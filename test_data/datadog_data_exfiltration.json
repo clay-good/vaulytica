@@ -1,0 +1,40 @@
+{
+  "id": "agg-signal-12345678-abcd-efgh-ijkl-mnopqrstuvwx",
+  "type": "signal",
+  "attributes": {
+    "timestamp": 1705932000000,
+    "message": "Unusual data transfer detected: Large volume of data uploaded to external cloud storage service from production database server",
+    "severity": "high",
+    "rule": {
+      "id": "rule-data-exfil-001",
+      "name": "Suspicious Data Exfiltration to External Storage",
+      "type": "log_detection"
+    },
+    "tags": [
+      "host:db-prod-primary-01",
+      "ip:10.0.20.100",
+      "env:production",
+      "service:postgresql",
+      "team:data-platform",
+      "security:high-risk"
+    ],
+    "custom": {
+      "source_ip": "10.0.20.100",
+      "destination_ip": "52.216.0.0",
+      "domain": "s3.amazonaws.com",
+      "bytes_transferred": "15728640000",
+      "duration_seconds": "3600",
+      "destination_service": "AWS S3",
+      "bucket_name": "suspicious-external-bucket",
+      "user_agent": "aws-cli/2.13.0",
+      "authentication_method": "access_key"
+    },
+    "workflow": {
+      "triage": {
+        "state": "open",
+        "assignee": "security-team"
+      }
+    }
+  }
+}
+

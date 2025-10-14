@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Analysis Report - ldt:a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6:1234567890</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+        }
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        .header .meta {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        .content {
+            padding: 40px;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 24px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        .risk-score {
+            display: inline-block;
+            padding: 20px 40px;
+            background: #dc3545;
+            color: white;
+            border-radius: 8px;
+            font-size: 48px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .confidence {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            margin-left: 20px;
+        }
+        .severity-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            background: #fd7e14;
+            color: white;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #667eea;
+        }
+        .attack-chain {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .attack-chain ol {
+            margin-left: 20px;
+        }
+        .attack-chain li {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+        }
+        .action-list {
+            list-style: none;
+        }
+        .action-list li {
+            padding: 15px;
+            margin: 10px 0;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 4px;
+        }
+        .action-list.immediate li {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+        .action-list.short-term li {
+            background: #d1ecf1;
+            border-left-color: #17a2b8;
+        }
+        .action-list.long-term li {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+        .query-box {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .footer {
+            background: #f8f9fa;
+            padding: 20px 40px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+        .indicator {
+            display: inline-block;
+            padding: 5px 10px;
+            background: #e9ecef;
+            border-radius: 4px;
+            margin: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Security Analysis Report</h1>
+            <div class="meta">
+                <strong>Event ID:</strong> ldt:a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6:1234567890<br>
+                <strong>Source:</strong> CrowdStrike Falcon<br>
+                <strong>Analyzed:</strong> 2025-10-12 19:00:27 UTC<br>
+                <strong>Severity:</strong> <span class="severity-badge">HIGH</span>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2>Executive Summary</h2>
+                <p>The security event indicates a potential data exfiltration incident involving a user accessing and copying large volumes of sensitive files from a production finance system to an external USB device during non-business hours. The incident appears to be a case of insider threat or compromised user account, with the user taking steps to collect and stage data for unauthorized removal from the organization.</p>
+            </div>
+            
+            <div class="section">
+                <h2>Risk Assessment</h2>
+                <div class="risk-score">8.0/10</div>
+                <div class="confidence">Confidence: 85%</div>
+                <p style="margin-top: 20px;"><strong>Event Description:</strong> Suspicious data collection activity detected. User accessed and copied large volumes of sensitive files to external USB device during non-business hours.</p>
+            </div>
+            
+            
+            <div class="section">
+                <h2>Attack Chain</h2>
+                <div class="attack-chain">
+                    <ol><li>Initial Access via Compromised User Account</li><li>Collection of Sensitive Data</li><li>Exfiltration via External Storage Device</li></ol>
+                </div>
+            </div>
+            
+            
+            <div class="section">
+                <h2>MITRE ATT&CK Techniques</h2>
+                <table>
+                    <thead>
+                        <tr><th>ID</th><th>Technique</th><th>Tactic</th><th>Confidence</th></tr>
+                    </thead>
+                    <tbody><tr><td>T1005</td><td>Data from Local System</td><td>Collection</td><td>90%</td></tr></tbody>
+                </table>
+            </div>
+            
+            
+            <div class="section">
+                <h2>Technical Indicators</h2>
+                <div><span class="indicator">file: financial_records_2024.xlsx</span><span class="indicator">command_line: cmd.exe /c copy C:\Users\jdoe\Documents\Confidential\*.* E:\backup\</span><span class="indicator">command_line: explorer.exe</span><span class="indicator">file: customer_database.csv</span><span class="indicator">command_line: robocopy C:\Users\jdoe\Documents\Confidential E:\backup /E /Z /R:3</span><span class="indicator">file: archive.zip</span><span class="indicator">command_line: powershell.exe Compress-Archive -Path C:\Users\jdoe\Documents\Confidential\* -DestinationPath C:\Users\jdoe\AppData\Local\Temp\archive.zip</span></div>
+            </div>
+            
+            
+        <div class="section">
+            <h2>Immediate Actions Required</h2>
+            <ul class="action-list immediate"><li>Isolate the affected system (LAPTOP-FINANCE-05) from the network to prevent further data exfiltration</li><li>Secure the user account (jdoe) and reset credentials to prevent ongoing unauthorized access</li><li>Initiate a forensic investigation to gather additional evidence and determine the full scope of the incident</li></ul>
+        </div>
+            
+            
+        <div class="section">
+            <h2>Short-Term Recommendations</h2>
+            <ul class="action-list short-term"><li>Review and tighten access controls and monitoring for sensitive data repositories within the finance department</li><li>Implement data loss prevention (DLP) controls to detect and block unauthorized data transfers to external storage devices</li><li>Conduct a comprehensive review of user activity logs and security events to identify any other suspicious behavior or potential indicators of compromise</li></ul>
+        </div>
+            
+            
+        <div class="section">
+            <h2>Long-Term Recommendations</h2>
+            <ul class="action-list long-term"><li>Implement a robust insider threat program to proactively monitor for and respond to suspicious user activities</li><li>Enhance security awareness training for all employees, with a focus on data handling best practices and reporting suspicious incidents</li><li>Develop and regularly test incident response and data breach notification procedures to ensure the organization is prepared to respond effectively to similar events in the future</li></ul>
+        </div>
+            
+            
+            <div class="section">
+                <h2>Investigation Queries</h2>
+                <div class="query-box">Retrieve and analyze all user activity logs for the affected system (LAPTOP-FINANCE-05) during the past 30 days</div><div class="query-box">Identify any other systems or devices that may have been accessed by the user (jdoe) during the same time period</div><div class="query-box">Check for any unusual network traffic or connections from the affected system to external IP addresses or domains</div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Processing Time: 9.93s | Tokens Used: 4885</p>
+            <p>Generated by Vaulytica Security Analysis Framework</p>
+        </div>
+    </div>
+</body>
+</html>

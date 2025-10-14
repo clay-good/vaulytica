@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Analysis Report - sf-evt-2024012115304567890</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+        }
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        .header .meta {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        .content {
+            padding: 40px;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 24px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        .risk-score {
+            display: inline-block;
+            padding: 20px 40px;
+            background: #dc3545;
+            color: white;
+            border-radius: 8px;
+            font-size: 48px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .confidence {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            margin-left: 20px;
+        }
+        .severity-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            background: #dc3545;
+            color: white;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #667eea;
+        }
+        .attack-chain {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .attack-chain ol {
+            margin-left: 20px;
+        }
+        .attack-chain li {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+        }
+        .action-list {
+            list-style: none;
+        }
+        .action-list li {
+            padding: 15px;
+            margin: 10px 0;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 4px;
+        }
+        .action-list.immediate li {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+        .action-list.short-term li {
+            background: #d1ecf1;
+            border-left-color: #17a2b8;
+        }
+        .action-list.long-term li {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+        .query-box {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .footer {
+            background: #f8f9fa;
+            padding: 20px 40px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+        .indicator {
+            display: inline-block;
+            padding: 5px 10px;
+            background: #e9ecef;
+            border-radius: 4px;
+            margin: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Security Analysis Report</h1>
+            <div class="meta">
+                <strong>Event ID:</strong> sf-evt-2024012115304567890<br>
+                <strong>Source:</strong> Snowflake<br>
+                <strong>Analyzed:</strong> 2025-10-12 19:18:43 UTC<br>
+                <strong>Severity:</strong> <span class="severity-badge">CRITICAL</span>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2>5W1H Quick Summary</h2>
+                <table>
+                    <tr><th style="width: 100px;">WHO</th><td>The key actors involved in this incident are:- Attacker: An unknown threat actor, potentially an external contractor or insider threat, who has compromised the account of a Snowflake user named CONTRACTOR_JSMITH.- Victim: The organization that owns the Snowflake 'CUSTOMER_DATA_PROD' database, which contains sensitive personally identifiable information (PII) data.- Affected User: CONTRACTOR_JSMITH, a Snowflake user with a 'DATA_ANALYST' role who has accessed and exfiltrated a large volume of sensitive customer data.</td></tr>
+                    <tr><th>WHAT</th><td>This is a case of data exfiltration, where a large volume of sensitive customer data has been extracted from a Snowflake production database by a compromised user account. The attacker executed a SQL query to retrieve 5 million customer records, including PII data such as names, email addresses, social security numbers, and credit card information, and then transferred approximately 14.65 GB of data out of the organization.</td></tr>
+                    <tr><th>WHEN</th><td>The security event was detected on 2024-01-21 at 15:30:45 UTC. The data exfiltration activity appears to have occurred during this time, with the attacker executing the SQL query and transferring the data out of the organization.</td></tr>
+                    <tr><th>WHERE</th><td>The affected systems and assets include:- Snowflake database: 'CUSTOMER_DATA_PROD' database, 'PII' schema- Snowflake user account: 'CONTRACTOR_JSMITH'- Snowflake client IP address: 203.0.113.45- Snowflake session ID: 987654321098765- Snowflake warehouse: 'ANALYTICS_WH'</td></tr>
+                    <tr><th>WHY</th><td>The attacker's motivation is likely financial gain, as the exfiltrated data includes sensitive PII that could be sold on the dark web or used for identity theft and fraud. The large volume of data stolen also suggests the attacker may have plans to leverage the information for further malicious activities.</td></tr>
+                    <tr><th>HOW</th><td>The attacker gained access to the Snowflake user account 'CONTRACTOR_JSMITH', which had a 'DATA_ANALYST' role with access to the 'CUSTOMER_DATA_PROD' database and 'PII' schema. The attacker then executed a SQL query to retrieve a large volume of sensitive customer data, including PII, and transferred approximately 14.65 GB of data out of the organization. The attacker likely used an external web service or cloud storage to exfiltrate the data, as indicated by the MITRE ATT&CK technique 'Exfiltration Over Web Service' (T1567).</td></tr>
+                </table>
+            </div>
+
+            <div class="section">
+                <h2>Executive Summary</h2>
+                <p>This is a critical security incident involving the exfiltration of a large volume of sensitive customer data from a Snowflake production database. The attacker has compromised the account of a Snowflake user, 'CONTRACTOR_JSMITH', and used it to execute a SQL query that retrieved 5 million customer records containing personally identifiable information (PII) such as names, email addresses, social security numbers, and credit card information. The attacker then transferred approximately 14.65 GB of data out of the organization, likely using an external web service or cloud storage. This incident poses a significant risk of financial loss, reputational damage, and regulatory compliance issues for the affected organization. Immediate action is required to contain the threat, preserve evidence, and initiate a comprehensive investigation.</p>
+            </div>
+
+            <div class="section">
+                <h2>Risk Assessment</h2>
+                <div class="risk-score">8.5/10</div>
+                <div class="confidence">Confidence: 95%</div>
+                <p style="margin-top: 20px;"><strong>Event Description:</strong> Event Type: DATA_EXFILTRATION_LARGE_EXPORT | User: CONTRACTOR_JSMITH | Source IP: 203.0.113.45 | Database: CUSTOMER_DATA_PROD | Data Volume: 15,728,640,000 bytes (14.65 GB)</p>
+            </div>
+
+            
+            <div class="section">
+                <h2>Attack Chain</h2>
+                <div class="attack-chain">
+                    <ol><li>Step 1: Initial Access via Compromised Snowflake User Account</li><li>Step 2: Privilege Escalation to Access Sensitive PII Data</li><li>Step 3: Data Exfiltration Over Web Service</li></ol>
+                </div>
+            </div>
+
+            
+            <div class="section">
+                <h2>MITRE ATT&CK Techniques</h2>
+                <table>
+                    <thead>
+                        <tr><th>ID</th><th>Technique</th><th>Tactic</th><th>Confidence</th></tr>
+                    </thead>
+                    <tbody><tr><td>T1078</td><td>Valid Accounts</td><td>Initial Access</td><td>90%</td></tr><tr><td>T1078.004</td><td>Cloud Accounts</td><td>Initial Access</td><td>90%</td></tr><tr><td>T1567</td><td>Exfiltration Over Web Service</td><td>Exfiltration</td><td>90%</td></tr></tbody>
+                </table>
+            </div>
+
+            
+            <div class="section">
+                <h2>Technical Indicators</h2>
+                <div><span class="indicator">ip_address: 203.0.113.45</span><span class="indicator">user_account: CONTRACTOR_JSMITH</span><span class="indicator">query: SELECT customer_id, full_name, email, phone, ssn, credit_card, address, date_of_birth FROM CUSTOMER_DATA_PROD.PII.CUSTOMER_RECORDS WHERE created_date >= '2020-01-01' ORDER BY customer_id LIMIT 5000000;</span><span class="indicator">session_id: 987654321098765</span><span class="indicator">data_volume: 15728640000</span></div>
+            </div>
+
+            
+        <div class="section">
+            <h2>Immediate Actions Required</h2>
+            <ul class="action-list immediate"><li>1. Immediately disable the 'CONTRACTOR_JSMITH' Snowflake user account to prevent further access and data exfiltration.</li><li>2. Initiate a comprehensive review of all Snowflake user accounts and access privileges to identify any other potentially compromised or suspicious activity.</li><li>3. Implement strict monitoring and alerting on all Snowflake database activity, especially large data transfers and access to sensitive PII tables.</li><li>4. Notify the organization's incident response team, security leadership, and any relevant regulatory bodies about the incident.</li></ul>
+        </div>
+
+            
+        <div class="section">
+            <h2>Short-Term Recommendations</h2>
+            <ul class="action-list short-term"><li>1. Conduct a thorough forensic investigation to determine the full scope of the data breach, including any additional compromised accounts, exfiltrated data, and potential lateral movement. (Priority: High, Owner: Incident Response Team)</li><li>2. Implement enhanced access controls and multi-factor authentication for all Snowflake user accounts, especially those with access to sensitive data. (Priority: High, Owner: Identity and Access Management Team)</li><li>3. Review and update the organization's data classification and protection policies to ensure appropriate controls are in place for sensitive PII data. (Priority: Medium, Owner: Information Security Policy Team)</li></ul>
+        </div>
+
+            
+        <div class="section">
+            <h2>Long-Term Recommendations</h2>
+            <ul class="action-list long-term"><li>1. Develop and implement a comprehensive data loss prevention (DLP) solution to monitor and control the flow of sensitive data across the organization's cloud and on-premises environments. (Timeline: 30-60 days, Resources: Security Engineering Team)</li><li>2. Conduct security awareness training for all Snowflake users, with a focus on identifying and reporting suspicious activity, such as unusual data access or exfiltration attempts. (Timeline: 60-90 days, Resources: Security Awareness and Training Team)</li><li>3. Evaluate the organization's cloud security posture and implement additional security controls, such as cloud security posture management (CSPM) and cloud workload protection platforms (CWPP), to enhance visibility and control over cloud-based resources. (Timeline: 90 days, Resources: Cloud Security Team)</li></ul>
+        </div>
+
+            
+            <div class="section">
+                <h2>Investigation Queries</h2>
+                <div class="query-box">SELECT * FROM SNOWFLAKE_AUDIT_LOG WHERE USER_NAME = 'CONTRACTOR_JSMITH' AND EVENT_TYPE = 'QUERY_EXECUTION' AND DATABASE_NAME = 'CUSTOMER_DATA_PROD' AND SCHEMA_NAME = 'PII' ORDER BY EVENT_TIMESTAMP DESC;</div><div class="query-box">SELECT * FROM SNOWFLAKE_AUDIT_LOG WHERE SESSION_ID = '987654321098765' ORDER BY EVENT_TIMESTAMP;</div><div class="query-box">SELECT * FROM SNOWFLAKE_AUDIT_LOG WHERE CLIENT_IP = '203.0.113.45' ORDER BY EVENT_TIMESTAMP DESC;</div><div class="query-box">SELECT * FROM SNOWFLAKE_USAGE_HISTORY WHERE USER_NAME = 'CONTRACTOR_JSMITH' AND DATABASE_NAME = 'CUSTOMER_DATA_PROD' AND SCHEMA_NAME = 'PII' ORDER BY BYTES_TRANSFERRED DESC;</div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Processing Time: 22.04s | Tokens Used: 7142</p>
+            <p>Generated by Vaulytica Security Analysis Framework</p>
+        </div>
+    </div>
+</body>
+</html>

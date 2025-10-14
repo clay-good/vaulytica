@@ -1,0 +1,54 @@
+{
+  "name": "organizations/123456789/sources/1234567890123456789/findings/a1b2c3d4e5f6g7h8i9j0",
+  "parent": "organizations/123456789/sources/1234567890123456789",
+  "resourceName": "//compute.googleapis.com/projects/production-project/zones/us-central1-a/instances/web-server-01",
+  "state": "ACTIVE",
+  "category": "Persistence: IAM Anomalous Grant",
+  "externalUri": "https://console.cloud.google.com/security/command-center/findings",
+  "sourceProperties": {
+    "detectionCategory": {
+      "ruleName": "iam_anomalous_grant"
+    },
+    "properties": {
+      "principalEmail": "compromised-service-account@production-project.iam.gserviceaccount.com",
+      "bindingDeltas": [
+        {
+          "action": "ADD",
+          "role": "roles/owner",
+          "member": "serviceAccount:suspicious-account@production-project.iam.gserviceaccount.com"
+        }
+      ],
+      "anomalousScore": 0.95
+    },
+    "ipAddresses": ["35.192.45.123"],
+    "domains": []
+  },
+  "securityMarks": {
+    "name": "organizations/123456789/sources/1234567890123456789/findings/a1b2c3d4e5f6g7h8i9j0/securityMarks",
+    "marks": {}
+  },
+  "eventTime": "2024-01-18T11:30:00.000Z",
+  "createTime": "2024-01-18T11:32:15.000Z",
+  "severity": "HIGH",
+  "description": "A service account has granted Owner role to another service account in an anomalous pattern. This may indicate privilege escalation by a compromised account attempting to establish persistence.",
+  "resource": {
+    "name": "//cloudresourcemanager.googleapis.com/projects/987654321",
+    "displayName": "production-project",
+    "type": "google.cloud.resourcemanager.Project",
+    "projectName": "projects/987654321",
+    "projectDisplayName": "Production Project",
+    "labels": {
+      "environment": "production",
+      "team": "platform",
+      "data-classification": "sensitive"
+    }
+  },
+  "finding_class": "THREAT",
+  "indicator": {
+    "ipAddresses": ["35.192.45.123"]
+  },
+  "mute": "UNMUTED",
+  "findingClass": "THREAT",
+  "canonicalName": "projects/987654321/sources/1234567890123456789/findings/a1b2c3d4e5f6g7h8i9j0"
+}
+

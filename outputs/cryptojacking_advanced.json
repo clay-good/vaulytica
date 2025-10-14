@@ -1,0 +1,193 @@
+{
+  "event": {
+    "event_id": "d7e8f9g0h1i2j3k4l5m6n7o8p9q0r1s2",
+    "source_system": "AWS GuardDuty",
+    "timestamp": "2024-01-20T10:15:30Z",
+    "severity": "HIGH",
+    "category": "MALWARE",
+    "title": "CryptoCurrency:EC2/BitcoinTool.B",
+    "description": "EC2 instance i-0x9y8z7w6v5u4t3s2 is communicating with a known cryptocurrency mining pool using an encrypted channel. The instance shows signs of resource hijacking with elevated CPU usage and network traffic patterns consistent with mining operations. This appears to be a sophisticated cryptojacking attack using obfuscation techniques.",
+    "affected_assets": [
+      {
+        "hostname": "i-0x9y8z7w6v5u4t3s2",
+        "ip_addresses": [
+          "10.0.5.100",
+          "54.210.123.45"
+        ],
+        "cloud_resource_id": "Instance",
+        "environment": "production",
+        "tags": {
+          "Name": "compute-worker-prod-05",
+          "Environment": "production",
+          "Application": "data-processing",
+          "CostCenter": "engineering"
+        }
+      }
+    ],
+    "technical_indicators": [
+      {
+        "indicator_type": "ip_address",
+        "value": "185.220.101.45",
+        "context": "Remote connection on port 3333"
+      }
+    ],
+    "mitre_attack": [],
+    "raw_event": {
+      "Id": "d7e8f9g0h1i2j3k4l5m6n7o8p9q0r1s2",
+      "Type": "CryptoCurrency:EC2/BitcoinTool.B",
+      "Severity": 9.0,
+      "CreatedAt": "2024-01-20T10:15:30.000Z",
+      "UpdatedAt": "2024-01-20T10:15:30.000Z",
+      "Title": "EC2 instance is communicating with cryptocurrency mining pool using encrypted channel",
+      "Description": "EC2 instance i-0x9y8z7w6v5u4t3s2 is communicating with a known cryptocurrency mining pool using an encrypted channel. The instance shows signs of resource hijacking with elevated CPU usage and network traffic patterns consistent with mining operations. This appears to be a sophisticated cryptojacking attack using obfuscation techniques.",
+      "Confidence": 98,
+      "Resource": {
+        "ResourceType": "Instance",
+        "InstanceDetails": {
+          "InstanceId": "i-0x9y8z7w6v5u4t3s2",
+          "InstanceType": "c5.4xlarge",
+          "LaunchTime": "2024-01-15T06:00:00.000Z",
+          "Platform": "linux",
+          "ImageId": "ami-0abcdef9876543210",
+          "ImageDescription": "Ubuntu Server 22.04 LTS",
+          "NetworkInterfaces": [
+            {
+              "NetworkInterfaceId": "eni-0fedcba9876543210",
+              "PrivateIpAddress": "10.0.5.100",
+              "PublicIp": "54.210.123.45",
+              "SubnetId": "subnet-0a1b2c3d4e5f",
+              "VpcId": "vpc-0x1y2z3w4v"
+            }
+          ],
+          "Tags": [
+            {
+              "Key": "Name",
+              "Value": "compute-worker-prod-05"
+            },
+            {
+              "Key": "Environment",
+              "Value": "production"
+            },
+            {
+              "Key": "Application",
+              "Value": "data-processing"
+            },
+            {
+              "Key": "CostCenter",
+              "Value": "engineering"
+            }
+          ]
+        }
+      },
+      "Service": {
+        "Action": {
+          "ActionType": "NETWORK_CONNECTION",
+          "NetworkConnectionAction": {
+            "ConnectionDirection": "OUTBOUND",
+            "Protocol": "TCP",
+            "LocalPortDetails": {
+              "Port": 45678,
+              "PortName": "Unknown"
+            },
+            "RemoteIpDetails": {
+              "IpAddressV4": "185.220.101.45",
+              "Country": {
+                "CountryName": "Netherlands"
+              },
+              "Organization": {
+                "Asn": "16509",
+                "AsnOrg": "Mining Pool Network"
+              }
+            },
+            "RemotePortDetails": {
+              "Port": 3333,
+              "PortName": "Stratum Mining Protocol"
+            },
+            "Blocked": false
+          }
+        },
+        "Evidence": {
+          "ThreatIntelligenceDetails": [
+            {
+              "ThreatListName": "Recorded Future",
+              "ThreatNames": [
+                "Cryptojacking",
+                "XMRig",
+                "Monero Mining"
+              ]
+            },
+            {
+              "ThreatListName": "AlienVault OTX",
+              "ThreatNames": [
+                "Cryptocurrency Mining",
+                "Resource Hijacking"
+              ]
+            }
+          ]
+        },
+        "Archived": false,
+        "Count": 342,
+        "DetectorId": "12abc34d567e8f90g1h2i3j4k5l6m7n8",
+        "EventFirstSeen": "2024-01-20T08:00:00.000Z",
+        "EventLastSeen": "2024-01-20T10:10:00.000Z",
+        "ResourceRole": "ACTOR",
+        "ServiceName": "guardduty",
+        "AdditionalInfo": {
+          "ThreatName": "XMRig Cryptominer",
+          "ThreatListName": "Recorded Future",
+          "Unusual": "true",
+          "UnusualProtocol": "Stratum"
+        }
+      },
+      "AccountId": "123456789012",
+      "Region": "us-east-1",
+      "Partition": "aws",
+      "Arn": "arn:aws:guardduty:us-east-1:123456789012:detector/12abc34d567e8f90g1h2i3j4k5l6m7n8/finding/d7e8f9g0h1i2j3k4l5m6n7o8p9q0r1s2"
+    },
+    "metadata": {},
+    "confidence_score": 0.98
+  },
+  "analysis": {
+    "event_id": "d7e8f9g0h1i2j3k4l5m6n7o8p9q0r1s2",
+    "analysis_timestamp": "2025-10-12T18:59:46.164161",
+    "executive_summary": "An AWS EC2 instance has been identified as potentially compromised and being used for unauthorized cryptocurrency mining. The incident was detected by AWS GuardDuty, which observed the instance communicating with a known cryptocurrency mining pool using an encrypted channel. The instance shows signs of resource hijacking with elevated CPU usage and network traffic patterns consistent with mining operations. This appears to be a sophisticated cryptojacking attack using obfuscation techniques.",
+    "risk_score": 8.0,
+    "confidence": 0.95,
+    "attack_chain": [
+      "Initial Access via Malware Infection",
+      "Persistence through Unauthorized Cryptocurrency Mining"
+    ],
+    "mitre_techniques": [
+      {
+        "technique_id": "T1496",
+        "technique_name": "Resource Hijacking",
+        "tactic": "Impact",
+        "confidence": 0.9
+      }
+    ],
+    "immediate_actions": [
+      "Isolate the affected EC2 instance to prevent further spread of the malware",
+      "Collect forensic evidence from the instance, including memory dumps and network traffic captures",
+      "Notify the appropriate teams (security, operations, and application owners) to coordinate the incident response"
+    ],
+    "short_term_recommendations": [
+      "Perform a thorough scan of the affected instance and the broader environment for indicators of compromise (IOCs)",
+      "Review and tighten security controls around EC2 instances, such as enforcing strong password policies, enabling multi-factor authentication, and implementing least-privilege access",
+      "Enhance monitoring and alerting for suspicious network activity, resource utilization, and cryptocurrency-related indicators"
+    ],
+    "long_term_recommendations": [
+      "Implement a comprehensive cloud security strategy, including regular vulnerability assessments, security hardening, and continuous monitoring",
+      "Develop and test incident response and disaster recovery plans to ensure the organization is prepared to respond effectively to similar incidents in the future",
+      "Provide security awareness training to employees to help them identify and report suspicious activities, such as unauthorized cryptocurrency mining"
+    ],
+    "related_incidents": [],
+    "investigation_queries": [
+      "Identify all EC2 instances that have communicated with the IP address 185.220.101.45 on port 3333 within the last 30 days",
+      "Analyze the network traffic and resource utilization patterns of the affected EC2 instance to identify any other suspicious activities",
+      "Search for the presence of the 'XMRig' process or other known cryptocurrency mining tools on the affected instance and across the environment"
+    ],
+    "raw_llm_response": "{\n  \"executive_summary\": \"An AWS EC2 instance has been identified as potentially compromised and being used for unauthorized cryptocurrency mining. The incident was detected by AWS GuardDuty, which observed the instance communicating with a known cryptocurrency mining pool using an encrypted channel. The instance shows signs of resource hijacking with elevated CPU usage and network traffic patterns consistent with mining operations. This appears to be a sophisticated cryptojacking attack using obfuscation techniques.\",\n  \"risk_score\": 8,\n  \"confidence\": 0.95,\n  \"attack_chain\": [\n    \"Initial Access via Malware Infection\",\n    \"Persistence through Unauthorized Cryptocurrency Mining\"\n  ],\n  \"mitre_techniques\": [\n    {\n      \"technique_id\": \"T1496\",\n      \"technique_name\": \"Resource Hijacking\",\n      \"tactic\": \"Impact\",\n      \"confidence\": 0.9\n    }\n  ],\n  \"immediate_actions\": [\n    \"Isolate the affected EC2 instance to prevent further spread of the malware\",\n    \"Collect forensic evidence from the instance, including memory dumps and network traffic captures\",\n    \"Notify the appropriate teams (security, operations, and application owners) to coordinate the incident response\"\n  ],\n  \"short_term_recommendations\": [\n    \"Perform a thorough scan of the affected instance and the broader environment for indicators of compromise (IOCs)\",\n    \"Review and tighten security controls around EC2 instances, such as enforcing strong password policies, enabling multi-factor authentication, and implementing least-privilege access\",\n    \"Enhance monitoring and alerting for suspicious network activity, resource utilization, and cryptocurrency-related indicators\"\n  ],\n  \"long_term_recommendations\": [\n    \"Implement a comprehensive cloud security strategy, including regular vulnerability assessments, security hardening, and continuous monitoring\",\n    \"Develop and test incident response and disaster recovery plans to ensure the organization is prepared to respond effectively to similar incidents in the future\",\n    \"Provide security awareness training to employees to help them identify and report suspicious activities, such as unauthorized cryptocurrency mining\"\n  ],\n  \"investigation_queries\": [\n    \"Identify all EC2 instances that have communicated with the IP address 185.220.101.45 on port 3333 within the last 30 days\",\n    \"Analyze the network traffic and resource utilization patterns of the affected EC2 instance to identify any other suspicious activities\",\n    \"Search for the presence of the 'XMRig' process or other known cryptocurrency mining tools on the affected instance and across the environment\"\n  ],\n  \"detailed_analysis\": {\n    \"incident_summary\": \"The security event data indicates that an AWS EC2 instance (i-0x9y8z7w6v5u4t3s2) has been compromised and is being used for unauthorized cryptocurrency mining. The instance is communicating with a known cryptocurrency mining pool using an encrypted channel, and it is showing signs of resource hijacking with elevated CPU usage and network traffic patterns consistent with mining operations. This appears to be a sophisticated cryptojacking attack using obfuscation techniques.\",\n    \"technical_indicators\": {\n      \"observables\": [\n        {\n          \"type\": \"ip_address\",\n          \"value\": \"185.220.101.45\",\n          \"context\": \"Remote connection on port 3333\"\n        },\n        {\n          \"type\": \"hostname\",\n          \"value\": \"i-0x9y8z7w6v5u4t3s2\",\n          \"context\": \"Affected EC2 instance\"\n        },\n        {\n          \"type\": \"ip_address\",\n          \"value\": \"10.0.5.100\",\n          \"context\": \"Private IP address of affected instance\"\n        },\n        {\n          \"type\": \"ip_address\",\n          \"value\": \"54.210.123.45\",\n          \"context\": \"Public IP address of affected instance\"\n        }\n      ],\n      \"anomalies\": [\n        \"Elevated CPU usage on the affected EC2 instance\",\n        \"Increased network traffic patterns consistent with cryptocurrency mining activities\",\n        \"Encrypted communication channel with a known cryptocurrency mining pool\"\n      ],\n      \"missing_information\": [\n        \"Specific malware or tools used in the attack\",\n        \"Details on the initial infection vector or attack entry point\"\n      ]\n    },\n    \"mitre_attack_mapping\": {\n      \"techniques\": [\n        {\n          \"id\": \"T1496\",\n          \"name\": \"Resource Hijacking\",\n          \"tactic\": \"Impact\",\n          \"confidence\": 0.9,\n          \"evidence\": \"The affected EC2 instance is showing signs of resource hijacking, with elevated CPU usage and network traffic patterns consistent with unauthorized cryptocurrency mining activities.\"\n        }\n      ],\n      \"attack_stage\": \"Persistence\",\n      \"threat_actor_sophistication\": \"Moderate to High\",\n      \"reasoning\": \"The use of obfuscation techniques and the targeting of cloud infrastructure suggest a moderately sophisticated threat actor. The ability to maintain persistent access through unauthorized cryptocurrency mining indicates a higher level of technical expertise.\"\n    },\n    \"attack_scenario_analysis\": {\n      \"most_likely_attack_vector\": \"Initial access was likely gained through a malware infection, potentially via a phishing email, vulnerable software, or other common attack vectors. The malware then installed a cryptocurrency mining tool, such as XMRig, on the EC2 instance to hijack its resources for mining operations.\",\n      \"threat_actor_motivation\": \"Opportunistic, as the attacker is likely seeking to monetize the compromised resources for financial gain through cryptocurrency mining.\",\n      \"potential_for_lateral_movement\": \"Moderate, as the attacker may attempt to move laterally within the AWS environment to compromise additional instances and expand the mining operation.\",\n      \"potential_for_escalation\": \"Moderate, as the attacker may attempt to gain higher-level access, such as through privilege escalation, to further entrench their presence and increase the impact of the attack.\"\n    },\n    \"risk_assessment\": {\n      \"asset_criticality\": 7,\n      \"likelihood_of_exploitation\": 8,\n      \"potential_impact\": 8,\n      \"overall_risk_score\": 8,\n      \"confidence_level\": 0.95,\n      \"reasoning\": \"The affected EC2 instance is part of a production environment and is likely processing sensitive data or performing critical business functions. The presence of a sophisticated cryptojacking attack suggests a high likelihood of successful exploitation, and the potential impact of the attack could be significant, including resource depletion, performance degradation, and potential data breaches. The high confidence level in this assessment is due to the detailed technical indicators and the similarities to past incidents.\"\n    }\n  }\n}",
+    "tokens_used": 4599,
+    "processing_time_seconds": 11.14327597618103
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "EVENT_ID": "sf-evt-2024012115304567890",
+  "EVENT_TYPE": "DATA_EXFILTRATION_LARGE_EXPORT",
+  "EVENT_TIMESTAMP": "2024-01-21T15:30:45.123Z",
+  "SEVERITY": "CRITICAL",
+  "CONFIDENCE_SCORE": 0.95,
+  "ACCOUNT_NAME": "PROD_ANALYTICS",
+  "USER_NAME": "CONTRACTOR_JSMITH",
+  "ROLE_NAME": "DATA_ANALYST",
+  "CLIENT_IP": "203.0.113.45",
+  "SESSION_ID": 987654321098765,
+  "DATABASE_NAME": "CUSTOMER_DATA_PROD",
+  "SCHEMA_NAME": "PII",
+  "TABLE_NAME": "CUSTOMER_RECORDS",
+  "WAREHOUSE_NAME": "ANALYTICS_WH",
+  "QUERY_TEXT": "SELECT customer_id, full_name, email, phone, ssn, credit_card, address, date_of_birth FROM CUSTOMER_DATA_PROD.PII.CUSTOMER_RECORDS WHERE created_date >= '2020-01-01' ORDER BY customer_id LIMIT 5000000;",
+  "QUERY_ID": "01b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "EXECUTION_STATUS": "SUCCESS",
+  "EXECUTION_TIME_MS": 45678,
+  "ROWS_PRODUCED": 5000000,
+  "BYTES_TRANSFERRED": 15728640000,
+  "BYTES_SCANNED": 25000000000,
+  "CREDITS_USED": 12.5,
+  "ERROR_MESSAGE": null,
+  "CLIENT_APPLICATION": "Python/3.9.7 snowflake-connector-python/2.7.9",
+  "CLIENT_OS": "Linux",
+  "CLIENT_VERSION": "2.7.9",
+  "AUTHENTICATION_METHOD": "PASSWORD",
+  "IS_FEDERATED": false,
+  "FIRST_AUTHENTICATION_FACTOR": "PASSWORD",
+  "SECOND_AUTHENTICATION_FACTOR": null,
+  "CONNECTION_TYPE": "EXTERNAL",
+  "NETWORK_POLICY": "ALLOW_ALL",
+  "ANOMALY_SCORE": 0.92,
+  "ANOMALY_REASONS": [
+    "Unusual data volume for user role",
+    "Access to PII tables outside normal hours",
+    "Export of entire table with sensitive columns",
+    "User typically queries <1000 rows, this query returned 5M rows",
+    "First time accessing SSN and credit card columns"
+  ],
+  "RISK_INDICATORS": {
+    "data_sensitivity": "HIGH",
+    "user_risk_score": 75,
+    "time_of_day_anomaly": true,
+    "volume_anomaly": true,
+    "column_sensitivity_anomaly": true
+  },
+  "CONTEXT": {
+    "user_department": "External Contractor",
+    "user_tenure_days": 45,
+    "normal_query_row_count": 850,
+    "normal_query_frequency": "5-10 per day",
+    "last_similar_query": "2024-01-15T09:23:11Z",
+    "contract_end_date": "2024-01-31"
+  }
+}
+

@@ -1,0 +1,106 @@
+{
+  "Id": "d7e8f9g0h1i2j3k4l5m6n7o8p9q0r1s2",
+  "Type": "CryptoCurrency:EC2/BitcoinTool.B",
+  "Severity": 9.0,
+  "CreatedAt": "2024-01-20T10:15:30.000Z",
+  "UpdatedAt": "2024-01-20T10:15:30.000Z",
+  "Title": "EC2 instance is communicating with cryptocurrency mining pool using encrypted channel",
+  "Description": "EC2 instance i-0x9y8z7w6v5u4t3s2 is communicating with a known cryptocurrency mining pool using an encrypted channel. The instance shows signs of resource hijacking with elevated CPU usage and network traffic patterns consistent with mining operations. This appears to be a sophisticated cryptojacking attack using obfuscation techniques.",
+  "Confidence": 98,
+  "Resource": {
+    "ResourceType": "Instance",
+    "InstanceDetails": {
+      "InstanceId": "i-0x9y8z7w6v5u4t3s2",
+      "InstanceType": "c5.4xlarge",
+      "LaunchTime": "2024-01-15T06:00:00.000Z",
+      "Platform": "linux",
+      "ImageId": "ami-0abcdef9876543210",
+      "ImageDescription": "Ubuntu Server 22.04 LTS",
+      "NetworkInterfaces": [
+        {
+          "NetworkInterfaceId": "eni-0fedcba9876543210",
+          "PrivateIpAddress": "10.0.5.100",
+          "PublicIp": "54.210.123.45",
+          "SubnetId": "subnet-0a1b2c3d4e5f",
+          "VpcId": "vpc-0x1y2z3w4v"
+        }
+      ],
+      "Tags": [
+        {
+          "Key": "Name",
+          "Value": "compute-worker-prod-05"
+        },
+        {
+          "Key": "Environment",
+          "Value": "production"
+        },
+        {
+          "Key": "Application",
+          "Value": "data-processing"
+        },
+        {
+          "Key": "CostCenter",
+          "Value": "engineering"
+        }
+      ]
+    }
+  },
+  "Service": {
+    "Action": {
+      "ActionType": "NETWORK_CONNECTION",
+      "NetworkConnectionAction": {
+        "ConnectionDirection": "OUTBOUND",
+        "Protocol": "TCP",
+        "LocalPortDetails": {
+          "Port": 45678,
+          "PortName": "Unknown"
+        },
+        "RemoteIpDetails": {
+          "IpAddressV4": "185.220.101.45",
+          "Country": {
+            "CountryName": "Netherlands"
+          },
+          "Organization": {
+            "Asn": "16509",
+            "AsnOrg": "Mining Pool Network"
+          }
+        },
+        "RemotePortDetails": {
+          "Port": 3333,
+          "PortName": "Stratum Mining Protocol"
+        },
+        "Blocked": false
+      }
+    },
+    "Evidence": {
+      "ThreatIntelligenceDetails": [
+        {
+          "ThreatListName": "Recorded Future",
+          "ThreatNames": ["Cryptojacking", "XMRig", "Monero Mining"]
+        },
+        {
+          "ThreatListName": "AlienVault OTX",
+          "ThreatNames": ["Cryptocurrency Mining", "Resource Hijacking"]
+        }
+      ]
+    },
+    "Archived": false,
+    "Count": 342,
+    "DetectorId": "12abc34d567e8f90g1h2i3j4k5l6m7n8",
+    "EventFirstSeen": "2024-01-20T08:00:00.000Z",
+    "EventLastSeen": "2024-01-20T10:10:00.000Z",
+    "ResourceRole": "ACTOR",
+    "ServiceName": "guardduty",
+    "AdditionalInfo": {
+      "ThreatName": "XMRig Cryptominer",
+      "ThreatListName": "Recorded Future",
+      "Unusual": "true",
+      "UnusualProtocol": "Stratum"
+    }
+  },
+  "AccountId": "123456789012",
+  "Region": "us-east-1",
+  "Partition": "aws",
+  "Arn": "arn:aws:guardduty:us-east-1:123456789012:detector/12abc34d567e8f90g1h2i3j4k5l6m7n8/finding/d7e8f9g0h1i2j3k4l5m6n7o8p9q0r1s2"
+}
+

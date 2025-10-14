@@ -1,0 +1,102 @@
+{
+  "Id": "e8f9g0h1i2j3k4l5m6n7o8p9q0r1s2t3",
+  "Type": "Impact:EC2/MaliciousFile",
+  "Severity": 9.5,
+  "CreatedAt": "2024-01-21T14:30:00.000Z",
+  "UpdatedAt": "2024-01-21T14:30:00.000Z",
+  "Title": "EC2 instance is exhibiting behavior consistent with ransomware activity",
+  "Description": "EC2 instance i-1a2b3c4d5e6f7g8h9 is showing signs of ransomware infection. Detected rapid file encryption activity, deletion of shadow copies, and communication with known ransomware command and control infrastructure. The instance is attempting to spread laterally to other systems in the network.",
+  "Confidence": 95,
+  "Resource": {
+    "ResourceType": "Instance",
+    "InstanceDetails": {
+      "InstanceId": "i-1a2b3c4d5e6f7g8h9",
+      "InstanceType": "m5.2xlarge",
+      "LaunchTime": "2023-11-01T09:00:00.000Z",
+      "Platform": "windows",
+      "ImageId": "ami-0windows2019server",
+      "ImageDescription": "Windows Server 2019 Base",
+      "NetworkInterfaces": [
+        {
+          "NetworkInterfaceId": "eni-0123456789abcdef0",
+          "PrivateIpAddress": "10.0.10.50",
+          "PublicIp": "52.45.67.89",
+          "SubnetId": "subnet-0x1y2z3w",
+          "VpcId": "vpc-0a1b2c3d"
+        }
+      ],
+      "Tags": [
+        {
+          "Key": "Name",
+          "Value": "file-server-prod-01"
+        },
+        {
+          "Key": "Environment",
+          "Value": "production"
+        },
+        {
+          "Key": "Application",
+          "Value": "file-storage"
+        },
+        {
+          "Key": "DataClassification",
+          "Value": "confidential"
+        }
+      ]
+    }
+  },
+  "Service": {
+    "Action": {
+      "ActionType": "NETWORK_CONNECTION",
+      "NetworkConnectionAction": {
+        "ConnectionDirection": "OUTBOUND",
+        "Protocol": "TCP",
+        "RemoteIpDetails": {
+          "IpAddressV4": "45.142.212.61",
+          "Country": {
+            "CountryName": "Russia"
+          },
+          "Organization": {
+            "Asn": "AS12345",
+            "AsnOrg": "Suspicious Hosting Provider"
+          }
+        },
+        "RemotePortDetails": {
+          "Port": 443,
+          "PortName": "HTTPS"
+        },
+        "Blocked": false
+      }
+    },
+    "Evidence": {
+      "ThreatIntelligenceDetails": [
+        {
+          "ThreatListName": "Recorded Future",
+          "ThreatNames": ["LockBit 3.0", "Ransomware", "File Encryption"]
+        },
+        {
+          "ThreatListName": "Mandiant",
+          "ThreatNames": ["Ransomware C2", "LockBit Infrastructure"]
+        }
+      ]
+    },
+    "Archived": false,
+    "Count": 15,
+    "DetectorId": "12abc34d567e8f90g1h2i3j4k5l6m7n8",
+    "EventFirstSeen": "2024-01-21T14:00:00.000Z",
+    "EventLastSeen": "2024-01-21T14:25:00.000Z",
+    "ResourceRole": "ACTOR",
+    "ServiceName": "guardduty",
+    "AdditionalInfo": {
+      "ThreatName": "LockBit 3.0 Ransomware",
+      "ThreatListName": "Recorded Future",
+      "Unusual": "true",
+      "SuspiciousActivity": "File encryption and shadow copy deletion detected"
+    }
+  },
+  "AccountId": "123456789012",
+  "Region": "us-east-1",
+  "Partition": "aws",
+  "Arn": "arn:aws:guardduty:us-east-1:123456789012:detector/12abc34d567e8f90g1h2i3j4k5l6m7n8/finding/e8f9g0h1i2j3k4l5m6n7o8p9q0r1s2t3"
+}
+

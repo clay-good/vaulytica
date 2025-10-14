@@ -1,0 +1,62 @@
+{
+  "batch_analysis_report": {
+    "generated_at": "2025-10-12T19:01:22.374909",
+    "summary": {
+      "total_events": 5,
+      "successful": 5,
+      "failed": 0,
+      "cache_hits": 1,
+      "cache_misses": 4,
+      "processing_time_seconds": 46.823301,
+      "start_time": "2025-10-12T19:00:35.550206",
+      "end_time": "2025-10-12T19:01:22.373507"
+    },
+    "results": [
+      {
+        "event_id": "c6d0e1f2g3h4i5j6k7l8m9n0o1p2q3r4",
+        "cached": false,
+        "risk_score": 8.5,
+        "confidence": 0.92,
+        "executive_summary": "An AWS EC2 instance has been identified as potentially compromised and communicating with a known Command & Control (C&C) server. The instance is querying a domain associated with malicious activity, indicating the presence of a backdoor or other malware that may be allowing an attacker to maintain persistent access and control over the system. Immediate action is required to contain the threat and prevent further damage.",
+        "immediate_actions_count": 3,
+        "mitre_techniques_count": 1
+      },
+      {
+        "event_id": "b5c9d0e1f2g3h4i5j6k7l8m9n0o1p2q3",
+        "cached": false,
+        "risk_score": 7.5,
+        "confidence": 0.85,
+        "executive_summary": "An AWS EC2 instance has been identified as performing SSH brute force attacks against remote hosts, indicating the instance may be compromised and being used to attack other systems. Immediate action is required to contain the threat and prevent further damage.",
+        "immediate_actions_count": 3,
+        "mitre_techniques_count": 1
+      },
+      {
+        "event_id": "d7e8f9g0h1i2j3k4l5m6n7o8p9q0r1s2",
+        "cached": true,
+        "risk_score": 8.0,
+        "confidence": 0.95,
+        "executive_summary": "An AWS EC2 instance has been identified as potentially compromised and being used for unauthorized cryptocurrency mining. The incident was detected by AWS GuardDuty, which observed the instance communicating with a known cryptocurrency mining pool using an encrypted channel. The instance shows signs of resource hijacking with elevated CPU usage and network traffic patterns consistent with mining operations. This appears to be a sophisticated cryptojacking attack using obfuscation techniques.",
+        "immediate_actions_count": 3,
+        "mitre_techniques_count": 1
+      },
+      {
+        "event_id": "e8f9g0h1i2j3k4l5m6n7o8p9q0r1s2t3",
+        "cached": false,
+        "risk_score": 8.5,
+        "confidence": 0.95,
+        "executive_summary": "An AWS EC2 instance has been identified as potentially compromised and being used for a ransomware attack. The instance is exhibiting signs of rapid file encryption, deletion of shadow copies, and communication with known ransomware command and control infrastructure. The incident poses a high risk of data loss and system disruption, requiring immediate containment and remediation.",
+        "immediate_actions_count": 3,
+        "mitre_techniques_count": 3
+      },
+      {
+        "event_id": "a4b8c9d1e2f3g4h5i6j7k8l9m0n1o2p3",
+        "cached": false,
+        "risk_score": 8.0,
+        "confidence": 0.95,
+        "executive_summary": "An AWS EC2 instance has been identified as potentially compromised and being used for unauthorized cryptocurrency mining. The incident was detected by AWS GuardDuty, which observed the instance querying a domain associated with Bitcoin mining pools. This indicates the instance may be infected with malware designed to hijack the system's resources for cryptocurrency mining activities without the owner's knowledge or consent. Immediate action is required to contain the threat and prevent further damage.",
+        "immediate_actions_count": 3,
+        "mitre_techniques_count": 1
+      }
+    ]
+  }
+}
