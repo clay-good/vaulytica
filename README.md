@@ -1051,16 +1051,3 @@ Key metrics to monitor:
 3. **File Permissions**: Ensure output directories have appropriate permissions
 4. **Logging**: Sensitive data is not logged (API keys, PII)
 5. **Network Security**: Consider running in isolated network segment
-
-## Roadmap
-
-Future enhancements under consideration:
-
-- REST API server mode
-- Native SOAR platform connectors
-- Additional data source parsers (Splunk, Elastic, Azure Sentinel)
-- Machine learning for anomaly detection
-- Custom playbook support
-- Multi-language support
-- Real-time streaming analysis
-- Advanced threat hunting capabilities
