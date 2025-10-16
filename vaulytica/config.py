@@ -49,12 +49,12 @@ class VaulyticaConfig(BaseSettings):
         default="INFO",
         description="Logging level (DEBUG, INFO, WARNING, ERROR)"
     )
-    
+
     output_dir: Path = Field(
         default=Path("./outputs"),
-        description="Directory for analysis outputs"
+        description="Directory for analysis outputs and cache"
     )
-    
+
     enable_rag: bool = Field(
         default=True,
         description="Enable RAG for historical incident correlation"
@@ -70,16 +70,72 @@ class VaulyticaConfig(BaseSettings):
         description="Enable caching for repeated analyses"
     )
 
-    output_dir: Path = Field(
-        default=Path("./outputs"),
-        description="Directory for output files"
-    )
-
     batch_max_workers: int = Field(
         default=3,
         description="Maximum parallel workers for batch processing"
     )
-    
+
+    webhook_secret: Optional[str] = Field(
+        default=None,
+        description="Secret key for webhook signature verification"
+    )
+
+    # Notification settings
+    slack_webhook_url: Optional[str] = Field(
+        default=None,
+        description="Slack webhook URL for notifications"
+    )
+
+    slack_channel: Optional[str] = Field(
+        default=None,
+        description="Slack channel override"
+    )
+
+    teams_webhook_url: Optional[str] = Field(
+        default=None,
+        description="Microsoft Teams webhook URL"
+    )
+
+    smtp_host: Optional[str] = Field(
+        default=None,
+        description="SMTP server host for email notifications"
+    )
+
+    smtp_port: int = Field(
+        default=587,
+        description="SMTP server port"
+    )
+
+    smtp_username: Optional[str] = Field(
+        default=None,
+        description="SMTP username"
+    )
+
+    smtp_password: Optional[str] = Field(
+        default=None,
+        description="SMTP password"
+    )
+
+    smtp_from: Optional[str] = Field(
+        default=None,
+        description="From email address"
+    )
+
+    smtp_to: Optional[str] = Field(
+        default=None,
+        description="To email address(es), comma-separated"
+    )
+
+    min_risk_score_notify: int = Field(
+        default=5,
+        description="Minimum risk score to trigger notifications"
+    )
+
+    notify_on_cache_hit: bool = Field(
+        default=False,
+        description="Send notifications for cached results"
+    )
+
     @field_validator("anthropic_api_key")
     @classmethod
     def validate_api_key(cls, v: str) -> str:

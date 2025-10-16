@@ -7,6 +7,9 @@ import chromadb
 from chromadb.config import Settings
 from vaulytica.models import SecurityEvent, AnalysisResult
 from vaulytica.config import VaulyticaConfig
+from vaulytica.logger import get_logger
+
+logger = get_logger(__name__)
 
 
 class IncidentRAG:
@@ -14,55 +17,73 @@ class IncidentRAG:
 
     def __init__(self, config: VaulyticaConfig):
         self.config = config
-        self.client = chromadb.PersistentClient(
-            path=str(config.chroma_db_path),
-            settings=Settings(anonymized_telemetry=False)
-        )
-        self.collection = self.client.get_or_create_collection(
-            name="security_incidents",
-            metadata={"description": "Historical security incidents and analyses"}
-        )
+        try:
+            self.client = chromadb.PersistentClient(
+                path=str(config.chroma_db_path),
+                settings=Settings(anonymized_telemetry=False)
+            )
+            self.collection = self.client.get_or_create_collection(
+                name="security_incidents",
+                metadata={"description": "Historical security incidents and analyses"}
+            )
+            logger.info(f"RAG system initialized with {self.collection.count()} incidents")
+        except Exception as e:
+            logger.error(f"Failed to initialize RAG system: {e}")
+            raise
     
     def store_incident(self, event: SecurityEvent, analysis: AnalysisResult) -> None:
-        """Store analyzed incident for future retrieval."""
-        
-        document = self._create_document(event, analysis)
-        metadata = self._create_metadata(event, analysis)
-        
-        self.collection.add(
-            documents=[document],
-            metadatas=[metadata],
-            ids=[event.event_id]
-        )
+        """Store analyzed incident for future retrieval with error handling."""
+
+        try:
+            document = self._create_document(event, analysis)
+            metadata = self._create_metadata(event, analysis)
+
+            self.collection.add(
+                documents=[document],
+                metadatas=[metadata],
+                ids=[event.event_id]
+            )
+            logger.debug(f"Stored incident {event.event_id} in RAG database")
+        except Exception as e:
+            logger.error(f"Failed to store incident {event.event_id}: {e}")
+            # Don't raise - storing in RAG is not critical for analysis
     
     def find_similar_incidents(
         self,
         event: SecurityEvent,
         max_results: int = 5
     ) -> List[Dict[str, any]]:
-        """Find similar historical incidents with enhanced relevance scoring."""
+        """Find similar historical incidents with enhanced relevance scoring and error handling."""
 
-        query_text = self._create_enhanced_query(event)
+        try:
+            query_text = self._create_enhanced_query(event)
 
-        results = self.collection.query(
-            query_texts=[query_text],
-            n_results=max_results * 2,
-            where={
-                "severity": {"$in": [event.severity.value, "HIGH", "CRITICAL"]}
-            } if event.severity.value in ["HIGH", "CRITICAL"] else None
-        )
+            results = self.collection.query(
+                query_texts=[query_text],
+                n_results=max_results * 2,
+                where={
+                    "severity": {"$in": [event.severity.value, "HIGH", "CRITICAL"]}
+                } if event.severity.value in ["HIGH", "CRITICAL"] else None
+            )
 
-        if not results["documents"] or not results["documents"][0]:
+            if not results["documents"] or not results["documents"][0]:
+                logger.debug("No similar incidents found in RAG database")
+                return []
+
+            scored_results = self._score_and_rank_results(
+                event,
+                results["documents"][0],
+                results["metadatas"][0] if results["metadatas"] else [],
+                results["distances"][0] if results["distances"] else []
+            )
+
+            logger.info(f"Found {len(scored_results[:max_results])} similar incidents")
+            return scored_results[:max_results]
+
+        except Exception as e:
+            logger.error(f"Failed to find similar incidents: {e}")
+            # Return empty list on error - RAG is optional
             return []
-
-        scored_results = self._score_and_rank_results(
-            event,
-            results["documents"][0],
-            results["metadatas"][0] if results["metadatas"] else [],
-            results["distances"][0] if results["distances"] else []
-        )
-
-        return scored_results[:max_results]
     
     def _create_document(self, event: SecurityEvent, analysis: AnalysisResult) -> str:
         """Create searchable document from incident."""

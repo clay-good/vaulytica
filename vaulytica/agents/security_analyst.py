@@ -5,10 +5,13 @@ import time
 import hashlib
 from datetime import datetime
 from typing import List, Optional, Dict
-from anthropic import Anthropic
+from anthropic import Anthropic, APIError, APIConnectionError, RateLimitError
 from vaulytica.models import SecurityEvent, AnalysisResult, MitreAttack, FiveW1H
 from vaulytica.config import VaulyticaConfig
+from vaulytica.logger import get_logger
 from .base import BaseAgent
+
+logger = get_logger(__name__)
 
 
 class SecurityAnalystAgent(BaseAgent):
@@ -44,7 +47,7 @@ class SecurityAnalystAgent(BaseAgent):
         events: List[SecurityEvent],
         historical_context: Optional[List[Dict]] = None
     ) -> AnalysisResult:
-        """Analyze security events with enhanced threat intelligence."""
+        """Analyze security events with enhanced threat intelligence and retry logic."""
 
         start_time = time.time()
 
@@ -55,12 +58,8 @@ class SecurityAnalystAgent(BaseAgent):
             historical_context
         )
 
-        response = self.client.messages.create(
-            model=self.config.model_name,
-            max_tokens=self.config.max_tokens,
-            temperature=self.config.temperature,
-            messages=[{"role": "user", "content": prompt}]
-        )
+        # Call API with retry logic
+        response = self._call_api_with_retry(prompt)
 
         raw_response = response.content[0].text
         tokens_used = response.usage.input_tokens + response.usage.output_tokens
@@ -69,6 +68,54 @@ class SecurityAnalystAgent(BaseAgent):
         result.processing_time_seconds = time.time() - start_time
 
         return result
+
+    def _call_api_with_retry(self, prompt: str, max_retries: int = 3):
+        """Call Anthropic API with exponential backoff retry logic."""
+
+        for attempt in range(max_retries):
+            try:
+                logger.debug(f"API call attempt {attempt + 1}/{max_retries}")
+
+                response = self.client.messages.create(
+                    model=self.config.model_name,
+                    max_tokens=self.config.max_tokens,
+                    temperature=self.config.temperature,
+                    messages=[{"role": "user", "content": prompt}]
+                )
+
+                logger.debug("API call successful")
+                return response
+
+            except RateLimitError as e:
+                logger.warning(f"Rate limit hit on attempt {attempt + 1}: {e}")
+                if attempt < max_retries - 1:
+                    wait_time = (2 ** attempt) * 2  # Exponential backoff: 2, 4, 8 seconds
+                    logger.info(f"Waiting {wait_time} seconds before retry...")
+                    time.sleep(wait_time)
+                else:
+                    logger.error("Max retries reached for rate limit")
+                    raise
+
+            except APIConnectionError as e:
+                logger.warning(f"Connection error on attempt {attempt + 1}: {e}")
+                if attempt < max_retries - 1:
+                    wait_time = (2 ** attempt)  # Exponential backoff: 1, 2, 4 seconds
+                    logger.info(f"Waiting {wait_time} seconds before retry...")
+                    time.sleep(wait_time)
+                else:
+                    logger.error("Max retries reached for connection error")
+                    raise
+
+            except APIError as e:
+                logger.error(f"API error on attempt {attempt + 1}: {e}")
+                # Don't retry on general API errors (likely client-side issues)
+                raise
+
+            except Exception as e:
+                logger.error(f"Unexpected error on attempt {attempt + 1}: {e}")
+                raise
+
+        raise Exception("Failed to call API after all retries")
 
     def _enrich_with_threat_intel(self, events: List[SecurityEvent]) -> List[SecurityEvent]:
         """Enrich events with threat intelligence context."""

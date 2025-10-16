@@ -34,7 +34,7 @@ from vaulytica.batch import BatchProcessor
 
 
 @click.group()
-@click.version_option(version="0.3.0")
+@click.version_option(version="0.4.0")
 @click.option('--debug', is_flag=True, help='Enable debug logging')
 @click.option('--log-file', type=click.Path(path_type=Path), help='Log file path')
 def cli(debug: bool, log_file: Optional[Path]):
@@ -392,6 +392,59 @@ def clear(api_key: Optional[str], clear_cache: bool, clear_expired: bool):
         click.echo(f"Cleared {cleared} cache entries")
     else:
         click.echo("Specify --clear-cache or --clear-expired")
+
+
+@cli.command()
+@click.option('--host', default='0.0.0.0', help='Host to bind to')
+@click.option('--port', default=8000, type=int, help='Port to bind to')
+@click.option('--reload', is_flag=True, help='Enable auto-reload for development')
+@click.option('--workers', default=1, type=int, help='Number of worker processes')
+@click.option('--api-key', envvar='ANTHROPIC_API_KEY', help='Anthropic API key')
+def serve(host: str, port: int, reload: bool, workers: int, api_key: Optional[str]):
+    """Start REST API server for SOAR integration."""
+
+    try:
+        # Validate configuration
+        config = load_config(api_key=api_key)
+        click.secho("✓ Configuration validated", fg='green')
+
+    except ValueError as e:
+        click.secho(f"✗ Configuration error: {e}", fg='red', bold=True)
+        click.echo("  Set ANTHROPIC_API_KEY environment variable or use --api-key option")
+        sys.exit(1)
+
+    try:
+        import uvicorn
+    except ImportError:
+        click.secho("✗ FastAPI/Uvicorn not installed", fg='red', bold=True)
+        click.echo("  Install with: pip install 'fastapi>=0.104.0' 'uvicorn[standard]>=0.24.0'")
+        sys.exit(1)
+
+    click.echo("")
+    click.secho("============================================================", fg='cyan', bold=True)
+    click.secho("  VAULYTICA API SERVER", fg='cyan', bold=True)
+    click.secho("============================================================", fg='cyan', bold=True)
+    click.echo("")
+    click.echo(f"  Host: {host}")
+    click.echo(f"  Port: {port}")
+    click.echo(f"  Workers: {workers}")
+    click.echo(f"  Reload: {reload}")
+    click.echo("")
+    click.echo(f"  API Documentation: http://{host}:{port}/docs")
+    click.echo(f"  Health Check: http://{host}:{port}/health")
+    click.echo("")
+    click.secho("============================================================", fg='cyan', bold=True)
+    click.echo("")
+
+    # Start server
+    uvicorn.run(
+        "vaulytica.api:app",
+        host=host,
+        port=port,
+        reload=reload,
+        workers=workers if not reload else 1,
+        log_level="info"
+    )
 
 
 if __name__ == '__main__':
