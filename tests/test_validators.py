@@ -1,5 +1,3 @@
-"""Tests for input validation."""
-
 import pytest
 import json
 from pathlib import Path

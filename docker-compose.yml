@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  vaulytica:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: vaulytica:latest
+    container_name: vaulytica-api
+    ports:
+      - "8000:8000"
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - VAULYTICA_MODEL_NAME=${VAULYTICA_MODEL_NAME:-claude-3-haiku-20240307}
+      - VAULYTICA_MAX_TOKENS=${VAULYTICA_MAX_TOKENS:-4000}
+      - VAULYTICA_TEMPERATURE=${VAULYTICA_TEMPERATURE:-0.0}
+      - VAULYTICA_ENABLE_RAG=${VAULYTICA_ENABLE_RAG:-true}
+      - VAULYTICA_ENABLE_CACHE=${VAULYTICA_ENABLE_CACHE:-true}
+      - VAULYTICA_MAX_HISTORICAL_INCIDENTS=${VAULYTICA_MAX_HISTORICAL_INCIDENTS:-5}
+      - VAULYTICA_BATCH_MAX_WORKERS=${VAULYTICA_BATCH_MAX_WORKERS:-3}
+      - VAULYTICA_LOG_LEVEL=${VAULYTICA_LOG_LEVEL:-INFO}
+    volumes:
+      - ./outputs:/app/outputs
+      - ./chroma_db:/app/chroma_db
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - vaulytica-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Optional: Prometheus for metrics
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: vaulytica-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    networks:
+      - vaulytica-network
+    restart: unless-stopped
+
+  # Optional: Grafana for visualization
+  grafana:
+    image: grafana/grafana:latest
+    container_name: vaulytica-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana-data:/var/lib/grafana
+    networks:
+      - vaulytica-network
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+
+networks:
+  vaulytica-network:
+    driver: bridge
+
+volumes:
+  prometheus-data:
+  grafana-data:
+

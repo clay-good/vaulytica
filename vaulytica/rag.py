@@ -1,5 +1,3 @@
-"""Enhanced RAG system for historical incident correlation."""
-
 import json
 import hashlib
 from typing import List, Optional, Dict, Tuple

@@ -1,4 +1,3 @@
-"""Tests for analysis caching."""
 
 import pytest
 import time

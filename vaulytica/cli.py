@@ -1,5 +1,3 @@
-"""Command-line interface for Vaulytica."""
-
 import asyncio
 import json
 import sys
@@ -34,11 +32,11 @@ from vaulytica.batch import BatchProcessor
 
 
 @click.group()
-@click.version_option(version="0.4.0")
+@click.version_option(version="0.30.0")
 @click.option('--debug', is_flag=True, help='Enable debug logging')
 @click.option('--log-file', type=click.Path(path_type=Path), help='Log file path')
 def cli(debug: bool, log_file: Optional[Path]):
-    """Vaulytica: AI-powered security event analysis framework."""
+    """Vaulytica: AI-powered security event analysis framework with deep learning, AutoML, interactive visualizations, incident management, automated forensics & investigation, threat hunting, SOAR, compliance, external threat intelligence, advanced automation, multi-platform ticketing (ServiceNow, Jira, PagerDuty, Datadog), Cloud Security Posture Management (CSPM), vulnerability management, Container Security & Kubernetes Security Posture Management (K8s SPM), IAM Security & Secrets Management, Zero Trust Architecture, Network Security, Data Loss Prevention (DLP), Encryption Management, API Security, Application Security Testing (AST), Security Automation, DevSecOps Integration, Security Orchestration, Advanced Threat Intelligence, Security Metrics & KPIs, Automated Penetration Testing, Supply Chain Security, SBOM Management, Security GRC, Security Posture Analytics, Continuous Monitoring, Predictive Security Intelligence, Attack Surface Management, Security Data Lake, Threat Modeling, and Incident Simulation."""
     import logging
     log_level = logging.DEBUG if debug else logging.INFO
     setup_logger(level=log_level, log_file=log_file)
@@ -242,8 +240,9 @@ def analyze(
 
 @cli.command()
 @click.option('--api-key', envvar='ANTHROPIC_API_KEY', help='Anthropic API key')
-def stats(api_key: Optional[str]):
-    """Show system statistics."""
+@click.option('--metrics', is_flag=True, help='Show metrics instead of stats')
+def stats(api_key: Optional[str], metrics: bool):
+    """Show system statistics and metrics."""
 
     try:
         config = load_config(api_key=api_key)
@@ -252,21 +251,63 @@ def stats(api_key: Optional[str]):
         return
 
     try:
-        rag = IncidentRAG(config)
-        rag_stats = rag.get_collection_stats()
+        if metrics:
+            # Show metrics from metrics collector
+            from vaulytica.metrics import get_metrics_collector
+            metrics_collector = get_metrics_collector()
+            metrics_data = metrics_collector.get_summary()
 
-        cache = AnalysisCache(config)
-        cache_stats = cache.get_stats()
+            click.echo("\n=== Vaulytica Metrics ===\n")
 
-        click.echo("\n=== Vaulytica System Statistics ===\n")
-        click.echo(f"RAG Database:")
-        click.echo(f"  Total incidents: {rag_stats['total_incidents']}")
-        click.echo(f"  Collection: {rag_stats['collection_name']}")
-        click.echo(f"\nCache:")
-        click.echo(f"  Total entries: {cache_stats['total_entries']}")
-        click.echo(f"  Total size: {cache_stats['total_size_mb']} MB")
-        click.echo(f"  TTL: {cache_stats['ttl_hours']} hours")
-        click.echo(f"  Cache directory: {cache_stats['cache_dir']}\n")
+            click.echo("Analysis:")
+            click.echo(f"  Total analyses: {metrics_data['analysis']['total_analyses']}")
+            click.echo(f"  Errors: {metrics_data['analysis']['errors']} ({metrics_data['analysis']['error_rate']:.1f}%)")
+            click.echo(f"  By platform: {metrics_data['analysis']['by_platform']}")
+
+            click.echo("\nCache:")
+            click.echo(f"  Hits: {metrics_data['cache']['hits']}")
+            click.echo(f"  Misses: {metrics_data['cache']['misses']}")
+            click.echo(f"  Hit rate: {metrics_data['cache']['hit_rate_percent']:.1f}%")
+
+            click.echo("\nPerformance:")
+            click.echo(f"  Avg latency: {metrics_data['performance']['avg_latency_seconds']}s")
+            click.echo(f"  P95 latency: {metrics_data['performance']['p95_latency_seconds']}s")
+            click.echo(f"  P99 latency: {metrics_data['performance']['p99_latency_seconds']}s")
+
+            click.echo("\nCost:")
+            click.echo(f"  Total tokens: {metrics_data['cost']['total_tokens']:,}")
+            click.echo(f"  Total cost: ${metrics_data['cost']['total_cost_usd']}")
+            click.echo(f"  Avg tokens/analysis: {metrics_data['cost']['avg_tokens_per_analysis']}")
+
+            click.echo("\nRisk:")
+            click.echo(f"  Average risk score: {metrics_data['risk']['average_risk_score']}")
+            click.echo(f"  High-risk events: {metrics_data['risk']['high_risk_events']}")
+            click.echo(f"  Medium-risk events: {metrics_data['risk']['medium_risk_events']}")
+            click.echo(f"  Low-risk events: {metrics_data['risk']['low_risk_events']}")
+
+            if metrics_data['threats']['top_mitre_techniques']:
+                click.echo("\nTop MITRE ATT&CK Techniques:")
+                for technique, count in metrics_data['threats']['top_mitre_techniques'][:5]:
+                    click.echo(f"  {technique}: {count}")
+
+            click.echo()
+        else:
+            # Show traditional stats
+            rag = IncidentRAG(config)
+            rag_stats = rag.get_collection_stats()
+
+            cache = AnalysisCache(config)
+            cache_stats = cache.get_stats()
+
+            click.echo("\n=== Vaulytica System Statistics ===\n")
+            click.echo(f"RAG Database:")
+            click.echo(f"  Total incidents: {rag_stats['total_incidents']}")
+            click.echo(f"  Collection: {rag_stats['collection_name']}")
+            click.echo(f"\nCache:")
+            click.echo(f"  Total entries: {cache_stats['total_entries']}")
+            click.echo(f"  Total size: {cache_stats['total_size_mb']} MB")
+            click.echo(f"  TTL: {cache_stats['ttl_hours']} hours")
+            click.echo(f"  Cache directory: {cache_stats['cache_dir']}\n")
 
     except Exception as e:
         click.echo(f"Error: {e}")

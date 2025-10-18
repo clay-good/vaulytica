@@ -1,5 +1,3 @@
-"""Analysis caching system for improved performance."""
-
 import json
 import hashlib
 import time

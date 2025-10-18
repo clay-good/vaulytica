@@ -1,5 +1,3 @@
-"""Batch processing system for analyzing multiple events."""
-
 import asyncio
 import json
 from pathlib import Path

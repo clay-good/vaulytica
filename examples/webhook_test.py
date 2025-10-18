@@ -1,9 +1,4 @@
 #!/usr/bin/env python3
-"""
-Test script for Vaulytica webhook endpoints.
-
-This script sends test events to webhook endpoints to verify they're working correctly.
-"""
 
 import json
 import sys

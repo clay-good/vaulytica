@@ -1,5 +1,3 @@
-"""Input validation and sanitization."""
-
 import json
 from pathlib import Path
 from typing import Any, Dict, List
@@ -146,12 +144,46 @@ def validate_directory(directory: Path, must_exist: bool = True) -> Path:
 
 def validate_pattern(pattern: str) -> str:
     """Validate file pattern."""
-    
+
     if not pattern:
         raise ValidationError("File pattern cannot be empty")
-    
+
     if not pattern.endswith('.json'):
         logger.warning(f"Pattern '{pattern}' does not end with .json")
-    
+
     return pattern
+
+
+def validate_event(event: Dict[str, Any]) -> bool:
+    """Validate security event structure.
+
+    Args:
+        event: Event dictionary to validate
+
+    Returns:
+        True if event is valid
+
+    Raises:
+        ValidationError: If event structure is invalid
+    """
+    if not isinstance(event, dict):
+        raise ValidationError(f"Event must be a dictionary, got {type(event).__name__}")
+
+    required_fields = ['event_id', 'source_system', 'title']
+    missing_fields = [field for field in required_fields if field not in event]
+
+    if missing_fields:
+        raise ValidationError(f"Event missing required fields: {', '.join(missing_fields)}")
+
+    if not event.get('event_id'):
+        raise ValidationError("Event ID cannot be empty")
+
+    if not event.get('source_system'):
+        raise ValidationError("Source system cannot be empty")
+
+    if not event.get('title'):
+        raise ValidationError("Title cannot be empty")
+
+    logger.debug(f"Successfully validated event: {event.get('event_id')}")
+    return True
 

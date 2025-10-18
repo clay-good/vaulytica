@@ -1,5 +1,3 @@
-"""Base agent framework."""
-
 from abc import ABC, abstractmethod
 from typing import List, Optional
 from vaulytica.models import SecurityEvent, AnalysisResult

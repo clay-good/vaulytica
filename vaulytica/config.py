@@ -1,19 +1,39 @@
-"""Configuration management for Vaulytica."""
-
+import os
+from enum import Enum
 from pathlib import Path
-from typing import Optional
-from pydantic import Field, field_validator
+from typing import Optional, Dict, Any
+from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class Environment(str, Enum):
+    """Deployment environment."""
+    DEVELOPMENT = "development"
+    STAGING = "staging"
+    PRODUCTION = "production"
+    TESTING = "testing"
 
 
 class VaulyticaConfig(BaseSettings):
     """Main configuration for Vaulytica."""
-    
+
     model_config = SettingsConfigDict(
         env_prefix="VAULYTICA_",
         env_file=".env",
         env_file_encoding="utf-8",
         case_sensitive=False,
+        extra="ignore"  # Ignore extra environment variables
+    )
+
+    # Environment configuration
+    environment: Environment = Field(
+        default=Environment.DEVELOPMENT,
+        description="Deployment environment"
+    )
+
+    debug: bool = Field(
+        default=False,
+        description="Enable debug mode"
     )
     
     anthropic_api_key: str = Field(
@@ -136,23 +156,169 @@ class VaulyticaConfig(BaseSettings):
         description="Send notifications for cached results"
     )
 
+    # Threat Feed Integration (v0.9.0)
+    virustotal_api_key: Optional[str] = Field(
+        default=None,
+        description="VirusTotal API key for IOC enrichment"
+    )
+
+    alienvault_otx_api_key: Optional[str] = Field(
+        default=None,
+        description="AlienVault OTX API key for threat intelligence"
+    )
+
+    abuseipdb_api_key: Optional[str] = Field(
+        default=None,
+        description="AbuseIPDB API key for IP reputation"
+    )
+
+    shodan_api_key: Optional[str] = Field(
+        default=None,
+        description="Shodan API key for IP intelligence"
+    )
+
+    enable_threat_feeds: bool = Field(
+        default=True,
+        description="Enable external threat feed integration"
+    )
+
+    threat_feed_cache_ttl: int = Field(
+        default=24,
+        description="Threat feed cache TTL in hours"
+    )
+
+    threat_feed_timeout: int = Field(
+        default=10,
+        description="Threat feed API timeout in seconds"
+    )
+
     @field_validator("anthropic_api_key")
     @classmethod
     def validate_api_key(cls, v: str) -> str:
+        """Validate Anthropic API key format."""
         if not v or v == "your-api-key-here":
             raise ValueError("Valid Anthropic API key required")
+        if not v.startswith("sk-ant-"):
+            raise ValueError("Invalid Anthropic API key format (should start with 'sk-ant-')")
         return v
-    
+
     @field_validator("chroma_db_path", "output_dir")
     @classmethod
     def ensure_path_exists(cls, v: Path) -> Path:
+        """Ensure required directories exist."""
         v.mkdir(parents=True, exist_ok=True)
         return v
 
+    @field_validator("log_level")
+    @classmethod
+    def validate_log_level(cls, v: str) -> str:
+        """Validate log level."""
+        valid_levels = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+        v = v.upper()
+        if v not in valid_levels:
+            raise ValueError(f"Invalid log level. Must be one of: {', '.join(valid_levels)}")
+        return v
 
-def load_config(api_key: Optional[str] = None) -> VaulyticaConfig:
-    """Load configuration with optional API key override."""
+    @model_validator(mode='after')
+    def validate_production_settings(self) -> 'VaulyticaConfig':
+        """Validate production-specific settings."""
+        if self.environment == Environment.PRODUCTION:
+            # Ensure critical settings are configured for production
+            if self.debug:
+                raise ValueError("Debug mode must be disabled in production")
+            if self.log_level == "DEBUG":
+                raise ValueError("Log level should not be DEBUG in production")
+            if not self.enable_cache:
+                import warnings
+                warnings.warn("Cache is disabled in production - this may impact performance")
+        return self
+
+    def get_environment_name(self) -> str:
+        """Get the current environment name."""
+        return self.environment.value
+
+    def is_production(self) -> bool:
+        """Check if running in production environment."""
+        return self.environment == Environment.PRODUCTION
+
+    def is_development(self) -> bool:
+        """Check if running in development environment."""
+        return self.environment == Environment.DEVELOPMENT
+
+    def to_dict(self, mask_secrets: bool = True) -> Dict[str, Any]:
+        """
+        Convert configuration to dictionary.
+
+        Args:
+            mask_secrets: If True, mask sensitive values
+
+        Returns:
+            Dictionary representation of configuration
+        """
+        config_dict = self.model_dump()
+
+        if mask_secrets:
+            # Mask sensitive fields
+            sensitive_fields = [
+                'anthropic_api_key', 'webhook_secret', 'slack_webhook_url',
+                'teams_webhook_url', 'smtp_password', 'jira_api_token',
+                'servicenow_password', 'pagerduty_api_key', 'opsgenie_api_key'
+            ]
+            for field in sensitive_fields:
+                if field in config_dict and config_dict[field]:
+                    config_dict[field] = "***MASKED***"
+
+        return config_dict
+
+
+def load_config(api_key: Optional[str] = None, environment: Optional[str] = None) -> VaulyticaConfig:
+    """
+    Load configuration with optional overrides.
+
+    Args:
+        api_key: Optional Anthropic API key override
+        environment: Optional environment override (development, staging, production)
+
+    Returns:
+        Loaded configuration
+
+    Raises:
+        ValueError: If configuration is invalid
+    """
+    kwargs = {}
     if api_key:
-        return VaulyticaConfig(anthropic_api_key=api_key)
-    return VaulyticaConfig()
+        kwargs['anthropic_api_key'] = api_key
+    if environment:
+        kwargs['environment'] = environment
+
+    return VaulyticaConfig(**kwargs)
+
+
+def load_config_from_file(config_file: Path) -> VaulyticaConfig:
+    """
+    Load configuration from a specific file.
+
+    Args:
+        config_file: Path to configuration file
+
+    Returns:
+        Loaded configuration
+    """
+    import json
+    import yaml
+
+    if not config_file.exists():
+        raise FileNotFoundError(f"Configuration file not found: {config_file}")
+
+    # Load based on file extension
+    if config_file.suffix == '.json':
+        with open(config_file) as f:
+            config_data = json.load(f)
+    elif config_file.suffix in ['.yaml', '.yml']:
+        with open(config_file) as f:
+            config_data = yaml.safe_load(f)
+    else:
+        raise ValueError(f"Unsupported configuration file format: {config_file.suffix}")
+
+    return VaulyticaConfig(**config_data)
 

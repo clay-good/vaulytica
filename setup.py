@@ -18,8 +18,8 @@ with open("requirements-dev.txt") as f:
 
 setup(
     name="vaulytica",
-    version="0.4.0",
-    description="AI-powered security event analysis framework with intelligent agents",
+    version="0.30.0",
+    description="AI-powered security event analysis framework with deep learning, AutoML, interactive visualizations, incident management, AI SOC analytics, real-time streaming analytics, automated forensics & investigation, threat hunting, SOAR, compliance, external threat intelligence integration, advanced automation, multi-platform ticketing (ServiceNow, Jira, PagerDuty, Datadog), Cloud Security Posture Management (CSPM), vulnerability management, Container Security & Kubernetes Security Posture Management (K8s SPM), IAM Security & Secrets Management, Zero Trust Architecture, Network Security, Data Loss Prevention (DLP), Encryption Management, API Security, Application Security Testing (AST), Security Automation, DevSecOps Integration, Security Orchestration, Advanced Threat Intelligence, Security Metrics & KPIs, Automated Penetration Testing, Supply Chain Security, SBOM Management, Security GRC, Security Posture Analytics, Continuous Monitoring, Predictive Security Intelligence, Attack Surface Management, Security Data Lake, Threat Modeling, and Incident Simulation",
     long_description=long_description,
     long_description_content_type="text/markdown",
     author="Vaulytica Team",

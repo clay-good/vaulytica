@@ -1,5 +1,3 @@
-"""Data models for security events and analysis."""
-
 from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
@@ -28,6 +26,10 @@ class EventCategory(str, Enum):
     PRIVILEGE_ESCALATION = "PRIVILEGE_ESCALATION"
     DEFENSE_EVASION = "DEFENSE_EVASION"
     UNKNOWN = "UNKNOWN"
+
+
+# Alias for backward compatibility
+EventType = EventCategory
 
 
 class AssetInfo(BaseModel):
@@ -86,6 +88,35 @@ class FiveW1H(BaseModel):
     how: str = Field(description="How was it executed (techniques, tools, methods)")
 
 
+class ThreatActorProfile(BaseModel):
+    """Threat actor attribution profile."""
+    actor_name: str
+    confidence: float = Field(ge=0.0, le=1.0)
+    origin: Optional[str] = None
+    motivation: Optional[str] = None
+    sophistication: Optional[str] = None
+    ttps_matched: List[str] = Field(default_factory=list)
+
+
+class BehavioralInsight(BaseModel):
+    """Behavioral analysis insight."""
+    insight_type: str
+    description: str
+    severity: str
+    confidence: float = Field(ge=0.0, le=1.0)
+    evidence: List[str] = Field(default_factory=list)
+
+
+class AttackGraphNode(BaseModel):
+    """Node in attack graph visualization."""
+    node_id: str
+    node_type: str  # initial_access, execution, persistence, etc.
+    technique_id: Optional[str] = None
+    description: str
+    timestamp: Optional[str] = None
+    confidence: float = Field(ge=0.0, le=1.0)
+
+
 class AnalysisResult(BaseModel):
     """Result of security analysis."""
 
@@ -96,18 +127,42 @@ class AnalysisResult(BaseModel):
     executive_summary: str
     risk_score: float = Field(ge=0.0, le=10.0)
     confidence: float = Field(ge=0.0, le=1.0)
-    
+
     attack_chain: List[str] = Field(default_factory=list)
     mitre_techniques: List[MitreAttack] = Field(default_factory=list)
-    
+
     immediate_actions: List[str] = Field(default_factory=list)
     short_term_recommendations: List[str] = Field(default_factory=list)
     long_term_recommendations: List[str] = Field(default_factory=list)
-    
+
     related_incidents: List[str] = Field(default_factory=list)
     investigation_queries: List[str] = Field(default_factory=list)
-    
+
+    # Enhanced fields
+    threat_actors: List[ThreatActorProfile] = Field(default_factory=list)
+    behavioral_insights: List[BehavioralInsight] = Field(default_factory=list)
+    attack_graph: List[AttackGraphNode] = Field(default_factory=list)
+    anomaly_score: float = Field(default=0.0, ge=0.0, le=10.0)
+    ioc_enrichments: Dict[str, Any] = Field(default_factory=dict)
+
     raw_llm_response: str
     tokens_used: int = 0
     processing_time_seconds: float = 0.0
+
+    # Correlation fields (populated by correlation engine)
+    correlated_event_ids: List[str] = Field(default_factory=list)
+    cluster_id: Optional[str] = None
+    campaign_id: Optional[str] = None
+
+
+class CorrelationSummary(BaseModel):
+    """Summary of event correlations."""
+    event_id: str
+    total_correlations: int
+    correlation_types: Dict[str, int] = Field(default_factory=dict)
+    correlated_events: List[str] = Field(default_factory=list)
+    cluster_id: Optional[str] = None
+    campaign_id: Optional[str] = None
+    campaign_name: Optional[str] = None
+    is_part_of_campaign: bool = False
 

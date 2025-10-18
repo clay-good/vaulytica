@@ -1,12 +1,3 @@
-"""
-Notification integrations for Vaulytica.
-
-Supports sending analysis results to various notification channels:
-- Slack
-- Microsoft Teams
-- Email (SMTP)
-"""
-
 import json
 import logging
 import smtplib

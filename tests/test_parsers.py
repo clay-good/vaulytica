@@ -1,5 +1,3 @@
-"""Tests for security event parsers."""
-
 import pytest
 from datetime import datetime
 from vaulytica.parsers import (

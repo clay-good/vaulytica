@@ -1,5 +1,3 @@
-"""Webhook receiver endpoints for real-time event ingestion."""
-
 import hashlib
 import hmac
 import json

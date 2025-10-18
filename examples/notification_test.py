@@ -1,9 +1,4 @@
 #!/usr/bin/env python3
-"""
-Test script for Vaulytica notification integrations.
-
-This script demonstrates how to configure and test Slack, Teams, and Email notifications.
-"""
 
 import asyncio
 import json

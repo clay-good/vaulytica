@@ -1,10 +1,4 @@
 #!/usr/bin/env python3
-"""
-Example client for Vaulytica REST API.
-
-This script demonstrates how to interact with the Vaulytica API
-for security event analysis.
-"""
 
 import json
 import sys
