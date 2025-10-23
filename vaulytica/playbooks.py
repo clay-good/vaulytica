@@ -1,7 +1,19 @@
+"""
+Automated Response & Playbook Execution Engine.
+
+This module provides intelligent automated response capabilities with:
+- Pre-built security playbooks for common threats
+- Dynamic playbook selection based on threat type
+- Action execution with approval workflows
+- Integration with security tools (AWS, GCP, Slack, etc.)
+- Rollback capabilities for safety
+- Audit logging for compliance
+"""
+
 import json
 import time
 from datetime import datetime
-from typing import List, Dict, Any, Optional, Callable
+from typing import List, Dict, Any, Optional, Callable, Union
 from enum import Enum
 from dataclasses import dataclass, field
 from vaulytica.models import SecurityEvent, AnalysisResult, Severity
@@ -99,14 +111,14 @@ class PlaybookExecution:
 class PlaybookEngine:
     """
     Automated Response & Playbook Execution Engine.
-    
+
     Manages security playbooks and automated response actions.
     """
-    
+
     def __init__(self, auto_execute: bool = False, require_approval: bool = True):
         """
         Initialize playbook engine.
-        
+
         Args:
             auto_execute: Automatically execute approved actions
             require_approval: Require approval for high-risk actions
@@ -116,18 +128,18 @@ class PlaybookEngine:
         self.playbooks: Dict[str, Playbook] = {}
         self.executions: Dict[str, PlaybookExecution] = {}
         self.action_handlers: Dict[ActionType, Callable] = {}
-        
+
         # Initialize built-in playbooks
         self._initialize_builtin_playbooks()
-        
+
         # Register default action handlers
         self._register_default_handlers()
-        
+
         logger.info(f"Playbook engine initialized with {len(self.playbooks)} playbooks")
-    
+
     def _initialize_builtin_playbooks(self):
         """Initialize built-in security playbooks."""
-        
+
         # Playbook 1: Ransomware Response
         ransomware_playbook = Playbook(
             playbook_id="pb_ransomware_001",
@@ -185,7 +197,7 @@ class PlaybookEngine:
             ]
         )
         self.playbooks[ransomware_playbook.playbook_id] = ransomware_playbook
-        
+
         # Playbook 2: Data Exfiltration Response
         exfiltration_playbook = Playbook(
             playbook_id="pb_exfiltration_001",
@@ -235,7 +247,7 @@ class PlaybookEngine:
             ]
         )
         self.playbooks[exfiltration_playbook.playbook_id] = exfiltration_playbook
-        
+
         # Playbook 3: Compromised Credentials Response
         credentials_playbook = Playbook(
             playbook_id="pb_credentials_001",
@@ -571,31 +583,48 @@ class PlaybookEngine:
     ) -> str:
         """Resolve target from event data."""
 
-        # Map template to actual values
-        if target_template == "affected_host":
-            if event.affected_assets:
-                return event.affected_assets[0].hostname or event.affected_assets[0].ip_addresses[0]
-        elif target_template == "source_host":
-            if event.affected_assets:
-                return event.affected_assets[0].hostname or event.affected_assets[0].ip_addresses[0]
-        elif target_template == "destination_ip":
-            for indicator in event.technical_indicators:
-                if indicator.indicator_type == "ip":
-                    return indicator.value
-        elif target_template == "compromised_user":
-            for indicator in event.technical_indicators:
-                if indicator.indicator_type in ["user", "account"]:
-                    return indicator.value
-        elif target_template == "malicious_process":
-            for indicator in event.technical_indicators:
-                if indicator.indicator_type == "process":
-                    return indicator.value
-        elif target_template == "mining_pool_ip":
-            for indicator in event.technical_indicators:
-                if indicator.indicator_type == "ip":
-                    return indicator.value
+        # Define target resolution strategies
+        resolvers = {
+            "affected_host": self._resolve_affected_host,
+            "source_host": self._resolve_source_host,
+            "destination_ip": lambda e: self._resolve_indicator_by_type(e, "ip"),
+            "compromised_user": lambda e: self._resolve_indicator_by_type(e, ["user", "account"]),
+            "malicious_process": lambda e: self._resolve_indicator_by_type(e, "process"),
+            "mining_pool_ip": lambda e: self._resolve_indicator_by_type(e, "ip")
+        }
+
+        resolver = resolvers.get(target_template)
+        if resolver:
+            result = resolver(event)
+            if result:
+                return result
 
         return target_template
+
+    def _resolve_affected_host(self, event: SecurityEvent) -> Optional[str]:
+        """Resolve affected host from event assets."""
+        if event.affected_assets:
+            asset = event.affected_assets[0]
+            return asset.hostname or (asset.ip_addresses[0] if asset.ip_addresses else None)
+        return None
+
+    def _resolve_source_host(self, event: SecurityEvent) -> Optional[str]:
+        """Resolve source host from event assets."""
+        return self._resolve_affected_host(event)
+
+    def _resolve_indicator_by_type(
+        self,
+        event: SecurityEvent,
+        indicator_types: Union[str, List[str]]
+    ) -> Optional[str]:
+        """Resolve indicator by type from technical indicators."""
+        if isinstance(indicator_types, str):
+            indicator_types = [indicator_types]
+
+        for indicator in event.technical_indicators:
+            if indicator.indicator_type in indicator_types:
+                return indicator.value
+        return None
 
     def _meets_severity_threshold(self, event_severity: Severity, threshold: Severity) -> bool:
         """Check if event severity meets playbook threshold."""
@@ -607,7 +636,7 @@ class PlaybookEngine:
         }
         return severity_order.get(event_severity, 0) >= severity_order.get(threshold, 0)
 
-    def approve_action(self, execution_id: str, action_id: str, approver: str):
+    def approve_action(self, execution_id: str, action_id: str, approver: str) -> None:
         """Approve a pending action."""
         execution = self.executions.get(execution_id)
         if not execution:
@@ -628,7 +657,7 @@ class PlaybookEngine:
 
         raise ValueError(f"Action not found: {action_id}")
 
-    def rollback_action(self, execution_id: str, action_id: str):
+    def rollback_action(self, execution_id: str, action_id: str) -> None:
         """Rollback a completed action."""
         execution = self.executions.get(execution_id)
         if not execution:
@@ -756,4 +785,3 @@ class PlaybookEngine:
         """Simulate system scan."""
         logger.info(f"[SIMULATED] Scanning system: {target}")
         return {"status": "success", "action": "scan_system", "target": target, "simulated": True}
-

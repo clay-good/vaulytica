@@ -1,3 +1,17 @@
+"""
+Supply Chain Security, SBOM Management & Security GRC Platform (v0.28.0).
+
+This module provides comprehensive supply chain security, software bill of materials (SBOM)
+management, and security governance, risk & compliance (GRC) capabilities.
+
+Features:
+- Supply chain security scanning and vulnerability tracking
+- SBOM generation and management (CycloneDX, SPDX)
+- Security GRC platform with governance, risk, and compliance
+- Policy-as-code engine with validation and enforcement
+- Risk management system with assessment and treatment
+"""
+
 import asyncio
 import hashlib
 import json
@@ -93,7 +107,7 @@ class ComplianceFramework(Enum):
     PCI_DSS = "pci_dss"
     HIPAA = "hipaa"
     GDPR = "gdpr"
-    NIST_CSF = "nist_csf"
+    NIST_CSF = "nist_cs"
     CIS = "cis"
     COBIT = "cobit"
 
@@ -269,7 +283,7 @@ class AuditLog:
 
 class SupplyChainSecurityScanner:
     """Supply chain security scanner."""
-    
+
     def __init__(self):
         self.dependencies: Dict[str, Dependency] = {}
         self.scan_results: List[SupplyChainScanResult] = []
@@ -285,7 +299,7 @@ class SupplyChainSecurityScanner:
             "threats_detected": 0,
             "license_issues": 0
         }
-    
+
     async def scan_dependencies(
         self,
         project_name: str,
@@ -293,12 +307,12 @@ class SupplyChainSecurityScanner:
     ) -> SupplyChainScanResult:
         """Scan project dependencies for security issues."""
         logger.info(f"Scanning dependencies for project: {project_name}")
-        
+
         scan_id = f"scan-{hashlib.md5(f'{project_name}{datetime.utcnow()}'.encode()).hexdigest()[:12]}"
         vulnerabilities = []
         license_issues = 0
         threats = []
-        
+
         # Analyze each dependency
         for dep_data in dependencies:
             dep = Dependency(
@@ -311,33 +325,33 @@ class SupplyChainSecurityScanner:
                 vulnerabilities=dep_data.get("vulnerabilities", []),
                 transitive_dependencies=dep_data.get("transitive", [])
             )
-            
+
             # Check for vulnerabilities
             if dep.vulnerabilities:
                 vulnerabilities.extend(dep.vulnerabilities)
                 self.statistics["vulnerabilities_found"] += len(dep.vulnerabilities)
-            
+
             # Check license compliance
             if dep.license_type == LicenseType.UNKNOWN or dep.license_type == LicenseType.PROPRIETARY:
                 license_issues += 1
                 self.statistics["license_issues"] += 1
-            
+
             # Detect supply chain threats
             detected_threats = await self._detect_threats(dep)
             threats.extend(detected_threats)
-            
+
             self.dependencies[f"{dep.name}@{dep.version}"] = dep
             self.statistics["dependencies_analyzed"] += 1
-        
+
         # Calculate severity counts
         critical_count = sum(1 for v in vulnerabilities if "critical" in v.lower())
         high_count = sum(1 for v in vulnerabilities if "high" in v.lower())
         medium_count = sum(1 for v in vulnerabilities if "medium" in v.lower())
         low_count = len(vulnerabilities) - critical_count - high_count - medium_count
-        
+
         # Calculate risk score
         risk_score = min(10.0, (critical_count * 2.0 + high_count * 1.0 + medium_count * 0.5 + len(threats) * 1.5))
-        
+
         result = SupplyChainScanResult(
             scan_id=scan_id,
             project_name=project_name,
@@ -353,7 +367,7 @@ class SupplyChainSecurityScanner:
             risk_score=risk_score,
             recommendations=self._generate_recommendations(critical_count, high_count, threats)
         )
-        
+
         self.scan_results.append(result)
         self.statistics["scans_performed"] += 1
 
@@ -548,7 +562,7 @@ class SBOMManager:
             "dataLicense": "CC0-1.0",
             "SPDXID": f"SPDXRef-{sbom.sbom_id}",
             "name": sbom.project_name,
-            "documentNamespace": f"https://vaulytica.io/sbom/{sbom.sbom_id}",
+            "documentNamespace": f"https://example.com",
             "creationInfo": {
                 "created": sbom.timestamp.isoformat(),
                 "creators": ["Tool: Vaulytica-0.28.0"]
@@ -1208,4 +1222,3 @@ def get_supply_chain_grc_orchestrator() -> SupplyChainGRCOrchestrator:
     if _orchestrator_instance is None:
         _orchestrator_instance = SupplyChainGRCOrchestrator()
     return _orchestrator_instance
-

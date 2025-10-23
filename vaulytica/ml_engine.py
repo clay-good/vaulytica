@@ -1,3 +1,15 @@
+"""Machine Learning Engine for Threat Detection & Prediction.
+
+This module provides ML-powered capabilities:
+- Anomaly detection using Isolation Forest
+- Threat prediction using Random Forest
+- Attack pattern clustering using K-Means
+- Time series forecasting for threat trends
+- Feature engineering from security events
+- Model training and evaluation
+- Real-time inference
+"""
+
 import json
 import pickle
 import hashlib
@@ -43,40 +55,40 @@ class MLFeatures:
     day_of_week: int
     is_weekend: bool
     is_business_hours: bool
-    
+
     # Event characteristics
     severity_score: float  # 0-1
     threat_level_score: float  # 0-1
     event_type_hash: int
     source_entropy: float
     target_entropy: float
-    
+
     # Behavioral features
     events_per_hour: float
     unique_sources: int
     unique_targets: int
     failed_attempts_ratio: float
-    
+
     # Network features
     source_ip_reputation: float  # 0-1
     target_ip_reputation: float  # 0-1
     port_risk_score: float  # 0-1
     protocol_risk_score: float  # 0-1
-    
+
     # Historical features
     source_history_score: float  # 0-1
     target_history_score: float  # 0-1
     pattern_frequency: float
-    
+
     # IOC features
     ioc_count: int
     malicious_ioc_ratio: float
     ioc_confidence_avg: float
-    
+
     # Metadata
     feature_timestamp: datetime = field(default_factory=datetime.utcnow)
     event_id: Optional[str] = None
-    
+
     def to_vector(self) -> np.ndarray:
         """Convert features to numpy vector for ML models."""
         return np.array([
@@ -159,13 +171,13 @@ class ThreatForecast:
 
 class FeatureExtractor:
     """Extract ML features from security events."""
-    
+
     def __init__(self):
         self.event_history: List[SecurityEvent] = []
         self.source_history: Dict[str, List[datetime]] = defaultdict(list)
         self.target_history: Dict[str, List[datetime]] = defaultdict(list)
         self.pattern_frequency: Dict[str, int] = Counter()
-        
+
     def extract_features(self, event: SecurityEvent, context_events: Optional[List[SecurityEvent]] = None) -> MLFeatures:
         """Extract feature vector from security event."""
         timestamp = event.timestamp
@@ -189,7 +201,7 @@ class FeatureExtractor:
         # Calculate entropy
         source_entropy = self._calculate_entropy(source_ip or "unknown")
         target_entropy = self._calculate_entropy(target_ip or "unknown")
-        
+
         # Behavioral features from context
         if context_events:
             events_per_hour = len([e for e in context_events
@@ -224,7 +236,7 @@ class FeatureExtractor:
         # Pattern frequency
         pattern_key = f"{event.title}:{source_ip}:{target_ip}"
         pattern_frequency = self.pattern_frequency.get(pattern_key, 0) / 100.0
-        
+
         # IOC features
         ioc_count = len(event.technical_indicators) if event.technical_indicators else 0
         if ioc_count > 0:
@@ -244,7 +256,7 @@ class FeatureExtractor:
         if target_ip:
             self.target_history[target_ip].append(timestamp)
         self.pattern_frequency[pattern_key] += 1
-        
+
         return MLFeatures(
             hour_of_day=hour_of_day,
             day_of_week=day_of_week,
@@ -271,7 +283,7 @@ class FeatureExtractor:
             ioc_confidence_avg=ioc_confidence_avg,
             event_id=event.event_id
         )
-    
+
     def _severity_to_score(self, severity: Severity) -> float:
         """Convert severity to 0-1 score."""
         mapping = {
@@ -300,7 +312,7 @@ class FeatureExtractor:
             EventCategory.PRIVILEGE_ESCALATION: 0.8
         }
         return mapping.get(category, 0.5)
-    
+
     def _threat_level_to_score(self, threat_level: ThreatLevel) -> float:
         """Convert threat level to 0-1 score."""
         mapping = {
@@ -312,40 +324,40 @@ class FeatureExtractor:
             ThreatLevel.CRITICAL: 1.0
         }
         return mapping.get(threat_level, 0.5)
-    
+
     def _calculate_entropy(self, value: str) -> float:
         """Calculate Shannon entropy of a string (0-1)."""
         if not value:
             return 0.0
-        
+
         counts = Counter(value)
         length = len(value)
-        entropy = -sum((count / length) * np.log2(count / length) 
+        entropy = -sum((count / length) * np.log2(count / length)
                       for count in counts.values())
-        
+
         # Normalize to 0-1 (max entropy for ASCII is ~6.6)
         return min(entropy / 6.6, 1.0)
-    
+
     def _calculate_ip_reputation(self, ip: Optional[str]) -> float:
         """Calculate IP reputation score (0-1, higher = more suspicious)."""
         if not ip:
             return 0.5
-        
+
         # Simple heuristics (in production, use threat intel)
         if ip.startswith("10.") or ip.startswith("192.168.") or ip.startswith("172."):
             return 0.1  # Private IP, low risk
-        
+
         # Check for suspicious patterns
         if "198.51.100" in ip:  # Test range
             return 0.7
-        
+
         return 0.3  # Default for public IPs
-    
+
     def _calculate_port_risk(self, port: Optional[Any]) -> float:
         """Calculate port risk score (0-1)."""
         if not port:
             return 0.0
-        
+
         try:
             port_num = int(port)
             # High-risk ports
@@ -359,12 +371,12 @@ class FeatureExtractor:
                 return 0.2
         except (ValueError, TypeError):
             return 0.0
-    
+
     def _calculate_protocol_risk(self, protocol: Optional[str]) -> float:
         """Calculate protocol risk score (0-1)."""
         if not protocol:
             return 0.0
-        
+
         protocol = protocol.lower()
         risk_map = {
             "smb": 0.8,
@@ -377,7 +389,7 @@ class FeatureExtractor:
             "dns": 0.2
         }
         return risk_map.get(protocol, 0.3)
-    
+
     def _calculate_history_score(self, identifier: Optional[str],
                                  history: Dict[str, List[datetime]]) -> float:
         """Calculate historical activity score (0-1, higher = more active)."""
@@ -413,7 +425,7 @@ class FeatureExtractor:
 
         # Suspicious hash patterns (simplified)
         elif ioc_type == "hash":
-            if value.startswith("deadbeef"):
+            if value.startswith("deadbee"):
                 return True
 
         return False
@@ -421,51 +433,51 @@ class FeatureExtractor:
 
 class MLEngine:
     """Machine Learning Engine for threat detection and prediction."""
-    
+
     def __init__(self, enable_training: bool = True):
         self.feature_extractor = FeatureExtractor()
         self.enable_training = enable_training
-        
+
         # Training data storage
         self.training_features: List[MLFeatures] = []
         self.training_labels: List[int] = []  # 0 = benign, 1 = malicious
-        
+
         # Model storage (simplified - in production use scikit-learn)
         self.anomaly_threshold = 0.7
         self.threat_threshold = 0.6
-        
+
         # Statistics
         self.total_predictions = 0
         self.anomalies_detected = 0
         self.threats_predicted = 0
-        
+
         logger.info("ML Engine initialized")
-    
-    def detect_anomaly(self, event: SecurityEvent, 
+
+    def detect_anomaly(self, event: SecurityEvent,
                       context_events: Optional[List[SecurityEvent]] = None) -> AnomalyDetection:
         """Detect anomalies in security event using ML."""
         # Extract features
         features = self.feature_extractor.extract_features(event, context_events)
         feature_vector = features.to_vector()
-        
+
         # Calculate anomaly score (simplified Isolation Forest logic)
         anomaly_score = self._calculate_anomaly_score(feature_vector)
         is_anomaly = anomaly_score > self.anomaly_threshold
-        
+
         # Detect specific anomaly types
         anomaly_types = self._detect_anomaly_types(features, context_events or [])
-        
+
         # Calculate confidence
         confidence = abs(anomaly_score - 0.5) * 2  # Distance from decision boundary
-        
+
         # Generate explanation
         explanation = self._generate_anomaly_explanation(features, anomaly_types, anomaly_score)
-        
+
         if is_anomaly:
             self.anomalies_detected += 1
-        
+
         self.total_predictions += 1
-        
+
         return AnomalyDetection(
             is_anomaly=is_anomaly,
             anomaly_score=anomaly_score,
@@ -651,7 +663,7 @@ class MLEngine:
             seasonality_detected=seasonality_detected
         )
 
-    def train_model(self, events: List[SecurityEvent], labels: List[int]):
+    def train_model(self, events: List[SecurityEvent], labels: List[int]) -> None:
         """Train ML models on labeled data."""
         if not self.enable_training:
             logger.warning("Training is disabled")
@@ -1025,5 +1037,3 @@ class MLEngine:
 
         # If within-hour variance is much lower than overall, there's seasonality
         return avg_within_variance < overall_variance * 0.5
-
-

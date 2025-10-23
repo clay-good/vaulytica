@@ -1,3 +1,9 @@
+"""Datadog Case Management Integration for Vaulytica.
+
+This module provides comprehensive integration with Datadog's Case Management API,
+enabling bidirectional synchronization, workflow automation, and real-time updates.
+"""
+
 import asyncio
 import hashlib
 import hmac
@@ -57,7 +63,7 @@ class DatadogCase:
     tags: List[str] = field(default_factory=list)
     attributes: Dict[str, Any] = field(default_factory=dict)
     timeline: List[Dict[str, Any]] = field(default_factory=list)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -88,7 +94,7 @@ class SyncMapping:
 
 class DatadogAPIClient:
     """Datadog API client with rate limiting and error handling."""
-    
+
     def __init__(
         self,
         api_key: str,
@@ -98,7 +104,7 @@ class DatadogAPIClient:
         max_retries: int = 3
     ):
         """Initialize Datadog API client.
-        
+
         Args:
             api_key: Datadog API key
             app_key: Datadog application key
@@ -108,23 +114,23 @@ class DatadogAPIClient:
         """
         self.api_key = api_key
         self.app_key = app_key
-        self.base_url = f"https://api.{site}"
+        self.base_url = f"https://example.com{site}"
         self.timeout = timeout
         self.max_retries = max_retries
-        
+
         # Rate limiting
         self._rate_limit_remaining = 1000
         self._rate_limit_reset = datetime.now()
         self._request_semaphore = asyncio.Semaphore(10)  # Max 10 concurrent requests
-        
+
         # Statistics
         self.total_requests = 0
         self.successful_requests = 0
         self.failed_requests = 0
         self.rate_limited_requests = 0
-        
+
         logger.info(f"Datadog API client initialized for site: {site}")
-    
+
     async def _make_request(
         self,
         method: str,
@@ -139,7 +145,7 @@ class DatadogAPIClient:
             "DD-APPLICATION-KEY": self.app_key,
             "Content-Type": "application/json"
         }
-        
+
         async with self._request_semaphore:
             for attempt in range(self.max_retries):
                 try:
@@ -148,9 +154,9 @@ class DatadogAPIClient:
                         wait_time = (self._rate_limit_reset - datetime.now()).total_seconds()
                         logger.warning(f"Rate limit approaching, waiting {wait_time:.1f}s")
                         await asyncio.sleep(wait_time)
-                    
+
                     self.total_requests += 1
-                    
+
                     async with aiohttp.ClientSession() as session:
                         async with session.request(
                             method,
@@ -167,18 +173,18 @@ class DatadogAPIClient:
                                 self._rate_limit_reset = datetime.fromtimestamp(
                                     int(response.headers["X-RateLimit-Reset"])
                                 )
-                            
+
                             if response.status == 429:  # Rate limited
                                 self.rate_limited_requests += 1
                                 retry_after = int(response.headers.get("Retry-After", 60))
                                 logger.warning(f"Rate limited, retrying after {retry_after}s")
                                 await asyncio.sleep(retry_after)
                                 continue
-                            
+
                             response.raise_for_status()
                             self.successful_requests += 1
                             return await response.json()
-                
+
                 except aiohttp.ClientError as e:
                     self.failed_requests += 1
                     if attempt == self.max_retries - 1:
@@ -186,9 +192,9 @@ class DatadogAPIClient:
                         raise
                     logger.warning(f"Request failed (attempt {attempt + 1}/{self.max_retries}): {e}")
                     await asyncio.sleep(2 ** attempt)  # Exponential backoff
-        
+
         raise Exception("Request failed after all retries")
-    
+
     async def get_case(self, case_id: str) -> Optional[DatadogCase]:
         """Get case by ID."""
         try:
@@ -197,7 +203,7 @@ class DatadogAPIClient:
         except Exception as e:
             logger.error(f"Failed to get case {case_id}: {e}")
             return None
-    
+
     async def list_cases(
         self,
         status: Optional[DatadogCaseStatus] = None,
@@ -210,14 +216,14 @@ class DatadogAPIClient:
             params["filter[status]"] = status.value
         if priority:
             params["filter[priority]"] = priority.value
-        
+
         try:
             response = await self._make_request("GET", "/api/v2/cases", params=params)
             return [self._parse_case(case_data) for case_data in response.get("data", [])]
         except Exception as e:
             logger.error(f"Failed to list cases: {e}")
             return []
-    
+
     async def create_case(
         self,
         title: str,
@@ -241,7 +247,7 @@ class DatadogAPIClient:
                 }
             }
         }
-        
+
         try:
             response = await self._make_request("POST", "/api/v2/cases", data=data)
             case = self._parse_case(response["data"])
@@ -250,7 +256,7 @@ class DatadogAPIClient:
         except Exception as e:
             logger.error(f"Failed to create case: {e}")
             return None
-    
+
     async def update_case(
         self,
         case_id: str,
@@ -269,7 +275,7 @@ class DatadogAPIClient:
             attributes["assignee"] = assignee
         if tags is not None:
             attributes["tags"] = tags
-        
+
         data = {
             "data": {
                 "type": "case",
@@ -277,7 +283,7 @@ class DatadogAPIClient:
                 "attributes": attributes
             }
         }
-        
+
         try:
             response = await self._make_request("PATCH", f"/api/v2/cases/{case_id}", data=data)
             case = self._parse_case(response["data"])
@@ -490,8 +496,8 @@ class DatadogCaseManager:
             for callback in self.on_sync_error:
                 try:
                     await callback("create_case", incident, e)
-                except:
-                    pass
+                except Exception as callback_error:
+                    logger.error(f"Error in sync_error callback: {callback_error}")
             return None
 
     async def sync_incident_to_case(
@@ -757,4 +763,3 @@ async def create_datadog_case_for_incident(
     except Exception as e:
         logger.error(f"Failed to create Datadog case: {e}")
         return None
-

@@ -1,3 +1,5 @@
+"""Output formatting and report generation."""
+
 import json
 from pathlib import Path
 from typing import Optional, Dict, Any
@@ -9,23 +11,23 @@ class OutputFormatter:
 
     def __init__(self):
         pass
-    
+
     def save_json(self, event: SecurityEvent, result: AnalysisResult, output_path: Path) -> None:
         """Save analysis as JSON."""
-        
+
         output_data = {
             "event": json.loads(event.model_dump_json()),
             "analysis": json.loads(result.model_dump_json()),
         }
-        
+
         output_path.parent.mkdir(parents=True, exist_ok=True)
         with open(output_path, 'w') as f:
             json.dump(output_data, f, indent=2, default=str)
-    
+
     def save_markdown(self, event: SecurityEvent, result: AnalysisResult, output_path: Path) -> None:
         """Save analysis as Markdown."""
-        
-        md_content = f"""# Security Analysis Report
+
+        md_content = """# Security Analysis Report
 
 **Event ID:** {result.event_id}
 **Analyzed:** {result.analysis_timestamp.strftime('%Y-%m-%d %H:%M:%S UTC')}
@@ -82,8 +84,7 @@ class OutputFormatter:
 
 *Processing time: {result.processing_time_seconds:.2f}s | Tokens used: {result.tokens_used}*
 """
-        
+
         output_path.parent.mkdir(parents=True, exist_ok=True)
         with open(output_path, 'w') as f:
             f.write(md_content)
-

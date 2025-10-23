@@ -1,4 +1,13 @@
 #!/usr/bin/env python3
+"""
+Demonstration of Vaulytica's Automated Response & Playbook Engine.
+
+This script demonstrates:
+- Playbook selection based on threat type
+- Automated response action execution
+- Approval workflows
+- Execution tracking and logging
+"""
 
 import asyncio
 from datetime import datetime
@@ -81,7 +90,7 @@ def create_credentials_event():
             environment="production"
         )],
         technical_indicators=[
-            TechnicalIndicator(indicator_type="user", value="john.doe@company.com"),
+            TechnicalIndicator(indicator_type="user", value="user@example.com"),
             TechnicalIndicator(indicator_type="account", value="john.doe")
         ],
         mitre_attack=[
@@ -227,7 +236,7 @@ async def main():
     
     print(f"Event: {creds_event.title}")
     print(f"Severity: {creds_event.severity.value}")
-    print(f"User: john.doe@company.com")
+    print(f"User: user@example.com")
     print()
     
     matching_playbooks = engine.select_playbooks(creds_event, creds_analysis)

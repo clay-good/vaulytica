@@ -1,3 +1,9 @@
+"""Live Datadog Integration Testing Module.
+
+This module provides comprehensive testing capabilities for Datadog integration
+with support for live data from Datadog cases and security signals.
+"""
+
 import asyncio
 import json
 import os
@@ -31,7 +37,7 @@ class TestResult:
     message: str
     details: Dict[str, Any] = field(default_factory=dict)
     error: Optional[str] = None
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -51,34 +57,34 @@ class TestSuite:
     results: List[TestResult] = field(default_factory=list)
     start_time: Optional[datetime] = None
     end_time: Optional[datetime] = None
-    
+
     @property
     def total_tests(self) -> int:
         """Total number of tests."""
         return len(self.results)
-    
+
     @property
     def passed_tests(self) -> int:
         """Number of passed tests."""
         return sum(1 for r in self.results if r.passed)
-    
+
     @property
     def failed_tests(self) -> int:
         """Number of failed tests."""
         return sum(1 for r in self.results if not r.passed)
-    
+
     @property
     def success_rate(self) -> float:
         """Test success rate."""
         return self.passed_tests / self.total_tests if self.total_tests > 0 else 0.0
-    
+
     @property
     def total_duration(self) -> float:
         """Total test duration."""
         if self.start_time and self.end_time:
             return (self.end_time - self.start_time).total_seconds()
         return sum(r.duration for r in self.results)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -94,7 +100,7 @@ class TestSuite:
 
 class DatadogLiveTester:
     """Comprehensive live testing for Datadog integration."""
-    
+
     def __init__(
         self,
         api_key: str,
@@ -103,7 +109,7 @@ class DatadogLiveTester:
         test_data_dir: Optional[Path] = None
     ):
         """Initialize live tester.
-        
+
         Args:
             api_key: Datadog API key
             app_key: Datadog application key
@@ -114,26 +120,26 @@ class DatadogLiveTester:
         self.app_key = app_key
         self.site = site
         self.test_data_dir = test_data_dir or Path("test_data")
-        
+
         # Initialize components
         self.api_client = DatadogAPIClient(api_key, app_key, site)
         self.case_manager = DatadogCaseManager(self.api_client, auto_sync=False)
         self.parser = DatadogParser()
-        
+
         # Test suites
         self.suites: List[TestSuite] = []
-        
+
         logger.info("Datadog live tester initialized")
-    
+
     async def run_all_tests(self) -> TestSuite:
         """Run all test suites."""
         suite = TestSuite(name="Datadog Integration - Full Test Suite")
         suite.start_time = datetime.now()
-        
+
         logger.info("=" * 80)
         logger.info("DATADOG INTEGRATION - LIVE TESTING")
         logger.info("=" * 80)
-        
+
         # Run test suites
         await self._test_api_client(suite)
         await self._test_case_management(suite)
@@ -141,19 +147,19 @@ class DatadogLiveTester:
         await self._test_signal_parsing(suite)
         await self._test_incident_sync(suite)
         await self._test_workflow_automation(suite)
-        
+
         suite.end_time = datetime.now()
         self.suites.append(suite)
-        
+
         # Print summary
         self._print_summary(suite)
-        
+
         return suite
-    
+
     async def _test_api_client(self, suite: TestSuite):
         """Test Datadog API client."""
         logger.info("\n📌 Testing Datadog API Client")
-        
+
         # Test 1: API connectivity
         start = datetime.now()
         try:
@@ -177,7 +183,7 @@ class DatadogLiveTester:
                 error=str(e)
             ))
             logger.error(f"  ❌ API Connectivity - {e}")
-        
+
         # Test 2: Rate limiting
         start = datetime.now()
         try:
@@ -185,7 +191,7 @@ class DatadogLiveTester:
             tasks = [self.api_client.list_cases(limit=1) for _ in range(5)]
             await asyncio.gather(*tasks)
             duration = (datetime.now() - start).total_seconds()
-            
+
             stats = self.api_client.get_statistics()
             suite.results.append(TestResult(
                 test_name="Rate Limiting",
@@ -205,11 +211,11 @@ class DatadogLiveTester:
                 error=str(e)
             ))
             logger.error(f"  ❌ Rate Limiting - {e}")
-    
+
     async def _test_case_management(self, suite: TestSuite):
         """Test case management operations."""
         logger.info("\n📌 Testing Case Management")
-        
+
         # Test 1: Create case
         start = datetime.now()
         test_case = None
@@ -222,7 +228,7 @@ class DatadogLiveTester:
                 tags=["vaulytica:test", "automated:true"]
             )
             duration = (datetime.now() - start).total_seconds()
-            
+
             if test_case:
                 suite.results.append(TestResult(
                     test_name="Create Case",
@@ -244,7 +250,7 @@ class DatadogLiveTester:
                 error=str(e)
             ))
             logger.error(f"  ❌ Create Case - {e}")
-        
+
         # Test 2: Update case
         if test_case:
             start = datetime.now()
@@ -255,7 +261,7 @@ class DatadogLiveTester:
                     tags=["vaulytica:test", "automated:true", "updated:true"]
                 )
                 duration = (datetime.now() - start).total_seconds()
-                
+
                 suite.results.append(TestResult(
                     test_name="Update Case",
                     passed=updated_case is not None,
@@ -274,7 +280,7 @@ class DatadogLiveTester:
                     error=str(e)
                 ))
                 logger.error(f"  ❌ Update Case - {e}")
-        
+
         # Test 3: Add timeline event
         if test_case:
             start = datetime.now()
@@ -286,7 +292,7 @@ class DatadogLiveTester:
                     metadata={"test": True, "timestamp": datetime.now().isoformat()}
                 )
                 duration = (datetime.now() - start).total_seconds()
-                
+
                 suite.results.append(TestResult(
                     test_name="Add Timeline Event",
                     passed=success,
@@ -304,7 +310,7 @@ class DatadogLiveTester:
                     error=str(e)
                 ))
                 logger.error(f"  ❌ Add Timeline Event - {e}")
-        
+
         # Test 4: Close case
         if test_case:
             start = datetime.now()
@@ -314,7 +320,7 @@ class DatadogLiveTester:
                     resolution="Test completed successfully"
                 )
                 duration = (datetime.now() - start).total_seconds()
-                
+
                 suite.results.append(TestResult(
                     test_name="Close Case",
                     passed=closed_case is not None,
@@ -508,8 +514,8 @@ class DatadogLiveTester:
                 # Clean up: close test case
                 try:
                     await self.api_client.close_case(case.case_id, "Test completed")
-                except:
-                    pass
+                except Exception as e:
+                    logger.debug(f"Failed to close test case during cleanup: {e}")
             else:
                 raise Exception("Case creation returned None")
 
@@ -604,7 +610,7 @@ class DatadogLiveTester:
                 if not result.passed:
                     logger.info(f"  ❌ {result.test_name}: {result.error}")
 
-    def save_results(self, output_file: Path):
+    def save_results(self, output_file: Path) -> None:
         """Save test results to file."""
         results = {
             "timestamp": datetime.now().isoformat(),
@@ -653,4 +659,3 @@ async def run_live_tests(
         tester.save_results(output_file)
 
     return suite
-

@@ -1,3 +1,5 @@
+"""Advanced threat intelligence enrichment and correlation engine."""
+
 import hashlib
 import ipaddress
 import re
@@ -50,7 +52,7 @@ class ThreatIntelligenceEngine:
         self.known_bad_ips = self._load_known_bad_ips()
         self.known_bad_domains = self._load_known_bad_domains()
         self.c2_infrastructure = self._load_c2_infrastructure()
-        
+
     def _load_apt_database(self) -> Dict:
         """Load comprehensive APT group database."""
         return {
@@ -235,16 +237,16 @@ class ThreatIntelligenceEngine:
     def enrich_ioc(self, ioc_value: str, ioc_type: str) -> IOCEnrichment:
         """
         Enrich an IOC with threat intelligence.
-        
+
         Args:
             ioc_value: The IOC value (IP, domain, hash, etc.)
             ioc_type: Type of IOC (ip, domain, hash, url, etc.)
-            
+
         Returns:
             IOCEnrichment object with threat intelligence
         """
         logger.debug(f"Enriching IOC: {ioc_type}={ioc_value}")
-        
+
         if ioc_type == "ip":
             return self._enrich_ip(ioc_value)
         elif ioc_type == "domain":
@@ -274,17 +276,17 @@ class ThreatIntelligenceEngine:
         reputation = 0.5  # Neutral
         threat_level = ThreatLevel.UNKNOWN
         confidence = 0.5
-        
+
         try:
             ip_obj = ipaddress.ip_address(ip)
-            
+
             # Check if private IP
             if ip_obj.is_private:
                 tags.append("private")
                 reputation = 0.3
                 threat_level = ThreatLevel.LOW
                 confidence = 0.9
-            
+
             # Check against known bad IPs
             for bad_network, info in self.known_bad_ips.items():
                 if ip_obj in ipaddress.ip_network(bad_network):
@@ -294,16 +296,16 @@ class ThreatIntelligenceEngine:
                     threat_level = ThreatLevel(info["severity"])
                     confidence = 0.85
                     break
-            
+
             # Check for cloud provider IPs (AWS, GCP, Azure)
             if self._is_cloud_ip(ip):
                 tags.append("cloud_provider")
                 reputation = 0.4
-                
+
         except ValueError:
             logger.warning(f"Invalid IP address: {ip}")
             confidence = 0.2
-        
+
         return IOCEnrichment(
             ioc_value=ip,
             ioc_type="ip",
@@ -324,7 +326,7 @@ class ThreatIntelligenceEngine:
         reputation = 0.5
         threat_level = ThreatLevel.UNKNOWN
         confidence = 0.5
-        
+
         # Check against known bad domains
         if domain in self.known_bad_domains:
             info = self.known_bad_domains[domain]
@@ -333,21 +335,21 @@ class ThreatIntelligenceEngine:
             reputation = 0.95
             threat_level = ThreatLevel(info["severity"])
             confidence = 0.9
-        
+
         # Check for suspicious patterns
         suspicious_keywords = ["evil", "malware", "phish", "hack", "exploit", "payload"]
         if any(keyword in domain.lower() for keyword in suspicious_keywords):
             tags.append("suspicious_keyword")
             reputation = min(reputation + 0.2, 1.0)
             confidence = 0.6
-        
+
         # Check for DGA-like patterns (Domain Generation Algorithm)
         if self._is_dga_domain(domain):
             tags.append("possible_dga")
             reputation = min(reputation + 0.3, 1.0)
             threat_level = ThreatLevel.MEDIUM
             confidence = 0.7
-        
+
         return IOCEnrichment(
             ioc_value=domain,
             ioc_type="domain",
@@ -393,7 +395,7 @@ class ThreatIntelligenceEngine:
                 associated_actors=domain_enrichment.associated_actors,
                 sources=domain_enrichment.sources
             )
-        
+
         return IOCEnrichment(
             ioc_value=url,
             ioc_type="url",
@@ -414,7 +416,7 @@ class ThreatIntelligenceEngine:
             "34.0.0.0/8",     # GCP (partial)
             "13.64.0.0/11",   # Azure (partial)
         ]
-        
+
         try:
             ip_obj = ipaddress.ip_address(ip)
             for cloud_range in cloud_ranges:
@@ -422,7 +424,7 @@ class ThreatIntelligenceEngine:
                     return True
         except ValueError:
             pass
-        
+
         return False
 
     def _is_dga_domain(self, domain: str) -> bool:
@@ -431,65 +433,64 @@ class ThreatIntelligenceEngine:
         domain_parts = domain.split('.')
         if len(domain_parts) < 2:
             return False
-        
+
         subdomain = domain_parts[0]
-        
+
         # DGA characteristics
         if len(subdomain) > 15:  # Long random strings
             vowels = sum(1 for c in subdomain if c in 'aeiou')
             consonants = len(subdomain) - vowels
-            
+
             # Low vowel ratio
             if vowels / len(subdomain) < 0.2:
                 return True
-            
+
             # High consonant clusters
             consonant_clusters = re.findall(r'[bcdfghjklmnpqrstvwxyz]{4,}', subdomain)
             if len(consonant_clusters) > 0:
                 return True
-        
+
         return False
 
     def correlate_apt_group(self, ttps: List[str], tools: List[str], targets: List[str]) -> List[Tuple[str, float]]:
         """
         Correlate observed TTPs, tools, and targets with known APT groups.
-        
+
         Returns:
             List of (apt_group_name, confidence_score) tuples
         """
         matches = []
-        
+
         for apt_name, apt_data in self.apt_database.items():
             score = 0.0
             max_score = 0.0
-            
+
             # TTP matching (weight: 0.5)
             if ttps:
                 ttp_matches = len(set(ttps) & set(apt_data["ttps"]))
                 ttp_score = ttp_matches / len(apt_data["ttps"]) if apt_data["ttps"] else 0
                 score += ttp_score * 0.5
                 max_score += 0.5
-            
+
             # Tool matching (weight: 0.3)
             if tools:
                 tool_matches = sum(1 for tool in tools if any(apt_tool.lower() in tool.lower() for apt_tool in apt_data["tools"]))
                 tool_score = tool_matches / len(apt_data["tools"]) if apt_data["tools"] else 0
                 score += tool_score * 0.3
                 max_score += 0.3
-            
+
             # Target matching (weight: 0.2)
             if targets:
                 target_matches = sum(1 for target in targets if any(apt_target.lower() in target.lower() for apt_target in apt_data["targets"]))
                 target_score = target_matches / len(apt_data["targets"]) if apt_data["targets"] else 0
                 score += target_score * 0.2
                 max_score += 0.2
-            
+
             if max_score > 0:
                 confidence = score / max_score
                 if confidence > 0.3:  # Threshold for inclusion
                     matches.append((apt_name, confidence))
-        
+
         # Sort by confidence descending
         matches.sort(key=lambda x: x[1], reverse=True)
         return matches[:5]  # Top 5 matches
-

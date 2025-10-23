@@ -1,3 +1,19 @@
+"""
+DevSecOps Integration & Security Orchestration Module for Vaulytica.
+
+This module provides comprehensive DevSecOps pipeline integration, security orchestration,
+advanced threat intelligence, security metrics, and automated penetration testing.
+
+Features:
+- DevSecOps Pipeline Integration (GitHub, GitLab, Jenkins, CircleCI)
+- Security Orchestration Hub with workflow automation
+- Advanced Threat Intelligence Platform with ML-based correlation
+- Security Metrics & KPIs Dashboard
+- Automated Penetration Testing
+- Security Gates & Policy Enforcement
+- Continuous Security Validation
+"""
+
 import asyncio
 import hashlib
 import json
@@ -198,10 +214,10 @@ class PentestResult:
 class DevSecOpsPipeline:
     """
     DevSecOps pipeline integration with security gates.
-    
+
     Integrates with CI/CD pipelines to enforce security policies and gates.
     """
-    
+
     def __init__(self):
         self.pipelines: Dict[str, PipelineConfig] = {}
         self.gate_results: List[SecurityGate] = []
@@ -212,22 +228,22 @@ class DevSecOpsPipeline:
             "gates_failed": 0,
             "vulnerabilities_blocked": 0
         }
-    
+
     async def configure_pipeline(self, config: PipelineConfig) -> Dict[str, Any]:
         """
         Configure a DevSecOps pipeline.
-        
+
         Args:
             config: Pipeline configuration
-        
+
         Returns:
             Configuration result
         """
         logger.info(f"Configuring pipeline: {config.name} ({config.pipeline_type.value})")
-        
+
         self.pipelines[config.pipeline_id] = config
         self.statistics["pipelines_configured"] += 1
-        
+
         return {
             "pipeline_id": config.pipeline_id,
             "status": "configured",
@@ -235,7 +251,7 @@ class DevSecOpsPipeline:
             "fail_on_critical": config.fail_on_critical,
             "fail_on_high": config.fail_on_high
         }
-    
+
     async def execute_security_gates(
         self,
         pipeline_id: str,
@@ -244,42 +260,42 @@ class DevSecOpsPipeline:
     ) -> Dict[str, Any]:
         """
         Execute security gates for a pipeline run.
-        
+
         Args:
             pipeline_id: Pipeline identifier
             commit_sha: Git commit SHA
             artifacts: Build artifacts to scan
-        
+
         Returns:
             Gate execution results
         """
         logger.info(f"Executing security gates for pipeline: {pipeline_id}")
-        
+
         if pipeline_id not in self.pipelines:
             raise ValueError(f"Pipeline not configured: {pipeline_id}")
-        
+
         config = self.pipelines[pipeline_id]
         gate_results = []
         overall_status = GateStatus.PASSED
-        
+
         for gate_type in config.security_gates:
             result = await self._execute_gate(gate_type, pipeline_id, artifacts)
             gate_results.append(result)
             self.gate_results.append(result)
             self.statistics["gates_executed"] += 1
-            
+
             if result.status == GateStatus.PASSED:
                 self.statistics["gates_passed"] += 1
             elif result.status == GateStatus.FAILED:
                 self.statistics["gates_failed"] += 1
                 overall_status = GateStatus.FAILED
-                
+
                 # Check if we should fail the build
                 if config.fail_on_critical and result.critical_count > 0:
                     self.statistics["vulnerabilities_blocked"] += result.critical_count
                 if config.fail_on_high and result.high_count > 0:
                     self.statistics["vulnerabilities_blocked"] += result.high_count
-        
+
         return {
             "pipeline_id": pipeline_id,
             "commit_sha": commit_sha,
@@ -297,7 +313,7 @@ class DevSecOpsPipeline:
             ],
             "should_fail_build": overall_status == GateStatus.FAILED
         }
-    
+
     async def _execute_gate(
         self,
         gate_type: SecurityGateType,
@@ -306,19 +322,19 @@ class DevSecOpsPipeline:
     ) -> SecurityGate:
         """Execute a single security gate."""
         start_time = datetime.utcnow()
-        
+
         # Simulate gate execution with mock findings
         findings = self._generate_mock_findings(gate_type)
-        
+
         duration = (datetime.utcnow() - start_time).total_seconds()
-        
+
         # Determine gate status
         status = GateStatus.PASSED
         if findings["critical"] > 0:
             status = GateStatus.FAILED
         elif findings["high"] > 3:
             status = GateStatus.WARNING
-        
+
         return SecurityGate(
             gate_id=f"gate-{hashlib.md5(f'{pipeline_id}{gate_type.value}{start_time}'.encode()).hexdigest()[:12]}",
             gate_type=gate_type,
@@ -332,7 +348,7 @@ class DevSecOpsPipeline:
             duration_seconds=duration,
             details={"findings": findings}
         )
-    
+
     def _generate_mock_findings(self, gate_type: SecurityGateType) -> Dict[str, int]:
         """Generate mock findings for testing."""
         # Different gate types have different finding patterns
@@ -347,7 +363,7 @@ class DevSecOpsPipeline:
             SecurityGateType.COMPLIANCE_CHECK: {"critical": 0, "high": 1, "medium": 2, "low": 1}
         }
         return patterns.get(gate_type, {"critical": 0, "high": 0, "medium": 0, "low": 0})
-    
+
     def get_statistics(self) -> Dict[str, Any]:
         """Get pipeline statistics."""
         return self.statistics.copy()
@@ -1249,4 +1265,3 @@ def get_devsecops_orchestrator() -> DevSecOpsOrchestrator:
     if _devsecops_orchestrator is None:
         _devsecops_orchestrator = DevSecOpsOrchestrator()
     return _devsecops_orchestrator
-

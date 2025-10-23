@@ -1,3 +1,25 @@
+"""
+Unified Ticketing Manager for Vaulytica.
+
+Provides a unified interface for managing tickets across multiple platforms:
+- ServiceNow incident management
+- Jira issue tracking
+- PagerDuty alerting
+- Datadog case management
+
+Supports:
+- Multi-platform ticket creation
+- Bidirectional synchronization
+- Unified status mapping
+- Cross-platform correlation
+- Ticket lifecycle management
+- Bulk operations
+- Statistics and reporting
+
+Author: Vaulytica Team
+Version: 0.21.0
+"""
+
 import asyncio
 from datetime import datetime
 from typing import Dict, List, Optional, Any, Set
@@ -80,7 +102,7 @@ class TicketingConfig:
     auto_create: bool = False
     auto_sync: bool = False
     sync_interval: int = 300  # 5 minutes
-    
+
     # Platform-specific configs
     servicenow_config: Optional[Dict[str, Any]] = None
     jira_config: Optional[Dict[str, Any]] = None
@@ -91,35 +113,35 @@ class TicketingConfig:
 class UnifiedTicketingManager:
     """
     Unified Ticketing Manager.
-    
+
     Orchestrates ticket management across multiple platforms with:
     - Multi-platform ticket creation
     - Bidirectional synchronization
     - Unified status tracking
     - Cross-platform correlation
     """
-    
+
     def __init__(self, config: TicketingConfig):
         """
         Initialize Unified Ticketing Manager.
-        
+
         Args:
             config: Ticketing configuration
         """
         self.config = config
-        
+
         # Platform managers
         self.servicenow_manager: Optional[ServiceNowIncidentManager] = None
         self.jira_manager: Optional[JiraIssueManager] = None
         self.pagerduty_manager: Optional[PagerDutyIncidentManager] = None
         self.datadog_manager: Optional[DatadogCaseManager] = None
-        
+
         # Initialize enabled platforms
         self._initialize_platforms()
-        
+
         # Unified ticket tracking
         self.tickets: Dict[str, List[UnifiedTicket]] = {}  # incident_id -> tickets
-        
+
         # Statistics
         self.statistics = {
             "total_tickets_created": 0,
@@ -130,47 +152,59 @@ class UnifiedTicketingManager:
             "sync_errors": 0,
             "last_sync": None
         }
-        
+
         logger.info(f"Unified Ticketing Manager initialized with platforms: {[p.value for p in config.enabled_platforms]}")
-    
+
     def _initialize_platforms(self):
         """Initialize enabled platform managers."""
-        # ServiceNow
-        if TicketingPlatform.SERVICENOW in self.config.enabled_platforms:
-            if SERVICENOW_AVAILABLE and self.config.servicenow_config:
-                try:
-                    self.servicenow_manager = get_servicenow_manager(**self.config.servicenow_config)
-                    logger.info("ServiceNow integration enabled")
-                except Exception as e:
-                    logger.error(f"Failed to initialize ServiceNow: {e}")
-        
-        # Jira
-        if TicketingPlatform.JIRA in self.config.enabled_platforms:
-            if JIRA_AVAILABLE and self.config.jira_config:
-                try:
-                    self.jira_manager = get_jira_manager(**self.config.jira_config)
-                    logger.info("Jira integration enabled")
-                except Exception as e:
-                    logger.error(f"Failed to initialize Jira: {e}")
-        
-        # PagerDuty
-        if TicketingPlatform.PAGERDUTY in self.config.enabled_platforms:
-            if PAGERDUTY_AVAILABLE and self.config.pagerduty_config:
-                try:
-                    self.pagerduty_manager = get_pagerduty_manager(**self.config.pagerduty_config)
-                    logger.info("PagerDuty integration enabled")
-                except Exception as e:
-                    logger.error(f"Failed to initialize PagerDuty: {e}")
-        
-        # Datadog
-        if TicketingPlatform.DATADOG in self.config.enabled_platforms:
-            if DATADOG_AVAILABLE and self.config.datadog_config:
-                try:
-                    self.datadog_manager = get_datadog_case_manager(**self.config.datadog_config)
-                    logger.info("Datadog integration enabled")
-                except Exception as e:
-                    logger.error(f"Failed to initialize Datadog: {e}")
-    
+        platform_initializers = {
+            TicketingPlatform.SERVICENOW: self._init_servicenow,
+            TicketingPlatform.JIRA: self._init_jira,
+            TicketingPlatform.PAGERDUTY: self._init_pagerduty,
+            TicketingPlatform.DATADOG: self._init_datadog
+        }
+
+        for platform in self.config.enabled_platforms:
+            initializer = platform_initializers.get(platform)
+            if initializer:
+                initializer()
+
+    def _init_servicenow(self):
+        """Initialize ServiceNow platform."""
+        if SERVICENOW_AVAILABLE and self.config.servicenow_config:
+            try:
+                self.servicenow_manager = get_servicenow_manager(**self.config.servicenow_config)
+                logger.info("ServiceNow integration enabled")
+            except Exception as e:
+                logger.error(f"Failed to initialize ServiceNow: {e}")
+
+    def _init_jira(self):
+        """Initialize Jira platform."""
+        if JIRA_AVAILABLE and self.config.jira_config:
+            try:
+                self.jira_manager = get_jira_manager(**self.config.jira_config)
+                logger.info("Jira integration enabled")
+            except Exception as e:
+                logger.error(f"Failed to initialize Jira: {e}")
+
+    def _init_pagerduty(self):
+        """Initialize PagerDuty platform."""
+        if PAGERDUTY_AVAILABLE and self.config.pagerduty_config:
+            try:
+                self.pagerduty_manager = get_pagerduty_manager(**self.config.pagerduty_config)
+                logger.info("PagerDuty integration enabled")
+            except Exception as e:
+                logger.error(f"Failed to initialize PagerDuty: {e}")
+
+    def _init_datadog(self):
+        """Initialize Datadog platform."""
+        if DATADOG_AVAILABLE and self.config.datadog_config:
+            try:
+                self.datadog_manager = get_datadog_case_manager(**self.config.datadog_config)
+                logger.info("Datadog integration enabled")
+            except Exception as e:
+                logger.error(f"Failed to initialize Datadog: {e}")
+
     async def create_tickets_for_incident(
         self,
         incident: Incident,
@@ -179,41 +213,41 @@ class UnifiedTicketingManager:
     ) -> List[UnifiedTicket]:
         """
         Create tickets across multiple platforms for an incident.
-        
+
         Args:
             incident: Vaulytica incident
             analysis: Optional AI analysis result
             platforms: Specific platforms to create tickets on (default: all enabled)
-        
+
         Returns:
             List of created unified tickets
         """
         if platforms is None:
             platforms = list(self.config.enabled_platforms)
-        
+
         tickets = []
         tasks = []
-        
+
         # ServiceNow
         if TicketingPlatform.SERVICENOW in platforms and self.servicenow_manager:
             tasks.append(self._create_servicenow_ticket(incident, analysis))
-        
+
         # Jira
         if TicketingPlatform.JIRA in platforms and self.jira_manager:
             tasks.append(self._create_jira_ticket(incident, analysis))
-        
+
         # PagerDuty
         if TicketingPlatform.PAGERDUTY in platforms and self.pagerduty_manager:
             tasks.append(self._create_pagerduty_ticket(incident, analysis))
-        
+
         # Datadog
         if TicketingPlatform.DATADOG in platforms and self.datadog_manager:
             tasks.append(self._create_datadog_ticket(incident, analysis))
-        
+
         # Execute all ticket creations in parallel
         if tasks:
             results = await asyncio.gather(*tasks, return_exceptions=True)
-            
+
             for result in results:
                 if isinstance(result, UnifiedTicket):
                     tickets.append(result)
@@ -222,17 +256,17 @@ class UnifiedTicketingManager:
                 elif isinstance(result, Exception):
                     logger.error(f"Error creating ticket: {result}")
                     self.statistics["sync_errors"] += 1
-        
+
         # Store tickets
         if tickets:
             if incident.incident_id not in self.tickets:
                 self.tickets[incident.incident_id] = []
             self.tickets[incident.incident_id].extend(tickets)
-            
+
             logger.info(f"Created {len(tickets)} tickets for incident {incident.incident_id}")
-        
+
         return tickets
-    
+
     async def _create_servicenow_ticket(
         self,
         incident: Incident,
@@ -260,7 +294,7 @@ class UnifiedTicketingManager:
             logger.error(f"Error creating ServiceNow ticket: {e}")
             raise
         return None
-    
+
     async def _create_jira_ticket(
         self,
         incident: Incident,
@@ -288,7 +322,7 @@ class UnifiedTicketingManager:
             logger.error(f"Error creating Jira ticket: {e}")
             raise
         return None
-    
+
     async def _create_pagerduty_ticket(
         self,
         incident: Incident,
@@ -316,7 +350,7 @@ class UnifiedTicketingManager:
             logger.error(f"Error creating PagerDuty ticket: {e}")
             raise
         return None
-    
+
     async def _create_datadog_ticket(
         self,
         incident: Incident,
@@ -336,7 +370,7 @@ class UnifiedTicketingManager:
                     priority=dd_case.priority.value,
                     created_at=dd_case.created_at,
                     updated_at=dd_case.updated_at,
-                    url=f"https://app.datadoghq.com/cases/{dd_case.case_id}",
+                    url=f"https://example.com",
                     assignee=dd_case.assignee,
                     metadata={"dd_case": dd_case}
                 )
@@ -556,4 +590,3 @@ def create_ticketing_config_from_env() -> TicketingConfig:
     config.sync_interval = int(os.getenv("TICKETING_SYNC_INTERVAL", "300"))
 
     return config
-

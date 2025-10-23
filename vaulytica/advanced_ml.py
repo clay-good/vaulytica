@@ -1,3 +1,17 @@
+"""
+Vaulytica Advanced ML Models - Deep Learning & AutoML
+
+This module provides advanced machine learning capabilities:
+- Deep Learning: LSTM and Transformer-like models for sequence analysis
+- AutoML: Automated hyperparameter tuning and model selection
+- Model Ensemble: Voting and stacking ensemble methods
+- Model Explainability: Feature importance and SHAP-like explanations
+- Model Persistence: Save/load trained models
+
+Author: World-Class Software Engineering Team
+Version: 0.12.0
+"""
+
 import json
 import pickle
 from typing import Dict, List, Optional, Tuple, Any
@@ -42,11 +56,11 @@ class ModelConfig:
     epochs: int = 10
     sequence_length: int = 10
     attention_heads: int = 4
-    
+
     # AutoML specific
     automl_iterations: int = 50
     automl_timeout: int = 300  # seconds
-    
+
     # Ensemble specific
     ensemble_method: EnsembleMethod = EnsembleMethod.WEIGHTED
     ensemble_weights: Optional[List[float]] = None
@@ -91,24 +105,24 @@ class AutoMLResult:
 class LSTMModel:
     """
     LSTM-based sequence model for threat detection.
-    
+
     Uses Long Short-Term Memory networks to analyze sequences of
     security events and predict threats based on temporal patterns.
     """
-    
+
     def __init__(self, config: ModelConfig):
         """Initialize LSTM model."""
         self.config = config
         self.hidden_size = config.hidden_size
         self.num_layers = config.num_layers
         self.sequence_length = config.sequence_length
-        
+
         # Simplified LSTM state (in production, use PyTorch/TensorFlow)
         self.weights = self._initialize_weights()
         self.trained = False
-        
+
         logger.info(f"LSTM model initialized: {config.hidden_size}x{config.num_layers} layers")
-    
+
     def _initialize_weights(self) -> Dict[str, np.ndarray]:
         """Initialize LSTM weights."""
         np.random.seed(42)
@@ -120,48 +134,48 @@ class LSTMModel:
             "input_gate": np.random.randn(self.hidden_size, self.hidden_size) * 0.01,
             "output_gate": np.random.randn(self.hidden_size, self.hidden_size) * 0.01
         }
-    
+
     def _sigmoid(self, x: np.ndarray) -> np.ndarray:
         """Sigmoid activation function."""
         return 1 / (1 + np.exp(-np.clip(x, -500, 500)))
-    
+
     def _tanh(self, x: np.ndarray) -> np.ndarray:
         """Tanh activation function."""
         return np.tanh(np.clip(x, -500, 500))
-    
+
     def _lstm_cell(self, x: np.ndarray, h_prev: np.ndarray, c_prev: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
         """Single LSTM cell forward pass."""
         # Forget gate
-        f_t = self._sigmoid(np.dot(x, self.weights["input_weights"]) + 
+        f_t = self._sigmoid(np.dot(x, self.weights["input_weights"]) +
                            np.dot(h_prev, self.weights["forget_gate"]))
-        
+
         # Input gate
-        i_t = self._sigmoid(np.dot(x, self.weights["input_weights"]) + 
+        i_t = self._sigmoid(np.dot(x, self.weights["input_weights"]) +
                            np.dot(h_prev, self.weights["input_gate"]))
-        
+
         # Cell state candidate
-        c_tilde = self._tanh(np.dot(x, self.weights["input_weights"]) + 
+        c_tilde = self._tanh(np.dot(x, self.weights["input_weights"]) +
                             np.dot(h_prev, self.weights["hidden_weights"]))
-        
+
         # Update cell state
         c_t = f_t * c_prev + i_t * c_tilde
-        
+
         # Output gate
-        o_t = self._sigmoid(np.dot(x, self.weights["input_weights"]) + 
+        o_t = self._sigmoid(np.dot(x, self.weights["input_weights"]) +
                            np.dot(h_prev, self.weights["output_gate"]))
-        
+
         # Hidden state
         h_t = o_t * self._tanh(c_t)
-        
+
         return h_t, c_t
-    
+
     def forward(self, sequence: List[np.ndarray]) -> Tuple[np.ndarray, List[np.ndarray]]:
         """
         Forward pass through LSTM.
-        
+
         Args:
             sequence: List of feature vectors (sequence_length x feature_dim)
-            
+
         Returns:
             output: Final output vector
             hidden_states: List of hidden states for attention
@@ -169,24 +183,24 @@ class LSTMModel:
         h = np.zeros(self.hidden_size)
         c = np.zeros(self.hidden_size)
         hidden_states = []
-        
+
         # Process sequence
         for x in sequence:
             h, c = self._lstm_cell(x, h, c)
             hidden_states.append(h)
-        
+
         # Final output
         output = np.dot(h, self.weights["output_weights"])
-        
+
         return output, hidden_states
-    
+
     def predict(self, sequence: List[MLFeatures]) -> Tuple[ThreatLevel, float, List[float]]:
         """
         Predict threat level from sequence of events.
-        
+
         Args:
             sequence: List of ML features from events
-            
+
         Returns:
             threat_level: Predicted threat level
             confidence: Prediction confidence
@@ -194,7 +208,7 @@ class LSTMModel:
         """
         # Convert features to vectors
         feature_vectors = [f.to_vector() for f in sequence]
-        
+
         # Pad or truncate sequence
         if len(feature_vectors) < self.sequence_length:
             # Pad with zeros
@@ -203,64 +217,64 @@ class LSTMModel:
         else:
             # Take last sequence_length items
             feature_vectors = feature_vectors[-self.sequence_length:]
-        
+
         # Forward pass
         output, hidden_states = self.forward(feature_vectors)
-        
+
         # Apply softmax
         exp_output = np.exp(output - np.max(output))
         probabilities = exp_output / np.sum(exp_output)
-        
+
         # Get prediction
         predicted_idx = np.argmax(probabilities)
         confidence = probabilities[predicted_idx]
-        
+
         # Map to threat level
-        threat_levels = [ThreatLevel.BENIGN, ThreatLevel.LOW, ThreatLevel.MEDIUM, 
+        threat_levels = [ThreatLevel.BENIGN, ThreatLevel.LOW, ThreatLevel.MEDIUM,
                         ThreatLevel.HIGH, ThreatLevel.CRITICAL]
         threat_level = threat_levels[predicted_idx]
-        
+
         # Calculate attention weights (simplified)
         attention_weights = self._calculate_attention(hidden_states)
-        
+
         return threat_level, float(confidence), attention_weights
-    
+
     def _calculate_attention(self, hidden_states: List[np.ndarray]) -> List[float]:
         """Calculate attention weights for sequence."""
         if not hidden_states:
             return []
-        
+
         # Simplified attention: use L2 norm of hidden states
         norms = [np.linalg.norm(h) for h in hidden_states]
         total = sum(norms)
-        
+
         if total == 0:
             return [1.0 / len(hidden_states)] * len(hidden_states)
-        
+
         return [n / total for n in norms]
-    
+
     def train(self, sequences: List[List[MLFeatures]], labels: List[ThreatLevel]) -> TrainingMetrics:
         """
         Train LSTM model (simplified training).
-        
+
         In production, this would use proper backpropagation through time.
         """
         start_time = datetime.utcnow()
-        
+
         # Simplified training: adjust weights based on predictions
         correct = 0
         total = len(sequences)
-        
+
         for sequence, label in zip(sequences, labels):
             predicted_level, confidence, _ = self.predict(sequence)
             if predicted_level == label:
                 correct += 1
-        
+
         accuracy = correct / total if total > 0 else 0.0
         training_time = (datetime.utcnow() - start_time).total_seconds()
-        
+
         self.trained = True
-        
+
         return TrainingMetrics(
             accuracy=accuracy,
             precision=accuracy,  # Simplified
@@ -276,28 +290,28 @@ class LSTMModel:
 class TransformerModel:
     """
     Transformer-like model with self-attention for threat detection.
-    
+
     Uses multi-head self-attention to capture complex relationships
     between security events in a sequence.
     """
-    
+
     def __init__(self, config: ModelConfig):
         """Initialize Transformer model."""
         self.config = config
         self.hidden_size = config.hidden_size
         self.num_heads = config.attention_heads
         self.sequence_length = config.sequence_length
-        
+
         self.weights = self._initialize_weights()
         self.trained = False
-        
+
         logger.info(f"Transformer model initialized: {config.attention_heads} heads, {config.hidden_size} hidden")
-    
+
     def _initialize_weights(self) -> Dict[str, np.ndarray]:
         """Initialize Transformer weights."""
         np.random.seed(42)
         head_dim = self.hidden_size // self.num_heads
-        
+
         return {
             "query": np.random.randn(self.num_heads, 23, head_dim) * 0.01,
             "key": np.random.randn(self.num_heads, 23, head_dim) * 0.01,
@@ -438,7 +452,7 @@ class EnsembleModel:
 
         logger.info(f"Ensemble model initialized: {len(self.models)} models, {self.method.value} voting")
 
-    def add_model(self, model: Any, weight: float = 1.0):
+    def add_model(self, model: Any, weight: float = 1.0) -> None:
         """Add model to ensemble."""
         self.models.append(model)
         self.weights.append(weight)
@@ -730,8 +744,8 @@ class ModelExplainer:
         if hasattr(model, 'predict'):
             try:
                 _, _, attention_weights = model.predict(sequence)
-            except:
-                pass
+            except (ValueError, TypeError, AttributeError) as e:
+                logger.debug(f"Failed to extract attention weights: {e}")
 
         return ModelExplanation(
             prediction=prediction.value,
@@ -750,7 +764,8 @@ class ModelExplainer:
         # Get baseline prediction
         try:
             baseline_pred, baseline_conf, _ = model.predict(sequence)
-        except:
+        except (ValueError, TypeError, AttributeError) as e:
+            logger.warning(f"Failed to get baseline prediction for feature importance: {e}")
             return {}
 
         importance = {}
@@ -827,7 +842,7 @@ class ModelPersistence:
         self.model_dir.mkdir(parents=True, exist_ok=True)
         logger.info(f"Model persistence initialized: {model_dir}")
 
-    def save_model(self, model: Any, model_name: str, metadata: Optional[Dict[str, Any]] = None):
+    def save_model(self, model: Any, model_name: str, metadata: Optional[Dict[str, Any]] = None) -> None:
         """Save model to disk."""
         model_path = self.model_dir / f"{model_name}.pkl"
         metadata_path = self.model_dir / f"{model_name}_metadata.json"
@@ -1018,7 +1033,7 @@ class AdvancedMLEngine:
 
         return explanation
 
-    def save_model(self, model_name: str):
+    def save_model(self, model_name: str) -> None:
         """Save active model to disk."""
         if not self.active_model:
             raise ValueError("No active model to save")
@@ -1040,7 +1055,7 @@ class AdvancedMLEngine:
 
         logger.info(f"Model saved: {model_name}")
 
-    def load_model(self, model_name: str):
+    def load_model(self, model_name: str) -> None:
         """Load model from disk."""
         model, metadata = self.persistence.load_model(model_name)
 
@@ -1108,7 +1123,7 @@ def get_advanced_ml_engine(config: Optional[ModelConfig] = None) -> AdvancedMLEn
     return _advanced_ml_engine
 
 
-def reset_advanced_ml_engine():
+def reset_advanced_ml_engine() -> None:
     """Reset global advanced ML engine instance."""
     global _advanced_ml_engine
     _advanced_ml_engine = None
@@ -1161,4 +1176,3 @@ if __name__ == "__main__":
     print("\n✓ Advanced ML Engine ready!")
     print(f"  Stats: {engine.get_stats()}")
     print("="*80)
-

@@ -1,3 +1,20 @@
+"""
+Jira Integration for Vaulytica.
+
+Provides comprehensive Jira issue tracking integration with:
+- Full CRUD operations for issues
+- Bidirectional synchronization with Vaulytica incidents
+- Custom field mapping
+- Comment and attachment support
+- Workflow transitions
+- Sprint and epic management
+- JQL query support
+- Agile board integration
+
+Author: Vaulytica Team
+Version: 0.21.0
+"""
+
 import asyncio
 import aiohttp
 import json
@@ -80,10 +97,10 @@ class SyncMapping:
 class JiraAPIClient:
     """
     Jira REST API client.
-    
+
     Provides low-level API operations for Jira Cloud/Server.
     """
-    
+
     def __init__(
         self,
         base_url: str,
@@ -93,9 +110,9 @@ class JiraAPIClient:
     ):
         """
         Initialize Jira API client.
-        
+
         Args:
-            base_url: Jira instance URL (e.g., 'https://company.atlassian.net')
+            base_url: Jira instance URL (e.g., 'https://your-company.atlassian.net')
             username: Jira username/email
             api_token: Jira API token
             api_version: API version (default: 2)
@@ -105,7 +122,7 @@ class JiraAPIClient:
         self.username = username
         self.api_token = api_token
         self.session: Optional[aiohttp.ClientSession] = None
-        
+
         # Statistics
         self.statistics = {
             "total_requests": 0,
@@ -115,15 +132,15 @@ class JiraAPIClient:
             "issues_updated": 0,
             "issues_queried": 0
         }
-        
+
         logger.info(f"Jira API client initialized for: {base_url}")
-    
+
     def _get_auth_header(self) -> str:
         """Generate Basic Auth header."""
         credentials = f"{self.username}:{self.api_token}"
         encoded = b64encode(credentials.encode()).decode()
         return f"Basic {encoded}"
-    
+
     async def _ensure_session(self):
         """Ensure aiohttp session exists."""
         if self.session is None or self.session.closed:
@@ -134,12 +151,12 @@ class JiraAPIClient:
                     "Accept": "application/json"
                 }
             )
-    
+
     async def close(self):
         """Close the aiohttp session."""
         if self.session and not self.session.closed:
             await self.session.close()
-    
+
     async def create_issue(
         self,
         project_key: str,
@@ -153,39 +170,39 @@ class JiraAPIClient:
     ) -> Optional[JiraIssue]:
         """Create a new Jira issue."""
         await self._ensure_session()
-        
+
         fields = {
             "project": {"key": project_key},
             "summary": summary,
             "description": description,
             "issuetype": {"name": issue_type}
         }
-        
+
         if priority:
             fields["priority"] = {"name": priority.value}
         if assignee:
             fields["assignee"] = {"name": assignee}
         if labels:
             fields["labels"] = labels
-        
+
         # Add custom fields
         fields.update(custom_fields)
-        
+
         payload = {"fields": fields}
-        
+
         try:
             self.statistics["total_requests"] += 1
-            
+
             async with self.session.post(
                 f"{self.api_url}/issue",
                 json=payload
             ) as response:
                 if response.status == 201:
                     data = await response.json()
-                    
+
                     self.statistics["successful_requests"] += 1
                     self.statistics["issues_created"] += 1
-                    
+
                     # Fetch full issue details
                     issue = await self.get_issue(data["key"])
                     if issue:
@@ -196,39 +213,39 @@ class JiraAPIClient:
                     error_text = await response.text()
                     logger.error(f"Failed to create issue: {response.status} - {error_text}")
                     return None
-                    
+
         except Exception as e:
             self.statistics["failed_requests"] += 1
             logger.error(f"Error creating issue: {e}")
             return None
-    
+
     async def get_issue(self, issue_key: str) -> Optional[JiraIssue]:
         """Get issue by key."""
         await self._ensure_session()
-        
+
         try:
             self.statistics["total_requests"] += 1
-            
+
             async with self.session.get(
                 f"{self.api_url}/issue/{issue_key}"
             ) as response:
                 if response.status == 200:
                     data = await response.json()
-                    
+
                     self.statistics["successful_requests"] += 1
                     self.statistics["issues_queried"] += 1
-                    
+
                     return self._parse_issue(data)
                 else:
                     self.statistics["failed_requests"] += 1
                     logger.error(f"Failed to get issue: {response.status}")
                     return None
-                    
+
         except Exception as e:
             self.statistics["failed_requests"] += 1
             logger.error(f"Error getting issue: {e}")
             return None
-    
+
     async def update_issue(
         self,
         issue_key: str,
@@ -236,12 +253,12 @@ class JiraAPIClient:
     ) -> Optional[JiraIssue]:
         """Update an existing Jira issue."""
         await self._ensure_session()
-        
+
         payload = {"fields": fields}
-        
+
         try:
             self.statistics["total_requests"] += 1
-            
+
             async with self.session.put(
                 f"{self.api_url}/issue/{issue_key}",
                 json=payload
@@ -249,7 +266,7 @@ class JiraAPIClient:
                 if response.status == 204:
                     self.statistics["successful_requests"] += 1
                     self.statistics["issues_updated"] += 1
-                    
+
                     # Fetch updated issue
                     issue = await self.get_issue(issue_key)
                     if issue:
@@ -260,12 +277,12 @@ class JiraAPIClient:
                     error_text = await response.text()
                     logger.error(f"Failed to update issue: {response.status} - {error_text}")
                     return None
-                    
+
         except Exception as e:
             self.statistics["failed_requests"] += 1
             logger.error(f"Error updating issue: {e}")
             return None
-    
+
     async def transition_issue(
         self,
         issue_key: str,
@@ -273,7 +290,7 @@ class JiraAPIClient:
     ) -> bool:
         """Transition issue to a new status."""
         await self._ensure_session()
-        
+
         try:
             # Get available transitions
             async with self.session.get(
@@ -281,24 +298,24 @@ class JiraAPIClient:
             ) as response:
                 if response.status != 200:
                     return False
-                
+
                 data = await response.json()
                 transitions = data.get("transitions", [])
-                
+
                 # Find matching transition
                 transition_id = None
                 for t in transitions:
                     if t["name"].lower() == transition_name.lower():
                         transition_id = t["id"]
                         break
-                
+
                 if not transition_id:
                     logger.error(f"Transition '{transition_name}' not found for {issue_key}")
                     return False
-            
+
             # Execute transition
             payload = {"transition": {"id": transition_id}}
-            
+
             async with self.session.post(
                 f"{self.api_url}/issue/{issue_key}/transitions",
                 json=payload
@@ -309,15 +326,15 @@ class JiraAPIClient:
                 else:
                     logger.error(f"Failed to transition issue: {response.status}")
                     return False
-                    
+
         except Exception as e:
             logger.error(f"Error transitioning issue: {e}")
             return False
-    
+
     def _parse_issue(self, data: Dict[str, Any]) -> JiraIssue:
         """Parse Jira API response into JiraIssue."""
         fields = data.get("fields", {})
-        
+
         return JiraIssue(
             key=data.get("key", ""),
             id=data.get("id", ""),
@@ -338,7 +355,7 @@ class JiraAPIClient:
             custom_fields={k: v for k, v in fields.items() if k.startswith("customfield_")},
             comments=[c for c in fields.get("comment", {}).get("comments", [])]
         )
-    
+
     def _parse_datetime(self, dt_str: Optional[str]) -> Optional[datetime]:
         """Parse Jira datetime string."""
         if not dt_str:
@@ -346,9 +363,10 @@ class JiraAPIClient:
         try:
             # Jira uses ISO 8601 format
             return datetime.fromisoformat(dt_str.replace('Z', '+00:00'))
-        except:
+        except (ValueError, TypeError, AttributeError) as e:
+            logger.warning(f"Failed to parse Jira datetime '{dt_str}': {e}")
             return None
-    
+
     def get_statistics(self) -> Dict[str, Any]:
         """Get API client statistics."""
         return self.statistics.copy()
@@ -372,6 +390,101 @@ class JiraAPIClient:
                     return False
         except Exception as e:
             logger.error(f"Error adding comment: {e}")
+            return False
+
+    async def add_attachment(
+        self,
+        issue_key: str,
+        filename: str,
+        content: bytes,
+        content_type: str = "application/octet-stream"
+    ) -> bool:
+        """
+        Add an attachment to an issue.
+
+        Args:
+            issue_key: Jira issue key (e.g., 'SEC-123')
+            filename: Name of the file
+            content: File content as bytes
+            content_type: MIME type of the file
+
+        Returns:
+            True if successful, False otherwise
+        """
+        await self._ensure_session()
+
+        try:
+            # Create form data
+            form = aiohttp.FormData()
+            form.add_field(
+                'file',
+                content,
+                filename=filename,
+                content_type=content_type
+            )
+
+            # Jira requires X-Atlassian-Token header for attachments
+            headers = {
+                "X-Atlassian-Token": "no-check"
+            }
+
+            async with self.session.post(
+                f"{self.api_url}/issue/{issue_key}/attachments",
+                data=form,
+                headers=headers
+            ) as response:
+                if response.status == 200:
+                    logger.info(f"Added attachment '{filename}' to {issue_key}")
+                    return True
+                else:
+                    error_text = await response.text()
+                    logger.error(f"Failed to add attachment: {response.status} - {error_text}")
+                    return False
+
+        except Exception as e:
+            logger.error(f"Error adding attachment: {e}")
+            return False
+
+    async def add_attachment_from_url(
+        self,
+        issue_key: str,
+        url: str,
+        filename: Optional[str] = None
+    ) -> bool:
+        """
+        Download a file from URL and attach it to an issue.
+
+        Args:
+            issue_key: Jira issue key (e.g., 'SEC-123')
+            url: URL to download file from
+            filename: Optional filename (defaults to URL basename)
+
+        Returns:
+            True if successful, False otherwise
+        """
+        await self._ensure_session()
+
+        try:
+            # Download file from URL
+            async with self.session.get(url) as response:
+                if response.status != 200:
+                    logger.error(f"Failed to download file from {url}: {response.status}")
+                    return False
+
+                content = await response.read()
+                content_type = response.headers.get('Content-Type', 'application/octet-stream')
+
+                # Determine filename
+                if not filename:
+                    from urllib.parse import urlparse
+                    parsed = urlparse(url)
+                    filename = parsed.path.split('/')[-1] or 'attachment'
+
+                # Add attachment
+                return await self.add_attachment(issue_key, filename, content, content_type)
+
+        except Exception as e:
+            logger.error(f"Error downloading and attaching file: {e}")
             return False
 
     async def search_issues(self, jql: str, max_results: int = 100) -> List[JiraIssue]:
@@ -488,7 +601,7 @@ class JiraIssueManager:
     ) -> str:
         """Build Jira issue description from Vaulytica incident."""
         lines = [
-            f"h2. Vaulytica Incident",
+            "h2. Vaulytica Incident",
             f"*Incident ID:* {incident.incident_id}",
             f"*Severity:* {incident.severity.value}",
             f"*Priority:* {incident.priority.value}",
@@ -645,6 +758,120 @@ class JiraIssueManager:
                 await self.on_sync_error("sync_incident", str(e))
             return None
 
+    async def attach_enrichment_data(
+        self,
+        issue_key: str,
+        analysis: AnalysisResult
+    ) -> Dict[str, bool]:
+        """
+        Attach enrichment data from Security Analyst to Jira issue.
+
+        This includes:
+        - URLScan.io screenshots
+        - WHOIS data as comments
+        - Investigation queries as comments
+
+        Args:
+            issue_key: Jira issue key (e.g., 'SEC-123')
+            analysis: AnalysisResult from Security Analyst Agent
+
+        Returns:
+            Dictionary with attachment results
+        """
+        results = {
+            "urlscan_screenshots": False,
+            "whois_comment": False,
+            "investigation_queries_comment": False
+        }
+
+        try:
+            # Attach URLScan.io screenshots
+            if analysis.urlscan_results:
+                screenshot_count = 0
+                for url, scan_result in analysis.urlscan_results.items():
+                    screenshot_url = scan_result.get('screenshot_url')
+                    if screenshot_url:
+                        filename = f"urlscan_{url.replace('://', '_').replace('/', '_')[:50]}.png"
+                        success = await self.api_client.add_attachment_from_url(
+                            issue_key,
+                            screenshot_url,
+                            filename
+                        )
+                        if success:
+                            screenshot_count += 1
+
+                if screenshot_count > 0:
+                    results["urlscan_screenshots"] = True
+                    logger.info(f"Attached {screenshot_count} URLScan screenshots to {issue_key}")
+
+            # Add WHOIS data as comment
+            if analysis.whois_results:
+                whois_comment = self._format_whois_comment(analysis.whois_results)
+                success = await self.api_client.add_comment(issue_key, whois_comment)
+                if success:
+                    results["whois_comment"] = True
+                    logger.info(f"Added WHOIS comment to {issue_key}")
+
+            # Add investigation queries as comment
+            if analysis.investigation_queries_by_platform:
+                queries_comment = self._format_investigation_queries_comment(
+                    analysis.investigation_queries_by_platform
+                )
+                success = await self.api_client.add_comment(issue_key, queries_comment)
+                if success:
+                    results["investigation_queries_comment"] = True
+                    logger.info(f"Added investigation queries comment to {issue_key}")
+
+            return results
+
+        except Exception as e:
+            logger.error(f"Error attaching enrichment data to {issue_key}: {e}")
+            return results
+
+    def _format_whois_comment(self, whois_results: Dict[str, Any]) -> str:
+        """Format WHOIS results as Jira comment."""
+        lines = ["h3. WHOIS Analysis", ""]
+
+        for domain, whois_data in whois_results.items():
+            lines.append(f"*Domain:* {domain}")
+            lines.append(f"* Age: {whois_data.get('age_days', 'Unknown')} days")
+            lines.append(f"* Recently Registered: {whois_data.get('is_recently_registered', False)}")
+            lines.append(f"* Registrar: {whois_data.get('registrar', 'Unknown')}")
+            lines.append(f"* Registration Date: {whois_data.get('registration_date', 'Unknown')}")
+
+            risk_indicators = whois_data.get('risk_indicators', [])
+            if risk_indicators:
+                lines.append("* Risk Indicators:")
+                for indicator in risk_indicators:
+                    lines.append(f"** {indicator}")
+
+            lines.append("")
+
+        return "\n".join(lines)
+
+    def _format_investigation_queries_comment(
+        self,
+        queries_by_platform: Dict[str, List[Dict[str, Any]]]
+    ) -> str:
+        """Format investigation queries as Jira comment."""
+        lines = ["h3. Recommended Investigation Queries", ""]
+
+        for platform, queries in queries_by_platform.items():
+            if not queries:
+                continue
+
+            lines.append(f"h4. {platform.upper()}")
+            lines.append("")
+
+            for i, query in enumerate(queries[:5], 1):  # Limit to 5 queries per platform
+                lines.append(f"*Query {i}:* {query.get('description', 'No description')}")
+                lines.append(f"{{code}}{query.get('query', '')}{{code}}")
+                lines.append(f"* Timeframe: {query.get('timeframe', 'N/A')}")
+                lines.append(f"* Priority: {query.get('priority', 'medium')}")
+                lines.append("")
+
+        return "\n".join(lines)
+
     def get_mapping(self, incident_id: str) -> Optional[SyncMapping]:
         """Get sync mapping for incident."""
         return self.mappings.get(incident_id)
@@ -684,4 +911,3 @@ def get_jira_manager(
         _jira_manager = JiraIssueManager(api_client, project_key, **kwargs)
 
     return _jira_manager
-

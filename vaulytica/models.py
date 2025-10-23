@@ -1,3 +1,5 @@
+"""Data models for security events and analysis."""
+
 from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
@@ -58,7 +60,7 @@ class MitreAttack(BaseModel):
 
 class SecurityEvent(BaseModel):
     """Normalized security event model."""
-    
+
     event_id: str = Field(description="Unique event identifier")
     source_system: str = Field(description="Source system (e.g., GuardDuty, GCP SCC)")
     timestamp: datetime = Field(description="Event timestamp")
@@ -66,14 +68,14 @@ class SecurityEvent(BaseModel):
     category: EventCategory = Field(description="Event category")
     title: str = Field(description="Event title/summary")
     description: str = Field(description="Detailed description")
-    
+
     affected_assets: List[AssetInfo] = Field(default_factory=list)
     technical_indicators: List[TechnicalIndicator] = Field(default_factory=list)
     mitre_attack: List[MitreAttack] = Field(default_factory=list)
-    
+
     raw_event: Dict[str, Any] = Field(description="Original raw event data")
     metadata: Dict[str, Any] = Field(default_factory=dict)
-    
+
     confidence_score: float = Field(default=1.0, ge=0.0, le=1.0)
 
 
@@ -145,6 +147,15 @@ class AnalysisResult(BaseModel):
     anomaly_score: float = Field(default=0.0, ge=0.0, le=10.0)
     ioc_enrichments: Dict[str, Any] = Field(default_factory=dict)
 
+    # Cross-platform investigation queries (new)
+    investigation_queries_by_platform: Dict[str, List[Dict[str, Any]]] = Field(default_factory=dict)
+
+    # URLScan.io results (new)
+    urlscan_results: Dict[str, Any] = Field(default_factory=dict)
+
+    # WHOIS results (new)
+    whois_results: Dict[str, Any] = Field(default_factory=dict)
+
     raw_llm_response: str
     tokens_used: int = 0
     processing_time_seconds: float = 0.0
@@ -165,4 +176,3 @@ class CorrelationSummary(BaseModel):
     campaign_id: Optional[str] = None
     campaign_name: Optional[str] = None
     is_part_of_campaign: bool = False
-

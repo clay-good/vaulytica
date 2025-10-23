@@ -1,3 +1,5 @@
+"""REST API server for Vaulytica SOAR integration."""
+
 import asyncio
 import time
 import signal
@@ -164,7 +166,7 @@ async def metrics_middleware(request: Request, call_next):
 async def security_headers_middleware(request: Request, call_next):
     """Add security headers to all responses."""
     response = await call_next(request)
-    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Content-Type-Options"] = "nosnif"
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["X-XSS-Protection"] = "1; mode=block"
     response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
@@ -194,7 +196,7 @@ forensics_engine = None
 # Request/Response Models
 class AnalysisRequest(BaseModel):
     """Request model for analysis endpoint."""
-    
+
     source: str = Field(
         ...,
         description="Source system type",
@@ -220,7 +222,7 @@ class AnalysisRequest(BaseModel):
 
 class AnalysisResponse(BaseModel):
     """Response model for analysis endpoint."""
-    
+
     event_id: str
     risk_score: float
     confidence: float
@@ -238,7 +240,7 @@ class AnalysisResponse(BaseModel):
 
 class HealthResponse(BaseModel):
     """Response model for health check."""
-    
+
     status: str
     version: str
     timestamp: str
@@ -248,7 +250,7 @@ class HealthResponse(BaseModel):
 
 class StatsResponse(BaseModel):
     """Response model for statistics."""
-    
+
     rag_stats: Dict[str, Any]
     cache_stats: Dict[str, Any]
 
@@ -395,7 +397,7 @@ async def shutdown_event():
 
 
 # Graceful shutdown signal handlers
-def handle_shutdown_signal(signum, frame):
+def handle_shutdown_signal(signum: int, frame: Any) -> None:
     """Handle shutdown signals gracefully."""
     logger.info(f"Received signal {signum}, initiating graceful shutdown...")
     app_state["shutdown_requested"] = True
@@ -584,21 +586,21 @@ async def get_prometheus_metrics():
 async def analyze_event(request: AnalysisRequest, background_tasks: BackgroundTasks):
     """
     Analyze a security event.
-    
+
     This endpoint accepts a raw security event from various sources and returns
     a comprehensive AI-powered analysis including risk scoring, MITRE ATT&CK mapping,
     and actionable recommendations.
     """
     try:
         logger.info(f"Received analysis request for source: {request.source}")
-        
+
         # Validate source
         if request.source not in parsers:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"Unsupported source: {request.source}. Supported: {list(parsers.keys())}"
             )
-        
+
         # Parse event
         parser = parsers[request.source]
         try:
@@ -610,7 +612,7 @@ async def analyze_event(request: AnalysisRequest, background_tasks: BackgroundTa
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"Failed to parse event: {str(e)}"
             )
-        
+
         # Check cache
         cached_result = None
         if request.enable_cache and cache:
@@ -630,7 +632,7 @@ async def analyze_event(request: AnalysisRequest, background_tasks: BackgroundTa
                 )
 
                 return _format_response(cached_result, cached=True)
-        
+
         # Find similar incidents
         historical_context = []
         if request.enable_rag and rag:
@@ -639,7 +641,7 @@ async def analyze_event(request: AnalysisRequest, background_tasks: BackgroundTa
                 logger.info(f"Found {len(historical_context)} similar incidents")
             except Exception as e:
                 logger.warning(f"RAG query failed: {e}")
-        
+
         # Perform analysis
         analysis_start = time.time()
         try:
@@ -675,7 +677,7 @@ async def analyze_event(request: AnalysisRequest, background_tasks: BackgroundTa
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Analysis failed: {str(e)}"
             )
-        
+
         # Store in cache (background task)
         if request.enable_cache and cache:
             background_tasks.add_task(cache.set, event, result)
@@ -711,7 +713,7 @@ async def analyze_event(request: AnalysisRequest, background_tasks: BackgroundTa
             )
 
         return _format_response(result, cached=False)
-        
+
     except HTTPException:
         raise
     except Exception as e:
@@ -3009,7 +3011,6 @@ async def start_hunt_campaign(hunt_id: str):
 async def execute_hunt_campaign(hunt_id: str, simulate: bool = True):
     """Execute all queries in a hunt campaign."""
     try:
-        from vaulytica.threat_hunting import get_threat_hunting_engine
         engine = get_threat_hunting_engine()
         result = await engine.execute_campaign(hunt_id, simulate=simulate)
         return result
@@ -3037,7 +3038,6 @@ async def list_hunt_campaigns(status: Optional[str] = None, limit: int = 100):
 async def get_hunt_campaign(hunt_id: str):
     """Get a specific hunt campaign."""
     try:
-        from vaulytica.threat_hunting import get_threat_hunting_engine
         engine = get_threat_hunting_engine()
         campaign = engine.get_campaign(hunt_id)
         if not campaign:
@@ -3054,7 +3054,6 @@ async def get_hunt_campaign(hunt_id: str):
 async def create_ioc_hunt(ioc: str, ioc_type: str, name: Optional[str] = None):
     """Generate a hunt campaign from an IOC."""
     try:
-        from vaulytica.threat_hunting import get_threat_hunting_engine
         engine = get_threat_hunting_engine()
         campaign = await engine.generate_hunt_from_ioc(ioc, ioc_type, name)
         return campaign.to_dict()
@@ -3067,7 +3066,6 @@ async def create_ioc_hunt(ioc: str, ioc_type: str, name: Optional[str] = None):
 async def get_threat_hunting_statistics():
     """Get threat hunting statistics."""
     try:
-        from vaulytica.threat_hunting import get_threat_hunting_engine
         engine = get_threat_hunting_engine()
         return engine.get_statistics()
     except Exception as e:
@@ -3192,7 +3190,6 @@ async def list_cases(status: Optional[str] = None, limit: int = 100):
 async def get_soar_statistics():
     """Get SOAR platform statistics."""
     try:
-        from vaulytica.soar import get_soar_platform
         platform = get_soar_platform()
         return platform.get_statistics()
     except Exception as e:
@@ -3225,7 +3222,6 @@ async def assess_compliance_framework(framework: str, assessed_by: Optional[str]
 async def get_compliance_report(framework: str, include_evidence: bool = False):
     """Generate a compliance report for a framework."""
     try:
-        from vaulytica.compliance import get_compliance_engine, ComplianceFramework
         engine = get_compliance_engine()
 
         report = await engine.generate_compliance_report(
@@ -3242,7 +3238,6 @@ async def get_compliance_report(framework: str, include_evidence: bool = False):
 async def get_compliance_gaps(framework: str):
     """Identify compliance gaps for a framework."""
     try:
-        from vaulytica.compliance import get_compliance_engine, ComplianceFramework
         engine = get_compliance_engine()
 
         gaps = await engine.identify_gaps(ComplianceFramework(framework))
@@ -3288,7 +3283,6 @@ async def get_audit_logs(
 ):
     """Retrieve audit logs with filtering."""
     try:
-        from vaulytica.compliance import get_compliance_engine
         engine = get_compliance_engine()
 
         logs = engine.get_audit_logs(user=user, action=action, limit=limit)
@@ -3302,7 +3296,6 @@ async def get_audit_logs(
 async def list_compliance_assessments(framework: Optional[str] = None, limit: int = 100):
     """List compliance assessments."""
     try:
-        from vaulytica.compliance import get_compliance_engine, ComplianceFramework
         engine = get_compliance_engine()
 
         fw = ComplianceFramework(framework) if framework else None
@@ -3317,7 +3310,6 @@ async def list_compliance_assessments(framework: Optional[str] = None, limit: in
 async def get_compliance_statistics():
     """Get compliance engine statistics."""
     try:
-        from vaulytica.compliance import get_compliance_engine
         engine = get_compliance_engine()
         return engine.get_statistics()
     except Exception as e:
@@ -3403,7 +3395,6 @@ async def search_mitre_techniques(
 ):
     """Search MITRE ATT&CK techniques."""
     try:
-        from vaulytica.threat_intel_integration import get_threat_intel_integration
 
         integration = get_threat_intel_integration()
         techniques = integration.search_mitre_techniques(tactic, platform, keyword)
@@ -3418,7 +3409,6 @@ async def search_mitre_techniques(
 async def get_threat_intel_statistics():
     """Get threat intelligence integration statistics."""
     try:
-        from vaulytica.threat_intel_integration import get_threat_intel_integration
 
         integration = get_threat_intel_integration()
         return integration.get_statistics()
@@ -3450,7 +3440,6 @@ async def generate_hypothesis(context: Dict[str, Any]):
 async def create_remediation_plan(incident_data: Dict[str, Any]):
     """Create automated remediation plan."""
     try:
-        from vaulytica.advanced_automation import get_advanced_automation
 
         automation = get_advanced_automation()
         plan = await automation.create_remediation_plan(incident_data)
@@ -3465,7 +3454,6 @@ async def create_remediation_plan(incident_data: Dict[str, Any]):
 async def approve_remediation_plan(plan_id: str, approved_by: str):
     """Approve remediation plan."""
     try:
-        from vaulytica.advanced_automation import get_advanced_automation
 
         automation = get_advanced_automation()
         success = automation.approve_remediation_plan(plan_id, approved_by)
@@ -3485,7 +3473,6 @@ async def approve_remediation_plan(plan_id: str, approved_by: str):
 async def execute_remediation_plan(plan_id: str, dry_run: bool = False):
     """Execute remediation plan."""
     try:
-        from vaulytica.advanced_automation import get_advanced_automation
 
         automation = get_advanced_automation()
         result = await automation.execute_remediation_plan(plan_id, dry_run)
@@ -3500,7 +3487,6 @@ async def execute_remediation_plan(plan_id: str, dry_run: bool = False):
 async def list_hypotheses(limit: int = 100):
     """List generated hypotheses."""
     try:
-        from vaulytica.advanced_automation import get_advanced_automation
 
         automation = get_advanced_automation()
         hypotheses = list(automation.hypotheses.values())[:limit]
@@ -3515,7 +3501,6 @@ async def list_hypotheses(limit: int = 100):
 async def list_remediation_plans(status: Optional[str] = None, limit: int = 100):
     """List remediation plans."""
     try:
-        from vaulytica.advanced_automation import get_advanced_automation
 
         automation = get_advanced_automation()
         plans = list(automation.remediation_plans.values())
@@ -3535,7 +3520,6 @@ async def list_remediation_plans(status: Optional[str] = None, limit: int = 100)
 async def get_automation_statistics():
     """Get automation engine statistics."""
     try:
-        from vaulytica.advanced_automation import get_advanced_automation
 
         automation = get_advanced_automation()
         return automation.get_statistics()
@@ -3600,7 +3584,6 @@ async def get_datadog_case(
 ):
     """Get Datadog case by ID."""
     try:
-        from vaulytica.datadog_integration import get_datadog_case_manager
 
         case_manager = get_datadog_case_manager(api_key, app_key)
         case = await case_manager.api_client.get_case(case_id)
@@ -3665,8 +3648,6 @@ async def sync_incident_to_case(
 ):
     """Sync Vaulytica incident updates to Datadog case."""
     try:
-        from vaulytica.datadog_integration import get_datadog_case_manager
-        from vaulytica.incidents import get_incident_manager
 
         # Get incident
         incident_manager = get_incident_manager()
@@ -3701,7 +3682,6 @@ async def get_datadog_mappings(
 ):
     """Get all incident-to-case sync mappings."""
     try:
-        from vaulytica.datadog_integration import get_datadog_case_manager
 
         case_manager = get_datadog_case_manager(api_key, app_key)
 
@@ -3732,7 +3712,6 @@ async def get_datadog_statistics(
 ):
     """Get Datadog integration statistics."""
     try:
-        from vaulytica.datadog_integration import get_datadog_case_manager
 
         case_manager = get_datadog_case_manager(api_key, app_key)
 
@@ -3787,7 +3766,6 @@ async def create_tickets_for_incident(
             create_ticketing_config_from_env,
             TicketingPlatform
         )
-        from vaulytica.incidents import get_incident_manager
 
         # Get or create ticketing manager
         ticketing_config = create_ticketing_config_from_env()
@@ -3874,7 +3852,6 @@ async def get_tickets_for_incident(incident_id: str):
 async def get_ticketing_statistics():
     """Get unified ticketing statistics."""
     try:
-        from vaulytica.ticketing import get_unified_ticketing_manager
 
         manager = get_unified_ticketing_manager()
         stats = manager.get_statistics()
@@ -4117,7 +4094,6 @@ async def create_remediation_plan(
     """Create remediation plan for a finding or vulnerability."""
     try:
         from vaulytica.cspm import get_cloud_scanner, get_compliance_engine
-        from vaulytica.vulnerability_management import get_vulnerability_scanner
         from vaulytica.remediation import get_remediation_engine
 
         scanner = get_cloud_scanner()
@@ -4177,7 +4153,6 @@ async def execute_remediation_plan(
 ):
     """Execute a remediation plan."""
     try:
-        from vaulytica.remediation import get_remediation_engine
 
         remediation_engine = get_remediation_engine()
 
@@ -4199,8 +4174,6 @@ async def get_cspm_statistics():
     """Get CSPM statistics."""
     try:
         from vaulytica.cspm import get_cspm_orchestrator
-        from vaulytica.vulnerability_management import get_vulnerability_scanner
-        from vaulytica.remediation import get_remediation_engine
 
         orchestrator = get_cspm_orchestrator()
         vuln_scanner = get_vulnerability_scanner()
@@ -4326,7 +4299,6 @@ async def check_kubernetes_cis_benchmark(
     Runs CIS benchmark checks on Kubernetes resources.
     """
     try:
-        from vaulytica.container_security import get_k8s_scanner
 
         scanner = get_k8s_scanner()
         resources = await scanner.scan_namespace(namespace)
@@ -4469,7 +4441,6 @@ async def verify_container_signature(
     Validates image authenticity and build provenance.
     """
     try:
-        from vaulytica.container_security import get_supply_chain_security, get_container_scanner
 
         # Scan image first
         scanner = get_container_scanner()
@@ -4525,7 +4496,6 @@ async def full_container_security_assessment(
 async def get_container_security_statistics():
     """Get container security statistics."""
     try:
-        from vaulytica.container_security import get_container_security_orchestrator
 
         orchestrator = get_container_security_orchestrator()
 
@@ -4749,7 +4719,6 @@ async def rotate_credential(
     Updates credential and extends expiration based on rotation policy.
     """
     try:
-        from vaulytica.iam_security import get_credential_manager
 
         manager = get_credential_manager()
 
@@ -4782,7 +4751,6 @@ async def get_expiring_credentials(
     Returns list of credentials that will expire within the threshold.
     """
     try:
-        from vaulytica.iam_security import get_credential_manager
 
         manager = get_credential_manager()
 
@@ -4901,7 +4869,6 @@ async def analyze_identity_threat(
     """
     try:
         from vaulytica.iam_security import get_identity_threat_detector, IAMPrincipal, IAMPrincipalType
-        from vaulytica.cspm import CloudProvider
 
         detector = get_identity_threat_detector()
 
@@ -4954,7 +4921,6 @@ async def perform_full_iam_assessment(
     """
     try:
         from vaulytica.iam_security import get_iam_orchestrator, IAMPrincipal, IAMPrincipalType
-        from vaulytica.cspm import CloudProvider
 
         orchestrator = get_iam_orchestrator()
 
@@ -5096,7 +5062,6 @@ async def analyze_network_flow(
             NetworkFlow,
             NetworkProtocol
         )
-        from datetime import datetime
 
         analyzer = get_network_analyzer()
 
@@ -5194,7 +5159,7 @@ async def create_dlp_policy(
     Returns created policy details.
     """
     try:
-        from vaulytica.network_security import (
+        from vaulytica.dlp import (
             get_dlp_engine,
             SensitiveDataType,
             DLPAction,
@@ -5276,10 +5241,6 @@ async def register_encryption_key(
     Returns registered key details.
     """
     try:
-        from vaulytica.network_security import (
-            get_encryption_manager,
-            EncryptionAlgorithm
-        )
 
         manager = get_encryption_manager()
 
@@ -5354,7 +5315,6 @@ async def check_key_rotation():
     Returns list of keys that need rotation.
     """
     try:
-        from vaulytica.network_security import get_encryption_manager
 
         manager = get_encryption_manager()
 
@@ -5394,14 +5354,6 @@ async def perform_network_security_assessment(
     Returns complete assessment with risk scores and recommendations.
     """
     try:
-        from vaulytica.network_security import (
-            get_network_security_orchestrator,
-            FirewallRule,
-            FirewallAction,
-            NetworkProtocol,
-            NetworkFlow
-        )
-        from datetime import datetime
 
         orchestrator = get_network_security_orchestrator()
 
@@ -5464,13 +5416,6 @@ async def get_network_security_statistics():
     Returns statistics from all network security components.
     """
     try:
-        from vaulytica.network_security import (
-            get_network_analyzer,
-            get_data_classifier,
-            get_dlp_engine,
-            get_encryption_manager,
-            get_network_threat_detector
-        )
 
         return {
             "status": "success",
@@ -5616,7 +5561,6 @@ async def test_xss(
     Tests parameters with various XSS payloads.
     """
     try:
-        from vaulytica.api_security import get_app_tester
 
         tester = get_app_tester()
 
@@ -5650,7 +5594,7 @@ async def test_xss(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/app-security/test-csrf")
+@app.post("/app-security/test-csr")
 async def test_csrf(
     target: str = Query(..., description="Target URL or endpoint")
 ):
@@ -5660,7 +5604,6 @@ async def test_csrf(
     Checks if CSRF protection is implemented.
     """
     try:
-        from vaulytica.api_security import get_app_tester
 
         tester = get_app_tester()
 
@@ -5690,7 +5633,7 @@ async def test_csrf(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/app-security/test-ssrf")
+@app.post("/app-security/test-ssr")
 async def test_ssrf(
     target: str = Query(..., description="Target URL or endpoint"),
     parameters: str = Query(..., description="Comma-separated list of parameters to test")
@@ -5701,7 +5644,6 @@ async def test_ssrf(
     Tests URL parameters with internal/localhost payloads.
     """
     try:
-        from vaulytica.api_security import get_app_tester
 
         tester = get_app_tester()
 
@@ -5839,7 +5781,6 @@ async def execute_security_scan(
     Runs comprehensive security testing.
     """
     try:
-        from vaulytica.api_security import get_security_automation
 
         automation = get_security_automation()
 
@@ -5884,7 +5825,6 @@ async def perform_full_api_security_assessment(
     """
     try:
         from vaulytica.api_security import get_api_security_orchestrator, APIEndpoint, APIMethod, AuthType
-        import json
 
         orchestrator = get_api_security_orchestrator()
 
@@ -6068,7 +6008,6 @@ async def ingest_threat_indicator(
     """Ingest a threat intelligence indicator."""
     try:
         from vaulytica.devsecops import get_threat_intelligence, ThreatIntelIndicator, ThreatIntelSource, Severity
-        from datetime import datetime
 
         intel = get_threat_intelligence()
 
@@ -6113,7 +6052,6 @@ async def enrich_threat_indicator(
 ):
     """Enrich a threat intelligence indicator."""
     try:
-        from vaulytica.devsecops import get_threat_intelligence
 
         intel = get_threat_intelligence()
         result = await intel.enrich_indicator(indicator_id)
@@ -6152,7 +6090,6 @@ async def collect_security_metrics():
 async def generate_executive_report():
     """Generate executive security report."""
     try:
-        from vaulytica.devsecops import get_metrics_dashboard
 
         dashboard = get_metrics_dashboard()
         report = await dashboard.generate_executive_report()
@@ -6214,7 +6151,6 @@ async def perform_full_security_assessment(
 async def get_devsecops_statistics():
     """Get comprehensive DevSecOps statistics."""
     try:
-        from vaulytica.devsecops import get_devsecops_orchestrator
 
         orchestrator = get_devsecops_orchestrator()
         stats = orchestrator.get_comprehensive_statistics()
@@ -6328,7 +6264,6 @@ async def export_sbom(sbom_id: str, format: str = "json"):
 async def correlate_sbom_vulnerabilities(sbom_id: str):
     """Correlate SBOM components with vulnerabilities."""
     try:
-        from vaulytica.supply_chain_security import get_sbom_manager
 
         manager = get_sbom_manager()
         result = await manager.correlate_vulnerabilities(sbom_id)
@@ -6342,13 +6277,6 @@ async def correlate_sbom_vulnerabilities(sbom_id: str):
 async def create_policy(request: Dict[str, Any]):
     """Create a security/compliance policy."""
     try:
-        from vaulytica.supply_chain_security import (
-            get_policy_engine,
-            Policy,
-            PolicyType,
-            PolicySeverity
-        )
-        from datetime import datetime
 
         engine = get_policy_engine()
 
@@ -6394,13 +6322,6 @@ async def evaluate_policy(request: Dict[str, Any]):
 async def identify_risk(request: Dict[str, Any]):
     """Identify a new security risk."""
     try:
-        from vaulytica.supply_chain_security import (
-            get_risk_management,
-            Risk,
-            RiskLevel,
-            RiskStatus
-        )
-        from datetime import datetime
 
         risk_mgmt = get_risk_management()
 
@@ -6446,7 +6367,6 @@ async def assess_risk(risk_id: str):
 async def treat_risk(risk_id: str, request: Dict[str, Any]):
     """Apply risk treatment."""
     try:
-        from vaulytica.supply_chain_security import get_risk_management
 
         risk_mgmt = get_risk_management()
         result = await risk_mgmt.treat_risk(
@@ -6464,7 +6384,6 @@ async def treat_risk(risk_id: str, request: Dict[str, Any]):
 async def generate_risk_report():
     """Generate comprehensive risk report."""
     try:
-        from vaulytica.supply_chain_security import get_risk_management
 
         risk_mgmt = get_risk_management()
         report = await risk_mgmt.generate_risk_report()
@@ -6478,13 +6397,6 @@ async def generate_risk_report():
 async def implement_control(request: Dict[str, Any]):
     """Implement a compliance control."""
     try:
-        from vaulytica.supply_chain_security import (
-            get_grc_platform,
-            ComplianceControl,
-            ComplianceFramework,
-            ControlStatus
-        )
-        from datetime import datetime, timedelta
 
         grc = get_grc_platform()
 
@@ -6527,10 +6439,6 @@ async def assess_control(control_id: str):
 async def calculate_compliance_score(framework: str):
     """Calculate compliance score for a framework."""
     try:
-        from vaulytica.supply_chain_security import (
-            get_grc_platform,
-            ComplianceFramework
-        )
 
         grc = get_grc_platform()
         result = await grc.calculate_compliance_score(ComplianceFramework(framework))
@@ -6548,8 +6456,6 @@ async def get_audit_trail(
 ):
     """Get audit trail."""
     try:
-        from vaulytica.supply_chain_security import get_grc_platform
-        from datetime import datetime
 
         grc = get_grc_platform()
 
@@ -6567,10 +6473,6 @@ async def get_audit_trail(
 async def perform_comprehensive_assessment(request: Dict[str, Any]):
     """Perform comprehensive supply chain and GRC assessment."""
     try:
-        from vaulytica.supply_chain_security import (
-            get_supply_chain_grc_orchestrator,
-            ComplianceFramework
-        )
 
         orchestrator = get_supply_chain_grc_orchestrator()
 
@@ -6726,7 +6628,6 @@ async def create_baseline(request: Dict[str, Any]):
 async def detect_drift(request: Dict[str, Any]):
     """Detect configuration drift from baseline."""
     try:
-        from vaulytica.security_posture import get_security_posture_orchestrator, PostureScore, PostureLevel, PostureDimension, PostureMetric
 
         orchestrator = get_security_posture_orchestrator()
 
@@ -6788,7 +6689,6 @@ async def get_monitoring_alerts(
 ):
     """Get monitoring alerts with optional filters."""
     try:
-        from vaulytica.security_posture import get_security_posture_orchestrator
         from vaulytica.cspm import Severity
 
         orchestrator = get_security_posture_orchestrator()
@@ -6824,7 +6724,6 @@ async def get_monitoring_alerts(
 async def acknowledge_alert(alert_id: str):
     """Acknowledge a monitoring alert."""
     try:
-        from vaulytica.security_posture import get_security_posture_orchestrator
 
         orchestrator = get_security_posture_orchestrator()
         result = await orchestrator.monitoring_system.acknowledge_alert(alert_id)
@@ -6841,7 +6740,6 @@ async def acknowledge_alert(alert_id: str):
 async def resolve_alert(alert_id: str):
     """Resolve a monitoring alert."""
     try:
-        from vaulytica.security_posture import get_security_posture_orchestrator
 
         orchestrator = get_security_posture_orchestrator()
         result = await orchestrator.monitoring_system.resolve_alert(alert_id)
@@ -6858,8 +6756,6 @@ async def resolve_alert(alert_id: str):
 async def predict_threats(request: Dict[str, Any]):
     """Predict potential security threats."""
     try:
-        from vaulytica.security_posture import get_security_posture_orchestrator
-        from datetime import datetime
 
         orchestrator = get_security_posture_orchestrator()
 
@@ -6905,7 +6801,6 @@ async def get_predictions(
 ):
     """Get threat predictions with optional filters."""
     try:
-        from vaulytica.security_posture import get_security_posture_orchestrator
 
         orchestrator = get_security_posture_orchestrator()
         predictions = await orchestrator.predictive_intelligence.get_predictions(
@@ -6937,7 +6832,6 @@ async def analyze_trend(request: Dict[str, Any]):
     """Analyze security trend for a dimension."""
     try:
         from vaulytica.security_posture import get_security_posture_orchestrator, PostureDimension
-        from datetime import datetime
 
         orchestrator = get_security_posture_orchestrator()
 
@@ -6975,7 +6869,6 @@ async def analyze_trend(request: Dict[str, Any]):
 async def get_trend(trend_id: str):
     """Get trend by ID."""
     try:
-        from vaulytica.security_posture import get_security_posture_orchestrator
 
         orchestrator = get_security_posture_orchestrator()
         trend = await orchestrator.trend_analysis.get_trend(trend_id)
@@ -7039,7 +6932,6 @@ async def compare_to_industry(request: Dict[str, Any]):
 async def get_available_benchmarks():
     """Get list of available industry benchmarks."""
     try:
-        from vaulytica.security_posture import get_security_posture_orchestrator
 
         orchestrator = get_security_posture_orchestrator()
         benchmarks = await orchestrator.benchmark_engine.get_available_benchmarks()
@@ -7094,7 +6986,6 @@ async def perform_comprehensive_analysis(request: Dict[str, Any]):
 async def get_posture_statistics():
     """Get comprehensive security posture statistics."""
     try:
-        from vaulytica.security_posture import get_security_posture_orchestrator
 
         orchestrator = get_security_posture_orchestrator()
         stats = await orchestrator.get_comprehensive_statistics()
@@ -7154,7 +7045,6 @@ async def get_assets(
 ):
     """Get discovered assets with optional filters."""
     try:
-        from vaulytica.attack_surface_management import get_attack_surface_discovery
 
         discovery = get_attack_surface_discovery()
 
@@ -7196,7 +7086,6 @@ async def get_assets(
 async def get_asset(asset_id: str):
     """Get asset by ID."""
     try:
-        from vaulytica.attack_surface_management import get_attack_surface_discovery
 
         discovery = get_attack_surface_discovery()
 
@@ -7246,7 +7135,6 @@ async def get_asset(asset_id: str):
 async def generate_attack_surface_report(request: Dict[str, Any]):
     """Generate attack surface report."""
     try:
-        from vaulytica.attack_surface_management import get_attack_surface_discovery
 
         discovery = get_attack_surface_discovery()
 
@@ -7287,7 +7175,6 @@ async def generate_attack_surface_report(request: Dict[str, Any]):
 async def get_asm_statistics():
     """Get attack surface discovery statistics."""
     try:
-        from vaulytica.attack_surface_management import get_attack_surface_discovery
 
         discovery = get_attack_surface_discovery()
         stats = discovery.get_statistics()
@@ -7373,7 +7260,6 @@ async def query_data(request: Dict[str, Any]):
 async def get_record(record_id: str):
     """Get record by ID."""
     try:
-        from vaulytica.attack_surface_management import get_security_data_lake
 
         data_lake = get_security_data_lake()
 
@@ -7415,7 +7301,6 @@ async def get_record(record_id: str):
 async def cleanup_expired_data():
     """Cleanup expired data from data lake."""
     try:
-        from vaulytica.attack_surface_management import get_security_data_lake
 
         data_lake = get_security_data_lake()
 
@@ -7434,7 +7319,6 @@ async def cleanup_expired_data():
 async def get_datalake_statistics():
     """Get data lake statistics."""
     try:
-        from vaulytica.attack_surface_management import get_security_data_lake
 
         data_lake = get_security_data_lake()
         stats = data_lake.get_statistics()
@@ -7495,7 +7379,6 @@ async def create_threat_model(request: Dict[str, Any]):
 async def get_threat_model(model_id: str):
     """Get threat model by ID."""
     try:
-        from vaulytica.attack_surface_management import get_threat_modeling_engine
 
         threat_modeling = get_threat_modeling_engine()
 
@@ -7555,7 +7438,6 @@ async def get_threat_model(model_id: str):
 async def get_all_threat_models():
     """Get all threat models."""
     try:
-        from vaulytica.attack_surface_management import get_threat_modeling_engine
 
         threat_modeling = get_threat_modeling_engine()
 
@@ -7588,7 +7470,6 @@ async def get_all_threat_models():
 async def get_threat_modeling_statistics():
     """Get threat modeling statistics."""
     try:
-        from vaulytica.attack_surface_management import get_threat_modeling_engine
 
         threat_modeling = get_threat_modeling_engine()
         stats = threat_modeling.get_statistics()
@@ -7646,7 +7527,6 @@ async def track_metric(request: Dict[str, Any]):
 async def generate_executive_dashboard(request: Dict[str, Any]):
     """Generate executive dashboard."""
     try:
-        from vaulytica.attack_surface_management import get_security_metrics_dashboard
 
         dashboard = get_security_metrics_dashboard()
 
@@ -7665,7 +7545,6 @@ async def generate_executive_dashboard(request: Dict[str, Any]):
 async def get_metrics_statistics():
     """Get metrics dashboard statistics."""
     try:
-        from vaulytica.attack_surface_management import get_security_metrics_dashboard
 
         dashboard = get_security_metrics_dashboard()
         stats = dashboard.get_statistics()
@@ -7720,7 +7599,6 @@ async def create_simulation(request: Dict[str, Any]):
 async def run_simulation(simulation_id: str):
     """Run incident simulation."""
     try:
-        from vaulytica.attack_surface_management import get_incident_simulation_platform
 
         simulation_platform = get_incident_simulation_platform()
 
@@ -7751,7 +7629,6 @@ async def run_simulation(simulation_id: str):
 async def get_simulation_statistics():
     """Get simulation platform statistics."""
     try:
-        from vaulytica.attack_surface_management import get_incident_simulation_platform
 
         simulation_platform = get_incident_simulation_platform()
         stats = simulation_platform.get_statistics()
@@ -7797,4 +7674,3 @@ async def perform_comprehensive_assessment(request: Dict[str, Any]):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
-

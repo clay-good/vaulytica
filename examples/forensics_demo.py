@@ -1,4 +1,18 @@
 #!/usr/bin/env python3
+"""
+Vaulytica Forensics Engine Demo
+
+Demonstrates comprehensive digital forensics and investigation capabilities:
+1. Evidence Collection - Automated collection from multiple sources
+2. Chain of Custody - Cryptographic integrity verification
+3. Evidence Analysis - Automated analysis with findings
+4. Investigation Workflows - Guided investigation with templates
+5. Forensic Reporting - Comprehensive report generation
+6. Integration with Security Events - Create investigations from events
+
+Author: World-Class Software Engineering Team
+Version: 0.17.0
+"""
 
 import asyncio
 from datetime import datetime, timedelta

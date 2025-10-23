@@ -1,3 +1,19 @@
+"""
+Vaulytica Real-Time Streaming Analytics
+
+Provides real-time event stream processing with:
+- Event stream processing with <100ms latency
+- Complex Event Processing (CEP) for pattern matching
+- Sliding window analytics (time-based and count-based)
+- Streaming correlation across multiple event streams
+- Streaming aggregations and metrics
+- Event replay and time travel for testing
+- Backpressure handling for high-volume bursts
+
+Author: Vaulytica Team
+Version: 0.16.0
+"""
+
 import asyncio
 import time
 from collections import deque, defaultdict
@@ -55,12 +71,12 @@ class StreamWindow:
     events: List[SecurityEvent] = field(default_factory=list)
     event_count: int = 0
     aggregations: Dict[str, Any] = field(default_factory=dict)
-    
+
     def add_event(self, event: SecurityEvent) -> None:
         """Add event to window."""
         self.events.append(event)
         self.event_count += 1
-    
+
     def is_complete(self, current_time: datetime, window_size: timedelta) -> bool:
         """Check if window is complete."""
         if self.window_type == WindowType.TUMBLING:
@@ -82,21 +98,21 @@ class CEPPattern:
     max_occurrences: Optional[int] = None
     description: str = ""
     severity: Severity = Severity.MEDIUM
-    
+
     def matches(self, events: List[SecurityEvent]) -> bool:
         """Check if events match this pattern."""
         if len(events) < self.min_occurrences:
             return False
-        
+
         if self.max_occurrences and len(events) > self.max_occurrences:
             return False
-        
+
         # Check time window
         if len(events) > 1:
             time_span = events[-1].timestamp - events[0].timestamp
             if time_span > self.time_window:
                 return False
-        
+
         # Check pattern-specific conditions
         if self.pattern_type == PatternType.SEQUENCE:
             return self._check_sequence(events)
@@ -104,19 +120,19 @@ class CEPPattern:
             return self._check_conjunction(events)
         elif self.pattern_type == PatternType.ITERATION:
             return self._check_iteration(events)
-        
+
         return True
-    
+
     def _check_sequence(self, events: List[SecurityEvent]) -> bool:
         """Check if events match sequence pattern."""
         if len(events) != len(self.conditions):
             return False
-        
+
         for event, condition in zip(events, self.conditions):
             if not self._event_matches_condition(event, condition):
                 return False
         return True
-    
+
     def _check_conjunction(self, events: List[SecurityEvent]) -> bool:
         """Check if all conditions are met."""
         matched_conditions = set()
@@ -125,21 +141,21 @@ class CEPPattern:
                 if self._event_matches_condition(event, condition):
                     matched_conditions.add(i)
         return len(matched_conditions) == len(self.conditions)
-    
+
     def _check_iteration(self, events: List[SecurityEvent]) -> bool:
         """Check if event repeats N times."""
         if not self.conditions:
             return False
-        
+
         condition = self.conditions[0]
         matches = sum(1 for e in events if self._event_matches_condition(e, condition))
-        
+
         if matches < self.min_occurrences:
             return False
         if self.max_occurrences and matches > self.max_occurrences:
             return False
         return True
-    
+
     def _event_matches_condition(self, event: SecurityEvent, condition: Dict[str, Any]) -> bool:
         """Check if event matches condition."""
         for key, value in condition.items():
@@ -207,7 +223,7 @@ class StreamAggregation(BaseModel):
 class EventStreamProcessor:
     """
     Real-time event stream processor with sliding windows and aggregations.
-    
+
     Features:
     - Multiple window types (tumbling, sliding, session, count)
     - Real-time aggregations
@@ -215,7 +231,7 @@ class EventStreamProcessor:
     - Event buffering
     - Latency tracking
     """
-    
+
     def __init__(
         self,
         window_size: timedelta = timedelta(minutes=5),
@@ -228,57 +244,57 @@ class EventStreamProcessor:
         self.window_type = window_type
         self.max_buffer_size = max_buffer_size
         self.processing_batch_size = processing_batch_size
-        
+
         # Event buffer and windows
         self.event_buffer: Deque[SecurityEvent] = deque(maxlen=max_buffer_size)
         self.active_windows: Dict[str, StreamWindow] = {}
         self.completed_windows: Deque[StreamWindow] = deque(maxlen=1000)
-        
+
         # Metrics
         self.metrics = StreamMetrics()
         self.start_time = time.time()
         self.last_metrics_update = time.time()
         self.processing_times: Deque[float] = deque(maxlen=1000)
-        
+
         # State
         self.state = StreamState.RUNNING
         self.event_handlers: List[Callable] = []
-        
+
         logger.info(f"EventStreamProcessor initialized: window_size={window_size}, type={window_type}")
-    
+
     async def process_event(self, event: SecurityEvent) -> Dict[str, Any]:
         """
         Process a single event through the stream.
-        
+
         Returns processing result with latency and window assignment.
         """
         start_time = time.time()
-        
+
         try:
             # Check backpressure
             if len(self.event_buffer) >= self.max_buffer_size * 0.9:
                 self.metrics.backpressure_events += 1
                 logger.warning(f"Backpressure detected: buffer at {len(self.event_buffer)}/{self.max_buffer_size}")
-            
+
             # Add to buffer
             self.event_buffer.append(event)
-            
+
             # Assign to window(s)
             windows = self._assign_to_windows(event)
-            
+
             # Update metrics
             self.metrics.events_processed += 1
             processing_time = (time.time() - start_time) * 1000  # ms
             self.processing_times.append(processing_time)
             self._update_metrics(processing_time)
-            
+
             # Call event handlers
             for handler in self.event_handlers:
                 try:
                     await handler(event)
                 except Exception as e:
                     logger.error(f"Event handler error: {e}")
-            
+
             return {
                 "status": "processed",
                 "event_id": event.event_id,
@@ -286,7 +302,7 @@ class EventStreamProcessor:
                 "processing_latency_ms": processing_time,
                 "buffer_size": len(self.event_buffer)
             }
-        
+
         except Exception as e:
             logger.error(f"Error processing event: {e}")
             self.metrics.dropped_events += 1
@@ -1349,4 +1365,3 @@ def convert_correlation_to_dict(correlation: StreamCorrelation) -> Dict[str, Any
         "detected_at": correlation.detected_at.isoformat(),
         "description": correlation.description
     }
-

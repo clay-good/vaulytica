@@ -1,3 +1,5 @@
+"""Tests for data models."""
+
 import pytest
 from datetime import datetime
 from vaulytica.models import (

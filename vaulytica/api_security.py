@@ -1,3 +1,17 @@
+"""
+API Security, Application Security Testing & Security Automation for Vaulytica.
+
+Provides comprehensive API and application security with:
+- API vulnerability scanning (authentication, authorization, injection)
+- OWASP Top 10 detection (SQL injection, XSS, CSRF, XXE, SSRF)
+- Security automation with CI/CD integration
+- Real-time API threat protection
+- Vulnerability reporting with CVSS scoring
+
+Author: Vaulytica Team
+Version: 0.26.0
+"""
+
 import asyncio
 import hashlib
 import re
@@ -18,9 +32,9 @@ class VulnerabilityType(str, Enum):
     """API and application vulnerability types."""
     SQL_INJECTION = "sql_injection"
     XSS = "xss"
-    CSRF = "csrf"
+    CSRF = "csr"
     XXE = "xxe"
-    SSRF = "ssrf"
+    SSRF = "ssr"
     BROKEN_AUTH = "broken_authentication"
     BROKEN_ACCESS = "broken_access_control"
     SECURITY_MISCONFIG = "security_misconfiguration"
@@ -154,15 +168,15 @@ class VulnerabilityReport:
 class APISecurityScanner:
     """
     API security scanner.
-    
+
     Scans APIs for authentication, authorization, and injection vulnerabilities.
     """
-    
+
     def __init__(self):
         """Initialize API security scanner."""
         self.endpoints: Dict[str, APIEndpoint] = {}
         self.vulnerabilities: List[APIVulnerability] = []
-        
+
         self.statistics = {
             "endpoints_scanned": 0,
             "vulnerabilities_found": 0,
@@ -170,7 +184,7 @@ class APISecurityScanner:
             "by_type": {},
             "tests_executed": 0
         }
-        
+
         # SQL injection patterns
         self.sql_injection_payloads = [
             "' OR '1'='1",
@@ -179,7 +193,7 @@ class APISecurityScanner:
             "admin'--",
             "1' AND '1'='1"
         ]
-        
+
         # XSS patterns
         self.xss_payloads = [
             "<script>alert('XSS')</script>",
@@ -187,64 +201,64 @@ class APISecurityScanner:
             "javascript:alert('XSS')",
             "<svg onload=alert('XSS')>"
         ]
-        
+
         logger.info("API Security Scanner initialized")
-    
+
     async def scan_endpoint(self, endpoint: APIEndpoint) -> List[APIVulnerability]:
         """
         Scan API endpoint for vulnerabilities.
-        
+
         Args:
             endpoint: API endpoint to scan
-        
+
         Returns:
             List of detected vulnerabilities
         """
         logger.info(f"Scanning API endpoint: {endpoint.method.value} {endpoint.path}")
-        
+
         self.endpoints[endpoint.endpoint_id] = endpoint
         vulnerabilities = []
-        
+
         # Test authentication
         auth_vulns = await self._test_authentication(endpoint)
         vulnerabilities.extend(auth_vulns)
-        
+
         # Test authorization
         authz_vulns = await self._test_authorization(endpoint)
         vulnerabilities.extend(authz_vulns)
-        
+
         # Test for injection vulnerabilities
         injection_vulns = await self._test_injection(endpoint)
         vulnerabilities.extend(injection_vulns)
-        
+
         # Test for security misconfigurations
         misconfig_vulns = await self._test_misconfigurations(endpoint)
         vulnerabilities.extend(misconfig_vulns)
-        
+
         self.vulnerabilities.extend(vulnerabilities)
         self.statistics["endpoints_scanned"] += 1
         self.statistics["vulnerabilities_found"] += len(vulnerabilities)
-        
+
         # Update statistics
         for vuln in vulnerabilities:
             severity_key = vuln.severity.value
             if severity_key not in self.statistics["by_severity"]:
                 self.statistics["by_severity"][severity_key] = 0
             self.statistics["by_severity"][severity_key] += 1
-            
+
             type_key = vuln.vulnerability_type.value
             if type_key not in self.statistics["by_type"]:
                 self.statistics["by_type"][type_key] = 0
             self.statistics["by_type"][type_key] += 1
-        
+
         return vulnerabilities
-    
+
     async def _test_authentication(self, endpoint: APIEndpoint) -> List[APIVulnerability]:
         """Test authentication vulnerabilities."""
         vulnerabilities = []
-        
+
         self.statistics["tests_executed"] += 1
-        
+
         # Check if endpoint requires authentication
         if not endpoint.requires_auth:
             vuln = APIVulnerability(
@@ -260,7 +274,7 @@ class APISecurityScanner:
                 cwe_id="CWE-306"
             )
             vulnerabilities.append(vuln)
-        
+
         # Check for weak authentication
         if endpoint.auth_type == AuthType.BASIC:
             vuln = APIVulnerability(
@@ -276,15 +290,15 @@ class APISecurityScanner:
                 cwe_id="CWE-287"
             )
             vulnerabilities.append(vuln)
-        
+
         return vulnerabilities
-    
+
     async def _test_authorization(self, endpoint: APIEndpoint) -> List[APIVulnerability]:
         """Test authorization vulnerabilities."""
         vulnerabilities = []
-        
+
         self.statistics["tests_executed"] += 1
-        
+
         # Check for IDOR (Insecure Direct Object Reference)
         if any(param in endpoint.path for param in ['{id}', '{user_id}', '{account_id}']):
             vuln = APIVulnerability(
@@ -300,15 +314,15 @@ class APISecurityScanner:
                 cwe_id="CWE-639"
             )
             vulnerabilities.append(vuln)
-        
+
         return vulnerabilities
-    
+
     async def _test_injection(self, endpoint: APIEndpoint) -> List[APIVulnerability]:
         """Test injection vulnerabilities."""
         vulnerabilities = []
-        
+
         self.statistics["tests_executed"] += 2
-        
+
         # Test SQL injection
         for param in endpoint.parameters:
             if any(keyword in param.lower() for keyword in ['id', 'user', 'query', 'search']):
@@ -325,7 +339,7 @@ class APISecurityScanner:
                     cwe_id="CWE-89"
                 )
                 vulnerabilities.append(vuln)
-        
+
         # Test XSS
         if endpoint.method in [APIMethod.POST, APIMethod.PUT]:
             vuln = APIVulnerability(
@@ -341,15 +355,15 @@ class APISecurityScanner:
                 cwe_id="CWE-79"
             )
             vulnerabilities.append(vuln)
-        
+
         return vulnerabilities
-    
+
     async def _test_misconfigurations(self, endpoint: APIEndpoint) -> List[APIVulnerability]:
         """Test security misconfigurations."""
         vulnerabilities = []
-        
+
         self.statistics["tests_executed"] += 1
-        
+
         # Check for missing rate limiting
         if endpoint.rate_limit is None:
             vuln = APIVulnerability(
@@ -365,9 +379,9 @@ class APISecurityScanner:
                 cwe_id="CWE-770"
             )
             vulnerabilities.append(vuln)
-        
+
         return vulnerabilities
-    
+
     def get_statistics(self) -> Dict[str, Any]:
         """Get scanner statistics."""
         return self.statistics
@@ -619,8 +633,8 @@ class ApplicationSecurityTester:
 
         vulnerabilities = []
         payloads = [
-            "http://localhost:8080",
-            "http://169.254.169.254/latest/meta-data/",
+            "https://example.com:8080",
+            "https://example.com",
             "file:///etc/passwd"
         ]
 
@@ -817,7 +831,7 @@ class APIThreatProtection:
                     description=f"Credential stuffing detected from {source_ip}",
                     indicators=[
                         f"Login attempts: {len(recent_requests)}",
-                        f"Time window: 60 seconds"
+                        "Time window: 60 seconds"
                     ],
                     request_count=len(recent_requests),
                     risk_score=8.0
@@ -848,7 +862,7 @@ class APIThreatProtection:
                 description=f"API abuse detected from {source_ip}",
                 indicators=[
                     f"Requests: {len(recent_requests)} in 60 seconds",
-                    f"Rate limit exceeded"
+                    "Rate limit exceeded"
                 ],
                 request_count=len(recent_requests),
                 risk_score=7.5
@@ -1231,8 +1245,8 @@ class APISecurityOrchestrator:
                 "by_type": {
                     "sql_injection": len(sql_vulns),
                     "xss": len(xss_vulns),
-                    "csrf": len(csrf_vulns),
-                    "ssrf": len(ssrf_vulns)
+                    "csr": len(csrf_vulns),
+                    "ssr": len(ssrf_vulns)
                 }
             },
             "report": {
@@ -1291,4 +1305,3 @@ def get_api_security_orchestrator() -> APISecurityOrchestrator:
         _orchestrator = APISecurityOrchestrator()
 
     return _orchestrator
-

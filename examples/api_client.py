@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+"""
+Example client for Vaulytica REST API.
+
+This script demonstrates how to interact with the Vaulytica API
+for security event analysis.
+"""
 
 import json
 import sys
@@ -10,7 +16,7 @@ from typing import Dict, Any
 class VaulyticaClient:
     """Client for Vaulytica REST API."""
     
-    def __init__(self, base_url: str = "http://localhost:8000"):
+    def __init__(self, base_url: str = "https://example.com:8000"):
         """Initialize client with API base URL."""
         self.base_url = base_url.rstrip("/")
         self.session = requests.Session()

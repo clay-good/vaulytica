@@ -1,3 +1,14 @@
+"""
+Advanced Automation Engine
+
+ML-powered automation with:
+- Automated hypothesis generation for threat hunting
+- Intelligent auto-remediation with risk assessment
+- Adaptive playbook selection
+- Automated investigation workflows
+- Self-learning automation rules
+"""
+
 import asyncio
 import uuid
 from dataclasses import dataclass, field
@@ -49,31 +60,31 @@ class AutomationRule:
     name: str = ""
     description: str = ""
     enabled: bool = True
-    
+
     # Trigger conditions
     trigger_type: AutomationTrigger = AutomationTrigger.EVENT_PATTERN
     trigger_conditions: Dict[str, Any] = field(default_factory=dict)
-    
+
     # Actions
     actions: List[AutomationAction] = field(default_factory=list)
     action_parameters: Dict[str, Any] = field(default_factory=dict)
-    
+
     # Risk assessment
     risk_level: RiskLevel = RiskLevel.MEDIUM
     require_approval: bool = False
     approval_timeout: int = 300  # seconds
-    
+
     # Learning
     success_count: int = 0
     failure_count: int = 0
     false_positive_count: int = 0
     confidence_score: float = 0.5  # 0.0-1.0
-    
+
     # Metadata
     created_at: datetime = field(default_factory=datetime.utcnow)
     last_triggered: Optional[datetime] = None
     trigger_count: int = 0
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -103,24 +114,24 @@ class HypothesisGeneration:
     hypothesis_id: str = field(default_factory=lambda: f"HYP-{uuid.uuid4().hex[:8]}")
     hypothesis: str = ""
     confidence: float = 0.0  # 0.0-1.0
-    
+
     # Context
     based_on: List[str] = field(default_factory=list)  # What triggered this hypothesis
     threat_actors: List[str] = field(default_factory=list)
     attack_techniques: List[str] = field(default_factory=list)
     iocs: List[str] = field(default_factory=list)
-    
+
     # Hunt queries
     suggested_queries: List[Dict[str, Any]] = field(default_factory=list)
-    
+
     # Validation
     validated: bool = False
     validation_result: Optional[str] = None
     findings_count: int = 0
-    
+
     # Metadata
     generated_at: datetime = field(default_factory=datetime.utcnow)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -145,34 +156,34 @@ class AutoRemediationPlan:
     plan_id: str = field(default_factory=lambda: f"PLAN-{uuid.uuid4().hex[:8]}")
     name: str = ""
     description: str = ""
-    
+
     # Risk assessment
     risk_level: RiskLevel = RiskLevel.MEDIUM
     impact_score: float = 0.5  # 0.0-1.0
     confidence: float = 0.5  # 0.0-1.0
-    
+
     # Actions
     steps: List[Dict[str, Any]] = field(default_factory=list)
     estimated_duration: int = 0  # seconds
-    
+
     # Approval
     requires_approval: bool = False
     approved: bool = False
     approved_by: Optional[str] = None
     approved_at: Optional[datetime] = None
-    
+
     # Execution
     status: str = "pending"  # pending, approved, executing, completed, failed, cancelled
     started_at: Optional[datetime] = None
     completed_at: Optional[datetime] = None
-    
+
     # Results
     success: bool = False
     error_message: Optional[str] = None
-    
+
     # Metadata
     created_at: datetime = field(default_factory=datetime.utcnow)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -200,23 +211,23 @@ class AutoRemediationPlan:
 class AdvancedAutomationEngine:
     """
     Advanced automation engine with ML-powered decision making.
-    
+
     Features:
     - Automated hypothesis generation
     - Intelligent auto-remediation
     - Adaptive playbook selection
     - Self-learning automation rules
     """
-    
+
     def __init__(self):
         """Initialize automation engine."""
         self.rules: Dict[str, AutomationRule] = {}
         self.hypotheses: Dict[str, HypothesisGeneration] = {}
         self.remediation_plans: Dict[str, AutoRemediationPlan] = {}
-        
+
         # Event history for pattern learning
         self.event_history: deque = deque(maxlen=10000)
-        
+
         # Statistics
         self.stats = {
             "total_rules": 0,
@@ -229,10 +240,10 @@ class AdvancedAutomationEngine:
             "remediation_plans_created": 0,
             "remediation_plans_executed": 0
         }
-        
+
         # Initialize default rules
         self._initialize_default_rules()
-    
+
     def _initialize_default_rules(self):
         """Initialize default automation rules."""
         # Rule 1: Auto-hunt on critical IOC match
@@ -246,7 +257,7 @@ class AdvancedAutomationEngine:
             require_approval=False
         )
         self.rules[rule1.rule_id] = rule1
-        
+
         # Rule 2: Auto-isolate on ransomware detection
         rule2 = AutomationRule(
             name="Auto-Isolate Ransomware",
@@ -258,7 +269,7 @@ class AdvancedAutomationEngine:
             require_approval=True
         )
         self.rules[rule2.rule_id] = rule2
-        
+
         # Rule 3: Auto-block malicious IPs
         rule3 = AutomationRule(
             name="Auto-Block Malicious IPs",
@@ -270,7 +281,7 @@ class AdvancedAutomationEngine:
             require_approval=False
         )
         self.rules[rule3.rule_id] = rule3
-        
+
         self.stats["total_rules"] = len(self.rules)
         self.stats["active_rules"] = sum(1 for r in self.rules.values() if r.enabled)
 
@@ -311,7 +322,7 @@ class AdvancedAutomationEngine:
         hypothesis = HypothesisGeneration(
             hypothesis=hypothesis_text,
             confidence=confidence,
-            based_on=[f"Event pattern analysis", f"{len(iocs)} IOCs", f"{len(threat_actors)} threat actors"],
+            based_on=["Event pattern analysis", f"{len(iocs)} IOCs", f"{len(threat_actors)} threat actors"],
             threat_actors=threat_actors,
             attack_techniques=attack_techniques,
             iocs=iocs,
@@ -336,7 +347,7 @@ class AdvancedAutomationEngine:
             technique = attack_techniques[0]
             return f"Suspicious activity matching {technique}. Adversary may be attempting to establish persistence or escalate privileges."
         elif iocs:
-            return f"Multiple IOCs detected in network traffic. Adversary may be communicating with command and control infrastructure."
+            return "Multiple IOCs detected in network traffic. Adversary may be communicating with command and control infrastructure."
         else:
             return "Anomalous behavior detected. Potential insider threat or compromised account activity."
 
@@ -707,4 +718,3 @@ def get_advanced_automation() -> AdvancedAutomationEngine:
         _advanced_automation = AdvancedAutomationEngine()
 
     return _advanced_automation
-

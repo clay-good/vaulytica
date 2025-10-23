@@ -1,0 +1,79 @@
+# Vaulytica Production Requirements
+# Install with: pip install -r requirements-production.txt
+
+# Core dependencies
+python-dotenv>=1.0.0
+pydantic>=2.0.0
+typing-extensions>=4.5.0
+
+# Security
+bcrypt>=4.0.1
+argon2-cffi>=21.3.0
+cryptography>=41.0.0
+
+# Secrets management
+hvac>=1.1.0  # HashiCorp Vault
+boto3>=1.28.0  # AWS Secrets Manager
+azure-keyvault-secrets>=4.7.0  # Azure Key Vault
+azure-identity>=1.13.0
+google-cloud-secret-manager>=2.16.0  # GCP Secret Manager
+
+# Monitoring & Observability
+prometheus-client>=0.17.0
+opentelemetry-api>=1.20.0
+opentelemetry-sdk>=1.20.0
+opentelemetry-instrumentation>=0.41b0
+
+# Distributed systems
+redis>=5.0.0
+hiredis>=2.2.0  # Redis performance
+pika>=1.3.0  # RabbitMQ
+
+# Async & Performance
+aiohttp>=3.8.0
+asyncio>=3.4.3
+uvloop>=0.17.0  # High-performance event loop
+
+# Database
+asyncpg>=0.28.0  # PostgreSQL async
+sqlalchemy>=2.0.0
+alembic>=1.11.0  # Database migrations
+
+# API & Web
+fastapi>=0.100.0
+uvicorn[standard]>=0.23.0
+pydantic-settings>=2.0.0
+
+# Data processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# ML & AI (existing)
+scikit-learn>=1.3.0
+transformers>=4.30.0
+torch>=2.0.0
+
+# Logging
+structlog>=23.1.0
+python-json-logger>=2.0.7
+
+# Testing
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+pytest-mock>=3.11.0
+
+# Code quality
+black>=23.7.0
+flake8>=6.1.0
+mypy>=1.5.0
+pylint>=2.17.0
+
+# Documentation
+mkdocs>=1.5.0
+mkdocs-material>=9.2.0
+
+# Utilities
+python-dateutil>=2.8.2
+pytz>=2023.3
+

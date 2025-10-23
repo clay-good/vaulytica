@@ -1,3 +1,18 @@
+"""
+IAM Security, Secrets Management & Zero Trust Architecture for Vaulytica.
+
+Provides comprehensive identity and access management security with:
+- IAM policy analysis and privilege escalation detection
+- Secrets scanning in code, configs, containers, and Kubernetes
+- Credential lifecycle management and rotation
+- Zero trust policy enforcement
+- Identity-based threat detection
+- Least privilege recommendations
+
+Author: Vaulytica Team
+Version: 0.24.0
+"""
+
 import asyncio
 import hashlib
 import re
@@ -180,18 +195,18 @@ class IdentityThreat:
 class IAMSecurityAnalyzer:
     """
     IAM security analyzer for cloud platforms.
-    
+
     Analyzes IAM policies, detects privilege escalation paths,
     identifies over-privileged roles, and provides recommendations.
     """
-    
+
     def __init__(self):
         """Initialize IAM security analyzer."""
         self.principals: Dict[str, IAMPrincipal] = {}
         self.policies: Dict[str, IAMPolicy] = {}
         self.escalation_paths: List[PrivilegeEscalationPath] = []
         self.over_privileged: List[OverPrivilegedRole] = []
-        
+
         self.statistics = {
             "principals_analyzed": 0,
             "policies_analyzed": 0,
@@ -200,7 +215,7 @@ class IAMSecurityAnalyzer:
             "findings_by_severity": {s.value: 0 for s in Severity},
             "last_analysis": None
         }
-        
+
         # Dangerous permissions that can lead to privilege escalation
         self.dangerous_permissions = {
             "aws": [
@@ -232,41 +247,41 @@ class IAMSecurityAnalyzer:
                 "compute.instances.setMetadata"
             ]
         }
-        
+
         logger.info("IAM Security Analyzer initialized")
-    
+
     async def analyze_principal(
         self,
         principal: IAMPrincipal
     ) -> Dict[str, Any]:
         """
         Analyze IAM principal for security issues.
-        
+
         Args:
             principal: IAM principal to analyze
-        
+
         Returns:
             Analysis results
         """
         logger.info(f"Analyzing IAM principal: {principal.name}")
-        
+
         self.principals[principal.principal_id] = principal
-        
+
         # Check for privilege escalation paths
         escalation_paths = await self._check_privilege_escalation(principal)
-        
+
         # Check if over-privileged
         over_privileged = await self._check_over_privileged(principal)
-        
+
         # Calculate privilege level
         privilege_level = self._calculate_privilege_level(principal)
-        
+
         # Check for inactive principals
         is_inactive = self._check_inactive(principal)
-        
+
         self.statistics["principals_analyzed"] += 1
         self.statistics["last_analysis"] = datetime.utcnow().isoformat()
-        
+
         return {
             "principal_id": principal.principal_id,
             "name": principal.name,
@@ -278,19 +293,19 @@ class IAMSecurityAnalyzer:
             "permissions_count": len(principal.permissions),
             "policies_count": len(principal.policies)
         }
-    
+
     async def _check_privilege_escalation(
         self,
         principal: IAMPrincipal
     ) -> List[PrivilegeEscalationPath]:
         """Check for privilege escalation paths."""
         paths = []
-        
+
         dangerous_perms = self.dangerous_permissions.get(
             principal.provider.value.lower(),
             []
         )
-        
+
         for perm in principal.permissions:
             if perm in dangerous_perms:
                 path = PrivilegeEscalationPath(
@@ -311,9 +326,9 @@ class IAMSecurityAnalyzer:
                 self.escalation_paths.append(path)
                 self.statistics["escalation_paths_found"] += 1
                 self.statistics["findings_by_severity"][Severity.HIGH.value] += 1
-        
+
         return paths
-    
+
     async def _check_over_privileged(
         self,
         principal: IAMPrincipal
@@ -321,7 +336,7 @@ class IAMSecurityAnalyzer:
         """Check if principal is over-privileged."""
         # Check for wildcard permissions
         wildcard_perms = {p for p in principal.permissions if '*' in p}
-        
+
         if wildcard_perms or len(principal.permissions) > 50:
             over_priv = OverPrivilegedRole(
                 principal=principal,
@@ -335,19 +350,19 @@ class IAMSecurityAnalyzer:
             self.over_privileged.append(over_priv)
             self.statistics["over_privileged_found"] += 1
             return over_priv
-        
+
         return None
-    
+
     def _calculate_privilege_level(self, principal: IAMPrincipal) -> PrivilegeLevel:
         """Calculate privilege level of principal."""
         # Check for admin permissions
         admin_indicators = ['*', 'admin', 'full', 'poweruser']
-        
+
         for perm in principal.permissions:
             perm_lower = perm.lower()
             if any(indicator in perm_lower for indicator in admin_indicators):
                 return PrivilegeLevel.ADMIN
-        
+
         # Check permission count
         if len(principal.permissions) > 50:
             return PrivilegeLevel.ELEVATED
@@ -357,23 +372,23 @@ class IAMSecurityAnalyzer:
             return PrivilegeLevel.LIMITED
         else:
             return PrivilegeLevel.READ_ONLY
-    
+
     def _check_inactive(self, principal: IAMPrincipal) -> bool:
         """Check if principal is inactive."""
         if principal.last_used is None:
             return True
-        
+
         inactive_threshold = datetime.utcnow() - timedelta(days=90)
         return principal.last_used < inactive_threshold
-    
+
     def get_escalation_paths(self) -> List[PrivilegeEscalationPath]:
         """Get all detected privilege escalation paths."""
         return self.escalation_paths
-    
+
     def get_over_privileged_roles(self) -> List[OverPrivilegedRole]:
         """Get all over-privileged roles."""
         return self.over_privileged
-    
+
     def get_statistics(self) -> Dict[str, Any]:
         """Get analyzer statistics."""
         return self.statistics
@@ -470,26 +485,34 @@ class SecretsScanner:
         secrets = []
         lines = content.split('\n')
 
+        # Optimize: Pre-compile all patterns and flatten structure
+        compiled_patterns = []
         for secret_type, patterns in self.secret_patterns.items():
             for pattern, description in patterns:
-                for line_num, line in enumerate(lines, 1):
-                    matches = re.finditer(pattern, line, re.IGNORECASE)
+                compiled_patterns.append((
+                    secret_type,
+                    re.compile(pattern, re.IGNORECASE),
+                    description
+                ))
 
-                    for match in matches:
-                        matched_text = match.group(0)
+        # Optimize: Single pass through lines, check all patterns
+        for line_num, line in enumerate(lines, 1):
+            for secret_type, compiled_pattern, description in compiled_patterns:
+                for match in compiled_pattern.finditer(line):
+                    matched_text = match.group(0)
 
-                        # Calculate entropy
-                        entropy = self._calculate_entropy(matched_text)
+                    # Calculate entropy
+                    entropy = self._calculate_entropy(matched_text)
 
-                        # High entropy indicates likely secret
-                        if entropy > 3.5 or secret_type in [
-                            SecretType.PRIVATE_KEY,
-                            SecretType.JWT_TOKEN,
-                            SecretType.GCP_SERVICE_ACCOUNT
-                        ]:
-                            severity = self._determine_severity(secret_type, entropy)
+                    # High entropy indicates likely secret
+                    if entropy > 3.5 or secret_type in [
+                        SecretType.PRIVATE_KEY,
+                        SecretType.JWT_TOKEN,
+                        SecretType.GCP_SERVICE_ACCOUNT
+                    ]:
+                        severity = self._determine_severity(secret_type, entropy)
 
-                            secret = DetectedSecret(
+                        secret = DetectedSecret(
                                 secret_id=f"secret-{hashlib.md5(f'{file_path}{line_num}{matched_text}'.encode()).hexdigest()[:12]}",
                                 secret_type=secret_type,
                                 location=location,
@@ -499,24 +522,24 @@ class SecretsScanner:
                                 entropy_score=entropy,
                                 severity=severity,
                                 remediation=self._get_remediation(secret_type)
-                            )
+                        )
 
-                            secrets.append(secret)
-                            self.detected_secrets.append(secret)
+                        secrets.append(secret)
+                        self.detected_secrets.append(secret)
 
-                            # Update statistics
-                            self.statistics["secrets_found"] += 1
+                        # Update statistics
+                        self.statistics["secrets_found"] += 1
 
-                            if secret_type.value not in self.statistics["secrets_by_type"]:
-                                self.statistics["secrets_by_type"][secret_type.value] = 0
-                            self.statistics["secrets_by_type"][secret_type.value] += 1
+                        if secret_type.value not in self.statistics["secrets_by_type"]:
+                            self.statistics["secrets_by_type"][secret_type.value] = 0
+                        self.statistics["secrets_by_type"][secret_type.value] += 1
 
-                            if location.value not in self.statistics["secrets_by_location"]:
-                                self.statistics["secrets_by_location"][location.value] = 0
-                            self.statistics["secrets_by_location"][location.value] += 1
+                        if location.value not in self.statistics["secrets_by_location"]:
+                            self.statistics["secrets_by_location"][location.value] = 0
+                        self.statistics["secrets_by_location"][location.value] += 1
 
-                            if entropy > 4.0:
-                                self.statistics["high_entropy_matches"] += 1
+                        if entropy > 4.0:
+                            self.statistics["high_entropy_matches"] += 1
 
         self.statistics["files_scanned"] += 1
         self.statistics["last_scan"] = datetime.utcnow().isoformat()
@@ -1461,4 +1484,3 @@ def get_iam_orchestrator() -> IAMSecurityOrchestrator:
         _iam_orchestrator = IAMSecurityOrchestrator()
 
     return _iam_orchestrator
-

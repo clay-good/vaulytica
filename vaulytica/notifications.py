@@ -1,3 +1,12 @@
+"""
+Notification integrations for Vaulytica.
+
+Supports sending analysis results to various notification channels:
+- Slack
+- Microsoft Teams
+- Email (SMTP)
+"""
+
 import json
 import logging
 import smtplib
@@ -16,15 +25,15 @@ logger = logging.getLogger(__name__)
 
 class NotificationConfig(BaseModel):
     """Configuration for notification channels."""
-    
+
     # Slack
     slack_webhook_url: Optional[str] = Field(None, description="Slack webhook URL")
     slack_channel: Optional[str] = Field(None, description="Slack channel override")
     slack_username: Optional[str] = Field("Vaulytica", description="Slack bot username")
-    
+
     # Microsoft Teams
     teams_webhook_url: Optional[str] = Field(None, description="Teams webhook URL")
-    
+
     # Email
     smtp_host: Optional[str] = Field(None, description="SMTP server host")
     smtp_port: int = Field(587, description="SMTP server port")
@@ -33,7 +42,7 @@ class NotificationConfig(BaseModel):
     smtp_from: Optional[str] = Field(None, description="From email address")
     smtp_to: Optional[str] = Field(None, description="To email address(es), comma-separated")
     smtp_use_tls: bool = Field(True, description="Use TLS for SMTP")
-    
+
     # Notification settings
     min_risk_score: int = Field(5, description="Minimum risk score to trigger notification")
     notify_on_cache_hit: bool = Field(False, description="Send notifications for cached results")
@@ -41,12 +50,12 @@ class NotificationConfig(BaseModel):
 
 class NotificationManager:
     """Manages sending notifications to various channels."""
-    
+
     def __init__(self, config: NotificationConfig):
         """Initialize notification manager."""
         self.config = config
         self.http_client = httpx.AsyncClient(timeout=30.0)
-    
+
     async def send_notification(
         self,
         result: AnalysisResult,
@@ -55,12 +64,12 @@ class NotificationManager:
     ) -> Dict[str, bool]:
         """
         Send notification to all configured channels.
-        
+
         Args:
             result: Analysis result
             event_source: Source platform (guardduty, datadog, etc.)
             cached: Whether result was from cache
-            
+
         Returns:
             Dictionary of channel -> success status
         """
@@ -68,13 +77,13 @@ class NotificationManager:
         if cached and not self.config.notify_on_cache_hit:
             logger.debug("Skipping notification for cached result")
             return {}
-        
+
         if result.risk_score < self.config.min_risk_score:
             logger.debug(f"Risk score {result.risk_score} below threshold {self.config.min_risk_score}")
             return {}
-        
+
         results = {}
-        
+
         # Send to Slack
         if self.config.slack_webhook_url:
             try:
@@ -83,7 +92,7 @@ class NotificationManager:
             except Exception as e:
                 logger.error(f"Failed to send Slack notification: {e}")
                 results['slack'] = False
-        
+
         # Send to Teams
         if self.config.teams_webhook_url:
             try:
@@ -92,7 +101,7 @@ class NotificationManager:
             except Exception as e:
                 logger.error(f"Failed to send Teams notification: {e}")
                 results['teams'] = False
-        
+
         # Send email
         if self.config.smtp_host and self.config.smtp_to:
             try:
@@ -101,9 +110,9 @@ class NotificationManager:
             except Exception as e:
                 logger.error(f"Failed to send email notification: {e}")
                 results['email'] = False
-        
+
         return results
-    
+
     async def _send_slack(
         self,
         result: AnalysisResult,
@@ -113,7 +122,7 @@ class NotificationManager:
         """Send notification to Slack."""
         # Determine color based on risk score
         if result.risk_score >= 8:
-            color = "#d32f2f"  # Red
+            color = "#d32f2"  # Red
             emoji = "🚨"
         elif result.risk_score >= 6:
             color = "#f57c00"  # Orange
@@ -121,7 +130,7 @@ class NotificationManager:
         else:
             color = "#fbc02d"  # Yellow
             emoji = "ℹ️"
-        
+
         # Build Slack message
         payload = {
             "username": self.config.slack_username,
@@ -166,11 +175,11 @@ class NotificationManager:
                 }
             ]
         }
-        
+
         # Add channel override if specified
         if self.config.slack_channel:
             payload["channel"] = self.config.slack_channel
-        
+
         # Add cached indicator
         if cached:
             payload["attachments"][0]["fields"].append({
@@ -178,20 +187,20 @@ class NotificationManager:
                 "value": "✓ Cached result",
                 "short": True
             })
-        
+
         # Send to Slack
         response = await self.http_client.post(
             self.config.slack_webhook_url,
             json=payload
         )
-        
+
         if response.status_code == 200:
             logger.info(f"Slack notification sent for event {result.event_id}")
             return True
         else:
             logger.error(f"Slack notification failed: {response.status_code} - {response.text}")
             return False
-    
+
     async def _send_teams(
         self,
         result: AnalysisResult,
@@ -201,16 +210,16 @@ class NotificationManager:
         """Send notification to Microsoft Teams."""
         # Determine theme color based on risk score
         if result.risk_score >= 8:
-            theme_color = "d32f2f"  # Red
+            theme_color = "d32f2"  # Red
         elif result.risk_score >= 6:
             theme_color = "f57c00"  # Orange
         else:
             theme_color = "fbc02d"  # Yellow
-        
+
         # Build Teams message card
         payload = {
             "@type": "MessageCard",
-            "@context": "https://schema.org/extensions",
+            "@context": "https://example.com",
             "summary": f"Security Event Analysis - Risk {result.risk_score}/10",
             "themeColor": theme_color,
             "title": "🔒 Security Event Analysis",
@@ -228,20 +237,20 @@ class NotificationManager:
                 }
             ]
         }
-        
+
         # Send to Teams
         response = await self.http_client.post(
             self.config.teams_webhook_url,
             json=payload
         )
-        
+
         if response.status_code == 200:
             logger.info(f"Teams notification sent for event {result.event_id}")
             return True
         else:
             logger.error(f"Teams notification failed: {response.status_code} - {response.text}")
             return False
-    
+
     def _send_email(
         self,
         result: AnalysisResult,
@@ -254,9 +263,9 @@ class NotificationManager:
         msg['Subject'] = f"[Vaulytica] Security Alert - Risk {result.risk_score}/10"
         msg['From'] = self.config.smtp_from
         msg['To'] = self.config.smtp_to
-        
+
         # Create plain text version
-        text_body = f"""
+        text_body = """
 Security Event Analysis
 
 Event ID: {result.event_id}
@@ -277,9 +286,9 @@ Immediate Actions:
 ---
 Generated by Vaulytica Security Analysis Framework
 """
-        
+
         msg.attach(MIMEText(text_body, 'plain'))
-        
+
         # Send email
         try:
             with smtplib.SMTP(self.config.smtp_host, self.config.smtp_port) as server:
@@ -288,14 +297,13 @@ Generated by Vaulytica Security Analysis Framework
                 if self.config.smtp_username and self.config.smtp_password:
                     server.login(self.config.smtp_username, self.config.smtp_password)
                 server.send_message(msg)
-            
+
             logger.info(f"Email notification sent for event {result.event_id}")
             return True
         except Exception as e:
             logger.error(f"Email send failed: {e}")
             return False
-    
+
     async def close(self):
         """Close HTTP client."""
         await self.http_client.aclose()
-

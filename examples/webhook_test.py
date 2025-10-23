@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+"""
+Test script for Vaulytica webhook endpoints.
+
+This script sends test events to webhook endpoints to verify they're working correctly.
+"""
 
 import json
 import sys
@@ -11,7 +16,7 @@ from typing import Dict, Any
 class WebhookTester:
     """Test webhook endpoints."""
     
-    def __init__(self, base_url: str = "http://localhost:8000"):
+    def __init__(self, base_url: str = "https://example.com:8000"):
         """Initialize tester with API base URL."""
         self.base_url = base_url.rstrip("/")
         self.session = requests.Session()
@@ -204,7 +209,7 @@ def main():
     print("=" * 60)
     
     # Parse arguments
-    base_url = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:8000"
+    base_url = sys.argv[1] if len(sys.argv) > 1 else "https://example.com:8000"
     
     # Initialize tester
     tester = WebhookTester(base_url)

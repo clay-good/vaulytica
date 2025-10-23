@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+Comprehensive API endpoint tests for Vaulytica.
+Tests all major endpoints for correctness and error handling.
+"""
 
 import sys
 import os

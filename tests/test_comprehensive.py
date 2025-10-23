@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+Comprehensive System Testing Suite
+Tests all major components of Vaulytica
+"""
 
 import sys
 from pathlib import Path
@@ -264,6 +268,6 @@ if issues_found:
 
 print("="*80)
 
-# Exit with appropriate code
-sys.exit(0 if tests_failed == 0 else 1)
-
+# Only exit if run directly
+if __name__ == "__main__":
+    sys.exit(0 if tests_failed == 0 else 1)

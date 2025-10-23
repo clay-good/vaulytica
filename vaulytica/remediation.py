@@ -1,3 +1,18 @@
+"""
+Automated Remediation Engine for Vaulytica.
+
+Provides automated remediation workflows with:
+- Infrastructure as Code (IaC) generation
+- Terraform and CloudFormation templates
+- Automated fix deployment
+- Rollback capabilities
+- Approval workflows
+- Remediation tracking
+
+Author: Vaulytica Team
+Version: 0.22.0
+"""
+
 import asyncio
 from datetime import datetime
 from typing import Dict, List, Optional, Any
@@ -49,18 +64,18 @@ class RemediationPlan:
     description: str
     remediation_type: RemediationType
     resource: CloudResource
-    
+
     # Actions
     steps: List[str] = field(default_factory=list)
     iac_template: Optional[str] = None
     iac_format: Optional[IaCFormat] = None
-    
+
     # Risk assessment
     estimated_effort: str = "medium"  # low, medium, high
     risk_of_change: str = "medium"  # low, medium, high
     requires_downtime: bool = False
     requires_approval: bool = True
-    
+
     # Execution
     status: RemediationStatus = RemediationStatus.PENDING
     created_at: datetime = field(default_factory=datetime.utcnow)
@@ -68,12 +83,12 @@ class RemediationPlan:
     executed_at: Optional[datetime] = None
     completed_at: Optional[datetime] = None
     approved_by: Optional[str] = None
-    
+
     # Results
     success: bool = False
     error_message: Optional[str] = None
     rollback_available: bool = True
-    
+
     # Related items
     finding_id: Optional[str] = None
     vulnerability_id: Optional[str] = None
@@ -82,14 +97,14 @@ class RemediationPlan:
 class RemediationEngine:
     """
     Automated remediation engine.
-    
+
     Generates and executes remediation plans with IaC templates.
     """
-    
+
     def __init__(self):
         """Initialize remediation engine."""
         self.plans: Dict[str, RemediationPlan] = {}
-        
+
         self.statistics = {
             "total_plans_created": 0,
             "plans_executed": 0,
@@ -98,9 +113,9 @@ class RemediationEngine:
             "plans_rolled_back": 0,
             "plans_by_type": {t.value: 0 for t in RemediationType}
         }
-        
+
         logger.info("Remediation Engine initialized")
-    
+
     async def create_remediation_plan(
         self,
         resource: CloudResource,
@@ -109,17 +124,17 @@ class RemediationEngine:
     ) -> RemediationPlan:
         """
         Create remediation plan for a finding or vulnerability.
-        
+
         Args:
             resource: Resource to remediate
             finding: Compliance finding (optional)
             vulnerability: Vulnerability assessment (optional)
-        
+
         Returns:
             Remediation plan
         """
         logger.info(f"Creating remediation plan for {resource.resource_id}")
-        
+
         # Determine remediation type and steps
         if finding:
             plan = await self._create_plan_from_finding(resource, finding)
@@ -127,29 +142,29 @@ class RemediationEngine:
             plan = await self._create_plan_from_vulnerability(resource, vulnerability)
         else:
             raise ValueError("Either finding or vulnerability must be provided")
-        
+
         self.plans[plan.plan_id] = plan
         self.statistics["total_plans_created"] += 1
         self.statistics["plans_by_type"][plan.remediation_type.value] += 1
-        
+
         logger.info(f"Created remediation plan {plan.plan_id}")
-        
+
         return plan
-    
+
     async def _create_plan_from_finding(self, resource: CloudResource, finding: Finding) -> RemediationPlan:
         """Create remediation plan from compliance finding."""
         plan_id = f"plan-{finding.finding_id}"
-        
+
         # Determine remediation based on check ID
         if "s3" in finding.check.check_id.lower() and "encryption" in finding.check.check_id.lower():
             return await self._create_s3_encryption_plan(resource, finding, plan_id)
-        
+
         elif "s3" in finding.check.check_id.lower() and "logging" in finding.check.check_id.lower():
             return await self._create_s3_logging_plan(resource, finding, plan_id)
-        
+
         elif "sg" in finding.check.check_id.lower() or "security_group" in finding.check.check_id.lower():
             return await self._create_security_group_plan(resource, finding, plan_id)
-        
+
         else:
             # Generic plan
             return RemediationPlan(
@@ -161,7 +176,7 @@ class RemediationEngine:
                 steps=[finding.remediation],
                 finding_id=finding.finding_id
             )
-    
+
     async def _create_s3_encryption_plan(
         self,
         resource: CloudResource,
@@ -170,7 +185,7 @@ class RemediationEngine:
     ) -> RemediationPlan:
         """Create plan to enable S3 bucket encryption."""
         # Generate Terraform template
-        terraform_template = f"""
+        terraform_template = """
 resource "aws_s3_bucket_server_side_encryption_configuration" "{resource.name}_encryption" {{
   bucket = "{resource.name}"
 
@@ -181,9 +196,9 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "{resource.name}_e
   }}
 }}
 """
-        
+
         # Generate CloudFormation template
-        cloudformation_template = f"""
+        cloudformation_template = """
 Resources:
   {resource.name}Encryption:
     Type: AWS::S3::BucketEncryption
@@ -193,7 +208,7 @@ Resources:
         - ServerSideEncryptionByDefault:
             SSEAlgorithm: AES256
 """
-        
+
         return RemediationPlan(
             plan_id=plan_id,
             title="Enable S3 Bucket Encryption",
@@ -213,7 +228,7 @@ Resources:
             requires_downtime=False,
             finding_id=finding.finding_id
         )
-    
+
     async def _create_s3_logging_plan(
         self,
         resource: CloudResource,
@@ -221,7 +236,7 @@ Resources:
         plan_id: str
     ) -> RemediationPlan:
         """Create plan to enable S3 bucket logging."""
-        terraform_template = f"""
+        terraform_template = """
 resource "aws_s3_bucket_logging" "{resource.name}_logging" {{
   bucket = "{resource.name}"
 
@@ -229,7 +244,7 @@ resource "aws_s3_bucket_logging" "{resource.name}_logging" {{
   target_prefix = "s3-access-logs/{resource.name}/"
 }}
 """
-        
+
         return RemediationPlan(
             plan_id=plan_id,
             title="Enable S3 Bucket Logging",
@@ -249,7 +264,7 @@ resource "aws_s3_bucket_logging" "{resource.name}_logging" {{
             requires_downtime=False,
             finding_id=finding.finding_id
         )
-    
+
     async def _create_security_group_plan(
         self,
         resource: CloudResource,
@@ -260,8 +275,8 @@ resource "aws_s3_bucket_logging" "{resource.name}_logging" {{
         # Determine which port to restrict
         port = 22 if "ssh" in finding.check.check_id.lower() else 3389
         protocol = "SSH" if port == 22 else "RDP"
-        
-        terraform_template = f"""
+
+        terraform_template = """
 resource "aws_security_group_rule" "{resource.name}_restrict_{port}" {{
   type              = "ingress"
   from_port         = {port}
@@ -272,7 +287,7 @@ resource "aws_security_group_rule" "{resource.name}_restrict_{port}" {{
   description       = "Restrict {protocol} access to admin IPs only"
 }}
 """
-        
+
         return RemediationPlan(
             plan_id=plan_id,
             title=f"Restrict {protocol} Access",
@@ -282,7 +297,7 @@ resource "aws_security_group_rule" "{resource.name}_restrict_{port}" {{
             steps=[
                 f"1. Identify legitimate {protocol} users",
                 f"2. Remove 0.0.0.0/0 rule for port {port}",
-                f"3. Add restricted rule with specific IP ranges",
+                "3. Add restricted rule with specific IP ranges",
                 "4. Verify connectivity for authorized users",
                 "5. Monitor for access issues"
             ],
@@ -294,7 +309,7 @@ resource "aws_security_group_rule" "{resource.name}_restrict_{port}" {{
             requires_approval=True,
             finding_id=finding.finding_id
         )
-    
+
     async def _create_plan_from_vulnerability(
         self,
         resource: CloudResource,
@@ -302,11 +317,11 @@ resource "aws_security_group_rule" "{resource.name}_restrict_{port}" {{
     ) -> RemediationPlan:
         """Create remediation plan from vulnerability assessment."""
         plan_id = f"plan-vuln-{vulnerability.assessment_id}"
-        
+
         # Get highest severity vulnerability
         if vulnerability.vulnerabilities:
             highest_vuln = max(vulnerability.vulnerabilities, key=lambda v: v.cvss_v3_score)
-            
+
             return RemediationPlan(
                 plan_id=plan_id,
                 title=f"Patch Vulnerability: {highest_vuln.cve_id}",
@@ -327,7 +342,7 @@ resource "aws_security_group_rule" "{resource.name}_restrict_{port}" {{
                 requires_approval=True,
                 vulnerability_id=vulnerability.assessment_id
             )
-        
+
         return RemediationPlan(
             plan_id=plan_id,
             title="No Vulnerabilities Found",
@@ -336,30 +351,30 @@ resource "aws_security_group_rule" "{resource.name}_restrict_{port}" {{
             resource=resource,
             vulnerability_id=vulnerability.assessment_id
         )
-    
+
     async def execute_plan(self, plan_id: str, dry_run: bool = True) -> Dict[str, Any]:
         """
         Execute a remediation plan.
-        
+
         Args:
             plan_id: Plan ID to execute
             dry_run: If True, simulate execution without making changes
-        
+
         Returns:
             Execution results
         """
         plan = self.plans.get(plan_id)
         if not plan:
             raise ValueError(f"Plan {plan_id} not found")
-        
+
         if plan.requires_approval and plan.status != RemediationStatus.APPROVED:
             raise ValueError(f"Plan {plan_id} requires approval before execution")
-        
+
         logger.info(f"Executing remediation plan {plan_id} (dry_run={dry_run})")
-        
+
         plan.status = RemediationStatus.IN_PROGRESS
         plan.executed_at = datetime.utcnow()
-        
+
         try:
             if dry_run:
                 # Simulate execution
@@ -374,7 +389,7 @@ resource "aws_security_group_rule" "{resource.name}_restrict_{port}" {{
                 # Execute actual remediation
                 result = await self._execute_remediation(plan)
                 plan.success = result["status"] == "success"
-            
+
             if plan.success:
                 plan.status = RemediationStatus.COMPLETED
                 plan.completed_at = datetime.utcnow()
@@ -383,20 +398,20 @@ resource "aws_security_group_rule" "{resource.name}_restrict_{port}" {{
                 plan.status = RemediationStatus.FAILED
                 plan.error_message = result.get("error")
                 self.statistics["plans_failed"] += 1
-            
+
             self.statistics["plans_executed"] += 1
-            
+
             logger.info(f"Plan {plan_id} execution completed: {plan.status}")
-            
+
             return result
-            
+
         except Exception as e:
             plan.status = RemediationStatus.FAILED
             plan.error_message = str(e)
             self.statistics["plans_failed"] += 1
             logger.error(f"Plan {plan_id} execution failed: {e}")
             raise
-    
+
     async def _execute_remediation(self, plan: RemediationPlan) -> Dict[str, Any]:
         """Execute actual remediation."""
         # In production, integrate with cloud provider APIs
@@ -406,27 +421,27 @@ resource "aws_security_group_rule" "{resource.name}_restrict_{port}" {{
             "message": f"Remediation completed for {plan.resource.resource_id}",
             "changes_applied": plan.steps
         }
-    
-    def approve_plan(self, plan_id: str, approved_by: str):
+
+    def approve_plan(self, plan_id: str, approved_by: str) -> None:
         """Approve a remediation plan."""
         plan = self.plans.get(plan_id)
         if not plan:
             raise ValueError(f"Plan {plan_id} not found")
-        
+
         plan.status = RemediationStatus.APPROVED
         plan.approved_at = datetime.utcnow()
         plan.approved_by = approved_by
-        
+
         logger.info(f"Plan {plan_id} approved by {approved_by}")
-    
+
     def get_plan(self, plan_id: str) -> Optional[RemediationPlan]:
         """Get remediation plan by ID."""
         return self.plans.get(plan_id)
-    
+
     def get_plans_by_status(self, status: RemediationStatus) -> List[RemediationPlan]:
         """Get plans by status."""
         return [p for p in self.plans.values() if p.status == status]
-    
+
     def get_statistics(self) -> Dict[str, Any]:
         """Get remediation engine statistics."""
         return self.statistics
@@ -439,9 +454,8 @@ _remediation_engine: Optional[RemediationEngine] = None
 def get_remediation_engine() -> RemediationEngine:
     """Get or create global remediation engine instance."""
     global _remediation_engine
-    
+
     if _remediation_engine is None:
         _remediation_engine = RemediationEngine()
-    
-    return _remediation_engine
 
+    return _remediation_engine

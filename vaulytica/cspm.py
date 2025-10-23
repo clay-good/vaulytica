@@ -1,3 +1,19 @@
+"""
+Cloud Security Posture Management (CSPM) for Vaulytica.
+
+Provides comprehensive cloud security posture management with:
+- Multi-cloud resource scanning (AWS, Azure, GCP)
+- Asset inventory and configuration analysis
+- Compliance framework checks (CIS, PCI-DSS, HIPAA, SOC2, NIST)
+- Vulnerability assessment with CVE database
+- Configuration drift detection
+- Automated remediation workflows
+- Risk scoring and prioritization
+
+Author: Vaulytica Team
+Version: 0.22.0
+"""
+
 import asyncio
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Any, Set
@@ -25,23 +41,23 @@ class ResourceType(str, Enum):
     VM_INSTANCE = "vm_instance"
     CONTAINER = "container"
     SERVERLESS = "serverless"
-    
+
     # Storage
     STORAGE_BUCKET = "storage_bucket"
     DATABASE = "database"
     VOLUME = "volume"
-    
+
     # Network
     VPC = "vpc"
     SUBNET = "subnet"
     SECURITY_GROUP = "security_group"
     LOAD_BALANCER = "load_balancer"
-    
+
     # Identity
     IAM_USER = "iam_user"
     IAM_ROLE = "iam_role"
     IAM_POLICY = "iam_policy"
-    
+
     # Other
     KMS_KEY = "kms_key"
     SECRET = "secret"
@@ -93,7 +109,7 @@ class CloudResource:
     created_at: Optional[datetime] = None
     last_modified: Optional[datetime] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
-    
+
     def get_config_hash(self) -> str:
         """Get hash of resource configuration."""
         config_str = json.dumps(self.configuration, sort_keys=True)
@@ -174,15 +190,15 @@ class DriftDetection:
 class CloudResourceScanner:
     """
     Multi-cloud resource scanner.
-    
+
     Scans cloud resources across AWS, Azure, GCP, and Kubernetes.
     """
-    
+
     def __init__(self):
         """Initialize cloud resource scanner."""
         self.resources: Dict[str, CloudResource] = {}
         self.scan_history: List[Dict[str, Any]] = []
-        
+
         self.statistics = {
             "total_scans": 0,
             "resources_discovered": 0,
@@ -190,9 +206,9 @@ class CloudResourceScanner:
             "resources_by_type": {t.value: 0 for t in ResourceType},
             "last_scan": None
         }
-        
+
         logger.info("Cloud Resource Scanner initialized")
-    
+
     async def scan_aws_resources(
         self,
         region: str = "us-east-1",
@@ -200,18 +216,18 @@ class CloudResourceScanner:
     ) -> List[CloudResource]:
         """
         Scan AWS resources.
-        
+
         Args:
             region: AWS region to scan
             resource_types: Specific resource types to scan
-        
+
         Returns:
             List of discovered resources
         """
         logger.info(f"Scanning AWS resources in {region}")
-        
+
         resources = []
-        
+
         # Mock AWS resource discovery
         # In production, use boto3 to scan actual AWS resources
         mock_resources = [
@@ -263,19 +279,19 @@ class CloudResourceScanner:
                 }
             )
         ]
-        
+
         for resource in mock_resources:
             if resource_types is None or resource.resource_type in resource_types:
                 resources.append(resource)
                 self.resources[resource.resource_id] = resource
                 self.statistics["resources_by_provider"][CloudProvider.AWS.value] += 1
                 self.statistics["resources_by_type"][resource.resource_type.value] += 1
-        
+
         self.statistics["resources_discovered"] += len(resources)
         logger.info(f"Discovered {len(resources)} AWS resources")
-        
+
         return resources
-    
+
     async def scan_azure_resources(
         self,
         subscription_id: str,
@@ -283,13 +299,13 @@ class CloudResourceScanner:
     ) -> List[CloudResource]:
         """Scan Azure resources."""
         logger.info(f"Scanning Azure resources in subscription {subscription_id}")
-        
+
         # Mock Azure scanning
         resources = []
         self.statistics["resources_discovered"] += len(resources)
-        
+
         return resources
-    
+
     async def scan_gcp_resources(
         self,
         project_id: str,
@@ -297,38 +313,38 @@ class CloudResourceScanner:
     ) -> List[CloudResource]:
         """Scan GCP resources."""
         logger.info(f"Scanning GCP resources in project {project_id}")
-        
+
         # Mock GCP scanning
         resources = []
         self.statistics["resources_discovered"] += len(resources)
-        
+
         return resources
-    
+
     async def scan_all_providers(self) -> Dict[CloudProvider, List[CloudResource]]:
         """Scan all cloud providers."""
         results = {}
-        
+
         # Scan AWS
         aws_resources = await self.scan_aws_resources()
         results[CloudProvider.AWS] = aws_resources
-        
+
         self.statistics["total_scans"] += 1
         self.statistics["last_scan"] = datetime.utcnow().isoformat()
-        
+
         return results
-    
+
     def get_resource(self, resource_id: str) -> Optional[CloudResource]:
         """Get resource by ID."""
         return self.resources.get(resource_id)
-    
+
     def get_resources_by_type(self, resource_type: ResourceType) -> List[CloudResource]:
         """Get all resources of a specific type."""
         return [r for r in self.resources.values() if r.resource_type == resource_type]
-    
+
     def get_resources_by_provider(self, provider: CloudProvider) -> List[CloudResource]:
         """Get all resources from a specific provider."""
         return [r for r in self.resources.values() if r.provider == provider]
-    
+
     def get_statistics(self) -> Dict[str, Any]:
         """Get scanner statistics."""
         return self.statistics
@@ -385,7 +401,7 @@ class ComplianceEngine:
             resource_types=[ResourceType.LOG_GROUP],
             check_function="check_cloudtrail_enabled",
             remediation="Enable CloudTrail in all regions with multi-region trail",
-            references=["https://docs.aws.amazon.com/awscloudtrail/latest/userguide/"]
+            references=["https://example.com"]
         )
 
         self.checks["cis-aws-2.3"] = ComplianceCheck(
@@ -397,7 +413,7 @@ class ComplianceEngine:
             resource_types=[ResourceType.STORAGE_BUCKET],
             check_function="check_s3_logging",
             remediation="Enable access logging on all S3 buckets",
-            references=["https://docs.aws.amazon.com/AmazonS3/latest/dev/ServerLogs.html"]
+            references=["https://example.com"]
         )
 
         self.checks["cis-aws-2.7"] = ComplianceCheck(
@@ -409,7 +425,7 @@ class ComplianceEngine:
             resource_types=[ResourceType.STORAGE_BUCKET],
             check_function="check_s3_encryption",
             remediation="Enable default encryption on all S3 buckets",
-            references=["https://docs.aws.amazon.com/AmazonS3/latest/dev/bucket-encryption.html"]
+            references=["https://example.com"]
         )
 
         self.checks["cis-aws-4.1"] = ComplianceCheck(
@@ -421,7 +437,7 @@ class ComplianceEngine:
             resource_types=[ResourceType.SECURITY_GROUP],
             check_function="check_sg_ssh_open",
             remediation="Restrict SSH access to specific IP ranges",
-            references=["https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html"]
+            references=["https://example.com"]
         )
 
         self.checks["cis-aws-4.2"] = ComplianceCheck(
@@ -433,7 +449,7 @@ class ComplianceEngine:
             resource_types=[ResourceType.SECURITY_GROUP],
             check_function="check_sg_rdp_open",
             remediation="Restrict RDP access to specific IP ranges",
-            references=["https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html"]
+            references=["https://example.com"]
         )
 
         # PCI-DSS Checks
@@ -446,7 +462,7 @@ class ComplianceEngine:
             resource_types=[ResourceType.STORAGE_BUCKET, ResourceType.DATABASE, ResourceType.VOLUME],
             check_function="check_encryption_at_rest",
             remediation="Enable encryption for all data storage resources",
-            references=["https://www.pcisecuritystandards.org/"]
+            references=["https://example.com"]
         )
 
         # HIPAA Checks
@@ -459,7 +475,7 @@ class ComplianceEngine:
             resource_types=[ResourceType.STORAGE_BUCKET, ResourceType.DATABASE],
             check_function="check_encryption_at_rest",
             remediation="Enable encryption for all resources containing ePHI",
-            references=["https://www.hhs.gov/hipaa/"]
+            references=["https://example.com"]
         )
 
     async def run_check(self, check: ComplianceCheck, resource: CloudResource) -> Optional[Finding]:
@@ -1015,4 +1031,3 @@ def get_cspm_orchestrator() -> CSPMOrchestrator:
         _cspm_orchestrator = CSPMOrchestrator()
 
     return _cspm_orchestrator
-

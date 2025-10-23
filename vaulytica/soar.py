@@ -1,3 +1,18 @@
+"""
+Vaulytica Security Orchestration, Automation and Response (SOAR) Platform
+
+This module provides advanced security orchestration capabilities:
+- Workflow automation with conditional logic and branching
+- Multi-step playbook execution with error handling
+- Integration orchestration across security tools
+- Case management with SLA tracking
+- Automated decision-making with AI assistance
+- Audit trail and compliance reporting
+
+Author: World-Class Software Engineering Team
+Version: 0.18.0
+"""
+
 import asyncio
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Set, Any, Callable, Tuple
@@ -82,8 +97,9 @@ class WorkflowAction:
     error: Optional[str] = None
     started_at: Optional[datetime] = None
     completed_at: Optional[datetime] = None
-    
+
     def to_dict(self) -> Dict[str, Any]:
+        """Convert PlaybookStep to dictionary."""
         return {
             "action_id": self.action_id,
             "action_type": self.action_type.value,
@@ -112,8 +128,9 @@ class Workflow:
     started_at: Optional[datetime] = None
     completed_at: Optional[datetime] = None
     created_by: Optional[str] = None
-    
+
     def to_dict(self) -> Dict[str, Any]:
+        """Convert Playbook to dictionary."""
         return {
             "workflow_id": self.workflow_id,
             "name": self.name,
@@ -146,8 +163,9 @@ class Case:
     updated_at: datetime = field(default_factory=datetime.utcnow)
     resolved_at: Optional[datetime] = None
     closed_at: Optional[datetime] = None
-    
+
     def to_dict(self) -> Dict[str, Any]:
+        """Convert PlaybookExecution to dictionary."""
         return {
             "case_id": self.case_id,
             "title": self.title,
@@ -170,11 +188,11 @@ class Case:
 class SOARPlatform:
     """
     Security Orchestration, Automation and Response Platform.
-    
+
     Provides advanced workflow automation, case management, and
     integration orchestration for security operations.
     """
-    
+
     def __init__(self):
         self.workflows: Dict[str, Workflow] = {}
         self.cases: Dict[str, Case] = {}
@@ -190,7 +208,7 @@ class SOARPlatform:
             "avg_case_resolution_time": 0.0
         }
         logger.info("SOAR Platform initialized")
-    
+
     def _initialize_templates(self) -> Dict[str, List[WorkflowAction]]:
         """Initialize workflow templates."""
         templates = {

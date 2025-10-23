@@ -1,3 +1,19 @@
+"""
+Security Posture Analytics, Continuous Monitoring & Predictive Security Intelligence for Vaulytica.
+
+Provides comprehensive security posture management with:
+- Real-time security posture scoring with multi-dimensional analysis
+- Continuous monitoring with baseline tracking and drift detection
+- Predictive security intelligence with ML-based threat forecasting
+- Historical trend analysis and pattern recognition
+- Industry benchmarking and peer comparison
+- Automated recommendations and remediation guidance
+- Executive dashboards and reporting
+
+Author: Vaulytica Team
+Version: 0.29.0
+"""
+
 import asyncio
 import hashlib
 import json
@@ -189,11 +205,11 @@ class BenchmarkComparison:
 class SecurityPostureScoringEngine:
     """
     Security posture scoring engine.
-    
+
     Calculates comprehensive security posture scores across multiple dimensions
     with weighted scoring and real-time updates.
     """
-    
+
     def __init__(self):
         """Initialize security posture scoring engine."""
         self.scores: Dict[str, PostureScore] = {}
@@ -214,7 +230,7 @@ class SecurityPostureScoringEngine:
             'recommendations_generated': 0,
             'posture_improvements': 0,
         }
-    
+
     async def calculate_posture_score(
         self,
         organization_id: str,
@@ -222,11 +238,11 @@ class SecurityPostureScoringEngine:
     ) -> PostureScore:
         """Calculate comprehensive security posture score."""
         start_time = datetime.utcnow()
-        
+
         # Store metrics
         for metric in metrics:
             self.metrics[metric.metric_id] = metric
-        
+
         # Calculate dimension scores
         dimension_scores = {}
         for dimension in PostureDimension:
@@ -235,19 +251,19 @@ class SecurityPostureScoringEngine:
                 dimension_scores[dimension] = self._calculate_dimension_score(dimension_metrics)
             else:
                 dimension_scores[dimension] = 0.0
-        
+
         # Calculate weighted overall score
         overall_score = sum(
             dimension_scores[dim] * self.dimension_weights[dim]
             for dim in PostureDimension
         )
-        
+
         # Determine posture level
         posture_level = self._determine_posture_level(overall_score)
-        
+
         # Generate recommendations
         recommendations = self._generate_recommendations(dimension_scores, metrics)
-        
+
         # Create posture score
         score = PostureScore(
             overall_score=round(overall_score, 2),
@@ -261,12 +277,12 @@ class SecurityPostureScoringEngine:
             },
             recommendations=recommendations
         )
-        
+
         self.scores[organization_id] = score
         self.statistics['scores_calculated'] += 1
         self.statistics['metrics_tracked'] = len(self.metrics)
         self.statistics['recommendations_generated'] += len(recommendations)
-        
+
         logger.info(f"Calculated security posture score: {overall_score:.2f} ({posture_level.value})")
 
         return score
@@ -326,7 +342,7 @@ class SecurityPostureScoringEngine:
                 recommendations.append(
                     f"Improve {dimension.value.replace('_', ' ').title()}: "
                     f"Current score {score:.1f}/100. "
-                    f"Focus on addressing critical gaps in this area."
+                    "Focus on addressing critical gaps in this area."
                 )
 
         # Find metrics below threshold
@@ -1535,4 +1551,3 @@ def get_security_posture_orchestrator() -> SecurityPostureOrchestrator:
     if _orchestrator is None:
         _orchestrator = SecurityPostureOrchestrator()
     return _orchestrator
-

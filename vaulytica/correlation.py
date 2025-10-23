@@ -1,3 +1,5 @@
+"""Advanced correlation engine for multi-event analysis and attack campaign detection."""
+
 import hashlib
 from datetime import datetime, timedelta
 from typing import List, Dict, Set, Tuple, Optional, Any
@@ -53,18 +55,18 @@ class EventCluster:
     shared_iocs: Set[str] = field(default_factory=set)
     attack_stages: List[str] = field(default_factory=list)
     time_span: Optional[timedelta] = None
-    
-    def add_event(self, event: SecurityEvent):
+
+    def add_event(self, event: SecurityEvent) -> None:
         """Add event to cluster."""
         self.events.append(event)
-        
+
         # Update primary assets
         for asset in event.affected_assets:
             if asset.hostname:
                 self.primary_assets.add(asset.hostname)
             for ip in asset.ip_addresses:
                 self.primary_assets.add(ip)
-        
+
         # Update time span
         if len(self.events) > 1:
             timestamps = [e.timestamp for e in self.events]
@@ -92,7 +94,7 @@ class AttackCampaign:
 class CorrelationEngine:
     """
     Advanced correlation engine for multi-event analysis.
-    
+
     Capabilities:
     - Temporal correlation (time-based)
     - Asset-based correlation (same targets)
@@ -103,14 +105,14 @@ class CorrelationEngine:
     - Lateral movement tracking
     - Data flow analysis
     """
-    
-    def __init__(self, 
+
+    def __init__(self,
                  temporal_window_minutes: int = 60,
                  min_correlation_confidence: float = 0.5,
                  min_campaign_events: int = 3):
         """
         Initialize correlation engine.
-        
+
         Args:
             temporal_window_minutes: Time window for temporal correlation
             min_correlation_confidence: Minimum confidence for correlation
@@ -119,29 +121,29 @@ class CorrelationEngine:
         self.temporal_window = timedelta(minutes=temporal_window_minutes)
         self.min_confidence = min_correlation_confidence
         self.min_campaign_events = min_campaign_events
-        
+
         # Event storage
         self.events: Dict[str, SecurityEvent] = {}
         self.analyses: Dict[str, AnalysisResult] = {}
-        
+
         # Correlation tracking
         self.correlations: List[CorrelationLink] = []
         self.clusters: Dict[str, EventCluster] = {}
         self.campaigns: Dict[str, AttackCampaign] = {}
-        
+
         # Index structures for fast lookup
         self.asset_index: Dict[str, Set[str]] = defaultdict(set)  # asset -> event_ids
         self.ioc_index: Dict[str, Set[str]] = defaultdict(set)  # ioc -> event_ids
         self.ttp_index: Dict[str, Set[str]] = defaultdict(set)  # ttp -> event_ids
         self.time_index: List[Tuple[datetime, str]] = []  # (timestamp, event_id)
-        
+
         logger.info(f"Correlation engine initialized (window={temporal_window_minutes}m, "
                    f"min_confidence={min_correlation_confidence})")
-    
-    def add_event(self, event: SecurityEvent, analysis: Optional[AnalysisResult] = None):
+
+    def add_event(self, event: SecurityEvent, analysis: Optional[AnalysisResult] = None) -> None:
         """
         Add event to correlation engine.
-        
+
         Args:
             event: Security event to add
             analysis: Optional analysis result
@@ -149,15 +151,15 @@ class CorrelationEngine:
         self.events[event.event_id] = event
         if analysis:
             self.analyses[event.event_id] = analysis
-        
+
         # Update indices
         self._update_indices(event, analysis)
-        
+
         # Perform correlation
         self._correlate_event(event, analysis)
-        
+
         logger.debug(f"Added event {event.event_id} to correlation engine")
-    
+
     def _update_indices(self, event: SecurityEvent, analysis: Optional[AnalysisResult]):
         """Update index structures with new event."""
         # Asset index
@@ -166,70 +168,70 @@ class CorrelationEngine:
                 self.asset_index[asset.hostname].add(event.event_id)
             for ip in asset.ip_addresses:
                 self.asset_index[ip].add(event.event_id)
-        
+
         # IOC index
         for indicator in event.technical_indicators:
             ioc_key = f"{indicator.indicator_type}:{indicator.value}"
             self.ioc_index[ioc_key].add(event.event_id)
-        
+
         # TTP index
         for mitre in event.mitre_attack:
             self.ttp_index[mitre.technique_id].add(event.event_id)
-        
+
         if analysis:
             for mitre in analysis.mitre_techniques:
                 self.ttp_index[mitre.technique_id].add(event.event_id)
-        
+
         # Time index
         self.time_index.append((event.timestamp, event.event_id))
         self.time_index.sort()  # Keep sorted by time
-    
+
     def _correlate_event(self, event: SecurityEvent, analysis: Optional[AnalysisResult]):
         """Correlate new event with existing events."""
         correlations = []
-        
+
         # Temporal correlation
         correlations.extend(self._find_temporal_correlations(event))
-        
+
         # Asset-based correlation
         correlations.extend(self._find_asset_correlations(event))
-        
+
         # IOC-based correlation
         correlations.extend(self._find_ioc_correlations(event))
-        
+
         # TTP-based correlation
         correlations.extend(self._find_ttp_correlations(event, analysis))
-        
+
         # Attack chain correlation
         if analysis:
             correlations.extend(self._find_attack_chain_correlations(event, analysis))
-        
+
         # Filter by confidence
         correlations = [c for c in correlations if c.confidence >= self.min_confidence]
-        
+
         # Add to correlation list
         self.correlations.extend(correlations)
-        
+
         # Update clusters
         if correlations:
             self._update_clusters(event, correlations)
-        
+
         logger.debug(f"Found {len(correlations)} correlations for event {event.event_id}")
-    
+
     def _find_temporal_correlations(self, event: SecurityEvent) -> List[CorrelationLink]:
         """Find events within temporal window."""
         correlations = []
-        
+
         for ts, event_id in self.time_index:
             if event_id == event.event_id:
                 continue
-            
+
             time_diff = abs((event.timestamp - ts).total_seconds())
-            
+
             if time_diff <= self.temporal_window.total_seconds():
                 # Calculate confidence based on time proximity
                 confidence = 1.0 - (time_diff / self.temporal_window.total_seconds()) * 0.5
-                
+
                 correlations.append(CorrelationLink(
                     event_id_1=event.event_id,
                     event_id_2=event_id,
@@ -238,32 +240,32 @@ class CorrelationEngine:
                     evidence=[f"Events within {time_diff:.0f} seconds"],
                     metadata={"time_diff_seconds": time_diff}
                 ))
-        
+
         return correlations
-    
+
     def _find_asset_correlations(self, event: SecurityEvent) -> List[CorrelationLink]:
         """Find events affecting same assets."""
         correlations = []
         related_events = set()
-        
+
         # Find events with shared assets
         for asset in event.affected_assets:
             if asset.hostname:
                 related_events.update(self.asset_index[asset.hostname])
             for ip in asset.ip_addresses:
                 related_events.update(self.asset_index[ip])
-        
+
         related_events.discard(event.event_id)
-        
+
         for related_id in related_events:
             related_event = self.events[related_id]
-            
+
             # Calculate shared assets
             shared_assets = self._get_shared_assets(event, related_event)
-            
+
             if shared_assets:
                 confidence = min(0.9, 0.5 + len(shared_assets) * 0.1)
-                
+
                 correlations.append(CorrelationLink(
                     event_id_1=event.event_id,
                     event_id_2=related_id,
@@ -272,31 +274,31 @@ class CorrelationEngine:
                     evidence=[f"Shared assets: {', '.join(list(shared_assets)[:3])}"],
                     metadata={"shared_assets": list(shared_assets)}
                 ))
-        
+
         return correlations
-    
+
     def _find_ioc_correlations(self, event: SecurityEvent) -> List[CorrelationLink]:
         """Find events with shared IOCs."""
         correlations = []
         related_events = set()
-        
+
         # Find events with shared IOCs
         for indicator in event.technical_indicators:
             ioc_key = f"{indicator.indicator_type}:{indicator.value}"
             related_events.update(self.ioc_index[ioc_key])
-        
+
         related_events.discard(event.event_id)
-        
+
         for related_id in related_events:
             related_event = self.events[related_id]
-            
+
             # Calculate shared IOCs
             shared_iocs = self._get_shared_iocs(event, related_event)
-            
+
             if shared_iocs:
                 # Higher confidence for IOC matches
                 confidence = min(0.95, 0.7 + len(shared_iocs) * 0.1)
-                
+
                 correlations.append(CorrelationLink(
                     event_id_1=event.event_id,
                     event_id_2=related_id,
@@ -800,4 +802,3 @@ class CorrelationEngine:
             "clusters": clusters_data,
             "statistics": self.get_statistics()
         }
-

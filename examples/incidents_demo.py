@@ -1,4 +1,15 @@
 #!/usr/bin/env python3
+"""
+Demonstration of Vaulytica's Incident Management & Alerting System.
+
+This script demonstrates:
+- Alert deduplication
+- Incident creation and lifecycle management
+- SLA tracking and escalation
+- On-call scheduling
+- Ticketing system integration
+- Incident metrics and reporting
+"""
 
 import asyncio
 from datetime import datetime, timedelta
@@ -154,7 +165,7 @@ def create_sample_events():
             environment="production"
         )],
         technical_indicators=[
-            TechnicalIndicator(indicator_type="user", value="analyst@company.com"),
+            TechnicalIndicator(indicator_type="user", value="user@example.com"),
             TechnicalIndicator(indicator_type="role", value="ACCOUNTADMIN")
         ],
         mitre_attack=[
@@ -166,7 +177,7 @@ def create_sample_events():
             )
         ],
         raw_event={},
-        metadata={"user": "analyst@company.com", "role": "ACCOUNTADMIN"}
+        metadata={"user": "user@example.com", "role": "ACCOUNTADMIN"}
     ))
     
     return events
@@ -181,14 +192,14 @@ async def demo_incident_lifecycle():
     manager = get_incident_manager()
     
     # Setup on-call schedule
-    manager.on_call_schedule.add_user(EscalationLevel.L1_ANALYST, "analyst1@company.com")
-    manager.on_call_schedule.add_user(EscalationLevel.L2_SENIOR_ANALYST, "senior1@company.com")
-    manager.on_call_schedule.add_user(EscalationLevel.L3_SECURITY_ENGINEER, "engineer1@company.com")
+    manager.on_call_schedule.add_user(EscalationLevel.L1_ANALYST, "user@example.com")
+    manager.on_call_schedule.add_user(EscalationLevel.L2_SENIOR_ANALYST, "user@example.com")
+    manager.on_call_schedule.add_user(EscalationLevel.L3_SECURITY_ENGINEER, "user@example.com")
     
     print("\n✓ On-call schedule configured")
-    print(f"  L1 Analyst: analyst1@company.com")
-    print(f"  L2 Senior Analyst: senior1@company.com")
-    print(f"  L3 Security Engineer: engineer1@company.com")
+    print(f"  L1 Analyst: user@example.com")
+    print(f"  L2 Senior Analyst: user@example.com")
+    print(f"  L3 Security Engineer: user@example.com")
     
     # Create sample events
     events = create_sample_events()
@@ -212,23 +223,23 @@ async def demo_incident_lifecycle():
         print(f"\n✓ Demonstrating lifecycle for incident: {incident.incident_id[:8]}...")
         
         # Acknowledge
-        manager.acknowledge_incident(incident.incident_id, "analyst1@company.com")
-        print(f"  1. Acknowledged by analyst1@company.com")
+        manager.acknowledge_incident(incident.incident_id, "user@example.com")
+        print(f"  1. Acknowledged by user@example.com")
         print(f"     Status: {incident.status.value}")
         
         # Start investigation
-        manager.start_investigation(incident.incident_id, "analyst1@company.com")
+        manager.start_investigation(incident.incident_id, "user@example.com")
         print(f"  2. Investigation started")
         print(f"     Status: {incident.status.value}")
         
         # Add note
-        incident.add_note("analyst1@company.com", "Investigating source IP 203.0.113.45")
+        incident.add_note("user@example.com", "Investigating source IP 203.0.113.45")
         print(f"  3. Added investigation note")
         
         # Resolve
         manager.resolve_incident(
             incident.incident_id,
-            "analyst1@company.com",
+            "user@example.com",
             "Blocked source IP and reset user password"
         )
         print(f"  4. Resolved")
@@ -236,7 +247,7 @@ async def demo_incident_lifecycle():
         print(f"     Time to resolve: {incident.get_time_to_resolve()}")
         
         # Close
-        manager.close_incident(incident.incident_id, "analyst1@company.com", "Verified resolution")
+        manager.close_incident(incident.incident_id, "user@example.com", "Verified resolution")
         print(f"  5. Closed")
         print(f"     Status: {incident.status.value}")
 
@@ -320,7 +331,7 @@ async def demo_ticketing_integration():
     jira_config = TicketingConfig(
         system=TicketingSystem.JIRA,
         enabled=True,
-        jira_url="https://company.atlassian.net",
+        jira_url="https://your-company.atlassian.net",
         jira_project_key="SEC"
     )
     ticketing.add_integration(jira_config)

@@ -207,3 +207,19 @@ $RECYCLE.BIN/
 # Test files
 test_output/
 *.test.py
+
+# Vaulytica specific
+chroma_db/
+outputs/
+models/
+*.pkl
+*.h5
+*.pt
+*.pth
+test_data/*.html
+test_data/*.json
+!test_data/guardduty_*.json
+!test_data/gcp_scc_*.json
+!test_data/datadog_*.json
+!test_data/crowdstrike_*.json
+!test_data/snowflake_*.json

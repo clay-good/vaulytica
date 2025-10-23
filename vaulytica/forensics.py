@@ -1,3 +1,18 @@
+"""
+Vaulytica Automated Forensics & Investigation Engine
+
+This module provides comprehensive digital forensics and investigation capabilities:
+- Automated evidence collection from multiple sources
+- Cryptographic chain of custody with hashing and signing
+- Guided investigation workflows with templates
+- Automated evidence analysis (logs, memory, network, disk)
+- Forensic report generation for legal/compliance
+- Integration with incident management and AI SOC analytics
+
+Author: World-Class Software Engineering Team
+Version: 0.17.0
+"""
+
 import hashlib
 import json
 import uuid
@@ -135,37 +150,37 @@ class Evidence(BaseModel):
     source: EvidenceSource
     collection_method: CollectionMethod
     status: EvidenceStatus = EvidenceStatus.PENDING
-    
+
     # Source information
     source_system: str
     source_ip: Optional[str] = None
     source_hostname: Optional[str] = None
     source_path: Optional[str] = None
-    
+
     # Collection information
     collected_at: Optional[datetime] = None
     collected_by: str  # person or system
     collection_tool: Optional[str] = None
-    
+
     # Evidence data
     data: Optional[Dict[str, Any]] = None  # actual evidence data
     data_size: int = 0  # size in bytes
     data_location: Optional[str] = None  # storage location
-    
+
     # Integrity
     hash_md5: Optional[str] = None
     hash_sha256: Optional[str] = None
     hash_sha512: Optional[str] = None
-    
+
     # Chain of custody
     chain_of_custody: List[ChainOfCustodyEntry] = Field(default_factory=list)
-    
+
     # Metadata
     tags: List[str] = Field(default_factory=list)
     related_evidence: List[str] = Field(default_factory=list)
     related_events: List[str] = Field(default_factory=list)
     notes: Optional[str] = None
-    
+
     # Analysis results
     analysis_results: Dict[str, Any] = Field(default_factory=dict)
 
@@ -179,20 +194,20 @@ class InvestigationTask(BaseModel):
     status: str = "pending"  # pending, in_progress, completed, skipped
     assigned_to: Optional[str] = None
     priority: int = 3  # 1-5, 5 is highest
-    
+
     # Dependencies
     depends_on: List[str] = Field(default_factory=list)  # task IDs
-    
+
     # Evidence
     required_evidence: List[str] = Field(default_factory=list)
     collected_evidence: List[str] = Field(default_factory=list)
-    
+
     # Timing
     created_at: datetime = Field(default_factory=datetime.now)
     started_at: Optional[datetime] = None
     completed_at: Optional[datetime] = None
     due_date: Optional[datetime] = None
-    
+
     # Results
     findings: Optional[str] = None
     artifacts: List[str] = Field(default_factory=list)
@@ -204,46 +219,46 @@ class Investigation(BaseModel):
     investigation_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     investigation_type: InvestigationType
     status: InvestigationStatus = InvestigationStatus.INITIATED
-    
+
     # Basic information
     title: str
     description: str
     severity: Severity
-    
+
     # Parties involved
     lead_investigator: str
     team_members: List[str] = Field(default_factory=list)
     stakeholders: List[str] = Field(default_factory=list)
-    
+
     # Related entities
     related_incidents: List[str] = Field(default_factory=list)
     related_events: List[str] = Field(default_factory=list)
     affected_assets: List[str] = Field(default_factory=list)
     affected_users: List[str] = Field(default_factory=list)
-    
+
     # Evidence
     evidence_items: List[str] = Field(default_factory=list)  # evidence IDs
-    
+
     # Workflow
     tasks: List[InvestigationTask] = Field(default_factory=list)
-    
+
     # Timeline
     initiated_at: datetime = Field(default_factory=datetime.now)
     evidence_collection_started: Optional[datetime] = None
     analysis_started: Optional[datetime] = None
     completed_at: Optional[datetime] = None
-    
+
     # Findings
     findings: Dict[str, Any] = Field(default_factory=dict)
     indicators_of_compromise: List[str] = Field(default_factory=list)
     root_cause: Optional[str] = None
     impact_assessment: Optional[str] = None
     recommendations: List[str] = Field(default_factory=list)
-    
+
     # Reporting
     report_generated: bool = False
     report_location: Optional[str] = None
-    
+
     # Metadata
     tags: List[str] = Field(default_factory=list)
     notes: Optional[str] = None
@@ -254,21 +269,21 @@ class AnalysisResult(BaseModel):
     analysis_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     evidence_id: str
     analysis_type: AnalysisType
-    
+
     # Analysis details
     analyzed_at: datetime = Field(default_factory=datetime.now)
     analyzed_by: str  # person or system
     analysis_tool: Optional[str] = None
-    
+
     # Results
     findings: List[Dict[str, Any]] = Field(default_factory=list)
     indicators: List[str] = Field(default_factory=list)
     timeline_events: List[Dict[str, Any]] = Field(default_factory=list)
-    
+
     # Scoring
     confidence: float = 0.0  # 0.0-1.0
     severity: Severity = Severity.INFO
-    
+
     # Metadata
     summary: Optional[str] = None
     details: Optional[str] = None
@@ -1242,140 +1257,179 @@ class ForensicReportGenerator:
         else:
             return self._generate_markdown_report(investigation)
 
-    def _generate_markdown_report(self, investigation: Investigation) -> str:
-        """Generate markdown format report."""
-        report = []
+    def _format_report_header(self, investigation: Investigation) -> List[str]:
+        """Format report header section."""
+        return [
+            "# FORENSIC INVESTIGATION REPORT",
+            "",
+            f"**Investigation ID:** {investigation.investigation_id}",
+            f"**Title:** {investigation.title}",
+            f"**Type:** {investigation.investigation_type.value}",
+            f"**Status:** {investigation.status.value}",
+            f"**Severity:** {investigation.severity.value}",
+            ""
+        ]
 
-        # Header
-        report.append("# FORENSIC INVESTIGATION REPORT")
-        report.append("")
-        report.append(f"**Investigation ID:** {investigation.investigation_id}")
-        report.append(f"**Title:** {investigation.title}")
-        report.append(f"**Type:** {investigation.investigation_type.value}")
-        report.append(f"**Status:** {investigation.status.value}")
-        report.append(f"**Severity:** {investigation.severity.value}")
-        report.append("")
+    def _format_executive_summary(self, investigation: Investigation) -> List[str]:
+        """Format executive summary section."""
+        return [
+            "## Executive Summary",
+            "",
+            investigation.description,
+            ""
+        ]
 
-        # Executive Summary
-        report.append("## Executive Summary")
-        report.append("")
-        report.append(investigation.description)
-        report.append("")
+    def _format_investigation_details(self, investigation: Investigation) -> List[str]:
+        """Format investigation details section."""
+        lines = [
+            "## Investigation Details",
+            "",
+            f"**Lead Investigator:** {investigation.lead_investigator}",
+            f"**Team Members:** {', '.join(investigation.team_members) if investigation.team_members else 'None'}",
+            f"**Initiated:** {investigation.initiated_at.strftime('%Y-%m-%d %H:%M:%S')}"
+        ]
 
-        # Investigation Details
-        report.append("## Investigation Details")
-        report.append("")
-        report.append(f"**Lead Investigator:** {investigation.lead_investigator}")
-        report.append(f"**Team Members:** {', '.join(investigation.team_members) if investigation.team_members else 'None'}")
-        report.append(f"**Initiated:** {investigation.initiated_at.strftime('%Y-%m-%d %H:%M:%S')}")
         if investigation.completed_at:
-            report.append(f"**Completed:** {investigation.completed_at.strftime('%Y-%m-%d %H:%M:%S')}")
+            lines.append(f"**Completed:** {investigation.completed_at.strftime('%Y-%m-%d %H:%M:%S')}")
             duration = investigation.completed_at - investigation.initiated_at
-            report.append(f"**Duration:** {duration}")
-        report.append("")
+            lines.append(f"**Duration:** {duration}")
 
-        # Affected Assets
-        if investigation.affected_assets or investigation.affected_users:
-            report.append("## Affected Assets and Users")
-            report.append("")
-            if investigation.affected_assets:
-                report.append("**Assets:**")
-                for asset in investigation.affected_assets:
-                    report.append(f"- {asset}")
-                report.append("")
-            if investigation.affected_users:
-                report.append("**Users:**")
-                for user in investigation.affected_users:
-                    report.append(f"- {user}")
-                report.append("")
+        lines.append("")
+        return lines
 
-        # Evidence Inventory
-        report.append("## Evidence Inventory")
-        report.append("")
-        report.append(f"**Total Evidence Items:** {len(investigation.evidence_items)}")
-        report.append("")
+    def _format_affected_assets(self, investigation: Investigation) -> List[str]:
+        """Format affected assets and users section."""
+        if not (investigation.affected_assets or investigation.affected_users):
+            return []
+
+        lines = ["## Affected Assets and Users", ""]
+
+        if investigation.affected_assets:
+            lines.append("**Assets:**")
+            for asset in investigation.affected_assets:
+                lines.append(f"- {asset}")
+            lines.append("")
+
+        if investigation.affected_users:
+            lines.append("**Users:**")
+            for user in investigation.affected_users:
+                lines.append(f"- {user}")
+            lines.append("")
+
+        return lines
+
+    def _format_evidence_inventory(self, investigation: Investigation) -> List[str]:
+        """Format evidence inventory section."""
+        lines = [
+            "## Evidence Inventory",
+            "",
+            f"**Total Evidence Items:** {len(investigation.evidence_items)}",
+            ""
+        ]
 
         for evidence_id in investigation.evidence_items:
             evidence = self.evidence_collector.get_evidence(evidence_id)
             if evidence:
-                report.append(f"### Evidence: {evidence.evidence_id}")
-                report.append(f"- **Type:** {evidence.evidence_type.value}")
-                report.append(f"- **Source:** {evidence.source.value}")
-                report.append(f"- **System:** {evidence.source_system}")
-                report.append(f"- **Collected:** {evidence.collected_at.strftime('%Y-%m-%d %H:%M:%S') if evidence.collected_at else 'N/A'}")
-                report.append(f"- **Collected By:** {evidence.collected_by}")
-                report.append(f"- **Status:** {evidence.status.value}")
-                report.append(f"- **Size:** {evidence.data_size} bytes")
-                report.append(f"- **SHA-256:** {evidence.hash_sha256}")
-                report.append("")
+                lines.extend([
+                    f"### Evidence: {evidence.evidence_id}",
+                    f"- **Type:** {evidence.evidence_type.value}",
+                    f"- **Source:** {evidence.source.value}",
+                    f"- **System:** {evidence.source_system}",
+                    f"- **Collected:** {evidence.collected_at.strftime('%Y-%m-%d %H:%M:%S') if evidence.collected_at else 'N/A'}",
+                    f"- **Collected By:** {evidence.collected_by}",
+                    f"- **Status:** {evidence.status.value}",
+                    f"- **Size:** {evidence.data_size} bytes",
+                    f"- **SHA-256:** {evidence.hash_sha256}",
+                    ""
+                ])
 
-                # Chain of custody
                 if evidence.chain_of_custody:
-                    report.append("**Chain of Custody:**")
+                    lines.append("**Chain of Custody:**")
                     for entry in evidence.chain_of_custody:
-                        report.append(f"- {entry.timestamp.strftime('%Y-%m-%d %H:%M:%S')}: {entry.action} by {entry.actor} at {entry.location}")
-                    report.append("")
+                        lines.append(f"- {entry.timestamp.strftime('%Y-%m-%d %H:%M:%S')}: {entry.action} by {entry.actor} at {entry.location}")
+                    lines.append("")
 
-        # Findings
+        return lines
+
+    def _format_findings_and_iocs(self, investigation: Investigation) -> List[str]:
+        """Format findings and IOCs sections."""
+        lines = []
+
         if investigation.findings:
-            report.append("## Findings")
-            report.append("")
+            lines.extend(["## Findings", ""])
             for key, value in investigation.findings.items():
-                report.append(f"### {key}")
-                report.append(f"{value}")
-                report.append("")
+                lines.extend([f"### {key}", f"{value}", ""])
 
-        # Indicators of Compromise
         if investigation.indicators_of_compromise:
-            report.append("## Indicators of Compromise (IOCs)")
-            report.append("")
+            lines.extend(["## Indicators of Compromise (IOCs)", ""])
             for ioc in investigation.indicators_of_compromise:
-                report.append(f"- {ioc}")
-            report.append("")
+                lines.append(f"- {ioc}")
+            lines.append("")
 
-        # Root Cause
+        return lines
+
+    def _format_analysis_sections(self, investigation: Investigation) -> List[str]:
+        """Format root cause, impact, and recommendations sections."""
+        lines = []
+
         if investigation.root_cause:
-            report.append("## Root Cause Analysis")
-            report.append("")
-            report.append(investigation.root_cause)
-            report.append("")
+            lines.extend(["## Root Cause Analysis", "", investigation.root_cause, ""])
 
-        # Impact Assessment
         if investigation.impact_assessment:
-            report.append("## Impact Assessment")
-            report.append("")
-            report.append(investigation.impact_assessment)
-            report.append("")
+            lines.extend(["## Impact Assessment", "", investigation.impact_assessment, ""])
 
-        # Recommendations
         if investigation.recommendations:
-            report.append("## Recommendations")
-            report.append("")
+            lines.extend(["## Recommendations", ""])
             for i, rec in enumerate(investigation.recommendations, 1):
-                report.append(f"{i}. {rec}")
-            report.append("")
+                lines.append(f"{i}. {rec}")
+            lines.append("")
 
-        # Investigation Tasks
-        report.append("## Investigation Tasks")
-        report.append("")
+        return lines
+
+    def _format_investigation_tasks(self, investigation: Investigation) -> List[str]:
+        """Format investigation tasks section."""
         completed_tasks = [t for t in investigation.tasks if t.status == "completed"]
-        pending_tasks = [t for t in investigation.tasks if t.status != "completed"]
-        report.append(f"**Completed:** {len(completed_tasks)}/{len(investigation.tasks)}")
-        report.append("")
+
+        lines = [
+            "## Investigation Tasks",
+            "",
+            f"**Completed:** {len(completed_tasks)}/{len(investigation.tasks)}",
+            ""
+        ]
 
         for task in investigation.tasks:
             status_icon = "✓" if task.status == "completed" else "○"
-            report.append(f"{status_icon} **{task.task_name}** ({task.status})")
+            lines.append(f"{status_icon} **{task.task_name}** ({task.status})")
             if task.findings:
-                report.append(f"  - Findings: {task.findings}")
-        report.append("")
+                lines.append(f"  - Findings: {task.findings}")
 
-        # Footer
-        report.append("---")
-        report.append("")
-        report.append(f"*Report generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*")
-        report.append("")
-        report.append("**CONFIDENTIAL - FOR AUTHORIZED PERSONNEL ONLY**")
+        lines.append("")
+        return lines
+
+    def _format_report_footer(self) -> List[str]:
+        """Format report footer."""
+        return [
+            "---",
+            "",
+            f"*Report generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*",
+            "",
+            "**CONFIDENTIAL - FOR AUTHORIZED PERSONNEL ONLY**"
+        ]
+
+    def _generate_markdown_report(self, investigation: Investigation) -> str:
+        """Generate markdown format report."""
+        report = []
+
+        # Build report using helper methods
+        report.extend(self._format_report_header(investigation))
+        report.extend(self._format_executive_summary(investigation))
+        report.extend(self._format_investigation_details(investigation))
+        report.extend(self._format_affected_assets(investigation))
+        report.extend(self._format_evidence_inventory(investigation))
+        report.extend(self._format_findings_and_iocs(investigation))
+        report.extend(self._format_analysis_sections(investigation))
+        report.extend(self._format_investigation_tasks(investigation))
+        report.extend(self._format_report_footer())
 
         return "\n".join(report)
 
@@ -1498,4 +1552,3 @@ def get_forensics_engine() -> ForensicsEngine:
     if _forensics_engine is None:
         _forensics_engine = ForensicsEngine()
     return _forensics_engine
-

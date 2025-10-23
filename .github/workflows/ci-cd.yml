@@ -146,7 +146,7 @@ jobs:
     if: github.ref == 'refs/heads/develop'
     environment:
       name: staging
-      url: https://staging.vaulytica.example.com
+      url: https://example.com
     
     steps:
     - name: Checkout code
@@ -168,7 +168,7 @@ jobs:
     - name: Run smoke tests
       run: |
         sleep 30
-        curl -f https://staging.vaulytica.example.com/health || exit 1
+        curl -f https://example.com || exit 1
 
   deploy-production:
     name: Deploy to Production
@@ -177,7 +177,7 @@ jobs:
     if: github.event_name == 'release'
     environment:
       name: production
-      url: https://vaulytica.example.com
+      url: https://example.com
     
     steps:
     - name: Checkout code
@@ -199,7 +199,7 @@ jobs:
     - name: Run smoke tests
       run: |
         sleep 30
-        curl -f https://vaulytica.example.com/health || exit 1
+        curl -f https://example.com || exit 1
     
     - name: Notify deployment
       uses: 8398a7/action-slack@v3

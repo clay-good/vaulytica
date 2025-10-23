@@ -1,3 +1,20 @@
+"""
+ServiceNow Integration for Vaulytica.
+
+Provides comprehensive ServiceNow incident management integration with:
+- Full CRUD operations for incidents
+- Bidirectional synchronization with Vaulytica incidents
+- Assignment group and user management
+- Work notes and comments
+- Attachment support
+- SLA tracking
+- Change management integration
+- CMDB integration for asset correlation
+
+Author: Vaulytica Team
+Version: 0.21.0
+"""
+
 import asyncio
 import aiohttp
 import json
@@ -88,10 +105,10 @@ class SyncMapping:
 class ServiceNowAPIClient:
     """
     ServiceNow REST API client.
-    
+
     Provides low-level API operations for ServiceNow Table API.
     """
-    
+
     def __init__(
         self,
         instance: str,
@@ -101,7 +118,7 @@ class ServiceNowAPIClient:
     ):
         """
         Initialize ServiceNow API client.
-        
+
         Args:
             instance: ServiceNow instance name (e.g., 'dev12345')
             username: ServiceNow username
@@ -113,7 +130,7 @@ class ServiceNowAPIClient:
         self.username = username
         self.password = password
         self.session: Optional[aiohttp.ClientSession] = None
-        
+
         # Statistics
         self.statistics = {
             "total_requests": 0,
@@ -123,15 +140,15 @@ class ServiceNowAPIClient:
             "incidents_updated": 0,
             "incidents_queried": 0
         }
-        
+
         logger.info(f"ServiceNow API client initialized for instance: {instance}")
-    
+
     def _get_auth_header(self) -> str:
         """Generate Basic Auth header."""
         credentials = f"{self.username}:{self.password}"
         encoded = b64encode(credentials.encode()).decode()
         return f"Basic {encoded}"
-    
+
     async def _ensure_session(self):
         """Ensure aiohttp session exists."""
         if self.session is None or self.session.closed:
@@ -142,12 +159,12 @@ class ServiceNowAPIClient:
                     "Accept": "application/json"
                 }
             )
-    
+
     async def close(self):
         """Close the aiohttp session."""
         if self.session and not self.session.closed:
             await self.session.close()
-    
+
     async def create_incident(
         self,
         short_description: str,
@@ -162,7 +179,7 @@ class ServiceNowAPIClient:
     ) -> Optional[ServiceNowIncident]:
         """Create a new ServiceNow incident."""
         await self._ensure_session()
-        
+
         payload = {
             "short_description": short_description,
             "description": description,
@@ -171,18 +188,18 @@ class ServiceNowAPIClient:
             "urgency": urgency.value,
             "category": category
         }
-        
+
         if assignment_group:
             payload["assignment_group"] = assignment_group
         if caller_id:
             payload["caller_id"] = caller_id
-        
+
         # Add any additional fields
         payload.update(kwargs)
-        
+
         try:
             self.statistics["total_requests"] += 1
-            
+
             async with self.session.post(
                 f"{self.base_url}/table/incident",
                 json=payload
@@ -190,10 +207,10 @@ class ServiceNowAPIClient:
                 if response.status == 201:
                     data = await response.json()
                     result = data.get("result", {})
-                    
+
                     self.statistics["successful_requests"] += 1
                     self.statistics["incidents_created"] += 1
-                    
+
                     incident = self._parse_incident(result)
                     logger.info(f"Created ServiceNow incident: {incident.number}")
                     return incident
@@ -202,40 +219,40 @@ class ServiceNowAPIClient:
                     error_text = await response.text()
                     logger.error(f"Failed to create incident: {response.status} - {error_text}")
                     return None
-                    
+
         except Exception as e:
             self.statistics["failed_requests"] += 1
             logger.error(f"Error creating incident: {e}")
             return None
-    
+
     async def get_incident(self, sys_id: str) -> Optional[ServiceNowIncident]:
         """Get incident by sys_id."""
         await self._ensure_session()
-        
+
         try:
             self.statistics["total_requests"] += 1
-            
+
             async with self.session.get(
                 f"{self.base_url}/table/incident/{sys_id}"
             ) as response:
                 if response.status == 200:
                     data = await response.json()
                     result = data.get("result", {})
-                    
+
                     self.statistics["successful_requests"] += 1
                     self.statistics["incidents_queried"] += 1
-                    
+
                     return self._parse_incident(result)
                 else:
                     self.statistics["failed_requests"] += 1
                     logger.error(f"Failed to get incident: {response.status}")
                     return None
-                    
+
         except Exception as e:
             self.statistics["failed_requests"] += 1
             logger.error(f"Error getting incident: {e}")
             return None
-    
+
     def _parse_incident(self, data: Dict[str, Any]) -> ServiceNowIncident:
         """Parse ServiceNow API response into ServiceNowIncident."""
         return ServiceNowIncident(
@@ -265,14 +282,15 @@ class ServiceNowAPIClient:
                 "resolved_at", "closed_at", "cmdb_ci", "business_service", "correlation_id"
             ]}
         )
-    
+
     def _parse_datetime(self, dt_str: Optional[str]) -> Optional[datetime]:
         """Parse ServiceNow datetime string."""
         if not dt_str:
             return None
         try:
             return datetime.strptime(dt_str, "%Y-%m-%d %H:%M:%S")
-        except:
+        except (ValueError, TypeError) as e:
+            logger.warning(f"Failed to parse ServiceNow datetime '{dt_str}': {e}")
             return None
 
     async def update_incident(
@@ -724,4 +742,3 @@ def get_servicenow_manager(
         _servicenow_manager = ServiceNowIncidentManager(api_client, **kwargs)
 
     return _servicenow_manager
-

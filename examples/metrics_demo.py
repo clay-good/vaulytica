@@ -1,4 +1,12 @@
 #!/usr/bin/env python3
+"""
+Demonstration of Vaulytica metrics and monitoring capabilities.
+
+This script shows how to:
+1. Collect metrics during analysis
+2. Export metrics in various formats
+3. Integrate with monitoring systems
+"""
 
 import asyncio
 import json
@@ -149,9 +157,9 @@ async def demo_metrics():
     
     print("💡 Integration Examples:\n")
     print("1. Prometheus scraping:")
-    print("   curl http://localhost:8000/metrics/prometheus")
+    print("   curl https://example.com:8000/metrics/prometheus")
     print("\n2. JSON metrics API:")
-    print("   curl http://localhost:8000/metrics")
+    print("   curl https://example.com:8000/metrics")
     print("\n3. CLI metrics:")
     print("   python -m vaulytica.cli stats --metrics")
     print("\n4. Grafana dashboard:")

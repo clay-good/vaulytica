@@ -1,3 +1,5 @@
+"""Tests for configuration management."""
+
 import pytest
 from pathlib import Path
 from vaulytica.config import VaulyticaConfig, load_config

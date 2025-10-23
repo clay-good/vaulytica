@@ -1,4 +1,17 @@
 #!/usr/bin/env python3
+"""
+Threat Feed Integration Demonstration
+
+This script demonstrates the real-time threat intelligence feed integration
+capabilities of Vaulytica v0.9.0.
+
+Features demonstrated:
+- Single IOC enrichment from multiple sources
+- Batch IOC enrichment
+- Threat feed statistics
+- Cache performance
+- Consensus verdict aggregation
+"""
 
 import sys
 import os

@@ -1,3 +1,19 @@
+"""
+External Threat Intelligence Integration Module
+
+Integrates with real external threat intelligence platforms:
+- VirusTotal API
+- AlienVault OTX API
+- MITRE ATT&CK Framework
+- Abuse IPDB
+- Shodan
+- URLhaus
+- ThreatFox
+
+Provides unified interface for threat intelligence enrichment,
+IOC validation, and threat actor attribution.
+"""
+
 import asyncio
 import hashlib
 import json
@@ -51,30 +67,30 @@ class ThreatIntelligence:
     threat_level: ThreatLevel
     confidence: float  # 0.0-1.0
     sources: List[ThreatIntelSource]
-    
+
     # Threat details
     malware_families: List[str] = field(default_factory=list)
     threat_actors: List[str] = field(default_factory=list)
     campaigns: List[str] = field(default_factory=list)
     attack_techniques: List[str] = field(default_factory=list)  # MITRE ATT&CK IDs
-    
+
     # Context
     first_seen: Optional[datetime] = None
     last_seen: Optional[datetime] = None
     tags: List[str] = field(default_factory=list)
     description: str = ""
-    
+
     # Reputation scores
     reputation_scores: Dict[str, float] = field(default_factory=dict)  # source -> score
     detection_rate: Optional[float] = None  # 0.0-1.0
-    
+
     # Related IOCs
     related_iocs: List[str] = field(default_factory=list)
-    
+
     # Metadata
     enriched_at: datetime = field(default_factory=datetime.utcnow)
     raw_data: Dict[str, Any] = field(default_factory=dict)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -109,12 +125,12 @@ class MITREAttackTechnique:
     data_sources: List[str]
     mitigations: List[str]
     detection_methods: List[str]
-    
+
     # Relationships
     sub_techniques: List[str] = field(default_factory=list)
     parent_technique: Optional[str] = None
     related_techniques: List[str] = field(default_factory=list)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -135,11 +151,11 @@ class MITREAttackTechnique:
 class ThreatIntelIntegration:
     """
     External threat intelligence integration.
-    
+
     Integrates with multiple threat intelligence platforms to provide
     comprehensive IOC enrichment and threat actor attribution.
     """
-    
+
     def __init__(
         self,
         virustotal_api_key: Optional[str] = None,
@@ -154,15 +170,15 @@ class ThreatIntelIntegration:
         self.abuseipdb_api_key = abuseipdb_api_key
         self.shodan_api_key = shodan_api_key
         self.cache_ttl = cache_ttl
-        
+
         # Cache
         self.cache: Dict[str, ThreatIntelligence] = {}
         self.cache_timestamps: Dict[str, datetime] = {}
-        
+
         # MITRE ATT&CK data
         self.mitre_techniques: Dict[str, MITREAttackTechnique] = {}
         self._initialize_mitre_data()
-        
+
         # Statistics
         self.stats = {
             "total_queries": 0,
@@ -171,7 +187,7 @@ class ThreatIntelIntegration:
             "api_calls": defaultdict(int),
             "enrichments_by_source": defaultdict(int)
         }
-    
+
     def _initialize_mitre_data(self):
         """Initialize MITRE ATT&CK technique data."""
         # Sample MITRE ATT&CK techniques (in production, load from MITRE's STIX data)
@@ -227,10 +243,10 @@ class ThreatIntelIntegration:
                 detection_methods=["Network traffic analysis", "Data flow monitoring"]
             )
         ]
-        
+
         for technique in techniques:
             self.mitre_techniques[technique.technique_id] = technique
-    
+
     async def enrich_ioc(
         self,
         ioc: str,
@@ -239,17 +255,17 @@ class ThreatIntelIntegration:
     ) -> ThreatIntelligence:
         """
         Enrich IOC with threat intelligence from multiple sources.
-        
+
         Args:
             ioc: IOC value
             ioc_type: Type of IOC
             sources: Specific sources to query (None = all available)
-        
+
         Returns:
             ThreatIntelligence object with enriched data
         """
         self.stats["total_queries"] += 1
-        
+
         # Check cache
         cache_key = f"{ioc_type.value}:{ioc}"
         if cache_key in self.cache:
@@ -257,13 +273,13 @@ class ThreatIntelIntegration:
             if cache_time and (datetime.utcnow() - cache_time).total_seconds() < self.cache_ttl:
                 self.stats["cache_hits"] += 1
                 return self.cache[cache_key]
-        
+
         self.stats["cache_misses"] += 1
-        
+
         # Determine sources to query
         if sources is None:
             sources = self._get_available_sources(ioc_type)
-        
+
         # Query sources in parallel
         tasks = []
         for source in sources:
@@ -277,35 +293,35 @@ class ThreatIntelIntegration:
                 tasks.append(self._query_shodan(ioc, ioc_type))
             elif source == ThreatIntelSource.INTERNAL:
                 tasks.append(self._query_internal(ioc, ioc_type))
-        
+
         # Execute queries
         results = await asyncio.gather(*tasks, return_exceptions=True)
-        
+
         # Fuse results
         intel = self._fuse_intelligence(ioc, ioc_type, results, sources)
-        
+
         # Cache result
         self.cache[cache_key] = intel
         self.cache_timestamps[cache_key] = datetime.utcnow()
-        
+
         return intel
-    
+
     def _get_available_sources(self, ioc_type: IOCType) -> List[ThreatIntelSource]:
         """Get available sources for IOC type."""
         sources = [ThreatIntelSource.INTERNAL]
-        
+
         if ioc_type in [IOCType.IP, IOCType.DOMAIN, IOCType.URL, IOCType.FILE_HASH]:
             if self.virustotal_api_key:
                 sources.append(ThreatIntelSource.VIRUSTOTAL)
             if self.otx_api_key:
                 sources.append(ThreatIntelSource.ALIENVAULT_OTX)
-        
+
         if ioc_type == IOCType.IP:
             if self.abuseipdb_api_key:
                 sources.append(ThreatIntelSource.ABUSEIPDB)
             if self.shodan_api_key:
                 sources.append(ThreatIntelSource.SHODAN)
-        
+
         return sources
 
     async def _query_virustotal(self, ioc: str, ioc_type: IOCType) -> Dict[str, Any]:
@@ -344,7 +360,7 @@ class ThreatIntelIntegration:
             "campaigns": ["Operation Ghost"],
             "attack_techniques": ["T1566.001", "T1059.001"],
             "tags": ["apt", "espionage"],
-            "description": f"IOC associated with APT activity"
+            "description": "IOC associated with APT activity"
         }
 
     async def _query_abuseipdb(self, ioc: str, ioc_type: IOCType) -> Dict[str, Any]:
@@ -361,7 +377,7 @@ class ThreatIntelIntegration:
             "confidence": 0.90,
             "reputation_score": 0.15,
             "tags": ["scanner", "brute-force"],
-            "description": f"IP reported for malicious activity"
+            "description": "IP reported for malicious activity"
         }
 
     async def _query_shodan(self, ioc: str, ioc_type: IOCType) -> Dict[str, Any]:
@@ -377,7 +393,7 @@ class ThreatIntelIntegration:
             "threat_level": ThreatLevel.INFO,
             "confidence": 0.60,
             "tags": ["open-port", "vulnerable"],
-            "description": f"IP has exposed services"
+            "description": "IP has exposed services"
         }
 
     async def _query_internal(self, ioc: str, ioc_type: IOCType) -> Dict[str, Any]:
@@ -392,7 +408,7 @@ class ThreatIntelIntegration:
             "threat_level": ThreatLevel.MEDIUM,
             "confidence": 0.65,
             "tags": ["internal"],
-            "description": f"Internal threat intelligence data"
+            "description": "Internal threat intelligence data"
         }
 
     def _fuse_intelligence(
@@ -577,7 +593,7 @@ class ThreatIntelIntegration:
             "mitre_techniques_loaded": len(self.mitre_techniques)
         }
 
-    def clear_cache(self):
+    def clear_cache(self) -> None:
         """Clear the intelligence cache."""
         self.cache.clear()
         self.cache_timestamps.clear()
@@ -605,4 +621,3 @@ def get_threat_intel_integration(
         )
 
     return _threat_intel_integration
-

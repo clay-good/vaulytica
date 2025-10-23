@@ -1,3 +1,18 @@
+"""
+Vaulytica Advanced Visualizations - Attack Graphs, Threat Maps, Network Topology
+
+This module provides advanced visualization capabilities:
+- Attack Graph: Interactive attack chain and kill chain visualization
+- Threat Map: Geographic threat map with real-time attack origins
+- Network Topology: Network graph showing compromised assets
+- Timeline: Interactive timeline of attack progression
+- Correlation Matrix: Heatmap showing event correlations
+- Entity Relationship: Graph of entities and their relationships
+
+Author: World-Class Software Engineering Team
+Version: 0.13.0
+"""
+
 import json
 from typing import Dict, List, Optional, Tuple, Any, Set
 from dataclasses import dataclass, field, asdict
@@ -59,12 +74,12 @@ class GraphNode:
     severity: Optional[Severity] = None
     threat_level: Optional[ThreatLevel] = None
     timestamp: Optional[datetime] = None
-    
+
     # Visual properties
     size: int = 10
     color: Optional[str] = None
     icon: Optional[str] = None
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
         data = {
@@ -74,7 +89,7 @@ class GraphNode:
             "properties": self.properties,
             "size": self.size
         }
-        
+
         if self.severity:
             data["severity"] = self.severity.value
         if self.threat_level:
@@ -85,7 +100,7 @@ class GraphNode:
             data["color"] = self.color
         if self.icon:
             data["icon"] = self.icon
-            
+
         return data
 
 
@@ -99,12 +114,12 @@ class GraphEdge:
     properties: Dict[str, Any] = field(default_factory=dict)
     weight: float = 1.0
     timestamp: Optional[datetime] = None
-    
+
     # Visual properties
     width: int = 2
     color: Optional[str] = None
     dashed: bool = False
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
         data = {
@@ -115,7 +130,7 @@ class GraphEdge:
             "width": self.width,
             "dashed": self.dashed
         }
-        
+
         if self.label:
             data["label"] = self.label
         if self.properties:
@@ -124,7 +139,7 @@ class GraphEdge:
             data["timestamp"] = self.timestamp.isoformat()
         if self.color:
             data["color"] = self.color
-            
+
         return data
 
 
@@ -134,27 +149,27 @@ class Graph:
     nodes: List[GraphNode] = field(default_factory=list)
     edges: List[GraphEdge] = field(default_factory=list)
     metadata: Dict[str, Any] = field(default_factory=dict)
-    
-    def add_node(self, node: GraphNode):
+
+    def add_node(self, node: GraphNode) -> None:
         """Add node to graph."""
         # Check if node already exists
         if not any(n.id == node.id for n in self.nodes):
             self.nodes.append(node)
-    
-    def add_edge(self, edge: GraphEdge):
+
+    def add_edge(self, edge: GraphEdge) -> None:
         """Add edge to graph."""
         # Check if edge already exists
-        if not any(e.source == edge.source and e.target == edge.target and e.type == edge.type 
+        if not any(e.source == edge.source and e.target == edge.target and e.type == edge.type
                    for e in self.edges):
             self.edges.append(edge)
-    
+
     def get_node(self, node_id: str) -> Optional[GraphNode]:
         """Get node by ID."""
         for node in self.nodes:
             if node.id == node_id:
                 return node
         return None
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
         return {
@@ -176,7 +191,7 @@ class ThreatMapPoint:
     severity: Severity = Severity.INFO
     threat_level: ThreatLevel = ThreatLevel.LOW
     timestamp: datetime = field(default_factory=datetime.utcnow)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -202,7 +217,7 @@ class TimelineEvent:
     severity: Severity
     category: EventCategory
     entities: List[str] = field(default_factory=list)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -223,7 +238,7 @@ class CorrelationCell:
     column: str
     value: float
     count: int = 0
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -237,40 +252,40 @@ class CorrelationCell:
 class AttackGraphBuilder:
     """
     Build attack graph visualization.
-    
+
     Creates interactive graph showing attack chains, kill chains,
     and MITRE ATT&CK techniques.
     """
-    
+
     def __init__(self):
         """Initialize attack graph builder."""
         self.graph = Graph()
         logger.info("Attack graph builder initialized")
-    
+
     def build_from_events(self, events: List[SecurityEvent]) -> Graph:
         """
         Build attack graph from security events.
-        
+
         Args:
             events: List of security events
-            
+
         Returns:
             Graph structure
         """
         self.graph = Graph()
-        
+
         # Sort events by timestamp
         sorted_events = sorted(events, key=lambda e: e.timestamp)
-        
+
         # Create nodes for each event
         for event in sorted_events:
             self._add_event_node(event)
-        
+
         # Create edges based on relationships
         self._create_temporal_edges(sorted_events)
         self._create_entity_edges(sorted_events)
         self._create_attack_chain_edges(sorted_events)
-        
+
         # Add metadata
         self.graph.metadata = {
             "total_events": len(events),
@@ -280,10 +295,10 @@ class AttackGraphBuilder:
             },
             "severity_distribution": self._get_severity_distribution(events)
         }
-        
+
         logger.info(f"Attack graph built: {len(self.graph.nodes)} nodes, {len(self.graph.edges)} edges")
         return self.graph
-    
+
     def _add_event_node(self, event: SecurityEvent):
         """Add event as node."""
         node = GraphNode(
@@ -314,7 +329,7 @@ class AttackGraphBuilder:
             self._add_ip_node(dest_ip, "destination")
         if user:
             self._add_user_node(user)
-    
+
     def _add_ip_node(self, ip: str, role: str):
         """Add IP address node."""
         node = GraphNode(
@@ -327,7 +342,7 @@ class AttackGraphBuilder:
             icon="globe"
         )
         self.graph.add_node(node)
-    
+
     def _add_user_node(self, user: str):
         """Add user node."""
         node = GraphNode(
@@ -419,24 +434,26 @@ class AttackGraphBuilder:
         ]
 
         # Find matching patterns
+        # Optimize: Build chain lookup dict for O(1) access
+        chain_lookup = {(chain[0], chain[1]): True for chain in attack_chains}
+
         for i in range(len(events) - 1):
             current = events[i]
             for j in range(i + 1, min(i + 5, len(events))):  # Look ahead up to 5 events
                 next_event = events[j]
 
-                # Check if this matches an attack chain pattern
-                for chain in attack_chains:
-                    if current.category == chain[0] and next_event.category == chain[1]:
-                        edge = GraphEdge(
-                            source=f"event_{current.event_id}",
-                            target=f"event_{next_event.event_id}",
-                            type=EdgeType.CAUSATION,
-                            label="leads to",
-                            weight=2.0,
-                            color="#f59e0b",
-                            width=3
-                        )
-                        self.graph.add_edge(edge)
+                # Optimize: O(1) lookup instead of O(n) loop
+                if (current.category, next_event.category) in chain_lookup:
+                    edge = GraphEdge(
+                        source=f"event_{current.event_id}",
+                        target=f"event_{next_event.event_id}",
+                        type=EdgeType.CAUSATION,
+                        label="leads to",
+                        weight=2.0,
+                        color="#f59e0b",
+                        width=3
+                    )
+                    self.graph.add_edge(edge)
 
     def _get_node_size(self, severity: Severity) -> int:
         """Get node size based on severity."""
@@ -663,59 +680,78 @@ class NetworkTopologyBuilder:
         assets = {}
 
         for event in events:
+            # Extract and process source IP
             source_ip = event.metadata.get("source_ip")
-            dest_ip = event.metadata.get("destination_ip") or event.metadata.get("target_ip")
-
-            # Add source IP as asset
             if source_ip:
-                asset_id = f"ip_{source_ip}"
-                if asset_id not in assets:
-                    assets[asset_id] = {
-                        "type": "ip",
-                        "value": source_ip,
-                        "events": [],
-                        "compromised": False,
-                        "max_severity": Severity.INFO
-                    }
-                assets[asset_id]["events"].append(event.event_id)
-                if event.severity.value > assets[asset_id]["max_severity"].value:
-                    assets[asset_id]["max_severity"] = event.severity
-                if event.severity in [Severity.CRITICAL, Severity.HIGH]:
-                    assets[asset_id]["compromised"] = True
+                self._add_ip_asset(assets, source_ip, event, is_source=True)
 
-            # Add destination IP as asset
+            # Extract and process destination IP
+            dest_ip = event.metadata.get("destination_ip") or event.metadata.get("target_ip")
             if dest_ip:
-                asset_id = f"ip_{dest_ip}"
-                if asset_id not in assets:
-                    assets[asset_id] = {
-                        "type": "ip",
-                        "value": dest_ip,
-                        "events": [],
-                        "compromised": False,
-                        "max_severity": Severity.INFO
-                    }
-                assets[asset_id]["events"].append(event.event_id)
-                if event.severity.value > assets[asset_id]["max_severity"].value:
-                    assets[asset_id]["max_severity"] = event.severity
+                self._add_ip_asset(assets, dest_ip, event, is_source=False)
 
-            # Add affected assets
+            # Extract and process affected assets
             for asset in event.affected_assets:
-                asset_id = f"asset_{asset.asset_id}"
-                if asset_id not in assets:
-                    assets[asset_id] = {
-                        "type": "asset",
-                        "value": asset.asset_id,
-                        "events": [],
-                        "compromised": False,
-                        "max_severity": Severity.INFO
-                    }
-                assets[asset_id]["events"].append(event.event_id)
-                if event.severity.value > assets[asset_id]["max_severity"].value:
-                    assets[asset_id]["max_severity"] = event.severity
-                if event.severity in [Severity.CRITICAL, Severity.HIGH]:
-                    assets[asset_id]["compromised"] = True
+                self._add_affected_asset(assets, asset, event)
 
         return assets
+
+    def _add_ip_asset(
+        self,
+        assets: Dict[str, Dict[str, Any]],
+        ip: str,
+        event: SecurityEvent,
+        is_source: bool
+    ):
+        """Add IP address as asset."""
+        asset_id = f"ip_{ip}"
+
+        if asset_id not in assets:
+            assets[asset_id] = {
+                "type": "ip",
+                "value": ip,
+                "events": [],
+                "compromised": False,
+                "max_severity": Severity.INFO
+            }
+
+        assets[asset_id]["events"].append(event.event_id)
+
+        # Update severity
+        if event.severity.value > assets[asset_id]["max_severity"].value:
+            assets[asset_id]["max_severity"] = event.severity
+
+        # Mark as compromised if high severity and source
+        if is_source and event.severity in [Severity.CRITICAL, Severity.HIGH]:
+            assets[asset_id]["compromised"] = True
+
+    def _add_affected_asset(
+        self,
+        assets: Dict[str, Dict[str, Any]],
+        asset: Any,
+        event: SecurityEvent
+    ):
+        """Add affected asset from event."""
+        asset_id = f"asset_{asset.asset_id}"
+
+        if asset_id not in assets:
+            assets[asset_id] = {
+                "type": "asset",
+                "value": asset.asset_id,
+                "events": [],
+                "compromised": False,
+                "max_severity": Severity.INFO
+            }
+
+        assets[asset_id]["events"].append(event.event_id)
+
+        # Update severity
+        if event.severity.value > assets[asset_id]["max_severity"].value:
+            assets[asset_id]["max_severity"] = event.severity
+
+        # Mark as compromised if high severity
+        if event.severity in [Severity.CRITICAL, Severity.HIGH]:
+            assets[asset_id]["compromised"] = True
 
     def _add_asset_node(self, asset_id: str, asset_info: Dict[str, Any]):
         """Add asset as node."""
@@ -1044,7 +1080,7 @@ def get_visualization_engine() -> VisualizationEngine:
     return _visualization_engine
 
 
-def reset_visualization_engine():
+def reset_visualization_engine() -> None:
     """Reset global visualization engine instance."""
     global _visualization_engine
     _visualization_engine = None
@@ -1058,14 +1094,13 @@ if __name__ == "__main__":
     # Create engine
     engine = VisualizationEngine()
 
-    print(f"✓ Visualization Engine initialized")
-    print(f"  - Attack Graph Builder: Ready")
-    print(f"  - Threat Map Builder: Ready")
-    print(f"  - Network Topology Builder: Ready")
-    print(f"  - Timeline Builder: Ready")
-    print(f"  - Correlation Matrix Builder: Ready")
+    print("✓ Visualization Engine initialized")
+    print("  - Attack Graph Builder: Ready")
+    print("  - Threat Map Builder: Ready")
+    print("  - Network Topology Builder: Ready")
+    print("  - Timeline Builder: Ready")
+    print("  - Correlation Matrix Builder: Ready")
 
     print("\n✓ Visualization Engine ready!")
     print(f"  Stats: {engine.get_stats()}")
     print("="*80)
-

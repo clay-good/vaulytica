@@ -1,3 +1,21 @@
+"""
+Attack Surface Management, Security Data Lake & Threat Modeling Platform (v0.30.0).
+
+This module provides comprehensive attack surface management, security data lake,
+and threat modeling capabilities for proactive security operations.
+
+Features:
+- Attack Surface Discovery: Asset discovery, external attack surface mapping, shadow IT detection
+- Security Data Lake: Centralized security data repository with advanced query engine
+- Threat Modeling: STRIDE-based threat modeling, attack tree generation, risk quantification
+- Security Metrics & KPI Dashboard: Executive dashboards, metrics tracking, automated reporting
+- Incident Simulation: Tabletop exercises, team readiness assessment, training modules
+- Attack Surface Scoring: Exposure scoring, risk prioritization, remediation guidance
+
+Author: World-Class Software Engineering Team
+Version: 0.30.0
+"""
+
 import asyncio
 import hashlib
 import json
@@ -802,7 +820,8 @@ class SecurityDataLake:
             if isinstance(raw_record['timestamp'], str):
                 try:
                     normalized['timestamp'] = datetime.fromisoformat(raw_record['timestamp'].replace('Z', '+00:00'))
-                except:
+                except (ValueError, TypeError) as e:
+                    logger.warning(f"Failed to parse timestamp '{raw_record['timestamp']}': {e}")
                     normalized['timestamp'] = datetime.utcnow()
             else:
                 normalized['timestamp'] = raw_record['timestamp']

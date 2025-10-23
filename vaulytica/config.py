@@ -1,3 +1,5 @@
+"""Configuration management for Vaulytica."""
+
 import os
 from enum import Enum
 from pathlib import Path
@@ -35,36 +37,36 @@ class VaulyticaConfig(BaseSettings):
         default=False,
         description="Enable debug mode"
     )
-    
+
     anthropic_api_key: str = Field(
         description="Anthropic API key for Claude access"
     )
-    
+
     model_name: str = Field(
         default="claude-3-haiku-20240307",
         description="Claude model to use for analysis"
     )
-    
+
     max_tokens: int = Field(
         default=4000,
         description="Maximum tokens for LLM responses"
     )
-    
+
     temperature: float = Field(
         default=0.0,
         description="Temperature for LLM sampling (0.0 for deterministic)"
     )
-    
+
     chunk_size: int = Field(
         default=50000,
         description="Maximum characters per chunk for analysis"
     )
-    
+
     chroma_db_path: Path = Field(
         default=Path("./chroma_db"),
         description="Path to ChromaDB storage"
     )
-    
+
     log_level: str = Field(
         default="INFO",
         description="Logging level (DEBUG, INFO, WARNING, ERROR)"
@@ -190,6 +192,119 @@ class VaulyticaConfig(BaseSettings):
     threat_feed_timeout: int = Field(
         default=10,
         description="Threat feed API timeout in seconds"
+    )
+
+    # URLScan.io Integration
+    urlscan_api_key: Optional[str] = Field(
+        default=None,
+        description="URLScan.io API key for screenshot capture and phishing detection"
+    )
+
+    urlscan_max_wait_seconds: int = Field(
+        default=60,
+        description="Maximum seconds to wait for URLScan.io scan completion"
+    )
+
+    # WHOIS Integration
+    enable_whois: bool = Field(
+        default=True,
+        description="Enable WHOIS domain lookups"
+    )
+
+    whois_recently_registered_threshold_days: int = Field(
+        default=30,
+        description="Days threshold for recently registered domain detection"
+    )
+
+    # Cross-Platform Investigation
+    enable_investigation_queries: bool = Field(
+        default=True,
+        description="Enable cross-platform investigation query generation"
+    )
+
+    # Jira Integration (v1.0.0)
+    jira_url: Optional[str] = Field(
+        default=None,
+        description="Jira instance URL (e.g., 'https://your-company.atlassian.net')"
+    )
+
+    jira_username: Optional[str] = Field(
+        default=None,
+        description="Jira username/email"
+    )
+
+    jira_api_token: Optional[str] = Field(
+        default=None,
+        description="Jira API token"
+    )
+
+    jira_project_key: Optional[str] = Field(
+        default=None,
+        description="Jira project key (e.g., 'SEC')"
+    )
+
+    jira_auto_create_issues: bool = Field(
+        default=False,
+        description="Automatically create Jira issues for incidents"
+    )
+
+    # Wiz Integration
+    wiz_client_id: Optional[str] = Field(
+        default=None,
+        description="Wiz service account client ID"
+    )
+
+    wiz_client_secret: Optional[str] = Field(
+        default=None,
+        description="Wiz service account client secret"
+    )
+
+    wiz_region: str = Field(
+        default="us17",
+        description="Wiz region (us17, eu1, etc.)"
+    )
+
+    wiz_enabled: bool = Field(
+        default=False,
+        description="Enable Wiz cloud security integration"
+    )
+
+    # Socket.dev Integration
+    socketdev_api_key: Optional[str] = Field(
+        default=None,
+        description="Socket.dev API key for supply chain security"
+    )
+
+    socketdev_enabled: bool = Field(
+        default=False,
+        description="Enable Socket.dev integration"
+    )
+
+    # GitLab Integration
+    gitlab_url: Optional[str] = Field(
+        default="https://gitlab.example.com",
+        description="GitLab instance URL"
+    )
+
+    gitlab_token: Optional[str] = Field(
+        default=None,
+        description="GitLab personal access token"
+    )
+
+    gitlab_enabled: bool = Field(
+        default=False,
+        description="Enable GitLab integration"
+    )
+
+    # GitHub Integration
+    github_token: Optional[str] = Field(
+        default=None,
+        description="GitHub personal access token"
+    )
+
+    github_enabled: bool = Field(
+        default=False,
+        description="Enable GitHub integration"
     )
 
     @field_validator("anthropic_api_key")
@@ -322,3 +437,38 @@ def load_config_from_file(config_file: Path) -> VaulyticaConfig:
 
     return VaulyticaConfig(**config_data)
 
+# Global configuration instance
+_global_config: Optional[VaulyticaConfig] = None
+
+
+def get_config() -> VaulyticaConfig:
+    """
+    Get the global configuration instance.
+
+    Creates a new configuration if one doesn't exist.
+    Uses environment variables or defaults.
+
+    Returns:
+        Global VaulyticaConfig instance
+    """
+    global _global_config
+    if _global_config is None:
+        try:
+            _global_config = VaulyticaConfig()
+        except Exception:
+            # If config fails (e.g., missing API key), create with test defaults
+            _global_config = VaulyticaConfig(
+                anthropic_api_key=os.getenv("ANTHROPIC_API_KEY", "sk-ant-test-key-for-testing-only")
+            )
+    return _global_config
+
+
+def set_config(config: VaulyticaConfig) -> None:
+    """
+    Set the global configuration instance.
+
+    Args:
+        config: Configuration to set as global
+    """
+    global _global_config
+    _global_config = config

@@ -1,3 +1,18 @@
+"""
+Vaulytica Advanced Threat Hunting Engine
+
+This module provides comprehensive threat hunting capabilities:
+- Hypothesis-driven hunting with automated query generation
+- Hunt campaign management with templates
+- IOC pivoting and enrichment
+- Behavioral hunting with ML-powered anomaly detection
+- Hunt result correlation and visualization
+- Integration with SIEM, EDR, and threat intelligence
+
+Author: World-Class Software Engineering Team
+Version: 0.18.0
+"""
+
 import asyncio
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Set, Any, Tuple
@@ -63,8 +78,9 @@ class HuntQuery:
     false_positive_rate: float = 0.0
     execution_time_estimate: int = 60  # seconds
     created_at: datetime = field(default_factory=datetime.utcnow)
-    
+
     def to_dict(self) -> Dict[str, Any]:
+        """Convert ThreatHypothesis to dictionary."""
         return {
             "query_id": self.query_id,
             "query_type": self.query_type.value,
@@ -96,8 +112,9 @@ class HuntFinding:
     discovered_at: datetime = field(default_factory=datetime.utcnow)
     validated: bool = False
     escalated: bool = False
-    
+
     def to_dict(self) -> Dict[str, Any]:
+        """Convert HuntingResult to dictionary."""
         return {
             "finding_id": self.finding_id,
             "hunt_id": self.hunt_id,
@@ -135,8 +152,9 @@ class HuntCampaign:
     created_at: datetime = field(default_factory=datetime.utcnow)
     started_at: Optional[datetime] = None
     completed_at: Optional[datetime] = None
-    
+
     def to_dict(self) -> Dict[str, Any]:
+        """Convert ThreatHunt to dictionary."""
         return {
             "hunt_id": self.hunt_id,
             "name": self.name,
@@ -160,11 +178,11 @@ class HuntCampaign:
 class ThreatHuntingEngine:
     """
     Advanced Threat Hunting Engine.
-    
+
     Provides hypothesis-driven threat hunting with automated query generation,
     IOC pivoting, behavioral analysis, and hunt campaign management.
     """
-    
+
     def __init__(self):
         self.campaigns: Dict[str, HuntCampaign] = {}
         self.findings: Dict[str, HuntFinding] = {}
@@ -179,7 +197,7 @@ class ThreatHuntingEngine:
             "avg_execution_time": 0.0
         }
         logger.info("Threat Hunting Engine initialized")
-    
+
     def _initialize_templates(self) -> Dict[str, List[HuntQuery]]:
         """Initialize hunt query templates for common scenarios."""
         templates = {
@@ -258,7 +276,7 @@ class ThreatHuntingEngine:
             ]
         }
         return templates
-    
+
     async def create_campaign(
         self,
         name: str,
@@ -274,7 +292,7 @@ class ThreatHuntingEngine:
     ) -> HuntCampaign:
         """Create a new threat hunting campaign."""
         hunt_id = f"HUNT-{datetime.utcnow().strftime('%Y%m%d')}-{len(self.campaigns) + 1:04d}"
-        
+
         campaign = HuntCampaign(
             hunt_id=hunt_id,
             name=name,
@@ -288,10 +306,10 @@ class ThreatHuntingEngine:
             mitre_techniques=mitre_techniques or [],
             threat_actors=threat_actors or []
         )
-        
+
         self.campaigns[hunt_id] = campaign
         self.statistics["total_campaigns"] += 1
-        
+
         logger.info(f"Created hunt campaign: {hunt_id} - {name}")
         return campaign
 
@@ -597,4 +615,3 @@ def get_threat_hunting_engine() -> ThreatHuntingEngine:
     if _threat_hunting_engine is None:
         _threat_hunting_engine = ThreatHuntingEngine()
     return _threat_hunting_engine
-

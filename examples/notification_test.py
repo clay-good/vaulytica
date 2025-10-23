@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+"""
+Test script for Vaulytica notification integrations.
+
+This script demonstrates how to configure and test Slack, Teams, and Email notifications.
+"""
 
 import asyncio
 import json
@@ -56,11 +61,11 @@ async def test_notifications():
     if not channels:
         print("⚠️  No notification channels configured!")
         print("\nTo configure notifications, set environment variables:")
-        print("  - VAULYTICA_SLACK_WEBHOOK_URL=https://hooks.slack.com/services/...")
-        print("  - VAULYTICA_TEAMS_WEBHOOK_URL=https://outlook.office.com/webhook/...")
+        print("  - VAULYTICA_SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/WEBHOOK/URL")
+        print("  - VAULYTICA_TEAMS_WEBHOOK_URL=https://example.com")
         print("  - VAULYTICA_SMTP_HOST=smtp.gmail.com")
-        print("  - VAULYTICA_SMTP_FROM=alerts@example.com")
-        print("  - VAULYTICA_SMTP_TO=security@example.com")
+        print("  - VAULYTICA_SMTP_FROM=user@example.com")
+        print("  - VAULYTICA_SMTP_TO=user@example.com")
         return
     
     print(f"📡 Configured channels: {', '.join(channels)}\n")

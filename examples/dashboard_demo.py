@@ -1,4 +1,17 @@
 #!/usr/bin/env python3
+"""
+Vaulytica Dashboard Demo
+
+This script demonstrates the web dashboard by:
+1. Starting the API server with dashboard
+2. Generating sample security events
+3. Showing real-time updates in the dashboard
+
+Usage:
+    python3 examples/dashboard_demo.py
+    
+Then open your browser to: https://example.com:8000
+"""
 
 import asyncio
 import time
@@ -142,7 +155,7 @@ async def main():
     print("2. Populate with 50 historical events")
     print("3. Generate new events every 5 seconds")
     print()
-    print("📊 Open your browser to: http://localhost:8000")
+    print("📊 Open your browser to: https://example.com:8000")
     print()
     print("=" * 80)
     
@@ -164,14 +177,14 @@ async def main():
     
     # Start continuous generation
     print("🚀 Dashboard is ready!")
-    print("   Open http://localhost:8000 in your browser")
+    print("   Open https://example.com:8000 in your browser")
     print()
     
     # Note: In production, this would run alongside the API server
     # For demo purposes, we'll just show how to generate events
     print("💡 To run the full dashboard:")
     print("   1. Start the API server: python3 -m vaulytica.api")
-    print("   2. Open http://localhost:8000 in your browser")
+    print("   2. Open https://example.com:8000 in your browser")
     print("   3. Use the 'Create Test Event' button or API endpoint")
     print()
     print("=" * 80)

@@ -1,3 +1,5 @@
+"""Tests for security event parsers."""
+
 import pytest
 from datetime import datetime
 from vaulytica.parsers import (
@@ -175,7 +177,7 @@ class TestSnowflakeParser:
             "EVENT_ID": "test-event-123",
             "EVENT_TYPE": "QUERY_EXECUTION",
             "EVENT_TIMESTAMP": "2024-10-15T14:30:00Z",
-            "USER_NAME": "testuser@example.com",
+            "USER_NAME": "user@example.com",
             "CLIENT_IP": "192.168.1.100",
             "DATABASE_NAME": "PRODUCTION_DB",
             "QUERY_TEXT": "SELECT * FROM sensitive_table",

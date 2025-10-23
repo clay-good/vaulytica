@@ -1,3 +1,22 @@
+"""
+Vaulytica AI SOC Analytics - Advanced AI-Powered Security Operations
+
+This module provides comprehensive AI-powered SOC analytics that performs the roles
+of a Security Operations Center using advanced machine learning and AI:
+
+- Predictive Threat Analytics: Forecast threats before they occur
+- Risk Scoring Engine: Dynamic risk assessment for assets, users, and threats
+- Automated Triage: AI-powered incident prioritization and classification
+- Threat Hunting: Proactive hypothesis-driven threat detection
+- Behavioral Analytics: UEBA with anomaly detection
+- Attack Path Analysis: Predict attack paths and calculate blast radius
+- Trend Analysis: Identify patterns and trends in security data
+- Threat Intelligence Correlation: Connect threats across time and space
+
+Author: World-Class Software Engineering Team
+Version: 0.15.0
+"""
+
 import json
 import hashlib
 import numpy as np
@@ -199,21 +218,21 @@ class SOCMetrics:
 
 class PredictiveThreatAnalytics:
     """Predictive analytics for threat forecasting."""
-    
+
     def __init__(self, ml_engine: MLEngine, advanced_ml: AdvancedMLEngine):
         self.ml_engine = ml_engine
         self.advanced_ml = advanced_ml
         self.threat_history: deque = deque(maxlen=1000)
         self.predictions: List[ThreatPrediction] = []
-        
-    def predict_threats(self, recent_events: List[SecurityEvent], 
+
+    def predict_threats(self, recent_events: List[SecurityEvent],
                        time_window: timedelta = timedelta(hours=24)) -> List[ThreatPrediction]:
         """Predict future threats based on recent activity."""
         predictions = []
-        
+
         # Analyze patterns in recent events
         patterns = self._analyze_threat_patterns(recent_events)
-        
+
         # Predict based on patterns
         for pattern_type, pattern_data in patterns.items():
             if pattern_data["confidence"] > 0.6:
@@ -221,19 +240,19 @@ class PredictiveThreatAnalytics:
                     pattern_type, pattern_data, time_window
                 )
                 predictions.append(prediction)
-        
+
         # Use ML to predict threat escalation
         if len(recent_events) >= 5:
             ml_predictions = self._ml_threat_prediction(recent_events, time_window)
             predictions.extend(ml_predictions)
-        
+
         self.predictions.extend(predictions)
         return predictions
-    
+
     def _analyze_threat_patterns(self, events: List[SecurityEvent]) -> Dict[str, Any]:
         """Analyze patterns in security events."""
         patterns = {}
-        
+
         # Pattern 1: Escalating severity
         severities = [e.severity for e in events[-10:]]
         if self._is_escalating(severities):
@@ -242,7 +261,7 @@ class PredictiveThreatAnalytics:
                 "indicators": ["Severity increasing over time"],
                 "threat_category": ThreatCategory.APT
             }
-        
+
         # Pattern 2: Repeated failed access
         failed_access_count = sum(1 for e in events if "failed" in e.title.lower() or "denied" in e.title.lower())
         if failed_access_count > 5:
@@ -251,7 +270,7 @@ class PredictiveThreatAnalytics:
                 "indicators": [f"{failed_access_count} failed access attempts"],
                 "threat_category": ThreatCategory.CREDENTIAL_THEFT
             }
-        
+
         # Pattern 3: Data exfiltration indicators
         exfil_events = [e for e in events if e.category == EventCategory.DATA_EXFILTRATION]
         if len(exfil_events) > 0:
@@ -260,7 +279,7 @@ class PredictiveThreatAnalytics:
                 "indicators": [f"{len(exfil_events)} data exfiltration events"],
                 "threat_category": ThreatCategory.DATA_BREACH
             }
-        
+
         # Pattern 4: Lateral movement
         lateral_events = [e for e in events if e.category == EventCategory.LATERAL_MOVEMENT]
         if len(lateral_events) > 2:
@@ -269,7 +288,7 @@ class PredictiveThreatAnalytics:
                 "indicators": [f"{len(lateral_events)} lateral movement events"],
                 "threat_category": ThreatCategory.APT
             }
-        
+
         return patterns
 
     def _is_escalating(self, severities: List[Severity]) -> bool:
@@ -1200,7 +1219,7 @@ class AttackPathAnalyzer:
         steps.append(f"Monitor target asset: {path[-1]}")
 
         if len(path) > 2:
-            steps.append(f"Review access controls for intermediate assets")
+            steps.append("Review access controls for intermediate assets")
 
         steps.append("Enable enhanced logging on all assets in path")
         steps.append("Review and restrict lateral movement capabilities")
@@ -1318,7 +1337,7 @@ class AISOCAnalytics:
         """Get SOC performance metrics."""
         return self.metrics
 
-    def update_metrics(self, incident: Incident, triage_result: TriageResult):
+    def update_metrics(self, incident: Incident, triage_result: TriageResult) -> None:
         """Update SOC metrics based on incident handling."""
         self.metrics.total_threats_predicted += 1
 
@@ -1490,4 +1509,3 @@ if __name__ == "__main__":
     print()
     print("AI-powered SOC analytics ready for production!")
     print("=" * 80)
-

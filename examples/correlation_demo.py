@@ -1,4 +1,13 @@
 #!/usr/bin/env python3
+"""
+Demonstration of Vaulytica's Advanced Correlation Engine.
+
+This script demonstrates:
+- Multi-event correlation
+- Attack chain detection
+- Campaign identification
+- Correlation graph visualization
+"""
 
 import asyncio
 from datetime import datetime, timedelta
@@ -28,7 +37,7 @@ def create_sample_events():
             environment="production"
         )],
         technical_indicators=[
-            TechnicalIndicator(indicator_type="email", value="attacker@evil.com"),
+            TechnicalIndicator(indicator_type="email", value="user@example.com"),
             TechnicalIndicator(indicator_type="hash", value="abc123def456")
         ],
         mitre_attack=[

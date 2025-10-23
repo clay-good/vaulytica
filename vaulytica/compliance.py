@@ -1,3 +1,18 @@
+"""
+Vaulytica Compliance & Audit Engine
+
+This module provides comprehensive compliance and audit capabilities:
+- Automated compliance checking (SOC2, ISO27001, NIST, PCI-DSS, HIPAA, GDPR)
+- Control framework mapping and assessment
+- Audit trail generation and management
+- Compliance reporting and dashboards
+- Gap analysis and remediation tracking
+- Evidence collection for audits
+
+Author: World-Class Software Engineering Team
+Version: 0.18.0
+"""
+
 import asyncio
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Set, Any, Tuple
@@ -66,8 +81,9 @@ class Control:
     next_assessment: Optional[datetime] = None
     owner: Optional[str] = None
     compliance_score: float = 0.0  # 0.0-1.0
-    
+
     def to_dict(self) -> Dict[str, Any]:
+        """Convert ComplianceCheck to dictionary."""
         return {
             "control_id": self.control_id,
             "framework": self.framework.value,
@@ -98,8 +114,9 @@ class ComplianceAssessment:
     recommendations: List[str] = field(default_factory=list)
     assessed_at: datetime = field(default_factory=datetime.utcnow)
     assessed_by: Optional[str] = None
-    
+
     def to_dict(self) -> Dict[str, Any]:
+        """Convert ComplianceResult to dictionary."""
         return {
             "assessment_id": self.assessment_id,
             "framework": self.framework.value,
@@ -126,8 +143,9 @@ class AuditLog:
     result: str
     details: Dict[str, Any]
     ip_address: Optional[str] = None
-    
+
     def to_dict(self) -> Dict[str, Any]:
+        """Convert ComplianceReport to dictionary."""
         return {
             "log_id": self.log_id,
             "timestamp": self.timestamp.isoformat(),
@@ -143,11 +161,11 @@ class AuditLog:
 class ComplianceEngine:
     """
     Compliance & Audit Engine.
-    
+
     Provides automated compliance checking, control assessment,
     audit trail management, and compliance reporting.
     """
-    
+
     def __init__(self):
         self.controls: Dict[str, Control] = {}
         self.assessments: Dict[str, ComplianceAssessment] = {}
@@ -162,11 +180,11 @@ class ComplianceEngine:
             "avg_compliance_score": 0.0
         }
         logger.info("Compliance Engine initialized")
-    
+
     def _initialize_frameworks(self) -> Dict[ComplianceFramework, List[Control]]:
         """Initialize compliance framework controls."""
         frameworks = {}
-        
+
         # SOC2 Controls
         frameworks[ComplianceFramework.SOC2] = [
             Control(
@@ -197,7 +215,7 @@ class ComplianceEngine:
                 compliance_score=0.92
             )
         ]
-        
+
         # ISO 27001 Controls
         frameworks[ComplianceFramework.ISO27001] = [
             Control(
@@ -228,7 +246,7 @@ class ComplianceEngine:
                 compliance_score=0.90
             )
         ]
-        
+
         # NIST CSF Controls
         frameworks[ComplianceFramework.NIST_CSF] = [
             Control(
@@ -259,7 +277,7 @@ class ComplianceEngine:
                 compliance_score=0.89
             )
         ]
-        
+
         # PCI-DSS Controls
         frameworks[ComplianceFramework.PCI_DSS] = [
             Control(
@@ -290,7 +308,7 @@ class ComplianceEngine:
                 compliance_score=0.87
             )
         ]
-        
+
         # HIPAA Controls
         frameworks[ComplianceFramework.HIPAA] = [
             Control(
@@ -312,7 +330,7 @@ class ComplianceEngine:
                 compliance_score=0.88
             )
         ]
-        
+
         # GDPR Controls
         frameworks[ComplianceFramework.GDPR] = [
             Control(
@@ -334,9 +352,9 @@ class ComplianceEngine:
                 compliance_score=0.91
             )
         ]
-        
+
         return frameworks
-    
+
     async def assess_framework(
         self,
         framework: ComplianceFramework,
@@ -344,16 +362,16 @@ class ComplianceEngine:
     ) -> ComplianceAssessment:
         """Perform a compliance assessment for a framework."""
         controls = self.control_frameworks.get(framework, [])
-        
+
         controls_assessed = len(controls)
         controls_compliant = sum(1 for c in controls if c.status == ControlStatus.IMPLEMENTED)
         controls_non_compliant = sum(1 for c in controls if c.status in [
             ControlStatus.NOT_IMPLEMENTED,
             ControlStatus.PARTIALLY_IMPLEMENTED
         ])
-        
+
         overall_score = sum(c.compliance_score for c in controls) / len(controls) if controls else 0.0
-        
+
         # Determine status
         if overall_score >= 0.95:
             status = ComplianceStatus.COMPLIANT
@@ -361,23 +379,23 @@ class ComplianceEngine:
             status = ComplianceStatus.PARTIALLY_COMPLIANT
         else:
             status = ComplianceStatus.NON_COMPLIANT
-        
+
         # Identify gaps
         gaps = [
             f"{c.control_id}: {c.title}"
             for c in controls
             if c.status != ControlStatus.IMPLEMENTED
         ]
-        
+
         # Generate recommendations
         recommendations = [
             f"Implement control {c.control_id}: {c.title}"
             for c in controls
             if c.status == ControlStatus.NOT_IMPLEMENTED
         ]
-        
+
         assessment_id = f"ASSESS-{framework.value}-{datetime.utcnow().strftime('%Y%m%d')}-{len(self.assessments) + 1:03d}"
-        
+
         assessment = ComplianceAssessment(
             assessment_id=assessment_id,
             framework=framework,
@@ -390,12 +408,12 @@ class ComplianceEngine:
             recommendations=recommendations,
             assessed_by=assessed_by
         )
-        
+
         self.assessments[assessment_id] = assessment
         self.statistics["total_assessments"] += 1
         if status == ComplianceStatus.COMPLIANT:
             self.statistics["compliant_assessments"] += 1
-        
+
         logger.info(f"Completed assessment {assessment_id} for {framework.value}: {status.value}")
         return assessment
 

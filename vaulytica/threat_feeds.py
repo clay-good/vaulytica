@@ -1,3 +1,22 @@
+"""
+Real-Time Threat Intelligence Feed Integration.
+
+This module provides integration with external threat intelligence sources:
+- VirusTotal API for file/IP/domain/URL reputation
+- AlienVault OTX for threat indicators and pulses
+- AbuseIPDB for IP reputation
+- URLhaus for malicious URL detection
+- Shodan for IP/port intelligence
+- Custom threat feeds (CSV, JSON, STIX/TAXII)
+
+Features:
+- Automatic IOC enrichment from multiple sources
+- Caching to reduce API calls
+- Rate limiting and quota management
+- Confidence scoring across sources
+- Threat feed aggregation
+"""
+
 import time
 import hashlib
 import json
@@ -62,11 +81,11 @@ class AggregatedThreatIntel:
 
 class ThreatFeedCache:
     """Simple in-memory cache for threat feed results."""
-    
+
     def __init__(self, ttl_hours: int = 24):
         self.cache: Dict[str, tuple[AggregatedThreatIntel, datetime]] = {}
         self.ttl = timedelta(hours=ttl_hours)
-    
+
     def get(self, ioc_value: str, ioc_type: str) -> Optional[AggregatedThreatIntel]:
         """Get cached result if not expired."""
         key = f"{ioc_type}:{ioc_value}"
@@ -78,14 +97,14 @@ class ThreatFeedCache:
             else:
                 del self.cache[key]
         return None
-    
-    def set(self, ioc_value: str, ioc_type: str, result: AggregatedThreatIntel):
+
+    def set(self, ioc_value: str, ioc_type: str, result: AggregatedThreatIntel) -> None:
         """Cache result."""
         key = f"{ioc_type}:{ioc_value}"
         self.cache[key] = (result, datetime.utcnow())
         logger.debug(f"Cached result for {key}")
-    
-    def clear_expired(self):
+
+    def clear_expired(self) -> None:
         """Clear expired cache entries."""
         now = datetime.utcnow()
         expired_keys = [
@@ -101,11 +120,11 @@ class ThreatFeedCache:
 class ThreatFeedIntegration:
     """
     Real-Time Threat Intelligence Feed Integration.
-    
+
     Integrates with multiple external threat intelligence sources
     to enrich IOCs with real-time threat data.
     """
-    
+
     def __init__(
         self,
         virustotal_api_key: Optional[str] = None,
@@ -118,7 +137,7 @@ class ThreatFeedIntegration:
     ):
         """
         Initialize threat feed integration.
-        
+
         Args:
             virustotal_api_key: VirusTotal API key
             otx_api_key: AlienVault OTX API key
@@ -133,14 +152,14 @@ class ThreatFeedIntegration:
         self.abuseipdb_api_key = abuseipdb_api_key
         self.shodan_api_key = shodan_api_key
         self.timeout = timeout_seconds
-        
+
         # Initialize cache
         self.cache = ThreatFeedCache(ttl_hours=cache_ttl_hours) if enable_cache else None
-        
+
         # Rate limiting
         self.last_request_time: Dict[ThreatFeedSource, float] = {}
         self.min_request_interval = 1.0  # Minimum seconds between requests
-        
+
         # Statistics
         self.stats = {
             "total_lookups": 0,
@@ -149,10 +168,10 @@ class ThreatFeedIntegration:
             "errors": 0,
             "by_source": {source: 0 for source in ThreatFeedSource}
         }
-        
+
         logger.info("ThreatFeedIntegration initialized")
         self._log_enabled_sources()
-    
+
     def _log_enabled_sources(self):
         """Log which threat feeds are enabled."""
         enabled = []
@@ -164,12 +183,12 @@ class ThreatFeedIntegration:
             enabled.append("AbuseIPDB")
         if self.shodan_api_key:
             enabled.append("Shodan")
-        
+
         if enabled:
             logger.info(f"Enabled threat feeds: {', '.join(enabled)}")
         else:
             logger.warning("No threat feed API keys configured - using simulated mode")
-    
+
     def enrich_ioc(
         self,
         ioc_value: str,
@@ -178,28 +197,28 @@ class ThreatFeedIntegration:
     ) -> AggregatedThreatIntel:
         """
         Enrich IOC with threat intelligence from multiple sources.
-        
+
         Args:
             ioc_value: IOC value (IP, domain, hash, URL)
             ioc_type: IOC type (ip, domain, hash, url)
             sources: Specific sources to query (None = all available)
-            
+
         Returns:
             Aggregated threat intelligence
         """
         self.stats["total_lookups"] += 1
-        
+
         # Check cache
         if self.cache:
             cached = self.cache.get(ioc_value, ioc_type)
             if cached:
                 self.stats["cache_hits"] += 1
                 return cached
-        
+
         # Determine which sources to query
         if sources is None:
             sources = self._get_available_sources(ioc_type)
-        
+
         # Query each source
         results = []
         for source in sources:
@@ -211,16 +230,16 @@ class ThreatFeedIntegration:
             except Exception as e:
                 logger.error(f"Error querying {source.value}: {e}")
                 self.stats["errors"] += 1
-        
+
         # Aggregate results
         aggregated = self._aggregate_results(ioc_value, ioc_type, results)
-        
+
         # Cache result
         if self.cache:
             self.cache.set(ioc_value, ioc_type, aggregated)
-        
+
         return aggregated
-    
+
     def _get_available_sources(self, ioc_type: str) -> List[ThreatFeedSource]:
         """Get available sources for IOC type."""
         sources = []
@@ -252,7 +271,7 @@ class ThreatFeedIntegration:
             ]
 
         return sources
-    
+
     def _query_source(
         self,
         source: ThreatFeedSource,
@@ -260,12 +279,12 @@ class ThreatFeedIntegration:
         ioc_type: str
     ) -> Optional[ThreatFeedResult]:
         """Query a specific threat feed source."""
-        
+
         # Rate limiting
         self._rate_limit(source)
-        
+
         self.stats["api_calls"] += 1
-        
+
         # Route to appropriate handler
         if source == ThreatFeedSource.VIRUSTOTAL:
             return self._query_virustotal(ioc_value, ioc_type)
@@ -281,17 +300,17 @@ class ThreatFeedIntegration:
             return self._query_threatfox(ioc_value, ioc_type)
         else:
             return self._simulate_query(source, ioc_value, ioc_type)
-    
+
     def _rate_limit(self, source: ThreatFeedSource):
         """Apply rate limiting."""
         last_time = self.last_request_time.get(source, 0)
         elapsed = time.time() - last_time
-        
+
         if elapsed < self.min_request_interval:
             sleep_time = self.min_request_interval - elapsed
             logger.debug(f"Rate limiting {source.value}: sleeping {sleep_time:.2f}s")
             time.sleep(sleep_time)
-        
+
         self.last_request_time[source] = time.time()
 
     def _query_virustotal(self, ioc_value: str, ioc_type: str) -> Optional[ThreatFeedResult]:
@@ -302,16 +321,16 @@ class ThreatFeedIntegration:
         try:
             # Map IOC type to VT endpoint
             if ioc_type == "ip":
-                url = f"https://www.virustotal.com/api/v3/ip_addresses/{ioc_value}"
+                url = f"https://example.com"
             elif ioc_type == "domain":
-                url = f"https://www.virustotal.com/api/v3/domains/{ioc_value}"
+                url = f"https://example.com"
             elif ioc_type == "hash":
-                url = f"https://www.virustotal.com/api/v3/files/{ioc_value}"
+                url = f"https://example.com"
             elif ioc_type == "url":
                 # URL needs to be base64 encoded
                 import base64
                 url_id = base64.urlsafe_b64encode(ioc_value.encode()).decode().strip("=")
-                url = f"https://www.virustotal.com/api/v3/urls/{url_id}"
+                url = f"https://example.com"
             else:
                 return None
 
@@ -372,13 +391,13 @@ class ThreatFeedIntegration:
         try:
             # Map IOC type to OTX endpoint
             if ioc_type == "ip":
-                url = f"https://otx.alienvault.com/api/v1/indicators/IPv4/{ioc_value}/general"
+                url = f"https://example.com"
             elif ioc_type == "domain":
-                url = f"https://otx.alienvault.com/api/v1/indicators/domain/{ioc_value}/general"
+                url = f"https://example.com"
             elif ioc_type == "hash":
-                url = f"https://otx.alienvault.com/api/v1/indicators/file/{ioc_value}/general"
+                url = f"https://example.com"
             elif ioc_type == "url":
-                url = f"https://otx.alienvault.com/api/v1/indicators/url/{ioc_value}/general"
+                url = f"https://example.com"
             else:
                 return None
 
@@ -432,7 +451,7 @@ class ThreatFeedIntegration:
             return None
 
         try:
-            url = "https://api.abuseipdb.com/api/v2/check"
+            url = "https://example.com"
             headers = {"Key": self.abuseipdb_api_key, "Accept": "application/json"}
             params = {"ipAddress": ioc_value, "maxAgeInDays": 90}
 
@@ -475,7 +494,7 @@ class ThreatFeedIntegration:
             return None
 
         try:
-            url = f"https://api.shodan.io/shodan/host/{ioc_value}"
+            url = f"https://example.com"
             params = {"key": self.shodan_api_key}
 
             response = requests.get(url, headers={}, params=params, timeout=self.timeout)
@@ -518,7 +537,7 @@ class ThreatFeedIntegration:
     def _query_urlhaus(self, ioc_value: str) -> Optional[ThreatFeedResult]:
         """Query URLhaus API (public, no key needed)."""
         try:
-            url = "https://urlhaus-api.abuse.ch/v1/url/"
+            url = "https://example.com"
             data = {"url": ioc_value}
 
             response = requests.post(url, data=data, timeout=self.timeout)
@@ -570,74 +589,18 @@ class ThreatFeedIntegration:
     def _query_threatfox(self, ioc_value: str, ioc_type: str) -> Optional[ThreatFeedResult]:
         """Query ThreatFox API (public, no key needed) - fallback to simulation if unavailable."""
         try:
-            url = "https://threatfox-api.abuse.ch/api/v1/"
-
-            # Map IOC type to ThreatFox search type
-            if ioc_type == "ip":
-                search_term = "ip:port"
-            elif ioc_type == "domain":
-                search_term = "domain"
-            elif ioc_type == "hash":
-                search_term = "hash"
-            elif ioc_type == "url":
-                search_term = "url"
-            else:
+            # Validate IOC type
+            search_term = self._map_ioc_type_to_search_term(ioc_type)
+            if not search_term:
                 return None
 
-            data = {
-                "query": "search_ioc",
-                "search_term": ioc_value
-            }
+            # Make API request
+            response = self._make_threatfox_request(ioc_value)
 
-            response = requests.post(url, json=data, timeout=self.timeout)
-
+            # Handle response
             if response.status_code == 200:
-                result = response.json()
-
-                if result.get("query_status") == "ok":
-                    iocs = result.get("data", [])
-
-                    if iocs:
-                        is_malicious = True
-                        confidence = 0.85
-                        threat_score = 85
-
-                        tags = []
-                        malware_families = []
-
-                        for ioc in iocs[:5]:
-                            if "tags" in ioc:
-                                tags.extend(ioc["tags"])
-                            if "malware" in ioc:
-                                malware_families.append(ioc["malware"])
-
-                        return ThreatFeedResult(
-                            source=ThreatFeedSource.THREATFOX,
-                            ioc_value=ioc_value,
-                            ioc_type=ioc_type,
-                            is_malicious=is_malicious,
-                            confidence=confidence,
-                            threat_score=threat_score,
-                            tags=list(set(tags))[:10],
-                            malware_families=list(set(malware_families)),
-                            detection_count=len(iocs),
-                            metadata={"ioc_count": len(iocs)}
-                        )
-                    else:
-                        # Not found
-                        return ThreatFeedResult(
-                            source=ThreatFeedSource.THREATFOX,
-                            ioc_value=ioc_value,
-                            ioc_type=ioc_type,
-                            is_malicious=False,
-                            confidence=0.3,
-                            threat_score=0,
-                            metadata={"status": "not_found"}
-                        )
-                else:
-                    return None
+                return self._process_threatfox_response(response.json(), ioc_value, ioc_type)
             elif response.status_code == 401:
-                # API now requires auth - fallback to simulation
                 logger.debug("ThreatFox requires authentication, using simulation")
                 return self._simulate_query(ThreatFeedSource.THREATFOX, ioc_value, ioc_type)
             else:
@@ -647,6 +610,83 @@ class ThreatFeedIntegration:
         except Exception as e:
             logger.debug(f"ThreatFox unavailable, using simulation: {e}")
             return self._simulate_query(ThreatFeedSource.THREATFOX, ioc_value, ioc_type)
+
+    def _map_ioc_type_to_search_term(self, ioc_type: str) -> Optional[str]:
+        """Map IOC type to ThreatFox search term."""
+        type_mapping = {
+            "ip": "ip:port",
+            "domain": "domain",
+            "hash": "hash",
+            "url": "url"
+        }
+        return type_mapping.get(ioc_type)
+
+    def _make_threatfox_request(self, ioc_value: str):
+        """Make ThreatFox API request."""
+        url = "https://example.com"
+        data = {
+            "query": "search_ioc",
+            "search_term": ioc_value
+        }
+        return requests.post(url, json=data, timeout=self.timeout)
+
+    def _process_threatfox_response(
+        self,
+        result: Dict[str, Any],
+        ioc_value: str,
+        ioc_type: str
+    ) -> Optional[ThreatFeedResult]:
+        """Process ThreatFox API response."""
+        if result.get("query_status") != "ok":
+            return None
+
+        iocs = result.get("data", [])
+
+        if iocs:
+            return self._build_malicious_result(iocs, ioc_value, ioc_type)
+        else:
+            return self._build_not_found_result(ioc_value, ioc_type)
+
+    def _build_malicious_result(
+        self,
+        iocs: List[Dict[str, Any]],
+        ioc_value: str,
+        ioc_type: str
+    ) -> ThreatFeedResult:
+        """Build result for malicious IOC."""
+        tags = []
+        malware_families = []
+
+        for ioc in iocs[:5]:
+            if "tags" in ioc:
+                tags.extend(ioc["tags"])
+            if "malware" in ioc:
+                malware_families.append(ioc["malware"])
+
+        return ThreatFeedResult(
+            source=ThreatFeedSource.THREATFOX,
+            ioc_value=ioc_value,
+            ioc_type=ioc_type,
+            is_malicious=True,
+            confidence=0.85,
+            threat_score=85,
+            tags=list(set(tags))[:10],
+            malware_families=list(set(malware_families)),
+            detection_count=len(iocs),
+            metadata={"ioc_count": len(iocs)}
+        )
+
+    def _build_not_found_result(self, ioc_value: str, ioc_type: str) -> ThreatFeedResult:
+        """Build result for IOC not found."""
+        return ThreatFeedResult(
+            source=ThreatFeedSource.THREATFOX,
+            ioc_value=ioc_value,
+            ioc_type=ioc_type,
+            is_malicious=False,
+            confidence=0.3,
+            threat_score=0,
+            metadata={"status": "not_found"}
+        )
 
     def _simulate_query(
         self,
@@ -816,9 +856,8 @@ class ThreatFeedIntegration:
             "cache_size": len(self.cache.cache) if self.cache else 0
         }
 
-    def clear_cache(self):
+    def clear_cache(self) -> None:
         """Clear threat feed cache."""
         if self.cache:
             self.cache.cache.clear()
             logger.info("Threat feed cache cleared")
-

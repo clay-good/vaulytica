@@ -1,4 +1,17 @@
 #!/usr/bin/env python3
+"""
+Vaulytica Streaming Analytics Demo
+
+Demonstrates real-time event stream processing with:
+- Event stream processing with sliding windows
+- Complex Event Processing (CEP) pattern matching
+- Real-time correlation across event streams
+- Event replay and time travel
+- Streaming metrics and monitoring
+
+Author: Vaulytica Team
+Version: 0.16.0
+"""
 
 import asyncio
 import sys

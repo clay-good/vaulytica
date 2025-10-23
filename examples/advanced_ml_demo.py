@@ -1,4 +1,18 @@
 #!/usr/bin/env python3
+"""
+Vaulytica Advanced ML Demo
+
+Demonstrates deep learning and AutoML capabilities:
+- LSTM sequence modeling
+- Transformer with attention
+- Model ensembles
+- AutoML optimization
+- Model explainability
+- Model persistence
+
+Author: World-Class Software Engineering Team
+Version: 0.12.0
+"""
 
 import sys
 from pathlib import Path

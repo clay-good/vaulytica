@@ -1,3 +1,18 @@
+"""
+Vaulytica Incident Management & Alerting System
+
+This module provides enterprise-grade incident management:
+- Alert deduplication and grouping
+- Incident lifecycle management (create, update, resolve, close)
+- SLA tracking and escalation
+- On-call scheduling and routing
+- Ticketing system integrations (Jira, ServiceNow, PagerDuty, Opsgenie)
+- Incident metrics and reporting
+
+Author: World-Class Software Engineering Team
+Version: 0.14.0
+"""
+
 import hashlib
 import json
 import uuid
@@ -71,14 +86,14 @@ class SLAPolicy:
     response_time: timedelta  # Time to start investigation
     resolution_time: timedelta  # Time to resolve
     escalation_time: timedelta  # Time before escalation
-    
+
     def is_breached(self, incident: 'Incident', check_type: str) -> bool:
         """Check if SLA is breached."""
         if not incident.created_at:
             return False
-        
+
         elapsed = datetime.utcnow() - incident.created_at
-        
+
         if check_type == "acknowledgement":
             return not incident.acknowledged_at and elapsed > self.acknowledgement_time
         elif check_type == "response":
@@ -87,7 +102,7 @@ class SLAPolicy:
             return incident.status not in [IncidentStatus.RESOLVED, IncidentStatus.CLOSED] and elapsed > self.resolution_time
         elif check_type == "escalation":
             return elapsed > self.escalation_time
-        
+
         return False
 
 
@@ -101,8 +116,8 @@ class Alert:
     created_at: datetime = field(default_factory=datetime.utcnow)
     deduplicated_count: int = 1  # Number of times this alert was deduplicated
     last_seen: datetime = field(default_factory=datetime.utcnow)
-    
-    def update_deduplication(self):
+
+    def update_deduplication(self) -> None:
         """Update deduplication counters."""
         self.deduplicated_count += 1
         self.last_seen = datetime.utcnow()
@@ -116,59 +131,60 @@ class Incident(BaseModel):
     status: IncidentStatus = IncidentStatus.NEW
     priority: IncidentPriority
     severity: Severity
-    
+
     # Lifecycle timestamps
     created_at: datetime = Field(default_factory=datetime.utcnow)
     acknowledged_at: Optional[datetime] = None
     investigating_at: Optional[datetime] = None
     resolved_at: Optional[datetime] = None
     closed_at: Optional[datetime] = None
-    
+
     # Assignment and escalation
     assigned_to: Optional[str] = None
     escalation_level: EscalationLevel = EscalationLevel.L1_ANALYST
     escalated_at: Optional[datetime] = None
-    
+
     # Alerts and events
     alert_ids: List[str] = Field(default_factory=list)
     event_count: int = 0
     deduplicated_count: int = 0
-    
+
     # Affected resources
     affected_assets: List[str] = Field(default_factory=list)
     affected_users: List[str] = Field(default_factory=list)
     source_ips: List[str] = Field(default_factory=list)
-    
+
     # MITRE ATT&CK
     mitre_techniques: List[str] = Field(default_factory=list)
     mitre_tactics: List[str] = Field(default_factory=list)
-    
+
     # Ticketing integration
     external_tickets: Dict[str, str] = Field(default_factory=dict)  # system -> ticket_id
-    
+
     # SLA tracking
     sla_breached: bool = False
     sla_breach_reasons: List[str] = Field(default_factory=list)
-    
+
     # Metadata
     tags: List[str] = Field(default_factory=list)
     notes: List[str] = Field(default_factory=list)
     metadata: Dict[str, Any] = Field(default_factory=dict)
-    
+
     class Config:
+        """Pydantic configuration for Incident model."""
         json_encoders = {
             datetime: lambda v: v.isoformat() if v else None
         }
-    
-    def acknowledge(self, user: str):
+
+    def acknowledge(self, user: str) -> None:
         """Acknowledge the incident."""
         if self.status == IncidentStatus.NEW:
             self.status = IncidentStatus.ACKNOWLEDGED
             self.acknowledged_at = datetime.utcnow()
             self.assigned_to = user
             self.notes.append(f"Acknowledged by {user} at {self.acknowledged_at.isoformat()}")
-    
-    def start_investigation(self, user: str):
+
+    def start_investigation(self, user: str) -> None:
         """Start investigating the incident."""
         if self.status in [IncidentStatus.NEW, IncidentStatus.ACKNOWLEDGED]:
             self.status = IncidentStatus.INVESTIGATING
@@ -176,15 +192,15 @@ class Incident(BaseModel):
             if not self.assigned_to:
                 self.assigned_to = user
             self.notes.append(f"Investigation started by {user} at {self.investigating_at.isoformat()}")
-    
-    def resolve(self, user: str, resolution_note: str):
+
+    def resolve(self, user: str, resolution_note: str) -> None:
         """Resolve the incident."""
         if self.status != IncidentStatus.RESOLVED:
             self.status = IncidentStatus.RESOLVED
             self.resolved_at = datetime.utcnow()
             self.notes.append(f"Resolved by {user} at {self.resolved_at.isoformat()}: {resolution_note}")
-    
-    def close(self, user: str, close_note: Optional[str] = None):
+
+    def close(self, user: str, close_note: Optional[str] = None) -> None:
         """Close the incident."""
         if self.status == IncidentStatus.RESOLVED:
             self.status = IncidentStatus.CLOSED
@@ -193,47 +209,47 @@ class Incident(BaseModel):
             if close_note:
                 note += f": {close_note}"
             self.notes.append(note)
-    
-    def reopen(self, user: str, reason: str):
+
+    def reopen(self, user: str, reason: str) -> None:
         """Reopen a resolved/closed incident."""
         if self.status in [IncidentStatus.RESOLVED, IncidentStatus.CLOSED]:
             self.status = IncidentStatus.REOPENED
             self.resolved_at = None
             self.closed_at = None
             self.notes.append(f"Reopened by {user} at {datetime.utcnow().isoformat()}: {reason}")
-    
-    def escalate(self, to_level: EscalationLevel, reason: str):
+
+    def escalate(self, to_level: EscalationLevel, reason: str) -> None:
         """Escalate the incident to a higher level."""
         old_level = self.escalation_level
         self.escalation_level = to_level
         self.escalated_at = datetime.utcnow()
         self.notes.append(f"Escalated from {old_level.value} to {to_level.value} at {self.escalated_at.isoformat()}: {reason}")
-    
-    def add_external_ticket(self, system: TicketingSystem, ticket_id: str):
+
+    def add_external_ticket(self, system: TicketingSystem, ticket_id: str) -> None:
         """Link external ticket."""
         self.external_tickets[system.value] = ticket_id
         self.notes.append(f"Linked to {system.value} ticket: {ticket_id}")
-    
-    def add_note(self, user: str, note: str):
+
+    def add_note(self, user: str, note: str) -> None:
         """Add a note to the incident."""
         timestamp = datetime.utcnow().isoformat()
         self.notes.append(f"[{timestamp}] {user}: {note}")
-    
-    def add_tag(self, tag: str):
+
+    def add_tag(self, tag: str) -> None:
         """Add a tag to the incident."""
         if tag not in self.tags:
             self.tags.append(tag)
-    
+
     def get_age(self) -> timedelta:
         """Get incident age."""
         return datetime.utcnow() - self.created_at
-    
+
     def get_time_to_acknowledge(self) -> Optional[timedelta]:
         """Get time taken to acknowledge."""
         if self.acknowledged_at:
             return self.acknowledged_at - self.created_at
         return None
-    
+
     def get_time_to_resolve(self) -> Optional[timedelta]:
         """Get time taken to resolve."""
         if self.resolved_at:
@@ -250,33 +266,33 @@ class IncidentMetrics:
     investigating_incidents: int = 0
     resolved_incidents: int = 0
     closed_incidents: int = 0
-    
+
     incidents_by_priority: Dict[str, int] = field(default_factory=lambda: defaultdict(int))
     incidents_by_severity: Dict[str, int] = field(default_factory=lambda: defaultdict(int))
     incidents_by_status: Dict[str, int] = field(default_factory=lambda: defaultdict(int))
-    
+
     sla_breaches: int = 0
     escalations: int = 0
-    
+
     avg_time_to_acknowledge: Optional[float] = None  # seconds
     avg_time_to_resolve: Optional[float] = None  # seconds
     avg_incident_age: Optional[float] = None  # seconds
-    
+
     alerts_deduplicated: int = 0
     deduplication_rate: float = 0.0  # percentage
-    
+
     timestamp: datetime = field(default_factory=datetime.utcnow)
 
 
 class AlertDeduplicator:
     """Alert deduplication engine."""
-    
+
     def __init__(self, time_window: timedelta = timedelta(minutes=5)):
         self.time_window = time_window
         self.alert_cache: Dict[str, Alert] = {}  # fingerprint -> Alert
         self.fingerprint_to_incident: Dict[str, str] = {}  # fingerprint -> incident_id
         logger.info(f"Alert deduplicator initialized with {time_window} time window")
-    
+
     def generate_fingerprint(self, event: SecurityEvent, analysis: Optional[AnalysisResult] = None) -> str:
         """Generate unique fingerprint for alert deduplication."""
         # Create fingerprint from key attributes
@@ -286,22 +302,22 @@ class AlertDeduplicator:
             "severity": event.severity.value,
             "title": event.title,
         }
-        
+
         # Add affected assets
         if event.affected_assets:
             fingerprint_data["assets"] = sorted([
                 asset.hostname or asset.cloud_resource_id or ""
                 for asset in event.affected_assets
             ])
-        
+
         # Add MITRE techniques
         if event.mitre_attack:
             fingerprint_data["mitre"] = sorted([m.technique_id for m in event.mitre_attack])
-        
+
         # Generate hash
         fingerprint_str = json.dumps(fingerprint_data, sort_keys=True)
         return hashlib.sha256(fingerprint_str.encode()).hexdigest()[:16]
-    
+
     def should_deduplicate(self, fingerprint: str) -> Tuple[bool, Optional[Alert]]:
         """Check if alert should be deduplicated."""
         if fingerprint in self.alert_cache:
@@ -312,13 +328,13 @@ class AlertDeduplicator:
             else:
                 # Time window expired, remove from cache
                 del self.alert_cache[fingerprint]
-        
+
         return False, None
-    
+
     def add_alert(self, alert: Alert) -> bool:
         """Add alert to deduplication cache. Returns True if deduplicated."""
         should_dedup, existing_alert = self.should_deduplicate(alert.fingerprint)
-        
+
         if should_dedup and existing_alert:
             existing_alert.update_deduplication()
             logger.debug(f"Alert deduplicated: {alert.alert_id} -> {existing_alert.alert_id} (count: {existing_alert.deduplicated_count})")
@@ -326,8 +342,8 @@ class AlertDeduplicator:
         else:
             self.alert_cache[alert.fingerprint] = alert
             return False
-    
-    def cleanup_expired(self):
+
+    def cleanup_expired(self) -> None:
         """Remove expired alerts from cache."""
         now = datetime.utcnow()
         expired = [
@@ -336,7 +352,7 @@ class AlertDeduplicator:
         ]
         for fp in expired:
             del self.alert_cache[fp]
-        
+
         if expired:
             logger.debug(f"Cleaned up {len(expired)} expired alerts from deduplication cache")
 
@@ -501,7 +517,7 @@ class SLATracker:
         """Get SLA policy for priority."""
         return self.policies.get(priority)
 
-    def set_policy(self, priority: IncidentPriority, policy: SLAPolicy):
+    def set_policy(self, priority: IncidentPriority, policy: SLAPolicy) -> None:
         """Set custom SLA policy."""
         self.policies[priority] = policy
         logger.info(f"Updated SLA policy for {priority.value}")
@@ -515,13 +531,13 @@ class OnCallSchedule:
         self.current_rotation: Dict[EscalationLevel, int] = defaultdict(int)
         logger.info("On-call schedule initialized")
 
-    def add_user(self, level: EscalationLevel, user: str):
+    def add_user(self, level: EscalationLevel, user: str) -> None:
         """Add user to on-call rotation."""
         if user not in self.schedules[level]:
             self.schedules[level].append(user)
             logger.info(f"Added {user} to {level.value} on-call rotation")
 
-    def remove_user(self, level: EscalationLevel, user: str):
+    def remove_user(self, level: EscalationLevel, user: str) -> None:
         """Remove user from on-call rotation."""
         if user in self.schedules[level]:
             self.schedules[level].remove(user)
@@ -536,7 +552,7 @@ class OnCallSchedule:
         index = self.current_rotation[level] % len(users)
         return users[index]
 
-    def rotate(self, level: EscalationLevel):
+    def rotate(self, level: EscalationLevel) -> None:
         """Rotate to next on-call user."""
         self.current_rotation[level] += 1
         logger.info(f"Rotated {level.value} on-call schedule")
@@ -679,7 +695,7 @@ class IncidentManager:
 
         return incident
 
-    def add_alert_to_incident(self, alert: Alert, incident_id: str):
+    def add_alert_to_incident(self, alert: Alert, incident_id: str) -> None:
         """Add alert to existing incident."""
         incident = self.incidents.get(incident_id)
         if not incident:
@@ -799,7 +815,7 @@ class IncidentManager:
         logger.info(f"Incident {incident_id} escalated to {to_level.value}")
         return True
 
-    def check_and_escalate_incidents(self):
+    def check_and_escalate_incidents(self) -> None:
         """Check all open incidents for auto-escalation."""
         if not self.enable_auto_escalation:
             return
@@ -816,7 +832,7 @@ class IncidentManager:
                     "Auto-escalation due to SLA breach"
                 )
 
-    def check_sla_breaches(self):
+    def check_sla_breaches(self) -> None:
         """Check all open incidents for SLA breaches."""
         for incident in self.incidents.values():
             if incident.status in [IncidentStatus.RESOLVED, IncidentStatus.CLOSED]:
@@ -866,53 +882,67 @@ class IncidentManager:
     def get_metrics(self) -> IncidentMetrics:
         """Get incident metrics."""
         metrics = IncidentMetrics()
-
         metrics.total_incidents = len(self.incidents)
 
-        # Count by status
+        # Collect metrics from all incidents
+        self._collect_status_metrics(metrics)
+        self._collect_timing_metrics(metrics)
+
+        metrics.escalations = self.total_escalations
+        return metrics
+
+    def _collect_status_metrics(self, metrics: IncidentMetrics):
+        """Collect status-based metrics from incidents."""
+        status_counters = {
+            IncidentStatus.NEW: lambda: setattr(metrics, 'open_incidents', metrics.open_incidents + 1),
+            IncidentStatus.ACKNOWLEDGED: lambda: setattr(metrics, 'acknowledged_incidents', metrics.acknowledged_incidents + 1),
+            IncidentStatus.INVESTIGATING: lambda: setattr(metrics, 'investigating_incidents', metrics.investigating_incidents + 1),
+            IncidentStatus.RESOLVED: lambda: setattr(metrics, 'resolved_incidents', metrics.resolved_incidents + 1),
+            IncidentStatus.CLOSED: lambda: setattr(metrics, 'closed_incidents', metrics.closed_incidents + 1)
+        }
+
         for incident in self.incidents.values():
+            # Count by status, priority, severity
             metrics.incidents_by_status[incident.status.value] += 1
             metrics.incidents_by_priority[incident.priority.value] += 1
             metrics.incidents_by_severity[incident.severity.value] += 1
 
-            if incident.status == IncidentStatus.NEW:
-                metrics.open_incidents += 1
-            elif incident.status == IncidentStatus.ACKNOWLEDGED:
-                metrics.acknowledged_incidents += 1
-            elif incident.status == IncidentStatus.INVESTIGATING:
-                metrics.investigating_incidents += 1
-            elif incident.status == IncidentStatus.RESOLVED:
-                metrics.resolved_incidents += 1
-            elif incident.status == IncidentStatus.CLOSED:
-                metrics.closed_incidents += 1
+            # Update status-specific counters
+            counter = status_counters.get(incident.status)
+            if counter:
+                counter()
 
+            # Count SLA breaches
             if incident.sla_breached:
                 metrics.sla_breaches += 1
 
-        # Calculate averages
+    def _collect_timing_metrics(self, metrics: IncidentMetrics):
+        """Collect timing-based metrics from incidents."""
         ack_times = []
         resolve_times = []
         ages = []
 
         for incident in self.incidents.values():
+            # Collect acknowledgement times
             ack_time = incident.get_time_to_acknowledge()
             if ack_time:
                 ack_times.append(ack_time.total_seconds())
 
+            # Collect resolution times
             resolve_time = incident.get_time_to_resolve()
             if resolve_time:
                 resolve_times.append(resolve_time.total_seconds())
 
+            # Collect ages
             ages.append(incident.get_age().total_seconds())
 
+        # Calculate averages
         if ack_times:
             metrics.avg_time_to_acknowledge = sum(ack_times) / len(ack_times)
         if resolve_times:
             metrics.avg_time_to_resolve = sum(resolve_times) / len(resolve_times)
         if ages:
             metrics.avg_incident_age = sum(ages) / len(ages)
-
-        metrics.escalations = self.total_escalations
         metrics.alerts_deduplicated = self.total_alerts_deduplicated
 
         if self.total_alerts_received > 0:
@@ -920,7 +950,7 @@ class IncidentManager:
 
         return metrics
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         """Cleanup expired alerts and old incidents."""
         self.deduplicator.cleanup_expired()
 
@@ -1212,7 +1242,7 @@ class TicketingManager:
         self.integrations: Dict[TicketingSystem, TicketingIntegration] = {}
         logger.info("Ticketing manager initialized")
 
-    def add_integration(self, config: TicketingConfig):
+    def add_integration(self, config: TicketingConfig) -> None:
         """Add ticketing system integration."""
         if not config.enabled:
             return
@@ -1364,14 +1394,14 @@ def format_incident_for_notification(incident: Incident) -> str:
     """Format incident for notification message."""
     lines = [
         f"🚨 **Incident Alert: {incident.title}**",
-        f"",
+        "",
         f"**ID:** {incident.incident_id}",
         f"**Priority:** {incident.priority.value}",
         f"**Severity:** {incident.severity.value}",
         f"**Status:** {incident.status.value}",
         f"**Created:** {incident.created_at.strftime('%Y-%m-%d %H:%M:%S UTC')}",
         f"**Age:** {incident.get_age()}",
-        f""
+        ""
     ]
 
     if incident.assigned_to:
@@ -1392,7 +1422,7 @@ def format_incident_for_notification(incident: Incident) -> str:
     if incident.sla_breached:
         lines.append(f"⚠️ **SLA BREACHED:** {', '.join(incident.sla_breach_reasons)}")
 
-    lines.append(f"")
+    lines.append("")
     lines.append(f"**Description:** {incident.description[:200]}...")
 
     return "\n".join(lines)
@@ -1434,8 +1464,8 @@ if __name__ == "__main__":
     manager = get_incident_manager()
 
     # Add on-call users
-    manager.on_call_schedule.add_user(EscalationLevel.L1_ANALYST, "analyst1@company.com")
-    manager.on_call_schedule.add_user(EscalationLevel.L2_SENIOR_ANALYST, "senior1@company.com")
+    manager.on_call_schedule.add_user(EscalationLevel.L1_ANALYST, "user@example.com")
+    manager.on_call_schedule.add_user(EscalationLevel.L2_SENIOR_ANALYST, "user@example.com")
 
     # Create sample event
     from vaulytica.models import SecurityEvent, Severity, EventCategory
@@ -1462,8 +1492,7 @@ if __name__ == "__main__":
 
     # Get metrics
     metrics = manager.get_metrics()
-    print(f"\nMetrics:")
+    print("\nMetrics:")
     print(f"Total Incidents: {metrics.total_incidents}")
     print(f"Open Incidents: {metrics.open_incidents}")
     print(f"Deduplication Rate: {metrics.deduplication_rate:.1f}%")
-

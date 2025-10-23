@@ -1,0 +1,291 @@
+# Kubernetes Horizontal Pod Autoscaler Configuration for Vaulytica
+
+---
+# HPA for API Service
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: vaulytica-api-hpa
+  namespace: vaulytica
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: vaulytica-api
+  minReplicas: 3
+  maxReplicas: 20
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  - type: Pods
+    pods:
+      metric:
+        name: http_requests_per_second
+      target:
+        type: AverageValue
+        averageValue: "1000"
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 50
+        periodSeconds: 60
+      - type: Pods
+        value: 2
+        periodSeconds: 60
+      selectPolicy: Min
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 30
+      - type: Pods
+        value: 4
+        periodSeconds: 30
+      selectPolicy: Max
+
+---
+# HPA for Agent Workers
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: vaulytica-agent-workers-hpa
+  namespace: vaulytica
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: vaulytica-agent-workers
+  minReplicas: 5
+  maxReplicas: 50
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 75
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 85
+  - type: External
+    external:
+      metric:
+        name: rabbitmq_queue_messages_ready
+        selector:
+          matchLabels:
+            queue: agent_tasks
+      target:
+        type: AverageValue
+        averageValue: "30"
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 600
+      policies:
+      - type: Pods
+        value: 1
+        periodSeconds: 120
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+      - type: Percent
+        value: 200
+        periodSeconds: 30
+      - type: Pods
+        value: 10
+        periodSeconds: 30
+      selectPolicy: Max
+
+---
+# HPA for Threat Response Service
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: vaulytica-threat-response-hpa
+  namespace: vaulytica
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: vaulytica-threat-response
+  minReplicas: 2
+  maxReplicas: 15
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Pods
+    pods:
+      metric:
+        name: threat_response_queue_depth
+      target:
+        type: AverageValue
+        averageValue: "20"
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Pods
+        value: 1
+        periodSeconds: 180
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+      - type: Pods
+        value: 5
+        periodSeconds: 15
+      selectPolicy: Max
+
+---
+# HPA for Workflow Orchestrator
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: vaulytica-workflow-orchestrator-hpa
+  namespace: vaulytica
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: vaulytica-workflow-orchestrator
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 75
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  - type: Pods
+    pods:
+      metric:
+        name: active_workflows
+      target:
+        type: AverageValue
+        averageValue: "50"
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Pods
+        value: 1
+        periodSeconds: 120
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 30
+      - type: Pods
+        value: 3
+        periodSeconds: 30
+      selectPolicy: Max
+
+---
+# Vertical Pod Autoscaler for Database
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: vaulytica-db-vpa
+  namespace: vaulytica
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: StatefulSet
+    name: vaulytica-postgres
+  updatePolicy:
+    updateMode: "Auto"
+  resourcePolicy:
+    containerPolicies:
+    - containerName: postgres
+      minAllowed:
+        cpu: 1000m
+        memory: 2Gi
+      maxAllowed:
+        cpu: 8000m
+        memory: 32Gi
+      controlledResources:
+      - cpu
+      - memory
+
+---
+# Vertical Pod Autoscaler for Redis
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: vaulytica-redis-vpa
+  namespace: vaulytica
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: StatefulSet
+    name: vaulytica-redis
+  updatePolicy:
+    updateMode: "Auto"
+  resourcePolicy:
+    containerPolicies:
+    - containerName: redis
+      minAllowed:
+        cpu: 500m
+        memory: 1Gi
+      maxAllowed:
+        cpu: 4000m
+        memory: 16Gi
+      controlledResources:
+      - cpu
+      - memory
+
+---
+# PodDisruptionBudget for API Service
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: vaulytica-api-pdb
+  namespace: vaulytica
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: vaulytica-api
+
+---
+# PodDisruptionBudget for Agent Workers
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: vaulytica-agent-workers-pdb
+  namespace: vaulytica
+spec:
+  minAvailable: 3
+  selector:
+    matchLabels:
+      app: vaulytica-agent-workers
+

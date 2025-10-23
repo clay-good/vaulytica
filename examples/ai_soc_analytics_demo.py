@@ -1,4 +1,19 @@
 #!/usr/bin/env python3
+"""
+Vaulytica AI SOC Analytics Demo
+
+Demonstrates comprehensive AI-powered Security Operations Center capabilities:
+- Predictive Threat Analytics
+- Risk Scoring Engine
+- Automated Triage System
+- Threat Hunting Engine
+- Behavioral Analytics (UEBA)
+- Attack Path Analysis
+- SOC Performance Metrics
+
+Author: World-Class Software Engineering Team
+Version: 0.15.0
+"""
 
 import sys
 from pathlib import Path

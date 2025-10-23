@@ -1,3 +1,20 @@
+"""
+PagerDuty Integration for Vaulytica.
+
+Provides comprehensive PagerDuty alerting and on-call management with:
+- Incident creation and management
+- Alert triggering and acknowledgment
+- On-call schedule integration
+- Escalation policy support
+- Service integration
+- Event v2 API support
+- Change events
+- Custom details and metadata
+
+Author: Vaulytica Team
+Version: 0.21.0
+"""
+
 import asyncio
 import aiohttp
 import json
@@ -76,10 +93,10 @@ class SyncMapping:
 class PagerDutyAPIClient:
     """
     PagerDuty REST API client.
-    
+
     Provides low-level API operations for PagerDuty Events API v2 and REST API.
     """
-    
+
     def __init__(
         self,
         api_key: str,
@@ -87,17 +104,17 @@ class PagerDutyAPIClient:
     ):
         """
         Initialize PagerDuty API client.
-        
+
         Args:
             api_key: PagerDuty REST API key
             integration_key: PagerDuty Events API v2 integration key (routing key)
         """
         self.api_key = api_key
         self.integration_key = integration_key
-        self.rest_api_url = "https://api.pagerduty.com"
-        self.events_api_url = "https://events.pagerduty.com/v2"
+        self.rest_api_url = "https://example.com"
+        self.events_api_url = "https://example.com"
         self.session: Optional[aiohttp.ClientSession] = None
-        
+
         # Statistics
         self.statistics = {
             "total_requests": 0,
@@ -108,9 +125,9 @@ class PagerDutyAPIClient:
             "events_resolved": 0,
             "incidents_queried": 0
         }
-        
+
         logger.info("PagerDuty API client initialized")
-    
+
     async def _ensure_session(self):
         """Ensure aiohttp session exists."""
         if self.session is None or self.session.closed:
@@ -121,12 +138,12 @@ class PagerDutyAPIClient:
                     "Accept": "application/vnd.pagerduty+json;version=2"
                 }
             )
-    
+
     async def close(self):
         """Close the aiohttp session."""
         if self.session and not self.session.closed:
             await self.session.close()
-    
+
     async def trigger_event(
         self,
         summary: str,
@@ -141,7 +158,7 @@ class PagerDutyAPIClient:
         if not self.integration_key:
             logger.error("Integration key required for triggering events")
             return None
-        
+
         payload = {
             "routing_key": self.integration_key,
             "event_action": PagerDutyEventAction.TRIGGER.value,
@@ -152,7 +169,7 @@ class PagerDutyAPIClient:
                 "timestamp": datetime.utcnow().isoformat()
             }
         }
-        
+
         if dedup_key:
             payload["dedup_key"] = dedup_key
         if custom_details:
@@ -161,10 +178,10 @@ class PagerDutyAPIClient:
             payload["links"] = links
         if images:
             payload["images"] = images
-        
+
         try:
             self.statistics["total_requests"] += 1
-            
+
             async with aiohttp.ClientSession() as session:
                 async with session.post(
                     f"{self.events_api_url}/enqueue",
@@ -172,10 +189,10 @@ class PagerDutyAPIClient:
                 ) as response:
                     if response.status == 202:
                         data = await response.json()
-                        
+
                         self.statistics["successful_requests"] += 1
                         self.statistics["events_triggered"] += 1
-                        
+
                         logger.info(f"Triggered PagerDuty event: {data.get('dedup_key')}")
                         return data
                     else:
@@ -183,27 +200,27 @@ class PagerDutyAPIClient:
                         error_text = await response.text()
                         logger.error(f"Failed to trigger event: {response.status} - {error_text}")
                         return None
-                        
+
         except Exception as e:
             self.statistics["failed_requests"] += 1
             logger.error(f"Error triggering event: {e}")
             return None
-    
+
     async def acknowledge_event(self, dedup_key: str) -> bool:
         """Acknowledge a PagerDuty event."""
         if not self.integration_key:
             logger.error("Integration key required for acknowledging events")
             return False
-        
+
         payload = {
             "routing_key": self.integration_key,
             "event_action": PagerDutyEventAction.ACKNOWLEDGE.value,
             "dedup_key": dedup_key
         }
-        
+
         try:
             self.statistics["total_requests"] += 1
-            
+
             async with aiohttp.ClientSession() as session:
                 async with session.post(
                     f"{self.events_api_url}/enqueue",
@@ -217,27 +234,27 @@ class PagerDutyAPIClient:
                     else:
                         self.statistics["failed_requests"] += 1
                         return False
-                        
+
         except Exception as e:
             self.statistics["failed_requests"] += 1
             logger.error(f"Error acknowledging event: {e}")
             return False
-    
+
     async def resolve_event(self, dedup_key: str) -> bool:
         """Resolve a PagerDuty event."""
         if not self.integration_key:
             logger.error("Integration key required for resolving events")
             return False
-        
+
         payload = {
             "routing_key": self.integration_key,
             "event_action": PagerDutyEventAction.RESOLVE.value,
             "dedup_key": dedup_key
         }
-        
+
         try:
             self.statistics["total_requests"] += 1
-            
+
             async with aiohttp.ClientSession() as session:
                 async with session.post(
                     f"{self.events_api_url}/enqueue",
@@ -251,46 +268,46 @@ class PagerDutyAPIClient:
                     else:
                         self.statistics["failed_requests"] += 1
                         return False
-                        
+
         except Exception as e:
             self.statistics["failed_requests"] += 1
             logger.error(f"Error resolving event: {e}")
             return False
-    
+
     async def get_incident(self, incident_id: str) -> Optional[PagerDutyIncident]:
         """Get incident by ID."""
         await self._ensure_session()
-        
+
         try:
             self.statistics["total_requests"] += 1
-            
+
             async with self.session.get(
                 f"{self.rest_api_url}/incidents/{incident_id}"
             ) as response:
                 if response.status == 200:
                     data = await response.json()
                     incident_data = data.get("incident", {})
-                    
+
                     self.statistics["successful_requests"] += 1
                     self.statistics["incidents_queried"] += 1
-                    
+
                     return self._parse_incident(incident_data)
                 else:
                     self.statistics["failed_requests"] += 1
                     logger.error(f"Failed to get incident: {response.status}")
                     return None
-                    
+
         except Exception as e:
             self.statistics["failed_requests"] += 1
             logger.error(f"Error getting incident: {e}")
             return None
-    
+
     def _parse_incident(self, data: Dict[str, Any]) -> PagerDutyIncident:
         """Parse PagerDuty API response into PagerDutyIncident."""
         service = data.get("service", {})
         escalation_policy = data.get("escalation_policy", {})
         assignments = data.get("assignments", [])
-        
+
         return PagerDutyIncident(
             id=data.get("id", ""),
             incident_number=data.get("incident_number", 0),
@@ -308,16 +325,17 @@ class PagerDutyAPIClient:
             html_url=data.get("html_url"),
             incident_key=data.get("incident_key")
         )
-    
+
     def _parse_datetime(self, dt_str: Optional[str]) -> datetime:
         """Parse PagerDuty datetime string."""
         if not dt_str:
             return datetime.utcnow()
         try:
             return datetime.fromisoformat(dt_str.replace('Z', '+00:00'))
-        except:
+        except (ValueError, TypeError, AttributeError) as e:
+            logger.warning(f"Failed to parse PagerDuty datetime '{dt_str}': {e}")
             return datetime.utcnow()
-    
+
     def get_statistics(self) -> Dict[str, Any]:
         """Get API client statistics."""
         return self.statistics.copy()
@@ -435,7 +453,7 @@ class PagerDutyIncidentManager:
             links = []
             if hasattr(incident, 'dashboard_url'):
                 links.append({
-                    "href": incident.dashboard_url,
+                    "hre": incident.dashboard_url,
                     "text": "View in Vaulytica Dashboard"
                 })
 
@@ -598,4 +616,3 @@ def get_pagerduty_manager(
         _pagerduty_manager = PagerDutyIncidentManager(api_client, **kwargs)
 
     return _pagerduty_manager
-

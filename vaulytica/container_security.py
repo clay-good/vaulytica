@@ -1,3 +1,20 @@
+"""
+Container Security & Kubernetes Security Posture Management for Vaulytica.
+
+Provides comprehensive container and Kubernetes security with:
+- Container image vulnerability scanning
+- Layer-by-layer analysis
+- Package and dependency scanning
+- Kubernetes resource security analysis
+- Runtime security monitoring
+- Pod Security Standards compliance
+- RBAC analysis
+- Network policy validation
+
+Author: Vaulytica Team
+Version: 0.23.0
+"""
+
 import asyncio
 import hashlib
 import json
@@ -25,7 +42,7 @@ class PackageManager(str, Enum):
     APK = "apk"  # Alpine
     APT = "apt"  # Debian/Ubuntu
     YUM = "yum"  # RHEL/CentOS
-    DNF = "dnf"  # Fedora
+    DNF = "dn"  # Fedora
     NPM = "npm"  # Node.js
     PIP = "pip"  # Python
     GEM = "gem"  # Ruby
@@ -124,7 +141,7 @@ class ImageScanResult:
     risk_score: float = 0.0
     scanned_at: datetime = field(default_factory=datetime.utcnow)
     scan_duration_ms: int = 0
-    
+
     def get_vulnerability_count_by_severity(self) -> Dict[str, int]:
         """Get vulnerability counts by severity."""
         counts = {s.value: 0 for s in Severity}
@@ -182,14 +199,14 @@ class K8sSecurityFinding:
 class ContainerImageScanner:
     """
     Container image vulnerability scanner.
-    
+
     Scans container images for vulnerabilities, packages, and misconfigurations.
     """
-    
+
     def __init__(self):
         """Initialize container image scanner."""
         self.scan_results: Dict[str, ImageScanResult] = {}
-        
+
         self.statistics = {
             "total_scans": 0,
             "images_scanned": 0,
@@ -198,12 +215,12 @@ class ContainerImageScanner:
             "packages_scanned": 0,
             "last_scan": None
         }
-        
+
         # Sample vulnerability database
         self._initialize_vulnerability_db()
-        
+
         logger.info("Container Image Scanner initialized")
-    
+
     def _initialize_vulnerability_db(self):
         """Initialize sample vulnerability database."""
         # Sample vulnerabilities for common packages
@@ -249,7 +266,7 @@ class ContainerImageScanner:
                 }
             ]
         }
-    
+
     async def scan_image(
         self,
         image_ref: str,
@@ -257,23 +274,23 @@ class ContainerImageScanner:
     ) -> ImageScanResult:
         """
         Scan container image for vulnerabilities.
-        
+
         Args:
             image_ref: Image reference (e.g., "nginx:1.21")
             registry: Container registry URL
-        
+
         Returns:
             Image scan result
         """
         logger.info(f"Scanning container image: {image_ref}")
-        
+
         start_time = datetime.utcnow()
-        
+
         # Parse image reference
         parts = image_ref.split(":")
         repository = parts[0]
         tag = parts[1] if len(parts) > 1 else "latest"
-        
+
         # Create mock image
         image = ContainerImage(
             image_id=hashlib.sha256(image_ref.encode()).hexdigest()[:12],
@@ -286,22 +303,22 @@ class ContainerImageScanner:
             os="linux",
             architecture="amd64"
         )
-        
+
         # Scan layers
         layers = await self._scan_layers(image)
-        
+
         # Scan packages
         packages = await self._scan_packages(image)
-        
+
         # Find vulnerabilities
         vulnerabilities = await self._find_vulnerabilities(packages, layers)
-        
+
         # Calculate risk score
         risk_score = self._calculate_risk_score(vulnerabilities)
-        
+
         # Create scan result
         scan_duration = int((datetime.utcnow() - start_time).total_seconds() * 1000)
-        
+
         scan_result = ImageScanResult(
             scan_id=f"scan-{image.image_id}-{int(datetime.utcnow().timestamp())}",
             image=image,
@@ -312,9 +329,9 @@ class ContainerImageScanner:
             risk_score=risk_score,
             scan_duration_ms=scan_duration
         )
-        
+
         self.scan_results[scan_result.scan_id] = scan_result
-        
+
         # Update statistics
         self.statistics["total_scans"] += 1
         self.statistics["images_scanned"] += 1
@@ -323,15 +340,15 @@ class ContainerImageScanner:
         for vuln in vulnerabilities:
             self.statistics["vulnerabilities_by_severity"][vuln.severity.value] += 1
         self.statistics["last_scan"] = datetime.utcnow().isoformat()
-        
+
         logger.info(f"Scan complete: {len(vulnerabilities)} vulnerabilities found in {scan_duration}ms")
-        
+
         return scan_result
-    
+
     async def _scan_layers(self, image: ContainerImage) -> List[ImageLayer]:
         """Scan image layers."""
         layers = []
-        
+
         for i, layer_id in enumerate(image.layers):
             layer = ImageLayer(
                 layer_id=layer_id,
@@ -340,14 +357,14 @@ class ContainerImageScanner:
                 created_at=image.created_at + timedelta(minutes=i)
             )
             layers.append(layer)
-        
+
         return layers
-    
+
     async def _scan_packages(self, image: ContainerImage) -> List[Package]:
         """Scan packages in image."""
         # Mock packages based on image name
         packages = []
-        
+
         if "nginx" in image.repository.lower():
             packages.extend([
                 Package("nginx", "1.21.0", PackageManager.APT, license="BSD-2-Clause"),
@@ -366,9 +383,9 @@ class ContainerImageScanner:
                 Package("openssl", "1.1.1k", PackageManager.APT, license="Apache-2.0"),
                 Package("curl", "7.74.0", PackageManager.APT, license="MIT")
             ])
-        
+
         return packages
-    
+
     async def _find_vulnerabilities(
         self,
         packages: List[Package],
@@ -376,7 +393,7 @@ class ContainerImageScanner:
     ) -> List[ImageVulnerability]:
         """Find vulnerabilities in packages."""
         vulnerabilities = []
-        
+
         for package in packages:
             if package.name in self.vulnerability_db:
                 for vuln_data in self.vulnerability_db[package.name]:
@@ -392,14 +409,14 @@ class ContainerImageScanner:
                         layer_id=layers[0].layer_id if layers else "unknown",
                         fix_available=True
                     ))
-        
+
         return vulnerabilities
-    
+
     def _calculate_risk_score(self, vulnerabilities: List[ImageVulnerability]) -> float:
         """Calculate overall risk score for image."""
         if not vulnerabilities:
             return 0.0
-        
+
         # Weight by severity
         severity_weights = {
             Severity.CRITICAL: 10.0,
@@ -408,21 +425,21 @@ class ContainerImageScanner:
             Severity.LOW: 2.5,
             Severity.INFO: 1.0
         }
-        
+
         total_score = sum(severity_weights.get(v.severity, 5.0) for v in vulnerabilities)
         avg_score = total_score / len(vulnerabilities)
-        
+
         # Adjust for exploit availability
         exploit_multiplier = 1.0
         if any(v.exploit_available for v in vulnerabilities):
             exploit_multiplier = 1.5
-        
+
         return min(avg_score * exploit_multiplier, 10.0)
-    
+
     def get_scan_result(self, scan_id: str) -> Optional[ImageScanResult]:
         """Get scan result by ID."""
         return self.scan_results.get(scan_id)
-    
+
     def get_statistics(self) -> Dict[str, Any]:
         """Get scanner statistics."""
         return self.statistics
@@ -1139,11 +1156,11 @@ class SupplyChainSecurity:
 
         return {
             "verified": True,
-            "signer": "build-system@example.com",
+            "signer": "user@example.com",
             "signed_at": (datetime.utcnow() - timedelta(days=1)).isoformat(),
             "provenance": {
                 "builder": "GitHub Actions",
-                "source_repo": "https://github.com/example/app",
+                "source_repo": "https://example.com",
                 "commit_sha": "abc123def456"
             }
         }
@@ -1345,4 +1362,3 @@ def get_container_security_orchestrator() -> ContainerSecurityOrchestrator:
         _orchestrator = ContainerSecurityOrchestrator()
 
     return _orchestrator
-

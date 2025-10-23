@@ -47,7 +47,7 @@ python -m vaulytica.cli serve --config config/production.yaml
 
 ```yaml
 # Environment
-environment: production  # development, staging, production, testing
+environment: production # development, staging, production, testing
 debug: false
 
 # Model Configuration
@@ -98,7 +98,7 @@ chunk_size: 50000
 
 ```bash
 export ANTHROPIC_API_KEY=sk-ant-api03-...
-export VAULYTICA_SLACK_WEBHOOK_URL=https://hooks.slack.com/...
+export VAULYTICA_SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/WEBHOOK/URL
 ```
 
 ### Option 2: .env File (Development Only)
@@ -111,7 +111,7 @@ cp .env.example .env
 nano .env
 ```
 
-**⚠️ Never commit `.env` files to version control!**
+**[WARNING] Never commit `.env` files to version control!**
 
 ### Option 3: Secrets Manager (Production)
 
@@ -122,12 +122,12 @@ import boto3
 import json
 
 def load_secrets_from_aws():
-    client = boto3.client('secretsmanager', region_name='us-west-2')
-    response = client.get_secret_value(SecretId='vaulytica/production')
-    secrets = json.loads(response['SecretString'])
-    
-    os.environ['ANTHROPIC_API_KEY'] = secrets['anthropic_api_key']
-    os.environ['VAULYTICA_SLACK_WEBHOOK_URL'] = secrets['slack_webhook_url']
+ client = boto3.client('secretsmanager', region_name='us-west-2')
+ response = client.get_secret_value(SecretId='vaulytica/production')
+ secrets = json.loads(response['SecretString'])
+ 
+ os.environ['ANTHROPIC_API_KEY'] = secrets['anthropic_api_key']
+ os.environ['VAULYTICA_SLACK_WEBHOOK_URL'] = secrets['slack_webhook_url']
 ```
 
 #### HashiCorp Vault
@@ -136,15 +136,15 @@ def load_secrets_from_aws():
 import hvac
 
 def load_secrets_from_vault():
-    client = hvac.Client(url='https://vault.example.com')
-    client.token = os.environ['VAULT_TOKEN']
-    
-    secrets = client.secrets.kv.v2.read_secret_version(
-        path='vaulytica/production'
-    )
-    
-    for key, value in secrets['data']['data'].items():
-        os.environ[f'VAULYTICA_{key.upper()}'] = value
+ client = hvac.Client(url='https://example.com')
+ client.token = os.environ['VAULT_TOKEN']
+ 
+ secrets = client.secrets.kv.v2.read_secret_version(
+ path='vaulytica/production'
+ )
+ 
+ for key, value in secrets['data']['data'].items():
+ os.environ[f'VAULYTICA_{key.upper()}'] = value
 ```
 
 ## Configuration Validation
@@ -155,11 +155,11 @@ Vaulytica validates configuration on startup:
 from vaulytica.config import load_config
 
 try:
-    config = load_config()
-    print(f"Configuration loaded for {config.get_environment_name()}")
+ config = load_config()
+ print(f"Configuration loaded for {config.get_environment_name()}")
 except ValueError as e:
-    print(f"Configuration error: {e}")
-    sys.exit(1)
+ print(f"Configuration error: {e}")
+ sys.exit(1)
 ```
 
 ### Production Validation Rules
@@ -191,7 +191,7 @@ config = load_config_from_file(Path("config/production.yaml"))
 ```python
 # Check environment
 if config.is_production():
-    print("Running in production mode")
+ print("Running in production mode")
 
 # Get configuration as dictionary
 config_dict = config.to_dict(mask_secrets=True)
@@ -208,18 +208,18 @@ print(f"RAG enabled: {config.enable_rag}")
 
 ```bash
 docker run -d \
-  -e ANTHROPIC_API_KEY="sk-ant-api03-..." \
-  -e VAULYTICA_ENVIRONMENT=production \
-  -e VAULYTICA_LOG_LEVEL=INFO \
-  vaulytica:latest
+ -e ANTHROPIC_API_KEY="sk-ant-api03-..." \
+ -e VAULYTICA_ENVIRONMENT=production \
+ -e VAULYTICA_LOG_LEVEL=INFO \
+ vaulytica:latest
 ```
 
 ### Using .env File
 
 ```bash
 docker run -d \
-  --env-file .env \
-  vaulytica:latest
+ --env-file .env \
+ vaulytica:latest
 ```
 
 ### Using Docker Secrets
@@ -230,9 +230,9 @@ echo "sk-ant-api03-..." | docker secret create anthropic_api_key -
 
 # Use in service
 docker service create \
-  --name vaulytica \
-  --secret anthropic_api_key \
-  vaulytica:latest
+ --name vaulytica \
+ --secret anthropic_api_key \
+ vaulytica:latest
 ```
 
 ## Kubernetes Configuration
@@ -243,11 +243,11 @@ docker service create \
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: vaulytica-config
+ name: vaulytica-config
 data:
-  environment: "production"
-  log-level: "INFO"
-  model-name: "claude-3-haiku-20240307"
+ environment: "production"
+ log-level: "INFO"
+ model-name: "claude-3-haiku-20240307"
 ```
 
 ### Using Secrets
@@ -256,11 +256,11 @@ data:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: vaulytica-secrets
+ name: vaulytica-secrets
 type: Opaque
 stringData:
-  anthropic-api-key: "sk-ant-api03-..."
-  slack-webhook-url: "https://hooks.slack.com/..."
+ anthropic-api-key: "sk-ant-api03-..."
+ slack-webhook-url: "https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
 ```
 
 ### In Deployment
@@ -268,15 +268,15 @@ stringData:
 ```yaml
 env:
 - name: VAULYTICA_ENVIRONMENT
-  valueFrom:
-    configMapKeyRef:
-      name: vaulytica-config
-      key: environment
+ valueFrom:
+ configMapKeyRef:
+ name: vaulytica-config
+ key: environment
 - name: ANTHROPIC_API_KEY
-  valueFrom:
-    secretKeyRef:
-      name: vaulytica-secrets
-      key: anthropic-api-key
+ valueFrom:
+ secretKeyRef:
+ name: vaulytica-secrets
+ key: anthropic-api-key
 ```
 
 ## Configuration Best Practices
@@ -287,29 +287,29 @@ env:
 # Add to .gitignore
 .env
 *.secret
-config/production.yaml  # If it contains secrets
+config/production.yaml # If it contains secrets
 ```
 
 ### 2. Use Environment-Specific Files
 
 ```
 config/
-├── development.yaml    # Development settings
-├── staging.yaml        # Staging settings
-├── production.yaml     # Production settings (no secrets!)
-└── testing.yaml        # Test settings
+ development.yaml # Development settings
+ staging.yaml # Staging settings
+ production.yaml # Production settings (no secrets!)
+ testing.yaml # Test settings
 ```
 
 ### 3. Validate on Startup
 
 ```python
 def main():
-    try:
-        config = load_config()
-        config.validate()  # Explicit validation
-    except ValueError as e:
-        logger.error(f"Invalid configuration: {e}")
-        sys.exit(1)
+ try:
+ config = load_config()
+ config.validate() # Explicit validation
+ except ValueError as e:
+ logger.error(f"Invalid configuration: {e}")
+ sys.exit(1)
 ```
 
 ### 4. Use Secrets Managers in Production
@@ -368,6 +368,6 @@ For configuration issues:
 
 ---
 
-**Version**: 0.17.0  
+**Version**: 0.17.0 
 **Last Updated**: 2024-01-15
 

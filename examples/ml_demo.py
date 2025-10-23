@@ -1,4 +1,13 @@
 #!/usr/bin/env python3
+"""Demonstration of ML Engine capabilities.
+
+This script demonstrates:
+1. Anomaly detection
+2. Threat prediction
+3. Attack clustering
+4. Time series forecasting
+5. Feature extraction
+"""
 
 import sys
 import os

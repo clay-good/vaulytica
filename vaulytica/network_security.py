@@ -1,3 +1,18 @@
+"""
+Network Security, Data Loss Prevention & Encryption Management for Vaulytica.
+
+Provides comprehensive network and data security with:
+- Network traffic analysis and firewall rule validation
+- Data Loss Prevention (DLP) with sensitive data detection
+- Encryption key lifecycle management
+- Data classification and sensitivity labeling
+- Network threat detection (port scanning, DDoS, C2 communication)
+- TLS/SSL certificate monitoring
+
+Author: Vaulytica Team
+Version: 0.25.0
+"""
+
 import asyncio
 import hashlib
 import re
@@ -201,16 +216,16 @@ class TLSCertificate:
 class NetworkSecurityAnalyzer:
     """
     Network security analyzer.
-    
+
     Analyzes network traffic, firewall rules, and detects network threats.
     """
-    
+
     def __init__(self):
         """Initialize network security analyzer."""
         self.firewall_rules: Dict[str, FirewallRule] = {}
         self.network_flows: List[NetworkFlow] = []
         self.threats: List[NetworkThreat] = []
-        
+
         self.statistics = {
             "rules_analyzed": 0,
             "flows_analyzed": 0,
@@ -219,63 +234,63 @@ class NetworkSecurityAnalyzer:
             "blocked_connections": 0,
             "allowed_connections": 0
         }
-        
+
         # Known malicious IPs (mock data)
         self.malicious_ips = {
             "192.0.2.1",  # TEST-NET-1
             "198.51.100.1",  # TEST-NET-2
             "203.0.113.1"  # TEST-NET-3
         }
-        
+
         # Known C2 domains
         self.c2_domains = {
             "malicious-c2.example.com",
             "evil-command.example.net"
         }
-        
+
         logger.info("Network Security Analyzer initialized")
-    
+
     async def analyze_firewall_rule(self, rule: FirewallRule) -> Dict[str, Any]:
         """
         Analyze firewall rule for security issues.
-        
+
         Args:
             rule: Firewall rule to analyze
-        
+
         Returns:
             Analysis results
         """
         logger.info(f"Analyzing firewall rule: {rule.name}")
-        
+
         self.firewall_rules[rule.rule_id] = rule
-        
+
         issues = []
         risk_score = 0.0
-        
+
         # Check for overly permissive rules
         if rule.source_ip in ["0.0.0.0/0", "*", "any"]:
             issues.append("Rule allows traffic from any source IP (0.0.0.0/0)")
             risk_score += 3.0
-        
+
         if rule.destination_ip in ["0.0.0.0/0", "*", "any"]:
             issues.append("Rule allows traffic to any destination IP")
             risk_score += 2.0
-        
+
         # Check for dangerous ports
         dangerous_ports = ["22", "3389", "23", "21", "445"]
         if rule.destination_port in dangerous_ports and rule.action == FirewallAction.ALLOW:
             issues.append(f"Rule allows access to dangerous port {rule.destination_port}")
             risk_score += 4.0
-        
+
         # Check for allow-all rules
-        if (rule.source_ip in ["0.0.0.0/0", "*"] and 
-            rule.destination_port in ["*", "any"] and 
+        if (rule.source_ip in ["0.0.0.0/0", "*"] and
+            rule.destination_port in ["*", "any"] and
             rule.action == FirewallAction.ALLOW):
             issues.append("Rule allows all traffic from anywhere to any port (CRITICAL)")
             risk_score += 10.0
-        
+
         self.statistics["rules_analyzed"] += 1
-        
+
         return {
             "rule_id": rule.rule_id,
             "name": rule.name,
@@ -283,22 +298,22 @@ class NetworkSecurityAnalyzer:
             "risk_score": min(risk_score, 10.0),
             "is_secure": len(issues) == 0
         }
-    
+
     async def analyze_network_flow(self, flow: NetworkFlow) -> Optional[NetworkThreat]:
         """
         Analyze network flow for threats.
-        
+
         Args:
             flow: Network flow to analyze
-        
+
         Returns:
             Detected threat or None
         """
         logger.info(f"Analyzing network flow: {flow.source_ip} -> {flow.destination_ip}")
-        
+
         self.network_flows.append(flow)
         self.statistics["flows_analyzed"] += 1
-        
+
         # Check for malicious IPs
         if flow.destination_ip in self.malicious_ips:
             threat = NetworkThreat(
@@ -316,20 +331,20 @@ class NetworkSecurityAnalyzer:
                 flows=[flow],
                 risk_score=9.0
             )
-            
+
             self.threats.append(threat)
             self.statistics["threats_detected"] += 1
-            
+
             if threat.threat_type.value not in self.statistics["threats_by_type"]:
                 self.statistics["threats_by_type"][threat.threat_type.value] = 0
             self.statistics["threats_by_type"][threat.threat_type.value] += 1
-            
+
             return threat
-        
+
         # Check for port scanning (multiple destination ports from same source)
         recent_flows = [f for f in self.network_flows[-100:] if f.source_ip == flow.source_ip]
         unique_ports = len(set(f.destination_port for f in recent_flows))
-        
+
         if unique_ports > 20:
             threat = NetworkThreat(
                 threat_id=f"threat-{hashlib.md5(f'{flow.source_ip}portscan'.encode()).hexdigest()[:12]}",
@@ -345,18 +360,18 @@ class NetworkSecurityAnalyzer:
                 flows=recent_flows[-10:],
                 risk_score=7.5
             )
-            
+
             self.threats.append(threat)
             self.statistics["threats_detected"] += 1
-            
+
             if threat.threat_type.value not in self.statistics["threats_by_type"]:
                 self.statistics["threats_by_type"][threat.threat_type.value] = 0
             self.statistics["threats_by_type"][threat.threat_type.value] += 1
-            
+
             return threat
-        
+
         return None
-    
+
     def get_statistics(self) -> Dict[str, Any]:
         """Get analyzer statistics."""
         return self.statistics
@@ -440,24 +455,32 @@ class DataClassifier:
         detected = []
         lines = content.split('\n')
 
+        # Optimize: Pre-compile all patterns and flatten structure
+        compiled_patterns = []
         for data_type, patterns in self.patterns.items():
             for pattern, description in patterns:
-                for line_num, line in enumerate(lines, 1):
-                    matches = re.finditer(pattern, line, re.IGNORECASE)
+                compiled_patterns.append((
+                    data_type,
+                    re.compile(pattern, re.IGNORECASE),
+                    description
+                ))
 
-                    for match in matches:
-                        matched_value = match.group(0)
+        # Optimize: Single pass through lines, check all patterns
+        for line_num, line in enumerate(lines, 1):
+            for data_type, compiled_pattern, description in compiled_patterns:
+                for match in compiled_pattern.finditer(line):
+                    matched_value = match.group(0)
 
-                        # Mask the value
-                        masked_value = self._mask_value(matched_value, data_type)
+                    # Mask the value
+                    masked_value = self._mask_value(matched_value, data_type)
 
-                        # Determine classification level
-                        classification = self._determine_classification(data_type)
+                    # Determine classification level
+                    classification = self._determine_classification(data_type)
 
-                        # Calculate confidence
-                        confidence = self._calculate_confidence(matched_value, data_type)
+                    # Calculate confidence
+                    confidence = self._calculate_confidence(matched_value, data_type)
 
-                        sensitive_data = SensitiveData(
+                    sensitive_data = SensitiveData(
                             data_id=f"data-{hashlib.md5(f'{location}{line_num}{matched_value}'.encode()).hexdigest()[:12]}",
                             data_type=data_type,
                             classification=classification,
@@ -466,24 +489,24 @@ class DataClassifier:
                             context=context or line[:100],
                             confidence=confidence,
                             line_number=line_num
-                        )
+                    )
 
-                        detected.append(sensitive_data)
-                        self.classified_data.append(sensitive_data)
+                    detected.append(sensitive_data)
+                    self.classified_data.append(sensitive_data)
 
-                        # Update statistics
-                        self.statistics["data_classified"] += 1
+                    # Update statistics
+                    self.statistics["data_classified"] += 1
 
-                        if data_type.value not in self.statistics["by_type"]:
-                            self.statistics["by_type"][data_type.value] = 0
-                        self.statistics["by_type"][data_type.value] += 1
+                    if data_type.value not in self.statistics["by_type"]:
+                        self.statistics["by_type"][data_type.value] = 0
+                    self.statistics["by_type"][data_type.value] += 1
 
-                        if classification.value not in self.statistics["by_classification"]:
-                            self.statistics["by_classification"][classification.value] = 0
-                        self.statistics["by_classification"][classification.value] += 1
+                    if classification.value not in self.statistics["by_classification"]:
+                        self.statistics["by_classification"][classification.value] = 0
+                    self.statistics["by_classification"][classification.value] += 1
 
-                        if confidence > 0.8:
-                            self.statistics["high_confidence"] += 1
+                    if confidence > 0.8:
+                        self.statistics["high_confidence"] += 1
 
         logger.info(f"Classified {len(detected)} sensitive data items in {location}")
 
@@ -1244,4 +1267,3 @@ def get_network_security_orchestrator() -> NetworkSecurityOrchestrator:
         _orchestrator = NetworkSecurityOrchestrator()
 
     return _orchestrator
-

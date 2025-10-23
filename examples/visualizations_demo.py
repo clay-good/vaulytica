@@ -1,4 +1,17 @@
 #!/usr/bin/env python3
+"""
+Vaulytica Advanced Visualizations Demo
+
+Demonstrates all visualization capabilities:
+- Attack Graph
+- Threat Map
+- Network Topology
+- Timeline
+- Correlation Matrix
+
+Author: World-Class Software Engineering Team
+Version: 0.13.0
+"""
 
 import sys
 import random
@@ -305,7 +318,7 @@ def main():
     print("="*80)
     print("\n🚀 Next Steps:")
     print("  1. Start the API server: python3 -m vaulytica.api")
-    print("  2. Open browser: http://localhost:8000/visualizations")
+    print("  2. Open browser: https://example.com:8000/visualizations")
     print("  3. Explore interactive visualizations with real-time data")
     print("\n" + "="*80)
 

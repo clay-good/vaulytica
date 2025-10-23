@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Vaulytica - Open Source AI Agent Framework for Security Operations. Intelligent SOC automation with multi-agent orchestration.">
+    <title>Vaulytica - AI Security Operations Platform</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg width='64' height='64' viewBox='0 0 64 64' fill='none' xmlns='http://www.w3.org/2000/svg'><circle cx='32' cy='32' r='28' fill='%23000000'/><path d='M32 16L44 48H20L32 16Z' fill='white'/></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #ffffff;
+            --surface: #fafafa;
+            --surface-elevated: #f5f5f5;
+            --surface-hover: #efefef;
+            --text: #1a1a1a;
+            --text-secondary: #666666;
+            --text-tertiary: #999999;
+            --accent: #000000;
+            --border: #e5e5e5;
+            --shadow: rgba(0, 0, 0, 0.08);
+            --shadow-hover: rgba(0, 0, 0, 0.12);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(0, 0, 0, 0.02) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(0, 0, 0, 0.015) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                padding: 0 40px;
+            }
+        }
+
+        header {
+            padding: 80px 0 120px;
+            text-align: center;
+            position: relative;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @media (min-width: 768px) {
+            header {
+                padding: 120px 0 180px;
+            }
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #000000 0%, #4a4a4a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            display: inline-block;
+        }
+
+        @media (min-width: 768px) {
+            .logo {
+                font-size: 5rem;
+                margin-bottom: 30px;
+            }
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        @media (min-width: 768px) {
+            .tagline {
+                font-size: 1.8rem;
+                margin-bottom: 50px;
+            }
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto 40px;
+            line-height: 1.8;
+            font-weight: 300;
+        }
+
+        @media (min-width: 768px) {
+            .hero-description {
+                font-size: 1.3rem;
+                margin-bottom: 60px;
+                line-height: 2;
+            }
+        }
+
+        .cta-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        @media (min-width: 768px) {
+            .cta-group {
+                flex-direction: row;
+                gap: 20px;
+            }
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 18px 40px;
+            background: var(--accent);
+            color: var(--bg);
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid var(--accent);
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            .cta-button {
+                padding: 24px 60px;
+                font-size: 1rem;
+                width: auto;
+            }
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            background: transparent;
+            color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px var(--shadow-hover);
+        }
+
+        .cta-button.secondary {
+            background: transparent;
+            color: var(--accent);
+            border: 2px solid var(--accent);
+        }
+
+        .cta-button.secondary:hover {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        .github-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 32px;
+            background: var(--surface);
+            color: var(--text);
+            text-decoration: none;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        @media (min-width: 768px) {
+            .github-link {
+                padding: 20px 40px;
+            }
+        }
+
+        .github-link:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px var(--shadow);
+        }
+
+        section {
+            padding: 60px 0;
+            position: relative;
+        }
+
+        @media (min-width: 768px) {
+            section {
+                padding: 100px 0;
+            }
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 15px;
+            letter-spacing: -0.02em;
+            color: var(--text);
+        }
+
+        @media (min-width: 768px) {
+            .section-title {
+                font-size: 3rem;
+                margin-bottom: 20px;
+            }
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 300;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            line-height: 1.7;
+        }
+
+        @media (min-width: 768px) {
+            .section-subtitle {
+                font-size: 1.3rem;
+                margin-bottom: 60px;
+                line-height: 1.8;
+            }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        @media (min-width: 640px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 30px;
+                margin: 60px 0;
+            }
+        }
+
+        .stat-card {
+            background: var(--surface);
+            padding: 30px 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        @media (min-width: 768px) {
+            .stat-card {
+                padding: 40px 30px;
+            }
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px var(--shadow);
+            border-color: var(--accent);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--accent);
+            margin-bottom: 10px;
+            letter-spacing: -0.02em;
+        }
+
+        @media (min-width: 768px) {
+            .stat-number {
+                font-size: 3rem;
+            }
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        @media (min-width: 768px) {
+            .stat-label {
+                font-size: 1rem;
+            }
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        @media (min-width: 768px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+                margin-top: 60px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .features-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .feature-card {
+            background: var(--surface);
+            padding: 30px 25px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @media (min-width: 768px) {
+            .feature-card {
+                padding: 40px 35px;
+            }
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 40px var(--shadow);
+            border-color: var(--accent);
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text);
+            letter-spacing: -0.01em;
+        }
+
+        @media (min-width: 768px) {
+            .feature-title {
+                font-size: 1.5rem;
+                margin-bottom: 15px;
+            }
+        }
+
+        .feature-description {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        @media (min-width: 768px) {
+            .feature-description {
+                font-size: 1.05rem;
+                line-height: 1.8;
+            }
+        }
+
+        .feature-description strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .agent-card {
+            background: var(--surface);
+            padding: 35px 25px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (min-width: 768px) {
+            .agent-card {
+                padding: 45px 35px;
+            }
+        }
+
+        .agent-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 40px var(--shadow);
+            border-color: var(--accent);
+        }
+
+        .code-block {
+            background: var(--surface-elevated);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            overflow-x: auto;
+            color: var(--text);
+        }
+
+        @media (min-width: 768px) {
+            .code-block {
+                padding: 24px;
+                font-size: 0.9rem;
+            }
+        }
+
+        .install-steps {
+            margin: 40px 0;
+        }
+
+        @media (min-width: 768px) {
+            .install-steps {
+                margin: 60px 0;
+            }
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: var(--surface);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        @media (min-width: 768px) {
+            .step {
+                flex-direction: row;
+                margin-bottom: 40px;
+                padding: 35px;
+            }
+        }
+
+        .step:hover {
+            border-color: var(--accent);
+            box-shadow: 0 8px 24px var(--shadow);
+        }
+
+        .step-number {
+            flex-shrink: 0;
+            width: 50px;
+            height: 50px;
+            background: var(--accent);
+            color: var(--bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 768px) {
+            .step-number {
+                width: 60px;
+                height: 60px;
+                font-size: 1.8rem;
+                margin: 0;
+            }
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+
+        @media (min-width: 768px) {
+            .step-title {
+                font-size: 1.4rem;
+                margin-bottom: 12px;
+            }
+        }
+
+        .step-description {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        @media (min-width: 768px) {
+            .step-description {
+                font-size: 1.05rem;
+            }
+        }
+
+        .architecture-diagram {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 30px;
+            margin: 40px 0;
+            overflow-x: auto;
+        }
+
+        @media (min-width: 768px) {
+            .architecture-diagram {
+                padding: 40px;
+                margin: 60px 0;
+            }
+        }
+
+        .architecture-diagram pre {
+            font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            color: var(--text);
+            white-space: pre;
+        }
+
+        @media (min-width: 768px) {
+            .architecture-diagram pre {
+                font-size: 0.9rem;
+            }
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: var(--surface-elevated);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        @media (min-width: 768px) {
+            .badge {
+                padding: 6px 12px;
+                font-size: 0.85rem;
+            }
+        }
+
+        .highlight-box {
+            background: var(--surface);
+            border-left: 4px solid var(--accent);
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        @media (min-width: 768px) {
+            .highlight-box {
+                padding: 30px;
+                margin: 40px 0;
+            }
+        }
+
+        .highlight-box h3 {
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+
+        @media (min-width: 768px) {
+            .highlight-box h3 {
+                font-size: 1.4rem;
+                margin-bottom: 15px;
+            }
+        }
+
+        .highlight-box p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        @media (min-width: 768px) {
+            .highlight-box p {
+                font-size: 1.05rem;
+            }
+        }
+
+        footer {
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            margin-top: 60px;
+            color: var(--text-secondary);
+        }
+
+        @media (min-width: 768px) {
+            footer {
+                padding: 60px 0;
+                margin-top: 100px;
+            }
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stat-number {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        @media (min-width: 768px) {
+            .table-wrapper {
+                margin: 40px 0;
+            }
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--surface);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+
+        @media (min-width: 768px) {
+            th, td {
+                padding: 16px;
+                font-size: 1rem;
+            }
+        }
+
+        th {
+            background: var(--surface-elevated);
+            font-weight: 600;
+            color: var(--text);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+        }
+
+        @media (min-width: 768px) {
+            th {
+                font-size: 0.85rem;
+            }
+        }
+
+        td {
+            color: var(--text-secondary);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        @media (max-width: 767px) {
+            .mobile-hidden {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">Vaulytica</div>
+            <p class="tagline">AI Agent Framework for Security Operations</p>
+            <p class="hero-description">
+                Open source platform that deploys intelligent AI agents to automate your Security Operations Center. From threat detection to incident response, leverage Claude-powered agents that think, learn, and act like your best security analysts.
+            </p>
+            <div class="cta-group">
+                <a href="https://github.com/clay-good/vaulytica" class="cta-button" target="_blank" rel="noopener">
+                    Get Started
+                </a>
+            </div>
+        </header>
+
+        <section>
+            <h2 class="section-title">Why Vaulytica?</h2>
+            <p class="section-subtitle">
+                Security teams are overwhelmed. Alert fatigue, manual triage, and repetitive investigations consume countless hours. Vaulytica changes that by deploying AI agents that work 24/7 to detect threats, respond to incidents, and continuously improve your security posture.
+            </p>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">AI Agents</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Analysis Phases</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">70%</div>
+                    <div class="stat-label">Alert Reduction</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">&lt;100ms</div>
+                    <div class="stat-label">Response Time</div>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h3>Built for Security Teams, By Security Engineers</h3>
+                <p>
+                    Vaulytica was born from the frustration of manual security operations. We spent years responding to incidents at 3 AM, triaging thousands of alerts, and writing the same investigation queries over and over. We built Vaulytica to be the AI-powered SOC we always wanted: intelligent, tireless, and constantly learning from every threat it encounters.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">AI Security Agents</h2>
+            <p class="section-subtitle">
+                Each agent specializes in a critical security domain, working together through a unified orchestration layer to provide comprehensive protection.
+            </p>
+
+            <div class="features-grid">
+                <div class="agent-card">
+                    <h3 class="feature-title">Security Analyst Agent</h3>
+                    <p class="feature-description">
+                        The Security Analyst Agent performs comprehensive 12-phase analysis on every security event. It enriches indicators of compromise with multi-source threat intelligence from VirusTotal, URLScan.io, WHOIS, AlienVault OTX, AbuseIPDB, and Shodan. The agent performs behavioral analysis to detect anomalies, maps threats to the MITRE ATT&CK framework, attributes attacks to known threat actors, and generates cross-platform investigation queries for Datadog, AWS CloudTrail, GCP audit logs, and Google Workspace. This eliminates hours of manual enrichment and provides actionable intelligence within seconds.
+                        <br><br>
+                        <span class="badge">VirusTotal</span>
+                        <span class="badge">URLScan.io</span>
+                        <span class="badge">WHOIS</span>
+                        <span class="badge">AlienVault</span>
+                        <span class="badge">Shodan</span>
+                    </p>
+                </div>
+
+                <div class="agent-card">
+                    <h3 class="feature-title">Incident Response Agent</h3>
+                    <p class="feature-description">
+                        The Incident Response Agent manages the complete incident lifecycle from detection through post-mortem. It automatically ingests enriched analysis from the Security Analyst Agent, reconstructs detailed attack timelines, orchestrates containment actions across multiple systems, and tracks critical metrics including MTTD (Mean Time To Detect), MTTC (Mean Time To Contain), and MTTR (Mean Time To Recover). The agent integrates with Jira, ServiceNow, PagerDuty, and Datadog Case Management to ensure seamless workflow automation and generates comprehensive post-incident reports with corrective actions.
+                        <br><br>
+                        <span class="badge">Jira</span>
+                        <span class="badge">ServiceNow</span>
+                        <span class="badge">PagerDuty</span>
+                        <span class="badge">Datadog Cases</span>
+                    </p>
+                </div>
+
+                <div class="agent-card">
+                    <h3 class="feature-title">Detection Engineering Agent</h3>
+                    <p class="feature-description">
+                        The Detection Engineering Agent continuously improves your security posture by learning from historical incidents and automatically creating new detection rules. It analyzes past attacks to identify detection gaps, generates Sigma rules that work across multiple SIEM platforms, reduces false positives through ML-powered threshold optimization, and maintains comprehensive detection coverage across the MITRE ATT&CK framework. The agent supports multiple rule formats including Sigma, YARA, KQL (Kusto Query Language), and SPL (Splunk Processing Language), enabling deployment across your entire security stack.
+                        <br><br>
+                        <span class="badge">Sigma Rules</span>
+                        <span class="badge">YARA</span>
+                        <span class="badge">KQL</span>
+                        <span class="badge">SPL</span>
+                    </p>
+                </div>
+
+                <div class="agent-card">
+                    <h3 class="feature-title">Brand Protection Agent</h3>
+                    <p class="feature-description">
+                        The Brand Protection Agent continuously monitors the internet for malicious use of your brand identity. It detects phishing websites, typosquatting domains, fraudulent SSL certificates, social media impersonation, and malicious mobile applications. The agent monitors Certificate Transparency logs to catch new SSL certificates using your brand name, performs WHOIS lookups on suspicious domain registrations, tracks DNS changes for lookalike domains, and integrates with domain registrars to facilitate takedown requests. This proactive approach helps protect your customers and your reputation before attacks gain momentum.
+                        <br><br>
+                        <span class="badge">Certificate Transparency</span>
+                        <span class="badge">WHOIS</span>
+                        <span class="badge">DNS Monitoring</span>
+                    </p>
+                </div>
+
+                <div class="agent-card">
+                    <h3 class="feature-title">Security Questionnaire Agent</h3>
+                    <p class="feature-description">
+                        The Security Questionnaire Agent eliminates the tedious process of completing vendor security assessments and RFP security sections. Using Retrieval-Augmented Generation (RAG) technology, it learns from your security documentation, policies, SOPs, compliance reports, and previous questionnaire responses. The agent automatically answers questions with consistent accuracy, provides confidence scores and source citations, and saves security teams 10-20 hours per week. It supports CSV and Excel questionnaire formats, maintains a library of approved responses for consistency, and includes a human review workflow for low-confidence answers.
+                        <br><br>
+                        <span class="badge">RAG-powered</span>
+                        <span class="badge">CSV/Excel Support</span>
+                        <span class="badge">80% Time Savings</span>
+                    </p>
+                </div>
+
+                <div class="agent-card">
+                    <h3 class="feature-title">Vulnerability Management Agent</h3>
+                    <p class="feature-description">
+                        The Vulnerability Management Agent bridges the gap between security and engineering teams by automating vulnerability remediation workflows. It ingests findings from Wiz and SocketDev, performs transitive dependency analysis to trace vulnerability paths through your software supply chain, enriches Jira tickets with business context and remediation guidance, creates GitLab or GitHub merge requests with automated fixes, and tracks MTTR metrics by team. The agent performs SBOM analysis, cross-validates findings from multiple sources, detects code ownership automatically, and validates remediation through continuous scanning.
+                        <br><br>
+                        <span class="badge">Wiz Integration</span>
+                        <span class="badge">SocketDev Integration</span>
+                        <span class="badge">Auto Merge Requests</span>
+                        <span class="badge">SBOM Analysis</span>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">Key Capabilities</h2>
+            <p class="section-subtitle">
+                Enterprise-grade security features powered by artificial intelligence and machine learning.
+            </p>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3 class="feature-title">Real-Time Streaming</h3>
+                    <p class="feature-description">
+                        Vaulytica processes over 1,000 events per second with less than 100 milliseconds of latency. The Complex Event Processing engine detects attack patterns across time windows, enabling detection of sophisticated multi-stage attacks that unfold over hours or days. The streaming architecture supports tumbling windows, sliding windows, session windows, and count-based windows for flexible pattern matching.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <h3 class="feature-title">Machine Learning</h3>
+                    <p class="feature-description">
+                        The platform employs Isolation Forest for anomaly detection, Random Forest for threat prediction, and LSTM neural networks for sequence analysis. AutoML-powered hyperparameter optimization achieves 88-95% accuracy with automatic model retraining. Models are continuously updated as new threat patterns emerge, ensuring detection capabilities evolve with the threat landscape.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <h3 class="feature-title">Behavioral Analysis</h3>
+                    <p class="feature-description">
+                        Eight attack pattern signatures detect brute force attacks, data exfiltration, lateral movement, privilege escalation, reconnaissance, persistence, credential dumping, and command and control traffic. User and Entity Behavior Analytics (UEBA) identifies anomalous behavior before traditional rules trigger, catching insider threats and compromised accounts early.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <h3 class="feature-title">Threat Intelligence</h3>
+                    <p class="feature-description">
+                        Aggregate intelligence from six sources: VirusTotal, AlienVault OTX, AbuseIPDB, Shodan, URLhaus, and ThreatFox. Smart caching provides a 4-5x speedup with an 83% cache hit rate, dramatically reducing API costs. Consensus voting validates IOC reputation across multiple sources, reducing false positives while maintaining high detection rates.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <h3 class="feature-title">Digital Forensics</h3>
+                    <p class="feature-description">
+                        Comprehensive evidence collection with cryptographic chain of custody using MD5, SHA-256, and SHA-512 hashing. The platform collects 15 evidence types from six sources including memory dumps, disk images, network captures, log files, and system configurations. Pattern detection and IOC extraction ensure legal compliance and court admissibility.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <h3 class="feature-title">Cloud Security</h3>
+                    <p class="feature-description">
+                        Multi-cloud Cloud Security Posture Management (CSPM) for AWS, Azure, and GCP. Container security with image scanning and Software Bill of Materials (SBOM) generation. Kubernetes security with CIS benchmarks and Pod Security Standards enforcement. IAM analysis and secrets scanning with zero-trust enforcement across all cloud environments.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <h3 class="feature-title">Attack Visualization</h3>
+                    <p class="feature-description">
+                        Interactive attack graphs with D3.js force-directed layouts show relationships between compromised assets. Geographic threat maps display attack origins and targets. Network topology graphs highlight compromise paths. Timeline visualization shows attack progression over time. Correlation heatmaps reveal patterns across multiple incidents.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <h3 class="feature-title">Automated Response</h3>
+                    <p class="feature-description">
+                        Fifteen response actions including isolate host, block IP address, disable user account, revoke credentials, quarantine file, kill process, block domain, and reset password. Five built-in playbooks for ransomware, data exfiltration, compromised credentials, cryptomining, and lateral movement with customizable approval workflows.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <h3 class="feature-title">Compliance Reporting</h3>
+                    <p class="feature-description">
+                        Automated compliance reporting for CIS benchmarks, PCI-DSS, HIPAA, SOC 2, and NIST frameworks. Evidence collection for audits with tamper-proof storage. Policy violation detection and remediation tracking. Risk scoring and trend analysis to measure security posture improvements over time.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">Why Open Source?</h2>
+            <p class="section-subtitle">
+                Security through transparency, innovation through collaboration.
+            </p>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3 class="feature-title">Full Transparency</h3>
+                    <p class="feature-description">
+                        See exactly how your security decisions are made. There are no black boxes and no proprietary algorithms you cannot inspect. Review every line of code, every detection rule, and every machine learning model. Security teams deserve to understand the tools protecting their organization. Open source enables security researchers to validate our approach and suggest improvements.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <h3 class="feature-title">Infinitely Extensible</h3>
+                    <p class="feature-description">
+                        Build custom agents for your unique environment. Extend existing agents, create new integrations, and add proprietary threat intelligence sources. The plugin architecture makes it easy to adapt Vaulytica to your specific security requirements without forking the codebase. Share your extensions with the community or keep them private.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <h3 class="feature-title">No Vendor Lock-In</h3>
+                    <p class="feature-description">
+                        Deploy anywhere you need, modify anything you want, and keep it forever. Whether on-premises, in a private cloud, or in air-gapped networks, you choose the deployment model. There are no licensing fees that scale with your security events, no forced upgrades, and no feature deprecation that breaks your workflows. You control your security infrastructure completely.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <h3 class="feature-title">Community-Driven Innovation</h3>
+                    <p class="feature-description">
+                        Benefit from the collective intelligence of security engineers worldwide. New threat detection techniques, novel machine learning models, and integration patterns are all shared freely. When someone discovers a better way to detect ransomware, the entire community benefits immediately. This accelerates innovation far beyond what any single vendor can achieve.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <h3 class="feature-title">Security by Design</h3>
+                    <p class="feature-description">
+                        Open source security tools are more secure because vulnerabilities are found and fixed faster. More eyes reviewing the code means fewer bugs in production. The security community can validate our threat detection logic and suggest improvements. Transparency builds trust in ways proprietary software never can.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <h3 class="feature-title">Cost Effective</h3>
+                    <p class="feature-description">
+                        Enterprise security without enterprise pricing. There are no per-seat licensing fees and no usage-based fees that explode with scale. Pay only for your infrastructure and the Anthropic API key. For most organizations, that is 10-50x cheaper than commercial SOAR platforms, with no compromise on capabilities.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">Quick Start</h2>
+            <p class="section-subtitle">
+                Deploy your first AI security agent in minutes.
+            </p>
+
+            <div class="install-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-title">Clone & Install</div>
+                        <p class="step-description">Get the code and install dependencies</p>
+                        <div class="code-block">git clone https://github.com/clay-good/vaulytica.git</div>
+                        <div class="code-block">cd vaulytica</div>
+                        <div class="code-block">pip install -e .</div>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-title">Configure API Keys</div>
+                        <p class="step-description">Set up your Anthropic API key and optional threat intelligence sources</p>
+                        <div class="code-block">export ANTHROPIC_API_KEY=sk-ant-...</div>
+                        <div class="code-block">export VIRUSTOTAL_API_KEY=your-vt-key</div>  
+                        <div class="code-block">export DATADOG_API_KEY=your-dd-key</div>                  
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-title">Analyze Your First Event</div>
+                        <p class="step-description">Deploy the Security Analyst Agent and analyze a security event</p>
+                        <div class="code-block">vaulytica analyze test_data/guardduty_crypto_mining.json --source guardduty</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h3>Production Ready in Hours, Not Weeks</h3>
+                <p>
+                    Vaulytica includes Docker Compose configurations for local development, Kubernetes manifests for production deployment, and comprehensive documentation covering common integration patterns. Most teams integrate their first data source and deploy their first agent within 4-6 hours. The platform includes sample configurations for major cloud providers and security tools.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">Integration Ecosystem</h2>
+            <p class="section-subtitle">
+                Works with the security tools you already use.
+            </p>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Integrations</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Cloud Platforms</strong></td>
+                            <td>AWS GuardDuty, Security Hub, CloudTrail • GCP Security Command Center • Azure Security Center, Sentinel</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SIEM / Logging</strong></td>
+                            <td>Datadog • Splunk • Elastic • Snowflake • Chronicle</td>
+                        </tr>
+                        <tr>
+                            <td><strong>EDR / XDR</strong></td>
+                            <td>CrowdStrike Falcon • SentinelOne • Microsoft Defender • Carbon Black</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Threat Intel</strong></td>
+                            <td>VirusTotal • AlienVault OTX • AbuseIPDB • Shodan • URLhaus • ThreatFox • URLScan.io</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ticketing</strong></td>
+                            <td>Jira • ServiceNow • PagerDuty • Datadog Case Management • Linear • Asana</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Code & DevOps</strong></td>
+                            <td>GitLab • GitHub • Bitbucket • Jenkins • CircleCI • GitHub Actions</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Vulnerability</strong></td>
+                            <td>Wiz • SocketDev • Snyk • Tenable • Qualys • Rapid7</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Collaboration</strong></td>
+                            <td>Slack • Microsoft Teams • Google Chat • Email (SMTP)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">Performance at Scale</h2>
+            <p class="section-subtitle">
+                Built for enterprise workloads with millions of security events per day.
+            </p>
+
+            <div class="features-grid">
+                <div class="stat-card">
+                    <div class="stat-number">&lt;100ms</div>
+                    <div class="stat-label">Event Processing</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">1,000+</div>
+                    <div class="stat-label">Events/Second</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">&lt;150ms</div>
+                    <div class="stat-label">ML Prediction</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">83%</div>
+                    <div class="stat-label">Cache Hit Rate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">40-70%</div>
+                    <div class="stat-label">Alert Reduction</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">Detection Accuracy</div>
+                </div>
+            </div>
+
+            <div class="highlight-box" style="margin-top: 40px;">
+                <h3>Optimized for Production</h3>
+                <p>
+                    Redis caching for threat intelligence reduces API costs by 4-5x. Batch processing handles thousands of IOCs in parallel. Async/await throughout for non-blocking I/O operations. PostgreSQL connection pooling and query optimization. Prometheus metrics and distributed tracing for observability. Horizontal scaling with Kubernetes StatefulSets supports millions of events per day.
+                </p>
+            </div>
+        </section>
+
+    <script>
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const animatedElements = document.querySelectorAll('.feature-card, .agent-card, .step, .stat-card');
+            animatedElements.forEach(el => {
+                el.classList.add('animate-on-scroll');
+                observer.observe(el);
+            });
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'992d4fac88e10b4f',t:'MTc2MTE4MTM3MA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"9305734d6143427e968aeaad0db898f7","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>

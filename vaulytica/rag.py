@@ -1,3 +1,5 @@
+"""Enhanced RAG system for historical incident correlation."""
+
 import json
 import hashlib
 from typing import List, Optional, Dict, Tuple
@@ -28,7 +30,7 @@ class IncidentRAG:
         except Exception as e:
             logger.error(f"Failed to initialize RAG system: {e}")
             raise
-    
+
     def store_incident(self, event: SecurityEvent, analysis: AnalysisResult) -> None:
         """Store analyzed incident for future retrieval with error handling."""
 
@@ -45,7 +47,7 @@ class IncidentRAG:
         except Exception as e:
             logger.error(f"Failed to store incident {event.event_id}: {e}")
             # Don't raise - storing in RAG is not critical for analysis
-    
+
     def find_similar_incidents(
         self,
         event: SecurityEvent,
@@ -82,10 +84,10 @@ class IncidentRAG:
             logger.error(f"Failed to find similar incidents: {e}")
             # Return empty list on error - RAG is optional
             return []
-    
+
     def _create_document(self, event: SecurityEvent, analysis: AnalysisResult) -> str:
         """Create searchable document from incident."""
-        
+
         doc_parts = [
             f"Title: {event.title}",
             f"Description: {event.description}",
@@ -95,16 +97,16 @@ class IncidentRAG:
             f"Attack Chain: {' -> '.join(analysis.attack_chain)}",
             f"MITRE Techniques: {', '.join([m.technique_name for m in analysis.mitre_techniques])}",
         ]
-        
+
         if event.technical_indicators:
             indicators = [f"{ti.indicator_type}:{ti.value}" for ti in event.technical_indicators]
             doc_parts.append(f"Indicators: {', '.join(indicators)}")
-        
+
         return "\n".join(doc_parts)
-    
+
     def _create_metadata(self, event: SecurityEvent, analysis: AnalysisResult) -> dict:
         """Create metadata for filtering and retrieval."""
-        
+
         return {
             "event_id": event.event_id,
             "source_system": event.source_system,
@@ -113,7 +115,7 @@ class IncidentRAG:
             "timestamp": event.timestamp.isoformat(),
             "risk_score": analysis.risk_score,
         }
-    
+
     def _create_enhanced_query(self, event: SecurityEvent) -> str:
         """Create enhanced query with weighted components."""
 
@@ -211,4 +213,3 @@ class IncidentRAG:
             pass
 
         return None
-

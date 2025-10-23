@@ -1,3 +1,5 @@
+"""Behavioral analysis engine for detecting anomalies and attack patterns."""
+
 import re
 from datetime import datetime, timedelta
 from typing import List, Dict, Optional, Tuple
@@ -133,10 +135,10 @@ class BehavioralAnalysisEngine:
     def analyze_event(self, event: SecurityEvent) -> Tuple[List[BehavioralAnomaly], List[AttackPattern]]:
         """
         Analyze a security event for behavioral anomalies and attack patterns.
-        
+
         Args:
             event: Security event to analyze
-            
+
         Returns:
             Tuple of (anomalies, attack_patterns)
         """
@@ -169,11 +171,11 @@ class BehavioralAnalysisEngine:
     def _detect_temporal_anomalies(self, event: SecurityEvent) -> List[BehavioralAnomaly]:
         """Detect time-based anomalies."""
         anomalies = []
-        
+
         # Check if event occurred during unusual hours
         event_hour = event.timestamp.hour
         baseline = self.behavioral_baselines["normal_login_hours"]
-        
+
         if event_hour < baseline["start"] or event_hour >= baseline["end"]:
             anomalies.append(BehavioralAnomaly(
                 anomaly_type=AnomalyType.TEMPORAL,
@@ -183,7 +185,7 @@ class BehavioralAnalysisEngine:
                 evidence=[f"Event timestamp: {event.timestamp.isoformat()}"],
                 baseline_deviation=0.6
             ))
-        
+
         # Check for weekend activity (if applicable)
         if event.timestamp.weekday() >= 5:  # Saturday or Sunday
             anomalies.append(BehavioralAnomaly(
@@ -194,29 +196,29 @@ class BehavioralAnalysisEngine:
                 evidence=[f"Day of week: {event.timestamp.strftime('%A')}"],
                 baseline_deviation=0.4
             ))
-        
+
         return anomalies
 
     def _detect_volumetric_anomalies(self, event: SecurityEvent) -> List[BehavioralAnomaly]:
         """Detect volume/frequency anomalies."""
         anomalies = []
-        
+
         # Check for high data transfer volumes
         description_lower = event.description.lower()
-        
+
         # Look for data transfer indicators
         data_patterns = [
             (r'(\d+)\s*(gb|gigabyte)', 1024 * 1024 * 1024),
             (r'(\d+)\s*(mb|megabyte)', 1024 * 1024),
             (r'(\d+)\s*(kb|kilobyte)', 1024),
         ]
-        
+
         for pattern, multiplier in data_patterns:
             match = re.search(pattern, description_lower)
             if match:
                 size = int(match.group(1)) * multiplier
                 baseline_max = self.behavioral_baselines["normal_data_transfer"]["max_bytes"]
-                
+
                 if size > baseline_max:
                     deviation = min((size - baseline_max) / baseline_max, 1.0)
                     anomalies.append(BehavioralAnomaly(
@@ -227,7 +229,7 @@ class BehavioralAnalysisEngine:
                         evidence=[f"Transfer size: {size} bytes", f"Baseline: {baseline_max} bytes"],
                         baseline_deviation=deviation
                     ))
-        
+
         # Check for high frequency indicators
         frequency_keywords = ["multiple", "repeated", "numerous", "many", "several"]
         if any(keyword in description_lower for keyword in frequency_keywords):
@@ -236,23 +238,23 @@ class BehavioralAnalysisEngine:
                 description="High frequency activity detected",
                 severity="MEDIUM",
                 confidence=0.6,
-                evidence=[f"Description contains frequency indicators"],
+                evidence=["Description contains frequency indicators"],
                 baseline_deviation=0.5
             ))
-        
+
         return anomalies
 
     def _detect_geographic_anomalies(self, event: SecurityEvent) -> List[BehavioralAnomaly]:
         """Detect location-based anomalies."""
         anomalies = []
-        
+
         # Check for unusual geographic locations
         description_lower = event.description.lower()
         metadata_str = str(event.metadata).lower()
-        
+
         # High-risk countries (example list)
         high_risk_countries = ["russia", "china", "north korea", "iran"]
-        
+
         for country in high_risk_countries:
             if country in description_lower or country in metadata_str:
                 anomalies.append(BehavioralAnomaly(
@@ -263,29 +265,29 @@ class BehavioralAnalysisEngine:
                     evidence=[f"Location indicator: {country}"],
                     baseline_deviation=0.7
                 ))
-        
+
         # Check for impossible travel (rapid geographic changes)
         # This would require historical context in production
-        
+
         return anomalies
 
     def _detect_attack_patterns(self, event: SecurityEvent) -> List[AttackPattern]:
         """Detect known attack patterns."""
         patterns = []
-        
+
         event_text = f"{event.title} {event.description}".lower()
-        
+
         for pattern_name, signature in self.attack_signatures.items():
             matched_indicators = []
-            
+
             for indicator in signature["indicators"]:
                 if indicator.lower() in event_text:
                     matched_indicators.append(indicator)
-            
+
             # Calculate confidence based on matched indicators
             if matched_indicators:
                 confidence = len(matched_indicators) / len(signature["indicators"])
-                
+
                 if confidence >= 0.3:  # Threshold for pattern detection
                     patterns.append(AttackPattern(
                         pattern_name=pattern_name,
@@ -295,16 +297,16 @@ class BehavioralAnalysisEngine:
                         mitre_ttps=signature["mitre"],
                         description=f"Detected {pattern_name.replace('_', ' ')} pattern based on {len(matched_indicators)} indicators"
                     ))
-        
+
         return patterns
 
     def _detect_sequential_anomalies(self, event: SecurityEvent) -> List[BehavioralAnomaly]:
         """Detect sequence/order anomalies."""
         anomalies = []
-        
+
         # Check for suspicious command sequences
         description_lower = event.description.lower()
-        
+
         # Suspicious sequences
         suspicious_sequences = [
             (["whoami", "ipconfig", "net user"], "reconnaissance_sequence"),
@@ -312,7 +314,7 @@ class BehavioralAnalysisEngine:
             (["powershell", "download", "execute"], "malware_delivery_sequence"),
             (["disable", "antivirus", "firewall"], "defense_evasion_sequence"),
         ]
-        
+
         for sequence, sequence_name in suspicious_sequences:
             matched = sum(1 for cmd in sequence if cmd in description_lower)
             if matched >= 2:
@@ -325,31 +327,31 @@ class BehavioralAnalysisEngine:
                     evidence=[f"Matched {matched}/{len(sequence)} commands in sequence"],
                     baseline_deviation=0.7
                 ))
-        
+
         return anomalies
 
     def calculate_anomaly_score(self, anomalies: List[BehavioralAnomaly]) -> float:
         """
         Calculate overall anomaly score from detected anomalies.
-        
+
         Returns:
             Score from 0.0 (normal) to 10.0 (highly anomalous)
         """
         if not anomalies:
             return 0.0
-        
+
         severity_weights = {
             "LOW": 1.0,
             "MEDIUM": 2.5,
             "HIGH": 5.0,
             "CRITICAL": 8.0
         }
-        
+
         total_score = 0.0
         for anomaly in anomalies:
             weight = severity_weights.get(anomaly.severity, 1.0)
             total_score += weight * anomaly.confidence * anomaly.baseline_deviation
-        
+
         # Normalize to 0-10 scale
         normalized_score = min(total_score / 2.0, 10.0)
         return round(normalized_score, 2)
@@ -390,4 +392,3 @@ class BehavioralAnalysisEngine:
                 for a in anomalies if a.confidence >= 0.7
             ]
         }
-
