@@ -1,0 +1,402 @@
+# High Security Configuration
+# Maximum security settings for sensitive organizations
+
+google_workspace:
+  domain: "defense-contractor.com"
+  admin_email: "security@defense-contractor.com"
+  service_account_file: "/vault/service-account.json"
+
+scanning:
+  batch_size: 50  # Smaller batches for careful processing
+  rate_limit_delay: 0.3
+  enable_cache: false  # Disable caching for real-time data
+  incremental: false  # Always full scan
+
+pii_detection:
+  enabled: true
+  confidence_threshold: 0.8  # Very high threshold
+  
+  # All PII patterns
+  patterns:
+    - ssn
+    - itin
+    - ein
+    - credit_card
+    - bank_account
+    - routing_number
+    - medical_record
+    - medicare
+    - medicaid
+    - dea_number
+    - npi
+    - passport
+    - drivers_license
+    - date_of_birth
+    - ip_address
+    - mac_address
+    - crypto_wallet
+    - email
+    - phone
+  
+  # Thorough scanning
+  chunk_size: 262144  # 256KB
+  chunk_overlap: 5000
+
+integrations:
+  email:
+    enabled: true
+    smtp_host: "secure-smtp.defense-contractor.com"
+    smtp_port: 587
+    smtp_user: "security-alerts@defense-contractor.com"
+    smtp_password: "${EMAIL_PASSWORD}"
+    from_address: "security-alerts@defense-contractor.com"
+    to_addresses:
+      - "security-team@defense-contractor.com"
+      - "ciso@defense-contractor.com"
+    use_tls: true
+    verify_cert: true
+  
+  slack:
+    enabled: true
+    webhook_url: "${SLACK_WEBHOOK_URL}"
+    channel: "#security-critical"
+    username: "Security Monitor"
+    mention_on_alert: "@security-team"
+  
+  webhook:
+    enabled: true
+    url: "${SIEM_URL}"
+    method: "POST"
+    headers:
+      Authorization: "Bearer ${SIEM_TOKEN}"
+      Content-Type: "application/json"
+    timeout: 30
+    retry_attempts: 5
+
+policies:
+  # No external sharing allowed
+  external_sharing:
+    enabled: true
+    allow_external: false  # Block all external sharing
+    
+    # Exception process
+    exception_request_email: "security-exceptions@defense-contractor.com"
+    require_approval: true
+    approval_levels: 3
+    
+    # Automatic blocking
+    auto_block: true
+    block_notification: true
+  
+  # Very short expiration
+  auto_expire:
+    enabled: true
+    default_days: 1  # 24 hours only
+    max_days: 7
+    
+    # No exceptions
+    allow_permanent: false
+    
+    # Aggressive notifications
+    notify_before_hours: 4
+    notify_hourly: true
+  
+  # Strict OAuth policies
+  oauth_apps:
+    enabled: true
+    
+    # Block all third-party apps by default
+    default_allow: false
+    
+    # Whitelist only
+    whitelist:
+      - "Google Drive"
+      - "Gmail"
+      - "Google Calendar"
+    
+    # Block risky apps
+    block_risky: true
+    risk_threshold: 0.3  # Very low threshold
+    
+    # Revoke on detection
+    auto_revoke: true
+  
+  # Public link restrictions
+  public_links:
+    enabled: true
+    allow_public: false  # No public links
+    auto_disable: true
+  
+  # Download restrictions
+  download_restrictions:
+    enabled: true
+    require_authentication: true
+    log_all_downloads: true
+
+compliance:
+  standards:
+    - itar
+    - cmmc
+    - nist_800_171
+    - fedramp
+  
+  audit_log:
+    enabled: true
+    retention_days: 3650  # 10 years
+    storage_path: "/vault/audit-logs"
+    encrypt: true
+    immutable: true
+    
+    # Log everything
+    log_all_events: true
+  
+  reporting:
+    enabled: true
+    schedule: "0 6 * * *"  # Daily
+    recipients:
+      - "security-team@defense-contractor.com"
+      - "ciso@defense-contractor.com"
+    formats: ["pdf", "json"]
+    classification: "CONFIDENTIAL"
+
+workflows:
+  # Real-time monitoring
+  realtime_monitoring:
+    enabled: true
+    schedule: "*/15 * * * *"  # Every 15 minutes
+    
+    scan_types:
+      - files
+      - emails
+      - shared_drives
+      - oauth_apps
+      - users
+    
+    # Immediate response
+    actions:
+      - type: "email"
+        priority: "critical"
+        recipients:
+          - "security-team@defense-contractor.com"
+      
+      - type: "slack"
+        channel: "#security-critical"
+        mention: "@channel"
+      
+      - type: "webhook"
+        url: "${INCIDENT_RESPONSE_URL}"
+      
+      - type: "auto_remediate"
+        actions:
+          - revoke_share
+          - notify_owner
+          - create_incident
+  
+  # Threat detection
+  threat_detection:
+    enabled: true
+    schedule: "*/30 * * * *"  # Every 30 minutes
+    
+    # Detect suspicious activity
+    detect:
+      - mass_downloads
+      - unusual_sharing
+      - after_hours_access
+      - geographic_anomalies
+      - privilege_escalation
+    
+    # Automatic response
+    auto_response:
+      enabled: true
+      actions:
+        - suspend_user
+        - revoke_tokens
+        - alert_security
+        - create_incident
+
+monitoring:
+  health_check:
+    enabled: true
+    interval: 30  # Every 30 seconds
+    alert_on_failure: true
+    
+    # Redundant monitoring
+    backup_monitors:
+      - "monitor1.defense-contractor.com"
+      - "monitor2.defense-contractor.com"
+  
+  metrics:
+    enabled: true
+    provider: "prometheus"
+    port: 9090
+    
+    # Security metrics
+    collect:
+      - security_events
+      - policy_violations
+      - blocked_shares
+      - suspicious_activity
+      - failed_auth_attempts
+      - api_errors
+    
+    # Real-time alerting
+    alert_rules:
+      - metric: "policy_violations"
+        threshold: 1
+        action: "immediate_alert"
+      
+      - metric: "suspicious_activity"
+        threshold: 1
+        action: "immediate_alert"
+
+offboarding:
+  enabled: true
+  
+  # Immediate actions
+  actions:
+    # Immediate revocation
+    revoke_access: true
+    revoke_oauth_tokens: true
+    revoke_api_keys: true
+    revoke_sessions: true
+    
+    # Data handling
+    transfer_ownership: true
+    transfer_to: "security-custodian@defense-contractor.com"
+    
+    backup_data: true
+    backup_location: "/vault/offboarding"
+    backup_encrypted: true
+    
+    # Account management
+    suspend_account: true
+    wipe_devices: true
+    
+    # Security review
+    security_review: true
+    review_access_logs: true
+    review_file_access: true
+    review_shares: true
+  
+  # Comprehensive notifications
+  notify_security: true
+  notify_manager: true
+  notify_hr: true
+  notify_legal: true
+  notify_compliance: true
+
+logging:
+  level: "DEBUG"  # Maximum logging
+  format: "json"
+  
+  outputs:
+    - type: "file"
+      path: "/vault/logs/vaulytica.log"
+      rotation: "hourly"
+      retention: 3650  # 10 years
+      encrypt: true
+      compression: "gzip"
+    
+    - type: "syslog"
+      host: "siem.defense-contractor.com"
+      port: 6514
+      protocol: "tcp"
+      tls: true
+      cert_verify: true
+    
+    - type: "splunk"
+      host: "splunk.defense-contractor.com"
+      port: 8088
+      token: "${SPLUNK_TOKEN}"
+      index: "security"
+      source_type: "vaulytica"
+
+security:
+  # Maximum encryption
+  encrypt_at_rest: true
+  encryption_algorithm: "AES-256-GCM"
+  encryption_key_file: "/vault/encryption.key"
+  
+  # Hardware security module
+  hsm:
+    enabled: true
+    provider: "aws-cloudhsm"
+    cluster_id: "${HSM_CLUSTER_ID}"
+  
+  # Key management
+  key_rotation:
+    enabled: true
+    rotation_days: 30  # Monthly rotation
+    auto_rotate: true
+  
+  # TLS 1.3 only
+  tls:
+    enabled: true
+    min_version: "1.3"
+    cert_file: "/vault/cert.pem"
+    key_file: "/vault/key.pem"
+    verify_peer: true
+    client_cert_required: true
+  
+  # Strict access control
+  rbac:
+    enabled: true
+    roles_file: "/vault/roles.yaml"
+    audit_access: true
+    
+    # Require MFA for all access
+    require_mfa: true
+  
+  # Network security
+  network:
+    # IP whitelist only
+    ip_whitelist:
+      - "10.0.0.0/8"
+      - "192.168.0.0/16"
+    
+    # No public access
+    allow_public: false
+    
+    # VPN required
+    require_vpn: true
+  
+  # Data loss prevention
+  dlp:
+    enabled: true
+    
+    # Block sensitive data
+    block_patterns:
+      - "TOP SECRET"
+      - "CLASSIFIED"
+      - "CONFIDENTIAL"
+      - "SECRET//"
+    
+    # Watermarking
+    watermark_documents: true
+  
+  # Incident response
+  incident_response:
+    enabled: true
+    
+    # Automatic containment
+    auto_contain: true
+    containment_actions:
+      - isolate_user
+      - revoke_access
+      - preserve_evidence
+      - alert_team
+    
+    # Integration
+    ticketing_system: "servicenow"
+    ticketing_url: "${SERVICENOW_URL}"
+
+performance:
+  # Prioritize security over performance
+  max_memory_mb: 4096
+  max_cpu_percent: 100
+  
+  # Conservative rate limiting
+  api_rate_limit:
+    requests_per_second: 5
+    burst: 10
+

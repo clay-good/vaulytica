@@ -1,0 +1,396 @@
+# Compliance-Focused Configuration
+# Optimized for HIPAA, SOC2, GDPR, and PCI-DSS compliance
+
+google_workspace:
+  domain: "healthcare.com"
+  admin_email: "compliance@healthcare.com"
+  service_account_file: "/secure/service-account.json"
+
+scanning:
+  batch_size: 100
+  rate_limit_delay: 0.2  # Conservative to ensure reliability
+  enable_cache: true
+  cache_ttl: 3600
+  incremental: true
+
+pii_detection:
+  enabled: true
+  confidence_threshold: 0.7  # Higher threshold for fewer false positives
+  
+  # Comprehensive healthcare and financial PII
+  patterns:
+    # Healthcare (HIPAA)
+    - ssn
+    - medical_record
+    - medicare
+    - medicaid
+    - dea_number
+    - npi
+    - date_of_birth
+    
+    # Financial (PCI-DSS)
+    - credit_card
+    - bank_account
+    - routing_number
+    - ein
+    
+    # Identity (GDPR)
+    - passport
+    - drivers_license
+    - email
+    - phone
+    - ip_address
+  
+  # Strict processing
+  chunk_size: 524288  # 512KB for thorough scanning
+  chunk_overlap: 2000  # Larger overlap to catch patterns
+
+integrations:
+  email:
+    enabled: true
+    smtp_host: "smtp.healthcare.com"
+    smtp_port: 587
+    smtp_user: "compliance-alerts@healthcare.com"
+    smtp_password: "${EMAIL_PASSWORD}"
+    from_address: "compliance-alerts@healthcare.com"
+    
+    # Multiple compliance stakeholders
+    to_addresses:
+      - "compliance-team@healthcare.com"
+      - "privacy-officer@healthcare.com"
+      - "security-team@healthcare.com"
+      - "ciso@healthcare.com"
+    
+    # Encrypted email
+    use_tls: true
+    verify_cert: true
+  
+  slack:
+    enabled: true
+    webhook_url: "${SLACK_WEBHOOK_URL}"
+    channel: "#compliance-alerts"
+    username: "Compliance Monitor"
+  
+  # Audit trail webhook
+  webhook:
+    enabled: true
+    url: "${AUDIT_SYSTEM_URL}"
+    method: "POST"
+    headers:
+      Authorization: "Bearer ${AUDIT_API_TOKEN}"
+      Content-Type: "application/json"
+    
+    # Include full audit trail
+    include_metadata: true
+    include_user_info: true
+    include_file_info: true
+
+policies:
+  # Strict external sharing
+  external_sharing:
+    enabled: true
+    
+    # No external sharing by default
+    allow_external: false
+    
+    # Whitelist only approved partners
+    allowed_domains:
+      - "approved-partner1.com"
+      - "approved-partner2.com"
+    
+    # Require multi-level approval
+    require_approval: true
+    approval_chain:
+      - "manager@healthcare.com"
+      - "compliance@healthcare.com"
+      - "ciso@healthcare.com"
+  
+  # Auto-expire all shares
+  auto_expire:
+    enabled: true
+    default_days: 7  # Short expiration for compliance
+    
+    # Department-specific (all short)
+    department_policies:
+      clinical: 3
+      billing: 7
+      hr: 7
+      it: 14
+    
+    # Aggressive notifications
+    notify_before_days: 2
+    notify_daily: true
+    notify_owner: true
+    notify_manager: true
+    notify_compliance: true
+  
+  # Data retention
+  data_retention:
+    enabled: true
+    
+    # Retention periods by data type
+    retention_periods:
+      medical_records: 2555  # 7 years (HIPAA)
+      financial_records: 2555  # 7 years (SOX)
+      employee_records: 2555  # 7 years
+      audit_logs: 2555  # 7 years
+      general_documents: 1095  # 3 years
+    
+    # Automatic deletion after retention
+    auto_delete: false  # Manual review required
+    
+    # Legal hold
+    legal_hold_enabled: true
+
+compliance:
+  # Multiple compliance standards
+  standards:
+    - hipaa
+    - sox
+    - gdpr
+    - pci_dss
+    - hitech
+  
+  # Comprehensive audit logging
+  audit_log:
+    enabled: true
+    retention_days: 2555  # 7 years
+    storage_path: "/secure/audit-logs"
+    
+    # Encrypted audit logs
+    encrypt: true
+    encryption_algorithm: "AES-256"
+    
+    # Immutable logs
+    immutable: true
+    
+    # Log everything
+    log_events:
+      - file_access
+      - file_share
+      - file_download
+      - user_login
+      - permission_change
+      - policy_change
+      - scan_execution
+      - alert_triggered
+  
+  # Regular compliance reporting
+  reporting:
+    enabled: true
+    
+    # Multiple report schedules
+    schedules:
+      daily:
+        cron: "0 8 * * *"
+        recipients:
+          - "compliance-team@healthcare.com"
+        formats: ["csv"]
+      
+      weekly:
+        cron: "0 8 * * 1"
+        recipients:
+          - "compliance-team@healthcare.com"
+          - "privacy-officer@healthcare.com"
+        formats: ["pdf", "csv"]
+      
+      monthly:
+        cron: "0 8 1 * *"
+        recipients:
+          - "compliance-team@healthcare.com"
+          - "privacy-officer@healthcare.com"
+          - "ciso@healthcare.com"
+          - "ceo@healthcare.com"
+        formats: ["pdf", "csv", "json"]
+    
+    # Report content
+    include:
+      - executive_summary
+      - pii_findings
+      - policy_violations
+      - risk_assessment
+      - remediation_status
+      - trend_analysis
+      - recommendations
+
+workflows:
+  # Continuous compliance monitoring
+  continuous_monitoring:
+    enabled: true
+    schedule: "0 */2 * * *"  # Every 2 hours
+    
+    # Comprehensive scanning
+    scan_types:
+      - files
+      - emails
+      - shared_drives
+      - oauth_apps
+    
+    # Strict PII detection
+    check_pii: true
+    confidence_threshold: 0.7
+    
+    # Immediate alerting
+    actions:
+      - type: "email"
+        priority: "high"
+        recipients:
+          - "compliance-team@healthcare.com"
+      
+      - type: "slack"
+        channel: "#compliance-alerts"
+        mention: "@compliance-team"
+      
+      - type: "webhook"
+        url: "${INCIDENT_RESPONSE_URL}"
+      
+      - type: "ticket"
+        system: "jira"
+        project: "COMPLIANCE"
+        priority: "high"
+  
+  # HIPAA-specific workflow
+  hipaa_monitoring:
+    enabled: true
+    schedule: "0 */4 * * *"  # Every 4 hours
+    
+    # Focus on healthcare PII
+    pii_patterns:
+      - medical_record
+      - medicare
+      - medicaid
+      - ssn
+      - dea_number
+      - npi
+    
+    # Strict actions
+    actions:
+      - type: "email"
+        recipients:
+          - "privacy-officer@healthcare.com"
+          - "compliance-team@healthcare.com"
+      
+      - type: "audit_log"
+        severity: "critical"
+
+monitoring:
+  # Compliance monitoring
+  health_check:
+    enabled: true
+    interval: 60  # Every minute
+    
+    # Alert if monitoring fails
+    alert_on_failure: true
+    alert_recipients:
+      - "compliance-team@healthcare.com"
+      - "it-ops@healthcare.com"
+  
+  # Metrics for compliance reporting
+  metrics:
+    enabled: true
+    provider: "prometheus"
+    port: 9090
+    
+    # Compliance-specific metrics
+    collect:
+      - pii_detections
+      - policy_violations
+      - external_shares
+      - failed_scans
+      - audit_log_entries
+      - compliance_score
+
+offboarding:
+  # Strict offboarding for compliance
+  enabled: true
+  
+  # Comprehensive actions
+  actions:
+    # Data handling
+    transfer_ownership: true
+    transfer_to: "data-custodian@healthcare.com"
+    
+    backup_data: true
+    backup_location: "/secure/offboarding-backups"
+    backup_encrypted: true
+    
+    # Access control
+    revoke_access: true
+    revoke_oauth_tokens: true
+    revoke_api_keys: true
+    
+    # Account management
+    suspend_account: true
+    delete_after_days: 90  # After retention period
+    
+    # Audit trail
+    create_audit_report: true
+    audit_report_recipients:
+      - "compliance-team@healthcare.com"
+      - "hr@healthcare.com"
+  
+  # Notifications
+  notify_manager: true
+  notify_hr: true
+  notify_compliance: true
+  notify_legal: true
+
+logging:
+  level: "INFO"
+  format: "json"
+  
+  # Comprehensive logging
+  outputs:
+    - type: "file"
+      path: "/secure/logs/vaulytica.log"
+      rotation: "daily"
+      retention: 2555  # 7 years
+      encrypt: true
+    
+    - type: "syslog"
+      host: "siem.healthcare.com"
+      port: 514
+      protocol: "tcp"
+      tls: true
+    
+    - type: "elasticsearch"
+      hosts:
+        - "es.healthcare.com:9200"
+      index: "compliance-logs"
+      use_ssl: true
+      verify_certs: true
+
+security:
+  # Maximum security settings
+  encrypt_at_rest: true
+  encryption_algorithm: "AES-256-GCM"
+  encryption_key_file: "/secure/encryption.key"
+  
+  # Key rotation
+  key_rotation:
+    enabled: true
+    rotation_days: 90
+  
+  # TLS everywhere
+  tls:
+    enabled: true
+    min_version: "1.3"
+    cert_file: "/secure/cert.pem"
+    key_file: "/secure/key.pem"
+    verify_peer: true
+  
+  # Access control
+  rbac:
+    enabled: true
+    roles_file: "/secure/roles.yaml"
+    
+    # Audit all access
+    audit_access: true
+  
+  # Multi-factor authentication
+  mfa:
+    required: true
+    methods:
+      - totp
+      - hardware_key
+

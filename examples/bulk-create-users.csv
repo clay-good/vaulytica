@@ -1,0 +1,5 @@
+email,first_name,last_name,password,org_unit,title,department
+john.doe@example.com,John,Doe,TempPassword123!,/Engineering,Software Engineer,Engineering
+jane.smith@example.com,Jane,Smith,TempPassword456!,/Sales,Sales Manager,Sales
+bob.johnson@example.com,Bob,Johnson,TempPassword789!,/Marketing,Marketing Specialist,Marketing
+

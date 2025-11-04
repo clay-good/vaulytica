@@ -1,0 +1,308 @@
+# Enterprise Vaulytica Configuration
+# Full-featured configuration for large organizations
+
+google_workspace:
+  domain: "enterprise.com"
+  admin_email: "admin@enterprise.com"
+  service_account_file: "/etc/vaulytica/service-account.json"
+  
+  # Additional domains to manage
+  additional_domains:
+    - "subsidiary1.com"
+    - "subsidiary2.com"
+
+scanning:
+  batch_size: 200
+  rate_limit_delay: 0.1
+  enable_cache: true
+  cache_ttl: 7200
+  
+  # Concurrent workers for parallel processing
+  max_workers: 5
+  
+  # Incremental scanning
+  incremental: true
+  
+  # File size limits (bytes)
+  max_file_size: 1073741824  # 1GB
+
+pii_detection:
+  enabled: true
+  confidence_threshold: 0.6
+  
+  # Comprehensive PII patterns
+  patterns:
+    # Financial
+    - ssn
+    - itin
+    - ein
+    - credit_card
+    - bank_account
+    - routing_number
+    
+    # Healthcare
+    - medical_record
+    - medicare
+    - medicaid
+    - dea_number
+    - npi
+    
+    # Identity
+    - passport
+    - drivers_license
+    - date_of_birth
+    
+    # Technical
+    - ip_address
+    - mac_address
+    - crypto_wallet
+    
+    # Contact
+    - email
+    - phone
+  
+  # Chunked processing for large files
+  chunk_size: 1048576  # 1MB
+  chunk_overlap: 1000
+
+integrations:
+  # Email notifications
+  email:
+    enabled: true
+    smtp_host: "smtp.office365.com"
+    smtp_port: 587
+    smtp_user: "vaulytica@enterprise.com"
+    smtp_password: "${EMAIL_PASSWORD}"
+    from_address: "vaulytica@enterprise.com"
+    to_addresses:
+      - "security-team@enterprise.com"
+      - "compliance@enterprise.com"
+    
+    # Email templates
+    templates:
+      pii_alert: "templates/pii_alert.html"
+      policy_violation: "templates/policy_violation.html"
+  
+  # Slack notifications
+  slack:
+    enabled: true
+    webhook_url: "${SLACK_WEBHOOK_URL}"
+    channel: "#security-alerts"
+    username: "Vaulytica"
+    icon_emoji: ":shield:"
+  
+  # SIEM webhook
+  webhook:
+    enabled: true
+    url: "${SIEM_WEBHOOK_URL}"
+    method: "POST"
+    headers:
+      Authorization: "Bearer ${SIEM_API_TOKEN}"
+      Content-Type: "application/json"
+    
+    # Retry configuration
+    retry_attempts: 3
+    retry_delay: 5
+
+policies:
+  # Auto-expire external shares
+  auto_expire:
+    enabled: true
+    default_days: 30
+    
+    # Department-specific policies
+    department_policies:
+      finance: 7
+      hr: 14
+      engineering: 90
+    
+    # Notification settings
+    notify_before_days: 3
+    notify_owner: true
+    notify_admin: true
+  
+  # External sharing restrictions
+  external_sharing:
+    enabled: true
+    
+    # Allowed domains
+    allowed_domains:
+      - "partner1.com"
+      - "partner2.com"
+    
+    # Blocked domains
+    blocked_domains:
+      - "competitor.com"
+    
+    # Require approval for external shares
+    require_approval: true
+    approval_email: "security-approvals@enterprise.com"
+  
+  # OAuth app policies
+  oauth_apps:
+    enabled: true
+    
+    # Block risky apps
+    block_risky: true
+    risk_threshold: 0.7
+    
+    # Whitelist trusted apps
+    whitelist:
+      - "Google Drive"
+      - "Gmail"
+      - "Slack"
+      - "Zoom"
+
+compliance:
+  # Compliance standards
+  standards:
+    - hipaa
+    - sox
+    - gdpr
+    - pci_dss
+  
+  # Audit logging
+  audit_log:
+    enabled: true
+    retention_days: 2555  # 7 years
+    storage_path: "/var/lib/vaulytica/audit"
+  
+  # Compliance reporting
+  reporting:
+    enabled: true
+    schedule: "0 0 1 * *"  # Monthly on 1st
+    recipients:
+      - "compliance@enterprise.com"
+      - "ciso@enterprise.com"
+    formats:
+      - pdf
+      - csv
+
+monitoring:
+  # Health checks
+  health_check:
+    enabled: true
+    interval: 300  # 5 minutes
+    endpoint: "http://localhost:8080/health"
+  
+  # Metrics collection
+  metrics:
+    enabled: true
+    provider: "prometheus"
+    port: 9090
+    
+    # Metrics to collect
+    collect:
+      - scan_duration
+      - files_scanned
+      - issues_found
+      - api_calls
+      - cache_hit_rate
+
+workflows:
+  # Automated workflows
+  external_pii_alert:
+    enabled: true
+    schedule: "0 */6 * * *"  # Every 6 hours
+    
+    # Workflow configuration
+    scan_external_only: true
+    check_pii: true
+    confidence_threshold: 0.6
+    
+    # Actions
+    actions:
+      - type: "email"
+        recipients:
+          - "security-team@enterprise.com"
+      - type: "slack"
+        channel: "#security-alerts"
+      - type: "webhook"
+        url: "${SIEM_WEBHOOK_URL}"
+  
+  gmail_external_pii_alert:
+    enabled: true
+    schedule: "0 */12 * * *"  # Every 12 hours
+    
+    # Scan configuration
+    days_back: 1
+    check_attachments: true
+    
+    # Actions
+    actions:
+      - type: "email"
+        recipients:
+          - "security-team@enterprise.com"
+
+offboarding:
+  # Automated offboarding
+  enabled: true
+  
+  # Actions to take
+  actions:
+    transfer_ownership: true
+    transfer_to: "manager@enterprise.com"
+    
+    revoke_access: true
+    suspend_account: false  # Manual approval required
+    
+    backup_data: true
+    backup_location: "/backups/offboarding"
+  
+  # Notification
+  notify_manager: true
+  notify_hr: true
+
+logging:
+  level: "INFO"
+  format: "json"
+  
+  # Multiple log outputs
+  outputs:
+    - type: "file"
+      path: "/var/log/vaulytica/app.log"
+      rotation: "daily"
+      retention: 90
+    
+    - type: "syslog"
+      host: "syslog.enterprise.com"
+      port: 514
+      protocol: "tcp"
+    
+    - type: "elasticsearch"
+      hosts:
+        - "es1.enterprise.com:9200"
+        - "es2.enterprise.com:9200"
+      index: "vaulytica"
+
+performance:
+  # Performance tuning
+  max_memory_mb: 2048
+  max_cpu_percent: 80
+  
+  # Rate limiting
+  api_rate_limit:
+    requests_per_second: 10
+    burst: 20
+  
+  # Connection pooling
+  connection_pool:
+    size: 10
+    timeout: 30
+
+security:
+  # Security settings
+  encrypt_at_rest: true
+  encryption_key_file: "/etc/vaulytica/encryption.key"
+  
+  # TLS settings
+  tls:
+    enabled: true
+    cert_file: "/etc/vaulytica/cert.pem"
+    key_file: "/etc/vaulytica/key.pem"
+  
+  # Access control
+  rbac:
+    enabled: true
+    roles_file: "/etc/vaulytica/roles.yaml"
+

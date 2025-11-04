@@ -1,0 +1,486 @@
+# Vaulytica Configuration - Education (FERPA Compliant)
+#
+# This configuration is optimized for educational institutions with:
+# - FERPA (Family Educational Rights and Privacy Act) compliance
+# - Student data protection
+# - Faculty/staff monitoring
+# - Academic integrity
+# - Reasonable resource usage for education budgets
+
+---
+
+# Google Workspace Configuration
+google_workspace:
+  service_account_file: "${GWS_SERVICE_ACCOUNT_FILE}"
+  subject_email: "${GWS_SUBJECT_EMAIL}"
+  domain: "university.edu"
+  
+  # Multi-domain support for departments
+  additional_domains:
+    - "students.university.edu"
+    - "faculty.university.edu"
+    - "research.university.edu"
+  
+  scopes:
+    - "https://www.googleapis.com/auth/drive.readonly"
+    - "https://www.googleapis.com/auth/admin.directory.user.readonly"
+    - "https://www.googleapis.com/auth/gmail.readonly"
+    - "https://www.googleapis.com/auth/admin.directory.group.readonly"
+
+# Scanning Configuration
+scanning:
+  files:
+    enabled: true
+    external_only: false  # Scan all for student data
+    check_pii: true
+    check_student_data: true
+    batch_size: 100
+    max_workers: 8
+    
+    # Focus on sensitive directories
+    priority_folders:
+      - "Student Records"
+      - "Grades"
+      - "Financial Aid"
+      - "Admissions"
+      - "Health Services"
+    
+    # Exclude public academic content
+    exclude_folders:
+      - "Public Course Materials"
+      - "Library Resources"
+      - "Public Research"
+    
+  users:
+    enabled: true
+    inactive_days: 180  # Longer for academic calendar
+    check_suspended: true
+    check_student_status: true
+    check_graduation_date: true
+    
+  gmail:
+    enabled: true
+    check_attachments: true
+    max_messages: 500
+    student_data_detection: true
+
+# Student Data Detection (FERPA-specific)
+pii_detection:
+  enabled: true
+  confidence_threshold: 0.7
+  
+  patterns:
+    # Student identifiers
+    - type: "student_id"
+      enabled: true
+      pattern: "(?:Student|SID|ID)[:\\s-]?\\d{7,10}"
+      confidence: 0.9
+      
+    - type: "university_id"
+      enabled: true
+      pattern: "(?:UID|University ID)[:\\s-]?[A-Z]?\\d{8,10}"
+      confidence: 0.9
+    
+    # Academic records
+    - type: "grade"
+      enabled: true
+      pattern: "(?:Grade|Score)[:\\s-]?(?:[A-F][+-]?|\\d{1,3}%)"
+      confidence: 0.8
+      
+    - type: "gpa"
+      enabled: true
+      pattern: "GPA[:\\s-]?[0-4]\\.[0-9]{1,2}"
+      confidence: 0.9
+      
+    - type: "transcript"
+      enabled: true
+      pattern: "(?:Transcript|Academic Record)"
+      confidence: 0.7
+    
+    # Financial information
+    - type: "financial_aid"
+      enabled: true
+      pattern: "(?:Financial Aid|FAFSA|Scholarship)[:\\s-]?(?:Amount|Award)"
+      confidence: 0.8
+      
+    - type: "tuition_payment"
+      enabled: true
+      pattern: "(?:Tuition|Payment|Balance)[:\\s-]?\\$[\\d,]+"
+      confidence: 0.7
+    
+    # Personal information
+    - type: "ssn"
+      enabled: true
+      confidence: 0.9
+      
+    - type: "dob"
+      enabled: true
+      confidence: 0.8
+      
+    - type: "parent_info"
+      enabled: true
+      pattern: "(?:Parent|Guardian)[:\\s-]?(?:Name|Contact|Email)"
+      confidence: 0.7
+      
+    - type: "address"
+      enabled: true
+      confidence: 0.7
+      
+    - type: "phone"
+      enabled: true
+      confidence: 0.7
+    
+    # Health information
+    - type: "health_record"
+      enabled: true
+      pattern: "(?:Health|Medical|Disability)[:\\s-]?(?:Record|Information)"
+      confidence: 0.8
+      
+    - type: "immunization"
+      enabled: true
+      pattern: "(?:Immunization|Vaccination)[:\\s-]?Record"
+      confidence: 0.8
+    
+    # Disciplinary records
+    - type: "disciplinary_record"
+      enabled: true
+      pattern: "(?:Disciplinary|Conduct|Violation)[:\\s-]?(?:Record|Report)"
+      confidence: 0.8
+
+# Policies (FERPA-compliant)
+policies:
+  expiration:
+    enabled: true
+    default_days: 90  # Academic semester
+    notify_before_days: 14
+    grace_period_days: 7
+    
+    # Special rules for student data
+    student_data_days: 30  # Shorter for student data
+    
+  lifecycle:
+    enabled: true
+    
+    # Student graduation workflow
+    graduate_student:
+      transfer_to_alumni: true
+      revoke_student_access: true
+      preserve_records: true
+      retention_years: 5
+    
+    # Faculty/staff offboarding
+    offboard_inactive_users: true
+    transfer_files: true
+    
+  access_control:
+    enabled: true
+    
+    # Role-based access
+    roles:
+      - name: "student"
+        can_access: ["own_records"]
+        cannot_share_externally: true
+        
+      - name: "faculty"
+        can_access: ["course_materials", "student_grades"]
+        can_share_with: ["students", "faculty"]
+        
+      - name: "staff"
+        can_access: ["administrative_records"]
+        can_share_with: ["staff", "faculty"]
+        
+      - name: "registrar"
+        can_access: ["all_student_records"]
+        audit_all_access: true
+
+# Integrations
+integrations:
+  email:
+    enabled: true
+    smtp_host: "smtp.university.edu"
+    smtp_port: 587
+    smtp_user: "${SMTP_USER}"
+    smtp_password: "${SMTP_PASSWORD}"
+    from_address: "ferpa-compliance@university.edu"
+    to_addresses:
+      - "registrar@university.edu"
+      - "compliance@university.edu"
+      - "it-security@university.edu"
+    
+    templates:
+      student_data_alert: |
+        Subject: [FERPA] Student Data Detected in Shared File
+        
+        FERPA ALERT: Student educational records have been detected.
+        
+        File: {file_name}
+        Owner: {owner_email}
+        Data Types: {data_types}
+        Shared With: {shared_with}
+        
+        FERPA requires:
+        1. Verify legitimate educational interest
+        2. Ensure proper consent if shared externally
+        3. Document disclosure in student record
+        4. Notify student if required
+        
+        Incident ID: {incident_id}
+  
+  slack:
+    enabled: true
+    webhook_url: "${SLACK_WEBHOOK_URL}"
+    channel: "#ferpa-compliance"
+    
+  # Student Information System integration
+  sis:
+    enabled: true
+    type: "banner"  # or "peoplesoft", "colleague"
+    endpoint: "${SIS_ENDPOINT}"
+    api_key: "${SIS_API_KEY}"
+    sync_student_status: true
+    sync_graduation_dates: true
+
+# Reporting
+reporting:
+  enabled: true
+  format: "pdf"
+  output_dir: "/var/lib/vaulytica/reports"
+  
+  schedule:
+    daily_summary: true
+    weekly_detailed: true
+    monthly_compliance: true
+    semester_report: true  # End of semester
+    annual_ferpa_audit: true
+  
+  recipients:
+    - "registrar@university.edu"
+    - "compliance@university.edu"
+    - "cio@university.edu"
+
+# Storage
+storage:
+  database_path: "/var/lib/vaulytica/state.db"
+  cache_dir: "/var/cache/vaulytica"
+  
+  encryption:
+    enabled: true
+    algorithm: "AES-256-GCM"
+    key_file: "/secure/keys/db-encryption-key"
+  
+  # FERPA retention (5 years typical)
+  retention:
+    scan_history_days: 1825  # 5 years
+    file_state_days: 1825
+    audit_logs_days: 1825
+    cache_ttl_seconds: 3600
+
+# Performance
+performance:
+  max_workers: 8
+  batch_size: 100
+  rate_limit_delay: 0.1
+  
+  cache:
+    enabled: true
+    ttl_seconds: 3600
+    max_size_mb: 1000
+  
+  incremental:
+    enabled: true
+  
+  # Off-peak scanning (avoid class hours)
+  schedule_preference:
+    avoid_hours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17]  # 8 AM - 5 PM
+    preferred_hours: [22, 23, 0, 1, 2, 3, 4, 5]  # 10 PM - 6 AM
+
+# Logging
+logging:
+  level: "INFO"
+  format: "json"
+  output: "/var/log/vaulytica/ferpa-audit.log"
+  
+  rotation:
+    max_size_mb: 100
+    max_files: 50
+    compress: true
+  
+  # Log FERPA-relevant events
+  events:
+    - "student_data_access"
+    - "student_data_disclosure"
+    - "grade_access"
+    - "transcript_access"
+    - "external_share"
+    - "permission_change"
+
+# Monitoring
+monitoring:
+  enabled: true
+  metrics_port: 9090
+  health_check_port: 8080
+  
+  alerts:
+    - name: "student_data_external_share"
+      severity: "critical"
+      channels: ["email", "slack"]
+      
+    - name: "grade_disclosure"
+      severity: "high"
+      channels: ["email"]
+      
+    - name: "unauthorized_access"
+      severity: "high"
+      channels: ["email", "slack"]
+
+# Security
+security:
+  encryption:
+    enabled: true
+    tls_min_version: "1.2"
+  
+  ip_whitelist:
+    enabled: true
+    allowed_ips:
+      - "10.0.0.0/8"  # Campus network
+      - "192.168.0.0/16"  # Campus WiFi
+    
+  vpn_required: false  # Not required on campus
+  mfa_required: true  # For administrative access
+
+# Compliance (FERPA)
+compliance:
+  enabled: true
+  
+  frameworks:
+    ferpa:
+      enabled: true
+      
+      # FERPA requirements
+      requirements:
+        written_consent: true  # For non-directory info
+        annual_notification: true
+        access_rights: true  # Students can view their records
+        amendment_rights: true
+        disclosure_logging: true
+        
+      # Directory information (can be disclosed)
+      directory_info:
+        - "name"
+        - "address"
+        - "phone"
+        - "email"
+        - "photo"
+        - "enrollment_status"
+        - "major"
+        - "dates_of_attendance"
+        - "degrees_received"
+        
+      # Non-directory information (requires consent)
+      protected_info:
+        - "ssn"
+        - "student_id"
+        - "grades"
+        - "gpa"
+        - "course_schedule"
+        - "financial_information"
+        - "disciplinary_records"
+
+# Workflows
+workflows:
+  # Student data disclosure workflow
+  student_data_disclosure:
+    enabled: true
+    require_consent: true
+    log_disclosure: true
+    notify_student: true
+    
+  # Graduation workflow
+  graduation:
+    enabled: true
+    convert_to_alumni: true
+    preserve_records: true
+    update_access: true
+    
+  # Semester cleanup
+  semester_cleanup:
+    enabled: true
+    archive_old_courses: true
+    remove_expired_shares: true
+    update_student_status: true
+
+# Scheduled Scans
+schedules:
+  # Nightly scan (off-peak)
+  nightly_scan:
+    enabled: true
+    cron: "0 2 * * *"  # 2 AM
+    command: "scan files --check-student-data"
+  
+  # Weekly user scan
+  weekly_user_scan:
+    enabled: true
+    cron: "0 3 * * 0"  # 3 AM Sunday
+    command: "scan users --check-graduation-dates"
+  
+  # End of semester cleanup
+  semester_cleanup:
+    enabled: true
+    cron: "0 4 15 5,12 *"  # May 15, Dec 15
+    command: "workflow run semester-cleanup"
+  
+  # Monthly compliance report
+  monthly_report:
+    enabled: true
+    cron: "0 9 1 * *"
+    command: "report generate --format pdf --type ferpa-compliance"
+
+---
+
+# FERPA Compliance Checklist
+
+# Annual Notification:
+# [ ] Notify students of FERPA rights
+# [ ] Publish directory information policy
+# [ ] Provide opt-out mechanism
+
+# Access Rights:
+# [x] Students can view their records
+# [x] Students can request amendments
+# [x] Respond to requests within 45 days
+
+# Disclosure Logging:
+# [x] Log all disclosures
+# [x] Maintain logs for 5 years
+# [x] Provide logs to students on request
+
+# Consent Requirements:
+# [x] Obtain written consent for non-directory info
+# [x] Specify records to be disclosed
+# [x] Specify purpose of disclosure
+# [x] Specify parties to whom disclosed
+
+---
+
+# Academic Calendar Integration
+
+# Fall Semester: August - December
+# Spring Semester: January - May
+# Summer Session: June - July
+
+# Key Dates:
+# - Semester start: Increase monitoring
+# - Midterms: Monitor grade sharing
+# - Finals: Monitor grade posting
+# - Semester end: Run cleanup workflow
+# - Graduation: Run graduation workflow
+
+---
+
+# Support Contacts
+
+# Registrar: registrar@university.edu
+# FERPA Compliance: ferpa@university.edu
+# IT Security: security@university.edu
+# Help Desk: helpdesk@university.edu
+

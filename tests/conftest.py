@@ -1,168 +1,102 @@
-"""Pytest configuration and fixtures."""
+"""Pytest configuration and fixtures for Vaulytica tests."""
 
 import pytest
-import json
 from pathlib import Path
-from datetime import datetime
-from vaulytica.models import (
-    SecurityEvent, Severity, EventCategory, AssetInfo, 
-    TechnicalIndicator, MitreAttack, AnalysisResult, FiveW1H
-)
-from vaulytica.config import VaulyticaConfig
+from typing import Dict, Any
 
 
 @pytest.fixture
-def mock_config(tmp_path):
-    """Create a mock configuration for testing."""
-    return VaulyticaConfig(
-        anthropic_api_key="test-key-12345",
-        model_name="claude-3-haiku-20240307",
-        max_tokens=4000,
-        temperature=0.0,
-        chroma_db_path=tmp_path / "chroma_db",
-        output_dir=tmp_path / "outputs",
-        enable_rag=True,
-        enable_cache=True,
-        max_historical_incidents=5,
-        batch_max_workers=2
-    )
-
-
-@pytest.fixture
-def sample_security_event():
-    """Create a sample security event for testing."""
-    return SecurityEvent(
-        event_id="test-event-001",
-        source_system="GuardDuty",
-        timestamp=datetime.utcnow(),
-        severity=Severity.HIGH,
-        category=EventCategory.MALWARE,
-        title="Cryptocurrency Mining Activity Detected",
-        description="EC2 instance i-1234567890abcdef0 is communicating with known mining pool",
-        affected_assets=[
-            AssetInfo(
-                hostname="web-server-01",
-                ip_addresses=["10.0.1.100", "54.123.45.67"],
-                cloud_resource_id="i-1234567890abcdef0",
-                environment="production"
-            )
-        ],
-        technical_indicators=[
-            TechnicalIndicator(
-                indicator_type="ip_address",
-                value="198.51.100.42",
-                context="Mining pool IP"
-            )
-        ],
-        mitre_attack=[
-            MitreAttack(
-                technique_id="T1496",
-                technique_name="Resource Hijacking",
-                tactic="Impact",
-                confidence=0.9
-            )
-        ],
-        raw_event={"detail": {"type": "CryptoCurrency:EC2/BitcoinTool.B!DNS"}},
-        confidence_score=0.95
-    )
-
-
-@pytest.fixture
-def sample_analysis_result():
-    """Create a sample analysis result for testing."""
-    return AnalysisResult(
-        event_id="test-event-001",
-        five_w1h=FiveW1H(
-            who="Unknown attacker targeting EC2 instance",
-            what="Cryptocurrency mining malware detected",
-            when="2024-10-15 14:30:00 UTC",
-            where="EC2 instance i-1234567890abcdef0 in us-east-1",
-            why="Financial gain through unauthorized resource usage",
-            how="Malware communicating with mining pool via DNS queries"
-        ),
-        executive_summary="High-severity cryptocurrency mining detected on production EC2 instance.",
-        risk_score=8.5,
-        confidence=0.92,
-        attack_chain=[
-            "Initial Access",
-            "Execution",
-            "Resource Hijacking",
-            "Command and Control"
-        ],
-        mitre_techniques=[
-            MitreAttack(
-                technique_id="T1496",
-                technique_name="Resource Hijacking",
-                tactic="Impact",
-                confidence=0.9
-            )
-        ],
-        immediate_actions=[
-            "Isolate affected EC2 instance immediately",
-            "Terminate mining process",
-            "Capture memory dump for forensics"
-        ],
-        short_term_recommendations=[
-            "Scan all EC2 instances for similar indicators",
-            "Review IAM permissions and access logs"
-        ],
-        long_term_recommendations=[
-            "Implement runtime security monitoring",
-            "Deploy EDR solution on all instances"
-        ],
-        investigation_queries=[
-            "SELECT * FROM cloudtrail WHERE resource_id = 'i-1234567890abcdef0'"
-        ]
-    )
-
-
-@pytest.fixture
-def sample_guardduty_event():
-    """Load sample GuardDuty event from test data."""
-    test_file = Path(__file__).parent.parent / "test_data" / "guardduty_crypto_mining.json"
-    if test_file.exists():
-        with open(test_file) as f:
-            return json.load(f)
+def sample_config() -> Dict[str, Any]:
+    """Provide a sample configuration for testing."""
     return {
-        "detail": {
-            "schemaVersion": "2.0",
-            "accountId": "123456789012",
-            "region": "us-east-1",
-            "partition": "aws",
-            "id": "test-finding-id",
-            "arn": "arn:aws:guardduty:us-east-1:123456789012:detector/test/finding/test",
-            "type": "CryptoCurrency:EC2/BitcoinTool.B!DNS",
-            "resource": {
-                "resourceType": "Instance",
-                "instanceDetails": {
-                    "instanceId": "i-1234567890abcdef0",
-                    "instanceType": "t2.micro"
-                }
-            },
-            "service": {
-                "serviceName": "guardduty",
-                "detectorId": "test-detector",
-                "action": {
-                    "actionType": "DNS_REQUEST",
-                    "dnsRequestAction": {
-                        "domain": "mining-pool.example.com"
-                    }
-                },
-                "eventFirstSeen": "2024-10-15T14:30:00Z",
-                "eventLastSeen": "2024-10-15T14:35:00Z",
-                "count": 42
-            },
-            "severity": 8.0,
-            "title": "Bitcoin mining activity detected",
-            "description": "EC2 instance is querying a domain name associated with Bitcoin mining activity."
-        }
+        "google_workspace": {
+            "domain": "example.com",
+            "credentials_file": "test-credentials.json",
+            "impersonate_user": "admin@example.com",
+        },
+        "scanning": {
+            "scan_my_drive": True,
+            "scan_shared_drives": True,
+            "check_pii": True,
+            "pii_patterns": ["ssn", "credit_card", "phone"],
+        },
+        "alerts": {
+            "email": {
+                "enabled": False,
+            }
+        },
+        "reporting": {
+            "output_dir": "./test-reports",
+            "formats": ["csv", "json"],
+        },
+        "storage": {
+            "database_path": ":memory:",
+        },
     }
 
 
 @pytest.fixture
-def temp_output_dir(tmp_path):
-    """Create a temporary output directory."""
-    output_dir = tmp_path / "outputs"
-    output_dir.mkdir()
-    return output_dir
+def temp_config_file(tmp_path: Path, sample_config: Dict[str, Any]) -> Path:
+    """Create a temporary config file for testing."""
+    import yaml
+    
+    config_file = tmp_path / "config.yaml"
+    with open(config_file, "w") as f:
+        yaml.dump(sample_config, f)
+    
+    return config_file
+
+
+@pytest.fixture
+def mock_drive_file() -> Dict[str, Any]:
+    """Provide a mock Google Drive file response."""
+    return {
+        "id": "file123",
+        "name": "Test Document.docx",
+        "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "owners": [{"emailAddress": "owner@example.com", "displayName": "Test Owner"}],
+        "createdTime": "2024-01-01T00:00:00.000Z",
+        "modifiedTime": "2024-01-15T00:00:00.000Z",
+        "size": "12345",
+        "permissions": [
+            {
+                "id": "perm1",
+                "type": "user",
+                "role": "owner",
+                "emailAddress": "owner@example.com",
+            },
+            {
+                "id": "perm2",
+                "type": "user",
+                "role": "reader",
+                "emailAddress": "external@otherdomain.com",
+            },
+        ],
+    }
+
+
+@pytest.fixture
+def mock_public_file() -> Dict[str, Any]:
+    """Provide a mock publicly shared Google Drive file."""
+    return {
+        "id": "file456",
+        "name": "Public Spreadsheet.xlsx",
+        "mimeType": "application/vnd.google-apps.spreadsheet",
+        "owners": [{"emailAddress": "owner@example.com", "displayName": "Test Owner"}],
+        "createdTime": "2024-01-01T00:00:00.000Z",
+        "modifiedTime": "2024-01-15T00:00:00.000Z",
+        "permissions": [
+            {
+                "id": "perm1",
+                "type": "user",
+                "role": "owner",
+                "emailAddress": "owner@example.com",
+            },
+            {
+                "id": "perm2",
+                "type": "anyone",
+                "role": "reader",
+            },
+        ],
+    }
 

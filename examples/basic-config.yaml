@@ -1,0 +1,63 @@
+# Basic Vaulytica Configuration
+# Perfect for getting started with basic security monitoring
+
+google_workspace:
+  # Your Google Workspace domain
+  domain: "example.com"
+  
+  # Admin email for domain-wide delegation
+  admin_email: "admin@example.com"
+  
+  # Path to service account JSON file
+  service_account_file: "service-account.json"
+
+scanning:
+  # Number of items to fetch per API request
+  batch_size: 100
+  
+  # Delay between API requests (seconds) to avoid rate limits
+  rate_limit_delay: 0.1
+  
+  # Enable caching to reduce API calls
+  enable_cache: true
+  
+  # Cache TTL in seconds
+  cache_ttl: 3600
+
+pii_detection:
+  # Enable PII detection
+  enabled: true
+  
+  # Minimum confidence score (0.0 to 1.0)
+  confidence_threshold: 0.5
+  
+  # PII patterns to detect
+  patterns:
+    - ssn
+    - credit_card
+    - email
+    - phone
+    - ip_address
+
+integrations:
+  # Email notifications
+  email:
+    enabled: true
+    smtp_host: "smtp.gmail.com"
+    smtp_port: 587
+    smtp_user: "alerts@example.com"
+    smtp_password: "your-app-password"
+    from_address: "vaulytica@example.com"
+    to_addresses:
+      - "security-team@example.com"
+
+logging:
+  # Log level: DEBUG, INFO, WARNING, ERROR, CRITICAL
+  level: "INFO"
+  
+  # Log format: text or json
+  format: "text"
+  
+  # Log file path (optional)
+  file: "logs/vaulytica.log"
+

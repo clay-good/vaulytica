@@ -1,0 +1,346 @@
+# Vaulytica Configuration - Small Business
+# 
+# This configuration is optimized for small businesses (10-100 users) with:
+# - Simple security monitoring
+# - Email notifications
+# - Basic PII detection
+# - Affordable resource usage
+# - Easy maintenance
+
+---
+
+# Google Workspace Configuration
+google_workspace:
+  # Service account for API access
+  service_account_file: "${GWS_SERVICE_ACCOUNT_FILE}"
+  subject_email: "${GWS_SUBJECT_EMAIL}"
+  domain: "smallbusiness.com"
+  
+  # Minimal required scopes
+  scopes:
+    - "https://www.googleapis.com/auth/drive.readonly"
+    - "https://www.googleapis.com/auth/admin.directory.user.readonly"
+    - "https://www.googleapis.com/auth/gmail.readonly"
+
+# Scanning Configuration
+scanning:
+  # File scanning
+  files:
+    enabled: true
+    external_only: true  # Only scan externally shared files
+    check_pii: true
+    batch_size: 50  # Smaller batches for limited resources
+    max_workers: 2  # Conservative concurrency
+    
+  # User scanning
+  users:
+    enabled: true
+    inactive_days: 90
+    check_suspended: true
+    
+  # Gmail scanning (optional - can be resource intensive)
+  gmail:
+    enabled: false  # Disabled by default for small businesses
+    check_attachments: false
+    max_messages: 100
+
+# PII Detection
+pii_detection:
+  enabled: true
+  confidence_threshold: 0.7
+  
+  # Essential PII types for small business
+  patterns:
+    - type: "ssn"
+      enabled: true
+    - type: "credit_card"
+      enabled: true
+    - type: "email"
+      enabled: true
+    - type: "phone"
+      enabled: true
+    - type: "bank_account"
+      enabled: true
+    - type: "dob"
+      enabled: true
+
+# Policies
+policies:
+  # Auto-expire external shares
+  expiration:
+    enabled: true
+    default_days: 30  # 30 days for small business
+    notify_before_days: 7
+    grace_period_days: 3
+    
+  # User lifecycle
+  lifecycle:
+    enabled: true
+    offboard_inactive_users: false  # Manual offboarding for small business
+    transfer_files: true
+    suspend_account: false
+
+# Email Notifications
+integrations:
+  email:
+    enabled: true
+    smtp_host: "smtp.gmail.com"
+    smtp_port: 587
+    smtp_user: "${SMTP_USER}"
+    smtp_password: "${SMTP_PASSWORD}"
+    from_address: "security@smallbusiness.com"
+    to_addresses:
+      - "admin@smallbusiness.com"
+      - "it@smallbusiness.com"
+    
+    # Email templates
+    templates:
+      pii_alert: |
+        Subject: [SECURITY] PII Detected in Shared File
+        
+        A file containing personally identifiable information (PII) has been detected:
+        
+        File: {file_name}
+        Owner: {owner_email}
+        PII Types: {pii_types}
+        Shared With: {shared_with}
+        
+        Please review and take appropriate action.
+        
+        View file: {file_url}
+      
+      expiration_warning: |
+        Subject: [NOTICE] External Share Expiring Soon
+        
+        An external file share will expire soon:
+        
+        File: {file_name}
+        Expires: {expiration_date}
+        Shared With: {shared_with}
+        
+        To extend access, please contact IT.
+
+  # Slack (optional)
+  slack:
+    enabled: false  # Disabled by default
+    webhook_url: "${SLACK_WEBHOOK_URL}"
+    channel: "#security"
+
+# Reporting
+reporting:
+  enabled: true
+  format: "html"  # Easy to read for non-technical users
+  output_dir: "/var/lib/vaulytica/reports"
+  
+  # Report schedule
+  schedule:
+    daily_summary: true
+    weekly_detailed: true
+    monthly_executive: true
+  
+  # Report recipients
+  recipients:
+    - "admin@smallbusiness.com"
+
+# Storage
+storage:
+  database_path: "/var/lib/vaulytica/state.db"
+  cache_dir: "/var/cache/vaulytica"
+  
+  # Data retention (shorter for small business)
+  retention:
+    scan_history_days: 30
+    file_state_days: 90
+    cache_ttl_seconds: 3600
+
+# Performance
+performance:
+  # Conservative settings for limited resources
+  max_workers: 2
+  batch_size: 50
+  rate_limit_delay: 0.2  # Slower to avoid quota issues
+  
+  # Caching
+  cache:
+    enabled: true
+    ttl_seconds: 3600
+    max_size_mb: 100  # Small cache size
+  
+  # Incremental scanning
+  incremental:
+    enabled: true  # Save time and resources
+
+# Logging
+logging:
+  level: "INFO"
+  format: "text"  # Simple format for small business
+  output: "/var/log/vaulytica/vaulytica.log"
+  
+  # Log rotation
+  rotation:
+    max_size_mb: 50
+    max_files: 5
+    compress: true
+
+# Monitoring
+monitoring:
+  enabled: false  # Disabled for simplicity
+  metrics_port: 9090
+  health_check_port: 8080
+
+# Security
+security:
+  # Basic security settings
+  encryption:
+    enabled: false  # Optional for small business
+  
+  # IP whitelisting (optional)
+  ip_whitelist:
+    enabled: false
+  
+  # VPN requirement (optional)
+  vpn_required: false
+
+# Workflows
+workflows:
+  # External PII alert workflow
+  external_pii_alert:
+    enabled: true
+    confidence_threshold: 0.7
+    notify_email: true
+    notify_slack: false
+    
+  # Offboarding workflow
+  offboarding:
+    enabled: false  # Manual process for small business
+
+# Compliance (optional)
+compliance:
+  enabled: false  # Not required for most small businesses
+  
+  # If needed, enable specific frameworks
+  frameworks:
+    hipaa: false
+    soc2: false
+    gdpr: false
+
+# Scheduled Scans
+schedules:
+  # Daily scan of external shares
+  daily_external_scan:
+    enabled: true
+    cron: "0 9 * * *"  # 9 AM daily
+    command: "scan files --external-only --check-pii"
+  
+  # Weekly user scan
+  weekly_user_scan:
+    enabled: true
+    cron: "0 10 * * 1"  # 10 AM Monday
+    command: "scan users --inactive-days 90"
+  
+  # Monthly report
+  monthly_report:
+    enabled: true
+    cron: "0 9 1 * *"  # 9 AM first of month
+    command: "report generate --format html --period month"
+
+# Notifications
+notifications:
+  # When to send notifications
+  triggers:
+    - event: "pii_detected"
+      severity: "high"
+      channels: ["email"]
+    
+    - event: "external_share_created"
+      severity: "medium"
+      channels: ["email"]
+    
+    - event: "inactive_user_found"
+      severity: "low"
+      channels: ["email"]
+  
+  # Notification throttling
+  throttling:
+    enabled: true
+    max_per_hour: 10
+    max_per_day: 50
+
+# Cost Optimization
+cost_optimization:
+  # Reduce API calls
+  api_calls:
+    batch_requests: true
+    cache_results: true
+    incremental_scans: true
+  
+  # Reduce storage
+  storage:
+    compress_logs: true
+    cleanup_old_data: true
+    minimal_retention: true
+  
+  # Reduce compute
+  compute:
+    low_concurrency: true
+    off_peak_scanning: true  # Run scans during off-peak hours
+
+# Support
+support:
+  contact_email: "support@example.com"
+  documentation_url: "https://docs.example.com"
+  community_slack: "https://slack.example.com"
+
+---
+
+# Quick Start Commands
+
+# 1. Test configuration
+# vaulytica test --test-config
+
+# 2. Run first scan
+# vaulytica scan files --external-only --check-pii
+
+# 3. Generate report
+# vaulytica report generate --format html
+
+# 4. Set up scheduled scans (systemd timer or cron)
+# See docs/DEPLOYMENT.md for details
+
+---
+
+# Estimated Costs (Google Workspace API)
+
+# For 50 users, 10,000 files:
+# - Daily scans: ~1,000 API calls
+# - Monthly API calls: ~30,000
+# - Well within free tier (1M requests/day)
+
+# Resource Usage:
+# - CPU: 1 core
+# - Memory: 512 MB
+# - Storage: 1 GB
+# - Network: Minimal
+
+---
+
+# Maintenance Schedule
+
+# Daily:
+# - Review security alerts
+# - Check scan results
+
+# Weekly:
+# - Review detailed reports
+# - Update policies as needed
+
+# Monthly:
+# - Review executive summary
+# - Update configuration
+# - Check for updates
+
+# Quarterly:
+# - Security assessment
+# - User training
+# - Policy review
+

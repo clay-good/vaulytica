@@ -1,507 +1,525 @@
 # Vaulytica Deployment Guide
 
-## Overview
+This guide covers deploying Vaulytica in various environments including Docker, Kubernetes, and systemd.
 
-This guide provides comprehensive instructions for deploying Vaulytica in development, staging, and production environments.
+---
+
+## Table of Contents
+
+1. [Prerequisites](#prerequisites)
+2. [Docker Deployment](#docker-deployment)
+3. [Kubernetes Deployment](#kubernetes-deployment)
+4. [Systemd Service](#systemd-service)
+5. [Configuration Management](#configuration-management)
+6. [Monitoring & Logging](#monitoring--logging)
+7. [Security Best Practices](#security-best-practices)
+
+---
 
 ## Prerequisites
 
-### System Requirements
+### Required
+- Python 3.10 or higher
+- Google Workspace Admin account
+- Service account with appropriate permissions
+- Poetry (for dependency management)
 
-**Minimum Requirements (Development)**
-- Operating System: Linux (Ubuntu 20.04+), macOS 11+, or Windows 10+ with WSL2
-- Python: 3.9 or higher
-- CPU: 2 cores
-- Memory: 4GB RAM
-- Storage: 10GB free disk space
+### Google Workspace API Permissions
+Your service account needs the following scopes:
+- `https://www.googleapis.com/auth/admin.directory.user.readonly`
+- `https://www.googleapis.com/auth/admin.directory.group.readonly`
+- `https://www.googleapis.com/auth/drive.readonly`
+- `https://www.googleapis.com/auth/gmail.readonly`
+- `https://www.googleapis.com/auth/admin.directory.domain.readonly`
 
-**Recommended Requirements (Production)**
-- Operating System: Linux (Ubuntu 20.04+ or RHEL 8+)
-- Python: 3.9 or higher
-- CPU: 16+ cores
-- Memory: 32GB+ RAM
-- Storage: 100GB+ SSD
-- Network: High-bandwidth, low-latency connection
+### Domain-Wide Delegation
+Enable domain-wide delegation for your service account in Google Workspace Admin Console.
 
-### Required Software
+---
 
-```bash
-# Python 3.9+
-python3 --version
+## Docker Deployment
 
-# pip (Python package manager)
-pip3 --version
+### 1. Create Dockerfile
 
-# Git
-git --version
+Create a `Dockerfile` in your project root:
 
-# Docker (optional, for containerized deployment)
-docker --version
+```dockerfile
+FROM python:3.11-slim
 
-# Kubernetes (optional, for orchestrated deployment)
-kubectl version
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Poetry
+RUN pip install poetry
+
+# Copy project files
+COPY pyproject.toml poetry.lock ./
+COPY vaulytica ./vaulytica
+COPY README.md ./
+
+# Install dependencies
+RUN poetry config virtualenvs.create false \
+    && poetry install --no-dev --no-interaction --no-ansi
+
+# Create directories for config and data
+RUN mkdir -p /app/config /app/data /app/logs
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV VAULYTICA_CONFIG=/app/config/config.yaml
+
+# Run as non-root user
+RUN useradd -m -u 1000 vaulytica && chown -R vaulytica:vaulytica /app
+USER vaulytica
+
+# Default command
+ENTRYPOINT ["vaulytica"]
+CMD ["--help"]
 ```
 
-### External Dependencies
+### 2. Create docker-compose.yml
 
-**Required**
-- PostgreSQL 13+ (or SQLite for development)
-- Redis 6+ (for caching and message queues)
+```yaml
+version: '3.8'
 
-**Optional**
-- RabbitMQ 3.8+ (for async task processing)
-- Elasticsearch 7+ (for log aggregation)
-- Prometheus + Grafana (for monitoring)
-
-## Installation
-
-### Method 1: Standard Installation
-
-1. Clone the repository:
-```bash
-git clone https://example.com
-cd vaulytica
+services:
+  vaulytica:
+    build: .
+    container_name: vaulytica
+    volumes:
+      - ./config:/app/config:ro
+      - ./data:/app/data
+      - ./logs:/app/logs
+    environment:
+      - VAULYTICA_CONFIG=/app/config/config.yaml
+      - TZ=UTC
+    restart: unless-stopped
+    command: scan files --external-only --check-pii
 ```
 
-2. Create a virtual environment:
+### 3. Build and Run
+
 ```bash
-python3 -m venv venv
-source venv/bin/activate # On Windows: venv\Scripts\activate
-```
-
-3. Install dependencies:
-```bash
-# Production dependencies
-pip install -r requirements.txt
-
-# Development dependencies (optional)
-pip install -r requirements-dev.txt
-```
-
-4. Set up the database:
-```bash
-# PostgreSQL
-createdb vaulytica
-python scripts/init_db.py
-
-# SQLite (development only)
-python scripts/init_db.py --sqlite
-```
-
-### Method 2: Docker Installation
-
-1. Build the Docker image:
-```bash
+# Build the image
 docker build -t vaulytica:latest .
-```
 
-2. Run with Docker Compose:
-```bash
-docker-compose up -d
-```
-
-This will start:
-- Vaulytica application
-- PostgreSQL database
-- Redis cache
-- Prometheus monitoring
-- Grafana dashboards
-
-### Method 3: Kubernetes Installation
-
-1. Create namespace:
-```bash
-kubectl create namespace vaulytica
-```
-
-2. Apply configurations:
-```bash
-kubectl apply -f kubernetes/
-```
-
-3. Verify deployment:
-```bash
-kubectl get pods -n vaulytica
-kubectl get services -n vaulytica
-```
-
-## Configuration
-
-### Environment Variables
-
-Create a `.env` file in the project root:
-
-```bash
-# Application
-VAULYTICA_ENV=production
-VAULYTICA_DEBUG=false
-VAULYTICA_LOG_LEVEL=INFO
-
-# API
-VAULYTICA_API_HOST=0.0.0.0
-VAULYTICA_API_PORT=8000
-VAULYTICA_API_KEY=your-secure-api-key
-
-# Database
-VAULYTICA_DB_URL=postgresql://user:password@localhost:5432/vaulytica
-VAULYTICA_DB_POOL_SIZE=20
-VAULYTICA_DB_MAX_OVERFLOW=10
-
-# Redis
-VAULYTICA_REDIS_URL=redis://localhost:6379/0
-VAULYTICA_REDIS_PASSWORD=your-redis-password
-
-# AI/ML
-ANTHROPIC_API_KEY=your-anthropic-api-key
-
-# Threat Intelligence
-VIRUSTOTAL_API_KEY=your-virustotal-api-key
-ALIENVAULT_API_KEY=your-alienvault-api-key
-ABUSEIPDB_API_KEY=your-abuseipdb-api-key
-SHODAN_API_KEY=your-shodan-api-key
-
-# Ticketing
-JIRA_URL=https://your-company.atlassian.net
-JIRA_USERNAME=your-username
-JIRA_API_TOKEN=your-api-token
-
-SERVICENOW_INSTANCE=your-instance
-SERVICENOW_USERNAME=your-username
-SERVICENOW_PASSWORD=your-password
-
-PAGERDUTY_API_KEY=your-pagerduty-api-key
-
-# Monitoring
-PROMETHEUS_ENABLED=true
-PROMETHEUS_PORT=9090
-GRAFANA_ENABLED=true
-GRAFANA_PORT=3000
-```
-
-### Configuration Files
-
-Configuration is managed through YAML files in the `config/` directory:
-
-**config/development.yaml**
-```yaml
-environment: development
-debug: true
-log_level: DEBUG
-
-database:
- url: sqlite:///vaulytica.db
- pool_size: 5
-
-cache:
- enabled: false
-
-api:
- host: 127.0.0.1
- port: 8000
- cors_origins:
- - https://example.com:3000
-```
-
-**config/production.yaml**
-```yaml
-environment: production
-debug: false
-log_level: INFO
-
-database:
- url: ${VAULYTICA_DB_URL}
- pool_size: 20
- max_overflow: 10
-
-cache:
- enabled: true
- redis_url: ${VAULYTICA_REDIS_URL}
- ttl: 3600
-
-api:
- host: 0.0.0.0
- port: 8000
- cors_origins:
- - https://example.com
-
-security:
- api_key_required: true
- rate_limit_enabled: true
- rate_limit_requests: 100
- rate_limit_period: 60
-
-monitoring:
- prometheus_enabled: true
- tracing_enabled: true
- log_aggregation_enabled: true
-```
-
-## Running the Application
-
-### Development Mode
-
-```bash
-# Activate virtual environment
-source venv/bin/activate
-
-# Run with auto-reload
-python -m vaulytica.main --reload
-
-# Or use uvicorn directly
-uvicorn vaulytica.main:app --reload --host 127.0.0.1 --port 8000
-```
-
-### Production Mode
-
-```bash
-# Using gunicorn with uvicorn workers
-gunicorn vaulytica.main:app \
- --workers 4 \
- --worker-class uvicorn.workers.UvicornWorker \
- --bind 0.0.0.0:8000 \
- --timeout 120 \
- --access-logfile - \
- --error-logfile -
-
-# Or using systemd service
-sudo systemctl start vaulytica
-sudo systemctl enable vaulytica
-```
-
-### Docker Mode
-
-```bash
-# Run single container
-docker run -d \
- --name vaulytica \
- -p 8000:8000 \
- -e VAULYTICA_ENV=production \
- -e VAULYTICA_DB_URL=postgresql://... \
- vaulytica:latest
-
-# Run with Docker Compose
+# Run with docker-compose
 docker-compose up -d
 
 # View logs
-docker-compose logs -f vaulytica
+docker-compose logs -f
+
+# Run one-off commands
+docker-compose run --rm vaulytica scan users --inactive-days 90
 ```
 
-### Kubernetes Mode
+### 4. Docker Environment Variables
 
 ```bash
-# Deploy
-kubectl apply -f kubernetes/
+# Configuration
+VAULYTICA_CONFIG=/app/config/config.yaml
 
-# Scale deployment
-kubectl scale deployment vaulytica --replicas=5 -n vaulytica
+# Logging
+LOG_LEVEL=INFO
+LOG_FORMAT=json
 
-# View logs
-kubectl logs -f deployment/vaulytica -n vaulytica
-
-# Port forward for testing
-kubectl port-forward service/vaulytica 8000:8000 -n vaulytica
+# Performance
+BATCH_SIZE=100
+RATE_LIMIT_DELAY=0.1
+ENABLE_CACHE=true
 ```
 
-## Health Checks
+---
 
-### Endpoints
+## Kubernetes Deployment
 
-```bash
-# Health check
-curl https://example.com:8000/health
+### 1. Create ConfigMap
 
-# Readiness check
-curl https://example.com:8000/ready
+`k8s/configmap.yaml`:
 
-# Metrics
-curl https://example.com:8000/metrics
-```
-
-### Expected Responses
-
-**Healthy**
-```json
-{
- "status": "healthy",
- "version": "0.30.0",
- "uptime": 3600,
- "database": "connected",
- "cache": "connected"
-}
-```
-
-## Monitoring
-
-### Prometheus Metrics
-
-Access Prometheus at `https://example.com:9090`
-
-Key metrics:
-- `vaulytica_requests_total`: Total API requests
-- `vaulytica_request_duration_seconds`: Request latency
-- `vaulytica_events_processed_total`: Events processed
-- `vaulytica_ml_predictions_total`: ML predictions made
-- `vaulytica_errors_total`: Total errors
-
-### Grafana Dashboards
-
-Access Grafana at `https://example.com:3000`
-
-Default credentials:
-- Username: admin
-- Password: admin (change on first login)
-
-Pre-configured dashboards:
-- System Overview
-- API Performance
-- Event Processing
-- ML Model Performance
-- Security Incidents
-
-### Logging
-
-Logs are written to:
-- Console (stdout/stderr)
-- File: `/var/log/vaulytica/app.log`
-- Syslog (if configured)
-
-Log format:
-```json
-{
- "timestamp": "2025-10-21T10:30:00Z",
- "level": "INFO",
- "logger": "vaulytica.agents.security_analyst",
- "message": "Event analyzed successfully",
- "correlation_id": "abc123",
- "event_id": "evt_456",
- "duration_ms": 150
-}
-```
-
-## Security
-
-### TLS/SSL Configuration
-
-```bash
-# Generate self-signed certificate (development only)
-openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes
-
-# Run with TLS
-uvicorn vaulytica.main:app \
- --ssl-keyfile=key.pem \
- --ssl-certfile=cert.pem \
- --host 0.0.0.0 \
- --port 8443
-```
-
-### Secrets Management
-
-Use environment variables or external secrets managers:
-
-```bash
-# Vault
-export VAULT_ADDR=https://example.com
-export VAULT_TOKEN=your-token
-
-# AWS Secrets Manager
-export AWS_REGION=us-east-1
-export AWS_SECRET_NAME=vaulytica/production
-
-# Azure Key Vault
-export AZURE_KEY_VAULT_NAME=vaulytica-vault
-
-# GCP Secret Manager
-export GCP_PROJECT_ID=your-project
-export GCP_SECRET_NAME=vaulytica-secrets
-```
-
-### Firewall Rules
-
-```bash
-# Allow API access
-sudo ufw allow 8000/tcp
-
-# Allow HTTPS
-sudo ufw allow 443/tcp
-
-# Allow Prometheus
-sudo ufw allow 9090/tcp
-
-# Allow Grafana
-sudo ufw allow 3000/tcp
-```
-
-## Scaling
-
-### Horizontal Scaling
-
-**Docker Compose**
-```bash
-docker-compose up -d --scale vaulytica=5
-```
-
-**Kubernetes**
-```bash
-kubectl scale deployment vaulytica --replicas=10 -n vaulytica
-```
-
-### Autoscaling
-
-**Kubernetes HPA (Horizontal Pod Autoscaler)**
 ```yaml
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
+apiVersion: v1
+kind: ConfigMap
 metadata:
- name: vaulytica-hpa
+  name: vaulytica-config
+  namespace: security
+data:
+  config.yaml: |
+    google_workspace:
+      domain: "example.com"
+      admin_email: "admin@example.com"
+      service_account_file: "/secrets/service-account.json"
+    
+    scanning:
+      batch_size: 100
+      rate_limit_delay: 0.1
+      enable_cache: true
+    
+    logging:
+      level: "INFO"
+      format: "json"
+```
+
+### 2. Create Secret
+
+```bash
+# Create secret from service account JSON
+kubectl create secret generic vaulytica-secrets \
+  --from-file=service-account.json=./service-account.json \
+  --namespace=security
+```
+
+### 3. Create Deployment
+
+`k8s/deployment.yaml`:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vaulytica
+  namespace: security
+  labels:
+    app: vaulytica
 spec:
- scaleTargetRef:
- apiVersion: apps/v1
- kind: Deployment
- name: vaulytica
- minReplicas: 3
- maxReplicas: 20
- metrics:
- - type: Resource
- resource:
- name: cpu
- target:
- type: Utilization
- averageUtilization: 70
- - type: Resource
- resource:
- name: memory
- target:
- type: Utilization
- averageUtilization: 80
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vaulytica
+  template:
+    metadata:
+      labels:
+        app: vaulytica
+    spec:
+      serviceAccountName: vaulytica
+      containers:
+      - name: vaulytica
+        image: vaulytica:latest
+        imagePullPolicy: IfNotPresent
+        command: ["vaulytica"]
+        args: ["scan", "files", "--external-only", "--check-pii"]
+        env:
+        - name: VAULYTICA_CONFIG
+          value: "/config/config.yaml"
+        - name: LOG_LEVEL
+          value: "INFO"
+        volumeMounts:
+        - name: config
+          mountPath: /config
+          readOnly: true
+        - name: secrets
+          mountPath: /secrets
+          readOnly: true
+        - name: data
+          mountPath: /app/data
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+      volumes:
+      - name: config
+        configMap:
+          name: vaulytica-config
+      - name: secrets
+        secret:
+          secretName: vaulytica-secrets
+      - name: data
+        persistentVolumeClaim:
+          claimName: vaulytica-data
 ```
 
-## Backup and Recovery
+### 4. Create CronJob for Scheduled Scans
 
-### Database Backup
+`k8s/cronjob.yaml`:
+
+```yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: vaulytica-daily-scan
+  namespace: security
+spec:
+  schedule: "0 2 * * *"  # Run at 2 AM daily
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: vaulytica
+          containers:
+          - name: vaulytica
+            image: vaulytica:latest
+            command: ["vaulytica"]
+            args: 
+            - "scan"
+            - "files"
+            - "--external-only"
+            - "--check-pii"
+            - "--incremental"
+            - "--output"
+            - "/app/data/scan-results.json"
+            - "--format"
+            - "json"
+            env:
+            - name: VAULYTICA_CONFIG
+              value: "/config/config.yaml"
+            volumeMounts:
+            - name: config
+              mountPath: /config
+              readOnly: true
+            - name: secrets
+              mountPath: /secrets
+              readOnly: true
+            - name: data
+              mountPath: /app/data
+          restartPolicy: OnFailure
+          volumes:
+          - name: config
+            configMap:
+              name: vaulytica-config
+          - name: secrets
+            secret:
+              secretName: vaulytica-secrets
+          - name: data
+            persistentVolumeClaim:
+              claimName: vaulytica-data
+```
+
+### 5. Create PersistentVolumeClaim
+
+`k8s/pvc.yaml`:
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vaulytica-data
+  namespace: security
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: standard
+```
+
+### 6. Deploy to Kubernetes
 
 ```bash
-# PostgreSQL backup
-pg_dump vaulytica > backup_$(date +%Y%m%d).sql
+# Create namespace
+kubectl create namespace security
 
-# Automated daily backups
-0 2 * * * pg_dump vaulytica | gzip > /backups/vaulytica_$(date +\%Y\%m\%d).sql.gz
+# Apply configurations
+kubectl apply -f k8s/configmap.yaml
+kubectl apply -f k8s/pvc.yaml
+kubectl apply -f k8s/deployment.yaml
+kubectl apply -f k8s/cronjob.yaml
+
+# Check status
+kubectl get pods -n security
+kubectl logs -f deployment/vaulytica -n security
+
+# Run manual scan
+kubectl run vaulytica-manual \
+  --image=vaulytica:latest \
+  --restart=Never \
+  --namespace=security \
+  -- scan files --external-only
 ```
 
-### Restore
+---
+
+## Systemd Service
+
+### 1. Create Service File
+
+`/etc/systemd/system/vaulytica.service`:
+
+```ini
+[Unit]
+Description=Vaulytica Security Scanner
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=vaulytica
+Group=vaulytica
+WorkingDirectory=/opt/vaulytica
+Environment="PATH=/opt/vaulytica/.venv/bin:/usr/local/bin:/usr/bin"
+Environment="VAULYTICA_CONFIG=/etc/vaulytica/config.yaml"
+ExecStart=/opt/vaulytica/.venv/bin/vaulytica scan files --external-only --check-pii --incremental
+Restart=on-failure
+RestartSec=30
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=vaulytica
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/vaulytica /var/log/vaulytica
+
+[Install]
+WantedBy=multi-user.target
+```
+
+### 2. Create Timer for Scheduled Scans
+
+`/etc/systemd/system/vaulytica.timer`:
+
+```ini
+[Unit]
+Description=Vaulytica Daily Scan Timer
+Requires=vaulytica.service
+
+[Timer]
+OnCalendar=daily
+OnCalendar=02:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+```
+
+### 3. Installation Steps
 
 ```bash
-# PostgreSQL restore
-psql vaulytica < backup_20251021.sql
+# Create user
+sudo useradd -r -s /bin/false vaulytica
+
+# Create directories
+sudo mkdir -p /opt/vaulytica
+sudo mkdir -p /etc/vaulytica
+sudo mkdir -p /var/lib/vaulytica
+sudo mkdir -p /var/log/vaulytica
+
+# Set permissions
+sudo chown -R vaulytica:vaulytica /opt/vaulytica
+sudo chown -R vaulytica:vaulytica /var/lib/vaulytica
+sudo chown -R vaulytica:vaulytica /var/log/vaulytica
+
+# Install application
+cd /opt/vaulytica
+sudo -u vaulytica poetry install
+
+# Copy configuration
+sudo cp config.yaml /etc/vaulytica/
+sudo chown vaulytica:vaulytica /etc/vaulytica/config.yaml
+sudo chmod 600 /etc/vaulytica/config.yaml
+
+# Enable and start service
+sudo systemctl daemon-reload
+sudo systemctl enable vaulytica.timer
+sudo systemctl start vaulytica.timer
+
+# Check status
+sudo systemctl status vaulytica.timer
+sudo journalctl -u vaulytica -f
 ```
 
-## Troubleshooting
+---
 
-See the troubleshooting guide in `docs/operations/troubleshooting.md` for common issues and solutions.
+## Configuration Management
 
-## Support
+### Environment-Specific Configs
 
-For issues or questions:
-- GitHub Issues: https://example.com
-- Documentation: https://docs.vaulytica.com
-- Community: https://community.vaulytica.com
+Create separate configs for each environment:
+
+```
+config/
+├── production.yaml
+├── staging.yaml
+└── development.yaml
+```
+
+### Using Environment Variables
+
+Override config values with environment variables:
+
+```bash
+export GWS_DOMAIN="example.com"
+export GWS_ADMIN_EMAIL="admin@example.com"
+export GWS_SERVICE_ACCOUNT_FILE="/path/to/service-account.json"
+```
+
+---
+
+## Monitoring & Logging
+
+### Structured Logging
+
+Vaulytica uses structured logging (JSON format) for easy parsing:
+
+```json
+{
+  "timestamp": "2025-10-28T10:30:00Z",
+  "level": "INFO",
+  "event": "scan_completed",
+  "files_scanned": 1234,
+  "issues_found": 5
+}
+```
+
+### Integration with Log Aggregators
+
+**Elasticsearch/Kibana:**
+```bash
+# Forward logs to Elasticsearch
+docker run -d \
+  --log-driver=fluentd \
+  --log-opt fluentd-address=localhost:24224 \
+  vaulytica:latest
+```
+
+**Splunk:**
+```bash
+# Use Splunk Universal Forwarder
+/opt/splunkforwarder/bin/splunk add monitor /var/log/vaulytica
+```
+
+---
+
+## Security Best Practices
+
+### 1. Credential Management
+- ✅ Never commit service account JSON to version control
+- ✅ Use Kubernetes secrets or HashiCorp Vault
+- ✅ Rotate service account keys regularly (every 90 days)
+- ✅ Use least-privilege permissions
+
+### 2. Network Security
+- ✅ Run in private network/VPC
+- ✅ Use firewall rules to restrict outbound traffic
+- ✅ Enable TLS for all external communications
+
+### 3. Container Security
+- ✅ Run as non-root user
+- ✅ Use minimal base images
+- ✅ Scan images for vulnerabilities
+- ✅ Keep dependencies updated
+
+### 4. Access Control
+- ✅ Limit who can deploy/modify
+- ✅ Use RBAC in Kubernetes
+- ✅ Audit all configuration changes
+
+---
+
+## Next Steps
+
+- [Getting Started Guide](GETTING_STARTED.md)
+- [Configuration Examples](examples/)
+- [Troubleshooting Guide](TROUBLESHOOTING.md)
 

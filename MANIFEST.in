@@ -1,9 +1,0 @@
-include README.md
-include LICENSE
-include requirements.txt
-include requirements-dev.txt
-recursive-include vaulytica *.py
-recursive-exclude test_data *
-recursive-exclude outputs *
-recursive-exclude chroma_db *
-

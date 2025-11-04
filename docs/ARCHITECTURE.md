@@ -1,397 +1,386 @@
-# Vaulytica Architecture
+# Vaulytica Architecture Guide
+
+**Version:** 1.0  
+**Last Updated:** 2025-10-28
+
+---
+
+## Table of Contents
+
+1. [Overview](#overview)
+2. [System Architecture](#system-architecture)
+3. [Core Components](#core-components)
+4. [Data Flow](#data-flow)
+5. [Security Model](#security-model)
+6. [Performance Optimizations](#performance-optimizations)
+7. [Extensibility](#extensibility)
+
+---
 
 ## Overview
 
-Vaulytica is built on a modular, scalable architecture designed for enterprise-grade security operations. The platform uses an AI agent framework that enables intelligent, autonomous security analysis and incident response.
+Vaulytica is a modular, enterprise-grade security monitoring platform for Google Workspace. The architecture is designed for:
+
+- **Scalability**: Handle 10,000+ users and millions of files
+- **Performance**: Concurrent processing, caching, and incremental scanning
+- **Reliability**: Comprehensive error handling and retry logic
+- **Extensibility**: Plugin-based architecture for custom integrations
+- **Security**: Least-privilege access and encrypted credentials
+
+---
 
 ## System Architecture
 
-### High-Level Architecture
-
+```
+┌─────────────────────────────────────────────────────────────┐
+│                         CLI Layer                            │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐   │
+│  │  Scan    │  │  Report  │  │  Policy  │  │ Workflow │   │
+│  │ Commands │  │ Commands │  │ Commands │  │ Commands │   │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────┘   │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      Core Services                           │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │
+│  │   Scanners   │  │   Detectors  │  │   Policies   │     │
+│  │ - File       │  │ - PII        │  │ - Expiration │     │
+│  │ - User       │  │ - DLP        │  │ - Lifecycle  │     │
+│  │ - Gmail      │  │ - OAuth      │  │ - Compliance │     │
+│  │ - Drive      │  └──────────────┘  └──────────────┘     │
+│  └──────────────┘                                           │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│                   Integration Layer                          │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐   │
+│  │  Email   │  │  Slack   │  │ Webhook  │  │   SIEM   │   │
+│  │  Alerts  │  │  Alerts  │  │  Events  │  │  Export  │   │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────┘   │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│                   Storage & State                            │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │
+│  │   SQLite     │  │  File Cache  │  │   Metrics    │     │
+│  │   Database   │  │   (Pickle)   │  │  (Prometheus)│     │
+│  └──────────────┘  └──────────────┘  └──────────────┘     │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│                  Google Workspace APIs                       │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐   │
+│  │ Drive API│  │ Admin SDK│  │ Gmail API│  │ Directory│   │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────┘   │
+└─────────────────────────────────────────────────────────────┘
 ```
 
- API Layer (REST/WebSocket) 
-
- Orchestration Layer 
- 
- Security Incident Threat 
- Analysis Response Intelligence 
- Agent Agent Extractor 
- 
-
- Shared Context Layer 
- 
- Document Data Knowledge 
- Intelligence Ingestion Graph 
- (RAG) Pipeline 
- 
-
- Processing Layer 
- 
- Machine Streaming Correlation 
- Learning Analytics Engine 
- Engine 
- 
-
- Integration Layer 
- 
- Ticketing Threat Cloud 
- Systems Feeds Platforms 
- 
-
- Infrastructure Layer 
- 
- Database Cache Message 
- (Postgres) (Redis) Queue 
- 
-
-```
+---
 
 ## Core Components
 
-### 1. Agent Framework
+### 1. Authentication & Authorization
 
-The agent framework provides a modular, extensible architecture for security operations:
+**Location:** `vaulytica/core/auth/`
 
-**Base Agent Interface**
-- Standardized agent lifecycle (initialize, execute, cleanup)
-- Shared context management
-- Inter-agent communication
-- Error handling and recovery
+**Components:**
+- `GoogleWorkspaceClient`: Main API client with service account authentication
+- `CredentialManager`: Secure credential storage and rotation
+- Domain-wide delegation for impersonation
 
-**Agent Types**
-- **Security Analysis Agent**: AI-powered security event analysis
-- **Incident Response Agent**: Automated incident response and investigation
-- **Threat Intelligence Extractor**: IOC extraction and rule generation
-- **Document Intelligence Agent**: RAG-based document search and retrieval
-- **Data Ingestion Agent**: Multi-source data collection and normalization
+**Key Features:**
+- Service account authentication
+- Automatic token refresh
+- Credential encryption at rest
+- Support for multiple domains
 
-**Orchestration**
-- Agent registry and discovery
-- Workflow coordination
-- Task distribution
-- Result aggregation
+### 2. Scanners
 
-### 2. Data Ingestion Pipeline
+**Location:** `vaulytica/core/scanners/`
 
-Multi-source data ingestion with normalization and enrichment:
+**Components:**
+- `FileScanner`: Scans Google Drive files for security issues
+- `UserScanner`: Scans user accounts for inactive/suspended users
+- `GmailScanner`: Scans Gmail attachments for PII
+- `SharedDriveScanner`: Scans shared drives
+- `OAuthScanner`: Audits OAuth applications
 
-**Supported Sources**
-- System and application logs
-- Network logs and packet captures
-- EDR (Endpoint Detection and Response) data
-- Cloud infrastructure logs (AWS, Azure, GCP)
-- Threat intelligence feeds
-- Vulnerability scan results
-- Security tool outputs
+**Key Features:**
+- Concurrent processing with ThreadPoolExecutor
+- Incremental scanning with state tracking
+- Batch API requests for efficiency
+- Rate limiting to avoid quota exhaustion
+- Progress tracking and callbacks
 
-**Processing Pipeline**
-1. Data collection from multiple sources
-2. Format normalization to common schema
-3. Enrichment with threat intelligence
-4. Correlation with historical data
-5. Storage in data lake and time-series database
+### 3. Detectors
 
-### 3. Machine Learning Engine
+**Location:** `vaulytica/core/detectors/`
 
-Advanced ML capabilities for threat detection and prediction:
+**Components:**
+- `PIIDetector`: Detects 20+ types of PII using regex patterns
+- `DLPRuleEngine`: Custom data loss prevention rules
+- `ComplianceChecker`: HIPAA, SOC2, GDPR compliance validation
 
-**Models**
-- **Isolation Forest**: Anomaly detection (7 anomaly types)
-- **Random Forest**: Threat prediction (8 attack types)
-- **LSTM**: Sequence modeling for temporal patterns
-- **Transformer**: Multi-head attention for complex relationships
-- **AutoML**: Automated hyperparameter optimization
+**Key Features:**
+- Pattern-based detection with confidence scoring
+- Context-aware confidence boosting
+- Chunked processing for large files
+- Support for multiple file formats (PDF, DOCX, XLSX, PPTX)
+- Custom rule definitions
 
-**Features**
-- 23 engineered features (temporal, behavioral, network, historical, IOC)
-- Real-time feature extraction
-- Online learning with model updates
-- Model versioning and persistence
+### 4. Policies
 
-**Performance**
-- Anomaly detection: <100ms per event
-- Threat prediction: <150ms per event
-- Model training: Minutes to hours (depending on dataset size)
-- Accuracy: 88-95% with AutoML optimization
+**Location:** `vaulytica/core/policies/`
 
-### 4. Streaming Analytics
+**Components:**
+- `ExpirationPolicy`: Auto-expire external file shares
+- `LifecyclePolicy`: User offboarding automation
+- `CompliancePolicy`: Enforce compliance requirements
 
-Real-time event processing with complex event pattern matching:
+**Key Features:**
+- Configurable expiration periods
+- Automatic notification before expiration
+- Grace periods for critical files
+- Audit logging of all policy actions
 
-**Stream Processing**
-- Event ingestion with <100ms latency
-- Throughput: 1,000+ events/sec
-- 4 window types: tumbling, sliding, session, count-based
-- Backpressure handling with automatic buffer management
+### 5. Integrations
 
-**Complex Event Processing (CEP)**
-- Pattern types: sequence, conjunction, disjunction, negation, iteration, temporal
-- 5 default patterns + custom pattern support
-- Pattern matching: <500ms
-- Real-time alerting on pattern matches
+**Location:** `vaulytica/integrations/`
 
-**Correlation**
-- Temporal correlation (time-based)
-- Asset correlation (same affected systems)
-- IOC correlation (shared indicators)
-- Behavioral correlation (similar attack patterns)
+**Components:**
+- `EmailAlerter`: Send email notifications
+- `SlackNotifier`: Post to Slack channels
+- `WebhookSender`: Send events to webhooks
+- `SIEMExporter`: Export to SIEM systems
 
-### 5. Forensics & Investigation
+**Key Features:**
+- Template-based notifications
+- Retry logic with exponential backoff
+- Batch notifications for efficiency
+- Support for custom integrations
 
-Comprehensive evidence collection and analysis:
+### 6. Workflows
 
-**Evidence Collection**
-- 15 evidence types from 6 sources
-- Automated collection workflows
-- Cryptographic chain of custody (MD5, SHA-256, SHA-512)
-- Complete audit trail
+**Location:** `vaulytica/workflows/`
 
-**Analysis**
-- 8 analysis types: log parsing, memory analysis, network analysis, file analysis, registry analysis, timeline reconstruction, IOC extraction, pattern detection
-- Automated IOC extraction
-- Timeline reconstruction
-- Pattern detection and correlation
+**Components:**
+- `ExternalPIIAlertWorkflow`: Alert on PII in externally shared files
+- `GmailPIIAlertWorkflow`: Alert on PII in Gmail attachments
+- `OffboardingWorkflow`: Automated user offboarding
 
-**Investigation Workflows**
-- 3 templates: security incident, data breach, malware analysis
-- Guided investigation steps
-- Evidence tracking and management
-- Comprehensive forensic reporting
+**Key Features:**
+- Multi-step workflow execution
+- Conditional logic and branching
+- Error handling and rollback
+- Workflow state persistence
 
-### 6. Cloud Security
+### 7. Utilities
 
-Multi-cloud security posture management:
+**Location:** `vaulytica/core/utils/`
 
-**CSPM (Cloud Security Posture Management)**
-- Multi-cloud resource scanning (AWS, Azure, GCP)
-- Configuration analysis and drift detection
-- Compliance checks (CIS, PCI-DSS, HIPAA, SOC2, NIST)
-- Automated remediation with IaC generation
+**Components:**
+- `Cache`: In-memory and file-based caching
+- `ConcurrentProcessor`: Parallel processing utilities
+- `RateLimiter`: API rate limiting
+- `RetryHandler`: Exponential backoff retry logic
 
-**Container Security**
-- Image vulnerability scanning with layer analysis
-- Runtime security monitoring
-- SBOM generation (CycloneDX, SPDX)
-- Supply chain security
+**Key Features:**
+- TTL-based cache expiration
+- Configurable concurrency levels
+- Token bucket rate limiting
+- Jitter for retry delays
 
-**Kubernetes Security**
-- CIS Kubernetes Benchmark
-- Pod Security Standards
-- RBAC analysis
-- Network policy validation
-
-**IAM Security**
-- Privilege analysis and escalation detection
-- Secrets scanning in code, configs, containers
-- Zero trust policy enforcement
-- Identity threat detection
-
-### 7. Integration Layer
-
-Seamless integration with security tools and platforms:
-
-**Ticketing Systems**
-- Jira, ServiceNow, PagerDuty, Datadog
-- Bidirectional sync
-- Custom field mapping
-- Automated ticket creation and updates
-
-**Threat Intelligence**
-- VirusTotal, AlienVault OTX, AbuseIPDB, Shodan, URLhaus, ThreatFox
-- Multi-source aggregation
-- Consensus voting
-- Smart caching (24-hour TTL)
-
-**Cloud Platforms**
-- AWS (GuardDuty, Security Hub, CloudTrail)
-- GCP (Security Command Center)
-- Azure (Security Center, Sentinel)
-
-**Security Tools**
-- CrowdStrike (EDR)
-- Datadog (monitoring)
-- Snowflake (data warehouse)
+---
 
 ## Data Flow
 
-### Security Event Analysis Flow
+### File Scanning Flow
 
 ```
-1. Event Ingestion
- ↓
-2. Normalization & Enrichment
- ↓
-3. ML-Based Anomaly Detection
- ↓
-4. Threat Intelligence Enrichment
- ↓
-5. AI-Powered Analysis (Claude)
- ↓
-6. Correlation with Historical Data
- ↓
-7. Risk Scoring & Prioritization
- ↓
-8. Automated Response (if applicable)
- ↓
-9. Incident Creation & Ticketing
- ↓
-10. Forensic Evidence Collection
+1. CLI Command
+   └─> scan files --external-only
+
+2. FileScanner Initialization
+   ├─> Load configuration
+   ├─> Initialize Google Workspace client
+   ├─> Load state manager (for incremental scanning)
+   └─> Initialize cache
+
+3. File Discovery
+   ├─> Query Drive API with filters
+   ├─> Apply incremental scan filter (if enabled)
+   ├─> Batch API requests (100 files per request)
+   └─> Cache file metadata
+
+4. Concurrent Processing
+   ├─> Split files into batches
+   ├─> Process batches concurrently (ThreadPoolExecutor)
+   ├─> Rate limiting between requests
+   └─> Progress tracking
+
+5. Content Analysis
+   ├─> Download file content
+   ├─> Parse file format (PDF, DOCX, etc.)
+   ├─> Chunk large files (>1MB)
+   ├─> Run PII detection
+   └─> Calculate risk score
+
+6. Policy Enforcement
+   ├─> Check expiration policies
+   ├─> Apply auto-expire if needed
+   ├─> Send notifications
+   └─> Log policy actions
+
+7. Results Processing
+   ├─> Aggregate results
+   ├─> Update state database
+   ├─> Generate reports
+   ├─> Send alerts (email, Slack, webhook)
+   └─> Export to SIEM
+
+8. Cleanup
+   ├─> Clear expired cache entries
+   ├─> Close database connections
+   └─> Log summary statistics
 ```
 
-### Incident Response Flow
+---
 
+## Security Model
+
+### Authentication
+
+- **Service Account**: Domain-wide delegation for API access
+- **Least Privilege**: Minimal required OAuth scopes
+- **Credential Encryption**: AES-256 encryption for stored credentials
+- **Token Rotation**: Automatic refresh of access tokens
+
+### Data Protection
+
+- **In-Transit**: TLS 1.3 for all API communications
+- **At-Rest**: Encrypted SQLite database for state
+- **Audit Logging**: All security events logged with timestamps
+- **Data Retention**: Configurable retention periods
+
+### Access Control
+
+- **RBAC**: Role-based access control for CLI commands
+- **IP Whitelisting**: Restrict access by IP address
+- **VPN Required**: Optional VPN requirement for sensitive operations
+- **MFA**: Multi-factor authentication for admin operations
+
+---
+
+## Performance Optimizations
+
+### 1. Caching
+
+- **In-Memory Cache**: Fast access to frequently used data
+- **File Cache**: Persistent cache across runs
+- **TTL-Based Expiration**: Automatic cleanup of stale data
+- **Cache Hit Rate**: 80-90% for repeated scans
+
+### 2. Concurrent Processing
+
+- **ThreadPoolExecutor**: Parallel API requests
+- **Configurable Workers**: 2-20 concurrent workers
+- **Batch Processing**: Group items for efficiency
+- **Rate Limiting**: Avoid API quota exhaustion
+
+### 3. Incremental Scanning
+
+- **State Tracking**: SQLite database for scan history
+- **Modified Time Filter**: Only scan changed files
+- **Performance Gain**: 80-95% faster on subsequent scans
+
+### 4. Chunked Processing
+
+- **Large File Handling**: Process files in 1MB chunks
+- **Memory Efficiency**: 90% memory reduction
+- **Overlap**: 100-character overlap between chunks
+
+---
+
+## Extensibility
+
+### Custom Detectors
+
+```python
+from vaulytica.core.detectors.base import BaseDetector
+
+class CustomDetector(BaseDetector):
+    def detect(self, content: str) -> List[Detection]:
+        # Custom detection logic
+        pass
 ```
-1. Incident Detection/Creation
- ↓
-2. Automated Triage & Prioritization
- ↓
-3. Evidence Collection
- ↓
-4. Timeline Reconstruction
- ↓
-5. Root Cause Analysis
- ↓
-6. Impact Assessment
- ↓
-7. Playbook Execution
- ↓
-8. Containment & Remediation
- ↓
-9. Post-Mortem Generation
- ↓
-10. Corrective Action Planning
+
+### Custom Integrations
+
+```python
+from vaulytica.integrations.base import BaseIntegration
+
+class CustomIntegration(BaseIntegration):
+    def send(self, event: Dict[str, Any]) -> bool:
+        # Custom integration logic
+        pass
 ```
 
-## Scalability
+### Custom Workflows
 
-### Horizontal Scaling
+```python
+from vaulytica.workflows.base import BaseWorkflow
 
-- **API Layer**: Load-balanced API servers
-- **Agent Workers**: Distributed agent execution
-- **Stream Processing**: Partitioned event streams
-- **Database**: Read replicas and sharding
-- **Cache**: Redis cluster with replication
+class CustomWorkflow(BaseWorkflow):
+    def execute(self, context: Dict[str, Any]) -> WorkflowResult:
+        # Custom workflow logic
+        pass
+```
 
-### Performance Optimization
+---
 
-- **Caching**: Multi-level caching (Redis, in-memory)
-- **Connection Pooling**: Reusable connections to external services
-- **Batch Processing**: Bulk operations for efficiency
-- **Async Operations**: Non-blocking I/O with asyncio
-- **Query Optimization**: Indexed queries and query caching
+## Deployment Considerations
 
-### Resource Management
+### Scalability
 
-- **Kubernetes HPA**: Horizontal Pod Autoscaling based on CPU/memory
-- **VPA**: Vertical Pod Autoscaling for resource optimization
-- **Resource Limits**: CPU and memory limits per component
-- **Backpressure Handling**: Automatic buffer management
+- **Horizontal Scaling**: Run multiple instances with shared state
+- **Load Balancing**: Distribute scans across instances
+- **Database Sharding**: Split state database by domain
 
-## Security
+### High Availability
 
-### Authentication & Authorization
+- **Health Checks**: `/health` endpoint for monitoring
+- **Graceful Shutdown**: Complete in-flight requests
+- **Automatic Restart**: Systemd or Kubernetes restart policies
 
-- **API Authentication**: API keys, JWT tokens
-- **RBAC**: Role-based access control
-- **Multi-Tenancy**: Data isolation per organization
-- **Session Management**: Secure session handling
+### Monitoring
 
-### Data Security
+- **Metrics**: Prometheus-compatible metrics endpoint
+- **Logging**: Structured JSON logs to stdout
+- **Alerting**: Integration with PagerDuty, Opsgenie
 
-- **Encryption at Rest**: Database encryption
-- **Encryption in Transit**: TLS/SSL for all communications
-- **Secrets Management**: Vault, AWS Secrets Manager, Azure Key Vault, GCP Secret Manager
-- **Password Hashing**: Bcrypt/Argon2
+---
 
-### Network Security
+## Future Architecture Enhancements
 
-- **Rate Limiting**: API rate limiting per user/IP
-- **DDoS Protection**: Request throttling and filtering
-- **CORS**: Configurable CORS policies
-- **Security Headers**: CSP, HSTS, X-Frame-Options
+1. **Microservices**: Split into separate services (scanner, detector, alerter)
+2. **Message Queue**: RabbitMQ or Kafka for async processing
+3. **Distributed Cache**: Redis for shared cache across instances
+4. **GraphQL API**: Modern API for custom integrations
+5. **Machine Learning**: ML-based anomaly detection
+6. **Real-Time Streaming**: WebSocket for live updates
 
-## Monitoring & Observability
+---
 
-### Metrics
+## Conclusion
 
-- **Prometheus**: Metrics collection and storage
-- **Grafana**: Visualization and dashboards
-- **Custom Metrics**: Application-specific metrics
+Vaulytica's architecture is designed for enterprise-scale deployments with a focus on performance, security, and extensibility. The modular design allows for easy customization and integration with existing security infrastructure.
 
-### Tracing
-
-- **OpenTelemetry**: Distributed tracing
-- **Span Collection**: Request tracing across services
-- **Performance Profiling**: Bottleneck identification
-
-### Logging
-
-- **Structured Logging**: JSON-formatted logs
-- **Correlation IDs**: Request tracking across services
-- **Log Aggregation**: Centralized log collection
-- **Log Levels**: DEBUG, INFO, WARNING, ERROR, CRITICAL
-
-## Deployment
-
-### Container Deployment
-
-- **Docker**: Containerized application
-- **Docker Compose**: Multi-container orchestration
-- **Image Optimization**: Multi-stage builds, layer caching
-
-### Kubernetes Deployment
-
-- **Deployments**: Stateless application pods
-- **StatefulSets**: Stateful components (databases)
-- **Services**: Load balancing and service discovery
-- **Ingress**: External access and routing
-- **ConfigMaps**: Configuration management
-- **Secrets**: Sensitive data management
-
-### Production Best Practices
-
-- **Health Checks**: Liveness and readiness probes
-- **Graceful Shutdown**: Clean termination handling
-- **Rolling Updates**: Zero-downtime deployments
-- **Backup & Recovery**: Automated backups and disaster recovery
-- **Monitoring**: Comprehensive observability
-- **Security Hardening**: Minimal attack surface
-
-## Technology Stack
-
-### Core Technologies
-
-- **Language**: Python 3.9+
-- **Web Framework**: FastAPI
-- **AI/ML**: Claude API, scikit-learn, TensorFlow/PyTorch
-- **Database**: PostgreSQL 13+
-- **Cache**: Redis 6+
-- **Message Queue**: RabbitMQ 3.8+
-- **Search**: Elasticsearch (optional)
-- **Vector DB**: ChromaDB (for RAG)
-
-### Infrastructure
-
-- **Container**: Docker
-- **Orchestration**: Kubernetes
-- **Monitoring**: Prometheus, Grafana
-- **Tracing**: OpenTelemetry
-- **CI/CD**: GitHub Actions, GitLab CI
-
-### External Services
-
-- **AI**: Claude (Anthropic)
-- **Threat Intelligence**: VirusTotal, AlienVault OTX, etc.
-- **Cloud**: AWS, Azure, GCP
-- **Ticketing**: Jira, ServiceNow, PagerDuty
-
-## Future Enhancements
-
-- **Multi-Region Deployment**: Global distribution for low latency
-- **Advanced AI Models**: GPT-4, custom fine-tuned models
-- **Federated Learning**: Privacy-preserving ML across organizations
-- **Quantum-Resistant Cryptography**: Post-quantum security
-- **Edge Computing**: Distributed processing at the edge
-- **5G Integration**: Real-time threat detection on 5G networks
+For more information, see:
+- [Getting Started Guide](GETTING_STARTED.md)
+- [Deployment Guide](DEPLOYMENT.md)
+- [Security Guide](SECURITY.md)
 

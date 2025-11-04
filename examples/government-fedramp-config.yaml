@@ -1,0 +1,499 @@
+# Vaulytica Configuration for Government Agencies (FedRAMP)
+# Target: Federal, state, and local government agencies
+# Compliance: FedRAMP (Moderate/High), FISMA, NIST 800-53, CJIS
+# Security Level: Maximum
+# Last Updated: 2025-10-28
+
+# ============================================================================
+# GOOGLE WORKSPACE CONFIGURATION
+# ============================================================================
+google_workspace:
+  # Service account for API access (must be FedRAMP authorized)
+  service_account_file: "${GWS_SERVICE_ACCOUNT_FILE}"
+  
+  # Admin email for domain-wide delegation
+  subject_email: "${GWS_ADMIN_EMAIL}"
+  
+  # Government domains (federal, state, local)
+  domains:
+    - "agency.gov"
+    - "state.gov"
+    - "local.gov"
+  
+  # Required OAuth scopes (minimal necessary access)
+  scopes:
+    - "https://www.googleapis.com/auth/drive.readonly"
+    - "https://www.googleapis.com/auth/admin.directory.user.readonly"
+    - "https://www.googleapis.com/auth/admin.directory.group.readonly"
+    - "https://www.googleapis.com/auth/gmail.readonly"
+
+# ============================================================================
+# SCANNING CONFIGURATION
+# ============================================================================
+scanning:
+  # Scan ALL files (not just external) for government compliance
+  external_only: false
+  
+  # Include Shared Drives (critical for government collaboration)
+  include_shared_drives: true
+  
+  # Scan frequency (continuous monitoring required)
+  scan_on_schedule: true
+  schedule_cron: "0 */4 * * *"  # Every 4 hours
+  
+  # Real-time scanning (FedRAMP High requirement)
+  real_time_scanning: true
+  scan_on_create: true
+  scan_on_modify: true
+  scan_on_share: true
+  
+  # Priority folders (government-specific)
+  priority_folders:
+    - "Classified"
+    - "CUI"  # Controlled Unclassified Information
+    - "FOUO"  # For Official Use Only
+    - "Law Enforcement Sensitive"
+    - "Personnel Records"
+    - "Contracts"
+    - "Budget"
+    - "Legal"
+    - "Intelligence"
+  
+  # File type filtering (scan all document types)
+  file_types:
+    - "application/pdf"
+    - "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    - "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    - "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    - "text/plain"
+    - "text/csv"
+    - "application/zip"
+  
+  # Batch size (conservative for government networks)
+  batch_size: 50
+  
+  # Skip trashed files
+  skip_trashed: true
+
+# ============================================================================
+# PII DETECTION (GOVERNMENT-SPECIFIC)
+# ============================================================================
+pii_detection:
+  enabled: true
+  
+  # Confidence threshold (strict for government)
+  confidence_threshold: 0.7
+  
+  # Chunked processing for large classified documents
+  chunked_processing: true
+  chunk_size: 524288  # 512 KB (smaller for security)
+  
+  # Government-specific PII patterns
+  patterns:
+    # Standard PII
+    - type: "ssn"
+      enabled: true
+      confidence: 0.9
+    
+    - type: "passport"
+      enabled: true
+      confidence: 0.9
+    
+    - type: "drivers_license"
+      enabled: true
+      confidence: 0.8
+    
+    # Government IDs
+    - type: "federal_employee_id"
+      pattern: "FED-\\d{7}"
+      confidence: 0.9
+      description: "Federal employee ID"
+    
+    - type: "security_clearance"
+      pattern: "(TOP SECRET|SECRET|CONFIDENTIAL|TS/SCI|TS-SCI)"
+      confidence: 1.0
+      description: "Security clearance level"
+    
+    - type: "cui_marking"
+      pattern: "(CUI|CONTROLLED UNCLASSIFIED INFORMATION)"
+      confidence: 1.0
+      description: "CUI marking"
+    
+    - type: "fouo_marking"
+      pattern: "(FOUO|FOR OFFICIAL USE ONLY)"
+      confidence: 1.0
+      description: "FOUO marking"
+    
+    - type: "les_marking"
+      pattern: "(LES|LAW ENFORCEMENT SENSITIVE)"
+      confidence: 1.0
+      description: "Law Enforcement Sensitive marking"
+    
+    # Law Enforcement
+    - type: "fbi_number"
+      pattern: "FBI-\\d{9}"
+      confidence: 0.9
+      description: "FBI identification number"
+    
+    - type: "ncic_number"
+      pattern: "NCIC-[A-Z0-9]{10}"
+      confidence: 0.9
+      description: "NCIC number"
+    
+    - type: "arrest_record"
+      pattern: "ARREST\\s*#?\\s*\\d{6,10}"
+      confidence: 0.8
+      description: "Arrest record number"
+    
+    # Military
+    - type: "military_id"
+      pattern: "\\d{10}"
+      confidence: 0.7
+      description: "Military ID (DoD ID)"
+    
+    - type: "classified_marking"
+      pattern: "(CLASSIFIED|UNCLASSIFIED|CONFIDENTIAL|SECRET|TOP SECRET)"
+      confidence: 1.0
+      description: "Classification marking"
+    
+    # Financial (government contracts)
+    - type: "contract_number"
+      pattern: "(CONTRACT|CONT)\\s*#?\\s*[A-Z0-9-]{8,20}"
+      confidence: 0.8
+      description: "Government contract number"
+    
+    - type: "grant_number"
+      pattern: "GRANT\\s*#?\\s*[A-Z0-9-]{8,20}"
+      confidence: 0.8
+      description: "Government grant number"
+    
+    # Tax information
+    - type: "ein"
+      enabled: true
+      confidence: 0.9
+    
+    - type: "itin"
+      enabled: true
+      confidence: 0.9
+
+# ============================================================================
+# POLICIES (FEDRAMP COMPLIANCE)
+# ============================================================================
+policies:
+  # External sharing (extremely restrictive)
+  external_sharing:
+    enabled: true
+    
+    # Block ALL external sharing by default
+    block_external: true
+    
+    # Whitelist for approved external partners (e.g., contractors)
+    whitelist_domains:
+      - "contractor.com"
+      - "partner.gov"
+    
+    # Expiration (very short for government)
+    auto_expire_days: 3
+    
+    # Grace period before expiration
+    grace_period_days: 1
+    
+    # Require justification for external shares
+    require_justification: true
+  
+  # Public sharing (absolutely prohibited)
+  public_sharing:
+    block_public: true
+    auto_revoke: true
+  
+  # Data retention (NIST 800-53 requirement)
+  retention:
+    enabled: true
+    retention_days: 2555  # 7 years (federal records retention)
+    
+    # Longer retention for specific types
+    retention_by_type:
+      "legal": 3650  # 10 years
+      "personnel": 2555  # 7 years
+      "contracts": 2555  # 7 years
+      "classified": 7300  # 20 years
+  
+  # Access controls (NIST 800-53 AC family)
+  access_control:
+    enabled: true
+    
+    # Role-based access control
+    rbac:
+      enabled: true
+      roles:
+        - name: "federal_employee"
+          permissions: ["read", "write", "share_internal"]
+        
+        - name: "contractor"
+          permissions: ["read"]
+        
+        - name: "executive"
+          permissions: ["read", "write", "share_internal", "share_external"]
+        
+        - name: "security_officer"
+          permissions: ["read", "write", "share_internal", "admin"]
+    
+    # Multi-factor authentication (required)
+    require_mfa: true
+    
+    # PIV/CAC card requirement
+    require_piv_cac: true
+    
+    # VPN requirement for remote access
+    require_vpn: true
+    
+    # Device compliance
+    require_compliant_device: true
+
+# ============================================================================
+# SECURITY CONTROLS (NIST 800-53)
+# ============================================================================
+security:
+  # Encryption (FIPS 140-2 compliant)
+  encryption:
+    at_rest: "AES-256-GCM"  # FIPS 140-2 approved
+    in_transit: "TLS 1.3"  # FIPS 140-2 approved
+    key_management: "HSM"  # Hardware Security Module
+  
+  # Audit logging (AU family)
+  audit_logging:
+    enabled: true
+    level: "DEBUG"  # Maximum logging for government
+    format: "json"
+    output: "/var/log/vaulytica/audit.log"
+    
+    # Tamper-proof logging (WORM storage)
+    tamper_proof: true
+    digital_signature: true
+    
+    # Log forwarding to SIEM (required)
+    forward_to_siem: true
+    
+    # Log retention (7 years minimum)
+    retention_days: 2555
+  
+  # Incident response (IR family)
+  incident_response:
+    enabled: true
+    
+    # Automatic incident creation
+    auto_create_incident: true
+    
+    # Incident severity levels
+    severity_levels:
+      critical: "Classified data exposed"
+      high: "CUI/FOUO data exposed"
+      medium: "PII exposed"
+      low: "Policy violation"
+    
+    # Response time requirements (FedRAMP)
+    response_times:
+      critical: 15  # 15 minutes
+      high: 60  # 1 hour
+      medium: 240  # 4 hours
+      low: 1440  # 24 hours
+  
+  # Continuous monitoring (CA-7)
+  continuous_monitoring:
+    enabled: true
+    scan_interval_minutes: 15  # Every 15 minutes
+    
+    # Real-time alerting
+    real_time_alerts: true
+    
+    # Automated response
+    automated_response: true
+
+# ============================================================================
+# INTEGRATIONS
+# ============================================================================
+integrations:
+  # Email alerts (required for government)
+  email:
+    enabled: true
+    smtp_host: "${SMTP_HOST}"
+    smtp_port: 587
+    smtp_user: "${SMTP_USER}"
+    smtp_password: "${SMTP_PASSWORD}"
+    from_address: "vaulytica@agency.gov"
+    to_addresses:
+      - "security-team@agency.gov"
+      - "ciso@agency.gov"
+      - "incident-response@agency.gov"
+    
+    # Encryption required
+    use_tls: true
+    
+    # Alert templates (government-specific)
+    templates:
+      critical: "URGENT: Classified data exposure detected"
+      high: "ALERT: CUI/FOUO data exposure detected"
+      medium: "WARNING: PII exposure detected"
+  
+  # SIEM integration (required for FedRAMP)
+  siem:
+    enabled: true
+    type: "splunk"  # or "qradar", "arcsight", "logrhythm"
+    endpoint: "${SIEM_ENDPOINT}"
+    api_key: "${SIEM_API_KEY}"
+    
+    # Send all events to SIEM
+    send_all_events: true
+    
+    # Event format
+    format: "CEF"  # Common Event Format
+  
+  # Slack (optional, for non-classified communications)
+  slack:
+    enabled: false  # Disabled by default for government
+  
+  # Webhook (for custom integrations)
+  webhook:
+    enabled: true
+    endpoints:
+      - url: "${WEBHOOK_ENDPOINT}"
+        events: ["pii_detected", "external_share", "policy_violation"]
+        retry_attempts: 5
+        timeout_seconds: 30
+
+# ============================================================================
+# PERFORMANCE
+# ============================================================================
+performance:
+  # Conservative settings for government networks
+  max_workers: 4
+  rate_limit_delay: 0.5  # 500ms between requests
+  request_timeout: 60
+  max_retries: 5
+  
+  # Memory limits (strict for government systems)
+  max_memory_mb: 2048  # 2 GB
+  
+  # Caching (limited for security)
+  cache:
+    enabled: true
+    ttl_seconds: 1800  # 30 minutes (short for security)
+    max_size: 1000
+
+# ============================================================================
+# COMPLIANCE REPORTING
+# ============================================================================
+compliance:
+  # FedRAMP reporting
+  fedramp:
+    enabled: true
+    level: "High"  # Moderate or High
+    
+    # Required controls
+    controls:
+      - "AC-2"  # Account Management
+      - "AC-3"  # Access Enforcement
+      - "AC-6"  # Least Privilege
+      - "AU-2"  # Audit Events
+      - "AU-3"  # Content of Audit Records
+      - "AU-6"  # Audit Review
+      - "CA-7"  # Continuous Monitoring
+      - "IA-2"  # Identification and Authentication
+      - "SC-7"  # Boundary Protection
+      - "SC-13"  # Cryptographic Protection
+      - "SI-4"  # Information System Monitoring
+  
+  # FISMA reporting
+  fisma:
+    enabled: true
+    impact_level: "High"  # Low, Moderate, or High
+  
+  # NIST 800-53 compliance
+  nist_800_53:
+    enabled: true
+    revision: "5"
+    baseline: "High"  # Low, Moderate, or High
+  
+  # CJIS (for law enforcement)
+  cjis:
+    enabled: false  # Enable if law enforcement agency
+    security_policy_version: "5.9"
+
+# ============================================================================
+# WORKFLOWS
+# ============================================================================
+workflows:
+  # Classified data exposure workflow
+  classified_exposure:
+    enabled: true
+    trigger: "classified_marking_detected"
+    actions:
+      - type: "revoke_access"
+        immediate: true
+      - type: "notify_security_team"
+        severity: "critical"
+      - type: "create_incident"
+        priority: "P1"
+      - type: "notify_ciso"
+        method: "phone"  # Immediate phone call
+  
+  # CUI/FOUO exposure workflow
+  cui_exposure:
+    enabled: true
+    trigger: "cui_marking_detected"
+    actions:
+      - type: "revoke_external_access"
+        immediate: true
+      - type: "notify_security_team"
+        severity: "high"
+      - type: "create_incident"
+        priority: "P2"
+  
+  # Security clearance verification
+  clearance_verification:
+    enabled: true
+    trigger: "classified_file_accessed"
+    actions:
+      - type: "verify_clearance"
+        required_level: "SECRET"
+      - type: "log_access"
+        audit_trail: true
+
+# ============================================================================
+# NOTES
+# ============================================================================
+# This configuration is designed for government agencies requiring FedRAMP
+# compliance. Key features:
+#
+# 1. Maximum security controls (NIST 800-53 High baseline)
+# 2. Continuous monitoring (every 15 minutes)
+# 3. Real-time alerting for classified/CUI data
+# 4. Strict access controls (PIV/CAC, MFA, VPN required)
+# 5. FIPS 140-2 compliant encryption
+# 6. Tamper-proof audit logging
+# 7. 7-year data retention
+# 8. Automated incident response
+# 9. SIEM integration required
+# 10. Block external sharing by default
+#
+# Estimated Resource Requirements:
+# - CPU: 8 cores
+# - RAM: 16 GB
+# - Storage: 100 GB (for audit logs)
+# - Network: Dedicated government network
+# - HSM: Required for key management
+# - SIEM: Required for log aggregation
+#
+# Estimated Costs:
+# - Infrastructure: $2,000/month
+# - HSM: $10,000/month
+# - SIEM: $15,000/month
+# - Total: ~$27,000/month
+#
+# Compliance Frameworks:
+# - FedRAMP (Moderate/High)
+# - FISMA
+# - NIST 800-53 Rev 5
+# - CJIS (optional, for law enforcement)
+# - FIPS 140-2
+

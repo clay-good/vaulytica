@@ -1,0 +1,220 @@
+# Vaulytica Configuration Example
+# Copy this file to config.yaml and customize for your organization
+
+# Single Domain Configuration (Simple)
+# Use this for scanning a single Google Workspace domain
+google_workspace:
+  # Your organization's primary domain
+  domain: "example.com"
+
+  # Authentication method 1: Service Account (recommended for automation)
+  credentials_file: "path/to/service-account.json"
+
+  # For service accounts, specify the admin user to impersonate
+  impersonate_user: "admin@example.com"
+
+  # Authentication method 2: OAuth 2.0 (for interactive use)
+  # Uncomment to use OAuth instead of service account
+  # oauth_credentials: "path/to/oauth-credentials.json"
+
+# Multi-Domain Configuration (Advanced)
+# Uncomment and use this section to scan multiple domains
+# Comment out the google_workspace section above when using this
+# domains:
+#   - domain: "example.com"
+#     credentials_file: "path/to/example-service-account.json"
+#     impersonate_user: "admin@example.com"
+#     enabled: true
+#     tags: ["production", "primary"]
+#     metadata:
+#       region: "us-east"
+#       business_unit: "corporate"
+#
+#   - domain: "subsidiary.com"
+#     credentials_file: "path/to/subsidiary-service-account.json"
+#     impersonate_user: "admin@subsidiary.com"
+#     enabled: true
+#     tags: ["production", "subsidiary"]
+#     metadata:
+#       region: "eu-west"
+#       business_unit: "emea"
+#
+#   - domain: "dev.example.com"
+#     credentials_file: "path/to/dev-service-account.json"
+#     impersonate_user: "admin@dev.example.com"
+#     enabled: false  # Disabled - won't be scanned
+#     tags: ["development"]
+
+# Scanning Configuration
+scanning:
+  # What to scan
+  scan_my_drive: true
+  scan_shared_drives: true
+  
+  # Filters
+  external_only: false  # Set to true to only scan externally shared files
+  public_only: false    # Set to true to only scan publicly shared files
+  
+  # File type filters (optional)
+  # include_file_types:
+  #   - "application/vnd.google-apps.spreadsheet"
+  #   - "application/vnd.google-apps.document"
+  #   - "application/pdf"
+  
+  # exclude_file_types:
+  #   - "application/vnd.google-apps.folder"
+  
+  # Performance settings
+  max_files_per_user: 10000  # Limit files scanned per user (0 = unlimited)
+  batch_size: 100            # Number of files to process in each batch
+  rate_limit_delay: 0.1      # Delay between API calls (seconds)
+  
+  # PII Detection
+  check_pii: true
+  pii_patterns:
+    - ssn                # Social Security Numbers
+    - credit_card        # Credit card numbers
+    - phone              # Phone numbers
+    - email              # Email addresses
+    - bank_account       # Bank account numbers
+    - routing_number     # Bank routing numbers
+    # - custom           # Add custom patterns in detectors config
+  
+  # Content scanning (for PII detection)
+  scan_file_content: true
+  max_file_size_mb: 10       # Max file size to download for content scanning
+
+# Alerting Configuration
+alerts:
+  # Email alerts
+  email:
+    enabled: true
+    smtp_host: "smtp.gmail.com"
+    smtp_port: 587
+    smtp_use_tls: true
+    smtp_user: "alerts@example.com"
+    smtp_password: "${SMTP_PASSWORD}"  # Use environment variable
+    from_address: "vaulytica@example.com"
+    recipients:
+      - "security@example.com"
+      - "it-admin@example.com"
+    
+    # Alert thresholds
+    alert_on_high_risk: true
+    alert_on_medium_risk: false
+    alert_on_low_risk: false
+    
+    # Digest settings
+    send_daily_digest: true
+    digest_time: "09:00"  # 24-hour format
+  
+  # Slack integration (coming soon)
+  slack:
+    enabled: false
+    webhook_url: "${SLACK_WEBHOOK_URL}"
+    channel: "#security-alerts"
+    mention_on_high_risk: "@security-team"
+  
+  # Webhook for SIEM/Datadog/Splunk
+  webhook:
+    enabled: false
+    url: "${WEBHOOK_URL}"
+    headers:
+      Authorization: "Bearer ${WEBHOOK_TOKEN}"
+    payload_format: "json"  # json or splunk
+
+# Reporting Configuration
+reporting:
+  # Output directory for reports
+  output_dir: "./reports"
+  
+  # Report formats
+  formats:
+    - csv
+    - json
+    # - html  # Coming soon
+    # - pdf   # Coming soon
+  
+  # Risk scoring
+  risk_thresholds:
+    high: 75      # Score >= 75 is high risk
+    medium: 50    # Score >= 50 is medium risk
+    low: 25       # Score >= 25 is low risk
+  
+  # Risk scoring weights
+  risk_weights:
+    public_sharing: 100        # Anyone with link
+    external_domain: 50        # Shared with external domain
+    external_individual: 40    # Shared with external individual
+    contains_pii: 50           # File contains PII
+    multiple_pii_types: 25     # Multiple PII types detected
+    large_file: 10             # File > 100MB
+    old_share: 15              # Shared > 90 days ago
+  
+  # Report customization
+  include_file_links: true
+  include_owner_info: true
+  include_sharing_history: false  # Requires historical data
+  
+  # Auto-export
+  auto_export_after_scan: true
+  export_filename_template: "vaulytica-report-{date}-{time}.{format}"
+
+# Policy Configuration (for automation features)
+policies:
+  # Auto-expire external sharing (coming soon)
+  auto_expire:
+    enabled: false
+    default_expiry_days: 30
+    grace_period_days: 7
+    exempt_domains:
+      - "trusted-partner.com"
+    exempt_users:
+      - "external-relations@example.com"
+  
+  # Employee offboarding (coming soon)
+  offboarding:
+    enabled: false
+    auto_transfer_to_manager: true
+    revoke_external_shares: true
+    archive_files: false
+
+# Storage Configuration
+storage:
+  # Local SQLite database for state management
+  database_path: "./vaulytica.db"
+  
+  # Data retention
+  retention_days: 90  # Keep scan history for 90 days
+  
+  # Backup
+  auto_backup: true
+  backup_dir: "./backups"
+  backup_retention_days: 30
+
+# Logging Configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  format: "json"  # json or text
+  output: "file"  # file, console, or both
+  log_file: "./logs/vaulytica.log"
+  max_file_size_mb: 10
+  backup_count: 5  # Number of log files to keep
+
+# Advanced Configuration
+advanced:
+  # Parallel processing
+  max_workers: 5  # Number of concurrent workers
+  
+  # Caching
+  cache_enabled: true
+  cache_ttl_seconds: 3600
+  
+  # Retry settings
+  max_retries: 3
+  retry_delay_seconds: 5
+  
+  # API quotas (Google Workspace limits)
+  respect_api_quotas: true
+  quota_buffer_percent: 20  # Stay 20% below quota limits
+
