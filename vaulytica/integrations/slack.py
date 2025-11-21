@@ -1,7 +1,6 @@
 """Slack integration for alerts and notifications."""
 
-import json
-from typing import List, Optional, Dict, Any
+from typing import Optional, Dict, Any
 from datetime import datetime
 
 import structlog

@@ -1,15 +1,14 @@
 """Batch processing with progress tracking and resume capability."""
 
 import json
-import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import List, Optional, Callable, Any, Iterator
+from typing import List, Optional, Callable, Any
 from enum import Enum
 
 import structlog
-from rich.progress import Progress, TaskID, SpinnerColumn, BarColumn, TextColumn, TimeRemainingColumn
+from rich.progress import Progress, SpinnerColumn, BarColumn, TextColumn, TimeRemainingColumn
 
 logger = structlog.get_logger(__name__)
 

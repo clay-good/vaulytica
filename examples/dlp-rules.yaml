@@ -1,0 +1,146 @@
+# Example DLP Rules Configuration
+# This file defines custom Data Loss Prevention (DLP) rules for Vaulytica
+
+rules:
+  # Social Security Number Detection
+  - rule_id: rule001
+    name: Detect SSN
+    description: Detect Social Security Numbers in shared files
+    patterns:
+      - name: SSN
+        pattern: "\\d{3}-\\d{2}-\\d{4}"
+        case_sensitive: false
+        whole_word: false
+    action: alert
+    severity: critical
+    enabled: true
+
+  # Credit Card Detection
+  - rule_id: rule002
+    name: Detect Credit Card
+    description: Detect credit card numbers
+    patterns:
+      - name: Credit Card
+        pattern: "\\d{4}[\\s-]?\\d{4}[\\s-]?\\d{4}[\\s-]?\\d{4}"
+        case_sensitive: false
+        whole_word: false
+    action: alert
+    severity: high
+    enabled: true
+
+  # Email Address Detection
+  - rule_id: rule003
+    name: Detect Email Addresses
+    description: Detect email addresses in documents
+    patterns:
+      - name: Email
+        pattern: "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}"
+        case_sensitive: false
+        whole_word: false
+    action: log
+    severity: medium
+    enabled: true
+
+  # Phone Number Detection
+  - rule_id: rule004
+    name: Detect Phone Numbers
+    description: Detect US phone numbers
+    patterns:
+      - name: Phone
+        pattern: "\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}"
+        case_sensitive: false
+        whole_word: false
+    action: log
+    severity: medium
+    enabled: true
+
+  # Employee ID Pattern (Custom)
+  - rule_id: rule005
+    name: Detect Employee ID
+    description: Detect company-specific employee IDs
+    patterns:
+      - name: Employee ID
+        pattern: "EMP-\\d{6}"
+        case_sensitive: false
+        whole_word: true
+    action: alert
+    severity: medium
+    enabled: true
+
+  # Medical Record Number (HIPAA)
+  - rule_id: rule006
+    name: Detect Medical Record Number
+    description: Detect medical record numbers (MRN)
+    patterns:
+      - name: MRN
+        pattern: "MRN-\\d{8}"
+        case_sensitive: false
+        whole_word: true
+    action: quarantine
+    severity: critical
+    enabled: true
+
+  # Patient ID (HIPAA)
+  - rule_id: rule007
+    name: Detect Patient ID
+    description: Detect patient identification numbers
+    patterns:
+      - name: Patient ID
+        pattern: "PT\\d{7}"
+        case_sensitive: false
+        whole_word: true
+    action: quarantine
+    severity: critical
+    enabled: true
+
+  # Student ID (FERPA)
+  - rule_id: rule008
+    name: Detect Student ID
+    description: Detect student identification numbers
+    patterns:
+      - name: Student ID
+        pattern: "STU\\d{7}"
+        case_sensitive: false
+        whole_word: true
+    action: alert
+    severity: high
+    enabled: true
+
+  # API Key Detection (Security)
+  - rule_id: rule009
+    name: Detect API Keys
+    description: Detect API keys and tokens
+    patterns:
+      - name: API Key
+        pattern: "api[_-]?key[\\s:=]*['\"]?[a-zA-Z0-9_\\-]{32,}['\"]?"
+        case_sensitive: false
+        whole_word: false
+    action: block
+    severity: critical
+    enabled: true
+
+  # AWS Access Key (Security)
+  - rule_id: rule010
+    name: Detect AWS Keys
+    description: Detect AWS access keys
+    patterns:
+      - name: AWS Access Key
+        pattern: "AKIA[0-9A-Z]{16}"
+        case_sensitive: true
+        whole_word: false
+    action: block
+    severity: critical
+    enabled: true
+
+# Action Types:
+# - alert: Send alert to security team
+# - block: Block the file from being shared
+# - quarantine: Move file to quarantine
+# - log: Log the detection (no action)
+
+# Severity Levels:
+# - critical: Immediate action required
+# - high: High priority
+# - medium: Medium priority
+# - low: Low priority
+# - info: Informational only

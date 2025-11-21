@@ -37,20 +37,20 @@ def metrics():
 def export(output, format):
     """
     Export metrics in Prometheus format.
-    
+
     Examples:
         # Export to stdout
         vaulytica metrics export
-        
+
         # Export to file
         vaulytica metrics export --output metrics.txt
-        
+
         # Export as JSON
         vaulytica metrics export --format json
     """
     try:
         exporter = get_exporter()
-        
+
         if format == 'prometheus':
             metrics_output = exporter.export_metrics()
         elif format == 'json':
@@ -59,7 +59,7 @@ def export(output, format):
         else:  # text
             summary = exporter.get_summary()
             metrics_output = _format_text_summary(summary)
-        
+
         if output:
             # Write to file
             output_path = Path(output)
@@ -69,7 +69,7 @@ def export(output, format):
         else:
             # Write to stdout
             print(metrics_output)
-        
+
     except Exception as e:
         console.print(f"[red]✗[/red] Failed to export metrics: {e}", file=sys.stderr)
         sys.exit(1)
@@ -85,30 +85,30 @@ def export(output, format):
 def show(watch):
     """
     Show current metrics summary.
-    
+
     Examples:
         # Show metrics once
         vaulytica metrics show
-        
+
         # Watch metrics (refresh every 5 seconds)
         vaulytica metrics show --watch
     """
     import time
-    
+
     try:
         while True:
             exporter = get_exporter()
             summary = exporter.get_summary()
-            
+
             # Clear screen in watch mode
             if watch:
                 console.clear()
-            
+
             # Create metrics table
             table = Table(title="Vaulytica Metrics", show_header=True, header_style="bold magenta")
             table.add_column("Metric", style="cyan", no_wrap=True)
             table.add_column("Value", style="green", justify="right")
-            
+
             # Add rows
             table.add_row("Uptime", _format_duration(summary['uptime_seconds']))
             table.add_row("Total Scans", str(int(summary['total_scans'])))
@@ -119,15 +119,15 @@ def show(watch):
             table.add_row("Active Scans", str(int(summary['active_scans'])))
             table.add_row("Cache Hit Rate", f"{summary['cache_hit_rate']:.2%}")
             table.add_row("Cache Size", str(int(summary['cache_size'])))
-            
+
             console.print(table)
-            
+
             if not watch:
                 break
-            
+
             console.print("\n[dim]Refreshing in 5 seconds... (Ctrl+C to stop)[/dim]")
             time.sleep(5)
-    
+
     except KeyboardInterrupt:
         console.print("\n[yellow]Stopped watching metrics[/yellow]")
     except Exception as e:
@@ -139,18 +139,18 @@ def show(watch):
 def reset():
     """
     Reset all metrics to zero.
-    
+
     WARNING: This will clear all collected metrics data.
     """
     try:
         from vaulytica.core.monitoring.prometheus_exporter import reset_exporter
-        
+
         if click.confirm("Are you sure you want to reset all metrics?"):
             reset_exporter()
             console.print("[green]✓[/green] All metrics have been reset")
         else:
             console.print("[yellow]Cancelled[/yellow]")
-    
+
     except Exception as e:
         console.print(f"[red]✗[/red] Failed to reset metrics: {e}", file=sys.stderr)
         sys.exit(1)
@@ -173,25 +173,25 @@ def reset():
 def serve(port, host):
     """
     Start HTTP server to serve Prometheus metrics.
-    
+
     This starts a simple HTTP server that exposes metrics at /metrics endpoint.
     Useful for Prometheus scraping.
-    
+
     Examples:
         # Start server on default port 9090
         vaulytica metrics serve
-        
+
         # Start server on custom port
         vaulytica metrics serve --port 8080
-        
+
         # Bind to localhost only
         vaulytica metrics serve --host 127.0.0.1
     """
     try:
         from http.server import HTTPServer, BaseHTTPRequestHandler
-        
+
         exporter = get_exporter()
-        
+
         class MetricsHandler(BaseHTTPRequestHandler):
             def do_GET(self):
                 if self.path == '/metrics':
@@ -208,13 +208,13 @@ def serve(port, host):
                 else:
                     self.send_response(404)
                     self.end_headers()
-            
+
             def log_message(self, format, *args):
                 # Suppress default logging
                 pass
-        
+
         server = HTTPServer((host, port), MetricsHandler)
-        
+
         console.print(Panel(
             f"[green]Prometheus metrics server started[/green]\n\n"
             f"Metrics endpoint: http://{host}:{port}/metrics\n"
@@ -223,9 +223,9 @@ def serve(port, host):
             title="Metrics Server",
             border_style="green"
         ))
-        
+
         server.serve_forever()
-    
+
     except KeyboardInterrupt:
         console.print("\n[yellow]Metrics server stopped[/yellow]")
     except Exception as e:

@@ -1,8 +1,10 @@
 """Compliance reporting for GDPR, HIPAA, SOC 2."""
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
-from typing import List, Optional, Dict, Any
+from typing import List, Dict, Any, Union
+from pathlib import Path
+import json
 
 import structlog
 
@@ -30,25 +32,25 @@ class GDPRReport:
 
     report_time: datetime
     domain: str
-    
+
     # Data sharing
     files_shared_outside_eu: int = 0
     files_with_pii_shared_externally: int = 0
-    
+
     # Access controls
     users_without_2fa: int = 0
     inactive_users_with_data_access: int = 0
-    
+
     # Data retention
     files_older_than_retention_period: int = 0
-    
+
     issues: List[ComplianceIssue] = field(default_factory=list)
-    
+
     def calculate_compliance_score(self) -> int:
         """Calculate GDPR compliance score (0-100)."""
         # Simple scoring: deduct points for issues
         score = 100
-        
+
         for issue in self.issues:
             if issue.severity == "critical":
                 score -= 10
@@ -58,7 +60,7 @@ class GDPRReport:
                 score -= 2
             elif issue.severity == "low":
                 score -= 1
-        
+
         return max(0, score)
 
 
@@ -68,25 +70,25 @@ class HIPAAReport:
 
     report_time: datetime
     domain: str
-    
+
     # PHI exposure
     files_with_phi: int = 0
     files_with_phi_shared_externally: int = 0
     files_with_phi_publicly_shared: int = 0
-    
+
     # Access controls
     users_without_2fa: int = 0
     admin_users_without_2fa: int = 0
-    
+
     # Audit logging
     audit_logging_enabled: bool = True
-    
+
     issues: List[ComplianceIssue] = field(default_factory=list)
-    
+
     def calculate_compliance_score(self) -> int:
         """Calculate HIPAA compliance score (0-100)."""
         score = 100
-        
+
         for issue in self.issues:
             if issue.severity == "critical":
                 score -= 15
@@ -96,7 +98,7 @@ class HIPAAReport:
                 score -= 3
             elif issue.severity == "low":
                 score -= 1
-        
+
         return max(0, score)
 
 
@@ -201,6 +203,7 @@ class FERPAReport:
 
     # Disclosure tracking
     unauthorized_disclosures: int = 0
+    unauthorized_access_detected: bool = False
 
     issues: List[ComplianceIssue] = field(default_factory=list)
 
@@ -245,6 +248,9 @@ class FedRAMPReport:
     files_shared_externally: int = 0
     files_publicly_shared: int = 0
     unencrypted_data_transfers: int = 0
+    encryption_at_rest_enabled: bool = False
+    encryption_in_transit_enabled: bool = False
+    multi_factor_auth_enforced: bool = False
 
     # System and Information Integrity (SI)
     files_with_sensitive_data_exposed: int = 0
@@ -320,7 +326,7 @@ class ComplianceReporter:
                 report.files_shared_outside_eu += 1
 
                 # Check for PII
-                if hasattr(file_info, "pii_result") and file_info.pii_result:
+                if hasattr(file_info, "pii_detected") and file_info.pii_detected:
                     report.files_with_pii_shared_externally += 1
 
                     report.issues.append(ComplianceIssue(
@@ -384,51 +390,52 @@ class ComplianceReporter:
 
         # Analyze files for PHI
         for file_info in files:
-            if hasattr(file_info, "pii_result") and file_info.pii_result:
-                report.files_with_phi += 1
+            if hasattr(file_info, "pii_detected") and file_info.pii_detected:
+                # Check if PII types include PHI indicators
+                pii_types = getattr(file_info, "pii_types", [])
+                if any(pii_type in ["MEDICAL", "PHI", "HEALTH"] for pii_type in pii_types):
+                    report.files_with_phi += 1
 
-                if file_info.is_public:
-                    report.files_with_phi_publicly_shared += 1
+                    if file_info.is_shared_externally:
+                        report.files_with_phi_shared_externally += 1
 
-                    report.issues.append(ComplianceIssue(
-                        severity="critical",
-                        category="phi_exposure",
-                        description=f"File with PHI publicly shared: {file_info.name}",
-                        recommendation="Immediately revoke public access to files containing PHI",
-                        affected_resource=file_info.id,
-                        resource_type="file",
-                    ))
+                        report.issues.append(ComplianceIssue(
+                            severity="critical",
+                            category="phi_exposure",
+                            description=f"PHI shared externally: {file_info.name}",
+                            recommendation="Immediately restrict external access to PHI",
+                            affected_resource=file_info.id,
+                            resource_type="file",
+                        ))
 
-                elif file_info.is_shared_externally:
-                    report.files_with_phi_shared_externally += 1
+                    if file_info.is_public:
+                        report.files_with_phi_publicly_shared += 1
 
-                    report.issues.append(ComplianceIssue(
-                        severity="high",
-                        category="phi_exposure",
-                        description=f"File with PHI shared externally: {file_info.name}",
-                        recommendation="Review and restrict external sharing of PHI",
-                        affected_resource=file_info.id,
-                        resource_type="file",
-                    ))
+                        report.issues.append(ComplianceIssue(
+                            severity="critical",
+                            category="phi_exposure",
+                            description=f"PHI shared publicly: {file_info.name}",
+                            recommendation="Immediately remove public access to PHI",
+                            affected_resource=file_info.id,
+                            resource_type="file",
+                        ))
 
         # Analyze users
         for user in users:
             if not user.two_factor_enabled:
                 report.users_without_2fa += 1
 
-                severity = "high" if user.is_admin else "medium"
-
                 if user.is_admin:
                     report.admin_users_without_2fa += 1
 
-                report.issues.append(ComplianceIssue(
-                    severity=severity,
-                    category="access_control",
-                    description=f"User without 2FA: {user.email}",
-                    recommendation="Enable 2-factor authentication for all users accessing PHI",
-                    affected_resource=user.email,
-                    resource_type="user",
-                ))
+                    report.issues.append(ComplianceIssue(
+                        severity="critical",
+                        category="access_control",
+                        description=f"Admin without 2FA accessing PHI: {user.email}",
+                        recommendation="HIPAA requires MFA for all users accessing PHI",
+                        affected_resource=user.email,
+                        resource_type="user",
+                    ))
 
         logger.info("hipaa_report_generated", issue_count=len(report.issues))
         return report
@@ -461,9 +468,9 @@ class ComplianceReporter:
 
                 report.issues.append(ComplianceIssue(
                     severity="high",
-                    category="security",
+                    category="confidentiality",
                     description=f"File publicly shared: {file_info.name}",
-                    recommendation="Review and restrict public file sharing",
+                    recommendation="Review and restrict public access",
                     affected_resource=file_info.id,
                     resource_type="file",
                 ))
@@ -471,10 +478,17 @@ class ComplianceReporter:
             if file_info.is_shared_externally:
                 report.files_shared_externally += 1
 
+            if hasattr(file_info, "pii_detected") and file_info.pii_detected:
+                report.files_with_sensitive_data += 1
+
+                if file_info.is_shared_externally:
+                    report.files_with_sensitive_data_shared += 1
+
         # Analyze users
         for user in users:
             if user.is_inactive:
                 report.inactive_users += 1
+
             if user.is_suspended:
                 report.suspended_users += 1
 
@@ -502,41 +516,33 @@ class ComplianceReporter:
             domain=self.domain,
         )
 
-        # PII patterns that might indicate card data
-        card_patterns = ["credit_card", "card_number", "cvv", "payment"]
-
         # Analyze files for cardholder data
         for file_info in files:
-            if hasattr(file_info, "pii_result") and file_info.pii_result:
-                # Check if PII includes credit card data
-                has_card_data = any(
-                    pattern in str(file_info.pii_result).lower()
-                    for pattern in card_patterns
-                )
-
-                if has_card_data:
+            if hasattr(file_info, "pii_detected") and file_info.pii_detected:
+                pii_types = getattr(file_info, "pii_types", [])
+                if any(pii_type in ["CREDIT_CARD", "CARD"] for pii_type in pii_types):
                     report.files_with_card_data += 1
+
+                    if file_info.is_shared_externally:
+                        report.files_with_card_data_shared_externally += 1
+
+                        report.issues.append(ComplianceIssue(
+                            severity="critical",
+                            category="data_protection",
+                            description=f"Cardholder data shared externally: {file_info.name}",
+                            recommendation="PCI-DSS prohibits external sharing of cardholder data",
+                            affected_resource=file_info.id,
+                            resource_type="file",
+                        ))
 
                     if file_info.is_public:
                         report.files_with_card_data_publicly_shared += 1
 
                         report.issues.append(ComplianceIssue(
                             severity="critical",
-                            category="cardholder_data_protection",
-                            description=f"File with card data publicly shared: {file_info.name}",
-                            recommendation="Immediately revoke public access to files containing cardholder data",
-                            affected_resource=file_info.id,
-                            resource_type="file",
-                        ))
-
-                    elif file_info.is_shared_externally:
-                        report.files_with_card_data_shared_externally += 1
-
-                        report.issues.append(ComplianceIssue(
-                            severity="critical",
-                            category="cardholder_data_protection",
-                            description=f"File with card data shared externally: {file_info.name}",
-                            recommendation="Restrict external sharing of cardholder data",
+                            category="data_protection",
+                            description=f"Cardholder data publicly shared: {file_info.name}",
+                            recommendation="Immediately remove public access to cardholder data",
                             affected_resource=file_info.id,
                             resource_type="file",
                         ))
@@ -545,15 +551,6 @@ class ComplianceReporter:
         for user in users:
             if not user.two_factor_enabled:
                 report.users_without_2fa += 1
-
-                report.issues.append(ComplianceIssue(
-                    severity="high",
-                    category="access_control",
-                    description=f"User without 2FA: {user.email}",
-                    recommendation="Enable 2-factor authentication for all users with access to cardholder data",
-                    affected_resource=user.email,
-                    resource_type="user",
-                ))
 
         logger.info("pcidss_report_generated", issue_count=len(report.issues))
         return report
@@ -579,73 +576,44 @@ class ComplianceReporter:
             domain=self.domain,
         )
 
-        # Keywords that might indicate student data
-        student_keywords = ["student", "grade", "transcript", "enrollment", "education"]
-
         # Analyze files for student data
         for file_info in files:
-            # Check filename for student data indicators
-            has_student_data = any(
-                keyword in file_info.name.lower()
-                for keyword in student_keywords
-            )
+            if hasattr(file_info, "pii_detected") and file_info.pii_detected:
+                pii_types = getattr(file_info, "pii_types", [])
+                if any(pii_type in ["STUDENT", "EDUCATION"] for pii_type in pii_types):
+                    report.files_with_student_data += 1
 
-            # Also check PII (student records often contain PII)
-            if hasattr(file_info, "pii_result") and file_info.pii_result:
-                has_student_data = True
+                    if file_info.is_shared_externally:
+                        report.files_with_student_data_shared_externally += 1
 
-            if has_student_data:
-                report.files_with_student_data += 1
+                        report.issues.append(ComplianceIssue(
+                            severity="critical",
+                            category="student_data",
+                            description=f"Student data shared externally: {file_info.name}",
+                            recommendation="FERPA requires authorization for external disclosure",
+                            affected_resource=file_info.id,
+                            resource_type="file",
+                        ))
 
-                if file_info.is_public:
-                    report.files_with_student_data_publicly_shared += 1
+                    if file_info.is_public:
+                        report.files_with_student_data_publicly_shared += 1
 
-                    report.issues.append(ComplianceIssue(
-                        severity="critical",
-                        category="student_data_protection",
-                        description=f"File with student data publicly shared: {file_info.name}",
-                        recommendation="Immediately revoke public access to files containing student data",
-                        affected_resource=file_info.id,
-                        resource_type="file",
-                    ))
-
-                elif file_info.is_shared_externally:
-                    report.files_with_student_data_shared_externally += 1
-
-                    report.issues.append(ComplianceIssue(
-                        severity="high",
-                        category="student_data_protection",
-                        description=f"File with student data shared externally: {file_info.name}",
-                        recommendation="Review and restrict external sharing of student data per FERPA requirements",
-                        affected_resource=file_info.id,
-                        resource_type="file",
-                    ))
+                        report.issues.append(ComplianceIssue(
+                            severity="critical",
+                            category="student_data",
+                            description=f"Student records publicly shared: {file_info.name}",
+                            recommendation="Immediately remove public access to student records",
+                            affected_resource=file_info.id,
+                            resource_type="file",
+                        ))
 
         # Analyze users
         for user in users:
             if not user.two_factor_enabled:
                 report.users_without_2fa += 1
 
-                report.issues.append(ComplianceIssue(
-                    severity="medium",
-                    category="access_control",
-                    description=f"User without 2FA: {user.email}",
-                    recommendation="Enable 2-factor authentication for all users with access to student data",
-                    affected_resource=user.email,
-                    resource_type="user",
-                ))
-
             if user.is_inactive:
                 report.inactive_users_with_student_data_access += 1
-
-                report.issues.append(ComplianceIssue(
-                    severity="medium",
-                    category="access_control",
-                    description=f"Inactive user with student data access: {user.email}",
-                    recommendation="Review and suspend inactive user accounts per FERPA requirements",
-                    affected_resource=user.email,
-                    resource_type="user",
-                ))
 
         logger.info("ferpa_report_generated", issue_count=len(report.issues))
         return report
@@ -661,7 +629,7 @@ class ComplianceReporter:
         Args:
             files: List of FileInfo objects
             users: List of UserInfo objects
-            impact_level: FedRAMP impact level (Low, Moderate, or High)
+            impact_level: FedRAMP impact level (Low, Moderate, High)
 
         Returns:
             FedRAMPReport
@@ -674,59 +642,36 @@ class ComplianceReporter:
             impact_level=impact_level,
         )
 
-        # Analyze files for security controls
+        # Analyze files
         for file_info in files:
+            if file_info.is_shared_externally:
+                report.files_shared_externally += 1
+
             if file_info.is_public:
                 report.files_publicly_shared += 1
 
                 report.issues.append(ComplianceIssue(
                     severity="critical",
-                    category="system_communications_protection",
+                    category="access_control",
                     description=f"File publicly shared: {file_info.name}",
-                    recommendation="FedRAMP requires strict access controls - revoke public access",
+                    recommendation="FedRAMP requires strict access controls",
                     affected_resource=file_info.id,
                     resource_type="file",
                 ))
 
-            if file_info.is_shared_externally:
-                report.files_shared_externally += 1
+            if hasattr(file_info, "pii_detected") and file_info.pii_detected:
+                report.files_with_sensitive_data_exposed += 1
 
-                report.issues.append(ComplianceIssue(
-                    severity="high",
-                    category="system_communications_protection",
-                    description=f"File shared externally: {file_info.name}",
-                    recommendation="Review external sharing against FedRAMP boundary protection requirements",
-                    affected_resource=file_info.id,
-                    resource_type="file",
-                ))
-
-            # Check for sensitive data exposure
-            if hasattr(file_info, "pii_result") and file_info.pii_result:
-                if file_info.is_shared_externally or file_info.is_public:
-                    report.files_with_sensitive_data_exposed += 1
-
-                    report.issues.append(ComplianceIssue(
-                        severity="critical",
-                        category="system_information_integrity",
-                        description=f"Sensitive data exposed: {file_info.name}",
-                        recommendation="Protect sensitive data per FedRAMP requirements",
-                        affected_resource=file_info.id,
-                        resource_type="file",
-                    ))
-
-        # Analyze users for access control and authentication
+        # Analyze users
         for user in users:
             if not user.two_factor_enabled:
                 report.users_without_2fa += 1
-                report.weak_authentication_methods += 1
-
-                severity = "critical" if impact_level == "High" else "high"
 
                 report.issues.append(ComplianceIssue(
-                    severity=severity,
-                    category="identification_authentication",
-                    description=f"User without 2FA: {user.email}",
-                    recommendation="FedRAMP requires multi-factor authentication for all users",
+                    severity="high",
+                    category="authentication",
+                    description=f"User without MFA: {user.email}",
+                    recommendation="FedRAMP requires MFA for all users",
                     affected_resource=user.email,
                     resource_type="user",
                 ))
@@ -760,3 +705,70 @@ class ComplianceReporter:
         logger.info("fedramp_report_generated", issue_count=len(report.issues))
         return report
 
+    def generate_all_reports(
+        self,
+        files: List[FileInfo],
+        users: List[UserInfo],
+    ) -> Dict[str, Union[GDPRReport, HIPAAReport, SOC2Report, PCIDSSReport, FERPAReport, FedRAMPReport]]:
+        """Generate all compliance reports.
+
+        Args:
+            files: List of FileInfo objects
+            users: List of UserInfo objects
+
+        Returns:
+            Dictionary of all compliance reports
+        """
+        logger.info("generating_all_compliance_reports")
+
+        return {
+            "gdpr": self.generate_gdpr_report(files, users),
+            "hipaa": self.generate_hipaa_report(files, users),
+            "soc2": self.generate_soc2_report(files, users),
+            "pci_dss": self.generate_pcidss_report(files, users),
+            "ferpa": self.generate_ferpa_report(files, users),
+            "fedramp": self.generate_fedramp_report(files, users),
+        }
+
+    def report_to_dict(
+        self,
+        report: Union[GDPRReport, HIPAAReport, SOC2Report, PCIDSSReport, FERPAReport, FedRAMPReport],
+    ) -> Dict[str, Any]:
+        """Convert report to dictionary.
+
+        Args:
+            report: Compliance report
+
+        Returns:
+            Dictionary representation
+        """
+        data = asdict(report)
+
+        # Convert datetime to ISO format
+        if "report_time" in data:
+            data["report_time"] = data["report_time"].isoformat()
+
+        # Add compliance score
+        data["compliance_score"] = report.calculate_compliance_score()
+
+        return data
+
+    def export_to_json(
+        self,
+        report: Union[GDPRReport, HIPAAReport, SOC2Report, PCIDSSReport, FERPAReport, FedRAMPReport],
+        output_file: Path,
+    ) -> None:
+        """Export report to JSON file.
+
+        Args:
+            report: Compliance report
+            output_file: Output file path
+        """
+        data = self.report_to_dict(report)
+
+        output_file.parent.mkdir(parents=True, exist_ok=True)
+
+        with open(output_file, "w") as f:
+            json.dump(data, f, indent=2)
+
+        logger.info("compliance_report_exported", file=str(output_file))

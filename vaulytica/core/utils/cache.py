@@ -1,7 +1,6 @@
 """Caching utilities for API responses."""
 
 import hashlib
-import json
 import pickle
 import time
 from dataclasses import dataclass

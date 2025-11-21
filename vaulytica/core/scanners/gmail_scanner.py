@@ -2,7 +2,6 @@
 
 import base64
 import io
-import re
 import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone, timedelta

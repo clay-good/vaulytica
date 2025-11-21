@@ -1,7 +1,7 @@
 """Calendar resource management commands."""
 
 from pathlib import Path
-from typing import Optional, List
+from typing import Optional
 
 import click
 from rich.console import Console
@@ -29,27 +29,27 @@ def list_resources(ctx: click.Context, output: Optional[Path]):
     from vaulytica.config.loader import load_config
     from vaulytica.core.auth.client import create_client_from_config
     from vaulytica.core.resources.calendar_resource_manager import CalendarResourceManager
-    
+
     console.print("[cyan]Listing calendar resources...[/cyan]\n")
-    
+
     # Load configuration
     config_path = ctx.obj.get("config_path")
     config = load_config(config_path)
-    
+
     # Create client
     client = create_client_from_config(config)
-    
+
     # Create resource manager
     resource_manager = CalendarResourceManager(client)
-    
+
     try:
         # List resources
         resources = resource_manager.list_resources()
-        
+
         if not resources:
             console.print("[yellow]No calendar resources found.[/yellow]")
             return
-        
+
         # Display results
         table = Table(title=f"Calendar Resources ({len(resources)} total)")
         table.add_column("Name", style="cyan")
@@ -57,7 +57,7 @@ def list_resources(ctx: click.Context, output: Optional[Path]):
         table.add_column("Type", style="blue")
         table.add_column("Capacity", style="yellow", justify="right")
         table.add_column("Building", style="magenta")
-        
+
         for resource in resources:
             table.add_row(
                 resource.resource_name,
@@ -66,16 +66,16 @@ def list_resources(ctx: click.Context, output: Optional[Path]):
                 str(resource.capacity) if resource.capacity else "N/A",
                 resource.building_id or "N/A",
             )
-        
+
         console.print(table)
-        
+
         # Save to file if requested
         if output:
             import json
             import csv
-            
+
             output_path = Path(output)
-            
+
             if output_path.suffix == ".json":
                 with open(output_path, "w") as f:
                     json.dump(
@@ -111,9 +111,9 @@ def list_resources(ctx: click.Context, output: Optional[Path]):
                             "capacity": r.capacity or "",
                             "building_id": r.building_id or "",
                         })
-            
+
             console.print(f"\n[green]✓ Results saved to {output_path}[/green]")
-        
+
     except Exception as e:
         console.print(f"[red]Error listing resources: {e}[/red]")
         raise click.Abort()
@@ -127,26 +127,26 @@ def get_resource(ctx: click.Context, resource_id: str):
     from vaulytica.config.loader import load_config
     from vaulytica.core.auth.client import create_client_from_config
     from vaulytica.core.resources.calendar_resource_manager import CalendarResourceManager
-    
+
     console.print(f"[cyan]Getting resource: {resource_id}...[/cyan]\n")
-    
+
     # Load configuration
     config_path = ctx.obj.get("config_path")
     config = load_config(config_path)
-    
+
     # Create client
     client = create_client_from_config(config)
-    
+
     # Create resource manager
     resource_manager = CalendarResourceManager(client)
-    
+
     try:
         # Get resource
         resource = resource_manager.get_resource(resource_id)
-        
+
         # Display results
         features_str = ", ".join(resource.feature_instances) if resource.feature_instances else "None"
-        
+
         console.print(Panel.fit(
             f"[bold]Name:[/bold] {resource.resource_name}\n"
             f"[bold]Email:[/bold] {resource.resource_email}\n"
@@ -160,7 +160,7 @@ def get_resource(ctx: click.Context, resource_id: str):
             title="Calendar Resource Details",
             border_style="green",
         ))
-        
+
     except Exception as e:
         console.print(f"[red]Error getting resource: {e}[/red]")
         raise click.Abort()
@@ -216,24 +216,24 @@ def create_resource(
     from vaulytica.config.loader import load_config
     from vaulytica.core.auth.client import create_client_from_config
     from vaulytica.core.resources.calendar_resource_manager import CalendarResourceManager
-    
+
     console.print(f"[cyan]Creating resource: {name}...[/cyan]\n")
-    
+
     # Load configuration
     config_path = ctx.obj.get("config_path")
     config = load_config(config_path)
-    
+
     # Create client
     client = create_client_from_config(config)
-    
+
     # Create resource manager
     resource_manager = CalendarResourceManager(client)
-    
+
     # Parse features
     feature_list = None
     if features:
         feature_list = [f.strip() for f in features.split(",")]
-    
+
     try:
         # Create resource
         resource = resource_manager.create_resource(
@@ -246,7 +246,7 @@ def create_resource(
             description=description,
             features=feature_list,
         )
-        
+
         # Display success
         console.print(Panel.fit(
             f"[green]✓ Resource created successfully![/green]\n\n"
@@ -257,7 +257,7 @@ def create_resource(
             f"Building: {resource.building_id or 'N/A'}",
             border_style="green",
         ))
-        
+
     except Exception as e:
         console.print(f"[red]Error creating resource: {e}[/red]")
         raise click.Abort()
@@ -288,24 +288,24 @@ def update_resource(
     from vaulytica.config.loader import load_config
     from vaulytica.core.auth.client import create_client_from_config
     from vaulytica.core.resources.calendar_resource_manager import CalendarResourceManager
-    
+
     console.print(f"[cyan]Updating resource: {resource_id}...[/cyan]\n")
-    
+
     # Load configuration
     config_path = ctx.obj.get("config_path")
     config = load_config(config_path)
-    
+
     # Create client
     client = create_client_from_config(config)
-    
+
     # Create resource manager
     resource_manager = CalendarResourceManager(client)
-    
+
     # Parse features
     feature_list = None
     if features:
         feature_list = [f.strip() for f in features.split(",")]
-    
+
     try:
         # Update resource
         resource = resource_manager.update_resource(
@@ -318,7 +318,7 @@ def update_resource(
             description=description,
             features=feature_list,
         )
-        
+
         # Display success
         console.print(Panel.fit(
             f"[green]✓ Resource updated successfully![/green]\n\n"
@@ -329,7 +329,7 @@ def update_resource(
             f"Building: {resource.building_id or 'N/A'}",
             border_style="green",
         ))
-        
+
     except Exception as e:
         console.print(f"[red]Error updating resource: {e}[/red]")
         raise click.Abort()
@@ -348,36 +348,36 @@ def delete_resource(ctx: click.Context, resource_id: str, confirm: bool):
     from vaulytica.config.loader import load_config
     from vaulytica.core.auth.client import create_client_from_config
     from vaulytica.core.resources.calendar_resource_manager import CalendarResourceManager
-    
+
     # Confirm deletion
     if not confirm:
         if not click.confirm(f"Are you sure you want to delete resource '{resource_id}'?"):
             console.print("[yellow]Deletion cancelled.[/yellow]")
             return
-    
+
     console.print(f"[cyan]Deleting resource: {resource_id}...[/cyan]\n")
-    
+
     # Load configuration
     config_path = ctx.obj.get("config_path")
     config = load_config(config_path)
-    
+
     # Create client
     client = create_client_from_config(config)
-    
+
     # Create resource manager
     resource_manager = CalendarResourceManager(client)
-    
+
     try:
         # Delete resource
         resource_manager.delete_resource(resource_id)
-        
+
         # Display success
         console.print(Panel.fit(
             f"[green]✓ Resource deleted successfully![/green]\n\n"
             f"Resource ID: {resource_id}",
             border_style="green",
         ))
-        
+
     except Exception as e:
         console.print(f"[red]Error deleting resource: {e}[/red]")
         raise click.Abort()
@@ -395,49 +395,49 @@ def list_buildings(ctx: click.Context, output: Optional[Path]):
     from vaulytica.config.loader import load_config
     from vaulytica.core.auth.client import create_client_from_config
     from vaulytica.core.resources.calendar_resource_manager import CalendarResourceManager
-    
+
     console.print("[cyan]Listing buildings...[/cyan]\n")
-    
+
     # Load configuration
     config_path = ctx.obj.get("config_path")
     config = load_config(config_path)
-    
+
     # Create client
     client = create_client_from_config(config)
-    
+
     # Create resource manager
     resource_manager = CalendarResourceManager(client)
-    
+
     try:
         # List buildings
         buildings = resource_manager.list_buildings()
-        
+
         if not buildings:
             console.print("[yellow]No buildings found.[/yellow]")
             return
-        
+
         # Display results
         table = Table(title=f"Buildings ({len(buildings)} total)")
         table.add_column("Building ID", style="cyan")
         table.add_column("Name", style="green")
         table.add_column("Description", style="blue")
-        
+
         for building in buildings:
             table.add_row(
                 building.building_id,
                 building.building_name,
                 building.description or "N/A",
             )
-        
+
         console.print(table)
-        
+
         # Save to file if requested
         if output:
             import json
             import csv
-            
+
             output_path = Path(output)
-            
+
             if output_path.suffix == ".json":
                 with open(output_path, "w") as f:
                     json.dump(
@@ -466,9 +466,9 @@ def list_buildings(ctx: click.Context, output: Optional[Path]):
                             "building_name": b.building_name,
                             "description": b.description or "",
                         })
-            
+
             console.print(f"\n[green]✓ Results saved to {output_path}[/green]")
-        
+
     except Exception as e:
         console.print(f"[red]Error listing buildings: {e}[/red]")
         raise click.Abort()

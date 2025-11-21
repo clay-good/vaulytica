@@ -1,9 +1,8 @@
 """Workflow for detecting and alerting on externally shared files with PII."""
 
-import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-from typing import List, Optional, Dict, Any
+from typing import List, Optional
 
 import structlog
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn
@@ -11,8 +10,6 @@ from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn
 from vaulytica.core.auth.client import GoogleWorkspaceClient
 from vaulytica.core.scanners.file_scanner import FileScanner, FileInfo
 from vaulytica.core.detectors.pii_detector import PIIDetector, PIIDetectionResult
-from vaulytica.core.utils.concurrent import ConcurrentProcessor
-from vaulytica.integrations.email import EmailAlerter
 from vaulytica.integrations.webhook import WebhookSender, WebhookConfig
 
 logger = structlog.get_logger(__name__)

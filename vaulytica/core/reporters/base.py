@@ -7,7 +7,6 @@ from pathlib import Path
 from typing import List, Optional
 
 from vaulytica.core.scanners.file_scanner import FileInfo
-from vaulytica.core.detectors.pii_detector import PIIDetectionResult
 
 
 @dataclass

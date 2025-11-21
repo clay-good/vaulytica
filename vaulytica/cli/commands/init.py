@@ -1,6 +1,5 @@
 """Init command implementation."""
 
-import shutil
 from pathlib import Path
 
 import click

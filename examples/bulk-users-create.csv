@@ -1,0 +1,6 @@
+email,first_name,last_name,password,org_unit
+john.doe@company.com,John,Doe,TempPass123!,/Engineering
+jane.smith@company.com,Jane,Smith,TempPass456!,/Engineering
+bob.wilson@company.com,Bob,Wilson,TempPass789!,/Sales
+alice.johnson@company.com,Alice,Johnson,TempPass012!,/Marketing
+charlie.brown@company.com,Charlie,Brown,TempPass345!,/Engineering

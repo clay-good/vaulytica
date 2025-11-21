@@ -9,7 +9,6 @@ console = Console()
 
 def config_command(ctx: click.Context) -> None:
     """Show current configuration."""
-    from vaulytica.config.loader import load_config
 
     config_path = ctx.obj.get("config_path")
     console.print(f"[cyan]Configuration file:[/cyan] {config_path}\n")

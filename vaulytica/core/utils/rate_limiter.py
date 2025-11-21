@@ -4,7 +4,6 @@ import time
 from dataclasses import dataclass, field
 from typing import Dict, Optional
 from threading import Lock
-from collections import deque
 
 import structlog
 

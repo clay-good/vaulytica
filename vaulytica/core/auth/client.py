@@ -1,6 +1,6 @@
 """Google Workspace API client wrapper."""
 
-from typing import Optional, Any
+from typing import Optional
 from googleapiclient.discovery import build, Resource
 from googleapiclient.errors import HttpError
 import structlog

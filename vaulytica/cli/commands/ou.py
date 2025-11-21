@@ -33,34 +33,34 @@ def list_ous(ctx: click.Context, parent: Optional[str], output: Optional[Path]):
     from vaulytica.config.loader import load_config
     from vaulytica.core.auth.client import create_client_from_config
     from vaulytica.core.lifecycle.ou_manager import OUManager
-    
+
     console.print("[cyan]Listing organizational units...[/cyan]\n")
-    
+
     # Load configuration
     config_path = ctx.obj.get("config_path")
     config = load_config(config_path)
-    
+
     # Create client
     client = create_client_from_config(config)
-    
+
     # Create OU manager
     ou_manager = OUManager(client)
-    
+
     try:
         # List OUs
         ous = ou_manager.list_ous(org_unit_path=parent)
-        
+
         if not ous:
             console.print("[yellow]No organizational units found.[/yellow]")
             return
-        
+
         # Display results
         table = Table(title=f"Organizational Units ({len(ous)} total)")
         table.add_column("Name", style="cyan")
         table.add_column("Path", style="green")
         table.add_column("Parent Path", style="blue")
         table.add_column("Block Inheritance", style="yellow")
-        
+
         for ou in ous:
             table.add_row(
                 ou.name,
@@ -68,16 +68,16 @@ def list_ous(ctx: click.Context, parent: Optional[str], output: Optional[Path]):
                 ou.parent_org_unit_path,
                 "Yes" if ou.block_inheritance else "No",
             )
-        
+
         console.print(table)
-        
+
         # Save to file if requested
         if output:
             import json
             import csv
-            
+
             output_path = Path(output)
-            
+
             if output_path.suffix == ".json":
                 with open(output_path, "w") as f:
                     json.dump(
@@ -109,9 +109,9 @@ def list_ous(ctx: click.Context, parent: Optional[str], output: Optional[Path]):
                             "description": ou.description or "",
                             "block_inheritance": ou.block_inheritance,
                         })
-            
+
             console.print(f"\n[green]✓ Results saved to {output_path}[/green]")
-        
+
     except Exception as e:
         console.print(f"[red]Error listing OUs: {e}[/red]")
         raise click.Abort()
@@ -125,23 +125,23 @@ def get_ou(ctx: click.Context, ou_path: str):
     from vaulytica.config.loader import load_config
     from vaulytica.core.auth.client import create_client_from_config
     from vaulytica.core.lifecycle.ou_manager import OUManager
-    
+
     console.print(f"[cyan]Getting OU: {ou_path}...[/cyan]\n")
-    
+
     # Load configuration
     config_path = ctx.obj.get("config_path")
     config = load_config(config_path)
-    
+
     # Create client
     client = create_client_from_config(config)
-    
+
     # Create OU manager
     ou_manager = OUManager(client)
-    
+
     try:
         # Get OU
         ou = ou_manager.get_ou(ou_path)
-        
+
         # Display results
         console.print(Panel.fit(
             f"[bold]Name:[/bold] {ou.name}\n"
@@ -152,7 +152,7 @@ def get_ou(ctx: click.Context, ou_path: str):
             title="Organizational Unit Details",
             border_style="green",
         ))
-        
+
     except Exception as e:
         console.print(f"[red]Error getting OU: {e}[/red]")
         raise click.Abort()
@@ -186,19 +186,19 @@ def create_ou(
     from vaulytica.config.loader import load_config
     from vaulytica.core.auth.client import create_client_from_config
     from vaulytica.core.lifecycle.ou_manager import OUManager
-    
+
     console.print(f"[cyan]Creating OU: {name}...[/cyan]\n")
-    
+
     # Load configuration
     config_path = ctx.obj.get("config_path")
     config = load_config(config_path)
-    
+
     # Create client
     client = create_client_from_config(config)
-    
+
     # Create OU manager
     ou_manager = OUManager(client)
-    
+
     try:
         # Create OU
         ou = ou_manager.create_ou(
@@ -207,7 +207,7 @@ def create_ou(
             description=description,
             block_inheritance=block_inheritance,
         )
-        
+
         # Display success
         console.print(Panel.fit(
             f"[green]✓ OU created successfully![/green]\n\n"
@@ -218,7 +218,7 @@ def create_ou(
             f"Block Inheritance: {'Yes' if ou.block_inheritance else 'No'}",
             border_style="green",
         ))
-        
+
     except Exception as e:
         console.print(f"[red]Error creating OU: {e}[/red]")
         raise click.Abort()
@@ -243,19 +243,19 @@ def update_ou(
     from vaulytica.config.loader import load_config
     from vaulytica.core.auth.client import create_client_from_config
     from vaulytica.core.lifecycle.ou_manager import OUManager
-    
+
     console.print(f"[cyan]Updating OU: {ou_path}...[/cyan]\n")
-    
+
     # Load configuration
     config_path = ctx.obj.get("config_path")
     config = load_config(config_path)
-    
+
     # Create client
     client = create_client_from_config(config)
-    
+
     # Create OU manager
     ou_manager = OUManager(client)
-    
+
     try:
         # Update OU
         ou = ou_manager.update_ou(
@@ -265,7 +265,7 @@ def update_ou(
             parent_org_unit_path=parent,
             block_inheritance=block_inheritance,
         )
-        
+
         # Display success
         console.print(Panel.fit(
             f"[green]✓ OU updated successfully![/green]\n\n"
@@ -276,7 +276,7 @@ def update_ou(
             f"Block Inheritance: {'Yes' if ou.block_inheritance else 'No'}",
             border_style="green",
         ))
-        
+
     except Exception as e:
         console.print(f"[red]Error updating OU: {e}[/red]")
         raise click.Abort()
@@ -295,36 +295,36 @@ def delete_ou(ctx: click.Context, ou_path: str, confirm: bool):
     from vaulytica.config.loader import load_config
     from vaulytica.core.auth.client import create_client_from_config
     from vaulytica.core.lifecycle.ou_manager import OUManager
-    
+
     # Confirm deletion
     if not confirm:
         if not click.confirm(f"Are you sure you want to delete OU '{ou_path}'?"):
             console.print("[yellow]Deletion cancelled.[/yellow]")
             return
-    
+
     console.print(f"[cyan]Deleting OU: {ou_path}...[/cyan]\n")
-    
+
     # Load configuration
     config_path = ctx.obj.get("config_path")
     config = load_config(config_path)
-    
+
     # Create client
     client = create_client_from_config(config)
-    
+
     # Create OU manager
     ou_manager = OUManager(client)
-    
+
     try:
         # Delete OU
         ou_manager.delete_ou(ou_path)
-        
+
         # Display success
         console.print(Panel.fit(
             f"[green]✓ OU deleted successfully![/green]\n\n"
             f"Path: {ou_path}",
             border_style="green",
         ))
-        
+
     except Exception as e:
         console.print(f"[red]Error deleting OU: {e}[/red]")
         raise click.Abort()

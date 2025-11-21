@@ -1,7 +1,7 @@
 """Group scanner for detecting security issues in Google Groups."""
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional, Set
+from typing import List, Dict, Optional
 import time
 import structlog
 from googleapiclient.errors import HttpError

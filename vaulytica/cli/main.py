@@ -828,6 +828,9 @@ from vaulytica.cli.commands.bulk import bulk_group
 from vaulytica.cli.commands.ou import ou_group
 from vaulytica.cli.commands.backup import backup_group
 from vaulytica.cli.commands.resources import resources_group
+from vaulytica.cli.commands.shadow_it import shadow_it_group
+from vaulytica.cli.commands.chrome_enterprise import chrome_group
+from vaulytica.cli.commands.security_posture import security_posture_group
 
 cli.add_command(monitor_group)
 cli.add_command(workflow_group)
@@ -838,6 +841,9 @@ cli.add_command(bulk_group)
 cli.add_command(ou_group)
 cli.add_command(backup_group)
 cli.add_command(resources_group)
+cli.add_command(shadow_it_group)
+cli.add_command(chrome_group)
+cli.add_command(security_posture_group)
 
 
 def main() -> None:

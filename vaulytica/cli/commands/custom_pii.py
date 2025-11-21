@@ -293,10 +293,10 @@ def validate_pattern_command(pattern):
         is_valid, error_msg = manager.validate_pattern(pattern)
 
         if is_valid:
-            console.print(f"[green]✓ Pattern is valid![/green]")
+            console.print("[green]✓ Pattern is valid![/green]")
             console.print(f"  Pattern: {pattern}")
         else:
-            console.print(f"[red]✗ Pattern is invalid[/red]")
+            console.print("[red]✗ Pattern is invalid[/red]")
             console.print(f"  Error: {error_msg}")
             raise click.Abort()
 

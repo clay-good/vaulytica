@@ -145,7 +145,6 @@ def scan_files_command(
     format: str,
 ) -> None:
     """Scan Google Drive files for sharing and PII issues."""
-    from datetime import datetime
     from vaulytica.config.loader import load_config
     from vaulytica.core.auth.client import create_client_from_config
     from vaulytica.core.scanners.file_scanner import FileScanner
@@ -277,6 +276,7 @@ def scan_users_command(
 ) -> None:
     """Scan for inactive users and service accounts."""
     from vaulytica.config.loader import load_config
+    from vaulytica.core.auth.client import create_client_from_config
 
     console.print("[cyan]Starting user scan...[/cyan]")
 
@@ -742,7 +742,7 @@ def scan_groups_command(
         filtered_groups = [g for g in filtered_groups if g.risk_score >= min_risk_score]
 
     # Display results
-    console.print(f"\n[bold]Groups Scan Results[/bold]")
+    console.print("\n[bold]Groups Scan Results[/bold]")
     console.print(f"Total groups: {result.total_groups}")
     console.print(f"Groups with external members: {result.groups_with_external_members}")
     console.print(f"Public groups: {result.public_groups}")
@@ -926,7 +926,7 @@ def scan_gmail_command(
             )
 
     # Display results
-    console.print(f"\n[bold]📊 Gmail Scan Results:[/bold]")
+    console.print("\n[bold]📊 Gmail Scan Results:[/bold]")
     console.print(f"  Total messages scanned: {result.total_messages}")
     console.print(f"  Total attachments found: {result.total_attachments}")
     console.print(f"  Attachments scanned: {result.attachments_scanned}")
@@ -1128,7 +1128,7 @@ def scan_gmail_security_command(
         )
 
     # Display results
-    console.print(f"\n[bold]Gmail Security Scan Results[/bold]")
+    console.print("\n[bold]Gmail Security Scan Results[/bold]")
     console.print(f"Total users scanned: {result.total_users_scanned}")
     console.print(f"Users with delegates: {result.users_with_delegates}")
     console.print(f"Users with forwarding: {result.users_with_forwarding}")

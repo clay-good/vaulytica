@@ -1,6 +1,5 @@
 """CLI commands for scheduled scans."""
 
-from pathlib import Path
 from typing import Optional
 
 import click
@@ -232,7 +231,7 @@ def remove_schedule(scan_id: str, yes: bool) -> None:
     if scheduler.remove_schedule(scan_id):
         console.print(f"[green]✓[/green] Schedule removed: {scan_id}")
     else:
-        console.print(f"[red]✗[/red] Failed to remove schedule")
+        console.print("[red]✗[/red] Failed to remove schedule")
 
 
 @schedule.command("enable")
@@ -249,7 +248,7 @@ def enable_schedule(scan_id: str) -> None:
         if scan and scan.next_run:
             console.print(f"  Next run: {scan.next_run}")
     else:
-        console.print(f"[red]✗[/red] Failed to enable schedule")
+        console.print("[red]✗[/red] Failed to enable schedule")
 
 
 @schedule.command("disable")
@@ -261,7 +260,7 @@ def disable_schedule(scan_id: str) -> None:
     if scheduler.disable_schedule(scan_id):
         console.print(f"[green]✓[/green] Schedule disabled: {scan_id}")
     else:
-        console.print(f"[red]✗[/red] Failed to disable schedule")
+        console.print("[red]✗[/red] Failed to disable schedule")
 
 
 @schedule.command("run")

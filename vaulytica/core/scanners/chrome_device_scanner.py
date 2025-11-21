@@ -3,7 +3,7 @@
 import time
 from dataclasses import dataclass, field
 from typing import List, Dict, Optional
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 import structlog
 from googleapiclient.errors import HttpError
 
@@ -21,31 +21,31 @@ class ChromeDevice:
     annotated_user: str = ""
     last_sync: Optional[datetime] = None
     last_enrollment_time: Optional[datetime] = None
-    
+
     # Device info
     model: str = ""
     os_version: str = ""
     platform_version: str = ""
     firmware_version: str = ""
-    
+
     # Status
     status: str = ""  # ACTIVE, PROVISIONED, DISABLED, DEPROVISIONED
     boot_mode: str = ""  # Verified, Dev
-    
+
     # User info
     recent_users: List[str] = field(default_factory=list)
-    
+
     # Security
     auto_update_expiration: Optional[datetime] = None
     is_auto_update_expired: bool = False
-    
+
     # Network
     ethernet_mac_address: str = ""
     wifi_mac_address: str = ""
-    
+
     # Organization
     org_unit_path: str = ""
-    
+
     # Risk assessment
     risk_score: int = 0
     risk_factors: List[str] = field(default_factory=list)
@@ -235,20 +235,20 @@ class ChromeDeviceScanner:
                     "customerId": self.customer_id,
                     "maxResults": 200,
                 }
-                
+
                 if org_unit_path:
                     params["orgUnitPath"] = org_unit_path
-                
+
                 if query:
                     params["query"] = query
-                
+
                 if page_token:
                     params["pageToken"] = page_token
 
                 response = self.client.admin.chromeosdevices().list(**params).execute()
-                
+
                 devices.extend(response.get("chromeosdevices", []))
-                
+
                 page_token = response.get("nextPageToken")
                 if not page_token:
                     break
@@ -261,7 +261,7 @@ class ChromeDeviceScanner:
 
     def _parse_device(self, device_data: Dict) -> ChromeDevice:
         """Parse Chrome device data from API response."""
-        
+
         # Parse timestamps
         last_sync = None
         if "lastSync" in device_data:

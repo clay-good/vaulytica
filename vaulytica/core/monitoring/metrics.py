@@ -1,10 +1,8 @@
 """Metrics collection and Prometheus export."""
 
-import time
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 from threading import Lock
-from collections import defaultdict
 
 import structlog
 

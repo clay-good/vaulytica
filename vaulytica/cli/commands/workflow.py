@@ -1,11 +1,9 @@
 """Workflow commands for automated security use cases."""
 
 import click
-from pathlib import Path
-from typing import Optional, List
+from typing import Optional
 from rich.console import Console
 from rich.table import Table
-from rich.panel import Panel
 
 console = Console()
 

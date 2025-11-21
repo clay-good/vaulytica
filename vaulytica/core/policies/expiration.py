@@ -2,10 +2,9 @@
 
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
-from typing import List, Optional, Dict, Any
+from typing import List, Optional
 
 import structlog
-from googleapiclient.errors import HttpError
 
 from vaulytica.core.auth.client import GoogleWorkspaceClient
 from vaulytica.core.scanners.file_scanner import FileInfo, FilePermission

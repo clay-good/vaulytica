@@ -1,6 +1,6 @@
 """User provisioning and lifecycle management."""
 
-from typing import Dict, List, Optional, Any
+from typing import Dict, Any
 import structlog
 from googleapiclient.errors import HttpError
 
@@ -69,18 +69,18 @@ class UserProvisioner:
         # Add optional fields
         if "title" in kwargs:
             user_body["organizations"] = [{"title": kwargs["title"], "primary": True}]
-        
+
         if "department" in kwargs:
             if "organizations" not in user_body:
                 user_body["organizations"] = [{}]
             user_body["organizations"][0]["department"] = kwargs["department"]
-        
+
         if "phone" in kwargs:
             user_body["phones"] = [{"value": kwargs["phone"], "type": "work"}]
-        
+
         if "recovery_email" in kwargs:
             user_body["recoveryEmail"] = kwargs["recovery_email"]
-        
+
         if "recovery_phone" in kwargs:
             user_body["recoveryPhone"] = kwargs["recovery_phone"]
 

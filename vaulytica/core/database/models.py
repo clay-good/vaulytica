@@ -1,7 +1,6 @@
 """Database models for historical tracking and large-scale data management."""
 
 from datetime import datetime
-from typing import Optional
 from sqlalchemy import (
     Column,
     String,

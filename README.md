@@ -18,6 +18,9 @@ A powerful, self-hosted Python CLI tool for comprehensive security monitoring, c
 ### Key Features
 
 - 🔍 **13 Security Scanners** - Files, OAuth apps, users, groups, mobile devices, Chrome OS, Gmail, audit logs, calendar, Vault, shared drives, licenses, Gmail security
+- 🛡️ **Security Posture Assessment** - **NEW!** Automated security baseline scanning with 25+ checks, compliance framework mapping (CIS, NIST, HIPAA, GDPR, PCI-DSS, SOC2)
+- 🕵️ **Shadow IT Discovery** - **NEW!** Advanced OAuth app risk analyzer with automated remediation playbooks
+- 🌐 **Chrome Enterprise Manager** - **NEW!** Complete browser security like Island Browser - policies, extensions, URL filtering, DLP controls
 - 👥 **User Lifecycle Management** - Create, update, suspend, restore, delete users with bulk operations
 - 🏢 **Organizational Management** - Full CRUD operations for OUs and calendar resources
 - 💾 **Backup & Export** - Automated backups of users, groups, and organizational structure
@@ -75,6 +78,9 @@ poetry run vaulytica scan files --check-pii --external-only
 | Command Group | Commands | Access Level | Use Case |
 |--------------|----------|--------------|----------|
 | **scan** | 13 scanners | READ-ONLY ✅ | Security scanning & auditing |
+| **security-posture** | assess, summary, frameworks | READ-ONLY ✅ | **NEW!** Security baseline scanning & compliance |
+| **shadow-it** | analyze, export-template | READ-ONLY ✅ | **NEW!** Shadow IT discovery & risk analysis |
+| **chrome** | policy, extensions, security | READ & WRITE ⚠️ | **NEW!** Chrome Enterprise browser management |
 | **users** | create, update, suspend, restore, delete | READ & WRITE ⚠️ | User provisioning |
 | **bulk** | create-users, suspend-users, export-users | READ & WRITE ⚠️ | Bulk operations |
 | **offboard** | user | READ & WRITE ⚠️ | Employee offboarding |
@@ -118,7 +124,165 @@ vaulytica scan files --max-files 100 --external-only
 
 ---
 
-#### 2. **Scan OAuth Apps** - Audit third-party access
+#### 2. **Shadow IT Discovery & Risk Analysis** - **NEW!** Advanced OAuth Security 🔥
+
+```bash
+# Comprehensive Shadow IT analysis with automated remediation playbook
+vaulytica shadow-it analyze \
+  --credentials service-account.json \
+  --admin-email admin@company.com \
+  --domain company.com \
+  --approval-list approved-apps.json \
+  --output shadow-it-report.html \
+  --format html
+
+# Quick analysis without approval list (flags all third-party apps)
+vaulytica shadow-it analyze \
+  --credentials service-account.json \
+  --admin-email admin@company.com \
+  --domain company.com \
+  --output report.json
+
+# Export approval template to start tracking approved apps
+vaulytica shadow-it export-template --output approved-apps.json
+```
+
+**What it does**:
+- 🔍 **Discovers unauthorized OAuth applications** - Identifies apps not on your approved list
+- ⚠️ **Risk analysis** - Categorizes findings as Critical/High/Medium/Low with risk scores
+- 🛡️ **Detects dangerous permissions** - Flags admin access, data exfiltration risks, excessive scopes
+- 📊 **Identifies patterns** - Finds stale grants, widespread adoption, unverified publishers
+- 📋 **Automated remediation playbook** - Step-by-step actions prioritized by urgency
+- 📈 **Executive summary** - Business-friendly reports for leadership
+- 📄 **Multiple output formats** - JSON, CSV, or beautiful HTML dashboards
+
+**Key Features**:
+- **Admin Access Detection**: Immediately flags apps with domain-wide admin privileges (CRITICAL risk)
+- **Data Exfiltration Analysis**: Identifies apps with Drive, Gmail, or Calendar access
+- **Stale Grant Detection**: Finds OAuth grants that haven't been used in 90+ days
+- **Widespread Adoption Alerts**: Highlights shadow IT used by 20+ users (indicates business need)
+- **Unverified Publishers**: Flags apps from non-Google-verified publishers
+- **Approval List Management**: Maintain allowlist of approved corporate apps
+
+**Example Output**:
+```
+Shadow IT Analysis Report
+========================
+Total Apps Analyzed: 127
+Shadow IT Apps: 18
+Critical Findings: 2 (apps with admin access!)
+High Findings: 5 (data exfiltration risks)
+Stale Grants: 8 (unused apps to revoke)
+
+Top Findings:
+🔴 CRITICAL: Unauthorized Admin Tool - Admin access to domain (5 users)
+🟠 HIGH: File Sync App - Full Drive access (25 users, widespread adoption)
+🟡 MEDIUM: Meeting Recorder - Calendar access, unverified publisher
+```
+
+**Permissions**: `admin.directory.user.readonly`, `admin.reports.audit.readonly`
+**Access**: READ-ONLY ✅
+**Perfect for**: Security teams, IT admins, compliance audits, executive reporting
+
+---
+
+#### 3. **Security Posture Assessment & Baseline Scanner** - **NEW!** Automated Compliance Auditing 🔥
+
+```bash
+# Comprehensive security posture assessment with 25+ checks
+vaulytica security-posture assess \
+  --credentials service-account.json \
+  --admin-email admin@company.com \
+  --domain company.com
+
+# Quick executive summary (critical & high issues only)
+vaulytica security-posture summary \
+  --credentials service-account.json \
+  --admin-email admin@company.com \
+  --domain company.com
+
+# Framework-specific assessment (CIS, HIPAA, etc.)
+vaulytica security-posture assess \
+  --credentials service-account.json \
+  --admin-email admin@company.com \
+  --domain company.com \
+  --framework cis \
+  --framework hipaa \
+  --output security-assessment.json
+
+# Filter by severity and export to JSON
+vaulytica security-posture assess \
+  --credentials service-account.json \
+  --admin-email admin@company.com \
+  --domain company.com \
+  --severity-filter critical \
+  --output critical-findings.json
+```
+
+**What it does**:
+- 🛡️ **25+ Security Checks** - Authentication, access control, sharing policies, mobile devices, data protection
+- 📊 **Severity-Weighted Scoring** - Get an overall security score (0-100) based on CRITICAL/HIGH/MEDIUM/LOW findings
+- ✅ **Compliance Framework Mapping** - Maps findings to CIS, NIST, HIPAA, GDPR, PCI-DSS, SOC2, Google Best Practices
+- 📋 **Actionable Remediation** - Every failed check includes step-by-step fix instructions
+- 🎯 **Executive Summaries** - Quick overview showing only critical and high-severity issues
+- 📈 **Trend Tracking** - Export to JSON for integration with SIEM, ticketing, or monitoring systems
+
+**Security Checks Include**:
+- **Authentication & Access**: 2FA enforcement, admin account security, password policies, session timeouts
+- **Sharing & Collaboration**: External sharing restrictions, public file detection, link sharing controls
+- **Third-Party Access**: OAuth app verification, API security, unverified publisher detection
+- **Mobile & Device Management**: MDM enforcement, device encryption requirements
+- **Data Protection**: DLP policies, email security (SPF/DKIM/DMARC)
+- **Audit & Monitoring**: Comprehensive audit logging, API access monitoring
+
+**Example Output**:
+```
+Security Posture Assessment
+==========================
+Domain: company.com
+Overall Security Score: 72/100 (Fair)
+
+Findings Summary
+===============
+✓ Passed:    18 checks
+✗ Failed:    7 checks
+Total:       25 checks
+
+Findings by Severity
+===================
+🔴 CRITICAL:  2 findings (IMMEDIATE ACTION REQUIRED!)
+🟠 HIGH:      3 findings
+🟡 MEDIUM:    2 findings
+
+Critical Findings
+================
+🔴 CRITICAL: MDM-001 - MDM Not Enforced
+   Impact: Unmanaged mobile devices can access corporate data
+   Remediation: Enable MDM in Admin Console → Devices → Mobile → Settings
+   Frameworks: CIS, HIPAA, PCI-DSS, SOC2
+
+🔴 CRITICAL: ADMIN-002 - Admin 2FA Not Enforced
+   Impact: Admin accounts vulnerable to credential theft
+   Remediation: Enforce 2FA in Admin Console → Security → 2-Step Verification
+   Frameworks: CIS, NIST, HIPAA, PCI-DSS, SOC2
+```
+
+**Use Cases**:
+- **Daily Security Monitoring**: Automated baseline scanning to detect security drift
+- **Compliance Audits**: Generate evidence for CIS, NIST, HIPAA, GDPR, PCI-DSS, SOC2 audits
+- **Executive Reporting**: Security score tracking over time with trend analysis
+- **Change Validation**: Run before/after major config changes to ensure no security regressions
+- **SIEM Integration**: Export findings to JSON for integration with Splunk, Elasticsearch, etc.
+- **Ticketing Integration**: Automatically create Jira/ServiceNow tickets for critical findings
+
+**Permissions**: `admin.directory.user.readonly`, `admin.directory.group.readonly`, `admin.directory.device.mobile.readonly`, `admin.reports.audit.readonly`
+**Access**: READ-ONLY ✅
+**Perfect for**: Security teams, compliance officers, CISOs, auditors, IT governance
+**Documentation**: [SECURITY_POSTURE_FEATURE.md](docs/SECURITY_POSTURE_FEATURE.md)
+
+---
+
+#### 4. **Scan OAuth Apps** - Audit third-party access
 
 ```bash
 # Find high-risk OAuth apps
@@ -134,7 +298,7 @@ vaulytica scan oauth-apps --user user@company.com
 
 ---
 
-#### 3. **Scan Users** - Find inactive users & 2FA compliance
+#### 5. **Scan Users** - Find inactive users & 2FA compliance
 
 ```bash
 # Find inactive users (90+ days)
@@ -153,7 +317,7 @@ vaulytica scan users --admins-only
 
 ---
 
-#### 4. **Scan Groups** - Audit external members & public groups
+#### 6. **Scan Groups** - Audit external members & public groups
 
 ```bash
 # Find groups with external members
@@ -172,7 +336,7 @@ vaulytica scan groups --orphaned
 
 ---
 
-#### 5. **Scan Mobile Devices** - Security & compliance checks
+#### 7. **Scan Mobile Devices** - Security & compliance checks
 
 ```bash
 # Scan all mobile devices
@@ -191,7 +355,7 @@ vaulytica scan devices --no-password
 
 ---
 
-#### 6. **Scan Chrome Devices** - Chromebook security
+#### 8. **Scan Chrome Devices** - Chromebook security
 
 ```bash
 # Scan all Chrome OS devices
@@ -210,7 +374,7 @@ vaulytica scan chrome-devices --inactive-days 90
 
 ---
 
-#### 7. **Scan Gmail** - Email attachments & PII
+#### 9. **Scan Gmail** - Email attachments & PII
 
 ```bash
 # Scan Gmail attachments for PII
@@ -229,7 +393,7 @@ vaulytica scan gmail --external-only --days-back 7
 
 ---
 
-#### 8. **Scan Gmail Security** - Delegates, forwarding, filters
+#### 10. **Scan Gmail Security** - Delegates, forwarding, filters
 
 ```bash
 # Check for email delegates
@@ -251,7 +415,7 @@ vaulytica scan gmail-security --delegates --forwarding --send-as --filters
 
 ---
 
-#### 9. **Scan Audit Logs** - Suspicious activity detection
+#### 11. **Scan Audit Logs** - Suspicious activity detection
 
 ```bash
 # Scan recent audit logs
@@ -270,7 +434,7 @@ vaulytica scan audit-logs --event-type admin --days-back 7
 
 ---
 
-#### 10. **Scan Calendar** - Public calendars & PII
+#### 12. **Scan Calendar** - Public calendars & PII
 
 ```bash
 # Scan calendars for PII
@@ -289,7 +453,7 @@ vaulytica scan calendar --user user@company.com
 
 ---
 
-#### 11. **Scan Shared Drives** - Team Drive security
+#### 13. **Scan Shared Drives** - Team Drive security
 
 ```bash
 # Scan all Shared Drives
@@ -308,7 +472,7 @@ vaulytica scan shared-drives --external-only
 
 ---
 
-#### 12. **Scan Licenses** - Cost optimization
+#### 14. **Scan Licenses** - Cost optimization
 
 ```bash
 # Scan license usage
@@ -327,7 +491,7 @@ vaulytica scan licenses --show-recommendations
 
 ---
 
-#### 13. **Scan Vault** - Legal holds & retention
+#### 15. **Scan Vault** - Legal holds & retention
 
 ```bash
 # Scan Vault matters
@@ -350,7 +514,7 @@ vaulytica scan vault --matter-id <matter-id>
 
 ⚠️ **Warning**: These commands MODIFY your Google Workspace. Use with caution!
 
-#### 14. **Create User** - Provision new employee
+#### 16. **Create User** - Provision new employee
 
 ```bash
 # Create new user
@@ -367,7 +531,7 @@ vaulytica users create john.doe@company.com \
 
 ---
 
-#### 15. **Update User** - Modify user account
+#### 17. **Update User** - Modify user account
 
 ```bash
 # Update user details
@@ -383,7 +547,7 @@ vaulytica users update user@company.com \
 
 ---
 
-#### 16. **Suspend User** - Block account access
+#### 18. **Suspend User** - Block account access
 
 ```bash
 # Suspend user immediately
@@ -396,7 +560,7 @@ vaulytica users suspend user@company.com
 
 ---
 
-#### 17. **Restore User** - Reactivate suspended account
+#### 19. **Restore User** - Reactivate suspended account
 
 ```bash
 # Restore suspended user
@@ -409,7 +573,7 @@ vaulytica users restore user@company.com
 
 ---
 
-#### 18. **Delete User** - Permanently remove account
+#### 20. **Delete User** - Permanently remove account
 
 ```bash
 # Delete user (permanent!)
@@ -424,7 +588,7 @@ vaulytica users delete user@company.com
 
 ### 📦 **Bulk Operations** (READ & WRITE)
 
-#### 19. **Bulk Create Users** - Create multiple users from CSV
+#### 21. **Bulk Create Users** - Create multiple users from CSV
 
 ```bash
 # Dry-run first (READ-ONLY)
@@ -441,7 +605,7 @@ vaulytica bulk create-users users.csv
 
 ---
 
-#### 20. **Bulk Suspend Users** - Suspend multiple users from CSV
+#### 22. **Bulk Suspend Users** - Suspend multiple users from CSV
 
 ```bash
 # Dry-run first (READ-ONLY)
@@ -458,7 +622,7 @@ vaulytica bulk suspend-users users.csv
 
 ---
 
-#### 21. **Export Users** - Export all users to CSV
+#### 23. **Export Users** - Export all users to CSV
 
 ```bash
 # Export all users
@@ -473,7 +637,7 @@ vaulytica bulk export-users --output all-users.csv
 
 ### 👋 **Employee Offboarding** (READ & WRITE)
 
-#### 22. **Offboard User** - Automated employee offboarding
+#### 24. **Offboard User** - Automated employee offboarding
 
 ```bash
 # Dry-run first (READ-ONLY)
@@ -502,7 +666,7 @@ vaulytica offboard user@company.com \
 
 ### 🏢 **Organizational Unit Management** (READ & WRITE)
 
-#### 23. **List OUs** - View organizational structure
+#### 25. **List OUs** - View organizational structure
 
 ```bash
 # List all OUs
@@ -521,7 +685,7 @@ vaulytica ou list --output ous.csv
 
 ---
 
-#### 24. **Create OU** - Create organizational unit
+#### 26. **Create OU** - Create organizational unit
 
 ```bash
 # Create new OU
@@ -536,7 +700,7 @@ vaulytica ou create "Engineering" \
 
 ---
 
-#### 25. **Update OU** - Modify organizational unit
+#### 27. **Update OU** - Modify organizational unit
 
 ```bash
 # Update OU
@@ -551,7 +715,7 @@ vaulytica ou update "/Engineering" \
 
 ---
 
-#### 26. **Delete OU** - Remove organizational unit
+#### 28. **Delete OU** - Remove organizational unit
 
 ```bash
 # Delete OU
@@ -566,7 +730,7 @@ vaulytica ou delete "/Engineering" --confirm
 
 ### 🏢 **Calendar Resource Management** (READ & WRITE)
 
-#### 27. **List Resources** - View conference rooms & equipment
+#### 29. **List Resources** - View conference rooms & equipment
 
 ```bash
 # List all resources
@@ -582,7 +746,7 @@ vaulytica resources list --output resources.csv
 
 ---
 
-#### 28. **Create Resource** - Add conference room
+#### 30. **Create Resource** - Add conference room
 
 ```bash
 # Create conference room
@@ -599,7 +763,7 @@ vaulytica resources create "Conference Room A" \
 
 ---
 
-#### 29. **Update Resource** - Modify resource details
+#### 31. **Update Resource** - Modify resource details
 
 ```bash
 # Update resource
@@ -614,7 +778,7 @@ vaulytica resources update <resource-id> \
 
 ---
 
-#### 30. **Delete Resource** - Remove resource
+#### 32. **Delete Resource** - Remove resource
 
 ```bash
 # Delete resource
@@ -629,7 +793,7 @@ vaulytica resources delete <resource-id> --confirm
 
 ### 💾 **Backup & Export** (READ-ONLY)
 
-#### 31. **Backup Users** - Export all user data
+#### 33. **Backup Users** - Export all user data
 
 ```bash
 # Backup users to JSON
@@ -645,7 +809,7 @@ vaulytica backup users --format csv
 
 ---
 
-#### 32. **Backup Groups** - Export all group data
+#### 34. **Backup Groups** - Export all group data
 
 ```bash
 # Backup groups
@@ -658,7 +822,7 @@ vaulytica backup groups --format json --backup-dir ./backups
 
 ---
 
-#### 33. **Backup OUs** - Export organizational structure
+#### 35. **Backup OUs** - Export organizational structure
 
 ```bash
 # Backup organizational units
@@ -671,7 +835,7 @@ vaulytica backup org-units --format json --backup-dir ./backups
 
 ---
 
-#### 34. **Full Backup** - Backup everything
+#### 36. **Full Backup** - Backup everything
 
 ```bash
 # Full backup (users, groups, OUs)
@@ -684,7 +848,7 @@ vaulytica backup full --format json --backup-dir ./backups
 
 ---
 
-#### 35. **List Backups** - View backup history
+#### 37. **List Backups** - View backup history
 
 ```bash
 # List all backups
@@ -699,7 +863,7 @@ vaulytica backup list --backup-dir ./backups
 
 ### 📊 **Compliance Reporting** (READ-ONLY)
 
-#### 36. **Generate Compliance Report** - GDPR, HIPAA, SOC2, etc.
+#### 38. **Generate Compliance Report** - GDPR, HIPAA, SOC2, etc.
 
 ```bash
 # GDPR compliance report
@@ -721,7 +885,7 @@ vaulytica compliance report --framework soc2 --output soc2-report.html
 
 ### 📈 **Monitoring & Alerting** (READ-ONLY)
 
-#### 37. **Health Check** - System health status
+#### 39. **Health Check** - System health status
 
 ```bash
 # Check system health
@@ -734,7 +898,7 @@ vaulytica monitor health
 
 ---
 
-#### 38. **Export Metrics** - Prometheus metrics
+#### 40. **Export Metrics** - Prometheus metrics
 
 ```bash
 # Export metrics
@@ -750,7 +914,7 @@ vaulytica metrics export --format json --output metrics.json
 
 ---
 
-#### 39. **Serve Metrics** - Prometheus HTTP endpoint
+#### 41. **Serve Metrics** - Prometheus HTTP endpoint
 
 ```bash
 # Start metrics server
@@ -765,7 +929,7 @@ vaulytica metrics serve --port 9090
 
 ### 🔄 **Automated Workflows** (READ-ONLY + Alerts)
 
-#### 40. **External PII Alert Workflow** - Automated PII detection & alerts
+#### 42. **External PII Alert Workflow** - Automated PII detection & alerts
 
 ```bash
 # Scan for external PII and send alerts
@@ -781,7 +945,7 @@ vaulytica workflow external-pii-alert \
 
 ---
 
-#### 41. **Gmail External PII Alert** - Email attachment monitoring
+#### 43. **Gmail External PII Alert** - Email attachment monitoring
 
 ```bash
 # Scan Gmail for external PII
@@ -800,7 +964,7 @@ vaulytica workflow gmail-external-pii-alert \
 
 ### ⏰ **Scheduled Scanning** (READ-ONLY)
 
-#### 42. **Schedule Scan** - Automated recurring scans
+#### 44. **Schedule Scan** - Automated recurring scans
 
 ```bash
 # Schedule daily file scan
@@ -816,7 +980,7 @@ vaulytica schedule add \
 
 ---
 
-#### 43. **List Schedules** - View scheduled scans
+#### 45. **List Schedules** - View scheduled scans
 
 ```bash
 # List all scheduled scans
@@ -831,7 +995,7 @@ vaulytica schedule list
 
 ### 🎨 **Custom PII Patterns** (Configuration)
 
-#### 44. **Add Custom PII Pattern** - Industry-specific detection
+#### 46. **Add Custom PII Pattern** - Industry-specific detection
 
 ```bash
 # Add custom pattern
@@ -847,7 +1011,7 @@ vaulytica custom-pii add \
 
 ---
 
-#### 45. **List Custom Patterns** - View custom patterns
+#### 47. **List Custom Patterns** - View custom patterns
 
 ```bash
 # List all custom patterns
@@ -862,7 +1026,7 @@ vaulytica custom-pii list
 
 ### 📄 **Report Generation** (READ-ONLY)
 
-#### 46. **Generate HTML Dashboard** - Visual reports
+#### 48. **Generate HTML Dashboard** - Visual reports
 
 ```bash
 # Generate HTML dashboard
@@ -877,7 +1041,7 @@ vaulytica report generate --format html --output dashboard.html
 
 ### 🔧 **Configuration & Testing**
 
-#### 47. **Initialize Config** - Setup wizard
+#### 49. **Initialize Config** - Setup wizard
 
 ```bash
 # Interactive setup
@@ -890,7 +1054,7 @@ vaulytica init
 
 ---
 
-#### 48. **Test Connection** - Verify setup
+#### 50. **Test Connection** - Verify setup
 
 ```bash
 # Test Google Workspace connection
@@ -903,7 +1067,7 @@ vaulytica test
 
 ---
 
-#### 49. **Show Config** - View current configuration
+#### 51. **Show Config** - View current configuration
 
 ```bash
 # Display current config
@@ -916,7 +1080,7 @@ vaulytica config
 
 ---
 
-#### 50. **Version Info** - Show version
+#### 52. **Version Info** - Show version
 
 ```bash
 # Show version

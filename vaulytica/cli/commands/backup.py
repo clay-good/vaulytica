@@ -41,27 +41,27 @@ def backup_users(
     from vaulytica.config.loader import load_config
     from vaulytica.core.auth.client import create_client_from_config
     from vaulytica.core.backup.backup_manager import BackupManager
-    
+
     console.print("[cyan]Starting user backup...[/cyan]\n")
-    
+
     # Load configuration
     config_path = ctx.obj.get("config_path")
     config = load_config(config_path)
-    
+
     # Create client
     client = create_client_from_config(config)
-    
+
     # Set backup directory
     if not backup_dir:
         backup_dir = Path("./backups")
-    
+
     # Create backup manager
     backup_manager = BackupManager(
         client=client,
         backup_dir=backup_dir,
         domain=config.domain,
     )
-    
+
     try:
         with Progress(
             SpinnerColumn(),
@@ -69,12 +69,12 @@ def backup_users(
             console=console,
         ) as progress:
             task = progress.add_task("Backing up users...", total=None)
-            
+
             # Perform backup
             metadata = backup_manager.backup_users(output_format=output_format)
-            
+
             progress.update(task, completed=True)
-        
+
         # Display success
         console.print(Panel.fit(
             f"[green]✓ User backup completed![/green]\n\n"
@@ -84,7 +84,7 @@ def backup_users(
             f"Location: {metadata.backup_path}",
             border_style="green",
         ))
-        
+
     except Exception as e:
         console.print(f"[red]Error backing up users: {e}[/red]")
         raise click.Abort()
@@ -113,27 +113,27 @@ def backup_groups(
     from vaulytica.config.loader import load_config
     from vaulytica.core.auth.client import create_client_from_config
     from vaulytica.core.backup.backup_manager import BackupManager
-    
+
     console.print("[cyan]Starting group backup...[/cyan]\n")
-    
+
     # Load configuration
     config_path = ctx.obj.get("config_path")
     config = load_config(config_path)
-    
+
     # Create client
     client = create_client_from_config(config)
-    
+
     # Set backup directory
     if not backup_dir:
         backup_dir = Path("./backups")
-    
+
     # Create backup manager
     backup_manager = BackupManager(
         client=client,
         backup_dir=backup_dir,
         domain=config.domain,
     )
-    
+
     try:
         with Progress(
             SpinnerColumn(),
@@ -141,12 +141,12 @@ def backup_groups(
             console=console,
         ) as progress:
             task = progress.add_task("Backing up groups...", total=None)
-            
+
             # Perform backup
             metadata = backup_manager.backup_groups(output_format=output_format)
-            
+
             progress.update(task, completed=True)
-        
+
         # Display success
         console.print(Panel.fit(
             f"[green]✓ Group backup completed![/green]\n\n"
@@ -156,7 +156,7 @@ def backup_groups(
             f"Location: {metadata.backup_path}",
             border_style="green",
         ))
-        
+
     except Exception as e:
         console.print(f"[red]Error backing up groups: {e}[/red]")
         raise click.Abort()
@@ -185,27 +185,27 @@ def backup_org_units(
     from vaulytica.config.loader import load_config
     from vaulytica.core.auth.client import create_client_from_config
     from vaulytica.core.backup.backup_manager import BackupManager
-    
+
     console.print("[cyan]Starting organizational unit backup...[/cyan]\n")
-    
+
     # Load configuration
     config_path = ctx.obj.get("config_path")
     config = load_config(config_path)
-    
+
     # Create client
     client = create_client_from_config(config)
-    
+
     # Set backup directory
     if not backup_dir:
         backup_dir = Path("./backups")
-    
+
     # Create backup manager
     backup_manager = BackupManager(
         client=client,
         backup_dir=backup_dir,
         domain=config.domain,
     )
-    
+
     try:
         with Progress(
             SpinnerColumn(),
@@ -213,12 +213,12 @@ def backup_org_units(
             console=console,
         ) as progress:
             task = progress.add_task("Backing up organizational units...", total=None)
-            
+
             # Perform backup
             metadata = backup_manager.backup_org_units(output_format=output_format)
-            
+
             progress.update(task, completed=True)
-        
+
         # Display success
         console.print(Panel.fit(
             f"[green]✓ Organizational unit backup completed![/green]\n\n"
@@ -228,7 +228,7 @@ def backup_org_units(
             f"Location: {metadata.backup_path}",
             border_style="green",
         ))
-        
+
     except Exception as e:
         console.print(f"[red]Error backing up organizational units: {e}[/red]")
         raise click.Abort()
@@ -257,27 +257,27 @@ def backup_full(
     from vaulytica.config.loader import load_config
     from vaulytica.core.auth.client import create_client_from_config
     from vaulytica.core.backup.backup_manager import BackupManager
-    
+
     console.print("[cyan]Starting full backup...[/cyan]\n")
-    
+
     # Load configuration
     config_path = ctx.obj.get("config_path")
     config = load_config(config_path)
-    
+
     # Create client
     client = create_client_from_config(config)
-    
+
     # Set backup directory
     if not backup_dir:
         backup_dir = Path("./backups")
-    
+
     # Create backup manager
     backup_manager = BackupManager(
         client=client,
         backup_dir=backup_dir,
         domain=config.domain,
     )
-    
+
     try:
         with Progress(
             SpinnerColumn(),
@@ -285,16 +285,16 @@ def backup_full(
             console=console,
         ) as progress:
             task = progress.add_task("Performing full backup...", total=None)
-            
+
             # Perform backup
             backups = backup_manager.backup_full(output_format=output_format)
-            
+
             progress.update(task, completed=True)
-        
+
         # Display success
         total_items = sum(b.item_count for b in backups)
         total_size = sum(b.size_bytes for b in backups)
-        
+
         console.print(Panel.fit(
             f"[green]✓ Full backup completed![/green]\n\n"
             f"Backups created: {len(backups)}\n"
@@ -303,7 +303,7 @@ def backup_full(
             f"Location: {backup_dir}",
             border_style="green",
         ))
-        
+
     except Exception as e:
         console.print(f"[red]Error performing full backup: {e}[/red]")
         raise click.Abort()
@@ -321,35 +321,35 @@ def list_backups(ctx: click.Context, backup_dir: Optional[Path]):
     from vaulytica.config.loader import load_config
     from vaulytica.core.auth.client import create_client_from_config
     from vaulytica.core.backup.backup_manager import BackupManager
-    
+
     console.print("[cyan]Listing backups...[/cyan]\n")
-    
+
     # Load configuration
     config_path = ctx.obj.get("config_path")
     config = load_config(config_path)
-    
+
     # Create client
     client = create_client_from_config(config)
-    
+
     # Set backup directory
     if not backup_dir:
         backup_dir = Path("./backups")
-    
+
     # Create backup manager
     backup_manager = BackupManager(
         client=client,
         backup_dir=backup_dir,
         domain=config.domain,
     )
-    
+
     try:
         # List backups
         backups = backup_manager.list_backups()
-        
+
         if not backups:
             console.print("[yellow]No backups found.[/yellow]")
             return
-        
+
         # Display results
         table = Table(title=f"Available Backups ({len(backups)} total)")
         table.add_column("Backup ID", style="cyan")
@@ -358,7 +358,7 @@ def list_backups(ctx: click.Context, backup_dir: Optional[Path]):
         table.add_column("Items", style="yellow", justify="right")
         table.add_column("Size", style="magenta", justify="right")
         table.add_column("Status", style="white")
-        
+
         for backup in backups:
             size_mb = backup.size_bytes / 1024 / 1024
             table.add_row(
@@ -369,9 +369,9 @@ def list_backups(ctx: click.Context, backup_dir: Optional[Path]):
                 f"{size_mb:.2f} MB",
                 backup.status,
             )
-        
+
         console.print(table)
-        
+
     except Exception as e:
         console.print(f"[red]Error listing backups: {e}[/red]")
         raise click.Abort()

@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-from typing import List, Optional, Dict, Any
+from typing import List, Optional
 
 import structlog
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn

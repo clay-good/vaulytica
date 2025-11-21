@@ -1,7 +1,7 @@
 """Anomaly detector for identifying unusual activity patterns."""
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Set
+from typing import List, Dict
 from datetime import datetime, time, timezone
 from collections import defaultdict
 import structlog

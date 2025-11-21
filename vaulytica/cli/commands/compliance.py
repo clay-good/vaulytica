@@ -1,6 +1,5 @@
 """Compliance reporting commands."""
 
-import csv
 import json
 from pathlib import Path
 from typing import Optional

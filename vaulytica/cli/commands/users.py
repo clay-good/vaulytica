@@ -1,13 +1,11 @@
 """User management commands."""
 
-from pathlib import Path
 from typing import Optional
 
 import click
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
-from rich.progress import Progress, SpinnerColumn, TextColumn
 
 console = Console()
 
@@ -40,13 +38,13 @@ def create_user(
     from vaulytica.config.loader import load_config
     from vaulytica.core.auth.client import create_client_from_config
     from vaulytica.core.lifecycle.user_provisioning import UserProvisioner
-    
+
     console.print(f"[cyan]Creating user: {email}[/cyan]\n")
-    
+
     # Prompt for password if not provided
     if not password:
         password = click.prompt("Enter initial password", hide_input=True, confirmation_prompt=True)
-    
+
     # Load configuration
     config_path = ctx.obj.get("config_path")
     try:
@@ -54,14 +52,14 @@ def create_user(
     except Exception as e:
         console.print(f"[red]Error loading configuration: {e}[/red]")
         raise click.Abort()
-    
+
     # Create client
     try:
         client = create_client_from_config(config)
     except Exception as e:
         console.print(f"[red]Error creating client: {e}[/red]")
         raise click.Abort()
-    
+
     # Create user
     try:
         provisioner = UserProvisioner(client)
@@ -73,7 +71,7 @@ def create_user(
             org_unit_path=org_unit,
             change_password_at_next_login=change_password,
         )
-        
+
         console.print(Panel.fit(
             f"[green]✓ User created successfully![/green]\n\n"
             f"Email: {user['primaryEmail']}\n"
@@ -82,7 +80,7 @@ def create_user(
             f"Change password required: {change_password}",
             border_style="green"
         ))
-        
+
     except Exception as e:
         console.print(f"[red]Error creating user: {e}[/red]")
         raise click.Abort()
@@ -97,17 +95,17 @@ def suspend_user(ctx: click.Context, email: str, reason: Optional[str]):
     from vaulytica.config.loader import load_config
     from vaulytica.core.auth.client import create_client_from_config
     from vaulytica.core.lifecycle.user_provisioning import UserProvisioner
-    
+
     console.print(f"[yellow]Suspending user: {email}[/yellow]\n")
-    
+
     if reason:
         console.print(f"Reason: {reason}\n")
-    
+
     # Confirm action
     if not click.confirm("Are you sure you want to suspend this user?"):
         console.print("[yellow]Cancelled[/yellow]")
         return
-    
+
     # Load configuration
     config_path = ctx.obj.get("config_path")
     try:
@@ -115,21 +113,21 @@ def suspend_user(ctx: click.Context, email: str, reason: Optional[str]):
     except Exception as e:
         console.print(f"[red]Error loading configuration: {e}[/red]")
         raise click.Abort()
-    
+
     # Create client
     try:
         client = create_client_from_config(config)
     except Exception as e:
         console.print(f"[red]Error creating client: {e}[/red]")
         raise click.Abort()
-    
+
     # Suspend user
     try:
         provisioner = UserProvisioner(client)
         provisioner.suspend_user(email)
-        
+
         console.print(f"[green]✓ User suspended: {email}[/green]")
-        
+
     except Exception as e:
         console.print(f"[red]Error suspending user: {e}[/red]")
         raise click.Abort()
@@ -143,9 +141,9 @@ def restore_user(ctx: click.Context, email: str):
     from vaulytica.config.loader import load_config
     from vaulytica.core.auth.client import create_client_from_config
     from vaulytica.core.lifecycle.user_provisioning import UserProvisioner
-    
+
     console.print(f"[cyan]Restoring user: {email}[/cyan]\n")
-    
+
     # Load configuration
     config_path = ctx.obj.get("config_path")
     try:
@@ -153,21 +151,21 @@ def restore_user(ctx: click.Context, email: str):
     except Exception as e:
         console.print(f"[red]Error loading configuration: {e}[/red]")
         raise click.Abort()
-    
+
     # Create client
     try:
         client = create_client_from_config(config)
     except Exception as e:
         console.print(f"[red]Error creating client: {e}[/red]")
         raise click.Abort()
-    
+
     # Restore user
     try:
         provisioner = UserProvisioner(client)
         provisioner.restore_user(email)
-        
+
         console.print(f"[green]✓ User restored: {email}[/green]")
-        
+
     except Exception as e:
         console.print(f"[red]Error restoring user: {e}[/red]")
         raise click.Abort()
@@ -182,22 +180,22 @@ def delete_user(ctx: click.Context, email: str, force: bool):
     from vaulytica.config.loader import load_config
     from vaulytica.core.auth.client import create_client_from_config
     from vaulytica.core.lifecycle.user_provisioning import UserProvisioner
-    
+
     console.print(f"[red]⚠ WARNING: Deleting user: {email}[/red]\n")
     console.print("[yellow]This action is PERMANENT and cannot be undone![/yellow]\n")
-    
+
     # Confirm action
     if not force:
         if not click.confirm("Are you absolutely sure you want to delete this user?"):
             console.print("[yellow]Cancelled[/yellow]")
             return
-        
+
         # Double confirmation
         confirmation = click.prompt("Type the email address to confirm")
         if confirmation != email:
             console.print("[red]Email does not match. Cancelled.[/red]")
             return
-    
+
     # Load configuration
     config_path = ctx.obj.get("config_path")
     try:
@@ -205,21 +203,21 @@ def delete_user(ctx: click.Context, email: str, force: bool):
     except Exception as e:
         console.print(f"[red]Error loading configuration: {e}[/red]")
         raise click.Abort()
-    
+
     # Create client
     try:
         client = create_client_from_config(config)
     except Exception as e:
         console.print(f"[red]Error creating client: {e}[/red]")
         raise click.Abort()
-    
+
     # Delete user
     try:
         provisioner = UserProvisioner(client)
         provisioner.delete_user(email)
-        
+
         console.print(f"[green]✓ User deleted: {email}[/green]")
-        
+
     except Exception as e:
         console.print(f"[red]Error deleting user: {e}[/red]")
         raise click.Abort()
@@ -248,9 +246,9 @@ def update_user(
     from vaulytica.config.loader import load_config
     from vaulytica.core.auth.client import create_client_from_config
     from vaulytica.core.lifecycle.user_provisioning import UserProvisioner
-    
+
     console.print(f"[cyan]Updating user: {email}[/cyan]\n")
-    
+
     # Build update dict
     updates = {}
     if first_name:
@@ -265,11 +263,11 @@ def update_user(
         updates["department"] = department
     if manager:
         updates["manager_email"] = manager
-    
+
     if not updates:
         console.print("[yellow]No updates specified[/yellow]")
         return
-    
+
     # Load configuration
     config_path = ctx.obj.get("config_path")
     try:
@@ -277,31 +275,31 @@ def update_user(
     except Exception as e:
         console.print(f"[red]Error loading configuration: {e}[/red]")
         raise click.Abort()
-    
+
     # Create client
     try:
         client = create_client_from_config(config)
     except Exception as e:
         console.print(f"[red]Error creating client: {e}[/red]")
         raise click.Abort()
-    
+
     # Update user
     try:
         provisioner = UserProvisioner(client)
         user = provisioner.update_user(email, **updates)
-        
-        console.print(f"[green]✓ User updated successfully![/green]\n")
-        
+
+        console.print("[green]✓ User updated successfully![/green]\n")
+
         # Display updated fields
         table = Table(title="Updated Fields")
         table.add_column("Field", style="cyan")
         table.add_column("Value", style="green")
-        
+
         for key, value in updates.items():
             table.add_row(key.replace("_", " ").title(), str(value))
-        
+
         console.print(table)
-        
+
     except Exception as e:
         console.print(f"[red]Error updating user: {e}[/red]")
         raise click.Abort()

@@ -1,8 +1,6 @@
 """Google Workspace authentication and credential management."""
 
-import json
 import os
-from pathlib import Path
 from typing import Optional, List
 
 from google.auth.transport.requests import Request

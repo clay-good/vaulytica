@@ -1,9 +1,8 @@
 """OAuth app and third-party integration scanner."""
 
 from dataclasses import dataclass, field
-from datetime import datetime, timezone, timedelta
+from datetime import datetime
 from typing import List, Optional, Dict, Any
-from functools import lru_cache
 import time
 
 import structlog

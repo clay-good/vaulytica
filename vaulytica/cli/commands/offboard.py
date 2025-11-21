@@ -155,7 +155,6 @@ def offboard_user(
         # Save report if requested
         if output:
             import json
-            from datetime import datetime
 
             report_data = {
                 "user_email": report.user_email,

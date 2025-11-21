@@ -13,8 +13,8 @@ COPY pyproject.toml poetry.lock* ./
 # Configure Poetry to not create virtual env (we're in a container)
 RUN poetry config virtualenvs.create false
 
-# Install dependencies
-RUN poetry install --no-dev --no-interaction --no-ansi
+# Install dependencies (without dev dependencies)
+RUN poetry install --only main --no-interaction --no-ansi
 
 # Final stage
 FROM python:3.11-slim

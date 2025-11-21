@@ -2,8 +2,8 @@
 
 import time
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta, timezone
-from typing import List, Optional, Dict, Any, Iterator
+from datetime import datetime, timezone
+from typing import List, Optional, Dict, Any
 
 import structlog
 from googleapiclient.errors import HttpError

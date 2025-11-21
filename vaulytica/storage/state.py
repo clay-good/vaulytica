@@ -86,17 +86,17 @@ class StateManager:
 
             # Create indexes
             cursor.execute("""
-                CREATE INDEX IF NOT EXISTS idx_file_modified 
+                CREATE INDEX IF NOT EXISTS idx_file_modified
                 ON file_state(modified_time)
             """)
 
             cursor.execute("""
-                CREATE INDEX IF NOT EXISTS idx_file_last_scanned 
+                CREATE INDEX IF NOT EXISTS idx_file_last_scanned
                 ON file_state(last_scanned)
             """)
 
             cursor.execute("""
-                CREATE INDEX IF NOT EXISTS idx_scan_history_time 
+                CREATE INDEX IF NOT EXISTS idx_scan_history_time
                 ON scan_history(start_time)
             """)
 
@@ -135,7 +135,7 @@ class StateManager:
 
             cursor.execute(
                 """
-                INSERT INTO scan_history 
+                INSERT INTO scan_history
                 (scan_type, domain, start_time, status, metadata)
                 VALUES (?, ?, ?, ?, ?)
                 """,
@@ -226,7 +226,7 @@ class StateManager:
             cursor.execute(
                 """
                 INSERT OR REPLACE INTO file_state
-                (file_id, file_name, owner_email, modified_time, last_scanned, 
+                (file_id, file_name, owner_email, modified_time, last_scanned,
                  risk_score, has_issues, metadata)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """,
@@ -342,7 +342,7 @@ class StateManager:
             cursor.execute(
                 """
                 INSERT OR REPLACE INTO user_state
-                (user_email, user_name, last_login, last_scanned, 
+                (user_email, user_name, last_login, last_scanned,
                  is_suspended, is_inactive, metadata)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
                 """,

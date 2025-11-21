@@ -1,7 +1,7 @@
 """Concurrent processing utilities."""
 
 import concurrent.futures
-from typing import Callable, Iterable, List, Optional, TypeVar, Any
+from typing import Callable, Iterable, List, Optional, TypeVar
 import structlog
 
 logger = structlog.get_logger(__name__)
