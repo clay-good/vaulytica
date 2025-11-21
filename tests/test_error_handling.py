@@ -19,7 +19,7 @@ class TestAPIErrorHandling:
     def test_handle_401_unauthorized(self):
         """Test handling of 401 Unauthorized errors."""
         client = Mock()
-        scanner = FileScanner(client=client)
+        scanner = FileScanner(client=client, domain="company.com")
 
         # Mock 401 error
         error_resp = Mock()
@@ -30,14 +30,14 @@ class TestAPIErrorHandling:
         client.drive_service().files().list.side_effect = http_error
 
         with pytest.raises(Exception) as exc_info:
-            scanner.scan_files()
+            scanner.scan_all_files()
 
         assert exc_info.value is not None
 
     def test_handle_403_forbidden(self):
         """Test handling of 403 Forbidden errors."""
         client = Mock()
-        scanner = FileScanner(client=client)
+        scanner = FileScanner(client=client, domain="company.com")
 
         # Mock 403 error
         error_resp = Mock()
@@ -48,14 +48,14 @@ class TestAPIErrorHandling:
         client.drive_service().files().list.side_effect = http_error
 
         with pytest.raises(Exception) as exc_info:
-            scanner.scan_files()
+            scanner.scan_all_files()
 
         assert exc_info.value is not None
 
     def test_handle_404_not_found(self):
         """Test handling of 404 Not Found errors."""
         client = Mock()
-        scanner = FileScanner(client=client)
+        scanner = FileScanner(client=client, domain="company.com")
 
         # Mock 404 error
         error_resp = Mock()
@@ -71,7 +71,7 @@ class TestAPIErrorHandling:
     def test_handle_429_rate_limit(self):
         """Test handling of 429 Rate Limit errors."""
         client = Mock()
-        scanner = FileScanner(client=client)
+        scanner = FileScanner(client=client, domain="company.com")
 
         # Mock 429 error
         error_resp = Mock()
@@ -82,14 +82,14 @@ class TestAPIErrorHandling:
         client.drive_service().files().list.side_effect = http_error
 
         with pytest.raises(Exception) as exc_info:
-            scanner.scan_files()
+            scanner.scan_all_files()
 
         assert "rate" in str(exc_info.value).lower() or exc_info.value is not None
 
     def test_handle_500_server_error(self):
         """Test handling of 500 Internal Server Error."""
         client = Mock()
-        scanner = FileScanner(client=client)
+        scanner = FileScanner(client=client, domain="company.com")
 
         # Mock 500 error
         error_resp = Mock()
@@ -100,12 +100,12 @@ class TestAPIErrorHandling:
         client.drive_service().files().list.side_effect = http_error
 
         with pytest.raises(Exception):
-            scanner.scan_files()
+            scanner.scan_all_files()
 
     def test_handle_503_service_unavailable(self):
         """Test handling of 503 Service Unavailable."""
         client = Mock()
-        scanner = FileScanner(client=client)
+        scanner = FileScanner(client=client, domain="company.com")
 
         # Mock 503 error
         error_resp = Mock()
@@ -116,7 +116,7 @@ class TestAPIErrorHandling:
         client.drive_service().files().list.side_effect = http_error
 
         with pytest.raises(Exception):
-            scanner.scan_files()
+            scanner.scan_all_files()
 
 
 class TestNetworkErrorHandling:
@@ -125,35 +125,35 @@ class TestNetworkErrorHandling:
     def test_handle_connection_timeout(self):
         """Test handling of connection timeout."""
         client = Mock()
-        scanner = FileScanner(client=client)
+        scanner = FileScanner(client=client, domain="company.com")
 
         # Mock timeout error
         client.drive_service().files().list.side_effect = TimeoutError("Connection timed out")
 
         with pytest.raises(TimeoutError):
-            scanner.scan_files()
+            scanner.scan_all_files()
 
     def test_handle_connection_reset(self):
         """Test handling of connection reset."""
         client = Mock()
-        scanner = FileScanner(client=client)
+        scanner = FileScanner(client=client, domain="company.com")
 
         # Mock connection reset
         client.drive_service().files().list.side_effect = ConnectionResetError("Connection reset by peer")
 
         with pytest.raises(ConnectionResetError):
-            scanner.scan_files()
+            scanner.scan_all_files()
 
     def test_handle_network_unreachable(self):
         """Test handling of network unreachable."""
         client = Mock()
-        scanner = FileScanner(client=client)
+        scanner = FileScanner(client=client, domain="company.com")
 
         # Mock network error
         client.drive_service().files().list.side_effect = OSError("Network is unreachable")
 
         with pytest.raises(OSError):
-            scanner.scan_files()
+            scanner.scan_all_files()
 
 
 class TestDataValidationErrors:
@@ -247,7 +247,7 @@ class TestResourceLimitErrors:
     def test_handle_quota_exhaustion(self):
         """Test handling of API quota exhaustion."""
         client = Mock()
-        scanner = FileScanner(client=client)
+        scanner = FileScanner(client=client, domain="company.com")
 
         # Mock quota exceeded error
         error_resp = Mock()
@@ -258,7 +258,7 @@ class TestResourceLimitErrors:
         client.drive_service().files().list.side_effect = http_error
 
         with pytest.raises(Exception):
-            scanner.scan_files()
+            scanner.scan_all_files()
 
     def test_handle_memory_limits(self):
         """Test handling of memory limits with large datasets."""
@@ -422,11 +422,13 @@ class TestRetryLogic:
 
     def test_retry_on_transient_error(self):
         """Test retrying on transient errors."""
-        from vaulytica.core.utils.retry import retry_on_exception
+        from vaulytica.core.utils.retry import retry_on_error, RetryConfig, RetryableError
 
         attempt_count = {"count": 0}
 
-        @retry_on_exception(max_retries=3, retry_delay=0.1)
+        config = RetryConfig(max_attempts=3, initial_delay=0.1, max_delay=0.1)
+
+        @retry_on_error(config=config, retryable_exceptions=(RetryableError, Exception))
         def flaky_function():
             attempt_count["count"] += 1
             if attempt_count["count"] < 3:
@@ -440,9 +442,11 @@ class TestRetryLogic:
 
     def test_max_retries_exceeded(self):
         """Test behavior when max retries is exceeded."""
-        from vaulytica.core.utils.retry import retry_on_exception
+        from vaulytica.core.utils.retry import retry_on_error, RetryConfig, RetryableError
 
-        @retry_on_exception(max_retries=3, retry_delay=0.1)
+        config = RetryConfig(max_attempts=3, initial_delay=0.1, max_delay=0.1)
+
+        @retry_on_error(config=config, retryable_exceptions=(RetryableError, Exception))
         def always_fails():
             raise Exception("Persistent error")
 

@@ -278,7 +278,6 @@ Critical Findings
 **Permissions**: `admin.directory.user.readonly`, `admin.directory.group.readonly`, `admin.directory.device.mobile.readonly`, `admin.reports.audit.readonly`
 **Access**: READ-ONLY ✅
 **Perfect for**: Security teams, compliance officers, CISOs, auditors, IT governance
-**Documentation**: [SECURITY_POSTURE_FEATURE.md](docs/SECURITY_POSTURE_FEATURE.md)
 
 ---
 

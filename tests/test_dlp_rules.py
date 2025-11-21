@@ -39,10 +39,10 @@ class TestDLPPattern:
 
         text = "Contact me at user@company.com for more information."
 
-        matches = pattern.find_matches(text)
+        matches = list(pattern.regex.finditer(text))
 
         assert len(matches) == 1
-        assert "user@company.com" in matches[0]
+        assert "user@company.com" in matches[0].group(0)
 
     def test_pattern_case_sensitivity(self):
         """Test case sensitive pattern matching."""
@@ -61,11 +61,11 @@ class TestDLPPattern:
         text = "This is sensitive data"
 
         # Case sensitive should not match
-        matches_sensitive = pattern_sensitive.find_matches(text)
+        matches_sensitive = list(pattern_sensitive.regex.finditer(text))
         assert len(matches_sensitive) == 0
 
         # Case insensitive should match
-        matches_insensitive = pattern_insensitive.find_matches(text)
+        matches_insensitive = list(pattern_insensitive.regex.finditer(text))
         assert len(matches_insensitive) == 1
 
     def test_pattern_whole_word_matching(self):
@@ -85,11 +85,11 @@ class TestDLPPattern:
         text = "This is a secret and also secretive information."
 
         # Whole word should match once
-        matches_whole = pattern_whole_word.find_matches(text)
+        matches_whole = list(pattern_whole_word.regex.finditer(text))
         assert len(matches_whole) == 1
 
         # Partial should match twice (secret and secretive)
-        matches_partial = pattern_partial.find_matches(text)
+        matches_partial = list(pattern_partial.regex.finditer(text))
         assert len(matches_partial) == 2
 
     def test_ssn_pattern(self):
@@ -101,10 +101,10 @@ class TestDLPPattern:
 
         text = "Employee SSN: 123-45-6789"
 
-        matches = pattern.find_matches(text)
+        matches = list(pattern.regex.finditer(text))
 
         assert len(matches) == 1
-        assert "123-45-6789" in matches[0]
+        assert "123-45-6789" in matches[0].group(0)
 
     def test_credit_card_pattern(self):
         """Test credit card pattern matching."""
@@ -115,7 +115,7 @@ class TestDLPPattern:
 
         text = "Card number: 1234-5678-9012-3456"
 
-        matches = pattern.find_matches(text)
+        matches = list(pattern.regex.finditer(text))
 
         assert len(matches) == 1
 
@@ -128,7 +128,7 @@ class TestDLPRule:
         pattern = DLPPattern(name="SSN", pattern=r"\d{3}-\d{2}-\d{4}")
 
         rule = DLPRule(
-            rule_id="rule001",
+            id="rule001",
             name="Detect SSN",
             description="Detect Social Security Numbers",
             patterns=[pattern],
@@ -137,7 +137,7 @@ class TestDLPRule:
             enabled=True,
         )
 
-        assert rule.rule_id == "rule001"
+        assert rule.id == "rule001"
         assert rule.name == "Detect SSN"
         assert rule.action == RuleAction.ALERT
         assert rule.severity == RuleSeverity.HIGH
@@ -148,7 +148,7 @@ class TestDLPRule:
         pattern = DLPPattern(name="SSN", pattern=r"\d{3}-\d{2}-\d{4}")
 
         rule = DLPRule(
-            rule_id="rule001",
+            id="rule001",
             name="Detect SSN",
             description="Detect Social Security Numbers",
             patterns=[pattern],
@@ -159,17 +159,19 @@ class TestDLPRule:
 
         text = "Employee records: SSN 123-45-6789, DOB 01/01/1990"
 
-        matches = rule.match(text)
+        # Use DLPEngine to test rule matching
+        engine = DLPEngine(rules=[rule])
+        result = engine.scan_content(text, "test_file", "test.txt")
 
-        assert matches is not None
-        assert len(matches) > 0
+        assert result is not None
+        assert len(result.matches) > 0
 
     def test_disabled_rule(self):
         """Test that disabled rules don't match."""
         pattern = DLPPattern(name="SSN", pattern=r"\d{3}-\d{2}-\d{4}")
 
         rule = DLPRule(
-            rule_id="rule001",
+            id="rule001",
             name="Detect SSN",
             description="Detect Social Security Numbers",
             patterns=[pattern],
@@ -180,12 +182,12 @@ class TestDLPRule:
 
         text = "SSN: 123-45-6789"
 
-        if rule.enabled:
-            matches = rule.match(text)
-            assert matches is not None
-        else:
-            # Rule is disabled, should not process
-            assert rule.enabled is False
+        # Use DLPEngine to test disabled rule
+        engine = DLPEngine(rules=[rule])
+        result = engine.scan_content(text, "test_file", "test.txt")
+
+        # Disabled rule should not generate matches
+        assert len(result.matches) == 0
 
 
 class TestDLPEngine:
@@ -205,7 +207,7 @@ class TestDLPEngine:
         pattern = DLPPattern(name="SSN", pattern=r"\d{3}-\d{2}-\d{4}")
 
         rule = DLPRule(
-            rule_id="rule001",
+            id="rule001",
             name="Detect SSN",
             description="Detect Social Security Numbers",
             patterns=[pattern],
@@ -217,7 +219,7 @@ class TestDLPEngine:
         engine.add_rule(rule)
 
         assert len(engine.rules) == 1
-        assert engine.rules[0].rule_id == "rule001"
+        assert engine.rules[0].id == "rule001"
 
     def test_scan_content(self):
         """Test scanning content with rules."""
@@ -226,7 +228,7 @@ class TestDLPEngine:
         # Add SSN rule
         ssn_pattern = DLPPattern(name="SSN", pattern=r"\d{3}-\d{2}-\d{4}")
         ssn_rule = DLPRule(
-            rule_id="rule001",
+            id="rule001",
             name="Detect SSN",
             description="Detect Social Security Numbers",
             patterns=[ssn_pattern],
@@ -242,7 +244,7 @@ class TestDLPEngine:
             pattern=r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}",
         )
         email_rule = DLPRule(
-            rule_id="rule002",
+            id="rule002",
             name="Detect Email",
             description="Detect email addresses",
             patterns=[email_pattern],
@@ -254,17 +256,17 @@ class TestDLPEngine:
 
         text = "Employee: John Doe, SSN: 123-45-6789, Email: john@company.com"
 
-        violations = engine.scan(text)
+        result = engine.scan_content(text, "test_file", "test.txt")
 
-        assert len(violations) == 2  # Should detect both SSN and email
-        assert any(v.rule_id == "rule001" for v in violations)
-        assert any(v.rule_id == "rule002" for v in violations)
+        assert len(result.matches) == 2  # Should detect both SSN and email
+        assert any(v.rule_id == "rule001" for v in result.matches)
+        assert any(v.rule_id == "rule002" for v in result.matches)
 
     def test_load_rules_from_yaml(self, tmp_path):
         """Test loading rules from YAML file."""
         rules_yaml = """
 rules:
-  - rule_id: rule001
+  - id: rule001
     name: Detect SSN
     description: Detect Social Security Numbers
     patterns:
@@ -275,7 +277,7 @@ rules:
     severity: high
     enabled: true
 
-  - rule_id: rule002
+  - id: rule002
     name: Detect Email
     description: Detect email addresses
     patterns:
@@ -290,12 +292,11 @@ rules:
         rules_file = tmp_path / "dlp_rules.yaml"
         rules_file.write_text(rules_yaml)
 
-        engine = DLPEngine()
-        engine.load_rules_from_yaml(rules_file)
+        engine = DLPEngine.from_yaml(str(rules_file))
 
         assert len(engine.rules) == 2
-        assert engine.rules[0].rule_id == "rule001"
-        assert engine.rules[1].rule_id == "rule002"
+        assert engine.rules[0].id == "rule001"
+        assert engine.rules[1].id == "rule002"
 
     def test_rule_action_execution(self):
         """Test rule action execution."""
@@ -305,7 +306,7 @@ rules:
 
         # Alert action
         alert_rule = DLPRule(
-            rule_id="rule001",
+            id="rule001",
             name="Alert on SSN",
             description="Alert when SSN detected",
             patterns=[pattern],
@@ -316,7 +317,7 @@ rules:
 
         # Block action
         block_rule = DLPRule(
-            rule_id="rule002",
+            id="rule002",
             name="Block SSN",
             description="Block when SSN detected",
             patterns=[pattern],
@@ -330,12 +331,12 @@ rules:
 
         text = "SSN: 123-45-6789"
 
-        violations = engine.scan(text)
+        result = engine.scan_content(text, "test_file", "test.txt")
 
-        # Should have violations for both rules
-        assert len(violations) == 2
-        assert any(v.action == RuleAction.ALERT for v in violations)
-        assert any(v.action == RuleAction.BLOCK for v in violations)
+        # Should have matches for both rules
+        assert len(result.matches) == 2
+        assert any(v.action == RuleAction.ALERT for v in result.matches)
+        assert any(v.action == RuleAction.BLOCK for v in result.matches)
 
 
 class TestRuleActions:
@@ -398,10 +399,10 @@ class TestCustomPatterns:
 
         text = "Employee ID: EMP-123456"
 
-        matches = pattern.find_matches(text)
+        matches = list(pattern.regex.finditer(text))
 
         assert len(matches) == 1
-        assert "EMP-123456" in matches[0]
+        assert "EMP-123456" in matches[0].group(0)
 
     def test_medical_record_number(self):
         """Test medical record number pattern."""
@@ -412,7 +413,7 @@ class TestCustomPatterns:
 
         text = "Medical Record: MRN-12345678"
 
-        matches = pattern.find_matches(text)
+        matches = list(pattern.regex.finditer(text))
 
         assert len(matches) == 1
 
@@ -425,7 +426,7 @@ class TestCustomPatterns:
 
         text = "Patient: PT1234567"
 
-        matches = pattern.find_matches(text)
+        matches = list(pattern.regex.finditer(text))
 
         assert len(matches) == 1
 
@@ -439,7 +440,7 @@ class TestRulePerformance:
 
         pattern = DLPPattern(name="SSN", pattern=r"\d{3}-\d{2}-\d{4}")
         rule = DLPRule(
-            rule_id="rule001",
+            id="rule001",
             name="Detect SSN",
             description="Detect Social Security Numbers",
             patterns=[pattern],
@@ -454,12 +455,12 @@ class TestRulePerformance:
 
         import time
         start = time.time()
-        violations = engine.scan(large_text)
+        result = engine.scan_content(large_text, "large_file", "large.txt")
         duration = time.time() - start
 
         # Should complete quickly (< 1 second)
         assert duration < 1.0
-        assert len(violations) > 0
+        assert len(result.matches) > 0
 
     def test_multiple_rules_performance(self):
         """Test performance with many rules."""
@@ -477,7 +478,7 @@ class TestRulePerformance:
         for i, (name, regex) in enumerate(patterns_and_rules):
             pattern = DLPPattern(name=name, pattern=regex)
             rule = DLPRule(
-                rule_id=f"rule{i:03d}",
+                id=f"rule{i:03d}",
                 name=f"Detect {name}",
                 description=f"Detect {name} patterns",
                 patterns=[pattern],
@@ -491,9 +492,9 @@ class TestRulePerformance:
 
         import time
         start = time.time()
-        violations = engine.scan(text)
+        result = engine.scan_content(text, "test_file", "test.txt")
         duration = time.time() - start
 
         # Should complete quickly even with multiple rules
         assert duration < 0.5
-        assert len(violations) >= 3  # Should detect SSN, email, and phone
+        assert len(result.matches) >= 3  # Should detect SSN, email, and phone

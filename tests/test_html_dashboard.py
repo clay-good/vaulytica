@@ -20,6 +20,7 @@ def sample_scan_results():
                 id="file1",
                 name="sensitive_data.xlsx",
                 owner_email="user@company.com",
+                owner_name="Test User",
                 mime_type="application/vnd.ms-excel",
                 created_time=datetime.now(timezone.utc),
                 modified_time=datetime.now(timezone.utc),
@@ -30,21 +31,12 @@ def sample_scan_results():
                 external_domains=["external.com"],
                 external_emails=["external@external.com"],
                 risk_score=85,
-                sharing_info=FilePermission(
-                    is_public=False,
-                    is_shared_externally=True,
-                    internal_shares=1,
-                    external_shares=1,
-                    public_shares=0,
-                    anyone_with_link=False,
-                ),
-                pii_detected=True,
-                pii_types=["EMAIL", "SSN"],
             ),
             FileInfo(
                 id="file2",
                 name="public_doc.pdf",
                 owner_email="user@company.com",
+                owner_name="Test User",
                 mime_type="application/pdf",
                 created_time=datetime.now(timezone.utc),
                 modified_time=datetime.now(timezone.utc),
@@ -55,42 +47,36 @@ def sample_scan_results():
                 external_domains=[],
                 external_emails=[],
                 risk_score=95,
-                sharing_info=FilePermission(
-                    is_public=True,
-                    is_shared_externally=True,
-                    internal_shares=0,
-                    external_shares=0,
-                    public_shares=1,
-                    anyone_with_link=True,
-                ),
-                pii_detected=False,
-                pii_types=[],
             ),
         ],
         "users": [
             UserInfo(
+                id="user1",
                 email="inactive@company.com",
                 full_name="Inactive User",
                 is_admin=False,
                 is_suspended=False,
+                is_archived=False,
                 last_login_time=datetime(2023, 6, 1, tzinfo=timezone.utc),
                 creation_time=datetime(2022, 1, 1, tzinfo=timezone.utc),
                 two_factor_enabled=False,
                 org_unit_path="/",
                 is_inactive=True,
-                inactive_days=200,
+                days_since_last_login=200,
             ),
             UserInfo(
+                id="user2",
                 email="active@company.com",
                 full_name="Active User",
                 is_admin=False,
                 is_suspended=False,
+                is_archived=False,
                 last_login_time=datetime.now(timezone.utc),
                 creation_time=datetime(2023, 1, 1, tzinfo=timezone.utc),
                 two_factor_enabled=True,
                 org_unit_path="/Engineering",
                 is_inactive=False,
-                inactive_days=0,
+                days_since_last_login=0,
             ),
         ],
         "oauth_apps": [
@@ -98,10 +84,10 @@ def sample_scan_results():
                 client_id="client123",
                 display_text="Risky App",
                 scopes=["https://www.googleapis.com/auth/drive"],
-                authorized_by=["user@company.com"],
+                user_count=1,
                 risk_score=85,
                 is_verified=False,
-                is_internal=False,
+                is_google_app=False,
             ),
         ],
     }
@@ -112,18 +98,19 @@ class TestHTMLDashboardGenerator:
 
     def test_create_dashboard_generator(self):
         """Test creating dashboard generator."""
-        generator = HTMLDashboardGenerator(domain="company.com")
+        generator = HTMLDashboardGenerator()
 
-        assert generator.domain == "company.com"
+        assert generator is not None
+        assert hasattr(generator, 'generate')
 
     def test_generate_basic_dashboard(self, tmp_path, sample_scan_results):
         """Test generating a basic dashboard."""
-        generator = HTMLDashboardGenerator(domain="company.com")
+        generator = HTMLDashboardGenerator()
 
         output_file = tmp_path / "dashboard.html"
-        generator.generate_dashboard(
+        generator.generate(
             scan_results=sample_scan_results,
-            output_file=output_file,
+            output_path=output_file,
         )
 
         assert output_file.exists()
@@ -137,12 +124,12 @@ class TestHTMLDashboardGenerator:
 
     def test_dashboard_includes_summary_stats(self, tmp_path, sample_scan_results):
         """Test that dashboard includes summary statistics."""
-        generator = HTMLDashboardGenerator(domain="company.com")
+        generator = HTMLDashboardGenerator()
 
         output_file = tmp_path / "dashboard.html"
-        generator.generate_dashboard(
+        generator.generate(
             scan_results=sample_scan_results,
-            output_file=output_file,
+            output_path=output_file,
         )
 
         html_content = output_file.read_text()
@@ -153,12 +140,12 @@ class TestHTMLDashboardGenerator:
 
     def test_dashboard_includes_charts(self, tmp_path, sample_scan_results):
         """Test that dashboard includes Chart.js charts."""
-        generator = HTMLDashboardGenerator(domain="company.com")
+        generator = HTMLDashboardGenerator()
 
         output_file = tmp_path / "dashboard.html"
-        generator.generate_dashboard(
+        generator.generate(
             scan_results=sample_scan_results,
-            output_file=output_file,
+            output_path=output_file,
         )
 
         html_content = output_file.read_text()
@@ -168,12 +155,12 @@ class TestHTMLDashboardGenerator:
 
     def test_dashboard_includes_risk_scoring(self, tmp_path, sample_scan_results):
         """Test that dashboard includes risk scoring."""
-        generator = HTMLDashboardGenerator(domain="company.com")
+        generator = HTMLDashboardGenerator()
 
         output_file = tmp_path / "dashboard.html"
-        generator.generate_dashboard(
+        generator.generate(
             scan_results=sample_scan_results,
-            output_file=output_file,
+            output_path=output_file,
         )
 
         html_content = output_file.read_text()
@@ -183,12 +170,12 @@ class TestHTMLDashboardGenerator:
 
     def test_dashboard_includes_pii_detection(self, tmp_path, sample_scan_results):
         """Test that dashboard includes PII detection results."""
-        generator = HTMLDashboardGenerator(domain="company.com")
+        generator = HTMLDashboardGenerator()
 
         output_file = tmp_path / "dashboard.html"
-        generator.generate_dashboard(
+        generator.generate(
             scan_results=sample_scan_results,
-            output_file=output_file,
+            output_path=output_file,
         )
 
         html_content = output_file.read_text()
@@ -198,12 +185,12 @@ class TestHTMLDashboardGenerator:
 
     def test_dashboard_includes_timestamp(self, tmp_path, sample_scan_results):
         """Test that dashboard includes generation timestamp."""
-        generator = HTMLDashboardGenerator(domain="company.com")
+        generator = HTMLDashboardGenerator()
 
         output_file = tmp_path / "dashboard.html"
-        generator.generate_dashboard(
+        generator.generate(
             scan_results=sample_scan_results,
-            output_file=output_file,
+            output_path=output_file,
         )
 
         html_content = output_file.read_text()
@@ -213,12 +200,12 @@ class TestHTMLDashboardGenerator:
 
     def test_dashboard_file_table(self, tmp_path, sample_scan_results):
         """Test that dashboard includes file details table."""
-        generator = HTMLDashboardGenerator(domain="company.com")
+        generator = HTMLDashboardGenerator()
 
         output_file = tmp_path / "dashboard.html"
-        generator.generate_dashboard(
+        generator.generate(
             scan_results=sample_scan_results,
-            output_file=output_file,
+            output_path=output_file,
         )
 
         html_content = output_file.read_text()
@@ -230,12 +217,12 @@ class TestHTMLDashboardGenerator:
 
     def test_dashboard_user_table(self, tmp_path, sample_scan_results):
         """Test that dashboard includes user details table."""
-        generator = HTMLDashboardGenerator(domain="company.com")
+        generator = HTMLDashboardGenerator()
 
         output_file = tmp_path / "dashboard.html"
-        generator.generate_dashboard(
+        generator.generate(
             scan_results=sample_scan_results,
-            output_file=output_file,
+            output_path=output_file,
         )
 
         html_content = output_file.read_text()
@@ -246,12 +233,12 @@ class TestHTMLDashboardGenerator:
 
     def test_dashboard_oauth_app_table(self, tmp_path, sample_scan_results):
         """Test that dashboard includes OAuth app details."""
-        generator = HTMLDashboardGenerator(domain="company.com")
+        generator = HTMLDashboardGenerator()
 
         output_file = tmp_path / "dashboard.html"
-        generator.generate_dashboard(
+        generator.generate(
             scan_results=sample_scan_results,
-            output_file=output_file,
+            output_path=output_file,
         )
 
         html_content = output_file.read_text()
@@ -261,12 +248,12 @@ class TestHTMLDashboardGenerator:
 
     def test_dashboard_with_empty_results(self, tmp_path):
         """Test dashboard generation with empty results."""
-        generator = HTMLDashboardGenerator(domain="company.com")
+        generator = HTMLDashboardGenerator()
 
         output_file = tmp_path / "dashboard.html"
-        generator.generate_dashboard(
+        generator.generate(
             scan_results={"files": [], "users": [], "oauth_apps": []},
-            output_file=output_file,
+            output_path=output_file,
         )
 
         assert output_file.exists()
@@ -277,12 +264,12 @@ class TestHTMLDashboardGenerator:
 
     def test_dashboard_css_styling(self, tmp_path, sample_scan_results):
         """Test that dashboard includes CSS styling."""
-        generator = HTMLDashboardGenerator(domain="company.com")
+        generator = HTMLDashboardGenerator()
 
         output_file = tmp_path / "dashboard.html"
-        generator.generate_dashboard(
+        generator.generate(
             scan_results=sample_scan_results,
-            output_file=output_file,
+            output_path=output_file,
         )
 
         html_content = output_file.read_text()
@@ -292,12 +279,12 @@ class TestHTMLDashboardGenerator:
 
     def test_dashboard_responsive_design(self, tmp_path, sample_scan_results):
         """Test that dashboard includes responsive design elements."""
-        generator = HTMLDashboardGenerator(domain="company.com")
+        generator = HTMLDashboardGenerator()
 
         output_file = tmp_path / "dashboard.html"
-        generator.generate_dashboard(
+        generator.generate(
             scan_results=sample_scan_results,
-            output_file=output_file,
+            output_path=output_file,
         )
 
         html_content = output_file.read_text()
@@ -311,12 +298,12 @@ class TestDashboardCharts:
 
     def test_risk_distribution_chart(self, tmp_path, sample_scan_results):
         """Test risk distribution chart."""
-        generator = HTMLDashboardGenerator(domain="company.com")
+        generator = HTMLDashboardGenerator()
 
         output_file = tmp_path / "dashboard.html"
-        generator.generate_dashboard(
+        generator.generate(
             scan_results=sample_scan_results,
-            output_file=output_file,
+            output_path=output_file,
         )
 
         html_content = output_file.read_text()
@@ -327,12 +314,12 @@ class TestDashboardCharts:
 
     def test_pii_types_chart(self, tmp_path, sample_scan_results):
         """Test PII types distribution chart."""
-        generator = HTMLDashboardGenerator(domain="company.com")
+        generator = HTMLDashboardGenerator()
 
         output_file = tmp_path / "dashboard.html"
-        generator.generate_dashboard(
+        generator.generate(
             scan_results=sample_scan_results,
-            output_file=output_file,
+            output_path=output_file,
         )
 
         html_content = output_file.read_text()
@@ -342,12 +329,12 @@ class TestDashboardCharts:
 
     def test_sharing_distribution_chart(self, tmp_path, sample_scan_results):
         """Test file sharing distribution chart."""
-        generator = HTMLDashboardGenerator(domain="company.com")
+        generator = HTMLDashboardGenerator()
 
         output_file = tmp_path / "dashboard.html"
-        generator.generate_dashboard(
+        generator.generate(
             scan_results=sample_scan_results,
-            output_file=output_file,
+            output_path=output_file,
         )
 
         html_content = output_file.read_text()
@@ -361,12 +348,12 @@ class TestDashboardExport:
 
     def test_export_to_pdf_ready(self, tmp_path, sample_scan_results):
         """Test that dashboard is print/PDF ready."""
-        generator = HTMLDashboardGenerator(domain="company.com")
+        generator = HTMLDashboardGenerator()
 
         output_file = tmp_path / "dashboard.html"
-        generator.generate_dashboard(
+        generator.generate(
             scan_results=sample_scan_results,
-            output_file=output_file,
+            output_path=output_file,
         )
 
         html_content = output_file.read_text()
@@ -376,12 +363,12 @@ class TestDashboardExport:
 
     def test_dashboard_metadata(self, tmp_path, sample_scan_results):
         """Test that dashboard includes proper HTML metadata."""
-        generator = HTMLDashboardGenerator(domain="company.com")
+        generator = HTMLDashboardGenerator()
 
         output_file = tmp_path / "dashboard.html"
-        generator.generate_dashboard(
+        generator.generate(
             scan_results=sample_scan_results,
-            output_file=output_file,
+            output_path=output_file,
         )
 
         html_content = output_file.read_text()
@@ -396,12 +383,12 @@ class TestDashboardTemplates:
 
     def test_executive_summary_section(self, tmp_path, sample_scan_results):
         """Test executive summary section."""
-        generator = HTMLDashboardGenerator(domain="company.com")
+        generator = HTMLDashboardGenerator()
 
         output_file = tmp_path / "dashboard.html"
-        generator.generate_dashboard(
+        generator.generate(
             scan_results=sample_scan_results,
-            output_file=output_file,
+            output_path=output_file,
             include_executive_summary=True,
         )
 
@@ -412,12 +399,12 @@ class TestDashboardTemplates:
 
     def test_detailed_findings_section(self, tmp_path, sample_scan_results):
         """Test detailed findings section."""
-        generator = HTMLDashboardGenerator(domain="company.com")
+        generator = HTMLDashboardGenerator()
 
         output_file = tmp_path / "dashboard.html"
-        generator.generate_dashboard(
+        generator.generate(
             scan_results=sample_scan_results,
-            output_file=output_file,
+            output_path=output_file,
             include_detailed_findings=True,
         )
 
@@ -428,12 +415,12 @@ class TestDashboardTemplates:
 
     def test_recommendations_section(self, tmp_path, sample_scan_results):
         """Test recommendations section."""
-        generator = HTMLDashboardGenerator(domain="company.com")
+        generator = HTMLDashboardGenerator()
 
         output_file = tmp_path / "dashboard.html"
-        generator.generate_dashboard(
+        generator.generate(
             scan_results=sample_scan_results,
-            output_file=output_file,
+            output_path=output_file,
             include_recommendations=True,
         )
 
@@ -448,42 +435,42 @@ class TestDashboardErrorHandling:
 
     def test_handle_invalid_output_path(self, sample_scan_results):
         """Test handling of invalid output path."""
-        generator = HTMLDashboardGenerator(domain="company.com")
+        generator = HTMLDashboardGenerator()
 
         # Try to write to non-existent directory
         with pytest.raises(Exception):
-            generator.generate_dashboard(
+            generator.generate(
                 scan_results=sample_scan_results,
-                output_file=Path("/nonexistent/dir/dashboard.html"),
+                output_path=Path("/nonexistent/dir/dashboard.html"),
             )
 
     def test_handle_malformed_scan_results(self, tmp_path):
         """Test handling of malformed scan results."""
-        generator = HTMLDashboardGenerator(domain="company.com")
+        generator = HTMLDashboardGenerator()
 
         output_file = tmp_path / "dashboard.html"
 
         # Try with None or malformed data
         try:
-            generator.generate_dashboard(
+            generator.generate(
                 scan_results=None,
-                output_file=output_file,
+                output_path=output_file,
             )
         except Exception:
             pass  # Expected to fail gracefully
 
     def test_handle_missing_required_fields(self, tmp_path):
         """Test handling of scan results with missing fields."""
-        generator = HTMLDashboardGenerator(domain="company.com")
+        generator = HTMLDashboardGenerator()
 
         output_file = tmp_path / "dashboard.html"
 
         # Provide incomplete scan results
         incomplete_results = {"files": []}  # Missing users and oauth_apps
 
-        generator.generate_dashboard(
+        generator.generate(
             scan_results=incomplete_results,
-            output_file=output_file,
+            output_path=output_file,
         )
 
         # Should handle gracefully and generate dashboard

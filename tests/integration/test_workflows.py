@@ -10,7 +10,7 @@ from vaulytica.core.scanners.file_scanner import FileScanner, FileInfo, FilePerm
 from vaulytica.core.scanners.user_scanner import UserScanner, UserInfo
 from vaulytica.core.compliance.reporting import ComplianceReporter
 from vaulytica.core.reporters.html_dashboard import HTMLDashboardGenerator
-from vaulytica.core.lifecycle.offboarding import EmployeeOffboardingManager
+from vaulytica.core.lifecycle.offboarding import OffboardingManager
 
 
 @pytest.fixture
@@ -137,14 +137,14 @@ class TestPIIDetectionWorkflow:
 class TestEmployeeOffboardingWorkflow:
     """Test end-to-end employee offboarding workflow."""
 
-    @patch("vaulytica.core.lifecycle.offboarding.EmployeeOffboardingManager")
+    @patch("vaulytica.core.lifecycle.offboarding.OffboardingManager")
     def test_complete_offboarding_workflow(self, mock_offboarding_class, mock_google_client, tmp_path):
         """Test complete employee offboarding process."""
         # Setup
         mock_offboarding = Mock()
         mock_offboarding_class.return_value = mock_offboarding
 
-        manager = EmployeeOffboardingManager(client=mock_google_client)
+        manager = OffboardingManager(client=mock_google_client)
 
         # Step 1: Suspend user
         manager.suspend_user(email="terminated@company.com")
@@ -179,13 +179,13 @@ class TestEmployeeOffboardingWorkflow:
         )
         mock_offboarding.create_backup.assert_called_once()
 
-    @patch("vaulytica.core.lifecycle.offboarding.EmployeeOffboardingManager")
+    @patch("vaulytica.core.lifecycle.offboarding.OffboardingManager")
     def test_offboarding_with_dry_run(self, mock_offboarding_class, mock_google_client):
         """Test offboarding dry-run mode."""
         mock_offboarding = Mock()
         mock_offboarding_class.return_value = mock_offboarding
 
-        manager = EmployeeOffboardingManager(client=mock_google_client)
+        manager = OffboardingManager(client=mock_google_client)
 
         # Dry-run should not make changes
         manager.offboard_user(

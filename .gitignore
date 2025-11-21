@@ -1,8 +1,23 @@
-# Python
+### macOS Specific ###
+# Files created by the macOS Finder and Spotlight
+.DS_Store
+# Temporary files created by the macOS file system
+.Trashes
+# File/folder metadata
+._*
+# History files
+.history
+# Thumbs DB (Windows, but often useful to include)
+Thumbs.db
+
+---
+
+### Python Specific ###
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
-*.so
+# Distribution / packaging
 .Python
 build/
 develop-eggs/
@@ -16,84 +31,124 @@ parts/
 sdist/
 var/
 wheels/
-pip-wheel-metadata/
-share/python-wheels/
+share/python/
 *.egg-info/
 .installed.cfg
-*.egg
-MANIFEST
-
-# Virtual environments
-venv/
-env/
-ENV/
-env.bak/
-venv.bak/
-.venv/
-poetry.lock
-
-# Poetry
-poetry.toml
-
-# Testing
+*.manifest
+# Testing and Coverage
 .pytest_cache/
+.tox/
 .coverage
 .coverage.*
 htmlcov/
-.tox/
-.nox/
-coverage.xml
-*.cover
-.hypothesis/
-
-# Type checking
-.mypy_cache/
-.dmypy.json
-dmypy.json
-.pyre/
-.pytype/
-
-# IDEs
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
-
-# Jupyter Notebook
+# Virtual environment
+.venv
+venv/
+env/
+# Jupyter Notebook Checkpoints
 .ipynb_checkpoints
-*.ipynb
+# mypy
+.mypy_cache/
+# PyInstaller/py2exe
+*.spec
 
-# Environment variables
-.env
-.env.local
-.env.*.local
-.dev.vars
+---
 
+### Node/npm/JavaScript Specific ###
+# Dependency directories
+node_modules/
+.pnpm-store/
+/jspm_packages/
+# Build/Dist/Output
+/dist/
+/out/
+/build/
+/tmp/
+/temp/
+# Next.js/Gatsby/Other Frameworks
+.next/
+.gatsby/
+/public/
+/.wrangler/
+/worker/
 # Logs
 logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+# Testing
+coverage/
+.nyc_output/
+/test-results/
+# TypeScript
+*.tsbuildinfo
+# Vite
+.vite/
 
-# Vaulytica specific
-outputs/
-chroma_db/
-*.db
-*.sqlite
-*.sqlite3
-cache/
-tmp/
-temp/
-*.tmp
+---
 
-# OS
-.DS_Store
-Thumbs.db
+### Rust Specific ###
+# Cargo build directory
+/target/
+# IntelliJ Rust plugin
+*.iml
+.idea/
+# Cross-compilation (e.g., for WebAssembly)
+/pkg/
+# Rust-analyzer
+.rust-analyzer/
+# Other common files
+Cargo.lock
 
-# Backup files
-*.bak
+---
+
+### Environment and Configuration ###
+# Environment variables
+.env
+.env.local
+.env.*.local
+.dev.vars
+.env.production
+.env.development
+.env.test
+# Security/Secrets
+*.pem
+*.key
+*.crt
+*.p12
+
+---
+
+### IDE and Editor Specific ###
+# VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+# JetBrains (IntelliJ, PyCharm, WebStorm, etc.)
+.idea/
+# (Rust specific IntelliJ files are included above, but keep these general ones)
+*.iws
+*.iml
+*.ipr
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+# Vim
 *.swp
+*.swo
 *~
+# Emacs
+#*#
+
+---
+
+### Other Temporary Files ###
+# General temporary files
+*.tmp
+*.bak
+*.orig
+.claude
