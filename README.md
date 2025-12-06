@@ -93,6 +93,19 @@ Vaulytica is a powerful, self-hosted Python CLI tool that provides comprehensive
 - Organizational unit and calendar resource management
 - Full backup and export capabilities
 
+### Scheduled Scanning
+- APScheduler backend with cron and interval triggers
+- Persist schedules to disk for daemon mode operation
+- Support for files, users, gmail, shared_drives, oauth scans
+- Enable/disable schedules without deletion
+
+### Trend Analysis
+- Historical metrics storage in SQLite database
+- Week-over-week and month-over-month comparisons
+- Trend direction detection (improving/degrading/stable)
+- Anomaly detection for sudden spikes or drops
+- Track 10 key security metrics over time
+
 ### Monitoring & Alerting
 - Email alerts for high-risk findings
 - Webhook integration for SIEM platforms (Splunk, Datadog, Elastic)
@@ -169,6 +182,7 @@ poetry run vaulytica scan files --check-pii --external-only --output pii-report.
 | `metrics` | Prometheus metrics export | READ-ONLY |
 | `workflow` | Automated alerting workflows | READ-ONLY + Alerts |
 | `schedule` | Scheduled scan management | READ-ONLY |
+| `trend` | Trend analysis and historical reporting | READ-ONLY |
 | `custom-pii` | Custom PII pattern management | Configuration |
 
 ---
@@ -959,19 +973,90 @@ vaulytica workflow gmail-external-pii-alert \
 
 ### Scheduled Scanning
 
-```bash
-# Add scheduled scan
-vaulytica schedule add \
-  --name "daily-file-scan" \
-  --command "scan files --external-only --check-pii" \
-  --cron "0 2 * * *"
+Schedule automated recurring scans using cron expressions or intervals.
 
-# List schedules
+```bash
+# Add a daily file scan at 2 AM
+vaulytica schedule add \
+  --name "Daily File Scan" \
+  --scan-type files \
+  --schedule "0 2 * * *"
+
+# Add a user scan every 6 hours
+vaulytica schedule add \
+  --name "Periodic User Scan" \
+  --scan-type users \
+  --schedule-type interval \
+  --schedule "6h"
+
+# List all schedules
 vaulytica schedule list
 
-# Run scheduled scans
+# Show schedule details
+vaulytica schedule show <scan_id>
+
+# Enable/disable schedules
+vaulytica schedule enable <scan_id>
+vaulytica schedule disable <scan_id>
+
+# Remove a schedule
+vaulytica schedule remove <scan_id>
+
+# Run scheduler (foreground, blocking)
 vaulytica schedule run
+
+# Run scheduler as daemon
+vaulytica schedule run --daemon
+
+# Stop scheduler
+vaulytica schedule stop
 ```
+
+**Supported Scan Types:** files, users, gmail, shared_drives, oauth
+
+**Schedule Formats:**
+- Cron: `"0 2 * * *"` (daily at 2 AM)
+- Interval: `"6h"` (every 6 hours), `"30m"` (every 30 minutes), `"1d"` (daily)
+
+---
+
+### Trend Analysis
+
+Track security metrics over time and detect trends.
+
+```bash
+# Analyze trend for a specific metric
+vaulytica trend analyze -m external_shares -d company.com --days 30
+
+# Compare two time periods
+vaulytica trend compare -m external_shares -d company.com \
+  --from-date 2024-01-01 --to-date 2024-01-31 \
+  --compare-from 2024-02-01 --compare-to 2024-02-28
+
+# Generate comprehensive trend report
+vaulytica trend report -d company.com --days 30 -o report.json
+
+# Week-over-week change
+vaulytica trend week-over-week -m external_shares -d company.com
+
+# Month-over-month change
+vaulytica trend month-over-month -m users_without_2fa -d company.com
+
+# Manually record a metric value
+vaulytica trend record -m external_shares -v 42 -d company.com
+```
+
+**Available Metrics:**
+- `external_shares` - Files shared externally
+- `public_files` - Publicly accessible files
+- `users_without_2fa` - Users without 2FA enabled
+- `high_risk_oauth` - High-risk OAuth applications
+- `inactive_users` - Inactive user accounts
+- `external_members` - External group members
+- `stale_files` - Files not accessed recently
+- `external_owned_files` - Files owned by external users
+- `security_score` - Overall security score (0-100)
+- `compliance_score` - Compliance score (0-100)
 
 ---
 

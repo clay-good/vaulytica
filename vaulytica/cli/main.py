@@ -964,6 +964,7 @@ from vaulytica.cli.commands.monitor import monitor_group
 from vaulytica.cli.commands.workflow import workflow_group
 from vaulytica.cli.commands.metrics import metrics
 from vaulytica.cli.commands.schedule import schedule
+from vaulytica.cli.commands.trend import trend
 from vaulytica.cli.commands.users import users_group
 from vaulytica.cli.commands.bulk import bulk_group
 from vaulytica.cli.commands.ou import ou_group
@@ -978,6 +979,7 @@ cli.add_command(monitor_group)
 cli.add_command(workflow_group)
 cli.add_command(metrics)
 cli.add_command(schedule)
+cli.add_command(trend)
 cli.add_command(users_group)
 cli.add_command(bulk_group)
 cli.add_command(ou_group)
