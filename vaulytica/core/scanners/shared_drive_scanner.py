@@ -15,6 +15,21 @@ logger = structlog.get_logger(__name__)
 
 
 @dataclass
+class SharedDriveMember:
+    """Represents a member of a Shared Drive."""
+
+    drive_id: str
+    drive_name: str
+    member_email: str
+    member_type: str  # user, group, domain, anyone
+    role: str  # organizer, fileOrganizer, writer, commenter, reader
+    is_external: bool = False
+    access_source: str = "direct"  # direct or via group name
+    display_name: Optional[str] = None
+    permission_id: str = ""
+
+
+@dataclass
 class SharedDriveInfo:
     """Represents a Shared Drive."""
 
@@ -27,6 +42,7 @@ class SharedDriveInfo:
     member_count: int = 0
     file_count: int = 0
     external_member_count: int = 0
+    members: List[SharedDriveMember] = field(default_factory=list)
 
 
 @dataclass
@@ -359,4 +375,196 @@ class SharedDriveScanner:
         )
 
         return drive_info
+
+    def scan_drive_members(
+        self,
+        max_drives: Optional[int] = None,
+    ) -> Iterator[SharedDriveMember]:
+        """Scan all Shared Drive memberships.
+
+        Lists all members of each Shared Drive with their roles,
+        identifies external members, and tracks group-based access.
+
+        Args:
+            max_drives: Maximum number of drives to scan
+
+        Yields:
+            SharedDriveMember objects
+
+        Raises:
+            SharedDriveScannerError: If scanning fails
+        """
+        logger.info(
+            "starting_shared_drive_membership_scan",
+            max_drives=max_drives,
+        )
+
+        scan_start_time = time.time()
+        drive_count = 0
+        member_count = 0
+        external_count = 0
+
+        try:
+            # Get all Shared Drives
+            for drive in self._list_shared_drives(max_drives=max_drives):
+                drive_count += 1
+
+                try:
+                    # Get permissions for this drive
+                    members = list(self._get_drive_members(drive.id, drive.name))
+
+                    for member in members:
+                        member_count += 1
+                        if member.is_external:
+                            external_count += 1
+                        yield member
+
+                except Exception as e:
+                    logger.warning(
+                        "failed_to_get_drive_members",
+                        drive_id=drive.id,
+                        drive_name=drive.name,
+                        error=str(e)
+                    )
+                    continue
+
+            scan_duration = time.time() - scan_start_time
+
+            logger.info(
+                "shared_drive_membership_scan_complete",
+                drives_scanned=drive_count,
+                total_members=member_count,
+                external_members=external_count,
+                scan_duration_seconds=round(scan_duration, 2),
+            )
+
+        except Exception as e:
+            logger.error("shared_drive_membership_scan_failed", error=str(e))
+            raise SharedDriveScannerError(f"Shared Drive membership scan failed: {e}")
+
+    def _get_drive_members(
+        self,
+        drive_id: str,
+        drive_name: str,
+    ) -> Iterator[SharedDriveMember]:
+        """Get all members of a specific Shared Drive.
+
+        Args:
+            drive_id: Shared Drive ID
+            drive_name: Shared Drive name for context
+
+        Yields:
+            SharedDriveMember objects
+        """
+        page_token = None
+
+        try:
+            while True:
+                try:
+                    response = (
+                        self.client.drive.permissions()
+                        .list(
+                            fileId=drive_id,
+                            supportsAllDrives=True,
+                            useDomainAdminAccess=True,
+                            pageSize=100,
+                            pageToken=page_token,
+                            fields="nextPageToken, permissions(id, type, role, emailAddress, domain, displayName, deleted)",
+                        )
+                        .execute()
+                    )
+
+                    permissions = response.get("permissions", [])
+
+                    for perm in permissions:
+                        if perm.get("deleted", False):
+                            continue
+
+                        member = self._process_permission_to_member(
+                            perm, drive_id, drive_name
+                        )
+                        if member:
+                            yield member
+
+                    page_token = response.get("nextPageToken")
+                    if not page_token:
+                        break
+
+                    time.sleep(0.1)  # Rate limiting
+
+                except HttpError as e:
+                    if e.resp.status == 429:
+                        logger.warning("rate_limit_hit_retrying")
+                        time.sleep(5)
+                        continue
+                    elif e.resp.status == 404:
+                        logger.warning("drive_not_found", drive_id=drive_id)
+                        break
+                    else:
+                        raise
+
+        except HttpError as e:
+            logger.error(
+                "failed_to_get_drive_permissions",
+                drive_id=drive_id,
+                error=str(e),
+            )
+            raise SharedDriveScannerError(f"Failed to get drive permissions: {e}")
+
+    def _process_permission_to_member(
+        self,
+        perm_data: Dict[str, Any],
+        drive_id: str,
+        drive_name: str,
+    ) -> Optional[SharedDriveMember]:
+        """Process permission data into SharedDriveMember.
+
+        Args:
+            perm_data: Permission data from API
+            drive_id: Shared Drive ID
+            drive_name: Shared Drive name
+
+        Returns:
+            SharedDriveMember object or None if invalid
+        """
+        perm_type = perm_data.get("type", "")
+        role = perm_data.get("role", "")
+        email = perm_data.get("emailAddress", "")
+        domain = perm_data.get("domain", "")
+        display_name = perm_data.get("displayName", "")
+        permission_id = perm_data.get("id", "")
+
+        # Determine member email/identifier
+        if perm_type == "user":
+            member_email = email
+        elif perm_type == "group":
+            member_email = email
+        elif perm_type == "domain":
+            member_email = f"*@{domain}" if domain else "domain"
+        elif perm_type == "anyone":
+            member_email = "anyone (public)"
+        else:
+            return None
+
+        # Determine if external
+        is_external = False
+        if perm_type == "anyone":
+            is_external = True
+        elif perm_type == "domain" and domain:
+            is_external = domain != self.domain
+        elif perm_type in ["user", "group"] and email:
+            email_domain = email.split("@")[-1] if "@" in email else ""
+            is_external = email_domain != self.domain
+
+        return SharedDriveMember(
+            drive_id=drive_id,
+            drive_name=drive_name,
+            member_email=member_email,
+            member_type=perm_type,
+            role=role,
+            is_external=is_external,
+            access_source="direct",
+            display_name=display_name,
+            permission_id=permission_id,
+        )
 

@@ -2745,3 +2745,207 @@ def scan_licenses_command(
 
             console.print(f"[green]✓ Results saved to {output}[/green]")
 
+
+def scan_shared_drive_members_command(
+    ctx: click.Context,
+    domain: Optional[str],
+    external_only: bool,
+    output: Optional[Path],
+    format: str,
+) -> None:
+    """Scan Shared Drive memberships and permissions.
+
+    Lists all members of each Shared Drive with their roles,
+    identifies external members (non-domain users), and tracks
+    group memberships that grant Shared Drive access.
+
+    Args:
+        ctx: Click context
+        domain: Domain to scan
+        external_only: Only show external members
+        output: Output file path
+        format: Output format (csv or json)
+    """
+    from vaulytica.config.loader import load_config
+    from vaulytica.core.auth.client import create_client_from_config
+    from vaulytica.core.scanners.shared_drive_scanner import SharedDriveScanner
+
+    console.print("[bold blue]Scanning Shared Drive memberships...[/bold blue]\n")
+
+    # Load configuration
+    config_path = ctx.obj.get("config_path")
+    try:
+        config = load_config(config_path)
+    except Exception as e:
+        console.print(f"[red]Error loading configuration: {e}[/red]")
+        raise click.Abort()
+
+    # Use domain from config if not specified
+    if not domain:
+        domain = config.get("google_workspace", {}).get("domain")
+        if not domain:
+            console.print("[red]Error: No domain specified in config or command line[/red]")
+            raise click.Abort()
+
+    console.print(f"[cyan]Domain:[/cyan] {domain}")
+    console.print(f"[cyan]External only:[/cyan] {external_only}")
+
+    # Create Google Workspace client
+    try:
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            console=console,
+        ) as progress:
+            task = progress.add_task("Authenticating...", total=None)
+            client = create_client_from_config(config)
+            progress.update(task, description="[green]Authenticated[/green]")
+
+            # Create scanner
+            scanner = SharedDriveScanner(client, domain)
+
+            # Scan for members
+            progress.update(task, description="Scanning Shared Drive memberships...")
+
+            members = []
+            drive_count = 0
+            external_count = 0
+            current_drive = ""
+
+            for member in scanner.scan_drive_members():
+                if member.drive_name != current_drive:
+                    current_drive = member.drive_name
+                    drive_count += 1
+                    progress.update(task, description=f"Scanning drive: {current_drive[:30]}...")
+
+                if member.is_external:
+                    external_count += 1
+
+                # Filter if requested
+                if external_only and not member.is_external:
+                    continue
+
+                members.append(member)
+
+            progress.update(task, description="[green]Scan complete[/green]")
+
+    except Exception as e:
+        console.print(f"[red]Error during scan: {e}[/red]")
+        raise click.Abort()
+
+    # Display summary
+    console.print(f"\n[bold]Scan Summary:[/bold]")
+    console.print(f"  Shared Drives scanned: {drive_count}")
+    console.print(f"  Total members found: {len(members)}")
+    console.print(f"  External members: {external_count}")
+
+    # Display results table
+    if members:
+        console.print(f"\n[bold]Membership Details ({len(members)} entries):[/bold]\n")
+
+        table = Table(show_header=True, header_style="bold magenta")
+        table.add_column("Drive Name", style="cyan", max_width=30)
+        table.add_column("Member", max_width=35)
+        table.add_column("Type")
+        table.add_column("Role")
+        table.add_column("External")
+
+        # Show first 50 entries
+        for member in members[:50]:
+            external_marker = "[red]Yes[/red]" if member.is_external else "[green]No[/green]"
+            table.add_row(
+                member.drive_name[:30] if len(member.drive_name) > 30 else member.drive_name,
+                member.member_email[:35] if len(member.member_email) > 35 else member.member_email,
+                member.member_type,
+                member.role,
+                external_marker,
+            )
+
+        console.print(table)
+
+        if len(members) > 50:
+            console.print(f"\n[dim]... and {len(members) - 50} more entries[/dim]")
+
+    # Save to file if requested
+    if output:
+        _save_shared_drive_members_to_output(members, output, format)
+
+    console.print("\n[green]Shared Drive membership scan complete[/green]")
+
+
+def _save_shared_drive_members_to_output(members: List, output: Path, format: str) -> None:
+    """Save Shared Drive membership results to output file.
+
+    Args:
+        members: List of SharedDriveMember objects
+        output: Output file path
+        format: Output format (csv or json)
+    """
+    output.parent.mkdir(parents=True, exist_ok=True)
+
+    if format == "csv":
+        with open(output, "w", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            # Write header
+            writer.writerow([
+                "Drive ID",
+                "Drive Name",
+                "Member Email",
+                "Member Type",
+                "Role",
+                "Is External",
+                "Display Name",
+                "Access Source",
+            ])
+            # Write data
+            for member in members:
+                writer.writerow([
+                    member.drive_id,
+                    member.drive_name,
+                    member.member_email,
+                    member.member_type,
+                    member.role,
+                    "Yes" if member.is_external else "No",
+                    member.display_name or "",
+                    member.access_source,
+                ])
+
+        console.print(f"[green]Results saved to {output}[/green]")
+
+    elif format == "json":
+        # Group by drive for better structure
+        drives_dict: Dict[str, Dict] = {}
+        for member in members:
+            if member.drive_id not in drives_dict:
+                drives_dict[member.drive_id] = {
+                    "drive_id": member.drive_id,
+                    "drive_name": member.drive_name,
+                    "members": [],
+                    "external_member_count": 0,
+                }
+            drives_dict[member.drive_id]["members"].append({
+                "email": member.member_email,
+                "type": member.member_type,
+                "role": member.role,
+                "is_external": member.is_external,
+                "display_name": member.display_name,
+                "access_source": member.access_source,
+            })
+            if member.is_external:
+                drives_dict[member.drive_id]["external_member_count"] += 1
+
+        data = {
+            "scan_type": "shared_drive_members",
+            "summary": {
+                "total_drives": len(drives_dict),
+                "total_members": len(members),
+                "external_members": sum(1 for m in members if m.is_external),
+            },
+            "drives": list(drives_dict.values()),
+        }
+
+        with open(output, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2)
+
+        console.print(f"[green]Results saved to {output}[/green]")
+

@@ -775,6 +775,55 @@ def scan_external_owned(
     scan_external_owned_command(ctx, domain, min_size, output, format)
 
 
+@scan.command("shared-drive-members")
+@click.option(
+    "--domain",
+    "-d",
+    help="Organization domain (from config if not specified)",
+)
+@click.option(
+    "--external-only",
+    is_flag=True,
+    help="Only show external (non-domain) members",
+)
+@click.option(
+    "--output",
+    "-o",
+    type=click.Path(path_type=Path),
+    help="Output file path",
+)
+@click.option(
+    "--format",
+    "-f",
+    type=click.Choice(["csv", "json"], case_sensitive=False),
+    default="csv",
+    help="Output format",
+)
+@click.pass_context
+def scan_shared_drive_members(
+    ctx: click.Context,
+    domain: Optional[str],
+    external_only: bool,
+    output: Optional[Path],
+    format: str,
+) -> None:
+    """Scan Shared Drive memberships and permissions.
+
+    Lists all members of each Shared Drive with their roles,
+    identifies external members (non-domain users), and tracks
+    group memberships that grant Shared Drive access.
+
+    Useful for:
+    - Security audits of Team Drive access
+    - Identifying external collaborators
+    - Compliance reporting
+    - Access review and cleanup
+    """
+    from vaulytica.cli.commands.scan import scan_shared_drive_members_command
+
+    scan_shared_drive_members_command(ctx, domain, external_only, output, format)
+
+
 @cli.group()
 @click.pass_context
 def report(ctx: click.Context) -> None:
