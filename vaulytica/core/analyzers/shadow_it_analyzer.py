@@ -403,7 +403,7 @@ class ShadowITAnalyzer:
                     f"Risk Score: {app.risk_score}/100",
                 ],
                 remediation_steps=[
-                    "⚠️ IMMEDIATE ACTION REQUIRED",
+                    "IMMEDIATE ACTION REQUIRED",
                     "Revoke access immediately if not approved",
                     "Investigate recent admin actions via audit logs",
                     "Review affected user accounts for unauthorized changes",
@@ -780,14 +780,14 @@ class ShadowITAnalyzer:
         # Critical risks
         if result.critical_findings > 0:
             summary_parts.append(
-                f"\n\n⚠️ CRITICAL: {result.critical_findings} critical finding(s) require immediate attention. "
+                f"\n\nCRITICAL: {result.critical_findings} critical finding(s) require immediate attention. "
                 f"These include apps with admin-level access that could compromise your entire organization."
             )
 
         # High risks
         if result.high_findings > 0:
             summary_parts.append(
-                f"\n\n🔴 HIGH PRIORITY: {result.high_findings} high-risk finding(s) identified, including "
+                f"\n\nHIGH PRIORITY: {result.high_findings} high-risk finding(s) identified, including "
                 f"{result.data_exfiltration_risks} data exfiltration risk(s) and "
                 f"{result.admin_access_risks} admin access risk(s)."
             )
@@ -795,20 +795,20 @@ class ShadowITAnalyzer:
         # Medium/Low risks
         if result.medium_findings > 0 or result.low_findings > 0:
             summary_parts.append(
-                f"\n\n🟡 MEDIUM/LOW: {result.medium_findings} medium and {result.low_findings} low-priority "
+                f"\n\nMEDIUM/LOW: {result.medium_findings} medium and {result.low_findings} low-priority "
                 f"findings require review and remediation within normal security operations."
             )
 
         # Stale grants
         if result.stale_grants > 0:
             summary_parts.append(
-                f"\n\n♻️ CLEANUP: {result.stale_grants} stale OAuth grant(s) detected that haven't been used "
+                f"\n\nCLEANUP: {result.stale_grants} stale OAuth grant(s) detected that haven't been used "
                 f"recently and should be revoked to reduce attack surface."
             )
 
         # Recommendations
         summary_parts.append(
-            "\n\n📋 NEXT STEPS:\n"
+            "\n\nNEXT STEPS:\n"
             f"1. Review the detailed remediation playbook ({len(result.remediation_playbook)} action items)\n"
             "2. Address critical and high-priority findings immediately\n"
             "3. Implement OAuth app whitelisting to prevent future Shadow IT\n"

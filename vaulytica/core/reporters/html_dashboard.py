@@ -34,7 +34,7 @@ class HTMLDashboardGenerator:
         Generate HTML dashboard from scan results.
 
         Args:
-            scan_results: List of scan result dictionaries
+            scan_results: List of scan result dictionaries OR dict with 'files', 'users', 'oauth_apps' keys
             metrics: Optional metrics dictionary
             output_path: Path to save the dashboard
 
@@ -42,11 +42,14 @@ class HTMLDashboardGenerator:
             Path to generated dashboard
         """
         try:
+            # Normalize scan_results to a list of file dictionaries
+            normalized_results = self._normalize_scan_results(scan_results)
+
             # Process scan results
-            stats = self._calculate_statistics(scan_results)
+            stats = self._calculate_statistics(normalized_results)
 
             # Generate charts data
-            charts_data = self._generate_charts_data(scan_results, stats)
+            charts_data = self._generate_charts_data(normalized_results, stats)
 
             # Generate HTML
             html = self._render_dashboard(stats, charts_data, metrics)
@@ -62,6 +65,63 @@ class HTMLDashboardGenerator:
         except Exception as e:
             logger.error("failed_to_generate_dashboard", error=str(e))
             raise
+
+    def _normalize_scan_results(self, scan_results) -> List[Dict]:
+        """Normalize scan results to a list of file dictionaries.
+
+        Args:
+            scan_results: Either a list of dicts/FileInfo objects, or a dict with 'files' key
+
+        Returns:
+            List of file dictionaries
+        """
+        if scan_results is None:
+            return []
+
+        # If it's a dict with 'files' key, extract and convert files
+        if isinstance(scan_results, dict):
+            files = scan_results.get('files', [])
+            normalized = []
+            for f in files:
+                if hasattr(f, '__dict__'):
+                    # Convert dataclass/object to dict
+                    file_dict = {
+                        'id': getattr(f, 'id', ''),
+                        'name': getattr(f, 'name', ''),
+                        'owner_email': getattr(f, 'owner_email', ''),
+                        'mime_type': getattr(f, 'mime_type', ''),
+                        'is_public': getattr(f, 'is_public', False),
+                        'has_external_sharing': getattr(f, 'is_shared_externally', False),
+                        'risk_score': getattr(f, 'risk_score', 0),
+                        'pii_findings': getattr(f, 'pii_findings', None) or getattr(f, 'pii_types', None),
+                    }
+                    normalized.append(file_dict)
+                elif isinstance(f, dict):
+                    normalized.append(f)
+            return normalized
+
+        # If it's already a list, convert any objects to dicts
+        if isinstance(scan_results, list):
+            normalized = []
+            for item in scan_results:
+                if hasattr(item, '__dict__') and not isinstance(item, dict):
+                    # Convert dataclass/object to dict
+                    file_dict = {
+                        'id': getattr(item, 'id', ''),
+                        'name': getattr(item, 'name', ''),
+                        'owner_email': getattr(item, 'owner_email', ''),
+                        'mime_type': getattr(item, 'mime_type', ''),
+                        'is_public': getattr(item, 'is_public', False),
+                        'has_external_sharing': getattr(item, 'is_shared_externally', False),
+                        'risk_score': getattr(item, 'risk_score', 0),
+                        'pii_findings': getattr(item, 'pii_findings', None) or getattr(item, 'pii_types', None),
+                    }
+                    normalized.append(file_dict)
+                elif isinstance(item, dict):
+                    normalized.append(item)
+            return normalized
+
+        return []
 
     def _calculate_statistics(self, scan_results: List[Dict]) -> Dict:
         """Calculate statistics from scan results."""
@@ -110,11 +170,15 @@ class HTMLDashboardGenerator:
 
     def _generate_charts_data(self, scan_results: List[Dict], stats: Dict) -> Dict:
         """Generate data for charts."""
+        # Professional monochrome color palette
+        risk_colors = ['#1f2937', '#6b7280', '#d1d5db']  # Dark gray, medium gray, light gray
+        sharing_colors = ['#374151', '#6b7280', '#9ca3af']  # Gray scale
+
         return {
             'risk_distribution': {
                 'labels': ['High Risk', 'Medium Risk', 'Low Risk'],
                 'data': [stats['high_risk'], stats['medium_risk'], stats['low_risk']],
-                'colors': ['#ef4444', '#f59e0b', '#10b981']
+                'colors': risk_colors
             },
             'sharing_status': {
                 'labels': ['External Shares', 'Public Shares', 'Internal Only'],
@@ -123,7 +187,7 @@ class HTMLDashboardGenerator:
                     stats['public_shares'],
                     stats['total_files'] - stats['external_shares'] - stats['public_shares']
                 ],
-                'colors': ['#f59e0b', '#ef4444', '#10b981']
+                'colors': sharing_colors
             },
             'pii_types': {
                 'labels': list(stats['pii_types'].keys())[:10],  # Top 10
@@ -142,10 +206,11 @@ class HTMLDashboardGenerator:
         }
 
     def _generate_colors(self, count: int) -> List[str]:
-        """Generate a list of colors for charts."""
+        """Generate a list of professional monochrome colors for charts."""
+        # Professional grayscale palette
         colors = [
-            '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6',
-            '#ec4899', '#14b8a6', '#f97316', '#06b6d4', '#84cc16'
+            '#1f2937', '#374151', '#4b5563', '#6b7280', '#9ca3af',
+            '#d1d5db', '#e5e7eb', '#f3f4f6', '#2d3748', '#4a5568'
         ]
         return (colors * ((count // len(colors)) + 1))[:count]
 
@@ -158,7 +223,7 @@ class HTMLDashboardGenerator:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vaulytica Dashboard</title>
+    <title>Vaulytica Security Report</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         * {{
@@ -168,10 +233,12 @@ class HTMLDashboardGenerator:
         }}
 
         body {{
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f8f9fa;
             min-height: 100vh;
-            padding: 20px;
+            padding: 24px;
+            color: #1f2937;
+            line-height: 1.5;
         }}
 
         .container {{
@@ -180,106 +247,127 @@ class HTMLDashboardGenerator:
         }}
 
         .header {{
-            background: white;
-            border-radius: 10px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            padding: 32px;
+            margin-bottom: 24px;
         }}
 
         .header h1 {{
-            color: #1f2937;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            color: #111827;
+            font-size: 1.875rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: -0.025em;
         }}
 
         .header .subtitle {{
             color: #6b7280;
-            font-size: 1rem;
+            font-size: 0.875rem;
         }}
 
         .stats-grid {{
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
         }}
 
         .stat-card {{
-            background: white;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s;
-        }}
-
-        .stat-card:hover {{
-            transform: translateY(-5px);
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            padding: 20px;
         }}
 
         .stat-card .label {{
             color: #6b7280;
-            font-size: 0.875rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            font-weight: 500;
         }}
 
         .stat-card .value {{
+            color: #111827;
+            font-size: 2rem;
+            font-weight: 600;
+        }}
+
+        .stat-card.alert .value {{
             color: #1f2937;
-            font-size: 2.5rem;
-            font-weight: bold;
+            font-weight: 700;
         }}
 
-        .stat-card.danger .value {{
-            color: #ef4444;
-        }}
-
-        .stat-card.warning .value {{
-            color: #f59e0b;
-        }}
-
-        .stat-card.success .value {{
-            color: #10b981;
+        .stat-card.alert {{
+            border-left: 4px solid #374151;
         }}
 
         .charts-grid {{
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
         }}
 
         .chart-card {{
-            background: white;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            padding: 24px;
         }}
 
         .chart-card h3 {{
-            color: #1f2937;
-            margin-bottom: 20px;
-            font-size: 1.25rem;
+            color: #111827;
+            margin-bottom: 16px;
+            font-size: 1rem;
+            font-weight: 600;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e5e7eb;
         }}
 
         .chart-container {{
             position: relative;
-            height: 300px;
+            height: 280px;
         }}
 
         .footer {{
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            padding: 16px;
             text-align: center;
+            color: #9ca3af;
+            font-size: 0.75rem;
+        }}
+
+        .footer a {{
             color: #6b7280;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+        }}
+
+        .footer a:hover {{
+            text-decoration: underline;
+        }}
+
+        @media print {{
+            body {{
+                background: #ffffff;
+                padding: 0;
+            }}
+            .stat-card, .chart-card, .header, .footer {{
+                border: 1px solid #d1d5db;
+                box-shadow: none;
+            }}
+            .chart-container {{
+                height: 250px;
+            }}
         }}
 
         @media (max-width: 768px) {{
             .charts-grid {{
                 grid-template-columns: 1fr;
+            }}
+            .stats-grid {{
+                grid-template-columns: repeat(2, 1fr);
             }}
         }}
     </style>
@@ -287,8 +375,8 @@ class HTMLDashboardGenerator:
 <body>
     <div class="container">
         <div class="header">
-            <h1>🛡️ Vaulytica Dashboard</h1>
-            <p class="subtitle">Generated on {timestamp}</p>
+            <h1>Vaulytica Security Report</h1>
+            <p class="subtitle">Report generated: {timestamp}</p>
         </div>
 
         <div class="stats-grid">
@@ -296,23 +384,23 @@ class HTMLDashboardGenerator:
                 <div class="label">Total Files Scanned</div>
                 <div class="value">{stats['total_files']:,}</div>
             </div>
-            <div class="stat-card danger">
+            <div class="stat-card alert">
                 <div class="label">High Risk Files</div>
                 <div class="value">{stats['high_risk']:,}</div>
             </div>
-            <div class="stat-card warning">
+            <div class="stat-card alert">
                 <div class="label">Files with PII</div>
                 <div class="value">{stats['pii_files']:,}</div>
             </div>
-            <div class="stat-card warning">
+            <div class="stat-card alert">
                 <div class="label">External Shares</div>
                 <div class="value">{stats['external_shares']:,}</div>
             </div>
-            <div class="stat-card danger">
+            <div class="stat-card alert">
                 <div class="label">Public Shares</div>
                 <div class="value">{stats['public_shares']:,}</div>
             </div>
-            <div class="stat-card success">
+            <div class="stat-card">
                 <div class="label">Low Risk Files</div>
                 <div class="value">{stats['low_risk']:,}</div>
             </div>
@@ -334,7 +422,7 @@ class HTMLDashboardGenerator:
             </div>
 
             <div class="chart-card">
-                <h3>Top PII Types Detected</h3>
+                <h3>PII Types Detected</h3>
                 <div class="chart-container">
                     <canvas id="piiChart"></canvas>
                 </div>
@@ -349,13 +437,14 @@ class HTMLDashboardGenerator:
         </div>
 
         <div class="footer">
-            <p>Generated by Vaulytica v1.0 | <a href="https://github.com/clay-good/vaulytica" style="color: #667eea;">GitHub</a></p>
+            <p>Generated by Vaulytica | <a href="https://github.com/clay-good/vaulytica">github.com/clay-good/vaulytica</a></p>
         </div>
     </div>
 
     <script>
-        // Chart.js configuration
-        Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif';
+        // Chart.js configuration - professional monochrome theme
+        Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+        Chart.defaults.color = '#6b7280';
 
         // Risk Distribution Chart
         new Chart(document.getElementById('riskChart'), {{
@@ -365,6 +454,7 @@ class HTMLDashboardGenerator:
                 datasets: [{{
                     data: {json.dumps(charts_data['risk_distribution']['data'])},
                     backgroundColor: {json.dumps(charts_data['risk_distribution']['colors'])},
+                    borderWidth: 0
                 }}]
             }},
             options: {{
@@ -373,6 +463,11 @@ class HTMLDashboardGenerator:
                 plugins: {{
                     legend: {{
                         position: 'bottom',
+                        labels: {{
+                            padding: 16,
+                            usePointStyle: true,
+                            pointStyle: 'rectRounded'
+                        }}
                     }}
                 }}
             }}
@@ -386,6 +481,7 @@ class HTMLDashboardGenerator:
                 datasets: [{{
                     data: {json.dumps(charts_data['sharing_status']['data'])},
                     backgroundColor: {json.dumps(charts_data['sharing_status']['colors'])},
+                    borderWidth: 0
                 }}]
             }},
             options: {{
@@ -394,6 +490,11 @@ class HTMLDashboardGenerator:
                 plugins: {{
                     legend: {{
                         position: 'bottom',
+                        labels: {{
+                            padding: 16,
+                            usePointStyle: true,
+                            pointStyle: 'rectRounded'
+                        }}
                     }}
                 }}
             }}
@@ -407,7 +508,8 @@ class HTMLDashboardGenerator:
                 datasets: [{{
                     label: 'Detections',
                     data: {json.dumps(charts_data['pii_types']['data'])},
-                    backgroundColor: '#667eea',
+                    backgroundColor: '#374151',
+                    borderRadius: 2
                 }}]
             }},
             options: {{
@@ -415,12 +517,20 @@ class HTMLDashboardGenerator:
                 maintainAspectRatio: false,
                 plugins: {{
                     legend: {{
-                        display: false,
+                        display: false
                     }}
                 }},
                 scales: {{
                     y: {{
-                        beginAtZero: true
+                        beginAtZero: true,
+                        grid: {{
+                            color: '#e5e7eb'
+                        }}
+                    }},
+                    x: {{
+                        grid: {{
+                            display: false
+                        }}
                     }}
                 }}
             }}
@@ -434,7 +544,8 @@ class HTMLDashboardGenerator:
                 datasets: [{{
                     label: 'Files',
                     data: {json.dumps(charts_data['file_types']['data'])},
-                    backgroundColor: '#764ba2',
+                    backgroundColor: '#6b7280',
+                    borderRadius: 2
                 }}]
             }},
             options: {{
@@ -442,12 +553,20 @@ class HTMLDashboardGenerator:
                 maintainAspectRatio: false,
                 plugins: {{
                     legend: {{
-                        display: false,
+                        display: false
                     }}
                 }},
                 scales: {{
                     y: {{
-                        beginAtZero: true
+                        beginAtZero: true,
+                        grid: {{
+                            color: '#e5e7eb'
+                        }}
+                    }},
+                    x: {{
+                        grid: {{
+                            display: false
+                        }}
                     }}
                 }}
             }}

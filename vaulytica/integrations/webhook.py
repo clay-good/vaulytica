@@ -117,7 +117,7 @@ class WebhookSender:
         self._oauth2_token_expiry: Optional[float] = None
 
         # Handle both string and enum format
-        format_value = config.format.value if isinstance(config.format, WebhookConfig) else config.format
+        format_value = config.format.value if isinstance(config.format, WebhookFormat) else config.format
 
         logger.info(
             "webhook_sender_initialized",

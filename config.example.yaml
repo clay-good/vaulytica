@@ -123,6 +123,30 @@ alerts:
       Authorization: "Bearer ${WEBHOOK_TOKEN}"
     payload_format: "json"  # json or splunk
 
+# Integrations Configuration
+integrations:
+  # Jira integration for creating security issues
+  jira:
+    enabled: false
+    url: "https://your-org.atlassian.net"
+    email: "your-email@company.com"
+    api_token: "${JIRA_API_TOKEN}"  # Generate at https://id.atlassian.com/manage-profile/security/api-tokens
+    project_key: "SEC"              # Your Jira project key
+    issue_type: "Task"              # Task, Bug, Story, etc.
+    default_priority: "Medium"
+    default_labels:
+      - vaulytica
+      - security
+    # Optional: default assignee account ID
+    # default_assignee: "5a48fde29f77b4001276abc3"
+    priority_mapping:
+      critical: "Highest"
+      high: "High"
+      medium: "Medium"
+      low: "Low"
+    verify_ssl: true
+    timeout: 30
+
 # Reporting Configuration
 reporting:
   # Output directory for reports

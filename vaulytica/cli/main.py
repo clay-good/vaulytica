@@ -831,6 +831,7 @@ from vaulytica.cli.commands.resources import resources_group
 from vaulytica.cli.commands.shadow_it import shadow_it_group
 from vaulytica.cli.commands.chrome_enterprise import chrome_group
 from vaulytica.cli.commands.security_posture import security_posture_group
+from vaulytica.cli.commands.jira import jira_group
 
 cli.add_command(monitor_group)
 cli.add_command(workflow_group)
@@ -844,6 +845,7 @@ cli.add_command(resources_group)
 cli.add_command(shadow_it_group)
 cli.add_command(chrome_group)
 cli.add_command(security_posture_group)
+cli.add_command(jira_group)
 
 
 def main() -> None:
