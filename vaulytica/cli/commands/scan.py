@@ -1,7 +1,7 @@
 """Scan command implementations."""
 
 from pathlib import Path
-from typing import Optional, List
+from typing import Optional, List, Dict
 from datetime import datetime, timezone
 import csv
 import json
@@ -2174,6 +2174,421 @@ def scan_chrome_devices_command(
                 json.dump(data, f, indent=2)
 
             console.print(f"[green]✓ Results saved to {output}[/green]")
+
+
+def scan_stale_drives_command(
+    ctx: click.Context,
+    domain: Optional[str],
+    days: int,
+    folders_only: bool,
+    output: Optional[Path],
+    format: str,
+) -> None:
+    """Scan for stale Drive content not accessed in N days.
+
+    This identifies files and folders that haven't been accessed recently,
+    useful for storage cleanup and cost management.
+
+    Args:
+        ctx: Click context
+        domain: Domain to scan
+        days: Number of days threshold for stale content
+        folders_only: Only scan folders, not individual files
+        output: Optional output file path
+        format: Output format (csv or json)
+    """
+    from vaulytica.config.loader import load_config
+    from vaulytica.core.auth.client import create_client_from_config
+    from vaulytica.core.scanners.file_scanner import FileScanner
+
+    console.print(f"[cyan]Scanning for stale Drive content (not accessed in {days} days)...[/cyan]")
+
+    # Load configuration
+    config_path = ctx.obj.get("config_path")
+    try:
+        config = load_config(config_path)
+    except Exception as e:
+        console.print(f"[red]Error loading configuration: {e}[/red]")
+        raise click.Abort()
+
+    # Use domain from config if not specified
+    if not domain:
+        domain = config.get("google_workspace", {}).get("domain")
+        if not domain:
+            console.print("[red]Error: No domain specified in config or command line[/red]")
+            raise click.Abort()
+
+    console.print(f"[cyan]Domain:[/cyan] {domain}")
+    console.print(f"[cyan]Stale threshold:[/cyan] {days} days")
+    console.print(f"[cyan]Folders only:[/cyan] {folders_only}\n")
+
+    # Create client
+    try:
+        client = create_client_from_config(config)
+    except Exception as e:
+        console.print(f"[red]Error creating client: {e}[/red]")
+        raise click.Abort()
+
+    # Create scanner
+    scanning_config = config.get("scanning", {})
+    scanner = FileScanner(
+        client,
+        domain=domain,
+        batch_size=scanning_config.get("batch_size", 100),
+        rate_limit_delay=scanning_config.get("rate_limit_delay", 0.1),
+    )
+
+    # Scan for stale content
+    with console.status("[bold green]Scanning for stale content..."):
+        stale_files = list(scanner.scan_stale_content(
+            stale_days=days,
+            folders_only=folders_only,
+        ))
+
+    # Display summary
+    console.print("\n[bold green]Stale Content Scan Complete[/bold green]\n")
+
+    summary_table = Table(title="Stale Content Summary")
+    summary_table.add_column("Metric", style="cyan")
+    summary_table.add_column("Count", style="green")
+
+    total_size = sum(f.size or 0 for f in stale_files)
+    folder_count = sum(1 for f in stale_files if f.mime_type == "application/vnd.google-apps.folder")
+    file_count = len(stale_files) - folder_count
+
+    summary_table.add_row("Total Stale Items", str(len(stale_files)))
+    summary_table.add_row("Stale Folders", str(folder_count))
+    summary_table.add_row("Stale Files", str(file_count))
+    summary_table.add_row("Total Size", _format_size(total_size))
+
+    console.print(summary_table)
+
+    # Display stale items
+    if stale_files:
+        console.print(f"\n[bold yellow]Stale Content (not accessed in {days}+ days):[/bold yellow]\n")
+
+        stale_table = Table()
+        stale_table.add_column("Name", style="cyan", max_width=40)
+        stale_table.add_column("Type", style="white")
+        stale_table.add_column("Owner", style="yellow")
+        stale_table.add_column("Size", style="green")
+        stale_table.add_column("Days Since Access", style="red")
+        stale_table.add_column("Last Accessed", style="dim")
+
+        # Sort by days since access (most stale first)
+        sorted_files = sorted(stale_files, key=lambda f: f.days_since_last_access or 0, reverse=True)
+
+        for file_info in sorted_files[:20]:
+            file_type = "Folder" if file_info.mime_type == "application/vnd.google-apps.folder" else "File"
+            last_accessed = file_info.last_accessed_time.strftime("%Y-%m-%d") if file_info.last_accessed_time else "Unknown"
+
+            stale_table.add_row(
+                file_info.name[:40],
+                file_type,
+                file_info.owner_email,
+                _format_size(file_info.size or 0),
+                str(file_info.days_since_last_access or "N/A"),
+                last_accessed,
+            )
+
+        console.print(stale_table)
+
+        if len(stale_files) > 20:
+            console.print(f"\n[dim]... and {len(stale_files) - 20} more stale items[/dim]")
+
+    # Save to file if requested
+    if output:
+        _save_stale_files_to_output(stale_files, output, format)
+        console.print(f"\n[green]Results saved to {output}[/green]")
+
+    console.print("\n[green]Stale content scan complete[/green]")
+
+
+def _format_size(size_bytes: int) -> str:
+    """Format byte size to human readable string."""
+    if size_bytes == 0:
+        return "0 B"
+    units = ["B", "KB", "MB", "GB", "TB"]
+    unit_index = 0
+    size = float(size_bytes)
+    while size >= 1024 and unit_index < len(units) - 1:
+        size /= 1024
+        unit_index += 1
+    return f"{size:.1f} {units[unit_index]}"
+
+
+def _save_stale_files_to_output(files: List, output: Path, format: str) -> None:
+    """Save stale files scan results to output file."""
+    output.parent.mkdir(parents=True, exist_ok=True)
+
+    if format == "csv":
+        with open(output, "w", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow([
+                "File ID",
+                "File Name",
+                "Type",
+                "Owner",
+                "Size",
+                "Days Since Access",
+                "Last Accessed",
+                "Modified Time",
+                "Web View Link",
+            ])
+
+            for file_info in files:
+                file_type = "Folder" if file_info.mime_type == "application/vnd.google-apps.folder" else "File"
+                writer.writerow([
+                    file_info.id,
+                    file_info.name,
+                    file_type,
+                    file_info.owner_email,
+                    file_info.size or 0,
+                    file_info.days_since_last_access or "N/A",
+                    file_info.last_accessed_time.isoformat() if file_info.last_accessed_time else "",
+                    file_info.modified_time.isoformat() if file_info.modified_time else "",
+                    file_info.web_view_link or "",
+                ])
+
+    elif format == "json":
+        data = {
+            "scan_type": "stale_drives",
+            "total_items": len(files),
+            "total_size_bytes": sum(f.size or 0 for f in files),
+            "files": [
+                {
+                    "id": f.id,
+                    "name": f.name,
+                    "type": "folder" if f.mime_type == "application/vnd.google-apps.folder" else "file",
+                    "owner": f.owner_email,
+                    "size": f.size,
+                    "days_since_last_access": f.days_since_last_access,
+                    "last_accessed_time": f.last_accessed_time.isoformat() if f.last_accessed_time else None,
+                    "modified_time": f.modified_time.isoformat() if f.modified_time else None,
+                    "web_view_link": f.web_view_link,
+                }
+                for f in files
+            ],
+        }
+
+        with open(output, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2)
+
+
+def scan_external_owned_command(
+    ctx: click.Context,
+    domain: Optional[str],
+    min_size: Optional[int],
+    output: Optional[Path],
+    format: str,
+) -> None:
+    """Scan for files owned by external users (outside organization domain).
+
+    This identifies files shared INTO the domain but owned by external parties,
+    useful for:
+    - Audit preparation
+    - Data sovereignty compliance
+    - Storage cleanup and cost management
+    - Security posture assessment
+
+    Args:
+        ctx: Click context
+        domain: Organization domain to check against
+        min_size: Minimum file size in bytes to include
+        output: Optional output file path
+        format: Output format (csv or json)
+    """
+    from vaulytica.config.loader import load_config
+    from vaulytica.core.auth.client import create_client_from_config
+    from vaulytica.core.scanners.file_scanner import FileScanner
+
+    console.print("[cyan]Scanning for files owned by external users...[/cyan]")
+
+    # Load configuration
+    config_path = ctx.obj.get("config_path")
+    try:
+        config = load_config(config_path)
+    except Exception as e:
+        console.print(f"[red]Error loading configuration: {e}[/red]")
+        raise click.Abort()
+
+    # Use domain from config if not specified
+    if not domain:
+        domain = config.get("google_workspace", {}).get("domain")
+        if not domain:
+            console.print("[red]Error: No domain specified in config or command line[/red]")
+            raise click.Abort()
+
+    console.print(f"[cyan]Organization domain:[/cyan] {domain}")
+    if min_size:
+        console.print(f"[cyan]Minimum file size:[/cyan] {_format_size(min_size)}")
+    console.print()
+
+    # Create client
+    try:
+        client = create_client_from_config(config)
+    except Exception as e:
+        console.print(f"[red]Error creating client: {e}[/red]")
+        raise click.Abort()
+
+    # Create scanner
+    scanning_config = config.get("scanning", {})
+    scanner = FileScanner(
+        client,
+        domain=domain,
+        batch_size=scanning_config.get("batch_size", 100),
+        rate_limit_delay=scanning_config.get("rate_limit_delay", 0.1),
+    )
+
+    # Scan for externally owned files
+    with console.status("[bold green]Scanning for externally owned files..."):
+        external_files = list(scanner.scan_external_owned(min_size=min_size))
+
+    # Display summary
+    console.print("\n[bold green]External Ownership Scan Complete[/bold green]\n")
+
+    # Group by owner domain
+    domains_count: Dict[str, int] = {}
+    domains_size: Dict[str, int] = {}
+    for f in external_files:
+        owner_domain = f.owner_domain or "unknown"
+        domains_count[owner_domain] = domains_count.get(owner_domain, 0) + 1
+        domains_size[owner_domain] = domains_size.get(owner_domain, 0) + (f.size or 0)
+
+    summary_table = Table(title="External Ownership Summary")
+    summary_table.add_column("Metric", style="cyan")
+    summary_table.add_column("Value", style="green")
+
+    total_size = sum(f.size or 0 for f in external_files)
+
+    summary_table.add_row("Total Externally Owned Files", str(len(external_files)))
+    summary_table.add_row("Total Storage Used", _format_size(total_size))
+    summary_table.add_row("External Domains", str(len(domains_count)))
+
+    console.print(summary_table)
+
+    # Display by domain breakdown
+    if domains_count:
+        console.print("\n[bold]Files by External Owner Domain:[/bold]\n")
+
+        domain_table = Table()
+        domain_table.add_column("External Domain", style="cyan")
+        domain_table.add_column("File Count", style="green", justify="right")
+        domain_table.add_column("Total Size", style="yellow", justify="right")
+
+        for ext_domain in sorted(domains_count.keys(), key=lambda d: domains_count[d], reverse=True):
+            domain_table.add_row(
+                ext_domain,
+                str(domains_count[ext_domain]),
+                _format_size(domains_size[ext_domain]),
+            )
+
+        console.print(domain_table)
+
+    # Display external files
+    if external_files:
+        console.print("\n[bold yellow]Externally Owned Files:[/bold yellow]\n")
+
+        files_table = Table()
+        files_table.add_column("Name", style="cyan", max_width=35)
+        files_table.add_column("Owner", style="yellow", max_width=30)
+        files_table.add_column("Owner Domain", style="red")
+        files_table.add_column("Size", style="green")
+        files_table.add_column("Internal Access", style="dim")
+
+        # Sort by size (largest first)
+        sorted_files = sorted(external_files, key=lambda f: f.size or 0, reverse=True)
+
+        for file_info in sorted_files[:20]:
+            internal_access = len(file_info.organization_access)
+            access_str = f"{internal_access} user(s)" if internal_access > 0 else "None"
+
+            files_table.add_row(
+                file_info.name[:35],
+                file_info.owner_email[:30],
+                file_info.owner_domain or "Unknown",
+                _format_size(file_info.size or 0),
+                access_str,
+            )
+
+        console.print(files_table)
+
+        if len(external_files) > 20:
+            console.print(f"\n[dim]... and {len(external_files) - 20} more externally owned files[/dim]")
+
+    # Save to file if requested
+    if output:
+        _save_external_owned_to_output(external_files, output, format, domain)
+        console.print(f"\n[green]Results saved to {output}[/green]")
+
+    console.print("\n[green]External ownership scan complete[/green]")
+
+
+def _save_external_owned_to_output(files: List, output: Path, format: str, organization_domain: str) -> None:
+    """Save externally owned files scan results to output file."""
+    output.parent.mkdir(parents=True, exist_ok=True)
+
+    if format == "csv":
+        with open(output, "w", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow([
+                "File ID",
+                "File Name",
+                "Owner Email",
+                "Owner Domain",
+                "Organization Domain",
+                "Size",
+                "Internal Users with Access",
+                "Modified Time",
+                "Web View Link",
+            ])
+
+            for file_info in files:
+                writer.writerow([
+                    file_info.id,
+                    file_info.name,
+                    file_info.owner_email,
+                    file_info.owner_domain or "",
+                    organization_domain,
+                    file_info.size or 0,
+                    "; ".join(file_info.organization_access) if file_info.organization_access else "",
+                    file_info.modified_time.isoformat() if file_info.modified_time else "",
+                    file_info.web_view_link or "",
+                ])
+
+    elif format == "json":
+        # Group by owner domain for summary
+        domains_summary = {}
+        for f in files:
+            owner_domain = f.owner_domain or "unknown"
+            if owner_domain not in domains_summary:
+                domains_summary[owner_domain] = {"count": 0, "size": 0}
+            domains_summary[owner_domain]["count"] += 1
+            domains_summary[owner_domain]["size"] += f.size or 0
+
+        data = {
+            "scan_type": "external_owned",
+            "organization_domain": organization_domain,
+            "total_files": len(files),
+            "total_size_bytes": sum(f.size or 0 for f in files),
+            "external_domains_summary": domains_summary,
+            "files": [
+                {
+                    "id": f.id,
+                    "name": f.name,
+                    "owner_email": f.owner_email,
+                    "owner_domain": f.owner_domain,
+                    "size": f.size,
+                    "organization_access": f.organization_access,
+                    "modified_time": f.modified_time.isoformat() if f.modified_time else None,
+                    "web_view_link": f.web_view_link,
+                }
+                for f in files
+            ],
+        }
+
+        with open(output, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2)
 
 
 def scan_licenses_command(

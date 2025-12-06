@@ -683,6 +683,98 @@ def scan_licenses(
     scan_licenses_command(config_path, unused_days, show_recommendations, output)
 
 
+@scan.command("stale-drives")
+@click.option(
+    "--domain",
+    "-d",
+    help="Domain to scan (from config if not specified)",
+)
+@click.option(
+    "--days",
+    type=int,
+    default=180,
+    help="Number of days threshold for stale content (default: 180)",
+)
+@click.option(
+    "--folders-only",
+    is_flag=True,
+    help="Only scan folders, not individual files",
+)
+@click.option(
+    "--output",
+    "-o",
+    type=click.Path(path_type=Path),
+    help="Output file path",
+)
+@click.option(
+    "--format",
+    "-f",
+    type=click.Choice(["csv", "json"], case_sensitive=False),
+    default="csv",
+    help="Output format",
+)
+@click.pass_context
+def scan_stale_drives(
+    ctx: click.Context,
+    domain: Optional[str],
+    days: int,
+    folders_only: bool,
+    output: Optional[Path],
+    format: str,
+) -> None:
+    """Scan for stale Drive content not accessed in N days.
+
+    Identifies files and folders that haven't been accessed recently,
+    useful for storage cleanup and cost management.
+    """
+    from vaulytica.cli.commands.scan import scan_stale_drives_command
+
+    scan_stale_drives_command(ctx, domain, days, folders_only, output, format)
+
+
+@scan.command("external-owned")
+@click.option(
+    "--domain",
+    "-d",
+    help="Organization domain to check against (from config if not specified)",
+)
+@click.option(
+    "--min-size",
+    type=int,
+    help="Minimum file size in bytes to include",
+)
+@click.option(
+    "--output",
+    "-o",
+    type=click.Path(path_type=Path),
+    help="Output file path",
+)
+@click.option(
+    "--format",
+    "-f",
+    type=click.Choice(["csv", "json"], case_sensitive=False),
+    default="csv",
+    help="Output format",
+)
+@click.pass_context
+def scan_external_owned(
+    ctx: click.Context,
+    domain: Optional[str],
+    min_size: Optional[int],
+    output: Optional[Path],
+    format: str,
+) -> None:
+    """Scan for files owned by external users.
+
+    Identifies files shared INTO the domain but owned by external parties.
+    Useful for audit preparation, data sovereignty compliance,
+    storage cleanup, and security posture assessment.
+    """
+    from vaulytica.cli.commands.scan import scan_external_owned_command
+
+    scan_external_owned_command(ctx, domain, min_size, output, format)
+
+
 @cli.group()
 @click.pass_context
 def report(ctx: click.Context) -> None:

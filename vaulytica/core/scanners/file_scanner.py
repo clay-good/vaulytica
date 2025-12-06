@@ -47,6 +47,14 @@ class FileInfo:
     external_domains: List[str] = field(default_factory=list)
     external_emails: List[str] = field(default_factory=list)
     risk_score: int = 0
+    # Phase 2: Last accessed tracking
+    last_accessed_time: Optional[datetime] = None
+    days_since_last_access: Optional[int] = None
+    is_stale: bool = False
+    # Phase 2: External ownership tracking
+    is_externally_owned: bool = False
+    owner_domain: Optional[str] = None
+    organization_access: List[str] = field(default_factory=list)
 
 
 class FileScannerError(Exception):
@@ -175,7 +183,7 @@ class FileScanner:
                             q=query,
                             pageSize=self.batch_size,
                             pageToken=page_token,
-                            fields="nextPageToken, files(id, name, mimeType, owners, createdTime, modifiedTime, size, webViewLink, permissions)",
+                            fields="nextPageToken, files(id, name, mimeType, owners, createdTime, modifiedTime, viewedByMeTime, size, webViewLink, permissions)",
                             supportsAllDrives=True,
                             includeItemsFromAllDrives=True,
                         )
@@ -257,11 +265,12 @@ class FileScanner:
             logger.error("file_scan_failed", error=str(e))
             raise FileScannerError(f"File scan failed: {e}")
 
-    def _process_file(self, file_data: Dict[str, Any]) -> FileInfo:
+    def _process_file(self, file_data: Dict[str, Any], stale_days: Optional[int] = None) -> FileInfo:
         """Process raw file data into FileInfo object.
 
         Args:
             file_data: Raw file data from Drive API
+            stale_days: Optional threshold for marking files as stale
 
         Returns:
             FileInfo object with processed data
@@ -272,6 +281,12 @@ class FileScanner:
         owner_email = owner.get("emailAddress", "unknown")
         owner_name = owner.get("displayName", "Unknown")
 
+        # Extract owner domain
+        owner_domain = owner_email.split("@")[-1] if "@" in owner_email else None
+
+        # Determine if file is externally owned
+        is_externally_owned = owner_domain is not None and owner_domain != self.domain
+
         # Parse timestamps
         created_time = datetime.fromisoformat(
             file_data.get("createdTime", "").replace("Z", "+00:00")
@@ -280,12 +295,26 @@ class FileScanner:
             file_data.get("modifiedTime", "").replace("Z", "+00:00")
         )
 
+        # Parse last accessed time (viewedByMeTime)
+        last_accessed_time = None
+        days_since_last_access = None
+        is_stale = False
+        viewed_by_me_time = file_data.get("viewedByMeTime")
+        if viewed_by_me_time:
+            last_accessed_time = datetime.fromisoformat(
+                viewed_by_me_time.replace("Z", "+00:00")
+            )
+            days_since_last_access = (datetime.now(last_accessed_time.tzinfo) - last_accessed_time).days
+            if stale_days is not None and days_since_last_access >= stale_days:
+                is_stale = True
+
         # Process permissions
         permissions = []
         is_public = False
         is_shared_externally = False
         external_domains = set()
         external_emails = set()
+        organization_access = set()
 
         for perm_data in file_data.get("permissions", []):
             perm = FilePermission(
@@ -303,13 +332,16 @@ class FileScanner:
             if perm.type == "anyone":
                 is_public = True
 
-            # Check for external sharing
+            # Check for external sharing and track organization access
             if perm.type == "user" and perm.email_address:
                 email_domain = perm.email_address.split("@")[-1]
                 if email_domain != self.domain:
                     is_shared_externally = True
                     external_emails.add(perm.email_address)
                     external_domains.add(email_domain)
+                else:
+                    # Internal user with access to this file
+                    organization_access.add(perm.email_address)
 
             elif perm.type == "domain" and perm.domain:
                 if perm.domain != self.domain:
@@ -332,6 +364,13 @@ class FileScanner:
             is_public=is_public,
             external_domains=list(external_domains),
             external_emails=list(external_emails),
+            # Phase 2 fields
+            last_accessed_time=last_accessed_time,
+            days_since_last_access=days_since_last_access,
+            is_stale=is_stale,
+            is_externally_owned=is_externally_owned,
+            owner_domain=owner_domain,
+            organization_access=list(organization_access),
         )
 
         # Calculate risk score
@@ -375,4 +414,202 @@ class FileScanner:
             score += 5
 
         return min(score, 100)  # Cap at 100
+
+    def scan_stale_content(
+        self,
+        stale_days: int = 180,
+        folders_only: bool = False,
+        max_files: Optional[int] = None,
+    ) -> Iterator[FileInfo]:
+        """Scan for stale files and folders not accessed in N days.
+
+        Args:
+            stale_days: Number of days threshold for marking content as stale
+            folders_only: Only scan folders, not individual files
+            max_files: Maximum number of files to scan
+
+        Yields:
+            FileInfo objects for stale files/folders
+
+        Raises:
+            FileScannerError: If scanning fails
+        """
+        logger.info(
+            "starting_stale_content_scan",
+            stale_days=stale_days,
+            folders_only=folders_only,
+            max_files=max_files,
+        )
+
+        try:
+            # Build query
+            query_parts = ["trashed=false"]
+
+            if folders_only:
+                query_parts.append("mimeType='application/vnd.google-apps.folder'")
+
+            query = " and ".join(query_parts)
+
+            page_token = None
+            file_count = 0
+            stale_count = 0
+
+            while True:
+                try:
+                    results = (
+                        self.client.drive.files()
+                        .list(
+                            q=query,
+                            pageSize=self.batch_size,
+                            pageToken=page_token,
+                            fields="nextPageToken, files(id, name, mimeType, owners, createdTime, modifiedTime, viewedByMeTime, size, webViewLink, permissions)",
+                            supportsAllDrives=True,
+                            includeItemsFromAllDrives=True,
+                        )
+                        .execute()
+                    )
+
+                    files = results.get("files", [])
+
+                    for file_data in files:
+                        file_info = self._process_file(file_data, stale_days=stale_days)
+
+                        # Only yield stale files
+                        if file_info.is_stale:
+                            stale_count += 1
+                            yield file_info
+
+                        file_count += 1
+
+                        # Check max_files limit
+                        if max_files and file_count >= max_files:
+                            break
+
+                    if max_files and file_count >= max_files:
+                        break
+
+                    page_token = results.get("nextPageToken")
+                    if not page_token:
+                        break
+
+                    time.sleep(self.rate_limit_delay)
+
+                except HttpError as e:
+                    if e.resp.status == 429:
+                        logger.warning("rate_limit_hit_retrying")
+                        time.sleep(5)
+                        continue
+                    else:
+                        raise FileScannerError(f"Failed to scan stale content: {e}")
+
+            logger.info(
+                "stale_content_scan_complete",
+                total_scanned=file_count,
+                stale_found=stale_count,
+            )
+
+        except Exception as e:
+            logger.error("stale_content_scan_failed", error=str(e))
+            raise FileScannerError(f"Stale content scan failed: {e}")
+
+    def scan_external_owned(
+        self,
+        min_size: Optional[int] = None,
+        max_files: Optional[int] = None,
+    ) -> Iterator[FileInfo]:
+        """Scan for files owned by external users (outside the organization domain).
+
+        This identifies files shared INTO the domain but owned by external parties,
+        which is valuable for:
+        - Audit preparation
+        - Data sovereignty compliance
+        - Storage cleanup and cost management
+        - Security posture assessment
+
+        Args:
+            min_size: Minimum file size in bytes to include
+            max_files: Maximum number of files to scan
+
+        Yields:
+            FileInfo objects for externally owned files
+
+        Raises:
+            FileScannerError: If scanning fails
+        """
+        logger.info(
+            "starting_external_owned_scan",
+            domain=self.domain,
+            min_size=min_size,
+            max_files=max_files,
+        )
+
+        try:
+            # Build query - we need to scan all accessible files
+            query = "trashed=false"
+
+            page_token = None
+            file_count = 0
+            external_owned_count = 0
+
+            while True:
+                try:
+                    results = (
+                        self.client.drive.files()
+                        .list(
+                            q=query,
+                            pageSize=self.batch_size,
+                            pageToken=page_token,
+                            fields="nextPageToken, files(id, name, mimeType, owners, createdTime, modifiedTime, viewedByMeTime, size, webViewLink, permissions)",
+                            supportsAllDrives=True,
+                            includeItemsFromAllDrives=True,
+                        )
+                        .execute()
+                    )
+
+                    files = results.get("files", [])
+
+                    for file_data in files:
+                        file_info = self._process_file(file_data)
+
+                        # Only yield externally owned files
+                        if file_info.is_externally_owned:
+                            # Apply size filter if specified
+                            if min_size and file_info.size and file_info.size < min_size:
+                                continue
+
+                            external_owned_count += 1
+                            yield file_info
+
+                        file_count += 1
+
+                        # Check max_files limit
+                        if max_files and file_count >= max_files:
+                            break
+
+                    if max_files and file_count >= max_files:
+                        break
+
+                    page_token = results.get("nextPageToken")
+                    if not page_token:
+                        break
+
+                    time.sleep(self.rate_limit_delay)
+
+                except HttpError as e:
+                    if e.resp.status == 429:
+                        logger.warning("rate_limit_hit_retrying")
+                        time.sleep(5)
+                        continue
+                    else:
+                        raise FileScannerError(f"Failed to scan external owned files: {e}")
+
+            logger.info(
+                "external_owned_scan_complete",
+                total_scanned=file_count,
+                external_owned_found=external_owned_count,
+            )
+
+        except Exception as e:
+            logger.error("external_owned_scan_failed", error=str(e))
+            raise FileScannerError(f"External owned scan failed: {e}")
 
