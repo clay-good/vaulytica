@@ -21,6 +21,105 @@ from vaulytica.core.security.posture_scanner import (
 console = Console()
 
 
+def _get_database_saver(ctx: click.Context):
+    """Get a DatabaseSaver instance if database saving is enabled."""
+    if not ctx.obj.get("save_to_db"):
+        return None
+
+    db_url = ctx.obj.get("db_url")
+    if not db_url:
+        return None
+
+    try:
+        from vaulytica.core.database.saver import DatabaseSaver
+        return DatabaseSaver(db_url)
+    except ImportError:
+        console.print(
+            "[yellow]Warning: Database support not installed. "
+            "Run 'pip install vaulytica[database]' to enable.[/yellow]"
+        )
+        return None
+    except Exception as e:
+        console.print(f"[yellow]Warning: Could not connect to database: {e}[/yellow]")
+        return None
+
+
+def _save_posture_to_db(
+    ctx: click.Context,
+    domain: str,
+    baseline,
+) -> Optional[int]:
+    """Save security posture findings to database if enabled.
+
+    Args:
+        ctx: Click context
+        domain: Domain being scanned
+        baseline: SecurityBaseline object with findings
+
+    Returns:
+        Scan ID if saved, None otherwise
+    """
+    saver = _get_database_saver(ctx)
+    if not saver:
+        return None
+
+    scan_id = None
+    try:
+        # Start the scan
+        scan_id = saver.start_scan(
+            scan_type="posture",
+            domain_name=domain,
+            triggered_by="cli",
+            config={
+                "command": "security-posture assess",
+                "frameworks": [f.value for f in baseline.frameworks_assessed],
+            },
+        )
+
+        # Convert findings to dict format for saving
+        findings_list = []
+        for finding in baseline.findings:
+            findings_list.append({
+                "check_id": finding.check_id,
+                "title": finding.title,
+                "description": finding.description,
+                "severity": finding.severity.value,
+                "passed": finding.passed,
+                "current_value": str(finding.current_value),
+                "expected_value": str(finding.expected_value),
+                "impact": finding.impact,
+                "remediation": finding.remediation,
+                "frameworks": [f.value for f in finding.frameworks],
+                "resource_type": finding.resource_type,
+                "resource_id": finding.resource_id,
+            })
+
+        # Save findings
+        count = saver.save_security_findings(scan_id, findings_list)
+
+        # Complete the scan
+        saver.complete_scan(
+            scan_id=scan_id,
+            total_items=baseline.total_checks,
+            issues_found=baseline.failed_checks,
+            high_risk_count=baseline.critical_findings + baseline.high_findings,
+            medium_risk_count=baseline.medium_findings,
+            low_risk_count=baseline.low_findings,
+        )
+
+        console.print(f"[green]Saved {count} security findings to database (scan ID: {scan_id})[/green]")
+        return scan_id
+
+    except Exception as e:
+        console.print(f"[red]Error saving to database: {e}[/red]")
+        if saver and scan_id:
+            try:
+                saver.fail_scan(scan_id, str(e))
+            except Exception:
+                pass
+        return None
+
+
 @click.group(name="security-posture")
 def security_posture_group() -> None:
     """Security posture assessment and baseline scanning."""
@@ -72,7 +171,9 @@ def security_posture_group() -> None:
     type=click.Choice(["critical", "high", "medium", "low"], case_sensitive=False),
     help="Only show findings of specified severity or higher",
 )
+@click.pass_context
 def assess_security_posture(
+    ctx: click.Context,
     credentials: str,
     admin_email: str,
     domain: str,
@@ -220,6 +321,9 @@ def assess_security_posture(
             with open(output, "w") as f:
                 json.dump(baseline.to_dict(), f, indent=2)
             console.print(f"\n[green]✓[/green] Assessment saved to: {output}")
+
+        # Save to database if enabled
+        _save_posture_to_db(ctx, domain, baseline)
 
         # Exit with non-zero code if critical findings
         if baseline.critical_findings > 0:

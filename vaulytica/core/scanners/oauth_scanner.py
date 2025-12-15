@@ -9,6 +9,12 @@ import structlog
 from googleapiclient.errors import HttpError
 
 from vaulytica.core.auth.client import GoogleWorkspaceClient
+from vaulytica.core.scanners.exceptions import (
+    NetworkError,
+    AuthenticationError,
+    PermissionError as ScannerPermissionError,
+    APIError,
+)
 
 logger = structlog.get_logger(__name__)
 
@@ -163,13 +169,32 @@ class OAuthScanner:
             try:
                 tokens = self._get_user_tokens(user_email)
                 result.tokens.extend(tokens)
+            except HttpError as e:
+                error_type = "permission_denied" if e.resp.status == 403 else "api_error"
+                logger.error(
+                    "failed_to_get_tokens_for_user",
+                    user_email=user_email,
+                    error=str(e),
+                    error_type=error_type,
+                    status_code=e.resp.status,
+                )
+                failed_users.append({"email": user_email, "error": str(e), "type": error_type})
+            except (ConnectionError, TimeoutError) as e:
+                logger.error(
+                    "failed_to_get_tokens_for_user",
+                    user_email=user_email,
+                    error=str(e),
+                    error_type="network_error",
+                )
+                failed_users.append({"email": user_email, "error": str(e), "type": "network_error"})
             except Exception as e:
                 logger.error(
                     "failed_to_get_tokens_for_user",
                     user_email=user_email,
                     error=str(e),
+                    error_type=type(e).__name__,
                 )
-                failed_users.append({"email": user_email, "error": str(e)})
+                failed_users.append({"email": user_email, "error": str(e), "type": type(e).__name__})
         else:
             # Scan all users
             from vaulytica.core.scanners.user_scanner import UserScanner
@@ -201,26 +226,39 @@ class OAuthScanner:
                             tokens_found=len(result.tokens)
                         )
                 except HttpError as e:
+                    error_type = "permission_denied" if e.resp.status == 403 else "api_error"
                     if e.resp.status == 403:
                         logger.warning(
                             "insufficient_permissions_for_user",
                             user_email=user.email,
                             error=str(e),
+                            status_code=e.resp.status,
                         )
                     else:
                         logger.warning(
                             "failed_to_get_tokens_for_user",
                             user_email=user.email,
                             error=str(e),
+                            error_type=error_type,
+                            status_code=e.resp.status,
                         )
-                    failed_users.append({"email": user.email, "error": str(e)})
+                    failed_users.append({"email": user.email, "error": str(e), "type": error_type})
+                except (ConnectionError, TimeoutError) as e:
+                    logger.warning(
+                        "network_error_for_user",
+                        user_email=user.email,
+                        error=str(e),
+                        error_type="network_error",
+                    )
+                    failed_users.append({"email": user.email, "error": str(e), "type": "network_error"})
                 except Exception as e:
                     logger.warning(
                         "unexpected_error_for_user",
                         user_email=user.email,
                         error=str(e),
+                        error_type=type(e).__name__,
                     )
-                    failed_users.append({"email": user.email, "error": str(e)})
+                    failed_users.append({"email": user.email, "error": str(e), "type": type(e).__name__})
 
         result.total_tokens = len(result.tokens)
 

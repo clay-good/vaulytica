@@ -1,0 +1,405 @@
+# PII Pattern Configuration for Vaulytica
+# This file allows customization of PII detection patterns
+#
+# Each pattern type has:
+#   - enabled: Whether to use this pattern (default: true)
+#   - patterns: List of regex patterns with base confidence scores
+#   - context_keywords: Keywords that increase confidence when found nearby
+#   - min_confidence: Minimum confidence threshold to report a match (default: 0.5)
+#
+# Custom patterns can be added to the 'custom' section at the bottom
+
+# ============================================================================
+# US IDENTIFIERS
+# ============================================================================
+
+ssn:
+  enabled: true
+  description: "Social Security Number"
+  min_confidence: 0.5
+  patterns:
+    - pattern: '\b\d{3}[-\s]?\d{2}[-\s]?\d{4}\b'
+      confidence: 0.9
+      description: "SSN format: 123-45-6789, 123 45 6789, or 123456789"
+  context_keywords:
+    - "ssn"
+    - "social security"
+    - "social-security"
+    - "ss#"
+    - "ss number"
+
+itin:
+  enabled: true
+  description: "Individual Taxpayer Identification Number"
+  min_confidence: 0.5
+  patterns:
+    - pattern: '\b9\d{2}[-\s]?\d{2}[-\s]?\d{4}\b'
+      confidence: 0.85
+      description: "ITIN format: 9XX-XX-XXXX (starts with 9)"
+  context_keywords:
+    - "itin"
+    - "taxpayer id"
+    - "tax id"
+    - "individual taxpayer"
+
+ein:
+  enabled: true
+  description: "Employer Identification Number"
+  min_confidence: 0.5
+  patterns:
+    - pattern: '\b\d{2}[-\s]?\d{7}\b'
+      confidence: 0.7
+      description: "EIN format: XX-XXXXXXX"
+  context_keywords:
+    - "ein"
+    - "employer id"
+    - "federal tax"
+    - "fein"
+    - "tax id"
+
+# ============================================================================
+# FINANCIAL
+# ============================================================================
+
+credit_card:
+  enabled: true
+  description: "Credit Card Numbers"
+  min_confidence: 0.5
+  validate_luhn: true  # Use Luhn algorithm validation
+  patterns:
+    - pattern: '\b4\d{3}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b'
+      confidence: 0.85
+      description: "Visa: 4xxx-xxxx-xxxx-xxxx"
+    - pattern: '\b5[1-5]\d{2}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b'
+      confidence: 0.85
+      description: "Mastercard: 5xxx-xxxx-xxxx-xxxx"
+    - pattern: '\b3[47]\d{2}[-\s]?\d{6}[-\s]?\d{5}\b'
+      confidence: 0.85
+      description: "Amex: 3xxx-xxxxxx-xxxxx"
+    - pattern: '\b6(?:011|5\d{2})[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b'
+      confidence: 0.85
+      description: "Discover: 6xxx-xxxx-xxxx-xxxx"
+    - pattern: '\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b'
+      confidence: 0.6
+      description: "Generic 16-digit card"
+  context_keywords:
+    - "card"
+    - "credit"
+    - "visa"
+    - "mastercard"
+    - "amex"
+    - "discover"
+    - "payment"
+    - "debit"
+
+bank_account:
+  enabled: true
+  description: "Bank Account Numbers"
+  min_confidence: 0.5
+  patterns:
+    - pattern: '\b\d{8,17}\b'
+      confidence: 0.5
+      description: "Bank account: 8-17 digits (requires context)"
+  context_keywords:
+    - "account"
+    - "bank"
+    - "checking"
+    - "savings"
+    - "account number"
+    - "acct"
+
+routing_number:
+  enabled: true
+  description: "Bank Routing Numbers"
+  min_confidence: 0.6
+  patterns:
+    - pattern: '\b\d{9}\b'
+      confidence: 0.5
+      description: "US routing number: 9 digits (requires context)"
+  context_keywords:
+    - "routing"
+    - "aba"
+    - "bank"
+    - "routing number"
+    - "transit"
+
+# ============================================================================
+# CONTACT INFORMATION
+# ============================================================================
+
+phone:
+  enabled: true
+  description: "Phone Numbers"
+  min_confidence: 0.5
+  patterns:
+    - pattern: '\b(?:\+?1[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})\b'
+      confidence: 0.8
+      description: "US phone: (123) 456-7890, 123-456-7890, etc."
+    - pattern: '\+\d{1,3}[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}'
+      confidence: 0.7
+      description: "International: +XX XXX XXX XXXX"
+  context_keywords:
+    - "phone"
+    - "tel"
+    - "mobile"
+    - "cell"
+    - "contact"
+    - "call"
+    - "fax"
+
+email:
+  enabled: true
+  description: "Email Addresses"
+  min_confidence: 0.5
+  patterns:
+    - pattern: '\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+      confidence: 0.95
+      description: "Standard email format"
+  context_keywords:
+    - "email"
+    - "e-mail"
+    - "contact"
+    - "send"
+
+# ============================================================================
+# HEALTHCARE (HIPAA)
+# ============================================================================
+
+medical_record:
+  enabled: true
+  description: "Medical Record Numbers"
+  min_confidence: 0.6
+  patterns:
+    - pattern: '\b(?:MRN|MR|MEDICAL(?:\s+RECORD)?)[-:\s]?#?[-:\s]?\d{6,10}\b'
+      confidence: 0.8
+      description: "MRN with prefix"
+    - pattern: '\b\d{6,10}\b'
+      confidence: 0.4
+      description: "Generic 6-10 digits (requires context)"
+  context_keywords:
+    - "mrn"
+    - "medical record"
+    - "patient id"
+    - "chart number"
+    - "patient"
+
+health_insurance:
+  enabled: true
+  description: "Health Insurance Numbers"
+  min_confidence: 0.5
+  patterns:
+    - pattern: '\b[A-Z]{2,3}\d{8,12}\b'
+      confidence: 0.6
+      description: "Insurance ID: 2-3 letters + 8-12 digits"
+  context_keywords:
+    - "insurance"
+    - "policy"
+    - "member id"
+    - "subscriber"
+    - "group"
+
+medicare:
+  enabled: true
+  description: "Medicare Numbers"
+  min_confidence: 0.5
+  patterns:
+    - pattern: '\b\d{1,9}[A-Z]{1,2}\d{2,4}\b'
+      confidence: 0.85
+      description: "Medicare: digits + letters + digits"
+  context_keywords:
+    - "medicare"
+    - "cms"
+    - "health insurance"
+    - "mbi"
+
+medicaid:
+  enabled: true
+  description: "Medicaid Numbers"
+  min_confidence: 0.6
+  patterns:
+    - pattern: '\b(?=.*[A-Z])(?=.*\d.*\d)[A-Z0-9]{8,14}\b'
+      confidence: 0.3
+      description: "Medicaid: varies by state (requires strong context)"
+  context_keywords:
+    - "medicaid"
+    - "medical assistance"
+    - "medi-cal"
+
+dea_number:
+  enabled: true
+  description: "DEA Registration Numbers"
+  min_confidence: 0.5
+  patterns:
+    - pattern: '\b[A-Z]{2}\d{7}\b'
+      confidence: 0.8
+      description: "DEA: 2 letters + 7 digits"
+  context_keywords:
+    - "dea"
+    - "drug enforcement"
+    - "prescriber"
+    - "controlled substance"
+
+npi:
+  enabled: true
+  description: "National Provider Identifier"
+  min_confidence: 0.6
+  patterns:
+    - pattern: '\b\d{10}\b'
+      confidence: 0.5
+      description: "NPI: 10 digits (requires context)"
+  context_keywords:
+    - "npi"
+    - "provider"
+    - "national provider"
+    - "healthcare provider"
+
+# ============================================================================
+# PERSONAL IDENTIFIERS
+# ============================================================================
+
+passport:
+  enabled: true
+  description: "Passport Numbers"
+  min_confidence: 0.5
+  patterns:
+    - pattern: '\b[A-Z]\d{8}\b'
+      confidence: 0.7
+      description: "US Passport: 1 letter + 8 digits"
+    - pattern: '\b\d{9}\b'
+      confidence: 0.4
+      description: "9 digits (requires context)"
+  context_keywords:
+    - "passport"
+    - "travel document"
+    - "passport number"
+    - "travel"
+
+drivers_license:
+  enabled: true
+  description: "Driver's License Numbers"
+  min_confidence: 0.5
+  patterns:
+    - pattern: '\b[A-Z]\d{7,8}\b'
+      confidence: 0.6
+      description: "Common format: 1 letter + 7-8 digits"
+    - pattern: '\b[A-Z]{1,2}\d{5,7}\b'
+      confidence: 0.5
+      description: "Alternative: 1-2 letters + 5-7 digits"
+  context_keywords:
+    - "license"
+    - "driver"
+    - "dl"
+    - "dmv"
+    - "driving"
+
+date_of_birth:
+  enabled: true
+  description: "Dates of Birth"
+  min_confidence: 0.5
+  patterns:
+    - pattern: '\b(?:0?[1-9]|1[0-2])[-/](?:0?[1-9]|[12][0-9]|3[01])[-/](?:19|20)\d{2}\b'
+      confidence: 0.85
+      description: "MM/DD/YYYY or MM-DD-YYYY"
+    - pattern: '\b(?:19|20)\d{2}[-/](?:0?[1-9]|1[0-2])[-/](?:0?[1-9]|[12][0-9]|3[01])\b'
+      confidence: 0.85
+      description: "YYYY-MM-DD"
+  context_keywords:
+    - "dob"
+    - "birth"
+    - "birthday"
+    - "born"
+    - "date of birth"
+
+# ============================================================================
+# TECHNICAL IDENTIFIERS
+# ============================================================================
+
+ip_address:
+  enabled: true
+  description: "IP Addresses"
+  min_confidence: 0.5
+  patterns:
+    - pattern: '\b(?:\d{1,3}\.){3}\d{1,3}\b'
+      confidence: 0.9
+      description: "IPv4 address"
+    - pattern: '\b(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}\b'
+      confidence: 0.9
+      description: "IPv6 address"
+  context_keywords:
+    - "ip"
+    - "address"
+    - "network"
+    - "server"
+
+mac_address:
+  enabled: true
+  description: "MAC Addresses"
+  min_confidence: 0.5
+  patterns:
+    - pattern: '\b(?:[0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}\b'
+      confidence: 0.95
+      description: "MAC: XX:XX:XX:XX:XX:XX or XX-XX-XX-XX-XX-XX"
+  context_keywords:
+    - "mac"
+    - "hardware"
+    - "network"
+    - "adapter"
+    - "ethernet"
+
+vehicle_vin:
+  enabled: true
+  description: "Vehicle Identification Numbers"
+  min_confidence: 0.5
+  patterns:
+    - pattern: '\b[A-HJ-NPR-Z0-9]{17}\b'
+      confidence: 0.8
+      description: "VIN: 17 alphanumeric characters"
+  context_keywords:
+    - "vin"
+    - "vehicle"
+    - "car"
+    - "automobile"
+    - "motor"
+
+crypto_wallet:
+  enabled: true
+  description: "Cryptocurrency Wallet Addresses"
+  min_confidence: 0.5
+  patterns:
+    - pattern: '\b[13][a-zA-Z0-9]{25,34}\b'
+      confidence: 0.8
+      description: "Bitcoin legacy: starts with 1 or 3"
+    - pattern: '\bbc1[a-z0-9]{39,59}\b'
+      confidence: 0.85
+      description: "Bitcoin bech32: starts with bc1"
+    - pattern: '\b0x[a-fA-F0-9]{38,42}\b'
+      confidence: 0.9
+      description: "Ethereum: starts with 0x"
+  context_keywords:
+    - "bitcoin"
+    - "btc"
+    - "ethereum"
+    - "eth"
+    - "wallet"
+    - "crypto"
+    - "blockchain"
+
+# ============================================================================
+# CUSTOM PATTERNS
+# ============================================================================
+# Add your organization-specific patterns here
+
+custom:
+  # Example: Employee ID pattern
+  # employee_id:
+  #   enabled: true
+  #   description: "Internal Employee ID"
+  #   min_confidence: 0.7
+  #   patterns:
+  #     - pattern: '\bEMP-\d{6}\b'
+  #       confidence: 0.9
+  #       description: "Employee ID: EMP-XXXXXX"
+  #   context_keywords:
+  #     - "employee"
+  #     - "staff"
+  #     - "emp id"

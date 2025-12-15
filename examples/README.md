@@ -102,6 +102,5 @@ poetry run vaulytica schedule list
 
 ### Need Help?
 
-- **Documentation**: See [docs/](../docs/) directory
-- **Troubleshooting**: See [TROUBLESHOOTING.md](../docs/TROUBLESHOOTING.md)
+- **Documentation**: See [docs/WEB_APP.md](../docs/WEB_APP.md) for web dashboard setup
 - **Issues**: Open an issue on [GitHub](https://github.com/clay-good/vaulytica/issues)

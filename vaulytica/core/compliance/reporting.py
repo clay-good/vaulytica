@@ -2,16 +2,22 @@
 
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
-from typing import List, Dict, Any, Union
+from typing import List, Dict, Any, Optional, Union
 from pathlib import Path
 import json
 
 import structlog
+import yaml
 
 from vaulytica.core.scanners.file_scanner import FileInfo
 from vaulytica.core.scanners.user_scanner import UserInfo
 
 logger = structlog.get_logger(__name__)
+
+# Default path for compliance rules configuration
+DEFAULT_COMPLIANCE_CONFIG_PATH = (
+    Path(__file__).parent.parent.parent / "config" / "compliance_rules.yaml"
+)
 
 
 @dataclass
@@ -279,23 +285,182 @@ class FedRAMPReport:
 
 
 class ComplianceReporter:
-    """Generate compliance reports."""
+    """Generate compliance reports.
 
-    # EU countries for GDPR
-    EU_COUNTRIES = [
+    Rules can be loaded from a YAML configuration file or use built-in defaults.
+    The configuration file allows customization of rules, severity scoring,
+    and recommendations without code changes.
+    """
+
+    # Default EU countries for GDPR (used as fallback)
+    DEFAULT_EU_COUNTRIES = [
         "at", "be", "bg", "hr", "cy", "cz", "dk", "ee", "fi", "fr",
         "de", "gr", "hu", "ie", "it", "lv", "lt", "lu", "mt", "nl",
         "pl", "pt", "ro", "sk", "si", "es", "se",
     ]
 
-    def __init__(self, domain: str):
+    # Default scoring weights (used as fallback)
+    DEFAULT_SCORING = {
+        "gdpr": {"critical": 10, "high": 5, "medium": 2, "low": 1},
+        "hipaa": {"critical": 15, "high": 8, "medium": 3, "low": 1},
+        "soc2": {"critical": 12, "high": 6, "medium": 3, "low": 1},
+        "pci_dss": {"critical": 20, "high": 10, "medium": 4, "low": 1},
+        "ferpa": {"critical": 15, "high": 8, "medium": 3, "low": 1},
+        "fedramp": {"critical": 18, "high": 10, "medium": 4, "low": 1},
+    }
+
+    # Backwards compatibility alias
+    EU_COUNTRIES = DEFAULT_EU_COUNTRIES
+
+    def __init__(self, domain: str, config_path: Optional[Path] = None):
         """Initialize compliance reporter.
 
         Args:
             domain: Organization domain
+            config_path: Path to YAML configuration file (default: built-in config)
         """
         self.domain = domain
-        logger.info("compliance_reporter_initialized", domain=domain)
+        self._load_config(config_path)
+        logger.info(
+            "compliance_reporter_initialized",
+            domain=domain,
+            config_loaded=self._config_loaded,
+        )
+
+    def _load_config(self, config_path: Optional[Path] = None) -> None:
+        """Load compliance rules from YAML configuration file.
+
+        Args:
+            config_path: Path to YAML config file (default: built-in config)
+        """
+        self._config_loaded = False
+        self.config: Dict[str, Any] = {}
+        self.eu_countries: List[str] = self.DEFAULT_EU_COUNTRIES.copy()
+        self.scoring: Dict[str, Dict[str, int]] = self.DEFAULT_SCORING.copy()
+        self.trusted_domains: List[str] = []
+        self.phi_indicators: List[str] = ["MEDICAL", "PHI", "HEALTH"]
+        self.card_data_indicators: List[str] = ["CREDIT_CARD", "CARD"]
+        self.student_data_indicators: List[str] = ["STUDENT", "EDUCATION"]
+
+        # Determine config path
+        if config_path is None:
+            config_path = DEFAULT_COMPLIANCE_CONFIG_PATH
+
+        # Try to load from config file
+        if config_path.exists():
+            try:
+                with open(config_path, "r") as f:
+                    self.config = yaml.safe_load(f) or {}
+
+                self._parse_config()
+                self._config_loaded = True
+                logger.info("compliance_config_loaded", path=str(config_path))
+                return
+            except Exception as e:
+                logger.warning(
+                    "compliance_config_load_failed",
+                    path=str(config_path),
+                    error=str(e),
+                )
+
+        # Fall back to defaults
+        logger.info("compliance_using_default_rules")
+
+    def _parse_config(self) -> None:
+        """Parse YAML configuration into internal structures."""
+        # Parse global settings
+        global_config = self.config.get("global", {})
+        if "eu_countries" in global_config:
+            self.eu_countries = global_config["eu_countries"]
+        if "trusted_domains" in global_config:
+            self.trusted_domains = global_config["trusted_domains"]
+
+        # Parse framework-specific settings
+        for framework in ["gdpr", "hipaa", "soc2", "pci_dss", "ferpa", "fedramp"]:
+            framework_config = self.config.get(framework, {})
+            if "scoring" in framework_config:
+                self.scoring[framework] = framework_config["scoring"]
+
+        # Parse HIPAA PHI indicators
+        hipaa_config = self.config.get("hipaa", {})
+        if "phi_indicators" in hipaa_config:
+            self.phi_indicators = hipaa_config["phi_indicators"]
+
+        # Parse PCI-DSS card data indicators
+        pci_config = self.config.get("pci_dss", {})
+        if "card_data_indicators" in pci_config:
+            self.card_data_indicators = pci_config["card_data_indicators"]
+
+        # Parse FERPA student data indicators
+        ferpa_config = self.config.get("ferpa", {})
+        if "student_data_indicators" in ferpa_config:
+            self.student_data_indicators = ferpa_config["student_data_indicators"]
+
+    def _get_scoring(self, framework: str, severity: str) -> int:
+        """Get scoring deduction for a framework and severity.
+
+        Args:
+            framework: Compliance framework name
+            severity: Issue severity
+
+        Returns:
+            Point deduction for this severity
+        """
+        return self.scoring.get(framework, {}).get(severity, 0)
+
+    def _is_framework_enabled(self, framework: str) -> bool:
+        """Check if a framework is enabled in config.
+
+        Args:
+            framework: Compliance framework name
+
+        Returns:
+            True if enabled
+        """
+        framework_config = self.config.get(framework, {})
+        return framework_config.get("enabled", True)
+
+    def _has_phi(self, pii_types: List[str]) -> bool:
+        """Check if PII types include PHI indicators.
+
+        Args:
+            pii_types: List of PII type strings
+
+        Returns:
+            True if PHI detected
+        """
+        return any(
+            indicator.upper() in [p.upper() for p in pii_types]
+            for indicator in self.phi_indicators
+        )
+
+    def _has_card_data(self, pii_types: List[str]) -> bool:
+        """Check if PII types include card data indicators.
+
+        Args:
+            pii_types: List of PII type strings
+
+        Returns:
+            True if card data detected
+        """
+        return any(
+            indicator.upper() in [p.upper() for p in pii_types]
+            for indicator in self.card_data_indicators
+        )
+
+    def _has_student_data(self, pii_types: List[str]) -> bool:
+        """Check if PII types include student data indicators.
+
+        Args:
+            pii_types: List of PII type strings
+
+        Returns:
+            True if student data detected
+        """
+        return any(
+            indicator.upper() in [p.upper() for p in pii_types]
+            for indicator in self.student_data_indicators
+        )
 
     def generate_gdpr_report(
         self,
@@ -393,7 +558,7 @@ class ComplianceReporter:
             if hasattr(file_info, "pii_detected") and file_info.pii_detected:
                 # Check if PII types include PHI indicators
                 pii_types = getattr(file_info, "pii_types", [])
-                if any(pii_type in ["MEDICAL", "PHI", "HEALTH"] for pii_type in pii_types):
+                if self._has_phi(pii_types):
                     report.files_with_phi += 1
 
                     if file_info.is_shared_externally:
@@ -520,7 +685,7 @@ class ComplianceReporter:
         for file_info in files:
             if hasattr(file_info, "pii_detected") and file_info.pii_detected:
                 pii_types = getattr(file_info, "pii_types", [])
-                if any(pii_type in ["CREDIT_CARD", "CARD"] for pii_type in pii_types):
+                if self._has_card_data(pii_types):
                     report.files_with_card_data += 1
 
                     if file_info.is_shared_externally:
@@ -580,7 +745,7 @@ class ComplianceReporter:
         for file_info in files:
             if hasattr(file_info, "pii_detected") and file_info.pii_detected:
                 pii_types = getattr(file_info, "pii_types", [])
-                if any(pii_type in ["STUDENT", "EDUCATION"] for pii_type in pii_types):
+                if self._has_student_data(pii_types):
                     report.files_with_student_data += 1
 
                     if file_info.is_shared_externally:

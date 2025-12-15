@@ -1,0 +1,31 @@
+# Vaulytica Scan Runner Dockerfile
+# Background service that executes scheduled scans from the web UI
+
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install backend dependencies first (for caching)
+COPY web/backend/requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy vaulytica CLI source and install with database support
+COPY pyproject.toml /app/cli/pyproject.toml
+COPY README.md /app/cli/README.md
+COPY vaulytica /app/cli/vaulytica
+RUN pip install --no-cache-dir /app/cli[database]
+
+# Copy backend code
+COPY web/backend /app/backend
+
+# Set Python path
+ENV PYTHONPATH=/app
+
+# Run the scan runner
+CMD ["python", "-m", "backend.services.scan_runner"]

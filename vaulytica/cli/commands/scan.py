@@ -1,10 +1,13 @@
 """Scan command implementations."""
 
 from pathlib import Path
-from typing import Optional, List, Dict
+from typing import Optional, List, Dict, Any, Callable
 from datetime import datetime, timezone
+from contextlib import contextmanager
 import csv
 import json
+import signal
+import threading
 
 import click
 from rich.console import Console
@@ -12,6 +15,293 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.table import Table
 
 console = Console()
+
+# Global state for scan cancellation
+_scan_cancelled = threading.Event()
+_active_scan_id: Optional[int] = None
+_active_db_saver = None
+
+
+def is_scan_cancelled() -> bool:
+    """Check if the current scan has been cancelled."""
+    return _scan_cancelled.is_set()
+
+
+def _signal_handler(signum, frame):
+    """Handle SIGINT/SIGTERM for graceful scan cancellation."""
+    global _scan_cancelled
+    _scan_cancelled.set()
+    console.print("\n[yellow]Cancellation requested... finishing current operation[/yellow]")
+
+
+@contextmanager
+def scan_context(ctx: click.Context, scan_type: str, domain: str):
+    """Context manager for scan operations with cancellation support.
+
+    Handles:
+    - Starting the scan in the database (if enabled)
+    - Setting up signal handlers for graceful cancellation
+    - Marking scan as completed/cancelled/failed on exit
+
+    Usage:
+        with scan_context(ctx, "files", "example.com") as scan_ctx:
+            # Periodically check: if scan_ctx.is_cancelled(): break
+            results = do_scan()
+            scan_ctx.set_results(results, issues=5)
+
+    Args:
+        ctx: Click context
+        scan_type: Type of scan
+        domain: Domain being scanned
+
+    Yields:
+        ScanContext object with methods for tracking progress
+    """
+    global _scan_cancelled, _active_scan_id, _active_db_saver
+
+    # Reset cancellation state
+    _scan_cancelled.clear()
+
+    # Set up signal handlers
+    original_sigint = signal.getsignal(signal.SIGINT)
+    original_sigterm = signal.getsignal(signal.SIGTERM)
+    signal.signal(signal.SIGINT, _signal_handler)
+    signal.signal(signal.SIGTERM, _signal_handler)
+
+    # Initialize database saver if enabled
+    saver = _get_database_saver(ctx)
+    scan_id = None
+    _active_db_saver = saver
+
+    if saver:
+        try:
+            scan_id = saver.start_scan(
+                scan_type=scan_type,
+                domain_name=domain,
+                triggered_by="cli",
+                config={"command": ctx.info_name},
+            )
+            _active_scan_id = scan_id
+        except Exception as e:
+            console.print(f"[yellow]Warning: Could not start scan in database: {e}[/yellow]")
+
+    class ScanContext:
+        """Context object for tracking scan state."""
+
+        def __init__(self):
+            self.total_items = 0
+            self.issues_found = 0
+            self.high_risk_count = 0
+            self.medium_risk_count = 0
+            self.low_risk_count = 0
+            self._error = None
+
+        @property
+        def scan_id(self) -> Optional[int]:
+            return scan_id
+
+        def is_cancelled(self) -> bool:
+            """Check if cancellation was requested."""
+            return _scan_cancelled.is_set()
+
+        def update_progress(
+            self,
+            percent: int,
+            message: Optional[str] = None,
+            items_processed: Optional[int] = None,
+            estimated_total: Optional[int] = None,
+        ):
+            """Update scan progress in the database.
+
+            Args:
+                percent: Progress percentage (0-100)
+                message: Current operation message (e.g., "Scanning files...")
+                items_processed: Number of items processed so far
+                estimated_total: Estimated total items (if known)
+            """
+            if saver and scan_id:
+                try:
+                    saver.update_progress(
+                        scan_id,
+                        percent=percent,
+                        message=message,
+                        items_processed=items_processed,
+                        estimated_total=estimated_total,
+                    )
+                except Exception:
+                    pass  # Silently ignore progress update failures
+
+        def set_results(
+            self,
+            total: int = 0,
+            issues: int = 0,
+            high: int = 0,
+            medium: int = 0,
+            low: int = 0,
+        ):
+            """Update scan results for final save."""
+            self.total_items = total
+            self.issues_found = issues
+            self.high_risk_count = high
+            self.medium_risk_count = medium
+            self.low_risk_count = low
+
+        def set_error(self, error: str):
+            """Mark scan as having an error."""
+            self._error = error
+
+    scan_ctx = ScanContext()
+
+    try:
+        yield scan_ctx
+    except KeyboardInterrupt:
+        _scan_cancelled.set()
+        console.print("\n[yellow]Scan interrupted by user[/yellow]")
+    except Exception as e:
+        scan_ctx.set_error(str(e))
+        raise
+    finally:
+        # Restore original signal handlers
+        signal.signal(signal.SIGINT, original_sigint)
+        signal.signal(signal.SIGTERM, original_sigterm)
+
+        # Update database with final status
+        if saver and scan_id:
+            try:
+                if scan_ctx._error:
+                    # Preserve partial results on failure
+                    saver.fail_scan(
+                        scan_id,
+                        scan_ctx._error,
+                        total_items=scan_ctx.total_items,
+                        issues_found=scan_ctx.issues_found,
+                        high_risk_count=scan_ctx.high_risk_count,
+                        medium_risk_count=scan_ctx.medium_risk_count,
+                        low_risk_count=scan_ctx.low_risk_count,
+                    )
+                    console.print(f"[red]Scan {scan_id} marked as failed (partial results saved)[/red]")
+                elif _scan_cancelled.is_set():
+                    saver.cancel_scan(
+                        scan_id,
+                        total_items=scan_ctx.total_items,
+                        issues_found=scan_ctx.issues_found,
+                        high_risk_count=scan_ctx.high_risk_count,
+                        medium_risk_count=scan_ctx.medium_risk_count,
+                        low_risk_count=scan_ctx.low_risk_count,
+                    )
+                    console.print(f"[yellow]Scan {scan_id} marked as cancelled[/yellow]")
+                else:
+                    saver.complete_scan(
+                        scan_id,
+                        total_items=scan_ctx.total_items,
+                        issues_found=scan_ctx.issues_found,
+                        high_risk_count=scan_ctx.high_risk_count,
+                        medium_risk_count=scan_ctx.medium_risk_count,
+                        low_risk_count=scan_ctx.low_risk_count,
+                    )
+            except Exception as e:
+                console.print(f"[yellow]Warning: Could not update scan status: {e}[/yellow]")
+
+        # Clear global state
+        _active_scan_id = None
+        _active_db_saver = None
+        _scan_cancelled.clear()
+
+
+def _get_database_saver(ctx: click.Context):
+    """Get a DatabaseSaver instance if database saving is enabled.
+
+    Args:
+        ctx: Click context containing save_to_db and db_url settings
+
+    Returns:
+        DatabaseSaver instance or None if not enabled
+    """
+    if not ctx.obj.get("save_to_db"):
+        return None
+
+    db_url = ctx.obj.get("db_url")
+    if not db_url:
+        return None
+
+    try:
+        from vaulytica.core.database.saver import DatabaseSaver
+        return DatabaseSaver(db_url)
+    except ImportError:
+        console.print(
+            "[yellow]Warning: Database support not installed. "
+            "Run 'pip install vaulytica[database]' to enable.[/yellow]"
+        )
+        return None
+    except Exception as e:
+        console.print(f"[yellow]Warning: Could not connect to database: {e}[/yellow]")
+        return None
+
+
+def _save_scan_to_db(
+    ctx: click.Context,
+    scan_type: str,
+    domain: str,
+    results: List[Any],
+    save_method: str,
+    high_risk: int = 0,
+    medium_risk: int = 0,
+    low_risk: int = 0,
+) -> Optional[int]:
+    """Save scan results to database if enabled.
+
+    Args:
+        ctx: Click context
+        scan_type: Type of scan (files, users, oauth, posture, etc.)
+        domain: Domain being scanned
+        results: List of scan results
+        save_method: Method name on DatabaseSaver to call (e.g., 'save_file_findings')
+        high_risk: Count of high-risk findings
+        medium_risk: Count of medium-risk findings
+        low_risk: Count of low-risk findings
+
+    Returns:
+        Scan ID if saved, None otherwise
+    """
+    saver = _get_database_saver(ctx)
+    if not saver:
+        return None
+
+    try:
+        # Start the scan
+        scan_id = saver.start_scan(
+            scan_type=scan_type,
+            domain_name=domain,
+            triggered_by="cli",
+            config={"command": ctx.info_name},
+        )
+
+        # Save the results using the appropriate method
+        save_func = getattr(saver, save_method)
+        count = save_func(scan_id, results)
+
+        # Complete the scan
+        issues_found = len([r for r in results if getattr(r, 'risk_score', 0) >= 50])
+        saver.complete_scan(
+            scan_id=scan_id,
+            total_items=len(results),
+            issues_found=issues_found,
+            high_risk_count=high_risk,
+            medium_risk_count=medium_risk,
+            low_risk_count=low_risk,
+        )
+
+        console.print(f"[green]Saved {count} findings to database (scan ID: {scan_id})[/green]")
+        return scan_id
+
+    except Exception as e:
+        console.print(f"[red]Error saving to database: {e}[/red]")
+        if saver and scan_id:
+            try:
+                saver.fail_scan(scan_id, str(e))
+            except Exception:
+                pass
+        return None
 
 
 def _save_files_to_output(files: List, output: Path, format: str) -> None:
@@ -149,6 +439,7 @@ def scan_files_command(
     from vaulytica.core.auth.client import create_client_from_config
     from vaulytica.core.scanners.file_scanner import FileScanner
     from vaulytica.storage.state import StateManager
+    from vaulytica.cli.validation import validate_domain, validate_email, ValidationError
     from rich.table import Table
 
     console.print("[cyan]Starting file scan...[/cyan]")
@@ -170,6 +461,15 @@ def scan_files_command(
         if not domain:
             console.print("[red]Error: No domain specified in config or command line[/red]")
             raise click.Abort()
+
+    # Validate inputs
+    try:
+        domain = validate_domain(domain)
+        if user:
+            user = validate_email(user)
+    except ValidationError as e:
+        console.print(f"[red]Validation error: {e}[/red]")
+        raise click.Abort()
 
     console.print(f"[cyan]Domain:[/cyan] {domain}")
     console.print(f"[cyan]External only:[/cyan] {external_only}")
@@ -255,6 +555,16 @@ def scan_files_command(
                 _save_files_to_output(files, output, format)
                 console.print(f"\n[green]✓[/green] Results saved to {output}")
 
+            # Save to database if enabled
+            if files:
+                high_risk = len([f for f in files if f.risk_score >= 75])
+                medium_risk = len([f for f in files if 50 <= f.risk_score < 75])
+                low_risk = len([f for f in files if f.risk_score < 50])
+                _save_scan_to_db(
+                    ctx, "files", domain, files, "save_file_findings",
+                    high_risk=high_risk, medium_risk=medium_risk, low_risk=low_risk
+                )
+
         else:
             console.print("\n[green]No files found with sharing issues[/green]")
 
@@ -277,6 +587,7 @@ def scan_users_command(
     """Scan for inactive users and service accounts."""
     from vaulytica.config.loader import load_config
     from vaulytica.core.auth.client import create_client_from_config
+    from vaulytica.cli.validation import validate_domain, validate_positive_integer, ValidationError
 
     console.print("[cyan]Starting user scan...[/cyan]")
 
@@ -294,6 +605,14 @@ def scan_users_command(
         if not domain:
             console.print("[red]Error: No domain specified in config or command line[/red]")
             raise click.Abort()
+
+    # Validate inputs
+    try:
+        domain = validate_domain(domain)
+        inactive_days = validate_positive_integer(inactive_days, "inactive_days")
+    except ValidationError as e:
+        console.print(f"[red]Validation error: {e}[/red]")
+        raise click.Abort()
 
     console.print(f"[cyan]Domain:[/cyan] {domain}")
     console.print(f"[cyan]Inactive threshold:[/cyan] {inactive_days} days\n")
@@ -363,6 +682,15 @@ def scan_users_command(
     if output:
         _save_users_to_output(result.users, output, format)
         console.print(f"\n[green]✓[/green] Results saved to {output}")
+
+    # Save to database if enabled
+    if result.users:
+        _save_scan_to_db(
+            ctx, "users", domain, result.users, "save_user_findings",
+            high_risk=result.inactive_users,  # Inactive users as high risk
+            medium_risk=result.suspended_users,
+            low_risk=result.active_users
+        )
 
 
 def scan_shared_drives_command(
@@ -526,6 +854,7 @@ def scan_oauth_apps_command(
     from vaulytica.config.loader import load_config
     from vaulytica.core.auth.client import create_client_from_config
     from vaulytica.core.scanners.oauth_scanner import OAuthScanner
+    from vaulytica.cli.validation import validate_domain, validate_email, ValidationError
 
     console.print("[cyan]Starting OAuth app scan...[/cyan]")
 
@@ -543,6 +872,15 @@ def scan_oauth_apps_command(
         if not domain:
             console.print("[red]Error: No domain specified in config or command line[/red]")
             raise click.Abort()
+
+    # Validate inputs
+    try:
+        domain = validate_domain(domain)
+        if user:
+            user = validate_email(user)
+    except ValidationError as e:
+        console.print(f"[red]Validation error: {e}[/red]")
+        raise click.Abort()
 
     console.print(f"[cyan]Domain:[/cyan] {domain}")
     if user:
@@ -659,6 +997,16 @@ def scan_oauth_apps_command(
                 ])
 
         console.print(f"[green]✓ Results saved to {output}[/green]")
+
+    # Save to database if enabled
+    if result.apps:
+        high_risk = len([a for a in result.apps if a.risk_score >= 75])
+        medium_risk = len([a for a in result.apps if 50 <= a.risk_score < 75])
+        low_risk = len([a for a in result.apps if a.risk_score < 50])
+        _save_scan_to_db(
+            ctx, "oauth", domain, result.apps, "save_oauth_findings",
+            high_risk=high_risk, medium_risk=medium_risk, low_risk=low_risk
+        )
 
 
 @click.command("groups")

@@ -11,6 +11,13 @@ from googleapiclient.errors import HttpError
 from vaulytica.core.auth.client import GoogleWorkspaceClient
 from vaulytica.core.utils.cache import Cache
 from vaulytica.storage.state import StateManager
+from vaulytica.core.scanners.exceptions import (
+    NetworkError,
+    AuthenticationError,
+    PermissionError as ScannerPermissionError,
+    RateLimitError,
+    APIError,
+)
 
 logger = structlog.get_logger(__name__)
 
@@ -261,9 +268,31 @@ class FileScanner:
                 scan_duration_seconds=round(scan_duration, 2)
             )
 
+        except FileScannerError:
+            # Re-raise scanner-specific errors
+            raise
+        except HttpError as e:
+            # Categorize HTTP errors
+            logger.error("file_scan_http_error", error=str(e), status=e.resp.status)
+            if e.resp.status == 401:
+                raise AuthenticationError(f"Authentication failed during file scan: {e}")
+            elif e.resp.status == 403:
+                raise ScannerPermissionError(f"Permission denied during file scan: {e}")
+            elif e.resp.status == 429:
+                raise RateLimitError(f"Rate limit exceeded during file scan: {e}")
+            elif e.resp.status >= 500:
+                raise NetworkError(f"Server error during file scan: {e}")
+            else:
+                raise APIError(f"API error during file scan: {e}", status_code=e.resp.status)
+        except ConnectionError as e:
+            logger.error("file_scan_connection_error", error=str(e))
+            raise NetworkError(f"Connection error during file scan: {e}")
+        except TimeoutError as e:
+            logger.error("file_scan_timeout", error=str(e))
+            raise NetworkError(f"Timeout during file scan: {e}")
         except Exception as e:
-            logger.error("file_scan_failed", error=str(e))
-            raise FileScannerError(f"File scan failed: {e}")
+            logger.error("file_scan_failed", error=str(e), error_type=type(e).__name__)
+            raise FileScannerError(f"File scan failed with unexpected error: {type(e).__name__}: {e}")
 
     def _process_file(self, file_data: Dict[str, Any], stale_days: Optional[int] = None) -> FileInfo:
         """Process raw file data into FileInfo object.
@@ -508,9 +537,24 @@ class FileScanner:
                 stale_found=stale_count,
             )
 
+        except FileScannerError:
+            raise
+        except HttpError as e:
+            logger.error("stale_content_scan_http_error", error=str(e), status=e.resp.status)
+            if e.resp.status == 401:
+                raise AuthenticationError(f"Authentication failed during stale content scan: {e}")
+            elif e.resp.status == 403:
+                raise ScannerPermissionError(f"Permission denied during stale content scan: {e}")
+            elif e.resp.status >= 500:
+                raise NetworkError(f"Server error during stale content scan: {e}")
+            else:
+                raise APIError(f"API error during stale content scan: {e}", status_code=e.resp.status)
+        except (ConnectionError, TimeoutError) as e:
+            logger.error("stale_content_scan_network_error", error=str(e))
+            raise NetworkError(f"Network error during stale content scan: {e}")
         except Exception as e:
-            logger.error("stale_content_scan_failed", error=str(e))
-            raise FileScannerError(f"Stale content scan failed: {e}")
+            logger.error("stale_content_scan_failed", error=str(e), error_type=type(e).__name__)
+            raise FileScannerError(f"Stale content scan failed with unexpected error: {type(e).__name__}: {e}")
 
     def scan_external_owned(
         self,
@@ -609,7 +653,22 @@ class FileScanner:
                 external_owned_found=external_owned_count,
             )
 
+        except FileScannerError:
+            raise
+        except HttpError as e:
+            logger.error("external_owned_scan_http_error", error=str(e), status=e.resp.status)
+            if e.resp.status == 401:
+                raise AuthenticationError(f"Authentication failed during external owned scan: {e}")
+            elif e.resp.status == 403:
+                raise ScannerPermissionError(f"Permission denied during external owned scan: {e}")
+            elif e.resp.status >= 500:
+                raise NetworkError(f"Server error during external owned scan: {e}")
+            else:
+                raise APIError(f"API error during external owned scan: {e}", status_code=e.resp.status)
+        except (ConnectionError, TimeoutError) as e:
+            logger.error("external_owned_scan_network_error", error=str(e))
+            raise NetworkError(f"Network error during external owned scan: {e}")
         except Exception as e:
-            logger.error("external_owned_scan_failed", error=str(e))
-            raise FileScannerError(f"External owned scan failed: {e}")
+            logger.error("external_owned_scan_failed", error=str(e), error_type=type(e).__name__)
+            raise FileScannerError(f"External owned scan failed with unexpected error: {type(e).__name__}: {e}")
 

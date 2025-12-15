@@ -1,0 +1,356 @@
+# Compliance Rules Configuration for Vaulytica
+# This file allows customization of compliance rules for different frameworks
+#
+# Each framework has:
+#   - enabled: Whether to generate reports for this framework (default: true)
+#   - scoring: Point deductions for each severity level
+#   - rules: List of compliance rules to check
+#
+# Custom rules can be added to the 'custom' section at the bottom
+
+# ============================================================================
+# GLOBAL SETTINGS
+# ============================================================================
+
+global:
+  # EU countries for GDPR
+  eu_countries:
+    - at  # Austria
+    - be  # Belgium
+    - bg  # Bulgaria
+    - hr  # Croatia
+    - cy  # Cyprus
+    - cz  # Czech Republic
+    - dk  # Denmark
+    - ee  # Estonia
+    - fi  # Finland
+    - fr  # France
+    - de  # Germany
+    - gr  # Greece
+    - hu  # Hungary
+    - ie  # Ireland
+    - it  # Italy
+    - lv  # Latvia
+    - lt  # Lithuania
+    - lu  # Luxembourg
+    - mt  # Malta
+    - nl  # Netherlands
+    - pl  # Poland
+    - pt  # Portugal
+    - ro  # Romania
+    - sk  # Slovakia
+    - si  # Slovenia
+    - es  # Spain
+    - se  # Sweden
+
+  # Trusted domains (domains allowed for external sharing)
+  trusted_domains: []
+
+  # Retention period in days (for checking old files)
+  default_retention_days: 365
+
+# ============================================================================
+# GDPR (General Data Protection Regulation)
+# ============================================================================
+
+gdpr:
+  enabled: true
+  description: "General Data Protection Regulation (EU)"
+  scoring:
+    critical: 10
+    high: 5
+    medium: 2
+    low: 1
+  rules:
+    - id: gdpr_pii_external_share
+      enabled: true
+      name: "PII Shared Externally"
+      category: "data_sharing"
+      severity: "high"
+      description: "File with PII shared externally: {resource_name}"
+      recommendation: "Review and restrict external sharing of files containing PII"
+      triggers:
+        - condition: "file.pii_detected and file.is_shared_externally"
+
+    - id: gdpr_no_2fa
+      enabled: true
+      name: "User Without 2FA"
+      category: "access_control"
+      severity: "medium"
+      description: "User without 2FA: {resource_name}"
+      recommendation: "Enable 2-factor authentication for all users"
+      triggers:
+        - condition: "user.two_factor_enabled == false"
+
+    - id: gdpr_inactive_user
+      enabled: true
+      name: "Inactive User With Access"
+      category: "access_control"
+      severity: "medium"
+      description: "Inactive user with data access: {resource_name}"
+      recommendation: "Review and suspend inactive user accounts"
+      triggers:
+        - condition: "user.is_inactive"
+
+# ============================================================================
+# HIPAA (Health Insurance Portability and Accountability Act)
+# ============================================================================
+
+hipaa:
+  enabled: true
+  description: "Health Insurance Portability and Accountability Act (US)"
+  scoring:
+    critical: 15
+    high: 8
+    medium: 3
+    low: 1
+  phi_indicators:
+    - "MEDICAL"
+    - "PHI"
+    - "HEALTH"
+    - "medical_record_number"
+    - "health_insurance_number"
+    - "medicare_number"
+    - "medicaid_number"
+  rules:
+    - id: hipaa_phi_external
+      enabled: true
+      name: "PHI Shared Externally"
+      category: "phi_exposure"
+      severity: "critical"
+      description: "PHI shared externally: {resource_name}"
+      recommendation: "Immediately restrict external access to PHI"
+      triggers:
+        - condition: "file.has_phi and file.is_shared_externally"
+
+    - id: hipaa_phi_public
+      enabled: true
+      name: "PHI Publicly Shared"
+      category: "phi_exposure"
+      severity: "critical"
+      description: "PHI shared publicly: {resource_name}"
+      recommendation: "Immediately remove public access to PHI"
+      triggers:
+        - condition: "file.has_phi and file.is_public"
+
+    - id: hipaa_admin_no_2fa
+      enabled: true
+      name: "Admin Without 2FA"
+      category: "access_control"
+      severity: "critical"
+      description: "Admin without 2FA accessing PHI: {resource_name}"
+      recommendation: "HIPAA requires MFA for all users accessing PHI"
+      triggers:
+        - condition: "user.is_admin and not user.two_factor_enabled"
+
+# ============================================================================
+# SOC 2 (Service Organization Control 2)
+# ============================================================================
+
+soc2:
+  enabled: true
+  description: "Service Organization Control 2"
+  scoring:
+    critical: 12
+    high: 6
+    medium: 3
+    low: 1
+  rules:
+    - id: soc2_public_file
+      enabled: true
+      name: "File Publicly Shared"
+      category: "confidentiality"
+      severity: "high"
+      description: "File publicly shared: {resource_name}"
+      recommendation: "Review and restrict public access"
+      triggers:
+        - condition: "file.is_public"
+
+    - id: soc2_sensitive_external
+      enabled: true
+      name: "Sensitive Data Shared Externally"
+      category: "confidentiality"
+      severity: "high"
+      description: "Sensitive data shared externally: {resource_name}"
+      recommendation: "Review external sharing of sensitive data"
+      triggers:
+        - condition: "file.pii_detected and file.is_shared_externally"
+
+# ============================================================================
+# PCI-DSS (Payment Card Industry Data Security Standard)
+# ============================================================================
+
+pci_dss:
+  enabled: true
+  description: "Payment Card Industry Data Security Standard"
+  scoring:
+    critical: 20
+    high: 10
+    medium: 4
+    low: 1
+  card_data_indicators:
+    - "CREDIT_CARD"
+    - "CARD"
+    - "credit_card"
+  rules:
+    - id: pci_card_external
+      enabled: true
+      name: "Cardholder Data Shared Externally"
+      category: "data_protection"
+      severity: "critical"
+      description: "Cardholder data shared externally: {resource_name}"
+      recommendation: "PCI-DSS prohibits external sharing of cardholder data"
+      triggers:
+        - condition: "file.has_card_data and file.is_shared_externally"
+
+    - id: pci_card_public
+      enabled: true
+      name: "Cardholder Data Publicly Shared"
+      category: "data_protection"
+      severity: "critical"
+      description: "Cardholder data publicly shared: {resource_name}"
+      recommendation: "Immediately remove public access to cardholder data"
+      triggers:
+        - condition: "file.has_card_data and file.is_public"
+
+    - id: pci_no_2fa
+      enabled: true
+      name: "User Without 2FA"
+      category: "access_control"
+      severity: "high"
+      description: "User without 2FA: {resource_name}"
+      recommendation: "PCI-DSS requires MFA for all users with cardholder data access"
+      triggers:
+        - condition: "user.two_factor_enabled == false"
+
+# ============================================================================
+# FERPA (Family Educational Rights and Privacy Act)
+# ============================================================================
+
+ferpa:
+  enabled: true
+  description: "Family Educational Rights and Privacy Act (US)"
+  scoring:
+    critical: 15
+    high: 8
+    medium: 3
+    low: 1
+  student_data_indicators:
+    - "STUDENT"
+    - "EDUCATION"
+    - "student_id"
+  rules:
+    - id: ferpa_student_external
+      enabled: true
+      name: "Student Data Shared Externally"
+      category: "student_data"
+      severity: "critical"
+      description: "Student data shared externally: {resource_name}"
+      recommendation: "FERPA requires authorization for external disclosure"
+      triggers:
+        - condition: "file.has_student_data and file.is_shared_externally"
+
+    - id: ferpa_student_public
+      enabled: true
+      name: "Student Records Publicly Shared"
+      category: "student_data"
+      severity: "critical"
+      description: "Student records publicly shared: {resource_name}"
+      recommendation: "Immediately remove public access to student records"
+      triggers:
+        - condition: "file.has_student_data and file.is_public"
+
+    - id: ferpa_inactive_user
+      enabled: true
+      name: "Inactive User With Student Data Access"
+      category: "access_control"
+      severity: "medium"
+      description: "Inactive user with student data access: {resource_name}"
+      recommendation: "Review and suspend inactive accounts with student data access"
+      triggers:
+        - condition: "user.is_inactive"
+
+# ============================================================================
+# FedRAMP (Federal Risk and Authorization Management Program)
+# ============================================================================
+
+fedramp:
+  enabled: true
+  description: "Federal Risk and Authorization Management Program (US)"
+  impact_levels:
+    - "Low"
+    - "Moderate"
+    - "High"
+  scoring:
+    Low:
+      critical: 12
+      high: 6
+      medium: 3
+      low: 1
+    Moderate:
+      critical: 18
+      high: 10
+      medium: 4
+      low: 1
+    High:
+      critical: 27
+      high: 15
+      medium: 6
+      low: 2
+  rules:
+    - id: fedramp_public_file
+      enabled: true
+      name: "File Publicly Shared"
+      category: "access_control"
+      severity: "critical"
+      description: "File publicly shared: {resource_name}"
+      recommendation: "FedRAMP requires strict access controls"
+      triggers:
+        - condition: "file.is_public"
+
+    - id: fedramp_no_mfa
+      enabled: true
+      name: "User Without MFA"
+      category: "authentication"
+      severity: "high"
+      description: "User without MFA: {resource_name}"
+      recommendation: "FedRAMP requires MFA for all users"
+      triggers:
+        - condition: "user.two_factor_enabled == false"
+
+    - id: fedramp_inactive_account
+      enabled: true
+      name: "Inactive Account"
+      category: "access_control"
+      severity: "medium"
+      description: "Inactive account: {resource_name}"
+      recommendation: "FedRAMP requires timely removal of inactive accounts"
+      triggers:
+        - condition: "user.is_inactive"
+
+    - id: fedramp_admin_no_mfa
+      enabled: true
+      name: "Admin Without MFA"
+      category: "access_control"
+      severity: "critical"
+      description: "Admin without 2FA: {resource_name}"
+      recommendation: "FedRAMP requires MFA for all privileged users"
+      triggers:
+        - condition: "user.is_admin and not user.two_factor_enabled"
+
+# ============================================================================
+# CUSTOM RULES
+# ============================================================================
+# Add your organization-specific compliance rules here
+
+custom:
+  # Example: Custom data protection rule
+  # - id: custom_confidential_external
+  #   enabled: true
+  #   name: "Confidential Data Shared Externally"
+  #   category: "data_protection"
+  #   severity: "high"
+  #   description: "Confidential file shared externally: {resource_name}"
+  #   recommendation: "Review and restrict external sharing of confidential files"
+  #   triggers:
+  #     - condition: "file.name contains 'confidential' and file.is_shared_externally"

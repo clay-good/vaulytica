@@ -1,25 +1,27 @@
-version: '3.8'
+# Vaulytica Docker Compose Configuration
+# Includes CLI tool and Web App services
 
 services:
+  # ==============================
+  # CLI Tool Services
+  # ==============================
+
   vaulytica:
     build: .
     image: vaulytica:latest
     container_name: vaulytica
     volumes:
-      # Mount config directory
       - ./config:/app/config:ro
-      # Mount reports directory
       - ./reports:/app/reports
-      # Mount logs directory
       - ./logs:/app/logs
-      # Mount credentials (read-only)
       - ./credentials:/app/credentials:ro
     environment:
       - VAULYTICA_CONFIG=/app/config/config.yaml
       - PYTHONUNBUFFERED=1
-    # Override command for different operations
-    # command: scan files --domain example.com
+      - DATABASE_URL=postgresql://vaulytica:${POSTGRES_PASSWORD:-changeme}@postgres:5432/vaulytica
     command: --help
+    networks:
+      - vaulytica-network
 
   # Scheduled scanner (runs daily at 2 AM)
   vaulytica-cron:
@@ -34,8 +36,137 @@ services:
     environment:
       - VAULYTICA_CONFIG=/app/config/config.yaml
       - PYTHONUNBUFFERED=1
-    # Install cron and run scheduled scans
+      - DATABASE_URL=postgresql://vaulytica:${POSTGRES_PASSWORD:-changeme}@postgres:5432/vaulytica
     entrypoint: /bin/sh
     command: -c "echo '0 2 * * * vaulytica scan files --domain example.com' | crontab - && crond -f"
     restart: unless-stopped
+    networks:
+      - vaulytica-network
 
+  # ==============================
+  # Web App Services
+  # ==============================
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: vaulytica-postgres
+    environment:
+      POSTGRES_DB: vaulytica
+      POSTGRES_USER: vaulytica
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vaulytica"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - vaulytica-network
+
+  # FastAPI Backend
+  backend:
+    build:
+      context: ./web/backend
+      dockerfile: Dockerfile
+    container_name: vaulytica-backend
+    environment:
+      DATABASE_URL: postgresql://vaulytica:${POSTGRES_PASSWORD:-changeme}@postgres:5432/vaulytica
+      SECRET_KEY: ${SECRET_KEY:-change-this-to-a-secure-random-string}
+      CORS_ORIGINS: '["http://localhost:3000", "http://localhost:3001"]'
+      DEBUG: ${DEBUG:-false}
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./web/backend:/app/backend
+      - ./vaulytica:/app/vaulytica
+    networks:
+      - vaulytica-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+
+  # Next.js Frontend
+  frontend:
+    build:
+      context: ./web/frontend
+      dockerfile: Dockerfile
+    container_name: vaulytica-frontend
+    environment:
+      NEXT_PUBLIC_API_URL: http://backend:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - vaulytica-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+  # Background Scan Runner (executes scheduled scans from web UI)
+  scan-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile.scan-runner
+    container_name: vaulytica-scan-runner
+    environment:
+      DATABASE_URL: postgresql://vaulytica:${POSTGRES_PASSWORD:-changeme}@postgres:5432/vaulytica
+      SCAN_CHECK_INTERVAL: ${SCAN_CHECK_INTERVAL:-60}
+      VAULYTICA_CLI_PATH: vaulytica
+      VAULYTICA_CREDENTIALS_PATH: /app/credentials/service-account.json
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./credentials:/app/credentials:ro
+    networks:
+      - vaulytica-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  vaulytica-network:
+    driver: bridge

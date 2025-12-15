@@ -43,6 +43,12 @@ pypdf = "^4.0.0"
 python-docx = "^1.1.0"
 openpyxl = "^3.1.2"
 python-pptx = "^0.6.23"
+# Database support (optional, for web dashboard integration)
+sqlalchemy = {version = "^2.0.25", optional = true}
+psycopg2-binary = {version = "^2.9.9", optional = true}
+
+[tool.poetry.extras]
+database = ["sqlalchemy", "psycopg2-binary"]
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.3"

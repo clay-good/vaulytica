@@ -50,8 +50,20 @@ logger = structlog.get_logger(__name__)
     is_flag=True,
     help="Enable debug logging",
 )
+@click.option(
+    "--save-to-db",
+    is_flag=True,
+    envvar="VAULYTICA_SAVE_TO_DB",
+    help="Save scan results to PostgreSQL database for web dashboard",
+)
+@click.option(
+    "--db-url",
+    type=str,
+    envvar="VAULYTICA_DB_URL",
+    help="PostgreSQL database URL (e.g., postgresql://user:pass@localhost:5432/vaulytica)",
+)
 @click.pass_context
-def cli(ctx: click.Context, config: Optional[Path], verbose: bool, debug: bool) -> None:
+def cli(ctx: click.Context, config: Optional[Path], verbose: bool, debug: bool, save_to_db: bool, db_url: Optional[str]) -> None:
     """Vaulytica: Google Workspace Security & Compliance Tool.
 
     An open-source CLI tool for scanning Google Workspace for security issues,
@@ -64,6 +76,13 @@ def cli(ctx: click.Context, config: Optional[Path], verbose: bool, debug: bool) 
     ctx.obj["config_path"] = config or Path("config.yaml")
     ctx.obj["verbose"] = verbose
     ctx.obj["debug"] = debug
+    ctx.obj["save_to_db"] = save_to_db
+    ctx.obj["db_url"] = db_url
+
+    # Validate database options
+    if save_to_db and not db_url:
+        console.print("[yellow]Warning: --save-to-db requires --db-url. Database saving disabled.[/yellow]")
+        ctx.obj["save_to_db"] = False
 
     # Configure logging level
     if debug:
@@ -75,7 +94,7 @@ def cli(ctx: click.Context, config: Optional[Path], verbose: bool, debug: bool) 
             wrapper_class=structlog.make_filtering_bound_logger(logging_level=20)  # INFO
         )
 
-    logger.debug("cli_initialized", config=str(config), verbose=verbose, debug=debug)
+    logger.debug("cli_initialized", config=str(config), verbose=verbose, debug=debug, save_to_db=save_to_db)
 
 
 @cli.command()
@@ -996,6 +1015,8 @@ def main() -> None:
     try:
         cli(obj={})
     except KeyboardInterrupt:
+        # Signal handlers in scan commands will handle graceful cancellation
+        # This is a fallback for commands without custom signal handling
         console.print("\n[yellow]Interrupted by user[/yellow]")
         sys.exit(130)
     except Exception as e:

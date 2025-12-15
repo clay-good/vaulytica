@@ -88,8 +88,7 @@ class TestPIIDetectionWorkflow:
         high_risk_files = [f for f in files_with_issues if f.risk_score > 70]
         assert len(high_risk_files) == 1  # Should trigger alert
 
-    @patch("vaulytica.integrations.email.EmailNotifier")
-    def test_pii_alert_workflow(self, mock_email, mock_google_client, sample_files):
+    def test_pii_alert_workflow(self, mock_google_client, sample_files):
         """Test PII detection with automated alerts."""
         # Sample files represent scanned files
         files_with_issues = sample_files
@@ -97,17 +96,15 @@ class TestPIIDetectionWorkflow:
         # Check if alert threshold is met
         threshold = 1
         if len(files_with_issues) >= threshold:
-            # Send alert
-            mock_email_instance = Mock()
-            mock_email.return_value = mock_email_instance
+            # Create mock notifier
+            mock_notifier = Mock()
 
-            notifier = mock_email.return_value
-            notifier.send_alert(
+            mock_notifier.send_alert(
                 subject="PII Alert: External sharing detected",
                 body=f"Found {len(files_with_issues)} files with PII shared externally",
             )
 
-            mock_email_instance.send_alert.assert_called_once()
+            mock_notifier.send_alert.assert_called_once()
 
 
 class TestEmployeeOffboardingWorkflow:

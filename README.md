@@ -2,8 +2,6 @@
 
 **Enterprise-Grade Google Workspace Security, Compliance & IT Administration**
 
----
-
 ## What is Vaulytica?
 
 Vaulytica is a powerful, self-hosted Python CLI tool that provides comprehensive security monitoring, compliance management, and IT automation for Google Workspace environments. Built for security teams, compliance officers, and IT administrators who need complete visibility and control over their organization's data.
@@ -1279,11 +1277,12 @@ vaulytica jira weekly-report
 
 ## Test Suite
 
-Vaulytica includes a comprehensive test suite with 535+ tests.
+Vaulytica includes a comprehensive test suite.
 
+**CLI Tests (926 tests):**
 ```bash
-# Run all tests
-poetry run pytest
+# Run CLI tests
+poetry run pytest tests/
 
 # Run with coverage
 poetry run pytest --cov=vaulytica --cov-report=html
@@ -1292,6 +1291,24 @@ poetry run pytest --cov=vaulytica --cov-report=html
 poetry run pytest tests/scanners/
 poetry run pytest tests/integrations/test_jira.py
 ```
+
+**Web Backend Tests (135 tests):**
+```bash
+cd web/backend
+.venv/bin/python -m pytest tests/ -v -o addopts=""
+```
+
+**Web Frontend Tests (110 tests):**
+```bash
+cd web/frontend
+npm test
+```
+
+**Test Coverage Summary:**
+- CLI: 926 tests (mocked; no live Google API)
+- Web Backend: 135 tests (133 passing, 2 skipped)
+- Web Frontend: 110 tests (Jest + React Testing Library)
+- Total: 1,171 tests across all components
 
 ---
 
@@ -1313,22 +1330,311 @@ vaulytica/
 
 ---
 
-## Contributing
+## Known Limitations and Honest Caveats
 
-Contributions are welcome. Please read the contributing guidelines before submitting pull requests.
+This section provides transparent information about what Vaulytica can and cannot do.
+
+### API and Performance Limitations
+
+1. **Google API Rate Limits**: Vaulytica is subject to Google Workspace API quotas. Large organizations may hit rate limits during comprehensive scans. The tool includes automatic retry with exponential backoff, which can make scans slow for large datasets.
+
+2. **File Content Scanning**: PII detection works by downloading file metadata and searching for patterns. Vaulytica does NOT:
+   - Download actual file contents (only metadata and text-based content where available)
+   - Scan images or PDFs for PII (pattern matching on text only)
+   - Detect obfuscated or encrypted PII
+   - Guarantee 100% PII detection accuracy
+
+3. **Email Scanning Depth**: Gmail scanning requires per-user impersonation and can be slow for organizations with many users. Attachment content is not deeply analyzed.
+
+4. **Real-time Monitoring**: Vaulytica is a CLI tool that runs on-demand or on a schedule. It is NOT a real-time monitoring system. There is no persistent daemon watching for security events in real-time.
+
+### Functional Limitations
+
+1. **Web Application**: A web dashboard with FastAPI backend (`web/backend/`) and Next.js frontend (`web/frontend/`) is available. Both are functional but have not been extensively tested in production environments. See [Web App Documentation](docs/WEB_APP.md).
+
+2. **Multi-Tenant Support**: The tool is designed for single-organization use. Managing multiple completely separate Google Workspace domains from a single installation is not natively supported.
+
+3. **Remediation**: Vaulytica detects issues and reports them but does NOT automatically remediate most security issues. User management commands can modify your workspace, but security issues like revoking OAuth tokens or removing external shares must be done manually or through separate tooling.
+
+4. **Machine Learning**: There is no ML-based anomaly detection. Anomaly detection is rule-based (statistical thresholds).
+
+5. **Historical Data**: Trend analysis requires you to run scans over time to build historical data. There is no way to retroactively get historical security posture.
+
+### Integration Limitations
+
+1. **Jira Integration**: Works with Jira Cloud only. Jira Server/Data Center has not been tested.
+
+2. **SIEM Integration**: Webhook integration sends data to SIEM platforms, but the format is generic. You may need to configure custom parsing rules in your SIEM.
+
+3. **Email Notifications**: Requires SMTP configuration. No native integration with email services like SendGrid or Mailgun.
+
+4. **Slack**: Basic webhook-based integration only. No interactive Slack app or slash commands.
+
+### Compliance Report Accuracy
+
+1. **Not a Compliance Certification**: Compliance reports are informational summaries based on security scans. They do NOT constitute official compliance certification, audit evidence, or legal compliance verification.
+
+2. **Framework Coverage**: Compliance framework mappings are best-effort interpretations. Actual compliance requirements vary by organization and auditor interpretation.
+
+3. **Scope Limitations**: Reports only cover Google Workspace security posture. They do NOT assess on-premises systems, other cloud providers, or non-technical compliance requirements.
+
+### Security Considerations
+
+1. **Service Account Permissions**: The service account has broad read access to your organization's data. Secure the credentials file appropriately.
+
+2. **Stored Credentials**: API tokens and credentials can be stored in config.yaml. Use environment variables for sensitive values in production.
+
+3. **Output Files**: Scan reports may contain sensitive information (user emails, file names, etc.). Handle output files securely.
+
+4. **Audit Trail**: The web app maintains an audit log of all sensitive operations (user login, password changes, scan triggers, finding updates, etc.). The CLI tool does NOT maintain an audit trail. For CLI usage auditing, integrate with your own logging.
+
+### Known Issues
+
+1. **Python Version**: Requires Python 3.9+. Tested primarily on Python 3.11/3.12.
+
+2. **Large Drive Scans**: Scanning drives with millions of files can take hours and may be interrupted by API rate limits.
+
+3. **Gmail Security Scan**: Requires Gmail API access for each user. Users with delegated accounts or complex configurations may have incomplete results.
+
+4. **Web App Not Production-Tested**: The web frontend and backend have been tested with Docker and mock data. They have not been tested with real Google Workspace scan data or in a production environment.
+
+5. **Database Tables Created on Startup**: Tables are now automatically created via FastAPI lifespan events. Manual creation is not required.
+
+6. **CLI and Web App Are Separate Installations**: The CLI tool uses Poetry and the web app uses pip/npm. They must be installed separately.
+
+7. **No Live API Testing**: The 926 CLI tests use mocks. No tests validate against an actual Google Workspace API. Real-world behavior may differ.
 
 ---
 
-## License
+## Web Dashboard (Self-Hosted)
 
-See LICENSE file for details.
+Vaulytica includes a self-hosted web dashboard for visualizing scan results.
 
----
+**Note:** The web dashboard has been tested with mock data and Docker. CLI scan results CAN populate the web dashboard using the `--save-to-db --db-url` flags (see CLI-to-Web Integration below).
 
-## Support
+### Quick Start (Manual Setup - Recommended)
 
-For issues and feature requests, please use the GitHub issue tracker.
+For the most reliable setup, run components manually:
 
----
+```bash
+# 1. Start PostgreSQL
+docker run -d \
+  --name vaulytica-postgres \
+  -e POSTGRES_DB=vaulytica \
+  -e POSTGRES_USER=vaulytica \
+  -e POSTGRES_PASSWORD=changeme \
+  -p 5432:5432 \
+  postgres:15-alpine
 
-**Vaulytica** - Enterprise-Grade Google Workspace Security
+# 2. Wait for PostgreSQL to start
+sleep 5
+
+# 3. Install backend dependencies
+cd web/backend
+pip install -r requirements.txt
+
+# 4. Initialize database and create admin user
+cd ..
+PYTHONPATH=. python scripts/init_db.py
+
+# 5. Start backend
+cd backend
+uvicorn backend.main:app --host 0.0.0.0 --port 8000 &
+
+# 6. Install frontend dependencies
+cd ../frontend
+npm install
+
+# 7. Start frontend
+npm run dev
+
+# 8. Access the dashboard
+open http://localhost:3000
+# Login: admin@example.com / changeme
+```
+
+### Quick Start (Docker - Validated)
+
+```bash
+# Start all web app services (backend, frontend, database, and scan runner)
+docker-compose up -d postgres backend frontend scan-runner
+
+# Wait for services to start
+sleep 10
+
+# Create database tables
+docker-compose exec backend python -c "
+from backend.db.database import engine
+from backend.db.models import Base
+Base.metadata.create_all(engine)
+print('Tables created')
+"
+
+# Create admin user
+docker-compose exec backend python -c "
+from backend.db.database import SessionLocal
+from backend.db.models import User
+from backend.auth.security import get_password_hash
+db = SessionLocal()
+admin = User(email='admin@example.com', hashed_password=get_password_hash('changeme'), full_name='Admin', is_superuser=True)
+db.add(admin)
+db.commit()
+print('Admin created: admin@example.com / changeme')
+"
+
+# Access the dashboard
+open http://localhost:3000
+
+# Access API documentation
+open http://localhost:8000/docs
+```
+
+### Background Scan Runner
+
+The `scan-runner` service automatically executes scheduled scans configured through the web UI.
+
+```bash
+# Start the scan runner (included in docker-compose up)
+docker-compose up -d scan-runner
+
+# View scan runner logs
+docker-compose logs -f scan-runner
+
+# Configuration via environment variables:
+# - SCAN_CHECK_INTERVAL: How often to check for due scans (default: 60 seconds)
+# - VAULYTICA_CLI_PATH: Path to vaulytica CLI (default: vaulytica)
+# - VAULYTICA_CREDENTIALS_PATH: Path to service account JSON (default: /app/credentials/service-account.json)
+```
+
+**How it works:**
+1. The scan runner polls the `scheduled_scans` table every 60 seconds
+2. When a scheduled scan's `next_run` time has passed, it executes the vaulytica CLI with `--save-to-db`
+3. After execution, it updates `last_run` and calculates the next `next_run` time
+4. Scan results are saved to the database and appear in the web dashboard
+
+**Note:** The scan runner requires:
+- The vaulytica CLI installed (included in the Docker image)
+- Service account credentials mounted at `/app/credentials/service-account.json`
+- PostgreSQL database connection
+
+### Backend Features (FastAPI)
+
+- REST API for scan results and findings
+- JWT authentication with bcrypt password hashing
+- Role-based access control with three roles: viewer, editor, admin
+- Role hierarchy: admin > editor > viewer (higher roles include lower permissions)
+- Per-domain role assignments for granular access control
+- Dashboard endpoints with security scoring and caching
+- Multi-domain support with per-user access control
+- Compliance summary by framework
+- User management API (CRUD, activate/deactivate)
+- Password reset flow with email sending (SMTP configurable)
+- Forgot password, reset password, and token validation endpoints
+- HTML email templates for password reset and confirmation
+- Audit logging for sensitive operations
+- Rate limiting on authentication endpoints
+- Security headers (HSTS, CSP, X-Frame-Options, etc.)
+- HTTPS redirect in production
+- Connection pool configuration for PostgreSQL
+- SQL aggregation optimizations for dashboard queries
+- GET /api/auth/me/permissions endpoint for frontend role checks
+- 135 passing backend tests
+
+### Frontend Features (Next.js)
+
+- Dashboard overview with security score visualization
+- Scan history listing and individual scan details
+- Findings browser with search, filter, and sort
+- Scheduled scans configuration page
+- CSV/JSON export for all finding types
+- Login/authentication flow
+- Settings page
+- Forgot password and reset password pages
+- Error boundaries and loading states
+- Toast notifications for user feedback
+- Form validation with error display
+- Responsive design with TailwindCSS
+- Role-based UI controls (buttons, actions show/hide based on user permissions)
+- PermissionsContext for centralized permission checking
+- 110 passing frontend tests
+
+### CLI-to-Web Integration
+
+The CLI tool can save scan results directly to the PostgreSQL database for viewing in the web dashboard.
+
+**Installation with database support:**
+
+```bash
+# Install with database extras
+pip install vaulytica[database]
+
+# Or with Poetry
+poetry install --extras database
+```
+
+**Usage:**
+
+```bash
+# Run scans and save to database
+vaulytica --save-to-db --db-url postgresql://user:pass@localhost:5432/vaulytica scan files --external-only
+
+# Or set environment variables
+export VAULYTICA_SAVE_TO_DB=1
+export VAULYTICA_DB_URL=postgresql://user:pass@localhost:5432/vaulytica
+vaulytica scan users --inactive-days 90
+
+# Supported scan types that save to database:
+# - scan files (FileFinding)
+# - scan users (UserFinding)
+# - scan oauth-apps (OAuthFinding)
+# - security-posture assess (SecurityFinding)
+```
+
+**Note:** The database integration is optional. Without the `--save-to-db` flag, the CLI works exactly as before, outputting to CSV/JSON files.
+
+### Web App Limitations
+
+**Functional Limitations:**
+- **No Real-time Updates**: Dashboard data requires manual refresh; no WebSocket/SSE streaming
+- **No PDF/Image Export**: Dashboard visualizations cannot be exported to PDF/image (CSV/JSON data export available)
+- **No Dark Mode Toggle**: Dark mode CSS is defined but no UI toggle to switch themes
+
+**What IS Implemented:**
+- **CLI-to-Web Integration**: CLI scans populate web dashboard via `--save-to-db --db-url` flags
+- **Role-Based Access Control (RBAC)**: Three roles (viewer, editor, admin) with per-domain assignments
+  - Viewer: Read-only access to scan results and findings
+  - Editor: Can trigger scans, update finding statuses, manage schedules
+  - Admin: Full access including user management for the domain
+- **UI Role Enforcement**: Frontend conditionally shows/hides buttons and actions based on user permissions
+  - Run Scan and Cancel buttons only shown for users with EDITOR+ role on the domain
+  - New Schedule button only shown for users who can manage schedules
+  - Domain dropdowns filtered to only show editable domains
+- **Alert & Notification System**: Configurable alert rules with email and webhook notifications
+  - Alert rule CRUD API at /api/alerts
+  - Condition types: high_risk_file, public_file, external_share, inactive_user, no_2fa_user, risky_oauth, security_finding, scan_completed, scan_failed
+  - Alert rules UI at /dashboard/alerts with create, toggle, and delete functionality
+  - NotificationService with email (SMTP) and webhook (httpx) support
+  - Alert processing endpoint to evaluate rules after scan completion
+- **CLI Scan Cancellation**: Graceful interruption with signal handlers (Ctrl+C / SIGTERM)
+  - Scans marked as "cancelled" in database with partial results preserved
+  - Uses context manager for proper cleanup
+- **Scan Progress Tracking**: Real-time progress monitoring for running scans
+  - Progress percentage, current operation message, items processed count
+  - CLI reports progress via scan_context.update_progress()
+  - Web UI shows progress bars with auto-refresh polling (3-5 second intervals)
+- **Email Sending**: SMTP-configurable email service for password reset (with HTML templates)
+- **Password Reset Flow**: Full forgot password, reset password, and token validation with frontend pages
+- Pagination on all finding and user list endpoints
+- Search/filter/sort on findings pages
+- Findings detail pages with click-through from lists
+- User management UI (admin page with search, filter, edit, activate/deactivate, delete)
+- User management API (list, update, delete, activate, deactivate)
+- Scan trigger/cancel API endpoints (requires EDITOR role)
+- Rate limiting on sensitive endpoints
+- Security headers and HTTPS redirect in production
+- Audit logging for all sensitive operations
+- Frontend tests (110 tests) and backend tests (135 tests)
+- Caching on dashboard and stats endpoints
+- Connection pool configuration
+
+See [Web App Documentation](docs/WEB_APP.md) for complete setup instructions.
