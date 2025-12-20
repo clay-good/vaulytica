@@ -112,7 +112,13 @@ class FileSecretBackend(SecretBackend):
         """Get the file path for a secret."""
         # Convert key to filename (lowercase, underscores)
         filename = key.lower().replace("-", "_")
-        return self.secrets_dir / filename
+        # Sanitize to prevent path traversal
+        filename = filename.replace("..", "").replace("/", "").replace("\\", "")
+        path = self.secrets_dir / filename
+        # Verify path is within secrets directory
+        if not path.resolve().is_relative_to(self.secrets_dir.resolve()):
+            raise ValueError(f"Invalid secret key: {key}")
+        return path
 
     def get(self, key: str, default: Optional[str] = None) -> Optional[str]:
         """Get secret from file."""

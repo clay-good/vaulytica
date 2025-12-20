@@ -307,8 +307,8 @@ def generate_dashboard_command(
                     try:
                         metadata = json.loads(result['metadata'])
                         result.update(metadata)
-                    except:
-                        pass
+                    except json.JSONDecodeError:
+                        pass  # Skip malformed metadata
                 scan_results.append(result)
 
             progress.update(task, description=f"Loaded {len(scan_results)} files")
