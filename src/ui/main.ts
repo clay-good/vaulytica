@@ -17,6 +17,7 @@ import { renderState, select, type DropzoneState } from "./states.js";
 import { createProgressBar } from "./progress.js";
 import { createRuleTicker } from "./ticker.js";
 import { registerServiceWorker } from "./sw-register.js";
+import { hydrateDkbValidation } from "./dkb-validation.js";
 
 const objectUrls: string[] = [];
 
@@ -102,6 +103,7 @@ if (typeof document !== "undefined") {
     if (!dz) return;
     void bootUi({ root, dropzone: dz, themeButton: theme });
     void registerServiceWorker({ badge: document.getElementById("offline-badge") });
+    void hydrateDkbValidation();
     // Best-effort: preload after a short idle so users who don't
     // hover the drop zone still benefit.
     if ("requestIdleCallback" in window) {

@@ -1,0 +1,35 @@
+{
+  "id": "hhs-sample-baa-2013",
+  "node_type": "regulator_model_form",
+  "dkb_node_version": 1,
+  "dkb_node_last_validated_at": "2026-05-12T00:00:00Z",
+  "name": "HHS Sample Business Associate Agreement Provisions",
+  "regulator": "U.S. Department of Health and Human Services, Office for Civil Rights",
+  "jurisdiction": "us-federal",
+  "authoritative_url": "https://www.hhs.gov/hipaa/for-professionals/covered-entities/sample-business-associate-agreement-provisions/index.html",
+  "vendored_path": "dkb/fixtures/v3/hhs-sample-baa.html",
+  "vendored_content_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "clauses": [
+    {
+      "clause_id": "hhs-baa-1",
+      "heading": "Permitted Uses and Disclosures",
+      "required_by_citation": "45 C.F.R. § 164.504(e)(2)(i)",
+      "normalized_text": "Business Associate may only use or disclose Protected Health Information as permitted or required by this Agreement or as required by law."
+    },
+    {
+      "clause_id": "hhs-baa-2",
+      "heading": "Reporting of Improper Use or Disclosure",
+      "required_by_citation": "45 C.F.R. § 164.504(e)(2)(ii)(C)",
+      "normalized_text": "Business Associate shall report to Covered Entity any use or disclosure of PHI not provided for by this Agreement of which it becomes aware, including breaches of unsecured PHI as required at 45 CFR 164.410."
+    }
+  ],
+  "cites": [
+    {
+      "authority": "45 C.F.R. § 164.504(e)",
+      "citation": "45 C.F.R. § 164.504(e) (2013)",
+      "source_url": "https://www.ecfr.gov/current/title-45/subtitle-A/subchapter-C/part-164/subpart-E/section-164.504",
+      "content_hash_at_pin": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "fetched_at": "2026-05-12T00:00:00Z"
+    }
+  ]
+}

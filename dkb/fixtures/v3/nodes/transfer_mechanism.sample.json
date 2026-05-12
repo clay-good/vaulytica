@@ -1,0 +1,23 @@
+{
+  "id": "eu-scc-2021-914-module-2",
+  "node_type": "transfer_mechanism",
+  "dkb_node_version": 1,
+  "dkb_node_last_validated_at": "2026-05-12T00:00:00Z",
+  "kind": "scc_module_2",
+  "name": "EU SCC Module 2 (Controller to Processor)",
+  "scope": "Transfers from an EEA controller to a non-EEA processor.",
+  "required_ancillary_documents": [
+    "Transfer Impact Assessment (TIA)",
+    "Annex I (List of Parties, Description of Transfer, Competent Supervisory Authority)",
+    "Annex II (Technical and Organisational Measures)"
+  ],
+  "cites": [
+    {
+      "authority": "Commission Implementing Decision (EU) 2021/914",
+      "citation": "Commission Implementing Decision (EU) 2021/914 of 4 June 2021, OJ L 199",
+      "source_url": "https://eur-lex.europa.eu/eli/dec_impl/2021/914/oj",
+      "content_hash_at_pin": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "fetched_at": "2026-05-12T00:00:00Z"
+    }
+  ]
+}

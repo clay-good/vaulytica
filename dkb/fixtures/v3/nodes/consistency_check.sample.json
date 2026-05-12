@@ -1,0 +1,19 @@
+{
+  "id": "msa-dpa-governing-law-consistency",
+  "node_type": "consistency_check",
+  "dkb_node_version": 1,
+  "dkb_node_last_validated_at": "2026-05-12T00:00:00Z",
+  "name": "MSA / DPA governing-law alignment",
+  "document_pair": ["MSA", "DPA"],
+  "description": "Flag when the MSA and DPA specify different governing-law jurisdictions; ambiguity defeats forum certainty for processor-related claims.",
+  "implementing_rule_id": "CONS-001",
+  "cites": [
+    {
+      "authority": "Vaulytica consistency-check catalog v1",
+      "citation": "Vaulytica consistency-check catalog v1 — CONS-001",
+      "source_url": "https://vaulytica.com/dkb/consistency/CONS-001",
+      "content_hash_at_pin": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "fetched_at": "2026-05-12T00:00:00Z"
+    }
+  ]
+}

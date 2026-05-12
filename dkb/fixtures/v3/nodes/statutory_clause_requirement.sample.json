@@ -1,0 +1,23 @@
+{
+  "id": "hipaa-164.504-e-2-ii-C-incident-report",
+  "node_type": "statutory_clause_requirement",
+  "dkb_node_version": 1,
+  "dkb_node_last_validated_at": "2026-05-12T00:00:00Z",
+  "regulator": "HHS OCR",
+  "jurisdiction": "us-federal",
+  "authority": "45 C.F.R. § 164.504(e)(2)(ii)(C)",
+  "citation": "45 C.F.R. § 164.504(e)(2)(ii)(C)",
+  "effective_date": "2013-09-23",
+  "requirement": "Business Associate Agreement must require the business associate to report any use or disclosure of PHI not provided for by its contract, including breaches of unsecured PHI.",
+  "minimum_compliant_text": "Business Associate shall report to Covered Entity any use or disclosure of PHI not provided for by this Agreement of which it becomes aware, including breaches of unsecured PHI as required at 45 CFR 164.410.",
+  "applies_to_document_types": ["BAA"],
+  "cites": [
+    {
+      "authority": "45 C.F.R. § 164.504(e)(2)(ii)(C)",
+      "citation": "45 C.F.R. § 164.504(e)(2)(ii)(C) (2013)",
+      "source_url": "https://www.ecfr.gov/current/title-45/subtitle-A/subchapter-C/part-164/subpart-E/section-164.504",
+      "content_hash_at_pin": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "fetched_at": "2026-05-12T00:00:00Z"
+    }
+  ]
+}

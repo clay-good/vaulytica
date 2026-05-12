@@ -9,6 +9,8 @@ import {
   JurisdictionSchema,
   StatutorySchema,
 } from "./schema.js";
+import type { V3DkbNode } from "./v3/types.js";
+import { V3DkbNodeListSchema } from "./v3/schema.js";
 
 /**
  * Load the Deterministic Knowledge Base. Resolution order:
@@ -41,6 +43,13 @@ export type LoadDkbOptions = {
   /** Use IndexedDB cache. Default `true` when available. */
   useCache?: boolean;
 };
+
+/**
+ * Validate an unknown JSON value as the v3 node list (spec-v3.md §13).
+ * Surface re-exported here so callers can validate v3 sidecar files
+ * loaded outside the manifest path.
+ */
+export const validateV3Nodes = (value: unknown): V3DkbNode[] => V3DkbNodeListSchema.parse(value);
 
 const DB_NAME = "vaulytica-dkb";
 const STORE = "dkbs";

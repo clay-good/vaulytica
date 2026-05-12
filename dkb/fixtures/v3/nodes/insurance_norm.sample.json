@@ -1,0 +1,24 @@
+{
+  "id": "saas-vendor-cyber-2026",
+  "node_type": "insurance_norm",
+  "dkb_node_version": 1,
+  "dkb_node_last_validated_at": "2026-05-12T00:00:00Z",
+  "vertical": "saas-vendor",
+  "coverage_type": "cyber",
+  "minimum_per_occurrence_usd": 5000000,
+  "minimum_aggregate_usd": 5000000,
+  "required_endorsements": [
+    "additional_insured",
+    "waiver_of_subrogation"
+  ],
+  "minimum_carrier_rating": "A-",
+  "cites": [
+    {
+      "authority": "Vaulytica market-norm panel, 2026",
+      "citation": "Vaulytica market-norm panel — SaaS vendor cyber coverage, 2026 review",
+      "source_url": "https://vaulytica.com/dkb/norms/saas-vendor-cyber",
+      "content_hash_at_pin": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "fetched_at": "2026-05-12T00:00:00Z"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "gdpr-art-28-2-subprocessor",
+  "node_type": "subprocessor_requirement",
+  "dkb_node_version": 1,
+  "dkb_node_last_validated_at": "2026-05-12T00:00:00Z",
+  "regulator": "European Data Protection Board",
+  "jurisdiction": "eu",
+  "notice_period_days": 30,
+  "objection_rights": "general",
+  "flow_down_required": true,
+  "list_publication_required": true,
+  "notes": "Article 28(2) requires prior specific or general written authorisation; with general authorisation the processor must inform the controller of intended changes giving the controller the opportunity to object.",
+  "cites": [
+    {
+      "authority": "Regulation (EU) 2016/679, Article 28(2)",
+      "citation": "GDPR art. 28(2)",
+      "source_url": "https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+      "content_hash_at_pin": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "fetched_at": "2026-05-12T00:00:00Z"
+    }
+  ]
+}

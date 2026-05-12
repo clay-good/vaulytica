@@ -36,7 +36,7 @@ export {
   StatutorySchema,
 } from "./schema.js";
 
-export { loadDkb, DkbLoadError } from "./loader.js";
+export { loadDkb, DkbLoadError, validateV3Nodes } from "./loader.js";
 export type { LoadDkbOptions } from "./loader.js";
 
 export {

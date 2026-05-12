@@ -1,0 +1,19 @@
+# dkb-staleness-ack.yml — human-acknowledged drift in pinned authorities.
+#
+# Each weekly DKB build re-fetches every pinned citation in the v3 DKB
+# and compares its normalized SHA-256 against `content_hash_at_pin`. If
+# any citation has drifted and the (node_id, citation) pair is not
+# listed below, the build exits non-zero — spec-v3.md §14, Step 20.
+#
+# To acknowledge a drift, add an entry under `acknowledgments:` with:
+#   - node_id:  the v3 DKB node id from the staleness report
+#   - citation: the citation string from the staleness report
+#   - ack:      a short human note explaining the disposition
+#               (e.g. "renumbered, no substantive change", "amendment
+#               under review by counsel — track via VAUL-1234").
+#
+# An acknowledgment does not silence the rule-disable behavior — rules
+# that depend on a stale node remain `enabled: false` until the pin is
+# refreshed. The ack only allows the build to publish.
+
+acknowledgments: []
