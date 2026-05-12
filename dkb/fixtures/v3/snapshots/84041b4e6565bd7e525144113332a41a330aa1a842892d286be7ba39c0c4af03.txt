@@ -1,0 +1,3 @@
+Federal Act on Data Protection (FADP) — Switzerland, revised version in force 1 September 2023.
+
+Article 9 — Disclosure to processors. Processing by a processor on behalf of a controller may take place only if a contract is concluded between the parties or if it is provided for by law. The processor shall process personal data only as instructed by the controller. The processor must guarantee the data security required by Article 8 and may engage a sub-processor only with the prior authorisation of the controller.

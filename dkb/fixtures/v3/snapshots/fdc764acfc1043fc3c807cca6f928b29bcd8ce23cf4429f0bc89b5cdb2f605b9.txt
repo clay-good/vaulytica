@@ -1,0 +1,17 @@
+Commission Implementing Decision (EU) 2021/914 of 4 June 2021 on standard contractual clauses for the transfer of personal data to third countries pursuant to Regulation (EU) 2016/679 of the European Parliament and of the Council.
+
+ANNEX. STANDARD CONTRACTUAL CLAUSES.
+
+Module 1: Transfer Controller to Controller.
+Module 2: Transfer Controller to Processor.
+Module 3: Transfer Processor to Processor.
+Module 4: Transfer Processor to Controller.
+
+Clause 1 — Purpose and scope.
+Clause 2 — Effect and invariability of the Clauses.
+Clause 8 — Data protection safeguards.
+Clause 14 — Local laws and practices affecting compliance with the Clauses (Transfer Impact Assessment).
+
+ANNEX I — A. List of Parties. B. Description of Transfer. C. Competent Supervisory Authority.
+ANNEX II — Technical and Organisational Measures including Technical and Organisational Measures to Ensure the Security of the Data.
+ANNEX III — List of Sub-processors (Modules 2 and 3 only).

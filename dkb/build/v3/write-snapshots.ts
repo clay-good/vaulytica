@@ -152,6 +152,127 @@ A. A contract between a controller and a processor shall govern the processor's 
 (1) A contract between a controller and processor shall include processing instructions, the nature and purpose of processing, the type of personal data, the duration of processing, deletion or return of personal data at the end of services, and shall require the processor to engage subcontractors pursuant to a written contract imposing the same obligations as those of the processor.`,
   },
   {
+    url: "https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+    text: `Regulation (EU) 2016/679 — General Data Protection Regulation (GDPR).
+
+Article 28 — Processor.
+3. Processing by a processor shall be governed by a contract or other legal act under Union or Member State law, that is binding on the processor with regard to the controller and that sets out the subject-matter and duration of the processing, the nature and purpose of the processing, the type of personal data and categories of data subjects and the obligations and rights of the controller. That contract or other legal act shall stipulate, in particular, that the processor:
+  (a) processes the personal data only on documented instructions from the controller;
+  (b) ensures that persons authorised to process the personal data have committed themselves to confidentiality;
+  (c) takes all measures required pursuant to Article 32;
+  (d) respects the conditions referred to in paragraphs 2 and 4 for engaging another processor;
+  (e) taking into account the nature of the processing, assists the controller by appropriate technical and organisational measures;
+  (f) assists the controller in ensuring compliance with the obligations pursuant to Articles 32 to 36;
+  (g) at the choice of the controller, deletes or returns all the personal data to the controller after the end of the provision of services;
+  (h) makes available to the controller all information necessary to demonstrate compliance.
+
+Article 32 — Security of processing. Taking into account the state of the art, the costs of implementation and the nature, scope, context and purposes of processing, the controller and the processor shall implement appropriate technical and organisational measures to ensure a level of security appropriate to the risk, including pseudonymisation and encryption of personal data; the ability to ensure ongoing confidentiality, integrity, availability and resilience of processing systems; the ability to restore availability and access to personal data in a timely manner; and a process for regularly testing, assessing and evaluating the effectiveness of measures.
+
+Article 33 — Notification of a personal data breach to the supervisory authority.
+1. In the case of a personal data breach, the controller shall without undue delay and, where feasible, not later than 72 hours after having become aware of it, notify the personal data breach to the competent supervisory authority.
+2. The processor shall notify the controller without undue delay after becoming aware of a personal data breach.
+
+Article 44 — General principle for transfers. Any transfer of personal data which are undergoing processing or are intended for processing after transfer to a third country or to an international organisation shall take place only if, subject to the other provisions of this Regulation, the conditions laid down in this Chapter are complied with by the controller and processor.
+
+Article 46 — Transfers subject to appropriate safeguards. In the absence of a decision pursuant to Article 45(3), a controller or processor may transfer personal data to a third country or an international organisation only if the controller or processor has provided appropriate safeguards, and on condition that enforceable data subject rights and effective legal remedies for data subjects are available.`,
+  },
+  {
+    url: "https://eur-lex.europa.eu/eli/dec_impl/2021/914/oj",
+    text: `Commission Implementing Decision (EU) 2021/914 of 4 June 2021 on standard contractual clauses for the transfer of personal data to third countries pursuant to Regulation (EU) 2016/679 of the European Parliament and of the Council.
+
+ANNEX. STANDARD CONTRACTUAL CLAUSES.
+
+Module 1: Transfer Controller to Controller.
+Module 2: Transfer Controller to Processor.
+Module 3: Transfer Processor to Processor.
+Module 4: Transfer Processor to Controller.
+
+Clause 1 — Purpose and scope.
+Clause 2 — Effect and invariability of the Clauses.
+Clause 8 — Data protection safeguards.
+Clause 14 — Local laws and practices affecting compliance with the Clauses (Transfer Impact Assessment).
+
+ANNEX I — A. List of Parties. B. Description of Transfer. C. Competent Supervisory Authority.
+ANNEX II — Technical and Organisational Measures including Technical and Organisational Measures to Ensure the Security of the Data.
+ANNEX III — List of Sub-processors (Modules 2 and 3 only).`,
+  },
+  {
+    url: "https://www.legislation.gov.uk/eur/2016/679/contents",
+    text: `Regulation (EU) 2016/679 (UK GDPR) — retained EU law as amended by the Data Protection, Privacy and Electronic Communications (Amendments etc) (EU Exit) Regulations 2019.
+
+Article 28 (UK GDPR) — Processor. Processing by a processor shall be governed by a contract binding the processor to the controller, setting out the subject-matter, duration, nature and purpose of processing, the type of personal data, categories of data subjects, and the obligations and rights of the controller.
+
+Article 32 (UK GDPR) — Security of processing. Appropriate technical and organisational measures shall be implemented.`,
+  },
+  {
+    url: "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/international-transfers/international-data-transfer-agreement-and-guidance/",
+    text: `UK International Data Transfer Agreement (IDTA) — published by the ICO.
+
+Part 1 — Parties. Identification of the Exporter and Importer.
+Part 2 — Transfer Details. Categories of data, data subjects, purposes, retention.
+Part 3 — Security Measures. Technical and organisational measures applied to the transfer.
+Part 4 — Mandatory Clauses. The clauses incorporated into the agreement.`,
+  },
+  {
+    url: "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/international-transfers/international-data-transfer-agreement-and-guidance/uk-addendum/",
+    text: `International Data Transfer Addendum to the EU Commission Standard Contractual Clauses — UK Addendum (the ICO Addendum).
+
+Table 1 — Parties to the Addendum. Exporter and Importer details.
+Table 2 — Selected SCC Modules. Tick boxes for Modules 1–4 of the EU SCCs.
+Table 3 — Appendix Information. Description of transfer, technical and organisational measures.
+Table 4 — Ending This Addendum When the Approved Addendum Changes. Either party rights.`,
+  },
+  {
+    url: "https://www.fedlex.admin.ch/eli/cc/2022/491/en",
+    text: `Federal Act on Data Protection (FADP) — Switzerland, revised version in force 1 September 2023.
+
+Article 9 — Disclosure to processors. Processing by a processor on behalf of a controller may take place only if a contract is concluded between the parties or if it is provided for by law. The processor shall process personal data only as instructed by the controller. The processor must guarantee the data security required by Article 8 and may engage a sub-processor only with the prior authorisation of the controller.`,
+  },
+  {
+    url: "https://www.edoeb.admin.ch/edoeb/en/home/dokumentation/datenschutz/Datenuebermittlung_und_Cloud/standardvertragsklauseln.html",
+    text: `FDPIC Addendum to the EU SCCs (Swiss Addendum).
+
+Competent Supervisory Authority: the Federal Data Protection and Information Commissioner (FDPIC) for transfers covered by Swiss data protection law.
+
+Governing Law: Swiss law where data subjects are resident in Switzerland; references in the SCCs to "Member State law" and "EU law" should be read as references to Swiss FADP.`,
+  },
+  {
+    url: "https://edpb.europa.eu/our-work-tools/general-guidance/guidelines-recommendations-best-practices_en",
+    text: `EDPB Guidelines, Recommendations and Best Practices.
+
+- Guidelines 07/2020 on the concepts of controller and processor.
+- Guidelines 05/2021 on the interplay between Article 3 and Chapter V.
+- Guidelines 01/2022 on data subject rights — right of access.
+- Guidelines 02/2023 on Technical Scope of Article 5(3) of the ePrivacy Directive.
+- Guidelines 01/2024 on legitimate interest.`,
+  },
+  {
+    url: "https://laws-lois.justice.gc.ca/eng/acts/p-8.6/page-1.html",
+    text: `Personal Information Protection and Electronic Documents Act (PIPEDA), S.C. 2000, c. 5.
+
+Schedule 1, Principle 4.1.3 (Accountability) — An organization is responsible for personal information in its possession or custody, including information that has been transferred to a third party for processing. The organization shall use contractual or other means to provide a comparable level of protection while the information is being processed by a third party.`,
+  },
+  {
+    url: "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm",
+    text: `Lei Geral de Proteção de Dados Pessoais (LGPD) — Lei nº 13.709/2018.
+
+Art. 39. O operador deverá realizar o tratamento segundo as instruções fornecidas pelo controlador, que verificará a observância das próprias instruções e das normas sobre a matéria.`,
+  },
+  {
+    url: "https://www.ppc.go.jp/en/legal/",
+    text: `Act on the Protection of Personal Information (APPI) — Japan, Law No. 57 of 2003 as amended.
+
+Article 25 — Supervision of Trustees. When a business operator entrusts the whole or part of the handling of personal data, it shall exercise necessary and appropriate supervision over the trustee to ensure the secure handling of personal data.`,
+  },
+  {
+    url: "https://www.npc.gov.cn/englishnpc/c23934/202112/1abd8829788946ecab270e469b13c39c.shtml",
+    text: `Personal Information Protection Law of the People's Republic of China (PIPL).
+
+Article 21. Where a personal information handler entrusts the handling of personal information to another party, the handler shall conclude an agreement with the entrusted party setting forth the purpose of processing, the period of processing, the method of processing, the types of personal information handled, the protective measures applied, and the rights and duties of both sides; the handler shall supervise the entrusted party's processing activities.
+
+Article 38. Where a personal information handler needs to provide personal information outside the territory of the People's Republic of China for business or other needs, it shall meet one of the following conditions: (1) pass a security assessment organized by the State cybersecurity and informatization department; (2) undergo personal information protection certification conducted by a specialized institution; (3) conclude a standard contract formulated by the State cybersecurity and informatization department with the foreign receiving party; or (4) other conditions provided by laws, administrative regulations.`,
+  },
+  {
     url: "https://delcode.delaware.gov/title6/c012D/",
     text: `§ 12D-107. Processor obligations.
 (b) A contract between a controller and a processor shall be binding and shall set forth:

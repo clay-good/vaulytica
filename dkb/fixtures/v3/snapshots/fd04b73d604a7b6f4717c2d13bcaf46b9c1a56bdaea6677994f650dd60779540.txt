@@ -1,0 +1,5 @@
+FDPIC Addendum to the EU SCCs (Swiss Addendum).
+
+Competent Supervisory Authority: the Federal Data Protection and Information Commissioner (FDPIC) for transfers covered by Swiss data protection law.
+
+Governing Law: Swiss law where data subjects are resident in Switzerland; references in the SCCs to "Member State law" and "EU law" should be read as references to Swiss FADP.

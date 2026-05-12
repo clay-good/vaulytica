@@ -1,0 +1,22 @@
+Regulation (EU) 2016/679 — General Data Protection Regulation (GDPR).
+
+Article 28 — Processor.
+3. Processing by a processor shall be governed by a contract or other legal act under Union or Member State law, that is binding on the processor with regard to the controller and that sets out the subject-matter and duration of the processing, the nature and purpose of the processing, the type of personal data and categories of data subjects and the obligations and rights of the controller. That contract or other legal act shall stipulate, in particular, that the processor:
+  (a) processes the personal data only on documented instructions from the controller;
+  (b) ensures that persons authorised to process the personal data have committed themselves to confidentiality;
+  (c) takes all measures required pursuant to Article 32;
+  (d) respects the conditions referred to in paragraphs 2 and 4 for engaging another processor;
+  (e) taking into account the nature of the processing, assists the controller by appropriate technical and organisational measures;
+  (f) assists the controller in ensuring compliance with the obligations pursuant to Articles 32 to 36;
+  (g) at the choice of the controller, deletes or returns all the personal data to the controller after the end of the provision of services;
+  (h) makes available to the controller all information necessary to demonstrate compliance.
+
+Article 32 — Security of processing. Taking into account the state of the art, the costs of implementation and the nature, scope, context and purposes of processing, the controller and the processor shall implement appropriate technical and organisational measures to ensure a level of security appropriate to the risk, including pseudonymisation and encryption of personal data; the ability to ensure ongoing confidentiality, integrity, availability and resilience of processing systems; the ability to restore availability and access to personal data in a timely manner; and a process for regularly testing, assessing and evaluating the effectiveness of measures.
+
+Article 33 — Notification of a personal data breach to the supervisory authority.
+1. In the case of a personal data breach, the controller shall without undue delay and, where feasible, not later than 72 hours after having become aware of it, notify the personal data breach to the competent supervisory authority.
+2. The processor shall notify the controller without undue delay after becoming aware of a personal data breach.
+
+Article 44 — General principle for transfers. Any transfer of personal data which are undergoing processing or are intended for processing after transfer to a third country or to an international organisation shall take place only if, subject to the other provisions of this Regulation, the conditions laid down in this Chapter are complied with by the controller and processor.
+
+Article 46 — Transfers subject to appropriate safeguards. In the absence of a decision pursuant to Article 45(3), a controller or processor may transfer personal data to a third country or an international organisation only if the controller or processor has provided appropriate safeguards, and on condition that enforceable data subject rights and effective legal remedies for data subjects are available.

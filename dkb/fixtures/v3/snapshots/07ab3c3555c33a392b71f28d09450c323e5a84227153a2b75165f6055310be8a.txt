@@ -1,0 +1,7 @@
+EDPB Guidelines, Recommendations and Best Practices.
+
+- Guidelines 07/2020 on the concepts of controller and processor.
+- Guidelines 05/2021 on the interplay between Article 3 and Chapter V.
+- Guidelines 01/2022 on data subject rights — right of access.
+- Guidelines 02/2023 on Technical Scope of Article 5(3) of the ePrivacy Directive.
+- Guidelines 01/2024 on legitimate interest.

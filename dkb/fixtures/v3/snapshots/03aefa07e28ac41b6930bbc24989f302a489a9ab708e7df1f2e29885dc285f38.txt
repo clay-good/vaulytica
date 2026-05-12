@@ -1,0 +1,5 @@
+Regulation (EU) 2016/679 (UK GDPR) — retained EU law as amended by the Data Protection, Privacy and Electronic Communications (Amendments etc) (EU Exit) Regulations 2019.
+
+Article 28 (UK GDPR) — Processor. Processing by a processor shall be governed by a contract binding the processor to the controller, setting out the subject-matter, duration, nature and purpose of processing, the type of personal data, categories of data subjects, and the obligations and rights of the controller.
+
+Article 32 (UK GDPR) — Security of processing. Appropriate technical and organisational measures shall be implemented.

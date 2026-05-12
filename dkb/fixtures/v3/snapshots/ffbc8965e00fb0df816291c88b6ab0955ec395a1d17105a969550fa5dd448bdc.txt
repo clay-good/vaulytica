@@ -1,0 +1,5 @@
+Personal Information Protection Law of the People's Republic of China (PIPL).
+
+Article 21. Where a personal information handler entrusts the handling of personal information to another party, the handler shall conclude an agreement with the entrusted party setting forth the purpose of processing, the period of processing, the method of processing, the types of personal information handled, the protective measures applied, and the rights and duties of both sides; the handler shall supervise the entrusted party's processing activities.
+
+Article 38. Where a personal information handler needs to provide personal information outside the territory of the People's Republic of China for business or other needs, it shall meet one of the following conditions: (1) pass a security assessment organized by the State cybersecurity and informatization department; (2) undergo personal information protection certification conducted by a specialized institution; (3) conclude a standard contract formulated by the State cybersecurity and informatization department with the foreign receiving party; or (4) other conditions provided by laws, administrative regulations.
