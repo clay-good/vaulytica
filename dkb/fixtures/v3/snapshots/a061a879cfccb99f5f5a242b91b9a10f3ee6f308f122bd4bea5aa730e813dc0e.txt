@@ -1,0 +1,6 @@
+<html><body><h1>HIPAA Settlements and Resolution Agreements</h1>
+<ul>
+<li><a href="/agreement-2024-cardio">2024 Cardio Clinic Resolution Agreement</a></li>
+<li><a href="/agreement-2023-uhh">2023 University Health Holdings Resolution Agreement</a></li>
+<li><a href="/agreement-2022-cnv">2022 CityNet Vendor Settlement</a></li>
+</ul></body></html>

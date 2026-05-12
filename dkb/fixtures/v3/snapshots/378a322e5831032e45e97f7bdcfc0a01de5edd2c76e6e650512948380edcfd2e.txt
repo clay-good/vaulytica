@@ -1,0 +1,13 @@
+§ 541.104. Data processing contract requirements.
+(a) A contract between a controller and a processor must be binding and clearly set forth:
+  (1) instructions for processing personal data;
+  (2) the nature and purpose of the processing;
+  (3) the type of personal data subject to processing;
+  (4) the duration of processing;
+  (5) the rights and obligations of both parties.
+(b) The contract must require the processor to:
+  (1) ensure that each person processing personal data is subject to a duty of confidentiality;
+  (2) delete or return all personal data to the controller at the controller's direction at the end of services;
+  (3) make available to the controller information necessary to demonstrate compliance;
+  (4) allow reasonable assessments by the controller; and
+  (5) engage any subcontractors pursuant to a written contract that imposes the same obligations.

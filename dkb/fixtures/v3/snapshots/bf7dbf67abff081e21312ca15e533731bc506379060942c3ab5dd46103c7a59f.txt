@@ -1,0 +1,2 @@
+§ 646A.578. Contract between controller and processor.
+(1) A contract between a controller and processor shall include processing instructions, the nature and purpose of processing, the type of personal data, the duration of processing, deletion or return of personal data at the end of services, and shall require the processor to engage subcontractors pursuant to a written contract imposing the same obligations as those of the processor.

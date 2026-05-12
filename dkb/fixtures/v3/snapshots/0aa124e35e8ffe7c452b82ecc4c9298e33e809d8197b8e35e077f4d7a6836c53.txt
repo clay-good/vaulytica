@@ -1,0 +1,6 @@
+Sec. 8 (codified at Conn. Gen. Stat. § 42-520). Processor obligations.
+(b) A contract between a controller and a processor shall govern the processor's data processing procedures with respect to processing performed on behalf of the controller. The contract shall be binding, clearly set forth instructions for processing data, the nature and purpose of processing, the type of personal data, the duration of processing, and the obligations and rights of both parties. The contract shall also require the processor to:
+  (1) Ensure that each person processing personal data is subject to a duty of confidentiality;
+  (2) At the controller's direction, delete or return all personal data to the controller at the end of services;
+  (3) Make available to the controller information necessary to demonstrate compliance;
+  (4) Engage any subcontractor pursuant to a written contract that requires the subcontractor to meet the same obligations.

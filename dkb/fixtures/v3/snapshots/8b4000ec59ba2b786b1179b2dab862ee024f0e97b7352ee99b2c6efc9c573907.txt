@@ -1,0 +1,13 @@
+Excerpts from 45 C.F.R. Part 164 — HIPAA Privacy and Security Rules.
+
+§ 164.502(e)(1)(i) — A covered entity may disclose protected health information to a business associate only if the covered entity obtains satisfactory assurances that the business associate will appropriately safeguard the information.
+
+§ 164.504(e) — Business associate contracts. The contract or other arrangement required by § 164.502(e) must:
+  (2)(i) Establish the permitted and required uses and disclosures of such information by the business associate.
+  (2)(ii)(C) Require the business associate to report to the covered entity any use or disclosure of the information not provided for by its contract of which it becomes aware, including breaches of unsecured protected health information.
+  (2)(ii)(D) Ensure that any subcontractors that create, receive, maintain, or transmit protected health information on behalf of the business associate agree to the same restrictions and conditions that apply to the business associate.
+  (2)(iii) Authorize termination of the contract by the covered entity, if the covered entity determines that the business associate has violated a material term.
+
+§ 164.410 — Notification by a business associate. Following the discovery of a breach of unsecured protected health information, a business associate shall notify the covered entity. Such notifications must be made without unreasonable delay and in no case later than 60 calendar days after discovery of a breach.
+
+§ 164.314(a) — Business associate contracts must require the business associate to comply, where applicable, with the Security Rule with respect to electronic protected health information.

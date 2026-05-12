@@ -1,0 +1,8 @@
+§ 13-61-301. Processor obligations.
+(2) A contract between a controller and a processor shall clearly set forth:
+  (a) instructions for processing personal data;
+  (b) the nature and purpose of the processing;
+  (c) the type of data subject to processing;
+  (d) the duration of processing; and
+  (e) the rights and obligations of both parties.
+(3) Before a processor engages a subcontractor, the processor shall enter into a written contract with the subcontractor that requires the subcontractor to meet the obligations of the processor with respect to the personal data.

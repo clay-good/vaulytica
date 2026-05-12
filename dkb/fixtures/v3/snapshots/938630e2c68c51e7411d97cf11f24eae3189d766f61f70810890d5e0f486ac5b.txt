@@ -1,0 +1,24 @@
+<html><body>
+<h1>Sample Business Associate Agreement Provisions</h1>
+
+<h2>Permitted Uses and Disclosures by Business Associate</h2>
+<p>Business Associate may only use or disclose Protected Health Information consistent with this Agreement or as required by law.</p>
+
+<h2>Reporting of Improper Use or Disclosure</h2>
+<p>Business Associate shall report to Covered Entity any use or disclosure of PHI not provided for by this Agreement.</p>
+
+<h2>Subcontractors</h2>
+<p>In accordance with 45 CFR 164.502(e)(1)(ii) and 164.308(b)(2), Business Associate shall ensure that any subcontractors agree to the same restrictions and conditions.</p>
+
+<h2>Access to PHI</h2>
+<p>Business Associate shall provide access to PHI in a Designated Record Set as necessary to satisfy 45 CFR 164.524.</p>
+
+<h2>Amendment of PHI</h2>
+<p>Business Associate shall make amendment to PHI in a Designated Record Set as directed pursuant to 45 CFR 164.526.</p>
+
+<h2>Accounting of Disclosures</h2>
+<p>Business Associate shall maintain and make available the information required to provide an accounting of disclosures.</p>
+
+<h2>Termination for Breach</h2>
+<p>Upon Covered Entity's knowledge of a material breach by Business Associate, Covered Entity shall provide an opportunity to cure and may terminate.</p>
+</body></html>

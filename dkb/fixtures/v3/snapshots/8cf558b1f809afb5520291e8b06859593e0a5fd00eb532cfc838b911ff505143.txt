@@ -1,0 +1,11 @@
+Cal. Code Regs. tit. 11, § 7051 — Contract Requirements for Service Providers and Contractors.
+
+(a) A written contract with a service provider or contractor shall:
+  (1) Identify the specific business purpose(s) for which the service provider or contractor is processing personal information;
+  (2) Prohibit the service provider or contractor from selling or sharing personal information;
+  (3) Prohibit the service provider or contractor from retaining, using, or disclosing personal information outside the direct business relationship;
+  (4) Require the service provider or contractor to comply with all applicable obligations under the CCPA, including providing the same level of privacy protection;
+  (5) Grant the business the right to take reasonable and appropriate steps to ensure that the service provider or contractor uses the personal information in a manner consistent with the business's obligations under the CCPA;
+  (6) Require the service provider or contractor to notify the business if it makes a determination that it can no longer meet its obligations under the CCPA;
+  (7) Grant the business the right, upon notice, to take reasonable and appropriate steps to stop and remediate unauthorized use of personal information;
+  (8) Require the service provider or contractor to enable the business to comply with verifiable consumer requests.

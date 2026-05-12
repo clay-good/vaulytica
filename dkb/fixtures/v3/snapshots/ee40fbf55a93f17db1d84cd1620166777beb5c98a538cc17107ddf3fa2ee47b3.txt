@@ -1,0 +1,9 @@
+§ 12D-107. Processor obligations.
+(b) A contract between a controller and a processor shall be binding and shall set forth:
+  (1) instructions for processing personal data;
+  (2) the nature and purpose of processing;
+  (3) the type of personal data;
+  (4) the duration of processing;
+  (5) audit rights of the controller;
+  (6) confidentiality obligations of the processor and its personnel; and
+  (7) a requirement that the processor engage any subcontractor pursuant to a written contract that imposes the same obligations on the subcontractor.

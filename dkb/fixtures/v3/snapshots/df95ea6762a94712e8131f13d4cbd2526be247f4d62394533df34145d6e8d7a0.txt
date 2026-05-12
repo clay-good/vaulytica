@@ -1,0 +1,6 @@
+§ 1798.100. (d) A business that collects a consumer's personal information and that sells that personal information to, or shares it with, a third party or that discloses it to a service provider or contractor for a business purpose, shall enter into an agreement with the third party, service provider, or contractor that obligates the third party, service provider, or contractor to comply with applicable obligations under this title and to provide the same level of privacy protection as required by this title.
+
+§ 1798.140. (ag)(1) "Service provider" means a person that processes personal information on behalf of a business and that receives from or on behalf of the business consumer's personal information for a business purpose pursuant to a written contract, provided that the contract prohibits the service provider from:
+  (A) Selling or sharing the personal information, including for cross-context behavioral advertising.
+  (B) Retaining, using, or disclosing the personal information for any purpose other than the specific business purpose enumerated in the contract.
+  (C) Retaining, using, or disclosing the information outside of the direct business relationship between the service provider and the business.

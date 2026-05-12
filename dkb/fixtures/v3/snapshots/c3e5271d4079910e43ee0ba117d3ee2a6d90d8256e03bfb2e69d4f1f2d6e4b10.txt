@@ -1,0 +1,7 @@
+§ 6-1-1305. Data processing contract requirements.
+(5) A contract between a controller and a processor shall be binding on both parties and shall clearly set forth:
+  (a) Processing instructions to which the processor is bound, including the nature and purpose of the processing;
+  (b) The type of personal data subject to the processing and the duration of the processing;
+  (c) The rights and obligations of both parties;
+  (d) A requirement that the processor delete or return all personal data to the controller as requested at the end of the provision of services unless retention is required by law; and
+  (e) A requirement that the processor make available to the controller information necessary to demonstrate compliance with this part.

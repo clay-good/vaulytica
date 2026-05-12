@@ -1,0 +1,7 @@
+§ 59.1-579. Data processing agreements.
+A. A contract between a controller and a processor shall govern the processor's data processing procedures with respect to processing performed on behalf of the controller. The contract shall be binding and clearly set forth instructions for processing data, the nature and purpose of processing, the type of data subject to processing, the duration of processing, and the rights and obligations of both parties. The contract shall also include requirements that the processor shall:
+  1. Ensure that each person processing personal data is subject to a duty of confidentiality with respect to the data;
+  2. At the controller's direction, delete or return all personal data to the controller as requested at the end of the provision of services;
+  3. Upon the reasonable request of the controller, make available to the controller all information in its possession necessary to demonstrate the processor's compliance with this chapter;
+  4. Allow, and cooperate with, reasonable assessments by the controller or the controller's designated assessor; and
+  5. Engage any subcontractor pursuant to a written contract that requires the subcontractor to meet the obligations of the processor with respect to the personal data.
