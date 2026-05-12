@@ -1,0 +1,545 @@
+[
+  {
+    "id": "clause-nda-confidentiality-balanced-v1",
+    "version": "1.0.0",
+    "category": "confidentiality-obligation",
+    "position": "balanced",
+    "normalized_text": "Recipient shall (a) protect Discloser's Confidential Information using the same degree of care it uses to protect its own Confidential Information of like importance, but in no event less than a reasonable degree of care, and (b) use the Confidential Information solely for the Permitted Purpose.",
+    "deal_types": ["mutual-nda", "unilateral-nda"],
+    "side": "neutral",
+    "source": {
+      "id": "common-paper-mutual-nda-v1.1",
+      "source": "Common Paper Mutual NDA, v1.1",
+      "source_url": "https://github.com/CommonPaper/Mutual-NDA",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Mutual NDA, v1.1, CC BY 4.0"
+    }
+  },
+  {
+    "id": "clause-nda-permitted-disclosures-balanced-v1",
+    "version": "1.0.0",
+    "category": "permitted-disclosures",
+    "position": "balanced",
+    "normalized_text": "Recipient may disclose Confidential Information to its employees, advisors, and contractors who have a need to know and who are bound by confidentiality obligations no less protective than those in this Agreement.",
+    "deal_types": ["mutual-nda", "unilateral-nda"],
+    "side": "neutral",
+    "source": {
+      "id": "common-paper-mutual-nda-v1.1",
+      "source": "Common Paper Mutual NDA, v1.1",
+      "source_url": "https://github.com/CommonPaper/Mutual-NDA",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Mutual NDA, v1.1, CC BY 4.0"
+    }
+  },
+  {
+    "id": "clause-nda-term-balanced-v1",
+    "version": "1.0.0",
+    "category": "term",
+    "position": "balanced",
+    "normalized_text": "This Agreement begins on the Effective Date and continues for two (2) years, unless earlier terminated. Confidentiality obligations under this Agreement survive for three (3) years following termination.",
+    "deal_types": ["mutual-nda", "unilateral-nda"],
+    "side": "neutral",
+    "source": {
+      "id": "common-paper-mutual-nda-v1.1",
+      "source": "Common Paper Mutual NDA, v1.1",
+      "source_url": "https://github.com/CommonPaper/Mutual-NDA",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Mutual NDA, v1.1, CC BY 4.0"
+    }
+  },
+  {
+    "id": "clause-governing-law-de-balanced-v1",
+    "version": "1.0.0",
+    "category": "governing-law",
+    "position": "balanced",
+    "normalized_text": "This Agreement is governed by and construed in accordance with the laws of the State of Delaware, without regard to its conflict-of-laws principles.",
+    "jurisdiction": "us-de",
+    "deal_types": ["mutual-nda", "unilateral-nda", "saas-customer", "saas-vendor", "msa-general"],
+    "side": "neutral",
+    "source": {
+      "id": "common-paper-cloud-service-agreement-v2",
+      "source": "Common Paper Cloud Service Agreement, v2",
+      "source_url": "https://github.com/CommonPaper/Cloud-Service-Agreement",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Cloud Service Agreement, v2, CC BY 4.0"
+    }
+  },
+  {
+    "id": "clause-governing-law-ny-balanced-v1",
+    "version": "1.0.0",
+    "category": "governing-law",
+    "position": "balanced",
+    "normalized_text": "This Agreement is governed by the laws of the State of New York, without regard to its conflict-of-laws principles.",
+    "jurisdiction": "us-ny",
+    "deal_types": ["msa-general", "saas-customer", "saas-vendor"],
+    "side": "neutral",
+    "source": {
+      "id": "common-paper-cloud-service-agreement-v2",
+      "source": "Common Paper Cloud Service Agreement, v2",
+      "source_url": "https://github.com/CommonPaper/Cloud-Service-Agreement",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Cloud Service Agreement, v2, CC BY 4.0"
+    }
+  },
+  {
+    "id": "clause-venue-delaware-courts-v1",
+    "version": "1.0.0",
+    "category": "venue",
+    "position": "balanced",
+    "normalized_text": "The state and federal courts located in the State of Delaware have exclusive jurisdiction over any dispute arising out of or relating to this Agreement.",
+    "jurisdiction": "us-de",
+    "deal_types": ["saas-customer", "saas-vendor", "msa-general"],
+    "side": "neutral",
+    "source": {
+      "id": "common-paper-cloud-service-agreement-v2",
+      "source": "Common Paper Cloud Service Agreement, v2",
+      "source_url": "https://github.com/CommonPaper/Cloud-Service-Agreement",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Cloud Service Agreement, v2, CC BY 4.0"
+    }
+  },
+  {
+    "id": "clause-termination-for-convenience-balanced-v1",
+    "version": "1.0.0",
+    "category": "termination-for-convenience",
+    "position": "balanced",
+    "normalized_text": "Either party may terminate this Agreement for convenience upon thirty (30) days' prior written notice to the other party.",
+    "deal_types": ["msa-general", "saas-customer", "saas-vendor", "consulting-agreement"],
+    "side": "neutral",
+    "source": {
+      "id": "common-paper-professional-services-agreement-v1",
+      "source": "Common Paper Professional Services Agreement, v1",
+      "source_url": "https://github.com/CommonPaper/Professional-Services-Agreement",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Professional Services Agreement, v1, CC BY 4.0"
+    }
+  },
+  {
+    "id": "clause-termination-for-cause-balanced-v1",
+    "version": "1.0.0",
+    "category": "termination-for-cause",
+    "position": "balanced",
+    "normalized_text": "Either party may terminate this Agreement for cause upon written notice if the other party materially breaches this Agreement and fails to cure such breach within thirty (30) days after receipt of written notice describing the breach.",
+    "deal_types": ["msa-general", "saas-customer", "saas-vendor", "consulting-agreement"],
+    "side": "neutral",
+    "source": {
+      "id": "common-paper-professional-services-agreement-v1",
+      "source": "Common Paper Professional Services Agreement, v1",
+      "source_url": "https://github.com/CommonPaper/Professional-Services-Agreement",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Professional Services Agreement, v1, CC BY 4.0"
+    }
+  },
+  {
+    "id": "clause-indemnity-third-party-claims-balanced-v1",
+    "version": "1.0.0",
+    "category": "indemnification",
+    "position": "balanced",
+    "normalized_text": "Each party (the \"Indemnifying Party\") shall defend the other party from any third-party claim arising out of the Indemnifying Party's gross negligence, willful misconduct, or breach of this Agreement, and shall indemnify the other party for damages awarded by a court of competent jurisdiction or amounts paid in settlement with the Indemnifying Party's consent.",
+    "deal_types": ["msa-general", "saas-customer", "saas-vendor", "consulting-agreement"],
+    "side": "neutral",
+    "source": {
+      "id": "common-paper-professional-services-agreement-v1",
+      "source": "Common Paper Professional Services Agreement, v1",
+      "source_url": "https://github.com/CommonPaper/Professional-Services-Agreement",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Professional Services Agreement, v1, CC BY 4.0"
+    }
+  },
+  {
+    "id": "clause-indemnity-ip-balanced-v1",
+    "version": "1.0.0",
+    "category": "indemnification-ip",
+    "position": "balanced",
+    "normalized_text": "Provider shall defend Customer against any third-party claim that the Services, as provided by Provider and used by Customer in accordance with this Agreement, infringe any United States patent, copyright, or trademark, and shall indemnify Customer for damages awarded by a court of competent jurisdiction.",
+    "deal_types": ["saas-customer", "saas-vendor"],
+    "side": "provider",
+    "source": {
+      "id": "common-paper-cloud-service-agreement-v2",
+      "source": "Common Paper Cloud Service Agreement, v2",
+      "source_url": "https://github.com/CommonPaper/Cloud-Service-Agreement",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Cloud Service Agreement, v2, CC BY 4.0"
+    }
+  },
+  {
+    "id": "clause-limitation-of-liability-balanced-v1",
+    "version": "1.0.0",
+    "category": "limitation-of-liability",
+    "position": "balanced",
+    "normalized_text": "Except for liability arising from (a) a party's indemnification obligations, (b) breach of confidentiality, (c) gross negligence or willful misconduct, or (d) infringement of the other party's intellectual property rights, each party's aggregate liability under this Agreement shall not exceed the amounts paid or payable by Customer to Provider during the twelve (12) months immediately preceding the event giving rise to the liability.",
+    "deal_types": ["saas-customer", "saas-vendor", "msa-general"],
+    "side": "neutral",
+    "source": {
+      "id": "common-paper-cloud-service-agreement-v2",
+      "source": "Common Paper Cloud Service Agreement, v2",
+      "source_url": "https://github.com/CommonPaper/Cloud-Service-Agreement",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Cloud Service Agreement, v2, CC BY 4.0"
+    }
+  },
+  {
+    "id": "clause-consequential-damages-waiver-balanced-v1",
+    "version": "1.0.0",
+    "category": "consequential-damages-waiver",
+    "position": "balanced",
+    "normalized_text": "Except for liability arising from a party's indemnification obligations or breach of confidentiality, neither party will be liable to the other for any consequential, incidental, special, exemplary, or punitive damages, or for any lost profits, lost revenue, or lost data, even if advised of the possibility of such damages.",
+    "deal_types": ["saas-customer", "saas-vendor", "msa-general"],
+    "side": "neutral",
+    "source": {
+      "id": "common-paper-cloud-service-agreement-v2",
+      "source": "Common Paper Cloud Service Agreement, v2",
+      "source_url": "https://github.com/CommonPaper/Cloud-Service-Agreement",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Cloud Service Agreement, v2, CC BY 4.0"
+    }
+  },
+  {
+    "id": "clause-auto-renewal-30-day-notice-v1",
+    "version": "1.0.0",
+    "category": "renewal-term",
+    "position": "balanced",
+    "normalized_text": "This Agreement renews automatically for successive one-year terms unless either party gives the other written notice of non-renewal at least thirty (30) days prior to the end of the then-current term.",
+    "deal_types": ["saas-customer", "saas-vendor"],
+    "side": "neutral",
+    "source": {
+      "id": "common-paper-cloud-service-agreement-v2",
+      "source": "Common Paper Cloud Service Agreement, v2",
+      "source_url": "https://github.com/CommonPaper/Cloud-Service-Agreement",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Cloud Service Agreement, v2, CC BY 4.0"
+    }
+  },
+  {
+    "id": "clause-survival-balanced-v1",
+    "version": "1.0.0",
+    "category": "survival",
+    "position": "balanced",
+    "normalized_text": "The provisions of this Agreement that by their nature should survive termination, including provisions regarding confidentiality, indemnification, limitation of liability, accrued payment obligations, and governing law, shall survive termination or expiration of this Agreement.",
+    "deal_types": ["msa-general", "saas-customer", "saas-vendor", "consulting-agreement"],
+    "side": "neutral",
+    "source": {
+      "id": "common-paper-professional-services-agreement-v1",
+      "source": "Common Paper Professional Services Agreement, v1",
+      "source_url": "https://github.com/CommonPaper/Professional-Services-Agreement",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Professional Services Agreement, v1, CC BY 4.0"
+    }
+  },
+  {
+    "id": "clause-assignment-restriction-balanced-v1",
+    "version": "1.0.0",
+    "category": "assignment",
+    "position": "balanced",
+    "normalized_text": "Neither party may assign this Agreement or any of its rights or obligations under this Agreement without the other party's prior written consent, except that either party may assign this Agreement without consent to a successor in connection with a merger, acquisition, or sale of all or substantially all of its assets.",
+    "deal_types": ["msa-general", "saas-customer", "saas-vendor", "consulting-agreement"],
+    "side": "neutral",
+    "source": {
+      "id": "common-paper-cloud-service-agreement-v2",
+      "source": "Common Paper Cloud Service Agreement, v2",
+      "source_url": "https://github.com/CommonPaper/Cloud-Service-Agreement",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Cloud Service Agreement, v2, CC BY 4.0"
+    }
+  },
+  {
+    "id": "clause-force-majeure-balanced-v1",
+    "version": "1.0.0",
+    "category": "force-majeure",
+    "position": "balanced",
+    "normalized_text": "Neither party will be liable for any delay or failure to perform its obligations under this Agreement (other than payment obligations) to the extent caused by an event beyond its reasonable control, including acts of God, war, terrorism, civil disturbance, government action, pandemic, or failure of public infrastructure.",
+    "deal_types": ["msa-general", "saas-customer", "saas-vendor", "consulting-agreement"],
+    "side": "neutral",
+    "source": {
+      "id": "common-paper-cloud-service-agreement-v2",
+      "source": "Common Paper Cloud Service Agreement, v2",
+      "source_url": "https://github.com/CommonPaper/Cloud-Service-Agreement",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Cloud Service Agreement, v2, CC BY 4.0"
+    }
+  },
+  {
+    "id": "clause-entire-agreement-balanced-v1",
+    "version": "1.0.0",
+    "category": "entire-agreement",
+    "position": "balanced",
+    "normalized_text": "This Agreement constitutes the entire agreement between the parties with respect to its subject matter and supersedes all prior or contemporaneous agreements, communications, and understandings, whether written or oral.",
+    "deal_types": ["mutual-nda", "unilateral-nda", "msa-general", "saas-customer", "saas-vendor"],
+    "side": "neutral",
+    "source": {
+      "id": "common-paper-mutual-nda-v1.1",
+      "source": "Common Paper Mutual NDA, v1.1",
+      "source_url": "https://github.com/CommonPaper/Mutual-NDA",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Mutual NDA, v1.1, CC BY 4.0"
+    }
+  },
+  {
+    "id": "clause-severability-balanced-v1",
+    "version": "1.0.0",
+    "category": "severability",
+    "position": "balanced",
+    "normalized_text": "If any provision of this Agreement is held to be invalid or unenforceable, the remaining provisions will remain in full force and effect, and the parties will negotiate in good faith to replace the invalid provision with a valid provision that most nearly reflects the original intent.",
+    "deal_types": ["mutual-nda", "unilateral-nda", "msa-general", "saas-customer", "saas-vendor"],
+    "side": "neutral",
+    "source": {
+      "id": "common-paper-mutual-nda-v1.1",
+      "source": "Common Paper Mutual NDA, v1.1",
+      "source_url": "https://github.com/CommonPaper/Mutual-NDA",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Mutual NDA, v1.1, CC BY 4.0"
+    }
+  },
+  {
+    "id": "clause-notices-balanced-v1",
+    "version": "1.0.0",
+    "category": "notices",
+    "position": "balanced",
+    "normalized_text": "Notices under this Agreement must be in writing and delivered by hand, by overnight courier, or by email to the address designated by the receiving party. Notices to a party's email address are effective upon confirmation of receipt.",
+    "deal_types": ["msa-general", "saas-customer", "saas-vendor"],
+    "side": "neutral",
+    "source": {
+      "id": "common-paper-cloud-service-agreement-v2",
+      "source": "Common Paper Cloud Service Agreement, v2",
+      "source_url": "https://github.com/CommonPaper/Cloud-Service-Agreement",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Cloud Service Agreement, v2, CC BY 4.0"
+    }
+  },
+  {
+    "id": "clause-arbitration-aaa-balanced-v1",
+    "version": "1.0.0",
+    "category": "arbitration",
+    "position": "balanced",
+    "normalized_text": "Any dispute arising out of or relating to this Agreement that cannot be resolved through good-faith negotiation will be finally resolved by binding arbitration administered by the American Arbitration Association under its Commercial Arbitration Rules. The seat of arbitration is the city in which the responding party is headquartered. The language of arbitration is English.",
+    "deal_types": ["msa-general", "saas-customer", "saas-vendor"],
+    "side": "neutral",
+    "source": {
+      "id": "common-paper-cloud-service-agreement-v2",
+      "source": "Common Paper Cloud Service Agreement, v2",
+      "source_url": "https://github.com/CommonPaper/Cloud-Service-Agreement",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Cloud Service Agreement, v2, CC BY 4.0"
+    }
+  },
+  {
+    "id": "clause-ip-assignment-work-for-hire-balanced-v1",
+    "version": "1.0.0",
+    "category": "ip-ownership",
+    "position": "balanced",
+    "normalized_text": "All Deliverables created by Provider in the course of performing the Services are works made for hire under United States copyright law and are owned by Customer. To the extent any Deliverable does not qualify as a work made for hire, Provider hereby assigns to Customer all right, title, and interest in and to such Deliverable.",
+    "deal_types": ["msa-general", "consulting-agreement", "sow"],
+    "side": "customer",
+    "source": {
+      "id": "common-paper-professional-services-agreement-v1",
+      "source": "Common Paper Professional Services Agreement, v1",
+      "source_url": "https://github.com/CommonPaper/Professional-Services-Agreement",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Professional Services Agreement, v1, CC BY 4.0"
+    }
+  },
+  {
+    "id": "clause-employee-ip-assignment-balanced-v1",
+    "version": "1.0.0",
+    "category": "employee-ip-assignment",
+    "position": "balanced",
+    "normalized_text": "Employee hereby assigns to the Company all right, title, and interest in and to all Inventions developed during Employee's employment with the Company that (a) relate to the Company's business, (b) result from work performed by Employee for the Company, or (c) are developed using the Company's equipment, supplies, facilities, or Confidential Information.",
+    "deal_types": ["employment-at-will-us"],
+    "side": "employer",
+    "source": {
+      "id": "github-balanced-employee-ip-agreement",
+      "source": "GitHub Balanced Employee IP Agreement",
+      "source_url": "https://github.com/github/balanced-employee-ip-agreement",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "GitHub, Inc., Balanced Employee IP Agreement, CC0"
+    }
+  },
+  {
+    "id": "clause-insurance-msa-balanced-v1",
+    "version": "1.0.0",
+    "category": "insurance",
+    "position": "balanced",
+    "normalized_text": "Provider shall maintain throughout the term of this Agreement (a) commercial general liability insurance of at least $1,000,000 per occurrence and $2,000,000 in the aggregate, (b) professional liability (errors and omissions) insurance of at least $2,000,000 per claim, and (c) workers' compensation insurance as required by law. Provider shall provide certificates of insurance upon Customer's request.",
+    "deal_types": ["msa-general", "consulting-agreement"],
+    "side": "provider",
+    "source": {
+      "id": "common-paper-professional-services-agreement-v1",
+      "source": "Common Paper Professional Services Agreement, v1",
+      "source_url": "https://github.com/CommonPaper/Professional-Services-Agreement",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Professional Services Agreement, v1, CC BY 4.0"
+    }
+  },
+  {
+    "id": "clause-data-processing-dpa-reference-v1",
+    "version": "1.0.0",
+    "category": "data-processing",
+    "position": "balanced",
+    "normalized_text": "To the extent Provider processes Personal Data on behalf of Customer in connection with providing the Services, the parties will enter into a Data Processing Agreement that complies with applicable data protection law, including Article 28 of the EU General Data Protection Regulation where applicable.",
+    "deal_types": ["saas-customer", "saas-vendor"],
+    "side": "neutral",
+    "source": {
+      "id": "common-paper-data-processing-agreement",
+      "source": "Common Paper Data Processing Agreement",
+      "source_url": "https://github.com/CommonPaper/Data-Processing-Agreement",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Data Processing Agreement, CC BY 4.0"
+    }
+  },
+  {
+    "id": "clause-payment-terms-net-30-v1",
+    "version": "1.0.0",
+    "category": "payment-terms",
+    "position": "balanced",
+    "normalized_text": "Customer shall pay each undisputed invoice within thirty (30) days after receipt of the invoice. Disputed amounts must be communicated to Provider in writing within the same thirty (30) day period; payment of undisputed amounts is not excused by a dispute over other amounts on the same invoice.",
+    "deal_types": ["msa-general", "saas-customer", "saas-vendor", "consulting-agreement"],
+    "side": "neutral",
+    "source": {
+      "id": "common-paper-professional-services-agreement-v1",
+      "source": "Common Paper Professional Services Agreement, v1",
+      "source_url": "https://github.com/CommonPaper/Professional-Services-Agreement",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Professional Services Agreement, v1, CC BY 4.0"
+    }
+  },
+  {
+    "id": "clause-warranty-services-balanced-v1",
+    "version": "1.0.0",
+    "category": "warranty",
+    "position": "balanced",
+    "normalized_text": "Provider warrants that the Services will be performed in a professional and workmanlike manner consistent with generally accepted industry standards. Customer's exclusive remedy for breach of this warranty is, at Provider's option, re-performance of the non-conforming Services or a refund of the fees paid for the non-conforming Services.",
+    "deal_types": ["msa-general", "consulting-agreement", "sow"],
+    "side": "neutral",
+    "source": {
+      "id": "common-paper-professional-services-agreement-v1",
+      "source": "Common Paper Professional Services Agreement, v1",
+      "source_url": "https://github.com/CommonPaper/Professional-Services-Agreement",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Professional Services Agreement, v1, CC BY 4.0"
+    }
+  },
+  {
+    "id": "clause-disclaimer-warranties-balanced-v1",
+    "version": "1.0.0",
+    "category": "disclaimer-of-warranties",
+    "position": "balanced",
+    "normalized_text": "Except for the express warranties stated in this Agreement, neither party makes any representations or warranties, whether express, implied, statutory, or otherwise, and each party expressly disclaims any implied warranties of merchantability, fitness for a particular purpose, title, and non-infringement.",
+    "deal_types": ["saas-customer", "saas-vendor", "msa-general"],
+    "side": "neutral",
+    "source": {
+      "id": "common-paper-cloud-service-agreement-v2",
+      "source": "Common Paper Cloud Service Agreement, v2",
+      "source_url": "https://github.com/CommonPaper/Cloud-Service-Agreement",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Cloud Service Agreement, v2, CC BY 4.0"
+    }
+  },
+  {
+    "id": "clause-non-solicit-12-months-balanced-v1",
+    "version": "1.0.0",
+    "category": "non-solicit-employees",
+    "position": "balanced",
+    "normalized_text": "During the term of this Agreement and for twelve (12) months thereafter, neither party will directly solicit the other party's employees with whom it had contact in connection with this Agreement. Generalized recruiting efforts (such as job postings) are not a violation of this provision.",
+    "deal_types": ["msa-general", "consulting-agreement"],
+    "side": "neutral",
+    "source": {
+      "id": "common-paper-professional-services-agreement-v1",
+      "source": "Common Paper Professional Services Agreement, v1",
+      "source_url": "https://github.com/CommonPaper/Professional-Services-Agreement",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Professional Services Agreement, v1, CC BY 4.0"
+    }
+  },
+  {
+    "id": "clause-jury-trial-waiver-mutual-v1",
+    "version": "1.0.0",
+    "category": "jury-trial-waiver",
+    "position": "balanced",
+    "normalized_text": "Each party hereby irrevocably waives any right to a trial by jury in any action or proceeding arising out of or relating to this Agreement, to the maximum extent permitted by applicable law.",
+    "deal_types": ["msa-general", "saas-customer", "saas-vendor"],
+    "side": "neutral",
+    "source": {
+      "id": "common-paper-cloud-service-agreement-v2",
+      "source": "Common Paper Cloud Service Agreement, v2",
+      "source_url": "https://github.com/CommonPaper/Cloud-Service-Agreement",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Cloud Service Agreement, v2, CC BY 4.0"
+    }
+  },
+  {
+    "id": "clause-counterparts-electronic-signature-v1",
+    "version": "1.0.0",
+    "category": "counterparts",
+    "position": "balanced",
+    "normalized_text": "This Agreement may be executed in counterparts, each of which is an original and all of which together constitute one and the same instrument. Signatures delivered electronically (including by PDF, DocuSign, or similar means) have the same effect as original handwritten signatures.",
+    "deal_types": ["mutual-nda", "unilateral-nda", "msa-general", "saas-customer", "saas-vendor"],
+    "side": "neutral",
+    "source": {
+      "id": "common-paper-mutual-nda-v1.1",
+      "source": "Common Paper Mutual NDA, v1.1",
+      "source_url": "https://github.com/CommonPaper/Mutual-NDA",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Mutual NDA, v1.1, CC BY 4.0"
+    }
+  }
+]

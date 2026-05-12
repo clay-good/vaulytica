@@ -1,0 +1,242 @@
+[
+  {
+    "id": "stat-9-usc-2",
+    "citation": "9 U.S.C. § 2",
+    "canonical_url": "https://www.law.cornell.edu/uscode/text/9/2",
+    "jurisdiction": "us-federal",
+    "excerpt": "A written provision in any maritime transaction or a contract evidencing a transaction involving commerce to settle by arbitration a controversy thereafter arising out of such contract or transaction shall be valid, irrevocable, and enforceable.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-15-usc-7001",
+    "citation": "15 U.S.C. § 7001 (ESIGN Act)",
+    "canonical_url": "https://www.law.cornell.edu/uscode/text/15/7001",
+    "jurisdiction": "us-federal",
+    "excerpt": "A signature, contract, or other record relating to such transaction may not be denied legal effect, validity, or enforceability solely because it is in electronic form.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-17-usc-101",
+    "citation": "17 U.S.C. § 101 — Definitions (work made for hire)",
+    "canonical_url": "https://www.law.cornell.edu/uscode/text/17/101",
+    "jurisdiction": "us-federal",
+    "excerpt": "A 'work made for hire' is (1) a work prepared by an employee within the scope of his or her employment; or (2) a work specially ordered or commissioned for use as a contribution to a collective work, as a part of a motion picture or other audiovisual work, as a translation, as a supplementary work, as a compilation, as an instructional text, as a test, as answer material for a test, or as an atlas, if the parties expressly agree in a written instrument signed by them that the work shall be considered a work made for hire.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-17-usc-201",
+    "citation": "17 U.S.C. § 201",
+    "canonical_url": "https://www.law.cornell.edu/uscode/text/17/201",
+    "jurisdiction": "us-federal",
+    "excerpt": "Copyright in a work protected under this title vests initially in the author or authors of the work. In the case of a work made for hire, the employer or other person for whom the work was prepared is considered the author.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-18-usc-1836",
+    "citation": "18 U.S.C. § 1836 (Defend Trade Secrets Act — civil)",
+    "canonical_url": "https://www.law.cornell.edu/uscode/text/18/1836",
+    "jurisdiction": "us-federal",
+    "excerpt": "An owner of a trade secret that is misappropriated may bring a civil action under this subsection if the trade secret is related to a product or service used in, or intended for use in, interstate or foreign commerce.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-28-usc-1391",
+    "citation": "28 U.S.C. § 1391 (venue generally)",
+    "canonical_url": "https://www.law.cornell.edu/uscode/text/28/1391",
+    "jurisdiction": "us-federal",
+    "excerpt": "A civil action may be brought in (1) a judicial district in which any defendant resides, if all defendants are residents of the State in which the district is located; (2) a judicial district in which a substantial part of the events or omissions giving rise to the claim occurred, or a substantial part of property that is the subject of the action is situated.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-16-cfr-425",
+    "citation": "16 C.F.R. Part 425 (FTC Negative Option Rule)",
+    "canonical_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-D/part-425",
+    "jurisdiction": "us-federal",
+    "excerpt": "A negative option plan is a contractual arrangement under which a seller periodically sends to consumers an announcement which identifies merchandise (other than annual or other introductory selections) it proposes to send to subscribers who are members of such a plan, who in turn will receive and be billed for the merchandise identified in each such announcement, unless by a date or within a time specified in the announcement they instruct the seller not to send the identified merchandise.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-15-usc-45",
+    "citation": "15 U.S.C. § 45 (FTC Act § 5)",
+    "canonical_url": "https://www.law.cornell.edu/uscode/text/15/45",
+    "jurisdiction": "us-federal",
+    "excerpt": "Unfair methods of competition in or affecting commerce, and unfair or deceptive acts or practices in or affecting commerce, are hereby declared unlawful.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-ucc-2-201",
+    "citation": "U.C.C. § 2-201 (Statute of Frauds — sale of goods)",
+    "canonical_url": "https://www.law.cornell.edu/ucc/2/2-201",
+    "jurisdiction": "us-federal",
+    "excerpt": "Except as otherwise provided in this section a contract for the sale of goods for the price of $500 or more is not enforceable by way of action or defense unless there is some writing sufficient to indicate that a contract for sale has been made between the parties and signed by the party against whom enforcement is sought.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-ucc-2-304",
+    "citation": "U.C.C. § 2-304",
+    "canonical_url": "https://www.law.cornell.edu/ucc/2/2-304",
+    "jurisdiction": "us-federal",
+    "excerpt": "The price can be made payable in money or otherwise. If it is payable in whole or in part in goods each party is a seller of the goods which he is to transfer.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-ueta-section-7",
+    "citation": "UETA § 7 (Legal recognition of electronic records and signatures)",
+    "canonical_url": "https://www.uniformlaws.org/committees/community-home?CommunityKey=2c04b76c-2b7d-4399-977e-d5876ba7e034",
+    "jurisdiction": "us-federal",
+    "excerpt": "A record or signature may not be denied legal effect or enforceability solely because it is in electronic form. A contract may not be denied legal effect or enforceability solely because an electronic record was used in its formation.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-ny-gol-5-501",
+    "citation": "New York General Obligations Law § 5-501 (civil usury)",
+    "canonical_url": "https://www.nysenate.gov/legislation/laws/GOB/5-501",
+    "jurisdiction": "us-ny",
+    "excerpt": "The rate of interest, as computed pursuant to this title, upon the loan or forbearance of any money, goods, or things in action, except as provided in subdivisions five and six of this section, or as otherwise provided by law, shall be six per centum per annum unless a different rate is prescribed in section fourteen-a of the banking law.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-ca-bp-16600",
+    "citation": "California Business and Professions Code § 16600",
+    "canonical_url": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=16600.",
+    "jurisdiction": "us-ca",
+    "excerpt": "Except as provided in this chapter, every contract by which anyone is restrained from engaging in a lawful profession, trade, or business of any kind is to that extent void.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-ftc-deception-statement",
+    "citation": "FTC Policy Statement on Deception (1983)",
+    "canonical_url": "https://www.ftc.gov/legal-library/browse/ftc-policy-statement-deception",
+    "jurisdiction": "us-federal",
+    "excerpt": "The Commission will find deception if there is a representation, omission or practice that is likely to mislead the consumer acting reasonably in the circumstances, to the consumer's detriment.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-ca-civ-1633-7",
+    "citation": "California Civil Code § 1633.7 (UETA — electronic signatures)",
+    "canonical_url": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1633.7.",
+    "jurisdiction": "us-ca",
+    "excerpt": "A record or signature may not be denied legal effect or enforceability solely because it is in electronic form. A contract may not be denied legal effect or enforceability solely because an electronic record was used in its formation.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-restatement-356-liquidated-damages",
+    "citation": "Restatement (Second) of Contracts § 356 (Liquidated Damages and Penalties)",
+    "canonical_url": "https://www.law.cornell.edu/wex/liquidated_damages",
+    "jurisdiction": "us-federal",
+    "excerpt": "Damages for breach by either party may be liquidated in the agreement but only at an amount that is reasonable in the light of the anticipated or actual loss caused by the breach and the difficulties of proof of loss.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-45-cfr-164-504",
+    "citation": "45 C.F.R. § 164.504 (HIPAA Business Associate provisions)",
+    "canonical_url": "https://www.ecfr.gov/current/title-45/subtitle-A/subchapter-C/part-164/subpart-E/section-164.504",
+    "jurisdiction": "us-federal",
+    "excerpt": "A covered entity may disclose protected health information to a business associate and may allow a business associate to create, receive, maintain, or transmit protected health information on its behalf, if the covered entity obtains satisfactory assurances that the business associate will appropriately safeguard the information.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-ccpa-1798-140",
+    "citation": "California Civil Code § 1798.140 (CCPA definitions)",
+    "canonical_url": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1798.140.",
+    "jurisdiction": "us-ca",
+    "excerpt": "For purposes of this title: ... 'Personal information' means information that identifies, relates to, describes, is reasonably capable of being associated with, or could reasonably be linked, directly or indirectly, with a particular consumer or household.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-gdpr-art-28",
+    "citation": "Regulation (EU) 2016/679 (GDPR), Article 28 — Processor",
+    "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02016R0679-20160504",
+    "jurisdiction": "us-federal",
+    "excerpt": "Where processing is to be carried out on behalf of a controller, the controller shall use only processors providing sufficient guarantees to implement appropriate technical and organisational measures in such a manner that processing will meet the requirements of this Regulation and ensure the protection of the rights of the data subject.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-irs-rev-rul-87-41",
+    "citation": "Rev. Rul. 87-41, 1987-1 C.B. 296 (IRS 20-factor test)",
+    "canonical_url": "https://www.irs.gov/businesses/small-businesses-self-employed/independent-contractor-defined",
+    "jurisdiction": "us-federal",
+    "excerpt": "To determine whether an individual is an employee or an independent contractor under the common law, the relationship of the worker and the business must be examined. All evidence of control and independence must be considered.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-16-cfr-910",
+    "citation": "16 C.F.R. Part 910 (FTC Non-Compete Clause Rule — status as of 2026 may be subject to litigation)",
+    "canonical_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-J/part-910",
+    "jurisdiction": "us-federal",
+    "excerpt": "It is an unfair method of competition for an employer to enter into or attempt to enter into a non-compete clause with a worker; enforce or attempt to enforce a non-compete clause with a worker; or represent to a worker that the worker is subject to a non-compete clause.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-29-usc-206",
+    "citation": "29 U.S.C. § 206 (Fair Labor Standards Act — minimum wage)",
+    "canonical_url": "https://www.law.cornell.edu/uscode/text/29/206",
+    "jurisdiction": "us-federal",
+    "excerpt": "Every employer shall pay to each of his employees who in any workweek is engaged in commerce or in the production of goods for commerce, or is employed in an enterprise engaged in commerce or in the production of goods for commerce, wages at the following rates ...",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-12-cfr-1026-truth-in-lending",
+    "citation": "12 C.F.R. Part 1026 (Regulation Z — Truth in Lending)",
+    "canonical_url": "https://www.ecfr.gov/current/title-12/chapter-X/part-1026",
+    "jurisdiction": "us-federal",
+    "excerpt": "This part, known as Regulation Z, implements the Truth in Lending Act and certain provisions of the Real Estate Settlement Procedures Act.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-ny-cplr-213",
+    "citation": "N.Y. C.P.L.R. § 213 (six-year statute of limitations for contracts)",
+    "canonical_url": "https://www.nysenate.gov/legislation/laws/CVP/213",
+    "jurisdiction": "us-ny",
+    "excerpt": "The following actions must be commenced within six years: ... 2. an action upon a contractual obligation or liability, express or implied.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-ca-ccp-337",
+    "citation": "Cal. Code Civ. Proc. § 337 (four-year statute of limitations for written contracts)",
+    "canonical_url": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CCP&sectionNum=337.",
+    "jurisdiction": "us-ca",
+    "excerpt": "Within four years: (a) An action upon any contract, obligation or liability founded upon an instrument in writing.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-tx-cpr-16-004",
+    "citation": "Tex. Civ. Prac. & Rem. Code § 16.004 (four-year residual contracts SoL)",
+    "canonical_url": "https://statutes.capitol.texas.gov/Docs/CP/htm/CP.16.htm#16.004",
+    "jurisdiction": "us-tx",
+    "excerpt": "A person must bring suit on the following actions not later than four years after the day the cause of action accrues: ... debt.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-utsa-prefatory",
+    "citation": "Uniform Trade Secrets Act (1985)",
+    "canonical_url": "https://www.uniformlaws.org/committees/community-home?CommunityKey=3a2538fb-e030-4e2d-a9e2-90373dc05792",
+    "jurisdiction": "us-federal",
+    "excerpt": "A 'trade secret' means information, including a formula, pattern, compilation, program, device, method, technique, or process, that derives independent economic value from not being generally known or readily ascertainable, and is the subject of efforts that are reasonable under the circumstances to maintain its secrecy.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-ucc-1-201-good-faith",
+    "citation": "U.C.C. § 1-201(b)(20) (good faith)",
+    "canonical_url": "https://www.law.cornell.edu/ucc/1/1-201",
+    "jurisdiction": "us-federal",
+    "excerpt": "'Good faith,' except as otherwise provided in Article 5, means honesty in fact and the observance of reasonable commercial standards of fair dealing.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-frcp-rule-23",
+    "citation": "Federal Rules of Civil Procedure, Rule 23 (Class Actions)",
+    "canonical_url": "https://www.law.cornell.edu/rules/frcp/rule_23",
+    "jurisdiction": "us-federal",
+    "excerpt": "One or more members of a class may sue or be sued as representative parties on behalf of all members only if: (1) the class is so numerous that joinder of all members is impracticable; (2) there are questions of law or fact common to the class; (3) the claims or defenses of the representative parties are typical of the claims or defenses of the class; and (4) the representative parties will fairly and adequately protect the interests of the class.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "id": "stat-restatement-205-good-faith",
+    "citation": "Restatement (Second) of Contracts § 205 (Duty of Good Faith and Fair Dealing)",
+    "canonical_url": "https://www.law.cornell.edu/wex/good_faith",
+    "jurisdiction": "us-federal",
+    "excerpt": "Every contract imposes upon each party a duty of good faith and fair dealing in its performance and its enforcement.",
+    "retrieved_at": "2026-05-11T00:00:00Z"
+  }
+]

@@ -1,0 +1,86 @@
+[
+  {
+    "category": "governing-law",
+    "pattern": "governed\\s+by\\s+(?:and\\s+construed\\s+in\\s+accordance\\s+with\\s+)?the\\s+laws?\\s+of",
+    "flags": "i",
+    "confidence": 0.95
+  },
+  {
+    "category": "indemnification",
+    "pattern": "\\b(?:indemnify|indemnification|hold\\s+harmless)\\b",
+    "flags": "i",
+    "confidence": 0.95
+  },
+  {
+    "category": "limitation-of-liability",
+    "pattern": "\\blimitation\\s+of\\s+liability\\b|aggregate\\s+liability[\\s\\S]{0,80}exceed",
+    "flags": "i",
+    "confidence": 0.95
+  },
+  {
+    "category": "confidentiality-obligation",
+    "pattern": "\\bconfidential\\s+information\\b|\\bnon[- ]disclosure\\b",
+    "flags": "i",
+    "confidence": 0.9
+  },
+  {
+    "category": "term",
+    "pattern": "this\\s+Agreement\\s+(?:begins|commences|shall\\s+commence)\\s+on",
+    "flags": "i",
+    "confidence": 0.85
+  },
+  {
+    "category": "termination-for-cause",
+    "pattern": "terminate\\s+(?:this\\s+Agreement\\s+)?for\\s+cause",
+    "flags": "i",
+    "confidence": 0.95
+  },
+  {
+    "category": "termination-for-convenience",
+    "pattern": "terminate\\s+(?:this\\s+Agreement\\s+)?for\\s+convenience",
+    "flags": "i",
+    "confidence": 0.95
+  },
+  {
+    "category": "force-majeure",
+    "pattern": "force\\s+majeure|act\\s+of\\s+God",
+    "flags": "i",
+    "confidence": 0.9
+  },
+  {
+    "category": "assignment",
+    "pattern": "may\\s+(?:not\\s+)?assign\\s+(?:this|its\\s+rights\\s+under\\s+this)\\s+Agreement",
+    "flags": "i",
+    "confidence": 0.9
+  },
+  {
+    "category": "entire-agreement",
+    "pattern": "entire\\s+agreement\\s+between\\s+the\\s+parties",
+    "flags": "i",
+    "confidence": 0.95
+  },
+  {
+    "category": "severability",
+    "pattern": "if\\s+any\\s+provision[\\s\\S]{0,40}invalid\\s+or\\s+unenforceable",
+    "flags": "i",
+    "confidence": 0.95
+  },
+  {
+    "category": "waiver",
+    "pattern": "no\\s+waiver[\\s\\S]{0,40}(?:single|continuing|breach)",
+    "flags": "i",
+    "confidence": 0.9
+  },
+  {
+    "category": "notices",
+    "pattern": "notices?\\s+under\\s+this\\s+Agreement\\s+must\\s+be\\s+in\\s+writing",
+    "flags": "i",
+    "confidence": 0.95
+  },
+  {
+    "category": "counterparts",
+    "pattern": "executed\\s+in\\s+counterparts|each\\s+of\\s+which\\s+is\\s+an\\s+original",
+    "flags": "i",
+    "confidence": 0.95
+  }
+]

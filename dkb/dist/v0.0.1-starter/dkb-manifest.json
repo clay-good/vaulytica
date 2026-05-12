@@ -1,0 +1,121 @@
+{
+  "version": "v0.0.1-starter",
+  "schema_version": "1.0.0",
+  "built_at": "2026-05-11T00:00:00Z",
+  "files": {
+    "clauses": {
+      "filename": "dkb-clauses.json",
+      "sha256": "4aa4639eb77dffc94c4c3878aa612cc06b8ab7d6e7acf3e8102513561bf65b6f",
+      "entries": 30
+    },
+    "jurisdictions": {
+      "filename": "dkb-jurisdictions.json",
+      "sha256": "0adc554517851863e03dc899e02bbad5b52a20578c292a1bff69b07e279f7b70",
+      "entries": 12
+    },
+    "definitions": {
+      "filename": "dkb-definitions.json",
+      "sha256": "d168e5e18fa0637a901d9f065a22403e0ac7aac893065ec6de8f917c6e5943e7",
+      "entries": 10
+    },
+    "dark_patterns": {
+      "filename": "dkb-dark-patterns.json",
+      "sha256": "652995288f8815aeb1f1d9d12988198a15ef146fd25cd37cbf4e45f81c5d356f",
+      "entries": 8
+    },
+    "statutes": {
+      "filename": "dkb-statutes.json",
+      "sha256": "105b55a660253a7082854c248858087e3e04a5b533584c457ced29a16ce78d57",
+      "entries": 30
+    },
+    "classifier_vocab": {
+      "filename": "dkb-classifier-vocab.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "entries": 0
+    },
+    "classifier_patterns": {
+      "filename": "dkb-classifier-patterns.json",
+      "sha256": "8b1c949d9eca92fe944d0e77b6b69d9dfc77dce97e9ef022b01bd607e0c95157",
+      "entries": 14
+    }
+  },
+  "sources": [
+    {
+      "id": "common-paper-mutual-nda-v1.1",
+      "source": "Common Paper Mutual NDA, v1.1",
+      "source_url": "https://github.com/CommonPaper/Mutual-NDA",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Mutual NDA, v1.1, CC BY 4.0"
+    },
+    {
+      "id": "common-paper-cloud-service-agreement-v2",
+      "source": "Common Paper Cloud Service Agreement, v2",
+      "source_url": "https://github.com/CommonPaper/Cloud-Service-Agreement",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Cloud Service Agreement, v2, CC BY 4.0"
+    },
+    {
+      "id": "common-paper-professional-services-agreement-v1",
+      "source": "Common Paper Professional Services Agreement, v1",
+      "source_url": "https://github.com/CommonPaper/Professional-Services-Agreement",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Professional Services Agreement, v1, CC BY 4.0"
+    },
+    {
+      "id": "common-paper-data-processing-agreement",
+      "source": "Common Paper Data Processing Agreement",
+      "source_url": "https://github.com/CommonPaper/Data-Processing-Agreement",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Common Paper, Data Processing Agreement, CC BY 4.0"
+    },
+    {
+      "id": "github-balanced-employee-ip-agreement",
+      "source": "GitHub Balanced Employee IP Agreement",
+      "source_url": "https://github.com/github/balanced-employee-ip-agreement",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "GitHub, Inc., Balanced Employee IP Agreement, CC0"
+    },
+    {
+      "id": "us-code",
+      "source": "United States Code (Office of the Law Revision Counsel)",
+      "source_url": "https://uscode.house.gov/",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "Public domain (17 USC § 105)",
+      "license_url": "https://www.law.cornell.edu/uscode/text/17/105"
+    },
+    {
+      "id": "ecfr",
+      "source": "Electronic Code of Federal Regulations",
+      "source_url": "https://www.ecfr.gov/",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "Public domain (US government work)",
+      "license_url": "https://www.ecfr.gov/about/"
+    },
+    {
+      "id": "cornell-lii",
+      "source": "Cornell Legal Information Institute",
+      "source_url": "https://www.law.cornell.edu/",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "Free use",
+      "license_url": "https://www.law.cornell.edu/info/copyright"
+    },
+    {
+      "id": "uniform-law-commission",
+      "source": "Uniform Law Commission",
+      "source_url": "https://www.uniformlaws.org/",
+      "retrieved_at": "2026-05-11T00:00:00Z",
+      "license": "Free use per ULC",
+      "license_url": "https://www.uniformlaws.org/"
+    }
+  ]
+}
