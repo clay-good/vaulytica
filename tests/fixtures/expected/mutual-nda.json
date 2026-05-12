@@ -1,0 +1,863 @@
+{
+  "dkb_version": "v0.0.1-starter",
+  "executed_at": "",
+  "execution_log": [
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "CHOICE-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "CHOICE-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "CHOICE-003-s1-0",
+      "fired": true,
+      "rule_id": "CHOICE-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "CHOICE-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "CHOICE-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "CHOICE-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "CHOICE-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "CHOICE-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "CHOICE-009",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "CHOICE-010",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "CHOICE-011",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "DARK-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "DARK-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "DARK-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "DARK-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "DARK-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "DARK-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "DARK-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "DARK-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "FIN-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "FIN-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "FIN-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "FIN-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "FIN-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "FIN-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "FIN-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "FIN-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "FIN-009",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "IPDATA-001-s1-0",
+      "fired": true,
+      "rule_id": "IPDATA-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "IPDATA-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "IPDATA-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "IPDATA-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "IPDATA-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "IPDATA-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "IPDATA-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "IPDATA-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "IPDATA-009",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "OBLI-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "OBLI-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "OBLI-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "OBLI-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "OBLI-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "OBLI-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "OBLI-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "OBLI-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "OBLI-009",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "PERS-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "PERS-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "PERS-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "PERS-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "PERS-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "PERS-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "PERS-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "PERS-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "RISK-001-s1-0",
+      "fired": true,
+      "rule_id": "RISK-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "RISK-005-s1-0",
+      "fired": true,
+      "rule_id": "RISK-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-009",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-010",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-011",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-012",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-013",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-014",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-015",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-016",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "STRUCT-006-s1.4-1039",
+      "fired": true,
+      "rule_id": "STRUCT-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "STRUCT-009-s1-0",
+      "fired": true,
+      "rule_id": "STRUCT-009",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-010",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-011",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-012",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "STRUCT-013-s1.7-1405",
+      "fired": true,
+      "rule_id": "STRUCT-013",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "STRUCT-014-s1.2-613",
+      "fired": true,
+      "rule_id": "STRUCT-014",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-015",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-009",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-010",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-011",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-012",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TERM-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "TERM-002-s1-0",
+      "fired": true,
+      "rule_id": "TERM-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TERM-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TERM-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "TERM-005-s1-0",
+      "fired": true,
+      "rule_id": "TERM-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TERM-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TERM-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TERM-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TERM-009",
+      "rule_version": "1.0.0"
+    }
+  ],
+  "findings": [
+    {
+      "description": "Found 2 placeholders that look like unfilled template content: \"____________________\", \"____________________\".",
+      "document_position": 1405,
+      "excerpt": {
+        "end_offset": 1425,
+        "section_id": "s1.7",
+        "start_offset": 1405,
+        "text": "____________________"
+      },
+      "explanation": "A bracketed placeholder, mustache token, or XXX run that survived into the final document is almost always a drafting accident — the contract is meant to be filled in. A placeholder where a counterparty name belongs makes the agreement legally questionable; a placeholder elsewhere makes the agreement embarrassing.",
+      "id": "STRUCT-013-s1.7-1405",
+      "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
+      "rule_id": "STRUCT-013",
+      "rule_version": "1.0.0",
+      "severity": "critical",
+      "source_citations": [],
+      "title": "Unfilled template placeholders: 2"
+    },
+    {
+      "description": "The contract does not allocate ownership of intellectual property.",
+      "document_position": 0,
+      "excerpt": {
+        "end_offset": 0,
+        "section_id": "s1",
+        "start_offset": 0,
+        "text": "(no IP-ownership clause)"
+      },
+      "explanation": "Without an IP-ownership clause, default copyright and patent rules apply: under 17 U.S.C. § 201, copyright vests in the author/employee unless work-for-hire or assignment applies.",
+      "id": "IPDATA-001-s1-0",
+      "rule_id": "IPDATA-001",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [
+        {
+          "id": "stat-17-usc-101",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "17 U.S.C. § 101 — Definitions (work made for hire)",
+          "source_url": "https://www.law.cornell.edu/uscode/text/17/101"
+        },
+        {
+          "id": "stat-17-usc-201",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "17 U.S.C. § 201",
+          "source_url": "https://www.law.cornell.edu/uscode/text/17/201"
+        }
+      ],
+      "title": "No IP-ownership clause detected"
+    },
+    {
+      "description": "Vaulytica did not find a limitation-of-liability clause.",
+      "document_position": 0,
+      "excerpt": {
+        "end_offset": 0,
+        "section_id": "s1",
+        "start_offset": 0,
+        "text": "(no LoL clause)"
+      },
+      "explanation": "Without a limitation-of-liability clause, exposure is bounded only by what the parties can prove in damages. Most commercial contracts cap liability.",
+      "id": "RISK-005-s1-0",
+      "rule_id": "RISK-005",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [],
+      "title": "No limitation-of-liability clause detected"
+    },
+    {
+      "description": "Used but not defined: This Agreement.",
+      "document_position": 1039,
+      "excerpt": {
+        "end_offset": 1053,
+        "section_id": "s1.4",
+        "start_offset": 1039,
+        "text": "This Agreement"
+      },
+      "explanation": "Title-Case phrases in a contract usually signal a defined term. When they aren't defined, readers must guess at the intended meaning. Either define them or use lowercase if the term is intended in its ordinary sense.",
+      "id": "STRUCT-006-s1.4-1039",
+      "recommendation": "Add a definition for each genuinely defined term, or change the casing if the phrase is being used in its ordinary sense.",
+      "rule_id": "STRUCT-006",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [],
+      "title": "Undefined Title-Case terms: 1"
+    },
+    {
+      "description": "The contract does not state a path to terminate for material breach.",
+      "document_position": 0,
+      "excerpt": {
+        "end_offset": 0,
+        "section_id": "s1",
+        "start_offset": 0,
+        "text": "(no for-cause termination)"
+      },
+      "explanation": "Without a for-cause termination path, parties must rely on common-law material-breach doctrines, which are jurisdiction-dependent.",
+      "id": "TERM-002-s1-0",
+      "rule_id": "TERM-002",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [],
+      "title": "No termination-for-cause clause detected"
+    },
+    {
+      "description": "The contract does not state what happens upon termination.",
+      "document_position": 0,
+      "excerpt": {
+        "end_offset": 0,
+        "section_id": "s1",
+        "start_offset": 0,
+        "text": "(no effect-of-termination clause)"
+      },
+      "explanation": "An effect-of-termination clause spells out the rights and obligations that survive, the return or destruction of materials, and the wind-down rules.",
+      "id": "TERM-005-s1-0",
+      "rule_id": "TERM-005",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [],
+      "title": "No effect-of-termination clause detected"
+    },
+    {
+      "description": "The document does not state where disputes must be brought.",
+      "document_position": 0,
+      "excerpt": {
+        "end_offset": 0,
+        "section_id": "s1",
+        "start_offset": 0,
+        "text": "(no venue clause)"
+      },
+      "explanation": "Without a venue clause, default venue rules apply (in federal court, 28 U.S.C. § 1391). A clear forum-selection clause avoids ambiguity.",
+      "id": "CHOICE-003-s1-0",
+      "rule_id": "CHOICE-003",
+      "rule_version": "1.0.0",
+      "severity": "info",
+      "source_citations": [
+        {
+          "id": "stat-28-usc-1391",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "28 U.S.C. § 1391 (venue generally)",
+          "source_url": "https://www.law.cornell.edu/uscode/text/28/1391"
+        }
+      ],
+      "title": "No venue / forum clause detected"
+    },
+    {
+      "description": "Neither 'indemnify' nor 'hold harmless' appears in the document.",
+      "document_position": 0,
+      "excerpt": {
+        "end_offset": 0,
+        "section_id": "s1",
+        "start_offset": 0,
+        "text": "(no indemnification language)"
+      },
+      "explanation": "Most commercial contracts allocate risk through an indemnification clause. The absence leaves the parties to default tort and contract law for any third-party claims.",
+      "id": "RISK-001-s1-0",
+      "rule_id": "RISK-001",
+      "rule_version": "1.0.0",
+      "severity": "info",
+      "source_citations": [],
+      "title": "No indemnification clause detected"
+    },
+    {
+      "description": "Confidential Information",
+      "document_position": 0,
+      "excerpt": {
+        "end_offset": 0,
+        "section_id": "s1",
+        "start_offset": 0,
+        "text": "Confidential Information"
+      },
+      "explanation": "Defined terms should be capitalized identically wherever they appear. A lowercase use of a defined term reads as ordinary usage and can change the meaning.",
+      "id": "STRUCT-009-s1-0",
+      "rule_id": "STRUCT-009",
+      "rule_version": "1.0.0",
+      "severity": "info",
+      "source_citations": [],
+      "title": "Inconsistent capitalization for 1 defined term"
+    },
+    {
+      "description": "1 reference uses the lowercase form of a defined term — likely a drafting slip. Affected terms: \"Confidential Information\".",
+      "document_position": 613,
+      "excerpt": {
+        "end_offset": 637,
+        "section_id": "s1.2",
+        "start_offset": 613,
+        "text": "Confidential Information"
+      },
+      "explanation": "A defined term carries its contractual meaning only when it is referenced with the same casing as its definition. A lowercase occurrence either creates a genuine ambiguity (the reader cannot tell if the defined meaning was intended) or signals a missed capitalization. Courts in commercial drafting jurisdictions sometimes read lowercase variants as the plain-English meaning rather than the defined meaning.",
+      "id": "STRUCT-014-s1.2-613",
+      "recommendation": "Recapitalize each lowercase occurrence to match the defined casing, or remove the term entirely if the unaltered plain-English meaning was intended.",
+      "rule_id": "STRUCT-014",
+      "rule_version": "1.0.0",
+      "severity": "info",
+      "source_citations": [],
+      "title": "Defined terms used in lowercase: 1"
+    }
+  ],
+  "playbook_id": "mutual-nda",
+  "playbook_match_confidence": 1,
+  "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\", \"Recipient\", \"Confidential Information\", \"Permitted Purpose\". Negative features penalized: \"employee\".",
+  "result_hash": "e00bbf3af3abf2a8a2f75431736f95ef00afa73063a5ab675d718880a731492b",
+  "source_file": {
+    "name": "mutual-nda.docx",
+    "sha256": "af57a8c10420454c79cb72fb076c471925ef2a0d1ff921fad90b2046dcc7fde9",
+    "size_bytes": 1
+  },
+  "version": "0.1.0"
+}

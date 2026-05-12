@@ -1,0 +1,38 @@
+{
+  "id": "consulting-agreement",
+  "version": "1.0.0",
+  "name": "Consulting Agreement",
+  "description": "Hybrid independent-contractor + services agreement for a named consultant. Based on Common Paper PSA with consulting-specific overlays.",
+  "match_features": {
+    "title_keywords": ["consulting agreement", "consultancy agreement", "advisory agreement", "consultant services"],
+    "required_clauses": ["payment-terms", "term", "ip-ownership"],
+    "distinguishing_phrases": ["Consultant", "advisory services", "expertise", "deliverables", "independent contractor", "the Consulting Services"],
+    "negative_features": ["at-will employee", "FLSA exempt", "lease", "Premises", "Tenant", "Subscription Term", "the Discloser"]
+  },
+  "expected_clauses": [
+    {"category": "payment-terms", "severity_if_missing": "critical"},
+    {"category": "ip-ownership", "severity_if_missing": "critical"},
+    {"category": "confidentiality-obligation", "severity_if_missing": "critical"},
+    {"category": "indemnification", "severity_if_missing": "warning"},
+    {"category": "termination-for-cause", "severity_if_missing": "warning"},
+    {"category": "termination-for-convenience", "severity_if_missing": "warning"},
+    {"category": "governing-law", "severity_if_missing": "warning"},
+    {"category": "non-solicit-employees", "severity_if_missing": "info"}
+  ],
+  "expected_defined_terms": [
+    {"term": "Consulting Services", "severity_if_missing": "critical"},
+    {"term": "Deliverables", "severity_if_missing": "warning"},
+    {"term": "Confidential Information", "severity_if_missing": "warning"}
+  ],
+  "rule_overrides": {
+    "PERS-001": {"severity": "warning"},
+    "PERS-002": {"severity": "warning"},
+    "DARK-001": {"severity": "warning"}
+  },
+  "balanced_defaults": [
+    {"clause": "payment-terms", "value": "Net 30 from invoice; hourly or fixed-fee at consultant's option per SOW", "source_dkb_id": "common-paper-professional-services-agreement-v1"},
+    {"clause": "ip-ownership", "value": "Work product is a work-for-hire owned by Customer; Consultant retains pre-existing materials and tools", "source_dkb_id": "common-paper-professional-services-agreement-v1"},
+    {"clause": "termination-for-convenience", "value": "Either party on 30 days' notice; payment for work performed through termination", "source_dkb_id": "common-paper-professional-services-agreement-v1"}
+  ],
+  "sources": ["common-paper-professional-services-agreement-v1"]
+}

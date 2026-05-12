@@ -1,0 +1,39 @@
+{
+  "id": "independent-contractor",
+  "version": "1.0.0",
+  "name": "Independent Contractor Agreement",
+  "description": "Engagement of a non-employee contractor to perform defined services. Focused on misclassification dark patterns. Based on Common Paper Professional Services Agreement and IRS 20-factor commentary.",
+  "match_features": {
+    "title_keywords": ["independent contractor", "contractor agreement", "freelance agreement", "1099 agreement"],
+    "required_clauses": ["payment-terms", "ip-ownership", "term", "termination-for-convenience"],
+    "distinguishing_phrases": ["independent contractor", "not an employee", "1099", "contractor's own", "no benefits", "Contractor shall"],
+    "negative_features": ["at-will employee", "exempt employee", "FLSA exempt", "salary", "base compensation", "the Discloser", "subscription"]
+  },
+  "expected_clauses": [
+    {"category": "payment-terms", "severity_if_missing": "critical"},
+    {"category": "ip-ownership", "severity_if_missing": "critical"},
+    {"category": "confidentiality-obligation", "severity_if_missing": "warning"},
+    {"category": "indemnification", "severity_if_missing": "warning"},
+    {"category": "termination-for-cause", "severity_if_missing": "warning"},
+    {"category": "termination-for-convenience", "severity_if_missing": "warning"},
+    {"category": "governing-law", "severity_if_missing": "warning"},
+    {"category": "insurance", "severity_if_missing": "info"}
+  ],
+  "expected_defined_terms": [
+    {"term": "Services", "severity_if_missing": "critical"},
+    {"term": "Deliverables", "severity_if_missing": "warning"},
+    {"term": "Contractor", "severity_if_missing": "info"}
+  ],
+  "rule_overrides": {
+    "PERS-001": {"severity": "critical"},
+    "PERS-002": {"severity": "critical"},
+    "PERS-003": {"severity": "warning"},
+    "DARK-001": {"severity": "warning"}
+  },
+  "balanced_defaults": [
+    {"clause": "payment-terms", "value": "Net 30 from invoice date", "source_dkb_id": "common-paper-professional-services-agreement-v1"},
+    {"clause": "ip-ownership", "value": "Work product is a work-for-hire owned by Customer; Contractor's pre-existing materials remain Contractor's", "source_dkb_id": "common-paper-professional-services-agreement-v1"},
+    {"clause": "termination-for-convenience", "value": "Either party may terminate on 30 days' written notice", "source_dkb_id": "common-paper-professional-services-agreement-v1"}
+  ],
+  "sources": ["common-paper-professional-services-agreement-v1"]
+}

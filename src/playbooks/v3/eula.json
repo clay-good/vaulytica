@@ -1,0 +1,21 @@
+{
+  "id": "eula",
+  "version": "0.0.0-placeholder",
+  "name": "End-User License Agreement (EULA)",
+  "description": "Placeholder per spec-v3.md §50. Full implementation lands in Step 29. Checks: license grant scope, prohibited uses, ownership, updates and versions, support disclaimers, telemetry disclosure, termination, EU consumer-law minimums where applicable (Consumer Rights Directive, Sale of Goods Directive, Digital Content Directive).",
+  "match_features": {
+    "title_keywords": ["end user license agreement", "eula", "software license agreement", "end-user license"],
+    "required_clauses": [],
+    "distinguishing_phrases": [],
+    "negative_features": []
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "consumer-protection",
+  "applicable_jurisdictions": ["US", "EU", "UK"],
+  "companion_playbooks": ["saas-tos"],
+  "compliance_matrix_columns": []
+}

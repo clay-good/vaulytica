@@ -1,0 +1,21 @@
+{
+  "id": "ai-addendum",
+  "version": "0.0.0-placeholder",
+  "name": "AI Usage Addendum",
+  "description": "Placeholder per spec-v3.md §49. Full implementation lands in Step 29. Selects the §34 addenda ruleset (AI portion). Citations to NIST AI RMF, EU AI Act high-risk categories, and FTC enforcement actions — cited as 'consensus practice, not statute' where applicable.",
+  "match_features": {
+    "title_keywords": ["ai addendum", "artificial intelligence addendum", "generative ai", "ai usage"],
+    "required_clauses": [],
+    "distinguishing_phrases": [],
+    "negative_features": []
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "consensus-practice",
+  "applicable_jurisdictions": ["US", "EU", "UK"],
+  "companion_playbooks": ["msa-vendor-deep", "dpa-controller-processor"],
+  "compliance_matrix_columns": []
+}

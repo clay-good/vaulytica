@@ -1,0 +1,21 @@
+{
+  "id": "baa-subcontractor",
+  "version": "0.0.0-placeholder",
+  "name": "BAA — Business Associate to Subcontractor",
+  "description": "Placeholder per spec-v3.md §36. Full implementation lands in Step 23. Business-associate to subcontractor BAA under HIPAA. Same ruleset as §35 minus covered-entity-only items, plus flow-down assertions.",
+  "match_features": {
+    "title_keywords": ["subcontractor business associate agreement", "subcontractor baa"],
+    "required_clauses": [],
+    "distinguishing_phrases": [],
+    "negative_features": []
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "HIPAA",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["baa", "msa-vendor-deep"],
+  "compliance_matrix_columns": []
+}

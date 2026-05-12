@@ -1,0 +1,1196 @@
+{
+  "dkb_version": "v0.0.1-starter",
+  "executed_at": "",
+  "execution_log": [
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "CHOICE-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "CHOICE-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "CHOICE-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "CHOICE-004-s1.10-1635",
+      "fired": true,
+      "rule_id": "CHOICE-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "CHOICE-005-s1.10-1692",
+      "fired": true,
+      "rule_id": "CHOICE-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "CHOICE-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "CHOICE-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "CHOICE-008-s1.8-1416",
+      "fired": true,
+      "rule_id": "CHOICE-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "CHOICE-009-s1.10-1635",
+      "fired": true,
+      "rule_id": "CHOICE-009",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "CHOICE-010-s1.8-1400",
+      "fired": true,
+      "rule_id": "CHOICE-010",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "CHOICE-011-s1.10-1635",
+      "fired": true,
+      "rule_id": "CHOICE-011",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "DARK-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "DARK-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "DARK-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "DARK-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "DARK-005-s1.8-1310",
+      "fired": true,
+      "rule_id": "DARK-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "DARK-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "DARK-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "DARK-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "FIN-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "FIN-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "FIN-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "FIN-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "FIN-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "FIN-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "FIN-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "FIN-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "FIN-009",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "IPDATA-001-s1-0",
+      "fired": true,
+      "rule_id": "IPDATA-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "IPDATA-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "IPDATA-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "IPDATA-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "IPDATA-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "IPDATA-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "IPDATA-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "IPDATA-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "IPDATA-009",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "OBLI-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "OBLI-002-s1-0",
+      "fired": true,
+      "rule_id": "OBLI-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "OBLI-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "OBLI-004-s1.1-278",
+      "fired": true,
+      "rule_id": "OBLI-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "OBLI-005-s1.5-668",
+      "fired": true,
+      "rule_id": "OBLI-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "OBLI-006-s1.7-1101",
+      "fired": true,
+      "rule_id": "OBLI-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "OBLI-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "OBLI-008-s1.1-278",
+      "fired": true,
+      "rule_id": "OBLI-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "OBLI-009",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "PERS-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "PERS-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "PERS-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "PERS-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "PERS-005-s1.5-764",
+      "fired": true,
+      "rule_id": "PERS-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "PERS-006-s1.6-933",
+      "fired": true,
+      "rule_id": "PERS-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "PERS-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "PERS-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "RISK-001-s1-0",
+      "fired": true,
+      "rule_id": "RISK-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "RISK-005-s1-0",
+      "fired": true,
+      "rule_id": "RISK-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-009",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-010",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-011",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-012",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-013",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-014",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-015",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-016",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "STRUCT-002-s1-0",
+      "fired": true,
+      "rule_id": "STRUCT-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "STRUCT-004-s1-0",
+      "fired": true,
+      "rule_id": "STRUCT-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "STRUCT-006-s1-209",
+      "fired": true,
+      "rule_id": "STRUCT-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-009",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-010",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-011",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-012",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "STRUCT-013-s1.11-1786",
+      "fired": true,
+      "rule_id": "STRUCT-013",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-014",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-015",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "TEMP-006-s1.9-1554",
+      "fired": true,
+      "rule_id": "TEMP-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "TEMP-007-s1.9-1554",
+      "fired": true,
+      "rule_id": "TEMP-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-009",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-010",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-011",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "TEMP-012-s1.9-1505",
+      "fired": true,
+      "rule_id": "TEMP-012",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TERM-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TERM-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TERM-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TERM-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "TERM-005-s1-0",
+      "fired": true,
+      "rule_id": "TERM-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TERM-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TERM-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TERM-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "TERM-009-s1.7-1051",
+      "fired": true,
+      "rule_id": "TERM-009",
+      "rule_version": "1.0.0"
+    }
+  ],
+  "findings": [
+    {
+      "description": "on an individual basis only",
+      "document_position": 1310,
+      "excerpt": {
+        "end_offset": 1337,
+        "section_id": "s1.8",
+        "start_offset": 1310,
+        "text": "ll disputes shall be resolved on an individual basis only and not as part of any class action or representative action."
+      },
+      "explanation": "A class-action waiver — typically paired with mandatory arbitration — prevents the affected party from joining other similarly-situated claimants. It is enforceable under the Federal Arbitration Act in most US contexts but materially limits practical recourse: small individual claims that would not be cost-effective to litigate solo often only see remedy through collective action. Confirm this waiver is intended and that the affected party (consumer, employee, contractor) understood the trade-off.",
+      "id": "DARK-005-s1.8-1310",
+      "recommendation": "If you are the party giving up class-action rights: weigh the trade-off against the realistic cost of solo arbitration. If you are the drafter: confirm whether enforceability survives in every jurisdiction the contract reaches (some states' analogous statutes are narrower than the FAA).",
+      "rule_id": "DARK-005",
+      "rule_version": "1.0.0",
+      "severity": "critical",
+      "source_citations": [
+        {
+          "id": "stat-ftc-deception-statement",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "FTC Policy Statement on Deception (1983)",
+          "source_url": "https://www.ftc.gov/legal-library/browse/ftc-policy-statement-deception"
+        }
+      ],
+      "title": "Class-action waiver present"
+    },
+    {
+      "description": "Found 2 placeholders that look like unfilled template content: \"____________________\", \"____________________\".",
+      "document_position": 1786,
+      "excerpt": {
+        "end_offset": 1806,
+        "section_id": "s1.11",
+        "start_offset": 1786,
+        "text": "____________________"
+      },
+      "explanation": "A bracketed placeholder, mustache token, or XXX run that survived into the final document is almost always a drafting accident — the contract is meant to be filled in. A placeholder where a counterparty name belongs makes the agreement legally questionable; a placeholder elsewhere makes the agreement embarrassing.",
+      "id": "STRUCT-013-s1.11-1786",
+      "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
+      "rule_id": "STRUCT-013",
+      "rule_version": "1.0.0",
+      "severity": "critical",
+      "source_citations": [],
+      "title": "Unfilled template placeholders: 2"
+    },
+    {
+      "description": "Governing law: Delaware. Venue: San Francisco.",
+      "document_position": 1635,
+      "excerpt": {
+        "end_offset": 1680,
+        "section_id": "s1.10",
+        "start_offset": 1635,
+        "text": "Delaware → San Francisco"
+      },
+      "explanation": "Choosing one jurisdiction's law but another's courts is sometimes deliberate, but courts in the chosen-venue jurisdiction may apply their own procedural rules differently than the governing-law jurisdiction would expect.",
+      "id": "CHOICE-004-s1.10-1635",
+      "rule_id": "CHOICE-004",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [],
+      "title": "Governing law (Delaware) and venue (San Francisco) differ"
+    },
+    {
+      "description": "Venue: San Francisco.",
+      "document_position": 1692,
+      "excerpt": {
+        "end_offset": 1753,
+        "section_id": "s1.10",
+        "start_offset": 1692,
+        "text": "San Francisco"
+      },
+      "explanation": "Enforcing a US judgment in a jurisdiction outside the New York or Hague convention can be expensive and uncertain. Confirm a clear path to enforcement exists.",
+      "id": "CHOICE-005-s1.10-1692",
+      "rule_id": "CHOICE-005",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [],
+      "title": "Foreign venue without standard enforceability treaty: San Francisco"
+    },
+    {
+      "description": "Employee hereby waives any right to trial by jury",
+      "document_position": 1400,
+      "excerpt": {
+        "end_offset": 1449,
+        "section_id": "s1.8",
+        "start_offset": 1400,
+        "text": "Employee hereby waives any right to trial by jury in any action arising from this Agreement."
+      },
+      "explanation": "A one-sided jury-trial waiver binds the counterparty to a bench-only or arbitration-only forum while leaving the drafter free to demand a jury. Even where enforceable (most US jurisdictions under the FAA and Seventh Amendment), the asymmetry is a recognized dark-pattern signal — particularly in consumer- and employee-facing contracts. *Leasing Service Corp. v. Crane* (4th Cir. 1986) requires the waiver to be `knowing and voluntary`, which courts apply more strictly to one-sided waivers.",
+      "id": "CHOICE-010-s1.8-1400",
+      "recommendation": "Make the waiver bilateral (`each party hereby waives any right to trial by jury`). If the asymmetry is intentional, document the consideration that supports the affected party's `knowing and voluntary` waiver.",
+      "rule_id": "CHOICE-010",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [],
+      "title": "Asymmetric jury-trial waiver"
+    },
+    {
+      "description": "Worker / party is identified as California-based but the contract selects Delaware law.",
+      "document_position": 1635,
+      "excerpt": {
+        "end_offset": 1680,
+        "section_id": "s1.10",
+        "start_offset": 1635,
+        "text": "Delaware"
+      },
+      "explanation": "Cal. Lab. Code § 925 voids out-of-state choice-of-law clauses in employment contracts entered into, modified, or extended after Jan. 1, 2017 — unless the employee was individually represented by counsel in negotiating that specific clause. Cal. Bus. & Prof. Code § 16600.5 (2024) extends similar reasoning to non-competes: they are unenforceable regardless of where signed if the worker is in California, and create a private right of action with attorneys' fees. This pattern is commonly used to evade California's strict non-compete prohibitions; courts (e.g., *Lyon v. Neustar*) routinely refuse to enforce it.",
+      "id": "CHOICE-011-s1.10-1635",
+      "recommendation": "Either change governing law to California, or include a §925 counsel-representation acknowledgment. Note that §16600.5 may render any non-compete unenforceable even with §925-compliant choice-of-law language.",
+      "rule_id": "CHOICE-011",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [
+        {
+          "id": "stat-ca-bp-16600",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "California Business and Professions Code § 16600",
+          "source_url": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=16600."
+        }
+      ],
+      "title": "Out-of-state choice-of-law on California-based party"
+    },
+    {
+      "description": "The contract does not allocate ownership of intellectual property.",
+      "document_position": 0,
+      "excerpt": {
+        "end_offset": 0,
+        "section_id": "s1",
+        "start_offset": 0,
+        "text": "(no IP-ownership clause)"
+      },
+      "explanation": "Without an IP-ownership clause, default copyright and patent rules apply: under 17 U.S.C. § 201, copyright vests in the author/employee unless work-for-hire or assignment applies.",
+      "id": "IPDATA-001-s1-0",
+      "rule_id": "IPDATA-001",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [
+        {
+          "id": "stat-17-usc-101",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "17 U.S.C. § 101 — Definitions (work made for hire)",
+          "source_url": "https://www.law.cornell.edu/uscode/text/17/101"
+        },
+        {
+          "id": "stat-17-usc-201",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "17 U.S.C. § 201",
+          "source_url": "https://www.law.cornell.edu/uscode/text/17/201"
+        }
+      ],
+      "title": "No IP-ownership clause detected"
+    },
+    {
+      "description": "shall not directly or indirectly compete",
+      "document_position": 764,
+      "excerpt": {
+        "end_offset": 804,
+        "section_id": "s1.5",
+        "start_offset": 764,
+        "text": "ment for any reason, Employee shall not directly or indirectly compete with Employer within the State of California or any other state where Employer conducts business."
+      },
+      "explanation": "Non-compete clauses have sharply divergent enforceability by jurisdiction. California prohibits them outright (Bus. & Prof. Code § 16600); Washington imposes income thresholds; Texas requires consideration and a reasonable geographic / temporal scope under Bus. & Com. Code § 15.50; the FTC's nationwide ban was vacated in 2024 but the regulatory environment remains active. A non-compete that's standard in one state may be void in another.",
+      "id": "PERS-005-s1.5-764",
+      "recommendation": "Confirm the controlling jurisdiction's enforceability bucket (use the DKB jurisdiction record). If the controlling state voids non-competes, either delete the clause or convert to a narrower non-solicitation. If the clause is enforceable, audit the duration, geographic scope, and consideration provided.",
+      "rule_id": "PERS-005",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [
+        {
+          "id": "stat-ca-bp-16600",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "California Business and Professions Code § 16600",
+          "source_url": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=16600."
+        }
+      ],
+      "title": "Non-compete clause present"
+    },
+    {
+      "description": "shall not disparage",
+      "document_position": 933,
+      "excerpt": {
+        "end_offset": 952,
+        "section_id": "s1.6",
+        "start_offset": 933,
+        "text": "Employee shall not disparage Employer, its officers, directors, products, or services in any forum at any time."
+      },
+      "explanation": "A non-disparagement clause that binds an employee or contractor at separation is enforceable in most US jurisdictions, but the NLRB's *McLaren Macomb* decision (Feb 2023) held that broad non-disparagement language in severance agreements can be unlawful as to NLRA-protected concerted activity. The SEC's Rule 21F-17 separately voids clauses that would prevent whistleblowing to the Commission. A non-disparagement provision without carve-outs for protected speech / agency reports / truthful testimony is increasingly indefensible.",
+      "id": "PERS-006-s1.6-933",
+      "recommendation": "Add explicit carve-outs for: (1) NLRA-protected concerted activity, (2) SEC, DOL, EEOC, or other agency whistleblower reports, (3) truthful testimony in legal proceedings, and (4) statements required by law. Consider also whether the clause should be bilateral.",
+      "rule_id": "PERS-006",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [
+        {
+          "id": "stat-ftc-deception-statement",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "FTC Policy Statement on Deception (1983)",
+          "source_url": "https://www.ftc.gov/legal-library/browse/ftc-policy-statement-deception"
+        }
+      ],
+      "title": "Non-disparagement clause present"
+    },
+    {
+      "description": "Neither 'indemnify' nor 'hold harmless' appears in the document.",
+      "document_position": 0,
+      "excerpt": {
+        "end_offset": 0,
+        "section_id": "s1",
+        "start_offset": 0,
+        "text": "(no indemnification language)"
+      },
+      "explanation": "Most commercial contracts allocate risk through an indemnification clause. The absence leaves the parties to default tort and contract law for any third-party claims.",
+      "id": "RISK-001-s1-0",
+      "rule_id": "RISK-001",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [],
+      "title": "No indemnification clause detected"
+    },
+    {
+      "description": "Vaulytica did not find a limitation-of-liability clause.",
+      "document_position": 0,
+      "excerpt": {
+        "end_offset": 0,
+        "section_id": "s1",
+        "start_offset": 0,
+        "text": "(no LoL clause)"
+      },
+      "explanation": "Without a limitation-of-liability clause, exposure is bounded only by what the parties can prove in damages. Most commercial contracts cap liability.",
+      "id": "RISK-005-s1-0",
+      "rule_id": "RISK-005",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [],
+      "title": "No limitation-of-liability clause detected"
+    },
+    {
+      "description": "No Effective Date is named, defined, or stated near the top of this Agreement.",
+      "document_position": 0,
+      "excerpt": {
+        "end_offset": 0,
+        "section_id": "s1",
+        "start_offset": 0,
+        "text": "(no Effective Date reference matched)"
+      },
+      "explanation": "Most contracts identify a starting point that other date references rely on. Without it, relative terms like 'within 30 days after the Effective Date' have no anchor.",
+      "id": "STRUCT-002-s1-0",
+      "recommendation": "Add an Effective Date — either in the preamble ('dated as of [date]'), as a defined term, or as an explicit 'Effective Date: [date]' line.",
+      "rule_id": "STRUCT-002",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [],
+      "title": "No Effective Date found"
+    },
+    {
+      "description": "Used but not defined: San Francisco.",
+      "document_position": 209,
+      "excerpt": {
+        "end_offset": 222,
+        "section_id": "s1",
+        "start_offset": 209,
+        "text": "San Francisco"
+      },
+      "explanation": "Title-Case phrases in a contract usually signal a defined term. When they aren't defined, readers must guess at the intended meaning. Either define them or use lowercase if the term is intended in its ordinary sense.",
+      "id": "STRUCT-006-s1-209",
+      "recommendation": "Add a definition for each genuinely defined term, or change the casing if the phrase is being used in its ordinary sense.",
+      "rule_id": "STRUCT-006",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [],
+      "title": "Undefined Title-Case terms: 1"
+    },
+    {
+      "description": "The survival clause exists but does not name: confidentiality, IP ownership / assignment.",
+      "document_position": 1505,
+      "excerpt": {
+        "end_offset": 1592,
+        "section_id": "s1.9",
+        "start_offset": 1505,
+        "text": "The provisions of Section 2 (Compensation) shall survive termination of this Agreement."
+      },
+      "explanation": "Survival language is what keeps sticky obligations alive after a contract terminates. A survival clause that doesn't expressly enumerate the present-in-document confidentiality / IP / indemnity obligations creates ambiguity at the moment those obligations matter most — post-termination, when the contract has already ended.",
+      "id": "TEMP-012-s1.9-1505",
+      "recommendation": "Add explicit named references to the missing obligation(s): confidentiality, IP ownership / assignment. Standard drafting names every sticky section by number or category in the survival clause.",
+      "rule_id": "TEMP-012",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [],
+      "title": "Survival clause does not name 2 sticky obligations"
+    },
+    {
+      "description": "The contract does not state what happens upon termination.",
+      "document_position": 0,
+      "excerpt": {
+        "end_offset": 0,
+        "section_id": "s1",
+        "start_offset": 0,
+        "text": "(no effect-of-termination clause)"
+      },
+      "explanation": "An effect-of-termination clause spells out the rights and obligations that survive, the return or destruction of materials, and the wind-down rules.",
+      "id": "TERM-005-s1-0",
+      "rule_id": "TERM-005",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [],
+      "title": "No effect-of-termination clause detected"
+    },
+    {
+      "description": "Employer may terminate this Agreement at any time",
+      "document_position": 1051,
+      "excerpt": {
+        "end_offset": 1100,
+        "section_id": "s1.7",
+        "start_offset": 1051,
+        "text": "Employer may terminate this Agreement at any time in its sole discretion."
+      },
+      "explanation": "The drafting party can walk away with no cause and no notice obligation, while the counterparty has to wait through a cure period or prove a material breach. This shifts the entire walk-away option to one side. Confirm whether the imbalance reflects a deliberate commercial bargain (e.g., a customer paying a premium for the right) or an unintended one-sided drafting move.",
+      "id": "TERM-009-s1.7-1051",
+      "recommendation": "Either grant both parties the same termination right, mirror the cure-period gate on the drafter, or pair the convenience right with a meaningful termination fee.",
+      "rule_id": "TERM-009",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [],
+      "title": "Asymmetric termination-for-convenience"
+    },
+    {
+      "description": "waives any right to trial by jury",
+      "document_position": 1416,
+      "excerpt": {
+        "end_offset": 1449,
+        "section_id": "s1.8",
+        "start_offset": 1416,
+        "text": "Employee hereby waives any right to trial by jury in any action arising from this Agreement."
+      },
+      "explanation": "Jury waivers are enforceable in most US jurisdictions but unenforceable in some contexts (e.g., California for pre-dispute employment waivers). Confirm enforceability against the governing-law jurisdiction.",
+      "id": "CHOICE-008-s1.8-1416",
+      "rule_id": "CHOICE-008",
+      "rule_version": "1.0.0",
+      "severity": "info",
+      "source_citations": [],
+      "title": "Jury trial waiver present"
+    },
+    {
+      "description": "Governing law: `Delaware` — venue: `San Francisco`.",
+      "document_position": 1635,
+      "excerpt": {
+        "end_offset": 1680,
+        "section_id": "s1.10",
+        "start_offset": 1635,
+        "text": "Delaware / San Francisco"
+      },
+      "explanation": "Picking one jurisdiction's law and another's forum means a court applies foreign law — adding legal-research cost, raising the risk of jurisdiction-specific surprises (e.g., consumer-protection statutes the chosen-law state didn't anticipate), and sometimes triggering choice-of-law analysis the parties didn't expect. The pairing is legitimate (Delaware law + NY/DE forum is common in M&A) but a mismatch in routine commercial contracts is often unintentional.",
+      "id": "CHOICE-009-s1.10-1635",
+      "recommendation": "Confirm the pairing is deliberate. If not, align them — typically by changing venue to the chosen-law state. If the mismatch is intentional, note the reason in counsel's notes for future reference.",
+      "rule_id": "CHOICE-009",
+      "rule_version": "1.0.0",
+      "severity": "info",
+      "source_citations": [],
+      "title": "Governing law differs from venue jurisdiction"
+    },
+    {
+      "description": "Only employee bears this typically-mutual obligation.",
+      "document_position": 0,
+      "excerpt": {
+        "end_offset": 0,
+        "section_id": "s1",
+        "start_offset": 0,
+        "text": "Obligation kind matching /\\bconfidential/i"
+      },
+      "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
+      "id": "OBLI-002-s1-0",
+      "rule_id": "OBLI-002",
+      "rule_version": "1.0.0",
+      "severity": "info",
+      "source_citations": [],
+      "title": "Asymmetric obligation under '\\bconfidential'"
+    },
+    {
+      "description": "The contract uses 'best efforts' rather than 'reasonable efforts' or 'commercially reasonable efforts'.",
+      "document_position": 278,
+      "excerpt": {
+        "end_offset": 290,
+        "section_id": "s1.1",
+        "start_offset": 278,
+        "text": "Employee shall use best efforts to perform the duties of Senior Engineer."
+      },
+      "explanation": "Courts in different US jurisdictions interpret 'best efforts' differently — some treat it as an extraordinary standard, others as a synonym for reasonable efforts. 'Commercially reasonable efforts' is generally clearer.",
+      "id": "OBLI-004-s1.1-278",
+      "rule_id": "OBLI-004",
+      "rule_version": "1.0.0",
+      "severity": "info",
+      "source_citations": [],
+      "title": "'Best efforts' standard used"
+    },
+    {
+      "description": "For a period of twelve (12) months following termination of employment for any reason, Employee shall not directly or in | Employee shall not disparage Employer, its officers, directors, products, or services in any forum at any time.",
+      "document_position": 668,
+      "excerpt": {
+        "end_offset": 902,
+        "section_id": "s1.5",
+        "start_offset": 668,
+        "text": "For a period of twelve (12) months following termination of employment for any reason, Employee shall not directly or indirectly compete with Employer within the State of California or any other state where Employer conducts business."
+      },
+      "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
+      "id": "OBLI-005-s1.5-668",
+      "rule_id": "OBLI-005",
+      "rule_version": "1.0.0",
+      "severity": "info",
+      "source_citations": [],
+      "title": "Negative covenants: 2"
+    },
+    {
+      "description": "One party retains sole discretion over a stated determination.",
+      "document_position": 1101,
+      "excerpt": {
+        "end_offset": 1123,
+        "section_id": "s1.7",
+        "start_offset": 1101,
+        "text": "ay terminate this Agreement at any time in its sole discretion."
+      },
+      "explanation": "Sole-discretion clauses give one party unilateral power. They are bounded by the implied duty of good faith and fair dealing (Restatement (Second) of Contracts § 205), but the language is asymmetric and worth a deliberate review.",
+      "id": "OBLI-006-s1.7-1101",
+      "rule_id": "OBLI-006",
+      "rule_version": "1.0.0",
+      "severity": "info",
+      "source_citations": [
+        {
+          "id": "stat-restatement-205-good-faith",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Restatement (Second) of Contracts § 205 (Duty of Good Faith and Fair Dealing)",
+          "source_url": "https://www.law.cornell.edu/wex/good_faith"
+        }
+      ],
+      "title": "'In its sole discretion' clause present"
+    },
+    {
+      "description": "The contract uses \"best efforts\" without defining it.",
+      "document_position": 278,
+      "excerpt": {
+        "end_offset": 290,
+        "section_id": "s1.1",
+        "start_offset": 278,
+        "text": "Employee shall use best efforts to perform the duties of Senior Engineer."
+      },
+      "explanation": "Efforts-standard phrases carry different obligation strengths in commercial drafting. *Bloor v. Falstaff* (2d Cir. 1979) and its progeny treat `best efforts` as the most demanding, `commercially reasonable efforts` as the middle term, and `reasonable efforts` as the weakest — but without an in-document definition, the parties can dispute which standard applies and what conduct satisfies it.",
+      "id": "OBLI-008-s1.1-278",
+      "recommendation": "Either delete the qualifier (let the obligation be absolute) or add an explicit definition of \"best efforts\" — typically a list of required actions (\"including obtaining all consents, devoting professional staff, and absorbing reasonable costs\") plus carve-outs (\"but not requiring litigation, financial harm, etc.\").",
+      "rule_id": "OBLI-008",
+      "rule_version": "1.0.0",
+      "severity": "info",
+      "source_citations": [],
+      "title": "Efforts standard \"best efforts\" undefined"
+    },
+    {
+      "description": "Vaulytica did not find a Definitions section or any inline-defined terms.",
+      "document_position": 0,
+      "excerpt": {
+        "end_offset": 0,
+        "section_id": "s1",
+        "start_offset": 0,
+        "text": "(no definitions located)"
+      },
+      "explanation": "Most non-trivial contracts capitalize defined terms and either set them out in a Definitions section or define them inline (\"X\" means …). Their absence is not by itself a problem, but downstream rules that check for use of specific defined terms will be skipped.",
+      "id": "STRUCT-004-s1-0",
+      "rule_id": "STRUCT-004",
+      "rule_version": "1.0.0",
+      "severity": "info",
+      "source_citations": [],
+      "title": "No defined terms detected"
+    },
+    {
+      "description": "Provisions are stated to survive termination.",
+      "document_position": 1554,
+      "excerpt": {
+        "end_offset": 1573,
+        "section_id": "s1.9",
+        "start_offset": 1554,
+        "text": "The provisions of Section 2 (Compensation) shall survive termination of this Agreement."
+      },
+      "explanation": "A survival clause names the obligations that outlast termination — typically confidentiality, indemnity, payment obligations accrued before termination, and choice of law.",
+      "id": "TEMP-006-s1.9-1554",
+      "rule_id": "TEMP-006",
+      "rule_version": "1.0.0",
+      "severity": "info",
+      "source_citations": [],
+      "title": "Survival clause present"
+    },
+    {
+      "description": "Survival clause does not appear to include: confidentiality, indemnity, payment, governing law.",
+      "document_position": 1554,
+      "excerpt": {
+        "end_offset": 1573,
+        "section_id": "s1.9",
+        "start_offset": 1554,
+        "text": "The provisions of Section 2 (Compensation) shall survive termination of this Agreement."
+      },
+      "explanation": "Typical surviving obligations include confidentiality, indemnity, accrued payment obligations, and governing law. Missing any of these is common and worth confirming.",
+      "id": "TEMP-007-s1.9-1554",
+      "rule_id": "TEMP-007",
+      "rule_version": "1.0.0",
+      "severity": "info",
+      "source_citations": [],
+      "title": "Survival list may be missing categories: confidentiality, indemnity, payment, governing law"
+    }
+  ],
+  "playbook_id": "employment-at-will-us",
+  "playbook_match_confidence": 1,
+  "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
+  "result_hash": "8a07864c2b2cf68852976f6fc2168e485ba1259ae024779cf0a3c262bdd03df0",
+  "source_file": {
+    "name": "bad-employment.docx",
+    "sha256": "a63cf2231e28b3073cb37b6c4c46ec63790ace71b45839bbbf5c237ab2e3d017",
+    "size_bytes": 1
+  },
+  "version": "0.1.0"
+}

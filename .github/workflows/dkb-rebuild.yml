@@ -1,0 +1,87 @@
+name: DKB rebuild
+
+on:
+  schedule:
+    # Weekly Sunday 00:00 UTC.
+    - cron: "0 0 * * 0"
+  workflow_dispatch:
+    inputs:
+      open_pr_always:
+        description: "Open a PR even when the regression diff is empty"
+        required: false
+        default: "false"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      VAULYTICA_DKB_BUILDER_UA: "Vaulytica DKB Builder (vaulytica.com)"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install
+        run: npm ci
+
+      - name: Restore fetcher cache
+        uses: actions/cache@v4
+        with:
+          path: dkb/build/cache
+          key: dkb-fetch-cache-${{ github.run_id }}
+          restore-keys: |
+            dkb-fetch-cache-
+
+      - name: Build DKB
+        id: build
+        run: |
+          npm run dkb:build
+          echo "version=$(ls -t dkb/dist | grep -v starter | head -n1)" >> "$GITHUB_OUTPUT"
+
+      - name: Run regression check
+        id: regression
+        run: |
+          set +e
+          npm test -- tests/integration --reporter=default
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Commit DKB on green regression
+        if: steps.regression.outputs.exit_code == '0' && inputs.open_pr_always != 'true'
+        run: |
+          git config user.name "vaulytica-bot"
+          git config user.email "bot@vaulytica.com"
+          git add dkb/dist/${{ steps.build.outputs.version }}
+          if git diff --cached --quiet; then
+            echo "No DKB changes to commit"
+          else
+            git commit -m "chore(dkb): rebuild ${{ steps.build.outputs.version }}"
+            git push
+          fi
+
+      - name: Open PR on regression diff
+        if: steps.regression.outputs.exit_code != '0' || inputs.open_pr_always == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: dkb-rebuild/${{ steps.build.outputs.version }}
+          title: "chore(dkb): rebuild ${{ steps.build.outputs.version }}"
+          body: |
+            Automated DKB rebuild.
+
+            Regression check exit code: ${{ steps.regression.outputs.exit_code }}
+
+            If the regression diff is non-empty, review the changed fixture outputs under
+            `tests/fixtures/expected/` and either accept (commit) the new expected
+            outputs or revert the underlying rule change.
+          commit-message: "chore(dkb): rebuild ${{ steps.build.outputs.version }}"
+          add-paths: |
+            dkb/dist/

@@ -1,0 +1,45 @@
+{
+  "id": "unilateral-nda",
+  "version": "1.0.0",
+  "name": "Unilateral Non-Disclosure Agreement",
+  "description": "One party (the Discloser) shares confidential information with another (the Recipient) for a defined purpose. Based on the Common Paper One-Way NDA.",
+  "match_features": {
+    "title_keywords": ["one-way nda", "unilateral nda", "one-way confidentiality", "unilateral non-disclosure", "one-way non-disclosure"],
+    "required_clauses": ["confidentiality-obligation", "permitted-disclosures", "term"],
+    "distinguishing_phrases": ["the Recipient", "the Discloser", "the Receiving Party", "the Disclosing Party", "shall not disclose"],
+    "negative_features": ["each party shall protect", "mutual", "both parties' confidential", "fees", "salary", "rent", "premises"]
+  },
+  "expected_clauses": [
+    {"category": "confidentiality-obligation", "severity_if_missing": "critical"},
+    {"category": "permitted-disclosures", "severity_if_missing": "critical"},
+    {"category": "term", "severity_if_missing": "warning"},
+    {"category": "governing-law", "severity_if_missing": "warning"},
+    {"category": "notices", "severity_if_missing": "info"},
+    {"category": "entire-agreement", "severity_if_missing": "info"}
+  ],
+  "expected_defined_terms": [
+    {"term": "Confidential Information", "severity_if_missing": "critical"},
+    {"term": "Permitted Purpose", "severity_if_missing": "warning"},
+    {"term": "Recipient", "severity_if_missing": "info"},
+    {"term": "Discloser", "severity_if_missing": "info"}
+  ],
+  "rule_overrides": {
+    "FIN-003": {"skip": true},
+    "FIN-004": {"skip": true},
+    "FIN-005": {"skip": true},
+    "FIN-006": {"skip": true},
+    "FIN-007": {"skip": true},
+    "FIN-008": {"skip": true},
+    "RISK-002": {"severity": "info"},
+    "PERS-001": {"skip": true},
+    "PERS-002": {"skip": true},
+    "PERS-003": {"skip": true},
+    "PERS-004": {"skip": true}
+  },
+  "balanced_defaults": [
+    {"clause": "confidentiality-obligation", "value": "Reasonable care; recipient may only use for the Permitted Purpose", "source_dkb_id": "common-paper-mutual-nda-v1.1"},
+    {"clause": "term", "value": "2-3 years", "source_dkb_id": "common-paper-mutual-nda-v1.1"},
+    {"clause": "non-disclosure-term", "value": "3 years post-termination, perpetual for trade secrets", "source_dkb_id": "common-paper-mutual-nda-v1.1"}
+  ],
+  "sources": ["common-paper-mutual-nda-v1.1"]
+}

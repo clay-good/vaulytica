@@ -1,2 +1,0 @@
-"""CLI module for Vaulytica."""
-

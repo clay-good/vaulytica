@@ -1,0 +1,21 @@
+{
+  "id": "dpa-controller-processor",
+  "version": "0.0.0-placeholder",
+  "name": "DPA — Controller to Processor (EU/UK)",
+  "description": "Placeholder per spec-v3.md §37. Full implementation lands in Step 24. Data Processing Agreement under GDPR and UK GDPR. Selects the §29 DPA-GDPR ruleset. Companion: MSA + SCC-Module-2 if processor is non-EU/UK.",
+  "match_features": {
+    "title_keywords": ["data processing agreement", "dpa", "controller", "processor"],
+    "required_clauses": [],
+    "distinguishing_phrases": [],
+    "negative_features": []
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "GDPR",
+  "applicable_jurisdictions": ["EU", "UK"],
+  "companion_playbooks": ["msa-vendor-deep", "scc-module-2"],
+  "compliance_matrix_columns": []
+}

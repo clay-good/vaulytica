@@ -1,0 +1,21 @@
+{
+  "id": "dpa-ccpa-service-provider",
+  "version": "0.0.0-placeholder",
+  "name": "DPA — CCPA Service Provider (CPRA-aligned)",
+  "description": "Placeholder per spec-v3.md §39. Full implementation lands in Step 25. Data Processing Agreement asserting CCPA 'Service Provider' status. Selects the §30 DPA-US-state ruleset. CPRA-aligned.",
+  "match_features": {
+    "title_keywords": ["service provider agreement", "ccpa service provider", "cpra"],
+    "required_clauses": [],
+    "distinguishing_phrases": [],
+    "negative_features": []
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "CCPA",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["msa-vendor-deep", "dpa-multi-state-us"],
+  "compliance_matrix_columns": []
+}

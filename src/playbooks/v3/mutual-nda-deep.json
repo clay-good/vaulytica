@@ -1,0 +1,21 @@
+{
+  "id": "mutual-nda-deep",
+  "version": "0.0.0-placeholder",
+  "name": "Mutual NDA — Deep Analysis",
+  "description": "Placeholder per spec-v3.md §44. Full implementation lands in Step 27. Replaces v2 mutual-nda. Selects the §32 NDA-deep ruleset. Includes DTSA notice check, symmetry check, definition-exclusions check, residuals-clause flag.",
+  "match_features": {
+    "title_keywords": ["mutual non-disclosure agreement", "mutual nda", "mutual confidentiality agreement"],
+    "required_clauses": [],
+    "distinguishing_phrases": [],
+    "negative_features": []
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "DTSA",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["msa-vendor-deep"],
+  "compliance_matrix_columns": []
+}

@@ -1,803 +1,104 @@
-# Vaulytica Architecture and Data Flow
+# Architecture
 
-This document describes the architecture, components, and data flow of Vaulytica - a Google Workspace security, compliance, and IT administration platform.
+Vaulytica is one product split into five pipeline stages — ingest, extract, classify, run, report — plus a sixth stage (the **Deterministic Knowledge Base**, or DKB) that ships as a static data asset. Every stage runs in the user's browser. There is no backend.
 
-## Table of Contents
+```mermaid
+flowchart TB
+    user[Person with a contract<br/>and a browser]
 
-1. [System Overview](#system-overview)
-2. [Component Architecture](#component-architecture)
-3. [Data Flow](#data-flow)
-4. [Security Architecture](#security-architecture)
-5. [Database Schema](#database-schema)
-6. [API Architecture](#api-architecture)
-7. [Scan Pipeline](#scan-pipeline)
-8. [Integration Points](#integration-points)
+    subgraph browser["The user's browser (this is the entire product)"]
+        direction TB
+        ingest[Ingest layer<br/>PDF.js · mammoth.js · Tesseract.js WASM]
+        normalize[Normalizer<br/>structured document tree]
+        extract[Extractors<br/>parties · dates · amounts ·<br/>definitions · sections · crossrefs<br/>· obligations · jurisdictions · classifier]
+        engine[Rule Engine<br/>80 deterministic rules at launch]
+        playbook[Playbook matcher<br/>NDA · employment · MSA · lease · IC · SaaS]
+        dkb[(Deterministic<br/>Knowledge Base<br/>shipped as static asset)]
+        report[Report builder<br/>docx-js → .docx in memory]
+    end
 
----
+    cdn[(Cloudflare Pages<br/>static asset CDN)]
+    download[Downloaded Word doc<br/>on the user's disk]
 
-## System Overview
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                              VAULYTICA PLATFORM                              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐  │
-│  │   Web UI    │    │  REST API   │    │     CLI     │    │  Scan Runner│  │
-│  │  (Next.js)  │◄──►│  (FastAPI)  │◄──►│   (Click)   │    │  (Celery)   │  │
-│  └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘  │
-│         │                 │                   │                  │          │
-│         │                 │                   │                  │          │
-│         ▼                 ▼                   ▼                  ▼          │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                        PostgreSQL Database                           │   │
-│  │   (Users, Domains, Scans, Findings, Audit Logs, Compliance)         │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
-│                                    │                                        │
-│                                    ▼                                        │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                      Google Workspace APIs                           │   │
-│  │   (Admin SDK, Drive, Gmail, Calendar, Vault)                        │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+    user -- "drops a file" --> ingest
+    cdn -. "one-time download<br/>of HTML, JS, DKB" .-> browser
+    ingest --> normalize --> extract --> engine
+    extract --> playbook
+    dkb --> engine
+    dkb --> playbook
+    engine --> report
+    playbook --> report
+    report -- "browser download" --> download
 ```
 
-### High-Level Architecture
+## Stage 1 — Ingest ([src/ingest/](../src/ingest/))
 
-Vaulytica consists of four main components:
+The ingest layer turns a `File` (PDF or DOCX) or pasted text into a **normalized DocumentTree** — a tree of sections, paragraphs, and runs with stable IDs and contiguous character offsets.
 
-| Component | Technology | Purpose |
-|-----------|------------|---------|
-| Web UI | Next.js 14, React, Tailwind CSS | User interface for managing scans, viewing findings |
-| REST API | FastAPI, SQLAlchemy, Pydantic | Backend API for all operations |
-| CLI | Click, Rich | Command-line interface for scanning and automation |
-| Scan Runner | Background worker | Executes scheduled scans asynchronously |
+| Source     | Module                              | Notes                                                                                  |
+| ---------- | ----------------------------------- | -------------------------------------------------------------------------------------- |
+| `.pdf`     | [`pdf.ts`](../src/ingest/pdf.ts)    | Wraps `pdfjs-dist` (legacy build). Heading detection via font-size jump heuristics.    |
+| `.docx`    | [`docx.ts`](../src/ingest/docx.ts)  | Wraps `mammoth`'s `convertToHtml`; the pure `parseDocxHtml` is exposed for tests.      |
+| Scanned PDF | [`ocr.ts`](../src/ingest/ocr.ts)   | Lazy-loaded `tesseract.js`. Fires only when the PDF text layer is empty and the caller opts in via `allowOcr: true`. |
+| Pasted text | [`paste.ts`](../src/ingest/paste.ts)| ATX + Setext heading detection.                                                        |
 
----
+Determinism contract: same bytes in → same tree out. The normalizer (`normalize.ts`) assigns stable IDs (`s1.p2.r0`) and contiguous offsets so every downstream extractor can refer to positions identically.
 
-## Component Architecture
+## Stage 2 — Extract ([src/extract/](../src/extract/))
 
-### 1. Web Frontend (`web/frontend/`)
+Each extractor is a **pure function** from the `DocumentTree` (and the outputs of any earlier extractor it depends on) to its typed output. The composite `ExtractedData` is the contract the rule engine consumes.
 
-```
-web/frontend/
-├── app/                     # Next.js 14 App Router
-│   ├── dashboard/           # Protected dashboard routes
-│   │   ├── findings/        # Findings management
-│   │   ├── scans/           # Scan management
-│   │   ├── schedules/       # Schedule configuration
-│   │   ├── alerts/          # Alert rules
-│   │   ├── compliance/      # Compliance reports
-│   │   └── users/           # User management
-│   ├── login/               # Authentication
-│   └── layout.tsx           # Root layout
-├── components/              # Reusable components
-│   ├── layout/              # Header, Sidebar, Navigation
-│   ├── ui/                  # Form inputs, Cards, Badges
-│   └── dashboard/           # Dashboard-specific widgets
-├── contexts/                # React contexts
-│   ├── ThemeContext.tsx     # Dark mode
-│   ├── PermissionsContext.tsx # RBAC
-│   └── MobileSidebarContext.tsx
-├── hooks/                   # Custom hooks
-│   └── useWebSocket.ts      # Real-time updates
-└── lib/                     # Utilities
-    ├── api.ts               # API client
-    ├── types.ts             # TypeScript types
-    └── validation.ts        # Form validation
-```
+- [`parties.ts`](../src/extract/parties.ts) — preamble + signature blocks
+- [`dates.ts`](../src/extract/dates.ts) — ISO + US + prose + relative + named-anchor
+- [`amounts.ts`](../src/extract/amounts.ts) — `decimal.js`-backed normalizer for `$1,500,000.00`, `USD 1.5MM`, "one million five hundred thousand," etc.
+- [`definitions.ts`](../src/extract/definitions.ts) — defined terms + defined-but-unused tracking
+- [`sections.ts`](../src/extract/sections.ts) — dotted-decimal / `Article I` / `§` labels
+- [`crossrefs.ts`](../src/extract/crossrefs.ts) — resolves cross-references against the outline
+- [`obligations.ts`](../src/extract/obligations.ts) — LEXDEMOD-style modal-verb parser
+- [`jurisdictions.ts`](../src/extract/jurisdictions.ts) — governing-law / venue / arbitration-seat normalized against the DKB
+- [`classifier.ts`](../src/extract/classifier.ts) — TF-IDF + pattern overlay; pure given a vocab + patterns
 
-**Key Features:**
-- Server-side rendering with Next.js
-- Real-time updates via WebSocket
-- Role-based UI rendering
-- Responsive mobile layout
-- Dark mode support
+## Stage 3 — DKB ([src/dkb/](../src/dkb/), [dkb/dist/](../dkb/dist/))
 
-### 2. Backend API (`web/backend/`)
+The DKB is a versioned bundle of seven JSON files shipped at `/dkb/<version>/`:
 
 ```
-web/backend/
-├── api/                     # API endpoints
-│   ├── v1/                  # Versioned API routes
-│   ├── auth.py              # Authentication
-│   ├── scans.py             # Scan management
-│   ├── findings.py          # Findings CRUD
-│   ├── domains.py           # Domain management
-│   ├── schedules.py         # Schedule CRUD
-│   ├── alerts.py            # Alert rules
-│   ├── compliance.py        # Compliance reports
-│   ├── users.py             # User management
-│   ├── audit.py             # Audit logs
-│   └── websocket.py         # WebSocket handlers
-├── auth/                    # Authentication
-│   ├── security.py          # JWT, RBAC
-│   └── schemas.py           # Auth schemas
-├── core/                    # Core services
-│   ├── cache.py             # In-memory cache
-│   ├── email.py             # Email service
-│   ├── notifications.py     # Notification service
-│   └── websocket.py         # WebSocket manager
-├── db/                      # Database
-│   ├── database.py          # Connection pool
-│   └── models.py            # SQLAlchemy models
-├── services/                # Business logic
-│   └── scan_runner.py       # Scan execution
-└── main.py                  # FastAPI application
+dkb-manifest.json            # versions, build date, file hashes
+dkb-clauses.json             # standard clause library
+dkb-jurisdictions.json       # jurisdiction reference
+dkb-definitions.json         # definition templates
+dkb-dark-patterns.json       # dark-pattern catalog
+dkb-statutes.json            # statutory citation index
+dkb-classifier-vocab.json    # TF-IDF vocabulary
+dkb-classifier-patterns.json # regex overrides
 ```
 
-**Key Features:**
-- RESTful API with OpenAPI documentation
-- JWT-based authentication with bcrypt
-- Role-based access control (RBAC)
-- In-memory caching with TTL
-- WebSocket for real-time updates
-- Rate limiting on sensitive endpoints
+`loadDkb()` fetches the manifest, then the files, validates every one against [`schema.ts`](../src/dkb/schema.ts), and caches the aggregate in IndexedDB keyed by `manifest.version`. The DKB is rebuilt weekly by [.github/workflows/dkb-rebuild.yml](../.github/workflows/dkb-rebuild.yml); see [data-sources.md](data-sources.md) for the source catalog and [`dkb/build/`](../dkb/build/) for the pipeline.
 
-### 3. CLI (`vaulytica/`)
+## Stage 4 — Playbook matcher ([src/playbooks/](../src/playbooks/))
 
-```
-vaulytica/
-├── cli/                     # CLI commands
-│   ├── commands/            # Command modules
-│   │   ├── scan.py          # Scan commands
-│   │   ├── config.py        # Configuration
-│   │   └── report.py        # Reporting
-│   ├── main.py              # CLI entry point
-│   └── validation.py        # Input validation
-├── core/                    # Core logic
-│   ├── scanners/            # Scanner implementations
-│   │   ├── file_scanner.py  # Drive file scanning
-│   │   ├── user_scanner.py  # User directory scanning
-│   │   ├── oauth_scanner.py # OAuth app scanning
-│   │   └── posture_scanner.py # Security posture
-│   ├── detectors/           # Detection engines
-│   │   └── pii_detector.py  # PII detection
-│   ├── compliance/          # Compliance
-│   │   └── reporting.py     # Compliance reports
-│   └── database/            # Database integration
-│       ├── models.py        # SQLAlchemy models
-│       └── saver.py         # Database persistence
-└── config/                  # Configuration files
-    ├── pii_patterns.yaml    # PII detection patterns
-    └── compliance_rules.yaml # Compliance rules
-```
+Given the extracted data + the document title, [`matchPlaybook`](../src/playbooks/matcher.ts) scores the document against every playbook's `match_features` (title keywords, required clauses, distinguishing phrases, negative features) and returns the highest-scoring playbook plus a human-readable `reasoning` string. The 12 launch playbooks live as JSON under [`playbooks/`](../playbooks/). If nothing scores above the threshold, `generic-fallback` runs only structural + basic-financial + temporal + dark-pattern rules.
 
-**Key Features:**
-- Command-line scanning for automation
-- Configurable PII detection patterns
-- Multiple output formats (JSON, CSV)
-- Database integration with `--save-to-db`
-- Signal handling for graceful cancellation
+## Stage 5 — Rule engine ([src/engine/](../src/engine/))
 
-### 4. Core Scanners
+The engine is a deterministic executor over a sorted list of `Rule`s. Each `Rule` is `(ctx: RuleContext) => Finding | null`, pure — no time, no randomness, no network, no environment. The runner:
 
-```
-┌────────────────────────────────────────────────────────────────────┐
-│                        SCANNER ARCHITECTURE                        │
-├────────────────────────────────────────────────────────────────────┤
-│                                                                    │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐             │
-│  │ File Scanner │  │ User Scanner │  │OAuth Scanner │             │
-│  │              │  │              │  │              │             │
-│  │ - Drive API  │  │ - Admin SDK  │  │ - Admin SDK  │             │
-│  │ - File perms │  │ - User list  │  │ - App perms  │             │
-│  │ - PII detect │  │ - 2FA status │  │ - Risk score │             │
-│  └──────────────┘  └──────────────┘  └──────────────┘             │
-│         │                 │                 │                      │
-│         ▼                 ▼                 ▼                      │
-│  ┌────────────────────────────────────────────────────────────┐   │
-│  │                    PII Detector                             │   │
-│  │                                                             │   │
-│  │  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐       │   │
-│  │  │   SSN   │  │ Credit  │  │  Email  │  │  Phone  │       │   │
-│  │  │ Pattern │  │  Card   │  │ Pattern │  │ Pattern │       │   │
-│  │  └─────────┘  └─────────┘  └─────────┘  └─────────┘       │   │
-│  │                                                             │   │
-│  │  Context Keywords → Confidence Boost → Min Threshold       │   │
-│  └────────────────────────────────────────────────────────────┘   │
-│                                                                    │
-└────────────────────────────────────────────────────────────────────┘
-```
+1. Sorts rules lexicographically by id.
+2. Applies playbook `rule_overrides` (`skip: true`, `severity: …`).
+3. Executes each rule in isolation, capturing execution-log entries for the audit trail.
+4. Sorts findings by `(severity, rule_id, document_position)`.
+5. Computes a `result_hash` (SHA-256 over the canonicalized `EngineRun` JSON with `result_hash` + `executed_at` blanked).
 
----
+That hash is the determinism contract. See [determinism.md](determinism.md).
 
-## Data Flow
+## Stage 6 — Report builder ([src/report/](../src/report/))
 
-### 1. Scan Execution Flow
+The DOCX builder (`buildDocxReport`) produces the report described in spec §22 — cover, executive summary, findings (Critical → Warning → Info), obligations ledger, extracted-data appendix, audit trail with full bibliography, verbatim disclaimer block. `buildJsonReport` serializes the full `EngineRun` as a pretty JSON Blob for users who want the structured form.
 
-```
-┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐
-│  User   │───►│  API    │───►│ Scanner │───►│  Google │───►│ Database│
-│         │    │         │    │         │    │  APIs   │    │         │
-└─────────┘    └─────────┘    └─────────┘    └─────────┘    └─────────┘
-     │              │              │              │              │
-     │  1. Trigger  │              │              │              │
-     │─────────────►│              │              │              │
-     │              │  2. Create   │              │              │
-     │              │    ScanRun   │              │              │
-     │              │─────────────►│              │              │
-     │              │              │  3. Enumerate│              │
-     │              │              │    Users     │              │
-     │              │              │─────────────►│              │
-     │              │              │◄─────────────│              │
-     │              │              │  4. For each │              │
-     │              │              │    user:     │              │
-     │              │              │    - Files   │              │
-     │              │              │    - Perms   │              │
-     │              │              │─────────────►│              │
-     │              │              │◄─────────────│              │
-     │              │              │  5. Detect   │              │
-     │              │              │    PII       │              │
-     │              │              │              │              │
-     │              │              │  6. Save     │              │
-     │              │              │    Findings  │              │
-     │              │              │─────────────────────────────►│
-     │              │◄─────────────│              │              │
-     │  7. Progress │              │              │              │
-     │    Updates   │              │              │              │
-     │◄─────────────│              │              │              │
-```
+## UI ([src/ui/](../src/ui/), [site/](../site/))
 
-### 2. Authentication Flow
+The marketing site and the tool are the **same DOM**. The drop zone transforms in place through three states (empty → analyzing → complete). The whole UI is wired by [`main.ts`](../src/ui/main.ts), which boots the dropzone, theme toggle, service-worker registration, and the pipeline. The service worker ([`sw.js`](../site/sw.js)) precaches HTML + assets and serves the DKB stale-while-revalidate so the app works offline.
 
-```
-┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐
-│ Browser │───►│  API    │───►│   JWT   │───►│ Database│
-└─────────┘    └─────────┘    └─────────┘    └─────────┘
-     │              │              │              │
-     │  1. Login    │              │              │
-     │  (email/pwd) │              │              │
-     │─────────────►│              │              │
-     │              │  2. Verify   │              │
-     │              │    Password  │              │
-     │              │─────────────────────────────►│
-     │              │◄─────────────────────────────│
-     │              │  3. Generate │              │
-     │              │    JWT Token │              │
-     │              │─────────────►│              │
-     │              │◄─────────────│              │
-     │  4. Return   │              │              │
-     │    Token     │              │              │
-     │◄─────────────│              │              │
-     │              │              │              │
-     │  5. Request  │              │              │
-     │  (+ Bearer)  │              │              │
-     │─────────────►│              │              │
-     │              │  6. Verify   │              │
-     │              │    Token     │              │
-     │              │─────────────►│              │
-     │              │◄─────────────│              │
-     │              │  7. Check    │              │
-     │              │    Permissions              │
-     │              │─────────────────────────────►│
-     │              │◄─────────────────────────────│
-     │  8. Response │              │              │
-     │◄─────────────│              │              │
-```
+## Deploy ([.github/workflows/deploy.yml](../.github/workflows/deploy.yml))
 
-### 3. Real-time Updates Flow
-
-```
-┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐
-│ Browser │◄──►│WebSocket│◄──►│ Scanner │───►│ Database│
-└─────────┘    └─────────┘    └─────────┘    └─────────┘
-     │              │              │              │
-     │  1. Connect  │              │              │
-     │─────────────►│              │              │
-     │  (upgrade)   │              │              │
-     │◄─────────────│              │              │
-     │              │              │              │
-     │              │  2. Scan     │              │
-     │              │    Progress  │              │
-     │              │◄─────────────│              │
-     │  3. Push     │              │              │
-     │    Update    │              │              │
-     │◄─────────────│              │              │
-     │              │              │              │
-     │              │  4. Finding  │              │
-     │              │    Created   │              │
-     │              │◄─────────────│              │
-     │  5. Push     │              │              │
-     │    Finding   │              │              │
-     │◄─────────────│              │              │
-     │              │              │              │
-     │              │  6. Scan     │              │
-     │              │    Complete  │              │
-     │              │◄─────────────│              │
-     │  7. Push     │              │              │
-     │    Complete  │              │              │
-     │◄─────────────│              │              │
-```
-
----
-
-## Security Architecture
-
-### Authentication & Authorization
-
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                      SECURITY ARCHITECTURE                          │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  ┌──────────────────────────────────────────────────────────────┐  │
-│  │                    AUTHENTICATION LAYER                       │  │
-│  │                                                               │  │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │  │
-│  │  │   bcrypt    │  │    JWT      │  │   Rate Limiting     │  │  │
-│  │  │  Password   │  │   Tokens    │  │   (slowapi)         │  │  │
-│  │  │   Hashing   │  │  (HS256)    │  │                     │  │  │
-│  │  └─────────────┘  └─────────────┘  └─────────────────────┘  │  │
-│  └──────────────────────────────────────────────────────────────┘  │
-│                              │                                      │
-│                              ▼                                      │
-│  ┌──────────────────────────────────────────────────────────────┐  │
-│  │                    AUTHORIZATION LAYER                        │  │
-│  │                                                               │  │
-│  │  ┌─────────────────────────────────────────────────────────┐ │  │
-│  │  │                 ROLE-BASED ACCESS CONTROL               │ │  │
-│  │  │                                                         │ │  │
-│  │  │   ┌─────────┐    ┌─────────┐    ┌─────────┐           │ │  │
-│  │  │   │ VIEWER  │ ◄──│ EDITOR  │ ◄──│  ADMIN  │           │ │  │
-│  │  │   │         │    │         │    │         │           │ │  │
-│  │  │   │ - Read  │    │ - Read  │    │ - Read  │           │ │  │
-│  │  │   │ - Export│    │ - Write │    │ - Write │           │ │  │
-│  │  │   │         │    │ - Scan  │    │ - Manage│           │ │  │
-│  │  │   └─────────┘    └─────────┘    └─────────┘           │ │  │
-│  │  └─────────────────────────────────────────────────────────┘ │  │
-│  │                                                               │  │
-│  │  + Domain-level access control                                │  │
-│  │  + Superuser flag for global admin                            │  │
-│  └──────────────────────────────────────────────────────────────┘  │
-│                              │                                      │
-│                              ▼                                      │
-│  ┌──────────────────────────────────────────────────────────────┐  │
-│  │                    TRANSPORT SECURITY                         │  │
-│  │                                                               │  │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │  │
-│  │  │   HTTPS     │  │  Security   │  │      CORS           │  │  │
-│  │  │  Redirect   │  │  Headers    │  │   Validation        │  │  │
-│  │  │(production) │  │   (HSTS)    │  │                     │  │  │
-│  │  └─────────────┘  └─────────────┘  └─────────────────────┘  │  │
-│  └──────────────────────────────────────────────────────────────┘  │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
-```
-
-### Rate Limiting
-
-| Endpoint | Limit | Window |
-|----------|-------|--------|
-| `/auth/login` | 5 | 1 minute |
-| `/auth/register` | 3 | 1 minute |
-| `/auth/forgot-password` | 3 | 1 minute |
-| `/auth/change-password` | 3 | 1 minute |
-| All other endpoints | 100 | 1 minute |
-
-### Security Headers
-
-```python
-# Applied in production
-SecurityHeadersMiddleware:
-  - Strict-Transport-Security: max-age=31536000
-  - X-Content-Type-Options: nosniff
-  - X-Frame-Options: DENY
-  - X-XSS-Protection: 1; mode=block
-```
-
----
-
-## Database Schema
-
-### Entity Relationship Diagram
-
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                       DATABASE SCHEMA                               │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  ┌───────────┐         ┌───────────┐         ┌───────────┐         │
-│  │   users   │─────────│user_domain│─────────│  domains  │         │
-│  │           │   M:N   │  _access  │   M:N   │           │         │
-│  │ - id      │         │           │         │ - id      │         │
-│  │ - email   │         │ - user_id │         │ - name    │         │
-│  │ - password│         │ - domain_id         │ - active  │         │
-│  │ - is_super│         │ - role    │         │ - creds   │         │
-│  └───────────┘         └───────────┘         └───────────┘         │
-│        │                                            │               │
-│        │                                            │               │
-│        ▼                                            ▼               │
-│  ┌───────────┐                              ┌───────────┐           │
-│  │audit_logs │                              │ scan_runs │           │
-│  │           │                              │           │           │
-│  │ - user_id │                              │ - domain  │           │
-│  │ - action  │                              │ - type    │           │
-│  │ - resource│                              │ - status  │           │
-│  │ - timestamp                              │ - progress│           │
-│  └───────────┘                              └───────────┘           │
-│                                                   │                 │
-│                    ┌──────────────────────────────┼──────────────┐  │
-│                    │              │               │              │  │
-│                    ▼              ▼               ▼              ▼  │
-│              ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌────────┐  │
-│              │ security │  │   file   │  │   user   │  │ oauth  │  │
-│              │ findings │  │ findings │  │ findings │  │findings│  │
-│              │          │  │          │  │          │  │        │  │
-│              │- check   │  │- file_id │  │- user_id │  │- app_id│  │
-│              │- severity│  │- sharing │  │- 2fa     │  │- scopes│  │
-│              │- status  │  │- pii     │  │- status  │  │- risk  │  │
-│              └──────────┘  └──────────┘  └──────────┘  └────────┘  │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
-```
-
-### Key Tables
-
-| Table | Purpose | Key Fields |
-|-------|---------|------------|
-| `users` | User accounts | email, hashed_password, is_superuser |
-| `domains` | Google Workspace domains | name, credentials_encrypted |
-| `user_domain_access` | RBAC mapping | user_id, domain_id, role |
-| `scan_runs` | Scan execution records | domain, scan_type, status, progress |
-| `security_findings` | Security posture findings | check_id, severity, status |
-| `file_findings` | File scan findings | file_id, sharing_type, pii_detected |
-| `user_findings` | User scan findings | user_email, has_2fa, is_admin |
-| `oauth_findings` | OAuth app findings | app_id, scopes, risk_score |
-| `compliance_reports` | Compliance reports | framework, score, issues |
-| `audit_logs` | Audit trail | user_id, action, timestamp |
-
----
-
-## API Architecture
-
-### Endpoint Structure
-
-```
-/api/v1/
-├── auth/
-│   ├── POST /login
-│   ├── POST /register
-│   ├── POST /logout
-│   ├── POST /refresh
-│   ├── POST /forgot-password
-│   ├── POST /reset-password
-│   └── GET  /me
-│
-├── domains/
-│   ├── GET    /           # List domains
-│   ├── POST   /           # Create domain
-│   ├── GET    /{id}       # Get domain
-│   ├── PATCH  /{id}       # Update domain
-│   └── DELETE /{id}       # Delete domain
-│
-├── scans/
-│   ├── GET    /           # List scans
-│   ├── POST   /trigger    # Trigger scan
-│   ├── GET    /{id}       # Get scan details
-│   ├── POST   /{id}/cancel # Cancel scan
-│   ├── PATCH  /{id}/progress # Update progress
-│   └── GET    /compare    # Compare scans
-│
-├── findings/
-│   ├── GET    /security   # Security findings
-│   ├── GET    /files      # File findings
-│   ├── GET    /users      # User findings
-│   ├── GET    /oauth      # OAuth findings
-│   ├── PATCH  /{id}/status # Update status
-│   └── GET    /export/*   # Export endpoints
-│
-├── schedules/
-│   ├── GET    /           # List schedules
-│   ├── POST   /           # Create schedule
-│   ├── PATCH  /{id}       # Update schedule
-│   └── DELETE /{id}       # Delete schedule
-│
-├── alerts/
-│   ├── GET    /           # List alerts
-│   ├── POST   /           # Create alert
-│   ├── PATCH  /{id}       # Update alert
-│   └── DELETE /{id}       # Delete alert
-│
-├── compliance/
-│   ├── GET    /           # List reports
-│   ├── POST   /           # Generate report
-│   ├── GET    /{id}       # Get report
-│   └── GET    /frameworks # Available frameworks
-│
-├── users/
-│   ├── GET    /           # List users (admin)
-│   ├── GET    /{id}       # Get user
-│   ├── PATCH  /{id}       # Update user
-│   └── DELETE /{id}       # Delete user
-│
-└── ws/
-    └── /                  # WebSocket endpoint
-```
-
-### Response Format
-
-All API responses follow a consistent format:
-
-```json
-// Success response
-{
-  "items": [...],
-  "total": 100,
-  "page": 1,
-  "page_size": 20,
-  "total_pages": 5,
-  "has_next": true,
-  "has_prev": false
-}
-
-// Error response
-{
-  "detail": "Error message"
-}
-```
-
----
-
-## Scan Pipeline
-
-### Scan Types
-
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                        SCAN PIPELINE                                │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  1. SECURITY POSTURE SCAN                                          │
-│     ┌─────────────────────────────────────────────────────────┐    │
-│     │  Domain Settings → Admin Console → 25+ Security Checks  │    │
-│     │                                                         │    │
-│     │  Checks: 2FA enforcement, password policies, sharing,   │    │
-│     │          mobile, OAuth apps, SSO, marketplace apps      │    │
-│     │                                                         │    │
-│     │  Output: SecurityFinding (check_id, severity, status)   │    │
-│     └─────────────────────────────────────────────────────────┘    │
-│                                                                     │
-│  2. FILE SCAN                                                       │
-│     ┌─────────────────────────────────────────────────────────┐    │
-│     │  Users → Drive Files → Permissions → PII Detection      │    │
-│     │                                                         │    │
-│     │  - Enumerate all users in domain                        │    │
-│     │  - For each user, list Drive files                      │    │
-│     │  - Check file permissions (external, anyone, domain)    │    │
-│     │  - Download and scan content for PII                    │    │
-│     │  - Score risk based on exposure + PII sensitivity       │    │
-│     │                                                         │    │
-│     │  Output: FileFinding (file_id, pii_types, risk_score)   │    │
-│     └─────────────────────────────────────────────────────────┘    │
-│                                                                     │
-│  3. USER SCAN                                                       │
-│     ┌─────────────────────────────────────────────────────────┐    │
-│     │  Admin SDK → User Directory → Status Analysis           │    │
-│     │                                                         │    │
-│     │  - List all users via Admin SDK                         │    │
-│     │  - Check 2FA enrollment status                          │    │
-│     │  - Check admin/delegated admin roles                    │    │
-│     │  - Check last login date (inactive detection)           │    │
-│     │  - Check suspended/archived status                      │    │
-│     │                                                         │    │
-│     │  Output: UserFinding (user_id, has_2fa, is_admin)       │    │
-│     └─────────────────────────────────────────────────────────┘    │
-│                                                                     │
-│  4. OAUTH APP SCAN                                                  │
-│     ┌─────────────────────────────────────────────────────────┐    │
-│     │  Admin SDK → Token Audit → Permission Analysis          │    │
-│     │                                                         │    │
-│     │  - List all authorized OAuth apps                       │    │
-│     │  - Analyze requested scopes                             │    │
-│     │  - Check verification status                            │    │
-│     │  - Score risk based on permissions                      │    │
-│     │  - Identify overly permissive apps                      │    │
-│     │                                                         │    │
-│     │  Output: OAuthFinding (app_id, scopes, risk_score)      │    │
-│     └─────────────────────────────────────────────────────────┘    │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
-```
-
-### PII Detection Pipeline
-
-```
-Input Text
-    │
-    ▼
-┌─────────────────┐
-│  Pattern Match  │ ─── SSN, Credit Card, Email, Phone, etc.
-└─────────────────┘
-    │
-    ▼
-┌─────────────────┐
-│   Validation    │ ─── Luhn algorithm for credit cards
-└─────────────────┘
-    │
-    ▼
-┌─────────────────┐
-│ Context Search  │ ─── Keywords boost confidence
-└─────────────────┘
-    │
-    ▼
-┌─────────────────┐
-│ Confidence Calc │ ─── Base + Context boost
-└─────────────────┘
-    │
-    ▼
-┌─────────────────┐
-│ Min Threshold   │ ─── Filter low confidence matches
-└─────────────────┘
-    │
-    ▼
-PII Matches
-```
-
----
-
-## Integration Points
-
-### Google Workspace APIs
-
-| API | Purpose | Scopes Required |
-|-----|---------|-----------------|
-| Admin SDK | Users, groups, devices | `admin.directory.*` |
-| Drive API | File listing and content | `drive.readonly` |
-| Gmail API | Email content (optional) | `gmail.readonly` |
-| Calendar API | Meeting content (optional) | `calendar.readonly` |
-| Vault API | eDiscovery data | `ediscovery.readonly` |
-
-### External Integrations
-
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                     EXTERNAL INTEGRATIONS                           │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  NOTIFICATIONS                                                      │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                │
-│  │    SMTP     │  │  Webhooks   │  │   Slack     │                │
-│  │   (Email)   │  │   (JSON)    │  │ (Incoming)  │                │
-│  └─────────────┘  └─────────────┘  └─────────────┘                │
-│                                                                     │
-│  TICKETING                                                          │
-│  ┌─────────────┐  ┌─────────────┐                                  │
-│  │    Jira     │  │  ServiceNow │                                  │
-│  │ (via webhook)│  │ (via webhook)│                                  │
-│  └─────────────┘  └─────────────┘                                  │
-│                                                                     │
-│  MONITORING                                                         │
-│  ┌─────────────┐  ┌─────────────┐                                  │
-│  │ Prometheus  │  │   Grafana   │                                  │
-│  │  /metrics   │  │ (dashboards)│                                  │
-│  └─────────────┘  └─────────────┘                                  │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
-```
-
-### CLI-to-Web Integration
-
-The CLI can save results directly to the web database:
-
-```bash
-# Scan and save to web database
-vaulytica scan files \
-  --domain example.com \
-  --save-to-db \
-  --db-url postgresql://vaulytica:password@localhost:5432/vaulytica
-```
-
-This allows:
-- Scheduled scans via cron
-- Integration with CI/CD pipelines
-- Centralized results in web dashboard
-
----
-
-## Deployment Architecture
-
-### Docker Compose (Development/Small)
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    DOCKER COMPOSE                               │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  ┌───────────────┐    ┌───────────────┐    ┌───────────────┐  │
-│  │   Frontend    │    │    Backend    │    │  Scan Runner  │  │
-│  │   (Next.js)   │◄──►│   (FastAPI)   │◄──►│   (Worker)    │  │
-│  │   Port: 3000  │    │   Port: 8000  │    │               │  │
-│  └───────────────┘    └───────────────┘    └───────────────┘  │
-│                              │                     │           │
-│                              ▼                     ▼           │
-│                       ┌───────────────────────────────┐        │
-│                       │       PostgreSQL              │        │
-│                       │       Port: 5432              │        │
-│                       └───────────────────────────────┘        │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-### Kubernetes (Production/Large)
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                      KUBERNETES                                 │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  ┌────────────────────────────────────────────────────────┐    │
-│  │                    Ingress Controller                   │    │
-│  │                    (nginx/traefik)                      │    │
-│  └────────────────────────────────────────────────────────┘    │
-│                              │                                  │
-│              ┌───────────────┴───────────────┐                 │
-│              ▼                               ▼                 │
-│  ┌───────────────────┐           ┌───────────────────┐        │
-│  │  Frontend Service │           │  Backend Service  │        │
-│  │   (Deployment)    │           │   (Deployment)    │        │
-│  │   replicas: 2     │           │   replicas: 3     │        │
-│  └───────────────────┘           └───────────────────┘        │
-│                                          │                     │
-│                                          ▼                     │
-│  ┌───────────────────┐           ┌───────────────────┐        │
-│  │ Scan Runner       │           │    PostgreSQL     │        │
-│  │ (Deployment)      │◄─────────►│  (StatefulSet)    │        │
-│  │ replicas: 2-5     │           │  + PVC for data   │        │
-│  └───────────────────┘           └───────────────────┘        │
-│                                                                 │
-│  ┌───────────────────────────────────────────────────────┐    │
-│  │                   ConfigMaps & Secrets                 │    │
-│  │  - vaulytica-config (app settings)                    │    │
-│  │  - vaulytica-secrets (credentials)                    │    │
-│  │  - vaulytica-google (service account)                 │    │
-│  └───────────────────────────────────────────────────────┘    │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
-
----
-
-## Performance Characteristics
-
-### Capacity Guidelines
-
-| Metric | Small (<500 users) | Medium (500-5000) | Large (>5000) |
-|--------|-------------------|-------------------|---------------|
-| Backend replicas | 1 | 2 | 3+ |
-| Scan runners | 1 | 2 | 3-5 |
-| Database | 1 CPU, 2GB RAM | 2 CPU, 4GB RAM | 4+ CPU, 8GB+ RAM |
-| Scan duration | ~10 min | ~30 min | ~1-2 hours |
-
-### Caching Strategy
-
-| Cache Key | TTL | Purpose |
-|-----------|-----|---------|
-| scan_stats | 5 min | Dashboard metrics |
-| findings_summary | 5 min | Findings overview |
-| dashboard_overview | 1 min | Dashboard page |
-| frameworks | 1 hour | Compliance frameworks |
-
----
-
-## Monitoring and Observability
-
-### Health Endpoints
-
-| Endpoint | Purpose |
-|----------|---------|
-| `/health` | Overall system health |
-| `/health/db` | Database connectivity |
-| `/health/cache` | Cache status |
-| `/metrics` | Prometheus metrics |
-
-### Key Metrics
-
-| Metric | Type | Description |
-|--------|------|-------------|
-| `scan_duration_seconds` | Histogram | Time to complete scans |
-| `findings_total` | Counter | Total findings by type |
-| `api_request_duration_seconds` | Histogram | API response times |
-| `active_connections` | Gauge | Database connections |
-| `websocket_connections` | Gauge | Active WebSocket clients |
+Push to `main` → lint + typecheck + test → Vite build → `cloudflare/wrangler-action@v3 pages deploy dist` → Playwright smoke test against `https://vaulytica.com`. Static security headers (strict CSP with no external `connect-src`, Permissions-Policy denying hardware APIs, HSTS, etc.) live in [`vite.config.ts`](../vite.config.ts) and ship as `dist/_headers`.

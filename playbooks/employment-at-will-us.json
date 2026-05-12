@@ -1,0 +1,40 @@
+{
+  "id": "employment-at-will-us",
+  "version": "1.0.0",
+  "name": "Employment Agreement, US, at-will, exempt",
+  "description": "Standard US offer-letter-style employment agreement for exempt, at-will employees. Based on GitHub's Balanced Employee IP Agreement and published Cooley offer-letter templates.",
+  "match_features": {
+    "title_keywords": ["offer letter", "employment agreement", "employment contract", "letter of employment"],
+    "required_clauses": ["confidentiality-obligation", "employee-ip-assignment", "term"],
+    "distinguishing_phrases": ["at-will", "exempt", "salary", "base compensation", "your position", "report to", "FLSA", "Employee"],
+    "negative_features": ["independent contractor", "1099", "not an employee", "as a consultant", "scope of work", "the Customer", "the Vendor"]
+  },
+  "expected_clauses": [
+    {"category": "confidentiality-obligation", "severity_if_missing": "critical"},
+    {"category": "employee-ip-assignment", "severity_if_missing": "critical"},
+    {"category": "non-solicit-employees", "severity_if_missing": "warning"},
+    {"category": "termination-for-cause", "severity_if_missing": "warning"},
+    {"category": "governing-law", "severity_if_missing": "warning"},
+    {"category": "entire-agreement", "severity_if_missing": "info"}
+  ],
+  "expected_defined_terms": [
+    {"term": "Confidential Information", "severity_if_missing": "warning"},
+    {"term": "Inventions", "severity_if_missing": "warning"},
+    {"term": "Effective Date", "severity_if_missing": "info"}
+  ],
+  "rule_overrides": {
+    "RISK-009": {"severity": "info"},
+    "RISK-010": {"severity": "info"},
+    "FIN-005": {"skip": true},
+    "FIN-006": {"skip": true},
+    "FIN-008": {"skip": true},
+    "TEMP-005": {"severity": "info"},
+    "PERS-004": {"severity": "warning"}
+  },
+  "balanced_defaults": [
+    {"clause": "employee-ip-assignment", "value": "Inventions made in the scope of employment using company resources, excluding prior inventions listed in Exhibit A", "source_dkb_id": "github-balanced-employee-ip-agreement"},
+    {"clause": "non-solicit-employees", "value": "12 months post-termination", "source_dkb_id": "common-paper-professional-services-agreement-v1"},
+    {"clause": "confidentiality-obligation", "value": "Indefinite for trade secrets; 3 years post-termination for other confidential information", "source_dkb_id": "github-balanced-employee-ip-agreement"}
+  ],
+  "sources": ["github-balanced-employee-ip-agreement", "common-paper-professional-services-agreement-v1"]
+}

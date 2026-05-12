@@ -1,0 +1,21 @@
+{
+  "id": "baa",
+  "version": "0.0.0-placeholder",
+  "name": "Business Associate Agreement",
+  "description": "Placeholder per spec-v3.md §35. Full implementation lands in Step 23. Covered-entity to business-associate BAA under HIPAA. Selects the §28 BAA ruleset.",
+  "match_features": {
+    "title_keywords": ["business associate agreement", "baa", "hipaa"],
+    "required_clauses": [],
+    "distinguishing_phrases": [],
+    "negative_features": []
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "HIPAA",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["msa-vendor-deep"],
+  "compliance_matrix_columns": []
+}

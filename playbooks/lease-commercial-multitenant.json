@@ -1,0 +1,49 @@
+{
+  "id": "lease-commercial-multitenant",
+  "version": "1.0.0",
+  "name": "Commercial Real Estate Lease (Multi-Tenant Office, US)",
+  "description": "Multi-tenant US office lease with operating-expense pass-throughs. High-anxiety contract for small businesses. Drafting standards informed by the ABA Real Property section and Uniform Law Commission commentary.",
+  "match_features": {
+    "title_keywords": ["office lease", "commercial lease", "lease agreement", "multi-tenant lease"],
+    "required_clauses": ["payment-terms", "term", "insurance"],
+    "distinguishing_phrases": ["Landlord", "Tenant", "Premises", "Common Area", "Rentable Square Feet", "Base Rent", "Operating Expenses", "CAM", "subleasing"],
+    "negative_features": ["the Service", "Subscription Term", "Confidential Information", "Customer Data", "Statement of Work", "SOW", "1099", "residential", "apartment", "no smoking", "pets are not permitted"]
+  },
+  "expected_clauses": [
+    {"category": "payment-terms", "severity_if_missing": "critical"},
+    {"category": "term", "severity_if_missing": "critical"},
+    {"category": "renewal-term", "severity_if_missing": "warning"},
+    {"category": "termination-for-cause", "severity_if_missing": "warning"},
+    {"category": "insurance", "severity_if_missing": "critical"},
+    {"category": "indemnification", "severity_if_missing": "warning"},
+    {"category": "assignment", "severity_if_missing": "warning"},
+    {"category": "governing-law", "severity_if_missing": "warning"},
+    {"category": "notices", "severity_if_missing": "warning"}
+  ],
+  "expected_defined_terms": [
+    {"term": "Premises", "severity_if_missing": "critical"},
+    {"term": "Base Rent", "severity_if_missing": "critical"},
+    {"term": "Operating Expenses", "severity_if_missing": "warning"},
+    {"term": "Common Area", "severity_if_missing": "warning"},
+    {"term": "Term", "severity_if_missing": "warning"}
+  ],
+  "rule_overrides": {
+    "RISK-009": {"severity": "warning"},
+    "PERS-001": {"skip": true},
+    "PERS-002": {"skip": true},
+    "PERS-003": {"skip": true},
+    "PERS-004": {"skip": true},
+    "IPDATA-001": {"skip": true},
+    "IPDATA-002": {"skip": true},
+    "IPDATA-003": {"skip": true},
+    "IPDATA-004": {"skip": true},
+    "IPDATA-005": {"skip": true},
+    "IPDATA-006": {"skip": true}
+  },
+  "balanced_defaults": [
+    {"clause": "payment-terms", "value": "Monthly base rent due on the first of the month; additional rent (CAM) reconciled annually", "source_dkb_id": "uniform-law-commission"},
+    {"clause": "insurance", "value": "Tenant maintains commercial general liability at $1M/$2M and property insurance on its contents", "source_dkb_id": "uniform-law-commission"},
+    {"clause": "assignment", "value": "No assignment or sublet without Landlord's prior written consent, not to be unreasonably withheld", "source_dkb_id": "uniform-law-commission"}
+  ],
+  "sources": ["uniform-law-commission"]
+}

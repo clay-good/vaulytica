@@ -1,0 +1,1394 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Vaulytica</title>
+    <meta
+      name="description"
+      content="Free, open-source, deterministic contract linter. Drop a PDF or DOCX, get a Word report with citations. No AI, no account, no server, no telemetry. Runs entirely in your browser."
+    />
+    <meta name="theme-color" content="#07090D" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#FAF8F3" media="(prefers-color-scheme: light)" />
+    <link rel="canonical" href="https://vaulytica.com/" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Vaulytica" />
+    <meta property="og:title" content="Vaulytica, deterministic contract checker" />
+    <meta
+      property="og:description"
+      content="Drop a contract. Get a Word report. Nothing leaves your browser. Free, open source, no AI."
+    />
+    <meta property="og:url" content="https://vaulytica.com/" />
+    <meta property="og:image" content="https://vaulytica.com/og-image.svg" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Vaulytica, deterministic contract checker" />
+    <meta
+      name="twitter:description"
+      content="Drop a contract. Get a Word report. Nothing leaves your browser. Free, open source, no AI."
+    />
+    <meta name="twitter:image" content="https://vaulytica.com/og-image.svg" />
+
+    <!-- Flash-of-unstyled-content guard: apply the saved theme before paint. -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("vaulytica-theme");
+          if (t === "light" || t === "dark") {
+            document.documentElement.setAttribute("data-theme", t);
+          } else if (window.matchMedia("(prefers-color-scheme: light)").matches) {
+            document.documentElement.setAttribute("data-theme", "light");
+          }
+        } catch (e) {
+          /* localStorage may be unavailable; default to dark. */
+        }
+      })();
+    </script>
+
+    <style>
+      :root {
+        --bg: #07090d;
+        --surface: #0d1117;
+        --heading: #f5f7fa;
+        --body: #c8ccd4;
+        --muted: #8b919c;
+        --line: #1f2530;
+        --accent: #00e5a8;
+        --accent-strong: #00e5a8;
+        --shadow: 0 1px 0 rgba(255, 255, 255, 0.03), 0 8px 32px rgba(0, 0, 0, 0.4);
+        --radius: 14px;
+        --max: 1100px;
+        --pad: clamp(20px, 4vw, 40px);
+        --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto,
+          sans-serif;
+        --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      }
+      [data-theme="light"] {
+        --bg: #faf8f3;
+        --surface: #f3f1ea;
+        --heading: #0d1117;
+        --body: #3a3f4b;
+        --muted: #6b7280;
+        --line: #e6e4dd;
+        --accent: #00a883;
+        --accent-strong: #00a883;
+        --shadow: 0 1px 0 rgba(0, 0, 0, 0.02), 0 8px 32px rgba(0, 0, 0, 0.08);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: var(--bg);
+        color: var(--body);
+        font-family: var(--font-sans);
+        font-size: 17px;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      h1,
+      h2,
+      h3,
+      h4 {
+        color: var(--heading);
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        margin: 0 0 0.5em;
+      }
+      h1 {
+        font-size: clamp(34px, 6vw, 60px);
+        line-height: 1.05;
+        letter-spacing: -0.025em;
+      }
+      h2 {
+        font-size: clamp(24px, 3.5vw, 36px);
+        line-height: 1.15;
+        margin-top: 0;
+      }
+      h3 {
+        font-size: 19px;
+      }
+      p {
+        margin: 0 0 1em;
+      }
+      code,
+      kbd,
+      samp {
+        font-family: var(--font-mono);
+        font-size: 0.92em;
+      }
+      :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+        border-radius: 4px;
+      }
+
+      /* Layout */
+      .wrap {
+        max-width: var(--max);
+        margin: 0 auto;
+        padding: 0 var(--pad);
+      }
+      section {
+        padding: clamp(56px, 8vw, 96px) 0;
+        border-top: 1px solid var(--line);
+      }
+      section:first-of-type {
+        border-top: 0;
+      }
+
+      /* Nav */
+      .nav {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        backdrop-filter: saturate(140%) blur(14px);
+        -webkit-backdrop-filter: saturate(140%) blur(14px);
+        background: color-mix(in srgb, var(--bg) 80%, transparent);
+        border-bottom: 1px solid var(--line);
+      }
+      .nav-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px var(--pad);
+        max-width: var(--max);
+        margin: 0 auto;
+      }
+      .wordmark {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 4px;
+        font-weight: 600;
+        font-size: 18px;
+        color: var(--heading);
+        letter-spacing: -0.01em;
+      }
+      .wordmark .dot {
+        width: 7px;
+        height: 7px;
+        background: var(--accent);
+        border-radius: 50%;
+        align-self: center;
+        margin-right: 2px;
+      }
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .icon-btn {
+        background: transparent;
+        border: 1px solid transparent;
+        color: var(--body);
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 120ms, color 120ms, border-color 120ms;
+      }
+      .icon-btn:hover {
+        background: var(--surface);
+        color: var(--heading);
+        border-color: var(--line);
+      }
+      .icon-btn svg {
+        width: 18px;
+        height: 18px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      [data-theme="dark"] .moon {
+        display: none;
+      }
+      [data-theme="light"] .sun {
+        display: none;
+      }
+
+      /* Hero */
+      .hero {
+        padding-top: clamp(48px, 8vw, 88px);
+        padding-bottom: clamp(40px, 6vw, 64px);
+      }
+      .eyebrow {
+        display: inline-block;
+        padding: 6px 12px;
+        font-family: var(--font-mono);
+        font-size: 12px;
+        letter-spacing: 0.04em;
+        color: var(--muted);
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        margin-bottom: 28px;
+      }
+      .eyebrow .dot {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        background: var(--accent);
+        border-radius: 50%;
+        vertical-align: middle;
+        margin-right: 6px;
+      }
+      .lead {
+        max-width: 720px;
+        font-size: clamp(18px, 1.7vw, 20px);
+        color: var(--body);
+      }
+
+      /* Drop zone */
+      .dropzone {
+        margin-top: 36px;
+        border: 2px dashed var(--line);
+        border-radius: var(--radius);
+        background: var(--surface);
+        padding: clamp(40px, 6vw, 72px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+        transition:
+          border-color 160ms,
+          background 160ms,
+          transform 160ms;
+        cursor: pointer;
+      }
+      .dropzone::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: var(--radius);
+        box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 40%, transparent);
+        transition: box-shadow 1.6s ease-in-out;
+        pointer-events: none;
+      }
+      .dropzone:hover {
+        border-color: var(--accent);
+      }
+      .dropzone .icon {
+        width: 38px;
+        height: 38px;
+        color: var(--accent);
+        margin-bottom: 14px;
+      }
+      .dropzone .icon svg {
+        width: 100%;
+        height: 100%;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 1.6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .dropzone-title {
+        color: var(--heading);
+        font-weight: 600;
+        font-size: 18px;
+        margin-bottom: 6px;
+      }
+      .dropzone-sub {
+        color: var(--muted);
+        font-size: 15px;
+        font-family: var(--font-mono);
+      }
+      @media (prefers-reduced-motion: no-preference) {
+        .dropzone[data-state="empty"] {
+          animation: pulse 4s ease-in-out infinite;
+        }
+        @keyframes pulse {
+          0%,
+          100% {
+            box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 0%, transparent);
+          }
+          50% {
+            box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 8%, transparent);
+          }
+        }
+      }
+      .dropzone.is-dragging {
+        border-color: var(--accent);
+      }
+      .dropzone[data-state="analyzing"],
+      .dropzone[data-state="complete"],
+      .dropzone[data-state="error"] {
+        cursor: default;
+        animation: none;
+      }
+      /* Progress bar */
+      .progress {
+        --progress: 0%;
+        --progress-transition: width 220ms ease-out;
+        position: relative;
+        width: 100%;
+        height: 6px;
+        background: color-mix(in srgb, var(--accent) 12%, transparent);
+        border-radius: 4px;
+        margin: 18px 0 14px;
+        overflow: hidden;
+      }
+      .progress::before {
+        content: "";
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: var(--progress);
+        background: var(--accent);
+        transition: var(--progress-transition);
+      }
+      /* Rule ticker */
+      .rule-ticker {
+        font-family: var(--font-mono);
+        font-size: 13.5px;
+        color: var(--muted);
+        height: 18px;
+        overflow: hidden;
+        text-align: left;
+        width: 100%;
+      }
+      .rule-ticker__line {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      /* Counts on completion */
+      .counts {
+        display: flex;
+        gap: 18px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin: 12px 0 14px;
+        font-size: 15px;
+      }
+      .count strong {
+        font-size: 19px;
+        margin-right: 4px;
+      }
+      .count--critical strong {
+        color: #b00020;
+      }
+      .count--warning strong {
+        color: #a86700;
+      }
+      .count--info strong {
+        color: var(--muted);
+      }
+      .btn {
+        display: inline-block;
+        padding: 10px 18px;
+        border-radius: 999px;
+        font-weight: 600;
+        text-decoration: none;
+      }
+      .btn-primary {
+        background: var(--accent);
+        color: #02110a;
+        margin-top: 6px;
+      }
+      .btn-link {
+        background: none;
+        border: 0;
+        color: var(--muted);
+        font-size: 14px;
+        text-decoration: underline;
+        cursor: pointer;
+        margin-top: 6px;
+      }
+      .playbook-disclosure {
+        margin: 8px 0 12px;
+        text-align: left;
+        max-width: 56ch;
+      }
+      .playbook-disclosure summary {
+        cursor: pointer;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .playbook-disclosure div {
+        margin-top: 6px;
+        color: var(--body);
+        font-size: 15px;
+      }
+
+      /* Grids */
+      .grid {
+        display: grid;
+        gap: 18px;
+      }
+      .grid-3 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .grid-2 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .grid-4 {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      @media (max-width: 900px) {
+        .grid-3,
+        .grid-4 {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 560px) {
+        .grid-3,
+        .grid-2,
+        .grid-4 {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 22px;
+      }
+      .card h3 {
+        margin: 0 0 10px;
+        color: var(--heading);
+        font-size: 17px;
+      }
+      .card p {
+        margin: 0;
+        font-size: 15.5px;
+        color: var(--body);
+      }
+      .card .ids {
+        margin-top: 10px;
+        font-family: var(--font-mono);
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.8;
+      }
+      .card .ids code {
+        background: color-mix(in srgb, var(--bg) 60%, var(--surface));
+        border: 1px solid var(--line);
+        padding: 1px 6px;
+        border-radius: 4px;
+        margin-right: 4px;
+        color: var(--body);
+      }
+
+      ul.tight {
+        margin: 0 0 1em;
+        padding: 0 0 0 1.1em;
+      }
+      ul.tight li {
+        margin: 0.4em 0;
+      }
+
+      .bullets-large li {
+        margin: 0.7em 0;
+        list-style: none;
+        padding-left: 1.4em;
+        position: relative;
+      }
+      .bullets-large li::before {
+        content: "•";
+        position: absolute;
+        left: 0;
+        color: var(--accent);
+        font-weight: 600;
+      }
+
+      /* FAQ */
+      details {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 16px 20px;
+        margin-bottom: 10px;
+      }
+      details > summary {
+        cursor: pointer;
+        list-style: none;
+        color: var(--heading);
+        font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+      }
+      details > summary::-webkit-details-marker {
+        display: none;
+      }
+      details > summary::after {
+        content: "+";
+        color: var(--muted);
+        font-family: var(--font-mono);
+        font-size: 18px;
+      }
+      details[open] > summary::after {
+        content: "−";
+      }
+      details > div {
+        padding-top: 12px;
+        color: var(--body);
+      }
+
+      /* Diagram */
+      #how-it-works {
+        padding: clamp(80px, 11vw, 132px) 0;
+      }
+      #how-it-works h2 {
+        margin-bottom: 18px;
+      }
+      #how-it-works > p {
+        max-width: 760px;
+        margin-bottom: 44px;
+      }
+      .diagram {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 32px;
+        margin-top: 12px;
+        overflow-x: auto;
+      }
+      .diagram svg {
+        display: block;
+        max-width: 100%;
+        height: auto;
+      }
+      .diagram text {
+        font-family: var(--font-mono);
+        font-size: 13px;
+        fill: var(--body);
+      }
+      .diagram .box rect {
+        fill: var(--bg);
+        stroke: var(--line);
+      }
+      .diagram .box .label {
+        fill: var(--heading);
+      }
+      .diagram .accent rect {
+        stroke: var(--accent);
+      }
+      .diagram .arrow {
+        stroke: var(--muted);
+        fill: none;
+        stroke-width: 1.4;
+        marker-end: url(#arrowhead);
+      }
+
+      /* Sources grid */
+      .source-grid {
+        display: grid;
+        gap: 14px;
+        grid-template-columns: repeat(3, 1fr);
+      }
+      @media (max-width: 900px) {
+        .source-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 560px) {
+        .source-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .source-card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 18px;
+        font-size: 15px;
+      }
+      .source-card h4 {
+        margin: 0 0 6px;
+        color: var(--heading);
+        font-size: 15.5px;
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+      }
+      .source-card h4 span {
+        font-family: var(--font-mono);
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 400;
+      }
+      .source-card p {
+        margin: 0 0 6px;
+        color: var(--body);
+      }
+      .source-card a {
+        font-family: var(--font-mono);
+        font-size: 13px;
+      }
+
+      /* Closing block */
+      .closing {
+        text-align: center;
+        padding: clamp(72px, 10vw, 120px) 0;
+      }
+      .closing .quote {
+        max-width: 720px;
+        margin: 0 auto 28px;
+        font-size: clamp(22px, 3.2vw, 34px);
+        line-height: 1.25;
+        letter-spacing: -0.015em;
+        color: var(--heading);
+        font-weight: 600;
+      }
+      .cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 22px;
+        background: var(--accent);
+        color: #04221a;
+        font-weight: 600;
+        border-radius: 999px;
+        text-decoration: none;
+        transition: transform 120ms, filter 120ms;
+      }
+      .cta:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.05);
+        text-decoration: none;
+      }
+      .closing-actions {
+        display: inline-flex;
+        align-items: center;
+        gap: 18px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .made-by {
+        color: var(--muted);
+        font-size: 15px;
+      }
+      .made-by a {
+        color: var(--body);
+        border-bottom: 1px dotted var(--line);
+      }
+      .made-by a:hover {
+        color: var(--accent);
+        text-decoration: none;
+        border-bottom-color: var(--accent);
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      /* Footer */
+      footer {
+        border-top: 1px solid var(--line);
+        padding: 36px var(--pad);
+        background: var(--bg);
+      }
+      footer .footer-inner {
+        max-width: var(--max);
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        justify-content: space-between;
+        align-items: center;
+        color: var(--muted);
+        font-size: 13.5px;
+      }
+      footer .disclaimer {
+        max-width: 640px;
+        line-height: 1.55;
+      }
+      .badge-line {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        font-family: var(--font-mono);
+        font-size: 12px;
+      }
+      .badge {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 3px 8px;
+        color: var(--body);
+      }
+
+      .verify-disclosure {
+        margin-top: 18px;
+        padding: 14px 16px;
+        background: var(--bg);
+        border: 1px dashed var(--line);
+        border-radius: 10px;
+        font-size: 15px;
+        font-family: var(--font-mono);
+        color: var(--body);
+      }
+      .verify-disclosure strong {
+        color: var(--heading);
+      }
+      .verify-disclosure ol {
+        margin: 8px 0 0;
+        padding-left: 1.3em;
+        line-height: 1.7;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0ms !important;
+          transition-duration: 0ms !important;
+        }
+      }
+    </style>
+
+    <!-- schema.org structured data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Vaulytica",
+        "url": "https://vaulytica.com",
+        "logo": "https://vaulytica.com/og-image.svg",
+        "description": "Free, deterministic, open-source contract checker. Runs entirely in the user's browser. No AI."
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Vaulytica",
+        "operatingSystem": "Any (web browser)",
+        "applicationCategory": "BusinessApplication",
+        "offers": {
+          "@type": "Offer",
+          "price": "0.00",
+          "priceCurrency": "USD"
+        },
+        "license": "https://opensource.org/licenses/MIT",
+        "url": "https://vaulytica.com",
+        "description": "A deterministic contract linter. Drop a PDF or DOCX into the browser, get back a Word document with findings, citations, and a full audit trail. No AI, no account, no server, no telemetry.",
+        "softwareRequirements": "Any modern web browser"
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": "How Vaulytica works",
+        "description": "Vaulytica is a static webpage. The user's contract enters the page, is parsed by PDF.js or mammoth.js, passes through extractors and a deterministic rule engine of approximately 80 rules backed by the Deterministic Knowledge Base, and is emitted as a Microsoft Word document. No data ever leaves the browser.",
+        "url": "https://vaulytica.com#how-it-works",
+        "author": {
+          "@type": "Organization",
+          "name": "Vaulytica",
+          "url": "https://vaulytica.com"
+        }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is this legal advice?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. Vaulytica is a software tool. It is not a lawyer, it does not give legal advice, and using it does not create an attorney-client relationship with anyone. If something here matters, hire a lawyer."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I trust the report?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The report is the output of a deterministic rule engine, not a model. Given the same input file, the same engine version, and the same Deterministic Knowledge Base version, you will get the same report. Every finding cites a rule by id and a source by URL. The audit trail at the end of every report names every rule that ran, including the silent ones."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do you train models on my data?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "There is no server. Your contract never leaves the tab. Nothing is logged, nothing is uploaded, nothing is retained. Open DevTools, open the Network tab, and confirm zero requests during analysis."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Why no AI?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Probabilistic answers cannot be cited. A senior partner cannot sign off on a chatbot output. An auditor cannot trace it. A client cannot reproduce it. Vaulytica does the work AI tools cannot do: exhaustive, identical, cited checking."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How is the data kept current?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The Deterministic Knowledge Base is rebuilt weekly via a public GitHub Action that fetches from SEC EDGAR, the US Code, the eCFR, govinfo, Common Paper, CUAD, LEDGAR, and other free public sources. Every entry records its source URL, retrieval date, and license."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What contract types are supported?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "At launch, twelve playbooks: Mutual NDA, Unilateral NDA, US Employment (at-will, exempt), Independent Contractor, SaaS Customer-side, SaaS Vendor-side, MSA, SOW, Commercial Lease (multi-tenant), Residential Lease (US), Consulting Agreement, and a Generic Fallback. The structural and financial rules run against any contract."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What if I find a bug?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Open an issue on GitHub. The repository is public and MIT-licensed. Reproducible bugs with a redacted fixture contract are fixed fast."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I add a rule?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. See docs/adding-a-rule.md in the repository. Every new rule must cite at least one DKB entry by id, include a positive and negative test fixture, and pass the deterministic regression check."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Why MIT license?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "MIT is the most permissive license most attorneys recognize on sight and removes any friction for someone who wants to fork the project, run it internally at a firm, or build a paid wrapper around it. The license invites that."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What about other languages?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "English at launch. Legal language is jurisdiction-specific and 'just translate it' is wrong. A future contributor with the right expertise can add another jurisdiction-language pair as a complete unit."
+            }
+          }
+        ]
+      }
+    </script>
+  </head>
+
+  <body>
+    <!-- Nav -->
+    <header class="nav" role="banner">
+      <div class="nav-inner">
+        <a href="/" class="wordmark" aria-label="Vaulytica home">
+          <span class="dot" aria-hidden="true"></span>vaulytica
+        </a>
+        <nav class="nav-actions" aria-label="Primary">
+          <button
+            class="icon-btn"
+            id="theme-toggle"
+            type="button"
+            aria-label="Toggle color theme"
+            title="Toggle theme"
+          >
+            <svg class="sun" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+            </svg>
+            <svg class="moon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </button>
+          <a
+            class="icon-btn"
+            href="https://github.com/clay-good/vaulytica"
+            rel="noopener"
+            aria-label="Vaulytica on GitHub"
+            title="GitHub"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"></path>
+            </svg>
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main" class="wrap">
+      <!-- Hero -->
+      <section class="hero" aria-labelledby="hero-h1">
+        <h1 id="hero-h1">Drop a contract.<br />Get a report.<br />Nothing leaves your browser.</h1>
+        <p class="lead">
+          Vaulytica is a deterministic linter for contracts. It runs hundreds of identical checks
+          against your document, the boring exhaustive ones a tired human misses at 1&nbsp;a.m., and
+          hands back a Word file you can cite. Free. Open source. MIT. No account, no AI, no server.
+          Drop something on me.
+        </p>
+
+        <div
+          class="dropzone"
+          id="dropzone"
+          role="button"
+          tabindex="0"
+          aria-label="Drop a PDF or DOCX contract here, or press Enter to choose a file"
+        >
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 3v12"></path>
+              <path d="m7 8 5-5 5 5"></path>
+              <path d="M5 21h14"></path>
+            </svg>
+          </span>
+          <div class="dropzone-title">Drop a PDF or DOCX here, or click to choose</div>
+          <div class="dropzone-sub">analysis runs locally · nothing is uploaded</div>
+        </div>
+      </section>
+
+      <!-- What it checks -->
+      <section aria-labelledby="checks-h2" id="what-it-checks">
+        <h2 id="checks-h2">What I check.</h2>
+        <p>
+          Roughly eighty rules at launch across ten categories. Every finding cites the rule by id
+          and the source by URL.
+        </p>
+
+        <div class="grid grid-3" style="margin-top: 28px">
+          <div class="card">
+            <h3>Structural &amp; formal</h3>
+            <p>
+              Party blocks, signatures, defined terms, cross-references, numbering, template
+              placeholders.
+            </p>
+            <div class="ids">
+              <code>STRUCT-001</code><code>STRUCT-003</code><code>STRUCT-005</code
+              ><code>STRUCT-007</code><code>STRUCT-009</code><code>STRUCT-011</code>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Financial terms</h3>
+            <p>Word/numeral mismatches, currency consistency, usury, payment terms, MFN, caps.</p>
+            <div class="ids">
+              <code>FIN-001</code><code>FIN-002</code><code>FIN-003</code><code>FIN-004</code
+              ><code>FIN-005</code><code>FIN-007</code>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Temporal</h3>
+            <p>
+              Impossible dates, auto-renewal notice windows, survival, cure periods, post-expiry
+              references.
+            </p>
+            <div class="ids">
+              <code>TEMP-001</code><code>TEMP-004</code><code>TEMP-005</code><code>TEMP-006</code
+              ><code>TEMP-008</code><code>TEMP-010</code>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Risk allocation</h3>
+            <p>
+              Indemnity presence + mutuality + caps, LoL with exceptions, consequential waivers,
+              insurance.
+            </p>
+            <div class="ids">
+              <code>RISK-001</code><code>RISK-002</code><code>RISK-004</code><code>RISK-005</code
+              ><code>RISK-009</code><code>RISK-013</code>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Choice &amp; venue</h3>
+            <p>
+              Governing law, forum, foreign-venue enforceability, arbitration, class waivers, jury
+              waivers.
+            </p>
+            <div class="ids">
+              <code>CHOICE-001</code><code>CHOICE-004</code><code>CHOICE-005</code
+              ><code>CHOICE-006</code><code>CHOICE-007</code><code>CHOICE-008</code>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Dark patterns</h3>
+            <p>
+              Unilateral modification rights, buried auto-renewal notices, asymmetric fee-shifting,
+              forced arbitration.
+            </p>
+            <div class="ids">
+              <code>DARK-001</code><code>DARK-002</code><code>DARK-003</code><code>DARK-004</code>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- How it works -->
+      <section id="how-it-works" aria-labelledby="how-h2">
+        <h2 id="how-h2">How this works.</h2>
+        <p>
+          Your file enters the page, runs through the engine, comes back out as a Word document.
+          Nothing else moves.
+        </p>
+
+        <div class="diagram" role="img" aria-label="Architecture diagram: ingest, normalize, extract, rule engine and playbook matcher fed by the DKB, then report builder. Everything is in the user's browser.">
+          <svg viewBox="0 0 880 320" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker
+                id="arrowhead"
+                viewBox="0 0 10 10"
+                refX="9"
+                refY="5"
+                markerWidth="8"
+                markerHeight="8"
+                orient="auto-start-reverse"
+              >
+                <path d="M0,0 L10,5 L0,10 z" fill="currentColor" style="color: var(--muted);" />
+              </marker>
+            </defs>
+
+            <!-- Browser frame -->
+            <g class="box accent">
+              <rect x="20" y="20" width="840" height="280" rx="14" />
+              <text class="label" x="40" y="44" style="font-weight: 600">The user's browser, the entire product</text>
+            </g>
+
+            <!-- Boxes -->
+            <g class="box">
+              <rect x="50" y="80" width="140" height="56" rx="10" />
+              <text class="label" x="120" y="106" text-anchor="middle">Ingest</text>
+              <text x="120" y="124" text-anchor="middle">PDF / DOCX / OCR</text>
+            </g>
+            <g class="box">
+              <rect x="220" y="80" width="140" height="56" rx="10" />
+              <text class="label" x="290" y="106" text-anchor="middle">Normalize</text>
+              <text x="290" y="124" text-anchor="middle">document tree</text>
+            </g>
+            <g class="box">
+              <rect x="390" y="80" width="160" height="56" rx="10" />
+              <text class="label" x="470" y="106" text-anchor="middle">Extractors</text>
+              <text x="470" y="124" text-anchor="middle">parties · dates · clauses</text>
+            </g>
+            <g class="box">
+              <rect x="580" y="80" width="150" height="56" rx="10" />
+              <text class="label" x="655" y="106" text-anchor="middle">Rule engine</text>
+              <text x="655" y="124" text-anchor="middle">~80 deterministic rules</text>
+            </g>
+
+            <g class="box">
+              <rect x="220" y="180" width="140" height="56" rx="10" />
+              <text class="label" x="290" y="206" text-anchor="middle">Playbook matcher</text>
+              <text x="290" y="224" text-anchor="middle">12 playbooks</text>
+            </g>
+            <g class="box accent">
+              <rect x="390" y="180" width="160" height="56" rx="10" />
+              <text class="label" x="470" y="206" text-anchor="middle">DKB (static asset)</text>
+              <text x="470" y="224" text-anchor="middle">clauses · jurisdictions · statutes</text>
+            </g>
+            <g class="box">
+              <rect x="580" y="180" width="150" height="56" rx="10" />
+              <text class="label" x="655" y="206" text-anchor="middle">Report builder</text>
+              <text x="655" y="224" text-anchor="middle">docx-js → .docx</text>
+            </g>
+
+            <!-- Arrows -->
+            <path class="arrow" d="M190,108 L220,108" />
+            <path class="arrow" d="M360,108 L390,108" />
+            <path class="arrow" d="M550,108 L580,108" />
+            <path class="arrow" d="M470,140 L470,180" />
+            <path class="arrow" d="M360,208 L390,208" />
+            <path class="arrow" d="M550,208 L580,208" />
+            <path class="arrow" d="M655,140 L655,180" />
+            <path class="arrow" d="M730,108 C800,108 800,260 760,260" />
+            <text x="780" y="278" fill="var(--muted)" font-family="var(--font-mono)" font-size="11">
+              Word .docx download
+            </text>
+          </svg>
+        </div>
+      </section>
+
+      <!-- What it does not do -->
+      <section aria-labelledby="not-h2">
+        <h2 id="not-h2">What I do not do.</h2>
+        <ul class="bullets-large" style="padding-left: 0; max-width: 760px">
+          <li>I do not give you legal advice. I am a software tool. If something here matters, hire a lawyer.</li>
+          <li>I do not replace your judgment. I find mechanical things consistently. The hard calls are still yours.</li>
+          <li>
+            I do not use AI. Not a model, not a copilot, not "powered by." A probabilistic answer
+            cannot be cited. The whole point of this is the opposite.
+          </li>
+          <li>
+            I do not see your data. There is no server. Your contract never leaves the tab. Open
+            DevTools and watch the network panel if you want to confirm.
+          </li>
+        </ul>
+      </section>
+
+      <!-- Why no AI -->
+      <section aria-labelledby="why-h2">
+        <h2 id="why-h2">Why no AI?</h2>
+        <p style="max-width: 760px">
+          Every other contract tool you can find right now leans on a language model. The pitch is
+          the same everywhere: paste your contract, the AI summarizes, the AI flags risk, the AI
+          suggests redlines. The output is fluent and confident and changes every time you run it. A
+          junior associate can use that for research. A senior partner cannot sign off on it. An
+          auditor cannot trace it. A client cannot reproduce it. The output is, by construction,
+          uncitable.
+        </p>
+        <p style="max-width: 760px">
+          Vaulytica is for the work the AI tools cannot do: exhaustive, identical, cited checking.
+          The professional failure mode in contract review is not "I did not understand the
+          indemnity clause." It is "I read eighty pages at midnight and missed that the
+          auto-renewal triggers sixty days before expiry rather than thirty." A deterministic
+          checklist runner catches that failure mode every time. A chatbot is neither exhaustive
+          nor reproducible. If you want to chat with an AI about your contract, do; it is fine, just
+          do not do it here.
+        </p>
+      </section>
+
+      <!-- Privacy -->
+      <section aria-labelledby="privacy-h2" id="privacy">
+        <h2 id="privacy-h2">Your privacy.</h2>
+        <p style="max-width: 760px">
+          Vaulytica runs entirely in your browser. There is no server to send your file to, because
+          there is no server. Open DevTools, open the Network tab, drop your contract, and confirm
+          zero requests. Verify it yourself. The site is a static page on Cloudflare Pages, the
+          code is on GitHub under MIT, and there is no analytics, no telemetry, no error reporting,
+          no fonts from CDNs. Every byte your browser fetches comes from vaulytica.com.
+        </p>
+
+        <details class="verify-disclosure">
+          <summary><strong>Verify in DevTools</strong> &middot; 30 seconds</summary>
+          <ol>
+            <li>Open this page in Chrome, Firefox, or Safari.</li>
+            <li>Press <kbd>F12</kbd> (or <kbd>⌥⌘I</kbd> on macOS) to open DevTools.</li>
+            <li>Click the <strong>Network</strong> tab and check "Disable cache."</li>
+            <li>Reload the page once to capture initial asset loads, then click <strong>Clear</strong>.</li>
+            <li>
+              Drop a contract onto the drop zone. Watch the network tab during analysis. There
+              should be zero requests.
+            </li>
+          </ol>
+        </details>
+      </section>
+
+      <!-- Sources -->
+      <section aria-labelledby="sources-h2">
+        <h2 id="sources-h2">Where the rules come from.</h2>
+        <p>Every rule cites at least one of these. Every source is free and public.</p>
+        <div class="source-grid" style="margin-top: 24px">
+          <div class="source-card">
+            <h4>SEC EDGAR <span>public domain</span></h4>
+            <p>Real-world clause corpus sampled from EX-10 attachments to 10-K, 10-Q, 8-K, and S-1 filings.</p>
+            <a href="https://efts.sec.gov/LATEST/search-index" rel="noopener">efts.sec.gov</a>
+          </div>
+          <div class="source-card">
+            <h4>Cornell LII <span>free use</span></h4>
+            <p>Cross-references between the UCC and each state's enacted version, and state-code lookups.</p>
+            <a href="https://www.law.cornell.edu/" rel="noopener">law.cornell.edu</a>
+          </div>
+          <div class="source-card">
+            <h4>Common Paper <span>CC BY 4.0</span></h4>
+            <p>Canonical balanced-default reference clauses for NDA, SaaS, MSA, SOW, DPA, and more.</p>
+            <a href="https://commonpaper.com/standards/" rel="noopener">commonpaper.com</a>
+          </div>
+          <div class="source-card">
+            <h4>CUAD <span>CC BY 4.0</span></h4>
+            <p>510 contracts, 13,000+ expert annotations, 41 clause categories. Trains the deterministic classifier.</p>
+            <a href="https://www.atticusprojectai.org/cuad" rel="noopener">atticusprojectai.org</a>
+          </div>
+          <div class="source-card">
+            <h4>LEDGAR <span>CC BY 4.0</span></h4>
+            <p>80,000+ provisions across 100 clause categories. Broader training set for the classifier.</p>
+            <a href="https://huggingface.co/datasets/coastalcph/lex_glue" rel="noopener">huggingface.co/lex_glue</a>
+          </div>
+          <div class="source-card">
+            <h4>US Code (LRC) <span>public domain</span></h4>
+            <p>Official US Code in USLM XML: Titles 9, 11, 15, 17, 18, 28, 35, and 41.</p>
+            <a href="https://uscode.house.gov/download/" rel="noopener">uscode.house.gov</a>
+          </div>
+          <div class="source-card">
+            <h4>eCFR <span>public domain</span></h4>
+            <p>Electronic Code of Federal Regulations: FTC (16), CFTC (17), IRS (26), Labor (29), HIPAA (45).</p>
+            <a href="https://www.ecfr.gov/api/versioner/v1/" rel="noopener">ecfr.gov</a>
+          </div>
+          <div class="source-card">
+            <h4>govinfo <span>public domain</span></h4>
+            <p>Bulk Federal Register, CFR, Public Laws, and Statute Compilations in XML.</p>
+            <a href="https://www.govinfo.gov/bulkdata/" rel="noopener">govinfo.gov</a>
+          </div>
+          <div class="source-card">
+            <h4>Uniform Law Commission <span>free use</span></h4>
+            <p>UETA, UCC, UTSA, RUFADAA, and other uniform-act citations.</p>
+            <a href="https://www.uniformlaws.org/" rel="noopener">uniformlaws.org</a>
+          </div>
+          <div class="source-card">
+            <h4>awesome-legal <span>CC0</span></h4>
+            <p>Curated set of public legal templates: GitHub's BEIPA, Cooley offer letters, YC SAFEs.</p>
+            <a href="https://github.com/ankane/awesome-legal" rel="noopener">github.com/ankane/awesome-legal</a>
+          </div>
+          <div class="source-card">
+            <h4>Atticus Project <span>CC BY 4.0</span></h4>
+            <p>Clause-type definitions and the broader Open Contract Dataset.</p>
+            <a href="https://www.atticusprojectai.org/" rel="noopener">atticusprojectai.org</a>
+          </div>
+          <div class="source-card">
+            <h4>Open-Agreements <span>MIT + CC BY</span></h4>
+            <p>Fillable DOCX builds of Common Paper, Bonterms, and OpenAgreements templates.</p>
+            <a href="https://github.com/open-agreements/open-agreements" rel="noopener">github.com/open-agreements</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section aria-labelledby="faq-h2" id="faq">
+        <h2 id="faq-h2">FAQ.</h2>
+
+        <details>
+          <summary>Is this legal advice?</summary>
+          <div>
+            No. Vaulytica is a software tool. It is not a lawyer, it does not give legal advice, and
+            using it does not create an attorney-client relationship with anyone. If something here
+            matters, hire a lawyer.
+          </div>
+        </details>
+        <details>
+          <summary>Can I trust the report?</summary>
+          <div>
+            The report is the output of a deterministic rule engine, not a model. Given the same
+            input file, the same engine version, and the same Deterministic Knowledge Base version,
+            you will get the same report. Every finding cites a rule by id and a source by URL. The
+            audit trail at the end of every report names every rule that ran, including the silent
+            ones.
+          </div>
+        </details>
+        <details>
+          <summary>Do you train models on my data?</summary>
+          <div>
+            There is no server. Your contract never leaves the tab. Nothing is logged, nothing is
+            uploaded, nothing is retained. Open DevTools, open the Network tab, and confirm zero
+            requests during analysis.
+          </div>
+        </details>
+        <details>
+          <summary>Why no AI?</summary>
+          <div>
+            Probabilistic answers cannot be cited. A senior partner cannot sign off on a chatbot
+            output. An auditor cannot trace it. A client cannot reproduce it. Vaulytica does the
+            work AI tools cannot do: exhaustive, identical, cited checking.
+          </div>
+        </details>
+        <details>
+          <summary>How is the data kept current?</summary>
+          <div>
+            The Deterministic Knowledge Base is rebuilt weekly via a public GitHub Action that
+            fetches from SEC EDGAR, the US Code, the eCFR, govinfo, Common Paper, CUAD, LEDGAR, and
+            other free public sources. Every entry records its source URL, retrieval date, and
+            license. The current DKB version is shown in the footer.
+          </div>
+        </details>
+        <details>
+          <summary>What contract types are supported?</summary>
+          <div>
+            At launch, twelve playbooks: Mutual NDA, Unilateral NDA, US Employment (at-will,
+            exempt), Independent Contractor, SaaS Customer-side, SaaS Vendor-side, MSA, SOW,
+            Commercial Lease (multi-tenant), Residential Lease (US), Consulting Agreement, and a
+            Generic Fallback. The structural and financial rules run against any contract.
+          </div>
+        </details>
+        <details>
+          <summary>What if I find a bug?</summary>
+          <div>
+            Open an issue on GitHub. The repository is public and MIT-licensed. Reproducible bugs
+            with a redacted fixture contract are fixed fast.
+          </div>
+        </details>
+        <details>
+          <summary>Can I add a rule?</summary>
+          <div>
+            Yes. See <code>docs/adding-a-rule.md</code> in the repository. Every new rule must cite
+            at least one DKB entry by id, include a positive and negative test fixture, and pass the
+            deterministic regression check.
+          </div>
+        </details>
+        <details>
+          <summary>Why MIT license?</summary>
+          <div>
+            MIT is the most permissive license most attorneys recognize on sight and removes any
+            friction for someone who wants to fork the project, run it internally at a firm, or
+            build a paid wrapper around it. The license invites that.
+          </div>
+        </details>
+        <details>
+          <summary>What about other languages?</summary>
+          <div>
+            English at launch. Legal language is jurisdiction-specific and "just translate it" is
+            wrong. A future contributor with the right expertise can add another
+            jurisdiction-language pair as a complete unit.
+          </div>
+        </details>
+      </section>
+
+      <!-- Closing -->
+      <section class="closing">
+        <p class="quote">Stop hoping you didn't miss anything.<br />Prove you didn't.</p>
+        <div class="closing-actions">
+          <a class="cta" href="https://github.com/clay-good/vaulytica" rel="noopener">
+            GitHub
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M7 17 17 7"></path><path d="M7 7h10v10"></path>
+            </svg>
+          </a>
+          <span class="made-by">Made with <span aria-hidden="true">&hearts;</span><span class="sr-only">love</span> by <a href="https://claygood.com" rel="noopener">Clay Good</a></span>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      (function () {
+        var root = document.documentElement;
+
+        // Theme toggle
+        var toggle = document.getElementById("theme-toggle");
+        if (toggle) {
+          toggle.addEventListener("click", function () {
+            var next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
+            root.setAttribute("data-theme", next);
+            try {
+              localStorage.setItem("vaulytica-theme", next);
+            } catch (e) {
+              /* ignore */
+            }
+          });
+        }
+
+        // Drop-zone behavior + the live pipeline are wired in
+        // src/ui/main.ts, imported below as a module.
+      })();
+    </script>
+    <script type="module" src="../src/ui/main.ts"></script>
+  </body>
+</html>

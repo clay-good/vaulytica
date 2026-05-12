@@ -1,0 +1,101 @@
+# Authoritative source list for the Deterministic Knowledge Base.
+# Every source in spec.md §12 is declared here. The build pipeline
+# (dkb/build/build.ts) reads this file, dispatches each entry to the
+# parser named by `parser`, and writes the typed records to
+# `dkb/build/cache/{id}/`.
+#
+# Determinism: the order of sources here defines fetch order. Don't
+# sort or reorder casually; the regression check baselines fixed
+# `retrieved_at` ordering when relevant.
+
+sources:
+  - id: edgar
+    name: SEC EDGAR
+    url: https://efts.sec.gov/LATEST/search-index
+    fetch_method: http
+    parser: edgar
+    license: Public domain (US government work)
+    license_url: https://www.usa.gov/government-works
+    rate_limit_rps: 10
+    user_agent: "Vaulytica DKB Builder (vaulytica.com)"
+    notes: |
+      Full-text search via efts.sec.gov/LATEST/search-index plus
+      data.sec.gov/submissions/CIK*.json. 5000 EX-10 exhibits
+      stratified by SIC code. Mandatory User-Agent header.
+
+  - id: uscode
+    name: Office of Law Revision Counsel — US Code (USLM XML)
+    url: https://uscode.house.gov/download/
+    fetch_method: http
+    parser: uscode
+    license: Public domain (US government work)
+    license_url: https://www.usa.gov/government-works
+    rate_limit_rps: 5
+    user_agent: "Vaulytica DKB Builder (vaulytica.com)"
+    notes: USLM XML bundles by title. We pull contract-relevant titles only.
+
+  - id: ecfr
+    name: Electronic Code of Federal Regulations
+    url: https://www.ecfr.gov/api/versioner/v1/
+    fetch_method: http
+    parser: ecfr
+    license: Public domain (US government work)
+    license_url: https://www.usa.gov/government-works
+    rate_limit_rps: 5
+    user_agent: "Vaulytica DKB Builder (vaulytica.com)"
+    notes: Versioner API; only the titles touched by contract rules.
+
+  - id: govinfo
+    name: govinfo.gov bulk data
+    url: https://www.govinfo.gov/bulkdata/
+    fetch_method: http
+    parser: govinfo
+    license: Public domain (US government work)
+    license_url: https://www.usa.gov/government-works
+    rate_limit_rps: 5
+    user_agent: "Vaulytica DKB Builder (vaulytica.com)"
+    notes: CFR and Public Laws bulk dumps; XML.
+
+  - id: commonpaper
+    name: Common Paper templates
+    url: https://github.com/CommonPaper
+    fetch_method: github-clone
+    parser: commonpaper
+    license: CC-BY-4.0
+    license_url: https://creativecommons.org/licenses/by/4.0/
+    rate_limit_rps: 1
+    user_agent: "Vaulytica DKB Builder (vaulytica.com)"
+    notes: Clone the org's public template repos and parse the DOCX templates.
+
+  - id: cuad
+    name: Atticus Project CUAD-QA
+    url: https://huggingface.co/datasets/theatticusproject/cuad-qa
+    fetch_method: huggingface-download
+    parser: cuad
+    license: CC-BY-4.0
+    license_url: https://creativecommons.org/licenses/by/4.0/
+    rate_limit_rps: 2
+    user_agent: "Vaulytica DKB Builder (vaulytica.com)"
+    notes: 500-contract CUAD-QA dataset; gold annotations across 41 clause categories.
+
+  - id: ledgar
+    name: LEDGAR (lex_glue subset)
+    url: https://huggingface.co/datasets/coastalcph/lex_glue
+    fetch_method: huggingface-download
+    parser: ledgar
+    license: CC-BY-NC-4.0
+    license_url: https://creativecommons.org/licenses/by-nc/4.0/
+    rate_limit_rps: 2
+    user_agent: "Vaulytica DKB Builder (vaulytica.com)"
+    notes: LEDGAR subset of lex_glue; ~80k contract provisions labeled with clause type.
+
+  - id: ulc
+    name: Uniform Law Commission acts
+    url: https://www.uniformlaws.org/acts
+    fetch_method: http
+    parser: ulc
+    license: Permissive (per ULC publication terms)
+    license_url: https://www.uniformlaws.org/about/about-the-ulc
+    rate_limit_rps: 2
+    user_agent: "Vaulytica DKB Builder (vaulytica.com)"
+    notes: Uniform act PDFs (UETA, UCC, UCITA, etc.); pdf-parse for text extraction.

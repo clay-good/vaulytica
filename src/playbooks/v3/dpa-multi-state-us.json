@@ -1,0 +1,21 @@
+{
+  "id": "dpa-multi-state-us",
+  "version": "0.0.0-placeholder",
+  "name": "DPA — Multi-State US (Colorado, Virginia, Connecticut, Utah, Texas, Oregon, Delaware)",
+  "description": "Placeholder per spec-v3.md §40. Full implementation lands in Step 25. Computes the union of applicable state requirements and flags when the document does not meet the strictest applicable.",
+  "match_features": {
+    "title_keywords": ["data processing agreement", "us state privacy", "multi-state"],
+    "required_clauses": [],
+    "distinguishing_phrases": [],
+    "negative_features": []
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "multi-state-US",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["dpa-ccpa-service-provider", "msa-vendor-deep"],
+  "compliance_matrix_columns": []
+}

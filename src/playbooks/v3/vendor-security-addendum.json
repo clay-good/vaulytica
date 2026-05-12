@@ -1,0 +1,21 @@
+{
+  "id": "vendor-security-addendum",
+  "version": "0.0.0-placeholder",
+  "name": "Vendor Security Addendum",
+  "description": "Placeholder per spec-v3.md §48. Full implementation lands in Step 29. Selects the §34 addenda ruleset (security-only portion). Checks: specific measures listed, cadence stated, right-to-audit or SOC 2 substitution, incident-response notification, vulnerability-disclosure, secure-development-lifecycle, data-classification mapping, encryption standards (FIPS 140-3 / AES-256), pen-test cadence.",
+  "match_features": {
+    "title_keywords": ["vendor security addendum", "security addendum", "information security exhibit"],
+    "required_clauses": [],
+    "distinguishing_phrases": [],
+    "negative_features": []
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "consensus-practice",
+  "applicable_jurisdictions": ["US", "EU", "UK"],
+  "companion_playbooks": ["msa-vendor-deep", "dpa-controller-processor"],
+  "compliance_matrix_columns": []
+}

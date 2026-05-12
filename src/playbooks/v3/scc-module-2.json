@@ -1,0 +1,21 @@
+{
+  "id": "scc-module-2",
+  "version": "0.0.0-placeholder",
+  "name": "EU Standard Contractual Clauses — Module 2 (Controller to Processor)",
+  "description": "Placeholder per spec-v3.md §41. Full implementation lands in Step 24. Verifies the official EU SCC Module 2 text (Commission Implementing Decision 2021/914) is incorporated unmodified. Checks Annexes I, II, III. Flags forbidden modifications per Clause 2.",
+  "match_features": {
+    "title_keywords": ["standard contractual clauses", "scc module 2", "module two", "controller to processor"],
+    "required_clauses": [],
+    "distinguishing_phrases": [],
+    "negative_features": []
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "GDPR",
+  "applicable_jurisdictions": ["EU"],
+  "companion_playbooks": ["dpa-controller-processor"],
+  "compliance_matrix_columns": []
+}

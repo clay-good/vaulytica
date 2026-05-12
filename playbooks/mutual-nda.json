@@ -1,0 +1,48 @@
+{
+  "id": "mutual-nda",
+  "version": "1.0.0",
+  "name": "Mutual Non-Disclosure Agreement",
+  "description": "Two parties exchanging confidential information for a defined purpose. Based on the Common Paper Mutual NDA v1.1.",
+  "match_features": {
+    "title_keywords": ["mutual non-disclosure", "mutual nda", "mutual confidentiality", "non-disclosure agreement", "confidentiality agreement"],
+    "required_clauses": ["confidentiality-obligation", "permitted-disclosures", "term"],
+    "distinguishing_phrases": ["Discloser", "Recipient", "Confidential Information", "Permitted Purpose", "each party"],
+    "negative_features": ["fees", "monthly subscription", "services to be performed", "rent", "premises", "employee", "salary", "scope of work", "one-way", "unilateral", "shall not disclose"]
+  },
+  "expected_clauses": [
+    {"category": "confidentiality-obligation", "severity_if_missing": "critical"},
+    {"category": "permitted-disclosures", "severity_if_missing": "critical"},
+    {"category": "term", "severity_if_missing": "warning"},
+    {"category": "governing-law", "severity_if_missing": "warning"},
+    {"category": "notices", "severity_if_missing": "info"},
+    {"category": "severability", "severity_if_missing": "info"},
+    {"category": "entire-agreement", "severity_if_missing": "info"}
+  ],
+  "expected_defined_terms": [
+    {"term": "Confidential Information", "severity_if_missing": "critical"},
+    {"term": "Permitted Purpose", "severity_if_missing": "warning"},
+    {"term": "Discloser", "severity_if_missing": "info"},
+    {"term": "Recipient", "severity_if_missing": "info"}
+  ],
+  "rule_overrides": {
+    "FIN-003": {"skip": true},
+    "FIN-004": {"skip": true},
+    "FIN-005": {"skip": true},
+    "FIN-006": {"skip": true},
+    "FIN-007": {"skip": true},
+    "FIN-008": {"skip": true},
+    "RISK-001": {"severity": "info"},
+    "RISK-009": {"severity": "warning"},
+    "PERS-001": {"skip": true},
+    "PERS-002": {"skip": true},
+    "PERS-003": {"skip": true},
+    "PERS-004": {"skip": true}
+  },
+  "balanced_defaults": [
+    {"clause": "confidentiality-obligation", "value": "Reasonable care, same as recipient uses for its own confidential information", "source_dkb_id": "common-paper-mutual-nda-v1.1"},
+    {"clause": "permitted-disclosures", "value": "Employees, advisors, and contractors who need to know and are bound by similar obligations", "source_dkb_id": "common-paper-mutual-nda-v1.1"},
+    {"clause": "term", "value": "2-5 years from the Effective Date", "source_dkb_id": "common-paper-mutual-nda-v1.1"},
+    {"clause": "non-disclosure-term", "value": "3 years post-termination", "source_dkb_id": "common-paper-mutual-nda-v1.1"}
+  ],
+  "sources": ["common-paper-mutual-nda-v1.1"]
+}

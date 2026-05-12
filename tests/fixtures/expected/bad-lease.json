@@ -1,0 +1,1068 @@
+{
+  "dkb_version": "v0.0.1-starter",
+  "executed_at": "",
+  "execution_log": [
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "CHOICE-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "CHOICE-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "CHOICE-003-s1-0",
+      "fired": true,
+      "rule_id": "CHOICE-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "CHOICE-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "CHOICE-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "CHOICE-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "CHOICE-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "CHOICE-008-s1.5-1182",
+      "fired": true,
+      "rule_id": "CHOICE-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "CHOICE-009",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "CHOICE-010-s1.5-1168",
+      "fired": true,
+      "rule_id": "CHOICE-010",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "CHOICE-011-s1.6-1292",
+      "fired": true,
+      "rule_id": "CHOICE-011",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "DARK-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "DARK-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "DARK-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "DARK-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "DARK-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "DARK-006-s1.5-1069",
+      "fired": true,
+      "rule_id": "DARK-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "DARK-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "DARK-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "FIN-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "FIN-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "FIN-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "FIN-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "FIN-005-s1-0",
+      "fired": true,
+      "rule_id": "FIN-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "FIN-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "FIN-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "FIN-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "FIN-009-s1.2-756",
+      "fired": true,
+      "rule_id": "FIN-009",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "IPDATA-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "IPDATA-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "IPDATA-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "IPDATA-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "IPDATA-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "IPDATA-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "IPDATA-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "IPDATA-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "IPDATA-009",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "OBLI-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "OBLI-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "OBLI-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "OBLI-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "OBLI-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "OBLI-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "OBLI-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "OBLI-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "OBLI-009",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "PERS-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "PERS-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "PERS-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "PERS-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "PERS-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "PERS-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "PERS-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "PERS-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "RISK-005-s1-0",
+      "fired": true,
+      "rule_id": "RISK-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-009",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-010",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "RISK-011-s1.4-946",
+      "fired": true,
+      "rule_id": "RISK-011",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-012",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-013",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "RISK-014",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "RISK-015-s1.4-940",
+      "fired": true,
+      "rule_id": "RISK-015",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "RISK-016-s1.3-843",
+      "fired": true,
+      "rule_id": "RISK-016",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "STRUCT-002-s1-0",
+      "fired": true,
+      "rule_id": "STRUCT-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "STRUCT-004-s1-0",
+      "fired": true,
+      "rule_id": "STRUCT-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-009",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-010",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-011",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-012",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "STRUCT-013-s1.7-1357",
+      "fired": true,
+      "rule_id": "STRUCT-013",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-014",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "STRUCT-015",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "TEMP-004-s1.1-365",
+      "fired": true,
+      "rule_id": "TEMP-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "TEMP-005-s1.1-365",
+      "fired": true,
+      "rule_id": "TEMP-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-009",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-010",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "TEMP-011-s1.1-365",
+      "fired": true,
+      "rule_id": "TEMP-011",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TEMP-012",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TERM-001",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "TERM-002-s1-0",
+      "fired": true,
+      "rule_id": "TERM-002",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TERM-003",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TERM-004",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "TERM-005-s1-0",
+      "fired": true,
+      "rule_id": "TERM-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TERM-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TERM-007",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TERM-008",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "rule_id": "TERM-009",
+      "rule_version": "1.0.0"
+    }
+  ],
+  "findings": [
+    {
+      "description": "Found 4 placeholders that look like unfilled template content: \"____________________\", \"____________________\", \"____________________\", \"____________________\".",
+      "document_position": 1357,
+      "excerpt": {
+        "end_offset": 1377,
+        "section_id": "s1.7",
+        "start_offset": 1357,
+        "text": "____________________"
+      },
+      "explanation": "A bracketed placeholder, mustache token, or XXX run that survived into the final document is almost always a drafting accident — the contract is meant to be filled in. A placeholder where a counterparty name belongs makes the agreement legally questionable; a placeholder elsewhere makes the agreement embarrassing.",
+      "id": "STRUCT-013-s1.7-1357",
+      "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
+      "rule_id": "STRUCT-013",
+      "rule_version": "1.0.0",
+      "severity": "critical",
+      "source_citations": [],
+      "title": "Unfilled template placeholders: 4"
+    },
+    {
+      "description": "Tenant hereby waives any right to trial by jury",
+      "document_position": 1168,
+      "excerpt": {
+        "end_offset": 1215,
+        "section_id": "s1.5",
+        "start_offset": 1168,
+        "text": "Tenant hereby waives any right to trial by jury in any action arising from this Lease."
+      },
+      "explanation": "A one-sided jury-trial waiver binds the counterparty to a bench-only or arbitration-only forum while leaving the drafter free to demand a jury. Even where enforceable (most US jurisdictions under the FAA and Seventh Amendment), the asymmetry is a recognized dark-pattern signal — particularly in consumer- and employee-facing contracts. *Leasing Service Corp. v. Crane* (4th Cir. 1986) requires the waiver to be `knowing and voluntary`, which courts apply more strictly to one-sided waivers.",
+      "id": "CHOICE-010-s1.5-1168",
+      "recommendation": "Make the waiver bilateral (`each party hereby waives any right to trial by jury`). If the asymmetry is intentional, document the consideration that supports the affected party's `knowing and voluntary` waiver.",
+      "rule_id": "CHOICE-010",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [],
+      "title": "Asymmetric jury-trial waiver"
+    },
+    {
+      "description": "Worker / party is identified as California-based but the contract selects New York law.",
+      "document_position": 1292,
+      "excerpt": {
+        "end_offset": 1337,
+        "section_id": "s1.6",
+        "start_offset": 1292,
+        "text": "New York"
+      },
+      "explanation": "Cal. Lab. Code § 925 voids out-of-state choice-of-law clauses in employment contracts entered into, modified, or extended after Jan. 1, 2017 — unless the employee was individually represented by counsel in negotiating that specific clause. Cal. Bus. & Prof. Code § 16600.5 (2024) extends similar reasoning to non-competes: they are unenforceable regardless of where signed if the worker is in California, and create a private right of action with attorneys' fees. This pattern is commonly used to evade California's strict non-compete prohibitions; courts (e.g., *Lyon v. Neustar*) routinely refuse to enforce it.",
+      "id": "CHOICE-011-s1.6-1292",
+      "recommendation": "Either change governing law to California, or include a §925 counsel-representation acknowledgment. Note that §16600.5 may render any non-compete unenforceable even with §925-compliant choice-of-law language.",
+      "rule_id": "CHOICE-011",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [
+        {
+          "id": "stat-ca-bp-16600",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "California Business and Professions Code § 16600",
+          "source_url": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=16600."
+        }
+      ],
+      "title": "Out-of-state choice-of-law on California-based party"
+    },
+    {
+      "description": "Tenant shall provide Landlord at least 60 days written notice of any claim before initiating suit",
+      "document_position": 1069,
+      "excerpt": {
+        "end_offset": 1166,
+        "section_id": "s1.5",
+        "start_offset": 1069,
+        "text": "Tenant shall provide Landlord at least 60 days written notice of any claim before initiating suit."
+      },
+      "explanation": "A pre-suit notice or cure window imposed on one party (typically the consumer / customer / employee) but not on the drafter compresses the affected party's ability to act quickly — by the time the notice period expires, evidence has aged and pressure to settle has built. The drafter, meanwhile, can initiate proceedings without warning. Confirm whether the asymmetry is a legitimate dispute-resolution structure (e.g., an MSA's `cure for material breach` provision) or a one-sided friction gate.",
+      "id": "DARK-006-s1.5-1069",
+      "recommendation": "If the gate is meant as a dispute-cooling mechanism, make it bilateral (`each party shall provide…`). If it is a one-sided cure window for the drafter's benefit, weigh whether the trade is intended.",
+      "rule_id": "DARK-006",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [
+        {
+          "id": "stat-ftc-deception-statement",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "FTC Policy Statement on Deception (1983)",
+          "source_url": "https://www.ftc.gov/legal-library/browse/ftc-policy-statement-deception"
+        }
+      ],
+      "title": "Asymmetric pre-suit notice / cure window"
+    },
+    {
+      "description": "The document references fees but no 'Net X' or 'due within' clause was found.",
+      "document_position": 0,
+      "excerpt": {
+        "end_offset": 0,
+        "section_id": "s1",
+        "start_offset": 0,
+        "text": "(no payment-term clause)"
+      },
+      "explanation": "Commercial contracts should state when payment is due. 'Net 30' or 'due within X days of invoice' is the typical formulation. Without it, payment timing defaults to the governing-law rule.",
+      "id": "FIN-005-s1-0",
+      "rule_id": "FIN-005",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [],
+      "title": "No payment-term clause detected"
+    },
+    {
+      "description": "The contract specifies a late-payment rate of 3% per month, which annualizes to approximately 36.0%.",
+      "document_position": 756,
+      "excerpt": {
+        "end_offset": 780,
+        "section_id": "s1.2",
+        "start_offset": 756,
+        "text": "Late Payment: A late fee of 3% per month shall apply to amounts not paid when due."
+      },
+      "explanation": "Most US states cap consumer interest in the 18–24%/year range; commercial transactions allow higher contractual rates in many states but several (New York General Obligations Law §5-501, Tennessee, Arkansas pre-Constitutional-Amendment) hold the line tighter. A rate that would be standard in Texas or Delaware may be void in New York or California consumer contexts. Confirm against the controlling jurisdiction.",
+      "id": "FIN-009-s1.2-756",
+      "recommendation": "Confirm the rate is enforceable under the controlling state's usury rules. For consumer-facing contracts, consider capping at 18% annualized. For commercial contracts, document the parties' acknowledgement of the rate.",
+      "rule_id": "FIN-009",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [
+        {
+          "id": "stat-ny-gol-5-501",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "New York General Obligations Law § 5-501 (civil usury)",
+          "source_url": "https://www.nysenate.gov/legislation/laws/GOB/5-501"
+        }
+      ],
+      "title": "Late-payment rate above 18%/year: ~36.0%"
+    },
+    {
+      "description": "Vaulytica did not find a limitation-of-liability clause.",
+      "document_position": 0,
+      "excerpt": {
+        "end_offset": 0,
+        "section_id": "s1",
+        "start_offset": 0,
+        "text": "(no LoL clause)"
+      },
+      "explanation": "Without a limitation-of-liability clause, exposure is bounded only by what the parties can prove in damages. Most commercial contracts cap liability.",
+      "id": "RISK-005-s1-0",
+      "rule_id": "RISK-005",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [],
+      "title": "No limitation-of-liability clause detected"
+    },
+    {
+      "description": "Indemnification language is present (`shall indemnify`) but no clause caps the aggregate exposure.",
+      "document_position": 940,
+      "excerpt": {
+        "end_offset": 955,
+        "section_id": "s1.4",
+        "start_offset": 940,
+        "text": "shall indemnify"
+      },
+      "explanation": "An indemnity carved out of (or simply not subject to) the liability cap can be the largest single financial risk a contract carries. A third-party IP infringement claim, a data-breach notification cost, or a regulatory fine can dwarf the contract value many times over. Confirm the carve-out is deliberate and proportionate to the indemnifying party's solvency.",
+      "id": "RISK-015-s1.4-940",
+      "recommendation": "Either subject indemnification to a per-claim and aggregate cap, or confirm the carve-out is a deliberate trade for higher pricing / different insurance.",
+      "rule_id": "RISK-015",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [],
+      "title": "Indemnification without aggregate cap"
+    },
+    {
+      "description": "shall maintain commercial general liability insurance",
+      "document_position": 843,
+      "excerpt": {
+        "end_offset": 896,
+        "section_id": "s1.3",
+        "start_offset": 843,
+        "text": "Tenant shall maintain commercial general liability insurance during the Term."
+      },
+      "explanation": "A bare `shall maintain insurance` clause is essentially unenforceable: the indemnitee has no way to test whether the counterparty's coverage is adequate, and a $1,000 homeowner policy formally satisfies the clause. Standard commercial drafting names a per-occurrence limit (typically $1M), an aggregate limit (typically $2M), and the coverage type (CGL, professional liability, cyber, etc.).",
+      "id": "RISK-016-s1.3-843",
+      "recommendation": "Specify (1) the coverage types required (CGL, professional liability, errors & omissions, cyber, workers' comp, auto), (2) the per-occurrence limit, (3) the aggregate limit, and (4) the certificate-of-insurance / additional-insured cooperation obligations.",
+      "rule_id": "RISK-016",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [],
+      "title": "Insurance requirement without coverage minimum"
+    },
+    {
+      "description": "No Effective Date is named, defined, or stated near the top of this Agreement.",
+      "document_position": 0,
+      "excerpt": {
+        "end_offset": 0,
+        "section_id": "s1",
+        "start_offset": 0,
+        "text": "(no Effective Date reference matched)"
+      },
+      "explanation": "Most contracts identify a starting point that other date references rely on. Without it, relative terms like 'within 30 days after the Effective Date' have no anchor.",
+      "id": "STRUCT-002-s1-0",
+      "recommendation": "Add an Effective Date — either in the preamble ('dated as of [date]'), as a defined term, or as an explicit 'Effective Date: [date]' line.",
+      "rule_id": "STRUCT-002",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [],
+      "title": "No Effective Date found"
+    },
+    {
+      "description": "The contract contains automatic-renewal language.",
+      "document_position": 365,
+      "excerpt": {
+        "end_offset": 380,
+        "section_id": "s1.1",
+        "start_offset": 365,
+        "text": "Term is three (3) years, with automatic renewal for successive one-year terms unless either party provides written notice of non-renewal at least 10 days before the end of the then-current Term."
+      },
+      "explanation": "Auto-renewal commits the customer to another term unless they actively opt out. The notice window is the critical detail; verify it is reasonable and well-located.",
+      "id": "TEMP-004-s1.1-365",
+      "rule_id": "TEMP-004",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [
+        {
+          "id": "stat-16-cfr-425",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "16 C.F.R. Part 425 (FTC Negative Option Rule)",
+          "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-D/part-425"
+        }
+      ],
+      "title": "Auto-renewal clause present"
+    },
+    {
+      "description": "Non-renewal notice window: 10 days.",
+      "document_position": 365,
+      "excerpt": {
+        "end_offset": 488,
+        "section_id": "s1.1",
+        "start_offset": 365,
+        "text": "automatic renewal for successive one-year terms unless either party provides written notice of non-renewal at least 10 days"
+      },
+      "explanation": "Typical auto-renewal notice windows are 30 to 90 days. Anything outside that band — too long and the customer is likely to forget, too short and they are likely to miss it — warrants review under FTC negative-option marketing guidance (16 CFR Part 425).",
+      "id": "TEMP-005-s1.1-365",
+      "rule_id": "TEMP-005",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [
+        {
+          "id": "stat-16-cfr-425",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "16 C.F.R. Part 425 (FTC Negative Option Rule)",
+          "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-D/part-425"
+        }
+      ],
+      "title": "Auto-renewal notice window of 10 days is unusual"
+    },
+    {
+      "description": "Auto-renewal requires non-renewal notice 10 days in advance.",
+      "document_position": 365,
+      "excerpt": {
+        "end_offset": 380,
+        "section_id": "s1.1",
+        "start_offset": 365,
+        "text": "The initial Term is three (3) years, with automatic renewal for successive one-year terms unless either party provides written notice of non-renewal at least 10 days before the end of the then-current Term."
+      },
+      "explanation": "An under-30-day non-renewal window compresses the customer's decision time. The FTC's Negative Option Rule and state-level auto-renewal statutes (California BPC §17600 et seq., New York GBL §527-a, and similar) constrain this in consumer contexts; even where the contract is B2B, short windows are widely reported as a friction-based dark pattern.",
+      "id": "TEMP-011-s1.1-365",
+      "recommendation": "Negotiate a 30- or 60-day non-renewal notice window.",
+      "rule_id": "TEMP-011",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [
+        {
+          "id": "stat-16-cfr-425",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "16 C.F.R. Part 425 (FTC Negative Option Rule)",
+          "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-D/part-425"
+        }
+      ],
+      "title": "Auto-renewal notice window under 30 days: 10"
+    },
+    {
+      "description": "The contract does not state a path to terminate for material breach.",
+      "document_position": 0,
+      "excerpt": {
+        "end_offset": 0,
+        "section_id": "s1",
+        "start_offset": 0,
+        "text": "(no for-cause termination)"
+      },
+      "explanation": "Without a for-cause termination path, parties must rely on common-law material-breach doctrines, which are jurisdiction-dependent.",
+      "id": "TERM-002-s1-0",
+      "rule_id": "TERM-002",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [],
+      "title": "No termination-for-cause clause detected"
+    },
+    {
+      "description": "The contract does not state what happens upon termination.",
+      "document_position": 0,
+      "excerpt": {
+        "end_offset": 0,
+        "section_id": "s1",
+        "start_offset": 0,
+        "text": "(no effect-of-termination clause)"
+      },
+      "explanation": "An effect-of-termination clause spells out the rights and obligations that survive, the return or destruction of materials, and the wind-down rules.",
+      "id": "TERM-005-s1-0",
+      "rule_id": "TERM-005",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [],
+      "title": "No effect-of-termination clause detected"
+    },
+    {
+      "description": "The document does not state where disputes must be brought.",
+      "document_position": 0,
+      "excerpt": {
+        "end_offset": 0,
+        "section_id": "s1",
+        "start_offset": 0,
+        "text": "(no venue clause)"
+      },
+      "explanation": "Without a venue clause, default venue rules apply (in federal court, 28 U.S.C. § 1391). A clear forum-selection clause avoids ambiguity.",
+      "id": "CHOICE-003-s1-0",
+      "rule_id": "CHOICE-003",
+      "rule_version": "1.0.0",
+      "severity": "info",
+      "source_citations": [
+        {
+          "id": "stat-28-usc-1391",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "28 U.S.C. § 1391 (venue generally)",
+          "source_url": "https://www.law.cornell.edu/uscode/text/28/1391"
+        }
+      ],
+      "title": "No venue / forum clause detected"
+    },
+    {
+      "description": "waives any right to trial by jury",
+      "document_position": 1182,
+      "excerpt": {
+        "end_offset": 1215,
+        "section_id": "s1.5",
+        "start_offset": 1182,
+        "text": "Tenant hereby waives any right to trial by jury in any action arising from this Lease."
+      },
+      "explanation": "Jury waivers are enforceable in most US jurisdictions but unenforceable in some contexts (e.g., California for pre-dispute employment waivers). Confirm enforceability against the governing-law jurisdiction.",
+      "id": "CHOICE-008-s1.5-1182",
+      "rule_id": "CHOICE-008",
+      "rule_version": "1.0.0",
+      "severity": "info",
+      "source_citations": [],
+      "title": "Jury trial waiver present"
+    },
+    {
+      "description": "Indemnity clause appears to be missing: notice, defense control, settlement consent.",
+      "document_position": 946,
+      "excerpt": {
+        "end_offset": 954,
+        "section_id": "s1.4",
+        "start_offset": 946,
+        "text": "Tenant shall indemnify and hold Landlord harmless from any claim arising from Tenant's occupancy of the Premises."
+      },
+      "explanation": "A complete indemnity clause specifies (a) the timeline and form for notice of a claim, (b) which party controls defense, and (c) whether settlement requires consent.",
+      "id": "RISK-011-s1.4-946",
+      "rule_id": "RISK-011",
+      "rule_version": "1.0.0",
+      "severity": "info",
+      "source_citations": [],
+      "title": "Indemnity procedural elements missing: notice, defense control, settlement consent"
+    },
+    {
+      "description": "Vaulytica did not find a Definitions section or any inline-defined terms.",
+      "document_position": 0,
+      "excerpt": {
+        "end_offset": 0,
+        "section_id": "s1",
+        "start_offset": 0,
+        "text": "(no definitions located)"
+      },
+      "explanation": "Most non-trivial contracts capitalize defined terms and either set them out in a Definitions section or define them inline (\"X\" means …). Their absence is not by itself a problem, but downstream rules that check for use of specific defined terms will be skipped.",
+      "id": "STRUCT-004-s1-0",
+      "rule_id": "STRUCT-004",
+      "rule_version": "1.0.0",
+      "severity": "info",
+      "source_citations": [],
+      "title": "No defined terms detected"
+    }
+  ],
+  "playbook_id": "lease-commercial-multitenant",
+  "playbook_match_confidence": 0.9,
+  "playbook_match_reasoning": "Selected lease-commercial-multitenant (score 0.9). Title matched: \"office lease\". Distinguishing phrases: \"Landlord\", \"Tenant\", \"Premises\", \"Common Area\", \"Rentable Square Feet\", \"Base Rent\", \"Operating Expenses\".",
+  "result_hash": "2ebb85d68326e39829b58c9b2021678be6bbb3a18095f26b7ac88213d7b143d0",
+  "source_file": {
+    "name": "bad-lease.docx",
+    "sha256": "a4b69cd11004f7a67b190cd55e53770cb225f43694ba7b8da3549551af75519e",
+    "size_bytes": 1
+  },
+  "version": "0.1.0"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "msa-customer-deep",
+  "version": "0.0.0-placeholder",
+  "name": "MSA — Customer-Side Deep Analysis",
+  "description": "Placeholder per spec-v3.md §47. Full implementation lands in Step 28. Replaces v2 saas-customer for customer-side. Selects the §33 MSA-deep ruleset, oriented toward catching customer-unfriendly drafting (no security commitments, no SLA, broad assignment, no data return).",
+  "match_features": {
+    "title_keywords": ["master services agreement", "cloud service agreement", "customer agreement"],
+    "required_clauses": [],
+    "distinguishing_phrases": [],
+    "negative_features": []
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "commercial",
+  "applicable_jurisdictions": ["US", "EU", "UK"],
+  "companion_playbooks": ["dpa-controller-processor", "baa", "vendor-security-addendum"],
+  "compliance_matrix_columns": []
+}

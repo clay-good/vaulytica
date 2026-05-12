@@ -1,0 +1,45 @@
+{
+  "id": "lease-residential-us",
+  "version": "1.0.0",
+  "name": "Residential Lease (US)",
+  "description": "US residential lease. Pro se and consumer use case. Per-state variation is significant; treat governing law as the gating concern.",
+  "match_features": {
+    "title_keywords": ["residential lease", "residential rental agreement", "apartment lease", "tenant lease", "rental agreement"],
+    "required_clauses": ["payment-terms", "term"],
+    "distinguishing_phrases": ["Landlord", "Tenant", "Premises", "security deposit", "rent shall be paid", "no smoking", "pets are not permitted", "residential"],
+    "negative_features": ["Subscription Term", "Confidential Information", "Customer Data", "Statement of Work", "SOW", "1099", "Operating Expenses", "Common Area", "CAM"]
+  },
+  "expected_clauses": [
+    {"category": "payment-terms", "severity_if_missing": "critical"},
+    {"category": "term", "severity_if_missing": "critical"},
+    {"category": "termination-for-cause", "severity_if_missing": "warning"},
+    {"category": "governing-law", "severity_if_missing": "warning"},
+    {"category": "notices", "severity_if_missing": "info"}
+  ],
+  "expected_defined_terms": [
+    {"term": "Premises", "severity_if_missing": "critical"},
+    {"term": "Rent", "severity_if_missing": "critical"},
+    {"term": "Term", "severity_if_missing": "warning"},
+    {"term": "Security Deposit", "severity_if_missing": "warning"}
+  ],
+  "rule_overrides": {
+    "RISK-009": {"severity": "warning"},
+    "DARK-001": {"severity": "warning"},
+    "DARK-002": {"severity": "warning"},
+    "PERS-001": {"skip": true},
+    "PERS-002": {"skip": true},
+    "PERS-003": {"skip": true},
+    "PERS-004": {"skip": true},
+    "IPDATA-001": {"skip": true},
+    "IPDATA-002": {"skip": true},
+    "IPDATA-003": {"skip": true},
+    "IPDATA-004": {"skip": true},
+    "IPDATA-005": {"skip": true},
+    "IPDATA-006": {"skip": true}
+  },
+  "balanced_defaults": [
+    {"clause": "term", "value": "12 months, then month-to-month unless renewed", "source_dkb_id": "uniform-law-commission"},
+    {"clause": "payment-terms", "value": "Monthly rent due on the first of the month; late fee after a state-law-compliant grace period", "source_dkb_id": "uniform-law-commission"}
+  ],
+  "sources": ["uniform-law-commission"]
+}

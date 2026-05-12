@@ -1,0 +1,43 @@
+{
+  "id": "saas-vendor",
+  "version": "1.0.0",
+  "name": "SaaS Agreement (Vendor Side)",
+  "description": "Vendor reviewing a SaaS subscription agreement. Watches for customer-favorable risk shifts, uncapped indemnity, and gold-plated SLAs. Based on Common Paper Cloud Service Agreement.",
+  "match_features": {
+    "title_keywords": ["cloud service agreement", "saas agreement", "subscription agreement", "master service agreement", "msa for software"],
+    "required_clauses": ["payment-terms", "limitation-of-liability", "disclaimer-of-warranties", "indemnification"],
+    "distinguishing_phrases": ["the Service", "Subscription Term", "Customer Data", "Vendor", "Provider", "uptime"],
+    "negative_features": ["independent contractor", "lease", "Premises", "Tenant", "Employee", "the Discloser"]
+  },
+  "expected_clauses": [
+    {"category": "payment-terms", "severity_if_missing": "critical"},
+    {"category": "limitation-of-liability", "severity_if_missing": "critical"},
+    {"category": "disclaimer-of-warranties", "severity_if_missing": "warning"},
+    {"category": "indemnification-ip", "severity_if_missing": "warning"},
+    {"category": "consequential-damages-waiver", "severity_if_missing": "warning"},
+    {"category": "term", "severity_if_missing": "warning"},
+    {"category": "renewal-term", "severity_if_missing": "warning"},
+    {"category": "termination-for-cause", "severity_if_missing": "warning"},
+    {"category": "governing-law", "severity_if_missing": "warning"}
+  ],
+  "expected_defined_terms": [
+    {"term": "Service", "severity_if_missing": "critical"},
+    {"term": "Subscription Term", "severity_if_missing": "warning"},
+    {"term": "Fees", "severity_if_missing": "warning"}
+  ],
+  "rule_overrides": {
+    "RISK-001": {"severity": "warning"},
+    "RISK-009": {"severity": "warning"},
+    "RISK-002": {"severity": "info"},
+    "PERS-001": {"skip": true},
+    "PERS-002": {"skip": true},
+    "PERS-003": {"skip": true},
+    "PERS-004": {"skip": true}
+  },
+  "balanced_defaults": [
+    {"clause": "limitation-of-liability", "value": "Cap at 12 months of fees paid; mutual; standard carve-outs", "source_dkb_id": "common-paper-cloud-service-agreement-v2"},
+    {"clause": "disclaimer-of-warranties", "value": "Service is provided AS-IS except for the limited express warranty; implied warranties disclaimed", "source_dkb_id": "common-paper-cloud-service-agreement-v2"},
+    {"clause": "consequential-damages-waiver", "value": "Mutual waiver of consequential, incidental, and indirect damages with standard carve-outs", "source_dkb_id": "common-paper-cloud-service-agreement-v2"}
+  ],
+  "sources": ["common-paper-cloud-service-agreement-v2"]
+}

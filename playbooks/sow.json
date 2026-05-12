@@ -1,0 +1,34 @@
+{
+  "id": "sow",
+  "version": "1.0.0",
+  "name": "Statement of Work",
+  "description": "Child of an MSA. Defines the scope, deliverables, schedule, and fees for a specific engagement. Based on Common Paper SOW under the Professional Services Agreement.",
+  "match_features": {
+    "title_keywords": ["statement of work", "sow", "scope of work", "work order"],
+    "required_clauses": ["payment-terms", "term"],
+    "distinguishing_phrases": ["Statement of Work", "this SOW", "Master Agreement", "Deliverables", "milestones", "subject to the Master"],
+    "negative_features": ["the Service is a hosted", "Subscription Term", "lease", "Tenant", "Employee", "the Discloser"]
+  },
+  "expected_clauses": [
+    {"category": "payment-terms", "severity_if_missing": "critical"},
+    {"category": "term", "severity_if_missing": "warning"},
+    {"category": "termination-for-convenience", "severity_if_missing": "info"},
+    {"category": "ip-ownership", "severity_if_missing": "info"}
+  ],
+  "expected_defined_terms": [
+    {"term": "Services", "severity_if_missing": "critical"},
+    {"term": "Deliverables", "severity_if_missing": "critical"},
+    {"term": "Fees", "severity_if_missing": "warning"}
+  ],
+  "rule_overrides": {
+    "STRUCT-009": {"severity": "info"},
+    "STRUCT-010": {"severity": "info"},
+    "RISK-001": {"skip": true},
+    "RISK-009": {"skip": true}
+  },
+  "balanced_defaults": [
+    {"clause": "payment-terms", "value": "Net 30 from invoice; monthly billing or on milestone acceptance", "source_dkb_id": "common-paper-professional-services-agreement-v1"},
+    {"clause": "term", "value": "From the Effective Date through completion of the Services or termination of the Master Agreement, whichever is earlier", "source_dkb_id": "common-paper-professional-services-agreement-v1"}
+  ],
+  "sources": ["common-paper-professional-services-agreement-v1"]
+}

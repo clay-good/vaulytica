@@ -1,0 +1,21 @@
+{
+  "id": "dpa-processor-subprocessor",
+  "version": "0.0.0-placeholder",
+  "name": "DPA — Processor to Sub-Processor",
+  "description": "Placeholder per spec-v3.md §38. Full implementation lands in Step 24. Data Processing Agreement from processor to sub-processor under GDPR. Same ruleset as §37 with flow-down emphasis.",
+  "match_features": {
+    "title_keywords": ["sub-processor agreement", "subprocessor data processing agreement"],
+    "required_clauses": [],
+    "distinguishing_phrases": [],
+    "negative_features": []
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "GDPR",
+  "applicable_jurisdictions": ["EU", "UK"],
+  "companion_playbooks": ["dpa-controller-processor", "scc-module-3"],
+  "compliance_matrix_columns": []
+}

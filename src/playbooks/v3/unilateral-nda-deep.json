@@ -1,0 +1,21 @@
+{
+  "id": "unilateral-nda-deep",
+  "version": "0.0.0-placeholder",
+  "name": "Unilateral NDA — Deep Analysis",
+  "description": "Placeholder per spec-v3.md §45. Full implementation lands in Step 27. Replaces v2 unilateral-nda. Selects the §32 NDA-deep ruleset. Includes DTSA notice check, receiver-only obligation check, definition-exclusions check.",
+  "match_features": {
+    "title_keywords": ["one-way non-disclosure agreement", "unilateral nda", "confidentiality agreement"],
+    "required_clauses": [],
+    "distinguishing_phrases": [],
+    "negative_features": []
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "DTSA",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["msa-vendor-deep"],
+  "compliance_matrix_columns": []
+}

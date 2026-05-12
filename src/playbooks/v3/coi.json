@@ -1,0 +1,21 @@
+{
+  "id": "coi",
+  "version": "0.0.0-placeholder",
+  "name": "Certificate of Insurance (COI) Check",
+  "description": "Placeholder per spec-v3.md §53. Full implementation lands in Step 29. Drop an ACORD 25; extract carrier, AM Best rating, coverage amounts, endorsements; lint against a customer-supplied requirements profile or the §12 default industry-norms profile.",
+  "match_features": {
+    "title_keywords": ["certificate of liability insurance", "acord 25", "certificate of insurance", "coi"],
+    "required_clauses": [],
+    "distinguishing_phrases": [],
+    "negative_features": []
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "insurance",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["msa-vendor-deep", "msa-customer-deep"],
+  "compliance_matrix_columns": []
+}

@@ -1,0 +1,49 @@
+{
+  "id": "saas-customer",
+  "version": "1.0.0",
+  "name": "SaaS Agreement (Customer Side)",
+  "description": "Customer reviewing a SaaS subscription agreement. Watches for vendor-favorable risk allocation, weak SLAs, and aggressive auto-renewal. Based on Common Paper Cloud Service Agreement.",
+  "match_features": {
+    "title_keywords": ["cloud service agreement", "saas agreement", "subscription agreement", "software-as-a-service", "master subscription"],
+    "required_clauses": ["payment-terms", "limitation-of-liability", "warranty", "indemnification"],
+    "distinguishing_phrases": ["the Service", "the Software", "Subscription Term", "Customer Data", "uptime", "Service Level"],
+    "negative_features": ["independent contractor", "lease", "Premises", "Tenant", "Landlord", "Employee", "the Discloser"]
+  },
+  "expected_clauses": [
+    {"category": "payment-terms", "severity_if_missing": "critical"},
+    {"category": "limitation-of-liability", "severity_if_missing": "critical"},
+    {"category": "warranty", "severity_if_missing": "warning"},
+    {"category": "disclaimer-of-warranties", "severity_if_missing": "info"},
+    {"category": "indemnification", "severity_if_missing": "critical"},
+    {"category": "indemnification-ip", "severity_if_missing": "warning"},
+    {"category": "data-processing", "severity_if_missing": "warning"},
+    {"category": "term", "severity_if_missing": "warning"},
+    {"category": "renewal-term", "severity_if_missing": "warning"},
+    {"category": "termination-for-cause", "severity_if_missing": "warning"},
+    {"category": "governing-law", "severity_if_missing": "warning"}
+  ],
+  "expected_defined_terms": [
+    {"term": "Service", "severity_if_missing": "critical"},
+    {"term": "Customer Data", "severity_if_missing": "critical"},
+    {"term": "Subscription Term", "severity_if_missing": "warning"},
+    {"term": "Fees", "severity_if_missing": "warning"}
+  ],
+  "rule_overrides": {
+    "RISK-001": {"severity": "critical"},
+    "RISK-002": {"severity": "warning"},
+    "RISK-009": {"severity": "critical"},
+    "DARK-001": {"severity": "warning"},
+    "DARK-002": {"severity": "warning"},
+    "PERS-001": {"skip": true},
+    "PERS-002": {"skip": true},
+    "PERS-003": {"skip": true},
+    "PERS-004": {"skip": true}
+  },
+  "balanced_defaults": [
+    {"clause": "limitation-of-liability", "value": "Cap at 12 months of fees paid; mutual; carve-outs for indemnity, confidentiality breach, and willful misconduct", "source_dkb_id": "common-paper-cloud-service-agreement-v2"},
+    {"clause": "renewal-term", "value": "Auto-renew for successive 1-year terms with at least 30 days' notice of non-renewal", "source_dkb_id": "common-paper-cloud-service-agreement-v2"},
+    {"clause": "indemnification-ip", "value": "Vendor defends and indemnifies against third-party IP infringement claims arising from the Service", "source_dkb_id": "common-paper-cloud-service-agreement-v2"},
+    {"clause": "data-processing", "value": "DPA incorporated by reference; processor commitments and sub-processor list maintained", "source_dkb_id": "common-paper-data-processing-agreement"}
+  ],
+  "sources": ["common-paper-cloud-service-agreement-v2", "common-paper-data-processing-agreement"]
+}

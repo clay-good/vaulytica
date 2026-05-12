@@ -1,0 +1,21 @@
+{
+  "id": "privacy-policy-lint",
+  "version": "0.0.0-placeholder",
+  "name": "Privacy Policy Linter",
+  "description": "Placeholder per spec-v3.md §52. Full implementation lands in Step 29. Not a contract, but a frequently-paired document. Checks alignment with CCPA § 1798.130 disclosure requirements, GDPR Articles 13/14, COPPA disclosure, state-by-state required content. Includes a 'matches your asserted DPA terms' check when run paired with a DPA.",
+  "match_features": {
+    "title_keywords": ["privacy policy", "privacy notice", "data privacy notice"],
+    "required_clauses": [],
+    "distinguishing_phrases": [],
+    "negative_features": []
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "CCPA",
+  "applicable_jurisdictions": ["US", "EU", "UK"],
+  "companion_playbooks": ["dpa-controller-processor", "dpa-ccpa-service-provider"],
+  "compliance_matrix_columns": []
+}

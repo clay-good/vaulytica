@@ -1,0 +1,21 @@
+{
+  "id": "uk-idta-addendum",
+  "version": "0.0.0-placeholder",
+  "name": "UK International Data Transfer Addendum / IDTA",
+  "description": "Placeholder per spec-v3.md §43. Full implementation lands in Step 26. Verifies Tables 1–4 of the UK Addendum to EU SCCs are completed; or, if standalone IDTA, verifies Tables 1–4 of the IDTA are completed and the substantive clauses are unmodified (per ICO templates).",
+  "match_features": {
+    "title_keywords": ["uk addendum", "idta", "international data transfer addendum", "uk idta"],
+    "required_clauses": [],
+    "distinguishing_phrases": [],
+    "negative_features": []
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "UK-GDPR",
+  "applicable_jurisdictions": ["UK"],
+  "companion_playbooks": ["dpa-controller-processor", "scc-module-2"],
+  "compliance_matrix_columns": []
+}

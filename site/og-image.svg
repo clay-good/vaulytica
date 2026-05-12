@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#07090D"/>
+  <g transform="translate(80,80)">
+    <circle cx="14" cy="22" r="10" fill="#00E5A8"/>
+    <text x="34" y="32" fill="#F5F7FA" font-family="ui-sans-serif, -apple-system, Inter, sans-serif" font-size="34" font-weight="600" letter-spacing="-0.5">vaulytica</text>
+  </g>
+  <g transform="translate(80,220)">
+    <text fill="#F5F7FA" font-family="ui-sans-serif, -apple-system, Inter, sans-serif" font-size="68" font-weight="600" letter-spacing="-1.2">
+      <tspan x="0" dy="0">Drop a contract.</tspan>
+      <tspan x="0" dy="80">Get a report.</tspan>
+      <tspan x="0" dy="80" fill="#00E5A8">Nothing leaves your browser.</tspan>
+    </text>
+  </g>
+  <text x="80" y="580" fill="#8B919C" font-family="ui-monospace, Menlo, monospace" font-size="22">free · open source · no signup · no AI · MIT</text>
+</svg>

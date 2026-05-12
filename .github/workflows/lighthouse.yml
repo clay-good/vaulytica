@@ -1,0 +1,51 @@
+name: Lighthouse CI (4G performance budget)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lighthouse:
+    # Runs Lighthouse against the built `dist/` directory using
+    # the throttled-mobile preset. Verifies LAUNCH.md row (l): the
+    # site loads in under 2s on a throttled 4G mobile profile. The
+    # budgets in `lighthouserc.json` enforce the targets:
+    #
+    #   - First Contentful Paint  ≤ 1500 ms
+    #   - Largest Contentful Paint ≤ 2000 ms
+    #   - Time to Interactive     ≤ 2000 ms
+    #   - Total Blocking Time     ≤  200 ms
+    #   - Cumulative Layout Shift ≤  0.1
+    #   - Performance score       ≥ 0.85
+    #   - Accessibility score     ≥ 0.95
+    #   - Best Practices score    ≥ 0.90
+    #   - SEO score               ≥ 0.90
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli@0.14.x
+
+      - name: Run Lighthouse CI
+        run: lhci autorun

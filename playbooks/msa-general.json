@@ -1,0 +1,38 @@
+{
+  "id": "msa-general",
+  "version": "1.0.0",
+  "name": "Master Services Agreement (General)",
+  "description": "Generic professional-services MSA. Fallback for B2B services contracts that are not specifically SaaS or consulting. Based on Common Paper Professional Services Agreement.",
+  "match_features": {
+    "title_keywords": ["master services agreement", "master service agreement", "msa", "professional services agreement", "services agreement"],
+    "required_clauses": ["payment-terms", "term", "termination-for-cause", "indemnification"],
+    "distinguishing_phrases": ["Statement of Work", "SOW", "Services", "Deliverables", "Provider", "Customer", "Master Agreement"],
+    "negative_features": ["the Service is a hosted", "Subscription Term", "lease", "Premises", "Tenant", "Employee", "the Discloser"]
+  },
+  "expected_clauses": [
+    {"category": "payment-terms", "severity_if_missing": "critical"},
+    {"category": "limitation-of-liability", "severity_if_missing": "warning"},
+    {"category": "indemnification", "severity_if_missing": "critical"},
+    {"category": "term", "severity_if_missing": "warning"},
+    {"category": "termination-for-cause", "severity_if_missing": "warning"},
+    {"category": "termination-for-convenience", "severity_if_missing": "info"},
+    {"category": "ip-ownership", "severity_if_missing": "warning"},
+    {"category": "confidentiality-obligation", "severity_if_missing": "warning"},
+    {"category": "governing-law", "severity_if_missing": "warning"},
+    {"category": "insurance", "severity_if_missing": "info"}
+  ],
+  "expected_defined_terms": [
+    {"term": "Services", "severity_if_missing": "critical"},
+    {"term": "Statement of Work", "severity_if_missing": "warning"},
+    {"term": "Fees", "severity_if_missing": "warning"}
+  ],
+  "rule_overrides": {
+    "RISK-009": {"severity": "warning"}
+  },
+  "balanced_defaults": [
+    {"clause": "payment-terms", "value": "Net 30 from invoice", "source_dkb_id": "common-paper-professional-services-agreement-v1"},
+    {"clause": "limitation-of-liability", "value": "Cap at 12 months of fees paid under the applicable SOW", "source_dkb_id": "common-paper-professional-services-agreement-v1"},
+    {"clause": "termination-for-convenience", "value": "Either party on 30 days' notice", "source_dkb_id": "common-paper-professional-services-agreement-v1"}
+  ],
+  "sources": ["common-paper-professional-services-agreement-v1"]
+}

@@ -1,0 +1,55 @@
+{
+  "name": "vaulytica",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The free, deterministic, runs-entirely-in-your-browser contract checker. A linter for legal documents.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "dkb:fetch": "tsx dkb/build/run-fetcher.ts",
+    "dkb:build": "tsx dkb/build/build.ts",
+    "icons": "tsx tools/generate-icons.ts",
+    "fixtures": "tsx tests/fixtures/build-fixtures.ts",
+    "fixtures:regen-golden": "VAULYTICA_REGEN_GOLDEN=1 vitest run tests/integration/golden-output.test.ts",
+    "e2e": "playwright test",
+    "e2e:install": "playwright install --with-deps chromium"
+  },
+  "dependencies": {
+    "decimal.js": "^10.4.3",
+    "docx": "^9.6.1",
+    "mammoth": "^1.8.0",
+    "pdfjs-dist": "^4.2.67",
+    "tesseract.js": "^5.1.0",
+    "zod": "^3.23.4"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.12.7",
+    "@typescript-eslint/eslint-plugin": "^7.7.0",
+    "@typescript-eslint/parser": "^7.7.0",
+    "@xmldom/xmldom": "^0.9.10",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "happy-dom": "^14.7.1",
+    "js-yaml": "^4.1.1",
+    "prettier": "^3.2.5",
+    "sharp": "^0.34.5",
+    "tsx": "^4.21.0",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.10",
+    "vitest": "^1.5.0"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "saas-tos",
+  "version": "0.0.0-placeholder",
+  "name": "SaaS Terms of Service (Consumer-Facing)",
+  "description": "Placeholder per spec-v3.md §51. Full implementation lands in Step 29. FTC Click-to-Cancel rule alignment, ROSCA, state auto-renewal laws, ADA accessibility statements, age gates where COPPA applicable, ToS dark-pattern detection (reuses v2 dark-patterns ruleset with elevated severity).",
+  "match_features": {
+    "title_keywords": ["terms of service", "terms of use", "tos", "user agreement"],
+    "required_clauses": [],
+    "distinguishing_phrases": [],
+    "negative_features": []
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "consumer-protection",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["privacy-policy-lint", "eula"],
+  "compliance_matrix_columns": []
+}

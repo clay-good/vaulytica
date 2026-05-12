@@ -1,0 +1,21 @@
+{
+  "id": "msa-vendor-deep",
+  "version": "0.0.0-placeholder",
+  "name": "MSA — Vendor-Side Deep Analysis",
+  "description": "Placeholder per spec-v3.md §46. Full implementation lands in Step 28. Replaces v2 saas-vendor and msa-general for vendor-side. Selects the §33 MSA-deep ruleset, oriented toward catching vendor-friendly drafting (low caps, broad disclaimers, narrow indemnity).",
+  "match_features": {
+    "title_keywords": ["master services agreement", "master subscription agreement", "vendor agreement"],
+    "required_clauses": [],
+    "distinguishing_phrases": [],
+    "negative_features": []
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "commercial",
+  "applicable_jurisdictions": ["US", "EU", "UK"],
+  "companion_playbooks": ["dpa-controller-processor", "baa"],
+  "compliance_matrix_columns": []
+}
