@@ -139,6 +139,7 @@ import { rule as DARK_005 } from "./dark-patterns/DARK-005.js";
 import { rule as DARK_006 } from "./dark-patterns/DARK-006.js";
 import { rule as DARK_007 } from "./dark-patterns/DARK-007.js";
 import { rule as DARK_008 } from "./dark-patterns/DARK-008.js";
+import { rule as DARK_009 } from "./dark-patterns/DARK-009.js";
 
 export const LAUNCH_RULES: readonly Rule[] = [
   // Structural — 14
@@ -165,5 +166,5 @@ export const LAUNCH_RULES: readonly Rule[] = [
   // Personnel — 4
   PERS_001, PERS_002, PERS_003, PERS_004, PERS_005, PERS_006, PERS_007, PERS_008,
   // Dark patterns — 4
-  DARK_001, DARK_002, DARK_003, DARK_004, DARK_005, DARK_006, DARK_007, DARK_008,
+  DARK_001, DARK_002, DARK_003, DARK_004, DARK_005, DARK_006, DARK_007, DARK_008, DARK_009,
 ];

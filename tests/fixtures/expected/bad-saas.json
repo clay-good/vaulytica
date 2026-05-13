@@ -126,6 +126,13 @@
     },
     {
       "elapsed_ms": 0,
+      "finding_id": "DARK-009-s1.3-838",
+      "fired": true,
+      "rule_id": "DARK-009",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
       "fired": false,
       "rule_id": "FIN-001",
       "rule_version": "1.0.0"
@@ -691,6 +698,33 @@
       "title": "Browsewrap / passive-acceptance language"
     },
     {
+      "description": "Vendor may modify the terms of this Agreement at any time by posting a revised version on its website",
+      "document_position": 838,
+      "excerpt": {
+        "end_offset": 939,
+        "section_id": "s1.3",
+        "start_offset": 838,
+        "text": "(d) Modifications. Vendor may modify the terms of this Agreement at any time by posting a revised version on its website; continued use of the Service constitutes acceptance."
+      },
+      "explanation": "Allowing one party to change the contract by posting a new version on a website shifts the entire burden of monitoring the agreement to the other party in perpetuity, and renders the originally negotiated terms effectively meaningless. The FTC has called out 'post-and-pray' amendment in enforcement actions, and California's auto-renewal law plus the FTC's Click-to-Cancel rule (16 CFR § 425) require affirmative consent for material changes. Courts also sometimes refuse to enforce such clauses on illusory-contract grounds.",
+      "id": "DARK-009-s1.3-838",
+      "recommendation": "Restrict unilateral amendment to immaterial / non-substantive changes effected by written notice (email + at least 30 days) with a defined objection / opt-out right. Material changes — pricing, scope, liability, data use — must require a signed amendment or affirmative click-through consent.",
+      "rule_id": "DARK-009",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [
+        {
+          "id": "stat-ftc-deception-statement",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "FTC Policy Statement on Deception (1983)",
+          "source_url": "https://www.ftc.gov/legal-library/browse/ftc-policy-statement-deception"
+        }
+      ],
+      "title": "Unilateral amendment by posting to a URL"
+    },
+    {
       "description": "The document references fees but no 'Net X' or 'due within' clause was found.",
       "document_position": 0,
       "excerpt": {
@@ -1006,7 +1040,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "ca4cad6c4879805aa44813c64fccc1a526e081ae9bb8b6d9614bc37a5ba370f1",
+  "result_hash": "0d613c93722fe7115fe438a0d2969321c551eda8da705eaeadb607a13458bca1",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",
