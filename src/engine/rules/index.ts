@@ -83,6 +83,7 @@ import { rule as RISK_013 } from "./risk-allocation/RISK-013.js";
 import { rule as RISK_014 } from "./risk-allocation/RISK-014.js";
 import { rule as RISK_015 } from "./risk-allocation/RISK-015.js";
 import { rule as RISK_016 } from "./risk-allocation/RISK-016.js";
+import { rule as RISK_017 } from "./risk-allocation/RISK-017.js";
 
 // Choice & venue
 import { rule as CHOICE_001 } from "./choice-and-venue/CHOICE-001.js";
@@ -155,7 +156,7 @@ export const LAUNCH_RULES: readonly Rule[] = [
   OBLI_001, OBLI_002, OBLI_003, OBLI_004, OBLI_005, OBLI_006, OBLI_007, OBLI_008, OBLI_009,
   // Risk allocation — 14
   RISK_001, RISK_002, RISK_003, RISK_004, RISK_005, RISK_006, RISK_007,
-  RISK_008, RISK_009, RISK_010, RISK_011, RISK_012, RISK_013, RISK_014, RISK_015, RISK_016,
+  RISK_008, RISK_009, RISK_010, RISK_011, RISK_012, RISK_013, RISK_014, RISK_015, RISK_016, RISK_017,
   // Choice & venue — 8
   CHOICE_001, CHOICE_002, CHOICE_003, CHOICE_004, CHOICE_005, CHOICE_006,
   CHOICE_007, CHOICE_008, CHOICE_009, CHOICE_010, CHOICE_011, CHOICE_012,
