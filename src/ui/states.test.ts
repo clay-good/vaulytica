@@ -71,12 +71,85 @@ describe("renderState", () => {
       const btn = select<HTMLButtonElement>(dz, "docx-download")!;
       btn.click();
       // saveBlob is async; let microtasks run.
-      await Promise.resolve();
-      await Promise.resolve();
+      for (let i = 0; i < 5; i++) await Promise.resolve();
       expect(seen.length).toBe(1);
       expect(seen[0]?.download).toBe("nda-vaulytica.docx");
       expect(seen[0]?.href).toMatch(/^blob:/);
-      expect(select(dz, "download-status")!.textContent).toMatch(/Saved nda-vaulytica\.docx/);
+      // happy-dom does not expose `showSaveFilePicker`, so we exercise
+      // the anchor fallback path. Status reports "Download started".
+      expect(select(dz, "download-status")!.textContent).toMatch(/Download started: nda-vaulytica\.docx/);
+    } finally {
+      HTMLAnchorElement.prototype.click = origClick;
+      document.body.removeChild(dz);
+    }
+  });
+
+  it("download flow uses File System Access API when available", async () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    const docxBlob = new Blob(["docx-bytes"], { type: "application/octet-stream" });
+    renderState(dz, {
+      kind: "complete",
+      filename: "nda.docx",
+      playbook_name: "Mutual NDA",
+      counts: { critical: 0, warning: 0, info: 0 },
+      docx_blob: docxBlob,
+      json_blob: new Blob(["{}"], { type: "application/json" }),
+      docx_filename: "nda-vaulytica.docx",
+      json_filename: "nda-vaulytica.json",
+    });
+    const written: BlobPart[] = [];
+    let closed = false;
+    (window as unknown as { showSaveFilePicker: unknown }).showSaveFilePicker = async (
+      opts: { suggestedName?: string },
+    ) => {
+      expect(opts.suggestedName).toBe("nda-vaulytica.docx");
+      return {
+        createWritable: async () => ({
+          write: async (data: BlobPart) => {
+            written.push(data);
+          },
+          close: async () => {
+            closed = true;
+          },
+        }),
+      };
+    };
+    try {
+      select<HTMLButtonElement>(dz, "docx-download")!.click();
+      for (let i = 0; i < 10; i++) await Promise.resolve();
+      expect(written.length).toBe(1);
+      expect(closed).toBe(true);
+      expect(select(dz, "download-status")!.textContent).toBe("Saved nda-vaulytica.docx");
+    } finally {
+      delete (window as unknown as { showSaveFilePicker?: unknown }).showSaveFilePicker;
+      document.body.removeChild(dz);
+    }
+  });
+
+  it("download flow reports empty blob and never calls click", async () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    renderState(dz, {
+      kind: "complete",
+      filename: "nda.docx",
+      playbook_name: "Mutual NDA",
+      counts: { critical: 0, warning: 0, info: 0 },
+      docx_blob: new Blob([], { type: "application/octet-stream" }),
+      json_blob: new Blob(["{}"], { type: "application/json" }),
+      docx_filename: "nda-vaulytica.docx",
+      json_filename: "nda-vaulytica.json",
+    });
+    let clicked = 0;
+    const origClick = HTMLAnchorElement.prototype.click;
+    HTMLAnchorElement.prototype.click = function () {
+      clicked++;
+    };
+    try {
+      select<HTMLButtonElement>(dz, "docx-download")!.click();
+      for (let i = 0; i < 5; i++) await Promise.resolve();
+      expect(clicked).toBe(0);
+      expect(select(dz, "download-status")!.textContent).toMatch(/empty/);
     } finally {
       HTMLAnchorElement.prototype.click = origClick;
       document.body.removeChild(dz);

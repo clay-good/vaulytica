@@ -104,6 +104,15 @@ export async function buildDocxReport(
   });
 
   const blob = await Packer.toBlob(doc);
+  // `Packer.toBlob` returns a Blob with no explicit type on some `docx`
+  // versions, which causes macOS to treat the download as an
+  // unrecognized binary. Re-wrap with the canonical Office MIME so the
+  // file picks up the right Finder icon and opens in Word.
+  if (blob.type === "") {
+    return new Blob([blob], {
+      type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    });
+  }
   return blob;
 }
 

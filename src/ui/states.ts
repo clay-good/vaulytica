@@ -105,33 +105,93 @@ export function baseName(filename: string): string {
   return i > 0 ? filename.slice(0, i) : filename;
 }
 
+const DOCX_MIME = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+const JSON_MIME = "application/json";
+
+type FsaWritable = {
+  write: (data: BlobPart) => Promise<void>;
+  close: () => Promise<void>;
+};
+type FsaHandle = { createWritable: () => Promise<FsaWritable> };
+type FsaWindow = Window & {
+  showSaveFilePicker?: (options: {
+    suggestedName?: string;
+    types?: Array<{ description?: string; accept: Record<string, string[]> }>;
+  }) => Promise<FsaHandle>;
+};
+
 /**
- * Programmatic, browser-agnostic "Save As" for a Blob.
+ * Reliable, user-confirmable "Save As" for a Blob.
  *
- * Why not `<a href="blob:..." download>`? On macOS Chrome + Cloudflare
- * Pages we hit two failure modes with the bare anchor:
+ * Two paths, in order of preference:
  *
- *   1. The dropzone's own click handler intercepted the bubbling click
- *      and re-opened the file picker (NSOpenPanel) — user saw an
- *      "Open" dialog instead of a save flow. Fixed in `dropzone.ts`
- *      by ignoring clicks on interactive children.
+ * 1. **File System Access API** (`showSaveFilePicker`). Available on
+ *    Chrome / Edge / Opera desktop. Pops up the native macOS save
+ *    panel with the proper "Save" button — the user sees exactly
+ *    where the file lands and can rename it. We only flip status to
+ *    "Saved X" *after* the writable stream's `close()` resolves,
+ *    so the message reflects an actual on-disk write, not just an
+ *    intent.
  *
- *   2. The previous implementation revoked the blob URL one render
- *      tick after creation, so Chrome's download manager streamed a
- *      partial blob, stalled at ~50–60% in the toolbar's circular
- *      progress indicator, and never showed up in chrome://downloads.
+ * 2. **Synthetic anchor fallback**. Used by Safari, Firefox, and any
+ *    browser without FSA. Creates a hidden `<a download>` over a
+ *    fresh `URL.createObjectURL(blob)`, clicks it inside the user
+ *    gesture, removes it, and revokes the URL 60s later so Chrome's
+ *    download manager has time to read every byte (revoking earlier
+ *    was the cause of the "stuck at 60% in toolbar with nothing in
+ *    chrome://downloads" bug). Status here is "Download started —
+ *    check your Downloads folder" because the page can't see whether
+ *    the OS actually persisted the file.
  *
- * The synthetic-anchor approach below is the canonical
- * cross-browser pattern: create the URL fresh, append a hidden
- * anchor, click it inside the user's gesture, remove it, and
- * `revokeObjectURL` after a generous delay so the download manager
- * has finished reading the bytes. Status is surfaced in the live
- * region so users see "Saved X.docx" right where they clicked.
+ * Empty / zero-byte blobs are caught up front so a silent pipeline
+ * bug surfaces as a visible error message instead of a phantom save.
  */
-async function saveBlob(blob: Blob, filename: string, statusEl: HTMLElement): Promise<void> {
-  statusEl.textContent = `Saving ${filename}…`;
+export async function saveBlob(
+  blob: Blob,
+  filename: string,
+  statusEl: HTMLElement,
+): Promise<void> {
+  if (!blob || blob.size === 0) {
+    statusEl.textContent = `Could not save ${filename}: the report blob is empty.`;
+    return;
+  }
+
+  const ext = filename.toLowerCase().endsWith(".docx") ? "docx" : "json";
+  // Defensively re-wrap if the upstream blob lost its MIME type. macOS
+  // associates files by MIME, and a blob of type "" lands as an
+  // unrecognized binary in some browsers.
+  const typedBlob =
+    blob.type === "" ? new Blob([blob], { type: ext === "docx" ? DOCX_MIME : JSON_MIME }) : blob;
+
+  const fsa = (window as FsaWindow).showSaveFilePicker;
+  if (typeof fsa === "function") {
+    statusEl.textContent = `Saving ${filename}…`;
+    try {
+      const accept: Record<string, string[]> =
+        ext === "docx" ? { [DOCX_MIME]: [".docx"] } : { [JSON_MIME]: [".json"] };
+      const description = ext === "docx" ? "Word document" : "JSON";
+      const handle = await fsa.call(window, {
+        suggestedName: filename,
+        types: [{ description, accept }],
+      });
+      const writable = await handle.createWritable();
+      await writable.write(typedBlob);
+      await writable.close();
+      statusEl.textContent = `Saved ${filename}`;
+      return;
+    } catch (err) {
+      const e = err as { name?: string; message?: string };
+      if (e.name === "AbortError") {
+        statusEl.textContent = "Save canceled.";
+        return;
+      }
+      // Permission denied, NotAllowedError, etc. — fall through to anchor.
+      statusEl.textContent = `Falling back to direct download (${e.message ?? "fsa unavailable"})…`;
+    }
+  }
+
   try {
-    const url = URL.createObjectURL(blob);
+    const url = URL.createObjectURL(typedBlob);
     const a = document.createElement("a");
     a.href = url;
     a.download = filename;
@@ -140,12 +200,8 @@ async function saveBlob(blob: Blob, filename: string, statusEl: HTMLElement): Pr
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    // Give the browser's download manager time to start streaming
-    // before we revoke the URL. 60 seconds is more than enough even
-    // for very large reports; revoking too early was the cause of the
-    // stuck-at-60% Chrome toolbar bug.
     setTimeout(() => URL.revokeObjectURL(url), 60_000);
-    statusEl.textContent = `Saved ${filename}`;
+    statusEl.textContent = `Download started: ${filename}. Check your Downloads folder.`;
   } catch (err) {
     statusEl.textContent = `Could not save: ${err instanceof Error ? err.message : String(err)}`;
   }
