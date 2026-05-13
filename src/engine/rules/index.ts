@@ -120,6 +120,7 @@ import { rule as IPDATA_006 } from "./ip-and-data/IPDATA-006.js";
 import { rule as IPDATA_007 } from "./ip-and-data/IPDATA-007.js";
 import { rule as IPDATA_008 } from "./ip-and-data/IPDATA-008.js";
 import { rule as IPDATA_009 } from "./ip-and-data/IPDATA-009.js";
+import { rule as IPDATA_010 } from "./ip-and-data/IPDATA-010.js";
 
 // Personnel
 import { rule as PERS_001 } from "./personnel/PERS-001.js";
@@ -163,7 +164,7 @@ export const LAUNCH_RULES: readonly Rule[] = [
   // Termination — 8
   TERM_001, TERM_002, TERM_003, TERM_004, TERM_005, TERM_006, TERM_007, TERM_008, TERM_009,
   // IP & data — 6
-  IPDATA_001, IPDATA_002, IPDATA_003, IPDATA_004, IPDATA_005, IPDATA_006, IPDATA_007, IPDATA_008, IPDATA_009,
+  IPDATA_001, IPDATA_002, IPDATA_003, IPDATA_004, IPDATA_005, IPDATA_006, IPDATA_007, IPDATA_008, IPDATA_009, IPDATA_010,
   // Personnel — 4
   PERS_001, PERS_002, PERS_003, PERS_004, PERS_005, PERS_006, PERS_007, PERS_008,
   // Dark patterns — 4

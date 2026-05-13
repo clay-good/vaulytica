@@ -244,6 +244,13 @@
     },
     {
       "elapsed_ms": 0,
+      "finding_id": "IPDATA-010-s1.2-598",
+      "fired": true,
+      "rule_id": "IPDATA-010",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
       "fired": false,
       "rule_id": "OBLI-001",
       "rule_version": "1.0.0"
@@ -750,6 +757,24 @@
       "title": "No IP-ownership clause detected"
     },
     {
+      "description": "grants Vendor a perpetual, irrevocable, worldwide, royalty-free license to use, reproduce, and create derivative works from Customer Data (including any Personal Data therein) for the purposes of operating, improving, training, and developi",
+      "document_position": 598,
+      "excerpt": {
+        "end_offset": 906,
+        "section_id": "s1.2",
+        "start_offset": 598,
+        "text": "Customer grants Vendor a perpetual, irrevocable, worldwide, royalty-free license to use, reproduce, and create derivative works from Customer Data (including any Personal Data therein) for the purposes of operating, improving, training, and developing Vendor's services, machine-learning models, and related products."
+      },
+      "explanation": "License grants that pile up perpetual / irrevocable / royalty-free / worldwide / sublicensable / transferable / fully paid-up modifiers over Feedback, Customer Data, User Content, or likeness surrender every lever a customer would ordinarily retain. The scope is often broader than the vendor needs and broader than the customer realizes. Especially for Feedback, the broadly-scoped grant means anything the customer ever says to support — even suggestions for entirely separate products — becomes free fodder for the vendor's roadmap, transferable to acquirers, and unrecoverable.",
+      "id": "IPDATA-010-s1.2-598",
+      "recommendation": "Narrow the license to what the vendor actually needs. For Feedback, a non-exclusive, non-transferable license to use Feedback for the limited purpose of improving the Service, terminating on termination of the Agreement, is the standard balanced position. Strike 'sublicensable' and 'transferable' unless the use case genuinely requires sharing the grant with third parties.",
+      "rule_id": "IPDATA-010",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [],
+      "title": "License grant is perpetual / irrevocable / royalty-free / sublicensable"
+    },
+    {
       "description": "Vaulytica did not find a limitation-of-liability clause.",
       "document_position": 0,
       "excerpt": {
@@ -941,7 +966,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "dd5642257e964681702f19489d91d4c834d4b8e4665d9c51fa377010078798d2",
+  "result_hash": "023c7790ec97ed48862f8579baf417c1734dd915e8a1bf0201ecaf8291851f28",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
     "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",
