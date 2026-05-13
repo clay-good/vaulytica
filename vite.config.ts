@@ -78,7 +78,8 @@ function deployAssets(): Plugin {
       }
 
       mkdirSync(DIST, { recursive: true });
-      writeFileSync(resolve(DIST, "_headers"), buildHeadersFile(), "utf8");
+      const inlineHashes = computeInlineScriptHashes(resolve(DIST, "index.html"));
+      writeFileSync(resolve(DIST, "_headers"), buildHeadersFile(inlineHashes), "utf8");
       writeFileSync(resolve(DIST, "_redirects"), buildRedirectsFile(), "utf8");
       writeFileSync(resolve(DIST, "robots.txt"), buildRobotsTxt(), "utf8");
       writeFileSync(resolve(DIST, "sitemap.xml"), buildSitemapXml(), "utf8");
@@ -147,10 +148,38 @@ function resolveLocalAsset(ref: string): string | null {
  * CSP with no external connect-src is the whole privacy story; if
  * this ever needs to relax, that should be a deliberate PR.
  */
-export function buildHeadersFile(): string {
+/**
+ * Compute SHA-256 hashes (base64) of every inline `<script>` block in
+ * the final `dist/index.html` so they can be allow-listed in the CSP
+ * `script-src` directive. This keeps the strict `script-src 'self'`
+ * posture (no `'unsafe-inline'`) while letting the FOUC-prevention
+ * bootstrap and similar small inline scripts execute. `<script>` tags
+ * carrying a `type` attribute (e.g. `application/ld+json`,
+ * `module`) are skipped — JSON-LD is not executable script and module
+ * scripts are loaded by URL so they're covered by `'self'`.
+ */
+function computeInlineScriptHashes(htmlPath: string): string[] {
+  if (!existsSync(htmlPath)) return [];
+  const html = readFileSync(htmlPath, "utf8");
+  const hashes: string[] = [];
+  const scriptRe = /<script\b([^>]*)>([\s\S]*?)<\/script>/gi;
+  let match: RegExpExecArray | null;
+  while ((match = scriptRe.exec(html)) !== null) {
+    const attrs = match[1] ?? "";
+    const body = match[2] ?? "";
+    if (/\bsrc\s*=/i.test(attrs)) continue;
+    if (/\btype\s*=\s*["'][^"']+["']/i.test(attrs)) continue;
+    const sha = createHash("sha256").update(body, "utf8").digest("base64");
+    hashes.push(`'sha256-${sha}'`);
+  }
+  return hashes;
+}
+
+export function buildHeadersFile(inlineScriptHashes: string[] = []): string {
+  const scriptSrc = ["'self'", "'wasm-unsafe-eval'", ...inlineScriptHashes].join(" ");
   const csp = [
     "default-src 'self'",
-    "script-src 'self' 'wasm-unsafe-eval'",
+    `script-src ${scriptSrc}`,
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob:",
     "font-src 'self'",

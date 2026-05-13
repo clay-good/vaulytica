@@ -1481,28 +1481,8 @@
       </section>
     </main>
 
-    <script>
-      (function () {
-        var root = document.documentElement;
-
-        // Theme toggle
-        var toggle = document.getElementById("theme-toggle");
-        if (toggle) {
-          toggle.addEventListener("click", function () {
-            var next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
-            root.setAttribute("data-theme", next);
-            try {
-              localStorage.setItem("vaulytica-theme", next);
-            } catch (e) {
-              /* ignore */
-            }
-          });
-        }
-
-        // Drop-zone behavior + the live pipeline are wired in
-        // src/ui/main.ts, imported below as a module.
-      })();
-    </script>
+    <!-- Theme-toggle wiring lives in src/ui/main.ts so the CSP can stay
+         tight (script-src 'self') and not need an inline-script hash. -->
     <script type="module" src="../src/ui/main.ts"></script>
   </body>
 </html>

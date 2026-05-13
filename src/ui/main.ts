@@ -57,12 +57,25 @@ export async function bootUi(opts: {
 }
 
 function setState(dz: HTMLElement, state: DropzoneState): void {
-  for (const url of objectUrls.splice(0)) URL.revokeObjectURL(url);
   renderState(dz, state);
+}
+
+/**
+ * Revoke any blob: URLs carried over from a previous pipeline run.
+ * Called once when a new run starts so the previous "complete" state's
+ * download anchors keep working until the user actually starts a new
+ * upload. Revoking on every state transition was the cause of the
+ * "Open / no file saved" dialog: the docx and json blob: URLs were
+ * being revoked immediately after creation, before the user could
+ * click them.
+ */
+function revokePreviousObjectUrls(): void {
+  for (const url of objectUrls.splice(0)) URL.revokeObjectURL(url);
 }
 
 async function runFile(dz: HTMLElement, file: File, kind: "pdf" | "docx"): Promise<void> {
   try {
+    revokePreviousObjectUrls();
     setState(dz, { kind: "analyzing", filename: file.name });
     const { runPipeline, countsBySeverity } = await import("./pipeline.js");
     const progress = createProgressBar(select(dz, "progress")!);
