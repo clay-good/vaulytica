@@ -680,20 +680,11 @@
         text-decoration: none;
       }
       .closing-actions {
-        display: flex;
+        display: inline-flex;
         align-items: center;
-        justify-content: space-between;
-        gap: 18px;
+        justify-content: center;
+        gap: 12px;
         flex-wrap: wrap;
-        max-width: 760px;
-        margin: 0 auto;
-        padding: 0 var(--pad);
-      }
-      .cta--left {
-        margin-right: auto;
-      }
-      .cta--right {
-        margin-left: auto;
       }
       .cta--secondary {
         background: var(--surface);
@@ -1333,10 +1324,10 @@
       <section class="closing">
         <p class="quote">Stop hoping you didn't miss anything.<br />Prove you didn't.</p>
         <div class="closing-actions">
-          <a class="cta cta--secondary cta--left" href="https://claygood.com" rel="noopener">
+          <a class="cta cta--secondary" href="https://claygood.com" rel="noopener">
             Made with <span aria-hidden="true">&hearts;</span><span class="sr-only">love</span> by Clay Good
           </a>
-          <a class="cta cta--right" href="https://github.com/clay-good/vaulytica" rel="noopener">
+          <a class="cta" href="https://github.com/clay-good/vaulytica" rel="noopener">
             GitHub
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M7 17 17 7"></path><path d="M7 7h10v10"></path>
