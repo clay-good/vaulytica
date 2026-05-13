@@ -80,6 +80,8 @@ function deployAssets(): Plugin {
       mkdirSync(DIST, { recursive: true });
       writeFileSync(resolve(DIST, "_headers"), buildHeadersFile(), "utf8");
       writeFileSync(resolve(DIST, "_redirects"), buildRedirectsFile(), "utf8");
+      writeFileSync(resolve(DIST, "robots.txt"), buildRobotsTxt(), "utf8");
+      writeFileSync(resolve(DIST, "sitemap.xml"), buildSitemapXml(), "utf8");
     },
   };
 }
@@ -201,6 +203,55 @@ export function buildHeadersFile(): string {
 /** SPA fallback. Vaulytica is single-page, so this is mostly courtesy. */
 export function buildRedirectsFile(): string {
   return "/*    /index.html   200\n";
+}
+
+/**
+ * `robots.txt` — allow indexing of the marketing surface, point crawlers
+ * at the sitemap, and explicitly disallow the dynamic asset directories
+ * (`/dkb/`, `/playbooks/`) so they don't pollute the index with JSON
+ * artifacts.
+ */
+export function buildRobotsTxt(): string {
+  return [
+    "# https://vaulytica.com/robots.txt",
+    "User-agent: *",
+    "Allow: /",
+    "Disallow: /dkb/",
+    "Disallow: /playbooks/",
+    "",
+    "Sitemap: https://vaulytica.com/sitemap.xml",
+    "",
+  ].join("\n");
+}
+
+/**
+ * `sitemap.xml` — single-page site, one URL plus deep links to the
+ * primary in-page sections. Search engines treat anchored URLs as
+ * lower-priority alternates of the canonical home, which keeps the
+ * indexing surface clean while still surfacing section names.
+ */
+export function buildSitemapXml(): string {
+  const today = new Date().toISOString().slice(0, 10);
+  const url = (loc: string, priority: string, freq = "weekly"): string =>
+    [
+      "  <url>",
+      `    <loc>${loc}</loc>`,
+      `    <lastmod>${today}</lastmod>`,
+      `    <changefreq>${freq}</changefreq>`,
+      `    <priority>${priority}</priority>`,
+      "  </url>",
+    ].join("\n");
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    url("https://vaulytica.com/", "1.0", "weekly"),
+    url("https://vaulytica.com/#how-it-works", "0.8"),
+    url("https://vaulytica.com/#sources", "0.7"),
+    url("https://vaulytica.com/#faq", "0.7"),
+    url("https://vaulytica.com/#privacy", "0.6"),
+    "</urlset>",
+    "",
+  ].join("\n");
 }
 
 function pickLatestDkb(distRoot: string): string {

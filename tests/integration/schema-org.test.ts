@@ -40,8 +40,10 @@ beforeAll(() => {
 });
 
 describe("schema.org JSON-LD blocks in site/index.html", () => {
-  it("ships exactly four blocks (Organization + SoftwareApplication + TechArticle + FAQPage)", () => {
-    expect(blocks.length, "spec §1 / §24 calls for 4 schema.org blocks").toBe(4);
+  it("ships the expected blocks for Rich Results coverage", () => {
+    // Organization, WebSite, WebApplication, BreadcrumbList, HowTo,
+    // TechArticle, FAQPage — seven blocks since the SEO expansion.
+    expect(blocks.length, "schema.org block count").toBeGreaterThanOrEqual(7);
   });
 
   it("every block uses the schema.org @context", () => {
@@ -57,16 +59,41 @@ describe("schema.org JSON-LD blocks in site/index.html", () => {
     expect(org!.url, "Organization.url required").toBeTruthy();
   });
 
-  it("includes a SoftwareApplication block with required Google Rich Results fields", () => {
-    const app = blocks.find((b) => b["@type"] === "SoftwareApplication");
-    expect(app, "SoftwareApplication block missing").toBeTruthy();
+  it("includes a WebApplication block with required Google Rich Results fields", () => {
+    const app = blocks.find(
+      (b) => b["@type"] === "WebApplication" || b["@type"] === "SoftwareApplication",
+    );
+    expect(app, "WebApplication / SoftwareApplication block missing").toBeTruthy();
     // Google's Software docs require: name, operatingSystem, applicationCategory, offers.
     expect(app!.name).toBeTruthy();
     expect(app!.operatingSystem).toBeTruthy();
     expect(app!.applicationCategory).toBeTruthy();
-    expect(app!.offers, "SoftwareApplication.offers is required for the Rich Results card").toBeTruthy();
+    expect(app!.offers, "offers is required for the Rich Results card").toBeTruthy();
     const offers = app!.offers as { price?: string; priceCurrency?: string };
     expect(offers.price, "offers.price required").toBeDefined();
+  });
+
+  it("includes a WebSite block (so Google can render a sitelinks search box if applicable)", () => {
+    const site = blocks.find((b) => b["@type"] === "WebSite");
+    expect(site, "WebSite block missing").toBeTruthy();
+    expect(site!.url).toBeTruthy();
+    expect(site!.name).toBeTruthy();
+  });
+
+  it("includes a BreadcrumbList block with itemListElement", () => {
+    const breadcrumb = blocks.find((b) => b["@type"] === "BreadcrumbList");
+    expect(breadcrumb, "BreadcrumbList block missing").toBeTruthy();
+    const items = breadcrumb!.itemListElement as Array<Record<string, unknown>>;
+    expect(Array.isArray(items)).toBe(true);
+    expect(items.length).toBeGreaterThan(0);
+  });
+
+  it("includes a HowTo block with at least three steps", () => {
+    const howto = blocks.find((b) => b["@type"] === "HowTo");
+    expect(howto, "HowTo block missing").toBeTruthy();
+    const steps = howto!.step as Array<Record<string, unknown>>;
+    expect(Array.isArray(steps)).toBe(true);
+    expect(steps.length).toBeGreaterThanOrEqual(3);
   });
 
   it("includes a TechArticle block with name + author", () => {

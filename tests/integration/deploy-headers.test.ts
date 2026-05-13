@@ -6,7 +6,12 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { buildHeadersFile, buildRedirectsFile } from "../../vite.config.js";
+import {
+  buildHeadersFile,
+  buildRedirectsFile,
+  buildRobotsTxt,
+  buildSitemapXml,
+} from "../../vite.config.js";
 
 describe("_headers", () => {
   const headers = buildHeadersFile();
@@ -53,5 +58,47 @@ describe("_headers", () => {
 describe("_redirects", () => {
   it("is the SPA fallback", () => {
     expect(buildRedirectsFile().trim()).toBe("/*    /index.html   200");
+  });
+});
+
+describe("robots.txt", () => {
+  const robots = buildRobotsTxt();
+
+  it("allows crawling and names the sitemap", () => {
+    expect(robots).toMatch(/User-agent:\s*\*/);
+    expect(robots).toMatch(/^Allow: \/$/m);
+    expect(robots).toMatch(/Sitemap:\s+https:\/\/vaulytica\.com\/sitemap\.xml/);
+  });
+
+  it("disallows the dynamic data directories", () => {
+    expect(robots).toMatch(/^Disallow: \/dkb\/$/m);
+    expect(robots).toMatch(/^Disallow: \/playbooks\/$/m);
+  });
+});
+
+describe("sitemap.xml", () => {
+  const sitemap = buildSitemapXml();
+
+  it("is a valid XML 1.0 sitemap document", () => {
+    expect(sitemap).toMatch(/^<\?xml version="1.0" encoding="UTF-8"\?>/);
+    expect(sitemap).toContain('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">');
+    expect(sitemap).toContain("</urlset>");
+  });
+
+  it("lists the canonical home with priority 1.0", () => {
+    expect(sitemap).toMatch(
+      /<loc>https:\/\/vaulytica\.com\/<\/loc>[\s\S]*?<priority>1\.0<\/priority>/,
+    );
+  });
+
+  it("includes the four primary in-page sections", () => {
+    expect(sitemap).toContain("https://vaulytica.com/#how-it-works");
+    expect(sitemap).toContain("https://vaulytica.com/#sources");
+    expect(sitemap).toContain("https://vaulytica.com/#faq");
+    expect(sitemap).toContain("https://vaulytica.com/#privacy");
+  });
+
+  it("uses an ISO 8601 date for lastmod", () => {
+    expect(sitemap).toMatch(/<lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>/);
   });
 });

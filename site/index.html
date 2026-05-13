@@ -3,14 +3,31 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>Vaulytica</title>
+    <title>Vaulytica — Free Deterministic Contract Review &amp; Compliance Checker (NDA · MSA · DPA · BAA)</title>
     <meta
       name="description"
-      content="Free, open-source, deterministic contract linter. Drop a PDF or DOCX, get a Word report with citations. No AI, no account, no server, no telemetry. Runs entirely in your browser."
+      content="Vaulytica is a free, open-source, deterministic contract review and compliance utility. Drop a PDF or DOCX — NDA, MSA, SaaS agreement, DPA (GDPR / CCPA), BAA (HIPAA), employment, lease — and get a cited Word report in seconds. No AI, no account, no server, no telemetry. Runs entirely in your browser."
     />
+    <meta
+      name="keywords"
+      content="contract review, contract linter, deterministic contract checker, free contract analysis, open source legal tech, NDA review, MSA review, DPA GDPR review, CCPA service provider, HIPAA BAA checker, SaaS contract review, employment contract review, lease review, no AI legal tool, browser-based contract analysis, privacy-first legal software, contract compliance checker, MIT licensed legal tool"
+    />
+    <meta name="author" content="Vaulytica" />
+    <meta name="creator" content="Clay Good" />
+    <meta name="publisher" content="Vaulytica" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="application-name" content="Vaulytica" />
+    <meta name="apple-mobile-web-app-title" content="Vaulytica" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="theme-color" content="#07090D" media="(prefers-color-scheme: dark)" />
     <meta name="theme-color" content="#FAF8F3" media="(prefers-color-scheme: light)" />
+    <meta name="color-scheme" content="dark light" />
     <link rel="canonical" href="https://vaulytica.com/" />
+    <link rel="alternate" hreflang="en" href="https://vaulytica.com/" />
+    <link rel="alternate" hreflang="x-default" href="https://vaulytica.com/" />
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -19,22 +36,31 @@
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Vaulytica" />
-    <meta property="og:title" content="Vaulytica, deterministic contract checker" />
+    <meta property="og:locale" content="en_US" />
+    <meta
+      property="og:title"
+      content="Vaulytica — Free Deterministic Contract Review (NDA · MSA · DPA · BAA)"
+    />
     <meta
       property="og:description"
-      content="Drop a contract. Get a Word report. Nothing leaves your browser. Free, open source, no AI."
+      content="Drop a contract. Get a cited Word report. Free, open source, no AI, no telemetry. NDA, MSA, SaaS, DPA (GDPR / CCPA), BAA (HIPAA), employment, lease."
     />
     <meta property="og:url" content="https://vaulytica.com/" />
     <meta property="og:image" content="https://vaulytica.com/og-image.svg" />
+    <meta property="og:image:alt" content="Vaulytica — deterministic, free contract review utility" />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Vaulytica, deterministic contract checker" />
+    <meta name="twitter:title" content="Vaulytica — Free Deterministic Contract Review (NDA · MSA · DPA · BAA)" />
     <meta
       name="twitter:description"
-      content="Drop a contract. Get a Word report. Nothing leaves your browser. Free, open source, no AI."
+      content="Drop a contract. Get a Word report with regulator citations. Nothing leaves your browser. Free, open source, no AI."
     />
     <meta name="twitter:image" content="https://vaulytica.com/og-image.svg" />
+    <meta name="twitter:image:alt" content="Vaulytica — deterministic, free contract review utility" />
 
     <!-- Flash-of-unstyled-content guard: apply the saved theme before paint. -->
     <script>
@@ -743,28 +769,150 @@
       {
         "@context": "https://schema.org",
         "@type": "Organization",
+        "@id": "https://vaulytica.com/#organization",
         "name": "Vaulytica",
         "url": "https://vaulytica.com",
-        "logo": "https://vaulytica.com/og-image.svg",
-        "description": "Free, deterministic, open-source contract checker. Runs entirely in the user's browser. No AI."
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://vaulytica.com/og-image.svg",
+          "width": 1200,
+          "height": 630
+        },
+        "description": "Free, deterministic, open-source contract review and compliance utility. Runs entirely in the user's browser. No AI, no server, no telemetry.",
+        "founder": {
+          "@type": "Person",
+          "name": "Clay Good",
+          "url": "https://claygood.com"
+        },
+        "sameAs": [
+          "https://github.com/clay-good/vaulytica"
+        ]
       }
     </script>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
+        "@type": "WebSite",
+        "@id": "https://vaulytica.com/#website",
+        "url": "https://vaulytica.com/",
         "name": "Vaulytica",
+        "description": "Free, deterministic contract review and compliance checker. NDA, MSA, SaaS, DPA (GDPR / CCPA), BAA (HIPAA), employment, lease.",
+        "inLanguage": "en-US",
+        "publisher": { "@id": "https://vaulytica.com/#organization" },
+        "license": "https://opensource.org/licenses/MIT"
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "@id": "https://vaulytica.com/#webapp",
+        "name": "Vaulytica",
+        "alternateName": "Vaulytica Contract Checker",
+        "url": "https://vaulytica.com",
         "operatingSystem": "Any (web browser)",
         "applicationCategory": "BusinessApplication",
+        "applicationSubCategory": "LegalApplication",
+        "browserRequirements": "Requires JavaScript and a modern browser (Chrome, Firefox, Safari, Edge).",
+        "isAccessibleForFree": true,
         "offers": {
           "@type": "Offer",
           "price": "0.00",
-          "priceCurrency": "USD"
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock"
         },
         "license": "https://opensource.org/licenses/MIT",
-        "url": "https://vaulytica.com",
-        "description": "A deterministic contract linter. Drop a PDF or DOCX into the browser, get back a Word document with findings, citations, and a full audit trail. No AI, no account, no server, no telemetry.",
-        "softwareRequirements": "Any modern web browser"
+        "softwareVersion": "1.0",
+        "softwareRequirements": "Any modern web browser",
+        "permissions": "No permissions required; runs entirely client-side.",
+        "description": "A deterministic contract review and compliance utility. Drop a PDF or DOCX — NDA, MSA, SaaS, DPA (GDPR / CCPA), BAA (HIPAA), employment, lease — and get a Microsoft Word report with findings, regulator citations, and a full audit trail. No AI, no account, no server, no telemetry.",
+        "featureList": [
+          "Deterministic rule engine — ~145 rules across launch + v3 rulesets",
+          "Cited findings — every rule references a regulator, statute, or vendored source",
+          "NDA / MSA / SaaS / Employment / Lease playbooks",
+          "GDPR / CCPA / VCDPA / CPA / CTDPA / UCPA / TDPSA / OCPA / DPDPA processor-contract checks",
+          "HIPAA Business Associate Agreement (BAA) checker",
+          "EU SCCs + UK IDTA / Addendum + Swiss FADP transfer-mechanism checks",
+          "Microsoft Word (DOCX) report output",
+          "100% browser-side processing — zero network calls during analysis",
+          "PWA / offline capable",
+          "MIT licensed, open source"
+        ],
+        "creator": { "@id": "https://vaulytica.com/#organization" },
+        "publisher": { "@id": "https://vaulytica.com/#organization" }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://vaulytica.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "How it works",
+            "item": "https://vaulytica.com/#how-it-works"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Sources",
+            "item": "https://vaulytica.com/#sources"
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "name": "FAQ",
+            "item": "https://vaulytica.com/#faq"
+          }
+        ]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "How to review a contract with Vaulytica",
+        "description": "Drop a PDF or DOCX into Vaulytica and download a Microsoft Word report with cited findings — entirely in your browser.",
+        "totalTime": "PT30S",
+        "supply": [
+          { "@type": "HowToSupply", "name": "A PDF or DOCX contract" }
+        ],
+        "tool": [
+          { "@type": "HowToTool", "name": "A modern web browser" }
+        ],
+        "step": [
+          {
+            "@type": "HowToStep",
+            "position": 1,
+            "name": "Open vaulytica.com",
+            "text": "Visit https://vaulytica.com in any modern browser. The full app loads as a single static page; no account is required."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 2,
+            "name": "Drop your contract",
+            "text": "Drag a PDF or DOCX onto the drop zone — or click to pick a file. The file is read locally; no upload occurs."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 3,
+            "name": "Watch the rule engine run",
+            "text": "Vaulytica auto-detects the contract type, selects the matching playbook, and runs the deterministic rule engine."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 4,
+            "name": "Download the Word report",
+            "text": "Click the .docx download button. The report includes findings grouped by severity, an obligations ledger, a citations appendix, and a full audit trail."
+          }
+        ]
       }
     </script>
     <script type="application/ld+json">
