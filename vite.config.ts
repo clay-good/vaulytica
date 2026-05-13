@@ -61,7 +61,7 @@ function deployAssets(): Plugin {
     name: "vaulytica-deploy-assets",
     apply: "build",
     closeBundle() {
-      const sitePublic = ["sw.js", "manifest.webmanifest", "favicon.svg", "og-image.svg", "icon-192.png", "icon-512.png", "icon-maskable-512.png"];
+      const sitePublic = ["sw.js", "manifest.webmanifest", "favicon.svg", "og-image.svg", "og-image.png", "icon-192.png", "icon-512.png", "icon-maskable-512.png"];
       for (const name of sitePublic) {
         const src = resolve(REPO_ROOT, "site", name);
         if (existsSync(src)) copyFileSync(src, resolve(DIST, name));
