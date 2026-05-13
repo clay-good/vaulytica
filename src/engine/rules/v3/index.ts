@@ -8,7 +8,8 @@
 
 import type { Rule } from "../../finding.js";
 import { BAA_RULES } from "./baa/index.js";
+import { DPA_GDPR_RULES } from "./dpa-gdpr/index.js";
 
-export const V3_RULES: readonly Rule[] = [...BAA_RULES];
+export const V3_RULES: readonly Rule[] = [...BAA_RULES, ...DPA_GDPR_RULES];
 
-export { BAA_RULES };
+export { BAA_RULES, DPA_GDPR_RULES };

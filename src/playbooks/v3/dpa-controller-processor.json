@@ -1,21 +1,66 @@
 {
   "id": "dpa-controller-processor",
-  "version": "0.0.0-placeholder",
+  "version": "1.0.0",
   "name": "DPA — Controller to Processor (EU/UK)",
-  "description": "Placeholder per spec-v3.md §37. Full implementation lands in Step 24. Data Processing Agreement under GDPR and UK GDPR. Selects the §29 DPA-GDPR ruleset. Companion: MSA + SCC-Module-2 if processor is non-EU/UK.",
+  "description": "Data Processing Agreement under GDPR and UK GDPR. Selects the §29 DPA-GDPR ruleset (55 rules) covering Article 28(3) enumerated clauses, Articles 28(2)/(4)/(9) subprocessor governance, Articles 27, 30, 32, 33(2), 35, 37, and Chapter V international transfers. Companion: MSA + SCC-Module-2 if processor is non-EU/UK.",
   "match_features": {
-    "title_keywords": ["data processing agreement", "dpa", "controller", "processor"],
+    "title_keywords": [
+      "data processing agreement",
+      "data processing addendum",
+      "dpa",
+      "gdpr addendum",
+      "personal data processing"
+    ],
     "required_clauses": [],
-    "distinguishing_phrases": [],
+    "distinguishing_phrases": [
+      "personal data",
+      "controller",
+      "processor",
+      "data subject",
+      "article 28",
+      "gdpr",
+      "documented instructions"
+    ],
     "negative_features": []
   },
   "expected_clauses": [],
-  "expected_defined_terms": [],
+  "expected_defined_terms": [
+    "Personal Data",
+    "Personal Data Breach",
+    "Data Subject",
+    "Controller",
+    "Processor",
+    "Sub-processor",
+    "Processing"
+  ],
   "rule_overrides": {},
   "balanced_defaults": [],
-  "sources": [],
+  "sources": [
+    {
+      "id": "gdpr-reg-2016-679",
+      "source": "Regulation (EU) 2016/679 (GDPR)",
+      "source_url": "https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+      "retrieved_at": "2026-05-12T00:00:00Z",
+      "license": "EUR-Lex re-use notice",
+      "license_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html"
+    }
+  ],
   "regulator_frame": "GDPR",
   "applicable_jurisdictions": ["EU", "UK"],
   "companion_playbooks": ["msa-vendor-deep", "scc-module-2"],
-  "compliance_matrix_columns": []
+  "compliance_matrix_columns": [
+    "GDPR Art. 28(3) intro",
+    "GDPR Art. 28(3)(a)",
+    "GDPR Art. 28(3)(b)",
+    "GDPR Art. 28(3)(c)",
+    "GDPR Art. 28(3)(d)",
+    "GDPR Art. 28(3)(e)",
+    "GDPR Art. 28(3)(f)",
+    "GDPR Art. 28(3)(g)",
+    "GDPR Art. 28(3)(h)",
+    "GDPR Art. 28(2)",
+    "GDPR Art. 32",
+    "GDPR Art. 33(2)",
+    "GDPR Arts. 44–49"
+  ]
 }

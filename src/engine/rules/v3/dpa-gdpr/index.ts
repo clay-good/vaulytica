@@ -1,18 +1,11 @@
 /**
- * DPA-GDPR ruleset — placeholder.
+ * DPA-GDPR ruleset — spec-v3.md §29 / Step 24.
  *
- * Spec: spec-v3.md §29.
- *
- * Will implement ~55 rules for Data Processing Agreements under GDPR / UK GDPR,
- * including Article 28(3) enumerated clauses (eight required categories),
- * Article 28(2) subprocessor authorization, Article 28(9) written form,
- * Article 32 security measures, Article 33 breach notification (processor obligation),
- * Article 30 records assistance, Article 35 DPIA assistance, Article 27 EU representative,
- * Article 37 DPO reference, and Articles 44–49 international transfers.
- *
- * Also covers quality-of-text rules: instructions must be documented; audit-substitution
- * must not eliminate the right entirely; deletion-or-return choice belongs to the controller.
- *
- * Implementation lands in spec-v3.md Step 24.
+ * 55 rules covering GDPR Article 28(3) enumerated clauses, Articles
+ * 28(2)/(4)/(9) subprocessor governance, Article 30 RoPA, Article 32
+ * security, Article 33(2) breach notification, Article 35 DPIA,
+ * Article 27 representative, Article 37 DPO, Chapter V international
+ * transfers, plus quality-of-text rules. Scoped via
+ * `applies_to_playbooks` to DPA / SCC playbooks.
  */
-export const RULES: never[] = [];
+export { DPA_GDPR_RULES } from "./rules.js";

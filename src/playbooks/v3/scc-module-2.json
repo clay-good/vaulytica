@@ -1,21 +1,59 @@
 {
   "id": "scc-module-2",
-  "version": "0.0.0-placeholder",
+  "version": "1.0.0",
   "name": "EU Standard Contractual Clauses — Module 2 (Controller to Processor)",
-  "description": "Placeholder per spec-v3.md §41. Full implementation lands in Step 24. Verifies the official EU SCC Module 2 text (Commission Implementing Decision 2021/914) is incorporated unmodified. Checks Annexes I, II, III. Flags forbidden modifications per Clause 2.",
+  "description": "Verifies the official EU SCC Module 2 text (Commission Implementing Decision 2021/914) is incorporated and checks Annexes I, II, III. Re-runs the §29 DPA-GDPR ruleset because SCC Module 2 must satisfy Article 28(3) by reference.",
   "match_features": {
-    "title_keywords": ["standard contractual clauses", "scc module 2", "module two", "controller to processor"],
+    "title_keywords": [
+      "standard contractual clauses",
+      "scc module 2",
+      "module two",
+      "controller to processor",
+      "commission implementing decision 2021/914"
+    ],
     "required_clauses": [],
-    "distinguishing_phrases": [],
+    "distinguishing_phrases": [
+      "annex i",
+      "annex ii",
+      "annex iii",
+      "module 2",
+      "controller to processor",
+      "clause 8",
+      "clause 14",
+      "personal data"
+    ],
     "negative_features": []
   },
   "expected_clauses": [],
-  "expected_defined_terms": [],
+  "expected_defined_terms": [
+    "Personal Data",
+    "Controller",
+    "Processor",
+    "Sub-processor",
+    "Data Subject"
+  ],
   "rule_overrides": {},
   "balanced_defaults": [],
-  "sources": [],
+  "sources": [
+    {
+      "id": "eu-scc-2021-914",
+      "source": "Commission Implementing Decision (EU) 2021/914",
+      "source_url": "https://eur-lex.europa.eu/eli/dec_impl/2021/914/oj",
+      "retrieved_at": "2026-05-12T00:00:00Z",
+      "license": "EUR-Lex re-use notice",
+      "license_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html"
+    }
+  ],
   "regulator_frame": "GDPR",
   "applicable_jurisdictions": ["EU"],
   "companion_playbooks": ["dpa-controller-processor"],
-  "compliance_matrix_columns": []
+  "compliance_matrix_columns": [
+    "SCC Clause 1 (Purpose and Scope)",
+    "SCC Clause 2 (Effect and Invariability)",
+    "SCC Clause 8 (Data Protection Safeguards)",
+    "SCC Clause 14 (Local Laws — TIA)",
+    "Annex I — Parties / Transfer / SA",
+    "Annex II — TOMs",
+    "Annex III — Sub-processors"
+  ]
 }
