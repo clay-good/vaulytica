@@ -19,8 +19,6 @@ import { createRuleTicker } from "./ticker.js";
 import { registerServiceWorker } from "./sw-register.js";
 import { hydrateDkbValidation } from "./dkb-validation.js";
 
-const objectUrls: string[] = [];
-
 /**
  * Preload the analysis pipeline as a side-effect of user intent —
  * dragover, mouse-over, or idle. The chunk download usually races
@@ -60,22 +58,13 @@ function setState(dz: HTMLElement, state: DropzoneState): void {
   renderState(dz, state);
 }
 
-/**
- * Revoke any blob: URLs carried over from a previous pipeline run.
- * Called once when a new run starts so the previous "complete" state's
- * download anchors keep working until the user actually starts a new
- * upload. Revoking on every state transition was the cause of the
- * "Open / no file saved" dialog: the docx and json blob: URLs were
- * being revoked immediately after creation, before the user could
- * click them.
- */
-function revokePreviousObjectUrls(): void {
-  for (const url of objectUrls.splice(0)) URL.revokeObjectURL(url);
+function baseFilename(filename: string): string {
+  const i = filename.lastIndexOf(".");
+  return i > 0 ? filename.slice(0, i) : filename;
 }
 
 async function runFile(dz: HTMLElement, file: File, kind: "pdf" | "docx"): Promise<void> {
   try {
-    revokePreviousObjectUrls();
     setState(dz, { kind: "analyzing", filename: file.name });
     const { runPipeline, countsBySeverity } = await import("./pipeline.js");
     const progress = createProgressBar(select(dz, "progress")!);
@@ -88,18 +77,17 @@ async function runFile(dz: HTMLElement, file: File, kind: "pdf" | "docx"): Promi
         setState(dz, { kind: "analyzing", filename: file.name, dkb_version: version }),
     });
 
-    const docxUrl = URL.createObjectURL(result.docx_blob);
-    const jsonUrl = URL.createObjectURL(result.json_blob);
-    objectUrls.push(docxUrl, jsonUrl);
-
+    const stem = baseFilename(file.name);
     setState(dz, {
       kind: "complete",
       filename: file.name,
       playbook_name: result.playbook.name,
       match_reasoning: result.match_reasoning,
       counts: countsBySeverity(result.run),
-      docx_url: docxUrl,
-      json_url: jsonUrl,
+      docx_blob: result.docx_blob,
+      json_blob: result.json_blob,
+      docx_filename: `${stem}-vaulytica.docx`,
+      json_filename: `${stem}-vaulytica.json`,
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);

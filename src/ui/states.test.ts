@@ -19,7 +19,7 @@ describe("renderState", () => {
     expect(select(dz, "progress")).not.toBeNull();
   });
 
-  it("renders complete state with counts, download URLs and reasoning", () => {
+  it("renders complete state with counts, download buttons and reasoning", () => {
     const dz = document.createElement("div");
     renderState(dz, {
       kind: "complete",
@@ -27,20 +27,60 @@ describe("renderState", () => {
       playbook_name: "Mutual NDA",
       match_reasoning: "matched on title and recipient/discloser phrasing",
       counts: { critical: 2, warning: 5, info: 11 },
-      docx_url: "blob:docx",
-      json_url: "blob:json",
+      docx_blob: new Blob(["docx"], { type: "application/octet-stream" }),
+      json_blob: new Blob(["{}"], { type: "application/json" }),
+      docx_filename: "nda-vaulytica.docx",
+      json_filename: "nda-vaulytica.json",
     });
     expect(dz.getAttribute("data-state")).toBe("complete");
-    const docx = select<HTMLAnchorElement>(dz, "docx-download")!;
-    const json = select<HTMLAnchorElement>(dz, "json-download")!;
-    expect(docx.href).toContain("blob:docx");
-    expect(json.href).toContain("blob:json");
-    expect(docx.getAttribute("download")).toBe("nda-vaulytica.docx");
-    expect(json.getAttribute("download")).toBe("nda-vaulytica.json");
+    const docx = select<HTMLButtonElement>(dz, "docx-download")!;
+    const json = select<HTMLButtonElement>(dz, "json-download")!;
+    expect(docx.tagName).toBe("BUTTON");
+    expect(json.tagName).toBe("BUTTON");
+    expect(docx.textContent).toMatch(/Download report \(Word\)/);
+    expect(json.textContent).toMatch(/Download structured data \(JSON\)/);
+    expect(select(dz, "download-status")).not.toBeNull();
     expect(select(dz, "counts")!.textContent).toMatch(/2/);
     expect(select(dz, "counts")!.textContent).toMatch(/5/);
     expect(select(dz, "counts")!.textContent).toMatch(/11/);
     expect(select(dz, "reasoning")!.textContent).toContain("matched on title");
+  });
+
+  it("download button triggers Save flow and reports status", async () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    const docxBlob = new Blob(["docx-bytes"], { type: "application/octet-stream" });
+    renderState(dz, {
+      kind: "complete",
+      filename: "nda.docx",
+      playbook_name: "Mutual NDA",
+      counts: { critical: 0, warning: 0, info: 0 },
+      docx_blob: docxBlob,
+      json_blob: new Blob(["{}"], { type: "application/json" }),
+      docx_filename: "nda-vaulytica.docx",
+      json_filename: "nda-vaulytica.json",
+    });
+    // Spy on anchor clicks so we can verify the synthetic anchor was
+    // dispatched with the right filename attribute.
+    const seen: { download: string; href: string }[] = [];
+    const origClick = HTMLAnchorElement.prototype.click;
+    HTMLAnchorElement.prototype.click = function () {
+      seen.push({ download: this.download, href: this.href });
+    };
+    try {
+      const btn = select<HTMLButtonElement>(dz, "docx-download")!;
+      btn.click();
+      // saveBlob is async; let microtasks run.
+      await Promise.resolve();
+      await Promise.resolve();
+      expect(seen.length).toBe(1);
+      expect(seen[0]?.download).toBe("nda-vaulytica.docx");
+      expect(seen[0]?.href).toMatch(/^blob:/);
+      expect(select(dz, "download-status")!.textContent).toMatch(/Saved nda-vaulytica\.docx/);
+    } finally {
+      HTMLAnchorElement.prototype.click = origClick;
+      document.body.removeChild(dz);
+    }
   });
 
   it("renders error state with a message", () => {

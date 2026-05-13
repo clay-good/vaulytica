@@ -16,7 +16,7 @@
  * Anything not matched is left to the browser's default cache.
  */
 
-const CACHE_VERSION = "vaulytica-v1";
+const CACHE_VERSION = "vaulytica-v2";
 const HTML_CACHE = `${CACHE_VERSION}-html`;
 const ASSET_CACHE = `${CACHE_VERSION}-assets`;
 const DKB_CACHE = `${CACHE_VERSION}-dkb`;

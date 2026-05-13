@@ -68,6 +68,13 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
   };
   const onClick = (e: Event): void => {
     if (e.target === input) return;
+    // The dropzone hosts interactive children in the "complete" / "error"
+    // states (download anchors, retry button, "why this playbook?"
+    // disclosure). Clicks on those must NOT also re-open the file
+    // picker — otherwise macOS shows its NSOpenPanel ("Open" button)
+    // on top of the download flow and the file never gets saved.
+    const target = e.target as HTMLElement | null;
+    if (target?.closest("a, button, summary, details, input, label")) return;
     onPick();
   };
   const onDragEnter = (e: DragEvent): void => {

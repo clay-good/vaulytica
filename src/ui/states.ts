@@ -13,8 +13,11 @@ export type DropzoneState =
       playbook_name: string;
       match_reasoning?: string;
       counts: { critical: number; warning: number; info: number };
-      docx_url: string;
-      json_url: string;
+      docx_blob: Blob;
+      json_blob: Blob;
+      /** Pre-formatted filenames for the two downloads. */
+      docx_filename: string;
+      json_filename: string;
     }
   | { kind: "error"; message: string };
 
@@ -39,8 +42,9 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
       <summary>Why this playbook?</summary>
       <div data-role="reasoning"></div>
     </details>
-    <a class="btn btn-primary" data-role="docx-download" download>Download report (Word)</a>
-    <a class="btn-link" data-role="json-download" download>Download structured data (JSON)</a>
+    <button class="btn btn-primary" type="button" data-role="docx-download">Download report (Word)</button>
+    <button class="btn-link" type="button" data-role="json-download">Download structured data (JSON)</button>
+    <div class="download-status" data-role="download-status" aria-live="polite"></div>
   `,
   error: `
     <div class="dropzone-title" data-role="error-title">Something went wrong</div>
@@ -64,12 +68,17 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
     select(dz, "counts")!.innerHTML = countsHtml(state.counts);
     select(dz, "reasoning")!.textContent =
       state.match_reasoning ?? `Auto-selected ${state.playbook_name}.`;
-    const docx = select<HTMLAnchorElement>(dz, "docx-download")!;
-    docx.href = state.docx_url;
-    docx.setAttribute("download", `${baseName(state.filename)}-vaulytica.docx`);
-    const json = select<HTMLAnchorElement>(dz, "json-download")!;
-    json.href = state.json_url;
-    json.setAttribute("download", `${baseName(state.filename)}-vaulytica.json`);
+    const docxBtn = select<HTMLButtonElement>(dz, "docx-download")!;
+    const jsonBtn = select<HTMLButtonElement>(dz, "json-download")!;
+    const status = select<HTMLElement>(dz, "download-status")!;
+    docxBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      void saveBlob(state.docx_blob, state.docx_filename, status);
+    });
+    jsonBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      void saveBlob(state.json_blob, state.json_filename, status);
+    });
   }
   if (state.kind === "error") {
     select(dz, "error-message")!.textContent = state.message;
@@ -91,7 +100,53 @@ function countsHtml(counts: { critical: number; warning: number; info: number })
   `;
 }
 
-function baseName(filename: string): string {
+export function baseName(filename: string): string {
   const i = filename.lastIndexOf(".");
   return i > 0 ? filename.slice(0, i) : filename;
+}
+
+/**
+ * Programmatic, browser-agnostic "Save As" for a Blob.
+ *
+ * Why not `<a href="blob:..." download>`? On macOS Chrome + Cloudflare
+ * Pages we hit two failure modes with the bare anchor:
+ *
+ *   1. The dropzone's own click handler intercepted the bubbling click
+ *      and re-opened the file picker (NSOpenPanel) — user saw an
+ *      "Open" dialog instead of a save flow. Fixed in `dropzone.ts`
+ *      by ignoring clicks on interactive children.
+ *
+ *   2. The previous implementation revoked the blob URL one render
+ *      tick after creation, so Chrome's download manager streamed a
+ *      partial blob, stalled at ~50–60% in the toolbar's circular
+ *      progress indicator, and never showed up in chrome://downloads.
+ *
+ * The synthetic-anchor approach below is the canonical
+ * cross-browser pattern: create the URL fresh, append a hidden
+ * anchor, click it inside the user's gesture, remove it, and
+ * `revokeObjectURL` after a generous delay so the download manager
+ * has finished reading the bytes. Status is surfaced in the live
+ * region so users see "Saved X.docx" right where they clicked.
+ */
+async function saveBlob(blob: Blob, filename: string, statusEl: HTMLElement): Promise<void> {
+  statusEl.textContent = `Saving ${filename}…`;
+  try {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.rel = "noopener";
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    // Give the browser's download manager time to start streaming
+    // before we revoke the URL. 60 seconds is more than enough even
+    // for very large reports; revoking too early was the cause of the
+    // stuck-at-60% Chrome toolbar bug.
+    setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    statusEl.textContent = `Saved ${filename}`;
+  } catch (err) {
+    statusEl.textContent = `Could not save: ${err instanceof Error ? err.message : String(err)}`;
+  }
 }
