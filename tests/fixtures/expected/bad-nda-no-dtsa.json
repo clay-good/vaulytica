@@ -546,6 +546,12 @@
     {
       "elapsed_ms": 0,
       "fired": false,
+      "rule_id": "STRUCT-016",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
       "rule_id": "TEMP-001",
       "rule_version": "1.0.0"
     },
@@ -858,7 +864,7 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "e451f227b9f0271303d23f4ebb0214515352db56b9145ba12cd20d35f256fb90",
+  "result_hash": "2cfb510a42564734e0abcf0875869716198588a6af140052b81ec0bd4f0e326b",
   "source_file": {
     "name": "bad-nda-no-dtsa.docx",
     "sha256": "6843694916dfef439851e84aca5bf213e35090b1a39f2b027f1e56d6382f2c29",

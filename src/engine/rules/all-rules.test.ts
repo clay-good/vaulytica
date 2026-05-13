@@ -4,8 +4,8 @@ import { runEngine } from "../runner.js";
 import { buildContext } from "../_test-fixtures.js";
 
 describe("Launch rule registry", () => {
-  it("ships exactly 110 rules (80 launch + 30 post-1.0 additions)", () => {
-    expect(LAUNCH_RULES.length).toBe(110);
+  it("ships exactly 111 rules (80 launch + 31 post-1.0 additions)", () => {
+    expect(LAUNCH_RULES.length).toBe(111);
   });
 
   it("has unique rule ids", () => {
@@ -28,7 +28,7 @@ describe("Launch rule registry", () => {
   });
 });
 
-describe("Engine + all 110 rules", () => {
+describe("Engine + all 111 rules", () => {
   it("runs end-to-end on a minimal context and is deterministic", async () => {
     const ctx = buildContext([
       "Agreement",
@@ -46,6 +46,6 @@ describe("Engine + all 110 rules", () => {
       source_file: { name: "demo.docx", sha256: "0".repeat(64), size_bytes: 100 },
     });
     expect(a.result_hash).toEqual(b.result_hash);
-    expect(a.execution_log.length).toBe(110);
+    expect(a.execution_log.length).toBe(111);
   });
 });

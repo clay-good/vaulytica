@@ -548,6 +548,12 @@
     {
       "elapsed_ms": 0,
       "fired": false,
+      "rule_id": "STRUCT-016",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
       "rule_id": "TEMP-001",
       "rule_version": "1.0.0"
     },
@@ -913,7 +919,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.9). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"exempt\", \"Employee\".",
-  "result_hash": "e6a6c45e99288d4aa5470585af6205540ac02f843a29f050c070b8fc3303de40",
+  "result_hash": "a77af11d7c3f4ee9f488a4d1265885ff5b0fcf5e729815355347c3bd9a895170",
   "source_file": {
     "name": "bad-employment-choice-of-law.docx",
     "sha256": "432c209852332e09cdc68eec7a183f61c5da1fa8aafe36b92e3b8bf6fd2e6c26",
