@@ -29,7 +29,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "CHOICE-005-s1.10-1692",
+      "finding_id": "CHOICE-005-s1.10-1682",
       "fired": true,
       "rule_id": "CHOICE-005",
       "rule_version": "1.0.0"
@@ -72,6 +72,13 @@
       "finding_id": "CHOICE-011-s1.10-1635",
       "fired": true,
       "rule_id": "CHOICE-011",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "finding_id": "CHOICE-012-s1.10-1682",
+      "fired": true,
+      "rule_id": "CHOICE-012",
       "rule_version": "1.0.0"
     },
     {
@@ -711,15 +718,15 @@
     },
     {
       "description": "Venue: San Francisco.",
-      "document_position": 1692,
+      "document_position": 1682,
       "excerpt": {
         "end_offset": 1753,
         "section_id": "s1.10",
-        "start_offset": 1692,
+        "start_offset": 1682,
         "text": "San Francisco"
       },
       "explanation": "Enforcing a US judgment in a jurisdiction outside the New York or Hague convention can be expensive and uncertain. Confirm a clear path to enforcement exists.",
-      "id": "CHOICE-005-s1.10-1692",
+      "id": "CHOICE-005-s1.10-1682",
       "rule_id": "CHOICE-005",
       "rule_version": "1.0.0",
       "severity": "warning",
@@ -770,6 +777,24 @@
         }
       ],
       "title": "Out-of-state choice-of-law on California-based party"
+    },
+    {
+      "description": "Governing law is Delaware; venue / exclusive jurisdiction is San Francisco.",
+      "document_position": 1682,
+      "excerpt": {
+        "end_offset": 1753,
+        "section_id": "s1.10",
+        "start_offset": 1682,
+        "text": "Delaware → San Francisco"
+      },
+      "explanation": "When the governing-law and venue clauses name different jurisdictions, the court hearing the dispute must apply foreign law as a question of fact. Each side pays for an expert on the other state's law, the local judge applies an unfamiliar framework, and outcomes become unpredictable. The mismatch is almost always a drafting accident — one side copy-pasted from a different template — rather than a deliberate strategic choice.",
+      "id": "CHOICE-012-s1.10-1682",
+      "recommendation": "Align governing law and venue to the same jurisdiction unless the mismatch is deliberate and documented. If deliberate, add a brief explanation in the choice-of-law section noting the rationale (typical use case: a neutral arbitral seat with a different governing law).",
+      "rule_id": "CHOICE-012",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [],
+      "title": "Governing law (Delaware) and venue (San Francisco) name different jurisdictions"
     },
     {
       "description": "The contract does not allocate ownership of intellectual property.",
@@ -1167,7 +1192,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
-  "result_hash": "088a68dd948f767968bb4a3cfe66b033f003d2a717e17f4190e2486391da3f4b",
+  "result_hash": "b0cb7d672d8accdb3a46faa5227dd0ec42102d3367bbc252ab561bbfac92f650",
   "source_file": {
     "name": "bad-employment.docx",
     "sha256": "44e689f2fe4e8767866844995363dda962260fd37d54469e6d0fdf443136013c",

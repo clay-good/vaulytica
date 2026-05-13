@@ -96,6 +96,7 @@ import { rule as CHOICE_008 } from "./choice-and-venue/CHOICE-008.js";
 import { rule as CHOICE_009 } from "./choice-and-venue/CHOICE-009.js";
 import { rule as CHOICE_010 } from "./choice-and-venue/CHOICE-010.js";
 import { rule as CHOICE_011 } from "./choice-and-venue/CHOICE-011.js";
+import { rule as CHOICE_012 } from "./choice-and-venue/CHOICE-012.js";
 
 // Termination
 import { rule as TERM_001 } from "./termination/TERM-001.js";
@@ -156,7 +157,7 @@ export const LAUNCH_RULES: readonly Rule[] = [
   RISK_008, RISK_009, RISK_010, RISK_011, RISK_012, RISK_013, RISK_014, RISK_015, RISK_016,
   // Choice & venue — 8
   CHOICE_001, CHOICE_002, CHOICE_003, CHOICE_004, CHOICE_005, CHOICE_006,
-  CHOICE_007, CHOICE_008, CHOICE_009, CHOICE_010, CHOICE_011,
+  CHOICE_007, CHOICE_008, CHOICE_009, CHOICE_010, CHOICE_011, CHOICE_012,
   // Termination — 8
   TERM_001, TERM_002, TERM_003, TERM_004, TERM_005, TERM_006, TERM_007, TERM_008, TERM_009,
   // IP & data — 6
