@@ -1,21 +1,64 @@
 {
   "id": "dpa-multi-state-us",
-  "version": "0.0.0-placeholder",
-  "name": "DPA — Multi-State US (Colorado, Virginia, Connecticut, Utah, Texas, Oregon, Delaware)",
-  "description": "Placeholder per spec-v3.md §40. Full implementation lands in Step 25. Computes the union of applicable state requirements and flags when the document does not meet the strictest applicable.",
+  "version": "1.0.0",
+  "name": "DPA — Multi-State US (CCPA, VCDPA, CPA, CTDPA, UCPA, TDPSA, OCPA, DPDPA)",
+  "description": "Multi-state DPA covering CCPA + VCDPA + CPA + CTDPA + UCPA + TDPSA + OCPA + DPDPA. Selects the §30 DPA-US-state ruleset (25 rules) and applies the strictest-applicable floor.",
   "match_features": {
-    "title_keywords": ["data processing agreement", "us state privacy", "multi-state"],
+    "title_keywords": [
+      "data processing agreement",
+      "data processing addendum",
+      "us state privacy",
+      "multi-state privacy",
+      "state privacy addendum"
+    ],
     "required_clauses": [],
-    "distinguishing_phrases": [],
+    "distinguishing_phrases": [
+      "personal information",
+      "personal data",
+      "service provider",
+      "processor",
+      "controller",
+      "1798.140",
+      "59.1-579",
+      "6-1-1305",
+      "42-520"
+    ],
     "negative_features": []
   },
   "expected_clauses": [],
-  "expected_defined_terms": [],
+  "expected_defined_terms": [
+    "Personal Information",
+    "Personal Data",
+    "Controller",
+    "Processor",
+    "Service Provider",
+    "Sub-processor",
+    "Consumer",
+    "Data Subject"
+  ],
   "rule_overrides": {},
   "balanced_defaults": [],
-  "sources": [],
+  "sources": [
+    {
+      "id": "ccpa-civ-code",
+      "source": "CCPA / CPRA — Cal. Civ. Code §§ 1798.100–1798.199.100",
+      "source_url": "https://leginfo.legislature.ca.gov/faces/codes_displayText.xhtml?division=3.&part=4.&lawCode=CIV&title=1.81.5",
+      "retrieved_at": "2026-05-12T00:00:00Z",
+      "license": "Public domain (California statute)",
+      "license_url": "https://www.ca.gov/"
+    }
+  ],
   "regulator_frame": "multi-state-US",
   "applicable_jurisdictions": ["US"],
   "companion_playbooks": ["dpa-ccpa-service-provider", "msa-vendor-deep"],
-  "compliance_matrix_columns": []
+  "compliance_matrix_columns": [
+    "Cal. Civ. Code § 1798.140(ag)",
+    "Va. Code § 59.1-579",
+    "Colo. Rev. Stat. § 6-1-1305",
+    "Conn. Gen. Stat. § 42-520",
+    "Utah Code § 13-61-301",
+    "Tex. Bus. & Com. Code § 541.104",
+    "ORS § 646A.578",
+    "6 Del. C. § 12D-107"
+  ]
 }

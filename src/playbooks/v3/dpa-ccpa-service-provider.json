@@ -1,21 +1,60 @@
 {
   "id": "dpa-ccpa-service-provider",
-  "version": "0.0.0-placeholder",
+  "version": "1.0.0",
   "name": "DPA — CCPA Service Provider (CPRA-aligned)",
-  "description": "Placeholder per spec-v3.md §39. Full implementation lands in Step 25. Data Processing Agreement asserting CCPA 'Service Provider' status. Selects the §30 DPA-US-state ruleset. CPRA-aligned.",
+  "description": "Data Processing Agreement asserting CCPA 'Service Provider' status under Cal. Civ. Code § 1798.140(ag) and 11 CCR § 7051. Selects the §30 DPA-US-state ruleset (25 rules).",
   "match_features": {
-    "title_keywords": ["service provider agreement", "ccpa service provider", "cpra"],
+    "title_keywords": [
+      "service provider agreement",
+      "ccpa service provider",
+      "cpra service provider",
+      "ccpa addendum",
+      "cpra addendum"
+    ],
     "required_clauses": [],
-    "distinguishing_phrases": [],
+    "distinguishing_phrases": [
+      "service provider",
+      "personal information",
+      "specific business purpose",
+      "cross-context behavioral advertising",
+      "1798.140",
+      "1798.100"
+    ],
     "negative_features": []
   },
   "expected_clauses": [],
-  "expected_defined_terms": [],
+  "expected_defined_terms": [
+    "Personal Information",
+    "Business",
+    "Service Provider",
+    "Contractor",
+    "Sale",
+    "Sharing"
+  ],
   "rule_overrides": {},
   "balanced_defaults": [],
-  "sources": [],
+  "sources": [
+    {
+      "id": "ccpa-civ-code",
+      "source": "Cal. Civ. Code §§ 1798.100–1798.199.100 (CCPA/CPRA)",
+      "source_url": "https://leginfo.legislature.ca.gov/faces/codes_displayText.xhtml?division=3.&part=4.&lawCode=CIV&title=1.81.5",
+      "retrieved_at": "2026-05-12T00:00:00Z",
+      "license": "Public domain (California statute)",
+      "license_url": "https://www.ca.gov/"
+    }
+  ],
   "regulator_frame": "CCPA",
   "applicable_jurisdictions": ["US"],
   "companion_playbooks": ["msa-vendor-deep", "dpa-multi-state-us"],
-  "compliance_matrix_columns": []
+  "compliance_matrix_columns": [
+    "Cal. Civ. Code § 1798.140(ag)(1)(A)",
+    "Cal. Civ. Code § 1798.140(ag)(1)(B)",
+    "Cal. Civ. Code § 1798.140(ag)(1)(C)",
+    "Cal. Civ. Code § 1798.140(ag)(1)(D)",
+    "Cal. Civ. Code § 1798.100(d)",
+    "11 CCR § 7051(a)(6)",
+    "11 CCR § 7051(a)(7)",
+    "11 CCR § 7051(a)(8)",
+    "11 CCR § 7051(b)"
+  ]
 }
