@@ -509,8 +509,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-013-s1.9-1500",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-013",
       "rule_version": "1.0.0"
     },
@@ -655,24 +654,6 @@
     }
   ],
   "findings": [
-    {
-      "description": "Found 4 placeholders that look like unfilled template content: \"____________________\", \"____________________\", \"____________________\", \"____________________\".",
-      "document_position": 1500,
-      "excerpt": {
-        "end_offset": 1520,
-        "section_id": "s1.9",
-        "start_offset": 1500,
-        "text": "____________________"
-      },
-      "explanation": "A bracketed placeholder, mustache token, or XXX run that survived into the final document is almost always a drafting accident — the contract is meant to be filled in. A placeholder where a counterparty name belongs makes the agreement legally questionable; a placeholder elsewhere makes the agreement embarrassing.",
-      "id": "STRUCT-013-s1.9-1500",
-      "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
-      "rule_id": "STRUCT-013",
-      "rule_version": "1.0.0",
-      "severity": "critical",
-      "source_citations": [],
-      "title": "Unfilled template placeholders: 4"
-    },
     {
       "description": "The contract does not allocate ownership of intellectual property.",
       "document_position": 0,
@@ -973,10 +954,10 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"consulting agreement\". Distinguishing phrases: \"Consultant\", \"advisory services\", \"deliverables\", \"independent contractor\", \"the Consulting Services\".",
-  "result_hash": "c5188353f36f75b27f89a7cc8b34fac1b2f4b36c2c1b64fbe9672958823a346b",
+  "result_hash": "6601c37346df4718b86ef5be279b23d8dd0abcbaf8ea67dd89122b1ead77759b",
   "source_file": {
     "name": "bad-consulting.docx",
-    "sha256": "8ca2f1f4cd8941fc6aa02688d0314308f31616d0a76710c9dd7e08c654789021",
+    "sha256": "f66f070f4bb768dbc3f21ee6782418bca5ed64451d483dab533b345a8ddbe691",
     "size_bytes": 1
   },
   "version": "0.1.0"

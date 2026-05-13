@@ -505,8 +505,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-013-s1.4-1177",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-013",
       "rule_version": "1.0.0"
     },
@@ -652,24 +651,6 @@
     }
   ],
   "findings": [
-    {
-      "description": "Found 4 placeholders that look like unfilled template content: \"____________________\", \"____________________\", \"____________________\", \"____________________\".",
-      "document_position": 1177,
-      "excerpt": {
-        "end_offset": 1197,
-        "section_id": "s1.4",
-        "start_offset": 1177,
-        "text": "____________________"
-      },
-      "explanation": "A bracketed placeholder, mustache token, or XXX run that survived into the final document is almost always a drafting accident — the contract is meant to be filled in. A placeholder where a counterparty name belongs makes the agreement legally questionable; a placeholder elsewhere makes the agreement embarrassing.",
-      "id": "STRUCT-013-s1.4-1177",
-      "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
-      "rule_id": "STRUCT-013",
-      "rule_version": "1.0.0",
-      "severity": "critical",
-      "source_citations": [],
-      "title": "Unfilled template placeholders: 4"
-    },
     {
       "description": "Worker / party is identified as California-based but the contract selects Delaware law.",
       "document_position": 840,
@@ -908,10 +889,10 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.9). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"exempt\", \"Employee\".",
-  "result_hash": "277dbd030861cf0f06f1024d5d578e02a5c3578691b7dc002f03413921e96601",
+  "result_hash": "4ac66f8e02ee9bcf472c472ae44842aff953a2908a52943f8848c78e189a82c1",
   "source_file": {
     "name": "bad-employment-choice-of-law.docx",
-    "sha256": "05833a44e54dc451896cf6d08fc4fd938af303689ad1ff245530c20f8c67160d",
+    "sha256": "432c209852332e09cdc68eec7a183f61c5da1fa8aafe36b92e3b8bf6fd2e6c26",
     "size_bytes": 1
   },
   "version": "0.1.0"

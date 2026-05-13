@@ -511,7 +511,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-013-s1.7-1183",
+      "finding_id": "STRUCT-013-s1.1-341",
       "fired": true,
       "rule_id": "STRUCT-013",
       "rule_version": "1.0.0"
@@ -677,22 +677,22 @@
       "title": "Unfilled template placeholder"
     },
     {
-      "description": "Found 4 placeholders that look like unfilled template content: \"____________________\", \"____________________\", \"____________________\", \"____________________\".",
-      "document_position": 1183,
+      "description": "Found 1 placeholder that looks like unfilled template content: \"[TBD methodology]\".",
+      "document_position": 341,
       "excerpt": {
-        "end_offset": 1203,
-        "section_id": "s1.7",
-        "start_offset": 1183,
-        "text": "____________________"
+        "end_offset": 358,
+        "section_id": "s1.1",
+        "start_offset": 341,
+        "text": "[TBD methodology]"
       },
       "explanation": "A bracketed placeholder, mustache token, or XXX run that survived into the final document is almost always a drafting accident — the contract is meant to be filled in. A placeholder where a counterparty name belongs makes the agreement legally questionable; a placeholder elsewhere makes the agreement embarrassing.",
-      "id": "STRUCT-013-s1.7-1183",
+      "id": "STRUCT-013-s1.1-341",
       "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
       "rule_id": "STRUCT-013",
       "rule_version": "1.0.0",
       "severity": "critical",
       "source_citations": [],
-      "title": "Unfilled template placeholders: 4"
+      "title": "Unfilled template placeholders: 1"
     },
     {
       "description": "The contract specifies a late-payment rate of 2.5% per month, which annualizes to approximately 30.0%.",
@@ -1011,10 +1011,10 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\", \"uptime\".",
-  "result_hash": "9da99851c53c422915d85f66e1ce24e28caa82a6bd1890b43fb0a54318474ca0",
+  "result_hash": "00500ee48f45e409bcd978442d15d5fa1da3255270e0c1f795548e98d7873d6f",
   "source_file": {
     "name": "bad-saas-vendor.docx",
-    "sha256": "a7223c4a651cc483c67ae7be97f4f9bb45defbebd85e8cd92c7ff061dd4eac71",
+    "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",
     "size_bytes": 1
   },
   "version": "0.1.0"

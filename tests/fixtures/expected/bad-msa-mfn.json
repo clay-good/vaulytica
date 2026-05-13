@@ -229,8 +229,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-001-s1.5-1542",
-      "fired": true,
+      "fired": false,
       "rule_id": "OBLI-001",
       "rule_version": "1.0.0"
     },
@@ -506,8 +505,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-013-s1.7-2010",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-013",
       "rule_version": "1.0.0"
     },
@@ -653,24 +651,6 @@
     }
   ],
   "findings": [
-    {
-      "description": "Found 4 placeholders that look like unfilled template content: \"____________________\", \"____________________\", \"____________________\", \"____________________\".",
-      "document_position": 2010,
-      "excerpt": {
-        "end_offset": 2030,
-        "section_id": "s1.7",
-        "start_offset": 2010,
-        "text": "____________________"
-      },
-      "explanation": "A bracketed placeholder, mustache token, or XXX run that survived into the final document is almost always a drafting accident — the contract is meant to be filled in. A placeholder where a counterparty name belongs makes the agreement legally questionable; a placeholder elsewhere makes the agreement embarrassing.",
-      "id": "STRUCT-013-s1.7-2010",
-      "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
-      "rule_id": "STRUCT-013",
-      "rule_version": "1.0.0",
-      "severity": "critical",
-      "source_citations": [],
-      "title": "Unfilled template placeholders: 4"
-    },
     {
       "description": "The document references fees but no 'Net X' or 'due within' clause was found.",
       "document_position": 0,
@@ -835,23 +815,6 @@
       "title": "No venue / forum clause detected"
     },
     {
-      "description": "EACH PARTY'S TOTAL CUMULATIVE LIABILITY ARISING OUT OF OR RELATED TO THIS AGREEMENT, WHETHER IN CONTRACT, TORT, OR OTHER",
-      "document_position": 1542,
-      "excerpt": {
-        "end_offset": 1794,
-        "section_id": "s1.5",
-        "start_offset": 1542,
-        "text": "EACH PARTY'S TOTAL CUMULATIVE LIABILITY ARISING OUT OF OR RELATED TO THIS AGREEMENT, WHETHER IN CONTRACT, TORT, OR OTHERWISE, SHALL NOT EXCEED THE FEES PAID BY CUSTOMER TO PROVIDER IN THE TWELVE (12) MONTHS PRECEDING THE EVENT GIVING RISE TO THE CLAIM."
-      },
-      "explanation": "An obligation that names 'the parties' or 'the appropriate party' without specifying which is hard to enforce. Identify the obligor explicitly.",
-      "id": "OBLI-001-s1.5-1542",
-      "rule_id": "OBLI-001",
-      "rule_version": "1.0.0",
-      "severity": "info",
-      "source_citations": [],
-      "title": "1 obligation with ambiguous obligor"
-    },
-    {
       "description": "Provider shall not invoice for any Deliverable until Customer has provided written acceptance of such Deliverable. | Customer shall not assign this Agreement, nor undergo any direct or indirect change of control (including any merger, co | EACH PARTY'S TOTAL CUMULATIVE LIABILITY ARISING OUT OF OR RELATED TO THIS AGREEMENT, WHETHER IN CONTRACT, TORT, OR OTHER",
       "document_position": 863,
       "excerpt": {
@@ -915,10 +878,10 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected msa-general (score 1). Title matched: \"master services agreement\", \"services agreement\". Distinguishing phrases: \"SOW\", \"Services\", \"Deliverables\", \"Provider\", \"Customer\".",
-  "result_hash": "a4623a9d9382409486098c1391d3f211ee43f1eb940c41339725770666c64bcc",
+  "result_hash": "e909ef2aea4a0fea87b86a2c91800c10ea54dbb37ad8213c72a3590437d70831",
   "source_file": {
     "name": "bad-msa-mfn.docx",
-    "sha256": "1d757bec105c748286152c09dc920cc451fa9bcb0adaf4ddf582d1303ce1dc34",
+    "sha256": "6c82de5ccf5a22064c5da0ad551848546762dc4f0b2fecf127a52f93798fe73d",
     "size_bytes": 1
   },
   "version": "0.1.0"

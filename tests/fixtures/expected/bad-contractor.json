@@ -684,7 +684,7 @@
       "title": "Class-action waiver present"
     },
     {
-      "description": "Found 6 placeholders that look like unfilled template content: \"[insert contractor name]\", \"____________________\", \"____________________\", \"[Contractor Name]\", \"____________________\", \"____________________\".",
+      "description": "Found 3 placeholders that look like unfilled template content: \"[insert contractor name]\", \"[Contractor Name]\", \"[Contractor Name]\".",
       "document_position": 123,
       "excerpt": {
         "end_offset": 147,
@@ -699,7 +699,7 @@
       "rule_version": "1.0.0",
       "severity": "critical",
       "source_citations": [],
-      "title": "Unfilled template placeholders: 6"
+      "title": "Unfilled template placeholders: 3"
     },
     {
       "description": "The document references fees but no 'Net X' or 'due within' clause was found.",
@@ -1001,10 +1001,10 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "a6b2f199aec7490798a8424a806476e639e289039265299bfce596e2f1e5e6c1",
+  "result_hash": "08ae15bb78863ff5c76464d09f137278c9b76b110e43706d090bc44227a80127",
   "source_file": {
     "name": "bad-contractor.docx",
-    "sha256": "8b2c88a3613d958af89a6ebb80cd36f6f2f9d938537db6f61d55e901b63bf16d",
+    "sha256": "7a40a2e53d068557d47cf7690838b907085994f596a0c6e2380b8ac2607543df",
     "size_bytes": 1
   },
   "version": "0.1.0"

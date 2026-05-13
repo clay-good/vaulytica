@@ -135,6 +135,22 @@ export function parseDocxHtml(html: string): DocumentTree {
     }
     // Default: paragraph-like.
     const runs = collectInlineRuns(el, "");
+    // Heuristic: a paragraph whose entire text starts with a numbered
+    // prefix like `3.2 Title` (dotted-decimal, single dot or more,
+    // followed by a Title-Cased phrase) and consists of just that
+    // heading-shaped line is almost certainly a section heading that
+    // the drafter typed by hand instead of applying a Heading style.
+    // Mammoth emits those as `<p>` not `<hN>`, so the cross-ref
+    // resolver and signature-block scanner never see the structure.
+    // Promote them based on dot depth: `3` → level 2, `3.2` → level 3,
+    // `3.2.1` → level 4, with `Article N` and `ARTICLE N` mapped to
+    // level 1.
+    const paragraphText = runs.map((r) => r.text).join("").trim();
+    const numbered = detectNumberedHeading(paragraphText);
+    if (numbered) {
+      pushSection(paragraphText, numbered.level);
+      continue;
+    }
     appendParagraph(runs);
   }
 
@@ -179,6 +195,38 @@ function makeTextRun(text: string): Run {
  * (browsers, happy-dom, jsdom) — otherwise throws a typed error directing
  * the caller to configure a DOM environment.
  */
+/**
+ * Detect numbered-heading-shaped paragraphs (`3.2 Invoicing and
+ * Payment`, `ARTICLE III. Services`, `Section 14.2 — Jurisdiction`).
+ * Returns the inferred section level when the paragraph looks like a
+ * heading, or `null` to leave it as ordinary body text.
+ *
+ * Heuristic constraints (kept conservative to avoid false promotions):
+ *   - Length ≤ 120 characters (real headings are short)
+ *   - No sentence-ending period followed by lower-case text
+ *   - The numeric prefix is followed by at least one Title-Case
+ *     word, OR is wrapped in ALL CAPS (`ARTICLE III. SERVICES`)
+ */
+export function detectNumberedHeading(text: string): { level: number } | null {
+  if (!text || text.length > 120) return null;
+  if (/\.\s+[a-z]/.test(text)) return null; // sentence-shaped
+  // Dotted-decimal: 1, 1.2, 1.2.3, optional trailing dot or em-dash.
+  const dotted = /^(\d+(?:\.\d+){0,3})\.?\s+[—–-]?\s*[A-Z][A-Za-z0-9'’&/ ()-]{1,100}$/.exec(text);
+  if (dotted) {
+    const dots = (dotted[1]!.match(/\./g) ?? []).length;
+    return { level: Math.min(2 + dots, 6) };
+  }
+  // Article / Section / § N
+  const articleRoman = /^(?:ARTICLE|Article)\s+([IVXLCDM]+|\d+)\b/.exec(text);
+  if (articleRoman) return { level: 1 };
+  const sectionPrefix = /^(?:Section|SECTION|§)\s+(\d+(?:\.\d+){0,3})\b/.exec(text);
+  if (sectionPrefix) {
+    const dots = (sectionPrefix[1]!.match(/\./g) ?? []).length;
+    return { level: Math.min(2 + dots, 6) };
+  }
+  return null;
+}
+
 function parseHtmlDocument(html: string): Document {
   if (typeof DOMParser === "undefined") {
     throw new Error(

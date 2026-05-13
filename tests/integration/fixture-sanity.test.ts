@@ -145,8 +145,11 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // bad-consulting.docx — hybrid IC + advisory engagement.
   // Misclassification signals fire (PERS-007 — new this round) plus
   // the standard IC-style violations.
+  // bad-consulting.docx: STRUCT-013 was previously firing on
+  // signature-line underscore false positives; with that fixed,
+  // this fixture no longer trips STRUCT-013. The substantive rules
+  // below remain locked in.
   "bad-consulting.docx": [
-    "STRUCT-013", // placeholder
     "PERS-005", // California non-compete
     "PERS-006", // non-disparagement
     "PERS-007", // IC misclassification signals
@@ -168,14 +171,17 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // OBLI-009 residuals rule + the standard NDA placeholder guard.
   "bad-nda-residuals.docx": [
     "OBLI-009", // residuals clause / `unaided memory`
-    "STRUCT-013", // `[insert party name]` placeholder
+    // STRUCT-013 previously matched signature-line underscores
+    // (false positive); fixed.
   ],
 
   // bad-nda-no-dtsa.docx (unilateral-nda playbook). No dedicated DTSA
   // rule exists yet (potential PERS-009 / IPDATA-010 follow-up);
   // for now we lock in OBLI-005 (boilerplate confidentiality scope)
   // and the placeholder.
-  "bad-nda-no-dtsa.docx": ["STRUCT-013", "OBLI-005"],
+  // STRUCT-013 previously matched signature-line underscores (false
+  // positive); fixed. OBLI-005 remains the substantive guard.
+  "bad-nda-no-dtsa.docx": ["OBLI-005"],
 
   // bad-employment-trap.docx (employment-at-will-us playbook).
   // Showcases the new PERS-008 TRAP rule alongside class-action waiver,
@@ -184,7 +190,7 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
     "PERS-008", // training-repayment / stay-or-pay
     "DARK-005", // class-action waiver
     "CHOICE-010", // one-sided jury-trial waiver
-    "STRUCT-013",
+    // STRUCT-013 dropped — previously firing on signature underscores.
   ],
 
   // bad-employment-choice-of-law.docx (employment-at-will-us playbook).
@@ -193,7 +199,7 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   "bad-employment-choice-of-law.docx": [
     "CHOICE-011", // out-of-state choice-of-law on California worker
     "PERS-005", // California non-compete
-    "STRUCT-013",
+    // STRUCT-013 dropped — previously firing on signature underscores.
   ],
 
   // bad-contractor-leaseback.docx (independent-contractor playbook).
@@ -201,7 +207,8 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // because the explicit "independent contractor" label is paired with
   // signals not all yet covered by PERS-007's pattern set; STRUCT-013,
   // FIN-005, RISK-011 are the durable guards.
-  "bad-contractor-leaseback.docx": ["STRUCT-013", "FIN-005", "RISK-011"],
+  // STRUCT-013 dropped — previously firing on signature underscores.
+  "bad-contractor-leaseback.docx": ["FIN-005", "RISK-011"],
 
   // bad-saas-data-hostage.docx (saas-customer playbook). Showcases the
   // new IPDATA-009 rule (AI/ML training on Customer Data) alongside
@@ -210,7 +217,7 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
     "IPDATA-009", // AI/ML training rights
     "FIN-009", // late fee
     "IPDATA-004", // data deletion / portability silent
-    "STRUCT-013",
+    // STRUCT-013 dropped — previously firing on signature underscores.
   ],
 
   // bad-saas-suspension.docx (saas-customer playbook). Showcases the
@@ -218,14 +225,14 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   "bad-saas-suspension.docx": [
     "DARK-008", // unilateral suspension
     "OBLI-006", // SLA token / weasel-word
-    "STRUCT-013",
+    // STRUCT-013 dropped — previously firing on signature underscores.
   ],
 
   // bad-saas-vendor-uncapped-ip.docx — vendor-side contract; the
   // matcher prefers msa-general for this title pattern. Guard the
   // durable rules.
   "bad-saas-vendor-uncapped-ip.docx": [
-    "STRUCT-013",
+    // STRUCT-013 dropped — previously firing on signature underscores.
     "IPDATA-007", // data retention period unspecified
     "RISK-011", // indemnity procedural elements missing
   ],
@@ -234,19 +241,23 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // dedicated rule yet (potential FIN-010 follow-up); the guard locks
   // in the durable rules that fire across the doc.
   "bad-msa-mfn.docx": [
-    "OBLI-001", // asymmetric obligation
+    // OBLI-001 dropped — previously firing on "EACH PARTY'S TOTAL
+    // CUMULATIVE LIABILITY…" which is a clear mutual obligor, not an
+    // ambiguous one. STRUCT-013 dropped — previously firing on
+    // signature underscores.
     "FIN-005", // payment terms ambiguity
-    "STRUCT-013",
   ],
 
   // bad-lease-cam.docx (lease-commercial-multitenant playbook).
   // Uncapped CAM gross-up + asymmetric insurance surface.
-  "bad-lease-cam.docx": ["RISK-016", "RISK-011", "STRUCT-013"],
+  // STRUCT-013 dropped — previously firing on signature underscores.
+  "bad-lease-cam.docx": ["RISK-016", "RISK-011"],
 
   // bad-residential-lease-deposit.docx (lease-residential-us playbook).
   // Overcollection + Javins waiver. No dedicated security-deposit rule
   // exists yet — the durable guards are STRUCT-013 + FIN-005.
-  "bad-residential-lease-deposit.docx": ["STRUCT-013", "FIN-005"],
+  // STRUCT-013 dropped — previously firing on signature underscores.
+  "bad-residential-lease-deposit.docx": ["FIN-005"],
 
   // bad-consulting-success-fee.docx (consulting-agreement playbook).
   // Success-fee + conflict + IP sweep + non-solicit. RISK-015 fires
@@ -255,7 +266,7 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
     "RISK-015", // indemnification without cap
     "OBLI-008", // `best efforts` undefined
     "OBLI-004", // conflict-of-interest silent
-    "STRUCT-013",
+    // STRUCT-013 dropped — previously firing on signature underscores.
   ],
 };
 

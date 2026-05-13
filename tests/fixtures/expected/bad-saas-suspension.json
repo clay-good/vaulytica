@@ -505,8 +505,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-013-s1.6-1579",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-013",
       "rule_version": "1.0.0"
     },
@@ -668,24 +667,6 @@
       "severity": "critical",
       "source_citations": [],
       "title": "No indemnification clause detected"
-    },
-    {
-      "description": "Found 4 placeholders that look like unfilled template content: \"____________________\", \"____________________\", \"____________________\", \"____________________\".",
-      "document_position": 1579,
-      "excerpt": {
-        "end_offset": 1599,
-        "section_id": "s1.6",
-        "start_offset": 1579,
-        "text": "____________________"
-      },
-      "explanation": "A bracketed placeholder, mustache token, or XXX run that survived into the final document is almost always a drafting accident — the contract is meant to be filled in. A placeholder where a counterparty name belongs makes the agreement legally questionable; a placeholder elsewhere makes the agreement embarrassing.",
-      "id": "STRUCT-013-s1.6-1579",
-      "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
-      "rule_id": "STRUCT-013",
-      "rule_version": "1.0.0",
-      "severity": "critical",
-      "source_citations": [],
-      "title": "Unfilled template placeholders: 4"
     },
     {
       "description": "Vendor may suspend Customer's access to the Services, in whole or in part, immediately and without notice if Vendor determines in its sole discretion",
@@ -907,10 +888,10 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected saas-customer (score 0.9). Title matched: \"subscription agreement\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"uptime\".",
-  "result_hash": "eed5c93ab4e7875fb3daf86876a88d7cfba43e73086d05742f1fdf293f066f4f",
+  "result_hash": "0be0b9d9fb32e32b272e31324c0faf9bca875ee3c2953c1f6bae5a788c918e36",
   "source_file": {
     "name": "bad-saas-suspension.docx",
-    "sha256": "33d499a8ae52913968c25e4c9c99fef70aecd2b13c2547c15d4140b96594eb50",
+    "sha256": "9afd9de44c9b6a123f62c53a81c06b34ec7a515c4e5519fc63b2bc69223ac49b",
     "size_bytes": 1
   },
   "version": "0.1.0"

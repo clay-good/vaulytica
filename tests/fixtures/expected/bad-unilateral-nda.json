@@ -673,7 +673,7 @@
       "title": "Uncapped or unlimited liability"
     },
     {
-      "description": "Found 6 placeholders that look like unfilled template content: \"[insert recipient name]\", \"____________________\", \"____________________\", \"____________________\", \"____________________\", \"____________________\".",
+      "description": "Found 1 placeholder that looks like unfilled template content: \"[insert recipient name]\".",
       "document_position": 128,
       "excerpt": {
         "end_offset": 151,
@@ -688,7 +688,7 @@
       "rule_version": "1.0.0",
       "severity": "critical",
       "source_citations": [],
-      "title": "Unfilled template placeholders: 6"
+      "title": "Unfilled template placeholders: 1"
     },
     {
       "description": "The contract does not allocate ownership of intellectual property.",
@@ -927,10 +927,10 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "b4984400f534956e8b1f07c3aa3921ffbd799d67ad73899af40e120d332b9de6",
+  "result_hash": "83a59b20d07a7040761e5c68d9308ef04021aac6d9e5e7bbf774ea2b634c6e08",
   "source_file": {
     "name": "bad-unilateral-nda.docx",
-    "sha256": "08d1ded25cb1194fb8fc9a20c19b57135d215c9de0ba1ed891dd7a9fa3d604fd",
+    "sha256": "be3d09f211f21ac2141d1ff1d2ec9023dafe4f56502a8a6b66aec83361fdeca6",
     "size_bytes": 1
   },
   "version": "0.1.0"

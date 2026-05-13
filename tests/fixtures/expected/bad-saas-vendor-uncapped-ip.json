@@ -461,8 +461,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-006-s1-22",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-006",
       "rule_version": "1.0.0"
     },
@@ -504,8 +503,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-013-s1.6-1388",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-013",
       "rule_version": "1.0.0"
     },
@@ -652,24 +650,6 @@
   ],
   "findings": [
     {
-      "description": "Found 4 placeholders that look like unfilled template content: \"____________________\", \"____________________\", \"____________________\", \"____________________\".",
-      "document_position": 1388,
-      "excerpt": {
-        "end_offset": 1408,
-        "section_id": "s1.6",
-        "start_offset": 1388,
-        "text": "____________________"
-      },
-      "explanation": "A bracketed placeholder, mustache token, or XXX run that survived into the final document is almost always a drafting accident — the contract is meant to be filled in. A placeholder where a counterparty name belongs makes the agreement legally questionable; a placeholder elsewhere makes the agreement embarrassing.",
-      "id": "STRUCT-013-s1.6-1388",
-      "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
-      "rule_id": "STRUCT-013",
-      "rule_version": "1.0.0",
-      "severity": "critical",
-      "source_citations": [],
-      "title": "Unfilled template placeholders: 4"
-    },
-    {
       "description": "The contract references data handling (`Customer Data`) but no clause specifies retention duration or deletion obligations.",
       "document_position": 604,
       "excerpt": {
@@ -704,24 +684,6 @@
       "severity": "warning",
       "source_citations": [],
       "title": "No Effective Date found"
-    },
-    {
-      "description": "Used but not defined: This Agreement.",
-      "document_position": 22,
-      "excerpt": {
-        "end_offset": 36,
-        "section_id": "s1",
-        "start_offset": 22,
-        "text": "This Agreement"
-      },
-      "explanation": "Title-Case phrases in a contract usually signal a defined term. When they aren't defined, readers must guess at the intended meaning. Either define them or use lowercase if the term is intended in its ordinary sense.",
-      "id": "STRUCT-006-s1-22",
-      "recommendation": "Add a definition for each genuinely defined term, or change the casing if the phrase is being used in its ordinary sense.",
-      "rule_id": "STRUCT-006",
-      "rule_version": "1.0.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "Undefined Title-Case terms: 1"
     },
     {
       "description": "The contract does not state a path to terminate for material breach.",
@@ -856,10 +818,10 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 0.8,
   "playbook_match_reasoning": "Selected msa-general (score 0.8). Required clauses present: \"indemnification\". Distinguishing phrases: \"Services\", \"Provider\", \"Customer\". Negative features penalized: \"lease\", \"Premises\".",
-  "result_hash": "6142ac6218f196990b55d75e7ead9d72aff9fc1449a481b6456d68033307e512",
+  "result_hash": "41c8bc886758f5807082291c83ef3ea1d2ab7838e21c121ec22f83d5eef2020f",
   "source_file": {
     "name": "bad-saas-vendor-uncapped-ip.docx",
-    "sha256": "d2ba3e9db30bac0c9395b7da3138c0e8bf95590b56c7316d3ef8ce3e575badab",
+    "sha256": "8ae94b74fdbe0bc441724e390612c07a1fd3fdc05bf782e829c1e4dda8a69083",
     "size_bytes": 1
   },
   "version": "0.1.0"

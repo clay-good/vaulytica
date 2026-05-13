@@ -516,8 +516,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-013-s1.11-1786",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-013",
       "rule_version": "1.0.0"
     },
@@ -692,24 +691,6 @@
         }
       ],
       "title": "Class-action waiver present"
-    },
-    {
-      "description": "Found 2 placeholders that look like unfilled template content: \"____________________\", \"____________________\".",
-      "document_position": 1786,
-      "excerpt": {
-        "end_offset": 1806,
-        "section_id": "s1.11",
-        "start_offset": 1786,
-        "text": "____________________"
-      },
-      "explanation": "A bracketed placeholder, mustache token, or XXX run that survived into the final document is almost always a drafting accident — the contract is meant to be filled in. A placeholder where a counterparty name belongs makes the agreement legally questionable; a placeholder elsewhere makes the agreement embarrassing.",
-      "id": "STRUCT-013-s1.11-1786",
-      "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
-      "rule_id": "STRUCT-013",
-      "rule_version": "1.0.0",
-      "severity": "critical",
-      "source_citations": [],
-      "title": "Unfilled template placeholders: 2"
     },
     {
       "description": "Governing law: Delaware. Venue: San Francisco.",
@@ -1186,10 +1167,10 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
-  "result_hash": "8a07864c2b2cf68852976f6fc2168e485ba1259ae024779cf0a3c262bdd03df0",
+  "result_hash": "088a68dd948f767968bb4a3cfe66b033f003d2a717e17f4190e2486391da3f4b",
   "source_file": {
     "name": "bad-employment.docx",
-    "sha256": "a63cf2231e28b3073cb37b6c4c46ec63790ace71b45839bbbf5c237ab2e3d017",
+    "sha256": "44e689f2fe4e8767866844995363dda962260fd37d54469e6d0fdf443136013c",
     "size_bytes": 1
   },
   "version": "0.1.0"

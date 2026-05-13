@@ -36,6 +36,89 @@ const COMMON_WORDS = new Set([
   "Attachment",
 ]);
 
+/**
+ * Sentence-initial words that are commonly capitalized but never
+ * function as defined terms. Filtering by *first word* eliminates the
+ * "Each Party," "If Client," "Neither Party" style false positives
+ * that arose every time a sentence began with one of these words
+ * followed by a capitalized noun. We match on the first word of the
+ * candidate phrase, not on the full phrase, so legitimate phrases
+ * like "Each Statement of Work" still fail this filter and so do
+ * cases like "The Services" (where "The" is the leading stopword).
+ */
+const TITLE_CASE_LEADING_STOPWORDS = new Set([
+  "Each",
+  "If",
+  "Neither",
+  "Either",
+  "Both",
+  "All",
+  "Any",
+  "Some",
+  "This",
+  "These",
+  "That",
+  "Those",
+  "The",
+  "A",
+  "An",
+  "It",
+  "He",
+  "She",
+  "They",
+  "We",
+  "You",
+  "I",
+  "Such",
+  "Other",
+  "Another",
+  "No",
+  "Not",
+  "Nothing",
+  "When",
+  "Where",
+  "While",
+  "As",
+  "For",
+  "From",
+  "In",
+  "On",
+  "Of",
+  "To",
+  "At",
+  "Upon",
+  "With",
+  "By",
+  "And",
+  "Or",
+  "But",
+  "Nor",
+  "So",
+  "Yet",
+  "After",
+  "Before",
+  "During",
+  "Until",
+  "Without",
+  "Within",
+  "Notwithstanding",
+  "Provided",
+  "Subject",
+  "Including",
+  "Furthermore",
+  "Moreover",
+  "Therefore",
+  "However",
+  "Otherwise",
+  "Failure",
+  "Each Party",
+  "Either Party",
+  "Neither Party",
+  "Both Parties",
+  "The Parties",
+  "The Party",
+]);
+
 export function extractDefinitions(tree: DocumentTree): DefinitionMap {
   const definitions = new Map<string, DefinitionEntry>();
 
@@ -109,6 +192,13 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       const phrase = m[1]!;
       if (definedNames.has(phrase.toLowerCase())) continue;
       if (COMMON_WORDS.has(phrase)) continue;
+      if (TITLE_CASE_LEADING_STOPWORDS.has(phrase)) continue;
+      // Only strip sentence-initial-stopword patterns from the candidate
+      // list when the phrase is short (2 words). Longer phrases like
+      // "The Special Reserve Fund" or "The Annual Operating Plan" are
+      // ordinary capitalized noun phrases worth flagging when undefined.
+      const words = phrase.split(/\s+/);
+      if (words.length === 2 && TITLE_CASE_LEADING_STOPWORDS.has(words[0]!)) continue;
       const list = undefinedHits.get(phrase) ?? [];
       list.push(posInParagraph(ctx, m.index, m.index + phrase.length));
       undefinedHits.set(phrase, list);

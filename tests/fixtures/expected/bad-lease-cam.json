@@ -504,8 +504,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-013-s1.9-2548",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-013",
       "rule_version": "1.0.0"
     },
@@ -651,24 +650,6 @@
     }
   ],
   "findings": [
-    {
-      "description": "Found 4 placeholders that look like unfilled template content: \"____________________\", \"____________________\", \"____________________\", \"____________________\".",
-      "document_position": 2548,
-      "excerpt": {
-        "end_offset": 2568,
-        "section_id": "s1.9",
-        "start_offset": 2548,
-        "text": "____________________"
-      },
-      "explanation": "A bracketed placeholder, mustache token, or XXX run that survived into the final document is almost always a drafting accident — the contract is meant to be filled in. A placeholder where a counterparty name belongs makes the agreement legally questionable; a placeholder elsewhere makes the agreement embarrassing.",
-      "id": "STRUCT-013-s1.9-2548",
-      "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
-      "rule_id": "STRUCT-013",
-      "rule_version": "1.0.0",
-      "severity": "critical",
-      "source_citations": [],
-      "title": "Unfilled template placeholders: 4"
-    },
     {
       "description": "The document references fees but no 'Net X' or 'due within' clause was found.",
       "document_position": 0,
@@ -855,10 +836,10 @@
   "playbook_id": "lease-commercial-multitenant",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected lease-commercial-multitenant (score 0.9). Title matched: \"office lease\". Distinguishing phrases: \"Landlord\", \"Tenant\", \"Premises\", \"Rentable Square Feet\", \"Base Rent\", \"Operating Expenses\".",
-  "result_hash": "8fb37486fbccf542726cabe0b033500802631a3954ba24568c0dadafa645959b",
+  "result_hash": "5c8aa74fcc5e8874897abf4d10dbafa4a94512873ffb8df0b01f81d70c1a268d",
   "source_file": {
     "name": "bad-lease-cam.docx",
-    "sha256": "3b5fe10e31ac7fb899af6902af07a1648ec15f837f273bd6d05dac917eb6c7ea",
+    "sha256": "1de7804edf376ad66d1a78b0c998aa4a479a18835fa4e104e20057385337a0b6",
     "size_bytes": 1
   },
   "version": "0.1.0"

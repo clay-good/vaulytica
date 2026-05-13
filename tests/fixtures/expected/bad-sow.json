@@ -673,7 +673,7 @@
       "title": "Unfilled template placeholder"
     },
     {
-      "description": "Found 5 placeholders that look like unfilled template content: \"[TBD]\", \"____________________\", \"____________________\", \"____________________\", \"____________________\".",
+      "description": "Found 1 placeholder that looks like unfilled template content: \"[TBD]\".",
       "document_position": 79,
       "excerpt": {
         "end_offset": 84,
@@ -688,7 +688,7 @@
       "rule_version": "1.0.0",
       "severity": "critical",
       "source_citations": [],
-      "title": "Unfilled template placeholders: 5"
+      "title": "Unfilled template placeholders: 1"
     },
     {
       "description": "Vaulytica did not find a governing-law clause.",
@@ -936,10 +936,10 @@
   "playbook_id": "sow",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected sow (score 0.9). Title matched: \"statement of work\". Distinguishing phrases: \"this SOW\", \"Master Agreement\", \"Deliverables\", \"milestones\".",
-  "result_hash": "efe7c7c2bc562e51e25278201afdbc9a3acc69b3d129017a4b2fb633474968f3",
+  "result_hash": "c776000b359ea4e8a70c8ea4dadd75f6fb648fac5acc05f7e83e94500a72ee58",
   "source_file": {
     "name": "bad-sow.docx",
-    "sha256": "7a7a2b8bee6f92cd80b5649462af61f0cefb25c2d2245c363c81115721c14b53",
+    "sha256": "cd7208763b891cf8cb8e1c853b54f63fb70fe10004a489fbeb95921a14b84c3c",
     "size_bytes": 1
   },
   "version": "0.1.0"

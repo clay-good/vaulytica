@@ -458,8 +458,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-006-s1.4-1039",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-006",
       "rule_version": "1.0.0"
     },
@@ -502,8 +501,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-013-s1.7-1405",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-013",
       "rule_version": "1.0.0"
     },
@@ -651,24 +649,6 @@
   ],
   "findings": [
     {
-      "description": "Found 2 placeholders that look like unfilled template content: \"____________________\", \"____________________\".",
-      "document_position": 1405,
-      "excerpt": {
-        "end_offset": 1425,
-        "section_id": "s1.7",
-        "start_offset": 1405,
-        "text": "____________________"
-      },
-      "explanation": "A bracketed placeholder, mustache token, or XXX run that survived into the final document is almost always a drafting accident — the contract is meant to be filled in. A placeholder where a counterparty name belongs makes the agreement legally questionable; a placeholder elsewhere makes the agreement embarrassing.",
-      "id": "STRUCT-013-s1.7-1405",
-      "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
-      "rule_id": "STRUCT-013",
-      "rule_version": "1.0.0",
-      "severity": "critical",
-      "source_citations": [],
-      "title": "Unfilled template placeholders: 2"
-    },
-    {
       "description": "The contract does not allocate ownership of intellectual property.",
       "document_position": 0,
       "excerpt": {
@@ -718,24 +698,6 @@
       "severity": "warning",
       "source_citations": [],
       "title": "No limitation-of-liability clause detected"
-    },
-    {
-      "description": "Used but not defined: This Agreement.",
-      "document_position": 1039,
-      "excerpt": {
-        "end_offset": 1053,
-        "section_id": "s1.4",
-        "start_offset": 1039,
-        "text": "This Agreement"
-      },
-      "explanation": "Title-Case phrases in a contract usually signal a defined term. When they aren't defined, readers must guess at the intended meaning. Either define them or use lowercase if the term is intended in its ordinary sense.",
-      "id": "STRUCT-006-s1.4-1039",
-      "recommendation": "Add a definition for each genuinely defined term, or change the casing if the phrase is being used in its ordinary sense.",
-      "rule_id": "STRUCT-006",
-      "rule_version": "1.0.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "Undefined Title-Case terms: 1"
     },
     {
       "description": "The contract does not state a path to terminate for material breach.",
@@ -853,10 +815,10 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\", \"Recipient\", \"Confidential Information\", \"Permitted Purpose\". Negative features penalized: \"employee\".",
-  "result_hash": "e00bbf3af3abf2a8a2f75431736f95ef00afa73063a5ab675d718880a731492b",
+  "result_hash": "120edd43b5a4e06cdb751ac138ec345bd9d0af88e0598387073e27b97d333438",
   "source_file": {
     "name": "mutual-nda.docx",
-    "sha256": "af57a8c10420454c79cb72fb076c471925ef2a0d1ff921fad90b2046dcc7fde9",
+    "sha256": "ef50f0dcb7abba00b9213ddb4a8a77a2ab5f0bc1f3ee2394f809706622bf8151",
     "size_bytes": 1
   },
   "version": "0.1.0"

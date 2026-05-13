@@ -506,8 +506,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-013-s1.6-1396",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-013",
       "rule_version": "1.0.0"
     },
@@ -670,24 +669,6 @@
       "severity": "critical",
       "source_citations": [],
       "title": "AI / model-training rights over Customer Data"
-    },
-    {
-      "description": "Found 4 placeholders that look like unfilled template content: \"____________________\", \"____________________\", \"____________________\", \"____________________\".",
-      "document_position": 1396,
-      "excerpt": {
-        "end_offset": 1416,
-        "section_id": "s1.6",
-        "start_offset": 1396,
-        "text": "____________________"
-      },
-      "explanation": "A bracketed placeholder, mustache token, or XXX run that survived into the final document is almost always a drafting accident — the contract is meant to be filled in. A placeholder where a counterparty name belongs makes the agreement legally questionable; a placeholder elsewhere makes the agreement embarrassing.",
-      "id": "STRUCT-013-s1.6-1396",
-      "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
-      "rule_id": "STRUCT-013",
-      "rule_version": "1.0.0",
-      "severity": "critical",
-      "source_citations": [],
-      "title": "Unfilled template placeholders: 4"
     },
     {
       "description": "The contract specifies a late-payment rate of 2% per month, which annualizes to approximately 24.0%.",
@@ -942,10 +923,10 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "5c9b9d680a0d8056a94495b50fc24cb9a10b8338ddf31fc82ea5f78040f72a42",
+  "result_hash": "43f6b6a02b855f2a723a3edd9af26f0a308fcd84becda76f2ce63f8ec8ea6312",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
-    "sha256": "5953f254d783507719d2f8a440c8d6e3cdf8b73ec7b9d85330dbeba0448b17aa",
+    "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",
     "size_bytes": 1
   },
   "version": "0.1.0"

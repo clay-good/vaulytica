@@ -11,8 +11,13 @@ export const rule: Rule = {
   description: "Flags obligations whose obligor is ambiguous ('the appropriate party', '', etc.).",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
+    // "The Parties", "Each Party", "Both Parties", "Either Party" are
+    // unambiguous mutual obligors — each party bears the obligation
+    // independently or jointly, as the wording dictates. Only flag
+    // truly vague obligors: "the appropriate party", "the relevant
+    // party", or an empty/missing obligor.
     const ambiguous = ctx.extracted.obligations.filter((o) =>
-      /^(the\s+parties|each\s+party|the\s+appropriate\s+party|either\s+party|\s*)$/i.test(o.obligor.trim()),
+      /^(the\s+appropriate\s+party|the\s+relevant\s+party|the\s+responsible\s+party|the\s+other\s+party|\s*)$/i.test(o.obligor.trim()),
     );
     if (ambiguous.length === 0) return null;
     const first = ambiguous[0]!;

@@ -503,8 +503,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-013-s1.7-1671",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-013",
       "rule_version": "1.0.0"
     },
@@ -650,24 +649,6 @@
     }
   ],
   "findings": [
-    {
-      "description": "Found 4 placeholders that look like unfilled template content: \"____________________\", \"____________________\", \"____________________\", \"____________________\".",
-      "document_position": 1671,
-      "excerpt": {
-        "end_offset": 1691,
-        "section_id": "s1.7",
-        "start_offset": 1671,
-        "text": "____________________"
-      },
-      "explanation": "A bracketed placeholder, mustache token, or XXX run that survived into the final document is almost always a drafting accident — the contract is meant to be filled in. A placeholder where a counterparty name belongs makes the agreement legally questionable; a placeholder elsewhere makes the agreement embarrassing.",
-      "id": "STRUCT-013-s1.7-1671",
-      "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
-      "rule_id": "STRUCT-013",
-      "rule_version": "1.0.0",
-      "severity": "critical",
-      "source_citations": [],
-      "title": "Unfilled template placeholders: 4"
-    },
     {
       "description": "The contract does not allocate ownership of intellectual property.",
       "document_position": 0,
@@ -854,10 +835,10 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\", \"Recipient\", \"Confidential Information\".",
-  "result_hash": "b011c8ae0a8bdd0058170057cc93616528d3cd5b026be6c215938e2a45a96e94",
+  "result_hash": "3bfd9d64bdb4e5e0b45defe633d3114ccc2677fb85a3e36df16fb236ff24f195",
   "source_file": {
     "name": "bad-nda-residuals.docx",
-    "sha256": "438a7d4a813cba7c9057e9774002e1ec3de8e866e14f5fda948959096d7035d7",
+    "sha256": "622200c84f9ee83eb9c5de968c4b2521039686489a1ccd0a460a268f812b7e12",
     "size_bytes": 1
   },
   "version": "0.1.0"

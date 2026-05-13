@@ -509,7 +509,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-013-s1.7-1357",
+      "finding_id": "STRUCT-013-s1.1-247",
       "fired": true,
       "rule_id": "STRUCT-013",
       "rule_version": "1.0.0"
@@ -660,22 +660,22 @@
   ],
   "findings": [
     {
-      "description": "Found 4 placeholders that look like unfilled template content: \"____________________\", \"____________________\", \"____________________\", \"____________________\".",
-      "document_position": 1357,
+      "description": "Found 1 placeholder that looks like unfilled template content: \"[Premises Address]\".",
+      "document_position": 247,
       "excerpt": {
-        "end_offset": 1377,
-        "section_id": "s1.7",
-        "start_offset": 1357,
-        "text": "____________________"
+        "end_offset": 265,
+        "section_id": "s1.1",
+        "start_offset": 247,
+        "text": "[Premises Address]"
       },
       "explanation": "A bracketed placeholder, mustache token, or XXX run that survived into the final document is almost always a drafting accident — the contract is meant to be filled in. A placeholder where a counterparty name belongs makes the agreement legally questionable; a placeholder elsewhere makes the agreement embarrassing.",
-      "id": "STRUCT-013-s1.7-1357",
+      "id": "STRUCT-013-s1.1-247",
       "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
       "rule_id": "STRUCT-013",
       "rule_version": "1.0.0",
       "severity": "critical",
       "source_citations": [],
-      "title": "Unfilled template placeholders: 4"
+      "title": "Unfilled template placeholders: 1"
     },
     {
       "description": "Tenant hereby waives any right to trial by jury",
@@ -1058,10 +1058,10 @@
   "playbook_id": "lease-commercial-multitenant",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected lease-commercial-multitenant (score 0.9). Title matched: \"office lease\". Distinguishing phrases: \"Landlord\", \"Tenant\", \"Premises\", \"Common Area\", \"Rentable Square Feet\", \"Base Rent\", \"Operating Expenses\".",
-  "result_hash": "2ebb85d68326e39829b58c9b2021678be6bbb3a18095f26b7ac88213d7b143d0",
+  "result_hash": "c09fe0830bb6531aa5f0ddec55146cbc02048b2f2133c85aab74f66cc790a1ec",
   "source_file": {
     "name": "bad-lease.docx",
-    "sha256": "a4b69cd11004f7a67b190cd55e53770cb225f43694ba7b8da3549551af75519e",
+    "sha256": "b9f12348ac5e0f56fe223c8e264370bf1159ebafc2e1c7e1fdb5a811ed1eea17",
     "size_bytes": 1
   },
   "version": "0.1.0"

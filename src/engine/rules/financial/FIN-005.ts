@@ -1,7 +1,28 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
 
-const PAYMENT_TERMS = /\bNet\s+(\d{1,3})\b|payment\s+(?:is\s+)?due\s+within\s+(\d{1,3})\s+days/i;
+const NUM_WORDS =
+  "(?:\\d{1,3}|zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|one\\s+hundred|hundred)";
+// Capture the common formulations of payment terms. Each branch is
+// anchored on a recognizable verb / noun phrase so we don't catch
+// stray numbers. Real-world drafting we want to recognize:
+//
+//   - "Net 30"
+//   - "payment is due within 30 days"
+//   - "due within fifteen (15) days of the invoice date"
+//   - "due and payable within 15 days of the invoice date"
+//   - "payable within thirty (30) days"
+//   - "invoices shall be paid within 30 days"
+//   - "payment terms: 30 days"
+const PAYMENT_TERMS = new RegExp(
+  [
+    `\\bNet\\s+\\d{1,3}\\b`,
+    `\\bpayment\\s+terms?\\s*[:–-]\\s*${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*days?`,
+    `\\b(?:payment|invoice|invoices|amount[s]?\\s+(?:due|owed)|fees?)\\s+[\\s\\w,]{0,40}?(?:is|are|shall\\s+be|must\\s+be|to\\s+be)?\\s*(?:due\\s+(?:and\\s+payable\\s+)?|payable\\s+|paid\\s+)within\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*days?`,
+    `\\b(?:due\\s+(?:and\\s+payable\\s+)?|payable\\s+|paid\\s+)within\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*days?\\s+(?:of|from|after)\\s+(?:the\\s+)?(?:invoice|receipt)`,
+  ].join("|"),
+  "i",
+);
 const ANY_PAYMENT = /\b(fee|payment|invoice|amount\s+due|payable)\b/i;
 
 /** FIN-005 — Payment terms presence and parseability (warning). */

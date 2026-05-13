@@ -508,8 +508,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-013-s1.6-1504",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-013",
       "rule_version": "1.0.0"
     },
@@ -699,24 +698,6 @@
       "severity": "critical",
       "source_citations": [],
       "title": "Training-repayment / stay-or-pay clause"
-    },
-    {
-      "description": "Found 4 placeholders that look like unfilled template content: \"____________________\", \"____________________\", \"____________________\", \"____________________\".",
-      "document_position": 1504,
-      "excerpt": {
-        "end_offset": 1524,
-        "section_id": "s1.6",
-        "start_offset": 1504,
-        "text": "____________________"
-      },
-      "explanation": "A bracketed placeholder, mustache token, or XXX run that survived into the final document is almost always a drafting accident — the contract is meant to be filled in. A placeholder where a counterparty name belongs makes the agreement legally questionable; a placeholder elsewhere makes the agreement embarrassing.",
-      "id": "STRUCT-013-s1.6-1504",
-      "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
-      "rule_id": "STRUCT-013",
-      "rule_version": "1.0.0",
-      "severity": "critical",
-      "source_citations": [],
-      "title": "Unfilled template placeholders: 4"
     },
     {
       "description": "Employee hereby waives any right to a trial by jury",
@@ -963,10 +944,10 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.9). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
-  "result_hash": "6c2bde0f6d6d615fcac6bc2833090f1a805cdb5730779c9ae57d48fcaac20e91",
+  "result_hash": "07e78d0872bfa4ff9f2736e544c3b3ff5987d4e1284d08a9a491e61bc00d6d36",
   "source_file": {
     "name": "bad-employment-trap.docx",
-    "sha256": "f3350f664de515e54a49fc919a9760d3db9b5e1008526210eceaa9c9a0e5f83e",
+    "sha256": "c0ef11cc8a800daead332bf1bc265f96d72af1c51953958734b1bf18c4058b2a",
     "size_bytes": 1
   },
   "version": "0.1.0"

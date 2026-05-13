@@ -502,8 +502,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-013-s1.8-1574",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-013",
       "rule_version": "1.0.0"
     },
@@ -649,24 +648,6 @@
     }
   ],
   "findings": [
-    {
-      "description": "Found 4 placeholders that look like unfilled template content: \"____________________\", \"____________________\", \"____________________\", \"____________________\".",
-      "document_position": 1574,
-      "excerpt": {
-        "end_offset": 1594,
-        "section_id": "s1.8",
-        "start_offset": 1574,
-        "text": "____________________"
-      },
-      "explanation": "A bracketed placeholder, mustache token, or XXX run that survived into the final document is almost always a drafting accident — the contract is meant to be filled in. A placeholder where a counterparty name belongs makes the agreement legally questionable; a placeholder elsewhere makes the agreement embarrassing.",
-      "id": "STRUCT-013-s1.8-1574",
-      "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
-      "rule_id": "STRUCT-013",
-      "rule_version": "1.0.0",
-      "severity": "critical",
-      "source_citations": [],
-      "title": "Unfilled template placeholders: 4"
-    },
     {
       "description": "The document references fees but no 'Net X' or 'due within' clause was found.",
       "document_position": 0,
@@ -817,10 +798,10 @@
   "playbook_id": "lease-residential-us",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected lease-residential-us (score 0.9). Title matched: \"residential lease\". Distinguishing phrases: \"Landlord\", \"Tenant\", \"Premises\", \"security deposit\", \"residential\".",
-  "result_hash": "a8490786fceda0b241a762ef3a67b33ec75e4b058cb6de6afcf1bd17d0efa0cf",
+  "result_hash": "09ee60f33924e42dc1cb62d658c31cfbd77b82876ab2b7a48114064778f12a0c",
   "source_file": {
     "name": "bad-residential-lease-deposit.docx",
-    "sha256": "c9436bc8f85f60b262843221bafadf894508be2190a0dfc7be41772206683f83",
+    "sha256": "a3aaac8da5682c5a7ff4d3cd79191c3344d5f3bc6ec7abe5d833f6234acf6973",
     "size_bytes": 1
   },
   "version": "0.1.0"

@@ -507,8 +507,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-013-s1.8-2286",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-013",
       "rule_version": "1.0.0"
     },
@@ -654,24 +653,6 @@
     }
   ],
   "findings": [
-    {
-      "description": "Found 4 placeholders that look like unfilled template content: \"____________________\", \"____________________\", \"____________________\", \"____________________\".",
-      "document_position": 2286,
-      "excerpt": {
-        "end_offset": 2306,
-        "section_id": "s1.8",
-        "start_offset": 2286,
-        "text": "____________________"
-      },
-      "explanation": "A bracketed placeholder, mustache token, or XXX run that survived into the final document is almost always a drafting accident — the contract is meant to be filled in. A placeholder where a counterparty name belongs makes the agreement legally questionable; a placeholder elsewhere makes the agreement embarrassing.",
-      "id": "STRUCT-013-s1.8-2286",
-      "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
-      "rule_id": "STRUCT-013",
-      "rule_version": "1.0.0",
-      "severity": "critical",
-      "source_citations": [],
-      "title": "Unfilled template placeholders: 4"
-    },
     {
       "description": "The document references fees but no 'Net X' or 'due within' clause was found.",
       "document_position": 0,
@@ -909,10 +890,10 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"advisory agreement\". Distinguishing phrases: \"advisory services\", \"deliverables\", \"independent contractor\".",
-  "result_hash": "6d9969f996cc44449928dae1f54a37c9d1161a7af2ec4ca835f3bd6e8443b1f9",
+  "result_hash": "7647a073a11a0def86f1e60f208fcf5674e1bbe682c164a7991b0fdf091c7f69",
   "source_file": {
     "name": "bad-consulting-success-fee.docx",
-    "sha256": "7cd8baa54a5a56afdad1833989d068b4fad6d872a54ea6d452ea55d0e79cf2fa",
+    "sha256": "6bc505eb0c1641cda4c3466a62f0b3eead258e2dc3a385e792e79f4a717ad6a5",
     "size_bytes": 1
   },
   "version": "0.1.0"

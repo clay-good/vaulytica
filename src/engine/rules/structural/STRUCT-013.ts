@@ -26,10 +26,29 @@ import { forEachParagraph } from "../../../extract/walk.js";
  * Cites: standard contract-drafting hygiene; no external statute.
  */
 
+/**
+ * Common field-label suffixes inside bracketed placeholders. Catching
+ * `[Premises Address]`, `[Effective Date]`, `[Customer Number]`,
+ * `[Lease Term]` — bracket-wrapped fields that drafters routinely
+ * leave for an electronic-signature workflow to fill in but that may
+ * still ship as bracketed text. Avoids `[See Section 5.1]` and
+ * similar legitimate bracket usages by requiring all words inside the
+ * brackets be Title-Case alphabetic.
+ */
+const FIELD_LABEL_SUFFIXES =
+  "Name|Date|Address|City|State|Zip|Country|Title|Code|Number|Amount|Value|Reference|Period|Term|Field|ID|Information|Details|Info|Description|Phone|Email|Sum|Fee|Rate|Price";
+
 const PATTERNS: Array<{ re: RegExp; label: string }> = [
   { re: /\[insert[^\]]{0,80}\]/gi, label: "[insert …] placeholder" },
   { re: /\[[A-Z][A-Za-z\s/&'-]{1,60}\s+[Nn]ame\]/g, label: "[Title-Case name] placeholder" },
-  { re: /\[(?:TBD|TBA|REDACTED|PENDING|PLACEHOLDER|FILL\s*IN|TODO)\]/gi, label: "[TBD]-family placeholder" },
+  {
+    re: new RegExp(
+      `\\[[A-Z][a-zA-Z]+(?:\\s+[A-Z][a-zA-Z]+){0,3}\\s+(?:${FIELD_LABEL_SUFFIXES})\\]`,
+      "g",
+    ),
+    label: "[Field Name] bracketed placeholder",
+  },
+  { re: /\[(?:TBD|TBA|REDACTED|PENDING|PLACEHOLDER|FILL\s*IN|TODO)\b[^\]]{0,60}\]/gi, label: "[TBD]-family placeholder" },
   { re: /\{\{[^}]{1,80}\}\}/g, label: "{{mustache}} placeholder" },
   { re: /<<[^>]{1,80}>>/g, label: "<<placeholder>>" },
   { re: /\bX{3,}\b/g, label: "XXX placeholder" },
@@ -54,6 +73,15 @@ export const rule: Rule = {
         re.lastIndex = 0;
         let m: RegExpExecArray | null;
         while ((m = re.exec(p.text)) !== null) {
+          // Skip underscore runs that are part of a signature-line
+          // context (the "By: ____ Name: ____ Title: ____ Date: ____"
+          // grid that electronic-signature platforms render). Those
+          // aren't unfilled template placeholders — they're signature
+          // affordances. The original heuristic mis-classified them as
+          // critical placeholder findings on every contract.
+          if (label === "underscore-line placeholder" && isSignatureContext(p.text)) {
+            continue;
+          }
           hits.push({
             raw: m[0],
             label,
@@ -85,3 +113,14 @@ export const rule: Rule = {
     });
   },
 };
+
+/**
+ * True if the paragraph text looks like a signature-block context.
+ * Triggered by ≥2 of (By, Name, Title, Date, Signature, Signed) in
+ * the same paragraph, OR the paragraph being formatted as a table-row
+ * "By: __ | Name: __ | Title: __ | Date: __" line.
+ */
+function isSignatureContext(text: string): boolean {
+  const tokens = (text.match(/\b(By|Name|Title|Date|Signature|Signed|Print(?:ed)?\s+Name|Authorized\s+Signatory)\b\s*:?/gi) ?? []).length;
+  return tokens >= 2;
+}

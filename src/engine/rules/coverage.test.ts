@@ -115,8 +115,11 @@ describe("Temporal — TEMP-002 to TEMP-010", () => {
 });
 
 describe("Obligations — OBLI-001 to OBLI-006", () => {
-  it("OBLI-001 fires when obligor is ambiguous", () => {
-    const ctx = buildContext(["H", "The parties shall cooperate in good faith."]);
+  it("OBLI-001 fires when obligor is genuinely ambiguous", () => {
+    // 'The parties' is no longer treated as ambiguous (it's a clear
+    // mutual obligor). The rule now only flags 'the appropriate
+    // party', 'the relevant party', 'the other party', etc.
+    const ctx = buildContext(["H", "The appropriate party shall cooperate in good faith."]);
     expect(OBLI_001.check(ctx)).not.toBeNull();
   });
   it("OBLI-004 fires on 'best efforts'", () => {

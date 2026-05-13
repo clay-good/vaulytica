@@ -509,8 +509,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-013-s1.7-1480",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-013",
       "rule_version": "1.0.0"
     },
@@ -659,24 +658,6 @@
   ],
   "findings": [
     {
-      "description": "Found 2 placeholders that look like unfilled template content: \"____________________\", \"____________________\".",
-      "document_position": 1480,
-      "excerpt": {
-        "end_offset": 1500,
-        "section_id": "s1.7",
-        "start_offset": 1480,
-        "text": "____________________"
-      },
-      "explanation": "A bracketed placeholder, mustache token, or XXX run that survived into the final document is almost always a drafting accident — the contract is meant to be filled in. A placeholder where a counterparty name belongs makes the agreement legally questionable; a placeholder elsewhere makes the agreement embarrassing.",
-      "id": "STRUCT-013-s1.7-1480",
-      "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
-      "rule_id": "STRUCT-013",
-      "rule_version": "1.0.0",
-      "severity": "critical",
-      "source_citations": [],
-      "title": "Unfilled template placeholders: 2"
-    },
-    {
       "description": "continued use of the Service constitutes acceptance",
       "document_position": 941,
       "excerpt": {
@@ -809,7 +790,7 @@
       "title": "No Effective Date found"
     },
     {
-      "description": "Used but not defined: Subscription Term, This Agreement.",
+      "description": "Used but not defined: Subscription Term.",
       "document_position": 253,
       "excerpt": {
         "end_offset": 270,
@@ -824,7 +805,7 @@
       "rule_version": "1.0.0",
       "severity": "warning",
       "source_citations": [],
-      "title": "Undefined Title-Case terms: 2"
+      "title": "Undefined Title-Case terms: 1"
     },
     {
       "description": "The contract contains automatic-renewal language.",
@@ -1019,10 +1000,10 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "038d3175cfd5b27d059f20d94847eafc0c3b94aae0a4a4cf36a26ed332d83b2d",
+  "result_hash": "5037513694954def7f2e06162ebdead1e0a08e1f1e561628449fcca53f8515ea",
   "source_file": {
     "name": "bad-saas.docx",
-    "sha256": "3767f81eeecdcfd66b94689e5be86946cb3994932edfc0ce5497abf5ab482d28",
+    "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",
     "size_bytes": 1
   },
   "version": "0.1.0"

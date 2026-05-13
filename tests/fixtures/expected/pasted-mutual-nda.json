@@ -440,8 +440,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-003-s1-1387",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-003",
       "rule_version": "1.0.0"
     },
@@ -502,8 +501,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-013-s1-1405",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-013",
       "rule_version": "1.0.0"
     },
@@ -650,59 +648,6 @@
     }
   ],
   "findings": [
-    {
-      "description": "The end of this Agreement does not contain the standard signature pattern.",
-      "document_position": 1387,
-      "excerpt": {
-        "end_offset": 1552,
-        "section_id": "s1",
-        "start_offset": 1387,
-        "text": "7. Signatures By: ____________________ Name: Jane Doe Title: CEO Date: January 1, 2026 By: ____________________ Name: John Roe Title: President Date: January 1,"
-      },
-      "explanation": "A contract without identifiable signatures may be unenforceable or invalid. Electronic signatures are permitted under ESIGN and state UETA equivalents, but the document must still record the parties' consent to be bound — typically via a 'By / Name / Title / Date' block.",
-      "id": "STRUCT-003-s1-1387",
-      "recommendation": "Add a signature block for each party with lines for By, Name, Title, and Date. Electronic-signature platforms like DocuSign produce this automatically.",
-      "rule_id": "STRUCT-003",
-      "rule_version": "1.0.0",
-      "severity": "critical",
-      "source_citations": [
-        {
-          "id": "stat-ueta-section-7",
-          "license": "Public domain (US government work)",
-          "license_url": "https://www.usa.gov/government-works",
-          "retrieved_at": "2026-05-11T00:00:00Z",
-          "source": "UETA § 7 (Legal recognition of electronic records and signatures)",
-          "source_url": "https://www.uniformlaws.org/committees/community-home?CommunityKey=2c04b76c-2b7d-4399-977e-d5876ba7e034"
-        },
-        {
-          "id": "stat-15-usc-7001",
-          "license": "Public domain (US government work)",
-          "license_url": "https://www.usa.gov/government-works",
-          "retrieved_at": "2026-05-11T00:00:00Z",
-          "source": "15 U.S.C. § 7001 (ESIGN Act)",
-          "source_url": "https://www.law.cornell.edu/uscode/text/15/7001"
-        }
-      ],
-      "title": "No signature block detected"
-    },
-    {
-      "description": "Found 2 placeholders that look like unfilled template content: \"____________________\", \"____________________\".",
-      "document_position": 1405,
-      "excerpt": {
-        "end_offset": 1425,
-        "section_id": "s1",
-        "start_offset": 1405,
-        "text": "____________________"
-      },
-      "explanation": "A bracketed placeholder, mustache token, or XXX run that survived into the final document is almost always a drafting accident — the contract is meant to be filled in. A placeholder where a counterparty name belongs makes the agreement legally questionable; a placeholder elsewhere makes the agreement embarrassing.",
-      "id": "STRUCT-013-s1-1405",
-      "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
-      "rule_id": "STRUCT-013",
-      "rule_version": "1.0.0",
-      "severity": "critical",
-      "source_citations": [],
-      "title": "Unfilled template placeholders: 2"
-    },
     {
       "description": "The contract does not allocate ownership of intellectual property.",
       "document_position": 0,
@@ -870,7 +815,7 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected mutual-nda (score 0.9). Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\", \"Recipient\", \"Confidential Information\", \"Permitted Purpose\". Negative features penalized: \"employee\".",
-  "result_hash": "725b4495729d2805aea32b4bec27bf8cdf0dc56ed8fd55f097a4b6d3c275c127",
+  "result_hash": "372d6aceba0b7b25c9029f4e8d8654a0015da12ee3c2bb364280ef52edac9450",
   "source_file": {
     "name": "pasted-mutual-nda.txt",
     "sha256": "908fab1cfc67064f69fefb5bd7aed92907945bf54c100eba2dcdb9d75c0e6d40",

@@ -503,8 +503,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-013-s1.5-849",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-013",
       "rule_version": "1.0.0"
     },
@@ -650,24 +649,6 @@
     }
   ],
   "findings": [
-    {
-      "description": "Found 4 placeholders that look like unfilled template content: \"____________________\", \"____________________\", \"____________________\", \"____________________\".",
-      "document_position": 849,
-      "excerpt": {
-        "end_offset": 869,
-        "section_id": "s1.5",
-        "start_offset": 849,
-        "text": "____________________"
-      },
-      "explanation": "A bracketed placeholder, mustache token, or XXX run that survived into the final document is almost always a drafting accident — the contract is meant to be filled in. A placeholder where a counterparty name belongs makes the agreement legally questionable; a placeholder elsewhere makes the agreement embarrassing.",
-      "id": "STRUCT-013-s1.5-849",
-      "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
-      "rule_id": "STRUCT-013",
-      "rule_version": "1.0.0",
-      "severity": "critical",
-      "source_citations": [],
-      "title": "Unfilled template placeholders: 4"
-    },
     {
       "description": "The contract does not allocate ownership of intellectual property.",
       "document_position": 0,
@@ -853,10 +834,10 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "74a0aa1bac79b9f6480aca4bc535f832d79753ff6a8cd5f56d5467232cc9c0f2",
+  "result_hash": "bd19cb582cdf0d4de7e60bef0697a774bf0e56173937ef9f91ca4fb5e665a553",
   "source_file": {
     "name": "bad-nda-no-dtsa.docx",
-    "sha256": "9935835927b3db6d185db317f25aeca40c246948626731e08f54a67addd2a3c9",
+    "sha256": "6843694916dfef439851e84aca5bf213e35090b1a39f2b027f1e56d6382f2c29",
     "size_bytes": 1
   },
   "version": "0.1.0"

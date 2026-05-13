@@ -504,8 +504,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-013-s1.6-1753",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-013",
       "rule_version": "1.0.0"
     },
@@ -650,24 +649,6 @@
     }
   ],
   "findings": [
-    {
-      "description": "Found 4 placeholders that look like unfilled template content: \"____________________\", \"____________________\", \"____________________\", \"____________________\".",
-      "document_position": 1753,
-      "excerpt": {
-        "end_offset": 1773,
-        "section_id": "s1.6",
-        "start_offset": 1753,
-        "text": "____________________"
-      },
-      "explanation": "A bracketed placeholder, mustache token, or XXX run that survived into the final document is almost always a drafting accident — the contract is meant to be filled in. A placeholder where a counterparty name belongs makes the agreement legally questionable; a placeholder elsewhere makes the agreement embarrassing.",
-      "id": "STRUCT-013-s1.6-1753",
-      "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
-      "rule_id": "STRUCT-013",
-      "rule_version": "1.0.0",
-      "severity": "critical",
-      "source_citations": [],
-      "title": "Unfilled template placeholders: 4"
-    },
     {
       "description": "The document references fees but no 'Net X' or 'due within' clause was found.",
       "document_position": 0,
@@ -836,10 +817,10 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "469dae49f8ed24da326fc2ae83044b7636aac93e13f07ccfccf31b81d810d76d",
+  "result_hash": "f5c5f5a62074c0bb86b5c16135fc74e3df25a87669b3fd672d8d8d9634e59a0f",
   "source_file": {
     "name": "bad-contractor-leaseback.docx",
-    "sha256": "7811dab80546772d0a39147c325b5277987479cd7e276b0236eb6987cfa2cd95",
+    "sha256": "82496f664a3abe77b7ed03c7c77b47c9ffbd8c5f883389cb761b7ba68b31f98d",
     "size_bytes": 1
   },
   "version": "0.1.0"
