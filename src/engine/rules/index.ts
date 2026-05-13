@@ -132,6 +132,7 @@ import { rule as PERS_005 } from "./personnel/PERS-005.js";
 import { rule as PERS_006 } from "./personnel/PERS-006.js";
 import { rule as PERS_007 } from "./personnel/PERS-007.js";
 import { rule as PERS_008 } from "./personnel/PERS-008.js";
+import { rule as PERS_009 } from "./personnel/PERS-009.js";
 
 // Dark patterns
 import { rule as DARK_001 } from "./dark-patterns/DARK-001.js";
@@ -167,7 +168,7 @@ export const LAUNCH_RULES: readonly Rule[] = [
   // IP & data — 6
   IPDATA_001, IPDATA_002, IPDATA_003, IPDATA_004, IPDATA_005, IPDATA_006, IPDATA_007, IPDATA_008, IPDATA_009, IPDATA_010,
   // Personnel — 4
-  PERS_001, PERS_002, PERS_003, PERS_004, PERS_005, PERS_006, PERS_007, PERS_008,
+  PERS_001, PERS_002, PERS_003, PERS_004, PERS_005, PERS_006, PERS_007, PERS_008, PERS_009,
   // Dark patterns — 4
   DARK_001, DARK_002, DARK_003, DARK_004, DARK_005, DARK_006, DARK_007, DARK_008, DARK_009,
 ];
