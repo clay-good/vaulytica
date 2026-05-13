@@ -93,7 +93,7 @@
         background: var(--bg);
         color: var(--body);
         font-family: var(--font-sans);
-        font-size: 17px;
+        font-size: 18.5px;
         line-height: 1.6;
         -webkit-font-smoothing: antialiased;
         text-rendering: optimizeLegibility;
@@ -177,32 +177,32 @@
       .wordmark {
         display: inline-flex;
         align-items: baseline;
-        gap: 4px;
+        gap: 5px;
         font-weight: 600;
-        font-size: 18px;
+        font-size: 24px;
         color: var(--heading);
         letter-spacing: -0.01em;
       }
       .wordmark .dot {
-        width: 7px;
-        height: 7px;
+        width: 9px;
+        height: 9px;
         background: var(--accent);
         border-radius: 50%;
         align-self: center;
-        margin-right: 2px;
+        margin-right: 3px;
       }
       .nav-actions {
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 8px;
       }
       .icon-btn {
         background: transparent;
         border: 1px solid transparent;
         color: var(--body);
         cursor: pointer;
-        padding: 8px;
-        border-radius: 8px;
+        padding: 11px;
+        border-radius: 10px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -214,8 +214,8 @@
         border-color: var(--line);
       }
       .icon-btn svg {
-        width: 18px;
-        height: 18px;
+        width: 24px;
+        height: 24px;
         stroke: currentColor;
         fill: none;
         stroke-width: 1.8;
@@ -567,19 +567,23 @@
         background: var(--surface);
         border: 1px solid var(--line);
         border-radius: var(--radius);
-        padding: 32px;
-        margin-top: 12px;
+        padding: 44px;
+        margin-top: 16px;
         overflow-x: auto;
       }
       .diagram svg {
         display: block;
         max-width: 100%;
         height: auto;
+        min-width: 760px;
       }
       .diagram text {
         font-family: var(--font-mono);
-        font-size: 13px;
+        font-size: 16px;
         fill: var(--body);
+      }
+      .diagram .label {
+        font-size: 17px;
       }
       .diagram .box rect {
         fill: var(--bg);
@@ -676,24 +680,31 @@
         text-decoration: none;
       }
       .closing-actions {
-        display: inline-flex;
+        display: flex;
         align-items: center;
+        justify-content: space-between;
         gap: 18px;
         flex-wrap: wrap;
-        justify-content: center;
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 0 var(--pad);
       }
-      .made-by {
-        color: var(--muted);
-        font-size: 15px;
+      .cta--left {
+        margin-right: auto;
       }
-      .made-by a {
-        color: var(--body);
-        border-bottom: 1px dotted var(--line);
+      .cta--right {
+        margin-left: auto;
       }
-      .made-by a:hover {
-        color: var(--accent);
-        text-decoration: none;
-        border-bottom-color: var(--accent);
+      .cta--secondary {
+        background: var(--surface);
+        color: var(--heading);
+        border: 1px solid var(--line);
+      }
+      .cta--secondary:hover {
+        filter: none;
+        background: var(--bg);
+        border-color: var(--accent);
+        color: var(--heading);
       }
       .sr-only {
         position: absolute;
@@ -705,41 +716,6 @@
         clip: rect(0, 0, 0, 0);
         white-space: nowrap;
         border: 0;
-      }
-
-      /* Footer */
-      footer {
-        border-top: 1px solid var(--line);
-        padding: 36px var(--pad);
-        background: var(--bg);
-      }
-      footer .footer-inner {
-        max-width: var(--max);
-        margin: 0 auto;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 14px;
-        justify-content: space-between;
-        align-items: center;
-        color: var(--muted);
-        font-size: 13.5px;
-      }
-      footer .disclaimer {
-        max-width: 640px;
-        line-height: 1.55;
-      }
-      .badge-line {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-        font-family: var(--font-mono);
-        font-size: 12px;
-      }
-      .badge {
-        border: 1px solid var(--line);
-        border-radius: 999px;
-        padding: 3px 8px;
-        color: var(--body);
       }
 
       .verify-disclosure {
@@ -1055,15 +1031,15 @@
         </p>
 
         <div class="diagram" role="img" aria-label="Architecture diagram: ingest, normalize, extract, rule engine and playbook matcher fed by the DKB, then report builder. Everything is in the user's browser.">
-          <svg viewBox="0 0 880 320" xmlns="http://www.w3.org/2000/svg">
+          <svg viewBox="0 0 1000 400" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <marker
                 id="arrowhead"
                 viewBox="0 0 10 10"
                 refX="9"
                 refY="5"
-                markerWidth="8"
-                markerHeight="8"
+                markerWidth="9"
+                markerHeight="9"
                 orient="auto-start-reverse"
               >
                 <path d="M0,0 L10,5 L0,10 z" fill="currentColor" style="color: var(--muted);" />
@@ -1072,58 +1048,59 @@
 
             <!-- Browser frame -->
             <g class="box accent">
-              <rect x="20" y="20" width="840" height="280" rx="14" />
-              <text class="label" x="40" y="44" style="font-weight: 600">The user's browser, the entire product</text>
+              <rect x="20" y="20" width="960" height="350" rx="16" />
+              <text class="label" x="44" y="52" style="font-weight: 600">The user's browser, the entire product</text>
             </g>
 
-            <!-- Boxes -->
+            <!-- Row 1: Ingest → Normalize → Extractors → Rule engine -->
             <g class="box">
-              <rect x="50" y="80" width="140" height="56" rx="10" />
-              <text class="label" x="120" y="106" text-anchor="middle">Ingest</text>
-              <text x="120" y="124" text-anchor="middle">PDF / DOCX / OCR</text>
+              <rect x="50" y="92" width="170" height="80" rx="12" />
+              <text class="label" x="135" y="128" text-anchor="middle">Ingest</text>
+              <text x="135" y="154" text-anchor="middle">PDF / DOCX / OCR</text>
             </g>
             <g class="box">
-              <rect x="220" y="80" width="140" height="56" rx="10" />
-              <text class="label" x="290" y="106" text-anchor="middle">Normalize</text>
-              <text x="290" y="124" text-anchor="middle">document tree</text>
+              <rect x="250" y="92" width="170" height="80" rx="12" />
+              <text class="label" x="335" y="128" text-anchor="middle">Normalize</text>
+              <text x="335" y="154" text-anchor="middle">document tree</text>
             </g>
             <g class="box">
-              <rect x="390" y="80" width="160" height="56" rx="10" />
-              <text class="label" x="470" y="106" text-anchor="middle">Extractors</text>
-              <text x="470" y="124" text-anchor="middle">parties · dates · clauses</text>
+              <rect x="450" y="92" width="190" height="80" rx="12" />
+              <text class="label" x="545" y="128" text-anchor="middle">Extractors</text>
+              <text x="545" y="154" text-anchor="middle">parties · dates · clauses</text>
             </g>
             <g class="box">
-              <rect x="580" y="80" width="150" height="56" rx="10" />
-              <text class="label" x="655" y="106" text-anchor="middle">Rule engine</text>
-              <text x="655" y="124" text-anchor="middle">~80 deterministic rules</text>
+              <rect x="670" y="92" width="180" height="80" rx="12" />
+              <text class="label" x="760" y="128" text-anchor="middle">Rule engine</text>
+              <text x="760" y="154" text-anchor="middle">~80 deterministic rules</text>
             </g>
 
+            <!-- Row 2: Playbook matcher · DKB · Report builder -->
             <g class="box">
-              <rect x="220" y="180" width="140" height="56" rx="10" />
-              <text class="label" x="290" y="206" text-anchor="middle">Playbook matcher</text>
-              <text x="290" y="224" text-anchor="middle">12 playbooks</text>
+              <rect x="250" y="244" width="170" height="80" rx="12" />
+              <text class="label" x="335" y="280" text-anchor="middle">Playbook matcher</text>
+              <text x="335" y="306" text-anchor="middle">12 playbooks</text>
             </g>
             <g class="box accent">
-              <rect x="390" y="180" width="160" height="56" rx="10" />
-              <text class="label" x="470" y="206" text-anchor="middle">DKB (static asset)</text>
-              <text x="470" y="224" text-anchor="middle">clauses · jurisdictions · statutes</text>
+              <rect x="450" y="244" width="190" height="80" rx="12" />
+              <text class="label" x="545" y="280" text-anchor="middle">DKB (static asset)</text>
+              <text x="545" y="306" text-anchor="middle">clauses · jurisdictions · statutes</text>
             </g>
             <g class="box">
-              <rect x="580" y="180" width="150" height="56" rx="10" />
-              <text class="label" x="655" y="206" text-anchor="middle">Report builder</text>
-              <text x="655" y="224" text-anchor="middle">docx-js → .docx</text>
+              <rect x="670" y="244" width="180" height="80" rx="12" />
+              <text class="label" x="760" y="280" text-anchor="middle">Report builder</text>
+              <text x="760" y="306" text-anchor="middle">docx-js → .docx</text>
             </g>
 
             <!-- Arrows -->
-            <path class="arrow" d="M190,108 L220,108" />
-            <path class="arrow" d="M360,108 L390,108" />
-            <path class="arrow" d="M550,108 L580,108" />
-            <path class="arrow" d="M470,140 L470,180" />
-            <path class="arrow" d="M360,208 L390,208" />
-            <path class="arrow" d="M550,208 L580,208" />
-            <path class="arrow" d="M655,140 L655,180" />
-            <path class="arrow" d="M730,108 C800,108 800,260 760,260" />
-            <text x="780" y="278" fill="var(--muted)" font-family="var(--font-mono)" font-size="11">
+            <path class="arrow" d="M220,132 L250,132" />
+            <path class="arrow" d="M420,132 L450,132" />
+            <path class="arrow" d="M640,132 L670,132" />
+            <path class="arrow" d="M545,172 L545,244" />
+            <path class="arrow" d="M420,284 L450,284" />
+            <path class="arrow" d="M640,284 L670,284" />
+            <path class="arrow" d="M760,172 L760,244" />
+            <path class="arrow" d="M850,132 C930,132 930,344 870,344" />
+            <text x="900" y="386" fill="var(--muted)" font-family="var(--font-mono)" font-size="14" text-anchor="end">
               Word .docx download
             </text>
           </svg>
@@ -1356,32 +1333,18 @@
       <section class="closing">
         <p class="quote">Stop hoping you didn't miss anything.<br />Prove you didn't.</p>
         <div class="closing-actions">
-          <a class="cta" href="https://github.com/clay-good/vaulytica" rel="noopener">
+          <a class="cta cta--secondary cta--left" href="https://claygood.com" rel="noopener">
+            Made with <span aria-hidden="true">&hearts;</span><span class="sr-only">love</span> by Clay Good
+          </a>
+          <a class="cta cta--right" href="https://github.com/clay-good/vaulytica" rel="noopener">
             GitHub
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M7 17 17 7"></path><path d="M7 7h10v10"></path>
             </svg>
           </a>
-          <span class="made-by">Made with <span aria-hidden="true">&hearts;</span><span class="sr-only">love</span> by <a href="https://claygood.com" rel="noopener">Clay Good</a></span>
         </div>
       </section>
     </main>
-
-    <footer>
-      <div class="footer-inner">
-        <p class="disclaimer">
-          Vaulytica is a deterministic legal-document utility. It is not legal advice.
-          Every finding cites a regulator, statute, or vendored source — see <a href="#sources">Sources</a>.
-        </p>
-        <p
-          class="dkb-validation"
-          data-role="dkb-validation"
-          aria-live="polite"
-          data-validated-at=""
-          data-stale-count=""
-        >DKB last validated: <span data-role="dkb-validated-at">—</span>. Stale citations under review: <span data-role="dkb-stale-count">0</span>.</p>
-      </div>
-    </footer>
 
     <script>
       (function () {
