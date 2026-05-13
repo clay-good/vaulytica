@@ -1,22 +1,17 @@
 /**
- * NDA deep ruleset — placeholder.
+ * NDA-deep ruleset — spec-v3.md §32 / Step 27.
  *
- * Spec: spec-v3.md §32.
- *
- * Will implement ~25 rules for deep NDA analysis, including:
- *   - DTSA notice present and complete (§26 extractor).
- *   - Confidentiality term reasonable (definite term or perpetual-on-trade-secrets).
- *   - Definition of Confidential Information with all four standard exclusions.
- *   - Residuals clause present/absent — flagged for awareness.
- *   - Permitted-use scope narrow enough ("to evaluate the Purpose," not "any business purpose").
- *   - Return-or-destruction with attestation requirement.
- *   - Injunctive-relief clause (waiver of bond, irreparable-harm acknowledgment).
- *   - Governing law from a list of viable jurisdictions.
- *   - Most-favored-nation / no-precedent clause.
- *   - Non-solicitation carve-outs with general-solicitation carve-out.
- *   - Symmetry check for mutual NDAs.
- *   - Receiver-only obligation check for unilateral NDAs.
- *
- * Implementation lands in spec-v3.md Step 27.
+ * 25 rules covering the DTSA whistleblower-immunity notice
+ * (18 U.S.C. § 1833(b)), Confidential-Information definition
+ * completeness, term separation, return / attestation, injunctive
+ * relief, permitted-use scope, governing law, residuals flagging, and
+ * mutual / unilateral symmetry checks. Every rule scopes to the
+ * NDA-deep playbooks via `applies_to_playbooks` so v2 NDA behavior
+ * remains unchanged.
  */
-export const RULES: never[] = [];
+export { NDA_DEEP_RULES } from "./rules.js";
+export {
+  NDA_PLAYBOOK_IDS,
+  NDA_MUTUAL_PLAYBOOK_IDS,
+  NDA_UNILATERAL_PLAYBOOK_IDS,
+} from "./_helpers.js";
