@@ -1,21 +1,66 @@
 {
   "id": "baa",
-  "version": "0.0.0-placeholder",
-  "name": "Business Associate Agreement",
-  "description": "Placeholder per spec-v3.md §35. Full implementation lands in Step 23. Covered-entity to business-associate BAA under HIPAA. Selects the §28 BAA ruleset.",
+  "version": "1.0.0",
+  "name": "Business Associate Agreement (HIPAA)",
+  "description": "Covered-entity to business-associate BAA under HIPAA. Selects the §28 BAA ruleset (45 rules) covering 45 CFR § 164.504(e) required clauses, § 164.314(a) Security Rule flow-down, § 164.410 breach notification, plus HHS-guidance posture rules.",
   "match_features": {
-    "title_keywords": ["business associate agreement", "baa", "hipaa"],
+    "title_keywords": [
+      "business associate agreement",
+      "business associate addendum",
+      "baa",
+      "hipaa addendum"
+    ],
     "required_clauses": [],
-    "distinguishing_phrases": [],
+    "distinguishing_phrases": [
+      "protected health information",
+      "covered entity",
+      "business associate",
+      "unsecured phi",
+      "164.504",
+      "164.410",
+      "security incident"
+    ],
     "negative_features": []
   },
   "expected_clauses": [],
-  "expected_defined_terms": [],
+  "expected_defined_terms": [
+    "Protected Health Information",
+    "PHI",
+    "ePHI",
+    "Covered Entity",
+    "Business Associate",
+    "Breach",
+    "Unsecured PHI",
+    "Security Incident"
+  ],
   "rule_overrides": {},
   "balanced_defaults": [],
-  "sources": [],
+  "sources": [
+    {
+      "id": "hipaa-45-cfr-164",
+      "source": "45 C.F.R. Part 164 — HIPAA Privacy and Security Rules",
+      "source_url": "https://www.ecfr.gov/current/title-45/subtitle-A/subchapter-C/part-164",
+      "retrieved_at": "2026-05-12T00:00:00Z",
+      "license": "Public domain (US government work)",
+      "license_url": "https://www.usa.gov/government-works"
+    }
+  ],
   "regulator_frame": "HIPAA",
   "applicable_jurisdictions": ["US"],
   "companion_playbooks": ["msa-vendor-deep"],
-  "compliance_matrix_columns": []
+  "compliance_matrix_columns": [
+    "45 CFR § 164.504(e)(2)(i)",
+    "45 CFR § 164.504(e)(2)(ii)(A)",
+    "45 CFR § 164.504(e)(2)(ii)(B)",
+    "45 CFR § 164.504(e)(2)(ii)(C)",
+    "45 CFR § 164.504(e)(2)(ii)(D)",
+    "45 CFR § 164.504(e)(2)(ii)(E)",
+    "45 CFR § 164.504(e)(2)(ii)(F)",
+    "45 CFR § 164.504(e)(2)(ii)(G)",
+    "45 CFR § 164.504(e)(2)(ii)(H)",
+    "45 CFR § 164.504(e)(2)(ii)(I)",
+    "45 CFR § 164.504(e)(2)(iii)",
+    "45 CFR § 164.314(a)",
+    "45 CFR § 164.410"
+  ]
 }

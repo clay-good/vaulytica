@@ -17,7 +17,7 @@ import { loadDkb } from "../dkb/index.js";
 import type { DKB } from "../dkb/types.js";
 import { matchPlaybook, parsePlaybook, LAUNCH_PLAYBOOK_IDS } from "../playbooks/index.js";
 import type { Playbook } from "../playbooks/types.js";
-import { LAUNCH_RULES, runEngine, type EngineRun, type Rule } from "../engine/index.js";
+import { LAUNCH_RULES, V3_RULES, runEngine, type EngineRun, type Rule } from "../engine/index.js";
 import { buildDocxReport, buildJsonReport } from "../report/index.js";
 
 export type PipelineProgress = {
@@ -104,7 +104,7 @@ export async function runPipeline(
 
   // 5. Run engine with live progress.
   const run = await runEngine({
-    rules: LAUNCH_RULES,
+    rules: [...LAUNCH_RULES, ...V3_RULES] as readonly Rule[],
     ctx: { tree: ingest.tree, extracted, dkb, playbook },
     source_file: { name: file.name, sha256: ingest.sha256, size_bytes: buffer.byteLength },
     playbook_match_confidence: match.confidence,

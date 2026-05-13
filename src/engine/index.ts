@@ -21,3 +21,4 @@ export { makeFinding, findSource, findStatuteCitation, SEVERITY_RANK } from "./f
 export { sortRules, sortFindings } from "./ordering.js";
 export { runEngine, stableStringify, ENGINE_VERSION, severityIsAtLeast } from "./runner.js";
 export { LAUNCH_RULES } from "./rules/index.js";
+export { V3_RULES, BAA_RULES } from "./rules/v3/index.js";

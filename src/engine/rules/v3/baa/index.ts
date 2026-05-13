@@ -1,15 +1,10 @@
 /**
- * BAA ruleset — placeholder.
+ * BAA ruleset — spec-v3.md §28 / Step 23.
  *
- * Spec: spec-v3.md §28.
- *
- * Will implement ~45 rules for Business Associate Agreements under HIPAA,
- * including required-clause checks per 45 CFR § 164.504(e)(2)(i)–(iii),
- * Security Rule flow-down (§ 164.314), breach-notification timing (§ 164.410),
- * and quality-of-text rules (breach trigger, return-or-destruction, audit rights,
- * indemnity cap concerns). Also covers two-document consistency rules when paired
- * with the underlying MSA.
- *
- * Implementation lands in spec-v3.md Step 23.
+ * 45 rules covering 45 C.F.R. § 164.504(e), § 164.314(a) flow-down,
+ * § 164.410 breach notification, plus HHS-guidance posture rules.
+ * Every rule is scoped to BAA playbooks via `applies_to_playbooks` so
+ * the v2 launch suite is untouched when no BAA is active.
  */
-export const RULES: never[] = [];
+export { BAA_RULES } from "./rules.js";
+export { BAA_PLAYBOOK_IDS } from "./_helpers.js";
