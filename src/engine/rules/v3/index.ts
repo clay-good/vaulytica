@@ -10,6 +10,7 @@ import type { Rule } from "../../finding.js";
 import { BAA_RULES } from "./baa/index.js";
 import { DPA_GDPR_RULES } from "./dpa-gdpr/index.js";
 import { DPA_US_STATE_RULES } from "./dpa-us-state/index.js";
+import { MSA_DEEP_RULES } from "./msa-deep/index.js";
 import { NDA_DEEP_RULES } from "./nda-deep/index.js";
 import { TRANSFER_RULES } from "./transfer/index.js";
 
@@ -17,8 +18,9 @@ export const V3_RULES: readonly Rule[] = [
   ...BAA_RULES,
   ...DPA_GDPR_RULES,
   ...DPA_US_STATE_RULES,
+  ...MSA_DEEP_RULES,
   ...NDA_DEEP_RULES,
   ...TRANSFER_RULES,
 ];
 
-export { BAA_RULES, DPA_GDPR_RULES, DPA_US_STATE_RULES, NDA_DEEP_RULES, TRANSFER_RULES };
+export { BAA_RULES, DPA_GDPR_RULES, DPA_US_STATE_RULES, MSA_DEEP_RULES, NDA_DEEP_RULES, TRANSFER_RULES };

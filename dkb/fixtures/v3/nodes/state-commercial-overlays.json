@@ -1,0 +1,117 @@
+[
+  {
+    "id": "state-overlay-ca-civ-1668",
+    "node_type": "statutory_clause_requirement",
+    "dkb_node_version": 1,
+    "dkb_node_last_validated_at": "2026-05-13T00:00:00Z",
+    "regulator": "California Civil Code",
+    "jurisdiction": "us-ca",
+    "authority": "Cal. Civ. Code § 1668",
+    "citation": "Cal. Civ. Code § 1668",
+    "effective_date": "1872-01-01",
+    "requirement": "A contract that purports to exempt anyone from responsibility for their own fraud, wilful injury to another's person or property, or violation of law (whether wilful or negligent) is unenforceable in California.",
+    "minimum_compliant_text": "The limitation of liability set forth in this Section shall not apply to (a) fraud, (b) wilful injury to the person or property of another, or (c) any violation of law.",
+    "applies_to_document_types": ["MSA", "SaaS", "Vendor Agreement", "Services Agreement"],
+    "cites": [
+      {
+        "authority": "Cal. Civ. Code § 1668",
+        "citation": "Cal. Civ. Code § 1668 (1872, as amended)",
+        "source_url": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1668",
+        "content_hash_at_pin": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fetched_at": "2026-05-13T00:00:00Z"
+      }
+    ]
+  },
+  {
+    "id": "state-overlay-ny-gob-5-322-1",
+    "node_type": "statutory_clause_requirement",
+    "dkb_node_version": 1,
+    "dkb_node_last_validated_at": "2026-05-13T00:00:00Z",
+    "regulator": "New York Department of State",
+    "jurisdiction": "us-ny",
+    "authority": "N.Y. Gen. Oblig. Law § 5-322.1",
+    "citation": "N.Y. Gen. Oblig. Law § 5-322.1",
+    "effective_date": "1981-07-08",
+    "requirement": "Construction-contract indemnifications that purport to indemnify the promisee against the promisee's own negligence are void as against public policy.",
+    "minimum_compliant_text": "Contractor shall indemnify Owner only to the extent of Contractor's own negligence or wilful misconduct; this indemnity shall not extend to claims arising from the negligence of Owner.",
+    "applies_to_document_types": ["MSA", "Construction Agreement", "Vendor Agreement"],
+    "cites": [
+      {
+        "authority": "N.Y. Gen. Oblig. Law § 5-322.1",
+        "citation": "N.Y. Gen. Oblig. Law § 5-322.1 (McKinney)",
+        "source_url": "https://www.nysenate.gov/legislation/laws/GOB/5-322.1",
+        "content_hash_at_pin": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fetched_at": "2026-05-13T00:00:00Z"
+      }
+    ]
+  },
+  {
+    "id": "state-overlay-tx-bus-com-151-102",
+    "node_type": "statutory_clause_requirement",
+    "dkb_node_version": 1,
+    "dkb_node_last_validated_at": "2026-05-13T00:00:00Z",
+    "regulator": "Texas Business and Commerce Code",
+    "jurisdiction": "us-tx",
+    "authority": "Tex. Bus. & Com. Code § 151.102",
+    "citation": "Tex. Bus. & Com. Code § 151.102",
+    "effective_date": "2012-01-01",
+    "requirement": "A construction contract provision is void to the extent it requires an indemnitor to indemnify the indemnitee against claims caused by the indemnitee's negligence or fault.",
+    "minimum_compliant_text": "Indemnitor shall indemnify Indemnitee only for claims caused by Indemnitor's negligence, fault, or wilful misconduct.",
+    "applies_to_document_types": ["MSA", "Construction Agreement"],
+    "cites": [
+      {
+        "authority": "Tex. Bus. & Com. Code § 151.102",
+        "citation": "Tex. Bus. & Com. Code § 151.102",
+        "source_url": "https://statutes.capitol.texas.gov/Docs/BC/htm/BC.151.htm",
+        "content_hash_at_pin": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fetched_at": "2026-05-13T00:00:00Z"
+      }
+    ]
+  },
+  {
+    "id": "state-overlay-ucc-2-316",
+    "node_type": "statutory_clause_requirement",
+    "dkb_node_version": 1,
+    "dkb_node_last_validated_at": "2026-05-13T00:00:00Z",
+    "regulator": "Uniform Commercial Code (state-adopted)",
+    "jurisdiction": "us-multi",
+    "authority": "U.C.C. § 2-316",
+    "citation": "U.C.C. § 2-316",
+    "effective_date": "1952-01-01",
+    "requirement": "To exclude or modify the implied warranty of merchantability the language must mention merchantability and, in writing, must be conspicuous.",
+    "minimum_compliant_text": "VENDOR DISCLAIMS ALL IMPLIED WARRANTIES, INCLUDING THE IMPLIED WARRANTY OF MERCHANTABILITY AND THE IMPLIED WARRANTY OF FITNESS FOR A PARTICULAR PURPOSE.",
+    "applies_to_document_types": ["MSA", "SaaS", "Vendor Agreement"],
+    "cites": [
+      {
+        "authority": "U.C.C. § 2-316",
+        "citation": "U.C.C. § 2-316 (2002)",
+        "source_url": "https://www.law.cornell.edu/ucc/2/2-316",
+        "content_hash_at_pin": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fetched_at": "2026-05-13T00:00:00Z"
+      }
+    ]
+  },
+  {
+    "id": "state-overlay-ucc-2-719",
+    "node_type": "statutory_clause_requirement",
+    "dkb_node_version": 1,
+    "dkb_node_last_validated_at": "2026-05-13T00:00:00Z",
+    "regulator": "Uniform Commercial Code (state-adopted)",
+    "jurisdiction": "us-multi",
+    "authority": "U.C.C. § 2-719",
+    "citation": "U.C.C. § 2-719",
+    "effective_date": "1952-01-01",
+    "requirement": "Where circumstances cause an exclusive or limited remedy to fail of its essential purpose, the remedy may be had as provided in the UCC.",
+    "minimum_compliant_text": "If the limited remedy is found to fail of its essential purpose, the customer's other remedies under this Agreement and applicable law remain available.",
+    "applies_to_document_types": ["MSA", "SaaS", "Vendor Agreement"],
+    "cites": [
+      {
+        "authority": "U.C.C. § 2-719(2)",
+        "citation": "U.C.C. § 2-719(2)",
+        "source_url": "https://www.law.cornell.edu/ucc/2/2-719",
+        "content_hash_at_pin": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fetched_at": "2026-05-13T00:00:00Z"
+      }
+    ]
+  }
+]

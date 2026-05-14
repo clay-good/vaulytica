@@ -1,21 +1,104 @@
 {
   "id": "msa-vendor-deep",
-  "version": "0.0.0-placeholder",
+  "version": "1.0.0",
   "name": "MSA — Vendor-Side Deep Analysis",
-  "description": "Placeholder per spec-v3.md §46. Full implementation lands in Step 28. Replaces v2 saas-vendor and msa-general for vendor-side. Selects the §33 MSA-deep ruleset, oriented toward catching vendor-friendly drafting (low caps, broad disclaimers, narrow indemnity).",
+  "description": "Deep analysis of a Master Services Agreement (or Master Subscription Agreement) from the vendor's perspective. Selects the §33 MSA-deep ruleset (30 rules). Replaces v2's saas-vendor playbook and overlaps msa-general for vendor-side review. Oriented toward catching vendor-friendly drafting that may not survive customer review: low liability caps, broad disclaimers, narrow indemnities, broad limitation of liability, unbounded feedback license, AI-usage non-disclosure.",
   "match_features": {
-    "title_keywords": ["master services agreement", "master subscription agreement", "vendor agreement"],
+    "title_keywords": [
+      "master services agreement",
+      "master subscription agreement",
+      "master agreement",
+      "vendor agreement",
+      "cloud service agreement",
+      "saas agreement"
+    ],
     "required_clauses": [],
-    "distinguishing_phrases": [],
-    "negative_features": []
+    "distinguishing_phrases": [
+      "limitation of liability",
+      "indemnification",
+      "intellectual property",
+      "warranty",
+      "term and termination",
+      "force majeure",
+      "service level",
+      "order of precedence",
+      "statement of work",
+      "fees and payment",
+      "professional services"
+    ],
+    "negative_features": [
+      "protected health information",
+      "personal data of data subjects",
+      "non-disclosure agreement",
+      "this nda"
+    ]
   },
-  "expected_clauses": [],
-  "expected_defined_terms": [],
+  "expected_clauses": [
+    "Limitation of Liability",
+    "Indemnification",
+    "Intellectual Property",
+    "Warranties",
+    "Term and Termination",
+    "Order of Precedence",
+    "Confidentiality",
+    "Governing Law"
+  ],
+  "expected_defined_terms": [
+    "Agreement",
+    "Services",
+    "Deliverables",
+    "Confidential Information",
+    "Statement of Work",
+    "Affiliate",
+    "Fees"
+  ],
   "rule_overrides": {},
   "balanced_defaults": [],
-  "sources": [],
+  "sources": [
+    {
+      "id": "msa-deep-baseline",
+      "source": "Commercial drafting baseline (UCC Article 2 + state overlays)",
+      "source_url": "https://www.law.cornell.edu/ucc",
+      "retrieved_at": "2026-05-13T00:00:00Z",
+      "license": "Public domain or fair use",
+      "license_url": "https://www.usa.gov/government-works"
+    },
+    {
+      "id": "msa-deep-cal-1668",
+      "source": "Cal. Civ. Code § 1668",
+      "source_url": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1668",
+      "retrieved_at": "2026-05-13T00:00:00Z",
+      "license": "Public domain",
+      "license_url": "https://www.usa.gov/government-works"
+    },
+    {
+      "id": "msa-deep-ny-5-322-1",
+      "source": "N.Y. Gen. Oblig. Law § 5-322.1",
+      "source_url": "https://www.nysenate.gov/legislation/laws/GOB/5-322.1",
+      "retrieved_at": "2026-05-13T00:00:00Z",
+      "license": "Public domain",
+      "license_url": "https://www.usa.gov/government-works"
+    }
+  ],
   "regulator_frame": "commercial",
   "applicable_jurisdictions": ["US", "EU", "UK"],
-  "companion_playbooks": ["dpa-controller-processor", "baa"],
-  "compliance_matrix_columns": []
+  "companion_playbooks": ["dpa-controller-processor", "baa", "vendor-security-addendum", "ai-addendum"],
+  "compliance_matrix_columns": [
+    "Indemnification scope",
+    "Indemnification procedure",
+    "Aggregate liability cap",
+    "Cap carve-outs",
+    "Consequential-damages waiver",
+    "State-law overlays (CA § 1668 / NY § 5-322.1 / TX 151)",
+    "IP allocation",
+    "Service warranties",
+    "Implied-warranty disclaimer (UCC § 2-316)",
+    "SLA reference",
+    "Term + Termination",
+    "Data return on termination",
+    "Force majeure (balanced)",
+    "Assignment / change-of-control",
+    "Order-of-precedence consistency",
+    "AI usage clause"
+  ]
 }
