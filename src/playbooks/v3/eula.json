@@ -1,21 +1,71 @@
 {
   "id": "eula",
-  "version": "0.0.0-placeholder",
+  "version": "1.0.0",
   "name": "End-User License Agreement (EULA)",
-  "description": "Placeholder per spec-v3.md §50. Full implementation lands in Step 29. Checks: license grant scope, prohibited uses, ownership, updates and versions, support disclaimers, telemetry disclosure, termination, EU consumer-law minimums where applicable (Consumer Rights Directive, Sale of Goods Directive, Digital Content Directive).",
+  "description": "Linter for an End-User License Agreement / Software License Agreement. Selects the §34 addenda ruleset (EULA portion, ADDENDA-017..018): explicit license grant scope + prohibited-uses enumeration, EU consumer-law minimums (Digital Content Directive 2019/770 + Consumer Rights Directive 2011/83).",
   "match_features": {
-    "title_keywords": ["end user license agreement", "eula", "software license agreement", "end-user license"],
+    "title_keywords": [
+      "end user license agreement",
+      "end-user license agreement",
+      "eula",
+      "software license agreement",
+      "application license agreement"
+    ],
     "required_clauses": [],
-    "distinguishing_phrases": [],
-    "negative_features": []
+    "distinguishing_phrases": [
+      "license to use",
+      "non-exclusive",
+      "non-transferable",
+      "reverse engineer",
+      "sublicense",
+      "decompile",
+      "software"
+    ],
+    "negative_features": [
+      "protected health information",
+      "data processing agreement",
+      "master services agreement"
+    ]
   },
-  "expected_clauses": [],
-  "expected_defined_terms": [],
+  "expected_clauses": [
+    "License Grant",
+    "Prohibited Uses",
+    "Ownership",
+    "Updates and Versions",
+    "Support and Disclaimers",
+    "Termination"
+  ],
+  "expected_defined_terms": [
+    "Software",
+    "Documentation",
+    "Licensee",
+    "Licensor"
+  ],
   "rule_overrides": {},
   "balanced_defaults": [],
-  "sources": [],
+  "sources": [
+    {
+      "id": "addenda-eu-digital-content-dir",
+      "source": "EU Digital Content Directive (Directive (EU) 2019/770)",
+      "source_url": "https://eur-lex.europa.eu/eli/dir/2019/770/oj",
+      "retrieved_at": "2026-05-13T00:00:00Z",
+      "license": "EUR-Lex re-use notice",
+      "license_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html"
+    },
+    {
+      "id": "addenda-eu-consumer-rights-dir",
+      "source": "EU Consumer Rights Directive (Directive 2011/83/EU)",
+      "source_url": "https://eur-lex.europa.eu/eli/dir/2011/83/oj",
+      "retrieved_at": "2026-05-13T00:00:00Z",
+      "license": "EUR-Lex re-use notice",
+      "license_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html"
+    }
+  ],
   "regulator_frame": "consumer-protection",
   "applicable_jurisdictions": ["US", "EU", "UK"],
-  "companion_playbooks": ["saas-tos"],
-  "compliance_matrix_columns": []
+  "companion_playbooks": ["saas-tos", "privacy-policy-lint"],
+  "compliance_matrix_columns": [
+    "License grant scope + prohibited uses",
+    "EU consumer-law minimums (Digital Content Directive)"
+  ]
 }

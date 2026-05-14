@@ -7,6 +7,7 @@
  */
 
 import type { Rule } from "../../finding.js";
+import { ADDENDA_RULES } from "./addenda/index.js";
 import { BAA_RULES } from "./baa/index.js";
 import { DPA_GDPR_RULES } from "./dpa-gdpr/index.js";
 import { DPA_US_STATE_RULES } from "./dpa-us-state/index.js";
@@ -15,6 +16,7 @@ import { NDA_DEEP_RULES } from "./nda-deep/index.js";
 import { TRANSFER_RULES } from "./transfer/index.js";
 
 export const V3_RULES: readonly Rule[] = [
+  ...ADDENDA_RULES,
   ...BAA_RULES,
   ...DPA_GDPR_RULES,
   ...DPA_US_STATE_RULES,
@@ -23,4 +25,12 @@ export const V3_RULES: readonly Rule[] = [
   ...TRANSFER_RULES,
 ];
 
-export { BAA_RULES, DPA_GDPR_RULES, DPA_US_STATE_RULES, MSA_DEEP_RULES, NDA_DEEP_RULES, TRANSFER_RULES };
+export {
+  ADDENDA_RULES,
+  BAA_RULES,
+  DPA_GDPR_RULES,
+  DPA_US_STATE_RULES,
+  MSA_DEEP_RULES,
+  NDA_DEEP_RULES,
+  TRANSFER_RULES,
+};

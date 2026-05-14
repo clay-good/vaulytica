@@ -1,21 +1,75 @@
 {
   "id": "saas-tos",
-  "version": "0.0.0-placeholder",
+  "version": "1.0.0",
   "name": "SaaS Terms of Service (Consumer-Facing)",
-  "description": "Placeholder per spec-v3.md §51. Full implementation lands in Step 29. FTC Click-to-Cancel rule alignment, ROSCA, state auto-renewal laws, ADA accessibility statements, age gates where COPPA applicable, ToS dark-pattern detection (reuses v2 dark-patterns ruleset with elevated severity).",
+  "description": "Linter for a consumer-facing SaaS Terms of Service / Terms of Use. Selects the §34 addenda ruleset (ToS portion, ADDENDA-019): FTC Click-to-Cancel rule + ROSCA alignment. v2's dark-patterns ruleset is also active on this surface (browsewrap, buried notice, class-action waiver, asymmetric jury-trial waiver) at elevated severity.",
   "match_features": {
-    "title_keywords": ["terms of service", "terms of use", "tos", "user agreement"],
+    "title_keywords": [
+      "terms of service",
+      "terms of use",
+      "tos",
+      "user agreement",
+      "customer terms"
+    ],
     "required_clauses": [],
-    "distinguishing_phrases": [],
-    "negative_features": []
+    "distinguishing_phrases": [
+      "by using the service",
+      "you agree",
+      "we may modify",
+      "your account",
+      "subscription",
+      "cancel",
+      "auto-renew",
+      "billing"
+    ],
+    "negative_features": [
+      "protected health information",
+      "data processing agreement",
+      "master services agreement",
+      "non-disclosure agreement"
+    ]
   },
-  "expected_clauses": [],
-  "expected_defined_terms": [],
+  "expected_clauses": [
+    "Account and Eligibility",
+    "Subscription and Billing",
+    "Cancellation",
+    "Auto-Renewal",
+    "Dispute Resolution",
+    "Termination",
+    "Acceptable Use"
+  ],
+  "expected_defined_terms": [
+    "Service",
+    "User",
+    "Account",
+    "Subscription"
+  ],
   "rule_overrides": {},
   "balanced_defaults": [],
-  "sources": [],
+  "sources": [
+    {
+      "id": "addenda-ftc-click-to-cancel",
+      "source": "FTC Negative Option / Click-to-Cancel Rule (16 C.F.R. Part 425)",
+      "source_url": "https://www.ftc.gov/legal-library/browse/rules/negative-option-rule",
+      "retrieved_at": "2026-05-13T00:00:00Z",
+      "license": "Public domain (FTC)",
+      "license_url": "https://www.usa.gov/government-works"
+    },
+    {
+      "id": "addenda-rosca-15-usc-8403",
+      "source": "ROSCA — 15 U.S.C. § 8403",
+      "source_url": "https://www.law.cornell.edu/uscode/text/15/8403",
+      "retrieved_at": "2026-05-13T00:00:00Z",
+      "license": "Public domain (US)",
+      "license_url": "https://www.usa.gov/government-works"
+    }
+  ],
   "regulator_frame": "consumer-protection",
   "applicable_jurisdictions": ["US"],
   "companion_playbooks": ["privacy-policy-lint", "eula"],
-  "compliance_matrix_columns": []
+  "compliance_matrix_columns": [
+    "FTC Click-to-Cancel alignment",
+    "ROSCA negative-option compliance",
+    "Dark-patterns surface (v2 reused at elevated severity)"
+  ]
 }

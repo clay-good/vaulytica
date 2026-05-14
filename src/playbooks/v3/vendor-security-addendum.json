@@ -1,21 +1,78 @@
 {
   "id": "vendor-security-addendum",
-  "version": "0.0.0-placeholder",
+  "version": "1.0.0",
   "name": "Vendor Security Addendum",
-  "description": "Placeholder per spec-v3.md §48. Full implementation lands in Step 29. Selects the §34 addenda ruleset (security-only portion). Checks: specific measures listed, cadence stated, right-to-audit or SOC 2 substitution, incident-response notification, vulnerability-disclosure, secure-development-lifecycle, data-classification mapping, encryption standards (FIPS 140-3 / AES-256), pen-test cadence.",
+  "description": "Linter for a Vendor Security Addendum / Information Security Exhibit. Selects the §34 addenda ruleset (security-only portion, ADDENDA-001..009): specific measures enumerated, security-review cadence, right-to-audit or SOC 2 substitution, incident-response notification window, vulnerability-disclosure handling, secure-development-lifecycle reference, data-classification mapping, named encryption standards (FIPS 140-3 / AES-256 / TLS 1.2+), penetration-test cadence.",
   "match_features": {
-    "title_keywords": ["vendor security addendum", "security addendum", "information security exhibit"],
+    "title_keywords": [
+      "vendor security addendum",
+      "security addendum",
+      "information security exhibit",
+      "data security addendum",
+      "security schedule"
+    ],
     "required_clauses": [],
-    "distinguishing_phrases": [],
-    "negative_features": []
+    "distinguishing_phrases": [
+      "access control",
+      "encryption",
+      "vulnerability management",
+      "incident response",
+      "SOC 2",
+      "ISO 27001",
+      "penetration test",
+      "secure development"
+    ],
+    "negative_features": [
+      "protected health information",
+      "data processing agreement",
+      "this nda"
+    ]
   },
-  "expected_clauses": [],
-  "expected_defined_terms": [],
+  "expected_clauses": [
+    "Access Control",
+    "Encryption",
+    "Incident Response",
+    "Vulnerability Management",
+    "Audit Rights",
+    "Penetration Testing"
+  ],
+  "expected_defined_terms": [
+    "Security Incident",
+    "Customer Data",
+    "Personnel"
+  ],
   "rule_overrides": {},
   "balanced_defaults": [],
-  "sources": [],
+  "sources": [
+    {
+      "id": "addenda-nist-sp-800-53",
+      "source": "NIST SP 800-53 Rev. 5 — Security and Privacy Controls",
+      "source_url": "https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final",
+      "retrieved_at": "2026-05-13T00:00:00Z",
+      "license": "Public domain (NIST)",
+      "license_url": "https://www.usa.gov/government-works"
+    },
+    {
+      "id": "addenda-fips-140-3",
+      "source": "FIPS 140-3 — Security Requirements for Cryptographic Modules",
+      "source_url": "https://csrc.nist.gov/publications/detail/fips/140/3/final",
+      "retrieved_at": "2026-05-13T00:00:00Z",
+      "license": "Public domain (NIST)",
+      "license_url": "https://www.usa.gov/government-works"
+    }
+  ],
   "regulator_frame": "consensus-practice",
   "applicable_jurisdictions": ["US", "EU", "UK"],
-  "companion_playbooks": ["msa-vendor-deep", "dpa-controller-processor"],
-  "compliance_matrix_columns": []
+  "companion_playbooks": ["msa-vendor-deep", "msa-customer-deep", "dpa-controller-processor"],
+  "compliance_matrix_columns": [
+    "Specific security measures enumerated",
+    "Security-review cadence",
+    "Right-to-audit / SOC 2 substitution",
+    "Incident-response notification window",
+    "Vulnerability-disclosure handling",
+    "Secure-development-lifecycle reference",
+    "Data-classification mapping",
+    "Named encryption standards (FIPS 140-3 / AES-256)",
+    "Penetration-test cadence"
+  ]
 }

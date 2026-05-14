@@ -1,21 +1,88 @@
 {
   "id": "ai-addendum",
-  "version": "0.0.0-placeholder",
+  "version": "1.0.0",
   "name": "AI Usage Addendum",
-  "description": "Placeholder per spec-v3.md §49. Full implementation lands in Step 29. Selects the §34 addenda ruleset (AI portion). Citations to NIST AI RMF, EU AI Act high-risk categories, and FTC enforcement actions — cited as 'consensus practice, not statute' where applicable.",
+  "description": "Linter for an AI / Generative-AI Addendum to a commercial agreement. Selects the §34 addenda ruleset (AI portion, ADDENDA-010..016): definitions (Generative AI / Foundation Model / Output / Training Data), prohibited training-on-customer-data without opt-in, transparency (features + default state + hosting), IP ownership of outputs, AI hallucination disclaimer + human-review obligation, AI subprocessor disclosure, deletion of fine-tuning data on termination. Citations are NIST AI RMF / EU AI Act / FTC enforcement — explicitly labeled 'consensus practice, not statute' where no controlling regulator applies.",
   "match_features": {
-    "title_keywords": ["ai addendum", "artificial intelligence addendum", "generative ai", "ai usage"],
+    "title_keywords": [
+      "ai addendum",
+      "artificial intelligence addendum",
+      "generative ai",
+      "ai usage",
+      "ai services addendum",
+      "machine learning addendum"
+    ],
     "required_clauses": [],
-    "distinguishing_phrases": [],
-    "negative_features": []
+    "distinguishing_phrases": [
+      "generative ai",
+      "foundation model",
+      "large language model",
+      "training data",
+      "output",
+      "hallucination",
+      "human review",
+      "prompt"
+    ],
+    "negative_features": [
+      "protected health information",
+      "non-disclosure agreement",
+      "this nda"
+    ]
   },
-  "expected_clauses": [],
-  "expected_defined_terms": [],
+  "expected_clauses": [
+    "Definitions",
+    "Permitted and Prohibited Uses",
+    "Transparency",
+    "Intellectual Property",
+    "Warranties and Disclaimers",
+    "Subprocessors",
+    "Data Handling"
+  ],
+  "expected_defined_terms": [
+    "Generative AI",
+    "Foundation Model",
+    "Output",
+    "Training Data",
+    "Customer Data"
+  ],
   "rule_overrides": {},
   "balanced_defaults": [],
-  "sources": [],
+  "sources": [
+    {
+      "id": "addenda-nist-ai-rmf",
+      "source": "NIST AI RMF 1.0 (consensus practice, not statute)",
+      "source_url": "https://www.nist.gov/itl/ai-risk-management-framework",
+      "retrieved_at": "2026-05-13T00:00:00Z",
+      "license": "Public domain (NIST)",
+      "license_url": "https://www.usa.gov/government-works"
+    },
+    {
+      "id": "addenda-eu-ai-act",
+      "source": "EU AI Act (Regulation (EU) 2024/1689)",
+      "source_url": "https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "retrieved_at": "2026-05-13T00:00:00Z",
+      "license": "EUR-Lex re-use notice",
+      "license_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html"
+    },
+    {
+      "id": "addenda-ftc-ai-guidance",
+      "source": "FTC enforcement actions on AI claims (consensus practice, not statute)",
+      "source_url": "https://www.ftc.gov/business-guidance/blog/2023/02/keep-your-ai-claims-check",
+      "retrieved_at": "2026-05-13T00:00:00Z",
+      "license": "Public domain (FTC)",
+      "license_url": "https://www.usa.gov/government-works"
+    }
+  ],
   "regulator_frame": "consensus-practice",
   "applicable_jurisdictions": ["US", "EU", "UK"],
-  "companion_playbooks": ["msa-vendor-deep", "dpa-controller-processor"],
-  "compliance_matrix_columns": []
+  "companion_playbooks": ["msa-vendor-deep", "msa-customer-deep", "dpa-controller-processor", "vendor-security-addendum"],
+  "compliance_matrix_columns": [
+    "AI definitions",
+    "Prohibited training on customer data",
+    "AI transparency (features + default + hosting)",
+    "IP ownership of outputs",
+    "AI hallucination disclaimer + human review",
+    "AI subprocessor disclosure",
+    "Fine-tuning data deletion on termination"
+  ]
 }

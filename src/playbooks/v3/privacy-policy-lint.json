@@ -1,21 +1,86 @@
 {
   "id": "privacy-policy-lint",
-  "version": "0.0.0-placeholder",
+  "version": "1.0.0",
   "name": "Privacy Policy Linter",
-  "description": "Placeholder per spec-v3.md §52. Full implementation lands in Step 29. Not a contract, but a frequently-paired document. Checks alignment with CCPA § 1798.130 disclosure requirements, GDPR Articles 13/14, COPPA disclosure, state-by-state required content. Includes a 'matches your asserted DPA terms' check when run paired with a DPA.",
+  "description": "Linter for a published privacy policy. Not a contract — checks that the regulator-required disclosures are present (CCPA § 1798.130 categories, GDPR Articles 13/14 lawful basis + rights, COPPA § 312.4 child-data disclosures). Selects the §34 addenda ruleset (privacy portion, ADDENDA-020). When paired with a DPA, a follow-up consistency check verifies the privacy-policy claims match the DPA terms.",
   "match_features": {
-    "title_keywords": ["privacy policy", "privacy notice", "data privacy notice"],
+    "title_keywords": [
+      "privacy policy",
+      "privacy notice",
+      "data privacy notice",
+      "privacy statement"
+    ],
     "required_clauses": [],
-    "distinguishing_phrases": [],
-    "negative_features": []
+    "distinguishing_phrases": [
+      "personal information",
+      "personal data",
+      "we collect",
+      "categories of personal information",
+      "third parties",
+      "cookies",
+      "data subject",
+      "your rights"
+    ],
+    "negative_features": [
+      "this agreement",
+      "master services agreement",
+      "non-disclosure agreement",
+      "the parties"
+    ]
   },
-  "expected_clauses": [],
-  "expected_defined_terms": [],
+  "expected_clauses": [
+    "Information We Collect",
+    "How We Use Information",
+    "Sharing With Third Parties",
+    "Your Rights",
+    "Retention",
+    "Children",
+    "International Transfers",
+    "Contact"
+  ],
+  "expected_defined_terms": [
+    "Personal Information",
+    "Personal Data",
+    "Service",
+    "User"
+  ],
   "rule_overrides": {},
   "balanced_defaults": [],
-  "sources": [],
-  "regulator_frame": "CCPA",
+  "sources": [
+    {
+      "id": "addenda-ccpa-1798-130",
+      "source": "CCPA § 1798.130 (disclosure requirements)",
+      "source_url": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1798.130",
+      "retrieved_at": "2026-05-13T00:00:00Z",
+      "license": "Public domain",
+      "license_url": "https://www.usa.gov/government-works"
+    },
+    {
+      "id": "addenda-gdpr-art-13-14",
+      "source": "GDPR Articles 13 and 14",
+      "source_url": "https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+      "retrieved_at": "2026-05-13T00:00:00Z",
+      "license": "EUR-Lex re-use notice",
+      "license_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html"
+    },
+    {
+      "id": "addenda-coppa-312-4",
+      "source": "COPPA 16 C.F.R. § 312.4 (notice and parental consent)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-312/section-312.4",
+      "retrieved_at": "2026-05-13T00:00:00Z",
+      "license": "Public domain (US)",
+      "license_url": "https://www.usa.gov/government-works"
+    }
+  ],
+  "regulator_frame": "CCPA + GDPR + COPPA",
   "applicable_jurisdictions": ["US", "EU", "UK"],
-  "companion_playbooks": ["dpa-controller-processor", "dpa-ccpa-service-provider"],
-  "compliance_matrix_columns": []
+  "companion_playbooks": ["dpa-controller-processor", "dpa-ccpa-service-provider", "saas-tos"],
+  "compliance_matrix_columns": [
+    "Categories of personal information disclosed (CCPA § 1798.130)",
+    "Lawful basis (GDPR Art. 13/14)",
+    "Data-subject rights (access / delete / portability / opt-out)",
+    "Retention",
+    "International transfers",
+    "Children (COPPA § 312.4)"
+  ]
 }

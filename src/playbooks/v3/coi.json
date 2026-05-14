@@ -1,21 +1,67 @@
 {
   "id": "coi",
-  "version": "0.0.0-placeholder",
+  "version": "1.0.0",
   "name": "Certificate of Insurance (COI) Check",
-  "description": "Placeholder per spec-v3.md §53. Full implementation lands in Step 29. Drop an ACORD 25; extract carrier, AM Best rating, coverage amounts, endorsements; lint against a customer-supplied requirements profile or the §12 default industry-norms profile.",
+  "description": "Linter for an ACORD 25 Certificate of Liability Insurance. Extracts carrier, AM Best rating, coverage amounts, and endorsements and lints against the §12 default requirements profile or a customer-supplied profile. The AM Best rating threshold is consulted from the DKB node `am-best-ratings.json` (curated for the build; cited as 'AM Best public ratings as of [DKB build date]'). Note: the ACORD-25 binary spatial-layout extractor lands in a follow-up commit alongside the COI test fixture corpus; this playbook is text-extraction-driven for now.",
   "match_features": {
-    "title_keywords": ["certificate of liability insurance", "acord 25", "certificate of insurance", "coi"],
+    "title_keywords": [
+      "certificate of liability insurance",
+      "acord 25",
+      "certificate of insurance",
+      "coi"
+    ],
     "required_clauses": [],
-    "distinguishing_phrases": [],
-    "negative_features": []
+    "distinguishing_phrases": [
+      "acord",
+      "policy number",
+      "general liability",
+      "professional liability",
+      "additional insured",
+      "carrier",
+      "policy effective date",
+      "limits of insurance"
+    ],
+    "negative_features": [
+      "this agreement",
+      "master services agreement",
+      "non-disclosure agreement",
+      "personal data"
+    ]
   },
   "expected_clauses": [],
   "expected_defined_terms": [],
   "rule_overrides": {},
   "balanced_defaults": [],
-  "sources": [],
+  "sources": [
+    {
+      "id": "addenda-am-best-public",
+      "source": "AM Best public ratings",
+      "source_url": "https://web.ambest.com/ratings-services/financial-strength-ratings",
+      "retrieved_at": "2026-05-13T00:00:00Z",
+      "license": "Public ratings re-use (ratings cited; identifier text not re-distributed)",
+      "license_url": "https://web.ambest.com/about/legal-information"
+    },
+    {
+      "id": "addenda-acord-form-25",
+      "source": "ACORD 25 — Certificate of Liability Insurance",
+      "source_url": "https://www.acord.org/standards-architecture/acord-forms",
+      "retrieved_at": "2026-05-13T00:00:00Z",
+      "license": "Form identifier only (not the form itself)",
+      "license_url": "https://www.acord.org"
+    }
+  ],
   "regulator_frame": "insurance",
   "applicable_jurisdictions": ["US"],
   "companion_playbooks": ["msa-vendor-deep", "msa-customer-deep"],
-  "compliance_matrix_columns": []
+  "compliance_matrix_columns": [
+    "Carrier identified",
+    "AM Best rating ≥ A-",
+    "General liability ≥ $1M / $2M",
+    "Professional liability (E&O) ≥ $1M",
+    "Cyber liability (where applicable)",
+    "Additional insured endorsement",
+    "Waiver of subrogation",
+    "Primary and noncontributory",
+    "Policy expiration"
+  ]
 }

@@ -1,0 +1,41 @@
+{
+  "id": "am-best-ratings-curated-2026-05-13",
+  "node_type": "insurance_norm",
+  "dkb_node_version": 1,
+  "dkb_node_last_validated_at": "2026-05-13T00:00:00Z",
+  "vertical": "commercial-general",
+  "coverage_type": "general_liability",
+  "minimum_per_occurrence_usd": 1000000,
+  "minimum_aggregate_usd": 2000000,
+  "required_endorsements": [
+    "additional insured",
+    "waiver of subrogation",
+    "primary and noncontributory"
+  ],
+  "minimum_carrier_rating": "A-",
+  "cites": [
+    {
+      "authority": "AM Best public ratings",
+      "citation": "AM Best public ratings as of 2026-05-13 (DKB build date)",
+      "source_url": "https://web.ambest.com/ratings-services/financial-strength-ratings",
+      "content_hash_at_pin": "0000000000000000000000000000000000000000000000000000000000000000",
+      "fetched_at": "2026-05-13T00:00:00Z"
+    }
+  ],
+  "rating_scale": {
+    "acceptable_ratings": ["A++", "A+", "A", "A-"],
+    "marginal_ratings": ["B++", "B+"],
+    "unacceptable_ratings": ["B", "B-", "C++", "C+", "C", "C-", "D", "E", "F", "S", "NR"],
+    "description": "Practitioner baseline: insurance carriers rated A- or better by AM Best are acceptable for commercial vendor contracts. B++ and B+ are marginal and warrant review. B or lower are unacceptable without a documented exception. Unrated (NR) and Suspended (S) require explicit waiver."
+  },
+  "curated_carriers": [
+    { "carrier": "Chubb", "rating": "A++", "status": "acceptable" },
+    { "carrier": "Travelers", "rating": "A++", "status": "acceptable" },
+    { "carrier": "Liberty Mutual", "rating": "A", "status": "acceptable" },
+    { "carrier": "The Hartford", "rating": "A+", "status": "acceptable" },
+    { "carrier": "Zurich North America", "rating": "A+", "status": "acceptable" },
+    { "carrier": "AIG", "rating": "A", "status": "acceptable" },
+    { "carrier": "CNA", "rating": "A", "status": "acceptable" },
+    { "carrier": "Berkshire Hathaway Specialty Insurance", "rating": "A++", "status": "acceptable" }
+  ]
+}
