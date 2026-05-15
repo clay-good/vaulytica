@@ -1,6 +1,14 @@
 import type { EngineRun, ExecutionLogEntry, Finding, PlaybookOverride, Rule, RuleContext, Severity } from "./finding.js";
 import { sortFindings, sortRules } from "./ordering.js";
 import { sha256Hex } from "../ingest/hash.js";
+import type {
+  ConsistencyDocument,
+  ConsistencyRule,
+  ConsistencyRun,
+} from "./consistency/types.js";
+import { runConsistency } from "./consistency/runner.js";
+import { CONSISTENCY_RULES } from "./consistency/rules/index.js";
+import type { DKB } from "../dkb/types.js";
 
 /**
  * Engine version. Embedded in every EngineRun and contributes to the
@@ -168,6 +176,70 @@ function nowMs(): number {
     return performance.now();
   }
   return Date.now();
+}
+
+/**
+ * Run the full per-document engine for every document in a bundle, then the
+ * cross-document consistency pass. Returns the per-document {@link EngineRun}s
+ * (in input order) and the single {@link ConsistencyRun}.
+ *
+ * `consistencyRules` defaults to the shipped {@link CONSISTENCY_RULES}; tests
+ * pass a narrower list to exercise a specific rule.
+ *
+ * Spec: spec-v3.md §27 (two-document mode). The per-document runs are
+ * independent — a slow document does not block the others; callers that
+ * need streaming behavior can fire them in parallel via `Promise.all`
+ * against {@link runEngine} directly and pass the results to
+ * {@link runConsistency} themselves.
+ */
+export type RunMultiInput = {
+  documents: Array<{
+    doc_id: string;
+    source_file_name: string;
+    run: RunEngineInput;
+  }>;
+  dkb: DKB;
+  consistencyRules?: readonly ConsistencyRule[];
+  /** ISO 8601 passed through to the consistency run; defaults to "". */
+  executed_at?: string;
+};
+
+export type RunMultiResult = {
+  per_document: Array<{
+    doc_id: string;
+    source_file_name: string;
+    run: EngineRun;
+  }>;
+  consistency: ConsistencyRun;
+};
+
+export async function runEngineMulti(input: RunMultiInput): Promise<RunMultiResult> {
+  if (input.documents.length < 2) {
+    throw new Error(
+      "runEngineMulti requires at least two documents; got " + input.documents.length,
+    );
+  }
+  const per_document = await Promise.all(
+    input.documents.map(async (d) => ({
+      doc_id: d.doc_id,
+      source_file_name: d.source_file_name,
+      run: await runEngine(d.run),
+    })),
+  );
+  const consistencyDocs: ConsistencyDocument[] = input.documents.map((d) => ({
+    doc_id: d.doc_id,
+    source_file_name: d.source_file_name,
+    playbook_id: d.run.ctx.playbook.id,
+    tree: d.run.ctx.tree,
+    extracted: d.run.ctx.extracted,
+  }));
+  const consistency = await runConsistency({
+    rules: input.consistencyRules ?? CONSISTENCY_RULES,
+    documents: consistencyDocs,
+    dkb: input.dkb,
+    executed_at: input.executed_at,
+  });
+  return { per_document, consistency };
 }
 
 export function severityIsAtLeast(severity: Severity, threshold: Severity): boolean {

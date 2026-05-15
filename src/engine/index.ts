@@ -19,7 +19,8 @@ export type {
 
 export { makeFinding, findSource, findStatuteCitation, SEVERITY_RANK } from "./finding.js";
 export { sortRules, sortFindings } from "./ordering.js";
-export { runEngine, stableStringify, ENGINE_VERSION, severityIsAtLeast } from "./runner.js";
+export { runEngine, runEngineMulti, stableStringify, ENGINE_VERSION, severityIsAtLeast } from "./runner.js";
+export type { RunMultiInput, RunMultiResult } from "./runner.js";
 export { LAUNCH_RULES } from "./rules/index.js";
 export {
   V3_RULES,
@@ -28,3 +29,24 @@ export {
   DPA_US_STATE_RULES,
   TRANSFER_RULES,
 } from "./rules/v3/index.js";
+
+export type {
+  ConsistencyContext,
+  ConsistencyDocument,
+  ConsistencyExcerpt,
+  ConsistencyExecutionLogEntry,
+  ConsistencyFinding,
+  ConsistencyRule,
+  ConsistencyRun,
+  DocKind,
+  RunConsistencyInput,
+} from "./consistency/index.js";
+
+export {
+  runConsistency,
+  CONSISTENCY_ENGINE_VERSION,
+  CONSISTENCY_RULES,
+  kindOf,
+  findByKind,
+  hasAllKinds,
+} from "./consistency/index.js";
