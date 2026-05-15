@@ -12,3 +12,24 @@ export {
   citationIndex,
   type BibliographyEntry,
 } from "./bibliography.js";
+
+// v3 report extensions (spec-v3.md §§54–59). Each renderer is conditional;
+// the v2 builder accepts an optional `v3?: V3ReportInputs` and inserts the
+// new sections only when the corresponding input is present.
+export type {
+  ComplianceMatrix,
+  ComplianceMatrixRow,
+  MatrixCell,
+  MatrixStatus,
+  V3ReportInputs,
+} from "./v3/index.js";
+
+export {
+  renderComplianceMatrix,
+  renderTransfersSummary,
+  renderSubprocessorPage,
+  renderInsurancePage,
+  renderConsistencyAppendix,
+  renderCitationIndex,
+  buildV3Footer,
+} from "./v3/index.js";

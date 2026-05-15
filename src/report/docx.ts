@@ -44,6 +44,16 @@ import type { IngestResult } from "../ingest/types.js";
 import type { Playbook } from "../playbooks/types.js";
 import { buildBibliography, citationIndex, type BibliographyEntry } from "./bibliography.js";
 import { formatCitation, formatBibliographyEntry } from "./citations.js";
+import type { V3ReportInputs } from "./v3/types.js";
+import {
+  renderComplianceMatrix,
+  renderTransfersSummary,
+  renderSubprocessorPage,
+  renderInsurancePage,
+  renderConsistencyAppendix,
+  renderCitationIndex,
+  buildV3Footer,
+} from "./v3/index.js";
 
 const MINT = "00A883";
 const DEFAULT_FONT = "Arial";
@@ -65,19 +75,40 @@ export async function buildDocxReport(
   ingest: IngestResult,
   dkb: DKB,
   playbook: Playbook,
+  v3?: V3ReportInputs,
 ): Promise<Blob> {
   const bibliography = buildBibliography(run.findings, dkb);
   const children: (Paragraph | Table)[] = [
     ...renderCover(run, ingest, playbook),
     ...renderExecutiveSummary(run, playbook),
+    // v3 §54 — compliance matrix sits between the executive summary and
+    // the findings list. Conditional on `v3.matrix` being present.
+    ...(v3?.matrix ? renderComplianceMatrix(v3.matrix) : []),
     ...renderFindingsSection("Critical Findings", "critical", run.findings, bibliography),
     ...renderFindingsSection("Warnings", "warning", run.findings, bibliography),
     ...renderFindingsSection("Informational", "info", run.findings, bibliography),
+    // v3 §§56–58 — conditional summary pages. Each renderer returns [] when
+    // the corresponding input is absent, so the page only appears when
+    // relevant.
+    ...(v3?.transfers ? renderTransfersSummary(v3.transfers) : []),
+    ...(v3?.subprocessor ? renderSubprocessorPage(v3.subprocessor) : []),
+    ...(v3?.insurance ? renderInsurancePage(v3.insurance) : []),
     ...renderObligationsLedger(run),
     ...renderExtractedAppendix(run),
     ...renderAuditTrail(run, playbook, bibliography),
+    // v3 §59 — two-document consistency appendix.
+    ...(v3?.consistency ? renderConsistencyAppendix(v3.consistency) : []),
+    // v3 §55 — citation depth verification appendix.
+    ...renderCitationIndex(bibliography, run.dkb_version, v3?.dkb_build_date),
     ...renderDisclaimer(),
   ];
+
+  const v3Footer = buildV3Footer({
+    engine_version: run.version,
+    dkb_version: run.dkb_version,
+    result_hash: run.result_hash,
+    dkb_build_date: v3?.dkb_build_date,
+  });
 
   const doc = new Document({
     creator: "Vaulytica",
@@ -98,6 +129,7 @@ export async function buildDocxReport(
             margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 },
           },
         },
+        footers: { default: v3Footer },
         children,
       },
     ],
