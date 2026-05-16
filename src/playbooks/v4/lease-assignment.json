@@ -1,0 +1,26 @@
+{
+  "id": "lease-assignment",
+  "version": "1.0.0",
+  "name": "Assignment of Lease",
+  "description": "Assignment of a commercial or residential lease with landlord consent and assignee assumption. Selects the §6.E real-estate ruleset (RE-054..RE-060).",
+  "match_features": {
+    "title_keywords": ["assignment of lease", "lease assignment"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "assignor",
+      "assignee",
+      "landlord consent",
+      "assumption of obligations"
+    ],
+    "negative_features": []
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Assignor", "Assignee", "Effective Date"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "Common-Law-Property",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": []
+}

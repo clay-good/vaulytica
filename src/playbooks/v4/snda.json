@@ -1,0 +1,21 @@
+{
+  "id": "snda",
+  "version": "1.0.0",
+  "name": "SNDA (Subordination, Non-Disturbance, Attornment)",
+  "description": "Tri-party SNDA between landlord, tenant, and mortgagee. Selects the §6.E real-estate ruleset (RE-046..RE-053).",
+  "match_features": {
+    "title_keywords": ["subordination", "non-disturbance", "attornment", "snda"],
+    "required_clauses": [],
+    "distinguishing_phrases": ["subordinate", "non-disturbance", "attorn", "mortgagee", "lender"],
+    "negative_features": []
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "Lender-Practice",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["estoppel-certificate"],
+  "compliance_matrix_columns": []
+}

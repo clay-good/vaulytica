@@ -1,0 +1,27 @@
+{
+  "id": "ground-lease",
+  "version": "1.0.0",
+  "name": "Ground Lease",
+  "description": "Long-term ground lease (49 / 50 / 99 years) with tenant construction rights and leasehold-mortgage protections. Selects the §6.E real-estate ruleset (RE-018..RE-024).",
+  "match_features": {
+    "title_keywords": ["ground lease"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "ground lease",
+      "99 years",
+      "leasehold mortgage",
+      "improvements",
+      "reversion"
+    ],
+    "negative_features": ["operating lease", "office lease"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "State-Real-Property",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["snda"],
+  "compliance_matrix_columns": ["State recording acts", "Leasehold mortgage practice"]
+}

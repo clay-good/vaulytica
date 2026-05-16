@@ -1,0 +1,27 @@
+{
+  "id": "net-lease",
+  "version": "1.0.0",
+  "name": "Single-Tenant Net Lease (NNN)",
+  "description": "Single-tenant triple-net (NNN) commercial lease. Selects the §6.E real-estate ruleset (RE-001..RE-008).",
+  "match_features": {
+    "title_keywords": ["triple net lease", "nnn lease", "net lease"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "triple net",
+      "nnn",
+      "real estate taxes",
+      "common area maintenance",
+      "cam"
+    ],
+    "negative_features": ["multi-tenant", "residential lease"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "State-Landlord-Tenant",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["snda", "estoppel-certificate"],
+  "compliance_matrix_columns": ["State landlord-tenant code"]
+}

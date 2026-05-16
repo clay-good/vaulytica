@@ -1,0 +1,26 @@
+{
+  "id": "real-estate-psa",
+  "version": "1.0.0",
+  "name": "Real-Estate Purchase and Sale Agreement (PSA)",
+  "description": "Real-property PSA under state real-property law and the Statute of Frauds. Selects the §6.E real-estate ruleset (RE-009..RE-017).",
+  "match_features": {
+    "title_keywords": ["purchase and sale agreement", "real estate purchase", "psa"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "earnest money",
+      "title commitment",
+      "due diligence period",
+      "closing"
+    ],
+    "negative_features": ["stock purchase agreement", "asset purchase agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Earnest Money", "Closing", "Permitted Exceptions"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "State-Real-Property",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": ["Statute of Frauds", "State recording acts", "IRC § 1031"]
+}

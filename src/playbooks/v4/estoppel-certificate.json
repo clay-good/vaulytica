@@ -1,0 +1,26 @@
+{
+  "id": "estoppel-certificate",
+  "version": "1.0.0",
+  "name": "Estoppel Certificate",
+  "description": "Tenant estoppel certificate delivered for refinancing or sale. Selects the §6.E real-estate ruleset (RE-040..RE-045).",
+  "match_features": {
+    "title_keywords": ["estoppel certificate", "tenant estoppel"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "no default",
+      "full force and effect",
+      "current rent",
+      "security deposit"
+    ],
+    "negative_features": []
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "Common-Law-Property",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["snda"],
+  "compliance_matrix_columns": []
+}

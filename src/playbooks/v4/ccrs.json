@@ -1,0 +1,36 @@
+{
+  "id": "ccrs",
+  "version": "1.0.0",
+  "name": "CC&Rs (Declaration of Covenants, Conditions, and Restrictions)",
+  "description": "Declaration of CC&Rs creating an owners association under state HOA statutes (e.g., Davis-Stirling Act). Selects the §6.E real-estate ruleset (RE-032..RE-039).",
+  "match_features": {
+    "title_keywords": [
+      "declaration of covenants",
+      "ccrs",
+      "ccr",
+      "covenants conditions and restrictions"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "homeowners association",
+      "hoa",
+      "assessments",
+      "architectural control",
+      "use restrictions"
+    ],
+    "negative_features": []
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "State-HOA",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "State HOA statutes",
+    "Fair Housing Act (42 U.S.C. § 3604)",
+    "Shelley v. Kraemer"
+  ]
+}

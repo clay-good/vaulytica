@@ -1,0 +1,24 @@
+{
+  "id": "easement-agreement",
+  "version": "1.0.0",
+  "name": "Easement Agreement",
+  "description": "Real-property easement agreement (appurtenant / in gross; affirmative / negative). Selects the §6.E real-estate ruleset (RE-025..RE-031).",
+  "match_features": {
+    "title_keywords": ["easement", "easement agreement", "grant of easement"],
+    "required_clauses": [],
+    "distinguishing_phrases": ["servient", "dominant", "appurtenant", "in gross", "scope of use"],
+    "negative_features": ["lease", "purchase agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "Common-Law-Property",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "Restatement (Third) of Property — Servitudes",
+    "State recording acts"
+  ]
+}
