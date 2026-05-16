@@ -1,0 +1,27 @@
+{
+  "id": "pip",
+  "version": "1.0.0",
+  "name": "Performance Improvement Plan (PIP)",
+  "description": "Employee performance-improvement plan with measurable goals, support commitments, and consequences. Selects the §6.F employment ruleset (EMP-039..EMP-044).",
+  "match_features": {
+    "title_keywords": ["performance improvement plan", "pip"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "performance deficiencies",
+      "30 days",
+      "60 days",
+      "90 days",
+      "performance goals"
+    ],
+    "negative_features": ["separation agreement", "offer letter"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "EEOC-Practice",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": ["EEOC enforcement guidance"]
+}

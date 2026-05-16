@@ -1,0 +1,33 @@
+{
+  "id": "employment-restrictive-covenant",
+  "version": "1.0.0",
+  "name": "Employment Restrictive Covenant Agreement",
+  "description": "Employment-side non-compete / non-solicit covenant. Selects the §6.F employment ruleset (EMP-024..EMP-031). Subject to FTC NCR § 910 and state non-compete law.",
+  "match_features": {
+    "title_keywords": [
+      "non-compete agreement",
+      "non-competition agreement",
+      "restrictive covenant agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "non-compete",
+      "non-solicitation",
+      "restricted period",
+      "garden leave"
+    ],
+    "negative_features": ["m&a restrictive covenant", "sale of business"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Competing Business", "Restricted Period", "Restricted Territory"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "FTC-NCR",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["piia", "executive-employment"],
+  "compliance_matrix_columns": [
+    "16 C.F.R. § 910 (FTC NCR)",
+    "State non-compete law (CA / MA / WA / NY / CO)"
+  ]
+}

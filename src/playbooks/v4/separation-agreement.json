@@ -1,0 +1,31 @@
+{
+  "id": "separation-agreement",
+  "version": "1.0.0",
+  "name": "Separation / Severance Agreement",
+  "description": "Separation / severance agreement with ADEA waiver (OWBPA § 626(f)) and NLRB *McLaren Macomb* compliance. Selects the §6.F employment ruleset (EMP-015..EMP-023).",
+  "match_features": {
+    "title_keywords": [
+      "separation agreement",
+      "severance agreement",
+      "general release",
+      "release of claims"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": ["release", "21 days", "45 days", "seven days", "revocation", "adea"],
+    "negative_features": ["offer letter", "executive employment agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Effective Date", "Revocation Period"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "OWBPA-ADEA",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "OWBPA / ADEA § 626(f)",
+    "NLRB McLaren Macomb (2023)",
+    "SEC Rule 21F-17",
+    "Cal. Civ. § 1542"
+  ]
+}

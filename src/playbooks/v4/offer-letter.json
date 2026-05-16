@@ -1,0 +1,27 @@
+{
+  "id": "offer-letter",
+  "version": "1.0.0",
+  "name": "Offer Letter",
+  "description": "Employment offer letter. Selects the §6.F employment ruleset (EMP-009..EMP-014).",
+  "match_features": {
+    "title_keywords": ["offer letter", "letter of employment offer"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "start date",
+      "base salary",
+      "at-will",
+      "subject to plan",
+      "accepted and agreed"
+    ],
+    "negative_features": ["executive employment agreement", "separation agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "State-Employment",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["piia"],
+  "compliance_matrix_columns": ["State at-will doctrine"]
+}

@@ -1,0 +1,37 @@
+{
+  "id": "executive-employment",
+  "version": "1.0.0",
+  "name": "Executive Employment Agreement",
+  "description": "Senior-executive employment agreement (CEO, CFO, named executive officer). Selects the §6.F employment ruleset (EMP-001..EMP-008).",
+  "match_features": {
+    "title_keywords": [
+      "executive employment agreement",
+      "chief executive officer agreement",
+      "employment agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "chief executive officer",
+      "chief financial officer",
+      "named executive officer",
+      "section 409a",
+      "section 280g",
+      "change in control"
+    ],
+    "negative_features": ["at-will offer letter", "consulting agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Cause", "Good Reason", "Change in Control", "Disability"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "IRC-409A-280G",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["piia", "employment-restrictive-covenant"],
+  "compliance_matrix_columns": [
+    "IRC § 409A",
+    "IRC § 280G",
+    "Reg S-K Item 402",
+    "Dodd-Frank § 954 clawback"
+  ]
+}

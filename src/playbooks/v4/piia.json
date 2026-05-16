@@ -1,0 +1,32 @@
+{
+  "id": "piia",
+  "version": "1.0.0",
+  "name": "Proprietary Information and Inventions Agreement (PIIA)",
+  "description": "Employee PIIA / IP-assignment agreement (Cal. Lab. § 2870 carve-out where applicable; DTSA notice). Selects the §6.F employment ruleset (EMP-032..EMP-038).",
+  "match_features": {
+    "title_keywords": [
+      "proprietary information and inventions agreement",
+      "piia",
+      "invention assignment agreement",
+      "ip assignment"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "inventions",
+      "proprietary information",
+      "assignment",
+      "prior inventions",
+      "2870"
+    ],
+    "negative_features": ["sale of business", "ip license"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Inventions", "Prior Inventions", "Confidential Information"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "State-IP-Assignment",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["offer-letter", "executive-employment"],
+  "compliance_matrix_columns": ["Cal. Lab. § 2870", "18 U.S.C. § 1833(b) (DTSA notice)"]
+}

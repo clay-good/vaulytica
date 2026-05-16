@@ -1,13 +1,31 @@
 /**
- * v4 sub-domain placeholder — `employment` ruleset (Step 49).
- *
- * Spec: `spec-v4.md` §6.F. Rules land in this directory once the
- * corresponding build step is executed. The barrel below exports an
- * empty `EMPLOYMENT_V4_RULES` so the v4 aggregate at
- * `src/engine/rules/v4/index.ts` can compose it without a build
- * error during scaffolding.
+ * v4 sub-domain F (Employment, expanded) ruleset — spec-v4.md §6.F,
+ * Step 49. 50 rules across 7 new employment families (executive
+ * employment, offer letter, separation / severance, employment-side
+ * restrictive covenant, PIIA, performance-improvement plan,
+ * employee handbook). v1's at-will employment and independent
+ * contractor playbooks continue under the launch playbooks.
  */
 
-import type { Rule } from "../../../finding.js";
+export {
+  EMPLOYMENT_RULES as EMPLOYMENT_V4_RULES,
+  EXEC_EMPLOYMENT_RULES,
+  OFFER_LETTER_RULES,
+  SEPARATION_RULES,
+  EMP_RESTRICTIVE_COVENANT_RULES,
+  PIIA_RULES,
+  PIP_RULES,
+  HANDBOOK_RULES,
+} from "./rules.js";
 
-export const EMPLOYMENT_V4_RULES: readonly Rule[] = [];
+export {
+  EMP_PLAYBOOK_IDS,
+  EMP_PLAYBOOK_EXEC,
+  EMP_PLAYBOOK_OFFER,
+  EMP_PLAYBOOK_SEPARATION,
+  EMP_PLAYBOOK_RC,
+  EMP_PLAYBOOK_PIIA,
+  EMP_PLAYBOOK_PIP,
+  EMP_PLAYBOOK_HANDBOOK,
+  type EmpPlaybookId,
+} from "./_helpers.js";
