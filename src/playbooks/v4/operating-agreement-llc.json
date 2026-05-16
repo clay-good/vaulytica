@@ -1,0 +1,35 @@
+{
+  "id": "operating-agreement-llc",
+  "version": "1.0.0",
+  "name": "LLC Operating Agreement",
+  "description": "Operating agreement of a Delaware (or similar) LLC. Selects the §6.B governance ruleset (GOV-013..GOV-022).",
+  "match_features": {
+    "title_keywords": ["operating agreement", "limited liability company agreement"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "members",
+      "manager",
+      "capital contribution",
+      "membership interest",
+      "operating agreement"
+    ],
+    "negative_features": ["bylaws", "stockholders", "partnership agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Member", "Manager", "Capital Contribution", "Membership Interest"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "DE-LLC-Act",
+  "applicable_jurisdictions": ["US-DE", "US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "DE LLC Act § 18-201",
+    "DE LLC Act § 18-402",
+    "DE LLC Act § 18-501",
+    "DE LLC Act § 18-504",
+    "DE LLC Act § 18-702",
+    "DE LLC Act § 18-1101",
+    "IRC § 704(b)"
+  ]
+}

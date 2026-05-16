@@ -1,0 +1,38 @@
+{
+  "id": "stockholders-agreement",
+  "version": "1.0.0",
+  "name": "Stockholders' Agreement",
+  "description": "Venture-style stockholders' / investors' rights agreement. Selects the §6.B governance ruleset (GOV-033..GOV-042). NVCA-anchored.",
+  "match_features": {
+    "title_keywords": [
+      "stockholders agreement",
+      "stockholders' agreement",
+      "investors rights agreement",
+      "investor rights agreement",
+      "voting agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "drag-along",
+      "tag-along",
+      "right of first refusal",
+      "co-sale",
+      "preemptive",
+      "protective provisions"
+    ],
+    "negative_features": ["bylaws", "operating agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "DGCL",
+  "applicable_jurisdictions": ["US-DE", "US"],
+  "companion_playbooks": ["charter-incorporation"],
+  "compliance_matrix_columns": [
+    "DGCL § 202",
+    "DGCL § 218",
+    "NVCA Stockholders' / Voting / IRA model"
+  ]
+}

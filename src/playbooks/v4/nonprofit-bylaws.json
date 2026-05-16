@@ -1,0 +1,32 @@
+{
+  "id": "nonprofit-bylaws",
+  "version": "1.0.0",
+  "name": "Nonprofit Bylaws (501(c)(3))",
+  "description": "Bylaws of a 501(c)(3) tax-exempt nonprofit corporation. Selects the §6.B governance ruleset (GOV-071..GOV-080).",
+  "match_features": {
+    "title_keywords": ["nonprofit bylaws", "bylaws of"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "501(c)(3)",
+      "tax-exempt",
+      "no part of the net earnings",
+      "charitable purposes",
+      "conflict of interest"
+    ],
+    "negative_features": ["operating agreement", "limited liability company"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "IRC-501c3",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "IRC § 501(c)(3)",
+    "Treas. Reg. § 1.501(c)(3)-1(b)",
+    "IRS Form 990 Part VI",
+    "ABA Model Nonprofit Corp Act"
+  ]
+}

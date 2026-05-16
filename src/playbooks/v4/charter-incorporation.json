@@ -1,0 +1,43 @@
+{
+  "id": "charter-incorporation",
+  "version": "1.0.0",
+  "name": "Certificate / Articles of Incorporation",
+  "description": "Charter of a Delaware (or MBCA-modeled) corporation. Selects the §6.B governance ruleset (GOV-023..GOV-032).",
+  "match_features": {
+    "title_keywords": [
+      "certificate of incorporation",
+      "articles of incorporation",
+      "amended and restated certificate of incorporation",
+      "charter"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "registered agent",
+      "registered office",
+      "authorized capital stock",
+      "incorporator",
+      "common stock",
+      "preferred stock"
+    ],
+    "negative_features": ["operating agreement", "limited liability company"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "DGCL",
+  "applicable_jurisdictions": ["US-DE", "US"],
+  "companion_playbooks": ["bylaws-corporation"],
+  "compliance_matrix_columns": [
+    "DGCL § 102(a)(1)",
+    "DGCL § 102(a)(2)",
+    "DGCL § 102(a)(3)",
+    "DGCL § 102(a)(4)",
+    "DGCL § 102(a)(5)",
+    "DGCL § 102(b)(7)",
+    "DGCL § 145",
+    "DGCL § 228",
+    "DGCL § 242"
+  ]
+}

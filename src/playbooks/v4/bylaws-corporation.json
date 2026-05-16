@@ -1,0 +1,35 @@
+{
+  "id": "bylaws-corporation",
+  "version": "1.0.0",
+  "name": "Corporate Bylaws",
+  "description": "Bylaws of a Delaware (or MBCA-modeled) corporation. Selects the §6.B governance ruleset (GOV-001..GOV-012) plus the cross-applicable governance rules.",
+  "match_features": {
+    "title_keywords": ["bylaws", "by-laws", "amended and restated bylaws"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "board of directors",
+      "stockholders",
+      "annual meeting",
+      "quorum",
+      "registered office",
+      "indemnification"
+    ],
+    "negative_features": ["operating agreement", "limited liability company", "partnership"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "DGCL",
+  "applicable_jurisdictions": ["US-DE", "US"],
+  "companion_playbooks": ["charter-incorporation"],
+  "compliance_matrix_columns": [
+    "DGCL § 109",
+    "DGCL § 141",
+    "DGCL § 211",
+    "DGCL § 216",
+    "DGCL § 222",
+    "DGCL § 145"
+  ]
+}

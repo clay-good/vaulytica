@@ -1,0 +1,41 @@
+{
+  "id": "partnership-agreement",
+  "version": "1.0.0",
+  "name": "Partnership / LP Agreement",
+  "description": "General partnership / limited-partnership agreement under RUPA and DRULPA. Selects the §6.B governance ruleset (GOV-061..GOV-070).",
+  "match_features": {
+    "title_keywords": [
+      "partnership agreement",
+      "limited partnership agreement",
+      "agreement of limited partnership"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "general partner",
+      "limited partner",
+      "capital account",
+      "partnership representative"
+    ],
+    "negative_features": ["bylaws", "operating agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [
+    "General Partner",
+    "Limited Partner",
+    "Capital Account",
+    "Partnership Representative"
+  ],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "DRULPA",
+  "applicable_jurisdictions": ["US-DE", "US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "RUPA § 401",
+    "DRULPA § 17-303",
+    "DRULPA § 17-1101",
+    "IRC § 704(b)",
+    "IRC § 6223"
+  ]
+}

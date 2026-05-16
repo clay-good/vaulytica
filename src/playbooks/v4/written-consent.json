@@ -1,0 +1,26 @@
+{
+  "id": "written-consent",
+  "version": "1.0.0",
+  "name": "Written Consent in Lieu of Meeting",
+  "description": "Board or stockholder action by written consent. Selects the §6.B governance ruleset (GOV-043..GOV-050) under DGCL §§ 141(f) and 228.",
+  "match_features": {
+    "title_keywords": ["written consent", "action by written consent", "unanimous written consent"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "in lieu of a meeting",
+      "the undersigned",
+      "resolved, that",
+      "constituting all of the directors"
+    ],
+    "negative_features": ["bylaws", "operating agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "DGCL",
+  "applicable_jurisdictions": ["US-DE", "US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": ["DGCL § 141(f)", "DGCL § 228"]
+}

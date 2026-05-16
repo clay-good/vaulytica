@@ -1,0 +1,37 @@
+{
+  "id": "committee-charter",
+  "version": "1.0.0",
+  "name": "Board Committee Charter (audit / comp / nominating)",
+  "description": "Charter for a board committee subject to NYSE / Nasdaq listing standards and SOX § 301. Selects the §6.B governance ruleset (GOV-051..GOV-060).",
+  "match_features": {
+    "title_keywords": [
+      "committee charter",
+      "audit committee charter",
+      "compensation committee charter",
+      "nominating and corporate governance committee charter"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "independent directors",
+      "audit committee",
+      "registered public accounting firm",
+      "whistleblower",
+      "annual self-evaluation"
+    ],
+    "negative_features": ["operating agreement", "bylaws"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "SOX",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["bylaws-corporation"],
+  "compliance_matrix_columns": [
+    "SOX § 301",
+    "Exchange Act Rule 10A-3",
+    "NYSE Listed Company Manual § 303A",
+    "Nasdaq Listing Rule 5605"
+  ]
+}
