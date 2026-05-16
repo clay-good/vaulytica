@@ -1,0 +1,118 @@
+/**
+ * v3 keyboard-accessibility smoke (spec-v3 Step 37).
+ *
+ * Spec wording: "manually verify keyboard navigation through the new
+ * chip-row toggles and the multi-doc cards." The chip row and
+ * multi-doc cards are not yet wired into the live UI (Step 33's UI
+ * hookup is partial — the pure primitives live at `src/ui/v3/` but
+ * `main.ts` still routes through the v2 single-file flow). Until the
+ * hookup lands, this spec exercises the v2 keyboard surface and a
+ * forward-compatible probe for the v3 chip row + multi-doc cards.
+ *
+ * The v2 keyboard surface in scope:
+ *
+ *   - Tab from the document root reaches the dropzone in a sane
+ *     number of stops.
+ *   - The dropzone itself has `role="button"` + `tabindex="0"` and
+ *     activates on Enter and Space (`bindDropzone` listens for both).
+ *   - The "Why this playbook?" disclosure is keyboard-operable.
+ *   - The theme toggle is reachable and operable via keyboard.
+ *
+ * For the v3 surface, when the chip row and multi-doc cards land in
+ * the DOM, the same set of assertions will apply — the spec already
+ * names them as test targets.
+ *
+ * A full axe-core sweep is gated on installing `@axe-core/playwright`;
+ * the install + the audit will land alongside the Step 33 UI hookup so
+ * a real v3 page state is available to scan. The notes in this file
+ * are intentionally explicit so a contributor picking up Step 37
+ * knows what is covered and what is not.
+ */
+
+import { test, expect } from "@playwright/test";
+
+test("dropzone is keyboard-reachable and operates on Enter", async ({ page }) => {
+  await page.goto("/");
+  const dz = page.locator("#dropzone");
+  await expect(dz).toBeVisible();
+  await expect(dz).toHaveAttribute("role", "button");
+  await expect(dz).toHaveAttribute("tabindex", /^-?\d+$/);
+
+  // Tab until we land on the dropzone. The page has a small number of
+  // tab stops; a sane upper bound prevents infinite loops if focus
+  // routing changes in a future build.
+  let onDz = false;
+  for (let i = 0; i < 50; i++) {
+    await page.keyboard.press("Tab");
+    onDz = await dz.evaluate((el) => el === document.activeElement);
+    if (onDz) break;
+  }
+  expect(onDz, "dropzone must be reachable via Tab in ≤ 50 stops").toBe(true);
+});
+
+test("theme toggle is keyboard-operable", async ({ page }) => {
+  await page.goto("/");
+  const toggle = page.locator("#theme-toggle");
+  await expect(toggle).toBeVisible();
+  await toggle.focus();
+  const before = await page.evaluate(() =>
+    document.documentElement.getAttribute("data-theme"),
+  );
+  await page.keyboard.press("Enter");
+  const after = await page.evaluate(() =>
+    document.documentElement.getAttribute("data-theme"),
+  );
+  expect(after, "theme toggle must flip data-theme on Enter").not.toBe(before);
+});
+
+test("FAQ disclosures open/close with keyboard", async ({ page }) => {
+  await page.goto("/");
+  const firstDetails = page.locator("details").first();
+  await firstDetails.locator("summary").focus();
+  const wasOpen = await firstDetails.evaluate((el) => (el as HTMLDetailsElement).open);
+  await page.keyboard.press("Enter");
+  const isOpen = await firstDetails.evaluate((el) => (el as HTMLDetailsElement).open);
+  expect(isOpen, "disclosure must toggle on Enter").not.toBe(wasOpen);
+});
+
+/**
+ * Forward-compatible probe for the v3 chip row and multi-doc cards.
+ *
+ * The selectors below match the DOM the Step 33 UI hookup will produce;
+ * the test is skipped when those elements are absent, so this spec
+ * stays green during the partial-hookup window. When the hookup lands,
+ * removing the skip is the only required change.
+ */
+test("v3 compliance-frame chip row is keyboard-reachable when present", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const chipRow = page.locator('[data-role="compliance-frame-chips"]');
+  const exists = (await chipRow.count()) > 0;
+  test.skip(!exists, "v3 chip-row hookup is not yet wired into the live UI");
+
+  const firstChip = chipRow.locator('[role="switch"]').first();
+  await firstChip.focus();
+  await expect(firstChip).toHaveAttribute("role", "switch");
+  await expect(firstChip).toHaveAttribute("aria-checked", /^(true|false)$/);
+  const before = await firstChip.getAttribute("aria-checked");
+  await page.keyboard.press("Space");
+  const after = await firstChip.getAttribute("aria-checked");
+  expect(after, "chip must flip aria-checked on Space").not.toBe(before);
+});
+
+test("v3 multi-doc cards are individually focusable when present", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const cards = page.locator('[data-role="multi-doc-card"]');
+  const count = await cards.count();
+  test.skip(count === 0, "v3 multi-doc cards are not yet wired into the live UI");
+
+  for (let i = 0; i < count; i++) {
+    const card = cards.nth(i);
+    await card.focus();
+    const focused = await card.evaluate((el) => el === document.activeElement);
+    expect(focused, `card ${i} must be individually focusable`).toBe(true);
+  }
+});

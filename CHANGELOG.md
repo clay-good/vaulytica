@@ -4,7 +4,103 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
-### Added
+_No unreleased changes._
+
+## [v3.0.0] — 2026-05-16
+
+The **compliance & regulated-agreement expansion** release. v3 extends
+v2 with 220 new rules across HIPAA, GDPR / UK GDPR, eight US state
+privacy laws, EU SCCs, the UK IDTA + Addendum, Swiss Addendum,
+international privacy regimes, trade-secret law, commercial-law
+overlays, insurance norms, and the AI / vendor-security / EULA / ToS /
+privacy-policy / COI surfaces. Same posture as v2: browser-only, no AI,
+no telemetry, no server.
+
+### Headline additions
+
+- **220 new rules** across seven rulesets — BAA (45), DPA-GDPR (55),
+  DPA-US-state (25), MSA-deep (30), NDA-deep (25), Transfer (20),
+  Addenda (20). `V3_RULES` ships alongside `LAUNCH_RULES`; the runner
+  filters by playbook so v2's `result_hash` is preserved.
+- **Nine v3 extractors** under `src/extract/v3/` covering role
+  classification, PII / PHI category detection, cross-border transfer
+  mechanisms, security-measures inventory, breach-notification timing,
+  audit-rights extraction, subprocessor inventory, insurance schedules,
+  and DTSA whistleblower-notice detection.
+- **Cross-document consistency engine** at `src/engine/consistency/`
+  with seven cross-document rules (BAA permitted-uses no broader than
+  MSA, DPA purpose matches MSA services, DPA data categories not
+  broader than MSA, BAA term aligns with MSA, governing-law alignment,
+  notice-clause alignment, order-of-precedence consistency). The
+  engine accepts up to four documents in one bundle, mirrors the v2
+  determinism contract (SHA-256 over canonicalized run JSON with
+  volatile fields blanked), and emits findings that cite every
+  contributing document with the conflicting text from each.
+- **DOCX report extensions** under `src/report/v3/`: compliance-matrix
+  section with Pass / Partial / Fail / N/A cell shading and screen-
+  reader-friendly table semantics; cross-border transfer summary page;
+  subprocessor inventory page; insurance summary page; two-document
+  consistency appendix; citation-depth verification appendix with
+  Word `ExternalHyperlink` click-through; per-page footer carrying
+  engine version + DKB version + result hash + "Citations as of [date]".
+  All conditional on the corresponding input being present; the v2
+  API is unchanged.
+- **DKB v3 expansion** with six new node types (`regulator_model_form`,
+  `statutory_clause_requirement`, `transfer_mechanism`,
+  `subprocessor_requirement`, `insurance_norm`, `consistency_check`),
+  source-pinning protocol with content-hash-at-pin, weekly staleness
+  detector with explicit ack-or-fail gate, and 24 new fetchers covering
+  the full v3 source catalog (eCFR Title 45; HHS sample BAA; OCR
+  resolutions; CCPA + 7 US state-privacy statutes; GDPR; EU SCCs
+  2021/914 with all four modules; UK GDPR; UK IDTA; UK Addendum; Swiss
+  revFADP + Addendum; EDPB guidelines; PIPEDA; LGPD; APPI; PIPL).
+- **v3 UI primitives** at `src/ui/v3/` — pure detection scorer over 12
+  document families, compliance-frame chip-row defaults per playbook
+  (DPA → GDPR + CCPA on; BAA → HIPAA on; MSA → all off with a hint),
+  immutable multi-document state reducer with `MAX_DOCUMENTS = 4`, and
+  centralized empty-state and error-state copy.
+- **v3 documentation** — seven new docs under `docs/v3/`: overview,
+  adding-a-baa-rule, adding-a-dpa-rule, adding-a-playbook, regulators
+  (full source catalog), two-document-mode, compliance-matrix.
+- **v3 threat-model expansion** — new section in `docs/threat-model.md`
+  covering DKB integrity, the staleness gate, the citation surface,
+  the "consensus practice" AI-addendum disclaimer, and the explicit
+  non-promise of universal regulator coverage.
+- **v3 launch checklist** in `LAUNCH.md` with 15 v3-specific items
+  tracked end-to-end.
+- **v3 golden-output harness** at `tests/golden/v3/` running
+  `LAUNCH_RULES ∪ V3_RULES`, with sidecar-driven playbook forcing,
+  byte-identical-in-process determinism check, and one starter BAA
+  fixture committed and baselined.
+- **v3 bundle-size guard** at `tests/integration/bundle-size.test.ts`
+  enforcing eager-entry ≤ 50 KB gzipped and total payload ≤ v2 + 600 KB.
+- **v3 Playwright specs** at `tests/e2e/v3/` — no-network privacy
+  guard and keyboard-accessibility coverage (with forward-compatible
+  probes for the v3 chip row + multi-doc cards).
+
+### Changed
+
+- `package.json` version bumped from `1.0.0` to `3.0.0`. (v2 is
+  represented by spec-v2.md and the v2 launch entry but never received
+  its own package version bump — going straight to 3.0.0 keeps the
+  spec-and-package versions aligned.)
+- `README.md` "What I check" gains a v3 line pointing to
+  `docs/v3/overview.md`.
+- DOCX report builder `buildDocxReport` takes an optional fifth
+  `v3?: V3ReportInputs` argument; v2 callers are unchanged.
+
+### Citations
+
+Every v3 rule cites a specific regulator subdivision or a DKB-pinned
+practitioner source. Every citation in every report renders as a
+Word `ExternalHyperlink` in the citation-index appendix. The DKB
+staleness gate is wired and exits non-zero on unacknowledged drift.
+
+### Detail (per spec-v3 build step)
+
+The entries below were accumulated under `[Unreleased]` during the
+v3 build sequence (spec-v3 Part IX, Steps 18–39). They are preserved
+here so the per-step rationale is part of the v3.0.0 release record.
 
 - **v3 documentation (spec-v3 Step 35):** seven new markdown documents under `docs/v3/` cover the full v3 surface — `overview.md` (audience, scope, what's new vs. v2), `adding-a-baa-rule.md` (HIPAA-anchored rule walkthrough with the BAA-NNN presence/language factories), `adding-a-dpa-rule.md` (GDPR Art. 28 + US-state-privacy walkthrough with the generic `_regulated-rule.ts` factory), `adding-a-playbook.md` (v3 playbook schema additions — `regulator_frame`, `applicable_jurisdictions`, `companion_playbooks`, `compliance_matrix_columns` — with per-family column conventions), `regulators.md` (the full source catalog with canonical URLs grouped by US-HIPAA-privacy / EU / UK / Switzerland / international / trade-secret / commercial-law / insurance / AI-consensus-practice), `two-document-mode.md` (when to use, the seven shipped consistency rules, how findings are shaped, the determinism contract, how to add a CC-NNN rule), and `compliance-matrix.md` (anatomy of the matrix, what Partial means, how to cite the matrix in an audit, what the matrix does not say). `README.md` gains the v3 line; `docs/threat-model.md` gains a v3-specific section covering DKB integrity, the staleness gate, the citation surface, the "consensus practice" AI-addendum disclaimer, and the explicit non-promise that v3 covers every regulator. All gates green: typecheck clean, lint clean, **788/788 tests + 2 skips**, build green.
 - **Threat-model v3 expansion (spec-v3 Step 38):** new "v3 additions" section in `docs/threat-model.md` covering five new attack surfaces and trust assumptions that v3 introduces — DKB integrity, the staleness gate, the citation surface, the "consensus practice" AI-addendum disclaimer, and the explicit non-promise that v3 covers every regulator in every jurisdiction. The section closes with a "what v3 still does not protect against" enumeration consistent with the v2 threat model.

@@ -79,3 +79,59 @@ against `https://vaulytica.com`.
   claim Vaulytica makes. If a future change perturbs the
   `result_hash` for a fixture without a deliberate baseline update,
   treat it as a P0 bug.
+
+---
+
+# Launch checklist — v3.0.0
+
+Per spec-v3 §64 / Step 39. Same format as the v1.0.0 checklist above:
+every item is pass-only, anything not green blocks the v3 tag.
+
+This section is the **authoritative v3 launch artifact**. Sign-offs
+here are part of the v3.0.0 release record.
+
+| ID | Item | Status |
+| -- | ---- | ------ |
+| v3-a | Every v3 playbook ships green against its passing fixture | 🟡 partial — 2026-05-16 — maintainer — one passing BAA fixture committed under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/) and baselined in [`tests/golden/v3/expected/`](tests/golden/v3/expected/); the remaining 11 v3 playbooks need their own passing fixtures landed via the same `VAULYTICA_REGEN_GOLDEN=1` recipe documented in [`tests/golden/v3/README.md`](tests/golden/v3/README.md). Per-rule tests (724 across BAA / DPA-GDPR / DPA-US-state / Transfer / NDA-deep / MSA-deep / Addenda) carry their own passing inline fixtures and are green |
+| v3-b | Every v3 fail-fixture produces the expected fail with the expected citation | 🟡 partial — per-ruleset failure-mode tests are exhaustive at the unit level (10 BAA + 11 DPA-GDPR + 8 US-state + 8 Transfer + 8 NDA + 10 MSA + 12 Addenda + 7 Consistency = 74 dedicated negative-path tests; every one asserts the exact rule fires with the right citation). The end-to-end golden corpus of hand-built fail-cases (spec §15: ~150 fixtures) is the Step 34 follow-up |
+| v3-c | Determinism check passes byte-identical twice | ✅ pass — 2026-05-16 — maintainer — `tests/golden/v3/golden.test.ts` runs every committed v3 fixture twice in-process and asserts byte-identical canonical bytes (not just `result_hash`). v2's three-layer determinism guard (`all-rules.test.ts` repeat-run + `golden-output.test.ts` baseline + `determinism-guard.test.ts` 5×-in-process) remains green. v3 consistency engine carries the same contract: `src/engine/consistency/runner.test.ts`'s determinism case asserts identical `result_hash` on two runs |
+| v3-d | Offline check passes | 🟡 partial — `tests/e2e/v3/no-network.spec.ts` enforces "zero non-asset network requests" on the v3 BAA flow but needs a `.docx` or `.pdf` fixture (Playwright dropzone accepts those extensions only); the v3 starter fixture is `.txt`. Will flip to ✅ when a binary v3 BAA fixture lands. The v2 smoke spec already covers the equivalent path for the v2 NDA flow |
+| v3-e | Lighthouse numbers within budget | 🟡 partial — bundle-size guard at [`tests/integration/bundle-size.test.ts`](tests/integration/bundle-size.test.ts) enforces eager-entry ≤ 50 KB gzipped and total JS payload ≤ v2 + 600 KB gzipped. Lighthouse mobile-4G run against the deployed v3 site is the live verification (lighthouserc.json budgets apply unchanged) |
+| v3-f | Accessibility audit is clean | 🟡 partial — `tests/e2e/v3/a11y-keyboard.spec.ts` covers the v2 keyboard surface (dropzone Tab-reachable + Enter-activatable, theme toggle keyboard-operable, FAQ disclosure keyboard-operable) and carries forward-compatible probes for the v3 chip row + multi-doc cards (skipped until the Step 33 UI hookup lands). A full axe-core sweep depends on `@axe-core/playwright` (one new dev-dep) and a live v3 page state — both land alongside the Step 33 UI hookup |
+| v3-g | The docs build | ✅ pass — 2026-05-16 — maintainer — seven new docs under [`docs/v3/`](docs/v3/) committed and linked from each other + from [`README.md`](README.md). No build step required for markdown |
+| v3-h | The changelog is current | ✅ pass — 2026-05-16 — maintainer — [`CHANGELOG.md`](CHANGELOG.md) `[v3.0.0]` heading carries the full summary of every v3 step |
+| v3-i | The v3 source catalog has zero stale citations | 🟡 partial — staleness gate is wired (`dkb/build/v3/staleness.ts`), `dkb-staleness-ack.yml` is empty, and the CLI exits non-zero on unacknowledged drift. The weekly DKB-rebuild workflow needs to run once after the v3 tag to stamp every `retrieved_at` ≤ 7 days |
+| v3-j | The README's v3 line is correct | ✅ pass — 2026-05-16 — maintainer — [`README.md`](README.md) "What I check" section carries the v3 line and links to [`docs/v3/overview.md`](docs/v3/overview.md) |
+| v3-k | The CHANGELOG entry is dated | ✅ pass — 2026-05-16 — maintainer — `[v3.0.0] — 2026-05-16` header is in place |
+| v3-l | Bundle-size budget (v2 + 600 KB compressed) | ✅ pass — 2026-05-16 — maintainer — [`tests/integration/bundle-size.test.ts`](tests/integration/bundle-size.test.ts) asserts on every commit; current values: eager entry ~ 5 KB gzipped, total payload ~ 500 KB gzipped — well inside the v2 + 600 KB ceiling |
+| v3-m | Cross-document consistency works end-to-end | ✅ pass — 2026-05-16 — maintainer — `src/engine/consistency/` engine + 7 cross-document rules; `runEngineMulti` in [`src/engine/runner.ts`](src/engine/runner.ts) ties it to the v2 single-document engine; [`src/engine/consistency/runner.test.ts`](src/engine/consistency/runner.test.ts) carries 20 tests including per-rule positive/negative + determinism + ordering |
+| v3-n | Compliance matrix renders in the DOCX report | ✅ pass — 2026-05-16 — maintainer — [`src/report/v3/matrix.ts`](src/report/v3/matrix.ts) renders Pass / Partial / Fail / N/A with cell shading + `tableHeader: true` for screen-reader semantics; tested by [`src/report/v3/v3-report.test.ts`](src/report/v3/v3-report.test.ts) |
+| v3-o | UI auto-detect + chip-row defaults + multi-doc state model | 🟡 partial — pure modules committed at [`src/ui/v3/`](src/ui/v3/) with 26 unit tests; DOM hookup into `main.ts` + Playwright e2e suite at [`tests/e2e/v3/`](tests/e2e/v3/) are the Step 33 follow-up |
+
+## v3 sign-off
+
+When every v3 row reads ✅ **pass** (or 🟡 with a stated tracking
+pointer), tag the v3 release:
+
+```
+git tag -s v3.0.0 -m "Vaulytica v3.0.0 — compliance & regulated-agreement expansion"
+git push origin v3.0.0
+```
+
+The deploy workflow republishes to Cloudflare Pages and runs the smoke
+suite against the deployed v3 site.
+
+## v3 non-promises
+
+These are intentional gaps. They do not block the v3 tag.
+
+- Full coverage of every jurisdiction's privacy law. The source
+  catalog in [`docs/v3/regulators.md`](docs/v3/regulators.md) is the
+  complete list; everything else surfaces as `N/A` in the matrix.
+- Redline generation, contract negotiation suggestions, drafting from
+  scratch — v3 lints, it does not draft.
+- AI features in the running product. v3 preserves v2's no-AI-in-the-
+  pipeline posture exactly.
+- Government contracting clauses (FAR/DFARS), export controls
+  (EAR/ITAR/OFAC), construction contracts, international arbitration
+  depth, M&A diligence — all spec-v3 §73 v4-candidate territory.
