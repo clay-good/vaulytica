@@ -1,0 +1,38 @@
+{
+  "id": "confidential-settlement",
+  "version": "1.0.0",
+  "name": "Confidential Settlement Agreement",
+  "description": "Confidential settlement agreement with NLRB *McLaren Macomb*, SEC Rule 21F-17 carve-out, and IRC § 162(q) compliance. Selects the §6.G settlement ruleset (SET-003..SET-010).",
+  "match_features": {
+    "title_keywords": [
+      "settlement agreement",
+      "confidential settlement",
+      "settlement and release"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "settlement payment",
+      "confidentiality",
+      "no admission",
+      "protected rights",
+      "1099",
+      "w-2"
+    ],
+    "negative_features": ["demand letter", "cease and desist", "tolling"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Settlement Payment", "Effective Date", "Released Claims"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "NLRB-MCLAREN-MACOMB",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["mutual-release"],
+  "compliance_matrix_columns": [
+    "NLRB McLaren Macomb (2023)",
+    "SEC Rule 21F-17 carve-out",
+    "Cal. Civ. § 1542 waiver",
+    "IRC § 162(q) (harassment / abuse)",
+    "Tax allocation (1099 / W-2)"
+  ]
+}

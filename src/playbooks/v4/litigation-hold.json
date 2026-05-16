@@ -1,0 +1,38 @@
+{
+  "id": "litigation-hold",
+  "version": "1.0.0",
+  "name": "Litigation Hold Notice",
+  "description": "Litigation hold / preservation notice (FRCP 37(e), *Zubulake*). Selects the §6.G settlement ruleset (SET-025..SET-030).",
+  "match_features": {
+    "title_keywords": [
+      "litigation hold",
+      "preservation notice",
+      "document preservation",
+      "legal hold"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "preserve",
+      "electronically stored information",
+      "esi",
+      "suspend deletion",
+      "custodian",
+      "attorney work product"
+    ],
+    "negative_features": ["settlement payment", "release", "demand letter", "cease and desist"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Custodian", "Covered Materials"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "FRCP-37E-ZUBULAKE",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "FRCP 37(e) preservation",
+    "Zubulake custodian acknowledgment",
+    "Suspension of routine deletion",
+    "Attorney work product"
+  ]
+}

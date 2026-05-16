@@ -1,0 +1,32 @@
+{
+  "id": "mutual-release",
+  "version": "1.0.0",
+  "name": "Mutual / General Release",
+  "description": "Mutual or general release of claims with optional California Civil Code § 1542 waiver. Selects the §6.G settlement ruleset (SET-001..SET-005, SET-008).",
+  "match_features": {
+    "title_keywords": ["mutual release", "general release", "release of claims", "release agreement"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "releasor",
+      "releasee",
+      "known and unknown",
+      "section 1542",
+      "no admission of liability"
+    ],
+    "negative_features": ["settlement payment", "demand", "cease and desist"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Releasor", "Releasee", "Effective Date"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "STATE-RELEASE-LAW",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["confidential-settlement"],
+  "compliance_matrix_columns": [
+    "Cal. Civ. § 1542 waiver",
+    "FRE 408 — no admission",
+    "Scope (known / unknown)",
+    "Parties (Releasor / Releasee + affiliates)"
+  ]
+}

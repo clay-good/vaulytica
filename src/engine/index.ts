@@ -42,6 +42,7 @@ export {
   M_AND_A_RULES,
   REAL_ESTATE_RULES,
   EMPLOYMENT_V4_RULES,
+  SETTLEMENT_RULES,
 } from "./rules/v4/index.js";
 
 export type {

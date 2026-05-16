@@ -1,0 +1,33 @@
+{
+  "id": "cease-and-desist",
+  "version": "1.0.0",
+  "name": "Cease-and-Desist Letter",
+  "description": "Cease-and-desist letter (IP, unfair competition, defamation). Lanham Act § 43(a) baseline; anti-SLAPP / extortion risk screen. Selects the §6.G settlement ruleset (SET-016..SET-020).",
+  "match_features": {
+    "title_keywords": ["cease and desist", "cease-and-desist", "notice of infringement"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "infringement",
+      "trademark",
+      "copyright",
+      "patent",
+      "immediately cease",
+      "recall"
+    ],
+    "negative_features": ["settlement agreement", "release", "tolling"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Mark", "Work", "Infringing Activity"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "LANHAM-ACT-OR-COPYRIGHT",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "Lanham Act § 43(a) (trademark / UC)",
+    "IP / mark identification",
+    "Response deadline",
+    "Anti-SLAPP / extortion risk (Flatley)"
+  ]
+}

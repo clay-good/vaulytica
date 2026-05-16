@@ -1,0 +1,31 @@
+{
+  "id": "tolling-agreement",
+  "version": "1.0.0",
+  "name": "Tolling Agreement",
+  "description": "Tolling agreement pausing the statute of limitations during pre-suit negotiations. Selects the §6.G settlement ruleset (SET-021..SET-024).",
+  "match_features": {
+    "title_keywords": ["tolling agreement", "limitations tolling agreement"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "statute of limitations",
+      "tolling period",
+      "no revival",
+      "terminates on notice"
+    ],
+    "negative_features": ["settlement payment", "release", "demand letter", "cease and desist"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Tolling Period", "Effective Date"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "STATE-LIMITATIONS",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "Tolled claims identified",
+    "Tolling period defined",
+    "No revival of barred claims",
+    "Termination on notice"
+  ]
+}

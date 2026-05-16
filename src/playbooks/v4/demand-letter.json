@@ -1,0 +1,32 @@
+{
+  "id": "demand-letter",
+  "version": "1.0.0",
+  "name": "Demand Letter",
+  "description": "Pre-suit demand letter (debt, wage, contract, PAGA) with FDCPA compliance and reservation of rights. Selects the §6.G settlement ruleset (SET-011..SET-015).",
+  "match_features": {
+    "title_keywords": ["demand letter", "demand for payment", "notice of claim", "pre-suit demand"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "demand",
+      "respond within",
+      "cure period",
+      "without prejudice",
+      "reservation of rights"
+    ],
+    "negative_features": ["settlement agreement", "release", "cease and desist", "tolling"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Demand", "Response Deadline"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "FDCPA-OR-STATE",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "FDCPA § 1692e (debt-collection)",
+    "Specific demand + deadline",
+    "Cal. Lab. § 2699.3 (PAGA notice)",
+    "Reservation of rights"
+  ]
+}
