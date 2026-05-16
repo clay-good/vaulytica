@@ -77,3 +77,142 @@ These are not threats today but are worth tracking:
 - **SRI on dynamic-import chunks.** Today's SRI plugin covers the eagerly-loaded entry only. Dynamic-import chunks (the analysis pipeline, vendor chunks) load *after* the entry has already passed SRI; an attacker who could swap a vendor chunk would first have had to bypass the entry SRI. Belt-and-suspenders SRI on dynamic chunks requires `build.modulePreload.resolveDependencies` hookery; tracked.
 - **A `report-uri` for CSP violations** so we can see *if* anyone is trying to smuggle content out via an allow-listed scheme. Currently absent because a `report-uri` would itself require a permitted reporting endpoint.
 - **Signed commits + tagged releases** so the supply chain from "commit" to "deploy" is verifiable end-to-end. Currently the Cloudflare deploy verifies the GitHub Action signature but not commit signatures.
+
+## v3 additions
+
+v3 introduces five new attack surfaces and trust assumptions worth
+calling out honestly. None of them weaken the v2 posture; all of them
+warrant explicit treatment because v3 expands the DKB, the rule catalog,
+and the citation surface area.
+
+### 1. DKB integrity
+
+v3 ships ~24 fetcher-derived bundles of regulator text in the DKB
+(`dkb/dist/<version>/`). The runtime verifies these in three ways:
+
+- The DKB manifest carries a `version` string and `sources[].id` /
+  `source_url` pairs; the loader at `src/dkb/loader.ts` validates the
+  manifest shape with Zod before any rule consumes it.
+- Every v3 node carries `dkb_node_version` and `dkb_node_last_validated_at`,
+  so a stale node surfaces in the loader output.
+- Every v3 citation carries `content_hash_at_pin =
+  sha256(normalizeForHash(snapshotText))` (see Step 20). The build
+  pipeline re-fetches the upstream URL on each weekly run and compares
+  the hash.
+
+What this protects against: a tampered DKB JSON whose contents disagree
+with the regulator's published text. The hash check would fail and the
+loader would refuse to accept the manifest.
+
+What it does not protect against: a clean swap of *both* the DKB JSON
+*and* the bundle at the same time. SRI on the entry bundle
+(Verification step 6) makes that materially harder, but a sufficiently
+motivated adversary with control of the deploy could in principle ship
+a tampered DKB with a tampered runtime that does not check it. See
+"v3 still does not protect against" below.
+
+### 2. The staleness gate
+
+When the DKB build pipeline detects upstream drift, the affected rule
+is moved into a stale-citation queue and disabled (`enabled: false`).
+The build itself exits non-zero if any drift is unacknowledged in
+`dkb-staleness-ack.yml`. Acks are explicit (`{node_id, citation,
+acknowledged_by, reason}`) and leave an auditable trail.
+
+What this protects against: silent drift between regulator text and
+the DKB. A finding cited against a section that no longer exists at
+that URL is the kind of error that erodes trust in a compliance tool;
+the staleness gate prevents it.
+
+How it might be bypassed: a human reviewer hand-acks a drift in
+`dkb-staleness-ack.yml` without actually reading the diff. The
+acknowledgment is auditable but it is still a human decision; treat
+the ack file as a security-sensitive artifact in code review.
+
+### 3. The citation surface
+
+v3 reports surface every citation in three places:
+
+- Inline next to the finding (the `[1] [3] [5]` bibliography numbers).
+- In the §55 citation index appendix with a clickable URL.
+- In the per-page footer's "Citations as of [DKB build date]" line.
+
+A reader of a printed single page can verify the report against its
+source. This is the v3 analogue of the v2 "fingerprint of the input
+file is recorded above" line on the report cover.
+
+What this protects against: a malicious DKB that lies about a CFR
+section — the citation index gives the reader the URL to verify, and
+the staleness gate would catch the drift on the next weekly build.
+
+What it does not protect against: a DKB that silently swaps two
+correctly-cited but unrelated facts. The hash check would not catch
+this because each individual citation is internally consistent; only
+end-to-end fixtures (Step 34 goldens) catch this class of bug.
+
+### 4. The "consensus practice" AI-addendum disclaimer
+
+The AI-addendum playbook (spec-v3 §34) cites NIST AI RMF, the EU AI
+Act, and FTC enforcement actions rather than controlling statute. Each
+ADDENDA-NNN rule in that surface carries the "consensus practice, not
+statute" framing explicitly in its description, and the report's §59
+disclaimer reinforces it:
+
+> Where v3 cites a "consensus practice" rather than a controlling
+> regulation (notably in the AI-Addendum playbook), Vaulytica is
+> reporting industry norms, not law. Failing one of these checks is
+> not a regulatory violation. It is an observation worth a
+> conversation with counsel.
+
+What this protects against: a user mistaking the AI-addendum findings
+for legal claims. The disclaimer is dry, prominent, and unavoidable in
+the report.
+
+What it does not protect against: a user who reads only the
+compliance-matrix summary cell. A future build will tag the
+AI-addendum row in the matrix explicitly as "consensus practice" to
+narrow this gap.
+
+### 5. The non-promise of universal coverage
+
+v3 covers the source catalog in [`docs/v3/regulators.md`](v3/regulators.md)
+and no more. Unsupported regulators surface as `N/A` cells in the
+compliance matrix with a "not yet covered" note. The non-promise is
+made explicit in:
+
+- The compliance-matrix section ("It does not opine on a regulator-
+  specific posture not covered by the source catalog").
+- The v3 overview ("v3 also does not cover every jurisdiction in every
+  regulator's universe").
+- The report disclaimer block.
+
+What this protects against: a user paging through a green compliance
+matrix and concluding the document is "compliant" with regulators v3
+does not cover. Every uncovered regulator shows `N/A` rather than
+silently passing.
+
+What it does not protect against: a user who skips the matrix entirely
+and reads only the findings count. Counts alone are misleading; the
+matrix and the source catalog together are the citable surface.
+
+## What v3 still does not protect against
+
+- A regulator whose stable URL goes 404 between weekly builds — the
+  staleness gate catches this at build time, but a user running an
+  older deployed build may run against a since-removed citation. The
+  citation-as-of footer line lets a reader notice the staleness.
+- A "consensus practice" that hardens into statute mid-period. The
+  AI-addendum surface in particular has a roughly 3- to 6-month
+  half-life on consensus practice; treat it as a moving target.
+- An adversarial document drafted specifically to evade v3's regex
+  patterns. The rules are deterministic, which means they are
+  predictable; a determined drafter can craft text that satisfies the
+  presence patterns without satisfying the regulator's intent. The
+  rules are conservative on purpose (false-negative-prefer over
+  false-positive) so adversarial documents that slip through still
+  get reviewed by counsel.
+- A jurisdictional carve-out (e.g., Cal. Civ. Code § 1668 in a
+  contract that explicitly waives California's choice-of-law rule).
+  v3 flags the statute reference but cannot reason about the waiver
+  unless the waiver is also pattern-matched. Treat the v3 findings as
+  a checklist, not a determination.
