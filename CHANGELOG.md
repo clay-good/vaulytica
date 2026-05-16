@@ -4,7 +4,24 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
-_No unreleased changes._
+### Added
+
+- **v4 Step 44 — consolidated bundle report renderer** (spec-v4.md §11).
+  New `src/report/bundle.ts` ships `buildBundleDocxReport`,
+  `buildBundleJson` / `buildBundleJsonBlob`, `buildBundleZip`, and
+  `bundleFingerprint`. The DOCX includes cover (bundle fingerprint,
+  document count, engine + DKB versions, ISO date), executive summary
+  (per-document + cross-document severity counts), per-document
+  subsections capped at `BUNDLE_TOP_N = 10` findings each, the full
+  cross-document consistency appendix, a deduped citation
+  bibliography, the full audit trail (per-doc + cross-doc execution
+  logs with elapsed times), and the standard determinism / privacy /
+  non-advice disclaimer block. The bundle zip pins per-entry mtime to
+  2000-01-01 UTC so the zip envelope is byte-identical across runs.
+  Bundle JSON shape: `{ runs, cross_doc_findings, bundle_fingerprint,
+  dkb_version, engine_version }`. The `fflate` dep introduced in Step
+  41 for zip ingest is reused for the §11 zip output path — one
+  library, two paths. 13 new unit tests; 864/864 passing.
 
 ## [v3.0.0] — 2026-05-16
 

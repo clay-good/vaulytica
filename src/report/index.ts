@@ -33,3 +33,21 @@ export {
   renderCitationIndex,
   buildV3Footer,
 } from "./v3/index.js";
+
+// v4 §11 — consolidated bundle report (Step 44).
+export {
+  buildBundleDocxReport,
+  buildBundleJson,
+  buildBundleJsonBlob,
+  buildBundleZip,
+  bundleFingerprint,
+  BUNDLE_TOP_N,
+} from "./bundle.js";
+
+export type {
+  BundleDocument,
+  BundleReportInput,
+  BundleZipInput,
+  BundleZipArtifact,
+  BundleJson,
+} from "./bundle.js";
