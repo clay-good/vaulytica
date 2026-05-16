@@ -1,0 +1,35 @@
+{
+  "id": "ma-restrictive-covenant",
+  "version": "1.0.0",
+  "name": "M&A Restrictive Covenant Agreement",
+  "description": "Sale-of-business non-compete / non-solicit covenants under the FTC NCR sale-of-business exception (16 C.F.R. § 910.2(a)(2)). Selects the §6.D M&A ruleset (MNA-072..MNA-080).",
+  "match_features": {
+    "title_keywords": [
+      "restrictive covenant agreement",
+      "non-compete agreement",
+      "non-competition agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "sale of the business",
+      "goodwill",
+      "non-compete",
+      "non-solicitation",
+      "blue pencil"
+    ],
+    "negative_features": ["employment agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Competing Business", "Restricted Period", "Restricted Territory"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "FTC-NCR",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [
+    "stock-purchase-agreement",
+    "asset-purchase-agreement",
+    "merger-agreement"
+  ],
+  "compliance_matrix_columns": ["16 C.F.R. § 910.2(a)(2)", "State non-compete law"]
+}

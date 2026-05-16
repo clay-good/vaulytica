@@ -1,0 +1,37 @@
+{
+  "id": "asset-purchase-agreement",
+  "version": "1.0.0",
+  "name": "Asset Purchase Agreement (APA)",
+  "description": "Asset purchase agreement under UCC § 9, IRC § 1060, and state bulk-sales law. Selects the §6.D M&A ruleset (MNA-020..MNA-028).",
+  "match_features": {
+    "title_keywords": ["asset purchase agreement", "apa"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "purchased assets",
+      "excluded assets",
+      "assumed liabilities",
+      "excluded liabilities",
+      "bill of sale"
+    ],
+    "negative_features": ["stock purchase agreement", "merger agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [
+    "Purchased Assets",
+    "Excluded Assets",
+    "Assumed Liabilities",
+    "Excluded Liabilities"
+  ],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "UCC-9",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["disclosure-schedules", "escrow-agreement"],
+  "compliance_matrix_columns": [
+    "UCC § 9-406",
+    "IRC § 1060",
+    "State bulk-sales statutes",
+    "WARN Act"
+  ]
+}

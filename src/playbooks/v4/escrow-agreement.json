@@ -1,0 +1,31 @@
+{
+  "id": "escrow-agreement",
+  "version": "1.0.0",
+  "name": "M&A Escrow Agreement",
+  "description": "Tri-party escrow agreement supporting an SPA / APA / merger. Selects the §6.D M&A ruleset (MNA-046..MNA-054).",
+  "match_features": {
+    "title_keywords": ["escrow agreement"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "escrow agent",
+      "escrow fund",
+      "release",
+      "joint instruction",
+      "interpleader"
+    ],
+    "negative_features": ["stock purchase agreement", "asset purchase agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Escrow Agent", "Escrow Fund", "Release Date"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "Practice-Baseline",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [
+    "stock-purchase-agreement",
+    "asset-purchase-agreement",
+    "merger-agreement"
+  ],
+  "compliance_matrix_columns": []
+}

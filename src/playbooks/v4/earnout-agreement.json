@@ -1,0 +1,27 @@
+{
+  "id": "earnout-agreement",
+  "version": "1.0.0",
+  "name": "Earnout Agreement",
+  "description": "Post-closing contingent-consideration earnout (Delaware *Lazard / Aveta* line). Selects the §6.D M&A ruleset (MNA-063..MNA-071).",
+  "match_features": {
+    "title_keywords": ["earnout", "earn-out"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "earnout period",
+      "milestone",
+      "ebitda",
+      "implied covenant",
+      "earnout payment"
+    ],
+    "negative_features": []
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Earnout Period", "Earnout Statement", "Milestone"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "DE-Chancery",
+  "applicable_jurisdictions": ["US-DE", "US"],
+  "companion_playbooks": ["stock-purchase-agreement", "merger-agreement"],
+  "compliance_matrix_columns": ["Lazard v. Qinetiq", "Aveta v. Cavallieri", "IRC § 483 / § 1274"]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "loi-term-sheet",
+  "version": "1.0.0",
+  "name": "Letter of Intent / Term Sheet",
+  "description": "Pre-definitive-agreement LOI or term sheet outlining commercial terms with binding / non-binding demarcation. Selects the §6.D M&A ruleset (MNA-001..MNA-009).",
+  "match_features": {
+    "title_keywords": ["letter of intent", "loi", "term sheet"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "non-binding",
+      "exclusivity",
+      "no-shop",
+      "due diligence",
+      "definitive agreement"
+    ],
+    "negative_features": ["definitive agreement", "stock purchase agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "Common-Law",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["stock-purchase-agreement", "asset-purchase-agreement"],
+  "compliance_matrix_columns": ["SIGA / Pennzoil binding-LOI line"]
+}

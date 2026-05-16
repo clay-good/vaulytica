@@ -1,0 +1,37 @@
+{
+  "id": "merger-agreement",
+  "version": "1.0.0",
+  "name": "Merger Agreement",
+  "description": "Plan and agreement of merger under DGCL §§ 251–259. Selects the §6.D M&A ruleset (MNA-029..MNA-038).",
+  "match_features": {
+    "title_keywords": ["merger agreement", "plan of merger", "agreement and plan of merger"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "surviving corporation",
+      "merger sub",
+      "per share consideration",
+      "appraisal rights",
+      "certificate of merger"
+    ],
+    "negative_features": ["asset purchase", "stock purchase agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [
+    "Surviving Corporation",
+    "Merger Sub",
+    "Effective Time",
+    "Merger Consideration"
+  ],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "DGCL",
+  "applicable_jurisdictions": ["US-DE", "US"],
+  "companion_playbooks": ["disclosure-schedules", "escrow-agreement", "earnout-agreement"],
+  "compliance_matrix_columns": [
+    "DGCL § 251",
+    "DGCL § 262",
+    "DGCL § 271",
+    "Omnicare fiduciary-out line"
+  ]
+}

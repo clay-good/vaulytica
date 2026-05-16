@@ -1,0 +1,31 @@
+{
+  "id": "transition-services-agreement",
+  "version": "1.0.0",
+  "name": "Transition Services Agreement (TSA)",
+  "description": "Post-closing transition services agreement (seller / corporate parent provides services to buyer / divested business). Selects the §6.D M&A ruleset (MNA-055..MNA-062).",
+  "match_features": {
+    "title_keywords": ["transition services agreement", "tsa"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "transition services",
+      "service period",
+      "service level",
+      "cost-plus",
+      "migration"
+    ],
+    "negative_features": ["msa", "master services agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Service Period", "Services Schedule"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "Practice-Baseline",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [
+    "merger-agreement",
+    "stock-purchase-agreement",
+    "asset-purchase-agreement"
+  ],
+  "compliance_matrix_columns": []
+}

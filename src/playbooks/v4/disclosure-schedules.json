@@ -1,0 +1,25 @@
+{
+  "id": "disclosure-schedules",
+  "version": "1.0.0",
+  "name": "Disclosure Schedules",
+  "description": "Schedules qualifying representations and warranties in a private-target M&A agreement. Selects the §6.D M&A ruleset (MNA-039..MNA-045).",
+  "match_features": {
+    "title_keywords": ["disclosure schedule", "disclosure schedules", "schedules"],
+    "required_clauses": [],
+    "distinguishing_phrases": ["general notes", "qualifies", "section", "schedule", "data room"],
+    "negative_features": []
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "Practice-Baseline",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [
+    "stock-purchase-agreement",
+    "asset-purchase-agreement",
+    "merger-agreement"
+  ],
+  "compliance_matrix_columns": ["ABA Private Target Deal Points Study"]
+}
