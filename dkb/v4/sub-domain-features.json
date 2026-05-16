@@ -1,0 +1,646 @@
+{
+  "$schema_version": "1.0.0",
+  "_comment": "Sub-domain title-keyword + distinguishing-phrase tables for the v4 two-stage classifier. Spec: spec-v4.md §9, Steps 42, 60. Anchored to the §6 catalog. Scoring weights mirror the v2 playbook matcher (title 0.3, distinguishing 0.2, negative -0.1).",
+  "sub_domains": {
+    "A-commercial": {
+      "name": "Commercial agreements",
+      "title_keywords": [
+        "master services agreement",
+        "msa",
+        "statement of work",
+        "sow",
+        "non-disclosure agreement",
+        "nondisclosure agreement",
+        "confidentiality agreement",
+        "consulting agreement",
+        "independent contractor agreement",
+        "saas agreement",
+        "subscription agreement",
+        "reseller agreement",
+        "distribution agreement",
+        "channel partner agreement",
+        "referral agreement",
+        "manufacturing agreement",
+        "supply agreement",
+        "marketing services agreement"
+      ],
+      "distinguishing_phrases": [
+        "scope of services",
+        "deliverables",
+        "subscription term",
+        "monthly fees",
+        "annual fees",
+        "the customer",
+        "the provider",
+        "professional services",
+        "disclosing party",
+        "receiving party",
+        "confidential information",
+        "uptime",
+        "service level agreement",
+        "territory"
+      ],
+      "negative_features": [
+        "premises",
+        "lessor",
+        "lessee",
+        "settlor",
+        "testator",
+        "stockholders agreement",
+        "registered agent"
+      ]
+    },
+    "B-governance": {
+      "name": "Corporate governance",
+      "title_keywords": [
+        "bylaws",
+        "by-laws",
+        "operating agreement",
+        "certificate of incorporation",
+        "articles of incorporation",
+        "certificate of formation",
+        "stockholders agreement",
+        "shareholders agreement",
+        "written consent in lieu of a meeting",
+        "unanimous written consent",
+        "audit committee charter",
+        "compensation committee charter",
+        "nominating and corporate governance committee charter",
+        "partnership agreement",
+        "limited partnership agreement"
+      ],
+      "distinguishing_phrases": [
+        "board of directors",
+        "registered agent",
+        "annual meeting of stockholders",
+        "drag-along",
+        "tag-along",
+        "general partner",
+        "limited partner",
+        "managing member",
+        "independent directors",
+        "501(c)(3)",
+        "tax-exempt",
+        "delaware general corporation law",
+        "dgcl",
+        "in lieu of a meeting",
+        "voting trust"
+      ],
+      "negative_features": [
+        "the customer",
+        "the provider",
+        "subscription term",
+        "premises",
+        "tenant",
+        "lessee"
+      ]
+    },
+    "C-equity": {
+      "name": "Equity and cap-table",
+      "title_keywords": [
+        "simple agreement for future equity",
+        "safe",
+        "convertible promissory note",
+        "convertible note",
+        "stock option agreement",
+        "option grant notice",
+        "restricted stock unit",
+        "rsu agreement",
+        "restricted stock purchase agreement",
+        "rspa",
+        "83(b) election",
+        "section 83(b) election",
+        "investor rights agreement",
+        "voting agreement",
+        "right of first refusal and co-sale",
+        "co-sale agreement"
+      ],
+      "distinguishing_phrases": [
+        "exercise price",
+        "vesting schedule",
+        "vesting commencement date",
+        "incentive stock option",
+        "nonqualified stock option",
+        "iso",
+        "nso",
+        "post-money valuation",
+        "pre-money valuation",
+        "valuation cap",
+        "discount rate",
+        "conversion event",
+        "irc section 409a",
+        "irc section 422",
+        "treas. reg. § 1.83",
+        "nvca",
+        "registration rights",
+        "maturity date"
+      ],
+      "negative_features": [
+        "premises",
+        "lessor",
+        "lessee",
+        "the customer",
+        "the provider",
+        "subscription term"
+      ]
+    },
+    "D-m-and-a": {
+      "name": "M&A and investment",
+      "title_keywords": [
+        "letter of intent",
+        "term sheet",
+        "stock purchase agreement",
+        "spa",
+        "asset purchase agreement",
+        "apa",
+        "merger agreement",
+        "agreement and plan of merger",
+        "disclosure schedule",
+        "escrow agreement",
+        "transition services agreement",
+        "tsa",
+        "earnout agreement"
+      ],
+      "distinguishing_phrases": [
+        "the closing",
+        "closing date",
+        "surviving corporation",
+        "purchased assets",
+        "assumed liabilities",
+        "excluded liabilities",
+        "purchase price",
+        "earnout period",
+        "milestone",
+        "representations and warranties",
+        "indemnification basket",
+        "indemnification cap",
+        "section x(y) of the agreement",
+        "the seller",
+        "the buyer",
+        "binding",
+        "non-binding"
+      ],
+      "negative_features": [
+        "subscription term",
+        "premises",
+        "tenant",
+        "lessor"
+      ]
+    },
+    "E-real-estate": {
+      "name": "Real estate",
+      "title_keywords": [
+        "commercial lease",
+        "residential lease",
+        "lease agreement",
+        "triple net lease",
+        "nnn lease",
+        "purchase and sale agreement",
+        "psa",
+        "ground lease",
+        "easement agreement",
+        "declaration of covenants",
+        "ccrs",
+        "cc&rs",
+        "estoppel certificate",
+        "subordination, non-disturbance",
+        "snda",
+        "assignment of lease"
+      ],
+      "distinguishing_phrases": [
+        "premises",
+        "the premises",
+        "lessor",
+        "lessee",
+        "landlord",
+        "tenant",
+        "rent",
+        "monthly rent",
+        "security deposit",
+        "common area",
+        "cam",
+        "property taxes",
+        "hoa",
+        "homeowners association",
+        "earnest money",
+        "easement"
+      ],
+      "negative_features": [
+        "the customer",
+        "the provider",
+        "subscription term",
+        "merger",
+        "stockholders agreement"
+      ]
+    },
+    "F-employment": {
+      "name": "Employment and HR",
+      "title_keywords": [
+        "employment agreement",
+        "executive employment agreement",
+        "offer letter",
+        "separation agreement",
+        "severance agreement",
+        "non-compete agreement",
+        "restrictive covenant agreement",
+        "proprietary information and inventions",
+        "piia",
+        "performance improvement plan",
+        "pip",
+        "employee handbook"
+      ],
+      "distinguishing_phrases": [
+        "at-will",
+        "employee",
+        "employer",
+        "base salary",
+        "start date",
+        "termination for cause",
+        "release of claims",
+        "owbpa",
+        "adea waiver",
+        "section 409a",
+        "section 280g",
+        "non-solicit",
+        "non-competition"
+      ],
+      "negative_features": [
+        "premises",
+        "subscription term",
+        "stockholders agreement",
+        "stock purchase",
+        "the seller",
+        "the buyer"
+      ]
+    },
+    "G-settlement": {
+      "name": "Settlement, release, demand",
+      "title_keywords": [
+        "settlement agreement",
+        "release of claims",
+        "mutual release",
+        "general release",
+        "demand letter",
+        "cease and desist",
+        "cease-and-desist letter",
+        "tolling agreement",
+        "litigation hold notice",
+        "preservation notice"
+      ],
+      "distinguishing_phrases": [
+        "california civil code section 1542",
+        "section 1542",
+        "release all claims",
+        "respond within",
+        "infringement",
+        "cease and desist",
+        "statute of limitations",
+        "duty to preserve",
+        "rule 37(e)",
+        "zubulake",
+        "no admission of liability"
+      ],
+      "negative_features": [
+        "premises",
+        "subscription term",
+        "vesting schedule",
+        "merger"
+      ]
+    },
+    "H-ip-licensing": {
+      "name": "IP and licensing",
+      "title_keywords": [
+        "intellectual property assignment",
+        "patent license agreement",
+        "trademark license agreement",
+        "copyright license agreement",
+        "contributor license agreement",
+        "cla",
+        "open source compliance",
+        "work-for-hire agreement",
+        "work made for hire"
+      ],
+      "distinguishing_phrases": [
+        "licensed patents",
+        "licensed marks",
+        "licensed works",
+        "exclusive license",
+        "non-exclusive license",
+        "frand",
+        "quality control",
+        "17 u.s.c. § 101",
+        "35 u.s.c.",
+        "lanham act"
+      ],
+      "negative_features": [
+        "premises",
+        "subscription term",
+        "merger"
+      ]
+    },
+    "I-privacy": {
+      "name": "Privacy and data protection",
+      "title_keywords": [
+        "data processing agreement",
+        "dpa",
+        "business associate agreement",
+        "baa",
+        "standard contractual clauses",
+        "scc",
+        "uk addendum",
+        "international data transfer agreement",
+        "uk idta",
+        "swiss addendum",
+        "privacy policy",
+        "cookie notice",
+        "cookie policy",
+        "notice of privacy practices",
+        "records of processing activities",
+        "ropa",
+        "data protection impact assessment",
+        "dpia",
+        "vendor security questionnaire",
+        "data incident notification"
+      ],
+      "distinguishing_phrases": [
+        "personal data",
+        "protected health information",
+        "phi",
+        "controller",
+        "processor",
+        "service provider",
+        "gdpr",
+        "ccpa",
+        "hipaa",
+        "article 28",
+        "article 30",
+        "article 35",
+        "45 cfr § 164.504",
+        "45 cfr § 164.520",
+        "sensitive personal information"
+      ],
+      "negative_features": [
+        "premises",
+        "merger",
+        "vesting schedule"
+      ]
+    },
+    "J-healthcare": {
+      "name": "Healthcare",
+      "title_keywords": [
+        "informed consent",
+        "patient authorization for release",
+        "authorization for release of phi",
+        "notice of privacy practices acknowledgment"
+      ],
+      "distinguishing_phrases": [
+        "common rule",
+        "voluntary",
+        "may withdraw",
+        "irb",
+        "institutional review board",
+        "45 cfr § 46.116",
+        "21 cfr § 50",
+        "45 cfr § 164.508",
+        "45 cfr § 164.520(c)(2)(ii)",
+        "subject of the research"
+      ],
+      "negative_features": [
+        "premises",
+        "subscription term",
+        "merger",
+        "the customer",
+        "the provider"
+      ]
+    },
+    "K-insurance": {
+      "name": "Insurance and risk",
+      "title_keywords": [
+        "certificate of liability insurance",
+        "acord 25",
+        "declarations page",
+        "insurance policy",
+        "endorsement",
+        "indemnification agreement",
+        "hold harmless agreement"
+      ],
+      "distinguishing_phrases": [
+        "named insured",
+        "policy period",
+        "form number",
+        "cg 20 10",
+        "cg 20 37",
+        "cg 20 26",
+        "additional insured",
+        "subrogation",
+        "waiver of subrogation",
+        "indemnitor",
+        "indemnitee",
+        "anti-indemnity"
+      ],
+      "negative_features": [
+        "subscription term",
+        "merger",
+        "vesting schedule"
+      ]
+    },
+    "L-banking": {
+      "name": "Banking and lending",
+      "title_keywords": [
+        "promissory note",
+        "loan agreement",
+        "credit agreement",
+        "security agreement",
+        "guaranty",
+        "guarantee agreement",
+        "intercreditor agreement",
+        "subordination agreement",
+        "deed of trust",
+        "mortgage",
+        "ucc-1",
+        "financing statement"
+      ],
+      "distinguishing_phrases": [
+        "maker",
+        "payee",
+        "borrower",
+        "lender",
+        "guarantor",
+        "collateral",
+        "secured party",
+        "debtor",
+        "interest rate",
+        "principal amount",
+        "ucc § 9-203",
+        "ucc § 9-108",
+        "reg z",
+        "annual percentage rate"
+      ],
+      "negative_features": [
+        "subscription term",
+        "merger",
+        "premises",
+        "the customer",
+        "the provider"
+      ]
+    },
+    "M-construction": {
+      "name": "Construction",
+      "title_keywords": [
+        "construction contract",
+        "aia document a101",
+        "aia document a201",
+        "subcontractor agreement",
+        "lien waiver",
+        "conditional waiver and release",
+        "unconditional waiver and release",
+        "payment bond",
+        "performance bond",
+        "change order",
+        "aia document g701"
+      ],
+      "distinguishing_phrases": [
+        "owner",
+        "contractor",
+        "subcontractor",
+        "scope of work",
+        "general conditions",
+        "miller act",
+        "lien rights",
+        "progress payment",
+        "final payment",
+        "surety",
+        "original contract sum"
+      ],
+      "negative_features": [
+        "subscription term",
+        "merger",
+        "vesting schedule"
+      ]
+    },
+    "N-trust-estate": {
+      "name": "Trust, estate, family",
+      "title_keywords": [
+        "last will and testament",
+        "revocable living trust",
+        "irrevocable trust",
+        "advance directive",
+        "living will",
+        "healthcare proxy",
+        "durable power of attorney",
+        "prenuptial agreement",
+        "premarital agreement",
+        "postnuptial agreement",
+        "marital settlement agreement",
+        "separation agreement"
+      ],
+      "distinguishing_phrases": [
+        "testator",
+        "settlor",
+        "grantor",
+        "trustee",
+        "beneficiary",
+        "executor",
+        "personal representative",
+        "principal",
+        "agent",
+        "attorney-in-fact",
+        "during the marriage",
+        "premarital",
+        "spousal support",
+        "parenting plan"
+      ],
+      "negative_features": [
+        "subscription term",
+        "merger",
+        "the customer",
+        "the provider",
+        "vesting schedule"
+      ]
+    },
+    "O-compliance-policy": {
+      "name": "Compliance policies and disclosures",
+      "title_keywords": [
+        "code of business conduct",
+        "code of ethics",
+        "anti-bribery and anti-corruption policy",
+        "fcpa policy",
+        "uk bribery act policy",
+        "anti-money laundering policy",
+        "aml policy",
+        "insider trading policy",
+        "whistleblower policy",
+        "document retention policy",
+        "conflict of interest policy",
+        "ai acceptable use policy",
+        "ai use policy",
+        "social media policy",
+        "lobbying policy",
+        "political contribution policy"
+      ],
+      "distinguishing_phrases": [
+        "material non-public information",
+        "10b-5",
+        "10b5-1",
+        "ofac",
+        "bsa",
+        "sox section 301",
+        "sox section 406",
+        "dodd-frank",
+        "ldA",
+        "code of conduct",
+        "anti-retaliation",
+        "fcpa",
+        "uk bribery act"
+      ],
+      "negative_features": [
+        "premises",
+        "subscription term",
+        "merger",
+        "vesting schedule"
+      ]
+    },
+    "P-regulatory-prose": {
+      "name": "Regulatory filings (prose portions)",
+      "title_keywords": [
+        "form d",
+        "form adv",
+        "form adv part 2a",
+        "registration statement on form s-1",
+        "annual report on form 10-k",
+        "private placement memorandum",
+        "ppm",
+        "offering circular",
+        "regulation a tier 1",
+        "regulation a tier 2"
+      ],
+      "distinguishing_phrases": [
+        "regulation d",
+        "rule 506",
+        "rule 504",
+        "exempt offering",
+        "investment adviser",
+        "risk factors",
+        "we may not be able to",
+        "subscription agreement",
+        "blue sky",
+        "form 1-a",
+        "reg s-k item 105"
+      ],
+      "negative_features": [
+        "premises",
+        "merger",
+        "stockholders agreement"
+      ]
+    }
+  },
+  "scoring_weights": {
+    "title_keyword": 0.3,
+    "distinguishing_phrase": 0.2,
+    "negative_feature": -0.1
+  },
+  "thresholds": {
+    "sub_domain_min_confidence": 0.5,
+    "family_min_confidence": 0.5
+  }
+}
