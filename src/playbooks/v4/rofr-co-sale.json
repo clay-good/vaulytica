@@ -1,0 +1,31 @@
+{
+  "id": "rofr-co-sale",
+  "version": "1.0.0",
+  "name": "ROFR / Co-Sale Agreement (NVCA)",
+  "description": "NVCA-style right of first refusal and co-sale agreement on transfers of common / founder stock. Selects the §6.C equity ruleset (EQT-064..EQT-070).",
+  "match_features": {
+    "title_keywords": [
+      "right of first refusal",
+      "right of first refusal and co-sale agreement",
+      "rofr",
+      "co-sale agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "right of first refusal",
+      "co-sale",
+      "tag-along",
+      "permitted transfer"
+    ],
+    "negative_features": ["bylaws", "operating agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "DGCL",
+  "applicable_jurisdictions": ["US-DE", "US"],
+  "companion_playbooks": ["investor-rights-agreement", "voting-agreement"],
+  "compliance_matrix_columns": ["DGCL § 202", "NVCA Model ROFR / Co-Sale"]
+}

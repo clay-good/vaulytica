@@ -1,0 +1,27 @@
+{
+  "id": "convertible-note",
+  "version": "1.0.0",
+  "name": "Convertible Promissory Note",
+  "description": "Convertible promissory note (UCC Article 3 negotiable instrument convertible into preferred stock at next qualified financing). Selects the §6.C equity ruleset (EQT-010..EQT-018).",
+  "match_features": {
+    "title_keywords": ["convertible note", "convertible promissory note"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "principal amount",
+      "interest rate",
+      "maturity date",
+      "qualified financing",
+      "subordination"
+    ],
+    "negative_features": ["simple agreement for future equity", "safe", "stock option grant"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Maturity Date", "Qualified Financing", "Conversion Price"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "UCC-3",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": ["UCC § 3-104", "UCC § 3-108", "State usury caps", "Reg D Rule 506"]
+}

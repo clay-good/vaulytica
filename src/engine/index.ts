@@ -35,7 +35,7 @@ export {
   DPA_US_STATE_RULES,
   TRANSFER_RULES,
 } from "./rules/v3/index.js";
-export { V4_RULES, GOVERNANCE_RULES } from "./rules/v4/index.js";
+export { V4_RULES, GOVERNANCE_RULES, EQUITY_RULES } from "./rules/v4/index.js";
 
 export type {
   ConsistencyContext,

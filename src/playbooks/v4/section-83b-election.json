@@ -1,0 +1,26 @@
+{
+  "id": "section-83b-election",
+  "version": "1.0.0",
+  "name": "§ 83(b) Election Form",
+  "description": "Section 83(b) election form per Treas. Reg. § 1.83-2. Selects the §6.C equity ruleset (EQT-043..EQT-048).",
+  "match_features": {
+    "title_keywords": ["section 83(b) election", "83(b) election", "election under section 83(b)"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "include in gross income",
+      "fair market value",
+      "internal revenue service",
+      "30 days"
+    ],
+    "negative_features": []
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "IRC-83b",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["rspa"],
+  "compliance_matrix_columns": ["IRC § 83(b)", "Treas. Reg. § 1.83-2"]
+}

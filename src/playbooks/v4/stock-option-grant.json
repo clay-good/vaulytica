@@ -1,0 +1,27 @@
+{
+  "id": "stock-option-grant",
+  "version": "1.0.0",
+  "name": "Stock Option Grant Notice + Agreement",
+  "description": "Stock option grant under an equity-incentive plan (ISO under IRC § 422 or NSO under § 409A). Selects the §6.C equity ruleset (EQT-019..EQT-028).",
+  "match_features": {
+    "title_keywords": ["stock option grant", "option agreement", "option grant notice"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "exercise price",
+      "vesting schedule",
+      "incentive stock option",
+      "non-qualified stock option",
+      "grant date"
+    ],
+    "negative_features": ["restricted stock unit", "rsu", "safe", "convertible note"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Grant Date", "Exercise Price", "Vesting Schedule", "Plan"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "IRC-409A-422",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": ["IRC § 409A", "IRC § 422", "Treas. Reg. § 1.409A-1(b)(5)"]
+}

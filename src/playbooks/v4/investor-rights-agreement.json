@@ -1,0 +1,32 @@
+{
+  "id": "investor-rights-agreement",
+  "version": "1.0.0",
+  "name": "Investor Rights Agreement (NVCA)",
+  "description": "NVCA-style investor rights agreement carrying registration / information / pro rata / ROFO / stand-off provisions. Selects the §6.C equity ruleset (EQT-049..EQT-056).",
+  "match_features": {
+    "title_keywords": [
+      "investor rights agreement",
+      "investors' rights agreement",
+      "investors rights agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "registration rights",
+      "demand registration",
+      "piggyback",
+      "form s-3",
+      "pro rata",
+      "information rights"
+    ],
+    "negative_features": ["bylaws", "operating agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Registrable Securities", "Major Investor", "Form S-3"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "NVCA",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["voting-agreement", "rofr-co-sale", "stockholders-agreement"],
+  "compliance_matrix_columns": ["Securities Act § 4(a)(2) / Reg D", "NVCA Model IRA"]
+}

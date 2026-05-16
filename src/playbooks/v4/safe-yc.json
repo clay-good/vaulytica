@@ -1,0 +1,36 @@
+{
+  "id": "safe-yc",
+  "version": "1.0.0",
+  "name": "Simple Agreement for Future Equity (Y Combinator SAFE)",
+  "description": "Y Combinator SAFE (post-money or pre-money variant). Selects the §6.C equity ruleset (EQT-001..EQT-009).",
+  "match_features": {
+    "title_keywords": ["simple agreement for future equity", "safe"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "post-money valuation cap",
+      "valuation cap",
+      "discount rate",
+      "most favored nation",
+      "equity financing"
+    ],
+    "negative_features": ["convertible note", "promissory note", "interest"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [
+    "Equity Financing",
+    "Liquidity Event",
+    "Dissolution Event",
+    "Post-Money Valuation Cap"
+  ],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "Reg-D",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["investor-rights-agreement"],
+  "compliance_matrix_columns": [
+    "YC SAFE — post-money template",
+    "Reg D Rule 506",
+    "DGCL § 102 / § 151"
+  ]
+}

@@ -39,6 +39,7 @@
 
 import type { Rule } from "../../finding.js";
 import { GOVERNANCE_RULES } from "./governance/index.js";
+import { EQUITY_RULES } from "./equity/index.js";
 
 /**
  * The v4 ruleset aggregate. Populated one sub-domain at a time as
@@ -46,6 +47,7 @@ import { GOVERNANCE_RULES } from "./governance/index.js";
  * change in v3 because the runner already filters rules by
  * `applies_to_playbooks` before executing them.
  */
-export const V4_RULES: readonly Rule[] = [...GOVERNANCE_RULES];
+export const V4_RULES: readonly Rule[] = [...GOVERNANCE_RULES, ...EQUITY_RULES];
 
 export { GOVERNANCE_RULES } from "./governance/index.js";
+export { EQUITY_RULES } from "./equity/index.js";

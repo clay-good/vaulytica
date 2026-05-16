@@ -1,0 +1,26 @@
+{
+  "id": "voting-agreement",
+  "version": "1.0.0",
+  "name": "Voting Agreement (NVCA)",
+  "description": "NVCA-style voting agreement binding stockholders to vote for designated directors and drag-along sales. Selects the §6.C equity ruleset (EQT-057..EQT-063).",
+  "match_features": {
+    "title_keywords": ["voting agreement"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "drag-along",
+      "irrevocable proxy",
+      "vote in favor",
+      "election of directors"
+    ],
+    "negative_features": ["bylaws", "operating agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "DGCL",
+  "applicable_jurisdictions": ["US-DE", "US"],
+  "companion_playbooks": ["investor-rights-agreement"],
+  "compliance_matrix_columns": ["DGCL § 218", "DGCL § 212", "NVCA Model Voting Agreement"]
+}
