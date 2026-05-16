@@ -46,7 +46,26 @@ const EAGER_ENTRY_GZIPPED_KB = 50;
 
 describe.skipIf(!RUN)("v3 bundle-size guard", () => {
   beforeAll(() => {
-    if (!existsSync(DIST) || !existsSync(ASSETS)) {
+    // The SRI guard (`tests/integration/sri.test.ts`) shares `dist/` and
+    // runs `rmSync(DIST)` + `npm run build` in its own beforeAll. Under
+    // parallel test execution we can land in the half-second window
+    // where `assets/` exists but `main-*.js` has not been written yet,
+    // which produces a false negative on the gzipped-payload check.
+    // Wait for the eager `main-*.js` chunk to appear (up to 60s) before
+    // probing sizes, falling back to running our own build only when
+    // the directory is genuinely missing.
+    const looksReady = (): boolean => {
+      if (!existsSync(ASSETS)) return false;
+      return jsFiles().some((f) => /^main-[A-Za-z0-9_-]+\.js$/.test(f));
+    };
+    if (!looksReady()) {
+      const deadline = Date.now() + 60_000;
+      while (!looksReady() && Date.now() < deadline) {
+        const wait = new Int32Array(new SharedArrayBuffer(4));
+        Atomics.wait(wait, 0, 0, 250);
+      }
+    }
+    if (!looksReady()) {
       execSync("npm run build", {
         cwd: REPO_ROOT,
         stdio: "pipe",

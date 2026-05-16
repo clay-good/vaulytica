@@ -46,6 +46,8 @@ export {
   runConsistency,
   CONSISTENCY_ENGINE_VERSION,
   CONSISTENCY_RULES,
+  V4_CROSS_RULES,
+  ALL_CONSISTENCY_RULES,
   kindOf,
   findByKind,
   hasAllKinds,
