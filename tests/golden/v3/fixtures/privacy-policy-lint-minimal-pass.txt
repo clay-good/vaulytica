@@ -1,0 +1,67 @@
+Privacy Policy — Acme Health Wearables Inc.
+
+Effective Date: January 1, 2026
+Last Updated: January 1, 2026
+Version History: v1.0 (January 1, 2026 — initial publication)
+
+1. Identity and Contact of Controller
+
+Acme Health Wearables Inc. ("Acme," "we," "our," "us"), a Delaware corporation, is the data controller responsible for the personal data described in this Privacy Policy. Our principal place of business is 100 Innovation Drive, San Francisco, CA 94105, USA. You may contact us at: privacy@acmehealthwearables.example.com or by mail at the address above. Our toll-free privacy request line is 1-800-555-0199 (available Monday through Friday, 9 a.m. to 5 p.m. Pacific Time). Our online privacy rights webform is available at https://privacy.acmehealthwearables.example.com/request.
+
+Data Protection Officer (EU/UK Users): Wayne Chen, DPO, dpo@acmehealthwearables.example.com, Acme Health Wearables GmbH, Unter den Linden 10, 10117 Berlin, Germany.
+
+2. Categories of Personal Data Collected
+
+We collect the following categories of personal data:
+
+Identifiers: name, email address, postal address, phone number, account username, device identifier, and IP address.
+
+Biometric and Health Data: heart rate, blood oxygen saturation, sleep patterns, step counts, caloric estimates, menstrual cycle data, and other health metrics recorded by your Acme device (we treat this as sensitive personal information under Cal. Civ. Code § 1798.140(ae) and as special-category data under GDPR Art. 9).
+
+Geolocation Data: precise GPS coordinates when you use route-tracking features, and general location derived from IP address.
+
+Internet or Electronic Network Activity: pages visited within our app, feature usage logs, session duration, and crash reports.
+
+Inferences: health wellness scores derived from biometric and activity data.
+
+3. Sources of Collection
+
+We collect personal data: (a) directly from you when you create an account, complete surveys, or contact support; (b) automatically from your Acme device and our mobile application; and (c) from third-party partners such as healthcare providers you authorize to share records with us and app-store platforms that provide download and purchase information.
+
+4. Business and Commercial Purposes for Collection
+
+We process personal data to: provide and improve the Acme wearable services; personalize your experience and wellness recommendations; send service-related communications; respond to your inquiries; comply with legal obligations, including tax recordkeeping; and detect, investigate, and prevent security incidents.
+
+5. Categories of Third Parties — No Sale or Sharing
+
+We do not sell your personal information. We do not share your personal information for cross-context behavioral advertising. We share personal data with: (a) cloud infrastructure providers acting as service providers under confidentiality obligations; (b) analytics service providers operating solely under our instructions; and (c) professional advisers (lawyers, accountants, auditors) bound by professional secrecy. We may disclose personal data if required by law or to protect our legal rights.
+
+6. Consumer Rights
+
+Depending on your jurisdiction, you may have the right to: access the personal information we hold about you; request deletion of your personal information; request correction of inaccurate personal information; request portability of your personal information in a machine-readable format; opt out of the sale or sharing of your personal information (we do not engage in these practices); and be free from discrimination for exercising your privacy rights. California residents have additional rights under the CCPA/CPRA, including the right to limit use of sensitive personal information.
+
+7. How to Exercise Your Rights
+
+To exercise any of the rights listed above, you may: (a) call our toll-free number 1-800-555-0199; (b) submit a request through our webform at https://privacy.acmehealthwearables.example.com/request; or (c) contact our Data Protection Officer (for EU/UK residents) at dpo@acmehealthwearables.example.com. We will verify your identity before processing your request. We will respond to verified requests within forty-five (45) days (or within the period required by applicable law). We do not charge a fee for exercising your rights.
+
+8. Retention Periods
+
+Identifiers: retained for the life of your account plus three (3) years for dispute resolution purposes. Health and biometric data: retained for the life of your account plus two (2) years unless you request earlier deletion. Tax records: retained for seven (7) years as required by applicable tax law. Internet activity logs: retained for ninety (90) days for security and performance purposes. Inferences: retained for the life of your account.
+
+9. Legal Basis for Processing (GDPR)
+
+For users in the European Economic Area and the United Kingdom, our legal bases for processing are: consent (Art. 6(1)(a) GDPR) for marketing communications and optional personalization features; performance of a contract (Art. 6(1)(b) GDPR) for providing the Services you have purchased; legal obligation (Art. 6(1)(c) GDPR) for tax records and regulatory compliance. For health and biometric data (special-category data under Art. 9 GDPR), we rely on your explicit consent (Art. 9(2)(a) GDPR).
+
+10. International Transfers
+
+Acme is headquartered in the United States. If you are in the EEA or UK, your personal data may be transferred to and processed in the US. For such transfers, we rely on Standard Contractual Clauses adopted by the European Commission pursuant to Commission Implementing Decision (EU) 2021/914, and on the UK International Data Transfer Addendum issued by the UK Information Commissioner's Office under section 119A of the Data Protection Act 2018. Copies of the applicable SCCs are available upon request.
+
+11. Children Under 13
+
+Our services are not directed to children under the age of 13. We do not knowingly collect personal information from children under 13 without verifiable parental consent as required by the Children's Online Privacy Protection Act ("COPPA"), 15 U.S.C. § 6501 et seq. If we discover we have collected personal information from a child under 13 without verifiable parental consent, we will delete it promptly. Parents or guardians who believe we may have collected information from a child under 13 should contact us at privacy@acmehealthwearables.example.com. Where a parent or guardian provides COPPA-verified parental consent, we may collect limited information from children under 13 solely as authorized by that consent.
+
+12. Updates to This Policy
+
+We may update this Privacy Policy from time to time. When we make material changes, we will post a notice on our website and, where required by law, notify you by email or in-app notification at least thirty (30) days before the changes take effect. The version history at the top of this document identifies all published versions and their effective dates.
+
+Contact: privacy@acmehealthwearables.example.com | 1-800-555-0199
