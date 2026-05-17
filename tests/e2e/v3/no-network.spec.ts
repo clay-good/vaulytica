@@ -43,7 +43,11 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 // The starter BAA fixture from the v3 golden corpus. As Step 34's
 // fixture set grows, this can move to a richer BAA without affecting
 // the test's structure.
-const DEFAULT_FIXTURE = join(
+// Prefer the binary .docx variant if it exists (the dropzone only
+// accepts .pdf / .docx). Falls back to the .txt fixture for older
+// checkouts; the .docx ships from `npm run fixtures:baa`.
+const DOCX_FIXTURE = join(__dirname, "baa-minimal-pass.docx");
+const TXT_FIXTURE = join(
   __dirname,
   "..",
   "..",
@@ -52,6 +56,7 @@ const DEFAULT_FIXTURE = join(
   "fixtures",
   "baa-minimal-pass.txt",
 );
+const DEFAULT_FIXTURE = existsSync(DOCX_FIXTURE) ? DOCX_FIXTURE : TXT_FIXTURE;
 
 const FIXTURE = process.env.VAULYTICA_E2E_V3_FIXTURE
   ? join(process.cwd(), process.env.VAULYTICA_E2E_V3_FIXTURE)

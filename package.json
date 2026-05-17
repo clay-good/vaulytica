@@ -22,6 +22,7 @@
     "dkb:build": "tsx dkb/build/build.ts",
     "icons": "tsx tools/generate-icons.ts",
     "fixtures": "tsx tests/fixtures/build-fixtures.ts",
+    "fixtures:baa": "tsx tests/fixtures/build-baa-fixture.ts",
     "fixtures:regen-golden": "VAULYTICA_REGEN_GOLDEN=1 vitest run tests/integration/golden-output.test.ts",
     "e2e": "playwright test",
     "e2e:install": "playwright install --with-deps chromium"
