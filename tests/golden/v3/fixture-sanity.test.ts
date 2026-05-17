@@ -71,6 +71,28 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // party" — triggering sale / share consequences for the disclosing
   // party.
   "dpa-ccpa-service-provider-no-business-purpose-fail.txt": ["USDPA-020"],
+
+  // Unilateral NDA with the entire "Term" section removed (no fixed
+  // duration, no perpetual trade-secret carve-out language). NDA-D-003
+  // is the load-bearing presence check — its `present_patterns` regex
+  // requires "<N> years" within ~80 chars of confidential/disclos and
+  // now matches nothing in the document.
+  "unilateral-nda-deep-missing-term-fail.txt": ["NDA-D-003"],
+
+  // Vendor-side MSA with the aggregate liability cap subsection
+  // removed (only the consequential-damages waiver and indemnity
+  // procedure survive). MSA-006 is the load-bearing presence check
+  // for the aggregate liability cap; without a cap the vendor's
+  // exposure is unbounded.
+  "msa-vendor-deep-no-liability-cap-fail.txt": ["MSA-006"],
+
+  // UK IDTA / Addendum with a side-letter "Annex IV" attached that
+  // purports to modify the ICO Mandatory Clauses (replacing Clause 12
+  // liability, amending Clause 16 notification, modifying Clause 9
+  // sub-processor authorisation). TRANSFER-015 is the load-bearing
+  // critical — ICO Mandatory Clauses are invariable; only Tables 1–4
+  // may be completed.
+  "uk-idta-addendum-modified-mandatory-clauses-fail.txt": ["TRANSFER-015"],
 };
 
 describe("v3 fixture sanity", () => {

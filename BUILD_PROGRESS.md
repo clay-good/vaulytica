@@ -241,6 +241,16 @@ Three substantive additions:
 
 ## Post-4.0 work
 
+### v3 fail-fixture corpus expansion (7 → 10) (2026-05-17) — ✅ complete
+
+Advanced LAUNCH row v3-b coverage from seven end-to-end fail-fixtures to ten, adding one per remaining under-covered v3 ruleset family (NDA-deep presence, MSA-deep presence, Transfer UK-Addendum critical). New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
+
+- `unilateral-nda-deep-missing-term-fail.txt` — removes the entire "Term" section so no `<N> years` window pairs with `confidential|disclos`. **NDA-D-003 (critical)** fires because its `present_patterns` regex requires a duration phrase near confidentiality language and now matches nothing in the document.
+- `msa-vendor-deep-no-liability-cap-fail.txt` — strips Section 8(a) (aggregate liability cap) and the cap-carve-out subsection 8(b); only the mutual consequential-damages waiver and indemnification procedure survive. **MSA-006 (critical)** fires because no `aggregate liability` / `total liability` cap phrase is present — unbounded vendor exposure.
+- `uk-idta-addendum-modified-mandatory-clauses-fail.txt` — keeps the UK Addendum Tables 1–4 shape but attaches an Annex IV side letter that purports to modify ICO Mandatory Clauses (replacing Clause 12 liability, amending Clause 16 notification, modifying Clause 9 sub-processor authorisation). **TRANSFER-015 (critical)** fires because the rule's bad-pattern regex catches `Mandatory Clauses ... as modified` / `with the exception` — the ICO template's Mandatory Clauses are invariable; only Tables 1–4 may be completed.
+
+Each fail-fixture has a `.playbook` sidecar forcing the v3 playbook (so the auto-detector cannot route to a v2 fallback). [`tests/golden/v3/fixture-sanity.test.ts`](tests/golden/v3/fixture-sanity.test.ts) now pins ten fail-fixtures (was seven); each entry asserts the load-bearing rule is in the fired set so a regex regression that silently stops the rule from firing is caught immediately. Goldens regenerated via `VAULYTICA_REGEN_GOLDEN=1`.
+
 ### v3 fail-fixture corpus expansion (4 → 7) (2026-05-17) — ✅ complete
 
 Advanced LAUNCH row v3-b coverage from four end-to-end fail-fixtures to seven, adding one per under-covered v3 ruleset (Addenda warning surface, Transfer critical surface, US state-DPA critical surface). New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):

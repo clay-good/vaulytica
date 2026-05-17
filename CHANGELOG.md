@@ -27,6 +27,11 @@ All notable changes to this project will be documented in this file. Format adap
   `scc-module-2-modified-clauses-fail.txt` (TRANSFER-003 critical),
   `dpa-ccpa-service-provider-no-business-purpose-fail.txt` (USDPA-020
   critical). Sanity test now pins 7 fail-fixtures.
+- Expand the v3 fail-fixture corpus from 7 to 10 (LAUNCH row v3-b):
+  `unilateral-nda-deep-missing-term-fail.txt` (NDA-D-003),
+  `msa-vendor-deep-no-liability-cap-fail.txt` (MSA-006),
+  `uk-idta-addendum-modified-mandatory-clauses-fail.txt` (TRANSFER-015
+  critical). Sanity test now pins 10 fail-fixtures.
 
 ---
 
