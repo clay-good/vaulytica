@@ -14,6 +14,8 @@ Vaulytica runs ~80 deterministic rules across ten categories — structural, fin
 
 **v3 adds compliance-grade rule sets for BAA, DPA, NDA, MSA, transfer mechanisms, and adjacent documents — same browser-only posture as v2.** 220 new rules across HIPAA, GDPR / UK GDPR, eight US state privacy laws, EU SCCs (Modules 1–4), the UK IDTA / Addendum, DTSA whistleblower notice, commercial-law overlays, and the AI / vendor-security / EULA / ToS / privacy-policy / COI surfaces. v3 also ships a cross-document consistency engine (drop an MSA + DPA together, get a single report with a consistency appendix), a regulator-by-clause-category compliance matrix in the DOCX report, and citation-pinned source-of-truth hashes so a stale regulator URL disables the affected rule until a human reviews the diff. See [`docs/v3/overview.md`](docs/v3/overview.md).
 
+**v4 expands to all logically-operative legal documents — 16 sub-domains, 700+ new rules, multi-document ingest (folder / zip / multi-file drop), and a cross-document consistency engine.** Same browser-only, no-AI, no-telemetry posture. See [`docs/v4/overview.md`](docs/v4/overview.md).
+
 ## What I do not do
 
 - I do not give you legal advice. I am a software tool. If something here matters, hire a lawyer.
@@ -58,6 +60,14 @@ Every other contract tool you can find right now leans on a language model. The 
 - Adding a rule: [`docs/adding-a-rule.md`](docs/adding-a-rule.md)
 - Adding a playbook: [`docs/adding-a-playbook.md`](docs/adding-a-playbook.md)
 - Contributing: [`CONTRIBUTING.md`](CONTRIBUTING.md)
+
+## v4
+
+- Overview: [`docs/v4/overview.md`](docs/v4/overview.md)
+- Adding a sub-domain: [`docs/v4/adding-a-sub-domain.md`](docs/v4/adding-a-sub-domain.md)
+- Adding a family: [`docs/v4/adding-a-family.md`](docs/v4/adding-a-family.md)
+- Cross-document rules: [`docs/v4/cross-document-rules.md`](docs/v4/cross-document-rules.md)
+- The document classifier: [`docs/v4/the-document-classifier.md`](docs/v4/the-document-classifier.md)
 
 ## License
 

@@ -216,3 +216,66 @@ matrix and the source catalog together are the citable surface.
   v3 flags the statute reference but cannot reason about the waiver
   unless the waiver is also pattern-matched. Treat the v3 findings as
   a checklist, not a determination.
+
+## v4 additions — multi-document surface
+
+### Multi-doc ingest (zip + folder + multi-file drop)
+
+Same client-side posture as v1–v3: zip decompression runs via `fflate`
+entirely in the browser; no temporary upload, no server touch. The
+per-bundle cap (50 files / 200 MB) is enforced before decompression
+begins — a zip bomb that would expand beyond the cap is rejected at the
+outer-size check, preventing memory-exhaustion DoS in the tab. Each file
+in the bundle is parsed independently by the same single-document
+extractors used in v1–v3; no new network surface is introduced.
+
+### Cross-document rules (CROSS-* families)
+
+Seven rule families operate across the parsed documents in a bundle:
+CROSS-PARTY (party-name drift — e.g., "Acme Corp." in the MSA vs.
+"Acme Corporation" in the SOW), CROSS-JURIS (governing-law conflict
+between documents), CROSS-DEFTERM (a defined term used across documents
+but defined inconsistently), CROSS-DATE (effective-date paradox — an
+amendment pre-dates its parent agreement), CROSS-AMOUNT (cap or payment
+amounts that contradict between an MSA and its order form),
+CROSS-MISSING (a document referenced by name in the bundle that is
+absent from the bundle), and CROSS-PRECEDENCE (conflicting precedence
+clauses). Each finding cites every contributing document by its
+per-bundle index. What they do not protect against: a controlling
+document that the user never included in the bundle — CROSS-MISSING
+fires only when a document is referenced by name in a present document.
+
+### Bundle fingerprint determinism
+
+The bundle fingerprint is `SHA-256(sorted per-doc hashes || cross-doc
+outcome bytes)`. Inputs are sorted lexicographically before hashing so
+the fingerprint is independent of the order in which the user dropped
+the files. The same bundle of documents produces a byte-identical
+fingerprint across machines and operating systems, consistent with v1–v3
+determinism guarantees.
+
+### Expanded family catalog (16 sub-domains)
+
+v4 adds sub-domains B (corporate governance), C (equity / cap-table),
+D (M&A), E (real-estate expanded), F (employment expanded), G
+(settlement / demand), H (IP / licensing expanded), I (privacy
+expanded), J (healthcare), K (insurance), L (banking / lending), M
+(construction), N (trust / estate / family), O (compliance policies),
+and P (regulatory prose). Sub-domains N and P carry mandatory
+per-output disclaimers (execution-formality and filing-schema
+respectively, per spec-v4 §6 footnotes). These disclaimers appear in
+the report cover and cannot be suppressed; they are not a threat-model
+control but a disclosure-accuracy measure.
+
+### What v4 still does not protect against
+
+- State-law variance the DKB has not yet indexed. v4's source catalog
+  covers CA / NY / TX / FL / IL for most state-keyed families; other
+  jurisdictions surface as `N/A` in the compliance matrix.
+- A bundle that omits a controlling document. CROSS-MISSING fires on
+  named references but cannot know what the user forgot to include.
+- Regulator filing schemas that v4 explicitly does not lint: SEC EDGAR
+  XBRL, FINRA WebCRD, and other machine-submission formats. v4 lints
+  the prose of regulatory-facing documents (Form ADV narrative, Reg S-K
+  Item 105 disclosures), not the structured-data envelope a filing
+  system validates separately.

@@ -135,3 +135,58 @@ These are intentional gaps. They do not block the v3 tag.
 - Government contracting clauses (FAR/DFARS), export controls
   (EAR/ITAR/OFAC), construction contracts, international arbitration
   depth, M&A diligence — all spec-v3 §73 v4-candidate territory.
+
+---
+
+# Launch checklist — v4.0.0
+
+Per spec-v4.md Part VI / Step 66. Same format as the v1.0.0 and v3.0.0
+checklists above: every item is pass-only, anything not green blocks
+the v4 tag.
+
+This section is the **authoritative v4 launch artifact**. Sign-offs
+here are part of the v4.0.0 release record.
+
+| ID | Item | Status |
+| -- | ---- | ------ |
+| v4-a | Every v4 playbook ships green against its passing fixture | ✅ pass — 2026-05-17 — maintainer — 15 per-family passing fixtures committed under [`tests/golden/v4/fixtures/`](tests/golden/v4/fixtures/) (one per sub-domain B–P) with goldens baselined in [`tests/golden/v4/expected/`](tests/golden/v4/expected/); `golden.test.ts` asserts golden match, two-run determinism, and expected playbook appearance on every fixture |
+| v4-b | Every v4 fail-fixture produces the expected fail with the expected citation | ✅ pass — 2026-05-17 — maintainer — 15 per-family fail fixtures committed alongside passing fixtures; each asserts at least one `fail`-severity finding citing the expected v4 rule id; per-rule negative-path unit tests in `src/engine/rules/v4/<letter>/rules.test.ts` cover every rule |
+| v4-c | Determinism check passes byte-identical twice | ✅ pass — 2026-05-17 — maintainer — [`tests/golden/v4/golden.test.ts`](tests/golden/v4/golden.test.ts) (Step 61) runs every v4 fixture twice in-process and asserts byte-identical canonical bytes; [`tests/golden/v4/bundle.test.ts`](tests/golden/v4/bundle.test.ts) applies the same guard to multi-doc bundles via `runEngineMulti` + `CONSISTENCY_RULES` |
+| v4-d | Offline check passes | ⏳ pending — v2 smoke spec covers the single-doc offline path; a v4-specific `tests/e2e/v4/no-network.spec.ts` exercising the multi-doc drop path lands in the v4.1 follow-up |
+| v4-e | Lighthouse numbers within budget | ⏳ pending — bundle-size guard at [`tests/integration/bundle-size.test.ts`](tests/integration/bundle-size.test.ts) (v4 block added in Step 62) enforces eager-entry ≤ 50 KB gzipped and total payload ≤ 1065 KB gzipped; live Lighthouse mobile-4G run against the deployed v4 site is the pending verification |
+| v4-f | Accessibility audit is clean | ⏳ pending — static a11y assertions added in [`tests/integration/static-html.test.ts`](tests/integration/static-html.test.ts) (v4 block in Step 63) assert tile count ≥ 6, h3 headings, hero h1, drop-zone aria-label, and footer wordmark; live axe DevTools full audit against the deployed page is the pending verification |
+| v4-g | The docs build | ✅ pass — 2026-05-17 — maintainer — five new docs under [`docs/v4/`](docs/v4/) committed and linked from each other and from [`README.md`](README.md); no build step required for markdown |
+| v4-h | The changelog is current | ✅ pass — 2026-05-17 — maintainer — [`CHANGELOG.md`](CHANGELOG.md) `[v4.0.0]` heading carries the full summary of every v4 step (Steps 40–66) |
+| v4-i | v4 source catalog has zero stale citations | ⏳ pending — staleness gate covers v4 DKB nodes unchanged (they pass through `V3DkbNodeListSchema`); the weekly DKB-rebuild workflow needs to run once after the v4 tag to stamp every `retrieved_at` ≤ 7 days |
+| v4-j | README's v4 line is correct | ✅ pass — 2026-05-17 — maintainer — [`README.md`](README.md) "What I check" section carries the v4 paragraph and links to [`docs/v4/overview.md`](docs/v4/overview.md); "v4" Docs section links all five v4 docs |
+| v4-k | CHANGELOG is dated | ✅ pass — 2026-05-17 — maintainer — `[v4.0.0] — 2026-05-17` header is in place |
+| v4-l | Bundle-size budget (v2 + v3 + v4 = 1065 KB compressed ceiling) | ✅ pass — 2026-05-17 — maintainer — [`tests/integration/bundle-size.test.ts`](tests/integration/bundle-size.test.ts) v4 block asserts on every commit; ceiling is v2 165 KB + v3 600 KB + v4 300 KB = 1065 KB gzipped |
+| v4-m | Cross-document consistency works end-to-end | ✅ pass — 2026-05-17 — maintainer — [`src/engine/consistency/`](src/engine/consistency/) engine + seven CROSS-* families; `runEngineMulti` in [`src/engine/runner.ts`](src/engine/runner.ts) drives them; five multi-doc bundle fixtures (party-name-conflict, governing-law-mismatch, effective-date-paradox, cap-mismatch, clean-msa-baa) all green in `bundle.test.ts` |
+| v4-n | Bundle report renders | ✅ pass — 2026-05-17 — maintainer — [`src/report/bundle.ts`](src/report/bundle.ts) ships `buildBundleDocxReport`, `buildBundleJson`, `buildBundleZip`, and `bundleFingerprint`; 13 unit tests green |
+| v4-o | Multi-doc ingest works on Chrome + Safari + Firefox | ⏳ pending — `src/ingest/multi.ts` ships the folder-picker / zip-decompress / multi-file-drop paths; cross-browser verification requires a deployed domain and real devices |
+
+## v4 sign-off
+
+When every v4 row reads ✅ **pass** (or 🟡 with a stated tracking
+pointer), tag the v4 release:
+
+```
+git tag -s v4.0.0 -m "Vaulytica v4.0.0 — all logically-operative legal documents"
+git push origin v4.0.0
+```
+
+The deploy workflow republishes to Cloudflare Pages and runs the smoke
+suite against the deployed v4 site.
+
+## v4 non-promises
+
+These are intentional gaps. They do not block the v4 tag.
+
+- SEC EDGAR XBRL structured-data validation. v4 lints the prose of
+  regulatory-facing documents, not the machine-submission envelope.
+- FINRA WebCRD filing schema validation. Same carve-out as XBRL.
+- Full state-law coverage. The DKB covers CA / NY / TX / FL / IL for
+  most state-keyed rules; other states surface as `N/A`.
+- Redline generation, contract negotiation, or drafting from scratch —
+  v4 lints, it does not draft.
+- AI features. v4 preserves v1–v3's no-AI-in-the-pipeline posture.

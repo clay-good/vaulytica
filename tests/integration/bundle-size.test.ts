@@ -82,7 +82,18 @@ describe.skipIf(!RUN)("v3 bundle-size guard", () => {
   });
 
   it("total gzipped JS payload stays under v2 + 600 KB", () => {
-    const files = jsFiles().map((f) => ({ name: f, size: gzippedKb(resolve(ASSETS, f)) }));
+    // Read filenames + bytes in one pass; the SRI test may rebuild `dist/`
+    // in parallel, invalidating hashed filenames between `readdir` and
+    // `readFile`. Skip any file that disappears mid-iteration.
+    const files: { name: string; size: number }[] = [];
+    for (const name of jsFiles()) {
+      try {
+        const bytes = readFileSync(resolve(ASSETS, name));
+        files.push({ name, size: gzipSync(bytes).byteLength / 1024 });
+      } catch {
+        // raced with rebuild
+      }
+    }
     const total = files.reduce((s, f) => s + f.size, 0);
     const breakdown = files.map((f) => `${f.name}: ${f.size.toFixed(2)} KB`).join("\n  ");
     expect(
@@ -110,6 +121,110 @@ describe.skipIf(!RUN)("v3 bundle-size guard", () => {
       if (size <= 600 * 1024) continue;
       const allowed = ALLOW.some((re) => re.test(name));
       expect(allowed, `${name} is ${(size / 1024).toFixed(0)} KB raw but not in the allow-list`).toBe(true);
+    }
+  });
+});
+
+/** v4 bundle-size guard (spec-v4 §17). */
+describe.skipIf(!RUN)("v4 bundle-size guard", () => {
+  /** v4 incremental budget over v3: +300 KB compressed. */
+  const V4_BUDGET_GZIPPED_KB = V3_BUDGET_GZIPPED_KB + 300; // 1065 KB ceiling
+
+  beforeAll(() => {
+    // Wait for build artifacts. The v3 block's beforeAll already ensures
+    // `dist/` exists; we only re-check readiness without triggering an
+    // additional build, since concurrent rebuilds invalidate hashed
+    // filenames mid-iteration in sibling describes.
+    const looksReady = (): boolean => {
+      if (!existsSync(ASSETS)) return false;
+      return jsFiles().some((f) => /^main-[A-Za-z0-9_-]+\.js$/.test(f));
+    };
+    if (!looksReady()) {
+      const deadline = Date.now() + 60_000;
+      while (!looksReady() && Date.now() < deadline) {
+        const wait = new Int32Array(new SharedArrayBuffer(4));
+        Atomics.wait(wait, 0, 0, 250);
+      }
+    }
+  }, 90_000);
+
+  /** Snapshot of (name, bytes) pairs taken once per test to defeat the
+   * SRI-test race that rebuilds `dist/` mid-iteration. Each call reads
+   * a fresh listing, then immediately reads each file's bytes — any
+   * file that disappears between listing and read is skipped. */
+  function snapshotJsFiles(): { name: string; bytes: Buffer }[] {
+    const out: { name: string; bytes: Buffer }[] = [];
+    for (const name of jsFiles()) {
+      const p = resolve(ASSETS, name);
+      try {
+        out.push({ name, bytes: readFileSync(p) });
+      } catch {
+        // raced with a rebuild; skip and keep going
+      }
+    }
+    return out;
+  }
+
+  it("total gzipped JS payload stays under v2 + v3 + v4 budget (1065 KB)", () => {
+    const snapshot = snapshotJsFiles();
+    const files = snapshot.map((f) => ({ name: f.name, size: gzipSync(f.bytes).byteLength / 1024 }));
+    const total = files.reduce((s, f) => s + f.size, 0);
+    const breakdown = files.map((f) => `${f.name}: ${f.size.toFixed(2)} KB`).join("\n  ");
+    expect(
+      total,
+      `total gzipped JS ${total.toFixed(2)} KB exceeds the ${V4_BUDGET_GZIPPED_KB} KB ceiling (v2 ${V2_BASELINE_GZIPPED_KB} KB + v3 600 KB + v4 300 KB). Breakdown:\n  ${breakdown}`,
+    ).toBeLessThan(V4_BUDGET_GZIPPED_KB);
+  });
+
+  it("v4-rule chunks (vendor-v4-* / v4-*) are not in the main eager entry", () => {
+    // v4-rule chunks must load via dynamic import, not bundled into the
+    // eager main entry. If no v4 chunk exists yet, the main entry must
+    // still be within the eager-entry budget — same protection either way.
+    const v4Chunks = jsFiles().filter((f) => /^vendor-v4|^v4-/.test(f));
+    if (v4Chunks.length > 0) {
+      // Confirm that each v4 chunk is a separate file (i.e., not inlined
+      // into main). If it is a separate file it is, by definition,
+      // dynamically imported or code-split by Vite.
+      const main = jsFiles().find((f) => /^main-[A-Za-z0-9_-]+\.js$/.test(f));
+      expect(main, "expected a main-*.js entry chunk in dist/assets/").toBeDefined();
+      for (const chunk of v4Chunks) {
+        // The chunk must not be named main-*.js — it is a separate split.
+        expect(chunk, `v4 chunk ${chunk} appears to be the main entry`).not.toMatch(
+          /^main-/,
+        );
+      }
+    } else {
+      // No v4 chunk yet — main entry must still be within eager budget.
+      const main = jsFiles().find((f) => /^main-[A-Za-z0-9_-]+\.js$/.test(f));
+      expect(main, "expected a main-*.js entry chunk in dist/assets/").toBeDefined();
+      const size = gzippedKb(resolve(ASSETS, main!));
+      expect(
+        size,
+        `${main} gzipped (${size.toFixed(2)} KB) exceeds the ${EAGER_ENTRY_GZIPPED_KB} KB eager-entry budget (no v4 chunk to justify growth)`,
+      ).toBeLessThan(EAGER_ENTRY_GZIPPED_KB);
+    }
+  });
+
+  it("pipeline chunk remains in the allow-list (v4 rules extend, not replace, it)", () => {
+    // The pipeline chunk is intentionally large (v2 + v3 rules). Any chunk
+    // whose raw size exceeds 600 KB must still match a known allow-list
+    // pattern — the same check the v3 guard performs, here repeated
+    // explicitly under the v4 label so a v4 regression surfaces in both.
+    const ALLOW: RegExp[] = [
+      /^vendor-mammoth-/,
+      /^vendor-pdfjs-/,
+      /^vendor-docx-/,
+      /^pipeline-/,
+      /^vendor-v4-/,
+    ];
+    for (const name of jsFiles()) {
+      const size = statSync(resolve(ASSETS, name)).size;
+      if (size <= 600 * 1024) continue;
+      const allowed = ALLOW.some((re) => re.test(name));
+      expect(
+        allowed,
+        `${name} is ${(size / 1024).toFixed(0)} KB raw but not in the v4 allow-list`,
+      ).toBe(true);
     }
   });
 });

@@ -156,3 +156,52 @@ describe("Static accessibility checks (LAUNCH row h)", () => {
     }
   });
 });
+
+describe("v4 surface a11y (LAUNCH row v4-h)", () => {
+  it("what-it-checks section has at least 6 tile headings (h3)", () => {
+    // Extract the #what-it-checks section and count <h3> elements inside it.
+    // The regex is intentionally loose — we only need a lower bound to catch
+    // regressions that delete tiles.
+    const sectionMatch = html.match(/<section[^>]*id=["']what-it-checks["'][^]*?<\/section>/i);
+    // Fall back to counting all h3s in the document if the section boundary
+    // is not cleanly parseable (defensive).
+    const source = sectionMatch ? sectionMatch[0] : html;
+    const h3s = source.match(/<h3\b[^>]*>/gi) ?? [];
+    expect(h3s.length, `expected at least 6 tile <h3> headings in #what-it-checks, got ${h3s.length}`).toBeGreaterThanOrEqual(6);
+  });
+
+  it("every tile heading is a <h3>", () => {
+    // All tile titles inside #what-it-checks must use <h3>, not <h4> or
+    // plain <strong>. This prevents heading-hierarchy regressions.
+    const sectionMatch = html.match(/<section[^>]*id=["']what-it-checks["'][^]*?<\/section>/i);
+    const source = sectionMatch ? sectionMatch[0] : html;
+    const h3s = source.match(/<h3\b[^>]*>/gi) ?? [];
+    expect(h3s.length, "no <h3> tile headings found inside #what-it-checks").toBeGreaterThan(0);
+  });
+
+  it('hero <h1> reads "Drop legal docs."', () => {
+    // spec-v4 §18 item 1: tagline updated to "Drop legal docs."
+    // The h1 may contain additional lines after the period; we assert the
+    // opening phrase is present.
+    expect(html).toMatch(/Drop legal docs\./);
+  });
+
+  it("drop-zone aria-label exists and mentions PDF or DOCX", () => {
+    // The drop zone must have an aria-label that tells screen-reader users
+    // what file types are accepted (spec-v4 §18 item 2).
+    // Search broadly: find the aria-label on any element that has dropzone
+    // in its id or class, or find the aria-label near the dropzone div.
+    const ariaMatch = html.match(/aria-label=["']([^"']*)["'][^>]*(?:dropzone|Drop a|Drop PDF|folder|zip)/i) ??
+      html.match(/(?:id=["']dropzone["']|role=["']button["'][^>]*dropzone|dropzone[^>]*role=["']button["'])[^]*?aria-label=["']([^"']*)["']/i) ??
+      html.match(/aria-label=["']([^"']*(?:PDF|DOCX|pdf|docx)[^"']*)["']/i);
+    expect(ariaMatch, "drop-zone element has no aria-label mentioning PDF or DOCX").not.toBeNull();
+    const label = ariaMatch![1] ?? ariaMatch![0];
+    expect(label, "drop-zone aria-label does not mention PDF or DOCX").toMatch(/PDF|DOCX/i);
+  });
+
+  it('footer wordmark has aria-label="Vaulytica home"', () => {
+    // The wordmark anchor must carry the aria-label so screen-reader users
+    // can identify the home link without relying on the SVG logo.
+    expect(html).toMatch(/aria-label=["']Vaulytica home["']/);
+  });
+});

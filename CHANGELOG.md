@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+---
+
+## [v4.0.0] — 2026-05-17
+
+v4 expands the catalog from contracts (v1) and regulated agreements (v3) to all logically-operative legal documents — 16 sub-domains, 700+ new rules, multi-document ingest (folder / zip / multi-file drop), and a cross-document consistency engine. UI surface unchanged per spec-v4 §18. Determinism contract preserved.
+
 ### Added
 
 - **v4 Step 61 — Test corpus expansion** (spec-v4.md Part VI).
