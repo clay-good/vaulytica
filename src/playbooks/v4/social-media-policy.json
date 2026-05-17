@@ -1,0 +1,26 @@
+{
+  "id": "social-media-policy",
+  "version": "1.0.0",
+  "name": "Social Media / External Communications Policy",
+  "description": "Social media / external communications policy under NLRA § 7 + SEC Reg FD + FTC endorsement guides. Selects the §6.O ruleset (POL-042..POL-045).",
+  "match_features": {
+    "title_keywords": ["social media policy", "external communications policy"],
+    "required_clauses": [],
+    "distinguishing_phrases": ["social media", "endorsement", "reg fd", "protected concerted", "ftc"],
+    "negative_features": ["aml", "anti-bribery", "insider trading"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "NLRA-SEC-REG-FD-FTC",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["code-of-conduct"],
+  "compliance_matrix_columns": [
+    "NLRA § 7 — wage / concerted-activity carve-out",
+    "FTC endorsement disclosure",
+    "Reg FD compliance",
+    "Brand voice + personal disclaimer"
+  ]
+}

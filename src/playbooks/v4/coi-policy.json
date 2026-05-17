@@ -1,0 +1,26 @@
+{
+  "id": "coi-policy",
+  "version": "1.0.0",
+  "name": "Conflict of Interest Policy",
+  "description": "Conflict of interest policy under IRS Form 990 + IRC § 4958 + state nonprofit law. Selects the §6.O ruleset (POL-033..POL-036).",
+  "match_features": {
+    "title_keywords": ["conflict of interest", "coi policy"],
+    "required_clauses": [],
+    "distinguishing_phrases": ["conflict of interest", "related party", "recusal", "disclosure", "annual certification"],
+    "negative_features": ["aml", "anti-bribery", "insider trading"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "IRS-FORM-990-IRC-4958",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["code-of-conduct"],
+  "compliance_matrix_columns": [
+    "Definition of conflict",
+    "Annual + ongoing disclosure",
+    "Recusal + § 4958 approval",
+    "Sanctions for violations"
+  ]
+}

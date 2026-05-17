@@ -50,6 +50,7 @@ export {
   BANKING_RULES,
   CONSTRUCTION_RULES,
   TRUST_ESTATE_RULES,
+  COMPLIANCE_POLICY_RULES,
 } from "./rules/v4/index.js";
 
 export type {

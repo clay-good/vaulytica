@@ -1,0 +1,27 @@
+{
+  "id": "whistleblower-policy",
+  "version": "1.0.0",
+  "name": "Whistleblower Policy",
+  "description": "Whistleblower policy under SOX § 806 + Dodd-Frank § 922 + SEC Rule 21F-17. Selects the §6.O ruleset (POL-023..POL-027).",
+  "match_features": {
+    "title_keywords": ["whistleblower policy", "whistleblower"],
+    "required_clauses": [],
+    "distinguishing_phrases": ["non-retaliation", "anonymous reporting", "audit committee", "hotline", "21f-17", "sox 806"],
+    "negative_features": ["aml", "anti-bribery"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "SOX-DODD-FRANK-SEC-21F17",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["code-of-conduct"],
+  "compliance_matrix_columns": [
+    "Reporting channels (internal / SEC / CFTC / DOL)",
+    "SOX 806 + Dodd-Frank 922 non-retaliation",
+    "SEC Rule 21F-17 carve-out",
+    "Confidentiality + anonymity",
+    "Investigation + corrective action"
+  ]
+}

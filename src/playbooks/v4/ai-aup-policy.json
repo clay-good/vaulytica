@@ -1,0 +1,27 @@
+{
+  "id": "ai-aup-policy",
+  "version": "1.0.0",
+  "name": "AI Acceptable Use Policy",
+  "description": "AI / generative-AI acceptable use policy under NIST AI RMF + EU AI Act + USPTO guidance. Selects the §6.O ruleset (POL-037..POL-041).",
+  "match_features": {
+    "title_keywords": ["ai use policy", "ai policy", "generative ai", "ai acceptable use"],
+    "required_clauses": [],
+    "distinguishing_phrases": ["approved ai tools", "human review", "prohibited inputs", "hallucination", "nist ai", "eu ai act"],
+    "negative_features": ["aml", "anti-bribery", "insider trading"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "NIST-AI-RMF-EU-AI-ACT",
+  "applicable_jurisdictions": ["US", "EU"],
+  "companion_playbooks": ["code-of-conduct", "document-retention-policy"],
+  "compliance_matrix_columns": [
+    "Approved tools + procurement gate",
+    "Prohibited inputs (PHI / PII / trade secrets / privileged)",
+    "Human-in-the-loop review",
+    "IP / hallucination / attribution",
+    "Training + incident reporting"
+  ]
+}

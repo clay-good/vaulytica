@@ -1,0 +1,28 @@
+{
+  "id": "aml-policy",
+  "version": "1.0.0",
+  "name": "Anti-Money-Laundering Policy",
+  "description": "AML / OFAC / BSA policy under FinCEN five-pillar rule + Corporate Transparency Act + state. Selects the §6.O ruleset (POL-012..POL-017).",
+  "match_features": {
+    "title_keywords": ["aml", "anti-money-laundering", "bsa policy"],
+    "required_clauses": [],
+    "distinguishing_phrases": ["fincen", "ofac", "sar", "ctr", "beneficial ownership", "customer identification", "five pillars"],
+    "negative_features": ["anti-bribery", "insider trading", "code of conduct"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "BSA-FINCEN-OFAC",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "BSA five-pillar program",
+    "OFAC sanctions screening",
+    "SAR (FinCEN 30-day)",
+    "CIP + beneficial ownership",
+    "CTR ≥ $10,000",
+    "Recordkeeping 5 years"
+  ]
+}

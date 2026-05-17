@@ -1,0 +1,27 @@
+{
+  "id": "document-retention-policy",
+  "version": "1.0.0",
+  "name": "Document Retention Policy",
+  "description": "Records retention policy under SEC + IRS + DOL + Sedona Principles + state. Selects the §6.O ruleset (POL-028..POL-032).",
+  "match_features": {
+    "title_keywords": ["document retention", "records retention", "retention policy", "records management"],
+    "required_clauses": [],
+    "distinguishing_phrases": ["retention schedule", "legal hold", "esi", "sedona", "destruction"],
+    "negative_features": ["aml", "anti-bribery", "code of conduct"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "SEC-IRS-DOL-SEDONA",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "Retention schedule",
+    "Legal-hold override (Sedona / FRCP 37(e))",
+    "ESI treatment",
+    "Regulatory minimums (SEC / IRS / DOL / HIPAA)",
+    "Secure destruction"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "lobbying-policy",
+  "version": "1.0.0",
+  "name": "Lobbying / Political Contribution Policy",
+  "description": "Lobbying + political-contribution policy under federal LDA + FECA + state lobbying laws + federal gift rules. Selects the §6.O ruleset (POL-046..POL-050).",
+  "match_features": {
+    "title_keywords": ["lobbying policy", "political contribution policy", "government affairs policy"],
+    "required_clauses": [],
+    "distinguishing_phrases": ["lobbying disclosure", "lda", "feca", "pac", "political contribution", "covered official"],
+    "negative_features": ["aml", "insider trading", "ai use"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "LDA-FECA-STATE",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["anti-bribery-policy"],
+  "compliance_matrix_columns": [
+    "LDA registration + LD-2 reporting",
+    "Pre-approval of activities",
+    "Political contributions (FECA + state)",
+    "State / local lobbying matrix",
+    "Gifts to government officials"
+  ]
+}

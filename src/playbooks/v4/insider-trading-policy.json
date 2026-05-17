@@ -1,0 +1,27 @@
+{
+  "id": "insider-trading-policy",
+  "version": "1.0.0",
+  "name": "Insider Trading Policy",
+  "description": "Insider trading policy under Rule 10b-5 + Rule 10b5-1 (Dec. 2022 amendments). Selects the §6.O ruleset (POL-018..POL-022).",
+  "match_features": {
+    "title_keywords": ["insider trading policy", "trading policy"],
+    "required_clauses": [],
+    "distinguishing_phrases": ["material non-public", "mnpi", "blackout", "10b5-1", "pre-clearance", "tipping"],
+    "negative_features": ["aml", "anti-bribery", "code of conduct"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "SEC-RULE-10B5",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["code-of-conduct"],
+  "compliance_matrix_columns": [
+    "Rule 10b-5 MNPI prohibition",
+    "Blackout + pre-clearance",
+    "Rule 10b5-1 plan",
+    "Tipping liability",
+    "Hedging / short sales / pledge"
+  ]
+}

@@ -1,13 +1,33 @@
 /**
- * v4 sub-domain placeholder — `compliance-policy` ruleset (Step 58).
- *
- * Spec: `spec-v4.md` §6.O. Rules land in this directory once the
- * corresponding build step is executed. The barrel below exports an
- * empty `COMPLIANCE_POLICY_RULES` so the v4 aggregate at
- * `src/engine/rules/v4/index.ts` can compose it without a build
- * error during scaffolding.
+ * v4 sub-domain O (Compliance policies and disclosures) ruleset —
+ * spec-v4.md §6.O, Step 58. 50 rules across 10 new families.
  */
 
-import type { Rule } from "../../../finding.js";
+export {
+  COMPLIANCE_POLICY_RULES,
+  CODE_OF_CONDUCT_RULES,
+  FCPA_RULES,
+  AML_RULES,
+  INSIDER_TRADING_RULES,
+  WHISTLEBLOWER_RULES,
+  DOC_RETENTION_RULES,
+  COI_POLICY_RULES,
+  AI_AUP_RULES,
+  SOCIAL_MEDIA_POLICY_RULES,
+  LOBBYING_POLICY_RULES,
+} from "./rules.js";
 
-export const COMPLIANCE_POLICY_RULES: readonly Rule[] = [];
+export {
+  POL_PLAYBOOK_IDS,
+  POL_PLAYBOOK_CODE_OF_CONDUCT,
+  POL_PLAYBOOK_FCPA,
+  POL_PLAYBOOK_AML,
+  POL_PLAYBOOK_INSIDER,
+  POL_PLAYBOOK_WHISTLEBLOWER,
+  POL_PLAYBOOK_RETENTION,
+  POL_PLAYBOOK_COI,
+  POL_PLAYBOOK_AI_AUP,
+  POL_PLAYBOOK_SOCIAL_MEDIA,
+  POL_PLAYBOOK_LOBBYING,
+  type PolPlaybookId,
+} from "./_helpers.js";
