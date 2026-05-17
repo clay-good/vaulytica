@@ -37,6 +37,12 @@ All notable changes to this project will be documented in this file. Format adap
   `scc-module-3-missing-clause-15-fail.txt` (TRANSFER-008 critical),
   `dpa-processor-subprocessor-missing-deletion-or-return-fail.txt`
   (DPA-013 critical). Sanity test now pins 13 fail-fixtures.
+- Expand the v3 fail-fixture corpus from 13 to 16 (LAUNCH row v3-b):
+  `baa-subcontractor-missing-return-or-destruction-fail.txt`
+  (BAA-010 critical),
+  `msa-customer-deep-missing-ip-indemnity-fail.txt` (MSA-001),
+  `dpa-multi-state-us-missing-deletion-or-return-fail.txt`
+  (USDPA-015 critical). Sanity test now pins 16 fail-fixtures.
 
 ---
 

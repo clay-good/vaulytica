@@ -1,0 +1,37 @@
+Business Associate Subcontractor Agreement
+
+This Business Associate Subcontractor Agreement ("Subcontractor BAA") is entered into as of January 1, 2026, pursuant to 45 C.F.R. § 164.504(e)(5), between Globex Services Inc., a New York corporation acting as Business Associate ("Business Associate" or "Upstream BA"), and Stark Cloud Inc., a Delaware corporation acting as Subcontractor ("Subcontractor"). Business Associate creates or receives Protected Health Information ("PHI") on behalf of one or more Covered Entities, and Subcontractor will create, receive, maintain, or transmit PHI on behalf of Business Associate in performing the Services.
+
+1. Flow-Down Obligations. Subcontractor agrees to the same restrictions and conditions that apply to Business Associate with respect to PHI under Business Associate's agreements with Covered Entities and under the HIPAA Rules at 45 C.F.R. Parts 160 and 164. Subcontractor shall not use or disclose PHI in any manner that would violate the HIPAA Rules if done by Business Associate directly.
+
+2. Permitted Uses and Disclosures. Subcontractor may use and disclose PHI only as necessary to provide the Services specified in the Master Services Agreement between the parties dated January 1, 2026 (the "MSA"), and as otherwise permitted or required by this Subcontractor BAA or by applicable law.
+
+3. Safeguards. Subcontractor shall implement administrative, physical, and technical safeguards that reasonably and appropriately protect the confidentiality, integrity, and availability of Electronic Protected Health Information ("ePHI") that Subcontractor creates, receives, maintains, or transmits on behalf of Business Associate, as required by the Security Rule at 45 C.F.R. §§ 164.308, 164.310, and 164.312. Subcontractor shall comply with the applicable Security Rule requirements for business associate contracts set forth at 45 C.F.R. § 164.314(a)(2)(iii).
+
+4. Breach Notification. Subcontractor shall report to Business Associate any Security Incident of which Subcontractor becomes aware. Subcontractor shall notify Business Associate of a Breach of Unsecured PHI without unreasonable delay and in no case later than thirty (30) days after Subcontractor discovers the Breach, as required by 45 C.F.R. § 164.410(b), so that Business Associate may satisfy its own sixty (60)-day reporting obligation to the Covered Entity.
+
+5. Subcontractor's Subcontractors. Subcontractor shall ensure that any agent or subcontractor that creates, receives, maintains, or transmits PHI on behalf of Subcontractor agrees in writing to the same restrictions, conditions, and requirements that apply through this Subcontractor BAA to Subcontractor.
+
+6. Access, Amendment, Accounting. Subcontractor shall make PHI available to Business Associate as necessary to enable Business Associate to fulfill its obligations under 45 C.F.R. §§ 164.524, 164.526, and 164.528 to the Covered Entity.
+
+7. Minimum Necessary. Subcontractor shall make reasonable efforts to limit any use or disclosure of PHI to the minimum necessary to accomplish the intended purpose of the Services.
+
+8. Encryption. Subcontractor shall encrypt ePHI in transit and at rest using NIST SP 800-111-compliant encryption. Subcontractor shall use FIPS 140-3 validated modules for all cryptographic operations involving ePHI.
+
+9. Security Risk Assessment. Subcontractor shall conduct an annual HIPAA Security Risk Assessment covering all systems that create, receive, maintain, or transmit ePHI on behalf of Business Associate, and shall remediate identified risks according to a documented risk management plan.
+
+10. Mitigation. Subcontractor shall mitigate, to the extent practicable, any harmful effect of any use or disclosure of PHI by Subcontractor in violation of this Subcontractor BAA.
+
+11. Books and Records. Subcontractor shall make its internal practices, books, and records relating to its use and disclosure of PHI available to the Secretary of Health and Human Services as required by 45 C.F.R. § 164.504(e)(2)(ii)(H).
+
+12. Term. This Subcontractor BAA shall be co-terminous with the MSA. Obligations to protect PHI and to safeguard PHI shall survive termination.
+
+13. Governing Law. This Subcontractor BAA is governed by the laws of the State of Delaware, except to the extent preempted by HIPAA and the HITECH Act.
+
+Effective Date: January 1, 2026.
+
+GLOBEX SERVICES INC. (Business Associate)          STARK CLOUD INC. (Subcontractor)
+
+Signed by: ____________________________            Signed by: ____________________________
+Title: Privacy Officer                             Title: Authorized Representative
+Date: January 1, 2026                              Date: January 1, 2026

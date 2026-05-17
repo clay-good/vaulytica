@@ -115,6 +115,28 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // choice between deletion and return at end-of-services is a core
   // GDPR processor obligation.
   "dpa-processor-subprocessor-missing-deletion-or-return-fail.txt": ["DPA-013"],
+
+  // Subcontractor BAA with the "Return or Destruction" section
+  // stripped and the term-survival sentence reworded to drop the
+  // "return or destroy" anchor. BAA-010 is the load-bearing critical
+  // for 45 C.F.R. § 164.504(e)(2)(ii)(I) — the BA must, at
+  // termination, return or destroy all PHI received from or created
+  // on behalf of the covered entity.
+  "baa-subcontractor-missing-return-or-destruction-fail.txt": ["BAA-010"],
+
+  // Customer-form MSA with the third-party IP infringement
+  // indemnification prong removed from Section 7 (Vendor
+  // Indemnification). MSA-001 is the load-bearing warning rule for
+  // commercial MSAs — a vendor-supplied deliverable that infringes
+  // third-party IP would otherwise leave the customer exposed.
+  "msa-customer-deep-missing-ip-indemnity-fail.txt": ["MSA-001"],
+
+  // Multi-state US DPA with the "Deletion on Termination" section
+  // stripped and Section 3 reworded to drop "delete or return".
+  // USDPA-015 is the load-bearing critical — VCDPA / CPA / CTDPA all
+  // require the processor to delete or return personal data at end
+  // of services.
+  "dpa-multi-state-us-missing-deletion-or-return-fail.txt": ["USDPA-015"],
 };
 
 describe("v3 fixture sanity", () => {

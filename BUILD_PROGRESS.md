@@ -241,6 +241,16 @@ Three substantive additions:
 
 ## Post-4.0 work
 
+### v3 fail-fixture corpus expansion (13 → 16) (2026-05-17) — ✅ complete
+
+Advanced LAUNCH row v3-b coverage from thirteen end-to-end fail-fixtures to sixteen, adding one per remaining under-covered v3 playbook (Subcontractor BAA critical, Customer-form MSA warning, Multi-state US DPA critical). New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
+
+- `baa-subcontractor-missing-return-or-destruction-fail.txt` — strips the "Return or Destruction" section and rewords the term-survival sentence to drop the "return or destroy" anchor. **BAA-010 (critical)** fires because 45 C.F.R. § 164.504(e)(2)(ii)(I) requires the BA, at termination, to return or destroy all PHI received from or created on behalf of the covered entity.
+- `msa-customer-deep-missing-ip-indemnity-fail.txt` — removes the third-party IP infringement indemnification prong from the Vendor Indemnification section, leaving only breach and gross-negligence/wilful-misconduct prongs. **MSA-001 (warning)** fires because the commercial drafting baseline requires the vendor to indemnify customers for third-party IP claims arising from the deliverables.
+- `dpa-multi-state-us-missing-deletion-or-return-fail.txt` — strips the "Deletion on Termination" section and reworks the VCDPA processor-obligations section to drop "delete or return". **USDPA-015 (critical)** fires because VCDPA / CPA / CTDPA all require the processor to delete or return personal data at end-of-services.
+
+Each fail-fixture has a `.playbook` sidecar forcing the v3 playbook (so the auto-detector cannot route to a v2 fallback). [`tests/golden/v3/fixture-sanity.test.ts`](tests/golden/v3/fixture-sanity.test.ts) now pins sixteen fail-fixtures (was thirteen); each entry asserts the load-bearing rule is in the fired set so a regex regression that silently stops the rule from firing is caught immediately. Goldens regenerated via `VAULYTICA_REGEN_GOLDEN=1`.
+
 ### v3 fail-fixture corpus expansion (10 → 13) (2026-05-17) — ✅ complete
 
 Advanced LAUNCH row v3-b coverage from ten end-to-end fail-fixtures to thirteen, adding one per remaining under-covered v3 playbook (Addenda EULA surface, Transfer SCC Module 3 critical, DPA processor-subprocessor critical). New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
