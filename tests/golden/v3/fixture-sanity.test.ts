@@ -93,6 +93,28 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // critical — ICO Mandatory Clauses are invariable; only Tables 1–4
   // may be completed.
   "uk-idta-addendum-modified-mandatory-clauses-fail.txt": ["TRANSFER-015"],
+
+  // EULA with the explicit license-grant scope ("non-exclusive /
+  // non-transferable / revocable license") and the prohibited-uses
+  // enumeration ("shall not reverse engineer / decompile / disassemble
+  // / sublicense") both stripped. ADDENDA-017 is the load-bearing
+  // EULA presence rule — both alternative patterns must match
+  // somewhere in the document, and now neither does.
+  "eula-no-license-grant-or-prohibitions-fail.txt": ["ADDENDA-017"],
+
+  // SCC Module 3 (Processor-to-Processor) with the entire
+  // "Clause 15 — Public Authority Access" block removed. TRANSFER-008
+  // is the load-bearing critical for the data-importer's Schrems-II
+  // notify-and-challenge obligation; absent Clause 15 the parties
+  // lose the foundational government-access posture.
+  "scc-module-3-missing-clause-15-fail.txt": ["TRANSFER-008"],
+
+  // Sub-processing DPA (Processor → Subprocessor) with the
+  // "Deletion or Return at End of Services" section stripped. DPA-013
+  // is the load-bearing critical for Art. 28(3)(g) — the controller's
+  // choice between deletion and return at end-of-services is a core
+  // GDPR processor obligation.
+  "dpa-processor-subprocessor-missing-deletion-or-return-fail.txt": ["DPA-013"],
 };
 
 describe("v3 fixture sanity", () => {

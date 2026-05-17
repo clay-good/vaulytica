@@ -1,0 +1,34 @@
+End User License Agreement — DataTools Pro 12.0
+
+This End User License Agreement ("EULA") is entered into between Globex Software Inc., a Delaware corporation ("Licensor"), and the individual or entity accepting this EULA ("End User"). By installing, copying, or otherwise using DataTools Pro 12.0 ("Software"), End User agrees to be bound by the terms of this EULA. If End User does not agree, do not install or use the Software.
+
+1. License. Licensor permits End User to use the Software pursuant to the terms of this EULA and payment of all applicable license fees. Use is for End User's internal business purposes.
+
+2. Use Restrictions. End User agrees to use the Software in accordance with the Documentation and to refrain from any use that would be inconsistent with the rights granted by Licensor. Misuse of the Software, including any use that exceeds the rights granted under this EULA, may result in termination by Licensor.
+
+3. Source Code. The Software is provided in object-code form only. To the extent compelled by mandatory statutory rights, End User may exercise such statutory rights as are conferred by applicable national law.
+
+4. Ownership. The Software and all copies thereof are and shall remain the exclusive property of Licensor and its licensors. This EULA does not transfer any ownership interest in the Software to End User. All rights not expressly granted herein are reserved by Licensor.
+
+5. Updates and Upgrades. Licensor may, in its sole discretion, provide updates, patches, or new versions of the Software ("Updates"). Updates shall be subject to the terms of this EULA unless accompanied by a separate license agreement. Upgrades to a new major version may require payment of additional license fees. Licensor has no obligation to provide Updates unless specified in a separate support agreement.
+
+6. Warranty Disclaimer. THE SOFTWARE IS PROVIDED "AS IS." LICENSOR DISCLAIMS ALL WARRANTIES, EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, INCLUDING WITHOUT LIMITATION THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. NOTWITHSTANDING THE FOREGOING, LICENSOR WARRANTS THAT THE MEDIA ON WHICH THE SOFTWARE IS DELIVERED WILL BE FREE FROM DEFECTS IN MATERIALS AND WORKMANSHIP UNDER NORMAL USE FOR A PERIOD OF NINETY (90) DAYS FROM THE DATE OF DELIVERY ("LIMITED MEDIA WARRANTY"). END USER'S EXCLUSIVE REMEDY FOR A BREACH OF THE LIMITED MEDIA WARRANTY IS REPLACEMENT OF THE DEFECTIVE MEDIA.
+
+7. Limitation of Liability. TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL LICENSOR BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES, INCLUDING LOST PROFITS, LOSS OF DATA, OR BUSINESS INTERRUPTION, ARISING OUT OF OR RELATING TO THIS EULA OR THE USE OR INABILITY TO USE THE SOFTWARE, EVEN IF LICENSOR HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. LICENSOR'S TOTAL CUMULATIVE LIABILITY ARISING OUT OF OR RELATING TO THIS EULA, WHETHER IN CONTRACT, TORT (INCLUDING NEGLIGENCE), OR OTHERWISE, SHALL NOT EXCEED THE LICENSE FEES ACTUALLY PAID BY END USER TO LICENSOR DURING THE TWELVE (12) MONTHS IMMEDIATELY PRECEDING THE EVENT GIVING RISE TO THE CLAIM.
+
+8. Termination. This EULA is effective until terminated. Licensor may terminate this EULA immediately upon written notice if End User breaches any term of this EULA and fails to cure such breach within thirty (30) days of written notice from Licensor. End User may terminate this EULA at any time by uninstalling and destroying all copies of the Software. Upon termination, End User must immediately cease all use of the Software and destroy all copies.
+
+9. Governing Law. This EULA shall be governed by and construed in accordance with the laws of the State of Delaware, without regard to its conflict-of-laws principles. Any dispute arising under this EULA shall be resolved exclusively in the state or federal courts located in New Castle County, Delaware.
+
+10. Export Control. End User acknowledges and agrees that the Software is subject to U.S. export control laws and regulations, including the Export Administration Regulations ("EAR") administered by the U.S. Department of Commerce and the sanctions programs administered by the U.S. Department of the Treasury's Office of Foreign Assets Control ("OFAC"). End User represents that it is not a Specially Designated National or otherwise subject to OFAC sanctions.
+
+11. Entire Agreement. This EULA constitutes the entire agreement between the parties with respect to the Software and supersedes all prior or contemporaneous agreements or representations relating thereto.
+
+BY CLICKING "I ACCEPT" OR INSTALLING THE SOFTWARE, END USER ACKNOWLEDGES THAT END USER HAS READ, UNDERSTOOD, AND AGREES TO BE BOUND BY THIS EULA.
+
+Globex Software Inc.
+123 Innovation Drive, Wilmington, Delaware 19801
+
+Authorized Signature: ____________________________
+Title: Vice President, Licensing
+Date: January 1, 2026

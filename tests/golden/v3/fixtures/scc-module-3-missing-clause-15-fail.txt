@@ -1,0 +1,69 @@
+Standard Contractual Clauses (Processor to Processor) — Module 3
+
+These Standard Contractual Clauses ("Clauses") are adopted pursuant to Commission Implementing Decision (EU) 2021/914 of 4 June 2021. Module 3 (Processor to Processor) applies. The data exporter is itself a processor acting on behalf of an upstream controller, and the data importer acts as a sub-processor.
+
+Parties
+
+Data Exporter: Globex EU SARL, a French société à responsabilité limitée, 15 rue Lafayette, 75009 Paris, France, acting as data processor on behalf of Acme Corp (the "upstream controller"). Contact: dpo@globexeu.example.com. Competent supervisory authority: Commission Nationale de l'Informatique et des Libertés ("CNIL").
+
+Data Importer: Stark Cloud Ireland Ltd., an Irish private limited company, One Grand Canal Square, Dublin 2, Ireland, acting as sub-processor on behalf of the data exporter and the upstream controller. Contact: dpo@starkcloud.example.ie.
+
+Controller Authorization. The upstream controller, Acme Corp, has provided prior specific written authorization for the data exporter to appoint the data importer as sub-processor under these Clauses, in compliance with GDPR Art. 28(2).
+
+Instructions Flow. The data importer shall process personal data only on documented instructions from the data exporter, which instructions reflect those provided by the upstream controller Acme Corp. The data importer shall promptly notify the data exporter if any instruction would infringe the GDPR.
+
+Clause 8 — Data Protection Safeguards (Processor-to-Processor)
+
+8.1 Documented Instructions. The data importer shall process personal data solely on documented instructions of the data exporter, which flow from the upstream controller. Any sub-processing outside those instructions requires prior written authorization of both the data exporter and the upstream controller.
+
+8.2 Confidentiality. The data importer shall ensure persons authorized to process personal data are subject to appropriate confidentiality obligations, whether contractual or statutory.
+
+8.3 Security (Article 32 GDPR). The data importer shall implement and maintain technical and organizational measures appropriate to the risk, including: encryption of personal data in transit and at rest; access control and multi-factor authentication; regular security assessments; incident response capabilities; and pseudonymization where appropriate. Details are set out in Annex II.
+
+8.4 Sub-Subprocessors. The data importer shall not engage further sub-processors without prior specific written authorization of the data exporter, which authorization is itself subject to the upstream controller's prior written consent. The data importer shall impose obligations equivalent to these Clauses on any further sub-processor.
+
+8.5 Assistance with Data Subject Rights and Arts. 32–36 Obligations. The data importer shall assist the data exporter (and through it the upstream controller) in complying with data subject rights under GDPR Chapter III and with obligations under Arts. 32–36, including breach notification, data protection impact assessments, and prior consultation.
+
+Clause 9 — Sub-Subprocessor Authorization
+
+The data exporter has granted the data importer general written authorization to engage sub-subprocessors listed in Annex III, subject to the upstream controller's prior written authorization. The data importer shall notify the data exporter of any changes at least thirty (30) days in advance. The data importer shall impose equivalent data-protection obligations on every sub-subprocessor.
+
+Clause 10 — Data Subject Rights
+
+The data importer shall notify the data exporter promptly upon receiving any data subject request and shall assist the data exporter in satisfying such request within applicable deadlines.
+
+Clause 11 — Redress
+
+The data importer shall not obstruct data subjects from exercising their GDPR rights and shall direct such requests to the data exporter.
+
+Clause 12 — Liability
+
+Each party shall be liable to the other for damages caused by its breach of these Clauses in proportion to its responsibility for such breach.
+
+Clause 14 — Local Laws Assessment
+
+The data exporter and data importer confirm no reason to believe that Irish or EU law prevents compliance with these Clauses. Transfers within the EEA do not require additional safeguards; any onward transfer outside the EEA requires a separate mechanism under GDPR Art. 46.
+
+Clause 16 — Non-Compliance and Termination
+
+If the data importer cannot comply with these Clauses, the data exporter shall suspend further transfers and may terminate the relevant portion of the MSA if non-compliance persists for more than thirty (30) days.
+
+Annex I — Parties and Processing Description
+
+A. List of Parties: Data exporter: Globex EU SARL, processor acting on behalf of upstream controller Acme Corp. Data importer: Stark Cloud Ireland Ltd., sub-processor. Upstream controller: Acme Corp, a Delaware corporation. B. Description of Transfer: Categories of data subjects — employees and customers of the upstream controller. Categories of personal data — names, email addresses, IP addresses, usage logs, and analytics data. Special categories — none. Frequency — continuous during the term of the MSA. Nature — cloud infrastructure processing. Purpose — supporting the data exporter's service delivery to the upstream controller. Retention — duration of the MSA plus one year. C. Competent Supervisory Authority: CNIL (for the data exporter).
+
+Annex II — Technical and Organisational Measures
+
+AES-256 encryption at rest; TLS 1.3 in transit; multi-factor authentication for privileged accounts; annual penetration testing; SOC 2 Type II and ISO 27001 certifications; automated anomaly detection; quarterly access reviews; documented incident response with 24-hour notification SLA.
+
+Annex III — Sub-Subprocessor List
+
+Wayne Enterprises Data Services Ltd., 100 Wayne Tower, Dublin 1, Ireland — purpose: backup and disaster recovery; transfer mechanism: intra-EEA (no additional safeguard required).
+
+Effective Date: February 1, 2026.
+
+GLOBEX EU SARL (Data Exporter / Processor)        STARK CLOUD IRELAND LTD. (Data Importer / Sub-Processor)
+
+Signed by: ____________________________           Signed by: ____________________________
+Title: Data Protection Officer                    Title: Authorized Representative
+Date: February 1, 2026                            Date: February 1, 2026

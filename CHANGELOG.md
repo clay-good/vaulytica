@@ -32,6 +32,11 @@ All notable changes to this project will be documented in this file. Format adap
   `msa-vendor-deep-no-liability-cap-fail.txt` (MSA-006),
   `uk-idta-addendum-modified-mandatory-clauses-fail.txt` (TRANSFER-015
   critical). Sanity test now pins 10 fail-fixtures.
+- Expand the v3 fail-fixture corpus from 10 to 13 (LAUNCH row v3-b):
+  `eula-no-license-grant-or-prohibitions-fail.txt` (ADDENDA-017),
+  `scc-module-3-missing-clause-15-fail.txt` (TRANSFER-008 critical),
+  `dpa-processor-subprocessor-missing-deletion-or-return-fail.txt`
+  (DPA-013 critical). Sanity test now pins 13 fail-fixtures.
 
 ---
 

@@ -241,6 +241,16 @@ Three substantive additions:
 
 ## Post-4.0 work
 
+### v3 fail-fixture corpus expansion (10 → 13) (2026-05-17) — ✅ complete
+
+Advanced LAUNCH row v3-b coverage from ten end-to-end fail-fixtures to thirteen, adding one per remaining under-covered v3 playbook (Addenda EULA surface, Transfer SCC Module 3 critical, DPA processor-subprocessor critical). New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
+
+- `eula-no-license-grant-or-prohibitions-fail.txt` — strips both the explicit license-grant scope ("non-exclusive / non-transferable / revocable license") and the prohibited-uses enumeration ("shall not reverse engineer / decompile / disassemble / sublicense"). **ADDENDA-017 (warning)** fires because neither of its `present_patterns` alternatives matches.
+- `scc-module-3-missing-clause-15-fail.txt` — keeps the EU SCC Module 3 (Processor-to-Processor) shape but removes the entire "Clause 15 — Public Authority Access" block. **TRANSFER-008 (critical)** fires because the data importer's Schrems II notify-and-challenge posture is absent.
+- `dpa-processor-subprocessor-missing-deletion-or-return-fail.txt` — strips Section 11 (Deletion or Return at End of Services) from the processor-subprocessor DPA. **DPA-013 (critical)** fires because GDPR Art. 28(3)(g) requires the controller's choice between deletion and return of personal data at end-of-services.
+
+Each fail-fixture has a `.playbook` sidecar forcing the v3 playbook (so the auto-detector cannot route to a v2 fallback). [`tests/golden/v3/fixture-sanity.test.ts`](tests/golden/v3/fixture-sanity.test.ts) now pins thirteen fail-fixtures (was ten); each entry asserts the load-bearing rule is in the fired set so a regex regression that silently stops the rule from firing is caught immediately. Goldens regenerated via `VAULYTICA_REGEN_GOLDEN=1`.
+
 ### v3 fail-fixture corpus expansion (7 → 10) (2026-05-17) — ✅ complete
 
 Advanced LAUNCH row v3-b coverage from seven end-to-end fail-fixtures to ten, adding one per remaining under-covered v3 ruleset family (NDA-deep presence, MSA-deep presence, Transfer UK-Addendum critical). New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
