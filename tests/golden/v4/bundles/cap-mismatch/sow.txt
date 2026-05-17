@@ -1,0 +1,11 @@
+Statement of Work No. 1
+
+Statement of Work under the MSA between Acme Inc. and Globex Inc., dated 2026-02-15.
+
+Scope. Vendor shall deliver software development services described in Exhibit A.
+
+Fees. Total fees: $500,000. Payment net 30. Governing Law: New York.
+
+Limitation of Liability. Notwithstanding any provision in the MSA, Vendor's aggregate liability under this Statement of Work shall not exceed fifty thousand dollars ($50,000).
+
+Term. Six (6) month delivery schedule with final delivery by 2026-08-31.

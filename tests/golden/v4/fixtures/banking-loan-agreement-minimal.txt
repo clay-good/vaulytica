@@ -1,0 +1,13 @@
+Loan Agreement
+
+This Loan Agreement is entered into between Lender, Capital Bank N.A., and Borrower, Acme Operating Co. The Lender hereby agrees to extend credit to the Borrower on the terms set forth herein.
+
+Loan Amount. The Lender shall make available to Borrower a term loan in the principal amount of $5,000,000.
+
+Interest. The unpaid principal amount of the Loan shall bear interest at a rate of SOFR plus 3.50% per annum. Default Rate: an additional 2.00% per annum.
+
+Repayment. Principal and interest shall be repaid in equal monthly installments over sixty (60) months commencing on the first month after the Closing Date.
+
+Events of Default. The occurrence of any of the following shall constitute an Event of Default: (a) failure to pay any amount when due; (b) breach of any covenant; (c) bankruptcy or insolvency of Borrower.
+
+Collateral. The Loan is secured by a first-priority security interest in substantially all of Borrower's personal property pursuant to a separate Security Agreement.

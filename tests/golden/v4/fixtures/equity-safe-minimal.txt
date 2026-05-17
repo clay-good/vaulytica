@@ -1,0 +1,7 @@
+Simple Agreement for Future Equity (SAFE)
+
+This Simple Agreement for Future Equity (this "SAFE") is entered into between the Company and the Investor. The Investor is purchasing the right to certain shares of the Company's capital stock subject to the terms set forth below.
+
+Post-Money Valuation Cap. The post-money valuation cap is $10,000,000. Discount Rate: 80%. Most favored nation rights apply.
+
+Equity Financing. Upon an Equity Financing, the SAFE will automatically convert into Safe Preferred Stock at the lower of the Discount Price or the Post-Money Valuation Cap Price.

@@ -1,0 +1,13 @@
+Business Associate Agreement
+
+This BAA is entered into between Acme Inc. ("Covered Entity") and Globex Inc. ("Business Associate") pursuant to 45 CFR § 164.504(e). Governing Law: laws of the State of Delaware.
+
+Permitted Uses. Business Associate may use PHI only as permitted by this BAA and the HIPAA Rules.
+
+Safeguards. Business Associate shall implement administrative, physical, and technical safeguards under 45 CFR §§ 164.308, 164.310, 164.312.
+
+Breach Reporting. Business Associate shall report Breaches to Covered Entity within sixty (60) days of discovery.
+
+Subcontractor Flow-Down. Business Associate shall ensure any subcontractor agrees in writing to the same restrictions.
+
+Term. Effective as of 2026-01-01, coterminous with the parties' Master Services Agreement.

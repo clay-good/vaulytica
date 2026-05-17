@@ -1,0 +1,13 @@
+Authorization for Use and Disclosure of Protected Health Information (PHI)
+
+I, the undersigned Patient, hereby authorize Covered Entity to use and disclose my Protected Health Information ("PHI") as described below.
+
+Description of PHI. The PHI to be used or disclosed includes my medical records, lab results, imaging studies, and treatment notes from the period 2024-01-01 through 2026-12-31.
+
+Recipient. PHI may be disclosed to: Insurance Underwriter Inc., 100 Healthcare Way, Boston, MA.
+
+Purpose. Underwriting determination for life insurance application.
+
+Expiration. This Authorization shall expire on 2027-12-31, unless I revoke it sooner by written notice to the Privacy Officer at Covered Entity. I understand that revocation is not effective for actions already taken.
+
+Patient Rights. I understand that I may refuse to sign this Authorization and that treatment may not be conditioned on signing, except as permitted by 45 C.F.R. § 164.508(b)(4).

@@ -1,0 +1,7 @@
+Master Services Agreement
+
+This Master Services Agreement is between Acme Inc. and Globex Inc. Governing Law: laws of the State of New York. Term: 3 years from 2026-01-01.
+
+Limitation of Liability. Each party's aggregate liability under this Agreement shall not exceed two million dollars ($2,000,000).
+
+Confidentiality. Each party shall protect the other's Confidential Information.

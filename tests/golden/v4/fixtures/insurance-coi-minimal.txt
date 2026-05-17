@@ -1,0 +1,16 @@
+Certificate of Insurance (COI Policy)
+
+This Certificate of Insurance is issued to evidence the insurance policies described below issued to the Named Insured.
+
+Named Insured. Contractor LLC, 100 Builder Way, Austin, TX.
+
+Producer. Insurance Brokerage Services, ACORD form 25.
+
+Coverages.
+- Commercial General Liability: $2,000,000 per occurrence / $4,000,000 aggregate; Acme Insurance Co., Policy No. CGL-12345; Effective 2026-01-01 to 2027-01-01.
+- Automobile Liability: $1,000,000 combined single limit.
+- Workers' Compensation: statutory; Employer's Liability $1,000,000.
+
+Additional Insured. Certificate Holder is named as additional insured on the General Liability and Automobile Liability policies as required by written contract.
+
+Waiver of Subrogation. The insurer waives rights of subrogation against the Certificate Holder where permitted by policy and applicable law.

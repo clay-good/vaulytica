@@ -1,0 +1,11 @@
+Executive Employment Agreement
+
+This Executive Employment Agreement is entered into between Employer, Northwind Corp., a Delaware corporation, and Executive, Jane Doe, residing in New York. Employer hereby employs Executive as Chief Executive Officer (CEO).
+
+Base Salary. Executive's annual base salary shall be $400,000, payable in accordance with Employer's regular payroll practices.
+
+Equity Compensation. Executive shall be granted 100,000 stock options vesting over four years with a one-year cliff.
+
+Term and Termination. The term shall be at-will. Employer may terminate Executive's employment for Cause or without Cause. Upon termination without Cause, Executive shall be entitled to severance equal to twelve (12) months of Base Salary.
+
+Restrictive Covenants. During employment and for twelve (12) months thereafter, Executive shall not solicit Employer's customers or employees and shall not compete with Employer in the same line of business in the United States.

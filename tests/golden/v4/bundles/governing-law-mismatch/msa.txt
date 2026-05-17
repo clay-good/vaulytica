@@ -1,0 +1,9 @@
+Master Services Agreement
+
+This Master Services Agreement is between Acme Inc. and Globex Inc. Governing Law: This Agreement shall be governed by the laws of the State of California.
+
+Services. Vendor shall perform consulting services as described in each Statement of Work.
+
+Term. Three (3) year initial term commencing 2026-01-01. Liability cap: $1,000,000.
+
+Confidentiality. Each party shall protect the other party's Confidential Information.

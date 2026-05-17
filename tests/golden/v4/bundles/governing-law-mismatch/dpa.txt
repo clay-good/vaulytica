@@ -1,0 +1,9 @@
+Data Processing Addendum
+
+This Data Processing Addendum is entered into between Acme Inc. ("Controller") and Globex Inc. ("Processor"). Governing Law: This Addendum shall be governed by the laws of the State of Delaware.
+
+Processing. Processor shall process Personal Data only on documented instructions from Controller pursuant to Article 28 of the GDPR.
+
+Subprocessors. Processor shall not engage any subprocessor without prior written consent of Controller and shall flow down equivalent obligations.
+
+Security. Processor shall implement appropriate technical and organizational measures pursuant to Article 32 GDPR.

@@ -1,0 +1,11 @@
+Business Associate Agreement
+
+This Business Associate Agreement ("BAA") is entered into pursuant to 45 CFR § 164.504(e) between Acme Corp. ("Covered Entity") and Globex, Inc. ("Business Associate"). Business Associate creates or receives Protected Health Information ("PHI") on behalf of Covered Entity.
+
+Permitted Uses. Business Associate may use and disclose PHI only as permitted by this BAA and the HIPAA Rules.
+
+Safeguards. Business Associate shall implement appropriate administrative, physical, and technical safeguards consistent with 45 CFR §§ 164.308, 164.310, 164.312.
+
+Reporting. Business Associate shall report Breaches without unreasonable delay and in no case later than sixty (60) days after discovery.
+
+Subcontractor Flow-Down. Business Associate shall ensure subcontractors agree in writing to the same restrictions.

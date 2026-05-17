@@ -1,0 +1,9 @@
+Business Associate Agreement
+
+This Business Associate Agreement ("BAA") is entered into between Acme Inc. ("Covered Entity") and Globex Inc. ("Business Associate"), effective as of June 1, 2026. This BAA is referenced in the parties' Master Services Agreement effective January 1, 2026, but is itself first effective on the later date.
+
+Permitted Uses. Business Associate may use PHI only as permitted by this BAA and the HIPAA Rules at 45 CFR § 164.504(e).
+
+Safeguards. Business Associate shall implement administrative, physical, and technical safeguards.
+
+Breach Reporting. Business Associate shall report Breaches within sixty (60) days of discovery.

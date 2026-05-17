@@ -6,6 +6,20 @@ All notable changes to this project will be documented in this file. Format adap
 
 ### Added
 
+- **v4 Step 61 — Test corpus expansion** (spec-v4.md Part VI).
+  New v4 golden-test harness at `tests/golden/v4/` mirroring
+  `tests/golden/v3/`: `_pipeline.ts` loads LAUNCH + v3 + every v4
+  playbook and runs `LAUNCH_RULES + V3_RULES + V4_RULES`;
+  `golden.test.ts` is the single-doc harness; `bundle.test.ts` is
+  the multi-doc harness driving `runEngineMulti` +
+  `CONSISTENCY_RULES` (spec-v4.md §§10–11). 15 single-doc fixtures
+  (one per v4 sub-domain B–P) with `.playbook` sidecars; 5
+  multi-doc bundles (party-name-conflict, governing-law-mismatch,
+  effective-date-paradox, cap-mismatch, clean-msa-baa) exercising
+  the CROSS-* rule families. Three sanity guards per fixture
+  (golden match, two-run determinism, v4-playbook + ≥1 finding).
+  Regeneration via `VAULYTICA_REGEN_GOLDEN=1`. 62 new tests;
+  1124/1124 + 2 skips.
 - **v4 Step 60 — DKB build pipeline (v4 fetchers)** (spec-v4.md §13).
   Eight v4 source families wired under `dkb/build/v4/fetchers/`
   emitting v3 DKB nodes (spec §12: v3 schema reused, no v4-specific

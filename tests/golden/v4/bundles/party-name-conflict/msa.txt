@@ -1,0 +1,11 @@
+Master Services Agreement
+
+This Master Services Agreement is entered into between Acme Corporation, a Delaware corporation ("Customer"), and Globex Services Inc., a New York corporation ("Vendor"). The Vendor shall perform the Services described in each Statement of Work.
+
+Governing Law. This Agreement shall be governed by the laws of the State of New York.
+
+Limitation of Liability. Each party's aggregate liability under this Agreement shall not exceed the fees paid in the twelve (12) months preceding the claim.
+
+Confidentiality. Each party shall maintain the confidentiality of the other party's Confidential Information.
+
+Term. The Initial Term is three (3) years commencing on 2026-01-01.

@@ -1,0 +1,7 @@
+Master Services Agreement
+
+This Master Services Agreement is between Acme Inc. and Globex Inc., effective as of January 1, 2026. This Agreement references and incorporates the Business Associate Agreement attached as Schedule B, which the parties acknowledge is "effective as of June 1, 2026."
+
+Governing Law: laws of the State of New York. Term: three (3) years. Liability cap: $1,000,000.
+
+Confidentiality. Each party shall protect Confidential Information.

@@ -1,0 +1,11 @@
+Statement of Work No. 1
+
+This Statement of Work is issued under the Master Services Agreement between Acme Inc. and Globex Inc.
+
+Governing Law: This Statement of Work shall be governed by the laws of the State of New York.
+
+Scope of Work. Vendor shall deliver the Software described in Exhibit A by 2026-12-31.
+
+Fees. Total fees: $250,000, invoiced monthly. Payment terms: net 30.
+
+Acceptance. Customer shall have 30 days after delivery to accept or reject the deliverables.
