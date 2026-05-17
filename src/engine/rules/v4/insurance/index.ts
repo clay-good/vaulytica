@@ -1,13 +1,25 @@
 /**
- * v4 sub-domain placeholder — `insurance` ruleset (Step 54).
- *
- * Spec: `spec-v4.md` §6.K. Rules land in this directory once the
- * corresponding build step is executed. The barrel below exports an
- * empty `INSURANCE_V4_RULES` so the v4 aggregate at
- * `src/engine/rules/v4/index.ts` can compose it without a build
- * error during scaffolding.
+ * v4 sub-domain K (Insurance and risk) ruleset — spec-v4.md §6.K,
+ * Step 54. 25 rules across 4 new families (policy summary /
+ * declarations, endorsement review, standalone indemnification
+ * agreement, hold-harmless agreement). K.1 (Certificate of Insurance /
+ * ACORD 25) continues under v3 `coi`.
  */
 
-import type { Rule } from "../../../finding.js";
+export {
+  INSURANCE_RULES,
+  POLICY_SUMMARY_RULES,
+  ENDORSEMENT_RULES,
+  INDEMNIFICATION_AGREEMENT_RULES,
+  HOLD_HARMLESS_RULES,
+} from "./rules.js";
 
-export const INSURANCE_V4_RULES: readonly Rule[] = [];
+export {
+  INS_PLAYBOOK_IDS,
+  INS_PLAYBOOK_POLICY,
+  INS_PLAYBOOK_ENDORSEMENT,
+  INS_PLAYBOOK_INDEMNIFICATION,
+  INS_PLAYBOOK_HOLD_HARMLESS,
+  type InsPlaybookId,
+} from "./_helpers.js";
+

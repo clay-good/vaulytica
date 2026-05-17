@@ -1,0 +1,40 @@
+{
+  "id": "indemnification-agreement",
+  "version": "1.0.0",
+  "name": "Indemnification Agreement (standalone)",
+  "description": "Standalone indemnification agreement with anti-indemnity statute screen (NY § 5-322.1, CA § 2782, TX § 151). Selects the §6.K ruleset (INS-013..INS-019).",
+  "match_features": {
+    "title_keywords": [
+      "indemnification agreement",
+      "indemnity agreement",
+      "agreement of indemnity"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "indemnitor",
+      "indemnitee",
+      "indemnify",
+      "duty to defend",
+      "additional insured",
+      "waiver of subrogation"
+    ],
+    "negative_features": ["hold harmless", "declarations", "endorsement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Indemnitor", "Indemnitee", "Loss"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "ANTI-INDEMNITY-STATE",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "Indemnitor / indemnitee parties",
+    "Scope Type I / II / III",
+    "Anti-indemnity screen (CA / NY / TX)",
+    "Duty to defend (Crawford)",
+    "Notice / tender / cooperation",
+    "Insurance support + AI + WoS",
+    "Survival"
+  ]
+}

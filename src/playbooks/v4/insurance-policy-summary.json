@@ -1,0 +1,41 @@
+{
+  "id": "insurance-policy-summary",
+  "version": "1.0.0",
+  "name": "Insurance Policy Summary / Declarations",
+  "description": "Insurance policy declarations / summary review under state insurance codes. Selects the §6.K ruleset (INS-001..INS-006).",
+  "match_features": {
+    "title_keywords": [
+      "declarations",
+      "policy summary",
+      "insurance declarations",
+      "dec page",
+      "policy declarations"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "named insured",
+      "policy period",
+      "limits of liability",
+      "premium",
+      "deductible",
+      "form number"
+    ],
+    "negative_features": ["endorsement", "indemnification agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Named Insured", "Policy Period", "Limits of Liability"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "STATE-INSURANCE-CODE",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["coi"],
+  "compliance_matrix_columns": [
+    "Named Insured + producer",
+    "Policy period",
+    "Limits (occurrence + aggregate)",
+    "Premium + deductible / SIR",
+    "Forms schedule (ISO / AAIS)",
+    "Claims-made vs occurrence"
+  ]
+}

@@ -47,6 +47,7 @@ import { SETTLEMENT_RULES } from "./settlement/index.js";
 import { IP_LICENSING_RULES } from "./ip-licensing/index.js";
 import { PRIVACY_EXTENDED_RULES } from "./privacy-extended/index.js";
 import { HEALTHCARE_RULES } from "./healthcare/index.js";
+import { INSURANCE_RULES } from "./insurance/index.js";
 
 /**
  * The v4 ruleset aggregate. Populated one sub-domain at a time as
@@ -64,6 +65,7 @@ export const V4_RULES: readonly Rule[] = [
   ...IP_LICENSING_RULES,
   ...PRIVACY_EXTENDED_RULES,
   ...HEALTHCARE_RULES,
+  ...INSURANCE_RULES,
 ];
 
 export { GOVERNANCE_RULES } from "./governance/index.js";
@@ -75,3 +77,4 @@ export { SETTLEMENT_RULES } from "./settlement/index.js";
 export { IP_LICENSING_RULES } from "./ip-licensing/index.js";
 export { PRIVACY_EXTENDED_RULES } from "./privacy-extended/index.js";
 export { HEALTHCARE_RULES } from "./healthcare/index.js";
+export { INSURANCE_RULES } from "./insurance/index.js";

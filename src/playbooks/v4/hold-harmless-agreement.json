@@ -1,0 +1,39 @@
+{
+  "id": "hold-harmless-agreement",
+  "version": "1.0.0",
+  "name": "Hold-Harmless Agreement",
+  "description": "Standalone hold-harmless agreement (typically participant / event release) with Tunkl-factor and assumption-of-risk screen. Selects the §6.K ruleset (INS-020..INS-025).",
+  "match_features": {
+    "title_keywords": [
+      "hold harmless",
+      "release and hold harmless",
+      "participant release",
+      "waiver and release"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "hold harmless",
+      "assumption of risk",
+      "acknowledge",
+      "voluntary",
+      "release"
+    ],
+    "negative_features": ["indemnification agreement", "declarations", "endorsement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Activity", "Participant"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "STATE-HOLD-HARMLESS-LAW",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "Parties identification",
+    "Activity / scope of risk",
+    "Pre-dispute / gross-negligence screen",
+    "Acknowledgment + assumption of risk",
+    "Signature + minor / guardian",
+    "Severability"
+  ]
+}

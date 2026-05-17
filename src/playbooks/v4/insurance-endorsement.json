@@ -1,0 +1,39 @@
+{
+  "id": "insurance-endorsement",
+  "version": "1.0.0",
+  "name": "Insurance Endorsement Review",
+  "description": "Insurance endorsement review (ISO / AAIS forms + state filings). Selects the §6.K ruleset (INS-007..INS-012).",
+  "match_features": {
+    "title_keywords": [
+      "endorsement",
+      "policy endorsement",
+      "amendatory endorsement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "this endorsement modifies",
+      "form number",
+      "edition",
+      "iso",
+      "additional insured",
+      "waiver of subrogation"
+    ],
+    "negative_features": ["declarations", "indemnification agreement", "hold harmless"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Endorsement", "Form Number"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "ISO-AAIS-STATE-FILINGS",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["insurance-policy-summary"],
+  "compliance_matrix_columns": [
+    "Form number + edition",
+    "Coverage being modified",
+    "Effective date",
+    "Coverage-restricting flags",
+    "AI form CG 20 10 / 37 / 38",
+    "Waiver of subrogation CG 24 04"
+  ]
+}

@@ -46,6 +46,7 @@ export {
   IP_LICENSING_RULES,
   PRIVACY_EXTENDED_RULES,
   HEALTHCARE_RULES,
+  INSURANCE_RULES,
 } from "./rules/v4/index.js";
 
 export type {
