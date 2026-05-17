@@ -1,0 +1,40 @@
+{
+  "id": "ip-assignment",
+  "version": "1.0.0",
+  "name": "IP Assignment Agreement",
+  "description": "Assignment of patents / trademarks / copyrights / trade secrets. 35 U.S.C. § 261 / 17 U.S.C. § 204 baseline. Selects the §6.H ruleset (IPL-001..IPL-006).",
+  "match_features": {
+    "title_keywords": [
+      "ip assignment",
+      "intellectual property assignment",
+      "assignment of intellectual property",
+      "patent assignment",
+      "trademark assignment",
+      "copyright assignment"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "assignor",
+      "assignee",
+      "hereby assigns",
+      "right to sue",
+      "further assurances",
+      "recordation"
+    ],
+    "negative_features": ["license", "royalty", "field of use"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Assignor", "Assignee", "Assigned IP"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "USPTO-COPYRIGHT-OFFICE",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "35 U.S.C. § 261 (patent assignment)",
+    "17 U.S.C. § 204 (copyright transfer writing)",
+    "Right to sue past infringement",
+    "Recordation cooperation + POA"
+  ]
+}

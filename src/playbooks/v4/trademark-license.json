@@ -1,0 +1,33 @@
+{
+  "id": "trademark-license",
+  "version": "1.0.0",
+  "name": "Trademark License Agreement",
+  "description": "Trademark license with naked-license avoidance (quality control) and proper-use guidelines. Selects the §6.H ruleset (IPL-013..IPL-018).",
+  "match_features": {
+    "title_keywords": ["trademark license", "service mark license", "brand license"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "licensed marks",
+      "quality control",
+      "goodwill",
+      "inures",
+      "channels of trade",
+      "field of use"
+    ],
+    "negative_features": ["patent", "copyright", "assignment"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Licensed Marks", "Quality Standards", "Territory"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "LANHAM-ACT",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "Lanham Act §§ 5 / 32 / 45",
+    "Quality control (naked-license)",
+    "Goodwill / no-challenge",
+    "Proper use (®/™, no genericization)"
+  ]
+}

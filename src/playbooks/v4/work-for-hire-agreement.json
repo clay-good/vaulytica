@@ -1,0 +1,39 @@
+{
+  "id": "work-for-hire-agreement",
+  "version": "1.0.0",
+  "name": "Work-for-Hire Agreement",
+  "description": "Work-made-for-hire agreement under 17 U.S.C. § 101 with backup assignment + DTSA notice. Selects the §6.H ruleset (IPL-036..IPL-040).",
+  "match_features": {
+    "title_keywords": [
+      "work for hire",
+      "work-for-hire",
+      "work made for hire",
+      "wfh agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "work made for hire",
+      "section 101",
+      "specially commissioned",
+      "to the extent",
+      "hereby assigns",
+      "dtsa"
+    ],
+    "negative_features": ["royalty", "license grant", "non-exclusive"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Work Product", "Contractor", "Client"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "17-USC-101",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "17 U.S.C. § 101 specially-commissioned",
+    "Backup assignment",
+    "DTSA 18 U.S.C. § 1833 notice",
+    "Moral-rights waiver (where waivable)",
+    "Independent-contractor status"
+  ]
+}

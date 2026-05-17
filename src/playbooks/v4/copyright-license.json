@@ -1,0 +1,37 @@
+{
+  "id": "copyright-license",
+  "version": "1.0.0",
+  "name": "Copyright License Agreement",
+  "description": "Copyright license with 17 U.S.C. § 204 writing requirement and § 106 rights enumeration. Selects the §6.H ruleset (IPL-019..IPL-024).",
+  "match_features": {
+    "title_keywords": [
+      "copyright license",
+      "license to copyright",
+      "publishing agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "licensed works",
+      "exclusive",
+      "non-exclusive",
+      "reproduction",
+      "derivative works",
+      "section 106"
+    ],
+    "negative_features": ["patent", "trademark", "assignment"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Licensed Works", "Term", "Territory"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "17-USC-COPYRIGHT",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "17 U.S.C. § 106 (rights enumerated)",
+    "17 U.S.C. § 204 (exclusive writing)",
+    "17 U.S.C. § 106A / VARA (moral rights)",
+    "17 U.S.C. § 203 (35-yr termination)"
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "id": "patent-license",
+  "version": "1.0.0",
+  "name": "Patent License Agreement",
+  "description": "Patent license with *Brulotte / Kimble* post-expiration-royalty screen and 35 U.S.C. § 287 marking. Selects the §6.H ruleset (IPL-007..IPL-012).",
+  "match_features": {
+    "title_keywords": ["patent license", "patent licensing agreement"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "licensed patents",
+      "field of use",
+      "royalty",
+      "net sales",
+      "sublicense",
+      "patent marking"
+    ],
+    "negative_features": ["trademark", "copyright", "assignment"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Licensed Patents", "Net Sales", "Field of Use"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "35-USC-PATENT",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "35 U.S.C. § 271 (scope)",
+    "Brulotte / Kimble post-expiration",
+    "35 U.S.C. § 287 (marking)",
+    "Royalty mechanics + audit"
+  ]
+}

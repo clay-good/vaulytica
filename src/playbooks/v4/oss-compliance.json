@@ -1,0 +1,42 @@
+{
+  "id": "oss-compliance",
+  "version": "1.0.0",
+  "name": "OSS Compliance Audit Document",
+  "description": "Open-source software compliance audit / SBOM document. Selects the §6.H ruleset (IPL-030..IPL-035).",
+  "match_features": {
+    "title_keywords": [
+      "open source compliance",
+      "oss compliance",
+      "sbom",
+      "third-party software notices",
+      "third-party licenses"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "mit",
+      "apache",
+      "gpl",
+      "agpl",
+      "bsd",
+      "spdx",
+      "cyclonedx",
+      "notice file"
+    ],
+    "negative_features": ["contributor license", "patent license", "trademark license"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["SBOM", "Third-Party Software"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "OSS-LICENSE-FAMILIES",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "Component inventory (SBOM)",
+    "Per-component license (SPDX)",
+    "Copyleft (GPL/AGPL) source",
+    "Notice / attribution file",
+    "Vulnerability tracking"
+  ]
+}

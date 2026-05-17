@@ -1,0 +1,37 @@
+{
+  "id": "contributor-license-agreement",
+  "version": "1.0.0",
+  "name": "Contributor License Agreement (CLA)",
+  "description": "OSS contributor license agreement (ASF ICLA / corporate CCLA pattern) with defensive-termination patent grant. Selects the §6.H ruleset (IPL-025..IPL-029).",
+  "match_features": {
+    "title_keywords": [
+      "contributor license agreement",
+      "cla",
+      "individual contributor license"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "contributor",
+      "contribution",
+      "patent license grant",
+      "defensive termination",
+      "original creation",
+      "dco"
+    ],
+    "negative_features": ["proprietary", "royalty", "assignment of intellectual property"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Contribution", "Contributor", "You"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "OSS-COMMUNITY",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "Copyright grant (perpetual / RF)",
+    "Patent grant + defensive termination",
+    "Original-work representation",
+    "DCO alternative path"
+  ]
+}
