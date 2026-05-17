@@ -1,0 +1,34 @@
+{
+  "id": "security-agreement",
+  "version": "1.0.0",
+  "name": "Security Agreement",
+  "description": "Security agreement under UCC Article 9 (attachment + perfection + remedies). Selects the §6.L ruleset (BNK-014..BNK-020).",
+  "match_features": {
+    "title_keywords": ["security agreement", "pledge agreement", "collateral agreement"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "debtor",
+      "secured party",
+      "collateral",
+      "security interest",
+      "grant",
+      "after-acquired"
+    ],
+    "negative_features": ["promissory note", "loan agreement", "guaranty"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Debtor", "Secured Party", "Collateral"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "UCC-ART-9",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["loan-agreement", "ucc-1-financing-statement"],
+  "compliance_matrix_columns": [
+    "§ 9-203 attachment + granting",
+    "§ 9-108 collateral description",
+    "§ 9-204 / 9-315 after-acquired + proceeds",
+    "§ 9-509 filing authorization",
+    "§ 9-601 default remedies"
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "id": "subordination-agreement",
+  "version": "1.0.0",
+  "name": "Subordination Agreement",
+  "description": "Subordination agreement under UCC § 9-339 + Bankruptcy Code § 510(a). Selects the §6.L ruleset (BNK-033..BNK-038).",
+  "match_features": {
+    "title_keywords": ["subordination agreement", "subordination"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "subordinated debt",
+      "senior debt",
+      "blockage",
+      "standstill",
+      "permitted payments",
+      "section 510"
+    ],
+    "negative_features": ["intercreditor agreement", "promissory note"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Subordinated Debt", "Senior Debt"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "UCC-9-339-BANKRUPTCY-510A",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["intercreditor-agreement"],
+  "compliance_matrix_columns": [
+    "Subordinated debt identified",
+    "Senior debt + refinance",
+    "Payment subordination + turnover",
+    "Permitted payments",
+    "Standstill",
+    "§ 510(a) bankruptcy"
+  ]
+}

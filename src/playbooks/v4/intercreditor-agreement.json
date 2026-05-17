@@ -1,0 +1,35 @@
+{
+  "id": "intercreditor-agreement",
+  "version": "1.0.0",
+  "name": "Intercreditor Agreement",
+  "description": "Intercreditor / lien-priority agreement (1L / 2L) — LSTA model baseline. Selects the §6.L ruleset (BNK-027..BNK-032).",
+  "match_features": {
+    "title_keywords": ["intercreditor agreement", "intercreditor", "lien subordination agreement"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "senior",
+      "junior",
+      "lien priority",
+      "standstill",
+      "turnover",
+      "dip financing"
+    ],
+    "negative_features": ["promissory note", "loan agreement", "guaranty"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Senior Debt", "Junior Debt", "Standstill Period"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "UCC-9-339-LSTA-MODEL",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "Senior / junior priorities",
+    "Blockage + turnover",
+    "Junior standstill",
+    "Bankruptcy / DIP / 363",
+    "Buy-out option",
+    "Amendment / consent rights"
+  ]
+}

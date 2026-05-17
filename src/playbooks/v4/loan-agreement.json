@@ -1,0 +1,36 @@
+{
+  "id": "loan-agreement",
+  "version": "1.0.0",
+  "name": "Loan Agreement",
+  "description": "Commercial loan agreement (term / revolver) with affirmative + negative + financial covenants. LSTA / ABA model baseline. Selects the §6.L ruleset (BNK-007..BNK-013).",
+  "match_features": {
+    "title_keywords": ["loan agreement", "credit agreement", "credit facility agreement"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "borrower",
+      "lender",
+      "facility",
+      "commitment",
+      "covenants",
+      "events of default"
+    ],
+    "negative_features": ["promissory note", "security agreement", "guaranty"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Borrower", "Lender", "Commitment"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "UCC-9-REG-Z-STATE-USURY",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["promissory-note", "security-agreement", "guaranty"],
+  "compliance_matrix_columns": [
+    "Loan amount + use of proceeds",
+    "Interest (SOFR + margin + floor)",
+    "Affirmative covenants",
+    "Negative covenants",
+    "Financial covenants",
+    "EoD + cross-default",
+    "Reg Z (consumer)"
+  ]
+}

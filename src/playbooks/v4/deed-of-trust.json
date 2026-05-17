@@ -1,0 +1,36 @@
+{
+  "id": "deed-of-trust",
+  "version": "1.0.0",
+  "name": "Deed of Trust / Mortgage",
+  "description": "Deed of trust or mortgage with power-of-sale + due-on-sale + state recording-act compliance. Selects the §6.L ruleset (BNK-039..BNK-044).",
+  "match_features": {
+    "title_keywords": ["deed of trust", "mortgage", "mortgage and security agreement"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "trustee",
+      "beneficiary",
+      "grantor",
+      "mortgagor",
+      "power of sale",
+      "due on sale",
+      "legal description"
+    ],
+    "negative_features": ["security agreement", "promissory note", "loan agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Grantor", "Trustee", "Beneficiary"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "STATE-REAL-PROPERTY",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["promissory-note"],
+  "compliance_matrix_columns": [
+    "Parties (grantor / trustee / beneficiary)",
+    "Legal description",
+    "Granting / habendum",
+    "Power of sale / judicial",
+    "Due on sale (Garn-St Germain)",
+    "Acknowledgment + homestead"
+  ]
+}

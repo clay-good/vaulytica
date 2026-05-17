@@ -1,0 +1,33 @@
+{
+  "id": "promissory-note",
+  "version": "1.0.0",
+  "name": "Promissory Note",
+  "description": "Promissory note under UCC Article 3 with state-usury savings clause. Selects the §6.L ruleset (BNK-001..BNK-006).",
+  "match_features": {
+    "title_keywords": ["promissory note", "note"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "maker",
+      "payee",
+      "principal amount",
+      "promise to pay",
+      "interest rate",
+      "maturity"
+    ],
+    "negative_features": ["security agreement", "deed of trust", "guaranty"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Maker", "Payee", "Principal Amount"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "UCC-ART-3",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "UCC § 3-104 negotiability",
+    "State usury savings",
+    "Default + acceleration",
+    "Presentment / dishonor waivers"
+  ]
+}

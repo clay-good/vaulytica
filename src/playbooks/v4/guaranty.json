@@ -1,0 +1,35 @@
+{
+  "id": "guaranty",
+  "version": "1.0.0",
+  "name": "Guaranty",
+  "description": "Continuing guaranty of payment with suretyship-defenses waiver and reinstatement clause. Selects the §6.L ruleset (BNK-021..BNK-026).",
+  "match_features": {
+    "title_keywords": ["guaranty", "guarantee", "guaranty agreement"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "guarantor",
+      "continuing guaranty",
+      "guaranty of payment",
+      "absolute and unconditional",
+      "subrogation",
+      "reinstatement"
+    ],
+    "negative_features": ["promissory note", "loan agreement", "security agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Guarantor", "Obligee", "Underlying Obligation"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "SURETYSHIP-STATUTE-OF-FRAUDS",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["loan-agreement"],
+  "compliance_matrix_columns": [
+    "Statute of Frauds",
+    "Payment vs collection",
+    "Suretyship defenses waived",
+    "Continuing / capped",
+    "Subrogation deferred",
+    "Reinstatement on preference"
+  ]
+}

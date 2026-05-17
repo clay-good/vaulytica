@@ -1,0 +1,35 @@
+{
+  "id": "ucc-1-financing-statement",
+  "version": "1.0.0",
+  "name": "UCC-1 Financing Statement (prose)",
+  "description": "UCC-1 financing statement prose components under UCC § 9-502 / § 9-503 / § 9-504. Selects the §6.L ruleset (BNK-045..BNK-050).",
+  "match_features": {
+    "title_keywords": ["financing statement", "ucc-1", "ucc1", "ucc financing statement"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "debtor",
+      "secured party",
+      "collateral",
+      "secretary of state",
+      "all assets",
+      "public organic record"
+    ],
+    "negative_features": ["security agreement", "loan agreement", "promissory note"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Debtor", "Secured Party", "Filing Office"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "UCC-9-502-503-504",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["security-agreement"],
+  "compliance_matrix_columns": [
+    "§ 9-503 exact legal name",
+    "§ 9-502 secured party + address",
+    "§ 9-504 collateral indication",
+    "§ 9-307 filing office",
+    "§ 9-515 5-year / continuation",
+    "§ 9-509 authorization"
+  ]
+}

@@ -47,6 +47,7 @@ export {
   PRIVACY_EXTENDED_RULES,
   HEALTHCARE_RULES,
   INSURANCE_RULES,
+  BANKING_RULES,
 } from "./rules/v4/index.js";
 
 export type {
