@@ -6,6 +6,21 @@ All notable changes to this project will be documented in this file. Format adap
 
 ### Added
 
+- **v4 Step 60 — DKB build pipeline (v4 fetchers)** (spec-v4.md §13).
+  Eight v4 source families wired under `dkb/build/v4/fetchers/`
+  emitting v3 DKB nodes (spec §12: v3 schema reused, no v4-specific
+  node type): `nvca` (NVCA model legal documents — SPA, IRA, Voting,
+  ROFR/Co-Sale, COI, Term Sheet); `dgcl` (DGCL §§ 102, 109, 141, 211,
+  251, 262); `mbca` (ABA MBCA §§ 2.02 / 7.01–7.02 / 8.01 / 10.03);
+  `ucc-article-2/3/9` (Cornell LII — § 2-201, § 2-314, § 2-316,
+  § 3-104, § 3-305, § 9-203, § 9-108, § 9-502); `aia` (A101 / A102 /
+  A201 / A401 / G701 / G702-G703 catalog); `frcp` + `fre` (Rules
+  37(e), 41, 408, 502); `state-landlord-tenant` (CA / NY / TX / FL /
+  IL); `state-trust-will` (CA / NY / TX / FL / IL). 19 fetcher ids
+  registered in `V4_FETCHERS`. Snapshot fixtures vendored at
+  `dkb/fixtures/v4/snapshots/{sha256(source_url)}.txt`. Step-20
+  staleness gate covers v4 nodes unchanged because they pass through
+  the v3 `V3DkbNodeListSchema`. 31 new tests; 1062/1062 + 2 skips.
 - **v4 Step 44 — consolidated bundle report renderer** (spec-v4.md §11).
   New `src/report/bundle.ts` ships `buildBundleDocxReport`,
   `buildBundleJson` / `buildBundleJsonBlob`, `buildBundleZip`, and

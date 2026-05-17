@@ -14,4 +14,6 @@ does not add a node type. Sub-domains B–P each contribute
 `statutory_clause_requirement` for DGCL §§; equity →
 `regulator_model_form` for NVCA templates).
 
-Until Step 60 lands, this directory is intentionally empty.
+Step 60 has landed: see [`snapshots/`](snapshots/) for the vendored
+authority fixtures and [`../../build/v4/fetchers/`](../../build/v4/fetchers/)
+for the eight fetcher families (19 source ids) they back.

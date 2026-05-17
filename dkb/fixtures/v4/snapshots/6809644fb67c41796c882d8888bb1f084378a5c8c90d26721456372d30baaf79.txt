@@ -1,0 +1,7 @@
+U.C.C. Article 2 — Sales.
+
+§ 2-201 Formal Requirements; Statute of Frauds. A contract for the sale of goods for the price of $500 or more is not enforceable by way of action or defense unless there is some writing sufficient to indicate that a contract for sale has been made between the parties and signed by the party against whom enforcement is sought.
+
+§ 2-314 Implied Warranty: Merchantability; Usage of Trade. Unless excluded or modified, a warranty that the goods shall be merchantable is implied in a contract for their sale if the seller is a merchant with respect to goods of that kind. Goods to be merchantable must be at least such as pass without objection in the trade under the contract description and are fit for the ordinary purposes for which such goods are used.
+
+§ 2-316 Exclusion or Modification of Warranties. To exclude or modify the implied warranty of merchantability or any part of it the language must mention merchantability and in case of a writing must be conspicuous, and to exclude or modify any implied warranty of fitness the exclusion must be by a writing and conspicuous.

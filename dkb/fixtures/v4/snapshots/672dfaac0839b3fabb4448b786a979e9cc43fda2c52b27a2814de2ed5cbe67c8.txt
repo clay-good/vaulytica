@@ -1,0 +1,7 @@
+U.C.C. Article 9 — Secured Transactions.
+
+§ 9-203 Attachment and Enforceability of Security Interest; Proceeds; Supporting Obligations; Formal Requisites. A security interest is enforceable against the debtor and third parties with respect to the collateral only if: (1) value has been given; (2) the debtor has rights in the collateral; and (3) the debtor has authenticated a security agreement that provides a description of the collateral. A written security agreement is required.
+
+§ 9-108 Sufficiency of Description. Except as otherwise provided, a description of personal or real property is sufficient if it reasonably identifies what is described. Specific listing, category, type of collateral defined in this article, quantity, or computational or allocational formula are sufficient. A description of collateral as "all the debtor's assets" or "all the debtor's personal property" is not sufficient in a security agreement.
+
+§ 9-502 Contents of Financing Statement; Record of Mortgage as Financing Statement; Time of Filing. A financing statement is sufficient only if it: (1) provides the name of the debtor; (2) provides the name of the secured party or a representative of the secured party; and (3) indicates the collateral covered by the financing statement. The UCC-1 financing statement is filed with the secretary of state.
