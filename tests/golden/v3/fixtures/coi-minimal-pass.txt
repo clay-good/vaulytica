@@ -1,0 +1,67 @@
+ACORD 25 (2016/03) — Certificate of Liability Insurance
+
+PRODUCER
+Wayne Brokerage LLC
+500 Insurance Plaza, Suite 800
+Wilmington, Delaware 19801
+Phone: (302) 555-0100
+Fax: (302) 555-0101
+
+THIS CERTIFICATE IS ISSUED AS A MATTER OF INFORMATION ONLY AND CONFERS NO RIGHTS UPON THE CERTIFICATE HOLDER. THIS CERTIFICATE DOES NOT AFFIRMATIVELY OR NEGATIVELY AMEND, EXTEND OR ALTER THE COVERAGE AFFORDED BY THE POLICIES BELOW. THIS CERTIFICATE OF INSURANCE DOES NOT CONSTITUTE A CONTRACT BETWEEN THE ISSUING INSURER(S), AUTHORIZED REPRESENTATIVE OR PRODUCER, AND THE CERTIFICATE HOLDER.
+
+INSURED
+Acme Corp
+123 Main Street
+Wilmington, Delaware 19801
+
+COVERAGES — CERTIFICATE NUMBER: COI-2026-00198 — REVISION NUMBER: 1
+
+THIS IS TO CERTIFY THAT THE POLICIES OF INSURANCE LISTED BELOW HAVE BEEN ISSUED TO THE INSURED NAMED ABOVE FOR THE POLICY PERIOD INDICATED. NOTWITHSTANDING ANY REQUIREMENT, TERM OR CONDITION OF ANY CONTRACT OR OTHER DOCUMENT WITH RESPECT TO WHICH THIS CERTIFICATE MAY BE ISSUED OR MAY PERTAIN, THE INSURANCE AFFORDED BY THE POLICIES DESCRIBED HEREIN IS SUBJECT TO ALL THE TERMS, EXCLUSIONS AND CONDITIONS OF SUCH POLICIES.
+
+TYPE OF INSURANCE | INSURER | NAIC # | POLICY NUMBER | EFF DATE | EXP DATE | LIMITS
+
+COMMERCIAL GENERAL LIABILITY — Constellation Casualty Insurance Co. — NAIC 22334 — CGL-2026-447821 — 2026-01-01 — 2027-01-01
+  Each Occurrence: $1,000,000
+  General Aggregate: $2,000,000
+  Products/Completed Operations Aggregate: $2,000,000
+  Personal and Advertising Injury: $1,000,000
+  Damage to Rented Premises: $100,000
+  Medical Expense (any one person): $5,000
+  AM Best Rating: A+
+  Additional Insured Endorsement: Named on policy per blanket additional insured endorsement CG 20 10 04 13
+  Waiver of Subrogation: Applies in favor of certificate holder per endorsement CG 24 04 05 09
+
+AUTOMOBILE LIABILITY — Constellation Casualty Insurance Co. — NAIC 22334 — AUTO-2026-112983 — 2026-01-01 — 2027-01-01
+  Combined Single Limit: $1,000,000 (each accident)
+  Covers: Any Auto
+  AM Best Rating: A+
+
+WORKERS COMPENSATION AND EMPLOYERS LIABILITY — Meridian Workers Comp Inc. — NAIC 31828 — WC-2026-887712 — 2026-01-01 — 2027-01-01
+  Workers Compensation: Statutory
+  Employers Liability Each Accident: $500,000
+  Employers Liability Disease — Policy Limit: $500,000
+  Employers Liability Disease — Each Employee: $500,000
+  AM Best Rating: A
+  Waiver of Subrogation: Applies in favor of certificate holder per endorsement WC 00 03 13
+
+UMBRELLA / EXCESS LIABILITY — Zenith Re Excess & Surplus Lines — NAIC 40738 — UMB-2026-330047 — 2026-01-01 — 2027-01-01
+  Each Occurrence: $5,000,000
+  Aggregate: $5,000,000
+  Follows Form: Commercial General Liability, Automobile Liability
+  AM Best Rating: A
+  Retention: $10,000
+
+CANCELLATION: SHOULD ANY OF THE ABOVE DESCRIBED POLICIES BE CANCELLED BEFORE THE EXPIRATION DATE THEREOF, THIRTY (30) DAYS WRITTEN NOTICE WILL BE DELIVERED IN ACCORDANCE WITH THE POLICY PROVISIONS TO THE CERTIFICATE HOLDER NAMED BELOW.
+
+CERTIFICATE HOLDER
+Globex Inc.
+789 Corporate Boulevard
+Wilmington, Delaware 19802
+
+AUTHORIZED REPRESENTATIVE
+Wayne Brokerage LLC
+
+Signature: ____________________________
+Name: Margaret T. Wayne
+Title: Licensed Insurance Broker
+Date: January 2, 2026
