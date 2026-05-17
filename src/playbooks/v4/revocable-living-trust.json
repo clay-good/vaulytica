@@ -1,0 +1,29 @@
+{
+  "id": "revocable-living-trust",
+  "version": "1.0.0",
+  "name": "Revocable Living Trust",
+  "description": "Revocable living trust under UTC + state trust codes with pour-over coordination. Per spec §6.N caveat: execution formalities cannot be verified from text alone (EST-060). Selects the §6.N ruleset (EST-009..EST-016).",
+  "match_features": {
+    "title_keywords": ["revocable living trust", "living trust", "declaration of trust"],
+    "required_clauses": [],
+    "distinguishing_phrases": ["settlor", "grantor", "trustor", "trustee", "trust property", "revocable", "spendthrift"],
+    "negative_features": ["last will and testament", "advance directive", "power of attorney"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Settlor", "Trustee", "Trust Property"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "UTC-STATE-TRUST-CODES",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["last-will-and-testament"],
+  "compliance_matrix_columns": [
+    "UTC § 103 / 401 formation",
+    "UTC § 602 revocability",
+    "UTC § 704 trustees",
+    "UTC § 502 spendthrift",
+    "Lifetime + death distributions",
+    "Pour-over coordination",
+    "Execution-formality disclaimer (EST-060)"
+  ]
+}

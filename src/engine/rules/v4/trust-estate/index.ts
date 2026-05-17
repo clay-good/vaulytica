@@ -1,13 +1,33 @@
 /**
- * v4 sub-domain placeholder — `trust-estate` ruleset (Step 57).
- *
- * Spec: `spec-v4.md` §6.N. Rules land in this directory once the
- * corresponding build step is executed. The barrel below exports an
- * empty `TRUST_ESTATE_RULES` so the v4 aggregate at
- * `src/engine/rules/v4/index.ts` can compose it without a build
- * error during scaffolding.
+ * v4 sub-domain N (Trust / estate / family) ruleset — spec-v4.md §6.N,
+ * Step 57. 60 rules across 8 new families (last will + revocable
+ * living trust + advance directive + healthcare POA + durable POA +
+ * prenup + postnup + family-law MSA) plus the always-fires `EST-060`
+ * execution-formality disclaimer.
  */
 
-import type { Rule } from "../../../finding.js";
+export {
+  TRUST_ESTATE_RULES,
+  WILL_RULES,
+  REVOCABLE_TRUST_RULES,
+  ADVANCE_DIRECTIVE_RULES,
+  HEALTHCARE_POA_RULES,
+  DURABLE_POA_RULES,
+  PRENUP_RULES,
+  POSTNUP_RULES,
+  FAMILY_MSA_RULES,
+  EXECUTION_DISCLAIMER_RULE,
+} from "./rules.js";
 
-export const TRUST_ESTATE_RULES: readonly Rule[] = [];
+export {
+  EST_PLAYBOOK_IDS,
+  EST_PLAYBOOK_WILL,
+  EST_PLAYBOOK_REVOCABLE_TRUST,
+  EST_PLAYBOOK_ADVANCE_DIRECTIVE,
+  EST_PLAYBOOK_HC_POA,
+  EST_PLAYBOOK_DURABLE_POA,
+  EST_PLAYBOOK_PRENUP,
+  EST_PLAYBOOK_POSTNUP,
+  EST_PLAYBOOK_FAMILY_MSA,
+  type EstPlaybookId,
+} from "./_helpers.js";

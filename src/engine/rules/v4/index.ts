@@ -50,6 +50,7 @@ import { HEALTHCARE_RULES } from "./healthcare/index.js";
 import { INSURANCE_RULES } from "./insurance/index.js";
 import { BANKING_RULES } from "./banking/index.js";
 import { CONSTRUCTION_RULES } from "./construction/index.js";
+import { TRUST_ESTATE_RULES } from "./trust-estate/index.js";
 
 /**
  * The v4 ruleset aggregate. Populated one sub-domain at a time as
@@ -70,6 +71,7 @@ export const V4_RULES: readonly Rule[] = [
   ...INSURANCE_RULES,
   ...BANKING_RULES,
   ...CONSTRUCTION_RULES,
+  ...TRUST_ESTATE_RULES,
 ];
 
 export { GOVERNANCE_RULES } from "./governance/index.js";
@@ -84,3 +86,4 @@ export { HEALTHCARE_RULES } from "./healthcare/index.js";
 export { INSURANCE_RULES } from "./insurance/index.js";
 export { BANKING_RULES } from "./banking/index.js";
 export { CONSTRUCTION_RULES } from "./construction/index.js";
+export { TRUST_ESTATE_RULES } from "./trust-estate/index.js";

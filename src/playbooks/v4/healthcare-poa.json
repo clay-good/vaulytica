@@ -1,0 +1,30 @@
+{
+  "id": "healthcare-poa",
+  "version": "1.0.0",
+  "name": "Healthcare Proxy / POA for Healthcare",
+  "description": "Healthcare proxy / durable POA for healthcare under state healthcare-POA statutes. Per spec §6.N caveat: execution formalities cannot be verified from text alone (EST-060). Selects the §6.N ruleset (EST-024..EST-030).",
+  "match_features": {
+    "title_keywords": ["healthcare proxy", "health care proxy", "healthcare power of attorney", "medical power of attorney"],
+    "required_clauses": [],
+    "distinguishing_phrases": ["principal", "agent", "proxy", "medical decisions", "incapacity", "hipaa"],
+    "negative_features": ["advance directive", "durable poa financial", "prenup"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Principal", "Agent"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "STATE-HEALTHCARE-POA",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["advance-directive", "durable-poa-financial"],
+  "compliance_matrix_columns": [
+    "Principal + agent + successor",
+    "Scope of authority",
+    "HIPAA authorization",
+    "Activation (springing / immediate)",
+    "End-of-life / DNR",
+    "Limitations",
+    "Witnesses / notary",
+    "Execution-formality disclaimer (EST-060)"
+  ]
+}

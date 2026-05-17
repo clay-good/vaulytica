@@ -49,6 +49,7 @@ export {
   INSURANCE_RULES,
   BANKING_RULES,
   CONSTRUCTION_RULES,
+  TRUST_ESTATE_RULES,
 } from "./rules/v4/index.js";
 
 export type {

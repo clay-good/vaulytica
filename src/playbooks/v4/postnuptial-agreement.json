@@ -1,0 +1,29 @@
+{
+  "id": "postnuptial-agreement",
+  "version": "1.0.0",
+  "name": "Postnuptial Agreement",
+  "description": "Postnuptial agreement under state postnup law (varies sharply). Per spec §6.N caveat: execution formalities cannot be verified from text alone (EST-060). Selects the §6.N ruleset (EST-046..EST-052).",
+  "match_features": {
+    "title_keywords": ["postnuptial agreement", "post-nuptial agreement", "postnup"],
+    "required_clauses": [],
+    "distinguishing_phrases": ["during the marriage", "spouses", "transmutation", "fiduciary duties"],
+    "negative_features": ["prenuptial", "premarital", "contemplation of marriage", "marital settlement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Spouses"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "STATE-POSTNUP-LAW",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["prenuptial-agreement"],
+  "compliance_matrix_columns": [
+    "Parties + during-marriage",
+    "Consideration recital",
+    "Heightened fiduciary disclosure",
+    "Property + transmutation",
+    "Spousal support",
+    "Independent counsel + voluntary",
+    "Execution-formality disclaimer (EST-060)"
+  ]
+}

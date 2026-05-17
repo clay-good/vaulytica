@@ -1,0 +1,30 @@
+{
+  "id": "prenuptial-agreement",
+  "version": "1.0.0",
+  "name": "Prenuptial Agreement",
+  "description": "Prenuptial agreement under UPAA / UPMAA + state family law. Per spec §6.N caveat: execution formalities cannot be verified from text alone (EST-060). Selects the §6.N ruleset (EST-038..EST-045).",
+  "match_features": {
+    "title_keywords": ["prenuptial agreement", "premarital agreement", "prenup"],
+    "required_clauses": [],
+    "distinguishing_phrases": ["prospective spouses", "contemplation of marriage", "separate property", "spousal support waiver", "elective share"],
+    "negative_features": ["postnuptial", "marital settlement", "during the marriage"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Prospective Spouses"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "UPMAA-UPAA-STATE",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "UPMAA § 3 contemplation",
+    "UPMAA § 9 disclosure",
+    "Property characterization",
+    "Spousal support (state-specific)",
+    "Estate / elective-share waiver",
+    "Independent counsel",
+    "Choice of law + venue",
+    "Execution-formality disclaimer (EST-060)"
+  ]
+}

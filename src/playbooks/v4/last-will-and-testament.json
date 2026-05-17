@@ -1,0 +1,28 @@
+{
+  "id": "last-will-and-testament",
+  "version": "1.0.0",
+  "name": "Last Will and Testament",
+  "description": "Last will and testament (text-only lint) under UPC §§ 2-501–509 + state will codes. Per spec §6.N caveat: execution formalities cannot be verified from text alone (EST-060 disclaimer). Selects the §6.N ruleset (EST-001..EST-008).",
+  "match_features": {
+    "title_keywords": ["last will and testament", "will of", "my will"],
+    "required_clauses": [],
+    "distinguishing_phrases": ["testator", "executor", "bequeath", "devise", "residue", "codicil"],
+    "negative_features": ["trust", "advance directive", "power of attorney", "prenuptial"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Testator", "Executor"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "UPC-STATE-WILL-CODES",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["revocable-living-trust"],
+  "compliance_matrix_columns": [
+    "UPC § 2-501–509 baseline",
+    "Revocation of prior wills",
+    "Executor + bond waiver",
+    "Residuary + guardianship",
+    "Self-proving affidavit",
+    "Execution-formality disclaimer (EST-060)"
+  ]
+}
