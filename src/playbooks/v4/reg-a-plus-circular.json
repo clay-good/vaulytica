@@ -1,0 +1,30 @@
+{
+  "id": "reg-a-plus-circular",
+  "version": "1.0.0",
+  "name": "Reg A+ Offering Circular",
+  "description": "Reg A+ Tier 1 / Tier 2 offering circular (Form 1-A) prose. Per spec §6.P caveat: v4 lints prose only (REG-040). Selects the §6.P ruleset (REG-033..REG-039).",
+  "match_features": {
+    "title_keywords": ["offering circular", "regulation a", "reg a+", "form 1-a"],
+    "required_clauses": [],
+    "distinguishing_phrases": ["tier 1", "tier 2", "form 1-a", "offering circular", "regulation a"],
+    "negative_features": ["form d", "form adv", "s-1", "10-k", "ppm"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Tier", "Offering Circular"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "REG-A-FORM-1-A",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "Tier 1 vs Tier 2 + offering cap",
+    "Form 1-A structure",
+    "Risk factors",
+    "Use of proceeds + plan of distribution",
+    "Non-accredited 10% limitation",
+    "Audited financials (Tier 2)",
+    "Ongoing reporting (Form 1-K / 1-SA / 1-U)",
+    "Prose-only disclaimer (REG-040)"
+  ]
+}

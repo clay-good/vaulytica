@@ -1,13 +1,28 @@
 /**
- * v4 sub-domain placeholder — `regulatory-prose` ruleset (Step 59).
- *
- * Spec: `spec-v4.md` §6.P. Rules land in this directory once the
- * corresponding build step is executed. The barrel below exports an
- * empty `REGULATORY_PROSE_RULES` so the v4 aggregate at
- * `src/engine/rules/v4/index.ts` can compose it without a build
- * error during scaffolding.
+ * v4 sub-domain P (Regulatory filings — prose only) ruleset —
+ * spec-v4.md §6.P, Step 59. 40 rules across 6 new families (Form D,
+ * Form ADV Part 2A, S-1 / 10-K risk factors shared, PPM, Reg A+
+ * offering circular) plus the always-fires `REG-040` filing-schema
+ * disclaimer.
  */
 
-import type { Rule } from "../../../finding.js";
+export {
+  REGULATORY_PROSE_RULES,
+  FORM_D_RULES,
+  FORM_ADV_RULES,
+  RISK_FACTORS_RULES,
+  PPM_RULES,
+  REG_A_RULES,
+  FILING_SCHEMA_DISCLAIMER_RULE,
+} from "./rules.js";
 
-export const REGULATORY_PROSE_RULES: readonly Rule[] = [];
+export {
+  REG_PLAYBOOK_IDS,
+  REG_PLAYBOOK_FORM_D,
+  REG_PLAYBOOK_FORM_ADV,
+  REG_PLAYBOOK_S1,
+  REG_PLAYBOOK_10K,
+  REG_PLAYBOOK_PPM,
+  REG_PLAYBOOK_REG_A,
+  type RegPlaybookId,
+} from "./_helpers.js";

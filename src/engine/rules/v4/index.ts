@@ -52,6 +52,7 @@ import { BANKING_RULES } from "./banking/index.js";
 import { CONSTRUCTION_RULES } from "./construction/index.js";
 import { TRUST_ESTATE_RULES } from "./trust-estate/index.js";
 import { COMPLIANCE_POLICY_RULES } from "./compliance-policy/index.js";
+import { REGULATORY_PROSE_RULES } from "./regulatory-prose/index.js";
 
 /**
  * The v4 ruleset aggregate. Populated one sub-domain at a time as
@@ -74,6 +75,7 @@ export const V4_RULES: readonly Rule[] = [
   ...CONSTRUCTION_RULES,
   ...TRUST_ESTATE_RULES,
   ...COMPLIANCE_POLICY_RULES,
+  ...REGULATORY_PROSE_RULES,
 ];
 
 export { GOVERNANCE_RULES } from "./governance/index.js";
@@ -90,3 +92,4 @@ export { BANKING_RULES } from "./banking/index.js";
 export { CONSTRUCTION_RULES } from "./construction/index.js";
 export { TRUST_ESTATE_RULES } from "./trust-estate/index.js";
 export { COMPLIANCE_POLICY_RULES } from "./compliance-policy/index.js";
+export { REGULATORY_PROSE_RULES } from "./regulatory-prose/index.js";

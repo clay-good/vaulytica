@@ -1,0 +1,30 @@
+{
+  "id": "form-d-narrative",
+  "version": "1.0.0",
+  "name": "Form D Narrative",
+  "description": "Form D narrative supporting a Reg D Rule 504 / 506(b) / 506(c) exempt offering. Per spec §6.P caveat: v4 lints prose only (REG-040). Selects the §6.P ruleset (REG-001..REG-007).",
+  "match_features": {
+    "title_keywords": ["form d", "regulation d", "exempt offering narrative"],
+    "required_clauses": [],
+    "distinguishing_phrases": ["rule 506", "rule 504", "accredited investor", "general solicitation", "edgar", "cik"],
+    "negative_features": ["form adv", "10-k", "ppm", "reg a+"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Issuer", "Accredited Investor"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "REG-D",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["ppm-narrative"],
+  "compliance_matrix_columns": [
+    "Issuer identification",
+    "Rule 504 / 506(b) / 506(c)",
+    "Accredited investor + 506(c) verification",
+    "General solicitation",
+    "Rule 506(d) bad-actor",
+    "Offering size + minimum",
+    "State blue-sky notice",
+    "Prose-only disclaimer (REG-040)"
+  ]
+}

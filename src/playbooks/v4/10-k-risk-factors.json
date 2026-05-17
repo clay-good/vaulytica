@@ -1,0 +1,32 @@
+{
+  "id": "10-k-risk-factors",
+  "version": "1.0.0",
+  "name": "10-K Risk Factors (prose only)",
+  "description": "10-K risk factors prose under Reg S-K Item 105 (with annual updates). Per spec §6.P caveat: v4 lints prose only (REG-040). Selects the §6.P shared risk-factors ruleset (REG-016..REG-024).",
+  "match_features": {
+    "title_keywords": ["10-k", "form 10-k", "annual report on form 10-k"],
+    "required_clauses": [],
+    "distinguishing_phrases": ["risk factors", "annual report", "item 1a", "fiscal year"],
+    "negative_features": ["form d", "form adv", "s-1", "ppm", "reg a+"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "REG-S-K-ITEM-105",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["s-1-risk-factors"],
+  "compliance_matrix_columns": [
+    "Risk-factor section",
+    "Item 105 materiality + summary",
+    "Boilerplate / specificity",
+    "Hypothetical / already-materialized",
+    "Plain-English headlines",
+    "PSLRA safe harbor",
+    "Cybersecurity",
+    "Climate / ESG",
+    "Updates from prior period",
+    "Prose-only disclaimer (REG-040)"
+  ]
+}

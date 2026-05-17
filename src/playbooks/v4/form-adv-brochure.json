@@ -1,0 +1,31 @@
+{
+  "id": "form-adv-brochure",
+  "version": "1.0.0",
+  "name": "Form ADV Part 2A Brochure",
+  "description": "Investment-adviser brochure (Form ADV Part 2A) under Rule 204-3. Per spec §6.P caveat: v4 lints prose only (REG-040). Selects the §6.P ruleset (REG-008..REG-015).",
+  "match_features": {
+    "title_keywords": ["form adv", "form adv part 2a", "investment adviser brochure"],
+    "required_clauses": [],
+    "distinguishing_phrases": ["investment adviser", "advisory business", "code of ethics", "brokerage practices", "custody", "item 4", "item 8"],
+    "negative_features": ["form d", "10-k", "ppm"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Investment Adviser", "Brochure"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "FORM-ADV-RULE-204-3",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "Cover page + Item 2 material changes",
+    "Item 4 advisory business",
+    "Item 5 fees + compensation",
+    "Item 8 methods + strategies + risks",
+    "Item 9 disciplinary",
+    "Item 11 code of ethics",
+    "Item 12 brokerage",
+    "Item 15 custody",
+    "Prose-only disclaimer (REG-040)"
+  ]
+}
