@@ -1,0 +1,43 @@
+{
+  "id": "vendor-security-questionnaire",
+  "version": "1.0.0",
+  "name": "Vendor Security Questionnaire (SIG / CAIQ)",
+  "description": "Vendor security questionnaire (SIG / CAIQ-style) with NIST CSF + ISO 27001 baseline. Selects the §6.I ruleset (PRV-027..PRV-033).",
+  "match_features": {
+    "title_keywords": [
+      "vendor security questionnaire",
+      "security questionnaire",
+      "sig",
+      "caiq",
+      "third-party risk"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "soc 2",
+      "iso 27001",
+      "encryption",
+      "mfa",
+      "rbac",
+      "penetration test",
+      "incident response"
+    ],
+    "negative_features": ["merger", "license grant"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Vendor", "Subprocessor"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "NIST-CSF-ISO-27001",
+  "applicable_jurisdictions": ["US", "EU"],
+  "companion_playbooks": ["vendor-security-bundle"],
+  "compliance_matrix_columns": [
+    "Security policy + governance",
+    "RBAC / least-privilege / MFA",
+    "Encryption at rest + in transit",
+    "Third-party audits (SOC 2 / ISO 27001)",
+    "Vulnerability management + penetration testing",
+    "Incident response + breach SLA",
+    "Subprocessor disclosure"
+  ]
+}

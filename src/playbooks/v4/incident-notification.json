@@ -1,0 +1,41 @@
+{
+  "id": "incident-notification",
+  "version": "1.0.0",
+  "name": "Data-Incident Notification Template",
+  "description": "Data-incident / breach notification template covering GDPR Art. 33 / 34 + HIPAA + US state breach laws. Selects the §6.I ruleset (PRV-034..PRV-040).",
+  "match_features": {
+    "title_keywords": [
+      "data breach notification",
+      "incident notification",
+      "breach notice",
+      "notification of data breach"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "nature of the incident",
+      "affected individuals",
+      "likely consequences",
+      "measures taken",
+      "without undue delay",
+      "72 hours"
+    ],
+    "negative_features": ["business associate agreement", "license grant"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Incident", "Affected Individual"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "GDPR-ART-33-STATE-BREACH",
+  "applicable_jurisdictions": ["US", "EU", "UK"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "Art. 33(3)(a) nature",
+    "Art. 33(3)(a) categories / numbers",
+    "Art. 33(3)(b) DPO contact",
+    "Art. 33(3)(c) consequences",
+    "Art. 33(3)(d) measures",
+    "GDPR 72h + HIPAA 60d + state",
+    "State-AG / OCR notification triggers"
+  ]
+}

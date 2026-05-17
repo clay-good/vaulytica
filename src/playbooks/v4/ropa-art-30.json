@@ -1,0 +1,39 @@
+{
+  "id": "ropa-art-30",
+  "version": "1.0.0",
+  "name": "Records of Processing Activities (GDPR Art. 30)",
+  "description": "GDPR Art. 30 records of processing activities for controllers / processors. Selects the §6.I ruleset (PRV-015..PRV-020).",
+  "match_features": {
+    "title_keywords": [
+      "records of processing",
+      "ropa",
+      "article 30",
+      "processing register"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "controller",
+      "joint controller",
+      "categories of data subjects",
+      "categories of personal data",
+      "international transfers",
+      "retention"
+    ],
+    "negative_features": ["business associate", "merger agreement", "patent license"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Controller", "Processor", "DPO"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "GDPR-ART-30",
+  "applicable_jurisdictions": ["EU", "UK"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "Art. 30(1)(a) controller / DPO",
+    "Art. 30(1)(b) purposes",
+    "Art. 30(1)(c) categories",
+    "Art. 30(1)(d)–(e) recipients / transfers",
+    "Art. 30(1)(f)–(g) retention / security"
+  ]
+}

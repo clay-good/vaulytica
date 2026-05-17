@@ -1,0 +1,33 @@
+{
+  "id": "cookie-notice",
+  "version": "1.0.0",
+  "name": "Cookie / Tracking Notice",
+  "description": "Cookie / tracking notice with ePrivacy + GDPR Art. 7 consent and CCPA / CPRA opt-out (GPC). Selects the §6.I ruleset (PRV-001..PRV-006).",
+  "match_features": {
+    "title_keywords": ["cookie notice", "cookie policy", "tracking notice", "cookie statement"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "strictly necessary",
+      "analytics",
+      "advertising",
+      "consent",
+      "preference center",
+      "do not sell"
+    ],
+    "negative_features": ["business associate", "data processing agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Cookies", "Consent"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "ePRIVACY-GDPR-CCPA",
+  "applicable_jurisdictions": ["EU", "UK", "US-CA"],
+  "companion_playbooks": ["privacy-policy-lint"],
+  "compliance_matrix_columns": [
+    "ePrivacy Art. 5(3)",
+    "GDPR Art. 7 consent",
+    "CCPA/CPRA opt-out + GPC",
+    "Per-cookie disclosure table"
+  ]
+}

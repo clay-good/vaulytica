@@ -1,0 +1,40 @@
+{
+  "id": "dpia-art-35",
+  "version": "1.0.0",
+  "name": "Data Protection Impact Assessment (GDPR Art. 35)",
+  "description": "GDPR Art. 35 DPIA covering necessity, proportionality, risk assessment, and mitigations. Selects the §6.I ruleset (PRV-021..PRV-026).",
+  "match_features": {
+    "title_keywords": [
+      "data protection impact assessment",
+      "dpia",
+      "pia",
+      "privacy impact assessment"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "necessity and proportionality",
+      "rights and freedoms",
+      "likelihood",
+      "severity",
+      "mitigations",
+      "supervisory authority"
+    ],
+    "negative_features": ["business associate", "merger agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Controller", "DPO", "Risk"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "GDPR-ART-35",
+  "applicable_jurisdictions": ["EU", "UK"],
+  "companion_playbooks": ["ropa-art-30"],
+  "compliance_matrix_columns": [
+    "Art. 35(7)(a) description",
+    "Art. 35(7)(b) necessity / proportionality",
+    "Art. 35(7)(c) risk assessment",
+    "Art. 35(7)(d) mitigations",
+    "Art. 35(2) DPO consultation",
+    "Art. 36 prior consultation"
+  ]
+}

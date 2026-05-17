@@ -1,0 +1,38 @@
+{
+  "id": "hipaa-npp",
+  "version": "1.0.0",
+  "name": "HIPAA Notice of Privacy Practices",
+  "description": "HIPAA Notice of Privacy Practices under 45 C.F.R. § 164.520. Selects the §6.I ruleset (PRV-007..PRV-014).",
+  "match_features": {
+    "title_keywords": [
+      "notice of privacy practices",
+      "npp",
+      "hipaa notice"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "protected health information",
+      "phi",
+      "treatment, payment, and health care operations",
+      "tpo",
+      "office for civil rights",
+      "ocr"
+    ],
+    "negative_features": ["dpa", "scc", "gdpr"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Protected Health Information", "Covered Entity"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "HIPAA-164.520",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "45 C.F.R. § 164.520(b)(1)(i) header",
+    "Uses / disclosures (TPO + others)",
+    "Individual rights enumeration",
+    "Right to complain (HHS / OCR)",
+    "Effective date + contact"
+  ]
+}

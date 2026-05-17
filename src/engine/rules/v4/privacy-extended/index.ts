@@ -1,13 +1,29 @@
 /**
- * v4 sub-domain placeholder — `privacy-extended` ruleset (Step 52).
- *
- * Spec: `spec-v4.md` §6.I. Rules land in this directory once the
- * corresponding build step is executed. The barrel below exports an
- * empty `PRIVACY_EXTENDED_RULES` so the v4 aggregate at
- * `src/engine/rules/v4/index.ts` can compose it without a build
- * error during scaffolding.
+ * v4 sub-domain I (Privacy, expanded) ruleset — spec-v4.md §6.I,
+ * Step 52. 40 rules across 6 new families (cookie / tracking notice,
+ * HIPAA NPP, GDPR Art. 30 ROPA, GDPR Art. 35 DPIA, vendor security
+ * questionnaire, data-incident notification). v3 BAA / DPA-GDPR /
+ * DPA-US-state / SCC / IDTA / privacy-policy continue under their
+ * existing rulesets.
  */
 
-import type { Rule } from "../../../finding.js";
+export {
+  PRIVACY_EXTENDED_RULES,
+  COOKIE_NOTICE_RULES,
+  NPP_RULES,
+  ROPA_RULES,
+  DPIA_RULES,
+  VENDOR_QUESTIONNAIRE_RULES,
+  INCIDENT_NOTIFICATION_RULES,
+} from "./rules.js";
 
-export const PRIVACY_EXTENDED_RULES: readonly Rule[] = [];
+export {
+  PRV_PLAYBOOK_IDS,
+  PRV_PLAYBOOK_COOKIE,
+  PRV_PLAYBOOK_NPP,
+  PRV_PLAYBOOK_ROPA,
+  PRV_PLAYBOOK_DPIA,
+  PRV_PLAYBOOK_VSQ,
+  PRV_PLAYBOOK_INCIDENT,
+  type PrvPlaybookId,
+} from "./_helpers.js";

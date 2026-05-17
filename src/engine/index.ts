@@ -44,6 +44,7 @@ export {
   EMPLOYMENT_V4_RULES,
   SETTLEMENT_RULES,
   IP_LICENSING_RULES,
+  PRIVACY_EXTENDED_RULES,
 } from "./rules/v4/index.js";
 
 export type {
