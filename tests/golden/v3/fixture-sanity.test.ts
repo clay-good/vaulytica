@@ -137,6 +137,24 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // require the processor to delete or return personal data at end
   // of services.
   "dpa-multi-state-us-missing-deletion-or-return-fail.txt": ["USDPA-015"],
+
+  // SaaS Terms of Service that forces phone-only cancellation during
+  // business hours and strips every Click-to-Cancel / ROSCA / online-
+  // cancellation anchor. ADDENDA-019 is the load-bearing warning —
+  // its present_patterns require either an online-cancellation phrase
+  // ("click to cancel" / "cancel online" / "cancel through your
+  // account" / "easy cancellation") or an explicit ROSCA reference,
+  // and now neither appears.
+  "saas-tos-no-click-to-cancel-fail.txt": ["ADDENDA-019"],
+
+  // Privacy Policy stripped of every CCPA § 1798.130 / GDPR Art. 13–14
+  // / COPPA disclosure anchor: no "categories of personal information",
+  // no "lawful basis" / "consent" / "legitimate interest" / "legal
+  // obligation", and no "right to access/delete/portability/opt-out/
+  // object" or "data subject rights" language. ADDENDA-020 is the
+  // load-bearing warning — its present_patterns require all three
+  // anchor families and now none appears.
+  "privacy-policy-lint-missing-disclosures-fail.txt": ["ADDENDA-020"],
 };
 
 describe("v3 fixture sanity", () => {

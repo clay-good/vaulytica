@@ -43,6 +43,15 @@ All notable changes to this project will be documented in this file. Format adap
   `msa-customer-deep-missing-ip-indemnity-fail.txt` (MSA-001),
   `dpa-multi-state-us-missing-deletion-or-return-fail.txt`
   (USDPA-015 critical). Sanity test now pins 16 fail-fixtures.
+- Expand the v3 fail-fixture corpus from 16 to 18 (LAUNCH row v3-b):
+  `saas-tos-no-click-to-cancel-fail.txt` (ADDENDA-019 — phone-only
+  cancellation strips every FTC Click-to-Cancel / ROSCA anchor),
+  `privacy-policy-lint-missing-disclosures-fail.txt` (ADDENDA-020 —
+  vague boilerplate strips every CCPA § 1798.130 / GDPR Art. 13–14 /
+  data-subject-rights anchor). Sanity test now pins 18 fail-fixtures.
+  The remaining v3 playbook without a fail-fixture (`coi`) carries no
+  v3 presence rules; coverage will land alongside the ACORD-25
+  spatial extractor.
 
 ---
 

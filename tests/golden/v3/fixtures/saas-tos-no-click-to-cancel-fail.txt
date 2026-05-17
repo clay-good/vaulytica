@@ -1,0 +1,37 @@
+ClipboardPro Terms of Service
+
+These Terms of Service ("Terms") govern access to and use of the ClipboardPro software-as-a-service platform ("Service") provided by Stark Industries Cloud, Inc., a Delaware corporation ("Provider"), to business entities that create an account ("Customer"). By creating an account or accessing the Service, Customer agrees to these Terms.
+
+1. Account Creation and Acceptable Use. Customer must create an account by providing accurate, complete, and current information. Customer is responsible for maintaining the confidentiality of account credentials and for all activity that occurs under its account. Customer shall use the Service only for lawful business purposes and shall not: (a) use the Service to transmit spam, malware, or unlawful content; (b) attempt to gain unauthorized access to the Service or Provider's systems; (c) use the Service to violate the rights of any third party; or (d) resell or sublicense access to the Service without Provider's prior written consent.
+
+2. Subscription Plan Tiers. Provider offers the following subscription tiers: (a) Starter — up to 10 seats, 50 GB storage, standard support; (b) Professional — up to 100 seats, 500 GB storage, priority support, API access; and (c) Enterprise — unlimited seats, 5 TB storage, dedicated support, custom SLA, and SSO integration. Pricing for each tier is set forth in the applicable Order Form. Customer may upgrade or downgrade between tiers upon thirty (30) days written notice to Provider.
+
+3. Auto-Renewal. Each subscription term will automatically renew for successive terms of equal length. To request non-renewal, Customer must call Provider's billing department at +1 (302) 555-0188 during normal business hours (Monday through Friday, 9 a.m. to 5 p.m. Eastern Time) and speak with a billing representative who will process the request. Written requests, email requests, and requests submitted through the account portal will not be accepted for cancellation; Provider's billing department will direct any such requests to the telephone line described above. Cancellation requests received fewer than sixty (60) days before the renewal date will not take effect until the following renewal cycle.
+
+4. Modification of Terms. Provider may modify these Terms at any time by providing Customer with at least thirty (30) days advance written notice via email to the account administrator address on file. If Customer does not agree to the modified Terms, Customer may discontinue use of the Service. Continued use of the Service after the effective date of any modification constitutes acceptance of the modified Terms.
+
+5. Data Ownership. Customer retains all right, title, and interest in and to the data, content, and information that Customer uploads to or processes through the Service ("Customer Data"). Provider acquires no ownership interest in Customer Data. Provider shall use Customer Data solely to provide and improve the Service and as otherwise expressly permitted by Customer in writing.
+
+6. Service-Level Commitment. Provider commits to a monthly uptime availability of 99.5% for the core Service, measured over each calendar month, excluding scheduled maintenance windows communicated to Customer at least forty-eight (48) hours in advance. If Provider fails to meet the 99.5% uptime commitment in any calendar month, Customer will be entitled to a service credit equal to 10% of the monthly subscription fee for each full percentage point of downtime below 99.5%, up to a maximum credit of 30% of the monthly fee. Credits must be requested within thirty (30) days of the end of the affected month and will be applied to the next invoice.
+
+7. Incident Response. Provider shall notify Customer within twenty-four (24) hours of Provider's confirmation of any security incident that results in or is reasonably likely to result in unauthorized access to, disclosure of, or destruction of Customer Data. The notification shall describe the nature of the incident, the categories of Customer Data affected, and the remediation steps Provider has taken or intends to take. Provider shall provide Customer with updates on the investigation and remediation at least every forty-eight (48) hours until the incident is fully resolved.
+
+8. Data Export on Termination. Upon expiration or termination of the subscription for any reason, Customer shall have thirty (30) days to export all Customer Data from the Service in a machine-readable format (CSV or JSON). Provider shall make the Customer Data available for export during this thirty (30)-day window and shall not delete or render inaccessible any Customer Data until the export window has expired. After the export window, Provider shall securely delete all Customer Data in accordance with its data-deletion policies.
+
+9. Fees and Late Fees. Customer shall pay all fees set forth in the applicable Order Form within thirty (30) days of invoice date. Any amounts not paid when due will accrue interest at the rate of eighteen percent (18%) per annum (approximately 1.5% per month), which the parties acknowledge does not exceed the maximum rate permitted by N.Y. Gen. Oblig. Law § 5-501, calculated from the due date until paid in full. Provider reserves the right to suspend access to the Service for accounts with overdue balances after providing Customer with ten (10) days written notice.
+
+10. Termination for Cause. Either party may terminate these Terms upon thirty (30) days written notice if the other party materially breaches these Terms and fails to cure such breach within the thirty (30)-day notice period. Provider may additionally terminate immediately if Customer violates the acceptable use provisions in Section 1, engages in fraudulent activity, or if Customer Data poses a security risk to the Service or other customers. Upon termination for cause by Provider, no refunds of pre-paid fees will be provided.
+
+11. Survival. The following provisions survive expiration or termination of these Terms for any reason: payment obligations (Section 9), intellectual property rights (Section 5), indemnification obligations, confidentiality obligations, limitation of liability, and this survival clause.
+
+12. Governing Law and Venue. These Terms shall be governed by the laws of the State of Delaware, without regard to conflict-of-laws principles. Any dispute arising under or relating to these Terms shall be resolved exclusively in the state or federal courts located in New Castle County, Delaware, and each party consents to personal jurisdiction in those courts.
+
+Effective Date: February 1, 2026.
+
+STARK INDUSTRIES CLOUD, INC.
+
+Signed by: ____________________________
+Title: Chief Commercial Officer
+Date: February 1, 2026
+
+CUSTOMER ACKNOWLEDGMENT: By creating an account or clicking "I Agree," Customer agrees to these Terms of Service.

@@ -241,6 +241,15 @@ Three substantive additions:
 
 ## Post-4.0 work
 
+### v3 fail-fixture corpus expansion (16 → 18) (2026-05-17) — ✅ complete
+
+Advanced LAUNCH row v3-b coverage from sixteen end-to-end fail-fixtures to eighteen, adding one per remaining under-covered v3 playbook with a dedicated ADDENDA-* rule (SaaS ToS warning, Privacy-Policy-Lint warning). The last gap — `coi` — carries no v3 rules (the COI playbook is text-extraction-driven and validated through the compliance matrix rather than presence rules), so a `coi-*-fail.txt` is deferred until the ACORD-25 spatial extractor lands. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
+
+- `saas-tos-no-click-to-cancel-fail.txt` — rewrites Section 3 (Auto-Renewal) to require phone-only cancellation during business hours and strips every "click-to-cancel" / "cancel online" / "cancel through your account" / "ROSCA" anchor; also removes the FTC Negative Option Rule reference. **ADDENDA-019 (warning)** fires because its `present_patterns` regex requires either an online-cancellation phrase or an explicit ROSCA reference, and now neither matches anywhere in the document. A consumer SaaS that gates cancellation behind phone-only business-hours support fails the FTC Click-to-Cancel rule.
+- `privacy-policy-lint-missing-disclosures-fail.txt` — replaces enumerated "Categories of Personal Data" with vague "items we gather" boilerplate; strips every "lawful basis" / "legitimate interest" / "consent" / "legal obligation" reference (Section 9 removed entirely); strips every "right to access / delete / portability / opt-out / object" enumeration and the "data-subject rights" anchor (Section 6 collapsed to "available choices vary by jurisdiction"). **ADDENDA-020 (warning)** fires because its `present_patterns` regex requires all three CCPA § 1798.130 / GDPR Art. 13–14 / data-subject-rights anchor families, and now none appears.
+
+Each fail-fixture has a `.playbook` sidecar forcing the v3 playbook (so the auto-detector cannot route to a v2 fallback). [`tests/golden/v3/fixture-sanity.test.ts`](tests/golden/v3/fixture-sanity.test.ts) now pins eighteen fail-fixtures (was sixteen); each entry asserts the load-bearing rule is in the fired set. Goldens regenerated. `npm run lint` clean, `npm run typecheck` clean, `npm test` green, `npm run build` green.
+
 ### v3 fail-fixture corpus expansion (13 → 16) (2026-05-17) — ✅ complete
 
 Advanced LAUNCH row v3-b coverage from thirteen end-to-end fail-fixtures to sixteen, adding one per remaining under-covered v3 playbook (Subcontractor BAA critical, Customer-form MSA warning, Multi-state US DPA critical). New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
