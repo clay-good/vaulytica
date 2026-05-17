@@ -49,6 +49,28 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
     "ADDENDA-011",
     "IPDATA-009",
   ],
+
+  // Vendor Security Addendum that swaps the 24-hour incident-notification
+  // window for vague "promptly and without undue delay" language.
+  // ADDENDA-004 (warning) is the load-bearing detector — its
+  // present_patterns regex requires `within \d+ (hours|days)` and now
+  // matches nothing in the incident-notification paragraph.
+  "vendor-security-addendum-missing-incident-window-fail.txt": ["ADDENDA-004"],
+
+  // SCC Module 2 with side-letter modifications attached. Per EU SCCs
+  // Clause 2, the SCC text is invariable; any "as modified" / "as
+  // amended" / "notwithstanding the SCCs" language is forbidden.
+  // TRANSFER-003 is the load-bearing critical.
+  "scc-module-2-modified-clauses-fail.txt": ["TRANSFER-003"],
+
+  // CCPA Service Provider addendum that claims Service Provider status
+  // but is missing the § 7051 "specific business purpose" and "same
+  // level of privacy protection" anchors. USDPA-020 fires (critical):
+  // a recipient claiming Service Provider status without meeting the
+  // § 7051 contract requirements may be reclassified as a "third
+  // party" — triggering sale / share consequences for the disclosing
+  // party.
+  "dpa-ccpa-service-provider-no-business-purpose-fail.txt": ["USDPA-020"],
 };
 
 describe("v3 fixture sanity", () => {

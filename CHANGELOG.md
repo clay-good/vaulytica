@@ -22,6 +22,11 @@ All notable changes to this project will be documented in this file. Format adap
   load-bearing critical rule (BAA-018, NDA-D-001/002, DPA-007,
   ADDENDA-011 respectively). Pinned by new
   [`tests/golden/v3/fixture-sanity.test.ts`](tests/golden/v3/fixture-sanity.test.ts).
+- Expand the v3 fail-fixture corpus from 4 to 7 (LAUNCH row v3-b):
+  `vendor-security-addendum-missing-incident-window-fail.txt` (ADDENDA-004),
+  `scc-module-2-modified-clauses-fail.txt` (TRANSFER-003 critical),
+  `dpa-ccpa-service-provider-no-business-purpose-fail.txt` (USDPA-020
+  critical). Sanity test now pins 7 fail-fixtures.
 
 ---
 
