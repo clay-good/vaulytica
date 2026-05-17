@@ -1,0 +1,40 @@
+{
+  "id": "construction-contract",
+  "version": "1.0.0",
+  "name": "Construction Contract (AIA-style)",
+  "description": "AIA A101 / A201-style owner-contractor agreement with anti-indemnity screen. Selects the §6.M ruleset (CON-001..CON-007).",
+  "match_features": {
+    "title_keywords": [
+      "construction contract",
+      "owner-contractor agreement",
+      "aia a101",
+      "construction agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "owner",
+      "contractor",
+      "architect",
+      "contract sum",
+      "substantial completion",
+      "general conditions"
+    ],
+    "negative_features": ["subcontractor", "lien waiver", "performance bond", "change order"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Owner", "Contractor", "Architect", "Contract Sum"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "AIA-A101-A201",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["subcontractor-agreement", "change-order"],
+  "compliance_matrix_columns": [
+    "AIA A101 § 4 contract sum",
+    "AIA A201 § 1.1.1 contract documents",
+    "AIA A201 § 3.7.4 differing site",
+    "AIA A201 §§ 3.18 / 11 indemnity / insurance",
+    "Anti-indemnity (CA / NY / TX)",
+    "AIA A201 § 14 termination"
+  ]
+}

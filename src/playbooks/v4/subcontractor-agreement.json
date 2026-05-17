@@ -1,0 +1,35 @@
+{
+  "id": "subcontractor-agreement",
+  "version": "1.0.0",
+  "name": "Subcontractor Agreement",
+  "description": "Subcontractor agreement with prime flow-down + pay-when/if-paid screen. ConsensusDocs 750 / AIA A401 baseline. Selects the §6.M ruleset (CON-008..CON-013).",
+  "match_features": {
+    "title_keywords": ["subcontract", "subcontractor agreement"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "subcontractor",
+      "general contractor",
+      "flow-down",
+      "pay-when-paid",
+      "pay-if-paid",
+      "prime contract"
+    ],
+    "negative_features": ["construction contract", "lien waiver", "performance bond"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Subcontractor", "General Contractor", "Prime Contract"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "AIA-A401-CONSENSUSDOCS-750",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["construction-contract"],
+  "compliance_matrix_columns": [
+    "GC / Subk / Project identified",
+    "Scope + flow-down",
+    "Pay-when-paid vs pay-if-paid",
+    "Schedule + coordination + cleanup",
+    "Warranties",
+    "Dispute resolution + venue + law"
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "id": "construction-lien-waiver",
+  "version": "1.0.0",
+  "name": "Construction Lien Waiver",
+  "description": "Mechanic's-lien waiver (conditional / unconditional, progress / final) under state-prescribed forms (CA Civ. § 8132–8138 and analogous). Selects the §6.M ruleset (CON-014..CON-019).",
+  "match_features": {
+    "title_keywords": [
+      "lien waiver",
+      "waiver and release",
+      "release of lien",
+      "conditional waiver",
+      "unconditional waiver"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "claimant",
+      "through date",
+      "amount of payment",
+      "conditional",
+      "unconditional",
+      "progress payment",
+      "final payment"
+    ],
+    "negative_features": ["construction contract", "subcontract", "performance bond", "change order"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Claimant", "Property", "Through Date"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "STATE-LIEN-WAIVER-FORM",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "Waiver type (conditional / final)",
+    "Claimant / property / through-date",
+    "Scope limited to amount",
+    "Conditional payment condition",
+    "Carve-outs (retention / disputed)",
+    "Signature + statutory form"
+  ]
+}

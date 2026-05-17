@@ -1,0 +1,35 @@
+{
+  "id": "payment-performance-bond",
+  "version": "1.0.0",
+  "name": "Payment / Performance Bond",
+  "description": "Construction payment or performance bond under Miller Act + state Little Miller Acts. AIA A312 baseline. Selects the §6.M ruleset (CON-020..CON-025).",
+  "match_features": {
+    "title_keywords": ["payment bond", "performance bond", "surety bond"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "principal",
+      "surety",
+      "obligee",
+      "penal sum",
+      "miller act",
+      "aia a312"
+    ],
+    "negative_features": ["lien waiver", "subcontract", "change order"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Principal", "Surety", "Obligee", "Penal Sum"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "MILLER-ACT-AIA-A312",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["construction-contract"],
+  "compliance_matrix_columns": [
+    "Principal / surety / obligee",
+    "Bond type (payment / performance / dual)",
+    "Penal sum",
+    "Underlying contract incorporated",
+    "Claimant + notice (90d / 1y)",
+    "Default + surety options"
+  ]
+}
