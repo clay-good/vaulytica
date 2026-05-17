@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Fixed
+- `PlaybookSchema` (`src/playbooks/types.ts`) now accepts the v3 playbook
+  shape — `expected_clauses` / `expected_defined_terms` as `string[]`
+  and `sources` as structured citation objects — coercing each to the
+  canonical engine shape. Previously 15 of the 19 v3 playbooks failed
+  Zod validation and were silently swallowed by the v3 golden harness,
+  causing v3 fixtures to run under v2 fallback playbooks and their
+  v3-scoped rules to never fire. All 19 v3 + 15 v4 goldens regenerated.
+
+### Added
+- Seed v3 fail-fixture corpus under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
+  `baa-missing-subcontractor-flow-down-fail.txt`,
+  `mutual-nda-deep-missing-dtsa-fail.txt`,
+  `dpa-controller-processor-missing-documented-instructions-fail.txt`,
+  `ai-addendum-training-without-optin-fail.txt`. Each exercises a
+  load-bearing critical rule (BAA-018, NDA-D-001/002, DPA-007,
+  ADDENDA-011 respectively). Pinned by new
+  [`tests/golden/v3/fixture-sanity.test.ts`](tests/golden/v3/fixture-sanity.test.ts).
+
 ---
 
 ## [v4.0.0] — 2026-05-17

@@ -93,11 +93,21 @@ export const PlaybookSchema = z.object({
   name: z.string().min(1),
   description: z.string().min(1),
   match_features: PlaybookMatchFeaturesSchema,
+  // v3 playbooks ship these as plain string arrays (`"Limitation of
+  // Liability"`); v2 playbooks use the object form. Both are accepted —
+  // a string `S` is coerced to `{category|term: S, severity_if_missing:
+  // "warning"}` so downstream consumers see a uniform shape.
   expected_clauses: z.array(
-    z.object({ category: z.string().min(1), severity_if_missing: severityEnum }),
+    z.union([
+      z.string().min(1).transform((s) => ({ category: s, severity_if_missing: "warning" as Severity })),
+      z.object({ category: z.string().min(1), severity_if_missing: severityEnum }),
+    ]),
   ),
   expected_defined_terms: z.array(
-    z.object({ term: z.string().min(1), severity_if_missing: severityEnum }),
+    z.union([
+      z.string().min(1).transform((s) => ({ term: s, severity_if_missing: "warning" as Severity })),
+      z.object({ term: z.string().min(1), severity_if_missing: severityEnum }),
+    ]),
   ),
   rule_overrides: z.record(z.string(), PlaybookOverrideSchema),
   balanced_defaults: z.array(
@@ -107,7 +117,16 @@ export const PlaybookSchema = z.object({
       source_dkb_id: z.string().min(1),
     }),
   ),
-  sources: z.array(z.string().min(1)),
+  // v2 playbooks ship `sources` as `string[]` (DKB ids); v3 playbooks
+  // ship structured citation objects with id/source/source_url/etc.
+  // Both are accepted — object form is coerced to its `id` string so
+  // downstream consumers continue to see a `string[]`.
+  sources: z.array(
+    z.union([
+      z.string().min(1),
+      z.object({ id: z.string().min(1) }).passthrough().transform((o) => o.id),
+    ]),
+  ),
   // v3 optional fields — all optional so v2 playbooks validate unchanged.
   regulator_frame: z.string().optional(),
   applicable_jurisdictions: z.array(z.string()).optional(),

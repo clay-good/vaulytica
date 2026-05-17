@@ -1,0 +1,31 @@
+Artificial Intelligence Use Addendum
+
+This Artificial Intelligence Use Addendum ("AI Addendum") is entered into as of March 1, 2026, by and between Stark Enterprises LLC, a Delaware limited liability company ("Customer"), and Wayne Analytics Inc., a California corporation ("Vendor"), and is incorporated into and made a part of the Master Services Agreement between the parties dated January 15, 2026 (the "MSA"). This AI Addendum governs Vendor's use of generative artificial intelligence tools and systems in connection with the Services and in processing Customer Data.
+
+1. Scope of AI Use. Vendor may use generative AI systems solely for the following purposes in connection with the Services: (a) automated summarization of Customer-provided documents, (b) drafting initial versions of deliverables for human review and revision, and (c) classifying and tagging Customer Data records as specified in the applicable Statement of Work.
+
+2. Training on Customer Data. Vendor may use Customer Data to train and improve our AI models on an opt-out basis, unless Customer opts out by written notice. Vendor reserves the right to use Customer Data to train its proprietary foundation models and third-party AI model fine-tunes.
+
+3. Transparency Log. Vendor shall maintain a transparency log recording each instance in which a deliverable, recommendation, or output provided to Customer was generated in whole or material part by an AI system. The log shall record: (a) the date of the output; (b) the AI system used; (c) the category of Customer Data processed; (d) the name and version of the AI model; and (e) whether human review was completed before delivery.
+
+4. Human-in-the-Loop Checkpoint. No deliverable generated in whole or material part by an AI system shall be provided to Customer without first being reviewed and approved by a qualified human member of Vendor's workforce.
+
+5. Vendor Indemnity for AI-Generated IP Infringement. Vendor shall indemnify, defend, and hold harmless Customer and its affiliates, officers, directors, employees, and agents from and against any and all claims, damages, losses, costs, and expenses (including reasonable attorneys' fees) arising out of or relating to any claim that AI-generated content delivered by Vendor under the MSA infringes the copyright, patent, trade secret, or other intellectual property right of any third party.
+
+6. Warranty Regarding Training Data. Vendor warrants that, to its knowledge as of the effective date of this AI Addendum, the training data used to develop or fine-tune any AI model deployed by Vendor in connection with the Services does not include third-party copyrighted material acquired without a license, permission, or other legal authorization.
+
+7. Compliance with AI Risk Frameworks. Vendor shall operate AI systems deployed under this AI Addendum in a manner consistent with the NIST AI Risk Management Framework 1.0 (published January 2023) ("NIST AI RMF"), including the Govern, Map, Measure, and Manage functions. In addition, Vendor acknowledges that certain AI systems covered by this AI Addendum may be subject to the EU AI Act (Regulation (EU) 2024/1689) and agrees to comply with all applicable obligations imposed by that Regulation.
+
+8. Termination Right for Model Changes. Customer may terminate this AI Addendum, and the AI processing portions of the MSA, upon thirty (30) days written notice if Vendor materially changes the underlying AI model, training data composition, or inference architecture used to provide Services to Customer.
+
+9. Record Retention. Vendor shall retain all transparency logs, human-reviewer documentation, and consent records required under this AI Addendum for a minimum of three (3) years following the termination or expiration of the MSA.
+
+10. Conflict. In the event of any conflict between this AI Addendum and the MSA with respect to AI use, this AI Addendum shall govern.
+
+Effective Date: March 1, 2026.
+
+STARK ENTERPRISES LLC (Customer)                   WAYNE ANALYTICS INC. (Vendor)
+
+Signed by: ____________________________            Signed by: ____________________________
+Title: Chief Technology Officer                    Title: Chief AI Officer
+Date: March 1, 2026                                Date: March 1, 2026
