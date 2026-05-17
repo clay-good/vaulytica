@@ -1,0 +1,38 @@
+{
+  "id": "informed-consent",
+  "version": "1.0.0",
+  "name": "Informed Consent (Research / Clinical)",
+  "description": "Informed consent under 45 C.F.R. § 46.116 (Common Rule) + 21 C.F.R. § 50 (FDA). Prose elements only. Selects the §6.J ruleset (HC-001..HC-009).",
+  "match_features": {
+    "title_keywords": [
+      "informed consent",
+      "consent to participate",
+      "consent form",
+      "subject consent"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "research",
+      "voluntary",
+      "withdraw",
+      "irb",
+      "principal investigator",
+      "clinicaltrials.gov"
+    ],
+    "negative_features": ["business associate", "merger", "license grant"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Subject", "Principal Investigator", "IRB"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "COMMON-RULE-FDA",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "Common Rule § 46.116",
+    "FDA § 50.25 (when applicable)",
+    "Voluntary + withdrawal",
+    "Contacts (PI / injury / IRB)"
+  ]
+}

@@ -1,13 +1,21 @@
 /**
- * v4 sub-domain placeholder — `healthcare` ruleset (Step 53).
- *
- * Spec: `spec-v4.md` §6.J. Rules land in this directory once the
- * corresponding build step is executed. The barrel below exports an
- * empty `HEALTHCARE_RULES` so the v4 aggregate at
- * `src/engine/rules/v4/index.ts` can compose it without a build
- * error during scaffolding.
+ * v4 sub-domain J (Healthcare) ruleset — spec-v4.md §6.J, Step 53.
+ * 25 rules across 3 new families (informed consent, PHI authorization,
+ * NPP acknowledgment). J.1 (HIPAA NPP) is routed to I.8 (Step 52);
+ * J.2 (BAA) is routed to v3 `BAA_RULES`.
  */
 
-import type { Rule } from "../../../finding.js";
+export {
+  HEALTHCARE_RULES,
+  INFORMED_CONSENT_RULES,
+  PHI_AUTHORIZATION_RULES,
+  NPP_ACK_RULES,
+} from "./rules.js";
 
-export const HEALTHCARE_RULES: readonly Rule[] = [];
+export {
+  HC_PLAYBOOK_IDS,
+  HC_PLAYBOOK_INFORMED_CONSENT,
+  HC_PLAYBOOK_PHI_AUTH,
+  HC_PLAYBOOK_NPP_ACK,
+  type HcPlaybookId,
+} from "./_helpers.js";

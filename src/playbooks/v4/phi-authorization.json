@@ -1,0 +1,38 @@
+{
+  "id": "phi-authorization",
+  "version": "1.0.0",
+  "name": "Patient Authorization for Release of PHI",
+  "description": "HIPAA authorization for use / disclosure of PHI under 45 C.F.R. § 164.508. Selects the §6.J ruleset (HC-010..HC-018).",
+  "match_features": {
+    "title_keywords": [
+      "authorization for release",
+      "authorization to disclose",
+      "phi authorization",
+      "release of medical records"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "protected health information",
+      "phi",
+      "right to revoke",
+      "re-disclosure",
+      "expiration date",
+      "purpose"
+    ],
+    "negative_features": ["informed consent", "research", "irb"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Protected Health Information", "Recipient"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "HIPAA-164.508",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "§ 164.508(c)(1)(i)–(vi) core elements",
+    "§ 164.508(c)(2)(i)–(iii) statements",
+    "Right to revoke",
+    "Re-disclosure risk"
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "id": "npp-acknowledgment",
+  "version": "1.0.0",
+  "name": "Notice of Privacy Practices Acknowledgment",
+  "description": "HIPAA NPP acknowledgment under 45 C.F.R. § 164.520(c)(2)(ii). Selects the §6.J ruleset (HC-019..HC-025).",
+  "match_features": {
+    "title_keywords": [
+      "acknowledgment of receipt",
+      "npp acknowledgment",
+      "notice of privacy practices acknowledgment"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "acknowledgment",
+      "notice of privacy practices",
+      "received",
+      "good faith effort"
+    ],
+    "negative_features": ["informed consent", "authorization to disclose"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Notice of Privacy Practices", "Covered Entity"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "HIPAA-164.520",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["hipaa-npp"],
+  "compliance_matrix_columns": [
+    "§ 164.520(c)(2)(ii) acknowledgment",
+    "Date + signature",
+    "Good-faith-effort failure",
+    "Retention § 164.530(j) 6 years"
+  ]
+}
