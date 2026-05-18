@@ -863,6 +863,43 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // outer bound for return or destruction of PHI at termination,
   // and open-ended timing risks indefinite PHI retention.
   "baa-return-or-destruction-open-ended-fail.txt": ["BAA-024"],
+
+  // Vendor MSA with Section 11's bankruptcy-termination subsection
+  // removed — every `bankruptc\w+` / `insolven\w+` / `receiver` /
+  // `assignment for the benefit of creditors` anchor is stripped
+  // while material-breach and convenience termination survive. The
+  // surviving Section 11 still grants termination-for-cause on 30
+  // days' notice of an uncured material breach plus a 60-day
+  // termination-for-convenience right, so MSA-018 still passes.
+  // MSA-019 (info) is the load-bearing rule — 11 U.S.C. § 365
+  // makes pure ipso-facto clauses unenforceable in some scenarios
+  // but the contract should still anchor the parties' intent that a
+  // bankruptcy filing, insolvency, receivership, or assignment for
+  // the benefit of creditors is a termination event.
+  "msa-vendor-deep-missing-bankruptcy-termination-fail.txt": ["MSA-019"],
+
+  // Vendor MSA with the "Transition Assistance" section removed —
+  // every `wind[- ]down` / `transition (assistance|services|
+  // period)` / `continued access` / `post[- ]termination
+  // (access|services)` anchor is stripped while the bankruptcy
+  // and material-breach termination subsections and the data-return
+  // clause are preserved. MSA-020 (info) is the load-bearing rule —
+  // without a wind-down period the customer can be cut off
+  // mid-migration; the commercial baseline is up to N (e.g., 90)
+  // days of post-termination service continuation at then-current
+  // rates to facilitate transition.
+  "msa-vendor-deep-missing-wind-down-fail.txt": ["MSA-020"],
+
+  // Vendor MSA with a new Section 15 ("Assignment") that bars
+  // assignment without prior written consent but is silent on
+  // change-of-control / merger / acquisition. MSA-023 (info) is the
+  // load-bearing rule — its bad_patterns catch `(neither party may
+  // assign|no assignment)` with a negative lookahead for
+  // `change of control` / `merger` / `acquisition` within the next
+  // 200 chars; without a change-of-control hook an acquirer can
+  // effectively step into the contract without the counterparty's
+  // consent.
+  "msa-vendor-deep-assignment-silent-change-of-control-fail.txt": ["MSA-023"],
 };
 
 describe("v3 fixture sanity", () => {

@@ -241,6 +241,16 @@ Three substantive additions:
 
 ## Post-4.0 work
 
+### v3 fail-fixture corpus expansion (78 → 81) (2026-05-18) — ✅ complete
+
+Advanced LAUNCH row v3-b coverage from seventy-eight end-to-end fail-fixtures to eighty-one by adding three new fixtures spanning three previously uncovered MSA-deep failure modes (bankruptcy/insolvency termination, hosted-service wind-down, assignment silent on change-of-control) — none of the three rules had an end-to-end fail-fixture before this batch. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
+
+- `msa-vendor-deep-missing-bankruptcy-termination-fail.txt` — Vendor MSA with Section 11's bankruptcy-termination subsection removed; every `bankruptc\w+` / `insolven\w+` / `receiver` / `assignment for the benefit of creditors` anchor is stripped while material-breach (30-day cure) and convenience (60-day notice) termination survive, so MSA-018 still passes. **MSA-019 (info)** fires — 11 U.S.C. § 365 makes pure ipso-facto clauses unenforceable in some scenarios, but the contract should still anchor the parties' intent that a bankruptcy filing, insolvency, receivership, or assignment for the benefit of creditors is a termination event.
+- `msa-vendor-deep-missing-wind-down-fail.txt` — Vendor MSA with Section 14 ("Transition Assistance") removed entirely; every `wind[- ]down` / `transition (assistance|services|period)` / `continued access` / `post[- ]termination (access|services)` anchor is stripped while the bankruptcy- and material-breach-termination subsections and the data-return clause are preserved so MSA-019 / MSA-018 / MSA-021 still pass. **MSA-020 (info)** fires — without a wind-down period the customer can be cut off mid-migration; the commercial baseline is up to N (e.g., 90) days of post-termination service continuation at then-current rates to facilitate transition.
+- `msa-vendor-deep-assignment-silent-change-of-control-fail.txt` — Vendor MSA with a new Section 15 ("Assignment") that bars assignment without prior written consent but is silent on change-of-control / merger / acquisition. **MSA-023 (info)** fires — its bad_patterns catch `(neither party may assign|no assignment)` with a negative lookahead for `change of control` / `merger` / `acquisition` within the next 200 chars; without a change-of-control hook an acquirer can effectively step into the contract without the counterparty's consent.
+
+Each fail-fixture has a `.playbook` sidecar pinning it to the `msa-vendor-deep` playbook so the auto-detect cannot drift to a v2 fallback. [`tests/golden/v3/fixture-sanity.test.ts`](tests/golden/v3/fixture-sanity.test.ts) now pins eighty-one fail-fixtures (was seventy-eight); each entry asserts the load-bearing rule fires. Goldens regenerated; LAUNCH row v3-b updated to 81. `npm run lint && typecheck && test && build` all green.
+
 ### v3 fail-fixture corpus expansion (75 → 78) (2026-05-18) — ✅ complete
 
 Advanced LAUNCH row v3-b coverage from seventy-five end-to-end fail-fixtures to seventy-eight by adding three new fixtures spanning three previously uncovered BAA failure modes (Security Rule technical safeguards, breach-notification outer-bound timing, return-or-destruction outer bound) — none of the three rules had an end-to-end fail-fixture before this batch. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
