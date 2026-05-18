@@ -488,6 +488,41 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // to control its own defense, raising moral-hazard and collusive-
   // settlement risks for whichever party bears the indemnity.
   "msa-vendor-deep-missing-indemnity-procedure-fail.txt": ["MSA-002"],
+
+  // Mutual NDA with the return-or-destruction clause present but the
+  // written certification / attestation requirement stripped — Section 7
+  // says the Receiving Party shall "return or destroy" Confidential
+  // Information but omits the "certify in writing" obligation. NDA-D-014
+  // is the load-bearing warning — its present_patterns look for
+  // certify/certification/attestation near destroy/return; without this
+  // requirement the discloser has no contractual proof that destruction
+  // actually occurred, leaving an unverifiable enforcement gap after
+  // the relationship ends. NDA-D-013 (return-or-destroy presence) still
+  // passes because the return-or-destroy language itself is intact.
+  "mutual-nda-deep-missing-return-attestation-fail.txt": ["NDA-D-014"],
+
+  // Mutual NDA with the injunctive-relief / irreparable-harm clause
+  // removed — Section 9 is replaced by a generic "Remedies" clause
+  // that merely preserves "all remedies at law or in equity" without
+  // explicitly acknowledging irreparable harm or entitling either
+  // party to injunctive relief. NDA-D-015 is the load-bearing rule —
+  // its present_patterns require one of: "irreparable harm/injury",
+  // "injunctive relief/remedy", or "equitable relief"; none appears in
+  // the body, so the discloser must prove inadequate-remedy-at-law
+  // from scratch in any emergency motion — the contractual shortcut is
+  // absent.
+  "mutual-nda-deep-missing-injunctive-relief-fail.txt": ["NDA-D-015"],
+
+  // Mutual NDA with the no-license / no-ownership-transfer clause
+  // omitted — the agreement says nothing about whether disclosure
+  // grants any right, license, or interest in the Confidential
+  // Information. NDA-D-021 is the load-bearing rule — its
+  // present_patterns look for "no license" or "does not grant /
+  // shall not be construed … license"; without this clause an
+  // aggressive receiver could argue an implied license arose from
+  // disclosure, giving the receiving party a litigation foothold the
+  // discloser never intended to concede.
+  "mutual-nda-deep-missing-no-license-clause-fail.txt": ["NDA-D-021"],
 };
 
 describe("v3 fixture sanity", () => {

@@ -43,6 +43,21 @@ All notable changes to this project will be documented in this file. Format adap
   `msa-customer-deep-missing-ip-indemnity-fail.txt` (MSA-001),
   `dpa-multi-state-us-missing-deletion-or-return-fail.txt`
   (USDPA-015 critical). Sanity test now pins 16 fail-fixtures.
+- Expand the v3 fail-fixture corpus from 48 to 51 (LAUNCH row v3-b)
+  with three new NDA-deep fail-fixtures — each exercises a load-bearing
+  NDA-D rule not previously covered end-to-end:
+  `mutual-nda-deep-missing-return-attestation-fail.txt` (NDA-D-014 —
+  return-or-destroy clause present but written certification requirement
+  stripped; discloser has no contractual proof of destruction after
+  relationship ends),
+  `mutual-nda-deep-missing-injunctive-relief-fail.txt` (NDA-D-015 —
+  injunctive-relief / irreparable-harm clause replaced by generic
+  "Remedies" section; discloser must prove inadequate-remedy-at-law from
+  scratch in any emergency motion),
+  `mutual-nda-deep-missing-no-license-clause-fail.txt` (NDA-D-021 —
+  no-license clause omitted entirely; aggressive receiver could argue
+  an implied license arose from disclosure).
+  Sanity test now pins 51 fail-fixtures.
 - Expand the v3 fail-fixture corpus from 45 to 48 (LAUNCH row v3-b)
   with three new fail-fixtures across three distinct v3 rule families —
   each exercises a load-bearing rule not previously covered:

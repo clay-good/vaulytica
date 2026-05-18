@@ -241,6 +241,16 @@ Three substantive additions:
 
 ## Post-4.0 work
 
+### v3 fail-fixture corpus expansion (48 → 51) (2026-05-18) — ✅ complete
+
+Advanced LAUNCH row v3-b coverage from forty-eight end-to-end fail-fixtures to fifty-one by adding three new NDA-deep fixtures — each exercises a distinct NDA-D load-bearing rule not previously covered end-to-end. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
+
+- `mutual-nda-deep-missing-return-attestation-fail.txt` — retains the return-or-destruction clause (Section 7 says the Receiving Party shall "return or destroy all Confidential Information") but strips the written certification obligation; the surviving text merely says the party shall make "reasonable efforts" to comply. **NDA-D-014 (warning)** fires because its present_patterns look for certify/certification/attestation near destroy/return and now neither appears; without this requirement the discloser has no contractual proof that destruction actually occurred, leaving an unverifiable enforcement gap after the relationship ends.
+- `mutual-nda-deep-missing-injunctive-relief-fail.txt` — replaces the injunctive-relief section with a generic "Remedies" clause that preserves "all remedies at law or in equity" but omits any acknowledgment of irreparable harm or entitlement to injunctive/equitable relief. **NDA-D-015 (critical)** fires because its present_patterns require one of "irreparable harm/injury", "injunctive relief/remedy", or "equitable relief" and none appears; without this clause the discloser must prove inadequate-remedy-at-law from scratch in any emergency motion, slowing emergency relief in a leak scenario.
+- `mutual-nda-deep-missing-no-license-clause-fail.txt` — omits any clause stating that disclosure does not grant a license or ownership interest; the agreement says nothing about whether the Receiving Party acquires any right in the Confidential Information. **NDA-D-021 (critical)** fires because its present_patterns require "no license" or "does not grant / shall not be construed … license" and now neither appears; without this clause an aggressive receiver could argue an implied license arose from disclosure.
+
+Each fail-fixture has a `.playbook` sidecar forcing the `mutual-nda-deep` playbook. [`tests/golden/v3/fixture-sanity.test.ts`](tests/golden/v3/fixture-sanity.test.ts) now pins fifty-one fail-fixtures (was forty-eight); each entry asserts the load-bearing rule is in the fired set. Goldens regenerated via `VAULYTICA_REGEN_GOLDEN=1`. Full gate green: `npm run lint && typecheck && test && build` — **1321 passing + 2 skips** (was 1312; +9 new tests: 3 golden-match, 3 determinism, 3 sanity guards).
+
 ### v3 fail-fixture corpus expansion (45 → 48) (2026-05-18) — ✅ complete
 
 Advanced LAUNCH row v3-b coverage from forty-five end-to-end fail-fixtures to forty-eight by adding a new BAA breach-timing fixture, a new multi-state US DPA subcontractor-contract fixture, and a new vendor-MSA indemnity-procedure fixture — each exercises a distinct load-bearing rule not previously covered. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
