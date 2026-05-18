@@ -751,6 +751,45 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // the aggregate liability cap — the rule surfaces this
   // commercially-contested choice for explicit review.
   "msa-vendor-deep-indemnity-carved-out-of-cap-fail.txt": ["MSA-005"],
+
+  // BAA with the Safeguards section narrowed from "administrative,
+  // physical, and technical safeguards … 45 CFR §§ 164.308,
+  // 164.310, and 164.312" to "administrative and technical
+  // safeguards … 45 CFR §§ 164.308 and 164.312" — every
+  // `physical safeguards` token and every `164.310` anchor is
+  // stripped while "Security Rule" is retained so BAA-013 still
+  // passes. BAA-015 (warning) is the load-bearing rule —
+  // § 164.310 requires the BAA to anchor physical safeguards
+  // (facility access controls, workstation security, device
+  // controls); without a § 164.310 hook the covered entity has no
+  // contractual lever to enforce physical-safeguard compliance.
+  "baa-missing-physical-safeguards-fail.txt": ["BAA-015"],
+
+  // Controller-to-Processor DPA with Section 7 ("Subprocessors")
+  // rewritten to omit any "prior written authorisation" /
+  // "authorisation of Controller" anchor — the surviving clause
+  // permits Processor to engage subprocessors at will, preserving
+  // only a downstream notice + objection right and the flow-down
+  // obligation. DPA-015 is the load-bearing rule — GDPR
+  // Art. 28(2) requires the processor not to engage another
+  // processor without prior specific or general written
+  // authorisation; with the anchor stripped the contractual hook
+  // for Art. 28(2) is lost and the controller has no upstream
+  // veto over subprocessor onboarding.
+  "dpa-controller-processor-missing-subprocessor-authorisation-fail.txt": ["DPA-015"],
+
+  // Vendor Security Addendum with Section 3 rewritten so that
+  // "Annual Penetration Test" becomes "Independent Penetration
+  // Test" and the cadence is described as "on a periodic basis
+  // as determined by Vendor's risk-management function" — every
+  // `annual\w*` / `annually` / `quarter\w+` / `every \d+
+  // months/years` anchor adjacent to "penetration test" /
+  // "pen-test" is stripped. ADDENDA-009 (info) is the load-bearing
+  // rule — annual third-party pen-tests are the
+  // practitioner-accepted baseline for SaaS; without a stated
+  // cadence the addendum carries no operational commitment to
+  // testing frequency.
+  "vendor-security-addendum-missing-pen-test-cadence-fail.txt": ["ADDENDA-009"],
 };
 
 describe("v3 fixture sanity", () => {

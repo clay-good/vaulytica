@@ -241,6 +241,16 @@ Three substantive additions:
 
 ## Post-4.0 work
 
+### v3 fail-fixture corpus expansion (69 → 72) (2026-05-18) — ✅ complete
+
+Advanced LAUNCH row v3-b coverage from sixty-nine end-to-end fail-fixtures to seventy-two by adding three new fixtures spanning three distinct v3 rule families (BAA, DPA-GDPR, ADDENDA) — none of the three rules had an end-to-end fail-fixture before this batch. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
+
+- `baa-missing-physical-safeguards-fail.txt` — BAA with the Safeguards section narrowed from "administrative, physical, and technical safeguards … 45 CFR §§ 164.308, 164.310, and 164.312" to "administrative and technical safeguards … 45 CFR §§ 164.308 and 164.312"; every `physical safeguards` token and every `164.310` anchor is stripped while "Security Rule" is retained so BAA-013 still passes. **BAA-015 (warning)** fires — § 164.310 requires the BAA to anchor physical safeguards (facility access controls, workstation security, device controls); without a § 164.310 hook the covered entity has no contractual lever to enforce physical-safeguard compliance.
+- `dpa-controller-processor-missing-subprocessor-authorisation-fail.txt` — Controller-to-Processor DPA with Section 7 ("Subprocessors") rewritten to omit any "prior written authorisation" / "authorisation of Controller" anchor — the surviving clause permits Processor to engage subprocessors at will, preserving only a downstream notice + objection right and the flow-down obligation. **DPA-015** fires — GDPR Art. 28(2) requires the processor not to engage another processor without prior specific or general written authorisation; with the anchor stripped the contractual hook for Art. 28(2) is lost and the controller has no upstream veto over subprocessor onboarding.
+- `vendor-security-addendum-missing-pen-test-cadence-fail.txt` — Vendor Security Addendum with Section 3 rewritten so that "Annual Penetration Test" becomes "Independent Penetration Test" and the cadence is described as "on a periodic basis as determined by Vendor's risk-management function"; every `annual\w*` / `annually` / `quarter\w+` / `every \d+ months/years` anchor adjacent to "penetration test" / "pen-test" is stripped. **ADDENDA-009 (info)** fires — annual third-party pen-tests are the practitioner-accepted baseline for SaaS; without a stated cadence the addendum carries no operational commitment to testing frequency.
+
+Each fail-fixture has a `.playbook` sidecar. [`tests/golden/v3/fixture-sanity.test.ts`](tests/golden/v3/fixture-sanity.test.ts) now pins seventy-two fail-fixtures (was sixty-nine); each entry asserts the load-bearing rule is in the fired set. Goldens regenerated via `VAULYTICA_REGEN_GOLDEN=1`. Full gate green: `npm run lint && typecheck && test && build`.
+
 ### v3 fail-fixture corpus expansion (66 → 69) (2026-05-18) — ✅ complete
 
 Advanced LAUNCH row v3-b coverage from sixty-six end-to-end fail-fixtures to sixty-nine by adding three new fixtures spanning three distinct v3 rule families (TRANSFER, NDA-deep, MSA-deep) — none of the three rules had an end-to-end fail-fixture before this batch. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
