@@ -43,6 +43,20 @@ All notable changes to this project will be documented in this file. Format adap
   `msa-customer-deep-missing-ip-indemnity-fail.txt` (MSA-001),
   `dpa-multi-state-us-missing-deletion-or-return-fail.txt`
   (USDPA-015 critical). Sanity test now pins 16 fail-fixtures.
+- Expand the v3 fail-fixture corpus from 27 to 30 (LAUNCH row v3-b)
+  with a fourth failure-mode fixture per already-covered playbook —
+  exercising a distinct load-bearing rule that prior fixtures did not:
+  `baa-missing-breach-notification-fail.txt` (BAA-019 critical —
+  Reporting section rewritten to drop the "breach of unsecured PHI" /
+  164.410 anchor, leaving the notification obligation legally
+  ambiguous),
+  `mutual-nda-deep-missing-ci-definition-fail.txt` (NDA-D-005 —
+  "Confidential Information means …" definition block removed so
+  confidentiality scope is undefined),
+  `msa-customer-deep-missing-data-return-fail.txt` (MSA-021 —
+  data-portability / return-on-termination section stripped, leaving
+  customer locked out of its own data). Sanity test now pins 30
+  fail-fixtures.
 - Expand the v3 fail-fixture corpus from 24 to 27 (LAUNCH row v3-b)
   with a third failure-mode fixture per already-covered playbook —
   exercising a distinct load-bearing rule that prior fixtures did not:

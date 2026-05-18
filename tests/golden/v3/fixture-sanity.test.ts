@@ -235,6 +235,37 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // fraud / wilful misconduct / IP indemnity / confidentiality /
   // data protection" and now none of these pairings appears.
   "msa-vendor-deep-missing-cap-carveouts-fail.txt": ["MSA-007"],
+
+  // BAA with the Reporting section rewritten to reference only "Security
+  // Incidents" and "impermissible access to PHI" — every anchor for
+  // "breach of unsecured PHI", "breach notification", and "164.410" is
+  // stripped. BAA-019 is the load-bearing critical for 45 C.F.R. § 164.410
+  // — the BA must notify the covered entity of a breach of unsecured PHI
+  // without unreasonable delay and in no case later than 60 calendar days
+  // after discovery; absent the statutory anchor the notification obligation
+  // is legally ambiguous and may not satisfy the regulatory standard.
+  "baa-missing-breach-notification-fail.txt": ["BAA-019"],
+
+  // Mutual NDA with the Section 1 "Confidential Information" definition
+  // replaced by unformatted references to "non-public information" — the
+  // capitalized defined-term definition block ("Confidential Information"
+  // means …) is entirely absent. NDA-D-005 is the load-bearing rule —
+  // its present_patterns require a statement of the form
+  // "Confidential Information means / shall mean / is defined" and now
+  // no such pattern appears anywhere in the document. Without a definition,
+  // the scope of the confidentiality obligation is ambiguous and may be
+  // construed narrowly against the disclosing party.
+  "mutual-nda-deep-missing-ci-definition-fail.txt": ["NDA-D-005"],
+
+  // Customer-form MSA with the "Data Portability and Return on Termination"
+  // section (Section 11) removed entirely — no clause requires Vendor to
+  // return a machine-readable export of Customer Data or delete Vendor's
+  // copies on termination. MSA-021 is the load-bearing warning — its
+  // present_patterns require "return … customer data", "data portability",
+  // or "export … machine-readable" and now none of these anchors appears.
+  // Without an explicit return obligation the customer can be locked out of
+  // its own data after the relationship ends.
+  "msa-customer-deep-missing-data-return-fail.txt": ["MSA-021"],
 };
 
 describe("v3 fixture sanity", () => {

@@ -241,6 +241,16 @@ Three substantive additions:
 
 ## Post-4.0 work
 
+### v3 fail-fixture corpus expansion (27 → 30) (2026-05-17) — ✅ complete
+
+Advanced LAUNCH row v3-b coverage from twenty-seven end-to-end fail-fixtures to thirty by adding a fourth failure-mode fixture for three already-covered playbooks (BAA, mutual NDA, customer-form MSA). Each new fixture exercises a distinct load-bearing rule that prior fixtures did not. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
+
+- `baa-missing-breach-notification-fail.txt` — rewrites the Reporting section to reference only "Security Incidents" and "impermissible access to PHI", stripping every anchor for "breach of unsecured PHI", "breach notification", and "164.410". **BAA-019 (critical)** fires because 45 C.F.R. § 164.410 requires the BA to notify the covered entity of a breach of unsecured PHI without unreasonable delay and in no case later than 60 calendar days after discovery; without the statutory anchor the notification obligation is legally ambiguous.
+- `mutual-nda-deep-missing-ci-definition-fail.txt` — replaces the Section 1 "Confidential Information" definition with unformatted references to "non-public information" so no capitalized defined-term statement ("Confidential Information means …") appears anywhere. **NDA-D-005 (critical)** fires because without a definition the scope of the obligation is ambiguous and may be construed narrowly against the disclosing party.
+- `msa-customer-deep-missing-data-return-fail.txt` — removes Section 11 (Data Portability and Return on Termination) entirely so no "return all Customer Data", "data portability", or "machine-readable export" anchor remains. **MSA-021 (warning)** fires because without an explicit data-return obligation the customer can be locked out of its own data after the relationship ends.
+
+Each fail-fixture has a `.playbook` sidecar forcing the v3 playbook. [`tests/golden/v3/fixture-sanity.test.ts`](tests/golden/v3/fixture-sanity.test.ts) now pins thirty fail-fixtures (was twenty-seven); each entry asserts the load-bearing rule is in the fired set. Goldens regenerated via `VAULYTICA_REGEN_GOLDEN=1`. Full gate green: `npm run lint && typecheck && test && build` — **1258 passing + 2 skips** (was 1249; +9 new tests: 3 golden-match, 3 determinism, 3 sanity guards).
+
 ### v3 fail-fixture corpus expansion (24 → 27) (2026-05-17) — ✅ complete
 
 Advanced LAUNCH row v3-b coverage from twenty-four end-to-end fail-fixtures to twenty-seven by adding a third failure-mode fixture for three already-covered playbooks (BAA, vendor-form MSA, mutual NDA). Each new fixture exercises a distinct load-bearing rule that prior fixtures did not. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
