@@ -43,6 +43,18 @@ All notable changes to this project will be documented in this file. Format adap
   `msa-customer-deep-missing-ip-indemnity-fail.txt` (MSA-001),
   `dpa-multi-state-us-missing-deletion-or-return-fail.txt`
   (USDPA-015 critical). Sanity test now pins 16 fail-fixtures.
+- Expand the v3 fail-fixture corpus from 30 to 33 (LAUNCH row v3-b)
+  with three new fail-fixtures across three distinct v3 rule families —
+  each exercises a load-bearing rule not previously covered:
+  `baa-missing-accounting-of-disclosures-fail.txt` (BAA-008 critical —
+  "accounting of disclosures" / 164.528 anchor stripped from the
+  Individual Rights section),
+  `msa-vendor-deep-missing-service-warranties-fail.txt` (MSA-013 —
+  Section 6 rewritten to a flat AS-IS disclaimer stripping workmanlike /
+  conformance-to-documentation / no-malicious-code warranty families),
+  `mutual-nda-deep-missing-public-domain-exclusion-fail.txt` (NDA-D-006 —
+  "publicly available" / "public domain" carve-out removed from the
+  Carveouts section). Sanity test now pins 33 fail-fixtures.
 - Expand the v3 fail-fixture corpus from 27 to 30 (LAUNCH row v3-b)
   with a fourth failure-mode fixture per already-covered playbook —
   exercising a distinct load-bearing rule that prior fixtures did not:

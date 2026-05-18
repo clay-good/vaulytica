@@ -266,6 +266,38 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // Without an explicit return obligation the customer can be locked out of
   // its own data after the relationship ends.
   "msa-customer-deep-missing-data-return-fail.txt": ["MSA-021"],
+
+  // BAA with the "Access, Amendment, Accounting" section rewritten to
+  // reference only 45 C.F.R. § 164.524 (individual right of access) and
+  // § 164.526 (right to amendment) — every "accounting of disclosures"
+  // and "164.528" anchor is stripped. BAA-008 is the load-bearing critical
+  // for 45 C.F.R. § 164.504(e)(2)(ii)(G) — the BA must maintain and make
+  // available the information required for an accounting of disclosures
+  // under § 164.528; without this hook the covered entity cannot meet its
+  // obligation to provide individuals with a history of disclosures.
+  "baa-missing-accounting-of-disclosures-fail.txt": ["BAA-008"],
+
+  // Vendor-form MSA with Section 6 (Warranty) rewritten to a flat
+  // "as-is / as-available" disclaimer — every anchor for "workmanlike",
+  // "professional manner", "conforms to documentation / specifications",
+  // and "no malicious code / virus / trojan" is removed. MSA-013 is the
+  // load-bearing warning — its present_patterns require at least one of
+  // the three service-warranty families to appear and now none does.
+  // Without these warranties the customer has no contractual basis to
+  // demand professional performance, spec conformance, or malware-free
+  // deliverables.
+  "msa-vendor-deep-missing-service-warranties-fail.txt": ["MSA-013"],
+
+  // Mutual NDA with the "publicly available / public domain" carve-out
+  // removed from Section 2 (Carveouts) — the standard four-exclusion list
+  // (public domain, prior knowledge, third-party-lawfully, independently
+  // developed) now lacks the "publicly available" prong. NDA-D-006 is the
+  // load-bearing warning — its present_patterns require
+  // "(publicly|generally) (available|known)" or "(public domain|in the
+  // public)" and now neither appears anywhere in the document. Without this
+  // exclusion the Receiving Party could technically breach the NDA by
+  // referencing information that is freely available to the world.
+  "mutual-nda-deep-missing-public-domain-exclusion-fail.txt": ["NDA-D-006"],
 };
 
 describe("v3 fixture sanity", () => {

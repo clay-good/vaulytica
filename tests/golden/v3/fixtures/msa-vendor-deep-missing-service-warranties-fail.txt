@@ -1,0 +1,35 @@
+Master Services Agreement
+
+This Master Services Agreement ("MSA" or "Agreement") is entered into as of March 1, 2026, between Acme Corp, a Delaware corporation ("Vendor"), and Wayne Enterprises LLC, a Delaware limited liability company ("Customer"). This Agreement governs all services Vendor provides to Customer pursuant to one or more Statements of Work.
+
+1. Order of Precedence. In the event of any conflict or inconsistency between this MSA and any Statement of Work ("SOW"), the terms of this MSA shall control and govern, except to the extent that a SOW explicitly states that it supersedes a specific provision of this MSA by reference to the section number.
+
+2. Services. Vendor shall provide the services described in each SOW executed by the parties. Each SOW is incorporated into and made a part of this Agreement.
+
+3. Fees and Payment. Customer shall pay Vendor the fees set forth in each applicable SOW. Payment is due within thirty (30) days of Customer's receipt of Vendor's invoice (Net 30). Overdue amounts shall accrue interest at the lesser of 1.5% per month or the maximum rate permitted by law.
+
+4. Intellectual Property Ownership. Vendor retains all right, title, and interest in and to its pre-existing intellectual property, including all software, tools, methodologies, and know-how ("Background IP"). Subject to Customer's timely payment of all fees, Vendor grants Customer a non-exclusive, non-transferable, worldwide license to use the deliverables described in each SOW solely for Customer's internal business purposes. Customer retains all right, title, and interest in and to Customer's pre-existing data and materials ("Customer Background IP"). Foreground intellectual property developed under this Agreement shall be owned by Customer as work-for-hire or by written assignment.
+
+5. Confidentiality. Each party (as "Receiving Party") shall hold in strict confidence all non-public information of the other party (as "Disclosing Party") designated as confidential or that reasonably should be understood to be confidential given the nature of the information. These mutual confidentiality obligations shall survive termination for three (3) years.
+
+6. Warranty. VENDOR MAKES NO WARRANTIES REGARDING THE SERVICES, EXPRESS OR IMPLIED. THE SERVICES ARE PROVIDED SOLELY ON AN "AS-IS" AND "AS-AVAILABLE" BASIS. WITHOUT LIMITING THE FOREGOING, VENDOR MAKES NO REPRESENTATION THAT THE SERVICES WILL MEET CUSTOMER'S REQUIREMENTS OR THAT SERVICE OPERATION WILL BE UNINTERRUPTED OR ERROR-FREE.
+
+7. Mutual Indemnification. (a) Vendor Indemnification. Vendor shall indemnify, defend, and hold harmless Customer from and against any third-party claim arising out of any allegation that the deliverables, as provided by Vendor and used in accordance with this Agreement, infringe any patent, copyright, trademark, or trade secret of a third party. (b) Customer Indemnification. Customer shall indemnify, defend, and hold harmless Vendor from and against any third-party claim arising out of Customer's use of the deliverables in violation of this Agreement or applicable law. (c) Indemnification Procedure. The indemnified party shall promptly notify the indemnifying party in writing and cooperate fully in the defense.
+
+8. Limitation of Liability. (a) Aggregate Liability Cap. EACH PARTY'S AGGREGATE LIABILITY SHALL NOT EXCEED THE TOTAL FEES PAID BY CUSTOMER IN THE TWELVE (12) MONTHS IMMEDIATELY PRECEDING THE CLAIM. (b) Carveouts. The aggregate liability cap shall not apply to: (i) breach of confidentiality; (ii) indemnification obligations; or (iii) liability arising from gross negligence or willful misconduct. (c) Exclusion of Consequential Damages. IN NO EVENT SHALL EITHER PARTY BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES.
+
+9. Term and Termination. (a) Term. This Agreement commences on the Effective Date and continues until terminated. (b) Termination for Cause. Either party may terminate upon written notice if the other party materially breaches this Agreement and fails to cure such breach within thirty (30) days of receiving written notice. (c) Termination for Convenience. Either party may terminate without cause upon sixty (60) days prior written notice.
+
+10. Data Return. Upon termination, Vendor shall return all Customer data in a machine-readable format within thirty (30) days and delete all copies thereafter.
+
+11. Governing Law; Venue. This Agreement shall be governed by the laws of the State of Delaware. Any dispute shall be resolved in the state or federal courts located in Wilmington, Delaware.
+
+12. Entire Agreement. This Agreement, together with all SOWs, constitutes the entire agreement between the parties and supersedes all prior negotiations and understandings.
+
+Effective Date: March 1, 2026.
+
+ACME CORP (Vendor)                                WAYNE ENTERPRISES LLC (Customer)
+
+Signed by: ____________________________           Signed by: ____________________________
+Title: Chief Executive Officer                    Title: Chief Operating Officer
+Date: March 1, 2026                               Date: March 1, 2026

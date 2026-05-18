@@ -241,6 +241,16 @@ Three substantive additions:
 
 ## Post-4.0 work
 
+### v3 fail-fixture corpus expansion (30 → 33) (2026-05-18) — ✅ complete
+
+Advanced LAUNCH row v3-b coverage from thirty end-to-end fail-fixtures to thirty-three by adding a fifth failure-mode fixture for BAA and new fixtures for vendor-form MSA and mutual NDA — each exercises a distinct load-bearing rule not previously covered. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
+
+- `baa-missing-accounting-of-disclosures-fail.txt` — rewrites the "Individual Rights" section to reference only 45 C.F.R. § 164.524 (access) and § 164.526 (amendment), stripping every "accounting of disclosures" and "164.528" anchor. **BAA-008 (critical)** fires because 45 C.F.R. § 164.504(e)(2)(ii)(G) requires the BA to maintain and make available the information required for an accounting of disclosures under § 164.528; without this hook the covered entity cannot meet its obligation to provide individuals with a history of disclosures.
+- `msa-vendor-deep-missing-service-warranties-fail.txt` — rewrites Section 6 (Warranty) to a flat "AS-IS / AS-AVAILABLE" disclaimer, stripping every anchor for "workmanlike", "professional manner", "conforms to documentation / specifications", and "no malicious code / virus / trojan". **MSA-013 (warning)** fires because its present_patterns require at least one of the three service-warranty families to appear and now none does; without these warranties the customer has no contractual basis to demand professional performance, spec conformance, or malware-free deliverables.
+- `mutual-nda-deep-missing-public-domain-exclusion-fail.txt` — removes the "publicly available" / "public domain" prong from Section 2 (Carveouts), leaving only the independently-developed, third-party-lawfully-received, and compelled-disclosure carve-outs. **NDA-D-006 (warning)** fires because its present_patterns require "(publicly|generally) (available|known)" or "(public domain|in the public)" and now neither appears; without this exclusion the Receiving Party could technically breach the NDA by referencing information freely available to the world.
+
+Each fail-fixture has a `.playbook` sidecar forcing the v3 playbook. [`tests/golden/v3/fixture-sanity.test.ts`](tests/golden/v3/fixture-sanity.test.ts) now pins thirty-three fail-fixtures (was thirty); each entry asserts the load-bearing rule is in the fired set. Goldens regenerated via `VAULYTICA_REGEN_GOLDEN=1`. Full gate green: `npm run lint && typecheck && test && build` — **1267 passing + 2 skips** (was 1258; +9 new tests: 3 golden-match, 3 determinism, 3 sanity guards).
+
 ### v3 fail-fixture corpus expansion (27 → 30) (2026-05-17) — ✅ complete
 
 Advanced LAUNCH row v3-b coverage from twenty-seven end-to-end fail-fixtures to thirty by adding a fourth failure-mode fixture for three already-covered playbooks (BAA, mutual NDA, customer-form MSA). Each new fixture exercises a distinct load-bearing rule that prior fixtures did not. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
