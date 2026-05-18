@@ -241,6 +241,16 @@ Three substantive additions:
 
 ## Post-4.0 work
 
+### v3 fail-fixture corpus expansion (72 → 75) (2026-05-18) — ✅ complete
+
+Advanced LAUNCH row v3-b coverage from seventy-two end-to-end fail-fixtures to seventy-five by adding three new fixtures spanning three distinct v3 rule families (BAA, NDA-deep, MSA-deep) — none of the three rules had an end-to-end fail-fixture before this batch. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
+
+- `baa-missing-security-incident-reporting-fail.txt` — BAA with the "Reporting" paragraph rewritten to drop the "Security Incident" sentence; the breach-notification sentence tied to 45 CFR § 164.410 is retained, but every `security incident` token has been removed. **BAA-017 (warning)** fires — 45 CFR § 164.314(a)(2)(i)(C) requires the BAA to obligate the Business Associate to report security incidents (including unsuccessful attempts) to the Covered Entity; without that hook the covered entity loses the contractual channel for incident visibility short of a confirmed breach.
+- `mutual-nda-deep-permitted-use-overbroad-fail.txt` — Mutual NDA with Section 3 ("Permitted Use") rewritten to grant use of Confidential Information "for any business purpose" of the Receiving Party instead of "solely for the Permitted Purpose." **NDA-D-011** fires — its bad_patterns catch `for any (business )?purpose` / `any lawful purpose` / `(unrestricted|any) use of (the )?confidential`, all of which weaken the contractual basis for objecting to unrelated downstream use of the disclosed information.
+- `msa-vendor-deep-sla-sole-exclusive-remedy-fail.txt` — Vendor MSA with a new Section 9 ("Service Level Agreement") committing to 99.9% monthly uptime but declaring that a prorated service credit is Customer's "sole and exclusive remedy" for any service-level failure, including extended downtime or chronic outage, and that Customer has no right to terminate or seek other damages. **MSA-017** fires — its bad_patterns catch the `(service|SLA) credit … sole and exclusive remedy` and `sole and exclusive remedy … (service level|SLA|downtime)` forms; an exclusive-remedy SLA bars the customer from terminating or seeking damages for extended outages, which is the commercially contested posture the rule surfaces for explicit review.
+
+Each fail-fixture has a `.playbook` sidecar. [`tests/golden/v3/fixture-sanity.test.ts`](tests/golden/v3/fixture-sanity.test.ts) now pins seventy-five fail-fixtures (was seventy-two); each entry asserts the load-bearing rule fires. Goldens regenerated; LAUNCH row v3-b updated to 75. `npm run lint && typecheck && test && build` all green; **1393/1393 tests + 2 skips**.
+
 ### v3 fail-fixture corpus expansion (69 → 72) (2026-05-18) — ✅ complete
 
 Advanced LAUNCH row v3-b coverage from sixty-nine end-to-end fail-fixtures to seventy-two by adding three new fixtures spanning three distinct v3 rule families (BAA, DPA-GDPR, ADDENDA) — none of the three rules had an end-to-end fail-fixture before this batch. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):

@@ -790,6 +790,41 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // cadence the addendum carries no operational commitment to
   // testing frequency.
   "vendor-security-addendum-missing-pen-test-cadence-fail.txt": ["ADDENDA-009"],
+
+  // BAA with the "Reporting" paragraph rewritten to drop the
+  // "Security Incident" sentence — the breach-notification sentence
+  // tied to 45 CFR § 164.410 is retained, but every `security
+  // incident` token has been removed. BAA-017 is the load-bearing
+  // rule — 45 CFR § 164.314(a)(2)(i)(C) requires the BAA to obligate
+  // the Business Associate to report security incidents (including
+  // unsuccessful attempts) to the Covered Entity; without that hook
+  // the covered entity loses the contractual channel for incident
+  // visibility short of a confirmed breach.
+  "baa-missing-security-incident-reporting-fail.txt": ["BAA-017"],
+
+  // Mutual NDA with Section 3 ("Permitted Use") rewritten to grant
+  // use of Confidential Information "for any business purpose" of
+  // the Receiving Party instead of "solely for the Permitted
+  // Purpose." NDA-D-011 is the load-bearing rule — its bad_patterns
+  // catch `for any (business )?purpose` / `any lawful purpose` /
+  // `(unrestricted|any) use of (the )?confidential`, all of which
+  // weaken the contractual basis for objecting to unrelated
+  // downstream use of the disclosed information.
+  "mutual-nda-deep-permitted-use-overbroad-fail.txt": ["NDA-D-011"],
+
+  // Vendor MSA with a new Section 9 ("Service Level Agreement")
+  // committing to 99.9% monthly uptime but declaring that a
+  // prorated service credit is Customer's "sole and exclusive
+  // remedy" for any service-level failure, including extended
+  // downtime or chronic outage, and that Customer has no right to
+  // terminate or seek other damages. MSA-017 is the load-bearing
+  // rule — its bad_patterns catch the `(service|SLA) credit … sole
+  // and exclusive remedy` and `sole and exclusive remedy … (service
+  // level|SLA|downtime)` forms; an exclusive-remedy SLA bars the
+  // customer from terminating or seeking damages for extended
+  // outages, which is the commercially contested posture the rule
+  // surfaces for explicit review.
+  "msa-vendor-deep-sla-sole-exclusive-remedy-fail.txt": ["MSA-017"],
 };
 
 describe("v3 fixture sanity", () => {
