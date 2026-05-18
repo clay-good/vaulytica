@@ -207,6 +207,34 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // (duty/committed/bound by confidentiality) appears anywhere else
   // in the document.
   "dpa-multi-state-us-missing-confidentiality-duty-fail.txt": ["USDPA-016"],
+
+  // BAA with the termination section rewritten to allow only
+  // convenience-termination and insolvency-termination, stripping every
+  // "material breach", "terminate...breach", and "breach...termination"
+  // anchor (the Reporting section is also reworded to avoid "Breaches").
+  // BAA-011 is the load-bearing critical for 45 C.F.R. § 164.504(e)(2)(iii)
+  // — the covered entity must have the right to terminate for material
+  // breach of HIPAA obligations.
+  "baa-missing-termination-for-breach-fail.txt": ["BAA-011"],
+
+  // Mutual NDA with Section 5 rewritten to impose a flat three-year term
+  // on all confidentiality obligations with no perpetual carve-out for
+  // trade secrets. NDA-D-004 is the load-bearing warning — its
+  // present_patterns require "trade secret" within ~120 chars of
+  // "as long as / so long as / in perpetuity / perpetual / qualifies as"
+  // and now no such pairing appears. Without the carve-out the discloser
+  // loses statutory UTSA / DTSA protection once the three-year term lapses.
+  "mutual-nda-deep-missing-perpetual-trade-secret-fail.txt": ["NDA-D-004"],
+
+  // Vendor-form MSA with the Section 8(b) carve-outs block removed from
+  // the Limitation of Liability — the aggregate cap now absorbs
+  // confidentiality-breach, indemnification, gross-negligence, and
+  // wilful-misconduct claims with no exception. MSA-007 is the
+  // load-bearing warning — its present_patterns require
+  // "cap / limitation…shall not apply / excluded / carved out …
+  // fraud / wilful misconduct / IP indemnity / confidentiality /
+  // data protection" and now none of these pairings appears.
+  "msa-vendor-deep-missing-cap-carveouts-fail.txt": ["MSA-007"],
 };
 
 describe("v3 fixture sanity", () => {

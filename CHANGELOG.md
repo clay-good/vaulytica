@@ -43,6 +43,18 @@ All notable changes to this project will be documented in this file. Format adap
   `msa-customer-deep-missing-ip-indemnity-fail.txt` (MSA-001),
   `dpa-multi-state-us-missing-deletion-or-return-fail.txt`
   (USDPA-015 critical). Sanity test now pins 16 fail-fixtures.
+- Expand the v3 fail-fixture corpus from 24 to 27 (LAUNCH row v3-b)
+  with a third failure-mode fixture per already-covered playbook —
+  exercising a distinct load-bearing rule that prior fixtures did not:
+  `baa-missing-termination-for-breach-fail.txt` (BAA-011 critical —
+  termination-for-material-breach right stripped, leaving only
+  convenience and insolvency termination),
+  `msa-vendor-deep-missing-cap-carveouts-fail.txt` (MSA-007 —
+  Section 8(b) cap carve-outs block removed so aggregate cap absorbs
+  fraud / wilful-misconduct / IP-indemnity / confidentiality claims),
+  `mutual-nda-deep-missing-perpetual-trade-secret-fail.txt` (NDA-D-004
+  — perpetual trade-secret carve-out stripped, leaving a flat
+  three-year term). Sanity test now pins 27 fail-fixtures.
 - Expand the v3 fail-fixture corpus from 21 to 24 (LAUNCH row v3-b)
   with a second failure-mode fixture per already-covered playbook —
   exercising a distinct load-bearing rule that prior fixtures did not:

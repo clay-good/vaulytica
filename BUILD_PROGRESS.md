@@ -241,6 +241,16 @@ Three substantive additions:
 
 ## Post-4.0 work
 
+### v3 fail-fixture corpus expansion (24 → 27) (2026-05-17) — ✅ complete
+
+Advanced LAUNCH row v3-b coverage from twenty-four end-to-end fail-fixtures to twenty-seven by adding a third failure-mode fixture for three already-covered playbooks (BAA, vendor-form MSA, mutual NDA). Each new fixture exercises a distinct load-bearing rule that prior fixtures did not. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
+
+- `baa-missing-termination-for-breach-fail.txt` — rewrites the termination section to allow only convenience-termination and insolvency-termination, stripping every "material breach", "terminate...breach", and "breach...termination" anchor (the Reporting section is also reworded to avoid "Breaches"). **BAA-011 (critical)** fires because 45 C.F.R. § 164.504(e)(2)(iii) requires the covered entity to have the right to terminate the BAA if the business associate has breached a material term of the agreement; without the clause the covered entity has no contractual trigger.
+- `msa-vendor-deep-missing-cap-carveouts-fail.txt` — removes the Section 8(b) carve-outs block from the Limitation of Liability so the aggregate cap now absorbs confidentiality-breach, indemnification, gross-negligence, and wilful-misconduct claims with no exception. **MSA-007 (warning)** fires because the commercial drafting baseline requires cap carve-outs for fraud / wilful misconduct / IP indemnity / confidentiality / data protection; without them the vendor's unlimited-damages exposure for fundamental breaches is absorbed by the cap.
+- `mutual-nda-deep-missing-perpetual-trade-secret-fail.txt` — rewrites Section 5 to impose a flat three-year term on all confidentiality obligations with no perpetual carve-out for trade secrets. **NDA-D-004 (warning)** fires because its present_patterns require "trade secret" within ~120 chars of "as long as / so long as / in perpetuity / perpetual / qualifies as" and now no such pairing appears; without the carve-out the discloser loses statutory UTSA / DTSA protection once the three-year term lapses.
+
+Each fail-fixture has a `.playbook` sidecar forcing the v3 playbook. [`tests/golden/v3/fixture-sanity.test.ts`](tests/golden/v3/fixture-sanity.test.ts) now pins twenty-seven fail-fixtures (was twenty-four); each entry asserts the load-bearing rule is in the fired set. Goldens regenerated via `VAULYTICA_REGEN_GOLDEN=1`. Full gate green: `npm run lint && typecheck && test && build` — **1249 passing + 2 skips** (was 1240; +9 new tests: 3 golden-match, 3 determinism, 3 sanity guards).
+
 ### v3 fail-fixture corpus expansion (21 → 24) (2026-05-17) — ✅ complete
 
 Advanced LAUNCH row v3-b coverage from twenty-one end-to-end fail-fixtures to twenty-four by adding a second failure-mode fixture for three already-covered playbooks (customer-form MSA, mutual NDA, multi-state US DPA). Each new fixture exercises a distinct load-bearing rule that prior fixtures did not. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
