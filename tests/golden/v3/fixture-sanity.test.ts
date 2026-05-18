@@ -669,6 +669,47 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // consequential-damages token; with one-sided phrasing the
   // pattern fails to match and the rule fires at info severity.
   "msa-vendor-deep-one-sided-consequential-waiver-fail.txt": ["MSA-008"],
+
+  // Controller-to-Processor DPA with Section 9 ("Assistance with
+  // Articles 32 to 36 Obligations") replaced by a generic
+  // "Cooperation on Operational Matters" paragraph — every
+  // `Articles 32 to 36` and `assist ... (breach|security|DPIA)`
+  // anchor is stripped. Surviving language references only
+  // "commercially reasonable cooperation" with no GDPR-aligned
+  // statutory framing. DPA-012 is the load-bearing rule — GDPR
+  // Art. 28(3)(f) requires the processor to assist the controller
+  // with the security (Art. 32), breach (Arts. 33–34), DPIA
+  // (Art. 35), and prior-consultation (Art. 36) obligations;
+  // without this clause the controller carries those obligations
+  // alone, materially weakening Art. 28 alignment.
+  "dpa-controller-processor-missing-art32-36-assistance-fail.txt": ["DPA-012"],
+
+  // BAA with the Safeguards section narrowed from "administrative,
+  // physical, and technical safeguards … 45 CFR §§ 164.308,
+  // 164.310, and 164.312" to "physical and technical safeguards …
+  // 45 CFR §§ 164.310 and 164.312" — every `administrative
+  // safeguards` token and every `164.308` anchor is stripped, but
+  // the broader "Security Rule" reference is retained so BAA-013
+  // still passes. BAA-014 is the load-bearing rule — § 164.308
+  // requires the BAA to anchor the administrative safeguards
+  // (workforce training, contingency planning, periodic risk
+  // assessment) that the Security Rule pins on every Business
+  // Associate; without a § 164.308 hook the covered entity has no
+  // contractual lever to enforce administrative-safeguard
+  // compliance.
+  "baa-missing-administrative-safeguards-fail.txt": ["BAA-014"],
+
+  // Vendor Security Addendum with Section 2 rewritten to remove
+  // every named encryption standard — "AES-256", "TLS 1.2", "TLS
+  // 1.3", and any "FIPS 140-3" reference are all stripped and the
+  // surviving prose references only "industry-standard symmetric
+  // ciphers" and "a current version of the Transport Layer
+  // Security protocol". ADDENDA-008 is the load-bearing rule —
+  // FIPS 140-3 and named TLS / AES versions are the
+  // practitioner-accepted contract anchors; generic "encryption" is
+  // unauditable because there is no specific cipher suite or
+  // protocol version against which to test the deployment.
+  "vendor-security-addendum-missing-named-encryption-fail.txt": ["ADDENDA-008"],
 };
 
 describe("v3 fixture sanity", () => {

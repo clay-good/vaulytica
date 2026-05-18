@@ -241,6 +241,16 @@ Three substantive additions:
 
 ## Post-4.0 work
 
+### v3 fail-fixture corpus expansion (63 → 66) (2026-05-18) — ✅ complete
+
+Advanced LAUNCH row v3-b coverage from sixty-three end-to-end fail-fixtures to sixty-six by adding three new fixtures spanning three distinct v3 rule families (DPA-GDPR, BAA, ADDENDA) — none of the three rules had an end-to-end fail-fixture before this batch. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
+
+- `dpa-controller-processor-missing-art32-36-assistance-fail.txt` — Controller→Processor DPA with Section 9 ("Assistance with Articles 32 to 36 Obligations") replaced by a generic "Cooperation on Operational Matters" paragraph; every `Articles 32 to 36` and `assist ... (breach|security|DPIA)` anchor is stripped and the surviving prose references only "commercially reasonable cooperation" with no GDPR-aligned statutory framing. **DPA-012** fires for GDPR Art. 28(3)(f) — the processor must assist the controller with the security (Art. 32), breach (Arts. 33–34), DPIA (Art. 35), and prior-consultation (Art. 36) obligations; without this clause the controller carries those obligations alone, materially weakening Art. 28 alignment.
+- `baa-missing-administrative-safeguards-fail.txt` — BAA with the Safeguards section narrowed from "administrative, physical, and technical safeguards … 45 CFR §§ 164.308, 164.310, and 164.312" to "physical and technical safeguards … 45 CFR §§ 164.310 and 164.312"; every `administrative safeguards` token and every `164.308` anchor is stripped, but the broader "Security Rule" reference is retained so BAA-013 still passes. **BAA-014 (warning)** fires for 45 C.F.R. § 164.308 — the BAA must anchor administrative safeguards (workforce training, contingency planning, periodic risk assessment); without a § 164.308 hook the covered entity has no contractual lever to enforce administrative-safeguard compliance.
+- `vendor-security-addendum-missing-named-encryption-fail.txt` — Vendor Security Addendum with Section 2 rewritten to remove every named encryption standard — `AES-256`, `TLS 1.2`, `TLS 1.3`, and any `FIPS 140-3` reference are all stripped and the surviving prose references only "industry-standard symmetric ciphers" and "a current version of the Transport Layer Security protocol". **ADDENDA-008 (warning)** fires for FIPS 140-3 / NIST SP 800-53 — named TLS / AES versions are the practitioner-accepted contract anchors; generic "encryption" is unauditable because there is no specific cipher suite or protocol version against which to test the deployment.
+
+Each fail-fixture has a `.playbook` sidecar. [`tests/golden/v3/fixture-sanity.test.ts`](tests/golden/v3/fixture-sanity.test.ts) now pins sixty-six fail-fixtures (was sixty-three); each entry asserts the load-bearing rule is in the fired set. Goldens regenerated via `VAULYTICA_REGEN_GOLDEN=1`. Full gate green: `npm run lint && typecheck && test && build`.
+
 ### v3 fail-fixture corpus expansion (60 → 63) (2026-05-18) — ✅ complete
 
 Advanced LAUNCH row v3-b coverage from sixty end-to-end fail-fixtures to sixty-three by adding three new fixtures spanning three distinct v3 rule families (BAA, NDA-deep, MSA-deep) — none of the three rules had an end-to-end fail-fixture before this batch. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):

@@ -43,6 +43,27 @@ All notable changes to this project will be documented in this file. Format adap
   `msa-customer-deep-missing-ip-indemnity-fail.txt` (MSA-001),
   `dpa-multi-state-us-missing-deletion-or-return-fail.txt`
   (USDPA-015 critical). Sanity test now pins 16 fail-fixtures.
+- Expand the v3 fail-fixture corpus from 63 to 66 (LAUNCH row v3-b)
+  with three new fail-fixtures spanning three distinct v3 rule families
+  (DPA-GDPR, BAA, ADDENDA) — each exercises a load-bearing rule not
+  previously covered end-to-end:
+  `dpa-controller-processor-missing-art32-36-assistance-fail.txt`
+  (DPA-012 — Section 9 "Assistance with Articles 32 to 36
+  Obligations" replaced by a generic "Cooperation on Operational
+  Matters" paragraph; every `Articles 32 to 36` and `assist ...
+  (breach|security|DPIA)` anchor is stripped per GDPR Art. 28(3)(f)),
+  `baa-missing-administrative-safeguards-fail.txt` (BAA-014 warning —
+  Safeguards narrowed from "administrative, physical, and technical
+  safeguards … 45 CFR §§ 164.308, 164.310, and 164.312" to
+  "physical and technical safeguards … 45 CFR §§ 164.310 and 164.312";
+  every `administrative safeguards` and `164.308` anchor stripped
+  while "Security Rule" is retained so BAA-013 still passes), and
+  `vendor-security-addendum-missing-named-encryption-fail.txt`
+  (ADDENDA-008 warning — Section 2 rewritten to remove every named
+  encryption standard, replacing AES-256 / TLS 1.2 / TLS 1.3 /
+  FIPS 140-3 references with generic "industry-standard symmetric
+  ciphers" and "a current version of the Transport Layer Security
+  protocol"). Sanity test now pins 66 fail-fixtures.
 - Expand the v3 fail-fixture corpus from 60 to 63 (LAUNCH row v3-b)
   with three new fail-fixtures spanning three distinct v3 rule families
   (BAA, NDA-deep, MSA-deep) — each exercises a load-bearing rule not
