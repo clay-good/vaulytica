@@ -710,6 +710,47 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // unauditable because there is no specific cipher suite or
   // protocol version against which to test the deployment.
   "vendor-security-addendum-missing-named-encryption-fail.txt": ["ADDENDA-008"],
+
+  // SCC Module 2 with the "Clause 14 — Local Laws and Practices
+  // Assessment" heading replaced by a generic "Destination-Country
+  // Conditions Statement" paragraph — every `clause 14`, `local
+  // laws and practices`, `transfer impact assessment`, and `TIA`
+  // anchor is stripped. The surviving prose preserves a soft
+  // good-faith warranty but loses the Schrems II TIA anchor.
+  // TRANSFER-007 is the load-bearing rule — Clause 14 of Decision
+  // 2021/914 anchors the Transfer Impact Assessment; without it
+  // there is no contractual hook for the parties' Schrems II
+  // analysis and supervisory authorities cannot locate the TIA
+  // discussion in the document.
+  "scc-module-2-missing-clause-14-fail.txt": ["TRANSFER-007"],
+
+  // Mutual NDA with a non-solicitation clause added at Section 7
+  // that runs for one year post-termination but contains no
+  // general-solicitation / public-job-postings carve-out — the
+  // surrounding 300-character window contains only "direct
+  // contact", "indirect contact", and "executive recruiter
+  // retained" language, deliberately omitting the standard
+  // safe-harbor phrasing. NDA-D-020 is the load-bearing rule —
+  // without a general-solicitation carve-out, ordinary recruiting
+  // (LinkedIn posts, conference recruiters, public job ads)
+  // becomes a contractual breach risk per the rule's negative
+  // lookahead for `general\s+solicitation` /
+  // `not\s+specifically\s+directed` / `general\s+advertis`.
+  "mutual-nda-deep-non-solicit-no-carve-out-fail.txt": ["NDA-D-020"],
+
+  // Vendor MSA with Section 8(b) "Carveouts" tightened so that
+  // "cap shall not apply to indemnification" sits inside the
+  // rule's 80-character proximity window. The pass fixture
+  // separates the cap reference and the indemnification token
+  // with ~95 chars of prose; the fail-fixture deliberately
+  // collapses the carve-out list ("The cap shall not apply to
+  // indemnification obligations under Section 7, breach of
+  // confidentiality under Section 5, or liability arising from
+  // gross negligence or willful misconduct."). MSA-005 (info)
+  // fires because indemnification is now plainly excluded from
+  // the aggregate liability cap — the rule surfaces this
+  // commercially-contested choice for explicit review.
+  "msa-vendor-deep-indemnity-carved-out-of-cap-fail.txt": ["MSA-005"],
 };
 
 describe("v3 fixture sanity", () => {

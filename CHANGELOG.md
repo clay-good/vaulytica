@@ -43,6 +43,28 @@ All notable changes to this project will be documented in this file. Format adap
   `msa-customer-deep-missing-ip-indemnity-fail.txt` (MSA-001),
   `dpa-multi-state-us-missing-deletion-or-return-fail.txt`
   (USDPA-015 critical). Sanity test now pins 16 fail-fixtures.
+- Expand the v3 fail-fixture corpus from 66 to 69 (LAUNCH row v3-b)
+  with three new fail-fixtures spanning three distinct v3 rule families
+  (TRANSFER, NDA-deep, MSA-deep) — each exercises a load-bearing rule
+  not previously covered end-to-end:
+  `scc-module-2-missing-clause-14-fail.txt` (TRANSFER-007 — "Clause
+  14 — Local Laws and Practices Assessment" replaced by a generic
+  "Destination-Country Conditions Statement" paragraph; every
+  `clause 14`, `local laws and practices`, `transfer impact
+  assessment`, and `TIA` anchor stripped, breaking the Schrems II
+  TIA hook),
+  `mutual-nda-deep-non-solicit-no-carve-out-fail.txt` (NDA-D-020
+  warning — non-solicit clause added without the
+  general-solicitation / public-job-postings safe-harbor language;
+  the rule's negative lookahead for `general\s+solicitation` /
+  `not\s+specifically\s+directed` / `general\s+advertis` fires
+  within the 300-char window), and
+  `msa-vendor-deep-indemnity-carved-out-of-cap-fail.txt` (MSA-005
+  info — Section 8(b) "Carveouts" tightened so that "cap shall not
+  apply to indemnification" sits inside the rule's 80-char
+  proximity window, surfacing the commercially-contested
+  cap-carve-out choice for explicit review). Sanity test now pins
+  69 fail-fixtures.
 - Expand the v3 fail-fixture corpus from 63 to 66 (LAUNCH row v3-b)
   with three new fail-fixtures spanning three distinct v3 rule families
   (DPA-GDPR, BAA, ADDENDA) — each exercises a load-bearing rule not

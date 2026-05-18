@@ -241,6 +241,16 @@ Three substantive additions:
 
 ## Post-4.0 work
 
+### v3 fail-fixture corpus expansion (66 → 69) (2026-05-18) — ✅ complete
+
+Advanced LAUNCH row v3-b coverage from sixty-six end-to-end fail-fixtures to sixty-nine by adding three new fixtures spanning three distinct v3 rule families (TRANSFER, NDA-deep, MSA-deep) — none of the three rules had an end-to-end fail-fixture before this batch. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
+
+- `scc-module-2-missing-clause-14-fail.txt` — SCC Module 2 with the "Clause 14 — Local Laws and Practices Assessment" heading replaced by a generic "Destination-Country Conditions Statement" paragraph; every `clause 14`, `local laws and practices`, `transfer impact assessment`, and `TIA` anchor is stripped while the surviving prose preserves a soft good-faith warranty without the Schrems II TIA anchor. **TRANSFER-007** fires for EU SCCs Clause 14 — Clause 14 of Decision 2021/914 anchors the Transfer Impact Assessment; without it there is no contractual hook for the parties' Schrems II analysis and supervisory authorities cannot locate the TIA discussion.
+- `mutual-nda-deep-non-solicit-no-carve-out-fail.txt` — Mutual NDA with a non-solicitation clause added at Section 7 that runs for one year post-termination but contains no general-solicitation / public-job-postings carve-out; the surrounding 300-character window contains only "direct contact", "indirect contact", and "executive recruiter retained" language, deliberately omitting the standard safe-harbor phrasing. **NDA-D-020 (warning)** fires because its bad_pattern's negative lookahead requires one of `general\s+solicitation` / `not\s+specifically\s+directed` / `general\s+advertis` within 300 chars of the non-solicit anchor; without the carve-out, ordinary recruiting (LinkedIn posts, conference recruiters, public job ads) becomes a contractual breach risk.
+- `msa-vendor-deep-indemnity-carved-out-of-cap-fail.txt` — Vendor MSA with Section 8(b) "Carveouts" tightened so that "cap shall not apply to indemnification" sits inside the rule's 80-character proximity window (the pass fixture separates them with ~95 chars). **MSA-005 (info)** fires because indemnification is now plainly excluded from the aggregate liability cap — the rule surfaces this commercially-contested choice for explicit review since whether indemnification falls inside or outside the cap is the most-contested cap-carve-out term in commercial drafting.
+
+Each fail-fixture has a `.playbook` sidecar. [`tests/golden/v3/fixture-sanity.test.ts`](tests/golden/v3/fixture-sanity.test.ts) now pins sixty-nine fail-fixtures (was sixty-six); each entry asserts the load-bearing rule is in the fired set. Goldens regenerated via `VAULYTICA_REGEN_GOLDEN=1`. Full gate green: `npm run lint && typecheck && test && build`.
+
 ### v3 fail-fixture corpus expansion (63 → 66) (2026-05-18) — ✅ complete
 
 Advanced LAUNCH row v3-b coverage from sixty-three end-to-end fail-fixtures to sixty-six by adding three new fixtures spanning three distinct v3 rule families (DPA-GDPR, BAA, ADDENDA) — none of the three rules had an end-to-end fail-fixture before this batch. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
