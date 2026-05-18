@@ -241,6 +241,16 @@ Three substantive additions:
 
 ## Post-4.0 work
 
+### v3 fail-fixture corpus expansion (39 → 42) (2026-05-18) — ✅ complete
+
+Advanced LAUNCH row v3-b coverage from thirty-nine end-to-end fail-fixtures to forty-two by adding a new NDA third-party-exclusion fixture, a new vendor-MSA force-majeure fixture, and a new BAA cure-infeasible-termination fixture — each exercises a distinct load-bearing rule not previously covered. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
+
+- `mutual-nda-deep-missing-third-party-exclusion-fail.txt` — removes the "third party lawfully obtained" prong from Section 2 (Carveouts); the last sentence actively reincorporates any information accessible from "any external party not operating under a separate written NDA". **NDA-D-008 (warning)** fires because its present_patterns require "third party" within ~80 chars of "without (breach|restriction)|lawfully" or "received/obtained from a third party" and now no such pairing appears; without this exclusion the Receiving Party risks breaching the NDA for using identical information it legitimately obtained from an independent source.
+- `msa-vendor-deep-missing-force-majeure-fail.txt` — rewrites the force-majeure clause as a vendor-only "Excused Performance" paragraph (Vendor's obligations excused; Customer's payment obligations explicitly not excused) with no bilateral "neither party" or "either party" framing anywhere. **MSA-022 (info)** fires because its present_patterns require "(neither party|either party).{0,80}force majeure" or "force majeure.{0,160}(neither|both|each party)" and now neither pattern appears; a one-sided force-majeure clause is commercially abnormal and leaves the customer without contractual relief for its own performance obligations during a force-majeure event.
+- `baa-missing-cure-infeasible-termination-fail.txt` — rewrites the Term and Termination section to allow only cure-period and insolvency termination, with no "cure is not feasible", "cure is infeasible", "infeasible to cure", or "fail.*cure" language anywhere in the document. **BAA-012 (warning)** fires because 45 C.F.R. § 164.504(e)(2)(iii) and HHS guidance expect BAAs to permit termination when cure of a material breach is not feasible; without this provision the covered entity may be left with no clear contractual exit when a systemic HIPAA violation cannot be remediated within the cure window.
+
+Each fail-fixture has a `.playbook` sidecar forcing the v3 playbook. [`tests/golden/v3/fixture-sanity.test.ts`](tests/golden/v3/fixture-sanity.test.ts) now pins forty-two fail-fixtures (was thirty-nine); each entry asserts the load-bearing rule is in the fired set. Goldens regenerated via `VAULYTICA_REGEN_GOLDEN=1`. Full gate green: `npm run lint && typecheck && test && build` — **1294 passing + 2 skips** (was 1285; +9 new tests: 3 golden-match, 3 determinism, 3 sanity guards).
+
 ### v3 fail-fixture corpus expansion (36 → 39) (2026-05-18) — ✅ complete
 
 Advanced LAUNCH row v3-b coverage from thirty-six end-to-end fail-fixtures to thirty-nine by adding a new NDA carve-out fixture, a new vendor-MSA SLA fixture, and a new DPA Article 32 security-measures fixture — each exercises a distinct load-bearing rule not previously covered. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):

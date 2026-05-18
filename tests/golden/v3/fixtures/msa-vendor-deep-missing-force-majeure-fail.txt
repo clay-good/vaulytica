@@ -1,0 +1,43 @@
+Master Services Agreement
+
+This Master Services Agreement ("MSA" or "Agreement") is entered into as of March 10, 2026, between Acme Corp, a Delaware corporation ("Vendor"), and Wayne Enterprises LLC, a Delaware limited liability company ("Customer"). This Agreement governs all services Vendor provides to Customer pursuant to one or more Statements of Work.
+
+1. Order of Precedence. In the event of any conflict or inconsistency between this MSA and any Statement of Work ("SOW"), the terms of this MSA shall control and govern, except to the extent that a SOW explicitly states that it supersedes a specific provision of this MSA by reference to the section number.
+
+2. Services. Vendor shall provide the services described in each SOW executed by the parties. Each SOW is incorporated into and made a part of this Agreement. Vendor shall perform services in a professional and workmanlike manner consistent with industry standards.
+
+3. Fees and Payment. Customer shall pay Vendor the fees set forth in each applicable SOW. Payment is due within thirty (30) days of Customer's receipt of Vendor's invoice (Net 30). Overdue amounts shall accrue interest at the lesser of 1.5% per month or the maximum rate permitted by law.
+
+4. Intellectual Property Ownership. Vendor retains all right, title, and interest in and to its pre-existing intellectual property, including all software, tools, methodologies, and know-how ("Vendor Background IP"), whether or not incorporated into any deliverable. All foreground intellectual property developed by Vendor specifically for Customer under a SOW shall be owned by Customer upon full payment of all fees. Vendor retains a non-exclusive, perpetual license to use any methodologies or tools developed during the engagement for other engagements. Customer retains all right, title, and interest in and to Customer's pre-existing data and materials.
+
+5. Confidentiality. Each party (as "Receiving Party") shall hold in strict confidence all non-public information of the other party (as "Disclosing Party") designated as confidential or that reasonably should be understood to be confidential. Each party shall use Confidential Information solely to perform its obligations or exercise its rights under this Agreement and shall disclose it only to employees who need to know and are bound by written confidentiality obligations no less protective. These mutual confidentiality obligations shall survive termination for three (3) years.
+
+6. Limited Warranty. Vendor warrants that: (a) services will be performed in a workmanlike and professional manner; (b) deliverables will conform to the applicable documentation and specifications; (c) services and deliverables will be free of malicious code, viruses, or disabling devices; and (d) services and deliverables comply with applicable laws and regulations and do not infringe any third-party intellectual property rights. EXCEPT AS EXPRESSLY SET FORTH IN THIS SECTION, THE SERVICES ARE PROVIDED "AS IS" WITHOUT ANY IMPLIED WARRANTIES, INCLUDING IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+
+7. Mutual Indemnification. (a) Vendor Indemnification. Vendor shall indemnify, defend, and hold harmless Customer from any third-party claim arising from: (i) infringement of a third-party intellectual property right by the deliverables; (ii) gross negligence or willful misconduct by Vendor; or (iii) breach of Vendor's data-protection obligations. (b) Customer Indemnification. Customer shall indemnify, defend, and hold harmless Vendor from third-party claims arising from Customer's misuse of the deliverables in violation of this Agreement. (c) Indemnification Procedure. The indemnified party shall promptly notify the indemnifying party in writing of any claim; give the indemnifying party sole control of the defense and settlement; and cooperate fully at the indemnifying party's expense. The indemnifying party shall not settle any claim that imposes liability on the indemnified party without the indemnified party's prior written consent.
+
+8. Limitation of Liability. (a) Aggregate Liability Cap. EACH PARTY'S AGGREGATE LIABILITY TO THE OTHER FOR ALL CLAIMS ARISING OUT OF OR RELATED TO THIS AGREEMENT SHALL NOT EXCEED THE TOTAL FEES PAID OR PAYABLE BY CUSTOMER IN THE TWELVE (12) MONTHS IMMEDIATELY PRECEDING THE CLAIM. (b) Carveouts. The aggregate cap shall not apply to: (i) breach of confidentiality obligations; (ii) either party's indemnification obligations; or (iii) liability arising from fraud, gross negligence, or willful misconduct. (c) Exclusion of Consequential Damages. IN NO EVENT SHALL EITHER PARTY BE LIABLE TO THE OTHER FOR ANY INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES, INCLUDING LOSS OF PROFITS OR DATA, ARISING OUT OF OR RELATED TO THIS AGREEMENT.
+
+9. Insurance. During the term, Vendor shall maintain commercial general liability insurance with limits of at least $1,000,000 per occurrence and $2,000,000 in the aggregate, and professional liability insurance with limits of at least $1,000,000 per occurrence.
+
+10. Service Level Agreement. Vendor commits to a 99.5% monthly uptime SLA for all hosted services. The SLA, including uptime measurement, support response times, and service credit schedule, is set forth in Schedule A, attached hereto and incorporated herein by reference.
+
+11. Termination. (a) Termination for Cause. Either party may terminate this Agreement upon written notice if the other party materially breaches this Agreement and fails to cure such breach within thirty (30) days after receiving written notice specifying the breach in reasonable detail. (b) Termination for Convenience. Either party may terminate this Agreement without cause upon sixty (60) days prior written notice to the other party. (c) Termination for Insolvency. Either party may terminate this Agreement immediately upon written notice if the other party files for bankruptcy, becomes insolvent, makes an assignment for the benefit of creditors, or has a receiver appointed.
+
+12. Excused Performance. Vendor shall not be liable for any delay or failure to perform its obligations under this Agreement to the extent such delay or failure is caused by circumstances beyond Vendor's reasonable control, including acts of God, war, terrorism, strikes, government actions, or internet service outages ("Force Majeure Event"). Vendor shall promptly notify Customer of a Force Majeure Event. Customer's payment obligations are not excused by any Force Majeure Event.
+
+13. Data Return. On termination or expiration of this Agreement, Vendor shall within thirty (30) days return all Customer Data in a machine-readable format and then delete or destroy all remaining copies of Customer Data from Vendor's systems, and certify destruction in writing upon Customer's request.
+
+14. Transition Assistance. Upon termination for any reason, Vendor shall provide up to ninety (90) days of post-termination access to the hosted service and reasonable transition assistance to Customer at Vendor's then-current time-and-materials rates to facilitate migration of Customer Data to a successor service.
+
+15. Governing Law; Venue. This Agreement shall be governed by and construed in accordance with the laws of the State of Delaware, without regard to its conflict-of-laws principles. Any dispute shall be resolved exclusively in the state or federal courts located in Wilmington, Delaware, and the parties hereby consent to the personal jurisdiction of such courts.
+
+16. General. (a) Amendment. No amendment is effective unless in writing signed by both parties and referencing this Agreement by title and date. (b) No Waiver. No failure or delay in enforcing any right shall be deemed a waiver of that right. (c) Survival. Sections 4, 5, 7, 8, and 15 shall survive expiration or termination. (d) Entire Agreement. This Agreement, together with all SOWs, constitutes the entire agreement between the parties and supersedes all prior negotiations.
+
+Effective Date: March 10, 2026.
+
+ACME CORP (Vendor)                                WAYNE ENTERPRISES LLC (Customer)
+
+Signed by: ____________________________           Signed by: ____________________________
+Title: Chief Executive Officer                    Title: Chief Operating Officer
+Date: March 10, 2026                              Date: March 10, 2026

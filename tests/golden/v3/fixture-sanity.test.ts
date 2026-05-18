@@ -370,6 +370,44 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   "dpa-controller-processor-missing-art32-security-measures-fail.txt": [
     "DPA-009",
   ],
+
+  // Mutual NDA with the "third party lawfully obtained" carve-out removed
+  // from Section 2 (Carveouts) — the standard four-exclusion list now
+  // lacks the prong for information lawfully received from an unobligated
+  // third party. The last sentence of Section 2 actively reincorporates
+  // any information accessible from any "external party not operating
+  // under a separate written NDA", closing the gap for the usual
+  // third-party-channel safe harbour. NDA-D-008 is the load-bearing rule
+  // — its present_patterns require "third party" within ~80 chars of
+  // "without (breach|restriction)|lawfully" or "received/obtained from a
+  // third party" and now no such pairing appears. Without this exclusion
+  // the Receiving Party risks breaching the NDA for using identical
+  // information it legitimately obtained from an independent source.
+  "mutual-nda-deep-missing-third-party-exclusion-fail.txt": ["NDA-D-008"],
+
+  // Vendor-form MSA with the force-majeure clause rewritten to a vendor-
+  // only excused-performance paragraph (titled "Excused Performance") that
+  // explicitly states Customer's payment obligations are not excused —
+  // there is no "neither party" or "either party" bilateral framing
+  // anywhere in the force-majeure section. MSA-022 is the load-bearing
+  // presence check — its present_patterns require
+  // "(neither party|either party).{0,80}force majeure" or
+  // "force majeure.{0,160}(neither|both|each party)" and now neither
+  // appears; a one-sided force-majeure clause is commercially abnormal
+  // and leaves the customer without relief for its own performance
+  // obligations in the event of a force-majeure event affecting it.
+  "msa-vendor-deep-missing-force-majeure-fail.txt": ["MSA-022"],
+
+  // BAA with the Term and Termination section rewritten to allow only
+  // cure-based and insolvency termination — every "cure is not feasible",
+  // "infeasible to cure", and "fail.*cure" anchor is absent. BAA-012 is
+  // the load-bearing warning for 45 C.F.R. § 164.504(e)(2)(iii) — HHS
+  // expects BAAs to permit termination when cure of a material breach is
+  // not feasible (e.g., a systemic HIPAA violation that cannot be
+  // remediated within a cure window); without this provision the covered
+  // entity may be stuck with a non-curable breach situation and no clear
+  // contractual exit.
+  "baa-missing-cure-infeasible-termination-fail.txt": ["BAA-012"],
 };
 
 describe("v3 fixture sanity", () => {

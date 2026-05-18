@@ -43,6 +43,22 @@ All notable changes to this project will be documented in this file. Format adap
   `msa-customer-deep-missing-ip-indemnity-fail.txt` (MSA-001),
   `dpa-multi-state-us-missing-deletion-or-return-fail.txt`
   (USDPA-015 critical). Sanity test now pins 16 fail-fixtures.
+- Expand the v3 fail-fixture corpus from 39 to 42 (LAUNCH row v3-b)
+  with three new fail-fixtures across three distinct v3 rule families —
+  each exercises a load-bearing rule not previously covered:
+  `mutual-nda-deep-missing-third-party-exclusion-fail.txt` (NDA-D-008 —
+  "third party lawfully obtained" carve-out removed from Carveouts; last
+  sentence reincorporates information from any "external party not under a
+  separate NDA", closing the standard third-party-channel safe harbour),
+  `msa-vendor-deep-missing-force-majeure-fail.txt` (MSA-022 — force-majeure
+  clause rewritten as vendor-only "Excused Performance" with no bilateral
+  "neither party" / "either party" framing; commercially abnormal one-sided
+  scope leaves Customer without relief for its own force-majeure events),
+  `baa-missing-cure-infeasible-termination-fail.txt` (BAA-012 — Term and
+  Termination section rewrites to cure-period + insolvency termination only,
+  stripping every "cure is not feasible" / "infeasible to cure" anchor; HHS
+  guidance expects BAAs to permit exit when a HIPAA breach cannot be cured).
+  Sanity test now pins 42 fail-fixtures.
 - Expand the v3 fail-fixture corpus from 36 to 39 (LAUNCH row v3-b)
   with three new fail-fixtures across three distinct v3 rule families —
   each exercises a load-bearing rule not previously covered:
