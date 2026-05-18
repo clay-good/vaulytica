@@ -43,6 +43,16 @@ All notable changes to this project will be documented in this file. Format adap
   `msa-customer-deep-missing-ip-indemnity-fail.txt` (MSA-001),
   `dpa-multi-state-us-missing-deletion-or-return-fail.txt`
   (USDPA-015 critical). Sanity test now pins 16 fail-fixtures.
+- Expand the v3 fail-fixture corpus from 21 to 24 (LAUNCH row v3-b)
+  with a second failure-mode fixture per already-covered playbook —
+  exercising a distinct load-bearing rule that prior fixtures did not:
+  `msa-customer-deep-missing-termination-clause-fail.txt` (MSA-018 —
+  termination-for-material-breach / cure-period clause removed),
+  `mutual-nda-deep-missing-return-or-destruction-fail.txt` (NDA-D-013
+  — return-or-destruction section stripped entirely),
+  `dpa-multi-state-us-missing-confidentiality-duty-fail.txt`
+  (USDPA-016 — "bound by confidentiality" anchor replaced with generic
+  access-control language). Sanity test now pins 24 fail-fixtures.
 - Expand the v3 fail-fixture corpus from 18 to 21 (LAUNCH row v3-b)
   with a second failure-mode fixture per already-covered playbook —
   exercising a distinct load-bearing rule that prior fixtures did not:

@@ -241,6 +241,16 @@ Three substantive additions:
 
 ## Post-4.0 work
 
+### v3 fail-fixture corpus expansion (21 → 24) (2026-05-17) — ✅ complete
+
+Advanced LAUNCH row v3-b coverage from twenty-one end-to-end fail-fixtures to twenty-four by adding a second failure-mode fixture for three already-covered playbooks (customer-form MSA, mutual NDA, multi-state US DPA). Each new fixture exercises a distinct load-bearing rule that prior fixtures did not. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
+
+- `msa-customer-deep-missing-termination-clause-fail.txt` — rewrites Section 10 (Termination) to remove the termination-for-cause / material-breach / cure-period clause (replaced with convenience-only and insolvency termination). **MSA-018 (warning)** fires because the commercial drafting baseline requires an explicit material-breach termination right with a cure period; without it the customer is forced into a common-law theory rather than a clear contractual trigger.
+- `mutual-nda-deep-missing-return-or-destruction-fail.txt` — removes Section 7 (Return or Destruction) from the mutual NDA entirely, so no "return or destroy" / "destruction of confidential" / "destroy all copies" anchor remains. **NDA-D-013 (critical)** fires because without a return-or-destruction clause the discloser has no contractual hook to recover or wipe disclosed material once the relationship ends.
+- `dpa-multi-state-us-missing-confidentiality-duty-fail.txt` — rewrites the Virginia VCDPA processor obligation in Section 3 to replace "bound by confidentiality" with "subject to appropriate access controls and security training", so no "duty of confidentiality" / "committed to confidentiality" / "bound by confidentiality" anchor remains anywhere. **USDPA-016 (warning)** fires because every state privacy statute requires the processor to subject authorized personnel to a duty of confidentiality.
+
+Each fail-fixture has a `.playbook` sidecar forcing the v3 playbook. [`tests/golden/v3/fixture-sanity.test.ts`](tests/golden/v3/fixture-sanity.test.ts) now pins twenty-four fail-fixtures (was twenty-one); each entry asserts the load-bearing rule is in the fired set. Goldens regenerated via `VAULYTICA_REGEN_GOLDEN=1`. Full gate green: `npm run lint && typecheck && test && build` — **1240 passing + 2 skips** (was 1231; +9 new tests: 3 golden-match, 3 determinism, 3 sanity guards).
+
 ### v3 fail-fixture corpus expansion (18 → 21) (2026-05-17) — ✅ complete
 
 Advanced LAUNCH row v3-b coverage from eighteen end-to-end fail-fixtures to twenty-one by adding a second failure-mode fixture for three already-covered playbooks (BAA, controller-processor DPA, vendor-form MSA). Each new fixture exercises a distinct load-bearing rule that prior fixtures did not — exercising the regex on a different §164.504(e) prong / Art. 28(3) prong / commercial-baseline rule rather than re-exercising rules already covered. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):

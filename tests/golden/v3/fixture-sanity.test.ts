@@ -181,6 +181,32 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // copyright / patent rules govern and rarely match the parties'
   // intent.
   "msa-vendor-deep-missing-background-foreground-ip-fail.txt": ["MSA-011"],
+
+  // Customer-form MSA with Section 10 rewritten to remove the
+  // termination-for-cause / material-breach / cure-period clause
+  // (replaced with convenience-only and insolvency termination).
+  // MSA-018 is the load-bearing warning — without an explicit
+  // material-breach termination right the customer is forced into a
+  // common-law theory rather than a clear contractual trigger.
+  "msa-customer-deep-missing-termination-clause-fail.txt": ["MSA-018"],
+
+  // Mutual NDA with Section 7 (Return or Destruction) removed entirely.
+  // NDA-D-013 is the load-bearing presence check —
+  // its present_patterns require "return or destroy" / "destruction of
+  // confidential" / "destroy all copies" and now none appears in the
+  // document. Without this clause the discloser has no contractual hook
+  // to recover or wipe disclosed material once the relationship ends.
+  "mutual-nda-deep-missing-return-or-destruction-fail.txt": ["NDA-D-013"],
+
+  // Multi-state US DPA with the "bound by confidentiality" anchor in
+  // Section 3 (Virginia VCDPA Processor Obligations) replaced by
+  // "subject to appropriate access controls and security training".
+  // USDPA-016 is the load-bearing rule — every state privacy statute
+  // requires the processor to subject authorized personnel to a duty
+  // of confidentiality, and no alternative pattern
+  // (duty/committed/bound by confidentiality) appears anywhere else
+  // in the document.
+  "dpa-multi-state-us-missing-confidentiality-duty-fail.txt": ["USDPA-016"],
 };
 
 describe("v3 fixture sanity", () => {
