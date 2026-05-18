@@ -900,6 +900,38 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // effectively step into the contract without the counterparty's
   // consent.
   "msa-vendor-deep-assignment-silent-change-of-control-fail.txt": ["MSA-023"],
+
+  // Mutual NDA with an added Section 8 "Residuals" clause that
+  // permits each Party to use information retained in the "unaided
+  // memory" of its personnel "for any purpose," and disclaims any
+  // royalty obligation. NDA-D-010 (info) is the load-bearing rule —
+  // its bad_patterns flag the bare `\bresiduals?\b` anchor and the
+  // `retained in.{0,40}(unaided )?memory` phrasing. The rule does
+  // not assert wrongness; it surfaces the carve-out so the discloser
+  // can make a deliberate choice about whether to keep it.
+  "mutual-nda-deep-residuals-clause-fail.txt": ["NDA-D-010"],
+
+  // Vendor MSA with an added Section 5 "Feedback License" granting
+  // Vendor a perpetual, irrevocable, royalty-free, worldwide license
+  // to use Customer feedback "for any purpose, without any
+  // restriction whatsoever." MSA-012 (info) is the load-bearing
+  // rule — its bad_patterns catch `feedback` within 80 chars of
+  // `perpetual|irrevocable|royalty-free|worldwide` within another
+  // 80 chars of `any purpose|without (any )?restriction`. The clause
+  // is broad enough to sweep in customer ideas the customer may want
+  // to commercialize separately.
+  "msa-vendor-deep-feedback-license-unbounded-fail.txt": ["MSA-012"],
+
+  // Multi-state US DPA with Section 7 rewritten to drop every
+  // "equivalent obligations" / "same restrictions" anchor — the
+  // subprocessor engagement clause still requires a written contract
+  // (so USDPA-018 stays satisfied) but no longer flows the
+  // service-provider's CCPA restrictions down to the subprocessor.
+  // USDPA-010 is the load-bearing rule — Cal. Code Regs. tit. 11,
+  // § 7051(b) requires the contract with subcontractors to include
+  // the same CCPA provisions; without that flow-down a subprocessor
+  // is operating off-contract from the business's point of view.
+  "dpa-multi-state-us-missing-subprocessor-flow-down-fail.txt": ["USDPA-010"],
 };
 
 describe("v3 fixture sanity", () => {
