@@ -595,6 +595,46 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // authorities cannot readily assess whether the agreement covers
   // all affected individuals.
   "dpa-controller-processor-missing-data-subjects-fail.txt": ["DPA-005"],
+
+  // BAA with the "Access, Amendment, Accounting" section rewritten as
+  // "Access, Accounting" — every "amendment", "amend.*PHI", and
+  // "164.526" anchor is stripped; the surviving sentence references
+  // only 45 CFR § 164.524 (access) and § 164.528 (accounting). The
+  // commercial substitute ("cooperate as commercially reasonable" on
+  // update or correction requests) deliberately avoids the words
+  // "amend" / "amendment" so neither alternation in BAA-007's
+  // present_patterns matches. BAA-007 is the load-bearing rule for
+  // 45 C.F.R. § 164.504(e)(2)(ii)(F) — the BAA must allow the covered
+  // entity to satisfy individuals' right to amend PHI under § 164.526;
+  // without this clause, an amendment request bottlenecks at the BA
+  // with no contractual hook.
+  "baa-missing-phi-amendment-fail.txt": ["BAA-007"],
+
+  // Mutual NDA with Section 8 rewritten as "Dispute Resolution; Venue"
+  // — every "governing law", "governed by the laws", and "laws of the
+  // State of/country of" anchor is stripped; the surviving clause
+  // designates a court (Wilmington) and waives forum non conveniens
+  // but explicitly disclaims any choice-of-substantive-law selection,
+  // deferring conflict-of-laws to the forum court. NDA-D-017 is the
+  // load-bearing rule — its present_patterns require one of three
+  // governing-law anchors and now none appears; without a chosen
+  // governing law the parties' substantive expectations are exposed
+  // to whichever forum-state conflict-of-laws regime picks up the
+  // case, producing materially unpredictable enforcement outcomes.
+  "mutual-nda-deep-missing-governing-law-fail.txt": ["NDA-D-017"],
+
+  // SCC Module 2 with the "Clause 11 — Redress" heading replaced by
+  // a generic "Customer Service Contact Point" paragraph — every
+  // "Clause 11" anchor and every "redress" token is stripped. The
+  // surviving prose preserves the contact-point obligation but loses
+  // both the SCC clause-numbering and the statutory term "redress".
+  // TRANSFER-006 is the load-bearing rule — its present_patterns
+  // require `clause\s*11\b` or `redress\b`; without either anchor,
+  // automated compliance tooling and auditors cannot locate the
+  // mandatory data-subject redress disclosure, and internal cross-
+  // references in the SCCs that point back to Clause 11 are silently
+  // broken.
+  "scc-module-2-missing-clause-11-fail.txt": ["TRANSFER-006"],
 };
 
 describe("v3 fixture sanity", () => {

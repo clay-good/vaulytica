@@ -43,6 +43,34 @@ All notable changes to this project will be documented in this file. Format adap
   `msa-customer-deep-missing-ip-indemnity-fail.txt` (MSA-001),
   `dpa-multi-state-us-missing-deletion-or-return-fail.txt`
   (USDPA-015 critical). Sanity test now pins 16 fail-fixtures.
+- Expand the v3 fail-fixture corpus from 57 to 60 (LAUNCH row v3-b)
+  with three new fail-fixtures spanning three distinct v3 rule families
+  (BAA, NDA-deep, TRANSFER) — each exercises a load-bearing rule not
+  previously covered end-to-end:
+  `baa-missing-phi-amendment-fail.txt` (BAA-007 — the "Access,
+  Amendment, Accounting" section is rewritten as "Access, Accounting";
+  every "amendment", "amend.*PHI", and "164.526" anchor is stripped
+  and the surviving sentence references only § 164.524 and § 164.528,
+  with the commercial substitute deliberately avoiding both "amend"
+  and "amendment" so neither alternation in BAA-007's present_patterns
+  matches — leaving an amendment request bottlenecked at the BA with
+  no contractual hook to satisfy § 164.526),
+  `mutual-nda-deep-missing-governing-law-fail.txt` (NDA-D-017 —
+  Section 8 is rewritten as "Dispute Resolution; Venue"; every
+  "governing law", "governed by the laws", and "laws of the State of /
+  country of" anchor is stripped and the surviving clause designates
+  only a forum, explicitly disclaiming any substantive-law selection
+  and deferring conflict-of-laws to the forum court — exposing the
+  parties' substantive expectations to whichever forum-state
+  conflict-of-laws regime picks up the case),
+  `scc-module-2-missing-clause-11-fail.txt` (TRANSFER-006 warning —
+  the "Clause 11 — Redress" heading is replaced by a generic
+  "Customer Service Contact Point" paragraph; every "Clause 11"
+  anchor and every "redress" token is stripped — the contact-point
+  obligation survives in prose but the SCC clause-numbering and the
+  statutory term are lost, breaking automated compliance lookups
+  and internal SCC cross-references back to Clause 11).
+  Sanity test now pins 60 fail-fixtures.
 - Expand the v3 fail-fixture corpus from 54 to 57 (LAUNCH row v3-b)
   with three new fail-fixtures spanning three distinct v3 rule families
   (TRANSFER, MSA, DPA-GDPR) — each exercises a load-bearing rule not
