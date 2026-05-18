@@ -241,6 +241,16 @@ Three substantive additions:
 
 ## Post-4.0 work
 
+### v3 fail-fixture corpus expansion (51 → 54) (2026-05-18) — ✅ complete
+
+Advanced LAUNCH row v3-b coverage from fifty-one end-to-end fail-fixtures to fifty-four by adding three new fixtures spanning three distinct v3 rule families (TRANSFER, DPA-GDPR, BAA) — none of the three families had a fixture for the chosen rules. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
+
+- `scc-module-2-missing-clause-8-fail.txt` — SCC Module 2 with the "Clause 8 — Data Protection Safeguards" heading and numbering stripped; all obligations survive in prose form but every "clause 8" / "Clause 8" anchor is absent. **TRANSFER-004** fires because its present_patterns require `clause\s*8\b` anywhere in the document; without the heading, automated compliance tooling and auditors cannot locate the Art. 28 safeguard block and the SCC's internal cross-references to "Clause 8.9" (audit) are silently broken.
+- `dpa-controller-processor-missing-dsr-assistance-fail.txt` — Controller→Processor DPA with Section 8 rewritten to an "Individual Requests" cooperation paragraph — every "assist the controller", "data subject rights", and "Chapter III" anchor is stripped; the surviving text references only "individuals" and "personal information." **DPA-011** fires for GDPR Art. 28(3)(e) — the processor must assist the controller by appropriate technical and organisational measures to fulfil its obligation to respond to data-subject rights; absent the statutory framing the processor has no explicit GDPR-aligned obligation covering access, erasure, portability, and objection requests.
+- `baa-missing-security-rule-compliance-fail.txt` — BAA with the Safeguards section rewritten to omit every "Security Rule", "164.30X", and "administrative … physical … technical" anchor; the surviving text references only "appropriate safeguards" and "applicable HIPAA regulations." **BAA-013 (critical)** fires for 45 C.F.R. § 164.314(a)(2)(i) — that regulation requires the BAA to explicitly mandate the BA's compliance with the HIPAA Security Rule for ePHI; a generic "appropriate safeguards" clause does not satisfy the regulatory citation requirement and leaves the covered entity without a clear contractual hook to enforce Security Rule compliance.
+
+Each fail-fixture has a `.playbook` sidecar. [`tests/golden/v3/fixture-sanity.test.ts`](tests/golden/v3/fixture-sanity.test.ts) now pins fifty-four fail-fixtures (was fifty-one); each entry asserts the load-bearing rule is in the fired set. Goldens regenerated via `VAULYTICA_REGEN_GOLDEN=1`. Full gate green: `npm run lint && typecheck && test && build` — **1330 passing + 2 skips** (was 1321; +9 new tests: 3 golden-match, 3 determinism, 3 sanity guards).
+
 ### v3 fail-fixture corpus expansion (48 → 51) (2026-05-18) — ✅ complete
 
 Advanced LAUNCH row v3-b coverage from forty-eight end-to-end fail-fixtures to fifty-one by adding three new NDA-deep fixtures — each exercises a distinct NDA-D load-bearing rule not previously covered end-to-end. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):

@@ -43,6 +43,25 @@ All notable changes to this project will be documented in this file. Format adap
   `msa-customer-deep-missing-ip-indemnity-fail.txt` (MSA-001),
   `dpa-multi-state-us-missing-deletion-or-return-fail.txt`
   (USDPA-015 critical). Sanity test now pins 16 fail-fixtures.
+- Expand the v3 fail-fixture corpus from 51 to 54 (LAUNCH row v3-b)
+  with three new fail-fixtures spanning three distinct v3 rule families
+  (TRANSFER, DPA-GDPR, BAA) — each exercises a load-bearing rule not
+  previously covered end-to-end:
+  `scc-module-2-missing-clause-8-fail.txt` (TRANSFER-004 — SCC Module 2
+  with the "Clause 8 — Data Protection Safeguards" heading stripped;
+  all obligations survive in prose but no "clause 8" anchor remains,
+  breaking automated compliance lookup and internal SCC cross-references),
+  `dpa-controller-processor-missing-dsr-assistance-fail.txt` (DPA-011 —
+  Section 8 rewritten to strip every "assist the controller", "data
+  subject rights", and "Chapter III" anchor; processor has no explicit
+  GDPR Art. 28(3)(e) obligation to assist with access, erasure,
+  portability, and objection requests),
+  `baa-missing-security-rule-compliance-fail.txt` (BAA-013 critical —
+  Safeguards section rewritten to drop all "Security Rule", "164.30X",
+  and "administrative … physical … technical" anchors; a generic
+  "appropriate safeguards" clause does not satisfy 45 C.F.R.
+  § 164.314(a)(2)(i)'s explicit Security Rule mandate).
+  Sanity test now pins 54 fail-fixtures.
 - Expand the v3 fail-fixture corpus from 48 to 51 (LAUNCH row v3-b)
   with three new NDA-deep fail-fixtures — each exercises a load-bearing
   NDA-D rule not previously covered end-to-end:

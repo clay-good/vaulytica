@@ -523,6 +523,40 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // disclosure, giving the receiving party a litigation foothold the
   // discloser never intended to concede.
   "mutual-nda-deep-missing-no-license-clause-fail.txt": ["NDA-D-021"],
+
+  // SCC Module 2 with the entire "Clause 8 — Data Protection
+  // Safeguards" heading and numbering stripped — the obligations
+  // survive in prose form but every "Clause 8" / "clause 8" anchor is
+  // absent. TRANSFER-004 is the load-bearing presence check — its
+  // present_patterns require `clause\s*8\b` anywhere in the document;
+  // without the heading, automated compliance tooling and auditors
+  // cannot locate the Art. 28 safeguard block, and the SCC's internal
+  // cross-references to "Clause 8.9" (audit) are silently broken.
+  "scc-module-2-missing-clause-8-fail.txt": ["TRANSFER-004"],
+
+  // Controller→Processor DPA with Section 8 rewritten to an
+  // "Individual Requests" cooperation paragraph — every "assist the
+  // controller", "data subject rights", and "Chapter III" anchor is
+  // stripped; the surviving text only references "individuals" and
+  // "personal information." DPA-011 is the load-bearing rule for
+  // GDPR Art. 28(3)(e) — the processor must assist the controller by
+  // appropriate technical and organisational measures to fulfil its
+  // obligation to respond to data-subject rights; absent the statutory
+  // framing, the processor has no explicit GDPR-aligned obligation
+  // covering access, erasure, portability, and objection requests.
+  "dpa-controller-processor-missing-dsr-assistance-fail.txt": ["DPA-011"],
+
+  // BAA with the Safeguards section rewritten to omit every "Security
+  // Rule", "164.30X", and "administrative … physical … technical"
+  // anchor — the surviving text references only "appropriate
+  // safeguards" and "applicable HIPAA regulations." BAA-013 is the
+  // load-bearing critical for 45 C.F.R. § 164.314(a)(2)(i) — that
+  // regulation explicitly requires the BAA to mandate the BA's
+  // compliance with the HIPAA Security Rule for ePHI; a generic
+  // "appropriate safeguards" clause does not satisfy the regulatory
+  // citation requirement and leaves the covered entity without a
+  // clear contractual hook to enforce Security Rule compliance.
+  "baa-missing-security-rule-compliance-fail.txt": ["BAA-013"],
 };
 
 describe("v3 fixture sanity", () => {
