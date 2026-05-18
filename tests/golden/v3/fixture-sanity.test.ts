@@ -333,6 +333,43 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   "msa-vendor-deep-missing-compliance-noninfringement-warranty-fail.txt": [
     "MSA-014",
   ],
+
+  // Mutual NDA with the "already known / prior to disclosure" exclusion
+  // removed from Section 2 (Carveouts) — the standard four-exclusion list
+  // now lacks the "previously known to the recipient" prong entirely.
+  // The last sentence of Section 2 is rewritten to affirmatively rope in
+  // information "regardless of how or when" the Receiving Party's employees
+  // came to know of it, closing off any implied prior-knowledge defence.
+  // NDA-D-007 is the load-bearing rule — its present_patterns require
+  // "already known", "prior to disclos", or "previously known" and now no
+  // such pattern appears anywhere in the document. Without this exclusion
+  // the Receiving Party risks breaching the NDA by using information they
+  // possessed long before the relationship began.
+  "mutual-nda-deep-missing-prior-knowledge-exclusion-fail.txt": ["NDA-D-007"],
+
+  // Vendor-form MSA with no SLA, service-level agreement, uptime commitment,
+  // or availability reference anywhere in the document — the Agreement covers
+  // warranty, indemnity, and limitation of liability but is silent on any
+  // performance or availability standard for the hosted service. MSA-016 is
+  // the load-bearing warning — its present_patterns require
+  // "service level agreement", "SLA", "uptime", or "availability commitment"
+  // and now none appears; without an SLA reference, availability promises
+  // are unenforceable and the customer has no contractual remedy for downtime.
+  "msa-vendor-deep-missing-sla-fail.txt": ["MSA-016"],
+
+  // Controller→Processor DPA with Section 6 (Security Measures) rewritten
+  // to a vague general-security-commitment paragraph — every reference to
+  // "Article 32", "technical and organisational measures", "encryption",
+  // "pseudonymisation", "confidentiality, integrity, availability and
+  // resilience", "restore availability", and "regularly testing" is stripped.
+  // DPA-009 is the load-bearing critical for GDPR Art. 28(3)(c) — the
+  // processor must take all measures required pursuant to Article 32;
+  // absent the statutory anchor and the enumerated TOMs, the controller
+  // cannot verify that the processor has implemented the required security
+  // of processing framework.
+  "dpa-controller-processor-missing-art32-security-measures-fail.txt": [
+    "DPA-009",
+  ],
 };
 
 describe("v3 fixture sanity", () => {

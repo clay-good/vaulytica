@@ -241,6 +241,16 @@ Three substantive additions:
 
 ## Post-4.0 work
 
+### v3 fail-fixture corpus expansion (36 → 39) (2026-05-18) — ✅ complete
+
+Advanced LAUNCH row v3-b coverage from thirty-six end-to-end fail-fixtures to thirty-nine by adding a new NDA carve-out fixture, a new vendor-MSA SLA fixture, and a new DPA Article 32 security-measures fixture — each exercises a distinct load-bearing rule not previously covered. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
+
+- `mutual-nda-deep-missing-prior-knowledge-exclusion-fail.txt` — removes the "already known / prior to disclosure" prong from Section 2 (Carveouts) and adds an affirmative sentence roping in information "regardless of how or when" the Receiving Party's employees came to know of it. **NDA-D-007 (critical)** fires because its present_patterns require "already known", "prior to disclos", or "previously known" and now no such pattern appears; without this exclusion the Receiving Party risks breaching the NDA by using information they independently possessed before the relationship began.
+- `msa-vendor-deep-missing-sla-fail.txt` — omits any "service level agreement", "SLA", "uptime", or "availability commitment" reference from a vendor-form MSA that is otherwise complete (warranty, indemnity, cap, termination). **MSA-016 (warning)** fires because its present_patterns require one of those four anchor families and now none appears; without an SLA reference, performance and availability promises are unenforceable and the customer has no contractual remedy for downtime.
+- `dpa-controller-processor-missing-art32-security-measures-fail.txt` — replaces Section 6 (Security Measures) with a vague general-security-commitment paragraph, stripping every reference to "Article 32", "technical and organisational measures", "encryption", "pseudonymisation", "confidentiality, integrity, availability and resilience", "restore availability", and "regularly testing". **DPA-009 (critical)** fires because GDPR Art. 28(3)(c) requires the processor to take all measures required pursuant to Article 32; absent the statutory anchor and the enumerated TOMs the controller cannot verify that the processor has implemented the required security-of-processing framework.
+
+Each fail-fixture has a `.playbook` sidecar forcing the v3 playbook. [`tests/golden/v3/fixture-sanity.test.ts`](tests/golden/v3/fixture-sanity.test.ts) now pins thirty-nine fail-fixtures (was thirty-six); each entry asserts the load-bearing rule is in the fired set. Goldens regenerated via `VAULYTICA_REGEN_GOLDEN=1`. Full gate green: `npm run lint && typecheck && test && build` — **1285 passing + 2 skips** (was 1276; +9 new tests: 3 golden-match, 3 determinism, 3 sanity guards).
+
 ### v3 fail-fixture corpus expansion (33 → 36) (2026-05-18) — ✅ complete
 
 Advanced LAUNCH row v3-b coverage from thirty-three end-to-end fail-fixtures to thirty-six by adding a third failure-mode fixture for DPA (controller-processor), a second audit-focused failure for multi-state US DPA, and a new compliance/non-infringement warranty fixture for vendor-form MSA — each exercises a distinct load-bearing rule not previously covered. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):

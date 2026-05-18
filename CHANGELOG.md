@@ -43,6 +43,22 @@ All notable changes to this project will be documented in this file. Format adap
   `msa-customer-deep-missing-ip-indemnity-fail.txt` (MSA-001),
   `dpa-multi-state-us-missing-deletion-or-return-fail.txt`
   (USDPA-015 critical). Sanity test now pins 16 fail-fixtures.
+- Expand the v3 fail-fixture corpus from 36 to 39 (LAUNCH row v3-b)
+  with three new fail-fixtures across three distinct v3 rule families —
+  each exercises a load-bearing rule not previously covered:
+  `mutual-nda-deep-missing-prior-knowledge-exclusion-fail.txt`
+  (NDA-D-007 — "already known / prior to disclos" exclusion removed from
+  Section 2 Carveouts, replaced with an affirmative sentence that sweeps
+  in information regardless of when the Receiving Party came to know it),
+  `msa-vendor-deep-missing-sla-fail.txt` (MSA-016 — no SLA, uptime, or
+  availability commitment reference anywhere in an otherwise complete
+  vendor-form MSA; customer has no contractual remedy for downtime),
+  `dpa-controller-processor-missing-art32-security-measures-fail.txt`
+  (DPA-009 critical — Section 6 rewritten to a vague general-security-
+  commitment paragraph, stripping every reference to "Article 32",
+  "technical and organisational measures", "encryption",
+  "pseudonymisation", CIA-R, restore-availability, and regular-testing).
+  Sanity test now pins 39 fail-fixtures.
 - Expand the v3 fail-fixture corpus from 33 to 36 (LAUNCH row v3-b)
   with three new fail-fixtures across three distinct v3 rule families —
   each exercises a load-bearing rule not previously covered:
