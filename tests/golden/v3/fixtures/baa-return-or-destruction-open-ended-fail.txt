@@ -1,0 +1,43 @@
+Business Associate Agreement
+
+This Business Associate Agreement ("BAA") is entered into pursuant to the requirements of 45 CFR § 164.504(e) between Covered Entity, Acme Health LLC, a Delaware limited liability company ("Covered Entity"), and Business Associate, Globex Services Inc., a New York corporation ("Business Associate"). The Parties acknowledge that Business Associate creates or receives Protected Health Information ("PHI") on behalf of Covered Entity in performing the Services.
+
+Permitted Uses and Disclosures. Business Associate may use and disclose PHI only to perform the Services described in the Master Services Agreement between the parties, and as otherwise permitted or required under this BAA, the HIPAA Rules, and applicable law. Business Associate shall not use or disclose PHI other than as permitted or required by this BAA or as required by law.
+
+Safeguards. Business Associate shall implement administrative, physical, and technical safeguards that reasonably and appropriately protect the confidentiality, integrity, and availability of Electronic Protected Health Information ("ePHI") that Business Associate creates, receives, maintains, or transmits on behalf of Covered Entity, as required by the Security Rule at 45 CFR §§ 164.308, 164.310, and 164.312. Business Associate shall comply with the Security Rule administrative, physical, and technical safeguards as required by 45 CFR § 164.314(a)(2)(i).
+
+Reporting. Business Associate shall report to Covered Entity any Security Incident of which it becomes aware. Business Associate shall report Breaches of Unsecured PHI to Covered Entity without unreasonable delay and in no case later than sixty (60) days following discovery of the Breach, as required by 45 CFR § 164.410.
+
+Subcontractor Flow-Down. Business Associate shall ensure that any subcontractor that creates, receives, maintains, or transmits PHI on behalf of Business Associate agrees in writing to the same restrictions, conditions, and requirements that apply to Business Associate under this BAA.
+
+Access, Amendment, Accounting. Business Associate shall make PHI available to Covered Entity as necessary to satisfy Covered Entity's obligations under 45 CFR § 164.524 (access), 45 CFR § 164.526 (amendment), and 45 CFR § 164.528 (accounting of disclosures).
+
+Books, Records. Business Associate shall make its internal practices, books, and records relating to its use and disclosure of PHI available to the Secretary of Health and Human Services for purposes of determining Covered Entity's compliance with the HIPAA Rules.
+
+Return or Destruction. Upon termination of this BAA for any reason, Business Associate shall return to Covered Entity or destroy all PHI as soon as practicable thereafter. If return or destruction is infeasible, Business Associate shall extend the protections of this BAA to such PHI and limit further uses and disclosures to those purposes that make return or destruction infeasible.
+
+Minimum Necessary. Business Associate shall, when using or disclosing PHI or requesting PHI from Covered Entity, make reasonable efforts to limit such use or disclosure to the minimum necessary to accomplish the intended purpose.
+
+Mitigation. Business Associate shall mitigate, to the extent practicable, any harmful effect that is known to Business Associate of a use or disclosure of PHI by Business Associate in violation of this BAA.
+
+Workforce Training. Business Associate shall train members of its workforce on PHI handling and the requirements of this BAA.
+
+Encryption. Business Associate shall encrypt PHI in transit and at rest using industry-standard methods consistent with NIST SP 800-66 and FIPS 140-3.
+
+Risk Assessment. Business Associate shall conduct a HIPAA Security Risk Assessment at least annually.
+
+Sanctions. Business Associate shall apply appropriate sanctions against workforce members who fail to comply with this BAA.
+
+Subcontractor List. Business Associate maintains a list of subcontractors that create, receive, maintain, or transmit PHI on behalf of Business Associate.
+
+Governing Law. This BAA shall be governed by the laws of the State of Delaware.
+
+Notice. Any notice required under this BAA shall be in writing and sent to the Privacy Officer at the address set forth in the Master Services Agreement.
+
+Term. This BAA shall be co-terminous with the Master Services Agreement, except that the obligations to return or destroy PHI shall survive.
+
+Effective Date: January 1, 2026.
+
+Signed by: ____________________________________
+Title: Authorized Representative
+Date: January 1, 2026

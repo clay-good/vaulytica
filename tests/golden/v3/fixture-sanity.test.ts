@@ -825,6 +825,44 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // outages, which is the commercially contested posture the rule
   // surfaces for explicit review.
   "msa-vendor-deep-sla-sole-exclusive-remedy-fail.txt": ["MSA-017"],
+
+  // BAA with the Safeguards section narrowed from "administrative,
+  // physical, and technical safeguards … 45 CFR §§ 164.308,
+  // 164.310, and 164.312" to "administrative and physical
+  // safeguards … 45 CFR §§ 164.308 and 164.310" — every
+  // `technical safeguards` token and every `164.312` anchor is
+  // stripped while the broader "Security Rule" reference is
+  // retained so BAA-013 still passes. BAA-016 (warning) is the
+  // load-bearing rule — § 164.312 requires the BAA to anchor
+  // technical safeguards (access controls, audit logs, integrity
+  // controls, transmission security); without a § 164.312 hook
+  // the covered entity has no contractual lever to enforce
+  // technical-safeguard compliance.
+  "baa-missing-technical-safeguards-fail.txt": ["BAA-016"],
+
+  // BAA with the breach-notification window widened from sixty to
+  // 90 calendar days following discovery of the Breach — every
+  // other anchor (`without unreasonable delay`, `discovery of the
+  // Breach`, `45 CFR § 164.410`) is preserved so BAA-019 /
+  // BAA-021 / BAA-022 still pass. BAA-020 (critical) is the
+  // load-bearing rule — 45 CFR § 164.410(b) requires
+  // notification "without unreasonable delay and in no case later
+  // than 60 calendar days after discovery"; any window beyond 60
+  // days violates HIPAA's outer bound.
+  "baa-breach-notification-90-day-window-fail.txt": ["BAA-020"],
+
+  // BAA with the "Return or Destruction" sentence rewritten so
+  // the outer time bound is replaced with "as soon as
+  // practicable thereafter" — every "thirty (30) days" /
+  // "ninety (90) days" / "by no later than" anchor is stripped
+  // and the surviving prose preserves only the open-ended
+  // commitment. BAA-024 (warning) is the load-bearing rule — its
+  // bad_patterns catch `(return|destroy|destruction) … (as soon
+  // as practicable|commercially reasonable|reasonable time)`
+  // within an 80-char window; HHS guidance expects a definite
+  // outer bound for return or destruction of PHI at termination,
+  // and open-ended timing risks indefinite PHI retention.
+  "baa-return-or-destruction-open-ended-fail.txt": ["BAA-024"],
 };
 
 describe("v3 fixture sanity", () => {
