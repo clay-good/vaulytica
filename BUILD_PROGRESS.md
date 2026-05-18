@@ -241,6 +241,16 @@ Three substantive additions:
 
 ## Post-4.0 work
 
+### v3 fail-fixture corpus expansion (33 → 36) (2026-05-18) — ✅ complete
+
+Advanced LAUNCH row v3-b coverage from thirty-three end-to-end fail-fixtures to thirty-six by adding a third failure-mode fixture for DPA (controller-processor), a second audit-focused failure for multi-state US DPA, and a new compliance/non-infringement warranty fixture for vendor-form MSA — each exercises a distinct load-bearing rule not previously covered. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
+
+- `dpa-controller-processor-missing-compliance-demonstration-fail.txt` — replaces Section 11 with an internal-records-only clause that explicitly restricts Controller access, stripping every "demonstrate compliance" and "allow for and contribute to audits" anchor. **DPA-014 (critical)** fires because GDPR Art. 28(3)(h) requires the processor to make available all information necessary to demonstrate compliance with Article 28 and to allow for and contribute to audits, including inspections, conducted by the controller or its mandated auditor.
+- `dpa-multi-state-us-missing-audit-cooperation-fail.txt` — replaces the audit-cooperation clause with an annual security-program clause, stripping every "allow and cooperate with reasonable assessments" and "assessor" anchor. **USDPA-017 (critical)** fires because VCDPA (Va. Code § 59.1-579) and several state statutes require the processor to allow and cooperate with reasonable assessments by the controller or the controller's designated assessor; without this clause the controller has no contractual mechanism to verify processor compliance.
+- `msa-vendor-deep-missing-compliance-noninfringement-warranty-fail.txt` — omits any "comply with applicable laws" or "non-infringement warranty" clause; Section 6 covers only workmanlike performance and malware-free deliverables. **MSA-014 (warning)** fires because its present_patterns require either a comply/compliance-with-laws anchor or a non-infringement warranty anchor, and now neither appears; without this warranty the customer has no contractual representation that vendor services comply with applicable law.
+
+Each fail-fixture has a `.playbook` sidecar forcing the v3 playbook. [`tests/golden/v3/fixture-sanity.test.ts`](tests/golden/v3/fixture-sanity.test.ts) now pins thirty-six fail-fixtures (was thirty-three); each entry asserts the load-bearing rule is in the fired set. Goldens regenerated via `VAULYTICA_REGEN_GOLDEN=1`. Full gate green: `npm run lint && typecheck && test && build` — **1276 passing + 2 skips** (was 1267; +9 new tests: 3 golden-match, 3 determinism, 3 sanity guards).
+
 ### v3 fail-fixture corpus expansion (30 → 33) (2026-05-18) — ✅ complete
 
 Advanced LAUNCH row v3-b coverage from thirty end-to-end fail-fixtures to thirty-three by adding a fifth failure-mode fixture for BAA and new fixtures for vendor-form MSA and mutual NDA — each exercises a distinct load-bearing rule not previously covered. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):

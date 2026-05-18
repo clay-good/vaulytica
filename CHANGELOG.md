@@ -43,6 +43,21 @@ All notable changes to this project will be documented in this file. Format adap
   `msa-customer-deep-missing-ip-indemnity-fail.txt` (MSA-001),
   `dpa-multi-state-us-missing-deletion-or-return-fail.txt`
   (USDPA-015 critical). Sanity test now pins 16 fail-fixtures.
+- Expand the v3 fail-fixture corpus from 33 to 36 (LAUNCH row v3-b)
+  with three new fail-fixtures across three distinct v3 rule families —
+  each exercises a load-bearing rule not previously covered:
+  `dpa-controller-processor-missing-compliance-demonstration-fail.txt`
+  (DPA-014 critical — Section 11 replaced with internal-records-only
+  clause, stripping every "demonstrate compliance" / audit-cooperation
+  anchor required by GDPR Art. 28(3)(h)),
+  `dpa-multi-state-us-missing-audit-cooperation-fail.txt` (USDPA-017
+  critical — audit-cooperation clause replaced with annual security-
+  program clause, stripping every "allow and cooperate with reasonable
+  assessments" / assessor anchor),
+  `msa-vendor-deep-missing-compliance-noninfringement-warranty-fail.txt`
+  (MSA-014 — no comply-with-laws or non-infringement warranty clause
+  present; Section 6 covers only workmanlike performance and malware-
+  free deliverables). Sanity test now pins 36 fail-fixtures.
 - Expand the v3 fail-fixture corpus from 30 to 33 (LAUNCH row v3-b)
   with three new fail-fixtures across three distinct v3 rule families —
   each exercises a load-bearing rule not previously covered:

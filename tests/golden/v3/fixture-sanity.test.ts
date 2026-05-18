@@ -298,6 +298,41 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // exclusion the Receiving Party could technically breach the NDA by
   // referencing information that is freely available to the world.
   "mutual-nda-deep-missing-public-domain-exclusion-fail.txt": ["NDA-D-006"],
+
+  // Controller→Processor DPA with every "demonstrate compliance" /
+  // "allow for and contribute to audits" anchor stripped — the entire
+  // Section 11 is replaced with an internal-records-only clause that
+  // explicitly restricts Controller access. DPA-014 is the load-bearing
+  // critical for GDPR Art. 28(3)(h) — the processor must make available
+  // all information necessary to demonstrate compliance with Article 28
+  // and must allow for and contribute to audits, including inspections,
+  // conducted by the controller or its mandated auditor.
+  "dpa-controller-processor-missing-compliance-demonstration-fail.txt": [
+    "DPA-014",
+  ],
+
+  // Multi-state US DPA with Section 9 (Annual Security Program) replacing
+  // the audit-cooperation clause — no "allow and cooperate with reasonable
+  // assessments" or "assessor" anchor remains anywhere in the document.
+  // USDPA-017 is the load-bearing critical — VCDPA (Va. Code § 59.1-579)
+  // and several state statutes require the processor to allow and cooperate
+  // with reasonable assessments by the controller or the controller's
+  // designated assessor; without this clause the controller has no
+  // contractual mechanism to verify processor compliance.
+  "dpa-multi-state-us-missing-audit-cooperation-fail.txt": ["USDPA-017"],
+
+  // Vendor-form MSA with no "comply with applicable laws" or
+  // "non-infringement" warranty clause — Section 6 (Limited Warranty)
+  // covers only workmanlike performance and malware-free deliverables
+  // while Section 7 addresses IP-infringement indemnity (not a warranty).
+  // MSA-014 is the load-bearing warning — its present_patterns require
+  // either a comply/compliance-with-laws anchor or a non-infringement
+  // warranty anchor, and now neither appears in the warranty section;
+  // without this clause the customer has no contractual representation
+  // that the vendor's services comply with applicable law.
+  "msa-vendor-deep-missing-compliance-noninfringement-warranty-fail.txt": [
+    "MSA-014",
+  ],
 };
 
 describe("v3 fixture sanity", () => {
