@@ -635,6 +635,40 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // references in the SCCs that point back to Clause 11 are silently
   // broken.
   "scc-module-2-missing-clause-11-fail.txt": ["TRANSFER-006"],
+
+  // BAA with the "Access, Amendment, Accounting" header rewritten as
+  // "Amendment, Accounting" — every `access to PHI`, `right of access`,
+  // and `164.524` anchor is stripped. The surviving prose references
+  // only § 164.526 (amendment) and § 164.528 (accounting) and uses
+  // commercial substitutes ("inspect or obtain a copy") that
+  // deliberately avoid the rule's three present_patterns. BAA-006 is
+  // the load-bearing rule — § 164.504(e)(2)(ii)(E) requires the BAA
+  // to enable the covered entity to satisfy individuals' right of
+  // access under § 164.524; without this clause an access request
+  // bottlenecks at the BA with no contractual hook.
+  "baa-missing-access-to-phi-fail.txt": ["BAA-006"],
+
+  // Mutual NDA with the governing-law clause re-pointed from Delaware
+  // to Wyoming (and venue to Cheyenne) — Wyoming is outside the
+  // NDA-D-018 viable-jurisdiction whitelist (Delaware / New York /
+  // California / Texas / Massachusetts / Illinois / Washington /
+  // England / United Kingdom). NDA-D-017 still passes (the
+  // governing-law clause is present); NDA-D-018 fires at info
+  // severity because the chosen jurisdiction is atypical and may
+  // produce unpredictable enforcement outcomes for an NDA.
+  "mutual-nda-deep-unusual-governing-law-fail.txt": ["NDA-D-018"],
+
+  // Vendor-form MSA with Section 8(c) rewritten one-sided — "IN NO
+  // EVENT SHALL EITHER PARTY BE LIABLE TO THE OTHER PARTY" becomes
+  // "VENDOR SHALL NOT BE LIABLE TO CUSTOMER" and every "neither
+  // party", "each party", and "mutual" scoping is stripped. The
+  // consequential-damages waiver now runs in only one direction.
+  // MSA-008 is the load-bearing rule — its present_patterns require
+  // a mutual scoping anchor (`neither\s+party` / `each\s+party` /
+  // `in\s+no\s+event\s+shall\s+either\s+party`) within 160 chars of a
+  // consequential-damages token; with one-sided phrasing the
+  // pattern fails to match and the rule fires at info severity.
+  "msa-vendor-deep-one-sided-consequential-waiver-fail.txt": ["MSA-008"],
 };
 
 describe("v3 fixture sanity", () => {

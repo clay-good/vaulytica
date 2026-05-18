@@ -43,6 +43,33 @@ All notable changes to this project will be documented in this file. Format adap
   `msa-customer-deep-missing-ip-indemnity-fail.txt` (MSA-001),
   `dpa-multi-state-us-missing-deletion-or-return-fail.txt`
   (USDPA-015 critical). Sanity test now pins 16 fail-fixtures.
+- Expand the v3 fail-fixture corpus from 60 to 63 (LAUNCH row v3-b)
+  with three new fail-fixtures spanning three distinct v3 rule families
+  (BAA, NDA-deep, MSA-deep) — each exercises a load-bearing rule not
+  previously covered end-to-end:
+  `baa-missing-access-to-phi-fail.txt` (BAA-006 — the "Access,
+  Amendment, Accounting" header is rewritten as "Amendment, Accounting";
+  every `access to PHI`, `right of access`, and `164.524` anchor is
+  stripped and the surviving prose uses "inspect or obtain a copy" so
+  none of BAA-006's three present_patterns match — leaving the
+  covered entity without a contractual hook to satisfy individuals'
+  right of access under § 164.524 per 45 CFR
+  § 164.504(e)(2)(ii)(E)),
+  `mutual-nda-deep-unusual-governing-law-fail.txt` (NDA-D-018 info —
+  governing law re-pointed from Delaware to Wyoming and venue to
+  Cheyenne; NDA-D-017 still passes but Wyoming sits outside the
+  viable-jurisdiction whitelist so NDA-D-018's `laws\s+of\s+...`
+  present_pattern fails and the rule fires as a soft warning that an
+  atypical jurisdiction may produce unpredictable NDA enforcement),
+  and
+  `msa-vendor-deep-one-sided-consequential-waiver-fail.txt` (MSA-008
+  info — Section 8(c)'s "IN NO EVENT SHALL EITHER PARTY BE LIABLE
+  TO THE OTHER PARTY" rewritten as "VENDOR SHALL NOT BE LIABLE TO
+  CUSTOMER", every "neither party"/"each party"/"mutual" scoping
+  stripped; MSA-008's present_pattern requires a mutual scoping
+  anchor within 160 chars of a consequential-damages token, so the
+  one-sided phrasing fails to match and the rule fires). Sanity
+  test now pins 63 fail-fixtures.
 - Expand the v3 fail-fixture corpus from 57 to 60 (LAUNCH row v3-b)
   with three new fail-fixtures spanning three distinct v3 rule families
   (BAA, NDA-deep, TRANSFER) — each exercises a load-bearing rule not

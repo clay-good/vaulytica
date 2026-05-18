@@ -241,6 +241,16 @@ Three substantive additions:
 
 ## Post-4.0 work
 
+### v3 fail-fixture corpus expansion (60 → 63) (2026-05-18) — ✅ complete
+
+Advanced LAUNCH row v3-b coverage from sixty end-to-end fail-fixtures to sixty-three by adding three new fixtures spanning three distinct v3 rule families (BAA, NDA-deep, MSA-deep) — none of the three rules had an end-to-end fail-fixture before this batch. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
+
+- `baa-missing-access-to-phi-fail.txt` — BAA with the "Access, Amendment, Accounting" header rewritten as "Amendment, Accounting"; every `access to PHI`, `right of access`, and `164.524` anchor is stripped. The surviving prose references only § 164.526 (amendment) and § 164.528 (accounting) and uses the commercial substitute "inspect or obtain a copy" that deliberately avoids the rule's three present_patterns. **BAA-006** fires for 45 C.F.R. § 164.504(e)(2)(ii)(E) — the BAA must allow the covered entity to satisfy individuals' right of access under § 164.524; without this clause an access request bottlenecks at the BA with no contractual hook.
+- `mutual-nda-deep-unusual-governing-law-fail.txt` — Mutual NDA with the governing-law clause re-pointed from Delaware to Wyoming (and venue to Cheyenne, Wyoming). NDA-D-017 still passes (a governing-law clause is present) but Wyoming sits outside the NDA-D-018 viable-jurisdiction whitelist (Delaware / New York / California / Texas / Massachusetts / Illinois / Washington / England / United Kingdom). **NDA-D-018 (info)** fires because its present_patterns require `laws\s+of\s+...(Delaware|New\s+York|California|Texas|Massachusetts|Illinois|Washington|England|United\s+Kingdom)` and Wyoming is absent; an atypical jurisdiction may produce unpredictable enforcement outcomes for an NDA.
+- `msa-vendor-deep-one-sided-consequential-waiver-fail.txt` — Vendor-form MSA with Section 8(c) rewritten one-sided — "IN NO EVENT SHALL EITHER PARTY BE LIABLE TO THE OTHER PARTY" becomes "VENDOR SHALL NOT BE LIABLE TO CUSTOMER" and every "neither party", "each party", and "mutual" scoping is stripped. **MSA-008 (info)** fires because its present_patterns require a mutual scoping anchor (`neither\s+party` / `each\s+party` / `in\s+no\s+event\s+shall\s+either\s+party`) within 160 chars of a consequential-damages token; with one-sided phrasing the pattern fails to match and the counterparty has no contractual reciprocity on indirect / consequential damages.
+
+Each fail-fixture has a `.playbook` sidecar. [`tests/golden/v3/fixture-sanity.test.ts`](tests/golden/v3/fixture-sanity.test.ts) now pins sixty-three fail-fixtures (was sixty); each entry asserts the load-bearing rule is in the fired set. Goldens regenerated via `VAULYTICA_REGEN_GOLDEN=1`. Full gate green: `npm run lint && typecheck && test && build`.
+
 ### v3 fail-fixture corpus expansion (57 → 60) (2026-05-18) — ✅ complete
 
 Advanced LAUNCH row v3-b coverage from fifty-seven end-to-end fail-fixtures to sixty by adding three new fixtures spanning three distinct v3 rule families (BAA, NDA-deep, TRANSFER) — none of the three rules had an end-to-end fail-fixture before this batch. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
