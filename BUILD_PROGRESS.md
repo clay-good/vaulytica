@@ -241,6 +241,16 @@ Three substantive additions:
 
 ## Post-4.0 work
 
+### v3 fail-fixture corpus expansion (54 → 57) (2026-05-18) — ✅ complete
+
+Advanced LAUNCH row v3-b coverage from fifty-four end-to-end fail-fixtures to fifty-seven by adding three new fixtures spanning three distinct v3 rule families (TRANSFER, MSA, DPA-GDPR) — none of the three rules had an end-to-end fail-fixture before this batch. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
+
+- `scc-module-2-missing-clause-9-fail.txt` — SCC Module 2 with the "Clause 9 — Use of Sub-Processors" heading and numbered provisions replaced by a generic "Downstream Vendor Management" paragraph; every "clause 9" / "clause\s*9\b" anchor is absent. **TRANSFER-005** fires because its present_patterns require `clause\s*9\b` anywhere in the document; without the Clause 9 heading the prior-authorisation regime for sub-processors is undefined and the Art. 28(4) flow-down hook is silently broken.
+- `msa-vendor-deep-missing-gross-negligence-indemnity-fail.txt` — Vendor-form MSA with the indemnification section covering only IP-infringement and Customer-violation claims — every gross-negligence, wilful-misconduct, and data-protection indemnity pairing is absent from both Section 7 and the cap carve-out list. **MSA-004 (warning)** fires because its present_patterns require "indemnif" paired within 200 chars with "gross negligence", "wilful misconduct", "data protection", "personal data", or "breach of DPA"; without this prong the counterparty bears uncompensated exposure for the highest-impact conduct categories.
+- `dpa-controller-processor-missing-data-subjects-fail.txt` — Controller→Processor DPA with Section 2 enumerating only types of personal data while omitting any identification of the population of individuals affected; every "categories of data subjects" / "data subjects category" anchor is stripped and Annex I is retitled "Personal Data in Scope" without a subjects enumeration. **DPA-005** fires for GDPR Art. 28(3) introductory paragraph — the controller-processor contract must set out the categories of data subjects; without this element the scope of Art. 28 obligations is undefined.
+
+Each fail-fixture has a `.playbook` sidecar. [`tests/golden/v3/fixture-sanity.test.ts`](tests/golden/v3/fixture-sanity.test.ts) now pins fifty-seven fail-fixtures (was fifty-four); each entry asserts the load-bearing rule is in the fired set. Goldens regenerated via `VAULYTICA_REGEN_GOLDEN=1`. Full gate green: `npm run lint && typecheck && test && build` — **1339 passing + 2 skips** (was 1330; +9 new tests: 3 golden-match, 3 determinism, 3 sanity guards).
+
 ### v3 fail-fixture corpus expansion (51 → 54) (2026-05-18) — ✅ complete
 
 Advanced LAUNCH row v3-b coverage from fifty-one end-to-end fail-fixtures to fifty-four by adding three new fixtures spanning three distinct v3 rule families (TRANSFER, DPA-GDPR, BAA) — none of the three families had a fixture for the chosen rules. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):

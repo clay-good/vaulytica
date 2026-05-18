@@ -557,6 +557,44 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // citation requirement and leaves the covered entity without a
   // clear contractual hook to enforce Security Rule compliance.
   "baa-missing-security-rule-compliance-fail.txt": ["BAA-013"],
+
+  // SCC Module 2 with the entire "Clause 9 — Use of Sub-Processors"
+  // heading and numbered provisions replaced by a generic "Downstream
+  // Vendor Management" paragraph — every "clause 9" / "clause\s*9\b"
+  // anchor is absent. TRANSFER-005 is the load-bearing presence check
+  // — Clause 9 governs the prior-authorisation regime for
+  // sub-processors and mandates a written contract imposing equivalent
+  // obligations; absent the clause heading the SCC's internal cross-
+  // references to Clause 9's authorisation mechanism are silently
+  // broken and the data exporter loses the Art. 28(4) flow-down hook.
+  "scc-module-2-missing-clause-9-fail.txt": ["TRANSFER-005"],
+
+  // Vendor-form MSA with the indemnification section covering only
+  // IP-infringement and Customer-violation claims — the gross
+  // negligence, wilful misconduct, and data-protection prong is
+  // entirely absent from Section 7 and from the carve-out list in
+  // Section 8(b). MSA-004 is the load-bearing warning — its
+  // present_patterns require an indemnification sentence that pairs
+  // "indemnif" with "gross negligence", "wilful misconduct",
+  // "data protection", "personal data", or "breach of DPA"; none of
+  // those pairings appears in the document. Without this prong the
+  // vendor's counterparty bears uncompensated exposure for the
+  // highest-impact conduct categories.
+  "msa-vendor-deep-missing-gross-negligence-indemnity-fail.txt": ["MSA-004"],
+
+  // Controller→Processor DPA with Section 2 rewritten to enumerate
+  // only the types of personal data processed ("names, email
+  // addresses, IP addresses …") while omitting any identification of
+  // the population of individuals affected — every "categories of
+  // data subjects" / "data subjects category" anchor is stripped and
+  // Annex I is retitled "Personal Data in Scope" without a subjects
+  // enumeration. DPA-005 is the load-bearing rule for GDPR Art. 28(3)
+  // introductory paragraph — the controller-processor contract must
+  // set out the categories of data subjects; without this element
+  // the scope of Art. 28 obligations is undefined and supervisory
+  // authorities cannot readily assess whether the agreement covers
+  // all affected individuals.
+  "dpa-controller-processor-missing-data-subjects-fail.txt": ["DPA-005"],
 };
 
 describe("v3 fixture sanity", () => {

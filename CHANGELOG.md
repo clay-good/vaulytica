@@ -43,6 +43,26 @@ All notable changes to this project will be documented in this file. Format adap
   `msa-customer-deep-missing-ip-indemnity-fail.txt` (MSA-001),
   `dpa-multi-state-us-missing-deletion-or-return-fail.txt`
   (USDPA-015 critical). Sanity test now pins 16 fail-fixtures.
+- Expand the v3 fail-fixture corpus from 54 to 57 (LAUNCH row v3-b)
+  with three new fail-fixtures spanning three distinct v3 rule families
+  (TRANSFER, MSA, DPA-GDPR) — each exercises a load-bearing rule not
+  previously covered end-to-end:
+  `scc-module-2-missing-clause-9-fail.txt` (TRANSFER-005 — SCC Module 2
+  with the "Clause 9 — Use of Sub-Processors" heading replaced by a
+  generic "Downstream Vendor Management" paragraph; every "clause 9"
+  anchor is absent, breaking the prior-authorisation regime and the
+  Art. 28(4) sub-processor flow-down hook),
+  `msa-vendor-deep-missing-gross-negligence-indemnity-fail.txt` (MSA-004
+  warning — indemnification covers only IP-infringement and Customer-
+  violation claims; the gross-negligence, wilful-misconduct, and
+  data-protection indemnity prong is entirely absent, leaving the
+  counterparty unprotected for the highest-impact conduct categories),
+  `dpa-controller-processor-missing-data-subjects-fail.txt` (DPA-005 —
+  Section 2 enumerates types of personal data only; every "categories
+  of data subjects" anchor is stripped and Annex I is retitled without
+  a subjects enumeration, failing the GDPR Art. 28(3) introductory
+  paragraph requirement).
+  Sanity test now pins 57 fail-fixtures.
 - Expand the v3 fail-fixture corpus from 51 to 54 (LAUNCH row v3-b)
   with three new fail-fixtures spanning three distinct v3 rule families
   (TRANSFER, DPA-GDPR, BAA) — each exercises a load-bearing rule not
