@@ -43,6 +43,18 @@ All notable changes to this project will be documented in this file. Format adap
   `msa-customer-deep-missing-ip-indemnity-fail.txt` (MSA-001),
   `dpa-multi-state-us-missing-deletion-or-return-fail.txt`
   (USDPA-015 critical). Sanity test now pins 16 fail-fixtures.
+- Expand the v3 fail-fixture corpus from 18 to 21 (LAUNCH row v3-b)
+  with a second failure-mode fixture per already-covered playbook —
+  exercising a distinct load-bearing rule that prior fixtures did not:
+  `baa-missing-hhs-books-records-fail.txt` (BAA-009 critical — 45
+  C.F.R. § 164.504(e)(2)(ii)(H) HHS Secretary books-and-records
+  availability),
+  `dpa-controller-processor-missing-personnel-confidentiality-fail.txt`
+  (DPA-008 critical — GDPR Art. 28(3)(b) personnel confidentiality
+  commitment),
+  `msa-vendor-deep-missing-background-foreground-ip-fail.txt`
+  (MSA-011 — commercial drafting baseline background/foreground IP
+  allocation). Sanity test now pins 21 fail-fixtures.
 - Expand the v3 fail-fixture corpus from 16 to 18 (LAUNCH row v3-b):
   `saas-tos-no-click-to-cancel-fail.txt` (ADDENDA-019 — phone-only
   cancellation strips every FTC Click-to-Cancel / ROSCA anchor),

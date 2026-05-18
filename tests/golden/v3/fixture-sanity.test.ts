@@ -155,6 +155,32 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // load-bearing warning — its present_patterns require all three
   // anchor families and now none appears.
   "privacy-policy-lint-missing-disclosures-fail.txt": ["ADDENDA-020"],
+
+  // BAA with the "Books, Records" paragraph removed — no "internal
+  // practices ... books ... records" or "Secretary of Health and Human
+  // Services" anchor remains anywhere in the document. BAA-009 is the
+  // load-bearing critical for 45 C.F.R. § 164.504(e)(2)(ii)(H) — the
+  // BA must make its internal practices, books, and records available
+  // to the HHS Secretary for compliance determination.
+  "baa-missing-hhs-books-records-fail.txt": ["BAA-009"],
+
+  // Controller→Processor DPA with Section 5 rewritten to "Personnel
+  // Training" (training only, no confidentiality commitment) and the
+  // ancillary "ongoing confidentiality" phrase stripped from the
+  // Section 6 security measures list. DPA-008 is the load-bearing
+  // critical for GDPR Art. 28(3)(b) — persons authorised to process
+  // personal data must be committed to confidentiality or under a
+  // statutory duty of confidentiality.
+  "dpa-controller-processor-missing-personnel-confidentiality-fail.txt": ["DPA-008"],
+
+  // Vendor-form MSA with Section 4 rewritten to drop the
+  // "pre-existing intellectual property" / "background IP" allocation
+  // anchor and with no "foreground IP" / "developed hereunder" anchor
+  // anywhere in the document. MSA-011 is the load-bearing warning —
+  // without explicit background/foreground IP allocation, default
+  // copyright / patent rules govern and rarely match the parties'
+  // intent.
+  "msa-vendor-deep-missing-background-foreground-ip-fail.txt": ["MSA-011"],
 };
 
 describe("v3 fixture sanity", () => {
