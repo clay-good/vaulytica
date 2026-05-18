@@ -43,6 +43,25 @@ All notable changes to this project will be documented in this file. Format adap
   `msa-customer-deep-missing-ip-indemnity-fail.txt` (MSA-001),
   `dpa-multi-state-us-missing-deletion-or-return-fail.txt`
   (USDPA-015 critical). Sanity test now pins 16 fail-fixtures.
+- Expand the v3 fail-fixture corpus from 45 to 48 (LAUNCH row v3-b)
+  with three new fail-fixtures across three distinct v3 rule families —
+  each exercises a load-bearing rule not previously covered:
+  `baa-missing-unreasonable-delay-language-fail.txt` (BAA-022 —
+  Reporting section rewritten to keep only the 60-calendar-day outer
+  bound from discovery, stripping every "without unreasonable delay"
+  anchor; HIPAA's 45 C.F.R. § 164.410(b) requires *both* the inner
+  "without unreasonable delay" standard *and* the 60-day cap),
+  `dpa-multi-state-us-missing-subcontractor-written-contract-fail.txt`
+  (USDPA-018 critical — Section 7 (Sub-Processor Management) rewritten
+  to require only prior notification and vetting; "written contract" /
+  "same obligations" anchors stripped, leaving the controller without
+  the equivalent-obligations guarantee Va. Code § 59.1-579 requires),
+  `msa-vendor-deep-missing-indemnity-procedure-fail.txt` (MSA-002 —
+  Section 7(c) Indemnification Procedure stripped; no "promptly notify",
+  "control of the defense", or "settlement … consent" anchor remains,
+  leaving the indemnitor without ability to control its own defense and
+  exposing it to moral-hazard and collusive-settlement risk).
+  Sanity test now pins 48 fail-fixtures.
 - Expand the v3 fail-fixture corpus from 42 to 45 (LAUNCH row v3-b)
   with three new fail-fixtures across three distinct v3 rule families —
   each exercises a load-bearing rule not previously covered:

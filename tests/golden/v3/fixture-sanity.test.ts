@@ -451,6 +451,43 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   "dpa-multi-state-us-missing-compliance-demonstration-fail.txt": [
     "USDPA-019",
   ],
+
+  // BAA with the Reporting section rewritten to drop "without
+  // unreasonable delay" from the breach-notification clause — the
+  // 60-calendar-day outer bound from discovery is preserved, but
+  // HIPAA's inner timing standard ("without unreasonable delay") is
+  // absent. BAA-022 is the load-bearing warning for 45 C.F.R.
+  // § 164.410(b) — the statute requires both "without unreasonable
+  // delay AND in no case later than 60 calendar days"; omitting the
+  // inner bound means a BA could lawfully notify on day 59 after
+  // every breach, eliminating the practical urgency HIPAA intended.
+  "baa-missing-unreasonable-delay-language-fail.txt": ["BAA-022"],
+
+  // Multi-state US DPA with Section 7 (Sub-Processor Management)
+  // rewritten to require only prior notification and vetting of
+  // subprocessors — the "written contract" / "written agreement" /
+  // "same obligations" anchor is stripped. USDPA-018 is the
+  // load-bearing critical — Va. Code § 59.1-579 and equivalent state
+  // statutes require the processor to engage subcontractors only
+  // pursuant to a written contract imposing equivalent obligations;
+  // without this clause the controller has no contractual guarantee
+  // that downstream subprocessors are bound by the same data
+  // protection requirements.
+  "dpa-multi-state-us-missing-subcontractor-written-contract-fail.txt": [
+    "USDPA-018",
+  ],
+
+  // Vendor-form MSA with the Section 7(c) Indemnification Procedure
+  // block stripped — no "promptly notify", "control of the defense",
+  // or "settlement…consent" anchor appears in the indemnification
+  // section; the surviving text merely says the parties shall
+  // "reasonably cooperate." MSA-002 is the load-bearing warning —
+  // its present_patterns require at least one procedural mechanic
+  // (notice, defense control, or settlement consent) and now none
+  // appears; without these mechanics the indemnitor loses the ability
+  // to control its own defense, raising moral-hazard and collusive-
+  // settlement risks for whichever party bears the indemnity.
+  "msa-vendor-deep-missing-indemnity-procedure-fail.txt": ["MSA-002"],
 };
 
 describe("v3 fixture sanity", () => {

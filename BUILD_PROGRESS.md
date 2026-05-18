@@ -241,6 +241,16 @@ Three substantive additions:
 
 ## Post-4.0 work
 
+### v3 fail-fixture corpus expansion (45 → 48) (2026-05-18) — ✅ complete
+
+Advanced LAUNCH row v3-b coverage from forty-five end-to-end fail-fixtures to forty-eight by adding a new BAA breach-timing fixture, a new multi-state US DPA subcontractor-contract fixture, and a new vendor-MSA indemnity-procedure fixture — each exercises a distinct load-bearing rule not previously covered. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
+
+- `baa-missing-unreasonable-delay-language-fail.txt` — rewrites the Reporting section so the breach-notification clause states only the 60-calendar-day outer bound from discovery, stripping every "without unreasonable delay" anchor. **BAA-022 (warning)** fires because 45 C.F.R. § 164.410(b) requires *both* "without unreasonable delay" *and* "in no case later than 60 calendar days"; without the inner timing standard a BA could lawfully notify on day 59 after every breach, eliminating the practical urgency HIPAA intended.
+- `dpa-multi-state-us-missing-subcontractor-written-contract-fail.txt` — rewrites Section 7 (Sub-Processor Management) to require only prior notification and vetting of subprocessors, stripping every "written contract", "written agreement", or "same obligations" anchor. **USDPA-018 (critical)** fires because Va. Code § 59.1-579 and equivalent state statutes require the processor to engage subcontractors only pursuant to a written contract imposing equivalent obligations; without this clause the controller has no contractual guarantee that downstream subprocessors are bound by the same data protection requirements.
+- `msa-vendor-deep-missing-indemnity-procedure-fail.txt` — strips the Section 7(c) Indemnification Procedure block; no "promptly notify", "control of the defense", or "settlement … consent" anchor appears in the indemnification section; the surviving text merely says the parties shall "reasonably cooperate." **MSA-002 (warning)** fires because its present_patterns require at least one procedural mechanic (notice, defense control, or settlement consent) and now none appears; without these mechanics the indemnitor loses the ability to control its own defense, raising moral-hazard and collusive-settlement risks.
+
+Each fail-fixture has a `.playbook` sidecar forcing the v3 playbook. [`tests/golden/v3/fixture-sanity.test.ts`](tests/golden/v3/fixture-sanity.test.ts) now pins forty-eight fail-fixtures (was forty-five); each entry asserts the load-bearing rule is in the fired set. Goldens regenerated via `VAULYTICA_REGEN_GOLDEN=1`. Full gate green: `npm run lint && typecheck && test && build` — **1312 passing + 2 skips** (was 1303; +9 new tests: 3 golden-match, 3 determinism, 3 sanity guards).
+
 ### v3 fail-fixture corpus expansion (42 → 45) (2026-05-18) — ✅ complete
 
 Advanced LAUNCH row v3-b coverage from forty-two end-to-end fail-fixtures to forty-five by adding a new NDA independent-development fixture, a new BAA breach-discovery-trigger fixture, and a new multi-state US DPA compliance-demonstration fixture — each exercises a distinct load-bearing rule not previously covered. New fixtures under [`tests/golden/v3/fixtures/`](tests/golden/v3/fixtures/):
