@@ -1243,6 +1243,56 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // an incident; the "redundant infrastructure" phrasing is a
   // partial substitute that lacks the restore-on-incident anchor.
   "dpa-controller-processor-missing-restore-availability-fail.txt": ["DPA-021"],
+
+  // Controller→processor GDPR DPA with Section 10's "Breach
+  // Notification (Article 33 GDPR)" rewritten as a generic
+  // "Incident Handling" paragraph: every `personal\s+data\s+breach`
+  // / `breach\s+of\s+personal\s+data` / `data\s+breach` anchor is
+  // removed, and the operative sentence is reframed as "Processor
+  // shall, without undue delay, work with Controller to investigate
+  // and remediate the underlying issue" — i.e., no "notify
+  // Controller … breach/incident" anchor in proximity. The other
+  // DPA clauses (Section 9 Articles 32–36 assistance referencing
+  // "breach notification" generically, Section 2 categories of
+  // data subjects, Section 6 security measures, and the "without
+  // undue delay" phrasing) are preserved so DPA-012 / 020 / 022 /
+  // 025 / 026 still pass. **DPA-024 (critical)** fires — GDPR
+  // Art. 33(2) requires the processor to notify the controller
+  // without undue delay after becoming aware of a personal data
+  // breach; a generic "operational anomaly / regulatory obligation"
+  // framing does not satisfy the named statutory anchor.
+  "dpa-controller-processor-missing-processor-breach-notice-fail.txt": ["DPA-024"],
+
+  // Vendor MSA with Section 5's "shall survive termination of this
+  // Agreement for three (3) years" rewritten to "shall continue in
+  // force after the end of this Agreement for three (3) years"
+  // (every `surviv\w+` anchor removed) and Section 12 swapped from
+  // "Entire Agreement" to a generic "Counterparts" paragraph
+  // (every `entire\s+agreement` / `integration\s+clause` /
+  // `supersed\w+\s+(?:all\s+)?prior` anchor removed). **MSA-026
+  // (info)** fires — its `present_patterns` need either a
+  // survival-tied-to-termination phrase or an entire-agreement /
+  // integration / supersedes-all-prior phrase; without survival,
+  // sticky obligations (confidentiality, IP, indemnity) may not
+  // outlive termination, and without integration prior
+  // negotiations may be admissible.
+  "msa-vendor-deep-missing-survival-entire-agreement-fail.txt": ["MSA-026"],
+
+  // Vendor Security Addendum with Section 4(c) "quarterly access
+  // reviews" rewritten to "regular access reviews on an ongoing
+  // basis" — every `(annual\w*|annually|quarterly|every\s+\d+\s+
+  // (?:months?|years?))` token bound within 80 non-period chars
+  // of an audit / review / assessment / certification / attestation
+  // / SOC 2 / ISO 27001 anchor is removed. Sections 3(a) "Annual
+  // Penetration Test" and Section 11 "annual information-security
+  // awareness training" survive but neither pairs a cadence token
+  // with one of ADDENDA-002's listed anchors. **ADDENDA-002
+  // (warning)** fires — without a stated cadence (e.g., "SOC 2
+  // Type II report renewed annually," "quarterly access reviews,"
+  // "ISO 27001 certification renewed every three years") the
+  // addendum carries no operational commitment a customer can
+  // audit against.
+  "vendor-security-addendum-missing-review-cadence-fail.txt": ["ADDENDA-002"],
 };
 
 describe("v3 fixture sanity", () => {
