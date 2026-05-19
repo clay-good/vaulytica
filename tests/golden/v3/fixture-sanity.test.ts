@@ -1454,6 +1454,65 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // of the indemnitee` end-to-end and surfaces the void-on-its-face
   // exposure the New-York-law clause inherits.
   "msa-vendor-deep-ny-construction-indemnity-fail.txt": ["MSA-010"],
+
+  // Mutual NDA with §3 (Use Restriction) and §4 (Obligations of
+  // Receiving Party) rewritten so the "solely for the Permitted
+  // Purpose" framing is replaced with open-ended "in connection
+  // with the Engagement" language; the recital "Permitted Purpose"
+  // definition is dropped in favor of a vague "matter described in
+  // the parties' written correspondence." Every NDA-D-001..002
+  // DTSA component, the 3-year confidentiality term, trade-secret
+  // perpetuity, return-or-destruction certificate, Delaware
+  // governing-law clause, and mutual symmetry are preserved so the
+  // rest of the NDA-deep baseline still passes. **NDA-D-012
+  // (warning)** fires — its present_patterns require either
+  // `solely\s+(for|to)\s+(the\s+)?purpose`,
+  // `to\s+(evaluate|assess|consider)\s+(a\s+)?(potential|the)\s+(business|transaction)`,
+  // or `\bpurpose\b.{0,40}(means|defined)`; none match, so the
+  // narrow-purpose framing is reported missing. Without a defined
+  // Purpose, the discloser loses the contractual hook to object
+  // when the receiver redirects Confidential Information to
+  // unrelated downstream use.
+  "mutual-nda-deep-missing-purpose-narrow-framing-fail.txt": ["NDA-D-012"],
+
+  // CCPA Service-Provider Addendum with §5 "Consumer Rights
+  // Assistance" removed entirely; every other anchor (verifiable
+  // consumer requests, consumer-rights wording, assist-the-business
+  // language) is absent from the rest of the document so no other
+  // paragraph supplies the missing recital. Sections 4
+  // (Certification), 6 (Subprocessors), 7 (Security), 8 (Deletion
+  // or Return), and 9 (Audit) are preserved so the rest of the
+  // USDPA-001..025 baseline still passes where it was passing.
+  // **USDPA-008 (critical)** fires — 11 C.C.R. § 7051(a)(8)
+  // requires the service-provider contract to require the service
+  // provider to enable the business to comply with verifiable
+  // consumer requests under the CCPA; a contract silent on
+  // consumer-rights assistance leaves the business with no
+  // contractual lever to fulfill consumer-rights timelines and
+  // exposes it to enforcement under § 1798.155 / § 1798.199.55.
+  "dpa-ccpa-service-provider-missing-consumer-rights-assistance-fail.txt": ["USDPA-008"],
+
+  // Vendor MSA with Section 11 governing-law switched from
+  // Delaware to Texas and a new Section 13 "Construction Project
+  // Indemnity" whose opening sentence pairs "this Agreement is
+  // governed by the laws of the State of Texas" with "Vendor
+  // shall indemnify and hold harmless Customer for any and all
+  // claims and losses ... including those resulting from the
+  // negligence of the indemnitee" in a single sentence. The
+  // Texas anchor and the indemnity-for-indemnitee-negligence sit
+  // in the same sentence so the intra-sentence `[^.]{0,400}` window
+  // in MSA-029's bad_pattern captures the pairing. Section 7
+  // mutual indemnification, Section 8 cap-with-carveouts, and
+  // the other MSA-deep clauses are preserved so the rest of the
+  // baseline still passes. **MSA-029 (warning)** fires — Tex.
+  // Bus. & Com. Code Ch. 151 § 151.102 voids construction-contract
+  // indemnities that cover the indemnitee's own negligence (with
+  // narrow insurance-policy exceptions); the rule surfaces the
+  // void-on-its-face exposure that the Texas-law clause inherits.
+  // MSA-010 (NY anti-indemnity) also fires because its
+  // construction-indemnity pattern is jurisdiction-neutral, but
+  // MSA-029 is the load-bearing detector for the Texas failure mode.
+  "msa-vendor-deep-tx-construction-indemnity-fail.txt": ["MSA-029"],
 };
 
 describe("v3 fixture sanity", () => {
