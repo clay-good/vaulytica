@@ -1012,6 +1012,50 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // not satisfy the mandatory-clauses requirement to complete
   // Table 3.
   "uk-idta-addendum-missing-table-3-fail.txt": ["TRANSFER-013"],
+
+  // BAA with Section 2's "administrative, physical, and technical
+  // safeguards" enumeration rewritten as a generic "Security
+  // Program" reference — every `appropriate safeguards` /
+  // `administrative.*physical.*technical` / `reasonable
+  // safeguards` anchor is removed. The 45 CFR § 164.314 cross-
+  // reference survives so the contract still gestures at Security
+  // Rule compliance, but no contract-level safeguards obligation
+  // exists. **BAA-003** fires — § 164.504(e)(2)(ii)(B) requires
+  // the BA to use appropriate safeguards (including the Security
+  // Rule administrative, physical, and technical safeguards) to
+  // prevent use or disclosure of PHI other than as provided for
+  // by the contract; a bare program-reference does not satisfy
+  // that contracting standard.
+  "baa-missing-appropriate-safeguards-fail.txt": ["BAA-003"],
+
+  // Controller→processor GDPR DPA with Section 1's heading
+  // rewritten to "Subject-Matter, Duration of Processing" and
+  // every `nature and purpose of (the )?processing` anchor
+  // removed from the body — the Section 1 sentence describing
+  // analysis of engagement data is reframed as a Processor
+  // obligation rather than a description of the processing
+  // nature/purpose. The subject-matter / duration / categories-
+  // of-data / documented-instructions / Art. 32 / subprocessor /
+  // DSR / breach-notification / deletion-or-return clauses
+  // remain so DPA-001 / DPA-002 / DPA-004..016 still pass.
+  // **DPA-003** fires — GDPR Art. 28(3) introductory paragraph
+  // requires the nature and purpose of the processing to be
+  // described so the controller's data-protection assessment
+  // and the processor's scope are aligned.
+  "dpa-controller-processor-missing-nature-and-purpose-fail.txt": ["DPA-003"],
+
+  // UK IDTA Addendum with the "Table 4 — Ending this Addendum
+  // when the Approved Addendum Changes" section removed; every
+  // `Table\s*4\s*[—:-]\s*Ending` / `table\s*4\b.{0,40}(ending|
+  // approved\s+addendum)` anchor is stripped. The Mandatory
+  // Clauses 19 and 20 still cover ICO-update termination but the
+  // mandatory Table 4 slot is empty. Tables 1, 2, and 3 are
+  // preserved so TRANSFER-011 / 012 / 013 / 016 still pass.
+  // **TRANSFER-014 (warning)** fires — the ICO UK Addendum
+  // Mandatory Clauses require Table 4 to specify which party (or
+  // both) may end the Addendum on a revision; without Table 4 the
+  // termination-on-ICO-update mechanic is ambiguous.
+  "uk-idta-addendum-missing-table-4-fail.txt": ["TRANSFER-014"],
 };
 
 describe("v3 fixture sanity", () => {
