@@ -1102,6 +1102,55 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // ambiguous and the Module-specific Clause-8 obligations are
   // not bound in.
   "uk-idta-addendum-missing-table-2-fail.txt": ["TRANSFER-012"],
+
+  // UK IDTA Addendum with the "Table 1 — Parties" heading renamed
+  // to a generic "Counterparty Details" section and every
+  // `Table\s*1\s*[—:-]\s*Parties` / `table\s*1\b.{0,40}part`
+  // anchor stripped. The Exporter / Importer identification text
+  // is preserved as free-form prose so the contract is still
+  // commercially legible. Tables 2, 3, and 4 are preserved so
+  // TRANSFER-012 / 013 / 014 still pass. **TRANSFER-011 (warning)**
+  // fires — the ICO UK Addendum Mandatory Clauses require Table 1
+  // to identify the Exporter and Importer in the prescribed
+  // tabular form; a free-form section does not satisfy the
+  // mandatory-clauses requirement. The companion TRANSFER-016
+  // (broader Parties-identification rule across both IDTA Part 1
+  // and Addendum Table 1) also fires for the same anchor loss.
+  "uk-idta-addendum-missing-table-1-fail.txt": ["TRANSFER-011"],
+
+  // UK IDTA Addendum with an added "Adequacy Mechanism" paragraph
+  // that asserts the Importer's certification under the EU-US
+  // Data Privacy Framework (and the UK Extension) is "sufficient
+  // to provide appropriate safeguards for Restricted Transfers"
+  // and that "the Parties shall not be required to implement any
+  // additional transfer mechanism while the DPF adequacy decision
+  // remains in force." Tables 1–4 and the Mandatory Clauses are
+  // preserved so TRANSFER-011..016 still pass. **TRANSFER-017
+  // (warning)** fires — its bad_patterns flag any
+  // `EU-US Data Privacy Framework` / `EU-US DPF` /
+  // `DPF (adequacy|certification)` mention; the DPF adequacy
+  // decision is permanently under litigation and a contract that
+  // disclaims any fallback transfer mechanism leaves the parties
+  // exposed if (or when) the DPF is invalidated again.
+  "uk-idta-addendum-relies-on-dpf-fail.txt": ["TRANSFER-017"],
+
+  // Controller→processor GDPR DPA with Section 6's measure-(e)
+  // rewritten to a "defined change-management process governing
+  // updates to security configurations and supporting
+  // infrastructure"; every `testing.*(measures|controls)` /
+  // `penetration\s+test` / `vulnerability\s+(scan|assessment)` /
+  // `periodic\s+assess` anchor is removed from the entire DPA.
+  // The remaining Section 6 measures (encryption, pseudonymisation,
+  // confidentiality/integrity/availability/resilience, restore-
+  // availability) and Articles 32–36 assistance, breach
+  // notification, audit-and-inspection clauses are preserved so
+  // DPA-019 / 020 / 021 / 023 still pass. **DPA-022 (warning)**
+  // fires — GDPR Art. 32(1)(d) requires a process for regularly
+  // testing, assessing and evaluating the effectiveness of
+  // technical and organisational measures; a change-management
+  // process is necessary but not sufficient to satisfy the
+  // statutory testing-of-measures requirement.
+  "dpa-controller-processor-missing-testing-of-measures-fail.txt": ["DPA-022"],
 };
 
 describe("v3 fixture sanity", () => {
