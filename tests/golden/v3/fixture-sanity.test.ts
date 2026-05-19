@@ -1662,6 +1662,49 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // signals the kind of careless drafting that produces operational
   // ambiguity in a breach-response scenario.
   "baa-state-law-overrides-hipaa-fail.txt": ["BAA-042"],
+
+  // BAA with the "Effective Date: January 1, 2026." line removed
+  // from the signature block; every other clause is preserved
+  // (including the Term clause and the signature block's
+  // "Signed by / Title / Date" lines) so the rest of the BAA
+  // baseline still passes where it was passing. **BAA-037
+  // (warning)** fires — its present_patterns require
+  // `effective\s+date`; with the line gone, no remaining text
+  // contains the phrase. An effective date anchors the timing rules
+  // in the BAA (term, breach windows, termination) — without it the
+  // 60-day breach-notification clock and the BAA's coterminous
+  // relationship with the underlying MSA are ambiguous on their face.
+  "baa-missing-effective-date-fail.txt": ["BAA-037"],
+
+  // BAA with the "Governing Law" paragraph removed entirely; every
+  // other clause is preserved so the rest of the BAA baseline still
+  // passes where it was passing, and no other paragraph uses
+  // `governing\s+law`, `governed\s+by\s+the\s+laws`, or
+  // `laws\s+of\s+the\s+State\s+of`. **BAA-039 (warning)** fires —
+  // although HIPAA is federal and the operative substantive rules
+  // are preempted, BAAs typically include a governing-law clause to
+  // anchor non-HIPAA contract disputes (indemnification, notice
+  // mechanics, term, fee allocation). A BAA silent on governing law
+  // leaves those non-HIPAA matters subject to default conflict-of-
+  // laws analysis, which can produce a different jurisdiction than
+  // the parties expect.
+  "baa-missing-governing-law-fail.txt": ["BAA-039"],
+
+  // BAA with the Reporting paragraph's "Unsecured PHI" downgraded
+  // to plain "PHI" and the lowercase "breach" tokens kept; the
+  // citation to 45 CFR § 164.410 is preserved (so the breach-
+  // reporting baseline survives) but no remaining text uses
+  // `unsecured\s+PHI`, `unsecured\s+protected\s+health\s+information`,
+  // `164\.402`, or `breach\s+(means|shall\s+have)`. Every other
+  // clause is preserved so the rest of the BAA baseline still
+  // passes where it was passing. **BAA-044 (warning)** fires —
+  // post-HITECH BAAs should track the modern defined terms "Breach"
+  // (45 C.F.R. § 164.402) and "Unsecured PHI" (§ 164.402); a BAA
+  // that talks about "breaches of PHI" without anchoring the
+  // Unsecured-PHI / § 164.402 vocabulary leaves room for argument
+  // that pre-HITECH definitions govern, which materially narrows
+  // the covered entity's notification obligations under HITECH.
+  "baa-missing-hipaa-current-definitions-fail.txt": ["BAA-044"],
 };
 
 describe("v3 fixture sanity", () => {
