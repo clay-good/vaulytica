@@ -1705,6 +1705,56 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // that pre-HITECH definitions govern, which materially narrows
   // the covered entity's notification obligations under HITECH.
   "baa-missing-hipaa-current-definitions-fail.txt": ["BAA-044"],
+
+  // Controller→processor GDPR DPA with the Controller-side
+  // signatory's "Title: Data Protection Officer" line rewritten to
+  // "Title: Privacy Lead"; every other clause is preserved so the
+  // rest of the DPA-001..030 / 032+ baseline still passes where it
+  // was passing, and no remaining text uses `data\s+protection\s+officer`,
+  // `\bDPO\b`, or `article\s*37`. **DPA-031 (warning)** fires —
+  // GDPR Article 37 requires the designation of a Data Protection
+  // Officer in certain cases (public authorities, large-scale
+  // systematic monitoring, special-category processing); modern
+  // DPAs reference the DPO contact details so the controller-side
+  // accountability under Art. 38–39 attaches to a named office. A
+  // DPA silent on the DPO leaves the Art. 37/38/39 accountability
+  // chain unsigned and the data-subject notification path
+  // ambiguous.
+  "dpa-controller-processor-missing-dpo-reference-fail.txt": ["DPA-031"],
+
+  // Controller→processor GDPR DPA with Section 12 (Deletion or
+  // Return at End of Services) rewritten from "Processor shall, at
+  // the choice of Controller, delete or return..." to "Processor
+  // may choose to delete or return all personal data to Controller
+  // and shall delete existing copies...". The reversal moves the
+  // deletion-or-return choice from the controller to the processor.
+  // Every other clause is preserved so the rest of the DPA-001..030
+  // baseline still passes where it was passing. **DPA-035
+  // (critical)** fires — its first bad_pattern matches
+  // `processor\s+(shall|may)\s+(choose|elect)\s+to\s+(delete|return)`
+  // end-to-end. GDPR Art. 28(3)(g) explicitly assigns the deletion-
+  // or-return election to the controller; vendor overreach
+  // commonly inverts this, and the rule surfaces the inversion as a
+  // load-bearing critical because the controller loses its
+  // contractual ability to compel the post-termination remediation
+  // posture that fits its own retention obligations.
+  "dpa-controller-processor-deletion-choice-processor-fail.txt": ["DPA-035"],
+
+  // Controller→processor GDPR DPA with the "Effective Date:
+  // February 1, 2026." line removed from the signature block and
+  // both inline "as of February 1, 2026," / "dated January 1, 2026"
+  // anchors stripped from the preamble; every other clause is
+  // preserved (including the Term-style "duration of the
+  // processing corresponds to the term of the MSA" recital in §1)
+  // so the rest of the DPA-001..030 baseline still passes where it
+  // was passing. **DPA-044 (warning)** fires — its present_patterns
+  // require `effective\s+date`; with the anchor gone, no remaining
+  // text contains the phrase. An effective date anchors the
+  // timing rules in the DPA (subject-matter window, breach-notice
+  // clock, deletion-or-return 30-day timer); without it, the
+  // Art. 28(3) intro requirement that the DPA define the duration
+  // of processing is undischarged on the face of the document.
+  "dpa-controller-processor-missing-effective-date-fail.txt": ["DPA-044"],
 };
 
 describe("v3 fixture sanity", () => {
