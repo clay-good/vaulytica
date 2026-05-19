@@ -1566,6 +1566,53 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // equivalent safeguards, defeating the Article 46 Schrems II
   // protection chain.
   "scc-module-2-missing-onward-transfer-terms-fail.txt": ["TRANSFER-020"],
+
+  // BAA with the "Mitigation" paragraph removed entirely; every
+  // other clause (Permitted Uses, Safeguards, Reporting,
+  // Subcontractor Flow-Down, Access/Amendment/Accounting, Books and
+  // Records, Return or Destruction, Minimum Necessary, Workforce
+  // Training, Encryption, Risk Assessment, Sanctions, Subcontractor
+  // List, Governing Law, Notice, Term) is preserved so the rest of
+  // the BAA baseline still passes where it was passing.
+  // **BAA-030 (critical)** fires — its present_patterns require
+  // `(mitigate|mitigation).*?(harm|effect|disclosure|use)`; with
+  // the paragraph gone, no remaining text pairs a mitigate verb
+  // with a harm/effect/disclosure/use object. 45 C.F.R. § 164.530(f)
+  // requires covered entities to mitigate harmful effects of any
+  // improper use or disclosure of PHI; the BA commonly inherits the
+  // duty by flow-down, and its absence leaves the covered entity
+  // with no contractual lever to compel mitigation when a BA leak
+  // surfaces downstream harm.
+  "baa-missing-mitigation-obligation-fail.txt": ["BAA-030"],
+
+  // BAA with the "Workforce Training" paragraph removed entirely;
+  // every other clause is preserved so the rest of the BAA baseline
+  // still passes where it was passing. **BAA-031 (warning)** fires
+  // — its present_patterns require `workforce\s+training`,
+  // `HIPAA\s+training`, or `trained\s+on.{0,40}(HIPAA|PHI)`; with
+  // the paragraph gone, no remaining text matches any of the three
+  // anchors. 45 C.F.R. §§ 164.530(b) and 164.308(a)(5) require
+  // workforce training on HIPAA / PHI handling; BAs are expected to
+  // flow the obligation down to their personnel, and a contract
+  // silent on training leaves the workforce-training pillar of the
+  // Security Management Process unanchored at the BA layer.
+  "baa-missing-workforce-training-fail.txt": ["BAA-031"],
+
+  // BAA with the "Encryption" paragraph removed entirely; every
+  // other clause is preserved so the rest of the BAA baseline still
+  // passes where it was passing, and no other paragraph mentions
+  // encryption, NIST 800, or FIPS 140 (the Safeguards paragraph
+  // names §§ 164.308 / 164.310 / 164.312 but does not invoke an
+  // encryption / NIST / FIPS anchor). **BAA-032 (warning)** fires
+  // — its present_patterns require `encrypt(ion)?`, `NIST\s*800`,
+  // or `FIPS\s*140`; with the paragraph gone, none match.
+  // Encryption is an addressable specification under 45 C.F.R.
+  // § 164.312(a)(2)(iv) / (e)(2)(ii) and the HITECH "safe harbor"
+  // for breach notification under 42 U.S.C. § 17932(h); a BAA that
+  // does not anchor encryption or an equivalent NIST 800-53 /
+  // 800-66 standard leaves the BA without the safe-harbor lever and
+  // pushes every incident onto the breach-notification timeline.
+  "baa-missing-encryption-nist-fail.txt": ["BAA-032"],
 };
 
 describe("v3 fixture sanity", () => {
