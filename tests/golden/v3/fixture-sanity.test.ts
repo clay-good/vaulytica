@@ -1151,6 +1151,48 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // process is necessary but not sufficient to satisfy the
   // statutory testing-of-measures requirement.
   "dpa-controller-processor-missing-testing-of-measures-fail.txt": ["DPA-022"],
+
+  // Vendor MSA with an added Section 8(d) "Exculpation" clause
+  // stating that "Vendor shall not be liable for fraud, willful
+  // injury, or violation of any law, and no liability shall apply
+  // to fraud or willful misconduct" — and governing law switched
+  // to California so the § 1668 problem actually bites. Section 8
+  // (a)–(c) (cap / carveouts / consequential waiver) is preserved.
+  // **MSA-009 (warning)** fires — California Civil Code § 1668
+  // voids contracts that exempt anyone from responsibility for
+  // their own fraud, willful injury, or violation of law; a cap
+  // (or here, a stand-alone exculpation) that absorbs these
+  // categories is unenforceable in California regardless of any
+  // carve-out elsewhere in the agreement.
+  "msa-vendor-deep-cal-1668-exculpation-fail.txt": ["MSA-009"],
+
+  // Vendor MSA with Section 6's limited-warranty disclaimer
+  // rewritten to "provided as is and with all faults, without any
+  // other warranty of any kind, express or implied, and Vendor
+  // disclaims any and all warranties to the maximum extent
+  // permitted by applicable law" — i.e., the "as is" lead-in is
+  // followed by "without any other warranty," matching MSA-015's
+  // first bad_pattern. The conspicuous-MERCHANTABILITY callout
+  // is dropped. **MSA-015 (info)** fires — UCC § 2-316 requires
+  // merchantability disclaimers to mention "merchantability"
+  // expressly and to be conspicuous; a generic "AS IS / disclaims
+  // any and all warranties" without the conspicuous-MERCHANTABILITY
+  // callout fails the UCC test, leaving the implied-warranty
+  // disclaimer vulnerable to challenge.
+  "msa-vendor-deep-as-is-without-warrant-fail.txt": ["MSA-015"],
+
+  // Vendor MSA with Section 11 collapsed to a single sentence
+  // that names Delaware as the governing law and New York County
+  // courts as the forum — the governing-law / venue alignment is
+  // broken and a Delaware-courts→Delaware-law symmetric structure
+  // is replaced by a Delaware-law→New-York-courts mismatch.
+  // **MSA-024 (info)** fires — its bad_patterns catch a
+  // `governed by the laws of {State A}` clause followed within
+  // 400 non-period characters by a `(courts|venue|jurisdiction|
+  // forum)` reference to a different `{State B}`; choosing one
+  // state's law but another state's forum forces the forum court
+  // to apply foreign law, adding cost and uncertainty.
+  "msa-vendor-deep-governing-law-venue-mismatch-fail.txt": ["MSA-024"],
 };
 
 describe("v3 fixture sanity", () => {
