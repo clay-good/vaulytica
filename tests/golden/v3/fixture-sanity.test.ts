@@ -1348,6 +1348,61 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // specific "cross-context behavioral advertising" statutory
   // term of art.
   "dpa-multi-state-us-missing-cross-context-prohibition-fail.txt": ["USDPA-003"],
+
+  // Controller→processor GDPR DPA with Section 9's "Assistance
+  // with Articles 32 to 36 Obligations" rewritten to drop every
+  // `data\s+protection\s+impact\s+assessment` / `\bDPIA\b` /
+  // `article\s*35` anchor — the sentence now reads "...including
+  // obligations relating to security, breach notification, prior
+  // consultation with supervisory authorities, and the
+  // supplementary measures appropriate to those obligations." The
+  // "Articles 32 to 36" reference survives so DPA-012 (Art. 28(3)(f)
+  // assistance) still passes, and the broader breach / security
+  // / consultation anchors keep DPA-008..014 intact. **DPA-029
+  // (warning)** fires — GDPR Art. 35 requires a DPIA for
+  // high-risk processing and Art. 28(3)(f) obliges the processor
+  // to assist; a "supplementary measures" wave-off does not
+  // anchor the processor's DPIA assistance duty, which auditors
+  // and supervisory authorities look for as a discrete clause.
+  "dpa-controller-processor-missing-dpia-assistance-fail.txt": ["DPA-029"],
+
+  // BAA with a new "Indemnification" clause appended after the
+  // Term section reciting that "Covered Entity shall indemnify,
+  // defend, and hold harmless Business Associate from and against
+  // any claim, loss, fine, penalty, or expense … arising out of
+  // or relating to any alleged HIPAA violation … regardless of
+  // the source of the underlying breach." Every other BAA clause
+  // (Permitted Uses, Safeguards, Reporting, Subcontractor
+  // Flow-Down, Access/Amendment/Accounting, Books/Records,
+  // Return-or-Destruction, Breach Notification) is preserved so
+  // BAA-001..022 still pass. **BAA-027 (warning)** fires — its
+  // `bad_patterns` catch `covered\s+entity\s+(shall|will)\s+indemnif`;
+  // 45 C.F.R. § 164.504(e) and HHS posture make clear that the
+  // covered entity should not indemnify the business associate
+  // for the BA's own HIPAA violations, because doing so inverts
+  // the regulatory burden and lets the BA shift the cost of its
+  // own non-compliance back to the customer.
+  "baa-covered-entity-indemnifies-ba-fail.txt": ["BAA-027"],
+
+  // SCC Module 2 with the Clause 14 heading renamed from "Local
+  // Laws and Practices Assessment" to "Destination-Jurisdiction
+  // Compliance Warranty" and the body's "documented transfer
+  // impact assessment" rewritten to "documented internal review
+  // of the destination jurisdiction"; every
+  // `transfer\s+(?:impact|risk)\s+assessment` /
+  // `local\s+laws\s+and\s+practices` / `\bTIA\b` / `\bTRA\b` /
+  // `supplementary\s+measures` anchor is removed from the entire
+  // SCC. The Clause 14 heading retains "Clause 14" so TRANSFER-007
+  // (presence of Clause 14) still passes; Clause 15 public-authority
+  // and Clause 16 non-compliance survive so TRANSFER-008 / 009
+  // still pass. **TRANSFER-019 (critical)** fires — EDPB
+  // Recommendations 01/2020 require the parties to anchor a
+  // Transfer Impact Assessment (TIA) — the assessment of local
+  // laws and practices of the recipient country plus any
+  // supplementary measures — in the SCC; a bare "documented
+  // internal review" without the named statutory anchors does
+  // not satisfy the Schrems II / EDPB expectation.
+  "scc-module-2-missing-tia-reference-fail.txt": ["TRANSFER-019"],
 };
 
 describe("v3 fixture sanity", () => {
