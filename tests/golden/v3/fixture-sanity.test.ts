@@ -1056,6 +1056,52 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // both) may end the Addendum on a revision; without Table 4 the
   // termination-on-ICO-update mechanic is ambiguous.
   "uk-idta-addendum-missing-table-4-fail.txt": ["TRANSFER-014"],
+
+  // BAA with the "Reporting" section renamed to "Internal Logging"
+  // and the operative sentence rewritten so the BA "shall maintain
+  // internal logs" of incidents and "report Breaches…to Acme Health
+  // LLC's Privacy Officer" — every `(report to|notify) covered
+  // entity` anchor is stripped while the 45 CFR § 164.410 breach-
+  // notification cross-reference and the 60-day window survive so
+  // BAA-019 / BAA-022 still pass. **BAA-004** fires — 45 C.F.R.
+  // § 164.504(e)(2)(ii)(C) requires the BAA to obligate the BA to
+  // report to the Covered Entity any use or disclosure not
+  // authorized by the contract; logging-only / Privacy-Officer-
+  // only language does not satisfy the report-to-Covered-Entity
+  // obligation in the statutory text.
+  "baa-missing-improper-use-reporting-fail.txt": ["BAA-004"],
+
+  // Controller→processor GDPR DPA with Section 2's heading
+  // rewritten to "Data Subjects and Information Inventory" and
+  // every `type|categories of personal data` / `personal data
+  // processed|categories` anchor stripped — "types of personal
+  // data" is replaced with "information" in the body. Annex I is
+  // renamed "Information Inventory" and rewritten to drop
+  // "categories of personal data are subject" while keeping the
+  // three-tier (identification / technical / behavioral) listing.
+  // The categories of data subjects sentence is preserved so
+  // DPA-005 still passes; DPA-001..004-other / DPA-006..016 also
+  // pass. **DPA-004** fires — GDPR Art. 28(3) introductory
+  // paragraph requires the type of personal data to be specified
+  // so the processor's permitted-processing scope is bounded by
+  // category; a bare "information inventory" without the
+  // statutory "personal data" tag does not satisfy that
+  // requirement.
+  "dpa-controller-processor-missing-type-of-personal-data-fail.txt": ["DPA-004"],
+
+  // UK IDTA Addendum with the "Table 2 — Selected SCCs, Modules
+  // and Selected Clauses" section replaced by a generic "EU SCC
+  // Incorporation" paragraph; every `Table\s*2\s*[—:-]\s*Selected
+  // SCC Modules` / `table\s*2\b.{0,40}module` anchor is removed
+  // and no Module (1/2/3/4) is identified. Tables 1, 3, and 4 are
+  // preserved so TRANSFER-011 / 013 / 014 / 016 still pass.
+  // **TRANSFER-012 (warning)** fires — the ICO UK Addendum
+  // Mandatory Clauses require Table 2 to identify which EU SCC
+  // Modules are being incorporated; without that anchor the
+  // Importer's role (controller / processor / sub-processor) is
+  // ambiguous and the Module-specific Clause-8 obligations are
+  // not bound in.
+  "uk-idta-addendum-missing-table-2-fail.txt": ["TRANSFER-012"],
 };
 
 describe("v3 fixture sanity", () => {

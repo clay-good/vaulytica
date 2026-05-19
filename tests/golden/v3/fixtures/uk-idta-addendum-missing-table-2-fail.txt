@@ -1,0 +1,71 @@
+UK International Data Transfer Addendum to the EU Standard Contractual Clauses
+
+This Addendum has been issued by the Information Commissioner for Parties making Restricted Transfers. The Information Commissioner considers that it provides Appropriate Safeguards for Restricted Transfers when it is entered into as a legally binding contract.
+
+This Addendum is dated 1 January 2026 and supplements the EU Standard Contractual Clauses entered into between the Parties for Restricted Transfers of personal data from the United Kingdom under the UK GDPR and the Data Protection Act 2018.
+
+Table 1 — Parties
+
+Start Date: 1 January 2026.
+
+The Parties' details and key contacts:
+
+Exporter: Acme UK Ltd., a company incorporated in England and Wales (company number 12345678), with registered office at 10 Gresham Street, London, EC2V 7JE, United Kingdom. Key contact: uk-dpo@acmecorp.example.com.
+
+Importer: Globex Inc., a Delaware corporation, 500 Market Street, San Francisco, CA 94105, USA. Key contact: privacy@globexinc.example.com.
+
+EU SCC Incorporation
+
+The Approved EU SCCs that this Addendum is appended to, forming part of this Addendum: Commission Implementing Decision (EU) 2021/914 Standard Contractual Clauses, entered into between the Parties and dated 1 January 2026. All Clauses of the Approved EU SCCs apply as incorporated and amended by the Mandatory Clauses of this Addendum.
+
+Table 3 — Appendix Information
+
+Annex 1A (List of Parties): as set out in the Approved EU SCCs Annex I. Annex 1B (Description of Transfer): personal data relating to UK data subjects, including names, email addresses, IP addresses, and usage data processed for the purposes of providing cloud services under the Master Services Agreement between the Parties dated 1 January 2026. No special-category personal data is transferred. Annex II (Technical and Organisational Measures): as set out in the Approved EU SCCs Annex II, which is incorporated by reference into this Addendum. Annex III (Sub-Processors): as set out in the Approved EU SCCs Annex III, incorporated by reference.
+
+Table 4 — Ending this Addendum when the Approved Addendum Changes
+
+Ending this Addendum when the Approved Addendum changes: the Importer may end this Addendum as described in Section 19 of the Mandatory Clauses, with one month's written notice.
+
+Mandatory Clauses
+
+Part 2: Mandatory Clauses of the Approved Addendum, being the template Addendum B.1.0 issued by the ICO and laid before Parliament in accordance with section 119A of the Data Protection Act 2018 on 2 February 2022, as revised under section 18, apply to and are incorporated into this Addendum.
+
+The following Mandatory Clauses (Clauses 1 through 22 of the Addendum B.1.0) are incorporated by reference:
+
+Clause 1 (Definitions): terms used in this Addendum have the meanings given in the Approved EU SCCs, the UK GDPR, and the Data Protection Act 2018.
+
+Clause 2 (Legal Effect): this Addendum supplements and forms part of the Approved EU SCCs. In the event of conflict between this Addendum and the Approved EU SCCs, this Addendum prevails.
+
+Clause 3 (Hierarchy): in the event of conflict between this Addendum and the relevant legislation (UK GDPR / Data Protection Act 2018), the legislation prevails.
+
+Clause 4 (Incorporation of the Approved EU SCCs): the Approved EU SCCs are incorporated into and form part of this Addendum, amended to the extent necessary for the Restricted Transfer from the United Kingdom.
+
+Clause 5 (Optional Clauses): no optional clauses are selected by the Parties.
+
+Clauses 6 through 18 set out the operational obligations of the Parties for Restricted Transfers, including: obligations to notify the other Party of changes affecting compliance; obligations on the Importer when receiving access requests from public authorities; obligations to suspend transfers and terminate this Addendum on non-compliance; and the process for updates where the ICO issues a revised Approved Addendum.
+
+Clause 19 — Termination of this Addendum
+
+Either Party may end this Addendum by giving one month's written notice to the other if the ICO issues a revised Approved Addendum under section 119A of the Data Protection Act 2018. The Parties shall cooperate in good faith to execute a replacement addendum within that notice period.
+
+Clause 20 — Changes to this Addendum
+
+Where the ICO issues a revised Approved Addendum and neither Party has exercised its right to end this Addendum, this Addendum will be automatically superseded by the revised Approved Addendum.
+
+Clause 21 — Dispute Resolution
+
+Disputes arising under this Addendum shall be resolved in accordance with the dispute-resolution clause in the Approved EU SCCs. The governing law of this Addendum is the law of England and Wales.
+
+Clause 22 — Entire Agreement
+
+This Addendum, together with the Approved EU SCCs and the Master Services Agreement, constitutes the entire agreement between the Parties with respect to Restricted Transfers from the United Kingdom to the United States.
+
+References in this Addendum to the UK GDPR and the Data Protection Act 2018 are to those enactments as they have effect in the United Kingdom from time to time.
+
+Commencement Date: 1 January 2026.
+
+ACME UK LTD. (Exporter)                           GLOBEX INC. (Importer)
+
+Signed by: ____________________________            Signed by: ____________________________
+Title: UK Data Protection Officer                  Title: Authorized Representative
+Date: 1 January 2026                               Date: 1 January 2026
