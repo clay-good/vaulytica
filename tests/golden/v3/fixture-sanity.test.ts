@@ -1755,6 +1755,68 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // Art. 28(3) intro requirement that the DPA define the duration
   // of processing is undischarged on the face of the document.
   "dpa-controller-processor-missing-effective-date-fail.txt": ["DPA-044"],
+
+  // Controller→processor GDPR DPA with Section 2's heading
+  // rewritten from "Categories of Personal Data and Data Subjects"
+  // to "Categories of Personal Data and Types of Data Subjects"
+  // and the body's "The categories of data subjects are..." line
+  // rewritten to "The types of data subjects are..."; the rest of
+  // the DPA is preserved so the DPA-001..030 baseline still passes
+  // where it was passing, and no remaining text uses
+  // `nature\s+of\s+the\s+(personal\s+data\s+)?breach`,
+  // `categor(?:y|ies)\s+of\s+data\s+subjects`, `likely\s+consequences`,
+  // or `measures\s+taken`. **DPA-026 (warning)** fires — GDPR
+  // Art. 33(3) requires the breach notification to describe the
+  // nature of the breach, the categories and approximate number of
+  // data subjects affected, the DPO contact, the likely
+  // consequences, and the measures taken; a DPA whose Section 10
+  // recites only that Processor will provide "sufficient
+  // information" without anchoring the Art. 33(3) content list
+  // leaves the controller without a contractual hook to demand the
+  // statutorily required elements when the BA hands over its
+  // intake report.
+  "dpa-controller-processor-missing-breach-content-elements-fail.txt": ["DPA-026"],
+
+  // Controller→processor GDPR DPA with Section 10 (Breach
+  // Notification) rewritten to a single sentence: "Processor shall
+  // notify Controller of any personal data breach no later than 30
+  // days after becoming aware of the breach, providing Controller
+  // with sufficient information to allow it to meet its own
+  // notification obligations under Articles 33 and 34 of the
+  // GDPR." The 48-hour anchor is dropped in favor of a 30-day
+  // window; every other clause is preserved so the rest of the
+  // DPA-001..030 baseline still passes where it was passing.
+  // **DPA-027 (warning)** fires — its first bad_pattern matches
+  // `\b(within|no\s+later\s+than)\s+(?:1[0-9]|2[0-9]|3[0-9]|[4-9][0-9]|[1-9][0-9]{2,})\s+days?\b.{0,80}(breach|notif)`
+  // end-to-end ("no later than 30 days after becoming aware of the
+  // breach"). Although GDPR Art. 33(2) does not set a strict outer
+  // bound for processor notification, supervisory guidance treats
+  // anything beyond ~24–72 hours as suspect; a 30-day processor-
+  // notification window leaves the controller no margin to meet
+  // its own Art. 33 / 34 obligations and effectively shifts the
+  // supervisory-notification clock entirely onto the controller.
+  "dpa-controller-processor-breach-notice-30-day-window-fail.txt": ["DPA-027"],
+
+  // Controller→processor GDPR DPA with Section 11 (Audit and
+  // Inspection Rights) rewritten to keep the first information-
+  // production sentence but replace the "allow for and contribute
+  // to audits, including inspections" clause with "Processor's
+  // annual SOC 2 Type II report shall satisfy Controller's audit
+  // rights under this DPA in lieu of any on-site inspection, and
+  // the SOC 2 Type II report shall be the sole means of verifying
+  // Processor's compliance with this Section." Every other clause
+  // is preserved so the rest of the DPA-001..030 baseline still
+  // passes where it was passing. **DPA-036 (warning)** fires —
+  // its first bad_pattern matches `(SOC\s*2|ISO\s*27001).{0,160}
+  // (in\s+lieu\s+of|shall\s+(satisfy|fulfill|fulfil)|the\s+sole\s+means)`
+  // (both `shall satisfy` and `in lieu of` / `sole means` anchors
+  // are present) end-to-end. GDPR Art. 28(3)(h) requires the
+  // processor to allow for and contribute to audits; SOC 2 / ISO
+  // substitution is permitted as a default, but it must not
+  // eliminate the controller's right to an on-site audit on
+  // reasonable cause, and a contract that designates SOC 2 as the
+  // "sole means" of verification breaches the statutory floor.
+  "dpa-controller-processor-soc2-eliminates-audit-fail.txt": ["DPA-036"],
 };
 
 describe("v3 fixture sanity", () => {
