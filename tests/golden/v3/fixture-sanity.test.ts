@@ -972,6 +972,46 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // when the SCCs become untenable; without it neither party has
   // the SCC-defined suspension or termination right.
   "scc-module-2-missing-clause-16-fail.txt": ["TRANSFER-009"],
+
+  // BAA with Section 1's "shall not use or disclose PHI other than
+  // as permitted or required" sentence rewritten to a permissive
+  // "may handle PHI in accordance with the requirements of this
+  // BAA" — every `(not use or disclose|shall not use)` anchor is
+  // stripped from the body. The downstream safeguards / reporting
+  // / subcontractor / access-amendment-accounting / books-records /
+  // return-or-destruction clauses are preserved so BAA-003..018
+  // still pass. **BAA-002** fires — 45 C.F.R.
+  // § 164.504(e)(2)(ii)(A) requires the contract to prohibit the
+  // BA from using or further disclosing PHI other than as permitted
+  // by the contract or as required by law; the permissive
+  // "may handle" phrasing does not satisfy that prohibition.
+  "baa-missing-use-limitation-fail.txt": ["BAA-002"],
+
+  // Controller→processor GDPR DPA with Section 1's heading
+  // rewritten to "Subject-Matter, Nature, and Purpose of
+  // Processing" — every `duration of (the )?processing` anchor is
+  // removed from the body. The subject-matter / nature-and-purpose
+  // / categories-of-data / documented-instructions / Art. 32 /
+  // subprocessor / DSR / breach-notification / deletion-or-return
+  // clauses remain so DPA-001 and DPA-003..016 still pass.
+  // **DPA-002** fires — GDPR Art. 28(3) introductory paragraph
+  // requires the duration of the processing to be set out, so the
+  // controller and processor know when the processing relationship
+  // (and the data-protection obligations bundled with it) end.
+  "dpa-controller-processor-missing-duration-of-processing-fail.txt": ["DPA-002"],
+
+  // UK IDTA Addendum with the "Table 3 — Appendix Information"
+  // section replaced by a generic "Annex Incorporation by
+  // Reference" paragraph; every `Table\s*3\s*[—:-]\s*Appendix
+  // Information` / `table\s*3\b.{0,40}appendix` anchor is removed.
+  // Tables 1, 2, and 4 are preserved so TRANSFER-011 / 012 / 014 /
+  // 016 still pass. **TRANSFER-013 (warning)** fires — the ICO UK
+  // Addendum Mandatory Clauses require Table 3 to incorporate the
+  // EU SCC Annex information (parties, transfer description,
+  // supervisory authority, TOMs); a reference-only paragraph does
+  // not satisfy the mandatory-clauses requirement to complete
+  // Table 3.
+  "uk-idta-addendum-missing-table-3-fail.txt": ["TRANSFER-013"],
 };
 
 describe("v3 fixture sanity", () => {
