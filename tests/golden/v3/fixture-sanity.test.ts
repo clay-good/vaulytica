@@ -1293,6 +1293,61 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // addendum carries no operational commitment a customer can
   // audit against.
   "vendor-security-addendum-missing-review-cadence-fail.txt": ["ADDENDA-002"],
+
+  // Controller→processor GDPR DPA with Section 10's "without
+  // undue delay" phrase replaced with "promptly"; every
+  // `without\s+undue\s+delay` anchor is removed from the entire
+  // DPA. Section 10 still says "Processor shall notify Controller
+  // promptly after becoming aware of a personal data breach, and
+  // in any event within 48 hours" so DPA-024 (Art. 33(2) presence)
+  // still passes, and Section 2 retains "categories of data
+  // subjects" so DPA-026 still passes; the 48-hour window is in
+  // hours, not days, so the DPA-027 loose-timing bad_pattern
+  // (`within\s+\d+\s+days?`) does not fire. **DPA-025 (warning)**
+  // fires — GDPR Art. 33(2) uses the "without undue delay"
+  // standard and drafters should preserve the exact phrasing so
+  // the processor's reporting trigger maps cleanly onto the
+  // controller's Art. 33(1) 72-hour clock; "promptly" is a softer
+  // standard that does not carry the same supervisory-authority
+  // expectation.
+  "dpa-controller-processor-missing-undue-delay-fail.txt": ["DPA-025"],
+
+  // BAA with a new "Definitions" section that narrows "Security
+  // Incident" to "only successful unauthorized access to or
+  // successful disclosure of ePHI" and expressly excludes
+  // unsuccessful attempts from the definition. The Reporting,
+  // Safeguards, Subcontractor-Flow-Down, Access/Amendment/
+  // Accounting, Books/Records, Return-or-Destruction, and
+  // Breach-Notification clauses are preserved so BAA-001..022
+  // still pass. **BAA-023 (warning)** fires — its bad_patterns
+  // catch both `Security\s+Incident.{0,200}successful\s+(unauthorized|access)`
+  // and `only\s+successful\s+(unauthorized\s+access|incidents)`;
+  // OCR's interpretation of 45 CFR § 164.304 is that "Security
+  // Incident" includes both successful and unsuccessful attempts,
+  // so narrowing to "only successful" excludes attack telemetry
+  // (failed login storms, port scans, unsuccessful intrusion
+  // attempts) that the covered entity needs to track to fulfill
+  // its Security Rule risk-management duty.
+  "baa-security-incident-narrowed-fail.txt": ["BAA-023"],
+
+  // Multi-state US DPA with Section 2(b) rewritten from "share
+  // personal information for cross-context behavioral advertising
+  // as defined in Cal. Civ. Code § 1798.140(ah)" to "make personal
+  // information available to any third party for targeted
+  // advertising purposes outside the Business Purpose"; every
+  // `cross[- ]context\s+behavioral\s+advertising` anchor is
+  // removed from the entire DPA. Section 2(a) sell-prohibition,
+  // Section 2(c) Business-Purpose limitation, and Section 2(d)
+  // no-combining restriction are preserved so USDPA-002 / 005 /
+  // 007 / 008 still pass. **USDPA-003 (critical)** fires —
+  // Cal. Civ. Code § 1798.140(ag)(1)(A) requires the service-
+  // provider contract to prohibit sharing including for
+  // cross-context behavioral advertising as a named statutory
+  // category; a generic "targeted advertising" prohibition is
+  // not equivalent because CCPA / CPRA enforcement turns on the
+  // specific "cross-context behavioral advertising" statutory
+  // term of art.
+  "dpa-multi-state-us-missing-cross-context-prohibition-fail.txt": ["USDPA-003"],
 };
 
 describe("v3 fixture sanity", () => {

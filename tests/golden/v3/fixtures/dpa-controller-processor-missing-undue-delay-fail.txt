@@ -1,0 +1,40 @@
+Data Processing Agreement (Controller to Processor)
+
+This Data Processing Agreement ("DPA") is entered into as of February 1, 2026, pursuant to Article 28 of the General Data Protection Regulation (EU) 2016/679 ("GDPR"), between Globex Inc., a German GmbH acting as data controller ("Controller"), and Wayne Enterprises LLC, a Delaware limited liability company acting as data processor ("Processor"). This DPA supplements and is incorporated into the Master Services Agreement between the parties dated January 1, 2026 (the "MSA").
+
+1. Subject-Matter, Duration, Nature, and Purpose of Processing. The subject-matter of the processing is the provision of cloud-based analytics services as described in the MSA. The duration of the processing corresponds to the term of the MSA. The nature and purpose of the processing is to analyze Controller's customer engagement data for reporting and optimization as instructed by Controller. Processing shall cease upon termination of the MSA.
+
+2. Categories of Personal Data and Data Subjects. The Processor shall process the following types of personal data: names, email addresses, IP addresses, device identifiers, and behavioral analytics data. The categories of data subjects are Controller's end-users and prospective customers. A complete list is set forth in Annex I to this DPA.
+
+3. Rights and Obligations of the Controller. Controller is responsible for ensuring the lawfulness of the processing, obtaining necessary consents, and responding to data subject requests. Controller shall provide Processor with documented instructions regarding the processing of personal data.
+
+4. Documented Instructions Only. Processor shall process personal data only on documented instructions from Controller, including with regard to transfers of personal data to a third country or an international organization, unless required to do so by applicable law; in such a case, Processor shall inform Controller of that legal requirement before processing, unless that law prohibits such information on important grounds of public interest. Processor shall immediately notify Controller if, in Processor's reasonable opinion, any instruction from Controller infringes the GDPR or other applicable data protection law.
+
+5. Confidentiality of Processing Personnel. Processor shall ensure that persons authorized to process personal data on behalf of Controller have committed themselves to confidentiality or are under an appropriate statutory obligation of confidentiality.
+
+6. Security Measures (Article 32 GDPR). Processor shall implement and maintain appropriate technical and organizational measures to ensure a level of security appropriate to the risk, including as appropriate: (a) encryption of personal data in transit and at rest; (b) pseudonymization of personal data where possible; (c) ongoing confidentiality, integrity, availability, and resilience of processing systems and services; (d) the ability to restore availability and access to personal data in a timely manner in the event of a physical or technical incident; (e) a process for regularly testing, assessing, and evaluating the effectiveness of technical and organizational measures for ensuring the security of the processing.
+
+7. Subprocessors. Processor shall not engage any subprocessor without prior specific or general written authorization of Controller. Where Processor relies on general written authorization, Processor shall inform Controller of any intended changes concerning the addition or replacement of other processors at least thirty (30) days prior to such change, thereby giving Controller the opportunity to object to such changes. Processor shall impose equivalent data protection obligations on any subprocessor by way of a written contract, and shall remain fully liable to Controller for the performance of such subprocessor's obligations.
+
+8. Assistance with Data Subject Rights. Processor shall assist Controller by appropriate technical and organizational measures, insofar as this is possible, for the fulfilment of Controller's obligation to respond to requests for exercising data subject rights under Chapter III of the GDPR, including rights of access, rectification, erasure, restriction, portability, and objection.
+
+9. Assistance with Articles 32 to 36 Obligations. Processor shall assist Controller in ensuring compliance with the obligations under Articles 32 to 36 of the GDPR, taking into account the nature of the processing and the information available to Processor, including obligations relating to security, breach notification, data protection impact assessments, and prior consultation with supervisory authorities.
+
+10. Breach Notification (Article 33 GDPR). In the event of a personal data breach, Processor shall notify Controller promptly after becoming aware of a personal data breach, and in any event within 48 hours, providing Controller with sufficient information to allow it to meet its obligations to notify the competent supervisory authority within 72 hours and, where required, affected data subjects.
+
+11. Audit and Inspection Rights. Processor shall make available to Controller all information necessary to demonstrate compliance with the obligations set out in this DPA, and shall allow for and contribute to audits, including inspections, conducted by Controller or an auditor mandated by Controller, subject to reasonable prior written notice and agreed confidentiality obligations.
+
+12. Deletion or Return at End of Services. Upon termination of the MSA for any reason, Processor shall, at the choice of Controller, delete or return all personal data to Controller and delete existing copies, unless applicable law requires storage of the personal data. Processor shall certify such deletion in writing within thirty (30) days of termination.
+
+13. Cross-Border Transfers and EU SCCs. Any transfer of personal data to a third country outside the European Economic Area shall be governed by the Standard Contractual Clauses adopted by the European Commission pursuant to Commission Implementing Decision (EU) 2021/914, Module Two (Controller to Processor), which are hereby incorporated by reference and form part of this DPA.
+
+Annex I — Categories of Personal Data
+The following categories of personal data are subject to this DPA: (A) identification data: name, username, email address; (B) technical data: IP address, browser type, device identifiers, session tokens; (C) behavioral data: click-stream events, feature usage logs, session duration metrics.
+
+Effective Date: February 1, 2026.
+
+GLOBEX INC. (Controller)                          WAYNE ENTERPRISES LLC (Processor)
+
+Signed by: ____________________________           Signed by: ____________________________
+Title: Data Protection Officer                    Title: Authorized Representative
+Date: February 1, 2026                            Date: February 1, 2026
