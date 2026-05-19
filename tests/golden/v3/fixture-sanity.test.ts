@@ -1193,6 +1193,56 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // state's law but another state's forum forces the forum court
   // to apply foreign law, adding cost and uncertainty.
   "msa-vendor-deep-governing-law-venue-mismatch-fail.txt": ["MSA-024"],
+
+  // Controller→processor GDPR DPA with Section 6's measure-(a)
+  // rewritten as "network and storage-layer cryptographic
+  // protection ... using industry-standard algorithms" and
+  // measure-(b) rewritten as "data minimization, access controls,
+  // and least-privilege role assignment" — every
+  // `pseudonymi[sz]ation` / `encrypt(ion|ed)` anchor is removed
+  // from the entire DPA. The remaining Section 6 measures
+  // (CIA-R triad, restore availability, regular testing) and
+  // Articles 32–36 assistance, breach notification, audit clauses
+  // are preserved so DPA-020 / 021 / 022 / 023 still pass.
+  // **DPA-019 (warning)** fires — GDPR Art. 32(1)(a) lists
+  // pseudonymisation and encryption among the technical and
+  // organisational measures appropriate to the risk; replacing
+  // these named statutory measures with generic
+  // "cryptographic protection" and "data minimization" drops the
+  // Art. 32(1)(a) anchor.
+  "dpa-controller-processor-missing-pseudonymisation-encryption-fail.txt": ["DPA-019"],
+
+  // Controller→processor GDPR DPA with Section 6's measure-(c)
+  // rewritten as "operational hardening of processing systems and
+  // services through configuration management, segregation of
+  // duties, and capacity planning" — every CIA-R triad anchor
+  // (`confidentiality.{0,30}integrity.{0,30}availability` /
+  // `availability.{0,30}resilience` /
+  // `integrity.{0,30}availability`) is removed from the entire
+  // DPA. The remaining Section 6 measures (encryption,
+  // pseudonymisation, restore availability, regular testing) and
+  // downstream clauses are preserved so DPA-019 / 021 / 022 / 023
+  // still pass. **DPA-020 (warning)** fires — GDPR Art. 32(1)(b)
+  // requires measures to ensure ongoing confidentiality,
+  // integrity, availability and resilience of processing systems
+  // and services; "operational hardening" generic language does
+  // not satisfy the named four-element commitment.
+  "dpa-controller-processor-missing-cia-resilience-fail.txt": ["DPA-020"],
+
+  // Controller→processor GDPR DPA with Section 6's measure-(d)
+  // rewritten as "maintenance of redundant infrastructure
+  // designed to limit unplanned downtime" — every
+  // `restore\s+availability` / `disaster\s+recovery` /
+  // `business\s+continuity` / `backup\s+and\s+recovery` anchor is
+  // removed from the entire DPA. The remaining Section 6 measures
+  // (encryption, pseudonymisation, CIA-R triad, regular testing)
+  // and downstream clauses are preserved so DPA-019 / 020 / 022 /
+  // 023 still pass. **DPA-021 (warning)** fires — GDPR
+  // Art. 32(1)(c) requires the ability to restore the availability
+  // and access to personal data in a timely manner in the event of
+  // an incident; the "redundant infrastructure" phrasing is a
+  // partial substitute that lacks the restore-on-incident anchor.
+  "dpa-controller-processor-missing-restore-availability-fail.txt": ["DPA-021"],
 };
 
 describe("v3 fixture sanity", () => {
