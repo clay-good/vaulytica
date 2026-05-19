@@ -1403,6 +1403,57 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // internal review" without the named statutory anchors does
   // not satisfy the Schrems II / EDPB expectation.
   "scc-module-2-missing-tia-reference-fail.txt": ["TRANSFER-019"],
+
+  // Controller→processor GDPR DPA with Section 7 (Subprocessors)
+  // rewritten so the "thereby giving Controller the opportunity
+  // to object to such changes" clause is removed; every
+  // `(opportunity\s+to\s+object|right\s+to\s+object).*?
+  // (sub[- ]?processor|processor)` anchor disappears. The general-
+  // written-authorization recital, the 30-day prior-notice
+  // requirement, the equivalent-data-protection flow-down, and
+  // the processor's full-liability undertaking are preserved so
+  // DPA-015 / 017 still pass. **DPA-016 (critical)** fires —
+  // GDPR Art. 28(2) requires informing the controller of intended
+  // subprocessor changes AND giving the controller an opportunity
+  // to object; a notice-without-objection-right does not satisfy
+  // the statutory standard and leaves the controller no lever to
+  // block a subprocessor it cannot accept.
+  "dpa-controller-processor-missing-subprocessor-objection-fail.txt": ["DPA-016"],
+
+  // BAA with a new "Limitation of Liability" clause appended
+  // after the Term section reciting that "each Party's aggregate
+  // liability for any and all claims arising out of or relating
+  // to this BAA shall not exceed the fees paid by Covered Entity
+  // to Business Associate in the twelve (12) months immediately
+  // preceding the event giving rise to the claim." Every other
+  // BAA clause is preserved so BAA-001..022 still pass.
+  // **BAA-025 (warning)** fires — its `bad_pattern`
+  // (`(aggregate\s+liability|total\s+liability|liability.{0,40}
+  // shall\s+not\s+exceed).{0,120}(fees|paid|amount)`) catches the
+  // injected cap; HIPAA civil money penalties under 45 C.F.R.
+  // § 160.404 can reach over $2M per violation category per year
+  // (adjusted annually), so a 12-month-fees cap effectively
+  // shifts HIPAA risk back to the Covered Entity rather than
+  // allocating it to the BA whose breach caused the penalty.
+  "baa-indemnity-cap-impairing-hipaa-fail.txt": ["BAA-025"],
+
+  // Vendor MSA with Section 11 governing-law switched from
+  // Delaware to New York and a new Section 13 "Construction
+  // Project Indemnity" appended that recites "Vendor shall
+  // indemnify and hold harmless Customer for any and all claims
+  // and losses arising out of or related to such work, including
+  // those resulting from the negligence of the indemnitee." The
+  // existing Section 7 mutual indemnification, Section 8
+  // liability cap with carveouts, and Section 11 venue clause
+  // are preserved so MSA-002 / 005 / 006 / 008 / 024 still pass.
+  // **MSA-010 (warning)** fires — N.Y. Gen. Oblig. § 5-322.1
+  // voids construction-contract indemnities that require the
+  // indemnitor to indemnify the indemnitee for the indemnitee's
+  // own negligence; the rule's first bad_pattern catches
+  // `indemnif\w+ … for any and all claims … including … negligence
+  // of the indemnitee` end-to-end and surfaces the void-on-its-face
+  // exposure the New-York-law clause inherits.
+  "msa-vendor-deep-ny-construction-indemnity-fail.txt": ["MSA-010"],
 };
 
 describe("v3 fixture sanity", () => {
