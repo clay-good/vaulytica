@@ -932,6 +932,46 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // the same CCPA provisions; without that flow-down a subprocessor
   // is operating off-contract from the business's point of view.
   "dpa-multi-state-us-missing-subprocessor-flow-down-fail.txt": ["USDPA-010"],
+
+  // BAA with Section 1's "Permitted Uses and Disclosures" heading
+  // renamed to "Scope of PHI Handling" and every `(permitted|
+  // authorized) (uses|disclosures)` / `uses and disclosures of
+  // PHI` anchor stripped from the body — "permitted or required"
+  // language is replaced with "required" throughout. The downstream
+  // safeguards / reporting / subcontractor-flow-down / access-
+  // amendment-accounting / books-records / return-or-destruction /
+  // minimum-necessary clauses are preserved so BAA-002..018 still
+  // pass. **BAA-001** is the load-bearing rule — 45 C.F.R.
+  // § 164.504(e)(2)(i) requires the BAA to set out the permitted
+  // and required uses and disclosures of PHI; without that clause
+  // the agreement does not satisfy HIPAA's core contracting
+  // standard.
+  "baa-missing-permitted-uses-and-disclosures-fail.txt": ["BAA-001"],
+
+  // Controller→processor GDPR DPA with Section 1's "Subject-Matter,
+  // Duration, Nature, and Purpose of Processing" heading rewritten
+  // to "Services, Duration, Nature, and Purpose of Processing" and
+  // the body's `subject-matter of the processing` / `scope of
+  // processing` anchors replaced with "the services consist of."
+  // The duration / nature-and-purpose / categories-of-data /
+  // documented-instructions / Art. 32 / subprocessor / DSR /
+  // breach-notification / deletion-or-return clauses are
+  // preserved so DPA-002..016 still pass. **DPA-001** is the
+  // load-bearing rule — GDPR Art. 28(3) introductory paragraph
+  // requires the controller-processor contract to set out the
+  // subject-matter of the processing.
+  "dpa-controller-processor-missing-subject-matter-fail.txt": ["DPA-001"],
+
+  // SCC Module 2 transfer with the "Clause 16 — Non-Compliance and
+  // Suspension or Termination" section removed; every `clause\s*16`
+  // / `non-compliance with (the )?clauses` anchor is stripped. A
+  // generic "Termination for Breach" paragraph stands in for the
+  // suspension/termination mechanic so the operative remedy isn't
+  // lost commercially. **TRANSFER-009 (warning)** is the load-
+  // bearing rule — EU SCCs Clause 16 governs the parties' rights
+  // when the SCCs become untenable; without it neither party has
+  // the SCC-defined suspension or termination right.
+  "scc-module-2-missing-clause-16-fail.txt": ["TRANSFER-009"],
 };
 
 describe("v3 fixture sanity", () => {
