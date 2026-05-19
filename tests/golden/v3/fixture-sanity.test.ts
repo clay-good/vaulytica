@@ -1613,6 +1613,55 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // 800-66 standard leaves the BA without the safe-harbor lever and
   // pushes every incident onto the breach-notification timeline.
   "baa-missing-encryption-nist-fail.txt": ["BAA-032"],
+
+  // BAA with the "Risk Assessment" paragraph removed entirely; the
+  // Safeguards paragraph still cites 45 CFR §§ 164.308 / 164.310 /
+  // 164.312 but never uses the words "risk assessment" or "risk
+  // analysis," so no remaining text supplies the missing anchor.
+  // Every other clause is preserved so the rest of the BAA baseline
+  // still passes where it was passing. **BAA-033 (warning)** fires
+  // — its present_patterns require `risk\s+(assessment|analysis)`;
+  // with the paragraph gone, neither phrase appears anywhere in the
+  // document. 45 C.F.R. § 164.308(a)(1)(ii)(A) requires a risk
+  // analysis as part of the Security Management Process; a BAA
+  // silent on the BA's risk-assessment cadence leaves the covered
+  // entity without a contractual hook to verify the BA's compliance
+  // with the foundational Security Rule control.
+  "baa-missing-risk-assessment-fail.txt": ["BAA-033"],
+
+  // BAA with the "Subcontractor List" paragraph removed entirely;
+  // the Subcontractor Flow-Down paragraph (which uses "subcontractor"
+  // / "agrees in writing" wording) is preserved so BAA-018 still
+  // passes, but no remaining text uses `list\s+of\s+subprocessors`,
+  // `list\s+of\s+subcontractors`, or `subprocessor.{0,60}
+  // (disclos|maintain.*list)`. Every other clause is preserved so
+  // the rest of the BAA baseline still passes where it was passing.
+  // **BAA-035 (warning)** fires — although 45 C.F.R.
+  // § 164.504(e)(2)(ii)(D) speaks to flow-down, modern BAAs require
+  // disclosure of the subprocessor / subcontractor identity for
+  // covered-entity vetting; a BAA that does not maintain a current
+  // disclosed list leaves the covered entity unable to perform
+  // downstream vendor due diligence as part of its own Security
+  // Management Process.
+  "baa-missing-subprocessor-list-fail.txt": ["BAA-035"],
+
+  // BAA with the "Governing Law" paragraph rewritten to subordinate
+  // HIPAA to state law: "This BAA shall be governed by the laws of
+  // the State of New York. Notwithstanding any provision of HIPAA or
+  // the HIPAA Rules to the contrary, in the event of any conflict
+  // between the terms of this BAA and any provision of New York
+  // state law, state law shall control...." Every other clause is
+  // preserved so the rest of the BAA baseline still passes where it
+  // was passing. **BAA-042 (warning)** fires — its first
+  // bad_pattern matches `notwithstanding\s+(any\s+)?(provision\s+of\s+)?HIPAA`
+  // and the second matches `state\s+law\s+(shall\s+)?controls?`;
+  // both appear end-to-end in the rewritten clause. 45 C.F.R.
+  // § 160.203 preempts contrary state law unless an exception
+  // applies, so a "notwithstanding HIPAA" / "state law controls"
+  // recital is unenforceable to the extent of HIPAA conflict and
+  // signals the kind of careless drafting that produces operational
+  // ambiguity in a breach-response scenario.
+  "baa-state-law-overrides-hipaa-fail.txt": ["BAA-042"],
 };
 
 describe("v3 fixture sanity", () => {
