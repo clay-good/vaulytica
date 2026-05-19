@@ -1513,6 +1513,59 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // construction-indemnity pattern is jurisdiction-neutral, but
   // MSA-029 is the load-bearing detector for the Texas failure mode.
   "msa-vendor-deep-tx-construction-indemnity-fail.txt": ["MSA-029"],
+
+  // BAA with the "Minimum Necessary" paragraph removed entirely;
+  // every other clause (Permitted Uses, Safeguards, Reporting,
+  // Subcontractor Flow-Down, Access/Amendment/Accounting, Books and
+  // Records, Return or Destruction, Mitigation, Workforce Training,
+  // Encryption, Risk Assessment, Sanctions, Subcontractor List,
+  // Governing Law, Notice, Term) is preserved so BAA-001..028 / 030+
+  // baseline still passes where it was passing. **BAA-029 (warning)**
+  // fires — its present_patterns require `minimum\s+necessary` or
+  // `164\.502\(b\)`; neither match, so the rule reports the
+  // 45 C.F.R. § 164.502(b) minimum-necessary anchor missing. Without
+  // the recital the BA has no contractual hook to limit downstream
+  // PHI requests, breaking the use/disclosure narrowing the Privacy
+  // Rule contemplates.
+  "baa-missing-minimum-necessary-fail.txt": ["BAA-029"],
+
+  // CCPA Service-Provider Addendum with §3(d) (the no-combining-
+  // with-other-data restriction) removed and the §3 enumeration
+  // ending at (c); every other anchor for the combining prohibition
+  // — `combin\w+\s+(personal\s+information|the\s+personal\s+data)`,
+  // `7050\(c\)`, or `other\s+sources` — is absent from the rest of
+  // the document so no other paragraph supplies the missing recital.
+  // Sections 4 (Certification), 5 (Consumer Rights Assistance), 6
+  // (Subprocessors), 7 (Security), 8 (Deletion or Return), and 9
+  // (Audit) are preserved so the rest of the USDPA-001..025 baseline
+  // still passes where it was passing. **USDPA-004 (warning)** fires
+  // — Cal. Civ. Code § 1798.140(ag)(1)(D) requires the service-
+  // provider contract to prohibit combining the business's Personal
+  // Information with data the service provider receives from or
+  // collects in connection with any other person, business, or
+  // direct consumer interaction (except as 11 C.C.R. § 7050(c)
+  // narrowly permits); a contract silent on combining leaves the
+  // business exposed to enforcement risk under § 1798.155 if the
+  // service provider augments the data with off-platform signals.
+  "dpa-ccpa-service-provider-missing-no-combining-restriction-fail.txt": ["USDPA-004"],
+
+  // SCC Module 2 with §8.6 (Onward Transfers) removed entirely and
+  // the subsequent §8.7 ("Processing Under Authority of Data
+  // Exporter") renumbered to §8.6; every anchor for the onward-
+  // transfer recital — `onward\s+transfer`, `clause\s+8\.7`, or
+  // `clause\s+8\.8` — is absent from the rest of the document so
+  // no other paragraph supplies the missing reference. Clauses 8.1
+  // through 8.5, 9, 10, 11, 12, 14, 15, 16, the docking clause, and
+  // the three annexes are preserved so the rest of the TRANSFER-001
+  // ..019 baseline still passes where it was passing. **TRANSFER-020
+  // (warning)** fires — EU SCCs Clause 8.7 / 8.8 governs onward
+  // transfers of personal data to third parties outside the EEA; an
+  // SCC Module 2 transfer arrangement that is silent on onward-
+  // transfer terms leaves the data exporter without a contractual
+  // mechanism to ensure that downstream recipients are bound by
+  // equivalent safeguards, defeating the Article 46 Schrems II
+  // protection chain.
+  "scc-module-2-missing-onward-transfer-terms-fail.txt": ["TRANSFER-020"],
 };
 
 describe("v3 fixture sanity", () => {

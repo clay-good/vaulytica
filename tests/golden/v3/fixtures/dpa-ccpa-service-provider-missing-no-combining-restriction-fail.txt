@@ -1,0 +1,29 @@
+California Service Provider Addendum
+
+This California Service Provider Addendum ("CCPA Addendum") is entered into as of April 1, 2026, between Acme Corp, a Delaware corporation ("Business"), and Globex Inc., a California corporation ("Service Provider"), and is incorporated into the Master Services Agreement between the parties dated January 1, 2026 (the "MSA"). This CCPA Addendum governs Service Provider's processing of Personal Information (as defined in Cal. Civ. Code § 1798.140(v)) on behalf of Business under the California Consumer Privacy Act of 2018 as amended by the California Privacy Rights Act of 2020 ("CCPA/CPRA"), and the implementing regulations at 11 C.C.R. § 7050 et seq.
+
+1. Service Provider Designation. The parties acknowledge that Service Provider is a "Service Provider" as defined in Cal. Civ. Code § 1798.140(ag): a for-profit entity that processes Personal Information on behalf of a Business pursuant to a written contract for a Business Purpose, and the contract prohibits the entity from retaining, using, or disclosing Personal Information for any purpose other than for the Business Purpose.
+
+2. Business Purpose. "Business Purpose" means the specific operational purpose for which Service Provider processes Personal Information, as described in the MSA and the Statement of Work in effect between the parties, consistent with the meaning of Cal. Civ. Code § 1798.140(e). Service Provider shall process Personal Information solely for the Business Purpose and shall not process Personal Information for any other commercial purpose.
+
+3. Prohibited Acts. Service Provider hereby certifies that it understands and shall comply with the following prohibitions: (a) Service Provider shall not sell Personal Information as defined in Cal. Civ. Code § 1798.140(al) and shall receive no monetary or other valuable consideration for selling Personal Information; (b) Service Provider shall not share Personal Information for cross-context behavioral advertising as defined in Cal. Civ. Code § 1798.140(ah); (c) Service Provider shall not retain, use, or disclose Personal Information outside the Business Purpose, including retaining Personal Information after completing the Services.
+
+4. Certification of Compliance. Upon Business's written request, Service Provider shall provide Business with a written certification of compliance with this CCPA Addendum, including confirmation that Service Provider has not sold, shared, or used Personal Information outside the Business Purpose. Business shall have the right to take reasonable and appropriate steps under Cal. Civ. Code § 1798.100(d) to stop and remediate unauthorized use of Personal Information.
+
+5. Consumer Rights Assistance. Service Provider shall assist Business in responding to consumer rights requests within fifteen (15) business days of receiving a forwarded request, including requests for: access to Personal Information; deletion of Personal Information; correction of inaccurate Personal Information; portability of Personal Information in a portable and readily usable format; and opt-out of sale or sharing of Personal Information.
+
+6. Subprocessors. Service Provider shall not engage any subprocessor that will access or process Personal Information without providing Business with prior written notice of at least thirty (30) days. Service Provider shall impose obligations on subprocessors equivalent to those in this CCPA Addendum by written contract and shall remain liable for subprocessors' compliance.
+
+7. Security. Service Provider shall maintain reasonable security procedures and practices appropriate to the nature of the Personal Information, consistent with Cal. Civ. Code § 1798.150 and 11 C.C.R. § 7040.
+
+8. Deletion or Return on Termination. Within thirty (30) days of the MSA's termination or expiration, Service Provider shall securely delete or return all Personal Information received from Business and shall certify such deletion or return in writing. All copies held by subprocessors shall be deleted within the same period.
+
+9. Audit. Business may audit Service Provider's compliance with this CCPA Addendum upon thirty (30) days prior written notice, no more than once per calendar year.
+
+Effective Date: April 1, 2026.
+
+ACME CORP (Business)                              GLOBEX INC. (Service Provider)
+
+Signed by: ____________________________           Signed by: ____________________________
+Title: Chief Privacy Officer                      Title: Authorized Representative
+Date: April 1, 2026                               Date: April 1, 2026
