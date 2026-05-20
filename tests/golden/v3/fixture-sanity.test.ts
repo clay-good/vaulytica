@@ -2804,6 +2804,84 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // supervisory authority without the role attachment a reading
   // against Articles 28 and 32–36 relies on.
   "dpa-controller-processor-roles-unclear-fail.txt": ["DPA-042"],
+
+  // BAA with every "PHI" / "Protected Health Information" /
+  // "ePHI" reference rewritten to the commercial term "Confidential
+  // Health Records" ("CHR" / "eCHR"), and an opening recital
+  // affirmatively disclaiming incorporation of the 45 CFR § 160.103
+  // controlled-vocabulary defined term: "the Parties have elected
+  // to use the commercial term 'Confidential Health Records'
+  // throughout this BAA, without incorporation by reference of the
+  // 45 CFR § 160.103 controlled-vocabulary defined term used
+  // elsewhere in the HIPAA Rules." Every other clause (Permitted
+  // Uses, Safeguards / Security Rule, Reporting, Subcontractor
+  // Flow-Down, Access/Amendment/Accounting, HHS Books and Records,
+  // Return-or-Destruction, Minimum Necessary, Mitigation, Workforce
+  // Training, Encryption, Risk Assessment, Sanctions, Subcontractor
+  // List, Governing Law, Notice, Term, Signature) is preserved
+  // with the relabeled term so the rest of the BAA-001..045
+  // baseline still resolves on commercial-vocabulary terms.
+  // BAA-041 (warning) fires — its present_pattern
+  // `Protected Health Information|\bPHI\b` is no longer matched
+  // anywhere in the document. 45 C.F.R. § 160.103 defines
+  // "Protected Health Information" as the operative term that
+  // attaches every downstream HIPAA Privacy and Security Rule
+  // obligation; a BAA that never mentions PHI is almost certainly
+  // the wrong template (commercial confidentiality agreement,
+  // generic data-processing agreement, etc.) and OCR would treat
+  // it as such.
+  "baa-missing-phi-reference-fail.txt": ["BAA-041"],
+
+  // Customer-form MSA with the Order-of-Precedence clause in
+  // Section 1 expanded to acknowledge that the indemnification
+  // regime, aggregate liability cap, intellectual property
+  // ownership/assignment, and service warranty are each set forth
+  // in the SOW rather than in the MSA, while the MSA's stated
+  // precedence places it above the SOW ("the terms of this MSA
+  // shall control and govern over the SOW in all respects").
+  // Sections 3, 5, 7, and 8 are rewritten as "Framework" clauses
+  // that delegate the operative substance to the SOW ("the
+  // substantive warranty for each engagement is set forth in the
+  // SOW", "the intellectual property ownership and assignment
+  // regime is set forth in the SOW", "the indemnification regime
+  // ... is set forth in the SOW", "the aggregate liability cap,
+  // the carveouts from the cap, and the mutual
+  // consequential-damages waiver applicable to each engagement
+  // are set forth in the SOW"). MSA-027 (warning) fires — the
+  // custom check detects all three signals: (a) a precedence
+  // declaration ("in the event of any conflict or inconsistency"),
+  // (b) MSA-over-SOW phrasing ("this MSA shall control and govern
+  // over the SOW"), and (c) operative-term-in-SOW phrasing
+  // ("indemnif... set forth in the SOW", "warrant... set forth in
+  // the SOW"). The internal inconsistency — putting the MSA on
+  // top of the SOW while the SOW houses the actual operative
+  // terms — means SOW-level indemnity / cap / IP / warranty
+  // terms may be silently overridden by MSA defaults at the
+  // moment of conflict.
+  "msa-customer-deep-precedence-burying-operative-terms-fail.txt": ["MSA-027"],
+
+  // Controller→processor GDPR DPA with every "personal data"
+  // reference rewritten to the commercial term "Customer
+  // Information", and an opening recital affirmatively disclaiming
+  // incorporation of the GDPR Article 4(1) controlled-vocabulary
+  // defined term: "the parties have elected to use the commercial
+  // term 'Customer Information' throughout this DPA in place of
+  // the GDPR Article 4(1) controlled-vocabulary defined term,
+  // without incorporation by reference of the Article 4(1)
+  // defined-term framework." Every other clause (Article 28
+  // subject-matter through deletion/return, EU SCCs incorporation,
+  // Annex I) is preserved with the relabeled term so the rest of
+  // the DPA baseline still resolves on commercial-vocabulary
+  // terms. DPA-050 (warning) fires — its present_pattern
+  // `personal\s+data` is no longer matched anywhere in the
+  // document. GDPR Art. 4(1) defines "personal data" as the
+  // operative term that attaches every downstream Article 28 / 32
+  // / 33 / 34 obligation; a DPA that never mentions personal data
+  // is almost certainly the wrong template (commercial
+  // confidentiality agreement, generic processing-of-business-
+  // data agreement, etc.) and a supervisory authority would treat
+  // it as such.
+  "dpa-controller-processor-missing-personal-data-reference-fail.txt": ["DPA-050"],
 };
 
 describe("v3 fixture sanity", () => {
