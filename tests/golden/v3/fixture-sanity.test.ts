@@ -2970,6 +2970,80 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // attorneys general / consumer protection agencies of each
   // state would treat it as such.
   "dpa-multi-state-us-missing-personal-information-reference-fail.txt": ["USDPA-025"],
+
+  // CCPA Service-Provider Addendum with an added preamble paragraph
+  // explicitly stating that "this CCPA Addendum will serve as the
+  // Service Provider Addendum for any applicable US state privacy
+  // law where Business and Service Provider conduct business that
+  // involves consumer Personal Information, including a multi-state
+  // operational footprint across several states." Every other
+  // clause (Service Provider Designation, Business Purpose,
+  // Prohibited Acts, Certification of Compliance, Consumer Rights
+  // Assistance, Subprocessors, Security, Deletion or Return on
+  // Termination, Audit) is preserved unchanged so the rest of the
+  // USDPA-001..025 baseline still passes where it was passing.
+  // USDPA-021 (info) fires — its bad_pattern
+  // `multi[- ]state|several\s+(?:US\s+)?states|applicable\s+US\s+state\s+(?:privacy\s+)?law`
+  // now matches in three places in the added paragraph. When a
+  // CCPA-only template explicitly contemplates multi-state coverage
+  // without adopting the strictest applicable state's required
+  // elements (VCDPA / CPA / CTDPA may demand wider scope or
+  // additional protections than CCPA alone), the business risks
+  // failing to meet the strictest applicable requirement and may
+  // be reclassified as a third party under the non-California
+  // statute that governs the relevant transfer.
+  "dpa-ccpa-service-provider-multi-state-language-fail.txt": ["USDPA-021"],
+
+  // Mutual NDA rewritten with the bilateral "Each Receiving Party
+  // shall ..." framing in Sections 3 and 4 of the baseline replaced
+  // by unilateral "The Receiving Party shall ..." framing in
+  // Sections 3 (Permitted Purpose), 4 (Obligations of Receiving
+  // Party), 5 (Receiving Party Representations), and 6 (Receiving
+  // Party Indemnification). Two additional one-sided clauses
+  // (Representations / Warranties, Indemnification) are added that
+  // bind only the Receiving Party. No "each party" / "each of the
+  // parties" anchor appears anywhere in the document. Every other
+  // clause (Confidential Information definition, statutory
+  // carveouts, three-year term with perpetual trade-secret
+  // carve-out, DTSA whistleblower-immunity notice, return-or-
+  // destruction, Delaware governing law, entire-agreement
+  // integration) is preserved. NDA-D-024 (warning) fires — its
+  // bad_pattern `^(?=.*receiving\s+party)(?!.*each\s+(party|of\s+the\s+parties)).{0,300}$`
+  // matches multiple lines in the document. Mutual NDAs are
+  // typically drafted with each party as both Disclosing and
+  // Receiving Party; asymmetric drafting that imposes obligations
+  // solely on "the Receiving Party" without "each party" framing
+  // suggests either (a) the wrong template was used, or (b) one
+  // party is silently advantaged — exactly the failure mode the
+  // rule is designed to detect.
+  "mutual-nda-deep-asymmetric-receiver-only-fail.txt": ["NDA-D-024"],
+
+  // SCC Module 2 instrument with Clause 1 (Purpose and Scope) and
+  // Clauses 8 through 18 fully present, but with Clause 2 (Effect
+  // and Invariability) explicitly omitted and an inserted recital
+  // affirmatively disclaiming the omission: "the parties have
+  // elected, for the purposes of this Module 2 instrument, not to
+  // adopt the operative legal-anchor clause that the standalone
+  // EU SCCs use to declare the legal effect of these Clauses and
+  // the prohibition on material modifications, and instead rely
+  // on the operative protections enumerated in Clauses 8 through
+  // 18 directly, without incorporation by reference of that
+  // operative legal-anchor clause's controlled-vocabulary
+  // anchor." Every other Module 2 clause + the three Annexes are
+  // preserved so the rest of the TRANSFER-001..019 baseline still
+  // passes where it was passing (TRANSFER-001 now also passes
+  // because Clause 1 is explicitly added). TRANSFER-002
+  // (warning) fires — its present_pattern
+  // `clause\s*2\b|effect\s+and\s+invariability|invariability` is
+  // no longer matched anywhere in the document. EU SCCs Clause 2
+  // forbids material modification of the Clauses, providing that
+  // the parties may add other clauses or business-related terms
+  // only if they do not contradict the SCCs; an SCC Module 2
+  // instrument that affirmatively omits the Clause 2 anchor loses
+  // the operative protection a supervisory authority searches for
+  // when verifying that the parties have not silently weakened
+  // the Approved Clauses.
+  "scc-module-2-missing-clause-2-fail.txt": ["TRANSFER-002"],
 };
 
 describe("v3 fixture sanity", () => {
