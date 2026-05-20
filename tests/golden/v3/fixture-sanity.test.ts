@@ -2521,6 +2521,87 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // floor is whatever the contract enumerates rather than what
   // the CCPA requires of the business.
   "dpa-ccpa-service-provider-missing-same-level-protection-fail.txt": ["USDPA-005"],
+
+  // Mutual NDA-Deep with a new Section 12 "Representations of the
+  // Parties" paragraph that recites only narrow execution
+  // representations (the natural person executing is duly
+  // designated; execution has been approved through customary
+  // corporate-decision processes) and explicitly forecloses
+  // further inquiry: "The Parties make no other representation or
+  // warranty in connection with the execution of this Agreement,
+  // and any further inquiry into a Party's organizational standing
+  // or contractual posture is foreclosed by this Section 12." No
+  // "full authority", "full power and authority", "authority to
+  // enter / execute", or "no conflicting (obligation|agreement)"
+  // anchor appears anywhere in the document. ("Authorized
+  // Representative" in the signature block does not match the
+  // regex because it begins with "authoriz-ed" rather than the
+  // word "authority".) Every other clause (DTSA notice, perpetual
+  // trade-secret carve-out, no-license, injunctive relief with
+  // bond waiver, governing law, no-precedent entire-agreement
+  // clause) is preserved so the rest of the NDA-D-001..025
+  // baseline still passes where it was passing. **NDA-D-022 (info)**
+  // fires — its present_patterns
+  // `(full\s+(power\s+and\s+)?authority|authority\s+to\s+(enter|execute))`
+  // and `no\s+conflicting\s+(obligation|agreement)` are no longer
+  // matched anywhere in the document. An authority + no-conflict
+  // representation is a low-cost addition that closes off a
+  // defensive argument later; foreclosing the inquiry instead
+  // signals concealment and is the structural opposite of the
+  // Common-Paper-style anchor the rule looks for.
+  "mutual-nda-deep-missing-authority-rep-fail.txt": ["NDA-D-022"],
+
+  // Controller→processor GDPR DPA with a new Section 14 "Internal
+  // Documentation" paragraph that proprietizes Processor's
+  // internal documentation of personal-data flows and processing
+  // activities and explicitly disclaims any obligation to assist
+  // Controller with controller-side documentation requirements
+  // outside Sections 8, 9, and 11: "Processor's obligation to
+  // assist Controller is limited to the categories of assistance
+  // enumerated in Sections 8, 9, and 11 of this DPA, and Processor
+  // shall have no obligation to assist Controller in compiling,
+  // maintaining, or supplementing any controller-side
+  // documentation requirement under any provision of the GDPR or
+  // other applicable data protection law that is not expressly
+  // enumerated in this DPA." No "records of processing", "article
+  // 30", or "RoPA" anchor appears anywhere in the document. Every
+  // other clause is preserved so the rest of the DPA-001..030
+  // baseline still passes where it was passing. **DPA-028
+  // (warning)** fires — its present_pattern
+  // `(records\s+of\s+processing|article\s*30|RoPA)` is no longer
+  // matched anywhere in the document. GDPR Art. 30 requires
+  // controllers to maintain records of processing activities; most
+  // DPAs anchor processor assistance with the controller's Art. 30
+  // RoPA. A DPA that proprietizes processor's internal
+  // documentation and disclaims any non-enumerated assistance duty
+  // leaves the controller without a contractual hook to compile
+  // its own RoPA when the processor is the only party with
+  // visibility into the upstream processing-activity metadata.
+  "dpa-controller-processor-missing-art30-ropa-assistance-fail.txt": ["DPA-028"],
+
+  // Vendor MSA with two distinct sole-and-exclusive-remedy
+  // clauses — Section 6 ("CUSTOMER'S SOLE AND EXCLUSIVE REMEDY ...
+  // SHALL BE RE-PERFORMANCE") and a new Section 7 ("Service
+  // Levels") declaring service-level credits Vendor's "sole and
+  // exclusive remedy" with the explicit additional statement that
+  // "no additional damages, refunds, or substitute performance
+  // remedies shall be available with respect to any service-level
+  // failure regardless of the cause, severity, duration, or
+  // recurrence of the failure" — and no "fail of (its) essential
+  // purpose", "essential purpose", or "U.C.C. § 2-719" anchor
+  // anywhere in the document. Every other clause is preserved so
+  // the rest of the MSA-001..030 baseline still passes where it
+  // was passing. **MSA-030 (info)** fires — its present_pattern
+  // `(fail\w*\s+of\s+(?:its\s+)?essential\s+purpose|essential\s+purpose|U\.?C\.?C\.?\s*§\s*2-719)`
+  // is no longer matched anywhere in the document. UCC § 2-719(2)
+  // preserves the customer's alternative remedies when a limited
+  // remedy fails of its essential purpose; an MSA whose limited
+  // remedies are paired with explicit disclaimers of substitute
+  // remedies forecloses the statutory escape on its face and
+  // leaves the customer with no remedy when re-performance / SLA
+  // credits prove worthless (e.g. extended service unavailability,
+  // repeated re-performance failure).
+  "msa-vendor-deep-missing-essential-purpose-fail.txt": ["MSA-030"],
 };
 
 describe("v3 fixture sanity", () => {
