@@ -1874,6 +1874,64 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // exercising the audit right and effectively immunizes processor
   // non-compliance.
   "dpa-controller-processor-audit-cost-controller-exclusive-fail.txt": ["DPA-049"],
+
+  // Controller→processor GDPR DPA with Section 6 (Security Measures
+  // (Article 32 GDPR)) augmented with an injected closing sentence:
+  // "To the extent any of the foregoing cannot be operationally
+  // implemented, Processor shall instead apply commercially reasonable
+  // security measures consistent with prevailing market practice for
+  // service providers of similar size and scope." Every other clause
+  // is preserved so the rest of the DPA-001..030 baseline still
+  // passes where it was passing. **DPA-023 (warning)** fires — its
+  // first bad_pattern matches `commercially\s+reasonable\s+(security|measures)`
+  // end-to-end. GDPR Art. 32 requires measures appropriate to the
+  // risk; "commercially reasonable" or "industry-standard" language
+  // without a specific Annex of technical and organisational measures
+  // is the hand-waving the regulator has criticised, because it
+  // shifts the substantive duty from a defined set of controls to
+  // whatever the processor's market peers happen to be doing.
+  "dpa-controller-processor-hand-waving-security-language-fail.txt": ["DPA-023"],
+
+  // Controller→processor GDPR DPA with Section 2 (Categories of
+  // Personal Data and Data Subjects) rewritten to reference "the
+  // Categories of Personal Data Section" at the end of the DPA
+  // instead of "Annex I"; the Annex I heading at the end of the DPA
+  // is likewise renamed to "Categories of Personal Data" with no
+  // "Annex I" / "Appendix I" / "Schedule I" / "Exhibit I" prefix.
+  // Every other clause is preserved so the rest of the
+  // DPA-001..030 baseline still passes where it was passing.
+  // **DPA-038 (warning)** fires — its present_pattern
+  // `(annex|appendix|exhibit|schedule)\s+(I|1|A)` is no longer
+  // matched anywhere in the document. SCC Annex I (and the modern
+  // DPA convention of an Annex describing the parties, transfer
+  // scope, and processing operations) anchors the description of
+  // the personal-data scope; without a labelled annex/appendix the
+  // document loses the canonical attachment that supervisory
+  // authorities and downstream subprocessors look to when scoping
+  // the processing.
+  "dpa-controller-processor-missing-personal-data-annex-fail.txt": ["DPA-038"],
+
+  // Controller→processor GDPR DPA with the entire signature block
+  // (party headers + "Signed by:" lines + "Title:" lines including
+  // "Authorized Representative" + "Date:" lines) replaced with a
+  // single recital paragraph: "This DPA is executed on behalf of
+  // Globex Inc. (Controller) and Wayne Enterprises LLC (Processor)
+  // through their respective representatives, with execution
+  // evidenced solely by reference to the MSA cover page; no separate
+  // execution lines, witness lines, or attestation blocks are
+  // included in this DPA." Every other clause (including "Effective
+  // Date: February 1, 2026.") is preserved so the rest of the
+  // DPA-001..030 baseline still passes where it was passing.
+  // **DPA-043 (warning)** fires — its present_pattern
+  // `By:\s*[_\-\s]+|signature\s+block|authori[sz]ed\s+(signatory|representative)|sign(ed)?\s+by`
+  // is no longer matched anywhere in the document. GDPR Art. 28(9)
+  // requires the DPA to be in writing including in electronic form;
+  // a signature block — even on an electronic agreement — is the
+  // canonical evidence-of-execution artefact that supervisory
+  // authorities and counter-parties look to when establishing that
+  // the obligations attached to a named, authorised representative
+  // of each party.
+  "dpa-controller-processor-missing-signature-block-fail.txt": ["DPA-043"],
 };
 
 describe("v3 fixture sanity", () => {
