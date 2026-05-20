@@ -2602,6 +2602,68 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // credits prove worthless (e.g. extended service unavailability,
   // repeated re-performance failure).
   "msa-vendor-deep-missing-essential-purpose-fail.txt": ["MSA-030"],
+
+  // Unilateral NDA with the "Disclosing Party" / "Receiving Party"
+  // role labels swapped throughout for the more generic "Provider"
+  // / "Recipient" framing. Every operative clause survives
+  // (definitions, carveouts, obligations, no-license, term, DTSA
+  // notice, return, governing law, entire agreement), but no
+  // "Disclosing Party" / "Receiving Party" anchor appears anywhere
+  // in the document. NDA-D-025 (warning) fires — its
+  // present_patterns `disclosing\s+party.{0,200}receiving\s+party`
+  // / `receiving\s+party.{0,200}disclosing\s+party` are no longer
+  // matched. Unilateral NDAs should clearly name one party as the
+  // Disclosing Party and the other as Receiving Party so the
+  // statutory framing and any downstream incorporation by reference
+  // (e.g., DTSA notice, residuals carve-outs) attaches to the right
+  // role; a "Provider" / "Recipient" generic substitute loses the
+  // unilateral-NDA template anchor and signals a template
+  // mismatch.
+  "unilateral-nda-deep-missing-disclosing-receiving-roles-fail.txt": ["NDA-D-025"],
+
+  // CCPA Service-Provider Addendum with Section 4 ("Certification
+  // of Compliance") rewritten to remove the "reasonable and
+  // appropriate steps" anchor required by Cal. Civ. Code
+  // § 1798.140(ag)(1)(C). The replacement language affirmatively
+  // disclaims any Business entitlement to "supervisory action"
+  // beyond the audit cadence in Section 9 and limits Service
+  // Provider's compliance evidence to "certifications, deletion
+  // confirmations, and audit-window deliverables expressly
+  // enumerated in this CCPA Addendum." Every other clause is
+  // preserved so the rest of the USDPA-001..025 baseline still
+  // passes where it was passing. USDPA-007 (critical) fires — its
+  // present_pattern
+  // `(reasonable\s+and\s+appropriate\s+steps|monitor|oversight\s+right|right\s+to\s+(?:audit|monitor|inspect))`
+  // is no longer matched anywhere in the document. § 1798.140(ag)(1)(C)
+  // requires the contract to grant the business the right to take
+  // reasonable and appropriate steps to ensure that the service
+  // provider uses personal information in a manner consistent with
+  // the business's CCPA obligations; an addendum that limits the
+  // business to a once-per-year audit window leaves it without a
+  // contractual hook to intervene when off-window evidence of
+  // unauthorized use surfaces.
+  "dpa-ccpa-service-provider-missing-monitoring-right-fail.txt": ["USDPA-007"],
+
+  // Controller→processor GDPR DPA with both "personal data breach"
+  // anchors in Section 10 ("Breach Notification") downgraded to
+  // the generic "data breach" plus an explicit recital disclaiming
+  // incorporation of any "defined-term framework or controlled
+  // vocabulary from any specific regulator or implementing
+  // regulation" with respect to that term. Every other clause is
+  // preserved (Article 28 documented instructions, Article 32
+  // security measures, Article 33 within-48-hours undue-delay
+  // language, Annex I categories, EU SCCs incorporation) so the
+  // rest of the DPA-001..030 baseline still passes where it was
+  // passing. DPA-041 (warning) fires — its present_pattern
+  // `(personal\s+data\s+breach|data\s+subject\s+shall\s+have|controller.{0,40}(shall\s+have\s+the\s+meaning|means)|processor.{0,40}(shall\s+have\s+the\s+meaning|means))`
+  // is no longer matched anywhere in the document. GDPR Art. 4
+  // defines the operative terms ("Personal Data Breach", "Data
+  // Subject", "Controller", "Processor") that anchor every
+  // downstream Article 28 obligation; a DPA that uses the
+  // operational "data breach" shorthand and disclaims controlled
+  // vocabulary loses the GDPR Art. 4 hook a supervisory authority
+  // relies on when reading the agreement against the regulation.
+  "dpa-controller-processor-missing-gdpr-terminology-fail.txt": ["DPA-041"],
 };
 
 describe("v3 fixture sanity", () => {
