@@ -2172,6 +2172,64 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // hallucination risk or naming human oversight leaves customers
   // without the canonical AI-risk anchor.
   "ai-addendum-missing-hallucination-and-human-review-fail.txt": ["ADDENDA-014"],
+
+  // Processor→subprocessor GDPR DPA with the closing signature
+  // block ("Signed by: ___" / "Title: Authorized Representative" /
+  // "Date: February 1, 2026") replaced with a single recital
+  // paragraph: "This Agreement is executed on behalf of Globex EU
+  // SARL (Upstream Processor) and Stark Cloud Ireland Ltd.
+  // (Subprocessor) through their respective representatives, with
+  // execution evidenced solely by reference to the MSA cover page;
+  // no separate execution lines, witness lines, or attestation
+  // blocks are included in this Sub-Processing Agreement." Every
+  // other clause is preserved so the rest of the DPA-001..030
+  // baseline still passes where it was passing. **DPA-043
+  // (warning)** fires — its present_pattern
+  // `By:\s*[_\-\s]+|signature\s+block|authori[sz]ed\s+(signatory|representative)|sign(ed)?\s+by`
+  // is no longer matched anywhere in the document. This is the
+  // dpa-processor-subprocessor playbook variant of the
+  // controller-processor signature-block fixture; the rule's
+  // statutory anchor (GDPR Art. 28(9) writing requirement) applies
+  // identically across both playbooks.
+  "dpa-processor-subprocessor-missing-signature-block-fail.txt": ["DPA-043"],
+
+  // BA→Subcontractor BAA with the closing signature block replaced
+  // with a single recital paragraph: "This Subcontractor BAA is
+  // executed by the Parties through their respective duly empowered
+  // officers, with execution evidenced solely by reference to the
+  // cover page of the Master Services Agreement; no separate
+  // execution lines, witness lines, or attestation blocks are
+  // included in this Subcontractor BAA." Every other clause
+  // (including "Effective Date: January 1, 2026.") is preserved so
+  // the rest of the BAA-001..045 baseline still passes where it
+  // was passing. **BAA-036 (warning)** fires — its present_pattern
+  // is no longer matched anywhere in the document. This is the
+  // baa-subcontractor playbook variant of the BAA signature-block
+  // fixture; the rule's statutory anchor (45 CFR § 164.504(e)(5)
+  // satisfactory-assurances writing requirement) applies
+  // identically across the primary BAA and the subcontractor BAA.
+  "baa-subcontractor-missing-signature-block-fail.txt": ["BAA-036"],
+
+  // Unilateral NDA-Deep with Section 4 ("No License") rewritten as
+  // "4. Scope of Use. Nothing in this Agreement shall be deemed to
+  // confer to the Receiving Party any interest, right, title, or
+  // other entitlement in or to the Disclosing Party's Confidential
+  // Information beyond the limited authorization to use such
+  // information solely for the Permitted Purpose and in accordance
+  // with the terms of this Agreement." The "No License" header is
+  // removed entirely so the regex `no\s+license` no longer matches
+  // anywhere in the document. "Nothing in this Agreement shall be
+  // deemed to confer" is intentionally not matched by the
+  // alternative pattern `(does\s+not\s+(grant|convey|transfer)|shall\s+not\s+be\s+construed.{0,40}license)`.
+  // Every other clause is preserved so the rest of the
+  // NDA-D-001..025 baseline still passes where it was passing.
+  // **NDA-D-021** fires — its present_patterns are no longer
+  // matched anywhere in the document. This is the
+  // unilateral-nda-deep playbook variant of the mutual-NDA
+  // no-license fixture; without a one-line denial of license,
+  // disclosure could be construed to grant an implied license in
+  // the Confidential Information.
+  "unilateral-nda-deep-missing-no-license-clause-fail.txt": ["NDA-D-021"],
 };
 
 describe("v3 fixture sanity", () => {
