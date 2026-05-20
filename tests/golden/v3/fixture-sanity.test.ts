@@ -3044,6 +3044,99 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // when verifying that the parties have not silently weakened
   // the Approved Clauses.
   "scc-module-2-missing-clause-2-fail.txt": ["TRANSFER-002"],
+
+  // SCC Module 2 instrument with Clause 2 (Effect and Invariability)
+  // and Clauses 8 through 18 fully present, but with Clause 1
+  // (Purpose and Scope) explicitly omitted and an inserted recital
+  // affirmatively disclaiming the omission: "the parties have
+  // elected, for the purposes of this Module 2 instrument, not to
+  // adopt the standalone EU SCCs' operative scope-and-objective
+  // anchor, and instead rely on the operative protections
+  // enumerated in Clauses 2 through 18 directly, without
+  // incorporation by reference of the standalone EU SCCs' opening
+  // scope-and-objective anchor's controlled-vocabulary anchor."
+  // The other reference to "purpose" anywhere in the body has been
+  // re-phrased to "objective" so that the Clause 1 anchor regex
+  // does not match. Every other Module 2 clause + the three
+  // Annexes are preserved so the rest of the TRANSFER-002..019
+  // baseline still passes where it was passing (TRANSFER-002 in
+  // particular now passes cleanly because Clause 2 is explicitly
+  // added). TRANSFER-001 (warning) fires — its present_pattern
+  // `clause\s*1\b|purpose\s+and\s+scope` is no longer matched
+  // anywhere in the document. EU SCCs Clause 1 (Purpose and Scope)
+  // sets out the parties' agreement to be bound by the SCCs and
+  // establishes the Article 46(2)(c) GDPR transfer mechanism; an
+  // SCC Module 2 instrument that affirmatively omits the Clause 1
+  // anchor loses the foundational scope statement a supervisory
+  // authority searches for when verifying that the parties have
+  // entered into the Approved Clauses as a Chapter V GDPR transfer
+  // tool.
+  "scc-module-2-missing-clause-1-fail.txt": ["TRANSFER-001"],
+
+  // Controller→processor GDPR DPA naming a non-EEA processor and
+  // expressly disclaiming designation of a GDPR Article 27 Union
+  // representative. An opening recital states that the Processor
+  // "is established outside the European Economic Area and that
+  // the Processor processes personal data of data subjects in the
+  // EEA in connection with the offering of services to those data
+  // subjects, so that Chapter V of the GDPR applies", and that
+  // "the Processor has elected not to designate a Union-based
+  // representative under the controlled-vocabulary mechanism
+  // contemplated by GDPR Chapter IV, and that the Processor
+  // instead relies on its in-house EEA legal team in Munich,
+  // Germany for direct communications with EEA data subjects and
+  // EEA supervisory authorities, without incorporation by
+  // reference of the controlled-vocabulary Chapter IV
+  // representative-designation framework." No "Article 27" / "EU
+  // representative" / "representative in the Union" anchor
+  // appears anywhere in the document. Every other clause (Article
+  // 28 subject-matter through deletion/return, EU SCCs
+  // incorporation, Annex I) is preserved so the rest of the DPA
+  // baseline still passes where it was passing. DPA-030 (warning)
+  // fires — its present_pattern
+  // `(article\s*27|EU\s+representative|representative\s+in\s+the\s+Union|representative\s+under\s+Article\s*27)`
+  // is no longer matched anywhere in the document. GDPR Art. 27
+  // requires non-EU controllers and processors falling within
+  // Art. 3(2) to designate an EU representative as their point of
+  // contact for EEA supervisory authorities and data subjects; a
+  // DPA that affirmatively disclaims the controlled-vocabulary
+  // designation framework leaves EEA data subjects without the
+  // Art. 27 hook they would use to enforce their rights against
+  // an extraterritorial processor.
+  "dpa-controller-processor-missing-art27-representative-fail.txt": ["DPA-030"],
+
+  // CCPA Service-Provider Addendum with an added Section 10
+  // ("Continued Capability") that affirmatively disclaims the
+  // controlled-vocabulary mechanism contemplated by 11 C.C.R. §
+  // 7051(a)(6): "The parties have elected not to adopt the
+  // controlled-vocabulary mechanism contemplated by 11 C.C.R. §
+  // 7051(a)(6) for a Service-Provider determination-based written
+  // notice to Business in the event Service Provider concludes
+  // that its capability has eroded, and instead rely on Business's
+  // audit rights in Section 9 and consumer-rights monitoring
+  // through the operational handoffs in Section 5 as the
+  // operational signal of any capability gap." No "no longer
+  // meet" / "no longer able to meet" / "notify ... can no longer"
+  // / "notify ... unable to meet" / "notify ... inability" anchor
+  // appears anywhere in the document. Every other clause (Service
+  // Provider Designation, Business Purpose, Prohibited Acts,
+  // Certification of Compliance, Consumer Rights Assistance,
+  // Subprocessors, Security, Deletion or Return on Termination,
+  // Audit) is preserved so the rest of the USDPA-001..025
+  // baseline still passes where it was passing. USDPA-009
+  // (warning) fires — its present_pattern
+  // `(no\s+longer\s+(meet|able\s+to\s+meet)|notify.{0,80}(can\s+no\s+longer|unable\s+to\s+meet|inability))`
+  // is no longer matched anywhere in the document. 11 C.C.R. §
+  // 7051(a)(6) requires the service-provider contract to require
+  // the service provider to notify the business if it makes a
+  // determination that it can no longer meet its obligations
+  // under the CCPA; without that determination-and-notify
+  // mechanism, the business has no early-warning signal of
+  // service-provider non-compliance and may continue to disclose
+  // Personal Information for the Business Purpose well past the
+  // point at which the service-provider relationship has broken
+  // down on the CCPA criteria.
+  "dpa-ccpa-service-provider-missing-inability-to-comply-notification-fail.txt": ["USDPA-009"],
 };
 
 describe("v3 fixture sanity", () => {
