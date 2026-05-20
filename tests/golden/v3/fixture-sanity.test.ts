@@ -2049,6 +2049,68 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // makes the temporal scope of every post-termination duty
   // (deletion, return, audit cooperation, survival) ambiguous.
   "dpa-controller-processor-missing-term-and-termination-fail.txt": ["DPA-045"],
+
+  // Multi-state US DPA with every "documented instructions" anchor
+  // (Sections 3, 5, and 6) rewritten as "express contractual
+  // directions" (Section 3) / "the express contractual directions
+  // Controller has set forth in the MSA and any annex thereto"
+  // (Sections 5 and 6). Section 5's "any instruction that
+  // constitutes a violation" becomes "any direction that
+  // constitutes a violation" so the "instructions"-family anchor
+  // disappears completely. Every other clause is preserved so the
+  // rest of the USDPA-001..025 baseline still passes where it was
+  // passing. **USDPA-011** fires — its present_pattern
+  // `(processing\s+instructions|instructions\s+for\s+processing|documented\s+instructions)`
+  // is no longer matched anywhere in the document. Every US state
+  // privacy statute (CCPA, VCDPA, CPA, CTDPA, UCPA) requires the
+  // processor / service-provider contract to set out the
+  // controller's processing instructions; a DPA that rephrases the
+  // anchor as "contractual directions" leaves a regulator and the
+  // controller without the canonical statutory hook.
+  "dpa-multi-state-us-missing-processing-instructions-fail.txt": ["USDPA-011"],
+
+  // Multi-state US DPA with the consumer-rights anchors in Section
+  // 8 rewritten so no "opt-out" / "opt out" / "consumer rights
+  // request" / "access request" / "deletion request" /
+  // "right to access|delete|opt-out|correct" pattern matches:
+  // section title becomes "Consumer Requests Assistance" (was
+  // "Consumer Rights Assistance"), enumerated rights become
+  // "review of personal information", "erasure of personal
+  // information", "correction of inaccurate personal information",
+  // "portability of personal information", and "the consumer's
+  // ability to decline sale or sharing". Section 4 also rewrites
+  // "consumer rights requests" → "consumer requests". Every other
+  // clause is preserved so the rest of the USDPA-001..025 baseline
+  // still passes where it was passing. **USDPA-023 (warning)**
+  // fires — its present_pattern is no longer matched anywhere in
+  // the document. State privacy statutes all confer consumer rights
+  // (access / deletion / correction / portability / opt-out of
+  // sale or sharing); a DPA that gestures at "consumer requests"
+  // generically without using the statutory anchor language leaves
+  // the operational handoff between controller and processor
+  // unanchored to the underlying right.
+  "dpa-multi-state-us-missing-consumer-rights-process-fail.txt": ["USDPA-023"],
+
+  // AI Addendum with Section 3 retitled "Affirmative Consent for AI
+  // Processing" (was "Opt-In for AI Processing"), "affirmatively
+  // opted in" rewritten as "affirmatively consented", and "Opt-out
+  // consent mechanisms" rewritten as "Negative-consent mechanisms"
+  // so no "opt-in" / "opt-out" / "on by default" / "enabled by
+  // default" anchor remains; no "AI features" / "AI functions" /
+  // "generative features" anchor exists in the fixture; and the
+  // fixture's "third-party foundational model" does not match the
+  // strict `third[- ]party\s+(?:provider|model|host)` shape. Every
+  // other clause is preserved so the rest of the ADDENDA-010..016
+  // baseline still passes where it was passing. **ADDENDA-012
+  // (warning)** fires — its present_patterns are no longer matched
+  // anywhere in the document. EU AI Act Article 50 + FTC
+  // consumer-protection posture both require clear disclosure of
+  // which features use AI, whether on by default or opt-in, and
+  // whether the model is on-prem or third-party-hosted; a vendor
+  // AI addendum that says "Affirmative Consent" without naming the
+  // features or the hosting posture leaves customers unable to
+  // audit the AI use surface.
+  "ai-addendum-missing-transparency-disclosures-fail.txt": ["ADDENDA-012"],
 };
 
 describe("v3 fixture sanity", () => {
