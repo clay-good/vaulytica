@@ -2664,6 +2664,86 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // vocabulary loses the GDPR Art. 4 hook a supervisory authority
   // relies on when reading the agreement against the regulation.
   "dpa-controller-processor-missing-gdpr-terminology-fail.txt": ["DPA-041"],
+
+  // Controller→processor GDPR DPA with the "Subprocessors" section
+  // heading and every "subprocessor" / "sub-processor" / "another
+  // processor" anchor swapped out for the generic "downstream
+  // vendor" framing. A new recital is added clarifying that
+  // "downstream vendor" is intended as an operational concept
+  // without incorporation by reference of the SCC-defined
+  // "sub-processor" or Article 28 "another processor" controlled
+  // vocabulary. Every other clause is preserved (Article 28
+  // documented instructions, Article 32 security measures, Article
+  // 33 breach notification, data-subject-rights assistance, audit
+  // and inspection rights, EU SCCs incorporation) so the rest of
+  // the DPA-001..030 baseline still passes where it was passing.
+  // DPA-010 (critical) fires — its present_pattern
+  // `(sub[- ]?processor|another\s+processor)` is no longer matched
+  // anywhere in the document. GDPR Art. 28(2) and (4) require the
+  // processor to respect the conditions for engaging another
+  // processor (prior authorisation + flow-down of the same
+  // obligations); a DPA that swaps the controlled-vocabulary
+  // "sub-processor" / "another processor" anchors for a generic
+  // "downstream vendor" loses the Art. 28(2)/(4) hook a supervisory
+  // authority searches for when verifying chain-of-responsibility
+  // and may leave the chain-of-responsibility ambiguous as to
+  // which downstream relationships trigger the Article 28
+  // flow-down obligation.
+  "dpa-controller-processor-missing-subprocessor-anchor-fail.txt": ["DPA-010"],
+
+  // CCPA Service-Provider Addendum with Section 3 ("Prohibited
+  // Acts") rewritten to drop "certifies that it understands and
+  // shall comply" in favour of "acknowledges and shall observe"
+  // and Section 4 ("Compliance Confirmation Report") rewritten to
+  // furnish an operational "compliance confirmation report"
+  // rather than a "written certification of compliance". A
+  // closing recital affirmatively disclaims the substitution: the
+  // report is "not intended to constitute, or to substitute for,
+  // any formal attestation, sworn declaration, or other
+  // regulator-format deliverable of CCPA understanding or
+  // restrictions." No "certifies" / "certification" anchor within
+  // 80 chars of "understand", "restrictions", "ccpa", or "comply"
+  // appears anywhere in the document. Every other clause is
+  // preserved so the rest of the USDPA-001..025 baseline still
+  // passes where it was passing. USDPA-006 (warning) fires — its
+  // present_pattern
+  // `(certifies?|certification).{0,80}(understand|restrictions|ccpa|comply)`
+  // is no longer matched anywhere in the document. 11 C.C.R.
+  // § 7051(a)(7) expects the service-provider contract to require
+  // an explicit certification that the service provider
+  // understands the restrictions and will comply; an
+  // "acknowledges and shall observe" substitute that affirmatively
+  // disclaims attestation-grade posture leaves the business
+  // without the contractual hook that supervisory authorities
+  // (and the Attorney General under § 1798.155) rely on to
+  // distinguish a Service Provider from a third-party recipient.
+  "dpa-ccpa-service-provider-missing-certification-of-understanding-fail.txt": ["USDPA-006"],
+
+  // Customer-form MSA with the cap-carveout in Section 8(b)(ii)
+  // rewritten to refer to "Section 6 (non-public information
+  // protection duties)" instead of "either party's breach of its
+  // confidentiality obligations", and with a new sentence at the
+  // end of Section 6 affirmatively excluding confidentiality
+  // breaches from the indemnification regime: "the remedies for
+  // breach of this Section 6 are equitable in nature (injunction,
+  // specific performance) rather than indemnity-based; ... the
+  // indemnification provisions in Section 7 do not extend to
+  // breaches of this Section 6." Every other clause is preserved
+  // (IP ownership, vendor indemnification for IP infringement and
+  // gross negligence, aggregate liability cap with non-cap
+  // carveouts, mutual consequential-damages waiver) so the rest
+  // of the MSA-001..030 baseline still passes where it was
+  // passing. MSA-003 (info) fires — its present_pattern
+  // `(?:indemnif\w+).{0,200}(?:confidential\w+|confidentiality\s+(?:breach|obligation))`
+  // is no longer matched anywhere in the document. Confidentiality
+  // breaches often produce damages that are difficult to quantify;
+  // an MSA that affirmatively excludes confidentiality breaches
+  // from indemnity coverage and confines the customer to equitable
+  // remedies leaves the customer without a contractual hook to
+  // recover defence costs, third-party claim exposure, or
+  // monetary damages caused by the vendor's confidentiality
+  // failures.
+  "msa-customer-deep-missing-confidentiality-indemnity-fail.txt": ["MSA-003"],
 };
 
 describe("v3 fixture sanity", () => {
