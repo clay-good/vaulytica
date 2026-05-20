@@ -2111,6 +2111,67 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // features or the hosting posture leaves customers unable to
   // audit the AI use surface.
   "ai-addendum-missing-transparency-disclosures-fail.txt": ["ADDENDA-012"],
+
+  // BAA with the closing signature block ("Signed by: ___" /
+  // "Title: Authorized Representative" / "Date: January 1, 2026")
+  // replaced with a single recital paragraph: "This BAA is
+  // executed by the Parties through their respective duly empowered
+  // officers, with execution evidenced solely by reference to the
+  // cover page of the Master Services Agreement; no separate
+  // execution lines, witness lines, or attestation blocks are
+  // included in this BAA." Every other clause (including
+  // "Effective Date: January 1, 2026.") is preserved so the rest
+  // of the BAA-001..045 baseline still passes where it was passing.
+  // **BAA-036 (warning)** fires — its present_pattern
+  // `By:\s*[_\-\s]+|signature\s+block|authorized\s+(signatory|representative)|sign(ed)?\s+by`
+  // is no longer matched anywhere in the document. 45 CFR
+  // § 164.504(e)(5) requires the covered entity to obtain
+  // satisfactory assurances through a written contract — a signed
+  // instrument; a BAA that gestures at execution without a
+  // signature block leaves the named, authorised representative
+  // of each party unidentified.
+  "baa-missing-signature-block-fail.txt": ["BAA-036"],
+
+  // Mutual NDA-Deep with Section 3 (Permitted Purpose and Use
+  // Restriction) rewritten so the only anchor that previously
+  // satisfied NDA-D-023 ("third party without the prior written
+  // consent of the Disclosing Party") is replaced with "third
+  // party absent the Disclosing Party's prior written approval".
+  // "without" → "absent" and "consent" → "approval" so neither
+  // `successors\s+and\s+assigns` nor `(may\s+not\s+assign|shall\s+not\s+assign|without.{0,40}consent)`
+  // is matched anywhere in the document. Every other clause is
+  // preserved so the rest of the NDA-D-001..025 baseline still
+  // passes where it was passing. **NDA-D-023 (warning)** fires —
+  // its present_patterns are no longer matched anywhere in the
+  // document. Without a consent-to-assignment / successors-and-
+  // assigns clause, an acquirer of the receiving party could
+  // inherit access to Confidential Information without the
+  // discloser's approval; the rule flags the missing scaffold.
+  "mutual-nda-deep-missing-assignment-consent-fail.txt": ["NDA-D-023"],
+
+  // AI Addendum with every "human review" / "human reviewer" /
+  // "Human-in-the-Loop" anchor stripped: Section 1's "human review
+  // and revision" → "qualified-workforce review and revision";
+  // Section 4's "whether human review was completed" → "whether
+  // qualified-workforce review was completed"; Section 5 retitled
+  // "Qualified-Workforce Checkpoint" (was "Human-in-the-Loop
+  // Checkpoint") and "qualified human member of Vendor's
+  // workforce" → "qualified workforce member of Vendor", "human
+  // reviewer" → "reviewer"; Section 10 "human-reviewer
+  // documentation" → "reviewer documentation". No
+  // "hallucinat" / "inaccurate output" / "not fit for" / "not
+  // (professional|legal|medical|financial) advice" anchor exists
+  // in the fixture either. Every other clause is preserved so the
+  // rest of the ADDENDA-010..016 baseline still passes where it
+  // was passing. **ADDENDA-014 (info)** fires — its
+  // present_patterns are no longer matched anywhere in the
+  // document. NIST AI RMF and practitioner posture both expect a
+  // hallucination-risk acknowledgment and a human-review
+  // obligation for high-stakes outputs; an AI addendum that
+  // gestures at "qualified-workforce review" without flagging
+  // hallucination risk or naming human oversight leaves customers
+  // without the canonical AI-risk anchor.
+  "ai-addendum-missing-hallucination-and-human-review-fail.txt": ["ADDENDA-014"],
 };
 
 describe("v3 fixture sanity", () => {
