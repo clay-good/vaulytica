@@ -2289,6 +2289,80 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // with no contractual hook for retained-PHI handling after the
   // commercial relationship ends.
   "baa-missing-survival-clause-fail.txt": ["BAA-043"],
+
+  // Mutual NDA-Deep with a complete Section 9 Injunctive Relief
+  // clause (acknowledging irreparable harm and entitlement to
+  // injunctive/equitable relief — so NDA-D-015 stays satisfied) but
+  // with the customary bond-waiver sentence stripped; the closing
+  // sentence of Section 9 says "Such injunctive relief shall be
+  // available subject to the requirements imposed by the court of
+  // competent jurisdiction, including any requirement that the
+  // movant satisfy each element of the applicable preliminary-
+  // injunction standard before relief issues." No "without bond",
+  // "waive ... bond", "waived bond", "no bond", "posting of a
+  // bond ... waived", or "security / surety" anchor appears
+  // anywhere in the document. Every other clause is preserved so
+  // the rest of the NDA-D-001..025 baseline still passes where it
+  // was passing. **NDA-D-016 (warning)** fires — its present_patterns
+  // `(without|waive[sd]?).{0,40}(bond|security|surety)` and
+  // `(no\s+bond|posting\s+of\s+a\s+bond.{0,40}waived)` are no longer
+  // matched anywhere in the document. Many courts require a movant
+  // to post a bond as a condition of preliminary injunctive relief;
+  // a contractual waiver smooths the emergency-motion path, and a
+  // mutual NDA that names injunctive relief without waiving the
+  // bond leaves a delay-and-cost lever on the table that a
+  // determined leaker can exploit while disclosure is in flight.
+  "mutual-nda-deep-missing-bond-waiver-fail.txt": ["NDA-D-016"],
+
+  // CCPA Service-Provider Addendum that names the Service Provider
+  // designation and recites the "same level of privacy protection"
+  // standard from Cal. Civ. Code § 1798.140(ag) but never anchors
+  // the use of Personal Information to the "specific business
+  // purpose enumerated" framing required by § 1798.140(ag)(1)(B).
+  // Section 2 ("Permitted Processing") rewrites the canonical
+  // anchor as "solely as reasonably necessary and proportionate to
+  // perform the Services described in the MSA" and Section 3(c)
+  // generalizes the use-limitation to "any commercial purpose
+  // other than performing the Services described in the MSA"; no
+  // "specific business purpose", "enumerated", or "business
+  // purpose enumerated" anchor appears anywhere in the document.
+  // Every other clause is preserved so the rest of the
+  // USDPA-001..025 baseline still passes where it was passing.
+  // **USDPA-001 (warning)** fires — its present_pattern
+  // `(?:specific\s+business\s+purpose|enumerated\s+(?:in\s+this\s+)?(?:contract|agreement)|business\s+purpose\s+enumerated)`
+  // is no longer matched anywhere in the document. Cal. Civ. Code
+  // § 1798.140(ag)(1)(B) requires the contract to prohibit the
+  // service provider from retaining, using, or disclosing Personal
+  // Information for any purpose other than the specific business
+  // purpose enumerated; "reasonably necessary and proportionate"
+  // language without the statutory anchor leaves the business
+  // exposed to enforcement under § 1798.155 if the service
+  // provider's processing drifts beyond the enumerated purpose
+  // set.
+  "dpa-ccpa-service-provider-missing-purpose-limitation-fail.txt": ["USDPA-001"],
+
+  // Vendor Security Addendum with Section 1 rewritten from
+  // certifications subsections (SOC 2 Type II + ISO 27001) to a
+  // generic "written information-security program aligned with
+  // prevailing industry practice" paragraph that delivers only an
+  // executive summary on request; Section 6 ("Verification") is
+  // rewritten to explicitly disclaim any customer-initiated audit
+  // privilege and to forbid reliance on any third-party assurance
+  // framework or certification scheme. The encryption, MFA, and
+  // vulnerability-management sections are preserved (so ADDENDA-001
+  // and ADDENDA-005 still pass), but no "right to audit",
+  // "Customer ... audit", "SOC 2", "ISO 27001", "ISO/IEC 27001", or
+  // "in lieu of (an) audit" anchor appears anywhere in the
+  // document. Every other clause is preserved so the rest of the
+  // ADDENDA-001..009 baseline still passes where it was passing.
+  // **ADDENDA-003 (warning)** fires — its present_pattern
+  // `(right\s+to\s+audit|customer.{0,40}audit|SOC\s*2|ISO\s*27001|ISO\s*\/IEC\s*27001|in\s+lieu\s+of\s+(?:an\s+)?audit)`
+  // is no longer matched anywhere in the document. Customers must be
+  // able to verify the vendor's security posture either directly
+  // (audit) or via an independent attestation (SOC 2 / ISO 27001);
+  // a "self-assessment plus executive summary" posture leaves the
+  // customer with no enforceable verification mechanism.
+  "vendor-security-addendum-missing-audit-or-soc2-fail.txt": ["ADDENDA-003"],
 };
 
 describe("v3 fixture sanity", () => {

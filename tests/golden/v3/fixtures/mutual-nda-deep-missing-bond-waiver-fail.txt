@@ -1,0 +1,33 @@
+Mutual Non-Disclosure Agreement
+
+This Mutual Non-Disclosure Agreement ("Agreement") is entered into as of January 15, 2026, by and between Acme Corp, a Delaware corporation ("Acme"), and Stark Industries, Inc., a California corporation ("Stark"). The Parties desire to explore a potential business relationship (the "Permitted Purpose") and may disclose certain confidential information to each other.
+
+1. Definition of Confidential Information. "Confidential Information" means any non-public information disclosed by one Party (the "Disclosing Party") to the other Party (the "Receiving Party"), whether orally, in writing, or by any other means, that is designated as confidential or that reasonably should be understood to be confidential given the nature of the information and the circumstances of disclosure. Confidential Information includes, without limitation, trade secrets, technical data, business plans, financial information, customer lists, and product roadmaps.
+
+2. Carveouts. Confidential Information does not include information that: (a) is or becomes publicly available through no fault of the Receiving Party; (b) was independently developed by the Receiving Party without reference to the Disclosing Party's Confidential Information; (c) was lawfully received by the Receiving Party from a third party without restriction; or (d) is required to be disclosed by applicable law, regulation, or court order, provided the Receiving Party gives the Disclosing Party prompt prior written notice and cooperates with the Disclosing Party's efforts to seek a protective order.
+
+3. Permitted Purpose and Use Restriction. Each Receiving Party shall use the Disclosing Party's Confidential Information solely for the Permitted Purpose and for no other purpose. Each Receiving Party shall not disclose Confidential Information to any third party without the prior written consent of the Disclosing Party.
+
+4. Obligations of Receiving Party. Each Receiving Party shall: (a) hold the Disclosing Party's Confidential Information in strict confidence using at least the same degree of care used to protect its own confidential information, but not less than reasonable care; (b) limit access to Confidential Information to those of its employees, contractors, and advisors who have a need to know for the Permitted Purpose and who are bound by written confidentiality obligations no less protective than those in this Agreement.
+
+5. Term. This Agreement shall commence on the Effective Date and continue for a period of three (3) years, unless earlier terminated by either Party upon thirty (30) days written notice. Notwithstanding the foregoing, the obligations of confidentiality with respect to information that constitutes a trade secret under applicable law shall survive termination of this Agreement for as long as such information remains a trade secret, in perpetuity if necessary.
+
+6. DTSA Whistleblower-Immunity Notice. Pursuant to 18 U.S.C. § 1833(b), an employee shall not be held criminally or civilly liable under any Federal or State trade secret law for the disclosure of a trade secret that — (A) is made (i) in confidence to a Federal, State, or local government official, either directly or indirectly, or to an attorney; and (ii) solely for the purpose of reporting or investigating a suspected violation of law; or (B) is made in a complaint or other document filed in a lawsuit or other proceeding, if such filing is made under seal. An employee who files a lawsuit for retaliation by an employer for reporting a suspected violation of law may disclose the trade secret to the attorney of the employee and use the trade secret information in the court proceeding, if the employee files any document containing the trade secret under seal and does not disclose the trade secret, except pursuant to court order.
+
+7. Return or Destruction. Upon termination of this Agreement or upon written request by the Disclosing Party, the Receiving Party shall promptly return or destroy all Confidential Information of the Disclosing Party, including all copies, extracts, and summaries thereof, and shall certify in writing that it has done so within thirty (30) days of such request.
+
+8. No License. Nothing in this Agreement shall be construed to grant the Receiving Party any license, right, or interest in or to the Disclosing Party's Confidential Information, except the limited right to use the Confidential Information solely for the Permitted Purpose as set forth in this Agreement.
+
+9. Injunctive Relief. Each Party acknowledges that any breach or threatened breach of this Agreement may cause irreparable harm to the Disclosing Party for which monetary damages would be an inadequate remedy. Accordingly, the Disclosing Party shall be entitled to seek injunctive and other equitable relief to prevent or restrain any such breach or threatened breach, in addition to all other remedies available at law or in equity. Such injunctive relief shall be available subject to the requirements imposed by the court of competent jurisdiction, including any requirement that the movant satisfy each element of the applicable preliminary-injunction standard before relief issues.
+
+10. Governing Law; Venue. This Agreement shall be governed by and construed in accordance with the laws of the State of Delaware, without regard to its conflict-of-laws principles. Any dispute arising under this Agreement shall be resolved in the state or federal courts located in Wilmington, Delaware.
+
+11. Entire Agreement. This Agreement constitutes the entire agreement between the Parties with respect to the subject matter hereof and supersedes all prior and contemporaneous understandings.
+
+Effective Date: January 15, 2026.
+
+ACME CORP                                        STARK INDUSTRIES, INC.
+
+Signed by: ____________________________          Signed by: ____________________________
+Title: Authorized Representative                 Title: Authorized Representative
+Date: January 15, 2026                           Date: January 15, 2026
