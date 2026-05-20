@@ -1,0 +1,35 @@
+Multi-State US Data Processing Addendum
+
+This Multi-State Data Processing Addendum ("DPA") is entered into as of March 1, 2026, between Acme Corp, a Delaware corporation acting as controller ("Controller"), and Globex Inc., a California corporation acting as service provider and processor ("Service Provider"). This DPA supplements and is incorporated into the Master Services Agreement between the parties dated January 1, 2026 (the "MSA"). It governs the processing of consumer Customer Records subject to the California Consumer Privacy Act as amended by the California Privacy Rights Act ("CCPA/CPRA"), the Virginia Consumer Data Protection Act (Va. Code § 59.1-578 et seq.) ("VCDPA"), the Colorado Privacy Act (Colo. Rev. Stat. § 6-1-1301 et seq.) ("CPA"), the Connecticut Data Privacy Act (Conn. Gen. Stat. § 42-515 et seq.) ("CTDPA"), and the Utah Consumer Privacy Act (Utah Code § 13-61-101 et seq.) ("UCPA") (collectively, the "Applicable State Laws"). The parties have elected to use the commercial label "Customer Records" throughout this DPA in place of the regulator-defined terminology used elsewhere in the Applicable State Laws, without incorporation by reference of any state-statutory controlled-vocabulary terminology.
+
+1. CCPA/CPRA Service Provider Designation. For purposes of the CCPA/CPRA, Service Provider is a "service provider" as defined in Cal. Civ. Code § 1798.140(ag). Controller discloses Customer Records to Service Provider only for the Business Purpose of providing the Services described in the MSA.
+
+2. Prohibited Acts. Service Provider shall not: (a) sell Customer Records as defined in Cal. Civ. Code § 1798.140(al); (b) share Customer Records for cross-context behavioral advertising as defined in Cal. Civ. Code § 1798.140(ah); (c) retain, use, or disclose Customer Records outside the Business Purpose, including for any commercial purpose other than providing the Services; or (d) combine Customer Records received from Controller with Customer Records received from or collected in connection with another person's or business's direct consumer interaction, except as permitted by CPRA regulations 11 C.C.R. § 7050 et seq.
+
+3. Virginia VCDPA Processor Obligations. As a processor under Va. Code § 59.1-579, Service Provider shall: process Customer Records only on Controller's documented instructions; ensure persons authorized to process Customer Records are bound by confidentiality; assist Controller with data protection assessments; delete or return Customer Records upon Controller's request; and make available all information necessary to demonstrate compliance with the VCDPA.
+
+4. Colorado CPA Processor Obligations. As a processor under Colo. Rev. Stat. § 6-1-1305(5), Service Provider shall implement and maintain appropriate technical and organizational measures to protect Customer Records, shall not engage subprocessors without prior consent, and shall assist Controller in complying with consumer rights requests.
+
+5. Connecticut CTDPA Obligations. As a processor under Conn. Gen. Stat. § 42-520, Service Provider shall process Customer Records consistent with documented instructions from Controller, and shall notify Controller of any instruction that constitutes a violation of the CTDPA.
+
+6. Utah UCPA Obligations. As a processor under Utah Code § 13-61-301, Service Provider shall process Customer Records only on Controller's documented instructions and shall assist Controller with Controller's obligations under the UCPA.
+
+7. Sub-Processor Flow-Down. Service Provider shall impose equivalent obligations on any subprocessor under a written contract that satisfies the processor agreement requirements of each Applicable State Law. Service Provider shall notify Controller at least thirty (30) days before adding or replacing a subprocessor, giving Controller the opportunity to object.
+
+8. Consumer Rights Assistance. Service Provider shall assist Controller in responding to consumer requests within the time periods required by Applicable State Laws, including requests for: access to Customer Records; deletion of Customer Records; correction of inaccurate Customer Records; portability of Customer Records; and opt-out of sale or sharing. Service Provider shall respond to verified consumer requests forwarded by Controller within fifteen (15) business days.
+
+9. Annual Security Assessment. Service Provider shall conduct an annual assessment covering the processing described in this DPA and shall make a summary of the assessment available to Controller upon request.
+
+10. Breach Notification. Service Provider shall notify Controller of any Customer Records breach within seventy-two (72) hours of discovery, including information sufficient to enable Controller to meet its own notification obligations under Applicable State Laws.
+
+11. Deletion on Termination. Within thirty (30) days following termination of the MSA, Service Provider shall securely delete or return all Customer Records processed under this DPA and shall certify such deletion in writing.
+
+12. Certification. Upon Controller's request, Service Provider shall certify in writing its compliance with the obligations of this DPA and each Applicable State Law applicable to Service Provider's processing.
+
+Effective Date: March 1, 2026.
+
+ACME CORP (Controller)                            GLOBEX INC. (Service Provider)
+
+Signed by: ____________________________           Signed by: ____________________________
+Title: Chief Privacy Officer                      Title: Authorized Representative
+Date: March 1, 2026                               Date: March 1, 2026

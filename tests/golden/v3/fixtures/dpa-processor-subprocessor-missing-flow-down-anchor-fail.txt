@@ -1,0 +1,36 @@
+Data Processing Agreement (Processor to Subprocessor)
+
+This Sub-Processing Agreement ("Agreement") is entered into as of February 1, 2026, pursuant to Article 28(4) of the General Data Protection Regulation (EU) 2016/679 ("GDPR"), between Globex EU SARL, a French société à responsabilité limitée acting as data processor ("Upstream Processor"), and Stark Cloud Ireland Ltd., an Irish private limited company acting as subprocessor ("Subprocessor"). The Upstream Processor acts on documented instructions received from one or more data controllers, and the Subprocessor will process personal data on behalf of the Upstream Processor in providing cloud infrastructure services under the Master Services Agreement between the parties dated January 1, 2026 (the "MSA").
+
+1. Controller Authorization. The Upstream Processor has obtained prior specific written authorization from the relevant controller(s) to appoint the Subprocessor, in accordance with Article 28(2) GDPR. The controller is hereby named as a third-party beneficiary of this Agreement and may enforce the data-protection obligations hereunder directly against the Subprocessor.
+
+2. Documented Instructions Only. The Subprocessor shall process personal data only on documented instructions from the Upstream Processor, which instructions reflect the upstream instructions provided by the relevant controller. The Subprocessor shall immediately inform the Upstream Processor if any instruction infringes the GDPR or applicable data protection law.
+
+3. Flow-Down of Data-Protection Duties. The Subprocessor agrees to comply with the data-protection requirements set out in Section 4 (Confidentiality), Section 5 (Security), Section 6 (Assistance with Data Subject Rights and Controller Obligations), Section 7 (Breach Notification), Section 8 (Sub-Sub-Processors), Section 9 (Audit Rights), Section 10 (Cross-Border Transfer Mechanism), and Section 11 (Deletion or Return at End of Services), each of which is intended to operate as an operational mapping of the Subprocessor's obligations under this Agreement. The Parties have elected not to adopt the Article 28(4) controlled-vocabulary incorporated-by-reference flow-down anchor in this Section, and the Subprocessor's duties are expressed by reference to each individually-enumerated operational duty rather than by an incorporated-by-reference framework. A breach by the Subprocessor of its duties under this Agreement shall be treated as a breach by the Upstream Processor of its duties to the controller.
+
+4. Confidentiality. The Subprocessor shall ensure that persons authorized to process personal data on its behalf are subject to appropriate confidentiality obligations, whether contractual or statutory.
+
+5. Security Measures (Article 32 GDPR). The Subprocessor shall implement and maintain appropriate technical and organizational measures to ensure a level of security appropriate to the risk, including: (a) encryption of personal data in transit and at rest; (b) pseudonymization where appropriate; (c) ongoing confidentiality, integrity, availability, and resilience of processing systems; (d) the ability to restore availability and access to personal data in a timely manner following an incident; (e) a process for regularly testing, assessing, and evaluating the effectiveness of technical and organizational security measures.
+
+6. Assistance with Data Subject Rights and Controller Obligations. The Subprocessor shall assist the Upstream Processor, by appropriate technical and organizational measures, to enable the Upstream Processor to fulfill its obligations to assist the controller with: (a) data subject access requests and other rights under Chapter III GDPR; (b) security obligations under Article 32 GDPR; (c) personal data breach notification under Articles 33 and 34 GDPR; (d) data protection impact assessments under Article 35 GDPR; and (e) prior consultation with supervisory authorities under Article 36 GDPR.
+
+7. Breach Notification. The Subprocessor shall notify the Upstream Processor without undue delay, and in any event within twenty-four (24) hours, after becoming aware of a personal data breach. Such notification shall include sufficient information for the Upstream Processor to notify the competent supervisory authority within seventy-two (72) hours of becoming aware, as required by Article 33 GDPR.
+
+8. Sub-Sub-Processors. The Subprocessor shall not engage any further sub-sub-processor without prior specific or general written authorization of the Upstream Processor (which authorization is subject to obtaining the controller's prior written authorization where required). The Subprocessor shall impose, by written contract, data-protection duties on any further sub-sub-processor by reference to the operational duties enumerated in Sections 4 through 11 of this Agreement, and shall remain liable to the Upstream Processor for the further sub-sub-processor's performance.
+
+9. Audit Rights. The Subprocessor shall make available to the Upstream Processor all information necessary to demonstrate compliance with this Agreement and shall allow for and contribute to audits, including inspections, conducted by the Upstream Processor or an auditor mandated by the Upstream Processor, subject to thirty (30) days prior written notice.
+
+10. Cross-Border Transfer Mechanism. Personal data transferred from the Upstream Processor to the Subprocessor that involves a transfer outside the European Economic Area shall be governed by the Standard Contractual Clauses adopted by the European Commission pursuant to Commission Implementing Decision (EU) 2021/914, Module 3 (Processor to Processor), which are incorporated by reference and form part of this Agreement.
+
+11. Deletion or Return at End of Services. Upon termination of the MSA or this Agreement for any reason, the Subprocessor shall, at the Upstream Processor's choice and on the controller's instructions, delete or return all personal data to the Upstream Processor and shall delete existing copies, unless applicable law requires retention of the personal data.
+
+Annex I — Processing Description
+Subject matter: cloud infrastructure and data processing services. Duration: term of the MSA. Nature: storage, retrieval, and processing. Purpose: fulfillment of services under the MSA. Categories of personal data: names, email addresses, IP addresses, usage logs. Data subjects: end-users of the controller's services.
+
+Effective Date: February 1, 2026.
+
+GLOBEX EU SARL (Upstream Processor)               STARK CLOUD IRELAND LTD. (Subprocessor)
+
+Signed by: ____________________________           Signed by: ____________________________
+Title: Data Protection Officer                    Title: Authorized Representative
+Date: February 1, 2026                            Date: February 1, 2026

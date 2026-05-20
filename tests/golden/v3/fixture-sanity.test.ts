@@ -2882,6 +2882,94 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // data agreement, etc.) and a supervisory authority would treat
   // it as such.
   "dpa-controller-processor-missing-personal-data-reference-fail.txt": ["DPA-050"],
+
+  // BAA with every "Covered Entity" / "Business Associate" role
+  // label replaced by the commercial "Client" / "Service Provider"
+  // pair throughout the preamble, every operative clause, and the
+  // signature block. An opening recital affirmatively disclaims
+  // the substitution: "the parties have elected to use the
+  // commercial labels 'Client' and 'Service Provider' in place of
+  // the 45 CFR § 160.103 controlled-vocabulary role designations
+  // used elsewhere in the HIPAA Rules, without incorporation by
+  // reference of those controlled-vocabulary designations." Every
+  // other clause (Permitted Uses, Safeguards, Reporting,
+  // Subcontractor Flow-Down, Access/Amendment/Accounting, HHS
+  // Books and Records, Return-or-Destruction, Minimum Necessary,
+  // Mitigation, Workforce Training, Encryption, Risk Assessment,
+  // Sanctions, Subcontractor List, Governing Law, Notice, Term,
+  // Signature) is preserved with the relabeled terms so the rest
+  // of the BAA-001..044 baseline still resolves on commercial-
+  // vocabulary terms. BAA-045 (warning) fires — its
+  // present_pattern
+  // `covered\s+entity.*?business\s+associate|business\s+associate.*?covered\s+entity`
+  // is no longer matched anywhere in the document. 45 C.F.R. §
+  // 160.103 defines "Covered Entity" and "Business Associate" as
+  // the role designations that attach every downstream HIPAA
+  // Privacy and Security Rule obligation; a BAA that swaps both
+  // labels for commercial "Client" / "Service Provider" anchors
+  // and affirmatively disclaims the controlled-vocabulary
+  // framework leaves OCR without the role attachment a reading
+  // against §§ 164.502, 164.504, and 164.308–.314 relies on.
+  "baa-ce-ba-roles-unclear-fail.txt": ["BAA-045"],
+
+  // Processor→subprocessor GDPR DPA with Section 3 ("Same
+  // Obligations as Upstream DPA") rewritten as a "Flow-Down of
+  // Data-Protection Duties" section that enumerates each
+  // operational duty by individual Section reference (Sections 4
+  // through 11) rather than by an Article 28(4) controlled-
+  // vocabulary flow-down anchor. The renamed section
+  // affirmatively disclaims the substitution: "The Parties have
+  // elected not to adopt the Article 28(4) controlled-vocabulary
+  // incorporated-by-reference flow-down anchor in this Section,
+  // and the Subprocessor's duties are expressed by reference to
+  // each individually-enumerated operational duty rather than by
+  // an incorporated-by-reference framework." Section 8
+  // (Sub-Sub-Processors) is rewritten to refer to the same
+  // enumerated-duty framework rather than "equivalent
+  // obligations." Every other clause (Controller Authorization,
+  // Documented Instructions, Confidentiality, Article 32 Security
+  // Measures, Article 33 Breach Notification, Audit Rights, EU
+  // SCCs Module 3 incorporation, Deletion or Return, Annex I) is
+  // preserved so the rest of the DPA baseline still passes where
+  // it was passing. DPA-017 (warning) fires — its present_pattern
+  // `(sub[- ]?processor|another\s+processor).*?(same\s+(data[- ]protection\s+)?obligations|same\s+obligations|same\s+terms|equivalent\s+obligations)`
+  // is no longer matched anywhere in the document. GDPR Art. 28(4)
+  // requires the processor to impose, by contract or other legal
+  // act, the same data-protection obligations on the subprocessor
+  // as set out in the contract between the controller and
+  // processor; an enumerated-duty framework without the
+  // controlled-vocabulary "same / equivalent obligations" anchor
+  // loses the Art. 28(4) hook a supervisory authority searches
+  // for when verifying that the upstream contract has been flowed
+  // down in substance.
+  "dpa-processor-subprocessor-missing-flow-down-anchor-fail.txt": ["DPA-017"],
+
+  // Multi-state US DPA with every "personal information" /
+  // "personal data" reference rewritten to the commercial label
+  // "Customer Records." An opening recital affirmatively
+  // disclaims the substitution: "the parties have elected to use
+  // the commercial label 'Customer Records' throughout this DPA
+  // in place of the regulator-defined terminology used elsewhere
+  // in the Applicable State Laws, without incorporation by
+  // reference of any state-statutory controlled-vocabulary
+  // terminology." Every other clause (CCPA/CPRA service-provider
+  // designation, prohibited acts, VCDPA/CPA/CTDPA/UCPA processor
+  // obligations, sub-processor flow-down, consumer rights
+  // assistance, breach notification, deletion on termination,
+  // certification) is preserved with the relabeled term so the
+  // rest of the DPA baseline still resolves on commercial-
+  // vocabulary terms. USDPA-025 (warning) fires — its
+  // present_pattern `personal\s+(information|data)` is no longer
+  // matched anywhere in the document. The CCPA/CPRA, VCDPA, CPA,
+  // CTDPA, and UCPA all define "personal information" (or
+  // "personal data") as the operative term that attaches every
+  // downstream service-provider / processor obligation; a multi-
+  // state DPA that never mentions personal information / data is
+  // almost certainly the wrong template (commercial confidentiality
+  // agreement, generic data-handling agreement, etc.) and the
+  // attorneys general / consumer protection agencies of each
+  // state would treat it as such.
+  "dpa-multi-state-us-missing-personal-information-reference-fail.txt": ["USDPA-025"],
 };
 
 describe("v3 fixture sanity", () => {
