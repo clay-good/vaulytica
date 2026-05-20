@@ -1998,6 +1998,57 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // retention" substitute leaves the personal data on the
   // processor's systems and inverts the statutory default.
   "dpa-controller-processor-missing-deletion-or-return-fail.txt": ["DPA-013"],
+
+  // Controller→processor GDPR DPA with Section 13 retitled
+  // "International Transfers Under Chapter V" and rewritten so the
+  // section preserves the Chapter V naming (so DPA-032 stays
+  // satisfied) — keeping "international transfer", "Chapter V",
+  // "adequacy decision", and "binding corporate rules" anchors —
+  // but no longer names the EU SCCs by reference, Commission
+  // Implementing Decision (EU) 2021/914, or Module Two. Every
+  // other clause is preserved so the rest of the DPA-001..030
+  // baseline still passes where it was passing. **DPA-033 (warning)**
+  // fires — its present_pattern `(2021\/914|standard\s+contractual\s+clauses|EU\s+SCCs?)`
+  // is no longer matched anywhere in the document. Commission
+  // Implementing Decision (EU) 2021/914 requires the parties to use
+  // the SCC template for in-scope transfers; a DPA that gestures at
+  // Chapter V without naming the SCC mechanism leaves the parties
+  // without the canonical transfer scaffold the Commission
+  // designated for controller-to-processor flows.
+  "dpa-controller-processor-missing-eu-sccs-incorporation-fail.txt": ["DPA-033"],
+
+  // Controller→processor GDPR DPA with the preamble's "limited
+  // liability company" rewritten as "limited company" (so no
+  // "liability" anchor remains incidentally) and Section 7's "shall
+  // remain fully liable to Controller" rewritten as "shall remain
+  // fully responsible to Controller". Every other clause is
+  // preserved so the rest of the DPA-001..030 baseline still passes
+  // where it was passing. **DPA-047 (warning)** fires — its
+  // present_pattern `(liability|indemnif|article\s*82)` is no longer
+  // matched anywhere in the document. GDPR Art. 82 makes both
+  // Controller and Processor potentially liable to data subjects;
+  // DPAs are expected to allocate that liability between the parties
+  // (an indemnity, a contribution scheme, or an Article 82
+  // reference) so the contractual residue is well defined.
+  "dpa-controller-processor-missing-liability-allocation-fail.txt": ["DPA-047"],
+
+  // Controller→processor GDPR DPA with every "termination" /
+  // "terminate" anchor stripped: Section 1's "Processing shall cease
+  // upon termination of the MSA" → "upon expiry or wind-down of the
+  // MSA"; "duration of the processing corresponds to the term of the
+  // MSA" → "during which the MSA is in force"; Section 12's "Upon
+  // termination of the MSA" → "Upon expiry or wind-down of the MSA";
+  // "thirty (30) days of termination" → "thirty (30) days following
+  // expiry or wind-down of the MSA". Every other clause is preserved
+  // so the rest of the DPA-001..030 baseline still passes where it
+  // was passing. **DPA-045 (warning)** fires — its present_pattern
+  // `(term\s+of\s+(this\s+)?agreement|initial\s+term|termination|terminate)`
+  // is no longer matched anywhere in the document. GDPR Art. 28(3)(g)
+  // anchors the end-of-services duties on a defined term and
+  // termination event; a DPA that never says "term" or "termination"
+  // makes the temporal scope of every post-termination duty
+  // (deletion, return, audit cooperation, survival) ambiguous.
+  "dpa-controller-processor-missing-term-and-termination-fail.txt": ["DPA-045"],
 };
 
 describe("v3 fixture sanity", () => {
