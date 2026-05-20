@@ -2744,6 +2744,66 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // monetary damages caused by the vendor's confidentiality
   // failures.
   "msa-customer-deep-missing-confidentiality-indemnity-fail.txt": ["MSA-003"],
+
+  // BAA with the §164.504(e)(2)(ii)(D) "Subcontractors" Privacy-Rule
+  // flow-down clause rewritten to refer to "downstream vendors" and
+  // affirmatively disclaim incorporation of the regulator-defined
+  // "subcontractor" controlled vocabulary. Every other clause
+  // (Permitted Uses, Safeguards, Reporting, Access/Amendment/
+  // Accounting, HHS Books and Records, Return-or-Destruction,
+  // Minimum Necessary, Mitigation, Workforce Training, Encryption,
+  // Risk Assessment, Sanctions, Governing Law, Notice, Term,
+  // Signature) is preserved so the rest of the BAA-001..045 baseline
+  // still passes where it was passing. BAA-005 (warning) fires —
+  // its present_pattern
+  // `(subcontractor|sub[- ]processor).*?(same restrictions|same conditions|written contract|agree)`
+  // is no longer matched anywhere in the document. 45 C.F.R. §
+  // 164.504(e)(2)(ii)(D) requires the BAA to obligate the BA to
+  // ensure that any subcontractor that creates, receives, maintains,
+  // or transmits PHI agrees in writing to the same restrictions and
+  // conditions that apply to the BA; a "downstream vendor" framing
+  // that affirmatively disclaims the controlled vocabulary loses the
+  // § 164.504(e)(2)(ii)(D) hook OCR relies on when verifying
+  // flow-down compliance at the BA / subcontractor boundary.
+  "baa-missing-privacy-rule-subcontractor-flow-down-fail.txt": ["BAA-005"],
+
+  // UK IDTA Addendum-form transfer instrument that uses
+  // "Schedule 1 (Signatory Details)" as the parties-identification
+  // anchor instead of the ICO-mandated `Part 1 — Parties` or
+  // `Table 1 — Parties` controlled vocabulary, and affirmatively
+  // disclaims adoption of either the standalone-IDTA section-naming
+  // convention or the Addendum-form anchor convention. Table 2, 3,
+  // and 4 anchors are preserved, so TRANSFER-012..014 still pass
+  // where they were passing. TRANSFER-016 (warning) fires — its
+  // present_patterns
+  // (`Part 1 — Parties`, `Table 1 — Parties`) match nothing in the
+  // document. The ICO Mandatory Clauses require the Approved
+  // Addendum / standalone IDTA to identify the Parties (Exporter
+  // and Importer) under either the `Part 1 — Parties` heading
+  // (standalone IDTA) or the `Table 1 — Parties` heading (Addendum
+  // form); a "Schedule 1 (Signatory Details)" substitute loses the
+  // anchor a UK supervisory authority searches for when verifying
+  // the Article 46(2)(d) (UK GDPR) transfer-tool compliance posture.
+  "uk-idta-addendum-missing-parties-section-anchor-fail.txt": ["TRANSFER-016"],
+
+  // Controller→processor GDPR DPA with every "Controller" and
+  // "Processor" role label replaced by the commercial "Customer" /
+  // "Vendor" pair, and an opening recital affirmatively disclaiming
+  // incorporation of the GDPR Article 4(7)/(8) defined-term
+  // framework. Every other clause (Article 28 subject-matter
+  // through deletion/return + EU SCCs incorporation + Annex I) is
+  // preserved with the new labels so the rest of the DPA baseline
+  // still resolves on commercial-vocabulary terms. DPA-042
+  // (warning) fires — its present_pattern
+  // `controller.*?processor|processor.*?controller` is no longer
+  // matched anywhere in the document. GDPR Art. 4(7) and (8)
+  // define "Controller" and "Processor" as the role labels that
+  // attach the Article 28 obligations; a DPA that swaps both
+  // labels for commercial "Customer" / "Vendor" anchors and
+  // affirmatively disclaims the defined-term framework leaves a
+  // supervisory authority without the role attachment a reading
+  // against Articles 28 and 32–36 relies on.
+  "dpa-controller-processor-roles-unclear-fail.txt": ["DPA-042"],
 };
 
 describe("v3 fixture sanity", () => {
