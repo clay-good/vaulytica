@@ -1817,6 +1817,63 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // reasonable cause, and a contract that designates SOC 2 as the
   // "sole means" of verification breaches the statutory floor.
   "dpa-controller-processor-soc2-eliminates-audit-fail.txt": ["DPA-036"],
+
+  // Controller→processor GDPR DPA with Section 4 (Documented
+  // Instructions Only) augmented with an injected sentence:
+  // "Notwithstanding the foregoing, Processor may deviate from
+  // Controller's instructions where, in Processor's reasonable
+  // judgment, such deviation is necessary or appropriate to
+  // operate the Services, and Processor shall not be required to
+  // seek prior approval from Controller before doing so." Every
+  // other clause is preserved so the rest of the DPA-001..030
+  // baseline still passes where it was passing. **DPA-037
+  // (warning)** fires — its first bad_pattern matches
+  // `processor\s+may\s+(deviate|depart)\s+from` end-to-end. GDPR
+  // Art. 28(3)(a) requires processing only on documented
+  // instructions from the controller; any deviation must be
+  // required by law and the processor must inform the controller
+  // — a unilateral "Processor may deviate" license collapses the
+  // statutory accountability chain and removes the controller's
+  // ability to direct the processing.
+  "dpa-controller-processor-instructions-deviation-fail.txt": ["DPA-037"],
+
+  // Controller→processor GDPR DPA with a new Section 14
+  // ("Indemnification") appended: "Controller shall indemnify,
+  // defend, and hold harmless Processor and its officers,
+  // directors, and employees from and against any GDPR fines,
+  // penalties, administrative sanctions, supervisory-authority
+  // claims, and related defense costs arising out of or relating
+  // to the processing of personal data under this DPA, regardless
+  // of the underlying cause or the party at fault." Every other
+  // clause is preserved so the rest of the DPA-001..030 baseline
+  // still passes where it was passing. **DPA-048 (warning)**
+  // fires — its first bad_pattern matches
+  // `controller\s+(shall|will)\s+indemnif.*?(processor|GDPR|fine)`
+  // end-to-end (both "Processor" and "GDPR" / "fine" anchors are
+  // within the matched span). Under GDPR Art. 82, a processor
+  // remains liable for its own infringements; shifting that
+  // liability to the controller through an unconditional
+  // indemnity is vendor overreach and may be unenforceable to the
+  // extent it purports to absolve the processor of supervisory-
+  // authority sanctions attributable to its own conduct.
+  "dpa-controller-processor-controller-indemnifies-gdpr-fines-fail.txt": ["DPA-048"],
+
+  // Controller→processor GDPR DPA with Section 11 (Audit and
+  // Inspection Rights) augmented with an injected closing sentence:
+  // "Controller shall bear all costs of any audit conducted under
+  // this Section, including any audit that uncovers a material
+  // breach by Processor." Every other clause is preserved so the
+  // rest of the DPA-001..030 baseline still passes where it was
+  // passing. **DPA-049 (warning)** fires — its first bad_pattern
+  // matches `controller\s+(shall|will)\s+bear\s+(all|the\s+entire|the\s+full)\s+costs?\s+of\s+(any\s+)?audit`
+  // end-to-end. Standard practice under GDPR Art. 28(3)(h) splits
+  // routine-audit cost to the controller but allocates cost to the
+  // processor where the audit uncovers material breach; a clause
+  // that fixes the entire audit cost on the controller — including
+  // breach-confirmed audits — discourages the controller from ever
+  // exercising the audit right and effectively immunizes processor
+  // non-compliance.
+  "dpa-controller-processor-audit-cost-controller-exclusive-fail.txt": ["DPA-049"],
 };
 
 describe("v3 fixture sanity", () => {
