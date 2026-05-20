@@ -1,0 +1,79 @@
+Standard Contractual Clauses (Controller to Processor) — Module 2
+
+These Standard Contractual Clauses ("Clauses") are adopted pursuant to Commission Implementing Decision (EU) 2021/914 of 4 June 2021 on standard contractual clauses for the transfer of personal data to third countries pursuant to Regulation (EU) 2016/679 of the European Parliament and of the Council ("GDPR"). Module 2 (Controller to Processor) applies.
+
+Parties
+
+Data Exporter: Acme Corp, a Delaware corporation established in the European Union at Acme Corp EU Branch, 10 rue de la Paix, 75001 Paris, France, acting as data controller. Contact: dpo@acmecorp.example.com. Competent supervisory authority: Commission Nationale de l'Informatique et des Libertés ("CNIL").
+
+Data Importer: Globex Inc., a Delaware corporation with principal offices at 500 Market Street, San Francisco, CA 94105, USA, acting as data processor. Contact: privacy@globexinc.example.com.
+
+Docking Clause. Any Member State entity may accede to these Clauses as a data exporter by executing Annex I. The importer agrees to such accession.
+
+Reliance on Adequacy Decision. Notwithstanding the foregoing, the Parties acknowledge that the Data Importer is self-certified under the EU-US Data Privacy Framework ("DPF") and that the European Commission has recognized the United States as providing an adequate level of protection for personal data transferred to DPF-certified recipients under Commission Implementing Decision (EU) 2023/1795 of 10 July 2023. The Parties intend to rely on the DPF adequacy decision for transfers under these Clauses for so long as it remains in force. For the avoidance of doubt, the Parties have not agreed any contingency or alternative transfer arrangement to be implemented if the DPF adequacy decision is set aside, withdrawn, struck down, or otherwise ceases to provide a lawful transfer basis; any such contingency shall be addressed by the Parties at the time the underlying event occurs.
+
+Clause 8 — Data Protection Safeguards
+
+8.1 Documented Instructions. The data importer shall process personal data only on documented instructions from the data exporter, including with regard to transfers to third countries. The data importer shall immediately inform the data exporter if it cannot comply with the instructions.
+
+8.2 Purpose Limitation and Transparency. The data importer shall not process personal data for purposes other than those described in Annex I. The data importer shall be transparent about its processing activities to the data exporter.
+
+8.3 Accuracy and Storage Limitation. The data importer shall take reasonable steps to ensure personal data is accurate, kept up to date, and erased or rectified when inaccurate. Personal data shall not be retained longer than necessary for the purposes in Annex I.
+
+8.4 Security (Article 32 GDPR). The data importer shall implement technical and organizational measures to protect personal data against unauthorized access, disclosure, alteration, or destruction, including: encryption of personal data in transit and at rest; access controls limiting data access to authorized personnel; vulnerability management and penetration testing; incident response procedures; and regular security reviews. These measures are described in Annex II.
+
+8.5 Sensitive Data. Where the transfer involves special categories of personal data under GDPR Art. 9, the data importer shall apply additional restrictions as described in Annex I and shall not process such data except as strictly necessary and as instructed by the data exporter.
+
+8.6 Onward Transfers. The data importer shall not transfer personal data to a third country without the data exporter's prior written authorization and unless appropriate safeguards under GDPR Art. 46 are in place, including by entering into standard contractual clauses adopted by the Commission.
+
+8.7 Processing Under Authority of Data Exporter. The data importer shall process personal data only in accordance with these Clauses and GDPR, and shall ensure that persons authorized to process personal data are bound by appropriate confidentiality obligations.
+
+Clause 9 — Use of Sub-Processors
+
+9.1 General Written Authorization. The data exporter has granted the data importer general written authorization to engage sub-processors listed in Annex III. The data importer shall inform the data exporter of any intended changes to the sub-processor list at least thirty (30) days in advance, giving the data exporter the opportunity to object. The data importer shall impose equivalent obligations on sub-processors by written contract.
+
+Clause 10 — Data Subject Rights
+
+The data importer shall promptly notify the data exporter of any request received directly from a data subject and shall assist the data exporter in responding to requests for access, rectification, erasure, restriction, portability, and objection under GDPR Chapter III.
+
+Clause 11 — Redress
+
+The data importer shall inform data subjects, upon request, of the contact point to which they can address their complaints and shall not obstruct data subjects from exercising their rights.
+
+Clause 12 — Liability
+
+Each party shall be liable to the other for any damages it causes by breach of these Clauses. Where multiple parties are responsible for damage, liability shall be proportionate to their responsibility.
+
+Clause 14 — Local Laws and Practices Assessment
+
+The data exporter and data importer warrant that they have no reason to believe the laws and practices of the destination country prevent the data importer from fulfilling its obligations under these Clauses. The data exporter has carried out a documented transfer impact assessment, which is available for review by the competent supervisory authority.
+
+Clause 15 — Obligations of the Data Importer in Case of Access by Public Authorities
+
+15.1 The data importer shall promptly notify the data exporter of any requests from public authorities for access to personal data. If such notification is legally prohibited, the data importer shall use its best efforts to obtain a waiver of the prohibition.
+
+15.2 The data importer shall review requests for legality and resist excessive or unlawful requests.
+
+Clause 16 — Non-Compliance and Suspension or Termination
+
+If the data importer cannot comply with these Clauses, the data exporter may suspend the transfer and, if non-compliance is not cured within thirty (30) days, terminate the portion of the MSA concerning the processing of personal data.
+
+Annex I — Parties and Processing Description
+
+A. List of Parties: Data exporter: Acme Corp EU Branch, acting as controller. Data importer: Globex Inc., acting as processor. B. Description of Transfer: Categories of data subjects — Acme Corp's employees and customers. Categories of personal data — names, email addresses, IP addresses, usage data. Special categories — none. Frequency of transfer — continuous during the term of the MSA. Nature of processing — cloud analytics and storage. Purpose — provision of services under the MSA. Retention period — duration of the MSA plus three years. C. Competent Supervisory Authority: CNIL (Commission Nationale de l'Informatique et des Libertés).
+
+Annex II — Technical and Organisational Measures
+
+AES-256 encryption at rest; TLS 1.3 encryption in transit; multi-factor authentication for all privileged access; annual penetration testing by an independent third party; SOC 2 Type II certification; automated vulnerability scanning; 24/7 security monitoring; documented incident response plan; data minimization and pseudonymization where feasible; quarterly access reviews.
+
+Annex III — List of Sub-Processors
+
+Stark Cloud Inc., 200 Cloud Avenue, Austin, TX 78701, USA — purpose: cloud infrastructure hosting; transfer mechanism: Module 2 SCCs.
+
+Effective Date: January 1, 2026.
+
+ACME CORP EU BRANCH (Data Exporter / Controller)   GLOBEX INC. (Data Importer / Processor)
+
+Signed by: ____________________________            Signed by: ____________________________
+Title: Data Protection Officer                     Title: Authorized Representative
+Date: January 1, 2026                              Date: January 1, 2026

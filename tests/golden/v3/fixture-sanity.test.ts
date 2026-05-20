@@ -2363,6 +2363,84 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // a "self-assessment plus executive summary" posture leaves the
   // customer with no enforceable verification mechanism.
   "vendor-security-addendum-missing-audit-or-soc2-fail.txt": ["ADDENDA-003"],
+
+  // Vendor MSA with a Section 13 "Modifications and Forbearance"
+  // paragraph that explicitly contemplates modification of the
+  // operative terms through "mutual understanding evidenced
+  // through ... subsequent course of dealing, including through
+  // email exchanges, executed change orders, addenda, or any
+  // combination of the foregoing methods" — without using the
+  // word "amend" anywhere — and the second sentence frames
+  // forbearance as "operative only for the specific instance"
+  // and "shall not operate as a continuing relinquishment" without
+  // ever saying "no waiver", "no failure", or "shall not be deemed
+  // a waiver". Every other clause is preserved so the rest of the
+  // MSA-001..030 baseline still passes where it was passing.
+  // **MSA-025 (info)** fires — neither
+  // `amend\w+.{0,40}(?:in\s+writing|written\s+(?:and\s+)?signed)`
+  // nor `(?:no\s+(?:waiver|failure)|shall\s+not\s+be\s+deemed\s+a\s+waiver)`
+  // matches anywhere in the document. A "course of dealing"
+  // modification clause that condones email modifications and a
+  // forbearance paragraph that omits the canonical no-waiver
+  // formula together leave the vendor MSA without the two
+  // commercial-baseline boilerplate hooks that prevent oral
+  // modifications and unintentional waivers from becoming
+  // litigation risks.
+  "msa-vendor-deep-missing-amendment-no-waiver-fail.txt": ["MSA-025"],
+
+  // SCC Module 2 transfer with a new "Reliance on Adequacy
+  // Decision" paragraph that explicitly anchors the parties on the
+  // EU-US Data Privacy Framework (DPF) adequacy decision
+  // (Commission Implementing Decision (EU) 2023/1795) "for so long
+  // as it remains in force" and explicitly disclaims any
+  // contractual fallback: "the Parties have not agreed any
+  // contingency or alternative transfer arrangement to be
+  // implemented if the DPF adequacy decision is set aside,
+  // withdrawn, struck down, or otherwise ceases to provide a
+  // lawful transfer basis". No "adequacy decision is invalidated /
+  // revoked", "fallback to SCC", or "substitute (transfer)
+  // mechanism" anchor appears anywhere in the document. Every
+  // other Module 2 clause + the three Annexes are preserved so
+  // the rest of the TRANSFER-001..019 baseline still passes where
+  // it was passing. **TRANSFER-018 (warning)** fires — its
+  // present_pattern
+  // `(adequacy\s+decision\s+is\s+(?:invalidated|revoked)|fallback\s+(?:to\s+)?SCC|substitute\s+(?:transfer\s+)?mechanism)`
+  // is no longer matched anywhere in the document. GDPR Art. 45
+  // adequacy decisions can be invalidated (Schrems I, Schrems II);
+  // the DPF was itself the third successive adequacy mechanism for
+  // EU-US transfers. A transfer arrangement that relies on the
+  // DPF without anchoring a contractual fallback to SCCs / IDTA on
+  // invalidation creates a "transfer cliff" the moment the DPF
+  // decision is set aside.
+  "scc-module-2-missing-adequacy-fallback-fail.txt": ["TRANSFER-018"],
+
+  // CCPA Service-Provider Addendum that retains the specific-
+  // business-purpose anchor (USDPA-001 stays satisfied via the
+  // "Business Purpose enumerated in this Agreement" recital) and
+  // the no-cross-context-advertising prohibition (USDPA-003 stays
+  // satisfied), but Section 3(a) is rewritten to use "shall not
+  // transfer Personal Information to any third party in exchange
+  // for monetary or other valuable consideration" — avoiding the
+  // statutory anchor language. Section 5's "opt-out of sale or
+  // sharing of Personal Information" is rewritten as "opt-out of
+  // cross-context behavioral advertising or the transfer of
+  // Personal Information for monetary or other valuable
+  // consideration" so no "sale of personal information" tail
+  // remains. No "prohibited from selling", "no sale of personal
+  // information", or "shall not sell personal information" anchor
+  // appears anywhere in the document. Every other clause is
+  // preserved so the rest of the USDPA-001..025 baseline still
+  // passes where it was passing. **USDPA-002 (warning)** fires —
+  // its present_pattern
+  // `(prohibited\s+from\s+selling|no\s+sale\s+of\s+personal\s+information|shall\s+not\s+sell\s+personal\s+information)`
+  // is no longer matched anywhere in the document. Cal. Civ. Code
+  // § 1798.140(ag)(1)(A) requires the service-provider contract
+  // to expressly prohibit sale of Personal Information; a clause
+  // that paraphrases the obligation as "shall not transfer for
+  // monetary consideration" tracks the underlying definition of
+  // "sale" at § 1798.140(ad) but loses the canonical anchor a
+  // regulator searches for when establishing CCPA compliance.
+  "dpa-ccpa-service-provider-missing-no-sale-prohibition-fail.txt": ["USDPA-002"],
 };
 
 describe("v3 fixture sanity", () => {
