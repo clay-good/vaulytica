@@ -1932,6 +1932,72 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // the obligations attached to a named, authorised representative
   // of each party.
   "dpa-controller-processor-missing-signature-block-fail.txt": ["DPA-043"],
+
+  // Controller→processor GDPR DPA with the two "written contract" /
+  // "in writing" anchors stripped: Section 7's "by way of a written
+  // contract" is rewritten as "via a duly executed contractual
+  // instrument" and Section 12's "shall certify such deletion in
+  // writing" is rewritten as "shall certify such deletion by formal
+  // notice to Controller". Every other clause is preserved so the
+  // rest of the DPA-001..030 baseline still passes where it was
+  // passing. **DPA-018 (warning)** fires — its present_pattern
+  // `(in\s+writing|electronic\s+form|written\s+(contract|agreement))`
+  // is no longer matched anywhere in the document. GDPR Art. 28(9)
+  // requires the contract to be in writing, including in electronic
+  // form; a DPA that never says so on its face leaves the form
+  // requirement ambiguous and removes the canonical statutory anchor
+  // that supervisory authorities and counter-parties look to when
+  // establishing the contract's compliance with Art. 28(9).
+  "dpa-controller-processor-missing-form-of-agreement-fail.txt": ["DPA-018"],
+
+  // Controller→processor GDPR DPA with Section 13 rewritten from
+  // "Cross-Border Transfers and EU SCCs" (which named the EU SCCs
+  // under Commission Implementing Decision (EU) 2021/914, Module
+  // Two) to a generic "Cross-Border Movement of Personal Data"
+  // paragraph that complies with applicable law and supplemental
+  // documentation but does not name any Chapter V mechanism (no
+  // "international transfer" / "Chapter V" / "Standard Contractual
+  // Clauses" / "SCCs" / "adequacy decision" / "Binding Corporate
+  // Rules" / "BCRs"). Section 4's "transfers of personal data to a
+  // third country or an international organization" is rewritten to
+  // "onward movement of personal data to a third country or an
+  // international organization" to avoid the "international
+  // transfer" anchor. Every other clause is preserved so the rest of
+  // the DPA-001..030 baseline still passes where it was passing.
+  // **DPA-032** fires — its present_pattern
+  // `(international\s+transfer|chapter\s+V|standard\s+contractual\s+clauses|\bSCCs?\b|adequacy\s+decision|binding\s+corporate\s+rules|\bBCRs?\b)`
+  // is no longer matched anywhere in the document. (DPA-033 also
+  // fires because the SCC-incorporation anchor is gone, but DPA-032
+  // is the load-bearing rule for this fixture; DPA-033 has its own
+  // negative-path coverage at the ruleset-test level.) GDPR Arts.
+  // 44–49 require an adequacy decision, SCCs, BCRs, or a derogation
+  // for transfers to third countries — generic "comply with
+  // applicable law" prose collapses the Chapter V mechanism into a
+  // black box and removes the named anchor regulators rely on to
+  // assess transfer lawfulness.
+  "dpa-controller-processor-missing-transfer-mechanism-fail.txt": ["DPA-032"],
+
+  // Controller→processor GDPR DPA with Section 12 ("Deletion or
+  // Return at End of Services") rewritten as "Records at End of
+  // Services. Upon termination of the MSA for any reason, Processor
+  // shall, at the choice of Controller, provide Controller with an
+  // inventory of personal data still held by Processor and the basis
+  // on which it is retained, unless applicable law requires
+  // retention of the personal data. Processor shall certify the
+  // accuracy of such inventory in writing within thirty (30) days of
+  // termination." The "delete or return" / "return or delete"
+  // anchors are eliminated, and "in writing" is preserved so DPA-018
+  // still passes. Every other clause is preserved so the rest of the
+  // DPA-001..030 baseline still passes where it was passing.
+  // **DPA-013 (critical)** fires — its present_pattern
+  // `(delete\s+or\s+return|return\s+or\s+delete).*?(personal\s+data|end\s+of\s+(?:the\s+)?(?:provision\s+of\s+)?services)`
+  // is no longer matched anywhere in the document. GDPR Art. 28(3)(g)
+  // requires the processor, at the choice of the controller, to
+  // delete or return all personal data to the controller after the
+  // end of the provision of services — an "inventory and basis for
+  // retention" substitute leaves the personal data on the
+  // processor's systems and inverts the statutory default.
+  "dpa-controller-processor-missing-deletion-or-return-fail.txt": ["DPA-013"],
 };
 
 describe("v3 fixture sanity", () => {
