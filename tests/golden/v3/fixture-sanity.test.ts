@@ -2441,6 +2441,86 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // "sale" at § 1798.140(ad) but loses the canonical anchor a
   // regulator searches for when establishing CCPA compliance.
   "dpa-ccpa-service-provider-missing-no-sale-prohibition-fail.txt": ["USDPA-002"],
+
+  // Mutual NDA-Deep with a new Section 12 "Course of Dealing"
+  // paragraph that does the opposite of a no-precedent clause: it
+  // expressly states that "the substantive provisions of this
+  // Agreement reflect the established baseline against which the
+  // Parties intend to evaluate, draft, and benchmark any future
+  // commercial agreement between them concerning the subject
+  // matter hereof, and the deal-equivalent commercial terms reached
+  // under this Agreement shall inform the Parties' subsequent
+  // negotiations of any related downstream arrangement." No "no
+  // precedent", "not create a precedent", "not constitute a
+  // precedent", or "most favored nation" anchor appears anywhere
+  // in the document. Every other clause (DTSA notice, perpetual
+  // trade-secret carve-out, no-license, injunctive relief with
+  // bond waiver, governing law, entire agreement) is preserved so
+  // the rest of the NDA-D-001..025 baseline still passes where it
+  // was passing. **NDA-D-019 (info)** fires — its present_pattern
+  // `(no\s+precedent|not\s+(create|constitute)\s+a\s+precedent|most\s+favored\s+nation)`
+  // is no longer matched anywhere in the document. A
+  // course-of-dealing clause that affirmatively designates the NDA
+  // as the commercial benchmark for future agreements is the
+  // structural opposite of a no-precedent clause and exposes the
+  // discloser to MFN-style argumentation if it later negotiates a
+  // tighter NDA with a different counterparty under different
+  // commercial assumptions.
+  "mutual-nda-deep-missing-no-precedent-fail.txt": ["NDA-D-019"],
+
+  // SCC Module 2 transfer with Clauses 1, 2, 8, 9, 11, 14, 15, and
+  // 16 explicitly anchored — and Clause 10 (Data Subject Rights)
+  // and Clause 12 (Liability) dropped to keep the document tight
+  // while still satisfying TRANSFER-005 / TRANSFER-006 via the
+  // Clause 11 redress anchor — but Clause 18 (Governing Law and
+  // Forum) is replaced with a plain-English "Governing Law"
+  // paragraph that picks the Republic of Ireland and Dublin venue
+  // without using the canonical "Clause 18", "Governing Law and
+  // Forum", "Governing Law and Jurisdiction", or "choice of forum"
+  // anchor. (An "Adequacy Fallback" paragraph satisfies
+  // TRANSFER-018 so the fixture is not co-flagged on the fallback
+  // rule.) Every other Module 2 clause + the three Annexes are
+  // preserved so the rest of the TRANSFER-001..019 baseline still
+  // passes where it was passing. **TRANSFER-010 (warning)** fires —
+  // its present_pattern
+  // `(clause\s*18\b|governing\s+law\s+and\s+(?:forum|jurisdiction)|choice\s+of\s+forum)`
+  // is no longer matched anywhere in the document. EU SCCs Clause
+  // 18 fixes the governing law on an EU Member State allowing
+  // third-party-beneficiary rights and the forum on a court of
+  // that Member State; a "Republic of Ireland law / Dublin venue"
+  // recital reaches the same operative result but loses the SCC
+  // Clause 18 anchor a supervisory authority searches for when
+  // verifying invariability under Clause 2.
+  "scc-module-2-missing-clause-18-fail.txt": ["TRANSFER-010"],
+
+  // CCPA Service-Provider Addendum with a new Section 2
+  // ("Compliance Posture") paragraph that explicitly substitutes
+  // "an equivalent privacy posture" for the canonical CCPA "same
+  // level of privacy protection" recital and pre-emptively
+  // disclaims incorporation of any additional statutory or
+  // regulatory standard: "Service Provider's privacy obligations
+  // under this Agreement are limited to the specific commitments
+  // enumerated herein and the obligations expressly imposed on
+  // service providers under 11 C.C.R. § 7051(a)(1)–(8), without
+  // incorporation by reference of any additional statutory or
+  // regulatory standard." No "same level of privacy protection" or
+  // "comply with all applicable obligations / CCPA" anchor appears
+  // anywhere in the document. Every other clause is preserved so
+  // the rest of the USDPA-001..025 baseline still passes where it
+  // was passing. **USDPA-005 (warning)** fires — its
+  // present_pattern
+  // `same\s+level\s+of\s+privacy\s+protection|comply\s+with\s+all\s+applicable\s+(?:obligations|ccpa)`
+  // is no longer matched anywhere in the document. Cal. Civ. Code
+  // § 1798.100(d) requires the contract to obligate the service
+  // provider to comply with applicable CCPA obligations and to
+  // provide the same level of privacy protection as required by
+  // the CCPA; an "equivalent privacy posture" substitute that
+  // affirmatively disclaims incorporation of any additional
+  // standard leaves the business exposed to enforcement under
+  // § 1798.155 because the service provider's residual obligation
+  // floor is whatever the contract enumerates rather than what
+  // the CCPA requires of the business.
+  "dpa-ccpa-service-provider-missing-same-level-protection-fail.txt": ["USDPA-005"],
 };
 
 describe("v3 fixture sanity", () => {
