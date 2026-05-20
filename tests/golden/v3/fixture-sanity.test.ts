@@ -2230,6 +2230,65 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // disclosure could be construed to grant an implied license in
   // the Confidential Information.
   "unilateral-nda-deep-missing-no-license-clause-fail.txt": ["NDA-D-021"],
+
+  // BAA with a "Compliance Verification" paragraph that explicitly
+  // disclaims any on-site or remote inspection privileges and
+  // designates the BA's annual SOC 2 Type II report as the "sole
+  // means" of verifying compliance; the document contains no
+  // "audit rights", "right to audit", "reasonable audit", or
+  // "conduct ... audit" anchor anywhere. Every other clause
+  // (Permitted Uses, Safeguards, Reporting, Subcontractor
+  // Flow-Down, Access/Amendment/Accounting, Books/Records,
+  // Return/Destruction, Minimum Necessary, Mitigation, Workforce
+  // Training, Encryption, Risk Assessment, Sanctions, Subcontractor
+  // List, Governing Law, Notice, Term with explicit "shall survive
+  // termination") is preserved so the rest of the BAA baseline
+  // still passes where it was passing. **BAA-026 (warning)** fires
+  // — its present_patterns are no longer matched anywhere in the
+  // document. HHS guidance encourages audit rights as a substantive
+  // complement to the books-and-records access requirement; without
+  // audit rights the covered entity has no contractual mechanism
+  // to verify ongoing HIPAA compliance beyond the books-and-records
+  // floor.
+  "baa-missing-audit-rights-fail.txt": ["BAA-026"],
+
+  // BAA that uses "Protected Health Information" throughout but
+  // never defines the term locally and never cross-references the
+  // HIPAA definition; the Definitions section only says
+  // "Capitalized terms used but not defined in this BAA carry the
+  // meaning given to them in the Master Services Agreement" with
+  // no "Protected Health Information ... means", "PHI ... shall
+  // have the meaning", or "45 CFR § 160.103" anchor anywhere. Every
+  // other clause is preserved so the rest of the BAA baseline still
+  // passes where it was passing. **BAA-028 (warning)** fires — its
+  // present_patterns are no longer matched anywhere in the
+  // document. 45 C.F.R. § 160.103 defines PHI and ePHI; drafters
+  // should either define these terms locally or incorporate the
+  // HIPAA definition by reference. A BAA that uses "Protected
+  // Health Information" without anchoring the regulatory definition
+  // leaves the scope of the obligation ambiguous when the term is
+  // later asserted to cover (or not cover) a borderline category
+  // of data.
+  "baa-missing-phi-definition-fail.txt": ["BAA-028"],
+
+  // BAA with the Term clause rewritten to make every right and
+  // duty of the parties terminate fully upon termination, with the
+  // sole carve-out being a 30-day completion window for the
+  // return-or-destruction obligation; the document contains no
+  // "survive termination", "shall survive", or "survival" anchor
+  // anywhere (the rewrite says the return-or-destruction obligation
+  // "thereafter terminates without further continuing effect"
+  // rather than the customary "shall survive"). Every other clause
+  // is preserved so the rest of the BAA baseline still passes where
+  // it was passing. **BAA-043 (warning)** fires — its
+  // present_patterns are no longer matched anywhere in the
+  // document. 45 C.F.R. § 164.504(e)(2)(ii)(I) and HHS guidance
+  // expect HIPAA obligations to survive termination for any PHI
+  // retained after termination; a BAA whose Term clause sweeps
+  // every obligation to a clean cut-off leaves the covered entity
+  // with no contractual hook for retained-PHI handling after the
+  // commercial relationship ends.
+  "baa-missing-survival-clause-fail.txt": ["BAA-043"],
 };
 
 describe("v3 fixture sanity", () => {
