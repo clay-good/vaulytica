@@ -63,6 +63,50 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // necessary cookies; without a categorized inventory the user
   // cannot give the granular consent the directive contemplates.
   "privacy-cookie-notice-missing-categories-fail.txt": ["PRV-001"],
+
+  // SAFE with the preamble extended by a sentence that affirmatively
+  // elects not to include a separately captioned economic-conversion-
+  // terms section (deliberately avoiding "valuation cap", "discount
+  // rate", "most favored nation", and "MFN"). No post-money or pre-
+  // money valuation cap, discount rate, or MFN anchor appears
+  // anywhere in the document. EQT-003 (critical) fires — its five
+  // present_patterns `/post.money\s+valuation\s+cap/i`,
+  // `/valuation\s+cap/i`, `/discount\s+rate/i`,
+  // `/most\s+favored\s+nation/i`, and `/\bmfn\b/i` are no longer
+  // matched anywhere in the document. The economic essence of a SAFE
+  // is the conversion price; without a cap, discount, or MFN the
+  // investor converts at the next-round price with no downside
+  // protection, defeating the purpose of the instrument.
+  "equity-safe-missing-valuation-cap-fail.txt": ["EQT-003"],
+
+  // Triple Net Lease with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately captioned
+  // insurance-requirements section (deliberately avoiding "commercial
+  // general liability", "property insurance", and "waiver of
+  // subrogation"). None of those anchors appears anywhere in the
+  // document. RE-003 (critical) fires — its three present_patterns
+  // `/commercial\s+general\s+liability/i`, `/property\s+insurance/i`,
+  // and `/waiver\s+of\s+subrogation/i` are no longer matched. NNN
+  // leases rely on tenant-carried insurance to protect both parties;
+  // without minimum CGL limits, a loss-payee clause, and a waiver of
+  // subrogation, landlord's coverage stack is exposed and recovery
+  // after a casualty is uncertain.
+  "real-estate-net-lease-missing-insurance-fail.txt": ["RE-003"],
+
+  // Loan Agreement with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately captioned
+  // remedial-trigger section (deliberately avoiding "events of
+  // default", "cross-default", "cure period", "grace period",
+  // "insolvency", and "bankruptcy"). None of those anchors appears
+  // anywhere in the document. BNK-012 (critical) fires — its three
+  // present_patterns `/events?\s+of\s+default/i`,
+  // `/(cross.?default|cure\s+period|grace\s+period)/i`, and
+  // `/(insolvenc|bankruptc)/i` are no longer matched anywhere in the
+  // document. Without an enumerated default catalogue and cure
+  // periods, the lender cannot accelerate until maturity and loses
+  // the early-warning protection that EoD cross-default triggers
+  // are designed to provide.
+  "banking-loan-agreement-missing-events-of-default-fail.txt": ["BNK-012"],
 };
 
 describe("v4 fixture sanity", () => {

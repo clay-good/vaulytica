@@ -1,0 +1,5 @@
+Simple Agreement for Future Equity (SAFE)
+
+This Simple Agreement for Future Equity (this "SAFE") is entered into between the Company and the Investor. The Investor is purchasing the right to certain shares of the Company's capital stock subject to the terms set forth below. The parties have elected not to include a separately captioned economic-conversion-terms section within this SAFE setting out an investor-protection price ceiling, price reduction, or preferred-nation treatment, relying instead on the Company's next priced-round subscription documents as the operative mechanism for determining the price at which this SAFE will convert.
+
+Equity Financing. Upon an Equity Financing, the SAFE will automatically convert into Safe Preferred Stock at the price per share paid by investors in such Equity Financing.
