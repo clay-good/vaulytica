@@ -3464,6 +3464,73 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // whether the parties have identified and separately scoped the higher-
   // risk data flows required by Cal. Civ. Code § 1798.121(a).
   "dpa-multi-state-us-missing-sensitive-pi-clause-fail.txt": ["USDPA-022"],
+
+  // GDPR Controller-to-Processor DPA with the preamble extended by a
+  // sentence that affirmatively elects not to include a separately
+  // captioned schedule enumerating approved sub-processors at signature,
+  // instead relying on the Section 7 prior-written-authorization
+  // mechanism and the Controller's right to object to any addition or
+  // replacement of other processors as the operative mechanism for sub-
+  // processor approvals. No `(annex|appendix|exhibit|schedule) (III|3|C)
+  // … (sub-processor|sub-processor list)` anchor or "list of sub-
+  // processors" phrase appears anywhere in the document. Annex I
+  // (categories of personal data) is retained so DPA-028 still passes;
+  // Section 7's prior-authorization, advance-notice, and flow-down
+  // language is preserved so DPA-015 / DPA-016 / DPA-017 still pass
+  // where they were passing. DPA-040 (warning) fires — its
+  // present_patterns
+  // `/(annex|appendix|exhibit|schedule)\s+(III|3|C).{0,40}(sub[- ]?processor|sub-processor\s+list)/i`
+  // and `/list\s+of\s+sub[- ]?processors/i` are no longer matched
+  // anywhere in the document. Commission Implementing Decision (EU)
+  // 2021/914, Annex III (Module Two / Three) requires the parties to
+  // identify approved sub-processors at the time of signature; without
+  // an Annex III the controller cannot verify which downstream
+  // processors are in scope under the executed transfer mechanism.
+  "dpa-controller-processor-missing-subprocessor-annex-fail.txt": ["DPA-040"],
+
+  // GDPR Controller-to-Processor DPA with the preamble extended by a
+  // sentence that affirmatively elects not to include a separately
+  // captioned choice-of-applicable-jurisdiction provision within the
+  // DPA, instead relying on the corresponding provision in the MSA as
+  // the operative mechanism for selecting the substantive law
+  // applicable to disputes arising under the DPA. No "governing law",
+  // "governed by the laws", or "laws of <Capitalized-jurisdiction>"
+  // anchor appears anywhere in the document. Every other clause
+  // (subject-matter, confidentiality, subprocessors, data-subject
+  // rights, Art. 32–36 assistance, breach notification, audit, deletion,
+  // SCCs) is preserved so the rest of the DPA-001..055 baseline still
+  // passes where it was passing. DPA-046 (warning) fires — its
+  // present_patterns
+  // `/(governing\s+law|governed\s+by\s+the\s+laws|laws\s+of\s+(?:the\s+)?(?:republic\s+of\s+)?[A-Z])/i`
+  // are no longer matched anywhere in the document. GDPR does not
+  // mandate a governing-law clause directly, but the SCCs require the
+  // parties to name an EU Member State (Clause 17) and DPAs commonly
+  // mirror that selection; without a DPA-level governing-law anchor a
+  // supervisory authority cannot determine which national supervisory
+  // regime supplies the residual rules for interpretation.
+  "dpa-controller-processor-missing-governing-law-fail.txt": ["DPA-046"],
+
+  // GDPR Controller-to-Processor DPA with the preamble extended by a
+  // sentence that affirmatively elects not to include a separately
+  // captioned post-termination-continuation clause within the DPA,
+  // instead relying on the Section 12 deletion-or-return mechanism and
+  // the corresponding wind-down provisions of the MSA as the operative
+  // mechanism for handling any Personal Data retained after expiry of
+  // the MSA. No "survive", "survival", or "survive the termination"
+  // anchor appears anywhere in the document. Section 12 (deletion or
+  // return at end of services) is preserved so DPA-013 still passes;
+  // every other clause is preserved so the rest of the DPA-001..055
+  // baseline still passes where it was passing. DPA-052 (warning) fires
+  // — its present_pattern
+  // `/survive\s+(the\s+)?termination|survival/i`
+  // is no longer matched anywhere in the document. GDPR Art. 28(3)(g)
+  // contemplates that, on termination, personal data be deleted or
+  // returned but does not itself address obligations applicable to
+  // residual data the processor may lawfully retain; without a survival
+  // anchor the protective obligations governing any such retained data
+  // (confidentiality, security, breach notice) are textually unmoored
+  // from the moment the underlying MSA terminates.
+  "dpa-controller-processor-missing-survival-fail.txt": ["DPA-052"],
 };
 
 describe("v3 fixture sanity", () => {
