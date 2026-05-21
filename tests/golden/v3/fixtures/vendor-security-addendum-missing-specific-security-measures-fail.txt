@@ -1,0 +1,41 @@
+Vendor Security Addendum
+
+This Vendor Security Addendum ("Addendum") is entered into as of April 1, 2026, by and between Acme Corp, a Delaware corporation ("Customer"), and Globex Solutions Inc., a California corporation ("Vendor"), and is incorporated into and made a part of the Master Services Agreement between the parties dated March 1, 2026 (the "MSA"). Capitalized terms not defined herein have the meanings given to them in the MSA. This Addendum sets forth the minimum information-security requirements Vendor must satisfy when handling Customer Data.
+
+The parties have elected not to adopt the controlled-vocabulary enumeration of specific security controls contemplated by NIST SP 800-53 and instead commit that Vendor will maintain an overall information-security posture consistent with industry norms. For the avoidance of doubt, this Addendum does not enumerate specific named controls or standards and does not incorporate by reference any control-family catalog or named-control framework.
+
+1. Certifications and Compliance. Vendor shall maintain, throughout the term of the MSA:
+
+(a) SOC 2 Type II. A current SOC 2 Type II certification covering the Trust Services Criteria for Security, Availability, and Confidentiality, issued by an independent AICPA-accredited auditor. Vendor shall provide Customer with a copy of its current SOC 2 Type II report upon request, subject to reasonable confidentiality obligations.
+
+(b) ISO 27001. A valid ISO 27001 certification covering the information security management systems used to process Customer Data, issued by an accredited certification body. Vendor shall provide Customer with a copy of its current ISO 27001 certificate upon request.
+
+2. Data Protection. Vendor shall implement and maintain appropriate technical measures to protect Customer Data from unauthorized disclosure. The parties have elected not to enumerate specific named cryptographic standards (such as any particular cipher suite or protocol version) and instead rely on Vendor's existing information-security certification program as evidence of adequate protections. Vendor's obligations are limited to maintaining protections consistent with its applicable certifications.
+
+3. Security Testing. Vendor shall engage a qualified independent third-party security firm to conduct periodic security assessments of the systems used to process Customer Data. Vendor shall remediate critical findings within thirty (30) days of report issuance and high findings within sixty (60) days. Upon request, Vendor shall provide Customer with an executive summary of any assessment report and the remediation status. The parties have elected not to adopt a formal program for identifying and tracking individual weaknesses through a scored-severity framework, and instead rely on the assessment process described above.
+
+4. Personnel Controls. Vendor shall implement and maintain personnel-related controls to limit access to Customer Data to employees who require it for their assigned duties. Vendor shall promptly revoke access for personnel who no longer require it. Records of such access decisions shall be retained for at least twelve (12) months. The parties have elected not to describe specific named authentication methods or role-based mechanisms and instead rely on Vendor's information-security certification program as evidence of adequate personnel-protection measures.
+
+5. Security Incident Notification. In the event Vendor becomes aware of a confirmed security incident involving unauthorized access to, or disclosure, modification, or destruction of, Customer Data, Vendor shall notify Customer in writing within twenty-four (24) hours of confirmation of the incident. Such notification shall include: (a) a description of the nature of the incident; (b) the categories and approximate volume of Customer Data affected; (c) the likely consequences of the incident; (d) the measures Vendor has taken or proposes to take to address the incident, including to mitigate its possible adverse effects. Vendor shall cooperate fully with Customer's investigation and provide additional information as it becomes available.
+
+6. Audit Right. Customer (or its designated auditor) shall have the right, upon thirty (30) days prior written notice, to audit Vendor's information-security practices and controls for compliance with this Addendum, no more than once per calendar year unless a security incident or material breach is reasonably suspected. Audits shall be conducted during Vendor's normal business hours without unreasonable disruption to Vendor's operations.
+
+7. Subprocessors. Vendor shall maintain a current list of subprocessors that access or process Customer Data and shall make such list available to Customer upon request. Vendor shall notify Customer at least thirty (30) days prior to engaging any new subprocessor that will access or process Customer Data, giving Customer the opportunity to object. Vendor shall impose information-security obligations on all subprocessors at least as protective as those set forth in this Addendum.
+
+8. Data Residency. Customer Data shall be stored and processed exclusively within the geographic region(s) identified in the applicable SOW, unless Customer provides prior written consent to an alternative location. Vendor shall not transfer Customer Data to any jurisdiction outside the agreed data-residency region without Customer's written approval.
+
+9. Data Deletion on Termination. Within thirty (30) days following the effective date of expiration or termination of the MSA, Vendor shall securely delete or destroy all Customer Data in its possession or control, including all copies held by subprocessors, and shall certify such deletion in writing to Customer.
+
+10. Cyber Liability Insurance. During the term of the MSA and for two (2) years thereafter, Vendor shall maintain cyber liability and data-breach insurance coverage of not less than Five Million Dollars ($5,000,000) per occurrence. Upon request, Vendor shall provide Customer with a certificate of insurance evidencing this coverage.
+
+11. Security Training. Vendor shall provide annual information-security awareness training to all Vendor personnel who handle, access, or process Customer Data. Training shall address applicable legal and regulatory requirements, Vendor's information-security policies, phishing and social-engineering threats, incident-reporting procedures, and acceptable-use obligations. Records of training completion shall be maintained for at least twelve (12) months and made available to Customer upon request.
+
+12. Conflict. In the event of any conflict between this Addendum and the MSA with respect to information-security requirements applicable to Customer Data, the more protective requirement shall govern.
+
+Effective Date: April 1, 2026.
+
+ACME CORP (Customer)                              GLOBEX SOLUTIONS INC. (Vendor)
+
+Signed by: ____________________________           Signed by: ____________________________
+Title: Chief Information Security Officer         Title: Chief Technology Officer
+Date: April 1, 2026                               Date: April 1, 2026

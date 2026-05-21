@@ -3137,6 +3137,93 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // point at which the service-provider relationship has broken
   // down on the CCPA criteria.
   "dpa-ccpa-service-provider-missing-inability-to-comply-notification-fail.txt": ["USDPA-009"],
+
+  // Vendor Security Addendum with a preamble paragraph that
+  // affirmatively elects not to adopt the NIST SP 800-53
+  // controlled-vocabulary enumeration of specific security
+  // controls, and rewrites Section 2 (Data Protection), Section
+  // 3 (Security Testing), and Section 4 (Personnel Controls) to
+  // remove every anchor from all three ADDENDA-001
+  // present_patterns: no "access control", "multi-factor", or
+  // "MFA" (pattern 1); no "encryption at rest", "encryption in
+  // transit", or "TLS 1.x" (pattern 2); no "vulnerability
+  // management", "patching", "configuration management", or
+  // "logging and monitoring" (pattern 3). SOC 2 Type II, ISO
+  // 27001, incident notification, audit right, subprocessors,
+  // data residency, deletion, insurance, and training clauses
+  // are preserved so the rest of the ADDENDA-001..009 baseline
+  // still passes where it was passing. ADDENDA-001 (warning)
+  // fires — its present_patterns
+  // `/(access\s+control|multi[- ]factor|MFA)/i`,
+  // `/(encryption\s+(?:at\s+rest|in\s+transit)|TLS\s+1\.[23])/i`,
+  // and
+  // `/(vulnerability\s+management|patching|configuration\s+management|logging\s+and\s+monitoring)/i`
+  // are all absent from the document. NIST SP 800-53 is the
+  // consensus practitioner baseline for vendor security addenda;
+  // a pure "industry-standard" commitment without an enumerated
+  // control list is unenforceable because it gives the customer
+  // no specific controls to verify, audit, or reference in a
+  // breach proceeding.
+  "vendor-security-addendum-missing-specific-security-measures-fail.txt": ["ADDENDA-001"],
+
+  // BAA with the Section 164.308(a)(1)(ii)(C) sanctions clause
+  // replaced by a "Personnel Conduct" section that affirmatively
+  // disclaims the controlled-vocabulary mechanism contemplated by
+  // 45 C.F.R. § 164.308(a)(1)(ii)(C): "The parties have elected
+  // not to adopt the controlled-vocabulary mechanism contemplated
+  // by 45 C.F.R. § 164.308(a)(1)(ii)(C) for a formal written
+  // personnel-accountability program requiring documented
+  // corrective action against staff who mishandle PHI, and
+  // instead rely on Business Associate's general
+  // employment-law and human-resources obligations as the
+  // operative personnel-accountability framework." No
+  // "(sanction|discipline) (policy|workforce|employees)" anchor
+  // appears anywhere in the document. Every other clause
+  // (Permitted Uses, Safeguards, Reporting, Subcontractor
+  // Flow-Down, Access/Amendment/Accounting, Books and Records,
+  // Return or Destruction, Minimum Necessary, Mitigation,
+  // Workforce Training, Encryption, Risk Assessment, Subcontractor
+  // List, Governing Law, Notice, Term, Signature) is preserved
+  // so the rest of the BAA-001..045 baseline still passes where
+  // it was passing. BAA-034 (warning) fires — its present_pattern
+  // `/(sanction|discipline)\s+(policy|workforce|employees)/i`
+  // is no longer matched anywhere in the document. 45 C.F.R.
+  // § 164.308(a)(1)(ii)(C) requires covered entities and business
+  // associates to implement a sanctions policy for workforce
+  // members who fail to comply with the security policies and
+  // procedures of the entity; a BAA that disclaims the
+  // controlled-vocabulary personnel-accountability framework
+  // leaves OCR without the § 164.308(a)(1)(ii)(C) hook it relies
+  // on when auditing business-associate workforce management.
+  "baa-missing-sanctions-policy-fail.txt": ["BAA-034"],
+
+  // Vendor-form MSA with a new sentence in Section 2 (Services)
+  // that affirmatively disclaims any obligation to disclose
+  // whether Vendor uses automated reasoning, predictive, or
+  // machine-learning tooling in delivering the services, and
+  // explicitly states that "this Agreement does not incorporate
+  // by reference the NIST AI RMF transparency baseline or any
+  // other framework requiring disclosure of automated-tooling
+  // usage." No "artificial intelligence", "generative AI",
+  // "foundation model", "large language model", or "LLM" anchor
+  // appears anywhere in the document. Every other clause
+  // (Order of Precedence, Fees and Payment, Intellectual
+  // Property Ownership, Confidentiality, Limited Warranty, Mutual
+  // Indemnification, Limitation of Liability, Insurance,
+  // Termination, Governing Law, Entire Agreement) is preserved
+  // so the rest of the MSA-001..030 baseline still passes where
+  // it was passing. MSA-028 (info) fires — its present_pattern
+  // `/(artificial\s+intelligence|generative\s+AI|foundation\s+model|large\s+language\s+model|\bLLM\b)/i`
+  // is no longer matched anywhere in the document. NIST AI RMF
+  // establishes transparency about AI usage as the baseline
+  // consensus practice; an MSA that affirmatively disclaims any
+  // disclosure of automated-tooling usage leaves Customer without
+  // the contractual hook to learn whether Vendor's outputs are
+  // AI-generated, whether Customer Data is used for model
+  // training, and who owns IP in AI-generated deliverables —
+  // all questions that the AI Addendum playbook (§49) addresses
+  // only after the MSA-level AI-usage clause is confirmed present.
+  "msa-vendor-deep-missing-ai-usage-clause-fail.txt": ["MSA-028"],
 };
 
 describe("v3 fixture sanity", () => {
