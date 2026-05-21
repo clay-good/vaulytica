@@ -3306,6 +3306,83 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // reviewing cross-border transfers following the invalidation
   // of Privacy Shield.
   "dpa-controller-processor-missing-tia-reference-fail.txt": ["DPA-034"],
+
+  // Vendor Security Addendum with the vulnerability-management
+  // section extended by a sentence that affirmatively elects not to
+  // adopt the controlled-vocabulary mechanism contemplated by NIST
+  // SP 800-53 SI-5 for a formal vulnerability-disclosure policy,
+  // coordinated-disclosure program, or bug-bounty arrangement, and
+  // instead relies on direct customer escalation as the operative
+  // external-report pathway. No "vulnerability disclosure",
+  // "coordinated disclosure", "bug bounty", "responsible
+  // disclosure", or "VDP" anchor appears anywhere in the document.
+  // Every other clause (SOC 2, ISO 27001, AES-256, TLS 1.3, MFA,
+  // SDLC, 24-hour incident window, right to audit, subprocessors,
+  // data classification, signature block) is preserved so the rest
+  // of the ADDENDA-001..009 baseline still passes where it was
+  // passing. ADDENDA-005 (info) fires — its present_pattern
+  // `/(vulnerability\s+disclosure|coordinated\s+disclosure|bug\s+bounty|responsible\s+disclosure|VDP\b)/i`
+  // is no longer matched anywhere in the document. NIST SP 800-53
+  // SI-5 (Software and System Information / Vulnerability
+  // Monitoring and Scanning) establishes a documented
+  // vulnerability-disclosure pathway as the practitioner-accepted
+  // baseline; without a VDP, researchers who discover flaws have no
+  // defined channel, materially increasing the time-to-fix and the
+  // risk of public disclosure before remediation.
+  "vendor-security-addendum-missing-vuln-disclosure-fail.txt": ["ADDENDA-005"],
+
+  // BAA with the "Notice" clause replaced by a "Communications"
+  // section that affirmatively elects not to adopt the controlled-
+  // vocabulary mechanism contemplated by 45 C.F.R. § 164.410(c)
+  // for a formal written notice clause specifying delivery methods,
+  // addresses, and timing requirements, and instead relies on
+  // direct email or phone contact between the parties' designated
+  // representatives as the operative communication pathway. No
+  // "notice shall be", "notices under/hereunder shall", or "notice
+  // address" anchor appears anywhere in the document. Every other
+  // clause (Permitted Uses, Safeguards, Reporting, Subcontractor
+  // Flow-Down, Access/Amendment/Accounting, Books and Records,
+  // Return or Destruction, Minimum Necessary, Mitigation,
+  // Workforce Training, Encryption, Risk Assessment, Sanctions,
+  // Subcontractor List, Governing Law, Term, Effective Date,
+  // Signature) is preserved so the rest of the BAA-001..045
+  // baseline still passes where it was passing. BAA-040 (warning)
+  // fires — its present_pattern
+  // `/(notice\s+(shall|must)\s+be|notices\s+(under|hereunder|shall)|notice\s+address)/i`
+  // is no longer matched anywhere in the document. 45 C.F.R.
+  // § 164.410(c) prescribes the required content of breach
+  // notifications; without a notice clause naming delivery
+  // methods and addresses, breach notices may be challenged as
+  // defective under § 164.410(d), and the parties have no
+  // contractual anchor to determine when a notice is legally
+  // effective.
+  "baa-missing-notice-clause-fail.txt": ["BAA-040"],
+
+  // Multi-State US DPA with the preamble extended by a sentence
+  // that affirmatively elects not to adopt the controlled-
+  // vocabulary mechanism contemplated by Va. Code § 59.1-579 and
+  // Colo. Rev. Stat. § 6-1-1305 for a formal written processing-
+  // characterization clause, and instead relies on the description
+  // of Services in the MSA as the operative mechanism for
+  // communicating the character and scope of the processing
+  // activities. No "nature and purpose of processing" or "nature
+  // and purpose of the processing" anchor appears anywhere in the
+  // document. A Section 7 ("Categories and Duration") is retained
+  // so USDPA-013 (type of personal data) and USDPA-014 (duration)
+  // still pass; "documented instructions" appears in Sections 3,
+  // 5, and 6 so USDPA-011 still passes. Every other clause is
+  // preserved so the rest of the USDPA-001..025 baseline still
+  // passes where it was passing. USDPA-012 (warning) fires — its
+  // present_pattern
+  // `/nature\s+and\s+purpose\s+of\s+(?:the\s+)?processing/i`
+  // is no longer matched anywhere in the document. VCDPA, CPA,
+  // CTDPA, UCPA, TDPSA, OCPA, and DPDPA all require the
+  // processor contract to set out the nature and purpose of the
+  // processing as a named element; without this clause regulators
+  // (including the Virginia AG and Colorado AG) cannot quickly
+  // assess whether the downstream processing is scoped to the
+  // stated controller purpose.
+  "dpa-multi-state-us-missing-nature-and-purpose-fail.txt": ["USDPA-012"],
 };
 
 describe("v3 fixture sanity", () => {
