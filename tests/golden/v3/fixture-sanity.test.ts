@@ -3531,6 +3531,77 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // (confidentiality, security, breach notice) are textually unmoored
   // from the moment the underlying MSA terminates.
   "dpa-controller-processor-missing-survival-fail.txt": ["DPA-052"],
+
+  // GDPR Controller-to-Processor DPA with the preamble extended by a
+  // sentence that affirmatively elects not to include a separately
+  // captioned obligation requiring the Processor to keep a change-
+  // history of downstream processors available to Controller on
+  // request, instead relying on the advance-notice mechanism in
+  // Section 7 (Processor shall inform Controller of intended changes
+  // concerning the addition or replacement of other processors at
+  // least thirty days prior to such change) as the operative
+  // mechanism for downstream-processor change communication. No
+  // "record of sub-processors", "sub-processor history",
+  // "sub-processor log", or "maintain … sub-processor" anchor
+  // appears anywhere in the document. Section 7's prior-
+  // authorization and advance-notice language is preserved so DPA-015
+  // / DPA-016 still pass. DPA-053 (warning) fires — its
+  // present_patterns
+  // `/(record\s+of\s+sub[- ]?processors|sub[- ]?processor\s+(history|log)|maintain.{0,80}sub[- ]?processor)/is`
+  // are no longer matched anywhere in the document. GDPR Art. 28(2)
+  // contemplates that controllers retain visibility into the
+  // processor's downstream-processor changes over the life of the
+  // agreement; a single advance-notice obligation does not, by
+  // itself, give the controller after-the-fact access to the running
+  // change history that an audit or supervisory inspection requires.
+  "dpa-controller-processor-missing-subprocessor-records-fail.txt": ["DPA-053"],
+
+  // GDPR Controller-to-Processor DPA with the preamble extended by a
+  // sentence that affirmatively elects not to include a separately
+  // captioned clause restating the SCC Module Two requirement that
+  // any further disclosure of Personal Data to a third country
+  // recipient be subject to the same data protection obligations as
+  // set out in this Agreement, instead relying on the wholesale
+  // incorporation of Commission Implementing Decision (EU) 2021/914,
+  // Module Two contained in Section 13 of this DPA as the operative
+  // mechanism. No "onward transfer", "onward-transfer", or
+  // "Clause 8.8" anchor appears anywhere in the document. Section 13
+  // (Cross-Border Transfers and EU SCCs) is preserved so DPA-032 /
+  // DPA-033 / DPA-034 still pass where they were passing. DPA-054
+  // (warning) fires — its present_patterns
+  // `/(onward\s+transfer|clause\s+8\.8|onward[- ]transfer)/i`
+  // are no longer matched anywhere in the document. Commission
+  // Implementing Decision (EU) 2021/914, Clause 8.8 requires onward
+  // transfers to be subject to the same data protection obligations
+  // as the underlying transfer; relying on wholesale incorporation of
+  // the SCC text without a DPA-level restating clause leaves the
+  // controller without a textual anchor to enforce against the
+  // processor in respect of further disclosures.
+  "dpa-controller-processor-missing-onward-transfer-fail.txt": ["DPA-054"],
+
+  // GDPR Controller-to-Processor DPA with the preamble extended by a
+  // sentence that affirmatively elects not to include a separately
+  // captioned clause restating the SCC Module Two requirement that
+  // the Processor notify the Controller of legally-binding requests
+  // for disclosure of the Personal Data received from official bodies
+  // (and challenge such requests where lawfully permitted), instead
+  // relying on the wholesale incorporation of Commission Implementing
+  // Decision (EU) 2021/914, Module Two contained in Section 13 of
+  // this DPA as the operative mechanism. No "public authority",
+  // "government request", "law enforcement request", "Clause 14", or
+  // "Clause 15" anchor appears anywhere in the document. Section 13
+  // is preserved so DPA-032 / DPA-033 / DPA-034 still pass where they
+  // were passing. DPA-055 (warning) fires — its present_pattern
+  // `/(public\s+authority|government\s+request|law\s+enforcement\s+request|clause\s+14|clause\s+15)/i`
+  // is no longer matched anywhere in the document. Commission
+  // Implementing Decision (EU) 2021/914, Clauses 14 and 15 require
+  // the processor to notify the controller of legally-binding
+  // requests from public authorities and to challenge such requests
+  // where permitted; without a DPA-level restating clause, the
+  // Schrems II-mandated local-law analysis the controller must
+  // perform under Clause 14(a) lacks the textual contractual hook on
+  // which supervisory authorities expect to rely.
+  "dpa-controller-processor-missing-local-law-disclosure-fail.txt": ["DPA-055"],
 };
 
 describe("v3 fixture sanity", () => {
