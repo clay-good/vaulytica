@@ -107,6 +107,49 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // the early-warning protection that EoD cross-default triggers
   // are designed to provide.
   "banking-loan-agreement-missing-events-of-default-fail.txt": ["BNK-012"],
+
+  // Asset Purchase Agreement with the preamble extended by a sentence
+  // that affirmatively elects not to include a separately captioned
+  // retained-obligations schedule enumerating liabilities not assumed
+  // by Buyer (deliberately avoiding "excluded liabilities"). No
+  // "excluded liabilities" anchor appears anywhere in the document.
+  // MNA-023 (critical) fires — its present_pattern
+  // `/excluded\s+liabilities/i` is no longer matched anywhere in the
+  // document. The structural advantage of an APA is that Buyer assumes
+  // only specifically-identified liabilities; without a broad
+  // Excluded Liabilities clause the catch-all protection evaporates
+  // and Buyer faces unquantified successor-liability exposure.
+  "m-and-a-asset-purchase-missing-excluded-liabilities-fail.txt": ["MNA-023"],
+
+  // Copyright License Agreement with the preamble extended by a
+  // sentence that affirmatively elects not to include a separately
+  // captioned grant-scope clause specifying whether the license is
+  // exclusive or non-exclusive (deliberately avoiding "exclusive",
+  // "non-exclusive", and "sole"). Neither "exclusive / non-exclusive /
+  // sole" nor "in writing / signed / executed" appears anywhere in
+  // the document. IPL-020 (critical) fires — its two present_patterns
+  // `/(exclusive|non.?exclusive|sole)/i` and
+  // `/(in\s+writing|signed|executed)/i` are no longer matched
+  // anywhere in the document. Under 17 U.S.C. § 204(a) an exclusive
+  // copyright transfer must be in a signed writing; without a stated
+  // exclusivity designation neither party has a four-corners answer
+  // to whether the licensee holds exclusive or shared rights.
+  "ip-licensing-copyright-missing-exclusivity-fail.txt": ["IPL-020"],
+
+  // PHI Authorization with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately captioned
+  // time-limit clause (deliberately avoiding "expir*", "on [digit]",
+  // "by [digit]", "years from", "end of", and "conclusion of"). No
+  // expiration date or expiration event appears anywhere in the
+  // document. HC-014 (critical) fires — its two present_patterns
+  // `/(expir(es?|ation|ing)|expir\b)/i` and
+  // `/((on|by)\s+\d|years?\s+from|end\s+of|conclusion\s+of)/i`
+  // are no longer matched anywhere in the document. 45 C.F.R.
+  // § 164.508(c)(1)(v) requires an expiration date or event; an
+  // authorization without one creates an open-ended consent that
+  // HIPAA Privacy Rule compliance depends on the patient revoking
+  // rather than the authorization naturally lapsing.
+  "healthcare-phi-authorization-missing-expiration-fail.txt": ["HC-014"],
 };
 
 describe("v4 fixture sanity", () => {
