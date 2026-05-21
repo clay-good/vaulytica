@@ -3224,6 +3224,88 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // all questions that the AI Addendum playbook (§49) addresses
   // only after the MSA-level AI-usage clause is confirmed present.
   "msa-vendor-deep-missing-ai-usage-clause-fail.txt": ["MSA-028"],
+
+  // Vendor Security Addendum with a preamble paragraph that
+  // affirmatively elects not to adopt the NIST SP 800-53 SA-15 /
+  // SA-11 controlled-vocabulary software-build-assurance framework,
+  // and rewrites Section 2 (Development Practices) to remove every
+  // anchor from the ADDENDA-006 present_pattern: no
+  // "secure-development lifecycle", "SDLC", "SAST", "DAST",
+  // "secure coding standards", "secure coding practices", or
+  // "code review" phrase appears anywhere in the document. Every
+  // other baseline clause (SOC 2 Type II, ISO 27001, AES-256 /
+  // TLS 1.3 encryption, annual penetration test, MFA / access
+  // control, data classification, vulnerability disclosure policy,
+  // 48-hour incident notification, audit right, subprocessors,
+  // data residency, deletion, insurance, annual training,
+  // signature block) is preserved so the rest of the
+  // ADDENDA-001..009 baseline still passes where it was passing.
+  // ADDENDA-006 (info) fires — its present_pattern
+  // `/(secure[- ]development\s+lifecycle|\bSDLC\b|SAST|DAST|secure\s+coding\s+(?:standards|practices)|code\s+review)/i`
+  // is no longer matched anywhere in the document. NIST SP 800-53
+  // SA-15 (Development Process, Standards, and Tools) and SA-11
+  // (Developer Testing and Evaluation) establish a secure-
+  // development-lifecycle program — including static analysis,
+  // dynamic analysis, and peer review — as the consensus
+  // practitioner baseline for SaaS vendors; a Vendor Security
+  // Addendum that disclaims any named SDLC framework leaves
+  // Customer without a contractual hook to verify that
+  // vulnerabilities are caught before they reach production.
+  "vendor-security-addendum-missing-sdlc-reference-fail.txt": ["ADDENDA-006"],
+
+  // BAA with the 45 C.F.R. § 164.504(e) term clause replaced by
+  // a "Duration" section that affirmatively disclaims the
+  // controlled-vocabulary mechanism contemplated by 45 C.F.R.
+  // § 164.504(e) for a formal written term clause specifying an
+  // enumerated duration in calendar units, and instead relies on
+  // the co-terminous nature of the BAA with the underlying services
+  // agreement as the operative duration mechanism. No
+  // "term ... year/month/day", "term of this/the agreement", or
+  // "initial term" anchor appears anywhere in the document. Every
+  // other clause (Permitted Uses, Safeguards, Reporting,
+  // Subcontractor Flow-Down, Access/Amendment/Accounting, Books
+  // and Records, Return or Destruction, Minimum Necessary,
+  // Mitigation, Workforce Training, Encryption, Risk Assessment,
+  // Sanctions, Subcontractor List, Governing Law, Notice, Effective
+  // Date, Signature) is preserved so the rest of the BAA-001..045
+  // baseline still passes where it was passing. BAA-038 (warning)
+  // fires — its present_pattern
+  // `/(term\b.{0,40}(year|month|day)|term\s+of\s+(this\s+)?agreement|initial\s+term)/i`
+  // is no longer matched anywhere in the document. 45 C.F.R.
+  // § 164.504(e) requires BAAs to include a statement of the
+  // term of the agreement; without a clearly enumerated duration
+  // (e.g., co-terminous with the MSA for a stated number of years,
+  // or specifying an initial term with renewal mechanics), parties
+  // have no anchor for computing notice periods, breach-cure
+  // windows, or the timing of return-or-destruction obligations at
+  // termination.
+  "baa-missing-term-clause-fail.txt": ["BAA-038"],
+
+  // DPA (Controller to Processor) with a preamble paragraph that
+  // affirmatively elects not to adopt the controlled-vocabulary
+  // mechanism contemplated by Commission Implementing Decision
+  // (EU) 2021/914, Clause 14 for a formal written country-law-
+  // and-practice assessment document, and instead relies on
+  // Processor's in-house legal team review of third-country
+  // frameworks as the operative mechanism. No "transfer impact
+  // assessment", "TIA", "transfer risk assessment", "TRA", or
+  // "local laws and practices" anchor appears anywhere in the
+  // document. Every other clause (Article 28 subject-matter
+  // through deletion/return, EU SCCs Module 2 incorporation,
+  // Annex I) is preserved so the rest of the DPA-001..055
+  // baseline still passes where it was passing. DPA-034 (warning)
+  // fires — its present_pattern
+  // `/(transfer\s+impact\s+assessment|TIA\b|transfer\s+risk\s+assessment|TRA\b|local\s+laws\s+and\s+practices)/i`
+  // is no longer matched anywhere in the document. Schrems II /
+  // SCC Clause 14 requires parties to assess the laws and
+  // practices of the recipient country before making a transfer
+  // relying on SCCs; a DPA that disclaims the formal written
+  // assessment mechanism leaves the Controller without the
+  // documented due-diligence record that supervisory authorities
+  // (including the Irish DPC and the French CNIL) require when
+  // reviewing cross-border transfers following the invalidation
+  // of Privacy Shield.
+  "dpa-controller-processor-missing-tia-reference-fail.txt": ["DPA-034"],
 };
 
 describe("v3 fixture sanity", () => {
