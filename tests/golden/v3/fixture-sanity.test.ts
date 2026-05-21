@@ -3383,6 +3383,87 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // assess whether the downstream processing is scoped to the
   // stated controller purpose.
   "dpa-multi-state-us-missing-nature-and-purpose-fail.txt": ["USDPA-012"],
+
+  // Vendor Security Addendum with the preamble extended by a sentence
+  // that affirmatively elects not to adopt the controlled-vocabulary
+  // mechanism contemplated by NIST SP 800-53 RA-2 for a formal tiering
+  // or labeling scheme, and instead relies on the uniform protective
+  // controls described in the Addendum as the operative security posture
+  // for all Customer Data regardless of content. No "data
+  // classification", "sensitivity label", "sensitivity tier",
+  // "confidential tier", or "classify Customer Data / data as" anchor
+  // appears anywhere in the document. A VDP clause is added to Section 3
+  // so ADDENDA-005 still passes; AES-256, TLS 1.3, SOC 2 Type II, ISO
+  // 27001, MFA, SDLC, 24-hour incident window, right to audit,
+  // subprocessors, data residency, deletion, insurance, and training are
+  // all preserved so the rest of the ADDENDA-001..009 baseline still
+  // passes where it was passing. ADDENDA-007 (info) fires — its
+  // present_pattern
+  // `/(data\s+classification|sensitivity\s+(?:label|tier)|confidential\s+tier|classify\s+(?:customer\s+data|data\s+as))/i`
+  // is no longer matched anywhere in the document. NIST SP 800-53 RA-2
+  // (Asset Identification / Categorization) and the related SC-16
+  // control require an explicit information-classification or sensitivity-
+  // tiering scheme so that protective controls are applied
+  // proportionately; without such a scheme, all Customer Data is
+  // implicitly treated at a single (often lower) tier, leaving higher-
+  // risk personal data underprotected relative to the Vendor's nominal
+  // security posture.
+  "vendor-security-addendum-missing-data-classification-fail.txt": ["ADDENDA-007"],
+
+  // GDPR Controller-to-Processor DPA with the preamble extended by a
+  // sentence that affirmatively elects not to adopt the controlled-
+  // vocabulary mechanism contemplated by GDPR Art. 32 and Commission
+  // Implementing Decision (EU) 2021/914 for a separately captioned
+  // annex or appendix enumerating the specific security controls in
+  // place, and instead relies on Section 6 of the DPA as the operative
+  // mechanism for documenting the Processor's security posture. No
+  // "(annex|appendix|exhibit|schedule) (II|2|B) … (technical|
+  // organisational|TOM)" anchor or "annex of technical and
+  // organisational" phrase appears anywhere in the document. Annex I
+  // (categories of personal data) is retained so DPA-028 still passes.
+  // Every other clause (subject-matter, confidentiality, subprocessors,
+  // data-subject rights, Art. 32–36 assistance, breach notification,
+  // audit, deletion, SCCs) is preserved so the rest of the DPA-001..055
+  // baseline still passes where it was passing. DPA-039 (warning) fires
+  // — its present_patterns
+  // `/(annex|appendix|exhibit|schedule)\s+(II|2|B).{0,40}(technical|organisational|TOM)/i`
+  // and `/annex\s+of\s+technical\s+and\s+organisational/i`
+  // are no longer matched anywhere in the document. GDPR Art. 32 and
+  // SCC Annex II (Commission Implementing Decision (EU) 2021/914)
+  // require the processor agreement to include an annex that describes
+  // the technical and organisational measures applied; without this
+  // annex the DPA cannot demonstrate Art. 32 compliance in a supervisory
+  // authority inspection because the section-level description in the
+  // body lacks the specificity required by the SCC template.
+  "dpa-controller-processor-missing-tom-annex-fail.txt": ["DPA-039"],
+
+  // Multi-State US DPA with the preamble extended by a sentence that
+  // affirmatively elects not to adopt the controlled-vocabulary
+  // mechanism contemplated by Cal. Civ. Code § 1798.121 and analogous
+  // provisions of the VCDPA, CPA, and CTDPA for a separately captioned
+  // clause addressing heightened-risk categories of personal
+  // information, and instead relies on the uniform protective controls
+  // in the DPA as the operative security posture for all personal
+  // information regardless of category. No "sensitive personal
+  // information", "sensitive personal data", or "sensitive data" anchor
+  // appears anywhere in the document. A Section 7 ("Categories and
+  // Duration") is retained so USDPA-013 (type of personal data) and
+  // USDPA-014 (duration) still pass; "nature and purpose of the
+  // processing" appears in the preamble so USDPA-012 still passes;
+  // "documented instructions" appears in Sections 3 and 4 so USDPA-011
+  // still passes. Every other clause is preserved so the rest of the
+  // USDPA-001..025 baseline still passes where it was passing. USDPA-022
+  // (warning) fires — its present_pattern
+  // `/sensitive\s+(personal\s+)?(?:information|data)/i`
+  // is no longer matched anywhere in the document. CCPA/CPRA, CPA,
+  // CTDPA, and VCDPA each define a category of "sensitive personal
+  // information" or "sensitive data" and impose heightened obligations
+  // (including opt-out rights and purpose limitations); without a
+  // dedicated sensitive-data clause a regulator (including the California
+  // Privacy Protection Agency or the Colorado AG) cannot determine
+  // whether the parties have identified and separately scoped the higher-
+  // risk data flows required by Cal. Civ. Code § 1798.121(a).
+  "dpa-multi-state-us-missing-sensitive-pi-clause-fail.txt": ["USDPA-022"],
 };
 
 describe("v3 fixture sanity", () => {
