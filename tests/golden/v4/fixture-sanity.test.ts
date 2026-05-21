@@ -150,6 +150,53 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // HIPAA Privacy Rule compliance depends on the patient revoking
   // rather than the authorization naturally lapsing.
   "healthcare-phi-authorization-missing-expiration-fail.txt": ["HC-014"],
+
+  // Confidential Settlement Agreement with the preamble extended by a
+  // sentence that affirmatively elects not to include a separately
+  // captioned compensation clause (deliberately avoiding "settlement
+  // payment", "settlement amount", "settlement sum", "consideration",
+  // "in consideration", and any "$NNN" dollar figure). None of those
+  // anchors appears anywhere in the document. SET-006 (critical)
+  // fires — its three present_patterns
+  // `/(settlement\s+payment|settlement\s+amount|settlement\s+sum)/i`,
+  // `/(consideration|in\s+consideration)/i`, and `/\$\s*[\d,]+/`
+  // are no longer matched anywhere in the document. Without recited
+  // consideration the agreement is vulnerable to a failure-of-
+  // consideration defense; the parties cannot verify the bargained-for
+  // exchange without a stated settlement payment amount.
+  "settlement-confidential-missing-consideration-fail.txt": ["SET-006"],
+
+  // Anti-Bribery and Anti-Corruption Policy with the preamble
+  // extended by a sentence that affirmatively elects not to include a
+  // separately captioned counterparty-vetting section (deliberately
+  // avoiding "third party / parties", "agent(s)", "intermediary /
+  // intermediaries", "distributor", "due diligence", "screening",
+  // and "background"). Neither present_pattern for third-party
+  // identification nor due-diligence review appears anywhere in the
+  // document. POL-007 (critical) fires — its two present_patterns
+  // `/(third.?part(y|ies)|agents?|intermediar(y|ies)|distributor)/i`
+  // and `/(due\s+diligence|screening|background)/i` are no longer
+  // matched anywhere in the document. DOJ-SEC FCPA Resource Guide
+  // identifies third-party intermediaries as the most common FCPA
+  // channel; without a vetting obligation the policy has no textual
+  // hook to trigger risk-based review before a high-risk engagement.
+  "compliance-anti-bribery-missing-third-party-diligence-fail.txt": ["POL-007"],
+
+  // Construction Contract with the preamble extended by a sentence
+  // that affirmatively elects not to include a separately captioned
+  // pricing clause (deliberately avoiding "contract sum", "stipulated
+  // sum", "guaranteed maximum price", "GMP", and "cost-plus") and a
+  // separately captioned payment-cadence clause (deliberately avoiding
+  // "progress payments" and "payment schedule / terms"). Neither
+  // present_pattern for pricing nor payment cadence appears anywhere
+  // in the document. CON-003 (critical) fires — its two present_patterns
+  // `/(contract\s+sum|stipulated\s+sum|guaranteed\s+maximum\s+price|gmp|cost.plus)/i`
+  // and `/(progress\s+payments?|payment\s+(schedule|terms))/i` are no
+  // longer matched anywhere in the document. AIA A101 §§ 4-5 require
+  // the contract sum and progress-payment schedule; without a stated
+  // pricing model and draw cadence the pricing basis for any change-
+  // order dispute is undefined.
+  "construction-contract-missing-contract-sum-fail.txt": ["CON-003"],
 };
 
 describe("v4 fixture sanity", () => {
