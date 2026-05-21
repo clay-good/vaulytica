@@ -3602,6 +3602,75 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // perform under Clause 14(a) lacks the textual contractual hook on
   // which supervisory authorities expect to rely.
   "dpa-controller-processor-missing-local-law-disclosure-fail.txt": ["DPA-055"],
+
+  // Multi-State US DPA with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately captioned
+  // schedule enumerating the kinds of consumer records the Service
+  // Provider handles, instead relying on the description of Services
+  // in the MSA and the Statement of Work as the operative mechanism
+  // for identifying the subject-matter of the processing. No
+  // "type of personal data", "type of personal information",
+  // "category of personal data/information", or "categories of
+  // personal data/information" anchor appears anywhere in the
+  // document. Every other clause (Business-Purpose, prohibited acts,
+  // VCDPA/CPA/CTDPA/UCPA processor obligations, sub-processor flow-
+  // down, consumer rights assistance, annual assessment, breach
+  // notification, deletion on termination, certification) is
+  // preserved so the rest of the USDPA-001..025 baseline still passes
+  // where it was passing. USDPA-013 (warning) fires — its
+  // present_pattern
+  // `/(type|categor(?:y|ies))\s+of\s+(personal\s+)?(?:data|information)/i`
+  // is no longer matched anywhere in the document. Va. Code § 59.1-579
+  // and Colo. Rev. Stat. § 6-1-1305 each require the processor
+  // contract to identify the type of personal data processed as a
+  // named element; without a textual anchor a regulator cannot
+  // determine the in-scope record set from the four corners of the
+  // DPA.
+  "dpa-multi-state-us-missing-type-of-data-fail.txt": ["USDPA-013"],
+
+  // Multi-State US DPA with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately captioned clause
+  // stating how long the Service Provider may handle the consumers'
+  // personal information, instead relying on the term and termination
+  // provisions of the MSA as the operative mechanism for fixing the
+  // temporal scope. No "duration of processing", "duration of the
+  // processing", "processing shall continue", or "processing will
+  // continue" anchor appears anywhere in the document. Every other
+  // clause is preserved so the rest of the USDPA-001..025 baseline
+  // still passes where it was passing. USDPA-014 (warning) fires —
+  // its present_pattern
+  // `/duration\s+of\s+(?:the\s+)?processing|processing\s+(?:shall|will)\s+continue/i`
+  // is no longer matched anywhere in the document. Each state's
+  // processor-contract statute (Va. Code § 59.1-579, Colo. Rev. Stat.
+  // § 6-1-1305, Conn. Gen. Stat. § 42-520, Utah Code § 13-61-301)
+  // requires the duration of the processing to be set out; relying on
+  // the MSA term alone leaves the controller without a DPA-level
+  // anchor to time-box the service provider's authority to handle the
+  // personal information.
+  "dpa-multi-state-us-missing-duration-fail.txt": ["USDPA-014"],
+
+  // Multi-State US DPA with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately captioned
+  // proportionality principle limiting the Service Provider's
+  // collection of personal information to what is required for the
+  // Business Purpose, instead relying on the Business-Purpose
+  // definition in Section 1 and the prohibited-acts enumeration in
+  // Section 2 as the operative mechanism for confining the Service
+  // Provider's collection to the disclosed scope. No
+  // "data minimization", "data minimisation", "reasonably necessary",
+  // or "necessary and proportionate" anchor appears anywhere in the
+  // document. Every other clause is preserved so the rest of the
+  // USDPA-001..025 baseline still passes where it was passing.
+  // USDPA-024 (warning) fires — its present_pattern
+  // `/(data\s+minim(?:ization|isation)|reasonably\s+necessary|necessary\s+and\s+proportionate)/i`
+  // is no longer matched anywhere in the document. Cal. Civ. Code
+  // § 1798.100(c), Va. Code § 59.1-578, Colo. Rev. Stat. § 6-1-1304,
+  // Conn. Gen. Stat. § 42-520(a), and Utah Code § 13-61-201 each
+  // incorporate a data-minimization principle requiring collection
+  // limited to what is reasonably necessary and proportionate; without
+  // a DPA-level minimization anchor the controller has no textual
+  // hook to enforce the statutory floor against the service provider.
+  "dpa-multi-state-us-missing-data-minimization-fail.txt": ["USDPA-024"],
 };
 
 describe("v3 fixture sanity", () => {
