@@ -3740,6 +3740,73 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // (e.g., per-tenant adapter weights, retrieval-augmentation
   // embeddings) the prohibition was breached to create.
   "ai-addendum-missing-fine-tuning-deletion-fail.txt": ["ADDENDA-016"],
+
+  // AI Addendum with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately captioned
+  // definitions section setting out the meanings of the core AI
+  // terms relied on throughout the AI Addendum, instead relying on
+  // ordinary commercial usage of those terms as understood in the
+  // industry from time to time and on the descriptions of Services
+  // contained in the MSA and the applicable Statement of Work as the
+  // operative mechanism for resolving any ambiguity. Throughout the
+  // operative text, "generative AI" / "foundation model" / "large
+  // language model" / "LLM" / "training data" anchors are dropped
+  // (replaced with neutral phrasings such as "AI systems" and "model
+  // inputs"); the "(Output|Outputs) … (means|shall mean)" anchor is
+  // likewise absent. ADDENDA-010 (warning) fires — its three
+  // present_patterns
+  //   `/(generative\s+AI|foundation\s+model|large\s+language\s+model|\bLLM\b)/i`
+  //   `/(\b)(Output|Outputs)\b.{0,40}(?:means|shall\s+mean)/i`
+  //   `/training\s+data/i`
+  // are no longer matched anywhere in the document. NIST AI RMF and
+  // practitioner posture both expect definitions to anchor the
+  // operative obligations of an AI Addendum; without textual
+  // definitions, every other AI-addendum clause is exposed to
+  // ordinary-meaning drift.
+  "ai-addendum-missing-ai-definitions-fail.txt": ["ADDENDA-010"],
+
+  // EULA with the preamble extended by a sentence that affirmatively
+  // elects not to include a separately captioned EU-consumer-law-
+  // minimums clause referencing the European Union digital-content
+  // and consumer-rights directives by their formal citation,
+  // instead relying on a generic Section 10 consumer-protection-
+  // savings provision as the operative mechanism. No
+  // "Digital Content Directive", "Directive (EU) 2019/770",
+  // "Consumer Rights Directive", or "Directive 2011/83" anchor
+  // appears anywhere in the document, and no "consumer rights cannot
+  // be limited / are not waived" phrasing appears either. ADDENDA-018
+  // (info) fires — its present_patterns
+  //   `/(Digital\s+Content\s+Directive|Directive\s+\(?EU\)?\s*2019\/770|Consumer\s+Rights\s+Directive|Directive\s+2011\/83)/i`
+  //   `/(consumer\s+rights\s+(?:cannot\s+be|are\s+not)\s+(?:limited|waived))/i`
+  // are no longer matched anywhere in the document. EU consumer law
+  // (Directive (EU) 2019/770 on digital content and Directive
+  // 2011/83/EU on consumer rights) cannot be contracted around for
+  // consumer-facing EULAs; a generic non-waiver savings clause does
+  // not put an EU consumer on textual notice of the directive-level
+  // minimums to which they are entitled.
+  "eula-missing-eu-consumer-law-fail.txt": ["ADDENDA-018"],
+
+  // GDPR Controller-to-Processor DPA with the preamble extended by
+  // a sentence that affirmatively elects not to include a separately
+  // captioned formal-communications clause stating how formal
+  // communications between the parties (including breach notices)
+  // are to be delivered, instead relying on the corresponding
+  // mechanism in the MSA. No "notice shall be" / "notice must be" /
+  // "notices under" / "notices hereunder" / "notices shall" /
+  // "notice address" anchor appears anywhere in the document.
+  // Section 10 (Breach Notification under GDPR Art. 33) is preserved
+  // but uses "inform" rather than the trigger phrase, and Section 14
+  // (Survival) is preserved so DPA-052 still passes. DPA-051
+  // (warning) fires — its present_pattern
+  //   `/(notice\s+(shall|must)\s+be|notices\s+(under|hereunder|shall)|notice\s+address)/i`
+  // is no longer matched anywhere in the document. GDPR Art. 33(2)
+  // contemplates that the processor "shall notify" the controller of
+  // any personal data breach without undue delay; a DPA without a
+  // formal-communications clause leaves the parties without a textual
+  // anchor for the delivery method, addressee, and timing of breach
+  // notices and other communications that ride on top of that
+  // statutory duty.
+  "dpa-controller-processor-missing-notice-clause-fail.txt": ["DPA-051"],
 };
 
 describe("v3 fixture sanity", () => {
