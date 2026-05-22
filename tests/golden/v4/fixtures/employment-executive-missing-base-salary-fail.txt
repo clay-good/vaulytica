@@ -1,0 +1,9 @@
+Executive Employment Agreement
+
+This Executive Employment Agreement is entered into between Employer, Northwind Corp., a Delaware corporation, and Executive, Jane Doe, residing in New York. Employer hereby employs Executive as Chief Executive Officer (CEO). The parties have elected not to include a separately captioned cash-compensation schedule within this Executive Employment Agreement, relying instead on a separately executed compensation letter and the Employer's standard payroll practices as the operative mechanism for fixing Executive's periodic cash remuneration, any year-end or performance-related premium payable to Executive, and any other monetary entitlements that may arise out of the employment relationship.
+
+Equity Compensation. Executive shall be granted 100,000 stock options vesting over four years with a one-year cliff.
+
+Term and Termination. The term shall be at-will. Employer may terminate Executive's employment for Cause or without Cause. Upon termination without Cause, Executive shall be entitled to severance equal to twelve (12) months of cash remuneration.
+
+Restrictive Covenants. During employment and for twelve (12) months thereafter, Executive shall not solicit Employer's customers or employees and shall not compete with Employer in the same line of business in the United States.

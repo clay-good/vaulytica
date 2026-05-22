@@ -241,6 +241,50 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // judgment creditors can reach the beneficial interest and defeat
   // the trust's estate-planning purpose.
   "trust-revocable-living-missing-spendthrift-fail.txt": ["EST-016"],
+
+  // Bylaws with the preamble extended by a sentence that affirmatively
+  // elects not to include a separately captioned director-and-officer
+  // protection article, relying instead on the residual authority
+  // supplied by DGCL § 145 and separately executed advancement-of-
+  // expenses contracts. No "indemnification / indemnify / indemnified"
+  // anchor appears anywhere in the document. GOV-008 fires — its
+  // present_pattern `/indemnif(ication|y|ied)/i` is no longer matched
+  // anywhere in the document. DGCL § 145 authorizes indemnification
+  // but is not self-executing; without a bylaw clause electing into the
+  // statutory authority, directors and officers lose the contractual
+  // hook for the protection.
+  "governance-bylaws-missing-indemnification-fail.txt": ["GOV-008"],
+
+  // Executive Employment Agreement with the preamble extended by a
+  // sentence that affirmatively elects not to include a separately
+  // captioned cash-compensation schedule, relying instead on a
+  // separately executed compensation letter and the Employer's
+  // standard payroll practices. No "base salary", "annual bonus /
+  // incentive", or "target bonus" anchor appears anywhere in the
+  // document. EMP-002 fires — its three present_patterns
+  // `/base\s+salary/i`, `/annual\s+(bonus|incentive)/i`, and
+  // `/target\s+bonus/i` are no longer matched anywhere in the document.
+  // Reg S-K Item 402 requires disclosure of compensation arrangements
+  // for named executive officers; without a stated base salary and
+  // bonus structure the central economic terms of the engagement are
+  // off the four corners.
+  "employment-executive-missing-base-salary-fail.txt": ["EMP-002"],
+
+  // Cookie Notice with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately captioned
+  // consent-withdrawal section, relying instead on the user's ability
+  // to clear stored cookies through their browser controls and lodge a
+  // supervisory-authority complaint. Neither a "withdraw / change /
+  // update / revoke ... consent" anchor nor a "cookie preferences /
+  // cookie settings / preference center" anchor appears anywhere in
+  // the document. PRV-004 fires — its two present_patterns
+  // `/(withdraw|change|update|revoke).{0,40}consent/i` and
+  // `/(cookie\s+(preferences?|settings)|preference\s+center)/i` are no
+  // longer matched anywhere in the document. GDPR Art. 7(3) requires
+  // that withdrawing consent be as easy as giving it; routing the user
+  // to generic browser controls fails the equal-prominence standard
+  // EDPB Guidelines 5/2020 contemplate.
+  "privacy-cookie-notice-missing-withdraw-consent-fail.txt": ["PRV-004"],
 };
 
 describe("v4 fixture sanity", () => {
