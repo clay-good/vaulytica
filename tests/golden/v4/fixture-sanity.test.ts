@@ -197,6 +197,50 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // pricing model and draw cadence the pricing basis for any change-
   // order dispute is undefined.
   "construction-contract-missing-contract-sum-fail.txt": ["CON-003"],
+
+  // Commercial General Liability Policy Summary with the preamble
+  // extended by a sentence that affirmatively elects not to include a
+  // separately captioned economic-terms provision (deliberately
+  // avoiding "premium", "deductible", "self-insured retention", and
+  // "SIR"). None of those anchors appears anywhere in the document.
+  // INS-004 (critical) fires — its two present_patterns
+  // `/premium/i` and
+  // `/(deductible|self.?insured\s+retention|sir)/i` are no longer
+  // matched anywhere in the document. Premium + deductible / SIR are
+  // the economic core of an insurance policy; without a stated
+  // premium and the insured's retained-risk threshold, the parties
+  // cannot verify the consideration paid or the attachment point at
+  // which the insurer's payment obligation begins.
+  "insurance-policy-summary-missing-premium-deductible-fail.txt": ["INS-004"],
+
+  // Form D Narrative with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately captioned
+  // safe-harbor-identification provision (deliberately avoiding
+  // "Rule 504 / 506 / 506(b) / 506(c)" and "exempt / exemption").
+  // None of those anchors appears anywhere in the document. REG-002
+  // fires — its two present_patterns
+  // `/(rule\s+50[46]|rule\s+506\(b\)|rule\s+506\(c\))/i` and
+  // `/(exempt|exemption)/i` are no longer matched anywhere in the
+  // document. Form D Item 6 requires identification of the exemption
+  // claimed; the difference between 506(b) (no general solicitation,
+  // reasonable belief) and 506(c) (general solicitation permitted,
+  // verified accredited status) is the central regulatory question
+  // for a Reg D offering and must be stated.
+  "regulatory-form-d-missing-exemption-fail.txt": ["REG-002"],
+
+  // Revocable Living Trust with the preamble extended by a sentence
+  // that affirmatively elects not to include a separately captioned
+  // third-party-claim-protection provision (deliberately avoiding
+  // "spendthrift", "creditor", "involuntary transfer", and
+  // "attachment"). None of those anchors appears anywhere in the
+  // document. EST-016 fires — its two present_patterns `/spendthrift/i`
+  // and `/(creditor|involuntary\s+transfer|attachment)/i` are no
+  // longer matched anywhere in the document. UTC § 502 enforces
+  // spendthrift provisions restraining both voluntary and involuntary
+  // transfers of beneficial interests; without one, a beneficiary's
+  // judgment creditors can reach the beneficial interest and defeat
+  // the trust's estate-planning purpose.
+  "trust-revocable-living-missing-spendthrift-fail.txt": ["EST-016"],
 };
 
 describe("v4 fixture sanity", () => {
