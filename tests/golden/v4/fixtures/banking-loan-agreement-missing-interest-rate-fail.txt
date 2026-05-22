@@ -1,0 +1,11 @@
+Loan Agreement
+
+This Loan Agreement is entered into between Lender, Northwind Bank N.A., and Borrower, Acme Operating Co. The Lender hereby agrees to extend credit to the Borrower on the terms set forth herein. The parties have elected not to include a separately titled pricing provision within this Loan Agreement stating the per-annum cost of the credit, the reference index against which any variable component is reset, the premium added to that index, or any minimum or maximum rate boundary, relying instead on the Lender's published standard rate schedule and the separate Pricing Letter as the operative mechanism for determining all amounts payable on account of the time-value of the principal.
+
+Loan Amount. The Lender shall make available to Borrower a term loan in the principal amount of $5,000,000.
+
+Repayment. Principal and any amounts owed shall be repaid in equal monthly installments over sixty (60) months commencing on the first month after the Closing Date.
+
+Events of Default. The occurrence of any of the following shall constitute an Event of Default: (a) failure to pay any amount when due; (b) breach of any covenant; (c) bankruptcy or insolvency of Borrower.
+
+Collateral. The Loan is secured by a first-priority security interest in substantially all of Borrower's personal property pursuant to a separate Security Agreement.

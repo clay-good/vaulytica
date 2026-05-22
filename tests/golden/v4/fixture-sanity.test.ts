@@ -285,6 +285,48 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // to generic browser controls fails the equal-prominence standard
   // EDPB Guidelines 5/2020 contemplate.
   "privacy-cookie-notice-missing-withdraw-consent-fail.txt": ["PRV-004"],
+
+  // Loan Agreement with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately titled pricing
+  // provision (deliberately avoiding "SOFR / prime rate / LIBOR",
+  // "margin / spread / basis points / bps", and "floor / cap"). The
+  // Interest section is removed. None of those anchors appears anywhere
+  // in the document. BNK-008 fires — its three present_patterns
+  // `/(sofr|prime\s+rate|libor)/i`,
+  // `/(margin|spread|basis\s+points|bps)/i`, and
+  // `/(floor|cap|cap\s+and\s+floor)/i` are no longer matched anywhere
+  // in the document. Without a stated index, margin, and floor the
+  // pricing of the credit is off the four corners; post-LIBOR
+  // transition (June 2023) the index is SOFR-based and the rate-reset
+  // mechanic must be in the agreement, not in a side letter.
+  "banking-loan-agreement-missing-interest-rate-fail.txt": ["BNK-008"],
+
+  // SAFE with the preamble extended by a sentence that affirmatively
+  // elects not to include a separately captioned conversion-trigger
+  // definition (deliberately avoiding "equity financing", "preferred
+  // stock financing", and "next priced round"). None of those anchors
+  // appears anywhere in the document. EQT-002 fires — its three
+  // present_patterns `/equity\s+financing/i`,
+  // `/preferred\s+stock\s+financing/i`, and `/next\s+priced\s+round/i`
+  // are no longer matched anywhere in the document. Without a defined
+  // Equity Financing the SAFE cannot convert; YC's post-money template
+  // uses "Equity Financing" or "Standard Preferred Stock" as the
+  // conversion trigger and the absence of an in-document definition
+  // leaves the investor with no four-corners trigger for conversion.
+  "equity-safe-missing-conversion-event-fail.txt": ["EQT-002"],
+
+  // Triple Net Lease with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately captioned
+  // ad-valorem-charge pass-through provision (deliberately avoiding
+  // "real estate taxes", "impositions", and "property taxes"). None
+  // of those anchors appears anywhere in the document. RE-002 fires —
+  // its two present_patterns `/real\s+estate\s+taxes?/i` and
+  // `/(impositions|property\s+taxes)/i` are no longer matched anywhere
+  // in the document. Direct payment shifts tax-bill risk; reimbursement
+  // keeps landlord on the bill and creates timing disputes — an NNN
+  // lease must specify which mechanic governs to keep both parties
+  // out of an avoidable post-loss allocation fight.
+  "real-estate-net-lease-missing-tax-passthrough-fail.txt": ["RE-002"],
 };
 
 describe("v4 fixture sanity", () => {
