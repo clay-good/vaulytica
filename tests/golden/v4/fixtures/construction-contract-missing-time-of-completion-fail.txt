@@ -1,0 +1,9 @@
+Construction Contract — Owner-Contractor Agreement
+
+This Construction Contract is entered into between Owner, Hospital Developer LLC, and Contractor, General Builder Inc., for the construction of the Project located at 200 Medical Park Drive, Houston, TX. The parties have elected not to include a separately captioned schedule-and-delay-remedy provision within this Contract setting forth the date by which the Work must reach the major performance milestones, the date by which the punch list must be closed out, or any per-day stipulated remedy for owner-suffered timing harm, relying instead on the Project Manager's published schedule of values and the separately executed Master Schedule to govern any timing dispute between the parties.
+
+Contract Sum. The Contract Sum payable to Contractor for performance of the Work is $12,500,000, subject to additions and deductions by Change Order in accordance with AIA Document A201 General Conditions.
+
+Payment. The Contractor shall submit monthly Applications for Payment supported by AIA G702/G703 forms. Retainage of 10% shall be withheld from each progress payment until Final Acceptance of the Project.
+
+Insurance and Bonds. Contractor shall maintain commercial general liability and worker's compensation insurance and shall furnish a Performance Bond and Payment Bond each in the full amount of the Contract Sum.

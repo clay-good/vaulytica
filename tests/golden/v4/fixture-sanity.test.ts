@@ -327,6 +327,59 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // lease must specify which mechanic governs to keep both parties
   // out of an avoidable post-loss allocation fight.
   "real-estate-net-lease-missing-tax-passthrough-fail.txt": ["RE-002"],
+
+  // Anti-Bribery Policy with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately captioned
+  // non-US-statute applicability provision (deliberately avoiding
+  // "UK Bribery Act", "UKBA", "Bribery Act 2010", "failure to prevent",
+  // "cross-border", and "adequate procedures"). The Compliance-with-Law
+  // section drops the UKBA reference. None of those anchors appears
+  // anywhere in the document. POL-010 fires — its two present_patterns
+  // `/(uk\s+bribery\s+act|ukba|bribery\s+act\s+2010)/i` and
+  // `/(failure\s+to\s+prevent|cross.border|adequate\s+procedures)/i`
+  // are no longer matched anywhere in the document. UKBA is broader
+  // than FCPA — commercial bribery, the "failure to prevent bribery"
+  // corporate offense, no facilitating-payments exception, broad
+  // jurisdictional reach. A policy that ignores the stricter regime
+  // leaves the multinational employer exposed to the criminal-corporate
+  // theory the SFO has used since 2017.
+  "compliance-anti-bribery-missing-ukba-cross-border-fail.txt": ["POL-010"],
+
+  // Construction Contract with the preamble extended by a sentence
+  // that affirmatively elects not to include a separately captioned
+  // schedule-and-delay-remedy provision (deliberately avoiding
+  // "substantial completion", "final completion", "completion date",
+  // "liquidated damages", "delay damages", and "no damages for delay").
+  // The Schedule section is removed; the Payment section's retainage
+  // anchor reads "until Final Acceptance" instead of "until Substantial
+  // Completion". None of those anchors appears anywhere in the
+  // document. CON-004 fires — its two present_patterns
+  // `/(substantial\s+completion|final\s+completion|completion\s+date)/i`
+  // and `/(liquidated\s+damages|delay\s+damages|no\s+damages\s+for\s+delay)/i`
+  // are no longer matched anywhere in the document. AIA A101 § 3
+  // requires commencement, substantial-completion, and final-completion
+  // dates; without them, schedule slip — the single largest source of
+  // construction disputes — has no contractually defined trigger for
+  // owner-suffered delay damages.
+  "construction-contract-missing-time-of-completion-fail.txt": ["CON-004"],
+
+  // PHI Authorization with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately captioned
+  // cancellation-mechanic provision (deliberately avoiding "revoke",
+  // "revoking", "revocation", "in writing", "written notice", "except",
+  // and "reliance"). The Expiration section drops the revocation
+  // sentence; the Patient Rights section replaces "except as permitted
+  // by" with "subject to the limits set forth in" to avoid the
+  // "except" anchor. None of those anchors appears anywhere in the
+  // document. HC-015 fires — its three present_patterns
+  // `/(revoke|revoking|revocation)/i`, `/(in\s+writing|written\s+notice)/i`,
+  // and `/(except|reliance)/i` are no longer matched anywhere in the
+  // document. 45 C.F.R. § 164.508(c)(2)(i) requires a statement of
+  // the right to revoke in writing and the exceptions; without one
+  // the patient has no four-corners hook to withdraw consent and the
+  // covered entity has no instruction for when reliance-based
+  // disclosures may still proceed.
+  "healthcare-phi-authorization-missing-right-to-revoke-fail.txt": ["HC-015"],
 };
 
 describe("v4 fixture sanity", () => {
