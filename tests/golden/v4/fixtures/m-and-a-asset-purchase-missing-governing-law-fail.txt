@@ -1,0 +1,11 @@
+Asset Purchase Agreement
+
+This Asset Purchase Agreement is entered into between Buyer, Acquirer Inc., a Delaware corporation, and Seller, Target Corp., a Delaware corporation. The Buyer agrees to purchase from the Seller substantially all of the Seller's assets used in the Business. The parties have elected not to include a separately captioned choice-of-law and venue-selection provision within this Agreement, relying instead on the state-law default rules applicable to transactions of this character and the parties' separately executed side letter addressing dispute resolution.
+
+Purchase Price. The aggregate purchase price for the Acquired Assets is $25,000,000, payable in cash at the Closing.
+
+Assumed Liabilities. The Buyer shall assume only the liabilities expressly set forth on Schedule 2.4 and shall not assume any other liabilities of the Seller.
+
+Excluded Liabilities. All liabilities and obligations of the Seller not expressly listed on Schedule 2.4 as Assumed Liabilities shall remain the sole responsibility of the Seller and shall constitute Excluded Liabilities for all purposes of this Agreement.
+
+Representations and Warranties. Each party makes the representations and warranties set forth herein. Indemnification: each party indemnifies the other for breaches of representations.

@@ -835,6 +835,67 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // landlord-tenant disputes.
   "real-estate-net-lease-missing-maintenance-repair-fail.txt": ["RE-004"],
 
+  // ── Leg 4, batch 5 — fourth failure mode (ip-licensing / m-and-a / regulatory-prose) ──
+
+  // Author's Rights License Agreement (pinned to the `copyright-license`
+  // playbook) with the preamble extended by a sentence that affirmatively
+  // elects not to include a separately captioned enumeration of the specific
+  // statutory exclusive rights being made available to Licensee hereunder
+  // (deliberately avoiding "reproduce / reproduc", "copy", "distribut",
+  // "display", "perform", "derivative works", "section 106", and
+  // "17 u.s.c. § 106"). The document replaces "Copyright License Agreement"
+  // with "Author's Rights License Agreement", replaces all "copyright"
+  // occurrences with "authorship rights" or "creative work" so the
+  // substring "copy" never appears, and substitutes "utilize and exploit
+  // commercially" for the "reproduce, distribute, publicly display, and
+  // publicly perform" grant. IPL-021 fires — its two present_patterns
+  // `/(reproduc|copy|distribut|display|perform|derivative\s+works?)/i` and
+  // `/(section\s+106|17\s+u\.?s\.?c\.?\s+§?\s*106)/i` are no longer matched
+  // anywhere in the document. 17 U.S.C. § 106 enumerates six exclusive rights
+  // (reproduction, distribution, display, performance, derivative works, and
+  // digital audio recording); a license that does not specify which of those
+  // rights is granted leaves the licensee without a four-corners anchor for
+  // the scope of use permitted and exposes both parties to infringement claims
+  // whenever the licensee's exploitation exceeds a court's implied-license
+  // construction of the vague "utilize and exploit" language.
+  "ip-licensing-copyright-missing-section-106-rights-fail.txt": ["IPL-021"],
+
+  // Asset Purchase Agreement with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately captioned choice-of-law
+  // and venue-selection provision (deliberately avoiding "governing law",
+  // "forum", "jurisdiction" near "Delaware" or "Chancery", and "Court of
+  // Chancery"). The preamble uses "choice-of-law and venue-selection" as a
+  // paraphrase so "governing law" never appears in the document; "dispute
+  // resolution" is referenced in passing but no "jurisdiction" or "forum"
+  // appears within 40 chars of "Delaware" or "Chancery" in the body. MNA-019
+  // fires — its two present_patterns `/governing\s+law/i` and
+  // `/(jurisdiction|forum).{0,40}(chancery|delaware)/is` are no longer matched
+  // anywhere in the document. Delaware Chancery is the standard forum for
+  // private-target M&A; without an explicit governing-law and forum clause
+  // the parties face a conflicts-of-laws fight over which state's body of
+  // commercial law governs the reps, indemnification, and closing mechanics,
+  // and lose the predictability benefit that Delaware Chancery case law (on
+  // MAE, indemnification caps, and sandbagging) supplies to both sides.
+  "m-and-a-asset-purchase-missing-governing-law-fail.txt": ["MNA-019"],
+
+  // Form D Narrative with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately captioned offering-size
+  // and investor-floor provision (deliberately avoiding "offering size",
+  // "offering amount", "offering aggregate", "minimum investment", "minimum
+  // subscription", and any "$NNN" dollar amounts). The Offering Amount section
+  // is removed entirely so no dollar amounts appear anywhere in the document,
+  // and the paraphrase "total capital sought" and "per-investor floor" are
+  // used in the preamble in place of the rule's anchor phrases. REG-006 fires
+  // — its three present_patterns `/(offering\s+(size|amount|aggregate))/i`,
+  // `/(minimum\s+(investment|subscription))/i`, and `/\$\s*[\d,]+/` are no
+  // longer matched anywhere in the document. Form D Items 13–14 require
+  // aggregate offering amount and minimum-investment information; without a
+  // stated offering size and investor floor, the regulator's staff and
+  // prospective investors have no four-corners answer to the total dilution
+  // ceiling or the buy-in threshold that the exemption's investor-protection
+  // scheme is calibrated to enforce.
+  "regulatory-form-d-missing-offering-amount-fail.txt": ["REG-006"],
+
   // ── Leg 4, batch 4 — fourth failure mode (compliance / construction / healthcare) ──
 
   // Anti-Bribery Policy with the preamble extended by a sentence that

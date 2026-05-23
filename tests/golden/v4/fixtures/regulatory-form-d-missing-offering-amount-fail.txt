@@ -1,0 +1,11 @@
+Form D Narrative — Notice of Exempt Offering of Securities
+
+Issuer. Acme Software Inc., a Delaware corporation with principal executive offices in San Francisco, California. CIK: 0001234567. The Issuer is filing this Notice of Exempt Offering of Securities on Form D pursuant to Regulation D. The parties have elected not to include a separately captioned offering-size and investor-floor provision within this Narrative, relying instead on the Issuer's confidential term sheet and the subscription agreement executed by each investor as the operative mechanism for communicating the total capital sought and the per-investor floor to prospective purchasers.
+
+Exemption. The Issuer is claiming an exemption from registration under Rule 506(b) of Regulation D. The Issuer is not engaging in general solicitation.
+
+Accredited Investors. All purchasers in the offering are accredited investors as defined in Rule 501(a). The Issuer has obtained written representations from each investor concerning accredited-investor status.
+
+Bad-Actor Disqualification. The Issuer has performed reasonable diligence under Rule 506(d) and has determined that no covered person is subject to a disqualifying event.
+
+Blue Sky. The Issuer will make state notice filings in each state where investors reside pursuant to NSMIA preemption.
