@@ -834,6 +834,69 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // a parking-lot resurfacing — the most common category of NNN
   // landlord-tenant disputes.
   "real-estate-net-lease-missing-maintenance-repair-fail.txt": ["RE-004"],
+
+  // ── Leg 4, batch 4 — fourth failure mode (compliance / construction / healthcare) ──
+
+  // Anti-Bribery Policy with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately captioned
+  // things-of-value provision (deliberately avoiding "gifts", "gift",
+  // "hospitality", "entertainment", "meals", "charitable",
+  // "political contribution", "threshold", "pre-approval", and
+  // "recordkeeping"). The preamble uses paraphrases: "courtesy items"
+  // for gifts, "social-function invitations" for hospitality,
+  // "philanthropic and electoral-giving contributions" for charitable /
+  // political, "per-occasion dollar caps" for threshold, "advance-
+  // authorization workflows" for pre-approval, and "logging obligations"
+  // for recordkeeping. None of those anchors appears anywhere in the
+  // document. POL-011 fires — its three present_patterns
+  // `/(gifts?|hospitality|entertainment|meals)/i`,
+  // `/(charitable|political\s+contribution)/i`, and
+  // `/(threshold|pre.?approval|recordkeeping)/i` are no longer matched
+  // anywhere in the document. Gifts and hospitality to foreign officials
+  // are the most common FCPA risk area (DOJ-SEC FCPA Resource Guide
+  // ch. 2); without a policy setting monetary thresholds, pre-approval
+  // workflow, and recordkeeping, the compliance program has no
+  // operational control over the highest-frequency corruption vector.
+  "compliance-anti-bribery-missing-gifts-hospitality-fail.txt": ["POL-011"],
+
+  // Construction Contract with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately captioned
+  // work-description and document-hierarchy provision (deliberately
+  // avoiding "scope of the work", "scope of work", "work to be
+  // performed", "contract documents", "drawings and specifications",
+  // and "specifications"). Neither present_pattern for scope-of-work
+  // identification nor contract-document enumeration appears anywhere in
+  // the document. CON-002 (critical) fires — its two present_patterns
+  // `/(scope\s+of\s+(the\s+)?work|work\s+to\s+be\s+performed)/i` and
+  // `/(contract\s+documents|drawings\s+and\s+specifications|specifications)/i`
+  // are no longer matched anywhere in the document. AIA A201 § 1.1.1
+  // defines the Contract Documents (Agreement + Conditions + Drawings +
+  // Specifications + addenda + Modifications); without an enumerated
+  // scope and document hierarchy, neither party has a four-corners
+  // answer to what the contractor is obligated to build or which
+  // drawings and specs govern change-order disputes.
+  "construction-contract-missing-scope-of-work-fail.txt": ["CON-002"],
+
+  // PHI Authorization with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately captioned
+  // conditioning-prohibition provision (deliberately avoiding
+  // "treatment", "payment", "enrollment", "eligibility", "benefits",
+  // "not conditioned", "cannot refuse", "cannot condition", and "will
+  // not affect"). The Patient Rights section is rewritten to "I
+  // understand that I may decline to sign this Authorization. Signing
+  // is entirely voluntary under 45 C.F.R. § 164.508(b)(4)." — removing
+  // "treatment" and "conditioned". The Description section replaces
+  // "treatment notes" with "clinical notes" to eliminate the remaining
+  // "treatment" anchor. None of those anchors appears anywhere in the
+  // document. HC-016 (critical) fires — its two present_patterns
+  // `/(treatment|payment|enrollment|eligibility|benefits)/i` and
+  // `/(not\s+conditioned|cannot\s+(refuse|condition)|will\s+not\s+(affect|condition))/i`
+  // are no longer matched anywhere in the document. 45 C.F.R.
+  // § 164.508(c)(2)(ii) requires a statement that treatment, payment,
+  // enrollment, or eligibility for benefits is not conditioned on the
+  // authorization; without one the patient cannot verify that refusing
+  // to sign carries no care-denial consequence.
+  "healthcare-phi-authorization-missing-conditioning-statement-fail.txt": ["HC-016"],
 };
 
 describe("v4 fixture sanity", () => {
