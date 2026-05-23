@@ -1,0 +1,9 @@
+Mutual Release
+
+This Mutual Release is entered into between Plaintiff, Acme Health LLC, and Defendant, Globex Services Inc., to fully resolve all claims relating to the Action. The parties have elected not to include a separately captioned identification provision within this Release naming the persons and entities on each side that are giving and receiving the release or any extension of the release beyond the two named principals (deliberately avoiding the spec's anchor terminology), relying instead on the underlying complaint caption and the parties' separately maintained corporate-structure charts as the operative source for any such extended-identification question.
+
+Consideration. Defendant shall pay Plaintiff the sum of $500,000 within thirty (30) days of the Effective Date as full and final consideration for the release set forth herein.
+
+Release. Each party hereby releases and forever discharges the other from any and all claims, demands, and causes of action, known or unknown, arising out of or relating to the Action.
+
+Non-Admission. This Release is not an admission of liability by either party.

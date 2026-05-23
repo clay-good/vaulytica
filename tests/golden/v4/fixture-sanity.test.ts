@@ -622,6 +622,59 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // property goes through intestacy and defeats the trust's estate-
   // planning purpose.
   "trust-revocable-living-missing-pour-over-fail.txt": ["EST-015"],
+
+  // Loan Agreement with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately captioned
+  // remedial-mechanic provision (deliberately avoiding "default",
+  // "events of default", "accelerat", "insolvency", "bankruptcy", and
+  // "payment default"). The Events-of-Default section is removed so
+  // no "default" or "bankruptcy/insolvency" substring appears anywhere
+  // in the document. BNK-005 fires — its three present_patterns
+  // `/(events?\s+of\s+default|default)/i`, `/accelerat/i`, and
+  // `/(insolvenc|bankruptc|payment\s+default)/i` are no longer matched
+  // anywhere in the document. Without an enumerated default and
+  // acceleration mechanic the payee must wait for maturity to sue
+  // and may face unjust-enrichment / cure arguments — the doc's
+  // reliance on the Lender's published collection practices is not a
+  // substitute for in-contract remedial-trigger machinery.
+  "banking-loan-agreement-missing-default-acceleration-fail.txt": ["BNK-005"],
+
+  // Single-Tenant Commercial Lease (derived from the NNN minimal but
+  // rewritten as a "fully-burdened single-tenant arrangement") with
+  // the preamble extended by a sentence that affirmatively elects not
+  // to include a separately captioned tenant-cost-assumption provision
+  // (deliberately avoiding "triple-net", "NNN", "CAM", "common area
+  // maintenance", "operating expenses", and any "real estate taxes
+  // ... tenant" co-occurrence within 80 chars). The "Real Estate
+  // Taxes" section is renamed "Ad Valorem Assessments" so the rule's
+  // 80-char-windowed `/real\s+estate\s+taxes?.{0,80}(tenant)/is`
+  // co-occurrence cannot match through the heading-to-tenant
+  // proximity that joining-newline would otherwise create. RE-001
+  // fires — its four present_patterns `/triple.net/i`, `/\bnnn\b/i`,
+  // `/real\s+estate\s+taxes?.{0,80}(tenant)/is`, and
+  // `/(cam|common\s+area\s+maintenance|operating\s+expenses)/i` are
+  // no longer matched anywhere in the document. The economic essence
+  // of an NNN lease is tenant assumption of three expense categories;
+  // silence converts the lease to gross by default.
+  "real-estate-net-lease-missing-nnn-cost-allocation-fail.txt": ["RE-001"],
+
+  // Mutual Release (pinned to the `mutual-release` playbook since
+  // SET-001 applies only to that playbook id) with the preamble
+  // extended by a sentence that affirmatively elects not to include a
+  // separately captioned identification provision naming the persons
+  // and entities on each side (deliberately avoiding "releasor",
+  // "releasee", "releasing party / parties", "released party /
+  // parties", "affiliates", "subsidiaries", "officers", "directors",
+  // and "agents"). The Release body uses bare "Plaintiff / Defendant"
+  // language without any extended-identification recitations. SET-001
+  // fires — its two present_patterns
+  // `/releas(or|ee|ing\s+part(y|ies)|ed\s+part(y|ies))/i` and
+  // `/(affiliates?|subsidiaries|officers|directors|agents)/i` are no
+  // longer matched anywhere in the document. An effective release
+  // must bind every entity intended to benefit; failure to enumerate
+  // affiliates, officers, directors, agents, and assigns leaves
+  // residual claims against unnamed parties.
+  "settlement-mutual-release-missing-releasing-parties-fail.txt": ["SET-001"],
 };
 
 describe("v4 fixture sanity", () => {

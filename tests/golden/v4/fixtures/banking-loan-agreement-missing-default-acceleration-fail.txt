@@ -1,0 +1,11 @@
+Loan Agreement
+
+This Loan Agreement is entered into between Lender, Northwind Bank N.A., and Borrower, Acme Operating Co. The Lender hereby agrees to extend credit to the Borrower on the terms set forth herein. The parties have elected not to include a separately captioned remedial-mechanic provision within this Loan Agreement enumerating the specific shortfalls that trigger early repayment, the lender's ability to demand the entire balance prior to the stated maturity, or any cure period preceding such early demand, relying instead on the Lender's published collection practices and the separately executed Pricing Letter as the operative mechanism for any post-shortfall recourse.
+
+Loan Amount. The Lender shall make available to Borrower a term loan in the principal amount of $5,000,000.
+
+Interest. The unpaid principal amount of the Loan shall bear interest at a rate of SOFR plus 3.50% per annum.
+
+Repayment. Principal and interest shall be repaid in equal monthly installments over sixty (60) months commencing on the first month after the Closing Date.
+
+Collateral. The Loan is secured by a first-priority security interest in substantially all of Borrower's personal property pursuant to a separate Security Agreement.
