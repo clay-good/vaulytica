@@ -582,6 +582,46 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // authorization without one fails the meaningful-and-specific
   // standard and is unenforceable on its face.
   "healthcare-phi-authorization-missing-purpose-fail.txt": ["HC-013"],
+
+  // SAFE with the preamble narrating an affirmative departure from
+  // the YC post-money form by adding an interest-accrual mechanic, and
+  // a new Interest section stating "This SAFE shall bear interest at
+  // a rate of 6% per annum, compounded annually". EQT-008 fires — its
+  // two bad-language patterns
+  // `/this\s+safe\s+(shall|will)\s+(bear|accrue)\s+interest/i` and
+  // `/interest\s+(rate|accrues|shall\s+accrue)\s+(at|of)\s+\d/i` are
+  // both matched. A SAFE is not a debt instrument; interest accrual
+  // is inconsistent with the YC template, may indicate a convertible
+  // note in disguise, and is state-law-sensitive under usury caps.
+  "equity-safe-interest-bearing-fail.txt": ["EQT-008"],
+
+  // Form D Narrative with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately captioned
+  // non-federal-jurisdiction-coordination provision (deliberately
+  // avoiding "blue-sky", "state notice", "NSMIA", "notice filing",
+  // and "state securities"). The Blue Sky section is removed.
+  // REG-007 fires — its two present_patterns
+  // `/(blue.sky|state\s+notice|nsmia)/i` and
+  // `/(notice\s+filing|state\s+securities)/i` are no longer matched
+  // anywhere in the document. Most states require notice filings for
+  // Reg D offerings (NSMIA-preempted but most states require Form D
+  // copies + filing fees); failure to file blocks resale, so the
+  // narrative must surface the per-state coordination obligation.
+  "regulatory-form-d-missing-blue-sky-fail.txt": ["REG-007"],
+
+  // Revocable Living Trust with the preamble extended by a sentence
+  // that affirmatively elects not to include a separately captioned
+  // probate-coordination provision (deliberately avoiding "pour-over",
+  // "pourover", "will", and "last will"). The Pour-Over section is
+  // removed entirely so no "will" or "pour-over" substring appears
+  // anywhere in the document. EST-015 fires — its two present_patterns
+  // `/(pour.?over|pourover)/i` and `/(will|last\s+will)/i` are no
+  // longer matched anywhere in the document. Pour-over wills devise
+  // residuary to the trust; coordination prevents probate of trust-
+  // funded property — without a pour-over reference, unfunded probate
+  // property goes through intestacy and defeats the trust's estate-
+  // planning purpose.
+  "trust-revocable-living-missing-pour-over-fail.txt": ["EST-015"],
 };
 
 describe("v4 fixture sanity", () => {
