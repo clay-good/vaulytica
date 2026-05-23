@@ -380,6 +380,55 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // covered entity has no instruction for when reliance-based
   // disclosures may still proceed.
   "healthcare-phi-authorization-missing-right-to-revoke-fail.txt": ["HC-015"],
+
+  // Copyright License Agreement with the preamble extended by a
+  // sentence that affirmatively elects not to include a separately
+  // captioned enumeration of the geographic-and-durational scope of
+  // the license (deliberately avoiding "term", "territory", "media",
+  // "channels", "format", "now known", and "hereafter developed").
+  // The Term-and-Termination section is renamed to "Duration and
+  // Discontinuance" and the Licensee is renamed from "Acme Media Inc."
+  // to "Acme Studios Inc." so that the substring "media" does not
+  // appear anywhere in the document. None of those anchors appears
+  // anywhere in the document. IPL-022 fires — its three present_patterns
+  // `/(term|territor)/i`, `/(media|channels?|format)/i`, and
+  // `/(now\s+known|hereafter\s+developed)/i` are no longer matched
+  // anywhere in the document. Term + territory + media define the
+  // boundary of the license; open-ended grants in unfamiliar media
+  // invite Bourne v. Walt Disney-style disputes when new exploitation
+  // surfaces emerge, and the in-document scope must control over a
+  // separately negotiated rate card.
+  "ip-licensing-copyright-missing-term-territory-media-fail.txt": ["IPL-022"],
+
+  // Asset Purchase Agreement with the preamble extended by a sentence
+  // that affirmatively elects not to include a separately captioned
+  // schedule enumerating the specific liability categories that Buyer
+  // is contractually undertaking at the Closing (deliberately avoiding
+  // "assumed liabilities"). No "assumed liabilities" anchor appears
+  // anywhere in the document. MNA-022 fires — its present_pattern
+  // `/assumed\s+liabilities/i` is no longer matched anywhere in the
+  // document. The structural advantage of an APA is that Buyer assumes
+  // only specifically-identified liabilities; without an Assumed
+  // Liabilities clause that catalogues the closed set, the implicit
+  // carve-in fails and Buyer faces ambiguity about which Seller
+  // obligations transfer at Closing.
+  "m-and-a-asset-purchase-missing-assumed-liabilities-fail.txt": ["MNA-022"],
+
+  // Form D Narrative with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately captioned
+  // screening-and-disclosure provision addressing Rule 506(d) bad-actor
+  // disqualification (deliberately avoiding "bad-actor", "rule 506(d)",
+  // "disqualif", "covered persons", and "disqualifying events"). The
+  // Bad-Actor Disqualification section is removed. None of those
+  // anchors appears anywhere in the document. REG-005 fires — its two
+  // present_patterns `/(bad.actor|rule\s+506\(d\)|disqualif)/i` and
+  // `/(covered\s+persons?|disqualifying\s+events?)/i` are no longer
+  // matched anywhere in the document. Rule 506(d) disqualifies covered
+  // persons (directors, officers, 20%+ owners) with disqualifying
+  // events from relying on Rule 506; an issuer that omits the
+  // screening recital cannot show it performed the reasonable-care
+  // diligence the rule contemplates.
+  "regulatory-form-d-missing-bad-actor-fail.txt": ["REG-005"],
 };
 
 describe("v4 fixture sanity", () => {

@@ -1,0 +1,11 @@
+Form D Narrative — Notice of Exempt Offering of Securities
+
+Issuer. Acme Software Inc., a Delaware corporation with principal executive offices in San Francisco, California. CIK: 0001234567. The Issuer is filing this Notice of Exempt Offering of Securities on Form D pursuant to Regulation D. The parties have elected not to include a separately captioned screening-and-disclosure provision within this Narrative addressing the federal-securities-regulation bar on Issuer reliance on a Regulation D safe harbor where a director, officer, or twenty-percent owner has been the subject of a qualifying enforcement event, relying instead on the Issuer's separately executed officer-and-director questionnaires and outside-counsel sign-off as the operative mechanism for any pre-closing review of integrity-related concerns.
+
+Exemption. The Issuer is claiming an exemption from registration under Rule 506(b) of Regulation D. The Issuer is not engaging in general solicitation.
+
+Accredited Investors. All purchasers in the offering are accredited investors as defined in Rule 501(a). The Issuer has obtained written representations from each investor concerning accredited-investor status.
+
+Offering Amount. Total Offering Amount: $5,000,000. Minimum Investment Accepted from Any Outside Investor: $25,000.
+
+Blue Sky. The Issuer will make state notice filings in each state where investors reside pursuant to NSMIA preemption.

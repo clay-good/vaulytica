@@ -1,0 +1,11 @@
+Copyright License Agreement
+
+This Copyright License Agreement is entered into between Licensor, Author Studio LLC, and Licensee, Acme Studios Inc. Licensor owns all copyright in and to the Work described on Exhibit A. The parties have elected not to include a separately captioned enumeration of the geographic-and-durational scope of this license, identifying the duration of the license, the regions in which Licensee may exploit the Work, or the delivery surfaces (whether print, broadcast, or digital) over which Licensee may make the Work available, relying instead on the Licensor's published exploitation guidelines and the separately negotiated rate card to govern those parameters.
+
+Grant. Licensor hereby grants to Licensee a non-exclusive, worldwide, royalty-bearing license to exploit the Work in Licensee's ordinary course of business during the Duration, subject to the limits set forth in this Agreement.
+
+Royalty. Licensee shall pay Licensor a royalty equal to ten percent (10%) of Net Receipts on a quarterly basis.
+
+Duration and Discontinuance. The initial duration is five (5) years. Either party may end this Agreement for material breach upon thirty (30) days' notice and cure.
+
+Reservation of Rights. All rights not expressly granted hereunder are reserved to Licensor.
