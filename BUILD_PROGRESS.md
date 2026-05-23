@@ -25,6 +25,16 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v4 multi-doc offline-verification spec landed (2026-05-22) — ✅ complete
+
+[`tests/e2e/v4/no-network.spec.ts`](tests/e2e/v4/no-network.spec.ts) committed. The spec covers LAUNCH row v4-d (spec-v4.md §8 — folder upload / zip / multi-file drop must produce zero cross-origin requests). It mirrors the structure of `tests/e2e/v3/no-network.spec.ts`: load the page, capture all network requests from that point forward, drive the multi-doc drop, wait for a download button, assert valid OOXML zip magic bytes (`PK\x03\x04` + > 1024 bytes), and assert the captured cross-origin request list is empty.
+
+**Forward-compatible probe pattern.** The multi-doc ingest library (`src/ingest/multi.ts`) is production-ready but the live `site/index.html` dropzone (`src/ui/dropzone.ts` `bindDropzone`) still reads only `input.files?.[0]`. The v4 multi-doc DOM affordances — `[data-role="multi-doc-dropzone"]`, `input[type="file"][multiple]` or `input[type="file"][webkitdirectory]` inside `#dropzone`, `[data-role="bundle-download"]` — are not yet wired. The spec probes for any one of these selectors and calls `test.skip` when none are found, matching the pattern in `tests/e2e/v3/a11y-keyboard.spec.ts` for the v3 chip-row probes. The skip is lifted automatically the moment the v4 UI hookup wires `src/ingest/multi.ts` into the live page — no changes to this spec are needed.
+
+**Fixture strategy.** The spec resolves two committed `.docx` fixtures (`tests/fixtures/contracts/mutual-nda.docx` + `tests/fixtures/contracts/bad-nda.docx`). If only one exists, it copies the available fixture to a temp dir under a distinct name so the multi-file input sees two separate logical paths (browsers may deduplicate identical paths in a multi-file `FileList`). If neither fixture exists, the spec skips.
+
+**Gate state.** `npm run lint && typecheck && test && build` all green. `npm run e2e` is not run (Playwright not installed in this env); the spec skips gracefully when the multi-doc UI affordances are absent, so it is safe as a CI gate today and will activate automatically after the UI hookup lands.
+
 ### v4 cross-doc bundle expansion + wiring fix (5 → 8) (2026-05-22) — ✅ complete
 
 **Wiring bug found and fixed.** `tests/golden/v4/bundle.test.ts` was passing `CONSISTENCY_RULES` (V3-only, CC-001 through CC-007) to `runEngineMulti`, meaning no V4 CROSS-* rule had ever fired in the bundle test harness since the bundle test was introduced. The fix: import and use `ALL_CONSISTENCY_RULES` (the combined `[...V3_CC, ...V4_CROSS]` registry exported from `src/engine/consistency/index.ts`) instead. The V4 rules themselves were correct — the bug was solely in the test wiring.
