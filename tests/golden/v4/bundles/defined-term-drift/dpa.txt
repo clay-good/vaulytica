@@ -1,0 +1,15 @@
+Data Processing Addendum
+
+This Data Processing Addendum ("Addendum") is entered into between Acme Inc. ("Controller") and Globex Inc. ("Processor"). Governing Law: laws of the State of Delaware.
+
+Definitions. "Customer Data" means all personal data, sensitive personal data, and any derived analytics processed by Processor on behalf of Controller, including any data generated from Controller's end users.
+
+Processing. Processor shall process Customer Data only on documented instructions from Controller pursuant to Article 28 of the GDPR. Customer Data shall not be used for any other purpose.
+
+Subprocessors. Processor shall not engage any subprocessor without prior written consent of Controller and shall flow down equivalent obligations.
+
+Security. Processor shall implement appropriate technical and organizational measures pursuant to Article 32 GDPR.
+
+Data Retention. Processor shall delete or return all Customer Data upon termination of the Agreement.
+
+Term. Effective as of 2026-01-01, coterminous with the parties' Master Services Agreement.

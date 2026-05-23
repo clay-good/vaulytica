@@ -40,7 +40,7 @@ import {
 } from "../../../src/engine/index.js";
 import { runEngineMulti, stableStringify } from "../../../src/engine/runner.js";
 import {
-  CONSISTENCY_RULES,
+  ALL_CONSISTENCY_RULES,
   type ConsistencyFinding,
   type ConsistencyRun,
 } from "../../../src/engine/consistency/index.js";
@@ -174,7 +174,7 @@ async function runBundle(name: string): Promise<BundleResult> {
   const { per_document, consistency } = await runEngineMulti({
     documents,
     dkb,
-    consistencyRules: CONSISTENCY_RULES,
+    consistencyRules: ALL_CONSISTENCY_RULES,
     executed_at: "",
   });
   return {

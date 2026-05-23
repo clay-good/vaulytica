@@ -25,6 +25,26 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v4 cross-doc bundle expansion + wiring fix (5 → 8) (2026-05-22) — ✅ complete
+
+**Wiring bug found and fixed.** `tests/golden/v4/bundle.test.ts` was passing `CONSISTENCY_RULES` (V3-only, CC-001 through CC-007) to `runEngineMulti`, meaning no V4 CROSS-* rule had ever fired in the bundle test harness since the bundle test was introduced. The fix: import and use `ALL_CONSISTENCY_RULES` (the combined `[...V3_CC, ...V4_CROSS]` registry exported from `src/engine/consistency/index.ts`) instead. The V4 rules themselves were correct — the bug was solely in the test wiring.
+
+**Three new bundle fixtures** added under `tests/golden/v4/bundles/`:
+
+- `defined-term-drift/` (msa.txt + dpa.txt) — MSA defines "Customer Data" narrowly (data submitted to the Services); the companion DPA expands it to include personal data, derived analytics, and data generated from end users. Exercises **CROSS-DEFTERM-001** (defined-term semantic drift across documents).
+- `missing-companion-dpa/` (msa.txt + sow.txt) — MSA and SOW bundle with no DPA present, even though the MSA explicitly references a Data Processing Agreement as required by applicable law. Exercises **CROSS-MISSING-001** (companion document required but absent from the bundle).
+- `precedence-clash/` (msa.txt + sow.txt) — MSA says "this MSA shall control and take precedence over all such documents"; the SOW says "this Statement of Work shall govern and the specific terms herein shall prevail over the general terms of the MSA." Exercises **CROSS-PRECEDENCE-001** (conflicting order-of-precedence clauses across documents).
+
+**Existing five bundles now also surface CROSS findings** (goldens regenerated):
+
+- `cap-mismatch` → `CROSS-AMOUNT-001`, `CROSS-MISSING-001`
+- `clean-msa-baa` → `CROSS-MISSING-001`
+- `effective-date-paradox` → `CROSS-DATE-001`
+- `governing-law-mismatch` → `CC-005`, `CROSS-DATE-001`, `CROSS-JURIS-001`, `CROSS-MISSING-001` (×2)
+- `party-name-conflict` → `CROSS-MISSING-001`
+
+Every CROSS rule (all 7: PARTY, JURIS, DEFTERM, DATE, AMOUNT, MISSING, PRECEDENCE) now has at least one dedicated bundle that exercises it end-to-end. The debug scratch test (`tests/debug-cross.test.ts`) is deleted. Full gate green: `npm run lint && typecheck && test && build` (2083 passing, 2 skipped).
+
 ### v4 fail-fixture corpus expansion (57 → 60) — fourth failure mode (insurance / trust-estate / settlement — every v4 sub-domain now ≥4 fail-fixtures, completing leg 4) (2026-05-22) — ✅ complete
 
 Completes leg 4 of the spec §16 "2–4 fixtures per family" upper bound. Adds a fourth failure-mode fixture for the final three v4 sub-domains (insurance, trust-estate, settlement), each exercising a distinct load-bearing rule not covered by any prior fixture. Every v4 sub-domain (B–P) now carries ≥4 end-to-end fail-fixtures. New fixtures under [`tests/golden/v4/fixtures/`](tests/golden/v4/fixtures/):

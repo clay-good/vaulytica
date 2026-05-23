@@ -1,0 +1,13 @@
+Master Services Agreement
+
+This Master Services Agreement ("Agreement") is between Acme Inc. ("Customer") and Globex Inc. ("Vendor"). Governing Law: laws of the State of Delaware.
+
+Definitions. "Customer Data" means any data, content, or information submitted by Customer to the Services, excluding Vendor's own operational and telemetry data.
+
+Services. Vendor shall perform the Services described in each Statement of Work. Customer Data shall remain the property of Customer at all times.
+
+Limitation of Liability. Each party's aggregate liability under this Agreement shall not exceed one million dollars ($1,000,000).
+
+Confidentiality. Each party shall maintain the confidentiality of the other party's Confidential Information.
+
+Term. Initial Term: three (3) years commencing 2026-01-01.

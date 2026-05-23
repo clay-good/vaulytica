@@ -1,0 +1,13 @@
+Statement of Work No. 1
+
+This Statement of Work ("SOW") is issued under the Master Services Agreement between Acme Inc. and Globex Inc., effective 2026-01-01. Governing Law: laws of the State of Delaware.
+
+Order of Precedence. In the event of any conflict between this Statement of Work and the MSA, this Statement of Work shall govern and the specific terms herein shall prevail over the general terms of the MSA.
+
+Scope. Vendor shall deliver the custom software integration described in Exhibit A by 2026-09-30.
+
+Fees. Total fees: $250,000, invoiced monthly. Payment terms: net 30.
+
+Limitation of Liability. Each party's aggregate liability under this Statement of Work shall not exceed one million dollars ($1,000,000).
+
+Term. Six (6) month delivery schedule commencing 2026-03-01.

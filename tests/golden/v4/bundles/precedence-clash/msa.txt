@@ -1,0 +1,13 @@
+Master Services Agreement
+
+This Master Services Agreement ("MSA") is between Acme Inc. ("Customer") and Globex Inc. ("Vendor"). Governing Law: laws of the State of Delaware.
+
+Order of Precedence. In the event of any conflict or inconsistency between this MSA and any Statement of Work or other ancillary document, this MSA shall control and take precedence over all such documents.
+
+Services. Vendor shall perform the Services described in each Statement of Work issued hereunder.
+
+Limitation of Liability. Each party's aggregate liability under this Agreement shall not exceed one million dollars ($1,000,000).
+
+Confidentiality. Each party shall maintain the confidentiality of the other party's Confidential Information.
+
+Term. Initial Term: three (3) years commencing 2026-01-01.

@@ -1,0 +1,13 @@
+Statement of Work No. 1
+
+This Statement of Work is issued under the Master Services Agreement between Acme Inc. and Globex Inc., effective 2026-01-01.
+
+Scope. Vendor shall deliver the software development services described in Exhibit A by 2026-09-30.
+
+Fees. Total fees: $300,000, invoiced monthly. Payment terms: net 30.
+
+Governing Law. This Statement of Work shall be governed by the laws of the State of Delaware.
+
+Limitation of Liability. Each party's aggregate liability under this Statement of Work shall not exceed one million dollars ($1,000,000).
+
+Term. Six (6) month delivery schedule commencing 2026-03-01.
