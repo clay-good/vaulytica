@@ -1,0 +1,13 @@
+Loan Agreement
+
+This Loan Agreement is entered into between Lender, Northwind Bank N.A., and Borrower, Acme Operating Co. The Lender hereby agrees to extend credit to the Borrower on the terms set forth herein. The parties have elected not to include a separately captioned borrower-undertakings provision within this Loan Agreement enumerating ongoing operational obligations such as corporate-existence upkeep, delivery of periodic reporting packages, compliance with applicable law, and notice obligations, relying instead on the Lender's customary lending policies, applicable statutory obligations, and any separately executed side letter as the operative mechanism for ongoing lender information and compliance protections.
+
+Loan Amount. The Lender shall make available to Borrower a term loan in the principal amount of $5,000,000. The facility type is a term loan. Use of proceeds: general working capital purposes.
+
+Interest. The unpaid principal amount of the Loan shall bear interest at a rate of SOFR plus a margin of 3.50% per annum. Floor: 1.00% per annum. Default Rate: an additional 2.00% per annum.
+
+Repayment. Principal and interest shall be repaid in equal monthly installments over sixty (60) months commencing on the first month after the Closing Date.
+
+Events of Default. The occurrence of any of the following shall constitute an Event of Default: (a) failure to pay any amount when due, with a three-day grace period; (b) breach of any covenant, with a thirty-day cure period; (c) insolvency or bankruptcy of Borrower; (d) cross-default with respect to any other indebtedness in excess of $500,000.
+
+Collateral. The Loan is secured by a first-priority security interest in substantially all of Borrower's personal property pursuant to a separate Security Agreement.

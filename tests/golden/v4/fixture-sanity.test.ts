@@ -782,6 +782,58 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // neither satisfies the granular opt-in requirement nor documents
   // a valid consent signal for each non-essential cookie category.
   "privacy-cookie-notice-missing-consent-mechanism-fail.txt": ["PRV-002"],
+
+  // Loan Agreement with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately captioned
+  // borrower-undertakings provision (deliberately avoiding "affirmative
+  // covenants", "financial statements", "books and records", and
+  // "maintenance"). No "affirmative covenants" or "financial
+  // statements / books and records / maintenance" anchor appears
+  // anywhere in the document. BNK-009 fires — its two present_patterns
+  // `/affirmative\s+covenants?/i` and
+  // `/(financial\s+statements?|books\s+and\s+records|maintenance)/i`
+  // are no longer matched anywhere in the document. Affirmative
+  // covenants (maintain corporate existence, comply with law, deliver
+  // financial statements, books-and-records access, notice of defaults)
+  // are the lender's information-rights backbone; without them the
+  // lender has no contractual hook to monitor deteriorating credit
+  // quality before it matures into a payment default.
+  "banking-loan-agreement-missing-affirmative-covenants-fail.txt": ["BNK-009"],
+
+  // SAFE with the preamble extended by a sentence that affirmatively
+  // elects not to include a separately captioned exit-event treatment
+  // provision (deliberately avoiding "liquidity event", "change of
+  // control", and "acquisition"). The document uses "strategic
+  // combination" and "purchase of the Company's outstanding shares"
+  // as paraphrases so none of the rule's anchors appears anywhere.
+  // EQT-004 fires — its three present_patterns `/liquidity\s+event/i`,
+  // `/change\s+of\s+control/i`, and `/acquisition/i` are no longer
+  // matched anywhere in the document. YC SAFE treats a strategic
+  // combination as a liquidity event where the investor receives the
+  // greater of (a) the purchase amount or (b) the as-converted amount;
+  // without an express liquidity-event clause the investor's exit
+  // treatment is undefined and the SAFE may inadvertently leave the
+  // investor with no contractual right to any proceeds on a sale of
+  // the Company prior to an Equity Financing.
+  "equity-safe-missing-liquidity-event-fail.txt": ["EQT-004"],
+
+  // Triple Net Lease with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately captioned
+  // upkeep-and-remediation provision (deliberately avoiding "maintenance
+  // and repair", "roof", "structural integrity", and "structural
+  // repair"). No "maintenance and repair" or
+  // "(roof|structural) (integrity|repair|maintenance)" anchor appears
+  // anywhere in the document. RE-004 fires — its two present_patterns
+  // `/maintenance\s+and\s+repair/i` and
+  // `/(roof|structural)\s+(integrity|repair|maintenance)/i` are no
+  // longer matched anywhere in the document. The allocation between
+  // roof / structure (landlord) and all other upkeep (tenant) is the
+  // heart of a single-tenant NNN lease; without an explicit maintenance-
+  // and-repair clause, the parties have no four-corners answer to which
+  // side bears the cost of a failing HVAC system, a leaking facade, or
+  // a parking-lot resurfacing — the most common category of NNN
+  // landlord-tenant disputes.
+  "real-estate-net-lease-missing-maintenance-repair-fail.txt": ["RE-004"],
 };
 
 describe("v4 fixture sanity", () => {
