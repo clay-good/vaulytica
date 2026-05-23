@@ -530,6 +530,58 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // cookie data routinely flows to third-party analytics / ad-tech
   // in the US and elsewhere and the notice must surface those flows.
   "privacy-cookie-notice-missing-third-party-recipients-fail.txt": ["PRV-006"],
+
+  // Anti-Bribery Policy with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately captioned
+  // financial-records-and-controls provision (deliberately avoiding
+  // "books and records", "accounting records / controls", "internal
+  // controls", "78m", "accurate", and "accuracy"). The Books-and-
+  // Records section is removed entirely. POL-008 fires — its three
+  // present_patterns
+  // `/(books\s+and\s+records|accounting\s+(records|controls))/i`,
+  // `/(internal\s+(accounting\s+)?controls?|78m)/i`, and
+  // `/(accurate|accuracy)/i` are no longer matched anywhere in the
+  // document. 15 U.S.C. § 78m(b)(2) requires issuers to maintain
+  // accurate books and records and adequate internal accounting
+  // controls; violations can be charged without underlying bribery, so
+  // the policy must affirmatively address the accounting-provisions
+  // half of FCPA enforcement.
+  "compliance-anti-bribery-missing-books-and-records-fail.txt": ["POL-008"],
+
+  // Construction Contract with the preamble extended by a sentence
+  // that affirmatively elects not to include a separately captioned
+  // risk-allocation provision (deliberately avoiding "indemnify",
+  // "indemnification", "insurance", "CGL", "workers compensation",
+  // and "waiver of subrogation"). The Insurance and Bonds section is
+  // narrowed to just Bonds (removing the insurance language). CON-006
+  // fires — its three present_patterns
+  // `/(indemnif(y|ies|ied|ication))/i`,
+  // `/(insurance|cgl|workers?\s+compensation)/i`, and
+  // `/(waiver\s+of\s+subrogation)/i` are no longer matched anywhere
+  // in the document. AIA A201 §§ 3.18 (indemnification) + 11
+  // (insurance) provide the standard pattern; state anti-indemnity
+  // statutes (CA Civ. § 2782, NY Gen. Oblig. § 5-322.1, TX Ins. § 151)
+  // void indemnity for owner's own / sole negligence, so the carve-
+  // outs must be in the contract — a separate Owner-Controlled Risk
+  // Management Program is not a substitute.
+  "construction-contract-missing-indemnification-insurance-fail.txt": ["CON-006"],
+
+  // PHI Authorization with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately captioned
+  // reason-for-disclosure provision (deliberately avoiding "purpose",
+  // "at the request of", and "for litigation / life insurance /
+  // treatment / payment / research / marketing"). The Purpose section
+  // is removed, "treatment notes" in the Description is changed to
+  // "clinical notes" so `for treatment` cannot match, and the
+  // Recipient is renamed from "Insurance Underwriter Inc." to "Acme
+  // Underwriting Inc." so the phrase "for life insurance" never
+  // appears. HC-013 fires — its two present_patterns `/purpose/i` and
+  // `/(at\s+the\s+request\s+of|for\s+(litigation|life\s+insurance|treatment|payment|research|marketing))/i`
+  // are no longer matched anywhere in the document. 45 C.F.R.
+  // § 164.508(c)(1)(iv) requires a description of each purpose; an
+  // authorization without one fails the meaningful-and-specific
+  // standard and is unenforceable on its face.
+  "healthcare-phi-authorization-missing-purpose-fail.txt": ["HC-013"],
 };
 
 describe("v4 fixture sanity", () => {
