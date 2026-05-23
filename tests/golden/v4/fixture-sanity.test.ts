@@ -429,6 +429,56 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // screening recital cannot show it performed the reasonable-care
   // diligence the rule contemplates.
   "regulatory-form-d-missing-bad-actor-fail.txt": ["REG-005"],
+
+  // Commercial General Liability Policy Summary derived from the
+  // existing premium-deductible fail-fixture by renaming the "Named
+  // Insured" line to "Insured Party" and the "Producer" line to
+  // "Insurance Intermediary" (with the broker entity renamed to
+  // "Insurance Wholesale Services LLC" so neither "broker" nor "agent"
+  // appears anywhere in the document). The preamble extension narrates
+  // the affirmative election not to include a party-and-intermediary
+  // identification provision. INS-001 fires — its two present_patterns
+  // `/named\s+insured/i` and `/(producer|broker|agent)/i` are no longer
+  // matched anywhere in the document. Coverage rights run to the
+  // Named Insured under state insurance codes; without a clearly
+  // labelled "Named Insured" and a stated producer / broker, the
+  // declarations are off the four corners and the carrier's
+  // book-of-business record becomes the only source for who is
+  // entitled to coverage.
+  "insurance-policy-summary-missing-named-insured-fail.txt": ["INS-001"],
+
+  // Revocable Living Trust with the preamble extended by a sentence
+  // that affirmatively elects not to include a separately captioned
+  // post-passing apportionment provision (deliberately avoiding "upon
+  // settlor's death", "after death", "beneficiar", and "distribute").
+  // The Distribution-Upon-Death section is removed entirely so neither
+  // "distribute" nor "beneficiary" appears anywhere in the document.
+  // EST-014 fires — its two present_patterns
+  // `/(upon\s+(settlor.?s|grantor.?s)\s+death|after\s+death)/i` and
+  // `/(beneficiar|distribute)/i` are no longer matched anywhere in
+  // the document. The post-death disposition is the trust's principal
+  // estate-planning function; without named beneficiaries and stated
+  // shares, the trust corpus is at risk of intestate disposition
+  // through the pour-over will rather than the planned distribution.
+  "trust-revocable-living-missing-death-distribution-fail.txt": ["EST-014"],
+
+  // Confidential Settlement Agreement and Mutual Release (pinned to
+  // the `mutual-release` playbook since SET-005 applies only to that
+  // playbook id) with the preamble extended by a sentence affirmatively
+  // electing to extend the release beyond the conduct underlying the
+  // Action to bind the releasing party with respect to prospective
+  // claims of any kind whatsoever, and the Mutual Release section
+  // amplified with "any future claims that may arise hereafter against
+  // the other party, including any prospective claims of any kind
+  // whatsoever". SET-005 fires — its two bad-language patterns
+  // `/releases?.{0,80}(future|hereafter\s+arising|may\s+arise).{0,80}claims?/is`
+  // and `/(future|prospective)\s+claims?.{0,80}(of\s+any\s+kind|whatsoever)/is`
+  // both match. California Civ. Code § 1668 voids contracts that
+  // exempt a party from responsibility for their own fraud, willful
+  // injury, or violation of law, and many jurisdictions are skeptical
+  // of releases of unaccrued claims — a release that purports to cover
+  // post-execution conduct is at risk of being limited or voided.
+  "settlement-confidential-overbroad-future-claims-fail.txt": ["SET-005"],
 };
 
 describe("v4 fixture sanity", () => {
