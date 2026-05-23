@@ -479,6 +479,57 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // of releases of unaccrued claims — a release that purports to cover
   // post-execution conduct is at risk of being limited or voided.
   "settlement-confidential-overbroad-future-claims-fail.txt": ["SET-005"],
+
+  // Bylaws with the preamble narrating a comprehensive
+  // exclusive-forum election and a new Exclusive Forum section
+  // designating the Court of Chancery of the State of Delaware as the
+  // exclusive forum for any claim asserted against the corporation,
+  // including without limitation any claim arising under the Securities
+  // Exchange Act of 1934 or any other federal securities laws.
+  // GOV-011 fires — its bad-language pattern
+  // `/exclusive\s+forum.{0,120}(state\s+of\s+delaware|chancery).{0,200}(exchange\s+act|1934\s+act|federal\s+securities)/is`
+  // matches. Salzberg v. Sciabacucchi (Del. 2020) upheld Delaware-
+  // forum bylaws for Securities Act of 1933 claims but expressly
+  // declined to extend that holding to Exchange Act claims, which
+  // carry exclusive federal-court jurisdiction under § 27; an
+  // exclusive-forum bylaw that purports to capture Exchange Act claims
+  // is at risk of being struck on petition.
+  "governance-bylaws-overbroad-exclusive-forum-fail.txt": ["GOV-011"],
+
+  // Executive Employment Agreement with the preamble extended by a
+  // sentence that affirmatively elects not to include a separately
+  // captioned post-employment-behavior provision (avoiding the rule's
+  // anchor phrases by paraphrase: "constraining the Executive's
+  // ability to compete", "communicate confidential information", and
+  // "recruit Employer personnel after termination"). The Restrictive
+  // Covenants section is removed entirely. EMP-008 fires — its two
+  // present_patterns `/restrictive\s+covenant/i` and
+  // `/(non.?disclosure|non.?solicit)/i` are no longer matched anywhere
+  // in the document. Executives need NDA + non-solicit (and
+  // non-compete only where enforceable) coverage; without an
+  // in-document restrictive-covenants clause or reference, the
+  // separately executed Confidentiality and Invention Assignment
+  // Agreement is the only operative restraint, and the Employer's
+  // post-termination protections rest entirely off the four corners.
+  "employment-executive-missing-restrictive-covenants-fail.txt": ["EMP-008"],
+
+  // Cookie Notice with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately captioned
+  // downstream-disclosure provision (deliberately avoiding the rule's
+  // anchor phrases: "third-party", "recipients", "international
+  // transfers", "outside the EU / EEA / UK", "SCC", "DPF", and "Data
+  // Privacy Framework" — the preamble uses "downstream-counterparty
+  // identification" so neither "recipients" nor "third-party" appears
+  // anywhere in the document). The Third-Party Cookies section is
+  // removed. PRV-006 fires — its three present_patterns
+  // `/(third.?party|recipients?)/i`,
+  // `/(international\s+transfers?|outside\s+the\s+(eu|eea|uk))/i`,
+  // and `/(scc|dpf|data\s+privacy\s+framework)/i` are no longer
+  // matched anywhere in the document. GDPR Art. 13(1)(e)–(f) requires
+  // disclosure of recipients and international-transfer mechanisms;
+  // cookie data routinely flows to third-party analytics / ad-tech
+  // in the US and elsewhere and the notice must surface those flows.
+  "privacy-cookie-notice-missing-third-party-recipients-fail.txt": ["PRV-006"],
 };
 
 describe("v4 fixture sanity", () => {
