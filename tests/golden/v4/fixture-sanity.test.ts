@@ -675,6 +675,58 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // affiliates, officers, directors, agents, and assigns leaves
   // residual claims against unnamed parties.
   "settlement-mutual-release-missing-releasing-parties-fail.txt": ["SET-001"],
+
+  // Patent License Agreement (pinned to the `patent-license` playbook,
+  // a different IPL sub-domain playbook from the copyright-license
+  // minimal/fail series) with the preamble extended by a sentence
+  // that affirmatively elects not to include a separately captioned
+  // identification provision listing the licensed patents by their
+  // issued / pending serial designations. The Exhibit reference uses
+  // "Exhibit A" rather than "Schedule A" to avoid the rule's
+  // `/schedule\s+a/i` anchor, and the preamble uses the paraphrase
+  // "industrial-monopoly grants" so the literal anchor "licensed
+  // patents" does not appear anywhere in the document. IPL-007 fires —
+  // its two present_patterns `/(licensed\s+patents?|schedule\s+a)/i`
+  // and `/(patent\s+no|u\.?s\.?\s+pat|application\s+no)/i` are no
+  // longer matched anywhere in the document. Patent licenses must
+  // identify the licensed claims with sufficient specificity for
+  // both enforcement and royalty accounting; without listed patent /
+  // application numbers, the licensed estate is off the four corners.
+  "ip-licensing-patent-missing-licensed-patents-fail.txt": ["IPL-007"],
+
+  // Letter of Intent (pinned to the `loi-term-sheet` playbook, a
+  // different M&A sub-domain playbook from the asset-purchase
+  // minimal/fail series) without any "non-binding / not binding /
+  // except as / except for" demarcation. The doc affirmatively states
+  // it "is binding upon the parties" and includes a Confidentiality
+  // section — pattern 2 (`/(binding|legally\s+binding)/i`) and
+  // pattern 3 (`/(confidentiality|exclusivity|expenses)/i`) match, but
+  // pattern 1 (`/(non.?binding|not\s+binding|except\s+(as|for))/i`)
+  // does not, so the compound rule's min_match=3 threshold is missed
+  // (2/3) and MNA-001 fires. The *SIGA / Pennzoil* line shows that
+  // LOIs can be enforced as binding contracts if the parties do not
+  // clearly disclaim intent to be bound on commercial terms; the
+  // standard pattern is confidentiality / exclusivity / expenses /
+  // governing law / forum binding and price / structure non-binding,
+  // and a doc that says only "is binding upon the parties" without
+  // demarcating the non-binding commercial provisions invites
+  // unintended enforcement.
+  "m-and-a-loi-missing-binding-demarcation-fail.txt": ["MNA-001"],
+
+  // Endorsement (pinned to the `insurance-endorsement` playbook, a
+  // different insurance sub-domain playbook from the policy-summary
+  // minimal/fail series) styled as a Commercial General Liability
+  // Endorsement — Absolute Pollution Exclusion. The body affirmatively
+  // states "This endorsement is an absolute exclusion of pollution and
+  // applies in addition to all other terms of the Policy" — the
+  // language-rule's first bad pattern
+  // `/(absolute\s+exclusion|total\s+exclusion).{0,80}(pollution|cyber|communicable\s+disease|silica|asbestos|abuse|molest)/is`
+  // matches and INS-010 fires. Coverage-restricting endorsements
+  // (absolute pollution / cyber / communicable-disease exclusions,
+  // $25K sublimits) materially shrink coverage and should be flagged
+  // to underwriters and the broker — IRMI / ALI-CLE practice treats
+  // them as the most common source of unintended coverage gaps.
+  "insurance-endorsement-coverage-restricting-fail.txt": ["INS-010"],
 };
 
 describe("v4 fixture sanity", () => {

@@ -1,0 +1,9 @@
+Patent License Agreement
+
+This Patent License Agreement is entered into between Licensor, Innovator Labs LLC, and Licensee, Acme Manufacturing Inc. Licensor owns certain patents covering the technology described on Exhibit A. The parties have elected not to include a separately captioned identification provision within this Agreement listing the licensed industrial-monopoly grants by their issued or pending serial designations, relying instead on Exhibit A and the Licensor's published portfolio summary as the operative source for the boundary of the licensed estate.
+
+Grant. Licensor hereby grants to Licensee a non-exclusive, worldwide, royalty-bearing license under the technology described on Exhibit A to make, use, sell, and import licensed products for the Term.
+
+Royalty. Licensee shall pay Licensor a royalty equal to four percent (4%) of Net Sales on a quarterly basis.
+
+Duration and Discontinuance. The initial duration is seven (7) years. Either party may end this Agreement for material breach upon thirty (30) days' notice and cure.
