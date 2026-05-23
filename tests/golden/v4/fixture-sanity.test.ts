@@ -727,6 +727,61 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // to underwriters and the broker — IRMI / ALI-CLE practice treats
   // them as the most common source of unintended coverage gaps.
   "insurance-endorsement-coverage-restricting-fail.txt": ["INS-010"],
+
+  // Bylaws with the preamble extended by a sentence that affirmatively
+  // elects not to include a separately captioned governance-body
+  // composition and election article, relying instead on the residual
+  // authority supplied by DGCL § 141 and the certificate of
+  // incorporation. The document consistently uses "governing body"
+  // rather than "board of directors", and the annual-meeting sentence
+  // reads "annual governance-body election" rather than "election of
+  // directors". No "board of directors" or "(elect|appoint) ...
+  // directors?" anchor appears anywhere in the document. GOV-006
+  // (critical) fires — its two present_patterns
+  // `/board\s+of\s+directors/i` and
+  // `/(elect|appoint).{0,30}directors?/i` are no longer matched
+  // anywhere in the document. DGCL § 141(b) and MBCA § 8.03 require
+  // the bylaws (or charter) to fix the number of directors and the
+  // manner of election; without a board-composition clause, the
+  // stockholder proxy materials and company's internal records have no
+  // four-corners anchor for board size or election procedure.
+  "governance-bylaws-missing-board-composition-fail.txt": ["GOV-006"],
+
+  // Executive Employment Agreement with the preamble extended by a
+  // sentence that affirmatively elects not to include a separately
+  // captioned deferred-compensation-tax-compliance provision, relying
+  // instead on applicable federal income tax law and company-wide
+  // tax-compliance policies. No "section 409A", "409A", "specified
+  // employee", or "six-month delay" anchor appears anywhere in the
+  // document. EMP-003 (critical) fires — its two present_patterns
+  // `/(section\s+409a|\b409a\b)/i` and
+  // `/(specified\s+employee|six.month\s+delay)/i` are no longer
+  // matched anywhere in the document. IRC § 409A triggers a 20%
+  // additional tax plus interest on the executive if deferred-
+  // compensation rules are violated; a § 409A compliance recital
+  // (including the six-month delay for specified employees and
+  // reformation authority) is universal in modern executive agreements
+  // because severance and deferred bonuses are inherently § 409A-
+  // sensitive arrangements.
+  "employment-executive-missing-409a-compliance-fail.txt": ["EMP-003"],
+
+  // Cookie Notice with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately captioned
+  // opt-in mechanism section, relying instead on users' browser
+  // settings and supervisory-authority guidance. The Consent section
+  // and the Withdrawal section are both removed; "cookie management
+  // tool" is not present in this fixture. No "consent", "banner",
+  // "preference center", "cookie preference", "accept", "reject", or
+  // "manage" anchor appears anywhere in the document. PRV-002
+  // (critical) fires — its three present_patterns `/consent/i`,
+  // `/(banner|preference\s+center|cookie\s+preference)/i`, and
+  // `/(accept|reject|manage)/i` are no longer matched anywhere in the
+  // document. ePrivacy Art. 5(3) + GDPR Art. 7 require freely given,
+  // specific, informed, and unambiguous affirmative-action consent
+  // (CJEU Planet49); routing users to generic browser controls
+  // neither satisfies the granular opt-in requirement nor documents
+  // a valid consent signal for each non-essential cookie category.
+  "privacy-cookie-notice-missing-consent-mechanism-fail.txt": ["PRV-002"],
 };
 
 describe("v4 fixture sanity", () => {
