@@ -958,6 +958,65 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // authorization; without one the patient cannot verify that refusing
   // to sign carries no care-denial consequence.
   "healthcare-phi-authorization-missing-conditioning-statement-fail.txt": ["HC-016"],
+
+  // ── Leg 4, batch 6 — fourth failure mode (insurance / trust-estate / settlement) ──
+
+  // Commercial General Liability Policy Summary with the preamble
+  // extended by a sentence that affirmatively elects not to include a
+  // separately captioned coverage-magnitude provision specifying the
+  // per-event and total maximum payment obligations of the Insurer
+  // (deliberately avoiding "limits of liability", "limit of liability",
+  // "limits of insurance", standalone "limit", "each occurrence",
+  // "per claim", and "aggregate"). The Limits-of-Liability section is
+  // removed; "per-occurrence deductible" uses a hyphen rather than
+  // a space so it does not match "each occurrence". None of those
+  // anchors appears anywhere in the document. INS-003 (critical) fires —
+  // its three present_patterns
+  // `/(limits?\s+of\s+(liability|insurance)|limit)/i`,
+  // `/(each\s+occurrence|per\s+claim)/i`, and
+  // `/(aggregate|general\s+aggregate)/i` are no longer matched anywhere
+  // in the document. Limits define the insurer's maximum exposure; both
+  // per-occurrence and aggregate limits should appear on the declarations
+  // so that the insured and contracting parties can verify the coverage
+  // stack, calculate self-insured retentions, and establish total
+  // risk-transfer headroom before relying on the policy.
+  "insurance-policy-summary-missing-limits-of-liability-fail.txt": ["INS-003"],
+
+  // Revocable Living Trust with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately captioned provision
+  // addressing how the Trustee shall manage trust assets for the Settlor's
+  // benefit during the Settlor's life (deliberately avoiding "during
+  // settlor's / grantor's lifetime", "while settlor is living", "income",
+  // "principal", and "distribut"). The "Distribution Upon Death" section
+  // is renamed "Death Disposition" and the operative verb is changed from
+  // "distribute" to "pay out" to eliminate the "distribut" anchor. No
+  // "income" or "principal" appears anywhere in the document. EST-013
+  // fires — its two present_patterns
+  // `/(during\s+(settlor.?s|grantor.?s)\s+lifetime|while\s+settlor\s+(is\s+)?living)/i`
+  // and `/(income|principal|distribut)/i` are no longer matched anywhere
+  // in the document. Without explicit lifetime-distribution direction,
+  // ambiguity about whether the Trustee may distribute principal arises;
+  // the trust is meant to be a fully operative vehicle for the Settlor
+  // during life, not just a death-distribution mechanism.
+  "trust-revocable-living-missing-lifetime-distribution-fail.txt": ["EST-013"],
+
+  // Mutual Release with the preamble extended by a sentence that
+  // affirmatively elects not to include a separately captioned scope-of-
+  // release clause specifying the breadth of claims discharged
+  // (deliberately avoiding "any and all ... claims", "each and every ...
+  // claims", and "known or unknown ... claims"). The Release body uses
+  // "all claims expressly asserted in the Action" rather than the broad
+  // "any and all claims, known or unknown" formulation; it expressly
+  // declines to address unknown claims. SET-002 (critical) fires — its
+  // two present_patterns
+  // `/(any\s+and\s+all|each\s+and\s+every)\s+claims?/i` and
+  // `/(known\s+(or|and)\s+unknown|known\s+or\s+unknown)\s+claims?/i`
+  // are no longer matched anywhere in the document. Without explicit
+  // scope language ("any and all claims, known or unknown"), a court may
+  // construe the release narrowly and leave residual claims alive; the
+  // parties' intent to achieve a full and final resolution is off the
+  // four corners.
+  "settlement-mutual-release-missing-scope-of-claims-fail.txt": ["SET-002"],
 };
 
 describe("v4 fixture sanity", () => {
