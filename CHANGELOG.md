@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- Engine-side compliance-frame rule filtering (spec-v3 §61, the named
+  follow-up to LAUNCH row v3-o).
+  - [`src/ui/frame-filter.ts`](src/ui/frame-filter.ts) (new) ships the
+    pure functions `framesForRule(ruleId)` and `filterRulesByFrames(rules,
+    activeFrames)`. The frame ↔ rule-id-prefix map covers every rule
+    family currently in v3: BAA-* → HIPAA, DPA-* → GDPR, USDPA-* → all 8
+    US state privacy statutes (CCPA + VCDPA + CPA + CTDPA + UCPA + TDPSA
+    + OCPA + DPDPA), TRANSFER-* → GDPR + UK-GDPR, ADDENDA-010..016
+    (AI Addendum) → NIST-AI-RMF + EU-AI-Act, ADDENDA-019
+    (FTC Click-to-Cancel) → FTC-ROSCA, ADDENDA-020 (privacy policy) →
+    GDPR + CCPA. The vendor-security and EULA ADDENDA ranges + every
+    V1 launch / V3 deep / V4 prefix are intentionally unframed —
+    they're playbook-bound, not regulator-bound, so toggling HIPAA off
+    must not silence the missing-party-name check. Longer prefixes
+    win in the lookup (USDPA- vs DPA-).
+  - [`src/ui/frame-filter.test.ts`](src/ui/frame-filter.test.ts) (new)
+    24 unit tests covering every mapping, the union semantics for
+    multi-frame activation, the unframed-prefix invariant, and a
+    purity check (the input array is not mutated).
+  - [`src/ui/pipeline.ts`](src/ui/pipeline.ts) `runPipeline` and
+    `runBundlePipeline` now accept an `options.active_frames` parameter
+    typed as `ReadonlyArray<ComplianceFrame>`. When omitted, the full
+    LAUNCH + V3 rule set runs (preserves existing behavior for every
+    caller in the tree today). When supplied, the rule set is filtered
+    through `filterRulesByFrames` before the engine runs.
+  - Wiring the chip-toggle UI in the complete state to call the
+    pipeline with the new frames + caching the per-doc ingest is the
+    remaining piece for the v3-o follow-up.
 - Test coverage for the v4 bundle-pipeline expansion helper.
   [`src/ui/pipeline.test.ts`](src/ui/pipeline.test.ts) (new) pins
   `expandBundleInputs` across 6 paths: multi-file passthrough,

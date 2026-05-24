@@ -45,10 +45,12 @@ import {
 import {
   detectV3Family,
   defaultFramesForPlaybook,
+  type ComplianceFrame,
   type V3Detection,
   type FrameDefaults,
 } from "./v3/index.js";
 import { familyDisplayLabel } from "./v3-labels.js";
+import { filterRulesByFrames } from "./frame-filter.js";
 
 export type PipelineProgress = {
   /** Fraction in [0, 1] after each rule completes. */
@@ -88,6 +90,19 @@ export type PipelineConfig = {
   playbook_base?: string;
 };
 
+export type PipelineOptions = {
+  /**
+   * Active compliance frames (spec-v3 §61, LAUNCH row v3-o follow-up).
+   * When provided, the engine rule set is filtered via
+   * `filterRulesByFrames` before the run: any frame-gated rule whose
+   * frames don't intersect this list is excluded. Unframed rules (the
+   * V1 launch rules + the V3 deep-rule families like NDA-D / MSA) are
+   * always kept regardless. Omit or pass `undefined` to disable
+   * frame filtering (default — matches v1/v3/v4 behavior to date).
+   */
+  active_frames?: ReadonlyArray<ComplianceFrame>;
+};
+
 const DEFAULT_DKB_BASE = "/dkb";
 const DEFAULT_PLAYBOOK_BASE = "/playbooks";
 
@@ -99,6 +114,7 @@ export async function runPipeline(
   kind: "pdf" | "docx",
   hooks: PipelineProgress = {},
   config: PipelineConfig = {},
+  options: PipelineOptions = {},
 ): Promise<PipelineResult> {
   // 1. Ingest. DKB load runs in parallel.
   const buffer = await file.arrayBuffer();
@@ -147,9 +163,14 @@ export async function runPipeline(
   });
   const playbook = playbooks.find((p) => p.id === match.playbook_id) ?? playbooks[0]!;
 
-  // 5. Run engine with live progress.
+  // 5. Run engine with live progress. Filter by active compliance
+  // frames when the caller supplied them (spec-v3 §61).
+  const ruleSet = filterRulesByFrames(
+    [...LAUNCH_RULES, ...V3_RULES] as readonly Rule[],
+    options.active_frames,
+  );
   const run = await runEngine({
-    rules: [...LAUNCH_RULES, ...V3_RULES] as readonly Rule[],
+    rules: ruleSet as readonly Rule[],
     ctx: { tree: ingest.tree, extracted, dkb, playbook },
     source_file: { name: file.name, sha256: ingest.sha256, size_bytes: buffer.byteLength },
     playbook_match_confidence: match.confidence,
@@ -281,6 +302,7 @@ export async function runBundlePipeline(
   files: ReadonlyArray<File>,
   hooks: BundlePipelineHooks = {},
   config: PipelineConfig = {},
+  options: PipelineOptions = {},
 ): Promise<BundlePipelineResult> {
   if (files.length === 0) throw new Error(BUNDLE_CAP_MESSAGE);
 
@@ -366,8 +388,14 @@ export async function runBundlePipeline(
     const playbook = playbooks.find((p) => p.id === match.playbook_id) ?? playbooks[0]!;
 
     const docIndex = i;
+    // Frame-filtered rule set (spec-v3 §61). When `options.active_frames`
+    // is omitted, this returns the full LAUNCH+V3 set unchanged.
+    const ruleSet = filterRulesByFrames(
+      [...LAUNCH_RULES, ...V3_RULES] as readonly Rule[],
+      options.active_frames,
+    );
     const run = await runEngine({
-      rules: [...LAUNCH_RULES, ...V3_RULES] as readonly Rule[],
+      rules: ruleSet as readonly Rule[],
       ctx: { tree: ingest.tree, extracted, dkb, playbook },
       source_file: {
         name: entry.filename,
