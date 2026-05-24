@@ -18,26 +18,8 @@ import { createProgressBar } from "./progress.js";
 import { createRuleTicker } from "./ticker.js";
 import { registerServiceWorker } from "./sw-register.js";
 import { hydrateDkbValidation } from "./dkb-validation.js";
+import { V3_FAMILY_LABELS } from "./v3-labels.js";
 
-/**
- * Human-readable labels for the v3 family ids returned by
- * `detectV3Family`. The chip in the complete-state surface reads
- * "Detected: <label>". Kept in `main.ts` (not the pure detector) so
- * the v3 detector stays free of UI concerns.
- */
-const V3_FAMILY_LABELS: Record<string, string> = {
-  baa: "Business Associate Agreement (BAA)",
-  "dpa-eu": "EU Data Processing Agreement",
-  "dpa-us-state": "US state DPA / Service Provider Addendum",
-  "scc-module-2": "EU SCC Module 2 (controller → processor)",
-  "scc-module-3": "EU SCC Module 3 (processor → processor)",
-  "uk-idta": "UK International Data Transfer Addendum",
-  "nda-deep": "NDA (deep)",
-  "msa-deep": "MSA (deep)",
-  coi: "Certificate of Insurance (ACORD 25)",
-  "vendor-security": "Vendor Security Addendum",
-  "ai-addendum": "AI Addendum",
-};
 
 /**
  * Preload the analysis pipeline as a side-effect of user intent —

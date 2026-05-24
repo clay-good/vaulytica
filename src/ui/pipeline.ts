@@ -48,6 +48,7 @@ import {
   type V3Detection,
   type FrameDefaults,
 } from "./v3/index.js";
+import { familyDisplayLabel } from "./v3-labels.js";
 
 export type PipelineProgress = {
   /** Fraction in [0, 1] after each rule completes. */
@@ -419,7 +420,11 @@ export async function runBundlePipeline(
     documents: perDoc.map((d) => ({
       doc_id: `doc-${d.filename}`,
       source_file_name: d.filename,
-      detected_family: d.playbook.name,
+      // Prefer the v3 family label when the detector fired with non-
+      // "unknown"; fall back to the playbook name (e.g. "Mutual NDA",
+      // "SaaS — Vendor") for v2-launch families that the v3 detector
+      // doesn't cover.
+      detected_family: familyDisplayLabel(d.v3_detection.family, d.playbook.name),
       run: d.run,
     })),
     consistency,

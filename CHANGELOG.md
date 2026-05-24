@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- Test coverage for the v4 bundle-pipeline expansion helper.
+  [`src/ui/pipeline.test.ts`](src/ui/pipeline.test.ts) (new) pins
+  `expandBundleInputs` across 6 paths: multi-file passthrough,
+  unsupported-extension filtering, zip-bundle unpack, zip
+  determinism (sorted entry order), single-non-zip edge case, and
+  empty-zip handling. The bundle pipeline was shipped without unit
+  coverage in commit 6f20dc5; this closes the gap.
+- Shared v3 family-label module. [`src/ui/v3-labels.ts`](src/ui/v3-labels.ts)
+  (new) carries `V3_FAMILY_LABELS` + `familyDisplayLabel`, consumed by
+  both `main.ts` (eager bundle, no heavy deps) and `pipeline.ts`
+  (dynamic chunk). Removes the duplicated table that previously lived
+  in `main.ts` alongside the pipeline's own copy. Unit tests in
+  [`src/ui/v3-labels.test.ts`](src/ui/v3-labels.test.ts) pin the table
+  coverage against the auto-detect family ids and the
+  `familyDisplayLabel` fallback contract.
+
+### Changed
+- Bundle DOCX cover now surfaces the v3 detected family for each
+  per-document subsection rather than the bare playbook id.
+  [`src/ui/pipeline.ts`](src/ui/pipeline.ts) `runBundlePipeline` sets
+  `BundleDocument.detected_family` via `familyDisplayLabel(family,
+  playbook.name)`, so a BAA shows "Business Associate Agreement (BAA)"
+  in the consolidated report while a Mutual NDA (family "unknown" at
+  the v3 detector level) still shows "Mutual NDA".
+
+### Added
 - v3 family detection in the bundle path (extends LAUNCH row v3-o to
   multi-doc). [`src/ui/pipeline.ts`](src/ui/pipeline.ts) `runBundlePipeline`
   now calls `detectV3Family` per document and exposes `v3_detection`
