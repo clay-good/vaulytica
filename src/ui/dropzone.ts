@@ -10,6 +10,17 @@
  *   - .doc  → reject with the user-facing fix-it message
  *   - other → reject with a generic message
  *
+ * Multi-document mode (spec-v4.md §8, Step 41 UI hookup, LAUNCH row v4-d):
+ *   - The file input carries `multiple` so users can pick more than one
+ *     file in a single picker gesture.
+ *   - When ≥ 2 files arrive (drag-drop or picker), the bundle callback
+ *     `onFiles` fires instead of `onFile`. The pipeline routes those
+ *     through `src/ingest/multi.ts` + `runEngineMulti` +
+ *     `buildBundleDocxReport`.
+ *   - A single `.zip` drop is also treated as a bundle — the pipeline
+ *     unpacks it client-side via `fflate`. We surface this through
+ *     `onFiles([zip])` so the pipeline owns the zip-vs-multi-file split.
+ *
  * Accessibility: role="button" + tabindex="0" + Enter/Space activation
  * + focus-visible outline live in `site/index.html`. The handlers
  * preventDefault() on drag events so the browser doesn't navigate.
@@ -34,9 +45,21 @@ export function validateFile(file: File): DropResult {
   return { ok: false, reason: `Vaulytica accepts .pdf and .docx — not "${file.name}".` };
 }
 
+/** True if the filename indicates a zip archive bundle (spec-v4 §8). */
+export function isZipFile(file: File): boolean {
+  return file.name.toLowerCase().endsWith(".zip");
+}
+
 export type DropzoneOptions = {
-  /** Called with the validated file. */
+  /** Called with the validated single file. */
   onFile: (result: DropResult) => void;
+  /**
+   * Called with the dropped/picked file list when ≥ 2 files arrive
+   * **or** when a single `.zip` arrives. The pipeline owns the bundle
+   * branch. When omitted, multi-file drops fall back to `onFile` on
+   * the first entry (preserves v1/v3 single-doc behavior).
+   */
+  onFiles?: (files: File[]) => void;
   /** Called when a drag-over begins/ends so CSS can pulse the border. */
   onDragState?: (active: boolean) => void;
 };
@@ -44,13 +67,24 @@ export type DropzoneOptions = {
 export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void {
   const input = document.createElement("input");
   input.type = "file";
-  input.accept = ".pdf,.docx";
+  // Multi-doc accept list adds .zip for the zip-bundle path (spec-v4 §8).
+  // The pipeline still distinguishes ≥ 2 files vs a single `.zip` and
+  // rejects unsupported extensions upstream via `validateFile` /
+  // `planBundle`.
+  input.accept = ".pdf,.docx,.zip";
+  input.multiple = true;
   input.style.display = "none";
   dz.appendChild(input);
 
-  const handleFile = (file: File | undefined): void => {
-    if (!file) return;
-    opts.onFile(validateFile(file));
+  const dispatch = (files: File[]): void => {
+    if (files.length === 0) return;
+    const isBundle =
+      files.length >= 2 || (files.length === 1 && isZipFile(files[0]!));
+    if (isBundle && opts.onFiles) {
+      opts.onFiles(files);
+      return;
+    }
+    opts.onFile(validateFile(files[0]!));
   };
 
   const onPick = (): void => {
@@ -58,7 +92,11 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
     input.click();
   };
   const onInputChange = (): void => {
-    handleFile(input.files?.[0] ?? undefined);
+    const list = input.files;
+    if (!list || list.length === 0) return;
+    const files: File[] = [];
+    for (let i = 0; i < list.length; i++) files.push(list[i]!);
+    dispatch(files);
   };
   const onKey = (e: KeyboardEvent): void => {
     if (e.key === "Enter" || e.key === " ") {
@@ -91,8 +129,11 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
   const onDrop = (e: DragEvent): void => {
     e.preventDefault();
     opts.onDragState?.(false);
-    const file = e.dataTransfer?.files?.[0];
-    handleFile(file ?? undefined);
+    const list = e.dataTransfer?.files;
+    if (!list || list.length === 0) return;
+    const files: File[] = [];
+    for (let i = 0; i < list.length; i++) files.push(list[i]!);
+    dispatch(files);
   };
 
   dz.addEventListener("click", onClick);

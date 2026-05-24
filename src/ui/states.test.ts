@@ -156,6 +156,45 @@ describe("renderState", () => {
     }
   });
 
+  it("renders bundle-complete state with counts, bundle download buttons and cross-doc summary", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 3,
+      counts: { critical: 4, warning: 7, info: 12 },
+      cross_doc_findings: 2,
+      bundle_docx_blob: new Blob(["docx"], { type: "application/octet-stream" }),
+      bundle_json_blob: new Blob(["{}"], { type: "application/json" }),
+      bundle_docx_filename: "vaulytica-bundle.docx",
+      bundle_json_filename: "vaulytica-bundle.json",
+    });
+    expect(dz.getAttribute("data-state")).toBe("bundle-complete");
+    expect(select(dz, "bundle-title")!.textContent).toMatch(/3 documents/);
+    expect(select(dz, "counts")!.textContent).toMatch(/4/);
+    expect(select(dz, "counts")!.textContent).toMatch(/7/);
+    expect(select(dz, "counts")!.textContent).toMatch(/12/);
+    expect(select(dz, "cross-doc-summary")!.textContent).toMatch(/2 cross-document/);
+    expect(select<HTMLButtonElement>(dz, "bundle-download")!.tagName).toBe("BUTTON");
+    expect(select<HTMLButtonElement>(dz, "bundle-json-download")!.tagName).toBe("BUTTON");
+    document.body.removeChild(dz);
+  });
+
+  it("bundle-complete reports 'no inconsistencies' when zero cross-doc findings", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 2,
+      counts: { critical: 0, warning: 0, info: 0 },
+      cross_doc_findings: 0,
+      bundle_docx_blob: new Blob(["docx"]),
+      bundle_json_blob: new Blob(["{}"]),
+      bundle_docx_filename: "vaulytica-bundle.docx",
+      bundle_json_filename: "vaulytica-bundle.json",
+    });
+    expect(select(dz, "cross-doc-summary")!.textContent).toMatch(/No cross-document/);
+  });
+
   it("renders error state with a message", () => {
     const dz = document.createElement("div");
     renderState(dz, { kind: "error", message: "Open it in Word…" });

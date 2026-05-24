@@ -19,6 +19,16 @@ export type DropzoneState =
       docx_filename: string;
       json_filename: string;
     }
+  | {
+      kind: "bundle-complete";
+      document_count: number;
+      counts: { critical: number; warning: number; info: number };
+      cross_doc_findings: number;
+      bundle_docx_blob: Blob;
+      bundle_json_blob: Blob;
+      bundle_docx_filename: string;
+      bundle_json_filename: string;
+    }
   | { kind: "error"; message: string };
 
 const TEMPLATES: Record<DropzoneState["kind"], string> = {
@@ -44,6 +54,14 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     </details>
     <button class="btn btn-primary" type="button" data-role="docx-download">Download report (Word)</button>
     <button class="btn-link" type="button" data-role="json-download">Download structured data (JSON)</button>
+    <div class="download-status" data-role="download-status" aria-live="polite"></div>
+  `,
+  "bundle-complete": `
+    <div class="dropzone-title" data-role="bundle-title"></div>
+    <div class="counts" data-role="counts"></div>
+    <div class="dropzone-sub" data-role="cross-doc-summary"></div>
+    <button class="btn btn-primary" type="button" data-role="bundle-download">Download consolidated report (Word)</button>
+    <button class="btn-link" type="button" data-role="bundle-json-download">Download bundle data (JSON)</button>
     <div class="download-status" data-role="download-status" aria-live="polite"></div>
   `,
   error: `
@@ -78,6 +96,26 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
     jsonBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       void saveBlob(state.json_blob, state.json_filename, status);
+    });
+  }
+  if (state.kind === "bundle-complete") {
+    select(dz, "bundle-title")!.textContent =
+      `${state.document_count} documents analyzed`;
+    select(dz, "counts")!.innerHTML = countsHtml(state.counts);
+    select(dz, "cross-doc-summary")!.textContent =
+      state.cross_doc_findings === 0
+        ? "No cross-document inconsistencies found."
+        : `${state.cross_doc_findings} cross-document finding${state.cross_doc_findings === 1 ? "" : "s"}.`;
+    const docxBtn = select<HTMLButtonElement>(dz, "bundle-download")!;
+    const jsonBtn = select<HTMLButtonElement>(dz, "bundle-json-download")!;
+    const status = select<HTMLElement>(dz, "download-status")!;
+    docxBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      void saveBlob(state.bundle_docx_blob, state.bundle_docx_filename, status);
+    });
+    jsonBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      void saveBlob(state.bundle_json_blob, state.bundle_json_filename, status);
     });
   }
   if (state.kind === "error") {

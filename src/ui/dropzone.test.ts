@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { bindDropzone, validateFile, type DropResult } from "./dropzone.js";
+import { bindDropzone, isZipFile, validateFile, type DropResult } from "./dropzone.js";
 
 function fakeFile(name: string, type = "application/pdf"): File {
   return new File(["x"], name, { type });
@@ -79,5 +79,87 @@ describe("bindDropzone", () => {
     dz.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
     expect(clickSpy).toHaveBeenCalledTimes(1);
     document.body.removeChild(dz);
+  });
+
+  it("exposes input[multiple] so the v4 multi-doc e2e probe matches", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    bindDropzone(dz, { onFile: () => {} });
+    const input = dz.querySelector<HTMLInputElement>("input[type=file]")!;
+    expect(input.multiple).toBe(true);
+    // spec-v4 §8 accept list must include .zip alongside .pdf/.docx
+    expect(input.accept.split(",")).toEqual(
+      expect.arrayContaining([".pdf", ".docx", ".zip"]),
+    );
+    document.body.removeChild(dz);
+  });
+
+  it("routes ≥ 2 files to onFiles, not onFile", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    const singles: DropResult[] = [];
+    const bundles: File[][] = [];
+    bindDropzone(dz, {
+      onFile: (r) => singles.push(r),
+      onFiles: (fs) => bundles.push(fs),
+    });
+    const input = dz.querySelector<HTMLInputElement>("input[type=file]")!;
+    const a = fakeFile("a.pdf");
+    const b = fakeFile("b.docx");
+    Object.defineProperty(input, "files", {
+      configurable: true,
+      get: () => [a, b],
+    });
+    input.dispatchEvent(new Event("change"));
+    expect(singles).toHaveLength(0);
+    expect(bundles).toHaveLength(1);
+    expect(bundles[0]!.map((f) => f.name)).toEqual(["a.pdf", "b.docx"]);
+    document.body.removeChild(dz);
+  });
+
+  it("routes a single .zip drop to onFiles (zip-bundle path)", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    const singles: DropResult[] = [];
+    const bundles: File[][] = [];
+    bindDropzone(dz, {
+      onFile: (r) => singles.push(r),
+      onFiles: (fs) => bundles.push(fs),
+    });
+    const input = dz.querySelector<HTMLInputElement>("input[type=file]")!;
+    const z = fakeFile("docs.zip", "application/zip");
+    Object.defineProperty(input, "files", {
+      configurable: true,
+      get: () => [z],
+    });
+    input.dispatchEvent(new Event("change"));
+    expect(singles).toHaveLength(0);
+    expect(bundles).toHaveLength(1);
+    expect(bundles[0]![0]!.name).toBe("docs.zip");
+    document.body.removeChild(dz);
+  });
+
+  it("falls back to onFile when ≥ 2 files arrive but onFiles is not provided", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    const singles: DropResult[] = [];
+    bindDropzone(dz, { onFile: (r) => singles.push(r) });
+    const input = dz.querySelector<HTMLInputElement>("input[type=file]")!;
+    Object.defineProperty(input, "files", {
+      configurable: true,
+      get: () => [fakeFile("a.pdf"), fakeFile("b.docx")],
+    });
+    input.dispatchEvent(new Event("change"));
+    expect(singles).toHaveLength(1);
+    expect(singles[0]?.ok).toBe(true);
+    document.body.removeChild(dz);
+  });
+});
+
+describe("isZipFile", () => {
+  it("matches .zip case-insensitively", () => {
+    expect(isZipFile(new File([], "x.zip"))).toBe(true);
+    expect(isZipFile(new File([], "X.ZIP"))).toBe(true);
+    expect(isZipFile(new File([], "x.docx"))).toBe(false);
   });
 });

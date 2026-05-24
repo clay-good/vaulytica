@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Added
+- v4 multi-doc UI hookup (LAUNCH row v4-d → 🟡 partial; spec-v4 §8 / §11).
+  [`src/ui/dropzone.ts`](src/ui/dropzone.ts) now exposes
+  `input[type="file"][multiple]` and accepts `.pdf,.docx,.zip`; multi-file
+  drops + single-`.zip` drops route through a new `onFiles` callback so the
+  pipeline owns the bundle branch (single-file behavior is unchanged).
+  [`src/ui/pipeline.ts`](src/ui/pipeline.ts) ships `runBundlePipeline`
+  which expands inputs (multi-file or single zip via `extractZipEntries`),
+  plans the bundle via `planBundle`, runs the per-doc engine and cross-doc
+  consistency against `ALL_CONSISTENCY_RULES`, and emits the consolidated
+  bundle DOCX + bundle JSON via `buildBundleDocxReport` /
+  `buildBundleJsonBlob`. [`src/ui/states.ts`](src/ui/states.ts) adds a
+  `bundle-complete` state with `[data-role="bundle-download"]` and
+  `[data-role="bundle-json-download"]` buttons plus a cross-document
+  finding summary. Unit coverage: [`src/ui/dropzone.test.ts`](src/ui/dropzone.test.ts)
+  (multi-file routing, zip routing, accept-list, fallback to single-file
+  when `onFiles` is omitted) and [`src/ui/states.test.ts`](src/ui/states.test.ts)
+  (bundle-complete render + zero-finding copy). The forward-compatible
+  skip in [`tests/e2e/v4/no-network.spec.ts`](tests/e2e/v4/no-network.spec.ts)
+  lifts automatically once the page is served from `dist/`. Folder-picker
+  (`webkitdirectory`) affordance is the remaining piece for row v4-o.
+
 ### Fixed
 - `PlaybookSchema` (`src/playbooks/types.ts`) now accepts the v3 playbook
   shape — `expected_clauses` / `expected_defined_terms` as `string[]`

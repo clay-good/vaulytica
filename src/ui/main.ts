@@ -47,6 +47,9 @@ export async function bootUi(opts: {
       }
       void runFile(opts.dropzone, r.file, r.kind);
     },
+    onFiles: (files) => {
+      void runBundle(opts.dropzone, files);
+    },
     onDragState: (active) => {
       opts.dropzone.classList.toggle("is-dragging", active);
       if (active) preloadPipeline();
@@ -88,6 +91,50 @@ async function runFile(dz: HTMLElement, file: File, kind: "pdf" | "docx"): Promi
       json_blob: result.json_blob,
       docx_filename: `${stem}-vaulytica.docx`,
       json_filename: `${stem}-vaulytica.json`,
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    setState(dz, { kind: "error", message });
+  }
+}
+
+async function runBundle(dz: HTMLElement, files: File[]): Promise<void> {
+  try {
+    const summary =
+      files.length === 1 && files[0]!.name.toLowerCase().endsWith(".zip")
+        ? files[0]!.name
+        : `${files.length} files`;
+    setState(dz, { kind: "analyzing", filename: summary });
+    const { runBundlePipeline, countsBySeverity } = await import("./pipeline.js");
+    const progress = createProgressBar(select(dz, "progress")!);
+    const ticker = createRuleTicker(select(dz, "ticker")!);
+    progress.reset();
+
+    const result = await runBundlePipeline(files, {
+      onProgress: (fraction) => progress.set(fraction),
+      onDocumentReady: (filename) => ticker.push("DOC", filename),
+      onDkbLoaded: (version) =>
+        setState(dz, { kind: "analyzing", filename: summary, dkb_version: version }),
+    });
+
+    // Aggregate per-doc severity counts across the whole bundle.
+    const counts = { critical: 0, warning: 0, info: 0 };
+    for (const d of result.documents) {
+      const c = countsBySeverity(d.run);
+      counts.critical += c.critical;
+      counts.warning += c.warning;
+      counts.info += c.info;
+    }
+
+    setState(dz, {
+      kind: "bundle-complete",
+      document_count: result.documents.length,
+      counts,
+      cross_doc_findings: result.consistency.findings.length,
+      bundle_docx_blob: result.bundle_docx_blob,
+      bundle_json_blob: result.bundle_json_blob,
+      bundle_docx_filename: "vaulytica-bundle.docx",
+      bundle_json_filename: "vaulytica-bundle.json",
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
