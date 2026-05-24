@@ -1,0 +1,43 @@
+{
+  "built_at": "2026-05-24T02:09:06.581Z",
+  "files": {
+    "classifier_patterns": {
+      "entries": 27,
+      "filename": "dkb-classifier-patterns.json",
+      "sha256": "8bf8b98fbf36d2162ce3882418b2d0e4b3277570d2d710c7bf4a124c765ec84d"
+    },
+    "classifier_vocab": {
+      "entries": 103,
+      "filename": "dkb-classifier-vocab.json",
+      "sha256": "6a01b8460432eca74a8197063f56971d881fc58696ad24e946e5bfadae6ddf22"
+    },
+    "clauses": {
+      "entries": 0,
+      "filename": "dkb-clauses.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "dark_patterns": {
+      "entries": 0,
+      "filename": "dkb-dark-patterns.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "definitions": {
+      "entries": 0,
+      "filename": "dkb-definitions.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "jurisdictions": {
+      "entries": 0,
+      "filename": "dkb-jurisdictions.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "statutes": {
+      "entries": 0,
+      "filename": "dkb-statutes.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  },
+  "schema_version": "1.0.0",
+  "sources": [],
+  "version": "v2026-05-24-local"
+}
