@@ -52,6 +52,13 @@ export type DropzoneState =
       bundle_json_blob: Blob;
       bundle_docx_filename: string;
       bundle_json_filename: string;
+      /**
+       * Per-doc v3 family labels (spec-v3 §60, LAUNCH row v3-o bundle
+       * side). Optional; only documents whose family is non-"unknown"
+       * are typically included. Rendered as a "Detected: X, Y" line
+       * under the cross-doc summary.
+       */
+      detected_families?: ReadonlyArray<string>;
     }
   | { kind: "error"; message: string };
 
@@ -91,6 +98,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     <div class="dropzone-title" data-role="bundle-title"></div>
     <div class="counts" data-role="counts"></div>
     <div class="dropzone-sub" data-role="cross-doc-summary"></div>
+    <div class="dropzone-sub bundle-detected-families" data-role="bundle-detected-families" hidden></div>
     <button class="btn btn-primary" type="button" data-role="bundle-download">Download consolidated report (Word)</button>
     <button class="btn-link" type="button" data-role="bundle-json-download">Download bundle data (JSON)</button>
     <div class="download-status" data-role="download-status" aria-live="polite"></div>
@@ -139,6 +147,14 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
       state.cross_doc_findings === 0
         ? "No cross-document inconsistencies found."
         : `${state.cross_doc_findings} cross-document finding${state.cross_doc_findings === 1 ? "" : "s"}.`;
+    const detectedEl = select<HTMLElement>(dz, "bundle-detected-families")!;
+    if (state.detected_families && state.detected_families.length > 0) {
+      detectedEl.hidden = false;
+      detectedEl.textContent = `Detected: ${state.detected_families.join(", ")}`;
+    } else {
+      detectedEl.hidden = true;
+      detectedEl.textContent = "";
+    }
     const docxBtn = select<HTMLButtonElement>(dz, "bundle-download")!;
     const jsonBtn = select<HTMLButtonElement>(dz, "bundle-json-download")!;
     const status = select<HTMLElement>(dz, "download-status")!;

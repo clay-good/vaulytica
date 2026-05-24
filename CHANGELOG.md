@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- v3 family detection in the bundle path (extends LAUNCH row v3-o to
+  multi-doc). [`src/ui/pipeline.ts`](src/ui/pipeline.ts) `runBundlePipeline`
+  now calls `detectV3Family` per document and exposes `v3_detection`
+  on each `BundlePerDocument`. [`src/ui/states.ts`](src/ui/states.ts)
+  `bundle-complete` state adds an optional
+  `[data-role="bundle-detected-families"]` line that lists the human-
+  readable detected families when at least one document is non-
+  "unknown". Unit coverage added in [`src/ui/states.test.ts`](src/ui/states.test.ts):
+  2 new tests (rendered, hidden-when-empty).
+- Static a11y hardening (LAUNCH rows h / v4-f).
+  [`tests/integration/static-html.test.ts`](tests/integration/static-html.test.ts)
+  gains 5 new assertions: monotonic heading hierarchy (no h1 → h3
+  jumps), exactly one `<h1>`, every native `<button>` has an
+  accessible name (text content or aria-label), every form control
+  has a label association (aria-label / aria-labelledby /
+  `<label for>`), every `<a>` has a non-empty accessible name.
+
+### Fixed
+- Heading hierarchy: the source catalog cards under "Where the rules
+  come from." were `<h4>` directly under the section's `<h2>`,
+  skipping `<h3>`. Promoted to `<h3>` (12 cards) and the matching
+  CSS selectors `.source-card h4` / `.source-card h4 span` retargeted
+  to `h3`. Caught by the new monotonic-heading test.
+
+### Added
 - v3 UI hookup — Step 33 DOM wiring (LAUNCH row v3-o; spec-v3 §§60–61).
   [`src/ui/pipeline.ts`](src/ui/pipeline.ts) now calls the pure
   `detectV3Family` + `defaultFramesForPlaybook` modules and surfaces

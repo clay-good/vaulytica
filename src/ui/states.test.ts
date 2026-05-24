@@ -286,6 +286,39 @@ describe("renderState", () => {
     document.body.removeChild(dz);
   });
 
+  it("bundle-complete shows detected families when provided", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 3,
+      counts: { critical: 0, warning: 0, info: 0 },
+      cross_doc_findings: 0,
+      bundle_docx_blob: new Blob(["docx"]),
+      bundle_json_blob: new Blob(["{}"]),
+      bundle_docx_filename: "x.docx",
+      bundle_json_filename: "x.json",
+      detected_families: ["BAA", "EU DPA"],
+    });
+    const det = select(dz, "bundle-detected-families")!;
+    expect(det.hidden).toBe(false);
+    expect(det.textContent).toBe("Detected: BAA, EU DPA");
+  });
+
+  it("bundle-complete hides detected-families line when none provided", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 2,
+      counts: { critical: 0, warning: 0, info: 0 },
+      cross_doc_findings: 0,
+      bundle_docx_blob: new Blob(["docx"]),
+      bundle_json_blob: new Blob(["{}"]),
+      bundle_docx_filename: "x.docx",
+      bundle_json_filename: "x.json",
+    });
+    expect(select(dz, "bundle-detected-families")!.hidden).toBe(true);
+  });
+
   it("bundle-complete reports 'no inconsistencies' when zero cross-doc findings", () => {
     const dz = document.createElement("div");
     renderState(dz, {

@@ -205,3 +205,115 @@ describe("v4 surface a11y (LAUNCH row v4-h)", () => {
     expect(html).toMatch(/aria-label=["']Vaulytica home["']/);
   });
 });
+
+describe("Static a11y hardening (LAUNCH rows h / v4-f)", () => {
+  // These checks extend the WCAG 2.2 AA static surface. They run cheaply
+  // on every commit so a regression in any of them fails CI before the
+  // axe DevTools live audit. axe will flag many of the same issues but
+  // only runs against the deployed page — these catch regressions earlier.
+
+  it("heading hierarchy is monotonic (no h1 → h3 jump skipping h2)", () => {
+    // Extract every heading level in document order, then assert no
+    // jump-down step exceeds 1. A `h1 → h2` step is fine; `h1 → h3`
+    // is not. Going back up (h3 → h2 → h2) is always allowed because
+    // a new section can re-anchor the hierarchy.
+    const levels: number[] = [];
+    const headingRe = /<h([1-6])\b[^>]*>/gi;
+    let m: RegExpExecArray | null;
+    while ((m = headingRe.exec(html)) !== null) {
+      levels.push(Number(m[1]));
+    }
+    expect(levels.length, "no headings found in the document").toBeGreaterThan(0);
+    let prev = 0;
+    for (let i = 0; i < levels.length; i++) {
+      const cur = levels[i]!;
+      if (prev > 0 && cur > prev + 1) {
+        throw new Error(
+          `heading hierarchy jumps from h${prev} to h${cur} at index ${i}; insert an intermediate level`,
+        );
+      }
+      prev = cur;
+    }
+  });
+
+  it("exactly one <h1> on the page (WCAG document-structure best practice)", () => {
+    const h1s = html.match(/<h1\b[^>]*>/gi) ?? [];
+    expect(h1s.length, `expected exactly one <h1>, got ${h1s.length}`).toBe(1);
+  });
+
+  it("every native <button> has a non-empty accessible name (text content or aria-label)", () => {
+    // Match <button ...>...</button> pairs and verify each has at least
+    // one of: non-whitespace text content, aria-label, or aria-labelledby.
+    // Self-closing buttons (rare/invalid) are skipped.
+    const buttonRe = /<button\b([^>]*)>([^]*?)<\/button>/gi;
+    let m: RegExpExecArray | null;
+    while ((m = buttonRe.exec(html)) !== null) {
+      const attrs = m[1] ?? "";
+      const inner = (m[2] ?? "").trim();
+      const hasAria =
+        /\saria-label(?:ledby)?=["'][^"']+["']/.test(attrs);
+      // Strip nested tags to test if there is any text-like content. An
+      // SVG-only button without aria-label is the canonical regression
+      // we want to catch.
+      const innerText = inner.replace(/<[^>]+>/g, "").trim();
+      const hasText = innerText.length > 0;
+      expect(
+        hasAria || hasText,
+        `<button> needs accessible name (text content or aria-label): ${m[0].slice(0, 200)}`,
+      ).toBe(true);
+    }
+  });
+
+  it("every form control (<input>/<select>/<textarea>) has a label association", () => {
+    // For each form-control tag, accept any one of:
+    //   - aria-label / aria-labelledby on the control
+    //   - id matched by a `<label for="<id>">` somewhere in the document
+    //   - hidden attribute (e.g. our injected <input type="file">; the
+    //     dropzone container carries the aria-label via role="button")
+    //   - type="hidden" (non-interactive)
+    //
+    // We intentionally ignore inputs created by the JS dropzone at
+    // runtime (they don't appear in the static HTML).
+    const controlRe = /<(?:input|select|textarea)\b([^>]*)>/gi;
+    let m: RegExpExecArray | null;
+    while ((m = controlRe.exec(html)) !== null) {
+      const attrs = m[1] ?? "";
+      if (/\stype=["']hidden["']/.test(attrs)) continue;
+      if (/\shidden(?:=|\s|>)/.test(attrs + ">")) continue;
+      const ariaLabeled = /\saria-label(?:ledby)?=["'][^"']+["']/.test(attrs);
+      if (ariaLabeled) continue;
+      const idMatch = /\sid=["']([^"']+)["']/.exec(attrs);
+      if (idMatch) {
+        const labelRe = new RegExp(
+          `<label\\s+[^>]*for=["']${idMatch[1]!.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}["']`,
+          "i",
+        );
+        if (labelRe.test(html)) continue;
+      }
+      throw new Error(
+        `form control has no label association (aria-label or matching <label for=…>): ${m[0]}`,
+      );
+    }
+  });
+
+  it("every <a> anchor has a non-empty accessible name", () => {
+    // Either text content or aria-label / aria-labelledby. Empty
+    // <a></a> tags are typically a regression (e.g. an SVG-only link
+    // missing aria-label).
+    const anchorRe = /<a\b([^>]*)>([^]*?)<\/a>/gi;
+    let m: RegExpExecArray | null;
+    while ((m = anchorRe.exec(html)) !== null) {
+      const attrs = m[1] ?? "";
+      const inner = (m[2] ?? "").trim();
+      const hasAria = /\saria-label(?:ledby)?=["'][^"']+["']/.test(attrs);
+      // Strip inner tags down to text; SVG-only anchors without aria-label
+      // are the regression we want to catch.
+      const innerText = inner.replace(/<[^>]+>/g, "").trim();
+      const hasText = innerText.length > 0;
+      expect(
+        hasAria || hasText,
+        `<a> needs accessible name (text content or aria-label): ${m[0].slice(0, 200)}`,
+      ).toBe(true);
+    }
+  });
+});

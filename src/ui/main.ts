@@ -159,6 +159,10 @@ async function runBundle(dz: HTMLElement, files: File[]): Promise<void> {
       counts.info += c.info;
     }
 
+    const detectedFamilies = result.documents
+      .map((d) => d.v3_detection.family)
+      .filter((f) => f !== "unknown")
+      .map((f) => V3_FAMILY_LABELS[f] ?? f);
     setState(dz, {
       kind: "bundle-complete",
       document_count: result.documents.length,
@@ -168,6 +172,7 @@ async function runBundle(dz: HTMLElement, files: File[]): Promise<void> {
       bundle_json_blob: result.bundle_json_blob,
       bundle_docx_filename: "vaulytica-bundle.docx",
       bundle_json_filename: "vaulytica-bundle.json",
+      detected_families: detectedFamilies.length > 0 ? detectedFamilies : undefined,
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);

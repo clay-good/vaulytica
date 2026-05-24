@@ -234,6 +234,8 @@ export type BundlePerDocument = {
   match_reasoning: string;
   docx_blob: Blob;
   json_blob: Blob;
+  /** v3 family auto-detection (spec-v3 §60), computed per-doc. */
+  v3_detection: V3Detection;
 };
 
 export type BundlePipelineResult = {
@@ -383,6 +385,8 @@ export async function runBundlePipeline(
     const docx_blob = await buildDocxReport(run, ingest, dkb, playbook);
     const json_blob = buildJsonReport(run, ingest);
 
+    const v3_detection = detectV3Family(extracted, bodyParts.join(" "));
+
     perDoc.push({
       filename: entry.filename,
       run,
@@ -390,6 +394,7 @@ export async function runBundlePipeline(
       match_reasoning: match.reasoning,
       docx_blob,
       json_blob,
+      v3_detection,
     });
     consistencyDocs.push({
       doc_id: `doc-${i + 1}-${entry.filename}`,
