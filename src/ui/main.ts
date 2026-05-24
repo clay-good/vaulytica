@@ -20,6 +20,26 @@ import { registerServiceWorker } from "./sw-register.js";
 import { hydrateDkbValidation } from "./dkb-validation.js";
 
 /**
+ * Human-readable labels for the v3 family ids returned by
+ * `detectV3Family`. The chip in the complete-state surface reads
+ * "Detected: <label>". Kept in `main.ts` (not the pure detector) so
+ * the v3 detector stays free of UI concerns.
+ */
+const V3_FAMILY_LABELS: Record<string, string> = {
+  baa: "Business Associate Agreement (BAA)",
+  "dpa-eu": "EU Data Processing Agreement",
+  "dpa-us-state": "US state DPA / Service Provider Addendum",
+  "scc-module-2": "EU SCC Module 2 (controller → processor)",
+  "scc-module-3": "EU SCC Module 3 (processor → processor)",
+  "uk-idta": "UK International Data Transfer Addendum",
+  "nda-deep": "NDA (deep)",
+  "msa-deep": "MSA (deep)",
+  coi: "Certificate of Insurance (ACORD 25)",
+  "vendor-security": "Vendor Security Addendum",
+  "ai-addendum": "AI Addendum",
+};
+
+/**
  * Preload the analysis pipeline as a side-effect of user intent —
  * dragover, mouse-over, or idle. The chunk download usually races
  * the user's "pick a file" gesture so the first analysis has the
@@ -91,6 +111,19 @@ async function runFile(dz: HTMLElement, file: File, kind: "pdf" | "docx"): Promi
       json_blob: result.json_blob,
       docx_filename: `${stem}-vaulytica.docx`,
       json_filename: `${stem}-vaulytica.json`,
+      v3_family:
+        result.v3_detection.family === "unknown"
+          ? undefined
+          : {
+              family: result.v3_detection.family,
+              label: V3_FAMILY_LABELS[result.v3_detection.family] ?? result.v3_detection.family,
+              confidence: result.v3_detection.confidence,
+            },
+      v3_frames: {
+        available: result.v3_frames.available,
+        on: result.v3_frames.on,
+        hint: result.v3_frames.hint,
+      },
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);

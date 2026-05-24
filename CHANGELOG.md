@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- v3 UI hookup — Step 33 DOM wiring (LAUNCH row v3-o; spec-v3 §§60–61).
+  [`src/ui/pipeline.ts`](src/ui/pipeline.ts) now calls the pure
+  `detectV3Family` + `defaultFramesForPlaybook` modules and surfaces
+  `v3_detection` + `v3_frames` on `PipelineResult`. [`src/ui/states.ts`](src/ui/states.ts)
+  renders a "Detected: <family>" pill (`[data-role="v3-family"]`,
+  carries a `data-confidence` integer percent), a compliance-frame
+  chip row (`[data-role="compliance-frame-chips"]`, one `role="switch"`
+  button per `ALL_FRAMES` entry, `aria-checked` mirrors the playbook
+  defaults, Space + Enter flip the chip — matches the existing
+  `tests/e2e/v3/a11y-keyboard.spec.ts` probe), and a one-line hint at
+  `[data-role="compliance-frame-hint"]` for playbooks with no default
+  frames. [`src/ui/main.ts`](src/ui/main.ts) carries the family-id →
+  human-label table. Unit coverage in [`src/ui/states.test.ts`](src/ui/states.test.ts):
+  5 new tests (family-chip render, hidden-when-unknown, chip-row
+  aria-checked, Space + Enter toggle, hint visibility). Engine-side
+  filtering on toggle is a follow-up; chip toggles are presentational
+  at this hookup.
 - v4 folder ingest UI hookup (LAUNCH row v4-o; spec-v4 §8 step 1).
   [`src/ui/dropzone.ts`](src/ui/dropzone.ts) now ships a second hidden
   `<input type="file" webkitdirectory multiple>` alongside the existing

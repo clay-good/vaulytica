@@ -156,6 +156,112 @@ describe("renderState", () => {
     }
   });
 
+  it("renders v3 family chip when detection is provided in complete state", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "complete",
+      filename: "baa.docx",
+      playbook_name: "BAA",
+      counts: { critical: 0, warning: 0, info: 0 },
+      docx_blob: new Blob(["docx"]),
+      json_blob: new Blob(["{}"]),
+      docx_filename: "baa-vaulytica.docx",
+      json_filename: "baa-vaulytica.json",
+      v3_family: { family: "baa", label: "BAA", confidence: 0.75 },
+    });
+    const chip = select(dz, "v3-family")!;
+    expect(chip.hidden).toBe(false);
+    expect(chip.textContent).toMatch(/Detected: BAA/);
+    expect(chip.getAttribute("data-confidence")).toBe("75");
+  });
+
+  it("hides v3 family chip when family is unknown or omitted", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "complete",
+      filename: "nda.docx",
+      playbook_name: "NDA",
+      counts: { critical: 0, warning: 0, info: 0 },
+      docx_blob: new Blob(["docx"]),
+      json_blob: new Blob(["{}"]),
+      docx_filename: "x.docx",
+      json_filename: "x.json",
+    });
+    expect(select(dz, "v3-family")!.hidden).toBe(true);
+  });
+
+  it("renders compliance-frame chip row with role=switch + aria-checked reflecting v3_frames.on", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "complete",
+      filename: "baa.docx",
+      playbook_name: "BAA",
+      counts: { critical: 0, warning: 0, info: 0 },
+      docx_blob: new Blob(["docx"]),
+      json_blob: new Blob(["{}"]),
+      docx_filename: "x.docx",
+      json_filename: "x.json",
+      v3_frames: {
+        available: ["HIPAA", "GDPR", "CCPA"],
+        on: ["HIPAA"],
+      },
+    });
+    const row = select(dz, "compliance-frame-chips")!;
+    expect(row.hidden).toBe(false);
+    const chips = row.querySelectorAll<HTMLButtonElement>('[role="switch"]');
+    expect(chips).toHaveLength(3);
+    expect(chips[0]!.textContent).toBe("HIPAA");
+    expect(chips[0]!.getAttribute("aria-checked")).toBe("true");
+    expect(chips[1]!.getAttribute("aria-checked")).toBe("false");
+    expect(chips[2]!.getAttribute("aria-checked")).toBe("false");
+    expect(chips[0]!.tabIndex).toBe(0);
+  });
+
+  it("compliance-frame chip flips aria-checked on Space (keyboard a11y probe)", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    renderState(dz, {
+      kind: "complete",
+      filename: "baa.docx",
+      playbook_name: "BAA",
+      counts: { critical: 0, warning: 0, info: 0 },
+      docx_blob: new Blob(["docx"]),
+      json_blob: new Blob(["{}"]),
+      docx_filename: "x.docx",
+      json_filename: "x.json",
+      v3_frames: { available: ["HIPAA"], on: [] },
+    });
+    const chip = dz.querySelector<HTMLButtonElement>('[role="switch"]')!;
+    expect(chip.getAttribute("aria-checked")).toBe("false");
+    chip.dispatchEvent(new KeyboardEvent("keydown", { key: " ", bubbles: true, cancelable: true }));
+    expect(chip.getAttribute("aria-checked")).toBe("true");
+    chip.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true, cancelable: true }));
+    expect(chip.getAttribute("aria-checked")).toBe("false");
+    document.body.removeChild(dz);
+  });
+
+  it("compliance-frame hint is rendered when v3_frames.hint is set", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "complete",
+      filename: "msa.docx",
+      playbook_name: "MSA",
+      counts: { critical: 0, warning: 0, info: 0 },
+      docx_blob: new Blob(["docx"]),
+      json_blob: new Blob(["{}"]),
+      docx_filename: "x.docx",
+      json_filename: "x.json",
+      v3_frames: {
+        available: ["HIPAA"],
+        on: [],
+        hint: "Looking for GDPR or HIPAA coverage? Add a companion DPA or BAA.",
+      },
+    });
+    const hint = select(dz, "compliance-frame-hint")!;
+    expect(hint.hidden).toBe(false);
+    expect(hint.textContent).toMatch(/Add a companion DPA or BAA/);
+  });
+
   it("renders bundle-complete state with counts, bundle download buttons and cross-doc summary", () => {
     const dz = document.createElement("div");
     document.body.appendChild(dz);

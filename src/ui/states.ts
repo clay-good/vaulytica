@@ -18,6 +18,30 @@ export type DropzoneState =
       /** Pre-formatted filenames for the two downloads. */
       docx_filename: string;
       json_filename: string;
+      /**
+       * v3 family detection (spec-v3 §60). When `family === "unknown"`
+       * or the field is omitted, no chip is rendered. Otherwise a
+       * read-only "Detected: X" pill appears under the playbook name.
+       */
+      v3_family?: {
+        family: string;
+        label: string;
+        confidence: number;
+      };
+      /**
+       * v3 compliance-frame chip row (spec-v3 §61, LAUNCH row v3-o).
+       * When omitted, the chip row is not rendered. `frames_on` is the
+       * initial toggle state; the renderer wires `role="switch"` +
+       * `aria-checked` + Space/Enter handlers so the chips are
+       * keyboard-operable (matches `tests/e2e/v3/a11y-keyboard.spec.ts`
+       * probe). Toggling is presentational at this hookup; engine-side
+       * filtering is a follow-up.
+       */
+      v3_frames?: {
+        available: ReadonlyArray<string>;
+        on: ReadonlyArray<string>;
+        hint?: string;
+      };
     }
   | {
       kind: "bundle-complete";
@@ -51,7 +75,10 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
   `,
   complete: `
     <div class="dropzone-title" data-role="complete-filename"></div>
+    <div class="v3-family-chip" data-role="v3-family" hidden></div>
     <div class="counts" data-role="counts"></div>
+    <div class="compliance-frame-chips" data-role="compliance-frame-chips" role="group" aria-label="Compliance frames" hidden></div>
+    <div class="dropzone-sub compliance-frame-hint" data-role="compliance-frame-hint" hidden></div>
     <details class="playbook-disclosure">
       <summary>Why this playbook?</summary>
       <div data-role="reasoning"></div>
@@ -90,6 +117,8 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
     select(dz, "counts")!.innerHTML = countsHtml(state.counts);
     select(dz, "reasoning")!.textContent =
       state.match_reasoning ?? `Auto-selected ${state.playbook_name}.`;
+    renderV3FamilyChip(dz, state.v3_family);
+    renderComplianceFrameChips(dz, state.v3_frames);
     const docxBtn = select<HTMLButtonElement>(dz, "docx-download")!;
     const jsonBtn = select<HTMLButtonElement>(dz, "json-download")!;
     const status = select<HTMLElement>(dz, "download-status")!;
@@ -145,6 +174,81 @@ function countsHtml(counts: { critical: number; warning: number; info: number })
 export function baseName(filename: string): string {
   const i = filename.lastIndexOf(".");
   return i > 0 ? filename.slice(0, i) : filename;
+}
+
+/* -------------------------------------------------------------------------- */
+/* v3 detection + compliance-frame chip-row renderers (spec-v3 §§60–61)       */
+/* -------------------------------------------------------------------------- */
+
+function renderV3FamilyChip(
+  dz: HTMLElement,
+  detection: { family: string; label: string; confidence: number } | undefined,
+): void {
+  const chip = select<HTMLElement>(dz, "v3-family");
+  if (!chip) return;
+  if (!detection || detection.family === "unknown") {
+    chip.hidden = true;
+    chip.textContent = "";
+    return;
+  }
+  chip.hidden = false;
+  const pct = Math.round(detection.confidence * 100);
+  chip.setAttribute("data-confidence", String(pct));
+  chip.textContent = `Detected: ${detection.label}`;
+}
+
+function renderComplianceFrameChips(
+  dz: HTMLElement,
+  frames:
+    | { available: ReadonlyArray<string>; on: ReadonlyArray<string>; hint?: string }
+    | undefined,
+): void {
+  const row = select<HTMLElement>(dz, "compliance-frame-chips");
+  const hintEl = select<HTMLElement>(dz, "compliance-frame-hint");
+  if (!row || !hintEl) return;
+  if (!frames || frames.available.length === 0) {
+    row.hidden = true;
+    row.innerHTML = "";
+    hintEl.hidden = true;
+    hintEl.textContent = "";
+    return;
+  }
+
+  row.hidden = false;
+  row.innerHTML = "";
+  const onSet = new Set(frames.on);
+  for (const frame of frames.available) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "compliance-chip";
+    btn.setAttribute("role", "switch");
+    btn.setAttribute("data-frame", frame);
+    const checked = onSet.has(frame);
+    btn.setAttribute("aria-checked", checked ? "true" : "false");
+    btn.tabIndex = 0;
+    btn.textContent = frame;
+    const toggle = (e: Event): void => {
+      e.stopPropagation();
+      const cur = btn.getAttribute("aria-checked") === "true";
+      btn.setAttribute("aria-checked", cur ? "false" : "true");
+    };
+    btn.addEventListener("click", toggle);
+    btn.addEventListener("keydown", (e) => {
+      if (e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        toggle(e);
+      }
+    });
+    row.appendChild(btn);
+  }
+
+  if (frames.hint) {
+    hintEl.hidden = false;
+    hintEl.textContent = frames.hint;
+  } else {
+    hintEl.hidden = true;
+    hintEl.textContent = "";
+  }
 }
 
 const DOCX_MIME = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";

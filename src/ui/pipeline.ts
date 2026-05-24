@@ -42,6 +42,12 @@ import {
   buildBundleJsonBlob,
   type BundleDocument,
 } from "../report/bundle.js";
+import {
+  detectV3Family,
+  defaultFramesForPlaybook,
+  type V3Detection,
+  type FrameDefaults,
+} from "./v3/index.js";
 
 export type PipelineProgress = {
   /** Fraction in [0, 1] after each rule completes. */
@@ -59,6 +65,21 @@ export type PipelineResult = {
   match_reasoning: string;
   docx_blob: Blob;
   json_blob: Blob;
+  /**
+   * v3 family auto-detection (spec-v3.md §60, LAUNCH row v3-o). Always
+   * computed alongside the v2 playbook match so the UI can surface
+   * "we detected: BAA" as a suggestion. `family === "unknown"` when
+   * no detector fired with confidence ≥ 1.
+   */
+  v3_detection: V3Detection;
+  /**
+   * Default compliance-frame chip-row state for the matched playbook
+   * (spec-v3.md §61). The UI renders one chip per `available` frame
+   * with `aria-checked` mirroring membership in `on`. Toggling is
+   * presentational at this hookup level — engine-side filtering is a
+   * follow-up.
+   */
+  v3_frames: FrameDefaults;
 };
 
 export type PipelineConfig = {
@@ -143,6 +164,10 @@ export async function runPipeline(
   const docx_blob = await buildDocxReport(run, ingest, dkb, playbook);
   const json_blob = buildJsonReport(run, ingest);
 
+  // 7. v3 family auto-detect + compliance-frame defaults (spec-v3 §§60–61).
+  const v3_detection = detectV3Family(extracted, bodyText);
+  const v3_frames = defaultFramesForPlaybook(playbook.id);
+
   return {
     ingest,
     run,
@@ -150,6 +175,8 @@ export async function runPipeline(
     match_reasoning: match.reasoning,
     docx_blob,
     json_blob,
+    v3_detection,
+    v3_frames,
   };
 }
 
