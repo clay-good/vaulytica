@@ -20,6 +20,14 @@
  *   - A single `.zip` drop is also treated as a bundle — the pipeline
  *     unpacks it client-side via `fflate`. We surface this through
  *     `onFiles([zip])` so the pipeline owns the zip-vs-multi-file split.
+ *   - **Folder mode** (spec-v4 §8 step 1, LAUNCH row v4-o): a second
+ *     hidden `<input type="file" webkitdirectory multiple>` plus a
+ *     visible "Choose folder…" affordance lets users pick a directory
+ *     tree. Folder drag-drop is handled in the `drop` listener via
+ *     `DataTransferItem.webkitGetAsEntry()` + the recursive walker
+ *     exported from `src/ingest/multi.ts`. In both cases the
+ *     enumerated `File[]` is dispatched through the same `onFiles`
+ *     channel — pipeline routing is uniform.
  *
  * Accessibility: role="button" + tabindex="0" + Enter/Space activation
  * + focus-visible outline live in `site/index.html`. The handlers
@@ -76,6 +84,23 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
   input.style.display = "none";
   dz.appendChild(input);
 
+  // Secondary input wired to the folder-picker affordance (spec-v4 §8
+  // step 1, LAUNCH row v4-o). `webkitdirectory` is non-standard but
+  // widely supported (Chromium 7+, Firefox 50+, Safari 14.1+). Browsers
+  // that don't recognise the attribute fall through to the multi-file
+  // input automatically. Each enumerated File carries `webkitRelativePath`
+  // so the bundle pipeline can de-duplicate by basename if needed.
+  const inputDir = document.createElement("input");
+  inputDir.type = "file";
+  inputDir.accept = ".pdf,.docx";
+  inputDir.multiple = true;
+  // Set both the property and the attribute so the e2e probe selector
+  // `#dropzone input[type="file"][webkitdirectory]` matches.
+  (inputDir as unknown as { webkitdirectory: boolean }).webkitdirectory = true;
+  inputDir.setAttribute("webkitdirectory", "");
+  inputDir.style.display = "none";
+  dz.appendChild(inputDir);
+
   const dispatch = (files: File[]): void => {
     if (files.length === 0) return;
     const isBundle =
@@ -91,12 +116,32 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
     input.value = "";
     input.click();
   };
+  const onPickFolder = (): void => {
+    inputDir.value = "";
+    inputDir.click();
+  };
+  const filesFromList = (list: FileList | null | undefined): File[] => {
+    if (!list || list.length === 0) return [];
+    const out: File[] = [];
+    for (let i = 0; i < list.length; i++) out.push(list[i]!);
+    return out;
+  };
   const onInputChange = (): void => {
-    const list = input.files;
-    if (!list || list.length === 0) return;
-    const files: File[] = [];
-    for (let i = 0; i < list.length; i++) files.push(list[i]!);
-    dispatch(files);
+    dispatch(filesFromList(input.files));
+  };
+  const onInputDirChange = (): void => {
+    // Folder picker may include arbitrary files (.DS_Store, README,
+    // images). Filter to the PDF/DOCX subset before dispatch so the
+    // pipeline doesn't have to second-guess the user. The pipeline's
+    // `planBundle` would reject the rest anyway, but rejecting here
+    // also keeps the file-count cap (50) measured against the
+    // accepted set rather than the raw tree.
+    const all = filesFromList(inputDir.files);
+    const accepted = all.filter((f) => {
+      const n = f.name.toLowerCase();
+      return n.endsWith(".pdf") || n.endsWith(".docx");
+    });
+    dispatch(accepted);
   };
   const onKey = (e: KeyboardEvent): void => {
     if (e.key === "Enter" || e.key === " ") {
@@ -105,13 +150,23 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
     }
   };
   const onClick = (e: Event): void => {
-    if (e.target === input) return;
+    if (e.target === input || e.target === inputDir) return;
+    const target = e.target as HTMLElement | null;
+    // Folder-pick affordance: an element annotated with
+    // `data-role="folder-pick"` opens the directory picker. The match
+    // happens before the generic interactive-child guard so the click
+    // still routes to `onPickFolder` even though the element is a
+    // <button> / <a>.
+    if (target?.closest('[data-role="folder-pick"]')) {
+      e.stopPropagation();
+      onPickFolder();
+      return;
+    }
     // The dropzone hosts interactive children in the "complete" / "error"
     // states (download anchors, retry button, "why this playbook?"
     // disclosure). Clicks on those must NOT also re-open the file
     // picker — otherwise macOS shows its NSOpenPanel ("Open" button)
     // on top of the download flow and the file never gets saved.
-    const target = e.target as HTMLElement | null;
     if (target?.closest("a, button, summary, details, input, label")) return;
     onPick();
   };
@@ -129,11 +184,38 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
   const onDrop = (e: DragEvent): void => {
     e.preventDefault();
     opts.onDragState?.(false);
-    const list = e.dataTransfer?.files;
-    if (!list || list.length === 0) return;
-    const files: File[] = [];
-    for (let i = 0; i < list.length; i++) files.push(list[i]!);
-    dispatch(files);
+
+    // Folder drag-drop path (spec-v4 §8 step 1). When any dropped
+    // DataTransferItem resolves to a directory entry, walk the tree
+    // via `webkitGetAsEntry()` and dispatch the enumerated File[]
+    // through the same `onFiles` channel. If no directory entry is
+    // present we use the cheaper `dataTransfer.files` path below.
+    const items = e.dataTransfer?.items;
+    const hasItemsApi =
+      items && items.length > 0 && typeof (items[0] as DataTransferItem | undefined)
+        ?.webkitGetAsEntry === "function";
+    if (hasItemsApi) {
+      const entries: FileSystemEntry[] = [];
+      let anyDir = false;
+      for (let i = 0; i < items!.length; i++) {
+        const entry = items![i]!.webkitGetAsEntry?.();
+        if (!entry) continue;
+        if (entry.isDirectory) anyDir = true;
+        entries.push(entry);
+      }
+      if (anyDir && entries.length > 0) {
+        void collectFilesFromEntries(entries).then((files) => {
+          const accepted = files.filter((f) => {
+            const n = f.name.toLowerCase();
+            return n.endsWith(".pdf") || n.endsWith(".docx");
+          });
+          dispatch(accepted);
+        });
+        return;
+      }
+    }
+
+    dispatch(filesFromList(e.dataTransfer?.files));
   };
 
   dz.addEventListener("click", onClick);
@@ -143,6 +225,7 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
   dz.addEventListener("dragleave", onDragLeave as EventListener);
   dz.addEventListener("drop", onDrop as EventListener);
   input.addEventListener("change", onInputChange);
+  inputDir.addEventListener("change", onInputDirChange);
 
   return () => {
     dz.removeEventListener("click", onClick);
@@ -152,6 +235,73 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
     dz.removeEventListener("dragleave", onDragLeave as EventListener);
     dz.removeEventListener("drop", onDrop as EventListener);
     input.removeEventListener("change", onInputChange);
+    inputDir.removeEventListener("change", onInputDirChange);
     dz.removeChild(input);
+    dz.removeChild(inputDir);
   };
+}
+
+/* -------------------------------------------------------------------------- */
+/* Folder drag-drop helpers                                                   */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Recursively enumerate every `File` reachable from a flat list of
+ * `FileSystemEntry`s (the result of `DataTransferItem.webkitGetAsEntry()`).
+ * Skips inaccessible entries silently — the drop UX should never throw
+ * because one subdirectory wasn't readable.
+ *
+ * Exported for tests. Mirrors the candidate-shape walker in
+ * `src/ingest/multi.ts` but returns `File[]` so the pipeline's
+ * `expandBundleInputs` (which already understands `File[]`) handles
+ * the rest.
+ */
+export async function collectFilesFromEntries(
+  entries: ReadonlyArray<FileSystemEntry>,
+): Promise<File[]> {
+  const out: File[] = [];
+  for (const entry of entries) {
+    await walkEntry(entry, out);
+  }
+  return out;
+}
+
+async function walkEntry(entry: FileSystemEntry, out: File[]): Promise<void> {
+  if (entry.isFile) {
+    const fileEntry = entry as FileSystemFileEntry;
+    try {
+      const file = await new Promise<File>((resolve, reject) => {
+        fileEntry.file(resolve, reject);
+      });
+      out.push(file);
+    } catch {
+      // Inaccessible / permission-denied entries are silently skipped.
+    }
+    return;
+  }
+  if (entry.isDirectory) {
+    const dir = entry as FileSystemDirectoryEntry;
+    const reader = dir.createReader();
+    const children = await readAllDirectoryEntries(reader);
+    for (const child of children) await walkEntry(child, out);
+  }
+}
+
+function readAllDirectoryEntries(
+  reader: FileSystemDirectoryReader,
+): Promise<FileSystemEntry[]> {
+  return new Promise((resolve, reject) => {
+    const acc: FileSystemEntry[] = [];
+    const next = (): void => {
+      reader.readEntries((batch) => {
+        if (batch.length === 0) {
+          resolve(acc);
+          return;
+        }
+        for (const e of batch) acc.push(e);
+        next();
+      }, reject);
+    };
+    next();
+  });
 }

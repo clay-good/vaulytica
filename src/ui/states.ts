@@ -38,6 +38,10 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     </span>
     <div class="dropzone-title">Drop a PDF or DOCX here, or click to choose</div>
     <div class="dropzone-sub">analysis runs locally · nothing is uploaded</div>
+    <div class="dropzone-sub dropzone-sub--secondary">
+      Multiple files? Drop a folder or
+      <button type="button" class="btn-link" data-role="folder-pick">choose a folder…</button>
+    </div>
   `,
   analyzing: `
     <div class="dropzone-title" data-role="analyzing-filename"></div>

@@ -1,5 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
-import { bindDropzone, isZipFile, validateFile, type DropResult } from "./dropzone.js";
+import {
+  bindDropzone,
+  collectFilesFromEntries,
+  isZipFile,
+  validateFile,
+  type DropResult,
+} from "./dropzone.js";
 
 function fakeFile(name: string, type = "application/pdf"): File {
   return new File(["x"], name, { type });
@@ -161,5 +167,121 @@ describe("isZipFile", () => {
     expect(isZipFile(new File([], "x.zip"))).toBe(true);
     expect(isZipFile(new File([], "X.ZIP"))).toBe(true);
     expect(isZipFile(new File([], "x.docx"))).toBe(false);
+  });
+});
+
+describe("folder picker (webkitdirectory)", () => {
+  it("exposes input[webkitdirectory] so the v4-o probe selector matches", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    bindDropzone(dz, { onFile: () => {} });
+    const dirInput = dz.querySelector<HTMLInputElement>(
+      'input[type="file"][webkitdirectory]',
+    );
+    expect(dirInput).not.toBeNull();
+    expect(dirInput!.multiple).toBe(true);
+    document.body.removeChild(dz);
+  });
+
+  it("a click on [data-role=folder-pick] opens the directory picker, not the file picker", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    dz.innerHTML = `<button data-role="folder-pick">choose folder</button>`;
+    bindDropzone(dz, { onFile: () => {} });
+    const inputs = dz.querySelectorAll<HTMLInputElement>('input[type="file"]');
+    const fileInput = Array.from(inputs).find((i) => !i.hasAttribute("webkitdirectory"))!;
+    const dirInput = Array.from(inputs).find((i) => i.hasAttribute("webkitdirectory"))!;
+    const fileClick = vi.spyOn(fileInput, "click");
+    const dirClick = vi.spyOn(dirInput, "click");
+    (dz.querySelector('[data-role="folder-pick"]') as HTMLButtonElement).click();
+    expect(dirClick).toHaveBeenCalledTimes(1);
+    expect(fileClick).toHaveBeenCalledTimes(0);
+    document.body.removeChild(dz);
+  });
+
+  it("folder-picker change filters to .pdf/.docx and routes to onFiles", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    const bundles: File[][] = [];
+    bindDropzone(dz, {
+      onFile: () => {},
+      onFiles: (fs) => bundles.push(fs),
+    });
+    const dirInput = dz.querySelector<HTMLInputElement>(
+      'input[type="file"][webkitdirectory]',
+    )!;
+    const a = fakeFile("a.pdf");
+    const b = fakeFile("b.docx");
+    const junk = fakeFile(".DS_Store", "application/octet-stream");
+    const readme = fakeFile("README.md", "text/plain");
+    Object.defineProperty(dirInput, "files", {
+      configurable: true,
+      get: () => [a, junk, b, readme],
+    });
+    dirInput.dispatchEvent(new Event("change"));
+    expect(bundles).toHaveLength(1);
+    expect(bundles[0]!.map((f) => f.name).sort()).toEqual(["a.pdf", "b.docx"]);
+    document.body.removeChild(dz);
+  });
+});
+
+describe("collectFilesFromEntries", () => {
+  // Build a minimal in-memory FileSystemEntry tree: one root directory
+  // containing two files and one nested subdirectory with a third file.
+  function makeFileEntry(name: string): FileSystemFileEntry {
+    return {
+      isFile: true,
+      isDirectory: false,
+      name,
+      fullPath: `/${name}`,
+      filesystem: null as unknown as FileSystem,
+      file: (cb: (file: File) => void) => cb(new File(["x"], name)),
+      getParent: () => {},
+    } as unknown as FileSystemFileEntry;
+  }
+  function makeDirEntry(
+    name: string,
+    children: FileSystemEntry[],
+  ): FileSystemDirectoryEntry {
+    let read = false;
+    return {
+      isFile: false,
+      isDirectory: true,
+      name,
+      fullPath: `/${name}`,
+      filesystem: null as unknown as FileSystem,
+      createReader: () => ({
+        readEntries: (
+          ok: (entries: FileSystemEntry[]) => void,
+        ) => {
+          if (read) {
+            ok([]);
+            return;
+          }
+          read = true;
+          ok(children);
+        },
+      }),
+      getFile: () => {},
+      getDirectory: () => {},
+    } as unknown as FileSystemDirectoryEntry;
+  }
+
+  it("walks nested directories and returns every File in order", async () => {
+    const tree = makeDirEntry("root", [
+      makeFileEntry("a.pdf"),
+      makeDirEntry("sub", [makeFileEntry("c.docx")]),
+      makeFileEntry("b.docx"),
+    ]);
+    const files = await collectFilesFromEntries([tree]);
+    expect(files.map((f) => f.name)).toEqual(["a.pdf", "c.docx", "b.docx"]);
+  });
+
+  it("flattens a flat list of FileSystemFileEntries", async () => {
+    const files = await collectFilesFromEntries([
+      makeFileEntry("a.pdf"),
+      makeFileEntry("b.docx"),
+    ]);
+    expect(files.map((f) => f.name)).toEqual(["a.pdf", "b.docx"]);
   });
 });

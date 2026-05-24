@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- v4 folder ingest UI hookup (LAUNCH row v4-o; spec-v4 §8 step 1).
+  [`src/ui/dropzone.ts`](src/ui/dropzone.ts) now ships a second hidden
+  `<input type="file" webkitdirectory multiple>` alongside the existing
+  multi-file picker, plus a "choose a folder…" affordance in the empty-
+  state template (`[data-role="folder-pick"]`). Folder drag-drop is
+  handled in the `drop` listener via `DataTransferItem.webkitGetAsEntry()`
+  and a new exported `collectFilesFromEntries` recursive walker. Both
+  paths filter to `.pdf` / `.docx` before dispatching through the same
+  `onFiles` channel, so `runBundlePipeline` is unchanged. Unit coverage
+  added in [`src/ui/dropzone.test.ts`](src/ui/dropzone.test.ts): probe
+  selector match, click-routing for the folder affordance, change-event
+  filtering of non-PDF/DOCX entries, and a nested-tree walker test.
 - v4 multi-doc UI hookup (LAUNCH row v4-d → 🟡 partial; spec-v4 §8 / §11).
   [`src/ui/dropzone.ts`](src/ui/dropzone.ts) now exposes
   `input[type="file"][multiple]` and accepts `.pdf,.docx,.zip`; multi-file
