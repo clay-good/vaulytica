@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- DOCX report: real parties / dates / amounts / definitions /
+  jurisdictions tables in the Extracted Data Appendix, and the
+  obligor / modal / action / trigger ledger in the Obligations
+  Ledger (closes the long-standing Step 9 follow-up noted in
+  `BUILD_PROGRESS.md`).
+  - [`src/report/docx.ts`](src/report/docx.ts) `buildDocxReport` now
+    accepts an optional sixth parameter `extracted?: ExtractedData`.
+    When threaded, `renderExtractedAppendix` renders parties (name /
+    role / entity type / formation jurisdiction), dates (raw / type /
+    ISO / anchor + offset), amounts (raw / currency / amount / word
+    form), defined terms (term / definition / use count + an unused-
+    terms line), and jurisdictions (clause kind / raw text /
+    normalized id). `renderObligationsLedger` renders the full
+    obligor / modal / action / trigger-qualifier table instead of the
+    finding-derived two-column summary. Without `extracted`, the
+    legacy counts-only appendix and finding-derived ledger render
+    unchanged.
+  - [`src/ui/pipeline.ts`](src/ui/pipeline.ts) threads
+    `prepared.extracted` (single-doc) and `extracted` (bundle path)
+    through to `buildDocxReport`.
+  - [`src/report/docx.test.ts`](src/report/docx.test.ts) adds 2 tests:
+    one verifying the enriched DOCX is larger than the baseline when
+    extracted data is provided, one pinning the legacy counts-only
+    fallback path.
+
+### Added
 - Compliance-frame UI toggle re-run (closes the remaining
   v3-o follow-up; spec-v3 §61).
   - [`src/ui/pipeline.ts`](src/ui/pipeline.ts) is now factored into

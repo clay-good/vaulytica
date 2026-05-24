@@ -230,7 +230,14 @@ export async function runReport(
     },
   });
 
-  const docx_blob = await buildDocxReport(run, prepared.ingest, prepared.dkb, prepared.playbook);
+  const docx_blob = await buildDocxReport(
+    run,
+    prepared.ingest,
+    prepared.dkb,
+    prepared.playbook,
+    undefined,
+    prepared.extracted,
+  );
   const json_blob = buildJsonReport(run, prepared.ingest);
 
   const v3_detection = detectV3Family(prepared.extracted, prepared.body_text);
@@ -474,7 +481,7 @@ export async function runBundlePipeline(
       },
     });
 
-    const docx_blob = await buildDocxReport(run, ingest, dkb, playbook);
+    const docx_blob = await buildDocxReport(run, ingest, dkb, playbook, undefined, extracted);
     const json_blob = buildJsonReport(run, ingest);
 
     const v3_detection = detectV3Family(extracted, bodyParts.join(" "));

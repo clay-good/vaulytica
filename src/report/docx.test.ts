@@ -90,6 +90,65 @@ describe("buildDocxReport", () => {
     const blob = await buildDocxReport(run, ingest, loadStarterDkbSync(), loadMutualNda());
     expect(blob.size).toBeGreaterThan(0);
   });
+
+  it("renders extracted-data appendix tables when ExtractedData is threaded (Step 9 follow-up)", async () => {
+    // The DOCX bytes are zip-compressed but vary deterministically by
+    // content. Comparing blob sizes with vs without the extracted data
+    // is a cheap proof that the new appendix renderers fired.
+    const baseline = await buildDocxReport(
+      makeRun(),
+      ingest,
+      loadStarterDkbSync(),
+      loadMutualNda(),
+    );
+    const extracted = {
+      parties: [
+        { id: "p1", name: "Acme Inc.", role: "Disclosing Party", entity_type: "corporation", jurisdiction_of_formation: "Delaware", positions: [] },
+        { id: "p2", name: "Northwind Ltd.", role: "Receiving Party", entity_type: "limited company", positions: [] },
+      ],
+      dates: [
+        { id: "d1", type: "absolute" as const, raw_text: "January 1, 2026", iso: "2026-01-01", position: { start_offset: 0, end_offset: 15 } },
+        { id: "d2", type: "relative" as const, raw_text: "thirty (30) days after the Effective Date", anchor: "Effective Date", offset_days: 30, position: { start_offset: 0, end_offset: 40 } },
+      ],
+      amounts: [
+        { id: "m1", raw_text: "$50,000", amount: "50000", currency: "USD", word_form: false, position: { start_offset: 0, end_offset: 7 } },
+      ],
+      definitions: {
+        entries: [
+          { term: "Confidential Information", definition: "Any non-public information disclosed under this Agreement.", defined_at: { start_offset: 0, end_offset: 50 }, used_at: [{ start_offset: 60, end_offset: 85 }, { start_offset: 100, end_offset: 125 }] },
+        ],
+        unused_terms: ["Vintage Term"],
+        undefined_capitalized: [],
+      },
+      outline: { nodes: [], by_id: {} },
+      crossrefs: [],
+      obligations: [
+        { id: "o1", obligor: "Receiving Party", action: "treat the Confidential Information as confidential", trigger: "upon disclosure", qualifier: "for two years", modal: "shall", raw_text: "...", position: { start_offset: 0, end_offset: 0 } },
+      ],
+      jurisdictions: [
+        { clause_kind: "governing-law" as const, jurisdiction_id: "us-de", raw_text: "State of Delaware", position: { start_offset: 0, end_offset: 18 } },
+      ],
+      classified: [],
+    };
+    const enriched = await buildDocxReport(
+      makeRun(),
+      ingest,
+      loadStarterDkbSync(),
+      loadMutualNda(),
+      undefined,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      extracted as any,
+    );
+    expect(enriched.size).toBeGreaterThan(baseline.size);
+  });
+
+  it("falls back to the counts-only appendix when ExtractedData is omitted (legacy path)", async () => {
+    // Belt-and-suspenders: the appendix still renders without
+    // extracted, so any future caller that doesn't thread the data
+    // through still gets a useful report.
+    const blob = await buildDocxReport(makeRun(), ingest, loadStarterDkbSync(), loadMutualNda());
+    expect(blob.size).toBeGreaterThan(1000);
+  });
 });
 
 describe("buildJsonReport", () => {

@@ -42,6 +42,7 @@ import type { EngineRun, Finding } from "../engine/finding.js";
 import type { DKB } from "../dkb/types.js";
 import type { IngestResult } from "../ingest/types.js";
 import type { Playbook } from "../playbooks/types.js";
+import type { ExtractedData } from "../extract/types.js";
 import { buildBibliography, citationIndex, type BibliographyEntry } from "./bibliography.js";
 import { formatCitation, formatBibliographyEntry } from "./citations.js";
 import type { V3ReportInputs } from "./v3/types.js";
@@ -76,6 +77,7 @@ export async function buildDocxReport(
   dkb: DKB,
   playbook: Playbook,
   v3?: V3ReportInputs,
+  extracted?: ExtractedData,
 ): Promise<Blob> {
   const bibliography = buildBibliography(run.findings, dkb);
   const children: (Paragraph | Table)[] = [
@@ -93,8 +95,8 @@ export async function buildDocxReport(
     ...(v3?.transfers ? renderTransfersSummary(v3.transfers) : []),
     ...(v3?.subprocessor ? renderSubprocessorPage(v3.subprocessor) : []),
     ...(v3?.insurance ? renderInsurancePage(v3.insurance) : []),
-    ...renderObligationsLedger(run),
-    ...renderExtractedAppendix(run),
+    ...renderObligationsLedger(run, extracted),
+    ...renderExtractedAppendix(run, extracted),
     ...renderAuditTrail(run, playbook, bibliography),
     // v3 §59 — two-document consistency appendix.
     ...(v3?.consistency ? renderConsistencyAppendix(v3.consistency) : []),
@@ -256,12 +258,40 @@ function renderFinding(f: Finding, bibliography: BibliographyEntry[]): Paragraph
 // ---------------------------------------------------------------------------
 // Obligations Ledger
 
-function renderObligationsLedger(run: EngineRun): (Paragraph | Table)[] {
-  // The full obligations ledger lives on ExtractedData; the EngineRun
-  // does not carry it. We surface the per-finding obligation hints
-  // through a two-column table grouped by obligor inferred from the
-  // finding's section/excerpt. The actual obligor lookup will land
-  // when the UI hookup (Step 12) wires ExtractedData through.
+function renderObligationsLedger(
+  run: EngineRun,
+  extracted?: ExtractedData,
+): (Paragraph | Table)[] {
+  // Preferred path: render the full obligor / action / trigger ledger
+  // from ExtractedData when the caller threaded it through. Falls back
+  // to the finding-derived two-column table when not provided
+  // (preserves legacy reports that don't have extract data on hand).
+  if (extracted && extracted.obligations.length > 0) {
+    const ledger = new Table({
+      width: { size: 100, type: WidthType.PERCENTAGE },
+      rows: [
+        headerRow(["Obligor", "Modal", "Action", "Trigger / Qualifier"]),
+        ...extracted.obligations.map((o) =>
+          bodyRow([
+            o.obligor,
+            o.modal,
+            truncate(o.action, 160),
+            [o.trigger, o.qualifier].filter(Boolean).join(" — ") || "—",
+          ]),
+        ),
+      ],
+    });
+    return [
+      h1("Obligations Ledger"),
+      para({
+        text:
+          `${extracted.obligations.length} obligation${extracted.obligations.length === 1 ? "" : "s"} extracted from the document.`,
+      }),
+      ledger,
+      pageBreak(),
+    ];
+  }
+
   const rows: Finding[][] = [[]];
   for (const f of run.findings) {
     if (!isObligationRelevant(f)) continue;
@@ -289,13 +319,16 @@ function isObligationRelevant(f: Finding): boolean {
 // ---------------------------------------------------------------------------
 // Extracted Data Appendix
 
-function renderExtractedAppendix(run: EngineRun): (Paragraph | Table)[] {
-  // Without ExtractedData in the EngineRun we surface only the rules
-  // that fired plus a counts table. When Step 12 lands, this section
-  // will pull parties/dates/amounts/definitions/sections from
-  // ExtractedData.
+function renderExtractedAppendix(
+  run: EngineRun,
+  extracted?: ExtractedData,
+): (Paragraph | Table)[] {
+  // Preferred path: surface parties / dates / amounts / definitions /
+  // jurisdictions tables from ExtractedData (spec.md §22, Step 9
+  // follow-up). Falls back to the counts-only summary when extracted
+  // data isn't threaded (preserves legacy callers).
   const counts = countFindings(run.findings);
-  return [
+  const out: (Paragraph | Table)[] = [
     h1("Extracted Data Appendix"),
     para({ text: "Summary of finding counts:" }),
     new Table({
@@ -307,8 +340,101 @@ function renderExtractedAppendix(run: EngineRun): (Paragraph | Table)[] {
         bodyRow(["Informational", String(counts.info)]),
       ],
     }),
-    pageBreak(),
   ];
+
+  if (!extracted) {
+    out.push(pageBreak());
+    return out;
+  }
+
+  if (extracted.parties.length > 0) {
+    out.push(spacer(), h2("Parties"));
+    out.push(
+      new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        rows: [
+          headerRow(["Name", "Role", "Entity type", "Formation jurisdiction"]),
+          ...extracted.parties.map((p) =>
+            bodyRow([p.name, p.role ?? "—", p.entity_type ?? "—", p.jurisdiction_of_formation ?? "—"]),
+          ),
+        ],
+      }),
+    );
+  }
+
+  if (extracted.dates.length > 0) {
+    out.push(spacer(), h2("Dates"));
+    out.push(
+      new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        rows: [
+          headerRow(["Raw text", "Type", "ISO", "Anchor / offset"]),
+          ...extracted.dates.map((d) => {
+            const anchor =
+              d.anchor && typeof d.offset_days === "number"
+                ? `${d.anchor} ${d.offset_days >= 0 ? "+" : ""}${d.offset_days}d`
+                : d.anchor ?? "—";
+            return bodyRow([truncate(d.raw_text, 80), d.type, d.iso ?? "—", anchor]);
+          }),
+        ],
+      }),
+    );
+  }
+
+  if (extracted.amounts.length > 0) {
+    out.push(spacer(), h2("Amounts"));
+    out.push(
+      new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        rows: [
+          headerRow(["Raw text", "Currency", "Amount", "Word form"]),
+          ...extracted.amounts.map((a) =>
+            bodyRow([truncate(a.raw_text, 80), a.currency, a.amount, a.word_form ? "yes" : "no"]),
+          ),
+        ],
+      }),
+    );
+  }
+
+  if (extracted.definitions.entries.length > 0) {
+    out.push(spacer(), h2("Defined terms"));
+    out.push(
+      new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        rows: [
+          headerRow(["Term", "Definition", "Used"]),
+          ...extracted.definitions.entries.map((e) =>
+            bodyRow([e.term, truncate(e.definition, 200), String(e.used_at.length)]),
+          ),
+        ],
+      }),
+    );
+    if (extracted.definitions.unused_terms.length > 0) {
+      out.push(
+        para({
+          text: `Unused defined terms: ${extracted.definitions.unused_terms.join(", ")}`,
+        }),
+      );
+    }
+  }
+
+  if (extracted.jurisdictions.length > 0) {
+    out.push(spacer(), h2("Jurisdictions"));
+    out.push(
+      new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        rows: [
+          headerRow(["Clause kind", "Raw text", "Normalized id"]),
+          ...extracted.jurisdictions.map((j) =>
+            bodyRow([j.clause_kind, truncate(j.raw_text, 100), j.jurisdiction_id ?? "—"]),
+          ),
+        ],
+      }),
+    );
+  }
+
+  out.push(pageBreak());
+  return out;
 }
 
 // ---------------------------------------------------------------------------
