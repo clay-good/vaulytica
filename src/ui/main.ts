@@ -71,7 +71,9 @@ function baseFilename(filename: string): string {
 async function runFile(dz: HTMLElement, file: File, kind: "pdf" | "docx"): Promise<void> {
   try {
     setState(dz, { kind: "analyzing", filename: file.name });
-    const { runPipeline, countsBySeverity } = await import("./pipeline.js");
+    const pipelineModule = await import("./pipeline.js");
+    const { runPipeline, runReport, countsBySeverity } = pipelineModule;
+    type PreparedDocument = import("./pipeline.js").PreparedDocument;
     const progress = createProgressBar(select(dz, "progress")!);
     const ticker = createRuleTicker(select(dz, "ticker")!);
     progress.reset();
@@ -83,34 +85,109 @@ async function runFile(dz: HTMLElement, file: File, kind: "pdf" | "docx"): Promi
     });
 
     const stem = baseFilename(file.name);
-    setState(dz, {
-      kind: "complete",
-      filename: file.name,
-      playbook_name: result.playbook.name,
-      match_reasoning: result.match_reasoning,
-      counts: countsBySeverity(result.run),
-      docx_blob: result.docx_blob,
-      json_blob: result.json_blob,
-      docx_filename: `${stem}-vaulytica.docx`,
-      json_filename: `${stem}-vaulytica.json`,
-      v3_family:
-        result.v3_detection.family === "unknown"
-          ? undefined
-          : {
-              family: result.v3_detection.family,
-              label: V3_FAMILY_LABELS[result.v3_detection.family] ?? result.v3_detection.family,
-              confidence: result.v3_detection.confidence,
-            },
-      v3_frames: {
-        available: result.v3_frames.available,
-        on: result.v3_frames.on,
-        hint: result.v3_frames.hint,
-      },
-    });
+
+    // Build a re-runnable closure: on chip toggle, call `runReport`
+    // against the cached `PreparedDocument` with the new frames and
+    // refresh the complete-state. The PDF / DKB are NOT re-fetched
+    // — re-run is fast (engine + report build only).
+    let rerunInFlight = false;
+    let pendingFrames: ReadonlyArray<string> | null = null;
+    const rerun = async (frames: ReadonlyArray<string>): Promise<void> => {
+      if (rerunInFlight) {
+        // Coalesce: keep the most recent toggle and apply once the
+        // current run finishes.
+        pendingFrames = frames;
+        return;
+      }
+      rerunInFlight = true;
+      try {
+        setState(dz, { kind: "analyzing", filename: file.name });
+        const fresh = await runReport(result.prepared as PreparedDocument, undefined, {
+          // ComplianceFrame is a string-literal union; the chip ids
+          // we put in `frames` are always members because they come
+          // from `result.v3_frames.available` (defaultFramesForPlaybook).
+          active_frames: frames as readonly never[],
+        });
+        renderCompleteState(dz, file.name, stem, fresh, countsBySeverity, frames, rerun);
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        setState(dz, { kind: "error", message });
+      } finally {
+        rerunInFlight = false;
+        if (pendingFrames !== null) {
+          const next = pendingFrames;
+          pendingFrames = null;
+          void rerun(next);
+        }
+      }
+    };
+
+    renderCompleteState(
+      dz,
+      file.name,
+      stem,
+      result,
+      countsBySeverity,
+      result.v3_frames.on,
+      rerun,
+    );
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     setState(dz, { kind: "error", message });
   }
+}
+
+/**
+ * Render the post-analysis complete-state. Factored so the initial
+ * run and the chip-toggle re-run share the same DOM-projection logic
+ * (filenames, family chip, compliance-frame chip row + handler).
+ */
+function renderCompleteState(
+  dz: HTMLElement,
+  filename: string,
+  stem: string,
+  result: {
+    playbook: { name: string };
+    match_reasoning: string;
+    run: import("./pipeline.js").PipelineResult["run"];
+    docx_blob: Blob;
+    json_blob: Blob;
+    v3_detection: import("./pipeline.js").PipelineResult["v3_detection"];
+    v3_frames: import("./pipeline.js").PipelineResult["v3_frames"];
+  },
+  countsBySeverity: (r: import("./pipeline.js").PipelineResult["run"]) => {
+    critical: number;
+    warning: number;
+    info: number;
+  },
+  activeFrames: ReadonlyArray<string>,
+  onFramesChange: (frames: ReadonlyArray<string>) => void,
+): void {
+  setState(dz, {
+    kind: "complete",
+    filename,
+    playbook_name: result.playbook.name,
+    match_reasoning: result.match_reasoning,
+    counts: countsBySeverity(result.run),
+    docx_blob: result.docx_blob,
+    json_blob: result.json_blob,
+    docx_filename: `${stem}-vaulytica.docx`,
+    json_filename: `${stem}-vaulytica.json`,
+    v3_family:
+      result.v3_detection.family === "unknown"
+        ? undefined
+        : {
+            family: result.v3_detection.family,
+            label: V3_FAMILY_LABELS[result.v3_detection.family] ?? result.v3_detection.family,
+            confidence: result.v3_detection.confidence,
+          },
+    v3_frames: {
+      available: result.v3_frames.available,
+      on: activeFrames,
+      hint: result.v3_frames.hint,
+    },
+    on_frames_change: onFramesChange,
+  });
 }
 
 async function runBundle(dz: HTMLElement, files: File[]): Promise<void> {

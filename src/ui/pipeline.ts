@@ -61,6 +61,24 @@ export type PipelineProgress = {
   onDkbLoaded?: (version: string) => void;
 };
 
+/**
+ * Cached per-document state from the expensive pre-engine phase
+ * (ingest + extract + DKB load + playbook match). The complete-state
+ * UI retains a `PreparedDocument` so the chip-toggle re-run can call
+ * straight into `runReport` without re-parsing the PDF or re-loading
+ * the DKB. Spec-v3 §61 / LAUNCH row v3-o follow-up.
+ */
+export type PreparedDocument = {
+  ingest: IngestResult;
+  /** ExtractedData — `unknown` here so we can avoid importing the extract barrel just for the type. */
+  extracted: import("../extract/types.js").ExtractedData;
+  body_text: string;
+  dkb: DKB;
+  playbook: Playbook;
+  source_file: { name: string; sha256: string; size_bytes: number };
+  match: { playbook_id: string; confidence: number; reasoning: string };
+};
+
 export type PipelineResult = {
   ingest: IngestResult;
   run: EngineRun;
@@ -109,14 +127,18 @@ const DEFAULT_PLAYBOOK_BASE = "/playbooks";
 let cachedDkb: DKB | null = null;
 let cachedPlaybooks: Playbook[] | null = null;
 
-export async function runPipeline(
+/**
+ * Phase 1: ingest + extract + DKB load + playbook match. Slow on
+ * first run (PDF parsing, mammoth, DKB fetch); idempotent and pure
+ * relative to its inputs. The output is reused across compliance-
+ * frame toggle re-runs.
+ */
+export async function prepareDocument(
   file: File,
   kind: "pdf" | "docx",
-  hooks: PipelineProgress = {},
   config: PipelineConfig = {},
-  options: PipelineOptions = {},
-): Promise<PipelineResult> {
-  // 1. Ingest. DKB load runs in parallel.
+  hooks: PipelineProgress = {},
+): Promise<PreparedDocument> {
   const buffer = await file.arrayBuffer();
   const dkbPromise = ensureDkb(config.dkb_base ?? DEFAULT_DKB_BASE);
   const ingest: IngestResult =
@@ -124,16 +146,13 @@ export async function runPipeline(
       ? await ingestPdfBuffer(buffer, { allowOcr: true })
       : await ingestDocxBuffer(buffer);
 
-  // 2. Wait for DKB.
   const dkb = await dkbPromise;
   hooks.onDkbLoaded?.(dkb.manifest.version);
 
-  // 3. Extract.
   const extracted = extractAll(ingest.tree, {
     classifier: { vocab: { vocab: {} }, patterns: dkb.classifier.patterns },
   });
 
-  // 4. Match playbook.
   const playbooks = await ensurePlaybooks(config.playbook_base ?? DEFAULT_PLAYBOOK_BASE);
   const titleSource = ingest.tree.sections[0]?.heading ?? file.name;
   // Walk every section + child paragraph for distinguishing-phrase
@@ -163,18 +182,47 @@ export async function runPipeline(
   });
   const playbook = playbooks.find((p) => p.id === match.playbook_id) ?? playbooks[0]!;
 
-  // 5. Run engine with live progress. Filter by active compliance
-  // frames when the caller supplied them (spec-v3 §61).
+  return {
+    ingest,
+    extracted,
+    body_text: bodyText,
+    dkb,
+    playbook,
+    source_file: { name: file.name, sha256: ingest.sha256, size_bytes: buffer.byteLength },
+    match: {
+      playbook_id: match.playbook_id,
+      confidence: match.confidence,
+      reasoning: match.reasoning,
+    },
+  };
+}
+
+/**
+ * Phase 2: run engine (optionally frame-filtered) + build reports +
+ * detect v3 family + compute frame defaults. Idempotent given a
+ * `PreparedDocument`; expected to be called multiple times for a
+ * given prepared payload as the user toggles compliance-frame chips.
+ */
+export async function runReport(
+  prepared: PreparedDocument,
+  hooks: PipelineProgress = {},
+  options: PipelineOptions = {},
+): Promise<PipelineResult> {
   const ruleSet = filterRulesByFrames(
     [...LAUNCH_RULES, ...V3_RULES] as readonly Rule[],
     options.active_frames,
   );
   const run = await runEngine({
     rules: ruleSet as readonly Rule[],
-    ctx: { tree: ingest.tree, extracted, dkb, playbook },
-    source_file: { name: file.name, sha256: ingest.sha256, size_bytes: buffer.byteLength },
-    playbook_match_confidence: match.confidence,
-    playbook_match_reasoning: match.reasoning,
+    ctx: {
+      tree: prepared.ingest.tree,
+      extracted: prepared.extracted,
+      dkb: prepared.dkb,
+      playbook: prepared.playbook,
+    },
+    source_file: prepared.source_file,
+    playbook_match_confidence: prepared.match.confidence,
+    playbook_match_reasoning: prepared.match.reasoning,
     executed_at: new Date().toISOString(),
     onRule: ({ rule, index, total, fired }) => {
       hooks.onProgress?.((index + 1) / total);
@@ -182,24 +230,39 @@ export async function runPipeline(
     },
   });
 
-  // 6. Build report Blobs.
-  const docx_blob = await buildDocxReport(run, ingest, dkb, playbook);
-  const json_blob = buildJsonReport(run, ingest);
+  const docx_blob = await buildDocxReport(run, prepared.ingest, prepared.dkb, prepared.playbook);
+  const json_blob = buildJsonReport(run, prepared.ingest);
 
-  // 7. v3 family auto-detect + compliance-frame defaults (spec-v3 §§60–61).
-  const v3_detection = detectV3Family(extracted, bodyText);
-  const v3_frames = defaultFramesForPlaybook(playbook.id);
+  const v3_detection = detectV3Family(prepared.extracted, prepared.body_text);
+  const v3_frames = defaultFramesForPlaybook(prepared.playbook.id);
 
   return {
-    ingest,
+    ingest: prepared.ingest,
     run,
-    playbook,
-    match_reasoning: match.reasoning,
+    playbook: prepared.playbook,
+    match_reasoning: prepared.match.reasoning,
     docx_blob,
     json_blob,
     v3_detection,
     v3_frames,
   };
+}
+
+/**
+ * Run the full pipeline end-to-end. Returns the `PreparedDocument`
+ * alongside the `PipelineResult` so the UI can retain it for a
+ * later `runReport` call when compliance-frame chips toggle.
+ */
+export async function runPipeline(
+  file: File,
+  kind: "pdf" | "docx",
+  hooks: PipelineProgress = {},
+  config: PipelineConfig = {},
+  options: PipelineOptions = {},
+): Promise<PipelineResult & { prepared: PreparedDocument }> {
+  const prepared = await prepareDocument(file, kind, config, hooks);
+  const report = await runReport(prepared, hooks, options);
+  return { ...report, prepared };
 }
 
 async function ensureDkb(base: string): Promise<DKB> {

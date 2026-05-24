@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- Compliance-frame UI toggle re-run (closes the remaining
+  v3-o follow-up; spec-v3 §61).
+  - [`src/ui/pipeline.ts`](src/ui/pipeline.ts) is now factored into
+    two phases. `prepareDocument` does the slow ingest + DKB load +
+    extract + playbook match and returns a `PreparedDocument`.
+    `runReport` does the engine run + report build against a
+    prepared payload (frame-aware via `options.active_frames`).
+    `runPipeline` chains them and returns `result.prepared`
+    alongside the report so the UI can retain it.
+  - [`src/ui/main.ts`](src/ui/main.ts) `runFile` builds a re-run
+    closure that calls `runReport` directly when chips toggle —
+    no PDF re-parse, no DKB re-fetch. Rapid toggles are coalesced
+    via a pending-frame slot so an in-flight re-run never queues
+    a backlog.
+  - [`src/ui/states.ts`](src/ui/states.ts) `complete` state accepts
+    `on_frames_change?: (active_frames) => void`. The chip-toggle
+    handler invokes it with the *current union* of active frames
+    after each flip, sourced from a closure-shared `Set`.
+  - [`src/ui/states.test.ts`](src/ui/states.test.ts) gains one test
+    that drives a 3-step toggle sequence (HIPAA off, GDPR on, HIPAA
+    back on) and asserts the callback receives the expected unions.
+
+### Added
 - Engine-side compliance-frame rule filtering (spec-v3 §61, the named
   follow-up to LAUNCH row v3-o).
   - [`src/ui/frame-filter.ts`](src/ui/frame-filter.ts) (new) ships the

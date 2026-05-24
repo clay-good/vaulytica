@@ -34,14 +34,21 @@ export type DropzoneState =
        * initial toggle state; the renderer wires `role="switch"` +
        * `aria-checked` + Space/Enter handlers so the chips are
        * keyboard-operable (matches `tests/e2e/v3/a11y-keyboard.spec.ts`
-       * probe). Toggling is presentational at this hookup; engine-side
-       * filtering is a follow-up.
+       * probe).
        */
       v3_frames?: {
         available: ReadonlyArray<string>;
         on: ReadonlyArray<string>;
         hint?: string;
       };
+      /**
+       * Invoked with the full current set of active frames whenever
+       * the user toggles a chip. The main UI uses this to re-run the
+       * engine against the cached `PreparedDocument` with the new
+       * frame set (spec-v3 §61). When omitted, toggling is purely
+       * presentational — useful for unit tests.
+       */
+      on_frames_change?: (active_frames: ReadonlyArray<string>) => void;
     }
   | {
       kind: "bundle-complete";
@@ -126,7 +133,7 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
     select(dz, "reasoning")!.textContent =
       state.match_reasoning ?? `Auto-selected ${state.playbook_name}.`;
     renderV3FamilyChip(dz, state.v3_family);
-    renderComplianceFrameChips(dz, state.v3_frames);
+    renderComplianceFrameChips(dz, state.v3_frames, state.on_frames_change);
     const docxBtn = select<HTMLButtonElement>(dz, "docx-download")!;
     const jsonBtn = select<HTMLButtonElement>(dz, "json-download")!;
     const status = select<HTMLElement>(dz, "download-status")!;
@@ -218,6 +225,7 @@ function renderComplianceFrameChips(
   frames:
     | { available: ReadonlyArray<string>; on: ReadonlyArray<string>; hint?: string }
     | undefined,
+  onChange?: (active: ReadonlyArray<string>) => void,
 ): void {
   const row = select<HTMLElement>(dz, "compliance-frame-chips");
   const hintEl = select<HTMLElement>(dz, "compliance-frame-hint");
@@ -232,14 +240,17 @@ function renderComplianceFrameChips(
 
   row.hidden = false;
   row.innerHTML = "";
-  const onSet = new Set(frames.on);
+  // The active set is shared across all chip handlers so each toggle
+  // can notify the parent with the *current* union, not just the
+  // chip that fired.
+  const active = new Set(frames.on);
   for (const frame of frames.available) {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "compliance-chip";
     btn.setAttribute("role", "switch");
     btn.setAttribute("data-frame", frame);
-    const checked = onSet.has(frame);
+    const checked = active.has(frame);
     btn.setAttribute("aria-checked", checked ? "true" : "false");
     btn.tabIndex = 0;
     btn.textContent = frame;
@@ -247,6 +258,9 @@ function renderComplianceFrameChips(
       e.stopPropagation();
       const cur = btn.getAttribute("aria-checked") === "true";
       btn.setAttribute("aria-checked", cur ? "false" : "true");
+      if (cur) active.delete(frame);
+      else active.add(frame);
+      onChange?.([...active]);
     };
     btn.addEventListener("click", toggle);
     btn.addEventListener("keydown", (e) => {

@@ -217,6 +217,38 @@ describe("renderState", () => {
     expect(chips[0]!.tabIndex).toBe(0);
   });
 
+  it("compliance-frame chip toggle invokes on_frames_change with the current union", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    const calls: ReadonlyArray<string>[] = [];
+    renderState(dz, {
+      kind: "complete",
+      filename: "baa.docx",
+      playbook_name: "BAA",
+      counts: { critical: 0, warning: 0, info: 0 },
+      docx_blob: new Blob(["docx"]),
+      json_blob: new Blob(["{}"]),
+      docx_filename: "x.docx",
+      json_filename: "x.json",
+      v3_frames: { available: ["HIPAA", "GDPR"], on: ["HIPAA"] },
+      on_frames_change: (frames) => calls.push([...frames]),
+    });
+    const chips = dz.querySelectorAll<HTMLButtonElement>('[role="switch"]');
+    // Turn HIPAA off → empty active set.
+    chips[0]!.click();
+    expect(calls).toHaveLength(1);
+    expect([...calls[0]!].sort()).toEqual([]);
+    // Turn GDPR on → ["GDPR"].
+    chips[1]!.click();
+    expect(calls).toHaveLength(2);
+    expect([...calls[1]!].sort()).toEqual(["GDPR"]);
+    // Turn HIPAA back on → ["GDPR", "HIPAA"] (order not contracted).
+    chips[0]!.click();
+    expect(calls).toHaveLength(3);
+    expect([...calls[2]!].sort()).toEqual(["GDPR", "HIPAA"]);
+    document.body.removeChild(dz);
+  });
+
   it("compliance-frame chip flips aria-checked on Space (keyboard a11y probe)", () => {
     const dz = document.createElement("div");
     document.body.appendChild(dz);
