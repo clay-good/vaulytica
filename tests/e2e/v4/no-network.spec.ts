@@ -98,6 +98,13 @@ test("v4 multi-doc drop makes zero non-asset network requests", async ({
   );
 
   const requests: string[] = [];
+  // Strip the File System Access API so the production saveBlob
+  // anchor-click fallback fires a `download` event Playwright can see;
+  // headless Chromium can't render the system save-as dialog.
+  await page.addInitScript(() => {
+    delete (window as { showSaveFilePicker?: unknown }).showSaveFilePicker;
+  });
+
   await page.goto("/");
   await expect(page.locator("#dropzone")).toBeVisible();
 

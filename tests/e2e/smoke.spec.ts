@@ -26,13 +26,26 @@ test("drop-zone → analyze → DOCX download path is intact", async ({ page }, 
   test.skip(!existsSync(FIXTURE), `fixture missing: ${FIXTURE}`);
 
   // Confirm zero outbound requests during analysis (the privacy promise).
+  // Compare against the configured baseURL rather than `page.url()` —
+  // the latter is "about:blank" for the very first navigation, which
+  // would mis-classify the initial document request as cross-origin.
+  const baseURL = process.env.VAULYTICA_E2E_BASE_URL ?? `http://127.0.0.1:${process.env.VAULYTICA_E2E_PORT ?? "4173"}`;
+  const pageOrigin = new URL(baseURL).origin;
   const externalRequests: string[] = [];
   page.on("request", (req) => {
     const u = new URL(req.url());
-    const origin = new URL(page.url() || "http://localhost").origin;
-    if (u.origin !== origin && u.protocol !== "data:" && u.protocol !== "blob:") {
+    if (u.origin !== pageOrigin && u.protocol !== "data:" && u.protocol !== "blob:") {
       externalRequests.push(req.url());
     }
+  });
+
+  // The production saveBlob path prefers `window.showSaveFilePicker`
+  // (File System Access API) when present; in headless Chromium that
+  // path can't render a system file picker and never fires a browser
+  // `download` event. Strip it before page load so the anchor-click
+  // fallback runs and Playwright can intercept the download.
+  await page.addInitScript(() => {
+    delete (window as { showSaveFilePicker?: unknown }).showSaveFilePicker;
   });
 
   await page.goto("/");
