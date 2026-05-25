@@ -177,3 +177,4 @@ test-results/
 .fastembed_cache/
 */.fastembed_cache/
 
+.lighthouseci/

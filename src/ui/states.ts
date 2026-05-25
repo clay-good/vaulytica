@@ -74,9 +74,9 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     <span class="icon" aria-hidden="true">
       <svg viewBox="0 0 24 24"><path d="M12 3v12"></path><path d="m7 8 5-5 5 5"></path><path d="M5 21h14"></path></svg>
     </span>
-    <div class="dropzone-title">Drop a PDF or DOCX here, or click to choose</div>
-    <div class="dropzone-sub">analysis runs locally · nothing is uploaded</div>
-    <div class="dropzone-sub dropzone-sub--secondary">
+    <div class="dropzone-title" id="dropzone-title">Drop a PDF or DOCX here, or click to choose</div>
+    <div class="dropzone-sub" id="dropzone-sub">analysis runs locally · nothing is uploaded</div>
+    <div class="dropzone-sub dropzone-sub--secondary" id="dropzone-folder-hint">
       Multiple files? Drop a folder or
       <button type="button" class="btn-link" data-role="folder-pick">choose a folder…</button>
     </div>

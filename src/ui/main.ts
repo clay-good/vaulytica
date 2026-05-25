@@ -249,15 +249,15 @@ if (typeof document !== "undefined") {
     void bootUi({ root, dropzone: dz, themeButton: theme });
     void registerServiceWorker({ badge: document.getElementById("offline-badge") });
     void hydrateDkbValidation();
-    // Best-effort: preload after a short idle so users who don't
-    // hover the drop zone still benefit.
-    if ("requestIdleCallback" in window) {
-      (window as unknown as { requestIdleCallback: (cb: () => void) => void }).requestIdleCallback(
-        () => preloadPipeline(),
-      );
-    } else {
-      setTimeout(preloadPipeline, 1500);
-    }
+    // Preload on first user-intent signal (focus, pointer-enter,
+    // touch). This avoids Lighthouse flagging the vendor chunks as
+    // `unused-javascript` on initial load, while still warming the
+    // bundle well before the user finishes their gesture.
+    const triggerPreload = (): void => preloadPipeline();
+    const opts = { once: true, passive: true } as AddEventListenerOptions;
+    dz.addEventListener("pointerenter", triggerPreload, opts);
+    dz.addEventListener("focus", triggerPreload, opts);
+    dz.addEventListener("touchstart", triggerPreload, opts);
   };
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", start, { once: true });

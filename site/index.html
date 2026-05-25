@@ -1087,7 +1087,8 @@
           id="dropzone"
           role="button"
           tabindex="0"
-          aria-label="Drop a PDF or DOCX contract here, or press Enter to choose a file"
+          aria-labelledby="dropzone-title dropzone-sub dropzone-folder-hint"
+          aria-label="Drop a PDF or DOCX here, or click to choose"
         >
           <span class="icon" aria-hidden="true">
             <svg viewBox="0 0 24 24">
@@ -1096,8 +1097,8 @@
               <path d="M5 21h14"></path>
             </svg>
           </span>
-          <div class="dropzone-title">Drop a PDF or DOCX here, or click to choose</div>
-          <div class="dropzone-sub">analysis runs locally · nothing is uploaded</div>
+          <div class="dropzone-title" id="dropzone-title">Drop a PDF or DOCX here, or click to choose</div>
+          <div class="dropzone-sub" id="dropzone-sub">analysis runs locally · nothing is uploaded</div>
         </div>
       </section>
 
