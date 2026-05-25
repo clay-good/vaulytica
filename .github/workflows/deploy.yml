@@ -68,7 +68,7 @@ jobs:
           VAULYTICA_E2E_BASE_URL: https://vaulytica.com
         run: npm run e2e
 
-      - name: Note: deploy skipped
+      - name: "Note: deploy skipped"
         if: env.CLOUDFLARE_API_TOKEN == ''
         run: |
           echo "::notice::CLOUDFLARE_API_TOKEN not set — deploy + e2e skipped."
