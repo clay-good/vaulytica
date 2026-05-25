@@ -38,8 +38,10 @@ test("drop-zone → analyze → DOCX download path is intact", async ({ page }, 
   await page.goto("/");
   await expect(page.locator("#dropzone")).toBeVisible();
 
-  // Find the hidden file input bindDropzone injects.
-  const fileInput = page.locator('#dropzone input[type="file"]');
+  // Find the hidden file input bindDropzone injects. v4 added a
+  // second `webkitdirectory` input for folder-pick, so we scope to
+  // the multi-file (non-directory) one.
+  const fileInput = page.locator('#dropzone input[type="file"]:not([webkitdirectory])');
   await fileInput.setInputFiles(FIXTURE);
 
   const downloadButton = page.locator('[data-role="docx-download"]');

@@ -89,7 +89,8 @@ test("v3 BAA flow makes zero non-asset network requests", async ({ page }) => {
     requests.push(u);
   });
 
-  const fileInput = page.locator('#dropzone input[type="file"]');
+  // Scope to the single-file input (v4 added a webkitdirectory sibling).
+  const fileInput = page.locator('#dropzone input[type="file"]:not([webkitdirectory])');
   await fileInput.setInputFiles(FIXTURE);
 
   const downloadButton = page.locator('[data-role="docx-download"]');
