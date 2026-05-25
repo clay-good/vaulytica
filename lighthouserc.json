@@ -4,7 +4,7 @@
       "staticDistDir": "./dist",
       "url": ["http://localhost/index.html"],
       "settings": {
-        "preset": "desktop",
+        "formFactor": "mobile",
         "throttlingMethod": "simulate",
         "throttling": {
           "rttMs": 150,

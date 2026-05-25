@@ -14,7 +14,7 @@
 
 import { readFile, readdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { basename as pathBasename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { parseDocxHtml } from "../../../src/ingest/docx.js";
@@ -168,8 +168,10 @@ export async function listV3Fixtures(dir: string): Promise<string[]> {
 }
 
 function basename(p: string): string {
-  const i = p.lastIndexOf("/");
-  return i >= 0 ? p.slice(i + 1) : p;
+  // Use node's path.basename to handle Windows backslash separators —
+  // otherwise `source_file.name` ends up as the full Windows path and
+  // poisons `result_hash` on cross-OS runs.
+  return pathBasename(p);
 }
 
 /**

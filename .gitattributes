@@ -1,0 +1,15 @@
+# Force LF line endings on text inputs that feed deterministic hashing.
+# Without this, Windows checkouts (core.autocrlf=true) convert LF→CRLF in
+# `.txt` fixtures, which changes `ingestPaste`'s sha256 and causes
+# `result_hash` drift in the cross-OS golden tests.
+* text=auto eol=lf
+*.docx binary
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary

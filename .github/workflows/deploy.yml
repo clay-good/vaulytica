@@ -17,6 +17,13 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    # Exposing the secret as a job-level env var lets `if:` skip the
+    # deploy + e2e steps gracefully on forks / environments where the
+    # Cloudflare credentials have not been configured. The build/test
+    # gate still runs (and is also covered by ci.yml).
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -44,6 +51,7 @@ jobs:
 
       - name: Deploy to Cloudflare Pages
         id: deploy
+        if: env.CLOUDFLARE_API_TOKEN != ''
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -51,15 +59,23 @@ jobs:
           command: pages deploy dist --project-name=vaulytica --branch=main
 
       - name: Install Playwright (chromium)
+        if: env.CLOUDFLARE_API_TOKEN != ''
         run: npm run e2e:install
 
       - name: Post-deploy smoke test
+        if: env.CLOUDFLARE_API_TOKEN != ''
         env:
           VAULYTICA_E2E_BASE_URL: https://vaulytica.com
         run: npm run e2e
 
+      - name: Note: deploy skipped
+        if: env.CLOUDFLARE_API_TOKEN == ''
+        run: |
+          echo "::notice::CLOUDFLARE_API_TOKEN not set — deploy + e2e skipped."
+          echo "Build artifacts in dist/ are still produced and validated."
+
       - name: Upload Playwright traces on failure
-        if: failure()
+        if: failure() && env.CLOUDFLARE_API_TOKEN != ''
         uses: actions/upload-artifact@v4
         with:
           name: playwright-traces

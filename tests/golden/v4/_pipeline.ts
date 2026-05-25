@@ -13,7 +13,7 @@
 
 import { readFile, readdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { basename as pathBasename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { parseDocxHtml } from "../../../src/ingest/docx.js";
@@ -173,8 +173,9 @@ export async function listV4Bundles(dir: string): Promise<string[]> {
 }
 
 function basename(p: string): string {
-  const i = p.lastIndexOf("/");
-  return i >= 0 ? p.slice(i + 1) : p;
+  // Use node's path.basename so Windows backslash separators don't leak
+  // the full path into `source_file.name` (breaks cross-OS result_hash).
+  return pathBasename(p);
 }
 
 /**
