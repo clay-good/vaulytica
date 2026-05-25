@@ -49,3 +49,11 @@ jobs:
 
       - name: Run Lighthouse CI
         run: lhci autorun
+
+      - name: Upload Lighthouse reports on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouseci-reports
+          path: .lighthouseci/
+          retention-days: 7
