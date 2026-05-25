@@ -30,6 +30,11 @@
  */
 
 import { test, expect } from "@playwright/test";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const BAA_FIXTURE = join(__dirname, "baa-minimal-pass.docx");
 
 test("dropzone is keyboard-reachable and operates on Enter", async ({ page }) => {
   await page.goto("/");
@@ -83,13 +88,31 @@ test("FAQ disclosures open/close with keyboard", async ({ page }) => {
  * stays green during the partial-hookup window. When the hookup lands,
  * removing the skip is the only required change.
  */
-test("v3 compliance-frame chip row is keyboard-reachable when present", async ({
-  page,
-}) => {
+test("v3 compliance-frame chip row is keyboard-operable", async ({ page }) => {
+  // The chip row only mounts in the complete-state. Drive the page
+  // through analysis by dropping the v3 BAA fixture, then verify
+  // the chips are reachable + activatable from the keyboard.
+  await page.addInitScript(() => {
+    delete (window as { showSaveFilePicker?: unknown }).showSaveFilePicker;
+  });
   await page.goto("/");
+
+  const fileInput = page.locator(
+    '#dropzone input[type="file"]:not([webkitdirectory])',
+  );
+  await fileInput.setInputFiles(BAA_FIXTURE);
+
+  // Wait for the complete-state DOM (chip row is rendered alongside
+  // the download button); the row may still be `hidden` if the
+  // playbook has no default frames, so check visibility, not just count.
+  await page.locator('[data-role="docx-download"]').waitFor({
+    state: "visible",
+    timeout: 60_000,
+  });
+
   const chipRow = page.locator('[data-role="compliance-frame-chips"]');
-  const exists = (await chipRow.count()) > 0;
-  test.skip(!exists, "v3 chip-row hookup is not yet wired into the live UI");
+  const chipCount = await chipRow.locator('[role="switch"]').count();
+  test.skip(chipCount === 0, "v3 BAA fixture resolved to a playbook with no compliance frames");
 
   const firstChip = chipRow.locator('[role="switch"]').first();
   await firstChip.focus();

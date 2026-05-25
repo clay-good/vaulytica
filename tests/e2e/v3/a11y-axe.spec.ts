@@ -29,6 +29,12 @@
 
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import { existsSync } from "node:fs";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const BAA_FIXTURE = join(__dirname, "baa-minimal-pass.docx");
 
 const TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 const DISABLED_RULES = ["color-contrast", "region"];
@@ -52,12 +58,37 @@ test("empty-state page has zero axe violations (WCAG 2.2 AA)", async ({ page }) 
   ).toEqual([]);
 });
 
-test("v3 chip-row state has zero axe violations when present", async ({ page }) => {
-  await page.goto("/");
-  const chipRow = page.locator('[data-role="compliance-frame-chips"]');
-  const exists = (await chipRow.count()) > 0;
-  test.skip(!exists, "v3 chip-row hookup not present in this page state");
+test("v3 compliance-frame chip row has zero axe violations after analysis", async ({
+  page,
+}) => {
+  test.skip(!existsSync(BAA_FIXTURE), `fixture missing: ${BAA_FIXTURE}`);
 
+  // Parity with smoke.spec.ts: strip the File System Access API so the
+  // saveBlob anchor-click fallback runs if the test ever triggers a
+  // download (the chip-row scan itself doesn't, but the init script is
+  // cheap and keeps environment behavior consistent across e2e specs).
+  await page.addInitScript(() => {
+    delete (window as { showSaveFilePicker?: unknown }).showSaveFilePicker;
+  });
+
+  await page.goto("/");
+  await page.locator("#dropzone[data-state]").first().waitFor({ state: "attached" });
+
+  // Drive the page into its complete-state so the chip row is rendered.
+  const fileInput = page.locator(
+    '#dropzone input[type="file"]:not([webkitdirectory])',
+  );
+  await fileInput.setInputFiles(BAA_FIXTURE);
+  await page.locator('[data-role="docx-download"]').waitFor({
+    state: "visible",
+    timeout: 60_000,
+  });
+
+  // Scoped scan: only the chip-row subtree. The dropzone container has
+  // unrelated nested-interactive findings (`<details>`, downloads,
+  // counts) that are tracked separately — refactoring requires
+  // removing `role="button"` from the dropzone wrapper, which is a
+  // larger UX change.
   const results = await new AxeBuilder({ page })
     .withTags(TAGS)
     .disableRules(DISABLED_RULES)
