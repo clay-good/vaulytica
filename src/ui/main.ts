@@ -35,6 +35,13 @@ export async function bootUi(opts: {
   root: HTMLElement;
   dropzone: HTMLElement;
   themeButton?: HTMLElement;
+  /**
+   * Sibling element that hosts the folder-pick affordance. Kept outside
+   * the dropzone so the dropzone (role="button") never contains a
+   * nested interactive control. Defaults to the `#dropzone-extras` node
+   * if one exists in the document.
+   */
+  folderPickContainer?: HTMLElement | null;
 }): Promise<void> {
   const persisted = readPersistedTheme();
   if (persisted) applyTheme(opts.root, persisted);
@@ -56,6 +63,7 @@ export async function bootUi(opts: {
       opts.dropzone.classList.toggle("is-dragging", active);
       if (active) preloadPipeline();
     },
+    folderPickContainer: opts.folderPickContainer,
   });
 }
 
@@ -246,7 +254,8 @@ if (typeof document !== "undefined") {
     const dz = document.getElementById("dropzone");
     const theme = document.getElementById("theme-toggle") ?? undefined;
     if (!dz) return;
-    void bootUi({ root, dropzone: dz, themeButton: theme });
+    const folderHost = document.getElementById("dropzone-extras") ?? undefined;
+    void bootUi({ root, dropzone: dz, themeButton: theme, folderPickContainer: folderHost });
     void registerServiceWorker({ badge: document.getElementById("offline-badge") });
     void hydrateDkbValidation();
     // Preload on first user-intent signal (focus, pointer-enter,

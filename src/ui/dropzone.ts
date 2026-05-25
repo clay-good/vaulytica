@@ -70,6 +70,16 @@ export type DropzoneOptions = {
   onFiles?: (files: File[]) => void;
   /** Called when a drag-over begins/ends so CSS can pulse the border. */
   onDragState?: (active: boolean) => void;
+  /**
+   * Optional sibling container that hosts the folder-pick affordance
+   * (an element with `data-role="folder-pick"`). When provided,
+   * `bindDropzone` listens for clicks on this element separately so
+   * the folder-pick `<button>` does not have to live inside the
+   * dropzone (which carries `role="button"`) and trigger axe's
+   * `nested-interactive` rule. When omitted, the legacy in-dropzone
+   * delegation still works for backwards-compatible unit tests.
+   */
+  folderPickContainer?: HTMLElement | null;
 };
 
 export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void {
@@ -218,6 +228,15 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
     dispatch(filesFromList(e.dataTransfer?.files));
   };
 
+  // Folder-pick clicks on the external container (preferred path).
+  const onExternalFolderClick = (e: Event): void => {
+    const target = e.target as HTMLElement | null;
+    if (target?.closest('[data-role="folder-pick"]')) {
+      e.stopPropagation();
+      onPickFolder();
+    }
+  };
+
   dz.addEventListener("click", onClick);
   dz.addEventListener("keydown", onKey);
   dz.addEventListener("dragenter", onDragEnter as EventListener);
@@ -226,6 +245,9 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
   dz.addEventListener("drop", onDrop as EventListener);
   input.addEventListener("change", onInputChange);
   inputDir.addEventListener("change", onInputDirChange);
+  if (opts.folderPickContainer) {
+    opts.folderPickContainer.addEventListener("click", onExternalFolderClick);
+  }
 
   return () => {
     dz.removeEventListener("click", onClick);
@@ -236,6 +258,9 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
     dz.removeEventListener("drop", onDrop as EventListener);
     input.removeEventListener("change", onInputChange);
     inputDir.removeEventListener("change", onInputDirChange);
+    if (opts.folderPickContainer) {
+      opts.folderPickContainer.removeEventListener("click", onExternalFolderClick);
+    }
     dz.removeChild(input);
     dz.removeChild(inputDir);
   };

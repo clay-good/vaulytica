@@ -19,14 +19,6 @@
  *     content in landmarks; the page is already wholly inside
  *     `<main>` / `<nav>` / `<footer>`, so spurious matches on
  *     in-section text would be noise.
- *   - `nested-interactive` — the empty-state dropzone (role="button")
- *     wraps a "choose a folder…" <button>. Rewiring requires moving
- *     the folder-pick affordance out of the dropzone container and
- *     re-attaching the click handler outside the event-delegation
- *     boundary in `bindDropzone`. Tracked as a separate refactor;
- *     the static-shape assertions in static-html.test.ts already
- *     enforce the dropzone's accessible-name machinery in the
- *     meantime.
  *
  * Forward-compatible: the spec scans the empty-state page (initial
  * render) and the v3 complete-state page (after a fixture drop) when
@@ -39,7 +31,7 @@ import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
 const TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
-const DISABLED_RULES = ["color-contrast", "region", "nested-interactive"];
+const DISABLED_RULES = ["color-contrast", "region"];
 
 test("empty-state page has zero axe violations (WCAG 2.2 AA)", async ({ page }) => {
   await page.goto("/");

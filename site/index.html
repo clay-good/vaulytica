@@ -349,6 +349,21 @@
         font-size: 15px;
         font-family: var(--font-mono);
       }
+      /* Sibling hint that lives outside the dropzone so the dropzone
+         button role never wraps an interactive control (axe a11y
+         rule: nested-interactive). The hint is only meaningful
+         before analysis starts; hide once the dropzone leaves the
+         empty state. */
+      .dropzone-extras {
+        color: var(--muted);
+        font-size: 14px;
+        font-family: var(--font-mono);
+        margin: 12px 0 0;
+        text-align: center;
+      }
+      .dropzone:not([data-state="empty"]) + .dropzone-extras {
+        display: none;
+      }
       @media (prefers-reduced-motion: no-preference) {
         .dropzone[data-state="empty"] {
           animation: pulse 4s ease-in-out infinite;
@@ -1087,7 +1102,7 @@
           id="dropzone"
           role="button"
           tabindex="0"
-          aria-labelledby="dropzone-title dropzone-sub dropzone-folder-hint"
+          aria-labelledby="dropzone-title dropzone-sub"
           aria-label="Drop a PDF or DOCX here, or click to choose"
         >
           <span class="icon" aria-hidden="true">
@@ -1100,6 +1115,10 @@
           <div class="dropzone-title" id="dropzone-title">Drop a PDF or DOCX here, or click to choose</div>
           <div class="dropzone-sub" id="dropzone-sub">analysis runs locally · nothing is uploaded</div>
         </div>
+        <p class="dropzone-extras" id="dropzone-extras">
+          Multiple files? Drop a folder or
+          <button type="button" class="btn-link" data-role="folder-pick">choose a folder…</button>
+        </p>
       </section>
 
       <!-- What it checks -->
