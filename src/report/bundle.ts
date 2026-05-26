@@ -140,6 +140,15 @@ export type BundleJsonDocument = {
   source_file_sha256: string;
   /** Echo of the per-doc result hash — keys this record to the run. */
   result_hash: string;
+  /**
+   * Per-document severity totals — mirrors the
+   * "Findings: N critical, M warning, K informational." sentence the
+   * bundle DOCX prints in each per-document subsection. Always present
+   * whenever the `documents[]` array is emitted so dashboards and
+   * alerting pipelines can answer "which doc has critical findings?"
+   * without scanning `runs[i].findings` themselves.
+   */
+  severity_counts: { critical: number; warning: number; info: number };
 };
 
 export type BundleJson = {
@@ -219,6 +228,7 @@ export async function buildBundleJson(input: BundleReportInput): Promise<BundleJ
         playbook_id: d.run.playbook_id,
         source_file_sha256: d.run.source_file.sha256,
         result_hash: d.run.result_hash,
+        severity_counts: countFindings(d.run.findings),
       };
       if (typeof d.detected_family === "string" && d.detected_family.length > 0) {
         entry.detected_family = d.detected_family;

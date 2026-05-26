@@ -312,6 +312,7 @@ describe("buildBundleJson — per-document metadata (spec-v3 §60 follow-up)", (
       playbook_match_confidence: 0.9,
       source_file_sha256: out.runs[0]!.source_file.sha256,
       result_hash: out.runs[0]!.result_hash,
+      severity_counts: { critical: 1, warning: 1, info: 0 },
     });
     expect(out.documents![1]!.doc_id).toBe("b");
     expect(out.documents![1]!.detected_family).toBe("Mutual NDA");
@@ -324,6 +325,30 @@ describe("buildBundleJson — per-document metadata (spec-v3 §60 follow-up)", (
       expect(entry.playbook_id).toBe("mutual-nda");
       expect(entry.playbook_match_confidence).toBe(0.9);
     }
+  });
+
+  it("surfaces per-doc severity_counts that match the underlying findings list", async () => {
+    const input = makeInput();
+    const withFindings: BundleReportInput = {
+      ...input,
+      documents: [
+        {
+          ...bundleDoc("a", "a"),
+          run: {
+            ...makeRun("a.docx", "a", [
+              finding("f1", "critical"),
+              finding("f2", "warning"),
+              finding("f3", "warning"),
+              finding("f4", "info"),
+            ]),
+          },
+        },
+        bundleDoc("b", "b"),
+      ],
+    };
+    const out = await buildBundleJson(withFindings);
+    expect(out.documents![0]!.severity_counts).toEqual({ critical: 1, warning: 2, info: 1 });
+    expect(out.documents![1]!.severity_counts).toEqual({ critical: 0, warning: 0, info: 0 });
   });
 
   it("surfaces source_file_sha256 (mirrors runs[i].source_file.sha256) on every entry", async () => {

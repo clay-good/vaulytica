@@ -25,6 +25,16 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v3 bundle JSON surfaces per-document severity_counts (spec-v3 §60 follow-up) (2026-05-26) — ✅ complete
+
+Last of the recent bundle-JSON ↔ bundle-DOCX parity gaps closed in this run. The per-document subsection of the bundle DOCX has long printed `Findings: N critical, M warning, K informational.` for each document; a dashboard or alerting pipeline previously had to count `runs[i].findings` itself to answer the same "which docs have critical findings?" question. Each `BundleJsonDocument` entry now carries the totals directly.
+
+- [`src/report/bundle.ts`](src/report/bundle.ts): `BundleJsonDocument` gains a required `severity_counts: { critical: number; warning: number; info: number }`. Always present whenever the `documents[]` array is emitted; computed via the existing internal `countFindings` helper (same function the DOCX per-document subsection already uses), so the JSON and DOCX cannot drift. The `documents[]` emission gate (still only emitted when at least one document carries a non-empty `detected_family`) is unchanged.
+
+Tests in [`src/report/bundle.test.ts`](src/report/bundle.test.ts) (1 new + 1 updated): (1) the exact-shape `toEqual` for the first document entry now includes `severity_counts: { critical: 1, warning: 1, info: 0 }` (matches the fixture's two-finding payload); (2) a new test passes a fixture with `[critical, warning, warning, info]` against one doc and `[]` against the other, asserts both entries' `severity_counts` track the underlying findings list independently.
+
+`npm run typecheck && lint && test && build` all green; **2187/2187 tests + 2 skips**.
+
 ### v3 bundle JSON surfaces consistency_version + per-document source_file_sha256 (spec-v3 §60 / §62 follow-up) (2026-05-26) — ✅ complete
 
 Two more bundle-JSON ↔ bundle-DOCX parity gaps closed in the same surgical pass as the recent §60 / §62 follow-ups. The DOCX audit trail has long printed `Consistency engine version: X` separately from the single-doc `Engine version: Y` (the two engines version independently), and the per-document subsection has long printed `File SHA-256: …`; the JSON output was forcing programmatic consumers to derive both from elsewhere.
