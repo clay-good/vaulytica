@@ -194,6 +194,49 @@ describe("buildBundleDocxReport", () => {
   it("BUNDLE_TOP_N is 10 per spec §11", () => {
     expect(BUNDLE_TOP_N).toBe(10);
   });
+
+  it("renders a Skipped Files appendix when rejected entries are passed", async () => {
+    const input: BundleReportInput = {
+      ...makeInput(),
+      rejected: [
+        { filename: "notes.txt", reason: 'Vaulytica accepts .pdf and .docx — not "notes.txt".' },
+        { filename: "huge.pdf", reason: "huge.pdf exceeds the 50 MB per-file limit." },
+      ],
+    };
+    const blob = await buildBundleDocxReport(input);
+    // The DOCX is a zip; the rendered text lives in word/document.xml.
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const docXml = strFromU8(entries["word/document.xml"]!);
+    expect(docXml).toContain("Skipped Files");
+    expect(docXml).toContain("notes.txt");
+    expect(docXml).toContain("huge.pdf");
+    expect(docXml).toContain("exceeds the 50 MB per-file limit");
+  });
+
+  it("does not render the Skipped Files appendix when no entries are rejected", async () => {
+    const blob = await buildBundleDocxReport(makeInput());
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const docXml = strFromU8(entries["word/document.xml"]!);
+    expect(docXml).not.toContain("Skipped Files");
+  });
+});
+
+describe("buildBundleJson — rejected entries", () => {
+  it("includes the rejected array when present", async () => {
+    const input: BundleReportInput = {
+      ...makeInput(),
+      rejected: [{ filename: "x.txt", reason: "unsupported" }],
+    };
+    const out = await buildBundleJson(input);
+    expect(out.rejected).toEqual([{ filename: "x.txt", reason: "unsupported" }]);
+  });
+
+  it("omits the rejected field when empty or absent (back-compat)", async () => {
+    const a = await buildBundleJson(makeInput());
+    expect(a.rejected).toBeUndefined();
+    const b = await buildBundleJson({ ...makeInput(), rejected: [] });
+    expect(b.rejected).toBeUndefined();
+  });
 });
 
 describe("buildBundleZip", () => {

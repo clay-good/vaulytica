@@ -527,7 +527,12 @@ export async function runBundlePipeline(
   });
 
   // 5. Build bundle DOCX + JSON.
-  const bundleInput: { documents: BundleDocument[]; consistency: typeof consistency; dkb: DKB } = {
+  const bundleInput: {
+    documents: BundleDocument[];
+    consistency: typeof consistency;
+    dkb: DKB;
+    rejected?: ReadonlyArray<{ filename: string; reason: string }>;
+  } = {
     documents: perDoc.map((d) => ({
       doc_id: `doc-${d.filename}`,
       source_file_name: d.filename,
@@ -540,6 +545,7 @@ export async function runBundlePipeline(
     })),
     consistency,
     dkb,
+    rejected: rejected.length > 0 ? rejected : undefined,
   };
   const bundle_docx_blob = await buildBundleDocxReport(bundleInput);
   const bundle_json_blob = await buildBundleJsonBlob(bundleInput);

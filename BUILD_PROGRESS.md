@@ -25,6 +25,17 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v3 bundle DOCX/JSON: Skipped Files appendix (2026-05-26) — ✅ complete
+
+Carries the planner-rejected list (newly surfaced in the UI in the previous commit) through to the consolidated bundle artifacts so a user opening the Word report alone — without the page open — still understands why their bundle has fewer documents than they dropped.
+
+- [`src/report/bundle.ts`](src/report/bundle.ts): `BundleReportInput` gains an optional `rejected?: ReadonlyArray<RejectedBundleEntry>` (new exported `RejectedBundleEntry = { filename: string; reason: string }`). `buildBundleJson` echoes the list as `rejected?` on the JSON output (omitted when empty/absent for back-compat). `buildBundleDocxReport` (a) updates the executive-summary intro to add "N files in the drop were skipped — see the Skipped Files appendix." when rejected entries are present, and (b) inserts a new `renderSkippedFilesAppendix` block between the Cross-Document Consistency Appendix and the Citation Bibliography. Appendix renders one bold filename + one description-paragraph per rejected entry. When `rejected` is absent or empty, the renderer returns `[]` so existing tests pass byte-identically.
+- [`src/ui/pipeline.ts`](src/ui/pipeline.ts): `runBundlePipeline` now threads the per-document `rejected` list it already collects from `planBundle` into `bundleInput`, so both the DOCX and JSON downloads include it.
+
+Tests in [`src/report/bundle.test.ts`](src/report/bundle.test.ts) (4 new): (1) DOCX with two rejected entries contains "Skipped Files" + each filename + each reason in `word/document.xml`; (2) DOCX without rejected entries does NOT contain "Skipped Files"; (3) JSON output includes the rejected array when present; (4) JSON output omits the field when empty or absent (back-compat).
+
+`npm run typecheck && lint && test && build` all green; **2173/2173 tests + 2 skips**.
+
 ### v3 bundle-complete "Skipped" list for planner-rejected files (2026-05-26) — ✅ complete
 
 `runBundlePipeline` already returns `rejected: Array<{ filename, reason }>` from `planBundle` (unsupported extension, oversized file, etc.), but the UI was silently swallowing it — a user who dropped a folder containing a `.txt` or a `README.md` saw two cards instead of three with no explanation. This change surfaces those rejections directly under the cross-doc summary in the bundle-complete state.

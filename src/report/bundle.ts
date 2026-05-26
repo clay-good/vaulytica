@@ -74,6 +74,11 @@ export type BundleDocument = {
   run: EngineRun;
 };
 
+export type RejectedBundleEntry = {
+  filename: string;
+  reason: string;
+};
+
 export type BundleReportInput = {
   documents: ReadonlyArray<BundleDocument>;
   consistency: ConsistencyRun;
@@ -82,6 +87,14 @@ export type BundleReportInput = {
   engine_version?: string;
   /** ISO 8601 timestamp printed on the cover. Excluded from `bundle_fingerprint`. */
   executed_at?: string;
+  /**
+   * Files in the dropped bundle that `planBundle` refused to ingest
+   * (unsupported extension, oversized, etc.). When non-empty, the
+   * executive summary mentions the skipped count and a small "Skipped
+   * Files" appendix enumerates them. Optional / back-compat: omitting
+   * the field preserves prior renderer output verbatim.
+   */
+  rejected?: ReadonlyArray<RejectedBundleEntry>;
 };
 
 export type BundleJson = {
@@ -90,6 +103,8 @@ export type BundleJson = {
   bundle_fingerprint: string;
   dkb_version: string;
   engine_version: string;
+  /** Spec-v4 §11 transparency: the planner-rejected entries, when present. */
+  rejected?: RejectedBundleEntry[];
 };
 
 /**
@@ -108,13 +123,17 @@ export async function bundleFingerprint(per_doc_result_hashes: ReadonlyArray<str
 export async function buildBundleJson(input: BundleReportInput): Promise<BundleJson> {
   const runs = input.documents.map((d) => d.run);
   const fingerprint = await bundleFingerprint(runs.map((r) => r.result_hash));
-  return {
+  const out: BundleJson = {
     runs,
     cross_doc_findings: [...input.consistency.findings],
     bundle_fingerprint: fingerprint,
     dkb_version: input.dkb.manifest.version,
     engine_version: input.engine_version ?? runs[0]?.version ?? "0.0.0",
   };
+  if (input.rejected && input.rejected.length > 0) {
+    out.rejected = input.rejected.map((r) => ({ filename: r.filename, reason: r.reason }));
+  }
+  return out;
 }
 
 export async function buildBundleJsonBlob(input: BundleReportInput): Promise<Blob> {
@@ -136,6 +155,7 @@ export async function buildBundleDocxReport(input: BundleReportInput): Promise<B
     ...renderExecutiveSummary(input, aggregate),
     ...renderPerDocumentSection(input),
     ...renderCrossDocAppendix(input.consistency),
+    ...renderSkippedFilesAppendix(input.rejected),
     ...renderBibliography(bibliography),
     ...renderAuditTrail(input),
     ...renderDisclaimer(),
@@ -258,7 +278,12 @@ function renderExecutiveSummary(
 ): (Paragraph | Table)[] {
   const docs = input.documents.length;
   const crossCounts = countConsistency(input.consistency.findings);
-  const intro = `This bundle contains ${plural(docs, "document")}. Across all documents the engine emitted ${plural(counts.critical, "critical finding")}, ${plural(counts.warning, "warning")}, and ${plural(counts.info, "informational item")}. The cross-document consistency pass executed ${plural(input.consistency.execution_log.length, "rule")} and surfaced ${plural(crossCounts.critical + crossCounts.warning + crossCounts.info, "cross-document finding")}.`;
+  const rejectedCount = input.rejected?.length ?? 0;
+  const rejectedSentence =
+    rejectedCount === 0
+      ? ""
+      : ` ${plural(rejectedCount, "file")} in the drop ${rejectedCount === 1 ? "was" : "were"} skipped — see the Skipped Files appendix.`;
+  const intro = `This bundle contains ${plural(docs, "document")}.${rejectedSentence} Across all documents the engine emitted ${plural(counts.critical, "critical finding")}, ${plural(counts.warning, "warning")}, and ${plural(counts.info, "informational item")}. The cross-document consistency pass executed ${plural(input.consistency.execution_log.length, "rule")} and surfaced ${plural(crossCounts.critical + crossCounts.warning + crossCounts.info, "cross-document finding")}.`;
   return [
     h1("Executive Summary"),
     para({ text: intro }),
@@ -308,6 +333,25 @@ function renderPerDocumentSection(input: BundleReportInput): (Paragraph | Table)
       }
     }
     out.push(spacer());
+  }
+  out.push(pageBreak());
+  return out;
+}
+
+function renderSkippedFilesAppendix(
+  rejected: ReadonlyArray<RejectedBundleEntry> | undefined,
+): (Paragraph | Table)[] {
+  if (!rejected || rejected.length === 0) return [];
+  const out: (Paragraph | Table)[] = [h1("Skipped Files")];
+  out.push(
+    para({
+      text: `${plural(rejected.length, "file")} from the drop ${rejected.length === 1 ? "was" : "were"} not analyzed. Each row records the filename and the reason the planner refused to ingest it (unsupported extension, exceeds the per-file size cap, etc.).`,
+    }),
+  );
+  out.push(spacer());
+  for (const r of rejected) {
+    out.push(para({ text: r.filename, bold: true }));
+    out.push(para({ text: r.reason }));
   }
   out.push(pageBreak());
   return out;
