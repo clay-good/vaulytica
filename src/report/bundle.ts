@@ -131,6 +131,13 @@ export type BundleJsonDocument = {
    * did not carry a confidence (e.g. forced playbook with no match).
    */
   playbook_match_confidence?: number;
+  /**
+   * SHA-256 of the source file bytes — mirrors the value the bundle
+   * DOCX prints under "File SHA-256:" in each per-document subsection,
+   * so a programmatic consumer can verify a per-document artifact by
+   * file hash without indexing back into `runs[i].source_file.sha256`.
+   */
+  source_file_sha256: string;
   /** Echo of the per-doc result hash — keys this record to the run. */
   result_hash: string;
 };
@@ -141,6 +148,14 @@ export type BundleJson = {
   bundle_fingerprint: string;
   dkb_version: string;
   engine_version: string;
+  /**
+   * Cross-document consistency engine version (`ConsistencyRun.version`).
+   * Mirrors the "Consistency engine version:" line the bundle DOCX
+   * audit trail already prints; surfaced separately from the
+   * single-doc `engine_version` because the two engines version
+   * independently.
+   */
+  consistency_version: string;
   /** Spec-v4 §11 transparency: the planner-rejected entries, when present. */
   rejected?: RejectedBundleEntry[];
   /**
@@ -185,6 +200,7 @@ export async function buildBundleJson(input: BundleReportInput): Promise<BundleJ
     bundle_fingerprint: fingerprint,
     dkb_version: input.dkb.manifest.version,
     engine_version: input.engine_version ?? runs[0]?.version ?? "0.0.0",
+    consistency_version: input.consistency.version,
   };
   if (input.rejected && input.rejected.length > 0) {
     out.rejected = input.rejected.map((r) => ({ filename: r.filename, reason: r.reason }));
@@ -201,6 +217,7 @@ export async function buildBundleJson(input: BundleReportInput): Promise<BundleJ
         doc_id: d.doc_id,
         source_file_name: d.source_file_name,
         playbook_id: d.run.playbook_id,
+        source_file_sha256: d.run.source_file.sha256,
         result_hash: d.run.result_hash,
       };
       if (typeof d.detected_family === "string" && d.detected_family.length > 0) {

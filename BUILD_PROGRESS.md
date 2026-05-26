@@ -25,6 +25,16 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v3 bundle JSON surfaces consistency_version + per-document source_file_sha256 (spec-v3 §60 / §62 follow-up) (2026-05-26) — ✅ complete
+
+Two more bundle-JSON ↔ bundle-DOCX parity gaps closed in the same surgical pass as the recent §60 / §62 follow-ups. The DOCX audit trail has long printed `Consistency engine version: X` separately from the single-doc `Engine version: Y` (the two engines version independently), and the per-document subsection has long printed `File SHA-256: …`; the JSON output was forcing programmatic consumers to derive both from elsewhere.
+
+- [`src/report/bundle.ts`](src/report/bundle.ts): `BundleJson` gains a required `consistency_version: string` (sourced from `ConsistencyRun.version`, always present — the consistency runner always emits one). `BundleJsonDocument` gains a required `source_file_sha256: string` (mirrors `EngineRun.source_file.sha256`, always present whenever the `documents[]` array is emitted). The `documents[]` emission gate (only emitted when at least one document carries a non-empty `detected_family`) is unchanged, so callers that never set `detected_family` see byte-identical prior output. The single-doc `engine_version` (which the prior post-1.0 commits already surfaced) is unchanged — both engine versions are now first-class fields in the bundle JSON.
+
+Tests in [`src/report/bundle.test.ts`](src/report/bundle.test.ts) (2 new + 1 updated): (1) the existing `packages runs + cross-doc findings + fingerprint` test now also asserts `consistency_version === "0.1.0"`; (2) a dedicated test passes a custom `ConsistencyRun.version` and asserts `engine_version` and `consistency_version` track independently; (3) a new `documents[]` test asserts `source_file_sha256` matches `runs[i].source_file.sha256` for every entry and is 64-char hex; (4) the exact-shape `toEqual` for the first document entry now includes `source_file_sha256`.
+
+`npm run typecheck && lint && test && build` all green; **2186/2186 tests + 2 skips**.
+
 ### v3 bundle JSON surfaces per-document playbook_id + playbook_match_confidence (spec-v3 §60 follow-up) (2026-05-26) — ✅ complete
 
 Completes the per-document JSON metadata surface started by the prior two §60 follow-ups (per-document `detected_family`, per-document `result_hash`): the matched playbook id (and its matcher confidence, when present) now ride on every `BundleJsonDocument` entry too. Without this, a programmatic consumer of the bundle JSON had to index back into `runs[i].playbook_id` to learn which playbook each document was analyzed against — fine when iterating in lockstep, fragile when grouping by playbook or building a UI table keyed on doc_id.

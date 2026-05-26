@@ -151,6 +151,17 @@ describe("buildBundleJson", () => {
     expect(out.bundle_fingerprint).toMatch(/^[0-9a-f]{64}$/);
     expect(out.dkb_version).toBe("v0.0.1-starter");
     expect(out.engine_version).toBe("0.1.0");
+    expect(out.consistency_version).toBe("0.1.0");
+  });
+
+  it("surfaces the cross-doc consistency engine version separately from engine_version", async () => {
+    const input = makeInput();
+    const out = await buildBundleJson({
+      ...input,
+      consistency: { ...input.consistency, version: "0.2.0-cross" },
+    });
+    expect(out.engine_version).toBe("0.1.0");
+    expect(out.consistency_version).toBe("0.2.0-cross");
   });
 
   it("buildBundleJsonBlob returns application/json with pretty-printed text", async () => {
@@ -299,6 +310,7 @@ describe("buildBundleJson — per-document metadata (spec-v3 §60 follow-up)", (
       detected_family: "Mutual NDA",
       playbook_id: "mutual-nda",
       playbook_match_confidence: 0.9,
+      source_file_sha256: out.runs[0]!.source_file.sha256,
       result_hash: out.runs[0]!.result_hash,
     });
     expect(out.documents![1]!.doc_id).toBe("b");
@@ -311,6 +323,15 @@ describe("buildBundleJson — per-document metadata (spec-v3 §60 follow-up)", (
     for (const entry of out.documents!) {
       expect(entry.playbook_id).toBe("mutual-nda");
       expect(entry.playbook_match_confidence).toBe(0.9);
+    }
+  });
+
+  it("surfaces source_file_sha256 (mirrors runs[i].source_file.sha256) on every entry", async () => {
+    const out = await buildBundleJson(makeInput());
+    expect(out.documents).toBeDefined();
+    for (let i = 0; i < out.documents!.length; i++) {
+      expect(out.documents![i]!.source_file_sha256).toBe(out.runs[i]!.source_file.sha256);
+      expect(out.documents![i]!.source_file_sha256).toMatch(/^[0-9a-f]{64}$/);
     }
   });
 
