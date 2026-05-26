@@ -221,6 +221,36 @@ describe("buildBundleDocxReport", () => {
   });
 });
 
+describe("buildBundleDocxReport — consistency_enabled", () => {
+  it("cover + intro reflect the disabled state when consistency_enabled=false", async () => {
+    const input: BundleReportInput = { ...makeInput(), consistency_enabled: false };
+    const blob = await buildBundleDocxReport(input);
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const docXml = strFromU8(entries["word/document.xml"]!);
+    expect(docXml).toContain("disabled by user");
+    expect(docXml).toContain(
+      "The cross-document consistency pass was disabled by the user",
+    );
+  });
+
+  it("cover + intro reflect rules executed when consistency_enabled=true", async () => {
+    const input: BundleReportInput = { ...makeInput(), consistency_enabled: true };
+    const blob = await buildBundleDocxReport(input);
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const docXml = strFromU8(entries["word/document.xml"]!);
+    expect(docXml).toMatch(/rules executed/);
+    expect(docXml).not.toContain("disabled by user");
+  });
+
+  it("omitting consistency_enabled preserves prior implicit behavior", async () => {
+    const blob = await buildBundleDocxReport(makeInput());
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const docXml = strFromU8(entries["word/document.xml"]!);
+    expect(docXml).not.toContain("disabled by user");
+    expect(docXml).toMatch(/rules executed/);
+  });
+});
+
 describe("buildBundleJson — rejected entries", () => {
   it("includes the rejected array when present", async () => {
     const input: BundleReportInput = {

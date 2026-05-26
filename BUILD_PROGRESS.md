@@ -25,6 +25,16 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v3 bundle DOCX cover + intro reflect consistency-toggle state (2026-05-26) — ✅ complete
+
+A reader opening the bundle Word report alone (without the page open) previously had no way to tell whether the user had turned off the cross-doc consistency toggle (spec-v3 §62) — they'd just see "0 cross-document findings" and wonder if the bundle was clean or the pass was skipped. This change makes the report self-documenting.
+
+- [`src/report/bundle.ts`](src/report/bundle.ts): `BundleReportInput` gains an optional `consistency_enabled?: boolean`. When explicitly `false`: the cover line is renamed from "Cross-document rules: N" to "Cross-document consistency: disabled by user" and the executive-summary intro replaces the "executed N rules and surfaced M findings" sentence with "The cross-document consistency pass was disabled by the user; no cross-document findings were computed." When `true` (or omitted, for back-compat): cover shows "N rules executed" and the intro keeps its original wording.
+- [`src/ui/pipeline.ts`](src/ui/pipeline.ts): `runBundleReport` threads its local `consistencyEnabled` (derived from `options.cross_doc_consistency !== false`) into `bundleInput.consistency_enabled`, so both the initial run and the toggle-driven re-run produce a report whose cover matches the UI checkbox state at download time.
+- Tests in [`src/report/bundle.test.ts`](src/report/bundle.test.ts) (3 new): (1) disabled state — cover contains "disabled by user" + intro contains "was disabled by the user"; (2) explicitly enabled — cover contains "rules executed" + does NOT contain "disabled"; (3) field omitted preserves prior behavior (cover contains "rules executed", does NOT contain "disabled by user").
+
+`npm run typecheck && lint && test && build` all green; **2176/2176 tests + 2 skips**.
+
 ### v3 bundle pipeline prepareBundle/runBundleReport split (spec-v3 §62 follow-up) (2026-05-26) — ✅ complete
 
 Closes the follow-up I flagged in the §62 consistency-toggle commit: "a future refactor mirroring the single-doc prepareDocument/runReport split could skip re-ingest". The cross-doc consistency toggle now re-runs only the consistency pass + bundle-report rebuild — no PDF parsing, no extract, no per-doc engine — so flipping the checkbox in the bundle-complete state feels instant instead of replaying the whole pipeline.

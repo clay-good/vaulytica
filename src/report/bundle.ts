@@ -95,6 +95,16 @@ export type BundleReportInput = {
    * the field preserves prior renderer output verbatim.
    */
   rejected?: ReadonlyArray<RejectedBundleEntry>;
+  /**
+   * Whether the user kept the spec-v3 §62 cross-document consistency
+   * toggle enabled for this run. When explicitly `false`, the cover
+   * and executive summary say "disabled by user" so a reader of the
+   * report alone understands why no cross-document findings appear.
+   * When omitted, the renderer falls back to the implicit signal
+   * (`consistency.execution_log.length > 0`), preserving prior
+   * behavior for callers that don't set the field.
+   */
+  consistency_enabled?: boolean;
 };
 
 export type BundleJson = {
@@ -262,7 +272,12 @@ function renderCover(input: BundleReportInput, fingerprint: string): Paragraph[]
     coverField("Bundle fingerprint", fingerprint),
     coverField("Engine version", engineVersion),
     coverField("DKB version", input.dkb.manifest.version),
-    coverField("Cross-document rules", String(input.consistency.execution_log.length)),
+    coverField(
+      "Cross-document consistency",
+      input.consistency_enabled === false
+        ? "disabled by user"
+        : `${input.consistency.execution_log.length} rules executed`,
+    ),
     coverField("Analysis date", iso ? `${iso}  (${human})` : "(omitted from hash)"),
     spacer(),
     para({ text: DETERMINISM_STATEMENT, italics: true }),
@@ -283,7 +298,11 @@ function renderExecutiveSummary(
     rejectedCount === 0
       ? ""
       : ` ${plural(rejectedCount, "file")} in the drop ${rejectedCount === 1 ? "was" : "were"} skipped — see the Skipped Files appendix.`;
-  const intro = `This bundle contains ${plural(docs, "document")}.${rejectedSentence} Across all documents the engine emitted ${plural(counts.critical, "critical finding")}, ${plural(counts.warning, "warning")}, and ${plural(counts.info, "informational item")}. The cross-document consistency pass executed ${plural(input.consistency.execution_log.length, "rule")} and surfaced ${plural(crossCounts.critical + crossCounts.warning + crossCounts.info, "cross-document finding")}.`;
+  const consistencyClause =
+    input.consistency_enabled === false
+      ? "The cross-document consistency pass was disabled by the user; no cross-document findings were computed."
+      : `The cross-document consistency pass executed ${plural(input.consistency.execution_log.length, "rule")} and surfaced ${plural(crossCounts.critical + crossCounts.warning + crossCounts.info, "cross-document finding")}.`;
+  const intro = `This bundle contains ${plural(docs, "document")}.${rejectedSentence} Across all documents the engine emitted ${plural(counts.critical, "critical finding")}, ${plural(counts.warning, "warning")}, and ${plural(counts.info, "informational item")}. ${consistencyClause}`;
   return [
     h1("Executive Summary"),
     para({ text: intro }),

@@ -568,6 +568,7 @@ export async function runBundleReport(
     consistency: typeof consistency;
     dkb: DKB;
     rejected?: ReadonlyArray<{ filename: string; reason: string }>;
+    consistency_enabled?: boolean;
   } = {
     documents: prepared.documents.map((d) => ({
       doc_id: `doc-${d.filename}`,
@@ -582,6 +583,7 @@ export async function runBundleReport(
     consistency,
     dkb: prepared.dkb,
     rejected: prepared.rejected.length > 0 ? prepared.rejected : undefined,
+    consistency_enabled: consistencyEnabled,
   };
   const bundle_docx_blob = await buildBundleDocxReport(bundleInput);
   const bundle_json_blob = await buildBundleJsonBlob(bundleInput);
