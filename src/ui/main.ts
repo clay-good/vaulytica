@@ -209,7 +209,8 @@ async function runBundle(
         ? files[0]!.name
         : `${files.length} files`;
     setState(dz, { kind: "analyzing", filename: summary });
-    const { runBundlePipeline, countsBySeverity } = await import("./pipeline.js");
+    const { runBundlePipeline } = await import("./pipeline.js");
+    type PreparedBundle = import("./pipeline.js").PreparedBundle;
     const progress = createProgressBar(select(dz, "progress")!);
     const ticker = createRuleTicker(select(dz, "ticker")!);
     progress.reset();
@@ -225,6 +226,39 @@ async function runBundle(
       {},
       { cross_doc_consistency: options.cross_doc_consistency },
     );
+    // Retain the prepared bundle so a consistency toggle can re-run
+    // just the consistency pass + bundle-report rebuild without
+    // re-ingesting every document (spec-v3 §62 follow-up).
+    const prepared: PreparedBundle = result.prepared;
+    renderBundleComplete(dz, prepared, result, options.cross_doc_consistency !== false);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    setState(dz, { kind: "error", message });
+  }
+}
+
+async function rerunBundleReport(
+  dz: HTMLElement,
+  prepared: import("./pipeline.js").PreparedBundle,
+  active: boolean,
+): Promise<void> {
+  try {
+    const { runBundleReport } = await import("./pipeline.js");
+    const result = await runBundleReport(prepared, { cross_doc_consistency: active });
+    renderBundleComplete(dz, prepared, result, active);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    setState(dz, { kind: "error", message });
+  }
+}
+
+async function renderBundleComplete(
+  dz: HTMLElement,
+  prepared: import("./pipeline.js").PreparedBundle,
+  result: Awaited<ReturnType<typeof import("./pipeline.js").runBundleReport>>,
+  crossDocActive: boolean,
+): Promise<void> {
+  const { countsBySeverity } = await import("./pipeline.js");
 
     // Aggregate per-doc severity counts across the whole bundle.
     const counts = { critical: 0, warning: 0, info: 0 };
@@ -260,7 +294,6 @@ async function runBundle(
         json_filename: `${stem}-vaulytica.json`,
       };
     });
-    const crossDocActive = options.cross_doc_consistency !== false;
     setState(dz, {
       kind: "bundle-complete",
       document_count: result.documents.length,
@@ -274,19 +307,13 @@ async function runBundle(
       documents: documentSummaries,
       rejected: result.rejected.length > 0 ? result.rejected : undefined,
       cross_doc_active: crossDocActive,
-      // Spec-v3 §62 toggle: when the user flips the checkbox, re-run
-      // the bundle with the new cross-doc setting. This re-ingests
-      // (the bundle pipeline is monolithic today); a future refactor
-      // mirroring the single-doc prepareDocument/runReport split can
-      // skip re-ingest the way compliance-frame chip toggles do.
+      // Spec-v3 §62 toggle: re-runs only the consistency pass + bundle
+      // report rebuild via the cached PreparedBundle, so the flip
+      // doesn't re-ingest every document.
       on_consistency_toggle: (active) => {
-        void runBundle(dz, files, { cross_doc_consistency: active });
+        void rerunBundleReport(dz, prepared, active);
       },
     });
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    setState(dz, { kind: "error", message });
-  }
 }
 
 // Auto-boot on DOMContentLoaded when imported from index.html.

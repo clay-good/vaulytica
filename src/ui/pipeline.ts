@@ -348,6 +348,25 @@ export type BundlePipelineResult = {
 };
 
 /**
+ * Cached output from the expensive bundle-pre-engine phase
+ * (ingest + extract + per-doc engine + per-doc reports + consistency
+ * doc shapes). The bundle-complete UI retains a `PreparedBundle` so
+ * the spec-v3 §62 cross-doc consistency toggle can re-run via
+ * `runBundleReport` without re-ingesting every document.
+ */
+export type PreparedBundle = {
+  documents: BundlePerDocument[];
+  rejected: Array<{ filename: string; reason: string }>;
+  /**
+   * Per-document tree + extracted payloads needed to re-run the
+   * cross-doc consistency engine. Held alongside the per-doc engine
+   * runs so a toggle only re-runs the cheap consistency pass.
+   */
+  consistency_docs: ConsistencyDocument[];
+  dkb: DKB;
+};
+
+/**
  * Resolve the dropped file list into the raw candidate-bundle shape
  * consumed by `planBundle`. Handles the v4 §8 zip-bundle case: a single
  * `.zip` drop is unpacked client-side and its accepted entries are
@@ -368,21 +387,19 @@ export async function expandBundleInputs(
 }
 
 /**
- * Run the full multi-document analysis pipeline. Mirrors `runPipeline`
- * for the single-doc path but fans out across N documents and folds in
- * the cross-document consistency engine.
- *
- * The bundle DOCX / JSON cover all per-doc engine runs plus the
- * cross-doc findings. Each document's own per-doc DOCX / JSON are
- * returned alongside so the UI can surface them as secondary
- * downloads.
+ * Phase 1 (bundle path): ingest + extract + per-doc engine + per-doc
+ * reports for every accepted file in the dropped bundle. Mirrors
+ * `prepareDocument` for the single-doc path. The output is reused
+ * across cross-doc-consistency toggle re-runs (spec-v3 §62) so the
+ * toggle costs one consistency pass + one bundle-report rebuild, not
+ * a full re-ingest of every document.
  */
-export async function runBundlePipeline(
+export async function prepareBundle(
   files: ReadonlyArray<File>,
   hooks: BundlePipelineHooks = {},
   config: PipelineConfig = {},
   options: PipelineOptions = {},
-): Promise<BundlePipelineResult> {
+): Promise<PreparedBundle> {
   if (files.length === 0) throw new Error(BUNDLE_CAP_MESSAGE);
 
   // 1. Resolve raw bytes (handles single-zip and multi-file).
@@ -513,27 +530,46 @@ export async function runBundlePipeline(
     });
   }
 
-  // 4. Cross-document consistency. Re-uses each doc's tree + extracted
-  // (collected above) so we don't re-ingest. When the user has
-  // toggled the §62 consistency switch off, the rules list collapses
-  // to an empty array — the runner still produces a valid
-  // `ConsistencyRun`, but findings + execution_log are empty.
+  return {
+    documents: perDoc,
+    rejected,
+    consistency_docs: consistencyDocs,
+    dkb,
+  };
+}
+
+/**
+ * Phase 2 (bundle path): run the cross-doc consistency engine and
+ * build the consolidated bundle DOCX + JSON. Cheap relative to
+ * `prepareBundle` — the per-doc engine runs are already in the
+ * `PreparedBundle`. Called both as part of the full pipeline and
+ * standalone when the user flips the spec-v3 §62 consistency toggle
+ * in the bundle-complete state.
+ */
+export async function runBundleReport(
+  prepared: PreparedBundle,
+  options: PipelineOptions = {},
+): Promise<BundlePipelineResult> {
+  // Cross-document consistency. When the user has toggled the §62
+  // consistency switch off, the rules list collapses to an empty
+  // array — the runner still produces a valid `ConsistencyRun`, but
+  // findings + execution_log are empty so the cross-doc appendix
+  // renders as "0 cross-document findings".
   const consistencyEnabled = options.cross_doc_consistency !== false;
   const consistency = await runConsistency({
     rules: consistencyEnabled ? ALL_CONSISTENCY_RULES : [],
-    documents: consistencyDocs,
-    dkb,
+    documents: prepared.consistency_docs,
+    dkb: prepared.dkb,
     executed_at: new Date().toISOString(),
   });
 
-  // 5. Build bundle DOCX + JSON.
   const bundleInput: {
     documents: BundleDocument[];
     consistency: typeof consistency;
     dkb: DKB;
     rejected?: ReadonlyArray<{ filename: string; reason: string }>;
   } = {
-    documents: perDoc.map((d) => ({
+    documents: prepared.documents.map((d) => ({
       doc_id: `doc-${d.filename}`,
       source_file_name: d.filename,
       // Prefer the v3 family label when the detector fired with non-
@@ -544,19 +580,41 @@ export async function runBundlePipeline(
       run: d.run,
     })),
     consistency,
-    dkb,
-    rejected: rejected.length > 0 ? rejected : undefined,
+    dkb: prepared.dkb,
+    rejected: prepared.rejected.length > 0 ? prepared.rejected : undefined,
   };
   const bundle_docx_blob = await buildBundleDocxReport(bundleInput);
   const bundle_json_blob = await buildBundleJsonBlob(bundleInput);
 
-  hooks.onProgress?.(1);
-
   return {
-    documents: perDoc,
-    rejected,
+    documents: prepared.documents,
+    rejected: prepared.rejected,
     consistency,
     bundle_docx_blob,
     bundle_json_blob,
   };
+}
+
+/**
+ * Run the full multi-document analysis pipeline. Mirrors `runPipeline`
+ * for the single-doc path but fans out across N documents and folds in
+ * the cross-document consistency engine.
+ *
+ * The bundle DOCX / JSON cover all per-doc engine runs plus the
+ * cross-doc findings. Each document's own per-doc DOCX / JSON are
+ * returned alongside so the UI can surface them as secondary
+ * downloads. The returned `prepared` field gives the UI everything
+ * it needs to call `runBundleReport` directly on a consistency
+ * toggle without re-ingesting (spec-v3 §62 follow-up).
+ */
+export async function runBundlePipeline(
+  files: ReadonlyArray<File>,
+  hooks: BundlePipelineHooks = {},
+  config: PipelineConfig = {},
+  options: PipelineOptions = {},
+): Promise<BundlePipelineResult & { prepared: PreparedBundle }> {
+  const prepared = await prepareBundle(files, hooks, config, options);
+  const report = await runBundleReport(prepared, options);
+  hooks.onProgress?.(1);
+  return { ...report, prepared };
 }

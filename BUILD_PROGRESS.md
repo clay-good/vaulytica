@@ -25,6 +25,16 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v3 bundle pipeline prepareBundle/runBundleReport split (spec-v3 §62 follow-up) (2026-05-26) — ✅ complete
+
+Closes the follow-up I flagged in the §62 consistency-toggle commit: "a future refactor mirroring the single-doc prepareDocument/runReport split could skip re-ingest". The cross-doc consistency toggle now re-runs only the consistency pass + bundle-report rebuild — no PDF parsing, no extract, no per-doc engine — so flipping the checkbox in the bundle-complete state feels instant instead of replaying the whole pipeline.
+
+- [`src/ui/pipeline.ts`](src/ui/pipeline.ts): new exported `PreparedBundle` type (`{ documents: BundlePerDocument[], rejected, consistency_docs: ConsistencyDocument[], dkb: DKB }`). New `prepareBundle(files, hooks, config, options)` does steps 1–3 (expand inputs, plan, ingest + extract + per-doc engine + per-doc reports) and returns the prepared payload. New `runBundleReport(prepared, options)` does steps 4–5 (runConsistency + buildBundleDocxReport + buildBundleJsonBlob). `runBundlePipeline` is now a 4-line orchestrator: `await prepareBundle(...); await runBundleReport(...); return { ...report, prepared }`.
+- [`src/ui/main.ts`](src/ui/main.ts): `runBundle` retains the returned `prepared` payload. New `rerunBundleReport(dz, prepared, active)` calls only `runBundleReport`. New shared `renderBundleComplete(dz, prepared, result, crossDocActive)` factored out from the inline body so both the initial run and the toggle re-run land on the same rendering path. The `on_consistency_toggle` callback now points to `rerunBundleReport`.
+- Tests: existing 126 test files + 2173 tests stay green because the only externally-visible change to `runBundlePipeline`'s return shape is the additional `prepared` field — every existing consumer ignores it.
+
+`npm run typecheck && lint && test && build` all green; **2173/2173 tests + 2 skips**.
+
 ### v3 bundle DOCX/JSON: Skipped Files appendix (2026-05-26) — ✅ complete
 
 Carries the planner-rejected list (newly surfaced in the UI in the previous commit) through to the consolidated bundle artifacts so a user opening the Word report alone — without the page open — still understands why their bundle has fewer documents than they dropped.
