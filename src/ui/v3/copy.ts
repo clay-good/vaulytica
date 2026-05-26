@@ -8,8 +8,8 @@
  */
 
 export const EMPTY_STATE_COPY = {
-  headline: "Drop up to four contracts at once — Vaulytica lints them locally.",
-  sub: "Vaulytica understands BAAs, DPAs, NDAs, MSAs, EU SCCs, the UK Addendum, vendor security exhibits, AI addenda, and certificates of insurance — and can compare pairs against each other.",
+  headline: "Drop a PDF or DOCX — up to four at once.",
+  sub: "Vaulytica understands BAAs, DPAs, NDAs, MSAs, EU SCCs, the UK Addendum, vendor security exhibits, AI addenda, and certificates of insurance — and can compare pairs against each other. Analysis runs locally; nothing is uploaded.",
 } as const;
 
 export type V3ErrorCode =

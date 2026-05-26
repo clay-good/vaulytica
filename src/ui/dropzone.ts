@@ -103,7 +103,7 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
   // dropzone gets a `:focus-within` ring); Enter/Space opens the
   // native file picker. The aria-label is the accessible name.
   input.className = "sr-only";
-  input.setAttribute("aria-label", "Drop a PDF or DOCX here, or click to choose");
+  input.setAttribute("aria-label", "Drop a PDF or DOCX — up to four at once.");
   dz.appendChild(input);
 
   // Secondary input wired to the folder-picker affordance (spec-v4 §8

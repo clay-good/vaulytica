@@ -36,11 +36,35 @@ function cardDoc(overrides: {
 }
 
 describe("renderState", () => {
-  it("renders empty state with the icon + sub", () => {
+  it("renders empty state with the v3 §63 headline + family-mentioning sub", () => {
     const dz = document.createElement("div");
     renderState(dz, { kind: "empty" });
     expect(dz.getAttribute("data-state")).toBe("empty");
     expect(dz.querySelector(".dropzone-title")?.textContent).toMatch(/Drop a PDF/);
+    expect(dz.querySelector(".dropzone-title")?.textContent).toMatch(/four/);
+    const sub = dz.querySelector(".dropzone-sub")!.textContent ?? "";
+    // Spec-v3 §63: empty-state mentions the new families.
+    expect(sub).toMatch(/BAA/);
+    expect(sub).toMatch(/DPA/);
+    expect(sub).toMatch(/SCC/);
+    expect(sub).toMatch(/nothing is uploaded/);
+  });
+
+  it("renders error state with structured title + detail when an error code is passed (spec-v3 §63)", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "error",
+      message: "fallback",
+      code: "scc-module-2-empty-annex",
+    });
+    expect(select(dz, "error-title")!.textContent).toMatch(/SCC Module 2/);
+    expect(select(dz, "error-message")!.textContent).toMatch(/Annex/);
+  });
+
+  it("renders error state with the freeform message when no code is passed", () => {
+    const dz = document.createElement("div");
+    renderState(dz, { kind: "error", message: "Ingest failed: bad bytes." });
+    expect(select(dz, "error-message")!.textContent).toBe("Ingest failed: bad bytes.");
   });
 
   it("renders analyzing state with filename + ticker host", () => {

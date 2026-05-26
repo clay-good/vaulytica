@@ -25,6 +25,19 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v3 empty-state copy + structured error messages hookup (spec-v3 §63) (2026-05-26) — ✅ complete
+
+Wires the v3 `EMPTY_STATE_COPY` constants (in [`src/ui/v3/copy.ts`](src/ui/v3/copy.ts), already exported but never rendered) into both the runtime renderer and the static HTML, and exposes the `V3_ERROR_COPY` lookup through a new optional `code` field on the `error` state. Closes the last spec-v3 §63 affordance: "Updated empty-state copy mentions the new families. Updated error states cover regulator-specific failures."
+
+- [`src/ui/v3/copy.ts`](src/ui/v3/copy.ts): `EMPTY_STATE_COPY` rewritten so the headline mentions PDF/DOCX **and** "up to four" (keeps the [`tests/integration/static-html.test.ts`](tests/integration/static-html.test.ts) "PDF or DOCX" assertion AND the existing `v3-ui.test.ts` /four/ assertion green) and the sub enumerates the new families (BAA, DPA, NDA, MSA, EU SCC, UK Addendum, vendor security exhibits, AI addenda, certificates of insurance) plus the "analysis runs locally · nothing is uploaded" privacy claim.
+- [`src/ui/states.ts`](src/ui/states.ts): empty template now interpolates `EMPTY_STATE_COPY.headline` + `.sub` (single source of truth). New `data-role="empty-headline"` + `data-role="empty-sub"` selectors. `DropzoneState.error` gains an optional `code?: string` — when supplied, the renderer calls `v3ErrorMessage(code)` and writes the structured `title` + `detail`; the freeform `message` path is the back-compat fallback.
+- [`site/index.html`](site/index.html): static empty-state copy synced to match `EMPTY_STATE_COPY` (initial paint before JS hydration shows the same words the renderer produces).
+- [`src/ui/dropzone.ts`](src/ui/dropzone.ts): hidden-input `aria-label` updated to match the new headline so screen-reader users get the same announcement as visual users.
+
+Tests: empty-state test in [`src/ui/states.test.ts`](src/ui/states.test.ts) updated to assert /four/ + BAA / DPA / SCC / "nothing is uploaded" in the sub. Two new tests added: (1) error state with `code: "scc-module-2-empty-annex"` renders the structured title + detail; (2) error state without a code preserves the freeform-message fallback.
+
+`npm run typecheck && lint && test && build` all green; **2166/2166 tests + 2 skips**.
+
 ### v3 cross-doc consistency toggle in bundle-complete (spec-v3 §62) (2026-05-26) — ✅ complete
 
 Closes the last UI affordance of spec-v3 §62 ("A toggle invites the user to run cross-document consistency checks (default on)"). [`src/ui/states.ts`](src/ui/states.ts) bundle-complete template adds a `<label data-role="cross-doc-toggle">` wrapping a checkbox (`[data-role="cross-doc-toggle-input"]`, checked by default). Rendered only when `document_count >= 2`. Flipping the checkbox (a) rewrites the cross-doc summary line in place ("Cross-document consistency disabled." when off; "{N} cross-document finding(s)." / "No cross-document inconsistencies found." when on), (b) invokes the new optional `on_consistency_toggle: (active: boolean) => void` callback on the bundle-complete state. `state.cross_doc_active` (default `true`) seeds the initial UI checkbox state.

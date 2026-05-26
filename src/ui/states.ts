@@ -3,6 +3,7 @@
  * in place through three states. CSS keys off `data-state` to swap
  * the inner content stack.
  */
+import { EMPTY_STATE_COPY, v3ErrorMessage } from "./v3/copy.js";
 
 export type DropzoneState =
   | { kind: "empty" }
@@ -104,15 +105,24 @@ export type DropzoneState =
       cross_doc_active?: boolean;
       on_consistency_toggle?: (active: boolean) => void;
     }
-  | { kind: "error"; message: string };
+  | {
+      kind: "error";
+      message: string;
+      /**
+       * Optional v3 error code (spec-v3 §63). When provided, the renderer
+       * looks up a structured title + detail via `v3ErrorMessage`; the
+       * `message` field is used as a fallback / unknown-code passthrough.
+       */
+      code?: string;
+    };
 
 const TEMPLATES: Record<DropzoneState["kind"], string> = {
   empty: `
     <span class="icon" aria-hidden="true">
       <svg viewBox="0 0 24 24"><path d="M12 3v12"></path><path d="m7 8 5-5 5 5"></path><path d="M5 21h14"></path></svg>
     </span>
-    <div class="dropzone-title" id="dropzone-title">Drop a PDF or DOCX here, or click to choose</div>
-    <div class="dropzone-sub" id="dropzone-sub">analysis runs locally · nothing is uploaded</div>
+    <div class="dropzone-title" id="dropzone-title" data-role="empty-headline">${EMPTY_STATE_COPY.headline}</div>
+    <div class="dropzone-sub" id="dropzone-sub" data-role="empty-sub">${EMPTY_STATE_COPY.sub}</div>
   `,
   analyzing: `
     <div class="dropzone-title" data-role="analyzing-filename"></div>
@@ -240,7 +250,17 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
     });
   }
   if (state.kind === "error") {
-    select(dz, "error-message")!.textContent = state.message;
+    // Spec-v3 §63: when an error code is provided, look up the
+    // structured title + detail. Falls back to the generic
+    // "Something went wrong" title + freeform message for legacy
+    // call sites that pass only `message`.
+    if (state.code) {
+      const msg = v3ErrorMessage(state.code);
+      select(dz, "error-title")!.textContent = msg.title;
+      select(dz, "error-message")!.textContent = msg.detail;
+    } else {
+      select(dz, "error-message")!.textContent = state.message;
+    }
   }
 }
 
