@@ -25,6 +25,16 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v3 bundle JSON surfaces consistency_execution_log (spec-v3 §62 follow-up) (2026-05-26) — ✅ complete
+
+Closes the last bundle-JSON ↔ bundle-DOCX parity gap I identified in this sweep. The bundle DOCX audit trail has long printed a "Cross-document rule execution" block enumerating every CC-NNN / CROSS-* rule with `ran`/`skipped` + `findings_count` + `elapsed_ms`. The JSON output only exposed `cross_doc_findings` (the findings array), so a consumer couldn't tell a "rule ran and produced zero findings" from a "rule skipped because its `requires: DocKind[]` was not satisfied" — both paths surface as zero in `cross_doc_findings` alone, which makes alerting and audit-trail derivation brittle (an alert pipeline shouldn't fire "0 cross-doc findings — bundle clean!" when the engine never actually ran the rule because the bundle had no DPA).
+
+- [`src/report/bundle.ts`](src/report/bundle.ts): `BundleJson` gains a required `consistency_execution_log: ConsistencyExecutionLogEntry[]` (defensive-copied from `input.consistency.execution_log` so post-build mutation of the JSON output does not touch the input). The DOCX audit trail rendering is unchanged — both surfaces now read from the same execution-log source.
+
+Tests in [`src/report/bundle.test.ts`](src/report/bundle.test.ts) (2 new): (1) the fixture's two-rule execution log (CROSS-PARTY-001 ran with 1 finding, CROSS-JURIS-001 skipped) round-trips through `consistency_execution_log` so `ran` + `findings_count` are inspectable per-rule; (2) mutating the output's `consistency_execution_log` does not modify the underlying input.
+
+`npm run typecheck && lint && test && build` all green; **2189/2189 tests + 2 skips**.
+
 ### v3 bundle JSON surfaces per-document severity_counts (spec-v3 §60 follow-up) (2026-05-26) — ✅ complete
 
 Last of the recent bundle-JSON ↔ bundle-DOCX parity gaps closed in this run. The per-document subsection of the bundle DOCX has long printed `Findings: N critical, M warning, K informational.` for each document; a dashboard or alerting pipeline previously had to count `runs[i].findings` itself to answer the same "which docs have critical findings?" question. Each `BundleJsonDocument` entry now carries the totals directly.

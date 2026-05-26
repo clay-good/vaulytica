@@ -154,6 +154,25 @@ describe("buildBundleJson", () => {
     expect(out.consistency_version).toBe("0.1.0");
   });
 
+  it("surfaces the cross-doc consistency execution_log so consumers can distinguish ran/skipped", async () => {
+    const out = await buildBundleJson(makeInput());
+    expect(out.consistency_execution_log).toHaveLength(2);
+    const entries = out.consistency_execution_log;
+    const ran = entries.find((e) => e.rule_id === "CROSS-PARTY-001");
+    const skipped = entries.find((e) => e.rule_id === "CROSS-JURIS-001");
+    expect(ran?.ran).toBe(true);
+    expect(ran?.findings_count).toBe(1);
+    expect(skipped?.ran).toBe(false);
+    expect(skipped?.findings_count).toBe(0);
+  });
+
+  it("consistency_execution_log is a defensive copy (mutating the result does not touch the input)", async () => {
+    const input = makeInput();
+    const out = await buildBundleJson(input);
+    out.consistency_execution_log.pop();
+    expect(input.consistency.execution_log).toHaveLength(2);
+  });
+
   it("surfaces the cross-doc consistency engine version separately from engine_version", async () => {
     const input = makeInput();
     const out = await buildBundleJson({

@@ -40,7 +40,11 @@ import {
 import { zipSync, type Zippable } from "fflate";
 
 import type { EngineRun, Finding, Severity } from "../engine/finding.js";
-import type { ConsistencyRun, ConsistencyFinding } from "../engine/consistency/types.js";
+import type {
+  ConsistencyRun,
+  ConsistencyFinding,
+  ConsistencyExecutionLogEntry,
+} from "../engine/consistency/types.js";
 import type { DKB, SourceCitation } from "../dkb/types.js";
 import { sha256Hex } from "../ingest/hash.js";
 import { stableStringify } from "../engine/runner.js";
@@ -165,6 +169,17 @@ export type BundleJson = {
    * independently.
    */
   consistency_version: string;
+  /**
+   * Full cross-document execution log (one entry per CC-NNN / CROSS-*
+   * rule, recording ran/skipped + findings_count + elapsed_ms). Mirrors
+   * the "Cross-document rule execution" block the bundle DOCX audit
+   * trail already prints; surfacing it in the JSON lets a programmatic
+   * consumer distinguish "rule ran and produced zero findings"
+   * (`ran: true, findings_count: 0`) from "rule skipped because its
+   * `requires: DocKind[]` was not satisfied" (`ran: false`) — both
+   * paths surface as zero in `cross_doc_findings` alone.
+   */
+  consistency_execution_log: ConsistencyExecutionLogEntry[];
   /** Spec-v4 §11 transparency: the planner-rejected entries, when present. */
   rejected?: RejectedBundleEntry[];
   /**
@@ -210,6 +225,7 @@ export async function buildBundleJson(input: BundleReportInput): Promise<BundleJ
     dkb_version: input.dkb.manifest.version,
     engine_version: input.engine_version ?? runs[0]?.version ?? "0.0.0",
     consistency_version: input.consistency.version,
+    consistency_execution_log: [...input.consistency.execution_log],
   };
   if (input.rejected && input.rejected.length > 0) {
     out.rejected = input.rejected.map((r) => ({ filename: r.filename, reason: r.reason }));
