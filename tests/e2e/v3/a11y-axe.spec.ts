@@ -58,15 +58,13 @@ test("empty-state page has zero axe violations (WCAG 2.2 AA)", async ({ page }) 
   ).toEqual([]);
 });
 
-test("v3 compliance-frame chip row has zero axe violations after analysis", async ({
-  page,
-}) => {
+test("v3 complete-state (post-analysis) has zero axe violations", async ({ page }) => {
   test.skip(!existsSync(BAA_FIXTURE), `fixture missing: ${BAA_FIXTURE}`);
 
   // Parity with smoke.spec.ts: strip the File System Access API so the
   // saveBlob anchor-click fallback runs if the test ever triggers a
-  // download (the chip-row scan itself doesn't, but the init script is
-  // cheap and keeps environment behavior consistent across e2e specs).
+  // download. The scan itself doesn't, but the init script is cheap
+  // and keeps environment behavior consistent across e2e specs.
   await page.addInitScript(() => {
     delete (window as { showSaveFilePicker?: unknown }).showSaveFilePicker;
   });
@@ -74,7 +72,8 @@ test("v3 compliance-frame chip row has zero axe violations after analysis", asyn
   await page.goto("/");
   await page.locator("#dropzone[data-state]").first().waitFor({ state: "attached" });
 
-  // Drive the page into its complete-state so the chip row is rendered.
+  // Drive the page into its complete-state so the chip row, downloads,
+  // <details>, and counts are all rendered.
   const fileInput = page.locator(
     '#dropzone input[type="file"]:not([webkitdirectory])',
   );
@@ -84,20 +83,17 @@ test("v3 compliance-frame chip row has zero axe violations after analysis", asyn
     timeout: 60_000,
   });
 
-  // Scoped scan: only the chip-row subtree. The dropzone container has
-  // unrelated nested-interactive findings (`<details>`, downloads,
-  // counts) that are tracked separately — refactoring requires
-  // removing `role="button"` from the dropzone wrapper, which is a
-  // larger UX change.
+  // Full-page scan now that the dropzone wrapper is a generic <div>
+  // (no role="button") so its interactive children no longer trip
+  // axe's nested-interactive rule.
   const results = await new AxeBuilder({ page })
     .withTags(TAGS)
     .disableRules(DISABLED_RULES)
-    .include('[data-role="compliance-frame-chips"]')
     .analyze();
 
   expect(
     results.violations,
-    `axe (chip-row scope) found ${results.violations.length} violation(s): ${results.violations
+    `axe (complete-state) found ${results.violations.length} violation(s): ${results.violations
       .map((v) => `${v.id} (${v.nodes.length} node[s])`)
       .join(", ")}`,
   ).toEqual([]);

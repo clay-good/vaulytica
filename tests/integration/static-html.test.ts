@@ -186,17 +186,19 @@ describe("v4 surface a11y (LAUNCH row v4-h)", () => {
     expect(html).toMatch(/Drop legal docs\./);
   });
 
-  it("drop-zone aria-label exists and mentions PDF or DOCX", () => {
-    // The drop zone must have an aria-label that tells screen-reader users
-    // what file types are accepted (spec-v4 §18 item 2).
-    // Search broadly: find the aria-label on any element that has dropzone
-    // in its id or class, or find the aria-label near the dropzone div.
-    const ariaMatch = html.match(/aria-label=["']([^"']*)["'][^>]*(?:dropzone|Drop a|Drop PDF|folder|zip)/i) ??
-      html.match(/(?:id=["']dropzone["']|role=["']button["'][^>]*dropzone|dropzone[^>]*role=["']button["'])[^]*?aria-label=["']([^"']*)["']/i) ??
-      html.match(/aria-label=["']([^"']*(?:PDF|DOCX|pdf|docx)[^"']*)["']/i);
-    expect(ariaMatch, "drop-zone element has no aria-label mentioning PDF or DOCX").not.toBeNull();
-    const label = ariaMatch![1] ?? ariaMatch![0];
-    expect(label, "drop-zone aria-label does not mention PDF or DOCX").toMatch(/PDF|DOCX/i);
+  it("drop-zone visible label mentions PDF or DOCX", () => {
+    // spec-v4 §18 item 2: the dropzone must tell users what file types
+    // are accepted. The visible label lives inside the dropzone div
+    // (announced by screen readers as part of the region) and the
+    // bindDropzone-injected hidden <input> carries an aria-label with
+    // the same text for keyboard/AT users — the aria-label is set at
+    // runtime in `src/ui/dropzone.ts` and asserted there in unit tests.
+    const dzMatch = html.match(/<div\b[^>]*id=["']dropzone["'][^>]*>[^]*?<\/div>/i);
+    expect(dzMatch, "dropzone div not found in static HTML").not.toBeNull();
+    expect(
+      dzMatch![0],
+      "dropzone visible content must mention PDF or DOCX",
+    ).toMatch(/PDF|DOCX/i);
   });
 
   it('footer wordmark has aria-label="Vaulytica home"', () => {

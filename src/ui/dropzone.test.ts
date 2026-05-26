@@ -76,14 +76,22 @@ describe("bindDropzone", () => {
     document.body.removeChild(dz);
   });
 
-  it("Enter triggers the file picker click", () => {
+  it("injects a visually-hidden file input with an aria-label as the keyboard entry point", () => {
     const dz = document.createElement("div");
     document.body.appendChild(dz);
     bindDropzone(dz, { onFile: () => {} });
-    const input = dz.querySelector<HTMLInputElement>("input[type=file]")!;
-    const clickSpy = vi.spyOn(input, "click");
-    dz.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
-    expect(clickSpy).toHaveBeenCalledTimes(1);
+    const input = dz.querySelector<HTMLInputElement>("input[type=file]:not([webkitdirectory])")!;
+    expect(input, "primary file input must exist").toBeTruthy();
+    // sr-only class keeps the input in the tab order (Enter/Space
+    // opens the native picker) without visually rendering it.
+    expect(input.className).toBe("sr-only");
+    expect(input.getAttribute("aria-label")).toMatch(/PDF|DOCX/i);
+    // The webkitdirectory sibling input is JS-driven only — out of
+    // tab order and aria-hidden so it doesn't surface as a second
+    // unlabeled file picker.
+    const dirInput = dz.querySelector<HTMLInputElement>("input[webkitdirectory]")!;
+    expect(dirInput.tabIndex).toBe(-1);
+    expect(dirInput.getAttribute("aria-hidden")).toBe("true");
     document.body.removeChild(dz);
   });
 

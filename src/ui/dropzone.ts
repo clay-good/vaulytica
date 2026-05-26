@@ -29,9 +29,15 @@
  *     enumerated `File[]` is dispatched through the same `onFiles`
  *     channel — pipeline routing is uniform.
  *
- * Accessibility: role="button" + tabindex="0" + Enter/Space activation
- * + focus-visible outline live in `site/index.html`. The handlers
- * preventDefault() on drag events so the browser doesn't navigate.
+ * Accessibility: the dropzone wrapper is a generic <div> (no role,
+ * no tabindex) so it never wraps interactive complete-state children
+ * (downloads, <details>, chip row) and trips axe's nested-interactive
+ * rule. The keyboard hook is the visually-hidden `<input type="file">`
+ * the binder injects with `class="sr-only"` and an aria-label — Tab
+ * focuses it, Enter/Space opens the native file picker, and the
+ * dropzone's `:focus-within` CSS rule paints a visible focus ring
+ * around the whole container. The handlers preventDefault() on drag
+ * events so the browser doesn't navigate.
  */
 
 export type AcceptedKind = "pdf" | "docx";
@@ -91,7 +97,13 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
   // `planBundle`.
   input.accept = ".pdf,.docx,.zip";
   input.multiple = true;
-  input.style.display = "none";
+  // Visually hidden but keyboard-focusable. The dropzone wrapper has
+  // no role/tabindex of its own; this input is the page's keyboard
+  // entry point into the analysis flow. Tab focuses it (the parent
+  // dropzone gets a `:focus-within` ring); Enter/Space opens the
+  // native file picker. The aria-label is the accessible name.
+  input.className = "sr-only";
+  input.setAttribute("aria-label", "Drop a PDF or DOCX here, or click to choose");
   dz.appendChild(input);
 
   // Secondary input wired to the folder-picker affordance (spec-v4 §8
@@ -108,6 +120,11 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
   // `#dropzone input[type="file"][webkitdirectory]` matches.
   (inputDir as unknown as { webkitdirectory: boolean }).webkitdirectory = true;
   inputDir.setAttribute("webkitdirectory", "");
+  // Out of Tab order — this input is JS-driven only (via the
+  // folder-pick button); putting it in the tab order would create a
+  // second focusable file-picker on the page with no visible label.
+  inputDir.tabIndex = -1;
+  inputDir.setAttribute("aria-hidden", "true");
   inputDir.style.display = "none";
   dz.appendChild(inputDir);
 
@@ -152,12 +169,6 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
       return n.endsWith(".pdf") || n.endsWith(".docx");
     });
     dispatch(accepted);
-  };
-  const onKey = (e: KeyboardEvent): void => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      onPick();
-    }
   };
   const onClick = (e: Event): void => {
     if (e.target === input || e.target === inputDir) return;
@@ -238,7 +249,6 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
   };
 
   dz.addEventListener("click", onClick);
-  dz.addEventListener("keydown", onKey);
   dz.addEventListener("dragenter", onDragEnter as EventListener);
   dz.addEventListener("dragover", onDragOver as EventListener);
   dz.addEventListener("dragleave", onDragLeave as EventListener);
@@ -251,7 +261,6 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
 
   return () => {
     dz.removeEventListener("click", onClick);
-    dz.removeEventListener("keydown", onKey);
     dz.removeEventListener("dragenter", onDragEnter as EventListener);
     dz.removeEventListener("dragover", onDragOver as EventListener);
     dz.removeEventListener("dragleave", onDragLeave as EventListener);

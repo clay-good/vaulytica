@@ -381,6 +381,29 @@
       .dropzone.is-dragging {
         border-color: var(--accent);
       }
+      /* Show a focus ring on the dropzone when the visually-hidden
+         file-input child receives keyboard focus (Tab). Without
+         :focus-within sighted keyboard users would have no indication
+         that the dropzone is the activatable target. */
+      .dropzone:focus-within {
+        border-color: var(--accent);
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+      /* Accessible visually-hidden helper (WCAG 4.1.2 escape hatch).
+         Removes from layout but keeps in the accessibility tree and
+         the Tab order. */
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
       .dropzone[data-state="analyzing"],
       .dropzone[data-state="complete"],
       .dropzone[data-state="error"] {
@@ -1132,14 +1155,17 @@
           Drop something on me.
         </p>
 
-        <div
-          class="dropzone"
-          id="dropzone"
-          role="button"
-          tabindex="0"
-          aria-labelledby="dropzone-title dropzone-sub"
-          aria-label="Drop a PDF or DOCX here, or click to choose"
-        >
+        <!--
+          The dropzone is a generic div (no role / no tabindex). The
+          keyboard-focusable element is the visually-hidden file-input
+          that bindDropzone() injects with `sr-only` styling and an
+          aria-label — Tab → input → Enter/Space opens the native
+          file picker. This avoids axe's nested-interactive rule
+          firing on the complete-state controls (downloads,
+          disclosure widget, chip row) the dropzone hosts after
+          analysis.
+        -->
+        <div class="dropzone" id="dropzone">
           <span class="icon" aria-hidden="true">
             <svg viewBox="0 0 24 24">
               <path d="M12 3v12"></path>

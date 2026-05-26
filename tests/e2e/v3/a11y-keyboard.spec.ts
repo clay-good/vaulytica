@@ -36,23 +36,30 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const BAA_FIXTURE = join(__dirname, "baa-minimal-pass.docx");
 
-test("dropzone is keyboard-reachable and operates on Enter", async ({ page }) => {
+test("dropzone is keyboard-reachable via its hidden file input", async ({ page }) => {
   await page.goto("/");
-  const dz = page.locator("#dropzone");
-  await expect(dz).toBeVisible();
-  await expect(dz).toHaveAttribute("role", "button");
-  await expect(dz).toHaveAttribute("tabindex", /^-?\d+$/);
+  // The dropzone wrapper is a generic <div> (no role / no tabindex)
+  // so it never wraps interactive children in the complete state.
+  // The keyboard entry point is the bindDropzone-injected
+  // visually-hidden <input type="file"> with an aria-label. Tab
+  // through the page until that input gets focus.
+  await expect(page.locator("#dropzone")).toBeVisible();
+  const fileInput = page.locator(
+    '#dropzone input[type="file"]:not([webkitdirectory])',
+  );
+  await expect(fileInput).toHaveCount(1);
 
-  // Tab until we land on the dropzone. The page has a small number of
-  // tab stops; a sane upper bound prevents infinite loops if focus
-  // routing changes in a future build.
-  let onDz = false;
+  let onInput = false;
   for (let i = 0; i < 50; i++) {
     await page.keyboard.press("Tab");
-    onDz = await dz.evaluate((el) => el === document.activeElement);
-    if (onDz) break;
+    onInput = await fileInput.evaluate((el) => el === document.activeElement);
+    if (onInput) break;
   }
-  expect(onDz, "dropzone must be reachable via Tab in ≤ 50 stops").toBe(true);
+  expect(onInput, "dropzone file input must be reachable via Tab in ≤ 50 stops").toBe(true);
+
+  // Sanity: the input also carries an aria-label so screen readers
+  // announce the file-type expectation.
+  await expect(fileInput).toHaveAttribute("aria-label", /PDF|DOCX/i);
 });
 
 test("theme toggle is keyboard-operable", async ({ page }) => {
