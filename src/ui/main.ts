@@ -231,18 +231,26 @@ async function runBundle(dz: HTMLElement, files: File[]): Promise<void> {
       .filter((f) => f !== "unknown")
       .map((f) => V3_FAMILY_LABELS[f] ?? f);
     // Per-doc summary cards (spec-v3 §62). Each card surfaces the
-    // filename, detected family (when known), matched playbook, and
-    // per-doc finding totals so multi-doc users can sanity-check what
-    // the bundle is reporting before opening the consolidated DOCX.
-    const documentSummaries = result.documents.map((d) => ({
-      filename: d.filename,
-      family_label:
-        d.v3_detection.family === "unknown"
-          ? undefined
-          : V3_FAMILY_LABELS[d.v3_detection.family] ?? d.v3_detection.family,
-      playbook_name: d.playbook.name,
-      counts: countsBySeverity(d.run),
-    }));
+    // filename, detected family (when known), matched playbook,
+    // per-doc finding totals, and two download buttons that save
+    // that document's own DOCX / JSON report so multi-doc users can
+    // drill into a single file without re-running the analysis.
+    const documentSummaries = result.documents.map((d) => {
+      const stem = baseFilename(d.filename);
+      return {
+        filename: d.filename,
+        family_label:
+          d.v3_detection.family === "unknown"
+            ? undefined
+            : V3_FAMILY_LABELS[d.v3_detection.family] ?? d.v3_detection.family,
+        playbook_name: d.playbook.name,
+        counts: countsBySeverity(d.run),
+        docx_blob: d.docx_blob,
+        json_blob: d.json_blob,
+        docx_filename: `${stem}-vaulytica.docx`,
+        json_filename: `${stem}-vaulytica.json`,
+      };
+    });
     setState(dz, {
       kind: "bundle-complete",
       document_count: result.documents.length,

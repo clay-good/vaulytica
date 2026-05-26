@@ -70,17 +70,24 @@ export type DropzoneState =
        * Per-document summary cards (spec-v3 §62: "the UI shows a small
        * card per document with detected type and selected playbook").
        * When provided, the bundle-complete state renders an `<ul>` of
-       * informational `<li>` cards under the counts row, each
-       * surfacing filename + family label + playbook name +
-       * per-doc finding totals. Cards are non-interactive (the bundle
-       * DOCX is the single download artifact); a future revision could
-       * make them clickable to expose per-doc DOCX downloads.
+       * `<li>` cards under the counts row, each surfacing filename +
+       * family label + playbook name + per-doc finding totals.
+       *
+       * Each card also exposes two download buttons — `docx_blob` /
+       * `json_blob` — so users can grab a single document's report
+       * without re-running the analysis. The bundle-level Download
+       * Consolidated Report (Word) remains the primary affordance;
+       * per-doc downloads are the secondary, "drill in" path.
        */
       documents?: ReadonlyArray<{
         filename: string;
         family_label?: string;
         playbook_name: string;
         counts: { critical: number; warning: number; info: number };
+        docx_blob: Blob;
+        json_blob: Blob;
+        docx_filename: string;
+        json_filename: string;
       }>;
     }
   | { kind: "error"; message: string };
@@ -210,11 +217,13 @@ function countsHtml(counts: { critical: number; warning: number; info: number })
 
 /**
  * Render per-document summary cards inside the bundle-complete state
- * (spec-v3 §62). Cards are informational `<li>` elements — they show
- * filename / detected family / matched playbook / per-doc finding
- * counts, but are not interactive (the bundle DOCX is the single
- * download artifact). The container `<ul>` is `hidden` when no
- * document list is provided so existing callers / tests stay green.
+ * (spec-v3 §62). Each `<li>` card shows filename / detected family /
+ * matched playbook / per-doc finding counts, plus two download
+ * buttons that save the per-doc DOCX report and JSON. Native
+ * `<button>` elements keep keyboard accessibility free (Tab focuses
+ * each, Enter/Space activates). The container `<ul>` is `hidden`
+ * when no document list is provided so existing callers / tests
+ * stay green.
  */
 function renderMultiDocCards(
   dz: HTMLElement,
@@ -224,6 +233,10 @@ function renderMultiDocCards(
         family_label?: string;
         playbook_name: string;
         counts: { critical: number; warning: number; info: number };
+        docx_blob: Blob;
+        json_blob: Blob;
+        docx_filename: string;
+        json_filename: string;
       }>
     | undefined,
 ): void {
@@ -236,7 +249,7 @@ function renderMultiDocCards(
   }
   list.hidden = false;
   list.innerHTML = documents
-    .map((d) => {
+    .map((d, i) => {
       const family = d.family_label
         ? `<span class="multi-doc-card-family">${escapeHtml(d.family_label)}</span>`
         : "";
@@ -247,9 +260,42 @@ function renderMultiDocCards(
         <div class="multi-doc-card-filename">${escapeHtml(d.filename)}</div>
         <div class="multi-doc-card-meta">${family}${family ? " · " : ""}${playbook}</div>
         <div class="multi-doc-card-counts">${countsLine}</div>
+        <div class="multi-doc-card-actions">
+          <button class="btn-link" type="button" data-role="card-docx-download" data-card-index="${i}" aria-label="Download Word report for ${escapeHtml(d.filename)}">Word</button>
+          <button class="btn-link" type="button" data-role="card-json-download" data-card-index="${i}" aria-label="Download JSON for ${escapeHtml(d.filename)}">JSON</button>
+        </div>
       </li>`;
     })
     .join("");
+
+  // Wire the per-card download buttons. Status is reported through
+  // the shared `[data-role="download-status"]` element rendered in
+  // the bundle-complete template (aria-live="polite").
+  const status = select<HTMLElement>(dz, "download-status");
+  list.querySelectorAll<HTMLButtonElement>('[data-role="card-docx-download"]').forEach(
+    (btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const idx = Number(btn.getAttribute("data-card-index"));
+        const doc = documents[idx];
+        if (doc && status) {
+          void saveBlob(doc.docx_blob, doc.docx_filename, status);
+        }
+      });
+    },
+  );
+  list.querySelectorAll<HTMLButtonElement>('[data-role="card-json-download"]').forEach(
+    (btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const idx = Number(btn.getAttribute("data-card-index"));
+        const doc = documents[idx];
+        if (doc && status) {
+          void saveBlob(doc.json_blob, doc.json_filename, status);
+        }
+      });
+    },
+  );
 }
 
 function escapeHtml(s: string): string {

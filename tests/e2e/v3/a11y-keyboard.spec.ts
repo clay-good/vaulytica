@@ -30,6 +30,7 @@
  */
 
 import { test, expect } from "@playwright/test";
+import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -131,13 +132,46 @@ test("v3 compliance-frame chip row is keyboard-operable", async ({ page }) => {
   expect(after, "chip must flip aria-checked on Space").not.toBe(before);
 });
 
-// Per spec-v3 §62 the per-doc summary cards are intentionally
-// informational ("a small card per document with detected type and
-// selected playbook") — there is no per-card action surface, so giving
-// them a tabindex would put non-interactive elements into the tab order
-// (a WCAG 2.4.3 violation). The previous forward-compatible probe is
-// removed; if a future revision makes cards clickable (e.g. to expose
-// per-doc DOCX downloads), reinstate a focus-assertion test here.
-test.skip("v3 multi-doc cards are intentionally non-interactive (spec-v3 §62)", () => {
-  /* documentation-only */
+test("multi-doc card download buttons are keyboard-operable", async ({ page }) => {
+  const dir = join(__dirname, "..", "..", "fixtures", "contracts");
+  const A = join(dir, "mutual-nda.docx");
+  const B = join(dir, "bad-nda.docx");
+  test.skip(
+    !existsSync(A) || !existsSync(B),
+    `bundle fixtures missing: ${A} / ${B}`,
+  );
+
+  await page.addInitScript(() => {
+    delete (window as { showSaveFilePicker?: unknown }).showSaveFilePicker;
+  });
+  await page.goto("/");
+
+  const fileInput = page.locator(
+    '#dropzone input[type="file"]:not([webkitdirectory])',
+  );
+  await fileInput.setInputFiles([A, B]);
+
+  // Wait for bundle-complete; the per-doc cards land alongside the
+  // consolidated download button.
+  await page.locator('[data-role="bundle-download"]').waitFor({
+    state: "visible",
+    timeout: 60_000,
+  });
+
+  const cards = page.locator('[data-role="multi-doc-card"]');
+  await expect(cards).toHaveCount(2);
+
+  // Each card exposes a Word + JSON download button (native <button>,
+  // so keyboard-focusable by default). Focus the first card's Word
+  // button via Tab from the page root and confirm it has the right
+  // aria-label.
+  const firstWordBtn = cards
+    .nth(0)
+    .locator('[data-role="card-docx-download"]');
+  await firstWordBtn.focus();
+  const isFocused = await firstWordBtn.evaluate((el) => el === document.activeElement);
+  expect(isFocused, "card Word button must be programmatically focusable").toBe(true);
+
+  const ariaLabel = await firstWordBtn.getAttribute("aria-label");
+  expect(ariaLabel ?? "").toMatch(/Word/i);
 });

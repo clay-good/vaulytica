@@ -523,6 +523,18 @@
         font-size: 12px;
         margin-top: 4px;
       }
+      .multi-doc-card-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 6px;
+      }
+      .multi-doc-card-actions .btn-link {
+        margin-top: 0;
+        font-size: 13px;
+        /* WCAG 2.5.8: meet 24x24 minimum target size. */
+        min-height: 32px;
+        padding: 4px 8px;
+      }
       /* Compliance-frame chip row (spec-v3 §61 / Step 33 UI hookup).
          Each chip is a toggle (role="switch"). WCAG 2.5.8 (AA)
          requires interactive targets to be ≥ 24×24 CSS px — set an

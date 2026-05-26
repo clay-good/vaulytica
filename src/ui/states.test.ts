@@ -1,5 +1,39 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { renderState, select } from "./states.js";
+
+/** Small fixture helper — supplies the per-doc blob/filename fields
+ *  required by the bundle-complete `documents` array so individual
+ *  tests can focus on the field(s) they exercise. */
+function cardDoc(overrides: {
+  filename: string;
+  family_label?: string;
+  playbook_name: string;
+  counts: { critical: number; warning: number; info: number };
+  docx_blob?: Blob;
+  json_blob?: Blob;
+  docx_filename?: string;
+  json_filename?: string;
+}): {
+  filename: string;
+  family_label?: string;
+  playbook_name: string;
+  counts: { critical: number; warning: number; info: number };
+  docx_blob: Blob;
+  json_blob: Blob;
+  docx_filename: string;
+  json_filename: string;
+} {
+  return {
+    filename: overrides.filename,
+    family_label: overrides.family_label,
+    playbook_name: overrides.playbook_name,
+    counts: overrides.counts,
+    docx_blob: overrides.docx_blob ?? new Blob(["docx"]),
+    json_blob: overrides.json_blob ?? new Blob(["{}"]),
+    docx_filename: overrides.docx_filename ?? `${overrides.filename}.docx`,
+    json_filename: overrides.json_filename ?? `${overrides.filename}.json`,
+  };
+}
 
 describe("renderState", () => {
   it("renders empty state with the icon + sub", () => {
@@ -348,17 +382,17 @@ describe("renderState", () => {
       bundle_docx_filename: "x.docx",
       bundle_json_filename: "x.json",
       documents: [
-        {
+        cardDoc({
           filename: "msa.docx",
           family_label: "MSA",
           playbook_name: "MSA (Customer-Deep)",
           counts: { critical: 1, warning: 0, info: 2 },
-        },
-        {
+        }),
+        cardDoc({
           filename: "dpa.docx",
           playbook_name: "DPA (Controller → Processor)",
           counts: { critical: 0, warning: 0, info: 1 },
-        },
+        }),
       ],
     });
     const list = select<HTMLUListElement>(dz, "multi-doc-cards")!;
@@ -374,6 +408,113 @@ describe("renderState", () => {
     // family-label line is omitted when undefined, so "·" separator absent
     // before the playbook name on that card.
     expect(cards[1]!.querySelector(".multi-doc-card-meta")?.textContent).not.toMatch(/·/);
+    // Each card exposes per-doc Word + JSON download buttons with
+    // aria-labels that name the document.
+    const wordBtns = list.querySelectorAll<HTMLButtonElement>(
+      '[data-role="card-docx-download"]',
+    );
+    const jsonBtns = list.querySelectorAll<HTMLButtonElement>(
+      '[data-role="card-json-download"]',
+    );
+    expect(wordBtns.length).toBe(2);
+    expect(jsonBtns.length).toBe(2);
+    expect(wordBtns[0]!.getAttribute("aria-label")).toMatch(/Word.*msa\.docx/);
+    expect(jsonBtns[1]!.getAttribute("aria-label")).toMatch(/JSON.*dpa\.docx/);
+  });
+
+  it("clicking a card download button saves that doc's per-doc blob", async () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    const msaDocx = new Blob(["msa-docx"], { type: "application/octet-stream" });
+    const dpaJson = new Blob(['{"x":1}'], { type: "application/json" });
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 2,
+      counts: { critical: 0, warning: 0, info: 0 },
+      cross_doc_findings: 0,
+      bundle_docx_blob: new Blob(["bundle-docx"]),
+      bundle_json_blob: new Blob(["{}"]),
+      bundle_docx_filename: "bundle.docx",
+      bundle_json_filename: "bundle.json",
+      documents: [
+        cardDoc({
+          filename: "msa.docx",
+          playbook_name: "MSA",
+          counts: { critical: 0, warning: 0, info: 0 },
+          docx_blob: msaDocx,
+          docx_filename: "msa-vaulytica.docx",
+        }),
+        cardDoc({
+          filename: "dpa.docx",
+          playbook_name: "DPA",
+          counts: { critical: 0, warning: 0, info: 0 },
+          json_blob: dpaJson,
+          json_filename: "dpa-vaulytica.json",
+        }),
+      ],
+    });
+    const seen: { download: string }[] = [];
+    const origClick = HTMLAnchorElement.prototype.click;
+    HTMLAnchorElement.prototype.click = function () {
+      seen.push({ download: this.download });
+    };
+    try {
+      const wordBtns = dz.querySelectorAll<HTMLButtonElement>(
+        '[data-role="card-docx-download"]',
+      );
+      const jsonBtns = dz.querySelectorAll<HTMLButtonElement>(
+        '[data-role="card-json-download"]',
+      );
+      wordBtns[0]!.click(); // msa Word
+      jsonBtns[1]!.click(); // dpa JSON
+      for (let i = 0; i < 5; i++) await Promise.resolve();
+      expect(seen.map((s) => s.download)).toEqual([
+        "msa-vaulytica.docx",
+        "dpa-vaulytica.json",
+      ]);
+      expect(select(dz, "download-status")!.textContent).toMatch(/dpa-vaulytica\.json/);
+    } finally {
+      HTMLAnchorElement.prototype.click = origClick;
+      document.body.removeChild(dz);
+    }
+  });
+
+  it("card download click does not bubble to the dropzone (no re-open picker)", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    const onDzClick = vi.fn();
+    dz.addEventListener("click", onDzClick);
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 1,
+      counts: { critical: 0, warning: 0, info: 0 },
+      cross_doc_findings: 0,
+      bundle_docx_blob: new Blob(["b"]),
+      bundle_json_blob: new Blob(["{}"]),
+      bundle_docx_filename: "b.docx",
+      bundle_json_filename: "b.json",
+      documents: [
+        cardDoc({
+          filename: "a.docx",
+          playbook_name: "X",
+          counts: { critical: 0, warning: 0, info: 0 },
+        }),
+      ],
+    });
+    const origClick = HTMLAnchorElement.prototype.click;
+    HTMLAnchorElement.prototype.click = function () {
+      /* swallow */
+    };
+    try {
+      const btn = dz.querySelector<HTMLButtonElement>(
+        '[data-role="card-docx-download"]',
+      )!;
+      btn.click();
+      expect(onDzClick).not.toHaveBeenCalled();
+    } finally {
+      HTMLAnchorElement.prototype.click = origClick;
+      document.body.removeChild(dz);
+    }
   });
 
   it("bundle-complete hides multi-doc card list when no documents provided", () => {
@@ -403,15 +544,19 @@ describe("renderState", () => {
       bundle_docx_filename: "x.docx",
       bundle_json_filename: "x.json",
       documents: [
-        {
+        cardDoc({
           filename: "evil<script>.docx",
           playbook_name: "Playbook & Co.",
           counts: { critical: 0, warning: 0, info: 0 },
-        },
+        }),
       ],
     });
     const card = dz.querySelector<HTMLLIElement>('[data-role="multi-doc-card"]')!;
-    expect(card.innerHTML).not.toContain("<script>");
+    // No <script> element ever lands in the DOM. Attribute values
+    // (e.g. aria-label) may serialize the literal "<script>" text
+    // back into HTML, but that's a payload-in-an-attribute, not a
+    // tag — the parser never executes it.
+    expect(card.querySelector("script")).toBeNull();
     expect(card.querySelector(".multi-doc-card-filename")!.textContent).toBe(
       "evil<script>.docx",
     );
