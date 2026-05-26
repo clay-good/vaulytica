@@ -269,6 +269,25 @@ describe("buildBundleJson — rejected entries", () => {
   });
 });
 
+describe("buildBundleJson — consistency_enabled", () => {
+  it("surfaces consistency_enabled=false when the user disabled the toggle", async () => {
+    const input: BundleReportInput = { ...makeInput(), consistency_enabled: false };
+    const out = await buildBundleJson(input);
+    expect(out.consistency_enabled).toBe(false);
+  });
+
+  it("omits consistency_enabled when explicitly true (back-compat)", async () => {
+    const input: BundleReportInput = { ...makeInput(), consistency_enabled: true };
+    const out = await buildBundleJson(input);
+    expect(out.consistency_enabled).toBeUndefined();
+  });
+
+  it("omits consistency_enabled when the field is absent (back-compat)", async () => {
+    const out = await buildBundleJson(makeInput());
+    expect(out.consistency_enabled).toBeUndefined();
+  });
+});
+
 describe("buildBundleZip", () => {
   it("packages consolidated-report.docx + bundle.json", async () => {
     const blob = await buildBundleZip(makeInput());

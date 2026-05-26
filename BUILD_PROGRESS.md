@@ -25,6 +25,17 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v3 bundle JSON surfaces consistency_enabled=false (spec-v3 §62 follow-up) (2026-05-26) — ✅ complete
+
+Mirrors the DOCX-cover "disabled by user" treatment landed in the previous commit so a programmatic consumer of the bundle JSON can also distinguish "user explicitly disabled the cross-document consistency toggle" from "the consistency pass ran and found zero issues". Without this signal, both states serialized to the same `cross_doc_findings: []` array.
+
+- [`src/report/bundle.ts`](src/report/bundle.ts): `BundleJson` gains an optional `consistency_enabled?: false`. `buildBundleJson` sets the field only when `input.consistency_enabled === false`; otherwise the field is omitted, preserving prior behavior for callers that don't set the input field or pass `true` (matches the same back-compat shape as the existing optional `rejected` field).
+- No pipeline change needed — `runBundleReport` already threads `consistency_enabled` into the `BundleReportInput` it passes to both `buildBundleDocxReport` and `buildBundleJsonBlob`, so the JSON output now picks up the same signal the DOCX already does.
+
+Tests in [`src/report/bundle.test.ts`](src/report/bundle.test.ts) (3 new): (1) `consistency_enabled: false` → JSON `consistency_enabled === false`; (2) `consistency_enabled: true` → field omitted (back-compat); (3) field absent → omitted (back-compat).
+
+`npm run typecheck && lint && test && build` all green.
+
 ### v3 bundle DOCX cover + intro reflect consistency-toggle state (2026-05-26) — ✅ complete
 
 A reader opening the bundle Word report alone (without the page open) previously had no way to tell whether the user had turned off the cross-doc consistency toggle (spec-v3 §62) — they'd just see "0 cross-document findings" and wonder if the bundle was clean or the pass was skipped. This change makes the report self-documenting.

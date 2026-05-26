@@ -115,6 +115,15 @@ export type BundleJson = {
   engine_version: string;
   /** Spec-v4 §11 transparency: the planner-rejected entries, when present. */
   rejected?: RejectedBundleEntry[];
+  /**
+   * Spec-v3 §62: when the user explicitly disabled the cross-document
+   * consistency toggle, surface that in the JSON output too so a
+   * programmatic consumer can distinguish "user disabled consistency"
+   * from "consistency ran and found zero issues". Omitted (back-compat)
+   * when the caller did not set `consistency_enabled` on the input or
+   * set it to `true`.
+   */
+  consistency_enabled?: false;
 };
 
 /**
@@ -142,6 +151,9 @@ export async function buildBundleJson(input: BundleReportInput): Promise<BundleJ
   };
   if (input.rejected && input.rejected.length > 0) {
     out.rejected = input.rejected.map((r) => ({ filename: r.filename, reason: r.reason }));
+  }
+  if (input.consistency_enabled === false) {
+    out.consistency_enabled = false;
   }
   return out;
 }
