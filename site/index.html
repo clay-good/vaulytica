@@ -535,6 +535,47 @@
         min-height: 32px;
         padding: 4px 8px;
       }
+      /* Bundle-complete "Skipped" list (spec-v3 §62 follow-up). When
+         the planner rejects files (unsupported extension, oversized),
+         the UI enumerates them under the cross-doc summary so the
+         user understands why their drop yielded fewer cards than
+         files. Kept visually subdued — informational, not alarming. */
+      .bundle-rejected {
+        margin-top: 12px;
+        text-align: left;
+        max-width: 56ch;
+      }
+      .bundle-rejected-heading {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 4px;
+      }
+      .bundle-rejected-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .bundle-rejected-item {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        padding: 4px 0;
+        border-top: 1px solid var(--line);
+        font-size: 12px;
+      }
+      .bundle-rejected-item:first-child {
+        border-top: 0;
+      }
+      .bundle-rejected-filename {
+        font-family: var(--font-mono);
+        color: var(--body);
+      }
+      .bundle-rejected-reason {
+        color: var(--muted);
+      }
       /* Cross-document consistency toggle (spec-v3 §62). Sits between
          the per-bundle counts and the cross-doc summary line; default
          on. The label wraps the checkbox so click-on-label toggles. */

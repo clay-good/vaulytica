@@ -442,6 +442,64 @@ describe("renderState", () => {
     expect(select<HTMLLabelElement>(dz, "cross-doc-toggle")!.hidden).toBe(true);
   });
 
+  it("bundle-complete renders the Skipped list when files were rejected", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 2,
+      counts: { critical: 0, warning: 0, info: 0 },
+      cross_doc_findings: 0,
+      bundle_docx_blob: new Blob(["docx"]),
+      bundle_json_blob: new Blob(["{}"]),
+      bundle_docx_filename: "x.docx",
+      bundle_json_filename: "x.json",
+      rejected: [
+        { filename: "README.md", reason: "Vaulytica accepts .pdf and .docx — not \"README.md\"." },
+        { filename: "scan.tiff", reason: "Vaulytica accepts .pdf and .docx — not \"scan.tiff\"." },
+      ],
+    });
+    const wrap = select(dz, "bundle-rejected")!;
+    expect(wrap.hidden).toBe(false);
+    const items = dz.querySelectorAll(".bundle-rejected-item");
+    expect(items.length).toBe(2);
+    expect(items[0]!.textContent).toMatch(/README\.md/);
+    expect(items[0]!.textContent).toMatch(/Vaulytica accepts/);
+    expect(items[1]!.textContent).toMatch(/scan\.tiff/);
+  });
+
+  it("bundle-complete hides the Skipped list when nothing was rejected", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 2,
+      counts: { critical: 0, warning: 0, info: 0 },
+      cross_doc_findings: 0,
+      bundle_docx_blob: new Blob(["docx"]),
+      bundle_json_blob: new Blob(["{}"]),
+      bundle_docx_filename: "x.docx",
+      bundle_json_filename: "x.json",
+    });
+    expect(select(dz, "bundle-rejected")!.hidden).toBe(true);
+  });
+
+  it("bundle-complete escapes HTML in rejected filenames/reasons", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 2,
+      counts: { critical: 0, warning: 0, info: 0 },
+      cross_doc_findings: 0,
+      bundle_docx_blob: new Blob(["docx"]),
+      bundle_json_blob: new Blob(["{}"]),
+      bundle_docx_filename: "x.docx",
+      bundle_json_filename: "x.json",
+      rejected: [{ filename: "<script>x</script>.txt", reason: "<bad>" }],
+    });
+    const item = dz.querySelector(".bundle-rejected-item")!;
+    expect(item.innerHTML).not.toContain("<script>");
+    expect(item.textContent).toMatch(/<script>x<\/script>\.txt/);
+  });
+
   it("bundle-complete shows detected families when provided", () => {
     const dz = document.createElement("div");
     renderState(dz, {

@@ -25,6 +25,18 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v3 bundle-complete "Skipped" list for planner-rejected files (2026-05-26) — ✅ complete
+
+`runBundlePipeline` already returns `rejected: Array<{ filename, reason }>` from `planBundle` (unsupported extension, oversized file, etc.), but the UI was silently swallowing it — a user who dropped a folder containing a `.txt` or a `README.md` saw two cards instead of three with no explanation. This change surfaces those rejections directly under the cross-doc summary in the bundle-complete state.
+
+- [`src/ui/states.ts`](src/ui/states.ts): `DropzoneState.bundle-complete` gains `rejected?: ReadonlyArray<{ filename: string; reason: string }>`. New template block `[data-role="bundle-rejected"]` (hidden by default) with a "Skipped" heading + `[data-role="bundle-rejected-list"]` `<ul>`. New `renderRejectedFiles` helper enumerates each entry as `<li>` with `bundle-rejected-filename` + `bundle-rejected-reason` spans. HTML-escaped via the existing `escapeHtml` helper so a hostile filename can't inject markup.
+- [`src/ui/main.ts`](src/ui/main.ts): `runBundle` passes `result.rejected` (or `undefined` when empty) into the bundle-complete state.
+- [`site/index.html`](site/index.html): `.bundle-rejected*` CSS — subdued styling (12px, muted color, top borders between items) so the block reads as informational rather than alarming.
+
+Tests in [`src/ui/states.test.ts`](src/ui/states.test.ts) (3 new): (1) two-file rejection list renders both entries with filename + reason text; (2) when no `rejected` field is passed, the Skipped block stays `hidden`; (3) HTML-escaping defends against `<script>`-in-filename.
+
+`npm run typecheck && lint && test && build` all green; **2169/2169 tests + 2 skips**.
+
 ### v3 empty-state copy + structured error messages hookup (spec-v3 §63) (2026-05-26) — ✅ complete
 
 Wires the v3 `EMPTY_STATE_COPY` constants (in [`src/ui/v3/copy.ts`](src/ui/v3/copy.ts), already exported but never rendered) into both the runtime renderer and the static HTML, and exposes the `V3_ERROR_COPY` lookup through a new optional `code` field on the `error` state. Closes the last spec-v3 §63 affordance: "Updated empty-state copy mentions the new families. Updated error states cover regulator-specific failures."

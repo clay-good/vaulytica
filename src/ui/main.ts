@@ -272,6 +272,7 @@ async function runBundle(
       bundle_json_filename: "vaulytica-bundle.json",
       detected_families: detectedFamilies.length > 0 ? detectedFamilies : undefined,
       documents: documentSummaries,
+      rejected: result.rejected.length > 0 ? result.rejected : undefined,
       cross_doc_active: crossDocActive,
       // Spec-v3 §62 toggle: when the user flips the checkbox, re-run
       // the bundle with the new cross-doc setting. This re-ingests

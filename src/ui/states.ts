@@ -104,6 +104,16 @@ export type DropzoneState =
        */
       cross_doc_active?: boolean;
       on_consistency_toggle?: (active: boolean) => void;
+      /**
+       * Files in the dropped bundle that the planner refused to ingest
+       * (unsupported extension, oversized, etc.). When non-empty, the
+       * bundle-complete state renders a small "Skipped" list under the
+       * counts row so the user understands why their file count went
+       * down. Each entry is `{ filename, reason }`; the reason comes
+       * straight from `planBundle` / `rejectionForFilename` so the
+       * user-facing string is already polished.
+       */
+      rejected?: ReadonlyArray<{ filename: string; reason: string }>;
     }
   | {
       kind: "error";
@@ -153,6 +163,10 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     </label>
     <div class="dropzone-sub" data-role="cross-doc-summary"></div>
     <div class="dropzone-sub bundle-detected-families" data-role="bundle-detected-families" hidden></div>
+    <div class="bundle-rejected" data-role="bundle-rejected" hidden>
+      <div class="bundle-rejected-heading">Skipped</div>
+      <ul class="bundle-rejected-list" data-role="bundle-rejected-list" aria-label="Files skipped from this bundle"></ul>
+    </div>
     <ul class="multi-doc-cards" data-role="multi-doc-cards" aria-label="Per-document summary" hidden></ul>
     <button class="btn btn-primary" type="button" data-role="bundle-download">Download consolidated report (Word)</button>
     <button class="btn-link" type="button" data-role="bundle-json-download">Download bundle data (JSON)</button>
@@ -236,6 +250,7 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
       detectedEl.hidden = true;
       detectedEl.textContent = "";
     }
+    renderRejectedFiles(dz, state.rejected);
     renderMultiDocCards(dz, state.documents);
     const docxBtn = select<HTMLButtonElement>(dz, "bundle-download")!;
     const jsonBtn = select<HTMLButtonElement>(dz, "bundle-json-download")!;
@@ -360,6 +375,34 @@ function renderMultiDocCards(
       });
     },
   );
+}
+
+/**
+ * Render the "Skipped" block inside the bundle-complete state. The
+ * planner already returns a polished per-entry reason string
+ * (`rejectionForFilename`, "exceeds the 50 MB per-file limit", etc.),
+ * so the UI just needs to enumerate them. Hidden when nothing was
+ * rejected so the surface stays quiet for the common case.
+ */
+function renderRejectedFiles(
+  dz: HTMLElement,
+  rejected: ReadonlyArray<{ filename: string; reason: string }> | undefined,
+): void {
+  const wrap = select<HTMLElement>(dz, "bundle-rejected");
+  const list = select<HTMLUListElement>(dz, "bundle-rejected-list");
+  if (!wrap || !list) return;
+  if (!rejected || rejected.length === 0) {
+    wrap.hidden = true;
+    list.innerHTML = "";
+    return;
+  }
+  wrap.hidden = false;
+  list.innerHTML = rejected
+    .map(
+      (r) =>
+        `<li class="bundle-rejected-item"><span class="bundle-rejected-filename">${escapeHtml(r.filename)}</span><span class="bundle-rejected-reason">${escapeHtml(r.reason)}</span></li>`,
+    )
+    .join("");
 }
 
 function escapeHtml(s: string): string {
