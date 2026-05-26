@@ -297,10 +297,42 @@ describe("buildBundleJson — per-document metadata (spec-v3 §60 follow-up)", (
       doc_id: "a",
       source_file_name: "a.docx",
       detected_family: "Mutual NDA",
+      playbook_id: "mutual-nda",
+      playbook_match_confidence: 0.9,
       result_hash: out.runs[0]!.result_hash,
     });
     expect(out.documents![1]!.doc_id).toBe("b");
     expect(out.documents![1]!.detected_family).toBe("Mutual NDA");
+  });
+
+  it("surfaces playbook_id + playbook_match_confidence on every documents[] entry", async () => {
+    const out = await buildBundleJson(makeInput());
+    expect(out.documents).toBeDefined();
+    for (const entry of out.documents!) {
+      expect(entry.playbook_id).toBe("mutual-nda");
+      expect(entry.playbook_match_confidence).toBe(0.9);
+    }
+  });
+
+  it("omits playbook_match_confidence when the run did not record one", async () => {
+    const noConfidence: BundleReportInput = {
+      ...makeInput(),
+      documents: [
+        {
+          ...bundleDoc("a", "a"),
+          run: {
+            ...makeRun("a.docx", "a", []),
+            playbook_match_confidence: undefined,
+          },
+        },
+        bundleDoc("b", "b"),
+      ],
+    };
+    const out = await buildBundleJson(noConfidence);
+    expect(out.documents).toBeDefined();
+    expect(out.documents![0]!.playbook_id).toBe("mutual-nda");
+    expect(out.documents![0]!.playbook_match_confidence).toBeUndefined();
+    expect(out.documents![1]!.playbook_match_confidence).toBe(0.9);
   });
 
   it("omits documents[] (back-compat) when no document carries a detected_family", async () => {

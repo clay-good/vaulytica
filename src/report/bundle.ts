@@ -118,6 +118,19 @@ export type BundleJsonDocument = {
   source_file_name: string;
   /** Same display label the bundle DOCX uses in per-document headings. */
   detected_family?: string;
+  /**
+   * Matched v2 playbook id (same value the bundle DOCX prints under
+   * "Playbook:"). Always present when `documents[]` is emitted so a
+   * programmatic consumer can group runs by playbook without indexing
+   * back into `runs[i].playbook_id`.
+   */
+  playbook_id: string;
+  /**
+   * Matcher confidence in `[0, 1]`, when the runner recorded one.
+   * Mirrors `EngineRun.playbook_match_confidence`; omitted when the run
+   * did not carry a confidence (e.g. forced playbook with no match).
+   */
+  playbook_match_confidence?: number;
   /** Echo of the per-doc result hash — keys this record to the run. */
   result_hash: string;
 };
@@ -187,10 +200,14 @@ export async function buildBundleJson(input: BundleReportInput): Promise<BundleJ
       const entry: BundleJsonDocument = {
         doc_id: d.doc_id,
         source_file_name: d.source_file_name,
+        playbook_id: d.run.playbook_id,
         result_hash: d.run.result_hash,
       };
       if (typeof d.detected_family === "string" && d.detected_family.length > 0) {
         entry.detected_family = d.detected_family;
+      }
+      if (typeof d.run.playbook_match_confidence === "number") {
+        entry.playbook_match_confidence = d.run.playbook_match_confidence;
       }
       return entry;
     });

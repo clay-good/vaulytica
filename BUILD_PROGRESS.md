@@ -25,6 +25,17 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v3 bundle JSON surfaces per-document playbook_id + playbook_match_confidence (spec-v3 §60 follow-up) (2026-05-26) — ✅ complete
+
+Completes the per-document JSON metadata surface started by the prior two §60 follow-ups (per-document `detected_family`, per-document `result_hash`): the matched playbook id (and its matcher confidence, when present) now ride on every `BundleJsonDocument` entry too. Without this, a programmatic consumer of the bundle JSON had to index back into `runs[i].playbook_id` to learn which playbook each document was analyzed against — fine when iterating in lockstep, fragile when grouping by playbook or building a UI table keyed on doc_id.
+
+- [`src/report/bundle.ts`](src/report/bundle.ts): `BundleJsonDocument` gains a required `playbook_id: string` (always present whenever the `documents[]` array is emitted, since `EngineRun.playbook_id` is always populated by the runner) and an optional `playbook_match_confidence?: number` (mirrors the optional field on `EngineRun`; omitted when the run did not record one). The DOCX already prints `Playbook: …` in each per-document subsection heading and `… → playbook_id (confidence N)` in the audit trail, so the JSON now carries the same signal at the same granularity.
+- The `documents[]` emission gate is unchanged (still only emitted when at least one document carries a non-empty `detected_family`), so back-compat for callers that never set `detected_family` is byte-identical to the prior commit.
+
+Tests in [`src/report/bundle.test.ts`](src/report/bundle.test.ts) (2 new + 1 updated): (1) updated the exact-shape `toEqual` to include `playbook_id` + `playbook_match_confidence`; (2) every emitted entry carries both fields when present; (3) a doc whose `EngineRun.playbook_match_confidence` is `undefined` omits the field while other docs in the same bundle keep theirs.
+
+`npm run typecheck && lint && test && build` all green; **2185/2185 tests + 2 skips**.
+
 ### v3 bundle JSON surfaces per-document detected_family (spec-v3 §60 follow-up) (2026-05-26) — ✅ complete
 
 The bundle DOCX has rendered the per-document `detected_family` label in each per-doc subsection heading since the spec-v3 §62 multi-doc card work landed, but the consolidated bundle JSON only exposed the raw `EngineRun[]` — a programmatic consumer (downstream automation, CI gate, archival index) had to re-derive the family label from `runs[i].playbook_id` instead of reading the same human-readable label the DOCX already shows. This change carries the family through to the JSON output too.
