@@ -288,6 +288,49 @@ describe("buildBundleJson — consistency_enabled", () => {
   });
 });
 
+describe("buildBundleJson — per-document metadata (spec-v3 §60 follow-up)", () => {
+  it("surfaces a documents[] array with detected_family + doc_id + result_hash", async () => {
+    const out = await buildBundleJson(makeInput());
+    expect(out.documents).toBeDefined();
+    expect(out.documents).toHaveLength(2);
+    expect(out.documents![0]).toEqual({
+      doc_id: "a",
+      source_file_name: "a.docx",
+      detected_family: "Mutual NDA",
+      result_hash: out.runs[0]!.result_hash,
+    });
+    expect(out.documents![1]!.doc_id).toBe("b");
+    expect(out.documents![1]!.detected_family).toBe("Mutual NDA");
+  });
+
+  it("omits documents[] (back-compat) when no document carries a detected_family", async () => {
+    const noFamily: BundleReportInput = {
+      ...makeInput(),
+      documents: [
+        // strip detected_family from each doc
+        { ...bundleDoc("a", "a"), detected_family: undefined },
+        { ...bundleDoc("b", "b"), detected_family: undefined },
+      ],
+    };
+    const out = await buildBundleJson(noFamily);
+    expect(out.documents).toBeUndefined();
+  });
+
+  it("omits per-entry detected_family when only some documents carry one", async () => {
+    const mixed: BundleReportInput = {
+      ...makeInput(),
+      documents: [
+        bundleDoc("a", "a"), // has detected_family: "Mutual NDA"
+        { ...bundleDoc("b", "b"), detected_family: undefined },
+      ],
+    };
+    const out = await buildBundleJson(mixed);
+    expect(out.documents).toHaveLength(2);
+    expect(out.documents![0]!.detected_family).toBe("Mutual NDA");
+    expect(out.documents![1]!.detected_family).toBeUndefined();
+  });
+});
+
 describe("buildBundleZip", () => {
   it("packages consolidated-report.docx + bundle.json", async () => {
     const blob = await buildBundleZip(makeInput());

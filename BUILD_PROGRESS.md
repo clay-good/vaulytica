@@ -25,6 +25,17 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v3 bundle JSON surfaces per-document detected_family (spec-v3 §60 follow-up) (2026-05-26) — ✅ complete
+
+The bundle DOCX has rendered the per-document `detected_family` label in each per-doc subsection heading since the spec-v3 §62 multi-doc card work landed, but the consolidated bundle JSON only exposed the raw `EngineRun[]` — a programmatic consumer (downstream automation, CI gate, archival index) had to re-derive the family label from `runs[i].playbook_id` instead of reading the same human-readable label the DOCX already shows. This change carries the family through to the JSON output too.
+
+- [`src/report/bundle.ts`](src/report/bundle.ts): new exported `BundleJsonDocument` type (`{ doc_id, source_file_name, detected_family?, result_hash }`). `BundleJson` gains an optional `documents?: BundleJsonDocument[]`. `buildBundleJson` emits the array only when at least one input document carries a non-empty `detected_family`; otherwise the field is omitted, preserving byte-identical prior output for callers that don't set it (same back-compat shape as the existing optional `rejected` and `consistency_enabled` fields). Per-entry `detected_family` is omitted when the input document didn't carry one, so mixed-family bundles serialize cleanly.
+- No pipeline change needed — `runBundleReport` already passes `detected_family` (via `familyDisplayLabel(d.v3_detection.family, d.playbook.name)`) into each `BundleDocument` it hands to `buildBundleJsonBlob`, so the JSON output now picks up the same family label the DOCX already displays.
+
+Tests in [`src/report/bundle.test.ts`](src/report/bundle.test.ts) (3 new): (1) two-document input with families → `documents[]` carries `doc_id` + `source_file_name` + `detected_family` + `result_hash` for each entry; (2) no document carries a family → `documents` field is omitted (back-compat); (3) mixed bundle where only one document carries a family → both entries render but only the populated one carries `detected_family`.
+
+`npm run typecheck && lint && test && build` all green.
+
 ### v3 bundle JSON surfaces consistency_enabled=false (spec-v3 §62 follow-up) (2026-05-26) — ✅ complete
 
 Mirrors the DOCX-cover "disabled by user" treatment landed in the previous commit so a programmatic consumer of the bundle JSON can also distinguish "user explicitly disabled the cross-document consistency toggle" from "the consistency pass ran and found zero issues". Without this signal, both states serialized to the same `cross_doc_findings: []` array.

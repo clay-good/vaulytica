@@ -107,6 +107,21 @@ export type BundleReportInput = {
   consistency_enabled?: boolean;
 };
 
+/**
+ * Per-document metadata surfaced alongside `runs` so a programmatic
+ * consumer of the bundle JSON can correlate each engine run with its
+ * UI-visible label (spec-v3 §60 detected family) and stable bundle
+ * doc-id without re-deriving them from `runs`. Spec-v3 §62 follow-up.
+ */
+export type BundleJsonDocument = {
+  doc_id: string;
+  source_file_name: string;
+  /** Same display label the bundle DOCX uses in per-document headings. */
+  detected_family?: string;
+  /** Echo of the per-doc result hash — keys this record to the run. */
+  result_hash: string;
+};
+
 export type BundleJson = {
   runs: EngineRun[];
   cross_doc_findings: ConsistencyFinding[];
@@ -124,6 +139,15 @@ export type BundleJson = {
    * set it to `true`.
    */
   consistency_enabled?: false;
+  /**
+   * Spec-v3 §60 + §62 follow-up: per-document metadata (stable doc-id,
+   * source file name, detected family, result hash) so the JSON output
+   * carries the same human-readable labels the bundle DOCX already
+   * shows. Omitted (back-compat) when no document carries a non-empty
+   * `detected_family` — preserves byte-for-byte prior renderer output
+   * for callers that don't set the field.
+   */
+  documents?: BundleJsonDocument[];
 };
 
 /**
@@ -154,6 +178,22 @@ export async function buildBundleJson(input: BundleReportInput): Promise<BundleJ
   }
   if (input.consistency_enabled === false) {
     out.consistency_enabled = false;
+  }
+  const anyFamily = input.documents.some(
+    (d) => typeof d.detected_family === "string" && d.detected_family.length > 0,
+  );
+  if (anyFamily) {
+    out.documents = input.documents.map((d) => {
+      const entry: BundleJsonDocument = {
+        doc_id: d.doc_id,
+        source_file_name: d.source_file_name,
+        result_hash: d.run.result_hash,
+      };
+      if (typeof d.detected_family === "string" && d.detected_family.length > 0) {
+        entry.detected_family = d.detected_family;
+      }
+      return entry;
+    });
   }
   return out;
 }
