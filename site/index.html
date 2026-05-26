@@ -488,6 +488,41 @@
         cursor: pointer;
         margin-top: 6px;
       }
+      /* Per-document summary cards in bundle-complete state
+         (spec-v3 §62). Cards are informational; the bundle DOCX is
+         the single download artifact. */
+      .multi-doc-cards {
+        list-style: none;
+        margin: 12px 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        text-align: left;
+      }
+      .multi-doc-card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 10px 14px;
+        font-family: var(--font-mono);
+        font-size: 13px;
+      }
+      .multi-doc-card-filename {
+        color: var(--heading);
+        font-weight: 600;
+        word-break: break-all;
+      }
+      .multi-doc-card-meta {
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 2px;
+      }
+      .multi-doc-card-counts {
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 4px;
+      }
       /* Compliance-frame chip row (spec-v3 §61 / Step 33 UI hookup).
          Each chip is a toggle (role="switch"). WCAG 2.5.8 (AA)
          requires interactive targets to be ≥ 24×24 CSS px — set an

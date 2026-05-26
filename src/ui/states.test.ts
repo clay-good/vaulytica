@@ -336,6 +336,90 @@ describe("renderState", () => {
     expect(det.textContent).toBe("Detected: BAA, EU DPA");
   });
 
+  it("bundle-complete renders a per-doc summary card per document (spec-v3 §62)", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 2,
+      counts: { critical: 1, warning: 0, info: 3 },
+      cross_doc_findings: 0,
+      bundle_docx_blob: new Blob(["docx"]),
+      bundle_json_blob: new Blob(["{}"]),
+      bundle_docx_filename: "x.docx",
+      bundle_json_filename: "x.json",
+      documents: [
+        {
+          filename: "msa.docx",
+          family_label: "MSA",
+          playbook_name: "MSA (Customer-Deep)",
+          counts: { critical: 1, warning: 0, info: 2 },
+        },
+        {
+          filename: "dpa.docx",
+          playbook_name: "DPA (Controller → Processor)",
+          counts: { critical: 0, warning: 0, info: 1 },
+        },
+      ],
+    });
+    const list = select<HTMLUListElement>(dz, "multi-doc-cards")!;
+    expect(list.hidden).toBe(false);
+    const cards = list.querySelectorAll<HTMLLIElement>('[data-role="multi-doc-card"]');
+    expect(cards.length).toBe(2);
+    expect(cards[0]!.textContent).toMatch(/msa\.docx/);
+    expect(cards[0]!.textContent).toMatch(/MSA \(Customer-Deep\)/);
+    expect(cards[0]!.textContent).toMatch(/1 critical/);
+    // Second doc has no family_label — should still render filename/playbook.
+    expect(cards[1]!.textContent).toMatch(/dpa\.docx/);
+    expect(cards[1]!.textContent).toMatch(/Controller/);
+    // family-label line is omitted when undefined, so "·" separator absent
+    // before the playbook name on that card.
+    expect(cards[1]!.querySelector(".multi-doc-card-meta")?.textContent).not.toMatch(/·/);
+  });
+
+  it("bundle-complete hides multi-doc card list when no documents provided", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 2,
+      counts: { critical: 0, warning: 0, info: 0 },
+      cross_doc_findings: 0,
+      bundle_docx_blob: new Blob(["docx"]),
+      bundle_json_blob: new Blob(["{}"]),
+      bundle_docx_filename: "x.docx",
+      bundle_json_filename: "x.json",
+    });
+    expect(select<HTMLUListElement>(dz, "multi-doc-cards")!.hidden).toBe(true);
+  });
+
+  it("multi-doc card escapes filename and playbook HTML", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 1,
+      counts: { critical: 0, warning: 0, info: 0 },
+      cross_doc_findings: 0,
+      bundle_docx_blob: new Blob(["docx"]),
+      bundle_json_blob: new Blob(["{}"]),
+      bundle_docx_filename: "x.docx",
+      bundle_json_filename: "x.json",
+      documents: [
+        {
+          filename: "evil<script>.docx",
+          playbook_name: "Playbook & Co.",
+          counts: { critical: 0, warning: 0, info: 0 },
+        },
+      ],
+    });
+    const card = dz.querySelector<HTMLLIElement>('[data-role="multi-doc-card"]')!;
+    expect(card.innerHTML).not.toContain("<script>");
+    expect(card.querySelector(".multi-doc-card-filename")!.textContent).toBe(
+      "evil<script>.docx",
+    );
+    expect(card.querySelector(".multi-doc-card-meta")!.textContent).toContain(
+      "Playbook & Co.",
+    );
+  });
+
   it("bundle-complete hides detected-families line when none provided", () => {
     const dz = document.createElement("div");
     renderState(dz, {

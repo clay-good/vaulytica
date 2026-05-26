@@ -66,6 +66,22 @@ export type DropzoneState =
        * under the cross-doc summary.
        */
       detected_families?: ReadonlyArray<string>;
+      /**
+       * Per-document summary cards (spec-v3 §62: "the UI shows a small
+       * card per document with detected type and selected playbook").
+       * When provided, the bundle-complete state renders an `<ul>` of
+       * informational `<li>` cards under the counts row, each
+       * surfacing filename + family label + playbook name +
+       * per-doc finding totals. Cards are non-interactive (the bundle
+       * DOCX is the single download artifact); a future revision could
+       * make them clickable to expose per-doc DOCX downloads.
+       */
+      documents?: ReadonlyArray<{
+        filename: string;
+        family_label?: string;
+        playbook_name: string;
+        counts: { critical: number; warning: number; info: number };
+      }>;
     }
   | { kind: "error"; message: string };
 
@@ -102,6 +118,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     <div class="counts" data-role="counts"></div>
     <div class="dropzone-sub" data-role="cross-doc-summary"></div>
     <div class="dropzone-sub bundle-detected-families" data-role="bundle-detected-families" hidden></div>
+    <ul class="multi-doc-cards" data-role="multi-doc-cards" aria-label="Per-document summary" hidden></ul>
     <button class="btn btn-primary" type="button" data-role="bundle-download">Download consolidated report (Word)</button>
     <button class="btn-link" type="button" data-role="bundle-json-download">Download bundle data (JSON)</button>
     <div class="download-status" data-role="download-status" aria-live="polite"></div>
@@ -158,6 +175,7 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
       detectedEl.hidden = true;
       detectedEl.textContent = "";
     }
+    renderMultiDocCards(dz, state.documents);
     const docxBtn = select<HTMLButtonElement>(dz, "bundle-download")!;
     const jsonBtn = select<HTMLButtonElement>(dz, "bundle-json-download")!;
     const status = select<HTMLElement>(dz, "download-status")!;
@@ -188,6 +206,59 @@ function countsHtml(counts: { critical: number; warning: number; info: number })
     <span class="count count--warning"><strong>${counts.warning}</strong> warnings</span>
     <span class="count count--info"><strong>${counts.info}</strong> informational</span>
   `;
+}
+
+/**
+ * Render per-document summary cards inside the bundle-complete state
+ * (spec-v3 §62). Cards are informational `<li>` elements — they show
+ * filename / detected family / matched playbook / per-doc finding
+ * counts, but are not interactive (the bundle DOCX is the single
+ * download artifact). The container `<ul>` is `hidden` when no
+ * document list is provided so existing callers / tests stay green.
+ */
+function renderMultiDocCards(
+  dz: HTMLElement,
+  documents:
+    | ReadonlyArray<{
+        filename: string;
+        family_label?: string;
+        playbook_name: string;
+        counts: { critical: number; warning: number; info: number };
+      }>
+    | undefined,
+): void {
+  const list = select<HTMLUListElement>(dz, "multi-doc-cards");
+  if (!list) return;
+  if (!documents || documents.length === 0) {
+    list.hidden = true;
+    list.innerHTML = "";
+    return;
+  }
+  list.hidden = false;
+  list.innerHTML = documents
+    .map((d) => {
+      const family = d.family_label
+        ? `<span class="multi-doc-card-family">${escapeHtml(d.family_label)}</span>`
+        : "";
+      const playbook = `<span class="multi-doc-card-playbook">${escapeHtml(d.playbook_name)}</span>`;
+      const c = d.counts;
+      const countsLine = `${c.critical} critical · ${c.warning} warnings · ${c.info} info`;
+      return `<li class="multi-doc-card" data-role="multi-doc-card">
+        <div class="multi-doc-card-filename">${escapeHtml(d.filename)}</div>
+        <div class="multi-doc-card-meta">${family}${family ? " · " : ""}${playbook}</div>
+        <div class="multi-doc-card-counts">${countsLine}</div>
+      </li>`;
+    })
+    .join("");
+}
+
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 export function baseName(filename: string): string {

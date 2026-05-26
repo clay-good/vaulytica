@@ -131,18 +131,13 @@ test("v3 compliance-frame chip row is keyboard-operable", async ({ page }) => {
   expect(after, "chip must flip aria-checked on Space").not.toBe(before);
 });
 
-test("v3 multi-doc cards are individually focusable when present", async ({
-  page,
-}) => {
-  await page.goto("/");
-  const cards = page.locator('[data-role="multi-doc-card"]');
-  const count = await cards.count();
-  test.skip(count === 0, "v3 multi-doc cards are not yet wired into the live UI");
-
-  for (let i = 0; i < count; i++) {
-    const card = cards.nth(i);
-    await card.focus();
-    const focused = await card.evaluate((el) => el === document.activeElement);
-    expect(focused, `card ${i} must be individually focusable`).toBe(true);
-  }
+// Per spec-v3 §62 the per-doc summary cards are intentionally
+// informational ("a small card per document with detected type and
+// selected playbook") — there is no per-card action surface, so giving
+// them a tabindex would put non-interactive elements into the tab order
+// (a WCAG 2.4.3 violation). The previous forward-compatible probe is
+// removed; if a future revision makes cards clickable (e.g. to expose
+// per-doc DOCX downloads), reinstate a focus-assertion test here.
+test.skip("v3 multi-doc cards are intentionally non-interactive (spec-v3 §62)", () => {
+  /* documentation-only */
 });
