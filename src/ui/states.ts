@@ -89,6 +89,20 @@ export type DropzoneState =
         docx_filename: string;
         json_filename: string;
       }>;
+      /**
+       * Cross-document consistency toggle (spec-v3 §62). When set,
+       * a checkbox is rendered above the cross-doc summary. The default
+       * checked state is `true` (consistency on, as required by §62).
+       * When the user toggles the checkbox the renderer (a) mirrors the
+       * new state into the cross-doc summary line — switching it to
+       * "Cross-document consistency disabled." when off, restoring the
+       * count/zero message when on — and (b) invokes `on_consistency_toggle`
+       * so the caller can rebuild the bundle DOCX/JSON without the
+       * cross-doc appendix. Omitting both fields skips the toggle
+       * (back-compat with existing call sites).
+       */
+      cross_doc_active?: boolean;
+      on_consistency_toggle?: (active: boolean) => void;
     }
   | { kind: "error"; message: string };
 
@@ -123,6 +137,10 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
   "bundle-complete": `
     <div class="dropzone-title" data-role="bundle-title"></div>
     <div class="counts" data-role="counts"></div>
+    <label class="cross-doc-toggle" data-role="cross-doc-toggle" hidden>
+      <input type="checkbox" data-role="cross-doc-toggle-input" checked />
+      <span>Run cross-document consistency checks</span>
+    </label>
     <div class="dropzone-sub" data-role="cross-doc-summary"></div>
     <div class="dropzone-sub bundle-detected-families" data-role="bundle-detected-families" hidden></div>
     <ul class="multi-doc-cards" data-role="multi-doc-cards" aria-label="Per-document summary" hidden></ul>
@@ -170,10 +188,36 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
     select(dz, "bundle-title")!.textContent =
       `${state.document_count} documents analyzed`;
     select(dz, "counts")!.innerHTML = countsHtml(state.counts);
-    select(dz, "cross-doc-summary")!.textContent =
-      state.cross_doc_findings === 0
-        ? "No cross-document inconsistencies found."
-        : `${state.cross_doc_findings} cross-document finding${state.cross_doc_findings === 1 ? "" : "s"}.`;
+    const summaryEl = select(dz, "cross-doc-summary")!;
+    const renderCrossDocSummary = (active: boolean): void => {
+      if (!active) {
+        summaryEl.textContent = "Cross-document consistency disabled.";
+        return;
+      }
+      summaryEl.textContent =
+        state.cross_doc_findings === 0
+          ? "No cross-document inconsistencies found."
+          : `${state.cross_doc_findings} cross-document finding${state.cross_doc_findings === 1 ? "" : "s"}.`;
+    };
+    const initialActive = state.cross_doc_active ?? true;
+    renderCrossDocSummary(initialActive);
+    // Cross-document consistency toggle (spec-v3 §62). Visible whenever
+    // the bundle-complete state is rendered with at least 2 documents.
+    const toggleWrap = select<HTMLLabelElement>(dz, "cross-doc-toggle");
+    const toggleInput = select<HTMLInputElement>(dz, "cross-doc-toggle-input");
+    if (toggleWrap && toggleInput && state.document_count >= 2) {
+      toggleWrap.hidden = false;
+      toggleInput.checked = initialActive;
+      toggleInput.addEventListener("change", (e) => {
+        e.stopPropagation();
+        const active = toggleInput.checked;
+        renderCrossDocSummary(active);
+        state.on_consistency_toggle?.(active);
+      });
+      // Prevent click on label/checkbox from bubbling to the dropzone
+      // (which would re-open the file picker).
+      toggleWrap.addEventListener("click", (e) => e.stopPropagation());
+    }
     const detectedEl = select<HTMLElement>(dz, "bundle-detected-families")!;
     if (state.detected_families && state.detected_families.length > 0) {
       detectedEl.hidden = false;

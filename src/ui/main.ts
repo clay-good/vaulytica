@@ -198,7 +198,11 @@ function renderCompleteState(
   });
 }
 
-async function runBundle(dz: HTMLElement, files: File[]): Promise<void> {
+async function runBundle(
+  dz: HTMLElement,
+  files: File[],
+  options: { cross_doc_consistency?: boolean } = {},
+): Promise<void> {
   try {
     const summary =
       files.length === 1 && files[0]!.name.toLowerCase().endsWith(".zip")
@@ -210,12 +214,17 @@ async function runBundle(dz: HTMLElement, files: File[]): Promise<void> {
     const ticker = createRuleTicker(select(dz, "ticker")!);
     progress.reset();
 
-    const result = await runBundlePipeline(files, {
-      onProgress: (fraction) => progress.set(fraction),
-      onDocumentReady: (filename) => ticker.push("DOC", filename),
-      onDkbLoaded: (version) =>
-        setState(dz, { kind: "analyzing", filename: summary, dkb_version: version }),
-    });
+    const result = await runBundlePipeline(
+      files,
+      {
+        onProgress: (fraction) => progress.set(fraction),
+        onDocumentReady: (filename) => ticker.push("DOC", filename),
+        onDkbLoaded: (version) =>
+          setState(dz, { kind: "analyzing", filename: summary, dkb_version: version }),
+      },
+      {},
+      { cross_doc_consistency: options.cross_doc_consistency },
+    );
 
     // Aggregate per-doc severity counts across the whole bundle.
     const counts = { critical: 0, warning: 0, info: 0 };
@@ -251,6 +260,7 @@ async function runBundle(dz: HTMLElement, files: File[]): Promise<void> {
         json_filename: `${stem}-vaulytica.json`,
       };
     });
+    const crossDocActive = options.cross_doc_consistency !== false;
     setState(dz, {
       kind: "bundle-complete",
       document_count: result.documents.length,
@@ -262,6 +272,15 @@ async function runBundle(dz: HTMLElement, files: File[]): Promise<void> {
       bundle_json_filename: "vaulytica-bundle.json",
       detected_families: detectedFamilies.length > 0 ? detectedFamilies : undefined,
       documents: documentSummaries,
+      cross_doc_active: crossDocActive,
+      // Spec-v3 §62 toggle: when the user flips the checkbox, re-run
+      // the bundle with the new cross-doc setting. This re-ingests
+      // (the bundle pipeline is monolithic today); a future refactor
+      // mirroring the single-doc prepareDocument/runReport split can
+      // skip re-ingest the way compliance-frame chip toggles do.
+      on_consistency_toggle: (active) => {
+        void runBundle(dz, files, { cross_doc_consistency: active });
+      },
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);

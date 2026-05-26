@@ -25,6 +25,20 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v3 cross-doc consistency toggle in bundle-complete (spec-v3 §62) (2026-05-26) — ✅ complete
+
+Closes the last UI affordance of spec-v3 §62 ("A toggle invites the user to run cross-document consistency checks (default on)"). [`src/ui/states.ts`](src/ui/states.ts) bundle-complete template adds a `<label data-role="cross-doc-toggle">` wrapping a checkbox (`[data-role="cross-doc-toggle-input"]`, checked by default). Rendered only when `document_count >= 2`. Flipping the checkbox (a) rewrites the cross-doc summary line in place ("Cross-document consistency disabled." when off; "{N} cross-document finding(s)." / "No cross-document inconsistencies found." when on), (b) invokes the new optional `on_consistency_toggle: (active: boolean) => void` callback on the bundle-complete state. `state.cross_doc_active` (default `true`) seeds the initial UI checkbox state.
+
+Engine side: [`src/ui/pipeline.ts`](src/ui/pipeline.ts) `PipelineOptions` gains `cross_doc_consistency?: boolean`. When set to `false`, `runBundlePipeline` calls `runConsistency` with `rules: []` instead of `ALL_CONSISTENCY_RULES`, so the consistency pass yields a valid `ConsistencyRun` with empty findings + execution_log and the bundle DOCX/JSON renderer reports "0 cross-document findings".
+
+UI wiring: [`src/ui/main.ts`](src/ui/main.ts) `runBundle` now accepts an `options.cross_doc_consistency` flag, passes it into `runBundlePipeline`, surfaces it on the rendered `bundle-complete` state as `cross_doc_active`, and wires `on_consistency_toggle` to re-run `runBundle(dz, files, { cross_doc_consistency: active })`. The re-run path re-ingests (the bundle pipeline is monolithic today); a future refactor mirroring the single-doc `prepareDocument` / `runReport` split could skip re-ingest the way compliance-frame chip toggles do — flagged in the inline comment.
+
+CSS: [`site/index.html`](site/index.html) gains a `.cross-doc-toggle` rule (min-height 32px for WCAG 2.5.8 target size, 16×16 native checkbox).
+
+Tests: 3 new unit tests in [`src/ui/states.test.ts`](src/ui/states.test.ts) — (1) toggle hidden by default rendering only when `document_count >= 2`, default checked, initial summary reflects findings count; (2) flipping the checkbox rewrites the summary to "Cross-document consistency disabled." and invokes `on_consistency_toggle(false)`, flipping back restores the count and invokes `on_consistency_toggle(true)`; (3) toggle stays hidden when only one document is in the bundle.
+
+`npm run typecheck && lint && test && build` all green.
+
 ### v4 multi-doc offline-verification spec landed (2026-05-22) — ✅ complete
 
 [`tests/e2e/v4/no-network.spec.ts`](tests/e2e/v4/no-network.spec.ts) committed. The spec covers LAUNCH row v4-d (spec-v4.md §8 — folder upload / zip / multi-file drop must produce zero cross-origin requests). It mirrors the structure of `tests/e2e/v3/no-network.spec.ts`: load the page, capture all network requests from that point forward, drive the multi-doc drop, wait for a download button, assert valid OOXML zip magic bytes (`PK\x03\x04` + > 1024 bytes), and assert the captured cross-origin request list is empty.

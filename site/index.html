@@ -535,6 +535,25 @@
         min-height: 32px;
         padding: 4px 8px;
       }
+      /* Cross-document consistency toggle (spec-v3 §62). Sits between
+         the per-bundle counts and the cross-doc summary line; default
+         on. The label wraps the checkbox so click-on-label toggles. */
+      .cross-doc-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 12px;
+        font-size: 13px;
+        color: var(--muted);
+        cursor: pointer;
+        /* WCAG 2.5.8: comfortable hit target around the native input. */
+        min-height: 32px;
+      }
+      .cross-doc-toggle input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+      }
       /* Compliance-frame chip row (spec-v3 §61 / Step 33 UI hookup).
          Each chip is a toggle (role="switch"). WCAG 2.5.8 (AA)
          requires interactive targets to be ≥ 24×24 CSS px — set an

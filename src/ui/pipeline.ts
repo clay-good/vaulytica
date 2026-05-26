@@ -119,6 +119,15 @@ export type PipelineOptions = {
    * frame filtering (default — matches v1/v3/v4 behavior to date).
    */
   active_frames?: ReadonlyArray<ComplianceFrame>;
+  /**
+   * Cross-document consistency toggle (spec-v3 §62). Default `true`.
+   * When set to `false`, `runBundlePipeline` skips the consistency
+   * pass: it still constructs an empty `ConsistencyRun` (so the
+   * bundle DOCX/JSON renderer's contract is preserved) but with an
+   * empty rules list, so no findings are emitted and the cross-doc
+   * appendix renders as "0 cross-document findings".
+   */
+  cross_doc_consistency?: boolean;
 };
 
 const DEFAULT_DKB_BASE = "/dkb";
@@ -505,9 +514,13 @@ export async function runBundlePipeline(
   }
 
   // 4. Cross-document consistency. Re-uses each doc's tree + extracted
-  // (collected above) so we don't re-ingest.
+  // (collected above) so we don't re-ingest. When the user has
+  // toggled the §62 consistency switch off, the rules list collapses
+  // to an empty array — the runner still produces a valid
+  // `ConsistencyRun`, but findings + execution_log are empty.
+  const consistencyEnabled = options.cross_doc_consistency !== false;
   const consistency = await runConsistency({
-    rules: ALL_CONSISTENCY_RULES,
+    rules: consistencyEnabled ? ALL_CONSISTENCY_RULES : [],
     documents: consistencyDocs,
     dkb,
     executed_at: new Date().toISOString(),

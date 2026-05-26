@@ -352,6 +352,72 @@ describe("renderState", () => {
     document.body.removeChild(dz);
   });
 
+  it("bundle-complete renders the cross-doc consistency toggle hidden by default (spec-v3 §62)", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 2,
+      counts: { critical: 0, warning: 0, info: 0 },
+      cross_doc_findings: 3,
+      bundle_docx_blob: new Blob(["docx"]),
+      bundle_json_blob: new Blob(["{}"]),
+      bundle_docx_filename: "x.docx",
+      bundle_json_filename: "x.json",
+    });
+    const toggle = select<HTMLLabelElement>(dz, "cross-doc-toggle")!;
+    const input = select<HTMLInputElement>(dz, "cross-doc-toggle-input")!;
+    // Visible whenever document_count >= 2.
+    expect(toggle.hidden).toBe(false);
+    // Default checked (consistency on).
+    expect(input.checked).toBe(true);
+    // Summary shows the finding count.
+    expect(select(dz, "cross-doc-summary")!.textContent).toMatch(/3 cross-document/);
+  });
+
+  it("bundle-complete toggle flips the cross-doc summary and invokes the callback (spec-v3 §62)", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    const onToggle = vi.fn();
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 2,
+      counts: { critical: 0, warning: 0, info: 0 },
+      cross_doc_findings: 2,
+      bundle_docx_blob: new Blob(["docx"]),
+      bundle_json_blob: new Blob(["{}"]),
+      bundle_docx_filename: "x.docx",
+      bundle_json_filename: "x.json",
+      on_consistency_toggle: onToggle,
+    });
+    const input = select<HTMLInputElement>(dz, "cross-doc-toggle-input")!;
+    input.checked = false;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+    expect(select(dz, "cross-doc-summary")!.textContent).toBe(
+      "Cross-document consistency disabled.",
+    );
+    expect(onToggle).toHaveBeenCalledWith(false);
+    input.checked = true;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+    expect(select(dz, "cross-doc-summary")!.textContent).toMatch(/2 cross-document/);
+    expect(onToggle).toHaveBeenLastCalledWith(true);
+    document.body.removeChild(dz);
+  });
+
+  it("bundle-complete hides the toggle when only one document is in the bundle", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 1,
+      counts: { critical: 0, warning: 0, info: 0 },
+      cross_doc_findings: 0,
+      bundle_docx_blob: new Blob(["docx"]),
+      bundle_json_blob: new Blob(["{}"]),
+      bundle_docx_filename: "x.docx",
+      bundle_json_filename: "x.json",
+    });
+    expect(select<HTMLLabelElement>(dz, "cross-doc-toggle")!.hidden).toBe(true);
+  });
+
   it("bundle-complete shows detected families when provided", () => {
     const dz = document.createElement("div");
     renderState(dz, {
