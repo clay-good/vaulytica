@@ -94,6 +94,37 @@ describe("detectV3Family", () => {
     expect(d.suggested_playbook).toBeNull();
     expect(d.signals).toEqual([]);
   });
+
+  it("routes nda-deep to mutual-nda-deep on mutual / two-way header", () => {
+    const ext = emptyExtracted();
+    const text =
+      "Mutual Non-Disclosure Agreement. Each party agrees to protect Confidential Information of the other. Trade secrets are governed by 18 U.S.C. § 1833.";
+    const d = detectV3Family(ext, text);
+    expect(d.family).toBe("nda-deep");
+    expect(d.suggested_playbook).toBe("mutual-nda-deep");
+  });
+
+  it("routes nda-deep to unilateral-nda-deep on one-way / discloser-recipient framing", () => {
+    const ext = emptyExtracted();
+    const text =
+      "One-way Non-Disclosure Agreement. The Disclosing Party may share Confidential Information with the Receiving Party for the purpose of evaluating a potential transaction. Trade secrets remain the property of the Discloser.";
+    const d = detectV3Family(ext, text);
+    expect(d.family).toBe("nda-deep");
+    expect(d.suggested_playbook).toBe("unilateral-nda-deep");
+  });
+
+  it("falls back to mutual-nda-deep when nda-deep signals are present but mutual/unilateral cues are absent", () => {
+    const ext = emptyExtracted();
+    // No "mutual" / "one-way" header, no discloser/recipient framing —
+    // bare "confidentiality agreement" + DTSA citation is enough to
+    // trigger nda-deep but does not pick a side. Mutual is the safer
+    // default (see resolveNdaDeepVariant doc).
+    const text =
+      "Confidentiality Agreement. The parties agree to protect trade secrets pursuant to 18 U.S.C. § 1833.";
+    const d = detectV3Family(ext, text);
+    expect(d.family).toBe("nda-deep");
+    expect(d.suggested_playbook).toBe("mutual-nda-deep");
+  });
 });
 
 /* ---------------- compliance-frame defaults ---------------- */

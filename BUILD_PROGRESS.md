@@ -25,6 +25,17 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v3 auto-detect routes nda-deep to mutual vs unilateral by symmetry signal (spec-v3 §27 / §32 follow-up) (2026-05-27) — ✅ complete
+
+Closes the routing gap left after the prior NDA-deep playbook upgrade. Both `mutual-nda-deep` and `unilateral-nda-deep` ship at v1.0.0 with distinct compliance-matrix columns (mutual symmetry vs. discloser/receiver role framing), but `detectV3Family` hard-coded `"nda-deep": "mutual-nda-deep"` in `FAMILY_TO_PLAYBOOK` — so every borderline NDA dropped on the page suggested the mutual playbook, even when the document explicitly self-titled "One-way NDA" or framed itself around a single Disclosing Party. The chip rendered the wrong suggestion and the compliance matrix would have rendered the wrong symmetry column on accept.
+
+- [`src/ui/v3/auto-detect.ts`](src/ui/v3/auto-detect.ts): a new `resolveNdaDeepVariant(text)` helper runs after the family-scoring pass picks `nda-deep`. It scores mutual signals (mutual / two-way / bilateral header; "each party" / "either party" phrasing) against unilateral signals (one-way / unilateral header; `Disclosing Party` → `Receiving Party` role framing in proximity). The higher-scoring variant wins; ties default to `mutual-nda-deep` because mutual rules include a symmetry check the unilateral playbook does not, so a unilateral document analyzed under the mutual playbook produces a (correctable) false-positive surface, whereas a mutual document analyzed under the unilateral playbook would silently miss the symmetry rule (false-negative). The resolver's signals are appended to the `signals` array so the audit trail shows why the variant was picked.
+- The `nda-deep` family id and `V3_FAMILY_LABELS["nda-deep"]` label are preserved — only the `suggested_playbook` field on the detection result changes shape (it can now be either `mutual-nda-deep` or `unilateral-nda-deep`). No fixture, golden, or chip-label test is touched.
+
+Tests in [`src/ui/v3/v3-ui.test.ts`](src/ui/v3/v3-ui.test.ts) (3 new): mutual header → `mutual-nda-deep`; one-way header + Discloser/Recipient framing → `unilateral-nda-deep`; bare "Confidentiality Agreement" with DTSA citation but no symmetry cues → mutual fallback. The remaining `detectV3Family` tests are unchanged and still pass.
+
+`npm run lint && typecheck && test && build` all green; **2196/2196 tests + 2 skips** (was 2193).
+
 ### v3 single-doc family chip surfaces detection_confidence + low-confidence treatment (spec-v3 §60 follow-up) (2026-05-26) — ✅ complete
 
 Closes the matching gap on the single-doc UI surface. The previous commit gave the multi-doc bundle cards a "(0.83)" suffix and a `.low-confidence` class; the single-doc complete state's v3 family chip previously rendered just "Detected: BAA" (the confidence was stored on a `data-confidence` attribute, invisible to humans). A user dropping a borderline-detected single document saw no visual signal that the auto-detection was tentative.

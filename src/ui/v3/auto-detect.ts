@@ -97,12 +97,78 @@ export function detectV3Family(
   }
 
   const confidence = Math.min(1, best.score / 4);
+  // NDA-deep further splits to mutual vs unilateral by symmetry signal.
+  // Both playbooks (mutual-nda-deep, unilateral-nda-deep) live at v1.0.0
+  // and carry distinct compliance-matrix columns; routing to the wrong
+  // variant means the matrix renders the wrong symmetry column. Keep
+  // the family id (nda-deep) stable so existing consumers, fixtures,
+  // and the chip label table are unaffected.
+  let suggested_playbook = FAMILY_TO_PLAYBOOK[best.family];
+  let extraSignals: DetectionSignal[] = [];
+  if (best.family === "nda-deep") {
+    const ndaResolution = resolveNdaDeepVariant(text);
+    suggested_playbook = ndaResolution.playbook;
+    extraSignals = ndaResolution.signals;
+  }
   return {
     family: best.family,
-    suggested_playbook: FAMILY_TO_PLAYBOOK[best.family],
+    suggested_playbook,
     confidence,
-    signals: best.signals,
+    signals: [...best.signals, ...extraSignals],
   };
+}
+
+/**
+ * Resolve `nda-deep` to either `mutual-nda-deep` or `unilateral-nda-deep`
+ * based on textual symmetry signals. Falls back to mutual when signals
+ * are absent — mutual is the safer default because mutual rules include
+ * a symmetry check the unilateral playbook does not, so a unilateral
+ * document analyzed under the mutual playbook produces strictly more
+ * findings (a false-positive surface), whereas a mutual document
+ * analyzed under the unilateral playbook would miss the symmetry rule
+ * entirely (a false-negative surface).
+ */
+function resolveNdaDeepVariant(text: string): {
+  playbook: string;
+  signals: DetectionSignal[];
+} {
+  const signals: DetectionSignal[] = [];
+  // Strong mutual markers — explicit title or symmetry vocabulary.
+  const mutualHeader =
+    /\bmutual\s+(?:non-?disclosure|confidentiality)\b|\btwo-?way\s+(?:non-?disclosure|confidentiality|nda)\b|\bbilateral\s+(?:non-?disclosure|confidentiality|nda)\b/i;
+  const mutualPhrase = /\beach\s+party\b|\beither\s+party\b/i;
+  // Strong unilateral markers — explicit title or asymmetric role
+  // vocabulary that names a single discloser.
+  const unilateralHeader =
+    /\bunilateral\s+(?:non-?disclosure|confidentiality|nda)\b|\bone-?way\s+(?:non-?disclosure|confidentiality|nda)\b/i;
+  const unilateralRoles =
+    /\b(?:disclosing\s+party|discloser)\b[\s\S]{0,400}\b(?:receiving\s+party|recipient)\b/i;
+  let mutualScore = 0;
+  let unilateralScore = 0;
+  if (mutualHeader.test(text)) {
+    signals.push({ source: "header", evidence: "Mutual / two-way / bilateral NDA", weight: 3 });
+    mutualScore += 3;
+  }
+  if (mutualPhrase.test(text)) {
+    signals.push({ source: "phrase", evidence: "Each / either party", weight: 1 });
+    mutualScore += 1;
+  }
+  if (unilateralHeader.test(text)) {
+    signals.push({ source: "header", evidence: "Unilateral / one-way NDA", weight: 3 });
+    unilateralScore += 3;
+  }
+  if (unilateralRoles.test(text) && !mutualHeader.test(text)) {
+    signals.push({
+      source: "phrase",
+      evidence: "Discloser → Recipient role framing",
+      weight: 1,
+    });
+    unilateralScore += 1;
+  }
+  if (unilateralScore > mutualScore) {
+    return { playbook: "unilateral-nda-deep", signals };
+  }
+  return { playbook: "mutual-nda-deep", signals };
 }
 
 /* ---------------- detectors ----------------- */
