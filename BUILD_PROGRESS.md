@@ -25,6 +25,17 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v3 bundle DOCX + JSON surface per-document detection_confidence (spec-v3 §60 follow-up) (2026-05-26) — ✅ complete
+
+The v3 `detectV3Family` extractor produces both a `family` label and a `confidence` score in `[0, 1]`, but until now the bundle artifacts only carried the label — neither the bundle DOCX per-document subsection nor the JSON `documents[]` entry exposed how confident the detector actually was. A 0.9 detection on a clean Common-Paper-shaped Mutual NDA and a 0.4 detection on an ambiguous document both rendered as bare "Detected family: Mutual NDA" lines. Surfacing the confidence makes ambiguous detections discoverable by a reader of the report alone (without the UI to compare against alternatives).
+
+- [`src/report/bundle.ts`](src/report/bundle.ts): `BundleDocument` gains an optional `detection_confidence?: number`. When threaded through: (a) the DOCX per-document subsection's "Detected family: …" line gains a "(confidence 0.83)" suffix (two-decimal `toFixed`, matching the v1 single-doc cover-page "match confidence" convention); (b) `BundleJsonDocument` gains an optional `detection_confidence?: number` (emitted on a per-entry basis — only docs that carry one get the field, mirroring the back-compat shape of `detected_family` and `playbook_match_confidence`).
+- [`src/ui/pipeline.ts`](src/ui/pipeline.ts): `runBundleReport` threads `d.v3_detection.confidence` from the per-document detection result (already computed and stored on each `BundleDocumentPrepared`) into the `BundleDocument` it passes into `buildBundleDocxReport` + `buildBundleJsonBlob`, so production bundles now carry the confidence end-to-end.
+
+Tests in [`src/report/bundle.test.ts`](src/report/bundle.test.ts) (2 new): (1) JSON output surfaces `detection_confidence` per entry when threaded and omits it per entry when absent; (2) DOCX per-document subsection prints "(confidence 0.83)" when threaded and renders the bare "Detected family: …" line for entries without one.
+
+`npm run typecheck && lint && test && build` all green; **2191/2191 tests + 2 skips**.
+
 ### v3 bundle JSON surfaces consistency_execution_log (spec-v3 §62 follow-up) (2026-05-26) — ✅ complete
 
 Closes the last bundle-JSON ↔ bundle-DOCX parity gap I identified in this sweep. The bundle DOCX audit trail has long printed a "Cross-document rule execution" block enumerating every CC-NNN / CROSS-* rule with `ran`/`skipped` + `findings_count` + `elapsed_ms`. The JSON output only exposed `cross_doc_findings` (the findings array), so a consumer couldn't tell a "rule ran and produced zero findings" from a "rule skipped because its `requires: DocKind[]` was not satisfied" — both paths surface as zero in `cross_doc_findings` alone, which makes alerting and audit-trail derivation brittle (an alert pipeline shouldn't fire "0 cross-doc findings — bundle clean!" when the engine never actually ran the rule because the bundle had no DPA).

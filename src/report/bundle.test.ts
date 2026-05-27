@@ -379,6 +379,35 @@ describe("buildBundleJson — per-document metadata (spec-v3 §60 follow-up)", (
     }
   });
 
+  it("surfaces detection_confidence when threaded through, omits when absent", async () => {
+    const input: BundleReportInput = {
+      ...makeInput(),
+      documents: [
+        { ...bundleDoc("a", "a"), detection_confidence: 0.83 },
+        bundleDoc("b", "b"),
+      ],
+    };
+    const out = await buildBundleJson(input);
+    expect(out.documents![0]!.detection_confidence).toBe(0.83);
+    expect(out.documents![1]!.detection_confidence).toBeUndefined();
+  });
+
+  it("DOCX per-document subsection prints '(confidence X.XX)' when detection_confidence is threaded", async () => {
+    const input: BundleReportInput = {
+      ...makeInput(),
+      documents: [
+        { ...bundleDoc("a", "a"), detection_confidence: 0.83 },
+        bundleDoc("b", "b"),
+      ],
+    };
+    const blob = await buildBundleDocxReport(input);
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const docXml = strFromU8(entries["word/document.xml"]!);
+    expect(docXml).toContain("(confidence 0.83)");
+    // Other doc does not get a confidence suffix.
+    expect(docXml).toContain("Detected family: Mutual NDA</w:t>");
+  });
+
   it("omits playbook_match_confidence when the run did not record one", async () => {
     const noConfidence: BundleReportInput = {
       ...makeInput(),

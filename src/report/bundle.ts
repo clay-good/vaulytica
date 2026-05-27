@@ -75,6 +75,15 @@ export type BundleDocument = {
   source_file_name: string;
   /** Sub-domain / playbook label, e.g. "Mutual NDA" or "MSA / Commercial". */
   detected_family?: string;
+  /**
+   * v3 `detectV3Family` confidence in `[0, 1]`. When threaded through
+   * by the caller, it rides through to both the bundle DOCX
+   * per-document subsection and the bundle JSON `documents[]` entry.
+   * Optional / back-compat: omitting it preserves prior renderer
+   * output verbatim (the DOCX subsection just shows the family label
+   * without a confidence suffix, and the JSON entry omits the field).
+   */
+  detection_confidence?: number;
   run: EngineRun;
 };
 
@@ -142,6 +151,11 @@ export type BundleJsonDocument = {
    * file hash without indexing back into `runs[i].source_file.sha256`.
    */
   source_file_sha256: string;
+  /**
+   * v3 `detectV3Family` confidence in `[0, 1]`. Omitted when the
+   * caller did not thread one through (see `BundleDocument`).
+   */
+  detection_confidence?: number;
   /** Echo of the per-doc result hash — keys this record to the run. */
   result_hash: string;
   /**
@@ -251,6 +265,9 @@ export async function buildBundleJson(input: BundleReportInput): Promise<BundleJ
       }
       if (typeof d.run.playbook_match_confidence === "number") {
         entry.playbook_match_confidence = d.run.playbook_match_confidence;
+      }
+      if (typeof d.detection_confidence === "number") {
+        entry.detection_confidence = d.detection_confidence;
       }
       return entry;
     });
@@ -437,8 +454,12 @@ function renderPerDocumentSection(input: BundleReportInput): (Paragraph | Table)
   for (const doc of input.documents) {
     const top = pickTop(doc.run.findings, BUNDLE_TOP_N);
     const familyLabel = doc.detected_family ?? doc.run.playbook_id;
+    const familyLine =
+      typeof doc.detection_confidence === "number"
+        ? `Detected family: ${familyLabel} (confidence ${doc.detection_confidence.toFixed(2)})`
+        : `Detected family: ${familyLabel}`;
     out.push(h2(doc.source_file_name));
-    out.push(para({ text: `Detected family: ${familyLabel}` }));
+    out.push(para({ text: familyLine }));
     out.push(para({ text: `Playbook: ${doc.run.playbook_id}` }));
     out.push(para({ text: `File SHA-256: ${doc.run.source_file.sha256}` }));
     out.push(para({ text: `Per-document result hash: ${doc.run.result_hash}` }));

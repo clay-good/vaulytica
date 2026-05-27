@@ -578,6 +578,7 @@ export async function runBundleReport(
       // "SaaS — Vendor") for v2-launch families that the v3 detector
       // doesn't cover.
       detected_family: familyDisplayLabel(d.v3_detection.family, d.playbook.name),
+      detection_confidence: d.v3_detection.confidence,
       run: d.run,
     })),
     consistency,
