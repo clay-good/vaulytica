@@ -291,7 +291,33 @@ function detectNdaDeep(extracted: ExtractedData, text: string): DetectionSignal[
   if (/\bDTSA\b|\b18\s*U\.?S\.?C\.?\s*§\s*1833\b/.test(text)) {
     out.push({ source: "phrase", evidence: "DTSA / § 1833 reference", weight: 2 });
   }
-  void extracted;
+  // Defined-term signal. The two playbooks (mutual-nda-deep,
+  // unilateral-nda-deep) both list "Confidential Information" as
+  // load-bearing and call out either Discloser/Recipient (unilateral)
+  // or each-side discloser/receiver roles (mutual). Presence of a
+  // formally-defined "Confidential Information" or
+  // "Disclosing/Receiving Party" is a strong NDA signal that
+  // pattern-matching the body alone may miss when the defined term is
+  // introduced in a definitions appendix away from the running text.
+  let sawConfidentialInformation = false;
+  let sawDiscloserOrRecipient = false;
+  for (const { term } of extracted.definitions.entries) {
+    if (!sawConfidentialInformation && /\bconfidential\s+information\b/i.test(term)) {
+      sawConfidentialInformation = true;
+    }
+    if (
+      !sawDiscloserOrRecipient &&
+      /\b(?:disclos(?:ing|er)|recipient|receiving\s+party)\b/i.test(term)
+    ) {
+      sawDiscloserOrRecipient = true;
+    }
+  }
+  if (sawConfidentialInformation) {
+    out.push({ source: "definition", evidence: "Confidential Information defined", weight: 2 });
+  }
+  if (sawDiscloserOrRecipient) {
+    out.push({ source: "definition", evidence: "Discloser / Recipient defined", weight: 1 });
+  }
   return out;
 }
 

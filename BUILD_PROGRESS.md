@@ -25,6 +25,16 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v3 detectNdaDeep adds defined-term signal (Confidential Information, Discloser/Recipient) (spec-v3 §60 follow-up) (2026-05-27) — ✅ complete
+
+Removes the `void extracted;` shim from `detectNdaDeep` and wires up the `extracted.definitions` signal the function already had access to. NDAs almost always introduce "Confidential Information" and either "Disclosing Party / Receiving Party" or "Discloser / Recipient" as formally-defined terms in a definitions appendix; when the body text is sparse (a one-paragraph NDA referencing an external schedule, or a contract where the running prose says "trade secrets" but the canonical defined-term names live in the appendix), pattern-matching the body alone misses the strongest contextual signal.
+
+- [`src/ui/v3/auto-detect.ts`](src/ui/v3/auto-detect.ts): `detectNdaDeep` now iterates `extracted.definitions.entries` once and emits two new signals when found — `Confidential Information defined` (weight 2) and `Discloser / Recipient defined` (weight 1). Both signals are additive — no existing signal weights change, so existing test confidence values still satisfy their `toBeGreaterThan(0)` assertions and the new signals only widen the detection surface. The `definition` source classification is the same one `detectBaa` and `detectDpaEu` already use.
+
+Tests in [`src/ui/v3/v3-ui.test.ts`](src/ui/v3/v3-ui.test.ts) (1 new): a sparse-body fixture with three formal NDA definitions ("Confidential Information", "Disclosing Party", "Receiving Party") and a one-sentence body now resolves to `family === "nda-deep"` with at least one `source === "definition"` signal in the audit trail.
+
+`npm run lint && typecheck && test && build` all green; **2197/2197 tests + 2 skips** (was 2196).
+
 ### v3 auto-detect routes nda-deep to mutual vs unilateral by symmetry signal (spec-v3 §27 / §32 follow-up) (2026-05-27) — ✅ complete
 
 Closes the routing gap left after the prior NDA-deep playbook upgrade. Both `mutual-nda-deep` and `unilateral-nda-deep` ship at v1.0.0 with distinct compliance-matrix columns (mutual symmetry vs. discloser/receiver role framing), but `detectV3Family` hard-coded `"nda-deep": "mutual-nda-deep"` in `FAMILY_TO_PLAYBOOK` — so every borderline NDA dropped on the page suggested the mutual playbook, even when the document explicitly self-titled "One-way NDA" or framed itself around a single Disclosing Party. The chip rendered the wrong suggestion and the compliance matrix would have rendered the wrong symmetry column on accept.

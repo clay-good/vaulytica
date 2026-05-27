@@ -113,6 +113,25 @@ describe("detectV3Family", () => {
     expect(d.suggested_playbook).toBe("unilateral-nda-deep");
   });
 
+  it("picks up nda-deep on the defined-term signal even when the body text is sparse", () => {
+    // Common case: definitions appendix is the only place "Confidential
+    // Information" and "Disclosing Party" appear in formal definition
+    // form. Body text mentions confidentiality and trade secrets but
+    // does not repeat the canonical defined-term names. Detector should
+    // still pick nda-deep on the strength of the definition entries.
+    const ext = emptyExtracted({
+      "Confidential Information":
+        "means any non-public information disclosed by one party to the other.",
+      "Disclosing Party": "means the party that discloses Confidential Information.",
+      "Receiving Party": "means the party that receives Confidential Information.",
+    });
+    const text =
+      "Non-Disclosure Agreement. The parties agree to protect each other's trade secrets.";
+    const d = detectV3Family(ext, text);
+    expect(d.family).toBe("nda-deep");
+    expect(d.signals.some((s) => s.source === "definition")).toBe(true);
+  });
+
   it("falls back to mutual-nda-deep when nda-deep signals are present but mutual/unilateral cues are absent", () => {
     const ext = emptyExtracted();
     // No "mutual" / "one-way" header, no discloser/recipient framing —
