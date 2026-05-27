@@ -25,6 +25,19 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v3 NDA-deep playbooks upgraded to v1.0.0 (spec-v3 §27 follow-up) (2026-05-26) — ✅ complete
+
+Closes one of the Step 27 remaining-work items: `src/playbooks/v3/mutual-nda-deep.json` and `src/playbooks/v3/unilateral-nda-deep.json` were still sitting at `0.0.0-placeholder` with empty `match_features.distinguishing_phrases`, `expected_defined_terms`, `sources`, and `compliance_matrix_columns` despite the 25-rule NDA-D-* ruleset and 39 fixtures landing in Step 27 + Step 34. The placeholders meant the playbook matcher couldn't actually pick either playbook on text-feature alone (only on the title-keyword match), and the bundle/single-doc compliance-matrix renderer had no columns to populate.
+
+- [`src/playbooks/v3/mutual-nda-deep.json`](src/playbooks/v3/mutual-nda-deep.json) → v1.0.0 with: 7 title keywords (mutual / two-way / bilateral variants), 14 distinguishing phrases (Confidential Information, trade secret, residuals, evaluate the purpose, discloser/recipient, 1833(b), whistleblower immunity, injunctive relief, irreparable harm), 6 negative features (BAA, PHI, DPA, SCC, MSA, SOW — the families most likely to be mis-routed into NDA-deep), 8 expected defined terms (Confidential Information, Purpose, Discloser, Recipient, Disclosing/Receiving Party, Trade Secret, Representatives), 3 grounded sources (18 U.S.C. § 1833(b), UTSA 1985, Common Paper Mutual NDA / consensus drafting), and a 15-column compliance matrix anchored to §32's enumerated obligations including the mutual-symmetry column unique to the mutual variant.
+- [`src/playbooks/v3/unilateral-nda-deep.json`](src/playbooks/v3/unilateral-nda-deep.json) → v1.0.0 with the same shape but: 6 title keywords (one-way / unilateral / generic "confidentiality agreement"), 12 distinguishing phrases (drops the mutual-only "each party" / "either party"), 9 negative features that include "mutual non-disclosure" + "each party" + "either party" so a mutual NDA isn't mis-routed into the unilateral playbook, and a 15-column compliance matrix whose final column is the spec-§32 "discloser / receiver role framing" check unique to the unilateral variant.
+
+Tests: existing 39 NDA-deep golden fixtures + 8-test NDA-deep ruleset + the playbook-integration test all continue to pass without modification — the upgrade is additive (richer match features improve the matcher score for these playbooks but do not change which playbook gets picked for any existing fixture, because each fixture carries a `.playbook` sidecar forcing the v3 selection).
+
+Note: the other Step 27 remaining-work items (deprecate v2 `mutual-nda` / `unilateral-nda` to `*-legacy` and re-point auto-detect to the deep playbooks for v3 detection) are intentionally left for a separate commit — they would touch the v2 launch playbook surface and the v2 auto-detect path, which has independent regression risk and deserves its own focused review.
+
+`npm run typecheck && lint && test && build` all green; **2191/2191 tests + 2 skips**.
+
 ### v3 bundle DOCX + JSON surface per-document detection_confidence (spec-v3 §60 follow-up) (2026-05-26) — ✅ complete
 
 The v3 `detectV3Family` extractor produces both a `family` label and a `confidence` score in `[0, 1]`, but until now the bundle artifacts only carried the label — neither the bundle DOCX per-document subsection nor the JSON `documents[]` entry exposed how confident the detector actually was. A 0.9 detection on a clean Common-Paper-shaped Mutual NDA and a 0.4 detection on an ambiguous document both rendered as bare "Detected family: Mutual NDA" lines. Surfacing the confidence makes ambiguous detections discoverable by a reader of the report alone (without the UI to compare against alternatives).

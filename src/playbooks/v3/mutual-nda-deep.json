@@ -1,21 +1,101 @@
 {
   "id": "mutual-nda-deep",
-  "version": "0.0.0-placeholder",
+  "version": "1.0.0",
   "name": "Mutual NDA — Deep Analysis",
-  "description": "Placeholder per spec-v3.md §44. Full implementation lands in Step 27. Replaces v2 mutual-nda. Selects the §32 NDA-deep ruleset. Includes DTSA notice check, symmetry check, definition-exclusions check, residuals-clause flag.",
+  "description": "Mutual / two-way non-disclosure agreement under US trade-secret law. Selects the §32 NDA-deep ruleset (25 rules) covering DTSA whistleblower-immunity notice (18 U.S.C. § 1833(b)), Confidential-Information definition completeness, four standard exclusions (publicly available, prior knowledge, lawful third-party, independent development), permitted-use scope, residuals, return-or-destruction with attestation, injunctive relief with waiver-of-bond, governing-law viability, no-precedent / MFN, non-solicit carve-outs, no-license, authority representation, successors-and-assigns, plus the mutual-NDA symmetry check.",
   "match_features": {
-    "title_keywords": ["mutual non-disclosure agreement", "mutual nda", "mutual confidentiality agreement"],
+    "title_keywords": [
+      "mutual non-disclosure agreement",
+      "mutual nda",
+      "mutual confidentiality agreement",
+      "two-way nda",
+      "two-way non-disclosure agreement",
+      "bilateral non-disclosure agreement",
+      "bilateral nda"
+    ],
     "required_clauses": [],
-    "distinguishing_phrases": [],
-    "negative_features": []
+    "distinguishing_phrases": [
+      "confidential information",
+      "trade secret",
+      "evaluate the purpose",
+      "residuals",
+      "discloser",
+      "recipient",
+      "disclosing party",
+      "receiving party",
+      "each party",
+      "either party",
+      "1833(b)",
+      "whistleblower immunity",
+      "injunctive relief",
+      "irreparable harm"
+    ],
+    "negative_features": [
+      "this Business Associate Agreement",
+      "protected health information",
+      "Data Processing Agreement",
+      "Standard Contractual Clauses",
+      "Master Services Agreement",
+      "Statement of Work"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": [],
+  "expected_defined_terms": [
+    "Confidential Information",
+    "Purpose",
+    "Discloser",
+    "Recipient",
+    "Disclosing Party",
+    "Receiving Party",
+    "Trade Secret",
+    "Representatives"
+  ],
   "rule_overrides": {},
   "balanced_defaults": [],
-  "sources": [],
+  "sources": [
+    {
+      "id": "dtsa-18-usc-1833-b",
+      "source": "18 U.S.C. § 1833(b) — Defend Trade Secrets Act whistleblower immunity / notice requirement",
+      "source_url": "https://www.law.cornell.edu/uscode/text/18/1833",
+      "retrieved_at": "2026-05-12T00:00:00Z",
+      "license": "Public domain (US government work)",
+      "license_url": "https://www.usa.gov/government-works"
+    },
+    {
+      "id": "utsa-1985",
+      "source": "Uniform Trade Secrets Act (1985 amended)",
+      "source_url": "https://www.uniformlaws.org/committees/community-home?CommunityKey=3a2538fb-e030-4e2d-a9e2-90373dc05792",
+      "retrieved_at": "2026-05-12T00:00:00Z",
+      "license": "Public uniform-law text",
+      "license_url": "https://www.uniformlaws.org/HigherLogic/System/DownloadDocumentFile.ashx?DocumentFileKey=e19b2528-e0b1-0054-23c4-8069701a4b62"
+    },
+    {
+      "id": "nda-consensus-drafting",
+      "source": "Common Paper Mutual NDA standard (consensus NDA drafting practice)",
+      "source_url": "https://commonpaper.com/standards/mutual-nda/",
+      "retrieved_at": "2026-05-12T00:00:00Z",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/"
+    }
+  ],
   "regulator_frame": "DTSA",
   "applicable_jurisdictions": ["US"],
   "companion_playbooks": ["msa-vendor-deep"],
-  "compliance_matrix_columns": []
+  "compliance_matrix_columns": [
+    "DTSA notice (18 U.S.C. § 1833(b))",
+    "Confidentiality term",
+    "Trade-secret perpetual carve-out",
+    "Confidential Information defined",
+    "Four standard exclusions",
+    "Permitted-use scope",
+    "Return-or-destruction with attestation",
+    "Injunctive relief + waiver of bond",
+    "Governing law (viable jurisdiction)",
+    "No-precedent / MFN",
+    "Non-solicit carve-outs",
+    "No-license",
+    "Authority representation",
+    "Successors-and-assigns / assignment consent",
+    "Mutual symmetry"
+  ]
 }
