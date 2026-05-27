@@ -129,6 +129,17 @@ playbook should be the family default, update that mapping.
 Otherwise the existing default is preserved and your playbook is
 available as a manual override.
 
+A family may also resolve dynamically when more than one playbook is a
+viable target for the same family. The current example is `nda-deep`,
+which post-processes its base mapping (`mutual-nda-deep`) through
+`resolveNdaDeepVariant(text)` to switch to `unilateral-nda-deep` when
+the document carries one-way / unilateral / Discloser → Recipient
+signals. The resolver appends its signals to the detection audit
+trail. If your family needs the same treatment — multiple playbooks
+under a single detection family — follow that pattern: keep one
+default in `FAMILY_TO_PLAYBOOK` and add a `resolve<Family>Variant`
+helper that runs after best-family selection.
+
 ## 7. Reference fixtures
 
 Drop one passing fixture and one failing fixture under
