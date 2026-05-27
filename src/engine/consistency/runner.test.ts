@@ -56,6 +56,16 @@ describe("CONSISTENCY_RULES registry", () => {
 describe("kindOf", () => {
   it("classifies playbook ids into the right document kinds", () => {
     expect(kindOf(makeDoc("a", "msa-vendor-deep", ["A", "x"]))).toBe("msa");
+    expect(kindOf(makeDoc("a", "msa-customer-deep", ["A", "x"]))).toBe("msa");
+    expect(kindOf(makeDoc("a", "msa-general", ["A", "x"]))).toBe("msa");
+    // family-msa is the v4 Family-Law Marital Settlement Agreement
+    // playbook — completely unrelated to a vendor MSA. The current
+    // `startsWith("msa-")` check correctly classifies it as "other"
+    // because "family-msa" does not start with "msa-". A future
+    // refactor that broadened the match (e.g. `includes("msa")`)
+    // would silently misroute family-law documents into two-doc MSA
+    // mode; pin the negative case so the regression surfaces.
+    expect(kindOf(makeDoc("a", "family-msa", ["A", "x"]))).toBe("other");
     expect(kindOf(makeDoc("a", "baa", ["A", "x"]))).toBe("baa");
     expect(kindOf(makeDoc("a", "baa-subcontractor", ["A", "x"]))).toBe("baa");
     expect(kindOf(makeDoc("a", "dpa-controller-processor", ["A", "x"]))).toBe("dpa");
