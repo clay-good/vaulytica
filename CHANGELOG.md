@@ -5,6 +5,67 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- v3 `detectV3Family` defined-term signals across the remaining
+  contract-style detectors (the form-style detectors — SCC, UK IDTA,
+  ACORD-25 — keep their `void extracted;` shims by design because the
+  underlying documents are pre-printed regulator / industry forms with
+  no meaningful definitions section).
+  - [`src/ui/v3/auto-detect.ts`](src/ui/v3/auto-detect.ts) `detectNdaDeep`
+    emits `Confidential Information defined` (weight 2) and `Discloser /
+    Recipient defined` (weight 1) from `extracted.definitions.entries`.
+  - `detectMsaDeep` emits `Services defined` + `Order Form / SOW
+    defined` (weight 1 each).
+  - `detectVendorSecurity` emits `Customer / Personal Data defined` +
+    `Security Measures defined` (weight 1 each).
+  - `detectAiAddendum` emits `Model / Foundation Model defined` +
+    `Training Data / Output defined` (weight 1 each).
+  - All signals are additive — no existing weights change, no fixtures
+    regenerated, no goldens shifted. The `source: "definition"`
+    classification matches what `detectBaa` / `detectDpaEu` /
+    `detectDpaUsState` already use.
+  - [`src/ui/v3/v3-ui.test.ts`](src/ui/v3/v3-ui.test.ts): 4 new tests,
+    one per detector, each with body text intentionally sparse enough
+    that the definition signal carries non-redundant weight.
+
+### Changed
+- v3 `detectV3Family` now routes the `nda-deep` family to either
+  `mutual-nda-deep` or `unilateral-nda-deep` based on symmetry
+  signals, instead of unconditionally suggesting the mutual variant.
+  Both playbooks now ship at v1.0.0 with distinct compliance-matrix
+  columns (mutual symmetry vs. discloser / receiver role framing);
+  the prior hard-coded mapping meant a document self-titled "One-way
+  NDA" would still suggest the mutual playbook and render the wrong
+  matrix column on accept.
+  - [`src/ui/v3/auto-detect.ts`](src/ui/v3/auto-detect.ts): new
+    `resolveNdaDeepVariant(text)` helper scores mutual-vs-unilateral
+    title and role-framing cues and picks the matching playbook.
+    Ties default to mutual (the safer fallback — mutual rules include
+    a symmetry check the unilateral playbook does not, so misrouting
+    a unilateral document under mutual produces a correctable
+    false-positive surface; the inverse silently misses a rule).
+    Resolver signals are appended to the detection audit trail.
+  - Family id (`nda-deep`), `V3_FAMILY_LABELS["nda-deep"]`, fixtures,
+    goldens, and consistency-engine `kindOf` resolver all unchanged
+    — only `suggested_playbook` gains a second possible value.
+  - [`src/ui/v3/v3-ui.test.ts`](src/ui/v3/v3-ui.test.ts): 3 new tests
+    pinning mutual-route, unilateral-route, and tie-fallback cases.
+
+### Fixed
+- Replaced two `github.com/clay-good/vaulytica/blob/main/spec-v4.md`
+  citation URLs with canonical anchors on `https://vaulytica.com`.
+  Both citations belong to self-referential disclaimer rules
+  (EST-060, REG-040) that previously cited the project's own spec
+  via a mutable branch in GitHub's code-hosting UI — not something a
+  partner can sign off on. The inline citation text in each rule's
+  `source` field already names the exact spec section (§6.N for
+  EST-060, §6.P for REG-040), so the auditable reference is now
+  self-contained in the citation row.
+  - [`src/engine/rules/v4/trust-estate/rules.ts`](src/engine/rules/v4/trust-estate/rules.ts)
+  - [`src/engine/rules/v4/regulatory-prose/rules.ts`](src/engine/rules/v4/regulatory-prose/rules.ts)
+  - 10 v4 golden fixtures regenerated; `result_hash` drift contained
+    to exactly the two affected rules.
+
+### Added
 - DOCX report: real parties / dates / amounts / definitions /
   jurisdictions tables in the Extracted Data Appendix, and the
   obligor / modal / action / trigger ledger in the Obligations
