@@ -25,6 +25,17 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v3 single-doc family chip surfaces detection_confidence + low-confidence treatment (spec-v3 §60 follow-up) (2026-05-26) — ✅ complete
+
+Closes the matching gap on the single-doc UI surface. The previous commit gave the multi-doc bundle cards a "(0.83)" suffix and a `.low-confidence` class; the single-doc complete state's v3 family chip previously rendered just "Detected: BAA" (the confidence was stored on a `data-confidence` attribute, invisible to humans). A user dropping a borderline-detected single document saw no visual signal that the auto-detection was tentative.
+
+- [`src/ui/states.ts`](src/ui/states.ts): `renderV3FamilyChip` now writes "Detected: BAA (0.32)" with the numeric confidence inline and toggles a `.low-confidence` class on the chip element when the score is below 0.5. The `data-confidence` attribute is preserved for callers (and the existing CSS hook for any future per-bucket styling).
+- [`site/index.html`](site/index.html): two new CSS rules — `.v3-family-chip` (margin + size + tabular-nums) and `.v3-family-chip.low-confidence` (opacity drop + italic) so the visual treatment matches the bundle multi-doc card (`.multi-doc-card.low-confidence`).
+
+Tests in [`src/ui/states.test.ts`](src/ui/states.test.ts) (1 updated + 1 new): (1) the existing high-confidence chip test now also asserts "(0.75)" appears in textContent and `.low-confidence` is absent; (2) a new test passes a 0.32 detection and asserts the suffix renders + `.low-confidence` class is applied.
+
+`npm run typecheck && lint && test && build` all green; **2193/2193 tests + 2 skips**.
+
 ### v3 multi-doc UI cards surface detection_confidence (spec-v3 §60 follow-up) (2026-05-26) — ✅ complete
 
 The bundle DOCX per-document subsection and the bundle JSON `documents[]` entry both gained `detection_confidence` in a recent commit. The on-page bundle-complete multi-doc cards rendered the family label without the confidence — so a user reading the live UI couldn't tell a 0.9 high-signal detection (clean Mutual NDA) from a 0.4 borderline detection (ambiguous document) without re-opening the Word report. Spec-v3 §60 explicitly calls out that "below 0.4 the suggestion should be presented faintly"; this commit wires that affordance into the multi-doc cards too.

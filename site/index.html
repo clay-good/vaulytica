@@ -609,6 +609,21 @@
         height: 16px;
         cursor: pointer;
       }
+      /* Single-doc v3 family-detection chip (spec-v3 §60). Mirrors the
+         bundle multi-doc card behavior: the chip is rendered faintly
+         when the detection confidence is < 0.5 (spec §60 explicit
+         requirement: "below 0.4 the suggestion should be presented
+         faintly"). */
+      .v3-family-chip {
+        margin-top: 8px;
+        font-size: 13px;
+        color: var(--muted);
+        font-variant-numeric: tabular-nums;
+      }
+      .v3-family-chip.low-confidence {
+        opacity: 0.65;
+        font-style: italic;
+      }
       /* Compliance-frame chip row (spec-v3 §61 / Step 33 UI hookup).
          Each chip is a toggle (role="switch"). WCAG 2.5.8 (AA)
          requires interactive targets to be ≥ 24×24 CSS px — set an

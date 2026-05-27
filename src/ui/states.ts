@@ -453,7 +453,12 @@ function renderV3FamilyChip(
   chip.hidden = false;
   const pct = Math.round(detection.confidence * 100);
   chip.setAttribute("data-confidence", String(pct));
-  chip.textContent = `Detected: ${detection.label}`;
+  // Spec-v3 §60: render the numeric confidence next to the family
+  // label, and flag low-confidence (< 0.5) detections with a class so
+  // CSS can present them faintly. Mirrors the affordance on the
+  // bundle-complete multi-doc cards (`.multi-doc-card.low-confidence`).
+  chip.classList.toggle("low-confidence", detection.confidence < 0.5);
+  chip.textContent = `Detected: ${detection.label} (${detection.confidence.toFixed(2)})`;
 }
 
 function renderComplianceFrameChips(

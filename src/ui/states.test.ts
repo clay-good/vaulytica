@@ -232,8 +232,29 @@ describe("renderState", () => {
     });
     const chip = select(dz, "v3-family")!;
     expect(chip.hidden).toBe(false);
-    expect(chip.textContent).toMatch(/Detected: BAA/);
+    expect(chip.textContent).toMatch(/Detected: BAA \(0\.75\)/);
     expect(chip.getAttribute("data-confidence")).toBe("75");
+    expect(chip.classList.contains("low-confidence")).toBe(false);
+  });
+
+  it("v3 family chip flags low-confidence detections with .low-confidence class (spec-v3 §60)", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "complete",
+      filename: "borderline.docx",
+      playbook_name: "DPA",
+      counts: { critical: 0, warning: 0, info: 0 },
+      docx_blob: new Blob(["docx"]),
+      json_blob: new Blob(["{}"]),
+      docx_filename: "x.docx",
+      json_filename: "x.json",
+      v3_family: { family: "dpa-eu", label: "EU DPA", confidence: 0.32 },
+    });
+    const chip = select(dz, "v3-family")!;
+    expect(chip.hidden).toBe(false);
+    expect(chip.textContent).toMatch(/Detected: EU DPA \(0\.32\)/);
+    expect(chip.getAttribute("data-confidence")).toBe("32");
+    expect(chip.classList.contains("low-confidence")).toBe(true);
   });
 
   it("hides v3 family chip when family is unknown or omitted", () => {
