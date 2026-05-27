@@ -1271,7 +1271,7 @@ const EXECUTION_DISCLAIMER_RULE: Rule = {
           id: "est-execution-disclaimer",
           source:
             "Vaulytica spec-v4.md §6.N caveat — execution-formality disclaimer required on every output in trust / estate / family sub-domain",
-          source_url: "https://github.com/clay-good/vaulytica/blob/main/spec-v4.md",
+          source_url: "https://vaulytica.com/#spec-v4-6n-trust-estate-execution-disclaimer",
           retrieved_at: "2026-05-16T00:00:00Z",
           license: "MIT",
           license_url: "https://opensource.org/licenses/MIT",

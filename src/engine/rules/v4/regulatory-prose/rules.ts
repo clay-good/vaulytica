@@ -884,7 +884,7 @@ const FILING_SCHEMA_DISCLAIMER_RULE: Rule = {
           id: "reg-prose-disclaimer",
           source:
             "Vaulytica spec-v4.md §6.P caveat — prose-only / filing-schema disclaimer required on every output in regulatory-prose sub-domain",
-          source_url: "https://github.com/clay-good/vaulytica/blob/main/spec-v4.md",
+          source_url: "https://vaulytica.com/#spec-v4-6p-regulatory-prose-filing-schema-disclaimer",
           retrieved_at: "2026-05-16T00:00:00Z",
           license: "MIT",
           license_url: "https://opensource.org/licenses/MIT",
