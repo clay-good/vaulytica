@@ -25,6 +25,18 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v3 multi-doc UI cards surface detection_confidence (spec-v3 §60 follow-up) (2026-05-26) — ✅ complete
+
+The bundle DOCX per-document subsection and the bundle JSON `documents[]` entry both gained `detection_confidence` in a recent commit. The on-page bundle-complete multi-doc cards rendered the family label without the confidence — so a user reading the live UI couldn't tell a 0.9 high-signal detection (clean Mutual NDA) from a 0.4 borderline detection (ambiguous document) without re-opening the Word report. Spec-v3 §60 explicitly calls out that "below 0.4 the suggestion should be presented faintly"; this commit wires that affordance into the multi-doc cards too.
+
+- [`src/ui/states.ts`](src/ui/states.ts): the `bundle-complete.documents[]` per-entry shape gains an optional `detection_confidence?: number`. The card renderer (a) appends "(0.83)" next to the family label as a separate `<span class="multi-doc-card-confidence">` so the suffix can be styled distinctly, and (b) flips a `.low-confidence` class on the card root when the score is below 0.5. Both effects are no-ops when `detection_confidence` is absent — the renderer is fully back-compat with existing callers (the recent JSON / DOCX commits are the model).
+- [`src/ui/main.ts`](src/ui/main.ts): `runBundle` threads `d.v3_detection.confidence` into each `documentSummaries[i].detection_confidence` (omitted when family is `"unknown"`, matching the existing `family_label` gate). So production multi-doc bundles now carry the confidence end-to-end into the UI.
+- [`site/index.html`](site/index.html): two new CSS rules — `.multi-doc-card-confidence` (tabular-nums + slight opacity reduction so the suffix doesn't compete with the family label) and `.multi-doc-card.low-confidence .multi-doc-card-family` (additional opacity drop + italic on the family label so a low-confidence call reads as "tentative" at a glance, per spec §60).
+
+Tests in [`src/ui/states.test.ts`](src/ui/states.test.ts) (1 new): a three-card fixture covering all three states — high-confidence (0.83) shows the suffix and no `.low-confidence` class; borderline (0.32) shows the suffix and flips on `.low-confidence`; no-confidence card shows neither the suffix nor the class (back-compat).
+
+`npm run typecheck && lint && test && build` all green; **2192/2192 tests + 2 skips**.
+
 ### v3 baa-subcontractor + dpa-processor-subprocessor playbooks upgraded to v1.0.0 (spec-v3 §23 / §24 follow-up) (2026-05-26) — ✅ complete
 
 The last two `0.0.0-placeholder` playbooks in `src/playbooks/v3/`. Like the prior NDA-deep upgrade, the placeholders meant the matcher couldn't pick these flow-down variants on text-feature alone and the compliance-matrix renderer had no columns to populate.

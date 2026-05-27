@@ -518,6 +518,20 @@
         font-size: 12px;
         margin-top: 2px;
       }
+      /* Spec-v3 §60: low-confidence (< 0.5) detections should be
+         presented faintly so a reader can spot ambiguous calls at a
+         glance. The confidence suffix renders in the same line as the
+         family label, mirroring the "(confidence 0.83)" string the
+         bundle DOCX prints in each per-document subsection. */
+      .multi-doc-card-confidence {
+        font-variant-numeric: tabular-nums;
+        opacity: 0.75;
+        margin-left: 2px;
+      }
+      .multi-doc-card.low-confidence .multi-doc-card-family {
+        opacity: 0.65;
+        font-style: italic;
+      }
       .multi-doc-card-counts {
         color: var(--muted);
         font-size: 12px;

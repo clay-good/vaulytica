@@ -83,6 +83,15 @@ export type DropzoneState =
       documents?: ReadonlyArray<{
         filename: string;
         family_label?: string;
+        /**
+         * Optional `detectV3Family` confidence in `[0, 1]`. When
+         * present, the card meta line appends "(0.83)" next to the
+         * family label and renders the entry with a `.low-confidence`
+         * class when the score is below 0.5 so ambiguous detections
+         * are visually distinct from confident ones (spec-v3 §60
+         * "below 0.4 the suggestion should be presented faintly").
+         */
+        detection_confidence?: number;
         playbook_name: string;
         counts: { critical: number; warning: number; info: number };
         docx_blob: Blob;
@@ -310,6 +319,7 @@ function renderMultiDocCards(
     | ReadonlyArray<{
         filename: string;
         family_label?: string;
+        detection_confidence?: number;
         playbook_name: string;
         counts: { critical: number; warning: number; info: number };
         docx_blob: Blob;
@@ -329,13 +339,19 @@ function renderMultiDocCards(
   list.hidden = false;
   list.innerHTML = documents
     .map((d, i) => {
+      const conf = typeof d.detection_confidence === "number" ? d.detection_confidence : null;
+      const confSuffix =
+        conf !== null
+          ? ` <span class="multi-doc-card-confidence">(${conf.toFixed(2)})</span>`
+          : "";
       const family = d.family_label
-        ? `<span class="multi-doc-card-family">${escapeHtml(d.family_label)}</span>`
+        ? `<span class="multi-doc-card-family">${escapeHtml(d.family_label)}${confSuffix}</span>`
         : "";
       const playbook = `<span class="multi-doc-card-playbook">${escapeHtml(d.playbook_name)}</span>`;
       const c = d.counts;
       const countsLine = `${c.critical} critical · ${c.warning} warnings · ${c.info} info`;
-      return `<li class="multi-doc-card" data-role="multi-doc-card">
+      const lowConfClass = conf !== null && conf < 0.5 ? " low-confidence" : "";
+      return `<li class="multi-doc-card${lowConfClass}" data-role="multi-doc-card">
         <div class="multi-doc-card-filename">${escapeHtml(d.filename)}</div>
         <div class="multi-doc-card-meta">${family}${family ? " · " : ""}${playbook}</div>
         <div class="multi-doc-card-counts">${countsLine}</div>

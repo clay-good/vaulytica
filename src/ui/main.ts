@@ -286,6 +286,8 @@ async function renderBundleComplete(
           d.v3_detection.family === "unknown"
             ? undefined
             : V3_FAMILY_LABELS[d.v3_detection.family] ?? d.v3_detection.family,
+        detection_confidence:
+          d.v3_detection.family === "unknown" ? undefined : d.v3_detection.confidence,
         playbook_name: d.playbook.name,
         counts: countsBySeverity(d.run),
         docx_blob: d.docx_blob,

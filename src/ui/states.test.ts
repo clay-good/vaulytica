@@ -7,6 +7,7 @@ import { renderState, select } from "./states.js";
 function cardDoc(overrides: {
   filename: string;
   family_label?: string;
+  detection_confidence?: number;
   playbook_name: string;
   counts: { critical: number; warning: number; info: number };
   docx_blob?: Blob;
@@ -16,6 +17,7 @@ function cardDoc(overrides: {
 }): {
   filename: string;
   family_label?: string;
+  detection_confidence?: number;
   playbook_name: string;
   counts: { critical: number; warning: number; info: number };
   docx_blob: Blob;
@@ -26,6 +28,7 @@ function cardDoc(overrides: {
   return {
     filename: overrides.filename,
     family_label: overrides.family_label,
+    detection_confidence: overrides.detection_confidence,
     playbook_name: overrides.playbook_name,
     counts: overrides.counts,
     docx_blob: overrides.docx_blob ?? new Blob(["docx"]),
@@ -568,6 +571,53 @@ describe("renderState", () => {
     expect(jsonBtns.length).toBe(2);
     expect(wordBtns[0]!.getAttribute("aria-label")).toMatch(/Word.*msa\.docx/);
     expect(jsonBtns[1]!.getAttribute("aria-label")).toMatch(/JSON.*dpa\.docx/);
+  });
+
+  it("renders detection_confidence next to the family label and flags low-confidence cards", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 3,
+      counts: { critical: 0, warning: 0, info: 0 },
+      cross_doc_findings: 0,
+      bundle_docx_blob: new Blob(["docx"]),
+      bundle_json_blob: new Blob(["{}"]),
+      bundle_docx_filename: "x.docx",
+      bundle_json_filename: "x.json",
+      documents: [
+        cardDoc({
+          filename: "msa.docx",
+          family_label: "MSA",
+          detection_confidence: 0.83,
+          playbook_name: "MSA (Customer-Deep)",
+          counts: { critical: 0, warning: 0, info: 0 },
+        }),
+        cardDoc({
+          filename: "borderline.docx",
+          family_label: "DPA",
+          detection_confidence: 0.32,
+          playbook_name: "DPA",
+          counts: { critical: 0, warning: 0, info: 0 },
+        }),
+        cardDoc({
+          filename: "no-conf.docx",
+          family_label: "BAA",
+          playbook_name: "BAA",
+          counts: { critical: 0, warning: 0, info: 0 },
+        }),
+      ],
+    });
+    const cards = dz.querySelectorAll<HTMLLIElement>('[data-role="multi-doc-card"]');
+    // High-confidence card shows (0.83) and is NOT flagged low-confidence.
+    expect(cards[0]!.textContent).toMatch(/MSA\s*\(0\.83\)/);
+    expect(cards[0]!.classList.contains("low-confidence")).toBe(false);
+    expect(cards[0]!.querySelector(".multi-doc-card-confidence")?.textContent).toBe("(0.83)");
+    // Low-confidence card gets the .low-confidence class.
+    expect(cards[1]!.textContent).toMatch(/DPA\s*\(0\.32\)/);
+    expect(cards[1]!.classList.contains("low-confidence")).toBe(true);
+    // Card without confidence shows no (X.XX) suffix and no .low-confidence flag.
+    expect(cards[2]!.querySelector(".multi-doc-card-confidence")).toBeNull();
+    expect(cards[2]!.classList.contains("low-confidence")).toBe(false);
   });
 
   it("clicking a card download button saves that doc's per-doc blob", async () => {
