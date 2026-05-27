@@ -14,7 +14,12 @@ Thumbs.db
 *.swo
 *~
 #*#
-.claude
+# Claude Code: per-user settings drift between machines; the rest of
+# .claude/ (agents, skills, rules) is the shared project convention
+# and stays tracked.
+.claude/settings.json
+.claude/settings.local.json
+.claude/.DS_Store
 
 # --------------------
 # Python Specific
