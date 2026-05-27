@@ -25,6 +25,17 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v3 baa-subcontractor + dpa-processor-subprocessor playbooks upgraded to v1.0.0 (spec-v3 §23 / §24 follow-up) (2026-05-26) — ✅ complete
+
+The last two `0.0.0-placeholder` playbooks in `src/playbooks/v3/`. Like the prior NDA-deep upgrade, the placeholders meant the matcher couldn't pick these flow-down variants on text-feature alone and the compliance-matrix renderer had no columns to populate.
+
+- [`src/playbooks/v3/baa-subcontractor.json`](src/playbooks/v3/baa-subcontractor.json) → v1.0.0 — business-associate-to-subcontractor BAA per the HHS HIPAA Omnibus Rule (78 Fed. Reg. 5566, Jan. 25, 2013). Adds 5 title keywords (subcontractor BAA / downstream BAA variants), 15 distinguishing phrases anchored to 45 CFR § 164.504(e)(5) and § 164.502(e)(1)(ii) flow-down (the regulatory hooks unique to subcontractor BAAs vs. the direct CE-to-BA BAA), 6 negative features to keep direct CE-to-BA BAAs in the parent `baa` playbook, 9 expected defined terms (adds "Subcontractor" to the standard BAA set), 2 grounded sources (45 CFR Part 164 + the Omnibus Rule Federal Register entry), and a 14-column compliance matrix that adds an explicit "§ 164.504(e)(5) flow-down" column to the standard BAA matrix.
+- [`src/playbooks/v3/dpa-processor-subprocessor.json`](src/playbooks/v3/dpa-processor-subprocessor.json) → v1.0.0 — processor-to-sub-processor DPA under GDPR + UK GDPR. Adds 6 title keywords (sub-processor DPA / downstream DPA variants), 17 distinguishing phrases anchored to Article 28(4) flow-down ("same data protection obligations", "upstream DPA", "principal DPA", "processor's obligations") alongside the standard GDPR Art. 28(3) vocabulary, 7 negative features to keep direct controller-to-processor DPAs in the parent `dpa-controller-processor` playbook, 7 expected defined terms (adds "Sub-processor" to the standard DPA set), 2 grounded sources (GDPR + UK GDPR), and a 14-column compliance matrix that adds explicit "Art. 28(2) prior authorisation" and "Art. 28(4) flow-down" columns to the standard DPA matrix.
+
+Tests: all existing 39-fixture NDA-deep golden suite + 8-test DPA-GDPR ruleset + the playbook-integration test continue to pass without modification — the upgrade is additive (richer match features improve the matcher score for these playbooks but do not change which playbook gets picked for any existing fixture, because each fixture carries a `.playbook` sidecar forcing the v3 selection). After this commit, **zero `0.0.0-placeholder` playbooks remain in `src/playbooks/v3/`**.
+
+`npm run typecheck && lint && test && build` all green; **2191/2191 tests + 2 skips**.
+
 ### v3 NDA-deep playbooks upgraded to v1.0.0 (spec-v3 §27 follow-up) (2026-05-26) — ✅ complete
 
 Closes one of the Step 27 remaining-work items: `src/playbooks/v3/mutual-nda-deep.json` and `src/playbooks/v3/unilateral-nda-deep.json` were still sitting at `0.0.0-placeholder` with empty `match_features.distinguishing_phrases`, `expected_defined_terms`, `sources`, and `compliance_matrix_columns` despite the 25-rule NDA-D-* ruleset and 39 fixtures landing in Step 27 + Step 34. The placeholders meant the playbook matcher couldn't actually pick either playbook on text-feature alone (only on the title-keyword match), and the bundle/single-doc compliance-matrix renderer had no columns to populate.
