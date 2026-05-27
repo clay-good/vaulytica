@@ -46,7 +46,7 @@ export type V3Detection = {
   signals: DetectionSignal[];
 };
 
-const FAMILY_TO_PLAYBOOK: Record<V3Family, string | null> = {
+export const FAMILY_TO_PLAYBOOK: Record<V3Family, string | null> = {
   baa: "baa",
   "dpa-eu": "dpa-controller-processor",
   "dpa-us-state": "dpa-ccpa-service-provider",
