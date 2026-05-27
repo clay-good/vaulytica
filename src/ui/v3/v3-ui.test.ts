@@ -102,6 +102,11 @@ describe("detectV3Family", () => {
     const d = detectV3Family(ext, text);
     expect(d.family).toBe("nda-deep");
     expect(d.suggested_playbook).toBe("mutual-nda-deep");
+    // Resolver appends its own signals to the audit trail so the user
+    // (and a future reviewer) can see why the variant was picked.
+    expect(
+      d.signals.some((s) => /Mutual \/ two-way \/ bilateral NDA/i.test(s.evidence)),
+    ).toBe(true);
   });
 
   it("routes nda-deep to unilateral-nda-deep on one-way / discloser-recipient framing", () => {
@@ -111,6 +116,10 @@ describe("detectV3Family", () => {
     const d = detectV3Family(ext, text);
     expect(d.family).toBe("nda-deep");
     expect(d.suggested_playbook).toBe("unilateral-nda-deep");
+    // Resolver appends its own signals to the audit trail.
+    expect(
+      d.signals.some((s) => /Unilateral \/ one-way NDA/i.test(s.evidence)),
+    ).toBe(true);
   });
 
   it("picks up nda-deep on the defined-term signal even when the body text is sparse", () => {
