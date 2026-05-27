@@ -61,6 +61,9 @@ describe("kindOf", () => {
     expect(kindOf(makeDoc("a", "dpa-controller-processor", ["A", "x"]))).toBe("dpa");
     expect(kindOf(makeDoc("a", "scc-module-2", ["A", "x"]))).toBe("dpa");
     expect(kindOf(makeDoc("a", "mutual-nda-deep", ["A", "x"]))).toBe("nda");
+    expect(kindOf(makeDoc("a", "unilateral-nda-deep", ["A", "x"]))).toBe("nda");
+    expect(kindOf(makeDoc("a", "mutual-nda", ["A", "x"]))).toBe("nda");
+    expect(kindOf(makeDoc("a", "unilateral-nda", ["A", "x"]))).toBe("nda");
     expect(kindOf(makeDoc("a", "sow", ["A", "x"]))).toBe("sow");
     expect(kindOf(makeDoc("a", "generic-fallback", ["A", "x"]))).toBe("other");
   });
