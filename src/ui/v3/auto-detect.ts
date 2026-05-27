@@ -335,7 +335,21 @@ function detectMsaDeep(extracted: ExtractedData, text: string): DetectionSignal[
   if (/\blimitation\s+of\s+liability\b/i.test(text)) {
     out.push({ source: "phrase", evidence: "Limitation of liability", weight: 1 });
   }
-  void extracted;
+  // Defined-term signal. MSAs almost always introduce "Services" and
+  // either "Order Form" or "Statement of Work" as formally-defined
+  // terms; "Deliverables" is the third structural definition.
+  for (const { term } of extracted.definitions.entries) {
+    if (/^services?$/i.test(term)) {
+      out.push({ source: "definition", evidence: "Services defined", weight: 1 });
+      break;
+    }
+  }
+  for (const { term } of extracted.definitions.entries) {
+    if (/^(?:order\s+form|statement\s+of\s+work|sow)$/i.test(term)) {
+      out.push({ source: "definition", evidence: "Order Form / SOW defined", weight: 1 });
+      break;
+    }
+  }
   return out;
 }
 
@@ -359,7 +373,21 @@ function detectVendorSecurity(extracted: ExtractedData, text: string): Detection
   if (/\bSOC\s*2(?:\s+Type\s*II)?\b|\bISO\s*27001\b/i.test(text)) {
     out.push({ source: "phrase", evidence: "SOC 2 / ISO 27001", weight: 1 });
   }
-  void extracted;
+  // Defined-term signal. Vendor security addenda introduce "Customer
+  // Data" (or "Personal Data") and "Security Measures" / "Security
+  // Standards" as the two load-bearing definitions.
+  for (const { term } of extracted.definitions.entries) {
+    if (/\bcustomer\s+data\b|\bpersonal\s+data\b/i.test(term)) {
+      out.push({ source: "definition", evidence: "Customer / Personal Data defined", weight: 1 });
+      break;
+    }
+  }
+  for (const { term } of extracted.definitions.entries) {
+    if (/\bsecurity\s+(?:measures?|standards?|controls?)\b/i.test(term)) {
+      out.push({ source: "definition", evidence: "Security Measures defined", weight: 1 });
+      break;
+    }
+  }
   return out;
 }
 
@@ -374,6 +402,21 @@ function detectAiAddendum(extracted: ExtractedData, text: string): DetectionSign
   if (/\bNIST\s+AI\s+RMF\b/i.test(text)) {
     out.push({ source: "phrase", evidence: "NIST AI RMF", weight: 1 });
   }
-  void extracted;
+  // Defined-term signal. AI addenda commonly introduce "Model" /
+  // "Foundation Model" and "Training Data" / "Output" as formal
+  // definitions; presence is a strong AI-addendum signal even when
+  // the title is generic ("Schedule 4: AI Services").
+  for (const { term } of extracted.definitions.entries) {
+    if (/\b(?:foundation\s+)?model\b|\bllm\b/i.test(term)) {
+      out.push({ source: "definition", evidence: "Model / Foundation Model defined", weight: 1 });
+      break;
+    }
+  }
+  for (const { term } of extracted.definitions.entries) {
+    if (/\btraining\s+data\b|\bmodel\s+output\b|^output$/i.test(term)) {
+      out.push({ source: "definition", evidence: "Training Data / Output defined", weight: 1 });
+      break;
+    }
+  }
   return out;
 }

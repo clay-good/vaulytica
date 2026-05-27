@@ -132,6 +132,45 @@ describe("detectV3Family", () => {
     expect(d.signals.some((s) => s.source === "definition")).toBe(true);
   });
 
+  it("picks up msa-deep on a defined Services + SOW signal even when MSA-specific phrases are absent", () => {
+    const ext = emptyExtracted({
+      Services:
+        "means the services to be provided by Vendor to Customer as described in each SOW.",
+      "Statement of Work":
+        "means each ordering document executed under this Agreement.",
+    });
+    const text = "Master Services Agreement. Limitation of liability applies.";
+    const d = detectV3Family(ext, text);
+    expect(d.family).toBe("msa-deep");
+    expect(d.signals.some((s) => s.source === "definition")).toBe(true);
+  });
+
+  it("picks up vendor-security on Customer Data + Security Measures defined-term signals", () => {
+    const ext = emptyExtracted({
+      "Customer Data":
+        "means data that Customer provides to Vendor in connection with the services.",
+      "Security Measures":
+        "means the administrative, technical, and physical safeguards Vendor maintains.",
+    });
+    const text = "Vendor Security Addendum. SOC 2 Type II maintained.";
+    const d = detectV3Family(ext, text);
+    expect(d.family).toBe("vendor-security");
+    expect(d.signals.some((s) => s.source === "definition")).toBe(true);
+  });
+
+  it("picks up ai-addendum on Foundation Model + Training Data defined-term signals", () => {
+    const ext = emptyExtracted({
+      "Foundation Model":
+        "means the large language model made available by Vendor for Customer use.",
+      "Training Data":
+        "means input data used by Vendor to train, fine-tune, or evaluate any Model.",
+    });
+    const text = "AI Addendum. NIST AI RMF.";
+    const d = detectV3Family(ext, text);
+    expect(d.family).toBe("ai-addendum");
+    expect(d.signals.some((s) => s.source === "definition")).toBe(true);
+  });
+
   it("falls back to mutual-nda-deep when nda-deep signals are present but mutual/unilateral cues are absent", () => {
     const ext = emptyExtracted();
     // No "mutual" / "one-way" header, no discloser/recipient framing —

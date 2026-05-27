@@ -25,6 +25,21 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v3 detectMsaDeep / detectVendorSecurity / detectAiAddendum add defined-term signals (spec-v3 §60 follow-up) (2026-05-27) — ✅ complete
+
+Continues the prior `detectNdaDeep` definition-signal commit across the three remaining v3 detectors whose target documents carry meaningful definitions sections. The form-style detectors (`detectSccModule`, `detectUkIdta`, `detectCoi`) keep their `void extracted;` shims — those documents are pre-printed regulator / industry forms (Implementing Decision (EU) 2021/914, UK ICO IDTA, ACORD 25) and a definitions section is the wrong place to look for signal.
+
+- [`src/ui/v3/auto-detect.ts`](src/ui/v3/auto-detect.ts):
+  - `detectMsaDeep` — emits `Services defined` (weight 1) and `Order Form / SOW defined` (weight 1) when the corresponding entries appear in `extracted.definitions.entries`. These are the two structural definitions that anchor every modern vendor / customer MSA.
+  - `detectVendorSecurity` — emits `Customer / Personal Data defined` (weight 1) and `Security Measures defined` (weight 1). The two load-bearing definitions in a vendor-security addendum; together they distinguish a security addendum from a generic technical exhibit.
+  - `detectAiAddendum` — emits `Model / Foundation Model defined` (weight 1) and `Training Data / Output defined` (weight 1). Catches AI addenda titled generically ("Schedule 4: AI Services") on definition strength when the addendum header pattern misses.
+
+All signals are additive — no existing weight changes, no fixtures regenerated, no goldens shifted. Source classification (`"definition"`) matches the convention from `detectBaa` / `detectDpaEu` / `detectDpaUsState` / `detectNdaDeep`.
+
+Tests in [`src/ui/v3/v3-ui.test.ts`](src/ui/v3/v3-ui.test.ts) (3 new): one per detector, each constructed so the body text alone would not be enough to push the family score above the minimum threshold without the definition signals — proving the new signal carries non-redundant weight rather than just shadowing the existing body-text signal.
+
+`npm run lint && typecheck && test && build` all green; **2200/2200 tests + 2 skips** (was 2197).
+
 ### v3 detectNdaDeep adds defined-term signal (Confidential Information, Discloser/Recipient) (spec-v3 §60 follow-up) (2026-05-27) — ✅ complete
 
 Removes the `void extracted;` shim from `detectNdaDeep` and wires up the `extracted.definitions` signal the function already had access to. NDAs almost always introduce "Confidential Information" and either "Disclosing Party / Receiving Party" or "Discloser / Recipient" as formally-defined terms in a definitions appendix; when the body text is sparse (a one-paragraph NDA referencing an external schedule, or a contract where the running prose says "trade secrets" but the canonical defined-term names live in the appendix), pattern-matching the body alone misses the strongest contextual signal.
