@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Changed
+- v4 bundle MSA + SOW fixtures pinned via `.playbook` sidecars so they
+  route to `msa-general` / `sow` instead of NDA / SaaS playbooks.
+  Adopts the v3 golden-harness pattern (pin per-doc playbook on
+  bundle fixtures so the bundle test focuses on the consistency
+  engine's cross-doc semantics, not on playbook routing).
+  - 8 `tests/golden/v4/bundles/*/msa.txt.playbook` (all → `msa-general`).
+  - 4 `tests/golden/v4/bundles/*/sow.txt.playbook` (all → `sow`).
+  - All 8 bundle goldens at `tests/golden/v4/bundle-expected/`
+    regenerated; only `per_document.result_hash` and
+    consistency `result_hash` changed.
+
 ### Deprecated
 - v2 `mutual-nda` and `unilateral-nda` playbooks are now marked
   `deprecated: true` in their JSON, with `superseded_by` pointing to

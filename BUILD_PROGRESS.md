@@ -25,6 +25,18 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v4 bundle MSA + SOW fixtures pinned to correct playbooks via .playbook sidecars (spec-v4 §10 follow-up) (2026-05-28) — ✅ complete
+
+Closes the test-fidelity hole exposed by the v2-NDA-deprecation commit. The eight v4 bundle MSA fixtures (`cap-mismatch` / `clean-msa-baa` / `defined-term-drift` / `effective-date-paradox` / `governing-law-mismatch` / `missing-companion-dpa` / `party-name-conflict` / `precedence-clash`) were previously matching `mutual-nda` (an NDA playbook, not an MSA — pre-deprecation) or `saas-vendor` (post-deprecation, but still wrong family). Each MSA fixture contains both confidentiality language ("Confidential Information", "each party") and service-shape language ("Services", "Vendor") because they are realistic skeletons, but the matcher couldn't disambiguate without a domain-specific signal — both NDA and SaaS playbooks were scoring 0.6–0.8 ahead of `msa-general`. Similarly, four SOW fixtures were matching SaaS or generic playbooks.
+
+- 8 new sidecars `tests/golden/v4/bundles/<bundle>/msa.txt.playbook` pinning every bundle MSA to `msa-general`.
+- 4 new sidecars `tests/golden/v4/bundles/<bundle>/sow.txt.playbook` pinning every bundle SOW to `sow`.
+- All 8 bundle goldens at [`tests/golden/v4/bundle-expected/`](tests/golden/v4/bundle-expected/) regenerated; only `per_document.result_hash` for the affected docs changed, finding counts and consistency `result_hash` adjusted in concert as the playbook-specific `rule_overrides` flowed through the engine run.
+
+This is the same pattern the v3 golden harness uses (every `tests/golden/v3/fixtures/*.txt` has a `.playbook` sidecar pinning the v3 playbook). v4 bundles inherit the same contract: bundle fixtures are *cross-document* tests of the consistency engine, not single-doc playbook-routing tests — so pinning the per-doc playbook is the right move.
+
+`npm run lint && typecheck && test && build` all green; **2205/2205 tests + 2 skips**.
+
 ### v2 mutual-nda / unilateral-nda playbooks deprecated in favor of `*-nda-deep` (spec-v3 §27 follow-up) (2026-05-28) — ✅ complete
 
 Closes the remaining Step 27 follow-up item flagged at [`BUILD_PROGRESS.md:107`](BUILD_PROGRESS.md): "deprecate v2 `mutual-nda` / `unilateral-nda` to `*-legacy` and re-point auto-detect to the deep playbooks for v3 detection." The auto-detect re-pointing was already done via `FAMILY_TO_PLAYBOOK["nda-deep"] → mutual-nda-deep` and the later `resolveNdaDeepVariant` split; this commit lands the v2 deprecation without a destructive rename so the 13+ stable call-sites that reference the `mutual-nda` / `unilateral-nda` ids continue to work, and the v2 launch-surface engine-run hashes for the existing v2 NDA goldens stay byte-identical.
