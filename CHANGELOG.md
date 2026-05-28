@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Added
+- DOCX cover surfaces playbook deprecation. When a deprecated
+  playbook matches (e.g. v2 `mutual-nda`), the Playbook line on the
+  cover now reads
+  `Mutual Non-Disclosure Agreement (mutual-nda v1.0.0) — match
+  confidence 0.92 — legacy; superseded by mutual-nda-deep`. A
+  reader of the report alone — without the playbook JSON open — can
+  see they were analyzed against a legacy playbook and which one
+  supersedes it.
+  - [`src/report/docx.ts`](src/report/docx.ts) `renderCover` reads
+    the optional `deprecated` + `superseded_by` Playbook fields.
+    Non-deprecated playbooks render byte-identically to before.
+  - [`src/report/docx.test.ts`](src/report/docx.test.ts) +2 tests:
+    deprecated-path asserts the suffix appears in `word/document.xml`,
+    non-deprecated path asserts neither "legacy" nor "superseded by"
+    appears.
+
 ### Changed
 - v4 bundle MSA + SOW fixtures pinned via `.playbook` sidecars so they
   route to `msa-general` / `sow` instead of NDA / SaaS playbooks.

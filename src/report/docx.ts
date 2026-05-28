@@ -170,6 +170,12 @@ function renderCover(run: EngineRun, ingest: IngestResult, playbook: Playbook): 
       "Playbook",
       `${playbook.name} (${playbook.id} v${playbook.version})${
         confidence !== null ? ` — match confidence ${confidence}` : ""
+      }${
+        playbook.deprecated === true
+          ? playbook.superseded_by
+            ? ` — legacy; superseded by ${playbook.superseded_by}`
+            : " — legacy"
+          : ""
       }`,
     ),
     spacer(),

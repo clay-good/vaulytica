@@ -25,6 +25,15 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### DOCX cover surfaces playbook deprecation (spec-v3 §27 follow-up) (2026-05-28) — ✅ complete
+
+Completes the user-visible feedback loop for the v2 NDA deprecation. The matcher demotes deprecated playbooks on ties (commit 24f0a8d), the report now also tells the reader of the Word report when their document was analyzed under a legacy playbook and which playbook supersedes it.
+
+- [`src/report/docx.ts`](src/report/docx.ts): `renderCover` appends `— legacy; superseded by <id>` (or `— legacy` when `superseded_by` is absent) to the Playbook line when `playbook.deprecated === true`. Non-deprecated playbooks render byte-identically — no goldens move (the DOCX bytes aren't pinned in any golden test, only `EngineRun.result_hash` is, and that's untouched).
+- [`src/report/docx.test.ts`](src/report/docx.test.ts) (2 new): (1) the deprecated `mutual-nda` cover contains `legacy; superseded by mutual-nda-deep` in `word/document.xml`; (2) cloning the playbook with `deprecated: false` produces a cover that contains neither "legacy" nor "superseded by".
+
+`npm run lint && typecheck && test && build` all green; **2208/2208 tests + 2 skips** (was 2206 + 2; +2 new tests).
+
 ### v4 bundle MSA + SOW fixtures pinned to correct playbooks via .playbook sidecars (spec-v4 §10 follow-up) (2026-05-28) — ✅ complete
 
 Closes the test-fidelity hole exposed by the v2-NDA-deprecation commit. The eight v4 bundle MSA fixtures (`cap-mismatch` / `clean-msa-baa` / `defined-term-drift` / `effective-date-paradox` / `governing-law-mismatch` / `missing-companion-dpa` / `party-name-conflict` / `precedence-clash`) were previously matching `mutual-nda` (an NDA playbook, not an MSA — pre-deprecation) or `saas-vendor` (post-deprecation, but still wrong family). Each MSA fixture contains both confidentiality language ("Confidential Information", "each party") and service-shape language ("Services", "Vendor") because they are realistic skeletons, but the matcher couldn't disambiguate without a domain-specific signal — both NDA and SaaS playbooks were scoring 0.6–0.8 ahead of `msa-general`. Similarly, four SOW fixtures were matching SaaS or generic playbooks.
