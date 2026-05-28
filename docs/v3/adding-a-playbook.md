@@ -157,3 +157,35 @@ depend on must in turn cite a specific DKB node id with a current
 [`docs/v3/adding-a-baa-rule.md`](adding-a-baa-rule.md) and
 [`docs/v3/adding-a-dpa-rule.md`](adding-a-dpa-rule.md) for the
 rule-level discipline.
+
+## 9. Deprecating the v2 predecessor (only when there is one)
+
+If your new v3 playbook is a strict successor to an existing v2
+playbook — the v3 `mutual-nda-deep` / `unilateral-nda-deep` →
+v2 `mutual-nda` / `unilateral-nda` case is the precedent —
+mark the v2 file as deprecated rather than renaming it. The
+metadata path keeps the v2 id stable so existing call-sites and
+goldens continue to work; the matcher demotes the deprecated
+playbook on ties; and the report / UI / JSON surfaces all
+annotate the user-visible Playbook line.
+
+```jsonc
+// playbooks/mutual-nda.json
+{
+  "id": "mutual-nda",
+  // …existing fields…
+  "deprecated": true,
+  "superseded_by": "mutual-nda-deep"
+}
+```
+
+Both fields are optional on `Playbook` (`src/playbooks/types.ts`)
+so existing JSON validates unchanged. **Only do this when the v3
+playbook is a strict 1:1 successor**: `msa-customer-deep` /
+`msa-vendor-deep` are vendor- and customer-side specializations
+of v2 `msa-general`, not strict successors, so `msa-general` is
+NOT marked deprecated — see the header note on
+[`src/engine/rules/v3/msa-deep/rules.ts`](../../src/engine/rules/v3/msa-deep/rules.ts).
+
+Full pattern + matcher tiebreak details:
+[`docs/adding-a-playbook.md` § "Deprecating a playbook"](../adding-a-playbook.md#deprecating-a-playbook).
