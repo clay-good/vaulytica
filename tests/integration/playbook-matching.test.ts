@@ -227,6 +227,56 @@ describe("matchPlaybook — determinism", () => {
   });
 });
 
+describe("PlaybookSchema accepts + validates the deprecation metadata (Step 27 follow-up)", () => {
+  const basePlaybook = {
+    id: "test-playbook",
+    version: "1.0.0",
+    name: "Test",
+    description: "Test playbook",
+    match_features: {
+      title_keywords: [],
+      required_clauses: [],
+      distinguishing_phrases: [],
+      negative_features: [],
+    },
+    expected_clauses: [],
+    expected_defined_terms: [],
+    rule_overrides: {},
+    balanced_defaults: [],
+    sources: [],
+  };
+
+  it("accepts a playbook with deprecated: true + superseded_by", () => {
+    const raw = { ...basePlaybook, deprecated: true, superseded_by: "successor-id" };
+    const parsed = PlaybookSchema.parse(raw);
+    expect(parsed.deprecated).toBe(true);
+    expect(parsed.superseded_by).toBe("successor-id");
+  });
+
+  it("accepts a playbook with deprecated: true and no superseded_by", () => {
+    const raw = { ...basePlaybook, deprecated: true };
+    const parsed = PlaybookSchema.parse(raw);
+    expect(parsed.deprecated).toBe(true);
+    expect(parsed.superseded_by).toBeUndefined();
+  });
+
+  it("accepts a playbook with no deprecation fields (back-compat default)", () => {
+    const parsed = PlaybookSchema.parse(basePlaybook);
+    expect(parsed.deprecated).toBeUndefined();
+    expect(parsed.superseded_by).toBeUndefined();
+  });
+
+  it("rejects deprecated: <non-boolean>", () => {
+    const raw = { ...basePlaybook, deprecated: "yes" };
+    expect(() => PlaybookSchema.parse(raw)).toThrow();
+  });
+
+  it("rejects superseded_by: <non-string>", () => {
+    const raw = { ...basePlaybook, deprecated: true, superseded_by: 42 };
+    expect(() => PlaybookSchema.parse(raw)).toThrow();
+  });
+});
+
 describe("Playbook deprecation metadata (Step 27 follow-up)", () => {
   const playbooks = loadAllPlaybooks();
   const byId = new Map(playbooks.map((p) => [p.id, p]));
