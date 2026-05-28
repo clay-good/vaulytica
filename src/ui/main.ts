@@ -155,7 +155,7 @@ function renderCompleteState(
   filename: string,
   stem: string,
   result: {
-    playbook: { name: string };
+    playbook: { name: string; deprecated?: boolean; superseded_by?: string };
     match_reasoning: string;
     run: import("./pipeline.js").PipelineResult["run"];
     docx_blob: Blob;
@@ -175,6 +175,10 @@ function renderCompleteState(
     kind: "complete",
     filename,
     playbook_name: result.playbook.name,
+    playbook_deprecation:
+      result.playbook.deprecated === true
+        ? { superseded_by: result.playbook.superseded_by }
+        : undefined,
     match_reasoning: result.match_reasoning,
     counts: countsBySeverity(result.run),
     docx_blob: result.docx_blob,
@@ -289,6 +293,7 @@ async function renderBundleComplete(
         detection_confidence:
           d.v3_detection.family === "unknown" ? undefined : d.v3_detection.confidence,
         playbook_name: d.playbook.name,
+        playbook_deprecated: d.playbook.deprecated === true ? true : undefined,
         counts: countsBySeverity(d.run),
         docx_blob: d.docx_blob,
         json_blob: d.json_blob,

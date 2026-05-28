@@ -9,6 +9,7 @@ function cardDoc(overrides: {
   family_label?: string;
   detection_confidence?: number;
   playbook_name: string;
+  playbook_deprecated?: boolean;
   counts: { critical: number; warning: number; info: number };
   docx_blob?: Blob;
   json_blob?: Blob;
@@ -19,6 +20,7 @@ function cardDoc(overrides: {
   family_label?: string;
   detection_confidence?: number;
   playbook_name: string;
+  playbook_deprecated?: boolean;
   counts: { critical: number; warning: number; info: number };
   docx_blob: Blob;
   json_blob: Blob;
@@ -30,6 +32,7 @@ function cardDoc(overrides: {
     family_label: overrides.family_label,
     detection_confidence: overrides.detection_confidence,
     playbook_name: overrides.playbook_name,
+    playbook_deprecated: overrides.playbook_deprecated,
     counts: overrides.counts,
     docx_blob: overrides.docx_blob ?? new Blob(["docx"]),
     json_blob: overrides.json_blob ?? new Blob(["{}"]),
@@ -105,6 +108,60 @@ describe("renderState", () => {
     expect(select(dz, "counts")!.textContent).toMatch(/5/);
     expect(select(dz, "counts")!.textContent).toMatch(/11/);
     expect(select(dz, "reasoning")!.textContent).toContain("matched on title");
+  });
+
+  it("complete-state reasoning annotates Legacy playbook + successor when playbook_deprecation is set", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "complete",
+      filename: "nda.docx",
+      playbook_name: "Mutual NDA",
+      playbook_deprecation: { superseded_by: "mutual-nda-deep" },
+      match_reasoning: "Selected mutual-nda.",
+      counts: { critical: 0, warning: 0, info: 0 },
+      docx_blob: new Blob(["docx"], { type: "application/octet-stream" }),
+      json_blob: new Blob(["{}"], { type: "application/json" }),
+      docx_filename: "nda.docx",
+      json_filename: "nda.json",
+    });
+    expect(select(dz, "reasoning")!.textContent).toBe(
+      "Selected mutual-nda. Legacy playbook — superseded by mutual-nda-deep.",
+    );
+  });
+
+  it("complete-state reasoning annotates Legacy playbook alone when superseded_by is absent", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "complete",
+      filename: "nda.docx",
+      playbook_name: "Mutual NDA",
+      playbook_deprecation: {},
+      counts: { critical: 0, warning: 0, info: 0 },
+      docx_blob: new Blob(["docx"], { type: "application/octet-stream" }),
+      json_blob: new Blob(["{}"], { type: "application/json" }),
+      docx_filename: "nda.docx",
+      json_filename: "nda.json",
+    });
+    expect(select(dz, "reasoning")!.textContent).toBe(
+      "Auto-selected Mutual NDA. Legacy playbook.",
+    );
+  });
+
+  it("complete-state reasoning omits the legacy annotation when playbook_deprecation is absent", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "complete",
+      filename: "nda.docx",
+      playbook_name: "Mutual NDA Deep",
+      match_reasoning: "Selected mutual-nda-deep.",
+      counts: { critical: 0, warning: 0, info: 0 },
+      docx_blob: new Blob(["docx"], { type: "application/octet-stream" }),
+      json_blob: new Blob(["{}"], { type: "application/json" }),
+      docx_filename: "x.docx",
+      json_filename: "x.json",
+    });
+    expect(select(dz, "reasoning")!.textContent).toBe("Selected mutual-nda-deep.");
+    expect(select(dz, "reasoning")!.textContent).not.toContain("Legacy");
   });
 
   it("download button triggers Save flow and reports status", async () => {
@@ -639,6 +696,47 @@ describe("renderState", () => {
     // Card without confidence shows no (X.XX) suffix and no .low-confidence flag.
     expect(cards[2]!.querySelector(".multi-doc-card-confidence")).toBeNull();
     expect(cards[2]!.classList.contains("low-confidence")).toBe(false);
+  });
+
+  it("multi-doc card playbook label is suffixed ' (legacy)' when playbook_deprecated is true", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 3,
+      counts: { critical: 0, warning: 0, info: 0 },
+      cross_doc_findings: 0,
+      bundle_docx_blob: new Blob(["docx"]),
+      bundle_json_blob: new Blob(["{}"]),
+      bundle_docx_filename: "x.docx",
+      bundle_json_filename: "x.json",
+      documents: [
+        cardDoc({
+          filename: "old-nda.docx",
+          playbook_name: "Mutual NDA",
+          playbook_deprecated: true,
+          counts: { critical: 0, warning: 0, info: 0 },
+        }),
+        cardDoc({
+          filename: "new-nda.docx",
+          playbook_name: "Mutual NDA (Deep)",
+          counts: { critical: 0, warning: 0, info: 0 },
+        }),
+        cardDoc({
+          filename: "explicit-non-deprecated.docx",
+          playbook_name: "BAA",
+          playbook_deprecated: false,
+          counts: { critical: 0, warning: 0, info: 0 },
+        }),
+      ],
+    });
+    const cards = dz.querySelectorAll<HTMLLIElement>('[data-role="multi-doc-card"]');
+    expect(cards[0]!.querySelector(".multi-doc-card-playbook")!.textContent).toBe(
+      "Mutual NDA (legacy)",
+    );
+    expect(cards[1]!.querySelector(".multi-doc-card-playbook")!.textContent).toBe(
+      "Mutual NDA (Deep)",
+    );
+    expect(cards[2]!.querySelector(".multi-doc-card-playbook")!.textContent).toBe("BAA");
   });
 
   it("clicking a card download button saves that doc's per-doc blob", async () => {

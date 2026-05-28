@@ -12,6 +12,14 @@ export type DropzoneState =
       kind: "complete";
       filename: string;
       playbook_name: string;
+      /**
+       * When the matched playbook carries `deprecated: true` in its
+       * JSON, the complete-state reasoning line is annotated with a
+       * "Legacy playbook" hint and (when present) the id of the
+       * playbook that supersedes it. Optional / back-compat: omitting
+       * preserves the prior reasoning-line output.
+       */
+      playbook_deprecation?: { superseded_by?: string };
       match_reasoning?: string;
       counts: { critical: number; warning: number; info: number };
       docx_blob: Blob;
@@ -93,6 +101,14 @@ export type DropzoneState =
          */
         detection_confidence?: number;
         playbook_name: string;
+        /**
+         * When the matched playbook is deprecated, the card's playbook
+         * label is suffixed with " (legacy)" so a reader scanning the
+         * bundle-complete page can spot a legacy match without opening
+         * the per-doc Word report. Optional / back-compat: omitting
+         * preserves prior card output.
+         */
+        playbook_deprecated?: boolean;
         counts: { critical: number; warning: number; info: number };
         docx_blob: Blob;
         json_blob: Blob;
@@ -201,8 +217,15 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
   if (state.kind === "complete") {
     select(dz, "complete-filename")!.textContent = state.filename;
     select(dz, "counts")!.innerHTML = countsHtml(state.counts);
-    select(dz, "reasoning")!.textContent =
+    const baseReasoning =
       state.match_reasoning ?? `Auto-selected ${state.playbook_name}.`;
+    const legacySuffix =
+      state.playbook_deprecation
+        ? state.playbook_deprecation.superseded_by
+          ? ` Legacy playbook — superseded by ${state.playbook_deprecation.superseded_by}.`
+          : " Legacy playbook."
+        : "";
+    select(dz, "reasoning")!.textContent = `${baseReasoning}${legacySuffix}`;
     renderV3FamilyChip(dz, state.v3_family);
     renderComplianceFrameChips(dz, state.v3_frames, state.on_frames_change);
     const docxBtn = select<HTMLButtonElement>(dz, "docx-download")!;
@@ -321,6 +344,7 @@ function renderMultiDocCards(
         family_label?: string;
         detection_confidence?: number;
         playbook_name: string;
+        playbook_deprecated?: boolean;
         counts: { critical: number; warning: number; info: number };
         docx_blob: Blob;
         json_blob: Blob;
@@ -347,7 +371,8 @@ function renderMultiDocCards(
       const family = d.family_label
         ? `<span class="multi-doc-card-family">${escapeHtml(d.family_label)}${confSuffix}</span>`
         : "";
-      const playbook = `<span class="multi-doc-card-playbook">${escapeHtml(d.playbook_name)}</span>`;
+      const legacyHint = d.playbook_deprecated === true ? " (legacy)" : "";
+      const playbook = `<span class="multi-doc-card-playbook">${escapeHtml(d.playbook_name)}${legacyHint}</span>`;
       const c = d.counts;
       const countsLine = `${c.critical} critical · ${c.warning} warnings · ${c.info} info`;
       const lowConfClass = conf !== null && conf < 0.5 ? " low-confidence" : "";

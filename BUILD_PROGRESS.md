@@ -25,6 +25,16 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### UI complete-state + bundle-complete cards surface playbook deprecation (spec-v3 §27 follow-up) (2026-05-28) — ✅ complete
+
+Closes the user-visible feedback loop for the v2 NDA deprecation across all three surfaces: matcher (24f0a8d) → single-doc DOCX cover (edc1ff9) → bundle DOCX + JSON (943d114) → **on-page UI (this commit)**. A user who drops a clean Common Paper Mutual NDA on the page now sees the legacy hint on the page without having to open the Word report.
+
+- [`src/ui/states.ts`](src/ui/states.ts): complete-state shape gains optional `playbook_deprecation?: { superseded_by?: string }`. When present, the reasoning text node is appended with `Legacy playbook — superseded by <id>.` (or `Legacy playbook.` when `superseded_by` is absent). Multi-doc card `documents[]` shape gains optional `playbook_deprecated?: boolean`; when true the card's `.multi-doc-card-playbook` label is suffixed with " (legacy)".
+- [`src/ui/main.ts`](src/ui/main.ts): both the single-doc `runFile` complete-state writer and the bundle `runBundle` per-doc summary builder thread `result.playbook.deprecated` + `result.playbook.superseded_by` from the pipeline result through to the state. The narrow inline-type for the single-doc helper widened to include the two optional Playbook fields.
+- [`src/ui/states.test.ts`](src/ui/states.test.ts) (+4 tests + 1 helper field): single-doc with successor pins the exact text content; single-doc without successor pins the "Legacy playbook." suffix alone; single-doc back-compat (no `playbook_deprecation`) preserves prior reasoning text byte-identically; multi-doc card test asserts annotation across three docs (deprecated with successor → " (legacy)"; non-deprecated explicit; non-deprecated implicit).
+
+`npm run lint && typecheck && test && build` all green; **2214/2214 tests + 2 skips** (was 2210 + 2; +4 new tests).
+
 ### Bundle DOCX + JSON per-document playbook deprecation (spec-v3 §27 follow-up) (2026-05-28) — ✅ complete
 
 Companion to the single-doc DOCX cover commit (edc1ff9). The per-document subsection of the bundle Word report now annotates the "Playbook:" line with "— legacy" / "— legacy; superseded by <id>" when the matched playbook carries `deprecated: true`, and the bundle JSON's `documents[]` entry carries optional `playbook_deprecated` + `playbook_superseded_by` fields so programmatic consumers can spot a legacy-playbook match without re-loading the playbook JSON. Non-deprecated bundles serialize byte-identically.

@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- UI complete-state and bundle-complete cards surface playbook
+  deprecation (closes the user-visible feedback loop for the v2 NDA
+  deprecation — single-doc DOCX cover landed in edc1ff9, bundle
+  DOCX + JSON landed in 943d114; this commit lands the on-page
+  affordance).
+  - [`src/ui/states.ts`](src/ui/states.ts): complete-state gains
+    optional `playbook_deprecation?: { superseded_by?: string }`.
+    When present, the reasoning line is appended with
+    "Legacy playbook — superseded by <id>." (or "Legacy playbook."
+    when `superseded_by` is absent). Multi-doc card `documents[]`
+    gains optional `playbook_deprecated?: boolean`; when true the
+    card's playbook label is suffixed " (legacy)".
+  - [`src/ui/main.ts`](src/ui/main.ts): both single-doc and bundle
+    paths thread `result.playbook.deprecated` +
+    `result.playbook.superseded_by` end-to-end. The narrow
+    inline-type for the single-doc helper widened to include the
+    two optional Playbook fields.
+  - [`src/ui/states.test.ts`](src/ui/states.test.ts): +4 tests
+    (single-doc with successor, single-doc no successor,
+    single-doc back-compat omits the suffix, multi-doc card
+    annotation across mixed states).
+
 - Bundle DOCX + JSON surface per-document playbook deprecation
   (spec-v3 §27 follow-up; companion to the single-doc DOCX cover
   addition in commit edc1ff9). When a deprecated playbook matched
