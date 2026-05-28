@@ -10,11 +10,11 @@ The Google Workspace & Microsoft 365 DSPM tooling has been rolled into [Mantissa
 
 ## What I check
 
-Vaulytica runs ~80 deterministic rules across ten categories — structural, financial, temporal, obligations, risk allocation, choice and venue, termination, IP and data, personnel, and dark patterns — against PDF or DOCX contracts you drop onto the page. The output is a Microsoft Word document with findings, an obligations ledger, an extracted-data appendix, and a full audit trail naming every rule, every data source, and the dataset version that produced the result.
+Vaulytica runs 1,000+ deterministic rules against PDF or DOCX documents you drop onto the page. The v1 launch set is 112 rules across ten categories — structural, financial, temporal, obligations, risk allocation, choice and venue, termination, IP and data, personnel, and dark patterns. The output is a Microsoft Word document with findings, an obligations ledger, an extracted-data appendix, and a full audit trail naming every rule, every data source, and the dataset version that produced the result.
 
 **v3 adds compliance-grade rule sets for BAA, DPA, NDA, MSA, transfer mechanisms, and adjacent documents — same browser-only posture as v2.** 220 new rules across HIPAA, GDPR / UK GDPR, eight US state privacy laws, EU SCCs (Modules 1–4), the UK IDTA / Addendum, DTSA whistleblower notice, commercial-law overlays, and the AI / vendor-security / EULA / ToS / privacy-policy / COI surfaces. v3 also ships a cross-document consistency engine (drop an MSA + DPA together, get a single report with a consistency appendix), a regulator-by-clause-category compliance matrix in the DOCX report, and citation-pinned source-of-truth hashes so a stale regulator URL disables the affected rule until a human reviews the diff. See [`docs/v3/overview.md`](docs/v3/overview.md).
 
-**v4 expands to all logically-operative legal documents — 16 sub-domains, 700+ new rules, multi-document ingest (folder / zip / multi-file drop), and a cross-document consistency engine.** Same browser-only, no-AI, no-telemetry posture. See [`docs/v4/overview.md`](docs/v4/overview.md).
+**v4 expands to all logically-operative legal documents — 16 sub-domains, 730 new rules, multi-document ingest (folder / zip / multi-file drop), and a cross-document consistency engine.** Same browser-only, no-AI, no-telemetry posture. See [`docs/v4/overview.md`](docs/v4/overview.md).
 
 ## What I do not do
 

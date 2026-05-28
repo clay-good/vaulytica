@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Changed
+- README.md + marketing site (`site/index.html`) updated to reflect
+  the current rule counts: v1 launch is 112 rules (was "~80"),
+  v3 adds 220, v4 adds 730, total is 1,000+ (was "~145"). Four
+  stale references corrected: `README.md` headline, the schema.org
+  `SoftwareApplication.featureList` entry, the `SoftwareApplication.description`
+  text, the on-page "What I check" paragraph, and the architecture-
+  diagram inline SVG label.
+  - No static-HTML tests pin the counts, so this is doc-only with
+    no test impact.
+
 ### Added
 - Single-doc JSON report surfaces `playbook_deprecated` +
   `playbook_superseded_by` alongside `run` / `ingest` (closes the
