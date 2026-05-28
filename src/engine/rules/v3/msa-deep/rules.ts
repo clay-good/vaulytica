@@ -10,9 +10,23 @@
  * order-of-precedence (with cross-document consistency probe),
  * and AI-usage clause flagging.
  *
- * Scoped to msa-vendor-deep + msa-customer-deep. v2's
- * `msa-general`, `saas-vendor`, `saas-customer` will be deprecated
- * to `*-legacy` in a follow-up commit (see BUILD_PROGRESS row 28).
+ * Scoped to msa-vendor-deep + msa-customer-deep.
+ *
+ * Earlier drafts of this header planned to deprecate v2's
+ * `msa-general`, `saas-customer`, and `saas-vendor` to `*-legacy`
+ * alongside the v3 deep variants — that follow-up was reconsidered
+ * and NOT pursued. The v2 NDA playbooks have a clean 1:1 successor
+ * (`mutual-nda` → `mutual-nda-deep`) so the v2-NDA-deprecation
+ * commit (2026-05-28) added the `deprecated` + `superseded_by`
+ * metadata path on those two ids. The v2 MSA + SaaS playbooks
+ * have no analogous 1:1 successor: `msa-general` is a fallback
+ * parent for B2B services contracts that are not specifically
+ * SaaS or consulting (the deep variants are narrower vendor- and
+ * customer-side specializations, not a strict successor); v3
+ * `saas-tos` lints SaaS Terms of Service which is a different
+ * document shape from the v2 enterprise SaaS Subscription
+ * Agreement playbooks. None of the three v2 ids carry
+ * `deprecated: true` today, by design.
  */
 
 import type { Finding, Rule, RuleContext } from "../../../finding.js";
