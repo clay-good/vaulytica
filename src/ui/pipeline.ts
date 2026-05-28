@@ -247,7 +247,7 @@ export async function runReport(
     undefined,
     prepared.extracted,
   );
-  const json_blob = buildJsonReport(run, prepared.ingest);
+  const json_blob = buildJsonReport(run, prepared.ingest, prepared.playbook);
 
   const v3_detection = detectV3Family(prepared.extracted, prepared.body_text);
   const v3_frames = defaultFramesForPlaybook(prepared.playbook.id);
@@ -508,7 +508,7 @@ export async function prepareBundle(
     });
 
     const docx_blob = await buildDocxReport(run, ingest, dkb, playbook, undefined, extracted);
-    const json_blob = buildJsonReport(run, ingest);
+    const json_blob = buildJsonReport(run, ingest, playbook);
 
     const v3_detection = detectV3Family(extracted, bodyParts.join(" "));
 

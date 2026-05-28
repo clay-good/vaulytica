@@ -186,4 +186,26 @@ describe("buildJsonReport", () => {
     expect(parsed.ingest.sha256).toBe("a".repeat(64));
     expect(text).toContain("\n  "); // pretty-printed
   });
+
+  it("surfaces playbook_deprecated + playbook_superseded_by when the playbook is deprecated (Step 27 follow-up)", async () => {
+    const blob = buildJsonReport(makeRun(), ingest, loadMutualNda());
+    const parsed = JSON.parse(await blob.text());
+    expect(parsed.playbook_deprecated).toBe(true);
+    expect(parsed.playbook_superseded_by).toBe("mutual-nda-deep");
+  });
+
+  it("omits playbook_deprecated when the playbook is not deprecated (back-compat)", async () => {
+    const nonDeprecated = { ...loadMutualNda(), deprecated: false, superseded_by: undefined };
+    const blob = buildJsonReport(makeRun(), ingest, nonDeprecated);
+    const parsed = JSON.parse(await blob.text());
+    expect(parsed.playbook_deprecated).toBeUndefined();
+    expect(parsed.playbook_superseded_by).toBeUndefined();
+  });
+
+  it("omits playbook_deprecated when the playbook arg is omitted entirely (back-compat)", async () => {
+    const blob = buildJsonReport(makeRun(), ingest);
+    const parsed = JSON.parse(await blob.text());
+    expect(parsed.playbook_deprecated).toBeUndefined();
+    expect(parsed.playbook_superseded_by).toBeUndefined();
+  });
 });

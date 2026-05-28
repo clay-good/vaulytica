@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- Single-doc JSON report surfaces `playbook_deprecated` +
+  `playbook_superseded_by` alongside `run` / `ingest` (closes the
+  single-doc ↔ bundle JSON parity gap on deprecation; the bundle
+  JSON has carried the per-entry fields since 943d114). Fields are
+  emitted only when the matched playbook carries `deprecated: true`
+  in its JSON, so JSON output for non-deprecated playbooks is
+  byte-identical to prior output.
+  - [`src/report/json.ts`](src/report/json.ts) `buildJsonReport`
+    gains an optional third `playbook?: Playbook` parameter. The
+    fields live alongside `run` / `ingest` (not inside `run`)
+    because adding to the run would change `result_hash`.
+  - [`src/ui/pipeline.ts`](src/ui/pipeline.ts): both single-doc
+    pipeline call-sites thread the matched playbook into
+    `buildJsonReport`.
+  - [`src/report/docx.test.ts`](src/report/docx.test.ts): +3 tests
+    (deprecated path, explicitly non-deprecated, playbook arg
+    omitted).
+
 - DOCX audit-trail Playbook line surfaces deprecation. Mirrors the
   annotation already on the cover (commit edc1ff9) so the in-report
   audit trail is self-consistent — a reviewer scrolling to the
