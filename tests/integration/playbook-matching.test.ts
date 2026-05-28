@@ -226,3 +226,82 @@ describe("matchPlaybook — determinism", () => {
     expect(r.playbook_id).toBe(GENERIC_FALLBACK_ID);
   });
 });
+
+describe("Playbook deprecation metadata (Step 27 follow-up)", () => {
+  const playbooks = loadAllPlaybooks();
+  const byId = new Map(playbooks.map((p) => [p.id, p]));
+
+  it("v2 mutual-nda is marked deprecated and superseded by mutual-nda-deep", () => {
+    const p = byId.get("mutual-nda");
+    expect(p?.deprecated).toBe(true);
+    expect(p?.superseded_by).toBe("mutual-nda-deep");
+  });
+
+  it("v2 unilateral-nda is marked deprecated and superseded by unilateral-nda-deep", () => {
+    const p = byId.get("unilateral-nda");
+    expect(p?.deprecated).toBe(true);
+    expect(p?.superseded_by).toBe("unilateral-nda-deep");
+  });
+
+  it("no other LAUNCH playbook is deprecated", () => {
+    for (const p of playbooks) {
+      if (p.id === "mutual-nda" || p.id === "unilateral-nda") continue;
+      expect(p.deprecated ?? false, p.id).toBe(false);
+    }
+  });
+
+  it("the deprecation metadata does not change matcher output for v2 NDA documents", () => {
+    // The v2 NDA fixtures continue to pick mutual-nda / unilateral-nda
+    // because they outscore every other playbook on their own — the
+    // deprecated-demotion tiebreak only kicks in on exact raw-score ties.
+    const mutual = runMatch(
+      "Mutual Non-Disclosure Agreement",
+      "This Mutual Non-Disclosure Agreement is entered into between Discloser and Recipient. Each party shall protect the other's Confidential Information and use it only for the Permitted Purpose.",
+    );
+    expect(mutual.playbook_id).toBe("mutual-nda");
+    const unilateral = runMatch(
+      "One-Way Non-Disclosure Agreement",
+      "The Recipient shall not disclose the Disclosing Party's Confidential Information and shall use it only for the Permitted Purpose.",
+    );
+    expect(unilateral.playbook_id).toBe("unilateral-nda");
+  });
+
+  it("on a raw-score tie, a non-deprecated playbook beats a deprecated one", () => {
+    // Synthetic two-playbook ranking — same raw score, only deprecated flag differs.
+    // We import the matcher directly with an empty extracted/classified
+    // payload so neither playbook gets any feature hits; both score 0,
+    // both fall to fallback, but the sort order itself is what we pin.
+    const dkb = loadStarterDkbSync();
+    const tree = buildTree(["x", "y"]);
+    const extracted = extractAll(tree, {
+      classifier: { vocab: { vocab: {} }, patterns: dkb.classifier.patterns },
+    });
+    const emptyFeatures = {
+      title_keywords: [],
+      required_clauses: [],
+      distinguishing_phrases: [],
+      negative_features: [],
+    };
+    const base: Omit<Playbook, "id" | "deprecated"> = {
+      version: "1.0.0",
+      name: "",
+      description: "",
+      match_features: emptyFeatures,
+      expected_clauses: [],
+      expected_defined_terms: [],
+      rule_overrides: {},
+      balanced_defaults: [],
+      sources: [],
+    };
+    // Alphabetic order would otherwise pick `a-legacy`. The deprecated
+    // tiebreak must promote `b-current` ahead of it.
+    const legacy: Playbook = { ...base, id: "a-legacy", deprecated: true };
+    const current: Playbook = { ...base, id: "b-current" };
+    const r = matchPlaybook(extracted, extracted.classified, [legacy, current], {
+      title: "x",
+      body_text: "y",
+    });
+    // Both score 0 → top alternative reported. We assert via reasoning + alternatives.
+    expect(r.alternatives[0]?.playbook_id).toBe("b-current");
+  });
+});

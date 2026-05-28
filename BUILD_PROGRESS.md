@@ -25,6 +25,20 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v2 mutual-nda / unilateral-nda playbooks deprecated in favor of `*-nda-deep` (spec-v3 §27 follow-up) (2026-05-28) — ✅ complete
+
+Closes the remaining Step 27 follow-up item flagged at [`BUILD_PROGRESS.md:107`](BUILD_PROGRESS.md): "deprecate v2 `mutual-nda` / `unilateral-nda` to `*-legacy` and re-point auto-detect to the deep playbooks for v3 detection." The auto-detect re-pointing was already done via `FAMILY_TO_PLAYBOOK["nda-deep"] → mutual-nda-deep` and the later `resolveNdaDeepVariant` split; this commit lands the v2 deprecation without a destructive rename so the 13+ stable call-sites that reference the `mutual-nda` / `unilateral-nda` ids continue to work, and the v2 launch-surface engine-run hashes for the existing v2 NDA goldens stay byte-identical.
+
+- [`src/playbooks/types.ts`](src/playbooks/types.ts): `Playbook` type and `PlaybookSchema` gain two optional fields — `deprecated?: boolean` and `superseded_by?: string`. Both default to absent; existing v2 / v3 / v4 playbook JSON validates unchanged.
+- [`playbooks/mutual-nda.json`](playbooks/mutual-nda.json): `"deprecated": true, "superseded_by": "mutual-nda-deep"` added.
+- [`playbooks/unilateral-nda.json`](playbooks/unilateral-nda.json): `"deprecated": true, "superseded_by": "unilateral-nda-deep"` added.
+- [`src/playbooks/matcher.ts`](src/playbooks/matcher.ts): the sort comparator gains a tiebreak — when two playbooks score the same `raw_score`, a non-deprecated playbook wins before the lexicographic id tiebreak fires. Non-tied scores are unchanged; the deprecation note is intentionally NOT added to the reasoning string so existing v2 NDA goldens stay byte-identical.
+- The new tiebreak surfaces a real improvement on the v4 bundle MSA fixtures: clean-msa-baa / missing-companion-dpa / precedence-clash were previously tying at 0.8 between `mutual-nda` and `saas-vendor` because the MSA fixtures contain both "Confidential Information" / "each party" (NDA distinguishing phrases) and SaaS-shaped language. Lex-order would pick `mutual-nda` for the MSA — clearly wrong. With deprecation demotion, `saas-vendor` wins the tie. The three bundle goldens at [`tests/golden/v4/bundle-expected/`](tests/golden/v4/bundle-expected/) were regenerated to record the more-correct playbook pick; only the per-document `result_hash` for the affected MSA documents drifted, finding counts stayed identical.
+
+Tests in [`tests/integration/playbook-matching.test.ts`](tests/integration/playbook-matching.test.ts) (4 new): (1) v2 `mutual-nda` carries `deprecated: true` + `superseded_by: "mutual-nda-deep"`; (2) v2 `unilateral-nda` mirrors the same shape pointing at `unilateral-nda-deep`; (3) no other LAUNCH playbook is deprecated; (4) on a synthetic two-playbook raw-score tie, the non-deprecated playbook beats the deprecated one regardless of lex ordering.
+
+`npm run lint && typecheck && test && build` all green; **2205/2205 tests + 2 skips** (was 2202 + 2 + 3 failing bundle goldens before regen).
+
 ### v3 detectMsaDeep / detectVendorSecurity / detectAiAddendum add defined-term signals (spec-v3 §60 follow-up) (2026-05-27) — ✅ complete
 
 Continues the prior `detectNdaDeep` definition-signal commit across the three remaining v3 detectors whose target documents carry meaningful definitions sections. The form-style detectors (`detectSccModule`, `detectUkIdta`, `detectCoi`) keep their `void extracted;` shims — those documents are pre-printed regulator / industry forms (Implementing Decision (EU) 2021/914, UK ICO IDTA, ACORD 25) and a definitions section is the wrong place to look for signal.

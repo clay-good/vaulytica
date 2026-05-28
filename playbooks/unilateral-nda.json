@@ -41,5 +41,7 @@
     {"clause": "term", "value": "2-3 years", "source_dkb_id": "common-paper-mutual-nda-v1.1"},
     {"clause": "non-disclosure-term", "value": "3 years post-termination, perpetual for trade secrets", "source_dkb_id": "common-paper-mutual-nda-v1.1"}
   ],
-  "sources": ["common-paper-mutual-nda-v1.1"]
+  "sources": ["common-paper-mutual-nda-v1.1"],
+  "deprecated": true,
+  "superseded_by": "unilateral-nda-deep"
 }

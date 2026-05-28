@@ -44,5 +44,7 @@
     {"clause": "term", "value": "2-5 years from the Effective Date", "source_dkb_id": "common-paper-mutual-nda-v1.1"},
     {"clause": "non-disclosure-term", "value": "3 years post-termination", "source_dkb_id": "common-paper-mutual-nda-v1.1"}
   ],
-  "sources": ["common-paper-mutual-nda-v1.1"]
+  "sources": ["common-paper-mutual-nda-v1.1"],
+  "deprecated": true,
+  "superseded_by": "mutual-nda-deep"
 }

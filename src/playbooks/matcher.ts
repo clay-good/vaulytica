@@ -127,6 +127,13 @@ export function matchPlaybook(
 
   scored.sort((a, b) => {
     if (b.raw_score !== a.raw_score) return b.raw_score - a.raw_score;
+    // Tiebreak 1: prefer non-deprecated over deprecated. Lets a
+    // `*-deep` successor outrank its legacy v2 sibling when both
+    // score identically.
+    const aDep = a.playbook.deprecated === true;
+    const bDep = b.playbook.deprecated === true;
+    if (aDep !== bDep) return aDep ? 1 : -1;
+    // Tiebreak 2: lexicographic id for determinism.
     return a.playbook.id.localeCompare(b.playbook.id);
   });
 

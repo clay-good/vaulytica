@@ -4,6 +4,34 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Deprecated
+- v2 `mutual-nda` and `unilateral-nda` playbooks are now marked
+  `deprecated: true` in their JSON, with `superseded_by` pointing to
+  the v3 `mutual-nda-deep` / `unilateral-nda-deep` successors.
+  - [`src/playbooks/types.ts`](src/playbooks/types.ts) `Playbook` type
+    and Zod schema gain optional `deprecated` + `superseded_by`
+    fields.
+  - [`playbooks/mutual-nda.json`](playbooks/mutual-nda.json) and
+    [`playbooks/unilateral-nda.json`](playbooks/unilateral-nda.json)
+    carry the new fields. The ids are intentionally unchanged so the
+    13+ stable callsites in src/ and tests/ continue to work and the
+    v2 launch-surface engine-run hashes stay byte-identical.
+  - [`src/playbooks/matcher.ts`](src/playbooks/matcher.ts) gains a
+    tiebreak: when two playbooks score the same `raw_score`, a
+    non-deprecated playbook beats a deprecated one before the
+    lexicographic id tiebreak fires.
+  - Surfaces a real improvement on the v4 bundle MSA fixtures
+    (clean-msa-baa / missing-companion-dpa / precedence-clash): the
+    MSAs were previously tying at 0.8 between `mutual-nda` and
+    `saas-vendor` and lex-order would pick `mutual-nda` for an MSA;
+    the deprecation demotion now picks `saas-vendor` for the tie.
+    Three bundle goldens regenerated.
+  - Closes the remaining Step 27 follow-up flagged at
+    `BUILD_PROGRESS.md` (the "deprecate v2 mutual-nda /
+    unilateral-nda" item; the auto-detect re-pointing half was
+    already done via `FAMILY_TO_PLAYBOOK["nda-deep"]` +
+    `resolveNdaDeepVariant`).
+
 ### Added
 - v3 `detectV3Family` defined-term signals across the remaining
   contract-style detectors (the form-style detectors — SCC, UK IDTA,

@@ -57,6 +57,15 @@ export type Playbook = {
   companion_playbooks?: string[];
   /** v3: columns for the compliance-matrix section of the report. */
   compliance_matrix_columns?: string[];
+  /**
+   * Marks this playbook as legacy. The matcher still loads and applies
+   * it (callers with a hard-coded id continue to work), but a
+   * deprecated playbook loses ties to any non-deprecated alternative,
+   * and consumers may surface a "Superseded by …" hint in the report.
+   */
+  deprecated?: boolean;
+  /** When `deprecated` is true, the id of the playbook that supersedes this one. */
+  superseded_by?: string;
 };
 
 /** The id of the fallback playbook, used when no playbook scores above threshold. */
@@ -132,6 +141,8 @@ export const PlaybookSchema = z.object({
   applicable_jurisdictions: z.array(z.string()).optional(),
   companion_playbooks: z.array(z.string()).optional(),
   compliance_matrix_columns: z.array(z.string()).optional(),
+  deprecated: z.boolean().optional(),
+  superseded_by: z.string().optional(),
 });
 
 /** Compile-time check: full Playbook is a superset of the engine's narrow Playbook. */
