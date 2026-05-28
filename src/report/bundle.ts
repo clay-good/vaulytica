@@ -604,9 +604,15 @@ function renderAuditTrail(input: BundleReportInput): Paragraph[] {
   out.push(spacer());
   out.push(h2("Per-document playbooks"));
   for (const d of input.documents) {
+    const deprecationSuffix =
+      d.playbook_deprecated === true
+        ? d.playbook_superseded_by
+          ? ` — legacy; superseded by ${d.playbook_superseded_by}`
+          : " — legacy"
+        : "";
     out.push(
       para({
-        text: `${d.source_file_name} → ${d.run.playbook_id}${d.run.playbook_match_confidence !== undefined ? ` (confidence ${d.run.playbook_match_confidence})` : ""}`,
+        text: `${d.source_file_name} → ${d.run.playbook_id}${d.run.playbook_match_confidence !== undefined ? ` (confidence ${d.run.playbook_match_confidence})` : ""}${deprecationSuffix}`,
       }),
     );
   }

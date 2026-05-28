@@ -449,6 +449,14 @@ describe("buildBundleJson — per-document metadata (spec-v3 §60 follow-up)", (
     // absence of " — legacy" on the third entry by counting hits.
     const legacyHits = docXml.match(/Playbook: mutual-nda — legacy/g) ?? [];
     expect(legacyHits).toHaveLength(2);
+    // The audit-trail "Per-document playbooks" section also annotates
+    // each entry with the same legacy hint so the report's audit
+    // surface stays consistent with the per-doc subsection.
+    expect(docXml).toContain("a.docx → mutual-nda");
+    expect(docXml).toMatch(/a\.docx → mutual-nda[^<]*— legacy; superseded by mutual-nda-deep/);
+    expect(docXml).toMatch(/b\.docx → mutual-nda[^<]*— legacy(?!;)/);
+    // Doc c's audit-trail line has no legacy suffix.
+    expect(docXml).toMatch(/c\.docx → mutual-nda[^—]*</);
   });
 
   it("JSON per-entry surfaces playbook_deprecated + playbook_superseded_by when threaded", async () => {
