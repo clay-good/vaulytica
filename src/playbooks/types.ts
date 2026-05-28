@@ -143,6 +143,19 @@ export const PlaybookSchema = z.object({
   compliance_matrix_columns: z.array(z.string()).optional(),
   deprecated: z.boolean().optional(),
   superseded_by: z.string().optional(),
+}).superRefine((val, ctx) => {
+  // `superseded_by` is the deprecation successor pointer — it only
+  // has semantic meaning when `deprecated: true`. Reject the
+  // combination silently before downstream tooling (matcher, report
+  // renderers, UI) tries to act on a successor pointer for an
+  // active playbook.
+  if (val.superseded_by !== undefined && val.deprecated !== true) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "`superseded_by` requires `deprecated: true`",
+      path: ["superseded_by"],
+    });
+  }
 });
 
 /** Compile-time check: full Playbook is a superset of the engine's narrow Playbook. */

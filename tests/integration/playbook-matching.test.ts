@@ -275,6 +275,23 @@ describe("PlaybookSchema accepts + validates the deprecation metadata (Step 27 f
     const raw = { ...basePlaybook, deprecated: true, superseded_by: 42 };
     expect(() => PlaybookSchema.parse(raw)).toThrow();
   });
+
+  it("rejects superseded_by without deprecated: true (semantic-coherence guard)", () => {
+    // A successor pointer on an active playbook is semantically
+    // incoherent — the matcher tiebreak and the report annotations
+    // both branch on `deprecated === true`, so a lone `superseded_by`
+    // would silently no-op everywhere. The schema rejects the
+    // combination so the author has to fix it before the playbook ships.
+    const stray = { ...basePlaybook, superseded_by: "successor-id" };
+    expect(() => PlaybookSchema.parse(stray)).toThrow(/superseded_by/);
+
+    const strayWithDeprecatedFalse = {
+      ...basePlaybook,
+      deprecated: false,
+      superseded_by: "successor-id",
+    };
+    expect(() => PlaybookSchema.parse(strayWithDeprecatedFalse)).toThrow(/superseded_by/);
+  });
 });
 
 describe("Playbook deprecation metadata (Step 27 follow-up)", () => {
