@@ -115,4 +115,26 @@ The matcher weights are fixed and live in [`src/playbooks/matcher.ts`](../src/pl
 | Distinguishing phrase  | +0.20            | 3× weight (0.60)                 |
 | Negative feature       | −0.10            | uncapped                         |
 
-Threshold for picking a non-fallback playbook is **0.5**. Ties between playbooks are broken **lexicographically** by id for determinism. If two of your candidates score similarly, lean on `negative_features` rather than inflating `title_keywords` — clear "this is *not* a …" signals are cleaner than dueling weight bumps.
+Threshold for picking a non-fallback playbook is **0.5**. Ties between playbooks are broken in this order, all deterministic:
+
+1. **`raw_score` desc** — the highest raw score wins outright.
+2. **Non-deprecated beats deprecated** — when two playbooks score the same `raw_score`, a non-deprecated playbook beats one whose JSON carries `"deprecated": true`. This lets a successor playbook (e.g. `mutual-nda-deep`) outrank its legacy v2 sibling (`mutual-nda`) on a perfect score tie without renaming the legacy id.
+3. **Lexicographic id** — final fallback.
+
+If two of your candidates score similarly, lean on `negative_features` rather than inflating `title_keywords` — clear "this is *not* a …" signals are cleaner than dueling weight bumps.
+
+## Deprecating a playbook
+
+When a richer successor playbook lands (the typical v2 → v3 / v4 case), mark the v2 entry as deprecated instead of renaming it. Renaming breaks every callsite in `src/`, `tests/`, and goldens that pin the id; the metadata path lets the matcher prefer the successor on ties while keeping the v2 id stable.
+
+```jsonc
+{
+  "id": "mutual-nda",
+  "version": "1.0.0",
+  // …existing fields…
+  "deprecated": true,
+  "superseded_by": "mutual-nda-deep"
+}
+```
+
+Both fields are optional on the `Playbook` schema (`src/playbooks/types.ts`). The matcher reads `deprecated` for the tiebreak above; `superseded_by` is informational for downstream tooling (report renderers, future migration guides, etc.). Existing fixtures that pin the deprecated id by sidecar (`*.playbook` files in `tests/golden/v3/fixtures/`) continue to work unchanged.

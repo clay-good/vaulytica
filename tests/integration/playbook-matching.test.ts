@@ -266,6 +266,38 @@ describe("Playbook deprecation metadata (Step 27 follow-up)", () => {
     expect(unilateral.playbook_id).toBe("unilateral-nda");
   });
 
+  it("cross-version: when v2 mutual-nda and v3 mutual-nda-deep are both in the candidate set on a tie, the v3 deep variant wins", () => {
+    // Mirrors the v4 bundle pipeline's candidate set (loadAllPlaybooks
+    // includes LAUNCH + v3 + v4). When both NDA playbooks score the
+    // same raw_score against a clean Mutual NDA, the deprecation
+    // demotion must elevate `mutual-nda-deep` above `mutual-nda`.
+    // We construct a synthetic two-playbook candidate set to isolate
+    // the cross-version behavior from the matcher's other heuristics.
+    const v2 = loadAllPlaybooks().find((p) => p.id === "mutual-nda");
+    const v3DeepRaw = JSON.parse(
+      readFileSync(
+        join(__dirname, "..", "..", "src", "playbooks", "v3", "mutual-nda-deep.json"),
+        "utf8",
+      ),
+    );
+    const v3Deep = parsePlaybook(v3DeepRaw);
+    expect(v2?.deprecated).toBe(true);
+    expect(v3Deep.deprecated ?? false).toBe(false);
+
+    // Force both to score 0 by passing an empty fixture so the only
+    // operative sort key is the deprecation tiebreak.
+    const dkb = loadStarterDkbSync();
+    const tree = buildTree(["x", "y"]);
+    const extracted = extractAll(tree, {
+      classifier: { vocab: { vocab: {} }, patterns: dkb.classifier.patterns },
+    });
+    const r = matchPlaybook(extracted, extracted.classified, [v2!, v3Deep], {
+      title: "x",
+      body_text: "y",
+    });
+    expect(r.alternatives[0]?.playbook_id).toBe("mutual-nda-deep");
+  });
+
   it("on a raw-score tie, a non-deprecated playbook beats a deprecated one", () => {
     // Synthetic two-playbook ranking — same raw score, only deprecated flag differs.
     // We import the matcher directly with an empty extracted/classified
