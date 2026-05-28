@@ -458,7 +458,15 @@ function renderAuditTrail(
     h1("Audit Trail"),
     para({ text: `Engine version: ${run.version}` }),
     para({ text: `DKB version: ${run.dkb_version}` }),
-    para({ text: `Playbook: ${playbook.name} — ${playbook.id} v${playbook.version} — ${matched}` }),
+    para({
+      text: `Playbook: ${playbook.name} — ${playbook.id} v${playbook.version} — ${matched}${
+        playbook.deprecated === true
+          ? playbook.superseded_by
+            ? ` — legacy; superseded by ${playbook.superseded_by}`
+            : " — legacy"
+          : ""
+      }`,
+    }),
     para({ text: `File fingerprint: ${run.source_file.sha256}` }),
     para({ text: `Result hash: ${run.result_hash}` }),
     para({ text: `Executed at: ${run.executed_at || "(omitted from hash)"}` }),

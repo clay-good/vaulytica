@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- DOCX audit-trail Playbook line surfaces deprecation. Mirrors the
+  annotation already on the cover (commit edc1ff9) so the in-report
+  audit trail is self-consistent — a reviewer scrolling to the
+  Audit Trail section sees the same legacy hint as the cover.
+  - [`src/report/docx.ts`](src/report/docx.ts) `renderAuditTrail`
+    appends `— legacy; superseded by <id>` (or `— legacy`) to the
+    Playbook line when `playbook.deprecated === true`.
+  - [`src/report/docx.test.ts`](src/report/docx.test.ts): the
+    existing deprecated-cover test now also asserts the substring
+    appears at least twice in `word/document.xml` (once in the
+    cover, once in the audit trail).
+
 - UI complete-state and bundle-complete cards surface playbook
   deprecation (closes the user-visible feedback loop for the v2 NDA
   deprecation — single-doc DOCX cover landed in edc1ff9, bundle

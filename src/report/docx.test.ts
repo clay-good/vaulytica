@@ -150,17 +150,19 @@ describe("buildDocxReport", () => {
     expect(blob.size).toBeGreaterThan(1000);
   });
 
-  it("cover surfaces deprecation when the playbook is marked deprecated (Step 27 follow-up)", async () => {
+  it("cover + audit trail surface deprecation when the playbook is marked deprecated (Step 27 follow-up)", async () => {
     // mutual-nda is marked deprecated + superseded_by mutual-nda-deep in
-    // its JSON (commit 24f0a8d). The DOCX cover should annotate the
-    // Playbook line so a reader of the report alone — without the
-    // playbook JSON open — sees that they were analyzed against a
-    // legacy playbook.
+    // its JSON (commit 24f0a8d). The DOCX cover AND the audit-trail
+    // Playbook line should both annotate so a reader of either surface
+    // sees that they were analyzed against a legacy playbook.
     const blob = await buildDocxReport(makeRun(), ingest, loadStarterDkbSync(), loadMutualNda());
     const { unzipSync, strFromU8 } = await import("fflate");
     const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
     const docXml = strFromU8(entries["word/document.xml"]!);
-    expect(docXml).toContain("legacy; superseded by mutual-nda-deep");
+    // The substring appears at least twice: once in the cover Playbook
+    // line, once in the audit-trail Playbook line.
+    const hits = docXml.match(/legacy; superseded by mutual-nda-deep/g) ?? [];
+    expect(hits.length).toBeGreaterThanOrEqual(2);
   });
 
   it("cover does NOT annotate non-deprecated playbooks", async () => {
