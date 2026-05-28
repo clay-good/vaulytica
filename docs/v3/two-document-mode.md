@@ -9,6 +9,14 @@ conflicting text from each.
 This page covers when to use it, what the rules check, and how the
 findings are surfaced.
 
+> **v4 readers:** v4 lifts the 4-document cap and adds the CROSS-*
+> families (party / jurisdiction / defined-term / date / amount /
+> missing / precedence). The v3 CC-001..CC-007 rules below ship in
+> the same registry (`ALL_CONSISTENCY_RULES`) and run on every v4
+> bundle that satisfies their `requires: DocKind[]`. See
+> [`docs/v4/cross-document-rules.md`](../v4/cross-document-rules.md)
+> for the v4 surface.
+
 ## When to use it
 
 The canonical pairings are:
