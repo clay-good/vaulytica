@@ -84,6 +84,20 @@ export type BundleDocument = {
    * without a confidence suffix, and the JSON entry omits the field).
    */
   detection_confidence?: number;
+  /**
+   * Whether the matched playbook carries `deprecated: true` in its
+   * JSON. When `true`, the bundle DOCX per-document subsection
+   * annotates the "Playbook:" line ("legacy" or
+   * "legacy; superseded by <id>"). Optional / back-compat: omitting
+   * preserves prior renderer output verbatim.
+   */
+  playbook_deprecated?: boolean;
+  /**
+   * Id of the playbook that supersedes this one, when
+   * `playbook_deprecated` is true. Mirrors the optional Playbook
+   * field of the same name.
+   */
+  playbook_superseded_by?: string;
   run: EngineRun;
 };
 
@@ -167,6 +181,19 @@ export type BundleJsonDocument = {
    * without scanning `runs[i].findings` themselves.
    */
   severity_counts: { critical: number; warning: number; info: number };
+  /**
+   * Mirrors `BundleDocument.playbook_deprecated`. Emitted only when the
+   * matched playbook carries `deprecated: true` in its JSON; absent
+   * otherwise so non-deprecated bundles serialize byte-identically to
+   * prior output.
+   */
+  playbook_deprecated?: true;
+  /**
+   * Mirrors `BundleDocument.playbook_superseded_by`. Emitted only when
+   * `playbook_deprecated` is also emitted AND the playbook JSON
+   * carries `superseded_by`.
+   */
+  playbook_superseded_by?: string;
 };
 
 export type BundleJson = {
@@ -268,6 +295,12 @@ export async function buildBundleJson(input: BundleReportInput): Promise<BundleJ
       }
       if (typeof d.detection_confidence === "number") {
         entry.detection_confidence = d.detection_confidence;
+      }
+      if (d.playbook_deprecated === true) {
+        entry.playbook_deprecated = true;
+        if (typeof d.playbook_superseded_by === "string" && d.playbook_superseded_by.length > 0) {
+          entry.playbook_superseded_by = d.playbook_superseded_by;
+        }
       }
       return entry;
     });
@@ -460,7 +493,13 @@ function renderPerDocumentSection(input: BundleReportInput): (Paragraph | Table)
         : `Detected family: ${familyLabel}`;
     out.push(h2(doc.source_file_name));
     out.push(para({ text: familyLine }));
-    out.push(para({ text: `Playbook: ${doc.run.playbook_id}` }));
+    const deprecationSuffix =
+      doc.playbook_deprecated === true
+        ? doc.playbook_superseded_by
+          ? ` — legacy; superseded by ${doc.playbook_superseded_by}`
+          : " — legacy"
+        : "";
+    out.push(para({ text: `Playbook: ${doc.run.playbook_id}${deprecationSuffix}` }));
     out.push(para({ text: `File SHA-256: ${doc.run.source_file.sha256}` }));
     out.push(para({ text: `Per-document result hash: ${doc.run.result_hash}` }));
     const totals = countFindings(doc.run.findings);

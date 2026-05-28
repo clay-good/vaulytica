@@ -579,6 +579,8 @@ export async function runBundleReport(
       // doesn't cover.
       detected_family: familyDisplayLabel(d.v3_detection.family, d.playbook.name),
       detection_confidence: d.v3_detection.confidence,
+      playbook_deprecated: d.playbook.deprecated === true ? true : undefined,
+      playbook_superseded_by: d.playbook.deprecated === true ? d.playbook.superseded_by : undefined,
       run: d.run,
     })),
     consistency,

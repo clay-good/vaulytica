@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- Bundle DOCX + JSON surface per-document playbook deprecation
+  (spec-v3 §27 follow-up; companion to the single-doc DOCX cover
+  addition in commit edc1ff9). When a deprecated playbook matched
+  for any document in a bundle, the per-document subsection's
+  "Playbook:" line in the bundle DOCX is annotated with
+  "— legacy" or "— legacy; superseded by <id>", and the bundle
+  JSON's `documents[]` entry carries optional `playbook_deprecated`
+  + `playbook_superseded_by` fields. Non-deprecated bundles
+  serialize byte-identically to prior output.
+  - [`src/report/bundle.ts`](src/report/bundle.ts):
+    `BundleDocument` gains optional `playbook_deprecated?: boolean`
+    + `playbook_superseded_by?: string`; `BundleJsonDocument`
+    mirrors them. The DOCX renderer reads them on the per-doc
+    Playbook line; the JSON emitter sets them per-entry when
+    `playbook_deprecated === true`.
+  - [`src/ui/pipeline.ts`](src/ui/pipeline.ts): the bundle pipeline
+    threads `d.playbook.deprecated` + `d.playbook.superseded_by`
+    into each `BundleDocument` so production bundles carry the
+    signal end-to-end.
+  - [`src/report/bundle.test.ts`](src/report/bundle.test.ts): +2
+    tests covering DOCX annotation (mix of deprecated +
+    superseded_by, deprecated alone, non-deprecated) and JSON
+    emission shape.
+
 - DOCX cover surfaces playbook deprecation. When a deprecated
   playbook matches (e.g. v2 `mutual-nda`), the Playbook line on the
   cover now reads

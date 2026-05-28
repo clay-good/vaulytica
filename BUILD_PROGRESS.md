@@ -25,6 +25,16 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### Bundle DOCX + JSON per-document playbook deprecation (spec-v3 §27 follow-up) (2026-05-28) — ✅ complete
+
+Companion to the single-doc DOCX cover commit (edc1ff9). The per-document subsection of the bundle Word report now annotates the "Playbook:" line with "— legacy" / "— legacy; superseded by <id>" when the matched playbook carries `deprecated: true`, and the bundle JSON's `documents[]` entry carries optional `playbook_deprecated` + `playbook_superseded_by` fields so programmatic consumers can spot a legacy-playbook match without re-loading the playbook JSON. Non-deprecated bundles serialize byte-identically.
+
+- [`src/report/bundle.ts`](src/report/bundle.ts): `BundleDocument` gains `playbook_deprecated?: boolean` + `playbook_superseded_by?: string`; `BundleJsonDocument` mirrors them. DOCX per-doc renderer reads the fields on the Playbook line; JSON emitter sets them per-entry only when `playbook_deprecated === true`.
+- [`src/ui/pipeline.ts`](src/ui/pipeline.ts): bundle pipeline threads `d.playbook.deprecated` + `d.playbook.superseded_by` into each `BundleDocument` so production bundles carry the signal end-to-end.
+- [`src/report/bundle.test.ts`](src/report/bundle.test.ts) (2 new): DOCX assertion across mixed deprecation states (with successor, without successor, non-deprecated); JSON shape assertion confirming the fields are absent when undefined.
+
+`npm run lint && typecheck && test && build` all green; **2210/2210 tests + 2 skips** (was 2208 + 2; +2 new tests).
+
 ### DOCX cover surfaces playbook deprecation (spec-v3 §27 follow-up) (2026-05-28) — ✅ complete
 
 Completes the user-visible feedback loop for the v2 NDA deprecation. The matcher demotes deprecated playbooks on ties (commit 24f0a8d), the report now also tells the reader of the Word report when their document was analyzed under a legacy playbook and which playbook supersedes it.

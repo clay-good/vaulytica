@@ -429,6 +429,47 @@ describe("buildBundleJson — per-document metadata (spec-v3 §60 follow-up)", (
     expect(out.documents![1]!.playbook_match_confidence).toBe(0.9);
   });
 
+  it("DOCX per-document subsection annotates Playbook line with deprecation when threaded", async () => {
+    const input: BundleReportInput = {
+      ...makeInput(),
+      documents: [
+        { ...bundleDoc("a", "a"), playbook_deprecated: true, playbook_superseded_by: "mutual-nda-deep" },
+        { ...bundleDoc("b", "b"), playbook_deprecated: true },
+        bundleDoc("c", "c"),
+      ],
+    };
+    const blob = await buildBundleDocxReport(input);
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const docXml = strFromU8(entries["word/document.xml"]!);
+    expect(docXml).toContain("Playbook: mutual-nda — legacy; superseded by mutual-nda-deep");
+    expect(docXml).toContain("Playbook: mutual-nda — legacy</w:t>");
+    // Doc c is not deprecated → no annotation on its Playbook line.
+    // The plain "Playbook: mutual-nda" string still appears (used by the
+    // first two annotated entries as a prefix), so verify via the
+    // absence of " — legacy" on the third entry by counting hits.
+    const legacyHits = docXml.match(/Playbook: mutual-nda — legacy/g) ?? [];
+    expect(legacyHits).toHaveLength(2);
+  });
+
+  it("JSON per-entry surfaces playbook_deprecated + playbook_superseded_by when threaded", async () => {
+    const input: BundleReportInput = {
+      ...makeInput(),
+      documents: [
+        { ...bundleDoc("a", "a"), playbook_deprecated: true, playbook_superseded_by: "mutual-nda-deep" },
+        { ...bundleDoc("b", "b"), playbook_deprecated: true },
+        bundleDoc("c", "c"),
+      ],
+    };
+    const out = await buildBundleJson(input);
+    expect(out.documents).toBeDefined();
+    expect(out.documents![0]!.playbook_deprecated).toBe(true);
+    expect(out.documents![0]!.playbook_superseded_by).toBe("mutual-nda-deep");
+    expect(out.documents![1]!.playbook_deprecated).toBe(true);
+    expect(out.documents![1]!.playbook_superseded_by).toBeUndefined();
+    expect(out.documents![2]!.playbook_deprecated).toBeUndefined();
+    expect(out.documents![2]!.playbook_superseded_by).toBeUndefined();
+  });
+
   it("omits documents[] (back-compat) when no document carries a detected_family", async () => {
     const noFamily: BundleReportInput = {
       ...makeInput(),
