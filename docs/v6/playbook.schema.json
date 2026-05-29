@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vaulytica.com/playbook.schema.json",
+  "title": "Vaulytica custom playbook",
+  "description": "A user-supplied, client-side playbook encoding a team's own contract-review positions (spec-v6 Part II). The Zod schema in src/playbooks/custom-playbook.ts is authoritative; this JSON Schema is an informative mirror for editor autocomplete and external tooling.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "catalog_version", "id", "name", "description"],
+  "properties": {
+    "schema_version": {
+      "description": "Version of this playbook schema format.",
+      "const": "1.0"
+    },
+    "catalog_version": {
+      "description": "The built-in rule-catalog version this playbook targets.",
+      "type": "string",
+      "minLength": 1
+    },
+    "id": { "type": "string", "minLength": 1 },
+    "name": { "type": "string", "minLength": 1 },
+    "description": { "type": "string", "minLength": 1 },
+    "mode": {
+      "description": "augment = built-in catalog + custom positions (default); replace = custom positions only.",
+      "enum": ["augment", "replace"]
+    },
+    "rule_selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "include": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "exclude": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "rule_overrides": {
+      "description": "Per-built-in-rule severity override / skip, keyed by rule id.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "severity": { "$ref": "#/$defs/severity" },
+          "skip": { "type": "boolean" }
+        }
+      }
+    },
+    "thresholds": {
+      "description": "Named numeric threshold parameters the team's positions reference.",
+      "type": "object",
+      "additionalProperties": { "type": "number" }
+    },
+    "required_clauses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["category", "severity"],
+        "properties": {
+          "category": { "type": "string", "minLength": 1 },
+          "severity": { "$ref": "#/$defs/severity" }
+        }
+      }
+    },
+    "custom_rules": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/customRule" }
+    }
+  },
+  "$defs": {
+    "severity": { "enum": ["critical", "warning", "info"] },
+    "citation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reference"],
+      "properties": {
+        "reference": { "type": "string", "minLength": 1 },
+        "url": { "type": "string", "format": "uri" }
+      }
+    },
+    "customRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "description", "severity", "assert"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 },
+        "severity": { "$ref": "#/$defs/severity" },
+        "assert": { "$ref": "#/$defs/predicate" },
+        "citation": { "$ref": "#/$defs/citation" }
+      }
+    },
+    "predicate": {
+      "description": "A condition that must hold for a compliant document; the rule fires a finding when it is false.",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": {
+            "kind": { "const": "clause_present" },
+            "pattern": { "type": "string", "minLength": 1 },
+            "section_heading": { "type": "string", "minLength": 1 }
+          },
+          "anyOf": [{ "required": ["pattern"] }, { "required": ["section_heading"] }]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": {
+            "kind": { "const": "clause_absent" },
+            "pattern": { "type": "string", "minLength": 1 },
+            "section_heading": { "type": "string", "minLength": 1 }
+          },
+          "anyOf": [{ "required": ["pattern"] }, { "required": ["section_heading"] }]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "metric", "comparator", "value"],
+          "properties": {
+            "kind": { "const": "numeric_threshold" },
+            "metric": {
+              "enum": [
+                "liability_cap_multiple",
+                "liability_cap_amount",
+                "notice_period_days",
+                "term_length_days",
+                "payment_term_days"
+              ]
+            },
+            "comparator": { "enum": ["gte", "lte", "gt", "lt", "eq"] },
+            "value": { "type": "number" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "term"],
+          "properties": {
+            "kind": { "const": "defined_term_present" },
+            "term": { "type": "string", "minLength": 1 }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "allowed"],
+          "properties": {
+            "kind": { "const": "governing_law_in" },
+            "allowed": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": {
+            "kind": { "const": "cross_ref_resolves" }
+          }
+        }
+      ]
+    }
+  }
+}

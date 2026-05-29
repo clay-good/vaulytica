@@ -23,3 +23,19 @@ export {
 export { matchPlaybook, type MatchInput } from "./matcher.js";
 export { parsePlaybook, parsePlaybooks, fetchPlaybooks } from "./loader.js";
 export { LAUNCH_PLAYBOOK_IDS, type LaunchPlaybookId } from "./registry.js";
+
+// v6 Part II — public, user-supplied playbook schema + validator (Step 91).
+export {
+  CustomPlaybookSchema,
+  CUSTOM_PLAYBOOK_SCHEMA_VERSION,
+  NUMERIC_METRICS,
+  validateCustomPlaybook,
+  parseCustomPlaybookJson,
+  type CustomPlaybook,
+  type CustomRule,
+  type CustomPredicate,
+  type CustomRuleCitation,
+  type CustomPlaybookValidation,
+  type NumericMetric,
+  type NumericComparator,
+} from "./custom-playbook.js";

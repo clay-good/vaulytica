@@ -25,6 +25,20 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v6 Step 91 — public playbook schema + JSON Schema + validator (spec-v6 Part II) (2026-05-29) — ✅ complete
+
+Opened the bring-your-own-playbook track (the largest single v6 expansion, spec-v6 §7). A custom playbook is a user-authored `.json` artifact encoding a team's own positions; it is loaded and validated **entirely client-side** (no bytes leave the tab) and is declarative data, never executable code — so it stays as deterministic and auditable as a built-in playbook (passes the §3 posture filter unchanged). This step delivers the schema + validator only; the load UI (Step 92) and the predicate interpreter (Step 93) build on it.
+
+New module [`src/playbooks/custom-playbook.ts`](src/playbooks/custom-playbook.ts) (+ two test files, 18 tests):
+
+- **Public, versioned schema.** A `CustomPlaybook` distinct from the internal matcher `Playbook`: `schema_version` ("1.0"), `catalog_version` (the built-in catalog it targets, §10), id/name/description, `mode` (augment | replace), `rule_selection` (include/exclude built-in rule ids), `rule_overrides` (per-rule severity/skip), `thresholds` (named numbers), `required_clauses`, and the `custom_rules` block (§8).
+- **Bounded declarative DSL (§9).** Each custom rule pairs a positive `assert` predicate (the condition that must hold for a *compliant* document — a finding fires when it is false) with id/title/description/severity and an optional `citation` (absence is marked `uncited (team policy)`, never silent). Six predicate kinds via a Zod `discriminatedUnion`: `clause_present` / `clause_absent` (pattern or section_heading required), `numeric_threshold` (bounded `metric` enum × comparator × value), `defined_term_present`, `governing_law_in`, `cross_ref_resolves`. `.strict()` everywhere so a typo is an error, not a silent drop.
+- **Validator with readable errors (§10).** `validateCustomPlaybook(raw)` → `{ ok, playbook }` or `{ ok: false, errors }` (sorted `path: message` strings); `parseCustomPlaybookJson(text)` reports a JSON syntax error as a readable error rather than throwing. `superRefine` guards catch authoring mistakes: a replace-mode playbook that checks nothing, duplicate custom-rule ids, and clause predicates with neither pattern nor heading.
+
+Artifacts: [`docs/v6/playbook-schema.md`](docs/v6/playbook-schema.md) (documented contract + worked example) and [`docs/v6/playbook.schema.json`](docs/v6/playbook.schema.json) (informative JSON Schema 2020-12 mirror for editor autocomplete; Zod is authoritative). A drift-guard test asserts the JSON mirror's metric enum, severity enum, predicate kinds, and required fields stay in lockstep with the Zod source of truth.
+
+Full gate green: `npm run lint && typecheck && test && build`. Not started: load-a-playbook UI (Step 92), custom-rule interpreter (Step 93 — the `numeric_threshold` metrics need extractor mapping work), authoring guide + examples (Step 94).
+
 ### v6 Steps 89–90 — version comparison engine + report + compare UI (spec-v6 Part I) (2026-05-29) — ✅ complete
 
 Landed the first v6 flagship track — version comparison. A comparison is `diff(run(base), run(revised))`: a pure, deterministic operation over two runs the engine already produces, so it passes the spec-v6 §3 five-part posture filter unchanged (no AI, no server, citable, lints-not-drafts, deterministic).
