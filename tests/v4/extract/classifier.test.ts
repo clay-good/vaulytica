@@ -166,8 +166,9 @@ describe("classifyV4 — threshold + fallback", () => {
     expect(r.confidence).toBe(0);
   });
 
-  it("returns null sub-domain on a body below the 0.5 confidence floor", () => {
-    // One distinguishing phrase only — should not clear the threshold.
+  it("returns null sub-domain on a body below the confidence floor", () => {
+    // One distinguishing phrase only (~0.143) — should not clear the
+    // calibrated 0.4 threshold.
     const r = classifyFromBody("Notes", "Tenant.");
     expect(r.sub_domain).toBeNull();
   });
@@ -288,8 +289,11 @@ describe("sub-domain-features.json — registry contract", () => {
     }
   });
 
-  it("declares the spec-mandated thresholds", () => {
-    expect(FEATURES.thresholds.sub_domain_min_confidence).toBe(0.5);
+  it("declares the calibrated thresholds", () => {
+    // Sub-domain floor calibrated from 0.5 → 0.4 against the golden
+    // corpus (spec-v4 Part VII open question #8; see
+    // classifier-calibration.test.ts). Family floor stays 0.5.
+    expect(FEATURES.thresholds.sub_domain_min_confidence).toBe(0.4);
     expect(FEATURES.thresholds.family_min_confidence).toBe(0.5);
   });
 

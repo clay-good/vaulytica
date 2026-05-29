@@ -640,7 +640,7 @@
     "negative_feature": -0.1
   },
   "thresholds": {
-    "sub_domain_min_confidence": 0.5,
+    "sub_domain_min_confidence": 0.4,
     "family_min_confidence": 0.5
   }
 }

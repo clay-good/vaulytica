@@ -25,6 +25,32 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v4 sub-domain classifier confidence threshold calibrated 0.5 → 0.4 (spec-v4 Part VII open question #8) (2026-05-28) — ✅ complete
+
+Closes the last tracked v4 tuning task. Open question #8 left the auto-classifier's 0.5 / 0.5 sub-domain / family confidence floors as "a starting point ... may need calibration once a fixture corpus exists." That corpus now exists (the Step 61 golden corpus under [`tests/golden/v4/fixtures/`](tests/golden/v4/fixtures/) — one passing + several failing fixtures per sub-domain B–P, each filename-prefixed with its sub-domain), so the floor was calibrated against it instead of guessed.
+
+**Method.** A throwaway harness ran `scoreSubDomains` over all 75 labeled `.txt` fixtures, took the top-1 sub-domain, and swept the accept threshold:
+
+| t | true-accept | false-accept | false-reject |
+|---|---|---|---|
+| 0.30 | 38 | 0 | 15 |
+| 0.40 | 38 | 0 | 15 |
+| 0.45 | 28 | 0 | 25 |
+| 0.50 (original) | 28 | 0 | 25 |
+| 0.60 | 13 | 0 | 40 |
+
+Top-1 accuracy is 70.7% (53/75); the rest are feature-table misclassifications (healthcare→privacy, ip-licensing→equity, settlement→commercial, compliance→employment) tracked as a separate feature-engineering task, **not** a threshold problem. The decisive finding: `false-accept` is 0 at every threshold — no wrong top-1 prediction scores above 0.286 — so the 0.5 floor was purely losing recall, sending 25 of 53 correct detections to `generic-fallback`.
+
+**Change.** [`dkb/v4/sub-domain-features.json`](dkb/v4/sub-domain-features.json) `thresholds.sub_domain_min_confidence` 0.5 → **0.4**: recovers 10 correct detections (28 → 38) with zero new misclassifications, and keeps a 0.114 margin above the 0.286 false-positive ceiling while still capturing the 0.429 correct tier. The **family floor stays 0.5** — it gates the delegated `matchPlaybook` stage whose own 0.5 threshold is calibrated separately by the playbook-matching tests and is not exercised by this corpus.
+
+- [`dkb/v4/sub-domain-features.json`](dkb/v4/sub-domain-features.json): sub-domain floor 0.5 → 0.4.
+- [`src/extract/v4/classifier.ts`](src/extract/v4/classifier.ts): docstring updated with the calibrated floor + rationale.
+- [`tests/v4/extract/classifier-calibration.test.ts`](tests/v4/extract/classifier-calibration.test.ts) (new, 5 tests): re-runs the sweep over the live corpus and locks the invariants — zero false-accepts at the calibrated floor, ≥ 35 true-accepts, strictly more recall than the old 0.5 floor, and a margin guard proving a sub-0.286 floor would admit errors. This makes the calibration auditable and regression-proof as the corpus grows.
+- [`tests/v4/extract/classifier.test.ts`](tests/v4/extract/classifier.test.ts): registry-contract assertion updated to the calibrated 0.4 floor; stale "0.5 floor" comments corrected.
+- [`spec-v4.md`](spec-v4.md) Part VII #8 marked ✅ resolved with the findings.
+
+`npm run lint && typecheck && test && build` all green. No production wiring changed — `classifyV4` remains an additive surface (the `matchPlaybook` flow is still the production path), so no determinism hash or golden moved.
+
 ### UI complete-state + bundle-complete cards surface playbook deprecation (spec-v3 §27 follow-up) (2026-05-28) — ✅ complete
 
 Closes the user-visible feedback loop for the v2 NDA deprecation across all three surfaces: matcher (24f0a8d) → single-doc DOCX cover (edc1ff9) → bundle DOCX + JSON (943d114) → **on-page UI (this commit)**. A user who drops a clean Common Paper Mutual NDA on the page now sees the legacy hint on the page without having to open the Word report.

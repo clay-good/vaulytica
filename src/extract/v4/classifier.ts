@@ -12,15 +12,25 @@
  * `match_features` table. This is delegated to the existing
  * `matchPlaybook` matcher (spec §8 of v2) — v4 does not duplicate it.
  *
- * Thresholds (spec §9):
+ * Thresholds (spec §9; calibrated per spec-v4 Part VII open question #8):
  *
- *   - Sub-domain confidence ≥ 0.5 → emit the family stage.
- *   - Sub-domain confidence < 0.5 → return null sub-domain; callers fall
+ *   - Sub-domain confidence ≥ 0.4 → emit the family stage.
+ *   - Sub-domain confidence < 0.4 → return null sub-domain; callers fall
  *     back to the v2 `matchPlaybook` flow, which itself falls back to
  *     `generic-fallback` per spec §8.
  *   - Family confidence < 0.5 within a confident sub-domain → emit the
  *     sub-domain's `*-generic` playbook (when one exists; the
  *     placeholder is named for later wiring).
+ *
+ * The 0.4 sub-domain floor was tuned against the labeled golden corpus
+ * (tests/golden/v4/fixtures/) and is locked by
+ * tests/v4/extract/classifier-calibration.test.ts. The 0.5 spec starting
+ * point rejected 25 of 53 correctly-classified fixtures; lowering to 0.4
+ * recovers 10 of them with zero new misclassifications (every wrong
+ * top-1 prediction in the corpus scores ≤ 0.286, well below 0.4). The
+ * family floor stays at 0.5 — it gates the delegated `matchPlaybook`
+ * stage, whose own 0.5 threshold is calibrated separately by the
+ * playbook-matching tests, and is not exercised by this corpus.
  *
  * Pure: no IO, no time, no randomness. The feature data is passed in
  * as a `SubDomainFeatures` object so callers control loading.
