@@ -142,7 +142,7 @@ export const PlaybookSchema = z.object({
   companion_playbooks: z.array(z.string()).optional(),
   compliance_matrix_columns: z.array(z.string()).optional(),
   deprecated: z.boolean().optional(),
-  superseded_by: z.string().optional(),
+  superseded_by: z.string().min(1).optional(),
 }).superRefine((val, ctx) => {
   // `superseded_by` is the deprecation successor pointer — it only
   // has semantic meaning when `deprecated: true`. Reject the

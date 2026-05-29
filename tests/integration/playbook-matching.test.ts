@@ -311,6 +311,11 @@ describe("PlaybookSchema accepts + validates the deprecation metadata (Step 27 f
     expect(() => PlaybookSchema.parse(raw)).toThrow();
   });
 
+  it("rejects superseded_by: \"\" (empty string is a meaningless successor pointer)", () => {
+    const raw = { ...basePlaybook, deprecated: true, superseded_by: "" };
+    expect(() => PlaybookSchema.parse(raw)).toThrow();
+  });
+
   it("rejects superseded_by without deprecated: true (semantic-coherence guard)", () => {
     // A successor pointer on an active playbook is semantically
     // incoherent — the matcher tiebreak and the report annotations
