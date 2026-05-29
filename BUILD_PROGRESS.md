@@ -25,6 +25,17 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v6 multi-family activation — don't-miss-anything for composite documents (2026-05-29) — ✅ complete
+
+Follow-up to the full-catalog wiring: a single document was still analyzed under exactly *one* matched playbook, so a **composite agreement** (e.g. an MSA with an embedded DPA exhibit and an IP schedule) matched one family and silently skipped the others' rules. Naively "run every rule" is the wrong fix — most v3/v4 rules are "required-clause-absent" rules, so running them on the wrong document type would fire dozens of false "missing X" findings (that's exactly what `applies_to_playbooks` gating prevents). Instead: detect *every family the document clearly contains* and run each one's rule set, surfacing the extras in a separate labeled section. Chosen via AskUserQuestion: **separate labeled section** + **strict activation bar**.
+
+- **Activation logic** ([`src/ui/playbook-candidates.ts`](src/ui/playbook-candidates.ts) — `familyIsPresent`, `selectSecondaryFamilies`, `MAX_SECONDARY_FAMILIES`; +6 tests): a secondary family activates only on a *strict* presence signal — a specific title keyword, or ≥3 distinguishing/required-clause hits (a mere passing mention does **not** trip the whole checklist). Stricter than candidate-admission (which only adds a match candidate); activation runs a full rule set, so it needs real evidence. Sorted by signal strength, capped at 4.
+- **Pipeline** ([`src/ui/pipeline.ts`](src/ui/pipeline.ts)): `prepareDocument` records `secondary_playbooks`; `runReport` runs each secondary family with **only that family's gated rules** (not the ungated launch rules, which already ran in the primary run, so no duplication) and returns `secondary_families: SecondaryFamilyResult[]`. The primary `run`/`result_hash` is byte-for-byte unchanged — secondaries are additive. Skipped when a custom playbook drives the run. Single-document path only this round (bundle per-doc multi-family is a noted follow-up).
+- **Report** ([`src/report/json.ts`](src/report/json.ts) + [`src/report/docx.ts`](src/report/docx.ts)): new shared `ReportSecondaryFamily` type; JSON emits an optional `secondary_families`; DOCX renders an "Additional Checks From Other Detected Families" section (one labeled table per family; families that ran clean say so). Both omit the surface entirely for single-family docs (back-compat). +4 tests.
+- **UI** ([`src/ui/states.ts`](src/ui/states.ts) + [`src/ui/main.ts`](src/ui/main.ts) + CSS): the complete state renders an "Also checked (other detected families)" block with per-family counts so the reviewer sees a present family was scanned even though it wasn't the primary match. +2 tests.
+
+Net effect: a plain NDA/MSA is unaffected (no family activates); a composite MSA+DPA now runs both rule sets and shows the DPA findings in their own section. Full gate green: `npm run lint && typecheck && test && build` — **2363 passing + 2 skips** (was 2351), bundle 656 KB gz < 765 budget.
+
 ### v6 Steps 92 + 94 — load-a-playbook UI (augment/replace + provenance) + authoring guide & worked examples (spec-v6 Part II) (2026-05-29) — ✅ complete
 
 Closed the bring-your-own-playbook track: a team can now load *its own* playbook in the tab, see it validated and previewed, choose augment vs replace, and have the next analysis enforce that standard — with every finding provenance-marked and nothing leaving the browser (passes the §3 + Part VII posture filter unchanged).

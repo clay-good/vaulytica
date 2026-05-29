@@ -5,7 +5,7 @@
  */
 
 export { buildDocxReport } from "./docx.js";
-export { buildJsonReport, type JsonReport } from "./json.js";
+export { buildJsonReport, type JsonReport, type ReportSecondaryFamily } from "./json.js";
 
 // v6 Part III — findings-to-action exports (Steps 87–88).
 export {

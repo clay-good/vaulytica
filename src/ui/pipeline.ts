@@ -67,7 +67,8 @@ import {
 } from "./v3/index.js";
 import { familyDisplayLabel } from "./v3-labels.js";
 import { filterRulesByFrames } from "./frame-filter.js";
-import { selectMatchCandidates } from "./playbook-candidates.js";
+import { selectMatchCandidates, selectSecondaryFamilies } from "./playbook-candidates.js";
+import type { Finding } from "../engine/finding.js";
 
 export type PipelineProgress = {
   /** Fraction in [0, 1] after each rule completes. */
@@ -94,6 +95,14 @@ export type PreparedDocument = {
   playbook: Playbook;
   source_file: { name: string; sha256: string; size_bytes: number };
   match: { playbook_id: string; confidence: number; reasoning: string };
+  /**
+   * Secondary families the document *also* clearly contains (spec-v6
+   * multi-family activation). A composite agreement (e.g. an MSA with an
+   * embedded DPA exhibit) matches one primary playbook but genuinely
+   * contains others; each of these runs its own rule set so a present
+   * family is never silently skipped. Empty for a single-family document.
+   */
+  secondary_playbooks: Playbook[];
 };
 
 export type PipelineResult = {
@@ -143,6 +152,22 @@ export type PipelineResult = {
     builtin_finding_count: number;
     unevaluable: ReadonlyArray<UnevaluableRule>;
   };
+  /**
+   * Multi-family activation (spec-v6). Additional families the document
+   * clearly contains beyond the primary match, each scanned with its own
+   * rule set and surfaced in the report's "additional checks" section. The
+   * primary `run` above is unchanged; these are quarantined so the core
+   * report stays clean. Empty for a single-family document.
+   */
+  secondary_families: SecondaryFamilyResult[];
+};
+
+/** One additional detected family's scan results (spec-v6 multi-family activation). */
+export type SecondaryFamilyResult = {
+  playbook_id: string;
+  playbook_name: string;
+  findings: Finding[];
+  counts: { critical: number; warning: number; info: number };
 };
 
 export type PipelineConfig = {
@@ -256,6 +281,14 @@ export async function prepareDocument(
   });
   const playbook = candidates.find((p) => p.id === match.playbook_id) ?? launchPlaybooks[0]!;
 
+  // Multi-family activation: other families this document clearly contains,
+  // run as secondary scans so a present family is never skipped (spec-v6).
+  const secondary_playbooks = selectSecondaryFamilies(
+    extendedPlaybooks,
+    { title: titleSource, body: bodyText, classified: extracted.classified, extracted },
+    match.playbook_id,
+  );
+
   return {
     ingest,
     extracted,
@@ -268,6 +301,7 @@ export async function prepareDocument(
       confidence: match.confidence,
       reasoning: match.reasoning,
     },
+    secondary_playbooks,
   };
 }
 
@@ -346,6 +380,42 @@ export async function runReport(
     });
   }
 
+  // Multi-family activation (spec-v6): run each clearly-present secondary
+  // family's own rule set as a separate scan. We run ONLY the rules gated to
+  // that family (not the ungated launch rules, which already ran in the
+  // primary run) so the secondary section is purely that family's specialized
+  // checks. Skipped when a custom playbook drives the run (its mode already
+  // redefines the rule semantics). Deterministic: families are pre-sorted and
+  // executed_at is blanked.
+  const secondary_families: SecondaryFamilyResult[] = [];
+  if (!options.custom_playbook) {
+    const allRules = [...LAUNCH_RULES, ...V3_RULES, ...V4_RULES] as readonly Rule[];
+    for (const sp of prepared.secondary_playbooks) {
+      const subset = filterRulesByFrames(
+        allRules.filter((r) => r.applies_to_playbooks?.includes(sp.id)),
+        options.active_frames,
+      );
+      if (subset.length === 0) continue;
+      const sRun = await runEngine({
+        rules: subset as readonly Rule[],
+        ctx: {
+          tree: prepared.ingest.tree,
+          extracted: prepared.extracted,
+          dkb: prepared.dkb,
+          playbook: sp,
+        },
+        source_file: prepared.source_file,
+        executed_at: "",
+      });
+      secondary_families.push({
+        playbook_id: sp.id,
+        playbook_name: sp.name,
+        findings: sRun.findings,
+        counts: countsBySeverity(sRun),
+      });
+    }
+  }
+
   const docx_blob = await buildDocxReport(
     run,
     prepared.ingest,
@@ -353,8 +423,9 @@ export async function runReport(
     prepared.playbook,
     undefined,
     prepared.extracted,
+    secondary_families,
   );
-  const json_blob = buildJsonReport(run, prepared.ingest, prepared.playbook);
+  const json_blob = buildJsonReport(run, prepared.ingest, prepared.playbook, secondary_families);
   const fixlist_md_blob = fixListMarkdownBlob(run, prepared.extracted);
   const fixlist_csv_blob = fixListCsvBlob(run);
   const obligations_csv_blob = obligationsCsvBlob(prepared.extracted);
@@ -377,6 +448,7 @@ export async function runReport(
     v3_detection,
     v3_frames,
     custom_playbook: customProvenance,
+    secondary_families,
   };
 }
 

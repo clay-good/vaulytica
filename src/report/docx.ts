@@ -43,6 +43,7 @@ import type { DKB } from "../dkb/types.js";
 import type { IngestResult } from "../ingest/types.js";
 import type { Playbook } from "../playbooks/types.js";
 import type { ExtractedData } from "../extract/types.js";
+import type { ReportSecondaryFamily } from "./json.js";
 import { buildBibliography, citationIndex, type BibliographyEntry } from "./bibliography.js";
 import { formatCitation, formatBibliographyEntry } from "./citations.js";
 import type { V3ReportInputs } from "./v3/types.js";
@@ -78,6 +79,7 @@ export async function buildDocxReport(
   playbook: Playbook,
   v3?: V3ReportInputs,
   extracted?: ExtractedData,
+  secondaryFamilies?: ReadonlyArray<ReportSecondaryFamily>,
 ): Promise<Blob> {
   const bibliography = buildBibliography(run.findings, dkb);
   const children: (Paragraph | Table)[] = [
@@ -89,6 +91,10 @@ export async function buildDocxReport(
     ...renderFindingsSection("Critical Findings", "critical", run.findings, bibliography),
     ...renderFindingsSection("Warnings", "warning", run.findings, bibliography),
     ...renderFindingsSection("Informational", "info", run.findings, bibliography),
+    // spec-v6 multi-family activation — additional families the document
+    // also contains, scanned with their own rule sets and quarantined here
+    // so the primary report above stays clean.
+    ...renderSecondaryFamiliesSection(secondaryFamilies),
     // v3 §§56–58 — conditional summary pages. Each renderer returns [] when
     // the corresponding input is absent, so the page only appears when
     // relevant.
@@ -320,6 +326,59 @@ function renderObligationsLedger(
 
 function isObligationRelevant(f: Finding): boolean {
   return /^(OBLI|RISK|TERM|PERS|FIN)-\d{3}$/.test(f.rule_id);
+}
+
+// ---------------------------------------------------------------------------
+// Additional checks from other detected families (spec-v6 multi-family
+// activation). The primary report above covers the matched playbook; this
+// section surfaces every *other* family the document clearly contains, each
+// scanned with its own rule set, so a present family is never silently
+// skipped. Each family is clearly labeled and kept separate from the primary
+// findings, including families that ran clean (which is itself reassuring).
+
+function renderSecondaryFamiliesSection(
+  secondary: ReadonlyArray<ReportSecondaryFamily> | undefined,
+): (Paragraph | Table)[] {
+  if (!secondary || secondary.length === 0) return [];
+  const out: (Paragraph | Table)[] = [
+    h1("Additional Checks From Other Detected Families"),
+    para({
+      text:
+        "Beyond the primary playbook, this document also contains content from the families below. Each was scanned with its own rule set. These checks are kept separate from the primary findings above.",
+      italics: true,
+    }),
+  ];
+  for (const fam of secondary) {
+    const c = fam.counts;
+    out.push(
+      para({
+        text: `${fam.playbook_name} (${fam.playbook_id}) — ${c.critical} critical, ${c.warning} warnings, ${c.info} informational`,
+        bold: true,
+      }),
+    );
+    if (fam.findings.length === 0) {
+      out.push(para({ text: "No findings — this family's requirements appear to be met.", italics: true }));
+      continue;
+    }
+    out.push(
+      new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        rows: [
+          headerRow(["Severity", "Rule", "Finding", "Section"]),
+          ...fam.findings.map((f) =>
+            bodyRow([
+              f.severity.toUpperCase(),
+              f.rule_id,
+              truncate(f.description, 200),
+              f.excerpt.section_id ?? "doc",
+            ]),
+          ),
+        ],
+      }),
+    );
+  }
+  out.push(pageBreak());
+  return out;
 }
 
 // ---------------------------------------------------------------------------

@@ -89,3 +89,63 @@ export function selectMatchCandidates(
   const admitted = extended.filter((p) => familySignalStrength(p, signals) >= ADMIT_THRESHOLD);
   return [...launch, ...admitted];
 }
+
+/**
+ * Most secondary families surfaced per document. A composite agreement
+ * rarely embeds more than a couple of distinct families; the cap bounds the
+ * extra engine passes and keeps the "additional checks" section readable.
+ */
+export const MAX_SECONDARY_FAMILIES = 4;
+
+/**
+ * Whether a document *clearly contains* a given family — the **strict**
+ * presence bar used to decide multi-family activation (run that family's
+ * full rule set as a secondary scan). Stricter than candidate admission:
+ * admission only adds a match candidate (the matcher still arbitrates),
+ * whereas activation runs a whole checklist of "required clause absent"
+ * rules, so it must be confident the family is genuinely present — not
+ * merely mentioned in passing. Clear-presence = a specific title keyword,
+ * or three or more distinguishing/required-clause hits in the body.
+ */
+export function familyIsPresent(playbook: Playbook, signals: CandidateSignals): boolean {
+  const title = signals.title.toLowerCase();
+  const body = signals.body.toLowerCase();
+  const f = playbook.match_features;
+
+  const titleHits = f.title_keywords.filter((kw) => title.includes(kw.toLowerCase())).length;
+  if (titleHits >= 1) return true;
+
+  const distHits = f.distinguishing_phrases.filter((p) => body.includes(p.toLowerCase())).length;
+  const categories = new Set(signals.classified.map((c) => c.category));
+  const definedTerms = new Set(signals.extracted.definitions.entries.map((e) => e.term.toLowerCase()));
+  const reqHits = f.required_clauses.filter(
+    (cat) => categories.has(cat) || definedTerms.has(cat.toLowerCase()),
+  ).length;
+  return distHits + reqHits >= 3;
+}
+
+/**
+ * Select the secondary families to run as additional scans: specialized
+ * playbooks the document clearly contains (strict bar), other than the
+ * primary matched playbook. Sorted by signal strength (desc) then id for a
+ * deterministic order, and capped at {@link MAX_SECONDARY_FAMILIES}.
+ *
+ * These drive the report's "additional checks from other detected families"
+ * section — a composite MSA that embeds a DPA exhibit gets the DPA rule set
+ * too, so a genuinely-present family is never silently skipped.
+ */
+export function selectSecondaryFamilies(
+  extended: readonly Playbook[],
+  signals: CandidateSignals,
+  primaryPlaybookId: string,
+): Playbook[] {
+  return extended
+    .filter((p) => p.id !== primaryPlaybookId && familyIsPresent(p, signals))
+    .sort((a, b) => {
+      const sa = familySignalStrength(a, signals);
+      const sb = familySignalStrength(b, signals);
+      if (sa !== sb) return sb - sa;
+      return a.id.localeCompare(b.id);
+    })
+    .slice(0, MAX_SECONDARY_FAMILIES);
+}

@@ -140,6 +140,47 @@ describe("renderState", () => {
     expect(prov.textContent).toMatch(/1 custom rule could not be evaluated/);
   });
 
+  it("renders the multi-family 'also checked' block when secondary families activated", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "complete",
+      filename: "msa.docx",
+      playbook_name: "MSA — Vendor",
+      counts: { critical: 1, warning: 2, info: 0 },
+      docx_blob: new Blob(["docx"], { type: "application/octet-stream" }),
+      json_blob: new Blob(["{}"], { type: "application/json" }),
+      docx_filename: "msa-vaulytica.docx",
+      json_filename: "msa-vaulytica.json",
+      secondary_families: [
+        { playbook_id: "dpa-controller-processor", playbook_name: "DPA (Controller–Processor)", counts: { critical: 1, warning: 0, info: 0 } },
+        { playbook_id: "ip-licensing-patent", playbook_name: "Patent License", counts: { critical: 0, warning: 0, info: 0 } },
+      ],
+    });
+    const block = select(dz, "secondary-families")!;
+    expect(block.hasAttribute("hidden")).toBe(false);
+    const items = select(dz, "secondary-families-list")!.querySelectorAll("li");
+    expect(items).toHaveLength(2);
+    expect(block.textContent).toContain("DPA (Controller–Processor)");
+    expect(block.textContent).toMatch(/1 critical/);
+    expect(block.textContent).toContain("Patent License");
+    expect(block.textContent).toMatch(/no findings/);
+  });
+
+  it("hides the multi-family block when no secondary families", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "complete",
+      filename: "nda.docx",
+      playbook_name: "Mutual NDA",
+      counts: { critical: 0, warning: 0, info: 0 },
+      docx_blob: new Blob(["docx"], { type: "application/octet-stream" }),
+      json_blob: new Blob(["{}"], { type: "application/json" }),
+      docx_filename: "nda-vaulytica.docx",
+      json_filename: "nda-vaulytica.json",
+    });
+    expect(select(dz, "secondary-families")!.hasAttribute("hidden")).toBe(true);
+  });
+
   it("renders the v6 findings-to-action export row when exports are supplied", () => {
     const dz = document.createElement("div");
     renderState(dz, {

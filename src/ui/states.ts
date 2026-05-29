@@ -99,6 +99,18 @@ export type DropzoneState =
         custom_finding_count: number;
         unevaluable_count: number;
       };
+      /**
+       * Multi-family activation (spec-v6). Additional families the document
+       * also clearly contains, each scanned with its own rule set. Rendered
+       * as a labeled "Additional checks from other detected families" block
+       * under the counts; the full findings live in the downloadable report.
+       * Optional / back-compat: omitting hides the block.
+       */
+      secondary_families?: ReadonlyArray<{
+        playbook_id: string;
+        playbook_name: string;
+        counts: { critical: number; warning: number; info: number };
+      }>;
     }
   | {
       kind: "comparison-complete";
@@ -239,6 +251,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     <div class="v3-family-chip" data-role="v3-family" hidden></div>
     <div class="counts" data-role="counts"></div>
     <div class="playbook-provenance" data-role="playbook-provenance" hidden></div>
+    <div class="secondary-families" data-role="secondary-families" hidden></div>
     <div class="compliance-frame-chips" data-role="compliance-frame-chips" role="group" aria-label="Compliance frames" hidden></div>
     <div class="dropzone-sub compliance-frame-hint" data-role="compliance-frame-hint" hidden></div>
     <details class="playbook-disclosure">
@@ -321,6 +334,7 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
     select(dz, "reasoning")!.textContent = `${baseReasoning}${legacySuffix}`;
     renderV3FamilyChip(dz, state.v3_family);
     renderPlaybookProvenance(dz, state.custom_playbook);
+    renderSecondaryFamilies(dz, state.secondary_families);
     renderComplianceFrameChips(dz, state.v3_frames, state.on_frames_change);
     const docxBtn = select<HTMLButtonElement>(dz, "docx-download")!;
     const jsonBtn = select<HTMLButtonElement>(dz, "json-download")!;
@@ -700,6 +714,51 @@ function renderPlaybookProvenance(
       ? ` · ${custom.unevaluable_count} custom rule${custom.unevaluable_count === 1 ? "" : "s"} could not be evaluated on this document`
       : "";
   el.textContent = `Enforcing ${modeWord}: ${findings}${unevaluable}.`;
+}
+
+/**
+ * Render the "additional checks from other detected families" block
+ * (spec-v6 multi-family activation). Lists each secondary family the
+ * document also contains, with its finding counts, so the reviewer sees
+ * that a present family was scanned even though it wasn't the primary
+ * match. The full findings are in the downloadable report. Hidden when no
+ * secondary family was activated.
+ */
+function renderSecondaryFamilies(
+  dz: HTMLElement,
+  families:
+    | ReadonlyArray<{
+        playbook_id: string;
+        playbook_name: string;
+        counts: { critical: number; warning: number; info: number };
+      }>
+    | undefined,
+): void {
+  const el = select<HTMLElement>(dz, "secondary-families");
+  if (!el) return;
+  if (!families || families.length === 0) {
+    el.hidden = true;
+    el.innerHTML = "";
+    return;
+  }
+  el.hidden = false;
+  const items = families
+    .map((f) => {
+      const c = f.counts;
+      const total = c.critical + c.warning + c.info;
+      const detail =
+        total === 0
+          ? "no findings"
+          : `${c.critical} critical · ${c.warning} warnings · ${c.info} info`;
+      return `<li class="secondary-family"><span class="secondary-family-name">${escapeHtml(
+        f.playbook_name,
+      )}</span> <span class="secondary-family-counts">${detail}</span></li>`;
+    })
+    .join("");
+  el.innerHTML = `
+    <div class="secondary-families-heading">Also checked (other detected families)</div>
+    <ul class="secondary-families-list" data-role="secondary-families-list">${items}</ul>
+  `;
 }
 
 function renderComplianceFrameChips(

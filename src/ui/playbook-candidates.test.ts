@@ -5,6 +5,9 @@ import { fileURLToPath } from "node:url";
 import {
   familySignalStrength,
   selectMatchCandidates,
+  familyIsPresent,
+  selectSecondaryFamilies,
+  MAX_SECONDARY_FAMILIES,
   ADMIT_THRESHOLD,
 } from "./playbook-candidates.js";
 import { parsePlaybook, matchPlaybook, type Playbook } from "../playbooks/index.js";
@@ -110,6 +113,75 @@ describe("selectMatchCandidates", () => {
   it("admits nothing extra for a plain document (today's behavior preserved)", () => {
     const got = selectMatchCandidates(launch, extended, signals("Services Agreement", "generic terms"));
     expect(got.map((p) => p.id)).toEqual(["mutual-nda"]);
+  });
+});
+
+// --- familyIsPresent (strict activation bar) --------------------------------
+
+describe("familyIsPresent", () => {
+  const dpa = pb("dpa-controller-processor", {
+    title_keywords: ["data processing agreement", "dpa"],
+    distinguishing_phrases: ["controller", "processor", "article 28", "sub-processor"],
+  });
+
+  it("activates on a single specific title keyword", () => {
+    expect(familyIsPresent(dpa, signals("Data Processing Agreement", "..."))).toBe(true);
+  });
+
+  it("activates on three or more distinguishing phrases (no title hit)", () => {
+    expect(
+      familyIsPresent(dpa, signals("Exhibit C", "the controller instructs the processor per article 28")),
+    ).toBe(true);
+  });
+
+  it("does NOT activate on a mere passing mention (two phrases)", () => {
+    expect(familyIsPresent(dpa, signals("Exhibit C", "the controller and processor"))).toBe(false);
+  });
+});
+
+// --- selectSecondaryFamilies ------------------------------------------------
+
+describe("selectSecondaryFamilies", () => {
+  const extended = [
+    pb("dpa-controller-processor", {
+      title_keywords: ["data processing agreement"],
+      distinguishing_phrases: ["controller", "processor", "article 28"],
+    }),
+    pb("ip-licensing-patent", { title_keywords: ["patent license agreement"] }),
+    pb("msa-vendor-deep", { title_keywords: ["master services agreement"] }),
+  ];
+
+  it("returns families clearly present, excluding the primary match", () => {
+    const got = selectSecondaryFamilies(
+      extended,
+      signals(
+        "Master Services Agreement with Data Processing Addendum",
+        "the controller instructs the processor under article 28",
+      ),
+      "msa-vendor-deep", // primary
+    );
+    const ids = got.map((p) => p.id);
+    expect(ids).toContain("dpa-controller-processor");
+    expect(ids).not.toContain("msa-vendor-deep"); // excluded — it's the primary
+    expect(ids).not.toContain("ip-licensing-patent"); // not present in the doc
+  });
+
+  it("returns nothing for a single-family document", () => {
+    const got = selectSecondaryFamilies(
+      extended,
+      signals("Master Services Agreement", "services and deliverables"),
+      "msa-vendor-deep",
+    );
+    expect(got).toEqual([]);
+  });
+
+  it("caps the number of secondary families", () => {
+    const many = Array.from({ length: 10 }, (_, i) =>
+      pb(`fam-${i}`, { title_keywords: [`family ${i} agreement`] }),
+    );
+    const title = many.map((_, i) => `Family ${i} Agreement`).join(" and ");
+    const got = selectSecondaryFamilies(many, signals(title, ""), "none");
+    expect(got.length).toBeLessThanOrEqual(MAX_SECONDARY_FAMILIES);
   });
 });
 

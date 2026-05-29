@@ -197,6 +197,7 @@ function renderCompleteState(
     v3_detection: import("./pipeline.js").PipelineResult["v3_detection"];
     v3_frames: import("./pipeline.js").PipelineResult["v3_frames"];
     custom_playbook?: import("./pipeline.js").PipelineResult["custom_playbook"];
+    secondary_families?: import("./pipeline.js").PipelineResult["secondary_families"];
   },
   countsBySeverity: (r: import("./pipeline.js").PipelineResult["run"]) => {
     critical: number;
@@ -254,6 +255,16 @@ function renderCompleteState(
           unevaluable_count: result.custom_playbook.unevaluable.length,
         }
       : undefined,
+    // v6 multi-family activation (full-catalog wiring). Additional families
+    // the document also contains, surfaced as a labeled "also checked" block.
+    secondary_families:
+      result.secondary_families && result.secondary_families.length > 0
+        ? result.secondary_families.map((f) => ({
+            playbook_id: f.playbook_id,
+            playbook_name: f.playbook_name,
+            counts: f.counts,
+          }))
+        : undefined,
     // v6 Part I comparison (Step 90). The base run is the one currently
     // rendered, so a frame-toggle re-run rebinds compare to the fresh run.
     on_compare: (revisedFile) => {

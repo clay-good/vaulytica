@@ -208,4 +208,68 @@ describe("buildJsonReport", () => {
     expect(parsed.playbook_deprecated).toBeUndefined();
     expect(parsed.playbook_superseded_by).toBeUndefined();
   });
+
+  it("emits secondary_families when multi-family activation supplies them (spec-v6)", async () => {
+    const secondary = [
+      {
+        playbook_id: "dpa-controller-processor",
+        playbook_name: "DPA (Controller–Processor)",
+        findings: [finding("dpa1", "critical")],
+        counts: { critical: 1, warning: 0, info: 0 },
+      },
+    ];
+    const blob = buildJsonReport(makeRun(), ingest, loadMutualNda(), secondary);
+    const parsed = JSON.parse(await blob.text());
+    expect(parsed.secondary_families).toHaveLength(1);
+    expect(parsed.secondary_families[0].playbook_id).toBe("dpa-controller-processor");
+    expect(parsed.secondary_families[0].findings).toHaveLength(1);
+  });
+
+  it("omits secondary_families for a single-family document (back-compat)", async () => {
+    const blob = buildJsonReport(makeRun(), ingest, loadMutualNda(), []);
+    const parsed = JSON.parse(await blob.text());
+    expect(parsed.secondary_families).toBeUndefined();
+  });
+});
+
+describe("buildDocxReport multi-family section (spec-v6)", () => {
+  it("renders the 'Additional Checks' section when secondary families are supplied", async () => {
+    const secondary = [
+      {
+        playbook_id: "dpa-controller-processor",
+        playbook_name: "DPA (Controller–Processor)",
+        findings: [finding("dpa1", "critical")],
+        counts: { critical: 1, warning: 0, info: 0 },
+      },
+      {
+        playbook_id: "ip-licensing-patent",
+        playbook_name: "Patent License",
+        findings: [],
+        counts: { critical: 0, warning: 0, info: 0 },
+      },
+    ];
+    const blob = await buildDocxReport(
+      makeRun(),
+      ingest,
+      loadStarterDkbSync(),
+      loadMutualNda(),
+      undefined,
+      undefined,
+      secondary,
+    );
+    const { unzipSync, strFromU8 } = await import("fflate");
+    const files = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const docXml = strFromU8(files["word/document.xml"]!);
+    expect(docXml).toContain("Additional Checks From Other Detected Families");
+    expect(docXml).toContain("DPA (Controller");
+    expect(docXml).toContain("Patent License");
+  });
+
+  it("renders no 'Additional Checks' section when none are supplied (back-compat)", async () => {
+    const blob = await buildDocxReport(makeRun(), ingest, loadStarterDkbSync(), loadMutualNda());
+    const { unzipSync, strFromU8 } = await import("fflate");
+    const files = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const docXml = strFromU8(files["word/document.xml"]!);
+    expect(docXml).not.toContain("Additional Checks From Other Detected Families");
+  });
 });
