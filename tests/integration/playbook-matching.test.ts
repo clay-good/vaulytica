@@ -7,7 +7,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -224,6 +224,41 @@ describe("matchPlaybook — determinism", () => {
       "this document contains the word agreement and nothing else of interest",
     );
     expect(r.playbook_id).toBe(GENERIC_FALLBACK_ID);
+  });
+});
+
+describe("Every v3 + v4 playbook JSON validates against PlaybookSchema", () => {
+  // Both _pipeline.ts harnesses (tests/golden/v3 + tests/golden/v4)
+  // silently `try { parsePlaybook(...) } catch {}` — a relic of when
+  // placeholder JSONs existed during the build sequence. As of today
+  // all 135 v2 + v3 + v4 playbooks parse cleanly. These tests pin
+  // that contract so a future malformed playbook surfaces as a
+  // dedicated test failure (with a useful Zod error message)
+  // instead of being silently dropped from the pipeline candidate
+  // set.
+  const v3Dir = join(__dirname, "..", "..", "src", "playbooks", "v3");
+  const v4Dir = join(__dirname, "..", "..", "src", "playbooks", "v4");
+
+  function listJsonFiles(dir: string): string[] {
+    return readdirSync(dir).filter((n) => n.endsWith(".json"));
+  }
+
+  it("every v3 playbook in src/playbooks/v3/ parses without throwing", () => {
+    const files = listJsonFiles(v3Dir);
+    expect(files.length, "v3 playbooks directory is empty?").toBeGreaterThan(0);
+    for (const name of files) {
+      const raw = JSON.parse(readFileSync(join(v3Dir, name), "utf8"));
+      expect(() => PlaybookSchema.parse(raw), `${name}`).not.toThrow();
+    }
+  });
+
+  it("every v4 playbook in src/playbooks/v4/ parses without throwing", () => {
+    const files = listJsonFiles(v4Dir);
+    expect(files.length, "v4 playbooks directory is empty?").toBeGreaterThan(0);
+    for (const name of files) {
+      const raw = JSON.parse(readFileSync(join(v4Dir, name), "utf8"));
+      expect(() => PlaybookSchema.parse(raw), `${name}`).not.toThrow();
+    }
   });
 });
 
