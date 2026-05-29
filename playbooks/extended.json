@@ -1,0 +1,6493 @@
+[
+  {
+    "id": "10-k-risk-factors",
+    "version": "1.0.0",
+    "name": "10-K Risk Factors (prose only)",
+    "description": "10-K risk factors prose under Reg S-K Item 105 (with annual updates). Per spec §6.P caveat: v4 lints prose only (REG-040). Selects the §6.P shared risk-factors ruleset (REG-016..REG-024).",
+    "match_features": {
+      "title_keywords": [
+        "10-k",
+        "form 10-k",
+        "annual report on form 10-k"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "risk factors",
+        "annual report",
+        "item 1a",
+        "fiscal year"
+      ],
+      "negative_features": [
+        "form d",
+        "form adv",
+        "s-1",
+        "ppm",
+        "reg a+"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "REG-S-K-ITEM-105",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "s-1-risk-factors"
+    ],
+    "compliance_matrix_columns": [
+      "Risk-factor section",
+      "Item 105 materiality + summary",
+      "Boilerplate / specificity",
+      "Hypothetical / already-materialized",
+      "Plain-English headlines",
+      "PSLRA safe harbor",
+      "Cybersecurity",
+      "Climate / ESG",
+      "Updates from prior period",
+      "Prose-only disclaimer (REG-040)"
+    ]
+  },
+  {
+    "id": "advance-directive",
+    "version": "1.0.0",
+    "name": "Advance Directive / Living Will",
+    "description": "Advance directive / living will under state advance-directive statutes (e.g., CA Prob. § 4670; NY Pub. Health § 2980). Per spec §6.N caveat: execution formalities cannot be verified from text alone (EST-060). Selects the §6.N ruleset (EST-017..EST-023).",
+    "match_features": {
+      "title_keywords": [
+        "advance directive",
+        "living will",
+        "advance health care directive"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "declarant",
+        "life-sustaining",
+        "artificial nutrition",
+        "terminal",
+        "persistent vegetative",
+        "organ donation"
+      ],
+      "negative_features": [
+        "healthcare proxy",
+        "agent",
+        "power of attorney"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Declarant"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "STATE-ADVANCE-DIRECTIVE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "healthcare-poa"
+    ],
+    "compliance_matrix_columns": [
+      "Declarant + capacity",
+      "End-of-life preferences",
+      "Pain management / comfort care",
+      "Anatomical gift",
+      "Witnesses / notary",
+      "Triggering condition",
+      "Revocation",
+      "Execution-formality disclaimer (EST-060)"
+    ]
+  },
+  {
+    "id": "ai-addendum",
+    "version": "1.0.0",
+    "name": "AI Usage Addendum",
+    "description": "Linter for an AI / Generative-AI Addendum to a commercial agreement. Selects the §34 addenda ruleset (AI portion, ADDENDA-010..016): definitions (Generative AI / Foundation Model / Output / Training Data), prohibited training-on-customer-data without opt-in, transparency (features + default state + hosting), IP ownership of outputs, AI hallucination disclaimer + human-review obligation, AI subprocessor disclosure, deletion of fine-tuning data on termination. Citations are NIST AI RMF / EU AI Act / FTC enforcement — explicitly labeled 'consensus practice, not statute' where no controlling regulator applies.",
+    "match_features": {
+      "title_keywords": [
+        "ai addendum",
+        "artificial intelligence addendum",
+        "generative ai",
+        "ai usage",
+        "ai services addendum",
+        "machine learning addendum"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "generative ai",
+        "foundation model",
+        "large language model",
+        "training data",
+        "output",
+        "hallucination",
+        "human review",
+        "prompt"
+      ],
+      "negative_features": [
+        "protected health information",
+        "non-disclosure agreement",
+        "this nda"
+      ]
+    },
+    "expected_clauses": [
+      "Definitions",
+      "Permitted and Prohibited Uses",
+      "Transparency",
+      "Intellectual Property",
+      "Warranties and Disclaimers",
+      "Subprocessors",
+      "Data Handling"
+    ],
+    "expected_defined_terms": [
+      "Generative AI",
+      "Foundation Model",
+      "Output",
+      "Training Data",
+      "Customer Data"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [
+      {
+        "id": "addenda-nist-ai-rmf",
+        "source": "NIST AI RMF 1.0 (consensus practice, not statute)",
+        "source_url": "https://www.nist.gov/itl/ai-risk-management-framework",
+        "retrieved_at": "2026-05-13T00:00:00Z",
+        "license": "Public domain (NIST)",
+        "license_url": "https://www.usa.gov/government-works"
+      },
+      {
+        "id": "addenda-eu-ai-act",
+        "source": "EU AI Act (Regulation (EU) 2024/1689)",
+        "source_url": "https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+        "retrieved_at": "2026-05-13T00:00:00Z",
+        "license": "EUR-Lex re-use notice",
+        "license_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html"
+      },
+      {
+        "id": "addenda-ftc-ai-guidance",
+        "source": "FTC enforcement actions on AI claims (consensus practice, not statute)",
+        "source_url": "https://www.ftc.gov/business-guidance/blog/2023/02/keep-your-ai-claims-check",
+        "retrieved_at": "2026-05-13T00:00:00Z",
+        "license": "Public domain (FTC)",
+        "license_url": "https://www.usa.gov/government-works"
+      }
+    ],
+    "regulator_frame": "consensus-practice",
+    "applicable_jurisdictions": [
+      "US",
+      "EU",
+      "UK"
+    ],
+    "companion_playbooks": [
+      "msa-vendor-deep",
+      "msa-customer-deep",
+      "dpa-controller-processor",
+      "vendor-security-addendum"
+    ],
+    "compliance_matrix_columns": [
+      "AI definitions",
+      "Prohibited training on customer data",
+      "AI transparency (features + default + hosting)",
+      "IP ownership of outputs",
+      "AI hallucination disclaimer + human review",
+      "AI subprocessor disclosure",
+      "Fine-tuning data deletion on termination"
+    ]
+  },
+  {
+    "id": "ai-aup-policy",
+    "version": "1.0.0",
+    "name": "AI Acceptable Use Policy",
+    "description": "AI / generative-AI acceptable use policy under NIST AI RMF + EU AI Act + USPTO guidance. Selects the §6.O ruleset (POL-037..POL-041).",
+    "match_features": {
+      "title_keywords": [
+        "ai use policy",
+        "ai policy",
+        "generative ai",
+        "ai acceptable use"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "approved ai tools",
+        "human review",
+        "prohibited inputs",
+        "hallucination",
+        "nist ai",
+        "eu ai act"
+      ],
+      "negative_features": [
+        "aml",
+        "anti-bribery",
+        "insider trading"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "NIST-AI-RMF-EU-AI-ACT",
+    "applicable_jurisdictions": [
+      "US",
+      "EU"
+    ],
+    "companion_playbooks": [
+      "code-of-conduct",
+      "document-retention-policy"
+    ],
+    "compliance_matrix_columns": [
+      "Approved tools + procurement gate",
+      "Prohibited inputs (PHI / PII / trade secrets / privileged)",
+      "Human-in-the-loop review",
+      "IP / hallucination / attribution",
+      "Training + incident reporting"
+    ]
+  },
+  {
+    "id": "aml-policy",
+    "version": "1.0.0",
+    "name": "Anti-Money-Laundering Policy",
+    "description": "AML / OFAC / BSA policy under FinCEN five-pillar rule + Corporate Transparency Act + state. Selects the §6.O ruleset (POL-012..POL-017).",
+    "match_features": {
+      "title_keywords": [
+        "aml",
+        "anti-money-laundering",
+        "bsa policy"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "fincen",
+        "ofac",
+        "sar",
+        "ctr",
+        "beneficial ownership",
+        "customer identification",
+        "five pillars"
+      ],
+      "negative_features": [
+        "anti-bribery",
+        "insider trading",
+        "code of conduct"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "BSA-FINCEN-OFAC",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "BSA five-pillar program",
+      "OFAC sanctions screening",
+      "SAR (FinCEN 30-day)",
+      "CIP + beneficial ownership",
+      "CTR ≥ $10,000",
+      "Recordkeeping 5 years"
+    ]
+  },
+  {
+    "id": "anti-bribery-policy",
+    "version": "1.0.0",
+    "name": "Anti-Bribery / Anti-Corruption Policy (FCPA / UKBA)",
+    "description": "Anti-bribery policy under FCPA + UK Bribery Act + multi-jurisdiction baselines. Selects the §6.O ruleset (POL-006..POL-011).",
+    "match_features": {
+      "title_keywords": [
+        "anti-bribery",
+        "anti-corruption",
+        "fcpa policy"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "fcpa",
+        "foreign corrupt practices act",
+        "foreign official",
+        "bribe",
+        "uk bribery act",
+        "ukba",
+        "facilitating payment"
+      ],
+      "negative_features": [
+        "aml",
+        "insider trading",
+        "lobbying"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "FCPA-UKBA",
+    "applicable_jurisdictions": [
+      "US",
+      "UK"
+    ],
+    "companion_playbooks": [
+      "code-of-conduct"
+    ],
+    "compliance_matrix_columns": [
+      "FCPA § 78dd anti-bribery",
+      "Third-party due diligence",
+      "Books & records / internal controls",
+      "Facilitating payments",
+      "UKBA cross-border",
+      "Gifts / hospitality / charitable / political"
+    ]
+  },
+  {
+    "id": "asset-purchase-agreement",
+    "version": "1.0.0",
+    "name": "Asset Purchase Agreement (APA)",
+    "description": "Asset purchase agreement under UCC § 9, IRC § 1060, and state bulk-sales law. Selects the §6.D M&A ruleset (MNA-020..MNA-028).",
+    "match_features": {
+      "title_keywords": [
+        "asset purchase agreement",
+        "apa"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "purchased assets",
+        "excluded assets",
+        "assumed liabilities",
+        "excluded liabilities",
+        "bill of sale"
+      ],
+      "negative_features": [
+        "stock purchase agreement",
+        "merger agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Purchased Assets",
+      "Excluded Assets",
+      "Assumed Liabilities",
+      "Excluded Liabilities"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "UCC-9",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "disclosure-schedules",
+      "escrow-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "UCC § 9-406",
+      "IRC § 1060",
+      "State bulk-sales statutes",
+      "WARN Act"
+    ]
+  },
+  {
+    "id": "baa",
+    "version": "1.0.0",
+    "name": "Business Associate Agreement (HIPAA)",
+    "description": "Covered-entity to business-associate BAA under HIPAA. Selects the §28 BAA ruleset (45 rules) covering 45 CFR § 164.504(e) required clauses, § 164.314(a) Security Rule flow-down, § 164.410 breach notification, plus HHS-guidance posture rules.",
+    "match_features": {
+      "title_keywords": [
+        "business associate agreement",
+        "business associate addendum",
+        "baa",
+        "hipaa addendum"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "protected health information",
+        "covered entity",
+        "business associate",
+        "unsecured phi",
+        "164.504",
+        "164.410",
+        "security incident"
+      ],
+      "negative_features": []
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Protected Health Information",
+      "PHI",
+      "ePHI",
+      "Covered Entity",
+      "Business Associate",
+      "Breach",
+      "Unsecured PHI",
+      "Security Incident"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [
+      {
+        "id": "hipaa-45-cfr-164",
+        "source": "45 C.F.R. Part 164 — HIPAA Privacy and Security Rules",
+        "source_url": "https://www.ecfr.gov/current/title-45/subtitle-A/subchapter-C/part-164",
+        "retrieved_at": "2026-05-12T00:00:00Z",
+        "license": "Public domain (US government work)",
+        "license_url": "https://www.usa.gov/government-works"
+      }
+    ],
+    "regulator_frame": "HIPAA",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "msa-vendor-deep"
+    ],
+    "compliance_matrix_columns": [
+      "45 CFR § 164.504(e)(2)(i)",
+      "45 CFR § 164.504(e)(2)(ii)(A)",
+      "45 CFR § 164.504(e)(2)(ii)(B)",
+      "45 CFR § 164.504(e)(2)(ii)(C)",
+      "45 CFR § 164.504(e)(2)(ii)(D)",
+      "45 CFR § 164.504(e)(2)(ii)(E)",
+      "45 CFR § 164.504(e)(2)(ii)(F)",
+      "45 CFR § 164.504(e)(2)(ii)(G)",
+      "45 CFR § 164.504(e)(2)(ii)(H)",
+      "45 CFR § 164.504(e)(2)(ii)(I)",
+      "45 CFR § 164.504(e)(2)(iii)",
+      "45 CFR § 164.314(a)",
+      "45 CFR § 164.410"
+    ]
+  },
+  {
+    "id": "baa-subcontractor",
+    "version": "1.0.0",
+    "name": "BAA — Business Associate to Subcontractor (HIPAA)",
+    "description": "Business-associate to subcontractor BAA under HIPAA. Selects the §28 BAA ruleset (45 rules) covering 45 CFR § 164.504(e) required clauses, § 164.314(a) Security Rule flow-down, § 164.410 breach notification, plus HHS-guidance posture rules — with an emphasis on flow-down (the subcontractor must comply with the same terms the upstream BAA imposes on the business associate, per 45 CFR § 164.502(e)(1)(ii) and § 164.504(e)(5)). Companion: the upstream BAA between the covered entity and the business associate.",
+    "match_features": {
+      "title_keywords": [
+        "subcontractor business associate agreement",
+        "subcontractor baa",
+        "business associate subcontractor agreement",
+        "downstream baa",
+        "ba subcontractor agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "subcontractor",
+        "business associate to subcontractor",
+        "downstream",
+        "upstream baa",
+        "flow-down",
+        "flow down",
+        "164.504(e)(5)",
+        "164.502(e)(1)(ii)",
+        "same terms",
+        "protected health information",
+        "covered entity",
+        "business associate",
+        "phi",
+        "164.504",
+        "164.410"
+      ],
+      "negative_features": [
+        "covered entity directly engages",
+        "Data Processing Agreement",
+        "Standard Contractual Clauses",
+        "Master Services Agreement",
+        "Statement of Work",
+        "mutual non-disclosure"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Protected Health Information",
+      "PHI",
+      "ePHI",
+      "Covered Entity",
+      "Business Associate",
+      "Subcontractor",
+      "Breach",
+      "Unsecured PHI",
+      "Security Incident"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [
+      {
+        "id": "hipaa-45-cfr-164",
+        "source": "45 C.F.R. Part 164 — HIPAA Privacy and Security Rules",
+        "source_url": "https://www.ecfr.gov/current/title-45/subtitle-A/subchapter-C/part-164",
+        "retrieved_at": "2026-05-12T00:00:00Z",
+        "license": "Public domain (US government work)",
+        "license_url": "https://www.usa.gov/government-works"
+      },
+      {
+        "id": "hhs-hipaa-subcontractor-guidance",
+        "source": "HHS HIPAA Omnibus Rule (78 Fed. Reg. 5566, Jan. 25, 2013) — subcontractor-as-business-associate provisions",
+        "source_url": "https://www.federalregister.gov/documents/2013/01/25/2013-01073/modifications-to-the-hipaa-privacy-security-enforcement-and-breach-notification-rules-under-the",
+        "retrieved_at": "2026-05-12T00:00:00Z",
+        "license": "Public domain (US government work)",
+        "license_url": "https://www.usa.gov/government-works"
+      }
+    ],
+    "regulator_frame": "HIPAA",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "baa",
+      "msa-vendor-deep"
+    ],
+    "compliance_matrix_columns": [
+      "45 CFR § 164.504(e)(2)(i)",
+      "45 CFR § 164.504(e)(2)(ii)(A)",
+      "45 CFR § 164.504(e)(2)(ii)(B)",
+      "45 CFR § 164.504(e)(2)(ii)(C)",
+      "45 CFR § 164.504(e)(2)(ii)(D)",
+      "45 CFR § 164.504(e)(2)(ii)(E)",
+      "45 CFR § 164.504(e)(2)(ii)(F)",
+      "45 CFR § 164.504(e)(2)(ii)(G)",
+      "45 CFR § 164.504(e)(2)(ii)(H)",
+      "45 CFR § 164.504(e)(2)(ii)(I)",
+      "45 CFR § 164.504(e)(2)(iii)",
+      "45 CFR § 164.314(a)",
+      "45 CFR § 164.410",
+      "45 CFR § 164.504(e)(5) (flow-down)"
+    ]
+  },
+  {
+    "id": "bylaws-corporation",
+    "version": "1.0.0",
+    "name": "Corporate Bylaws",
+    "description": "Bylaws of a Delaware (or MBCA-modeled) corporation. Selects the §6.B governance ruleset (GOV-001..GOV-012) plus the cross-applicable governance rules.",
+    "match_features": {
+      "title_keywords": [
+        "bylaws",
+        "by-laws",
+        "amended and restated bylaws"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "board of directors",
+        "stockholders",
+        "annual meeting",
+        "quorum",
+        "registered office",
+        "indemnification"
+      ],
+      "negative_features": [
+        "operating agreement",
+        "limited liability company",
+        "partnership"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "DGCL",
+    "applicable_jurisdictions": [
+      "US-DE",
+      "US"
+    ],
+    "companion_playbooks": [
+      "charter-incorporation"
+    ],
+    "compliance_matrix_columns": [
+      "DGCL § 109",
+      "DGCL § 141",
+      "DGCL § 211",
+      "DGCL § 216",
+      "DGCL § 222",
+      "DGCL § 145"
+    ]
+  },
+  {
+    "id": "ccrs",
+    "version": "1.0.0",
+    "name": "CC&Rs (Declaration of Covenants, Conditions, and Restrictions)",
+    "description": "Declaration of CC&Rs creating an owners association under state HOA statutes (e.g., Davis-Stirling Act). Selects the §6.E real-estate ruleset (RE-032..RE-039).",
+    "match_features": {
+      "title_keywords": [
+        "declaration of covenants",
+        "ccrs",
+        "ccr",
+        "covenants conditions and restrictions"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "homeowners association",
+        "hoa",
+        "assessments",
+        "architectural control",
+        "use restrictions"
+      ],
+      "negative_features": []
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "State-HOA",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "State HOA statutes",
+      "Fair Housing Act (42 U.S.C. § 3604)",
+      "Shelley v. Kraemer"
+    ]
+  },
+  {
+    "id": "cease-and-desist",
+    "version": "1.0.0",
+    "name": "Cease-and-Desist Letter",
+    "description": "Cease-and-desist letter (IP, unfair competition, defamation). Lanham Act § 43(a) baseline; anti-SLAPP / extortion risk screen. Selects the §6.G settlement ruleset (SET-016..SET-020).",
+    "match_features": {
+      "title_keywords": [
+        "cease and desist",
+        "cease-and-desist",
+        "notice of infringement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "infringement",
+        "trademark",
+        "copyright",
+        "patent",
+        "immediately cease",
+        "recall"
+      ],
+      "negative_features": [
+        "settlement agreement",
+        "release",
+        "tolling"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Mark",
+      "Work",
+      "Infringing Activity"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "LANHAM-ACT-OR-COPYRIGHT",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "Lanham Act § 43(a) (trademark / UC)",
+      "IP / mark identification",
+      "Response deadline",
+      "Anti-SLAPP / extortion risk (Flatley)"
+    ]
+  },
+  {
+    "id": "change-order",
+    "version": "1.0.0",
+    "name": "Change Order",
+    "description": "Construction change order under AIA G701 baseline with contract-sum + time-adjustment summary. Selects the §6.M ruleset (CON-026..CON-030).",
+    "match_features": {
+      "title_keywords": [
+        "change order",
+        "co",
+        "g701"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "original contract sum",
+        "revised contract sum",
+        "description of change",
+        "time adjustment",
+        "substantial completion"
+      ],
+      "negative_features": [
+        "construction contract",
+        "subcontract",
+        "lien waiver",
+        "performance bond"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Original Contract Sum",
+      "Revised Contract Sum"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "AIA-G701",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "construction-contract"
+    ],
+    "compliance_matrix_columns": [
+      "Original + revised contract sum",
+      "Description of change",
+      "Time adjustment",
+      "Owner / architect / contractor signatures",
+      "Waiver of further claims"
+    ]
+  },
+  {
+    "id": "charter-incorporation",
+    "version": "1.0.0",
+    "name": "Certificate / Articles of Incorporation",
+    "description": "Charter of a Delaware (or MBCA-modeled) corporation. Selects the §6.B governance ruleset (GOV-023..GOV-032).",
+    "match_features": {
+      "title_keywords": [
+        "certificate of incorporation",
+        "articles of incorporation",
+        "amended and restated certificate of incorporation",
+        "charter"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "registered agent",
+        "registered office",
+        "authorized capital stock",
+        "incorporator",
+        "common stock",
+        "preferred stock"
+      ],
+      "negative_features": [
+        "operating agreement",
+        "limited liability company"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "DGCL",
+    "applicable_jurisdictions": [
+      "US-DE",
+      "US"
+    ],
+    "companion_playbooks": [
+      "bylaws-corporation"
+    ],
+    "compliance_matrix_columns": [
+      "DGCL § 102(a)(1)",
+      "DGCL § 102(a)(2)",
+      "DGCL § 102(a)(3)",
+      "DGCL § 102(a)(4)",
+      "DGCL § 102(a)(5)",
+      "DGCL § 102(b)(7)",
+      "DGCL § 145",
+      "DGCL § 228",
+      "DGCL § 242"
+    ]
+  },
+  {
+    "id": "code-of-conduct",
+    "version": "1.0.0",
+    "name": "Code of Conduct / Ethics",
+    "description": "Code of business conduct / ethics under NYSE 303A / Nasdaq 5610 / SOX § 406. Selects the §6.O ruleset (POL-001..POL-005).",
+    "match_features": {
+      "title_keywords": [
+        "code of conduct",
+        "code of ethics",
+        "code of business conduct"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "directors",
+        "officers",
+        "employees",
+        "waiver",
+        "ethical conduct",
+        "compliance with law"
+      ],
+      "negative_features": [
+        "anti-bribery",
+        "aml",
+        "whistleblower"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "NYSE-NASDAQ-SOX",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "whistleblower-policy",
+      "coi-policy"
+    ],
+    "compliance_matrix_columns": [
+      "NYSE 303A / Nasdaq 5610 scope",
+      "SOX § 406 financial-officer elements",
+      "Waiver disclosure (8-K)",
+      "Reporting + non-retaliation",
+      "Compliance with laws"
+    ]
+  },
+  {
+    "id": "coi",
+    "version": "1.0.0",
+    "name": "Certificate of Insurance (COI) Check",
+    "description": "Linter for an ACORD 25 Certificate of Liability Insurance. Extracts carrier, AM Best rating, coverage amounts, and endorsements and lints against the §12 default requirements profile or a customer-supplied profile. The AM Best rating threshold is consulted from the DKB node `am-best-ratings.json` (curated for the build; cited as 'AM Best public ratings as of [DKB build date]'). Note: the ACORD-25 binary spatial-layout extractor lands in a follow-up commit alongside the COI test fixture corpus; this playbook is text-extraction-driven for now.",
+    "match_features": {
+      "title_keywords": [
+        "certificate of liability insurance",
+        "acord 25",
+        "certificate of insurance",
+        "coi"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "acord",
+        "policy number",
+        "general liability",
+        "professional liability",
+        "additional insured",
+        "carrier",
+        "policy effective date",
+        "limits of insurance"
+      ],
+      "negative_features": [
+        "this agreement",
+        "master services agreement",
+        "non-disclosure agreement",
+        "personal data"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [
+      {
+        "id": "addenda-am-best-public",
+        "source": "AM Best public ratings",
+        "source_url": "https://web.ambest.com/ratings-services/financial-strength-ratings",
+        "retrieved_at": "2026-05-13T00:00:00Z",
+        "license": "Public ratings re-use (ratings cited; identifier text not re-distributed)",
+        "license_url": "https://web.ambest.com/about/legal-information"
+      },
+      {
+        "id": "addenda-acord-form-25",
+        "source": "ACORD 25 — Certificate of Liability Insurance",
+        "source_url": "https://www.acord.org/standards-architecture/acord-forms",
+        "retrieved_at": "2026-05-13T00:00:00Z",
+        "license": "Form identifier only (not the form itself)",
+        "license_url": "https://www.acord.org"
+      }
+    ],
+    "regulator_frame": "insurance",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "msa-vendor-deep",
+      "msa-customer-deep"
+    ],
+    "compliance_matrix_columns": [
+      "Carrier identified",
+      "AM Best rating ≥ A-",
+      "General liability ≥ $1M / $2M",
+      "Professional liability (E&O) ≥ $1M",
+      "Cyber liability (where applicable)",
+      "Additional insured endorsement",
+      "Waiver of subrogation",
+      "Primary and noncontributory",
+      "Policy expiration"
+    ]
+  },
+  {
+    "id": "coi-policy",
+    "version": "1.0.0",
+    "name": "Conflict of Interest Policy",
+    "description": "Conflict of interest policy under IRS Form 990 + IRC § 4958 + state nonprofit law. Selects the §6.O ruleset (POL-033..POL-036).",
+    "match_features": {
+      "title_keywords": [
+        "conflict of interest",
+        "coi policy"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "conflict of interest",
+        "related party",
+        "recusal",
+        "disclosure",
+        "annual certification"
+      ],
+      "negative_features": [
+        "aml",
+        "anti-bribery",
+        "insider trading"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "IRS-FORM-990-IRC-4958",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "code-of-conduct"
+    ],
+    "compliance_matrix_columns": [
+      "Definition of conflict",
+      "Annual + ongoing disclosure",
+      "Recusal + § 4958 approval",
+      "Sanctions for violations"
+    ]
+  },
+  {
+    "id": "committee-charter",
+    "version": "1.0.0",
+    "name": "Board Committee Charter (audit / comp / nominating)",
+    "description": "Charter for a board committee subject to NYSE / Nasdaq listing standards and SOX § 301. Selects the §6.B governance ruleset (GOV-051..GOV-060).",
+    "match_features": {
+      "title_keywords": [
+        "committee charter",
+        "audit committee charter",
+        "compensation committee charter",
+        "nominating and corporate governance committee charter"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "independent directors",
+        "audit committee",
+        "registered public accounting firm",
+        "whistleblower",
+        "annual self-evaluation"
+      ],
+      "negative_features": [
+        "operating agreement",
+        "bylaws"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "SOX",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "bylaws-corporation"
+    ],
+    "compliance_matrix_columns": [
+      "SOX § 301",
+      "Exchange Act Rule 10A-3",
+      "NYSE Listed Company Manual § 303A",
+      "Nasdaq Listing Rule 5605"
+    ]
+  },
+  {
+    "id": "confidential-settlement",
+    "version": "1.0.0",
+    "name": "Confidential Settlement Agreement",
+    "description": "Confidential settlement agreement with NLRB *McLaren Macomb*, SEC Rule 21F-17 carve-out, and IRC § 162(q) compliance. Selects the §6.G settlement ruleset (SET-003..SET-010).",
+    "match_features": {
+      "title_keywords": [
+        "settlement agreement",
+        "confidential settlement",
+        "settlement and release"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "settlement payment",
+        "confidentiality",
+        "no admission",
+        "protected rights",
+        "1099",
+        "w-2"
+      ],
+      "negative_features": [
+        "demand letter",
+        "cease and desist",
+        "tolling"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Settlement Payment",
+      "Effective Date",
+      "Released Claims"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "NLRB-MCLAREN-MACOMB",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "mutual-release"
+    ],
+    "compliance_matrix_columns": [
+      "NLRB McLaren Macomb (2023)",
+      "SEC Rule 21F-17 carve-out",
+      "Cal. Civ. § 1542 waiver",
+      "IRC § 162(q) (harassment / abuse)",
+      "Tax allocation (1099 / W-2)"
+    ]
+  },
+  {
+    "id": "construction-contract",
+    "version": "1.0.0",
+    "name": "Construction Contract (AIA-style)",
+    "description": "AIA A101 / A201-style owner-contractor agreement with anti-indemnity screen. Selects the §6.M ruleset (CON-001..CON-007).",
+    "match_features": {
+      "title_keywords": [
+        "construction contract",
+        "owner-contractor agreement",
+        "aia a101",
+        "construction agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "owner",
+        "contractor",
+        "architect",
+        "contract sum",
+        "substantial completion",
+        "general conditions"
+      ],
+      "negative_features": [
+        "subcontractor",
+        "lien waiver",
+        "performance bond",
+        "change order"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Owner",
+      "Contractor",
+      "Architect",
+      "Contract Sum"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "AIA-A101-A201",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "subcontractor-agreement",
+      "change-order"
+    ],
+    "compliance_matrix_columns": [
+      "AIA A101 § 4 contract sum",
+      "AIA A201 § 1.1.1 contract documents",
+      "AIA A201 § 3.7.4 differing site",
+      "AIA A201 §§ 3.18 / 11 indemnity / insurance",
+      "Anti-indemnity (CA / NY / TX)",
+      "AIA A201 § 14 termination"
+    ]
+  },
+  {
+    "id": "construction-lien-waiver",
+    "version": "1.0.0",
+    "name": "Construction Lien Waiver",
+    "description": "Mechanic's-lien waiver (conditional / unconditional, progress / final) under state-prescribed forms (CA Civ. § 8132–8138 and analogous). Selects the §6.M ruleset (CON-014..CON-019).",
+    "match_features": {
+      "title_keywords": [
+        "lien waiver",
+        "waiver and release",
+        "release of lien",
+        "conditional waiver",
+        "unconditional waiver"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "claimant",
+        "through date",
+        "amount of payment",
+        "conditional",
+        "unconditional",
+        "progress payment",
+        "final payment"
+      ],
+      "negative_features": [
+        "construction contract",
+        "subcontract",
+        "performance bond",
+        "change order"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Claimant",
+      "Property",
+      "Through Date"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "STATE-LIEN-WAIVER-FORM",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "Waiver type (conditional / final)",
+      "Claimant / property / through-date",
+      "Scope limited to amount",
+      "Conditional payment condition",
+      "Carve-outs (retention / disputed)",
+      "Signature + statutory form"
+    ]
+  },
+  {
+    "id": "contributor-license-agreement",
+    "version": "1.0.0",
+    "name": "Contributor License Agreement (CLA)",
+    "description": "OSS contributor license agreement (ASF ICLA / corporate CCLA pattern) with defensive-termination patent grant. Selects the §6.H ruleset (IPL-025..IPL-029).",
+    "match_features": {
+      "title_keywords": [
+        "contributor license agreement",
+        "cla",
+        "individual contributor license"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "contributor",
+        "contribution",
+        "patent license grant",
+        "defensive termination",
+        "original creation",
+        "dco"
+      ],
+      "negative_features": [
+        "proprietary",
+        "royalty",
+        "assignment of intellectual property"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Contribution",
+      "Contributor",
+      "You"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "OSS-COMMUNITY",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "Copyright grant (perpetual / RF)",
+      "Patent grant + defensive termination",
+      "Original-work representation",
+      "DCO alternative path"
+    ]
+  },
+  {
+    "id": "convertible-note",
+    "version": "1.0.0",
+    "name": "Convertible Promissory Note",
+    "description": "Convertible promissory note (UCC Article 3 negotiable instrument convertible into preferred stock at next qualified financing). Selects the §6.C equity ruleset (EQT-010..EQT-018).",
+    "match_features": {
+      "title_keywords": [
+        "convertible note",
+        "convertible promissory note"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "principal amount",
+        "interest rate",
+        "maturity date",
+        "qualified financing",
+        "subordination"
+      ],
+      "negative_features": [
+        "simple agreement for future equity",
+        "safe",
+        "stock option grant"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Maturity Date",
+      "Qualified Financing",
+      "Conversion Price"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "UCC-3",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "UCC § 3-104",
+      "UCC § 3-108",
+      "State usury caps",
+      "Reg D Rule 506"
+    ]
+  },
+  {
+    "id": "cookie-notice",
+    "version": "1.0.0",
+    "name": "Cookie / Tracking Notice",
+    "description": "Cookie / tracking notice with ePrivacy + GDPR Art. 7 consent and CCPA / CPRA opt-out (GPC). Selects the §6.I ruleset (PRV-001..PRV-006).",
+    "match_features": {
+      "title_keywords": [
+        "cookie notice",
+        "cookie policy",
+        "tracking notice",
+        "cookie statement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "strictly necessary",
+        "analytics",
+        "advertising",
+        "consent",
+        "preference center",
+        "do not sell"
+      ],
+      "negative_features": [
+        "business associate",
+        "data processing agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Cookies",
+      "Consent"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "ePRIVACY-GDPR-CCPA",
+    "applicable_jurisdictions": [
+      "EU",
+      "UK",
+      "US-CA"
+    ],
+    "companion_playbooks": [
+      "privacy-policy-lint"
+    ],
+    "compliance_matrix_columns": [
+      "ePrivacy Art. 5(3)",
+      "GDPR Art. 7 consent",
+      "CCPA/CPRA opt-out + GPC",
+      "Per-cookie disclosure table"
+    ]
+  },
+  {
+    "id": "copyright-license",
+    "version": "1.0.0",
+    "name": "Copyright License Agreement",
+    "description": "Copyright license with 17 U.S.C. § 204 writing requirement and § 106 rights enumeration. Selects the §6.H ruleset (IPL-019..IPL-024).",
+    "match_features": {
+      "title_keywords": [
+        "copyright license",
+        "license to copyright",
+        "publishing agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "licensed works",
+        "exclusive",
+        "non-exclusive",
+        "reproduction",
+        "derivative works",
+        "section 106"
+      ],
+      "negative_features": [
+        "patent",
+        "trademark",
+        "assignment"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Licensed Works",
+      "Term",
+      "Territory"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "17-USC-COPYRIGHT",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "17 U.S.C. § 106 (rights enumerated)",
+      "17 U.S.C. § 204 (exclusive writing)",
+      "17 U.S.C. § 106A / VARA (moral rights)",
+      "17 U.S.C. § 203 (35-yr termination)"
+    ]
+  },
+  {
+    "id": "deed-of-trust",
+    "version": "1.0.0",
+    "name": "Deed of Trust / Mortgage",
+    "description": "Deed of trust or mortgage with power-of-sale + due-on-sale + state recording-act compliance. Selects the §6.L ruleset (BNK-039..BNK-044).",
+    "match_features": {
+      "title_keywords": [
+        "deed of trust",
+        "mortgage",
+        "mortgage and security agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "trustee",
+        "beneficiary",
+        "grantor",
+        "mortgagor",
+        "power of sale",
+        "due on sale",
+        "legal description"
+      ],
+      "negative_features": [
+        "security agreement",
+        "promissory note",
+        "loan agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Grantor",
+      "Trustee",
+      "Beneficiary"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "STATE-REAL-PROPERTY",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "promissory-note"
+    ],
+    "compliance_matrix_columns": [
+      "Parties (grantor / trustee / beneficiary)",
+      "Legal description",
+      "Granting / habendum",
+      "Power of sale / judicial",
+      "Due on sale (Garn-St Germain)",
+      "Acknowledgment + homestead"
+    ]
+  },
+  {
+    "id": "demand-letter",
+    "version": "1.0.0",
+    "name": "Demand Letter",
+    "description": "Pre-suit demand letter (debt, wage, contract, PAGA) with FDCPA compliance and reservation of rights. Selects the §6.G settlement ruleset (SET-011..SET-015).",
+    "match_features": {
+      "title_keywords": [
+        "demand letter",
+        "demand for payment",
+        "notice of claim",
+        "pre-suit demand"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "demand",
+        "respond within",
+        "cure period",
+        "without prejudice",
+        "reservation of rights"
+      ],
+      "negative_features": [
+        "settlement agreement",
+        "release",
+        "cease and desist",
+        "tolling"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Demand",
+      "Response Deadline"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "FDCPA-OR-STATE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "FDCPA § 1692e (debt-collection)",
+      "Specific demand + deadline",
+      "Cal. Lab. § 2699.3 (PAGA notice)",
+      "Reservation of rights"
+    ]
+  },
+  {
+    "id": "disclosure-schedules",
+    "version": "1.0.0",
+    "name": "Disclosure Schedules",
+    "description": "Schedules qualifying representations and warranties in a private-target M&A agreement. Selects the §6.D M&A ruleset (MNA-039..MNA-045).",
+    "match_features": {
+      "title_keywords": [
+        "disclosure schedule",
+        "disclosure schedules",
+        "schedules"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "general notes",
+        "qualifies",
+        "section",
+        "schedule",
+        "data room"
+      ],
+      "negative_features": []
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "Practice-Baseline",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "stock-purchase-agreement",
+      "asset-purchase-agreement",
+      "merger-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "ABA Private Target Deal Points Study"
+    ]
+  },
+  {
+    "id": "document-retention-policy",
+    "version": "1.0.0",
+    "name": "Document Retention Policy",
+    "description": "Records retention policy under SEC + IRS + DOL + Sedona Principles + state. Selects the §6.O ruleset (POL-028..POL-032).",
+    "match_features": {
+      "title_keywords": [
+        "document retention",
+        "records retention",
+        "retention policy",
+        "records management"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "retention schedule",
+        "legal hold",
+        "esi",
+        "sedona",
+        "destruction"
+      ],
+      "negative_features": [
+        "aml",
+        "anti-bribery",
+        "code of conduct"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "SEC-IRS-DOL-SEDONA",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "Retention schedule",
+      "Legal-hold override (Sedona / FRCP 37(e))",
+      "ESI treatment",
+      "Regulatory minimums (SEC / IRS / DOL / HIPAA)",
+      "Secure destruction"
+    ]
+  },
+  {
+    "id": "dpa-ccpa-service-provider",
+    "version": "1.0.0",
+    "name": "DPA — CCPA Service Provider (CPRA-aligned)",
+    "description": "Data Processing Agreement asserting CCPA 'Service Provider' status under Cal. Civ. Code § 1798.140(ag) and 11 CCR § 7051. Selects the §30 DPA-US-state ruleset (25 rules).",
+    "match_features": {
+      "title_keywords": [
+        "service provider agreement",
+        "ccpa service provider",
+        "cpra service provider",
+        "ccpa addendum",
+        "cpra addendum"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "service provider",
+        "personal information",
+        "specific business purpose",
+        "cross-context behavioral advertising",
+        "1798.140",
+        "1798.100"
+      ],
+      "negative_features": []
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Personal Information",
+      "Business",
+      "Service Provider",
+      "Contractor",
+      "Sale",
+      "Sharing"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [
+      {
+        "id": "ccpa-civ-code",
+        "source": "Cal. Civ. Code §§ 1798.100–1798.199.100 (CCPA/CPRA)",
+        "source_url": "https://leginfo.legislature.ca.gov/faces/codes_displayText.xhtml?division=3.&part=4.&lawCode=CIV&title=1.81.5",
+        "retrieved_at": "2026-05-12T00:00:00Z",
+        "license": "Public domain (California statute)",
+        "license_url": "https://www.ca.gov/"
+      }
+    ],
+    "regulator_frame": "CCPA",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "msa-vendor-deep",
+      "dpa-multi-state-us"
+    ],
+    "compliance_matrix_columns": [
+      "Cal. Civ. Code § 1798.140(ag)(1)(A)",
+      "Cal. Civ. Code § 1798.140(ag)(1)(B)",
+      "Cal. Civ. Code § 1798.140(ag)(1)(C)",
+      "Cal. Civ. Code § 1798.140(ag)(1)(D)",
+      "Cal. Civ. Code § 1798.100(d)",
+      "11 CCR § 7051(a)(6)",
+      "11 CCR § 7051(a)(7)",
+      "11 CCR § 7051(a)(8)",
+      "11 CCR § 7051(b)"
+    ]
+  },
+  {
+    "id": "dpa-controller-processor",
+    "version": "1.0.0",
+    "name": "DPA — Controller to Processor (EU/UK)",
+    "description": "Data Processing Agreement under GDPR and UK GDPR. Selects the §29 DPA-GDPR ruleset (55 rules) covering Article 28(3) enumerated clauses, Articles 28(2)/(4)/(9) subprocessor governance, Articles 27, 30, 32, 33(2), 35, 37, and Chapter V international transfers. Companion: MSA + SCC-Module-2 if processor is non-EU/UK.",
+    "match_features": {
+      "title_keywords": [
+        "data processing agreement",
+        "data processing addendum",
+        "dpa",
+        "gdpr addendum",
+        "personal data processing"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "personal data",
+        "controller",
+        "processor",
+        "data subject",
+        "article 28",
+        "gdpr",
+        "documented instructions"
+      ],
+      "negative_features": []
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Personal Data",
+      "Personal Data Breach",
+      "Data Subject",
+      "Controller",
+      "Processor",
+      "Sub-processor",
+      "Processing"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [
+      {
+        "id": "gdpr-reg-2016-679",
+        "source": "Regulation (EU) 2016/679 (GDPR)",
+        "source_url": "https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+        "retrieved_at": "2026-05-12T00:00:00Z",
+        "license": "EUR-Lex re-use notice",
+        "license_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html"
+      }
+    ],
+    "regulator_frame": "GDPR",
+    "applicable_jurisdictions": [
+      "EU",
+      "UK"
+    ],
+    "companion_playbooks": [
+      "msa-vendor-deep",
+      "scc-module-2"
+    ],
+    "compliance_matrix_columns": [
+      "GDPR Art. 28(3) intro",
+      "GDPR Art. 28(3)(a)",
+      "GDPR Art. 28(3)(b)",
+      "GDPR Art. 28(3)(c)",
+      "GDPR Art. 28(3)(d)",
+      "GDPR Art. 28(3)(e)",
+      "GDPR Art. 28(3)(f)",
+      "GDPR Art. 28(3)(g)",
+      "GDPR Art. 28(3)(h)",
+      "GDPR Art. 28(2)",
+      "GDPR Art. 32",
+      "GDPR Art. 33(2)",
+      "GDPR Arts. 44–49"
+    ]
+  },
+  {
+    "id": "dpa-multi-state-us",
+    "version": "1.0.0",
+    "name": "DPA — Multi-State US (CCPA, VCDPA, CPA, CTDPA, UCPA, TDPSA, OCPA, DPDPA)",
+    "description": "Multi-state DPA covering CCPA + VCDPA + CPA + CTDPA + UCPA + TDPSA + OCPA + DPDPA. Selects the §30 DPA-US-state ruleset (25 rules) and applies the strictest-applicable floor.",
+    "match_features": {
+      "title_keywords": [
+        "data processing agreement",
+        "data processing addendum",
+        "us state privacy",
+        "multi-state privacy",
+        "state privacy addendum"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "personal information",
+        "personal data",
+        "service provider",
+        "processor",
+        "controller",
+        "1798.140",
+        "59.1-579",
+        "6-1-1305",
+        "42-520"
+      ],
+      "negative_features": []
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Personal Information",
+      "Personal Data",
+      "Controller",
+      "Processor",
+      "Service Provider",
+      "Sub-processor",
+      "Consumer",
+      "Data Subject"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [
+      {
+        "id": "ccpa-civ-code",
+        "source": "CCPA / CPRA — Cal. Civ. Code §§ 1798.100–1798.199.100",
+        "source_url": "https://leginfo.legislature.ca.gov/faces/codes_displayText.xhtml?division=3.&part=4.&lawCode=CIV&title=1.81.5",
+        "retrieved_at": "2026-05-12T00:00:00Z",
+        "license": "Public domain (California statute)",
+        "license_url": "https://www.ca.gov/"
+      }
+    ],
+    "regulator_frame": "multi-state-US",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "dpa-ccpa-service-provider",
+      "msa-vendor-deep"
+    ],
+    "compliance_matrix_columns": [
+      "Cal. Civ. Code § 1798.140(ag)",
+      "Va. Code § 59.1-579",
+      "Colo. Rev. Stat. § 6-1-1305",
+      "Conn. Gen. Stat. § 42-520",
+      "Utah Code § 13-61-301",
+      "Tex. Bus. & Com. Code § 541.104",
+      "ORS § 646A.578",
+      "6 Del. C. § 12D-107"
+    ]
+  },
+  {
+    "id": "dpa-processor-subprocessor",
+    "version": "1.0.0",
+    "name": "DPA — Processor to Sub-Processor (EU/UK GDPR)",
+    "description": "Data Processing Agreement from a processor to its sub-processor under GDPR and UK GDPR. Selects the §29 DPA-GDPR ruleset (55 rules) covering Article 28(3) enumerated clauses, Articles 28(2)/(4)/(9) subprocessor governance, Articles 27, 30, 32, 33(2), 35, 37, and Chapter V international transfers — with an emphasis on Article 28(4) flow-down (the sub-processor must be bound by the same data-protection obligations as the upstream processor-controller DPA). Companion: the upstream controller-processor DPA and SCC Module 3 when the sub-processor is non-EU/UK.",
+    "match_features": {
+      "title_keywords": [
+        "sub-processor agreement",
+        "subprocessor data processing agreement",
+        "sub-processor data processing agreement",
+        "downstream dpa",
+        "processor to sub-processor agreement",
+        "processor-to-subprocessor"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "sub-processor",
+        "subprocessor",
+        "article 28(4)",
+        "art. 28(4)",
+        "same data protection obligations",
+        "flow-down",
+        "flow down",
+        "upstream dpa",
+        "principal dpa",
+        "processor's obligations",
+        "personal data",
+        "controller",
+        "processor",
+        "data subject",
+        "article 28",
+        "gdpr",
+        "documented instructions"
+      ],
+      "negative_features": [
+        "controller-to-processor",
+        "between the controller and the processor",
+        "Business Associate Agreement",
+        "protected health information",
+        "Master Services Agreement",
+        "Statement of Work",
+        "mutual non-disclosure"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Personal Data",
+      "Personal Data Breach",
+      "Data Subject",
+      "Controller",
+      "Processor",
+      "Sub-processor",
+      "Processing"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [
+      {
+        "id": "gdpr-reg-2016-679",
+        "source": "Regulation (EU) 2016/679 (GDPR) — Articles 28(2) and 28(4) (sub-processor flow-down)",
+        "source_url": "https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+        "retrieved_at": "2026-05-12T00:00:00Z",
+        "license": "EUR-Lex re-use notice",
+        "license_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html"
+      },
+      {
+        "id": "uk-gdpr",
+        "source": "UK GDPR (Data Protection Act 2018, as amended) — Art. 28 sub-processor governance",
+        "source_url": "https://www.legislation.gov.uk/ukpga/2018/12/contents",
+        "retrieved_at": "2026-05-12T00:00:00Z",
+        "license": "Open Government Licence v3.0",
+        "license_url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+      }
+    ],
+    "regulator_frame": "GDPR",
+    "applicable_jurisdictions": [
+      "EU",
+      "UK"
+    ],
+    "companion_playbooks": [
+      "dpa-controller-processor",
+      "scc-module-3"
+    ],
+    "compliance_matrix_columns": [
+      "GDPR Art. 28(3) intro",
+      "GDPR Art. 28(3)(a)",
+      "GDPR Art. 28(3)(b)",
+      "GDPR Art. 28(3)(c)",
+      "GDPR Art. 28(3)(d)",
+      "GDPR Art. 28(3)(e)",
+      "GDPR Art. 28(3)(f)",
+      "GDPR Art. 28(3)(g)",
+      "GDPR Art. 28(3)(h)",
+      "GDPR Art. 28(2) prior authorisation",
+      "GDPR Art. 28(4) flow-down",
+      "GDPR Art. 32",
+      "GDPR Art. 33(2)",
+      "GDPR Arts. 44–49"
+    ]
+  },
+  {
+    "id": "dpia-art-35",
+    "version": "1.0.0",
+    "name": "Data Protection Impact Assessment (GDPR Art. 35)",
+    "description": "GDPR Art. 35 DPIA covering necessity, proportionality, risk assessment, and mitigations. Selects the §6.I ruleset (PRV-021..PRV-026).",
+    "match_features": {
+      "title_keywords": [
+        "data protection impact assessment",
+        "dpia",
+        "pia",
+        "privacy impact assessment"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "necessity and proportionality",
+        "rights and freedoms",
+        "likelihood",
+        "severity",
+        "mitigations",
+        "supervisory authority"
+      ],
+      "negative_features": [
+        "business associate",
+        "merger agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Controller",
+      "DPO",
+      "Risk"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "GDPR-ART-35",
+    "applicable_jurisdictions": [
+      "EU",
+      "UK"
+    ],
+    "companion_playbooks": [
+      "ropa-art-30"
+    ],
+    "compliance_matrix_columns": [
+      "Art. 35(7)(a) description",
+      "Art. 35(7)(b) necessity / proportionality",
+      "Art. 35(7)(c) risk assessment",
+      "Art. 35(7)(d) mitigations",
+      "Art. 35(2) DPO consultation",
+      "Art. 36 prior consultation"
+    ]
+  },
+  {
+    "id": "durable-poa-financial",
+    "version": "1.0.0",
+    "name": "Durable Power of Attorney (Financial)",
+    "description": "Durable POA under UPOAA + state POA statutes with 'hot powers' specific grant. Per spec §6.N caveat: execution formalities cannot be verified from text alone (EST-060). Selects the §6.N ruleset (EST-031..EST-037).",
+    "match_features": {
+      "title_keywords": [
+        "durable power of attorney",
+        "general power of attorney",
+        "financial power of attorney"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "principal",
+        "attorney-in-fact",
+        "durable",
+        "incapacity",
+        "hot powers",
+        "third-party reliance"
+      ],
+      "negative_features": [
+        "healthcare proxy",
+        "advance directive",
+        "trust"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Principal",
+      "Agent"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "UPOAA-STATE-POA",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "healthcare-poa"
+    ],
+    "compliance_matrix_columns": [
+      "UPOAA § 110 principal + agent",
+      "§ 104 durability",
+      "§ 201 hot powers",
+      "§ 109 springing / immediate",
+      "§ 114 agent's duties",
+      "§§ 119–120 third-party reliance",
+      "§ 105 notarial + recording",
+      "Execution-formality disclaimer (EST-060)"
+    ]
+  },
+  {
+    "id": "earnout-agreement",
+    "version": "1.0.0",
+    "name": "Earnout Agreement",
+    "description": "Post-closing contingent-consideration earnout (Delaware *Lazard / Aveta* line). Selects the §6.D M&A ruleset (MNA-063..MNA-071).",
+    "match_features": {
+      "title_keywords": [
+        "earnout",
+        "earn-out"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "earnout period",
+        "milestone",
+        "ebitda",
+        "implied covenant",
+        "earnout payment"
+      ],
+      "negative_features": []
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Earnout Period",
+      "Earnout Statement",
+      "Milestone"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "DE-Chancery",
+    "applicable_jurisdictions": [
+      "US-DE",
+      "US"
+    ],
+    "companion_playbooks": [
+      "stock-purchase-agreement",
+      "merger-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Lazard v. Qinetiq",
+      "Aveta v. Cavallieri",
+      "IRC § 483 / § 1274"
+    ]
+  },
+  {
+    "id": "easement-agreement",
+    "version": "1.0.0",
+    "name": "Easement Agreement",
+    "description": "Real-property easement agreement (appurtenant / in gross; affirmative / negative). Selects the §6.E real-estate ruleset (RE-025..RE-031).",
+    "match_features": {
+      "title_keywords": [
+        "easement",
+        "easement agreement",
+        "grant of easement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "servient",
+        "dominant",
+        "appurtenant",
+        "in gross",
+        "scope of use"
+      ],
+      "negative_features": [
+        "lease",
+        "purchase agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "Common-Law-Property",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "Restatement (Third) of Property — Servitudes",
+      "State recording acts"
+    ]
+  },
+  {
+    "id": "employee-handbook",
+    "version": "1.0.0",
+    "name": "Employee Handbook",
+    "description": "Employee handbook (scoped subset — at-will, EEO, wage/hour, leave, social media, acknowledgment). Selects the §6.F employment ruleset (EMP-045..EMP-050).",
+    "match_features": {
+      "title_keywords": [
+        "employee handbook",
+        "personnel manual"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "at-will",
+        "equal employment opportunity",
+        "harassment",
+        "fmla",
+        "acknowledgment of receipt"
+      ],
+      "negative_features": [
+        "offer letter",
+        "executive employment agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "EEOC-NLRA-FLSA",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "Title VII / EEOC",
+      "FLSA",
+      "FMLA",
+      "NLRA § 7 (Stericycle, 2023)"
+    ]
+  },
+  {
+    "id": "employment-restrictive-covenant",
+    "version": "1.0.0",
+    "name": "Employment Restrictive Covenant Agreement",
+    "description": "Employment-side non-compete / non-solicit covenant. Selects the §6.F employment ruleset (EMP-024..EMP-031). Subject to FTC NCR § 910 and state non-compete law.",
+    "match_features": {
+      "title_keywords": [
+        "non-compete agreement",
+        "non-competition agreement",
+        "restrictive covenant agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "non-compete",
+        "non-solicitation",
+        "restricted period",
+        "garden leave"
+      ],
+      "negative_features": [
+        "m&a restrictive covenant",
+        "sale of business"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Competing Business",
+      "Restricted Period",
+      "Restricted Territory"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "FTC-NCR",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "piia",
+      "executive-employment"
+    ],
+    "compliance_matrix_columns": [
+      "16 C.F.R. § 910 (FTC NCR)",
+      "State non-compete law (CA / MA / WA / NY / CO)"
+    ]
+  },
+  {
+    "id": "escrow-agreement",
+    "version": "1.0.0",
+    "name": "M&A Escrow Agreement",
+    "description": "Tri-party escrow agreement supporting an SPA / APA / merger. Selects the §6.D M&A ruleset (MNA-046..MNA-054).",
+    "match_features": {
+      "title_keywords": [
+        "escrow agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "escrow agent",
+        "escrow fund",
+        "release",
+        "joint instruction",
+        "interpleader"
+      ],
+      "negative_features": [
+        "stock purchase agreement",
+        "asset purchase agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Escrow Agent",
+      "Escrow Fund",
+      "Release Date"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "Practice-Baseline",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "stock-purchase-agreement",
+      "asset-purchase-agreement",
+      "merger-agreement"
+    ],
+    "compliance_matrix_columns": []
+  },
+  {
+    "id": "estoppel-certificate",
+    "version": "1.0.0",
+    "name": "Estoppel Certificate",
+    "description": "Tenant estoppel certificate delivered for refinancing or sale. Selects the §6.E real-estate ruleset (RE-040..RE-045).",
+    "match_features": {
+      "title_keywords": [
+        "estoppel certificate",
+        "tenant estoppel"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "no default",
+        "full force and effect",
+        "current rent",
+        "security deposit"
+      ],
+      "negative_features": []
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "Common-Law-Property",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "snda"
+    ],
+    "compliance_matrix_columns": []
+  },
+  {
+    "id": "eula",
+    "version": "1.0.0",
+    "name": "End-User License Agreement (EULA)",
+    "description": "Linter for an End-User License Agreement / Software License Agreement. Selects the §34 addenda ruleset (EULA portion, ADDENDA-017..018): explicit license grant scope + prohibited-uses enumeration, EU consumer-law minimums (Digital Content Directive 2019/770 + Consumer Rights Directive 2011/83).",
+    "match_features": {
+      "title_keywords": [
+        "end user license agreement",
+        "end-user license agreement",
+        "eula",
+        "software license agreement",
+        "application license agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "license to use",
+        "non-exclusive",
+        "non-transferable",
+        "reverse engineer",
+        "sublicense",
+        "decompile",
+        "software"
+      ],
+      "negative_features": [
+        "protected health information",
+        "data processing agreement",
+        "master services agreement"
+      ]
+    },
+    "expected_clauses": [
+      "License Grant",
+      "Prohibited Uses",
+      "Ownership",
+      "Updates and Versions",
+      "Support and Disclaimers",
+      "Termination"
+    ],
+    "expected_defined_terms": [
+      "Software",
+      "Documentation",
+      "Licensee",
+      "Licensor"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [
+      {
+        "id": "addenda-eu-digital-content-dir",
+        "source": "EU Digital Content Directive (Directive (EU) 2019/770)",
+        "source_url": "https://eur-lex.europa.eu/eli/dir/2019/770/oj",
+        "retrieved_at": "2026-05-13T00:00:00Z",
+        "license": "EUR-Lex re-use notice",
+        "license_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html"
+      },
+      {
+        "id": "addenda-eu-consumer-rights-dir",
+        "source": "EU Consumer Rights Directive (Directive 2011/83/EU)",
+        "source_url": "https://eur-lex.europa.eu/eli/dir/2011/83/oj",
+        "retrieved_at": "2026-05-13T00:00:00Z",
+        "license": "EUR-Lex re-use notice",
+        "license_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html"
+      }
+    ],
+    "regulator_frame": "consumer-protection",
+    "applicable_jurisdictions": [
+      "US",
+      "EU",
+      "UK"
+    ],
+    "companion_playbooks": [
+      "saas-tos",
+      "privacy-policy-lint"
+    ],
+    "compliance_matrix_columns": [
+      "License grant scope + prohibited uses",
+      "EU consumer-law minimums (Digital Content Directive)"
+    ]
+  },
+  {
+    "id": "executive-employment",
+    "version": "1.0.0",
+    "name": "Executive Employment Agreement",
+    "description": "Senior-executive employment agreement (CEO, CFO, named executive officer). Selects the §6.F employment ruleset (EMP-001..EMP-008).",
+    "match_features": {
+      "title_keywords": [
+        "executive employment agreement",
+        "chief executive officer agreement",
+        "employment agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "chief executive officer",
+        "chief financial officer",
+        "named executive officer",
+        "section 409a",
+        "section 280g",
+        "change in control"
+      ],
+      "negative_features": [
+        "at-will offer letter",
+        "consulting agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Cause",
+      "Good Reason",
+      "Change in Control",
+      "Disability"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "IRC-409A-280G",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "piia",
+      "employment-restrictive-covenant"
+    ],
+    "compliance_matrix_columns": [
+      "IRC § 409A",
+      "IRC § 280G",
+      "Reg S-K Item 402",
+      "Dodd-Frank § 954 clawback"
+    ]
+  },
+  {
+    "id": "family-msa",
+    "version": "1.0.0",
+    "name": "Family-Law MSA (Separation / Marital Settlement)",
+    "description": "Family-law marital settlement / separation agreement under state divorce codes. Per spec §6.N caveat: execution formalities cannot be verified from text alone (EST-060). Selects the §6.N ruleset (EST-053..EST-059).",
+    "match_features": {
+      "title_keywords": [
+        "marital settlement agreement",
+        "separation agreement",
+        "divorce settlement",
+        "msa",
+        "stipulated judgment"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "petitioner",
+        "respondent",
+        "date of separation",
+        "spousal support",
+        "child support",
+        "qdro",
+        "custody",
+        "parenting plan"
+      ],
+      "negative_features": [
+        "master services agreement",
+        "prenuptial",
+        "postnuptial"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Petitioner",
+      "Respondent",
+      "Date of Separation"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "STATE-DIVORCE-CODES",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "Parties + separation date",
+      "Property / debt division",
+      "Spousal support",
+      "Custody + parenting plan + child support",
+      "Tax provisions (TCJA / 8332)",
+      "QDRO retirement division",
+      "Incorporation / merger",
+      "Execution-formality disclaimer (EST-060)"
+    ]
+  },
+  {
+    "id": "form-adv-brochure",
+    "version": "1.0.0",
+    "name": "Form ADV Part 2A Brochure",
+    "description": "Investment-adviser brochure (Form ADV Part 2A) under Rule 204-3. Per spec §6.P caveat: v4 lints prose only (REG-040). Selects the §6.P ruleset (REG-008..REG-015).",
+    "match_features": {
+      "title_keywords": [
+        "form adv",
+        "form adv part 2a",
+        "investment adviser brochure"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "investment adviser",
+        "advisory business",
+        "code of ethics",
+        "brokerage practices",
+        "custody",
+        "item 4",
+        "item 8"
+      ],
+      "negative_features": [
+        "form d",
+        "10-k",
+        "ppm"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Investment Adviser",
+      "Brochure"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "FORM-ADV-RULE-204-3",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "Cover page + Item 2 material changes",
+      "Item 4 advisory business",
+      "Item 5 fees + compensation",
+      "Item 8 methods + strategies + risks",
+      "Item 9 disciplinary",
+      "Item 11 code of ethics",
+      "Item 12 brokerage",
+      "Item 15 custody",
+      "Prose-only disclaimer (REG-040)"
+    ]
+  },
+  {
+    "id": "form-d-narrative",
+    "version": "1.0.0",
+    "name": "Form D Narrative",
+    "description": "Form D narrative supporting a Reg D Rule 504 / 506(b) / 506(c) exempt offering. Per spec §6.P caveat: v4 lints prose only (REG-040). Selects the §6.P ruleset (REG-001..REG-007).",
+    "match_features": {
+      "title_keywords": [
+        "form d",
+        "regulation d",
+        "exempt offering narrative"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "rule 506",
+        "rule 504",
+        "accredited investor",
+        "general solicitation",
+        "edgar",
+        "cik"
+      ],
+      "negative_features": [
+        "form adv",
+        "10-k",
+        "ppm",
+        "reg a+"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Issuer",
+      "Accredited Investor"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "REG-D",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "ppm-narrative"
+    ],
+    "compliance_matrix_columns": [
+      "Issuer identification",
+      "Rule 504 / 506(b) / 506(c)",
+      "Accredited investor + 506(c) verification",
+      "General solicitation",
+      "Rule 506(d) bad-actor",
+      "Offering size + minimum",
+      "State blue-sky notice",
+      "Prose-only disclaimer (REG-040)"
+    ]
+  },
+  {
+    "id": "ground-lease",
+    "version": "1.0.0",
+    "name": "Ground Lease",
+    "description": "Long-term ground lease (49 / 50 / 99 years) with tenant construction rights and leasehold-mortgage protections. Selects the §6.E real-estate ruleset (RE-018..RE-024).",
+    "match_features": {
+      "title_keywords": [
+        "ground lease"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "ground lease",
+        "99 years",
+        "leasehold mortgage",
+        "improvements",
+        "reversion"
+      ],
+      "negative_features": [
+        "operating lease",
+        "office lease"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "State-Real-Property",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "snda"
+    ],
+    "compliance_matrix_columns": [
+      "State recording acts",
+      "Leasehold mortgage practice"
+    ]
+  },
+  {
+    "id": "guaranty",
+    "version": "1.0.0",
+    "name": "Guaranty",
+    "description": "Continuing guaranty of payment with suretyship-defenses waiver and reinstatement clause. Selects the §6.L ruleset (BNK-021..BNK-026).",
+    "match_features": {
+      "title_keywords": [
+        "guaranty",
+        "guarantee",
+        "guaranty agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "guarantor",
+        "continuing guaranty",
+        "guaranty of payment",
+        "absolute and unconditional",
+        "subrogation",
+        "reinstatement"
+      ],
+      "negative_features": [
+        "promissory note",
+        "loan agreement",
+        "security agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Guarantor",
+      "Obligee",
+      "Underlying Obligation"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "SURETYSHIP-STATUTE-OF-FRAUDS",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "loan-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Statute of Frauds",
+      "Payment vs collection",
+      "Suretyship defenses waived",
+      "Continuing / capped",
+      "Subrogation deferred",
+      "Reinstatement on preference"
+    ]
+  },
+  {
+    "id": "healthcare-poa",
+    "version": "1.0.0",
+    "name": "Healthcare Proxy / POA for Healthcare",
+    "description": "Healthcare proxy / durable POA for healthcare under state healthcare-POA statutes. Per spec §6.N caveat: execution formalities cannot be verified from text alone (EST-060). Selects the §6.N ruleset (EST-024..EST-030).",
+    "match_features": {
+      "title_keywords": [
+        "healthcare proxy",
+        "health care proxy",
+        "healthcare power of attorney",
+        "medical power of attorney"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "principal",
+        "agent",
+        "proxy",
+        "medical decisions",
+        "incapacity",
+        "hipaa"
+      ],
+      "negative_features": [
+        "advance directive",
+        "durable poa financial",
+        "prenup"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Principal",
+      "Agent"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "STATE-HEALTHCARE-POA",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "advance-directive",
+      "durable-poa-financial"
+    ],
+    "compliance_matrix_columns": [
+      "Principal + agent + successor",
+      "Scope of authority",
+      "HIPAA authorization",
+      "Activation (springing / immediate)",
+      "End-of-life / DNR",
+      "Limitations",
+      "Witnesses / notary",
+      "Execution-formality disclaimer (EST-060)"
+    ]
+  },
+  {
+    "id": "hipaa-npp",
+    "version": "1.0.0",
+    "name": "HIPAA Notice of Privacy Practices",
+    "description": "HIPAA Notice of Privacy Practices under 45 C.F.R. § 164.520. Selects the §6.I ruleset (PRV-007..PRV-014).",
+    "match_features": {
+      "title_keywords": [
+        "notice of privacy practices",
+        "npp",
+        "hipaa notice"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "protected health information",
+        "phi",
+        "treatment, payment, and health care operations",
+        "tpo",
+        "office for civil rights",
+        "ocr"
+      ],
+      "negative_features": [
+        "dpa",
+        "scc",
+        "gdpr"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Protected Health Information",
+      "Covered Entity"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "HIPAA-164.520",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "45 C.F.R. § 164.520(b)(1)(i) header",
+      "Uses / disclosures (TPO + others)",
+      "Individual rights enumeration",
+      "Right to complain (HHS / OCR)",
+      "Effective date + contact"
+    ]
+  },
+  {
+    "id": "hold-harmless-agreement",
+    "version": "1.0.0",
+    "name": "Hold-Harmless Agreement",
+    "description": "Standalone hold-harmless agreement (typically participant / event release) with Tunkl-factor and assumption-of-risk screen. Selects the §6.K ruleset (INS-020..INS-025).",
+    "match_features": {
+      "title_keywords": [
+        "hold harmless",
+        "release and hold harmless",
+        "participant release",
+        "waiver and release"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "hold harmless",
+        "assumption of risk",
+        "acknowledge",
+        "voluntary",
+        "release"
+      ],
+      "negative_features": [
+        "indemnification agreement",
+        "declarations",
+        "endorsement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Activity",
+      "Participant"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "STATE-HOLD-HARMLESS-LAW",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "Parties identification",
+      "Activity / scope of risk",
+      "Pre-dispute / gross-negligence screen",
+      "Acknowledgment + assumption of risk",
+      "Signature + minor / guardian",
+      "Severability"
+    ]
+  },
+  {
+    "id": "incident-notification",
+    "version": "1.0.0",
+    "name": "Data-Incident Notification Template",
+    "description": "Data-incident / breach notification template covering GDPR Art. 33 / 34 + HIPAA + US state breach laws. Selects the §6.I ruleset (PRV-034..PRV-040).",
+    "match_features": {
+      "title_keywords": [
+        "data breach notification",
+        "incident notification",
+        "breach notice",
+        "notification of data breach"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "nature of the incident",
+        "affected individuals",
+        "likely consequences",
+        "measures taken",
+        "without undue delay",
+        "72 hours"
+      ],
+      "negative_features": [
+        "business associate agreement",
+        "license grant"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Incident",
+      "Affected Individual"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "GDPR-ART-33-STATE-BREACH",
+    "applicable_jurisdictions": [
+      "US",
+      "EU",
+      "UK"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "Art. 33(3)(a) nature",
+      "Art. 33(3)(a) categories / numbers",
+      "Art. 33(3)(b) DPO contact",
+      "Art. 33(3)(c) consequences",
+      "Art. 33(3)(d) measures",
+      "GDPR 72h + HIPAA 60d + state",
+      "State-AG / OCR notification triggers"
+    ]
+  },
+  {
+    "id": "indemnification-agreement",
+    "version": "1.0.0",
+    "name": "Indemnification Agreement (standalone)",
+    "description": "Standalone indemnification agreement with anti-indemnity statute screen (NY § 5-322.1, CA § 2782, TX § 151). Selects the §6.K ruleset (INS-013..INS-019).",
+    "match_features": {
+      "title_keywords": [
+        "indemnification agreement",
+        "indemnity agreement",
+        "agreement of indemnity"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "indemnitor",
+        "indemnitee",
+        "indemnify",
+        "duty to defend",
+        "additional insured",
+        "waiver of subrogation"
+      ],
+      "negative_features": [
+        "hold harmless",
+        "declarations",
+        "endorsement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Indemnitor",
+      "Indemnitee",
+      "Loss"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "ANTI-INDEMNITY-STATE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "Indemnitor / indemnitee parties",
+      "Scope Type I / II / III",
+      "Anti-indemnity screen (CA / NY / TX)",
+      "Duty to defend (Crawford)",
+      "Notice / tender / cooperation",
+      "Insurance support + AI + WoS",
+      "Survival"
+    ]
+  },
+  {
+    "id": "informed-consent",
+    "version": "1.0.0",
+    "name": "Informed Consent (Research / Clinical)",
+    "description": "Informed consent under 45 C.F.R. § 46.116 (Common Rule) + 21 C.F.R. § 50 (FDA). Prose elements only. Selects the §6.J ruleset (HC-001..HC-009).",
+    "match_features": {
+      "title_keywords": [
+        "informed consent",
+        "consent to participate",
+        "consent form",
+        "subject consent"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "research",
+        "voluntary",
+        "withdraw",
+        "irb",
+        "principal investigator",
+        "clinicaltrials.gov"
+      ],
+      "negative_features": [
+        "business associate",
+        "merger",
+        "license grant"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Subject",
+      "Principal Investigator",
+      "IRB"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "COMMON-RULE-FDA",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "Common Rule § 46.116",
+      "FDA § 50.25 (when applicable)",
+      "Voluntary + withdrawal",
+      "Contacts (PI / injury / IRB)"
+    ]
+  },
+  {
+    "id": "insider-trading-policy",
+    "version": "1.0.0",
+    "name": "Insider Trading Policy",
+    "description": "Insider trading policy under Rule 10b-5 + Rule 10b5-1 (Dec. 2022 amendments). Selects the §6.O ruleset (POL-018..POL-022).",
+    "match_features": {
+      "title_keywords": [
+        "insider trading policy",
+        "trading policy"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "material non-public",
+        "mnpi",
+        "blackout",
+        "10b5-1",
+        "pre-clearance",
+        "tipping"
+      ],
+      "negative_features": [
+        "aml",
+        "anti-bribery",
+        "code of conduct"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "SEC-RULE-10B5",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "code-of-conduct"
+    ],
+    "compliance_matrix_columns": [
+      "Rule 10b-5 MNPI prohibition",
+      "Blackout + pre-clearance",
+      "Rule 10b5-1 plan",
+      "Tipping liability",
+      "Hedging / short sales / pledge"
+    ]
+  },
+  {
+    "id": "insurance-endorsement",
+    "version": "1.0.0",
+    "name": "Insurance Endorsement Review",
+    "description": "Insurance endorsement review (ISO / AAIS forms + state filings). Selects the §6.K ruleset (INS-007..INS-012).",
+    "match_features": {
+      "title_keywords": [
+        "endorsement",
+        "policy endorsement",
+        "amendatory endorsement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "this endorsement modifies",
+        "form number",
+        "edition",
+        "iso",
+        "additional insured",
+        "waiver of subrogation"
+      ],
+      "negative_features": [
+        "declarations",
+        "indemnification agreement",
+        "hold harmless"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Endorsement",
+      "Form Number"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "ISO-AAIS-STATE-FILINGS",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "insurance-policy-summary"
+    ],
+    "compliance_matrix_columns": [
+      "Form number + edition",
+      "Coverage being modified",
+      "Effective date",
+      "Coverage-restricting flags",
+      "AI form CG 20 10 / 37 / 38",
+      "Waiver of subrogation CG 24 04"
+    ]
+  },
+  {
+    "id": "insurance-policy-summary",
+    "version": "1.0.0",
+    "name": "Insurance Policy Summary / Declarations",
+    "description": "Insurance policy declarations / summary review under state insurance codes. Selects the §6.K ruleset (INS-001..INS-006).",
+    "match_features": {
+      "title_keywords": [
+        "declarations",
+        "policy summary",
+        "insurance declarations",
+        "dec page",
+        "policy declarations"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "named insured",
+        "policy period",
+        "limits of liability",
+        "premium",
+        "deductible",
+        "form number"
+      ],
+      "negative_features": [
+        "endorsement",
+        "indemnification agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Named Insured",
+      "Policy Period",
+      "Limits of Liability"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "STATE-INSURANCE-CODE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "coi"
+    ],
+    "compliance_matrix_columns": [
+      "Named Insured + producer",
+      "Policy period",
+      "Limits (occurrence + aggregate)",
+      "Premium + deductible / SIR",
+      "Forms schedule (ISO / AAIS)",
+      "Claims-made vs occurrence"
+    ]
+  },
+  {
+    "id": "intercreditor-agreement",
+    "version": "1.0.0",
+    "name": "Intercreditor Agreement",
+    "description": "Intercreditor / lien-priority agreement (1L / 2L) — LSTA model baseline. Selects the §6.L ruleset (BNK-027..BNK-032).",
+    "match_features": {
+      "title_keywords": [
+        "intercreditor agreement",
+        "intercreditor",
+        "lien subordination agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "senior",
+        "junior",
+        "lien priority",
+        "standstill",
+        "turnover",
+        "dip financing"
+      ],
+      "negative_features": [
+        "promissory note",
+        "loan agreement",
+        "guaranty"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Senior Debt",
+      "Junior Debt",
+      "Standstill Period"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "UCC-9-339-LSTA-MODEL",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "Senior / junior priorities",
+      "Blockage + turnover",
+      "Junior standstill",
+      "Bankruptcy / DIP / 363",
+      "Buy-out option",
+      "Amendment / consent rights"
+    ]
+  },
+  {
+    "id": "investor-rights-agreement",
+    "version": "1.0.0",
+    "name": "Investor Rights Agreement (NVCA)",
+    "description": "NVCA-style investor rights agreement carrying registration / information / pro rata / ROFO / stand-off provisions. Selects the §6.C equity ruleset (EQT-049..EQT-056).",
+    "match_features": {
+      "title_keywords": [
+        "investor rights agreement",
+        "investors' rights agreement",
+        "investors rights agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "registration rights",
+        "demand registration",
+        "piggyback",
+        "form s-3",
+        "pro rata",
+        "information rights"
+      ],
+      "negative_features": [
+        "bylaws",
+        "operating agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Registrable Securities",
+      "Major Investor",
+      "Form S-3"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "NVCA",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "voting-agreement",
+      "rofr-co-sale",
+      "stockholders-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Securities Act § 4(a)(2) / Reg D",
+      "NVCA Model IRA"
+    ]
+  },
+  {
+    "id": "ip-assignment",
+    "version": "1.0.0",
+    "name": "IP Assignment Agreement",
+    "description": "Assignment of patents / trademarks / copyrights / trade secrets. 35 U.S.C. § 261 / 17 U.S.C. § 204 baseline. Selects the §6.H ruleset (IPL-001..IPL-006).",
+    "match_features": {
+      "title_keywords": [
+        "ip assignment",
+        "intellectual property assignment",
+        "assignment of intellectual property",
+        "patent assignment",
+        "trademark assignment",
+        "copyright assignment"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "assignor",
+        "assignee",
+        "hereby assigns",
+        "right to sue",
+        "further assurances",
+        "recordation"
+      ],
+      "negative_features": [
+        "license",
+        "royalty",
+        "field of use"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Assignor",
+      "Assignee",
+      "Assigned IP"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "USPTO-COPYRIGHT-OFFICE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "35 U.S.C. § 261 (patent assignment)",
+      "17 U.S.C. § 204 (copyright transfer writing)",
+      "Right to sue past infringement",
+      "Recordation cooperation + POA"
+    ]
+  },
+  {
+    "id": "last-will-and-testament",
+    "version": "1.0.0",
+    "name": "Last Will and Testament",
+    "description": "Last will and testament (text-only lint) under UPC §§ 2-501–509 + state will codes. Per spec §6.N caveat: execution formalities cannot be verified from text alone (EST-060 disclaimer). Selects the §6.N ruleset (EST-001..EST-008).",
+    "match_features": {
+      "title_keywords": [
+        "last will and testament",
+        "will of",
+        "my will"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "testator",
+        "executor",
+        "bequeath",
+        "devise",
+        "residue",
+        "codicil"
+      ],
+      "negative_features": [
+        "trust",
+        "advance directive",
+        "power of attorney",
+        "prenuptial"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Testator",
+      "Executor"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "UPC-STATE-WILL-CODES",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "revocable-living-trust"
+    ],
+    "compliance_matrix_columns": [
+      "UPC § 2-501–509 baseline",
+      "Revocation of prior wills",
+      "Executor + bond waiver",
+      "Residuary + guardianship",
+      "Self-proving affidavit",
+      "Execution-formality disclaimer (EST-060)"
+    ]
+  },
+  {
+    "id": "lease-assignment",
+    "version": "1.0.0",
+    "name": "Assignment of Lease",
+    "description": "Assignment of a commercial or residential lease with landlord consent and assignee assumption. Selects the §6.E real-estate ruleset (RE-054..RE-060).",
+    "match_features": {
+      "title_keywords": [
+        "assignment of lease",
+        "lease assignment"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "assignor",
+        "assignee",
+        "landlord consent",
+        "assumption of obligations"
+      ],
+      "negative_features": []
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Assignor",
+      "Assignee",
+      "Effective Date"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "Common-Law-Property",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": []
+  },
+  {
+    "id": "litigation-hold",
+    "version": "1.0.0",
+    "name": "Litigation Hold Notice",
+    "description": "Litigation hold / preservation notice (FRCP 37(e), *Zubulake*). Selects the §6.G settlement ruleset (SET-025..SET-030).",
+    "match_features": {
+      "title_keywords": [
+        "litigation hold",
+        "preservation notice",
+        "document preservation",
+        "legal hold"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "preserve",
+        "electronically stored information",
+        "esi",
+        "suspend deletion",
+        "custodian",
+        "attorney work product"
+      ],
+      "negative_features": [
+        "settlement payment",
+        "release",
+        "demand letter",
+        "cease and desist"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Custodian",
+      "Covered Materials"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "FRCP-37E-ZUBULAKE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "FRCP 37(e) preservation",
+      "Zubulake custodian acknowledgment",
+      "Suspension of routine deletion",
+      "Attorney work product"
+    ]
+  },
+  {
+    "id": "loan-agreement",
+    "version": "1.0.0",
+    "name": "Loan Agreement",
+    "description": "Commercial loan agreement (term / revolver) with affirmative + negative + financial covenants. LSTA / ABA model baseline. Selects the §6.L ruleset (BNK-007..BNK-013).",
+    "match_features": {
+      "title_keywords": [
+        "loan agreement",
+        "credit agreement",
+        "credit facility agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "borrower",
+        "lender",
+        "facility",
+        "commitment",
+        "covenants",
+        "events of default"
+      ],
+      "negative_features": [
+        "promissory note",
+        "security agreement",
+        "guaranty"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Borrower",
+      "Lender",
+      "Commitment"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "UCC-9-REG-Z-STATE-USURY",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "promissory-note",
+      "security-agreement",
+      "guaranty"
+    ],
+    "compliance_matrix_columns": [
+      "Loan amount + use of proceeds",
+      "Interest (SOFR + margin + floor)",
+      "Affirmative covenants",
+      "Negative covenants",
+      "Financial covenants",
+      "EoD + cross-default",
+      "Reg Z (consumer)"
+    ]
+  },
+  {
+    "id": "lobbying-policy",
+    "version": "1.0.0",
+    "name": "Lobbying / Political Contribution Policy",
+    "description": "Lobbying + political-contribution policy under federal LDA + FECA + state lobbying laws + federal gift rules. Selects the §6.O ruleset (POL-046..POL-050).",
+    "match_features": {
+      "title_keywords": [
+        "lobbying policy",
+        "political contribution policy",
+        "government affairs policy"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "lobbying disclosure",
+        "lda",
+        "feca",
+        "pac",
+        "political contribution",
+        "covered official"
+      ],
+      "negative_features": [
+        "aml",
+        "insider trading",
+        "ai use"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "LDA-FECA-STATE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "anti-bribery-policy"
+    ],
+    "compliance_matrix_columns": [
+      "LDA registration + LD-2 reporting",
+      "Pre-approval of activities",
+      "Political contributions (FECA + state)",
+      "State / local lobbying matrix",
+      "Gifts to government officials"
+    ]
+  },
+  {
+    "id": "loi-term-sheet",
+    "version": "1.0.0",
+    "name": "Letter of Intent / Term Sheet",
+    "description": "Pre-definitive-agreement LOI or term sheet outlining commercial terms with binding / non-binding demarcation. Selects the §6.D M&A ruleset (MNA-001..MNA-009).",
+    "match_features": {
+      "title_keywords": [
+        "letter of intent",
+        "loi",
+        "term sheet"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "non-binding",
+        "exclusivity",
+        "no-shop",
+        "due diligence",
+        "definitive agreement"
+      ],
+      "negative_features": [
+        "definitive agreement",
+        "stock purchase agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "Common-Law",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "stock-purchase-agreement",
+      "asset-purchase-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "SIGA / Pennzoil binding-LOI line"
+    ]
+  },
+  {
+    "id": "ma-restrictive-covenant",
+    "version": "1.0.0",
+    "name": "M&A Restrictive Covenant Agreement",
+    "description": "Sale-of-business non-compete / non-solicit covenants under the FTC NCR sale-of-business exception (16 C.F.R. § 910.2(a)(2)). Selects the §6.D M&A ruleset (MNA-072..MNA-080).",
+    "match_features": {
+      "title_keywords": [
+        "restrictive covenant agreement",
+        "non-compete agreement",
+        "non-competition agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "sale of the business",
+        "goodwill",
+        "non-compete",
+        "non-solicitation",
+        "blue pencil"
+      ],
+      "negative_features": [
+        "employment agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Competing Business",
+      "Restricted Period",
+      "Restricted Territory"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "FTC-NCR",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "stock-purchase-agreement",
+      "asset-purchase-agreement",
+      "merger-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "16 C.F.R. § 910.2(a)(2)",
+      "State non-compete law"
+    ]
+  },
+  {
+    "id": "merger-agreement",
+    "version": "1.0.0",
+    "name": "Merger Agreement",
+    "description": "Plan and agreement of merger under DGCL §§ 251–259. Selects the §6.D M&A ruleset (MNA-029..MNA-038).",
+    "match_features": {
+      "title_keywords": [
+        "merger agreement",
+        "plan of merger",
+        "agreement and plan of merger"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "surviving corporation",
+        "merger sub",
+        "per share consideration",
+        "appraisal rights",
+        "certificate of merger"
+      ],
+      "negative_features": [
+        "asset purchase",
+        "stock purchase agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Surviving Corporation",
+      "Merger Sub",
+      "Effective Time",
+      "Merger Consideration"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "DGCL",
+    "applicable_jurisdictions": [
+      "US-DE",
+      "US"
+    ],
+    "companion_playbooks": [
+      "disclosure-schedules",
+      "escrow-agreement",
+      "earnout-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "DGCL § 251",
+      "DGCL § 262",
+      "DGCL § 271",
+      "Omnicare fiduciary-out line"
+    ]
+  },
+  {
+    "id": "msa-customer-deep",
+    "version": "1.0.0",
+    "name": "MSA — Customer-Side Deep Analysis",
+    "description": "Deep analysis of a Master Services Agreement (or Master Subscription Agreement) from the customer's perspective. Selects the §33 MSA-deep ruleset (30 rules). Replaces v2's saas-customer playbook. Oriented toward catching customer-unfriendly drafting: no security commitments, missing SLA, broad assignment rights, no data return on termination, indemnity carved out of the cap, sole-and-exclusive SLA credit remedy, missing wind-down period.",
+    "match_features": {
+      "title_keywords": [
+        "master services agreement",
+        "master subscription agreement",
+        "master agreement",
+        "customer agreement",
+        "cloud service agreement",
+        "saas agreement",
+        "subscription terms"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "service level agreement",
+        "uptime",
+        "data return",
+        "customer data",
+        "termination for convenience",
+        "transition assistance",
+        "limitation of liability",
+        "indemnification",
+        "order of precedence"
+      ],
+      "negative_features": [
+        "protected health information",
+        "personal data of data subjects",
+        "non-disclosure agreement",
+        "this nda"
+      ]
+    },
+    "expected_clauses": [
+      "Service Levels",
+      "Data Protection",
+      "Limitation of Liability",
+      "Indemnification",
+      "Termination",
+      "Data Return",
+      "Order of Precedence",
+      "Confidentiality",
+      "Governing Law"
+    ],
+    "expected_defined_terms": [
+      "Agreement",
+      "Services",
+      "Customer Data",
+      "Confidential Information",
+      "Order Form",
+      "Affiliate",
+      "Fees"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [
+      {
+        "id": "msa-deep-baseline",
+        "source": "Commercial drafting baseline (UCC Article 2 + state overlays)",
+        "source_url": "https://www.law.cornell.edu/ucc",
+        "retrieved_at": "2026-05-13T00:00:00Z",
+        "license": "Public domain or fair use",
+        "license_url": "https://www.usa.gov/government-works"
+      },
+      {
+        "id": "msa-deep-cal-1668",
+        "source": "Cal. Civ. Code § 1668",
+        "source_url": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1668",
+        "retrieved_at": "2026-05-13T00:00:00Z",
+        "license": "Public domain",
+        "license_url": "https://www.usa.gov/government-works"
+      },
+      {
+        "id": "msa-deep-ucc-2-719",
+        "source": "U.C.C. § 2-719",
+        "source_url": "https://www.law.cornell.edu/ucc/2/2-719",
+        "retrieved_at": "2026-05-13T00:00:00Z",
+        "license": "Public domain",
+        "license_url": "https://www.usa.gov/government-works"
+      }
+    ],
+    "regulator_frame": "commercial",
+    "applicable_jurisdictions": [
+      "US",
+      "EU",
+      "UK"
+    ],
+    "companion_playbooks": [
+      "dpa-controller-processor",
+      "baa",
+      "vendor-security-addendum",
+      "ai-addendum"
+    ],
+    "compliance_matrix_columns": [
+      "Indemnification scope",
+      "Indemnification procedure",
+      "Aggregate liability cap",
+      "Cap carve-outs",
+      "Consequential-damages waiver",
+      "State-law overlays (CA § 1668 / NY § 5-322.1 / TX 151)",
+      "IP allocation",
+      "Service warranties",
+      "Implied-warranty disclaimer (UCC § 2-316)",
+      "SLA reference + remedy",
+      "Term + Termination",
+      "Data return on termination",
+      "Wind-down period",
+      "Force majeure (balanced)",
+      "Assignment / change-of-control",
+      "Order-of-precedence consistency",
+      "AI usage clause"
+    ]
+  },
+  {
+    "id": "msa-vendor-deep",
+    "version": "1.0.0",
+    "name": "MSA — Vendor-Side Deep Analysis",
+    "description": "Deep analysis of a Master Services Agreement (or Master Subscription Agreement) from the vendor's perspective. Selects the §33 MSA-deep ruleset (30 rules). Replaces v2's saas-vendor playbook and overlaps msa-general for vendor-side review. Oriented toward catching vendor-friendly drafting that may not survive customer review: low liability caps, broad disclaimers, narrow indemnities, broad limitation of liability, unbounded feedback license, AI-usage non-disclosure.",
+    "match_features": {
+      "title_keywords": [
+        "master services agreement",
+        "master subscription agreement",
+        "master agreement",
+        "vendor agreement",
+        "cloud service agreement",
+        "saas agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "limitation of liability",
+        "indemnification",
+        "intellectual property",
+        "warranty",
+        "term and termination",
+        "force majeure",
+        "service level",
+        "order of precedence",
+        "statement of work",
+        "fees and payment",
+        "professional services"
+      ],
+      "negative_features": [
+        "protected health information",
+        "personal data of data subjects",
+        "non-disclosure agreement",
+        "this nda"
+      ]
+    },
+    "expected_clauses": [
+      "Limitation of Liability",
+      "Indemnification",
+      "Intellectual Property",
+      "Warranties",
+      "Term and Termination",
+      "Order of Precedence",
+      "Confidentiality",
+      "Governing Law"
+    ],
+    "expected_defined_terms": [
+      "Agreement",
+      "Services",
+      "Deliverables",
+      "Confidential Information",
+      "Statement of Work",
+      "Affiliate",
+      "Fees"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [
+      {
+        "id": "msa-deep-baseline",
+        "source": "Commercial drafting baseline (UCC Article 2 + state overlays)",
+        "source_url": "https://www.law.cornell.edu/ucc",
+        "retrieved_at": "2026-05-13T00:00:00Z",
+        "license": "Public domain or fair use",
+        "license_url": "https://www.usa.gov/government-works"
+      },
+      {
+        "id": "msa-deep-cal-1668",
+        "source": "Cal. Civ. Code § 1668",
+        "source_url": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1668",
+        "retrieved_at": "2026-05-13T00:00:00Z",
+        "license": "Public domain",
+        "license_url": "https://www.usa.gov/government-works"
+      },
+      {
+        "id": "msa-deep-ny-5-322-1",
+        "source": "N.Y. Gen. Oblig. Law § 5-322.1",
+        "source_url": "https://www.nysenate.gov/legislation/laws/GOB/5-322.1",
+        "retrieved_at": "2026-05-13T00:00:00Z",
+        "license": "Public domain",
+        "license_url": "https://www.usa.gov/government-works"
+      }
+    ],
+    "regulator_frame": "commercial",
+    "applicable_jurisdictions": [
+      "US",
+      "EU",
+      "UK"
+    ],
+    "companion_playbooks": [
+      "dpa-controller-processor",
+      "baa",
+      "vendor-security-addendum",
+      "ai-addendum"
+    ],
+    "compliance_matrix_columns": [
+      "Indemnification scope",
+      "Indemnification procedure",
+      "Aggregate liability cap",
+      "Cap carve-outs",
+      "Consequential-damages waiver",
+      "State-law overlays (CA § 1668 / NY § 5-322.1 / TX 151)",
+      "IP allocation",
+      "Service warranties",
+      "Implied-warranty disclaimer (UCC § 2-316)",
+      "SLA reference",
+      "Term + Termination",
+      "Data return on termination",
+      "Force majeure (balanced)",
+      "Assignment / change-of-control",
+      "Order-of-precedence consistency",
+      "AI usage clause"
+    ]
+  },
+  {
+    "id": "mutual-nda-deep",
+    "version": "1.0.0",
+    "name": "Mutual NDA — Deep Analysis",
+    "description": "Mutual / two-way non-disclosure agreement under US trade-secret law. Selects the §32 NDA-deep ruleset (25 rules) covering DTSA whistleblower-immunity notice (18 U.S.C. § 1833(b)), Confidential-Information definition completeness, four standard exclusions (publicly available, prior knowledge, lawful third-party, independent development), permitted-use scope, residuals, return-or-destruction with attestation, injunctive relief with waiver-of-bond, governing-law viability, no-precedent / MFN, non-solicit carve-outs, no-license, authority representation, successors-and-assigns, plus the mutual-NDA symmetry check.",
+    "match_features": {
+      "title_keywords": [
+        "mutual non-disclosure agreement",
+        "mutual nda",
+        "mutual confidentiality agreement",
+        "two-way nda",
+        "two-way non-disclosure agreement",
+        "bilateral non-disclosure agreement",
+        "bilateral nda"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "confidential information",
+        "trade secret",
+        "evaluate the purpose",
+        "residuals",
+        "discloser",
+        "recipient",
+        "disclosing party",
+        "receiving party",
+        "each party",
+        "either party",
+        "1833(b)",
+        "whistleblower immunity",
+        "injunctive relief",
+        "irreparable harm"
+      ],
+      "negative_features": [
+        "this Business Associate Agreement",
+        "protected health information",
+        "Data Processing Agreement",
+        "Standard Contractual Clauses",
+        "Master Services Agreement",
+        "Statement of Work"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Confidential Information",
+      "Purpose",
+      "Discloser",
+      "Recipient",
+      "Disclosing Party",
+      "Receiving Party",
+      "Trade Secret",
+      "Representatives"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [
+      {
+        "id": "dtsa-18-usc-1833-b",
+        "source": "18 U.S.C. § 1833(b) — Defend Trade Secrets Act whistleblower immunity / notice requirement",
+        "source_url": "https://www.law.cornell.edu/uscode/text/18/1833",
+        "retrieved_at": "2026-05-12T00:00:00Z",
+        "license": "Public domain (US government work)",
+        "license_url": "https://www.usa.gov/government-works"
+      },
+      {
+        "id": "utsa-1985",
+        "source": "Uniform Trade Secrets Act (1985 amended)",
+        "source_url": "https://www.uniformlaws.org/committees/community-home?CommunityKey=3a2538fb-e030-4e2d-a9e2-90373dc05792",
+        "retrieved_at": "2026-05-12T00:00:00Z",
+        "license": "Public uniform-law text",
+        "license_url": "https://www.uniformlaws.org/HigherLogic/System/DownloadDocumentFile.ashx?DocumentFileKey=e19b2528-e0b1-0054-23c4-8069701a4b62"
+      },
+      {
+        "id": "nda-consensus-drafting",
+        "source": "Common Paper Mutual NDA standard (consensus NDA drafting practice)",
+        "source_url": "https://commonpaper.com/standards/mutual-nda/",
+        "retrieved_at": "2026-05-12T00:00:00Z",
+        "license": "CC BY 4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/"
+      }
+    ],
+    "regulator_frame": "DTSA",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "msa-vendor-deep"
+    ],
+    "compliance_matrix_columns": [
+      "DTSA notice (18 U.S.C. § 1833(b))",
+      "Confidentiality term",
+      "Trade-secret perpetual carve-out",
+      "Confidential Information defined",
+      "Four standard exclusions",
+      "Permitted-use scope",
+      "Return-or-destruction with attestation",
+      "Injunctive relief + waiver of bond",
+      "Governing law (viable jurisdiction)",
+      "No-precedent / MFN",
+      "Non-solicit carve-outs",
+      "No-license",
+      "Authority representation",
+      "Successors-and-assigns / assignment consent",
+      "Mutual symmetry"
+    ]
+  },
+  {
+    "id": "mutual-release",
+    "version": "1.0.0",
+    "name": "Mutual / General Release",
+    "description": "Mutual or general release of claims with optional California Civil Code § 1542 waiver. Selects the §6.G settlement ruleset (SET-001..SET-005, SET-008).",
+    "match_features": {
+      "title_keywords": [
+        "mutual release",
+        "general release",
+        "release of claims",
+        "release agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "releasor",
+        "releasee",
+        "known and unknown",
+        "section 1542",
+        "no admission of liability"
+      ],
+      "negative_features": [
+        "settlement payment",
+        "demand",
+        "cease and desist"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Releasor",
+      "Releasee",
+      "Effective Date"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "STATE-RELEASE-LAW",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "confidential-settlement"
+    ],
+    "compliance_matrix_columns": [
+      "Cal. Civ. § 1542 waiver",
+      "FRE 408 — no admission",
+      "Scope (known / unknown)",
+      "Parties (Releasor / Releasee + affiliates)"
+    ]
+  },
+  {
+    "id": "net-lease",
+    "version": "1.0.0",
+    "name": "Single-Tenant Net Lease (NNN)",
+    "description": "Single-tenant triple-net (NNN) commercial lease. Selects the §6.E real-estate ruleset (RE-001..RE-008).",
+    "match_features": {
+      "title_keywords": [
+        "triple net lease",
+        "nnn lease",
+        "net lease"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "triple net",
+        "nnn",
+        "real estate taxes",
+        "common area maintenance",
+        "cam"
+      ],
+      "negative_features": [
+        "multi-tenant",
+        "residential lease"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "State-Landlord-Tenant",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "snda",
+      "estoppel-certificate"
+    ],
+    "compliance_matrix_columns": [
+      "State landlord-tenant code"
+    ]
+  },
+  {
+    "id": "nonprofit-bylaws",
+    "version": "1.0.0",
+    "name": "Nonprofit Bylaws (501(c)(3))",
+    "description": "Bylaws of a 501(c)(3) tax-exempt nonprofit corporation. Selects the §6.B governance ruleset (GOV-071..GOV-080).",
+    "match_features": {
+      "title_keywords": [
+        "nonprofit bylaws",
+        "bylaws of"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "501(c)(3)",
+        "tax-exempt",
+        "no part of the net earnings",
+        "charitable purposes",
+        "conflict of interest"
+      ],
+      "negative_features": [
+        "operating agreement",
+        "limited liability company"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "IRC-501c3",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "IRC § 501(c)(3)",
+      "Treas. Reg. § 1.501(c)(3)-1(b)",
+      "IRS Form 990 Part VI",
+      "ABA Model Nonprofit Corp Act"
+    ]
+  },
+  {
+    "id": "npp-acknowledgment",
+    "version": "1.0.0",
+    "name": "Notice of Privacy Practices Acknowledgment",
+    "description": "HIPAA NPP acknowledgment under 45 C.F.R. § 164.520(c)(2)(ii). Selects the §6.J ruleset (HC-019..HC-025).",
+    "match_features": {
+      "title_keywords": [
+        "acknowledgment of receipt",
+        "npp acknowledgment",
+        "notice of privacy practices acknowledgment"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "acknowledgment",
+        "notice of privacy practices",
+        "received",
+        "good faith effort"
+      ],
+      "negative_features": [
+        "informed consent",
+        "authorization to disclose"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Notice of Privacy Practices",
+      "Covered Entity"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "HIPAA-164.520",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "hipaa-npp"
+    ],
+    "compliance_matrix_columns": [
+      "§ 164.520(c)(2)(ii) acknowledgment",
+      "Date + signature",
+      "Good-faith-effort failure",
+      "Retention § 164.530(j) 6 years"
+    ]
+  },
+  {
+    "id": "offer-letter",
+    "version": "1.0.0",
+    "name": "Offer Letter",
+    "description": "Employment offer letter. Selects the §6.F employment ruleset (EMP-009..EMP-014).",
+    "match_features": {
+      "title_keywords": [
+        "offer letter",
+        "letter of employment offer"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "start date",
+        "base salary",
+        "at-will",
+        "subject to plan",
+        "accepted and agreed"
+      ],
+      "negative_features": [
+        "executive employment agreement",
+        "separation agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "State-Employment",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "piia"
+    ],
+    "compliance_matrix_columns": [
+      "State at-will doctrine"
+    ]
+  },
+  {
+    "id": "operating-agreement-llc",
+    "version": "1.0.0",
+    "name": "LLC Operating Agreement",
+    "description": "Operating agreement of a Delaware (or similar) LLC. Selects the §6.B governance ruleset (GOV-013..GOV-022).",
+    "match_features": {
+      "title_keywords": [
+        "operating agreement",
+        "limited liability company agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "members",
+        "manager",
+        "capital contribution",
+        "membership interest",
+        "operating agreement"
+      ],
+      "negative_features": [
+        "bylaws",
+        "stockholders",
+        "partnership agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Member",
+      "Manager",
+      "Capital Contribution",
+      "Membership Interest"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "DE-LLC-Act",
+    "applicable_jurisdictions": [
+      "US-DE",
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "DE LLC Act § 18-201",
+      "DE LLC Act § 18-402",
+      "DE LLC Act § 18-501",
+      "DE LLC Act § 18-504",
+      "DE LLC Act § 18-702",
+      "DE LLC Act § 18-1101",
+      "IRC § 704(b)"
+    ]
+  },
+  {
+    "id": "oss-compliance",
+    "version": "1.0.0",
+    "name": "OSS Compliance Audit Document",
+    "description": "Open-source software compliance audit / SBOM document. Selects the §6.H ruleset (IPL-030..IPL-035).",
+    "match_features": {
+      "title_keywords": [
+        "open source compliance",
+        "oss compliance",
+        "sbom",
+        "third-party software notices",
+        "third-party licenses"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "mit",
+        "apache",
+        "gpl",
+        "agpl",
+        "bsd",
+        "spdx",
+        "cyclonedx",
+        "notice file"
+      ],
+      "negative_features": [
+        "contributor license",
+        "patent license",
+        "trademark license"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "SBOM",
+      "Third-Party Software"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "OSS-LICENSE-FAMILIES",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "Component inventory (SBOM)",
+      "Per-component license (SPDX)",
+      "Copyleft (GPL/AGPL) source",
+      "Notice / attribution file",
+      "Vulnerability tracking"
+    ]
+  },
+  {
+    "id": "partnership-agreement",
+    "version": "1.0.0",
+    "name": "Partnership / LP Agreement",
+    "description": "General partnership / limited-partnership agreement under RUPA and DRULPA. Selects the §6.B governance ruleset (GOV-061..GOV-070).",
+    "match_features": {
+      "title_keywords": [
+        "partnership agreement",
+        "limited partnership agreement",
+        "agreement of limited partnership"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "general partner",
+        "limited partner",
+        "capital account",
+        "partnership representative"
+      ],
+      "negative_features": [
+        "bylaws",
+        "operating agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "General Partner",
+      "Limited Partner",
+      "Capital Account",
+      "Partnership Representative"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "DRULPA",
+    "applicable_jurisdictions": [
+      "US-DE",
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "RUPA § 401",
+      "DRULPA § 17-303",
+      "DRULPA § 17-1101",
+      "IRC § 704(b)",
+      "IRC § 6223"
+    ]
+  },
+  {
+    "id": "patent-license",
+    "version": "1.0.0",
+    "name": "Patent License Agreement",
+    "description": "Patent license with *Brulotte / Kimble* post-expiration-royalty screen and 35 U.S.C. § 287 marking. Selects the §6.H ruleset (IPL-007..IPL-012).",
+    "match_features": {
+      "title_keywords": [
+        "patent license",
+        "patent licensing agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "licensed patents",
+        "field of use",
+        "royalty",
+        "net sales",
+        "sublicense",
+        "patent marking"
+      ],
+      "negative_features": [
+        "trademark",
+        "copyright",
+        "assignment"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Licensed Patents",
+      "Net Sales",
+      "Field of Use"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "35-USC-PATENT",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "35 U.S.C. § 271 (scope)",
+      "Brulotte / Kimble post-expiration",
+      "35 U.S.C. § 287 (marking)",
+      "Royalty mechanics + audit"
+    ]
+  },
+  {
+    "id": "payment-performance-bond",
+    "version": "1.0.0",
+    "name": "Payment / Performance Bond",
+    "description": "Construction payment or performance bond under Miller Act + state Little Miller Acts. AIA A312 baseline. Selects the §6.M ruleset (CON-020..CON-025).",
+    "match_features": {
+      "title_keywords": [
+        "payment bond",
+        "performance bond",
+        "surety bond"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "principal",
+        "surety",
+        "obligee",
+        "penal sum",
+        "miller act",
+        "aia a312"
+      ],
+      "negative_features": [
+        "lien waiver",
+        "subcontract",
+        "change order"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Principal",
+      "Surety",
+      "Obligee",
+      "Penal Sum"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "MILLER-ACT-AIA-A312",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "construction-contract"
+    ],
+    "compliance_matrix_columns": [
+      "Principal / surety / obligee",
+      "Bond type (payment / performance / dual)",
+      "Penal sum",
+      "Underlying contract incorporated",
+      "Claimant + notice (90d / 1y)",
+      "Default + surety options"
+    ]
+  },
+  {
+    "id": "phi-authorization",
+    "version": "1.0.0",
+    "name": "Patient Authorization for Release of PHI",
+    "description": "HIPAA authorization for use / disclosure of PHI under 45 C.F.R. § 164.508. Selects the §6.J ruleset (HC-010..HC-018).",
+    "match_features": {
+      "title_keywords": [
+        "authorization for release",
+        "authorization to disclose",
+        "phi authorization",
+        "release of medical records"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "protected health information",
+        "phi",
+        "right to revoke",
+        "re-disclosure",
+        "expiration date",
+        "purpose"
+      ],
+      "negative_features": [
+        "informed consent",
+        "research",
+        "irb"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Protected Health Information",
+      "Recipient"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "HIPAA-164.508",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "§ 164.508(c)(1)(i)–(vi) core elements",
+      "§ 164.508(c)(2)(i)–(iii) statements",
+      "Right to revoke",
+      "Re-disclosure risk"
+    ]
+  },
+  {
+    "id": "piia",
+    "version": "1.0.0",
+    "name": "Proprietary Information and Inventions Agreement (PIIA)",
+    "description": "Employee PIIA / IP-assignment agreement (Cal. Lab. § 2870 carve-out where applicable; DTSA notice). Selects the §6.F employment ruleset (EMP-032..EMP-038).",
+    "match_features": {
+      "title_keywords": [
+        "proprietary information and inventions agreement",
+        "piia",
+        "invention assignment agreement",
+        "ip assignment"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "inventions",
+        "proprietary information",
+        "assignment",
+        "prior inventions",
+        "2870"
+      ],
+      "negative_features": [
+        "sale of business",
+        "ip license"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Inventions",
+      "Prior Inventions",
+      "Confidential Information"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "State-IP-Assignment",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "offer-letter",
+      "executive-employment"
+    ],
+    "compliance_matrix_columns": [
+      "Cal. Lab. § 2870",
+      "18 U.S.C. § 1833(b) (DTSA notice)"
+    ]
+  },
+  {
+    "id": "pip",
+    "version": "1.0.0",
+    "name": "Performance Improvement Plan (PIP)",
+    "description": "Employee performance-improvement plan with measurable goals, support commitments, and consequences. Selects the §6.F employment ruleset (EMP-039..EMP-044).",
+    "match_features": {
+      "title_keywords": [
+        "performance improvement plan",
+        "pip"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "performance deficiencies",
+        "30 days",
+        "60 days",
+        "90 days",
+        "performance goals"
+      ],
+      "negative_features": [
+        "separation agreement",
+        "offer letter"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "EEOC-Practice",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "EEOC enforcement guidance"
+    ]
+  },
+  {
+    "id": "postnuptial-agreement",
+    "version": "1.0.0",
+    "name": "Postnuptial Agreement",
+    "description": "Postnuptial agreement under state postnup law (varies sharply). Per spec §6.N caveat: execution formalities cannot be verified from text alone (EST-060). Selects the §6.N ruleset (EST-046..EST-052).",
+    "match_features": {
+      "title_keywords": [
+        "postnuptial agreement",
+        "post-nuptial agreement",
+        "postnup"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "during the marriage",
+        "spouses",
+        "transmutation",
+        "fiduciary duties"
+      ],
+      "negative_features": [
+        "prenuptial",
+        "premarital",
+        "contemplation of marriage",
+        "marital settlement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Spouses"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "STATE-POSTNUP-LAW",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "prenuptial-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Parties + during-marriage",
+      "Consideration recital",
+      "Heightened fiduciary disclosure",
+      "Property + transmutation",
+      "Spousal support",
+      "Independent counsel + voluntary",
+      "Execution-formality disclaimer (EST-060)"
+    ]
+  },
+  {
+    "id": "ppm-narrative",
+    "version": "1.0.0",
+    "name": "Private Placement Memorandum (PPM) Narrative",
+    "description": "Private placement memorandum narrative under Reg D + state blue-sky. Per spec §6.P caveat: v4 lints prose only (REG-040). Selects the §6.P ruleset (REG-025..REG-032).",
+    "match_features": {
+      "title_keywords": [
+        "private placement memorandum",
+        "ppm",
+        "confidential offering memorandum",
+        "offering memorandum"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "subscription",
+        "accredited investor",
+        "transfer restrictions",
+        "rule 144 legend",
+        "use of proceeds"
+      ],
+      "negative_features": [
+        "form d",
+        "form adv",
+        "10-k",
+        "reg a+"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Subscriber",
+      "Offering"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "REG-D-BLUE-SKY",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "form-d-narrative"
+    ],
+    "compliance_matrix_columns": [
+      "Issuer + offering overview",
+      "Risk factors",
+      "Suitability / accredited",
+      "Subscription procedure",
+      "Transfer restrictions + Rule 144",
+      "Conflicts of interest",
+      "Tax considerations",
+      "State blue-sky + selling agents",
+      "Prose-only disclaimer (REG-040)"
+    ]
+  },
+  {
+    "id": "prenuptial-agreement",
+    "version": "1.0.0",
+    "name": "Prenuptial Agreement",
+    "description": "Prenuptial agreement under UPAA / UPMAA + state family law. Per spec §6.N caveat: execution formalities cannot be verified from text alone (EST-060). Selects the §6.N ruleset (EST-038..EST-045).",
+    "match_features": {
+      "title_keywords": [
+        "prenuptial agreement",
+        "premarital agreement",
+        "prenup"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "prospective spouses",
+        "contemplation of marriage",
+        "separate property",
+        "spousal support waiver",
+        "elective share"
+      ],
+      "negative_features": [
+        "postnuptial",
+        "marital settlement",
+        "during the marriage"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Prospective Spouses"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "UPMAA-UPAA-STATE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "UPMAA § 3 contemplation",
+      "UPMAA § 9 disclosure",
+      "Property characterization",
+      "Spousal support (state-specific)",
+      "Estate / elective-share waiver",
+      "Independent counsel",
+      "Choice of law + venue",
+      "Execution-formality disclaimer (EST-060)"
+    ]
+  },
+  {
+    "id": "privacy-policy-lint",
+    "version": "1.0.0",
+    "name": "Privacy Policy Linter",
+    "description": "Linter for a published privacy policy. Not a contract — checks that the regulator-required disclosures are present (CCPA § 1798.130 categories, GDPR Articles 13/14 lawful basis + rights, COPPA § 312.4 child-data disclosures). Selects the §34 addenda ruleset (privacy portion, ADDENDA-020). When paired with a DPA, a follow-up consistency check verifies the privacy-policy claims match the DPA terms.",
+    "match_features": {
+      "title_keywords": [
+        "privacy policy",
+        "privacy notice",
+        "data privacy notice",
+        "privacy statement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "personal information",
+        "personal data",
+        "we collect",
+        "categories of personal information",
+        "third parties",
+        "cookies",
+        "data subject",
+        "your rights"
+      ],
+      "negative_features": [
+        "this agreement",
+        "master services agreement",
+        "non-disclosure agreement",
+        "the parties"
+      ]
+    },
+    "expected_clauses": [
+      "Information We Collect",
+      "How We Use Information",
+      "Sharing With Third Parties",
+      "Your Rights",
+      "Retention",
+      "Children",
+      "International Transfers",
+      "Contact"
+    ],
+    "expected_defined_terms": [
+      "Personal Information",
+      "Personal Data",
+      "Service",
+      "User"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [
+      {
+        "id": "addenda-ccpa-1798-130",
+        "source": "CCPA § 1798.130 (disclosure requirements)",
+        "source_url": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1798.130",
+        "retrieved_at": "2026-05-13T00:00:00Z",
+        "license": "Public domain",
+        "license_url": "https://www.usa.gov/government-works"
+      },
+      {
+        "id": "addenda-gdpr-art-13-14",
+        "source": "GDPR Articles 13 and 14",
+        "source_url": "https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+        "retrieved_at": "2026-05-13T00:00:00Z",
+        "license": "EUR-Lex re-use notice",
+        "license_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html"
+      },
+      {
+        "id": "addenda-coppa-312-4",
+        "source": "COPPA 16 C.F.R. § 312.4 (notice and parental consent)",
+        "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-312/section-312.4",
+        "retrieved_at": "2026-05-13T00:00:00Z",
+        "license": "Public domain (US)",
+        "license_url": "https://www.usa.gov/government-works"
+      }
+    ],
+    "regulator_frame": "CCPA + GDPR + COPPA",
+    "applicable_jurisdictions": [
+      "US",
+      "EU",
+      "UK"
+    ],
+    "companion_playbooks": [
+      "dpa-controller-processor",
+      "dpa-ccpa-service-provider",
+      "saas-tos"
+    ],
+    "compliance_matrix_columns": [
+      "Categories of personal information disclosed (CCPA § 1798.130)",
+      "Lawful basis (GDPR Art. 13/14)",
+      "Data-subject rights (access / delete / portability / opt-out)",
+      "Retention",
+      "International transfers",
+      "Children (COPPA § 312.4)"
+    ]
+  },
+  {
+    "id": "promissory-note",
+    "version": "1.0.0",
+    "name": "Promissory Note",
+    "description": "Promissory note under UCC Article 3 with state-usury savings clause. Selects the §6.L ruleset (BNK-001..BNK-006).",
+    "match_features": {
+      "title_keywords": [
+        "promissory note",
+        "note"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "maker",
+        "payee",
+        "principal amount",
+        "promise to pay",
+        "interest rate",
+        "maturity"
+      ],
+      "negative_features": [
+        "security agreement",
+        "deed of trust",
+        "guaranty"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Maker",
+      "Payee",
+      "Principal Amount"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "UCC-ART-3",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "UCC § 3-104 negotiability",
+      "State usury savings",
+      "Default + acceleration",
+      "Presentment / dishonor waivers"
+    ]
+  },
+  {
+    "id": "real-estate-psa",
+    "version": "1.0.0",
+    "name": "Real-Estate Purchase and Sale Agreement (PSA)",
+    "description": "Real-property PSA under state real-property law and the Statute of Frauds. Selects the §6.E real-estate ruleset (RE-009..RE-017).",
+    "match_features": {
+      "title_keywords": [
+        "purchase and sale agreement",
+        "real estate purchase",
+        "psa"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "earnest money",
+        "title commitment",
+        "due diligence period",
+        "closing"
+      ],
+      "negative_features": [
+        "stock purchase agreement",
+        "asset purchase agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Earnest Money",
+      "Closing",
+      "Permitted Exceptions"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "State-Real-Property",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "Statute of Frauds",
+      "State recording acts",
+      "IRC § 1031"
+    ]
+  },
+  {
+    "id": "reg-a-plus-circular",
+    "version": "1.0.0",
+    "name": "Reg A+ Offering Circular",
+    "description": "Reg A+ Tier 1 / Tier 2 offering circular (Form 1-A) prose. Per spec §6.P caveat: v4 lints prose only (REG-040). Selects the §6.P ruleset (REG-033..REG-039).",
+    "match_features": {
+      "title_keywords": [
+        "offering circular",
+        "regulation a",
+        "reg a+",
+        "form 1-a"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "tier 1",
+        "tier 2",
+        "form 1-a",
+        "offering circular",
+        "regulation a"
+      ],
+      "negative_features": [
+        "form d",
+        "form adv",
+        "s-1",
+        "10-k",
+        "ppm"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Tier",
+      "Offering Circular"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "REG-A-FORM-1-A",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "Tier 1 vs Tier 2 + offering cap",
+      "Form 1-A structure",
+      "Risk factors",
+      "Use of proceeds + plan of distribution",
+      "Non-accredited 10% limitation",
+      "Audited financials (Tier 2)",
+      "Ongoing reporting (Form 1-K / 1-SA / 1-U)",
+      "Prose-only disclaimer (REG-040)"
+    ]
+  },
+  {
+    "id": "revocable-living-trust",
+    "version": "1.0.0",
+    "name": "Revocable Living Trust",
+    "description": "Revocable living trust under UTC + state trust codes with pour-over coordination. Per spec §6.N caveat: execution formalities cannot be verified from text alone (EST-060). Selects the §6.N ruleset (EST-009..EST-016).",
+    "match_features": {
+      "title_keywords": [
+        "revocable living trust",
+        "living trust",
+        "declaration of trust"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "settlor",
+        "grantor",
+        "trustor",
+        "trustee",
+        "trust property",
+        "revocable",
+        "spendthrift"
+      ],
+      "negative_features": [
+        "last will and testament",
+        "advance directive",
+        "power of attorney"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Settlor",
+      "Trustee",
+      "Trust Property"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "UTC-STATE-TRUST-CODES",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "last-will-and-testament"
+    ],
+    "compliance_matrix_columns": [
+      "UTC § 103 / 401 formation",
+      "UTC § 602 revocability",
+      "UTC § 704 trustees",
+      "UTC § 502 spendthrift",
+      "Lifetime + death distributions",
+      "Pour-over coordination",
+      "Execution-formality disclaimer (EST-060)"
+    ]
+  },
+  {
+    "id": "rofr-co-sale",
+    "version": "1.0.0",
+    "name": "ROFR / Co-Sale Agreement (NVCA)",
+    "description": "NVCA-style right of first refusal and co-sale agreement on transfers of common / founder stock. Selects the §6.C equity ruleset (EQT-064..EQT-070).",
+    "match_features": {
+      "title_keywords": [
+        "right of first refusal",
+        "right of first refusal and co-sale agreement",
+        "rofr",
+        "co-sale agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "right of first refusal",
+        "co-sale",
+        "tag-along",
+        "permitted transfer"
+      ],
+      "negative_features": [
+        "bylaws",
+        "operating agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "DGCL",
+    "applicable_jurisdictions": [
+      "US-DE",
+      "US"
+    ],
+    "companion_playbooks": [
+      "investor-rights-agreement",
+      "voting-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "DGCL § 202",
+      "NVCA Model ROFR / Co-Sale"
+    ]
+  },
+  {
+    "id": "ropa-art-30",
+    "version": "1.0.0",
+    "name": "Records of Processing Activities (GDPR Art. 30)",
+    "description": "GDPR Art. 30 records of processing activities for controllers / processors. Selects the §6.I ruleset (PRV-015..PRV-020).",
+    "match_features": {
+      "title_keywords": [
+        "records of processing",
+        "ropa",
+        "article 30",
+        "processing register"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "controller",
+        "joint controller",
+        "categories of data subjects",
+        "categories of personal data",
+        "international transfers",
+        "retention"
+      ],
+      "negative_features": [
+        "business associate",
+        "merger agreement",
+        "patent license"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Controller",
+      "Processor",
+      "DPO"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "GDPR-ART-30",
+    "applicable_jurisdictions": [
+      "EU",
+      "UK"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "Art. 30(1)(a) controller / DPO",
+      "Art. 30(1)(b) purposes",
+      "Art. 30(1)(c) categories",
+      "Art. 30(1)(d)–(e) recipients / transfers",
+      "Art. 30(1)(f)–(g) retention / security"
+    ]
+  },
+  {
+    "id": "rspa",
+    "version": "1.0.0",
+    "name": "Restricted Stock Purchase Agreement",
+    "description": "Founder / early-employee restricted stock purchase agreement subject to vesting and a § 83(b) election. Selects the §6.C equity ruleset (EQT-036..EQT-042).",
+    "match_features": {
+      "title_keywords": [
+        "restricted stock purchase agreement",
+        "rspa",
+        "stock purchase agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "repurchase right",
+        "vesting",
+        "83(b)",
+        "stock power",
+        "escrow"
+      ],
+      "negative_features": [
+        "stock option",
+        "rsu"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Purchase Price",
+      "Repurchase Right",
+      "Vesting Schedule",
+      "Unvested Shares"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "IRC-83",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "section-83b-election"
+    ],
+    "compliance_matrix_columns": [
+      "IRC § 83",
+      "Treas. Reg. § 1.83-2",
+      "DGCL § 202",
+      "FINRA Rule 5131"
+    ]
+  },
+  {
+    "id": "rsu-grant",
+    "version": "1.0.0",
+    "name": "Restricted Stock Unit (RSU) Grant",
+    "description": "RSU grant under an equity-incentive plan (IRC § 409A short-term-deferral or deferred-compensation). Selects the §6.C equity ruleset (EQT-029..EQT-035).",
+    "match_features": {
+      "title_keywords": [
+        "restricted stock unit",
+        "rsu",
+        "rsu grant"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "units",
+        "settlement",
+        "vesting",
+        "short-term deferral",
+        "withholding"
+      ],
+      "negative_features": [
+        "stock option",
+        "exercise price",
+        "safe"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Grant Date",
+      "Number of Units",
+      "Settlement Date",
+      "Plan"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "IRC-409A",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "IRC § 83",
+      "IRC § 409A",
+      "Treas. Reg. § 1.409A-1(b)(4)"
+    ]
+  },
+  {
+    "id": "s-1-risk-factors",
+    "version": "1.0.0",
+    "name": "S-1 Risk Factors (prose only)",
+    "description": "S-1 risk factors prose under Reg S-K Item 105 + plain-English rule. Per spec §6.P caveat: v4 lints prose only (REG-040). Selects the §6.P shared risk-factors ruleset (REG-016..REG-023).",
+    "match_features": {
+      "title_keywords": [
+        "s-1",
+        "form s-1",
+        "registration statement",
+        "ipo prospectus"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "risk factors",
+        "we may not be able to",
+        "registration statement",
+        "item 105"
+      ],
+      "negative_features": [
+        "form d",
+        "form adv",
+        "10-k",
+        "ppm",
+        "reg a+"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "REG-S-K-ITEM-105",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "10-k-risk-factors"
+    ],
+    "compliance_matrix_columns": [
+      "Risk-factor section",
+      "Item 105 materiality + summary",
+      "Boilerplate / specificity",
+      "Hypothetical / already-materialized",
+      "Plain-English headlines",
+      "PSLRA safe harbor",
+      "Cybersecurity",
+      "Climate / ESG",
+      "Prose-only disclaimer (REG-040)"
+    ]
+  },
+  {
+    "id": "saas-tos",
+    "version": "1.0.0",
+    "name": "SaaS Terms of Service (Consumer-Facing)",
+    "description": "Linter for a consumer-facing SaaS Terms of Service / Terms of Use. Selects the §34 addenda ruleset (ToS portion, ADDENDA-019): FTC Click-to-Cancel rule + ROSCA alignment. v2's dark-patterns ruleset is also active on this surface (browsewrap, buried notice, class-action waiver, asymmetric jury-trial waiver) at elevated severity.",
+    "match_features": {
+      "title_keywords": [
+        "terms of service",
+        "terms of use",
+        "tos",
+        "user agreement",
+        "customer terms"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "by using the service",
+        "you agree",
+        "we may modify",
+        "your account",
+        "subscription",
+        "cancel",
+        "auto-renew",
+        "billing"
+      ],
+      "negative_features": [
+        "protected health information",
+        "data processing agreement",
+        "master services agreement",
+        "non-disclosure agreement"
+      ]
+    },
+    "expected_clauses": [
+      "Account and Eligibility",
+      "Subscription and Billing",
+      "Cancellation",
+      "Auto-Renewal",
+      "Dispute Resolution",
+      "Termination",
+      "Acceptable Use"
+    ],
+    "expected_defined_terms": [
+      "Service",
+      "User",
+      "Account",
+      "Subscription"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [
+      {
+        "id": "addenda-ftc-click-to-cancel",
+        "source": "FTC Negative Option / Click-to-Cancel Rule (16 C.F.R. Part 425)",
+        "source_url": "https://www.ftc.gov/legal-library/browse/rules/negative-option-rule",
+        "retrieved_at": "2026-05-13T00:00:00Z",
+        "license": "Public domain (FTC)",
+        "license_url": "https://www.usa.gov/government-works"
+      },
+      {
+        "id": "addenda-rosca-15-usc-8403",
+        "source": "ROSCA — 15 U.S.C. § 8403",
+        "source_url": "https://www.law.cornell.edu/uscode/text/15/8403",
+        "retrieved_at": "2026-05-13T00:00:00Z",
+        "license": "Public domain (US)",
+        "license_url": "https://www.usa.gov/government-works"
+      }
+    ],
+    "regulator_frame": "consumer-protection",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "privacy-policy-lint",
+      "eula"
+    ],
+    "compliance_matrix_columns": [
+      "FTC Click-to-Cancel alignment",
+      "ROSCA negative-option compliance",
+      "Dark-patterns surface (v2 reused at elevated severity)"
+    ]
+  },
+  {
+    "id": "safe-yc",
+    "version": "1.0.0",
+    "name": "Simple Agreement for Future Equity (Y Combinator SAFE)",
+    "description": "Y Combinator SAFE (post-money or pre-money variant). Selects the §6.C equity ruleset (EQT-001..EQT-009).",
+    "match_features": {
+      "title_keywords": [
+        "simple agreement for future equity",
+        "safe"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "post-money valuation cap",
+        "valuation cap",
+        "discount rate",
+        "most favored nation",
+        "equity financing"
+      ],
+      "negative_features": [
+        "convertible note",
+        "promissory note",
+        "interest"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Equity Financing",
+      "Liquidity Event",
+      "Dissolution Event",
+      "Post-Money Valuation Cap"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "Reg-D",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "investor-rights-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "YC SAFE — post-money template",
+      "Reg D Rule 506",
+      "DGCL § 102 / § 151"
+    ]
+  },
+  {
+    "id": "scc-module-2",
+    "version": "1.0.0",
+    "name": "EU Standard Contractual Clauses — Module 2 (Controller to Processor)",
+    "description": "Verifies the official EU SCC Module 2 text (Commission Implementing Decision 2021/914) is incorporated and checks Annexes I, II, III. Re-runs the §29 DPA-GDPR ruleset because SCC Module 2 must satisfy Article 28(3) by reference.",
+    "match_features": {
+      "title_keywords": [
+        "standard contractual clauses",
+        "scc module 2",
+        "module two",
+        "controller to processor",
+        "commission implementing decision 2021/914"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "annex i",
+        "annex ii",
+        "annex iii",
+        "module 2",
+        "controller to processor",
+        "clause 8",
+        "clause 14",
+        "personal data"
+      ],
+      "negative_features": []
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Personal Data",
+      "Controller",
+      "Processor",
+      "Sub-processor",
+      "Data Subject"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [
+      {
+        "id": "eu-scc-2021-914",
+        "source": "Commission Implementing Decision (EU) 2021/914",
+        "source_url": "https://eur-lex.europa.eu/eli/dec_impl/2021/914/oj",
+        "retrieved_at": "2026-05-12T00:00:00Z",
+        "license": "EUR-Lex re-use notice",
+        "license_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html"
+      }
+    ],
+    "regulator_frame": "GDPR",
+    "applicable_jurisdictions": [
+      "EU"
+    ],
+    "companion_playbooks": [
+      "dpa-controller-processor"
+    ],
+    "compliance_matrix_columns": [
+      "SCC Clause 1 (Purpose and Scope)",
+      "SCC Clause 2 (Effect and Invariability)",
+      "SCC Clause 8 (Data Protection Safeguards)",
+      "SCC Clause 14 (Local Laws — TIA)",
+      "Annex I — Parties / Transfer / SA",
+      "Annex II — TOMs",
+      "Annex III — Sub-processors"
+    ]
+  },
+  {
+    "id": "scc-module-3",
+    "version": "1.0.0",
+    "name": "EU Standard Contractual Clauses — Module 3 (Processor to Processor)",
+    "description": "Verifies the official EU SCC Module 3 text (Commission Implementing Decision 2021/914) is incorporated and checks Annexes I, II, III. Selects the §29 DPA-GDPR ruleset and §31 transfer-mechanism ruleset.",
+    "match_features": {
+      "title_keywords": [
+        "standard contractual clauses",
+        "scc module 3",
+        "module three",
+        "processor to processor",
+        "commission implementing decision 2021/914"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "annex i",
+        "annex ii",
+        "annex iii",
+        "module 3",
+        "processor to processor",
+        "clause 8",
+        "personal data"
+      ],
+      "negative_features": []
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Personal Data",
+      "Controller",
+      "Processor",
+      "Sub-processor",
+      "Data Subject"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [
+      {
+        "id": "eu-scc-2021-914",
+        "source": "Commission Implementing Decision (EU) 2021/914",
+        "source_url": "https://eur-lex.europa.eu/eli/dec_impl/2021/914/oj",
+        "retrieved_at": "2026-05-12T00:00:00Z",
+        "license": "EUR-Lex re-use notice",
+        "license_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html"
+      }
+    ],
+    "regulator_frame": "GDPR",
+    "applicable_jurisdictions": [
+      "EU"
+    ],
+    "companion_playbooks": [
+      "dpa-processor-subprocessor"
+    ],
+    "compliance_matrix_columns": [
+      "SCC Clause 1 (Purpose and Scope)",
+      "SCC Clause 2 (Effect and Invariability)",
+      "SCC Clause 8 (Data Protection Safeguards)",
+      "SCC Clause 14 (Local Laws — TIA)",
+      "Annex I — Parties / Transfer / SA",
+      "Annex II — TOMs",
+      "Annex III — Sub-processors"
+    ]
+  },
+  {
+    "id": "section-83b-election",
+    "version": "1.0.0",
+    "name": "§ 83(b) Election Form",
+    "description": "Section 83(b) election form per Treas. Reg. § 1.83-2. Selects the §6.C equity ruleset (EQT-043..EQT-048).",
+    "match_features": {
+      "title_keywords": [
+        "section 83(b) election",
+        "83(b) election",
+        "election under section 83(b)"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "include in gross income",
+        "fair market value",
+        "internal revenue service",
+        "30 days"
+      ],
+      "negative_features": []
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "IRC-83b",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "rspa"
+    ],
+    "compliance_matrix_columns": [
+      "IRC § 83(b)",
+      "Treas. Reg. § 1.83-2"
+    ]
+  },
+  {
+    "id": "security-agreement",
+    "version": "1.0.0",
+    "name": "Security Agreement",
+    "description": "Security agreement under UCC Article 9 (attachment + perfection + remedies). Selects the §6.L ruleset (BNK-014..BNK-020).",
+    "match_features": {
+      "title_keywords": [
+        "security agreement",
+        "pledge agreement",
+        "collateral agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "debtor",
+        "secured party",
+        "collateral",
+        "security interest",
+        "grant",
+        "after-acquired"
+      ],
+      "negative_features": [
+        "promissory note",
+        "loan agreement",
+        "guaranty"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Debtor",
+      "Secured Party",
+      "Collateral"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "UCC-ART-9",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "loan-agreement",
+      "ucc-1-financing-statement"
+    ],
+    "compliance_matrix_columns": [
+      "§ 9-203 attachment + granting",
+      "§ 9-108 collateral description",
+      "§ 9-204 / 9-315 after-acquired + proceeds",
+      "§ 9-509 filing authorization",
+      "§ 9-601 default remedies"
+    ]
+  },
+  {
+    "id": "separation-agreement",
+    "version": "1.0.0",
+    "name": "Separation / Severance Agreement",
+    "description": "Separation / severance agreement with ADEA waiver (OWBPA § 626(f)) and NLRB *McLaren Macomb* compliance. Selects the §6.F employment ruleset (EMP-015..EMP-023).",
+    "match_features": {
+      "title_keywords": [
+        "separation agreement",
+        "severance agreement",
+        "general release",
+        "release of claims"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "release",
+        "21 days",
+        "45 days",
+        "seven days",
+        "revocation",
+        "adea"
+      ],
+      "negative_features": [
+        "offer letter",
+        "executive employment agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Effective Date",
+      "Revocation Period"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "OWBPA-ADEA",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "OWBPA / ADEA § 626(f)",
+      "NLRB McLaren Macomb (2023)",
+      "SEC Rule 21F-17",
+      "Cal. Civ. § 1542"
+    ]
+  },
+  {
+    "id": "snda",
+    "version": "1.0.0",
+    "name": "SNDA (Subordination, Non-Disturbance, Attornment)",
+    "description": "Tri-party SNDA between landlord, tenant, and mortgagee. Selects the §6.E real-estate ruleset (RE-046..RE-053).",
+    "match_features": {
+      "title_keywords": [
+        "subordination",
+        "non-disturbance",
+        "attornment",
+        "snda"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "subordinate",
+        "non-disturbance",
+        "attorn",
+        "mortgagee",
+        "lender"
+      ],
+      "negative_features": []
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "Lender-Practice",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "estoppel-certificate"
+    ],
+    "compliance_matrix_columns": []
+  },
+  {
+    "id": "social-media-policy",
+    "version": "1.0.0",
+    "name": "Social Media / External Communications Policy",
+    "description": "Social media / external communications policy under NLRA § 7 + SEC Reg FD + FTC endorsement guides. Selects the §6.O ruleset (POL-042..POL-045).",
+    "match_features": {
+      "title_keywords": [
+        "social media policy",
+        "external communications policy"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "social media",
+        "endorsement",
+        "reg fd",
+        "protected concerted",
+        "ftc"
+      ],
+      "negative_features": [
+        "aml",
+        "anti-bribery",
+        "insider trading"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "NLRA-SEC-REG-FD-FTC",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "code-of-conduct"
+    ],
+    "compliance_matrix_columns": [
+      "NLRA § 7 — wage / concerted-activity carve-out",
+      "FTC endorsement disclosure",
+      "Reg FD compliance",
+      "Brand voice + personal disclaimer"
+    ]
+  },
+  {
+    "id": "stock-option-grant",
+    "version": "1.0.0",
+    "name": "Stock Option Grant Notice + Agreement",
+    "description": "Stock option grant under an equity-incentive plan (ISO under IRC § 422 or NSO under § 409A). Selects the §6.C equity ruleset (EQT-019..EQT-028).",
+    "match_features": {
+      "title_keywords": [
+        "stock option grant",
+        "option agreement",
+        "option grant notice"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "exercise price",
+        "vesting schedule",
+        "incentive stock option",
+        "non-qualified stock option",
+        "grant date"
+      ],
+      "negative_features": [
+        "restricted stock unit",
+        "rsu",
+        "safe",
+        "convertible note"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Grant Date",
+      "Exercise Price",
+      "Vesting Schedule",
+      "Plan"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "IRC-409A-422",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "IRC § 409A",
+      "IRC § 422",
+      "Treas. Reg. § 1.409A-1(b)(5)"
+    ]
+  },
+  {
+    "id": "stock-purchase-agreement",
+    "version": "1.0.0",
+    "name": "Stock Purchase Agreement (SPA)",
+    "description": "Private-target stock purchase agreement. Selects the §6.D M&A ruleset (MNA-010..MNA-019). ABA Private Target Deal Points anchors.",
+    "match_features": {
+      "title_keywords": [
+        "stock purchase agreement",
+        "spa",
+        "share purchase agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "purchase and sale",
+        "working capital",
+        "material adverse effect",
+        "indemnification",
+        "survival"
+      ],
+      "negative_features": [
+        "asset purchase",
+        "merger agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Purchase Price",
+      "Material Adverse Effect",
+      "Closing",
+      "Survival Period"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "DGCL",
+    "applicable_jurisdictions": [
+      "US-DE",
+      "US"
+    ],
+    "companion_playbooks": [
+      "disclosure-schedules",
+      "escrow-agreement",
+      "ma-restrictive-covenant"
+    ],
+    "compliance_matrix_columns": [
+      "DGCL § 115",
+      "ABA Private Target Deal Points Study"
+    ]
+  },
+  {
+    "id": "stockholders-agreement",
+    "version": "1.0.0",
+    "name": "Stockholders' Agreement",
+    "description": "Venture-style stockholders' / investors' rights agreement. Selects the §6.B governance ruleset (GOV-033..GOV-042). NVCA-anchored.",
+    "match_features": {
+      "title_keywords": [
+        "stockholders agreement",
+        "stockholders' agreement",
+        "investors rights agreement",
+        "investor rights agreement",
+        "voting agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "drag-along",
+        "tag-along",
+        "right of first refusal",
+        "co-sale",
+        "preemptive",
+        "protective provisions"
+      ],
+      "negative_features": [
+        "bylaws",
+        "operating agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "DGCL",
+    "applicable_jurisdictions": [
+      "US-DE",
+      "US"
+    ],
+    "companion_playbooks": [
+      "charter-incorporation"
+    ],
+    "compliance_matrix_columns": [
+      "DGCL § 202",
+      "DGCL § 218",
+      "NVCA Stockholders' / Voting / IRA model"
+    ]
+  },
+  {
+    "id": "subcontractor-agreement",
+    "version": "1.0.0",
+    "name": "Subcontractor Agreement",
+    "description": "Subcontractor agreement with prime flow-down + pay-when/if-paid screen. ConsensusDocs 750 / AIA A401 baseline. Selects the §6.M ruleset (CON-008..CON-013).",
+    "match_features": {
+      "title_keywords": [
+        "subcontract",
+        "subcontractor agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "subcontractor",
+        "general contractor",
+        "flow-down",
+        "pay-when-paid",
+        "pay-if-paid",
+        "prime contract"
+      ],
+      "negative_features": [
+        "construction contract",
+        "lien waiver",
+        "performance bond"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Subcontractor",
+      "General Contractor",
+      "Prime Contract"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "AIA-A401-CONSENSUSDOCS-750",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "construction-contract"
+    ],
+    "compliance_matrix_columns": [
+      "GC / Subk / Project identified",
+      "Scope + flow-down",
+      "Pay-when-paid vs pay-if-paid",
+      "Schedule + coordination + cleanup",
+      "Warranties",
+      "Dispute resolution + venue + law"
+    ]
+  },
+  {
+    "id": "subordination-agreement",
+    "version": "1.0.0",
+    "name": "Subordination Agreement",
+    "description": "Subordination agreement under UCC § 9-339 + Bankruptcy Code § 510(a). Selects the §6.L ruleset (BNK-033..BNK-038).",
+    "match_features": {
+      "title_keywords": [
+        "subordination agreement",
+        "subordination"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "subordinated debt",
+        "senior debt",
+        "blockage",
+        "standstill",
+        "permitted payments",
+        "section 510"
+      ],
+      "negative_features": [
+        "intercreditor agreement",
+        "promissory note"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Subordinated Debt",
+      "Senior Debt"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "UCC-9-339-BANKRUPTCY-510A",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "intercreditor-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Subordinated debt identified",
+      "Senior debt + refinance",
+      "Payment subordination + turnover",
+      "Permitted payments",
+      "Standstill",
+      "§ 510(a) bankruptcy"
+    ]
+  },
+  {
+    "id": "tolling-agreement",
+    "version": "1.0.0",
+    "name": "Tolling Agreement",
+    "description": "Tolling agreement pausing the statute of limitations during pre-suit negotiations. Selects the §6.G settlement ruleset (SET-021..SET-024).",
+    "match_features": {
+      "title_keywords": [
+        "tolling agreement",
+        "limitations tolling agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "statute of limitations",
+        "tolling period",
+        "no revival",
+        "terminates on notice"
+      ],
+      "negative_features": [
+        "settlement payment",
+        "release",
+        "demand letter",
+        "cease and desist"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Tolling Period",
+      "Effective Date"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "STATE-LIMITATIONS",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "Tolled claims identified",
+      "Tolling period defined",
+      "No revival of barred claims",
+      "Termination on notice"
+    ]
+  },
+  {
+    "id": "trademark-license",
+    "version": "1.0.0",
+    "name": "Trademark License Agreement",
+    "description": "Trademark license with naked-license avoidance (quality control) and proper-use guidelines. Selects the §6.H ruleset (IPL-013..IPL-018).",
+    "match_features": {
+      "title_keywords": [
+        "trademark license",
+        "service mark license",
+        "brand license"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "licensed marks",
+        "quality control",
+        "goodwill",
+        "inures",
+        "channels of trade",
+        "field of use"
+      ],
+      "negative_features": [
+        "patent",
+        "copyright",
+        "assignment"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Licensed Marks",
+      "Quality Standards",
+      "Territory"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "LANHAM-ACT",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "Lanham Act §§ 5 / 32 / 45",
+      "Quality control (naked-license)",
+      "Goodwill / no-challenge",
+      "Proper use (®/™, no genericization)"
+    ]
+  },
+  {
+    "id": "transition-services-agreement",
+    "version": "1.0.0",
+    "name": "Transition Services Agreement (TSA)",
+    "description": "Post-closing transition services agreement (seller / corporate parent provides services to buyer / divested business). Selects the §6.D M&A ruleset (MNA-055..MNA-062).",
+    "match_features": {
+      "title_keywords": [
+        "transition services agreement",
+        "tsa"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "transition services",
+        "service period",
+        "service level",
+        "cost-plus",
+        "migration"
+      ],
+      "negative_features": [
+        "msa",
+        "master services agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Service Period",
+      "Services Schedule"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "Practice-Baseline",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "merger-agreement",
+      "stock-purchase-agreement",
+      "asset-purchase-agreement"
+    ],
+    "compliance_matrix_columns": []
+  },
+  {
+    "id": "ucc-1-financing-statement",
+    "version": "1.0.0",
+    "name": "UCC-1 Financing Statement (prose)",
+    "description": "UCC-1 financing statement prose components under UCC § 9-502 / § 9-503 / § 9-504. Selects the §6.L ruleset (BNK-045..BNK-050).",
+    "match_features": {
+      "title_keywords": [
+        "financing statement",
+        "ucc-1",
+        "ucc1",
+        "ucc financing statement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "debtor",
+        "secured party",
+        "collateral",
+        "secretary of state",
+        "all assets",
+        "public organic record"
+      ],
+      "negative_features": [
+        "security agreement",
+        "loan agreement",
+        "promissory note"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Debtor",
+      "Secured Party",
+      "Filing Office"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "UCC-9-502-503-504",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "security-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "§ 9-503 exact legal name",
+      "§ 9-502 secured party + address",
+      "§ 9-504 collateral indication",
+      "§ 9-307 filing office",
+      "§ 9-515 5-year / continuation",
+      "§ 9-509 authorization"
+    ]
+  },
+  {
+    "id": "uk-idta-addendum",
+    "version": "1.0.0",
+    "name": "UK International Data Transfer Addendum / IDTA",
+    "description": "UK Addendum to EU SCCs or standalone UK IDTA. Selects the §31 transfer-mechanism ruleset (20 rules) covering Tables/Parts completion, mandatory-clauses integrity, TIA/TRA, adequacy-decision posture, and onward transfers.",
+    "match_features": {
+      "title_keywords": [
+        "uk addendum",
+        "idta",
+        "international data transfer addendum",
+        "uk idta",
+        "international data transfer agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "uk gdpr",
+        "ico",
+        "table 1",
+        "table 2",
+        "table 3",
+        "table 4",
+        "part 1",
+        "mandatory clauses",
+        "approved addendum"
+      ],
+      "negative_features": []
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Exporter",
+      "Importer",
+      "UK GDPR",
+      "Personal Data"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [
+      {
+        "id": "ico-uk-idta",
+        "source": "ICO International Data Transfer Agreement and Addendum",
+        "source_url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/international-transfers/international-data-transfer-agreement-and-guidance/",
+        "retrieved_at": "2026-05-12T00:00:00Z",
+        "license": "Open Government Licence v3.0",
+        "license_url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+      }
+    ],
+    "regulator_frame": "UK-GDPR",
+    "applicable_jurisdictions": [
+      "UK"
+    ],
+    "companion_playbooks": [
+      "dpa-controller-processor",
+      "scc-module-2"
+    ],
+    "compliance_matrix_columns": [
+      "UK Addendum Table 1 (Parties)",
+      "UK Addendum Table 2 (SCC Modules)",
+      "UK Addendum Table 3 (Appendix Info)",
+      "UK Addendum Table 4 (Ending)",
+      "Mandatory Clauses unmodified",
+      "TIA / TRA referenced"
+    ]
+  },
+  {
+    "id": "unilateral-nda-deep",
+    "version": "1.0.0",
+    "name": "Unilateral NDA — Deep Analysis",
+    "description": "One-way / unilateral non-disclosure agreement under US trade-secret law. Selects the §32 NDA-deep ruleset (25 rules) covering DTSA whistleblower-immunity notice (18 U.S.C. § 1833(b)), Confidential-Information definition completeness, four standard exclusions, permitted-use scope, residuals, return-or-destruction with attestation, injunctive relief with waiver-of-bond, governing-law viability, no-precedent / MFN, non-solicit carve-outs, no-license, authority representation, successors-and-assigns, plus the unilateral-NDA role-framing check (disclosing-party / receiving-party labels must be present).",
+    "match_features": {
+      "title_keywords": [
+        "one-way non-disclosure agreement",
+        "one-way nda",
+        "unilateral non-disclosure agreement",
+        "unilateral nda",
+        "confidentiality agreement",
+        "non-disclosure agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "confidential information",
+        "trade secret",
+        "evaluate the purpose",
+        "discloser",
+        "recipient",
+        "disclosing party",
+        "receiving party",
+        "the receiving party shall",
+        "1833(b)",
+        "whistleblower immunity",
+        "injunctive relief",
+        "irreparable harm"
+      ],
+      "negative_features": [
+        "mutual non-disclosure",
+        "each party",
+        "either party",
+        "this Business Associate Agreement",
+        "protected health information",
+        "Data Processing Agreement",
+        "Standard Contractual Clauses",
+        "Master Services Agreement",
+        "Statement of Work"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Confidential Information",
+      "Purpose",
+      "Discloser",
+      "Recipient",
+      "Disclosing Party",
+      "Receiving Party",
+      "Trade Secret",
+      "Representatives"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [
+      {
+        "id": "dtsa-18-usc-1833-b",
+        "source": "18 U.S.C. § 1833(b) — Defend Trade Secrets Act whistleblower immunity / notice requirement",
+        "source_url": "https://www.law.cornell.edu/uscode/text/18/1833",
+        "retrieved_at": "2026-05-12T00:00:00Z",
+        "license": "Public domain (US government work)",
+        "license_url": "https://www.usa.gov/government-works"
+      },
+      {
+        "id": "utsa-1985",
+        "source": "Uniform Trade Secrets Act (1985 amended)",
+        "source_url": "https://www.uniformlaws.org/committees/community-home?CommunityKey=3a2538fb-e030-4e2d-a9e2-90373dc05792",
+        "retrieved_at": "2026-05-12T00:00:00Z",
+        "license": "Public uniform-law text",
+        "license_url": "https://www.uniformlaws.org/HigherLogic/System/DownloadDocumentFile.ashx?DocumentFileKey=e19b2528-e0b1-0054-23c4-8069701a4b62"
+      },
+      {
+        "id": "nda-consensus-drafting",
+        "source": "Consensus unilateral-NDA drafting practice (Common Paper, ACC, ABA practice notes)",
+        "source_url": "https://commonpaper.com/standards/mutual-nda/",
+        "retrieved_at": "2026-05-12T00:00:00Z",
+        "license": "CC BY 4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/"
+      }
+    ],
+    "regulator_frame": "DTSA",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "msa-vendor-deep"
+    ],
+    "compliance_matrix_columns": [
+      "DTSA notice (18 U.S.C. § 1833(b))",
+      "Confidentiality term",
+      "Trade-secret perpetual carve-out",
+      "Confidential Information defined",
+      "Four standard exclusions",
+      "Permitted-use scope",
+      "Return-or-destruction with attestation",
+      "Injunctive relief + waiver of bond",
+      "Governing law (viable jurisdiction)",
+      "No-precedent / MFN",
+      "Non-solicit carve-outs",
+      "No-license",
+      "Authority representation",
+      "Successors-and-assigns / assignment consent",
+      "Discloser / receiver role framing"
+    ]
+  },
+  {
+    "id": "vendor-security-addendum",
+    "version": "1.0.0",
+    "name": "Vendor Security Addendum",
+    "description": "Linter for a Vendor Security Addendum / Information Security Exhibit. Selects the §34 addenda ruleset (security-only portion, ADDENDA-001..009): specific measures enumerated, security-review cadence, right-to-audit or SOC 2 substitution, incident-response notification window, vulnerability-disclosure handling, secure-development-lifecycle reference, data-classification mapping, named encryption standards (FIPS 140-3 / AES-256 / TLS 1.2+), penetration-test cadence.",
+    "match_features": {
+      "title_keywords": [
+        "vendor security addendum",
+        "security addendum",
+        "information security exhibit",
+        "data security addendum",
+        "security schedule"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "access control",
+        "encryption",
+        "vulnerability management",
+        "incident response",
+        "SOC 2",
+        "ISO 27001",
+        "penetration test",
+        "secure development"
+      ],
+      "negative_features": [
+        "protected health information",
+        "data processing agreement",
+        "this nda"
+      ]
+    },
+    "expected_clauses": [
+      "Access Control",
+      "Encryption",
+      "Incident Response",
+      "Vulnerability Management",
+      "Audit Rights",
+      "Penetration Testing"
+    ],
+    "expected_defined_terms": [
+      "Security Incident",
+      "Customer Data",
+      "Personnel"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [
+      {
+        "id": "addenda-nist-sp-800-53",
+        "source": "NIST SP 800-53 Rev. 5 — Security and Privacy Controls",
+        "source_url": "https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final",
+        "retrieved_at": "2026-05-13T00:00:00Z",
+        "license": "Public domain (NIST)",
+        "license_url": "https://www.usa.gov/government-works"
+      },
+      {
+        "id": "addenda-fips-140-3",
+        "source": "FIPS 140-3 — Security Requirements for Cryptographic Modules",
+        "source_url": "https://csrc.nist.gov/publications/detail/fips/140/3/final",
+        "retrieved_at": "2026-05-13T00:00:00Z",
+        "license": "Public domain (NIST)",
+        "license_url": "https://www.usa.gov/government-works"
+      }
+    ],
+    "regulator_frame": "consensus-practice",
+    "applicable_jurisdictions": [
+      "US",
+      "EU",
+      "UK"
+    ],
+    "companion_playbooks": [
+      "msa-vendor-deep",
+      "msa-customer-deep",
+      "dpa-controller-processor"
+    ],
+    "compliance_matrix_columns": [
+      "Specific security measures enumerated",
+      "Security-review cadence",
+      "Right-to-audit / SOC 2 substitution",
+      "Incident-response notification window",
+      "Vulnerability-disclosure handling",
+      "Secure-development-lifecycle reference",
+      "Data-classification mapping",
+      "Named encryption standards (FIPS 140-3 / AES-256)",
+      "Penetration-test cadence"
+    ]
+  },
+  {
+    "id": "vendor-security-questionnaire",
+    "version": "1.0.0",
+    "name": "Vendor Security Questionnaire (SIG / CAIQ)",
+    "description": "Vendor security questionnaire (SIG / CAIQ-style) with NIST CSF + ISO 27001 baseline. Selects the §6.I ruleset (PRV-027..PRV-033).",
+    "match_features": {
+      "title_keywords": [
+        "vendor security questionnaire",
+        "security questionnaire",
+        "sig",
+        "caiq",
+        "third-party risk"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "soc 2",
+        "iso 27001",
+        "encryption",
+        "mfa",
+        "rbac",
+        "penetration test",
+        "incident response"
+      ],
+      "negative_features": [
+        "merger",
+        "license grant"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Vendor",
+      "Subprocessor"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "NIST-CSF-ISO-27001",
+    "applicable_jurisdictions": [
+      "US",
+      "EU"
+    ],
+    "companion_playbooks": [
+      "vendor-security-bundle"
+    ],
+    "compliance_matrix_columns": [
+      "Security policy + governance",
+      "RBAC / least-privilege / MFA",
+      "Encryption at rest + in transit",
+      "Third-party audits (SOC 2 / ISO 27001)",
+      "Vulnerability management + penetration testing",
+      "Incident response + breach SLA",
+      "Subprocessor disclosure"
+    ]
+  },
+  {
+    "id": "voting-agreement",
+    "version": "1.0.0",
+    "name": "Voting Agreement (NVCA)",
+    "description": "NVCA-style voting agreement binding stockholders to vote for designated directors and drag-along sales. Selects the §6.C equity ruleset (EQT-057..EQT-063).",
+    "match_features": {
+      "title_keywords": [
+        "voting agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "drag-along",
+        "irrevocable proxy",
+        "vote in favor",
+        "election of directors"
+      ],
+      "negative_features": [
+        "bylaws",
+        "operating agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "DGCL",
+    "applicable_jurisdictions": [
+      "US-DE",
+      "US"
+    ],
+    "companion_playbooks": [
+      "investor-rights-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "DGCL § 218",
+      "DGCL § 212",
+      "NVCA Model Voting Agreement"
+    ]
+  },
+  {
+    "id": "whistleblower-policy",
+    "version": "1.0.0",
+    "name": "Whistleblower Policy",
+    "description": "Whistleblower policy under SOX § 806 + Dodd-Frank § 922 + SEC Rule 21F-17. Selects the §6.O ruleset (POL-023..POL-027).",
+    "match_features": {
+      "title_keywords": [
+        "whistleblower policy",
+        "whistleblower"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "non-retaliation",
+        "anonymous reporting",
+        "audit committee",
+        "hotline",
+        "21f-17",
+        "sox 806"
+      ],
+      "negative_features": [
+        "aml",
+        "anti-bribery"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "SOX-DODD-FRANK-SEC-21F17",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "code-of-conduct"
+    ],
+    "compliance_matrix_columns": [
+      "Reporting channels (internal / SEC / CFTC / DOL)",
+      "SOX 806 + Dodd-Frank 922 non-retaliation",
+      "SEC Rule 21F-17 carve-out",
+      "Confidentiality + anonymity",
+      "Investigation + corrective action"
+    ]
+  },
+  {
+    "id": "work-for-hire-agreement",
+    "version": "1.0.0",
+    "name": "Work-for-Hire Agreement",
+    "description": "Work-made-for-hire agreement under 17 U.S.C. § 101 with backup assignment + DTSA notice. Selects the §6.H ruleset (IPL-036..IPL-040).",
+    "match_features": {
+      "title_keywords": [
+        "work for hire",
+        "work-for-hire",
+        "work made for hire",
+        "wfh agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "work made for hire",
+        "section 101",
+        "specially commissioned",
+        "to the extent",
+        "hereby assigns",
+        "dtsa"
+      ],
+      "negative_features": [
+        "royalty",
+        "license grant",
+        "non-exclusive"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Work Product",
+      "Contractor",
+      "Client"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "17-USC-101",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "17 U.S.C. § 101 specially-commissioned",
+      "Backup assignment",
+      "DTSA 18 U.S.C. § 1833 notice",
+      "Moral-rights waiver (where waivable)",
+      "Independent-contractor status"
+    ]
+  },
+  {
+    "id": "written-consent",
+    "version": "1.0.0",
+    "name": "Written Consent in Lieu of Meeting",
+    "description": "Board or stockholder action by written consent. Selects the §6.B governance ruleset (GOV-043..GOV-050) under DGCL §§ 141(f) and 228.",
+    "match_features": {
+      "title_keywords": [
+        "written consent",
+        "action by written consent",
+        "unanimous written consent"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "in lieu of a meeting",
+        "the undersigned",
+        "resolved, that",
+        "constituting all of the directors"
+      ],
+      "negative_features": [
+        "bylaws",
+        "operating agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "DGCL",
+    "applicable_jurisdictions": [
+      "US-DE",
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "DGCL § 141(f)",
+      "DGCL § 228"
+    ]
+  }
+]

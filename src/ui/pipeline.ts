@@ -38,6 +38,7 @@ import {
   ALL_CONSISTENCY_RULES,
   LAUNCH_RULES,
   V3_RULES,
+  V4_RULES,
   runEngine,
   runConsistency,
   type ConsistencyDocument,
@@ -66,6 +67,7 @@ import {
 } from "./v3/index.js";
 import { familyDisplayLabel } from "./v3-labels.js";
 import { filterRulesByFrames } from "./frame-filter.js";
+import { selectMatchCandidates } from "./playbook-candidates.js";
 
 export type PipelineProgress = {
   /** Fraction in [0, 1] after each rule completes. */
@@ -185,6 +187,7 @@ const DEFAULT_PLAYBOOK_BASE = "/playbooks";
 
 let cachedDkb: DKB | null = null;
 let cachedPlaybooks: Playbook[] | null = null;
+let cachedExtendedPlaybooks: Playbook[] | null = null;
 
 /**
  * Phase 1: ingest + extract + DKB load + playbook match. Slow on
@@ -212,7 +215,11 @@ export async function prepareDocument(
     classifier: { vocab: { vocab: {} }, patterns: dkb.classifier.patterns },
   });
 
-  const playbooks = await ensurePlaybooks(config.playbook_base ?? DEFAULT_PLAYBOOK_BASE);
+  const playbookBase = config.playbook_base ?? DEFAULT_PLAYBOOK_BASE;
+  const [launchPlaybooks, extendedPlaybooks] = await Promise.all([
+    ensurePlaybooks(playbookBase),
+    ensureExtendedPlaybooks(playbookBase),
+  ]);
   const titleSource = ingest.tree.sections[0]?.heading ?? file.name;
   // Walk every section + child paragraph for distinguishing-phrase
   // matching. The classifier categories alone are a poor proxy for
@@ -235,11 +242,19 @@ export async function prepareDocument(
     ingest.tree.sections as unknown as Parameters<typeof walkSections>[0],
   );
   const bodyText = bodyParts.join(" ");
-  const match = matchPlaybook(extracted, extracted.classified, playbooks, {
+  // Family-gated candidate set: launch playbooks always, plus the v3/v4
+  // playbooks the document clearly signals (spec-v6 full-catalog wiring).
+  const candidates = selectMatchCandidates(launchPlaybooks, extendedPlaybooks, {
+    title: titleSource,
+    body: bodyText,
+    classified: extracted.classified,
+    extracted,
+  });
+  const match = matchPlaybook(extracted, extracted.classified, candidates, {
     title: titleSource,
     body_text: bodyText,
   });
-  const playbook = playbooks.find((p) => p.id === match.playbook_id) ?? playbooks[0]!;
+  const playbook = candidates.find((p) => p.id === match.playbook_id) ?? launchPlaybooks[0]!;
 
   return {
     ingest,
@@ -268,7 +283,7 @@ export async function runReport(
   options: PipelineOptions = {},
 ): Promise<PipelineResult> {
   const ruleSet = filterRulesByFrames(
-    [...LAUNCH_RULES, ...V3_RULES] as readonly Rule[],
+    [...LAUNCH_RULES, ...V3_RULES, ...V4_RULES] as readonly Rule[],
     options.active_frames,
   );
   const onRuleProgress = ({
@@ -373,7 +388,7 @@ export async function runReport(
  * dynamic-imports this module (already preloaded on hover/drag) on demand.
  */
 export function catalogRuleIds(): string[] {
-  return [...LAUNCH_RULES, ...V3_RULES].map((r) => r.id);
+  return [...LAUNCH_RULES, ...V3_RULES, ...V4_RULES].map((r) => r.id);
 }
 
 /**
@@ -434,6 +449,32 @@ async function ensurePlaybooks(base: string): Promise<Playbook[]> {
   );
   cachedPlaybooks = responses;
   return cachedPlaybooks;
+}
+
+/**
+ * Load the bundled v3 + v4 playbook manifest (`playbooks/extended.json`,
+ * spec-v6 full-catalog wiring). One fetch — SW-cached like the launch
+ * playbooks. These become match candidates only when the document signals
+ * their family (see {@link selectMatchCandidates}); their rules fire via
+ * `applies_to_playbooks` once matched. A missing/204 manifest degrades
+ * gracefully to launch-only matching (the prior behavior) rather than
+ * throwing, so a stale deploy can never break the common path.
+ */
+async function ensureExtendedPlaybooks(base: string): Promise<Playbook[]> {
+  if (cachedExtendedPlaybooks) return cachedExtendedPlaybooks;
+  try {
+    const res = await fetch(`${base}/extended.json`);
+    if (!res.ok) {
+      cachedExtendedPlaybooks = [];
+      return cachedExtendedPlaybooks;
+    }
+    const raw = (await res.json()) as unknown[];
+    cachedExtendedPlaybooks = raw.map((p) => parsePlaybook(p));
+  } catch {
+    // Network/parse failure → fall back to launch-only matching.
+    cachedExtendedPlaybooks = [];
+  }
+  return cachedExtendedPlaybooks;
 }
 
 export function countsBySeverity(run: EngineRun): {
@@ -539,8 +580,10 @@ export async function prepareBundle(
   if (!plan.ok) throw new Error(plan.reason);
 
   // 2. Load DKB + playbooks in parallel.
+  const bundlePlaybookBase = config.playbook_base ?? DEFAULT_PLAYBOOK_BASE;
   const dkbPromise = ensureDkb(config.dkb_base ?? DEFAULT_DKB_BASE);
-  const playbooksPromise = ensurePlaybooks(config.playbook_base ?? DEFAULT_PLAYBOOK_BASE);
+  const playbooksPromise = ensurePlaybooks(bundlePlaybookBase);
+  const extendedPromise = ensureExtendedPlaybooks(bundlePlaybookBase);
 
   const accepted = plan.entries.filter((e): e is Extract<MultiIngestEntry, { ok: true }> => e.ok);
   const rejected: Array<{ filename: string; reason: string }> = plan.entries
@@ -559,7 +602,8 @@ export async function prepareBundle(
   // 3. Ingest each accepted entry (parallel). Reuse the cached DKB.
   const dkb = await dkbPromise;
   hooks.onDkbLoaded?.(dkb.manifest.version);
-  const playbooks = await playbooksPromise;
+  const launchPlaybooks = await playbooksPromise;
+  const extendedPlaybooks = await extendedPromise;
 
   const total = accepted.length;
   const perDoc: BundlePerDocument[] = [];
@@ -608,17 +652,24 @@ export async function prepareBundle(
     );
 
     const titleSource = ingest.tree.sections[0]?.heading ?? entry.filename;
-    const match = matchPlaybook(extracted, extracted.classified, playbooks, {
+    const bundleBody = bodyParts.join(" ");
+    const candidates = selectMatchCandidates(launchPlaybooks, extendedPlaybooks, {
       title: titleSource,
-      body_text: bodyParts.join(" "),
+      body: bundleBody,
+      classified: extracted.classified,
+      extracted,
     });
-    const playbook = playbooks.find((p) => p.id === match.playbook_id) ?? playbooks[0]!;
+    const match = matchPlaybook(extracted, extracted.classified, candidates, {
+      title: titleSource,
+      body_text: bundleBody,
+    });
+    const playbook = candidates.find((p) => p.id === match.playbook_id) ?? launchPlaybooks[0]!;
 
     const docIndex = i;
     // Frame-filtered rule set (spec-v3 §61). When `options.active_frames`
     // is omitted, this returns the full LAUNCH+V3 set unchanged.
     const ruleSet = filterRulesByFrames(
-      [...LAUNCH_RULES, ...V3_RULES] as readonly Rule[],
+      [...LAUNCH_RULES, ...V3_RULES, ...V4_RULES] as readonly Rule[],
       options.active_frames,
     );
     const run = await runEngine({
