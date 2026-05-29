@@ -11,6 +11,7 @@
  */
 
 import { describe, expect, it } from "vitest";
+import { readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -3818,4 +3819,25 @@ describe("v3 fixture sanity", () => {
       expect(missing, `expected rules did not fire: ${missing.join(", ")}`).toEqual([]);
     });
   }
+});
+
+/**
+ * Coverage gate: every `*-fail.txt` fixture must have an
+ * `EXPECTED_RULE_IDS` entry. Without this, a new fail-fixture
+ * could land with no sanity pin and the per-fixture rule-fires
+ * assertion above would silently skip it. Matches the gate
+ * added to the v4 sanity test in the same commit.
+ */
+describe("v3 fixture sanity — coverage gate", () => {
+  it("every *-fail.txt fixture has an EXPECTED_RULE_IDS entry", () => {
+    const failFixtures = readdirSync(FIXTURES)
+      .filter((n) => n.endsWith("-fail.txt"))
+      .sort();
+    const pinned = new Set(Object.keys(EXPECTED_RULE_IDS));
+    const missing = failFixtures.filter((n) => !pinned.has(n));
+    expect(
+      missing,
+      `add ${missing.length} fail-fixture(s) to EXPECTED_RULE_IDS in this file`,
+    ).toEqual([]);
+  });
 });

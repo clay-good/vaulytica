@@ -12,6 +12,7 @@
  */
 
 import { describe, expect, it } from "vitest";
+import { readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -1028,4 +1029,30 @@ describe("v4 fixture sanity", () => {
       expect(missing, `expected rules did not fire: ${missing.join(", ")}`).toEqual([]);
     });
   }
+});
+
+/**
+ * Coverage gate: every `*-fail.txt` fixture under `fixtures/`
+ * must have an `EXPECTED_RULE_IDS` entry. The map above is the
+ * single source of truth for which rule a given fail-fixture is
+ * supposed to exercise; without this gate a new `-fail` fixture
+ * could land with no sanity pin and the per-fixture rule-fires
+ * assertion above would silently skip it.
+ *
+ * (The `*-minimal.txt` baseline fixtures don't need entries —
+ * they're representative templates whose finding set is locked
+ * down structurally by the byte-identical golden tests.)
+ */
+describe("v4 fixture sanity — coverage gate", () => {
+  it("every *-fail.txt fixture has an EXPECTED_RULE_IDS entry", () => {
+    const failFixtures = readdirSync(FIXTURES)
+      .filter((n) => n.endsWith("-fail.txt"))
+      .sort();
+    const pinned = new Set(Object.keys(EXPECTED_RULE_IDS));
+    const missing = failFixtures.filter((n) => !pinned.has(n));
+    expect(
+      missing,
+      `add ${missing.length} fail-fixture(s) to EXPECTED_RULE_IDS in this file`,
+    ).toEqual([]);
+  });
 });
