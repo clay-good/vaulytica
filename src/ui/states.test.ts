@@ -142,6 +142,123 @@ describe("renderState", () => {
     expect(select(dz, "export-deadlines-ics")!.textContent).toMatch(/Deadlines/);
   });
 
+  it("hides the v6 compare row unless on_compare is supplied", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "complete",
+      filename: "nda.docx",
+      playbook_name: "Mutual NDA",
+      counts: { critical: 0, warning: 0, info: 0 },
+      docx_blob: new Blob(["docx"]),
+      json_blob: new Blob(["{}"]),
+      docx_filename: "nda.docx",
+      json_filename: "nda.json",
+    });
+    expect(select(dz, "compare-row")!.hasAttribute("hidden")).toBe(true);
+  });
+
+  it("renders the v6 compare affordance and invokes on_compare with the chosen file", () => {
+    const dz = document.createElement("div");
+    const onCompare = vi.fn();
+    renderState(dz, {
+      kind: "complete",
+      filename: "nda.docx",
+      playbook_name: "Mutual NDA",
+      counts: { critical: 0, warning: 0, info: 0 },
+      docx_blob: new Blob(["docx"]),
+      json_blob: new Blob(["{}"]),
+      docx_filename: "nda.docx",
+      json_filename: "nda.json",
+      on_compare: onCompare,
+    });
+    expect(select(dz, "compare-row")!.hasAttribute("hidden")).toBe(false);
+    const input = select<HTMLInputElement>(dz, "compare-input")!;
+    const file = new File(["%PDF-1.7"], "nda-v2.pdf", { type: "application/pdf" });
+    Object.defineProperty(input, "files", { value: [file], configurable: true });
+    input.dispatchEvent(new Event("change"));
+    expect(onCompare).toHaveBeenCalledTimes(1);
+    expect(onCompare.mock.calls[0]![0].name).toBe("nda-v2.pdf");
+  });
+
+  it("renders the comparison-complete state with bucket counts and downloads", () => {
+    const dz = document.createElement("div");
+    const onReset = vi.fn();
+    renderState(dz, {
+      kind: "comparison-complete",
+      base_filename: "nda-v1.pdf",
+      revised_filename: "nda-v2.pdf",
+      verdict: "Net improvement: more findings resolved than introduced.",
+      counts: {
+        resolved: { critical: 1, warning: 1, info: 0, total: 2 },
+        introduced: { critical: 0, warning: 0, info: 1, total: 1 },
+        unchanged: { critical: 0, warning: 2, info: 0, total: 2 },
+        carried_clean_count: 940,
+      },
+      dkb_mismatch: false,
+      docx_blob: new Blob(["docx"]),
+      json_blob: new Blob(["{}"]),
+      docx_filename: "cmp.docx",
+      json_filename: "cmp.json",
+      on_reset: onReset,
+    });
+    expect(dz.getAttribute("data-state")).toBe("comparison-complete");
+    expect(select(dz, "comparison-versions")!.textContent).toContain("nda-v1.pdf");
+    expect(select(dz, "comparison-versions")!.textContent).toContain("nda-v2.pdf");
+    expect(select(dz, "comparison-verdict")!.textContent).toContain("Net improvement");
+    const counts = select(dz, "comparison-counts")!.textContent!;
+    expect(counts).toMatch(/2\s*resolved/);
+    expect(counts).toMatch(/1\s*introduced/);
+    expect(counts).toMatch(/940/);
+    expect(select(dz, "comparison-dkb-warning")!.hasAttribute("hidden")).toBe(true);
+    select<HTMLButtonElement>(dz, "comparison-reset")!.click();
+    expect(onReset).toHaveBeenCalledTimes(1);
+  });
+
+  it("comparison-complete surfaces a DKB-mismatch warning when flagged", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "comparison-complete",
+      base_filename: "a.pdf",
+      revised_filename: "b.pdf",
+      verdict: "No change to the risk surface.",
+      counts: {
+        resolved: { critical: 0, warning: 0, info: 0, total: 0 },
+        introduced: { critical: 0, warning: 0, info: 0, total: 0 },
+        unchanged: { critical: 0, warning: 0, info: 0, total: 0 },
+        carried_clean_count: 10,
+      },
+      dkb_mismatch: true,
+      docx_blob: new Blob(["docx"]),
+      json_blob: new Blob(["{}"]),
+      docx_filename: "cmp.docx",
+      json_filename: "cmp.json",
+    });
+    const warn = select(dz, "comparison-dkb-warning")!;
+    expect(warn.hasAttribute("hidden")).toBe(false);
+    expect(warn.textContent).toContain("different DKB versions");
+  });
+
+  it("error state renders a secondary action button and invokes it", () => {
+    const dz = document.createElement("div");
+    const onClick = vi.fn();
+    renderState(dz, {
+      kind: "error",
+      message: "cross-family",
+      action: { label: "Compare anyway", on_click: onClick },
+    });
+    const action = select<HTMLButtonElement>(dz, "error-action")!;
+    expect(action.hasAttribute("hidden")).toBe(false);
+    expect(action.textContent).toBe("Compare anyway");
+    action.click();
+    expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("error state hides the action button when no action is supplied", () => {
+    const dz = document.createElement("div");
+    renderState(dz, { kind: "error", message: "boom" });
+    expect(select(dz, "error-action")!.hasAttribute("hidden")).toBe(true);
+  });
+
   it("complete-state reasoning annotates Legacy playbook + successor when playbook_deprecation is set", () => {
     const dz = document.createElement("div");
     renderState(dz, {

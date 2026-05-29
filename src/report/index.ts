@@ -22,6 +22,23 @@ export {
   type UnresolvedDate,
   type DeadlinesResult,
 } from "./exports.js";
+// v6 Part I — version comparison (Steps 89–90).
+export {
+  compareRuns,
+  comparabilityOf,
+  ComparisonRefusedError,
+  buildComparisonJson,
+  buildComparisonJsonObject,
+  type Comparison,
+  type Comparability,
+  type ComparisonDelta,
+  type ComparisonJson,
+  type RunSummary,
+  type SeverityCounts,
+  type UnchangedPair,
+} from "./compare.js";
+export { buildComparisonDocx, comparisonDocxBlob } from "./compare-docx.js";
+
 export { formatCitation, formatBibliographyEntry } from "./citations.js";
 export {
   buildBibliography,

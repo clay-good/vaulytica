@@ -1,6 +1,6 @@
 # Vaulytica v6 — Workflow
 
-> **Status:** specification, partially implemented. Steps 87–88 (findings-to-action exports + deadlines `.ics`, Part III) landed 2026-05-29 — see [`BUILD_PROGRESS.md`](../BUILD_PROGRESS.md). Remainder not yet implemented.
+> **Status:** specification, partially implemented. Steps 87–88 (findings-to-action exports + deadlines `.ics`, Part III) and Steps 89–90 (version comparison engine + report + compare UI, Part I) landed 2026-05-29 — see [`BUILD_PROGRESS.md`](../BUILD_PROGRESS.md). Remainder not yet implemented.
 > **Scope:** expand *what you can do with* Vaulytica, and deepen what it already does — without leaving the deterministic, no-AI, no-server, browser-only, citable posture. v6 moves the product from "drop one document, get findings" toward "fit into how a legal team actually reviews": compare versions, enforce *your own* standard, turn findings into action, and reach documents and jurisdictions currently out of scope.
 > **Cousin docs:** [`spec.md`](spec.md) (v1), [`spec-v3.md`](spec-v3.md) (regulated agreements), [`spec-v4.md`](spec-v4.md) (all logically-operative legal documents), [`spec-v5.md`](spec-v5.md) (Ground Truth — accuracy & validation).
 > **Relationship to v5:** v5 *measures* the engine; v6 *extends* it. They are independent and can proceed in parallel — but v6 features must be added to the v5 corpus and harness as they land, so accuracy is measured on the new surfaces too. Every v6 cross-reference to "measured" assumes the v5 harness exists.
@@ -198,8 +198,8 @@ Ordered by value-to-effort, fastest high-value first:
 |---|------|--------|------|
 | 87 | Findings-to-action exports ✅ | Fix-list (Markdown + CSV) + obligations CSV from the existing ledger; deterministic, two-run-identical tests. **Done 2026-05-29** (`src/report/exports.ts`). | Quick win |
 | 88 | Deadlines `.ics` export ✅ | Deterministic calendar from extracted temporal facts + computed notice deadlines; ambiguous-date guard; fixtures. **Done 2026-05-29** (`src/report/exports.ts`). | Quick win |
-| 89 | Version comparison engine | `diff(run(base), run(revised))` → resolved/introduced/unchanged buckets; comparison `result_hash`; family-mismatch refusal. | Flagship |
-| 90 | Version comparison report + UI compare affordance | Comparison DOCX + JSON; two-slot compare surface; clause-level span delta appendix. | Flagship |
+| 89 | Version comparison engine ✅ | `diff(run(base), run(revised))` → resolved/introduced/unchanged buckets + carried-clean count; comparison `result_hash`; family-mismatch refusal. **Done 2026-05-29** (`src/report/compare.ts`). | Flagship |
+| 90 | Version comparison report + UI compare affordance ✅ | Comparison DOCX + JSON; compare affordance + `comparison-complete` state; clause-level span delta appendix. **Done 2026-05-29** (`src/report/compare-docx.ts`, `src/ui/`). | Flagship |
 | 91 | Public playbook schema + JSON Schema + validator | Documented, versioned schema; `zod` validator; `docs/v6/playbook-schema.md`. | Flagship |
 | 92 | Load-a-playbook UI + augment/replace modes + provenance | Client-side load + validate + preview; `source: custom-playbook` on findings; privacy guard test. | Flagship |
 | 93 | Custom-rules declarative DSL + interpreter | Bounded predicate set over existing extractor outputs; per-rule citation; determinism + auditability tests. | Flagship |

@@ -77,6 +77,36 @@ export type DropzoneState =
        * presentational — useful for unit tests.
        */
       on_frames_change?: (active_frames: ReadonlyArray<string>) => void;
+      /**
+       * v6 Part I version comparison (Step 90). When provided, the
+       * complete-state renders a "Compare a revised version…" affordance:
+       * a button that opens a file picker and invokes this callback with
+       * the chosen second document. The main UI runs the engine on it and
+       * transitions to the `comparison-complete` state. Optional /
+       * back-compat: omitting it hides the compare row.
+       */
+      on_compare?: (file: File) => void;
+    }
+  | {
+      kind: "comparison-complete";
+      base_filename: string;
+      revised_filename: string;
+      /** Plain-language headline verdict (net improvement / regression / …). */
+      verdict: string;
+      counts: {
+        resolved: { critical: number; warning: number; info: number; total: number };
+        introduced: { critical: number; warning: number; info: number; total: number };
+        unchanged: { critical: number; warning: number; info: number; total: number };
+        carried_clean_count: number;
+      };
+      /** True when the two runs used different DKB versions (flagged, not blocked). */
+      dkb_mismatch: boolean;
+      docx_blob: Blob;
+      json_blob: Blob;
+      docx_filename: string;
+      json_filename: string;
+      /** Start over (return to the empty drop zone). */
+      on_reset?: () => void;
     }
   | {
       kind: "bundle-complete";
@@ -168,6 +198,13 @@ export type DropzoneState =
        * `message` field is used as a fallback / unknown-code passthrough.
        */
       code?: string;
+      /**
+       * Optional secondary action button. Used by the version-comparison
+       * flow (Step 90) to offer "Compare anyway" when a cross-family
+       * pairing is refused — the message explains the refusal, the action
+       * lets the user confirm the pairing.
+       */
+      action?: { label: string; on_click: () => void };
     };
 
 const TEMPLATES: Record<DropzoneState["kind"], string> = {
@@ -203,6 +240,21 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
       <button class="btn-link" type="button" data-role="export-obligations-csv">Obligations (CSV)</button>
       <button class="btn-link" type="button" data-role="export-deadlines-ics">Deadlines (.ics)</button>
     </div>
+    <div class="compare-row" data-role="compare-row" hidden>
+      <button class="btn-link" type="button" data-role="compare-button">Compare a revised version…</button>
+      <input type="file" accept=".pdf,.docx" data-role="compare-input" hidden aria-hidden="true" tabindex="-1" />
+    </div>
+    <div class="download-status" data-role="download-status" aria-live="polite"></div>
+  `,
+  "comparison-complete": `
+    <div class="dropzone-title" data-role="comparison-title">Version comparison</div>
+    <div class="dropzone-sub" data-role="comparison-versions"></div>
+    <div class="dropzone-sub comparison-verdict" data-role="comparison-verdict"></div>
+    <div class="comparison-counts" data-role="comparison-counts"></div>
+    <div class="dropzone-sub comparison-dkb-warning" data-role="comparison-dkb-warning" hidden></div>
+    <button class="btn btn-primary" type="button" data-role="comparison-docx-download">Download comparison (Word)</button>
+    <button class="btn-link" type="button" data-role="comparison-json-download">Download comparison data (JSON)</button>
+    <button class="btn-link" type="button" data-role="comparison-reset">Analyze another document</button>
     <div class="download-status" data-role="download-status" aria-live="polite"></div>
   `,
   "bundle-complete": `
@@ -226,6 +278,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
   error: `
     <div class="dropzone-title" data-role="error-title">Something went wrong</div>
     <div class="dropzone-sub" data-role="error-message"></div>
+    <button class="btn-link" type="button" data-role="error-action" hidden></button>
     <button class="btn-link" type="button" data-role="error-reset">Try another file</button>
   `,
 };
@@ -278,6 +331,56 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
       wire("export-fixlist-csv", ex.fixlist_csv_blob, ex.fixlist_csv_filename);
       wire("export-obligations-csv", ex.obligations_csv_blob, ex.obligations_csv_filename);
       wire("export-deadlines-ics", ex.deadlines_ics_blob, ex.deadlines_ics_filename);
+    }
+    if (state.on_compare) {
+      const onCompare = state.on_compare;
+      const row = select<HTMLElement>(dz, "compare-row")!;
+      row.removeAttribute("hidden");
+      const btn = select<HTMLButtonElement>(dz, "compare-button")!;
+      const input = select<HTMLInputElement>(dz, "compare-input")!;
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        input.click();
+      });
+      input.addEventListener("click", (e) => e.stopPropagation());
+      input.addEventListener("change", (e) => {
+        e.stopPropagation();
+        const file = input.files?.[0];
+        if (file) onCompare(file);
+      });
+    }
+  }
+  if (state.kind === "comparison-complete") {
+    select(dz, "comparison-versions")!.textContent =
+      `Base: ${state.base_filename} → Revised: ${state.revised_filename}`;
+    select(dz, "comparison-verdict")!.textContent = state.verdict;
+    select(dz, "comparison-counts")!.innerHTML = comparisonCountsHtml(state.counts);
+    const dkbWarn = select<HTMLElement>(dz, "comparison-dkb-warning")!;
+    if (state.dkb_mismatch) {
+      dkbWarn.hidden = false;
+      dkbWarn.textContent =
+        "The two versions were analyzed against different DKB versions, so a finding may differ because the underlying authority changed, not the document.";
+    }
+    const status = select<HTMLElement>(dz, "download-status")!;
+    const docxBtn = select<HTMLButtonElement>(dz, "comparison-docx-download")!;
+    const jsonBtn = select<HTMLButtonElement>(dz, "comparison-json-download")!;
+    docxBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      void saveBlob(state.docx_blob, state.docx_filename, status);
+    });
+    jsonBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      void saveBlob(state.json_blob, state.json_filename, status);
+    });
+    const resetBtn = select<HTMLButtonElement>(dz, "comparison-reset")!;
+    if (state.on_reset) {
+      const onReset = state.on_reset;
+      resetBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        onReset();
+      });
+    } else {
+      resetBtn.hidden = true;
     }
   }
   if (state.kind === "bundle-complete") {
@@ -348,6 +451,16 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
     } else {
       select(dz, "error-message")!.textContent = state.message;
     }
+    const actionBtn = select<HTMLButtonElement>(dz, "error-action")!;
+    if (state.action) {
+      const action = state.action;
+      actionBtn.hidden = false;
+      actionBtn.textContent = action.label;
+      actionBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        action.on_click();
+      });
+    }
   }
 }
 
@@ -356,6 +469,25 @@ export function select<T extends HTMLElement = HTMLElement>(
   role: string,
 ): T | null {
   return root.querySelector<T>(`[data-role="${role}"]`);
+}
+
+type BucketCounts = { critical: number; warning: number; info: number; total: number };
+
+function comparisonCountsHtml(counts: {
+  resolved: BucketCounts;
+  introduced: BucketCounts;
+  unchanged: BucketCounts;
+  carried_clean_count: number;
+}): string {
+  const line = (label: string, klass: string, c: BucketCounts): string =>
+    `<span class="comparison-count comparison-count--${klass}"><strong>${c.total}</strong> ${label}` +
+    `<span class="comparison-count-detail"> (${c.critical}C · ${c.warning}W · ${c.info}I)</span></span>`;
+  return `
+    ${line("resolved", "resolved", counts.resolved)}
+    ${line("introduced", "introduced", counts.introduced)}
+    ${line("unchanged", "unchanged", counts.unchanged)}
+    <span class="comparison-count comparison-count--clean"><strong>${counts.carried_clean_count}</strong> carried clean</span>
+  `;
 }
 
 function countsHtml(counts: { critical: number; warning: number; info: number }): string {

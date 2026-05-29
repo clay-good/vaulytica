@@ -213,7 +213,92 @@ function renderCompleteState(
       hint: result.v3_frames.hint,
     },
     on_frames_change: onFramesChange,
+    // v6 Part I comparison (Step 90). The base run is the one currently
+    // rendered, so a frame-toggle re-run rebinds compare to the fresh run.
+    on_compare: (revisedFile) => {
+      void runComparison(dz, filename, result.run, revisedFile);
+    },
   });
+}
+
+/**
+ * v6 Part I version comparison (Step 90). Runs the engine on the revised
+ * document, diffs it against the base run, and renders the comparison-complete
+ * state. A cross-family pairing is refused with a clear message and a
+ * "Compare anyway" action that confirms the pairing (spec-v6 §5).
+ */
+async function runComparison(
+  dz: HTMLElement,
+  baseDisplayName: string,
+  baseRun: import("./pipeline.js").PipelineResult["run"],
+  revisedFile: File,
+): Promise<void> {
+  try {
+    const kind: "pdf" | "docx" = revisedFile.name.toLowerCase().endsWith(".pdf") ? "pdf" : "docx";
+    setState(dz, { kind: "analyzing", filename: revisedFile.name });
+    const { runPipeline } = await import("./pipeline.js");
+    const progress = createProgressBar(select(dz, "progress")!);
+    const ticker = createRuleTicker(select(dz, "ticker")!);
+    progress.reset();
+    const revised = await runPipeline(revisedFile, kind, {
+      onProgress: (fraction) => progress.set(fraction),
+      onRule: (rule) => ticker.push(rule.id, rule.name),
+    });
+
+    const { compareRuns, comparabilityOf, buildComparisonDocx, buildComparisonJson } =
+      await import("../report/index.js");
+    const revisedRun = revised.run;
+
+    const stem = `${baseFilename(baseRun.source_file.name)}-vs-${baseFilename(revisedFile.name)}`;
+    const build = async (confirmPairing: boolean): Promise<void> => {
+      const cmp = await compareRuns(baseRun, revisedRun, { confirmPairing });
+      const docx = await buildComparisonDocx(cmp);
+      const json = buildComparisonJson(cmp);
+      const { resolved, introduced, unchanged } = cmp.delta.counts;
+      const verdict =
+        introduced.total === 0 && resolved.total === 0
+          ? "No change to the risk surface."
+          : introduced.critical > 0
+            ? "Read the introduced findings first — this revision created at least one critical finding."
+            : resolved.total > introduced.total
+              ? "Net improvement: more findings resolved than introduced."
+              : introduced.total > resolved.total
+                ? "Net regression: more findings introduced than resolved."
+                : "Mixed: equal findings resolved and introduced.";
+      setState(dz, {
+        kind: "comparison-complete",
+        base_filename: baseRun.source_file.name || baseDisplayName,
+        revised_filename: revisedFile.name,
+        verdict,
+        counts: {
+          resolved,
+          introduced,
+          unchanged,
+          carried_clean_count: cmp.delta.carried_clean_count,
+        },
+        dkb_mismatch: cmp.dkb_mismatch,
+        docx_blob: docx,
+        json_blob: json,
+        docx_filename: `${stem}-comparison.docx`,
+        json_filename: `${stem}-comparison.json`,
+        on_reset: () => setState(dz, { kind: "empty" }),
+      });
+    };
+
+    const comparability = comparabilityOf(baseRun, revisedRun);
+    if (!comparability.comparable) {
+      setState(dz, {
+        kind: "error",
+        message: comparability.reason ?? "These documents are not comparable.",
+        action: { label: "Compare anyway", on_click: () => void build(true) },
+      });
+      return;
+    }
+    await build(false);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    setState(dz, { kind: "error", message });
+  }
 }
 
 async function runBundle(
