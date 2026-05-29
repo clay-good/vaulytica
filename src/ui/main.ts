@@ -19,6 +19,14 @@ import { createRuleTicker } from "./ticker.js";
 import { registerServiceWorker } from "./sw-register.js";
 import { hydrateDkbValidation } from "./dkb-validation.js";
 import { V3_FAMILY_LABELS } from "./v3-labels.js";
+import { bindPlaybookPanel, type LoadedPlaybook } from "./playbook-panel.js";
+
+/**
+ * The user-supplied playbook currently loaded in the tab (spec-v6 Part II,
+ * Step 92), or `null`. Held in memory only — never uploaded (Part VII). When
+ * set, the next single-document analysis enforces it.
+ */
+let activeCustomPlaybook: LoadedPlaybook | null = null;
 
 
 /**
@@ -42,10 +50,24 @@ export async function bootUi(opts: {
    * if one exists in the document.
    */
   folderPickContainer?: HTMLElement | null;
+  /**
+   * Container hosting the bring-your-own-playbook panel (spec-v6 Part II,
+   * Step 92). Defaults to the `#playbook-panel` node if one exists. When
+   * absent, the playbook affordance is simply not rendered.
+   */
+  playbookPanelContainer?: HTMLElement | null;
 }): Promise<void> {
   const persisted = readPersistedTheme();
   if (persisted) applyTheme(opts.root, persisted);
   if (opts.themeButton) bindThemeToggle(opts.root, opts.themeButton);
+
+  if (opts.playbookPanelContainer) {
+    bindPlaybookPanel(opts.playbookPanelContainer, {
+      onActiveChange: (playbook) => {
+        activeCustomPlaybook = playbook;
+      },
+    });
+  }
 
   renderState(opts.dropzone, { kind: "empty" });
   bindDropzone(opts.dropzone, {
@@ -85,12 +107,18 @@ async function runFile(dz: HTMLElement, file: File, kind: "pdf" | "docx"): Promi
     const progress = createProgressBar(select(dz, "progress")!);
     const ticker = createRuleTicker(select(dz, "ticker")!);
     progress.reset();
-    const result = await runPipeline(file, kind, {
-      onProgress: (fraction) => progress.set(fraction),
-      onRule: (rule) => ticker.push(rule.id, rule.name),
-      onDkbLoaded: (version) =>
-        setState(dz, { kind: "analyzing", filename: file.name, dkb_version: version }),
-    });
+    const result = await runPipeline(
+      file,
+      kind,
+      {
+        onProgress: (fraction) => progress.set(fraction),
+        onRule: (rule) => ticker.push(rule.id, rule.name),
+        onDkbLoaded: (version) =>
+          setState(dz, { kind: "analyzing", filename: file.name, dkb_version: version }),
+      },
+      {},
+      { custom_playbook: activeCustomPlaybook ?? undefined },
+    );
 
     const stem = baseFilename(file.name);
 
@@ -115,6 +143,8 @@ async function runFile(dz: HTMLElement, file: File, kind: "pdf" | "docx"): Promi
           // we put in `frames` are always members because they come
           // from `result.v3_frames.available` (defaultFramesForPlaybook).
           active_frames: frames as readonly never[],
+          // Preserve the active playbook across frame-toggle re-runs.
+          custom_playbook: activeCustomPlaybook ?? undefined,
         });
         renderCompleteState(dz, file.name, stem, fresh, countsBySeverity, frames, rerun);
       } catch (err) {
@@ -166,6 +196,7 @@ function renderCompleteState(
     deadlines_ics_blob: Blob;
     v3_detection: import("./pipeline.js").PipelineResult["v3_detection"];
     v3_frames: import("./pipeline.js").PipelineResult["v3_frames"];
+    custom_playbook?: import("./pipeline.js").PipelineResult["custom_playbook"];
   },
   countsBySeverity: (r: import("./pipeline.js").PipelineResult["run"]) => {
     critical: number;
@@ -213,6 +244,16 @@ function renderCompleteState(
       hint: result.v3_frames.hint,
     },
     on_frames_change: onFramesChange,
+    // v6 Part II bring-your-own-playbook provenance (Step 92). Present only
+    // when a user-supplied playbook drove this run.
+    custom_playbook: result.custom_playbook
+      ? {
+          name: result.custom_playbook.name,
+          mode: result.custom_playbook.mode,
+          custom_finding_count: result.custom_playbook.custom_finding_count,
+          unevaluable_count: result.custom_playbook.unevaluable.length,
+        }
+      : undefined,
     // v6 Part I comparison (Step 90). The base run is the one currently
     // rendered, so a frame-toggle re-run rebinds compare to the fresh run.
     on_compare: (revisedFile) => {
@@ -430,7 +471,14 @@ if (typeof document !== "undefined") {
     const theme = document.getElementById("theme-toggle") ?? undefined;
     if (!dz) return;
     const folderHost = document.getElementById("dropzone-extras") ?? undefined;
-    void bootUi({ root, dropzone: dz, themeButton: theme, folderPickContainer: folderHost });
+    const playbookHost = document.getElementById("playbook-panel") ?? undefined;
+    void bootUi({
+      root,
+      dropzone: dz,
+      themeButton: theme,
+      folderPickContainer: folderHost,
+      playbookPanelContainer: playbookHost,
+    });
     void registerServiceWorker({ badge: document.getElementById("offline-badge") });
     void hydrateDkbValidation();
     // Preload on first user-intent signal (focus, pointer-enter,

@@ -26,6 +26,15 @@ import type { DKB } from "../dkb/types.js";
 import { matchPlaybook, parsePlaybook, LAUNCH_PLAYBOOK_IDS } from "../playbooks/index.js";
 import type { Playbook } from "../playbooks/types.js";
 import {
+  runWithCustomPlaybook,
+  previewCustomPlaybook,
+  parseCustomPlaybookJson,
+  RULE_CATALOG_VERSION,
+  type CustomPlaybook,
+  type CustomPlaybookPreview,
+  type UnevaluableRule,
+} from "../playbooks/index.js";
+import {
   ALL_CONSISTENCY_RULES,
   LAUNCH_RULES,
   V3_RULES,
@@ -118,6 +127,20 @@ export type PipelineResult = {
    * follow-up.
    */
   v3_frames: FrameDefaults;
+  /**
+   * v6 Part II custom-playbook provenance (Step 92). Present only when a
+   * user-supplied playbook was active for the run. Lets the complete-state
+   * surface "N findings from your playbook" + any unevaluable rules so the
+   * report distinguishes the team's standard from the built-in catalog.
+   */
+  custom_playbook?: {
+    id: string;
+    name: string;
+    mode: "augment" | "replace";
+    custom_finding_count: number;
+    builtin_finding_count: number;
+    unevaluable: ReadonlyArray<UnevaluableRule>;
+  };
 };
 
 export type PipelineConfig = {
@@ -136,6 +159,16 @@ export type PipelineOptions = {
    * frame filtering (default — matches v1/v3/v4 behavior to date).
    */
   active_frames?: ReadonlyArray<ComplianceFrame>;
+  /**
+   * v6 Part II bring-your-own-playbook (Step 92). When set, the run is
+   * driven by the user-supplied playbook: the built-in catalog is narrowed
+   * per its `rule_selection` / `rule_overrides` (or dropped entirely in
+   * `replace` mode), and the custom-rule interpreter runs over the same
+   * document. Custom findings carry `source: "custom-playbook"`; built-in
+   * findings are tagged `catalog`. Omit to run the built-in catalog only.
+   * The playbook is held in memory and never leaves the tab (Part VII).
+   */
+  custom_playbook?: CustomPlaybook;
   /**
    * Cross-document consistency toggle (spec-v3 §62). Default `true`.
    * When set to `false`, `runBundlePipeline` skips the consistency
@@ -238,23 +271,65 @@ export async function runReport(
     [...LAUNCH_RULES, ...V3_RULES] as readonly Rule[],
     options.active_frames,
   );
-  const run = await runEngine({
-    rules: ruleSet as readonly Rule[],
-    ctx: {
+  const onRuleProgress = ({
+    rule,
+    index,
+    total,
+    fired,
+  }: {
+    rule: Rule;
+    index: number;
+    total: number;
+    fired: boolean;
+  }): void => {
+    hooks.onProgress?.((index + 1) / total);
+    hooks.onRule?.(rule, fired);
+  };
+
+  // v6 Part II: when a user-supplied playbook is active, drive the run
+  // through the custom-playbook orchestrator (built-in catalog narrowed +
+  // custom interpreter merged). Otherwise run the built-in catalog as before.
+  let run: EngineRun;
+  let customProvenance: PipelineResult["custom_playbook"];
+  if (options.custom_playbook) {
+    const custom = await runWithCustomPlaybook({
+      rules: ruleSet as readonly Rule[],
+      matched_playbook: prepared.playbook,
+      custom_playbook: options.custom_playbook,
       tree: prepared.ingest.tree,
       extracted: prepared.extracted,
       dkb: prepared.dkb,
-      playbook: prepared.playbook,
-    },
-    source_file: prepared.source_file,
-    playbook_match_confidence: prepared.match.confidence,
-    playbook_match_reasoning: prepared.match.reasoning,
-    executed_at: new Date().toISOString(),
-    onRule: ({ rule, index, total, fired }) => {
-      hooks.onProgress?.((index + 1) / total);
-      hooks.onRule?.(rule, fired);
-    },
-  });
+      source_file: prepared.source_file,
+      playbook_match_confidence: prepared.match.confidence,
+      playbook_match_reasoning: prepared.match.reasoning,
+      executed_at: new Date().toISOString(),
+      onRule: onRuleProgress,
+    });
+    run = custom.run;
+    customProvenance = {
+      id: options.custom_playbook.id,
+      name: options.custom_playbook.name,
+      mode: options.custom_playbook.mode ?? "augment",
+      custom_finding_count: custom.custom_finding_count,
+      builtin_finding_count: custom.builtin_finding_count,
+      unevaluable: custom.custom.unevaluable,
+    };
+  } else {
+    run = await runEngine({
+      rules: ruleSet as readonly Rule[],
+      ctx: {
+        tree: prepared.ingest.tree,
+        extracted: prepared.extracted,
+        dkb: prepared.dkb,
+        playbook: prepared.playbook,
+      },
+      source_file: prepared.source_file,
+      playbook_match_confidence: prepared.match.confidence,
+      playbook_match_reasoning: prepared.match.reasoning,
+      executed_at: new Date().toISOString(),
+      onRule: onRuleProgress,
+    });
+  }
 
   const docx_blob = await buildDocxReport(
     run,
@@ -286,7 +361,38 @@ export async function runReport(
     deadlines_ics_blob,
     v3_detection,
     v3_frames,
+    custom_playbook: customProvenance,
   };
+}
+
+/**
+ * Built-in catalog rule ids the single-document pipeline runs, in catalog
+ * order. Exposed so the (eager) playbook panel can compute a custom-playbook
+ * {@link previewCustomPlaybook} preview against the *real* catalog without
+ * pulling the whole engine into the marketing-page bundle — the panel
+ * dynamic-imports this module (already preloaded on hover/drag) on demand.
+ */
+export function catalogRuleIds(): string[] {
+  return [...LAUNCH_RULES, ...V3_RULES].map((r) => r.id);
+}
+
+/**
+ * Validate raw playbook JSON text and, on success, compute the catalog-aware
+ * preview in one call — the shape the playbook panel renders. Re-exported
+ * through this (lazy) chunk so the eager UI bundle stays free of `zod`.
+ */
+export function validateAndPreviewPlaybook(
+  text: string,
+):
+  | { ok: true; playbook: CustomPlaybook; preview: CustomPlaybookPreview }
+  | { ok: false; errors: string[] } {
+  const parsed = parseCustomPlaybookJson(text);
+  if (!parsed.ok) return parsed;
+  const preview = previewCustomPlaybook(parsed.playbook, {
+    rule_ids: catalogRuleIds(),
+    version: RULE_CATALOG_VERSION,
+  });
+  return { ok: true, playbook: parsed.playbook, preview };
 }
 
 /**

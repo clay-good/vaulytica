@@ -132,8 +132,14 @@ export async function runEngine(input: RunEngineInput): Promise<EngineRun> {
  * wall-clock from `performance.now()` — both vary across runs and
  * machines without changing the substantive output, so both are
  * blanked before hashing.
+ *
+ * Exported so callers that synthesize a derived run (e.g. the
+ * custom-playbook merge in `src/playbooks/custom-run.ts`, which appends
+ * user-rule findings to a built-in run) can recompute the hash with the
+ * exact same canonicalization, rather than reimplementing it and risking
+ * drift from the engine's determinism contract.
  */
-async function computeResultHash(run: EngineRun): Promise<string> {
+export async function computeResultHash(run: EngineRun): Promise<string> {
   const canonical: EngineRun = {
     ...run,
     result_hash: "",

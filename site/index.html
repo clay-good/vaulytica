@@ -674,6 +674,59 @@
         color: var(--body);
         font-size: 15px;
       }
+      /* Bring-your-own-playbook panel (spec-v6 Part II, Step 92). Sits
+         beside the drop zone in the empty state; everything is loaded,
+         validated, and held client-side — no bytes leave the tab. */
+      .playbook-panel {
+        max-width: 56ch;
+        text-align: left;
+      }
+      .playbook-panel .playbook-status {
+        margin-top: 8px;
+        font-size: 14px;
+        color: var(--body);
+      }
+      .playbook-error {
+        color: var(--critical, #b00020);
+      }
+      .playbook-error-heading {
+        font-weight: 600;
+      }
+      .playbook-error-list,
+      .playbook-warnings {
+        margin: 4px 0 0;
+        padding-left: 18px;
+      }
+      .playbook-warnings {
+        color: var(--muted);
+      }
+      .playbook-loaded-summary {
+        margin-top: 4px;
+        color: var(--muted);
+      }
+      .playbook-mode {
+        margin: 8px 0;
+        border: 1px solid var(--border, #ddd);
+        border-radius: 8px;
+        padding: 6px 10px;
+      }
+      .playbook-mode legend {
+        font-size: 13px;
+        color: var(--muted);
+        padding: 0 4px;
+      }
+      .playbook-mode label {
+        display: block;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      /* Custom-playbook provenance line in the complete state. */
+      .playbook-provenance {
+        margin: 4px 0 8px;
+        font-size: 14px;
+        color: var(--muted);
+        text-align: center;
+      }
       /* Findings-to-action export row (spec-v6 Part III). A wrapped
          row of secondary link-buttons under the primary downloads. */
       .export-row {
@@ -1368,6 +1421,7 @@
           Multiple files? Drop a folder or
           <button type="button" class="btn-link" data-role="folder-pick">choose a folder…</button>
         </p>
+        <div class="playbook-panel dropzone-extras" id="playbook-panel" aria-label="Bring your own playbook"></div>
       </section>
 
       <!-- What it checks -->

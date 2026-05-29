@@ -47,3 +47,14 @@ export {
   type CustomPlaybookFinding,
   type UnevaluableRule,
 } from "./custom-interpreter.js";
+
+// v6 Part II — custom-playbook preview + merged run (Step 92).
+export {
+  previewCustomPlaybook,
+  selectBuiltinRuleIds,
+  runWithCustomPlaybook,
+  RULE_CATALOG_VERSION,
+  type CustomPlaybookPreview,
+  type CustomPlaybookRunResult,
+  type RunWithCustomPlaybookInput,
+} from "./custom-run.js";

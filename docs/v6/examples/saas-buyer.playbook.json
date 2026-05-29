@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "catalog_version": "0.1.0",
+  "id": "acme-saas-buyer",
+  "name": "Acme SaaS Buyer Standard",
+  "description": "Acme's negotiation positions for inbound SaaS subscription agreements — the standard our procurement team enforces on every vendor paper.",
+  "mode": "augment",
+  "thresholds": {
+    "min_cap_multiple": 12,
+    "max_notice_days": 30
+  },
+  "required_clauses": [
+    { "category": "limitation-of-liability", "severity": "critical" },
+    { "category": "confidentiality-obligation", "severity": "warning" }
+  ],
+  "custom_rules": [
+    {
+      "id": "ACME-SAAS-CAP",
+      "title": "Liability cap must be at least 12x fees",
+      "description": "We do not accept a liability cap below 12x trailing fees.",
+      "severity": "critical",
+      "assert": { "kind": "numeric_threshold", "metric": "liability_cap_multiple", "comparator": "gte", "value": 12 },
+      "citation": { "reference": "Acme Contracting Policy §4.2" }
+    },
+    {
+      "id": "ACME-SAAS-NOTICE",
+      "title": "Termination notice must be 30 days or fewer",
+      "description": "We do not accept a termination-for-convenience notice longer than 30 days.",
+      "severity": "warning",
+      "assert": { "kind": "numeric_threshold", "metric": "notice_period_days", "comparator": "lte", "value": 30 },
+      "citation": { "reference": "Acme Contracting Policy §6.1" }
+    },
+    {
+      "id": "ACME-SAAS-GOVLAW",
+      "title": "Governing law must be Delaware or New York",
+      "description": "We accept only Delaware or New York as the governing law.",
+      "severity": "warning",
+      "assert": { "kind": "governing_law_in", "allowed": ["Delaware", "New York"] }
+    },
+    {
+      "id": "ACME-SAAS-NO-ARB",
+      "title": "No mandatory arbitration",
+      "description": "We strike mandatory-arbitration clauses; disputes go to court.",
+      "severity": "warning",
+      "assert": { "kind": "clause_absent", "pattern": "arbitration" }
+    },
+    {
+      "id": "ACME-SAAS-DPA",
+      "title": "A Data Processing Addendum must be referenced",
+      "description": "The agreement must define and incorporate a Data Processing Addendum.",
+      "severity": "critical",
+      "assert": { "kind": "clause_present", "pattern": "data processing addendum" },
+      "citation": { "reference": "Acme Privacy Policy §2" }
+    }
+  ]
+}

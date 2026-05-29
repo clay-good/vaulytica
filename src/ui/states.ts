@@ -86,6 +86,19 @@ export type DropzoneState =
        * back-compat: omitting it hides the compare row.
        */
       on_compare?: (file: File) => void;
+      /**
+       * v6 Part II bring-your-own-playbook provenance (Step 92). Present only
+       * when a user-supplied playbook drove this run. Renders a line under the
+       * counts distinguishing "your standard flagged this" from the built-in
+       * catalog, plus how many of the team's rules could not be evaluated on
+       * this document. Optional / back-compat: omitting hides the line.
+       */
+      custom_playbook?: {
+        name: string;
+        mode: "augment" | "replace";
+        custom_finding_count: number;
+        unevaluable_count: number;
+      };
     }
   | {
       kind: "comparison-complete";
@@ -225,6 +238,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     <div class="dropzone-title" data-role="complete-filename"></div>
     <div class="v3-family-chip" data-role="v3-family" hidden></div>
     <div class="counts" data-role="counts"></div>
+    <div class="playbook-provenance" data-role="playbook-provenance" hidden></div>
     <div class="compliance-frame-chips" data-role="compliance-frame-chips" role="group" aria-label="Compliance frames" hidden></div>
     <div class="dropzone-sub compliance-frame-hint" data-role="compliance-frame-hint" hidden></div>
     <details class="playbook-disclosure">
@@ -306,6 +320,7 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
         : "";
     select(dz, "reasoning")!.textContent = `${baseReasoning}${legacySuffix}`;
     renderV3FamilyChip(dz, state.v3_family);
+    renderPlaybookProvenance(dz, state.custom_playbook);
     renderComplianceFrameChips(dz, state.v3_frames, state.on_frames_change);
     const docxBtn = select<HTMLButtonElement>(dz, "docx-download")!;
     const jsonBtn = select<HTMLButtonElement>(dz, "json-download")!;
@@ -656,6 +671,35 @@ function renderV3FamilyChip(
   // bundle-complete multi-doc cards (`.multi-doc-card.low-confidence`).
   chip.classList.toggle("low-confidence", detection.confidence < 0.5);
   chip.textContent = `Detected: ${detection.label} (${detection.confidence.toFixed(2)})`;
+}
+
+/**
+ * Render the bring-your-own-playbook provenance line (spec-v6 Part II,
+ * Step 92). Distinguishes the team's standard from the built-in catalog and
+ * notes any custom rules that could not be evaluated on this document.
+ * Hidden when the run was not driven by a custom playbook.
+ */
+function renderPlaybookProvenance(
+  dz: HTMLElement,
+  custom:
+    | { name: string; mode: "augment" | "replace"; custom_finding_count: number; unevaluable_count: number }
+    | undefined,
+): void {
+  const el = select<HTMLElement>(dz, "playbook-provenance");
+  if (!el) return;
+  if (!custom) {
+    el.hidden = true;
+    el.textContent = "";
+    return;
+  }
+  el.hidden = false;
+  const modeWord = custom.mode === "replace" ? "only your playbook" : "your playbook + the built-in catalog";
+  const findings = `${custom.custom_finding_count} finding${custom.custom_finding_count === 1 ? "" : "s"} from ${escapeHtml(custom.name)}`;
+  const unevaluable =
+    custom.unevaluable_count > 0
+      ? ` · ${custom.unevaluable_count} custom rule${custom.unevaluable_count === 1 ? "" : "s"} could not be evaluated on this document`
+      : "";
+  el.textContent = `Enforcing ${modeWord}: ${findings}${unevaluable}.`;
 }
 
 function renderComplianceFrameChips(

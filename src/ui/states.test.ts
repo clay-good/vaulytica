@@ -110,6 +110,34 @@ describe("renderState", () => {
     expect(select(dz, "reasoning")!.textContent).toContain("matched on title");
     // No exports supplied → the v6 export row stays hidden.
     expect(select(dz, "export-row")!.hasAttribute("hidden")).toBe(true);
+    // No custom playbook → provenance line stays hidden.
+    expect(select(dz, "playbook-provenance")!.hasAttribute("hidden")).toBe(true);
+  });
+
+  it("renders the v6 custom-playbook provenance line when a playbook drove the run", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "complete",
+      filename: "msa.docx",
+      playbook_name: "MSA — Vendor",
+      counts: { critical: 1, warning: 2, info: 0 },
+      docx_blob: new Blob(["docx"], { type: "application/octet-stream" }),
+      json_blob: new Blob(["{}"], { type: "application/json" }),
+      docx_filename: "msa-vaulytica.docx",
+      json_filename: "msa-vaulytica.json",
+      custom_playbook: {
+        name: "Acme SaaS Buyer Standard",
+        mode: "augment",
+        custom_finding_count: 3,
+        unevaluable_count: 1,
+      },
+    });
+    const prov = select(dz, "playbook-provenance")!;
+    expect(prov.hasAttribute("hidden")).toBe(false);
+    expect(prov.textContent).toContain("Acme SaaS Buyer Standard");
+    expect(prov.textContent).toMatch(/3 findings/);
+    expect(prov.textContent).toMatch(/your playbook \+ the built-in catalog/);
+    expect(prov.textContent).toMatch(/1 custom rule could not be evaluated/);
   });
 
   it("renders the v6 findings-to-action export row when exports are supplied", () => {

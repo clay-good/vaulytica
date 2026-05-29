@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "catalog_version": "0.1.0",
+  "id": "northwind-vendor-redlines",
+  "name": "Northwind Vendor Red-lines",
+  "description": "Northwind's sell-side red-lines — the positions our deal desk requires before signing a customer's MSA or order form. We are the vendor, so these protect us from over-broad liability and slow payment.",
+  "mode": "augment",
+  "rule_overrides": {
+    "RISK-002": { "severity": "info" }
+  },
+  "thresholds": {
+    "max_cap_multiple": 1,
+    "min_payment_days": 30
+  },
+  "custom_rules": [
+    {
+      "id": "NW-CAP-LIMIT",
+      "title": "Liability cap must not exceed 1x fees",
+      "description": "As the vendor, we cap our aggregate liability at 1x trailing fees; a higher cap is a red-line.",
+      "severity": "critical",
+      "assert": { "kind": "numeric_threshold", "metric": "liability_cap_multiple", "comparator": "lte", "value": 1 },
+      "citation": { "reference": "Northwind Deal Desk Playbook §3.1" }
+    },
+    {
+      "id": "NW-PAYMENT",
+      "title": "Payment terms must be at least Net 30",
+      "description": "We do not accept payment terms shorter than Net 30.",
+      "severity": "warning",
+      "assert": { "kind": "numeric_threshold", "metric": "payment_term_days", "comparator": "gte", "value": 30 },
+      "citation": { "reference": "Northwind Deal Desk Playbook §5.2" }
+    },
+    {
+      "id": "NW-NO-UNLIMITED-INDEMNITY",
+      "title": "No uncapped or unlimited indemnity",
+      "description": "We strike any 'unlimited' or 'uncapped' indemnity language.",
+      "severity": "critical",
+      "assert": { "kind": "clause_absent", "pattern": "unlimited" }
+    },
+    {
+      "id": "NW-GOVLAW",
+      "title": "Governing law must be Washington or Delaware",
+      "description": "We require Washington or Delaware governing law on our paper.",
+      "severity": "warning",
+      "assert": { "kind": "governing_law_in", "allowed": ["Washington", "Delaware"] }
+    },
+    {
+      "id": "NW-REFS",
+      "title": "Internal cross-references must resolve",
+      "description": "A dangling section reference is an authoring defect we ask the customer to fix before signature.",
+      "severity": "info",
+      "assert": { "kind": "cross_ref_resolves" }
+    }
+  ]
+}

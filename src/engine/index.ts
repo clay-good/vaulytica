@@ -23,6 +23,7 @@ export {
   runEngine,
   runEngineMulti,
   stableStringify,
+  computeResultHash,
   ENGINE_VERSION,
   severityIsAtLeast,
 } from "./runner.js";
