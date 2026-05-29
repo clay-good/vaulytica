@@ -160,6 +160,10 @@ function renderCompleteState(
     run: import("./pipeline.js").PipelineResult["run"];
     docx_blob: Blob;
     json_blob: Blob;
+    fixlist_md_blob: Blob;
+    fixlist_csv_blob: Blob;
+    obligations_csv_blob: Blob;
+    deadlines_ics_blob: Blob;
     v3_detection: import("./pipeline.js").PipelineResult["v3_detection"];
     v3_frames: import("./pipeline.js").PipelineResult["v3_frames"];
   },
@@ -185,6 +189,16 @@ function renderCompleteState(
     json_blob: result.json_blob,
     docx_filename: `${stem}-vaulytica.docx`,
     json_filename: `${stem}-vaulytica.json`,
+    exports: {
+      fixlist_md_blob: result.fixlist_md_blob,
+      fixlist_csv_blob: result.fixlist_csv_blob,
+      obligations_csv_blob: result.obligations_csv_blob,
+      deadlines_ics_blob: result.deadlines_ics_blob,
+      fixlist_md_filename: `${stem}-vaulytica-fixlist.md`,
+      fixlist_csv_filename: `${stem}-vaulytica-fixlist.csv`,
+      obligations_csv_filename: `${stem}-vaulytica-obligations.csv`,
+      deadlines_ics_filename: `${stem}-vaulytica-deadlines.ics`,
+    },
     v3_family:
       result.v3_detection.family === "unknown"
         ? undefined

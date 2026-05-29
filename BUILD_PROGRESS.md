@@ -25,6 +25,19 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v6 Steps 87–88 — findings-to-action exports + deadlines `.ics` (spec-v6 Part III) (2026-05-29) — ✅ complete
+
+Landed the two v6 "quick win" build steps — pure deterministic projections over a run the engine already produces, no new model/server/probabilistic path (passes the spec-v6 §3 five-part posture filter). Per spec-v6 §6 / open-question #7, the use-case expansion (exports) proceeds independently of the human-gated v5 corpus work.
+
+New module [`src/report/exports.ts`](src/report/exports.ts) (+ [`exports.test.ts`](src/report/exports.test.ts), 23 tests):
+
+- **Step 87 — fix list + obligations CSV.** `buildFixListMarkdown(run, extracted?)` renders findings as a severity-grouped checklist; when `extracted` is supplied it appends a "Dates to verify manually" section sourced from the deadlines resolver (spec-v6 §13 ambiguous-date guard). `buildFixListCsv(run)` emits RFC-4180-escaped rows in the run's existing sorted order. `buildObligationsCsv(extracted)` projects the obligations ledger (obligor / modal / action / trigger / qualifier / section / source clause).
+- **Step 88 — deadlines `.ics`.** `collectDeadlines(extracted)` resolves extracted temporal facts into events + an `unresolved` list: valid absolute dates become events directly; relative dates resolve **only** when the anchor's definition pins a concrete date (the "term + notice period" arithmetic of §13, computed via UTC `addDays` — never guessed). `buildDeadlinesIcs` serializes all-day VEVENTs with a **fixed DTSTAMP** and a content-derived FNV-1a UID, CRLF line folding, and RFC-5545 escaping, so two machines produce byte-identical calendars (same discipline as `result_hash`). Negative-offset ("before"-an-anchor) dates are flagged as notice deadlines and carry a DISPLAY VALARM.
+
+UI wiring (additive, back-compat): [`pipeline.ts`](src/ui/pipeline.ts) `runReport` now builds the four export blobs alongside the DOCX/JSON (so both the initial run and the compliance-frame re-run path get them); [`states.ts`](src/ui/states.ts) gains an optional `exports` field on the complete-state, a hidden-by-default "Export" row in the template, and click handlers — and `saveBlob` was generalized from a hardcoded docx/json branch to a `FILE_TYPES` lookup (adds `.md` / `.csv` / `.ics` MIME + File System Access `accept` filters). [`main.ts`](src/ui/main.ts) supplies the blobs + filenames. [`site/index.html`](site/index.html) adds a minimal `.export-row` flex style. Two new render tests in [`states.test.ts`](src/ui/states.test.ts) cover the hidden-without-exports and rendered-with-exports branches.
+
+Full gate green: `npm run lint && typecheck && test && build` — **2259 passing + 2 skips** (was 2235; +24 new). Determinism asserted by two-run-identical tests on every export. Not started: comparison engine (Step 89+) and custom playbooks (Step 91+).
+
 ### v4 sub-domain classifier confidence threshold calibrated 0.5 → 0.4 (spec-v4 Part VII open question #8) (2026-05-28) — ✅ complete
 
 Closes the last tracked v4 tuning task. Open question #8 left the auto-classifier's 0.5 / 0.5 sub-domain / family confidence floors as "a starting point ... may need calibration once a fixture corpus exists." That corpus now exists (the Step 61 golden corpus under [`tests/golden/v4/fixtures/`](tests/golden/v4/fixtures/) — one passing + several failing fixtures per sub-domain B–P, each filename-prefixed with its sub-domain), so the floor was calibrated against it instead of guessed.

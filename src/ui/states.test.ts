@@ -108,6 +108,38 @@ describe("renderState", () => {
     expect(select(dz, "counts")!.textContent).toMatch(/5/);
     expect(select(dz, "counts")!.textContent).toMatch(/11/);
     expect(select(dz, "reasoning")!.textContent).toContain("matched on title");
+    // No exports supplied → the v6 export row stays hidden.
+    expect(select(dz, "export-row")!.hasAttribute("hidden")).toBe(true);
+  });
+
+  it("renders the v6 findings-to-action export row when exports are supplied", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "complete",
+      filename: "nda.docx",
+      playbook_name: "Mutual NDA",
+      counts: { critical: 1, warning: 0, info: 0 },
+      docx_blob: new Blob(["docx"], { type: "application/octet-stream" }),
+      json_blob: new Blob(["{}"], { type: "application/json" }),
+      docx_filename: "nda-vaulytica.docx",
+      json_filename: "nda-vaulytica.json",
+      exports: {
+        fixlist_md_blob: new Blob(["# fix"], { type: "text/markdown" }),
+        fixlist_csv_blob: new Blob(["a,b"], { type: "text/csv" }),
+        obligations_csv_blob: new Blob(["a,b"], { type: "text/csv" }),
+        deadlines_ics_blob: new Blob(["BEGIN:VCALENDAR"], { type: "text/calendar" }),
+        fixlist_md_filename: "nda-vaulytica-fixlist.md",
+        fixlist_csv_filename: "nda-vaulytica-fixlist.csv",
+        obligations_csv_filename: "nda-vaulytica-obligations.csv",
+        deadlines_ics_filename: "nda-vaulytica-deadlines.ics",
+      },
+    });
+    const row = select(dz, "export-row")!;
+    expect(row.hasAttribute("hidden")).toBe(false);
+    expect(select(dz, "export-fixlist-md")!.textContent).toMatch(/Fix list \(Markdown\)/);
+    expect(select(dz, "export-fixlist-csv")).not.toBeNull();
+    expect(select(dz, "export-obligations-csv")).not.toBeNull();
+    expect(select(dz, "export-deadlines-ics")!.textContent).toMatch(/Deadlines/);
   });
 
   it("complete-state reasoning annotates Legacy playbook + successor when playbook_deprecation is set", () => {

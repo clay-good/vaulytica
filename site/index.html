@@ -674,6 +674,23 @@
         color: var(--body);
         font-size: 15px;
       }
+      /* Findings-to-action export row (spec-v6 Part III). A wrapped
+         row of secondary link-buttons under the primary downloads. */
+      .export-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 4px 14px;
+        margin-top: 10px;
+      }
+      .export-row .btn-link {
+        margin-top: 0;
+      }
+      .export-row-label {
+        color: var(--muted);
+        font-size: 14px;
+      }
       .download-status {
         margin-top: 10px;
         min-height: 1.25em;

@@ -28,6 +28,25 @@ export type DropzoneState =
       docx_filename: string;
       json_filename: string;
       /**
+       * v6 Part III findings-to-action exports (Steps 87–88). When all
+       * four blobs are present, the complete-state renders an "Export"
+       * row beneath the primary downloads: fix-list (Markdown), fix-list
+       * (CSV), obligations (CSV), and a deadlines `.ics`. Optional /
+       * back-compat: omitting them hides the export row entirely, so
+       * existing call sites and tests that don't supply exports are
+       * unaffected.
+       */
+      exports?: {
+        fixlist_md_blob: Blob;
+        fixlist_csv_blob: Blob;
+        obligations_csv_blob: Blob;
+        deadlines_ics_blob: Blob;
+        fixlist_md_filename: string;
+        fixlist_csv_filename: string;
+        obligations_csv_filename: string;
+        deadlines_ics_filename: string;
+      };
+      /**
        * v3 family detection (spec-v3 §60). When `family === "unknown"`
        * or the field is omitted, no chip is rendered. Otherwise a
        * read-only "Detected: X" pill appears under the playbook name.
@@ -177,6 +196,13 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     </details>
     <button class="btn btn-primary" type="button" data-role="docx-download">Download report (Word)</button>
     <button class="btn-link" type="button" data-role="json-download">Download structured data (JSON)</button>
+    <div class="export-row" data-role="export-row" role="group" aria-label="Export findings to action" hidden>
+      <span class="export-row-label">Export:</span>
+      <button class="btn-link" type="button" data-role="export-fixlist-md">Fix list (Markdown)</button>
+      <button class="btn-link" type="button" data-role="export-fixlist-csv">Fix list (CSV)</button>
+      <button class="btn-link" type="button" data-role="export-obligations-csv">Obligations (CSV)</button>
+      <button class="btn-link" type="button" data-role="export-deadlines-ics">Deadlines (.ics)</button>
+    </div>
     <div class="download-status" data-role="download-status" aria-live="polite"></div>
   `,
   "bundle-complete": `
@@ -239,6 +265,20 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
       e.stopPropagation();
       void saveBlob(state.json_blob, state.json_filename, status);
     });
+    if (state.exports) {
+      const ex = state.exports;
+      select(dz, "export-row")!.removeAttribute("hidden");
+      const wire = (role: string, blob: Blob, filename: string): void => {
+        select<HTMLButtonElement>(dz, role)!.addEventListener("click", (e) => {
+          e.stopPropagation();
+          void saveBlob(blob, filename, status);
+        });
+      };
+      wire("export-fixlist-md", ex.fixlist_md_blob, ex.fixlist_md_filename);
+      wire("export-fixlist-csv", ex.fixlist_csv_blob, ex.fixlist_csv_filename);
+      wire("export-obligations-csv", ex.obligations_csv_blob, ex.obligations_csv_filename);
+      wire("export-deadlines-ics", ex.deadlines_ics_blob, ex.deadlines_ics_filename);
+    }
   }
   if (state.kind === "bundle-complete") {
     select(dz, "bundle-title")!.textContent =
@@ -550,6 +590,25 @@ function renderComplianceFrameChips(
 const DOCX_MIME = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 const JSON_MIME = "application/json";
 
+/**
+ * File-type metadata keyed by extension. Drives both the defensive MIME
+ * re-wrap and the File System Access `accept` filter. Adding an export
+ * format (v6 Part III) is one entry here.
+ */
+const FILE_TYPES: Record<string, { mime: string; description: string; ext: string }> = {
+  docx: { mime: DOCX_MIME, description: "Word document", ext: ".docx" },
+  json: { mime: JSON_MIME, description: "JSON", ext: ".json" },
+  md: { mime: "text/markdown", description: "Markdown", ext: ".md" },
+  csv: { mime: "text/csv", description: "CSV", ext: ".csv" },
+  ics: { mime: "text/calendar", description: "iCalendar", ext: ".ics" },
+};
+
+function fileTypeFor(filename: string): { mime: string; description: string; ext: string } {
+  const dot = filename.lastIndexOf(".");
+  const ext = dot >= 0 ? filename.slice(dot + 1).toLowerCase() : "";
+  return FILE_TYPES[ext] ?? FILE_TYPES.json!;
+}
+
 type FsaWritable = {
   write: (data: BlobPart) => Promise<void>;
   close: () => Promise<void>;
@@ -598,20 +657,19 @@ export async function saveBlob(
     return;
   }
 
-  const ext = filename.toLowerCase().endsWith(".docx") ? "docx" : "json";
+  const fileType = fileTypeFor(filename);
   // Defensively re-wrap if the upstream blob lost its MIME type. macOS
   // associates files by MIME, and a blob of type "" lands as an
   // unrecognized binary in some browsers.
   const typedBlob =
-    blob.type === "" ? new Blob([blob], { type: ext === "docx" ? DOCX_MIME : JSON_MIME }) : blob;
+    blob.type === "" ? new Blob([blob], { type: fileType.mime }) : blob;
 
   const fsa = (window as FsaWindow).showSaveFilePicker;
   if (typeof fsa === "function") {
     statusEl.textContent = `Saving ${filename}…`;
     try {
-      const accept: Record<string, string[]> =
-        ext === "docx" ? { [DOCX_MIME]: [".docx"] } : { [JSON_MIME]: [".json"] };
-      const description = ext === "docx" ? "Word document" : "JSON";
+      const accept: Record<string, string[]> = { [fileType.mime]: [fileType.ext] };
+      const description = fileType.description;
       const handle = await fsa.call(window, {
         suggestedName: filename,
         types: [{ description, accept }],

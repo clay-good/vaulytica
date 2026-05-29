@@ -38,6 +38,12 @@ import {
 } from "../engine/index.js";
 import { buildDocxReport, buildJsonReport } from "../report/index.js";
 import {
+  fixListMarkdownBlob,
+  fixListCsvBlob,
+  obligationsCsvBlob,
+  deadlinesIcsBlob,
+} from "../report/exports.js";
+import {
   buildBundleDocxReport,
   buildBundleJsonBlob,
   type BundleDocument,
@@ -86,6 +92,17 @@ export type PipelineResult = {
   match_reasoning: string;
   docx_blob: Blob;
   json_blob: Blob;
+  /**
+   * v6 Part III findings-to-action exports (Steps 87–88). Built from the
+   * same run + extracted data as the DOCX/JSON so the complete-state can
+   * offer them without re-running the engine. The fix-list Markdown
+   * carries the manual-verify date section; the `.ics` carries only the
+   * deterministically resolvable deadlines.
+   */
+  fixlist_md_blob: Blob;
+  fixlist_csv_blob: Blob;
+  obligations_csv_blob: Blob;
+  deadlines_ics_blob: Blob;
   /**
    * v3 family auto-detection (spec-v3.md §60, LAUNCH row v3-o). Always
    * computed alongside the v2 playbook match so the UI can surface
@@ -248,6 +265,10 @@ export async function runReport(
     prepared.extracted,
   );
   const json_blob = buildJsonReport(run, prepared.ingest, prepared.playbook);
+  const fixlist_md_blob = fixListMarkdownBlob(run, prepared.extracted);
+  const fixlist_csv_blob = fixListCsvBlob(run);
+  const obligations_csv_blob = obligationsCsvBlob(prepared.extracted);
+  const deadlines_ics_blob = deadlinesIcsBlob(prepared.extracted);
 
   const v3_detection = detectV3Family(prepared.extracted, prepared.body_text);
   const v3_frames = defaultFramesForPlaybook(prepared.playbook.id);
@@ -259,6 +280,10 @@ export async function runReport(
     match_reasoning: prepared.match.reasoning,
     docx_blob,
     json_blob,
+    fixlist_md_blob,
+    fixlist_csv_blob,
+    obligations_csv_blob,
+    deadlines_ics_blob,
     v3_detection,
     v3_frames,
   };
