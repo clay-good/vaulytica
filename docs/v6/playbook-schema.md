@@ -57,7 +57,7 @@ Each custom rule pairs a **predicate** (the condition that must hold for a *comp
 | `clause_absent` | `pattern?`, `section_heading?` | no clause matching the pattern/heading is present |
 | `numeric_threshold` | `metric`, `comparator`, `value` | the extracted metric satisfies `comparator value` |
 | `defined_term_present` | `term` | the term is defined in the document |
-| `governing_law_in` | `allowed[]` | the governing law is one of the allowed jurisdictions |
+| `governing_law_in` | `allowed[]` | the governing law is one of the allowed jurisdictions (each entry is a jurisdiction **name** like `"Delaware"` or a DKB id like `"us-de"`; matched against the extracted clause either way) |
 | `cross_ref_resolves` | — | every internal cross-reference resolves |
 
 `clause_present` / `clause_absent` require at least one of `pattern` or `section_heading`; a predicate with neither could never match a concrete clause and is rejected.

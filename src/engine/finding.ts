@@ -35,6 +35,15 @@ export type Finding = {
   /** For stable sorting within a severity bucket. */
   document_position: number;
   classifier_confidence?: number;
+  /**
+   * Provenance marker (spec-v6 §8). Built-in catalog findings leave this
+   * unset (so the field is omitted from the serialized run and the
+   * `result_hash` of every existing run is unchanged); findings produced by
+   * a user-supplied custom playbook (Part II) set `"custom-playbook"` so the
+   * report can distinguish "your standard flagged this" from "Vaulytica's
+   * catalog flagged this".
+   */
+  source?: "catalog" | "custom-playbook";
 };
 
 export type PlaybookOverride = {

@@ -1,6 +1,6 @@
 # Vaulytica v6 — Workflow
 
-> **Status:** specification, partially implemented. Steps 87–88 (findings-to-action exports + deadlines `.ics`, Part III), Steps 89–90 (version comparison engine + report + compare UI, Part I), and Step 91 (public playbook schema + validator, Part II) landed 2026-05-29 — see [`BUILD_PROGRESS.md`](../BUILD_PROGRESS.md). Remainder not yet implemented.
+> **Status:** specification, partially implemented. Steps 87–88 (findings-to-action exports + deadlines `.ics`, Part III), Steps 89–90 (version comparison engine + report + compare UI, Part I), and Steps 91 + 93 (public playbook schema + validator, and the custom-rule interpreter, Part II) landed 2026-05-29 — see [`BUILD_PROGRESS.md`](../BUILD_PROGRESS.md). Remainder not yet implemented.
 > **Scope:** expand *what you can do with* Vaulytica, and deepen what it already does — without leaving the deterministic, no-AI, no-server, browser-only, citable posture. v6 moves the product from "drop one document, get findings" toward "fit into how a legal team actually reviews": compare versions, enforce *your own* standard, turn findings into action, and reach documents and jurisdictions currently out of scope.
 > **Cousin docs:** [`spec.md`](spec.md) (v1), [`spec-v3.md`](spec-v3.md) (regulated agreements), [`spec-v4.md`](spec-v4.md) (all logically-operative legal documents), [`spec-v5.md`](spec-v5.md) (Ground Truth — accuracy & validation).
 > **Relationship to v5:** v5 *measures* the engine; v6 *extends* it. They are independent and can proceed in parallel — but v6 features must be added to the v5 corpus and harness as they land, so accuracy is measured on the new surfaces too. Every v6 cross-reference to "measured" assumes the v5 harness exists.
@@ -202,7 +202,7 @@ Ordered by value-to-effort, fastest high-value first:
 | 90 | Version comparison report + UI compare affordance ✅ | Comparison DOCX + JSON; compare affordance + `comparison-complete` state; clause-level span delta appendix. **Done 2026-05-29** (`src/report/compare-docx.ts`, `src/ui/`). | Flagship |
 | 91 | Public playbook schema + JSON Schema + validator ✅ | Documented, versioned schema; `zod` validator; `docs/v6/playbook-schema.md` + `playbook.schema.json`. **Done 2026-05-29** (`src/playbooks/custom-playbook.ts`). | Flagship |
 | 92 | Load-a-playbook UI + augment/replace modes + provenance | Client-side load + validate + preview; `source: custom-playbook` on findings; privacy guard test. | Flagship |
-| 93 | Custom-rules declarative DSL + interpreter | Bounded predicate set over existing extractor outputs; per-rule citation; determinism + auditability tests. | Flagship |
+| 93 | Custom-rules declarative DSL + interpreter ✅ | Bounded predicate set over existing extractor outputs; per-rule citation; determinism + auditability tests; end-to-end corpus harness. **Done 2026-05-29** (`src/playbooks/custom-interpreter.ts`). | Flagship |
 | 94 | Authoring guide + worked examples | `docs/v6/authoring-a-playbook.md`; SaaS-buyer + vendor red-line example playbooks committed. | Flagship |
 | 95 | DKB model-clause nodes + fetchers | Model-clause node type; fetchers from existing public catalogs; coverage count. | Deepen |
 | 96 | Model-clause references on rule cards | "Reference model clause" section; honest coverage (only where a real reference exists). | Deepen |

@@ -39,3 +39,11 @@ export {
   type NumericMetric,
   type NumericComparator,
 } from "./custom-playbook.js";
+
+// v6 Part II — custom-playbook interpreter (Step 93).
+export {
+  runCustomPlaybook,
+  type CustomPlaybookRun,
+  type CustomPlaybookFinding,
+  type UnevaluableRule,
+} from "./custom-interpreter.js";

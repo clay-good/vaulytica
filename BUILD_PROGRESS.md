@@ -25,6 +25,21 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### v6 Step 93 — custom-rule DSL interpreter + end-to-end corpus harness (spec-v6 Part II) (2026-05-29) — ✅ complete
+
+Built the enforcement half of bring-your-own-playbook: the interpreter that evaluates a validated custom playbook's predicates against a document and produces findings. Pure function of `(playbook, tree, extracted)` — no AI, no network, no `eval` — so it stays as deterministic and auditable as a built-in run (passes the §3 posture filter). (Step 92, the load-a-playbook UI, is the remaining piece of the track.)
+
+New module [`src/playbooks/custom-interpreter.ts`](src/playbooks/custom-interpreter.ts) (+ `custom-interpreter.test.ts`, 14 tests; + an end-to-end corpus harness, 1 test):
+
+- **All six predicate kinds (§9).** Each predicate states the condition that must hold for a *compliant* document; a finding fires when it is false. `defined_term_present` (over `definitions.entries`), `clause_present` / `clause_absent` (pattern over flattened text and/or section-heading match, scoped to the section when both are given), `governing_law_in` (over extracted governing-law clauses), `cross_ref_resolves` (over `crossrefs`), and `numeric_threshold` over a bounded, deterministic metric extractor (`notice_period_days`, `term_length_days`, `payment_term_days`, `liability_cap_multiple`, `liability_cap_amount`) with patterns calibrated to real phrasings. A `numeric_threshold` is violated when *any* matched value breaks the assertion.
+- **No fabricated answers.** A predicate the engine cannot evaluate on a document (metric never stated, no governing-law clause) is reported in a separate `unevaluable` list with a reason — never a false pass or a false finding (the spec-v6 §13 discipline).
+- **Provenance + citability (§8, §9).** Every finding is `source: "custom-playbook"` (a new optional field on `Finding`, unset on built-ins so no `result_hash`/golden change); a rule's `citation` becomes the finding's attribution and a citationless rule is marked `citation_provenance: "uncited (team policy)"`, never silently uncited. The custom run carries a determinism `result_hash`.
+- **Fix found while building.** `extractJurisdictions` only sets `jurisdiction_id` when a DKB lookup is passed — and **neither the live pipeline nor the test helper passes one**, so `jurisdiction_id` is always `undefined` in practice. A `governing_law_in` predicate keyed only on the id would never fire in the real app. Fixed: the predicate now matches `allowed` entries against the jurisdiction's `raw_text` (name) as well as the id, so authors write `["Delaware", "New York"]` and it works regardless of lookup wiring.
+
+End-to-end harness [`tests/integration/custom-playbook-harness.test.ts`](tests/integration/custom-playbook-harness.test.ts) runs all 24 realistic per-use-case `.docx` fixtures through the *same* ingest→extract→engine pipeline the live site uses, then enforces a use-case-appropriate custom playbook (NDA / SaaS-buyer / vendor-mgmt / employment / lease) on each. Result: **16 findings (7 governing-law violations, 8 uncited), 23 honestly-unevaluable predicates** — e.g. `bad-nda` flags an undefined "Confidential Information" + a dangling cross-reference, `bad-employment` flags wrong governing law + a >30-day notice, while the clean `mutual-nda` produces none. Determinism asserted by a byte-identical second run per fixture. (Real online filings were requested but network egress is unavailable here, so the committed realistic corpus stands in — same code path.)
+
+Full gate green: `npm run lint && typecheck && test && build`.
+
 ### v6 Step 91 — public playbook schema + JSON Schema + validator (spec-v6 Part II) (2026-05-29) — ✅ complete
 
 Opened the bring-your-own-playbook track (the largest single v6 expansion, spec-v6 §7). A custom playbook is a user-authored `.json` artifact encoding a team's own positions; it is loaded and validated **entirely client-side** (no bytes leave the tab) and is declarative data, never executable code — so it stays as deterministic and auditable as a built-in playbook (passes the §3 posture filter unchanged). This step delivers the schema + validator only; the load UI (Step 92) and the predicate interpreter (Step 93) build on it.
