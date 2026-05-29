@@ -53,15 +53,22 @@ export async function loadAllPlaybooks(): Promise<Playbook[]> {
     const text = await readFile(join(PLAYBOOK_DIR, `${id}.json`), "utf8");
     playbooks.push(parsePlaybook(JSON.parse(text)));
   }
+  // Schema-validation failures are surfaced loudly. The
+  // "every v3 / v4 playbook validates" tests in
+  // tests/integration/playbook-matching.test.ts pin the contract;
+  // this loader matches it so a regression doesn't silently shrink
+  // the candidate set for the v4 bundle pipeline.
   for (const dir of [V3_PLAYBOOK_DIR, V4_PLAYBOOK_DIR]) {
     if (!existsSync(dir)) continue;
     const names = (await readdir(dir)).filter((n) => n.endsWith(".json"));
     for (const name of names) {
+      const text = await readFile(join(dir, name), "utf8");
       try {
-        const text = await readFile(join(dir, name), "utf8");
         playbooks.push(parsePlaybook(JSON.parse(text)));
-      } catch {
-        // Ignore unparseable placeholders (consistent with the v3 harness).
+      } catch (e) {
+        throw new Error(
+          `playbook ${name} (under ${dir}) failed PlaybookSchema validation: ${e instanceof Error ? e.message : String(e)}`,
+        );
       }
     }
   }

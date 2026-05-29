@@ -52,17 +52,22 @@ export async function loadAllPlaybooks(): Promise<Playbook[]> {
     playbooks.push(parsePlaybook(JSON.parse(text)));
   }
   // v3 playbooks live in a separate directory and are loaded greedily
-  // so the auto-detect surface sees them. Failed parses are ignored
-  // (placeholder playbooks at v0.0.0 are still useful as id targets).
+  // so the auto-detect surface sees them. Schema-validation failures
+  // are surfaced loudly — the silent-skip pattern from the early-build
+  // placeholder days masked real regressions; the
+  // "every v3 playbook validates" test in
+  // tests/integration/playbook-matching.test.ts pins the contract,
+  // and this loader now matches it.
   if (existsSync(V3_PLAYBOOK_DIR)) {
     const v3Names = (await readdir(V3_PLAYBOOK_DIR)).filter((n) => n.endsWith(".json"));
     for (const name of v3Names) {
+      const text = await readFile(join(V3_PLAYBOOK_DIR, name), "utf8");
       try {
-        const text = await readFile(join(V3_PLAYBOOK_DIR, name), "utf8");
         playbooks.push(parsePlaybook(JSON.parse(text)));
-      } catch {
-        // Ignore unparseable placeholders; the integration harness only
-        // needs playbooks that pass the schema.
+      } catch (e) {
+        throw new Error(
+          `v3 playbook ${name} failed PlaybookSchema validation: ${e instanceof Error ? e.message : String(e)}`,
+        );
       }
     }
   }
