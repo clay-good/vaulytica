@@ -1055,4 +1055,25 @@ describe("v4 fixture sanity — coverage gate", () => {
       `add ${missing.length} fail-fixture(s) to EXPECTED_RULE_IDS in this file`,
     ).toEqual([]);
   });
+
+  it("every .txt fixture has a matching .playbook sidecar", () => {
+    // v4 fixtures rely on `.playbook` sidecars to pin the per-doc
+    // playbook id, because the title_keywords on most v4 playbooks
+    // don't match the hyphenated test-fixture filenames the matcher
+    // sees as `title`. Without a sidecar a new fixture would silently
+    // route to `generic-fallback` and the golden test would record
+    // that as the baseline. The sidecar contract is "every .txt has
+    // a .playbook" — pin it here.
+    const txtFixtures = readdirSync(FIXTURES)
+      .filter((n) => n.endsWith(".txt"))
+      .sort();
+    const sidecarPresent = new Set(
+      readdirSync(FIXTURES).filter((n) => n.endsWith(".txt.playbook")),
+    );
+    const missing = txtFixtures.filter((n) => !sidecarPresent.has(`${n}.playbook`));
+    expect(
+      missing,
+      `add a .playbook sidecar next to: ${missing.join(", ")}`,
+    ).toEqual([]);
+  });
 });

@@ -3840,4 +3840,22 @@ describe("v3 fixture sanity — coverage gate", () => {
       `add ${missing.length} fail-fixture(s) to EXPECTED_RULE_IDS in this file`,
     ).toEqual([]);
   });
+
+  it("every .txt fixture has a matching .playbook sidecar", () => {
+    // v3 fixtures pin the v3 playbook id via a `.playbook` sidecar
+    // (see docs/v3/adding-a-playbook.md §7). Without a sidecar a
+    // new fixture could silently match a v2 fallback playbook and
+    // the golden test would record that as the baseline.
+    const txtFixtures = readdirSync(FIXTURES)
+      .filter((n) => n.endsWith(".txt"))
+      .sort();
+    const sidecarPresent = new Set(
+      readdirSync(FIXTURES).filter((n) => n.endsWith(".txt.playbook")),
+    );
+    const missing = txtFixtures.filter((n) => !sidecarPresent.has(`${n}.playbook`));
+    expect(
+      missing,
+      `add a .playbook sidecar next to: ${missing.join(", ")}`,
+    ).toEqual([]);
+  });
 });
