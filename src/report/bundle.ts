@@ -49,6 +49,12 @@ import type { DKB, SourceCitation } from "../dkb/types.js";
 import { sha256Hex } from "../ingest/hash.js";
 import { stableStringify } from "../engine/runner.js";
 import { formatBibliographyEntry } from "./citations.js";
+import {
+  buildPortfolioMatrix,
+  portfolioFingerprint,
+  type PortfolioMatrix,
+  type PortfolioStatus,
+} from "./portfolio.js";
 
 const MINT = "00A883";
 const DEFAULT_FONT = "Arial";
@@ -241,6 +247,14 @@ export type BundleJson = {
    * for callers that don't set the field.
    */
   documents?: BundleJsonDocument[];
+  /**
+   * Portfolio risk matrix (spec-v6 Part V): a documents × key-checks grid
+   * plus rollups, a deterministic aggregation over the per-document runs.
+   * Always emitted for a bundle. `portfolio_fingerprint` extends
+   * `bundle_fingerprint` with the canonical matrix.
+   */
+  portfolio: PortfolioMatrix;
+  portfolio_fingerprint: string;
 };
 
 /**
@@ -259,6 +273,13 @@ export async function bundleFingerprint(per_doc_result_hashes: ReadonlyArray<str
 export async function buildBundleJson(input: BundleReportInput): Promise<BundleJson> {
   const runs = input.documents.map((d) => d.run);
   const fingerprint = await bundleFingerprint(runs.map((r) => r.result_hash));
+  const portfolio = buildPortfolioMatrix(
+    input.documents.map((d) => ({
+      doc_id: d.doc_id,
+      source_file_name: d.source_file_name,
+      run: d.run,
+    })),
+  );
   const out: BundleJson = {
     runs,
     cross_doc_findings: [...input.consistency.findings],
@@ -267,6 +288,8 @@ export async function buildBundleJson(input: BundleReportInput): Promise<BundleJ
     engine_version: input.engine_version ?? runs[0]?.version ?? "0.0.0",
     consistency_version: input.consistency.version,
     consistency_execution_log: [...input.consistency.execution_log],
+    portfolio,
+    portfolio_fingerprint: await portfolioFingerprint(fingerprint, portfolio),
   };
   if (input.rejected && input.rejected.length > 0) {
     out.rejected = input.rejected.map((r) => ({ filename: r.filename, reason: r.reason }));
@@ -322,9 +345,18 @@ export async function buildBundleDocxReport(input: BundleReportInput): Promise<B
   const aggregate = aggregateSeverityCounts(input);
   const bibliography = buildBundleBibliography(input);
 
+  const portfolio = buildPortfolioMatrix(
+    input.documents.map((d) => ({
+      doc_id: d.doc_id,
+      source_file_name: d.source_file_name,
+      run: d.run,
+    })),
+  );
+
   const children: (Paragraph | Table)[] = [
     ...renderCover(input, fingerprint),
     ...renderExecutiveSummary(input, aggregate),
+    ...renderPortfolioMatrix(portfolio),
     ...renderPerDocumentSection(input),
     ...renderCrossDocAppendix(input.consistency),
     ...renderSkippedFilesAppendix(input.rejected),
@@ -480,6 +512,119 @@ function renderExecutiveSummary(
     }),
     pageBreak(),
   ];
+}
+
+// Portfolio matrix shading — mirrors the v3 compliance-matrix vocabulary
+// (green pass / yellow attention / red fail / grey N/A).
+const PORTFOLIO_FILL: Record<PortfolioStatus, string> = {
+  ok: "C8E6C9",
+  flag: "FFF59D",
+  risk: "FFCDD2",
+  na: "EEEEEE",
+};
+const PORTFOLIO_TEXT: Record<PortfolioStatus, string> = {
+  ok: "1B5E20",
+  flag: "8D6E00",
+  risk: "B71C1C",
+  na: "555555",
+};
+
+function renderPortfolioMatrix(matrix: PortfolioMatrix): (Paragraph | Table)[] {
+  const out: (Paragraph | Table)[] = [h1("Portfolio Risk Matrix")];
+  out.push(
+    para({
+      text: "A deterministic projection of the per-document runs: one row per document, one column per high-signal check. Each cell is shaded green (in place), yellow (present and noteworthy), red (a gap or risk), or grey (not applicable — the underlying rule did not run for that document). A grey cell is never a claim that the clause is missing.",
+    }),
+  );
+  out.push(spacer());
+
+  const header = new TableRow({
+    tableHeader: true,
+    children: ["Document", ...matrix.checks.map((c) => c.label)].map(
+      (text) =>
+        new TableCell({
+          shading: { type: ShadingType.CLEAR, fill: MINT, color: "auto" },
+          children: [
+            new Paragraph({
+              children: [new TextRun({ text, bold: true, color: "FFFFFF", font: DEFAULT_FONT, size: BODY_SIZE })],
+            }),
+          ],
+        }),
+    ),
+  });
+  const dataRows = matrix.rows.map(
+    (row) =>
+      new TableRow({
+        children: [
+          styledCell(truncate(row.source_file_name, 48), { bold: true }),
+          ...row.cells.map((cell) => portfolioCell(cell.status, cell.label, cell.rule_ids)),
+        ],
+      }),
+  );
+  out.push(new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [header, ...dataRows] }));
+  out.push(spacer());
+
+  if (matrix.truncated) {
+    out.push(
+      para({
+        text: `Note: this bundle contains ${matrix.total} documents; the matrix shows the first ${matrix.included} (sorted by file name). The portfolio cap is ${matrix.included} rows.`,
+        italics: true,
+      }),
+    );
+  } else {
+    out.push(para({ text: `${matrix.total} ${matrix.total === 1 ? "document" : "documents"} included.`, italics: true }));
+  }
+
+  if (matrix.rollups.length > 0) {
+    out.push(spacer());
+    out.push(h2("Portfolio rollups"));
+    for (const r of matrix.rollups) {
+      out.push(para({ text: r.text, bold: r.count > 0 }));
+      if (r.count > 0 && r.documents.length > 0) {
+        out.push(para({ text: `  ${r.documents.join(", ")}`, italics: true }));
+      }
+    }
+  }
+  out.push(pageBreak());
+  return out;
+}
+
+function portfolioCell(status: PortfolioStatus, label: string, ruleIds?: string[]): TableCell {
+  const lines = [label];
+  if (ruleIds && ruleIds.length > 0) lines.push(ruleIds.join(", "));
+  return new TableCell({
+    shading: { type: ShadingType.CLEAR, fill: PORTFOLIO_FILL[status], color: "auto" },
+    children: lines.map(
+      (line, i) =>
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: line,
+              bold: i === 0,
+              color: i === 0 ? PORTFOLIO_TEXT[status] : "555555",
+              font: DEFAULT_FONT,
+              size: BODY_SIZE,
+            }),
+          ],
+        }),
+    ),
+  });
+}
+
+function styledCell(text: string, opts: { bold?: boolean } = {}): TableCell {
+  return new TableCell({
+    borders: {
+      top: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC" },
+      bottom: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC" },
+      left: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC" },
+      right: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC" },
+    },
+    children: [
+      new Paragraph({
+        children: [new TextRun({ text, bold: opts.bold, font: DEFAULT_FONT, size: BODY_SIZE })],
+      }),
+    ],
+  });
 }
 
 function renderPerDocumentSection(input: BundleReportInput): (Paragraph | Table)[] {

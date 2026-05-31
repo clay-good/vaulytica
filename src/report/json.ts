@@ -9,6 +9,11 @@
 import type { EngineRun, Finding } from "../engine/finding.js";
 import type { IngestResult } from "../ingest/types.js";
 import type { Playbook } from "../playbooks/types.js";
+import {
+  modelClauseForRule,
+  MODEL_CLAUSE_COVERAGE,
+  type ModelClauseReference,
+} from "../dkb/model-clauses.js";
 
 /**
  * One additional detected family's scan results (spec-v6 multi-family
@@ -49,6 +54,26 @@ export type JsonReport = {
    * consumers are unaffected.
    */
   secondary_families?: ReportSecondaryFamily[];
+  /**
+   * Public model-clause references for the findings in this report (spec-v6
+   * Part IV). One entry per distinct fired rule that carries a reference —
+   * "what good looks like," a pointer to public model language, never a
+   * generated redline. Lives outside `run`, so `result_hash` is unchanged.
+   * Omitted entirely when no fired rule has a reference, so coverage stays
+   * honest. `model_clause_coverage` always publishes the catalog totals.
+   */
+  model_clause_references?: Array<{
+    rule_id: string;
+    reference: ModelClauseReference;
+  }>;
+  model_clause_coverage: {
+    /** Distinct fired rules in this report that carry a reference. */
+    referenced_in_report: number;
+    /** Distinct rules in Vaulytica's catalog that carry a reference. */
+    rules_with_reference: number;
+    /** Distinct public model clauses in the catalog. */
+    model_clauses: number;
+  };
 };
 
 export function buildJsonReport(
@@ -57,6 +82,17 @@ export function buildJsonReport(
   playbook?: Playbook,
   secondaryFamilies?: ReadonlyArray<ReportSecondaryFamily>,
 ): Blob {
+  // spec-v6 Part IV — one model-clause reference per distinct fired rule that
+  // has one, in first-seen finding order (findings arrive pre-sorted).
+  const modelRefs: Array<{ rule_id: string; reference: ModelClauseReference }> = [];
+  const seenRules = new Set<string>();
+  for (const f of run.findings) {
+    if (seenRules.has(f.rule_id)) continue;
+    seenRules.add(f.rule_id);
+    const reference = modelClauseForRule(f.rule_id);
+    if (reference) modelRefs.push({ rule_id: f.rule_id, reference });
+  }
+
   const payload: JsonReport = {
     run,
     ingest: {
@@ -66,7 +102,13 @@ export function buildJsonReport(
       language: ingest.language,
       sha256: ingest.sha256,
     },
+    model_clause_coverage: {
+      referenced_in_report: modelRefs.length,
+      rules_with_reference: MODEL_CLAUSE_COVERAGE.rules_with_reference,
+      model_clauses: MODEL_CLAUSE_COVERAGE.model_clauses,
+    },
   };
+  if (modelRefs.length > 0) payload.model_clause_references = modelRefs;
   if (playbook && playbook.deprecated === true) {
     payload.playbook_deprecated = true;
     if (typeof playbook.superseded_by === "string" && playbook.superseded_by.length > 0) {

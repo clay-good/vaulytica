@@ -46,6 +46,7 @@ import type { ExtractedData } from "../extract/types.js";
 import type { ReportSecondaryFamily } from "./json.js";
 import { buildBibliography, citationIndex, type BibliographyEntry } from "./bibliography.js";
 import { formatCitation, formatBibliographyEntry } from "./citations.js";
+import { modelClauseForRule, MODEL_CLAUSE_COVERAGE } from "../dkb/model-clauses.js";
 import type { V3ReportInputs } from "./v3/types.js";
 import {
   renderComplianceMatrix,
@@ -263,7 +264,30 @@ function renderFinding(f: Finding, bibliography: BibliographyEntry[]): Paragraph
     ...(citationNumbers.length > 0
       ? [para({ text: `Sources: ${citationNumbers.map((n) => `[${n}]`).join(" ")}` })]
       : []),
+    ...renderModelClauseReference(f),
     spacer(),
+  ];
+}
+
+/**
+ * "Reference model clause" section (spec-v6 Part IV §15). For findings whose
+ * rule has an associated public model clause, surface the attributed public
+ * reference — what good looks like — never a generated redline. Returns []
+ * for rules without a reference, so coverage is honest.
+ */
+function renderModelClauseReference(f: Finding): Paragraph[] {
+  const mc = modelClauseForRule(f.rule_id);
+  if (!mc) return [];
+  return [
+    para({ text: "Reference model clause", bold: true, color: MINT }),
+    para({ text: `${mc.title} — ${mc.source_catalog}`, bold: true }),
+    para({ text: mc.summary }),
+    para({
+      text: `Reference only — Vaulytica does not draft. Source: ${formatCitation(mc.source)}${
+        mc.source.attribution ? ` (${mc.source.attribution})` : ""
+      } [license: ${mc.source.license}]`,
+      italics: true,
+    }),
   ];
 }
 
@@ -513,6 +537,11 @@ function renderAuditTrail(
   const matched = run.playbook_match_reasoning
     ? `auto-selected (${run.playbook_match_reasoning})`
     : "selected by caller";
+  // spec-v6 §15 — honest model-clause coverage. Count distinct fired rules
+  // in this report that carry a public model-clause reference.
+  const referencedInReport = new Set(
+    run.findings.map((f) => f.rule_id).filter((id) => modelClauseForRule(id)),
+  ).size;
   return [
     h1("Audit Trail"),
     para({ text: `Engine version: ${run.version}` }),
@@ -529,6 +558,11 @@ function renderAuditTrail(
     para({ text: `File fingerprint: ${run.source_file.sha256}` }),
     para({ text: `Result hash: ${run.result_hash}` }),
     para({ text: `Executed at: ${run.executed_at || "(omitted from hash)"}` }),
+    para({
+      text: `Model-clause references: this report references ${referencedInReport} public model clause${
+        referencedInReport === 1 ? "" : "s"
+      }. Vaulytica's catalog carries model-clause references for ${MODEL_CLAUSE_COVERAGE.rules_with_reference} rules across ${MODEL_CLAUSE_COVERAGE.model_clauses} public model clauses.`,
+    }),
     spacer(),
     h2("Rules executed"),
     ...run.execution_log.map((e) =>

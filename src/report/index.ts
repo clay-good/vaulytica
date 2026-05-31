@@ -84,3 +84,26 @@ export type {
   BundleZipArtifact,
   BundleJson,
 } from "./bundle.js";
+
+// v6 Part V — portfolio risk matrix (Step 97).
+export {
+  buildPortfolioMatrix,
+  portfolioFingerprint,
+  PORTFOLIO_CHECKS,
+  PORTFOLIO_MATRIX_MAX_ROWS,
+} from "./portfolio.js";
+export type {
+  PortfolioMatrix,
+  PortfolioRow,
+  PortfolioRollup,
+  PortfolioStatus,
+  PortfolioCellEval,
+} from "./portfolio.js";
+
+// v6 Part IV — model-clause references (Steps 95–96).
+export {
+  MODEL_CLAUSES,
+  MODEL_CLAUSE_COVERAGE,
+  modelClauseForRule,
+  type ModelClauseReference,
+} from "../dkb/model-clauses.js";

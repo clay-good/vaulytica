@@ -232,6 +232,56 @@ describe("buildJsonReport", () => {
   });
 });
 
+describe("model-clause references (spec-v6 Part IV)", () => {
+  function runWithRule(ruleId: string): EngineRun {
+    const run = makeRun();
+    run.findings = [{ ...finding("x1", "warning"), rule_id: ruleId }];
+    return run;
+  }
+
+  it("emits a model_clause_references entry for a fired rule that has one", async () => {
+    const blob = buildJsonReport(runWithRule("RISK-005"), ingest);
+    const parsed = JSON.parse(await blob.text());
+    expect(parsed.model_clause_references).toHaveLength(1);
+    expect(parsed.model_clause_references[0].rule_id).toBe("RISK-005");
+    expect(parsed.model_clause_references[0].reference.id).toBe("cp-csa-limitation-of-liability");
+    expect(parsed.model_clause_references[0].reference.source.license).toBe("CC-BY-4.0");
+    expect(parsed.model_clause_coverage.referenced_in_report).toBe(1);
+    expect(parsed.model_clause_coverage.rules_with_reference).toBeGreaterThan(0);
+  });
+
+  it("omits model_clause_references when no fired rule has one, but still publishes coverage", async () => {
+    const blob = buildJsonReport(runWithRule("STRUCT-001"), ingest);
+    const parsed = JSON.parse(await blob.text());
+    expect(parsed.model_clause_references).toBeUndefined();
+    expect(parsed.model_clause_coverage.referenced_in_report).toBe(0);
+    expect(parsed.model_clause_coverage.model_clauses).toBeGreaterThan(0);
+  });
+
+  it("does not change the run result_hash (references live outside the run)", async () => {
+    const run = runWithRule("RISK-005");
+    const before = run.result_hash;
+    const blob = buildJsonReport(run, ingest);
+    const parsed = JSON.parse(await blob.text());
+    expect(parsed.run.result_hash).toBe(before);
+  });
+
+  it("renders the reference + attribution in the DOCX for a finding that has one", async () => {
+    const blob = await buildDocxReport(
+      runWithRule("RISK-005"),
+      ingest,
+      loadStarterDkbSync(),
+      loadMutualNda(),
+    );
+    const { unzipSync, strFromU8 } = await import("fflate");
+    const files = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const docXml = strFromU8(files["word/document.xml"]!);
+    expect(docXml).toContain("Reference model clause");
+    expect(docXml).toContain("Common Paper");
+    expect(docXml).toContain("Vaulytica does not draft");
+  });
+});
+
 describe("buildDocxReport multi-family section (spec-v6)", () => {
   it("renders the 'Additional Checks' section when secondary families are supplied", async () => {
     const secondary = [

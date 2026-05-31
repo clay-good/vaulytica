@@ -551,3 +551,29 @@ describe("buildBundleZip", () => {
     }
   });
 });
+
+describe("portfolio risk matrix in the bundle (spec-v6 Part V)", () => {
+  it("emits a portfolio matrix + fingerprint in the bundle JSON", async () => {
+    const json = await buildBundleJson(makeInput());
+    expect(json.portfolio).toBeDefined();
+    expect(json.portfolio.checks.length).toBeGreaterThan(0);
+    expect(json.portfolio.rows).toHaveLength(2);
+    expect(json.portfolio.total).toBe(2);
+    expect(json.portfolio_fingerprint).toMatch(/^[0-9a-f]{64}$/);
+  });
+
+  it("renders the Portfolio Risk Matrix section in the DOCX", async () => {
+    const blob = await buildBundleDocxReport(makeInput());
+    const files = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const docXml = strFromU8(files["word/document.xml"]!);
+    expect(docXml).toContain("Portfolio Risk Matrix");
+    expect(docXml).toContain("Liability cap");
+    expect(docXml).toContain("Auto-renewal");
+  });
+
+  it("the portfolio fingerprint is deterministic across two builds", async () => {
+    const a = await buildBundleJson(makeInput());
+    const b = await buildBundleJson(makeInput());
+    expect(a.portfolio_fingerprint).toBe(b.portfolio_fingerprint);
+  });
+});
