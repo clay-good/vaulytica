@@ -325,6 +325,22 @@ export default defineConfig({
     emptyOutDir: true,
     target: "es2022",
     sourcemap: true,
+    // Keep the small entry/runtime chunks preloaded (they render the
+    // LCP hero), but drop the heavy lazy vendor chunks from the
+    // `<link rel="modulepreload">` set. pdfjs-dist uses dynamic
+    // imports internally, so Vite's shared `__vitePreload` helper is
+    // colocated in the 375 KB vendor-pdfjs chunk; the entry calls that
+    // helper for its lazy `import("./pipeline.js")`, which otherwise
+    // makes the browser preload all of pdfjs on the first-paint path —
+    // 375 KB competing with the document download for First Contentful
+    // Paint, even though pdfjs is only needed once a PDF is dropped.
+    // Filtering it (and the other heavy parser vendors) out of the
+    // preload list keeps them lazy: they load with the pipeline chunk
+    // on file drop, off the critical render path.
+    modulePreload: {
+      resolveDependencies: (_filename, deps) =>
+        deps.filter((dep) => !/vendor-(pdfjs|mammoth|docx|tesseract|decimal|zod)/.test(dep)),
+    },
     rollupOptions: {
       input: {
         main: resolve(__dirname, "site/index.html"),
