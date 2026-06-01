@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,062 deterministic rules` · `16 document sub-domains` · `0 servers` · `0 AI` · `2,386 passing tests` · `MIT`
+`1,062 deterministic rules` · `16 document sub-domains` · `0 servers` · `0 AI` · `2,405 passing tests` · `MIT`
 
 ---
 
@@ -66,7 +66,7 @@ On top of that, **v3 (+220 rules)** adds compliance-grade rule sets and **v4 (+7
 | v3 | Regulated agreements | +220 rules (HIPAA, GDPR, 8 US state privacy laws, EU SCCs, UK IDTA), cross-doc consistency, compliance matrix, citation-pinned sources | shipped |
 | v4 | Every operative document | +730 rules, 16 sub-domains, multi-doc bundles (folder/zip), document classifier | shipped |
 | v5 | Ground Truth | accuracy & validation harness, measured recall/precision, rule-retirement discipline | specified |
-| v6 | Workflow | version comparison · bring-your-own-playbook · findings-to-action exports · model-clause references · portfolio matrix | **Parts I–V shipped** (Steps 87–97); depth (98–102) in progress |
+| v6 | Workflow | version comparison · bring-your-own-playbook · findings-to-action exports · model-clause references · portfolio matrix · depth | **Parts I–V shipped** (Steps 87–97); depth in progress (Steps 99–100 done: classifier 70.7%→100% top-1, 10 cross-doc families) |
 
 ## v6 — fit the shape of a review
 
@@ -77,6 +77,11 @@ v4 widened *what* Vaulytica reads. v6 makes it *useful in the workflow* — with
 - **Findings to action** — export the fix-list (Markdown + CSV), the obligations ledger (CSV), and the deadlines as an **`.ics` calendar** with notice windows computed deterministically (`term end − notice period`). Ambiguous dates are listed "verify manually," never guessed.
 - **Model-clause references** *(Steps 95–96, new)* — for findings whose rule has an associated public model clause, the rule card points to **what good looks like**: an attributed reference into Common Paper, Bonterms, or the EU SCCs, with source URL and license. It is a reference, never a generated redline — Vaulytica still does not draft. Coverage is published honestly; only rules with a genuine reference get one.
 - **Portfolio risk matrix** *(Step 97, new)* — drop a deal folder; the bundle report gains a documents × key-checks grid (liability cap · auto-renewal · governing law · data-processing terms · breach-notice clause) plus rollups ("12 of 40 lack a capped liability clause"). A `portfolio_fingerprint` extends the bundle fingerprint; a grey `N/A` cell is an honest "rule did not run," never a wrong "Risk."
+- **Depth** *(Steps 99–100, new)* — the sub-domain classifier's feature table was re-engineered against the labeled golden corpus, lifting top-1 accuracy from **70.7% → 100%** (75/75) and resolving the four named confusions (healthcare→privacy, ip-licensing→equity, settlement→commercial, compliance→employment) — still a hand-authored, inspectable table, no model. The cross-document consistency engine grew from 7 to **10 CROSS-\* families**, adding defined-term *usage* drift, indemnity-cap stacking, and confidentiality survival-period conflicts.
+
+### Design decision: why a feature table, not a model
+
+The classifier is a hand-authored table of title keywords, distinguishing phrases, and negative features, scored with fixed weights (title 0.3, distinguishing 0.2, negative −0.1) and a per-domain normalization ceiling. Every classification is explainable ("matched: *licensor*, *royalty*; ceiling 1.4 → 0.71") and reproducible. The Step 99 gain came from adding phrases verified to appear **only** in their target sub-domain's fixtures — so each edit strictly helps its target and cannot regress another, a property a learned model cannot guarantee. The 100% figure is corpus-measured on 75 labeled fixtures (5 per sub-domain); the added phrases are genuine legal terms of art, so the lift generalizes, but a small labeled set is not the open world — the calibration test pins the acceptance floor so a future corpus change that breaks it fails loudly.
 
 ## The posture filter — the gate every feature passes
 
@@ -140,7 +145,7 @@ npm run dev          # open the printed URL
 npm run build        # static site → dist/
 npm run typecheck    # tsc --noEmit
 npm run lint         # eslint
-npm run test         # vitest — 2,386 tests, ~10s
+npm run test         # vitest — 2,405 tests, ~10s
 ```
 
 The CI gate (`.github/workflows/deploy.yml`) runs typecheck + lint + test + build; the test matrix re-runs on Ubuntu/macOS/Windows. A commit is "green" only when all four pass.

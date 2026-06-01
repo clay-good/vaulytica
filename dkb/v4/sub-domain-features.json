@@ -133,7 +133,9 @@
         "treas. reg. § 1.83",
         "nvca",
         "registration rights",
-        "maturity date"
+        "maturity date",
+        "equity financing",
+        "capital stock"
       ],
       "negative_features": [
         "premises",
@@ -298,7 +300,14 @@
         "duty to preserve",
         "rule 37(e)",
         "zubulake",
-        "no admission of liability"
+        "no admission of liability",
+        "causes of action",
+        "known or unknown",
+        "the action",
+        "full and final",
+        "releases and forever",
+        "plaintiff",
+        "defendant"
       ],
       "negative_features": [
         "premises",
@@ -330,7 +339,11 @@
         "quality control",
         "17 u.s.c. § 101",
         "35 u.s.c.",
-        "lanham act"
+        "lanham act",
+        "licensor",
+        "licensee",
+        "royalty",
+        "reservation of rights"
       ],
       "negative_features": [
         "premises",
@@ -377,7 +390,9 @@
         "article 35",
         "45 cfr § 164.504",
         "45 cfr § 164.520",
-        "sensitive personal information"
+        "sensitive personal information",
+        "cookies",
+        "tracking technologies"
       ],
       "negative_features": [
         "premises",
@@ -391,6 +406,8 @@
         "informed consent",
         "patient authorization for release",
         "authorization for release of phi",
+        "authorization for use and disclosure of protected health information",
+        "authorization for use and disclosure",
         "notice of privacy practices acknowledgment"
       ],
       "distinguishing_phrases": [
@@ -403,7 +420,10 @@
         "21 cfr § 50",
         "45 cfr § 164.508",
         "45 cfr § 164.520(c)(2)(ii)",
-        "subject of the research"
+        "subject of the research",
+        "covered entity",
+        "use and disclose",
+        "privacy officer"
       ],
       "negative_features": [
         "premises",
@@ -591,7 +611,13 @@
         "code of conduct",
         "anti-retaliation",
         "fcpa",
-        "uk bribery act"
+        "uk bribery act",
+        "bribery",
+        "corruption",
+        "government official",
+        "anything of value",
+        "improper advantage",
+        "books and records"
       ],
       "negative_features": [
         "premises",

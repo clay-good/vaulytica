@@ -20,6 +20,9 @@ import {
   CROSS_AMOUNT_001,
   CROSS_MISSING_001,
   CROSS_PRECEDENCE_001,
+  CROSS_DEFTERM_002,
+  CROSS_INDEMNITY_001,
+  CROSS_SURVIVAL_001,
 } from "./index.js";
 import { ALL_CONSISTENCY_RULES, CONSISTENCY_RULES } from "../index.js";
 import type { ConsistencyDocument } from "../../types.js";
@@ -45,10 +48,10 @@ const STARTER_DKB = (() => buildContext(["x", "y"]).dkb)();
 /* ---------------- registry ----------------- */
 
 describe("V4_CROSS_RULES registry", () => {
-  it("ships seven CROSS-* rules with unique ids", () => {
-    expect(V4_CROSS_RULES).toHaveLength(7);
+  it("ships ten CROSS-* rules with unique ids", () => {
+    expect(V4_CROSS_RULES).toHaveLength(10);
     const ids = V4_CROSS_RULES.map((r) => r.id);
-    expect(new Set(ids).size).toBe(7);
+    expect(new Set(ids).size).toBe(10);
     for (const id of ids) expect(id).toMatch(/^CROSS-[A-Z]+-\d{3}$/);
   });
 
@@ -283,5 +286,88 @@ describe("V4_CROSS_RULES — determinism", () => {
     const r1 = await runConsistency({ rules: V4_CROSS_RULES, documents: [msa, sow], dkb: STARTER_DKB });
     const r2 = await runConsistency({ rules: V4_CROSS_RULES, documents: [msa, sow], dkb: STARTER_DKB });
     expect(r2.result_hash).toBe(r1.result_hash);
+  });
+});
+
+/* ---------------- CROSS-DEFTERM-002 (spec-v6 §20) --------------- */
+
+describe("CROSS-DEFTERM-002", () => {
+  it("fires when a term defined in the MSA is used undefined in the SOW", async () => {
+    const msa = makeDoc("msa", "msa-vendor-deep",
+      ["Definitions", "\"Authorized Users\" means the employees and contractors of Customer permitted to access the Services."],
+    );
+    const sow = makeDoc("sow", "sow",
+      ["Access", "Provider shall provision access only to the Authorized Users identified in this Statement of Work."],
+    );
+    const run = await runConsistency({ rules: [CROSS_DEFTERM_002], documents: [msa, sow], dkb: STARTER_DKB });
+    expect(run.findings.length).toBeGreaterThanOrEqual(1);
+    expect(run.findings[0]!.title).toMatch(/Authorized Users/);
+    expect(run.findings[0]!.excerpts).toHaveLength(2);
+  });
+
+  it("does not fire when the using document incorporates definitions by reference", async () => {
+    const msa = makeDoc("msa", "msa-vendor-deep",
+      ["Definitions", "\"Authorized Users\" means the employees of Customer permitted to access the Services."],
+    );
+    const sow = makeDoc("sow", "sow",
+      ["Interpretation", "Capitalized terms not defined herein have the meanings given in the Master Services Agreement. Provider shall provision access only to the Authorized Users."],
+    );
+    const run = await runConsistency({ rules: [CROSS_DEFTERM_002], documents: [msa, sow], dkb: STARTER_DKB });
+    expect(run.findings).toHaveLength(0);
+  });
+});
+
+/* ---------------- CROSS-INDEMNITY-001 (spec-v6 §20) ------------- */
+
+describe("CROSS-INDEMNITY-001", () => {
+  it("fires when indemnity caps differ across the MSA and the order form", async () => {
+    const msa = makeDoc("msa", "msa-vendor-deep",
+      ["Indemnification", "Each party's indemnification obligations under this Agreement shall not exceed $2,000,000 in the aggregate."],
+    );
+    const order = makeDoc("order", "sow",
+      ["Indemnification", "Vendor's indemnification liability under this Order Form is limited to $500,000."],
+    );
+    const run = await runConsistency({ rules: [CROSS_INDEMNITY_001], documents: [msa, order], dkb: STARTER_DKB });
+    expect(run.findings).toHaveLength(1);
+    expect(run.findings[0]!.title).toMatch(/Indemnity caps differ|\$500,000|\$2,000,000/);
+  });
+
+  it("does not fire when only one document caps indemnity", async () => {
+    const msa = makeDoc("msa", "msa-vendor-deep",
+      ["Indemnification", "Each party's indemnification obligations shall not exceed $2,000,000."],
+    );
+    const order = makeDoc("order", "sow",
+      ["Scope", "Vendor shall deliver the Services described herein."],
+    );
+    const run = await runConsistency({ rules: [CROSS_INDEMNITY_001], documents: [msa, order], dkb: STARTER_DKB });
+    expect(run.findings).toHaveLength(0);
+  });
+});
+
+/* ---------------- CROSS-SURVIVAL-001 (spec-v6 §20) ------------- */
+
+describe("CROSS-SURVIVAL-001", () => {
+  it("fires when confidentiality survives a fixed term in one doc and in perpetuity in another", async () => {
+    const msa = makeDoc("msa", "msa-vendor-deep",
+      ["Survival", "The confidentiality obligations in this Agreement shall survive termination for a period of three (3) years."],
+    );
+    const dpa = makeDoc("dpa", "dpa-controller-processor",
+      ["Survival", "The confidentiality obligations shall survive termination of this Agreement in perpetuity."],
+    );
+    const run = await runConsistency({ rules: [CROSS_SURVIVAL_001], documents: [msa, dpa], dkb: STARTER_DKB });
+    expect(run.findings).toHaveLength(1);
+    expect(run.findings[0]!.title).toMatch(/Confidentiality survives/);
+    expect(run.findings[0]!.excerpts).toHaveLength(2);
+  });
+
+  it("does not fire when both documents survive confidentiality for the same period", async () => {
+    const msa = makeDoc("msa", "msa-vendor-deep",
+      ["Survival", "The confidentiality obligations shall survive termination for three (3) years."],
+    );
+    const dpa = makeDoc("dpa", "dpa-controller-processor",
+      ["Survival", "The confidentiality obligations shall survive termination for three (3) years."],
+    );
+    const run = await runConsistency({ rules: [CROSS_SURVIVAL_001], documents: [msa, dpa], dkb: STARTER_DKB });
+    expect(run.findings).toHaveLength(0);
   });
 });

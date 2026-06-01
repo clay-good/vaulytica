@@ -206,7 +206,133 @@ export function firstLiabilityCap(
 }
 
 import type { DocumentTree } from "../../../../ingest/types.js";
+import type { DocPosition } from "../../../../extract/types.js";
 import { forEachParagraph } from "../../../../extract/walk.js";
+import { fullText } from "../../_helpers.js";
+
+/**
+ * Does the document carry an "incorporation by reference" clause — the
+ * standard drafting move that says undefined capitalized terms take their
+ * meaning from another agreement? When present, a capitalized-but-undefined
+ * term is *intentional*, not a drift, so CROSS-DEFTERM-002 must not fire.
+ */
+export function hasIncorporationByReference(doc: ConsistencyDocument): boolean {
+  const text = fullText(doc);
+  return (
+    /capitalized\s+terms?\s+(?:not|used|that\s+are\s+not)\b[^.]{0,80}?(?:defined|meaning)/i.test(text) ||
+    /(?:meanings?|definitions?)\s+(?:given|set\s+forth|assigned|ascribed)\b[^.]{0,60}?\b(?:in|under)\b/i.test(text)
+  );
+}
+
+/**
+ * Defined-term *usage* drift (distinct from the *definition* drift
+ * CROSS-DEFTERM-001 catches): a term is **defined** in `definer` and used
+ * as a capitalized term in `user` but **not defined there**, and `user`
+ * carries no incorporation-by-reference clause. The term silently borrows
+ * `definer`'s meaning — a chain-of-meaning the reviewer should make explicit.
+ */
+export function findDefinedTermUsageDrift(
+  definer: ConsistencyDocument,
+  user: ConsistencyDocument,
+): Array<{ term: string; definition: string; def_pos: DocPosition; use_pos: DocPosition }> {
+  if (hasIncorporationByReference(user)) return [];
+  const userDefined = new Set(user.extracted.definitions.entries.map((e) => e.term.toLowerCase()));
+  const out: Array<{ term: string; definition: string; def_pos: DocPosition; use_pos: DocPosition }> = [];
+  for (const def of definer.extracted.definitions.entries) {
+    const key = def.term.toLowerCase();
+    if (userDefined.has(key)) continue;
+    // Only multi-word, Title-Case terms are unambiguous "defined-term" uses;
+    // a single common word (e.g. "Services") would over-fire.
+    if (!/\s/.test(def.term.trim())) continue;
+    // Find the first paragraph in `user` that uses the term verbatim (with
+    // its defined casing). The defined-term casing carries the signal.
+    const re = new RegExp(`\\b${escapeRegExp(def.term)}\\b`);
+    let usePos: DocPosition | null = null;
+    forEachParagraph(user.tree, (p) => {
+      if (usePos) return;
+      const idx = p.text.search(re);
+      if (idx >= 0) usePos = { section_id: p.section.id, start: p.start, end: p.end };
+    });
+    if (!usePos) continue;
+    out.push({ term: def.term, definition: def.definition, def_pos: def.defined_at, use_pos: usePos });
+  }
+  return out;
+}
+
+function escapeRegExp(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/**
+ * Parse the first indemnification cap in a document: a paragraph that names
+ * an indemnity ("indemnif…") *and* a cap phrasing, surfacing the largest $
+ * amount in that paragraph. Anchors on "indemnif" (not "aggregate
+ * liability"), so it covers a different surface than {@link firstLiabilityCap}
+ * / CROSS-AMOUNT-001 — indemnity caps commonly sit above the general
+ * liability cap, and an order form that re-states one stacks ambiguously.
+ */
+export function firstIndemnityCap(
+  doc: ConsistencyDocument,
+): { amount_usd: number; raw_text: string; section_id?: string; start: number; end: number } | null {
+  const capRe = /\b(indemnif\w+)\b/i;
+  const limitRe = /\b(not\s+to\s+exceed|shall\s+not\s+exceed|capped\s+at|limited\s+to|up\s+to|maximum\s+(?:aggregate\s+)?(?:amount|liability))\b/i;
+  type Hit = { text: string; section_id?: string; start: number; end: number };
+  const slot: { value: Hit | null } = { value: null };
+  forEachParagraph(doc.tree, (p) => {
+    if (slot.value) return;
+    if (capRe.test(p.text) && limitRe.test(p.text) && /\$/.test(p.text)) {
+      slot.value = { text: p.text, section_id: p.section.id || undefined, start: p.start, end: p.end };
+    }
+  });
+  if (!slot.value) return null;
+  const found: Hit = slot.value;
+  const amounts = [...found.text.matchAll(/\$\s*([\d,]+(?:\.\d+)?)\s*(million|thousand|m|k)?/gi)];
+  let max = 0;
+  for (const m of amounts) {
+    const num = Number(m[1]!.replace(/,/g, ""));
+    if (!Number.isFinite(num)) continue;
+    const s = (m[2] ?? "").toLowerCase();
+    const scaled = s === "million" || s === "m" ? num * 1_000_000 : s === "thousand" || s === "k" ? num * 1_000 : num;
+    if (scaled > max) max = scaled;
+  }
+  if (max === 0) return null;
+  return { amount_usd: max, raw_text: found.text, section_id: found.section_id, start: found.start, end: found.end };
+}
+
+/**
+ * Detect how a document treats the *survival* of confidentiality after
+ * termination. Returns a normalized descriptor — a number of years, or
+ * "perpetual" — plus the paragraph for the excerpt, or null when no
+ * confidentiality-survival statement is found. Cross-doc conflict = two
+ * documents that survive confidentiality for materially different periods.
+ */
+export function confidentialitySurvival(
+  doc: ConsistencyDocument,
+): { descriptor: string; years: number | "perpetual"; raw_text: string; section_id?: string; start: number; end: number } | null {
+  type Hit = { text: string; section_id?: string; start: number; end: number };
+  const slot: { value: Hit | null } = { value: null };
+  forEachParagraph(doc.tree, (p) => {
+    if (slot.value) return;
+    if (/\bsurviv\w+/i.test(p.text) && /\bconfidential/i.test(p.text)) {
+      slot.value = { text: p.text, section_id: p.section.id || undefined, start: p.start, end: p.end };
+    }
+  });
+  if (!slot.value) return null;
+  const found: Hit = slot.value;
+  if (/\b(perpetu\w+|indefinit\w+|in\s+perpetuity|no\s+expiration|without\s+(?:limit|expiration)|forever)\b/i.test(found.text)) {
+    return { descriptor: "perpetual", years: "perpetual", raw_text: found.text, section_id: found.section_id, start: found.start, end: found.end };
+  }
+  // Match the number of years, tolerating the "three (3) years" drafting
+  // form (grab the parenthetical digit) as well as a plain "3 years".
+  const ym = found.text.match(/(\d+)\s*\)?\s*years?\b/i);
+  if (ym) {
+    const y = Number(ym[1]);
+    if (Number.isFinite(y) && y > 0) {
+      return { descriptor: `${y} year(s)`, years: y, raw_text: found.text, section_id: found.section_id, start: found.start, end: found.end };
+    }
+  }
+  return null;
+}
 
 function walkParagraphs(
   tree: DocumentTree,

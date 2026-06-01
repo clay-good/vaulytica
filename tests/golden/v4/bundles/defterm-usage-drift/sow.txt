@@ -1,0 +1,7 @@
+Statement of Work No. 1
+
+This Statement of Work is entered under the Master Services Agreement between Acme Inc. and Globex Inc., dated 2026-02-01. Governing Law: New York.
+
+Access. Vendor shall provision access to the Services only to the Authorized Users designated by Customer in writing.
+
+Fees. Total fees: $250,000. Payment net 30.

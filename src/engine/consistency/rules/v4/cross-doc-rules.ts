@@ -28,9 +28,12 @@ import type { ConsistencyRule, ConsistencyFinding, DocKind } from "../../types.j
 import { findByKind, kindOf, fullText } from "../../_helpers.js";
 import { makeConsistencyFinding, textExcerpt } from "../_finding.js";
 import {
+  confidentialitySurvival,
   effectiveDateOf,
   findDefinedTermMismatches,
+  findDefinedTermUsageDrift,
   findPartyNameMismatches,
+  firstIndemnityCap,
   firstLiabilityCap,
 } from "./_helpers.js";
 import { forEachParagraph } from "../../../../extract/walk.js";
@@ -441,6 +444,142 @@ export const CROSS_PRECEDENCE_001: ConsistencyRule = {
   },
 };
 
+/* -------------------- CROSS-DEFTERM-002 --------------------------- */
+
+export const CROSS_DEFTERM_002: ConsistencyRule = {
+  id: "CROSS-DEFTERM-002",
+  version: V4_VERSION,
+  name: "Defined term used in one document but defined only in another",
+  category: "consistency",
+  default_severity: "warning",
+  description:
+    "A capitalized term is defined in one document and used as a defined term in another that does not define it and carries no incorporation-by-reference clause. The second document silently borrows the first's definition — a chain of meaning a counterparty can later dispute. Distinct from CROSS-DEFTERM-001, which compares two competing definitions of the same term.",
+  requires: [],
+  check(ctx): ConsistencyFinding[] {
+    if (ctx.documents.length < 2) return [];
+    const out: ConsistencyFinding[] = [];
+    const seen = new Set<string>();
+    for (let i = 0; i < ctx.documents.length; i++) {
+      for (let j = 0; j < ctx.documents.length; j++) {
+        if (i === j) continue;
+        const definer = ctx.documents[i]!;
+        const user = ctx.documents[j]!;
+        for (const m of findDefinedTermUsageDrift(definer, user)) {
+          const key = `${m.term.toLowerCase()}|${definer.doc_id}|${user.doc_id}`;
+          if (seen.has(key)) continue;
+          seen.add(key);
+          out.push(
+            makeConsistencyFinding({
+              rule: CROSS_DEFTERM_002,
+              title: `"${m.term}" is defined in "${definer.doc_id}" but used undefined in "${user.doc_id}"`,
+              description: `"${user.doc_id}" uses the capitalized term "${m.term}" without defining it and without an incorporation-by-reference clause; "${definer.doc_id}" defines it as: "${truncate(m.definition, 200)}".`,
+              explanation:
+                "A capitalized term reads as a defined term. When the document using it neither defines it nor incorporates the other agreement's definitions by reference, the meaning is only implied — and a counterparty can argue the term is undefined (and therefore given its plain meaning) in the document that uses it.",
+              recommendation:
+                'Add an incorporation-by-reference clause to the using document ("Capitalized terms not defined herein have the meanings given in [the other agreement]"), or define the term in place.',
+              excerpts: [
+                textExcerpt(definer, m.definition, m.def_pos.start, m.def_pos.end),
+                textExcerpt(user, m.term, m.use_pos.start, m.use_pos.end),
+              ],
+            }),
+          );
+        }
+      }
+    }
+    return out;
+  },
+};
+
+/* -------------------- CROSS-INDEMNITY-001 ------------------------- */
+
+export const CROSS_INDEMNITY_001: ConsistencyRule = {
+  id: "CROSS-INDEMNITY-001",
+  version: V4_VERSION,
+  name: "Indemnity caps differ across documents (stacking ambiguity)",
+  category: "consistency",
+  default_severity: "warning",
+  description:
+    "Two documents in the bundle state different indemnification caps (e.g., an MSA and an order form each cap indemnity at a different figure). Whether the caps stack, or one folds into the other, is ambiguous unless stated. Distinct from CROSS-AMOUNT-001, which compares the general aggregate-liability cap; indemnity caps commonly sit above it.",
+  requires: [],
+  check(ctx): ConsistencyFinding[] {
+    if (ctx.documents.length < 2) return [];
+    const caps = ctx.documents
+      .map((d) => ({ doc: d, cap: firstIndemnityCap(d) }))
+      .filter((x): x is { doc: typeof x.doc; cap: NonNullable<typeof x.cap> } => x.cap !== null);
+    if (caps.length < 2) return [];
+    let lo = caps[0]!;
+    let hi = caps[0]!;
+    for (const c of caps) {
+      if (c.cap.amount_usd < lo.cap.amount_usd) lo = c;
+      if (c.cap.amount_usd > hi.cap.amount_usd) hi = c;
+    }
+    if (lo.cap.amount_usd === hi.cap.amount_usd) return [];
+    return [
+      makeConsistencyFinding({
+        rule: CROSS_INDEMNITY_001,
+        title: `Indemnity caps differ: $${lo.cap.amount_usd.toLocaleString()} in "${lo.doc.doc_id}" vs $${hi.cap.amount_usd.toLocaleString()} in "${hi.doc.doc_id}"`,
+        description: `"${lo.doc.doc_id}" caps indemnification at $${lo.cap.amount_usd.toLocaleString()}; "${hi.doc.doc_id}" caps it at $${hi.cap.amount_usd.toLocaleString()}. Whether these stack, or the order form's cap folds into the master agreement's, is not stated.`,
+        explanation:
+          "Indemnity caps are negotiated separately from the general liability cap and frequently sit above it. When a master agreement and an order form each state one, the relationship — stack, replace, or fold — must be explicit, or the lower cap controls any indemnity that touches both documents.",
+        recommendation:
+          "State the relationship explicitly: name whether the order-form indemnity cap stacks on top of, or is included within, the master agreement's indemnity cap.",
+        excerpts: [
+          textExcerpt(lo.doc, lo.cap.raw_text, lo.cap.start, lo.cap.end),
+          textExcerpt(hi.doc, hi.cap.raw_text, hi.cap.start, hi.cap.end),
+        ],
+      }),
+    ];
+  },
+};
+
+/* -------------------- CROSS-SURVIVAL-001 -------------------------- */
+
+export const CROSS_SURVIVAL_001: ConsistencyRule = {
+  id: "CROSS-SURVIVAL-001",
+  version: V4_VERSION,
+  name: "Confidentiality survival period conflicts across documents",
+  category: "consistency",
+  default_severity: "warning",
+  description:
+    "Two documents in the bundle survive confidentiality for materially different periods (e.g., an MSA says confidentiality survives three years; a DPA says it survives in perpetuity). The longer period effectively governs shared confidential information, defeating the shorter one.",
+  requires: [],
+  check(ctx): ConsistencyFinding[] {
+    if (ctx.documents.length < 2) return [];
+    const survivals = ctx.documents
+      .map((d) => ({ doc: d, s: confidentialitySurvival(d) }))
+      .filter((x): x is { doc: typeof x.doc; s: NonNullable<typeof x.s> } => x.s !== null);
+    if (survivals.length < 2) return [];
+    const out: ConsistencyFinding[] = [];
+    const seen = new Set<string>();
+    for (let i = 0; i < survivals.length; i++) {
+      for (let j = i + 1; j < survivals.length; j++) {
+        const a = survivals[i]!;
+        const b = survivals[j]!;
+        if (a.s.descriptor === b.s.descriptor) continue;
+        const key = `${a.doc.doc_id}|${b.doc.doc_id}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        out.push(
+          makeConsistencyFinding({
+            rule: CROSS_SURVIVAL_001,
+            title: `Confidentiality survives ${a.s.descriptor} in "${a.doc.doc_id}" but ${b.s.descriptor} in "${b.doc.doc_id}"`,
+            description: `"${a.doc.doc_id}" survives confidentiality for ${a.s.descriptor}; "${b.doc.doc_id}" survives it for ${b.s.descriptor}. The two periods govern overlapping confidential information.`,
+            explanation:
+              "When documents covering the same relationship survive confidentiality for different periods, the longer period effectively controls any information exchanged under both — the shorter clause cannot claw back protection the other still grants. The mismatch is usually an artifact of templates drafted apart.",
+            recommendation:
+              "Reconcile the survival periods to a single duration, or state explicitly which document's confidentiality term governs information exchanged under both.",
+            excerpts: [
+              textExcerpt(a.doc, a.s.raw_text, a.s.start, a.s.end),
+              textExcerpt(b.doc, b.s.raw_text, b.s.start, b.s.end),
+            ],
+          }),
+        );
+      }
+    }
+    return out;
+  },
+};
+
 /* -------------------- Internal helpers ---------------------------- */
 
 function truncate(text: string, limit: number): string {
@@ -483,6 +622,10 @@ export const V4_CROSS_RULES: ConsistencyRule[] = [
   CROSS_AMOUNT_001,
   CROSS_MISSING_001,
   CROSS_PRECEDENCE_001,
+  // spec-v6 §20 / Step 100 — three additional families.
+  CROSS_DEFTERM_002,
+  CROSS_INDEMNITY_001,
+  CROSS_SURVIVAL_001,
 ];
 
 // Suppress the "unused" warning on `findByKind` — kept imported because

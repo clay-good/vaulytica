@@ -1,0 +1,7 @@
+Master Services Agreement
+
+This Master Services Agreement is between Acme Inc. and Globex Inc., effective 2026-01-01. Governing Law: laws of the State of New York.
+
+Definitions. "Authorized Users" means the employees and contractors of Customer who are permitted to access the Services under this Agreement.
+
+Confidentiality. Each party shall protect the other's Confidential Information.

@@ -1,0 +1,5 @@
+Data Processing Agreement
+
+This Data Processing Agreement supplements the Master Services Agreement between Acme Inc. and Globex Inc.
+
+Survival. The confidentiality obligations set forth herein shall survive termination of this Agreement in perpetuity.
