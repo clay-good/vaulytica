@@ -746,6 +746,91 @@
       .secondary-family-counts {
         color: var(--muted);
       }
+      /* Jurisdiction overlays (spec-v6 Part VI §21, Step 101). State-law
+         deltas for the governing-law state(s), as a citable reference block. */
+      .jurisdiction-overlays {
+        margin: 10px 0 8px;
+        font-size: 14px;
+        text-align: left;
+        width: 100%;
+        max-width: 56ch;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .overlay-heading {
+        font-weight: 600;
+        color: var(--body);
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 4px 8px;
+      }
+      .overlay-coverage {
+        font-weight: 400;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .overlay-list {
+        list-style: none;
+        margin: 6px 0 0;
+        padding: 0;
+        display: grid;
+        gap: 8px;
+      }
+      .overlay-card {
+        border: 1px solid var(--border, color-mix(in srgb, var(--muted) 35%, transparent));
+        border-left-width: 4px;
+        border-radius: 8px;
+        padding: 8px 10px;
+        background: var(--surface);
+        overflow-wrap: anywhere;
+      }
+      .overlay-card.overlay-prohibited {
+        border-left-color: #b00020;
+      }
+      .overlay-card.overlay-restricted {
+        border-left-color: #a86700;
+      }
+      .overlay-card.overlay-permitted {
+        border-left-color: var(--accent);
+      }
+      .overlay-card.overlay-informational {
+        border-left-color: var(--muted);
+      }
+      .overlay-card-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 2px 8px;
+        margin-bottom: 4px;
+      }
+      .overlay-state {
+        font-weight: 600;
+        color: var(--body);
+      }
+      .overlay-status {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .overlay-summary {
+        color: var(--body);
+        margin-bottom: 4px;
+      }
+      .overlay-reco {
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+      .overlay-cite {
+        font-size: 12px;
+        color: var(--accent);
+        overflow-wrap: anywhere;
+      }
+      .overlay-uncovered {
+        margin-top: 8px;
+        font-size: 13px;
+        color: var(--muted);
+        font-style: italic;
+      }
       /* Findings-to-action export row (spec-v6 Part III). A wrapped
          row of secondary link-buttons under the primary downloads. */
       .export-row {

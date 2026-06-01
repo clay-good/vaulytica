@@ -107,3 +107,14 @@ export {
   modelClauseForRule,
   type ModelClauseReference,
 } from "../dkb/model-clauses.js";
+
+// v6 Part VI §21 — jurisdiction overlays (Step 101).
+export {
+  STATE_OVERLAYS,
+  STATE_OVERLAY_COVERAGE,
+  selectStateOverlays,
+  overlayFamilyForPlaybook,
+  type StateOverlay,
+  type StateOverlayResult,
+  type OverlayFamily,
+} from "../dkb/state-overlays.js";

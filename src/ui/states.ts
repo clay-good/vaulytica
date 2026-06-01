@@ -111,6 +111,29 @@ export type DropzoneState =
         playbook_name: string;
         counts: { critical: number; warning: number; info: number };
       }>;
+      /**
+       * Jurisdiction overlays (spec-v6 Part VI §21, Step 101). State-law
+       * deltas for the governing-law state(s) this document names, for the
+       * families where state law dominates (employment non-compete, lending
+       * usury). Rendered as a labeled, citable reference block under the
+       * counts — never findings, so the result hash is unchanged.
+       * `uncovered_states` keeps coverage honest. Optional / back-compat:
+       * omitting hides the block.
+       */
+      jurisdiction_overlays?: {
+        family: string;
+        states_in_catalog: number;
+        matched: ReadonlyArray<{
+          state_name: string;
+          posture: "prohibited" | "restricted" | "permitted" | "informational";
+          topic: string;
+          headline: string;
+          summary: string;
+          recommendation: string;
+          citation: { source: string; source_url: string };
+        }>;
+        uncovered_states: ReadonlyArray<string>;
+      };
     }
   | {
       kind: "comparison-complete";
@@ -252,6 +275,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     <div class="counts" data-role="counts"></div>
     <div class="playbook-provenance" data-role="playbook-provenance" hidden></div>
     <div class="secondary-families" data-role="secondary-families" hidden></div>
+    <div class="jurisdiction-overlays" data-role="jurisdiction-overlays" hidden></div>
     <div class="compliance-frame-chips" data-role="compliance-frame-chips" role="group" aria-label="Compliance frames" hidden></div>
     <div class="dropzone-sub compliance-frame-hint" data-role="compliance-frame-hint" hidden></div>
     <details class="playbook-disclosure">
@@ -335,6 +359,7 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
     renderV3FamilyChip(dz, state.v3_family);
     renderPlaybookProvenance(dz, state.custom_playbook);
     renderSecondaryFamilies(dz, state.secondary_families);
+    renderJurisdictionOverlays(dz, state.jurisdiction_overlays);
     renderComplianceFrameChips(dz, state.v3_frames, state.on_frames_change);
     const docxBtn = select<HTMLButtonElement>(dz, "docx-download")!;
     const jsonBtn = select<HTMLButtonElement>(dz, "json-download")!;
@@ -758,6 +783,56 @@ function renderSecondaryFamilies(
   el.innerHTML = `
     <div class="secondary-families-heading">Also checked (other detected families)</div>
     <ul class="secondary-families-list" data-role="secondary-families-list">${items}</ul>
+  `;
+}
+
+/**
+ * Jurisdiction overlays (spec-v6 Part VI §21, Step 101). State-law deltas for
+ * the governing-law state(s) the document names, for the state-sensitive
+ * families. A citable reference block, not findings; honest about the states
+ * it does not cover. Hidden when there is no overlay to show.
+ */
+function renderJurisdictionOverlays(
+  dz: HTMLElement,
+  overlays: Extract<DropzoneState, { kind: "complete" }>["jurisdiction_overlays"],
+): void {
+  const el = select<HTMLElement>(dz, "jurisdiction-overlays");
+  if (!el) return;
+  if (!overlays || (overlays.matched.length === 0 && overlays.uncovered_states.length === 0)) {
+    el.hidden = true;
+    el.innerHTML = "";
+    return;
+  }
+  el.hidden = false;
+  const topic = overlays.matched[0]?.topic ?? overlays.family;
+  const cards = overlays.matched
+    .map(
+      (o) => `<li class="overlay-card overlay-${o.posture}">
+        <div class="overlay-card-head"><span class="overlay-state">${escapeHtml(
+          o.state_name,
+        )}</span> <span class="overlay-status">${escapeHtml(o.headline)}</span></div>
+        <div class="overlay-summary">${escapeHtml(o.summary)}</div>
+        <div class="overlay-reco">${escapeHtml(o.recommendation)}</div>
+        <a class="overlay-cite" href="${escapeHtml(
+          o.citation.source_url,
+        )}" target="_blank" rel="noopener noreferrer">${escapeHtml(o.citation.source)}</a>
+      </li>`,
+    )
+    .join("");
+  const uncovered =
+    overlays.uncovered_states.length > 0
+      ? `<div class="overlay-uncovered">No overlay on file for ${overlays.uncovered_states
+          .map((s) => s.replace(/^us-/, "").toUpperCase())
+          .join(", ")} — an honest coverage gap, not a clean pass. Verify ${escapeHtml(
+          topic,
+        )} for ${overlays.uncovered_states.length === 1 ? "that state" : "those states"} manually.</div>`
+      : "";
+  el.innerHTML = `
+    <div class="overlay-heading">Jurisdiction overlays <span class="overlay-coverage">${escapeHtml(
+      topic,
+    )} · ${overlays.states_in_catalog} states covered</span></div>
+    <ul class="overlay-list">${cards}</ul>
+    ${uncovered}
   `;
 }
 

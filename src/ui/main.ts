@@ -198,6 +198,7 @@ function renderCompleteState(
     v3_frames: import("./pipeline.js").PipelineResult["v3_frames"];
     custom_playbook?: import("./pipeline.js").PipelineResult["custom_playbook"];
     secondary_families?: import("./pipeline.js").PipelineResult["secondary_families"];
+    jurisdiction_overlays?: import("./pipeline.js").PipelineResult["jurisdiction_overlays"];
   },
   countsBySeverity: (r: import("./pipeline.js").PipelineResult["run"]) => {
     critical: number;
@@ -264,6 +265,29 @@ function renderCompleteState(
             playbook_name: f.playbook_name,
             counts: f.counts,
           }))
+        : undefined,
+    // v6 Part VI §21 jurisdiction overlays (Step 101). State-law deltas for
+    // the governing-law state(s) the document names, surfaced as a citable
+    // reference block. Hidden unless the family is state-sensitive and a
+    // covered (or honestly-uncovered) governing-law state was detected.
+    jurisdiction_overlays:
+      result.jurisdiction_overlays &&
+      (result.jurisdiction_overlays.matched.length > 0 ||
+        result.jurisdiction_overlays.detected_states.length > 0)
+        ? {
+            family: result.jurisdiction_overlays.family,
+            states_in_catalog: result.jurisdiction_overlays.states_in_catalog,
+            matched: result.jurisdiction_overlays.matched.map((o) => ({
+              state_name: o.state_name,
+              posture: o.posture,
+              topic: o.topic,
+              headline: o.headline,
+              summary: o.summary,
+              recommendation: o.recommendation,
+              citation: { source: o.citation.source, source_url: o.citation.source_url },
+            })),
+            uncovered_states: result.jurisdiction_overlays.uncovered_states,
+          }
         : undefined,
     // v6 Part I comparison (Step 90). The base run is the one currently
     // rendered, so a frame-toggle re-run rebinds compare to the fresh run.

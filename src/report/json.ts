@@ -14,6 +14,8 @@ import {
   MODEL_CLAUSE_COVERAGE,
   type ModelClauseReference,
 } from "../dkb/model-clauses.js";
+import { selectStateOverlays, type StateOverlayResult } from "../dkb/state-overlays.js";
+import type { ExtractedData } from "../extract/types.js";
 
 /**
  * One additional detected family's scan results (spec-v6 multi-family
@@ -74,6 +76,16 @@ export type JsonReport = {
     /** Distinct public model clauses in the catalog. */
     model_clauses: number;
   };
+  /**
+   * Jurisdiction overlays (spec-v6 Part VI §21). State-law deltas for the
+   * governing-law state(s) this document names, for the families where state
+   * law dominates the outcome (employment non-compete, lending usury). Lives
+   * outside `run` — a citable reference layer, not findings, so `result_hash`
+   * is unchanged. Omitted when the family has no overlay catalog or no
+   * governing-law state was detected. `uncovered_states` keeps coverage
+   * honest: a detected-but-uncovered state is reported, never silently passed.
+   */
+  jurisdiction_overlays?: StateOverlayResult;
 };
 
 export function buildJsonReport(
@@ -81,6 +93,7 @@ export function buildJsonReport(
   ingest: IngestResult,
   playbook?: Playbook,
   secondaryFamilies?: ReadonlyArray<ReportSecondaryFamily>,
+  extracted?: ExtractedData,
 ): Blob {
   // spec-v6 Part IV — one model-clause reference per distinct fired rule that
   // has one, in first-seen finding order (findings arrive pre-sorted).
@@ -109,6 +122,13 @@ export function buildJsonReport(
     },
   };
   if (modelRefs.length > 0) payload.model_clause_references = modelRefs;
+  // spec-v6 Part VI §21 — jurisdiction overlays for the governing-law state(s).
+  if (extracted) {
+    const overlays = selectStateOverlays(run.playbook_id, extracted.jurisdictions);
+    if (overlays && (overlays.matched.length > 0 || overlays.detected_states.length > 0)) {
+      payload.jurisdiction_overlays = overlays;
+    }
+  }
   if (playbook && playbook.deprecated === true) {
     payload.playbook_deprecated = true;
     if (typeof playbook.superseded_by === "string" && playbook.superseded_by.length > 0) {

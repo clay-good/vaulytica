@@ -282,6 +282,90 @@ describe("model-clause references (spec-v6 Part IV)", () => {
   });
 });
 
+describe("jurisdiction overlays (spec-v6 Part VI §21, Step 101)", () => {
+  function empRun(): EngineRun {
+    const run = makeRun();
+    run.playbook_id = "executive-employment";
+    return run;
+  }
+  function extractedWithGovLaw(raw: string): import("../extract/types.js").ExtractedData {
+    return {
+      parties: [],
+      dates: [],
+      amounts: [],
+      definitions: { entries: [] } as never,
+      outline: { sections: [] } as never,
+      crossrefs: [],
+      obligations: [],
+      jurisdictions: [
+        {
+          clause_kind: "governing-law",
+          raw_text: raw,
+          position: { section_id: "s1", start: 0, end: raw.length },
+        },
+      ],
+      classified: [],
+    };
+  }
+
+  it("emits jurisdiction_overlays in JSON for an employment doc governed by California", async () => {
+    const blob = buildJsonReport(
+      empRun(),
+      ingest,
+      undefined,
+      undefined,
+      extractedWithGovLaw("California"),
+    );
+    const parsed = JSON.parse(await blob.text());
+    expect(parsed.jurisdiction_overlays.family).toBe("employment");
+    expect(parsed.jurisdiction_overlays.matched[0].jurisdiction).toBe("us-ca");
+    expect(parsed.jurisdiction_overlays.matched[0].posture).toBe("prohibited");
+  });
+
+  it("reports an uncovered governing-law state honestly", async () => {
+    const blob = buildJsonReport(
+      empRun(),
+      ingest,
+      undefined,
+      undefined,
+      extractedWithGovLaw("Wyoming"),
+    );
+    const parsed = JSON.parse(await blob.text());
+    expect(parsed.jurisdiction_overlays.matched).toHaveLength(0);
+    expect(parsed.jurisdiction_overlays.uncovered_states).toEqual(["us-wy"]);
+  });
+
+  it("omits jurisdiction_overlays for a family with no overlay catalog", async () => {
+    const blob = buildJsonReport(makeRun(), ingest, undefined, undefined, extractedWithGovLaw("California"));
+    const parsed = JSON.parse(await blob.text());
+    expect(parsed.jurisdiction_overlays).toBeUndefined();
+  });
+
+  it("does not change the run result_hash (overlays live outside the run)", async () => {
+    const run = empRun();
+    const before = run.result_hash;
+    const blob = buildJsonReport(run, ingest, undefined, undefined, extractedWithGovLaw("California"));
+    const parsed = JSON.parse(await blob.text());
+    expect(parsed.run.result_hash).toBe(before);
+  });
+
+  it("renders the Jurisdiction Overlays section in the DOCX", async () => {
+    const blob = await buildDocxReport(
+      empRun(),
+      ingest,
+      loadStarterDkbSync(),
+      loadMutualNda(),
+      undefined,
+      extractedWithGovLaw("California"),
+    );
+    const { unzipSync, strFromU8 } = await import("fflate");
+    const files = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const docXml = strFromU8(files["word/document.xml"]!);
+    expect(docXml).toContain("Jurisdiction Overlays");
+    expect(docXml).toContain("California");
+  });
+});
+
 describe("buildDocxReport multi-family section (spec-v6)", () => {
   it("renders the 'Additional Checks' section when secondary families are supplied", async () => {
     const secondary = [

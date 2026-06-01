@@ -68,6 +68,7 @@ import {
 import { familyDisplayLabel } from "./v3-labels.js";
 import { filterRulesByFrames } from "./frame-filter.js";
 import { selectMatchCandidates, selectSecondaryFamilies } from "./playbook-candidates.js";
+import { selectStateOverlays, type StateOverlayResult } from "../dkb/state-overlays.js";
 import type { Finding } from "../engine/finding.js";
 
 export type PipelineProgress = {
@@ -160,6 +161,16 @@ export type PipelineResult = {
    * report stays clean. Empty for a single-family document.
    */
   secondary_families: SecondaryFamilyResult[];
+  /**
+   * Jurisdiction overlays (spec-v6 Part VI §21, Step 101). State-law deltas
+   * for the governing-law state(s) the document names, for the families where
+   * state law dominates the outcome (employment non-compete, lending usury).
+   * Computed deterministically from the matched playbook id + the extracted
+   * governing-law references. `undefined` when the family has no overlay
+   * catalog or no governing-law state was detected. A citable reference layer
+   * — never findings, so the run's `result_hash` is unchanged.
+   */
+  jurisdiction_overlays?: StateOverlayResult;
 };
 
 /** One additional detected family's scan results (spec-v6 multi-family activation). */
@@ -425,7 +436,13 @@ export async function runReport(
     prepared.extracted,
     secondary_families,
   );
-  const json_blob = buildJsonReport(run, prepared.ingest, prepared.playbook, secondary_families);
+  const json_blob = buildJsonReport(
+    run,
+    prepared.ingest,
+    prepared.playbook,
+    secondary_families,
+    prepared.extracted,
+  );
   const fixlist_md_blob = fixListMarkdownBlob(run, prepared.extracted);
   const fixlist_csv_blob = fixListCsvBlob(run);
   const obligations_csv_blob = obligationsCsvBlob(prepared.extracted);
@@ -433,6 +450,10 @@ export async function runReport(
 
   const v3_detection = detectV3Family(prepared.extracted, prepared.body_text);
   const v3_frames = defaultFramesForPlaybook(prepared.playbook.id);
+  const jurisdiction_overlays = selectStateOverlays(
+    run.playbook_id,
+    prepared.extracted.jurisdictions,
+  );
 
   return {
     ingest: prepared.ingest,
@@ -449,6 +470,7 @@ export async function runReport(
     v3_frames,
     custom_playbook: customProvenance,
     secondary_families,
+    jurisdiction_overlays,
   };
 }
 
@@ -762,7 +784,7 @@ export async function prepareBundle(
     });
 
     const docx_blob = await buildDocxReport(run, ingest, dkb, playbook, undefined, extracted);
-    const json_blob = buildJsonReport(run, ingest, playbook);
+    const json_blob = buildJsonReport(run, ingest, playbook, undefined, extracted);
 
     const v3_detection = detectV3Family(extracted, bodyParts.join(" "));
 

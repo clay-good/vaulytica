@@ -47,6 +47,7 @@ import type { ReportSecondaryFamily } from "./json.js";
 import { buildBibliography, citationIndex, type BibliographyEntry } from "./bibliography.js";
 import { formatCitation, formatBibliographyEntry } from "./citations.js";
 import { modelClauseForRule, MODEL_CLAUSE_COVERAGE } from "../dkb/model-clauses.js";
+import { selectStateOverlays, type StateOverlayResult } from "../dkb/state-overlays.js";
 import type { V3ReportInputs } from "./v3/types.js";
 import {
   renderComplianceMatrix,
@@ -103,6 +104,13 @@ export async function buildDocxReport(
     ...(v3?.subprocessor ? renderSubprocessorPage(v3.subprocessor) : []),
     ...(v3?.insurance ? renderInsurancePage(v3.insurance) : []),
     ...renderObligationsLedger(run, extracted),
+    // spec-v6 Part VI §21 — jurisdiction overlays. State-law deltas for the
+    // detected governing-law state(s), surfaced as an advisory reference layer
+    // (not EngineRun findings, so result_hash is unchanged). Empty for
+    // families with no overlay catalog or when no covered state is detected.
+    ...renderJurisdictionOverlaysSection(
+      extracted ? selectStateOverlays(run.playbook_id, extracted.jurisdictions) : undefined,
+    ),
     ...renderExtractedAppendix(run, extracted),
     ...renderAuditTrail(run, playbook, bibliography),
     // v3 §59 — two-document consistency appendix.
@@ -398,6 +406,86 @@ function renderSecondaryFamiliesSection(
             ]),
           ),
         ],
+      }),
+    );
+  }
+  out.push(pageBreak());
+  return out;
+}
+
+// ---------------------------------------------------------------------------
+// Jurisdiction Overlays (spec-v6 Part VI §21, Step 101)
+
+function postureLabel(posture: StateOverlayResult["matched"][number]["posture"]): string {
+  switch (posture) {
+    case "prohibited":
+      return "Prohibited";
+    case "restricted":
+      return "Restricted";
+    case "permitted":
+      return "Permitted";
+    case "informational":
+      return "Reference";
+  }
+}
+
+function renderJurisdictionOverlaysSection(
+  overlays: StateOverlayResult | undefined,
+): (Paragraph | Table)[] {
+  // Honest scope: nothing to show when the family has no overlay catalog or
+  // when the document named no covered governing-law state. We do not invent
+  // a section in that case.
+  if (!overlays || (overlays.matched.length === 0 && overlays.detected_states.length === 0)) {
+    return [];
+  }
+  const topic = overlays.matched[0]?.topic ?? overlays.family;
+  const out: (Paragraph | Table)[] = [
+    h1("Jurisdiction Overlays"),
+    para({
+      text: `State law on ${topic} varies sharply. Vaulytica's overlay catalog covers ${plural(
+        overlays.states_in_catalog,
+        "state",
+      )} for the ${overlays.family} family. The entries below match the governing-law state(s) this document names. These are a citable reference layer, not findings — they do not change the report's result hash.`,
+      italics: true,
+    }),
+  ];
+
+  if (overlays.matched.length > 0) {
+    out.push(
+      new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        rows: [
+          headerRow(["State", "Status", "Summary", "Authority"]),
+          ...overlays.matched.map((o) =>
+            bodyRow([
+              o.state_name,
+              `${postureLabel(o.posture)} — ${o.headline}`,
+              truncate(o.summary, 320),
+              o.citation.source,
+            ]),
+          ),
+        ],
+      }),
+    );
+    for (const o of overlays.matched) {
+      out.push(
+        para({ text: `${o.state_name}: ${o.headline}`, bold: true, color: severityColor(o.severity) }),
+        para({ text: o.recommendation }),
+        para({ text: `Authority: ${o.citation.source} — ${o.citation.source_url}`, italics: true, size: 18 }),
+        spacer(),
+      );
+    }
+  }
+
+  if (overlays.uncovered_states.length > 0) {
+    out.push(
+      para({
+        text: `No overlay on file for: ${overlays.uncovered_states
+          .map((s) => s.replace(/^us-/, "").toUpperCase())
+          .join(", ")}. This is an honest coverage gap — not a clean pass. Verify ${topic} for ${
+          overlays.uncovered_states.length === 1 ? "that state" : "those states"
+        } manually.`,
+        italics: true,
       }),
     );
   }

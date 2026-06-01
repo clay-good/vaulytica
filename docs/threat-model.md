@@ -279,3 +279,66 @@ control but a disclosure-accuracy measure.
   the prose of regulatory-facing documents (Form ADV narrative, Reg S-K
   Item 105 disclosures), not the structured-data envelope a filing
   system validates separately.
+
+## v6 additions — workflow surface
+
+v6 expands *what you can do with* a run (compare versions, enforce your
+own standard, export findings, aggregate a portfolio) and deepens what
+the engine already does. Each feature passed the same five-part posture
+filter (deterministic / no-AI / no-server / citable / lints-not-drafts).
+Two of them open new trust surfaces worth stating explicitly.
+
+### User-supplied playbooks (Part II)
+
+A custom playbook is an arbitrary `.json` file the user loads from their
+own disk. It is held in the tab exactly like the user's document:
+loaded via the file input, validated against the public schema with
+`zod`, and kept in memory for the session. It is **never uploaded** —
+the privacy guard (`tests/integration/custom-playbook-privacy.test.ts`)
+asserts no playbook bytes appear in any network request, the same
+discipline the corpus-exclusion tests apply to document content.
+
+What a malicious or malformed playbook **cannot** do:
+
+- **Execute code.** The `custom_rules` block is a constrained,
+  declarative predicate set (`clause_present`, `numeric_threshold`,
+  `governing_law_in`, …) evaluated by the engine's interpreter over the
+  same extracted facts the built-in rules use. There is no
+  free-code-execution path, no `eval`, no regex supplied as code — a
+  custom rule is data, so a custom playbook is as auditable and
+  deterministic as a built-in one and cannot exfiltrate or compute
+  arbitrarily.
+- **Forge provenance.** Findings produced by a user playbook carry
+  `source: "custom-playbook"`, so the report always distinguishes "your
+  standard flagged this" from "Vaulytica's catalog flagged this." A
+  custom rule without a citation is marked `uncited (team policy)`,
+  never silently presented as a Vaulytica-authored, DKB-grounded
+  finding.
+- **Silently mis-run.** A playbook that fails schema validation is
+  rejected with human-readable errors before any rule runs; a playbook
+  targeting a retired catalog version warns rather than failing
+  opaquely. A rule the playbook references that does not exist in the
+  catalog is surfaced as unevaluable, not skipped quietly.
+
+What this still does not protect against: a user who loads a *wrong*
+playbook (an honest standard that encodes a position their own counsel
+would reject). v6 enforces the standard the user supplies; it does not
+opine on whether that standard is good — the same way it lints a
+document without judging whether the deal is wise.
+
+### Jurisdiction overlays (Part VI §21)
+
+The state-law overlay catalog (`src/dkb/state-overlays.ts`) is a frozen,
+hand-curated, `zod`-validated module — not a runtime fetcher and not a
+user input. Overlays are selected deterministically from the matched
+family (a function of the playbook id) and the governing-law state read
+out of the extracted jurisdiction references, and are surfaced as a
+**citable reference layer alongside** the report, not as `EngineRun`
+findings, so no existing `result_hash` changes. Coverage is honest by
+construction: a governing-law state with no overlay node is reported as
+an explicit gap (`uncovered_states`), never silently treated as a clean
+pass. The same boundary as v4 holds — state-law variance the catalog has
+not indexed surfaces as an honest N/A. The residential-deposit overlays
+gate to the residential lease playbook only; the commercial-lease
+playbook is excluded, so a residential deposit-cap statute is never
+mis-applied to a commercial lease.
