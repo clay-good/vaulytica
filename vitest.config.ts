@@ -9,6 +9,8 @@ export default defineConfig({
       "tests/**/*.test.ts",
       "dkb/**/*.test.ts",
       "site/**/*.test.ts",
+      // v5 accuracy harness (build-and-CI-only; never imported by src/).
+      "tools/**/*.test.ts",
     ],
     globals: false,
     reporters: "default",

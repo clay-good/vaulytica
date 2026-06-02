@@ -1,6 +1,6 @@
 # Vaulytica v5 — Ground Truth
 
-> **Status:** specification, not yet implemented.
+> **Status:** partially implemented — the **measurement infrastructure** is built and unit-tested (Steps 67, 69, 71, 83): corpus scaffolding + provenance/redaction tooling, the gold-annotation schema + Cohen's-κ computation, the accuracy harness (`tools/accuracy/`, `npm run accuracy`) with a reproducible scoreboard hash, and the `src/`-never-imports-corpus privacy guard. The remaining steps gate on **human work that code cannot do** — sourcing real license-clean documents (68, 73, 74), credentialed attorney annotation (70) and legal review (76, 77), and real-user testing (85) — plus the deploy steps (84) that need a live site. See [`docs/v5/methodology.md`](v5/methodology.md), [`docs/v5/annotation-protocol.md`](v5/annotation-protocol.md), and [`BUILD_PROGRESS.md`](../BUILD_PROGRESS.md).
 > **Scope:** measure and prove the engine's accuracy. No new document families, no new rules-for-the-sake-of-rules, no UI rebuild. v5 builds the corpus, the metrics harness, the legal-review ledger, and the public trust artifacts that turn "1,000 rules that pass their own synthetic fixtures" into "a tool whose error rate is known, published, and reproducible." It also lands the deployment and real-user gates that v1–v4 left pending.
 > **Cousin docs:** [`spec.md`](spec.md) (v1, 17 steps, 1.0.0), [`spec-v3.md`](spec-v3.md) (regulated agreements), [`spec-v4.md`](spec-v4.md) (all logically-operative legal documents).
 
@@ -309,12 +309,12 @@ Each step is a prompt-sized unit, continuing the global numbering after v4's Ste
 
 | # | Step | Output |
 |---|------|--------|
-| 67 | Corpus scaffolding + provenance + redaction tooling | `corpus/` layout, `CORPUS_VERSION`, provenance schema, redaction script + redaction log, storage decision (in-repo vs LFS/submodule), disjoint-from-fixtures guard test. |
-| 68 | Seed corpus — Tier A (EDGAR + Common Paper) | ≥15 real redacted docs each for NDA, MSA, SaaS, DPA, BAA, employment, lease. Provenance records committed. |
-| 69 | Annotation schema + tooling + protocol doc | Gold-standard JSON schema (§6), `docs/v5/annotation-protocol.md`, double-annotation + κ computation tooling, adjudication workflow. |
-| 70 | Tier A annotations + κ baseline | Two-annotator gold sets for all Tier A docs; κ computed and recorded; adjudications logged. |
-| 71 | Accuracy harness v1 + first scoreboard | `tools/accuracy/` runner, metric computation (§8), `SCOREBOARD.md` + `scoreboard.json`, reproducible hash. **First honest precision/recall numbers recorded.** Empirical floors set just under measured. |
-| 72 | Accuracy CI gate (threshold + ratchet) | `npm run accuracy` wired as fifth gate; floor + ratchet logic; `unmeasured`-rule exclusion accounting. |
+| 67 | Corpus scaffolding + provenance + redaction tooling ✅ | `corpus/` layout, `CORPUS_VERSION`, provenance schema (`tools/accuracy/schema.ts`), redaction script + redaction log (`redact.ts`), storage decision (in-repo redacted text — `corpus/README.md`), disjoint-from-fixtures guard test (`tests/integration/accuracy-corpus-guard.test.ts`). **Done 2026-06-01.** |
+| 68 | Seed corpus — Tier A (EDGAR + Common Paper) ⏳ | ≥15 real redacted docs each for NDA, MSA, SaaS, DPA, BAA, employment, lease. Provenance records committed. **Human-gated** (real-document sourcing). |
+| 69 | Annotation schema + tooling + protocol doc ✅ | Gold-standard JSON schema (§6, `GoldAnnotationSchema`), `docs/v5/annotation-protocol.md`, Cohen's-κ computation tooling (`tools/accuracy/kappa.ts`), adjudication fields. **Done 2026-06-01.** |
+| 70 | Tier A annotations + κ baseline ⏳ | Two-annotator gold sets for all Tier A docs; κ computed and recorded; adjudications logged. **Human-gated** (credentialed annotation). |
+| 71 | Accuracy harness v1 + first scoreboard ✅ | `tools/accuracy/` runner (`run.ts`), metric computation (§8, `metrics.ts`), Node full-catalog pipeline reuse (`pipeline.ts`), `SCOREBOARD.md` + `scoreboard.json`, reproducible scoreboard hash (`scoreboard.ts`). Verified by unit tests; reports the honest empty state until Step 68/70 land. Empirical floors set once real numbers exist. **Harness done 2026-06-01; numbers pending corpus.** |
+| 72 | Accuracy CI gate (threshold + ratchet) ⏳ | `npm run accuracy` exists; floor + ratchet gate is deferred until the first real measured numbers (Step 71 numbers) exist — gating on a fabricated floor would reintroduce the dishonesty v5 breaks. |
 | 73 | Tier B corpus + annotations | ≥8 real docs each for equity/SAFE, settlement, IP license, loan, governance; annotated; scoreboard extended. |
 | 74 | Tier C corpus + annotations (thin, flagged) | ≥4 real docs each for M&A, insurance, construction, trust/estate, compliance policy, regulatory prose; `corpus_thin` flags wired. |
 | 75 | Legal-basis ledger scaffolding + `tier` on Rule/Finding | Ledger schema + machine mirror test; `tier` field added to `Rule` and `Finding`; **deliberate golden baseline regen** (P0-reviewed). |
@@ -325,7 +325,7 @@ Each step is a prompt-sized unit, continuing the global numbering after v4's Ste
 | 80 | Explainability — evidence spans + rationale | `Finding` carries matched span + scanned-sections for absence findings; rationale line in report + JSON. |
 | 81 | Explainability — why-not trace + rule cards | JSON why-not trace; rule-card data assembled from ledger + scoreboard; tier badge + measured-precision surfaced in report/UI. |
 | 82 | Public accuracy report + methodology page | `site/accuracy.html` generated from `scoreboard.json`; `docs/v5/methodology.md`; honest-limits disclosure expansion. |
-| 83 | Privacy/determinism guards for the v5 surface | Bundle-excludes-corpus guard; scoreboard-hash determinism test; confirm no corpus-derived runtime logic. |
+| 83 | Privacy/determinism guards for the v5 surface ✅ | `src/`-never-imports-corpus/harness guard + bundle-excludes-corpus guard (`tests/integration/accuracy-corpus-guard.test.ts`); scoreboard-hash determinism test (`tools/accuracy/scoreboard.test.ts`); no corpus-derived runtime logic. **Done 2026-06-01.** |
 | 84 | Deploy + flip mechanical launch rows | Live deploy; smoke suite; record verifier + date for v1-a/c/e/h/i/j/k/l, v3-e/f/i, v4-d/e/f/i/o. |
 | 85 | Real-user usability gate | v1-o protocol against deployed site with corpus docs; lawyer + non-lawyer; feedback → uncovered_defects + FP candidates. |
 | 86 | v5 launch checklist + version bump | Full v5 launch checklist (corpus version, κ, precision/recall floors, ledger completeness, deploy green); bump to 5.0.0; tag v5.0.0. |

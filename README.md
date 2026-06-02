@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,062 deterministic rules` · `16 document sub-domains` · `35 state-law overlays` · `0 servers` · `0 AI` · `2,427 passing tests` · `v6.0.0` · `MIT`
+`1,062 deterministic rules` · `16 document sub-domains` · `35 state-law overlays` · `0 servers` · `0 AI` · `2,468 passing tests` · `v6.0.0` · `MIT`
 
 ---
 
@@ -65,7 +65,7 @@ On top of that, **v3 (+220 rules)** adds compliance-grade rule sets and **v4 (+7
 | v1 | Linter | 112 rules, DOCX report, `result_hash`, browser-only | shipped |
 | v3 | Regulated agreements | +220 rules (HIPAA, GDPR, 8 US state privacy laws, EU SCCs, UK IDTA), cross-doc consistency, compliance matrix, citation-pinned sources | shipped |
 | v4 | Every operative document | +730 rules, 16 sub-domains, multi-doc bundles (folder/zip), document classifier | shipped |
-| v5 | Ground Truth | accuracy & validation harness, measured recall/precision, rule-retirement discipline | specified |
+| v5 | Ground Truth | accuracy & validation harness, measured recall/precision, rule-retirement discipline | **infrastructure built** (Steps 67/69/71/83): corpus scaffolding, gold-annotation schema + Cohen's κ, `npm run accuracy` harness + reproducible scoreboard. Numbers await a human-gated real corpus + attorney annotation (Steps 68/70). |
 | v6 | Workflow | version comparison · bring-your-own-playbook · findings-to-action exports · model-clause references · portfolio matrix · depth (classifier, cross-doc families, jurisdiction overlays) | **complete · 6.0.0** (Steps 87–102; only Step 98 extraction-recall deferred behind v5) |
 
 ## v6 — fit the shape of a review
@@ -93,6 +93,29 @@ Overlays gate on the matched family and the **governing-law** clause only (venue
 ### Design decision: why a feature table, not a model
 
 The classifier is a hand-authored table of title keywords, distinguishing phrases, and negative features, scored with fixed weights (title 0.3, distinguishing 0.2, negative −0.1) and a per-domain normalization ceiling. Every classification is explainable ("matched: *licensor*, *royalty*; ceiling 1.4 → 0.71") and reproducible. The Step 99 gain came from adding phrases verified to appear **only** in their target sub-domain's fixtures — so each edit strictly helps its target and cannot regress another, a property a learned model cannot guarantee. The 100% figure is corpus-measured on 75 labeled fixtures (5 per sub-domain); the added phrases are genuine legal terms of art, so the lift generalizes, but a small labeled set is not the open world — the calibration test pins the acceptance floor so a future corpus change that breaks it fails loudly.
+
+## v5 — Ground Truth: making accuracy measured, not asserted
+
+*Deterministic is not the same as correct.* A rule that fires identically every time can be reproducibly wrong. Every rule today passes a synthetic fixture authored by the same person who wrote the rule — a closed, self-confirming loop. v5 breaks it by measuring the engine against **real contracts it did not write**, graded by a credentialed attorney.
+
+The **measurement machinery is built and unit-tested** (`tools/accuracy/`, run with `npm run accuracy`):
+
+```mermaid
+flowchart LR
+  C[(corpus/<br/>real redacted docs<br/>+ gold annotations)] --> H[Accuracy harness]
+  R[(full engine<br/>1,062 rules · 135 playbooks)] --> H
+  H --> M[TP / FP / FN / TN<br/>precision · recall · F1<br/>macro + micro]
+  M --> S[SCOREBOARD.md + scoreboard.json<br/>reproducible SHA-256]
+  K[Cohen's κ<br/>inter-annotator agreement] --> M
+  style S fill:#00A883,color:#fff
+```
+
+- **Reuses the real pipeline.** The harness runs the exact `ingest → extract → classify → engine` path the browser uses — a measured number reflects shipped behavior, not a test-only shortcut.
+- **Honest by construction.** Gold silence on a fired rule scores as a false alarm (closed-world); a rule graded only on documents where annotators disagreed (Cohen's κ < 0.6) is flagged `unmeasured` and excluded from the headline, with the exclusion count published. Bootstrap placeholder docs never count toward a real number.
+- **Reproducible.** The scoreboard is stamped `(corpus, dkb, engine)` and hashed with the same wall-clock-excluded discipline as `result_hash` — two machines produce a byte-identical scoreboard.
+- **Privacy-preserved.** The corpus, annotations, and scoreboard live in `corpus/`, `tools/accuracy/`, and `docs/` — **never imported by `src/`** (a guard test asserts it), so not one byte ships in the deployed bundle. The user's document still never leaves the tab.
+
+The committed scoreboard currently reports `status: empty` and publishes **no** precision/recall number — because there are zero real annotated documents yet. Sourcing license-clean real documents (EDGAR Ex-10 exhibits, CC0 template banks) and credentialed attorney annotation are human-gated steps that code cannot do; the harness produces a real number the moment they land. Publishing a number only when it is real is the entire point. See [`docs/v5/methodology.md`](docs/v5/methodology.md).
 
 ## The posture filter — the gate every feature passes
 
@@ -156,7 +179,8 @@ npm run dev          # open the printed URL
 npm run build        # static site → dist/
 npm run typecheck    # tsc --noEmit
 npm run lint         # eslint
-npm run test         # vitest — 2,425 tests, ~10s
+npm run test         # vitest — 2,468 tests, ~10s
+npm run accuracy     # v5 Ground Truth harness → tools/accuracy/SCOREBOARD.md
 ```
 
 The CI gate (`.github/workflows/deploy.yml`) runs typecheck + lint + test + build; the test matrix re-runs on Ubuntu/macOS/Windows. A commit is "green" only when all four pass.
@@ -174,6 +198,8 @@ src/
   report/      DOCX · JSON · bundle · comparison · exports · portfolio matrix
   ui/          drop zone, pipeline, four document states, theme toggle
 dkb/build/     offline fetchers (EDGAR, US Code, eCFR, Common Paper, …) → DKB
+tools/accuracy/ v5 Ground Truth harness (corpus loader, κ, metrics, scoreboard)
+corpus/        real-document accuracy corpus (build/CI-only; never in the bundle)
 docs/          architecture, determinism, threat model, specs v1–v6
 playbooks/     served playbook JSON; tools/ bundles the v3+v4 catalog
 ```
@@ -207,6 +233,8 @@ See [`docs/data-sources.md`](docs/data-sources.md) and [`docs/determinism.md`](d
 | v6 overview (workflow features) | [`docs/v6/README.md`](docs/v6/README.md) |
 | Bring-your-own playbook (authoring) | [`docs/v6/authoring-a-playbook.md`](docs/v6/authoring-a-playbook.md) |
 | Jurisdiction overlays (state law) | [`docs/v6/jurisdiction-overlays.md`](docs/v6/jurisdiction-overlays.md) |
+| Accuracy methodology (v5 Ground Truth) | [`docs/v5/methodology.md`](docs/v5/methodology.md) |
+| Annotation protocol (v5) | [`docs/v5/annotation-protocol.md`](docs/v5/annotation-protocol.md) |
 | v4 overview + sub-domains | [`docs/v4/overview.md`](docs/v4/overview.md) |
 | Specs | [`docs/spec.md`](docs/spec.md) · [`spec-v3`](docs/spec-v3.md) · [`spec-v4`](docs/spec-v4.md) · [`spec-v5`](docs/spec-v5.md) · [`spec-v6`](docs/spec-v6.md) |
 | Contributing | [`CONTRIBUTING.md`](CONTRIBUTING.md) |

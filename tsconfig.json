@@ -22,6 +22,6 @@
     "verbatimModuleSyntax": false,
     "types": ["vite/client", "node"]
   },
-  "include": ["src/**/*.ts", "site/**/*.ts", "dkb/**/*.ts", "tests/**/*.ts", "vite.config.ts", "vitest.config.ts"],
+  "include": ["src/**/*.ts", "site/**/*.ts", "dkb/**/*.ts", "tests/**/*.ts", "tools/**/*.ts", "vite.config.ts", "vitest.config.ts"],
   "exclude": ["node_modules", "dist", "dkb/dist", "dkb/build/cache"]
 }
