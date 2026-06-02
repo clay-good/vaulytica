@@ -1027,13 +1027,90 @@
         border-radius: var(--radius);
         padding: 56px;
         margin-top: 20px;
-        overflow-x: auto;
       }
       .diagram svg {
         display: block;
         max-width: 100%;
         height: auto;
-        min-width: 720px;
+      }
+      /* The wide left-to-right SVG flow can't shrink legibly on a phone,
+         so below the tablet breakpoint we hide it and render a stacked,
+         readable step list instead — no horizontal scrolling on any
+         viewport. The container's role="img" + aria-label already
+         describe the flow, so both renderings are presentational. */
+      .diagram-steps {
+        display: none;
+      }
+      @media (max-width: 720px) {
+        .diagram {
+          padding: 22px;
+        }
+        .diagram svg {
+          display: none;
+        }
+        .diagram-steps {
+          display: grid;
+          gap: 10px;
+          margin: 0;
+          padding: 0;
+          list-style: none;
+          counter-reset: step;
+        }
+        .diagram-steps li {
+          display: grid;
+          grid-template-columns: 30px 1fr;
+          align-items: start;
+          gap: 12px;
+          padding: 12px 14px;
+          background: var(--bg);
+          border: 1px solid var(--line);
+          border-radius: 12px;
+        }
+        .diagram-steps li.is-feeder {
+          border-style: dashed;
+          border-color: var(--accent);
+        }
+        .diagram-steps li::before {
+          counter-increment: step;
+          content: counter(step);
+          width: 30px;
+          height: 30px;
+          display: grid;
+          place-items: center;
+          border-radius: 999px;
+          background: var(--accent);
+          color: #02110a;
+          font-family: var(--font-mono);
+          font-weight: 700;
+          font-size: 14px;
+        }
+        .diagram-steps li.is-feeder::before {
+          counter-increment: none;
+          content: "+";
+          background: transparent;
+          border: 1px solid var(--accent);
+          color: var(--accent);
+        }
+        .diagram-steps .step-title {
+          font-weight: 600;
+          color: var(--heading);
+          font-size: 15px;
+        }
+        .diagram-steps .step-sub {
+          color: var(--muted);
+          font-size: 13.5px;
+          margin-top: 2px;
+        }
+        .diagram-note {
+          display: block;
+          margin: 12px 2px 0;
+          font-size: 13px;
+          color: var(--muted);
+          font-style: italic;
+        }
+      }
+      .diagram-note {
+        display: none;
       }
       .diagram text {
         font-family: var(--font-mono);
@@ -1154,17 +1231,6 @@
         background: var(--bg);
         border-color: var(--accent);
         color: var(--heading);
-      }
-      .sr-only {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        white-space: nowrap;
-        border: 0;
       }
 
       .verify-disclosure {
@@ -1675,6 +1741,42 @@
             <!-- Arrow: Knowledge Base feeds the rule engine -->
             <path class="arrow" d="M712,356 L712,272" />
           </svg>
+          <!-- Stacked equivalent for narrow viewports (see .diagram-steps
+               CSS). Presentational — the container's aria-label describes
+               the flow for assistive tech. -->
+          <ol class="diagram-steps">
+            <li>
+              <div>
+                <div class="step-title">Your file</div>
+                <div class="step-sub">PDF or DOCX, dropped in the tab</div>
+              </div>
+            </li>
+            <li>
+              <div>
+                <div class="step-title">Read &amp; extract</div>
+                <div class="step-sub">parties, dates, clauses</div>
+              </div>
+            </li>
+            <li class="is-feeder">
+              <div>
+                <div class="step-title">Knowledge Base</div>
+                <div class="step-sub">statutes · clauses · playbooks · dark patterns</div>
+              </div>
+            </li>
+            <li>
+              <div>
+                <div class="step-title">1,000+ cited rules</div>
+                <div class="step-sub">deterministic engine</div>
+              </div>
+            </li>
+            <li>
+              <div>
+                <div class="step-title">Word report</div>
+                <div class="step-sub">.docx download</div>
+              </div>
+            </li>
+          </ol>
+          <p class="diagram-note">Everything runs in your browser — nothing leaves the tab.</p>
         </div>
       </section>
 
