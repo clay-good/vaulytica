@@ -17,6 +17,100 @@ All notable changes to this project will be documented in this file. Format adap
   overlays; 2,468 tests; v6.0.0). Doc-only; no test impact. Full-surface
   responsiveness (no horizontal scroll, 320–1280 px, all six view
   states) was re-verified empirically — see `BUILD_PROGRESS.md`.
+
+## [6.0.0] — 2026-06-01
+
+The 4.0.0 → 6.0.0 release. The package version jumps straight from 4.0.0 to
+6.0.0: v5 (Ground Truth) is specified and its measurement infrastructure is
+built, but its published accuracy numbers are human-gated, so it never took a
+standalone package bump; v6 (Workflow) is the release that closes out the
+sequence. The `ENGINE_VERSION` that feeds `result_hash` is deliberately
+**unchanged at `0.1.0`** — every v6 surface is additive and lives outside the
+`EngineRun`, so no existing report hash moved. The full per-step rationale
+accumulated under `[Unreleased]` during the build is preserved as the detail
+sections beneath this summary.
+
+### v6 — Workflow (Steps 87–102)
+
+Six feature parts, each passing the five-part posture filter (deterministic ·
+no AI · no server · citable · lints-not-drafts):
+
+- **Part I — Version comparison (Steps 89–90).** Drop a base and a revised
+  document; get a deterministic finding-delta (resolved / introduced /
+  unchanged / carried-clean) with a comparison hash
+  `SHA-256(base_hash + revised_hash + canonical(delta))`, a compare UI, and a
+  DOCX/JSON comparison report.
+- **Part II — Bring-your-own playbook (Steps 91–94).** A team encodes its own
+  positions as a user-authored `.json` playbook, validated **client-side** against
+  a public versioned schema (`docs/v6/playbook.schema.json`; authoritative Zod
+  in `src/playbooks/custom-playbook.ts`) — declarative data, never executable
+  code. A bounded six-predicate DSL interpreter (`src/playbooks/custom-interpreter.ts`)
+  evaluates it with no `eval` and no network; predicates it cannot evaluate are
+  reported, never guessed. Load-a-playbook UI (augment vs replace; findings
+  carry `source: custom-playbook` provenance and cite the team's own authority);
+  authoring guide + two worked examples. A privacy guard test asserts zero
+  egress across the full load→validate→enforce path.
+- **Part III — Findings to action (Steps 87–88).** Export the fix-list (Markdown
+  + CSV), the obligations ledger (CSV), and deadlines as an `.ics` calendar with
+  notice windows computed deterministically (`term end − notice period`);
+  ambiguous dates are listed "verify manually," never guessed.
+- **Part IV — Model-clause references (Steps 95–96).** For a finding whose rule
+  has an associated public model clause, the rule card points to an attributed
+  reference into Common Paper / Bonterms / the EU SCCs (source URL + license) —
+  a reference, never a generated redline. `src/dkb/model-clauses.ts`; surfaced
+  outside the `EngineRun`, coverage published honestly.
+- **Part V — Portfolio risk matrix (Step 97).** A deal-folder bundle gains a
+  documents × key-checks grid (liability cap · auto-renewal · governing law ·
+  data-processing terms · breach-notice) plus rollups; a rule that did not run
+  renders an honest grey `N/A`, never a wrong "Risk." `portfolio_fingerprint`
+  extends the bundle fingerprint; a 50-row scale guard reports the true total.
+- **Part VI — Depth (Steps 99–101).** The sub-domain classifier's feature table
+  was re-engineered, lifting top-1 accuracy **70.7% → 100%** (75/75) on the
+  labeled golden corpus and resolving the four named confusions — still a
+  hand-authored, inspectable table, no model. The cross-document consistency
+  engine grew **7 → 10** CROSS-\* families (defined-term *usage* drift,
+  indemnity-cap stacking, confidentiality survival-period conflict).
+  Jurisdiction overlays: **35** per-(family × state) state-law deltas across the
+  three families where state law dominates — employment non-compete (15 states),
+  residential-lease deposit (10), lending usury (10) — surfaced as a citable
+  reference layer outside the `EngineRun`, with honest `uncovered_states`.
+- **Full-catalog wiring + multi-family activation.** The live pipeline now
+  serves the v3+v4 playbook catalog (`playbooks/extended.json`) and runs all
+  **1,062** rules (LAUNCH 112 + V3 220 + V4 730), family-gated via
+  `selectMatchCandidates` so a plain NDA is unaffected, and a composite document
+  runs every family it clearly contains. (Before this, only the 112 launch rules
+  fired in production — the other 950 gated to playbook ids that were never
+  served.)
+- **Step 98 (extraction recall)** is deliberately deferred behind v5 measurement
+  (spec-v6 Part IX #7).
+
+### v5 — Ground Truth: measurement infrastructure (Steps 67, 69, 71, 83)
+
+The accuracy & validation harness that measures the engine against real
+contracts it did not write, built and unit-tested under `tools/accuracy/`
+(`npm run accuracy`): corpus scaffolding + provenance + deterministic PII
+redaction (67); the gold-annotation schema + Cohen's κ inter-annotator
+agreement + annotation protocol (69); the full-catalog Node pipeline (the same
+`ingest → extract → classify → engine` path the browser uses) + closed-world
+TP/FP/FN/TN + precision/recall/F1 (macro + micro) + a reproducible SHA-256
+scoreboard (71); and the privacy/determinism guards asserting no `src/` file
+imports `tools/accuracy` or `corpus/`, so corpus bytes never reach the deployed
+bundle (83). The committed scoreboard honestly reports `status: empty` — no
+precision/recall number is published until real license-clean documents and
+credentialed-attorney annotation land (human-gated Steps 68/70/73–77/85).
+
+### Changed
+- `package.json` version bumped from `4.0.0` to `6.0.0`; `ENGINE_VERSION`
+  unchanged at `0.1.0` (feeds `result_hash`, so bumping it would churn every
+  golden).
+
+### Detail — entries accumulated under `[Unreleased]` during the v4-follow-up → v6 build
+
+The entries below were logged incrementally during the post-4.0.0 build
+sequence and are preserved here so the per-step rationale is part of the
+6.0.0 release record.
+
+### Changed
 - README.md + marketing site (`site/index.html`) updated to reflect
   the current rule counts: v1 launch is 112 rules (was "~80"),
   v3 adds 220, v4 adds 730, total is 1,000+ (was "~145"). Four
