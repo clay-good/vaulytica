@@ -6,6 +6,8 @@
 
 `1,062 deterministic rules` · `16 document sub-domains` · `35 state-law overlays` · `0 servers` · `0 AI` · `2,468 passing tests` · `v6.0.0` · `MIT`
 
+![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
+
 ---
 
 ## The one idea
@@ -57,6 +59,16 @@ The **v1 launch set** is 112 rules across ten always-on categories that apply to
 | Personnel | 9 | stay-or-pay/training-repayment clauses, IC misclassification signals, overlong non-solicits |
 
 On top of that, **v3 (+220 rules)** adds compliance-grade rule sets and **v4 (+730 rules)** adds 16 specialized sub-domains. The full **1,062-rule** catalog runs live, family-gated so a plain NDA is not flagged for missing GDPR clauses.
+
+## What the result looks like
+
+<img src="docs/images/report-mobile.png" alt="Vaulytica report card on a phone: severity counts, a California non-compete jurisdiction overlay with citation, and Word/JSON/fix-list/calendar exports" width="320" align="right" />
+
+The drop zone transforms in place into a result card: severity counts (critical / warning / informational), the matched playbook with a "why," any jurisdiction overlays for the governing-law state, and one-click exports — the **Word report** you can cite, the structured **JSON** with its `result_hash`, the **fix-list** (Markdown / CSV), the obligations ledger (CSV), and deadlines as an **`.ics` calendar**.
+
+Every view is verified to render with **no horizontal scroll from 320 px to 1280 px** — the shot at right is the live card at a 390 px phone width. The whole flow runs in the tab; open DevTools and the network panel stays empty.
+
+<br clear="all" />
 
 ## What each version added
 
@@ -196,7 +208,7 @@ src/
   engine/      pure rule runner + 1,062 rules + cross-document consistency
   playbooks/   built-in playbooks + bring-your-own schema/validator/interpreter
   report/      DOCX · JSON · bundle · comparison · exports · portfolio matrix
-  ui/          drop zone, pipeline, four document states, theme toggle
+  ui/          drop zone, pipeline, six-state result machine, theme toggle
 dkb/build/     offline fetchers (EDGAR, US Code, eCFR, Common Paper, …) → DKB
 tools/accuracy/ v5 Ground Truth harness (corpus loader, κ, metrics, scoreboard)
 corpus/        real-document accuracy corpus (build/CI-only; never in the bundle)

@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Changed
+- README.md gains real product imagery (`docs/images/hero.png`,
+  `docs/images/report-mobile.png`) — actual headless renders of the
+  shipped UI (dark-theme landing hero; the `complete`-state result
+  card at a 390 px phone width) — and a one-word accuracy fix in the
+  project layout ("four document states" → "six-state result machine",
+  matching the `empty`/`analyzing`/`complete`/`comparison-complete`/
+  `bundle-complete`/`error` machine). Images live under `docs/`, so
+  they touch neither the deployed bundle nor the Lighthouse budget.
+  Headline counts re-verified against live code (1,062 rules; 35 state
+  overlays; 2,468 tests; v6.0.0). Doc-only; no test impact. Full-surface
+  responsiveness (no horizontal scroll, 320–1280 px, all six view
+  states) was re-verified empirically — see `BUILD_PROGRESS.md`.
 - README.md + marketing site (`site/index.html`) updated to reflect
   the current rule counts: v1 launch is 112 rules (was "~80"),
   v3 adds 220, v4 adds 730, total is 1,000+ (was "~145"). Four
