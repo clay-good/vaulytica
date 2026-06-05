@@ -25,6 +25,16 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](docs/spec.md) 
 
 ## Post-1.0 work
 
+### spec-v7 Steps 115–116 — code-coverage measurement + regression gate (2026-06-05) — ✅ complete
+
+First implementation increment of spec-v7 (Thrust B / Part VIII). The suite had **161 files / 2,502 tests but zero coverage tooling or gate** — "tests pass" carried no statement about which branches they reached. Now measured and enforced:
+
+- **Measure (Step 115).** Added `@vitest/coverage-v8@4.1.8` (exact-pinned to vitest 4.1.8; 0 npm vulns) + a `coverage` script (`vitest run --coverage`). Coverage block in [`vitest.config.ts`](vitest.config.ts) scoped to the **shipped `src/` bundle** — the build-and-CI-only harnesses (`tools/`, `dkb/build/`) and all test scaffolding (`*.test.ts`, `src/extract/_fixtures.ts`, `src/engine/_test-fixtures.ts`) excluded so the number describes production logic, not plumbing. First measured baseline (deterministic): **statements 85.53% · branches 72.35% · functions 87.12% · lines 87.52%** (6049/7072 · 2890/3994 · 1225/1406 · 5352/6115).
+- **Gate (Step 116).** Regression-only floors set a couple points **under** each measured value (lines 85 · functions 85 · statements 83 · branches 70) — they fail the build on a *drop*, never block on an aspiration (the v5 §IX #4 measure-first philosophy, applied to coverage). Headroom absorbs cross-platform drift (the gate runs on ubuntu/Node-22 CI; baseline measured on macOS/Node-25). Wired into [`.github/workflows/ci.yml`](.github/workflows/ci.yml) by swapping `npm run test` → `npm run coverage` (coverage is a superset — runs the suite *and* enforces the floor); `test-matrix.yml` keeps the plain, faster `npm run test` on all three OSes for cross-OS determinism. A ratchet raises the floors as coverage climbs; **branches (72.35%, the lowest) is the next ratchet target.**
+- **Honest scope.** This gates the *current* coverage; it does not raise it. Improving branch coverage is ongoing ratchet work, not this step. Overlay expansion (Step 111) and any rule/citation authoring were deliberately **not** taken on — citable state-law facts are attorney-gated per v5's honesty posture, so fabricating them would violate the same principle the scoreboard protects.
+- **No behavior change.** Config + CI + one dev-dep only; no `src/` touched, no `result_hash`/golden churn, no UI/CSS change → responsiveness unaffected (still the 2026-06-03 verified-clean state). README "Build & verify" gains a coverage cheat-sheet (baseline + floors); spec-v7 status + build-plan rows 115–116 marked ✅.
+- **Verification gate green:** lint (0) + typecheck (0) + **`npm run coverage`** (2502 tests + floor enforced, exit 0) + build (exit 0). `npm ci` reproducibility preserved (package-lock updated, +229 lines).
+
 ### spec-v7 — "Depth & Proof": the next exhaustive spec (2026-06-05) — ✅ written (not yet implemented)
 
 Authored [`docs/spec-v7.md`](docs/spec-v7.md), a full specification continuing the global step numbering from v6's Step 102 → **Steps 103–126 (24 steps)**. Two interlocking thrusts, grounded in an actual codebase audit (two exploration passes over `src/` and the test surface), not invented backlog:

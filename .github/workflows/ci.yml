@@ -18,5 +18,8 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm run lint
-      - run: npm run test
+      # Coverage is a superset of `npm run test` (runs the suite + enforces the
+      # spec-v7 regression-only coverage floor); the cross-OS matrix keeps the
+      # plain, faster `npm run test` for determinism checks on every platform.
+      - run: npm run coverage
       - run: npm run build

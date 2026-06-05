@@ -269,10 +269,22 @@ npm run build        # static site → dist/
 npm run typecheck    # tsc --noEmit
 npm run lint         # eslint
 npm run test         # vitest — 2,502 tests, ~10s
+npm run coverage     # vitest + V8 coverage, enforces the regression floor
 npm run accuracy     # v5 Ground Truth harness → tools/accuracy/SCOREBOARD.md
 ```
 
-The CI gate (`.github/workflows/deploy.yml`) runs typecheck + lint + test + build; the test matrix re-runs on Ubuntu/macOS/Windows. A commit is "green" only when all four pass.
+The CI gate (`.github/workflows/ci.yml`) runs typecheck + lint + **coverage** + build on Ubuntu; the test matrix re-runs the plain suite on Ubuntu/macOS/Windows for cross-OS determinism, and Lighthouse enforces the mobile performance budget. A commit is "green" only when all pass.
+
+### Coverage — measured, then gated (spec-v7 Part VIII)
+
+The suite proves *behavior*; coverage proves the suite *reaches the code*. The first measured baseline over the shipped `src/` bundle (build-and-CI-only harnesses excluded):
+
+| Metric | Baseline | Floor | Metric | Baseline | Floor |
+|---|---:|---:|---|---:|---:|
+| Lines | 87.5% | 85% | Functions | 87.1% | 85% |
+| Statements | 85.5% | 83% | Branches | 72.4% | 70% |
+
+Floors are **regression-only** — set a couple points under the measured value (headroom for cross-platform drift), they fail the build on a *drop*, never block on an aspiration. A ratchet raises them as coverage climbs; branches (the lowest) is the next ratchet target. Same measure-first discipline the [v5 accuracy scoreboard](docs/v5/methodology.md) uses for precision/recall — publish the real number, gate against regression, never against a fabricated target.
 
 ## Project layout
 

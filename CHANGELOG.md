@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- **Code-coverage measurement + regression gate (spec-v7 Steps 115–116).** The
+  suite had 161 files / 2,502 tests but **no coverage tooling or gate**. Added
+  `@vitest/coverage-v8` + an `npm run coverage` script + a coverage block in
+  `vitest.config.ts` scoped to the shipped `src/` bundle (build/CI-only harnesses
+  and test scaffolding excluded). First measured baseline: statements 85.5% ·
+  branches 72.4% · functions 87.1% · lines 87.5%. Regression-only floors (a couple
+  points under each measured value — lines 85 · functions 85 · statements 83 ·
+  branches 70) are wired into `.github/workflows/ci.yml` (coverage runs in place of
+  the plain test step, which the cross-OS matrix keeps for determinism). The floors
+  fail the build on a *drop*, never block on an aspiration — the same measure-first
+  discipline the v5 accuracy scoreboard uses; a ratchet raises them as coverage
+  climbs (branches is the next target). README "Build & verify" gains a coverage
+  cheat-sheet. Config/CI/dev-dep only; no `src/`, `result_hash`, golden, or
+  responsiveness impact.
 - **spec-v7 — "Depth & Proof" (`docs/spec-v7.md`).** A full specification
   continuing the global step numbering from v6's Step 102 → Steps 103–126 (24
   steps), grounded in a codebase + test-surface audit. Two thrusts: **(A) Depth**
