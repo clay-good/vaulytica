@@ -14,6 +14,7 @@ export type {
   PlaybookOverride,
   Rule,
   RuleContext,
+  RuleTier,
   Severity,
 } from "./finding.js";
 

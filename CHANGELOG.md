@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Added
+- **v5 Step 75 — legal-basis ledger scaffolding + `tier` on `Rule`/`Finding`**
+  (spec-v5 Part III). New `RuleTier` (`established` / `prevailing-practice` /
+  `opinion`) is added as an **optional** field on `Rule` and `Finding`;
+  `makeFinding` copies it through only when set, so an unsigned rule omits the
+  field and `result_hash` is byte-unchanged (same additive discipline as the
+  existing `source?` marker — verified zero golden churn). The ledger schema +
+  loader live in `tools/accuracy/legal-basis.ts` (build-and-CI-only; `src/`
+  never imports it), with an honestly-empty machine mirror at
+  `docs/legal-basis/ledger.json` and a documented protocol in
+  `docs/legal-basis/README.md`. `tierForRule` bakes in spec-v5 §14: an
+  `unsound` verdict surfaces no tier (the rule is retired, not shown) and a
+  `disputed` verdict caps the tier at `opinion`. A machine-mirror test
+  (`tests/integration/legal-basis-ledger.test.ts`) enforces schema validity,
+  no duplicate `rule_id`, rule + DKB referential integrity, and — load-bearing
+  — that **every inline `Rule.tier` is backed by a signed ledger entry**, so a
+  surfaced tier badge can never be author-asserted. No attorney has signed yet
+  (Steps 76/77 are human-gated); the ledger reports an honest 0-of-N coverage.
+
 ### Changed
 - README.md gains real product imagery (`docs/images/hero.png`,
   `docs/images/report-mobile.png`) — actual headless renders of the

@@ -76,6 +76,21 @@ with the exclusion count published.
   Bootstrap placeholder documents (maintainer-authored, to exercise the
   harness) are excluded from every headline number and surfaced as such.
 
+## Legal soundness, not just agreement
+
+Measurement answers *does the rule match a credentialed human's annotation?*
+It does **not** answer *is the rule's legal premise sound?* — two annotators
+could share a misconception. The [legal-basis ledger](../legal-basis/README.md)
+(spec-v5 Part III) is the orthogonal check: a per-rule record of the authority
+the rule rests on, pinned to a DKB node, plus a licensed attorney's `verdict`
+and confidence `tier` (`established` / `prevailing-practice` / `opinion`). The
+`tier` is surfaced on the finding so a statutory flag reads differently from a
+drafting preference. The ledger machinery and the optional `tier` field are
+built (Step 75) and the ledger is **honestly empty** until attorney review
+(Steps 76/77) signs the first entry — the same posture this scoreboard takes
+until a real corpus lands. A finding is fully defensible only when it is both
+*measured* (here) and *legally reviewed* (the ledger).
+
 ## Reproducing the scoreboard
 
 ```

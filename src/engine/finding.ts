@@ -11,6 +11,26 @@ import type { DKB, SourceCitation } from "../dkb/types.js";
 
 export type Severity = "critical" | "warning" | "info";
 
+/**
+ * Legal-confidence tier (spec-v5 §12/§15, Step 75). Distinguishes a finding
+ * grounded in black-letter law from one grounded in a drafting preference:
+ *
+ * - `established` — black-letter law or model-code text (a statute, a
+ *   regulation, a uniform act).
+ * - `prevailing-practice` — a widely-followed drafting convention (e.g. a
+ *   30-day breach-notice window) that is not itself codified.
+ * - `opinion` — a defensible-but-contestable preference the rule encodes.
+ *
+ * A rule's tier is **set only after a credentialed attorney signs its
+ * legal-basis ledger entry** (Steps 76/77, human-gated). Until then the field
+ * is unset on both the {@link Rule} and the {@link Finding}, so it is omitted
+ * from the serialized run and the `result_hash` of every existing run is
+ * unchanged — the same additive discipline as {@link Finding.source}. The
+ * machine-mirror test (`tests/integration/legal-basis-ledger.test.ts`) asserts
+ * a tier on a Rule is always backed by a matching ledger verdict.
+ */
+export type RuleTier = "established" | "prevailing-practice" | "opinion";
+
 export type Excerpt = {
   text: string;
   section_id?: string;
@@ -44,6 +64,13 @@ export type Finding = {
    * catalog flagged this".
    */
   source?: "catalog" | "custom-playbook";
+  /**
+   * Legal-confidence tier inherited from the rule (spec-v5 §15, Step 75).
+   * Copied from {@link Rule.tier} by {@link makeFinding} only when the rule
+   * carries one; unset (and so omitted from the serialized run) until the
+   * rule's ledger entry is attorney-signed, so `result_hash` is unchanged.
+   */
+  tier?: RuleTier;
 };
 
 export type PlaybookOverride = {
@@ -80,6 +107,14 @@ export type Rule = {
    * id is in this list. If absent, the rule always runs.
    */
   applies_to_playbooks?: string[];
+  /**
+   * Legal-confidence tier (spec-v5 §15, Step 75). Set inline on the rule
+   * **only after** a credentialed attorney signs the rule's legal-basis
+   * ledger entry (`docs/legal-basis/`) with a matching `tier`. Unset for an
+   * author-asserted rule; the machine-mirror test rejects a tier here that no
+   * signed ledger entry backs. See {@link RuleTier}.
+   */
+  tier?: RuleTier;
   /** Pure check function. Must not perform IO, read time, or use randomness. */
   check(ctx: RuleContext): Finding | null;
 };
@@ -131,7 +166,7 @@ export function makeFinding(args: {
   classifier_confidence?: number;
 }): Finding {
   const severity = args.severity ?? args.rule.default_severity;
-  return {
+  const finding: Finding = {
     id: `${args.rule.id}-${args.position.section_id || "doc"}-${args.position.start}`,
     rule_id: args.rule.id,
     rule_version: args.rule.version,
@@ -150,6 +185,11 @@ export function makeFinding(args: {
     document_position: args.position.start,
     classifier_confidence: args.classifier_confidence,
   };
+  // spec-v5 §15: inherit the rule's attorney-signed tier. Assigned only when
+  // present so an unsigned rule leaves the field omitted and `result_hash`
+  // unchanged (same discipline as `source`).
+  if (args.rule.tier !== undefined) finding.tier = args.rule.tier;
+  return finding;
 }
 
 /** Look up a DKB source citation by id. Returns `undefined` if absent. */

@@ -1,0 +1,99 @@
+# The legal-basis ledger
+
+> **Status:** scaffolding in place (spec-v5 Part III, Step 75). The machine
+> mirror [`ledger.json`](ledger.json) currently holds **0 signed entries** —
+> attorney review (Steps 76/77) is human-gated and has not run. This is the
+> honest empty state, the same posture the [accuracy
+> scoreboard](../../tools/accuracy/SCOREBOARD.md) takes until real corpus
+> documents land: no fabricated verdicts, no fabricated numbers.
+
+Measurement (the [accuracy harness](../../tools/accuracy/)) tells us whether a
+rule matches a credentialed human's annotations. It does **not** tell us whether
+the rule's *legal premise* is sound — two annotators could share the same
+misconception. This ledger grounds each rule in authority a third party can
+check, and records a licensed attorney's sign-off on it. It is the launch
+artifact for the trust claim the way [`LAUNCH.md`](../../LAUNCH.md) is for the
+determinism claim: **anyone can audit which rules a lawyer actually blessed and
+which are still author-asserted.**
+
+## What an entry looks like
+
+One record per rule, validated by `LegalBasisEntrySchema`
+([`tools/accuracy/legal-basis.ts`](../../tools/accuracy/legal-basis.ts)):
+
+```jsonc
+{
+  "rule_id": "BAA-019",
+  "claim": "A BAA must require the business associate to report breaches of unsecured PHI to the covered entity.",
+  "legal_basis": [
+    { "authority": "45 C.F.R. § 164.410", "pinpoint": "(a)(1)", "dkb_node": "hipaa-baa-breach-notification" }
+  ],
+  "review": {
+    "reviewer": "att-007",
+    "credential": "JD, licensed NY bar (number on file)",
+    "date": "2026-06-15",
+    "verdict": "sound",
+    "tier": "established"
+  },
+  "notes": "Distinct from § 164.404 (CE→individual) and § 164.408 (CE→HHS); this rule targets BA→CE only."
+}
+```
+
+- **`legal_basis` is non-empty and DKB-linked.** Each authority pins to a
+  `dkb_node` the engine already carries. This extends the v1 invariant ("every
+  rule cites ≥1 DKB entry") from *has a citation* to *the citation actually
+  supports the claim, confirmed by a human.* The machine-mirror test rejects an
+  entry whose `dkb_node` is not present in the DKB.
+- **`verdict`** ∈ `sound` · `sound-but-narrow` · `disputed` · `unsound`.
+  An `unsound` verdict triggers the retirement path (§14): the rule moves to
+  retired status, referencing playbooks drop it, and the reason is recorded.
+  A `disputed` rule may ship only downgraded to `opinion` tier.
+- **`tier`** ∈ `established` (black-letter law / model-code text) ·
+  `prevailing-practice` (a widely-followed convention, e.g. a 30-day
+  breach-notice window) · `opinion` (a defensible-but-contestable preference).
+  The tier is surfaced to the user (spec-v5 §21) so a finding grounded in a
+  statute reads differently from one grounded in a drafting preference.
+
+## How a tier reaches the user
+
+The tier flows in one direction only, and never without a human in the loop:
+
+```
+attorney signs entry in docs/legal-basis/ledger.json   (Step 76/77, human-gated)
+        │
+        ▼
+maintainer sets  tier: "<tier>"  inline on the rule  (src/engine/rules/.../<RULE>.ts)
+        │   ← machine-mirror test asserts this matches the signed ledger entry
+        ▼
+makeFinding() copies Rule.tier → Finding.tier         (src/engine/finding.ts §15)
+        │   ← only when set, so an unsigned rule omits the field; result_hash unchanged
+        ▼
+report DOCX / JSON / rule card show the tier badge     (Step 81)
+```
+
+Because no entry is signed yet, **no rule carries a `tier`, no finding carries a
+`tier`, and `result_hash` is byte-identical to before Step 75.** The first
+signed entry is a *deliberate* golden-baseline regen (spec-v5 §15), reviewed as
+a P0-adjacent change — not an incidental one.
+
+## Invariants the CI test enforces
+
+[`tests/integration/legal-basis-ledger.test.ts`](../../tests/integration/legal-basis-ledger.test.ts):
+
+1. Every entry validates against `LegalBasisEntrySchema` (strict — no stray keys).
+2. No duplicate `rule_id` (one record per rule).
+3. Every `rule_id` names a real rule in the live catalog (LAUNCH + V3 + V4 + cross-doc).
+4. Every `legal_basis[].dkb_node` exists in the committed DKB.
+5. Every `Rule.tier` set inline in `src/` is backed by a signed ledger entry whose
+   derived tier matches (an unsigned tier inline is rejected; this is what keeps a
+   surfaced "established" badge from ever being author-asserted).
+6. Coverage is reported, never silently rounded: *N of M rules signed.*
+
+## Why the ledger is build-and-CI-only
+
+The ledger never ships to the browser. It lives under `docs/` and is loaded only
+by the harness and its tests, exactly like the corpus and the scoreboard. The
+one `src/` change Part III requires is the optional `tier` field on the `Rule`
+and `Finding` types (spec-v5 §15) — a type, not the data. The privacy guard
+([`tests/integration/accuracy-corpus-guard.test.ts`](../../tests/integration/accuracy-corpus-guard.test.ts))
+asserts `src/` never imports `tools/accuracy/`.
