@@ -200,6 +200,81 @@ export function buildPortfolioMatrix(
   };
 }
 
+export type PortfolioDocumentDigest = {
+  doc_id: string;
+  source_file_name: string;
+  critical: number;
+  warning: number;
+  info: number;
+  /** One-line headline: the worst severity present, with counts. */
+  digest: string;
+};
+
+export type PortfolioExecutiveSummary = {
+  documents: number;
+  critical: number;
+  warning: number;
+  info: number;
+  /** One-line bundle headline. */
+  headline: string;
+  per_document: PortfolioDocumentDigest[];
+};
+
+/**
+ * Portfolio executive summary (spec-v7 §17): the rolled-up
+ * critical/warning/info counts across the bundle plus a one-line digest
+ * per document, so a deal folder opens with the headline, not the
+ * detail. Pure aggregation over the per-document runs; lives outside
+ * every `result_hash`. Documents are sorted canonically (file name,
+ * then doc id) to match the matrix projection.
+ */
+export function buildPortfolioExecutiveSummary(
+  documents: ReadonlyArray<PortfolioInputDocument>,
+): PortfolioExecutiveSummary {
+  const sorted = [...documents].sort(
+    (a, b) =>
+      a.source_file_name.localeCompare(b.source_file_name) || a.doc_id.localeCompare(b.doc_id),
+  );
+  const per_document = sorted.map((d): PortfolioDocumentDigest => {
+    let critical = 0;
+    let warning = 0;
+    let info = 0;
+    for (const f of d.run.findings) {
+      if (f.severity === "critical") critical += 1;
+      else if (f.severity === "warning") warning += 1;
+      else info += 1;
+    }
+    return {
+      doc_id: d.doc_id,
+      source_file_name: d.source_file_name,
+      critical,
+      warning,
+      info,
+      digest: digestLine(critical, warning, info),
+    };
+  });
+  const critical = per_document.reduce((a, d) => a + d.critical, 0);
+  const warning = per_document.reduce((a, d) => a + d.warning, 0);
+  const info = per_document.reduce((a, d) => a + d.info, 0);
+  const n = per_document.length;
+  return {
+    documents: n,
+    critical,
+    warning,
+    info,
+    headline: `${n} ${n === 1 ? "document" : "documents"} · ${critical} critical · ${warning} warning · ${info} info`,
+    per_document,
+  };
+}
+
+function digestLine(critical: number, warning: number, info: number): string {
+  if (critical > 0)
+    return `${critical} critical, ${warning} warning, ${info} info — review the critical findings first`;
+  if (warning > 0) return `No critical findings; ${warning} warning, ${info} info`;
+  if (info > 0) return `Clean of critical/warning findings; ${info} info`;
+  return "No findings";
+}
+
 /**
  * Portfolio fingerprint (spec-v6 §17): extends the bundle fingerprint by
  * folding in the canonical matrix (statuses + labels + rollup counts, which

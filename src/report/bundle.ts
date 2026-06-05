@@ -52,8 +52,10 @@ import { formatBibliographyEntry } from "./citations.js";
 import type { ReportSecondaryFamily } from "./json.js";
 import {
   buildPortfolioMatrix,
+  buildPortfolioExecutiveSummary,
   portfolioFingerprint,
   type PortfolioMatrix,
+  type PortfolioExecutiveSummary,
   type PortfolioStatus,
 } from "./portfolio.js";
 
@@ -277,6 +279,13 @@ export type BundleJson = {
    */
   portfolio: PortfolioMatrix;
   portfolio_fingerprint: string;
+  /**
+   * Portfolio executive summary (spec-v7 §17): rolled-up
+   * critical/warning/info counts across the bundle + a one-line digest
+   * per document, so a deal folder opens with the headline. Pure
+   * aggregation over the per-document runs; outside every result_hash.
+   */
+  executive_summary: PortfolioExecutiveSummary;
 };
 
 /**
@@ -312,6 +321,13 @@ export async function buildBundleJson(input: BundleReportInput): Promise<BundleJ
     consistency_execution_log: [...input.consistency.execution_log],
     portfolio,
     portfolio_fingerprint: await portfolioFingerprint(fingerprint, portfolio),
+    executive_summary: buildPortfolioExecutiveSummary(
+      input.documents.map((d) => ({
+        doc_id: d.doc_id,
+        source_file_name: d.source_file_name,
+        run: d.run,
+      })),
+    ),
   };
   if (input.rejected && input.rejected.length > 0) {
     out.rejected = input.rejected.map((r) => ({ filename: r.filename, reason: r.reason }));

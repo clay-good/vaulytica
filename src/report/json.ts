@@ -7,6 +7,7 @@
  */
 
 import type { EngineRun, Finding } from "../engine/finding.js";
+import { RULE_TAXONOMY_VERSION } from "../engine/runner.js";
 import type { IngestResult } from "../ingest/types.js";
 import type { Playbook } from "../playbooks/types.js";
 import {
@@ -34,6 +35,20 @@ export type ReportSecondaryFamily = {
 export type JsonReport = {
   run: EngineRun;
   ingest: Pick<IngestResult, "source" | "word_count" | "page_count" | "language" | "sha256">;
+  /**
+   * Report-level provenance (spec-v7 §17). Stamps the versions that
+   * produced this report — DKB, engine, and the rule-taxonomy vocabulary
+   * — at the top level so a downstream tool can identify the rule
+   * vocabulary behind a finding without reaching into `run`. Lives
+   * outside `run`, so `result_hash` is unchanged. `dkb_version` /
+   * `engine_version` mirror the values inside `run`; `rule_taxonomy_version`
+   * is new.
+   */
+  provenance: {
+    dkb_version: string;
+    engine_version: string;
+    rule_taxonomy_version: string;
+  };
   /**
    * Mirrors the per-entry field in the bundle JSON's `documents[]`
    * (commit 943d114) — emitted only when the matched playbook carries
@@ -114,6 +129,11 @@ export function buildJsonReport(
       page_count: ingest.page_count,
       language: ingest.language,
       sha256: ingest.sha256,
+    },
+    provenance: {
+      dkb_version: run.dkb_version,
+      engine_version: run.version,
+      rule_taxonomy_version: RULE_TAXONOMY_VERSION,
     },
     model_clause_coverage: {
       referenced_in_report: modelRefs.length,

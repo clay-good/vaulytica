@@ -113,3 +113,43 @@ describe("portfolio risk matrix (spec-v6 Part V)", () => {
     expect(f1).not.toBe(f2);
   });
 });
+
+describe("portfolio executive summary (spec-v7 §17)", () => {
+  function runWithFindings(sevs: Array<"critical" | "warning" | "info">): EngineRun {
+    const base = run({});
+    return {
+      ...base,
+      findings: sevs.map((severity, i) => ({
+        id: `f-${i}`,
+        rule_id: `R-${i}`,
+        rule_version: "1.0.0",
+        severity,
+        title: "t",
+        description: "d",
+        excerpt: { text: "x", section_id: "s1", start_offset: 0, end_offset: 1 },
+        explanation: "e",
+        recommendation: "r",
+        source_citations: [],
+        document_position: i,
+      })),
+    };
+  }
+
+  it("rolls up severity counts across the bundle and digests each document", async () => {
+    const { buildPortfolioExecutiveSummary } = await import("./portfolio.js");
+    const docs: PortfolioInputDocument[] = [
+      { doc_id: "msa", source_file_name: "msa.txt", run: runWithFindings(["critical", "warning", "info"]) },
+      { doc_id: "dpa", source_file_name: "dpa.txt", run: runWithFindings(["info"]) },
+    ];
+    const summary = buildPortfolioExecutiveSummary(docs);
+    expect(summary.documents).toBe(2);
+    expect(summary.critical).toBe(1);
+    expect(summary.warning).toBe(1);
+    expect(summary.info).toBe(2);
+    expect(summary.headline).toMatch(/2 documents · 1 critical · 1 warning · 2 info/);
+    // Sorted by file name: dpa before msa.
+    expect(summary.per_document.map((d) => d.doc_id)).toEqual(["dpa", "msa"]);
+    expect(summary.per_document[1]!.digest).toMatch(/review the critical findings first/);
+    expect(summary.per_document[0]!.digest).toMatch(/Clean of critical\/warning/);
+  });
+});

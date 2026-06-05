@@ -349,4 +349,13 @@ describe("buildDeadlinesIcs", () => {
     expect(ics).toContain("BEGIN:VCALENDAR");
     expect(ics).not.toContain("BEGIN:VEVENT");
   });
+
+  it("emits unresolved dates as all-day 'verify manually' events rather than dropping them", () => {
+    const ex = emptyExtracted();
+    ex.dates = [date("absolute", "13/13/2025", {})]; // impossible date → unresolved
+    const ics = buildDeadlinesIcs(ex);
+    expect(ics).toContain("SUMMARY:Verify manually: 13/13/2025");
+    expect(ics).toContain("DTSTART;VALUE=DATE:20200101"); // fixed sentinel date
+    expect(ics).toContain("not machine-readable");
+  });
 });

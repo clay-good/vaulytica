@@ -187,6 +187,13 @@ describe("buildJsonReport", () => {
     expect(text).toContain("\n  "); // pretty-printed
   });
 
+  it("stamps report-level provenance (dkb/engine/rule-taxonomy versions) (spec-v7 §17)", async () => {
+    const parsed = JSON.parse(await buildJsonReport(makeRun(), ingest).text());
+    expect(parsed.provenance.dkb_version).toBe(parsed.run.dkb_version);
+    expect(parsed.provenance.engine_version).toBe(parsed.run.version);
+    expect(parsed.provenance.rule_taxonomy_version).toMatch(/^\d+\.\d+\.\d+$/);
+  });
+
   it("surfaces playbook_deprecated + playbook_superseded_by when the playbook is deprecated (Step 27 follow-up)", async () => {
     const blob = buildJsonReport(makeRun(), ingest, loadMutualNda());
     const parsed = JSON.parse(await blob.text());

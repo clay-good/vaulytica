@@ -424,7 +424,7 @@ const FIXED_DTSTAMP = "20200101T000000Z";
  * the deadline so they surface in the user's calendar.
  */
 export function buildDeadlinesIcs(extracted: ExtractedData): string {
-  const { events } = collectDeadlines(extracted);
+  const { events, unresolved } = collectDeadlines(extracted);
   const lines: string[] = [];
   lines.push("BEGIN:VCALENDAR");
   lines.push("VERSION:2.0");
@@ -456,9 +456,33 @@ export function buildDeadlinesIcs(extracted: ExtractedData): string {
     lines.push("END:VEVENT");
   });
 
+  // Unresolved deadlines (no calendar date) are surfaced as all-day
+  // "verify manually" events on a fixed sentinel date rather than being
+  // silently dropped, each carrying its source section and the reason it
+  // could not be resolved. The sentinel (the epoch DTSTAMP date) is
+  // obviously artificial, so the user reads it as "needs attention," and
+  // it keeps the file deterministic. (spec-v7 §17.)
+  unresolved.forEach((u, i) => {
+    const ymd = SENTINEL_VERIFY_DATE.replace(/-/g, "");
+    const ymdEnd = addDays(SENTINEL_VERIFY_DATE, 1).replace(/-/g, "");
+    const uid = `verify-${pad(i, 4)}-${fnv1a(`${u.raw_text}|${u.section ?? ""}`)}@vaulytica`;
+    const desc = `Verify manually — ${u.reason}${u.section ? ` (from section ${u.section})` : ""}: ${u.raw_text}`;
+    lines.push("BEGIN:VEVENT");
+    lines.push(`UID:${uid}`);
+    lines.push(`DTSTAMP:${FIXED_DTSTAMP}`);
+    lines.push(`DTSTART;VALUE=DATE:${ymd}`);
+    lines.push(`DTEND;VALUE=DATE:${ymdEnd}`);
+    lines.push(icsFold(`SUMMARY:${icsEscape(`Verify manually: ${u.raw_text}`)}`));
+    lines.push(icsFold(`DESCRIPTION:${icsEscape(desc)}`));
+    lines.push("END:VEVENT");
+  });
+
   lines.push("END:VCALENDAR");
   return lines.join("\r\n") + "\r\n";
 }
+
+/** Fixed sentinel date for unresolved "verify manually" calendar events. */
+const SENTINEL_VERIFY_DATE = "2020-01-01";
 
 // ---------------------------------------------------------------------------
 // Blob helpers (UI convenience — same pattern as report/json.ts)

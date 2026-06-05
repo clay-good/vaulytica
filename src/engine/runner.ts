@@ -18,6 +18,16 @@ import type { DKB } from "../dkb/types.js";
  */
 export const ENGINE_VERSION = "0.1.0";
 
+/**
+ * Rule-taxonomy version: the vocabulary of rule categories/families the
+ * report was produced against. Distinct from {@link ENGINE_VERSION}
+ * (which feeds `result_hash`); this is stamped only into report
+ * provenance (outside the EngineRun) so a downstream consumer can tell
+ * which rule vocabulary a finding came from. Bumped when the family set
+ * changes (e.g. v7 added three CROSS-* families). (spec-v7 §17.)
+ */
+export const RULE_TAXONOMY_VERSION = "7.0.0";
+
 export type RunEngineInput = {
   rules: readonly Rule[];
   ctx: RuleContext;
