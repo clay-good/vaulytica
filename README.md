@@ -180,6 +180,8 @@ The `executed_at` timestamp is set to `""` before hashing, so the only things th
 
 ## Quick start
 
+Requires **Node 22 LTS** (`.nvmrc` pins it; `nvm use` picks it up). Node 20 was the original target but reached end-of-life in April 2026.
+
 ```
 git clone https://github.com/clay-good/vaulytica.git
 cd vaulytica

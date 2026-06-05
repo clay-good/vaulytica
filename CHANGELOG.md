@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Changed
+- **CI: migrated every GitHub-published action off the deprecated Node 20
+  runtime.** GitHub is forcing Node 20 actions to Node 24 by 2026-06-16; all
+  five workflows now pin the current Node-24 majors —
+  `actions/checkout@v4 → v6`, `actions/setup-node@v4 → v6`,
+  `actions/cache@v4 → v5` (dkb-rebuild), `actions/upload-artifact@v4 → v7`
+  (deploy + lighthouse failure paths). No API changes affect our usage:
+  `setup-node`'s new auto-caching is inert because we set `cache: "npm"`
+  explicitly and ship no `packageManager` field; `cache`/`upload-artifact`
+  inputs are unchanged; GitHub-hosted runners exceed the new minimum runner
+  version. Third-party actions (`cloudflare/wrangler-action`,
+  `peter-evans/create-pull-request`) are unchanged — they run only in
+  secret-gated/scheduled jobs, not the public gate.
+- **Project Node baseline raised 20 → 22 LTS** (`.nvmrc`, `package.json`
+  `engines` `>=20 → >=22`, every workflow `node-version`/matrix entry). Node 20
+  reached end-of-life on 2026-04-30; the suite already passes on Node 25
+  locally and on 20 in CI, so Node 22 is safely bracketed. `result_hash` is
+  Node-version-independent (SHA-256 over canonical JSON), so determinism is
+  unaffected.
+
 ### Added
 - **v5 Step 75 — legal-basis ledger scaffolding + `tier` on `Rule`/`Finding`**
   (spec-v5 Part III). New `RuleTier` (`established` / `prevailing-practice` /

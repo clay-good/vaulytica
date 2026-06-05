@@ -23,19 +23,19 @@ jobs:
       VAULYTICA_DKB_BUILDER_UA: "Vaulytica DKB Builder (vaulytica.com)"
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      - name: Setup Node 20
-        uses: actions/setup-node@v4
+      - name: Setup Node 22
+        uses: actions/setup-node@v6
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "npm"
 
       - name: Install
         run: npm ci
 
       - name: Restore fetcher cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: dkb/build/cache
           key: dkb-fetch-cache-${{ github.run_id }}
