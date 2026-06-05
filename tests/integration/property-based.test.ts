@@ -3,6 +3,8 @@ import fc from "fast-check";
 import { normalize } from "../../src/ingest/normalize.js";
 import { extractAmounts } from "../../src/extract/amounts.js";
 import { extractDates } from "../../src/extract/dates.js";
+import { extractSections } from "../../src/extract/sections.js";
+import { extractCrossRefs } from "../../src/extract/crossrefs.js";
 import { buildTree } from "../../src/extract/_fixtures.js";
 import type { DocumentTree, Run, Section } from "../../src/ingest/types.js";
 
@@ -148,6 +150,74 @@ describe("extractors — round-trip properties (spec-v7 Step 118)", () => {
           const iso = `${y}-${pad(mo)}-${pad(d)}`;
           const dates = extractDates(buildTree(["Term", `This is dated ${iso} accordingly.`]));
           expect(dates.some((dr) => dr.iso === iso)).toBe(true);
+        },
+      ),
+      opts,
+    );
+  });
+});
+
+describe("crossrefs — resolve/flag invariants (spec-v7 Step 118 follow-up)", () => {
+  // A pool of dotted-decimal section labels the outline + REF_RE both
+  // understand. Each property picks a non-empty subset to *exist* as
+  // numbered sections, and one label held out of that subset to be *missing*.
+  const LABEL_POOL = ["1", "2", "3", "4", "5", "1.1", "2.1", "3.2"];
+
+  /** Build a normalized tree with the given numbered sections + a body that
+   *  references one existing and one missing section. */
+  function buildNumberedTree(existing: string[], refExisting: string, refMissing: string): DocumentTree {
+    return normalize({
+      type: "document",
+      sections: [
+        ...existing.map<Section>((label) => ({
+          id: "",
+          heading: `${label} Defined Term`,
+          level: 1,
+          paragraphs: [{ id: "", runs: [{ id: "", text: "Body text.", start: 0, end: 0 }] }],
+          children: [],
+        })),
+        {
+          id: "",
+          heading: "Reference",
+          level: 1,
+          paragraphs: [
+            {
+              id: "",
+              runs: [
+                {
+                  id: "",
+                  text: `See Section ${refExisting} and Section ${refMissing} for details.`,
+                  start: 0,
+                  end: 0,
+                },
+              ],
+            },
+          ],
+          children: [],
+        },
+      ],
+    });
+  }
+
+  it("a reference to an existing section resolves; a reference to a non-existent section flags", () => {
+    fc.assert(
+      fc.property(
+        // A non-empty, deduped subset of the pool to exist.
+        fc.uniqueArray(fc.constantFrom(...LABEL_POOL), { minLength: 1, maxLength: LABEL_POOL.length }),
+        (existing) => {
+          const present = existing[0]!;
+          const missing = LABEL_POOL.find((l) => !existing.includes(l));
+          // Skip the degenerate draw where the subset is the whole pool
+          // (no held-out missing label exists to test the flag direction).
+          fc.pre(missing !== undefined);
+          const tree = buildNumberedTree(existing, present, missing!);
+          const refs = extractCrossRefs(tree, extractSections(tree));
+          // Exact raw_text match — "Section 1" must not be confused with the
+          // "Section 1.1" reference that shares a numeric prefix.
+          const presentRef = refs.find((r) => r.raw_text === `Section ${present}`);
+          const missingRef = refs.find((r) => r.raw_text === `Section ${missing}`);
+          expect(presentRef?.unresolved, `Section ${present} should resolve`).toBe(false);
+          expect(missingRef?.unresolved, `Section ${missing} should flag`).toBe(true);
         },
       ),
       opts,

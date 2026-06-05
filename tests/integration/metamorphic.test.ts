@@ -81,4 +81,59 @@ describe("metamorphic invariants (spec-v7 Step 119)", () => {
     const total = (await Promise.all(DOCS.map(run))).reduce((n, r) => n + r.findings.length, 0);
     expect(total).toBeGreaterThan(0);
   });
+
+  // ── position-only sensitivity (spec-v7 Step 119 follow-up) ──────────────
+  //
+  // Reordering independent clauses must change finding *positions* but not
+  // *which rules fire* — except where order itself is the defect, in which
+  // case the order-sensitive rule MUST flip (a positive relation, not just a
+  // negative one). Two tests below cover both directions.
+
+  // A document with no dates, so STRUCT-002 ("effective date present") fires
+  // regardless of clause order, and whose other findings (uncapped liability,
+  // an unfilled placeholder, an undefined defined-term use) are all
+  // order-independent — a clean substrate for the invariance direction.
+  const ORDER_INVARIANT: [string, ...string[]] = [
+    "Services Agreement",
+    "Liability is unlimited and Provider shall indemnify Customer for all losses without limitation.",
+    "The vendor must complete the [INSERT SCOPE] before acceptance.",
+    "All Confidential Information shall be protected at all times.",
+  ];
+
+  it("reordering independent clauses keeps the fired-rule set but moves positions", async () => {
+    const clean = await run([ORDER_INVARIANT]);
+    const [head, ...body] = ORDER_INVARIANT;
+    const reversed: [string, ...string[]] = [head, ...body.reverse()];
+    const shuffled = await run([reversed]);
+    // Same rules fire (order is not the defect here)…
+    expect(shuffled.findings.map((f) => f.rule_id).sort()).toEqual(
+      clean.findings.map((f) => f.rule_id).sort(),
+    );
+    // …but the engine is position-aware, not order-blind: moving clauses of
+    // different lengths shifts finding offsets, so the run is not identical.
+    expect(shuffled.result_hash).not.toBe(clean.result_hash);
+  });
+
+  it("when order IS the defect, the order-sensitive rule flips (STRUCT-002)", async () => {
+    // STRUCT-002 fires unless an Effective Date is named, defined, or appears
+    // as an absolute date in the top 25% of the document. The ONLY date here
+    // is "2025-01-01"; its position is the whole signal.
+    const filler = [
+      "The Provider shall perform the Services with reasonable care and skill.",
+      "The Customer shall pay all undisputed fees within thirty days of invoice.",
+      "Each party shall keep the other's Confidential Information secret.",
+    ];
+    const dateTop: [string, ...string[]] = ["Agreement", "This Agreement is dated 2025-01-01.", ...filler];
+    const dateBottom: [string, ...string[]] = ["Agreement", ...filler, "This Agreement is dated 2025-01-01."];
+
+    const top = await run([dateTop]);
+    const bottom = await run([dateBottom]);
+    const fired = (r: Awaited<ReturnType<typeof run>>): boolean =>
+      r.findings.some((f) => f.rule_id === "STRUCT-002");
+    // Date in the top quartile → satisfied → STRUCT-002 silent.
+    expect(fired(top)).toBe(false);
+    // Same content, date pushed past the quartile → STRUCT-002 fires. The
+    // relation is positive: order is the defect, so the rule MUST flip.
+    expect(fired(bottom)).toBe(true);
+  });
 });
