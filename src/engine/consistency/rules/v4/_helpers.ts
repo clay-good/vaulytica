@@ -334,6 +334,125 @@ export function confidentialitySurvival(
   return null;
 }
 
+/**
+ * The document's dominant currency: the most-referenced currency code
+ * across its extracted amounts (alphabetical tie-break for
+ * determinism), with a representative excerpt. Null when the document
+ * states no monetary amount. Cross-doc conflict (CROSS-CURRENCY-001) =
+ * two documents in one bundle whose dominant currencies differ.
+ */
+export function dominantCurrency(
+  doc: ConsistencyDocument,
+): { currency: string; raw_text: string; section_id?: string; start: number; end: number } | null {
+  const amts = doc.extracted.amounts;
+  if (amts.length === 0) return null;
+  const counts = new Map<string, number>();
+  for (const a of amts) counts.set(a.currency, (counts.get(a.currency) ?? 0) + 1);
+  let best: string | null = null;
+  let bestN = 0;
+  for (const [cur, n] of [...counts].sort((a, b) => a[0].localeCompare(b[0]))) {
+    if (n > bestN) {
+      bestN = n;
+      best = cur;
+    }
+  }
+  if (!best) return null;
+  const sample = amts.find((a) => a.currency === best)!;
+  return {
+    currency: best,
+    raw_text: sample.raw_text,
+    section_id: sample.position.section_id,
+    start: sample.position.start,
+    end: sample.position.end,
+  };
+}
+
+/**
+ * How a document treats termination: "convenience" (terminable on
+ * notice without cause) or "cause-only" (non-terminable except for
+ * cause). Returns the first posture found, the stronger "cause-only"
+ * signal taking priority. Cross-doc conflict (CROSS-TERM-001) = a
+ * convenience-terminable master over a cause-only companion, where
+ * early termination of the master orphans the bound companion.
+ */
+export function terminationPosture(
+  doc: ConsistencyDocument,
+): { posture: "convenience" | "cause-only"; raw_text: string; section_id?: string; start: number; end: number } | null {
+  type Hit = { text: string; section_id?: string; start: number; end: number };
+  const slot: { convenience: Hit | null; causeOnly: Hit | null } = {
+    convenience: null,
+    causeOnly: null,
+  };
+  walkParagraphs(doc.tree, (p) => {
+    if (
+      !slot.causeOnly &&
+      (/\b(?:non-?terminable|may\s+not\s+be\s+terminated|not\s+terminable|shall\s+not\s+be\s+terminated)\b[^.]*?\b(?:except|other\s+than|save)\b[^.]*?\bcause\b/i.test(
+        p.text,
+      ) ||
+        /\bterminat\w*\b[^.]*?\bonly\s+for\s+cause\b/i.test(p.text))
+    ) {
+      slot.causeOnly = { text: p.text, section_id: p.section_id, start: p.start, end: p.end };
+    }
+    if (!slot.convenience && /\bterminat\w*\b[^.]*?\bfor\s+convenience\b/i.test(p.text)) {
+      slot.convenience = { text: p.text, section_id: p.section_id, start: p.start, end: p.end };
+    }
+  });
+  if (slot.causeOnly) {
+    const h = slot.causeOnly;
+    return { posture: "cause-only", raw_text: h.text, section_id: h.section_id, start: h.start, end: h.end };
+  }
+  if (slot.convenience) {
+    const h = slot.convenience;
+    return { posture: "convenience", raw_text: h.text, section_id: h.section_id, start: h.start, end: h.end };
+  }
+  return null;
+}
+
+/** Normalized carveout categories recognized in a liability-cap exception clause. */
+const CARVEOUT_TERMS: Array<[string, RegExp]> = [
+  ["IP infringement", /\b(?:intellectual\s+property|ip\s+infringement|infringement)\b/i],
+  ["confidentiality", /\bconfidential(?:ity)?\b/i],
+  ["indemnification", /\bindemnif\w+/i],
+  ["gross negligence", /\bgross\s+negligence\b/i],
+  ["willful misconduct", /\b(?:willful|wilful)\s+misconduct\b/i],
+  ["bodily injury", /\b(?:bodily|personal)\s+injury\b/i],
+  ["death", /\bdeath\b/i],
+  ["fraud", /\bfraud\b/i],
+  ["data breach", /\b(?:data\s+breach|security\s+breach|breach\s+of\s+data)\b/i],
+];
+
+/**
+ * The set of carveouts that a document excepts from its liability cap
+ * ("the foregoing limitation shall not apply to … IP infringement,
+ * confidentiality, bodily injury"). Returns the normalized category set
+ * + excerpt, or null when no carveout clause is found. Cross-doc
+ * conflict (CROSS-CARVEOUT-001) = two documents whose carveout sets
+ * differ — an asymmetric allocation trap.
+ */
+export function liabilityCarveouts(
+  doc: ConsistencyDocument,
+): { set: string[]; raw_text: string; section_id?: string; start: number; end: number } | null {
+  type Hit = { text: string; section_id?: string; start: number; end: number };
+  const slot: { value: Hit | null } = { value: null };
+  walkParagraphs(doc.tree, (p) => {
+    if (slot.value) return;
+    const capContext = /\b(?:liability|limitation\s+of\s+liability|shall\s+not\s+exceed|aggregate\s+liability)\b/i.test(
+      p.text,
+    );
+    const exception = /\b(?:shall\s+not\s+apply|do(?:es)?\s+not\s+apply|except(?:ions?)?|excluding|other\s+than)\b/i.test(
+      p.text,
+    );
+    if (capContext && exception) {
+      slot.value = { text: p.text, section_id: p.section_id, start: p.start, end: p.end };
+    }
+  });
+  if (!slot.value) return null;
+  const found: Hit = slot.value;
+  const set = CARVEOUT_TERMS.filter(([, re]) => re.test(found.text)).map(([label]) => label);
+  if (set.length === 0) return null;
+  return { set, raw_text: found.text, section_id: found.section_id, start: found.start, end: found.end };
+}
+
 function walkParagraphs(
   tree: DocumentTree,
   fn: (ctx: { text: string; section_id?: string; start: number; end: number }) => void,

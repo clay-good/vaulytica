@@ -1,0 +1,5 @@
+Data Processing Agreement
+
+This Data Processing Agreement supplements the Master Services Agreement between Acme Inc. and Globex Inc., effective 2026-01-01. Governing Law: New York.
+
+Limitation of Liability. This limitation of liability shall not apply to breaches of confidentiality.

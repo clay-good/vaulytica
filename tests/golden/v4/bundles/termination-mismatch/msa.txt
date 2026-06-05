@@ -1,0 +1,5 @@
+Master Services Agreement
+
+This Master Services Agreement is between Acme Inc. and Globex Inc., effective 2026-01-01. Governing Law: New York.
+
+Term. Either party may terminate this Master Services Agreement for convenience upon thirty (30) days written notice.

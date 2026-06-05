@@ -29,12 +29,15 @@ import { findByKind, kindOf, fullText } from "../../_helpers.js";
 import { makeConsistencyFinding, textExcerpt } from "../_finding.js";
 import {
   confidentialitySurvival,
+  dominantCurrency,
   effectiveDateOf,
   findDefinedTermMismatches,
   findDefinedTermUsageDrift,
   findPartyNameMismatches,
   firstIndemnityCap,
   firstLiabilityCap,
+  liabilityCarveouts,
+  terminationPosture,
 } from "./_helpers.js";
 import { forEachParagraph } from "../../../../extract/walk.js";
 
@@ -580,6 +583,156 @@ export const CROSS_SURVIVAL_001: ConsistencyRule = {
   },
 };
 
+/* -------------------- CROSS-TERM-001 ----------------------------- */
+
+export const CROSS_TERM_001: ConsistencyRule = {
+  id: "CROSS-TERM-001",
+  version: V4_VERSION,
+  name: "Termination posture conflicts across documents",
+  category: "consistency",
+  default_severity: "warning",
+  description:
+    "One document in the bundle is terminable for convenience while a companion is non-terminable except for cause (or terminable only for cause). Early termination of the convenience-terminable master orphans the bound companion, which by its own terms cannot follow.",
+  requires: [],
+  check(ctx): ConsistencyFinding[] {
+    if (ctx.documents.length < 2) return [];
+    const postures = ctx.documents
+      .map((d) => ({ doc: d, p: terminationPosture(d) }))
+      .filter((x): x is { doc: typeof x.doc; p: NonNullable<typeof x.p> } => x.p !== null);
+    const out: ConsistencyFinding[] = [];
+    const seen = new Set<string>();
+    for (const conv of postures) {
+      if (conv.p.posture !== "convenience") continue;
+      for (const cause of postures) {
+        if (cause.p.posture !== "cause-only" || cause.doc.doc_id === conv.doc.doc_id) continue;
+        const key = `${conv.doc.doc_id}|${cause.doc.doc_id}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        out.push(
+          makeConsistencyFinding({
+            rule: CROSS_TERM_001,
+            title: `"${conv.doc.doc_id}" is terminable for convenience but "${cause.doc.doc_id}" is terminable only for cause`,
+            description: `"${conv.doc.doc_id}" may be terminated for convenience, while "${cause.doc.doc_id}" cannot be terminated except for cause. Terminating the former for convenience strands the latter.`,
+            explanation:
+              "When a master agreement can be ended at will but a bound companion (an SOW, DPA, or order form) can only be ended for cause, ending the master leaves the companion live with no counterparty obligation behind it — or, conversely, traps the parties in the companion after the master is gone.",
+            recommendation:
+              "Align the termination triggers: make the companion terminate automatically (or for convenience) when the master does, or state which agreement's termination right controls.",
+            excerpts: [
+              textExcerpt(conv.doc, conv.p.raw_text, conv.p.start, conv.p.end),
+              textExcerpt(cause.doc, cause.p.raw_text, cause.p.start, cause.p.end),
+            ],
+          }),
+        );
+      }
+    }
+    return out;
+  },
+};
+
+/* -------------------- CROSS-CARVEOUT-001 ------------------------- */
+
+export const CROSS_CARVEOUT_001: ConsistencyRule = {
+  id: "CROSS-CARVEOUT-001",
+  version: V4_VERSION,
+  name: "Liability-cap carveouts differ across documents",
+  category: "consistency",
+  default_severity: "warning",
+  description:
+    "Two documents in the bundle except different categories from their liability caps (e.g., an MSA carves out IP infringement and confidentiality; a DPA carves out only confidentiality). An asymmetric carveout set means uncapped exposure under one document but not the other for the same kind of harm.",
+  requires: [],
+  check(ctx): ConsistencyFinding[] {
+    if (ctx.documents.length < 2) return [];
+    const cv = ctx.documents
+      .map((d) => ({ doc: d, c: liabilityCarveouts(d) }))
+      .filter((x): x is { doc: typeof x.doc; c: NonNullable<typeof x.c> } => x.c !== null);
+    const out: ConsistencyFinding[] = [];
+    const seen = new Set<string>();
+    for (let i = 0; i < cv.length; i++) {
+      for (let j = i + 1; j < cv.length; j++) {
+        const a = cv[i]!;
+        const b = cv[j]!;
+        const setA = new Set(a.c.set);
+        const setB = new Set(b.c.set);
+        const onlyA = a.c.set.filter((x) => !setB.has(x));
+        const onlyB = b.c.set.filter((x) => !setA.has(x));
+        if (onlyA.length === 0 && onlyB.length === 0) continue;
+        const key = `${a.doc.doc_id}|${b.doc.doc_id}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        const diff = [
+          onlyA.length ? `only "${a.doc.doc_id}" carves out ${onlyA.join(", ")}` : "",
+          onlyB.length ? `only "${b.doc.doc_id}" carves out ${onlyB.join(", ")}` : "",
+        ]
+          .filter(Boolean)
+          .join("; ");
+        out.push(
+          makeConsistencyFinding({
+            rule: CROSS_CARVEOUT_001,
+            title: `Liability-cap carveouts differ between "${a.doc.doc_id}" and "${b.doc.doc_id}"`,
+            description: `The liability-cap exception sets are asymmetric: ${diff}.`,
+            explanation:
+              "Carveouts to the liability cap define where exposure is uncapped. When two documents covering one relationship carve out different categories, the same harm (say, an IP-infringement claim) is uncapped under one and capped under the other — an allocation gap that usually reflects templates merged without reconciling their exception lists.",
+            recommendation:
+              "Reconcile the carveout lists to a single set across the bundle, or state explicitly which document's liability allocation governs claims that touch both.",
+            excerpts: [
+              textExcerpt(a.doc, a.c.raw_text, a.c.start, a.c.end),
+              textExcerpt(b.doc, b.c.raw_text, b.c.start, b.c.end),
+            ],
+          }),
+        );
+      }
+    }
+    return out;
+  },
+};
+
+/* -------------------- CROSS-CURRENCY-001 ------------------------- */
+
+export const CROSS_CURRENCY_001: ConsistencyRule = {
+  id: "CROSS-CURRENCY-001",
+  version: V4_VERSION,
+  name: "Payment currency differs across documents",
+  category: "consistency",
+  default_severity: "warning",
+  description:
+    "Two documents in the bundle state amounts in different dominant currencies (e.g., the master agreement is in USD but an appendix fee schedule is in EUR). The effective currency for amounts shared across the set is ambiguous absent a conversion or controlling-currency clause.",
+  requires: [],
+  check(ctx): ConsistencyFinding[] {
+    if (ctx.documents.length < 2) return [];
+    const cur = ctx.documents
+      .map((d) => ({ doc: d, c: dominantCurrency(d) }))
+      .filter((x): x is { doc: typeof x.doc; c: NonNullable<typeof x.c> } => x.c !== null);
+    const out: ConsistencyFinding[] = [];
+    const seen = new Set<string>();
+    for (let i = 0; i < cur.length; i++) {
+      for (let j = i + 1; j < cur.length; j++) {
+        const a = cur[i]!;
+        const b = cur[j]!;
+        if (a.c.currency === b.c.currency) continue;
+        const key = `${a.doc.doc_id}|${b.doc.doc_id}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        out.push(
+          makeConsistencyFinding({
+            rule: CROSS_CURRENCY_001,
+            title: `Currency differs: ${a.c.currency} in "${a.doc.doc_id}" vs ${b.c.currency} in "${b.doc.doc_id}"`,
+            description: `"${a.doc.doc_id}" states amounts in ${a.c.currency}; "${b.doc.doc_id}" states them in ${b.c.currency}. Which currency controls amounts shared across the set is not stated.`,
+            explanation:
+              "When documents in one deal denominate money in different currencies, any cross-referenced figure (a cap, a fee, a threshold) is ambiguous, and FX movement silently reallocates value between the parties. This is usually an artifact of a master and a local appendix drafted in different jurisdictions.",
+            recommendation:
+              "Name a single controlling currency for the bundle, or add a conversion rule (rate source and date) for amounts that cross documents.",
+            excerpts: [
+              textExcerpt(a.doc, a.c.raw_text, a.c.start, a.c.end),
+              textExcerpt(b.doc, b.c.raw_text, b.c.start, b.c.end),
+            ],
+          }),
+        );
+      }
+    }
+    return out;
+  },
+};
+
 /* -------------------- Internal helpers ---------------------------- */
 
 function truncate(text: string, limit: number): string {
@@ -626,6 +779,10 @@ export const V4_CROSS_RULES: ConsistencyRule[] = [
   CROSS_DEFTERM_002,
   CROSS_INDEMNITY_001,
   CROSS_SURVIVAL_001,
+  // spec-v7 §13 / Step 110 — three more families.
+  CROSS_TERM_001,
+  CROSS_CARVEOUT_001,
+  CROSS_CURRENCY_001,
 ];
 
 // Suppress the "unused" warning on `findByKind` — kept imported because

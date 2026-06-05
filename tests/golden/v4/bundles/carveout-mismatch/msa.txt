@@ -1,0 +1,5 @@
+Master Services Agreement
+
+This Master Services Agreement is between Acme Inc. and Globex Inc., effective 2026-01-01. Governing Law: New York.
+
+Limitation of Liability. The aggregate liability of each party shall not exceed the fees paid. The foregoing limitation of liability shall not apply to breaches of confidentiality, intellectual property infringement, or bodily injury.

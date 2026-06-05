@@ -23,6 +23,9 @@ import {
   CROSS_DEFTERM_002,
   CROSS_INDEMNITY_001,
   CROSS_SURVIVAL_001,
+  CROSS_TERM_001,
+  CROSS_CARVEOUT_001,
+  CROSS_CURRENCY_001,
 } from "./index.js";
 import { ALL_CONSISTENCY_RULES, CONSISTENCY_RULES } from "../index.js";
 import type { ConsistencyDocument } from "../../types.js";
@@ -48,10 +51,10 @@ const STARTER_DKB = (() => buildContext(["x", "y"]).dkb)();
 /* ---------------- registry ----------------- */
 
 describe("V4_CROSS_RULES registry", () => {
-  it("ships ten CROSS-* rules with unique ids", () => {
-    expect(V4_CROSS_RULES).toHaveLength(10);
+  it("ships thirteen CROSS-* rules with unique ids", () => {
+    expect(V4_CROSS_RULES).toHaveLength(13);
     const ids = V4_CROSS_RULES.map((r) => r.id);
-    expect(new Set(ids).size).toBe(10);
+    expect(new Set(ids).size).toBe(13);
     for (const id of ids) expect(id).toMatch(/^CROSS-[A-Z]+-\d{3}$/);
   });
 
@@ -368,6 +371,90 @@ describe("CROSS-SURVIVAL-001", () => {
       ["Survival", "The confidentiality obligations shall survive termination for three (3) years."],
     );
     const run = await runConsistency({ rules: [CROSS_SURVIVAL_001], documents: [msa, dpa], dkb: STARTER_DKB });
+    expect(run.findings).toHaveLength(0);
+  });
+});
+
+/* ---------------- CROSS-TERM-001 (spec-v7 §13) ----------------- */
+
+describe("CROSS-TERM-001", () => {
+  it("fires when a convenience-terminable master sits over a cause-only companion", async () => {
+    const msa = makeDoc("msa", "msa-vendor-deep",
+      ["Term", "Either party may terminate this Master Services Agreement for convenience upon thirty (30) days written notice."],
+    );
+    const sow = makeDoc("sow", "msa-vendor-deep",
+      ["Term", "This Statement of Work is non-terminable except for cause."],
+    );
+    const run = await runConsistency({ rules: [CROSS_TERM_001], documents: [msa, sow], dkb: STARTER_DKB });
+    expect(run.findings).toHaveLength(1);
+    expect(run.findings[0]!.title).toMatch(/terminable for convenience/);
+    expect(run.findings[0]!.excerpts).toHaveLength(2);
+  });
+
+  it("does not fire when both documents are terminable for convenience", async () => {
+    const msa = makeDoc("msa", "msa-vendor-deep",
+      ["Term", "Either party may terminate this Agreement for convenience upon notice."],
+    );
+    const sow = makeDoc("sow", "msa-vendor-deep",
+      ["Term", "Either party may terminate this Statement of Work for convenience upon notice."],
+    );
+    const run = await runConsistency({ rules: [CROSS_TERM_001], documents: [msa, sow], dkb: STARTER_DKB });
+    expect(run.findings).toHaveLength(0);
+  });
+});
+
+/* ---------------- CROSS-CARVEOUT-001 (spec-v7 §13) ------------- */
+
+describe("CROSS-CARVEOUT-001", () => {
+  it("fires when the liability-cap carveout sets differ across documents", async () => {
+    const msa = makeDoc("msa", "msa-vendor-deep",
+      ["Liability", "The foregoing limitation of liability shall not apply to breaches of confidentiality, intellectual property infringement, or bodily injury."],
+    );
+    const dpa = makeDoc("dpa", "dpa-controller-processor",
+      ["Liability", "This limitation of liability shall not apply to breaches of confidentiality."],
+    );
+    const run = await runConsistency({ rules: [CROSS_CARVEOUT_001], documents: [msa, dpa], dkb: STARTER_DKB });
+    expect(run.findings).toHaveLength(1);
+    expect(run.findings[0]!.title).toMatch(/carveouts differ/);
+    expect(run.findings[0]!.excerpts).toHaveLength(2);
+  });
+
+  it("does not fire when the carveout sets match", async () => {
+    const msa = makeDoc("msa", "msa-vendor-deep",
+      ["Liability", "This limitation of liability shall not apply to breaches of confidentiality or intellectual property infringement."],
+    );
+    const dpa = makeDoc("dpa", "dpa-controller-processor",
+      ["Liability", "This limitation of liability shall not apply to intellectual property infringement or breaches of confidentiality."],
+    );
+    const run = await runConsistency({ rules: [CROSS_CARVEOUT_001], documents: [msa, dpa], dkb: STARTER_DKB });
+    expect(run.findings).toHaveLength(0);
+  });
+});
+
+/* ---------------- CROSS-CURRENCY-001 (spec-v7 §13) ------------- */
+
+describe("CROSS-CURRENCY-001", () => {
+  it("fires when documents state amounts in different dominant currencies", async () => {
+    const msa = makeDoc("msa", "msa-vendor-deep",
+      ["Fees", "The annual fee is $250,000 payable in advance. A late fee of $5,000 applies."],
+    );
+    const appendix = makeDoc("appendix", "msa-vendor-deep",
+      ["Fee Schedule", "The annual fee is €250,000 payable in advance. A late fee of €5,000 applies."],
+    );
+    const run = await runConsistency({ rules: [CROSS_CURRENCY_001], documents: [msa, appendix], dkb: STARTER_DKB });
+    expect(run.findings).toHaveLength(1);
+    expect(run.findings[0]!.title).toMatch(/Currency differs/);
+    expect(run.findings[0]!.excerpts).toHaveLength(2);
+  });
+
+  it("does not fire when both documents use the same currency", async () => {
+    const msa = makeDoc("msa", "msa-vendor-deep",
+      ["Fees", "The annual fee is $250,000 payable in advance."],
+    );
+    const appendix = makeDoc("appendix", "msa-vendor-deep",
+      ["Fee Schedule", "The annual fee is $250,000 payable in advance."],
+    );
+    const run = await runConsistency({ rules: [CROSS_CURRENCY_001], documents: [msa, appendix], dkb: STARTER_DKB });
     expect(run.findings).toHaveLength(0);
   });
 });
