@@ -537,6 +537,18 @@
         font-size: 12px;
         margin-top: 4px;
       }
+      /* Spec-v6 multi-family activation: a composite document inside a bundle
+         (e.g. an MSA embedding a DPA exhibit) is scanned with every family it
+         contains, not just its primary match. The "Also checked" line names
+         each extra family and its per-severity counts. Wraps rather than
+         overflows on narrow viewports. */
+      .multi-doc-card-secondary {
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 4px;
+        font-style: italic;
+        overflow-wrap: anywhere;
+      }
       .multi-doc-card-actions {
         display: flex;
         gap: 12px;

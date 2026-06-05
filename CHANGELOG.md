@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Added
+- **Bundle per-doc multi-family activation** (spec-v6 multi-family, the noted
+  follow-up). A composite document — an MSA embedding a DPA exhibit, say — is
+  now scanned with **every** family it clearly contains when it arrives inside a
+  multi-document bundle, not just its primary matched playbook. Previously this
+  "don't-miss-anything" behavior ran only for a document dropped **by itself**;
+  the same file produced a thinner report inside a deal folder. Now identical
+  either way. Each document's per-doc DOCX/JSON download inside the bundle, the
+  consolidated bundle report (an "Also checked (other detected families)" block
+  in the DOCX; `secondary_families` on each `documents[]` entry in the JSON),
+  and each multi-doc card in the bundle-complete view all surface the secondary
+  families. Purely additive: the primary per-doc `run`/`result_hash`, the bundle
+  fingerprint, and every golden are byte-unchanged; single-family bundles
+  serialize identically to before. Secondary families run **only** their gated
+  rules (no duplication of the launch rules that already ran). +6 tests.
+
 ### Fixed
 - **spec-v4.md status was stale — said "not yet implemented" for shipped code.**
   v4 has been complete and shipped (version 4.0.0) for some time — 730 rules, 16

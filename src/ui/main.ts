@@ -470,6 +470,13 @@ async function renderBundleComplete(
         playbook_name: d.playbook.name,
         playbook_deprecated: d.playbook.deprecated === true ? true : undefined,
         counts: countsBySeverity(d.run),
+        secondary_families:
+          d.secondary_families.length > 0
+            ? d.secondary_families.map((f) => ({
+                playbook_name: f.playbook_name,
+                counts: f.counts,
+              }))
+            : undefined,
         docx_blob: d.docx_blob,
         json_blob: d.json_blob,
         docx_filename: `${stem}-vaulytica.docx`,

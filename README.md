@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,062 deterministic rules` · `16 document sub-domains` · `35 state-law overlays` · `0 servers` · `0 AI` · `2,496 passing tests` · `v6.0.0` · `MIT`
+`1,062 deterministic rules` · `16 document sub-domains` · `35 state-law overlays` · `0 servers` · `0 AI` · `2,502 passing tests` · `v6.0.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
 
@@ -53,7 +53,7 @@ Vaulytica takes the documents a real review actually arrives as — and handles 
 | **Pasted text** | normalized directly | no file needed |
 | **Folder or `.zip`** | every file ingested, then the **cross-document consistency** pass runs | `.zip` unpacked client-side via fflate (MIT, same-origin) |
 
-Two or more documents trigger **bundle mode**: per-document reports *plus* a portfolio risk matrix and cross-document checks (conflicting governing law, indemnity-cap stacking, defined-term drift across the set). Nothing is uploaded — the file, and any playbook you load, never leaves the browser tab.
+Two or more documents trigger **bundle mode**: per-document reports *plus* a portfolio risk matrix and cross-document checks (conflicting governing law, indemnity-cap stacking, defined-term drift across the set). A **composite document** — an MSA with a data-processing exhibit, say — is scanned with **every** family it clearly contains, not just its primary match, so a present family is never silently skipped; this holds whether the document is dropped alone or inside a folder. Nothing is uploaded — the file, and any playbook you load, never leaves the browser tab.
 
 ## What it checks — rule cheat sheet
 
@@ -219,7 +219,7 @@ npm run dev          # open the printed URL
 npm run build        # static site → dist/
 npm run typecheck    # tsc --noEmit
 npm run lint         # eslint
-npm run test         # vitest — 2,496 tests, ~10s
+npm run test         # vitest — 2,502 tests, ~10s
 npm run accuracy     # v5 Ground Truth harness → tools/accuracy/SCOREBOARD.md
 ```
 

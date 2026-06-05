@@ -207,6 +207,17 @@ export type DropzoneState =
          */
         playbook_deprecated?: boolean;
         counts: { critical: number; warning: number; info: number };
+        /**
+         * Multi-family activation (spec-v6). Additional families this bundled
+         * document also clearly contains beyond its primary match — the same
+         * families a composite document gets when dropped alone. Rendered as a
+         * compact "Also checked" line on the card; full findings live in the
+         * per-doc download. Optional / back-compat: omitting hides the line.
+         */
+        secondary_families?: ReadonlyArray<{
+          playbook_name: string;
+          counts: { critical: number; warning: number; info: number };
+        }>;
         docx_blob: Blob;
         json_blob: Blob;
         docx_filename: string;
@@ -572,6 +583,10 @@ function renderMultiDocCards(
         playbook_name: string;
         playbook_deprecated?: boolean;
         counts: { critical: number; warning: number; info: number };
+        secondary_families?: ReadonlyArray<{
+          playbook_name: string;
+          counts: { critical: number; warning: number; info: number };
+        }>;
         docx_blob: Blob;
         json_blob: Blob;
         docx_filename: string;
@@ -602,10 +617,20 @@ function renderMultiDocCards(
       const c = d.counts;
       const countsLine = `${c.critical} critical · ${c.warning} warnings · ${c.info} info`;
       const lowConfClass = conf !== null && conf < 0.5 ? " low-confidence" : "";
+      const secondary =
+        d.secondary_families && d.secondary_families.length > 0
+          ? `<div class="multi-doc-card-secondary">Also checked: ${d.secondary_families
+              .map(
+                (f) =>
+                  `${escapeHtml(f.playbook_name)} (${f.counts.critical}C · ${f.counts.warning}W · ${f.counts.info}I)`,
+              )
+              .join("; ")}</div>`
+          : "";
       return `<li class="multi-doc-card${lowConfClass}" data-role="multi-doc-card">
         <div class="multi-doc-card-filename">${escapeHtml(d.filename)}</div>
         <div class="multi-doc-card-meta">${family}${family ? " · " : ""}${playbook}</div>
         <div class="multi-doc-card-counts">${countsLine}</div>
+        ${secondary}
         <div class="multi-doc-card-actions">
           <button class="btn-link" type="button" data-role="card-docx-download" data-card-index="${i}" aria-label="Download Word report for ${escapeHtml(d.filename)}">Word</button>
           <button class="btn-link" type="button" data-role="card-json-download" data-card-index="${i}" aria-label="Download JSON for ${escapeHtml(d.filename)}">JSON</button>

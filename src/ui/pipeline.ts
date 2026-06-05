@@ -317,6 +317,50 @@ export async function prepareDocument(
 }
 
 /**
+ * Run each clearly-present secondary family's own rule set as a separate
+ * scan (spec-v6 multi-family activation). We run ONLY the rules gated to
+ * that family (not the ungated launch rules, which already ran in the
+ * primary run) so each secondary result is purely that family's specialized
+ * checks. Deterministic: the caller pre-sorts `secondaryPlaybooks` and
+ * `executed_at` is blanked. Shared by the single-document `runReport` and the
+ * multi-document `prepareBundle` so a composite document is scanned the same
+ * way whether it arrives alone or inside a bundle.
+ */
+async function runSecondaryFamilies(
+  secondaryPlaybooks: ReadonlyArray<Playbook>,
+  ctx: {
+    tree: PreparedDocument["ingest"]["tree"];
+    extracted: PreparedDocument["extracted"];
+    dkb: DKB;
+    source_file: PreparedDocument["source_file"];
+  },
+  activeFrames?: ReadonlyArray<ComplianceFrame>,
+): Promise<SecondaryFamilyResult[]> {
+  const out: SecondaryFamilyResult[] = [];
+  const allRules = [...LAUNCH_RULES, ...V3_RULES, ...V4_RULES] as readonly Rule[];
+  for (const sp of secondaryPlaybooks) {
+    const subset = filterRulesByFrames(
+      allRules.filter((r) => r.applies_to_playbooks?.includes(sp.id)),
+      activeFrames,
+    );
+    if (subset.length === 0) continue;
+    const sRun = await runEngine({
+      rules: subset as readonly Rule[],
+      ctx: { tree: ctx.tree, extracted: ctx.extracted, dkb: ctx.dkb, playbook: sp },
+      source_file: ctx.source_file,
+      executed_at: "",
+    });
+    out.push({
+      playbook_id: sp.id,
+      playbook_name: sp.name,
+      findings: sRun.findings,
+      counts: countsBySeverity(sRun),
+    });
+  }
+  return out;
+}
+
+/**
  * Phase 2: run engine (optionally frame-filtered) + build reports +
  * detect v3 family + compute frame defaults. Idempotent given a
  * `PreparedDocument`; expected to be called multiple times for a
@@ -392,40 +436,20 @@ export async function runReport(
   }
 
   // Multi-family activation (spec-v6): run each clearly-present secondary
-  // family's own rule set as a separate scan. We run ONLY the rules gated to
-  // that family (not the ungated launch rules, which already ran in the
-  // primary run) so the secondary section is purely that family's specialized
-  // checks. Skipped when a custom playbook drives the run (its mode already
-  // redefines the rule semantics). Deterministic: families are pre-sorted and
-  // executed_at is blanked.
-  const secondary_families: SecondaryFamilyResult[] = [];
-  if (!options.custom_playbook) {
-    const allRules = [...LAUNCH_RULES, ...V3_RULES, ...V4_RULES] as readonly Rule[];
-    for (const sp of prepared.secondary_playbooks) {
-      const subset = filterRulesByFrames(
-        allRules.filter((r) => r.applies_to_playbooks?.includes(sp.id)),
-        options.active_frames,
-      );
-      if (subset.length === 0) continue;
-      const sRun = await runEngine({
-        rules: subset as readonly Rule[],
-        ctx: {
+  // family's own rule set as a separate scan. Skipped when a custom playbook
+  // drives the run (its mode already redefines the rule semantics).
+  const secondary_families: SecondaryFamilyResult[] = options.custom_playbook
+    ? []
+    : await runSecondaryFamilies(
+        prepared.secondary_playbooks,
+        {
           tree: prepared.ingest.tree,
           extracted: prepared.extracted,
           dkb: prepared.dkb,
-          playbook: sp,
+          source_file: prepared.source_file,
         },
-        source_file: prepared.source_file,
-        executed_at: "",
-      });
-      secondary_families.push({
-        playbook_id: sp.id,
-        playbook_name: sp.name,
-        findings: sRun.findings,
-        counts: countsBySeverity(sRun),
-      });
-    }
-  }
+        options.active_frames,
+      );
 
   const docx_blob = await buildDocxReport(
     run,
@@ -603,6 +627,15 @@ export type BundlePerDocument = {
   json_blob: Blob;
   /** v3 family auto-detection (spec-v3 §60), computed per-doc. */
   v3_detection: V3Detection;
+  /**
+   * Additional families this document also contains beyond the primary match
+   * (spec-v6 multi-family activation). A composite document inside a bundle is
+   * scanned the same way it would be if dropped alone — every present family's
+   * rule set runs, not just the primary playbook's. Empty for a single-family
+   * document. Rides through to the per-doc DOCX/JSON downloads and the
+   * consolidated bundle report's per-document subsection.
+   */
+  secondary_families: SecondaryFamilyResult[];
 };
 
 export type BundlePipelineResult = {
@@ -766,14 +799,15 @@ export async function prepareBundle(
       [...LAUNCH_RULES, ...V3_RULES, ...V4_RULES] as readonly Rule[],
       options.active_frames,
     );
+    const sourceFile = {
+      name: entry.filename,
+      sha256: ingest.sha256,
+      size_bytes: entry.size_bytes,
+    };
     const run = await runEngine({
       rules: ruleSet as readonly Rule[],
       ctx: { tree: ingest.tree, extracted, dkb, playbook },
-      source_file: {
-        name: entry.filename,
-        sha256: ingest.sha256,
-        size_bytes: entry.size_bytes,
-      },
+      source_file: sourceFile,
       playbook_match_confidence: match.confidence,
       playbook_match_reasoning: match.reasoning,
       executed_at: new Date().toISOString(),
@@ -783,8 +817,33 @@ export async function prepareBundle(
       },
     });
 
-    const docx_blob = await buildDocxReport(run, ingest, dkb, playbook, undefined, extracted);
-    const json_blob = buildJsonReport(run, ingest, playbook, undefined, extracted);
+    // Multi-family activation (spec-v6): scan the other families this document
+    // clearly contains so a composite document inside a bundle is treated the
+    // same as one dropped alone. Skipped under a custom playbook (its mode
+    // redefines the rule semantics), matching the single-doc path.
+    const secondaryPlaybooks = selectSecondaryFamilies(
+      extendedPlaybooks,
+      { title: titleSource, body: bundleBody, classified: extracted.classified, extracted },
+      match.playbook_id,
+    );
+    const secondary_families = options.custom_playbook
+      ? []
+      : await runSecondaryFamilies(
+          secondaryPlaybooks,
+          { tree: ingest.tree, extracted, dkb, source_file: sourceFile },
+          options.active_frames,
+        );
+
+    const docx_blob = await buildDocxReport(
+      run,
+      ingest,
+      dkb,
+      playbook,
+      undefined,
+      extracted,
+      secondary_families,
+    );
+    const json_blob = buildJsonReport(run, ingest, playbook, secondary_families, extracted);
 
     const v3_detection = detectV3Family(extracted, bodyParts.join(" "));
 
@@ -796,6 +855,7 @@ export async function prepareBundle(
       docx_blob,
       json_blob,
       v3_detection,
+      secondary_families,
     });
     consistencyDocs.push({
       doc_id: `doc-${i + 1}-${entry.filename}`,
@@ -858,6 +918,7 @@ export async function runBundleReport(
       playbook_deprecated: d.playbook.deprecated === true ? true : undefined,
       playbook_superseded_by: d.playbook.deprecated === true ? d.playbook.superseded_by : undefined,
       run: d.run,
+      secondary_families: d.secondary_families.length > 0 ? d.secondary_families : undefined,
     })),
     consistency,
     dkb: prepared.dkb,

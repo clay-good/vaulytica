@@ -11,6 +11,10 @@ function cardDoc(overrides: {
   playbook_name: string;
   playbook_deprecated?: boolean;
   counts: { critical: number; warning: number; info: number };
+  secondary_families?: ReadonlyArray<{
+    playbook_name: string;
+    counts: { critical: number; warning: number; info: number };
+  }>;
   docx_blob?: Blob;
   json_blob?: Blob;
   docx_filename?: string;
@@ -22,6 +26,10 @@ function cardDoc(overrides: {
   playbook_name: string;
   playbook_deprecated?: boolean;
   counts: { critical: number; warning: number; info: number };
+  secondary_families?: ReadonlyArray<{
+    playbook_name: string;
+    counts: { critical: number; warning: number; info: number };
+  }>;
   docx_blob: Blob;
   json_blob: Blob;
   docx_filename: string;
@@ -34,6 +42,7 @@ function cardDoc(overrides: {
     playbook_name: overrides.playbook_name,
     playbook_deprecated: overrides.playbook_deprecated,
     counts: overrides.counts,
+    secondary_families: overrides.secondary_families,
     docx_blob: overrides.docx_blob ?? new Blob(["docx"]),
     json_blob: overrides.json_blob ?? new Blob(["{}"]),
     docx_filename: overrides.docx_filename ?? `${overrides.filename}.docx`,
@@ -867,6 +876,48 @@ describe("renderState", () => {
     expect(jsonBtns.length).toBe(2);
     expect(wordBtns[0]!.getAttribute("aria-label")).toMatch(/Word.*msa\.docx/);
     expect(jsonBtns[1]!.getAttribute("aria-label")).toMatch(/JSON.*dpa\.docx/);
+  });
+
+  it("renders an 'Also checked' line on a bundled composite document's card (spec-v6 multi-family)", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 2,
+      counts: { critical: 1, warning: 1, info: 0 },
+      cross_doc_findings: 0,
+      bundle_docx_blob: new Blob(["docx"]),
+      bundle_json_blob: new Blob(["{}"]),
+      bundle_docx_filename: "x.docx",
+      bundle_json_filename: "x.json",
+      documents: [
+        cardDoc({
+          filename: "msa-with-dpa.docx",
+          family_label: "MSA",
+          playbook_name: "MSA (Customer-Deep)",
+          counts: { critical: 1, warning: 0, info: 0 },
+          secondary_families: [
+            {
+              playbook_name: "Data Processing Agreement (EU/UK)",
+              counts: { critical: 0, warning: 1, info: 0 },
+            },
+          ],
+        }),
+        cardDoc({
+          filename: "nda.docx",
+          playbook_name: "Mutual NDA",
+          counts: { critical: 0, warning: 0, info: 0 },
+        }),
+      ],
+    });
+    const list = select<HTMLUListElement>(dz, "multi-doc-cards")!;
+    const cards = list.querySelectorAll<HTMLLIElement>('[data-role="multi-doc-card"]');
+    const secondary = cards[0]!.querySelector(".multi-doc-card-secondary");
+    expect(secondary).not.toBeNull();
+    expect(secondary!.textContent).toMatch(/Also checked:/);
+    expect(secondary!.textContent).toMatch(/Data Processing Agreement \(EU\/UK\)/);
+    expect(secondary!.textContent).toMatch(/0C · 1W · 0I/);
+    // A single-family document gets no "Also checked" line.
+    expect(cards[1]!.querySelector(".multi-doc-card-secondary")).toBeNull();
   });
 
   it("renders detection_confidence next to the family label and flags low-confidence cards", () => {

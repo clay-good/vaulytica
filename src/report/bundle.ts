@@ -49,6 +49,7 @@ import type { DKB, SourceCitation } from "../dkb/types.js";
 import { sha256Hex } from "../ingest/hash.js";
 import { stableStringify } from "../engine/runner.js";
 import { formatBibliographyEntry } from "./citations.js";
+import type { ReportSecondaryFamily } from "./json.js";
 import {
   buildPortfolioMatrix,
   portfolioFingerprint,
@@ -105,6 +106,19 @@ export type BundleDocument = {
    */
   playbook_superseded_by?: string;
   run: EngineRun;
+  /**
+   * Additional families this document also contains beyond the primary
+   * match (spec-v6 multi-family activation). Same per-document semantics as
+   * the single-document report: a composite document (e.g. an MSA embedding
+   * a DPA exhibit) inside a bundle is scanned with every present family's
+   * rule set, not just its primary playbook's, so a family is never silently
+   * skipped just because the document arrived in a bundle. Each family's
+   * findings ride through to the per-document subsection in the bundle DOCX
+   * and to the `documents[]` entry in the bundle JSON. Optional / back-compat:
+   * omitting it (or passing an empty array) preserves prior renderer output
+   * verbatim for single-family documents.
+   */
+  secondary_families?: ReadonlyArray<ReportSecondaryFamily>;
 };
 
 export type RejectedBundleEntry = {
@@ -200,6 +214,14 @@ export type BundleJsonDocument = {
    * carries `superseded_by`.
    */
   playbook_superseded_by?: string;
+  /**
+   * Additional detected families this document also contains (spec-v6
+   * multi-family activation), mirroring the single-document JSON's
+   * `secondary_families`. Emitted only when at least one secondary family
+   * was activated for this document; absent for single-family documents so
+   * existing consumers and goldens are byte-unaffected.
+   */
+  secondary_families?: ReportSecondaryFamily[];
 };
 
 export type BundleJson = {
@@ -324,6 +346,9 @@ export async function buildBundleJson(input: BundleReportInput): Promise<BundleJ
         if (typeof d.playbook_superseded_by === "string" && d.playbook_superseded_by.length > 0) {
           entry.playbook_superseded_by = d.playbook_superseded_by;
         }
+      }
+      if (d.secondary_families && d.secondary_families.length > 0) {
+        entry.secondary_families = d.secondary_families.map((s) => ({ ...s }));
       }
       return entry;
     });
@@ -668,9 +693,49 @@ function renderPerDocumentSection(input: BundleReportInput): (Paragraph | Table)
         out.push(para({ text: f.description }));
       }
     }
+    out.push(...renderPerDocumentSecondaryFamilies(doc.secondary_families));
     out.push(spacer());
   }
   out.push(pageBreak());
+  return out;
+}
+
+// Additional families a bundled document also contains beyond its primary
+// match (spec-v6 multi-family activation). The same composite document dropped
+// alone gets these families in its single-document report; this keeps the
+// bundle's per-document subsection consistent with that. Rendered compactly —
+// the family label with severity counts plus each finding's headline — since
+// the document's own per-document DOCX download carries the full section.
+function renderPerDocumentSecondaryFamilies(
+  secondary: ReadonlyArray<ReportSecondaryFamily> | undefined,
+): Paragraph[] {
+  if (!secondary || secondary.length === 0) return [];
+  const out: Paragraph[] = [
+    para({ text: "Also checked (other detected families):", bold: true, italics: true }),
+  ];
+  for (const fam of secondary) {
+    const c = fam.counts;
+    out.push(
+      para({
+        text: `${fam.playbook_name} (${fam.playbook_id}) — ${c.critical} critical, ${c.warning} warning, ${c.info} informational`,
+        bold: true,
+      }),
+    );
+    if (fam.findings.length === 0) {
+      out.push(
+        para({ text: "No findings — this family's requirements appear to be met.", italics: true }),
+      );
+      continue;
+    }
+    for (const f of pickTop(fam.findings, BUNDLE_TOP_N)) {
+      out.push(
+        para({
+          text: `[${f.severity.toUpperCase()}] ${f.rule_id} — ${f.title}`,
+          color: severityColor(f.severity),
+        }),
+      );
+    }
+  }
   return out;
 }
 

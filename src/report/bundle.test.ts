@@ -577,3 +577,65 @@ describe("portfolio risk matrix in the bundle (spec-v6 Part V)", () => {
     expect(a.portfolio_fingerprint).toBe(b.portfolio_fingerprint);
   });
 });
+
+describe("bundle multi-family activation (spec-v6)", () => {
+  const secondary = [
+    {
+      playbook_id: "dpa-eu-uk",
+      playbook_name: "Data Processing Agreement (EU/UK)",
+      findings: [finding("dpa1", "warning", "DPA-001"), finding("dpa2", "info", "DPA-007")],
+      counts: { critical: 0, warning: 1, info: 1 },
+    },
+  ];
+
+  function inputWithSecondary(): BundleReportInput {
+    const base = makeInput();
+    return {
+      ...base,
+      documents: [{ ...base.documents[0]!, secondary_families: secondary }, base.documents[1]!],
+    };
+  }
+
+  it("surfaces secondary_families on the bundle JSON documents[] entry that has them, omits elsewhere", async () => {
+    const out = await buildBundleJson(inputWithSecondary());
+    expect(out.documents![0]!.secondary_families).toBeDefined();
+    expect(out.documents![0]!.secondary_families).toHaveLength(1);
+    expect(out.documents![0]!.secondary_families![0]!.playbook_id).toBe("dpa-eu-uk");
+    expect(out.documents![0]!.secondary_families![0]!.counts).toEqual({
+      critical: 0,
+      warning: 1,
+      info: 1,
+    });
+    // The other document carries no secondary families.
+    expect(out.documents![1]!.secondary_families).toBeUndefined();
+  });
+
+  it("omits secondary_families from every entry when no document has them (byte-stable for single-family bundles)", async () => {
+    const out = await buildBundleJson(makeInput());
+    for (const entry of out.documents!) {
+      expect(entry.secondary_families).toBeUndefined();
+    }
+  });
+
+  it("renders an 'Also checked' block with the family name + counts in the bundle DOCX", async () => {
+    const blob = await buildBundleDocxReport(inputWithSecondary());
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const docXml = strFromU8(entries["word/document.xml"]!);
+    expect(docXml).toContain("Also checked (other detected families):");
+    expect(docXml).toContain("Data Processing Agreement (EU/UK) (dpa-eu-uk)");
+    expect(docXml).toContain("DPA-001");
+  });
+
+  it("does not render the 'Also checked' block for a single-family bundle", async () => {
+    const blob = await buildBundleDocxReport(makeInput());
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const docXml = strFromU8(entries["word/document.xml"]!);
+    expect(docXml).not.toContain("Also checked (other detected families):");
+  });
+
+  it("is deterministic — two builds of the same multi-family bundle JSON match", async () => {
+    const a = await buildBundleJsonBlob(inputWithSecondary());
+    const b = await buildBundleJsonBlob(inputWithSecondary());
+    expect(await a.text()).toBe(await b.text());
+  });
+});
