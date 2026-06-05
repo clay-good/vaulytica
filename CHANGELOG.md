@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- **spec-v7 — "Depth & Proof" (`docs/spec-v7.md`).** A full specification
+  continuing the global step numbering from v6's Step 102 → Steps 103–126 (24
+  steps), grounded in a codebase + test-surface audit. Two thrusts: **(A) Depth**
+  — close v6 Step 98 extraction recall extractor-by-extractor, wire the measured
+  `dkb/v4/sub-domain-features.json` classifier table into live routing (the
+  dead-artifact gap, gated behind v5 + a reviewed golden re-baseline), more
+  `CROSS-*` families, employment overlays → 50 states + a non-solicitation family,
+  and deepen the thin rule categories. **(B) Proof** — the test *kinds* the suite
+  lacks today (verified: 161 files / 2,502 tests, determinism pinned, but no
+  coverage gate, no per-rule positive+negative completeness guarantee, and no
+  property/metamorphic/mutation/parity/schema-fuzz/report-structure tests): vitest
+  V8 coverage + regression-only gate, a per-rule completeness meta-test, fast-check
+  property tests, a metamorphic invariant suite, Node↔browser pipeline parity,
+  schema fuzz + round-trip, DOCX/JSON report-structure validation, Stryker mutation
+  testing, and e2e/a11y expansion incl. responsiveness-as-a-test. Posture-clean and
+  measure-before-gate throughout; makes the **testing ≠ accuracy** distinction
+  explicit (Thrust B proves internal logic; v5 proves the legal premise). README
+  version table + specs index updated. Doc-only; the spec is a plan, unimplemented.
 - **Bundle per-doc multi-family activation** (spec-v6 multi-family, the noted
   follow-up). A composite document — an MSA embedding a DPA exhibit, say — is
   now scanned with **every** family it clearly contains when it arrives inside a

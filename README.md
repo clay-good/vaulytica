@@ -103,6 +103,7 @@ Every view is verified to render with **no horizontal scroll from 320 px to 1280
 | v4 | Every operative document | +730 rules, 16 sub-domains, multi-doc bundles (folder/zip), document classifier | shipped |
 | v5 | Ground Truth | accuracy & validation harness, measured recall/precision, rule-retirement discipline | **infrastructure built** (Steps 67/69/71/75/83): corpus scaffolding, gold-annotation schema + Cohen's κ, `npm run accuracy` harness + reproducible scoreboard, legal-basis ledger + `tier` field. Numbers + sign-offs await a human-gated real corpus, attorney annotation, and legal review (Steps 68/70/76/77). |
 | v6 | Workflow | version comparison · bring-your-own-playbook · findings-to-action exports · model-clause references · portfolio matrix · depth (classifier, cross-doc families, jurisdiction overlays) | **complete · 6.0.0** (Steps 87–102; only Step 98 extraction-recall deferred behind v5) |
+| v7 | Depth & Proof | extraction recall · classifier live-routing · more cross-doc families & overlays · deeper rule categories · **and** the missing test *kinds*: coverage + mutation + property + metamorphic + parity + schema-fuzz + report-structure gates | **specified** (Steps 103–126; [`spec-v7`](docs/spec-v7.md)) |
 
 ## v6 — fit the shape of a review
 
@@ -325,7 +326,7 @@ See [`docs/data-sources.md`](docs/data-sources.md) and [`docs/determinism.md`](d
 | Annotation protocol (v5) | [`docs/v5/annotation-protocol.md`](docs/v5/annotation-protocol.md) |
 | Legal-basis ledger (v5, rule sign-off) | [`docs/legal-basis/README.md`](docs/legal-basis/README.md) |
 | v4 overview + sub-domains | [`docs/v4/overview.md`](docs/v4/overview.md) |
-| Specs | [`docs/spec.md`](docs/spec.md) · [`spec-v3`](docs/spec-v3.md) · [`spec-v4`](docs/spec-v4.md) · [`spec-v5`](docs/spec-v5.md) · [`spec-v6`](docs/spec-v6.md) |
+| Specs | [`docs/spec.md`](docs/spec.md) · [`spec-v3`](docs/spec-v3.md) · [`spec-v4`](docs/spec-v4.md) · [`spec-v5`](docs/spec-v5.md) · [`spec-v6`](docs/spec-v6.md) · [`spec-v7`](docs/spec-v7.md) |
 | Contributing | [`CONTRIBUTING.md`](CONTRIBUTING.md) |
 
 ## What happened to the older project?
