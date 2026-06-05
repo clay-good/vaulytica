@@ -25,6 +25,24 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](docs/spec.md) 
 
 ## Post-1.0 work
 
+### spec-v7 close — Depth & Proof Steps 103–108, 110, 113–114, 120, 125–126 → version 7.0.0 (2026-06-05) — ✅ complete
+
+Implemented the bulk of spec-v7's two thrusts in one arc and bumped to **7.0.0**. Verification gate green throughout: `npm run typecheck` + `npm run lint` + `npm test` (**2,593** passing + 2 skipped) + `npm run build`; the docs link-integrity guard passes.
+
+**Thrust A — Depth (all additive; extracted-data is not part of `result_hash`, so new optional fields never churn a hash):**
+- **Steps 103–108 — extraction recall.** Dates (`fiscal-period` type + `fiscal_period`; broadened citable anchor-alias table + "Date Hereof"; range deadlines via `offset_days_max`; documented `TWO_DIGIT_YEAR_PIVOT`). Amounts (`range_max`; "and" is a range connector only after "between" so currency lists stay separate; `per_unit`; deferred `$`-currency override). Parties (`aliases` short/role/all-caps chains, `dba`, two-column `By:`/`Name:` capture). Obligations (prohibitive/permissive modals — the **one intended behavior change**; `nested_triggers`; `obligor_exclusion`). Definitions (`reference`, `scope`, DFS-bounded `circular_terms` — surfacing as a finding deferred to avoid all-golden execution_log churn). Crossrefs/jurisdictions (`sub_ref`, `fallback_jurisdiction`; implied-law inference confirmed absent). **Golden re-baseline (Step 106):** 6 fixtures gained/raised an OBLI-005 "negative covenants" finding — line-reviewed, OBLI-005 only; leaseback 9→10, healthcare +1, SCC 5→6.
+- **Step 110 — three cross-document families.** `CROSS-TERM-001`, `CROSS-CARVEOUT-001`, `CROSS-CURRENCY-001` (V4_CROSS_RULES 10→13), each with a bundle fixture. Consistency rules are bundle-only → single-doc goldens byte-unchanged; the 11 pre-existing bundle goldens got a mechanical `execution_log_count` 17→20 with **no new findings** on any of them.
+- **Step 113 — ingest robustness.** Pure, testable `assessTextLayer` per-page-density OCR trigger (a searchable header over a scanned body now OCRs the body); `markLowConfidence` per-word `[uncertain]` markers + ingest warning. OCR accuracy stays device-gated; orchestration + heuristics unit-tested.
+- **Step 114 — report fidelity.** JSON `provenance` (DKB/engine + new `RULE_TAXONOMY_VERSION="7.0.0"`); portfolio `executive_summary` (severity rollup + per-doc digest) in bundle JSON; `.ics` verify-manually events for unresolved deadlines on a fixed sentinel date. All outside the run.
+
+**Thrust B — Proof:**
+- **Step 120 — Node↔browser parity** (`tools/accuracy/parity.test.ts`): a shared fixture through both `runReport` and `runDocument` yields a byte-identical `EngineRun` (playbook_id + result_hash + findings + execution_log). Makes v5's "reuses the real pipeline" claim executable.
+- **Step 125 — responsiveness-as-a-test** (`tests/e2e/responsiveness.spec.ts`): `scrollWidth ≤ clientWidth` per view-state at 320/390/768/1280 px (landing + empty + complete), reusing the proven a11y-axe flow. Runs under Playwright post-deploy; `*.spec.ts` is outside the vitest `*.test.ts` glob so it does not run in `npm test`. No UI/CSS changed this session → the deployed surface stays at the 2026-06-03 verified-clean state.
+
+**Step 126 — close.** `docs/v7/README.md` + `docs/v7/testing-architecture.md`; threat-model "v7 — proof surface" section; `package.json` 6.0.0→7.0.0 (ENGINE_VERSION stays 0.1.0 — feeds result_hash); spec-v7 status header + build-plan rows reconciled; CHANGELOG `[7.0.0]` section; README counts (2,546→2,593 tests; 17→20 cross-doc; v6.0.0→v7.0.0) + a v7 "Depth & Proof" section + parity/responsiveness in the proof section.
+
+**Principled deferrals (documented in spec-v7 + docs/v7 + CHANGELOG):** Step 109 (classifier live-routing — held behind the v5 corpus; a routing change must be measured against real annotated docs); Step 111 (50-state overlay + non-solicitation — per-state enforceability is attorney-gated legal data the v5 honesty contract forbids fabricating); Step 112 (rule-catalog depth — a new always-on rule re-baselines every single-doc golden's execution_log and needs a citable DKB source); Steps 123–124 (Stryker mutation testing — slow, belongs on a scheduled/on-demand job). These are the steps that would compromise honesty or the green-build contract; the additive, verifiable work shipped.
+
 ### spec-v7 Steps 121 + 117 — schema fuzz + round-trip, and per-rule completeness (2026-06-05) — ✅ complete
 
 Two more Thrust-B proof steps, both test-only (no `src/` production change, no `result_hash`/golden churn, no UI/CSS → responsiveness unaffected).

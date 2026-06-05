@@ -4,7 +4,31 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
-### Added
+## [7.0.0] — 2026-06-05
+
+**v7 "Depth & Proof"** — make the engine more correct on real documents (Thrust A) and prove the logic sound under inputs no author wrote down (Thrust B), without touching the deterministic / no-AI / no-server / citable / lints-not-drafts posture. See [`docs/v7/README.md`](docs/v7/README.md) and [`docs/v7/testing-architecture.md`](docs/v7/testing-architecture.md).
+
+### Added (Thrust A — depth, Steps 103–108, 110, 113–114)
+- **Extraction recall (Steps 103–108).** Dates: fiscal periods (`fiscal-period` type), broadened citable anchor-alias set + "Date Hereof", disjunctive/range deadlines (`offset_days_max`), documented `TWO_DIGIT_YEAR_PIVOT`. Amounts: range amounts (`range_max`), per-unit qualifiers (`per_unit`), deferred `$`-currency override. Parties: alias/role chains (`aliases`), `dba` operating names, two-column signature-field capture. Obligations: prohibitive/permissive boundary modals, nested-trigger decomposition (`nested_triggers`), scope exclusion (`obligor_exclusion`). Definitions: definition-by-`reference`, `scope`-gated defs, circularity detection (`circular_terms`). Crossrefs/jurisdictions: trailing sub-reference (`sub_ref`), governing-law `fallback_jurisdiction` precedence. All new fields optional and outside `result_hash`.
+- **Three cross-document families (Step 110).** `CROSS-TERM-001` (termination-alignment), `CROSS-CARVEOUT-001` (liability-cap carveout mismatch), `CROSS-CURRENCY-001` (payment-currency mismatch); V4_CROSS_RULES 10 → 13, each with a bundle fixture.
+- **Ingest robustness (Step 113).** Per-page text-density OCR trigger (`assessTextLayer`) so a searchable header over a scanned body OCRs the body; per-word confidence `[uncertain]` markers (`markLowConfidence`) + ingest warning.
+- **Report/export fidelity (Step 114).** JSON `provenance` (DKB/engine/rule-taxonomy versions); portfolio `executive_summary` (rolled-up severity counts + per-document digest); `.ics` verify-manually events for unresolved deadlines. All outside the run.
+
+### Added (Thrust B — proof, Steps 120, 125)
+- **Node↔browser pipeline parity (Step 120).** `tools/accuracy/parity.test.ts` drives a shared fixture through both `runReport` (browser) and `runDocument` (Node accuracy harness) and asserts a byte-identical `EngineRun` — making v5's "the harness reuses the real pipeline" claim executable.
+- **Responsiveness-as-a-test (Step 125).** `tests/e2e/responsiveness.spec.ts` asserts `scrollWidth ≤ clientWidth` per view-state at 320/390/768/1280 px — the manual responsiveness audit becomes a CI gate.
+
+### Changed
+- **`result_hash` re-baseline (Step 106, reviewed).** The new prohibitive/permissive modals surface previously-missed negative covenants; six goldens gained/raised an OBLI-005 "negative covenants" finding (line-reviewed — OBLI-005 only). Eleven bundle goldens got a mechanical `consistency.execution_log_count` bump 17 → 20 with no new findings on any pre-existing bundle.
+- **Version 6.0.0 → 7.0.0** (Step 126). `ENGINE_VERSION` stays 0.1.0 (it feeds `result_hash`); the new `RULE_TAXONOMY_VERSION` is "7.0.0", stamped only into report provenance.
+
+### Deferred (with reasons)
+- **Step 109** (classifier live-routing) — held behind the v5 corpus; a routing change must be measured against real annotated documents.
+- **Step 111** (50-state overlay + non-solicitation) — per-state enforceability is attorney-gated legal data under the v5 honesty contract.
+- **Step 112** (rule-catalog depth) — a new always-on rule re-baselines every single-document golden's `execution_log` and needs a citable DKB source.
+- **Steps 123–124** (Stryker mutation testing) — slow; belongs on a scheduled/on-demand job off the per-push path.
+
+### Earlier v7 increments (Steps 115–122)
 - **Schema fuzz + round-trip for the DKB (spec-v7 Step 121).** Added
   `src/dkb/schema-fuzz.test.ts` (+29 tests): every DKB artifact round-trips
   through `parse → serialize → parse`, the wrong top-level type is rejected, and

@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,062 deterministic rules` · `16 document sub-domains` · `35 state-law overlays` · `0 servers` · `0 AI` · `2,546 passing tests` · `v6.0.0` · `MIT`
+`1,062 deterministic rules` · `20 cross-document checks` · `16 document sub-domains` · `35 state-law overlays` · `0 servers` · `0 AI` · `2,593 passing tests` · `v7.0.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
 
@@ -74,7 +74,7 @@ The **v1 launch set** is 112 rules across ten always-on categories that apply to
 
 On top of that, **v3 (+220 rules)** adds compliance-grade rule sets and **v4 (+730 rules)** adds 16 specialized sub-domains. The full **1,062-rule** catalog runs live, family-gated so a plain NDA is not flagged for missing GDPR clauses.
 
-Those 1,062 are all **single-document** rules. Dropping a folder or `.zip` additionally runs **17 cross-document consistency rules** — defects no single-document scan can see because they live in the *relationship between* documents:
+Those 1,062 are all **single-document** rules. Dropping a folder or `.zip` additionally runs **20 cross-document consistency rules** — defects no single-document scan can see because they live in the *relationship between* documents:
 
 | Cross-doc check | Catches |
 |---|---|
@@ -103,7 +103,7 @@ Every view is verified to render with **no horizontal scroll from 320 px to 1280
 | v4 | Every operative document | +730 rules, 16 sub-domains, multi-doc bundles (folder/zip), document classifier | shipped |
 | v5 | Ground Truth | accuracy & validation harness, measured recall/precision, rule-retirement discipline | **infrastructure built** (Steps 67/69/71/75/83): corpus scaffolding, gold-annotation schema + Cohen's κ, `npm run accuracy` harness + reproducible scoreboard, legal-basis ledger + `tier` field. Numbers + sign-offs await a human-gated real corpus, attorney annotation, and legal review (Steps 68/70/76/77). |
 | v6 | Workflow | version comparison · bring-your-own-playbook · findings-to-action exports · model-clause references · portfolio matrix · depth (classifier, cross-doc families, jurisdiction overlays) | **complete · 6.0.0** (Steps 87–102; only Step 98 extraction-recall deferred behind v5) |
-| v7 | Depth & Proof | extraction recall · classifier live-routing · more cross-doc families & overlays · deeper rule categories · **and** the missing test *kinds*: coverage + mutation + property + metamorphic + parity + schema-fuzz + report-structure gates | **specified** (Steps 103–126; [`spec-v7`](docs/spec-v7.md)) |
+| v7 | Depth & Proof | extraction recall · 3 new cross-doc families · mixed-text-layer OCR + per-word confidence · report provenance/exec-summary · **and** the missing test *kinds*: coverage + property + metamorphic + parity + schema-fuzz + report-structure + responsiveness gates | **substantially done · 7.0.0** (Steps 103–108, 110, 113–122, 125–126; [`spec-v7`](docs/spec-v7.md) · [`docs/v7/`](docs/v7/README.md)). Deferred with reasons: 109 (v5-gated routing), 111 (attorney-gated overlay data), 112 (golden-churn + citations), 123–124 (scheduled mutation testing). |
 
 ## v6 — fit the shape of a review
 
@@ -130,6 +130,24 @@ Overlays gate on the matched family and the **governing-law** clause only (venue
 ### Design decision: why a feature table, not a model
 
 The classifier is a hand-authored table of title keywords, distinguishing phrases, and negative features, scored with fixed weights (title 0.3, distinguishing 0.2, negative −0.1) and a per-domain normalization ceiling. Every classification is explainable ("matched: *licensor*, *royalty*; ceiling 1.4 → 0.71") and reproducible. The Step 99 gain came from adding phrases verified to appear **only** in their target sub-domain's fixtures — so each edit strictly helps its target and cannot regress another, a property a learned model cannot guarantee. The 100% figure is corpus-measured on 75 labeled fixtures (5 per sub-domain); the added phrases are genuine legal terms of art, so the lift generalizes, but a small labeled set is not the open world — the calibration test pins the acceptance floor so a future corpus change that breaks it fails loudly.
+
+## v7 — Depth & Proof: more right, and provably so
+
+v7 answers the two halves of *"is this thing actually right?"* in dependency order, without touching the five promises. Full write-up: [`docs/v7/`](docs/v7/README.md) and the [testing-architecture doc](docs/v7/testing-architecture.md).
+
+**Thrust A — Depth** deepens the layers everything downstream reads:
+
+- **Extraction recall** *(Steps 103–108)* — the extract layer now catches what it used to drop: **fiscal periods** ("FY2025-Q3") and **range deadlines** ("thirty to sixty days after…", both bounds kept), a broadened citable **anchor-alias** set; **range amounts** ("$100k to $200k" → a cap rule reads the upper bound), **per-unit qualifiers** ("$X per incident" ≠ an absolute cap), and a **deferred currency override**; party **alias/role chains** and **DBA** names and two-column signature blocks; **prohibitive/permissive modals** ("may not", "cannot" — previously invisible obligations), **nested triggers**, and **scope exclusions**; **definition-by-reference**, **scope-gated definitions**, and **circularity detection**; sub-reference and governing-law **fallback-precedence** capture. Every new field is optional and outside `result_hash`; the one intended behavior change (the new modals) shipped with a line-reviewed golden re-baseline.
+- **Cross-document families** *(Step 110)* — the consistency engine grew 10 → **13 CROSS-\* families**: **termination-alignment** (a convenience-terminable master over a cause-only companion), **liability-cap carveout mismatch** (asymmetric uncapped exposure), and **payment-currency mismatch** across a bundle.
+- **Ingest robustness** *(Step 113)* — a **per-page text-density** OCR trigger so a searchable cover over a scanned body no longer hides the body; **per-word confidence** `[uncertain]` markers + an ingest warning so a faxed scan never silently feeds a misread amount into a rule.
+- **Report fidelity** *(Step 114)* — JSON **provenance** (DKB/engine/rule-taxonomy versions), a portfolio **executive summary** (rolled-up severity counts + per-document digest), and **`.ics` verify-manually events** for unresolved deadlines. All outside the run.
+
+**Thrust B — Proof** adds the test *kinds* the suite lacked — **coverage gate, per-rule completeness, property-based (`fast-check`), metamorphic invariants, schema fuzz, report-structure validation, Node↔browser parity, and responsiveness-as-a-test**. The standout:
+
+- **Node↔browser parity** *(Step 120)* — a shared fixture driven through both the shipped browser pipeline and the Node accuracy harness must produce a **byte-identical `EngineRun`**, so a measured accuracy number provably describes shipped behavior.
+- **Responsiveness-as-a-test** *(Step 125)* — `scrollWidth ≤ clientWidth` per view-state at **320 / 390 / 768 / 1280 px** turns the recurring manual mobile audit into a CI gate (kept alongside the periodic visual audit).
+
+**Testing ≠ accuracy** stays explicit: Thrust B proves the engine does what each rule *says*; v5 proves each rule matches what a *lawyer* says. **Principled deferrals:** classifier live-routing (109) stays behind the v5 corpus; the 50-state overlay expansion (111) and deeper rule categories (112) are attorney-gated under the v5 honesty contract; Stryker mutation testing (123–124) belongs on a scheduled job.
 
 ## v5 — Ground Truth: making accuracy measured, not asserted
 
@@ -206,7 +224,7 @@ flowchart LR
   end
   M -. "import() on file drop" .-> DROP
   subgraph DROP["On file drop · lazy"]
-    P[pipeline · 1,062 rules<br/>265 KB gz]
+    P[pipeline · 1,062 rules<br/>268 KB gz]
     PDF[vendor-pdfjs · 146 KB gz<br/>PDF only]
     DOCXIN[vendor-mammoth · 126 KB gz<br/>DOCX only]
     Z[vendor-zod + decimal<br/>32 KB gz]
@@ -223,7 +241,7 @@ flowchart LR
 |---|---:|---|---|
 | `index.html` (inline CSS) | 17.1 KB | first paint | the page renders from this alone — no JS needed to see content |
 | `main` + `rolldown-runtime` | 12.3 KB | first paint (preloaded) | hydrates the drop zone; the *only* JS on the FCP path |
-| `pipeline` (1,062 rules + extract/classify/engine) | 265 KB | file drop | you don't need the engine until there's a document to run it on |
+| `pipeline` (1,062 rules + extract/classify/engine) | 268 KB | file drop | you don't need the engine until there's a document to run it on |
 | `vendor-pdfjs` | 146 KB | dropping a **PDF** | format-specific — a DOCX never loads it |
 | `vendor-mammoth` | 126 KB | dropping a **DOCX** | format-specific — a PDF never loads it |
 | `vendor-zod` + `vendor-decimal` | 32 KB | file drop | DKB validation + exact financial math, engine-only |
@@ -268,7 +286,7 @@ npm run dev          # open the printed URL
 npm run build        # static site → dist/
 npm run typecheck    # tsc --noEmit
 npm run lint         # eslint
-npm run test         # vitest — 2,546 tests, ~10s
+npm run test         # vitest — 2,593 tests, ~10s
 npm run coverage     # vitest + V8 coverage, enforces the regression floor
 npm run accuracy     # v5 Ground Truth harness → tools/accuracy/SCOREBOARD.md
 ```
@@ -277,12 +295,12 @@ The CI gate (`.github/workflows/ci.yml`) runs typecheck + lint + **coverage** + 
 
 ### Coverage — measured, then gated (spec-v7 Part VIII)
 
-The suite proves *behavior*; coverage proves the suite *reaches the code*. The first measured baseline over the shipped `src/` bundle (build-and-CI-only harnesses excluded):
+The suite proves *behavior*; coverage proves the suite *reaches the code*. Measured over the shipped `src/` bundle (build-and-CI-only harnesses excluded), after the v7 depth work:
 
-| Metric | Baseline | Floor | Metric | Baseline | Floor |
+| Metric | Measured | Floor | Metric | Measured | Floor |
 |---|---:|---:|---|---:|---:|
-| Lines | 87.5% | 85% | Functions | 87.1% | 85% |
-| Statements | 85.5% | 83% | Branches | 72.4% | 70% |
+| Lines | 88.7% | 85% | Functions | 88.0% | 85% |
+| Statements | 86.5% | 83% | Branches | 73.4% | 70% |
 
 Floors are **regression-only** — set a couple points under the measured value (headroom for cross-platform drift), they fail the build on a *drop*, never block on an aspiration. A ratchet raises them as coverage climbs; branches (the lowest) is the next ratchet target. Same measure-first discipline the [v5 accuracy scoreboard](docs/v5/methodology.md) uses for precision/recall — publish the real number, gate against regression, never against a fabricated target.
 
@@ -293,6 +311,8 @@ The suite also tests **invariants no example could enumerate** (spec-v7 Step 118
 And it tests **what the engine *means*** with metamorphic relations (spec-v7 Step 119): a document and a copy of it with non-semantic whitespace noise must produce the **same `result_hash` and the same findings**. That relation immediately earned its keep — it caught a real determinism leak (the normalizer collapsed whitespace in run text but *not* in headings, so heading whitespace bled into the offset stream and the hash) which is now fixed, with zero change to any committed golden report.
 
 Two more proofs round it out: the DKB schemas are **fuzzed with a known oracle** (spec-v7 Step 121) — every artifact round-trips through `parse → serialize → parse`, and a battery of single-field mutations (bad enum, missing-required, out-of-range, malformed URL/hash) is each rejected, because a schema's real job is to *refuse* corruption before it reaches the engine. And a **per-rule completeness gate** (spec-v7 Step 117) aggregates execution logs across the golden corpus to prove every always-on launch rule actually runs, holding a regression-only floor on how many are seen both to fire *and* to stay silent — so the always-on core can never quietly lose its positive or negative coverage.
+
+Finally, two structural guarantees close the loop. **Node↔browser parity** (spec-v7 Step 120) drives a shared fixture through both the shipped browser pipeline (`runReport`) and the Node accuracy harness (`runDocument`) and asserts a **byte-identical `EngineRun`** — so a measured accuracy number provably describes shipped behavior, not a test-only shortcut. And **responsiveness-as-a-test** (spec-v7 Step 125) asserts `scrollWidth ≤ clientWidth` for each view-state at 320/390/768/1280 px, turning the manual mobile audit into a CI gate. The full proof surface is documented in [`docs/v7/testing-architecture.md`](docs/v7/testing-architecture.md).
 
 ## Project layout
 

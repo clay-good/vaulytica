@@ -342,3 +342,54 @@ not indexed surfaces as an honest N/A. The residential-deposit overlays
 gate to the residential lease playbook only; the commercial-lease
 playbook is excluded, so a residential deposit-cap statute is never
 mis-applied to a commercial lease.
+
+## v7 additions — proof surface
+
+v7 deepens extraction and adds many test artifacts. Both the determinism
+and the privacy claims must hold *unweakened*, and the new test
+machinery must not become a new exfiltration or trust surface.
+
+### Deepened extraction does not silently change output
+
+Every extractor change in v7 is **additive and fixture-gated**. New
+record fields (`fiscal_period`, `range_max`, `per_unit`, `aliases`,
+`dba`, `nested_triggers`, `obligor_exclusion`, `reference`, `scope`,
+`circular_terms`, `sub_ref`, `fallback_jurisdiction`) are optional, and
+the extracted-data stream is **not part of `result_hash`** — only a rule
+that reads a new signal can change a finding. The single intentional
+behavior change (the prohibitive/permissive modal signal) shipped with a
+line-reviewed golden re-baseline touching only OBLI-005; nothing was
+silently absorbed. New cross-document rules fire only in bundle mode, so
+single-document `result_hash` is byte-unchanged.
+
+### Test artifacts stay in the repo / the tab
+
+Property generators (`fast-check`), the parity harness, and the Node
+accuracy pipeline are **build-and-CI-only** — never imported by `src/`,
+so none ship in the browser bundle. The existing import-direction guard
+(`tests/integration/accuracy-corpus-guard.test.ts`) enforces that `src/`
+never imports `tools/accuracy` or the corpus; the parity test lives in
+`tools/` and imports `src/` (the allowed direction), so the shipped
+bundle is unaffected. `fast-check` generates inputs and Stryker (when it
+lands) mutates code, both at build time — neither introduces a
+probabilistic component into the shipped path. The engine remains a pure
+synchronous function.
+
+### Report provenance and the executive summary leak nothing new
+
+The JSON `provenance` block stamps version strings (DKB, engine,
+rule-taxonomy) already implied by the run; the portfolio
+`executive_summary` is pure aggregation over per-document findings the
+report already contains. Both live outside every `result_hash` and
+bundle fingerprint, and neither emits document content that was not
+already in the report. The `.ics` verify-manually events surface
+unresolved deadlines (with their source section) that were previously
+dropped — strictly *more* of the user's own document, never anything
+external.
+
+### Responsiveness gate is an observation, not a surface
+
+The responsiveness Playwright spec only measures `scrollWidth` against
+`clientWidth` at fixed viewports against the already-deployed site; it
+introduces no new input channel and no network egress beyond the
+same-origin page load the other e2e specs already make.
