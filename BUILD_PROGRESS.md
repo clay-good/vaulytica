@@ -25,6 +25,14 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### Close the last ingest coverage gap — OCR orchestration tests + README count fix (2026-06-05) — ✅ complete
+
+Follows the "make the path verifiable" thread from the pdfjs work. `ocr.ts` (the scanned-PDF OCR fallback) was the **last** ingest entrypoint with zero unit coverage. Its real engine — tesseract.js (WASM + a downloaded `eng` model) plus canvas rasterization — can't run headless, but the **orchestration logic we wrote** can be covered with mocks.
+
+- **`src/ingest/ocr.test.ts` (+6).** `vi.mock("tesseract.js")` supplies a fake worker; a `FakeOffscreenCanvas` stub (via `vi.stubGlobal`) lets `makeCanvas`→`getContext` proceed without a real rasterizer (we never read pixels — `recognize` is mocked). Covers both `ocrCanvas` and `runOcr`: the per-page loop and `getPage(n)` ordering, the **`\n\n` page-separator contract** that downstream paragraph detection relies on, progress-callback cadence (`n/total`, once per page), the default `eng` language, and — the load-bearing assertion — that the worker is **always `terminate()`d, even when recognition throws** (no engine leak). **Explicitly not covered:** OCR *accuracy* and tesseract-v7 API fidelity — those need a real device with a scanned PDF (the same gate that holds the tesseract 5→7 bump). This pins our code's contract, not the engine's behavior.
+- **README accuracy fix.** The headline + build-section test counts were stale at **2,486**; corrected to **2,495** (the +3 PDF tests from last commit and +6 OCR tests here). Every other headline stat re-checked against live code (1,062 rules, 16 sub-domains, 35 overlays, v6.0.0) — all current.
+- **Verification.** lint (0) + typecheck + **2495 tests** (+6) + build green; clean. No `src/` behavior change (test-only + doc) → no `result_hash`/golden churn, no responsiveness impact.
+
 ### Dependency-modernization arc — close-out + the one held major (2026-06-05) — ✅ complete (4 of 5 majors)
 
 Consolidates the multi-commit modernization pass and records the deliberate stopping point. All four **safely-verifiable** major bumps are done and green on main:

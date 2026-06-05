@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- **OCR orchestration tests** (`src/ingest/ocr.test.ts`, +6). `ocr.ts` was the
+  last ingest entrypoint with no coverage. The real engine (tesseract.js WASM +
+  a downloaded language model) and canvas rasterization can't run headless, so
+  they're mocked — this does **not** verify OCR accuracy (that needs a real
+  device), but it pins the logic we own: the per-page loop, the `\n\n`
+  page-separator contract downstream paragraph detection depends on, the
+  progress callback cadence, and that the worker is always `terminate()`d —
+  even when recognition throws — so the engine never leaks. Every ingest
+  entrypoint now has a unit test.
 - **PDF text-extraction regression tests** (`src/ingest/pdf.test.ts`). The
   `ingestPdfBuffer` → pdfjs path — the primary ingest route — had **zero**
   automated coverage: the suite stayed green regardless of whether pdfjs parsed
