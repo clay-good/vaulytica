@@ -217,7 +217,7 @@ const customRuleSchema = z
     if (rule.assert.kind === "clause_present" || rule.assert.kind === "clause_absent") {
       if (rule.assert.pattern === undefined && rule.assert.section_heading === undefined) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: "custom",
           message: "a clause_present/clause_absent predicate needs `pattern` or `section_heading`",
           path: ["assert"],
         });
@@ -262,7 +262,7 @@ export const CustomPlaybookSchema = z
       (pb.required_clauses === undefined || pb.required_clauses.length === 0)
     ) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: "custom",
         message:
           "a replace-mode playbook must define at least one custom_rule or required_clause, otherwise it checks nothing",
         path: ["mode"],
@@ -274,7 +274,7 @@ export const CustomPlaybookSchema = z
       pb.custom_rules.forEach((r, i) => {
         if (seen.has(r.id)) {
           ctx.addIssue({
-            code: z.ZodIssueCode.custom,
+            code: "custom",
             message: `duplicate custom_rule id "${r.id}"`,
             path: ["custom_rules", i, "id"],
           });

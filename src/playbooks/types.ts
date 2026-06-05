@@ -151,7 +151,7 @@ export const PlaybookSchema = z.object({
   // active playbook.
   if (val.superseded_by !== undefined && val.deprecated !== true) {
     ctx.addIssue({
-      code: z.ZodIssueCode.custom,
+      code: "custom",
       message: "`superseded_by` requires `deprecated: true`",
       path: ["superseded_by"],
     });

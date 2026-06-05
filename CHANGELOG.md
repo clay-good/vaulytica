@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Changed
+- **Major dependency modernization: zod 3 → 4** (`^3.23.4 → ^4.4.3`). The
+  validation library underpinning every DKB / playbook / accuracy / custom-rule
+  schema is now on the current major (zod 3 will eventually lose maintenance).
+  The bare `"zod"` import resolves to zod 4's recommended **classic** API, which
+  retains `.url()` / `.strict()` / `.finite()` / `.nonnegative()` (none flagged
+  `@deprecated`) and the two-arg `z.record(key, value)` form the codebase
+  already used — so the **only** code change was the one API zod 4 removed:
+  `z.ZodIssueCode.custom` → the string literal `"custom"` (4 `superRefine`
+  sites, the form the zod 4 migration guide recommends; fully covered by the
+  custom-playbook validation tests). All 2486 tests, typecheck, and build pass.
+  **Honest cost:** zod 4 classic is *larger* than zod 3, not smaller — the
+  `vendor-zod` chunk grew 12.98 → 19.39 KB gzipped (+6.4 KB). The smaller-core
+  benefit only comes from `zod/mini`'s functional API, which would mean
+  rewriting every schema (out of scope). The increase is well within the bundle
+  budget (total ~705 KB gzipped vs the 1065 KB ceiling) and `vendor-zod` is a
+  non-eager chunk, so first-paint (the eager `main` entry) is unaffected.
+  0 vulnerabilities. (Other deferred majors unchanged: eslint 9→10, typescript
+  5.9→6.0, pdfjs-dist 4→6, tesseract.js 5→7.)
 - **Dependency hygiene pass.** `@types/node` `^20 → ^22` to match the Node 22
   runtime baseline (the *supported floor*, not the newer `^25`, so the types
   never permit an API the CI runtime lacks). Refreshed every in-range
