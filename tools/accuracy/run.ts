@@ -77,7 +77,6 @@ async function main(): Promise<void> {
   const { markdown, json } = await runAccuracy();
   await writeFile(join(OUT_DIR, "SCOREBOARD.md"), markdown + "\n");
   await writeFile(join(OUT_DIR, "scoreboard.json"), json + "\n");
-  // eslint-disable-next-line no-console
   console.log("Wrote tools/accuracy/SCOREBOARD.md and scoreboard.json");
 }
 
@@ -85,7 +84,6 @@ async function main(): Promise<void> {
 const invokedDirectly = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
 if (invokedDirectly) {
   main().catch((err) => {
-    // eslint-disable-next-line no-console
     console.error(err);
     process.exit(1);
   });

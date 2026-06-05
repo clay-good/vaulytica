@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Changed
+- **Linting: migrated ESLint 8 (EOL) → ESLint 9 flat config.** ESLint 8 reached
+  end-of-life in October 2024 and its legacy `.eslintrc` system pulled the
+  deprecated `inflight`, `rimraf@3`, and `@humanwhocodes/config-array` /
+  `object-schema` transitive packages (the `npm install` deprecation warnings).
+  `.eslintrc.cjs` → `eslint.config.js` (flat config); `eslint@^8 → ^9.39`;
+  the separate `@typescript-eslint/{parser,eslint-plugin}@^7` → the unified
+  `typescript-eslint@^8.60` meta-package; `eslint-config-prettier@^9 → ^10`
+  (using its `/flat` export); added `@eslint/js@^9` and `globals@^16`. The
+  config is **behavior-preserving** — same ignores, same browser+node globals
+  (the old `env` block), same two rule overrides (`no-unused-vars` warn with
+  `^_` ignore, `no-explicit-any` warn). typescript-eslint v8's recommended set
+  surfaced **0 new errors**. ESLint 9's default `reportUnusedDisableDirectives`
+  flagged 5 dead `// eslint-disable-next-line no-console` comments (the
+  `no-console` rule was never enabled) in tools/tests that legitimately log;
+  removed. A fresh `npm install` now emits **zero** deprecation warnings, and
+  `npm ci` resolves cleanly. (ESLint 10 exists but typescript-eslint's mature
+  support targets v9; revisit once the v10 ecosystem settles.)
 - **CI: migrated every GitHub-published action off the deprecated Node 20
   runtime.** GitHub is forcing Node 20 actions to Node 24 by 2026-06-16; all
   five workflows now pin the current Node-24 majors —

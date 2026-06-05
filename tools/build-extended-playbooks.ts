@@ -61,7 +61,6 @@ export function renderManifest(playbooks: Array<Record<string, unknown>>): strin
 function main(): void {
   const playbooks = collectExtendedPlaybooks();
   writeFileSync(EXTENDED_MANIFEST_PATH, renderManifest(playbooks), "utf8");
-  // eslint-disable-next-line no-console
   console.log(`wrote ${playbooks.length} playbooks → ${EXTENDED_MANIFEST_PATH}`);
 }
 

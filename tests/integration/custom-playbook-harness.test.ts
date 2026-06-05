@@ -158,7 +158,6 @@ describe("custom-playbook end-to-end harness over the fixture corpus", () => {
       `Totals: ${totalFindings} findings, ${totalUneval} unevaluable, ` +
         `${govLawFindings} governing-law violations, ${uncitedFindings} uncited findings, across ${rows.length} fixtures.`,
     );
-    // eslint-disable-next-line no-console
     console.log(lines.join("\n"));
 
     // ---- aggregate invariants ---------------------------------------------

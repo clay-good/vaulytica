@@ -116,7 +116,6 @@ describe("v4 sub-domain classifier — top-1 accuracy (Step 99)", () => {
     const wrong = rows.filter((r) => r.predicted !== r.expected);
     // Diagnostic — printed only when the suite runs with reporter output.
     if (wrong.length > 0) {
-      // eslint-disable-next-line no-console
       console.log(
         `top-1 ${correct}/${rows.length} = ${((100 * correct) / rows.length).toFixed(1)}%; misses:\n` +
           wrong
