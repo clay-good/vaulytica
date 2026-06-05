@@ -30,6 +30,19 @@ All notable changes to this project will be documented in this file. Format adap
   status line to spec-v3.md (shipped 3.0.0), which had none. Doc-only.
 
 ### Changed
+- **README — performance / first-paint load-path section.** Added a
+  "Performance — the first-paint path is tiny on purpose" section quantifying
+  what the README previously only asserted (a whole engine that "runs entirely
+  in your browser"). Documents the eager first-paint set (≈29 KB gz: the
+  self-contained `index.html`+inline-CSS plus the `main`+runtime entry — **zero**
+  vendor chunks, verified against the built `dist/index.html` preload set) versus
+  the lazy chunks loaded per interaction (pipeline/engine + format-specific parser
+  on file drop; report + `vendor-docx` on export; tesseract only on a scanned
+  PDF), the `modulePreload`-filtering design decision that keeps pdfjs off the
+  critical render path, and the Lighthouse CI budget (FCP ≤ 1.8 s, TTI ≤ 2.0 s,
+  perf ≥ 0.85, a11y ≥ 0.95) that fails the build on regression. All numbers taken
+  from the live `vite build` output and `lighthouserc.json`. Doc-only; no `src/`,
+  `result_hash`, or responsiveness impact.
 - **README — cross-document consistency cheat sheet.** The headline "1,062
   rules" and the rule cheat-sheet count only *single-document* rules; the engine
   also runs **17 cross-document consistency rules** (`CROSS-*` + `CC-*`) on

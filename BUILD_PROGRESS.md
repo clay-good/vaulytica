@@ -25,6 +25,15 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](docs/spec.md) 
 
 ## Post-1.0 work
 
+### README — quantify the first-paint / load-path performance story (2026-06-05) — ✅ complete
+
+A README-depth pass (the recurring "make the README detailed — system designs, design decisions, no filler" ask). The README documented determinism, privacy, the rule catalog, and the ingest path thoroughly but **never quantified the bundle/load story** — central to a tool that ships its whole engine to the browser. Added a **"Performance — the first-paint path is tiny on purpose"** section: a mermaid of the three lazy-load triggers (first paint → file drop → export), a per-chunk table (what loads when + why it's deferred), the `modulePreload`-filtering design decision, and the Lighthouse CI budget that enforces it.
+
+- **Every number is measured, not asserted.** The eager first-paint set is exactly `main` + `rolldown-runtime` (≈12.3 KB gz) plus the self-contained `index.html`+inline-CSS (17.1 KB gz) — confirmed by grepping the **built** `dist/index.html` `modulepreload` set (zero vendor chunks leak). Lazy chunks (pipeline 265, vendor-pdfjs 146, vendor-mammoth 126, report+docx 149, zod+decimal 32, tesseract+ocr 8 — all gz) taken straight from the `vite build` output. The CI-budget table (FCP ≤ 1.8 s, TTI ≤ 2.0 s, perf ≥ 0.85, a11y ≥ 0.95, …) is transcribed from [`lighthouserc.json`](lighthouserc.json).
+- **Why it's the right addition.** It is the one piece of the architecture the README asserted ("runs entirely in your browser") without showing the engineering that makes it fast on a throttled phone — the `import("./pipeline")` deferral + the preload-filter that keeps pdfjs off the FCP path. Pure documentation: no `src/` touched, no `result_hash`/golden/responsiveness impact.
+- **Housekeeping.** Spec-driven build work (v1–v6) is complete; v5's remaining steps are human-gated (real corpus, attorney annotation/review) and v6's Step 98 is deferred behind it, so this pass is README/docs only. Full gate re-confirmed green; the docs link-integrity guard passes with the two new in-repo links (`lighthouserc.json`, `vite.config.ts`).
+- **Verification gate green:** lint (0) + typecheck (0) + **2502 tests** (+0; doc-only) + build. README headline stats re-verified against live code (1,062 rules, 16 sub-domains, 35 overlays, 2,502 tests, v6.0.0).
+
 ### Bundle per-doc multi-family activation — close the v6 noted follow-up (2026-06-05) — ✅ complete
 
 Closed the one explicitly-deferred piece of the v6 multi-family work. Since 2026-05-29 a **single** dropped document has been scanned with **every** family it clearly contains (a composite MSA-with-DPA-exhibit gets both rule sets), surfaced as an "Additional Checks From Other Detected Families" section. But that activation ran in `runReport` only — the **multi-document bundle path** (`prepareBundle`) scanned each document with its **primary** matched playbook alone. So the *same* composite document produced a richer report when dropped by itself than when dropped inside a deal folder. That inconsistency is now gone.

@@ -194,6 +194,54 @@ flowchart LR
 
 The `executed_at` timestamp is set to `""` before hashing, so the only things that move the hash are the inputs and the rule outcomes. The v6 surfaces follow the same discipline: the comparison hash is `SHA-256(base_hash + revised_hash + canonical(delta))`; the portfolio fingerprint extends the bundle fingerprint with the canonical matrix; model-clause references and jurisdiction overlays live **outside** the `EngineRun`, so adding them changed no existing `result_hash`. See [`docs/determinism.md`](docs/determinism.md).
 
+## Performance — the first-paint path is tiny on purpose
+
+A "runs-entirely-in-your-browser" tool ships its whole engine to the client. The trap is obvious: a 1,062-rule engine plus a PDF parser plus a DOCX writer is megabytes of JavaScript, and if it all loads up front the page is slow to paint on the exact phones the product promises to serve. Vaulytica avoids this by splitting the bundle along the **interaction** that needs each piece — nothing parser- or engine-related is on the critical render path. The page paints from ~17 KB gz of self-contained HTML+CSS; everything heavy waits for the file drop.
+
+```mermaid
+flowchart LR
+  subgraph FP["First paint · ~29 KB gz · preloaded"]
+    H[index.html + inline CSS<br/>17.1 KB gz] --> M[main entry + runtime<br/>12.3 KB gz]
+  end
+  M -. "import() on file drop" .-> DROP
+  subgraph DROP["On file drop · lazy"]
+    P[pipeline · 1,062 rules<br/>265 KB gz]
+    PDF[vendor-pdfjs · 146 KB gz<br/>PDF only]
+    DOCXIN[vendor-mammoth · 126 KB gz<br/>DOCX only]
+    Z[vendor-zod + decimal<br/>32 KB gz]
+  end
+  P -. "on export click" .-> EXP
+  subgraph EXP["On export · lazy"]
+    RPT[report + vendor-docx<br/>149 KB gz]
+  end
+  P -. "scanned PDF only" .-> OCR[vendor-tesseract · 8 KB gz]
+  style FP fill:#00A883,color:#fff
+```
+
+| Chunk | gz | Loads when | Why it's deferred |
+|---|---:|---|---|
+| `index.html` (inline CSS) | 17.1 KB | first paint | the page renders from this alone — no JS needed to see content |
+| `main` + `rolldown-runtime` | 12.3 KB | first paint (preloaded) | hydrates the drop zone; the *only* JS on the FCP path |
+| `pipeline` (1,062 rules + extract/classify/engine) | 265 KB | file drop | you don't need the engine until there's a document to run it on |
+| `vendor-pdfjs` | 146 KB | dropping a **PDF** | format-specific — a DOCX never loads it |
+| `vendor-mammoth` | 126 KB | dropping a **DOCX** | format-specific — a PDF never loads it |
+| `vendor-zod` + `vendor-decimal` | 32 KB | file drop | DKB validation + exact financial math, engine-only |
+| `report` + `vendor-docx` | 149 KB | clicking **export** | you don't need the Word writer until you ask for the report |
+| `vendor-tesseract` + `ocr` | 8 KB | a **scanned** (image-only) PDF | OCR fallback only; the ~8 MB language model is fetched lazily on top |
+
+**The design decision.** Vite's `modulePreload` set is filtered so the heavy parser vendors are dropped from the `<link rel="modulepreload">` list in the built HTML — without that filter, the entry's lazy `import("./pipeline")` would drag all of pdfjs onto the first-paint path through Vite's shared preload helper. The built `index.html` preloads exactly two chunks: the entry and the runtime. **Zero vendor chunks leak onto the critical path** — verified in the build output, not just intended. Each heavy dependency is also its own named chunk, so a bump to one (say `docx`) leaves the immutable, year-cached `pdfjs` and `tesseract` chunks untouched for returning users.
+
+**Enforced, not asserted.** CI runs Lighthouse on a throttled mobile profile (360 px, 4× CPU slowdown, ~1.6 Mbps) and **fails the build** below these floors, so the budget can't quietly regress:
+
+| Metric | Budget | Metric | Budget |
+|---|---|---|---|
+| First Contentful Paint | ≤ 1.8 s | Performance score | ≥ 0.85 |
+| Time to Interactive | ≤ 2.0 s | Accessibility score | ≥ 0.95 |
+| Largest Contentful Paint | ≤ 2.0 s | Total Blocking Time | ≤ 200 ms |
+| Cumulative Layout Shift | ≤ 0.1 | Best-practices / SEO | ≥ 0.90 |
+
+See [`lighthouserc.json`](lighthouserc.json) and [`vite.config.ts`](vite.config.ts).
+
 ## What I do not do
 
 - I do not give you legal advice. I am a software tool. If something here matters, hire a lawyer.
