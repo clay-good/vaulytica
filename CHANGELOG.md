@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Changed
+- **Dependency hygiene pass.** `@types/node` `^20 → ^22` to match the Node 22
+  runtime baseline (the *supported floor*, not the newer `^25`, so the types
+  never permit an API the CI runtime lacks). Refreshed every in-range
+  patch/minor to current: `docx` 9.6.1→9.7.1, `vite` 8.0.13→8.0.16, `vitest`
+  4.1.6→4.1.8, `tsx` 4.21.0→4.22.4, `happy-dom` 20.9.0→20.10.1, `js-yaml`
+  4.1.1→4.2.0. `npm audit` reports **0 vulnerabilities**; the full gate
+  (lint + typecheck + 2486 tests + build) and a clean `npm ci` stay green —
+  notably the `docx` minor did not perturb any report test (the DOCX tests
+  assert structure/content, not bytes). **Deferred majors** (each a real
+  breaking-change migration, left for a deliberate individual pass): `eslint`
+  9→10 / `globals` 16→17 (the ecosystem still settling on v9), `typescript`
+  5.9→6.0, `zod` 3→4, `pdfjs-dist` 4→6, `tesseract.js` 5→7.
 - **Linting: migrated ESLint 8 (EOL) → ESLint 9 flat config.** ESLint 8 reached
   end-of-life in October 2024 and its legacy `.eslintrc` system pulled the
   deprecated `inflight`, `rimraf@3`, and `@humanwhocodes/config-array` /

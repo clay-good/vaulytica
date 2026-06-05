@@ -25,6 +25,16 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### Dependency hygiene — align @types/node to the runtime, refresh in-range deps, document deferred majors (2026-06-04) — ✅ complete
+
+A maintenance pass closing the loop on the Node 22 / ESLint 9 work: bring the dependency tree current where it is safe to, and honestly enumerate the major bumps that are *not* safe to do blind.
+
+- **`@types/node` `^20 → ^22`.** The runtime baseline moved to Node 22 two commits ago, but the type definitions still described Node 20. Pinned to `^22` — the **supported floor**, deliberately not the newer `^25` (latest), so the editor/`tsc` never offer a Node API that the CI runtime (Node 22) lacks. `npm run typecheck` clean.
+- **In-range refresh.** `npm update` on the deps whose latest sits inside the existing `^` range — `docx` 9.6.1→9.7.1, `vite` 8.0.13→8.0.16, `vitest` 4.1.6→4.1.8, `tsx` 4.21.0→4.22.4, `happy-dom` 20.9.0→20.10.1, `js-yaml` 4.1.1→4.2.0 — refreshing `package-lock.json` (what `npm ci` installs) without changing the declared ranges. The `docx` minor was the one to watch (it generates the citable Word report); the report tests assert **structure/content, not bytes**, so they passed unchanged.
+- **Security.** `npm audit` → **0 vulnerabilities**, before and after.
+- **Deferred majors (documented, not done).** Each is a genuine breaking-change migration that must be its own reviewed pass, never a blind bump in a "stay green" turn: `eslint` 9→10 + `globals` 16→17 (intentionally on the mature typescript-eslint-v8-aligned v9), `typescript` 5.9→**6.0** (just released), `zod` 3→**4** (breaking schema API, used by ~every DKB/playbook/accuracy schema), `pdfjs-dist` 4→**6** and `tesseract.js` 5→**7** (runtime parser/OCR engines with major API changes). `@types/node` shows `22→25` in `npm outdated` but staying at 22 is correct (match the runtime floor).
+- **Verification.** Full gate green (lint 0 problems + typecheck + 2486 tests + build) and a clean `npm ci` (0 vulnerabilities). No `src/`/UI change, so no responsiveness or `result_hash` impact.
+
 ### Toolchain housekeeping — ESLint 8 (EOL) → ESLint 9 flat config; clear all npm deprecation warnings (2026-06-04) — ✅ complete
 
 Continues the "remove EOL/deprecated tooling" thread from the Node 20 → 22 bump. ESLint 8 reached end-of-life in October 2024, and its legacy `.eslintrc` system was the root of the `npm install` deprecation noise (`inflight`, `rimraf@3`, `@humanwhocodes/config-array` + `object-schema` are all transitive deps of the old eslintrc/file-entry-cache stack, dropped in ESLint 9's flat-config core).
