@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- **Documentation link-integrity guard** (`tests/integration/docs-links.test.ts`).
+  Walks every authored `.md` file and fails if any relative link doesn't
+  resolve to an existing file — turning the prior one-off 29-link fix into a
+  permanent CI gate so stale references can't creep back. Strips fenced/inline
+  code first so *illustrative* link syntax in examples isn't flagged;
+  leading-slash links resolve from the repo root (as GitHub renders them).
+  Verified to fire (a broken link injected into a doc fails the test).
 - **OCR orchestration tests** (`src/ingest/ocr.test.ts`, +6). `ocr.ts` was the
   last ingest entrypoint with no coverage. The real engine (tesseract.js WASM +
   a downloaded language model) and canvas rasterization can't run headless, so

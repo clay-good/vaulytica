@@ -25,6 +25,15 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](docs/spec.md) 
 
 ## Post-1.0 work
 
+### Make the doc-link fix permanent — a link-integrity CI guard (2026-06-05) — ✅ complete
+
+Last commit fixed 29 broken markdown links by hand; this one stops them from coming back. The "make it verifiable" discipline applied to docs: a one-off fix without a guard regresses, so the audit becomes a test.
+
+- **`tests/integration/docs-links.test.ts`** (+1) walks every authored `.md` (build/vendor dirs excluded), extracts each relative `[text](path)` link, resolves it against the file's own directory (leading-slash links resolve from the repo root, the way GitHub renders them), and fails listing any that don't exist.
+- **Robustness — strips code first.** Fenced blocks and inline-code spans routinely show *illustrative* link syntax (the audit entry itself contains `` `[text](path)` `` as an example); the guard removes code before extracting links so examples aren't mistaken for real links. It also strips link titles (`path "title"`) and `<...>` destinations, and skips external (`http`/`mailto`/`tel`) and pure `#anchor` links. This exactly reproduces the verified-clean 0-broken state.
+- **Verified to fire, not inert.** Injecting `[x](docs/this-file-does-not-exist.md)` into a doc makes the test fail with the offending link named; reverting restores green — same prove-the-guard discipline used for the `no-console` rule.
+- **Verification.** lint (0) + typecheck + **2496 tests** (+1) + build green. README test count bumped 2,495 → 2,496. Test-only + doc → no `src/`/`result_hash`/responsiveness impact.
+
 ### Doc-integrity sweep — fix 29 broken internal links across the markdown (2026-06-05) — ✅ complete
 
 Continuing the docs-accuracy audit. A scan of all **64** tracked markdown files (extract every `[text](path)` relative link, resolve against the file's directory, check existence) found **29 broken links** — almost all from the **spec files having moved to `docs/`** at some point, leaving stale references behind.
