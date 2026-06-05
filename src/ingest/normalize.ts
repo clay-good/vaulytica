@@ -67,9 +67,16 @@ export function normalize(tree: DocumentTree): DocumentTree {
 
   const normalizeSection = (s: Section, path: number[]): Section => {
     const id = makeSectionId(path);
-    if (s.heading) {
+    // Collapse heading whitespace the same way run text is collapsed, so the
+    // offset stream (and therefore every finding offset and the result_hash)
+    // never depends on non-semantic whitespace in a heading. Without this, two
+    // documents identical except for extra spaces/tabs in a heading produce
+    // different result_hashes — a determinism leak the metamorphic suite caught
+    // (spec-v7 Step 119). Clean single-spaced headings are unchanged (no churn).
+    const heading = s.heading.replace(/[ \t\r\n]+/g, " ").trim();
+    if (heading) {
       // The heading text itself takes up its own offset span plus a newline.
-      cursor += s.heading.length + 1;
+      cursor += heading.length + 1;
     }
     const paragraphs: Paragraph[] = [];
     let pIdx = 0;
@@ -83,7 +90,7 @@ export function normalize(tree: DocumentTree): DocumentTree {
     const children: Section[] = s.children.map((c, i) => normalizeSection(c, [...path, i + 1]));
     return {
       id,
-      heading: s.heading,
+      heading,
       level: s.level,
       paragraphs,
       children,

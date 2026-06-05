@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- **Metamorphic invariant testing (spec-v7 Step 119).** Added a suite
+  (`tests/integration/metamorphic.test.ts`, +3 tests) asserting that a document
+  and a copy with non-semantic whitespace noise produce the same `result_hash`
+  and finding set, and that inserting a whitespace-only paragraph changes nothing.
+  Tests what the engine *means*, not just that it is deterministic.
+
+### Fixed
+- **Determinism leak: heading whitespace bled into the result_hash.** The
+  metamorphic suite caught it immediately — `normalize` collapsed whitespace in
+  run text but stored section headings verbatim and advanced the offset cursor by
+  the raw heading length, so two documents identical except for extra spaces/tabs
+  in a heading produced different `result_hash`es. Fixed in `src/ingest/normalize.ts`
+  by collapsing heading whitespace the same way run text is collapsed. **Zero golden
+  churn** (real headings are clean single-spaced, so the collapse is a no-op for
+  them; all 26 golden hashes unchanged) — the fix strictly adds whitespace-invariance.
+
+### Added
 - **Property-based testing (spec-v7 Step 118).** Added `fast-check` + a property
   suite (`tests/integration/property-based.test.ts`, +5 properties) over generated
   `DocumentTree`s — a new test *kind* that proves invariants over inputs no author

@@ -25,6 +25,16 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](docs/spec.md) 
 
 ## Post-1.0 work
 
+### spec-v7 Step 119 — metamorphic invariants (caught + fixed a determinism leak) (2026-06-05) — ✅ complete
+
+Next spec-v7 increment (Thrust B / Part XI) — and the highest-value one so far, because it found a real bug on day one. Metamorphic testing proves not "same input → same hash" (the determinism guard already does that) but *which transformations of the input must NOT change the output* — the relations that encode what the engine **means**.
+
+- **The suite** ([`tests/integration/metamorphic.test.ts`](tests/integration/metamorphic.test.ts), +3 tests). Over rule-firing documents (placeholders, uncapped liability, a phantom cross-ref, auto-renewal — a non-empty finding set, guarded by a third test so the invariance can't pass vacuously): (1) **collapsible-whitespace noise** — replacing every space with `"  \t "` (which `normalize` folds back to a single space) must leave the `result_hash` and the finding set byte-identical; (2) **whitespace-only-paragraph insertion** — a paragraph that normalizes to zero runs is dropped before it can advance the offset cursor, so it must change nothing.
+- **The bug it caught.** Relation (1) failed: the same rules fired with identical excerpt *text* but offsets shifted by exactly the extra heading length. Root cause in [`src/ingest/normalize.ts`](src/ingest/normalize.ts): `normalize` collapsed whitespace in **run text but not in section headings** — it stored the heading verbatim and advanced the offset cursor by the *raw* `heading.length`. So two documents identical except for whitespace in a heading produced **different `result_hash`es** — a determinism leak in the load-bearing claim. Fixed by collapsing the heading's whitespace (`[ \t\r\n]+` → `" "`, trimmed) before it touches the cursor or is stored.
+- **Zero golden churn.** Real fixtures have clean single-spaced headings, so the collapse is a no-op for them — confirmed: all **26 golden `result_hash`es are byte-unchanged**, the determinism guard (5×/fixture) still passes, and the normalize-idempotence property still holds. The fix strictly *adds* whitespace-invariance; it changes output only for malformed-whitespace headings (which no committed hash covers), so no `result_hash`/golden regen and no ENGINE_VERSION bump.
+- **No UI/CSS change → responsiveness unaffected.** One surgical `src/` fix (normalize headings) + 3 tests + docs. Tests 2512 → **2515**; README counts + proof section, spec-v7 status + build-plan row 119 updated.
+- **Verification gate green:** lint (0) + typecheck (0) + **`npm run coverage`** (2515 tests + floor enforced, exit 0) + build (exit 0); golden-output + determinism-guard + property suites all pass; docs link-integrity guard passes.
+
 ### spec-v7 Step 118 — property-based testing (2026-06-05) — ✅ complete
 
 Next spec-v7 increment (Thrust B / Part X) — a genuinely new test *kind*. Every other test is example-based (it proves the inputs the author wrote down); these prove invariants over inputs **no author wrote down**, targeting the foundational layers everything downstream reads.
