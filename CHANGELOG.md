@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- **Schema fuzz + round-trip for the DKB (spec-v7 Step 121).** Added
+  `src/dkb/schema-fuzz.test.ts` (+29 tests): every DKB artifact round-trips
+  through `parse → serialize → parse`, the wrong top-level type is rejected, and
+  a battery of single-field mutations (bad enum, missing-required, out-of-range,
+  malformed URL/hash/ISO-datetime) is each rejected — testing that the schemas do
+  their real job of *refusing* corruption, not just accepting valid input.
+- **Per-rule completeness gate, measure-first (spec-v7 Step 117).** Added
+  `tests/integration/rule-completeness.test.ts` (+2 tests): aggregates execution
+  logs across the golden corpus to assert every always-on launch rule runs
+  (112/112), and enforces a regression-only floor on how many launch rules are
+  seen both to fire and to stay silent (measured 63/111/62 of 112; floors
+  60/108/59). 49 launch rules have no positive case in the corpus yet — a now-
+  visible gap and the ratchet's next target. Test-only; no `src/`/`result_hash`
+  impact.
 - **Metamorphic invariant testing (spec-v7 Step 119).** Added a suite
   (`tests/integration/metamorphic.test.ts`, +3 tests) asserting that a document
   and a copy with non-semantic whitespace noise produce the same `result_hash`
