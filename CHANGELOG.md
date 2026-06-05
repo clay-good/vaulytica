@@ -33,6 +33,14 @@ All notable changes to this project will be documented in this file. Format adap
   testable headless.
 
 ### Changed
+- **README — "What you can drop in" ingest cheat sheet.** A new section + table
+  documents how each input is handled (digital PDF → pdf.js text extraction;
+  scanned PDF → lazy OCR fallback; DOCX → mammoth; pasted text; folder/`.zip` →
+  bundle mode with cross-document consistency), the deterministic source hash,
+  and the in-tab privacy posture — closing the "can I use this on *my*
+  documents?" gap the prior one-box flowchart left. Verified against the live
+  ingest code (`allowOcr: true` is wired in `pipeline.ts`; `.zip` unpacks via
+  fflate). Doc-only.
 - **Major dependency modernization: pdfjs-dist 4 → 6** (`^4.2.67 → ^6.0.227`,
   GA, skipping 5). Verified against the new text-extraction tests: pdfjs 6
   still ships the `legacy/build/pdf.mjs` entry we import, and extraction is
