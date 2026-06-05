@@ -25,6 +25,18 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### Major dependency modernization — ESLint 9 → 10 (+ @eslint/js 10, globals 17) (2026-06-05) — ✅ complete
+
+The third deferred major. Lowest-risk of those remaining — the ESLint 9 flat config from two commits ago carries over verbatim, and only `npm run lint` is affected. Picked ahead of the pdfjs/tesseract parser bumps (worker/wasm runtime risk best validated on a real device).
+
+- **No config change.** [`eslint.config.js`](eslint.config.js) is unchanged: `js.configs.recommended` + `tseslint.configs.recommended` + the two rule overrides + `prettier` flat. `eslint ^9.39 → ^10.4.1`, `@eslint/js ^9 → ^10.0.1`, `globals ^16 → ^17.6.0`. typescript-eslint@8.60 declares `eslint ^8.57 || ^9 || ^10`, so 10.4 is in range — lint runs with no unsupported-version warning; `eslint-config-prettier` peers `>=7`.
+- **Two new recommended rules → 5 findings, all fixed (not disabled).** ESLint 10 adds `no-useless-assignment` and `preserve-caught-error` to `js.configs.recommended`:
+  - `no-useless-assignment` (3): [`src/engine/runner.ts`](src/engine/runner.ts), [`src/engine/consistency/runner.ts`](src/engine/consistency/runner.ts), and [`tools/accuracy/pipeline.ts`](tools/accuracy/pipeline.ts) each had a `let x = <default>` whose initializer is dead because both the following `try` and `catch` assign `x`. Dropped the initializer — TS (6.0) correctly treats the variable as definitely-assigned after a try/catch where both branches assign, and the catch still supplies the on-error default. **Behavior-preserving** (the initializer value was never read), so no `result_hash` / golden change — confirmed by the determinism + golden suites passing.
+  - `preserve-caught-error` (2): [`tests/golden/v3/_pipeline.ts`](tests/golden/v3/_pipeline.ts) + [`tests/golden/v4/_pipeline.ts`](tests/golden/v4/_pipeline.ts) re-threw a schema-validation failure with the original error's *message* interpolated but no `cause`. Now pass `{ cause: e }`, preserving the error chain for a failing-playbook diagnostic (a test-helper-only path; passing runs never throw here).
+- **Node floor.** ESLint 10 requires Node `^20.19 || ^22.13 || >=24`. CI's `node-version: 22` installs the latest 22.x (22.22.x ≥ 22.13) and `.nvmrc`/`nvm use` resolves the same, so the lint step satisfies it. The app's declared `engines` stays `>=22` — that field is the *app's* runtime floor (the engine runs in the browser; Node is build/dev only), and ESLint 10's stricter dev-tooling need is met by the pinned 22.x, not by over-constraining the package's runtime claim.
+- **Verification.** lint (0 problems) + typecheck + 2486 tests + build green; clean `npm ci`, 0 vulnerabilities; lint re-verified after a fresh install. No UI/CSS touch → responsiveness unaffected.
+- **Deferred majors remaining:** `pdfjs-dist` 4→6, `tesseract.js` 5→7 — the two runtime parser/OCR engines, each carrying worker/wasm integration risk that headless CI can exercise at the unit/integration level but not at real-device render fidelity.
+
 ### Major dependency modernization — TypeScript 5.9 → 6.0 (2026-06-05) — ✅ complete
 
 The second deferred major, chosen over pdfjs 6 / tesseract 7 (runtime parser/OCR with worker-integration risk that can't be fully validated headless) and eslint 10 (marginal right after last turn's eslint 9). TS 6.0 is the most contained of the remaining majors: a single devDep, verified binary-style by `tsc --noEmit`, with no runtime, bundle, or worker surface.

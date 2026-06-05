@@ -59,7 +59,9 @@ export async function loadAccuracyDeps(): Promise<AccuracyDeps> {
     const text = await readFile(join(PLAYBOOK_DIR, `${id}.json`), "utf8");
     launchPlaybooks.push(parsePlaybook(JSON.parse(text)));
   }
-  let extendedPlaybooks: Playbook[] = [];
+  // Both branches assign, so no initializer is needed (ESLint 10
+  // `no-useless-assignment`); the catch supplies the empty-on-missing default.
+  let extendedPlaybooks: Playbook[];
   try {
     const ext = JSON.parse(await readFile(join(PLAYBOOK_DIR, "extended.json"), "utf8"));
     extendedPlaybooks = (ext as unknown[]).map((p) => parsePlaybook(p));

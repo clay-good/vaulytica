@@ -84,7 +84,10 @@ export async function runEngine(input: RunEngineInput): Promise<EngineRun> {
       continue;
     }
     const started = nowMs();
-    let finding: Finding | null = null;
+    // Both branches below assign, so the variable is definitely assigned after
+    // the try/catch; an initial `= null` would be dead (ESLint 10
+    // `no-useless-assignment`).
+    let finding: Finding | null;
     try {
       finding = rule.check(input.ctx);
     } catch {

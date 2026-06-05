@@ -76,7 +76,10 @@ export async function runConsistency(
       continue;
     }
     const started = nowMs();
-    let out: ConsistencyFinding[] = [];
+    // Declared without an initializer: both the try and catch assign it, so the
+    // variable is definitely assigned afterward and an initial `= []` would be
+    // dead (ESLint 10 `no-useless-assignment`).
+    let out: ConsistencyFinding[];
     try {
       out = rule.check(ctx) ?? [];
     } catch {

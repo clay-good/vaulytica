@@ -68,6 +68,7 @@ export async function loadAllPlaybooks(): Promise<Playbook[]> {
       } catch (e) {
         throw new Error(
           `playbook ${name} (under ${dir}) failed PlaybookSchema validation: ${e instanceof Error ? e.message : String(e)}`,
+          { cause: e },
         );
       }
     }

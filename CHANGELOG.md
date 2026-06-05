@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Changed
+- **Major dependency modernization: ESLint 9 → 10** (`eslint ^9.39 → ^10.4`,
+  `@eslint/js ^9 → ^10`, `globals ^16 → ^17`). The flat config carries over
+  unchanged. ESLint 10 promotes two rules into `js.configs.recommended` that
+  surfaced 5 genuine findings, all **fixed** (not disabled): `no-useless-
+  assignment` flagged dead default-initializers that both the `try` and `catch`
+  always overwrite (in the two engine runners + the accuracy pipeline loader) —
+  removed, since the variable is definitely-assigned after the try/catch and the
+  initializer was never read (behavior-preserving, no `result_hash` change);
+  `preserve-caught-error` flagged two golden test-helper re-throws that dropped
+  the original error — now attach `{ cause: e }`, improving the error chain when
+  a playbook fails schema validation. ESLint 10 requires Node `^20.19 ||
+  ^22.13 || >=24`, satisfied by CI's `node-version: 22` (installs the latest
+  22.x) and `.nvmrc`. typescript-eslint@8.60 (peer `eslint ^10`) emits no
+  unsupported-version warning. Gate green (lint 0 problems + typecheck + 2486
+  tests + build), clean `npm ci`, 0 vulnerabilities. (Remaining deferred
+  majors: pdfjs-dist 4→6, tesseract.js 5→7.)
 - **Major dependency modernization: TypeScript 5.9 → 6.0** (`^5.4.5 → ^6.0.3`,
   GA). Zero code changes — `tsc --noEmit` passes clean. The codebase was
   already TS-6-ready: the tsconfig carries none of the long-deprecated options
