@@ -158,4 +158,4 @@ exported `CONSISTENCY_RULES` array.
   documents at once. Four is the user-facing UX limit.
 
 For the consistency engine's full design, see
-[`spec-v3.md`](../../spec-v3.md) §§27, 59.
+[`spec-v3.md`](../spec-v3.md) §§27, 59.

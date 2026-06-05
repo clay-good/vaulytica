@@ -7,7 +7,7 @@ column per required-clause category. Each cell carries a status —
 `Pass` / `Partial` / `Fail` / `N/A` — with cell shading and an optional
 short note + list of contributing rule ids.
 
-Spec reference: [`spec-v3.md`](../../spec-v3.md) §54.
+Spec reference: [`spec-v3.md`](../spec-v3.md) §54.
 Renderer: [`src/report/v3/matrix.ts`](../../src/report/v3/matrix.ts).
 Types: [`src/report/v3/types.ts`](../../src/report/v3/types.ts).
 

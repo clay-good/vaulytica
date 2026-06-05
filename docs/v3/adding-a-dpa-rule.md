@@ -88,7 +88,7 @@ sensitive-personal-information opt-out right."
 ### 1. Find the citation
 
 CCPA is fetched by
-[`dkb/build/v3/fetchers/ccpa-civ-code.ts`](../../dkb/build/v3/fetchers/ccpa-civ-code.ts).
+[`dkb/build/v3/fetchers/state-privacy.ts`](../../dkb/build/v3/fetchers/state-privacy.ts).
 The sensitive-PI opt-out lives at Cal. Civ. Code § 1798.121.
 
 ### 2. Author the rule

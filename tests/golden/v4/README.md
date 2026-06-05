@@ -1,6 +1,6 @@
 # tests/golden/v4 — v4 golden-output corpus
 
-Per [`spec-v4.md`](../../../spec-v4.md) Part VI, Step 61.
+Per [`spec-v4.md`](../../../docs/spec-v4.md) Part VI, Step 61.
 
 ## Layout
 
@@ -49,7 +49,7 @@ v4 analogue of the v2 cross-OS determinism guarantee in
 
 ## Expansion plan
 
-[`spec-v4.md`](../../../spec-v4.md) §16 sketches ~150 fixtures across
+[`spec-v4.md`](../../../docs/spec-v4.md) §16 sketches ~150 fixtures across
 sub-domains B–P plus 5+ multi-doc bundles per cross-doc rule family.
 Step 61 lands the harness + 1 representative fixture per sub-domain
 (15 total) + 5 multi-doc bundles covering each of the CROSS-* rule

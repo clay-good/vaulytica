@@ -123,5 +123,5 @@ clickable URL and the DKB version. To verify a citation:
 
 The DKB build pipeline runs weekly and re-fetches every cited source.
 If a hash drifts, the affected rule is moved into a stale-citation
-queue and disabled. See [`spec-v3.md`](../../spec-v3.md) §14 for the
+queue and disabled. See [`spec-v3.md`](../spec-v3.md) §14 for the
 full protocol.

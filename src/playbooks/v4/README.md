@@ -1,6 +1,6 @@
 # v4 playbooks
 
-Per [`spec-v4.md`](../../../spec-v4.md) Part VI Steps 45–59. Each
+Per [`spec-v4.md`](../../../docs/spec-v4.md) Part VI Steps 45–59. Each
 sub-domain (B–P) contributes new playbook JSON files to this directory
 as the corresponding step lands. The schema is the v3-extended
 `Playbook` schema (`src/playbooks/types.ts`) — no v4-only schema

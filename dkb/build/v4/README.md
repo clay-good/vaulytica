@@ -1,6 +1,6 @@
 # dkb/build/v4 — v4 DKB build pipeline
 
-Per [`spec-v4.md`](../../../spec-v4.md) §13, Step 60. v4 fetchers land
+Per [`spec-v4.md`](../../../docs/spec-v4.md) §13, Step 60. v4 fetchers land
 here as Step 60 executes. Same framework as the v3 fetchers under
 [`../v3/`](../v3/) — every fetcher is a pure function from a
 `V3FetchContext` (snapshot reader + optional HTTP client) to a list

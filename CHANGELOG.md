@@ -33,6 +33,12 @@ All notable changes to this project will be documented in this file. Format adap
   testable headless.
 
 ### Changed
+- **Doc-integrity sweep — fixed 29 broken internal markdown links.** A scan of
+  all 64 tracked markdown files found stale relative links, almost all from the
+  spec files having moved into `docs/` (root/nested references kept the old
+  paths and wrong `../` depths). Also corrected one stale filename
+  (`ccpa-civ-code.ts` → the consolidated `state-privacy.ts`) and a fragile
+  leading-slash link. Re-scan confirms 0 broken links. Markdown-only.
 - **`no-console` lint guard on the shipped `src/` bundle.** CONTRIBUTING
   promised "console is restricted," but the ESLint config never enforced it.
   `src/` already carries **zero** `console.*`, so the rule is added with no
@@ -1241,7 +1247,7 @@ here so the per-step rationale is part of the v3.0.0 release record.
 
 ## [1.0.0] — 2026-05-12
 
-Initial public release. Vaulytica is now feature-complete for the seventeen-step build plan in [`spec.md`](spec.md) §26.
+Initial public release. Vaulytica is now feature-complete for the seventeen-step build plan in [`spec.md`](docs/spec.md) §26.
 
 ### Added
 

@@ -119,7 +119,7 @@ Discuss in an issue first. Extractor changes touch the deterministic contract; m
 When you add a feature, also update:
 
 - [`README.md`](README.md) if it changes the user-facing summary.
-- [`spec.md`](spec.md) — only if the change is *substantive enough* to alter the project's contract. Most PRs do not touch spec.md.
+- [`spec.md`](docs/spec.md) — only if the change is *substantive enough* to alter the project's contract. Most PRs do not touch spec.md.
 - [`docs/`](docs/) — the appropriate guide. New extractor → update `architecture.md`. New rule → no doc change needed unless the helper API moved.
 - [`BUILD_PROGRESS.md`](BUILD_PROGRESS.md) — only updated during the 17-step build; closed PRs after launch do not touch this file.
 

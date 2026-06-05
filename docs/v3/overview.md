@@ -43,7 +43,7 @@ document consistency rules (`src/engine/consistency/rules/`).
    The DKB build pipeline re-fetches every cited authority weekly and
    compares the hash. Drift moves the affected rule into a "stale-citation"
    queue and disables it until a human triages the diff.
-   See [`spec-v3.md`](../../spec-v3.md) §14.
+   See [`spec-v3.md`](../spec-v3.md) §14.
 
 2. **220 new rules.** Each rule is the same `Rule` interface v2 uses, in
    a v3 subdirectory (`src/engine/rules/v3/<family>/`). The v3 rule
@@ -76,7 +76,7 @@ machine-verifiable footer let counsel triage what the linter saw, but
 the legal call is still counsel's.
 
 v3 also does not cover every jurisdiction in every regulator's universe.
-Spec [`spec-v3.md`](../../spec-v3.md) §§5–12 enumerates the source
+Spec [`spec-v3.md`](../spec-v3.md) §§5–12 enumerates the source
 catalog explicitly; everything outside it surfaces as `N/A` in the
 compliance matrix with a "not yet covered" note. Read the source catalog
 before relying on v3 in an audit.

@@ -1,6 +1,6 @@
 # dkb/fixtures/v4 — v4 DKB fixture corpus
 
-Per [`spec-v4.md`](../../../spec-v4.md) §13, Step 60. v4 sources land
+Per [`spec-v4.md`](../../../docs/spec-v4.md) §13, Step 60. v4 sources land
 here as Step 60 executes. Each source contributes:
 
 - One or more DKB nodes under `nodes/<sub-domain>/`.

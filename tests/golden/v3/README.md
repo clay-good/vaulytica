@@ -1,7 +1,7 @@
 # tests/golden/v3 — v3 golden-output corpus
 
 This directory carries the golden-output regression suite for the v3
-rule sets, per [spec-v3.md](../../spec-v3.md) Part X and Step 34.
+rule sets, per [spec-v3.md](../../../docs/spec-v3.md) Part X and Step 34.
 
 ## Layout
 
