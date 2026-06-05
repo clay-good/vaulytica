@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- **Property-based testing (spec-v7 Step 118).** Added `fast-check` + a property
+  suite (`tests/integration/property-based.test.ts`, +5 properties) over generated
+  `DocumentTree`s — a new test *kind* that proves invariants over inputs no author
+  enumerated: the normalizer is idempotent and assigns exact, non-overlapping
+  offsets and drops empties; any US-dollar amount and any valid ISO date round-trips
+  through its extractor. A fixed seed keeps the generated inputs identical on every
+  machine/run (a non-deterministic gate is forbidden here). Raised coverage slightly
+  (the properties exercise edge paths the example tests missed). Test/dev-dep only.
+
+### Fixed
+- **ESLint no longer lints generated coverage output.** Running `npm run coverage`
+  before `npm run lint` left `coverage/` on disk and `eslint .` scanned it; added
+  `coverage/` to the `eslint.config.js` global ignores (alongside `dist/`).
+- **Property tests get a generous timeout.** Generating hundreds of recursive trees
+  exceeds vitest's 5s default under V8 coverage instrumentation; the property file
+  sets `testTimeout: 30_000` (same lesson as the pdfjs cold-load test) so the gate
+  goes red on a real counterexample, never on a slow runner.
+
+### Added
 - **Report-structure validation (spec-v7 Step 122).** The DOCX report — the
   artifact a user cites — was tested only for ZIP validity + MIME type. Added 5
   tests (`src/report/docx.test.ts`) that unzip the generated `word/document.xml`

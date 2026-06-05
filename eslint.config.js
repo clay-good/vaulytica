@@ -16,7 +16,7 @@ import prettier from "eslint-config-prettier/flat";
 export default tseslint.config(
   // Global ignores. node_modules/ and .git/ are ignored by default in flat
   // config; these are the project's build outputs + the old-style CJS files.
-  { ignores: ["dist/", "dkb/dist/", "dkb/build/cache/", "**/*.cjs"] },
+  { ignores: ["dist/", "dkb/dist/", "dkb/build/cache/", "coverage/", "**/*.cjs"] },
 
   // Base recommended rule sets: core JS, then TypeScript (non-type-checked, to
   // match the prior `plugin:@typescript-eslint/recommended` — no typed linting).
