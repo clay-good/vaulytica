@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Changed
+- **Major dependency modernization: TypeScript 5.9 → 6.0** (`^5.4.5 → ^6.0.3`,
+  GA). Zero code changes — `tsc --noEmit` passes clean. The codebase was
+  already TS-6-ready: the tsconfig carries none of the long-deprecated options
+  TS 6.0 turns into errors (`importsNotUsedAsValues`, `preserveValueImports`,
+  `keyofStringsOnly`, ES3 targets, …), `target`/`module` are modern
+  (ES2022/ESNext), and the existing `strict` + `noUncheckedIndexedAccess`
+  settings already satisfy 6.0's stricter checks. Only `npm run typecheck`
+  (tsc) and the linter (typescript-eslint, whose `<6.1.0` peer range covers
+  6.0 — no unsupported-version warning) consume the `typescript` package; vite
+  and tsx transpile via esbuild, so there is no transpile or runtime change.
+  Gate green (lint + typecheck + 2486 tests + build), clean `npm ci`, 0
+  vulnerabilities. (Remaining deferred majors: eslint 9→10 + globals 16→17,
+  pdfjs-dist 4→6, tesseract.js 5→7.)
 - **Major dependency modernization: zod 3 → 4** (`^3.23.4 → ^4.4.3`). The
   validation library underpinning every DKB / playbook / accuracy / custom-rule
   schema is now on the current major (zod 3 will eventually lose maintenance).

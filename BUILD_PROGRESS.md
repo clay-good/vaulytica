@@ -25,6 +25,15 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### Major dependency modernization — TypeScript 5.9 → 6.0 (2026-06-05) — ✅ complete
+
+The second deferred major, chosen over pdfjs 6 / tesseract 7 (runtime parser/OCR with worker-integration risk that can't be fully validated headless) and eslint 10 (marginal right after last turn's eslint 9). TS 6.0 is the most contained of the remaining majors: a single devDep, verified binary-style by `tsc --noEmit`, with no runtime, bundle, or worker surface.
+
+- **Zero code changes.** `tsc --noEmit` passes clean under `typescript@6.0.3`. TS 6.0 is the "deprecations become errors" bridge release toward the TS 7 native port, so the risk was removed compiler options and stricter checks — but [`tsconfig.json`](tsconfig.json) carries **none** of the options 6.0 drops (`importsNotUsedAsValues`, `preserveValueImports`, `keyofStringsOnly`, `noImplicitUseStrict`, `out`, `charset`, ES3 `target`/`module`), already targets ES2022/ESNext with `moduleResolution: Bundler`, and runs `strict` + `noUncheckedIndexedAccess` + `noUnusedLocals/Parameters` — so the code already satisfied 6.0's stricter pass.
+- **Blast radius is just typecheck + lint.** Only `npm run typecheck` (tsc) and the linter consume the `typescript` package. `typescript-eslint@8.60` declares `typescript >=4.8.4 <6.1.0`, so 6.0.3 is in range — `npm run lint` ran with **no** "unsupported TypeScript version" warning. vite (rolldown/esbuild) and tsx (esbuild) transpile without tsc, so there is **no** transpile-output or runtime change, hence no `result_hash` / golden churn.
+- **Verification.** lint (0 problems) + typecheck + 2486 tests + build green; clean `npm ci`, 0 vulnerabilities. No `src/` behavior change and no UI/CSS touch, so responsiveness is unaffected.
+- **Deferred majors remaining:** `eslint` 9→10 + `globals` 16→17, `pdfjs-dist` 4→6, `tesseract.js` 5→7 — each its own reviewed pass (the two parser/OCR bumps carry worker/wasm integration risk best validated on a real device).
+
 ### Major dependency modernization — zod 3 → 4 (2026-06-04) — ✅ complete
 
 The first of the deferred majors, picked over TypeScript 6 / pdfjs 6 / tesseract 7 because zod is the **load-bearing validation layer** (every DKB, playbook, accuracy, and custom-rule schema is a zod schema) and the breaking surface turned out to be tiny and fully test-covered.
