@@ -1,5 +1,7 @@
 # Vaulytica — Build Specification v3 (Compliance & Regulated-Agreement Expansion)
 
+> **Status:** ✅ **complete (shipped, version 3.0.0).** All four anchor families (BAA / DPA / NDA-deep / MSA-deep) and their supporting documents shipped as **+220 rules** with citation-pinned sources, the two-document consistency mode, and the compliance matrix. See [`BUILD_PROGRESS.md`](../BUILD_PROGRESS.md) and [`docs/v3/`](v3/).
+>
 > v3 assumes v2 (see [spec.md](spec.md)) is fully implemented and deployed: the ingest layer, OCR fallback, extractors, ~80 deterministic rules across ten categories, the twelve launch playbooks (including the existing generic `mutual-nda`, `unilateral-nda`, `msa-general`, `saas-customer`, `saas-vendor`), the DOCX reporter, the DKB build pipeline, and the single-page UI are all live. v3 does not rewrite any of that. v3 extends it.
 >
 > The wedge for v3 is the family of agreements where the *correct* answer is dictated by statute, regulation, or a published model form rather than market norms. These are the agreements that lawyers and compliance officers most often get wrong — not because the rules are hard, but because the rules are voluminous, cross-referenced, and changed by an agency three jurisdictions away last quarter. A deterministic linter that knows the citation for each missing clause is, for these documents, more valuable than a senior associate doing a midnight read. v3 ships that.

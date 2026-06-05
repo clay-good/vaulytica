@@ -25,6 +25,12 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](docs/spec.md) 
 
 ## Post-1.0 work
 
+### Spec status-header accuracy — spec-v4 still said "not yet implemented" (2026-06-05) — ✅ complete
+
+A spec-accuracy pass (the recurring "read all spec md files" ask). Found one clear inaccuracy: **`docs/spec-v4.md` opened with "> Status: specification, not yet implemented"** — but v4 has been **shipped (version 4.0.0)** for some time (the 730-rule layer, 16 sub-domains, folder/`.zip` bundle ingest, the document classifier — all live, and the README version table lists v4 as shipped). A reader opening the spec would conclude the entire v4 surface is vaporware. Updated to an accurate ✅-complete status mirroring spec-v5/v6's format, summarizing what landed and the Part VII open-question state (#2/#4/#7/#8 resolved; #1 device-gated; #3 profiling; #5/#6 a maintainer decision). spec-v4's Part VII entries themselves were already correctly marked ✅-resolved — only the top-level header was stale.
+
+Also added a matching **`> Status: ✅ complete (shipped, version 3.0.0)`** line to `docs/spec-v3.md`, which (being an older-format spec) had no status marker at all, for consistency with v4/v5/v6. The new header links (`../BUILD_PROGRESS.md`, `v3/`, `v4/`) all resolve — confirmed by the docs-links guard. Doc-only; gate green (lint + typecheck + 2496 tests + build).
+
 ### Doc-audit follow-through — anchor/HTML link scan (clean) + document the cross-doc rules (2026-06-05) — ✅ complete
 
 Extended the doc-integrity audit and re-verified the README's headline numbers; one genuine completeness gap found and closed.

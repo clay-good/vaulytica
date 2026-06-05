@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Fixed
+- **spec-v4.md status was stale — said "not yet implemented" for shipped code.**
+  v4 has been complete and shipped (version 4.0.0) for some time — 730 rules, 16
+  sub-domains, bundle ingest, the classifier — yet its spec header still read
+  "specification, not yet implemented," which would tell a reader the whole
+  surface is vaporware. Updated to an accurate ✅-complete status mirroring
+  spec-v5/v6, including the Part VII open-question state. Also added a matching
+  status line to spec-v3.md (shipped 3.0.0), which had none. Doc-only.
+
 ### Changed
 - **README — cross-document consistency cheat sheet.** The headline "1,062
   rules" and the rule cheat-sheet count only *single-document* rules; the engine

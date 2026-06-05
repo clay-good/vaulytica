@@ -1,6 +1,6 @@
 # Vaulytica v4 — The legal-document linter
 
-> **Status:** specification, not yet implemented.
+> **Status:** ✅ **complete (shipped, version 4.0.0).** All of v4 landed: **+730 rules** across **16 specialized sub-domains**, multi-document **bundle** ingest (folder / `.zip`) with the cross-document consistency engine, and the document / sub-domain classifier. The full **1,062-rule** catalog (LAUNCH + v3 + v4) runs live, family-gated. See [`BUILD_PROGRESS.md`](../BUILD_PROGRESS.md) and [`docs/v4/`](v4/). Part VII open questions: **#2 / #4 / #7 / #8 resolved** (below); **#1** (iOS Safari folder-vs-zip fidelity) needs a real device; **#3** (vendor-chunk split) is a profiling nicety (bundle is within budget); **#5 / #6** (trust-estate / regulatory-prose disclaimer placement) await a maintainer output-placement decision.
 > **Scope:** expand the library of supported document types from "contracts" to "all logically-operative legal documents." UI/UX unchanged. Determinism preserved. AI still excluded.
 > **Cousin docs:** [`spec.md`](spec.md) (v1, 17 steps, 1.0.0), [`spec-v3.md`](spec-v3.md) (regulated agreements, BAA/DPA/MSA/NDA-deep, addenda).
 
