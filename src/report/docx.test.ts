@@ -407,3 +407,80 @@ describe("buildDocxReport multi-family section (spec-v6)", () => {
     expect(docXml).not.toContain("Additional Checks From Other Detected Families");
   });
 });
+
+// spec-v7 Part XIV (Step 122) — report-structure validation. The report is
+// the product: the thing a user cites. Earlier tests proved it is a valid ZIP
+// of the right MIME type; these prove it *says the right things* — that the
+// cover/audit-trail carry the proof fields, findings are grouped in severity
+// order, citations render, and the verbatim posture block is present. Structure,
+// not pixels: every assertion is a deterministic substring/ordering over the
+// unzipped OOXML, so it is CI-safe and localizes any regression that drops or
+// reorders a load-bearing part of the report.
+describe("report-structure validation (spec-v7 Step 122)", () => {
+  async function docXmlOf(blob: Blob): Promise<string> {
+    const { unzipSync, strFromU8 } = await import("fflate");
+    const files = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    return strFromU8(files["word/document.xml"]!);
+  }
+
+  it("DOCX carries the title and the proof fields (engine/DKB versions, file fingerprint, result hash)", async () => {
+    const run = makeRun();
+    const xml = await docXmlOf(await buildDocxReport(run, ingest, loadStarterDkbSync(), loadMutualNda()));
+    expect(xml).toContain("Vaulytica Report");
+    expect(xml).toContain(`Engine version: ${run.version}`);
+    expect(xml).toContain(`DKB version: ${run.dkb_version}`);
+    expect(xml).toContain(`File fingerprint: ${run.source_file.sha256}`);
+    expect(xml).toContain(`Result hash: ${run.result_hash}`);
+  });
+
+  it("DOCX groups findings Critical → Warning → Info, in that order", async () => {
+    const xml = await docXmlOf(await buildDocxReport(makeRun(), ingest, loadStarterDkbSync(), loadMutualNda()));
+    // Anchor ordering on the per-finding severity badges, which appear only in
+    // the findings sections (the counts tables use the plain words), so the
+    // order reflects the findings grouping, not an incidental earlier mention.
+    const crit = xml.indexOf("[CRITICAL]");
+    const warn = xml.indexOf("[WARNING]");
+    const info = xml.indexOf("[INFO]");
+    expect(crit).toBeGreaterThan(-1);
+    expect(warn).toBeGreaterThan(crit);
+    expect(info).toBeGreaterThan(warn);
+    expect(xml).toContain("Critical Findings");
+    expect(xml).toContain("Warnings");
+  });
+
+  it("DOCX renders a Sources line for cited findings plus a Bibliography section", async () => {
+    const xml = await docXmlOf(await buildDocxReport(makeRun(), ingest, loadStarterDkbSync(), loadMutualNda()));
+    expect(xml).toMatch(/Sources: \[\d+\]/);
+    expect(xml).toContain("Bibliography");
+  });
+
+  it("DOCX carries the verbatim determinism, privacy, and non-advice posture statements", async () => {
+    const xml = await docXmlOf(await buildDocxReport(makeRun(), ingest, loadStarterDkbSync(), loadMutualNda()));
+    expect(xml).toContain("This report was produced by a deterministic process");
+    expect(xml).toContain("performed entirely inside the user"); // privacy (apostrophe-free prefix)
+    expect(xml).toContain("Vaulytica is a software tool, not a lawyer"); // non-advice disclaimer
+  });
+
+  it("JSON report is shape-complete: run + ingest envelopes with well-formed findings", async () => {
+    const parsed = JSON.parse(await buildJsonReport(makeRun(), ingest).text());
+    for (const k of ["version", "dkb_version", "playbook_id", "result_hash", "executed_at", "findings", "execution_log", "source_file"]) {
+      expect(parsed.run).toHaveProperty(k);
+    }
+    expect(Array.isArray(parsed.run.findings)).toBe(true);
+    expect(Array.isArray(parsed.run.execution_log)).toBe(true);
+    for (const k of ["name", "sha256", "size_bytes"]) {
+      expect(parsed.run.source_file).toHaveProperty(k);
+    }
+    // The JSON ingest is an intentional summary Pick (no tree, no warnings).
+    for (const k of ["source", "word_count", "sha256"]) {
+      expect(parsed.ingest).toHaveProperty(k);
+    }
+    // Every finding traces to a rule and carries a valid severity + citations array.
+    for (const f of parsed.run.findings) {
+      for (const k of ["id", "rule_id", "severity", "title", "source_citations"]) {
+        expect(f).toHaveProperty(k);
+      }
+      expect(["critical", "warning", "info"]).toContain(f.severity);
+    }
+  });
+});

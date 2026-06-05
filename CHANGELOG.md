@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- **Report-structure validation (spec-v7 Step 122).** The DOCX report — the
+  artifact a user cites — was tested only for ZIP validity + MIME type. Added 5
+  tests (`src/report/docx.test.ts`) that unzip the generated `word/document.xml`
+  and assert the report *says the right things*: the cover/audit-trail carry the
+  title + engine/DKB versions + file fingerprint + result hash; findings render
+  grouped Critical → Warning → Info (ordering anchored on the unique per-finding
+  severity badges); cited findings render a `Sources: [n]` line + a Bibliography
+  section; and the verbatim determinism/privacy/non-advice posture block is
+  present. Also pins the JSON report's `{ run, ingest }` envelope shape and
+  well-formed findings. Test-only; pins existing mature behavior (no `src/`,
+  `result_hash`, golden, or responsiveness impact). Tests 2,502 → 2,507.
 - **Code-coverage measurement + regression gate (spec-v7 Steps 115–116).** The
   suite had 161 files / 2,502 tests but **no coverage tooling or gate**. Added
   `@vitest/coverage-v8` + an `npm run coverage` script + a coverage block in

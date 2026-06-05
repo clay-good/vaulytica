@@ -25,6 +25,15 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](docs/spec.md) 
 
 ## Post-1.0 work
 
+### spec-v7 Step 122 — report-structure validation (2026-06-05) — ✅ complete
+
+Next spec-v7 increment (Thrust B / Part XIV). The DOCX report **is the product** — the artifact a user cites — yet it was tested only for ZIP validity + MIME type + a couple of content spot-checks (deprecation annotations). It had no proof that it *says the right things*. Closed that:
+
+- **DOCX structure** ([`src/report/docx.test.ts`](src/report/docx.test.ts), +5 tests). Unzips `word/document.xml` (the established fflate pattern already used in the file) and asserts the load-bearing structure: the cover/audit-trail carry the **title + engine version + DKB version + file fingerprint + result hash**; findings render **grouped Critical → Warning → Info** (ordering anchored on the per-finding `[CRITICAL]`/`[WARNING]`/`[INFO]` badges, which are unique to the findings sections — the counts tables use plain words — so the assertion reflects the real grouping, not an incidental earlier mention); cited findings render a `Sources: [n]` line + a **Bibliography** section; and the **verbatim determinism + privacy + non-advice posture block** is present.
+- **JSON envelope shape.** Pins the `{ run, ingest }` contract — `run` carries version/dkb_version/playbook_id/result_hash/executed_at/findings/execution_log/source_file; every finding traces to a rule with a valid severity + citations array; `ingest` is the intended summary Pick (`source`/`word_count`/`sha256` — no tree, no warnings). One assumed field (`warnings`) was corrected to the actual schema after the first run flagged it — the test now asserts reality, not my guess.
+- **Honest scope + low risk.** The report builder is mature (v1+), so these assertions *pin* existing behavior rather than drive new code — coverage % is unchanged (the paths were already executed; the value is catching a future regression that drops/reorders a part of the report, not raising the number). No `src/` production code touched, no `result_hash`/golden churn, no UI/CSS change → responsiveness unaffected. Tests 2502 → **2507**; README headline + build-section counts bumped; spec-v7 status + build-plan row 122 marked ✅.
+- **Verification gate green:** lint (0) + typecheck (0) + **`npm run coverage`** (2507 tests + floor enforced, exit 0) + build (exit 0).
+
 ### spec-v7 Steps 115–116 — code-coverage measurement + regression gate (2026-06-05) — ✅ complete
 
 First implementation increment of spec-v7 (Thrust B / Part VIII). The suite had **161 files / 2,502 tests but zero coverage tooling or gate** — "tests pass" carried no statement about which branches they reached. Now measured and enforced:
