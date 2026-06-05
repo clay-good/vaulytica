@@ -25,4 +25,16 @@ describe("extractJurisdictions", () => {
     );
     expect(refs[0]!.jurisdiction_id).toBe("us-ca");
   });
+
+  it("captures an exception/fallback jurisdiction on the primary record", () => {
+    const tree = buildTree([
+      "Governing Law",
+      "This Agreement shall be governed by the laws of the State of Delaware, except that any dispute concerning real property shall be governed by the laws of Texas.",
+    ]);
+    const refs = extractJurisdictions(tree);
+    const gov = refs.find((r) => r.clause_kind === "governing-law");
+    expect(gov?.raw_text).toMatch(/Delaware/);
+    // The primary record carries the fallback precedence link.
+    expect(gov?.fallback_jurisdiction).toBe("Texas");
+  });
 });

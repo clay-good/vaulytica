@@ -24,6 +24,14 @@ import { forEachParagraph, forEachSection, posInParagraph } from "./walk.js";
 const DEFINITION_INLINE = /["“”']([A-Z][\w\s\-&]{1,80}?)["“”']\s+(?:shall\s+)?means?\b/g;
 const DEFINITION_BARE = /^\s*([A-Z][\w\s\-&]{1,80}?)\s+(?:shall\s+)?means?\b/;
 
+/** A definition that points at an exhibit/schedule/section rather than stating its own text. */
+const DEFINITION_REFERENCE =
+  /\b(?:attached\s+(?:hereto\s+)?as|set\s+forth\s+in|described\s+in|defined\s+in|as\s+set\s+out\s+in|in)\s+((?:Exhibit|Schedule|Appendix|Annex|Attachment|Section|Article)\s+[A-Z0-9][\w.()-]*)/i;
+
+/** A scope-gating prefix that confines a definition to a section/clause. */
+const DEFINITION_SCOPE =
+  /\b(?:for\s+(?:the\s+)?purposes\s+of|as\s+used\s+in|solely\s+for\s+purposes\s+of)\s+(?:this\s+)?((?:Section|Article|Clause|Paragraph)\s+[\w.()-]+)[,:\s]*$/i;
+
 const DEFINITIONS_HEADING = /\b(definitions?|defined\s+terms|glossary)\b/i;
 const TITLE_CASE_PHRASE = /\b((?:[A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,4}))\b/g;
 const COMMON_WORDS = new Set([
@@ -140,11 +148,13 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
         const term = bare[1]!.trim();
         const def = text.slice(bare.index + bare[0].length).trim().replace(/^[-:]+\s*/, "");
         const start = p.runs[0]?.start ?? 0;
+        const reference = cleanRef(DEFINITION_REFERENCE.exec(def)?.[1]);
         registerDefinition(definitions, {
           term,
           definition: def,
           defined_at: { section_id: section.id, paragraph_id: p.id, start, end: start + text.length },
           used_at: [],
+          ...(reference ? { reference } : {}),
         });
       }
       _pIdx += 1;
@@ -209,11 +219,60 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
     .map(([term, positions]) => ({ term, positions }))
     .sort((a, b) => a.term.localeCompare(b.term));
 
+  const circular_terms = detectCircularDefinitions([...definitions.values()]);
+
   return {
     entries: [...definitions.values()].sort((a, b) => a.term.localeCompare(b.term)),
     unused_terms,
     undefined_capitalized,
+    ...(circular_terms.length > 0 ? { circular_terms } : {}),
   };
+}
+
+/**
+ * Walk the definition graph (term A → term B when A's definition text
+ * references defined term B) and return each cycle as an ordered list
+ * of terms. Deterministic: terms are processed in sorted order and each
+ * cycle is canonicalized to start at its alphabetically-first term.
+ */
+function detectCircularDefinitions(entries: DefinitionEntry[]): string[][] {
+  const byTerm = new Map<string, DefinitionEntry>();
+  for (const e of entries) byTerm.set(e.term, e);
+  const terms = [...byTerm.keys()].sort();
+  // Adjacency: A → B when B (a defined term other than A) appears in A's definition.
+  const edges = new Map<string, string[]>();
+  for (const a of terms) {
+    const def = byTerm.get(a)!.definition;
+    const targets = terms.filter(
+      (b) => b !== a && new RegExp(`\\b${escapeRegExp(b)}\\b`).test(def),
+    );
+    edges.set(a, targets);
+  }
+  const cyclesByKey = new Map<string, string[]>();
+  const visit = (start: string, node: string, path: string[], seen: Set<string>): void => {
+    if (path.length > 8) return; // bound DFS on dense definition graphs
+    for (const next of edges.get(node) ?? []) {
+      if (next === start && path.length >= 2) {
+        const cycle = [...path];
+        const min = cycle.indexOf([...cycle].sort()[0]!);
+        const rotated = [...cycle.slice(min), ...cycle.slice(0, min)];
+        cyclesByKey.set(rotated.join(" "), rotated);
+      } else if (!seen.has(next)) {
+        seen.add(next);
+        visit(start, next, [...path, next], seen);
+        seen.delete(next);
+      }
+    }
+  };
+  for (const t of terms) visit(t, t, [t], new Set([t]));
+  return [...cyclesByKey.values()].sort((a, b) => a.join().localeCompare(b.join()));
+}
+
+/** Trim a captured reference/scope label and strip trailing sentence punctuation. */
+function cleanRef(raw: string | undefined): string | undefined {
+  if (!raw) return undefined;
+  const v = raw.trim().replace(/[.,;:]+$/, "");
+  return v || undefined;
 }
 
 function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry[] {
@@ -224,6 +283,8 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
     const term = m[1]!.trim();
     const after = text.slice(m.index + m[0].length).trim();
     if (!after) continue;
+    const reference = cleanRef(DEFINITION_REFERENCE.exec(after)?.[1]);
+    const scope = cleanRef(DEFINITION_SCOPE.exec(text.slice(0, m.index))?.[1]);
     out.push({
       term,
       definition: after,
@@ -234,6 +295,8 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
         end: base.start + m.index + m[0].length,
       },
       used_at: [],
+      ...(reference ? { reference } : {}),
+      ...(scope ? { scope } : {}),
     });
   }
   return out;

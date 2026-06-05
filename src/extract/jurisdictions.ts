@@ -34,10 +34,15 @@ export function extractJurisdictions(
   forEachParagraph(tree, (ctx) => {
     runRegex(GOV_LAW, ctx.text, (m) => {
       const raw = (m[2] ?? "").trim();
+      // Exception / fallback structure: capture the jurisdiction this
+      // clause yields to on the primary record (precedence is explicit)
+      // rather than emitting a second, equal governing-law record.
+      const fallback = detectFallback(ctx.text.slice(m.index + m[0].length));
       out.push({
         clause_kind: "governing-law",
         jurisdiction_id: lookup(raw),
         raw_text: raw,
+        ...(fallback ? { fallback_jurisdiction: fallback } : {}),
         position: posInParagraph(ctx, m.index, m.index + m[0].length),
       });
     });
@@ -80,6 +85,21 @@ export function extractJurisdictions(
   });
 
   return out;
+}
+
+/**
+ * Detect an exception/fallback jurisdiction in the text following a
+ * governing-law clause: "…, except … the laws of Texas"; "…, provided
+ * that if such courts lack jurisdiction, then New York". Bounded to the
+ * clause tail so it does not reach into the next sentence.
+ */
+function detectFallback(tail: string): string | undefined {
+  const window = tail.slice(0, 200);
+  const m =
+    /\b(?:except|provided\s+that|otherwise|failing\s+which|if\s+such\s+courts?\b[^.;]*?(?:then|,))\b[^.;]*?\b(?:the\s+)?(?:laws?\s+of\s+|courts?\s+of\s+|then\s+)(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?)/.exec(
+      window,
+    );
+  return m?.[1]?.trim() || undefined;
 }
 
 function runRegex(

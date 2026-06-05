@@ -28,10 +28,17 @@ export function extractCrossRefs(
       const label = (m[1] ?? "").replace(/\(.*\)$/, "");
       const normalized = normalizeLabel(label);
       const resolved = normalized ? labelIndex.get(normalized) : undefined;
+      // Capture any trailing parenthetical sub-reference chain
+      // ("(a)(ii)") that follows the matched label, without disturbing
+      // resolution (which keys on the section number) or `raw_text`.
+      const inMatch = /(\([a-z0-9]+\))+$/i.exec(m[1] ?? "")?.[0] ?? "";
+      const trailing = /^(\([a-z0-9]+\))+/i.exec(ctx.text.slice(m.index + m[0].length))?.[0] ?? "";
+      const subRef = `${inMatch}${trailing}`;
       refs.push({
         raw_text: m[0],
         resolved_id: resolved,
         unresolved: resolved === undefined,
+        ...(subRef ? { sub_ref: subRef } : {}),
         position: posInParagraph(ctx, m.index, m.index + m[0].length),
       });
     }

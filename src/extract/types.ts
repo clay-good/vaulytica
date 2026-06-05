@@ -103,6 +103,19 @@ export type DefinitionEntry = {
   defined_at: DocPosition;
   /** Every use of the term outside its own definition, in document order. */
   used_at: DocPosition[];
+  /**
+   * For definitions by reference ("'Agreement' means the Master Service
+   * Agreement attached as Exhibit A"): the cross-reference target the
+   * definition points at ("Exhibit A"), so the definition resolves to a
+   * reference rather than a literal phrase that embeds the ref.
+   */
+  reference?: string;
+  /**
+   * For scope-gated definitions ("For the purposes of this Section 4,
+   * 'Customer' means …"): the scope in which the definition applies, so
+   * a section-local redefinition does not poison the whole document.
+   */
+  scope?: string;
 };
 
 export type DefinitionMap = {
@@ -111,6 +124,15 @@ export type DefinitionMap = {
   unused_terms: string[];
   /** Title-Case multi-word phrases that look like defined terms but aren't. */
   undefined_capitalized: { term: string; positions: DocPosition[] }[];
+  /**
+   * Terms whose definitions reference each other in a cycle
+   * ("Term means … Termination Date; Termination Date means … Term").
+   * Each entry is one cycle as an ordered list of terms. Surfacing this
+   * as a finding is a gated follow-up (an always-on rule would
+   * re-baseline every single-document golden); the detection is exposed
+   * here for the report layer and that future rule.
+   */
+  circular_terms?: string[][];
 };
 
 export type SectionOutlineNode = {
@@ -137,6 +159,12 @@ export type CrossRef = {
   resolved_id?: string;
   /** True when the reference text did not resolve to any section. */
   unresolved: boolean;
+  /**
+   * Trailing parenthetical sub-reference chain ("(a)(ii)" for
+   * "Section 4.2(a)(ii)"), normalized and captured separately so the
+   * sub-level is not lost while resolution still keys on the section.
+   */
+  sub_ref?: string;
   position: DocPosition;
 };
 
@@ -170,6 +198,14 @@ export type JurisdictionReference = {
   jurisdiction_id?: string;
   /** The raw text matched (e.g., "State of Delaware"). */
   raw_text: string;
+  /**
+   * For governing-law clauses with an exception/fallback structure
+   * ("California law, except … Texas"; "Delaware courts, provided that
+   * if such courts lack jurisdiction, then New York"): the fallback
+   * jurisdiction this clause yields to, captured on the primary record
+   * (not a separate equal record) so precedence is explicit.
+   */
+  fallback_jurisdiction?: string;
   position: DocPosition;
 };
 

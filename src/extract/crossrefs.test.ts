@@ -52,4 +52,24 @@ describe("extractCrossRefs", () => {
     const phantom = refs.find((r) => r.raw_text.includes("99.4"));
     expect(phantom?.unresolved).toBe(true);
   });
+
+  it("captures a trailing parenthetical sub-reference chain", () => {
+    const t = normalize({
+      type: "document",
+      sections: [
+        {
+          id: "",
+          heading: "1. Terms",
+          level: 1,
+          paragraphs: [
+            { id: "", runs: [{ id: "", text: "Per Section 1.2(a)(ii) the fee applies.", start: 0, end: 0 }] },
+          ],
+          children: [],
+        },
+      ],
+    });
+    const refs = extractCrossRefs(t, extractSections(t));
+    const ref = refs.find((r) => /1\.2/.test(r.raw_text));
+    expect(ref?.sub_ref).toBe("(a)(ii)");
+  });
 });
