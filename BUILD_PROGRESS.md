@@ -25,6 +25,23 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### Dependency-modernization arc — close-out + the one held major (2026-06-05) — ✅ complete (4 of 5 majors)
+
+Consolidates the multi-commit modernization pass and records the deliberate stopping point. All four **safely-verifiable** major bumps are done and green on main:
+
+| Major | From → To | How it was verified |
+|---|---|---|
+| zod | 3 → 4 | full schema/test suite; only `ZodIssueCode.custom` → `"custom"`; honest +6.4 KB gz cost noted |
+| TypeScript | 5.9 → 6.0 | `tsc --noEmit` clean (codebase already TS-6-ready); zero code changes |
+| ESLint (+@eslint/js, globals) | 9 → 10 | flat config unchanged; 5 new-rule findings *fixed*, not disabled |
+| pdfjs-dist | 4 → 6 | **made the path testable first** (new `pdf.test.ts`) + fixed a latent buffer-detach bug, then bumped against the test |
+
+**Held (deliberate maintainer decision, 2026-06-05): `tesseract.js` 5 → 7.** Its only consumer (`src/ingest/ocr.ts`) drives OCR through a canvas + WASM + language-model path that **cannot be verified headless or in this sandbox** (no network for the `eng` model, no real device). The API we use (`createWorker("eng")` / `recognize` / `terminate`) is unchanged since v5, so a bump would be API-safe and pass the gate — but "gate green" would **not** mean "OCR verified on v7," which violates the project's green-means-working discipline. Per the maintainer's choice, it is held to pair with a **real-device OCR validation** pass (the spec-v4 Part VII #1 item). This is the honest stopping point, not an oversight.
+
+**This turn's verification (no code change warranted):**
+- **Ingest coverage audit** — every ingest entrypoint now has a unit test (`docx`, `paste`, `pdf`, `normalize`, `hash`, `multi`) **except `ocr.ts`**, which is the same untestable-headless OCR/WASM path as the held tesseract bump. The notable PDF gap was closed last commit.
+- **Responsiveness re-confirmed** — static review of `site/index.html` CSS + `src/ui/states.ts`: the responsive patterns hold (`overflow-wrap: anywhere`, `word-break: break-all`, `max-width: 100%`); the two `white-space: nowrap` rules are safe (`.sr-only` is the 1px screen-reader utility; `.rule-ticker__line` pairs nowrap with `overflow:hidden; text-overflow:ellipsis` in a `width:100%` box, so it truncates rather than overflows). Consistent with the 2026-06-03 empirical audit; zero UI/CSS changes since. Empirical (Playwright) re-verification is **sandbox-blocked here** (network/preview-server access denied), so it's deferred to an environment that allows it.
+
 ### Major dependency modernization — pdfjs-dist 4 → 6 (+ close a zero-coverage gap + fix a latent bug) (2026-06-05) — ✅ complete
 
 The fourth deferred major, and the first that wasn't a clean bump. The honest sequence matters more than the version number:
