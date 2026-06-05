@@ -33,7 +33,38 @@ const CURRENCY_CODES = new Set([
   "KRW", "BRL", "MXN", "ZAR", "SGD", "HKD", "SEK", "NOK", "DKK", "RUB",
 ]);
 
-const NUMERIC = /([$€£¥₹₩₽]|\b(?:USD|EUR|GBP|JPY|CAD|AUD|NZD|CHF|CNY|INR|KRW|BRL|MXN|ZAR|SGD|HKD|SEK|NOK|DKK|RUB)\b)?\s*([\d]{1,3}(?:,\d{3})*(?:\.\d+)?|\d+(?:\.\d+)?)\s*(k|kk|m|mm|mn|bn|b)?/gi;
+const CUR = String.raw`[$€£¥₹₩₽]|\b(?:USD|EUR|GBP|JPY|CAD|AUD|NZD|CHF|CNY|INR|KRW|BRL|MXN|ZAR|SGD|HKD|SEK|NOK|DKK|RUB)\b`;
+const AMT = String.raw`[\d]{1,3}(?:,\d{3})*(?:\.\d+)?|\d+(?:\.\d+)?`;
+const SCALE = String.raw`k|kk|m|mm|mn|bn|b`;
+
+const NUMERIC = new RegExp(
+  String.raw`(${CUR})?\s*(${AMT})\s*(${SCALE})?`,
+  "gi",
+);
+
+/**
+ * Range amounts: "$100k to $200k", "between USD 50,000 and USD 100,000".
+ * Matched before the single NUMERIC pass; the span suppresses the
+ * single-amount pass so the same phrase is not double-counted. The
+ * lower bound becomes `amount`, the upper becomes `range_max`, so a cap
+ * rule reads the controlling (upper) bound. (v7 §6.)
+ */
+const RANGE_NUMERIC = new RegExp(
+  String.raw`(between\s+)?(${CUR})?\s*(${AMT})\s*(${SCALE})?\s*(to|through|–|—|-|and)\s+(${CUR})?\s*(${AMT})\s*(${SCALE})?`,
+  "gi",
+);
+
+/** Trailing per-unit qualifier: "per user", "/ user, per month", "per incident". */
+const PER_UNIT = /^\s*(?:per|\/)\s+([a-z][\w]*(?:[\s,/-]+(?:per\s+)?[a-z][\w]*){0,3})/i;
+
+/**
+ * Deferred currency override controlling clause: "all amounts are in
+ * CAD unless otherwise stated", "all fees stated in EUR". Resolved in a
+ * second pass so ambiguous `$`-symbol amounts that appeared before the
+ * clause adopt the controlling currency. (v7 §6.)
+ */
+const CURRENCY_OVERRIDE =
+  /\ball\s+(?:amounts?|fees?|payments?|sums?|figures?|prices?|charges?)\s+(?:are\s+|is\s+|stated\s+|expressed\s+|denominated\s+|shall\s+be\s+|will\s+be\s+|to\s+be\s+)*in\s+(USD|EUR|GBP|JPY|CAD|AUD|NZD|CHF|CNY|INR|KRW|BRL|MXN|ZAR|SGD|HKD|SEK|NOK|DKK|RUB)\b/i;
 
 const SCALES: Record<string, string> = {
   k: "1000",
@@ -70,33 +101,62 @@ export function extractAmounts(tree: DocumentTree): MoneyReference[] {
   const out: MoneyReference[] = [];
   let counter = 0;
   const nextId = (): string => `money-${++counter}`;
+  /** Indices in `out` whose currency came from a bare `$` symbol (ambiguous). */
+  const dollarSourced: number[] = [];
+  let overrideCurrency: string | null = null;
 
   forEachParagraph(tree, (ctx) => {
-    // Numeric.
-    NUMERIC.lastIndex = 0;
+    if (overrideCurrency === null) {
+      const ov = CURRENCY_OVERRIDE.exec(ctx.text);
+      if (ov) overrideCurrency = ov[1]!.toUpperCase();
+    }
+    // Range amounts first; record spans so the single NUMERIC pass does
+    // not double-count either endpoint.
+    const rangeSpans: Array<[number, number]> = [];
+    RANGE_NUMERIC.lastIndex = 0;
     let m: RegExpExecArray | null;
-    while ((m = NUMERIC.exec(ctx.text)) !== null) {
-      const symOrCode = m[1];
-      const rawNum = m[2];
-      const scale = m[3]?.toLowerCase();
-      if (!symOrCode || !rawNum) continue;
-      const currency = resolveCurrency(symOrCode);
-      const baseStr = rawNum.replace(/,/g, "");
-      let amount: Decimal;
-      try {
-        amount = new Decimal(baseStr);
-      } catch {
-        continue;
-      }
-      if (scale && SCALES[scale]) amount = amount.mul(SCALES[scale]!);
+    while ((m = RANGE_NUMERIC.exec(ctx.text)) !== null) {
+      const between = m[1];
+      const connector = (m[5] ?? "").toLowerCase();
+      // "and" is only a range connector after "between" — otherwise
+      // "€500 and £1,000" is a currency list, not a range.
+      if (connector === "and" && !between) continue;
+      const lo = computeAmount(m[2], m[3], m[4]);
+      const hi = computeAmount(m[6] ?? m[2], m[7], m[8]);
+      if (!lo || !hi) continue;
+      rangeSpans.push([m.index, m.index + m[0].length]);
+      const idx = out.length;
       out.push({
         id: nextId(),
         raw_text: m[0],
-        amount: amount.toString(),
-        currency,
+        amount: lo.amount,
+        currency: lo.currency,
         word_form: false,
+        range_max: hi.amount,
         position: posInParagraph(ctx, m.index, m.index + m[0].length),
       });
+      if (lo.fromDollar) dollarSourced.push(idx);
+    }
+    // Numeric.
+    NUMERIC.lastIndex = 0;
+    while ((m = NUMERIC.exec(ctx.text)) !== null) {
+      const start = m.index;
+      const end = m.index + m[0].length;
+      if (rangeSpans.some(([s, e]) => start < e && end > s)) continue;
+      const computed = computeAmount(m[1], m[2], m[3]);
+      if (!computed) continue;
+      const perUnit = PER_UNIT.exec(ctx.text.slice(end));
+      const idx = out.length;
+      out.push({
+        id: nextId(),
+        raw_text: m[0],
+        amount: computed.amount,
+        currency: computed.currency,
+        word_form: false,
+        ...(perUnit ? { per_unit: perUnit[1]!.trim().replace(/\s+/g, " ") } : {}),
+        position: posInParagraph(ctx, start, end),
+      });
+      if (computed.fromDollar) dollarSourced.push(idx);
     }
     // Word form.
     WORD_FORM.lastIndex = 0;
@@ -121,7 +181,42 @@ export function extractAmounts(tree: DocumentTree): MoneyReference[] {
     }
   });
 
+  // Deferred currency override: ambiguous `$`-symbol amounts adopt the
+  // controlling currency declared by a document-level clause.
+  if (overrideCurrency && overrideCurrency !== "USD") {
+    for (const idx of dollarSourced) {
+      out[idx]!.currency = overrideCurrency;
+    }
+  }
+
   return out;
+}
+
+/**
+ * Compute a money value from an optional currency token, a numeric
+ * string, and an optional scale suffix. Returns null when the number is
+ * absent or unparseable; `fromDollar` marks an ambiguous `$`-symbol
+ * source (USD by default, but reassignable by a currency-override clause).
+ */
+function computeAmount(
+  symOrCode: string | undefined,
+  rawNum: string | undefined,
+  scaleRaw: string | undefined,
+): { amount: string; currency: string; fromDollar: boolean } | null {
+  if (!symOrCode || !rawNum) return null;
+  const scale = scaleRaw?.toLowerCase();
+  let amount: Decimal;
+  try {
+    amount = new Decimal(rawNum.replace(/,/g, ""));
+  } catch {
+    return null;
+  }
+  if (scale && SCALES[scale]) amount = amount.mul(SCALES[scale]!);
+  return {
+    amount: amount.toString(),
+    currency: resolveCurrency(symOrCode),
+    fromDollar: symOrCode === "$",
+  };
 }
 
 function resolveCurrency(symOrCode: string): string {

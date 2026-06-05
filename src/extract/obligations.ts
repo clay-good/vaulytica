@@ -18,7 +18,15 @@ import { forEachParagraph, posInParagraph } from "./walk.js";
  * via OBLI-001.
  */
 
+// Order matters: multi-word and negative/permissive boundary modals
+// precede the bare modals so "may not" / "is required to" win over a
+// shorter overlap. (v7 §8: modal completeness.)
 const MODALS = [
+  "may not",
+  "is required to",
+  "is permitted to",
+  "is prohibited from",
+  "cannot",
   "shall",
   "must",
   "will",
@@ -60,7 +68,9 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
       const subject = sentence.slice(0, m.index).trim();
       const predicate = sentence.slice(m.index + m[0].length).trim();
       const obligor = resolveObligor(subject, partyNames, partyRoles);
+      const obligorExclusion = scopeExclusion(subject);
       const trigger = TRIGGER_RE.exec(predicate)?.[0]?.trim();
+      const nested = trigger ? decomposeNestedTriggers(trigger) : undefined;
       const qualifier = QUALIFIER_RE.exec(predicate)?.[0]?.trim();
       let action = predicate;
       if (trigger) action = action.replace(trigger, "").trim();
@@ -73,6 +83,8 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
         action,
         trigger,
         qualifier,
+        ...(nested ? { nested_triggers: nested } : {}),
+        ...(obligorExclusion ? { obligor_exclusion: obligorExclusion } : {}),
         modal,
         raw_text: sentence.trim(),
         position: posInParagraph(ctx, start, start + sentence.length),
@@ -81,6 +93,33 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
   });
 
   return out;
+}
+
+/**
+ * Decompose a nested trigger into its chain of sub-conditions. A
+ * trigger like "within 60 days of the date that the other party
+ * provides notice that it has received the goods" carries two embedded
+ * "that …" conditions; extraction otherwise keeps only the top level.
+ * Returns the ordered sub-clauses, or undefined when there is no nesting.
+ */
+function decomposeNestedTriggers(trigger: string): string[] | undefined {
+  const parts = trigger
+    .split(/\bthat\b/i)
+    .map((p) => p.replace(/^[\s,]+|[\s,]+$/g, ""))
+    .filter((p) => p.length > 0);
+  return parts.length >= 2 ? parts : undefined;
+}
+
+/**
+ * Capture a scope-narrowing exclusion in the obligor subject:
+ * "Each party except the Provider shall …" → "Provider".
+ */
+function scopeExclusion(subject: string): string | undefined {
+  const m = /\bexcept\s+(?:for\s+)?(?:the\s+)?([A-Za-z][\w .'’-]{1,40}?)\s*$/i.exec(
+    subject.replace(/[,;]\s*$/, "").trim(),
+  );
+  if (!m) return undefined;
+  return m[1]!.replace(/[\s.]+$/, "").trim() || undefined;
 }
 
 function splitSentences(text: string): { text: string; start: number }[] {

@@ -3,18 +3,32 @@ import type { DateReference } from "./types.js";
 import { forEachParagraph, posInParagraph } from "./walk.js";
 
 /**
- * Extract every date reference from the document. Three categories:
+ * Extract every date reference from the document. Categories:
  *
  * 1. Absolute dates: `2025-01-01`, `1/1/2025`, `01/01/25`, `January 1, 2025`.
  * 2. Relative dates: `thirty (30) days after the Effective Date`,
- *    `within 60 days of the date hereof`.
+ *    `within 60 days of the date hereof`. Disjunctive ranges
+ *    (`thirty to sixty days after …`) keep both bounds.
  * 3. Named-anchor references: bare uses of defined date terms such as
- *    `the Effective Date` or `the Closing Date`. (The actual definition
- *    is resolved by the definitions extractor, not here.)
+ *    `the Effective Date` or `the Commencement Date`. (The actual
+ *    definition is resolved by the definitions extractor, not here.)
+ * 4. Fiscal periods: `fiscal Q2 2025`, `FY2025-Q3` — no calendar-unit
+ *    anchor exists, so these are surfaced for manual verification.
  */
 
 const MONTHS =
   "January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec";
+
+/**
+ * Two-digit-year century pivot. A bare two-digit year `YY < PIVOT`
+ * resolves to `2000 + YY`, otherwise `1900 + YY`. This follows the
+ * POSIX `strptime` convention (years 69–99 → 1969–1999, 00–68 →
+ * 2000–2068); 70 is the documented boundary. It is a heuristic: a
+ * decades-old trust instrument or a far-future refinancing date can sit
+ * on the wrong side of it, so a two-digit year is a candidate for
+ * surrounding-context confirmation, not a guarantee.
+ */
+const TWO_DIGIT_YEAR_PIVOT = 70;
 
 const ISO = /\b(\d{4})-(\d{2})-(\d{2})\b/g;
 const US_NUMERIC = /\b(\d{1,2})\/(\d{1,2})\/(\d{2,4})\b/g;
@@ -31,12 +45,50 @@ const NUMBER_WORDS: Record<string, number> = {
   seventy: 70, eighty: 80, ninety: 90, hundred: 100,
 };
 
+/**
+ * Disjunctive / range deadlines: "thirty to sixty days after the
+ * Effective Date", "30 to 60 days of …". Captured before the single
+ * RELATIVE pass; the matched span suppresses the single-bound pass so
+ * the same phrase is not double-counted. A range whose upper bound is
+ * unresolved is reported verify-manually, never guessed to one date.
+ */
+const RANGE_RELATIVE = new RegExp(
+  String.raw`\b(?:within\s+|between\s+)?(\w+(?:[-\s]\w+)?)\s*\(?\s*(\d+)?\s*\)?\s*(?:to|-|–|—|and|or)\s+(\w+(?:[-\s]\w+)?)\s*\(?\s*(\d+)?\s*\)?\s*(day|days|week|weeks|month|months|year|years|business\s+day|business\s+days)\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z][\w\s]{2,40}?)(?=[.,;)]|$)`,
+  "gi",
+);
+
 const RELATIVE = new RegExp(
   String.raw`\b(?:within\s+)?(\w+(?:[-\s]\w+)?)\s*\(?\s*(\d+)?\s*\)?\s*(day|days|week|weeks|month|months|year|years|business\s+day|business\s+days)\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z][\w\s]{2,40}?)(?=[.,;)]|$)`,
   "gi",
 );
 
-const NAMED_ANCHOR = /\bthe\s+(Effective|Closing|Commencement|Termination|Expiration|Renewal|Execution)\s+Date\b/gi;
+/**
+ * Named date anchors. The vocabulary is a small, inspectable, citable
+ * alias set rather than an opaque literal: each phrase is a defined
+ * date term that real agreements use as the reference point for
+ * relative deadlines. Keep these in canonical "<Phrase> Date" form so
+ * obligation/cross-document resolution sees one stable anchor per
+ * concept. (v7 §5: broaden anchor-alias breadth.)
+ */
+const ANCHOR_ALIASES =
+  "Effective|Closing|Commencement|Termination|Expiration|Renewal|Execution|Signing|Start|Term Start|Delivery|Acceptance|Go-Live|Hire|Grant|Vesting|Maturity|Funding|Disbursement|Completion|Onboarding";
+
+const NAMED_ANCHOR = new RegExp(
+  String.raw`\bthe\s+(${ANCHOR_ALIASES})\s+Date\b`,
+  "gi",
+);
+
+/** Bare "Date Hereof" / "date hereof" — an anchor with no "Date" suffix. */
+const DATE_HEREOF = /\bthe\s+(Date\s+Hereof)\b/gi;
+
+/**
+ * Fiscal periods: "fiscal Q2 2025", "FY2025-Q3", "FY 2025", "fiscal
+ * year 2025". No calendar-unit anchor exists; financial documents use
+ * them for payment and reporting deadlines, so capture them rather than
+ * fall silent. Normalized to an `FYyyyy[-Qn]` label.
+ */
+const FISCAL_PERIOD =
+  /\b(?:fiscal\s+(?:year\s+)?|FY\s*)(\d{4})(?:[-\s]?Q([1-4]))?\b|\bfiscal\s+Q([1-4])\s+(\d{4})\b/gi;
 
 export function extractDates(tree: DocumentTree): DateReference[] {
   const out: DateReference[] = [];
@@ -62,7 +114,7 @@ export function extractDates(tree: DocumentTree): DateReference[] {
       const mm = parseInt(m[1]!, 10);
       const dd = parseInt(m[2]!, 10);
       let yyyy = parseInt(m[3]!, 10);
-      if (m[3]!.length === 2) yyyy = yyyy < 70 ? 2000 + yyyy : 1900 + yyyy;
+      if (m[3]!.length === 2) yyyy = yyyy < TWO_DIGIT_YEAR_PIVOT ? 2000 + yyyy : 1900 + yyyy;
       const iso = `${yyyy.toString().padStart(4, "0")}-${mm.toString().padStart(2, "0")}-${dd.toString().padStart(2, "0")}`;
       out.push({
         id: nextId(),
@@ -89,8 +141,35 @@ export function extractDates(tree: DocumentTree): DateReference[] {
         position: posInParagraph(ctx, m.index, m.index + m[0].length),
       });
     }
+    // Disjunctive / range deadlines first; record spans so the
+    // single-bound RELATIVE pass below does not double-count them.
+    const rangeSpans: Array<[number, number]> = [];
+    RANGE_RELATIVE.lastIndex = 0;
+    while ((m = RANGE_RELATIVE.exec(ctx.text)) !== null) {
+      const lower = countOf(m[1], m[2]);
+      const upper = countOf(m[3], m[4]);
+      const unit = (m[5] ?? "").toLowerCase().replace(/\s+/g, " ").trim();
+      const anchor = (m[6] ?? "").trim();
+      if (lower === null || upper === null) continue;
+      const direction = /\bbefore\b|\bprior\s+to\b/i.test(m[0]) ? -1 : 1;
+      const lo = lower * unitToDays(unit) * direction;
+      const hi = upper * unitToDays(unit) * direction;
+      rangeSpans.push([m.index, m.index + m[0].length]);
+      out.push({
+        id: nextId(),
+        type: "relative",
+        raw_text: m[0],
+        anchor,
+        offset_days: Math.min(lo, hi),
+        offset_days_max: Math.max(lo, hi),
+        position: posInParagraph(ctx, m.index, m.index + m[0].length),
+      });
+    }
     RELATIVE.lastIndex = 0;
     while ((m = RELATIVE.exec(ctx.text)) !== null) {
+      const start = m.index;
+      const end = m.index + m[0].length;
+      if (rangeSpans.some(([s, e]) => start < e && end > s)) continue;
       const wordCount = m[1] ? parseWordNumber(m[1]) : null;
       const numericCount = m[2] ? parseInt(m[2], 10) : null;
       const unit = (m[3] ?? "").toLowerCase().replace(/\s+/g, " ").trim();
@@ -104,24 +183,73 @@ export function extractDates(tree: DocumentTree): DateReference[] {
         raw_text: m[0],
         anchor,
         offset_days: days,
-        position: posInParagraph(ctx, m.index, m.index + m[0].length),
+        position: posInParagraph(ctx, start, end),
       });
     }
     NAMED_ANCHOR.lastIndex = 0;
     while ((m = NAMED_ANCHOR.exec(ctx.text)) !== null) {
-      const word = m[1]!;
-      const title = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
       out.push({
         id: nextId(),
         type: "named-anchor",
         raw_text: m[0].replace(/^the\s+/i, ""),
-        anchor: `${title} Date`,
+        anchor: `${titleCaseAnchor(m[1]!)} Date`,
+        position: posInParagraph(ctx, m.index, m.index + m[0].length),
+      });
+    }
+    DATE_HEREOF.lastIndex = 0;
+    while ((m = DATE_HEREOF.exec(ctx.text)) !== null) {
+      out.push({
+        id: nextId(),
+        type: "named-anchor",
+        raw_text: m[0].replace(/^the\s+/i, ""),
+        anchor: "Date Hereof",
+        position: posInParagraph(ctx, m.index, m.index + m[0].length),
+      });
+    }
+    FISCAL_PERIOD.lastIndex = 0;
+    while ((m = FISCAL_PERIOD.exec(ctx.text)) !== null) {
+      // Two alternations: "FY2025[-Q3]" (m1=year, m2=quarter) or
+      // "fiscal Q3 2025" (m3=quarter, m4=year).
+      const year = m[1] ?? m[4];
+      const quarter = m[2] ?? m[3];
+      if (!year) continue;
+      const label = quarter ? `FY${year}-Q${quarter}` : `FY${year}`;
+      out.push({
+        id: nextId(),
+        type: "fiscal-period",
+        raw_text: m[0],
+        fiscal_period: label,
         position: posInParagraph(ctx, m.index, m.index + m[0].length),
       });
     }
   });
 
   return out;
+}
+
+/**
+ * Resolve a count from a word-slot and an optional parenthetical digit
+ * slot, e.g. ("thirty", "30") → 30, ("thirty", undefined) → 30,
+ * ("30", undefined) → 30. Returns null when neither resolves.
+ */
+function countOf(wordGroup: string | undefined, digitGroup: string | undefined): number | null {
+  if (digitGroup) return parseInt(digitGroup, 10);
+  if (!wordGroup) return null;
+  const w = parseWordNumber(wordGroup);
+  if (w !== null) return w;
+  return /^\d+$/.test(wordGroup.trim()) ? parseInt(wordGroup.trim(), 10) : null;
+}
+
+/** Title-case a (possibly multi-word, hyphenated) anchor alias. */
+function titleCaseAnchor(raw: string): string {
+  return raw
+    .split(/(\s+|-)/)
+    .map((part) =>
+      /^\s+$/.test(part) || part === "-"
+        ? part
+        : part.charAt(0).toUpperCase() + part.slice(1).toLowerCase(),
+    )
+    .join("");
 }
 
 function monthNumber(name: string): number | null {

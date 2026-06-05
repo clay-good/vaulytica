@@ -21,4 +21,36 @@ describe("extractObligations", () => {
     expect(provider?.trigger ?? "").toMatch(/within\s+thirty/);
     expect(customer?.qualifier ?? "").toMatch(/subject\s+to/);
   });
+
+  it("decomposes a nested trigger into its sub-conditions", () => {
+    const tree = buildTree([
+      "Notice",
+      "The Provider shall refund the fees within 60 days of the date that the Customer provides written notice that it has terminated for cause.",
+    ]);
+    const obli = extractObligations(tree, []).find((o) => o.nested_triggers);
+    expect(obli?.nested_triggers?.length).toBeGreaterThanOrEqual(2);
+    expect(obli?.nested_triggers?.join(" ")).toMatch(/written notice/);
+  });
+
+  it("captures a scope-narrowing obligor exclusion", () => {
+    const tree = buildTree([
+      "Confidentiality",
+      "Each party except the Provider shall maintain insurance at all times.",
+    ]);
+    const obli = extractObligations(tree, []).find((o) => o.obligor_exclusion);
+    expect(obli?.obligor_exclusion).toMatch(/Provider/);
+  });
+
+  it("captures prohibitive and permissive boundary modals", () => {
+    const tree = buildTree([
+      "Restrictions",
+      "The Customer may not assign this Agreement without consent.",
+      "The Provider is required to maintain the Services.",
+      "The Customer cannot sublicense the software.",
+    ]);
+    const modals = extractObligations(tree, []).map((o) => o.modal);
+    expect(modals).toContain("may not");
+    expect(modals).toContain("is required to");
+    expect(modals).toContain("cannot");
+  });
 });

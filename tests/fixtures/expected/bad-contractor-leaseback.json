@@ -271,7 +271,8 @@
     },
     {
       "elapsed_ms": 0,
-      "fired": false,
+      "finding_id": "OBLI-005-s1.1-402",
+      "fired": true,
       "rule_id": "OBLI-005",
       "rule_version": "1.0.0"
     },
@@ -816,6 +817,23 @@
       "title": "No venue / forum clause detected"
     },
     {
+      "description": "Contractor may not use any vehicle or device not leased from or pre-approved by Company.",
+      "document_position": 402,
+      "excerpt": {
+        "end_offset": 491,
+        "section_id": "s1.1",
+        "start_offset": 402,
+        "text": "Contractor may not use any vehicle or device not leased from or pre-approved by Company."
+      },
+      "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
+      "id": "OBLI-005-s1.1-402",
+      "rule_id": "OBLI-005",
+      "rule_version": "1.0.0",
+      "severity": "info",
+      "source_citations": [],
+      "title": "Negative covenants: 1"
+    },
+    {
       "description": "Indemnity clause appears to be missing: notice, defense control, settlement consent.",
       "document_position": 1236,
       "excerpt": {
@@ -853,7 +871,7 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "ca28e896a052f9fccb9f349d7512f227c2689b44dbd5acf111a810fca2488e67",
+  "result_hash": "141e753662ffac537779e0b3fd86e59dfc481115e36bc25977cb2a1f94373a7c",
   "source_file": {
     "name": "bad-contractor-leaseback.docx",
     "sha256": "82496f664a3abe77b7ed03c7c77b47c9ffbd8c5f883389cb761b7ba68b31f98d",

@@ -27,6 +27,15 @@ export type Party = {
   role?: string;
   entity_type?: string;
   jurisdiction_of_formation?: string;
+  /**
+   * Alternate surface forms that refer to this same entity: a short
+   * form ("Acme" for "Acme Corp."), an upper-cased variant ("ACME"),
+   * and the defined role ("Provider"). Lets obligation-obligor
+   * resolution and CROSS-PARTY stop drifting on one entity.
+   */
+  aliases?: string[];
+  /** Operating / "doing business as" name, when distinct from the legal name. */
+  dba?: string;
   positions: DocPosition[];
 };
 
@@ -34,7 +43,8 @@ export type DateReferenceType =
   | "absolute"
   | "relative"
   | "named-anchor"
-  | "anchor-definition";
+  | "anchor-definition"
+  | "fiscal-period";
 
 export type DateReference = {
   id: string;
@@ -46,6 +56,19 @@ export type DateReference = {
   anchor?: string;
   /** For relative dates: offset in days from anchor. Negative for "before". */
   offset_days?: number;
+  /**
+   * For disjunctive / range relative deadlines ("thirty to sixty days
+   * after …"): the upper bound in days. When set, `offset_days` is the
+   * lower bound and the deadline is reported verify-manually rather than
+   * guessed to a single calendar date.
+   */
+  offset_days_max?: number;
+  /**
+   * For fiscal-period references ("fiscal Q2 2025", "FY2025-Q3"): the
+   * normalized period label. No calendar-unit anchor exists, so these
+   * carry no `iso` and are surfaced as verify-manually deadlines.
+   */
+  fiscal_period?: string;
   position: DocPosition;
 };
 
@@ -56,6 +79,18 @@ export type MoneyReference = {
   amount: string;
   currency: string;
   word_form: boolean;
+  /**
+   * For range amounts ("$100k to $200k"): the upper bound as a decimal
+   * string. When set, `amount` is the lower bound. A cap rule reads the
+   * upper bound rather than a random endpoint.
+   */
+  range_max?: string;
+  /**
+   * For per-unit amounts ("USD 50 per user, per month", "$X per
+   * incident"): the normalized unit qualifier ("user, per month",
+   * "incident"). Distinguishes a per-incident cap from an absolute cap.
+   */
+  per_unit?: string;
   position: DocPosition;
 };
 
@@ -111,6 +146,18 @@ export type Obligation = {
   action: string;
   trigger?: string;
   qualifier?: string;
+  /**
+   * For nested trigger conditions ("within 60 days of the date that the
+   * other party provides notice that it has received …"): the chain of
+   * sub-conditions, decomposed beyond the top-level trigger.
+   */
+  nested_triggers?: string[];
+  /**
+   * For scope-narrowing obligors ("Each party except the Provider
+   * shall …"): the excluded role/party, so the obligor is not read as
+   * a bare "each party".
+   */
+  obligor_exclusion?: string;
   modal: string;
   raw_text: string;
   position: DocPosition;

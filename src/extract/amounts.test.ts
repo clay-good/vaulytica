@@ -25,4 +25,42 @@ describe("extractAmounts", () => {
     const codes = new Set(out.map((a) => a.currency));
     expect(codes).toEqual(new Set(["EUR", "GBP", "JPY"]));
   });
+
+  it("captures a range amount with lower and upper bounds, not two endpoints", () => {
+    const tree = buildTree(["Cap", "Liability is capped at $100k to $200k under this Agreement."]);
+    const out = extractAmounts(tree);
+    expect(out).toHaveLength(1);
+    expect(out[0]?.amount).toBe("100000");
+    expect(out[0]?.range_max).toBe("200000");
+  });
+
+  it("captures a 'between X and Y' range but not a bare currency list", () => {
+    const range = extractAmounts(buildTree(["Cap", "between $50,000 and $100,000"]));
+    expect(range).toHaveLength(1);
+    expect(range[0]?.range_max).toBe("100000");
+    const list = extractAmounts(buildTree(["Body", "Pay $50,000 and $100,000."]));
+    expect(list).toHaveLength(2);
+    expect(list.every((a) => a.range_max === undefined)).toBe(true);
+  });
+
+  it("preserves a per-unit qualifier", () => {
+    const out = extractAmounts(buildTree(["Fees", "The price is USD 50 per user, per month."]));
+    const perUser = out.find((a) => a.per_unit);
+    expect(perUser?.amount).toBe("50");
+    expect(perUser?.per_unit).toMatch(/^user/);
+  });
+
+  it("applies a deferred currency override to ambiguous $ amounts", () => {
+    const tree = buildTree([
+      "Fees",
+      "The fee is $100,000. All amounts are in CAD unless otherwise stated.",
+    ]);
+    const out = extractAmounts(tree);
+    expect(out.find((a) => a.amount === "100000")?.currency).toBe("CAD");
+  });
+
+  it("leaves currency unchanged when no override clause is present", () => {
+    const out = extractAmounts(buildTree(["Fees", "The fee is $100,000."]));
+    expect(out[0]?.currency).toBe("USD");
+  });
 });

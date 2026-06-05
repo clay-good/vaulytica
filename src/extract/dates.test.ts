@@ -38,4 +38,51 @@ describe("extractDates", () => {
     const found = dates.find((d) => d.raw_text === "2025-02-30");
     expect(found?.iso).toBeUndefined();
   });
+
+  it("captures broadened anchor aliases (Commencement, Term Start, Date Hereof)", () => {
+    const tree = buildTree([
+      "Term",
+      "This begins on the Commencement Date and ends per the Term Start Date, as of the Date Hereof.",
+    ]);
+    const anchors = extractDates(tree)
+      .filter((d) => d.type === "named-anchor")
+      .map((d) => d.anchor);
+    expect(anchors).toContain("Commencement Date");
+    expect(anchors).toContain("Term Start Date");
+    expect(anchors).toContain("Date Hereof");
+  });
+
+  it("decomposes disjunctive range deadlines into lower and upper bounds", () => {
+    const tree = buildTree([
+      "Notice",
+      "The party shall respond within thirty to sixty days after the Effective Date.",
+    ]);
+    const range = extractDates(tree).find((d) => d.offset_days_max !== undefined);
+    expect(range?.offset_days).toBe(30);
+    expect(range?.offset_days_max).toBe(60);
+    expect(range?.anchor).toMatch(/Effective Date/);
+  });
+
+  it("does not double-count a range as a separate single-bound relative date", () => {
+    const tree = buildTree([
+      "Notice",
+      "The party shall respond within 30 to 60 days after the Effective Date.",
+    ]);
+    const rel = extractDates(tree).filter((d) => d.type === "relative");
+    expect(rel).toHaveLength(1);
+    expect(rel[0]?.offset_days_max).toBe(60);
+  });
+
+  it("captures fiscal periods with a normalized label and no iso", () => {
+    const tree = buildTree([
+      "Payment",
+      "Payment is due in fiscal Q2 2025 and reconciled by FY2025-Q3 and FY 2026.",
+    ]);
+    const fiscal = extractDates(tree).filter((d) => d.type === "fiscal-period");
+    const labels = fiscal.map((d) => d.fiscal_period);
+    expect(labels).toContain("FY2025-Q2");
+    expect(labels).toContain("FY2025-Q3");
+    expect(labels).toContain("FY2026");
+    expect(fiscal.every((d) => d.iso === undefined)).toBe(true);
+  });
 });

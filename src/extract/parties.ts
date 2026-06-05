@@ -54,6 +54,22 @@ const BETWEEN_RE = /\bbetween\s+(.+?)\s+and\s+(.+?)(?:[.;,]|$)/i;
 
 const SIGNATURE_LINE = /^(?:By|Name|Title|Date)\s*:?\s*/i;
 
+/**
+ * Every "By:" / "Name:" segment in a signature paragraph, not just the
+ * leading one. Two-column e-signature blocks flatten to one line with
+ * both parties' "By:"/"Name:" fields; capturing each segment recovers
+ * the second party the leading-anchored regex drops. (v7 §7.)
+ */
+const SIGNATURE_FIELD =
+  /\b(?:By|Name)\s*:\s*(?:\/s\/\s*)?([A-Z][\w.'’-]*(?:\s+[A-Z][\w.'’-]*){0,4}?)(?=\s+(?:By|Name|Title|Date|its)\b|[,;]|\t|\s{2,}|$)/g;
+
+/**
+ * "doing business as" / "d/b/a" operating name following a legal name.
+ * Capture both names; the operating name becomes the party's `dba`.
+ */
+const DBA_RE =
+  /\b(?:d\/b\/a|d\.b\.a\.|dba|doing business as)\s+["“”']?([A-Z][\w&.,'’-]*(?:\s+[A-Z][\w&.,'’-]*){0,5})/gi;
+
 export function extractParties(tree: DocumentTree): Party[] {
   const partyMap = new Map<string, Party>();
   const allText: { text: string; pos: (start: number, end: number) => DocPosition }[] = [];
@@ -90,6 +106,24 @@ export function extractParties(tree: DocumentTree): Party[] {
         position: pos(m.index, m.index + m[0].length),
       });
     }
+    DBA_RE.lastIndex = 0;
+    let dm: RegExpExecArray | null;
+    while ((dm = DBA_RE.exec(text)) !== null) {
+      const dba = cleanPartyName(dm[1] ?? "");
+      if (!dba) continue;
+      // Attach to the party whose declaration ends nearest before the
+      // d/b/a phrase (the legal name it operates under).
+      const before = text.slice(0, dm.index);
+      PARTY_DECL.lastIndex = 0;
+      let pm: RegExpExecArray | null;
+      let legal = "";
+      while ((pm = PARTY_DECL.exec(before)) !== null) {
+        const cand = (pm[1] ?? "").trim();
+        if (cand && !isBoilerplateName(cand)) legal = cand;
+      }
+      const target = legal ? partyMap.get(legal.toLowerCase()) : undefined;
+      if (target && !target.dba) target.dba = dba;
+    }
     const betweenMatch = BETWEEN_RE.exec(text);
     if (betweenMatch) {
       const a = cleanPartyName(betweenMatch[1] ?? "");
@@ -114,14 +148,34 @@ export function extractParties(tree: DocumentTree): Party[] {
   const sigStart = Math.floor(allText.length * 0.85);
   for (let i = sigStart; i < allText.length; i += 1) {
     const { text, pos } = allText[i]!;
-    if (!SIGNATURE_LINE.test(text)) continue;
-    const after = text.replace(SIGNATURE_LINE, "").trim();
-    if (after && /[A-Z]/.test(after) && !/^_+$/.test(after)) {
-      const name = cleanPartyName(after);
-      if (name) {
-        registerParty(partyMap, name, { position: pos(0, text.length) });
+    if (SIGNATURE_LINE.test(text)) {
+      const after = text.replace(SIGNATURE_LINE, "").trim();
+      if (after && /[A-Z]/.test(after) && !/^_+$/.test(after)) {
+        const name = cleanPartyName(after);
+        if (name) {
+          registerParty(partyMap, name, { position: pos(0, text.length) });
+        }
       }
     }
+    // Two-column / tabular signature blocks: pick up every "By:"/"Name:"
+    // field on the line, including the second party's column.
+    SIGNATURE_FIELD.lastIndex = 0;
+    let sm: RegExpExecArray | null;
+    while ((sm = SIGNATURE_FIELD.exec(text)) !== null) {
+      const name = cleanPartyName(sm[1] ?? "");
+      if (name && !isBoilerplateName(name)) {
+        registerParty(partyMap, name, {
+          position: pos(sm.index, sm.index + sm[0].length),
+        });
+      }
+    }
+  }
+
+  // Resolve alias / role chains: a short form, an upper-cased variant,
+  // the defined role, and any d/b/a name all point at one entity.
+  for (const party of partyMap.values()) {
+    const aliases = computeAliases(party);
+    if (aliases.length > 0) party.aliases = aliases;
   }
 
   // Record every additional occurrence of each known party name.
@@ -174,6 +228,40 @@ function registerParty(
     jurisdiction_of_formation: extras.jurisdiction_of_formation,
     positions: extras.position ? [extras.position] : [],
   });
+}
+
+/**
+ * Build the alternate surface forms that refer to the same entity:
+ * a short form (the leading distinctive word of a multi-word legal
+ * name), an all-caps variant, the defined role, and the d/b/a name.
+ * Excludes the canonical name itself and dedupes.
+ */
+function computeAliases(party: Party): string[] {
+  const out: string[] = [];
+  const add = (s: string | undefined): void => {
+    if (!s) return;
+    const v = s.trim();
+    if (v && v.toLowerCase() !== party.name.toLowerCase() && !out.includes(v)) out.push(v);
+  };
+  if (party.role) add(party.role);
+  if (party.dba) add(party.dba);
+  // Short form: leading word(s) before a corporate suffix, tolerant of
+  // trailing punctuation ("Acme Corp.," → "Acme"; "Globex International
+  // Ltd." → "Globex International").
+  const base = party.name.replace(/[\s.,;]+$/, "");
+  const short = base.replace(
+    /[\s,]+(?:Corp|Corporation|Inc|LLC|L\.L\.C\.|Ltd|Limited|Co|Company|GmbH|AG|PLC|LP|LLP|PLLC)\b\.?$/i,
+    "",
+  );
+  if (short && short !== base && /\s/.test(base)) {
+    add(short);
+    const firstWord = short.split(/\s+/)[0];
+    if (firstWord && firstWord.length >= 3) add(firstWord);
+  }
+  // All-caps variant ("ACME") when the name is mixed-case single-token-ish.
+  const upper = party.name.toUpperCase();
+  if (upper !== party.name && party.name.length <= 24) add(upper);
+  return out;
 }
 
 function cleanPartyName(raw: string): string {

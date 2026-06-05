@@ -306,6 +306,16 @@ export function collectDeadlines(extracted: ExtractedData): DeadlinesResult {
       continue;
     }
     if (date.type === "relative") {
+      // A disjunctive / range deadline has no single calendar date; we
+      // surface it for manual verification rather than guessing a bound.
+      if (date.offset_days_max !== undefined) {
+        unresolved.push({
+          raw_text: date.raw_text,
+          reason: "range deadline — verify the controlling bound manually",
+          section,
+        });
+        continue;
+      }
       const resolved = resolveRelative(date, anchors);
       if (resolved) {
         events.push(resolved);
@@ -318,6 +328,14 @@ export function collectDeadlines(extracted: ExtractedData): DeadlinesResult {
           section,
         });
       }
+      continue;
+    }
+    if (date.type === "fiscal-period") {
+      unresolved.push({
+        raw_text: date.raw_text,
+        reason: "fiscal period — no fixed calendar date; verify against the fiscal calendar",
+        section,
+      });
       continue;
     }
     // named-anchor / anchor-definition: a reference, not a dated event.
