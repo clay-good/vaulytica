@@ -11,7 +11,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
  * when recognition throws, so the engine doesn't leak.
  */
 
-const recognize = vi.fn<(img: unknown) => Promise<{ data: { text: string } }>>();
+const recognize =
+  vi.fn<
+    (img: unknown) => Promise<{ data: { text: string; words?: { text: string; confidence: number }[] } }>
+  >();
 const terminate = vi.fn(async () => {});
 const createWorker = vi.fn(async (_lang?: string) => ({ recognize, terminate }));
 
@@ -34,7 +37,7 @@ class FakeOffscreenCanvas {
   }
 }
 
-import { ocrCanvas, runOcr } from "./ocr.js";
+import { ocrCanvas, runOcr, markLowConfidence } from "./ocr.js";
 
 beforeEach(() => {
   vi.stubGlobal("OffscreenCanvas", FakeOffscreenCanvas);
@@ -73,6 +76,42 @@ describe("ocrCanvas", () => {
     recognize.mockRejectedValue(new Error("recognize failed"));
     await expect(ocrCanvas({} as HTMLCanvasElement)).rejects.toThrow("recognize failed");
     expect(terminate).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("markLowConfidence", () => {
+  it("marks only words below the confidence threshold", () => {
+    const out = markLowConfidence([
+      { text: "Acme", confidence: 95 },
+      { text: "Corp", confidence: 40 },
+      { text: "shall", confidence: 88 },
+      { text: "pay", confidence: 12 },
+    ]);
+    expect(out).toBe("Acme Corp [uncertain] shall pay [uncertain]");
+  });
+
+  it("leaves a high-confidence line unmarked", () => {
+    const out = markLowConfidence([
+      { text: "All", confidence: 90 },
+      { text: "clear", confidence: 91 },
+    ]);
+    expect(out).toBe("All clear");
+  });
+});
+
+describe("runOcr applies per-word confidence marking when words are present", () => {
+  it("flags low-confidence words inline", async () => {
+    recognize.mockResolvedValue({
+      data: {
+        text: "ignored",
+        words: [
+          { text: "Provider", confidence: 95 },
+          { text: "pays", confidence: 30 },
+        ],
+      },
+    });
+    const text = await runOcr({ numPages: 1, getPage: async () => fakePage() });
+    expect(text).toBe("Provider pays [uncertain]");
   });
 });
 

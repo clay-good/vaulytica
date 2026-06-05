@@ -97,11 +97,11 @@ export async function ingestPdfBuffer(
     options.onProgress?.(n / pdfDoc.numPages, "text");
   }
 
-  const totalAlpha = pages
-    .map((p) => p.items.reduce((acc, it) => acc + (it.str.match(/[A-Za-z]/g)?.length ?? 0), 0))
-    .reduce((a, b) => a + b, 0);
-
-  const needsOcr = pdfDoc.numPages > 1 && totalAlpha < 100;
+  const perPageAlpha = pages.map((p) =>
+    p.items.reduce((acc, it) => acc + (it.str.match(/[A-Za-z]/g)?.length ?? 0), 0),
+  );
+  const layer = assessTextLayer(perPageAlpha);
+  const needsOcr = layer.needsOcr;
 
   if (needsOcr) {
     if (options.allowOcr) {
@@ -113,8 +113,14 @@ export async function ingestPdfBuffer(
       const tree = buildTreeFromOcrText(ocrText);
       const normalized = normalize(tree);
       warnings.push(
-        `Text layer was effectively empty (${totalAlpha} alphabetic chars across ${pdfDoc.numPages} pages); OCR fallback was used. Some structure may be lost.`,
+        `${layer.reason}; OCR fallback was used. Some structure may be lost.`,
       );
+      const uncertain = (ocrText.match(/\[uncertain\]/g) ?? []).length;
+      if (uncertain > 0) {
+        warnings.push(
+          `OCR flagged ${uncertain} low-confidence word${uncertain === 1 ? "" : "s"} (marked "[uncertain]" in the text). Verify any party name, amount, or date near an [uncertain] marker before relying on a finding.`,
+        );
+      }
       return {
         tree: normalized,
         source: "pdf",
@@ -125,7 +131,7 @@ export async function ingestPdfBuffer(
       };
     }
     warnings.push(
-      `Text layer is effectively empty (${totalAlpha} alphabetic chars across ${pdfDoc.numPages} pages). Pass { allowOcr: true } to run OCR via tesseract.js, or supply a digitally-generated PDF.`,
+      `${layer.reason}. Pass { allowOcr: true } to run OCR via tesseract.js, or supply a digitally-generated PDF.`,
     );
   }
 
@@ -140,6 +146,61 @@ export async function ingestPdfBuffer(
     sha256,
     warnings,
   };
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+// Text-layer assessment (OCR trigger)
+// ───────────────────────────────────────────────────────────────────────────
+
+/** A page with fewer alphabetic characters than this is treated as image-only. */
+export const PER_PAGE_ALPHA_FLOOR = 50;
+
+/**
+ * Decide whether a PDF needs OCR from its per-page alphabetic-character
+ * counts. Two triggers, both requiring more than one page:
+ *
+ * 1. Whole-document near-empty (< 100 alpha chars total) — a fully
+ *    scanned PDF (the original, conservative trigger).
+ * 2. Mixed text layer — most pages are image-only (< {@link
+ *    PER_PAGE_ALPHA_FLOOR} alpha chars) even though a searchable header
+ *    or cover inflates the total above 100. A digitally-searchable
+ *    header over an image-only body would otherwise be misread as
+ *    text-sufficient and the body silently lost.
+ *
+ * Conservative on trigger 2: it requires at least two image-only pages
+ * and a clear majority (≥ 60%) of pages image-only, so a single sparse
+ * divider or signature page does not force OCR on an otherwise-text PDF.
+ * Pure and deterministic.
+ */
+export function assessTextLayer(perPageAlpha: number[]): {
+  needsOcr: boolean;
+  imageOnlyPages: number[];
+  reason: string;
+} {
+  const numPages = perPageAlpha.length;
+  const totalAlpha = perPageAlpha.reduce((a, b) => a + b, 0);
+  const imageOnlyPages = perPageAlpha
+    .map((a, i) => ({ a, page: i + 1 }))
+    .filter((x) => x.a < PER_PAGE_ALPHA_FLOOR)
+    .map((x) => x.page);
+  if (numPages <= 1) {
+    return { needsOcr: false, imageOnlyPages, reason: "" };
+  }
+  if (totalAlpha < 100) {
+    return {
+      needsOcr: true,
+      imageOnlyPages,
+      reason: `Text layer is effectively empty (${totalAlpha} alphabetic chars across ${numPages} pages)`,
+    };
+  }
+  if (imageOnlyPages.length >= 2 && imageOnlyPages.length / numPages >= 0.6) {
+    return {
+      needsOcr: true,
+      imageOnlyPages,
+      reason: `Text layer is mixed: ${imageOnlyPages.length} of ${numPages} pages are image-only (a searchable header over a scanned body)`,
+    };
+  }
+  return { needsOcr: false, imageOnlyPages, reason: "" };
 }
 
 // ───────────────────────────────────────────────────────────────────────────

@@ -25,14 +25,42 @@ type PdfPage = {
   };
 };
 
+type RecognizeWord = { text: string; confidence: number };
+type RecognizeResult = { data: { text: string; words?: RecognizeWord[] } };
+
 type TesseractLike = {
   createWorker: (lang?: string) => Promise<{
-    recognize: (img: HTMLCanvasElement | string) => Promise<{ data: { text: string } }>;
+    recognize: (img: HTMLCanvasElement | string) => Promise<RecognizeResult>;
     terminate: () => Promise<void>;
   }>;
 };
 
 const OCR_SCALE = 200 / 72;
+
+/**
+ * Confidence (0–100) below which a recognized word is flagged
+ * `[uncertain]`. Fixed so the marker stream is deterministic: a faxed
+ * or photocopied scan never silently feeds a misread party name or
+ * amount into a rule — the reviewer sees the uncertainty inline.
+ */
+export const OCR_CONFIDENCE_THRESHOLD = 60;
+
+/**
+ * Render a page's recognized words to text, appending an `[uncertain]`
+ * marker after each word whose confidence is below the threshold. Pure
+ * and deterministic. When tesseract does not surface per-word data
+ * (older builds, or a mock), callers fall back to the plain `text`.
+ */
+export function markLowConfidence(
+  words: RecognizeWord[],
+  threshold = OCR_CONFIDENCE_THRESHOLD,
+): string {
+  return words
+    .map((w) => (w.confidence < threshold ? `${w.text} [uncertain]` : w.text))
+    .join(" ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
 
 export type OcrProgress = (progress: number, stage: "text" | "ocr") => void;
 
@@ -54,7 +82,13 @@ export async function runOcr(pdfDoc: PdfDocument, onProgress?: OcrProgress): Pro
       if (!ctx) throw new Error("ingest/ocr: failed to acquire 2D canvas context");
       await page.render({ canvasContext: ctx, viewport }).promise;
       const result = await worker.recognize(canvas);
-      chunks.push(result.data.text);
+      // Prefer per-word confidence marking when tesseract surfaces it;
+      // fall back to the plain page text otherwise.
+      const pageText =
+        result.data.words && result.data.words.length > 0
+          ? markLowConfidence(result.data.words)
+          : result.data.text;
+      chunks.push(pageText);
       onProgress?.(n / pdfDoc.numPages, "ocr");
     }
     return chunks.join("\n\n");

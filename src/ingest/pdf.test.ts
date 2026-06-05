@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { ingestPdfBuffer } from "./pdf.js";
+import { ingestPdfBuffer, assessTextLayer } from "./pdf.js";
 
 // The first call lazily loads pdfjs (`legacy/build/pdf.mjs`) — a heavy module
 // whose cold init can exceed vitest's default 5s timeout on slower CI runners
@@ -79,5 +79,31 @@ describe("ingestPdfBuffer — real pdfjs text extraction", () => {
     const a = await ingestPdfBuffer(buildMinimalPdf("Same bytes"), { allowOcr: false });
     const b = await ingestPdfBuffer(buildMinimalPdf("Same bytes"), { allowOcr: false });
     expect(a.sha256).toBe(b.sha256);
+  });
+});
+
+describe("assessTextLayer — OCR trigger heuristics", () => {
+  it("does not trigger on a single page", () => {
+    expect(assessTextLayer([5]).needsOcr).toBe(false);
+  });
+
+  it("triggers on a whole-document near-empty multi-page PDF", () => {
+    const r = assessTextLayer([10, 5, 0]);
+    expect(r.needsOcr).toBe(true);
+    expect(r.reason).toMatch(/effectively empty/);
+  });
+
+  it("triggers on a mixed layer: searchable header over an image-only body", () => {
+    // page 1 = 150-char cover; pages 2–5 image-only. Total > 100, so the
+    // old whole-document trigger would miss it.
+    const r = assessTextLayer([150, 0, 0, 0, 0]);
+    expect(r.needsOcr).toBe(true);
+    expect(r.reason).toMatch(/mixed/);
+    expect(r.imageOnlyPages).toEqual([2, 3, 4, 5]);
+  });
+
+  it("does not trigger on a text PDF with one sparse divider/signature page", () => {
+    const r = assessTextLayer([2000, 1800, 10, 1500]);
+    expect(r.needsOcr).toBe(false);
   });
 });
