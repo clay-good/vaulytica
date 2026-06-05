@@ -33,6 +33,14 @@ All notable changes to this project will be documented in this file. Format adap
   testable headless.
 
 ### Changed
+- **`no-console` lint guard on the shipped `src/` bundle.** CONTRIBUTING
+  promised "console is restricted," but the ESLint config never enforced it.
+  `src/` already carries **zero** `console.*`, so the rule is added with no
+  churn — a regression guard that keeps stray debug logs (noise, and a
+  potential info-leak of document content to DevTools in a "nothing leaves the
+  tab" tool) out of the deployed code. Scoped to non-test `src/`; `tools/`,
+  `dkb/`, and tests log freely. CONTRIBUTING's code-style note corrected to
+  state the actual enforcement precisely (warnings vs errors; ESLint vs `tsc`).
 - **README — "What you can drop in" ingest cheat sheet.** A new section + table
   documents how each input is handled (digital PDF → pdf.js text extraction;
   scanned PDF → lazy OCR fallback; DOCX → mammoth; pasted text; folder/`.zip` →

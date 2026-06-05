@@ -25,6 +25,14 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](spec.md) §26.
 
 ## Post-1.0 work
 
+### Enforce the documented `no-console` rule on the shipped bundle + fix the doc (2026-06-05) — ✅ complete
+
+A doc/reality mismatch found while auditing the current-facing docs for staleness. [`CONTRIBUTING.md`](CONTRIBUTING.md) claimed "console is restricted," but `eslint.config.js` never enforced `no-console` (confirmed during the ESLint 9 migration, when the dead `// eslint-disable-next-line no-console` directives turned out to guard a rule that wasn't even on). The better fix is to make the promise true rather than weaken it.
+
+- **`no-console: "error"` scoped to non-test `src/`** ([`eslint.config.js`](eslint.config.js)). `src/` is the **deployed** browser code; in a "nothing leaves the tab" tool a stray `console.log` is both noise and a potential info-leak of document content to DevTools, so the shipped bundle should carry none. `tools/`, `dkb/`, and tests log freely (the harness/CLI surfaces legitimately print), so the rule is scoped with `files: ["src/**/*.ts"], ignores: ["src/**/*.test.ts"]`. **Zero churn** — `src/` already has 0 `console.*`, so it's a pure regression guard. Verified three ways: lint stays green; injecting a `console.log` into a `src/` file makes lint error (`Unexpected console statement`); the rule does **not** fire in `tools/accuracy/run.ts` (correct scoping).
+- **CONTRIBUTING corrected** to state the actual enforcement precisely: `no-explicit-any`/unused-vars are *warnings* (with the `_` opt-out), `no-console` is an *error* in `src/`, and `tsc`'s `noUnusedLocals`/`noUnusedParameters` are the things that make unused locals *hard build errors* — replacing the vaguer/partly-wrong prior wording.
+- **Verification.** lint (0) + typecheck + 2495 tests + build green; clean. No `src/` behavior change → no `result_hash`/golden churn, no responsiveness impact.
+
 ### Close the last ingest coverage gap — OCR orchestration tests + README count fix (2026-06-05) — ✅ complete
 
 Follows the "make the path verifiable" thread from the pdfjs work. `ocr.ts` (the scanned-PDF OCR fallback) was the **last** ingest entrypoint with zero unit coverage. Its real engine — tesseract.js (WASM + a downloaded `eng` model) plus canvas rasterization — can't run headless, but the **orchestration logic we wrote** can be covered with mocks.

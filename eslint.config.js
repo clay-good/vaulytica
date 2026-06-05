@@ -2,9 +2,10 @@
 //
 // ESLint 8 reached end-of-life in October 2024 and its legacy `.eslintrc`
 // system pulled the deprecated `@humanwhocodes/config-array` / `inflight` /
-// `rimraf` transitive packages. This flat config is behavior-preserving: same
-// ignores, same browser+node globals (was `env`), same two rule overrides as
-// the old `.eslintrc.cjs`. The toolchain is now `eslint@9`, the unified
+// `rimraf` transitive packages. The migration was behavior-preserving (same
+// ignores, same browser+node globals (was `env`), same rule overrides as the
+// old `.eslintrc.cjs`); a `no-console` guard on the shipped `src/` bundle was
+// added afterward (see below). The toolchain is now `eslint@10`, the unified
 // `typescript-eslint@8` meta-package (replacing the separate
 // `@typescript-eslint/{parser,eslint-plugin}`), and `eslint-config-prettier@10`.
 import js from "@eslint/js";
@@ -42,6 +43,18 @@ export default tseslint.config(
       ],
       "@typescript-eslint/no-explicit-any": "warn",
     },
+  },
+
+  // Keep the shipped browser bundle free of stray `console.*`. `src/` is the
+  // deployed code, and in a "nothing leaves the tab" tool a stray debug log is
+  // both noise and a potential info-leak of document content to DevTools. Build
+  // tooling (`tools/`, `dkb/`) and tests log freely, so this is scoped to
+  // non-test `src/` files. (`src/` carries zero `console.*` today; this is a
+  // regression guard, and it makes CONTRIBUTING's "console is restricted" true.)
+  {
+    files: ["src/**/*.ts"],
+    ignores: ["src/**/*.test.ts"],
+    rules: { "no-console": "error" },
   },
 
   // Turn off stylistic rules that conflict with Prettier. Must be last.

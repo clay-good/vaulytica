@@ -110,7 +110,7 @@ Discuss in an issue first. Extractor changes touch the deterministic contract; m
 ## Code style
 
 - Prettier handles formatting. Run `npm run format` before pushing if your editor doesn't auto-format.
-- ESLint config blocks the obvious mistakes (`no-explicit-any` is on, console is restricted, unused imports/locals are errors). Don't disable rules without a clear reason in the PR description.
+- ESLint (flat config, `eslint.config.js`) flags the obvious mistakes: `no-explicit-any` and unused vars are warnings (prefix an intentionally-unused name with `_` to opt out); `no-console` is an **error** in shipped `src/` code (build tooling under `tools/`/`dkb/` and tests may log freely); and `tsc`'s `noUnusedLocals`/`noUnusedParameters` make unused locals/parameters hard build errors. Don't disable rules without a clear reason in the PR description.
 - TypeScript is strict mode. No `// @ts-ignore` without a comment explaining why.
 - Comments default to **off** — well-named identifiers are better than running commentary. Comment when the *why* is non-obvious, never the *what*.
 
