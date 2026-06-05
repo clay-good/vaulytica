@@ -1,6 +1,12 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { ingestPdfBuffer } from "./pdf.js";
+
+// The first call lazily loads pdfjs (`legacy/build/pdf.mjs`) — a heavy module
+// whose cold init can exceed vitest's default 5s timeout on slower CI runners
+// (observed ~6s on windows-latest). These tests do real parsing work, so give
+// them generous headroom; the work itself is milliseconds once pdfjs is warm.
+vi.setConfig({ testTimeout: 30_000 });
 
 /**
  * Regression coverage for the PDF text-extraction path (`ingestPdfBuffer` →
