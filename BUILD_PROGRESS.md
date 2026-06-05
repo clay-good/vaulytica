@@ -25,6 +25,15 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](docs/spec.md) 
 
 ## Post-1.0 work
 
+### Doc-audit follow-through — anchor/HTML link scan (clean) + document the cross-doc rules (2026-06-05) — ✅ complete
+
+Extended the doc-integrity audit and re-verified the README's headline numbers; one genuine completeness gap found and closed.
+
+- **Anchor + HTML-ref scan — clean.** Scanned all markdown for broken `#anchor` links (only **1** anchor link exists in the whole repo, 0 broken — the docs don't use them) and for `<img src>`/`href` references to local files (only **2**, the README image is valid; the 1 "broken" is an illustrative `<script src=…>` quoted inside a BUILD_PROGRESS table cell, not a real link). Neither warrants a guard extension — the existing relative-link guard covers the real surface.
+- **README stats re-verified against live code.** `1,062 deterministic rules` = `LAUNCH 112 + V3 220 + V4 730` ✓ (counted via the real exports); `35 state-law overlays` = `STATE_OVERLAYS.length` ✓; `16 sub-domains` ✓.
+- **Gap found + closed: the 17 cross-document rules were undercounted.** The headline "1,062" and the rule cheat-sheet are all *single-document* rules; the engine also runs **17 cross-document consistency rules** (`ALL_CONSISTENCY_RULES`: 7 `CC-*` v3 BAA/MSA/DPA-consistency + 10 `CROSS-*` v4) on bundles — a real capability mentioned only in passing under v6. Added a cheat-sheet table to the README documenting all of them (jurisdiction/precedence conflicts, indemnity-cap stacking, survival/defined-term/party drift, amount/date conflicts, missing companion docs, BAA↔MSA scope). Accurate by construction (every family pulled from the live rule list).
+- **Verification.** lint + typecheck + 2496 tests (incl. the docs-links guard on the new content) + build green. Doc-only — no `src/`/`result_hash`/responsiveness impact.
+
 ### Make the doc-link fix permanent — a link-integrity CI guard (2026-06-05) — ✅ complete
 
 Last commit fixed 29 broken markdown links by hand; this one stops them from coming back. The "make it verifiable" discipline applied to docs: a one-off fix without a guard regresses, so the audit becomes a test.

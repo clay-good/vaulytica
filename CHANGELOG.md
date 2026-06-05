@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Changed
+- **README — cross-document consistency cheat sheet.** The headline "1,062
+  rules" and the rule cheat-sheet count only *single-document* rules; the engine
+  also runs **17 cross-document consistency rules** (`CROSS-*` + `CC-*`) on
+  folder/`.zip` bundles — conflicting governing law, indemnity-cap stacking,
+  defined-term drift across the set, BAA↔MSA scope, etc. That capability was
+  mentioned only in passing under v6; added a cheat-sheet table documenting all
+  of it. Verified against the live `ALL_CONSISTENCY_RULES` (exactly 17). Headline
+  stats re-confirmed accurate (1,062 = 112+220+730; 35 overlays). Doc-only.
+
 ### Added
 - **Documentation link-integrity guard** (`tests/integration/docs-links.test.ts`).
   Walks every authored `.md` file and fails if any relative link doesn't
