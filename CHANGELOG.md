@@ -4,7 +4,41 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Added
+- **PDF text-extraction regression tests** (`src/ingest/pdf.test.ts`). The
+  `ingestPdfBuffer` → pdfjs path — the primary ingest route — had **zero**
+  automated coverage: the suite stayed green regardless of whether pdfjs parsed
+  anything, which made a pdfjs major bump unverifiable. New tests build a
+  structurally-valid PDF in-process (correct `xref` offsets, real text layer)
+  and assert the real pdfjs engine extracts it, hashes deterministically, and
+  returns no warnings. This is what made the pdfjs 4→6 bump below a *verified*
+  change rather than a hopeful one.
+
+### Fixed
+- **Latent buffer-detach fragility in PDF ingest.** `ingestPdfBuffer` hashed the
+  source bytes *after* `getDocument`, but pdfjs takes ownership of the
+  ArrayBuffer and may detach it (it does under pdfjs's Node fake-worker; the
+  browser's copying worker happened to leave it intact). The hash now runs
+  *before* the buffer is handed to pdfjs — same bytes, identical hash, no
+  `result_hash`/golden change — making the path robust in any environment and
+  testable headless.
+
 ### Changed
+- **Major dependency modernization: pdfjs-dist 4 → 6** (`^4.2.67 → ^6.0.227`,
+  GA, skipping 5). Verified against the new text-extraction tests: pdfjs 6
+  still ships the `legacy/build/pdf.mjs` entry we import, and extraction is
+  byte-correct. **Honest cost:** the non-eager `vendor-pdfjs` chunk grew
+  112.77 → 146.03 KB gzipped (+33 KB) — total gzipped JS is now ~713 KB against
+  the 1065 KB ceiling (bundle-size test green), and pdfjs loads only when a PDF
+  is dropped (excluded from modulepreload), so first-paint is unaffected
+  (Lighthouse green). **OCR-path caveat:** the scanned-PDF fallback
+  (`ocr.ts`, which renders pages to a canvas for tesseract.js) is not
+  headless-testable and is **left unchanged** — pdfjs 6 reworked `render`
+  (`canvas` is now primary, `canvasContext` backwards-compatible with `canvas`
+  defaulting from the context), and our `canvasContext`-only call remains
+  supported; real-device validation of the OCR fallback stays pending (a
+  pre-existing gap, not a regression). 0 vulnerabilities. (Last deferred major:
+  tesseract.js 5→7 — the OCR engine, same untestable-headless path.)
 - **Major dependency modernization: ESLint 9 → 10** (`eslint ^9.39 → ^10.4`,
   `@eslint/js ^9 → ^10`, `globals ^16 → ^17`). The flat config carries over
   unchanged. ESLint 10 promotes two rules into `js.configs.recommended` that

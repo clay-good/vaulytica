@@ -34,7 +34,7 @@
     "docx": "^9.6.1",
     "fflate": "^0.8.3",
     "mammoth": "^1.8.0",
-    "pdfjs-dist": "^4.2.67",
+    "pdfjs-dist": "^6.0.227",
     "tesseract.js": "^5.1.0",
     "zod": "^4.4.3"
   },
