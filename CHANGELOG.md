@@ -10,8 +10,19 @@ All notable changes to this project will be documented in this file. Format adap
   resolve to an existing file — turning the prior one-off 29-link fix into a
   permanent CI gate so stale references can't creep back. Strips fenced/inline
   code first so *illustrative* link syntax in examples isn't flagged;
-  leading-slash links resolve from the repo root (as GitHub renders them).
-  Verified to fire (a broken link injected into a doc fails the test).
+  leading-slash links resolve from the repo root (as GitHub renders them); and
+  it compares the on-disk canonical case (`realpathSync.native`) so wrong-case
+  links — which "resolve" on case-insensitive macOS but 404 on GitHub/Linux —
+  are caught on any OS. On its first run it caught exactly such a bug: the
+  README's "Architecture" link pointed at lowercase `docs/architecture.md`
+  while the file was misnamed `docs/ARCHITECTURE.md`. Verified to fire (both a
+  missing-file and a wrong-case link injected into a doc fail the test).
+
+### Fixed
+- **README "Architecture" doc link 404'd on GitHub.** `docs/ARCHITECTURE.md`
+  was renamed to lowercase `docs/architecture.md` to match the README link,
+  CONTRIBUTING's prose, and the lowercase convention of every other doc (the
+  mismatch was invisible on case-insensitive macOS).
 - **OCR orchestration tests** (`src/ingest/ocr.test.ts`, +6). `ocr.ts` was the
   last ingest entrypoint with no coverage. The real engine (tesseract.js WASM +
   a downloaded language model) and canvas rasterization can't run headless, so

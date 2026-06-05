@@ -16,7 +16,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -77,8 +77,20 @@ describe("documentation link integrity", () => {
       const dir = dirname(file);
       for (const dest of relativeLinkTargets(stripCode(readFileSync(file, "utf8")))) {
         const target = dest.startsWith("/") ? join(REPO_ROOT, dest) : resolve(dir, dest);
+        const rel = file.slice(REPO_ROOT.length + 1);
         if (!existsSync(target)) {
-          broken.push(`${file.slice(REPO_ROOT.length + 1)}  →  ${dest}`);
+          broken.push(`${rel}  →  ${dest}  (not found)`);
+          continue;
+        }
+        // existsSync is case-insensitive on macOS; GitHub + Linux CI are
+        // case-sensitive, so a wrong-case link "resolves" locally yet 404s in
+        // production. Compare the on-disk canonical case to catch it anywhere.
+        try {
+          if (realpathSync.native(target) !== target) {
+            broken.push(`${rel}  →  ${dest}  (case mismatch vs on-disk name)`);
+          }
+        } catch {
+          // realpath can fail on exotic paths; existsSync already passed.
         }
       }
     }
