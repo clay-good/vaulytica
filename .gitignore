@@ -183,3 +183,8 @@ test-results/
 */.fastembed_cache/
 
 .lighthouseci/
+
+# Stryker mutation testing — generated reports + temp (committed baseline lives in docs/v7/mutation-baseline.md)
+reports/
+.stryker-tmp/
+stryker.log

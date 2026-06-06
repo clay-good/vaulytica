@@ -25,6 +25,16 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](docs/spec.md) 
 
 ## Post-1.0 work
 
+### spec-v7 Steps 123–124 (mutation testing) + 118/119 follow-ups (2026-06-05) — ✅ complete
+
+Closed the last non-gated v7 deferrals + the two property/metamorphic follow-ups the original steps flagged. Verification gate green: typecheck + lint + `npm test` (**2,600** passing + 2 skipped) + build + docs link-integrity guard.
+
+- **Steps 123–124 — mutation testing.** Added Stryker (`@stryker-mutator/core` + `@stryker-mutator/vitest-runner` 9.6.1, dev-only; peers `vitest >=2.0.0` so vitest-4-compatible) scoped to the highest-value pure extractors (`src/extract/dates.ts`, `src/extract/amounts.ts`). `stryker.config.json` + a minimal `vitest.mutation.config.ts` (includes only the two covering unit-test files → a run finishes in ~3.5 min), `npm run mutation`, and `.github/workflows/mutation.yml` (weekly cron + `workflow_dispatch`, **never** the per-push gate; uploads the HTML report). **First measured score 51.26%** → a survivor-fix pass (pinned unit→day conversion + `before`-direction signing in dates; scale-suffix multiplication + range-currency inheritance in amounts; +4 unit tests) raised it to **55.65%** (dates 60.61% · amounts 49.43%), demonstrating the measure→fix→re-measure loop. Regression-only `thresholds.break = 48`. Committed baseline doc `docs/v7/mutation-baseline.md`; generated `reports/` + `.stryker-tmp/` gitignored. Many remaining survivors are equivalent/near-equivalent regex mutants (`\s+`→`\s`) no in-domain input distinguishes — the ratchet target, not 100%.
+- **Step 118 follow-up — crossref property** (committed separately, 8ec3ce6). `tests/integration/property-based.test.ts` (+1): over a generated subset of numbered sections, a reference to an *existing* section always resolves and a reference to a *held-out non-existent* one always flags; exact `raw_text` match avoids the "Section 1" vs "Section 1.1" numeric-prefix trap.
+- **Step 119 follow-up — order relations** (committed separately, 8ec3ce6). `tests/integration/metamorphic.test.ts` (+2): reordering independent clauses keeps the fired-rule SET but changes the result_hash (position-aware, not order-blind); and when order IS the defect, STRUCT-002 flips as the sole date crosses the top-quartile boundary — a positive metamorphic relation.
+
+**Remaining v7 deferrals are now only 109/111/112 — all v5-/attorney-gated** (routing must be measured against the real corpus; per-state overlay enforceability + new always-on rule citations are attorney-gated and would re-baseline goldens). spec-v7 rows 118/119/123/124 marked ✅; docs/v7 (README + testing-architecture + new mutation-baseline), threat-model unaffected, CHANGELOG [Unreleased], README counts (2,593→2,600) + proof section + build cheat-sheet updated.
+
 ### spec-v7 close — Depth & Proof Steps 103–108, 110, 113–114, 120, 125–126 → version 7.0.0 (2026-06-05) — ✅ complete
 
 Implemented the bulk of spec-v7's two thrusts in one arc and bumped to **7.0.0**. Verification gate green throughout: `npm run typecheck` + `npm run lint` + `npm test` (**2,593** passing + 2 skipped) + `npm run build`; the docs link-integrity guard passes.

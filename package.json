@@ -27,6 +27,7 @@
     "fixtures": "tsx tests/fixtures/build-fixtures.ts",
     "fixtures:baa": "tsx tests/fixtures/build-baa-fixture.ts",
     "fixtures:regen-golden": "VAULYTICA_REGEN_GOLDEN=1 vitest run tests/integration/golden-output.test.ts",
+    "mutation": "stryker run",
     "e2e": "playwright test",
     "e2e:install": "playwright install --with-deps chromium"
   },
@@ -43,6 +44,8 @@
     "@axe-core/playwright": "^4.11.3",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.60.0",
+    "@stryker-mutator/core": "^9.6.1",
+    "@stryker-mutator/vitest-runner": "^9.6.1",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^22.19.19",
     "@vitest/coverage-v8": "^4.1.8",
@@ -60,5 +63,8 @@
     "typescript-eslint": "^8.60.1",
     "vite": "^8.0.13",
     "vitest": "^4.1.6"
+  },
+  "overrides": {
+    "qs": "^6.15.2"
   }
 }

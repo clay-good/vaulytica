@@ -1,0 +1,16 @@
+{
+  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "_comment": "spec-v7 Step 123 — mutation testing. Scoped first to the highest-value pure extractors (dates, amounts); a separate, slow, on-demand/scheduled job, never the per-push gate. Expand the mutate set as the score is established.",
+  "testRunner": "vitest",
+  "vitest": { "configFile": "vitest.mutation.config.ts" },
+  "coverageAnalysis": "perTest",
+  "mutate": ["src/extract/dates.ts", "src/extract/amounts.ts"],
+  "reporters": ["clear-text", "json", "html"],
+  "htmlReporter": { "fileName": "reports/mutation/index.html" },
+  "jsonReporter": { "fileName": "reports/mutation/mutation.json" },
+  "timeoutMS": 60000,
+  "concurrency": 4,
+  "tempDirName": ".stryker-tmp",
+  "_thresholds_comment": "Regression-only (spec-v7 Step 124): break a couple points under the measured baseline (51.26% on dates+amounts, 2026-06-05); never an aspiration. Runs only in the scheduled/on-demand mutation workflow, not the per-push gate. Ratchet up as survivors are killed.",
+  "thresholds": { "high": 80, "low": 55, "break": 48 }
+}

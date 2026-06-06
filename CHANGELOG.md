@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Added
+- **Mutation testing (spec-v7 Steps 123–124).** Added Stryker
+  (`@stryker-mutator/core` + `vitest-runner`, dev-only) scoped to the date and
+  amount extractors, a `npm run mutation` script, and a scheduled/on-demand
+  `.github/workflows/mutation.yml` (weekly + `workflow_dispatch`, **never** the
+  per-push gate). Committed baseline **55.65%** mutation score, raised from the
+  first measured 51.26% by a survivor-fix pass (pinned unit→day conversion +
+  `before`-direction signing in dates; scale-suffix multiplication + range
+  currency inheritance in amounts). Regression-only `thresholds.break = 48`.
+  See [`docs/v7/mutation-baseline.md`](docs/v7/mutation-baseline.md). Generated
+  reports (`reports/`, `.stryker-tmp/`) are gitignored.
+- **Property-based + metamorphic follow-ups (spec-v7 Steps 118/119).** A
+  crossref resolve/flag property (a reference to an existing section always
+  resolves; a held-out non-existent one always flags) and two metamorphic
+  relations (reordering independent clauses keeps the fired-rule set but changes
+  the result_hash; when order IS the defect, STRUCT-002 flips as the only date
+  crosses the top-quartile boundary). Test-only; no `src/`/`result_hash` impact.
+
 ## [7.0.0] — 2026-06-05
 
 **v7 "Depth & Proof"** — make the engine more correct on real documents (Thrust A) and prove the logic sound under inputs no author wrote down (Thrust B), without touching the deterministic / no-AI / no-server / citable / lints-not-drafts posture. See [`docs/v7/README.md`](docs/v7/README.md) and [`docs/v7/testing-architecture.md`](docs/v7/testing-architecture.md).

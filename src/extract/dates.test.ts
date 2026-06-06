@@ -73,6 +73,25 @@ describe("extractDates", () => {
     expect(rel[0]?.offset_days_max).toBe(60);
   });
 
+  it("converts units to days and signs 'before' offsets negative", () => {
+    const weeks = extractDates(buildTree(["Notice", "Pay within two weeks after the Effective Date."]));
+    expect(weeks.find((d) => d.type === "relative")?.offset_days).toBe(14);
+    const months = extractDates(buildTree(["Notice", "Pay within three months after the Effective Date."]));
+    expect(months.find((d) => d.type === "relative")?.offset_days).toBe(90);
+    const years = extractDates(buildTree(["Notice", "Renew one year after the Effective Date."]));
+    expect(years.find((d) => d.type === "relative")?.offset_days).toBe(365);
+    const before = extractDates(buildTree(["Notice", "Notify sixty (60) days before the Termination Date."]));
+    expect(before.find((d) => d.type === "relative")?.offset_days).toBe(-60);
+  });
+
+  it("keeps range bounds ordered low→high and converts the unit", () => {
+    const range = extractDates(
+      buildTree(["Notice", "Respond within two to three weeks after the Effective Date."]),
+    ).find((d) => d.offset_days_max !== undefined);
+    expect(range?.offset_days).toBe(14);
+    expect(range?.offset_days_max).toBe(21);
+  });
+
   it("captures fiscal periods with a normalized label and no iso", () => {
     const tree = buildTree([
       "Payment",

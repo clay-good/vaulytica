@@ -26,10 +26,26 @@ describe("extractAmounts", () => {
     expect(codes).toEqual(new Set(["EUR", "GBP", "JPY"]));
   });
 
+  it("applies scale suffixes exactly (k, M, bn)", () => {
+    expect(extractAmounts(buildTree(["F", "Fee is $5k."]))[0]?.amount).toBe("5000");
+    expect(extractAmounts(buildTree(["F", "Fee is $2.5M."]))[0]?.amount).toBe("2500000");
+    expect(extractAmounts(buildTree(["F", "Fee is $1bn."]))[0]?.amount).toBe("1000000000");
+    // No scale suffix → the bare number, not multiplied.
+    expect(extractAmounts(buildTree(["F", "Fee is $750."]))[0]?.amount).toBe("750");
+  });
+
   it("captures a range amount with lower and upper bounds, not two endpoints", () => {
     const tree = buildTree(["Cap", "Liability is capped at $100k to $200k under this Agreement."]);
     const out = extractAmounts(tree);
     expect(out).toHaveLength(1);
+    expect(out[0]?.amount).toBe("100000");
+    expect(out[0]?.range_max).toBe("200000");
+  });
+
+  it("a range with no currency on the upper bound inherits the lower bound's currency", () => {
+    const out = extractAmounts(buildTree(["Cap", "Liability is capped at €100,000 to 200,000."]));
+    expect(out).toHaveLength(1);
+    expect(out[0]?.currency).toBe("EUR");
     expect(out[0]?.amount).toBe("100000");
     expect(out[0]?.range_max).toBe("200000");
   });

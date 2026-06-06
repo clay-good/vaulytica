@@ -1,0 +1,35 @@
+name: Mutation testing
+
+# spec-v7 Steps 123–124. Mutation testing measures the suite's fault-detection
+# power (would a test CATCH a bug here?), not just line coverage. Stryker runs
+# the test suite once per mutant, so it is slow — it runs on a weekly schedule
+# and on demand, NEVER on the per-push critical path (that stays ci.yml's
+# typecheck + lint + coverage + build). The regression-only `break` threshold in
+# stryker.config.json fails this job if the score drops below the floor.
+
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Mondays 06:00 UTC
+  workflow_dispatch: {}
+
+jobs:
+  mutation:
+    runs-on: ubuntu-latest
+    # Don't fail forks / scheduled runs on transient infra; the score gate is
+    # the signal, surfaced in the job log + uploaded HTML report.
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Run Stryker (scoped to extractors)
+        run: npm run mutation
+      - name: Upload mutation report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: mutation-report
+          path: reports/mutation/
+          if-no-files-found: ignore

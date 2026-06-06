@@ -17,12 +17,13 @@ The suite is **green ⇏ correct** by itself: a green example-based suite only s
 | **Node↔browser parity** | Does the accuracy harness produce the *same run* as the shipped pipeline? | `tools/accuracy/parity.test.ts` |
 | **Schema fuzz + round-trip** | Does each zod schema *reject* corruption and round-trip valid input? | `src/dkb/schema-fuzz.test.ts` |
 | **Report structure** | Does the DOCX/JSON actually *say the right things*, in the right order? | `src/report/docx.test.ts` |
+| **Mutation** | Would a test *catch a bug* on a covered line — not just run it? | `npm run mutation` (Stryker, scoped to extractors), scheduled in `mutation.yml` |
 | **Responsiveness** | No horizontal overflow per view-state at 320/390/768/1280 px? | `tests/e2e/responsiveness.spec.ts` (Playwright, post-deploy) |
 | **a11y / keyboard / no-network** | WCAG 2.2 AA, keyboard reachability, zero cross-origin requests? | `tests/e2e/v3/`, `tests/e2e/v4/` (Playwright, post-deploy) |
 
 ## Why each layer earns its place
 
-- **Coverage** tells you a line *ran*; it does not tell you a test would *catch a bug* on that line — that is what mutation testing (Steps 123–124, deferred to a scheduled job) measures. Coverage is the floor, not the ceiling.
+- **Coverage** tells you a line *ran*; it does not tell you a test would *catch a bug* on that line — that is what **mutation testing** (Steps 123–124) measures. Stryker injects faults and reports how many the tests kill; the scoped baseline is **55.65%** (see [`mutation-baseline.md`](mutation-baseline.md)), a regression-only floor on a scheduled job, never the per-push gate. Coverage is the floor, not the ceiling.
 - **Per-rule completeness** converts an unknown ("how many rules are actually proven?") into a closed set the build enforces. It is measure-first: it reports the gap, then ratchets to hard-fail as negatives are backfilled.
 - **Property-based** testing catches the off-by-one and the empty-input crash the fixtures never hit — normalizer idempotence, exact/contiguous offsets, amount/date round-trips. Fixed seed → a failure reproduces exactly.
 - **Metamorphic** testing encodes what the engine *means*: whitespace noise must not change `result_hash`; re-wrapping paragraphs must not change which rules fire. It already caught a real heading-whitespace determinism leak.
