@@ -25,6 +25,20 @@ Tracks completion of the seventeen-step build plan in [`spec.md`](docs/spec.md) 
 
 ## Post-1.0 work
 
+### spec-v8 Thrust A — Resilience, Steps 127–134 (2026-06-05) — ✅ complete
+
+Hardened every public ingest/extract/playbook entry point to fail safely on hostile input (reject deterministically or degrade to a bounded result; never crash/hang/exhaust memory). Each guard is a **pure function of the input** (determinism holds — §6 "bounds, never timeouts") and ships with an adversarial reproduction. All additive → zero golden churn (extracted-data + rejection paths are outside `result_hash`). Verification gate green: typecheck + lint + `npm test` (**2,618** passing + 2 skipped) + build.
+
+- **Step 128 — ingest guards** (new `src/ingest/limits.ts`): `MAX_DOCUMENT_BYTES` (50 MB) on docx/pdf buffers + `MAX_PASTE_CHARS` (20M) on paste → typed `InputTooLargeError` before parsing. `MAX_SECTION_DEPTH` (64): `normalize` flattens descendants **iteratively** at the cap (a 20,000-deep tree no longer overflows the stack) and `countWords` is now iterative. `MAX_OCR_PAGES` (500) bounds the OCR loop with a skipped-pages warning (degrade-with-banner, Open Q #1).
+- **Step 129 — zip-bomb guard** (`multi.ts`): `extractZipEntries` uses fflate's pre-inflation `filter` to enforce `MAX_COMPRESSION_RATIO` (200×) + a cumulative-uncompressed budget, throwing a typed `ArchiveTooLargeError` **before** the archive expands; nested `.zip` rejected; zip-slip/`__MACOSX` retained.
+- **Step 130 — numeric magnitude** (`amounts.ts`): `MAX_AMOUNT_DIGITS` (30) + `NaN`/`Infinity` drop in `computeAmount` — a 50+-digit adversarial amount is dropped, not constructed.
+- **Step 131 — custom-playbook caps** (`custom-playbook.ts`): `MAX_PLAYBOOK_JSON_BYTES` (5 MB, pre-`JSON.parse`), `MAX_CUSTOM_RULES` (5000), per-string caps (name/reference/pattern); cap-named errors.
+- **Step 132 — report scale bound** (`bundle.ts`): `BUNDLE_CROSS_DOC_TOP_N` (100) caps the cross-doc appendix with an honest "N more not shown" footer; the full set stays in bundle JSON.
+- **Steps 133–134 — fuzz boundary gate** (`tests/integration/fuzz-boundary.test.ts`): `fast-check` (fixed seed, 200 runs) over the public surface — extractors never throw on arbitrary text; `normalize`/`countWords` total + stack-safe on generated trees; `parseCustomPlaybookJson` total; `ingestPaste` resolves-or-typed-rejects. A per-commit gate (fast, pure, no IO) — the boundary analog of v7's metamorphic suite.
+- **Step 127 consolidation:** the §5 contract is in `docs/v8/robustness-and-fuzzing.md`; the adversarial reproductions live as code in the per-module guard tests (`limits`/`multi`/`amounts`/`custom-playbook`.test.ts) + the fuzz layer, rather than a separate `tests/fixtures/adversarial/` tree — same reviewable-as-code principle, less duplication.
+
+**Next: spec-v8 Thrust B (Citations, 135–140)** — inline-everywhere across all export formats, Bluebook breadth (EU/GDPR, ISO/NIST, secondary, pinpoint), honest freshness, never-truncate — all render-side / manifest-scoped → no `result_hash` churn. Then Thrust C (Reach, 141–146): SARIF, single-file HTML, Node CLI, playbook diff, reproducibility verifier.
+
 ### spec-v7 Steps 123–124 (mutation testing) + 118/119 follow-ups (2026-06-05) — ✅ complete
 
 Closed the last non-gated v7 deferrals + the two property/metamorphic follow-ups the original steps flagged. Verification gate green: typecheck + lint + `npm test` (**2,600** passing + 2 skipped) + build + docs link-integrity guard.

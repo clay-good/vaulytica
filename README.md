@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,062 deterministic rules` · `20 cross-document checks` · `16 document sub-domains` · `35 state-law overlays` · `0 servers` · `0 AI` · `2,600 passing tests` · `v7.0.0` · `MIT`
+`1,062 deterministic rules` · `20 cross-document checks` · `16 document sub-domains` · `35 state-law overlays` · `0 servers` · `0 AI` · `2,618 passing tests` · `v7.0.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
 
@@ -104,6 +104,11 @@ Every view is verified to render with **no horizontal scroll from 320 px to 1280
 | v5 | Ground Truth | accuracy & validation harness, measured recall/precision, rule-retirement discipline | **infrastructure built** (Steps 67/69/71/75/83): corpus scaffolding, gold-annotation schema + Cohen's κ, `npm run accuracy` harness + reproducible scoreboard, legal-basis ledger + `tier` field. Numbers + sign-offs await a human-gated real corpus, attorney annotation, and legal review (Steps 68/70/76/77). |
 | v6 | Workflow | version comparison · bring-your-own-playbook · findings-to-action exports · model-clause references · portfolio matrix · depth (classifier, cross-doc families, jurisdiction overlays) | **complete · 6.0.0** (Steps 87–102; only Step 98 extraction-recall deferred behind v5) |
 | v7 | Depth & Proof | extraction recall · 3 new cross-doc families · mixed-text-layer OCR + per-word confidence · report provenance/exec-summary · **and** the missing test *kinds*: coverage + property + metamorphic + parity + schema-fuzz + report-structure + **mutation** + responsiveness gates | **substantially done · 7.0.0** (Steps 103–108, 110, 113–126; [`spec-v7`](docs/spec-v7.md) · [`docs/v7/`](docs/v7/README.md)). Deferred — all v5-/attorney-gated: 109 (routing measured against the real corpus), 111 (per-state overlay data), 112 (golden-churn + citable sources). |
+| v8 | Hardening & Reach | (A) input-boundary guards + fuzz gate so the engine *survives* hostile input · (B) inline-everywhere/honest citations · (C) SARIF, CLI, single-file HTML — the linter in the workflow | **Thrust A done** (Steps 127–134: byte/paste/depth/OCR caps, zip-bomb + numeric + playbook guards, fuzz boundary gate; [`spec-v8`](docs/spec-v8.md) · [`docs/v8/`](docs/v8/robustness-and-fuzzing.md)). Thrust B (Citations) + C (Reach) forthcoming. |
+
+## v8 — hardening: a tool that cannot be made to hang
+
+The suite proves the engine is *correct* on inputs an author wrote down (v7) and — once the corpus lands — *legally right* (v5). v8 Thrust A adds the third claim: it *survives garbage*. Every public entry point now has a **pure-function input guard** (a bound, never a timeout — a timeout would break determinism): a 50 MB document or a 20-million-character paste is rejected with a typed error before parsing; a 20,000-section-deep hostile tree is flattened iteratively instead of overflowing the stack; a **zip bomb** is rejected by compression ratio *before* fflate inflates it; a fifty-digit amount, a 100,000-rule custom playbook, and a megabyte-long regex are all capped. A `fast-check` **fuzz boundary gate** then proves the property across the whole surface — every public function *returns or throws a typed error, never an uncaught crash, on any input* — the boundary analog of v7's metamorphic suite. All of it is zero-churn against the goldens (guards reject hostile inputs the goldens never contained). Thrust B (citations inline in every export, formatted across EU/ISO/secondary forms, honestly dated) and Thrust C (SARIF, a Node CLI, a single-file HTML report) are next.
 
 ## v6 — fit the shape of a review
 
@@ -286,7 +291,7 @@ npm run dev          # open the printed URL
 npm run build        # static site → dist/
 npm run typecheck    # tsc --noEmit
 npm run lint         # eslint
-npm run test         # vitest — 2,600 tests, ~10s
+npm run test         # vitest — 2,618 tests, ~10s
 npm run coverage     # vitest + V8 coverage, enforces the regression floor
 npm run accuracy     # v5 Ground Truth harness → tools/accuracy/SCOREBOARD.md
 npm run mutation     # Stryker mutation score (scoped to extractors; slow, off the per-push path)

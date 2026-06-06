@@ -66,6 +66,16 @@ const BODY_SIZE = 22;
 /** Cap on per-document findings surfaced in the consolidated DOCX (spec §11). */
 export const BUNDLE_TOP_N = 10;
 
+/**
+ * Cap on cross-document findings rendered in the consolidated DOCX appendix
+ * (spec-v8 §11). The cross-document pass is O(documents × findings); paired
+ * with the bundle input caps the count is bounded, but a large bundle can
+ * still produce more cross-doc findings than a reader needs in the DOCX. Mirror
+ * the per-document `BUNDLE_TOP_N` truncation with an honest "N more" footer —
+ * the full set always remains in the bundle JSON's `cross_doc_findings`.
+ */
+export const BUNDLE_CROSS_DOC_TOP_N = 100;
+
 const DETERMINISM_STATEMENT =
   "This consolidated report was produced by a deterministic process. Given the same input files, the same Vaulytica engine version, and the same Deterministic Knowledge Base version, the rules in this report will produce an identical report on any machine, at any time. The bundle fingerprint is recorded above for verification. No part of this analysis was performed by a language model or any other non-deterministic system.";
 
@@ -781,7 +791,8 @@ function renderCrossDocAppendix(consistency: ConsistencyRun): (Paragraph | Table
     out.push(pageBreak());
     return out;
   }
-  for (const f of consistency.findings) {
+  const shown = consistency.findings.slice(0, BUNDLE_CROSS_DOC_TOP_N);
+  for (const f of shown) {
     out.push(
       para({
         text: `[${f.severity.toUpperCase()}] ${f.rule_id} — ${f.title}`,
@@ -803,6 +814,15 @@ function renderCrossDocAppendix(consistency: ConsistencyRun): (Paragraph | Table
       );
     }
     out.push(spacer());
+  }
+  const hidden = consistency.findings.length - shown.length;
+  if (hidden > 0) {
+    out.push(
+      para({
+        text: `… and ${hidden} more cross-document finding${hidden === 1 ? "" : "s"} not shown here. The complete set is in the bundle JSON (cross_doc_findings).`,
+        italics: true,
+      }),
+    );
   }
   out.push(pageBreak());
   return out;

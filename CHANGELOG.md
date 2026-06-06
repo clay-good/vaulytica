@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- **Input-boundary hardening (spec-v8 Thrust A, Steps 127–134).** Every public
+  ingest/extract/playbook entry point now fails safely on hostile input —
+  rejects deterministically or degrades to a bounded result, never crashes,
+  hangs, or exhausts memory. New `src/ingest/limits.ts`: `MAX_DOCUMENT_BYTES`
+  (50 MB) + `MAX_PASTE_CHARS` (20M) → typed `InputTooLargeError` before parsing;
+  `MAX_SECTION_DEPTH` (64) makes `normalize` flatten deep trees iteratively
+  (a 20,000-deep hostile tree no longer overflows the stack) and `countWords`
+  iterative; `MAX_OCR_PAGES` (500) bounds the OCR loop with an honest skipped-
+  pages warning. `extractZipEntries` guards via fflate's pre-inflation filter —
+  `MAX_COMPRESSION_RATIO` (200×) + cumulative-uncompressed budget → typed
+  `ArchiveTooLargeError` before a zip bomb expands; nested `.zip` rejected.
+  `amounts.ts` drops 50+-digit / NaN / Infinity amounts (`MAX_AMOUNT_DIGITS`).
+  Custom-playbook caps (`MAX_PLAYBOOK_JSON_BYTES` pre-parse, `MAX_CUSTOM_RULES`,
+  per-string caps). `BUNDLE_CROSS_DOC_TOP_N` (100) caps the cross-doc appendix
+  with an honest footer (full set stays in JSON). A `fast-check` fuzz boundary
+  gate (`tests/integration/fuzz-boundary.test.ts`) proves the whole public
+  surface returns-or-typed-throws and terminates on arbitrary input — the
+  boundary analog of v7's metamorphic suite. All guards are pure functions of
+  the input (determinism holds — bounds, never timeouts) and zero-churn against
+  the goldens. See [`docs/spec-v8.md`](docs/spec-v8.md) + [`docs/v8/robustness-and-fuzzing.md`](docs/v8/robustness-and-fuzzing.md).
 - **Mutation testing (spec-v7 Steps 123–124).** Added Stryker
   (`@stryker-mutator/core` + `vitest-runner`, dev-only) scoped to the date and
   amount extractors, a `npm run mutation` script, and a scheduled/on-demand
