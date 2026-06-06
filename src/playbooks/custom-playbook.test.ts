@@ -3,6 +3,9 @@ import {
   validateCustomPlaybook,
   parseCustomPlaybookJson,
   CUSTOM_PLAYBOOK_SCHEMA_VERSION,
+  MAX_PLAYBOOK_JSON_BYTES,
+  MAX_CUSTOM_RULES,
+  MAX_PLAYBOOK_STRING_LEN,
   type CustomPlaybook,
 } from "./custom-playbook.js";
 
@@ -188,5 +191,44 @@ describe("parseCustomPlaybookJson", () => {
     const r = parseCustomPlaybookJson("{ not valid json ");
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.errors[0]).toContain("not valid JSON");
+  });
+
+  it("rejects an oversized playbook JSON before parsing (spec-v8 §10)", () => {
+    const huge = " ".repeat(MAX_PLAYBOOK_JSON_BYTES + 1) + "{}";
+    const r = parseCustomPlaybookJson(huge);
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.errors[0]).toMatch(/exceeding the/);
+  });
+});
+
+describe("custom-playbook caps (spec-v8 §10)", () => {
+  it("rejects more than MAX_CUSTOM_RULES custom rules", () => {
+    const rule = {
+      id: "r",
+      title: "t",
+      description: "d",
+      severity: "info" as const,
+      assert: { kind: "cross_ref_resolves" as const },
+    };
+    const rules = Array.from({ length: MAX_CUSTOM_RULES + 1 }, (_, i) => ({ ...rule, id: `r-${i}` }));
+    const r = validateCustomPlaybook(minimal({ custom_rules: rules }));
+    expect(r.ok).toBe(false);
+  });
+
+  it("rejects an over-long regex pattern in a custom rule", () => {
+    const r = validateCustomPlaybook(
+      minimal({
+        custom_rules: [
+          {
+            id: "r1",
+            title: "t",
+            description: "d",
+            severity: "warning",
+            assert: { kind: "clause_present", pattern: "a".repeat(MAX_PLAYBOOK_STRING_LEN + 1) },
+          },
+        ],
+      }),
+    );
+    expect(r.ok).toBe(false);
   });
 });

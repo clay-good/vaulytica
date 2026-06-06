@@ -35,6 +35,8 @@ type TesseractLike = {
   }>;
 };
 
+import { MAX_OCR_PAGES } from "./limits.js";
+
 const OCR_SCALE = 200 / 72;
 
 /**
@@ -74,7 +76,10 @@ export async function runOcr(pdfDoc: PdfDocument, onProgress?: OcrProgress): Pro
   const worker = await tesseract.createWorker("eng");
   try {
     const chunks: string[] = [];
-    for (let n = 1; n <= pdfDoc.numPages; n += 1) {
+    // Bound the work: OCR at most MAX_OCR_PAGES sequentially (spec-v8 §7).
+    // The caller (ingestPdfBuffer) warns when pages were skipped.
+    const pageCount = Math.min(pdfDoc.numPages, MAX_OCR_PAGES);
+    for (let n = 1; n <= pageCount; n += 1) {
       const page = await pdfDoc.getPage(n);
       const viewport = page.getViewport({ scale: OCR_SCALE });
       const canvas = makeCanvas(viewport.width, viewport.height);
@@ -89,7 +94,7 @@ export async function runOcr(pdfDoc: PdfDocument, onProgress?: OcrProgress): Pro
           ? markLowConfidence(result.data.words)
           : result.data.text;
       chunks.push(pageText);
-      onProgress?.(n / pdfDoc.numPages, "ocr");
+      onProgress?.(n / pageCount, "ocr");
     }
     return chunks.join("\n\n");
   } finally {

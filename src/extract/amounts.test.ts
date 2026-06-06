@@ -26,6 +26,17 @@ describe("extractAmounts", () => {
     expect(codes).toEqual(new Set(["EUR", "GBP", "JPY"]));
   });
 
+  it("drops an adversarial 50+-digit amount rather than constructing it (spec-v8 §9)", () => {
+    // 17 comma-separated groups → 51 digits, captured whole by the NUMERIC
+    // grouping alternative; past MAX_AMOUNT_DIGITS so it is dropped.
+    const huge = Array(17).fill("999").join(",");
+    const out = extractAmounts(buildTree(["F", `The fee is $${huge}.`]));
+    expect(out).toHaveLength(0);
+    // A normal large-but-real amount is still captured.
+    const real = extractAmounts(buildTree(["F", "The fee is $1,500,000,000."]));
+    expect(real[0]?.amount).toBe("1500000000");
+  });
+
   it("applies scale suffixes exactly (k, M, bn)", () => {
     expect(extractAmounts(buildTree(["F", "Fee is $5k."]))[0]?.amount).toBe("5000");
     expect(extractAmounts(buildTree(["F", "Fee is $2.5M."]))[0]?.amount).toBe("2500000");

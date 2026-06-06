@@ -1,6 +1,7 @@
 import type { DocumentTree, IngestResult, Paragraph, Run, Section } from "./types.js";
 import { countWords, normalize } from "./normalize.js";
 import { sha256Hex } from "./hash.js";
+import { assertDocumentBytes } from "./limits.js";
 
 /**
  * Ingest a DOCX file using mammoth.js. DOCX preserves real heading styles
@@ -41,6 +42,7 @@ export async function ingestDocx(file: File): Promise<IngestResult> {
 }
 
 export async function ingestDocxBuffer(buf: ArrayBuffer): Promise<IngestResult> {
+  assertDocumentBytes(buf.byteLength); // spec-v8 §7 — reject before parsing
   const warnings: string[] = [];
   const mammoth = await loadMammoth();
   const result = await mammoth.convertToHtml({ arrayBuffer: buf });

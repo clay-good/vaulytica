@@ -18,6 +18,17 @@ import { forEachParagraph, posInParagraph } from "./walk.js";
 
 Decimal.set({ precision: 50 });
 
+/**
+ * Magnitude bound (spec-v8 §9). An amount whose integer-digit count exceeds
+ * this — a `"999…999 billion"` with fifty digits — is adversarial, not a real
+ * figure (a $1 quadrillion contract has 16 digits), and drives unbounded
+ * `decimal.js` work. Such an amount, or one that resolves to NaN/±Infinity, is
+ * dropped from the extracted stream with no `MoneyReference` emitted. The
+ * extracted-data stream is not part of `result_hash` and no rule reads a
+ * fifty-digit amount, so this is zero-churn against the goldens.
+ */
+const MAX_AMOUNT_DIGITS = 30;
+
 const CURRENCY_SYMBOLS: Record<string, string> = {
   "$": "USD",
   "€": "EUR",
@@ -204,14 +215,18 @@ function computeAmount(
   scaleRaw: string | undefined,
 ): { amount: string; currency: string; fromDollar: boolean } | null {
   if (!symOrCode || !rawNum) return null;
+  const cleaned = rawNum.replace(/,/g, "");
+  // Magnitude guard (spec-v8 §9): drop adversarial / unbounded values.
+  if ((cleaned.match(/\d/g)?.length ?? 0) > MAX_AMOUNT_DIGITS) return null;
   const scale = scaleRaw?.toLowerCase();
   let amount: Decimal;
   try {
-    amount = new Decimal(rawNum.replace(/,/g, ""));
+    amount = new Decimal(cleaned);
   } catch {
     return null;
   }
   if (scale && SCALES[scale]) amount = amount.mul(SCALES[scale]!);
+  if (!amount.isFinite()) return null;
   return {
     amount: amount.toString(),
     currency: resolveCurrency(symOrCode),

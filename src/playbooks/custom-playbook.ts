@@ -29,6 +29,16 @@ import type { Severity } from "../engine/finding.js";
 export const CUSTOM_PLAYBOOK_SCHEMA_VERSION = "1.0";
 
 /**
+ * Input-boundary caps for a user-supplied playbook (spec-v8 §10). A custom
+ * playbook is user input held in the tab; an unbounded one (a 50 MB JSON, a
+ * 100,000-rule set, a megabyte-long regex) validates and then runs O(n) per
+ * document. Each cap is one order of magnitude past any real team standard.
+ */
+export const MAX_PLAYBOOK_JSON_BYTES = 5 * 1024 * 1024;
+export const MAX_CUSTOM_RULES = 5000;
+export const MAX_PLAYBOOK_STRING_LEN = 2000;
+
+/**
  * Numeric metrics a `numeric_threshold` predicate may assert on. Bounded by
  * design (spec-v6 §9: "Each maps to an existing extractor output") — a small
  * enum keeps the DSL auditable. Maintainers extend this set as extractor
@@ -154,7 +164,7 @@ export type CustomPlaybook = {
 const severityEnum = z.enum(["critical", "warning", "info"]);
 
 const citationSchema = z.object({
-  reference: z.string().min(1),
+  reference: z.string().min(1).max(MAX_PLAYBOOK_STRING_LEN),
   url: z.string().url().optional(),
 });
 
@@ -162,14 +172,14 @@ const predicateSchema = z.discriminatedUnion("kind", [
   z
     .object({
       kind: z.literal("clause_present"),
-      pattern: z.string().min(1).optional(),
+      pattern: z.string().min(1).max(MAX_PLAYBOOK_STRING_LEN).optional(),
       section_heading: z.string().min(1).optional(),
     })
     .strict(),
   z
     .object({
       kind: z.literal("clause_absent"),
-      pattern: z.string().min(1).optional(),
+      pattern: z.string().min(1).max(MAX_PLAYBOOK_STRING_LEN).optional(),
       section_heading: z.string().min(1).optional(),
     })
     .strict(),
@@ -250,7 +260,7 @@ export const CustomPlaybookSchema = z
     required_clauses: z
       .array(z.object({ category: z.string().min(1), severity: severityEnum }).strict())
       .optional(),
-    custom_rules: z.array(customRuleSchema).optional(),
+    custom_rules: z.array(customRuleSchema).max(MAX_CUSTOM_RULES).optional(),
   })
   .strict()
   .superRefine((pb, ctx) => {
@@ -318,6 +328,15 @@ export function validateCustomPlaybook(raw: unknown): CustomPlaybookValidation {
  * surface it the same way it surfaces schema errors.
  */
 export function parseCustomPlaybookJson(text: string): CustomPlaybookValidation {
+  // Reject an oversized playbook before JSON.parse allocates its tree (spec-v8 §10).
+  if (text.length > MAX_PLAYBOOK_JSON_BYTES) {
+    return {
+      ok: false,
+      errors: [
+        `(root): playbook is ${text.length.toLocaleString()} characters, exceeding the ${MAX_PLAYBOOK_JSON_BYTES.toLocaleString()} limit.`,
+      ],
+    };
+  }
   let parsed: unknown;
   try {
     parsed = JSON.parse(text);

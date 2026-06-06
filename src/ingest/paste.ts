@@ -1,6 +1,7 @@
 import type { DocumentTree, IngestResult, Paragraph, Section } from "./types.js";
 import { countWords, normalize } from "./normalize.js";
 import { sha256Hex } from "./hash.js";
+import { assertPasteChars } from "./limits.js";
 
 /**
  * Ingest a raw text string. Pasted text has lost its document structure, so
@@ -17,6 +18,8 @@ import { sha256Hex } from "./hash.js";
  * an empty tree.
  */
 export async function ingestPaste(text: string): Promise<IngestResult> {
+  // Deterministic rejection of a hostile paste before any work (spec-v8 §7).
+  assertPasteChars(text.length);
   const warnings: string[] = [];
   warnings.push(
     "Pasted text loses document structure; rules that depend on heading levels or DOCX styles may be skipped.",

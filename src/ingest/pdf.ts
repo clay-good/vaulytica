@@ -1,6 +1,7 @@
 import type { DocumentTree, IngestResult, Paragraph, Run, Section } from "./types.js";
 import { countWords, normalize } from "./normalize.js";
 import { sha256Hex } from "./hash.js";
+import { assertDocumentBytes, MAX_OCR_PAGES } from "./limits.js";
 
 /**
  * Ingest a PDF using PDF.js. PDFs have no native heading metadata, so we
@@ -79,6 +80,7 @@ export async function ingestPdfBuffer(
   buf: ArrayBuffer,
   options: IngestPdfOptions = {},
 ): Promise<IngestResult> {
+  assertDocumentBytes(buf.byteLength); // spec-v8 §7 — reject before parsing
   const warnings: string[] = [];
   // Hash the source bytes *before* handing the buffer to pdfjs. `getDocument`
   // takes ownership of the ArrayBuffer and may detach it (it does under pdfjs's
@@ -115,6 +117,11 @@ export async function ingestPdfBuffer(
       warnings.push(
         `${layer.reason}; OCR fallback was used. Some structure may be lost.`,
       );
+      if (pdfDoc.numPages > MAX_OCR_PAGES) {
+        warnings.push(
+          `Document has ${pdfDoc.numPages} pages; OCR was bounded to the first ${MAX_OCR_PAGES}. The remaining ${pdfDoc.numPages - MAX_OCR_PAGES} page(s) were not OCR'd.`,
+        );
+      }
       const uncertain = (ocrText.match(/\[uncertain\]/g) ?? []).length;
       if (uncertain > 0) {
         warnings.push(

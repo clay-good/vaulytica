@@ -11,6 +11,7 @@ import {
   looksLikeZip,
   planBundle,
   rejectionForFilename,
+  ArchiveTooLargeError,
 } from "./multi.js";
 
 function fakeBytes(size: number, fill = 0): ArrayBuffer {
@@ -172,6 +173,18 @@ describe("extractZipEntries", () => {
     const entries = extractZipEntries(archive);
     expect(entries).toHaveLength(1);
     expect(entries[0]!.filename).toBe("msa.docx");
+  });
+
+  it("rejects a zip bomb by compression ratio before full expansion (spec-v8 §8)", () => {
+    // 4 MB of zeros in a .docx-named entry compresses to a few KB → ratio ≫ 200×.
+    const bomb = buildZip({ "bomb.docx": new Uint8Array(4 * 1024 * 1024) });
+    expect(() => extractZipEntries(bomb)).toThrow(ArchiveTooLargeError);
+  });
+
+  it("rejects a nested archive rather than recursing into it (spec-v8 §8)", () => {
+    const inner = new Uint8Array(buildZip({ "msa.docx": strToU8("x") }));
+    const archive = buildZip({ "outer.docx": strToU8("x"), "inner.zip": inner });
+    expect(() => extractZipEntries(archive)).toThrow(ArchiveTooLargeError);
   });
 
   it("produces a deterministic order regardless of zip producer order", () => {

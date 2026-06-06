@@ -1,5 +1,22 @@
 import type { DocumentTree, Paragraph, Run, Section } from "./types.js";
 import { makeParagraphId, makeRunId, makeSectionId } from "./types.js";
+import { MAX_SECTION_DEPTH } from "./limits.js";
+
+/**
+ * Iteratively collect every paragraph in a subtree in document order, without
+ * recursion — so flattening a pathologically deep subtree (spec-v8 §7
+ * recursion guard) cannot itself overflow the stack.
+ */
+function collectDescendantParagraphs(sections: Section[]): Paragraph[] {
+  const out: Paragraph[] = [];
+  const stack: Section[] = [...sections].reverse();
+  while (stack.length > 0) {
+    const s = stack.pop()!;
+    for (const p of s.paragraphs) out.push(p);
+    for (let i = s.children.length - 1; i >= 0; i -= 1) stack.push(s.children[i]!);
+  }
+  return out;
+}
 
 /**
  * Normalize a DocumentTree:
@@ -78,16 +95,27 @@ export function normalize(tree: DocumentTree): DocumentTree {
       // The heading text itself takes up its own offset span plus a newline.
       cursor += heading.length + 1;
     }
+    // Recursion guard (spec-v8 §7): at the depth cap, stop recursing and
+    // flatten every descendant section's paragraphs into this one (collected
+    // iteratively, so a 50,000-deep hostile tree cannot overflow the stack).
+    // Content is preserved; only the nesting past the cap is discarded.
+    const atDepthCap = path.length >= MAX_SECTION_DEPTH;
+    const ownParagraphs = atDepthCap
+      ? [...s.paragraphs, ...collectDescendantParagraphs(s.children)]
+      : s.paragraphs;
+
     const paragraphs: Paragraph[] = [];
     let pIdx = 0;
-    for (const p of s.paragraphs) {
+    for (const p of ownParagraphs) {
       const np = normalizeParagraph(p, id, pIdx);
       if (np) {
         paragraphs.push(np);
         pIdx += 1;
       }
     }
-    const children: Section[] = s.children.map((c, i) => normalizeSection(c, [...path, i + 1]));
+    const children: Section[] = atDepthCap
+      ? []
+      : s.children.map((c, i) => normalizeSection(c, [...path, i + 1]));
     return {
       id,
       heading,
@@ -103,20 +131,23 @@ export function normalize(tree: DocumentTree): DocumentTree {
   };
 }
 
-/** Count words in a tree by splitting every run on whitespace. */
+/**
+ * Count words in a tree by splitting every run on whitespace. Iterative (an
+ * explicit stack, no recursion) so it is stack-safe on an arbitrarily deep
+ * tree — part of the spec-v8 §7 recursion-guard contract.
+ */
 export function countWords(tree: DocumentTree): number {
   let n = 0;
-  const walk = (sections: Section[]): void => {
-    for (const s of sections) {
-      if (s.heading) n += s.heading.trim().split(/\s+/).filter(Boolean).length;
-      for (const p of s.paragraphs) {
-        for (const r of p.runs) {
-          n += r.text.trim().split(/\s+/).filter(Boolean).length;
-        }
+  const stack: Section[] = [...tree.sections].reverse();
+  while (stack.length > 0) {
+    const s = stack.pop()!;
+    if (s.heading) n += s.heading.trim().split(/\s+/).filter(Boolean).length;
+    for (const p of s.paragraphs) {
+      for (const r of p.runs) {
+        n += r.text.trim().split(/\s+/).filter(Boolean).length;
       }
-      walk(s.children);
     }
-  };
-  walk(tree.sections);
+    for (let i = s.children.length - 1; i >= 0; i -= 1) stack.push(s.children[i]!);
+  }
   return n;
 }

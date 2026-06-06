@@ -35,6 +35,23 @@ export const MAX_BUNDLE_BYTES = 200 * 1024 * 1024;
 /** Per-bundle file count ceiling. Spec-v4 §8. */
 export const MAX_BUNDLE_FILES = 50;
 
+/**
+ * Per-entry decompression-ratio ceiling (spec-v8 §8). A legitimate DOCX (a
+ * zip of XML) compresses ~5–10×; a PDF is already compressed (~1×). A zip
+ * bomb inflates 1000×+. 200× is far past any real document yet catches the
+ * classic bomb. Checked against the entry's *declared* uncompressed size
+ * before fflate inflates it.
+ */
+export const MAX_COMPRESSION_RATIO = 200;
+
+/** Typed, catchable rejection for a zip-bomb / oversized-archive entry. */
+export class ArchiveTooLargeError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ArchiveTooLargeError";
+  }
+}
+
 /** User-facing copy when the bundle exceeds either bundle-level cap. */
 export const BUNDLE_CAP_MESSAGE =
   "Vaulytica analyzes up to 50 files / 200 MB at once. Split your bundle or upload fewer files.";
@@ -212,7 +229,39 @@ function readAllDirectoryEntries(
 export function extractZipEntries(
   archive: ArrayBuffer,
 ): Array<{ filename: string; bytes: ArrayBuffer; size_bytes: number }> {
-  const unzipped = unzipSync(new Uint8Array(archive));
+  // Decompression-ratio guard (spec-v8 §8): inspect each entry's *declared*
+  // sizes via fflate's filter — which runs BEFORE the entry is inflated — and
+  // abort the whole archive the moment the cumulative uncompressed budget or
+  // the per-entry ratio is breached, or a nested archive is seen. fflate skips
+  // entries the filter rejects (returns false), so non-target files are never
+  // inflated; only candidate (.pdf/.docx) entries count toward the budget.
+  let cumulativeUncompressed = 0;
+  const unzipped = unzipSync(new Uint8Array(archive), {
+    filter: (file) => {
+      const name = file.name;
+      if (name.endsWith("/") || name.startsWith("__MACOSX/")) return false;
+      const basename = name.split("/").pop() ?? name;
+      if (basename.toLowerCase().endsWith(".zip")) {
+        throw new ArchiveTooLargeError(
+          `Nested archive "${name}" is not allowed inside a bundle.`,
+        );
+      }
+      if (classifyExtension(basename) === null) return false; // not inflated
+      const ratio = file.size > 0 ? file.originalSize / file.size : file.originalSize;
+      if (ratio > MAX_COMPRESSION_RATIO) {
+        throw new ArchiveTooLargeError(
+          `Archive entry "${name}" has a ${Math.round(ratio)}× compression ratio, exceeding the ${MAX_COMPRESSION_RATIO}× limit (possible zip bomb).`,
+        );
+      }
+      cumulativeUncompressed += file.originalSize;
+      if (cumulativeUncompressed > MAX_BUNDLE_BYTES) {
+        throw new ArchiveTooLargeError(
+          `Archive inflates to over ${MAX_BUNDLE_BYTES.toLocaleString()} uncompressed bytes; rejected before full expansion.`,
+        );
+      }
+      return true;
+    },
+  });
   const out: Array<{ filename: string; bytes: ArrayBuffer; size_bytes: number }> = [];
   for (const [path, data] of Object.entries(unzipped)) {
     if (path.endsWith("/")) continue; // directory entry
