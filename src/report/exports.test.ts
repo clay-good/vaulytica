@@ -108,7 +108,7 @@ describe("buildFixListMarkdown", () => {
     expect(md).toContain("## Info (0)");
     expect(md).toContain("- [ ] **MSA-006** — Issue with MSA-006");
     expect(md).toContain("- Recommendation: Fix the clause.");
-    expect(md).toContain("- Authority: 45 C.F.R. § 164.410");
+    expect(md).toContain("- Authority: [45 C.F.R. § 164.410](https://example.com)");
     expect(md).toContain("_None._"); // info bucket
   });
 
@@ -139,7 +139,9 @@ describe("buildFixListCsv", () => {
     const run = makeRun([finding("MSA-006", "critical", 10), finding("NDA-003", "warning", 20)]);
     const csv = buildFixListCsv(run);
     const rows = csv.trimEnd().split("\r\n");
-    expect(rows[0]).toBe("severity,rule_id,section,title,explanation,recommendation,authority");
+    expect(rows[0]).toBe(
+      "severity,rule_id,section,title,explanation,recommendation,authority,authority_url",
+    );
     expect(rows).toHaveLength(3);
     expect(rows[1]).toContain("critical,MSA-006,s10,");
   });
@@ -357,5 +359,22 @@ describe("buildDeadlinesIcs", () => {
     expect(ics).toContain("SUMMARY:Verify manually: 13/13/2025");
     expect(ics).toContain("DTSTART;VALUE=DATE:20200101"); // fixed sentinel date
     expect(ics).toContain("not machine-readable");
+  });
+});
+
+describe("citation completeness across action exports (spec-v8 §14, Step 140)", () => {
+  // The §14 contract: if an output names a finding, that output carries the
+  // finding's resolvable citation. Parameterized over the action-item formats
+  // that exist today (Markdown, CSV); extends to SARIF/HTML in Thrust C.
+  it("every cited finding's URL survives into the Markdown and CSV exports", () => {
+    const run = makeRun([finding("MSA-006", "critical", 10)]);
+    const url = "https://example.com";
+    const md = buildFixListMarkdown(run);
+    // Markdown: a clickable link, not a stripped bare name.
+    expect(md).toContain(`](${url})`);
+    // CSV: a dedicated authority_url column carrying the resolvable URL.
+    const csv = buildFixListCsv(run);
+    expect(csv.split("\r\n")[0]).toContain("authority_url");
+    expect(csv).toContain(url);
   });
 });

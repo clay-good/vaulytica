@@ -45,3 +45,27 @@ describe("formatBibliographyEntry", () => {
     expect(line).toContain("license: CC-BY-4.0");
   });
 });
+
+describe("URL-less / date-less custom citation renders cleanly (spec-v8 §14)", () => {
+  // A cited-by-policy custom rule: the interpreter materializes empty
+  // source_url / retrieved_at. Before v8 this rendered "Policy 4.2 — " with a
+  // dangling em-dash and "[retrieved ; license: Team policy]" with a blank date.
+  const policy: SourceCitation = {
+    id: "policy-4-2",
+    source: "Policy 4.2",
+    source_url: "",
+    retrieved_at: "",
+    license: "Team policy",
+    license_url: "",
+  };
+
+  it("formatCitation omits the dangling em-dash when there is no URL", () => {
+    expect(formatCitation(policy)).toBe("Policy 4.2");
+  });
+
+  it("formatBibliographyEntry renders 'cited — license' instead of a blank retrieval", () => {
+    const line = formatBibliographyEntry(7, policy);
+    expect(line).toBe("[7] Policy 4.2 (cited — Team policy)");
+    expect(line).not.toContain("retrieved ;");
+  });
+});

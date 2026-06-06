@@ -35,7 +35,7 @@ const SEVERITY_LABEL: Record<Severity, string> = {
 // Fix list
 // ---------------------------------------------------------------------------
 
-/** Source-authority string for a finding (deduped, in citation order). */
+/** Source-authority names for a finding (deduped, in citation order). */
 function citationLine(f: Finding): string {
   const seen = new Set<string>();
   const out: string[] = [];
@@ -44,6 +44,39 @@ function citationLine(f: Finding): string {
     if (s && !seen.has(s)) {
       seen.add(s);
       out.push(s);
+    }
+  }
+  return out.join("; ");
+}
+
+/**
+ * Markdown-link form of the authority (spec-v8 §14): `[source](url)` when the
+ * citation has a resolvable URL, the bare name otherwise — so the action-item
+ * fix-list a user pastes into a ticket stays *verifiable*, not stripped to a
+ * bare name as it was before v8.
+ */
+function citationLineMarkdown(f: Finding): string {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const c of f.source_citations) {
+    const s = c.source.trim();
+    if (!s || seen.has(s)) continue;
+    seen.add(s);
+    const url = c.source_url?.trim();
+    out.push(url ? `[${s}](${url})` : s);
+  }
+  return out.join("; ");
+}
+
+/** Resolvable authority URLs for a finding (deduped) — the CSV `authority_url` column. */
+function citationUrls(f: Finding): string {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const c of f.source_citations) {
+    const url = c.source_url?.trim();
+    if (url && !seen.has(url)) {
+      seen.add(url);
+      out.push(url);
     }
   }
   return out.join("; ");
@@ -86,7 +119,7 @@ export function buildFixListMarkdown(run: EngineRun, extracted?: ExtractedData):
       if (section) lines.push(`  - Section: ${section}`);
       if (f.explanation) lines.push(`  - ${f.explanation}`);
       if (f.recommendation) lines.push(`  - Recommendation: ${f.recommendation}`);
-      const cites = citationLine(f);
+      const cites = citationLineMarkdown(f);
       if (cites) lines.push(`  - Authority: ${cites}`);
     }
   }
@@ -126,7 +159,18 @@ function csvRow(fields: string[]): string {
 /** The findings as a CSV, one row per finding, in the run's sorted order. */
 export function buildFixListCsv(run: EngineRun): string {
   const rows: string[] = [];
-  rows.push(csvRow(["severity", "rule_id", "section", "title", "explanation", "recommendation", "authority"]));
+  rows.push(
+    csvRow([
+      "severity",
+      "rule_id",
+      "section",
+      "title",
+      "explanation",
+      "recommendation",
+      "authority",
+      "authority_url",
+    ]),
+  );
   for (const f of run.findings) {
     rows.push(
       csvRow([
@@ -137,6 +181,7 @@ export function buildFixListCsv(run: EngineRun): string {
         f.explanation ?? "",
         f.recommendation ?? "",
         citationLine(f),
+        citationUrls(f), // spec-v8 §14 — verifiable URL alongside the name
       ]),
     );
   }

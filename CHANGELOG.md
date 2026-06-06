@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- **Inline-everywhere citations (spec-v8 Thrust B, Step 135 + partial 140).**
+  The Markdown fix-list now renders authorities as clickable `[source](url)`
+  links and the CSV gains a dedicated `authority_url` column — the action-item
+  artifacts a user pastes into a ticket/spreadsheet stay verifiable instead of
+  stripped to a bare name. Render-side fix in `formatCitation` /
+  `formatBibliographyEntry`: a cited custom-playbook rule with no URL now renders
+  cleanly as `Policy 4.2` (was `"Policy 4.2 — "` with a dangling em-dash) and
+  `[N] Policy 4.2 (cited — Team policy)` (was `[retrieved ; license: …]` with a
+  blank date). A citation-completeness meta-test asserts every cited finding's
+  URL survives into the Markdown + CSV exports (extends to SARIF/HTML in Thrust
+  C). All render-side → zero `result_hash` churn; only the export-test goldens
+  re-baselined (mechanical, reviewed).
 - **Input-boundary hardening (spec-v8 Thrust A, Steps 127–134).** Every public
   ingest/extract/playbook entry point now fails safely on hostile input —
   rejects deterministically or degrades to a bounded result, never crashes,

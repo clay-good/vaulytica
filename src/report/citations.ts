@@ -46,13 +46,13 @@ function publishedYear(source: SourceCitation): string | undefined {
  */
 export function formatCitation(source: SourceCitation): string {
   const year = publishedYear(source);
-
-  if (isUsLegalCitation(source.source)) {
-    const yearPart = year ? ` (${year})` : "";
-    return `${source.source}${yearPart} — ${source.source_url}`;
-  }
-
-  return `${source.source} — ${source.source_url}`;
+  const yearPart = isUsLegalCitation(source.source) && year ? ` (${year})` : "";
+  const head = `${source.source}${yearPart}`;
+  // Omit the " — URL" segment when there is no URL (spec-v8 §14): a cited
+  // custom-playbook rule with no source_url must render cleanly as
+  // "Policy 4.2", not "Policy 4.2 — " with a dangling em-dash.
+  const url = source.source_url?.trim();
+  return url ? `${head} — ${url}` : head;
 }
 
 /**
@@ -66,6 +66,13 @@ export function formatBibliographyEntry(index: number, source: SourceCitation): 
   parts.push(`[${index}]`);
   parts.push(formatCitation(source));
   if (source.attribution) parts.push(`(${source.attribution})`);
-  parts.push(`[retrieved ${source.retrieved_at}; license: ${source.license}]`);
+  // Render the retrieval/license segment honestly (spec-v8 §14): a cited
+  // custom-playbook rule with no retrieval date must not print
+  // "[retrieved ; license: Team policy]" with a blank date.
+  const retrieved = source.retrieved_at?.trim();
+  const license = source.license?.trim();
+  if (retrieved && license) parts.push(`[retrieved ${retrieved}; license: ${license}]`);
+  else if (retrieved) parts.push(`[retrieved ${retrieved}]`);
+  else if (license) parts.push(`(cited — ${license})`);
   return parts.join(" ");
 }
