@@ -110,7 +110,22 @@ export async function runDocument(
   playbookId: string | undefined,
   deps: AccuracyDeps,
 ): Promise<DocumentRun> {
-  const ingest = await ingestPaste(text);
+  return runIngested(await ingestPaste(text), filename, playbookId, deps);
+}
+
+/**
+ * The post-ingest half of the pipeline: extract → classify → playbook
+ * match → engine. Factored out of {@link runDocument} so a caller that
+ * ingested a *binary* document (the CLI, Step 143, reading `.docx`/`.pdf`)
+ * runs the identical downstream the parity test pins for text — no logic
+ * is re-implemented, only the ingest front-end differs.
+ */
+export async function runIngested(
+  ingest: import("../../src/ingest/types.js").IngestResult,
+  filename: string,
+  playbookId: string | undefined,
+  deps: AccuracyDeps,
+): Promise<DocumentRun> {
   const extracted = extractAll(ingest.tree, {
     classifier: { vocab: { vocab: {} }, patterns: deps.dkb.classifier.patterns },
   });

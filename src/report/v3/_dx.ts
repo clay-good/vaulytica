@@ -23,6 +23,7 @@ import {
   type IParagraphOptions,
   type IRunOptions,
 } from "docx";
+import { breakLongTokens } from "../citations.js";
 
 export const MINT = "00A883";
 export const DEFAULT_FONT = "Arial";
@@ -142,23 +143,23 @@ export function buildTable(rows: TableRow[]): Table {
 
 /** Build a paragraph containing a hyperlink. */
 export function hyperlinkParagraph(label: string, url: string, opts: { bold?: boolean; italics?: boolean } = {}): Paragraph {
-  return new Paragraph({
-    children: [
-      new ExternalHyperlink({
-        link: url,
-        children: [
-          new TextRun({
-            text: label,
-            style: "Hyperlink",
-            color: "0563C1",
-            underline: {},
-            font: DEFAULT_FONT,
-            size: BODY_SIZE,
-            bold: opts.bold,
-            italics: opts.italics,
-          }),
-        ],
+  // Split the (often long) URL label into wrap-friendly runs so Word can
+  // break it at the cell margin rather than overflow the page (spec-v8 §18).
+  // The concatenated run text equals `label` exactly — never truncated.
+  const runs = breakLongTokens(label).map(
+    (seg) =>
+      new TextRun({
+        text: seg,
+        style: "Hyperlink",
+        color: "0563C1",
+        underline: {},
+        font: DEFAULT_FONT,
+        size: BODY_SIZE,
+        bold: opts.bold,
+        italics: opts.italics,
       }),
-    ],
+  );
+  return new Paragraph({
+    children: [new ExternalHyperlink({ link: url, children: runs })],
   });
 }

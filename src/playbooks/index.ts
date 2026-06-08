@@ -48,6 +48,16 @@ export {
   type UnevaluableRule,
 } from "./custom-interpreter.js";
 
+// spec-v8 §23 — custom-playbook structural diff (Step 144).
+export {
+  diffPlaybooks,
+  diffPlaybooksMarkdown,
+  type PlaybookDiff,
+  type FieldChange,
+  type OverrideChange,
+  type CustomRuleChange,
+} from "./diff.js";
+
 // v6 Part II — custom-playbook preview + merged run (Step 92).
 export {
   previewCustomPlaybook,

@@ -84,6 +84,46 @@ describe("buildDocxReport", () => {
     expect(bytes[3]).toBe(0x04);
   });
 
+  it("renders citations in full and wraps long URLs (spec-v8 §18 never-truncate)", async () => {
+    const longUrl =
+      "https://www.govinfo.gov/content/pkg/CFR-2024-title45-vol2/xml/CFR-2024-title45-vol2-sec164-410.xml";
+    const longSource = "45 C.F.R. § 164.410(a)(1) — Notification to the Secretary of a breach of unsecured protected health information";
+    const run = makeRun();
+    run.findings = [
+      {
+        ...finding("c1", "critical"),
+        source_citations: [
+          {
+            id: "cfr-164-410",
+            source: longSource,
+            source_url: longUrl,
+            retrieved_at: "2026-05-11T00:00:00Z",
+            license: "Public domain (US government work)",
+            license_url: "https://www.usa.gov/government-works",
+          },
+        ],
+      },
+    ];
+    const blob = await buildDocxReport(run, ingest, loadStarterDkbSync(), loadMutualNda());
+    const { unzipSync, strFromU8 } = await import("fflate");
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const docXml = strFromU8(entries["word/document.xml"]!);
+    // Concatenate every run's visible text: the wrap mechanism splits a URL
+    // across adjacent runs, so the contiguous string only re-forms when the
+    // run texts are joined — which is exactly what Word renders on the page.
+    const runText = (docXml.match(/<w:t[^>]*>([^<]*)<\/w:t>/g) ?? [])
+      .map((m) => m.replace(/<[^>]+>/g, ""))
+      .join("");
+    // Never truncated: the full citation source and the full URL both appear.
+    expect(runText).toContain(longSource);
+    expect(runText).toContain(longUrl);
+    expect(runText).not.toContain("…");
+    // Wrapped: the long URL is split into multiple adjacent runs so Word can
+    // break it at the margin rather than overflow the page.
+    const urlRunCount = (docXml.match(/<w:t[^>]*>[^<]*govinfo[^<]*<\/w:t>/g) ?? []).length;
+    expect(urlRunCount).toBeGreaterThan(1);
+  });
+
   it("handles a run with zero findings", async () => {
     const run = makeRun();
     run.findings = [];

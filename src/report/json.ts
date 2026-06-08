@@ -17,6 +17,7 @@ import {
 } from "../dkb/model-clauses.js";
 import { selectStateOverlays, type StateOverlayResult } from "../dkb/state-overlays.js";
 import type { ExtractedData } from "../extract/types.js";
+import { buildClauseEvidence, type ClauseEvidenceSummary } from "./clause-evidence.js";
 
 /**
  * One additional detected family's scan results (spec-v6 multi-family
@@ -101,6 +102,14 @@ export type JsonReport = {
    * honest: a detected-but-uncovered state is reported, never silently passed.
    */
   jurisdiction_overlays?: StateOverlayResult;
+  /**
+   * Clause-evidence coverage (spec-v8 §25). How defensible each finding is —
+   * which carry a verbatim quoted excerpt span vs. a bare match. A
+   * projection of the run computed at report time; lives outside `run`, so
+   * `result_hash` is unchanged. Always emitted (it is informative even when
+   * all findings are quoted).
+   */
+  clause_evidence: ClauseEvidenceSummary;
 };
 
 export function buildJsonReport(
@@ -140,6 +149,7 @@ export function buildJsonReport(
       rules_with_reference: MODEL_CLAUSE_COVERAGE.rules_with_reference,
       model_clauses: MODEL_CLAUSE_COVERAGE.model_clauses,
     },
+    clause_evidence: buildClauseEvidence(run),
   };
   if (modelRefs.length > 0) payload.model_clause_references = modelRefs;
   // spec-v6 Part VI §21 — jurisdiction overlays for the governing-law state(s).

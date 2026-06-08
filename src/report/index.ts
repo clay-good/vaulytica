@@ -39,7 +39,24 @@ export {
 } from "./compare.js";
 export { buildComparisonDocx, comparisonDocxBlob } from "./compare-docx.js";
 
-export { formatCitation, formatBibliographyEntry } from "./citations.js";
+export {
+  formatCitation,
+  formatBibliographyEntry,
+  freshnessSignal,
+  citationFamily,
+  breakLongTokens,
+  type CitationFamily,
+} from "./citations.js";
+
+// spec-v8 Thrust C — SARIF 2.1.0 export (Step 141) + standalone HTML report (Step 142).
+export { buildSarif, buildSarifJson, sarifBlob, type SarifLog } from "./sarif.js";
+export { buildHtmlReport, htmlReportBlob } from "./html.js";
+// spec-v8 §25 — clause-evidence coverage surface (Step 146).
+export {
+  buildClauseEvidence,
+  type ClauseEvidenceSummary,
+  type FindingEvidence,
+} from "./clause-evidence.js";
 export {
   buildBibliography,
   citationIndex,

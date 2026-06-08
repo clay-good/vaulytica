@@ -49,10 +49,10 @@ The Markdown/CSV/ICS changes re-baseline only the **export** goldens (mechanical
 | US reporter (case) | `410 U.S. 113` | ✅ today |
 | State code | `Cal. Civ. Code § 1542` | ✅ today |
 | UCC | `UCC § 2-201` | ✅ today |
-| **Pinpoint subsection** | `45 C.F.R. § 164.410(a)(1)` — keep `(a)(1)`, don't truncate to base | ⬜ v8 §16 |
-| **EU / GDPR** | `GDPR Art. 28` · `Regulation (EU) 2016/679` · `Directive 2016/680` | ⬜ v8 §16 |
-| **Standards** | `ISO/IEC 27001:2022` · `NIST SP 800-171 Rev. 2` | ⬜ v8 §16 |
-| **Secondary source** | `Restatement (Third) of Unfair Competition § 39` | ⬜ v8 §16 |
+| **Pinpoint subsection** | `45 C.F.R. § 164.410(a)(1)` — keep `(a)(1)`, don't truncate to base | ✅ v8 §16 |
+| **EU / GDPR** | `GDPR Art. 28` · `Regulation (EU) 2016/679` · `Directive 2016/680` | ✅ v8 §16 |
+| **Standards** | `ISO/IEC 27001:2022` · `NIST SP 800-171 Rev. 2` | ✅ v8 §16 |
+| **Secondary source** | `Restatement (Third) of Unfair Competition § 39` | ✅ v8 §16 |
 
 A form the DKB does **not** cite is not added — the matrix grows only to match real source data, never ahead of it.
 

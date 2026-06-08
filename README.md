@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,062 deterministic rules` · `20 cross-document checks` · `16 document sub-domains` · `35 state-law overlays` · `0 servers` · `0 AI` · `2,621 passing tests` · `v7.0.0` · `MIT`
+`1,062 deterministic rules` · `20 cross-document checks` · `16 document sub-domains` · `35 state-law overlays` · `7 export formats` · `0 servers` · `0 AI` · `2,674 passing tests` · `v8.0.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
 
@@ -33,13 +33,13 @@ flowchart LR
   E --> F[Select playbook<br/>built-in or your own]
   F --> G[Run rules<br/>1,062 pure functions]
   G --> H[Findings<br/>+ result_hash]
-  H --> I[Report<br/>DOCX · JSON · fix-list ·<br/>.ics · portfolio matrix]
+  H --> I[Report<br/>DOCX · JSON · SARIF · HTML ·<br/>fix-list · .ics · portfolio matrix]
   K[(Deterministic<br/>Knowledge Base)] --> G
   style K fill:#00A883,color:#fff
   style H fill:#00A883,color:#fff
 ```
 
-Everything in this diagram runs in the tab. The DKB is a static, versioned, content-hashed JSON artifact served alongside the page; the engine is a synchronous pure function over it.
+Everything in this diagram runs in the tab. The DKB is a static, versioned, content-hashed JSON artifact served alongside the page; the engine is a synchronous pure function over it. The **same pipeline** runs headless from the [`vaulytica analyze` CLI](#v8--reach-the-linter-in-the-workflow) — proven byte-identical to the browser run.
 
 ## What you can drop in — ingest cheat sheet
 
@@ -88,7 +88,7 @@ Those 1,062 are all **single-document** rules. Dropping a folder or `.zip` addit
 
 <img src="docs/images/report-mobile.png" alt="Vaulytica report card on a phone: severity counts, a California non-compete jurisdiction overlay with citation, and Word/JSON/fix-list/calendar exports" width="320" align="right" />
 
-The drop zone transforms in place into a result card: severity counts (critical / warning / informational), the matched playbook with a "why," any jurisdiction overlays for the governing-law state, and one-click exports — the **Word report** you can cite, the structured **JSON** with its `result_hash`, the **fix-list** (Markdown / CSV), the obligations ledger (CSV), and deadlines as an **`.ics` calendar**.
+The drop zone transforms in place into a result card: severity counts (critical / warning / informational), the matched playbook with a "why," any jurisdiction overlays for the governing-law state, and one-click exports — the **Word report** you can cite, the structured **JSON** with its `result_hash`, **SARIF 2.1.0** for code-scanning/PR annotation, a self-contained **single-file HTML** report that prints clean to PDF, the **fix-list** (Markdown / CSV), the obligations ledger (CSV), and deadlines as an **`.ics` calendar**. As of v8 **every** one of those carries each finding's resolvable citation — the URL rides into the spreadsheet row, the SARIF result, and the calendar event, not just the Word doc.
 
 Every view is verified to render with **no horizontal scroll from 320 px to 1280 px** — the shot at right is the live card at a 390 px phone width. The whole flow runs in the tab; open DevTools and the network panel stays empty.
 
@@ -104,11 +104,57 @@ Every view is verified to render with **no horizontal scroll from 320 px to 1280
 | v5 | Ground Truth | accuracy & validation harness, measured recall/precision, rule-retirement discipline | **infrastructure built** (Steps 67/69/71/75/83): corpus scaffolding, gold-annotation schema + Cohen's κ, `npm run accuracy` harness + reproducible scoreboard, legal-basis ledger + `tier` field. Numbers + sign-offs await a human-gated real corpus, attorney annotation, and legal review (Steps 68/70/76/77). |
 | v6 | Workflow | version comparison · bring-your-own-playbook · findings-to-action exports · model-clause references · portfolio matrix · depth (classifier, cross-doc families, jurisdiction overlays) | **complete · 6.0.0** (Steps 87–102; only Step 98 extraction-recall deferred behind v5) |
 | v7 | Depth & Proof | extraction recall · 3 new cross-doc families · mixed-text-layer OCR + per-word confidence · report provenance/exec-summary · **and** the missing test *kinds*: coverage + property + metamorphic + parity + schema-fuzz + report-structure + **mutation** + responsiveness gates | **substantially done · 7.0.0** (Steps 103–108, 110, 113–126; [`spec-v7`](docs/spec-v7.md) · [`docs/v7/`](docs/v7/README.md)). Deferred — all v5-/attorney-gated: 109 (routing measured against the real corpus), 111 (per-state overlay data), 112 (golden-churn + citable sources). |
-| v8 | Hardening & Reach | (A) input-boundary guards + fuzz gate so the engine *survives* hostile input · (B) inline-everywhere/honest citations · (C) SARIF, CLI, single-file HTML — the linter in the workflow | **Thrust A done** (Steps 127–134: byte/paste/depth/OCR caps, zip-bomb + numeric + playbook guards, fuzz boundary gate; [`spec-v8`](docs/spec-v8.md) · [`docs/v8/`](docs/v8/robustness-and-fuzzing.md)). Thrust B (Citations) + C (Reach) forthcoming. |
+| v8 | Hardening & Reach | (A) input-boundary guards + fuzz gate so the engine *survives* hostile input · (B) inline-everywhere/honest citations across every format · (C) SARIF, a headless CLI, a single-file HTML report, a playbook diff, a reproducibility verifier — the linter in the workflow | **complete · 8.0.0** (Steps 127–147; [`spec-v8`](docs/spec-v8.md) · [`docs/v8/`](docs/v8/README.md)). Deferred — npm/Action distribution, attorney-gated publication dates, scheduled (not per-commit) citation reachability, clause-level redline. |
 
 ## v8 — hardening: a tool that cannot be made to hang
 
-The suite proves the engine is *correct* on inputs an author wrote down (v7) and — once the corpus lands — *legally right* (v5). v8 Thrust A adds the third claim: it *survives garbage*. Every public entry point now has a **pure-function input guard** (a bound, never a timeout — a timeout would break determinism): a 50 MB document or a 20-million-character paste is rejected with a typed error before parsing; a 20,000-section-deep hostile tree is flattened iteratively instead of overflowing the stack; a **zip bomb** is rejected by compression ratio *before* fflate inflates it; a fifty-digit amount, a 100,000-rule custom playbook, and a megabyte-long regex are all capped. A `fast-check` **fuzz boundary gate** then proves the property across the whole surface — every public function *returns or throws a typed error, never an uncaught crash, on any input* — the boundary analog of v7's metamorphic suite. All of it is zero-churn against the goldens (guards reject hostile inputs the goldens never contained). Thrust B (citations inline in every export, formatted across EU/ISO/secondary forms, honestly dated) and Thrust C (SARIF, a Node CLI, a single-file HTML report) are next.
+The suite proves the engine is *correct* on inputs an author wrote down (v7) and — once the corpus lands — *legally right* (v5). v8 Thrust A adds the third claim: it *survives garbage*. Every public entry point now has a **pure-function input guard** (a bound, never a timeout — a timeout would break determinism): a 50 MB document or a 20-million-character paste is rejected with a typed error before parsing; a 20,000-section-deep hostile tree is flattened iteratively instead of overflowing the stack; a **zip bomb** is rejected by cumulative-inflated-byte budget + compression ratio *before* fflate inflates it (and nested archives are refused outright); a fifty-digit amount, a 100,000-rule custom playbook, and a megabyte-long regex are all capped. A `fast-check` **fuzz boundary gate** then proves the property across the whole surface — every public function *returns or throws a typed error, never an uncaught crash, on any input* — the boundary analog of v7's metamorphic suite. All of it is zero-churn against the goldens (guards reject hostile inputs the goldens never contained).
+
+## v8 — citations: verifiable from whatever artifact you're holding
+
+A finding is *citable* only if you can follow it to the source from the artifact in your hand. Before v8 that was true of the Word doc and the JSON and **false** of the spreadsheet row (URL stripped to a bare name), the calendar event (no source), and a cited-by-team-policy rule (it rendered `"Policy 4.2 — "` with a dangling em-dash). v8 closes every gap and pins it with a gate:
+
+- **Inline-everywhere.** The Markdown fix-list carries a `[source](url)` link; the CSV gains an `authority_url` column; the URL-less custom rule renders cleanly as `Policy 4.2 (cited — team policy)`. A **cross-format completeness meta-test** asserts that for every cited finding, the resolvable URL survives into **all** of DOCX, JSON, Markdown, CSV, SARIF, and HTML — a new output that cannot carry a citation does not ship.
+- **Breadth.** `citationFamily()` recognizes the forms the DKB actually cites beyond US statutes — **EU/GDPR** (`Regulation (EU) 2016/679`), **standards** (`ISO/IEC 27001:2022`, `NIST SP 800-53 Rev. 5`), and **secondary sources** (Restatements, uniform acts) — rendering each conventionally. Only US-statutory forms take a Bluebook parenthetical year (EU/standards embed their own); **pinpoint subsections** like `45 C.F.R. § 164.410(a)(1)` are preserved, never truncated to the base section.
+- **Honesty & wrapping.** A reader-facing **freshness signal** shows the retrieval date (and publication date when genuinely known — *never fabricated*; absent when unknown). It is the *date*, never a computed elapsed "age" — elapsed time depends on the clock and would break determinism. Long citation URLs **wrap** (DOCX run-splitting · HTML `overflow-wrap`) and are **never truncated** — a structure test asserts the full source + URL render.
+- **Integrity tool.** A build-only [`tools/citation-check`](tools/citation-check/) sweeps every citation URL: well-formedness gates every commit (pure), reachability runs on a schedule (network). It is `src/`-isolated — a guard test asserts the browser bundle can never import it.
+
+## v8 — reach: the linter in the workflow
+
+The product is "a linter for legal documents," yet it spoke no linter format and had no headless entry point. v8 Thrust C spends the v7 parity proof (the Node pipeline is byte-identical to the browser) to put the same engine wherever the work happens:
+
+- **SARIF 2.1.0** — each rule → a `reportingDescriptor` (with the citation as `helpUri`), each finding → a `result` (severity → level, section → location, `result_hash` + finding id → `partialFingerprints` so findings dedupe across runs). Annotate a pull request, populate a code-scanning dashboard.
+- **Standalone HTML report** — a self-contained `.html` (all CSS inlined, **no script**, no external resource) that renders the full report with wrapped inline citations and prints clean to PDF from any browser. The archivable, emailable, diff-able counterpart to the DOCX — and mobile-responsive by construction.
+- **Headless API + CLI** — `vaulytica analyze <path|glob|dir> --playbook <id> --format json,sarif,html,md,csv --out <dir> --fail-on critical` runs the **same parity-proven pipeline** in CI, a pre-commit hook, or a folder sweep, exiting non-zero when findings breach a threshold. The DKB ships with the tool, so it opens **no socket** — "nothing leaves your machine" holds headless too.
+- **Playbook diff** — `diffPlaybooks(a, b)` gives custom-playbook authors version control for their team standard: which built-in rules were selected, which severity overrides moved, which custom rules were added/removed/edited, rendered as Markdown or JSON.
+- **Reproducibility verifier** — `verifyReproducibility(savedReport, original)` re-derives the `result_hash` and reports *what* diverged — the input, the engine, or the DKB — turning the determinism promise into a checkable audit receipt.
+- **Export enhancements** — a bundle "everything" archive (per-document fix-list/CSV/ICS/JSON in one download) and a **clause-evidence coverage** surface that tells a reviewer which findings pin a verbatim quoted clause span vs. rest on a bare match.
+
+Every Thrust-B change is render-side or additive (zero `result_hash` churn); every Thrust-C format is a deterministic rendering of the same run that inherits the full citation. Full write-up: [`docs/v8/`](docs/v8/README.md).
+
+### CLI cheat sheet
+
+```
+# Analyze one file, print SARIF to stdout
+npm run analyze -- analyze contract.docx --format sarif
+
+# Sweep a deal folder, write Word-free HTML + JSON + fix-list per doc, gate CI on any critical
+npm run analyze -- analyze ./deal-room --format html,json,md --out ./out --fail-on critical
+
+# Verify a saved report reproduces from the original document
+tsx tools/cli/verify.ts report.json original.txt
+
+# Build-only: check every citation URL is well-formed (per-commit) or reachable (scheduled)
+npm run citation:check            # well-formedness
+npm run citation:check -- --reachability   # + network sweep
+```
+
+| Flag | Meaning |
+|---|---|
+| `--playbook <id>` | force a specific playbook instead of auto-matching |
+| `--format <list>` | comma list of `json,sarif,html,md,csv` (default `json`) |
+| `--out <dir>` | write one file per document per format (else stdout for a single file/format) |
+| `--fail-on <sev>` | exit non-zero (code 2) when any finding is at or above `critical\|warning\|info` |
 
 ## v6 — fit the shape of a review
 
@@ -291,10 +337,12 @@ npm run dev          # open the printed URL
 npm run build        # static site → dist/
 npm run typecheck    # tsc --noEmit
 npm run lint         # eslint
-npm run test         # vitest — 2,621 tests, ~10s
+npm run test         # vitest — 2,674 tests, ~20s
 npm run coverage     # vitest + V8 coverage, enforces the regression floor
 npm run accuracy     # v5 Ground Truth harness → tools/accuracy/SCOREBOARD.md
 npm run mutation     # Stryker mutation score (scoped to extractors; slow, off the per-push path)
+npm run citation:check   # v8 build-only citation URL well-formedness (+ --reachability for the network sweep)
+npm run analyze -- analyze <path> --format sarif,html,json   # v8 headless CLI
 ```
 
 The CI gate (`.github/workflows/ci.yml`) runs typecheck + lint + **coverage** + build on Ubuntu; the test matrix re-runs the plain suite on Ubuntu/macOS/Windows for cross-OS determinism, and Lighthouse enforces the mobile performance budget. Mutation testing runs on its own weekly/on-demand workflow, never the per-push path. A commit is "green" only when the per-push gates pass.
@@ -305,8 +353,8 @@ The suite proves *behavior*; coverage proves the suite *reaches the code*. Measu
 
 | Metric | Measured | Floor | Metric | Measured | Floor |
 |---|---:|---:|---|---:|---:|
-| Lines | 88.7% | 85% | Functions | 88.0% | 85% |
-| Statements | 86.5% | 83% | Branches | 73.4% | 70% |
+| Lines | 88.8% | 85% | Functions | 88.1% | 85% |
+| Statements | 86.6% | 83% | Branches | 74.0% | 70% |
 
 Floors are **regression-only** — set a couple points under the measured value (headroom for cross-platform drift), they fail the build on a *drop*, never block on an aspiration. A ratchet raises them as coverage climbs; branches (the lowest) is the next ratchet target. Same measure-first discipline the [v5 accuracy scoreboard](docs/v5/methodology.md) uses for precision/recall — publish the real number, gate against regression, never against a fabricated target.
 
@@ -332,12 +380,15 @@ src/
   dkb/         Deterministic Knowledge Base types, loader, model-clauses, state-overlays
   engine/      pure rule runner + 1,062 rules + cross-document consistency
   playbooks/   built-in playbooks + bring-your-own schema/validator/interpreter
-  report/      DOCX · JSON · bundle · comparison · exports · portfolio matrix
+  report/      DOCX · JSON · SARIF · HTML · bundle · comparison · exports ·
+               portfolio matrix · citations · clause-evidence
   ui/          drop zone, pipeline, six-state result machine, theme toggle
 dkb/build/     offline fetchers (EDGAR, US Code, eCFR, Common Paper, …) → DKB
 tools/accuracy/ v5 Ground Truth harness (corpus loader, κ, metrics, scoreboard, legal-basis ledger)
+tools/cli/     v8 headless API (analyzeText/analyzeFile) + `vaulytica analyze` CLI + reproducibility verifier
+tools/citation-check/ v8 build-only citation URL well-formedness + scheduled reachability
 corpus/        real-document accuracy corpus (build/CI-only; never in the bundle)
-docs/          architecture, determinism, threat model, legal-basis ledger, specs v1–v6
+docs/          architecture, determinism, threat model, legal-basis ledger, specs v1–v8
 playbooks/     served playbook JSON; tools/ bundles the v3+v4 catalog
 ```
 
@@ -374,7 +425,11 @@ See [`docs/data-sources.md`](docs/data-sources.md) and [`docs/determinism.md`](d
 | Annotation protocol (v5) | [`docs/v5/annotation-protocol.md`](docs/v5/annotation-protocol.md) |
 | Legal-basis ledger (v5, rule sign-off) | [`docs/legal-basis/README.md`](docs/legal-basis/README.md) |
 | v4 overview + sub-domains | [`docs/v4/overview.md`](docs/v4/overview.md) |
-| Specs | [`docs/spec.md`](docs/spec.md) · [`spec-v3`](docs/spec-v3.md) · [`spec-v4`](docs/spec-v4.md) · [`spec-v5`](docs/spec-v5.md) · [`spec-v6`](docs/spec-v6.md) · [`spec-v7`](docs/spec-v7.md) |
+| v7 overview (depth & proof) | [`docs/v7/README.md`](docs/v7/README.md) |
+| v8 overview (hardening & reach) | [`docs/v8/README.md`](docs/v8/README.md) |
+| v8 robustness & fuzzing (Thrust A) | [`docs/v8/robustness-and-fuzzing.md`](docs/v8/robustness-and-fuzzing.md) |
+| v8 citation standard (Thrust B) | [`docs/v8/citation-standard.md`](docs/v8/citation-standard.md) |
+| Specs | [`docs/spec.md`](docs/spec.md) · [`spec-v3`](docs/spec-v3.md) · [`spec-v4`](docs/spec-v4.md) · [`spec-v5`](docs/spec-v5.md) · [`spec-v6`](docs/spec-v6.md) · [`spec-v7`](docs/spec-v7.md) · [`spec-v8`](docs/spec-v8.md) |
 | Contributing | [`CONTRIBUTING.md`](CONTRIBUTING.md) |
 
 ## What happened to the older project?

@@ -45,7 +45,7 @@ import type { Playbook } from "../playbooks/types.js";
 import type { ExtractedData } from "../extract/types.js";
 import type { ReportSecondaryFamily } from "./json.js";
 import { buildBibliography, citationIndex, type BibliographyEntry } from "./bibliography.js";
-import { formatCitation, formatBibliographyEntry } from "./citations.js";
+import { formatCitation, formatBibliographyEntry, breakLongTokens } from "./citations.js";
 import { modelClauseForRule, MODEL_CLAUSE_COVERAGE } from "../dkb/model-clauses.js";
 import { selectStateOverlays, type StateOverlayResult } from "../dkb/state-overlays.js";
 import type { V3ReportInputs } from "./v3/types.js";
@@ -662,7 +662,7 @@ function renderAuditTrail(
     h2("Bibliography"),
     ...(bibliography.length === 0
       ? [para({ text: "No DKB sources were referenced by any finding in this report." })]
-      : bibliography.map((b) => para({ text: formatBibliographyEntry(b.index, b.source) }))),
+      : bibliography.map((b) => wrappingPara({ text: formatBibliographyEntry(b.index, b.source) }))),
     pageBreak(),
   ];
 }
@@ -710,6 +710,27 @@ function para(opts: ParaOpts): Paragraph {
     heading: opts.heading,
     alignment: opts.alignment,
     children: [new TextRun(runOpts)],
+  });
+}
+
+/**
+ * A paragraph whose long unbroken tokens (citation URLs) are split into
+ * adjacent runs so Word can wrap them at the page margin rather than let
+ * the line overflow (spec-v8 §18). The concatenated run text equals
+ * `text` exactly, so the citation is never truncated.
+ */
+function wrappingPara(opts: ParaOpts): Paragraph {
+  const base = {
+    bold: opts.bold,
+    italics: opts.italics,
+    color: opts.color,
+    font: DEFAULT_FONT,
+    size: opts.size ?? BODY_SIZE,
+  };
+  return new Paragraph({
+    heading: opts.heading,
+    alignment: opts.alignment,
+    children: breakLongTokens(opts.text).map((seg) => new TextRun({ ...base, text: seg })),
   });
 }
 

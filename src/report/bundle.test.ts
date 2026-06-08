@@ -536,6 +536,21 @@ describe("buildBundleZip", () => {
     expect(Array.from(entries["per-document/a.docx"]!)).toEqual([1, 2, 3]);
   });
 
+  it("'everything' archive adds per-document fix-list + CSV + JSON (spec-v8 §25)", async () => {
+    const blob = await buildBundleZip({ ...makeInput(), include_per_document_exports: true });
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const keys = Object.keys(entries).sort();
+    // Fix-list (md) + CSV are derivable from the run alone, so both docs get them.
+    expect(keys).toContain("per-document/a.fixlist.md");
+    expect(keys).toContain("per-document/a.fixlist.csv");
+    expect(keys).toContain("per-document/b.fixlist.md");
+    // No extracted/ingest threaded here, so no .ics / .report.json — honest partial.
+    expect(keys).not.toContain("per-document/a.deadlines.ics");
+    expect(keys).not.toContain("per-document/a.report.json");
+    // The fix-list names the document's critical finding.
+    expect(strFromU8(entries["per-document/a.fixlist.md"]!)).toContain("Critical");
+  });
+
   it("uses a fixed mtime so the zip envelope itself is deterministic", async () => {
     // The docx library packs its own (timestamped) bytes, so the full
     // zip cannot be byte-identical across runs. Instead we verify that

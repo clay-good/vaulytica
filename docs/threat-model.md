@@ -393,3 +393,67 @@ The responsiveness Playwright spec only measures `scrollWidth` against
 `clientWidth` at fixed viewports against the already-deployed site; it
 introduces no new input channel and no network egress beyond the
 same-origin page load the other e2e specs already make.
+
+## v8 additions — hardening & reach surface
+
+v8 hardens every public function against hostile input, makes the citation
+correct in every artifact, and adds headless/portable output surfaces. Each
+must hold the determinism and privacy claims *unweakened*, and the new CLI
+and formats are the two places posture is easiest to erode by accident.
+
+### Input-boundary guards are bounds, not timeouts
+
+Every Thrust-A guard is a **pure function of the input** — a byte/char cap,
+a recursion-depth limit, a numeric-magnitude bound, a decompression-ratio
+ceiling, a rule/string count cap. None reads a clock or a random source, so
+a capped input is rejected *identically on every machine* and the engine
+stays a pure synchronous function. A timeout was deliberately rejected: a
+document that finishes in 4 s on a workstation and times out at 3 s on a
+phone would produce two results from one input — exactly the non-determinism
+v1–v7 forbid. The guards bound **work** so that **time** is bounded as a
+consequence. A guard that drops work surfaces an honest `capped` flag or
+warning rather than silently emitting a partial result. The zip-bomb guard
+aborts on the *cumulative inflated byte budget* and ratio ceiling **before**
+the archive is fully expanded, and rejects nested archives rather than
+recursing — closing the "small archive, gigabyte payload" exhaustion vector.
+
+### The citation work adds no new egress
+
+Thrust B is render-side or additive. Reformatting (breadth, freshness,
+wrapping) is downstream of the `EngineRun` and emits only the citation data
+the report already carried; `source_published_at` renders only when present
+and is **never fabricated** (the honesty gate). No citation change opens a
+network connection — the tab still makes zero cross-origin requests.
+
+### The one network tool is build-only and `src/`-isolated
+
+`tools/citation-check`'s reachability path is the only network-touching code
+v8 adds. It is **build/CI-only and never imported by `src/`** — the extended
+`accuracy-corpus-guard` asserts the import-direction invariant exactly as it
+does for the accuracy harness, so the reachability checker can never reach
+the shipped browser bundle. Its per-commit well-formedness check is pure (URL
+parsing, no IO).
+
+### New output formats inherit posture, not just content
+
+SARIF, the standalone HTML report, the CLI output, and the bundle
+"everything" archive are deterministic renderings of the same run. Each
+carries the full citation (the cross-format completeness gate enforces it),
+and none emits document content not already in the report. The HTML report
+is **script-free with all CSS inlined and no external resource** — it cannot
+phone home, and it renders/prints offline. The CLI ships the DKB with the
+tool and **opens no socket**; it is the parity-proven pipeline (`runIngested`
+≡ the browser `runReport`), so a CI dashboard number describes shipped
+behavior. `clause_evidence`, the reproducibility receipt, and the SARIF
+`partialFingerprints` all live outside the `EngineRun`, so no `result_hash`,
+bundle fingerprint, or golden moves.
+
+### What v8 still does not protect against
+
+v8 makes the engine *survive* hostile input; it does not make a wrong finding
+right (that is v5's accuracy surface) nor prove the logic sound (v7). A guard
+rejects a 200 MB paste or a zip bomb deterministically, but it cannot judge
+whether a well-formed contract's clause is legally adequate. The CLI runs on
+the user's machine with the user's trust; a CLI invoked against untrusted
+files inherits the same browser-tab guarantees (no egress, bounded work) but,
+like any local tool, runs with the caller's filesystem permissions.

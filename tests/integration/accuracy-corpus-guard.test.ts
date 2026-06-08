@@ -50,6 +50,21 @@ describe("v5 corpus privacy guard (spec-v5 §VIII, Step 83)", () => {
     expect(offenders, "src/ must never import the corpus or accuracy harness").toEqual([]);
   });
 
+  it("no src/ file imports the citation-check tool (spec-v8 §19 posture guard)", () => {
+    // The citation-check tool has a network reachability path; if src/
+    // imported it the no-server posture would be at risk, so it stays
+    // build/CI-only in tools/, exactly like the accuracy harness.
+    const tsFiles = walk(SRC, (p) => p.endsWith(".ts"));
+    const offenders: string[] = [];
+    for (const file of tsFiles) {
+      const text = readFileSync(file, "utf8");
+      if (/from\s+["'][^"']*tools\/citation-check/.test(text)) {
+        offenders.push(file.replace(REPO_ROOT + "/", ""));
+      }
+    }
+    expect(offenders, "src/ must never import the citation-check tool").toEqual([]);
+  });
+
   it("no built asset contains any corpus document's text", () => {
     if (!existsSync(DIST_ASSETS)) return; // build-gated; runs in CI where dist exists
     const docsDir = join(CORPUS, "documents");

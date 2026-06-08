@@ -4,8 +4,75 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [8.0.0] - 2026-06-08 — Hardening & Reach (spec-v8 complete)
+
 ### Added
-- **Inline-everywhere citations (spec-v8 Thrust B, Step 135 + partial 140).**
+- **Citation formatter breadth (spec-v8 Thrust B, Step 136).** `citationFamily()`
+  classifies a citation `source` into `us-statutory` / `eu` / `standard` /
+  `secondary` / `other`, each tied to a real DKB citation. Only US-statutory
+  forms take a Bluebook parenthetical year (EU regs / ISO-NIST standards /
+  secondary sources embed their own identifying year); pinpoint subsections
+  (`45 C.F.R. § 164.410(a)(1)`) are preserved verbatim, never truncated to the
+  base section. Pinned-string fixtures per family. Render-side → zero churn.
+- **Citation freshness signal (Step 137).** `freshnessSignal()` surfaces the
+  retrieval date (and publication date when genuinely known); the bibliography
+  renders `(published YYYY-MM-DD)` only when `source_published_at` is present —
+  **never fabricated**, absent when unknown (the honesty gate). Date-only, never
+  a computed elapsed "age" (a clock read would break determinism). Additive →
+  zero golden churn.
+- **Never-truncate / always-wrap citations (Step 138).** `breakLongTokens()`
+  splits long citation URLs into wrap-friendly DOCX runs (bibliography +
+  citation-index hyperlink) and the HTML report uses `overflow-wrap: anywhere`;
+  a DOCX structure test asserts the full citation source + URL render with no
+  ellipsis. The split segments rejoin to the original exactly.
+- **Citation integrity tool (Step 139).** Build-only `tools/citation-check`:
+  per-commit URL well-formedness (pure; `npm run citation:check`) + scheduled
+  reachability (`--reachability`, network, mocked in test). `accuracy-corpus-
+  guard` extended to assert `src/` never imports it.
+- **Cross-format citation-completeness gate (Step 140).**
+  `tests/integration/citation-completeness.test.ts` asserts every cited
+  finding's resolvable URL survives into **every** finding-bearing format —
+  DOCX, JSON, Markdown, CSV, SARIF, HTML — and the URL-less custom case renders
+  cleanly. The executable form of the §14 inline-everywhere contract.
+- **SARIF 2.1.0 export (spec-v8 Thrust C, Step 141).** `buildSarif` /
+  `buildSarifJson` / `sarifBlob` — rule→`reportingDescriptor` (citation →
+  `helpUri`), finding→`result` (severity→level, section→`logicalLocation`,
+  offset→`region`), finding-id + `result_hash` → `partialFingerprints` for
+  cross-run dedupe; deterministic canonical JSON. Render-side → zero churn.
+- **Standalone single-file HTML report (Step 142).** `buildHtmlReport` —
+  self-contained, all CSS inlined, **no `<script>`**, no external resource;
+  cover proof fields, severity-grouped findings, inline citations with wrapped
+  URLs + freshness, bibliography, clause-evidence, verbatim posture block;
+  mobile-responsive and print-clean. Deterministic; escapes HTML metacharacters.
+- **Node API + headless CLI (Step 143).** `tools/cli/api.ts` (`analyzeText` /
+  `analyzeFile`) + `vaulytica analyze <path|glob|dir> --playbook --format
+  json,sarif,html,md,csv --out --fail-on` over the parity-proven pipeline
+  (`runIngested` factored out of `runDocument` so binary ingest reuses the exact
+  downstream the parity test pins). DKB ships with the tool — no socket. CLI
+  parity test asserts `analyzeText` ≡ `runDocument` byte-for-byte.
+- **Playbook diff (Step 144).** `diffPlaybooks(a, b)` + `diffPlaybooksMarkdown`
+  — structural diff of two custom playbooks (metadata, built-in rule selection,
+  severity/skip overrides, thresholds, required clauses, custom-rule add /
+  remove / edit). Pure, deterministic.
+- **Reproducibility verifier (Step 145).** `verifyReproducibility(saved,
+  original)` re-derives the `result_hash` via the parity-proven pipeline and
+  reports what diverged — input / engine / DKB / unexplained; `explainReproResult`
+  narrates. `tsx tools/cli/verify.ts <report.json> <original.txt>`.
+- **Export enhancements (Step 146).** Bundle "everything" archive
+  (`include_per_document_exports`: per-document fix-list + CSV, and ICS / JSON
+  when `extracted` / `ingest` are threaded). `buildClauseEvidence` coverage
+  surface — which findings pin a verbatim quoted clause span vs. a bare match —
+  as a `clause_evidence` JSON field (outside the run → zero churn) + an HTML
+  section.
+
+### Changed
+- Version bumped to **8.0.0** (Step 147). `RULE_TAXONOMY_VERSION` stays `7.0.0`
+  — v8 adds no rules, so the rule vocabulary is unchanged. Spec statuses,
+  threat-model ("v8 — hardening & reach surface"), `docs/v8/README.md`, and the
+  README posture / test-count (2,621 → 2,674) / Thrust-C surfaces reconciled.
+
+### Added (earlier in this cycle)
+- **Inline-everywhere citations (spec-v8 Thrust B, Step 135).**
   The Markdown fix-list now renders authorities as clickable `[source](url)`
   links and the CSV gains a dedicated `authority_url` column — the action-item
   artifacts a user pastes into a ticket/spreadsheet stay verifiable instead of

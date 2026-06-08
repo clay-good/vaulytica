@@ -50,6 +50,10 @@ import { sha256Hex } from "../ingest/hash.js";
 import { stableStringify } from "../engine/runner.js";
 import { formatBibliographyEntry } from "./citations.js";
 import type { ReportSecondaryFamily } from "./json.js";
+import { buildJsonReport } from "./json.js";
+import { buildFixListMarkdown, buildFixListCsv, buildDeadlinesIcs } from "./exports.js";
+import type { ExtractedData } from "../extract/types.js";
+import type { IngestResult } from "../ingest/types.js";
 import {
   buildPortfolioMatrix,
   buildPortfolioExecutiveSummary,
@@ -118,6 +122,18 @@ export type BundleDocument = {
    */
   playbook_superseded_by?: string;
   run: EngineRun;
+  /**
+   * Extracted data for this document (obligations, dates). When present,
+   * the bundle "everything" archive (spec-v8 §25) emits a per-document
+   * `.ics` deadlines file and threads unresolved dates into the per-document
+   * fix-list. Optional / back-compat: omitting it just drops the `.ics`.
+   */
+  extracted?: ExtractedData;
+  /**
+   * Ingest summary for this document. When present, the "everything"
+   * archive emits a per-document JSON report. Optional / back-compat.
+   */
+  ingest?: IngestResult;
   /**
    * Additional families this document also contains beyond the primary
    * match (spec-v6 multi-family activation). Same per-document semantics as
@@ -466,6 +482,15 @@ export type BundleZipInput = BundleReportInput & {
    * `buildJsonReport` for download buttons).
    */
   per_document_artifacts?: ReadonlyArray<BundleZipArtifact>;
+  /**
+   * Bundle "everything" archive (spec-v8 §25). When true, the zip also
+   * carries, per document, the action exports a portfolio reviewer would
+   * otherwise download one at a time: a fix-list (Markdown + CSV), a
+   * deadlines `.ics` (when `extracted` is present), and the per-document
+   * JSON report (when `ingest` is present). All are deterministic
+   * projections of artifacts that already exist; nothing new is computed.
+   */
+  include_per_document_exports?: boolean;
 };
 
 /**
@@ -487,6 +512,24 @@ export async function buildBundleZip(input: BundleZipInput): Promise<Blob> {
     for (const a of input.per_document_artifacts) {
       const path = `per-document/${a.filename}`;
       files[path] = a.bytes;
+    }
+  }
+
+  // spec-v8 §25 — the "everything" archive: per-document action exports,
+  // each a deterministic projection of the document's run / extracted data.
+  if (input.include_per_document_exports) {
+    const enc = new TextEncoder();
+    for (const doc of input.documents) {
+      const stem = `per-document/${doc.doc_id}`;
+      files[`${stem}.fixlist.md`] = enc.encode(buildFixListMarkdown(doc.run, doc.extracted));
+      files[`${stem}.fixlist.csv`] = enc.encode(buildFixListCsv(doc.run));
+      if (doc.extracted) {
+        files[`${stem}.deadlines.ics`] = enc.encode(buildDeadlinesIcs(doc.extracted));
+      }
+      if (doc.ingest) {
+        const jsonBlob = buildJsonReport(doc.run, doc.ingest);
+        files[`${stem}.report.json`] = new Uint8Array(await jsonBlob.arrayBuffer());
+      }
     }
   }
 
