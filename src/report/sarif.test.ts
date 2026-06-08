@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildSarif, buildSarifJson } from "./sarif.js";
+import { buildSarif, buildSarifJson, sarifConformanceViolations } from "./sarif.js";
 import type { EngineRun, Finding } from "../engine/finding.js";
 
 function finding(id: string, rule: string, sev: Finding["severity"], withUrl = true): Finding {
@@ -108,5 +108,51 @@ describe("buildSarif (spec-v8 §20 — SARIF 2.1.0)", () => {
   it("is deterministic: identical run → identical JSON bytes", () => {
     const r = run([finding("f1", "A", "critical"), finding("f2", "B", "info")]);
     expect(buildSarifJson(r)).toBe(buildSarifJson(r));
+  });
+});
+
+describe("SARIF 2.1.0 structural conformance (spec-v8 §20)", () => {
+  it("real output conforms across fixtures (cited, URL-less, empty, multi-rule)", () => {
+    const fixtures = [
+      run([finding("f1", "DPA-001", "critical")]),
+      run([finding("f1", "POLICY-1", "warning", false)]), // URL-less custom citation
+      run([]), // no findings
+      run([
+        finding("f1", "ZZZ", "info"),
+        finding("f2", "AAA", "critical"),
+        finding("f3", "AAA", "warning"), // two findings, one rule
+      ]),
+    ];
+    for (const r of fixtures) {
+      expect(sarifConformanceViolations(buildSarif(r))).toEqual([]);
+    }
+  });
+
+  it("has teeth — catches a dangling ruleIndex", () => {
+    const log = buildSarif(run([finding("f1", "A", "critical")]));
+    log.runs[0]!.results[0]!.ruleIndex = 99;
+    expect(sarifConformanceViolations(log).some((s) => s.includes("ruleIndex"))).toBe(true);
+  });
+
+  it("has teeth — catches an invalid level, a non-string fingerprint, and a bad helpUri", () => {
+    const log = buildSarif(run([finding("f1", "A", "critical")]));
+    // @ts-expect-error — deliberately invalid for the negative test.
+    log.runs[0]!.results[0]!.level = "fatal";
+    // @ts-expect-error — fingerprints must be strings.
+    log.runs[0]!.results[0]!.partialFingerprints["bad/v1"] = 42;
+    log.runs[0]!.tool.driver.rules[0]!.helpUri = "not-a-url";
+    const violations = sarifConformanceViolations(log);
+    expect(violations.some((s) => s.includes("level"))).toBe(true);
+    expect(violations.some((s) => s.includes("partialFingerprints"))).toBe(true);
+    expect(violations.some((s) => s.includes("helpUri"))).toBe(true);
+  });
+
+  it("has teeth — catches a missing message text and empty artifact uri", () => {
+    const log = buildSarif(run([finding("f1", "A", "critical")]));
+    log.runs[0]!.results[0]!.message.text = "";
+    log.runs[0]!.results[0]!.locations[0]!.physicalLocation.artifactLocation.uri = "";
+    const violations = sarifConformanceViolations(log);
+    expect(violations.some((s) => s.includes("message.text"))).toBe(true);
+    expect(violations.some((s) => s.includes("artifactLocation.uri"))).toBe(true);
   });
 });

@@ -193,3 +193,104 @@ export function buildSarifJson(run: EngineRun): string {
 export function sarifBlob(run: EngineRun): Blob {
   return new Blob([buildSarifJson(run)], { type: "application/sarif+json" });
 }
+
+// ---------------------------------------------------------------------------
+// Structural conformance (spec-v8 §20)
+// ---------------------------------------------------------------------------
+
+/**
+ * Assert the **ingestion-critical** structural invariants of SARIF 2.1.0 over
+ * a built log — the rules GitHub Code Scanning and the SARIF ecosystem
+ * actually enforce when consuming a file. Returns a list of human-readable
+ * violations; an empty list means the log conforms.
+ *
+ * This is a deterministic, dependency-free structural check, not a full
+ * validation against the OASIS-published JSON Schema (that schema cannot be
+ * fetched in the offline/in-tab posture, and hand-vendoring a copy and
+ * calling it "the published schema" would be the dishonesty this project
+ * forbids). It pins the object-graph rules `buildSarif` must satisfy: a
+ * `level` outside the enum, a dangling `ruleIndex`, a non-string
+ * `partialFingerprints` value, a missing `message.text`, or a non-absolute
+ * `helpUri` would each break a real consumer, and each is caught here.
+ *
+ * Exposed (not test-only) so a caller writing SARIF — e.g. the CLI — can
+ * self-check its output before handing it to a downstream tool.
+ */
+export function sarifConformanceViolations(log: SarifLog): string[] {
+  const v: string[] = [];
+  const isStr = (x: unknown): x is string => typeof x === "string";
+  const isNonEmpty = (x: unknown): x is string => isStr(x) && x.length > 0;
+  const isInt = (x: unknown): x is number => typeof x === "number" && Number.isInteger(x);
+  const isAbsoluteUrl = (x: string): boolean => {
+    try {
+      return Boolean(new URL(x).href);
+    } catch {
+      return false;
+    }
+  };
+  const LEVELS = new Set(["error", "warning", "note", "none"]);
+
+  if (log.version !== "2.1.0") v.push(`version must be "2.1.0", got ${JSON.stringify(log.version)}`);
+  if (!isNonEmpty(log.$schema)) v.push("$schema must be a non-empty string");
+  if (!Array.isArray(log.runs) || log.runs.length === 0) {
+    v.push("runs must be a non-empty array");
+    return v;
+  }
+
+  log.runs.forEach((run, ri) => {
+    const driver = run.tool?.driver;
+    if (!driver) {
+      v.push(`runs[${ri}].tool.driver is required`);
+      return;
+    }
+    if (!isNonEmpty(driver.name)) v.push(`runs[${ri}].tool.driver.name must be a non-empty string`);
+    const rules = driver.rules ?? [];
+    rules.forEach((rule, di) => {
+      if (!isNonEmpty(rule.id)) v.push(`runs[${ri}].rules[${di}].id must be a non-empty string`);
+      if (rule.shortDescription && !isStr(rule.shortDescription.text)) {
+        v.push(`runs[${ri}].rules[${di}].shortDescription.text must be a string`);
+      }
+      if (rule.helpUri !== undefined && !(isStr(rule.helpUri) && isAbsoluteUrl(rule.helpUri))) {
+        v.push(`runs[${ri}].rules[${di}].helpUri must be an absolute URI`);
+      }
+    });
+
+    if (!Array.isArray(run.results)) {
+      v.push(`runs[${ri}].results must be an array`);
+      return;
+    }
+    run.results.forEach((res, si) => {
+      const at = `runs[${ri}].results[${si}]`;
+      if (!isStr(res.ruleId)) v.push(`${at}.ruleId must be a string`);
+      if (!isInt(res.ruleIndex) || res.ruleIndex < 0 || res.ruleIndex >= rules.length) {
+        v.push(`${at}.ruleIndex ${res.ruleIndex} out of range [0, ${rules.length - 1}]`);
+      } else if (rules[res.ruleIndex]!.id !== res.ruleId) {
+        v.push(`${at}.ruleIndex points to "${rules[res.ruleIndex]!.id}", not ruleId "${res.ruleId}"`);
+      }
+      if (!LEVELS.has(res.level)) v.push(`${at}.level "${res.level}" is not a valid SARIF level`);
+      if (!isNonEmpty(res.message?.text)) v.push(`${at}.message.text must be a non-empty string`);
+      if (!Array.isArray(res.locations) || res.locations.length === 0) {
+        v.push(`${at}.locations must be a non-empty array`);
+      } else {
+        res.locations.forEach((loc, li) => {
+          const uri = loc.physicalLocation?.artifactLocation?.uri;
+          if (!isNonEmpty(uri)) v.push(`${at}.locations[${li}] artifactLocation.uri must be non-empty`);
+          const region = loc.physicalLocation?.region;
+          if (region) {
+            if (!isInt(region.charOffset) || region.charOffset < 0) {
+              v.push(`${at}.locations[${li}].region.charOffset must be a non-negative integer`);
+            }
+            if (!isInt(region.charLength) || region.charLength < 0) {
+              v.push(`${at}.locations[${li}].region.charLength must be a non-negative integer`);
+            }
+          }
+        });
+      }
+      for (const [k, val] of Object.entries(res.partialFingerprints ?? {})) {
+        if (!isStr(val)) v.push(`${at}.partialFingerprints["${k}"] must be a string`);
+      }
+    });
+  });
+
+  return v;
+}

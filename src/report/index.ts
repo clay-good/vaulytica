@@ -49,7 +49,13 @@ export {
 } from "./citations.js";
 
 // spec-v8 Thrust C — SARIF 2.1.0 export (Step 141) + standalone HTML report (Step 142).
-export { buildSarif, buildSarifJson, sarifBlob, type SarifLog } from "./sarif.js";
+export {
+  buildSarif,
+  buildSarifJson,
+  sarifBlob,
+  sarifConformanceViolations,
+  type SarifLog,
+} from "./sarif.js";
 export { buildHtmlReport, htmlReportBlob } from "./html.js";
 // spec-v8 §25 — clause-evidence coverage surface (Step 146).
 export {

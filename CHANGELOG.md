@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- **SARIF 2.1.0 structural-conformance gate (closes the spec-v8 §20 test
+  promise).** Step 141 shipped the SARIF export but its test only checked the
+  `$schema` *string*; §20 promised validation against the schema. Added an
+  exposed, dependency-free `sarifConformanceViolations(log)` that pins the
+  ingestion-critical SARIF 2.1.0 invariants GitHub Code Scanning actually
+  enforces — the `level` enum, an in-range `ruleIndex` consistent with its
+  `ruleId`, string-valued `partialFingerprints`, non-empty `message.text` and
+  `artifactLocation.uri`, absolute `helpUri` — with **negative tests** proving
+  the checker has teeth (a dangling index, a bad level, a non-string
+  fingerprint, a malformed URI are each caught). Real output conforms across
+  fixtures (cited, URL-less custom, empty, multi-finding-per-rule). Full
+  validation against the OASIS-*published* JSON Schema stays deferred for the
+  offline/posture reason citation reachability is (§19) — the authoritative
+  schema can't be fetched in-tab, and vendoring a copy and calling it "the
+  published schema" would be dishonest; spec §20 + docs reconciled to describe
+  the conformance check accurately.
 - **Unified `vaulytica` CLI dispatcher — `analyze | diff | verify` (surfaces
   the playbook diff).** The CLI (`npm run cli -- <command>`) now dispatches
   three subcommands over the same parity-proven engine instead of only
