@@ -92,17 +92,34 @@ async function walkDir(dir: string): Promise<string[]> {
   return out;
 }
 
+/**
+ * Split a `dir/pattern` glob into its directory and basename pattern. A glob
+ * with no slash (e.g. `*.docx`) resolves against the current directory — the
+ * previous `slice(0, lastIndexOf("/"))` produced a bogus directory (`*.doc`)
+ * for that case, so a bare glob silently matched nothing.
+ */
+export function splitGlob(target: string): { dir: string; pattern: string } {
+  const slash = target.lastIndexOf("/");
+  return slash >= 0
+    ? { dir: target.slice(0, slash) || "/", pattern: target.slice(slash + 1) }
+    : { dir: ".", pattern: target };
+}
+
+/** Compile a single-segment glob pattern (`*` wildcard) to an anchored RegExp. */
+export function globToRegExp(pattern: string): RegExp {
+  const escaped = pattern.replace(/[.+^${}()|[\]\\]/g, "\\$&").replace(/\*/g, ".*");
+  return new RegExp("^" + escaped + "$");
+}
+
 /** Resolve the target into a deterministic, sorted list of input files. */
 async function resolveInputs(target: string): Promise<string[]> {
   const st = await stat(target).catch(() => null);
   if (st?.isDirectory()) return walkDir(target);
   if (st?.isFile()) return [target];
   // Treat as a simple `dir/*.ext` glob (one wildcard segment).
-  const idx = target.indexOf("*");
-  if (idx >= 0) {
-    const dir = target.slice(0, target.lastIndexOf("/", idx)) || ".";
-    const pattern = target.slice((target.lastIndexOf("/", idx) ?? -1) + 1);
-    const re = new RegExp("^" + pattern.replace(/[.+^${}()|[\]\\]/g, "\\$&").replace(/\*/g, ".*") + "$");
+  if (target.includes("*")) {
+    const { dir, pattern } = splitGlob(target);
+    const re = globToRegExp(pattern);
     const names = await readdir(dir).catch(() => [] as string[]);
     return names
       .filter((n) => re.test(n))
@@ -182,9 +199,20 @@ async function runAnalyze(argv: string[]): Promise<void> {
 }
 
 async function runVerify(argv: string[]): Promise<void> {
-  const positional = argv.filter((a) => !a.startsWith("--"));
-  const playbookIdx = argv.indexOf("--playbook");
-  const playbookId = playbookIdx >= 0 ? argv[playbookIdx + 1] : undefined;
+  // Sequential parse so a `--playbook <id>` placed *before* the positionals
+  // does not leak its value into the positional list (a filter-by-prefix
+  // approach would mis-assign the report path).
+  const positional: string[] = [];
+  let playbookId: string | undefined;
+  for (let i = 0; i < argv.length; i++) {
+    if (argv[i] === "--playbook") {
+      playbookId = argv[++i];
+    } else if (argv[i]!.startsWith("--")) {
+      throw new Error(`unknown flag "${argv[i]}"`);
+    } else {
+      positional.push(argv[i]!);
+    }
+  }
   const [reportPath, originalPath] = positional;
   if (!reportPath || !originalPath) {
     throw new Error("usage: verify <report.json> <original> [--playbook <id>]");
@@ -226,7 +254,11 @@ async function main(): Promise<void> {
   }
 }
 
-void main().catch((err) => {
-  process.stderr.write(`vaulytica: ${err instanceof Error ? err.message : String(err)}\n`);
-  process.exitCode = 1;
-});
+// Run as a CLI only when invoked directly, not when imported by a test
+// (importing for the unit tests must not trigger the dispatcher).
+if (process.argv[1] && /run\.ts$/.test(process.argv[1])) {
+  void main().catch((err) => {
+    process.stderr.write(`vaulytica: ${err instanceof Error ? err.message : String(err)}\n`);
+    process.exitCode = 1;
+  });
+}

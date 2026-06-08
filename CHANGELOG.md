@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Fixed
+- **CLI bare-glob resolution.** `vaulytica analyze '*.docx'` (a quoted glob with
+  no directory, so the shell doesn't expand it) silently matched nothing: the
+  old `slice(0, lastIndexOf("/"))` produced a bogus directory (`*.doc`) for a
+  slashless pattern, so `readdir` failed. Extracted `splitGlob` + `globToRegExp`
+  as pure, unit-tested helpers — a slashless glob now resolves against `.`.
+- **CLI `verify --playbook` argument ordering.** `verify --playbook <id> <report>
+  <original>` mis-assigned the report path (the flag value leaked into the
+  positional list under a filter-by-prefix parse). Replaced with a sequential
+  parser that consumes the flag's value, so `--playbook` works before or after
+  the positionals (and an unknown flag now errors instead of being treated as a
+  path). Also guarded `run.ts`'s top-level dispatcher so importing it (for the
+  new unit tests) does not execute the CLI.
+
 ### Added
 - **SARIF 2.1.0 structural-conformance gate (closes the spec-v8 §20 test
   promise).** Step 141 shipped the SARIF export but its test only checked the
