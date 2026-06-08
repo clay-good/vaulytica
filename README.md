@@ -125,31 +125,42 @@ The product is "a linter for legal documents," yet it spoke no linter format and
 
 - **SARIF 2.1.0** — each rule → a `reportingDescriptor` (with the citation as `helpUri`), each finding → a `result` (severity → level, section → location, `result_hash` + finding id → `partialFingerprints` so findings dedupe across runs). Annotate a pull request, populate a code-scanning dashboard.
 - **Standalone HTML report** — a self-contained `.html` (all CSS inlined, **no script**, no external resource) that renders the full report with wrapped inline citations and prints clean to PDF from any browser. The archivable, emailable, diff-able counterpart to the DOCX — and mobile-responsive by construction.
-- **Headless API + CLI** — `vaulytica analyze <path|glob|dir> --playbook <id> --format json,sarif,html,md,csv --out <dir> --fail-on critical` runs the **same parity-proven pipeline** in CI, a pre-commit hook, or a folder sweep, exiting non-zero when findings breach a threshold. The DKB ships with the tool, so it opens **no socket** — "nothing leaves your machine" holds headless too.
-- **Playbook diff** — `diffPlaybooks(a, b)` gives custom-playbook authors version control for their team standard: which built-in rules were selected, which severity overrides moved, which custom rules were added/removed/edited, rendered as Markdown or JSON.
-- **Reproducibility verifier** — `verifyReproducibility(savedReport, original)` re-derives the `result_hash` and reports *what* diverged — the input, the engine, or the DKB — turning the determinism promise into a checkable audit receipt.
+- **Headless API + CLI** — a single dispatcher, `vaulytica analyze | diff | verify`, over the **same parity-proven pipeline**. `analyze <path|glob|dir> --format json,sarif,html,md,csv --fail-on critical` runs the engine in CI, a pre-commit hook, or a folder sweep, exiting non-zero when findings breach a threshold. The DKB ships with the tool, so it opens **no socket** — "nothing leaves your machine" holds headless too.
+- **Playbook diff** — `vaulytica diff a.json b.json` (and the `diffPlaybooks(a, b)` API) gives custom-playbook authors version control for their team standard: which built-in rules were selected, which severity overrides moved, which custom rules were added/removed/edited, rendered as Markdown or JSON. `--exit-code` makes it a CI primitive (non-zero when the standard changed).
+- **Reproducibility verifier** — `vaulytica verify report.json original.txt` (and `verifyReproducibility(savedReport, original)`) re-derives the `result_hash` and reports *what* diverged — the input, the engine, or the DKB — turning the determinism promise into a checkable audit receipt.
 - **Export enhancements** — a bundle "everything" archive (per-document fix-list/CSV/ICS/JSON in one download) and a **clause-evidence coverage** surface that tells a reviewer which findings pin a verbatim quoted clause span vs. rest on a bare match.
 
 Every Thrust-B change is render-side or additive (zero `result_hash` churn); every Thrust-C format is a deterministic rendering of the same run that inherits the full citation. Full write-up: [`docs/v8/`](docs/v8/README.md).
 
 ### CLI cheat sheet
 
+One dispatcher, three commands — `analyze`, `diff`, `verify` — over the parity-proven engine (`npm run cli -- <command>`):
+
 ```
-# Analyze one file, print SARIF to stdout
-npm run analyze -- analyze contract.docx --format sarif
+# analyze: one file, print SARIF to stdout
+npm run cli -- analyze contract.docx --format sarif
 
-# Sweep a deal folder, write Word-free HTML + JSON + fix-list per doc, gate CI on any critical
-npm run analyze -- analyze ./deal-room --format html,json,md --out ./out --fail-on critical
+# analyze: sweep a deal folder, write HTML + JSON + fix-list per doc, gate CI on any critical
+npm run cli -- analyze ./deal-room --format html,json,md --out ./out --fail-on critical
 
-# Verify a saved report reproduces from the original document
-tsx tools/cli/verify.ts report.json original.txt
+# diff: structural diff of two custom playbooks (CI primitive — --exit-code fails on any change)
+npm run cli -- diff team-standard-v1.json team-standard-v2.json --exit-code
 
-# Build-only: check every citation URL is well-formed (per-commit) or reachable (scheduled)
+# verify: re-derive a saved report's result_hash from the original document (audit receipt)
+npm run cli -- verify report.json original.txt
+
+# build-only: check every citation URL is well-formed (per-commit) or reachable (scheduled)
 npm run citation:check            # well-formedness
 npm run citation:check -- --reachability   # + network sweep
 ```
 
-| Flag | Meaning |
+| Command | Purpose | Exit code |
+|---|---|---|
+| `analyze <path\|glob\|dir>` | run the engine headless, write `json,sarif,html,md,csv` | `2` when findings breach `--fail-on` |
+| `diff <a.json> <b.json>` | structural diff of two custom playbooks (Markdown/JSON) | `1` with `--exit-code` when they differ |
+| `verify <report.json> <original>` | re-derive `result_hash`; report input/engine/DKB drift | `3` when not reproduced |
+
+| `analyze` flag | Meaning |
 |---|---|
 | `--playbook <id>` | force a specific playbook instead of auto-matching |
 | `--format <list>` | comma list of `json,sarif,html,md,csv` (default `json`) |
@@ -342,7 +353,7 @@ npm run coverage     # vitest + V8 coverage, enforces the regression floor
 npm run accuracy     # v5 Ground Truth harness → tools/accuracy/SCOREBOARD.md
 npm run mutation     # Stryker mutation score (scoped to extractors; slow, off the per-push path)
 npm run citation:check   # v8 build-only citation URL well-formedness (+ --reachability for the network sweep)
-npm run analyze -- analyze <path> --format sarif,html,json   # v8 headless CLI
+npm run cli -- analyze <path> --format sarif,html,json   # v8 headless CLI (also: diff, verify)
 ```
 
 The CI gate (`.github/workflows/ci.yml`) runs typecheck + lint + **coverage** + build on Ubuntu; the test matrix re-runs the plain suite on Ubuntu/macOS/Windows for cross-OS determinism, and Lighthouse enforces the mobile performance budget. Mutation testing runs on its own weekly/on-demand workflow, never the per-push path. A commit is "green" only when the per-push gates pass.
@@ -385,7 +396,7 @@ src/
   ui/          drop zone, pipeline, six-state result machine, theme toggle
 dkb/build/     offline fetchers (EDGAR, US Code, eCFR, Common Paper, …) → DKB
 tools/accuracy/ v5 Ground Truth harness (corpus loader, κ, metrics, scoreboard, legal-basis ledger)
-tools/cli/     v8 headless API (analyzeText/analyzeFile) + `vaulytica analyze` CLI + reproducibility verifier
+tools/cli/     v8 headless API (analyzeText/analyzeFile) + `vaulytica analyze | diff | verify` CLI dispatcher
 tools/citation-check/ v8 build-only citation URL well-formedness + scheduled reachability
 corpus/        real-document accuracy corpus (build/CI-only; never in the bundle)
 docs/          architecture, determinism, threat model, legal-basis ledger, specs v1–v8

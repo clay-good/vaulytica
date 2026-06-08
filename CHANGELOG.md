@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- **Unified `vaulytica` CLI dispatcher — `analyze | diff | verify` (surfaces
+  the playbook diff).** The CLI (`npm run cli -- <command>`) now dispatches
+  three subcommands over the same parity-proven engine instead of only
+  `analyze`. New `diff <a.json> <b.json> [--format markdown|json]
+  [--exit-code]` surfaces `diffPlaybooks` (spec-v8 Step 144) — until now a
+  shipped builder with **no entry point** — as a reviewable terminal/CI
+  command (`--exit-code` is a `git diff`-style CI primitive that exits 1 when
+  two custom playbooks differ). `verify <report.json> <original>` folds the
+  reproducibility verifier (Step 145) into the same dispatcher. `analyze`
+  is unchanged. New `tools/cli/diff.ts` (pure, unit-tested `formatPlaybookDiff`
+  + the `runDiff` handler); `run.ts` refactored from a single-command script
+  into a dispatcher with a `--help` usage banner. Added an `npm run cli`
+  script (the `analyze` script is kept as a back-compat alias). Build/CI-only;
+  `src/` never imports it.
 - **v8 reach formats reachable from the tab (UI wiring).** The SARIF 2.1.0
   export and the standalone single-file HTML report (spec-v8 Steps 141–142)
   are now offered as one-click downloads in the complete-state export row

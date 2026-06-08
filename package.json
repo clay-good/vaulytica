@@ -25,6 +25,7 @@
     "playbooks:bundle": "tsx tools/build-extended-playbooks.ts",
     "accuracy": "tsx tools/accuracy/run.ts",
     "citation:check": "tsx tools/citation-check/run.ts",
+    "cli": "tsx tools/cli/run.ts",
     "analyze": "tsx tools/cli/run.ts",
     "fixtures": "tsx tests/fixtures/build-fixtures.ts",
     "fixtures:baa": "tsx tests/fixtures/build-baa-fixture.ts",
