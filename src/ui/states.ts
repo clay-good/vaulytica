@@ -28,23 +28,27 @@ export type DropzoneState =
       docx_filename: string;
       json_filename: string;
       /**
-       * v6 Part III findings-to-action exports (Steps 87–88). When all
-       * four blobs are present, the complete-state renders an "Export"
-       * row beneath the primary downloads: fix-list (Markdown), fix-list
-       * (CSV), obligations (CSV), and a deadlines `.ics`. Optional /
-       * back-compat: omitting them hides the export row entirely, so
-       * existing call sites and tests that don't supply exports are
-       * unaffected.
+       * v6 Part III findings-to-action exports (Steps 87–88) + v8 Thrust C
+       * reach formats (Steps 141–142). When present, the complete-state
+       * renders an "Export" row beneath the primary downloads: fix-list
+       * (Markdown), fix-list (CSV), obligations (CSV), a deadlines `.ics`,
+       * the machine-readable SARIF, and a standalone HTML report. Optional /
+       * back-compat: omitting it hides the export row entirely, so existing
+       * call sites and tests that don't supply exports are unaffected.
        */
       exports?: {
         fixlist_md_blob: Blob;
         fixlist_csv_blob: Blob;
         obligations_csv_blob: Blob;
         deadlines_ics_blob: Blob;
+        sarif_blob: Blob;
+        html_blob: Blob;
         fixlist_md_filename: string;
         fixlist_csv_filename: string;
         obligations_csv_filename: string;
         deadlines_ics_filename: string;
+        sarif_filename: string;
+        html_filename: string;
       };
       /**
        * v3 family detection (spec-v3 §60). When `family === "unknown"`
@@ -165,6 +169,15 @@ export type DropzoneState =
       bundle_json_blob: Blob;
       bundle_docx_filename: string;
       bundle_json_filename: string;
+      /**
+       * Bundle "everything" archive (spec-v8 §25). When present, the
+       * bundle-complete state offers a "Download everything (.zip)" link —
+       * the consolidated DOCX + bundle JSON + per-document fix-list / CSV /
+       * `.ics` / JSON in one archive. Optional / back-compat: omitting it
+       * hides the link, so existing call sites and tests are unaffected.
+       */
+      bundle_zip_blob?: Blob;
+      bundle_zip_filename?: string;
       /**
        * Per-doc v3 family labels (spec-v3 §60, LAUNCH row v3-o bundle
        * side). Optional; only documents whose family is non-"unknown"
@@ -301,6 +314,8 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
       <button class="btn-link" type="button" data-role="export-fixlist-csv">Fix list (CSV)</button>
       <button class="btn-link" type="button" data-role="export-obligations-csv">Obligations (CSV)</button>
       <button class="btn-link" type="button" data-role="export-deadlines-ics">Deadlines (.ics)</button>
+      <button class="btn-link" type="button" data-role="export-html">HTML report</button>
+      <button class="btn-link" type="button" data-role="export-sarif">SARIF</button>
     </div>
     <div class="compare-row" data-role="compare-row" hidden>
       <button class="btn-link" type="button" data-role="compare-button">Compare a revised version…</button>
@@ -335,6 +350,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     <ul class="multi-doc-cards" data-role="multi-doc-cards" aria-label="Per-document summary" hidden></ul>
     <button class="btn btn-primary" type="button" data-role="bundle-download">Download consolidated report (Word)</button>
     <button class="btn-link" type="button" data-role="bundle-json-download">Download bundle data (JSON)</button>
+    <button class="btn-link" type="button" data-role="bundle-zip-download" hidden>Download everything (.zip)</button>
     <div class="download-status" data-role="download-status" aria-live="polite"></div>
   `,
   error: `
@@ -396,6 +412,8 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
       wire("export-fixlist-csv", ex.fixlist_csv_blob, ex.fixlist_csv_filename);
       wire("export-obligations-csv", ex.obligations_csv_blob, ex.obligations_csv_filename);
       wire("export-deadlines-ics", ex.deadlines_ics_blob, ex.deadlines_ics_filename);
+      wire("export-html", ex.html_blob, ex.html_filename);
+      wire("export-sarif", ex.sarif_blob, ex.sarif_filename);
     }
     if (state.on_compare) {
       const onCompare = state.on_compare;
@@ -503,6 +521,16 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
       e.stopPropagation();
       void saveBlob(state.bundle_json_blob, state.bundle_json_filename, status);
     });
+    if (state.bundle_zip_blob && state.bundle_zip_filename) {
+      const zipBlob = state.bundle_zip_blob;
+      const zipName = state.bundle_zip_filename;
+      const zipBtn = select<HTMLButtonElement>(dz, "bundle-zip-download")!;
+      zipBtn.removeAttribute("hidden");
+      zipBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        void saveBlob(zipBlob, zipName, status);
+      });
+    }
   }
   if (state.kind === "error") {
     // Spec-v3 §63: when an error code is provided, look up the

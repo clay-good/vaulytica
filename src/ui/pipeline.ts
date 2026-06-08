@@ -46,7 +46,7 @@ import {
   type EngineRun,
   type Rule,
 } from "../engine/index.js";
-import { buildDocxReport, buildJsonReport } from "../report/index.js";
+import { buildDocxReport, buildJsonReport, sarifBlob, htmlReportBlob } from "../report/index.js";
 import {
   fixListMarkdownBlob,
   fixListCsvBlob,
@@ -56,6 +56,7 @@ import {
 import {
   buildBundleDocxReport,
   buildBundleJsonBlob,
+  buildBundleZip,
   type BundleDocument,
 } from "../report/bundle.js";
 import {
@@ -124,6 +125,15 @@ export type PipelineResult = {
   fixlist_csv_blob: Blob;
   obligations_csv_blob: Blob;
   deadlines_ics_blob: Blob;
+  /**
+   * v8 Thrust C reach formats (Steps 141–142). Built from the same run so
+   * the complete-state can offer the machine-readable SARIF (for CI / code
+   * scanning) and the self-contained, print-clean HTML report alongside the
+   * Word/JSON downloads — without re-running the engine. Both render the
+   * full Thrust-B inline citation.
+   */
+  sarif_blob: Blob;
+  html_blob: Blob;
   /**
    * v3 family auto-detection (spec-v3.md §60, LAUNCH row v3-o). Always
    * computed alongside the v2 playbook match so the UI can surface
@@ -471,6 +481,9 @@ export async function runReport(
   const fixlist_csv_blob = fixListCsvBlob(run);
   const obligations_csv_blob = obligationsCsvBlob(prepared.extracted);
   const deadlines_ics_blob = deadlinesIcsBlob(prepared.extracted);
+  // v8 Steps 141–142 — SARIF (machine-readable) + standalone HTML (print-clean).
+  const sarif_blob = sarifBlob(run);
+  const html_blob = htmlReportBlob(run, prepared.ingest, prepared.dkb, prepared.playbook);
 
   const v3_detection = detectV3Family(prepared.extracted, prepared.body_text);
   const v3_frames = defaultFramesForPlaybook(prepared.playbook.id);
@@ -490,6 +503,8 @@ export async function runReport(
     fixlist_csv_blob,
     obligations_csv_blob,
     deadlines_ics_blob,
+    sarif_blob,
+    html_blob,
     v3_detection,
     v3_frames,
     custom_playbook: customProvenance,
@@ -623,6 +638,14 @@ export type BundlePerDocument = {
   run: EngineRun;
   playbook: Playbook;
   match_reasoning: string;
+  /**
+   * Per-document ingest + extracted data, retained so the bundle
+   * "everything" archive (spec-v8 §25) can emit per-document fix-lists,
+   * deadlines `.ics`, and JSON without re-ingesting. Same payloads the
+   * per-doc DOCX/JSON were already built from.
+   */
+  ingest: IngestResult;
+  extracted: import("../extract/types.js").ExtractedData;
   docx_blob: Blob;
   json_blob: Blob;
   /** v3 family auto-detection (spec-v3 §60), computed per-doc. */
@@ -644,6 +667,13 @@ export type BundlePipelineResult = {
   consistency: ConsistencyRun;
   bundle_docx_blob: Blob;
   bundle_json_blob: Blob;
+  /**
+   * Bundle "everything" archive (spec-v8 §25): a single deterministic ZIP
+   * holding the consolidated DOCX, the bundle JSON, and per-document
+   * fix-list (Markdown + CSV), deadlines `.ics`, and JSON — so a portfolio
+   * review is one download instead of a dozen.
+   */
+  bundle_zip_blob: Blob;
 };
 
 /**
@@ -852,6 +882,8 @@ export async function prepareBundle(
       run,
       playbook,
       match_reasoning: match.reasoning,
+      ingest,
+      extracted,
       docx_blob,
       json_blob,
       v3_detection,
@@ -918,6 +950,10 @@ export async function runBundleReport(
       playbook_deprecated: d.playbook.deprecated === true ? true : undefined,
       playbook_superseded_by: d.playbook.deprecated === true ? d.playbook.superseded_by : undefined,
       run: d.run,
+      // Thread the per-doc payloads so the "everything" archive can emit
+      // per-document fix-list/CSV/ICS/JSON (spec-v8 §25).
+      extracted: d.extracted,
+      ingest: d.ingest,
       secondary_families: d.secondary_families.length > 0 ? d.secondary_families : undefined,
     })),
     consistency,
@@ -927,6 +963,12 @@ export async function runBundleReport(
   };
   const bundle_docx_blob = await buildBundleDocxReport(bundleInput);
   const bundle_json_blob = await buildBundleJsonBlob(bundleInput);
+  // spec-v8 §25 — the "everything" archive: consolidated DOCX + bundle JSON +
+  // per-document fix-list/CSV/ICS/JSON in one deterministic ZIP.
+  const bundle_zip_blob = await buildBundleZip({
+    ...bundleInput,
+    include_per_document_exports: true,
+  });
 
   return {
     documents: prepared.documents,
@@ -934,6 +976,7 @@ export async function runBundleReport(
     consistency,
     bundle_docx_blob,
     bundle_json_blob,
+    bundle_zip_blob,
   };
 }
 

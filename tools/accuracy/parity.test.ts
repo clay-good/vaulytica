@@ -123,6 +123,16 @@ describe("Node↔browser pipeline parity (spec-v7 Step 120)", () => {
       expect(ui.run.execution_log.map((e) => [e.rule_id, e.fired])).toEqual(
         acc.run.execution_log.map((e) => [e.rule_id, e.fired]),
       );
+
+      // v8 Steps 141–142 — the browser pipeline emits the SARIF + standalone
+      // HTML reach formats alongside the Word/JSON/fix-list downloads, so the
+      // complete-state can offer them. Confirm they are produced and non-empty.
+      expect(ui.sarif_blob.type).toBe("application/sarif+json");
+      expect(ui.sarif_blob.size).toBeGreaterThan(0);
+      expect(ui.html_blob.type).toBe("text/html");
+      const html = await ui.html_blob.text();
+      expect(html.startsWith("<!doctype html>")).toBe(true);
+      expect(html).not.toContain("<script");
     });
   }
 });

@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Added
+- **v8 reach formats reachable from the tab (UI wiring).** The SARIF 2.1.0
+  export and the standalone single-file HTML report (spec-v8 Steps 141–142)
+  are now offered as one-click downloads in the complete-state export row
+  ("HTML report", "SARIF") beside the existing fix-list / CSV / obligations /
+  `.ics` links, and the bundle-complete state gains a "Download everything
+  (.zip)" link — the spec-v8 §25 "everything" archive (consolidated DOCX +
+  bundle JSON + per-document fix-list / CSV / `.ics` / JSON in one ZIP). Until
+  now these v8 builders shipped but were unreachable from the browser, so the
+  README's "one-click exports … SARIF … single-file HTML" claim was ahead of
+  the UI; this closes that gap. `runReport`/`runBundleReport` build the blobs
+  from the same run (no re-analysis); the export row's `flex-wrap` layout keeps
+  the two new buttons from introducing any horizontal scroll on mobile. The
+  parity test now also asserts the browser pipeline emits a non-empty,
+  script-free HTML report and a `application/sarif+json` blob.
+
 ## [8.0.0] - 2026-06-08 — Hardening & Reach (spec-v8 complete)
 
 ### Added

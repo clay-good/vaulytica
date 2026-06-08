@@ -194,6 +194,8 @@ function renderCompleteState(
     fixlist_csv_blob: Blob;
     obligations_csv_blob: Blob;
     deadlines_ics_blob: Blob;
+    sarif_blob: Blob;
+    html_blob: Blob;
     v3_detection: import("./pipeline.js").PipelineResult["v3_detection"];
     v3_frames: import("./pipeline.js").PipelineResult["v3_frames"];
     custom_playbook?: import("./pipeline.js").PipelineResult["custom_playbook"];
@@ -227,10 +229,14 @@ function renderCompleteState(
       fixlist_csv_blob: result.fixlist_csv_blob,
       obligations_csv_blob: result.obligations_csv_blob,
       deadlines_ics_blob: result.deadlines_ics_blob,
+      sarif_blob: result.sarif_blob,
+      html_blob: result.html_blob,
       fixlist_md_filename: `${stem}-vaulytica-fixlist.md`,
       fixlist_csv_filename: `${stem}-vaulytica-fixlist.csv`,
       obligations_csv_filename: `${stem}-vaulytica-obligations.csv`,
       deadlines_ics_filename: `${stem}-vaulytica-deadlines.ics`,
+      sarif_filename: `${stem}-vaulytica.sarif.json`,
+      html_filename: `${stem}-vaulytica-report.html`,
     },
     v3_family:
       result.v3_detection.family === "unknown"
@@ -492,6 +498,8 @@ async function renderBundleComplete(
       bundle_json_blob: result.bundle_json_blob,
       bundle_docx_filename: "vaulytica-bundle.docx",
       bundle_json_filename: "vaulytica-bundle.json",
+      bundle_zip_blob: result.bundle_zip_blob,
+      bundle_zip_filename: "vaulytica-bundle.zip",
       detected_families: detectedFamilies.length > 0 ? detectedFamilies : undefined,
       documents: documentSummaries,
       rejected: result.rejected.length > 0 ? result.rejected : undefined,

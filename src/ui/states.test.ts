@@ -206,10 +206,14 @@ describe("renderState", () => {
         fixlist_csv_blob: new Blob(["a,b"], { type: "text/csv" }),
         obligations_csv_blob: new Blob(["a,b"], { type: "text/csv" }),
         deadlines_ics_blob: new Blob(["BEGIN:VCALENDAR"], { type: "text/calendar" }),
+        sarif_blob: new Blob(['{"version":"2.1.0"}'], { type: "application/sarif+json" }),
+        html_blob: new Blob(["<!doctype html>"], { type: "text/html" }),
         fixlist_md_filename: "nda-vaulytica-fixlist.md",
         fixlist_csv_filename: "nda-vaulytica-fixlist.csv",
         obligations_csv_filename: "nda-vaulytica-obligations.csv",
         deadlines_ics_filename: "nda-vaulytica-deadlines.ics",
+        sarif_filename: "nda-vaulytica.sarif.json",
+        html_filename: "nda-vaulytica-report.html",
       },
     });
     const row = select(dz, "export-row")!;
@@ -218,6 +222,8 @@ describe("renderState", () => {
     expect(select(dz, "export-fixlist-csv")).not.toBeNull();
     expect(select(dz, "export-obligations-csv")).not.toBeNull();
     expect(select(dz, "export-deadlines-ics")!.textContent).toMatch(/Deadlines/);
+    expect(select(dz, "export-html")!.textContent).toMatch(/HTML report/);
+    expect(select(dz, "export-sarif")!.textContent).toMatch(/SARIF/);
   });
 
   it("hides the v6 compare row unless on_compare is supplied", () => {
@@ -681,6 +687,29 @@ describe("renderState", () => {
     expect(select(dz, "cross-doc-summary")!.textContent).toMatch(/2 cross-document/);
     expect(select<HTMLButtonElement>(dz, "bundle-download")!.tagName).toBe("BUTTON");
     expect(select<HTMLButtonElement>(dz, "bundle-json-download")!.tagName).toBe("BUTTON");
+    // No bundle_zip_blob supplied → the "everything" link stays hidden.
+    expect(select(dz, "bundle-zip-download")!.hasAttribute("hidden")).toBe(true);
+    document.body.removeChild(dz);
+  });
+
+  it("bundle-complete reveals the 'everything' (.zip) link when the archive blob is present (spec-v8 §25)", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 2,
+      counts: { critical: 0, warning: 1, info: 0 },
+      cross_doc_findings: 0,
+      bundle_docx_blob: new Blob(["docx"], { type: "application/octet-stream" }),
+      bundle_json_blob: new Blob(["{}"], { type: "application/json" }),
+      bundle_docx_filename: "vaulytica-bundle.docx",
+      bundle_json_filename: "vaulytica-bundle.json",
+      bundle_zip_blob: new Blob(["PK"], { type: "application/zip" }),
+      bundle_zip_filename: "vaulytica-bundle.zip",
+    });
+    const zip = select(dz, "bundle-zip-download")!;
+    expect(zip.hasAttribute("hidden")).toBe(false);
+    expect(zip.textContent).toMatch(/Download everything \(\.zip\)/);
     document.body.removeChild(dz);
   });
 
