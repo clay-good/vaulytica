@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Documentation
+- **Refreshed the README product screenshot (it was stale by two export
+  formats).** `docs/images/report-mobile.png` predated the v8 UI wiring, so it
+  showed only 4 export buttons; the app now offers 6 (it was missing **HTML
+  report** and **SARIF**), and the link/overlay colours had since changed.
+  Regenerated it from the *current* `renderState` + page CSS via a new, isolated
+  generator (`tools/screenshots/capture.spec.ts`, `npm run screenshots`) so the
+  product shot stays faithful as the UI evolves — and updated the alt text to
+  list all seven export formats. The generator lives outside `tests/e2e`, so it
+  is never run by the e2e suite or vitest; it is invoked on demand.
+
 ### Accessibility
 - **Bring-your-own-playbook panel sub-states are now responsiveness/a11y-gated
   (fixed two real bugs).** The panel's JS-rendered error / loaded / warning

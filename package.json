@@ -22,6 +22,7 @@
     "dkb:fetch": "tsx dkb/build/run-fetcher.ts",
     "dkb:build": "tsx dkb/build/build.ts",
     "icons": "tsx tools/generate-icons.ts",
+    "screenshots": "playwright test tools/screenshots/capture.spec.ts --config=tools/screenshots/pw.config.ts",
     "playbooks:bundle": "tsx tools/build-extended-playbooks.ts",
     "accuracy": "tsx tools/accuracy/run.ts",
     "citation:check": "tsx tools/citation-check/run.ts",
