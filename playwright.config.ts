@@ -35,7 +35,13 @@ export default defineConfig({
   webServer: process.env.VAULYTICA_E2E_BASE_URL
     ? undefined
     : {
-        command: `npm run preview -- --port ${PORT} --strictPort`,
+        // Bind the same IPv4 host Playwright polls (`url` below). Vite preview
+        // defaults to `localhost`, which on a dual-stack machine resolves to
+        // IPv6 `::1` — so polling `127.0.0.1` never connects and the server
+        // wait times out. Forcing `--host 127.0.0.1` makes `npx playwright
+        // test` work locally out of the box. (CI sets VAULYTICA_E2E_BASE_URL
+        // and hits the deployed site, so this branch is local-only.)
+        command: `npm run preview -- --host 127.0.0.1 --port ${PORT} --strictPort`,
         url: BASE_URL,
         timeout: 60_000,
         reuseExistingServer: !process.env.CI,

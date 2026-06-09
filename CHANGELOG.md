@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Fixed
+- **Local Playwright e2e couldn't reach its own preview server (IPv4/IPv6
+  mismatch).** `vite preview` defaults to binding `localhost`, which on a
+  dual-stack machine resolves to IPv6 `::1`, but the Playwright `webServer`
+  polls `127.0.0.1` (IPv4) — so the server-ready wait timed out at 60 s and
+  `npx playwright test` never ran locally (it only ran in deploy CI, which hits
+  the deployed site via `VAULYTICA_E2E_BASE_URL`). Forced the preview to
+  `--host 127.0.0.1` so it binds the address Playwright polls. With this, the
+  full e2e suite runs locally; the **responsiveness + accessibility gates were
+  then verified empirically** for the first time in this environment — all 34
+  responsiveness/a11y tests pass (live app + every `DropzoneState` at
+  320/390/768/1280 px with zero horizontal overflow, axe WCAG 2 AA in both
+  themes). CI-only `VAULYTICA_E2E_BASE_URL` path is unaffected.
 - **GitHub Action install would have broken `tsx` on the runner
   (`--ignore-scripts`).** Self-reviewing the freshly-shipped Action: the install
   step used `npm ci --ignore-scripts`, which skips **esbuild**'s `postinstall`
