@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- **`vaulytica compare <base> <revised>` — headless version comparison (extends
+  v8 Thrust C "reach").** Comparison was the one major feature with no headless
+  entry point; the CLI did `analyze | diff | verify` but not `compare`. New
+  `tools/cli/compare.ts` (wired into the `run.ts` dispatcher) analyzes both
+  documents over the parity-proven Node engine, runs `compareRuns` +
+  `buildClauseDiff`, and emits either a Markdown summary (a finding-delta table
+  plus the inline word-level redline — `~~removed~~` / `**added**` — of every
+  rewritten clause) or `--format json` (the machine-readable comparison with
+  `clause_diff`). `--fail-on critical|warning|info` exits non-zero (code 2) when
+  the revision *introduced* a finding at or above the threshold — so a pull
+  request can be gated on "did this revision create new exposure?" with the
+  redline attached as the artifact. `--confirm-pairing` permits a cross-family
+  compare (mirrors the UI refusal). DKB ships with the tool → no socket.
+  Build/CI-only (the corpus guard still holds: `tools/` may import `src/`, never
+  the reverse). +10 tests (arg parsing, the introduced-bucket gate, the Markdown
+  redline, and a real-engine end-to-end over two temp files).
 - **Inline word-level redline within rewritten clauses (completes the Part XVIII
   redline).** The clause redline reported *which* clauses were rewritten but
   showed the whole old vs whole new paragraph — noisy for a one-word edit. Each

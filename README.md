@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,062 deterministic rules` · `20 cross-document checks` · `16 document sub-domains` · `35 state-law overlays` · `7 export formats` · `0 servers` · `0 AI` · `2,733 passing tests` · `v8.0.0` · `MIT`
+`1,062 deterministic rules` · `20 cross-document checks` · `16 document sub-domains` · `35 state-law overlays` · `7 export formats` · `0 servers` · `0 AI` · `2,743 passing tests` · `v8.0.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
 
@@ -125,7 +125,7 @@ The product is "a linter for legal documents," yet it spoke no linter format and
 
 - **SARIF 2.1.0** — each rule → a `reportingDescriptor` (with the citation as `helpUri`), each finding → a `result` (severity → level, section → location, `result_hash` + finding id → `partialFingerprints` so findings dedupe across runs). Annotate a pull request, populate a code-scanning dashboard. The output is gated by a `sarifConformanceViolations()` structural check (level enum, in-range `ruleIndex`, string fingerprints, absolute `helpUri`) — negative-tested, so a regression that would make GitHub reject the file fails the build.
 - **Standalone HTML report** — a self-contained `.html` (all CSS inlined, **no script**, no external resource) that renders the full report with wrapped inline citations and prints clean to PDF from any browser. The archivable, emailable, diff-able counterpart to the DOCX — and mobile-responsive by construction.
-- **Headless API + CLI** — a single dispatcher, `vaulytica analyze | diff | verify`, over the **same parity-proven pipeline**. `analyze <path|glob|dir> --format json,sarif,html,md,csv --fail-on critical` runs the engine in CI, a pre-commit hook, or a folder sweep, exiting non-zero when findings breach a threshold. The DKB ships with the tool, so it opens **no socket** — "nothing leaves your machine" holds headless too.
+- **Headless API + CLI** — a single dispatcher, `vaulytica analyze | diff | compare | verify`, over the **same parity-proven pipeline**. `analyze <path|glob|dir> --format json,sarif,html,md,csv --fail-on critical` runs the engine in CI, a pre-commit hook, or a folder sweep, exiting non-zero when findings breach a threshold. The DKB ships with the tool, so it opens **no socket** — "nothing leaves your machine" holds headless too.
 - **Playbook diff** — `vaulytica diff a.json b.json` (and the `diffPlaybooks(a, b)` API) gives custom-playbook authors version control for their team standard: which built-in rules were selected, which severity overrides moved, which custom rules were added/removed/edited, rendered as Markdown or JSON. `--exit-code` makes it a CI primitive (non-zero when the standard changed).
 - **Reproducibility verifier** — `vaulytica verify report.json original.txt` (and `verifyReproducibility(savedReport, original)`) re-derives the `result_hash` and reports *what* diverged — the input, the engine, or the DKB — turning the determinism promise into a checkable audit receipt.
 - **Export enhancements** — a bundle "everything" archive (per-document fix-list/CSV/ICS/JSON in one download) and a **clause-evidence coverage** surface that tells a reviewer which findings pin a verbatim quoted clause span vs. rest on a bare match.
@@ -134,7 +134,7 @@ Every Thrust-B change is render-side or additive (zero `result_hash` churn); eve
 
 ### CLI cheat sheet
 
-One dispatcher, three commands — `analyze`, `diff`, `verify` — over the parity-proven engine (`npm run cli -- <command>`):
+One dispatcher, four commands — `analyze`, `diff`, `compare`, `verify` — over the parity-proven engine (`npm run cli -- <command>`):
 
 ```
 # analyze: one file, print SARIF to stdout
@@ -146,6 +146,10 @@ npm run cli -- analyze ./deal-room --format html,json,md --out ./out --fail-on c
 # diff: structural diff of two custom playbooks (CI primitive — --exit-code fails on any change)
 npm run cli -- diff team-standard-v1.json team-standard-v2.json --exit-code
 
+# compare: version-compare two documents + emit the clause redline; fail CI if the
+# revision introduced a critical finding (a redline gate on a pull request)
+npm run cli -- compare base.docx revised.docx --fail-on critical
+
 # verify: re-derive a saved report's result_hash from the original document (audit receipt)
 npm run cli -- verify report.json original.txt
 
@@ -154,10 +158,13 @@ npm run citation:check            # well-formedness
 npm run citation:check -- --reachability   # + network sweep
 ```
 
+`compare` prints a Markdown summary by default — a finding-delta table plus the inline word-level redline (`~~removed~~` / `**added**`) of every rewritten clause — or `--format json` for the machine-readable comparison (with `clause_diff`). It is the comparison feature, headless: a pull request can now be gated on "did this revision introduce new exposure?" with the redline attached as the artifact.
+
 | Command | Purpose | Exit code |
 |---|---|---|
 | `analyze <path\|glob\|dir>` | run the engine headless, write `json,sarif,html,md,csv` | `2` when findings breach `--fail-on` |
 | `diff <a.json> <b.json>` | structural diff of two custom playbooks (Markdown/JSON) | `1` with `--exit-code` when they differ |
+| `compare <base> <revised>` | version-compare two documents + clause redline (Markdown/JSON) | `2` when the revision *introduced* a finding at/above `--fail-on` |
 | `verify <report.json> <original>` | re-derive `result_hash`; report input/engine/DKB drift | `3` when not reproduced |
 
 | `analyze` flag | Meaning |
@@ -348,12 +355,12 @@ npm run dev          # open the printed URL
 npm run build        # static site → dist/
 npm run typecheck    # tsc --noEmit
 npm run lint         # eslint
-npm run test         # vitest — 2,733 tests, ~20s
+npm run test         # vitest — 2,743 tests, ~20s
 npm run coverage     # vitest + V8 coverage, enforces the regression floor
 npm run accuracy     # v5 Ground Truth harness → tools/accuracy/SCOREBOARD.md
 npm run mutation     # Stryker mutation score (scoped to extractors; slow, off the per-push path)
 npm run citation:check   # v8 build-only citation URL well-formedness (+ --reachability for the network sweep)
-npm run cli -- analyze <path> --format sarif,html,json   # v8 headless CLI (also: diff, verify)
+npm run cli -- analyze <path> --format sarif,html,json   # v8 headless CLI (also: diff, compare, verify)
 ```
 
 The CI gate (`.github/workflows/ci.yml`) runs typecheck + lint + **coverage** + build on Ubuntu; the test matrix re-runs the plain suite on Ubuntu/macOS/Windows for cross-OS determinism, and Lighthouse enforces the mobile performance budget. Mutation testing runs on its own weekly/on-demand workflow, never the per-push path. A commit is "green" only when the per-push gates pass.
@@ -396,7 +403,7 @@ src/
   ui/          drop zone, pipeline, six-state result machine, theme toggle
 dkb/build/     offline fetchers (EDGAR, US Code, eCFR, Common Paper, …) → DKB
 tools/accuracy/ v5 Ground Truth harness (corpus loader, κ, metrics, scoreboard, legal-basis ledger)
-tools/cli/     v8 headless API (analyzeText/analyzeFile) + `vaulytica analyze | diff | verify` CLI dispatcher
+tools/cli/     v8 headless API (analyzeText/analyzeFile) + `vaulytica analyze | diff | compare | verify` CLI dispatcher
 tools/citation-check/ v8 build-only citation URL well-formedness + scheduled reachability
 corpus/        real-document accuracy corpus (build/CI-only; never in the bundle)
 docs/          architecture, determinism, threat model, legal-basis ledger, specs v1–v8

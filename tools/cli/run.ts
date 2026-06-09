@@ -5,12 +5,14 @@
  *       [--playbook <id>] [--format json,sarif,html,md,csv] \
  *       [--out <dir>] [--fail-on critical|warning|info]
  *   tsx tools/cli/run.ts diff <a.json> <b.json> [--format markdown|json] [--exit-code]
+ *   tsx tools/cli/run.ts compare <base> <revised> [--fail-on <sev>] [--format json|markdown]
  *   tsx tools/cli/run.ts verify <report.json> <original> [--playbook <id>]
  *
- * One dispatcher over the three reach commands: `analyze` runs the engine
- * headless (CI gate), `diff` compares two custom playbooks (Step 144), and
- * `verify` re-derives a saved report's `result_hash` (Step 145). The DKB
- * ships with the tool — it opens no socket. The engine is the SAME engine
+ * One dispatcher over the reach commands: `analyze` runs the engine headless
+ * (CI gate), `diff` compares two custom playbooks (Step 144), `compare`
+ * version-compares two documents + emits the clause redline (a CI redline
+ * gate), and `verify` re-derives a saved report's `result_hash` (Step 145).
+ * The DKB ships with the tool — it opens no socket. The engine is the SAME engine
  * the tab runs (parity-proven), so a number on a CI dashboard describes
  * shipped behavior. Build/CI-only; never imported by `src/`.
  */
@@ -20,6 +22,7 @@ import { join, basename, extname, resolve } from "node:path";
 
 import { analyzeFile, loadAccuracyDeps, type AnalyzeResult } from "./api.js";
 import { runDiff } from "./diff.js";
+import { runCompare } from "./compare.js";
 import { verifyReproducibility, explainReproResult, type SavedReport } from "./verify.js";
 import type { Severity } from "../../src/engine/index.js";
 import { buildJsonReport } from "../../src/report/json.js";
@@ -231,6 +234,8 @@ Commands:
   analyze <path|glob|dir> [--playbook <id>] [--format json,sarif,html,md,csv]
                           [--out <dir>] [--fail-on critical|warning|info]
   diff    <a.json> <b.json> [--format markdown|json] [--exit-code]
+  compare <base> <revised> [--playbook <id>] [--format json|markdown]
+                          [--fail-on critical|warning|info] [--confirm-pairing]
   verify  <report.json> <original> [--playbook <id>]
 `;
 
@@ -241,6 +246,8 @@ async function main(): Promise<void> {
       return runAnalyze(rest);
     case "diff":
       return runDiff(rest);
+    case "compare":
+      return runCompare(rest);
     case "verify":
       return runVerify(rest);
     case undefined:
@@ -250,7 +257,7 @@ async function main(): Promise<void> {
       process.stdout.write(USAGE);
       return;
     default:
-      throw new Error(`unknown command "${command}" (expected: analyze | diff | verify)`);
+      throw new Error(`unknown command "${command}" (expected: analyze | diff | compare | verify)`);
   }
 }
 
