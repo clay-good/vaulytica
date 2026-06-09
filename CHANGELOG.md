@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Fixed
+- **Hardened the second reusable regex-exec-loop helper against the zero-width
+  hang (audit follow-up).** Swept every manual `while ((m = re.exec(text)))`
+  loop in `src/` for the same infinite-loop class fixed in `allMatches`. The
+  ~20 one-off extractor/rule loops all use fixed, literal-anchored regexes
+  (require `$`, a keyword, `\d+`, etc.) that provably can't match empty — left
+  as-is. The one other *reusable* helper, `extractMetricValues`'s `all()` in
+  `custom-interpreter.ts` (a growing set of metric patterns flows through it),
+  got the same `lastIndex` step-past guard for consistency / future-proofing,
+  even though today's patterns all require `\d+`. Zero behaviour change (56
+  playbook tests unchanged).
 - **`allMatches` could hang the tab on a zero-width regex (latent unbounded-work
   vector).** The shared rule helper `allMatches` (`src/engine/rules/_helpers.ts`)
   ran `while ((m = re.exec(text)))` with a global regex; a zero-width match

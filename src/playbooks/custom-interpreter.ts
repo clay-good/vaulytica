@@ -314,6 +314,11 @@ function extractMetricValues(metric: string, facts: DocFacts): number[] {
     while ((m = r.exec(text)) !== null) {
       const v = map(m);
       if (v !== null && Number.isFinite(v)) out.push(v);
+      // Defensive: a zero-width match would not advance lastIndex and would
+      // spin forever (same hazard as rules/_helpers.ts allMatches). Today's
+      // metric patterns all require `\d+`, but guard the reusable loop so a
+      // future nullable pattern can't hang the tab (spec-v8 §5).
+      if (m[0].length === 0) r.lastIndex += 1;
     }
   };
 
