@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Accessibility
+- **Bring-your-own-playbook panel sub-states are now responsiveness/a11y-gated
+  (fixed two real bugs).** The panel's JS-rendered error / loaded / warning
+  sub-states aren't part of the `DropzoneState` union, so they were never
+  tested. New `tests/e2e/playbook-panel-a11y.spec.ts` renders them with the real
+  page CSS and found: (1) the **invalid-playbook error message** — the text that
+  tells you *why* your playbook was rejected — used `var(--critical, #b00020)`,
+  but `--critical` was **undefined** so it fell back to a dark-red `#b00020` at
+  ~2.7:1 on the dark theme's near-black surface (barely legible) → defined
+  `--critical` per theme (dark: a bright `#ff6b6b` ≥ 6:1; light: `#b00020`); (2)
+  validation errors echo user-supplied ids (rule ids, metric names) that can be
+  long unbreakable tokens and **overflowed a 320 px phone** → `overflow-wrap:
+  anywhere` on `.playbook-status` (inherited by the lists/summary). Both pass
+  responsiveness + axe in both themes now.
 - **Rich complete-state content is now responsiveness/a11y-gated.** The
   exhaustive `responsiveness-states.spec.ts` complete-state fixture was minimal
   — it never rendered the jurisdiction-overlay block, compliance-frame chips,

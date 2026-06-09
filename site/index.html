@@ -96,6 +96,10 @@
         /* Link-text colour (≥ 4.5:1 on this theme's surfaces). Dark: the
            bright mint reads cleanly on near-black. */
         --link: #00e5a8;
+        /* Error-text colour. The plain #b00020 dark-red is only ~2.7:1 on the
+           near-black bg (an invalid-playbook message would be unreadable), so
+           the dark theme uses a brighter red (≥ 6:1). Light keeps #b00020. */
+        --critical: #ff6b6b;
         --shadow: 0 1px 0 rgba(255, 255, 255, 0.03), 0 8px 32px rgba(0, 0, 0, 0.4);
         --radius: 14px;
         --max: 1100px;
@@ -120,6 +124,8 @@
         /* Light: the brand mint is only ~2.7:1 on the cream surfaces, so link
            text uses a darker on-brand teal (≥ 5:1). Buttons keep --accent. */
         --link: #00735a;
+        /* Error text: #b00020 dark-red reads well (~6:1) on the cream. */
+        --critical: #b00020;
         --shadow: 0 1px 0 rgba(0, 0, 0, 0.02), 0 8px 32px rgba(0, 0, 0, 0.08);
       }
       * {
@@ -727,6 +733,10 @@
         margin-top: 8px;
         font-size: 14px;
         color: var(--body);
+        /* Validation errors echo user-supplied ids (rule ids, metric names)
+           that can be long, unbreakable tokens — wrap them (inherited by the
+           error/warning lists + loaded summary) so the panel never overflows. */
+        overflow-wrap: anywhere;
       }
       .playbook-error {
         color: var(--critical, #b00020);
