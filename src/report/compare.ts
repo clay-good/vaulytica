@@ -28,7 +28,7 @@ import type { EngineRun, Finding, Severity } from "../engine/finding.js";
 import { SEVERITY_RANK } from "../engine/finding.js";
 import { sha256Hex } from "../ingest/hash.js";
 import { stableStringify } from "../engine/runner.js";
-import type { ClauseDiff } from "./clause-diff.js";
+import type { ClauseDiff, WordDiffSegment } from "./clause-diff.js";
 
 export type SeverityCounts = {
   critical: number;
@@ -316,7 +316,12 @@ type ComparisonJsonClause = { section: string; heading: string; text: string };
 type ComparisonJsonClauseDiff = {
   added: ComparisonJsonClause[];
   removed: ComparisonJsonClause[];
-  changed: Array<{ base: ComparisonJsonClause; revised: ComparisonJsonClause }>;
+  changed: Array<{
+    base: ComparisonJsonClause;
+    revised: ComparisonJsonClause;
+    /** Inline word-level redline; omitted when the clause was too long to align. */
+    word_diff?: WordDiffSegment[];
+  }>;
   unchanged_count: number;
   base_clause_count: number;
   revised_clause_count: number;
@@ -331,7 +336,11 @@ function jsonClauseDiff(d: ClauseDiff): ComparisonJsonClauseDiff {
   return {
     added: d.added.map(jsonClause),
     removed: d.removed.map(jsonClause),
-    changed: d.changed.map((p) => ({ base: jsonClause(p.base), revised: jsonClause(p.revised) })),
+    changed: d.changed.map((p) => ({
+      base: jsonClause(p.base),
+      revised: jsonClause(p.revised),
+      ...(p.word_diff ? { word_diff: p.word_diff } : {}),
+    })),
     unchanged_count: d.unchanged_count,
     base_clause_count: d.base_clause_count,
     revised_clause_count: d.revised_clause_count,

@@ -1,6 +1,24 @@
 import { describe, expect, it } from "vitest";
-import { buildClauseDiff, flattenClauses, MAX_CLAUSE_DIFF_CELLS } from "./clause-diff.js";
+import {
+  buildClauseDiff,
+  flattenClauses,
+  diffWords,
+  MAX_CLAUSE_DIFF_CELLS,
+  MAX_WORD_DIFF_TOKENS,
+} from "./clause-diff.js";
+import type { WordDiffSegment } from "./clause-diff.js";
 import type { DocumentTree } from "../ingest/types.js";
+
+/** Reassemble the base text (equal + removed) and revised text (equal + added). */
+function reassemble(segs: WordDiffSegment[]): { base: string; revised: string } {
+  let base = "";
+  let revised = "";
+  for (const s of segs) {
+    if (s.status !== "added") base += s.text;
+    if (s.status !== "removed") revised += s.text;
+  }
+  return { base, revised };
+}
 
 /** Build a minimal DocumentTree from sections of paragraph texts. */
 function tree(sections: Array<{ heading: string; paras: string[] }>): DocumentTree {
@@ -146,5 +164,66 @@ describe("buildClauseDiff", () => {
     expect(d.changed).toEqual([]); // no alignment in the fallback
     expect(d.added.map((c) => c.text)).toEqual(["a brand new clause"]);
     expect(d.unchanged_count).toBe(n);
+  });
+
+  it("attaches a word-level redline to a rewritten clause", () => {
+    const d = buildClauseDiff(
+      doc("Liability is capped at $1,000,000 per claim."),
+      doc("Liability is capped at $5,000,000 per claim."),
+    );
+    expect(d.changed).toHaveLength(1);
+    const wd = d.changed[0]!.word_diff!;
+    expect(wd).not.toBeNull();
+    // Only the amount token changed; the surrounding words stay equal.
+    expect(wd.filter((s) => s.status === "removed").map((s) => s.text)).toContain("$1,000,000");
+    expect(wd.filter((s) => s.status === "added").map((s) => s.text)).toContain("$5,000,000");
+    expect(wd.some((s) => s.status === "equal" && s.text.includes("Liability"))).toBe(true);
+  });
+});
+
+describe("diffWords", () => {
+  it("marks only the changed token, keeping the rest equal", () => {
+    const segs = diffWords("the fee is 30 days net", "the fee is 45 days net")!;
+    expect(segs.filter((s) => s.status === "removed").map((s) => s.text)).toEqual(["30"]);
+    expect(segs.filter((s) => s.status === "added").map((s) => s.text)).toEqual(["45"]);
+  });
+
+  it("reassembles exactly to the base (equal+removed) and revised (equal+added)", () => {
+    const base = "Tenant shall pay rent on the first day of each month.";
+    const revised = "Tenant must pay rent by the fifth business day of each month.";
+    const { base: b, revised: r } = reassemble(diffWords(base, revised)!);
+    expect(b).toBe(base);
+    expect(r).toBe(revised);
+  });
+
+  it("returns a single equal segment for identical text", () => {
+    expect(diffWords("same text", "same text")).toEqual([{ text: "same text", status: "equal" }]);
+  });
+
+  it("is deterministic", () => {
+    expect(diffWords("a b c d", "a x c y")).toEqual(diffWords("a b c d", "a x c y"));
+  });
+
+  it("returns null when a side exceeds the token ceiling (renderer falls back)", () => {
+    const huge = Array.from({ length: MAX_WORD_DIFF_TOKENS + 1 }, (_, i) => `w${i}`).join(" ");
+    expect(diffWords(huge, "short")).toBeNull();
+    expect(diffWords("short", huge)).toBeNull();
+  });
+});
+
+describe("buildClauseDiff — set-based fallback", () => {
+  it("the set-based fallback conserves multiplicity of a repeated clause", () => {
+    // Past the ceiling, a boilerplate clause present 5× in base and 3× in
+    // revised must match 3 (unchanged) and surface the other 2 as removed —
+    // not silently swallow them via a `count > 0` membership test.
+    const pad = Math.ceil(Math.sqrt(MAX_CLAUSE_DIFF_CELLS)); // ~2000 shared, unique clauses
+    const shared = Array.from({ length: pad }, (_, i) => `pad ${i}`);
+    const base = ["BOILER", "BOILER", "BOILER", "BOILER", "BOILER", ...shared];
+    const revised = ["BOILER", "BOILER", "BOILER", ...shared];
+    const d = buildClauseDiff(doc(...base), doc(...revised));
+    expect(d.truncated).toBe(true);
+    expect(d.removed.map((c) => c.text)).toEqual(["BOILER", "BOILER"]);
+    expect(d.added).toEqual([]);
+    expect(d.unchanged_count).toBe(pad + 3); // pads + 3 matched boilerplate copies
   });
 });

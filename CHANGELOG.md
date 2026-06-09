@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- **Inline word-level redline within rewritten clauses (completes the Part XVIII
+  redline).** The clause redline reported *which* clauses were rewritten but
+  showed the whole old vs whole new paragraph — noisy for a one-word edit. Each
+  `changed` pair now carries a `word_diff`: a second deterministic token-LCS
+  (`diffWords` in `src/report/clause-diff.ts`) that marks the exact words struck
+  and added (segments reassemble exactly to the base and revised texts; bounded
+  by `MAX_WORD_DIFF_TOKENS`, `null` past it so the renderer falls back to the
+  two full texts). The comparison Word report renders it as a true inline
+  redline — strikethrough for removed words, underline for added — and the
+  comparison JSON carries the `word_diff` segments for machine consumption. Still
+  outside the comparison `result_hash` (zero golden churn). +7 tests.
 - **Clause-level redline for version comparison (spec-v8 Part XVIII).** The
   comparison feature diffed two `EngineRun`s and told you which *findings*
   resolved / introduced / persisted, but never showed the *clause text* that
@@ -26,6 +37,15 @@ All notable changes to this project will be documented in this file. Format adap
   deferral in spec-v8 Part XVIII.
 
 ### Fixed
+- **Set-based redline fallback miscounted a repeated clause (multiset bug).**
+  Found self-reviewing the freshly-shipped redline. The oversized-document
+  fallback `setDiff` (`src/report/clause-diff.ts`) used a `count > 0` membership
+  test: when a boilerplate clause appeared `b` times in base and `r` times in
+  revised with `r < b`, all `r` revised copies were marked unchanged but the
+  surplus `b − r` base copies were never reported as removed — silently wrong
+  counts, only on the truncated path (documents past the alignment ceiling).
+  Reworked to proper multiset semantics — `min(b, r)` matched, the surplus on
+  each side surfaced as added/removed. +1 test over a 5×-vs-3× repeated clause.
 - **DKB cache fallback could serve a corrupt record as "latest."**
   `readLatestCache` (`src/dkb/loader.ts`) — the offline fallback that picks the
   newest cached DKB out of IndexedDB when the exact requested version is missing

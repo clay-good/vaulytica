@@ -42,9 +42,11 @@ export { buildComparisonDocx, comparisonDocxBlob } from "./compare-docx.js";
 export {
   buildClauseDiff,
   flattenClauses,
+  diffWords,
   type ClauseDiff,
   type Clause,
   type ClausePair,
+  type WordDiffSegment,
 } from "./clause-diff.js";
 
 export {

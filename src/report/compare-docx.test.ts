@@ -112,8 +112,13 @@ describe("buildComparisonDocx", () => {
     const docXml = strFromU8(unzipSync(await bytes(await buildComparisonDocx(cmp, diff)))["word/document.xml"]!);
     expect(docXml).toContain("Document Redline");
     expect(docXml).toContain("$5,000,000"); // revised side of the rewrite
+    expect(docXml).toContain("$1,000,000"); // base side, struck through inline
     expect(docXml).toContain("Brand new clause"); // added
     expect(docXml).toContain("Removed clause"); // removed
+    // The rewritten clause renders an inline redline: a strikethrough run (removed)
+    // and an underlined run (added) exist.
+    expect(docXml).toContain("<w:strike/>");
+    expect(docXml).toContain('<w:u w:val="single"/>');
   });
 
   it("omits the Document Redline section when no clause diff is supplied", async () => {

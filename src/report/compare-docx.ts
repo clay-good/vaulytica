@@ -37,7 +37,7 @@ import {
 
 import type { Finding, Severity } from "../engine/finding.js";
 import type { Comparison, SeverityCounts, UnchangedPair } from "./compare.js";
-import type { Clause, ClauseDiff } from "./clause-diff.js";
+import type { Clause, ClauseDiff, WordDiffSegment } from "./clause-diff.js";
 
 /**
  * Cap on redline rows rendered per category. A pathological redline (a
@@ -281,6 +281,21 @@ function clauseLabel(c: Clause): string {
   return c.heading ? `${c.heading} (${c.id})` : c.id;
 }
 
+/** One paragraph rendering an inline word-level redline (strike = removed, underline = added). */
+function redlineParagraph(segments: WordDiffSegment[]): Paragraph {
+  return new Paragraph({
+    children: segments.map((s) => {
+      if (s.status === "removed") {
+        return new TextRun({ text: s.text, strike: true, color: "B00020", font: DEFAULT_FONT, size: BODY_SIZE });
+      }
+      if (s.status === "added") {
+        return new TextRun({ text: s.text, underline: {}, color: "1A7A4C", font: DEFAULT_FONT, size: BODY_SIZE });
+      }
+      return new TextRun({ text: s.text, font: DEFAULT_FONT, size: BODY_SIZE });
+    }),
+  });
+}
+
 function renderRedline(diff: ClauseDiff): (Paragraph | Table)[] {
   const out: (Paragraph | Table)[] = [
     h1("Document Redline"),
@@ -310,15 +325,25 @@ function renderRedline(diff: ClauseDiff): (Paragraph | Table)[] {
 
   if (diff.changed.length > 0) {
     out.push(h3("Rewritten clauses"));
+    out.push(para({
+      text: "Inline redline: struck-through text was removed, underlined text was added.",
+      italics: true,
+    }));
     for (const pair of diff.changed.slice(0, MAX_REDLINE_ROWS)) {
       out.push(para({ text: clauseLabel(pair.revised), bold: true, size: 24 }));
-      out.push(new Table({
-        width: { size: 100, type: WidthType.PERCENTAGE },
-        rows: [
-          headerRow(["Base", "Revised"]),
-          bodyRow([truncate(pair.base.text, 600), truncate(pair.revised.text, 600)]),
-        ],
-      }));
+      if (pair.word_diff) {
+        // Authentic inline redline (strikethrough removed / underline added).
+        out.push(redlineParagraph(pair.word_diff));
+      } else {
+        // Clause too long to word-align — show the two full texts side by side.
+        out.push(new Table({
+          width: { size: 100, type: WidthType.PERCENTAGE },
+          rows: [
+            headerRow(["Base", "Revised"]),
+            bodyRow([truncate(pair.base.text, 600), truncate(pair.revised.text, 600)]),
+          ],
+        }));
+      }
       out.push(spacer());
     }
     pushOverflowNote(out, diff.changed.length, "rewritten clauses");

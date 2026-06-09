@@ -36,8 +36,15 @@ export type Clause = {
   key: string;
 };
 
-/** A base clause paired with the revised clause that replaced it. */
-export type ClausePair = { base: Clause; revised: Clause };
+/** One run of the inline word-level redline of a rewritten clause. */
+export type WordDiffSegment = { text: string; status: "equal" | "removed" | "added" };
+
+/**
+ * A base clause paired with the revised clause that replaced it, plus the
+ * inline word-level redline between them (`null` when either side has too many
+ * tokens to align — the renderer falls back to showing the two full texts).
+ */
+export type ClausePair = { base: Clause; revised: Clause; word_diff: WordDiffSegment[] | null };
 
 export type ClauseDiff = {
   /** Clauses present in the revised document with no base counterpart. */
@@ -67,9 +74,73 @@ export type ClauseDiff = {
  */
 export const MAX_CLAUSE_DIFF_CELLS = 4_000_000;
 
+/**
+ * Token ceiling per side for the inline word-level redline. A clause is short
+ * (the renderer truncates display at ~600 chars ≈ a hundred-odd tokens), so
+ * 600 is generous; past it the word align is skipped (the renderer shows the
+ * two full texts). Bounds the O(tokens²) inner diff — never unbounded.
+ */
+export const MAX_WORD_DIFF_TOKENS = 600;
+
 /** Collapse insignificant whitespace so re-wrapping is not read as an edit. */
 function normalizeClause(text: string): string {
   return text.replace(/\s+/g, " ").trim();
+}
+
+/** Split into alternating whitespace / non-whitespace tokens (exact spacing kept). */
+function tokenizeWords(text: string): string[] {
+  return text.match(/\s+|\S+/g) ?? [];
+}
+
+/**
+ * Inline word-level redline between two clause texts: a deterministic LCS over
+ * word tokens, emitted as merged `equal` / `removed` / `added` segments that
+ * reassemble to exactly the base text (equal+removed) and the revised text
+ * (equal+added). Returns `null` when either side exceeds {@link
+ * MAX_WORD_DIFF_TOKENS} so the caller can fall back to the full texts.
+ */
+export function diffWords(base: string, revised: string): WordDiffSegment[] | null {
+  const a = tokenizeWords(base);
+  const b = tokenizeWords(revised);
+  if (a.length > MAX_WORD_DIFF_TOKENS || b.length > MAX_WORD_DIFF_TOKENS) return null;
+
+  const n = a.length;
+  const m = b.length;
+  const w = m + 1;
+  const dp = new Int32Array((n + 1) * w);
+  for (let i = n - 1; i >= 0; i--) {
+    for (let j = m - 1; j >= 0; j--) {
+      dp[i * w + j] =
+        a[i] === b[j]
+          ? dp[(i + 1) * w + (j + 1)]! + 1
+          : Math.max(dp[(i + 1) * w + j]!, dp[i * w + (j + 1)]!);
+    }
+  }
+
+  const segs: WordDiffSegment[] = [];
+  const push = (text: string, status: WordDiffSegment["status"]): void => {
+    const last = segs[segs.length - 1];
+    if (last && last.status === status) last.text += text;
+    else segs.push({ text, status });
+  };
+  let i = 0;
+  let j = 0;
+  while (i < n && j < m) {
+    if (a[i] === b[j]) {
+      push(a[i]!, "equal");
+      i++;
+      j++;
+    } else if (dp[(i + 1) * w + j]! >= dp[i * w + (j + 1)]!) {
+      push(a[i]!, "removed");
+      i++;
+    } else {
+      push(b[j]!, "added");
+      j++;
+    }
+  }
+  while (i < n) push(a[i++]!, "removed");
+  while (j < m) push(b[j++]!, "added");
+  return segs;
 }
 
 /**
@@ -173,7 +244,11 @@ function classify(ops: Op[]): Pick<ClauseDiff, "added" | "removed" | "changed" |
     while (k < ops.length && ops[k]!.kind === "remove") rem.push(ops[k++]!.clause);
     while (k < ops.length && ops[k]!.kind === "add") add.push(ops[k++]!.clause);
     const paired = Math.min(rem.length, add.length);
-    for (let p = 0; p < paired; p++) changed.push({ base: rem[p]!, revised: add[p]! });
+    for (let p = 0; p < paired; p++) {
+      const base = rem[p]!;
+      const revised = add[p]!;
+      changed.push({ base, revised, word_diff: diffWords(base.text, revised.text) });
+    }
     for (let p = paired; p < rem.length; p++) removed.push(rem[p]!);
     for (let p = paired; p < add.length; p++) added.push(add[p]!);
   }
@@ -181,10 +256,13 @@ function classify(ops: Op[]): Pick<ClauseDiff, "added" | "removed" | "changed" |
 }
 
 /**
- * Bounded set-based fallback for oversized pairs: membership only. A clause in
- * revised whose key is absent from the base multiset is `added`; a base clause
- * absent from revised is `removed`; the rest are unchanged. No alignment, so no
- * `changed` pairing — honest about the loss via `truncated`.
+ * Bounded set-based fallback for oversized pairs: multiset membership only. A
+ * clause key present `b` times in base and `r` times in revised matches
+ * `min(b, r)` copies (counted unchanged); the `r − min` surplus revised copies
+ * are `added` and the `b − min` surplus base copies are `removed`. No
+ * alignment, so no `changed` pairing — honest about the loss via `truncated`.
+ * (A naive `count > 0` membership test would lose the surplus of a repeated
+ * boilerplate clause whose multiplicity changed.)
  */
 function setDiff(base: Clause[], revised: Clause[]): ClauseDiff {
   const baseCounts = new Map<string, number>();
@@ -192,15 +270,33 @@ function setDiff(base: Clause[], revised: Clause[]): ClauseDiff {
   const revCounts = new Map<string, number>();
   for (const c of revised) revCounts.set(c.key, (revCounts.get(c.key) ?? 0) + 1);
 
+  // Matched copies per key = min(base, revised). Two separate budgets are
+  // drawn down — one while scanning revised (unchanged vs added), one while
+  // scanning base (matched vs removed) — so multiplicity is conserved.
+  const matched = new Map<string, number>();
+  for (const [key, b] of baseCounts) {
+    const r = revCounts.get(key) ?? 0;
+    if (r > 0) matched.set(key, Math.min(b, r));
+  }
+
+  const revBudget = new Map(matched);
   const added: Clause[] = [];
   let unchanged = 0;
   for (const c of revised) {
-    if ((baseCounts.get(c.key) ?? 0) > 0) unchanged++;
-    else added.push(c);
+    const left = revBudget.get(c.key) ?? 0;
+    if (left > 0) {
+      revBudget.set(c.key, left - 1);
+      unchanged++;
+    } else {
+      added.push(c);
+    }
   }
+  const baseBudget = new Map(matched);
   const removed: Clause[] = [];
   for (const c of base) {
-    if ((revCounts.get(c.key) ?? 0) === 0) removed.push(c);
+    const left = baseBudget.get(c.key) ?? 0;
+    if (left > 0) baseBudget.set(c.key, left - 1);
+    else removed.push(c);
   }
   return {
     added,
