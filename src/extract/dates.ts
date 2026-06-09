@@ -60,13 +60,16 @@ const NUMBER_WORDS: Record<string, number> = {
 // extractor (spec-v8 §5: bound, never timeout). Eight is far beyond any real
 // inter-token gap (post-normalization ≤ 2), so the match is byte-identical on
 // every realistic input — verified — while backtracking is now linear.
+// The count word itself is bounded (`\w{1,40}`, not `\w+`): an unbounded `\w+`
+// overlaps the later `(\d+)` over a long digit run (`\w` matches digits), which
+// is O(n^2) on a giant pasted number; no count word/numeral exceeds 40 chars.
 const RANGE_RELATIVE = new RegExp(
-  String.raw`\b(?:within\s+|between\s+)?(\w+(?:[-\s]\w+)?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(?:to|-|–|—|and|or)\s+(\w+(?:[-\s]\w+)?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(day|days|week|weeks|month|months|year|years|business\s+day|business\s+days)\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z][\w\s]{2,40}?)(?=[.,;)]|$)`,
+  String.raw`\b(?:within\s+|between\s+)?(\w{1,40}(?:[-\s]\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(?:to|-|–|—|and|or)\s+(\w{1,40}(?:[-\s]\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(day|days|week|weeks|month|months|year|years|business\s+day|business\s+days)\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z][\w\s]{2,40}?)(?=[.,;)]|$)`,
   "gi",
 );
 
 const RELATIVE = new RegExp(
-  String.raw`\b(?:within\s+)?(\w+(?:[-\s]\w+)?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(day|days|week|weeks|month|months|year|years|business\s+day|business\s+days)\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z][\w\s]{2,40}?)(?=[.,;)]|$)`,
+  String.raw`\b(?:within\s+)?(\w{1,40}(?:[-\s]\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(day|days|week|weeks|month|months|year|years|business\s+day|business\s+days)\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z][\w\s]{2,40}?)(?=[.,;)]|$)`,
   "gi",
 );
 

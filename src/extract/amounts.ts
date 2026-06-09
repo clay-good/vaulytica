@@ -45,11 +45,24 @@ const CURRENCY_CODES = new Set([
 ]);
 
 const CUR = String.raw`[$€£¥₹₩₽]|\b(?:USD|EUR|GBP|JPY|CAD|AUD|NZD|CHF|CNY|INR|KRW|BRL|MXN|ZAR|SGD|HKD|SEK|NOK|DKK|RUB)\b`;
-const AMT = String.raw`[\d]{1,3}(?:,\d{3})*(?:\.\d+)?|\d+(?:\.\d+)?`;
+// Digit counts are BOUNDED (`{0,40}`/`{1,40}`, not `*`/`+`): in RANGE_NUMERIC
+// the amount is followed by a REQUIRED range connector, so an unbounded `\d+`
+// matches a whole pasted digit run, fails to find the connector, then
+// backtracks the run from every start position — O(n²) (a ReDoS hang). Forty
+// digits comfortably exceeds MAX_AMOUNT_DIGITS (30), so any number long enough
+// to be bounded here is dropped by `computeAmount` regardless: byte-identical
+// extraction on every real amount, linear on a hostile digit run.
+const AMT = String.raw`[\d]{1,3}(?:,\d{3}){0,40}(?:\.\d{1,40})?|\d{1,40}(?:\.\d{1,40})?`;
 const SCALE = String.raw`k|kk|m|mm|mn|bn|b`;
 
+// Whitespace gaps are BOUNDED (`\s{0,8}`, not `\s*`): an optional currency
+// prefix leaves `\s*` as the first real token, so a global exec-loop over a long
+// whitespace run rescans the remainder from every start position before the
+// required amount fails — O(n²) per pass. `\s` matches NBSP (which `normalize`
+// keeps), so a crafted NBSP run is a reachable hang. No real money expression
+// has > 8 chars between the symbol, digits, and scale, so this is byte-identical.
 const NUMERIC = new RegExp(
-  String.raw`(${CUR})?\s*(${AMT})\s*(${SCALE})?`,
+  String.raw`(${CUR})?\s{0,8}(${AMT})\s{0,8}(${SCALE})?`,
   "gi",
 );
 
@@ -61,7 +74,7 @@ const NUMERIC = new RegExp(
  * rule reads the controlling (upper) bound. (v7 §6.)
  */
 const RANGE_NUMERIC = new RegExp(
-  String.raw`(between\s+)?(${CUR})?\s*(${AMT})\s*(${SCALE})?\s*(to|through|–|—|-|and)\s+(${CUR})?\s*(${AMT})\s*(${SCALE})?`,
+  String.raw`(between\s+)?(${CUR})?\s{0,8}(${AMT})\s{0,8}(${SCALE})?\s{0,8}(to|through|–|—|-|and)\s{1,8}(${CUR})?\s{0,8}(${AMT})\s{0,8}(${SCALE})?`,
   "gi",
 );
 
@@ -110,8 +123,12 @@ const WORD_SCALES: Record<string, string> = {
 // single-char separator each space/hyphen is one deterministic iteration; the
 // matched language and greedy match are identical (verified), so no golden
 // churn — but the match is now linear instead of exponential.
+// The trailing separator before the currency word is BOUNDED (`\s{1,8}`, not
+// `\s+`): the group's `[-\s]` and an unbounded trailing `\s+` both consume a
+// whitespace run, which is O(n^2) on a long NBSP run (NBSP survives normalize);
+// no real gap before "dollars" exceeds 8 chars, so the match is unchanged.
 const WORD_FORM = new RegExp(
-  String.raw`\b((?:(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion|trillion|and|[-\s])+))\s+(dollars?|euros?|pounds?\s+sterling|pounds?)\b`,
+  String.raw`\b((?:(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion|trillion|and|[-\s])+))\s{1,8}(dollars?|euros?|pounds?\s+sterling|pounds?)\b`,
   "gi",
 );
 

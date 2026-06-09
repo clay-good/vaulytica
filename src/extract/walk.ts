@@ -65,6 +65,37 @@ export function posInParagraph(
   };
 }
 
+/**
+ * Strip leading and trailing characters matching `edge` (a single-character
+ * class regex) in **linear** time.
+ *
+ * This replaces `str.replace(/^<edge>+|<edge>+$/g, "")` and `str.replace(
+ * /<edge>+$/, "")`. Those `$`-anchored trims backtrack **O(n²)** on a long run
+ * of edge characters that does not actually reach the boundary — the engine
+ * retries the greedy `<edge>+` from every start position. On hostile input (a
+ * party name or clause subject padded with thousands of commas / dots / NBSPs —
+ * none of which `normalize` collapses) that is a ReDoS, defeating the spec-v8
+ * §5 "a tool that cannot be made to hang" guarantee. A two-pointer character
+ * scan is O(n) and matches the same character set exactly, so it is a
+ * byte-identical, churn-free replacement. `edge` must match exactly one char
+ * (it is applied per character via `edge.test`, so it must not be `/g`).
+ */
+export function trimEdges(s: string, edge: RegExp): string {
+  let i = 0;
+  let j = s.length;
+  while (i < j && edge.test(s[i]!)) i += 1;
+  while (j > i && edge.test(s[j - 1]!)) j -= 1;
+  return s.slice(i, j);
+}
+
+/** Trailing-only counterpart of {@link trimEdges} — replaces a `<edge>+$` trim
+ * (same O(n²) ReDoS) for sites where a leading edge char must be preserved. */
+export function trimEnd(s: string, edge: RegExp): string {
+  let j = s.length;
+  while (j > 0 && edge.test(s[j - 1]!)) j -= 1;
+  return s.slice(0, j);
+}
+
 /** Total length of the flat document (final paragraph end). */
 export function documentLength(tree: DocumentTree): number {
   let max = 0;

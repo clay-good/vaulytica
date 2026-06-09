@@ -1,6 +1,6 @@
 import type { DocumentTree } from "../ingest/types.js";
 import type { Party, DocPosition } from "./types.js";
-import { forEachParagraph } from "./walk.js";
+import { forEachParagraph, trimEdges, trimEnd } from "./walk.js";
 
 /**
  * Extract contracting parties from the document preamble and signature
@@ -46,7 +46,12 @@ const US_STATE = "(?:Alabama|Alaska|Arizona|Arkansas|California|Colorado|Connect
 // name. Entity-type tokens in the text are lowercase by convention
 // ("a Delaware corporation"); the `ENTITY_TYPES` list mirrors that.
 const PARTY_DECL = new RegExp(
-  String.raw`([A-Z][\w&.,'’-]*(?:\s+[A-Z][\w&.,'’-]*){0,6})\s*,?\s*(?:a|an)?\s*(?:(${US_STATE})\s+)?(${ENTITY_TYPES.join("|")})\s*(?:\(\s*["“”']([^"”'’\)]+)["“”']\s*\))?`,
+  // Each name token is BOUNDED (`{0,80}`, not `*`): the name is followed by a
+  // REQUIRED entity-type suffix, so an unbounded token matches a long letter
+  // run, fails to find the suffix, and backtracks the run from every start
+  // position — O(n²) on a hostile uppercase run (a ReDoS hang, spec-v8 §5). No
+  // real name token exceeds 80 chars, so this is byte-identical and now linear.
+  String.raw`([A-Z][\w&.,'’-]{0,80}(?:\s+[A-Z][\w&.,'’-]{0,80}){0,6})\s*,?\s*(?:a|an)?\s*(?:(${US_STATE})\s+)?(${ENTITY_TYPES.join("|")})\s*(?:\(\s*["“”']([^"”'’\)]+)["“”']\s*\))?`,
   "g",
 );
 
@@ -248,9 +253,13 @@ function computeAliases(party: Party): string[] {
   // Short form: leading word(s) before a corporate suffix, tolerant of
   // trailing punctuation ("Acme Corp.," → "Acme"; "Globex International
   // Ltd." → "Globex International").
-  const base = party.name.replace(/[\s.,;]+$/, "");
+  const base = trimEnd(party.name, /[\s.,;]/);
   const short = base.replace(
-    /[\s,]+(?:Corp|Corporation|Inc|LLC|L\.L\.C\.|Ltd|Limited|Co|Company|GmbH|AG|PLC|LP|LLP|PLLC)\b\.?$/i,
+    // Bounded leading separator (`{1,8}`, not `+`): a `[\s,]+…$` trim backtracks
+    // O(n²) on a long comma/whitespace run that does not reach the suffix (a
+    // ReDoS on a hostile party name); no real name has > 8 separator chars
+    // before its corporate suffix, so this is byte-identical and now linear.
+    /[\s,]{1,8}(?:Corp|Corporation|Inc|LLC|L\.L\.C\.|Ltd|Limited|Co|Company|GmbH|AG|PLC|LP|LLP|PLLC)\b\.?$/i,
     "",
   );
   if (short && short !== base && /\s/.test(base)) {
@@ -265,10 +274,10 @@ function computeAliases(party: Party): string[] {
 }
 
 function cleanPartyName(raw: string): string {
-  let n = raw.trim().replace(/^["“”'’\s]+|["“”'’\s]+$/g, "");
+  let n = trimEdges(raw.trim(), /["“”'’\s]/);
   // Strip trailing entity descriptor like ", a Delaware corporation".
   n = n.replace(/,\s*(?:a|an)\s+.+$/i, "");
-  n = n.replace(/[.,;]+$/, "");
+  n = trimEnd(n, /[.,;]/);
   if (n.length < 2 || n.length > 80) return "";
   if (!/[A-Z]/.test(n.charAt(0))) return "";
   return n;

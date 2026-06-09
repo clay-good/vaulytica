@@ -36,8 +36,18 @@ function collectDescendantParagraphs(sections: Section[]): Paragraph[] {
 export function normalize(tree: DocumentTree): DocumentTree {
   let cursor = 0;
 
+  // Collapse runs of ANY Unicode whitespace (`\s`) to a single ASCII space —
+  // not just `[ \t\r\n]`. Two reasons: (1) determinism — a finding's text and
+  // offsets must not depend on whether a drafter typed a regular space, a
+  // non-breaking space (U+00A0), or an ideographic space (U+3000); they are all
+  // semantically a space. (2) Robustness — the downstream extractors match with
+  // `\s`, which spans those exotic whitespace characters, but the *old* fold
+  // left them intact, so a crafted run of thousands of NBSPs reached the
+  // extractors and drove several regexes into O(n²) backtracking (a ReDoS hang,
+  // spec-v8 §5). Folding them here removes the run at the source for every
+  // extractor at once. ASCII-only documents (every fixture) are byte-unchanged.
   const normalizeRunText = (text: string): string => {
-    return text.replace(/[ \t\r\n]+/g, " ");
+    return text.replace(/\s+/g, " ");
   };
 
   const normalizeParagraph = (
@@ -90,7 +100,7 @@ export function normalize(tree: DocumentTree): DocumentTree {
     // documents identical except for extra spaces/tabs in a heading produce
     // different result_hashes — a determinism leak the metamorphic suite caught
     // (spec-v7 Step 119). Clean single-spaced headings are unchanged (no churn).
-    const heading = s.heading.replace(/[ \t\r\n]+/g, " ").trim();
+    const heading = s.heading.replace(/\s+/g, " ").trim();
     if (heading) {
       // The heading text itself takes up its own offset span plus a newline.
       cursor += heading.length + 1;

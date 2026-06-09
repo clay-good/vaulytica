@@ -1,6 +1,6 @@
 import type { DocumentTree } from "../ingest/types.js";
 import type { Obligation, Party } from "./types.js";
-import { forEachParagraph, posInParagraph } from "./walk.js";
+import { forEachParagraph, posInParagraph, trimEdges } from "./walk.js";
 
 /**
  * Extract every modal-verb obligation from the document.
@@ -105,7 +105,7 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
 function decomposeNestedTriggers(trigger: string): string[] | undefined {
   const parts = trigger
     .split(/\bthat\b/i)
-    .map((p) => p.replace(/^[\s,]+|[\s,]+$/g, ""))
+    .map((p) => trimEdges(p, /[\s,]/))
     .filter((p) => p.length > 0);
   return parts.length >= 2 ? parts : undefined;
 }
@@ -119,15 +119,31 @@ function scopeExclusion(subject: string): string | undefined {
     subject.replace(/[,;]\s*$/, "").trim(),
   );
   if (!m) return undefined;
-  return m[1]!.replace(/[\s.]+$/, "").trim() || undefined;
+  return trimEdges(m[1]!, /[\s.]/).trim() || undefined;
 }
 
 function splitSentences(text: string): { text: string; start: number }[] {
+  // An O(n) manual scan, byte-for-byte equivalent to the prior
+  // `/[^.!?]+[.!?]+/g` (a maximal run of non-terminators followed by ≥1
+  // terminator). That global regex is O(n²) on a paragraph with NO `.!?`
+  // terminator (a long clause, or a hostile run of commas/hyphens/digits): at
+  // every start position the greedy `[^.!?]+` scans to end, then the required
+  // `[.!?]+` fails and backtracks uselessly — a ReDoS hang (spec-v8 §5). The
+  // scan emits the same spans: leading terminators are skipped, a span needs ≥1
+  // non-terminator then ≥1 terminator, and an unterminated trailing remainder is
+  // dropped (the whole-text fallback below covers the no-sentence case).
   const out: { text: string; start: number }[] = [];
-  const re = /[^.!?]+[.!?]+/g;
-  let m: RegExpExecArray | null;
-  while ((m = re.exec(text)) !== null) {
-    out.push({ text: m[0], start: m.index });
+  const isTerm = (c: string): boolean => c === "." || c === "!" || c === "?";
+  let i = 0;
+  const n = text.length;
+  while (i < n) {
+    while (i < n && isTerm(text[i]!)) i += 1; // skip leading terminators
+    if (i >= n) break;
+    const start = i;
+    while (i < n && !isTerm(text[i]!)) i += 1; // [^.!?]+
+    if (i >= n) break; // no terminator follows → unterminated remainder, dropped
+    while (i < n && isTerm(text[i]!)) i += 1; // [.!?]+
+    out.push({ text: text.slice(start, i), start });
   }
   if (out.length === 0 && text.trim().length > 0) {
     out.push({ text, start: 0 });
@@ -140,7 +156,7 @@ function resolveObligor(
   partyNames: Set<string>,
   partyRoles: Set<string>,
 ): string {
-  const trimmed = subject.replace(/^[,;.\s]+|[,;.\s]+$/g, "");
+  const trimmed = trimEdges(subject, /[,;.\s]/);
   const lower = trimmed.toLowerCase();
   // Direct party-name match.
   for (const name of partyNames) {

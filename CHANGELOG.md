@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Fixed
+- **ReDoS sweep of the whole extractor surface — no input can make extraction
+  hang (spec-v8 Thrust A).** A systematic fuzz of every regex in `src/`
+  (killable workers, 50k-char runs of each character class) found a cluster of
+  super-linear backtracking beyond the two extractors fixed previously. None are
+  caught by the input-size guards (a ~100-char paragraph triggers them) and all
+  are reachable with characters that survive normalization. Each fix is verified
+  byte-identical on real input (the full golden suite is unchanged) and linear
+  on hostile input:
+  - **Root cause — `normalize` now folds *all* Unicode whitespace** (`\s`, not
+    just `[ \t\r\n]`). The extractors match with `\s` (which spans NBSP `U+00A0`,
+    ideographic space, etc.), but those characters used to pass through intact, so
+    a crafted run of thousands of NBSPs reached the extractors and drove several
+    `\s*`-bearing patterns into O(n²). Folding them at the source fixes every
+    whitespace-run vector at once (and makes a finding independent of whether a
+    drafter typed a space or a non-breaking space). Zero fixtures contain such
+    characters, so the corpus is byte-unchanged.
+  - **`splitSentences` (obligations)** used `/[^.!?]+[.!?]+/g`, which is O(n²) on
+    any paragraph with no `.!?` terminator (a long clause, or a hostile run) —
+    the greedy run rescans from every start position. Replaced with an O(n)
+    manual scan that emits byte-identical spans.
+  - **Anchored edge-trims** (`/^[…]+|[…]+$/`) in the party and obligation
+    extractors backtrack O(n²) on a long run of the trimmed characters (commas,
+    dots) that does not reach the boundary. Replaced with linear `trimEdges` /
+    `trimEnd` helpers (two-pointer scans).
+  - **Bounded the remaining unbounded quantifiers** that a required-token suffix
+    forces to backtrack across a run: `PARTY_DECL`'s name token (`{0,80}`), the
+    amount `AMT` digit groups (`{1,40}`, comfortably above `MAX_AMOUNT_DIGITS`),
+    the date count word (`\w{1,40}`), and the `\s*` gaps in `NUMERIC` /
+    `RANGE_NUMERIC` / `WORD_FORM` (`\s{0,8}`). Every bound is far beyond any real
+    value, so extraction is unchanged.
+  The **fuzz-boundary gate** now drives the full `extractAll` surface over 50k
+  runs of every character class (a ReDoS is a hang, not a throw, so the prior
+  "never throws" property at 400 chars could not see it). +49 tests.
 - **Catastrophic regex backtracking (ReDoS) in the amount and date extractors —
   the engine could be made to hang.** Three extractor patterns had a
   super-linear backtracking shape on adversarial input, defeating the spec-v8
