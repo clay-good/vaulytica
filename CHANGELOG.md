@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Security
+- **Neutralized a `javascript:`/`data:` URL XSS vector in the shareable HTML
+  report.** `z.string().url()` accepts `javascript:alert(1)` and `data:` URLs
+  (the URL constructor parses them), so a custom-playbook citation `url` could
+  ride into the standalone HTML report — which spec-v8 designs to be *emailed*
+  — as an active `<a href>`, executing in a recipient's browser on open.
+  Two-layered fix: (1) the custom-playbook **schema now rejects any citation
+  URL that is not http(s)** at load, with a clear message — protecting every
+  output format at the input boundary; (2) the HTML renderer **only emits an
+  http(s) `href`** and falls back to inert escaped text for any other scheme
+  (defense-in-depth for the artifact that executes on open), keeping the URL
+  visible/verifiable but non-executable. DKB citations were never affected
+  (build-time and vetted). Threat-model updated.
+
 ### Fixed
 - **CLI bare-glob resolution.** `vaulytica analyze '*.docx'` (a quoted glob with
   no directory, so the shell doesn't expand it) silently matched nothing: the

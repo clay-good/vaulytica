@@ -165,7 +165,19 @@ const severityEnum = z.enum(["critical", "warning", "info"]);
 
 const citationSchema = z.object({
   reference: z.string().min(1).max(MAX_PLAYBOOK_STRING_LEN),
-  url: z.string().url().optional(),
+  // A citation URL must be an http(s) web address. `z.string().url()` alone
+  // accepts `javascript:` and `data:` URLs (the URL constructor parses them),
+  // which would otherwise ride through a user-supplied playbook into a
+  // *shareable* HTML report's `<a href>` — an XSS vector. Restrict the scheme
+  // at the boundary so a malicious or mistaken citation URL is rejected with a
+  // clear message rather than silently embedded.
+  url: z
+    .string()
+    .url()
+    .refine((u) => /^https?:\/\//i.test(u), {
+      message: "citation url must be an http(s) URL",
+    })
+    .optional(),
 });
 
 const predicateSchema = z.discriminatedUnion("kind", [

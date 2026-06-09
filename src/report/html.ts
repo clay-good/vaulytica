@@ -52,6 +52,23 @@ function esc(text: string): string {
     .replace(/'/g, "&#39;");
 }
 
+/**
+ * Return `url` only if it is a safe http(s) web address, else `null`. The
+ * standalone HTML report is designed to be emailed/shared, so a citation URL
+ * with a `javascript:` or `data:` scheme — which a malicious custom playbook
+ * could supply — must never become an active `<a href>`. The schema already
+ * rejects such URLs at load (defense in depth); this guarantees the rendered
+ * artifact is safe even for a citation that bypassed validation.
+ */
+function safeHref(url: string): string | null {
+  try {
+    const protocol = new URL(url).protocol;
+    return protocol === "https:" || protocol === "http:" ? url : null;
+  } catch {
+    return null;
+  }
+}
+
 // Fixed, font-agnostic, print-clean CSS. `overflow-wrap: anywhere` on the
 // citation URL is the HTML half of the §18 always-wrap contract.
 const STYLE = `
@@ -93,7 +110,13 @@ function renderCitation(c: SourceCitation): string {
   const fresh = freshnessSignal(c);
   const freshPart = fresh ? ` <span class="fresh">(${esc(fresh)})</span>` : "";
   if (url) {
-    return `<div class="cite">Authority: <a href="${esc(url)}">${esc(c.source)}</a>${freshPart}</div>`;
+    const href = safeHref(url);
+    // Safe scheme → clickable link. Unsafe scheme → render the source + the
+    // URL as inert escaped text, so the citation stays visible/verifiable but
+    // can never execute when the shared report is opened.
+    return href
+      ? `<div class="cite">Authority: <a href="${esc(href)}">${esc(c.source)}</a>${freshPart}</div>`
+      : `<div class="cite">Authority: ${esc(c.source)} (${esc(url)})${freshPart}</div>`;
   }
   // URL-less custom-playbook rule (spec-v8 §14): render cleanly, honestly
   // distinguished, never a dangling segment.
@@ -173,9 +196,11 @@ export function buildHtmlReport(
       // reader can click through and the URL still wraps (.biblio li has
       // overflow-wrap). Never truncated — the full entry is rendered.
       const escaped = esc(text);
-      const li = url
-        ? escaped.replace(esc(url), `<a href="${esc(url)}">${esc(url)}</a>`)
-        : escaped;
+      // Only an http(s) URL becomes a link; an unsafe scheme stays inert
+      // escaped text (it is already part of `escaped`), so a shared report
+      // can never carry an active javascript:/data: link.
+      const href = url ? safeHref(url) : null;
+      const li = href ? escaped.replace(esc(href), `<a href="${esc(href)}">${esc(href)}</a>`) : escaped;
       body.push(`<li>${li}</li>`);
     }
     body.push("</ol>");

@@ -97,6 +97,32 @@ describe("buildHtmlReport (spec-v8 §21 — standalone single-file HTML)", () =>
     expect(html).toContain("&lt;script&gt;");
   });
 
+  it("never emits an active javascript:/data: citation href (XSS defense in depth)", () => {
+    // A citation URL with a dangerous scheme (e.g. from a custom playbook that
+    // bypassed schema validation) must render as inert text, not a live link.
+    const run = makeRun();
+    run.findings = [
+      {
+        ...finding("x", "warning"),
+        source_citations: [
+          {
+            id: "policy-evil",
+            source: "Team Policy 9",
+            source_url: "javascript:alert(document.domain)",
+            retrieved_at: "2026-05-11T00:00:00Z",
+            license: "Team policy",
+            license_url: "",
+          },
+        ],
+      },
+    ];
+    const html = buildHtmlReport(run, ingest, loadStarterDkbSync());
+    expect(html).not.toContain('href="javascript:');
+    expect(html).not.toContain('href="data:');
+    // The URL stays visible (citability) — just inert, HTML-escaped text.
+    expect(html).toContain("javascript:alert(document.domain)");
+  });
+
   it("is deterministic: identical inputs → identical bytes", () => {
     const dkb = loadStarterDkbSync();
     expect(buildHtmlReport(makeRun(), ingest, dkb)).toBe(buildHtmlReport(makeRun(), ingest, dkb));

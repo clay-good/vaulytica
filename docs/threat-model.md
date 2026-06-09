@@ -448,6 +448,22 @@ behavior. `clause_evidence`, the reproducibility receipt, and the SARIF
 `partialFingerprints` all live outside the `EngineRun`, so no `result_hash`,
 bundle fingerprint, or golden moves.
 
+### The shareable HTML report carries no active link
+
+Because the standalone HTML report is designed to be **emailed and shared**,
+its links are a cross-site-scripting surface a normal report does not have: a
+citation URL with a `javascript:` or `data:` scheme would, in the recipient's
+browser, become an executable `<a href>`. The only user-controlled path to a
+citation URL is a custom playbook (the DKB's are build-time and vetted), so
+the fix is two-layered: the custom-playbook **schema rejects any citation URL
+that is not http(s)** at load (the URL constructor — and therefore
+`z.string().url()` — otherwise accepts `javascript:`/`data:`), and the HTML
+renderer **only ever emits an http(s) `href`**, falling back to inert escaped
+text for any other scheme (so the citation stays visible and verifiable but
+cannot execute). All other output formats inherit the schema guard at the
+input boundary; the HTML render guard is defense-in-depth for the one artifact
+that executes on open.
+
 ### What v8 still does not protect against
 
 v8 makes the engine *survive* hostile input; it does not make a wrong finding

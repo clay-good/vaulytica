@@ -104,6 +104,45 @@ describe("validateCustomPlaybook — rejections with readable errors", () => {
     if (!r.ok) expect(r.errors.join("\n")).toMatch(/Unrecognized key|surprise/);
   });
 
+  it("rejects a non-http(s) citation URL (javascript:/data: XSS guard)", () => {
+    for (const url of ["javascript:alert(1)", "data:text/html,<script>alert(1)</script>", "file:///etc/passwd"]) {
+      const r = validateCustomPlaybook(
+        minimal({
+          custom_rules: [
+            {
+              id: "X",
+              title: "t",
+              description: "d",
+              severity: "info",
+              assert: { kind: "clause_present", pattern: "indemnification" },
+              citation: { reference: "Policy", url },
+            },
+          ],
+        }),
+      );
+      expect(r.ok, `expected ${url} to be rejected`).toBe(false);
+      if (!r.ok) expect(r.errors.join("\n")).toMatch(/url|http/i);
+    }
+  });
+
+  it("accepts an https citation URL", () => {
+    const r = validateCustomPlaybook(
+      minimal({
+        custom_rules: [
+          {
+            id: "X",
+            title: "t",
+            description: "d",
+            severity: "info",
+            assert: { kind: "clause_present", pattern: "indemnification" },
+            citation: { reference: "Policy", url: "https://example.com/policy" },
+          },
+        ],
+      }),
+    );
+    expect(r.ok).toBe(true);
+  });
+
   it("rejects an unknown numeric metric (bounded DSL)", () => {
     const r = validateCustomPlaybook(
       minimal({
