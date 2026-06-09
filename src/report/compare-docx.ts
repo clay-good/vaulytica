@@ -37,6 +37,15 @@ import {
 
 import type { Finding, Severity } from "../engine/finding.js";
 import type { Comparison, SeverityCounts, UnchangedPair } from "./compare.js";
+import type { Clause, ClauseDiff } from "./clause-diff.js";
+
+/**
+ * Cap on redline rows rendered per category. A pathological redline (a
+ * thousand rewritten clauses) would bloat the DOCX; past the cap the report
+ * shows the first N and an honest "and X more" footer rather than truncating
+ * silently. Real legal redlines are far under this.
+ */
+const MAX_REDLINE_ROWS = 100;
 
 const MINT = "00A883";
 const DEFAULT_FONT = "Arial";
@@ -51,7 +60,7 @@ const PRIVACY_STATEMENT =
 const NON_ADVICE_STATEMENT =
   "Vaulytica is a software tool, not a lawyer. This comparison is a mechanical diff of two rule-engine runs over documents you provided. It is not legal advice, and using Vaulytica does not create an attorney-client relationship with anyone. The decision to act on any change shown here, or not, is yours and your counsel's.";
 
-export async function buildComparisonDocx(cmp: Comparison): Promise<Blob> {
+export async function buildComparisonDocx(cmp: Comparison, clauseDiff?: ClauseDiff): Promise<Blob> {
   const children: (Paragraph | Table)[] = [
     ...renderCover(cmp),
     ...renderExecutiveSummary(cmp),
@@ -59,6 +68,7 @@ export async function buildComparisonDocx(cmp: Comparison): Promise<Blob> {
     ...renderBucket("Introduced", "Findings absent on the base version that fired on the revised version — these edits created an issue.", cmp.delta.introduced),
     ...renderUnchangedBucket(cmp.delta.unchanged),
     ...renderClauseDeltaAppendix(cmp.delta.unchanged),
+    ...(clauseDiff ? renderRedline(clauseDiff) : []),
     ...renderDisclaimer(),
   ];
 
@@ -264,6 +274,87 @@ function renderClauseDeltaAppendix(unchanged: UnchangedPair[]): (Paragraph | Tab
 }
 
 // ---------------------------------------------------------------------------
+// Document redline — full clause-level text diff (spec-v8 Part XVIII)
+// ---------------------------------------------------------------------------
+
+function clauseLabel(c: Clause): string {
+  return c.heading ? `${c.heading} (${c.id})` : c.id;
+}
+
+function renderRedline(diff: ClauseDiff): (Paragraph | Table)[] {
+  const out: (Paragraph | Table)[] = [
+    h1("Document Redline"),
+    para({
+      text:
+        "A clause-level text diff of the two documents — which paragraphs were added, removed, or rewritten between the base and the revised version. This is a verbatim comparison of the documents' own text (deterministic LCS alignment), independent of the findings above. No generated language.",
+    }),
+    para({
+      text:
+        `${diff.changed.length} changed · ${diff.added.length} added · ${diff.removed.length} removed · ` +
+        `${diff.unchanged_count} unchanged (base ${diff.base_clause_count} clauses → revised ${diff.revised_clause_count}).`,
+      bold: true,
+    }),
+  ];
+  if (diff.truncated) {
+    out.push(para({
+      text: "Note: the documents were large enough that a full alignment was not computed; rewrites are listed as a separate add and remove rather than paired, and clause order is not considered.",
+      italics: true,
+      color: "A86700",
+    }));
+  }
+  if (diff.changed.length + diff.added.length + diff.removed.length === 0) {
+    out.push(para({ text: "No clause-level text changes between the two documents.", italics: true }));
+    out.push(pageBreak());
+    return out;
+  }
+
+  if (diff.changed.length > 0) {
+    out.push(h3("Rewritten clauses"));
+    for (const pair of diff.changed.slice(0, MAX_REDLINE_ROWS)) {
+      out.push(para({ text: clauseLabel(pair.revised), bold: true, size: 24 }));
+      out.push(new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        rows: [
+          headerRow(["Base", "Revised"]),
+          bodyRow([truncate(pair.base.text, 600), truncate(pair.revised.text, 600)]),
+        ],
+      }));
+      out.push(spacer());
+    }
+    pushOverflowNote(out, diff.changed.length, "rewritten clauses");
+  }
+
+  if (diff.added.length > 0) {
+    out.push(h3("Added clauses"));
+    for (const c of diff.added.slice(0, MAX_REDLINE_ROWS)) {
+      out.push(para({ text: `+ [${clauseLabel(c)}] ${truncate(c.text, 600)}`, color: "1A7A4C" }));
+    }
+    pushOverflowNote(out, diff.added.length, "added clauses");
+  }
+
+  if (diff.removed.length > 0) {
+    out.push(h3("Removed clauses"));
+    for (const c of diff.removed.slice(0, MAX_REDLINE_ROWS)) {
+      out.push(para({ text: `− [${clauseLabel(c)}] ${truncate(c.text, 600)}`, color: "B00020" }));
+    }
+    pushOverflowNote(out, diff.removed.length, "removed clauses");
+  }
+
+  out.push(pageBreak());
+  return out;
+}
+
+function pushOverflowNote(out: (Paragraph | Table)[], total: number, label: string): void {
+  if (total > MAX_REDLINE_ROWS) {
+    out.push(para({
+      text: `… and ${total - MAX_REDLINE_ROWS} more ${label} (showing the first ${MAX_REDLINE_ROWS}).`,
+      italics: true,
+    }));
+  }
+  out.push(spacer());
+}
+
+// ---------------------------------------------------------------------------
 // Disclaimer
 // ---------------------------------------------------------------------------
 
@@ -379,6 +470,6 @@ function countPhrase(c: SeverityCounts): string {
 }
 
 /** Blob convenience, matching report/json.ts and exports.ts patterns. */
-export function comparisonDocxBlob(cmp: Comparison): Promise<Blob> {
-  return buildComparisonDocx(cmp);
+export function comparisonDocxBlob(cmp: Comparison, clauseDiff?: ClauseDiff): Promise<Blob> {
+  return buildComparisonDocx(cmp, clauseDiff);
 }

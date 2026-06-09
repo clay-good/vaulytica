@@ -153,6 +153,18 @@ export type DropzoneState =
       };
       /** True when the two runs used different DKB versions (flagged, not blocked). */
       dkb_mismatch: boolean;
+      /**
+       * Clause-level redline summary (spec-v8 Part XVIII). Present when the two
+       * documents were diffed; renders a one-line "N changed · M added · K
+       * removed" under the counts. The full redline is in the DOCX/JSON exports.
+       * Optional / back-compat: omitting it hides the line.
+       */
+      clause_diff?: {
+        added: number;
+        removed: number;
+        changed: number;
+        truncated: boolean;
+      };
       docx_blob: Blob;
       json_blob: Blob;
       docx_filename: string;
@@ -328,6 +340,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     <div class="dropzone-sub" data-role="comparison-versions"></div>
     <div class="dropzone-sub comparison-verdict" data-role="comparison-verdict"></div>
     <div class="comparison-counts" data-role="comparison-counts"></div>
+    <div class="dropzone-sub comparison-redline" data-role="comparison-redline" hidden></div>
     <div class="dropzone-sub comparison-dkb-warning" data-role="comparison-dkb-warning" hidden></div>
     <button class="btn btn-primary" type="button" data-role="comparison-docx-download">Download comparison (Word)</button>
     <button class="btn-link" type="button" data-role="comparison-json-download">Download comparison data (JSON)</button>
@@ -438,6 +451,20 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
       `Base: ${state.base_filename} → Revised: ${state.revised_filename}`;
     select(dz, "comparison-verdict")!.textContent = state.verdict;
     select(dz, "comparison-counts")!.innerHTML = comparisonCountsHtml(state.counts);
+    const redline = select<HTMLElement>(dz, "comparison-redline")!;
+    if (state.clause_diff) {
+      const cd = state.clause_diff;
+      if (cd.added + cd.removed + cd.changed === 0) {
+        redline.textContent = "Redline: no clause-level text changes between the two versions.";
+      } else {
+        redline.textContent =
+          `Redline: ${cd.changed} clause${cd.changed === 1 ? "" : "s"} rewritten · ` +
+          `${cd.added} added · ${cd.removed} removed` +
+          (cd.truncated ? " (large documents — approximate)" : "") +
+          ". Full text diff in the Word/JSON export.";
+      }
+      redline.hidden = false;
+    }
     const dkbWarn = select<HTMLElement>(dz, "comparison-dkb-warning")!;
     if (state.dkb_mismatch) {
       dkbWarn.hidden = false;

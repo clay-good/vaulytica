@@ -294,8 +294,60 @@ describe("renderState", () => {
     expect(counts).toMatch(/1\s*introduced/);
     expect(counts).toMatch(/940/);
     expect(select(dz, "comparison-dkb-warning")!.hasAttribute("hidden")).toBe(true);
+    // No clause_diff supplied → the redline line stays hidden (back-compat).
+    expect(select(dz, "comparison-redline")!.hasAttribute("hidden")).toBe(true);
     select<HTMLButtonElement>(dz, "comparison-reset")!.click();
     expect(onReset).toHaveBeenCalledTimes(1);
+  });
+
+  it("comparison-complete renders a clause-level redline summary when supplied", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "comparison-complete",
+      base_filename: "a.pdf",
+      revised_filename: "b.pdf",
+      verdict: "Mixed.",
+      counts: {
+        resolved: { critical: 0, warning: 0, info: 0, total: 0 },
+        introduced: { critical: 0, warning: 0, info: 0, total: 0 },
+        unchanged: { critical: 0, warning: 0, info: 0, total: 0 },
+        carried_clean_count: 0,
+      },
+      dkb_mismatch: false,
+      clause_diff: { added: 2, removed: 1, changed: 3, truncated: false },
+      docx_blob: new Blob(["docx"]),
+      json_blob: new Blob(["{}"]),
+      docx_filename: "cmp.docx",
+      json_filename: "cmp.json",
+    });
+    const redline = select(dz, "comparison-redline")!;
+    expect(redline.hasAttribute("hidden")).toBe(false);
+    expect(redline.textContent).toContain("3 clauses rewritten");
+    expect(redline.textContent).toContain("2 added");
+    expect(redline.textContent).toContain("1 removed");
+  });
+
+  it("comparison-complete redline reports no text changes for an identical body", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "comparison-complete",
+      base_filename: "a.pdf",
+      revised_filename: "b.pdf",
+      verdict: "No change.",
+      counts: {
+        resolved: { critical: 0, warning: 0, info: 0, total: 0 },
+        introduced: { critical: 0, warning: 0, info: 0, total: 0 },
+        unchanged: { critical: 0, warning: 0, info: 0, total: 0 },
+        carried_clean_count: 0,
+      },
+      dkb_mismatch: false,
+      clause_diff: { added: 0, removed: 0, changed: 0, truncated: false },
+      docx_blob: new Blob(["docx"]),
+      json_blob: new Blob(["{}"]),
+      docx_filename: "cmp.docx",
+      json_filename: "cmp.json",
+    });
+    expect(select(dz, "comparison-redline")!.textContent).toContain("no clause-level text changes");
   });
 
   it("comparison-complete surfaces a DKB-mismatch warning when flagged", () => {

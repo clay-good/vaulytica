@@ -934,6 +934,12 @@
         font-weight: 600;
         color: var(--body);
       }
+      .comparison-redline {
+        /* Clause-level redline summary. overflow-wrap keeps a long sentence
+           from pushing the card past a narrow viewport. */
+        color: var(--muted);
+        overflow-wrap: anywhere;
+      }
       .comparison-dkb-warning {
         /* Theme-aware amber: #a86700 is normal-size text here (not a big bold
            count), so it needs 4.5:1 — it failed on the dark default (~3.96:1).

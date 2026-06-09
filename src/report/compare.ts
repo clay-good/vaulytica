@@ -28,6 +28,7 @@ import type { EngineRun, Finding, Severity } from "../engine/finding.js";
 import { SEVERITY_RANK } from "../engine/finding.js";
 import { sha256Hex } from "../ingest/hash.js";
 import { stableStringify } from "../engine/runner.js";
+import type { ClauseDiff } from "./clause-diff.js";
 
 export type SeverityCounts = {
   critical: number;
@@ -303,7 +304,40 @@ export type ComparisonJson = {
   resolved: ComparisonJsonFinding[];
   introduced: ComparisonJsonFinding[];
   unchanged: ComparisonJsonUnchanged[];
+  /**
+   * Clause-level text redline (spec-v8 Part XVIII), when the caller supplies
+   * the two documents. Omitted otherwise — additive, outside `result_hash`.
+   */
+  clause_diff?: ComparisonJsonClauseDiff;
 };
+
+type ComparisonJsonClause = { section: string; heading: string; text: string };
+
+type ComparisonJsonClauseDiff = {
+  added: ComparisonJsonClause[];
+  removed: ComparisonJsonClause[];
+  changed: Array<{ base: ComparisonJsonClause; revised: ComparisonJsonClause }>;
+  unchanged_count: number;
+  base_clause_count: number;
+  revised_clause_count: number;
+  truncated: boolean;
+};
+
+function jsonClause(c: { id: string; heading: string; text: string }): ComparisonJsonClause {
+  return { section: c.id, heading: c.heading, text: c.text };
+}
+
+function jsonClauseDiff(d: ClauseDiff): ComparisonJsonClauseDiff {
+  return {
+    added: d.added.map(jsonClause),
+    removed: d.removed.map(jsonClause),
+    changed: d.changed.map((p) => ({ base: jsonClause(p.base), revised: jsonClause(p.revised) })),
+    unchanged_count: d.unchanged_count,
+    base_clause_count: d.base_clause_count,
+    revised_clause_count: d.revised_clause_count,
+    truncated: d.truncated,
+  };
+}
 
 type ComparisonJsonFinding = {
   rule_id: string;
@@ -327,8 +361,12 @@ function jsonFinding(f: Finding): ComparisonJsonFinding {
   };
 }
 
-/** Build the comparison JSON payload object (pure; no Blob). */
-export function buildComparisonJsonObject(cmp: Comparison): ComparisonJson {
+/**
+ * Build the comparison JSON payload object (pure; no Blob). When `clauseDiff`
+ * is supplied it is rendered as an additive `clause_diff` field — it never
+ * enters `cmp.result_hash`, so passing it changes no existing comparison golden.
+ */
+export function buildComparisonJsonObject(cmp: Comparison, clauseDiff?: ClauseDiff): ComparisonJson {
   return {
     kind: "vaulytica-comparison",
     result_hash: cmp.result_hash,
@@ -348,12 +386,13 @@ export function buildComparisonJsonObject(cmp: Comparison): ComparisonJson {
       ...jsonFinding(u.finding),
       clause_changed: u.clause_changed,
     })),
+    ...(clauseDiff ? { clause_diff: jsonClauseDiff(clauseDiff) } : {}),
   };
 }
 
 /** The comparison JSON as a downloadable Blob (human-formatted, 2-space). */
-export function buildComparisonJson(cmp: Comparison): Blob {
-  return new Blob([JSON.stringify(buildComparisonJsonObject(cmp), null, 2)], {
+export function buildComparisonJson(cmp: Comparison, clauseDiff?: ClauseDiff): Blob {
+  return new Blob([JSON.stringify(buildComparisonJsonObject(cmp, clauseDiff), null, 2)], {
     type: "application/json",
   });
 }

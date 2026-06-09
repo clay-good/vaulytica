@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Added
+- **Clause-level redline for version comparison (spec-v8 Part XVIII).** The
+  comparison feature diffed two `EngineRun`s and told you which *findings*
+  resolved / introduced / persisted, but never showed the *clause text* that
+  moved. New `src/report/clause-diff.ts` (`buildClauseDiff`) computes a
+  deterministic, paragraph-level text diff of the two documents — which clauses
+  were **rewritten, added, or removed** — via an LCS alignment over the
+  documents' own normalized text, pairing a replaced block into a single
+  `changed` entry. It is **bounded** (spec-v8 §5): past a cell ceiling
+  (`MAX_CLAUSE_DIFF_CELLS`) it degrades to a set-based membership diff and sets
+  `truncated`, never an unbounded allocation. Surfaced in the comparison Word
+  report (a "Document Redline" section with base-vs-revised tables, capped rows
+  + an honest "and N more" footer), the comparison JSON (an additive
+  `clause_diff` field), and a one-line UI summary in the comparison-complete
+  state. It is a *verbatim* diff — no generated language, never a suggested edit
+  — and lives **outside** the comparison `result_hash`, so it churned no
+  comparison golden (the model-clause/overlay precedent). +18 tests across the
+  algorithm (insertion/deletion/rewrite/move/whitespace/empty/bound/determinism),
+  the JSON and DOCX wiring, and the UI summary. This was the last substantial
+  deferral in spec-v8 Part XVIII.
+
 ### Fixed
 - **DKB cache fallback could serve a corrupt record as "latest."**
   `readLatestCache` (`src/dkb/loader.ts`) — the offline fallback that picks the

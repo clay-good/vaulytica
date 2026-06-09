@@ -38,6 +38,14 @@ export {
   type UnchangedPair,
 } from "./compare.js";
 export { buildComparisonDocx, comparisonDocxBlob } from "./compare-docx.js";
+// spec-v8 Part XVIII — clause-level text redline for version comparison.
+export {
+  buildClauseDiff,
+  flattenClauses,
+  type ClauseDiff,
+  type Clause,
+  type ClausePair,
+} from "./clause-diff.js";
 
 export {
   formatCitation,

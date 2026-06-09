@@ -1,7 +1,27 @@
 import { describe, expect, it } from "vitest";
 import { buildComparisonDocx } from "./compare-docx.js";
 import { compareRuns } from "./compare.js";
+import { buildClauseDiff } from "./clause-diff.js";
 import type { EngineRun, Finding, Severity } from "../engine/finding.js";
+import type { DocumentTree } from "../ingest/types.js";
+
+function docTree(...paras: string[]): DocumentTree {
+  return {
+    type: "document",
+    sections: [
+      {
+        id: "s0",
+        heading: "Agreement",
+        level: 1,
+        paragraphs: paras.map((t, i) => ({
+          id: `s0.p${i}`,
+          runs: [{ id: `s0.p${i}.r0`, text: t, start: 0, end: t.length }],
+        })),
+        children: [],
+      },
+    ],
+  };
+}
 
 function finding(rule_id: string, severity: Severity, position: number, text = "the clause text"): Finding {
   return {
@@ -78,5 +98,31 @@ describe("buildComparisonDocx", () => {
     const cmp = await compareRuns(base, revised);
     const blob = await buildComparisonDocx(cmp);
     expect((await bytes(blob)).length).toBeGreaterThan(0);
+  });
+
+  it("renders the Document Redline section with the changed clause text", async () => {
+    const base = makeRun("v1.pdf", "b".repeat(64), [finding("A", "critical", 1)]);
+    const revised = makeRun("v2.pdf", "r".repeat(64), [finding("A", "critical", 1)]);
+    const cmp = await compareRuns(base, revised);
+    const diff = buildClauseDiff(
+      docTree("Cap is $1,000,000.", "Removed clause.", "Stable clause."),
+      docTree("Cap is $5,000,000.", "Stable clause.", "Brand new clause."),
+    );
+    const { unzipSync, strFromU8 } = await import("fflate");
+    const docXml = strFromU8(unzipSync(await bytes(await buildComparisonDocx(cmp, diff)))["word/document.xml"]!);
+    expect(docXml).toContain("Document Redline");
+    expect(docXml).toContain("$5,000,000"); // revised side of the rewrite
+    expect(docXml).toContain("Brand new clause"); // added
+    expect(docXml).toContain("Removed clause"); // removed
+  });
+
+  it("omits the Document Redline section when no clause diff is supplied", async () => {
+    const cmp = await compareRuns(
+      makeRun("v1.pdf", "b".repeat(64), [finding("A", "critical", 1)]),
+      makeRun("v2.pdf", "r".repeat(64), [finding("A", "critical", 1)]),
+    );
+    const { unzipSync, strFromU8 } = await import("fflate");
+    const docXml = strFromU8(unzipSync(await bytes(await buildComparisonDocx(cmp)))["word/document.xml"]!);
+    expect(docXml).not.toContain("Document Redline");
   });
 });

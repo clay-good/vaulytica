@@ -188,6 +188,8 @@ function renderCompleteState(
     playbook: { name: string; deprecated?: boolean; superseded_by?: string };
     match_reasoning: string;
     run: import("./pipeline.js").PipelineResult["run"];
+    /** Carried so version comparison can build a clause-level redline of the base doc. */
+    ingest: import("./pipeline.js").PipelineResult["ingest"];
     docx_blob: Blob;
     json_blob: Blob;
     fixlist_md_blob: Blob;
@@ -298,7 +300,7 @@ function renderCompleteState(
     // v6 Part I comparison (Step 90). The base run is the one currently
     // rendered, so a frame-toggle re-run rebinds compare to the fresh run.
     on_compare: (revisedFile) => {
-      void runComparison(dz, filename, result.run, revisedFile);
+      void runComparison(dz, filename, result.run, result.ingest.tree, revisedFile);
     },
   });
 }
@@ -313,6 +315,7 @@ async function runComparison(
   dz: HTMLElement,
   baseDisplayName: string,
   baseRun: import("./pipeline.js").PipelineResult["run"],
+  baseTree: import("../ingest/types.js").DocumentTree,
   revisedFile: File,
 ): Promise<void> {
   try {
@@ -327,15 +330,19 @@ async function runComparison(
       onRule: (rule) => ticker.push(rule.id, rule.name),
     });
 
-    const { compareRuns, comparabilityOf, buildComparisonDocx, buildComparisonJson } =
+    const { compareRuns, comparabilityOf, buildComparisonDocx, buildComparisonJson, buildClauseDiff } =
       await import("../report/index.js");
     const revisedRun = revised.run;
+    // Clause-level redline (spec-v8 Part XVIII): a verbatim text diff of the two
+    // documents, rendered into the DOCX/JSON and summarized in the UI. Outside
+    // the comparison result_hash.
+    const clauseDiff = buildClauseDiff(baseTree, revised.ingest.tree);
 
     const stem = `${baseFilename(baseRun.source_file.name)}-vs-${baseFilename(revisedFile.name)}`;
     const build = async (confirmPairing: boolean): Promise<void> => {
       const cmp = await compareRuns(baseRun, revisedRun, { confirmPairing });
-      const docx = await buildComparisonDocx(cmp);
-      const json = buildComparisonJson(cmp);
+      const docx = await buildComparisonDocx(cmp, clauseDiff);
+      const json = buildComparisonJson(cmp, clauseDiff);
       const { resolved, introduced, unchanged } = cmp.delta.counts;
       const verdict =
         introduced.total === 0 && resolved.total === 0
@@ -359,6 +366,12 @@ async function runComparison(
           carried_clean_count: cmp.delta.carried_clean_count,
         },
         dkb_mismatch: cmp.dkb_mismatch,
+        clause_diff: {
+          added: clauseDiff.added.length,
+          removed: clauseDiff.removed.length,
+          changed: clauseDiff.changed.length,
+          truncated: clauseDiff.truncated,
+        },
         docx_blob: docx,
         json_blob: json,
         docx_filename: `${stem}-comparison.docx`,

@@ -5,10 +5,31 @@ import {
   ComparisonRefusedError,
   buildComparisonJsonObject,
 } from "./compare.js";
+import { buildClauseDiff } from "./clause-diff.js";
 import type { EngineRun, Finding, Severity } from "../engine/finding.js";
 import type { ExecutionLogEntry } from "../engine/finding.js";
+import type { DocumentTree } from "../ingest/types.js";
 
 // --- fixtures ---------------------------------------------------------------
+
+/** A one-section document tree from paragraph texts (for clause-diff tests). */
+function docTree(...paras: string[]): DocumentTree {
+  return {
+    type: "document",
+    sections: [
+      {
+        id: "s0",
+        heading: "Agreement",
+        level: 1,
+        paragraphs: paras.map((t, i) => ({
+          id: `s0.p${i}`,
+          runs: [{ id: `s0.p${i}.r0`, text: t, start: 0, end: t.length }],
+        })),
+        children: [],
+      },
+    ],
+  };
+}
 
 function finding(rule_id: string, severity: Severity, position: number, text = "the clause text"): Finding {
   return {
@@ -212,5 +233,24 @@ describe("buildComparisonJsonObject", () => {
     expect(json.resolved.map((f) => f.rule_id)).toEqual(["RES"]);
     expect(json.introduced.map((f) => f.rule_id)).toEqual(["INTRO"]);
     expect(json.summary.introduced.critical).toBe(1);
+  });
+
+  it("omits clause_diff when no diff is supplied (additive, zero churn)", async () => {
+    const cmp = await compareRuns(makeRun({ findings: [] }), makeRun({ findings: [] }));
+    expect(buildComparisonJsonObject(cmp).clause_diff).toBeUndefined();
+  });
+
+  it("renders a supplied clause_diff as an additive field outside result_hash", async () => {
+    const cmp = await compareRuns(makeRun({ findings: [] }), makeRun({ findings: [] }));
+    const clauseDiff = buildClauseDiff(
+      docTree("Cap is $1,000,000.", "Law is Delaware."),
+      docTree("Cap is $5,000,000.", "Law is Delaware."),
+    );
+    const json = buildComparisonJsonObject(cmp, clauseDiff);
+    expect(json.result_hash).toBe(cmp.result_hash); // hash unchanged by the diff
+    expect(json.clause_diff?.changed).toHaveLength(1);
+    expect(json.clause_diff?.changed[0]!.revised.text).toContain("$5,000,000");
+    expect(json.clause_diff?.unchanged_count).toBe(1);
+    expect(json.clause_diff?.truncated).toBe(false);
   });
 });
