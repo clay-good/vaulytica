@@ -343,11 +343,16 @@
         font-weight: 600;
         font-size: 18px;
         margin-bottom: 6px;
+        /* A long, unbreakable contract filename (e.g. underscore-joined)
+           must wrap rather than push the card past a phone viewport. */
+        overflow-wrap: anywhere;
       }
       .dropzone-sub {
         color: var(--muted);
         font-size: 15px;
         font-family: var(--font-mono);
+        /* Comparison "base → revised" filenames can be long + unbreakable. */
+        overflow-wrap: anywhere;
       }
       /* Sibling hint that lives outside the dropzone so the dropzone
          button role never wraps an interactive control (axe a11y
@@ -598,6 +603,9 @@
       .bundle-rejected-filename {
         font-family: var(--font-mono);
         color: var(--body);
+        /* A skipped file's name is shown verbatim and may be a long,
+           unbreakable token — wrap it inside the 56ch list, never overflow. */
+        overflow-wrap: anywhere;
       }
       .bundle-rejected-reason {
         color: var(--muted);

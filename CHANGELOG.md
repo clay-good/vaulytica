@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Fixed
+- **Mobile horizontal-overflow on long contract filenames (3 view-states).** A
+  long, underscore-joined filename (e.g. `Master_Services_Agreement_..._v12_
+  executed.pdf`) is a single unbreakable token; `.dropzone-title` (complete /
+  analyzing states), `.dropzone-sub` (comparison "base → revised" line), and
+  `.bundle-rejected-filename` (skipped-file list) had no `overflow-wrap`, so on
+  a 320 px phone the filename pushed the card 100–400 px past the viewport —
+  horizontal scroll. Added `overflow-wrap: anywhere` to all three. The existing
+  responsiveness e2e never caught this because it drops a *short*-named fixture.
+
+### Added
+- **Exhaustive responsiveness gate over every view-state.** New
+  `tests/e2e/responsiveness-states.spec.ts` renders the **full** `DropzoneState`
+  union (empty · analyzing · complete · comparison · bundle · error) via the
+  real `renderState` + the real page CSS through Playwright `page.setContent`
+  (no server needed — so it runs anywhere), at 320 / 390 / 768 / 1280 px, with
+  overflow-*stressing* fixtures (very long filenames, many per-doc cards, long
+  skip reasons / error messages). This is what surfaced the overflow bugs above;
+  it complements the live-app `responsiveness.spec.ts` (which pins empty +
+  complete against the deployed site).
+
 ### Security
 - **Neutralized a `javascript:`/`data:` URL XSS vector in the shareable HTML
   report.** `z.string().url()` accepts `javascript:alert(1)` and `data:` URLs

@@ -8,11 +8,15 @@
  * design (it catches overflow, not ugliness), kept alongside the
  * periodic visual audit per spec-v7 Open Question #7.
  *
- * Covers the reliably-reachable, highest-traffic states using the same
- * proven flow as `tests/e2e/v3/a11y-axe.spec.ts`: the landing page +
- * empty app state (initial render) and the complete state (after a
- * fixture drop). The comparison / bundle / error states stay covered by
- * the periodic visual audit (their flows are not pinned here).
+ * Covers the reliably-reachable, highest-traffic states against the *live*
+ * app using the same proven flow as `tests/e2e/v3/a11y-axe.spec.ts`: the
+ * landing page + empty app state (initial render) and the complete state
+ * (after a fixture drop). The full `DropzoneState` union — including the
+ * comparison / bundle / error / analyzing states, and overflow-stressing
+ * long filenames — is pinned by `responsiveness-states.spec.ts`, which
+ * renders each state via `renderState` + the real page CSS (no server),
+ * so this spec and that one are complementary: live-fidelity here,
+ * exhaustive-state coverage there.
  */
 
 import { test, expect, type Page } from "@playwright/test";
