@@ -256,7 +256,7 @@ export function extractZipEntries(
       cumulativeUncompressed += file.originalSize;
       if (cumulativeUncompressed > MAX_BUNDLE_BYTES) {
         throw new ArchiveTooLargeError(
-          `Archive inflates to over ${MAX_BUNDLE_BYTES.toLocaleString()} uncompressed bytes; rejected before full expansion.`,
+          `Archive inflates to over ${MAX_BUNDLE_BYTES.toLocaleString("en-US")} uncompressed bytes; rejected before full expansion.`,
         );
       }
       return true;

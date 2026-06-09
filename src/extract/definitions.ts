@@ -217,12 +217,12 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
   const undefined_capitalized = [...undefinedHits.entries()]
     .filter(([, positions]) => positions.length >= 2)
     .map(([term, positions]) => ({ term, positions }))
-    .sort((a, b) => a.term.localeCompare(b.term));
+    .sort((a, b) => a.term.localeCompare(b.term, "en"));
 
   const circular_terms = detectCircularDefinitions([...definitions.values()]);
 
   return {
-    entries: [...definitions.values()].sort((a, b) => a.term.localeCompare(b.term)),
+    entries: [...definitions.values()].sort((a, b) => a.term.localeCompare(b.term, "en")),
     unused_terms,
     undefined_capitalized,
     ...(circular_terms.length > 0 ? { circular_terms } : {}),
@@ -265,7 +265,7 @@ function detectCircularDefinitions(entries: DefinitionEntry[]): string[][] {
     }
   };
   for (const t of terms) visit(t, t, [t], new Set([t]));
-  return [...cyclesByKey.values()].sort((a, b) => a.join().localeCompare(b.join()));
+  return [...cyclesByKey.values()].sort((a, b) => a.join().localeCompare(b.join(), "en"));
 }
 
 /** Trim a captured reference/scope label and strip trailing sentence punctuation. */

@@ -344,7 +344,7 @@ export function parseCustomPlaybookJson(text: string): CustomPlaybookValidation 
     return {
       ok: false,
       errors: [
-        `(root): playbook is ${text.length.toLocaleString()} characters, exceeding the ${MAX_PLAYBOOK_JSON_BYTES.toLocaleString()} limit.`,
+        `(root): playbook is ${text.length.toLocaleString("en-US")} characters, exceeding the ${MAX_PLAYBOOK_JSON_BYTES.toLocaleString("en-US")} limit.`,
       ],
     };
   }

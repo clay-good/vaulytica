@@ -280,8 +280,8 @@ export const CROSS_AMOUNT_001: ConsistencyRule = {
     return [
       makeConsistencyFinding({
         rule: CROSS_AMOUNT_001,
-        title: `Aggregate liability caps differ: $${lo.cap.amount_usd.toLocaleString()} in "${lo.doc.doc_id}" vs $${hi.cap.amount_usd.toLocaleString()} in "${hi.doc.doc_id}"`,
-        description: `"${lo.doc.doc_id}" caps liability at $${lo.cap.amount_usd.toLocaleString()}; "${hi.doc.doc_id}" caps it at $${hi.cap.amount_usd.toLocaleString()}. The lower cap will control for any liability that touches both documents.`,
+        title: `Aggregate liability caps differ: $${lo.cap.amount_usd.toLocaleString("en-US")} in "${lo.doc.doc_id}" vs $${hi.cap.amount_usd.toLocaleString("en-US")} in "${hi.doc.doc_id}"`,
+        description: `"${lo.doc.doc_id}" caps liability at $${lo.cap.amount_usd.toLocaleString("en-US")}; "${hi.doc.doc_id}" caps it at $${hi.cap.amount_usd.toLocaleString("en-US")}. The lower cap will control for any liability that touches both documents.`,
         explanation:
           "Cap mismatch is one of the most common multi-document drafting errors. Operatively the lower cap wins; a party that wanted the higher cap to control for one stream of conduct must carve it out explicitly in the document the conduct comes under.",
         recommendation:
@@ -520,8 +520,8 @@ export const CROSS_INDEMNITY_001: ConsistencyRule = {
     return [
       makeConsistencyFinding({
         rule: CROSS_INDEMNITY_001,
-        title: `Indemnity caps differ: $${lo.cap.amount_usd.toLocaleString()} in "${lo.doc.doc_id}" vs $${hi.cap.amount_usd.toLocaleString()} in "${hi.doc.doc_id}"`,
-        description: `"${lo.doc.doc_id}" caps indemnification at $${lo.cap.amount_usd.toLocaleString()}; "${hi.doc.doc_id}" caps it at $${hi.cap.amount_usd.toLocaleString()}. Whether these stack, or the order form's cap folds into the master agreement's, is not stated.`,
+        title: `Indemnity caps differ: $${lo.cap.amount_usd.toLocaleString("en-US")} in "${lo.doc.doc_id}" vs $${hi.cap.amount_usd.toLocaleString("en-US")} in "${hi.doc.doc_id}"`,
+        description: `"${lo.doc.doc_id}" caps indemnification at $${lo.cap.amount_usd.toLocaleString("en-US")}; "${hi.doc.doc_id}" caps it at $${hi.cap.amount_usd.toLocaleString("en-US")}. Whether these stack, or the order form's cap folds into the master agreement's, is not stated.`,
         explanation:
           "Indemnity caps are negotiated separately from the general liability cap and frequently sit above it. When a master agreement and an order form each state one, the relationship — stack, replace, or fold — must be explicit, or the lower cap controls any indemnity that touches both documents.",
         recommendation:

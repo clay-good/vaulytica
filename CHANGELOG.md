@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Fixed
+- **Pinned every `toLocaleString` to `"en-US"` and added a static locale-pin
+  guard (determinism hardening, round 2).** A follow-up sweep found the
+  number-formatting twin of the `localeCompare` bug: eight `Number.toLocaleString()`
+  calls with **no locale argument**, so a number like `1234567` renders
+  `"1,234,567"` on an en-US host but `"1.234.567"` on a German one. Four of them
+  (`engine/consistency/rules/v4/cross-doc-rules.ts`) format the **finding title
+  and description** of the aggregate-liability and indemnity-cap cross-doc rules
+  — text that is serialized into the `EngineRun` and hashed, so a bundle analyzed
+  on a non-en host produced a **different `result_hash`**. Pinned all eight
+  (cross-doc rules + the three oversize-input error messages in
+  `ingest/limits.ts` / `ingest/multi.ts` / `playbooks/custom-playbook.ts`) to
+  `"en-US"`, matching the existing `report/v3/insurance.ts` precedent; en-US
+  output is byte-identical, so **zero golden churn**. Also pinned three more
+  `localeCompare` sites in `extract/definitions.ts` (defined-term / circular-term
+  ordering) that the prior manual grep missed. New **static locale-pin guard**
+  in `tests/integration/determinism-guard.test.ts` scans all shipped `src/` and
+  fails if any `localeCompare`/`toLocaleString` omits an explicit `"en"`/`"en-US"`
+  locale — the repeated-run determinism test can't catch this class (the host
+  locale is constant within a process), which is how two such bugs reached `main`.
 - **Pinned every `localeCompare` sort to the `"en"` locale (determinism
   hardening).** Twelve stable-ordering sorts across `src/` (playbook match
   tie-break in `matcher.ts`, secondary-family ordering in

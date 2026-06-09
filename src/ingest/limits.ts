@@ -46,7 +46,7 @@ export class InputTooLargeError extends Error {
   readonly observed: number;
   constructor(what: string, observed: number, cap: number) {
     super(
-      `${what} (${observed.toLocaleString()}) exceeds the ${cap.toLocaleString()} limit. ` +
+      `${what} (${observed.toLocaleString("en-US")}) exceeds the ${cap.toLocaleString("en-US")} limit. ` +
         `Split the document or supply a smaller file.`,
     );
     this.name = "InputTooLargeError";
