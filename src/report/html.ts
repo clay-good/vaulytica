@@ -20,6 +20,7 @@
 
 import type { EngineRun, Finding, Severity } from "../engine/finding.js";
 import type { DKB, SourceCitation } from "../dkb/types.js";
+import { isHttpUrl } from "../dkb/url-safety.js";
 import type { IngestResult } from "../ingest/types.js";
 import type { Playbook } from "../playbooks/types.js";
 import { buildBibliography, citationIndex } from "./bibliography.js";
@@ -57,16 +58,11 @@ function esc(text: string): string {
  * standalone HTML report is designed to be emailed/shared, so a citation URL
  * with a `javascript:` or `data:` scheme — which a malicious custom playbook
  * could supply — must never become an active `<a href>`. The schema already
- * rejects such URLs at load (defense in depth); this guarantees the rendered
+ * rejects such URLs at load (input boundary); this guarantees the rendered
  * artifact is safe even for a citation that bypassed validation.
  */
 function safeHref(url: string): string | null {
-  try {
-    const protocol = new URL(url).protocol;
-    return protocol === "https:" || protocol === "http:" ? url : null;
-  } catch {
-    return null;
-  }
+  return isHttpUrl(url) ? url : null;
 }
 
 // Fixed, font-agnostic, print-clean CSS. `overflow-wrap: anywhere` on the

@@ -448,21 +448,33 @@ behavior. `clause_evidence`, the reproducibility receipt, and the SARIF
 `partialFingerprints` all live outside the `EngineRun`, so no `result_hash`,
 bundle fingerprint, or golden moves.
 
-### The shareable HTML report carries no active link
+### The shareable rich reports carry no active link
 
-Because the standalone HTML report is designed to be **emailed and shared**,
-its links are a cross-site-scripting surface a normal report does not have: a
-citation URL with a `javascript:` or `data:` scheme would, in the recipient's
-browser, become an executable `<a href>`. The only user-controlled path to a
-citation URL is a custom playbook (the DKB's are build-time and vetted), so
-the fix is two-layered: the custom-playbook **schema rejects any citation URL
-that is not http(s)** at load (the URL constructor — and therefore
-`z.string().url()` — otherwise accepts `javascript:`/`data:`), and the HTML
-renderer **only ever emits an http(s) `href`**, falling back to inert escaped
-text for any other scheme (so the citation stays visible and verifiable but
-cannot execute). All other output formats inherit the schema guard at the
-input boundary; the HTML render guard is defense-in-depth for the one artifact
-that executes on open.
+Because the standalone HTML report and the DOCX are designed to be **emailed
+and shared**, their links are a cross-site-scripting surface a normal report
+does not have: a citation URL with a `javascript:` or `data:` scheme would, in
+the recipient's browser (or, for some link types, their Word client), become
+an executable link. The only user-controlled path to a citation URL is a
+custom playbook (the DKB's are build-time and vetted). One shared predicate —
+`isHttpUrl` ([`src/dkb/url-safety.ts`](../src/dkb/url-safety.ts)) — enforces the
+policy at **both** boundaries:
+
+- **Input boundary.** The custom-playbook schema rejects any citation URL that
+  is not http(s) at load (the URL constructor — and therefore
+  `z.string().url()` — otherwise accepts `javascript:`/`data:`), with a clear
+  message. Every output format inherits this fail-fast guard.
+- **Output boundary.** *Both* rich renderers sanitize independently: the HTML
+  report only ever emits an http(s) `<a href>`, and the DOCX
+  `hyperlinkParagraph` only ever creates an `ExternalHyperlink` (and thus a
+  relationship Target) for an http(s) URL. An unsafe scheme renders as inert,
+  escaped text in either format — the citation stays visible and verifiable
+  but cannot execute. Sanitizing at render means a non-http(s) URL from *any*
+  source (a future field, a tampered DKB) is neutralized at the point of
+  danger, not relied upon to have been caught upstream.
+
+`http` is permitted alongside `https` because the shipped DKB carries a
+legitimate `http://` license URL (the UK Open Government Licence); only the
+scheme is constrained, never the host.
 
 ### What v8 still does not protect against
 

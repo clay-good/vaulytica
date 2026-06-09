@@ -24,6 +24,7 @@ import {
   type IRunOptions,
 } from "docx";
 import { breakLongTokens } from "../citations.js";
+import { isHttpUrl } from "../../dkb/url-safety.js";
 
 export const MINT = "00A883";
 export const DEFAULT_FONT = "Arial";
@@ -146,13 +147,17 @@ export function hyperlinkParagraph(label: string, url: string, opts: { bold?: bo
   // Split the (often long) URL label into wrap-friendly runs so Word can
   // break it at the cell margin rather than overflow the page (spec-v8 §18).
   // The concatenated run text equals `label` exactly — never truncated.
+  // Only an http(s) URL becomes an active ExternalHyperlink; an unsafe scheme
+  // (javascript:/data:) renders as plain text so a shared DOCX carries no
+  // executable link — the output-boundary half of the URL-safety policy.
+  const safe = isHttpUrl(url);
   const runs = breakLongTokens(label).map(
     (seg) =>
       new TextRun({
         text: seg,
-        style: "Hyperlink",
-        color: "0563C1",
-        underline: {},
+        style: safe ? "Hyperlink" : undefined,
+        color: safe ? "0563C1" : undefined,
+        underline: safe ? {} : undefined,
         font: DEFAULT_FONT,
         size: BODY_SIZE,
         bold: opts.bold,
@@ -160,6 +165,6 @@ export function hyperlinkParagraph(label: string, url: string, opts: { bold?: bo
       }),
   );
   return new Paragraph({
-    children: [new ExternalHyperlink({ link: url, children: runs })],
+    children: safe ? [new ExternalHyperlink({ link: url, children: runs })] : runs,
   });
 }

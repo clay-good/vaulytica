@@ -17,6 +17,15 @@ All notable changes to this project will be documented in this file. Format adap
   (defense-in-depth for the artifact that executes on open), keeping the URL
   visible/verifiable but non-executable. DKB citations were never affected
   (build-time and vetted). Threat-model updated.
+- **Extended the URL-safety guard to the DOCX (the other shareable rich
+  format), via one shared `isHttpUrl` predicate.** The DOCX citation-index
+  built an `ExternalHyperlink` for any `source_url`; a non-http(s) scheme is now
+  rendered as inert text (no hyperlink relationship is created) just like the
+  HTML report. Factored the HTML `safeHref` and the custom-playbook schema
+  refine onto the same `src/dkb/url-safety.ts` predicate, so the input-boundary
+  schema guard and both output-boundary render guards share one canonical
+  policy. `http` is allowed alongside `https` (the DKB carries a legitimate
+  `http://` UK OGL license URL); only the scheme is constrained.
 
 ### Fixed
 - **CLI bare-glob resolution.** `vaulytica analyze '*.docx'` (a quoted glob with

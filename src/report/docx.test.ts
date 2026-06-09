@@ -124,6 +124,43 @@ describe("buildDocxReport", () => {
     expect(urlRunCount).toBeGreaterThan(1);
   });
 
+  it("never emits a javascript:/data: hyperlink relationship (XSS defense, output boundary)", async () => {
+    const evil = "javascript:alert(document.domain)";
+    const run = makeRun();
+    run.findings = [
+      {
+        ...finding("c1", "critical"),
+        source_citations: [
+          {
+            id: "policy-evil",
+            source: "Team Policy 9",
+            source_url: evil,
+            retrieved_at: "2026-05-11T00:00:00Z",
+            license: "Team policy",
+            license_url: "",
+          },
+        ],
+      },
+    ];
+    const blob = await buildDocxReport(run, ingest, loadStarterDkbSync(), loadMutualNda());
+    const { unzipSync, strFromU8 } = await import("fflate");
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    // The citation-index would otherwise create an ExternalHyperlink whose
+    // Target lands in the relationships file. With the scheme guard, no
+    // hyperlink relationship is created, so the dangerous scheme never becomes
+    // an active link in the shared DOCX.
+    const rels = entries["word/_rels/document.xml.rels"]
+      ? strFromU8(entries["word/_rels/document.xml.rels"]!)
+      : "";
+    expect(rels).not.toContain("javascript:");
+    // The URL text is still present (citability), just inert.
+    const docXml = strFromU8(entries["word/document.xml"]!);
+    const runText = (docXml.match(/<w:t[^>]*>([^<]*)<\/w:t>/g) ?? [])
+      .map((m) => m.replace(/<[^>]+>/g, ""))
+      .join("");
+    expect(runText).toContain(evil);
+  });
+
   it("handles a run with zero findings", async () => {
     const run = makeRun();
     run.findings = [];

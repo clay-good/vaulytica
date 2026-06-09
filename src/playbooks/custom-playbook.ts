@@ -24,6 +24,7 @@
 
 import { z } from "zod";
 import type { Severity } from "../engine/finding.js";
+import { isHttpUrl } from "../dkb/url-safety.js";
 
 /** The version of *this schema format* (not the user's playbook). */
 export const CUSTOM_PLAYBOOK_SCHEMA_VERSION = "1.0";
@@ -174,9 +175,7 @@ const citationSchema = z.object({
   url: z
     .string()
     .url()
-    .refine((u) => /^https?:\/\//i.test(u), {
-      message: "citation url must be an http(s) URL",
-    })
+    .refine(isHttpUrl, { message: "citation url must be an http(s) URL" })
     .optional(),
 });
 
