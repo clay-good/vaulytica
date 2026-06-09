@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- **Distribution surface: a `vaulytica` binary + a GitHub Action (spec-v8 §22).**
+  The deferred "publish the CLI" item — the engineering half, not the
+  credentialed `npm publish` itself. New `bin/vaulytica.mjs`, a thin `node
+  --import tsx` launcher so the TypeScript CLI is invokable as a plain binary
+  (no fragile pre-bundle of the WASM/worker ingest deps), with exit codes
+  propagated for CI gating. `package.json` is now publish-ready: a `vaulytica`
+  `bin`, a `files` allow-list shipping the engine + CLI + starter DKB +
+  playbooks, npm metadata (keywords/repository/homepage), and `tsx` moved to
+  `dependencies` (so `npx vaulytica` works) — still `private: true` so an
+  accidental publish is refused. New composite **GitHub Action** (`action.yml`)
+  runs the engine in any repo's CI: `analyze` (→ SARIF for code-scanning upload)
+  or `compare` (a redline gate), with `fail-on` propagating the non-zero exit.
+  The DKB ships with the tool, so a CI analysis opens **no socket** — nothing
+  leaves the runner. New [`docs/ci-integration.md`](docs/ci-integration.md) with
+  the workflow recipes, the `npx` usage, and the maintainer publish steps. +7
+  tests (bin launcher smoke + exit-code propagation, `action.yml` validity,
+  package-metadata consistency).
 - **`vaulytica compare <base> <revised>` — headless version comparison (extends
   v8 Thrust C "reach").** Comparison was the one major feature with no headless
   entry point; the CLI did `analyze | diff | verify` but not `compare`. New

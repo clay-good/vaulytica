@@ -43,7 +43,7 @@ v7 proved the engine is *internally sound* and (with the v5 corpus) *legally rig
 
 v8 ships the deterministic, honesty-clean work and **defers, with reasons**:
 
-- **Published npm package / GitHub Action** — a public distribution surface is a maintainer decision (versioning, support, supply-chain). v8 lands the CLI as `tools/`-resident tooling proven identical to the shipped engine; publishing externally is a deliberate follow-up.
+- **Published npm package / GitHub Action** — ✅ **distribution surface shipped (post-8.0.0).** A `vaulytica` binary ([`bin/vaulytica.mjs`](../../bin/vaulytica.mjs)) + `package.json` `bin`/`files` allow-list make the package publish-ready, and a composite **GitHub Action** ([`action.yml`](../../action.yml)) runs the CLI in any repo's CI (analyze → SARIF upload, or a `compare` redline gate). The DKB ships with the tool → no socket. The one genuinely maintainer-gated step that remains is the act of publishing itself (`private: false` + `npm publish` needs npm credentials); see [`docs/ci-integration.md`](../ci-integration.md).
 - **`source_published_at` where the real date is unknown** — the field stays *absent*, never guessed. Fabricating a date is the dishonesty v5 forbids; it lands per-source only when genuinely sourced.
 - **Citation reachability in the per-commit path** — network is flaky; the reachability sweep runs scheduled/on-demand, while the pure well-formedness check gates every commit.
 

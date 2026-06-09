@@ -1,0 +1,94 @@
+name: "Vaulytica contract review"
+description: "Deterministic, no-AI legal-document linter — analyze or version-compare contracts in CI and gate on findings (SARIF, redline)."
+author: "clay-good"
+branding:
+  icon: "shield"
+  color: "green"
+
+inputs:
+  command:
+    description: "Which subcommand to run: analyze | compare."
+    required: false
+    default: "analyze"
+  files:
+    description: "analyze: a path, single-segment glob, or directory of documents (.pdf/.docx/.txt/.md)."
+    required: false
+    default: ""
+  base:
+    description: "compare: the base document."
+    required: false
+    default: ""
+  revised:
+    description: "compare: the revised document."
+    required: false
+    default: ""
+  format:
+    description: "Output format(s). analyze: comma list of json,sarif,html,md,csv (default sarif). compare: json|markdown."
+    required: false
+    default: "sarif"
+  fail-on:
+    description: "Exit non-zero when a finding (analyze) — or an introduced finding (compare) — is at or above this severity: critical|warning|info. Empty = never fail."
+    required: false
+    default: ""
+  playbook:
+    description: "Force a specific playbook id instead of auto-matching."
+    required: false
+    default: ""
+  out:
+    description: "analyze only: directory to write one file per document per format (e.g. for SARIF upload)."
+    required: false
+    default: ""
+
+runs:
+  using: "composite"
+  steps:
+    # Install the engine's runtime deps in the action's own checkout. `tsx` is a
+    # runtime dependency, so the CLI runs from TypeScript source with no build
+    # step. `--ignore-scripts` skips native postinstalls (sharp/playwright) the
+    # CLI does not use, keeping the install fast and hermetic.
+    - name: Install Vaulytica
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      run: npm ci --ignore-scripts --no-audit --no-fund
+
+    # Run against the consumer's checked-out files (GITHUB_WORKSPACE). The DKB
+    # ships with the tool, so analysis opens no socket — nothing leaves the
+    # runner. The CLI's own exit code (2 = --fail-on breach) propagates and
+    # fails the step.
+    - name: Run Vaulytica
+      shell: bash
+      working-directory: ${{ github.workspace }}
+      env:
+        VAULYTICA_BIN: ${{ github.action_path }}/bin/vaulytica.mjs
+        CMD: ${{ inputs.command }}
+        FILES: ${{ inputs.files }}
+        BASE: ${{ inputs.base }}
+        REVISED: ${{ inputs.revised }}
+        FORMAT: ${{ inputs.format }}
+        FAIL_ON: ${{ inputs.fail-on }}
+        PLAYBOOK: ${{ inputs.playbook }}
+        OUT: ${{ inputs.out }}
+      run: |
+        set -euo pipefail
+        args=("$CMD")
+        if [ "$CMD" = "compare" ]; then
+          if [ -z "$BASE" ] || [ -z "$REVISED" ]; then
+            echo "::error::compare requires both 'base' and 'revised' inputs" >&2
+            exit 1
+          fi
+          args+=("$BASE" "$REVISED")
+        else
+          if [ -z "$FILES" ]; then
+            echo "::error::analyze requires the 'files' input" >&2
+            exit 1
+          fi
+          args+=("$FILES")
+        fi
+        [ -n "$FORMAT" ] && args+=(--format "$FORMAT")
+        [ -n "$PLAYBOOK" ] && args+=(--playbook "$PLAYBOOK")
+        [ -n "$FAIL_ON" ] && args+=(--fail-on "$FAIL_ON")
+        if [ "$CMD" = "analyze" ] && [ -n "$OUT" ]; then
+          args+=(--out "$OUT")
+        fi
+        echo "vaulytica ${args[*]}"
+        node "$VAULYTICA_BIN" "${args[@]}"

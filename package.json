@@ -5,9 +5,39 @@
   "description": "The free, deterministic, runs-entirely-in-your-browser contract checker. A linter for legal documents.",
   "license": "MIT",
   "type": "module",
+  "keywords": [
+    "legal",
+    "contract",
+    "linter",
+    "deterministic",
+    "sarif",
+    "ci",
+    "redline",
+    "compliance"
+  ],
+  "homepage": "https://vaulytica.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clay-good/vaulytica.git"
+  },
+  "bugs": {
+    "url": "https://github.com/clay-good/vaulytica/issues"
+  },
   "engines": {
     "node": ">=22"
   },
+  "bin": {
+    "vaulytica": "bin/vaulytica.mjs"
+  },
+  "files": [
+    "bin/",
+    "tools/cli/",
+    "tools/accuracy/",
+    "src/",
+    "dkb/dist/v0.0.1-starter/",
+    "playbooks/",
+    "tsconfig.json"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -42,6 +72,7 @@
     "mammoth": "^1.8.0",
     "pdfjs-dist": "^6.0.227",
     "tesseract.js": "^5.1.0",
+    "tsx": "^4.21.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
@@ -62,7 +93,6 @@
     "js-yaml": "^4.1.1",
     "prettier": "^3.2.5",
     "sharp": "^0.34.5",
-    "tsx": "^4.21.0",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.60.1",
     "vite": "^8.0.13",
