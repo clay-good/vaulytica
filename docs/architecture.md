@@ -11,10 +11,10 @@ flowchart TB
         ingest[Ingest layer<br/>PDF.js · mammoth.js · Tesseract.js WASM]
         normalize[Normalizer<br/>structured document tree]
         extract[Extractors<br/>parties · dates · amounts ·<br/>definitions · sections · crossrefs<br/>· obligations · jurisdictions · classifier]
-        engine[Rule Engine<br/>80 deterministic rules at launch]
-        playbook[Playbook matcher<br/>NDA · employment · MSA · lease · IC · SaaS]
+        engine[Rule Engine<br/>112 launch · 1,062 total rules<br/>+ 20 cross-document checks]
+        playbook[Playbook matcher<br/>NDA · employment · MSA · lease · IC · SaaS · …]
         dkb[(Deterministic<br/>Knowledge Base<br/>shipped as static asset)]
-        report[Report builder<br/>docx-js → .docx in memory]
+        report[Report builder<br/>DOCX · JSON · SARIF · HTML ·<br/>fix-list · .ics · comparison redline]
     end
 
     cdn[(Cloudflare Pages<br/>static asset CDN)]
@@ -93,11 +93,24 @@ That hash is the determinism contract. See [determinism.md](determinism.md).
 
 ## Stage 6 — Report builder ([src/report/](../src/report/))
 
-The DOCX builder (`buildDocxReport`) produces the report described in spec §22 — cover, executive summary, findings (Critical → Warning → Info), obligations ledger, extracted-data appendix, audit trail with full bibliography, verbatim disclaimer block. `buildJsonReport` serializes the full `EngineRun` as a pretty JSON Blob for users who want the structured form.
+The report layer renders one deterministic `EngineRun` into many formats, each a pure function of the run (so each reproduces byte-for-byte):
+
+- **DOCX** (`buildDocxReport`) — cover + proof fields, executive summary, findings (Critical → Warning → Info), obligations ledger, extracted-data appendix, audit trail with full bibliography, verbatim disclaimer block.
+- **JSON** (`buildJsonReport`) — the full `EngineRun` plus provenance, model-clause references, jurisdiction overlays, and `clause_evidence` (the surfaces outside the run, so they never move `result_hash`).
+- **SARIF 2.1.0** (`buildSarif`) for code-scanning / PR annotation, and a **single-file, script-free HTML report** (`buildHtmlReport`) that prints clean to PDF.
+- **Findings-to-action exports** (`exports.ts`) — the fix-list (Markdown / CSV), the obligations ledger (CSV), and deadlines as an **`.ics`** calendar.
+- **Bundle / portfolio** (`bundle.ts`, `portfolio.ts`) — the multi-document consolidated report, the documents × key-checks matrix, and the "everything" archive.
+- **Version comparison** (`compare.ts`, `compare-docx.ts`) — the finding delta of two runs *plus* the **clause-level redline** (`clause-diff.ts`): a paragraph-level LCS text diff with an inline word-level redline of every rewritten clause, all outside the comparison `result_hash`.
+
+Every citation is rendered by the shared `citations.ts` formatter, so a finding's pinned source resolves identically in every format (a cross-format completeness test enforces it).
+
+## Headless surface ([tools/cli/](../tools/cli/))
+
+The same engine runs outside the browser via a Node API + CLI, proven **byte-identical** to the tab by `parity.test.ts` (the CLI composes `src/` ingest with the parity-proven `runIngested`). One dispatcher exposes four commands: `analyze` (run the engine in CI / a folder sweep, `--fail-on` gating), `diff` (structural diff of two custom playbooks), `compare` (version-compare two documents + emit the redline, a CI redline gate), and `verify` (re-derive a saved `result_hash`). The DKB ships with the tool, so it opens **no socket** — "nothing leaves your machine" holds headless too. `tools/` is build/CI-only and never imported by `src/` (a guard test asserts the direction).
 
 ## UI ([src/ui/](../src/ui/), [site/](../site/))
 
-The marketing site and the tool are the **same DOM**. The drop zone transforms in place through three states (empty → analyzing → complete). The whole UI is wired by [`main.ts`](../src/ui/main.ts), which boots the dropzone, theme toggle, service-worker registration, and the pipeline. The service worker ([`sw.js`](../site/sw.js)) precaches HTML + assets and serves the DKB stale-while-revalidate so the app works offline.
+The marketing site and the tool are the **same DOM**. The drop zone transforms in place through six view-states — empty → analyzing → complete, plus comparison-complete, bundle-complete, and error — each verified to render with no horizontal scroll from 320 px to 1280 px (a responsiveness test pins `scrollWidth ≤ clientWidth`). The whole UI is wired by [`main.ts`](../src/ui/main.ts), which boots the dropzone, theme toggle, service-worker registration, and the pipeline. The service worker ([`sw.js`](../site/sw.js)) precaches HTML + assets and serves the DKB stale-while-revalidate so the app works offline.
 
 ## Deploy ([.github/workflows/deploy.yml](../.github/workflows/deploy.yml))
 
