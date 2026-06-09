@@ -864,7 +864,9 @@
       }
       .overlay-cite {
         font-size: 12px;
-        color: var(--accent);
+        /* The citation is a link; use --link (AA on both themes' surfaces),
+           not the raw brand --accent which is ~2.7:1 on the light surface. */
+        color: var(--link);
         overflow-wrap: anywhere;
       }
       .overlay-uncovered {

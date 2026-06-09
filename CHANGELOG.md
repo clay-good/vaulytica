@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Accessibility
+- **Rich complete-state content is now responsiveness/a11y-gated.** The
+  exhaustive `responsiveness-states.spec.ts` complete-state fixture was minimal
+  — it never rendered the jurisdiction-overlay block, compliance-frame chips,
+  custom-playbook provenance, or the detected-family chip, so those elements
+  (long statute citations, link colours) were untested. Enriched the fixture to
+  stress all of them (and taught the harness to expose `globalThis.document` for
+  the renderers that build nodes via the global, as the browser/vitest do). It
+  caught a real light-theme contrast bug the minimal fixture missed: the
+  jurisdiction-overlay citation link (`.overlay-cite`) used the raw brand mint
+  `var(--accent)` (~2.7:1 on the cream surface) → switched to the `--link` token
+  (AA on both themes). Complete state now passes responsiveness + axe in both
+  themes with its full content rendered.
 - **Marketing landing page is now WCAG 2 AA in both themes (gated).** The live
   axe sweep `disableRules(["color-contrast", "region"])` and only runs the dark
   theme, so the full landing page's contrast was never gated. A new

@@ -39,13 +39,26 @@ const PAGE_CSS = (() => {
 /** Render a state to the same DOM the app mounts, as an HTML string. */
 function renderStateHtml(state: DropzoneState): string {
   const win = new Window();
-  const dz = win.document.createElement("div");
-  dz.className = "dropzone";
-  dz.id = "dropzone";
-  // renderState sets data-state + innerHTML and populates fields; outerHTML
-  // captures the resulting markup (event listeners are irrelevant to layout).
-  renderState(dz as unknown as HTMLElement, state);
-  return `<main id="main" class="wrap">${dz.outerHTML}</main>`;
+  // Some rich-content renderers (jurisdiction overlays, compliance chips) build
+  // nodes via the global `document` — present in the browser and in vitest's
+  // happy-dom env, but not under a bare `new Window()`. Expose it for the call.
+  const g = globalThis as { document?: unknown; window?: unknown };
+  const prevDoc = g.document;
+  const prevWin = g.window;
+  g.document = win.document;
+  g.window = win;
+  try {
+    const dz = win.document.createElement("div");
+    dz.className = "dropzone";
+    dz.id = "dropzone";
+    // renderState sets data-state + innerHTML and populates fields; outerHTML
+    // captures the resulting markup (event listeners are irrelevant to layout).
+    renderState(dz as unknown as HTMLElement, state);
+    return `<main id="main" class="wrap">${dz.outerHTML}</main>`;
+  } finally {
+    g.document = prevDoc;
+    g.window = prevWin;
+  }
 }
 
 /** Themes: default (no attribute) is the dark palette; `light` opts in. */
@@ -123,6 +136,41 @@ const STATES: Array<{ name: string; state: DropzoneState }> = [
       secondary_families: [
         { playbook_id: "baa", playbook_name: "Business Associate Agreement (HIPAA §164.504(e))", counts: counts3 },
       ],
+      // Rich complete-state content — these render long citations, chips, and
+      // provenance lines that are prime overflow / contrast candidates.
+      v3_family: { family: "dpa-controller-processor", label: "Data Processing Agreement (Controller↔Processor)", confidence: 0.92 },
+      v3_frames: {
+        available: ["GDPR", "CCPA", "HIPAA", "UK GDPR", "ISO 27001", "SOC 2", "PCI DSS", "NIST 800-53"],
+        on: ["GDPR", "CCPA", "HIPAA"],
+        hint: "Toggle a framework to re-scan against its specific obligations.",
+      },
+      custom_playbook: {
+        name: "Acme Corporation Outside-Counsel Data-Processing Standard (revision 2026-Q2)",
+        mode: "augment",
+        custom_finding_count: 4,
+        unevaluable_count: 2,
+      },
+      jurisdiction_overlays: {
+        family: "employment-noncompete",
+        states_in_catalog: 15,
+        matched: [
+          {
+            state_name: "California",
+            posture: "prohibited",
+            topic: "Non-compete enforceability",
+            headline: "Non-competes are void and unenforceable for employees",
+            summary:
+              "California voids employee non-compete covenants as a matter of public policy, with narrow statutory exceptions (sale of business, dissolution of partnership). A choice-of-law clause selecting another state generally will not save a non-compete against a California-resident employee.",
+            recommendation: "Remove the non-compete or scope it to a permitted statutory exception; do not rely on an out-of-state choice-of-law clause.",
+            citation: {
+              source: "California Business and Professions Code § 16600 (and §§ 16601–16602.5 exceptions)",
+              source_url:
+                "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=16600",
+            },
+          },
+        ],
+        uncovered_states: ["Wyoming", "Mississippi", "West Virginia"],
+      },
     },
   },
   {
