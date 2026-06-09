@@ -202,7 +202,13 @@ export function buildHtmlReport(
       // escaped text (it is already part of `escaped`), so a shared report
       // can never carry an active javascript:/data: link.
       const href = url ? safeHref(url) : null;
-      const li = href ? escaped.replace(esc(href), `<a href="${esc(href)}">${esc(href)}</a>`) : escaped;
+      // Use a replacer *function*, not a string: a string replacement makes
+      // `$&`/`$1`/`` $` ``/`$'` in a (user-supplied custom-playbook) citation URL
+      // expand as special patterns and corrupt the rendered link. A function
+      // inserts the markup verbatim.
+      const li = href
+        ? escaped.replace(esc(href), () => `<a href="${esc(href)}">${esc(href)}</a>`)
+        : escaped;
       body.push(`<li>${li}</li>`);
     }
     body.push("</ol>");

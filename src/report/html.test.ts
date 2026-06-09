@@ -123,6 +123,39 @@ describe("buildHtmlReport (spec-v8 §21 — standalone single-file HTML)", () =>
     expect(html).toContain("javascript:alert(document.domain)");
   });
 
+  it("renders a bibliography citation URL containing $-replacement patterns verbatim", () => {
+    // The bibliography links the URL by `String.replace`-ing it inside the
+    // already-escaped entry. With a *string* replacement, `$&`/`` $` ``/`$'` in a
+    // user-supplied custom-playbook citation URL expand as special patterns and
+    // corrupt the href (the matched URL gets spliced into itself). A *function*
+    // replacement inserts the markup verbatim. Assert on the bibliography <ol>.
+    const tricky = "https://policy.example.com/s?a=$&b=$1&c=$`d";
+    const run = makeRun();
+    run.findings = [
+      {
+        ...finding("x", "warning"),
+        source_citations: [
+          {
+            id: "policy-dollar",
+            source: "Team Policy 12",
+            source_url: tricky,
+            retrieved_at: "2026-05-11T00:00:00Z",
+            license: "Team policy",
+            license_url: "",
+          },
+        ],
+      },
+    ];
+    const html = buildHtmlReport(run, ingest, loadStarterDkbSync());
+    const biblio = html.slice(html.indexOf('<ol class="biblio">'), html.indexOf("</ol>"));
+    const escapedUrl = tricky.replace(/&/g, "&amp;"); // tricky has no other esc-able chars
+    // The bibliography href carries the full URL, HTML-escaped, uncorrupted.
+    expect(biblio).toContain(`href="${escapedUrl}"`);
+    // The corruption splices the URL into itself: `s?a=https://policy…` (the `$`
+    // is consumed by `$&`). It must not appear.
+    expect(biblio).not.toContain("s?a=https://policy");
+  });
+
   it("is deterministic: identical inputs → identical bytes", () => {
     const dkb = loadStarterDkbSync();
     expect(buildHtmlReport(makeRun(), ingest, dkb)).toBe(buildHtmlReport(makeRun(), ingest, dkb));

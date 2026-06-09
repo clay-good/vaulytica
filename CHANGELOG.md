@@ -4,7 +4,36 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Security
+- **Neutralized CSV formula injection (CWE-1236) in the fix-list and obligations
+  exports.** Both CSVs carry verbatim clause text (the obligations ledger emits
+  the obligation action / trigger / source clause) and custom-playbook rule
+  titles — all untrusted. `csvField` did RFC 4180 quoting but did not guard the
+  formula-injection class: a cell whose first character is `=`/`+`/`-`/`@` (or a
+  leading tab/CR) is interpreted as a **formula** when the file is opened in
+  Excel or Google Sheets, so a clause crafted as `=HYPERLINK("http://evil",…)`
+  could execute on the reviewer's machine. `csvField` now prefixes such a cell
+  with a single quote (the OWASP mitigation) so a spreadsheet renders it as
+  inert text. Zero golden churn (no fixture cell began with a formula trigger);
+  +2 tests over the `=`/`+`/`-`/`@` triggers.
+
 ### Fixed
+- **`$`-replacement patterns in a custom-playbook citation URL corrupted the
+  standalone HTML report's bibliography link.** The bibliography links a URL by
+  `String.replace`-ing it inside the already-escaped entry text
+  (`src/report/html.ts`). With a **string** replacement, a special-replacement
+  pattern (`$&`, `$'`, or the dollar-backtick prefix) in the replacement string
+  is expanded — so a
+  user-supplied custom-playbook citation URL like
+  `https://policy.example.com/s?a=$&b=1` had the matched URL spliced into its own
+  `href` (e.g. `…s?a=https://policy.example.com/…`), producing a broken,
+  unfollowable citation link — in the v8 §10 "custom playbook is hostile input"
+  surface. (Not XSS — the spliced substring is already HTML-escaped, and the
+  `safeHref` http(s)-only guard still holds; it is link **corruption**.) Switched
+  to a **function** replacer, which inserts the markup verbatim. Render-side →
+  zero `result_hash` churn. Added a regression test asserting a `$`-laden
+  bibliography URL renders into an intact `href`, verified to fail against the
+  string replacer.
 - **Pinned every `toLocaleString` to `"en-US"` and added a static locale-pin
   guard (determinism hardening, round 2).** A follow-up sweep found the
   number-formatting twin of the `localeCompare` bug: eight `Number.toLocaleString()`

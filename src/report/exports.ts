@@ -144,12 +144,22 @@ export function buildFixListMarkdown(run: EngineRun, extracted?: ExtractedData):
   return lines.join("\n");
 }
 
-/** RFC 4180 field: quote when it contains a comma, quote, CR, or LF. */
+/**
+ * RFC 4180 field: quote when it contains a comma, quote, CR, or LF.
+ *
+ * Also neutralizes CSV formula injection (CWE-1236): a cell whose first
+ * character is a spreadsheet formula trigger (`= + - @`, or a leading
+ * tab/CR used to bypass) is prefixed with a single quote so Excel/Sheets
+ * render it as text instead of executing it. The fix-list and obligations
+ * CSVs carry verbatim clause text and custom-playbook rule titles — both
+ * untrusted — so a clause like `=HYPERLINK(...)` must not become live.
+ */
 function csvField(value: string): string {
-  if (/[",\r\n]/.test(value)) {
-    return `"${value.replace(/"/g, '""')}"`;
+  const guarded = /^[=+\-@\t\r]/.test(value) ? `'${value}` : value;
+  if (/[",\r\n]/.test(guarded)) {
+    return `"${guarded.replace(/"/g, '""')}"`;
   }
-  return value;
+  return guarded;
 }
 
 function csvRow(fields: string[]): string {

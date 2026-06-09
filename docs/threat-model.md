@@ -476,6 +476,22 @@ policy at **both** boundaries:
 legitimate `http://` license URL (the UK Open Government Licence); only the
 scheme is constrained, never the host.
 
+### The spreadsheet exports carry no live formula
+
+The fix-list and obligations **CSV** exports are a second injection surface, in
+a different class: they carry verbatim clause text (the obligations ledger
+emits the obligation's action, trigger, and source clause) and custom-playbook
+rule titles — all untrusted — and a spreadsheet treats a cell that begins with
+`=`, `+`, `-`, or `@` as a **formula**. A clause crafted as
+`=HYPERLINK("http://evil", "click")` would, opened in Excel or Google Sheets,
+execute on the reviewer's machine (CSV formula injection, CWE-1236). The single
+field encoder (`csvField` in [`src/report/exports.ts`](../src/report/exports.ts))
+prefixes any such cell — including the leading-tab/CR bypass forms — with a
+single quote (the OWASP mitigation), so the spreadsheet renders it as inert
+text. One choke point covers both CSVs; RFC 4180 quoting is applied on top. The
+rich renderers' escaping handles their own injection class (XSS); this handles
+the spreadsheet's.
+
 ### What v8 still does not protect against
 
 v8 makes the engine *survive* hostile input; it does not make a wrong finding

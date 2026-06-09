@@ -164,6 +164,25 @@ describe("buildFixListCsv", () => {
     const run = makeRun([finding("A-1", "critical", 1)]);
     expect(buildFixListCsv(run)).toBe(buildFixListCsv(run));
   });
+
+  it("neutralizes CSV formula injection (CWE-1236) in untrusted cells", () => {
+    const f = finding("X-1", "critical", 1);
+    // A malicious clause weaponized as a spreadsheet formula.
+    f.title = '=HYPERLINK("http://evil.example","click")';
+    const csv = buildFixListCsv(makeRun([f]));
+    // The cell is prefixed with ' so it renders as text, never executes.
+    expect(csv).toContain(`'=HYPERLINK`);
+    expect(csv).not.toContain(`,=HYPERLINK`);
+  });
+
+  it("neutralizes the +,-,@ formula triggers too", () => {
+    for (const lead of ["+", "-", "@"]) {
+      const f = finding("X-1", "critical", 1);
+      f.title = `${lead}cmd`;
+      const csv = buildFixListCsv(makeRun([f]));
+      expect(csv).toContain(`'${lead}cmd`);
+    }
+  });
 });
 
 // --- obligations ------------------------------------------------------------
