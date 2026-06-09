@@ -88,6 +88,11 @@ export function allMatches(ctx: RuleContext, re: RegExp): ParagraphHit[] {
           end: p.start + m.index + m[0].length,
         },
       });
+      // A zero-width match (e.g. a rule regex like `/x?/` or `/\b/`) does not
+      // advance `lastIndex`, so without this the loop spins forever — a
+      // synchronous hang of the tab, exactly the unbounded work spec-v8 §5
+      // forbids. Step past it.
+      if (m[0].length === 0) r.lastIndex += 1;
     }
   });
   return out;

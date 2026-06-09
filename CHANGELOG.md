@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Fixed
+- **`allMatches` could hang the tab on a zero-width regex (latent unbounded-work
+  vector).** The shared rule helper `allMatches` (`src/engine/rules/_helpers.ts`)
+  ran `while ((m = re.exec(text)))` with a global regex; a zero-width match
+  (e.g. a rule regex like `/x?/` or `/\b/`) does not advance `lastIndex`, so the
+  loop spins **forever** — a synchronous hang of the browser tab, exactly the
+  unbounded work spec-v8 §5 forbids. No shipped rule triggers it today (the two
+  callers, STRUCT-016 / RISK-002, require literal text), but it's a hang waiting
+  for any future rule that passes an empty-matchable pattern. Added the standard
+  `lastIndex` step-past guard; added `_helpers.test.ts` pinning termination on
+  `/\b/`, `/x?/`, `/a*/`. Zero churn for the current callers (1,104
+  rule/golden tests unchanged). Found by auditing low-branch-coverage modules.
 - **Extractors could throw an uncaught `RangeError` on a deeply-nested tree
   (spec-v8 §5/§7 residual).** The extractor walkers (`src/extract/walk.ts`,
   `forEachParagraph` / `forEachSection`) recursed on `section.children` with no
