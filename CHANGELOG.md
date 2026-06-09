@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Fixed
+- **Pinned every `localeCompare` sort to the `"en"` locale (determinism
+  hardening).** Twelve stable-ordering sorts across `src/` (playbook match
+  tie-break in `matcher.ts`, secondary-family ordering in
+  `playbook-candidates.ts`, currency-mode pick in the v4 consistency
+  `_helpers.ts`, deadline/`.ics` ordering in `exports.ts`, portfolio row order
+  in `portfolio.ts`, custom-playbook error/unevaluable ordering, DKB version
+  pick in `loader.ts`) called `String.prototype.localeCompare` with **no locale
+  argument** — so collation fell back to the host's runtime locale (ICU/`LANG`).
+  For the determinism thesis that is a latent footgun: a tie-break or a
+  finding-feeding sort that orders differently under a French vs. English locale
+  can move `result_hash` across machines. Several of these feed the engine run
+  (`matcher` decides which playbook wins a score tie; `_helpers` picks the
+  dominant currency that a finding quotes). Pinning to `"en"` makes the
+  collation host-independent; ASCII ids/codes sort identically, so **zero golden
+  churn** (full suite byte-unchanged, 2,702 → 2,703 only from the new ICS test).
+- **`icsFold` folded `.ics` content lines by character count, not octets (RFC
+  5545 §3.1).** The deadline-calendar line folder sliced at 73/72 *characters*
+  while its own contract said "≤75 octets" — correct for ASCII but able to emit
+  a line **over** the 75-octet limit on multi-byte clause text (accented terms,
+  a `€` symbol, an emoji in a filename), which strict calendar parsers reject.
+  Rewrote it to fold on **UTF-8 octet boundaries** without splitting a code
+  point (`octetLength` / `splitByOctets` helpers). Pure-ASCII lines fold
+  identically (zero golden churn); multi-byte text now stays within the limit.
+  Added a test that a 270-octet euro-sign summary folds to ≤75-octet lines and
+  unfolds back to intact UTF-8. Found in the same low-coverage audit pass.
 - **Hardened the second reusable regex-exec-loop helper against the zero-width
   hang (audit follow-up).** Swept every manual `while ((m = re.exec(text)))`
   loop in `src/` for the same infinite-loop class fixed in `allMatches`. The

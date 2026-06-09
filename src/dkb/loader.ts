@@ -169,7 +169,7 @@ async function readLatestCache(): Promise<DKB | null> {
       req.onsuccess = (): void => {
         const records = (req.result as Array<{ version: string; dkb: DKB }> | undefined) ?? [];
         if (records.length === 0) return resolve(null);
-        records.sort((a, b) => a.version.localeCompare(b.version));
+        records.sort((a, b) => a.version.localeCompare(b.version, "en"));
         resolve(records[records.length - 1]!.dkb);
       };
       req.onerror = (): void => reject(req.error);

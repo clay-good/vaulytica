@@ -329,7 +329,7 @@ export function validateCustomPlaybook(raw: unknown): CustomPlaybookValidation {
   if (result.success) {
     return { ok: true, playbook: result.data as CustomPlaybook };
   }
-  const errors = result.error.issues.map(formatIssue).sort((a, b) => a.localeCompare(b));
+  const errors = result.error.issues.map(formatIssue).sort((a, b) => a.localeCompare(b, "en"));
   return { ok: false, errors };
 }
 

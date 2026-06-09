@@ -166,7 +166,8 @@ export function buildPortfolioMatrix(
 ): PortfolioMatrix {
   const sorted = [...documents].sort(
     (a, b) =>
-      a.source_file_name.localeCompare(b.source_file_name) || a.doc_id.localeCompare(b.doc_id),
+      a.source_file_name.localeCompare(b.source_file_name, "en") ||
+      a.doc_id.localeCompare(b.doc_id, "en"),
   );
   const total = sorted.length;
   const truncated = total > PORTFOLIO_MATRIX_MAX_ROWS;
@@ -233,7 +234,8 @@ export function buildPortfolioExecutiveSummary(
 ): PortfolioExecutiveSummary {
   const sorted = [...documents].sort(
     (a, b) =>
-      a.source_file_name.localeCompare(b.source_file_name) || a.doc_id.localeCompare(b.doc_id),
+      a.source_file_name.localeCompare(b.source_file_name, "en") ||
+      a.doc_id.localeCompare(b.doc_id, "en"),
   );
   const per_document = sorted.map((d): PortfolioDocumentDigest => {
     let critical = 0;

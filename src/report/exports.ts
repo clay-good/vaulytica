@@ -394,14 +394,14 @@ export function collectDeadlines(extracted: ExtractedData): DeadlinesResult {
   // Deterministic order: by date, then summary, then section.
   events.sort(
     (a, b) =>
-      a.iso.localeCompare(b.iso) ||
-      a.summary.localeCompare(b.summary) ||
-      (a.section ?? "").localeCompare(b.section ?? ""),
+      a.iso.localeCompare(b.iso, "en") ||
+      a.summary.localeCompare(b.summary, "en") ||
+      (a.section ?? "").localeCompare(b.section ?? "", "en"),
   );
   unresolved.sort(
     (a, b) =>
-      a.raw_text.localeCompare(b.raw_text) ||
-      (a.section ?? "").localeCompare(b.section ?? ""),
+      a.raw_text.localeCompare(b.raw_text, "en") ||
+      (a.section ?? "").localeCompare(b.section ?? "", "en"),
   );
   return { events, unresolved };
 }
@@ -434,16 +434,40 @@ function icsEscape(value: string): string {
     .replace(/\r\n|\n|\r/g, "\\n");
 }
 
-/** Fold a content line to ≤75 octets per RFC 5545 §3.1 (CRLF + space). */
+/** UTF-8 octet length of a string (RFC 5545 folds by octets, not characters). */
+function octetLength(value: string): number {
+  return new TextEncoder().encode(value).length;
+}
+
+/** Longest prefix of `value` whose UTF-8 length ≤ `maxOctets`, split on a code-point boundary. */
+function splitByOctets(value: string, maxOctets: number): [string, string] {
+  const encoder = new TextEncoder();
+  let octets = 0;
+  let cut = 0;
+  for (const ch of value) {
+    const width = encoder.encode(ch).length;
+    if (octets + width > maxOctets) break;
+    octets += width;
+    cut += ch.length;
+  }
+  return [value.slice(0, cut), value.slice(cut)];
+}
+
+/**
+ * Fold a content line to ≤75 octets per RFC 5545 §3.1 (CRLF + space).
+ * Folds on octet boundaries — pure-ASCII lines fold identically to a char split,
+ * but multi-byte text (accents, currency symbols, emoji) never overruns the limit.
+ */
 function icsFold(line: string): string {
-  if (line.length <= 73) return line;
+  if (octetLength(line) <= 73) return line;
   const out: string[] = [];
   let rest = line;
-  out.push(rest.slice(0, 73));
-  rest = rest.slice(73);
+  let first = true;
   while (rest.length > 0) {
-    out.push(" " + rest.slice(0, 72));
-    rest = rest.slice(72);
+    const [head, tail] = splitByOctets(rest, first ? 73 : 72);
+    out.push(first ? head : " " + head);
+    rest = tail;
+    first = false;
   }
   return out.join("\r\n");
 }

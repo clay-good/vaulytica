@@ -145,7 +145,7 @@ export function selectSecondaryFamilies(
       const sa = familySignalStrength(a, signals);
       const sb = familySignalStrength(b, signals);
       if (sa !== sb) return sb - sa;
-      return a.id.localeCompare(b.id);
+      return a.id.localeCompare(b.id, "en");
     })
     .slice(0, MAX_SECONDARY_FAMILIES);
 }

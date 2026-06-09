@@ -346,6 +346,24 @@ describe("buildDeadlinesIcs", () => {
     expect(ics).toContain("\\,");
   });
 
+  it("folds long multi-byte summaries to ≤75 octets without splitting a code point", () => {
+    const ex = emptyExtracted();
+    // 90 chars, every one a 3-octet euro sign → 270 octets, forces several folds.
+    const longSummary = "€".repeat(90);
+    ex.dates = [date("absolute", `${longSummary} 2025-06-01`, { iso: "2025-06-01" })];
+    const ics = buildDeadlinesIcs(ex);
+    const encoder = new TextEncoder();
+    for (const line of ics.split("\r\n")) {
+      // RFC 5545 §3.1: a folded content line is ≤75 octets.
+      expect(encoder.encode(line).length).toBeLessThanOrEqual(75);
+    }
+    // Unfolding (strip CRLF + leading space) must reproduce intact UTF-8 — no half a euro sign.
+    const summaryLine = ics.slice(ics.indexOf("SUMMARY:"));
+    const unfolded = summaryLine.split("\r\n ").join("").split("\r\n")[0]!;
+    expect(unfolded).toContain(longSummary);
+    expect(unfolded).not.toContain("�");
+  });
+
   it("produces an empty calendar (no VEVENTs) when there are no resolvable dates", () => {
     const ics = buildDeadlinesIcs(emptyExtracted());
     expect(ics).toContain("BEGIN:VCALENDAR");

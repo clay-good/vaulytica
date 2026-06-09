@@ -129,7 +129,7 @@ export async function runCustomPlaybook(
   }
 
   findings.sort(cmpFinding);
-  unevaluable.sort((a, b) => a.rule_id.localeCompare(b.rule_id));
+  unevaluable.sort((a, b) => a.rule_id.localeCompare(b.rule_id, "en"));
 
   const result_hash = await sha256Hex(
     stableStringify({

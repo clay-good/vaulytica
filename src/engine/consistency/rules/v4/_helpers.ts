@@ -350,7 +350,7 @@ export function dominantCurrency(
   for (const a of amts) counts.set(a.currency, (counts.get(a.currency) ?? 0) + 1);
   let best: string | null = null;
   let bestN = 0;
-  for (const [cur, n] of [...counts].sort((a, b) => a[0].localeCompare(b[0]))) {
+  for (const [cur, n] of [...counts].sort((a, b) => a[0].localeCompare(b[0], "en"))) {
     if (n > bestN) {
       bestN = n;
       best = cur;

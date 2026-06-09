@@ -134,7 +134,7 @@ export function matchPlaybook(
     const bDep = b.playbook.deprecated === true;
     if (aDep !== bDep) return aDep ? 1 : -1;
     // Tiebreak 2: lexicographic id for determinism.
-    return a.playbook.id.localeCompare(b.playbook.id);
+    return a.playbook.id.localeCompare(b.playbook.id, "en");
   });
 
   const top = scored[0];
