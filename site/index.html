@@ -106,7 +106,11 @@
         --surface: #f3f1ea;
         --heading: #0d1117;
         --body: #3a3f4b;
-        --muted: #6b7280;
+        /* #6b7280 was ~4.3:1 on the cream --bg/--surface — below WCAG 2 AA for
+           the many normal-size muted labels (sub-text, card meta, toggles).
+           #5b626f darkens just enough to clear 4.5:1 on both surfaces while
+           staying a muted slate. (Dark theme keeps its own lighter --muted.) */
+        --muted: #5b626f;
         --line: #e6e4dd;
         --accent: #00a883;
         --accent-strong: #00a883;
@@ -530,11 +534,18 @@
          bundle DOCX prints in each per-document subsection. */
       .multi-doc-card-confidence {
         font-variant-numeric: tabular-nums;
-        opacity: 0.75;
+        /* No opacity dim: 0.75 on the already-muted confidence number put it
+           at ~3.9:1 (below WCAG 2 AA). It is small + muted enough to read as
+           secondary without the extra dimming. */
         margin-left: 2px;
       }
       .multi-doc-card.low-confidence .multi-doc-card-family {
-        opacity: 0.65;
+        /* "Presented faintly" (spec-v3 §60) without dropping below WCAG AA:
+           opacity: 0.65 dimmed the label under the 4.5:1 line. The muted
+           token is AA-tuned for both themes and reads as fainter than the
+           body-colour label, so italics + muted convey low confidence
+           accessibly. */
+        color: var(--muted);
         font-style: italic;
       }
       .multi-doc-card-counts {
@@ -901,7 +912,13 @@
         color: var(--body);
       }
       .comparison-dkb-warning {
-        color: #a86700;
+        /* Theme-aware amber: #a86700 is normal-size text here (not a big bold
+           count), so it needs 4.5:1 — it failed on the dark default (~3.96:1).
+           Brighter amber on dark, darker amber on light, both ≥ 4.5:1. */
+        color: #d18a26;
+      }
+      [data-theme="light"] .comparison-dkb-warning {
+        color: #8a5200;
       }
       .download-status {
         margin-top: 10px;

@@ -290,7 +290,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
   analyzing: `
     <div class="dropzone-title" data-role="analyzing-filename"></div>
     <div class="dropzone-sub" data-role="analyzing-dkb"></div>
-    <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-role="progress"></div>
+    <div class="progress" role="progressbar" aria-label="Analysis progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-role="progress"></div>
     <div class="rule-ticker" data-role="ticker"></div>
   `,
   complete: `

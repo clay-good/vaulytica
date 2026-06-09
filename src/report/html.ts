@@ -70,8 +70,12 @@ function safeHref(url: string): string | null {
 const STYLE = `
   :root { --mint: #00a883; --crit: #b00020; --warn: #a86700; --info: #555; }
   * { box-sizing: border-box; }
+  /* overflow-wrap is inherited, so setting it on body makes every text node in
+     the report — headings (the filename in the <h1>), finding titles, rule ids,
+     SHA-256 proof values, citation URLs — break a long unbreakable token rather
+     than push the page past a phone viewport. No horizontal scroll, anywhere. */
   body { font-family: Arial, Helvetica, sans-serif; color: #1a1a1a; line-height: 1.5;
-    max-width: 52rem; margin: 0 auto; padding: 1.25rem; }
+    max-width: 52rem; margin: 0 auto; padding: 1.25rem; overflow-wrap: anywhere; }
   h1, h2, h3 { color: var(--mint); line-height: 1.25; }
   h1 { font-size: 1.6rem; border-bottom: 2px solid var(--mint); padding-bottom: .3rem; }
   h2 { font-size: 1.25rem; margin-top: 2rem; }
@@ -93,7 +97,9 @@ const STYLE = `
   .ruleid { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .8rem; color: #666; }
   .cite, .cite a { overflow-wrap: anywhere; word-break: break-word; }
   .cite { font-size: .85rem; color: #333; margin-top: .4rem; }
-  .fresh { color: #777; font-size: .8rem; }
+  /* #6b6b6b ≈ 5.0:1 on white — clears WCAG 2 AA (4.5:1) for this small,
+     muted freshness label; #777 was 4.47:1 and failed by a hair. */
+  .fresh { color: #6b6b6b; font-size: .8rem; }
   ol.biblio { padding-left: 1.4rem; }
   ol.biblio li { overflow-wrap: anywhere; margin-bottom: .4rem; font-size: .85rem; }
   .posture p { font-size: .85rem; color: #333; }

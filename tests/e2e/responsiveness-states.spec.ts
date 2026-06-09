@@ -18,6 +18,7 @@
  */
 
 import { test, expect, type Page } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -47,11 +48,16 @@ function renderStateHtml(state: DropzoneState): string {
   return `<main id="main" class="wrap">${dz.outerHTML}</main>`;
 }
 
-function pageHtml(state: DropzoneState): string {
+/** Themes: default (no attribute) is the dark palette; `light` opts in. */
+type Theme = "default" | "light";
+
+function pageHtml(state: DropzoneState, theme: Theme = "default"): string {
+  const themeAttr = theme === "light" ? ' data-theme="light"' : "";
   return [
     "<!doctype html>",
-    '<html lang="en"><head><meta charset="utf-8">',
+    `<html lang="en"${themeAttr}><head><meta charset="utf-8">`,
     '<meta name="viewport" content="width=device-width, initial-scale=1">',
+    "<title>Vaulytica report view</title>",
     `<style>${PAGE_CSS}</style></head><body>`,
     renderStateHtml(state),
     "</body></html>",
@@ -192,5 +198,28 @@ test.describe("every view-state scrolls vertically only (320–1280px)", () => {
       await page.setContent(pageHtml(state));
       await expectNoHorizontalOverflow(page, `${name} state`);
     });
+  }
+});
+
+// The live `a11y-axe.spec.ts` scans only the empty + complete states; this
+// covers the rest of the union — and both palettes, since contrast depends on
+// the theme (the default dark and the opt-in light) — so a low-contrast colour
+// in the comparison / bundle / error states can no longer ship unnoticed.
+test.describe("every view-state has zero axe violations (WCAG 2 AA, both themes)", () => {
+  for (const { name, state } of STATES) {
+    for (const theme of ["default", "light"] as const) {
+      test(`${name} state is accessible (${theme} theme)`, async ({ page }) => {
+        await page.setContent(pageHtml(state, theme));
+        const results = await new AxeBuilder({ page })
+          .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+          .analyze();
+        expect(
+          results.violations,
+          `axe found ${results.violations.length} violation(s) in ${name}/${theme}: ${results.violations
+            .map((v) => `${v.id} (${v.nodes.length}: ${v.nodes[0]?.target})`)
+            .join("; ")}`,
+        ).toEqual([]);
+      });
+    }
   }
 });

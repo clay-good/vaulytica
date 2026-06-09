@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Accessibility
+- **Standalone HTML report is now responsive and WCAG 2 AA clean.** The
+  shareable single-file report (spec-v8 §21) overflowed a 320 px phone by
+  ~924 px — a long underscore-joined filename in the `<h1>` (and finding
+  titles) was an unbreakable token with no wrap. Set `overflow-wrap: anywhere`
+  on the report `body` (it inherits, so every heading / rule-id / SHA-256 proof
+  value / citation URL wraps). An axe sweep also found the freshness label
+  (`.fresh` `#777` = 4.47:1) just under AA; darkened to `#6b6b6b` (~5:1). New
+  `tests/e2e/html-report-responsive.spec.ts` pins both (responsiveness +
+  zero axe violations) via `page.setContent` (no server).
+- **Fixed WCAG 2 AA contrast + a missing progressbar name across the app's
+  non-default states/theme.** The live axe gate only scans the empty + complete
+  states in the default (dark) theme; rendering the **full** `DropzoneState`
+  union in **both** themes surfaced real, never-tested issues: the light-theme
+  `--muted` (`#6b7280`, ~4.3:1 on the cream surface) failed AA for every muted
+  label (sub-text, card meta, toggles) → darkened to `#5b626f`; the
+  low-confidence card's confidence number was dimmed by `opacity: 0.75` to
+  ~3.9:1 → removed the dim; the low-confidence family label used `opacity: 0.65`
+  → switched to the (AA-tuned) muted colour, preserving the "faint" intent
+  accessibly; the comparison DKB-mismatch warning (`#a86700` normal text) failed
+  on dark → theme-aware amber; and the `analyzing` progressbar had no accessible
+  name → added `aria-label`. `responsiveness-states.spec.ts` now also runs axe
+  per state × theme, so these can't regress.
+
 ### Fixed
 - **Mobile horizontal-overflow on long contract filenames (3 view-states).** A
   long, underscore-joined filename (e.g. `Master_Services_Agreement_..._v12_
