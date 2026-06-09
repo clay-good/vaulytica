@@ -12,34 +12,43 @@ export type ParagraphContext = {
   end: number;
 };
 
-/** Walk every paragraph in document order. */
+/**
+ * Walk every paragraph in document order.
+ *
+ * Iterative pre-order DFS (an explicit stack, not recursion) so a
+ * pathologically nested tree cannot overflow the call stack — the
+ * extractors are public functions and must never throw an uncaught
+ * `RangeError` (spec-v8 §5/§7; the same reason `normalize`/`countWords`
+ * are iterative). The traversal order is identical to the prior recursive
+ * walk — a section's paragraphs, then its children in order — so output is
+ * byte-unchanged.
+ */
 export function forEachParagraph(
   tree: DocumentTree,
   fn: (ctx: ParagraphContext) => void,
 ): void {
-  const walk = (sections: Section[]): void => {
-    for (const s of sections) {
-      for (const p of s.paragraphs) {
-        const text = p.runs.map((r) => r.text).join("");
-        const start = p.runs[0]?.start ?? 0;
-        const end = p.runs[p.runs.length - 1]?.end ?? start;
-        fn({ section: s, paragraph: p, text, start, end });
-      }
-      walk(s.children);
+  const stack: Section[] = [...tree.sections].reverse();
+  while (stack.length > 0) {
+    const s = stack.pop()!;
+    for (const p of s.paragraphs) {
+      const text = p.runs.map((r) => r.text).join("");
+      const start = p.runs[0]?.start ?? 0;
+      const end = p.runs[p.runs.length - 1]?.end ?? start;
+      fn({ section: s, paragraph: p, text, start, end });
     }
-  };
-  walk(tree.sections);
+    for (let i = s.children.length - 1; i >= 0; i -= 1) stack.push(s.children[i]!);
+  }
 }
 
-/** Walk every section in document order (depth-first). */
+/** Walk every section in document order (pre-order DFS). Iterative — see
+ * {@link forEachParagraph} for why (no unbounded recursion). */
 export function forEachSection(tree: DocumentTree, fn: (s: Section) => void): void {
-  const walk = (sections: Section[]): void => {
-    for (const s of sections) {
-      fn(s);
-      walk(s.children);
-    }
-  };
-  walk(tree.sections);
+  const stack: Section[] = [...tree.sections].reverse();
+  while (stack.length > 0) {
+    const s = stack.pop()!;
+    fn(s);
+    for (let i = s.children.length - 1; i >= 0; i -= 1) stack.push(s.children[i]!);
+  }
 }
 
 /** Convenience for building a DocPosition from a paragraph context. */

@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Fixed
+- **Extractors could throw an uncaught `RangeError` on a deeply-nested tree
+  (spec-v8 §5/§7 residual).** The extractor walkers (`src/extract/walk.ts`,
+  `forEachParagraph` / `forEachSection`) recursed on `section.children` with no
+  bound — `extractAll` (a public function) blew the call stack at a few thousand
+  levels of nesting. spec-v8 §7 had listed `walk.ts` among the walkers to guard,
+  but Step 128 only made `normalize` / `countWords` iterative; the extractor
+  walkers stayed recursive. Production never hit this (ingest flattens to
+  `MAX_SECTION_DEPTH` before extraction), but the §5 contract forbids a public
+  function throwing an uncaught exception. Rewrote both walkers as **iterative
+  pre-order DFS** (explicit stack) — byte-identical traversal order (zero golden
+  churn; 1,110 extract/golden tests unchanged), now total to any depth (verified
+  to 100k). Added a fuzz-boundary test pinning extractor stack-safety on a
+  50,000-deep tree. Found by auditing the lowest-branch-coverage shipped modules.
+
 ### Documentation
 - **Refreshed the README product screenshot (it was stale by two export
   formats).** `docs/images/report-mobile.png` predated the v8 UI wiring, so it
