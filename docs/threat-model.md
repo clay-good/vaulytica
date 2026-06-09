@@ -501,3 +501,53 @@ whether a well-formed contract's clause is legally adequate. The CLI runs on
 the user's machine with the user's trust; a CLI invoked against untrusted
 files inherits the same browser-tab guarantees (no egress, bounded work) but,
 like any local tool, runs with the caller's filesystem permissions.
+
+## v9 additions — the handoff & delivery surface
+
+### The container read-surface is private and bounded
+
+v9 Thrust A opens a *second* read over the document — the **original container
+bytes** (`src/delivery/container.ts`), recovering the tracked changes, comments,
+hidden runs, and metadata the flattening ingest discards. This is a new read
+surface, so it is worth stating what it does **not** change: it reads bytes the
+user already dropped, in the tab, and emits findings to the same report; it
+makes **zero network calls** and writes nothing off-machine. It inherits every
+v8 Thrust A guard *before* it reads a single member — the 50 MB container cap,
+the 200× decompression-ratio ceiling, a per-part inflate cap, and a per-fact
+match cap — and it inflates **only** the four handoff-relevant OOXML parts, never
+the whole archive. Every regex is linear (the ReDoS-free guarantee holds). The
+function is **total**: a malformed, truncated, oversized, or non-zip input
+resolves to a typed "could not inspect" note, never a throw, never a hang.
+
+### The one network-touching idea adjacent to this is out of scope
+
+A leaked URL in metadata or a clause is *reported*, never *fetched* — resolving
+it would breach the no-server posture at runtime. The build-only reachability
+checker (v8 Step 139) remains the only place a URL is ever fetched, and never
+from `src/`.
+
+### Sensitive data never round-trips, and the scan never over-claims
+
+The `HANDOFF-005` masking rule is a hard invariant: no finding, in **any** format
+(JSON / DOCX / CSV / Markdown / SARIF / HTML), may contain an unmasked matched
+value — the report that warns about exposed PII must not reproduce it. A test
+greps every serialized finding to prove it. And the whole surface is
+**presence-only**: a scan that matches nothing reports *nothing it can match*,
+never "this document is clean / safe to send." The honesty contract is v5's,
+restated for a new surface.
+
+### No corpus contamination
+
+The adversarial-container fixtures are deterministic OOXML builders
+(`src/delivery/_fixtures.ts`, `fflate.zipSync`) — no real document is ever
+committed as a test artifact. A real document's leaked metadata must never enter
+the repo, exactly as the v8 Step-139 discipline requires.
+
+### What v9 still does not protect against
+
+v9 reports internal facts; it never renders a legal conclusion ("validly
+executed", "privilege waived", "fully redacted") — those stay attorney-gated. It
+never *removes* what it finds (that is the user's deliberate act in their own
+editor), and it does not claim to catch *every* concealment technique. PDF
+tracked-change/comment recovery from markup annotations is a documented no-op in
+this pass; the report says so honestly rather than implying a clean bill.

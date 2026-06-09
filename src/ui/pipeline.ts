@@ -71,6 +71,8 @@ import { filterRulesByFrames } from "./frame-filter.js";
 import { selectMatchCandidates, selectSecondaryFamilies } from "./playbook-candidates.js";
 import { selectStateOverlays, type StateOverlayResult } from "../dkb/state-overlays.js";
 import type { Finding } from "../engine/finding.js";
+import { scanDelivery, type DeliveryReport } from "../delivery/index.js";
+import { flattenText } from "../ingest/types.js";
 
 export type PipelineProgress = {
   /** Fraction in [0, 1] after each rule completes. */
@@ -105,6 +107,15 @@ export type PreparedDocument = {
    * family is never silently skipped. Empty for a single-family document.
    */
   secondary_playbooks: Playbook[];
+  /**
+   * Pre-disclosure / "Clean to Send" scan (spec-v9 Thrust A). Read once over
+   * the ORIGINAL container bytes during preparation — it is independent of the
+   * rule run, so it does not recompute on a compliance-frame re-run. Carries
+   * its own `delivery_hash` outside the engine `result_hash`. Optional so a
+   * hand-built `PreparedDocument` (e.g. the parity harness) need not synthesize
+   * a container scan; `prepareDocument` always populates it.
+   */
+  delivery?: DeliveryReport;
 };
 
 export type PipelineResult = {
@@ -181,6 +192,13 @@ export type PipelineResult = {
    * — never findings, so the run's `result_hash` is unchanged.
    */
   jurisdiction_overlays?: StateOverlayResult;
+  /**
+   * Pre-disclosure scan (spec-v9 Thrust A), carried through from the
+   * `PreparedDocument`. Surfaced in the complete-state's Delivery section and
+   * embedded in the downloadable JSON's `delivery` block. Its `delivery_hash`
+   * is independent of `run.result_hash`.
+   */
+  delivery?: DeliveryReport;
 };
 
 /** One additional detected family's scan results (spec-v6 multi-family activation). */
@@ -310,6 +328,16 @@ export async function prepareDocument(
     match.playbook_id,
   );
 
+  // spec-v9 Thrust A — read the ORIGINAL container bytes once (independent of
+  // the rule run, so a frame-toggle re-run never recomputes it). Cross-matter
+  // metadata detection uses the extracted party set. Never throws.
+  const delivery = await scanDelivery({
+    bytes: buffer,
+    source: kind === "pdf" ? "pdf" : "docx",
+    text: flattenText(ingest.tree),
+    parties: extracted.parties.map((p) => p.name),
+  });
+
   return {
     ingest,
     extracted,
@@ -323,6 +351,7 @@ export async function prepareDocument(
       reasoning: match.reasoning,
     },
     secondary_playbooks,
+    delivery,
   };
 }
 
@@ -476,6 +505,7 @@ export async function runReport(
     prepared.playbook,
     secondary_families,
     prepared.extracted,
+    prepared.delivery,
   );
   const fixlist_md_blob = fixListMarkdownBlob(run, prepared.extracted);
   const fixlist_csv_blob = fixListCsvBlob(run);
@@ -510,6 +540,7 @@ export async function runReport(
     custom_playbook: customProvenance,
     secondary_families,
     jurisdiction_overlays,
+    delivery: prepared.delivery,
   };
 }
 

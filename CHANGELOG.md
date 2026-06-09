@@ -4,6 +4,45 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Added
+- **Clean to Send — the pre-disclosure scan (spec-v9 Thrust A, Steps 148–154).**
+  A deterministic, in-tab read over a document's **original container bytes**
+  (the DOCX/PDF you dropped, before mammoth/pdf.js flatten them) that recovers
+  the facts the normalizing ingest discards and surfaces them as a new
+  `HANDOFF-*` finding family and a `DeliveryReport`. The one document a lawyer
+  must never upload to a cloud scrubber — a privileged, comment-laden redline —
+  is exactly the one this catches, because nothing leaves the machine. New
+  module [`src/delivery/`](src/delivery/):
+  - **`HANDOFF-001` / `002` — residual tracked changes & comments** (critical).
+    Parses `w:ins`/`w:del`/`w:move*` and `word/comments.xml`; reports the count,
+    the author (itself a metadata leak), and a location-only excerpt.
+  - **`HANDOFF-003` — hidden / non-printing content** (warning). `w:vanish` runs
+    and deleted-but-retained `w:delText`; reports the recovered span so the user
+    can decide. Never judges intent; never claims to catch *all* concealment.
+  - **`HANDOFF-004` — authoring metadata** (info → warning → critical). Reads
+    `docProps/core.xml`/`app.xml` and the PDF Info dictionary verbatim; flags a
+    `Company`/`Manager`/`Template`-path naming an entity **absent from the
+    document's own party set** as a likely cross-matter leak.
+  - **`HANDOFF-005` — sensitive-data patterns** (warning → critical). SSN
+    (structurally validated), EIN, payment-card (**Luhn**-validated), bank-routing
+    (**ABA**-checksum), context-gated DOB, and lower-confidence email/phone.
+    Every matched value is **masked** before it is stored — a hard invariant: the
+    report warning about exposed PII never reproduces it.
+  - **Additive by construction.** The `HANDOFF-*` findings carry their own
+    `delivery_hash` over the container facts, **namespaced apart from** the engine
+    `result_hash` (the v8 Step-146 "field outside the run" precedent), so a
+    text-only or metadata-clean document yields an empty report and **no existing
+    golden re-baselines**.
+  - **Total & private.** `readContainer` never throws and never hangs on a
+    malformed, truncated, oversized, or non-zip input — it resolves to typed
+    facts or an honest "could not inspect" note (never a clean bill of health),
+    under the v8 byte-cap / decompression-ratio / match-cap guards. All regexes
+    are linear (the repo's ReDoS-free guarantee holds).
+  - **Surfaces.** A `delivery` block in the JSON report, a CLI `--delivery` flag
+    (with a one-line presence-only summary), and a prominent "Clean to send?"
+    section in the tab's complete state. +29 tests (adversarial-container
+    fixtures, totality contract, the masking invariant, PDF Info parsing).
+
 ### Fixed
 - **ReDoS sweep of the whole extractor surface — no input can make extraction
   hang (spec-v8 Thrust A).** A systematic fuzz of every regex in `src/`

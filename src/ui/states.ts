@@ -138,6 +138,26 @@ export type DropzoneState =
         }>;
         uncovered_states: ReadonlyArray<string>;
       };
+      /**
+       * Pre-disclosure / "Clean to Send" scan (spec-v9 Thrust A). Surfaced as
+       * a prominent block above the findings counts: tracked changes, comments,
+       * hidden content, authoring metadata, and sensitive-data patterns
+       * recovered from the ORIGINAL container bytes. Presence-only — never a
+       * clean bill of health. Optional / back-compat: omitting hides the block.
+       */
+      delivery?: {
+        inspectable: boolean;
+        note?: string;
+        summary: string;
+        findings: ReadonlyArray<{
+          rule_id: string;
+          severity: "critical" | "warning" | "info";
+          title: string;
+          description: string;
+          count: number;
+          evidence: ReadonlyArray<string>;
+        }>;
+      };
     }
   | {
       kind: "comparison-complete";
@@ -308,6 +328,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
   complete: `
     <div class="dropzone-title" data-role="complete-filename"></div>
     <div class="v3-family-chip" data-role="v3-family" hidden></div>
+    <div class="delivery-section" data-role="delivery" hidden></div>
     <div class="counts" data-role="counts"></div>
     <div class="playbook-provenance" data-role="playbook-provenance" hidden></div>
     <div class="secondary-families" data-role="secondary-families" hidden></div>
@@ -397,6 +418,7 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
         : "";
     select(dz, "reasoning")!.textContent = `${baseReasoning}${legacySuffix}`;
     renderV3FamilyChip(dz, state.v3_family);
+    renderDelivery(dz, state.delivery);
     renderPlaybookProvenance(dz, state.custom_playbook);
     renderSecondaryFamilies(dz, state.secondary_families);
     renderJurisdictionOverlays(dz, state.jurisdiction_overlays);
@@ -872,6 +894,59 @@ function renderSecondaryFamilies(
  * families. A citable reference block, not findings; honest about the states
  * it does not cover. Hidden when there is no overlay to show.
  */
+function renderDelivery(
+  dz: HTMLElement,
+  delivery: Extract<DropzoneState, { kind: "complete" }>["delivery"],
+): void {
+  const el = select<HTMLElement>(dz, "delivery");
+  if (!el) return;
+  // Hide entirely when the scan found nothing AND the container was
+  // inspectable — a clean inspectable document needs no banner. An
+  // uninspectable input with a note is also hidden here (the main report
+  // suffices); we surface the block only when there is something to show.
+  if (!delivery || (delivery.findings.length === 0 && delivery.inspectable)) {
+    el.hidden = true;
+    el.innerHTML = "";
+    return;
+  }
+  if (delivery.findings.length === 0) {
+    el.hidden = true;
+    el.innerHTML = "";
+    return;
+  }
+  el.hidden = false;
+  const worst = delivery.findings.some((f) => f.severity === "critical")
+    ? "critical"
+    : delivery.findings.some((f) => f.severity === "warning")
+      ? "warning"
+      : "info";
+  const cards = delivery.findings
+    .map((f) => {
+      const evidence = f.evidence
+        .slice(0, 6)
+        .map((e) => `<li>${escapeHtml(e)}</li>`)
+        .join("");
+      const more =
+        f.count > 6 ? `<li class="delivery-more">…and ${f.count - 6} more</li>` : "";
+      return `<li class="delivery-card delivery-${f.severity}">
+        <div class="delivery-card-head"><span class="delivery-rule">${escapeHtml(
+          f.rule_id,
+        )}</span> <span class="delivery-card-title">${escapeHtml(f.title)}</span></div>
+        <div class="delivery-card-desc">${escapeHtml(f.description)}</div>
+        <ul class="delivery-evidence">${evidence}${more}</ul>
+      </li>`;
+    })
+    .join("");
+  el.innerHTML = `
+    <div class="delivery-heading delivery-heading-${worst}">
+      <span class="delivery-badge">Clean to send?</span>
+      <span class="delivery-summary">${escapeHtml(delivery.summary)}</span>
+    </div>
+    <ul class="delivery-list">${cards}</ul>
+    <div class="delivery-note">Vaulytica reports what it found in the original file and where — it never removes it (that is your edit in Word) and never certifies the document clean.</div>
+  `;
+}
+
 function renderJurisdictionOverlays(
   dz: HTMLElement,
   overlays: Extract<DropzoneState, { kind: "complete" }>["jurisdiction_overlays"],

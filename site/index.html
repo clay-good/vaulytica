@@ -885,6 +885,106 @@
         color: var(--muted);
         font-style: italic;
       }
+      /* Pre-disclosure / "Clean to send" scan (spec-v9 Thrust A). A prominent
+         block above the findings counts; presence-only, never a clean bill. */
+      .delivery-section {
+        margin: 4px 0 14px;
+        text-align: left;
+      }
+      .delivery-heading {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 4px 8px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid color-mix(in srgb, var(--muted) 35%, transparent);
+        border-left-width: 4px;
+        background: var(--surface);
+      }
+      .delivery-heading-critical {
+        border-left-color: #b00020;
+      }
+      .delivery-heading-warning {
+        border-left-color: #a86700;
+      }
+      .delivery-heading-info {
+        border-left-color: var(--muted);
+      }
+      .delivery-badge {
+        font-weight: 600;
+        color: var(--body);
+        white-space: nowrap;
+      }
+      .delivery-summary {
+        color: var(--body);
+        overflow-wrap: anywhere;
+      }
+      .delivery-list {
+        list-style: none;
+        margin: 8px 0 0;
+        padding: 0;
+        display: grid;
+        gap: 8px;
+      }
+      .delivery-card {
+        border: 1px solid color-mix(in srgb, var(--muted) 35%, transparent);
+        border-left-width: 4px;
+        border-radius: 8px;
+        padding: 8px 10px;
+        background: var(--surface);
+        overflow-wrap: anywhere;
+      }
+      .delivery-card.delivery-critical {
+        border-left-color: #b00020;
+      }
+      .delivery-card.delivery-warning {
+        border-left-color: #a86700;
+      }
+      .delivery-card.delivery-info {
+        border-left-color: var(--muted);
+      }
+      .delivery-card-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 2px 8px;
+        margin-bottom: 4px;
+      }
+      .delivery-rule {
+        font-family: var(--mono, ui-monospace, monospace);
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted);
+      }
+      .delivery-card-title {
+        font-weight: 600;
+        color: var(--body);
+      }
+      .delivery-card-desc {
+        color: var(--body);
+        margin-bottom: 4px;
+      }
+      .delivery-evidence {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        font-size: 13px;
+        color: var(--muted);
+        display: grid;
+        gap: 2px;
+        overflow-wrap: anywhere;
+      }
+      .delivery-evidence .delivery-more {
+        font-style: italic;
+      }
+      .delivery-note {
+        margin-top: 8px;
+        font-size: 12px;
+        color: var(--muted);
+        font-style: italic;
+        overflow-wrap: anywhere;
+      }
       /* Findings-to-action export row (spec-v6 Part III). A wrapped
          row of secondary link-buttons under the primary downloads. */
       .export-row {

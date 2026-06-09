@@ -21,7 +21,9 @@ import { ingestPaste } from "../../src/ingest/paste.js";
 import { ingestDocxBuffer } from "../../src/ingest/docx.js";
 import { ingestPdfBuffer } from "../../src/ingest/pdf.js";
 import type { IngestResult } from "../../src/ingest/types.js";
+import { flattenText } from "../../src/ingest/types.js";
 import type { EngineRun } from "../../src/engine/index.js";
+import { scanDelivery, type DeliveryReport, type ContainerSource } from "../../src/delivery/index.js";
 
 import { loadAccuracyDeps, runIngested, type AccuracyDeps } from "../accuracy/pipeline.js";
 
@@ -31,7 +33,21 @@ export type AnalyzeResult = {
   auto_matched_playbook_id: string;
   /** The ingest result, so the report builders (JSON/HTML) can render. */
   ingest: IngestResult;
+  /**
+   * Pre-disclosure scan (spec-v9 Thrust A), populated only when `--delivery`
+   * is passed. Reads the ORIGINAL bytes for tracked changes, comments, hidden
+   * content, metadata, and sensitive-data patterns; carries its own
+   * `delivery_hash` outside `run.result_hash`.
+   */
+  delivery?: DeliveryReport;
 };
+
+function containerSource(path: string): ContainerSource {
+  const ext = extname(path).toLowerCase();
+  if (ext === ".docx") return "docx";
+  if (ext === ".pdf") return "pdf";
+  return "paste";
+}
 
 /** Format families the CLI can ingest, by extension. */
 const TEXT_EXT = new Set([".txt", ".md", ".markdown", ".text"]);
@@ -61,13 +77,21 @@ async function ingestByExtension(path: string, bytes: Buffer): Promise<IngestRes
  */
 export async function analyzeFile(
   path: string,
-  opts: { playbookId?: string; deps?: AccuracyDeps } = {},
+  opts: { playbookId?: string; deps?: AccuracyDeps; delivery?: boolean } = {},
 ): Promise<AnalyzeResult> {
   const deps = opts.deps ?? (await loadAccuracyDeps());
   const bytes = await readFile(path);
   const ingest = await ingestByExtension(path, bytes);
   const result = await runIngested(ingest, basename(path), opts.playbookId, deps);
-  return { ...result, ingest };
+  const out: AnalyzeResult = { ...result, ingest };
+  if (opts.delivery) {
+    out.delivery = await scanDelivery({
+      bytes: toArrayBuffer(bytes),
+      source: containerSource(path),
+      text: flattenText(ingest.tree),
+    });
+  }
+  return out;
 }
 
 /**

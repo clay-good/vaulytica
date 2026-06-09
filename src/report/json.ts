@@ -18,6 +18,7 @@ import {
 import { selectStateOverlays, type StateOverlayResult } from "../dkb/state-overlays.js";
 import type { ExtractedData } from "../extract/types.js";
 import { buildClauseEvidence, type ClauseEvidenceSummary } from "./clause-evidence.js";
+import type { DeliveryReport } from "../delivery/types.js";
 
 /**
  * One additional detected family's scan results (spec-v6 multi-family
@@ -110,6 +111,17 @@ export type JsonReport = {
    * all findings are quoted).
    */
   clause_evidence: ClauseEvidenceSummary;
+  /**
+   * Pre-disclosure / "Clean to Send" scan (spec-v9 Thrust A). Container facts
+   * recovered from the document's ORIGINAL bytes — tracked changes, comments,
+   * hidden content, authoring metadata, sensitive-data patterns — aggregated
+   * into a {@link DeliveryReport} with its OWN `delivery_hash`. Lives outside
+   * `run`, namespaced apart from `result_hash` (the v8 Step-146 "field outside
+   * the run" precedent), so adding it re-baselines no existing golden. Emitted
+   * only when the scan ran (the CLI `--delivery` flag / the tab's delivery
+   * pass); absent otherwise, so existing consumers are unaffected.
+   */
+  delivery?: DeliveryReport;
 };
 
 export function buildJsonReport(
@@ -118,6 +130,7 @@ export function buildJsonReport(
   playbook?: Playbook,
   secondaryFamilies?: ReadonlyArray<ReportSecondaryFamily>,
   extracted?: ExtractedData,
+  delivery?: DeliveryReport,
 ): Blob {
   // spec-v6 Part IV — one model-clause reference per distinct fired rule that
   // has one, in first-seen finding order (findings arrive pre-sorted).
@@ -168,6 +181,8 @@ export function buildJsonReport(
   if (secondaryFamilies && secondaryFamilies.length > 0) {
     payload.secondary_families = secondaryFamilies.map((s) => ({ ...s }));
   }
+  // spec-v9 Thrust A — the Delivery block, outside `run` so `result_hash` is unchanged.
+  if (delivery) payload.delivery = delivery;
   const json = JSON.stringify(payload, null, 2);
   return new Blob([json], { type: "application/json" });
 }

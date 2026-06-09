@@ -171,6 +171,45 @@ const STATES: Array<{ name: string; state: DropzoneState }> = [
         ],
         uncovered_states: ["Wyoming", "Mississippi", "West Virginia"],
       },
+      // v9 Thrust A pre-disclosure scan — long author names, an unbroken
+      // template path, and masked spans are prime overflow candidates.
+      delivery: {
+        inspectable: true,
+        summary:
+          "Delivery: 3 tracked changes, 2 comments, 5 metadata fields, 4 sensitive-data spans — review before sending.",
+        findings: [
+          {
+            rule_id: "HANDOFF-001",
+            severity: "critical",
+            title: "Tracked changes are still present",
+            description: "3 tracked-change revisions remain in the document's container.",
+            count: 3,
+            evidence: [
+              "insertion by Opposing Counsel — Wilson Sonsini Goodrich & Rosati: “indemnify and hold harmless from any and all claims whatsoever arising”",
+              "deletion by Jane Q. Partner: “net thirty (30) days from the date of invoice”",
+            ],
+          },
+          {
+            rule_id: "HANDOFF-004",
+            severity: "critical",
+            title: "Authoring metadata is present",
+            description: "5 authoring-metadata fields are embedded in the container. 2 identity fields name an entity not among the document's parties (a likely cross-matter leak).",
+            count: 5,
+            evidence: [
+              "template: C:\\Users\\jdrafter\\AppData\\Roaming\\Microsoft\\Templates\\PriorClient_Globex_MSA_FINAL_v7.dotx ⚠ not a named party",
+              "company: Globex Industries International Holdings LLC ⚠ not a named party",
+            ],
+          },
+          {
+            rule_id: "HANDOFF-005",
+            severity: "critical",
+            title: "Sensitive-data patterns are present",
+            description: "4 spans match sensitive-data formats that are routinely redacted before disclosure.",
+            count: 4,
+            evidence: ["ssn (high confidence): ***-**-6789", "card (high confidence): ************4242"],
+          },
+        ],
+      },
     },
   },
   {

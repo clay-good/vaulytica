@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,062 deterministic rules` · `20 cross-document checks` · `16 document sub-domains` · `35 state-law overlays` · `7 export formats` · `0 servers` · `0 AI` · `2,803 passing tests` · `v8.0.0` · `MIT`
+`1,062 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `16 document sub-domains` · `35 state-law overlays` · `7 export formats` · `0 servers` · `0 AI` · `2,829 passing tests` · `v8.1.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
 
@@ -84,6 +84,40 @@ Those 1,062 are all **single-document** rules. Dropping a folder or `.zip` addit
 | `CROSS-AMOUNT` · `CROSS-DATE` · `CROSS-MISSING` | fee/date conflicts between documents; a referenced companion doc that isn't in the set |
 | `CC-001`…`CC-007` | BAA ↔ MSA ↔ DPA scope consistency (e.g. a BAA purpose broader than the MSA permits) |
 
+## Clean to send — the pre-disclosure scan (v9 Thrust A)
+
+The malpractice headline is rarely a missing indemnity cap. It is a redline sent with **opposing counsel's comments still attached**, a "final" Word file whose **metadata names the prior client** it was templated from, or a **tracked change** that reveals a number the sender meant to bury. Vaulytica was blind to all of these by construction — its DOCX ingest runs `mammoth.convertToHtml`, whose whole job is to *flatten* a document to clean prose: it resolves tracked changes to their accepted state, drops the comment store, and ignores `docProps`. The facts you most need a second pair of eyes on were the facts the engine deleted on the way in.
+
+v9 opens a **second read surface over the original container bytes** — the `.docx`/`.pdf` exactly as you dropped it — and recovers what the flattening threw away. It is uniquely enabled by the no-server posture: the one document you must *never* upload to a cloud scrubber (privileged, unredacted, comment-laden) is exactly the one this checks, **in the tab**.
+
+```mermaid
+flowchart LR
+  A[Original bytes<br/>.docx / .pdf] --> B[readContainer<br/>fflate · linear regex<br/>v8 zip-bomb guards]
+  B --> C[ContainerFacts<br/>revisions · comments ·<br/>hidden · metadata · sensitive]
+  C --> D[HANDOFF-001…005<br/>presence-only · masked]
+  D --> E[DeliveryReport<br/>+ delivery_hash]
+  A2[Flattened text<br/>DocumentTree] -.engine result_hash.-> F[Rule findings]
+  E -.namespaced apart.-> F
+  style E fill:#00A883,color:#fff
+  style B fill:#00A883,color:#fff
+```
+
+| Check | Catches | Severity | Cites |
+|---|---|---|---|
+| `HANDOFF-001` | residual **tracked changes** (`w:ins`/`w:del`/`w:move*`) — count, author, location | critical | the revision element |
+| `HANDOFF-002` | live **comments** (`word/comments.xml`, PDF sticky notes) — author, excerpt | critical | the comment |
+| `HANDOFF-003` | **hidden / non-printing** content (`w:vanish`, deleted-but-retained text) | warning | the recovered span |
+| `HANDOFF-004` | **authoring metadata** (`core.xml`/`app.xml`, PDF Info) — flags a `Company`/`Template` naming an entity **absent from the parties** (cross-matter leak) | info → critical | the metadata field |
+| `HANDOFF-005` | **sensitive-data patterns** — SSN (structural), EIN, card (**Luhn**), routing (**ABA**), DOB, email/phone | warning → critical | the **masked** span |
+
+Three invariants make it safe to point at your most sensitive file:
+
+- **Presence-only, never a clean bill.** A scan that matches nothing has found *nothing it can match*, not *nothing there*. The report says "found N items of these types" — it never says "this document is clean / safe to send."
+- **Masking is a hard invariant.** No `HANDOFF-005` finding, in any format, ever contains an unmasked value: `***-**-6789`, not the SSN. The report that *warns about* exposed PII must not itself reproduce it. A test greps every serialized finding to prove it.
+- **It reports, it never removes.** v9 tells you a tracked change is at §4.2; deleting it stays your deliberate act in Word. It never strips, accepts, redacts, or renders a legal conclusion ("validly executed", "privilege waived") — the same lint-not-draft line v4 drew.
+
+**Zero engine churn.** The `HANDOFF-*` findings carry their own `delivery_hash` over the container facts, **namespaced apart from** the engine `result_hash`. A text-only or metadata-clean document produces an empty report and re-baselines no golden. Run it from the CLI with `--delivery`, read the `delivery` block in the JSON, or see the "Clean to send?" card in the tab.
+
 ## What the result looks like
 
 <img src="docs/images/report-mobile.png" alt="Vaulytica report card on a phone: severity counts, a California non-compete jurisdiction overlay with citation, and one-click exports — Word, JSON, fix-list (Markdown/CSV), obligations, deadlines (.ics), HTML report, and SARIF" width="320" align="right" />
@@ -105,6 +139,7 @@ Every view is verified to render with **no horizontal scroll from 320 px to 1280
 | v6 | Workflow | version comparison · bring-your-own-playbook · findings-to-action exports · model-clause references · portfolio matrix · depth (classifier, cross-doc families, jurisdiction overlays) | **complete · 6.0.0** (Steps 87–102; only Step 98 extraction-recall deferred behind v5) |
 | v7 | Depth & Proof | extraction recall · 3 new cross-doc families · mixed-text-layer OCR + per-word confidence · report provenance/exec-summary · **and** the missing test *kinds*: coverage + property + metamorphic + parity + schema-fuzz + report-structure + **mutation** + responsiveness gates | **substantially done · 7.0.0** (Steps 103–108, 110, 113–126; [`spec-v7`](docs/spec-v7.md) · [`docs/v7/`](docs/v7/README.md)). Deferred — all v5-/attorney-gated: 109 (routing measured against the real corpus), 111 (per-state overlay data), 112 (golden-churn + citable sources). |
 | v8 | Hardening & Reach | (A) input-boundary guards + fuzz gate so the engine *survives* hostile input · (B) inline-everywhere/honest citations across every format · (C) SARIF, a headless CLI, a single-file HTML report, a playbook diff, a reproducibility verifier — the linter in the workflow · (D) clause-level redline for version comparison · (E) a GitHub Action + publish-ready `vaulytica` binary | **complete · 8.0.0** (Steps 127–147 + the Part-XVIII redline + the distribution surface; [`spec-v8`](docs/spec-v8.md) · [`docs/v8/`](docs/v8/README.md)). Deferred — attorney-gated publication dates, scheduled (not per-commit) citation reachability, the act of `npm publish` (maintainer credentials). |
+| v9 | The Last Look | **(A) Clean to Send** — a pre-disclosure scan over the *original container bytes*: residual tracked changes, live comments, hidden content, cross-matter metadata, and masked sensitive-data patterns (`HANDOFF-001…005`) the flattening ingest discards, with their own `delivery_hash` outside the engine `result_hash` · (B) Ready to Sign and (C) Tracked to Its Dates are specified, not yet built | **Thrust A complete · 8.1.0** (Steps 148–154; [`spec-v9`](docs/spec-v9.md) · [`docs/v9/`](docs/v9/)). Proposed — Thrusts B (155–159) and C (160–164) + the close (165). |
 
 ## v8 — hardening: a tool that cannot be made to hang
 
@@ -142,6 +177,10 @@ npm run cli -- analyze contract.docx --format sarif
 
 # analyze: sweep a deal folder, write HTML + JSON + fix-list per doc, gate CI on any critical
 npm run cli -- analyze ./deal-room --format html,json,md --out ./out --fail-on critical
+
+# analyze: run the v9 pre-disclosure scan too (tracked changes, comments, metadata, PII)
+# — adds a `delivery` block to the JSON + a presence-only summary line per file
+npm run cli -- analyze final-redline.docx --delivery --format json
 
 # diff: structural diff of two custom playbooks (CI primitive — --exit-code fails on any change)
 npm run cli -- diff team-standard-v1.json team-standard-v2.json --exit-code
@@ -373,7 +412,7 @@ npm run dev          # open the printed URL
 npm run build        # static site → dist/
 npm run typecheck    # tsc --noEmit
 npm run lint         # eslint
-npm run test         # vitest — 2,803 tests, ~20s
+npm run test         # vitest — 2,829 tests, ~20s
 npm run coverage     # vitest + V8 coverage, enforces the regression floor
 npm run accuracy     # v5 Ground Truth harness → tools/accuracy/SCOREBOARD.md
 npm run mutation     # Stryker mutation score (scoped to extractors; slow, off the per-push path)
@@ -415,6 +454,7 @@ src/
                jurisdictions · cross-refs · classifier
   dkb/         Deterministic Knowledge Base types, loader, model-clauses, state-overlays
   engine/      pure rule runner + 1,062 rules + cross-document consistency
+  delivery/    v9 pre-disclosure scan — container read · HANDOFF-001…005 · masking · DeliveryReport
   playbooks/   built-in playbooks + bring-your-own schema/validator/interpreter
   report/      DOCX · JSON · SARIF · HTML · bundle · comparison · exports ·
                portfolio matrix · citations · clause-evidence
@@ -424,7 +464,7 @@ tools/accuracy/ v5 Ground Truth harness (corpus loader, κ, metrics, scoreboard,
 tools/cli/     v8 headless API (analyzeText/analyzeFile) + `vaulytica analyze | diff | compare | verify` CLI dispatcher
 tools/citation-check/ v8 build-only citation URL well-formedness + scheduled reachability
 corpus/        real-document accuracy corpus (build/CI-only; never in the bundle)
-docs/          architecture, determinism, threat model, legal-basis ledger, specs v1–v8
+docs/          architecture, determinism, threat model, legal-basis ledger, specs v1–v9
 playbooks/     served playbook JSON; tools/ bundles the v3+v4 catalog
 ```
 

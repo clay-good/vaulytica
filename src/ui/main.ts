@@ -203,6 +203,7 @@ function renderCompleteState(
     custom_playbook?: import("./pipeline.js").PipelineResult["custom_playbook"];
     secondary_families?: import("./pipeline.js").PipelineResult["secondary_families"];
     jurisdiction_overlays?: import("./pipeline.js").PipelineResult["jurisdiction_overlays"];
+    delivery?: import("./pipeline.js").PipelineResult["delivery"];
   },
   countsBySeverity: (r: import("./pipeline.js").PipelineResult["run"]) => {
     critical: number;
@@ -297,6 +298,24 @@ function renderCompleteState(
             uncovered_states: result.jurisdiction_overlays.uncovered_states,
           }
         : undefined,
+    // spec-v9 Thrust A — pre-disclosure ("Clean to Send") scan over the
+    // original container bytes. Surfaced as a prominent block above the counts;
+    // presence-only, never a clean bill of health.
+    delivery: result.delivery
+      ? {
+          inspectable: result.delivery.inspectable,
+          note: result.delivery.note,
+          summary: result.delivery.summary,
+          findings: result.delivery.findings.map((f) => ({
+            rule_id: f.rule_id,
+            severity: f.severity,
+            title: f.title,
+            description: f.description,
+            count: f.count,
+            evidence: f.evidence,
+          })),
+        }
+      : undefined,
     // v6 Part I comparison (Step 90). The base run is the one currently
     // rendered, so a frame-toggle re-run rebinds compare to the fresh run.
     on_compare: (revisedFile) => {

@@ -47,6 +47,8 @@ type Args = {
   formats: Format[];
   out?: string;
   failOn?: Severity;
+  /** spec-v9 Thrust A — run the pre-disclosure ("Clean to Send") scan. */
+  delivery?: boolean;
 };
 
 function parseArgs(argv: string[]): Args {
@@ -73,6 +75,9 @@ function parseArgs(argv: string[]): Args {
       case "--fail-on":
         args.failOn = val as Severity;
         i++;
+        break;
+      case "--delivery":
+        args.delivery = true;
         break;
       default:
         throw new Error(`unknown flag "${flag}"`);
@@ -139,7 +144,7 @@ export async function resolveInputs(target: string): Promise<string[]> {
 async function renderFormat(fmt: Format, r: AnalyzeResult, dkb: Dkb): Promise<string> {
   switch (fmt) {
     case "json":
-      return buildJsonReport(r.run, r.ingest).text();
+      return buildJsonReport(r.run, r.ingest, undefined, undefined, undefined, r.delivery).text();
     case "sarif":
       return buildSarifJson(r.run);
     case "html":
@@ -173,13 +178,14 @@ async function runAnalyze(argv: string[]): Promise<void> {
 
   let breached = false;
   for (const file of inputs) {
-    const r = await analyzeFile(file, { playbookId: args.playbook, deps });
+    const r = await analyzeFile(file, { playbookId: args.playbook, deps, delivery: args.delivery });
 
     const counts = { critical: 0, warning: 0, info: 0 };
     for (const f of r.run.findings) counts[f.severity]++;
     process.stdout.write(
       `${file}  [${r.playbook_id}]  ${counts.critical}C ${counts.warning}W ${counts.info}I\n`,
     );
+    if (r.delivery) process.stdout.write(`  ${r.delivery.summary}\n`);
 
     for (const fmt of args.formats) {
       const content = await renderFormat(fmt, r, deps.dkb);
