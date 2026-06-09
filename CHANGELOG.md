@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Fixed
+- **Headless CLI ingested a directory in host-locale order (non-deterministic
+  reproduction).** `vaulytica analyze <dir>`'s `walkDir` sorted directory
+  entries with a bare `localeCompare`, which depends on the host locale/ICU —
+  so the same folder could be analyzed (and its per-file report lines printed,
+  its output files written, its `--fail-on` evaluated) in a *different order* on
+  a machine with a different `LANG`. The sibling glob branch already used
+  code-unit `.sort()`, so `analyze dir/` and `analyze 'dir/*.ext'` could even
+  disagree on order. Switched the walk to a code-unit comparator (locale- and
+  ICU-independent, identical to the glob branch). The build-time playbook
+  bundler (`tools/build-extended-playbooks.ts`) carried the same bare
+  `localeCompare` over playbook ids; pinned it the same way (regenerating
+  `playbooks/extended.json` is byte-identical — the IDs already sorted the same).
+  The static **locale-pin guard** now also scans `tools/cli/` — the published
+  CLI is a distribution surface that runs the same engine and so carries the
+  same reproducibility contract as the shipped `src/` bundle; previously the
+  guard only covered `src/`, which is how this slipped through. +2 tests
+  (`resolveInputs` directory ordering proves uppercase sorts before lowercase,
+  which `localeCompare` would not do).
 - **Local Playwright e2e couldn't reach its own preview server (IPv4/IPv6
   mismatch).** `vite preview` defaults to binding `localhost`, which on a
   dual-stack machine resolves to IPv6 `::1`, but the Playwright `webServer`

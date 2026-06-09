@@ -84,8 +84,12 @@ function parseArgs(argv: string[]): Args {
 /** Recursively collect supported files under a directory. */
 async function walkDir(dir: string): Promise<string[]> {
   const out: string[] = [];
+  // Code-unit ordering (not `localeCompare`, which depends on the host
+  // locale/ICU and would make a directory analysis non-reproducible across
+  // machines) — and identical to the glob branch's bare `.sort()`, so
+  // `analyze dir/` and `analyze 'dir/*.ext'` ingest files in the same order.
   for (const entry of (await readdir(dir, { withFileTypes: true })).sort((a, b) =>
-    a.name.localeCompare(b.name),
+    a.name < b.name ? -1 : a.name > b.name ? 1 : 0,
   )) {
     if (entry.name.startsWith(".")) continue;
     const full = join(dir, entry.name);
@@ -115,7 +119,7 @@ export function globToRegExp(pattern: string): RegExp {
 }
 
 /** Resolve the target into a deterministic, sorted list of input files. */
-async function resolveInputs(target: string): Promise<string[]> {
+export async function resolveInputs(target: string): Promise<string[]> {
   const st = await stat(target).catch(() => null);
   if (st?.isDirectory()) return walkDir(target);
   if (st?.isFile()) return [target];

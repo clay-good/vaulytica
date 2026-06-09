@@ -49,7 +49,13 @@ export function collectExtendedPlaybooks(): Array<Record<string, unknown>> {
       out.push(obj);
     }
   }
-  out.sort((a, b) => String(a.id).localeCompare(String(b.id)));
+  // Code-unit ordering (not host-locale `localeCompare`) so the bundled
+  // artifact is byte-identical whoever regenerates it, on any machine.
+  out.sort((a, b) => {
+    const x = String(a.id);
+    const y = String(b.id);
+    return x < y ? -1 : x > y ? 1 : 0;
+  });
   return out;
 }
 

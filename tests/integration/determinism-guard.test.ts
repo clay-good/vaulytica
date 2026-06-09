@@ -26,6 +26,10 @@ import { listFixtures, runFixture } from "./_pipeline-helpers.js";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CONTRACTS = join(__dirname, "..", "fixtures", "contracts");
 const SRC = join(__dirname, "..", "..", "src");
+// The headless CLI (`tools/cli/`) is a *published* distribution surface that
+// runs the same engine and must produce reproducible output across machines —
+// so it carries the same locale-pin contract as the shipped `src/` bundle.
+const CLI = join(__dirname, "..", "..", "tools", "cli");
 const REPEATS = 5;
 
 const fixtures = await listFixtures(CONTRACTS);
@@ -52,25 +56,29 @@ describe("determinism guard — repeated runs", () => {
  * `result_hash` (a playbook match tie-break, the currency a finding quotes,
  * a cross-doc cap rendered into finding text). Two such bugs reached `main`
  * before this guard existed. The rule: every `localeCompare`/`toLocaleString`
- * in shipped `src/` must pin an explicit `"en"`/`"en-US"` locale.
+ * in shipped `src/` (and the published `tools/cli/`) must pin an explicit
+ * `"en"`/`"en-US"` locale — or avoid `localeCompare` entirely in favor of
+ * code-unit ordering, which is locale- and ICU-independent.
  */
-function collectSrcFiles(dir: string): string[] {
+function collectTsFiles(dir: string): string[] {
   const out: string[] = [];
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const full = join(dir, entry.name);
-    if (entry.isDirectory()) out.push(...collectSrcFiles(full));
+    if (entry.isDirectory()) out.push(...collectTsFiles(full));
     else if (entry.name.endsWith(".ts") && !entry.name.endsWith(".test.ts")) out.push(full);
   }
   return out;
 }
 
+const REPO_ROOT = join(__dirname, "..", "..");
+
 describe("determinism guard — locale-pin source scan", () => {
-  it("every localeCompare/toLocaleString in src/ pins an explicit locale", () => {
+  it("every localeCompare/toLocaleString in src/ and tools/cli/ pins an explicit locale", () => {
     const violations: string[] = [];
-    for (const file of collectSrcFiles(SRC)) {
+    for (const file of [...collectTsFiles(SRC), ...collectTsFiles(CLI)]) {
       const lines = readFileSync(file, "utf8").split("\n");
       lines.forEach((line, i) => {
-        const rel = `${file.slice(file.indexOf("/src/") + 1)}:${i + 1}`;
+        const rel = `${file.slice(REPO_ROOT.length + 1)}:${i + 1}`;
         // Each call site is single-line in this codebase, so a line-level
         // check is exact: the pinned forms always carry an "en" locale literal.
         if (/\.localeCompare\(/.test(line) && !/"en(-US)?"/.test(line)) {
