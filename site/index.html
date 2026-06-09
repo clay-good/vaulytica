@@ -93,6 +93,9 @@
         --line: #1f2530;
         --accent: #00e5a8;
         --accent-strong: #00e5a8;
+        /* Link-text colour (≥ 4.5:1 on this theme's surfaces). Dark: the
+           bright mint reads cleanly on near-black. */
+        --link: #00e5a8;
         --shadow: 0 1px 0 rgba(255, 255, 255, 0.03), 0 8px 32px rgba(0, 0, 0, 0.4);
         --radius: 14px;
         --max: 1100px;
@@ -114,6 +117,9 @@
         --line: #e6e4dd;
         --accent: #00a883;
         --accent-strong: #00a883;
+        /* Light: the brand mint is only ~2.7:1 on the cream surfaces, so link
+           text uses a darker on-brand teal (≥ 5:1). Buttons keep --accent. */
+        --link: #00735a;
         --shadow: 0 1px 0 rgba(0, 0, 0, 0.02), 0 8px 32px rgba(0, 0, 0, 0.08);
       }
       * {
@@ -134,7 +140,12 @@
         text-rendering: optimizeLegibility;
       }
       a {
-        color: var(--accent);
+        /* `--link` (not the raw brand --accent) so link *text* meets WCAG 2 AA
+           on each theme's surfaces: the bright mint reads on near-black (dark)
+           but is only ~2.7:1 on the cream (light), so light uses a darker
+           on-brand teal. Button-styled links (e.g. .cta) keep their own
+           class-level colour — this element selector is lower-specificity. */
+        color: var(--link);
         text-decoration: none;
       }
       a:hover {
@@ -1628,7 +1639,7 @@
           Multiple files? Drop a folder or
           <button type="button" class="btn-link" data-role="folder-pick">choose a folder…</button>
         </p>
-        <div class="playbook-panel dropzone-extras" id="playbook-panel" aria-label="Bring your own playbook"></div>
+        <div class="playbook-panel dropzone-extras" id="playbook-panel" role="group" aria-label="Bring your own playbook"></div>
       </section>
 
       <!-- What it checks -->

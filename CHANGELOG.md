@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Accessibility
+- **Marketing landing page is now WCAG 2 AA in both themes (gated).** The live
+  axe sweep `disableRules(["color-contrast", "region"])` and only runs the dark
+  theme, so the full landing page's contrast was never gated. A new
+  `tests/e2e/landing-responsive-a11y.spec.ts` renders the real `site/index.html`
+  via `page.setContent` (no server), pins each theme via `data-theme`, runs axe
+  with **color-contrast enabled**, and checks no horizontal overflow at
+  320–1280 px. It found two real, never-tested defects: (1) the
+  bring-your-own-playbook panel had `aria-label` on a role-less `div`
+  (`aria-prohibited-attr`) → added `role="group"`; (2) **every link in the light
+  theme** rendered the brand mint (`#00a883`) at ~2.7:1 on the cream surfaces
+  (links are `var(--accent)` text) — introduced a `--link` token (dark: the
+  bright mint on near-black; light: a darker on-brand teal `#00735a` ≥ 5:1) so
+  link text clears AA while buttons keep `--accent`.
 - **Standalone HTML report is now responsive and WCAG 2 AA clean.** The
   shareable single-file report (spec-v8 §21) overflowed a 320 px phone by
   ~924 px — a long underscore-joined filename in the `<h1>` (and finding
