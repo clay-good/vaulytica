@@ -42,14 +42,15 @@ inputs:
 runs:
   using: "composite"
   steps:
-    # Install the engine's runtime deps in the action's own checkout. `tsx` is a
-    # runtime dependency, so the CLI runs from TypeScript source with no build
-    # step. `--ignore-scripts` skips native postinstalls (sharp/playwright) the
-    # CLI does not use, keeping the install fast and hermetic.
+    # Install only the engine's runtime deps in the action's own checkout. `tsx`
+    # is a runtime dependency, so the CLI runs from TypeScript source with no
+    # build step. `--omit=dev` skips the heavy dev-only deps (the `sharp` native
+    # build, Playwright) while still running `esbuild`'s postinstall — tsx needs
+    # esbuild, and `--ignore-scripts` would leave its binary unconfigured.
     - name: Install Vaulytica
       shell: bash
       working-directory: ${{ github.action_path }}
-      run: npm ci --ignore-scripts --no-audit --no-fund
+      run: npm ci --omit=dev --no-audit --no-fund
 
     # Run against the consumer's checked-out files (GITHUB_WORKSPACE). The DKB
     # ships with the tool, so analysis opens no socket — nothing leaves the

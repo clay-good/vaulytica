@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Fixed
+- **GitHub Action install would have broken `tsx` on the runner
+  (`--ignore-scripts`).** Self-reviewing the freshly-shipped Action: the install
+  step used `npm ci --ignore-scripts`, which skips **esbuild**'s `postinstall`
+  (`node install.js`) — and `tsx` (the CLI's runtime loader) depends on esbuild,
+  which fails at runtime when its binary is left unconfigured. Switched to
+  `npm ci --omit=dev`, which runs esbuild's postinstall while still skipping the
+  dev-only `sharp` native build and Playwright. Verified in an isolated install
+  that `--omit=dev` yields a working `tsx`. A test now pins `--omit=dev` and
+  forbids `--ignore-scripts`, so the regression can't recur.
+- **Trimmed `*.test.ts` from the publishable npm tarball.** Added `!**/*.test.ts`
+  to the `files` allow-list — the package no longer ships test files (601 → 472
+  files), while keeping `_test-fixtures.ts` (the CLI's `loadStarterDkbSync` lives
+  there, not a `.test.ts`). The earlier "noted pre-publish refinement" is done.
+
 ### Added
 - **Distribution surface: a `vaulytica` binary + a GitHub Action (spec-v8 §22).**
   The deferred "publish the CLI" item — the engineering half, not the

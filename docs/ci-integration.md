@@ -76,10 +76,11 @@ exposure — "this redline added a critical finding."
 | `playbook` | both | force a specific playbook id instead of auto-matching |
 | `out` | analyze | directory for one output file per document per format |
 
-The Action is a **composite** action: it installs the engine's runtime
-dependencies in its own checkout (`tsx` is a runtime dep, so the TypeScript CLI
-runs with no build step; `--ignore-scripts` skips native postinstalls the CLI
-does not use) and runs it against your checked-out files. The engine is the
+The Action is a **composite** action: it installs only the engine's runtime
+dependencies in its own checkout (`npm ci --omit=dev` — `tsx` is a runtime dep,
+so the TypeScript CLI runs with no build step; the dev-only `sharp` native build
+and Playwright are skipped, while `esbuild`'s postinstall, which `tsx` needs,
+still runs) and runs it against your checked-out files. The engine is the
 *same* engine the tab runs, proven byte-identical by the parity test — so a
 number on a dashboard describes shipped behavior.
 
@@ -130,10 +131,9 @@ The package is **publish-ready** but ships `private: true` so an accidental
    (or a major-version moving tag your consumers reference).
 
 The published tarball ships the source CLI + engine + the starter DKB +
-playbooks (the `files` allow-list); the runtime data is resolved relative to the
-package's own tree, so `npx vaulytica` works from any directory. Trimming the
-in-tree `*.test.ts` files from the tarball (a `files`-pattern refinement) is a
-reasonable pre-publish cleanup; it does not affect correctness.
+playbooks (the `files` allow-list, with `!**/*.test.ts` trimming the in-tree
+test files); the runtime data is resolved relative to the package's own tree, so
+`npx vaulytica` works from any directory.
 
 ## Posture in CI (unchanged)
 

@@ -36,7 +36,8 @@
     "src/",
     "dkb/dist/v0.0.1-starter/",
     "playbooks/",
-    "tsconfig.json"
+    "tsconfig.json",
+    "!**/*.test.ts"
   ],
   "scripts": {
     "dev": "vite",

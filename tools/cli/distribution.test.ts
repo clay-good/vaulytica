@@ -67,7 +67,11 @@ describe("action.yml (GitHub composite Action)", () => {
     expect(action.runs.using).toBe("composite");
     expect(action.runs.steps.length).toBeGreaterThanOrEqual(2);
     const runs = action.runs.steps.map((s) => s.run ?? "").join("\n");
-    expect(runs).toContain("npm ci");
+    // Must install with --omit=dev (not --ignore-scripts): tsx needs esbuild's
+    // postinstall to configure its binary, which --ignore-scripts would skip
+    // and break the runner; --omit=dev still skips the dev-only sharp build.
+    expect(runs).toContain("npm ci --omit=dev");
+    expect(runs).not.toContain("--ignore-scripts");
     expect(runs).toContain('node "$VAULYTICA_BIN"');
     // The bin is resolved from the action's own checkout.
     expect(actionText).toContain("${{ github.action_path }}/bin/vaulytica.mjs");
