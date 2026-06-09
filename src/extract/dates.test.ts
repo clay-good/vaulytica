@@ -104,4 +104,18 @@ describe("extractDates", () => {
     expect(labels).toContain("FY2026");
     expect(fiscal.every((d) => d.iso === undefined)).toBe(true);
   });
+
+  it("does not catastrophically backtrack on a long Unicode-whitespace run (ReDoS guard)", () => {
+    // The RELATIVE / RANGE_RELATIVE numeral chain previously used four adjacent
+    // unbounded `\s*`; `\s` matches NBSP (U+00A0), which `normalize` does not
+    // collapse (it folds only `[ \t\r\n]`), so a crafted run of NBSPs caused
+    // polynomial backtracking. Bounded whitespace makes the match linear; under
+    // the old pattern this input would not complete (the test would time out).
+    const nbsp = String.fromCharCode(0xa0); // U+00A0 — survives `normalize`
+    const evil = "due within " + nbsp.repeat(5000) + "days after X";
+    const t0 = performance.now();
+    const out = extractDates(buildTree(["Notice", evil]));
+    expect(performance.now() - t0).toBeLessThan(1000);
+    expect(Array.isArray(out)).toBe(true);
+  });
 });

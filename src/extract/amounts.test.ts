@@ -90,4 +90,17 @@ describe("extractAmounts", () => {
     const out = extractAmounts(buildTree(["Fees", "The fee is $100,000."]));
     expect(out[0]?.currency).toBe("USD");
   });
+
+  it("does not catastrophically backtrack on a number word + long separator run (ReDoS guard)", () => {
+    // `WORD_FORM` previously matched `(?:…|[-\s]+)+`, which degenerates to
+    // `([-\s]+)+` on a run of hyphens/spaces — exponential backtracking. A
+    // fill-in line like `ten -------------` (common in templates) would hang
+    // the extractor. With a single-char separator the match is linear; under
+    // the old pattern this input would not complete (the test would time out).
+    const evil = "Pay ten " + "-".repeat(2000) + " widgets per order.";
+    const t0 = performance.now();
+    const out = extractAmounts(buildTree(["Fees", evil]));
+    expect(performance.now() - t0).toBeLessThan(1000);
+    expect(Array.isArray(out)).toBe(true);
+  });
 });

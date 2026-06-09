@@ -103,8 +103,15 @@ const WORD_SCALES: Record<string, string> = {
   trillion: "1000000000000",
 };
 
+// The inner separator is a SINGLE `[-\s]` (not `[-\s]+`): a `(?:…|[-\s]+)+`
+// shape is catastrophic backtracking (ReDoS) — for a run of hyphens/spaces it
+// degenerates to `([-\s]+)+`, with 2^(n-1) ways to partition the run, so a
+// fill-in line like `ten ------------------` would hang the extractor. With a
+// single-char separator each space/hyphen is one deterministic iteration; the
+// matched language and greedy match are identical (verified), so no golden
+// churn — but the match is now linear instead of exponential.
 const WORD_FORM = new RegExp(
-  String.raw`\b((?:(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion|trillion|and|[-\s]+)+))\s+(dollars?|euros?|pounds?\s+sterling|pounds?)\b`,
+  String.raw`\b((?:(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion|trillion|and|[-\s])+))\s+(dollars?|euros?|pounds?\s+sterling|pounds?)\b`,
   "gi",
 );
 

@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Fixed
+- **Catastrophic regex backtracking (ReDoS) in the amount and date extractors —
+  the engine could be made to hang.** Three extractor patterns had a
+  super-linear backtracking shape on adversarial input, defeating the spec-v8
+  Thrust A "a tool that cannot be made to hang" guarantee (the input-size guards
+  don't help — a ~100-character paragraph triggers it):
+  - `amounts.ts` `WORD_FORM` used `(?:…|[-\s]+)+`, which degenerates to
+    `([-\s]+)+` over a run of hyphens/spaces — **exponential** (verified:
+    28 hyphens ≈ 0.8 s, each +4 ≈ 16×). A fill-in line like
+    `ten ------------------` (common in templates, and hyphens survive
+    normalization) would hang. Fixed to a single-char separator `[-\s]`
+    (identical language and greedy match → zero golden churn; now linear —
+    5,000 chars in 0.05 ms).
+  - `dates.ts` `RELATIVE` / `RANGE_RELATIVE` used four adjacent unbounded `\s*`
+    in the optional numeral chain — **polynomial** over a whitespace run. `\s`
+    matches Unicode whitespace (NBSP `U+00A0`, etc.) that `normalize` does **not**
+    collapse (it folds only `[ \t\r\n]`), so a crafted run of NBSPs was
+    reachable (200 k chars ≈ 23 s before). Bounded each to `\s{0,8}` (the
+    spec-v8 §5 "bound, never timeout" idiom; eight is far beyond any real
+    inter-token gap, which is ≤ 2 post-normalization → byte-identical on every
+    realistic input, verified across the golden suite → zero churn; now linear —
+    200 k chars in 0.9 ms).
+  +2 regression tests assert each extractor stays fast (< 1 s) on the
+  adversarial run (under the old patterns these would not complete).
 - **Headless CLI ingested a directory in host-locale order (non-deterministic
   reproduction).** `vaulytica analyze <dir>`'s `walkDir` sorted directory
   entries with a bare `localeCompare`, which depends on the host locale/ICU —

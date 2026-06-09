@@ -52,13 +52,21 @@ const NUMBER_WORDS: Record<string, number> = {
  * the same phrase is not double-counted. A range whose upper bound is
  * unresolved is reported verify-manually, never guessed to one date.
  */
+// The optional numeral chain between the count word and the unit uses BOUNDED
+// whitespace (`\s{0,8}`, not `\s*`): four adjacent unbounded `\s*` over the same
+// whitespace run is polynomial backtracking (ReDoS) — `\s` matches Unicode
+// whitespace (NBSP, etc.) that `normalize` does NOT collapse (it folds only
+// `[ \t\r\n]`), so a crafted run of hundreds of NBSPs would otherwise hang the
+// extractor (spec-v8 §5: bound, never timeout). Eight is far beyond any real
+// inter-token gap (post-normalization ≤ 2), so the match is byte-identical on
+// every realistic input — verified — while backtracking is now linear.
 const RANGE_RELATIVE = new RegExp(
-  String.raw`\b(?:within\s+|between\s+)?(\w+(?:[-\s]\w+)?)\s*\(?\s*(\d+)?\s*\)?\s*(?:to|-|–|—|and|or)\s+(\w+(?:[-\s]\w+)?)\s*\(?\s*(\d+)?\s*\)?\s*(day|days|week|weeks|month|months|year|years|business\s+day|business\s+days)\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z][\w\s]{2,40}?)(?=[.,;)]|$)`,
+  String.raw`\b(?:within\s+|between\s+)?(\w+(?:[-\s]\w+)?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(?:to|-|–|—|and|or)\s+(\w+(?:[-\s]\w+)?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(day|days|week|weeks|month|months|year|years|business\s+day|business\s+days)\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z][\w\s]{2,40}?)(?=[.,;)]|$)`,
   "gi",
 );
 
 const RELATIVE = new RegExp(
-  String.raw`\b(?:within\s+)?(\w+(?:[-\s]\w+)?)\s*\(?\s*(\d+)?\s*\)?\s*(day|days|week|weeks|month|months|year|years|business\s+day|business\s+days)\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z][\w\s]{2,40}?)(?=[.,;)]|$)`,
+  String.raw`\b(?:within\s+)?(\w+(?:[-\s]\w+)?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(day|days|week|weeks|month|months|year|years|business\s+day|business\s+days)\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z][\w\s]{2,40}?)(?=[.,;)]|$)`,
   "gi",
 );
 
