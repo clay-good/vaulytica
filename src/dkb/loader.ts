@@ -11,6 +11,7 @@ import {
 } from "./schema.js";
 import type { V3DkbNode } from "./v3/types.js";
 import { V3DkbNodeListSchema } from "./v3/schema.js";
+import { compareDkbVersions } from "./version.js";
 
 /**
  * Load the Deterministic Knowledge Base. Resolution order:
@@ -169,7 +170,11 @@ async function readLatestCache(): Promise<DKB | null> {
       req.onsuccess = (): void => {
         const records = (req.result as Array<{ version: string; dkb: DKB }> | undefined) ?? [];
         if (records.length === 0) return resolve(null);
-        records.sort((a, b) => a.version.localeCompare(b.version, "en"));
+        // Pick the latest by the DKB's own semantic version order, not string
+        // order: `compareDkbVersions` treats an unparseable version as oldest, so
+        // a corrupt cache record can never be chosen over a valid one (a bare
+        // `localeCompare` would sort e.g. "zzz-corrupt" *after* "v2026-…").
+        records.sort((a, b) => compareDkbVersions(a.version, b.version));
         resolve(records[records.length - 1]!.dkb);
       };
       req.onerror = (): void => reject(req.error);

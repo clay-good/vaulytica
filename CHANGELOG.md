@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Fixed
+- **DKB cache fallback could serve a corrupt record as "latest."**
+  `readLatestCache` (`src/dkb/loader.ts`) — the offline fallback that picks the
+  newest cached DKB out of IndexedDB when the exact requested version is missing
+  — sorted records with string `localeCompare` and served the maximum. A string
+  sort is not the DKB's version order: a garbage/corrupt version key like
+  `zzz-corrupt` sorts *after* a valid `v2026-06-07-local` (`'z' > 'v'`) and would
+  be chosen, feeding the engine a corrupt knowledge base. Switched to the
+  project's own `compareDkbVersions`, which parses the `vYYYY-MM-DD-<hash>` /
+  `v0.0.x-` forms and treats an unparseable version as **oldest** — so a valid
+  record always outranks a corrupt one. Well-formed current versions are
+  date-ordered identically, so behavior is unchanged for the normal path; this
+  hardens the corrupt-cache edge (v8 §5 posture). Runtime/IndexedDB-only → zero
+  golden churn; +1 test pinning the corruption-safety ordering.
+
 ### Security
 - **Neutralized CSV formula injection (CWE-1236) in the fix-list and obligations
   exports.** Both CSVs carry verbatim clause text (the obligations ledger emits

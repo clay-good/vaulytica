@@ -30,6 +30,17 @@ describe("compareDkbVersions", () => {
     expect(compareDkbVersions("v2026-05-11-a", "v2026-05-11-b")).toBeLessThan(0);
     expect(compareDkbVersions("v2026-05-11-b", "v2026-05-11-b")).toBe(0);
   });
+
+  it("treats an unparseable version as oldest (cache-corruption safety)", () => {
+    // The loader sorts cached DKB records by this comparator and serves the
+    // max. A corrupt/garbage version string must therefore never outrank a
+    // valid one — a string sort would put "zzz-corrupt" *after* "v2026-…".
+    expect(compareDkbVersions("zzz-corrupt", "v2026-06-07-local")).toBeLessThan(0);
+    expect(compareDkbVersions("v2026-06-07-local", "zzz-corrupt")).toBeGreaterThan(0);
+    const records = ["zzz-corrupt", "v0.0.1-starter", "v2026-06-07-local"];
+    records.sort(compareDkbVersions);
+    expect(records[records.length - 1]).toBe("v2026-06-07-local");
+  });
 });
 
 describe("isValidDkbVersion", () => {
