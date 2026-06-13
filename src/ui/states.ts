@@ -59,6 +59,13 @@ export type DropzoneState =
         closing_checklist_csv_blob?: Blob;
         closing_checklist_md_filename?: string;
         closing_checklist_csv_filename?: string;
+        /** spec-v10 Thrust B — negotiation posture export + sheet, present only with positions. */
+        negotiation_posture_md_blob?: Blob;
+        negotiation_posture_csv_blob?: Blob;
+        negotiation_sheet_blob?: Blob;
+        negotiation_posture_md_filename?: string;
+        negotiation_posture_csv_filename?: string;
+        negotiation_sheet_filename?: string;
       };
       /**
        * v3 family detection (spec-v3 §60). When `family === "unknown"`
@@ -419,6 +426,9 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
       <button class="btn-link" type="button" data-role="export-closing-checklist-csv" hidden>Closing checklist (CSV)</button>
       <button class="btn-link" type="button" data-role="export-critical-dates-ics" hidden>Critical dates (.ics)</button>
       <button class="btn-link" type="button" data-role="export-critical-dates-md" hidden>Critical dates (Markdown)</button>
+      <button class="btn-link" type="button" data-role="export-negotiation-sheet" hidden>Negotiation sheet (HTML)</button>
+      <button class="btn-link" type="button" data-role="export-negotiation-md" hidden>Negotiation posture (Markdown)</button>
+      <button class="btn-link" type="button" data-role="export-negotiation-csv" hidden>Negotiation posture (CSV)</button>
       <button class="btn-link" type="button" data-role="export-html">HTML report</button>
       <button class="btn-link" type="button" data-role="export-sarif">SARIF</button>
     </div>
@@ -541,6 +551,19 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
         const btn = select<HTMLButtonElement>(dz, "export-critical-dates-md")!;
         btn.removeAttribute("hidden");
         wire("export-critical-dates-md", ex.critical_dates_md_blob, ex.critical_dates_md_filename);
+      }
+      // spec-v10 Thrust B — negotiation posture export + sheet, shown only with positions.
+      if (ex.negotiation_sheet_blob && ex.negotiation_sheet_filename) {
+        select<HTMLButtonElement>(dz, "export-negotiation-sheet")!.removeAttribute("hidden");
+        wire("export-negotiation-sheet", ex.negotiation_sheet_blob, ex.negotiation_sheet_filename);
+      }
+      if (ex.negotiation_posture_md_blob && ex.negotiation_posture_md_filename) {
+        select<HTMLButtonElement>(dz, "export-negotiation-md")!.removeAttribute("hidden");
+        wire("export-negotiation-md", ex.negotiation_posture_md_blob, ex.negotiation_posture_md_filename);
+      }
+      if (ex.negotiation_posture_csv_blob && ex.negotiation_posture_csv_filename) {
+        select<HTMLButtonElement>(dz, "export-negotiation-csv")!.removeAttribute("hidden");
+        wire("export-negotiation-csv", ex.negotiation_posture_csv_blob, ex.negotiation_posture_csv_filename);
       }
       wire("export-html", ex.html_blob, ex.html_filename);
       wire("export-sarif", ex.sarif_blob, ex.sarif_filename);

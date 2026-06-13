@@ -63,4 +63,39 @@ describe("CLI/API parity with the parity-proven pipeline (spec-v8 Step 143)", ()
     const forced = await analyzeText(NDA, "nda.txt", { deps, playbookId: deps.launchPlaybooks[0]!.id });
     expect(forced.run.playbook_id).toBe(deps.launchPlaybooks[0]!.id);
   });
+
+  it("evaluates negotiation posture from a custom playbook (spec-v10 Step 172)", async () => {
+    const deps = await loadAccuracyDeps();
+    const dir = await mkdtemp(join(tmpdir(), "vaulytica-cli-"));
+    try {
+      const path = join(dir, "nda.txt");
+      await writeFile(path, NDA);
+      const customPlaybook = {
+        schema_version: "1.0" as const,
+        catalog_version: "0.1.0",
+        id: "acme",
+        name: "Acme",
+        description: "Acme negotiation positions.",
+        negotiation_positions: [
+          {
+            dimension: "Governing law",
+            ideal: { kind: "governing_law_in" as const, allowed: ["Delaware"] },
+            acceptable: { kind: "governing_law_in" as const, allowed: ["Delaware", "New York"] },
+            guidance: { ideal: "Delaware — hold." },
+          },
+        ],
+      };
+      const r = await analyzeFile(path, { deps, customPlaybook, posture: true });
+      expect(r.negotiation_posture).toBeDefined();
+      const row = r.negotiation_posture!.positions.find((p) => p.dimension === "Governing law");
+      expect(row?.tier).toBe("ideal"); // the NDA is governed by Delaware
+      expect(r.negotiation_posture!.counts.ideal).toBe(1);
+
+      // Without --posture, no posture is computed.
+      const noPosture = await analyzeFile(path, { deps, customPlaybook });
+      expect(noPosture.negotiation_posture).toBeUndefined();
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
 });

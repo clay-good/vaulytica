@@ -211,6 +211,9 @@ function renderCompleteState(
     closing_checklist_md_blob?: Blob;
     closing_checklist_csv_blob?: Blob;
     negotiation_posture?: import("./pipeline.js").PipelineResult["negotiation_posture"];
+    negotiation_posture_md_blob?: Blob;
+    negotiation_posture_csv_blob?: Blob;
+    negotiation_sheet_blob?: Blob;
   },
   countsBySeverity: (r: import("./pipeline.js").PipelineResult["run"]) => {
     critical: number;
@@ -257,6 +260,13 @@ function renderCompleteState(
       closing_checklist_csv_blob: result.closing_checklist_csv_blob,
       closing_checklist_md_filename: `${stem}-vaulytica-closing-checklist.md`,
       closing_checklist_csv_filename: `${stem}-vaulytica-closing-checklist.csv`,
+      // spec-v10 Thrust B — negotiation posture export + sheet, present only with positions.
+      negotiation_posture_md_blob: result.negotiation_posture_md_blob,
+      negotiation_posture_csv_blob: result.negotiation_posture_csv_blob,
+      negotiation_sheet_blob: result.negotiation_sheet_blob,
+      negotiation_posture_md_filename: `${stem}-vaulytica-negotiation-posture.md`,
+      negotiation_posture_csv_filename: `${stem}-vaulytica-negotiation-posture.csv`,
+      negotiation_sheet_filename: `${stem}-vaulytica-negotiation-sheet.html`,
     },
     v3_family:
       result.v3_detection.family === "unknown"

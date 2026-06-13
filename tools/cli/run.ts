@@ -29,6 +29,7 @@ import { buildJsonReport } from "../../src/report/json.js";
 import { buildSarifJson } from "../../src/report/sarif.js";
 import { buildHtmlReport } from "../../src/report/html.js";
 import { buildFixListMarkdown, buildFixListCsv } from "../../src/report/exports.js";
+import { parseCustomPlaybookJson } from "../../src/playbooks/custom-playbook.js";
 
 const SUPPORTED_EXT = new Set([".txt", ".md", ".markdown", ".text", ".docx", ".pdf"]);
 const SEVERITY_RANK: Record<Severity, number> = { critical: 0, warning: 1, info: 2 };
@@ -53,6 +54,10 @@ type Args = {
   criticalDates?: boolean;
   /** spec-v9 Thrust B — build the closing checklist. */
   checklist?: boolean;
+  /** spec-v10 Thrust B — path to a custom playbook whose positions drive `--posture`. */
+  playbookFile?: string;
+  /** spec-v10 Thrust B — evaluate the custom playbook's negotiation posture. */
+  posture?: boolean;
 };
 
 function parseArgs(argv: string[]): Args {
@@ -88,6 +93,13 @@ function parseArgs(argv: string[]): Args {
         break;
       case "--checklist":
         args.checklist = true;
+        break;
+      case "--playbook-file":
+        args.playbookFile = val;
+        i++;
+        break;
+      case "--posture":
+        args.posture = true;
         break;
       default:
         throw new Error(`unknown flag "${flag}"`);
@@ -170,6 +182,7 @@ async function renderFormat(fmt: Format, r: AnalyzeResult, dkb: Dkb): Promise<st
         r.delivery,
         r.critical_dates,
         r.closing_checklist,
+        r.negotiation_posture,
       ).text();
     case "sarif":
       return buildSarifJson(r.run, v9surfaces);
@@ -195,6 +208,37 @@ function worstSeverity(r: AnalyzeResult): Severity | null {
 async function runAnalyze(argv: string[]): Promise<void> {
   const args = parseArgs(argv);
   const deps = await loadAccuracyDeps();
+
+  // spec-v10 Thrust B — load + validate a custom playbook file (its
+  // `negotiation_positions` drive `--posture`). A malformed playbook is a hard
+  // error with the validator's messages, never a silent no-op.
+  let customPlaybook: import("../../src/playbooks/custom-playbook.js").CustomPlaybook | undefined;
+  if (args.playbookFile) {
+    const text = await readFile(args.playbookFile, "utf8").catch(() => null);
+    if (text === null) {
+      process.stderr.write(`cannot read playbook file: ${args.playbookFile}\n`);
+      process.exitCode = 1;
+      return;
+    }
+    const parsed = parseCustomPlaybookJson(text);
+    if (!parsed.ok) {
+      process.stderr.write(`invalid playbook ${args.playbookFile}:\n  ${parsed.errors.join("\n  ")}\n`);
+      process.exitCode = 1;
+      return;
+    }
+    customPlaybook = parsed.playbook;
+    if (args.posture && !(customPlaybook.negotiation_positions?.length)) {
+      process.stderr.write(
+        `--posture: ${args.playbookFile} defines no negotiation_positions.\n`,
+      );
+    }
+  }
+  if (args.posture && !args.playbookFile) {
+    process.stderr.write("--posture requires --playbook-file <path>\n");
+    process.exitCode = 1;
+    return;
+  }
+
   const inputs = await resolveInputs(args.target);
   if (inputs.length === 0) {
     process.stderr.write(`no analyzable files matched: ${args.target}\n`);
@@ -210,6 +254,8 @@ async function runAnalyze(argv: string[]): Promise<void> {
       delivery: args.delivery,
       criticalDates: args.criticalDates,
       checklist: args.checklist,
+      customPlaybook,
+      posture: args.posture,
     });
 
     const counts = { critical: 0, warning: 0, info: 0 };
@@ -226,6 +272,12 @@ async function runAnalyze(argv: string[]): Promise<void> {
     if (r.closing_checklist) {
       process.stdout.write(
         `  Closing checklist: ${r.closing_checklist.open_count} readiness item(s) to resolve.\n`,
+      );
+    }
+    if (r.negotiation_posture) {
+      const c = r.negotiation_posture.counts;
+      process.stdout.write(
+        `  Negotiation posture: ${c.ideal} ideal, ${c.acceptable} acceptable, ${c.below_acceptable} below floor, ${c.unevaluable} not stated.\n`,
       );
     }
 
@@ -286,6 +338,7 @@ Commands:
   analyze <path|glob|dir> [--playbook <id>] [--format json,sarif,html,md,csv]
                           [--out <dir>] [--fail-on critical|warning|info]
                           [--delivery] [--critical-dates] [--checklist]
+                          [--playbook-file <path>] [--posture]
   diff    <a.json> <b.json> [--format markdown|json] [--exit-code]
   compare <base> <revised> [--playbook <id>] [--format json|markdown]
                           [--fail-on critical|warning|info] [--confirm-pairing]

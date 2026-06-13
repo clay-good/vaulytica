@@ -27,6 +27,11 @@ import { scanDelivery, type DeliveryReport, type ContainerSource } from "../../s
 import { extractAll } from "../../src/extract/index.js";
 import { buildCriticalDates, type CriticalDatesRegister } from "../../src/report/critical-dates.js";
 import { buildClosingChecklist, type ClosingChecklist } from "../../src/report/closing-checklist.js";
+import {
+  evaluateNegotiationPosture,
+  type NegotiationPosture,
+} from "../../src/playbooks/custom-interpreter.js";
+import type { CustomPlaybook } from "../../src/playbooks/custom-playbook.js";
 
 import { loadAccuracyDeps, runIngested, type AccuracyDeps } from "../accuracy/pipeline.js";
 
@@ -58,6 +63,14 @@ export type AnalyzeResult = {
    * ran). Outside `run.result_hash`; omitted when no readiness item is found.
    */
   closing_checklist?: ClosingChecklist;
+  /**
+   * Negotiation posture (spec-v10 Thrust B, Step 172), populated only when a
+   * `--playbook-file` carrying `negotiation_positions` is supplied with
+   * `--posture`. Which rung of the team's ideal/acceptable ladder the draft
+   * meets on each dimension; carries its own `posture_hash` outside
+   * `run.result_hash`. Advisory — never a legal conclusion.
+   */
+  negotiation_posture?: NegotiationPosture;
 };
 
 function containerSource(path: string): ContainerSource {
@@ -101,6 +114,9 @@ export async function analyzeFile(
     delivery?: boolean;
     criticalDates?: boolean;
     checklist?: boolean;
+    /** A validated custom playbook; its `negotiation_positions` drive `--posture`. */
+    customPlaybook?: CustomPlaybook;
+    posture?: boolean;
   } = {},
 ): Promise<AnalyzeResult> {
   const deps = opts.deps ?? (await loadAccuracyDeps());
@@ -132,6 +148,16 @@ export async function analyzeFile(
       })),
     );
     if (checklist.items.length > 0) out.closing_checklist = checklist;
+  }
+  // spec-v10 Thrust B Step 172 — headless negotiation posture from a supplied
+  // custom playbook's `negotiation_positions` (the posture only — the playbook's
+  // custom rules are not merged into the run in this pass).
+  if (opts.posture && opts.customPlaybook?.negotiation_positions?.length) {
+    const extracted = extractAll(ingest.tree);
+    out.negotiation_posture = await evaluateNegotiationPosture(
+      opts.customPlaybook.negotiation_positions,
+      { tree: ingest.tree, extracted },
+    );
   }
   return out;
 }

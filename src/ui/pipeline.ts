@@ -48,7 +48,13 @@ import {
   type EngineRun,
   type Rule,
 } from "../engine/index.js";
-import { buildDocxReport, buildJsonReport, sarifBlob, htmlReportBlob } from "../report/index.js";
+import {
+  buildDocxReport,
+  buildJsonReport,
+  sarifBlob,
+  htmlReportBlob,
+  negotiationSheetBlob,
+} from "../report/index.js";
 import { buildCriticalDates, type CriticalDatesRegister } from "../report/critical-dates.js";
 import { buildClosingChecklist, type ClosingChecklist } from "../report/closing-checklist.js";
 import {
@@ -56,6 +62,8 @@ import {
   criticalDatesIcsBlob,
   closingChecklistMarkdownBlob,
   closingChecklistCsvBlob,
+  negotiationPostureMarkdownBlob,
+  negotiationPostureCsvBlob,
   fixListMarkdownBlob,
   fixListCsvBlob,
   obligationsCsvBlob,
@@ -186,9 +194,14 @@ export type PipelineResult = {
    * Negotiation posture (spec-v10 Thrust A). Present only when the active
    * custom playbook defines `negotiation_positions`. Reports which rung of the
    * team's ideal/acceptable ladder the draft meets on each dimension —
-   * advisory, with its own `posture_hash`, outside `run.result_hash`.
+   * advisory, with its own `posture_hash`, outside `run.result_hash`. The
+   * Markdown/CSV exports (Thrust B Step 171) and the standalone action-grouped
+   * negotiation sheet (Step 170) are the downloadable artifacts.
    */
   negotiation_posture?: NegotiationPosture;
+  negotiation_posture_md_blob?: Blob;
+  negotiation_posture_csv_blob?: Blob;
+  negotiation_sheet_blob?: Blob;
   /**
    * Multi-family activation (spec-v6). Additional families the document
    * clearly contains beyond the primary match, each scanned with its own
@@ -623,7 +636,17 @@ export async function runReport(
     secondary_families,
     jurisdiction_overlays,
     delivery: prepared.delivery,
-    ...(negotiationPosture ? { negotiation_posture: negotiationPosture } : {}),
+    ...(negotiationPosture
+      ? {
+          negotiation_posture: negotiationPosture,
+          negotiation_posture_md_blob: negotiationPostureMarkdownBlob(negotiationPosture),
+          negotiation_posture_csv_blob: negotiationPostureCsvBlob(negotiationPosture),
+          negotiation_sheet_blob: negotiationSheetBlob(
+            negotiationPosture,
+            options.custom_playbook?.name,
+          ),
+        }
+      : {}),
     ...(hasCriticalDates
       ? {
           critical_dates,

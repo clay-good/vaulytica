@@ -52,6 +52,14 @@ export {
   closingChecklistMarkdownBlob,
   closingChecklistCsvBlob,
 } from "./exports.js";
+// spec-v10 Thrust B — negotiation-posture export (Step 171) + standalone sheet (Step 170).
+export {
+  buildNegotiationPostureMarkdown,
+  buildNegotiationPostureCsv,
+  negotiationPostureMarkdownBlob,
+  negotiationPostureCsvBlob,
+} from "./exports.js";
+export { buildNegotiationSheet, negotiationSheetBlob } from "./negotiation-sheet.js";
 // v6 Part I — version comparison (Steps 89–90).
 export {
   compareRuns,

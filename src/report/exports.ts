@@ -25,6 +25,11 @@ import type { EngineRun, Finding, Severity } from "../engine/finding.js";
 import type { DateReference, ExtractedData } from "../extract/types.js";
 import type { CriticalDate, CriticalDatesRegister } from "./critical-dates.js";
 import type { ChecklistCategory, ClosingChecklist } from "./closing-checklist.js";
+import type {
+  NegotiationPosture,
+  NegotiationTier,
+  NegotiationPositionResult,
+} from "../playbooks/custom-interpreter.js";
 
 const SEVERITY_ORDER: Severity[] = ["critical", "warning", "info"];
 const SEVERITY_LABEL: Record<Severity, string> = {
@@ -806,4 +811,85 @@ export function closingChecklistMarkdownBlob(checklist: ClosingChecklist): Blob 
 
 export function closingChecklistCsvBlob(checklist: ClosingChecklist): Blob {
   return new Blob([buildClosingChecklistCsv(checklist)], { type: "text/csv" });
+}
+
+// ---------------------------------------------------------------------------
+// Negotiation posture (spec-v10 Thrust B, Step 171)
+// ---------------------------------------------------------------------------
+
+const NEGOTIATION_TIER_LABEL: Record<NegotiationTier, string> = {
+  ideal: "Ideal",
+  acceptable: "Acceptable",
+  "below-acceptable": "Below floor",
+  unevaluable: "Not stated",
+};
+
+/** The cell shown for "what we found" — the evaluator detail or the unevaluable reason. */
+function postureFinding(p: NegotiationPositionResult): string {
+  return (p.detail ?? p.reason ?? "").trim();
+}
+
+/**
+ * The negotiation posture as a Markdown table (dimension · tier · what we found
+ * · guidance · section). A deterministic projection of the team's ladder
+ * against the draft; advisory, never a legal conclusion (spec-v10 §3).
+ */
+export function buildNegotiationPostureMarkdown(posture: NegotiationPosture): string {
+  const c = posture.counts;
+  const lines: string[] = [];
+  lines.push("# Vaulytica negotiation posture");
+  lines.push("");
+  lines.push(
+    `**Ideal:** ${c.ideal} · **Acceptable:** ${c.acceptable} · **Below floor:** ${c.below_acceptable} · **Not stated:** ${c.unevaluable} · **Posture hash:** \`${posture.posture_hash}\``,
+  );
+  lines.push("");
+  lines.push(
+    "Where this draft sits on your team's ladder, per dimension. Computed deterministically from your playbook's positions — it shows where you stand, not whether a term is legally adequate, enforceable, or market.",
+  );
+  if (posture.positions.length === 0) {
+    lines.push("");
+    lines.push("_No negotiation positions were defined._");
+    lines.push("");
+    return lines.join("\n");
+  }
+  lines.push("");
+  lines.push("| Dimension | Tier | What we found | Guidance | Section |");
+  lines.push("|---|---|---|---|---|");
+  for (const p of posture.positions) {
+    lines.push(
+      `| ${mdCell(p.dimension)} | ${NEGOTIATION_TIER_LABEL[p.tier]} | ${mdCell(postureFinding(p) || "—")} | ${mdCell(p.guidance ?? "—")} | ${mdCell(p.section_id ?? "—")} |`,
+    );
+  }
+  lines.push("");
+  return lines.join("\n");
+}
+
+/**
+ * The negotiation posture as CSV (dimension, tier, finding, guidance, section).
+ * Uses the same RFC 4180 + formula-injection-guarded encoder as the fix list —
+ * a position's `dimension`/`guidance` are author-supplied and untrusted.
+ */
+export function buildNegotiationPostureCsv(posture: NegotiationPosture): string {
+  const rows: string[] = [];
+  rows.push(csvRow(["dimension", "tier", "finding", "guidance", "section"]));
+  for (const p of posture.positions) {
+    rows.push(
+      csvRow([
+        p.dimension,
+        NEGOTIATION_TIER_LABEL[p.tier],
+        postureFinding(p),
+        p.guidance ?? "",
+        p.section_id ?? "",
+      ]),
+    );
+  }
+  return rows.join("\r\n") + "\r\n";
+}
+
+export function negotiationPostureMarkdownBlob(posture: NegotiationPosture): Blob {
+  return new Blob([buildNegotiationPostureMarkdown(posture)], { type: "text/markdown" });
+}
+
+export function negotiationPostureCsvBlob(posture: NegotiationPosture): Blob {
+  return new Blob([buildNegotiationPostureCsv(posture)], { type: "text/csv" });
 }

@@ -4,6 +4,38 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.2.0] — 2026-06-13 — Negotiation posture: report & export (spec-v10 Thrust B)
+
+### Added
+- **Negotiation posture — report & export (spec-v10 Thrust B, Steps 170–172).**
+  Deepens the v10 posture from a report *section* into the negotiator's actual
+  worksheet, all render-side (**zero `result_hash` churn**):
+  - **Standalone negotiation sheet** ([`src/report/negotiation-sheet.ts`](src/report/negotiation-sheet.ts),
+    Step 170) — a self-contained, print-clean HTML sheet that regroups the
+    positions by **action** rather than dimension: *escalate* (below floor) ·
+    *push here* (at the floor) · *verify* (not stated) · *hold* (already ideal),
+    in that priority order, so the most urgent fronts are at the top. Author
+    strings are HTML-escaped; mobile-safe (an e2e asserts vertical-scroll-only
+    at 320–1280px and zero WCAG 2 AA violations).
+  - **Markdown + CSV posture export** ([`src/report/exports.ts`](src/report/exports.ts),
+    Step 171) — `buildNegotiationPostureMarkdown` (a dimension · tier · finding ·
+    guidance · section table) and `buildNegotiationPostureCsv` (RFC 4180 + the
+    same formula-injection guard as the fix list, since a position's
+    `dimension`/`guidance` is untrusted author text). Both download from the
+    complete-state export row.
+  - **Headless posture in the CLI** (Step 172) — `vaulytica analyze … --playbook-file <path>`
+    loads and validates a custom playbook (a malformed file is a hard error with
+    the validator's messages, never a silent no-op), and `--posture` evaluates
+    its `negotiation_positions` against the document, printing a summary line
+    (`Negotiation posture: N ideal, M acceptable, K below floor, J not stated`)
+    and emitting the `negotiation_posture` JSON block — the same deterministic
+    classification, in CI or a folder sweep. (Merging the playbook's custom
+    *rules* into the headless run is a separate follow-up; `--posture` computes
+    the posture only.)
+  - +7 tests (Markdown/CSV structure + formula-injection guard; the sheet's
+    action grouping + escaping + determinism; CLI posture via `analyzeFile`; the
+    sheet responsiveness/a11y e2e). Suite 2,897 → 2,904. Version 9.1.0 → 9.2.0.
+
 ## [9.1.0] — 2026-06-13 — Negotiation Posture (spec-v10 Thrust A) + PDF annotations
 
 ### Added
