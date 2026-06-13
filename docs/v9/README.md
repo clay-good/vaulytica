@@ -47,4 +47,16 @@ Deterministic · no AI · no server · citable (every v9 finding cites the docum
 
 ## Principled deferrals (Part XVI)
 
-Any legal-sufficiency conclusion (valid execution, required notarization, ESIGN/UETA compliance, redaction adequacy, privilege) stays attorney-gated; removing/scrubbing what the scan finds crosses the lint-not-draft line; fetching a leaked metadata URL would breach the no-server posture. Engineering-scoped partials: a standalone DOCX closing checklist (the main DOCX report still carries the findings) and an HTML/SARIF rendering of the critical-dates register.
+Any legal-sufficiency conclusion (valid execution, required notarization, ESIGN/UETA compliance, redaction adequacy, privilege) stays attorney-gated; removing/scrubbing what the scan finds crosses the lint-not-draft line; fetching a leaked metadata URL would breach the no-server posture; PDF tracked-change/comment recovery from markup annotations is a documented no-op (the report says so honestly).
+
+## Output-surface coverage
+
+All three v9 surfaces now render in **every** report format, not just JSON:
+
+| Surface | JSON | DOCX | HTML | SARIF | Markdown | CSV | .ics | tab | CLI |
+|---|---|---|---|---|---|---|---|---|---|
+| Clean to Send (`HANDOFF-*`) | ✅ `delivery` | ✅ section | ✅ section | ✅ first-class results | — | — | — | ✅ | `--delivery` |
+| Ready to Sign (closing checklist) | ✅ `closing_checklist` | ✅ section | ✅ section | — (projection of existing results) | ✅ | ✅ | — | ✅ | `--checklist` |
+| Tracked to Its Dates (register) | ✅ `critical_dates` | ✅ section | ✅ section | ✅ `DATE-*` note results | ✅ | — | ✅ | ✅ | `--critical-dates` |
+
+The DOCX, HTML, and SARIF builders take a single optional `V9Surfaces` bundle ([`src/report/v9-surfaces.ts`](../../src/report/v9-surfaces.ts)); each section renders only when its surface is non-empty, so a v8-era document with no handoff facts, no readiness gaps, and no derivable dates produces a byte-identical report. Everything is render-side — zero `result_hash` churn.

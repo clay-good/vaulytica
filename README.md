@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,065 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `35 state-law overlays` · `9 export formats` · `0 servers` · `0 AI` · `2,874 passing tests` · `v9.0.0` · `MIT`
+`1,065 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `35 state-law overlays` · `9 export formats` · `0 servers` · `0 AI` · `2,880 passing tests` · `v9.0.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
 
@@ -31,7 +31,7 @@ flowchart LR
   C --> D[Extract facts<br/>parties · dates · amounts ·<br/>defs · obligations · jurisdictions]
   D --> E[Classify<br/>family + sub-domain<br/>TF-IDF feature table]
   E --> F[Select playbook<br/>built-in or your own]
-  F --> G[Run rules<br/>1,062 pure functions]
+  F --> G[Run rules<br/>1,065 pure functions]
   G --> H[Findings<br/>+ result_hash]
   H --> I[Report<br/>DOCX · JSON · SARIF · HTML ·<br/>fix-list · .ics · portfolio matrix]
   K[(Deterministic<br/>Knowledge Base)] --> G
@@ -57,11 +57,11 @@ Two or more documents trigger **bundle mode**: per-document reports *plus* a por
 
 ## What it checks — rule cheat sheet
 
-The **v1 launch set** is 112 rules across ten always-on categories that apply to any agreement:
+The **always-on launch set** is 115 rules across ten categories that apply to any agreement (the original v1 set of 112 plus v9 Thrust B's three execution-readiness reconciliations):
 
 | Category | Rules | Catches (examples) |
 |---|---|---|
-| Structural | 16 | missing signature block, unfilled `[placeholders]`, broken cross-refs, used-but-undefined terms |
+| Structural | 19 | missing signature block, unfilled `[placeholders]`, broken cross-refs, used-but-undefined terms; **v9:** a declared party with no signature line (`STRUCT-017`), a referenced exhibit not attached (`STRUCT-018`), a recited notarization with no notary block (`STRUCT-019`) |
 | Risk allocation | 17 | uncapped liability, indemnity without a cap, one-way fee-shifting, missing limitation of liability |
 | Choice & venue | 12 | no governing law, venue/law mismatch, out-of-state law on a CA employee, class-action waiver |
 | Temporal | 12 | impossible dates, auto-renewal with a short notice window, survival silent on confidentiality/IP |
@@ -72,9 +72,9 @@ The **v1 launch set** is 112 rules across ten always-on categories that apply to
 | Dark patterns | 9 | unilateral amendment by posting, hidden auto-renewal, browsewrap acceptance |
 | Personnel | 9 | stay-or-pay/training-repayment clauses, IC misclassification signals, overlong non-solicits |
 
-On top of that, **v3 (+220 rules)** adds compliance-grade rule sets and **v4 (+730 rules)** adds 16 specialized sub-domains. The full **1,062-rule** catalog runs live, family-gated so a plain NDA is not flagged for missing GDPR clauses.
+On top of that, **v3 (+220 rules)** adds compliance-grade rule sets and **v4 (+730 rules)** adds 16 specialized sub-domains. The full **1,065-rule** catalog runs live, family-gated so a plain NDA is not flagged for missing GDPR clauses.
 
-Those 1,062 are all **single-document** rules. Dropping a folder or `.zip` additionally runs **20 cross-document consistency rules** — defects no single-document scan can see because they live in the *relationship between* documents:
+Those 1,065 are all **single-document** rules. Dropping a folder or `.zip` additionally runs **20 cross-document consistency rules** — defects no single-document scan can see because they live in the *relationship between* documents:
 
 | Cross-doc check | Catches |
 |---|---|
@@ -151,6 +151,18 @@ flowchart LR
 - The **register** carries its own `critical_dates_hash`, a JSON `critical_dates` block, a deepened `.ics` (render-only DISPLAY alarm on notice/opt-out/cure rows), a Markdown register, a CLI `--critical-dates` flag, and a tab "Your calendar, computed" view.
 
 **The wall-clock trap, closed.** Only the *absolute* computed date enters the register or its hash. Anything relative to *today* — "due in 12 days", "overdue", soonest-first — is render-only. A metamorphic gate re-runs the same document under two different "today" values and asserts a byte-identical register, hash, `.ics`, and Markdown, so a later edit cannot leak an elapsed value into a hashed artifact and quietly break reproducibility.
+
+### Cheat sheet — where each v9 surface renders
+
+All three "Last Look" surfaces render in **every** format the report speaks, not just JSON. Each renders only when non-empty, so a clean document produces a byte-identical v8-era report — render-side, zero `result_hash` churn ([`src/report/v9-surfaces.ts`](src/report/v9-surfaces.ts)).
+
+| Surface | JSON | DOCX | HTML | SARIF | Markdown | CSV | `.ics` | tab | CLI flag |
+|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:--|
+| **Clean to Send** (`HANDOFF-001…005`) | `delivery` | § section | § section | first-class results | — | — | — | "Clean to send?" | `--delivery` |
+| **Ready to Sign** (closing checklist) | `closing_checklist` | § section | § section | — *(projection of existing results)* | ✓ | ✓ | — | "Ready to sign?" | `--checklist` |
+| **Tracked to Its Dates** (register) | `critical_dates` | § section | § section | `DATE-*` note results | ✓ | — | ✓ | "Your calendar, computed" | `--critical-dates` |
+
+In SARIF the handoff findings cite the *container* (no text offset → no `region`, a `kind: "container"` logical location), and the derived deadlines surface at `note` level anchored to their source section — both carry their own hash (`delivery_hash` / `critical_dates_hash`) as a `partialFingerprint` so a CI consumer dedupes them across runs. The closing checklist is a pure projection of findings already in the run, so it is *not* re-emitted as SARIF results (that would double-count).
 
 ## What the result looks like
 
@@ -318,7 +330,7 @@ The **measurement machinery is built and unit-tested** (`tools/accuracy/`, run w
 ```mermaid
 flowchart LR
   C[(corpus/<br/>real redacted docs<br/>+ gold annotations)] --> H[Accuracy harness]
-  R[(full engine<br/>1,062 rules · 135 playbooks)] --> H
+  R[(full engine<br/>1,065 rules · 135 playbooks)] --> H
   H --> M[TP / FP / FN / TN<br/>precision · recall · F1<br/>macro + micro]
   M --> S[SCOREBOARD.md + scoreboard.json<br/>reproducible SHA-256]
   K[Cohen's κ<br/>inter-annotator agreement] --> M
@@ -375,7 +387,7 @@ The `executed_at` timestamp is set to `""` before hashing, so the only things th
 
 ## Performance — the first-paint path is tiny on purpose
 
-A "runs-entirely-in-your-browser" tool ships its whole engine to the client. The trap is obvious: a 1,062-rule engine plus a PDF parser plus a DOCX writer is megabytes of JavaScript, and if it all loads up front the page is slow to paint on the exact phones the product promises to serve. Vaulytica avoids this by splitting the bundle along the **interaction** that needs each piece — nothing parser- or engine-related is on the critical render path. The page paints from ~17 KB gz of self-contained HTML+CSS; everything heavy waits for the file drop.
+A "runs-entirely-in-your-browser" tool ships its whole engine to the client. The trap is obvious: a 1,065-rule engine plus a PDF parser plus a DOCX writer is megabytes of JavaScript, and if it all loads up front the page is slow to paint on the exact phones the product promises to serve. Vaulytica avoids this by splitting the bundle along the **interaction** that needs each piece — nothing parser- or engine-related is on the critical render path. The page paints from ~17 KB gz of self-contained HTML+CSS; everything heavy waits for the file drop.
 
 ```mermaid
 flowchart LR
@@ -384,7 +396,7 @@ flowchart LR
   end
   M -. "import() on file drop" .-> DROP
   subgraph DROP["On file drop · lazy"]
-    P[pipeline · 1,062 rules<br/>268 KB gz]
+    P[pipeline · 1,065 rules<br/>268 KB gz]
     PDF[vendor-pdfjs · 146 KB gz<br/>PDF only]
     DOCXIN[vendor-mammoth · 126 KB gz<br/>DOCX only]
     Z[vendor-zod + decimal<br/>32 KB gz]
@@ -401,7 +413,7 @@ flowchart LR
 |---|---:|---|---|
 | `index.html` (inline CSS) | 17.1 KB | first paint | the page renders from this alone — no JS needed to see content |
 | `main` + `rolldown-runtime` | 12.3 KB | first paint (preloaded) | hydrates the drop zone; the *only* JS on the FCP path |
-| `pipeline` (1,062 rules + extract/classify/engine) | 268 KB | file drop | you don't need the engine until there's a document to run it on |
+| `pipeline` (1,065 rules + extract/classify/engine) | 268 KB | file drop | you don't need the engine until there's a document to run it on |
 | `vendor-pdfjs` | 146 KB | dropping a **PDF** | format-specific — a DOCX never loads it |
 | `vendor-mammoth` | 126 KB | dropping a **DOCX** | format-specific — a PDF never loads it |
 | `vendor-zod` + `vendor-decimal` | 32 KB | file drop | DKB validation + exact financial math, engine-only |
@@ -446,7 +458,7 @@ npm run dev          # open the printed URL
 npm run build        # static site → dist/
 npm run typecheck    # tsc --noEmit
 npm run lint         # eslint
-npm run test         # vitest — 2,874 tests, ~20s
+npm run test         # vitest — 2,880 tests, ~20s
 npm run coverage     # vitest + V8 coverage, enforces the regression floor
 npm run accuracy     # v5 Ground Truth harness → tools/accuracy/SCOREBOARD.md
 npm run mutation     # Stryker mutation score (scoped to extractors; slow, off the per-push path)
@@ -487,7 +499,7 @@ src/
   extract/     parties · dates · amounts · definitions · obligations ·
                jurisdictions · cross-refs · classifier
   dkb/         Deterministic Knowledge Base types, loader, model-clauses, state-overlays
-  engine/      pure rule runner + 1,062 rules + cross-document consistency
+  engine/      pure rule runner + 1,065 rules + cross-document consistency
   delivery/    v9 pre-disclosure scan — container read · HANDOFF-001…005 · masking · DeliveryReport
   playbooks/   built-in playbooks + bring-your-own schema/validator/interpreter
   report/      DOCX · JSON · SARIF · HTML · bundle · comparison · exports ·

@@ -516,15 +516,6 @@ export async function runReport(
         options.active_frames,
       );
 
-  const docx_blob = await buildDocxReport(
-    run,
-    prepared.ingest,
-    prepared.dkb,
-    prepared.playbook,
-    undefined,
-    prepared.extracted,
-    secondary_families,
-  );
   // spec-v9 Thrust C — compute the critical-dates register (additive, its own
   // hash, outside result_hash). Empty register → omitted, no surfaces shown.
   const critical_dates = await buildCriticalDates(prepared.extracted, prepared.ingest.tree);
@@ -541,6 +532,24 @@ export async function runReport(
     })),
   );
   const hasChecklist = closing_checklist.items.length > 0;
+  // The v9 "Last Look" surfaces, bundled once and threaded into every output
+  // format (DOCX/HTML/SARIF, alongside the JSON block) so the report carries
+  // the same Clean-to-send / Ready-to-sign / Critical-dates content everywhere.
+  const v9surfaces = {
+    delivery: prepared.delivery,
+    criticalDates: hasCriticalDates ? critical_dates : undefined,
+    closingChecklist: hasChecklist ? closing_checklist : undefined,
+  };
+  const docx_blob = await buildDocxReport(
+    run,
+    prepared.ingest,
+    prepared.dkb,
+    prepared.playbook,
+    undefined,
+    prepared.extracted,
+    secondary_families,
+    v9surfaces,
+  );
   const json_blob = buildJsonReport(
     run,
     prepared.ingest,
@@ -555,9 +564,10 @@ export async function runReport(
   const fixlist_csv_blob = fixListCsvBlob(run);
   const obligations_csv_blob = obligationsCsvBlob(prepared.extracted);
   const deadlines_ics_blob = deadlinesIcsBlob(prepared.extracted);
-  // v8 Steps 141–142 — SARIF (machine-readable) + standalone HTML (print-clean).
-  const sarif_blob = sarifBlob(run);
-  const html_blob = htmlReportBlob(run, prepared.ingest, prepared.dkb, prepared.playbook);
+  // v8 Steps 141–142 — SARIF (machine-readable) + standalone HTML (print-clean),
+  // now carrying the v9 surfaces (HANDOFF-*/DATE-* results · the three sections).
+  const sarif_blob = sarifBlob(run, v9surfaces);
+  const html_blob = htmlReportBlob(run, prepared.ingest, prepared.dkb, prepared.playbook, v9surfaces);
 
   const v3_detection = detectV3Family(prepared.extracted, prepared.body_text);
   const v3_frames = defaultFramesForPlaybook(prepared.playbook.id);

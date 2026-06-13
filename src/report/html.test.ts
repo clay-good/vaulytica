@@ -160,4 +160,71 @@ describe("buildHtmlReport (spec-v8 §21 — standalone single-file HTML)", () =>
     const dkb = loadStarterDkbSync();
     expect(buildHtmlReport(makeRun(), ingest, dkb)).toBe(buildHtmlReport(makeRun(), ingest, dkb));
   });
+
+  it("renders the v9 Last Look sections and escapes their content", () => {
+    const dkb = loadStarterDkbSync();
+    const v9 = {
+      delivery: {
+        source: "docx" as const,
+        inspectable: true,
+        findings: [
+          {
+            rule_id: "HANDOFF-001",
+            severity: "critical" as const,
+            title: "Tracked changes are present",
+            description: "2 tracked-change revisions remain.",
+            count: 2,
+            evidence: ["insertion by <b>Opposing Counsel</b>"],
+          },
+        ],
+        summary: "Delivery: 2 tracked changes — review before sending.",
+        delivery_hash: "d".repeat(64),
+      },
+      closingChecklist: {
+        open_count: 1,
+        items: [
+          {
+            category: "attachment" as const,
+            rule_id: "STRUCT-018",
+            label: "Referenced attachment not present: Exhibit C",
+            section: "s3",
+          },
+        ],
+      },
+      criticalDates: {
+        register: [
+          {
+            rule_id: "DATE-001",
+            kind: "auto-renewal-notice" as const,
+            resolved: true,
+            computed_date: "2025-11-01",
+            trigger: "60 days before the Renewal Date",
+            anchor: "Renewal Date",
+            responsible: "Acme Corp",
+            section: "s8",
+          },
+        ],
+        resolved_count: 1,
+        unresolved_count: 0,
+        critical_dates_hash: "e".repeat(64),
+      },
+    };
+    const html = buildHtmlReport(makeRun(), ingest, dkb, undefined, v9);
+    expect(html).toContain("Clean to send — pre-disclosure scan");
+    expect(html).toContain("Ready to sign — closing checklist");
+    expect(html).toContain("Critical dates — computed from the document");
+    expect(html).toContain("2025-11-01");
+    expect(html).toContain("HANDOFF-001");
+    // HANDOFF evidence with markup is escaped, never live.
+    expect(html).toContain("&lt;b&gt;Opposing Counsel&lt;/b&gt;");
+    expect(html).not.toContain("<b>Opposing Counsel</b>");
+    expect(html).not.toContain("<script");
+  });
+
+  it("omits the v9 sections entirely when no surface is supplied (v8-identical)", () => {
+    const dkb = loadStarterDkbSync();
+    expect(buildHtmlReport(makeRun(), ingest, dkb)).toBe(
+      buildHtmlReport(makeRun(), ingest, dkb, undefined, {}),
+    );
+  });
 });

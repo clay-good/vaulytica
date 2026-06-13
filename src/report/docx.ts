@@ -44,6 +44,10 @@ import type { IngestResult } from "../ingest/types.js";
 import type { Playbook } from "../playbooks/types.js";
 import type { ExtractedData } from "../extract/types.js";
 import type { ReportSecondaryFamily } from "./json.js";
+import type { V9Surfaces } from "./v9-surfaces.js";
+import type { DeliveryReport } from "../delivery/types.js";
+import type { ClosingChecklist, ChecklistCategory } from "./closing-checklist.js";
+import type { CriticalDatesRegister, CriticalDateKind } from "./critical-dates.js";
 import { buildBibliography, citationIndex, type BibliographyEntry } from "./bibliography.js";
 import { formatCitation, formatBibliographyEntry, breakLongTokens } from "./citations.js";
 import { modelClauseForRule, MODEL_CLAUSE_COVERAGE } from "../dkb/model-clauses.js";
@@ -82,6 +86,7 @@ export async function buildDocxReport(
   v3?: V3ReportInputs,
   extracted?: ExtractedData,
   secondaryFamilies?: ReadonlyArray<ReportSecondaryFamily>,
+  v9?: V9Surfaces,
 ): Promise<Blob> {
   const bibliography = buildBibliography(run.findings, dkb);
   const children: (Paragraph | Table)[] = [
@@ -93,6 +98,12 @@ export async function buildDocxReport(
     ...renderFindingsSection("Critical Findings", "critical", run.findings, bibliography),
     ...renderFindingsSection("Warnings", "warning", run.findings, bibliography),
     ...renderFindingsSection("Informational", "info", run.findings, bibliography),
+    // spec-v9 "Last Look" surfaces — render-side, outside result_hash. Each
+    // renderer returns [] when its surface is absent/empty, so a v8-era
+    // document produces a byte-identical report.
+    ...renderDeliverySection(v9?.delivery),
+    ...renderClosingChecklistSection(v9?.closingChecklist),
+    ...renderCriticalDatesSection(v9?.criticalDates),
     // spec-v6 multi-family activation — additional families the document
     // also contains, scanned with their own rule sets and quarantined here
     // so the primary report above stays clean.
@@ -409,6 +420,123 @@ function renderSecondaryFamiliesSection(
       }),
     );
   }
+  out.push(pageBreak());
+  return out;
+}
+
+// ---------------------------------------------------------------------------
+// spec-v9 "Last Look" surfaces (Thrusts A/B/C) — render-side, outside result_hash
+
+/** "Clean to send" — the delivery / HANDOFF-* pre-disclosure section (Thrust A). */
+function renderDeliverySection(delivery: DeliveryReport | undefined): (Paragraph | Table)[] {
+  if (!delivery || delivery.findings.length === 0) return [];
+  const out: (Paragraph | Table)[] = [
+    h1("Clean to Send — Pre-Disclosure Scan"),
+    para({ text: delivery.summary, italics: true }),
+    new Table({
+      width: { size: 100, type: WidthType.PERCENTAGE },
+      rows: [
+        headerRow(["Severity", "Check", "What was found", "Count"]),
+        ...delivery.findings.map((f) =>
+          bodyRow([
+            f.severity.toUpperCase(),
+            f.rule_id,
+            truncate(f.description, 240),
+            String(f.count),
+          ]),
+        ),
+      ],
+    }),
+    para({
+      text:
+        "Vaulytica reports what it found in the original file and where — it never removes it (that is your edit in Word) and never certifies the document clean.",
+      italics: true,
+      size: 18,
+    }),
+  ];
+  out.push(pageBreak());
+  return out;
+}
+
+const CHECKLIST_CAT_LABEL: Record<ChecklistCategory, string> = {
+  signature: "Signatures",
+  attachment: "Attachments",
+  formality: "Execution formalities",
+  blank: "Unfilled content",
+  handoff: "Pre-send cleanup",
+};
+
+/** "Ready to sign" — the consolidated closing checklist (Thrust B). */
+function renderClosingChecklistSection(
+  checklist: ClosingChecklist | undefined,
+): (Paragraph | Table)[] {
+  if (!checklist || checklist.items.length === 0) return [];
+  const out: (Paragraph | Table)[] = [
+    h1("Ready to Sign — Closing Checklist"),
+    para({
+      text: `${checklist.open_count} readiness item${
+        checklist.open_count === 1 ? "" : "s"
+      } to resolve before closing. A deterministic projection of the findings; it does not certify the document is ready to sign or validly executed.`,
+      italics: true,
+    }),
+    new Table({
+      width: { size: 100, type: WidthType.PERCENTAGE },
+      rows: [
+        headerRow(["Category", "Rule", "Item", "Section"]),
+        ...checklist.items.map((i) =>
+          bodyRow([
+            CHECKLIST_CAT_LABEL[i.category],
+            i.rule_id,
+            truncate(i.label, 240),
+            i.section ?? "—",
+          ]),
+        ),
+      ],
+    }),
+  ];
+  out.push(pageBreak());
+  return out;
+}
+
+const CRITICAL_DATE_KIND_LABEL: Record<CriticalDateKind, string> = {
+  "auto-renewal-notice": "Auto-renewal notice",
+  "cure-window": "Cure window",
+  "opt-out-window": "Opt-out / termination",
+  "survival-end": "Survival end",
+  "notice-period": "Notice deadline",
+};
+
+/** "Your calendar, computed" — the critical-dates register (Thrust C). */
+function renderCriticalDatesSection(
+  register: CriticalDatesRegister | undefined,
+): (Paragraph | Table)[] {
+  if (!register || register.register.length === 0) return [];
+  const out: (Paragraph | Table)[] = [
+    h1("Critical Dates — Computed From the Document"),
+    para({
+      text: `${register.resolved_count} computed, ${register.unresolved_count} to verify manually. Each date is calendar arithmetic over the document's own terms — not a determination that a deadline is met, missed, or binding.`,
+      italics: true,
+    }),
+    new Table({
+      width: { size: 100, type: WidthType.PERCENTAGE },
+      rows: [
+        headerRow(["Date", "Type", "Responsible", "Section", "Trigger"]),
+        ...register.register.map((r) =>
+          bodyRow([
+            r.resolved
+              ? r.window
+                ? `${r.window[0]} – ${r.window[1]}`
+                : (r.computed_date ?? "—")
+              : "Verify manually",
+            CRITICAL_DATE_KIND_LABEL[r.kind],
+            r.responsible || "—",
+            r.section ?? "—",
+            truncate(r.trigger, 200),
+          ]),
+        ),
+      ],
+    }),
+  ];
   out.push(pageBreak());
   return out;
 }

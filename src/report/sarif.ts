@@ -27,6 +27,18 @@ import type { EngineRun, Finding, Severity } from "../engine/finding.js";
 import type { SourceCitation } from "../dkb/types.js";
 import { ENGINE_VERSION } from "../engine/runner.js";
 import { formatCitation, freshnessSignal } from "./citations.js";
+import type { V9Surfaces } from "./v9-surfaces.js";
+import type { HandoffFinding } from "../delivery/types.js";
+import type { CriticalDate, CriticalDateKind } from "./critical-dates.js";
+
+/** Human label per derived-deadline family (Thrust C), for SARIF descriptors. */
+const CRITICAL_DATE_KIND_LABEL: Record<CriticalDateKind, string> = {
+  "auto-renewal-notice": "Auto-renewal notice deadline",
+  "cure-window": "Cure window deadline",
+  "opt-out-window": "Opt-out / termination window",
+  "survival-end": "Survival-end date",
+  "notice-period": "Notice-period deadline",
+};
 
 const SARIF_SCHEMA =
   "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json";
@@ -100,17 +112,30 @@ function primaryHelpUri(f: Finding): string | undefined {
   return undefined;
 }
 
-export function buildSarif(run: EngineRun): SarifLog {
-  // One reportingDescriptor per distinct rule that produced a finding, in
-  // sorted rule-id order for determinism.
-  const ruleIds = [...new Set(run.findings.map((f) => f.rule_id))].sort();
-  const ruleIndex = new Map(ruleIds.map((id, i) => [id, i]));
+type SarifRule = SarifLog["runs"][0]["tool"]["driver"]["rules"][0];
+type SarifResult = SarifLog["runs"][0]["results"][0];
 
-  const rules = ruleIds.map((id) => {
+export function buildSarif(run: EngineRun, v9?: V9Surfaces): SarifLog {
+  // One reportingDescriptor per distinct rule that produced a finding, in
+  // sorted rule-id order for determinism. The v9 surfaces extend this with the
+  // HANDOFF-* (pre-disclosure) and DATE-* (derived-deadline) rule families, so
+  // a SARIF consumer (CI / code scanning) sees the handoff risks and the
+  // computed deadlines as first-class results — never silently dropped.
+  const handoff = v9?.delivery?.findings ?? [];
+  const register = v9?.criticalDates?.register ?? [];
+  const engineRuleIds = [...new Set(run.findings.map((f) => f.rule_id))].sort();
+  const handoffRuleIds = [...new Set(handoff.map((f) => f.rule_id))].sort();
+  const dateRuleIds = [...new Set(register.map((r) => r.rule_id))].sort();
+  // Engine / handoff / date rule-id namespaces are disjoint, so the combined
+  // index is collision-free and every result's ruleIndex resolves to its id.
+  const allRuleIds = [...engineRuleIds, ...handoffRuleIds, ...dateRuleIds];
+  const ruleIndex = new Map(allRuleIds.map((id, i) => [id, i]));
+
+  const engineRules: SarifRule[] = engineRuleIds.map((id) => {
     // Representative finding for the descriptor's text + helpUri.
     const f = run.findings.find((x) => x.rule_id === id)!;
     const helpUri = primaryHelpUri(f);
-    const descriptor: SarifLog["runs"][0]["tool"]["driver"]["rules"][0] = {
+    const descriptor: SarifRule = {
       id,
       name: id,
       shortDescription: { text: f.title },
@@ -121,8 +146,17 @@ export function buildSarif(run: EngineRun): SarifLog {
     }
     return descriptor;
   });
+  const handoffRules: SarifRule[] = handoffRuleIds.map((id) => {
+    const f = handoff.find((x) => x.rule_id === id)!;
+    return { id, name: id, shortDescription: { text: f.title } };
+  });
+  const dateRules: SarifRule[] = dateRuleIds.map((id) => {
+    const r = register.find((x) => x.rule_id === id)!;
+    return { id, name: id, shortDescription: { text: CRITICAL_DATE_KIND_LABEL[r.kind] } };
+  });
+  const rules = [...engineRules, ...handoffRules, ...dateRules];
 
-  const results = run.findings.map((f) => {
+  const findingResults: SarifResult[] = run.findings.map((f) => {
     const idx = ruleIndex.get(f.rule_id)!;
     const helpUri = primaryHelpUri(f);
     const citations = f.source_citations.map(citationProperty);
@@ -166,6 +200,18 @@ export function buildSarif(run: EngineRun): SarifLog {
     };
   });
 
+  // HANDOFF-* (Thrust A): pre-disclosure facts cited to the container, not a
+  // text offset — so no `region`, and the logicalLocation names the container.
+  const deliveryHash = v9?.delivery?.delivery_hash ?? "";
+  const handoffResults: SarifResult[] = handoff.map((f) => handoffResult(f, ruleIndex, run, deliveryHash));
+
+  // DATE-* (Thrust C): computed deadlines, surfaced at "note" level (a date to
+  // track, not a violation), anchored to the source section.
+  const datesHash = v9?.criticalDates?.critical_dates_hash ?? "";
+  const dateResults: SarifResult[] = register.map((r, i) => dateResult(r, ruleIndex, run, datesHash, i));
+
+  const results = [...findingResults, ...handoffResults, ...dateResults];
+
   return {
     $schema: SARIF_SCHEMA,
     version: "2.1.0",
@@ -185,13 +231,85 @@ export function buildSarif(run: EngineRun): SarifLog {
   };
 }
 
-/** Canonical, pretty-printed SARIF JSON string (deterministic). */
-export function buildSarifJson(run: EngineRun): string {
-  return JSON.stringify(buildSarif(run), null, 2);
+/** Map a HANDOFF finding to a SARIF result (container-located, no text region). */
+function handoffResult(
+  f: HandoffFinding,
+  ruleIndex: Map<string, number>,
+  run: EngineRun,
+  deliveryHash: string,
+): SarifResult {
+  return {
+    ruleId: f.rule_id,
+    ruleIndex: ruleIndex.get(f.rule_id)!,
+    level: LEVEL[f.severity],
+    message: { text: f.description },
+    locations: [
+      {
+        physicalLocation: { artifactLocation: { uri: run.source_file.name } },
+        logicalLocations: [{ name: "pre-disclosure", kind: "container" }],
+      },
+    ],
+    partialFingerprints: {
+      "vaulyticaHandoffId/v1": f.rule_id,
+      "vaulyticaDeliveryHash/v1": deliveryHash,
+    },
+    properties: {
+      severity: f.severity,
+      count: f.count,
+      evidence: f.evidence,
+      surface: "delivery",
+    },
+  };
 }
 
-export function sarifBlob(run: EngineRun): Blob {
-  return new Blob([buildSarifJson(run)], { type: "application/sarif+json" });
+/** Map a derived critical date to a SARIF result (section-located, note level). */
+function dateResult(
+  r: CriticalDate,
+  ruleIndex: Map<string, number>,
+  run: EngineRun,
+  datesHash: string,
+  index: number,
+): SarifResult {
+  const when = r.resolved
+    ? r.window
+      ? `${r.window[0]}–${r.window[1]}`
+      : (r.computed_date ?? "unresolved")
+    : "verify manually";
+  return {
+    ruleId: r.rule_id,
+    ruleIndex: ruleIndex.get(r.rule_id)!,
+    level: "note",
+    message: { text: `${CRITICAL_DATE_KIND_LABEL[r.kind]} (${when}): ${r.trigger}` },
+    locations: [
+      {
+        physicalLocation: { artifactLocation: { uri: run.source_file.name } },
+        logicalLocations: [{ name: r.section ?? "document", kind: "section" }],
+      },
+    ],
+    partialFingerprints: {
+      // Index keeps the key unique when two rows share a rule id + section.
+      "vaulyticaCriticalDateId/v1": `${r.rule_id}-${r.section ?? "doc"}-${index}`,
+      "vaulyticaCriticalDatesHash/v1": datesHash,
+    },
+    properties: {
+      kind: r.kind,
+      resolved: r.resolved,
+      computed_date: r.computed_date ?? "",
+      anchor: r.anchor,
+      responsible: r.responsible,
+      ...(r.reason ? { reason: r.reason } : {}),
+      surface: "critical-dates",
+    },
+  };
+}
+
+/** Canonical, pretty-printed SARIF JSON string (deterministic). */
+export function buildSarifJson(run: EngineRun, v9?: V9Surfaces): string {
+  return JSON.stringify(buildSarif(run, v9), null, 2);
+}
+
+export function sarifBlob(run: EngineRun, v9?: V9Surfaces): Blob {
+  return new Blob([buildSarifJson(run, v9)], { type: "application/sarif+json" });
 }
 
 // ---------------------------------------------------------------------------

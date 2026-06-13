@@ -26,6 +26,10 @@ import type { Playbook } from "../playbooks/types.js";
 import { buildBibliography, citationIndex } from "./bibliography.js";
 import { formatBibliographyEntry, freshnessSignal } from "./citations.js";
 import { buildClauseEvidence } from "./clause-evidence.js";
+import type { V9Surfaces } from "./v9-surfaces.js";
+import type { DeliveryReport } from "../delivery/types.js";
+import type { ClosingChecklist, ChecklistCategory } from "./closing-checklist.js";
+import type { CriticalDatesRegister, CriticalDateKind } from "./critical-dates.js";
 
 const SEVERITY_ORDER: Severity[] = ["critical", "warning", "info"];
 const SEVERITY_LABEL: Record<Severity, string> = {
@@ -103,6 +107,20 @@ const STYLE = `
   ol.biblio { padding-left: 1.4rem; }
   ol.biblio li { overflow-wrap: anywhere; margin-bottom: .4rem; font-size: .85rem; }
   .posture p { font-size: .85rem; color: #333; }
+  /* v9 "Last Look" surfaces — each a bordered card list, mobile-safe (every
+     cell wraps, no fixed widths, no horizontal scroll). */
+  .v9-note { font-size: .8rem; color: #555; font-style: italic; margin: .25rem 0 .75rem; }
+  ul.v9-list { list-style: none; padding: 0; margin: .5rem 0; }
+  ul.v9-list li { border: 1px solid #dde3e1; border-left-width: 4px; border-radius: 6px;
+    padding: .5rem .7rem; margin-bottom: .5rem; overflow-wrap: anywhere; }
+  ul.v9-list li.crit { border-left-color: var(--crit); }
+  ul.v9-list li.warn { border-left-color: var(--warn); }
+  ul.v9-list li.info { border-left-color: var(--info); }
+  ul.v9-list li.ok { border-left-color: var(--mint); }
+  .v9-head { font-weight: bold; }
+  .v9-sub { font-size: .82rem; color: #555; margin-top: .15rem; }
+  .v9-evi { font-size: .82rem; color: #444; margin: .1rem 0 0; padding-left: 1.1rem; }
+  .v9-date { font-family: ui-monospace, Menlo, Consolas, monospace; font-weight: bold; }
   @media print { body { max-width: none; } a { color: inherit; text-decoration: underline; } }
   @media (max-width: 32rem) { body { padding: .75rem; } h1 { font-size: 1.35rem; } }
 `;
@@ -144,11 +162,111 @@ function renderFinding(f: Finding, bibliography: ReturnType<typeof buildBibliogr
   return parts.join("\n");
 }
 
+const SEV_CLASS: Record<string, string> = { critical: "crit", warning: "warn", info: "info" };
+
+/** "Clean to send" — the delivery / HANDOFF-* pre-disclosure section (Thrust A). */
+function renderDeliverySection(delivery: DeliveryReport): string[] {
+  if (delivery.findings.length === 0) return [];
+  const out: string[] = ["<h2>Clean to send — pre-disclosure scan</h2>"];
+  out.push(`<p class="v9-note">${esc(delivery.summary)}</p>`);
+  out.push('<ul class="v9-list">');
+  for (const f of delivery.findings) {
+    const evi = f.evidence
+      .slice(0, 6)
+      .map((e) => `<div class="v9-evi">${esc(e)}</div>`)
+      .join("");
+    const more = f.count > 6 ? `<div class="v9-evi">…and ${f.count - 6} more</div>` : "";
+    out.push(
+      `<li class="${SEV_CLASS[f.severity] ?? "info"}"><div class="v9-head"><span class="ruleid">${esc(f.rule_id)}</span> ${esc(f.title)}</div><div class="v9-sub">${esc(f.description)}</div>${evi}${more}</li>`,
+    );
+  }
+  out.push("</ul>");
+  out.push(
+    '<p class="v9-note">Vaulytica reports what it found in the original file and where — it never removes it (that is your edit in Word) and never certifies the document clean.</p>',
+  );
+  return out;
+}
+
+const CHECKLIST_CAT_LABEL: Record<ChecklistCategory, string> = {
+  signature: "Signatures",
+  attachment: "Attachments",
+  formality: "Execution formalities",
+  blank: "Unfilled content",
+  handoff: "Pre-send cleanup",
+};
+const CHECKLIST_CAT_ORDER: ChecklistCategory[] = [
+  "signature",
+  "attachment",
+  "formality",
+  "blank",
+  "handoff",
+];
+
+/** "Ready to sign" — the consolidated closing checklist (Thrust B). */
+function renderClosingChecklistSection(checklist: ClosingChecklist): string[] {
+  if (checklist.items.length === 0) return [];
+  const out: string[] = ["<h2>Ready to sign — closing checklist</h2>"];
+  out.push(
+    `<p class="v9-note">${checklist.open_count} readiness item${checklist.open_count === 1 ? "" : "s"} to resolve. A projection of the findings — it does not certify the document is ready to sign or validly executed.</p>`,
+  );
+  for (const cat of CHECKLIST_CAT_ORDER) {
+    const group = checklist.items.filter((i) => i.category === cat);
+    if (group.length === 0) continue;
+    out.push(`<h3>${esc(CHECKLIST_CAT_LABEL[cat])} (${group.length})</h3>`);
+    out.push('<ul class="v9-list">');
+    for (const i of group) {
+      const where = i.section ? ` <span class="ruleid">§${esc(i.section)}</span>` : "";
+      out.push(
+        `<li class="warn"><span class="ruleid">${esc(i.rule_id)}</span> ${esc(i.label)}${where}</li>`,
+      );
+    }
+    out.push("</ul>");
+  }
+  return out;
+}
+
+const CRITICAL_DATE_KIND_LABEL: Record<CriticalDateKind, string> = {
+  "auto-renewal-notice": "Auto-renewal notice",
+  "cure-window": "Cure window",
+  "opt-out-window": "Opt-out / termination",
+  "survival-end": "Survival end",
+  "notice-period": "Notice deadline",
+};
+
+/** "Your calendar, computed" — the critical-dates register (Thrust C). */
+function renderCriticalDatesSection(register: CriticalDatesRegister): string[] {
+  if (register.register.length === 0) return [];
+  const out: string[] = ["<h2>Critical dates — computed from the document</h2>"];
+  out.push(
+    `<p class="v9-note">${register.resolved_count} computed · ${register.unresolved_count} to verify manually. Each date is calendar arithmetic over the document's own terms; never a determination that a deadline is met, missed, or binding.</p>`,
+  );
+  out.push('<ul class="v9-list">');
+  for (const r of register.register) {
+    const label = CRITICAL_DATE_KIND_LABEL[r.kind] ?? "Deadline";
+    const date = r.resolved
+      ? r.window
+        ? `${esc(r.window[0])} – ${esc(r.window[1])}`
+        : esc(r.computed_date ?? "")
+      : "Verify manually";
+    const meta: string[] = [];
+    if (r.anchor) meta.push(`anchor: ${esc(r.anchor)}`);
+    if (r.responsible) meta.push(`responsible: ${esc(r.responsible)}`);
+    if (r.section) meta.push(`§${esc(r.section)}`);
+    const reason = !r.resolved && r.reason ? `<div class="v9-evi">${esc(r.reason)}</div>` : "";
+    out.push(
+      `<li class="${r.resolved ? "ok" : "warn"}"><div class="v9-head"><span class="v9-date">${date}</span> · <span class="ruleid">${esc(r.rule_id)}</span> ${esc(label)}</div><div class="v9-sub">${esc(r.trigger)}</div>${meta.length ? `<div class="v9-sub">${meta.join(" · ")}</div>` : ""}${reason}</li>`,
+    );
+  }
+  out.push("</ul>");
+  return out;
+}
+
 export function buildHtmlReport(
   run: EngineRun,
   ingest: IngestResult,
   dkb: DKB,
   playbook?: Playbook,
+  v9?: V9Surfaces,
 ): string {
   const bibliography = buildBibliography(run.findings, dkb);
   const counts = { critical: 0, warning: 0, info: 0 } as Record<Severity, number>;
@@ -183,6 +301,12 @@ export function buildHtmlReport(
     }
     for (const f of group) body.push(renderFinding(f, bibliography));
   }
+
+  // v9 "Last Look" surfaces — render-side, outside `result_hash`. Each is
+  // omitted when empty, so a document with none yields the v8 report byte-for-byte.
+  if (v9?.delivery) body.push(...renderDeliverySection(v9.delivery));
+  if (v9?.closingChecklist) body.push(...renderClosingChecklistSection(v9.closingChecklist));
+  if (v9?.criticalDates) body.push(...renderCriticalDatesSection(v9.criticalDates));
 
   // Bibliography.
   body.push("<h2>Bibliography</h2>");
@@ -256,6 +380,7 @@ export function htmlReportBlob(
   ingest: IngestResult,
   dkb: DKB,
   playbook?: Playbook,
+  v9?: V9Surfaces,
 ): Blob {
-  return new Blob([buildHtmlReport(run, ingest, dkb, playbook)], { type: "text/html" });
+  return new Blob([buildHtmlReport(run, ingest, dkb, playbook, v9)], { type: "text/html" });
 }

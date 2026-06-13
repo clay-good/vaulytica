@@ -4,6 +4,38 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Added
+- **v9 output-surface completion — the Last Look surfaces now render in every
+  report format.** Closes the two engineering-scoped deferrals documented at the
+  9.0.0 release (spec-v9 Steps 153/159/163). The delivery (`HANDOFF-*`), closing
+  checklist, and critical-dates surfaces previously rendered only in JSON / CLI /
+  tab / Markdown / CSV / `.ics`; they now also render in the **DOCX** report, the
+  standalone **HTML** report, and **SARIF** — all via a single optional
+  `V9Surfaces` bundle ([`src/report/v9-surfaces.ts`](src/report/v9-surfaces.ts)),
+  render-side, **zero `result_hash` churn** (each section is omitted when empty,
+  so a document with no handoff facts / readiness gaps / derivable dates produces
+  a byte-identical v8-era report):
+  - **DOCX** — new "Clean to Send", "Ready to Sign — Closing Checklist", and
+    "Critical Dates" sections (each a heading + table, omitted when empty).
+  - **HTML** — the same three sections as bordered, mobile-safe card lists
+    (every cell wraps; the standalone report still scrolls vertically only at
+    320–1280px and clears WCAG 2 AA, verified by the deepened
+    `html-report-responsive` e2e with overflow-prone v9 content).
+  - **SARIF** — `HANDOFF-001…005` and `DATE-001…005` are now first-class SARIF
+    `result`s with their own rule descriptors: handoff findings cite the
+    container (no text region; `kind: "container"` logical location), derived
+    deadlines surface at `note` level anchored to their section, and each carries
+    its surface hash (`delivery_hash` / `critical_dates_hash`) as a
+    `partialFingerprint` for cross-run dedupe. The output stays conformant
+    (`sarifConformanceViolations` green). The closing checklist is a projection
+    of findings already emitted, so it is intentionally **not** re-emitted as
+    SARIF results.
+  - Wired through `runReport` (one `V9Surfaces` bundle threaded into DOCX/HTML/
+    SARIF) and the CLI `renderFormat` (`--delivery` / `--checklist` /
+    `--critical-dates` now flow into `sarif`/`html` output, not just `json`).
+  - +6 unit tests (html/sarif/docx structure + "byte-identical when absent")
+    and the deepened HTML-report e2e. Suite 2,874 → 2,880.
+
 ## [9.0.0] — 2026-06-12 — The Last Look (spec-v9 complete)
 
 ### Added

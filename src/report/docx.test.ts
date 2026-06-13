@@ -251,6 +251,87 @@ describe("buildDocxReport", () => {
     expect(docXml).not.toContain("legacy");
     expect(docXml).not.toContain("superseded by");
   });
+
+  it("renders the v9 Last Look sections when the surfaces are supplied", async () => {
+    const v9 = {
+      delivery: {
+        source: "docx" as const,
+        inspectable: true,
+        findings: [
+          {
+            rule_id: "HANDOFF-001",
+            severity: "critical" as const,
+            title: "Tracked changes are present",
+            description: "2 tracked-change revisions remain.",
+            count: 2,
+            evidence: [],
+          },
+        ],
+        summary: "Delivery: 2 tracked changes — review before sending.",
+        delivery_hash: "d".repeat(64),
+      },
+      closingChecklist: {
+        open_count: 1,
+        items: [
+          {
+            category: "attachment" as const,
+            rule_id: "STRUCT-018",
+            label: "Referenced attachment not present: Exhibit C",
+            section: "s3",
+          },
+        ],
+      },
+      criticalDates: {
+        register: [
+          {
+            rule_id: "DATE-001",
+            kind: "auto-renewal-notice" as const,
+            resolved: true,
+            computed_date: "2025-11-01",
+            trigger: "60 days before the Renewal Date",
+            anchor: "Renewal Date",
+            responsible: "Acme Corp",
+            section: "s8",
+          },
+        ],
+        resolved_count: 1,
+        unresolved_count: 0,
+        critical_dates_hash: "e".repeat(64),
+      },
+    };
+    const blob = await buildDocxReport(
+      makeRun(),
+      ingest,
+      loadStarterDkbSync(),
+      loadMutualNda(),
+      undefined,
+      undefined,
+      undefined,
+      v9,
+    );
+    const { unzipSync, strFromU8 } = await import("fflate");
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const docXml = strFromU8(entries["word/document.xml"]!);
+    const runText = (docXml.match(/<w:t[^>]*>([^<]*)<\/w:t>/g) ?? [])
+      .map((m) => m.replace(/<[^>]+>/g, ""))
+      .join("");
+    expect(runText).toContain("Clean to Send");
+    expect(runText).toContain("Ready to Sign");
+    expect(runText).toContain("Critical Dates");
+    expect(runText).toContain("HANDOFF-001");
+    expect(runText).toContain("2025-11-01");
+  });
+
+  it("omits the v9 sections when no surface is supplied", async () => {
+    const blob = await buildDocxReport(makeRun(), ingest, loadStarterDkbSync(), loadMutualNda());
+    const { unzipSync, strFromU8 } = await import("fflate");
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const runText = (strFromU8(entries["word/document.xml"]!).match(/<w:t[^>]*>([^<]*)<\/w:t>/g) ?? [])
+      .map((m) => m.replace(/<[^>]+>/g, ""))
+      .join("");
+    expect(runText).not.toContain("Clean to Send");
+    expect(runText).not.toContain("Critical Dates");
+  });
 });
 
 describe("buildJsonReport", () => {

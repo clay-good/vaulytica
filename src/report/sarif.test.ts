@@ -156,3 +156,85 @@ describe("SARIF 2.1.0 structural conformance (spec-v8 §20)", () => {
     expect(violations.some((s) => s.includes("artifactLocation.uri"))).toBe(true);
   });
 });
+
+describe("buildSarif — v9 Last Look surfaces (HANDOFF-* + DATE-*)", () => {
+  const delivery = {
+    source: "docx" as const,
+    inspectable: true,
+    findings: [
+      {
+        rule_id: "HANDOFF-001",
+        severity: "critical" as const,
+        title: "Tracked changes are present",
+        description: "3 tracked-change revisions remain in the document's container.",
+        count: 3,
+        evidence: ["insertion by Opposing Counsel: “indemnify and hold harmless”"],
+      },
+      {
+        rule_id: "HANDOFF-005",
+        severity: "warning" as const,
+        title: "Sensitive-data patterns are present",
+        description: "2 spans match sensitive-data formats.",
+        count: 2,
+        evidence: ["ssn (high confidence): ***-**-6789"],
+      },
+    ],
+    summary: "Delivery: 3 tracked changes, 2 sensitive-data spans — review before sending.",
+    delivery_hash: "d".repeat(64),
+  };
+  const criticalDates = {
+    register: [
+      {
+        rule_id: "DATE-001",
+        kind: "auto-renewal-notice" as const,
+        resolved: true,
+        computed_date: "2025-11-01",
+        trigger: "60 days before the Renewal Date",
+        anchor: "Renewal Date",
+        responsible: "Acme Corp",
+        section: "s8",
+      },
+      {
+        rule_id: "DATE-005",
+        kind: "notice-period" as const,
+        resolved: false,
+        computed_date: null,
+        trigger: "15 business days after the Approval Date",
+        anchor: "Approval Date",
+        responsible: "",
+        section: "s9",
+        reason: "business-day deadline — no holiday calendar is asserted; verify manually",
+      },
+    ],
+    resolved_count: 1,
+    unresolved_count: 1,
+    critical_dates_hash: "e".repeat(64),
+  };
+
+  it("emits HANDOFF-* and DATE-* as first-class, conformant results", () => {
+    const log = buildSarif(run([finding("f1", "STRUCT-001", "warning")]), { delivery, criticalDates });
+    expect(sarifConformanceViolations(log)).toEqual([]);
+    const results = log.runs[0]!.results;
+    const ids = results.map((r) => r.ruleId);
+    expect(ids).toContain("HANDOFF-001");
+    expect(ids).toContain("HANDOFF-005");
+    expect(ids).toContain("DATE-001");
+    expect(ids).toContain("DATE-005");
+    // Every result's ruleIndex resolves to its own ruleId in the rule list.
+    const rules = log.runs[0]!.tool.driver.rules;
+    for (const r of results) expect(rules[r.ruleIndex]!.id).toBe(r.ruleId);
+    // HANDOFF carries no text region (container-located); DATE is note level.
+    const handoff = results.find((r) => r.ruleId === "HANDOFF-001")!;
+    expect(handoff.level).toBe("error");
+    expect(handoff.locations[0]!.physicalLocation.region).toBeUndefined();
+    expect(handoff.locations[0]!.logicalLocations![0]!.kind).toBe("container");
+    const date = results.find((r) => r.ruleId === "DATE-001")!;
+    expect(date.level).toBe("note");
+    expect(date.partialFingerprints["vaulyticaCriticalDatesHash/v1"]).toBe("e".repeat(64));
+  });
+
+  it("is byte-identical to the v8 SARIF when no v9 surface is supplied", () => {
+    const findings = [finding("f1", "STRUCT-001", "warning")];
+    expect(buildSarifJson(run(findings))).toBe(buildSarifJson(run(findings), {}));
+  });
+});

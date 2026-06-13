@@ -152,6 +152,13 @@ export async function resolveInputs(target: string): Promise<string[]> {
 }
 
 async function renderFormat(fmt: Format, r: AnalyzeResult, dkb: Dkb): Promise<string> {
+  // The v9 "Last Look" surfaces, populated only when the matching flag ran
+  // (--delivery / --critical-dates / --checklist). Threaded into every format.
+  const v9surfaces = {
+    delivery: r.delivery,
+    criticalDates: r.critical_dates,
+    closingChecklist: r.closing_checklist,
+  };
   switch (fmt) {
     case "json":
       return buildJsonReport(
@@ -165,9 +172,9 @@ async function renderFormat(fmt: Format, r: AnalyzeResult, dkb: Dkb): Promise<st
         r.closing_checklist,
       ).text();
     case "sarif":
-      return buildSarifJson(r.run);
+      return buildSarifJson(r.run, v9surfaces);
     case "html":
-      return buildHtmlReport(r.run, r.ingest, dkb);
+      return buildHtmlReport(r.run, r.ingest, dkb, undefined, v9surfaces);
     case "md":
       return buildFixListMarkdown(r.run);
     case "csv":

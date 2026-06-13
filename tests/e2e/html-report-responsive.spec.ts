@@ -70,6 +70,81 @@ const run: EngineRun = {
   result_hash: "b".repeat(64),
 };
 
+// v9 "Last Look" surfaces with overflow-prone content (long author/template
+// paths, a 60-day-before clause, a leak-named entity) — so the new HTML
+// sections are width- and a11y-tested alongside the findings.
+const v9 = {
+  delivery: {
+    source: "docx" as const,
+    inspectable: true,
+    summary:
+      "Delivery: 3 tracked changes, 2 comments, 5 metadata fields, 4 sensitive-data spans — review before sending.",
+    findings: [
+      {
+        rule_id: "HANDOFF-004",
+        severity: "critical" as const,
+        title: "Authoring metadata is present",
+        description:
+          "5 authoring-metadata fields are embedded in the container. 2 identity fields name an entity not among the document's parties (a likely cross-matter leak).",
+        count: 5,
+        evidence: [
+          "template: C:\\Users\\jdrafter\\AppData\\Roaming\\Microsoft\\Templates\\PriorClient_Globex_MSA_FINAL_v7.dotx ⚠ not a named party",
+          "company: Globex Industries International Holdings LLC ⚠ not a named party",
+        ],
+      },
+    ],
+    delivery_hash: "d".repeat(64),
+  },
+  closingChecklist: {
+    open_count: 2,
+    items: [
+      {
+        category: "signature" as const,
+        rule_id: "STRUCT-017",
+        label:
+          "Declared parties with no signature line: 2 — Globex Industries International Holdings LLC and Initech Worldwide Incorporated have no attributable signature line",
+        section: "s12.4",
+      },
+      {
+        category: "attachment" as const,
+        rule_id: "STRUCT-018",
+        label: "Referenced attachments not present: 3 — Exhibit C, Schedule 2.4, and Annex IV",
+        section: "s3.1",
+      },
+    ],
+  },
+  criticalDates: {
+    resolved_count: 1,
+    unresolved_count: 1,
+    critical_dates_hash: "e".repeat(64),
+    register: [
+      {
+        rule_id: "DATE-001",
+        kind: "auto-renewal-notice" as const,
+        resolved: true,
+        computed_date: "2025-11-01",
+        trigger:
+          "sixty (60) days prior to each anniversary of the Effective Date unless either party gives written notice of non-renewal",
+        anchor: "Renewal Date",
+        responsible: "Globex Industries International Holdings LLC",
+        section: "s8.2",
+      },
+      {
+        rule_id: "DATE-005",
+        kind: "notice-period" as const,
+        resolved: false,
+        computed_date: null,
+        trigger: "fifteen (15) business days after the date of the final regulatory approval",
+        anchor: "Approval Date",
+        responsible: "",
+        section: "s9.3",
+        reason:
+          "business-day deadline (15 business days) — no holiday calendar is asserted; verify manually",
+      },
+    ],
+  },
+};
+
 const BREAKPOINTS = [
   { label: "320px", width: 320, height: 720 },
   { label: "390px", width: 390, height: 844 },
@@ -89,13 +164,13 @@ async function expectNoHorizontalOverflow(page: Page): Promise<void> {
 }
 
 test("standalone HTML report scrolls vertically only (320–1280px)", async ({ page }) => {
-  const html = buildHtmlReport(run, ingest, loadStarterDkbSync());
+  const html = buildHtmlReport(run, ingest, loadStarterDkbSync(), undefined, v9);
   await page.setContent(html);
   await expectNoHorizontalOverflow(page);
 });
 
 test("standalone HTML report has zero axe violations (WCAG 2 AA)", async ({ page }) => {
-  await page.setContent(buildHtmlReport(run, ingest, loadStarterDkbSync()));
+  await page.setContent(buildHtmlReport(run, ingest, loadStarterDkbSync(), undefined, v9));
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
     .analyze();
