@@ -63,6 +63,11 @@
     "custom_rules": {
       "type": "array",
       "items": { "$ref": "#/$defs/customRule" }
+    },
+    "negotiation_positions": {
+      "type": "array",
+      "description": "Tiered negotiation positions (spec-v10): which rung of the team's ideal/acceptable ladder the draft meets, on each negotiable dimension. Advisory posture, outside result_hash.",
+      "items": { "$ref": "#/$defs/negotiationPosition" }
     }
   },
   "$defs": {
@@ -87,6 +92,26 @@
         "severity": { "$ref": "#/$defs/severity" },
         "assert": { "$ref": "#/$defs/predicate" },
         "citation": { "$ref": "#/$defs/citation" }
+      }
+    },
+    "negotiationPosition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dimension", "ideal", "acceptable"],
+      "description": "A tiered position on one negotiable dimension. `ideal` is the stricter predicate, `acceptable` the floor; both reuse the predicate DSL.",
+      "properties": {
+        "dimension": { "type": "string", "minLength": 1 },
+        "ideal": { "$ref": "#/$defs/predicate" },
+        "acceptable": { "$ref": "#/$defs/predicate" },
+        "guidance": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "ideal": { "type": "string", "minLength": 1 },
+            "acceptable": { "type": "string", "minLength": 1 },
+            "walk_away": { "type": "string", "minLength": 1 }
+          }
+        }
       }
     },
     "predicate": {

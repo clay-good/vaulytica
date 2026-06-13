@@ -145,6 +145,34 @@ const v9 = {
   },
 };
 
+// spec-v10 negotiation posture — overflow-prone dimensions/details/guidance.
+const posture = {
+  counts: { ideal: 1, acceptable: 1, below_acceptable: 1, unevaluable: 1 },
+  posture_hash: "f".repeat(64),
+  positions: [
+    {
+      dimension: "Liability cap (as a multiple of trailing twelve months of fees paid)",
+      tier: "below-acceptable" as const,
+      detail: "Found liability_cap_multiple = 3; your playbook requires liability_cap_multiple ≥ 6.",
+      guidance: "Below our 6x floor — escalate to the deal lead before agreeing to anything lower.",
+      section_id: "s7.4",
+    },
+    {
+      dimension: "Termination-for-convenience notice period",
+      tier: "acceptable" as const,
+      detail: "Found notice_period_days = 45; ideal requires notice_period_days ≤ 30.",
+      guidance: "Up to 60 days is tolerable.",
+      section_id: "s12",
+    },
+    { dimension: "Governing law", tier: "ideal" as const, guidance: "Delaware — hold." },
+    {
+      dimension: "Uptime service-level commitment",
+      tier: "unevaluable" as const,
+      reason: "could not locate a value for the uptime SLA in the document",
+    },
+  ],
+};
+
 const BREAKPOINTS = [
   { label: "320px", width: 320, height: 720 },
   { label: "390px", width: 390, height: 844 },
@@ -164,13 +192,13 @@ async function expectNoHorizontalOverflow(page: Page): Promise<void> {
 }
 
 test("standalone HTML report scrolls vertically only (320–1280px)", async ({ page }) => {
-  const html = buildHtmlReport(run, ingest, loadStarterDkbSync(), undefined, v9);
+  const html = buildHtmlReport(run, ingest, loadStarterDkbSync(), undefined, v9, posture);
   await page.setContent(html);
   await expectNoHorizontalOverflow(page);
 });
 
 test("standalone HTML report has zero axe violations (WCAG 2 AA)", async ({ page }) => {
-  await page.setContent(buildHtmlReport(run, ingest, loadStarterDkbSync(), undefined, v9));
+  await page.setContent(buildHtmlReport(run, ingest, loadStarterDkbSync(), undefined, v9, posture));
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
     .analyze();

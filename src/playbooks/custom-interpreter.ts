@@ -36,6 +36,7 @@ import type {
   CustomPlaybook,
   CustomPredicate,
   CustomRule,
+  NegotiationPosition,
   NumericComparator,
 } from "./custom-playbook.js";
 
@@ -75,6 +76,34 @@ type PredicateOutcome =
   | { kind: "compliant" }
   | { kind: "violated"; detail: string; section_id?: string; clause_text?: string; position?: number }
   | { kind: "unevaluable"; reason: string };
+
+// ---------------------------------------------------------------------------
+// Negotiation posture (spec-v10 Thrust A)
+// ---------------------------------------------------------------------------
+
+/** Which rung of a team's ideal/acceptable ladder the draft currently meets. */
+export type NegotiationTier = "ideal" | "acceptable" | "below-acceptable" | "unevaluable";
+
+export type NegotiationPositionResult = {
+  dimension: string;
+  tier: NegotiationTier;
+  /** The author's guidance for the tier reached (or walk-away when below). */
+  guidance?: string;
+  /** The evaluator's plain explanation of why this tier (from the violated predicate). */
+  detail?: string;
+  /** A short excerpt of the clause that set the tier, when known. */
+  excerpt?: string;
+  section_id?: string;
+  /** Why unevaluable, when the metric/clause is not stated in the document. */
+  reason?: string;
+};
+
+export type NegotiationPosture = {
+  positions: NegotiationPositionResult[];
+  counts: { ideal: number; acceptable: number; below_acceptable: number; unevaluable: number };
+  /** SHA-256 over the canonical posture — additive, namespaced apart from `result_hash`. */
+  posture_hash: string;
+};
 
 // ---------------------------------------------------------------------------
 // Entry point
@@ -151,6 +180,92 @@ export async function runCustomPlaybook(
     unevaluable,
     result_hash,
   };
+}
+
+/**
+ * Evaluate a playbook's tiered negotiation positions against the document
+ * (spec-v10 Thrust A). Pure and deterministic: reuses the SAME predicate
+ * evaluator the custom rules use, so a tier is classified by exactly the
+ * deterministic logic that already ships — no new fuzzy matching. The posture
+ * is advisory and carries its own `posture_hash`, namespaced apart from the
+ * engine `result_hash`.
+ */
+export async function evaluateNegotiationPosture(
+  positions: readonly NegotiationPosition[],
+  input: { tree: DocumentTree; extracted: ExtractedData },
+): Promise<NegotiationPosture> {
+  const facts = buildDocFacts(input.tree, input.extracted);
+  const results = positions.map((pos) => classifyPosition(pos, facts));
+  // Deterministic order: by dimension label (machine-independent).
+  results.sort((a, b) => a.dimension.localeCompare(b.dimension, "en"));
+  const counts = { ideal: 0, acceptable: 0, below_acceptable: 0, unevaluable: 0 };
+  for (const r of results) {
+    if (r.tier === "ideal") counts.ideal += 1;
+    else if (r.tier === "acceptable") counts.acceptable += 1;
+    else if (r.tier === "below-acceptable") counts.below_acceptable += 1;
+    else counts.unevaluable += 1;
+  }
+  const posture_hash = await sha256Hex(
+    stableStringify({ positions: results.map((r) => ({ dimension: r.dimension, tier: r.tier })) }),
+  );
+  return { positions: results, counts, posture_hash };
+}
+
+/**
+ * Classify one position into a tier. The ladder is monotone: `ideal` is the
+ * stricter predicate, `acceptable` the looser floor. We report
+ * `below-acceptable` ONLY when both tiers are evaluable and both fail — if
+ * either tier is unevaluable (the metric/clause is not stated), the position
+ * is honestly `unevaluable`, never a false "walk-away" on absent data.
+ */
+function classifyPosition(pos: NegotiationPosition, facts: DocFacts): NegotiationPositionResult {
+  const dimension = pos.dimension;
+  const ideal = evaluatePredicate(pos.ideal, facts);
+  if (ideal.kind === "compliant") {
+    return compact({ dimension, tier: "ideal", guidance: pos.guidance?.ideal });
+  }
+  const acceptable = evaluatePredicate(pos.acceptable, facts);
+  if (acceptable.kind === "compliant") {
+    return compact({
+      dimension,
+      tier: "acceptable",
+      guidance: pos.guidance?.acceptable,
+      detail: ideal.kind === "violated" ? ideal.detail : undefined,
+      excerpt: ideal.kind === "violated" ? excerptOf(ideal.clause_text) : undefined,
+      section_id: ideal.kind === "violated" ? ideal.section_id : undefined,
+    });
+  }
+  if (ideal.kind === "violated" && acceptable.kind === "violated") {
+    return compact({
+      dimension,
+      tier: "below-acceptable",
+      guidance: pos.guidance?.walk_away,
+      detail: acceptable.detail,
+      excerpt: excerptOf(acceptable.clause_text ?? ideal.clause_text),
+      section_id: acceptable.section_id ?? ideal.section_id,
+    });
+  }
+  const reason =
+    acceptable.kind === "unevaluable"
+      ? acceptable.reason
+      : ideal.kind === "unevaluable"
+        ? ideal.reason
+        : "could not be evaluated on this document";
+  return compact({ dimension, tier: "unevaluable", reason });
+}
+
+/** Drop undefined fields so the canonical posture body is stable and minimal. */
+function compact(r: NegotiationPositionResult): NegotiationPositionResult {
+  const out = { ...r } as Record<string, unknown>;
+  for (const k of Object.keys(out)) if (out[k] === undefined) delete out[k];
+  return out as NegotiationPositionResult;
+}
+
+/** Short, location-only excerpt of a clause for the posture report. */
+function excerptOf(text: string | undefined): string | undefined {
+  if (!text) return undefined;
+  const t = text.trim();
+  return t.length <= 160 ? t : t.slice(0, 159) + "…";
 }
 
 // ---------------------------------------------------------------------------

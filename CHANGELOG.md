@@ -4,7 +4,42 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.1.0] — 2026-06-13 — Negotiation Posture (spec-v10 Thrust A) + PDF annotations
+
 ### Added
+- **Negotiation posture — the tiered-position ladder (spec-v10 Thrust A, Steps
+  166–169).** Deepens the v6 bring-your-own-playbook axis from binary
+  enforcement to a negotiation ladder. A custom playbook can now carry
+  `negotiation_positions`: one entry per negotiable dimension, each an `ideal`
+  and an `acceptable` predicate drawn from the **same** bounded v6 DSL the
+  custom rules use, plus optional per-tier `guidance`. The engine reports which
+  rung the draft meets — **ideal · acceptable · below-floor · not-stated** —
+  classified **deterministically by the existing `evaluatePredicate`**, so
+  there is no new fuzzy logic.
+  - Schema: `negotiation_positions` on `CustomPlaybook` (Zod + the published
+    [`docs/v6/playbook.schema.json`](docs/v6/playbook.schema.json) artifact),
+    backward-compatible (optional field, `schema_version` unchanged). Validation
+    rejects a tier clause predicate with neither `pattern` nor `section_heading`
+    and a duplicate `dimension`; a posture-only `replace`-mode playbook is now
+    valid.
+  - Evaluator: `evaluateNegotiationPosture` ([`src/playbooks/custom-interpreter.ts`](src/playbooks/custom-interpreter.ts))
+    — monotone (`ideal` strict, `acceptable` the floor); **below-floor only when
+    both tiers are evaluable and both fail** (an unstated metric is honestly
+    `unevaluable`, never a false walk-away — the v5/v6 honesty contract). Carries
+    its own `posture_hash`, namespaced apart from the engine `result_hash`.
+  - Surfaces: a `negotiation_posture` JSON block, a "Negotiation Posture"
+    section in the DOCX and standalone HTML reports, and a mobile-safe
+    "Negotiation posture" card in the complete-state tab — each shown only when
+    the active custom playbook defined positions, so a position-free run renders
+    identically to before. **Render-side, zero `result_hash` churn.**
+  - Advisory, never a legal conclusion: a tier reports where the draft sits on
+    the team's **own** ladder, never that a term is enforceable, adequate, or
+    market.
+  - +14 tests (tier classification across numeric / governing-law / clause
+    ladders; schema validation; DOCX/HTML rendering + escaping; the e2e
+    responsiveness stress fixture). The `saas-buyer` example playbook gains
+    three worked positions. `docs/spec-v10.md` written. Suite 2,883 → 2,897.
+
 - **PDF reviewer-annotation recovery in the pre-disclosure scan (spec-v9 §7).**
   Closes the last v9 Thrust-A deferral: the delivery scan's PDF path read only
   the Info-dictionary metadata and reported markup/comment recovery as a

@@ -578,3 +578,28 @@ extractors already produce. Two properties matter to the threat model:
   gate re-runs a document under two "today" values and asserts byte-identical
   output, so a later edit cannot smuggle an elapsed-time value into a hashed
   artifact and quietly make the engine non-reproducible.
+
+### v10 — negotiation posture (custom-playbook surface)
+
+The negotiation posture (spec-v10 Thrust A) adds no new read surface and no new
+external dependency. It is a pure function over (a) a user-supplied custom
+playbook's `negotiation_positions` and (b) the document's already-extracted
+facts, evaluated by the **same** bounded predicate evaluator the v6 custom
+rules use — read as data, never code (no `eval`, no network, no clock).
+
+- **User-supplied input, bounded.** A playbook is held in the tab and is
+  capped before it runs: positions are bounded (`MAX_NEGOTIATION_POSITIONS`),
+  every string is length-bounded (`MAX_PLAYBOOK_STRING_LEN`), and the schema is
+  `.strict()` so an unknown field is rejected, not silently carried. A malformed
+  position is a validation error with a human-readable message, never a silent
+  no-op.
+- **User-supplied strings are escaped at every render.** A position's
+  `dimension`, `guidance`, and the evaluator's `detail` can contain arbitrary
+  author text; the HTML report escapes them through the same `esc()` choke
+  point as every other field (a `<script>` in guidance renders inert), the DOCX
+  writer emits them as text runs, and the tab card escapes via `escapeHtml`. A
+  shareable report can never carry live markup from a playbook.
+- **Advisory, deterministic, additive.** The posture reports where a draft sits
+  on the team's *own* ladder — never a legal conclusion — and carries its own
+  `posture_hash` outside the engine `result_hash`, so it cannot perturb the
+  reproducibility contract.

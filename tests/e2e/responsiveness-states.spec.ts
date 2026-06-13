@@ -282,6 +282,32 @@ const STATES: Array<{ name: string; state: DropzoneState }> = [
           },
         ],
       },
+      // spec-v10 negotiation posture — long dimensions/details/guidance.
+      negotiation_posture: {
+        counts: { ideal: 1, acceptable: 1, below_acceptable: 1, unevaluable: 1 },
+        positions: [
+          {
+            dimension: "Liability cap (as a multiple of trailing twelve months of fees)",
+            tier: "below-acceptable",
+            detail: "Found liability_cap_multiple = 3; your playbook requires liability_cap_multiple ≥ 6.",
+            guidance: "Below our 6x floor — escalate to the deal lead before agreeing to anything lower.",
+            section_id: "s7.4",
+          },
+          {
+            dimension: "Termination-for-convenience notice period",
+            tier: "acceptable",
+            detail: "Found notice_period_days = 45; ideal requires notice_period_days ≤ 30.",
+            guidance: "Up to 60 days is tolerable; push for 30 if you have leverage.",
+            section_id: "s12",
+          },
+          { dimension: "Governing law", tier: "ideal", guidance: "Delaware — our preferred forum; hold." },
+          {
+            dimension: "Uptime service-level commitment",
+            tier: "unevaluable",
+            reason: "could not locate a value for the uptime SLA in the document",
+          },
+        ],
+      },
     },
   },
   {

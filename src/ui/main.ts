@@ -210,6 +210,7 @@ function renderCompleteState(
     closing_checklist?: import("./pipeline.js").PipelineResult["closing_checklist"];
     closing_checklist_md_blob?: Blob;
     closing_checklist_csv_blob?: Blob;
+    negotiation_posture?: import("./pipeline.js").PipelineResult["negotiation_posture"];
   },
   countsBySeverity: (r: import("./pipeline.js").PipelineResult["run"]) => {
     critical: number;
@@ -361,6 +362,20 @@ function renderCompleteState(
             rule_id: i.rule_id,
             label: i.label,
             section: i.section,
+          })),
+        }
+      : undefined,
+    // spec-v10 Thrust A — tiered negotiation posture (custom playbook only).
+    negotiation_posture: result.negotiation_posture
+      ? {
+          counts: result.negotiation_posture.counts,
+          positions: result.negotiation_posture.positions.map((p) => ({
+            dimension: p.dimension,
+            tier: p.tier,
+            guidance: p.guidance,
+            detail: p.detail,
+            reason: p.reason,
+            section_id: p.section_id,
           })),
         }
       : undefined,

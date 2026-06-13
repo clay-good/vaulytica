@@ -21,6 +21,7 @@ import { buildClauseEvidence, type ClauseEvidenceSummary } from "./clause-eviden
 import type { DeliveryReport } from "../delivery/types.js";
 import type { CriticalDatesRegister } from "./critical-dates.js";
 import type { ClosingChecklist } from "./closing-checklist.js";
+import type { NegotiationPosture } from "../playbooks/custom-interpreter.js";
 
 /**
  * One additional detected family's scan results (spec-v6 multi-family
@@ -144,6 +145,13 @@ export type JsonReport = {
    * item is present.
    */
   closing_checklist?: ClosingChecklist;
+  /**
+   * Negotiation posture (spec-v10 Thrust A). Present only when the active
+   * custom playbook defined `negotiation_positions` — which rung of the team's
+   * ideal/acceptable ladder the draft meets on each dimension. Advisory, with
+   * its own `posture_hash`, outside `run.result_hash`.
+   */
+  negotiation_posture?: NegotiationPosture;
 };
 
 export function buildJsonReport(
@@ -155,6 +163,7 @@ export function buildJsonReport(
   delivery?: DeliveryReport,
   criticalDates?: CriticalDatesRegister,
   closingChecklist?: ClosingChecklist,
+  negotiationPosture?: NegotiationPosture,
 ): Blob {
   // spec-v6 Part IV — one model-clause reference per distinct fired rule that
   // has one, in first-seen finding order (findings arrive pre-sorted).
@@ -211,6 +220,10 @@ export function buildJsonReport(
   if (criticalDates && criticalDates.register.length > 0) payload.critical_dates = criticalDates;
   // spec-v9 Thrust B — the closing checklist, a render-side projection of `run.findings`.
   if (closingChecklist && closingChecklist.items.length > 0) payload.closing_checklist = closingChecklist;
+  // spec-v10 Thrust A — the negotiation posture, additive (own posture_hash).
+  if (negotiationPosture && negotiationPosture.positions.length > 0) {
+    payload.negotiation_posture = negotiationPosture;
+  }
   const json = JSON.stringify(payload, null, 2);
   return new Blob([json], { type: "application/json" });
 }

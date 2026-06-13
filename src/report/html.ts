@@ -30,6 +30,7 @@ import type { V9Surfaces } from "./v9-surfaces.js";
 import type { DeliveryReport } from "../delivery/types.js";
 import type { ClosingChecklist, ChecklistCategory } from "./closing-checklist.js";
 import type { CriticalDatesRegister, CriticalDateKind } from "./critical-dates.js";
+import type { NegotiationPosture, NegotiationTier } from "../playbooks/custom-interpreter.js";
 
 const SEVERITY_ORDER: Severity[] = ["critical", "warning", "info"];
 const SEVERITY_LABEL: Record<Severity, string> = {
@@ -261,12 +262,42 @@ function renderCriticalDatesSection(register: CriticalDatesRegister): string[] {
   return out;
 }
 
+const NEGOTIATION_TIER: Record<NegotiationTier, { label: string; cls: string }> = {
+  ideal: { label: "Ideal", cls: "ok" },
+  acceptable: { label: "Acceptable", cls: "info" },
+  "below-acceptable": { label: "Below floor — escalate", cls: "crit" },
+  unevaluable: { label: "Not stated — verify", cls: "warn" },
+};
+
+/** "Negotiation posture" — the tiered ideal/acceptable ladder per dimension (spec-v10 Thrust A). */
+function renderNegotiationPostureSection(posture: NegotiationPosture): string[] {
+  if (posture.positions.length === 0) return [];
+  const c = posture.counts;
+  const out: string[] = ["<h2>Negotiation posture</h2>"];
+  out.push(
+    `<p class="v9-note">${c.ideal} ideal · ${c.acceptable} acceptable · ${c.below_acceptable} below floor · ${c.unevaluable} not stated. Advisory posture computed deterministically from your playbook's positions — it does not render a legal conclusion.</p>`,
+  );
+  out.push('<ul class="v9-list">');
+  for (const p of posture.positions) {
+    const tier = NEGOTIATION_TIER[p.tier];
+    const detail = p.detail ?? p.reason ?? "";
+    const guide = p.guidance ? `<div class="v9-evi">Guidance: ${esc(p.guidance)}</div>` : "";
+    const where = p.section_id ? ` <span class="ruleid">§${esc(p.section_id)}</span>` : "";
+    out.push(
+      `<li class="${tier.cls}"><div class="v9-head">${esc(p.dimension)} — <strong>${esc(tier.label)}</strong>${where}</div>${detail ? `<div class="v9-sub">${esc(detail)}</div>` : ""}${guide}</li>`,
+    );
+  }
+  out.push("</ul>");
+  return out;
+}
+
 export function buildHtmlReport(
   run: EngineRun,
   ingest: IngestResult,
   dkb: DKB,
   playbook?: Playbook,
   v9?: V9Surfaces,
+  negotiationPosture?: NegotiationPosture,
 ): string {
   const bibliography = buildBibliography(run.findings, dkb);
   const counts = { critical: 0, warning: 0, info: 0 } as Record<Severity, number>;
@@ -307,6 +338,8 @@ export function buildHtmlReport(
   if (v9?.delivery) body.push(...renderDeliverySection(v9.delivery));
   if (v9?.closingChecklist) body.push(...renderClosingChecklistSection(v9.closingChecklist));
   if (v9?.criticalDates) body.push(...renderCriticalDatesSection(v9.criticalDates));
+  // spec-v10 Thrust A — tiered negotiation posture (custom playbook only).
+  if (negotiationPosture) body.push(...renderNegotiationPostureSection(negotiationPosture));
 
   // Bibliography.
   body.push("<h2>Bibliography</h2>");
@@ -381,6 +414,9 @@ export function htmlReportBlob(
   dkb: DKB,
   playbook?: Playbook,
   v9?: V9Surfaces,
+  negotiationPosture?: NegotiationPosture,
 ): Blob {
-  return new Blob([buildHtmlReport(run, ingest, dkb, playbook, v9)], { type: "text/html" });
+  return new Blob([buildHtmlReport(run, ingest, dkb, playbook, v9, negotiationPosture)], {
+    type: "text/html",
+  });
 }

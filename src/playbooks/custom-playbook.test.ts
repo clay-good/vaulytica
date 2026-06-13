@@ -271,3 +271,63 @@ describe("custom-playbook caps (spec-v8 §10)", () => {
     expect(r.ok).toBe(false);
   });
 });
+
+describe("validateCustomPlaybook — negotiation positions (spec-v10)", () => {
+  it("accepts tiered ideal/acceptable positions", () => {
+    const r = validateCustomPlaybook(
+      minimal({
+        negotiation_positions: [
+          {
+            dimension: "Liability cap",
+            ideal: { kind: "numeric_threshold", metric: "liability_cap_multiple", comparator: "gte", value: 12 },
+            acceptable: { kind: "numeric_threshold", metric: "liability_cap_multiple", comparator: "gte", value: 6 },
+            guidance: { ideal: "12 months", acceptable: "6 months", walk_away: "Escalate." },
+          },
+        ],
+      }),
+    );
+    expect(r.ok).toBe(true);
+  });
+
+  it("rejects a duplicate dimension", () => {
+    const pos = {
+      dimension: "Liability cap",
+      ideal: { kind: "clause_present", pattern: "cap" },
+      acceptable: { kind: "clause_present", pattern: "limit" },
+    };
+    const r = validateCustomPlaybook(minimal({ negotiation_positions: [pos, { ...pos }] as never }));
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.errors.join(" ")).toMatch(/duplicate.*dimension/i);
+  });
+
+  it("rejects a tier clause predicate with neither pattern nor heading", () => {
+    const r = validateCustomPlaybook(
+      minimal({
+        negotiation_positions: [
+          {
+            dimension: "Indemnity",
+            ideal: { kind: "clause_present" } as never,
+            acceptable: { kind: "clause_present", pattern: "indemn" },
+          },
+        ],
+      }),
+    );
+    expect(r.ok).toBe(false);
+  });
+
+  it("allows a replace-mode playbook whose only content is positions", () => {
+    const r = validateCustomPlaybook(
+      minimal({
+        mode: "replace",
+        negotiation_positions: [
+          {
+            dimension: "Governing law",
+            ideal: { kind: "governing_law_in", allowed: ["Delaware"] },
+            acceptable: { kind: "governing_law_in", allowed: ["Delaware", "New York"] },
+          },
+        ],
+      }),
+    );
+    expect(r.ok).toBe(true);
+  });
+});

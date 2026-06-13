@@ -38,6 +38,7 @@ export const CUSTOM_PLAYBOOK_SCHEMA_VERSION = "1.0";
 export const MAX_PLAYBOOK_JSON_BYTES = 5 * 1024 * 1024;
 export const MAX_CUSTOM_RULES = 5000;
 export const MAX_PLAYBOOK_STRING_LEN = 2000;
+export const MAX_NEGOTIATION_POSITIONS = 500;
 
 /**
  * Numeric metrics a `numeric_threshold` predicate may assert on. Bounded by
@@ -134,6 +135,36 @@ export type CustomPlaybookRuleOverride = {
   skip?: boolean;
 };
 
+/** Per-tier negotiation guidance shown beside a {@link NegotiationPosition}. */
+export type NegotiationTierGuidance = {
+  ideal?: string;
+  acceptable?: string;
+  walk_away?: string;
+};
+
+/**
+ * A tiered negotiation position (spec-v10 "Negotiation Posture", Thrust A).
+ *
+ * Encodes a team's fallback ladder for one negotiable dimension as two
+ * predicates from the SAME bounded DSL the custom rules use: `ideal` (the best
+ * position) and `acceptable` (the floor). The engine evaluates which tier the
+ * document currently meets — *ideal*, *acceptable*, *below-acceptable*, or
+ * *unevaluable* (the metric is not stated) — with the existing deterministic
+ * predicate evaluator and **no** new fuzzy logic. It is advisory posture, not
+ * a finding: it tells the negotiator where the draft sits on their ladder and
+ * carries each tier's guidance, never asserting a legal conclusion.
+ */
+export type NegotiationPosition = {
+  /** A unique label for the negotiable dimension, e.g. "Liability cap". */
+  dimension: string;
+  /** The ideal (best) position — the document meets it when this predicate holds. */
+  ideal: CustomPredicate;
+  /** The acceptable floor. Evaluated only when `ideal` does not hold. */
+  acceptable: CustomPredicate;
+  /** Optional per-tier negotiation guidance to surface in the report. */
+  guidance?: NegotiationTierGuidance;
+};
+
 export type CustomPlaybook = {
   schema_version: typeof CUSTOM_PLAYBOOK_SCHEMA_VERSION;
   /** The built-in rule-catalog version this playbook targets (spec-v6 §10). */
@@ -156,6 +187,12 @@ export type CustomPlaybook = {
   required_clauses?: Array<{ category: string; severity: Severity }>;
   /** The bounded declarative DSL (§9). */
   custom_rules?: CustomRule[];
+  /**
+   * Tiered negotiation positions (spec-v10 Thrust A). Advisory posture — each
+   * reports which tier of the team's ideal/acceptable ladder the draft meets,
+   * outside the run's `result_hash`.
+   */
+  negotiation_positions?: NegotiationPosition[];
 };
 
 // ---------------------------------------------------------------------------
@@ -246,6 +283,43 @@ const customRuleSchema = z
     }
   });
 
+const guidanceSchema = z
+  .object({
+    ideal: z.string().min(1).max(MAX_PLAYBOOK_STRING_LEN).optional(),
+    acceptable: z.string().min(1).max(MAX_PLAYBOOK_STRING_LEN).optional(),
+    walk_away: z.string().min(1).max(MAX_PLAYBOOK_STRING_LEN).optional(),
+  })
+  .strict();
+
+const negotiationPositionSchema = z
+  .object({
+    dimension: z.string().min(1).max(MAX_PLAYBOOK_STRING_LEN),
+    ideal: predicateSchema,
+    acceptable: predicateSchema,
+    guidance: guidanceSchema.optional(),
+  })
+  .strict()
+  .superRefine((pos, ctx) => {
+    // Same trap the custom-rule refinement guards: a clause_present/absent
+    // predicate with neither a pattern nor a section heading can never match a
+    // concrete clause, so a tier built on it would silently always (or never)
+    // hold. Reject it on whichever tier carries it.
+    for (const tier of ["ideal", "acceptable"] as const) {
+      const pred = pos[tier];
+      if (
+        (pred.kind === "clause_present" || pred.kind === "clause_absent") &&
+        pred.pattern === undefined &&
+        pred.section_heading === undefined
+      ) {
+        ctx.addIssue({
+          code: "custom",
+          message: `the ${tier} clause_present/clause_absent predicate needs \`pattern\` or \`section_heading\``,
+          path: [tier],
+        });
+      }
+    }
+  });
+
 export const CustomPlaybookSchema = z
   .object({
     schema_version: z.literal(CUSTOM_PLAYBOOK_SCHEMA_VERSION),
@@ -272,15 +346,21 @@ export const CustomPlaybookSchema = z
       .array(z.object({ category: z.string().min(1), severity: severityEnum }).strict())
       .optional(),
     custom_rules: z.array(customRuleSchema).max(MAX_CUSTOM_RULES).optional(),
+    negotiation_positions: z
+      .array(negotiationPositionSchema)
+      .max(MAX_NEGOTIATION_POSITIONS)
+      .optional(),
   })
   .strict()
   .superRefine((pb, ctx) => {
     // A replace-mode playbook with no positions of its own would silently
-    // run nothing — almost certainly an authoring mistake.
+    // run nothing — almost certainly an authoring mistake. Negotiation
+    // positions count: a posture-only replace playbook is a legitimate use.
     if (
       pb.mode === "replace" &&
       (pb.custom_rules === undefined || pb.custom_rules.length === 0) &&
-      (pb.required_clauses === undefined || pb.required_clauses.length === 0)
+      (pb.required_clauses === undefined || pb.required_clauses.length === 0) &&
+      (pb.negotiation_positions === undefined || pb.negotiation_positions.length === 0)
     ) {
       ctx.addIssue({
         code: "custom",
@@ -301,6 +381,22 @@ export const CustomPlaybookSchema = z
           });
         }
         seen.add(r.id);
+      });
+    }
+    // Negotiation-position dimensions must be unique so each is addressable in
+    // the posture report.
+    if (pb.negotiation_positions) {
+      const seen = new Set<string>();
+      pb.negotiation_positions.forEach((p, i) => {
+        const key = p.dimension.trim().toLowerCase();
+        if (seen.has(key)) {
+          ctx.addIssue({
+            code: "custom",
+            message: `duplicate negotiation_positions dimension "${p.dimension}"`,
+            path: ["negotiation_positions", i, "dimension"],
+          });
+        }
+        seen.add(key);
       });
     }
   });

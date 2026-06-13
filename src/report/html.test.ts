@@ -227,4 +227,30 @@ describe("buildHtmlReport (spec-v8 §21 — standalone single-file HTML)", () =>
       buildHtmlReport(makeRun(), ingest, dkb, undefined, {}),
     );
   });
+
+  it("renders the negotiation-posture section and escapes its content (spec-v10)", () => {
+    const dkb = loadStarterDkbSync();
+    const posture = {
+      counts: { ideal: 1, acceptable: 0, below_acceptable: 1, unevaluable: 0 },
+      positions: [
+        {
+          dimension: "Liability cap",
+          tier: "below-acceptable" as const,
+          detail: "Found liability_cap_multiple = 3; requires ≥ 6.",
+          guidance: "Escalate <b>now</b>.",
+          section_id: "s4",
+        },
+        { dimension: "Governing law", tier: "ideal" as const, guidance: "Delaware" },
+      ],
+      posture_hash: "f".repeat(64),
+    };
+    const html = buildHtmlReport(makeRun(), ingest, dkb, undefined, undefined, posture);
+    expect(html).toContain("Negotiation posture");
+    expect(html).toContain("Below floor — escalate");
+    expect(html).toContain("Liability cap");
+    // Guidance markup is escaped, never live.
+    expect(html).toContain("Escalate &lt;b&gt;now&lt;/b&gt;.");
+    expect(html).not.toContain("Escalate <b>now</b>");
+    expect(html).not.toContain("<script");
+  });
 });

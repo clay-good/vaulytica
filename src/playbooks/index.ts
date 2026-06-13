@@ -38,6 +38,8 @@ export {
   type CustomPlaybookValidation,
   type NumericMetric,
   type NumericComparator,
+  type NegotiationPosition,
+  type NegotiationTierGuidance,
 } from "./custom-playbook.js";
 
 // v6 Part II — custom-playbook interpreter (Step 93).
@@ -46,6 +48,11 @@ export {
   type CustomPlaybookRun,
   type CustomPlaybookFinding,
   type UnevaluableRule,
+  // spec-v10 Thrust A — tiered negotiation posture.
+  evaluateNegotiationPosture,
+  type NegotiationPosture,
+  type NegotiationPositionResult,
+  type NegotiationTier,
 } from "./custom-interpreter.js";
 
 // spec-v8 §23 — custom-playbook structural diff (Step 144).

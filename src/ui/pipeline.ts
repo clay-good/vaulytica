@@ -29,10 +29,12 @@ import {
   runWithCustomPlaybook,
   previewCustomPlaybook,
   parseCustomPlaybookJson,
+  evaluateNegotiationPosture,
   RULE_CATALOG_VERSION,
   type CustomPlaybook,
   type CustomPlaybookPreview,
   type UnevaluableRule,
+  type NegotiationPosture,
 } from "../playbooks/index.js";
 import {
   ALL_CONSISTENCY_RULES,
@@ -180,6 +182,13 @@ export type PipelineResult = {
     builtin_finding_count: number;
     unevaluable: ReadonlyArray<UnevaluableRule>;
   };
+  /**
+   * Negotiation posture (spec-v10 Thrust A). Present only when the active
+   * custom playbook defines `negotiation_positions`. Reports which rung of the
+   * team's ideal/acceptable ladder the draft meets on each dimension —
+   * advisory, with its own `posture_hash`, outside `run.result_hash`.
+   */
+  negotiation_posture?: NegotiationPosture;
   /**
    * Multi-family activation (spec-v6). Additional families the document
    * clearly contains beyond the primary match, each scanned with its own
@@ -460,6 +469,7 @@ export async function runReport(
   // custom interpreter merged). Otherwise run the built-in catalog as before.
   let run: EngineRun;
   let customProvenance: PipelineResult["custom_playbook"];
+  let negotiationPosture: NegotiationPosture | undefined;
   if (options.custom_playbook) {
     const custom = await runWithCustomPlaybook({
       rules: ruleSet as readonly Rule[],
@@ -483,6 +493,15 @@ export async function runReport(
       builtin_finding_count: custom.builtin_finding_count,
       unevaluable: custom.custom.unevaluable,
     };
+    // spec-v10 Thrust A — tiered negotiation posture, evaluated when the
+    // playbook defines positions. Additive (own posture_hash, outside the run).
+    const positions = options.custom_playbook.negotiation_positions;
+    if (positions && positions.length > 0) {
+      negotiationPosture = await evaluateNegotiationPosture(positions, {
+        tree: prepared.ingest.tree,
+        extracted: prepared.extracted,
+      });
+    }
   } else {
     run = await runEngine({
       rules: ruleSet as readonly Rule[],
@@ -549,6 +568,7 @@ export async function runReport(
     prepared.extracted,
     secondary_families,
     v9surfaces,
+    negotiationPosture,
   );
   const json_blob = buildJsonReport(
     run,
@@ -559,6 +579,7 @@ export async function runReport(
     prepared.delivery,
     hasCriticalDates ? critical_dates : undefined,
     hasChecklist ? closing_checklist : undefined,
+    negotiationPosture,
   );
   const fixlist_md_blob = fixListMarkdownBlob(run, prepared.extracted);
   const fixlist_csv_blob = fixListCsvBlob(run);
@@ -567,7 +588,14 @@ export async function runReport(
   // v8 Steps 141–142 — SARIF (machine-readable) + standalone HTML (print-clean),
   // now carrying the v9 surfaces (HANDOFF-*/DATE-* results · the three sections).
   const sarif_blob = sarifBlob(run, v9surfaces);
-  const html_blob = htmlReportBlob(run, prepared.ingest, prepared.dkb, prepared.playbook, v9surfaces);
+  const html_blob = htmlReportBlob(
+    run,
+    prepared.ingest,
+    prepared.dkb,
+    prepared.playbook,
+    v9surfaces,
+    negotiationPosture,
+  );
 
   const v3_detection = detectV3Family(prepared.extracted, prepared.body_text);
   const v3_frames = defaultFramesForPlaybook(prepared.playbook.id);
@@ -595,6 +623,7 @@ export async function runReport(
     secondary_families,
     jurisdiction_overlays,
     delivery: prepared.delivery,
+    ...(negotiationPosture ? { negotiation_posture: negotiationPosture } : {}),
     ...(hasCriticalDates
       ? {
           critical_dates,

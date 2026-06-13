@@ -48,6 +48,7 @@ import type { V9Surfaces } from "./v9-surfaces.js";
 import type { DeliveryReport } from "../delivery/types.js";
 import type { ClosingChecklist, ChecklistCategory } from "./closing-checklist.js";
 import type { CriticalDatesRegister, CriticalDateKind } from "./critical-dates.js";
+import type { NegotiationPosture, NegotiationTier } from "../playbooks/custom-interpreter.js";
 import { buildBibliography, citationIndex, type BibliographyEntry } from "./bibliography.js";
 import { formatCitation, formatBibliographyEntry, breakLongTokens } from "./citations.js";
 import { modelClauseForRule, MODEL_CLAUSE_COVERAGE } from "../dkb/model-clauses.js";
@@ -87,6 +88,7 @@ export async function buildDocxReport(
   extracted?: ExtractedData,
   secondaryFamilies?: ReadonlyArray<ReportSecondaryFamily>,
   v9?: V9Surfaces,
+  negotiationPosture?: NegotiationPosture,
 ): Promise<Blob> {
   const bibliography = buildBibliography(run.findings, dkb);
   const children: (Paragraph | Table)[] = [
@@ -104,6 +106,8 @@ export async function buildDocxReport(
     ...renderDeliverySection(v9?.delivery),
     ...renderClosingChecklistSection(v9?.closingChecklist),
     ...renderCriticalDatesSection(v9?.criticalDates),
+    // spec-v10 Thrust A — tiered negotiation posture (custom playbook only).
+    ...renderNegotiationPostureSection(negotiationPosture),
     // spec-v6 multi-family activation — additional families the document
     // also contains, scanned with their own rule sets and quarantined here
     // so the primary report above stays clean.
@@ -532,6 +536,44 @@ function renderCriticalDatesSection(
             r.responsible || "—",
             r.section ?? "—",
             truncate(r.trigger, 200),
+          ]),
+        ),
+      ],
+    }),
+  ];
+  out.push(pageBreak());
+  return out;
+}
+
+const NEGOTIATION_TIER_LABEL: Record<NegotiationTier, string> = {
+  ideal: "Ideal",
+  acceptable: "Acceptable",
+  "below-acceptable": "Below floor — escalate",
+  unevaluable: "Not stated — verify",
+};
+
+/** "Negotiation posture" — the tiered ideal/acceptable ladder per dimension (Thrust A). */
+function renderNegotiationPostureSection(
+  posture: NegotiationPosture | undefined,
+): (Paragraph | Table)[] {
+  if (!posture || posture.positions.length === 0) return [];
+  const c = posture.counts;
+  const out: (Paragraph | Table)[] = [
+    h1("Negotiation Posture"),
+    para({
+      text: `Where this draft sits on your team's ladder: ${c.ideal} ideal · ${c.acceptable} acceptable · ${c.below_acceptable} below floor · ${c.unevaluable} not stated. Advisory posture computed deterministically from your playbook's positions — it does not render a legal conclusion.`,
+      italics: true,
+    }),
+    new Table({
+      width: { size: 100, type: WidthType.PERCENTAGE },
+      rows: [
+        headerRow(["Dimension", "Tier", "What we found / guidance", "Section"]),
+        ...posture.positions.map((p) =>
+          bodyRow([
+            p.dimension,
+            NEGOTIATION_TIER_LABEL[p.tier],
+            truncate(p.detail ?? p.reason ?? p.guidance ?? "—", 280),
+            p.section_id ?? "—",
           ]),
         ),
       ],

@@ -332,6 +332,36 @@ describe("buildDocxReport", () => {
     expect(runText).not.toContain("Clean to Send");
     expect(runText).not.toContain("Critical Dates");
   });
+
+  it("renders the negotiation-posture section when supplied (spec-v10)", async () => {
+    const posture = {
+      counts: { ideal: 1, acceptable: 1, below_acceptable: 0, unevaluable: 0 },
+      positions: [
+        { dimension: "Liability cap", tier: "acceptable" as const, detail: "8x", section_id: "s4" },
+        { dimension: "Governing law", tier: "ideal" as const, guidance: "Delaware" },
+      ],
+      posture_hash: "f".repeat(64),
+    };
+    const blob = await buildDocxReport(
+      makeRun(),
+      ingest,
+      loadStarterDkbSync(),
+      loadMutualNda(),
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      posture,
+    );
+    const { unzipSync, strFromU8 } = await import("fflate");
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const runText = (strFromU8(entries["word/document.xml"]!).match(/<w:t[^>]*>([^<]*)<\/w:t>/g) ?? [])
+      .map((m) => m.replace(/<[^>]+>/g, ""))
+      .join("");
+    expect(runText).toContain("Negotiation Posture");
+    expect(runText).toContain("Liability cap");
+    expect(runText).toContain("Acceptable");
+  });
 });
 
 describe("buildJsonReport", () => {

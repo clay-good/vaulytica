@@ -52,5 +52,37 @@
       "assert": { "kind": "clause_present", "pattern": "data processing addendum" },
       "citation": { "reference": "Acme Privacy Policy §2" }
     }
+  ],
+  "negotiation_positions": [
+    {
+      "dimension": "Liability cap",
+      "ideal": { "kind": "numeric_threshold", "metric": "liability_cap_multiple", "comparator": "gte", "value": 12 },
+      "acceptable": { "kind": "numeric_threshold", "metric": "liability_cap_multiple", "comparator": "gte", "value": 6 },
+      "guidance": {
+        "ideal": "12x trailing fees — our opening and preferred position.",
+        "acceptable": "6x fees is our floor; do not settle lower without sign-off.",
+        "walk_away": "Below 6x — escalate to the deal lead before agreeing."
+      }
+    },
+    {
+      "dimension": "Termination-for-convenience notice",
+      "ideal": { "kind": "numeric_threshold", "metric": "notice_period_days", "comparator": "lte", "value": 30 },
+      "acceptable": { "kind": "numeric_threshold", "metric": "notice_period_days", "comparator": "lte", "value": 60 },
+      "guidance": {
+        "ideal": "30 days or fewer to exit.",
+        "acceptable": "Up to 60 days is tolerable.",
+        "walk_away": "Longer than 60 days locks us in — push back."
+      }
+    },
+    {
+      "dimension": "Governing law",
+      "ideal": { "kind": "governing_law_in", "allowed": ["Delaware"] },
+      "acceptable": { "kind": "governing_law_in", "allowed": ["Delaware", "New York", "California"] },
+      "guidance": {
+        "ideal": "Delaware — our preferred forum.",
+        "acceptable": "New York or California are acceptable.",
+        "walk_away": "Any other state — route to legal before agreeing."
+      }
+    }
   ]
 }

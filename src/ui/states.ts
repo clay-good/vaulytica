@@ -206,6 +206,23 @@ export type DropzoneState =
           section?: string;
         }>;
       };
+      /**
+       * Negotiation posture (spec-v10 Thrust A). Present only when a custom
+       * playbook with `negotiation_positions` ran: which rung of the team's
+       * ideal/acceptable ladder the draft meets on each dimension. Advisory —
+       * never a legal conclusion. Optional / back-compat: omitting hides it.
+       */
+      negotiation_posture?: {
+        counts: { ideal: number; acceptable: number; below_acceptable: number; unevaluable: number };
+        positions: ReadonlyArray<{
+          dimension: string;
+          tier: "ideal" | "acceptable" | "below-acceptable" | "unevaluable";
+          guidance?: string;
+          detail?: string;
+          reason?: string;
+          section_id?: string;
+        }>;
+      };
     }
   | {
       kind: "comparison-complete";
@@ -379,6 +396,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     <div class="delivery-section" data-role="delivery" hidden></div>
     <div class="closing-checklist-section" data-role="closing-checklist" hidden></div>
     <div class="critical-dates-section" data-role="critical-dates" hidden></div>
+    <div class="negotiation-section" data-role="negotiation" hidden></div>
     <div class="counts" data-role="counts"></div>
     <div class="playbook-provenance" data-role="playbook-provenance" hidden></div>
     <div class="secondary-families" data-role="secondary-families" hidden></div>
@@ -475,6 +493,7 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
     renderDelivery(dz, state.delivery);
     renderClosingChecklist(dz, state.closing_checklist);
     renderCriticalDates(dz, state.critical_dates);
+    renderNegotiationPosture(dz, state.negotiation_posture);
     renderPlaybookProvenance(dz, state.custom_playbook);
     renderSecondaryFamilies(dz, state.secondary_families);
     renderJurisdictionOverlays(dz, state.jurisdiction_overlays);
@@ -1067,6 +1086,54 @@ function renderClosingChecklist(
     </div>
     ${groups}
     <div class="cl-note">A deterministic projection of the findings — it lists what is left to resolve before closing; it does not certify the document is ready to sign or validly executed.</div>
+  `;
+}
+
+const NEGOTIATION_TIER_LABEL: Record<string, { label: string; cls: string }> = {
+  ideal: { label: "Ideal", cls: "np-ideal" },
+  acceptable: { label: "Acceptable", cls: "np-acceptable" },
+  "below-acceptable": { label: "Below floor — escalate", cls: "np-below" },
+  unevaluable: { label: "Not stated — verify", cls: "np-uneval" },
+};
+
+/**
+ * Negotiation-posture view (spec-v10 Thrust A). Shows which rung of the team's
+ * ideal/acceptable ladder the draft meets on each dimension. Mobile-safe;
+ * advisory — never a legal conclusion. Hidden when empty.
+ */
+function renderNegotiationPosture(
+  dz: HTMLElement,
+  np: Extract<DropzoneState, { kind: "complete" }>["negotiation_posture"],
+): void {
+  const el = select<HTMLElement>(dz, "negotiation");
+  if (!el) return;
+  if (!np || np.positions.length === 0) {
+    el.hidden = true;
+    el.innerHTML = "";
+    return;
+  }
+  el.hidden = false;
+  const c = np.counts;
+  const cards = np.positions
+    .map((p) => {
+      const tier = NEGOTIATION_TIER_LABEL[p.tier] ?? { label: p.tier, cls: "cd-unresolved" };
+      const detail = p.detail ?? p.reason ?? "";
+      const guide = p.guidance ? `<div class="np-guide">Guidance: ${escapeHtml(p.guidance)}</div>` : "";
+      const where = p.section_id ? ` <span class="cd-kind">§${escapeHtml(p.section_id)}</span>` : "";
+      return `<li class="np-card ${tier.cls}">
+        <div class="np-head"><span class="np-dim">${escapeHtml(p.dimension)}</span> <span class="np-tier">${escapeHtml(tier.label)}</span>${where}</div>
+        ${detail ? `<div class="np-detail">${escapeHtml(detail)}</div>` : ""}
+        ${guide}
+      </li>`;
+    })
+    .join("");
+  el.innerHTML = `
+    <div class="np-heading">
+      <span class="np-badge">Negotiation posture</span>
+      <span class="np-summary">${c.ideal} ideal · ${c.acceptable} acceptable · ${c.below_acceptable} below floor · ${c.unevaluable} not stated</span>
+    </div>
+    <ul class="np-list">${cards}</ul>
+    <div class="np-note">Computed deterministically from your playbook's positions — it shows where the draft sits on your ladder; it is not a legal conclusion.</div>
   `;
 }
 
