@@ -49,6 +49,10 @@ type Args = {
   failOn?: Severity;
   /** spec-v9 Thrust A — run the pre-disclosure ("Clean to Send") scan. */
   delivery?: boolean;
+  /** spec-v9 Thrust C — compute the critical-dates register. */
+  criticalDates?: boolean;
+  /** spec-v9 Thrust B — build the closing checklist. */
+  checklist?: boolean;
 };
 
 function parseArgs(argv: string[]): Args {
@@ -78,6 +82,12 @@ function parseArgs(argv: string[]): Args {
         break;
       case "--delivery":
         args.delivery = true;
+        break;
+      case "--critical-dates":
+        args.criticalDates = true;
+        break;
+      case "--checklist":
+        args.checklist = true;
         break;
       default:
         throw new Error(`unknown flag "${flag}"`);
@@ -144,7 +154,16 @@ export async function resolveInputs(target: string): Promise<string[]> {
 async function renderFormat(fmt: Format, r: AnalyzeResult, dkb: Dkb): Promise<string> {
   switch (fmt) {
     case "json":
-      return buildJsonReport(r.run, r.ingest, undefined, undefined, undefined, r.delivery).text();
+      return buildJsonReport(
+        r.run,
+        r.ingest,
+        undefined,
+        undefined,
+        undefined,
+        r.delivery,
+        r.critical_dates,
+        r.closing_checklist,
+      ).text();
     case "sarif":
       return buildSarifJson(r.run);
     case "html":
@@ -178,7 +197,13 @@ async function runAnalyze(argv: string[]): Promise<void> {
 
   let breached = false;
   for (const file of inputs) {
-    const r = await analyzeFile(file, { playbookId: args.playbook, deps, delivery: args.delivery });
+    const r = await analyzeFile(file, {
+      playbookId: args.playbook,
+      deps,
+      delivery: args.delivery,
+      criticalDates: args.criticalDates,
+      checklist: args.checklist,
+    });
 
     const counts = { critical: 0, warning: 0, info: 0 };
     for (const f of r.run.findings) counts[f.severity]++;
@@ -186,6 +211,16 @@ async function runAnalyze(argv: string[]): Promise<void> {
       `${file}  [${r.playbook_id}]  ${counts.critical}C ${counts.warning}W ${counts.info}I\n`,
     );
     if (r.delivery) process.stdout.write(`  ${r.delivery.summary}\n`);
+    if (r.critical_dates) {
+      process.stdout.write(
+        `  Critical dates: ${r.critical_dates.resolved_count} computed, ${r.critical_dates.unresolved_count} to verify manually.\n`,
+      );
+    }
+    if (r.closing_checklist) {
+      process.stdout.write(
+        `  Closing checklist: ${r.closing_checklist.open_count} readiness item(s) to resolve.\n`,
+      );
+    }
 
     for (const fmt of args.formats) {
       const content = await renderFormat(fmt, r, deps.dkb);
@@ -243,6 +278,7 @@ const USAGE = `vaulytica — deterministic legal-document linter (headless)
 Commands:
   analyze <path|glob|dir> [--playbook <id>] [--format json,sarif,html,md,csv]
                           [--out <dir>] [--fail-on critical|warning|info]
+                          [--delivery] [--critical-dates] [--checklist]
   diff    <a.json> <b.json> [--format markdown|json] [--exit-code]
   compare <base> <revised> [--playbook <id>] [--format json|markdown]
                           [--fail-on critical|warning|info] [--confirm-pairing]

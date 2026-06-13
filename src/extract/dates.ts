@@ -165,6 +165,7 @@ export function extractDates(tree: DocumentTree): DateReference[] {
       const direction = /\bbefore\b|\bprior\s+to\b/i.test(m[0]) ? -1 : 1;
       const lo = lower * unitToDays(unit) * direction;
       const hi = upper * unitToDays(unit) * direction;
+      const calUnit = unitToCalendar(unit);
       rangeSpans.push([m.index, m.index + m[0].length]);
       out.push({
         id: nextId(),
@@ -173,6 +174,9 @@ export function extractDates(tree: DocumentTree): DateReference[] {
         anchor,
         offset_days: Math.min(lo, hi),
         offset_days_max: Math.max(lo, hi),
+        offset_unit: calUnit,
+        offset_count: Math.min(lower, upper) * direction,
+        offset_count_max: Math.max(lower, upper) * direction,
         position: posInParagraph(ctx, m.index, m.index + m[0].length),
       });
     }
@@ -194,6 +198,9 @@ export function extractDates(tree: DocumentTree): DateReference[] {
         raw_text: m[0],
         anchor,
         offset_days: days,
+        ...(count !== null
+          ? { offset_unit: unitToCalendar(unit), offset_count: count * direction }
+          : {}),
         position: posInParagraph(ctx, start, end),
       });
     }
@@ -306,4 +313,18 @@ function unitToDays(unit: string): number {
   if (unit.startsWith("month")) return 30;
   if (unit.startsWith("year")) return 365;
   return 1;
+}
+
+/**
+ * Map a matched unit token to the canonical calendar unit the v9
+ * critical-dates derivation uses for month-end / leap-year-correct
+ * arithmetic. "business day(s)" is preserved distinctly so the register
+ * can surface it verify-manually (no holiday calendar is asserted).
+ */
+function unitToCalendar(unit: string): "days" | "weeks" | "months" | "years" | "business-days" {
+  if (unit.startsWith("business day")) return "business-days";
+  if (unit.startsWith("week")) return "weeks";
+  if (unit.startsWith("month")) return "months";
+  if (unit.startsWith("year")) return "years";
+  return "days";
 }

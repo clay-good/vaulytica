@@ -24,6 +24,9 @@ import type { IngestResult } from "../../src/ingest/types.js";
 import { flattenText } from "../../src/ingest/types.js";
 import type { EngineRun } from "../../src/engine/index.js";
 import { scanDelivery, type DeliveryReport, type ContainerSource } from "../../src/delivery/index.js";
+import { extractAll } from "../../src/extract/index.js";
+import { buildCriticalDates, type CriticalDatesRegister } from "../../src/report/critical-dates.js";
+import { buildClosingChecklist, type ClosingChecklist } from "../../src/report/closing-checklist.js";
 
 import { loadAccuracyDeps, runIngested, type AccuracyDeps } from "../accuracy/pipeline.js";
 
@@ -40,6 +43,21 @@ export type AnalyzeResult = {
    * `delivery_hash` outside `run.result_hash`.
    */
   delivery?: DeliveryReport;
+  /**
+   * Critical-dates register (spec-v9 Thrust C), populated only when
+   * `--critical-dates` is passed. The deadlines the document's own temporal
+   * terms compute to (auto-renewal notice, cure window, opt-out, survival end,
+   * notice period), as absolute dates; carries its own `critical_dates_hash`
+   * outside `run.result_hash`. Omitted when no derivable date is found.
+   */
+  critical_dates?: CriticalDatesRegister;
+  /**
+   * Closing checklist (spec-v9 Thrust B), populated only when `--checklist`
+   * is passed. The consolidated execution-readiness items projected from the
+   * run's findings (and the delivery handoff items when `--delivery` also
+   * ran). Outside `run.result_hash`; omitted when no readiness item is found.
+   */
+  closing_checklist?: ClosingChecklist;
 };
 
 function containerSource(path: string): ContainerSource {
@@ -77,7 +95,13 @@ async function ingestByExtension(path: string, bytes: Buffer): Promise<IngestRes
  */
 export async function analyzeFile(
   path: string,
-  opts: { playbookId?: string; deps?: AccuracyDeps; delivery?: boolean } = {},
+  opts: {
+    playbookId?: string;
+    deps?: AccuracyDeps;
+    delivery?: boolean;
+    criticalDates?: boolean;
+    checklist?: boolean;
+  } = {},
 ): Promise<AnalyzeResult> {
   const deps = opts.deps ?? (await loadAccuracyDeps());
   const bytes = await readFile(path);
@@ -90,6 +114,24 @@ export async function analyzeFile(
       source: containerSource(path),
       text: flattenText(ingest.tree),
     });
+  }
+  if (opts.criticalDates) {
+    // The register reads only dates/definitions/obligations, so a classifier-
+    // free re-extract suffices; outside `run.result_hash`.
+    const extracted = extractAll(ingest.tree);
+    const register = await buildCriticalDates(extracted, ingest.tree);
+    if (register.register.length > 0) out.critical_dates = register;
+  }
+  if (opts.checklist) {
+    const checklist = buildClosingChecklist(
+      out.run,
+      (out.delivery?.findings ?? []).map((f) => ({
+        rule_id: f.rule_id,
+        title: f.title,
+        count: f.count,
+      })),
+    );
+    if (checklist.items.length > 0) out.closing_checklist = checklist;
   }
   return out;
 }

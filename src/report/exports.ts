@@ -23,6 +23,8 @@
 
 import type { EngineRun, Finding, Severity } from "../engine/finding.js";
 import type { DateReference, ExtractedData } from "../extract/types.js";
+import type { CriticalDate, CriticalDatesRegister } from "./critical-dates.js";
+import type { ChecklistCategory, ClosingChecklist } from "./closing-checklist.js";
 
 const SEVERITY_ORDER: Severity[] = ["critical", "warning", "info"];
 const SEVERITY_LABEL: Record<Severity, string> = {
@@ -581,4 +583,227 @@ export function obligationsCsvBlob(extracted: ExtractedData): Blob {
 
 export function deadlinesIcsBlob(extracted: ExtractedData): Blob {
   return new Blob([buildDeadlinesIcs(extracted)], { type: "text/calendar" });
+}
+
+// ---------------------------------------------------------------------------
+// Critical-dates register (spec-v9 Thrust C, Step 163)
+// ---------------------------------------------------------------------------
+
+const KIND_LABEL: Record<CriticalDate["kind"], string> = {
+  "auto-renewal-notice": "Auto-renewal notice",
+  "cure-window": "Cure window",
+  "opt-out-window": "Opt-out / termination window",
+  "survival-end": "Survival end",
+  "notice-period": "Notice deadline",
+};
+
+/**
+ * The computed critical-dates register as a Markdown table, grouped:
+ * resolved deadlines (with their absolute computed date) first, then a
+ * "verify manually" list for the rows whose anchor could not be resolved.
+ * Pure projection of the register — no wall-clock, no "days remaining"
+ * (§3 corollary 4): the absolute date is shown, never a computed age.
+ */
+export function buildCriticalDatesMarkdown(register: CriticalDatesRegister): string {
+  const lines: string[] = [];
+  lines.push("# Vaulytica critical dates");
+  lines.push("");
+  lines.push(
+    `**Resolved:** ${register.resolved_count} · **Verify manually:** ${register.unresolved_count} · **Register hash:** \`${register.critical_dates_hash}\``,
+  );
+  lines.push("");
+  lines.push(
+    "Each deadline below is computed from the document's own terms by calendar arithmetic (`anchor ± N`). These are the dates the document places on your calendar; they are not legal determinations that a deadline is met, missed, or binding.",
+  );
+
+  const resolved = register.register.filter((r) => r.resolved);
+  const unresolved = register.register.filter((r) => !r.resolved);
+
+  lines.push("");
+  lines.push(`## Computed deadlines (${resolved.length})`);
+  if (resolved.length === 0) {
+    lines.push("");
+    lines.push("_None could be computed to an absolute date._");
+  } else {
+    lines.push("");
+    lines.push("| Date | Type | Anchor | Responsible | Section | Trigger |");
+    lines.push("|---|---|---|---|---|---|");
+    for (const r of resolved) {
+      const date = r.window ? `${r.window[0]} – ${r.window[1]}` : (r.computed_date ?? "");
+      lines.push(
+        `| ${date} | ${KIND_LABEL[r.kind]} | ${mdCell(r.anchor)} | ${mdCell(r.responsible || "—")} | ${mdCell(r.section ?? "—")} | ${mdCell(r.trigger)} |`,
+      );
+    }
+  }
+
+  if (unresolved.length > 0) {
+    lines.push("");
+    lines.push(`## Verify manually (${unresolved.length})`);
+    lines.push("");
+    lines.push(
+      "These deadlines reference an anchor with no concrete calendar date in the document, so they were not computed — verify each by hand.",
+    );
+    for (const r of unresolved) {
+      const where = r.section ? ` (section ${r.section})` : "";
+      lines.push(`- [ ] \`${r.trigger}\`${where} — ${r.reason ?? "anchor unresolved"}`);
+    }
+  }
+
+  lines.push("");
+  return lines.join("\n");
+}
+
+/** Escape a Markdown table cell: collapse newlines and escape the pipe. */
+function mdCell(value: string): string {
+  return value.replace(/\r?\n/g, " ").replace(/\|/g, "\\|").trim();
+}
+
+/**
+ * The critical-dates register as an iCalendar (`.ics`). Resolved deadlines
+ * are all-day VEVENTs on their computed date; a notice / opt-out / cure
+ * deadline carries a DISPLAY alarm AT the deadline so it surfaces in the
+ * user's calendar (a render-only reminder, not a hashed elapsed value —
+ * §3 corollary 4). Unresolved rows are sentinel "verify manually" events,
+ * never silently dropped. Deterministic: fixed DTSTAMP, content-derived
+ * UIDs, no wall-clock.
+ */
+export function buildCriticalDatesIcs(register: CriticalDatesRegister): string {
+  const lines: string[] = [];
+  lines.push("BEGIN:VCALENDAR");
+  lines.push("VERSION:2.0");
+  lines.push("PRODID:-//Vaulytica//Critical Dates Export//EN");
+  lines.push("CALSCALE:GREGORIAN");
+
+  const resolved = register.register.filter((r) => r.resolved && r.computed_date);
+  resolved.forEach((r, i) => {
+    const iso = r.computed_date!;
+    const ymd = iso.replace(/-/g, "");
+    const ymdEnd = addDays(iso, 1).replace(/-/g, "");
+    const uid = `cd-${pad(i, 4)}-${fnv1a(`${iso}|${r.kind}|${r.trigger}|${r.section ?? ""}`)}@vaulytica`;
+    const summary = `${KIND_LABEL[r.kind]}: ${r.trigger}`;
+    const respPart = r.responsible ? ` Responsible: ${r.responsible}.` : "";
+    const desc = `Computed from ${r.section ? `section ${r.section}` : "the document"} (anchor: ${r.anchor || "—"}).${respPart} ${r.trigger}`;
+    const alarm = r.kind === "auto-renewal-notice" || r.kind === "opt-out-window" || r.kind === "cure-window";
+    lines.push("BEGIN:VEVENT");
+    lines.push(`UID:${uid}`);
+    lines.push(`DTSTAMP:${FIXED_DTSTAMP}`);
+    lines.push(`DTSTART;VALUE=DATE:${ymd}`);
+    lines.push(`DTEND;VALUE=DATE:${ymdEnd}`);
+    lines.push(icsFold(`SUMMARY:${icsEscape(summary)}`));
+    lines.push(icsFold(`DESCRIPTION:${icsEscape(desc)}`));
+    if (alarm) {
+      lines.push("BEGIN:VALARM");
+      lines.push("ACTION:DISPLAY");
+      lines.push(icsFold(`DESCRIPTION:${icsEscape(summary)}`));
+      lines.push("TRIGGER:PT0S");
+      lines.push("END:VALARM");
+    }
+    lines.push("END:VEVENT");
+  });
+
+  const unresolved = register.register.filter((r) => !r.resolved);
+  unresolved.forEach((r, i) => {
+    const ymd = SENTINEL_VERIFY_DATE.replace(/-/g, "");
+    const ymdEnd = addDays(SENTINEL_VERIFY_DATE, 1).replace(/-/g, "");
+    const uid = `cd-verify-${pad(i, 4)}-${fnv1a(`${r.trigger}|${r.section ?? ""}`)}@vaulytica`;
+    const desc = `Verify manually — ${r.reason ?? "anchor unresolved"}${r.section ? ` (from section ${r.section})` : ""}: ${r.trigger}`;
+    lines.push("BEGIN:VEVENT");
+    lines.push(`UID:${uid}`);
+    lines.push(`DTSTAMP:${FIXED_DTSTAMP}`);
+    lines.push(`DTSTART;VALUE=DATE:${ymd}`);
+    lines.push(`DTEND;VALUE=DATE:${ymdEnd}`);
+    lines.push(icsFold(`SUMMARY:${icsEscape(`Verify manually: ${r.trigger}`)}`));
+    lines.push(icsFold(`DESCRIPTION:${icsEscape(desc)}`));
+    lines.push("END:VEVENT");
+  });
+
+  lines.push("END:VCALENDAR");
+  return lines.join("\r\n") + "\r\n";
+}
+
+export function criticalDatesMarkdownBlob(register: CriticalDatesRegister): Blob {
+  return new Blob([buildCriticalDatesMarkdown(register)], { type: "text/markdown" });
+}
+
+export function criticalDatesIcsBlob(register: CriticalDatesRegister): Blob {
+  return new Blob([buildCriticalDatesIcs(register)], { type: "text/calendar" });
+}
+
+// ---------------------------------------------------------------------------
+// Closing Checklist (spec-v9 Thrust B, Step 159)
+// ---------------------------------------------------------------------------
+
+const CHECKLIST_CATEGORY_LABEL: Record<ChecklistCategory, string> = {
+  signature: "Signatures",
+  attachment: "Attachments",
+  formality: "Execution formalities",
+  blank: "Unfilled content",
+  handoff: "Pre-send cleanup",
+};
+
+const CHECKLIST_CATEGORY_ORDER: ChecklistCategory[] = [
+  "signature",
+  "attachment",
+  "formality",
+  "blank",
+  "handoff",
+];
+
+/**
+ * The Closing Checklist as a Markdown checklist, grouped by readiness
+ * category. A re-projection of findings the report already carries (§24); it
+ * reports the items left to resolve and never asserts the document is "ready
+ * to sign."
+ */
+export function buildClosingChecklistMarkdown(checklist: ClosingChecklist): string {
+  const lines: string[] = [];
+  lines.push("# Vaulytica closing checklist");
+  lines.push("");
+  lines.push(`**Readiness items to resolve:** ${checklist.open_count}`);
+  lines.push("");
+  lines.push(
+    "Each item is an execution-readiness gap the engine detected — work it down before closing. This is a deterministic projection of the findings; it does not certify the document is ready to sign or validly executed.",
+  );
+  if (checklist.items.length === 0) {
+    lines.push("");
+    lines.push(
+      "_No readiness item was detected. This is not a certification that the document is ready to sign._",
+    );
+    lines.push("");
+    return lines.join("\n");
+  }
+  for (const cat of CHECKLIST_CATEGORY_ORDER) {
+    const group = checklist.items.filter((i) => i.category === cat);
+    if (group.length === 0) continue;
+    lines.push("");
+    lines.push(`## ${CHECKLIST_CATEGORY_LABEL[cat]} (${group.length})`);
+    lines.push("");
+    for (const i of group) {
+      const where = i.section ? ` _(section ${i.section})_` : "";
+      lines.push(`- [ ] **${i.rule_id}** — ${i.label}${where}`);
+    }
+  }
+  lines.push("");
+  return lines.join("\n");
+}
+
+/**
+ * The Closing Checklist as CSV (category, rule_id, item, section). Uses the
+ * same RFC 4180 + formula-injection-guarded field encoder as the fix list.
+ */
+export function buildClosingChecklistCsv(checklist: ClosingChecklist): string {
+  const rows: string[] = [];
+  rows.push(csvRow(["category", "rule_id", "item", "section"]));
+  for (const i of checklist.items) {
+    rows.push(csvRow([CHECKLIST_CATEGORY_LABEL[i.category], i.rule_id, i.label, i.section ?? ""]));
+  }
+  return rows.join("\r\n") + "\r\n";
+}
+
+export function closingChecklistMarkdownBlob(checklist: ClosingChecklist): Blob {
+  return new Blob([buildClosingChecklistMarkdown(checklist)], { type: "text/markdown" });
+}
+
+export function closingChecklistCsvBlob(checklist: ClosingChecklist): Blob {
+  return new Blob([buildClosingChecklistCsv(checklist)], { type: "text/csv" });
 }

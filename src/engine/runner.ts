@@ -24,9 +24,10 @@ export const ENGINE_VERSION = "0.1.0";
  * (which feeds `result_hash`); this is stamped only into report
  * provenance (outside the EngineRun) so a downstream consumer can tell
  * which rule vocabulary a finding came from. Bumped when the family set
- * changes (e.g. v7 added three CROSS-* families). (spec-v7 §17.)
+ * changes (e.g. v7 added three CROSS-* families; v9 Thrust B added the
+ * STRUCT-017/018/019 execution-readiness reconciliation rules). (spec-v7 §17.)
  */
-export const RULE_TAXONOMY_VERSION = "7.0.0";
+export const RULE_TAXONOMY_VERSION = "9.0.0";
 
 export type RunEngineInput = {
   rules: readonly Rule[];

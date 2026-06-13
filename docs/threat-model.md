@@ -551,3 +551,25 @@ never *removes* what it finds (that is the user's deliberate act in their own
 editor), and it does not claim to catch *every* concealment technique. PDF
 tracked-change/comment recovery from markup annotations is a documented no-op in
 this pass; the report says so honestly rather than implying a clean bill.
+
+### v9 Thrusts B & C — reconciliation and date derivation add no new surface
+
+Thrust B (Ready to Sign) and Thrust C (Tracked to Its Dates) open **no new read
+surface and no new external dependency** — they are pure functions over facts the
+extractors already produce. Two properties matter to the threat model:
+
+- **Precision over recall, by design.** The execution-readiness rules
+  (`STRUCT-017/018/019`) and the date derivation are written to err toward
+  *silence* rather than a false positive: `STRUCT-017` fires only on a clearly
+  multi-party-labeled signature block missing a declared corporate party (0
+  false positives across the 341-fixture corpus), and an unresolved date anchor
+  yields a "verify manually" item, never a guessed deadline. A wrong finding
+  baked into the deterministic output is the failure mode these rules guard
+  against.
+- **No wall-clock in the hash (the v9-specific trap).** The critical-dates
+  derivation reads no clock: only an *absolute* computed date enters the register,
+  its `critical_dates_hash`, or any export's stable content. Every relative-to-today
+  view ("due in N days", "overdue", soonest-first) is render-only. A metamorphic
+  gate re-runs a document under two "today" values and asserts byte-identical
+  output, so a later edit cannot smuggle an elapsed-time value into a hashed
+  artifact and quietly make the engine non-reproducible.

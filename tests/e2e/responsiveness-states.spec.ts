@@ -210,6 +210,78 @@ const STATES: Array<{ name: string; state: DropzoneState }> = [
           },
         ],
       },
+      // v9 Thrust B closing checklist — long labels are overflow candidates.
+      closing_checklist: {
+        open_count: 4,
+        items: [
+          {
+            category: "signature",
+            rule_id: "STRUCT-017",
+            label:
+              "Declared parties with no signature line: 2 — Globex Industries International Holdings LLC and Initech Worldwide Incorporated have no attributable signature line",
+            section: "s12.4",
+          },
+          {
+            category: "attachment",
+            rule_id: "STRUCT-018",
+            label:
+              "Referenced attachments not present: 3 — Exhibit C, Schedule 2.4, and Annex IV are referenced but not attached to the document",
+            section: "s3.1",
+          },
+          {
+            category: "formality",
+            rule_id: "STRUCT-019",
+            label: "Recited notarization with no notary block",
+            section: "s14",
+          },
+          {
+            category: "handoff",
+            rule_id: "HANDOFF-001",
+            label: "3 tracked changes still in the document — not send-ready",
+          },
+        ],
+      },
+      // v9 Thrust C critical-dates register — long triggers + windows.
+      critical_dates: {
+        resolved_count: 2,
+        unresolved_count: 1,
+        rows: [
+          {
+            rule_id: "DATE-001",
+            kind: "auto-renewal-notice",
+            resolved: true,
+            computed_date: "2025-11-01",
+            trigger:
+              "sixty (60) days prior to each anniversary of the Effective Date unless either party gives written notice of non-renewal",
+            anchor: "Renewal Date",
+            responsible: "Globex Industries International Holdings LLC",
+            section: "s8.2",
+          },
+          {
+            rule_id: "DATE-002",
+            kind: "cure-window",
+            resolved: true,
+            computed_date: "2026-02-28",
+            window: ["2026-02-28", "2026-03-30"],
+            trigger: "thirty to sixty days after written notice of breach to cure the default",
+            anchor: "Notice Date",
+            responsible: "",
+            section: "s11",
+          },
+          {
+            rule_id: "DATE-005",
+            kind: "notice-period",
+            resolved: false,
+            computed_date: null,
+            trigger: "fifteen (15) business days after the date of the final regulatory approval",
+            anchor: "Approval Date",
+            responsible: "",
+            section: "s9.3",
+            reason:
+              "business-day deadline (15 business days) — no holiday calendar is asserted; verify manually",
+          },
+        ],
+      },
     },
   },
   {

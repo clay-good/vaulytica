@@ -64,6 +64,26 @@ export type DateReference = {
    */
   offset_days_max?: number;
   /**
+   * For relative dates: the *calendar* unit the clause stated, preserved
+   * verbatim alongside the day-collapsed {@link offset_days} so the v9
+   * critical-dates derivation can do month-end / leap-year-correct
+   * arithmetic ("Jan 31 + 1 month = Feb 28") instead of the lossy
+   * 30-days-per-month approximation `offset_days` carries. Additive and
+   * optional: existing consumers keep reading `offset_days` unchanged, so
+   * no rule and no `result_hash` moves. "business-days" is preserved but
+   * surfaced verify-manually (no holiday calendar is asserted).
+   */
+  offset_unit?: "days" | "weeks" | "months" | "years" | "business-days";
+  /**
+   * For relative dates: the signed count in {@link offset_unit} ("60 days
+   * prior to" → `offset_unit: "days"`, `offset_count: -60`). Negative for
+   * "before" / "prior to". Paired with `offset_unit` for calendar
+   * arithmetic; `offset_count_max` carries the upper bound of a range.
+   */
+  offset_count?: number;
+  /** Upper bound of a disjunctive range, in {@link offset_unit}. */
+  offset_count_max?: number;
+  /**
    * For fiscal-period references ("fiscal Q2 2025", "FY2025-Q3"): the
    * normalized period label. No calendar-unit anchor exists, so these
    * carry no `iso` and are surfaced as verify-manually deadlines.

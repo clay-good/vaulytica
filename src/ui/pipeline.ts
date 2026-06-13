@@ -47,7 +47,13 @@ import {
   type Rule,
 } from "../engine/index.js";
 import { buildDocxReport, buildJsonReport, sarifBlob, htmlReportBlob } from "../report/index.js";
+import { buildCriticalDates, type CriticalDatesRegister } from "../report/critical-dates.js";
+import { buildClosingChecklist, type ClosingChecklist } from "../report/closing-checklist.js";
 import {
+  criticalDatesMarkdownBlob,
+  criticalDatesIcsBlob,
+  closingChecklistMarkdownBlob,
+  closingChecklistCsvBlob,
   fixListMarkdownBlob,
   fixListCsvBlob,
   obligationsCsvBlob,
@@ -199,6 +205,26 @@ export type PipelineResult = {
    * is independent of `run.result_hash`.
    */
   delivery?: DeliveryReport;
+  /**
+   * Critical-dates register (spec-v9 Thrust C). The deadlines the document's
+   * own temporal terms imply, computed to absolute dates by `anchor ± N`
+   * calendar arithmetic, with its own `critical_dates_hash` independent of
+   * `run.result_hash`. `undefined` when no derivable date was found. The
+   * Markdown/.ics blobs are the calendar artifacts the complete-state offers.
+   */
+  critical_dates?: CriticalDatesRegister;
+  critical_dates_md_blob?: Blob;
+  critical_dates_ics_blob?: Blob;
+  /**
+   * Closing checklist (spec-v9 Thrust B). The consolidated execution-readiness
+   * items (signatures, attachments, formalities, unfilled blanks, pre-send
+   * cleanup) projected from the run's own findings + the delivery handoff
+   * items. `undefined` when no readiness item is present. The Markdown/CSV
+   * blobs are the downloadable checklist artifacts.
+   */
+  closing_checklist?: ClosingChecklist;
+  closing_checklist_md_blob?: Blob;
+  closing_checklist_csv_blob?: Blob;
 };
 
 /** One additional detected family's scan results (spec-v6 multi-family activation). */
@@ -499,6 +525,22 @@ export async function runReport(
     prepared.extracted,
     secondary_families,
   );
+  // spec-v9 Thrust C — compute the critical-dates register (additive, its own
+  // hash, outside result_hash). Empty register → omitted, no surfaces shown.
+  const critical_dates = await buildCriticalDates(prepared.extracted, prepared.ingest.tree);
+  const hasCriticalDates = critical_dates.register.length > 0;
+  // spec-v9 Thrust B — consolidate the closing checklist from the run's own
+  // readiness findings plus the delivery handoff items (render-side, outside
+  // result_hash). Empty checklist → omitted, no surfaces shown.
+  const closing_checklist = buildClosingChecklist(
+    run,
+    (prepared.delivery?.findings ?? []).map((f) => ({
+      rule_id: f.rule_id,
+      title: f.title,
+      count: f.count,
+    })),
+  );
+  const hasChecklist = closing_checklist.items.length > 0;
   const json_blob = buildJsonReport(
     run,
     prepared.ingest,
@@ -506,6 +548,8 @@ export async function runReport(
     secondary_families,
     prepared.extracted,
     prepared.delivery,
+    hasCriticalDates ? critical_dates : undefined,
+    hasChecklist ? closing_checklist : undefined,
   );
   const fixlist_md_blob = fixListMarkdownBlob(run, prepared.extracted);
   const fixlist_csv_blob = fixListCsvBlob(run);
@@ -541,6 +585,20 @@ export async function runReport(
     secondary_families,
     jurisdiction_overlays,
     delivery: prepared.delivery,
+    ...(hasCriticalDates
+      ? {
+          critical_dates,
+          critical_dates_md_blob: criticalDatesMarkdownBlob(critical_dates),
+          critical_dates_ics_blob: criticalDatesIcsBlob(critical_dates),
+        }
+      : {}),
+    ...(hasChecklist
+      ? {
+          closing_checklist,
+          closing_checklist_md_blob: closingChecklistMarkdownBlob(closing_checklist),
+          closing_checklist_csv_blob: closingChecklistCsvBlob(closing_checklist),
+        }
+      : {}),
   };
 }
 

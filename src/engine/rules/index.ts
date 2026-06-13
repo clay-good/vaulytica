@@ -30,6 +30,9 @@ import { rule as STRUCT_013 } from "./structural/STRUCT-013.js";
 import { rule as STRUCT_014 } from "./structural/STRUCT-014.js";
 import { rule as STRUCT_015 } from "./structural/STRUCT-015.js";
 import { rule as STRUCT_016 } from "./structural/STRUCT-016.js";
+import { rule as STRUCT_017 } from "./structural/STRUCT-017.js";
+import { rule as STRUCT_018 } from "./structural/STRUCT-018.js";
+import { rule as STRUCT_019 } from "./structural/STRUCT-019.js";
 
 // Financial
 import { rule as FIN_001 } from "./financial/FIN-001.js";
@@ -146,10 +149,10 @@ import { rule as DARK_008 } from "./dark-patterns/DARK-008.js";
 import { rule as DARK_009 } from "./dark-patterns/DARK-009.js";
 
 export const LAUNCH_RULES: readonly Rule[] = [
-  // Structural — 14
+  // Structural — 19
   STRUCT_001, STRUCT_002, STRUCT_003, STRUCT_004, STRUCT_005, STRUCT_006,
   STRUCT_007, STRUCT_008, STRUCT_009, STRUCT_010, STRUCT_011, STRUCT_012,
-  STRUCT_013, STRUCT_014, STRUCT_015, STRUCT_016,
+  STRUCT_013, STRUCT_014, STRUCT_015, STRUCT_016, STRUCT_017, STRUCT_018, STRUCT_019,
   // Financial — 8
   FIN_001, FIN_002, FIN_003, FIN_004, FIN_005, FIN_006, FIN_007, FIN_008, FIN_009,
   // Temporal — 10

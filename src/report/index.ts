@@ -22,6 +22,36 @@ export {
   type UnresolvedDate,
   type DeadlinesResult,
 } from "./exports.js";
+// spec-v9 Thrust C — critical-dates register + its exports.
+export {
+  deriveDate,
+  resolveAnchors,
+  buildCriticalDates,
+  type CriticalDate,
+  type CriticalDateKind,
+  type CriticalDatesRegister,
+  type DerivedDate,
+} from "./critical-dates.js";
+export {
+  buildCriticalDatesMarkdown,
+  buildCriticalDatesIcs,
+  criticalDatesMarkdownBlob,
+  criticalDatesIcsBlob,
+} from "./exports.js";
+// spec-v9 Thrust B — readiness consolidation + Closing Checklist export.
+export {
+  buildClosingChecklist,
+  type ClosingChecklist,
+  type ChecklistItem,
+  type ChecklistCategory,
+  type ChecklistHandoff,
+} from "./closing-checklist.js";
+export {
+  buildClosingChecklistMarkdown,
+  buildClosingChecklistCsv,
+  closingChecklistMarkdownBlob,
+  closingChecklistCsvBlob,
+} from "./exports.js";
 // v6 Part I — version comparison (Steps 89–90).
 export {
   compareRuns,

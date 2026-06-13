@@ -4,6 +4,77 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.0.0] — 2026-06-12 — The Last Look (spec-v9 complete)
+
+### Added
+- **Ready to Sign — execution-readiness reconciliation (spec-v9 Thrust B, Steps 155–159).**
+  Deepens the `STRUCT-*` family from *detection* to *reconciliation* — three new
+  always-on rules (launch set **112 → 115**), all internal-consistency only
+  (they report the gap, never "validly executed"):
+  - **`STRUCT-017` — signature-block completeness** (warning). Reconciles the
+    declared contracting parties against the signature block and reports a
+    declared party with no attributable line. Precision-first: fires only on a
+    clearly multi-party-labeled block (`≥2` parties named) missing a further
+    **corporate-suffix-named** party, dropping the defined-term / functional-role
+    phantoms (`"Confidential Information"`, `"Receiving Party"`) the preamble
+    extractor occasionally fabricates — **0 false positives across the
+    341-fixture corpus**, while its unit tests prove it fires on the genuine
+    "four-party agreement, three signature lines" case.
+  - **`STRUCT-018` — attachment completeness** (warning). Reconciles every
+    Exhibit / Schedule / Annex / Appendix / Attachment reference against the set
+    present as a heading or title line, and reports referenced-but-absent (and
+    present-but-unreferenced) attachments — the consolidated reconciliation view,
+    distinct from `STRUCT-016`'s incorporation-risk lens.
+  - **`STRUCT-019` — recited formalities** (warning). Where the document's own
+    text recites notarization or witnessing, checks that the corresponding
+    notary jurat / witness block is present. High precision; never asserts the
+    formality is legally required.
+  - **Closing Checklist** ([`src/report/closing-checklist.ts`](src/report/closing-checklist.ts)).
+    Consolidates the readiness findings (`STRUCT-003`/`011`/`013`/`017`/`018`/`019`)
+    and the send-readiness handoff items (`HANDOFF-001`/`002`) into one ordered,
+    grouped artifact — Markdown and CSV exports, a JSON `closing_checklist` block,
+    a CLI `--checklist` flag, and a tab "Ready to sign?" view. A render-side
+    projection of findings the engine already produced; **zero `result_hash`
+    churn** beyond the three new rules' mechanical execution-log re-baseline.
+- **Tracked to Its Dates — the computed critical-dates register (spec-v9 Thrust C,
+  Steps 160–164).** Turns the relative temporal terms the extractor already pulls
+  into absolute, calendarable deadlines. New module
+  [`src/report/critical-dates.ts`](src/report/critical-dates.ts):
+  - **`deriveDate(reference, anchor)`** — pure calendar arithmetic, `anchor ± N
+    {days|weeks|months|years}`, month-end-clamped (`Jan 31 + 1 month = Feb 28`)
+    and leap-year-correct, proven by property tests (validity, monotonicity,
+    month round-trip). Reads **no clock**. An undated anchor or a business-day
+    count yields an **unresolved** "verify manually" item — never a guess. New
+    additive `offset_unit` / `offset_count` / `offset_count_max` on
+    `DateReference` carry the calendar unit the day-collapsed `offset_days` loses
+    (extractor data, outside `result_hash` — zero golden churn).
+  - **`DATE-001…005`** — auto-renewal notice, cure window, opt-out window,
+    survival end, notice-period — classified from the clause context, with the
+    responsible party drawn from the obligations extractor.
+  - A canonically-sorted **register** with its own `critical_dates_hash`, a JSON
+    `critical_dates` block, a deepened `.ics` (`buildCriticalDatesIcs`, with a
+    render-only DISPLAY alarm on notice/opt-out/cure rows), a Markdown register
+    (`buildCriticalDatesMarkdown`), a CLI `--critical-dates` flag, and a tab
+    "Your calendar, computed" view.
+  - **No-wall-clock metamorphic gate**
+    ([`tests/integration/critical-dates-no-wallclock.test.ts`](tests/integration/critical-dates-no-wallclock.test.ts)):
+    the same document under two different "today" values yields a byte-identical
+    register, `critical_dates_hash`, `.ics`, and Markdown — only the *absolute*
+    computed date is ever hashed; every relative-to-today view ("due in N days",
+    "overdue", soonest-first) is render-only.
+- **v9 close (Step 165).** [`docs/v9/README.md`](docs/v9/README.md) overview;
+  threat-model Thrust B/C note; `RULE_TAXONOMY_VERSION` 7.0.0 → 9.0.0; spec-v9
+  status table reconciled (all 18 steps shipped); README posture/test-count
+  (2,829 → 2,874) and Thrust surface refresh. Version 8.1.0 → **9.0.0**.
+
+### Notes
+- The three new always-on `STRUCT-*` rules re-baseline the engine
+  `result_hash` and `execution_log` mechanically across the golden corpus (355
+  golden files regenerated). The new findings were audited to fire only on
+  genuine readiness gaps; the regen is otherwise zero-judgment.
+
+## [8.1.0] — 2026-06-09 — Clean to Send (spec-v9 Thrust A)
+
 ### Added
 - **Clean to Send — the pre-disclosure scan (spec-v9 Thrust A, Steps 148–154).**
   A deterministic, in-tab read over a document's **original container bytes**

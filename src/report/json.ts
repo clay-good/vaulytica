@@ -19,6 +19,8 @@ import { selectStateOverlays, type StateOverlayResult } from "../dkb/state-overl
 import type { ExtractedData } from "../extract/types.js";
 import { buildClauseEvidence, type ClauseEvidenceSummary } from "./clause-evidence.js";
 import type { DeliveryReport } from "../delivery/types.js";
+import type { CriticalDatesRegister } from "./critical-dates.js";
+import type { ClosingChecklist } from "./closing-checklist.js";
 
 /**
  * One additional detected family's scan results (spec-v6 multi-family
@@ -122,6 +124,26 @@ export type JsonReport = {
    * pass); absent otherwise, so existing consumers are unaffected.
    */
   delivery?: DeliveryReport;
+  /**
+   * Critical-dates register (spec-v9 Thrust C). The deadlines the document's
+   * own temporal terms imply, computed to absolute dates by `anchor ± N`
+   * calendar arithmetic, with a `critical_dates_hash` of its own. Lives
+   * outside `run`, namespaced apart from `result_hash` (the same "field
+   * outside the run" precedent as `delivery`), so adding it re-baselines no
+   * existing golden. Only **absolute** computed dates are carried — no
+   * relative-to-today value ever enters this block (§3 corollary 4). Emitted
+   * only when the register is non-empty; absent otherwise.
+   */
+  critical_dates?: CriticalDatesRegister;
+  /**
+   * Closing checklist (spec-v9 Thrust B, §23–§24). The execution-readiness
+   * items consolidated from the engine's own findings (signatures,
+   * attachments, formalities, unfilled blanks) plus send-readiness handoff
+   * items. A render-side re-projection of `run.findings`; lives outside `run`,
+   * so `result_hash` is unchanged. Emitted only when at least one readiness
+   * item is present.
+   */
+  closing_checklist?: ClosingChecklist;
 };
 
 export function buildJsonReport(
@@ -131,6 +153,8 @@ export function buildJsonReport(
   secondaryFamilies?: ReadonlyArray<ReportSecondaryFamily>,
   extracted?: ExtractedData,
   delivery?: DeliveryReport,
+  criticalDates?: CriticalDatesRegister,
+  closingChecklist?: ClosingChecklist,
 ): Blob {
   // spec-v6 Part IV — one model-clause reference per distinct fired rule that
   // has one, in first-seen finding order (findings arrive pre-sorted).
@@ -183,6 +207,10 @@ export function buildJsonReport(
   }
   // spec-v9 Thrust A — the Delivery block, outside `run` so `result_hash` is unchanged.
   if (delivery) payload.delivery = delivery;
+  // spec-v9 Thrust C — the critical-dates register, outside `run` so `result_hash` is unchanged.
+  if (criticalDates && criticalDates.register.length > 0) payload.critical_dates = criticalDates;
+  // spec-v9 Thrust B — the closing checklist, a render-side projection of `run.findings`.
+  if (closingChecklist && closingChecklist.items.length > 0) payload.closing_checklist = closingChecklist;
   const json = JSON.stringify(payload, null, 2);
   return new Blob([json], { type: "application/json" });
 }

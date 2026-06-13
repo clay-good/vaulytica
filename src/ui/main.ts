@@ -204,6 +204,12 @@ function renderCompleteState(
     secondary_families?: import("./pipeline.js").PipelineResult["secondary_families"];
     jurisdiction_overlays?: import("./pipeline.js").PipelineResult["jurisdiction_overlays"];
     delivery?: import("./pipeline.js").PipelineResult["delivery"];
+    critical_dates?: import("./pipeline.js").PipelineResult["critical_dates"];
+    critical_dates_md_blob?: Blob;
+    critical_dates_ics_blob?: Blob;
+    closing_checklist?: import("./pipeline.js").PipelineResult["closing_checklist"];
+    closing_checklist_md_blob?: Blob;
+    closing_checklist_csv_blob?: Blob;
   },
   countsBySeverity: (r: import("./pipeline.js").PipelineResult["run"]) => {
     critical: number;
@@ -240,6 +246,16 @@ function renderCompleteState(
       deadlines_ics_filename: `${stem}-vaulytica-deadlines.ics`,
       sarif_filename: `${stem}-vaulytica.sarif.json`,
       html_filename: `${stem}-vaulytica-report.html`,
+      // spec-v9 Thrust C — critical-dates calendar / register, present only when non-empty.
+      critical_dates_ics_blob: result.critical_dates_ics_blob,
+      critical_dates_md_blob: result.critical_dates_md_blob,
+      critical_dates_ics_filename: `${stem}-vaulytica-critical-dates.ics`,
+      critical_dates_md_filename: `${stem}-vaulytica-critical-dates.md`,
+      // spec-v9 Thrust B — closing checklist, present only when there is a readiness item.
+      closing_checklist_md_blob: result.closing_checklist_md_blob,
+      closing_checklist_csv_blob: result.closing_checklist_csv_blob,
+      closing_checklist_md_filename: `${stem}-vaulytica-closing-checklist.md`,
+      closing_checklist_csv_filename: `${stem}-vaulytica-closing-checklist.csv`,
     },
     v3_family:
       result.v3_detection.family === "unknown"
@@ -313,6 +329,38 @@ function renderCompleteState(
             description: f.description,
             count: f.count,
             evidence: f.evidence,
+          })),
+        }
+      : undefined,
+    // spec-v9 Thrust C — critical-dates register. The deadlines the document's
+    // own terms compute to, as absolute dates; no relative-to-today value.
+    critical_dates: result.critical_dates
+      ? {
+          resolved_count: result.critical_dates.resolved_count,
+          unresolved_count: result.critical_dates.unresolved_count,
+          rows: result.critical_dates.register.map((r) => ({
+            rule_id: r.rule_id,
+            kind: r.kind,
+            resolved: r.resolved,
+            computed_date: r.computed_date,
+            window: r.window,
+            trigger: r.trigger,
+            anchor: r.anchor,
+            responsible: r.responsible,
+            section: r.section,
+            reason: r.reason,
+          })),
+        }
+      : undefined,
+    // spec-v9 Thrust B — closing checklist (readiness consolidation).
+    closing_checklist: result.closing_checklist
+      ? {
+          open_count: result.closing_checklist.open_count,
+          items: result.closing_checklist.items.map((i) => ({
+            category: i.category,
+            rule_id: i.rule_id,
+            label: i.label,
+            section: i.section,
           })),
         }
       : undefined,

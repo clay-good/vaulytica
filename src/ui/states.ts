@@ -49,6 +49,16 @@ export type DropzoneState =
         deadlines_ics_filename: string;
         sarif_filename: string;
         html_filename: string;
+        /** spec-v9 Thrust C — critical-dates calendar / register, present only when non-empty. */
+        critical_dates_ics_blob?: Blob;
+        critical_dates_md_blob?: Blob;
+        critical_dates_ics_filename?: string;
+        critical_dates_md_filename?: string;
+        /** spec-v9 Thrust B — closing checklist, present only when there is a readiness item. */
+        closing_checklist_md_blob?: Blob;
+        closing_checklist_csv_blob?: Blob;
+        closing_checklist_md_filename?: string;
+        closing_checklist_csv_filename?: string;
       };
       /**
        * v3 family detection (spec-v3 §60). When `family === "unknown"`
@@ -156,6 +166,44 @@ export type DropzoneState =
           description: string;
           count: number;
           evidence: ReadonlyArray<string>;
+        }>;
+      };
+      /**
+       * Critical-dates register (spec-v9 Thrust C). The deadlines the
+       * document's own terms compute to — auto-renewal notice, cure window,
+       * opt-out window, survival end, notice period — as absolute dates. Only
+       * the absolute date is shown; never a relative-to-today value (§3
+       * corollary 4). Optional / back-compat: omitting hides the block.
+       */
+      critical_dates?: {
+        resolved_count: number;
+        unresolved_count: number;
+        rows: ReadonlyArray<{
+          rule_id: string;
+          kind: string;
+          resolved: boolean;
+          computed_date: string | null;
+          window?: readonly [string, string];
+          trigger: string;
+          anchor: string;
+          responsible: string;
+          section?: string;
+          reason?: string;
+        }>;
+      };
+      /**
+       * Closing checklist (spec-v9 Thrust B). Consolidated execution-readiness
+       * items projected from the run's findings + the delivery handoff items.
+       * Presence-only — an empty list is hidden; it never certifies "ready to
+       * sign." Optional / back-compat: omitting hides the block.
+       */
+      closing_checklist?: {
+        open_count: number;
+        items: ReadonlyArray<{
+          category: string;
+          rule_id: string;
+          label: string;
+          section?: string;
         }>;
       };
     }
@@ -329,6 +377,8 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     <div class="dropzone-title" data-role="complete-filename"></div>
     <div class="v3-family-chip" data-role="v3-family" hidden></div>
     <div class="delivery-section" data-role="delivery" hidden></div>
+    <div class="closing-checklist-section" data-role="closing-checklist" hidden></div>
+    <div class="critical-dates-section" data-role="critical-dates" hidden></div>
     <div class="counts" data-role="counts"></div>
     <div class="playbook-provenance" data-role="playbook-provenance" hidden></div>
     <div class="secondary-families" data-role="secondary-families" hidden></div>
@@ -347,6 +397,10 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
       <button class="btn-link" type="button" data-role="export-fixlist-csv">Fix list (CSV)</button>
       <button class="btn-link" type="button" data-role="export-obligations-csv">Obligations (CSV)</button>
       <button class="btn-link" type="button" data-role="export-deadlines-ics">Deadlines (.ics)</button>
+      <button class="btn-link" type="button" data-role="export-closing-checklist-md" hidden>Closing checklist (Markdown)</button>
+      <button class="btn-link" type="button" data-role="export-closing-checklist-csv" hidden>Closing checklist (CSV)</button>
+      <button class="btn-link" type="button" data-role="export-critical-dates-ics" hidden>Critical dates (.ics)</button>
+      <button class="btn-link" type="button" data-role="export-critical-dates-md" hidden>Critical dates (Markdown)</button>
       <button class="btn-link" type="button" data-role="export-html">HTML report</button>
       <button class="btn-link" type="button" data-role="export-sarif">SARIF</button>
     </div>
@@ -419,6 +473,8 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
     select(dz, "reasoning")!.textContent = `${baseReasoning}${legacySuffix}`;
     renderV3FamilyChip(dz, state.v3_family);
     renderDelivery(dz, state.delivery);
+    renderClosingChecklist(dz, state.closing_checklist);
+    renderCriticalDates(dz, state.critical_dates);
     renderPlaybookProvenance(dz, state.custom_playbook);
     renderSecondaryFamilies(dz, state.secondary_families);
     renderJurisdictionOverlays(dz, state.jurisdiction_overlays);
@@ -447,6 +503,26 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
       wire("export-fixlist-csv", ex.fixlist_csv_blob, ex.fixlist_csv_filename);
       wire("export-obligations-csv", ex.obligations_csv_blob, ex.obligations_csv_filename);
       wire("export-deadlines-ics", ex.deadlines_ics_blob, ex.deadlines_ics_filename);
+      // spec-v9 Thrust B — closing checklist, shown only when there is a readiness item.
+      if (ex.closing_checklist_md_blob && ex.closing_checklist_md_filename) {
+        select<HTMLButtonElement>(dz, "export-closing-checklist-md")!.removeAttribute("hidden");
+        wire("export-closing-checklist-md", ex.closing_checklist_md_blob, ex.closing_checklist_md_filename);
+      }
+      if (ex.closing_checklist_csv_blob && ex.closing_checklist_csv_filename) {
+        select<HTMLButtonElement>(dz, "export-closing-checklist-csv")!.removeAttribute("hidden");
+        wire("export-closing-checklist-csv", ex.closing_checklist_csv_blob, ex.closing_checklist_csv_filename);
+      }
+      // spec-v9 Thrust C — critical-dates calendar / register, shown only when present.
+      if (ex.critical_dates_ics_blob && ex.critical_dates_ics_filename) {
+        const btn = select<HTMLButtonElement>(dz, "export-critical-dates-ics")!;
+        btn.removeAttribute("hidden");
+        wire("export-critical-dates-ics", ex.critical_dates_ics_blob, ex.critical_dates_ics_filename);
+      }
+      if (ex.critical_dates_md_blob && ex.critical_dates_md_filename) {
+        const btn = select<HTMLButtonElement>(dz, "export-critical-dates-md")!;
+        btn.removeAttribute("hidden");
+        wire("export-critical-dates-md", ex.critical_dates_md_blob, ex.critical_dates_md_filename);
+      }
       wire("export-html", ex.html_blob, ex.html_filename);
       wire("export-sarif", ex.sarif_blob, ex.sarif_filename);
     }
@@ -944,6 +1020,111 @@ function renderDelivery(
     </div>
     <ul class="delivery-list">${cards}</ul>
     <div class="delivery-note">Vaulytica reports what it found in the original file and where — it never removes it (that is your edit in Word) and never certifies the document clean.</div>
+  `;
+}
+
+const CHECKLIST_CATEGORY_LABEL: Record<string, string> = {
+  signature: "Signatures",
+  attachment: "Attachments",
+  formality: "Execution formalities",
+  blank: "Unfilled content",
+  handoff: "Pre-send cleanup",
+};
+const CHECKLIST_CATEGORY_ORDER = ["signature", "attachment", "formality", "blank", "handoff"];
+
+/**
+ * Closing-checklist view (spec-v9 Thrust B). The consolidated readiness items
+ * as a mobile-safe, grouped checklist. Presence-only: hidden when empty, and
+ * it never certifies the document "ready to sign."
+ */
+function renderClosingChecklist(
+  dz: HTMLElement,
+  cl: Extract<DropzoneState, { kind: "complete" }>["closing_checklist"],
+): void {
+  const el = select<HTMLElement>(dz, "closing-checklist");
+  if (!el) return;
+  if (!cl || cl.items.length === 0) {
+    el.hidden = true;
+    el.innerHTML = "";
+    return;
+  }
+  el.hidden = false;
+  const groups = CHECKLIST_CATEGORY_ORDER.map((cat) => {
+    const items = cl.items.filter((i) => i.category === cat);
+    if (items.length === 0) return "";
+    const lis = items
+      .map((i) => {
+        const where = i.section ? ` <span class="cl-section">§${escapeHtml(i.section)}</span>` : "";
+        return `<li class="cl-item"><span class="cl-rule">${escapeHtml(i.rule_id)}</span> ${escapeHtml(i.label)}${where}</li>`;
+      })
+      .join("");
+    return `<div class="cl-group"><div class="cl-group-head">${escapeHtml(CHECKLIST_CATEGORY_LABEL[cat] ?? cat)} (${items.length})</div><ul class="cl-list">${lis}</ul></div>`;
+  }).join("");
+  el.innerHTML = `
+    <div class="cl-heading">
+      <span class="cl-badge">Ready to sign?</span>
+      <span class="cl-summary">${cl.open_count} readiness item${cl.open_count === 1 ? "" : "s"} to resolve</span>
+    </div>
+    ${groups}
+    <div class="cl-note">A deterministic projection of the findings — it lists what is left to resolve before closing; it does not certify the document is ready to sign or validly executed.</div>
+  `;
+}
+
+const CRITICAL_DATE_KIND_LABEL: Record<string, string> = {
+  "auto-renewal-notice": "Auto-renewal notice",
+  "cure-window": "Cure window",
+  "opt-out-window": "Opt-out / termination",
+  "survival-end": "Survival end",
+  "notice-period": "Notice deadline",
+};
+
+/**
+ * Critical-dates view (spec-v9 Thrust C). Renders the computed deadlines as
+ * a mobile-safe list of cards — each shows the absolute computed date (or a
+ * "verify manually" badge), the deadline type, anchor, and the clause it
+ * derives from. Only absolute dates are shown; no "days remaining" (§3
+ * corollary 4). Hidden when the register is empty.
+ */
+function renderCriticalDates(
+  dz: HTMLElement,
+  cd: Extract<DropzoneState, { kind: "complete" }>["critical_dates"],
+): void {
+  const el = select<HTMLElement>(dz, "critical-dates");
+  if (!el) return;
+  if (!cd || cd.rows.length === 0) {
+    el.hidden = true;
+    el.innerHTML = "";
+    return;
+  }
+  el.hidden = false;
+  const cards = cd.rows
+    .map((r) => {
+      const label = CRITICAL_DATE_KIND_LABEL[r.kind] ?? "Deadline";
+      const date = r.resolved
+        ? r.window
+          ? `${escapeHtml(r.window[0])} – ${escapeHtml(r.window[1])}`
+          : escapeHtml(r.computed_date ?? "")
+        : "Verify manually";
+      const meta: string[] = [];
+      if (r.anchor) meta.push(`anchor: ${escapeHtml(r.anchor)}`);
+      if (r.responsible) meta.push(`responsible: ${escapeHtml(r.responsible)}`);
+      if (r.section) meta.push(`§${escapeHtml(r.section)}`);
+      const reason = !r.resolved && r.reason ? `<div class="cd-reason">${escapeHtml(r.reason)}</div>` : "";
+      return `<li class="cd-card cd-${r.resolved ? "resolved" : "unresolved"}">
+        <div class="cd-card-head"><span class="cd-date">${date}</span> <span class="cd-kind">${escapeHtml(label)}</span></div>
+        <div class="cd-trigger">${escapeHtml(r.trigger)}</div>
+        ${meta.length ? `<div class="cd-meta">${meta.join(" · ")}</div>` : ""}
+        ${reason}
+      </li>`;
+    })
+    .join("");
+  el.innerHTML = `
+    <div class="cd-heading">
+      <span class="cd-badge">Your calendar, computed</span>
+      <span class="cd-summary">${cd.resolved_count} computed · ${cd.unresolved_count} to verify manually</span>
+    </div>
+    <ul class="cd-list">${cards}</ul>
+    <div class="cd-note">Each date is computed from the document's own terms by calendar arithmetic — it is not a determination that a deadline is met, missed, or binding.</div>
   `;
 }
 
