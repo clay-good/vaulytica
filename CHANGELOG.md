@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- **PDF reviewer-annotation recovery in the pre-disclosure scan (spec-v9 §7).**
+  Closes the last v9 Thrust-A deferral: the delivery scan's PDF path read only
+  the Info-dictionary metadata and reported markup/comment recovery as a
+  documented no-op. It now recovers **reviewer annotations** — sticky notes
+  (`/Text`), free-text notes (`/FreeText`), and text markup (`/Highlight`,
+  `/Underline`, `/StrikeOut`, `/Squiggly`) — from the **uncompressed** byte
+  regions, surfacing each as a `CommentFact` (author from `/T`, a bounded
+  excerpt from `/Contents`, literal or hex; a bare mark with no note reports its
+  type, e.g. `[highlight]`), so `HANDOFF-002` now fires on a PDF carrying live
+  reviewer markup, not just a DOCX. The parser reads the raw bytes (not pdf.js)
+  to stay pure, bounded, and **ReDoS-free** (every regex linear; a search window
+  clamped to the annotation's own object so a neighbouring object's fields are
+  never pulled in); annotations or metadata inside a compressed object stream or
+  an encrypted region are still not recovered, and the report's note now states
+  that reach honestly rather than implying a clean bill. +4 tests (positive
+  recovery, object-boundary isolation, pathological-blob totality/ReDoS guard,
+  honest-note wording). Render-side / container-scoped — **zero `result_hash`
+  churn**.
+
 - **v9 output-surface completion — the Last Look surfaces now render in every
   report format.** Closes the two engineering-scoped deferrals documented at the
   9.0.0 release (spec-v9 Steps 153/159/163). The delivery (`HANDOFF-*`), closing

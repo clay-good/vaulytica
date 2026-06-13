@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,065 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `35 state-law overlays` · `9 export formats` · `0 servers` · `0 AI` · `2,880 passing tests` · `v9.0.0` · `MIT`
+`1,065 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `35 state-law overlays` · `9 export formats` · `0 servers` · `0 AI` · `2,883 passing tests` · `v9.0.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
 
@@ -105,7 +105,7 @@ flowchart LR
 | Check | Catches | Severity | Cites |
 |---|---|---|---|
 | `HANDOFF-001` | residual **tracked changes** (`w:ins`/`w:del`/`w:move*`) — count, author, location | critical | the revision element |
-| `HANDOFF-002` | live **comments** (`word/comments.xml`, PDF sticky notes) — author, excerpt | critical | the comment |
+| `HANDOFF-002` | live **comments / reviewer markup** (`word/comments.xml`; PDF sticky notes + text markup — highlight/underline/strikeout/squiggly) — author, excerpt | critical | the comment / annotation |
 | `HANDOFF-003` | **hidden / non-printing** content (`w:vanish`, deleted-but-retained text) | warning | the recovered span |
 | `HANDOFF-004` | **authoring metadata** (`core.xml`/`app.xml`, PDF Info) — flags a `Company`/`Template` naming an entity **absent from the parties** (cross-matter leak) | info → critical | the metadata field |
 | `HANDOFF-005` | **sensitive-data patterns** — SSN (structural), EIN, card (**Luhn**), routing (**ABA**), DOB, email/phone | warning → critical | the **masked** span |
@@ -458,7 +458,7 @@ npm run dev          # open the printed URL
 npm run build        # static site → dist/
 npm run typecheck    # tsc --noEmit
 npm run lint         # eslint
-npm run test         # vitest — 2,880 tests, ~20s
+npm run test         # vitest — 2,883 tests, ~20s
 npm run coverage     # vitest + V8 coverage, enforces the regression floor
 npm run accuracy     # v5 Ground Truth harness → tools/accuracy/SCOREBOARD.md
 npm run mutation     # Stryker mutation score (scoped to extractors; slow, off the per-push path)

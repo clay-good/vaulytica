@@ -222,28 +222,84 @@ function parseDocxMetadata(core: string, app: string): MetadataFact[] {
 /* -------------------------------- PDF --------------------------------- */
 
 /**
- * Best-effort PDF authoring-metadata read. Parses the Info-dictionary fields
- * present in the uncompressed byte regions of the file. A PDF whose Info
- * dictionary is in an encrypted or object-stream-compressed region yields an
- * honest "could not inspect metadata" note rather than a false clean bill.
- * Revision/comment recovery from PDF markup annotations is out of scope for
- * this pass (§Part XVI deferral) and reported as such.
+ * Best-effort PDF read: authoring-metadata (the Info dictionary) **and**
+ * reviewer markup/comment annotations (spec-v9 §7 — sticky notes and
+ * text-markup), both parsed from the uncompressed byte regions of the file.
+ *
+ * Honest partial coverage (§3 corollary 3): a PDF whose Info dictionary or
+ * whose annotations live in an encrypted or object-stream-compressed region is
+ * not fully readable from the raw bytes, so the note states the scan's reach
+ * rather than implying a clean bill. We deliberately read the raw bytes (not
+ * pdf.js) to keep this pure, bounded, and ReDoS-free — the same posture the
+ * DOCX path holds.
  */
 function readPdf(bytes: ArrayBuffer, text: string): ContainerFacts {
   // Decode as latin1 so byte offsets map 1:1 to characters (PDF is byte-oriented).
   const ascii = strFromU8(new Uint8Array(bytes.slice(0, Math.min(bytes.byteLength, MAX_PART_BYTES))), true);
   const metadata = parsePdfInfo(ascii);
+  const comments = parsePdfAnnotations(ascii);
   return {
     source: "pdf",
     inspectable: true,
     note:
-      "PDF scan reads authoring metadata only; tracked-change and comment recovery from PDF markup annotations is not yet supported.",
+      "PDF scan reads authoring metadata and reviewer annotations (sticky notes, text markup) from the uncompressed byte regions; annotations or metadata inside a compressed object stream or an encrypted region are not recovered.",
     revisions: [],
-    comments: [],
+    comments,
     hidden: [],
     metadata,
     sensitive: scanSensitive(text),
   };
+}
+
+/** Reviewer markup/comment annotation subtypes we surface (spec-v9 §7). */
+const PDF_ANNOT_SUBTYPES = "Text|FreeText|Highlight|Underline|StrikeOut|Squiggly";
+const PDF_ANNOT_RE = new RegExp(`/Subtype\\s{0,8}/(${PDF_ANNOT_SUBTYPES})\\b`, "g");
+const PDF_ANNOT_LABEL: Record<string, string> = {
+  Text: "sticky note",
+  FreeText: "free-text note",
+  Highlight: "highlight",
+  Underline: "underline",
+  StrikeOut: "strikeout",
+  Squiggly: "squiggly underline",
+};
+
+/**
+ * Recover reviewer annotations as {@link CommentFact}s. For each markup /
+ * sticky-note annotation in the uncompressed body, capture its author (`/T`)
+ * and a bounded excerpt of its note (`/Contents`, literal or hex); a markup
+ * mark with no note still surfaces with a `[highlight]`-style label so the
+ * recipient-visible mark is reported. The window is clamped to the annotation's
+ * own object (between `endobj` markers) so a neighbouring object's fields are
+ * never pulled in. All regexes are linear and bounded — ReDoS-free.
+ */
+function parsePdfAnnotations(ascii: string): CommentFact[] {
+  const facts: CommentFact[] = [];
+  PDF_ANNOT_RE.lastIndex = 0;
+  let m: RegExpExecArray | null;
+  while ((m = PDF_ANNOT_RE.exec(ascii)) !== null && facts.length < MAX_FACTS) {
+    const subtype = m[1]!;
+    // Clamp the search window to this annotation's object: back to the prior
+    // `endobj`, forward to this object's `endobj`, each within a bounded span.
+    const rawBefore = ascii.slice(Math.max(0, m.index - 1200), m.index);
+    const cut = rawBefore.lastIndexOf("endobj");
+    const before = cut >= 0 ? rawBefore.slice(cut + 6) : rawBefore;
+    const rawAfter = ascii.slice(m.index, Math.min(ascii.length, m.index + 1200));
+    const end = rawAfter.indexOf("endobj");
+    const after = end >= 0 ? rawAfter.slice(0, end) : rawAfter;
+    const window = before + after;
+
+    const authorLit = /\/T\s{0,8}\(([^)]{0,200})\)/.exec(window)?.[1];
+    const authorHex = /\/T\s{0,8}<([0-9A-Fa-f]{0,400})>/.exec(window)?.[1];
+    const author = authorLit !== undefined ? decodePdfLiteral(authorLit) : authorHex !== undefined ? decodePdfHex(authorHex) : undefined;
+
+    const contentsLit = /\/Contents\s{0,8}\(([^)]{0,400})\)/.exec(window)?.[1];
+    const contentsHex = /\/Contents\s{0,8}<([0-9A-Fa-f]{0,800})>/.exec(window)?.[1];
+    const contents = contentsLit !== undefined ? decodePdfLiteral(contentsLit) : contentsHex !== undefined ? decodePdfHex(contentsHex) : undefined;
+
+    const exc = excerpt(contents) ?? `[${PDF_ANNOT_LABEL[subtype] ?? subtype.toLowerCase()}]`;
+    facts.push(compact({ author: clean(author), excerpt: exc }));
+  }
+  return facts;
 }
 
 function parsePdfInfo(ascii: string): MetadataFact[] {

@@ -548,9 +548,14 @@ the repo, exactly as the v8 Step-139 discipline requires.
 v9 reports internal facts; it never renders a legal conclusion ("validly
 executed", "privilege waived", "fully redacted") — those stay attorney-gated. It
 never *removes* what it finds (that is the user's deliberate act in their own
-editor), and it does not claim to catch *every* concealment technique. PDF
-tracked-change/comment recovery from markup annotations is a documented no-op in
-this pass; the report says so honestly rather than implying a clean bill.
+editor), and it does not claim to catch *every* concealment technique. The PDF
+scan recovers reviewer markup/comment annotations (sticky notes + text markup)
+and Info-dictionary metadata from the **uncompressed** byte regions only —
+annotations or metadata sealed inside a compressed object stream or an encrypted
+region are not recovered, and the report's note states that reach honestly
+rather than implying a clean bill. The scan reads the raw bytes (not pdf.js), so
+it stays a pure, bounded, ReDoS-free function; the trade-off is that it sees
+only what the file leaves uncompressed.
 
 ### v9 Thrusts B & C — reconciliation and date derivation add no new surface
 

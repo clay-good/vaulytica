@@ -75,7 +75,7 @@ These steps add a deterministic read over the document's **original container**,
 
 ### §5. What it does
 
-Defines a new module `src/ingest/container.ts` (alongside, not inside, the existing `ingestDocx`/`ingestPdf`) that takes the **original uploaded bytes** and returns a typed `ContainerFacts` record: revision marks, comments, hidden runs, metadata fields, and the raw text spans the sensitive-data scan reads. It runs *in parallel* to normalization, never mutating the `DocumentTree`. It is format-aware: DOCX (the rich case — OOXML zip), PDF (Info dictionary + annotations/markup via pdf.js), and a documented no-op for pasted text and image-only inputs (which carry no container to inspect — and the report says so honestly, per §3 corollary 3).
+Defines a new module `src/ingest/container.ts` (alongside, not inside, the existing `ingestDocx`/`ingestPdf`) that takes the **original uploaded bytes** and returns a typed `ContainerFacts` record: revision marks, comments, hidden runs, metadata fields, and the raw text spans the sensitive-data scan reads. It runs *in parallel* to normalization, never mutating the `DocumentTree`. It is format-aware: DOCX (the rich case — OOXML zip), PDF (Info dictionary + reviewer markup/comment annotations, parsed from the raw container bytes — not pdf.js — to keep the read pure, bounded, and ReDoS-free; the uncompressed regions only, with the report's note stating that reach honestly), and a documented no-op for pasted text and image-only inputs (which carry no container to inspect — and the report says so honestly, per §3 corollary 3).
 
 ### §6. The gap and the fix
 

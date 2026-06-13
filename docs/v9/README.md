@@ -47,7 +47,7 @@ Deterministic · no AI · no server · citable (every v9 finding cites the docum
 
 ## Principled deferrals (Part XVI)
 
-Any legal-sufficiency conclusion (valid execution, required notarization, ESIGN/UETA compliance, redaction adequacy, privilege) stays attorney-gated; removing/scrubbing what the scan finds crosses the lint-not-draft line; fetching a leaked metadata URL would breach the no-server posture; PDF tracked-change/comment recovery from markup annotations is a documented no-op (the report says so honestly).
+Any legal-sufficiency conclusion (valid execution, required notarization, ESIGN/UETA compliance, redaction adequacy, privilege) stays attorney-gated; removing/scrubbing what the scan finds crosses the lint-not-draft line; fetching a leaked metadata URL would breach the no-server posture. The PDF scan recovers reviewer markup/comment annotations (sticky notes + text markup: highlight/underline/strikeout/squiggly) and Info-dictionary metadata from the **uncompressed** byte regions; annotations or metadata inside a compressed object stream or an encrypted region are not recovered, and the report's note says so honestly (an image-only/scanned PDF carries no recoverable structure at all — a documented no-op).
 
 ## Output-surface coverage
 

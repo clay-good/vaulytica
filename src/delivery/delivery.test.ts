@@ -183,15 +183,70 @@ describe("PDF container read", () => {
     expect(fields.creator).toBe("Microsoft Word"); // decoded from hex
   });
 
-  it("notes that PDF markup recovery is out of scope, without asserting cleanliness", () => {
+  it("notes its reach honestly (uncompressed regions only), without asserting cleanliness", () => {
     const facts = readContainer(minimalPdf(), "pdf", "x");
-    expect(facts.note).toMatch(/metadata only/i);
+    expect(facts.note).toMatch(/not recovered/i);
+    expect(facts.note).toMatch(/compressed object stream|encrypted/i);
     expect(facts.revisions).toHaveLength(0);
   });
 
   it("scans PDF body text for sensitive data", () => {
     const facts = readContainer(minimalPdf(), "pdf", "SSN 123-45-6789 here");
     expect(facts.sensitive.some((s) => s.type === "ssn")).toBe(true);
+  });
+
+  // A PDF with reviewer annotations: a sticky note (Text), a strikeout with a
+  // note (StrikeOut + /Contents), and a bare highlight (no /Contents).
+  function annotatedPdf(): ArrayBuffer {
+    const text =
+      "%PDF-1.7\n" +
+      "1 0 obj\n<< /Type /Annot /Subtype /Text /T (Opposing Counsel) " +
+      "/Contents (please revise this indemnity) /Rect [10 10 20 20] >>\nendobj\n" +
+      "2 0 obj\n<< /Type /Annot /Subtype /StrikeOut /T (Jane Partner) " +
+      "/Contents <64656c657465> /Rect [30 30 40 40] >>\nendobj\n" +
+      "3 0 obj\n<< /Type /Annot /Subtype /Highlight /Rect [50 50 60 60] >>\nendobj\n" +
+      "trailer\n<< >>\n%%EOF\n";
+    const bytes = new TextEncoder().encode(text);
+    return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
+  }
+
+  it("recovers reviewer markup/comment annotations (sticky notes + text markup)", () => {
+    const facts = readContainer(annotatedPdf(), "pdf", "body");
+    expect(facts.comments).toHaveLength(3);
+    const sticky = facts.comments.find((c) => c.author === "Opposing Counsel");
+    expect(sticky?.excerpt).toBe("please revise this indemnity");
+    const strike = facts.comments.find((c) => c.author === "Jane Partner");
+    expect(strike?.excerpt).toBe("delete"); // hex-decoded /Contents
+    // A bare highlight with no /Contents still reports the mark, by label.
+    expect(facts.comments.some((c) => c.excerpt === "[highlight]")).toBe(true);
+  });
+
+  it("never pulls a neighbouring annotation's note across the object boundary", () => {
+    const facts = readContainer(annotatedPdf(), "pdf", "body");
+    // The bare highlight (object 3) must not inherit object 2's strikeout note.
+    const highlight = facts.comments.find((c) => c.excerpt === "[highlight]");
+    expect(highlight).toBeDefined();
+    expect(highlight?.author).toBeUndefined();
+  });
+
+  it("stays total and fast on a pathological annotation blob (ReDoS-safe)", () => {
+    // Thousands of subtypes, an unterminated /Contents literal, and a huge
+    // unbroken run — the bounded linear regexes must finish quickly and never
+    // throw (the repo's ReDoS-free + totality contract).
+    const evil =
+      "%PDF-1.7\n" +
+      "/Subtype /Text /Contents (" + "A".repeat(50000) + // never closed
+      "/Subtype /Highlight ".repeat(5000) +
+      "(".repeat(20000) +
+      "\n%%EOF\n";
+    const bytes = new TextEncoder().encode(evil);
+    const buf = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
+    const start = performance.now();
+    const facts = readContainer(buf, "pdf", "x");
+    expect(performance.now() - start).toBeLessThan(1000);
+    expect(facts.inspectable).toBe(true);
+    // Bounded output: never unbounded, never a throw.
+    expect(facts.comments.length).toBeLessThanOrEqual(2000);
   });
 });
 
