@@ -83,6 +83,36 @@
         "acceptable": "New York or California are acceptable.",
         "walk_away": "Any other state — route to legal before agreeing."
       }
+    },
+    {
+      "dimension": "Cure period",
+      "ideal": { "kind": "numeric_threshold", "metric": "cure_period_days", "comparator": "gte", "value": 30 },
+      "acceptable": { "kind": "numeric_threshold", "metric": "cure_period_days", "comparator": "gte", "value": 15 },
+      "guidance": {
+        "ideal": "30 days to cure a breach before the vendor can terminate.",
+        "acceptable": "15 days is the shortest cure window we accept.",
+        "walk_away": "Under 15 days leaves us no room to remedy — push back."
+      }
+    },
+    {
+      "dimension": "Uptime SLA",
+      "ideal": { "kind": "numeric_threshold", "metric": "uptime_sla_percent", "comparator": "gte", "value": 99.95 },
+      "acceptable": { "kind": "numeric_threshold", "metric": "uptime_sla_percent", "comparator": "gte", "value": 99.9 },
+      "guidance": {
+        "ideal": "99.95% monthly uptime — our target for production workloads.",
+        "acceptable": "99.9% is the floor for a business-critical service.",
+        "walk_away": "Below 99.9% — escalate or require service credits."
+      }
+    },
+    {
+      "dimension": "Indemnification mutuality",
+      "ideal": { "kind": "clause_mutual", "clause": "indemnification" },
+      "acceptable": { "kind": "clause_present", "pattern": "indemnif" },
+      "guidance": {
+        "ideal": "Mutual indemnity — both sides carry the obligation. Hold.",
+        "acceptable": "One-way indemnity is present — push for a mutual carve-out.",
+        "walk_away": "No indemnity at all — escalate to the deal lead."
+      }
     }
   ]
 }

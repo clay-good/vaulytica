@@ -94,6 +94,43 @@ describe("evaluateNegotiationPosture — tier classification (spec-v10 Thrust A)
     expect(oneWay.positions[0]!.tier).toBe("acceptable");
   });
 
+  it("classifies a Thrust C mutuality ladder (ideal = mutual, acceptable = present)", async () => {
+    const indemnity: NegotiationPosition = {
+      dimension: "Indemnification mutuality",
+      ideal: { kind: "clause_mutual", clause: "indemnification" },
+      acceptable: { kind: "clause_present", pattern: "indemnif" },
+      guidance: {
+        ideal: "Mutual indemnity — hold.",
+        acceptable: "One-way indemnity present — push for mutual.",
+        walk_away: "No indemnity at all — escalate.",
+      },
+    };
+    const mutual = await posture(
+      ["Each party shall indemnify and hold the other party harmless from third-party claims."],
+      [indemnity],
+    );
+    expect(mutual.positions[0]!.tier).toBe("ideal");
+    const oneWay = await posture(
+      ["Customer shall indemnify Provider against all claims arising from Customer's use."],
+      [indemnity],
+    );
+    expect(oneWay.positions[0]!.tier).toBe("acceptable");
+    expect(oneWay.positions[0]!.guidance).toBe("One-way indemnity present — push for mutual.");
+  });
+
+  it("classifies a Thrust C temporal ladder (cure period in days)", async () => {
+    const cure: NegotiationPosition = {
+      dimension: "Cure period",
+      ideal: { kind: "numeric_threshold", metric: "cure_period_days", comparator: "gte", value: 30 },
+      acceptable: { kind: "numeric_threshold", metric: "cure_period_days", comparator: "gte", value: 15 },
+    };
+    const acceptable = await posture(
+      ["The breaching party shall have a cure period of 20 days to remedy the default."],
+      [cure],
+    );
+    expect(acceptable.positions[0]!.tier).toBe("acceptable");
+  });
+
   it("is deterministic, sorted by dimension, with a stable posture_hash", async () => {
     const positions: NegotiationPosition[] = [
       { dimension: "Zeta", ideal: { kind: "clause_present", pattern: "zzz" }, acceptable: { kind: "clause_present", pattern: "yyy" } },

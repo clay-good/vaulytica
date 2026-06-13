@@ -59,6 +59,7 @@ Each custom rule pairs a **predicate** (the condition that must hold for a *comp
 | `defined_term_present` | `term` | the term is defined in the document |
 | `governing_law_in` | `allowed[]` | the governing law is one of the allowed jurisdictions (each entry is a jurisdiction **name** like `"Delaware"` or a DKB id like `"us-de"`; matched against the extracted clause either way) |
 | `cross_ref_resolves` | — | every internal cross-reference resolves |
+| `clause_mutual` | `clause`, `pattern?`, `section_heading?` | the located clause is **mutual** (carries reciprocity language — "each party", "both parties", "mutual", …) rather than one-way |
 
 `clause_present` / `clause_absent` require at least one of `pattern` or `section_heading`; a predicate with neither could never match a concrete clause and is rejected.
 
@@ -71,8 +72,14 @@ Each custom rule pairs a **predicate** (the condition that must hold for a *comp
 - `notice_period_days` — notice period in days
 - `term_length_days` — agreement term in days
 - `payment_term_days` — payment due window in days
+- `cure_period_days` — cure window for a breach, in days *(spec-v10 Thrust C)*
+- `auto_renewal_notice_days` — non-renewal notice window, in days *(spec-v10 Thrust C)*
+- `indemnity_cap_amount` — indemnification cap as an absolute amount *(spec-v10 Thrust C)*
+- `uptime_sla_percent` — service-level uptime/availability commitment, in percent *(spec-v10 Thrust C)*
 
 The set is intentionally small for auditability; maintainers grow it as extractor coverage grows. An unknown metric is a validation error, never a silent no-op.
+
+`clause_mutual` (spec-v10 Thrust C) asserts a clause is reciprocal rather than one-way. `clause` is one of a **bounded** set — `indemnification`, `termination`, `confidentiality` — that anchors where the clause is located; an explicit `pattern` or `section_heading` overrides the default anchor. The classifier is a deterministic marker scan (no model): a located clause carrying any reciprocity marker is compliant; one with none is reported one-way; a clause that is not present at all is unevaluable, never a false "one-way".
 
 ## Validation
 

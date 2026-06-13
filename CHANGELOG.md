@@ -4,6 +4,41 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.3.0] — 2026-06-13 — Negotiation posture: dimension breadth (spec-v10 Thrust C)
+
+### Added
+- **Negotiation posture — dimension breadth (spec-v10 Thrust C, Steps 173–175).**
+  Widens the set of negotiable dimensions a `negotiation_position` (or any
+  `custom_rule`) can assert on, each **measure-first**: wired only behind an
+  extractor fixture proving the extraction is reliable on representative clause
+  prose, never guessed. Fully additive — a playbook that does not use the new
+  dimensions validates and runs exactly as before; no golden or `result_hash`
+  moves.
+  - **Temporal metrics** (Step 173) — two new `numeric_threshold` metrics:
+    `cure_period_days` (the cure window for a breach) and
+    `auto_renewal_notice_days` (the non-renewal notice window), both routed
+    through the same `extractMetricValues` path the v6 metrics use.
+  - **Financial metrics** (Step 174) — `indemnity_cap_amount` (indemnification
+    cap as an absolute amount) and `uptime_sla_percent` (a service-level
+    uptime/availability commitment, in percent).
+  - **Mutuality predicate** (Step 175) — a new `clause_mutual` predicate kind:
+    *is the indemnification / termination / confidentiality clause **mutual** or
+    one-way?* It reuses the v6 `findClause` locator (`clause` anchors the
+    default location; an explicit `pattern`/`section_heading` overrides it) and
+    adds a bounded, deterministic reciprocity-marker scan — no model, no fuzzy
+    logic. A located clause carrying "each party" / "both parties" / "mutual" /
+    "respective" / … is mutual; one with none is reported one-way; a clause that
+    is absent is honestly **unevaluable**, never a false "one-way" (§3 corollary
+    2).
+  - The published JSON Schema artifact ([`docs/v6/playbook.schema.json`](docs/v6/playbook.schema.json))
+    mirrors the four new metrics and the seventh predicate kind, guarded by the
+    schema-artifact test. The `acme-saas-buyer` example playbook gains three
+    Thrust-C positions (cure period, uptime SLA, indemnification mutuality).
+  - +18 tests (measure-first extractor fixtures for all four metrics across
+    representative prose; `clause_mutual` compliant/one-way/unevaluable +
+    pattern-override; Thrust-C posture ladders; the mutual-clause schema-enum
+    guard). Suite 2,904 → 2,922. Version 9.2.0 → 9.3.0.
+
 ## [9.2.0] — 2026-06-13 — Negotiation posture: report & export (spec-v10 Thrust B)
 
 ### Added

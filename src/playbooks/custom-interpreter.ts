@@ -333,6 +333,29 @@ function evaluatePredicate(p: CustomPredicate, facts: DocFacts): PredicateOutcom
         position: g0.position.start,
       };
     }
+    case "clause_mutual": {
+      // Locate the clause (the explicit pattern wins; otherwise the bounded
+      // per-category anchor), then classify it as mutual or one-way with a
+      // deterministic marker scan — no model, no fuzzy logic (spec-v10 §C).
+      const anchor = p.pattern ?? MUTUAL_CLAUSE_ANCHORS[p.clause];
+      const hit = findClause(anchor, p.section_heading, facts);
+      if (!hit) {
+        return {
+          kind: "unevaluable",
+          reason: `no ${p.clause} clause was found to assess mutuality`,
+        };
+      }
+      // hit.text is already lower-cased (section text from sectionTextLower).
+      const mutual = MUTUALITY_MARKERS.some((m) => hit.text.includes(m));
+      if (mutual) return { kind: "compliant" };
+      return {
+        kind: "violated",
+        detail: `The ${p.clause} clause appears one-way — it carries no mutual / each-party / both-parties language; your playbook requires it to be mutual.`,
+        section_id: hit.section_id,
+        clause_text: hit.text,
+        position: hit.position,
+      };
+    }
     case "cross_ref_resolves": {
       const dangling = facts.extracted.crossrefs.filter((c) => c.unresolved);
       if (dangling.length === 0) return { kind: "compliant" };
@@ -406,6 +429,33 @@ function findClause(
   return null;
 }
 
+/**
+ * Default location anchor for each `clause_mutual` category (spec-v10 §C). A
+ * `pattern` on the predicate overrides this; otherwise the clause is found by
+ * its category's stem so an author can write `{ clause: "indemnification" }`
+ * without restating the search text.
+ */
+const MUTUAL_CLAUSE_ANCHORS: Record<string, string> = {
+  indemnification: "indemnif",
+  termination: "terminat",
+  confidentiality: "confidential",
+};
+
+/**
+ * Reciprocity markers (lower-cased) that make a clause mutual. A located
+ * clause carrying any of these is compliant; one with none is reported
+ * one-way. Bounded and deterministic — the §3 "no fuzzy logic" contract.
+ */
+const MUTUALITY_MARKERS = [
+  "mutual",
+  "each party",
+  "both parties",
+  "either party",
+  "neither party",
+  "respective",
+  "reciprocal",
+];
+
 function describeClauseTarget(pattern?: string, heading?: string): string {
   const parts: string[] = [];
   if (heading) parts.push(`section heading "${heading}"`);
@@ -456,6 +506,26 @@ function extractMetricValues(metric: string, facts: DocFacts): number[] {
     case "liability_cap_amount":
       all(/liab[a-z]*[^.$]{0,120}?\$\s?([\d,]+(?:\.\d+)?)/g, (m) => Number(m[1]!.replace(/,/g, "")));
       all(/\$\s?([\d,]+(?:\.\d+)?)[^.$]{0,60}?liab[a-z]*/g, (m) => Number(m[1]!.replace(/,/g, "")));
+      break;
+    // spec-v10 Thrust C — temporal dimensions (Step 173).
+    case "cure_period_days":
+      all(/cure[a-z]*[^.]{0,40}?within\s+(\d+)\s+(?:calendar\s+|business\s+)?days/g, (m) => Number(m[1]));
+      all(/within\s+(\d+)\s+(?:calendar\s+|business\s+)?days[^.]{0,40}?(?:to\s+)?cure\b/g, (m) => Number(m[1]));
+      all(/cure\s+period\s+of\s+(\d+)\s+(?:calendar\s+|business\s+)?days/g, (m) => Number(m[1]));
+      break;
+    case "auto_renewal_notice_days":
+      all(/(?:auto(?:matic(?:ally)?)?[\s-]*renew\w*|renew\w*\s+automatically)[^.]{0,160}?(\d+)\s+(?:calendar\s+|business\s+)?days/g, (m) => Number(m[1]));
+      all(/(?:non-?renewal|not\s+to\s+renew|intent\s+not\s+to\s+renew)[^.]{0,80}?(\d+)\s+(?:calendar\s+|business\s+)?days/g, (m) => Number(m[1]));
+      all(/(\d+)\s+(?:calendar\s+|business\s+)?days[^.]{0,60}?(?:before|prior\s+to)[^.]{0,40}?(?:renew|the\s+end\s+of\s+the[^.]{0,20}?term|expir)/g, (m) => Number(m[1]));
+      break;
+    // spec-v10 Thrust C — financial dimensions (Step 174).
+    case "indemnity_cap_amount":
+      all(/indemnif[a-z]*[^.$]{0,120}?\$\s?([\d,]+(?:\.\d+)?)/g, (m) => Number(m[1]!.replace(/,/g, "")));
+      all(/\$\s?([\d,]+(?:\.\d+)?)[^.$]{0,60}?indemnif[a-z]*/g, (m) => Number(m[1]!.replace(/,/g, "")));
+      break;
+    case "uptime_sla_percent":
+      all(/(?:up\s?time|availability|service\s+level)[^.%]{0,80}?(\d{2,3}(?:\.\d+)?)\s*%/g, (m) => Number(m[1]));
+      all(/(\d{2,3}(?:\.\d+)?)\s*%[^.]{0,40}?(?:up\s?time|availability)/g, (m) => Number(m[1]));
       break;
     default:
       return [];

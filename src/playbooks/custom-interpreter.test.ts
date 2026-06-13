@@ -198,6 +198,133 @@ describe("runCustomPlaybook — predicates", () => {
   });
 });
 
+// --- spec-v10 Thrust C: dimension breadth (measure-first fixtures) ----------
+//
+// Each new metric is gated by a fixture proving the extractor locates the
+// value on representative clause prose BEFORE it is relied on by a position.
+// A metric run against a document that does not state it must be unevaluable,
+// never guessed (spec-v10 §3 corollary 2, §XVI).
+
+describe("runCustomPlaybook — Thrust C numeric metrics", () => {
+  /** Build a single-rule playbook asserting `metric comparator value`. */
+  function metricRule(
+    metric: string,
+    comparator: "gte" | "lte" | "gt" | "lt" | "eq",
+    value: number,
+  ): CustomPlaybook {
+    return pb({
+      custom_rules: [
+        {
+          id: "R1",
+          title: "t",
+          description: "d",
+          severity: "warning",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          assert: { kind: "numeric_threshold", metric, comparator, value } as any,
+        },
+      ],
+    });
+  }
+
+  const CASES: Array<{ metric: string; body: string; expect: number }> = [
+    { metric: "cure_period_days", body: "If a party fails to cure such breach within 30 days of written notice, the other party may terminate.", expect: 30 },
+    { metric: "cure_period_days", body: "The breaching party shall have a cure period of 15 days to remedy the default.", expect: 15 },
+    { metric: "cure_period_days", body: "Termination is permitted if the default is not remedied within 45 business days to cure the breach.", expect: 45 },
+    { metric: "auto_renewal_notice_days", body: "This Agreement will automatically renew for successive one-year terms unless either party gives at least 60 days written notice of non-renewal.", expect: 60 },
+    { metric: "auto_renewal_notice_days", body: "Notice of non-renewal must be delivered no fewer than 90 days before the end of the then-current term.", expect: 90 },
+    { metric: "indemnity_cap_amount", body: "Vendor's total indemnification liability under this section shall not exceed $500,000 in the aggregate.", expect: 500000 },
+    { metric: "indemnity_cap_amount", body: "In no event shall $250,000 be exceeded for the Provider's indemnification obligations.", expect: 250000 },
+    { metric: "uptime_sla_percent", body: "Provider guarantees monthly uptime of 99.9% measured per calendar month.", expect: 99.9 },
+    { metric: "uptime_sla_percent", body: "The Service shall maintain 99.95% availability during each billing period.", expect: 99.95 },
+  ];
+
+  for (const c of CASES) {
+    it(`extracts ${c.metric} = ${c.expect} from representative prose`, async () => {
+      // eq makes the assertion pass iff the extracted value is exactly c.expect:
+      // a clean proof the extractor located the right number (compliant = found
+      // and matched; a wrong/absent value would be a finding or unevaluable).
+      const run = await runCustomPlaybook(metricRule(c.metric, "eq", c.expect), {
+        tree: tree("Clause", c.body),
+        extracted: emptyExtracted(),
+      });
+      expect(run.unevaluable).toHaveLength(0);
+      expect(run.findings).toHaveLength(0);
+    });
+  }
+
+  it("a Thrust C metric is unevaluable when the document never states it", async () => {
+    const run = await runCustomPlaybook(metricRule("uptime_sla_percent", "gte", 99), {
+      tree: tree("X", "This agreement says nothing about service availability."),
+      extracted: emptyExtracted(),
+    });
+    expect(run.findings).toHaveLength(0);
+    expect(run.unevaluable[0]!.reason).toContain("uptime_sla_percent");
+  });
+
+  it("a Thrust C metric fires a finding when the stated value breaks the assertion", async () => {
+    const run = await runCustomPlaybook(metricRule("uptime_sla_percent", "gte", 99.99), {
+      tree: tree("SLA", "Provider guarantees uptime of 99.9% per month."),
+      extracted: emptyExtracted(),
+    });
+    expect(run.findings).toHaveLength(1);
+    expect(run.findings[0]!.explanation).toContain("99.9");
+  });
+});
+
+describe("runCustomPlaybook — clause_mutual predicate", () => {
+  it("is compliant when the clause carries mutuality language", async () => {
+    const run = await runCustomPlaybook(
+      pb({
+        custom_rules: [
+          { id: "R1", title: "Mutual indemnity", description: "d", severity: "warning", assert: { kind: "clause_mutual", clause: "indemnification" } },
+        ],
+      }),
+      { tree: tree("Indemnification", "Each party shall indemnify and hold harmless the other party from third-party claims."), extracted: emptyExtracted() },
+    );
+    expect(run.findings).toHaveLength(0);
+    expect(run.unevaluable).toHaveLength(0);
+  });
+
+  it("fires when the clause is one-way", async () => {
+    const run = await runCustomPlaybook(
+      pb({
+        custom_rules: [
+          { id: "R1", title: "Mutual indemnity", description: "d", severity: "warning", assert: { kind: "clause_mutual", clause: "indemnification" } },
+        ],
+      }),
+      { tree: tree("Indemnification", "Customer shall indemnify and defend Vendor against all claims arising from Customer's use of the Service."), extracted: emptyExtracted() },
+    );
+    expect(run.findings).toHaveLength(1);
+    expect(run.findings[0]!.explanation.toLowerCase()).toContain("one-way");
+  });
+
+  it("is unevaluable when no clause of that category is present", async () => {
+    const run = await runCustomPlaybook(
+      pb({
+        custom_rules: [
+          { id: "R1", title: "Mutual termination", description: "d", severity: "warning", assert: { kind: "clause_mutual", clause: "termination" } },
+        ],
+      }),
+      { tree: tree("Payment", "Fees are due net 30."), extracted: emptyExtracted() },
+    );
+    expect(run.findings).toHaveLength(0);
+    expect(run.unevaluable[0]!.reason).toContain("termination");
+  });
+
+  it("honors an explicit pattern override for the clause location", async () => {
+    const run = await runCustomPlaybook(
+      pb({
+        custom_rules: [
+          { id: "R1", title: "Mutual confidentiality", description: "d", severity: "warning", assert: { kind: "clause_mutual", clause: "confidentiality", pattern: "non-disclosure" } },
+        ],
+      }),
+      { tree: tree("NDA", "The non-disclosure obligations are mutual and bind both parties equally."), extracted: emptyExtracted() },
+    );
+    expect(run.findings).toHaveLength(0);
+    expect(run.unevaluable).toHaveLength(0);
+  });
+});
+
 describe("runCustomPlaybook — required_clauses + citation provenance", () => {
   it("required_clauses fires when a required category is not classified", async () => {
     const run = await runCustomPlaybook(

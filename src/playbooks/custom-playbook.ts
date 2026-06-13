@@ -53,8 +53,24 @@ export const NUMERIC_METRICS = [
   "notice_period_days",
   "term_length_days",
   "payment_term_days",
+  // spec-v10 Thrust C — temporal dimensions (Step 173).
+  "cure_period_days",
+  "auto_renewal_notice_days",
+  // spec-v10 Thrust C — financial dimensions (Step 174).
+  "indemnity_cap_amount",
+  "uptime_sla_percent",
 ] as const;
 export type NumericMetric = (typeof NUMERIC_METRICS)[number];
+
+/**
+ * Clause categories a `clause_mutual` predicate may assert on (spec-v10
+ * Thrust C, Step 175). Each maps to the deterministic mutuality classifier in
+ * the interpreter; the bounded enum keeps the DSL auditable, exactly like
+ * {@link NUMERIC_METRICS}. An unknown clause is a validation error, never a
+ * silent no-op.
+ */
+export const MUTUAL_CLAUSES = ["indemnification", "termination", "confidentiality"] as const;
+export type MutualClause = (typeof MUTUAL_CLAUSES)[number];
 
 export type NumericComparator = "gte" | "lte" | "gt" | "lt" | "eq";
 
@@ -103,13 +119,30 @@ export type CrossRefResolvesPredicate = {
   kind: "cross_ref_resolves";
 };
 
+/**
+ * Asserts a clause is **mutual** rather than one-way (spec-v10 Thrust C, Step
+ * 175). The predicate holds (compliant) when the located clause carries
+ * reciprocity language ("each party", "both parties", "mutual", …); it is
+ * violated when the clause is found but one-way, and unevaluable when no such
+ * clause is present. Deterministic: the classifier is a bounded marker scan,
+ * never a model. `clause` anchors the default location; `pattern` /
+ * `section_heading` narrow it, exactly like {@link ClausePresentPredicate}.
+ */
+export type ClauseMutualPredicate = {
+  kind: "clause_mutual";
+  clause: MutualClause;
+  pattern?: string;
+  section_heading?: string;
+};
+
 export type CustomPredicate =
   | ClausePresentPredicate
   | ClauseAbsentPredicate
   | NumericThresholdPredicate
   | DefinedTermPresentPredicate
   | GoverningLawInPredicate
-  | CrossRefResolvesPredicate;
+  | CrossRefResolvesPredicate
+  | ClauseMutualPredicate;
 
 /** Authority a custom rule cites. Absent → the report marks it `uncited (team policy)`. */
 export type CustomRuleCitation = {
@@ -254,6 +287,14 @@ const predicateSchema = z.discriminatedUnion("kind", [
   z
     .object({
       kind: z.literal("cross_ref_resolves"),
+    })
+    .strict(),
+  z
+    .object({
+      kind: z.literal("clause_mutual"),
+      clause: z.enum(MUTUAL_CLAUSES),
+      pattern: z.string().min(1).max(MAX_PLAYBOOK_STRING_LEN).optional(),
+      section_heading: z.string().min(1).optional(),
     })
     .strict(),
 ]);

@@ -9,7 +9,11 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { NUMERIC_METRICS, CUSTOM_PLAYBOOK_SCHEMA_VERSION } from "./custom-playbook.js";
+import {
+  NUMERIC_METRICS,
+  MUTUAL_CLAUSES,
+  CUSTOM_PLAYBOOK_SCHEMA_VERSION,
+} from "./custom-playbook.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SCHEMA_PATH = join(__dirname, "..", "..", "docs", "v6", "playbook.schema.json");
@@ -47,7 +51,7 @@ describe("playbook.schema.json artifact", () => {
     expect(predicate.properties.metric.enum).toEqual([...NUMERIC_METRICS]);
   });
 
-  it("covers all six predicate kinds", () => {
+  it("covers all seven predicate kinds", () => {
     const kinds = schema.$defs.predicate.oneOf
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .map((p: any) => p.properties.kind.const)
@@ -55,6 +59,7 @@ describe("playbook.schema.json artifact", () => {
     expect(kinds).toEqual(
       [
         "clause_absent",
+        "clause_mutual",
         "clause_present",
         "cross_ref_resolves",
         "defined_term_present",
@@ -62,5 +67,14 @@ describe("playbook.schema.json artifact", () => {
         "numeric_threshold",
       ].sort(),
     );
+  });
+
+  it("mirrors the bounded mutual-clause enum exactly", () => {
+    const predicate = schema.$defs.predicate.oneOf.find(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (p: any) => p.properties?.kind?.const === "clause_mutual",
+    );
+    expect(predicate).toBeDefined();
+    expect(predicate.properties.clause.enum).toEqual([...MUTUAL_CLAUSES]);
   });
 });

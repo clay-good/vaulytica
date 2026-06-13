@@ -151,7 +151,11 @@
                 "liability_cap_amount",
                 "notice_period_days",
                 "term_length_days",
-                "payment_term_days"
+                "payment_term_days",
+                "cure_period_days",
+                "auto_renewal_notice_days",
+                "indemnity_cap_amount",
+                "uptime_sla_percent"
               ]
             },
             "comparator": { "enum": ["gte", "lte", "gt", "lt", "eq"] },
@@ -186,6 +190,17 @@
           "required": ["kind"],
           "properties": {
             "kind": { "const": "cross_ref_resolves" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "clause"],
+          "properties": {
+            "kind": { "const": "clause_mutual" },
+            "clause": { "enum": ["indemnification", "termination", "confidentiality"] },
+            "pattern": { "type": "string", "minLength": 1 },
+            "section_heading": { "type": "string", "minLength": 1 }
           }
         }
       ]

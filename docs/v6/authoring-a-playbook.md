@@ -65,8 +65,11 @@ Each `custom_rule` pairs a **predicate** (the condition that must hold for a *co
 | `defined_term_present` | `term` | the term is not defined |
 | `governing_law_in` | `allowed[]` | the governing law is outside the allow-list |
 | `cross_ref_resolves` | — | an internal cross-reference dangles |
+| `clause_mutual` | `clause`, `pattern?`, `section_heading?` | the located clause is one-way rather than mutual |
 
-`numeric_threshold` metrics are a bounded set — `liability_cap_multiple`, `liability_cap_amount`, `notice_period_days`, `term_length_days`, `payment_term_days`. A metric the engine cannot locate on a given document is reported **unevaluable** (never a false pass, never a guess). `comparator` is one of `gte`, `lte`, `gt`, `lt`, `eq`.
+`numeric_threshold` metrics are a bounded set — `liability_cap_multiple`, `liability_cap_amount`, `notice_period_days`, `term_length_days`, `payment_term_days`, and (spec-v10 Thrust C) `cure_period_days`, `auto_renewal_notice_days`, `indemnity_cap_amount`, `uptime_sla_percent`. A metric the engine cannot locate on a given document is reported **unevaluable** (never a false pass, never a guess). `comparator` is one of `gte`, `lte`, `gt`, `lt`, `eq`.
+
+`clause_mutual` (spec-v10 Thrust C) asserts a clause is **mutual** rather than one-way. `clause` is one of `indemnification`, `termination`, `confidentiality` (it anchors where the clause is located); add a `pattern` or `section_heading` to override the default anchor. A located clause carrying reciprocity language ("each party", "both parties", "mutual", …) is compliant; one with none fires; a clause that is absent is unevaluable.
 
 `governing_law_in` entries may be jurisdiction **names** (`"Delaware"`) or DKB ids (`"us-de"`); both match the extracted clause.
 
