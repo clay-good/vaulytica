@@ -450,6 +450,64 @@ const STATES: Array<{ name: string; state: DropzoneState }> = [
     },
   },
   {
+    // spec-v13 Thrust B — cross-document posture movement across two rounds. Long
+    // dimension labels + the floor-transition / coherence-shift sub-lines stress
+    // wrap at 320px.
+    name: "bundle-comparison-complete",
+    state: {
+      kind: "bundle-comparison-complete",
+      base_document_count: 3,
+      revised_document_count: 4,
+      coherence_movement: {
+        floor_counts: {
+          improved: 1,
+          regressed: 1,
+          unchanged: 1,
+          "newly-stated": 1,
+          "now-unstated": 0,
+          appeared: 0,
+          disappeared: 0,
+        },
+        shift_counts: { fractured: 1, reconciled: 1, realigned: 0, unchanged: 2 },
+        movement_hash: "9f2c8b1a4e7d6c3f0a9b8e7d6c5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f",
+        fronts: [
+          {
+            dimension:
+              "Aggregate limitation of liability cap as a multiple of trailing-twelve-month fees paid",
+            base_coherence: "aligned",
+            revised_coherence: "divergent",
+            base_floor: "acceptable",
+            revised_floor: "below-acceptable",
+            floor_movement: "regressed",
+            coherence_shift: "fractured",
+          },
+          {
+            dimension: "Governing law and exclusive forum selection for all disputes arising hereunder",
+            base_coherence: "divergent",
+            revised_coherence: "aligned",
+            base_floor: "below-acceptable",
+            revised_floor: "ideal",
+            floor_movement: "improved",
+            coherence_shift: "reconciled",
+          },
+          {
+            dimension: "Mutuality of the indemnification obligations between the contracting parties",
+            base_coherence: null,
+            revised_coherence: "single",
+            base_floor: null,
+            revised_floor: "acceptable",
+            floor_movement: "newly-stated",
+            coherence_shift: "unchanged",
+          },
+        ],
+      },
+      docx_blob: new Blob(["docx"]),
+      json_blob: new Blob(["{}"]),
+      docx_filename: "vaulytica-bundle-movement.docx",
+      json_filename: "vaulytica-posture-movement.json",
+    },
+  },
+  {
     name: "error",
     state: {
       kind: "error",

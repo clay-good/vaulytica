@@ -232,3 +232,32 @@ export async function compareCoherence(
 export function coherenceRegressed(movement: CoherenceMovement): boolean {
   return movement.floor_counts.regressed > 0;
 }
+
+/**
+ * Serialize a {@link CoherenceMovement} to a stable, pretty-printed JSON string
+ * for the two-round deliverable's structured download (spec-v13 Thrust B). The
+ * key order is fixed and the front order is already pinned by `compareCoherence`,
+ * so the same movement always yields identical bytes — the `movement_hash` it
+ * carries is the canonical fingerprint, reproducible from the `fronts` here.
+ */
+export function buildCoherenceMovementJson(movement: CoherenceMovement): string {
+  return JSON.stringify(
+    {
+      schema: "vaulytica.posture-movement.v1",
+      movement_hash: movement.movement_hash,
+      floor_counts: movement.floor_counts,
+      shift_counts: movement.shift_counts,
+      fronts: movement.fronts.map((f) => ({
+        dimension: f.dimension,
+        base_coherence: f.base_coherence,
+        revised_coherence: f.revised_coherence,
+        base_floor: f.base_floor,
+        revised_floor: f.revised_floor,
+        floor_movement: f.floor_movement,
+        coherence_shift: f.coherence_shift,
+      })),
+    },
+    null,
+    2,
+  );
+}

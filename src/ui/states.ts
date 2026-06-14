@@ -408,6 +408,66 @@ export type DropzoneState =
         }>;
         counts: { aligned: number; divergent: number; single: number; unstated: number };
       };
+      /**
+       * spec-v13 Thrust B — two-round comparison affordance. Present only when
+       * this bundle produced a posture coherence (a positions-bearing custom
+       * playbook was active), so there is a binding floor to track round over
+       * round. When set, the bundle-complete state renders a "Compare a revised
+       * round…" button + a hidden multi-file input; picking the revised round's
+       * files invokes this callback. The main UI re-analyzes them against the
+       * same playbook, diffs the two coherences, and transitions to the
+       * `bundle-comparison-complete` state. Omitted (back-compat) when no
+       * coherence was computed, so the affordance never appears on a bundle the
+       * movement could not be computed for.
+       */
+      on_compare_round?: (files: File[]) => void;
+    }
+  | {
+      /**
+       * spec-v13 Thrust B — cross-document posture movement across two rounds.
+       * The diff of two v12 coherences (a baseline round and this round, scored
+       * against the same ladder): per front, how the binding floor moved and
+       * whether the package fractured or reconciled. Reached from
+       * `bundle-complete` via `on_compare_round`. Advisory — it reports where the
+       * binding floor that governs exposure moved on the team's own ladder, never
+       * that a term became legally adequate or which document legally governs.
+       */
+      kind: "bundle-comparison-complete";
+      base_document_count: number;
+      revised_document_count: number;
+      coherence_movement: {
+        floor_counts: {
+          improved: number;
+          regressed: number;
+          unchanged: number;
+          "newly-stated": number;
+          "now-unstated": number;
+          appeared: number;
+          disappeared: number;
+        };
+        shift_counts: {
+          fractured: number;
+          reconciled: number;
+          realigned: number;
+          unchanged: number;
+        };
+        movement_hash: string;
+        fronts: ReadonlyArray<{
+          dimension: string;
+          base_coherence: string | null;
+          revised_coherence: string | null;
+          base_floor: string | null;
+          revised_floor: string | null;
+          floor_movement: string;
+          coherence_shift: string;
+        }>;
+      };
+      docx_blob: Blob;
+      json_blob: Blob;
+      docx_filename: string;
+      json_filename: string;
+      /** Start over (return to the empty drop zone). */
+      on_reset?: () => void;
     }
   | {
       kind: "error";
@@ -513,6 +573,19 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     <button class="btn btn-primary" type="button" data-role="bundle-download">Download consolidated report (Word)</button>
     <button class="btn-link" type="button" data-role="bundle-json-download">Download bundle data (JSON)</button>
     <button class="btn-link" type="button" data-role="bundle-zip-download" hidden>Download everything (.zip)</button>
+    <div class="compare-row" data-role="bundle-compare-row" hidden>
+      <button class="btn-link" type="button" data-role="bundle-compare-button">Compare a revised round…</button>
+      <input type="file" accept=".pdf,.docx,.zip" multiple data-role="bundle-compare-input" hidden aria-hidden="true" tabindex="-1" />
+    </div>
+    <div class="download-status" data-role="download-status" aria-live="polite"></div>
+  `,
+  "bundle-comparison-complete": `
+    <div class="dropzone-title" data-role="bundle-comparison-title">Posture movement across the package</div>
+    <div class="dropzone-sub" data-role="bundle-comparison-rounds"></div>
+    <div class="negotiation-section" data-role="bundle-coherence-movement" hidden></div>
+    <button class="btn btn-primary" type="button" data-role="bundle-comparison-docx-download">Download two-round report (Word)</button>
+    <button class="btn-link" type="button" data-role="bundle-comparison-json-download">Download movement data (JSON)</button>
+    <button class="btn-link" type="button" data-role="bundle-comparison-reset">Analyze another bundle</button>
     <div class="download-status" data-role="download-status" aria-live="polite"></div>
   `,
   error: `
@@ -745,6 +818,55 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
         e.stopPropagation();
         void saveBlob(zipBlob, zipName, status);
       });
+    }
+    // spec-v13 Thrust B — "Compare a revised round…" affordance. Shown only when
+    // this bundle produced a coherence (a positions-bearing playbook was active),
+    // so there is a binding floor to track round over round. Mirrors the v6/v11
+    // single-document compare row, but accepts multiple files (the revised round
+    // is itself a bundle).
+    if (state.on_compare_round) {
+      const onCompareRound = state.on_compare_round;
+      const row = select<HTMLElement>(dz, "bundle-compare-row")!;
+      row.removeAttribute("hidden");
+      const btn = select<HTMLButtonElement>(dz, "bundle-compare-button")!;
+      const input = select<HTMLInputElement>(dz, "bundle-compare-input")!;
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        input.click();
+      });
+      input.addEventListener("click", (e) => e.stopPropagation());
+      input.addEventListener("change", (e) => {
+        e.stopPropagation();
+        const files = input.files ? Array.from(input.files) : [];
+        if (files.length > 0) onCompareRound(files);
+      });
+    }
+  }
+  if (state.kind === "bundle-comparison-complete") {
+    select(dz, "bundle-comparison-rounds")!.textContent =
+      `Baseline: ${state.base_document_count} document${state.base_document_count === 1 ? "" : "s"} → ` +
+      `Revised: ${state.revised_document_count} document${state.revised_document_count === 1 ? "" : "s"}`;
+    renderCoherenceMovement(dz, state.coherence_movement);
+    const status = select<HTMLElement>(dz, "download-status")!;
+    const docxBtn = select<HTMLButtonElement>(dz, "bundle-comparison-docx-download")!;
+    const jsonBtn = select<HTMLButtonElement>(dz, "bundle-comparison-json-download")!;
+    docxBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      void saveBlob(state.docx_blob, state.docx_filename, status);
+    });
+    jsonBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      void saveBlob(state.json_blob, state.json_filename, status);
+    });
+    const resetBtn = select<HTMLButtonElement>(dz, "bundle-comparison-reset")!;
+    if (state.on_reset) {
+      const onReset = state.on_reset;
+      resetBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        onReset();
+      });
+    } else {
+      resetBtn.hidden = true;
     }
   }
   if (state.kind === "error") {
@@ -1334,6 +1456,93 @@ function renderPostureCoherence(
     </div>
     <ul class="np-list">${cards}</ul>
     <div class="np-note">How your posture sits across the whole bundle, deterministically — each document was classified against the same positions; it names the weakest document but does not decide which one legally governs.</div>
+  `;
+}
+
+// spec-v13 Thrust B — binding-floor movement label + left-border color. Reuses
+// the v11 `pm-*` direction palette (one axis over): green = improved, red =
+// regressed, grey = unchanged, blue = newly stated, amber = no longer stated.
+const FLOOR_MOVEMENT_LABEL: Record<string, { label: string; cls: string }> = {
+  improved: { label: "Floor improved", cls: "pm-improved" },
+  regressed: { label: "Floor regressed — review", cls: "pm-regressed" },
+  unchanged: { label: "Floor unchanged", cls: "pm-unchanged" },
+  "newly-stated": { label: "Floor newly stated", cls: "pm-newly" },
+  "now-unstated": { label: "Floor no longer stated — verify", cls: "pm-unstated" },
+  appeared: { label: "Front added", cls: "pm-newly" },
+  disappeared: { label: "Front removed", cls: "pm-unstated" },
+};
+
+// The advisory coherence-shift companion. Its own `cm-shift-*` text color so it
+// reads apart from the floor-movement border: red = fractured, green =
+// reconciled, grey = realigned / unchanged.
+const COHERENCE_SHIFT_LABEL: Record<string, { label: string; cls: string }> = {
+  fractured: { label: "Fractured", cls: "cm-shift-fractured" },
+  reconciled: { label: "Reconciled", cls: "cm-shift-reconciled" },
+  realigned: { label: "Realigned", cls: "cm-shift-realigned" },
+  unchanged: { label: "Unchanged", cls: "cm-shift-unchanged" },
+};
+
+const COHERENCE_KIND_SHORT: Record<string, string> = {
+  aligned: "aligned",
+  divergent: "divergent",
+  single: "stated by one",
+  unstated: "unstated",
+};
+
+function coherenceKindShort(kind: string | null): string {
+  if (kind === null) return "—";
+  return COHERENCE_KIND_SHORT[kind] ?? kind;
+}
+
+/**
+ * Cross-document posture-movement view (spec-v13 Thrust B). Shows, per front,
+ * how the binding floor (the weakest stated rung, which governs exposure across
+ * a deal package) moved between the baseline round and the revised round, and
+ * whether the package fractured or reconciled. Mobile-safe (reuses the `np-*`
+ * overflow-wrap card styles, with the `pm-*` direction color on the left border
+ * and a `cm-shift-*` color on the shift line); advisory — never a legal
+ * conclusion, never a precedence ruling. Hidden when no movement was computed.
+ */
+function renderCoherenceMovement(
+  dz: HTMLElement,
+  cm: Extract<DropzoneState, { kind: "bundle-comparison-complete" }>["coherence_movement"],
+): void {
+  const el = select<HTMLElement>(dz, "bundle-coherence-movement");
+  if (!el) return;
+  if (!cm || cm.fronts.length === 0) {
+    el.hidden = true;
+    el.innerHTML = "";
+    return;
+  }
+  el.hidden = false;
+  const fc = cm.floor_counts;
+  const sc = cm.shift_counts;
+  const cards = cm.fronts
+    .map((f) => {
+      const m = FLOOR_MOVEMENT_LABEL[f.floor_movement] ?? {
+        label: f.floor_movement,
+        cls: "pm-unchanged",
+      };
+      const shift = COHERENCE_SHIFT_LABEL[f.coherence_shift] ?? {
+        label: f.coherence_shift,
+        cls: "cm-shift-unchanged",
+      };
+      const floorLine = `Binding floor: ${escapeHtml(coherenceTierShort(f.base_floor ?? "—"))} → ${escapeHtml(coherenceTierShort(f.revised_floor ?? "—"))}`;
+      const shiftLine = `Coherence: <span class="cm-shift ${shift.cls}">${escapeHtml(shift.label)}</span> (${escapeHtml(coherenceKindShort(f.base_coherence))} → ${escapeHtml(coherenceKindShort(f.revised_coherence))})`;
+      return `<li class="np-card ${m.cls}">
+        <div class="np-head"><span class="np-dim">${escapeHtml(f.dimension)}</span> <span class="np-tier">${escapeHtml(m.label)}</span></div>
+        <div class="np-detail">${floorLine}</div>
+        <div class="np-detail">${shiftLine}</div>
+      </li>`;
+    })
+    .join("");
+  el.innerHTML = `
+    <div class="np-heading">
+      <span class="np-badge">Posture movement</span>
+      <span class="np-summary">${fc.improved} floor improved · ${fc.regressed} regressed · ${fc.unchanged} unchanged · ${fc["newly-stated"]} newly stated · ${fc["now-unstated"]} no longer stated · ${sc.fractured} fractured · ${sc.reconciled} reconciled</span>
+    </div>
+    <ul class="np-list">${cards}</ul>
+    <div class="np-note">How the binding floor that governs your exposure moved across the whole package, deterministically — both rounds were scored against the same positions; it reports where the floor moved on your own ladder and whether the package fractured or reconciled, not a legal conclusion about either round.</div>
   `;
 }
 

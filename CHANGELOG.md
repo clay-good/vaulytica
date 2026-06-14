@@ -4,6 +4,50 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.10.0] — 2026-06-13 — Cross-document posture movement in the browser + DOCX (spec-v13 Thrusts B & C)
+
+### Added
+- **Browser two-round bundle comparison (spec-v13 Thrust B, Step 190).** The
+  bundle-complete view grows a "Compare a revised round…" affordance — offered
+  only when the round produced a posture coherence (a positions-bearing custom
+  playbook was active), exactly as v11's compare row is offered only on a single
+  document. Picking the revised round's files re-analyzes them against the
+  **same** active playbook, computes its v12 coherence, diffs it against the
+  baseline round's via `compareCoherence`, and transitions to a new
+  `bundle-comparison-complete` state. The state renders a mobile-safe per-front
+  card: the left border reuses the v11 `pm-*` direction palette for the
+  binding-floor movement (`Floor improved` / `Floor regressed` / …), and a
+  `cm-shift-*` text color names the coherence shift (`Fractured` / `Reconciled` /
+  `Realigned`). A floor transition line (`acceptable → below floor`) and the
+  coherence-kind transition ride alongside. Advisory throughout — it reports
+  where the binding floor that governs exposure moved on the team's own ladder,
+  never a legal conclusion or which document legally governs.
+- **Two-round deliverable DOCX + JSON (spec-v13 Thrust C, Step 191).** The
+  comparison state offers a "Download two-round report (Word)" — the revised
+  round's consolidated bundle DOCX with a trailing "Posture Movement (Across the
+  Package)" section ([`src/report/bundle.ts`](src/report/bundle.ts)
+  `renderPostureMovementSection`): one row per front (Front · Floor movement ·
+  Binding floor base→revised · Coherence shift), color-coded by the binding-floor
+  movement and carrying the `movement_hash` for verification. A structured
+  movement JSON (`buildCoherenceMovementJson`) rides alongside as a second
+  download. Both the DOCX section and the JSON are **additive** — threaded only
+  when the two-round flow supplies a movement, so every existing per-document
+  `result_hash`, `coherence_hash`, and bundle golden is byte-unchanged.
+
+### Quality
+- The new `bundle-comparison-complete` view-state is registered in the
+  full-`DropzoneState` responsiveness + axe e2e (`responsiveness-states.spec.ts`):
+  vertical-scroll-only at 320 / 390 / 768 / 1280 px and zero WCAG 2 AA violations
+  in both the dark and light themes. The `cm-shift-*` foreground colors are
+  theme-aware (the reconciled green darkens on the light surface) so they clear
+  the 4.5:1 contrast floor on each theme.
+
+### Notes
+- spec-v13 is now complete end-to-end (Thrust A 9.9.0; Thrusts B & C 9.10.0).
+  The fourth corner of the posture matrix — across documents, across versions —
+  now has a headless surface, a CI gate, a browser card, and a Word deliverable,
+  matching how v10–v12 each landed.
+
 ## [9.9.0] — 2026-06-13 — Cross-document posture movement (spec-v13 Thrust A)
 
 ### Added

@@ -815,6 +815,119 @@ describe("renderState", () => {
     document.body.removeChild(dz);
   });
 
+  it("bundle-complete hides the compare-round row unless on_compare_round is supplied (spec-v13 Thrust B)", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 2,
+      counts: { critical: 0, warning: 0, info: 0 },
+      cross_doc_findings: 0,
+      bundle_docx_blob: new Blob(["docx"], { type: "application/octet-stream" }),
+      bundle_json_blob: new Blob(["{}"], { type: "application/json" }),
+      bundle_docx_filename: "vaulytica-bundle.docx",
+      bundle_json_filename: "vaulytica-bundle.json",
+    });
+    expect(select(dz, "bundle-compare-row")!.hasAttribute("hidden")).toBe(true);
+    document.body.removeChild(dz);
+  });
+
+  it("bundle-complete renders the compare-round affordance and invokes on_compare_round with the chosen files (spec-v13 Thrust B)", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    const onCompareRound = vi.fn();
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 2,
+      counts: { critical: 0, warning: 0, info: 0 },
+      cross_doc_findings: 0,
+      bundle_docx_blob: new Blob(["docx"], { type: "application/octet-stream" }),
+      bundle_json_blob: new Blob(["{}"], { type: "application/json" }),
+      bundle_docx_filename: "vaulytica-bundle.docx",
+      bundle_json_filename: "vaulytica-bundle.json",
+      on_compare_round: onCompareRound,
+    });
+    expect(select(dz, "bundle-compare-row")!.hasAttribute("hidden")).toBe(false);
+    const input = select<HTMLInputElement>(dz, "bundle-compare-input")!;
+    const a = new File(["%PDF-1.7"], "msa-v2.pdf", { type: "application/pdf" });
+    const b = new File(["%PDF-1.7"], "order-v2.pdf", { type: "application/pdf" });
+    Object.defineProperty(input, "files", { value: [a, b], configurable: true });
+    input.dispatchEvent(new Event("change"));
+    expect(onCompareRound).toHaveBeenCalledTimes(1);
+    expect(onCompareRound.mock.calls[0]![0].map((f: File) => f.name)).toEqual([
+      "msa-v2.pdf",
+      "order-v2.pdf",
+    ]);
+    document.body.removeChild(dz);
+  });
+
+  it("renders the bundle-comparison-complete state with the movement card + downloads (spec-v13 Thrust B)", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    const onReset = vi.fn();
+    renderState(dz, {
+      kind: "bundle-comparison-complete",
+      base_document_count: 2,
+      revised_document_count: 3,
+      coherence_movement: {
+        floor_counts: {
+          improved: 0,
+          regressed: 1,
+          unchanged: 1,
+          "newly-stated": 0,
+          "now-unstated": 0,
+          appeared: 0,
+          disappeared: 0,
+        },
+        shift_counts: { fractured: 0, reconciled: 1, realigned: 0, unchanged: 1 },
+        movement_hash: "abc123",
+        fronts: [
+          {
+            dimension: "Governing law",
+            base_coherence: "divergent",
+            revised_coherence: "aligned",
+            base_floor: "below-acceptable",
+            revised_floor: "ideal",
+            floor_movement: "improved",
+            coherence_shift: "reconciled",
+          },
+          {
+            dimension: "Liability cap",
+            base_coherence: "divergent",
+            revised_coherence: "divergent",
+            base_floor: "acceptable",
+            revised_floor: "below-acceptable",
+            floor_movement: "regressed",
+            coherence_shift: "unchanged",
+          },
+        ],
+      },
+      docx_blob: new Blob(["docx"], { type: "application/octet-stream" }),
+      json_blob: new Blob(["{}"], { type: "application/json" }),
+      docx_filename: "vaulytica-bundle-movement.docx",
+      json_filename: "vaulytica-posture-movement.json",
+      on_reset: onReset,
+    });
+    expect(dz.getAttribute("data-state")).toBe("bundle-comparison-complete");
+    expect(select(dz, "bundle-comparison-rounds")!.textContent).toMatch(
+      /Baseline: 2 documents → Revised: 3 documents/,
+    );
+    const card = select(dz, "bundle-coherence-movement")!;
+    expect(card.hidden).toBe(false);
+    expect(card.textContent).toMatch(/Posture movement/);
+    expect(card.textContent).toMatch(/Liability cap/);
+    expect(card.textContent).toMatch(/Floor regressed/);
+    expect(card.textContent).toMatch(/Reconciled/);
+    // The floor transition renders human-readable rung labels.
+    expect(card.textContent).toMatch(/acceptable → below floor/);
+    // Advisory disclaimer present, never a legal conclusion.
+    expect(card.textContent).toMatch(/not a legal conclusion/);
+    // Reset wires back to the empty drop zone.
+    select<HTMLButtonElement>(dz, "bundle-comparison-reset")!.click();
+    expect(onReset).toHaveBeenCalledTimes(1);
+    document.body.removeChild(dz);
+  });
+
   it("bundle-complete reveals the 'everything' (.zip) link when the archive blob is present (spec-v8 §25)", () => {
     const dz = document.createElement("div");
     document.body.appendChild(dz);

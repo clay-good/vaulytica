@@ -80,6 +80,17 @@ import {
   type PostureCoherence,
   type CoherenceInput,
 } from "../report/posture-coherence.js";
+import type { CoherenceMovement } from "../report/coherence-movement.js";
+// spec-v13 Thrust B — re-exported so the two-round comparison flow in `main.ts`
+// can diff two coherences and serialize the movement without importing the
+// report layer directly (it already dynamic-imports `./pipeline.js`).
+export {
+  compareCoherence,
+  buildCoherenceMovementJson,
+  type CoherenceMovement,
+  type CoherenceFrontMovement,
+  type CoherenceShift,
+} from "../report/coherence-movement.js";
 import {
   detectV3Family,
   defaultFramesForPlaybook,
@@ -297,6 +308,16 @@ export type PipelineOptions = {
    * appendix renders as "0 cross-document findings".
    */
   cross_doc_consistency?: boolean;
+  /**
+   * Cross-document posture **movement** between two rounds (spec-v13 Thrust B/C).
+   * When set, `runBundleReport` threads it into the bundle DOCX/JSON so the
+   * consolidated report carries a trailing "Posture Movement (Across the
+   * Package)" section. Supplied only by the two-round comparison flow after it
+   * has diffed this round's coherence against a baseline round's via
+   * `compareCoherence`; omitted on a plain bundle run so every bundle golden is
+   * byte-unchanged.
+   */
+  posture_movement?: CoherenceMovement;
 };
 
 const DEFAULT_DKB_BASE = "/dkb";
@@ -1142,6 +1163,7 @@ export async function runBundleReport(
     rejected?: ReadonlyArray<{ filename: string; reason: string }>;
     consistency_enabled?: boolean;
     posture_coherence?: PostureCoherence;
+    posture_movement?: CoherenceMovement;
   } = {
     documents: prepared.documents.map((d) => ({
       doc_id: `doc-${d.filename}`,
@@ -1166,6 +1188,11 @@ export async function runBundleReport(
     rejected: prepared.rejected.length > 0 ? prepared.rejected : undefined,
     consistency_enabled: consistencyEnabled,
     posture_coherence,
+    // spec-v13 Thrust C — when the two-round comparison flow supplies a movement
+    // (this round diffed against a baseline round), the consolidated DOCX/JSON
+    // carries the trailing "Posture Movement (Across the Package)" section.
+    // Absent on a plain bundle run, so every bundle golden is byte-unchanged.
+    posture_movement: options.posture_movement,
   };
   const bundle_docx_blob = await buildBundleDocxReport(bundleInput);
   const bundle_json_blob = await buildBundleJsonBlob(bundleInput);

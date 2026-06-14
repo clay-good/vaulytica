@@ -6,6 +6,7 @@ import {
 import {
   compareCoherence,
   coherenceRegressed,
+  buildCoherenceMovementJson,
   type CoherenceFrontMovement,
 } from "./coherence-movement.js";
 import type { NegotiationPosture, NegotiationTier } from "../playbooks/custom-interpreter.js";
@@ -188,5 +189,34 @@ describe("coherenceRegressed — the CI gate predicate", () => {
     // a front that fell off the ladder is `now-unstated`, never a rung regression.
     expect(dropped.fronts[0]!.floor_movement).toBe("now-unstated");
     expect(coherenceRegressed(dropped)).toBe(false);
+  });
+});
+
+describe("buildCoherenceMovementJson — the two-round deliverable's structured download (spec-v13 Thrust B)", () => {
+  it("serializes the movement with the hash, counts, and per-front rows", async () => {
+    const m = await compareCoherence(
+      await coherenceOfCap("ideal", "acceptable"),
+      await coherenceOfCap("ideal", "below-acceptable"),
+    );
+    const parsed = JSON.parse(buildCoherenceMovementJson(m));
+    expect(parsed.schema).toBe("vaulytica.posture-movement.v1");
+    expect(parsed.movement_hash).toBe(m.movement_hash);
+    expect(parsed.floor_counts.regressed).toBe(1);
+    expect(parsed.fronts).toHaveLength(1);
+    expect(parsed.fronts[0].dimension).toBe("Cap");
+    expect(parsed.fronts[0].floor_movement).toBe("regressed");
+    expect(parsed.fronts[0].base_floor).toBe("acceptable");
+    expect(parsed.fronts[0].revised_floor).toBe("below-acceptable");
+  });
+
+  it("is deterministic: same movement → identical bytes", async () => {
+    const build = async (): Promise<string> =>
+      buildCoherenceMovementJson(
+        await compareCoherence(
+          await coherenceOfCap("ideal", "acceptable"),
+          await coherenceOfCap("acceptable", "acceptable"),
+        ),
+      );
+    expect(await build()).toBe(await build());
   });
 });

@@ -1182,6 +1182,30 @@
       .np-card.pc-unstated {
         border-left-color: color-mix(in srgb, var(--muted) 55%, transparent);
       }
+      /* Cross-document posture-movement card (spec-v13). The left border reuses
+         the .pm-* direction palette (binding-floor movement); the coherence-shift
+         line gets its own inline color so it reads apart from the border: red
+         fractured, green reconciled, grey realigned/unchanged. */
+      .cm-shift {
+        font-weight: 600;
+      }
+      /* Theme-aware, WCAG-AA text colors. These are foreground text, not the
+         border-only pm-/pc- swatches, so they must clear 4.5:1 on each theme's
+         surface. --critical is already themed and AA; the reconciled green is
+         light-on-dark by default and darkened for the light surface. */
+      .cm-shift-fractured {
+        color: var(--critical, #b00020);
+      }
+      .cm-shift-reconciled {
+        color: #2ecc8f;
+      }
+      [data-theme="light"] .cm-shift-reconciled {
+        color: #0a6b3d;
+      }
+      .cm-shift-realigned,
+      .cm-shift-unchanged {
+        color: var(--muted);
+      }
       /* Closing-checklist view (spec-v9 Thrust B). The consolidated
          execution-readiness items, grouped and mobile-safe. */
       .closing-checklist-section {

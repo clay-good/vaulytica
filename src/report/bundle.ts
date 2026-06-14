@@ -54,6 +54,12 @@ import { buildJsonReport } from "./json.js";
 import { buildFixListMarkdown, buildFixListCsv, buildDeadlinesIcs } from "./exports.js";
 import type { ExtractedData } from "../extract/types.js";
 import type { PostureCoherence, PostureCoherenceKind } from "./posture-coherence.js";
+import type {
+  CoherenceMovement,
+  CoherenceShift,
+  CoherenceFrontMovement,
+} from "./coherence-movement.js";
+import type { PostureMovementKind } from "./posture-movement.js";
 import type { NegotiationTier } from "../playbooks/custom-interpreter.js";
 import type { IngestResult } from "../ingest/types.js";
 import {
@@ -194,6 +200,21 @@ export type BundleReportInput = {
    * governs (spec-v12 §3 corollary 3).
    */
   posture_coherence?: PostureCoherence;
+  /**
+   * Cross-document posture **movement** between two rounds (spec-v13 Thrust C).
+   * Present only when the bundle was analyzed with a `--baseline` round (a
+   * two-round deliverable), so this report carries the diff of two v12
+   * coherences computed against the **same** ladder. When set, the bundle DOCX
+   * renders a trailing "Posture Movement (Across the Package)" section: one row
+   * per front (Front · Floor movement · Floor base→revised · Coherence shift),
+   * color-coded by the binding-floor movement. Omitted (back-compat) when no
+   * baseline was supplied — every existing bundle golden is byte-unchanged.
+   * Advisory: it reports where the bundle's binding floor moved on the team's
+   * own ladder and whether the package fractured or reconciled, never that a
+   * term became legally adequate or that the weakest document legally governs
+   * (spec-v13 §3 corollary 3).
+   */
+  posture_movement?: CoherenceMovement;
 };
 
 /**
@@ -442,6 +463,7 @@ export async function buildBundleDocxReport(input: BundleReportInput): Promise<B
     ...renderCrossDocAppendix(input.consistency),
     ...renderSkippedFilesAppendix(input.rejected),
     ...renderPostureCoherenceSection(input.posture_coherence),
+    ...renderPostureMovementSection(input.posture_movement),
     ...renderBibliography(bibliography),
     ...renderAuditTrail(input),
     ...renderDisclaimer(),
@@ -937,6 +959,160 @@ function coherenceCell(kind: PostureCoherenceKind): TableCell {
             text: COHERENCE_LABEL[kind],
             bold: true,
             color: COHERENCE_TEXT[kind],
+            font: DEFAULT_FONT,
+            size: BODY_SIZE,
+          }),
+        ],
+      }),
+    ],
+  });
+}
+
+// Binding-floor-movement shading (spec-v13 Thrust C). The fill encodes which way
+// the bundle's weakest stated rung moved between rounds: green = improved, red =
+// regressed, grey = unchanged, blue = newly stated, amber = no longer stated.
+// Mirrors the v11 compare-docx movement palette (one axis over) so a reader of
+// either report reads the same colors for the same direction.
+const MOVEMENT_FILL: Record<PostureMovementKind, string> = {
+  improved: "E6F4EA",
+  regressed: "FBE9E7",
+  unchanged: "EFEFEF",
+  "newly-stated": "E8EEF9",
+  "now-unstated": "FBF1E0",
+  appeared: "E8EEF9",
+  disappeared: "FBF1E0",
+};
+const MOVEMENT_TEXT: Record<PostureMovementKind, string> = {
+  improved: "1A8F5A",
+  regressed: "B00020",
+  unchanged: "555555",
+  "newly-stated": "2D6CDF",
+  "now-unstated": "A86700",
+  appeared: "2D6CDF",
+  disappeared: "A86700",
+};
+const MOVEMENT_LABEL: Record<PostureMovementKind, string> = {
+  improved: "Improved",
+  regressed: "Regressed",
+  unchanged: "Unchanged",
+  "newly-stated": "Newly stated",
+  "now-unstated": "No longer stated",
+  appeared: "Added front",
+  disappeared: "Removed front",
+};
+
+// Coherence-shift shading (spec-v13 Thrust C, the advisory companion). Green =
+// reconciled (a divergent front closed), red = fractured (a held front split),
+// grey = realigned / unchanged (the stating set changed without crossing the
+// divergence line, or no change).
+const SHIFT_TEXT: Record<CoherenceShift, string> = {
+  reconciled: "1A8F5A",
+  fractured: "B00020",
+  realigned: "555555",
+  unchanged: "555555",
+};
+const SHIFT_LABEL: Record<CoherenceShift, string> = {
+  reconciled: "Reconciled",
+  fractured: "Fractured",
+  realigned: "Realigned",
+  unchanged: "Unchanged",
+};
+
+/** "ideal → acceptable" style floor transition; "—" for an unstated side. */
+function floorTransition(front: CoherenceFrontMovement): string {
+  const fmt = (t: NegotiationTier | null): string => (t === null ? "—" : TIER_SHORT_LABEL[t]);
+  return `${fmt(front.base_floor)} → ${fmt(front.revised_floor)}`;
+}
+
+/**
+ * Posture Movement section (spec-v13 Thrust C). A trailing, optional section in
+ * a two-round deliverable: one row per negotiation front — Front · Floor
+ * movement · Floor (base → revised) · Coherence shift — color-coded by the
+ * binding-floor movement. Omitted entirely when no movement was supplied (no
+ * baseline round), so every existing bundle golden is byte-unchanged. Advisory:
+ * it reports where the bundle's binding floor moved on the team's own ladder and
+ * whether the package fractured or reconciled, never that a term became legally
+ * adequate or that the weakest document legally governs (spec-v13 §3 corollary 3).
+ */
+function renderPostureMovementSection(
+  movement: CoherenceMovement | undefined,
+): (Paragraph | Table)[] {
+  if (!movement || movement.fronts.length === 0) return [];
+  const fc = movement.floor_counts;
+  const sc = movement.shift_counts;
+  const out: (Paragraph | Table)[] = [h1("Posture Movement (Across the Package)")];
+  out.push(
+    para({
+      text: "How the team's negotiation posture moved across the whole bundle between the baseline round and this round. Each round was scored against the same positions; this section reports, per front, how the binding floor (the weakest stated rung, which governs exposure across a deal package) moved — and whether the package fractured (a front it agreed on now diverges) or reconciled (a divergent front no longer diverges).",
+    }),
+  );
+  out.push(
+    para({
+      text: `Binding floor: ${fc.improved} improved · ${fc.regressed} regressed · ${fc.unchanged} unchanged · ${fc["newly-stated"]} newly stated · ${fc["now-unstated"]} no longer stated. Coherence: ${sc.fractured} fractured · ${sc.reconciled} reconciled · ${sc.realigned} realigned.`,
+      bold: true,
+    }),
+  );
+  out.push(coverField("Movement hash", movement.movement_hash));
+  out.push(spacer());
+
+  const header = headerRow(["Front", "Floor movement", "Binding floor (base → revised)", "Coherence shift"]);
+  const rows = movement.fronts.map(
+    (f) =>
+      new TableRow({
+        children: [
+          styledCell(f.dimension, { bold: true }),
+          movementCell(f.floor_movement),
+          styledCell(floorTransition(f)),
+          shiftCell(f.coherence_shift),
+        ],
+      }),
+  );
+  out.push(new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [header, ...rows] }));
+  out.push(spacer());
+  out.push(
+    para({
+      text: "Computed deterministically by diffing the two rounds' coherences against your team's same positions — it reports where the binding floor that governs your exposure moved on your own ladder; it is not a legal conclusion and does not assert a term became adequate, enforceable, or that the weakest document legally governs.",
+      italics: true,
+    }),
+  );
+  out.push(pageBreak());
+  return out;
+}
+
+function movementCell(kind: PostureMovementKind): TableCell {
+  return new TableCell({
+    shading: { type: ShadingType.CLEAR, fill: MOVEMENT_FILL[kind], color: "auto" },
+    children: [
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: MOVEMENT_LABEL[kind],
+            bold: true,
+            color: MOVEMENT_TEXT[kind],
+            font: DEFAULT_FONT,
+            size: BODY_SIZE,
+          }),
+        ],
+      }),
+    ],
+  });
+}
+
+function shiftCell(kind: CoherenceShift): TableCell {
+  return new TableCell({
+    borders: {
+      top: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC" },
+      bottom: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC" },
+      left: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC" },
+      right: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC" },
+    },
+    children: [
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: SHIFT_LABEL[kind],
+            bold: kind === "fractured" || kind === "reconciled",
+            color: SHIFT_TEXT[kind],
             font: DEFAULT_FONT,
             size: BODY_SIZE,
           }),

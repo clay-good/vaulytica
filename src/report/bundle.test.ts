@@ -24,6 +24,7 @@ import type { BundleDocument, BundleReportInput } from "./bundle.js";
 import type { EngineRun, Finding } from "../engine/finding.js";
 import type { ConsistencyRun, ConsistencyFinding } from "../engine/consistency/types.js";
 import { bundlePostureCoherence } from "./posture-coherence.js";
+import { compareCoherence, type CoherenceMovement } from "./coherence-movement.js";
 import type { NegotiationPosture, NegotiationTier } from "../playbooks/custom-interpreter.js";
 
 function finding(id: string, severity: Finding["severity"], rule_id = "STRUCT-001"): Finding {
@@ -295,6 +296,73 @@ describe("buildBundleDocxReport — Posture Coherence section (spec-v12 Thrust C
       { document: "b.docx", posture: posture({ Cap: "acceptable" }) },
     ]);
     const input: BundleReportInput = { ...makeInput(), posture_coherence: coherence };
+    const render = async (): Promise<string> => {
+      const blob = await buildBundleDocxReport(input);
+      const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+      return strFromU8(entries["word/document.xml"]!);
+    };
+    expect(await render()).toBe(await render());
+  });
+});
+
+describe("buildBundleDocxReport — Posture Movement section (spec-v13 Thrust C)", () => {
+  function posture(map: Record<string, NegotiationTier>): NegotiationPosture {
+    return {
+      positions: Object.entries(map).map(([dimension, tier]) => ({ dimension, tier })),
+      counts: { ideal: 0, acceptable: 0, below_acceptable: 0, unevaluable: 0 },
+      posture_hash: "test",
+    };
+  }
+
+  async function movement(
+    base: Record<string, NegotiationTier>[],
+    revised: Record<string, NegotiationTier>[],
+  ): Promise<CoherenceMovement> {
+    const baseCoherence = await bundlePostureCoherence(
+      base.map((m, i) => ({ document: `b${i}.docx`, posture: posture(m) })),
+    );
+    const revisedCoherence = await bundlePostureCoherence(
+      revised.map((m, i) => ({ document: `r${i}.docx`, posture: posture(m) })),
+    );
+    return compareCoherence(baseCoherence, revisedCoherence);
+  }
+
+  it("renders the Posture Movement section with the floor movement, transition, and shift", async () => {
+    // Cap floor regresses (acceptable → below floor); GovLaw reconciles
+    // (divergent → aligned at ideal).
+    const m = await movement(
+      [
+        { Cap: "ideal", GovLaw: "ideal" },
+        { Cap: "acceptable", GovLaw: "below-acceptable" },
+      ],
+      [
+        { Cap: "ideal", GovLaw: "ideal" },
+        { Cap: "below-acceptable", GovLaw: "ideal" },
+      ],
+    );
+    const input: BundleReportInput = { ...makeInput(), posture_movement: m };
+    const blob = await buildBundleDocxReport(input);
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const docXml = strFromU8(entries["word/document.xml"]!);
+    expect(docXml).toContain("Posture Movement (Across the Package)");
+    expect(docXml).toContain("Regressed");
+    expect(docXml).toContain("Reconciled");
+    // The floor transition reads "acceptable → below floor" on the Cap front.
+    expect(docXml).toContain("below floor");
+    // The movement hash is recorded for verification.
+    expect(docXml).toContain(m.movement_hash);
+  });
+
+  it("omits the Posture Movement section when no movement is supplied (golden byte-stable)", async () => {
+    const blob = await buildBundleDocxReport(makeInput());
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const docXml = strFromU8(entries["word/document.xml"]!);
+    expect(docXml).not.toContain("Posture Movement");
+  });
+
+  it("is deterministic: same movement → identical rendered document body", async () => {
+    const m = await movement([{ Cap: "ideal" }, { Cap: "acceptable" }], [{ Cap: "acceptable" }, { Cap: "acceptable" }]);
+    const input: BundleReportInput = { ...makeInput(), posture_movement: m };
     const render = async (): Promise<string> => {
       const blob = await buildBundleDocxReport(input);
       const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));

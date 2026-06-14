@@ -677,7 +677,115 @@ async function renderBundleComplete(
       on_consistency_toggle: (active) => {
         void rerunBundleReport(dz, prepared, active);
       },
+      // spec-v13 Thrust B — "Compare a revised round…" affordance. Offered only
+      // when this round produced a posture coherence (a positions-bearing custom
+      // playbook was active), so there is a binding floor to track across rounds.
+      // Picking the revised round's files re-analyzes them against the *same*
+      // playbook, diffs the two coherences, and transitions to the
+      // bundle-comparison-complete state.
+      on_compare_round: result.posture_coherence
+        ? (files) => {
+            void runBundleComparison(
+              dz,
+              result.posture_coherence!,
+              result.documents.length,
+              files,
+            );
+          }
+        : undefined,
     });
+}
+
+/**
+ * spec-v13 Thrust B — cross-document posture movement across two rounds. Runs the
+ * full bundle pipeline on the revised round's files against the *same* active
+ * playbook as the baseline round, computes its v12 coherence, diffs it against
+ * the baseline coherence via `compareCoherence`, and renders the
+ * bundle-comparison-complete state. The two-round deliverable DOCX is the revised
+ * round's consolidated report with a trailing "Posture Movement (Across the
+ * Package)" section (Thrust C). A revised round that yields no coherence (fewer
+ * than two documents classified against the playbook's positions) is a hard
+ * error, not a silent no-op — mirroring the headless `--baseline` contract.
+ */
+async function runBundleComparison(
+  dz: HTMLElement,
+  baseCoherence: import("../report/posture-coherence.js").PostureCoherence,
+  baseDocumentCount: number,
+  files: File[],
+): Promise<void> {
+  try {
+    const summary =
+      files.length === 1 && files[0]!.name.toLowerCase().endsWith(".zip")
+        ? files[0]!.name
+        : `${files.length} files`;
+    setState(dz, { kind: "analyzing", filename: summary });
+    const { runBundlePipeline, runBundleReport, compareCoherence, buildCoherenceMovementJson } =
+      await import("./pipeline.js");
+    const progress = createProgressBar(select(dz, "progress")!);
+    const ticker = createRuleTicker(select(dz, "ticker")!);
+    progress.reset();
+
+    const revised = await runBundlePipeline(
+      files,
+      {
+        onProgress: (fraction) => progress.set(fraction),
+        onDocumentReady: (filename) => ticker.push("DOC", filename),
+      },
+      {},
+      { custom_playbook: activeCustomPlaybook ?? undefined },
+    );
+
+    if (!revised.posture_coherence) {
+      setState(dz, {
+        kind: "error",
+        message:
+          "The revised round produced no posture coherence. It needs at least two documents, each classified against your active playbook's positions — load the same positions-bearing playbook you used for the baseline round, and a revised round of two or more documents.",
+      });
+      return;
+    }
+
+    // The movement is the diff of the two coherences (baseline → revised),
+    // matched by negotiation front (dimension). Both were scored against the
+    // same active playbook, so the comparison is on one ladder.
+    const movement = await compareCoherence(baseCoherence, revised.posture_coherence);
+
+    // The two-round deliverable: rebuild the revised round's consolidated DOCX
+    // with the movement section appended (Thrust C). Reuses the prepared bundle,
+    // so no document is re-ingested.
+    const deliverable = await runBundleReport(revised.prepared, {
+      custom_playbook: activeCustomPlaybook ?? undefined,
+      posture_movement: movement,
+    });
+
+    const movementJson = buildCoherenceMovementJson(movement);
+    setState(dz, {
+      kind: "bundle-comparison-complete",
+      base_document_count: baseDocumentCount,
+      revised_document_count: revised.documents.length,
+      coherence_movement: {
+        floor_counts: movement.floor_counts,
+        shift_counts: movement.shift_counts,
+        movement_hash: movement.movement_hash,
+        fronts: movement.fronts.map((f) => ({
+          dimension: f.dimension,
+          base_coherence: f.base_coherence,
+          revised_coherence: f.revised_coherence,
+          base_floor: f.base_floor,
+          revised_floor: f.revised_floor,
+          floor_movement: f.floor_movement,
+          coherence_shift: f.coherence_shift,
+        })),
+      },
+      docx_blob: deliverable.bundle_docx_blob,
+      json_blob: new Blob([movementJson], { type: "application/json" }),
+      docx_filename: "vaulytica-bundle-movement.docx",
+      json_filename: "vaulytica-posture-movement.json",
+      on_reset: () => setState(dz, { kind: "empty" }),
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    setState(dz, { kind: "error", message });
+  }
 }
 
 // Auto-boot on DOMContentLoaded when imported from index.html.
