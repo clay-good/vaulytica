@@ -1,0 +1,177 @@
+[
+  {
+    "id": "dp-unilateral-modification-v1",
+    "version": "1.0.0",
+    "pattern_description": "A clause that allows one party (typically the vendor) to modify the terms of the agreement at any time upon notice, without giving the other party a corresponding right to terminate.",
+    "detection": {
+      "regex": [
+        "(?:Provider|Vendor|Company)\\s+may\\s+modify\\s+(?:these|this|the)\\s+(?:terms|Agreement|Terms)\\s+(?:at\\s+any\\s+time|from\\s+time\\s+to\\s+time)",
+        "(?:reserves\\s+the\\s+right\\s+to\\s+(?:modify|amend|change))\\s+(?:these|this|the)\\s+(?:terms|Agreement|Terms)"
+      ]
+    },
+    "plain_language_explanation": "The vendor can change the deal whenever they want without your consent. You should at minimum have a right to terminate if the changes are material.",
+    "harm_pattern": "Shifts unilateral re-pricing and re-negotiation power to the drafter.",
+    "authorities": [
+      {
+        "id": "ftc-deceptive-acts-policy-statement",
+        "source": "FTC Policy Statement on Deception (Oct. 14, 1983)",
+        "source_url": "https://www.ftc.gov/legal-library/browse/ftc-policy-statement-deception",
+        "retrieved_at": "2026-05-11T00:00:00Z",
+        "license": "Public domain (US government work)",
+        "license_url": "https://www.usa.gov/government-works"
+      }
+    ]
+  },
+  {
+    "id": "dp-auto-renewal-buried-notice-v1",
+    "version": "1.0.0",
+    "pattern_description": "An auto-renewal clause where the notice window required to prevent renewal is buried in a different section or expressed in unusual terms (60+ or fewer than 30 days).",
+    "detection": {
+      "regex": [
+        "(?:renew|renewal)s?\\s+automatically.*?(?:ninety|sixty|45|60|90)\\s+days?"
+      ],
+      "structural_check": "auto-renewal clause + non-renewal notice window > 90 days OR < 30 days OR located outside the term section"
+    },
+    "plain_language_explanation": "The contract renews automatically unless you give notice within an unusually long or short window. The longer the window, the more likely you forget; the shorter, the more likely you miss it.",
+    "harm_pattern": "Unintended renewal commits the customer to another term without negotiation.",
+    "authorities": [
+      {
+        "id": "ftc-negative-option-rule",
+        "source": "FTC Negative Option Rule, 16 C.F.R. Part 425",
+        "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-D/part-425",
+        "retrieved_at": "2026-05-11T00:00:00Z",
+        "license": "Public domain (US government work)",
+        "license_url": "https://www.usa.gov/government-works"
+      }
+    ]
+  },
+  {
+    "id": "dp-asymmetric-fee-shifting-v1",
+    "version": "1.0.0",
+    "pattern_description": "A fee-shifting clause that runs in only one direction (typically: the customer pays the vendor's attorneys' fees if the vendor prevails, but the vendor is not similarly obligated).",
+    "detection": {
+      "regex": [
+        "Customer\\s+shall\\s+(?:pay|reimburse)\\s+(?:Provider|Vendor|Company)['’]s\\s+(?:reasonable\\s+)?attorneys?[’']?\\s+fees"
+      ]
+    },
+    "plain_language_explanation": "Only one side pays the other's lawyers if there is a fight. That is a one-sided risk allocation; a balanced clause runs both ways or specifies a 'prevailing party' standard.",
+    "harm_pattern": "Discourages legitimate disputes by stacking the litigation cost asymmetrically.",
+    "authorities": [
+      {
+        "id": "aba-model-rule-1-5",
+        "source": "ABA Model Rule of Professional Conduct 1.5 — Fees",
+        "source_url": "https://www.americanbar.org/groups/professional_responsibility/publications/model_rules_of_professional_conduct/rule_1_5_fees/",
+        "retrieved_at": "2026-05-11T00:00:00Z",
+        "license": "ABA — Used for citation; see source page",
+        "license_url": "https://www.americanbar.org/"
+      }
+    ]
+  },
+  {
+    "id": "dp-mandatory-arbitration-class-waiver-consumer-v1",
+    "version": "1.0.0",
+    "pattern_description": "A clause that mandates arbitration of all disputes and waives the consumer's right to bring or participate in class actions. Common in consumer-facing contracts (terms of service, employment, residential leases).",
+    "detection": {
+      "regex": [
+        "(?:waive|waives|waiver)\\s+(?:any|all|the)\\s+right\\s+to\\s+(?:participate\\s+in|bring|join)\\s+(?:any\\s+)?class\\s+action"
+      ]
+    },
+    "plain_language_explanation": "Forces individual arbitration and gives up the right to band together with others. Enforceable under federal law after AT&T Mobility v. Concepcion, but worth flagging in consumer-facing contracts because individual arbitration changes the economics of small claims dramatically.",
+    "harm_pattern": "Effectively immunizes small-dollar widespread harms from collective redress.",
+    "authorities": [
+      {
+        "id": "fcc-9-usc-2",
+        "source": "Federal Arbitration Act, 9 U.S.C. § 2",
+        "source_url": "https://www.law.cornell.edu/uscode/text/9/2",
+        "retrieved_at": "2026-05-11T00:00:00Z",
+        "license": "Public domain (US government work)",
+        "license_url": "https://www.law.cornell.edu/"
+      }
+    ]
+  },
+  {
+    "id": "dp-perpetual-license-back-grant-v1",
+    "version": "1.0.0",
+    "pattern_description": "A clause that grants the vendor a perpetual, irrevocable, worldwide license to the customer's content, feedback, or data, without limitation to the purpose of the agreement.",
+    "detection": {
+      "regex": [
+        "(?:perpetual|irrevocable)[,\\s]+(?:worldwide|royalty[- ]free|sublicensable)[\\s\\S]{0,80}?license"
+      ]
+    },
+    "plain_language_explanation": "The vendor gets to keep using your stuff forever, even after you leave. Reasonable for usage data the vendor needs to operate the service; problematic for customer content or feedback without explicit scope limits.",
+    "harm_pattern": "Customer loses control of their content even after termination.",
+    "authorities": [
+      {
+        "id": "us-copyright-act-201",
+        "source": "Copyright Act of 1976, 17 U.S.C. § 201 — Ownership of copyright",
+        "source_url": "https://www.law.cornell.edu/uscode/text/17/201",
+        "retrieved_at": "2026-05-11T00:00:00Z",
+        "license": "Public domain (US government work)",
+        "license_url": "https://www.law.cornell.edu/"
+      }
+    ]
+  },
+  {
+    "id": "dp-no-shop-without-mutuality-v1",
+    "version": "1.0.0",
+    "pattern_description": "A no-shop / exclusivity clause that prevents one party from soliciting competing offers without imposing a similar restriction on the other party, in a context where mutuality is the norm.",
+    "detection": {
+      "structural_check": "exclusivity clause present + only one obligor + no corresponding restriction on counterparty"
+    },
+    "plain_language_explanation": "Locks one party in while leaving the other free. In acquisition / partnership contexts, exclusivity usually runs both ways.",
+    "harm_pattern": "Creates information asymmetry and bargaining-power imbalance during negotiation.",
+    "authorities": [
+      {
+        "id": "ftc-act-section-5",
+        "source": "Federal Trade Commission Act, 15 U.S.C. § 45 (unfair methods of competition)",
+        "source_url": "https://www.law.cornell.edu/uscode/text/15/45",
+        "retrieved_at": "2026-05-11T00:00:00Z",
+        "license": "Public domain (US government work)",
+        "license_url": "https://www.law.cornell.edu/"
+      }
+    ]
+  },
+  {
+    "id": "dp-non-compete-overbroad-v1",
+    "version": "1.0.0",
+    "pattern_description": "A non-compete clause with geographic scope of 'worldwide' or temporal scope greater than two years, especially in jurisdictions where non-competes are narrowly enforceable.",
+    "detection": {
+      "regex": [
+        "non[- ]compete[\\s\\S]{0,200}(?:worldwide|globally|in\\s+any\\s+jurisdiction)",
+        "non[- ]compete[\\s\\S]{0,200}(?:three|four|five|6|7|8|9|10)\\s+years"
+      ]
+    },
+    "plain_language_explanation": "The geographic or temporal scope of the non-compete is broader than most courts will enforce. In California, all employee non-competes are void by statute. The clause may be unenforceable as written.",
+    "harm_pattern": "Chilling effect on the restricted party's economic mobility even if ultimately unenforceable.",
+    "authorities": [
+      {
+        "id": "ca-bus-prof-16600",
+        "source": "California Business and Professions Code § 16600",
+        "source_url": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=16600.",
+        "retrieved_at": "2026-05-11T00:00:00Z",
+        "license": "Public domain (state government work)",
+        "license_url": "https://leginfo.legislature.ca.gov/"
+      }
+    ]
+  },
+  {
+    "id": "dp-data-use-without-deletion-right-v1",
+    "version": "1.0.0",
+    "pattern_description": "A clause granting the vendor rights to use customer data, without specifying a corresponding right for the customer to require deletion of that data on termination.",
+    "detection": {
+      "structural_check": "data-use grant present + no deletion-on-termination right + no DPA reference"
+    },
+    "plain_language_explanation": "The vendor can use your data, and there is no commitment to delete it when you leave. For B2B SaaS with EU or California customers, GDPR Article 28 and CCPA require specific deletion obligations.",
+    "harm_pattern": "Customer cannot reclaim control of its data on termination.",
+    "authorities": [
+      {
+        "id": "gdpr-art-28",
+        "source": "Regulation (EU) 2016/679 (GDPR), Article 28",
+        "source_url": "https://gdpr-info.eu/art-28-gdpr/",
+        "retrieved_at": "2026-05-11T00:00:00Z",
+        "license": "Mirror of public EU regulation",
+        "license_url": "https://eur-lex.europa.eu/eli/reg/2016/679/oj"
+      }
+    ]
+  }
+]
