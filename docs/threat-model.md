@@ -658,3 +658,34 @@ binding floor. There is no document parsing, no network, and no clock in the pat
   carries its own `coherence_hash` outside every document's `result_hash` and the
   bundle fingerprint, so it cannot perturb the reproducibility contract or any
   existing per-document or bundle golden.
+
+### v13 — posture movement (cross-document, cross-round surface)
+
+The cross-document posture movement (spec-v13) adds **no new read surface, no new
+extraction, and no new predicate**. `compareCoherence(base, revised)` is a pure
+function over two already-computed `PostureCoherence` objects — it compares the
+binding-floor tier *label* and the coherence *label* per front and emits a
+movement plus its `movement_hash`. There is no document parsing, no network, and
+no clock in the path.
+
+- **No new untrusted input at the engine.** The only inputs are two coherences,
+  each of which derives from postures the v10 evaluator produced; the author
+  strings they carry (dimension labels) were already bounded at the v10 surface.
+  The movement reaches one surface — the CLI `analyze` movement summary (terminal)
+  — and the headless renderer escapes nothing because the terminal is not an HTML
+  sink; the tier/coherence/movement values are closed enums, not author text. The
+  baseline bundle is analyzed through the **same** `analyzeFile` boundary the
+  primary bundle uses, so it inherits every v8 input-boundary guard (size caps,
+  timeouts, the fuzz-proven ingest) — a hostile baseline document cannot reach a
+  weaker path than a primary one.
+- **Honest about unstated data.** A floor transition touching an unstated side is
+  `newly-stated` / `now-unstated`, never ranked as improved or regressed; a front
+  that dropped off the ladder is reported but never trips the
+  `--fail-on-coherence-regression` gate — preserving the v10 §3 honesty contract
+  across the composed axis.
+- **Advisory, deterministic, additive.** The movement reports how the bundle's
+  floor moved on the team's own ladder and whether the package fractured or
+  reconciled — never that a term became legally adequate or which document
+  *legally governs* — and carries its own `movement_hash` outside every
+  `result_hash`, `posture_hash`, and `coherence_hash`, so a run with no
+  `--baseline` is byte-identical to before and it cannot perturb any golden.

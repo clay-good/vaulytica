@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,065 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `35 state-law overlays` · `9 export formats` · `0 servers` · `0 AI` · `2,967 passing tests` · `v9.8.0` · `MIT`
+`1,065 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `35 state-law overlays` · `9 export formats` · `0 servers` · `0 AI` · `2,984 passing tests` · `v9.9.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
 
@@ -296,6 +296,34 @@ vaulytica analyze ./deal-package/ --playbook-file team.json --posture --fail-on-
 
 The coherence is not headless-only: drop a deal package into the **browser** with a team playbook active and the bundle-complete view renders a mobile-safe **"Posture coherence" card** — one card per front, the rung spread across the documents, the binding floor named, color-coded by coherence — and the consolidated **Word bundle report** carries a trailing **"Posture Coherence" section** (Front · Coherence · per-document rung · binding floor). Both are additive: a bundle with no active posture playbook renders neither, so every existing bundle report is byte-unchanged. In the bundle the playbook contributes *only* its posture positions — each document's per-document findings are still driven by its own matched playbook. Full design: [`spec-v12`](docs/spec-v12.md).
 
+## Posture movement across the deal — round over round (v13)
+
+A real negotiation is a **sequence of packages**, not one package. Round one is an MSA plus an order form; round two is the revised pair. The deal lead's actual question is the composition of two axes you already have: *between rounds, did the binding floor on each front — the rung that actually governs my exposure — get better or worse, and did any front the package agreed on quietly fracture?* v11 can't see it (it diffs **one** document). v12 can't see it (it scores **one** round). Only the diff of two v12 coherences can. v13 is the fourth corner of the posture matrix:
+
+|  | single version | across versions |
+|---|---|---|
+| **single document** | v10 — posture (snapshot) | v11 — posture movement |
+| **across documents** | v12 — posture coherence | **v13 — coherence movement** |
+
+[`compareCoherence(base, revised)`](src/report/coherence-movement.ts) is a **pure diff of two v12 coherences** — both computed against the **same** ladder — matched per front by **dimension** (never by document, so a `msa-v1.docx` → `msa-v2.docx` rename or an added DPA never confuses it). For each front it reports two things:
+
+- **binding-floor movement** (the headline, the well-ordered, gateable signal): `improved · regressed · unchanged · newly-stated · now-unstated` — reusing v11's exact `TIER_RANK`, applied to the weakest stated rung across the package.
+- **coherence shift** (advisory context): `fractured` (a front the package agreed on now diverges) · `reconciled` (a divergent front no longer diverges) · `realigned` (the stating set changed without crossing the line) · `unchanged`.
+
+It carries its own `movement_hash`, namespaced apart from every `result_hash`, `posture_hash`, and `coherence_hash` (additive — a run with no baseline yields no movement and moves no golden). `unevaluable` stays **unranked**: a floor transition touching an unstated side is `newly-stated`/`now-unstated`, never a false regression (the §3 honesty contract, carried across the composed axis). It runs headless — diff a revised package against a baseline round:
+
+```sh
+# how did the package's binding floor move between two rounds?
+vaulytica analyze ./round-2/ --playbook-file team.json --posture --baseline ./round-1/
+# → Cross-document posture movement (vs. baseline): binding floor: N improved, M regressed, …
+#   ⚠ Liability cap: binding floor ↓ regressed (acceptable → below-acceptable).
+
+# make a regressed binding floor a hard CI gate (exit 2)
+vaulytica analyze ./round-2/ --playbook-file team.json --posture --baseline ./round-1/ --fail-on-coherence-regression
+```
+
+`--fail-on-coherence-regression` makes the floor movement a hard CI gate (code 2 when any front's binding floor moves to a strictly worse **stated** rung), exactly as `--fail-on-regression` gates the single-document version axis and `--fail-on-divergence` gates the single-round cross-document axis. Honest by construction — a front that dropped off the ladder entirely (`now-unstated`) is reported but never trips the gate, since a dropped front is not a rung regression. Thrust A (the engine, the headless surface, the gate) is shipped; a browser-UI two-round card and a DOCX section are proposed, waiting on a two-bundle comparison surface the UI does not yet have. Full design: [`spec-v13`](docs/spec-v13.md).
+
 ## What the result looks like
 
 <img src="docs/images/report-mobile.png" alt="Vaulytica report card on a phone: severity counts, a California non-compete jurisdiction overlay with citation, and one-click exports — Word, JSON, fix-list (Markdown/CSV), obligations, deadlines (.ics), HTML report, and SARIF" width="320" align="right" />
@@ -321,6 +349,7 @@ Every view is verified to render with **no horizontal scroll from 320 px to 1280
 | v10 | Negotiation Posture | **(A) Tiered-position ladder** — a custom playbook can carry `negotiation_positions` (an `ideal`/`acceptable` pair per dimension, drawn from the v6 predicate DSL); the engine reports which rung the draft meets — ideal · acceptable · below-floor · not-stated — with a `posture_hash` outside the `result_hash` · **(B) Posture report & export** — a standalone action-grouped negotiation **sheet**, a Markdown/CSV posture export, and a headless CLI `--posture` mode (`--playbook-file`) · **(C) Dimension breadth** — four new `numeric_threshold` metrics (`cure_period_days`, `auto_renewal_notice_days`, `indemnity_cap_amount`, `uptime_sla_percent`) and a `clause_mutual` predicate, each measure-first (extractor fixtures before wiring) | **complete · 9.3.0** (Steps 166–175; [`spec-v10`](docs/spec-v10.md)). |
 | v11 | Negotiation Posture Movement | **(A) Movement engine & surfaces** — `comparePosture` diffs two v10 postures and reports, per dimension, how the rung *moved* between a base draft and a revised one — **improved · regressed · unchanged · newly-stated · now-unstated** — with a `movement_hash` outside the comparison `result_hash`; surfaced as a `posture_movement` JSON block, a mobile-safe "Posture movement" comparison-complete card, and a headless `compare --playbook-file <path> --posture` mode. `unevaluable` stays unranked, so "not stated" is never a false regression · **(B) Word comparison-report section** — a color-coded "Posture Movement" section in the DOCX comparison deliverable (`buildComparisonDocx`, trailing optional arg; omitted when no movement, so no golden moves) · **(C) CI regression gate** — `compare --posture --fail-on-regression` exits non-zero when any front regressed to a worse rung (`now-unstated` reported but never trips it) | **complete · 9.6.0** (Steps 176–180; [`spec-v11`](docs/spec-v11.md)). |
 | v12 | Cross-Document Posture Coherence | **(A) Coherence engine & headless surface** — `bundlePostureCoherence` scores one v10 posture per document (all against the same ladder) and reports, per front, whether the package is **aligned · divergent · single · unstated**, plus the **binding floor** (the weakest stated rung + the document carrying it); reuses v11's `TIER_RANK`, carries a `coherence_hash` outside every `result_hash`. Surfaced in `analyze --posture` over a bundle (a "Cross-document posture coherence" summary) and gated by `analyze --posture --fail-on-divergence` (exit 2 when any front diverges; `single`/`unstated` never trip it). `unevaluable` stays unranked, so silence is never a false divergence · **(B) Browser-UI coherence card** — the bundle pipeline computes a per-document posture (against one team ladder) and the bundle-complete view renders a mobile-safe `pc-*` "Posture coherence" card (per-front rung spread + binding floor); the per-document engine run is untouched · **(C) Consolidated-DOCX section** — `buildBundleDocxReport` renders a trailing color-coded "Posture Coherence" table, omitted when no positions are supplied so every bundle golden is byte-unchanged | **complete · 9.8.0** (Steps 181–186; [`spec-v12`](docs/spec-v12.md)). |
+| v13 | Cross-Document Posture Movement | **(A) Movement engine & headless surface** — `compareCoherence` diffs two v12 coherences (a deal package at a **base** round and a **revised** round, same ladder) and reports, per front (matched by dimension, not by document), how the **binding floor** moved — **improved · regressed · unchanged · newly-stated · now-unstated** — and how the coherence kind shifted — **fractured · reconciled · realigned · unchanged**; reuses v11's `TIER_RANK`, carries a `movement_hash` outside every `result_hash`/`posture_hash`/`coherence_hash`. Surfaced in `analyze --posture --baseline <bundle>` (a "Cross-document posture movement" summary) and gated by `--fail-on-coherence-regression` (exit 2 when any front's binding floor regressed to a worse stated rung; `now-unstated` never trips it). The fourth corner of the posture matrix (across docs × across versions) · **(B) Browser-UI two-round card** · **(C) DOCX movement section** — proposed, waiting on a two-bundle comparison surface the UI does not yet have | **A complete · 9.9.0** (Steps 187–189; B/C proposed 190–191; [`spec-v13`](docs/spec-v13.md)). |
 
 ## v8 — hardening: a tool that cannot be made to hang
 
@@ -380,6 +409,11 @@ npm run cli -- analyze ./deal-package/ --playbook-file team.json --posture
 # …and gate the PR on it: fail CI if any front diverges across the documents
 npm run cli -- analyze ./deal-package/ --playbook-file team.json --posture --fail-on-divergence
 
+# analyze + posture movement (v13): how did the package's binding floor move between two rounds?
+npm run cli -- analyze ./round-2/ --playbook-file team.json --posture --baseline ./round-1/
+# …and gate the PR on it: fail CI if any front's binding floor regressed across rounds
+npm run cli -- analyze ./round-2/ --playbook-file team.json --posture --baseline ./round-1/ --fail-on-coherence-regression
+
 # verify: re-derive a saved report's result_hash from the original document (audit receipt)
 npm run cli -- verify report.json original.txt
 
@@ -392,7 +426,7 @@ npm run citation:check -- --reachability   # + network sweep
 
 | Command | Purpose | Exit code |
 |---|---|---|
-| `analyze <path\|glob\|dir>` | run the engine headless, write `json,sarif,html,md,csv`; `--playbook-file <p> --posture` over a bundle adds cross-document posture coherence; `--fail-on-divergence` gates on it | `2` when findings breach `--fail-on`, **or** (with `--fail-on-divergence`) when any posture front diverges across the bundle |
+| `analyze <path\|glob\|dir>` | run the engine headless, write `json,sarif,html,md,csv`; `--playbook-file <p> --posture` over a bundle adds cross-document posture coherence; `--fail-on-divergence` gates on it; `--baseline <bundle>` adds cross-document posture *movement* vs. a prior round; `--fail-on-coherence-regression` gates on it | `2` when findings breach `--fail-on`, **or** (with `--fail-on-divergence`) when any posture front diverges across the bundle, **or** (with `--fail-on-coherence-regression`) when any front's binding floor regressed vs. the baseline |
 | `diff <a.json> <b.json>` | structural diff of two custom playbooks (Markdown/JSON) | `1` with `--exit-code` when they differ |
 | `compare <base> <revised>` | version-compare two documents + clause redline (Markdown/JSON); `--playbook-file <p> --posture` adds the posture movement; `--fail-on-regression` gates on it | `2` when the revision *introduced* a finding at/above `--fail-on`, **or** (with `--fail-on-regression`) when any posture front regressed |
 | `verify <report.json> <original>` | re-derive `result_hash`; report input/engine/DKB drift | `3` when not reproduced |
@@ -405,6 +439,8 @@ npm run citation:check -- --reachability   # + network sweep
 | `--fail-on <sev>` | exit non-zero (code 2) when any finding is at or above `critical\|warning\|info` |
 | `--playbook-file <p>` `--posture` | classify the playbook's `negotiation_positions` per document; over a bundle, also reports cross-document posture coherence (the binding floor + divergent fronts) |
 | `--fail-on-divergence` | exit non-zero (code 2) when any posture front diverges across the bundle (requires `--posture`) |
+| `--baseline <path\|glob\|dir>` | a prior round of the same deal package; reports cross-document posture *movement* — per front, how the binding floor moved and whether the package fractured/reconciled vs. the baseline (requires `--posture`) |
+| `--fail-on-coherence-regression` | exit non-zero (code 2) when any front's binding floor regressed to a worse stated rung vs. the baseline (requires `--baseline`) |
 
 ### Drop it into CI — GitHub Action
 
@@ -605,7 +641,7 @@ npm run dev          # open the printed URL
 npm run build        # static site → dist/
 npm run typecheck    # tsc --noEmit
 npm run lint         # eslint
-npm run test         # vitest — 2,967 tests, ~30s
+npm run test         # vitest — 2,984 tests, ~30s
 npm run coverage     # vitest + V8 coverage, enforces the regression floor
 npm run accuracy     # v5 Ground Truth harness → tools/accuracy/SCOREBOARD.md
 npm run mutation     # Stryker mutation score (scoped to extractors; slow, off the per-push path)

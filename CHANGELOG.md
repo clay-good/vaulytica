@@ -4,6 +4,57 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.9.0] — 2026-06-13 — Cross-document posture movement (spec-v13 Thrust A)
+
+### Added
+- **Cross-document posture-movement engine (spec-v13 Thrust A, Step 187).** A new
+  pure module [`src/report/coherence-movement.ts`](src/report/coherence-movement.ts)
+  exports `compareCoherence(base, revised)`: given two v12 `PostureCoherence`
+  objects — a deal package at a **base** round and at a **revised** round, both
+  classified against the **same** team positions — it reports, per negotiation
+  front (matched by **dimension**, not by document, so a `msa-v1.docx` →
+  `msa-v2.docx` rename or an added document never confuses it), how the bundle's
+  **binding floor** moved (`improved` / `regressed` / `unchanged` /
+  `newly-stated` / `now-unstated`, reusing v11's exported `TIER_RANK`) and how
+  the **coherence kind** shifted (`fractured` / `reconciled` / `realigned` /
+  `unchanged`). Floor- and shift-count tallies and a `movement_hash` namespaced
+  apart from every `result_hash`, `posture_hash`, and `coherence_hash`. A
+  `coherenceRegressed(movement)` predicate mirrors v11's `postureRegressed` and
+  v12's `hasDivergence`. This is the fourth corner of the posture matrix —
+  v10 (single doc, single version), v11 (single doc, across versions), v12
+  (across docs, single version), v13 (across docs, across versions).
+- **Headless cross-round movement (spec-v13 Thrust A, Step 188).** The CLI
+  [`analyze`](tools/cli/run.ts) command accepts `--baseline <path|glob|dir>`
+  (requires `--posture`): it analyzes the baseline bundle against the **same**
+  custom playbook, computes its v12 coherence, diffs it against the primary
+  bundle's coherence via `compareCoherence`, and prints a "Cross-document posture
+  movement (vs. baseline)" summary — the floor- and shift-count lines, one line
+  per front whose floor moved or whose package fractured/reconciled (an unmoved
+  front is omitted), and the `movement_hash`. A baseline that yields no coherence
+  (fewer than two documents with a posture) is a hard error, not a silent no-op.
+- **Coherence-regression CI gate (spec-v13 Thrust A, Step 189).** The CLI
+  `analyze` command accepts `--fail-on-coherence-regression` (requires
+  `--baseline`): it exits non-zero (code 2) when any front's binding floor moved
+  to a strictly worse **stated** rung between the two rounds. The gate is the
+  well-ordered floor worsening only; a front that dropped off the ladder
+  (`now-unstated`) is reported but never trips it (spec-v13 §3 corollary 2 — a
+  dropped front is not conflated with a rung regression; a team that wants to
+  gate on it composes from `floor_counts`). Reported alongside `--fail-on` and
+  `--fail-on-divergence`; any tripping sets exit 2.
+
+### Notes
+- Additive and back-compatible: an `analyze` run with no `--baseline` yields no
+  movement, so every per-document `result_hash`, every `posture_hash`, every
+  `coherence_hash`, and every bundle golden is byte-identical to 9.8.0.
+- The movement is **advisory** (spec-v13 §3): it reports where the bundle's
+  binding floor moved on the team's own ladder and whether the package fractured
+  or reconciled — never that a term became legally adequate or enforceable, and
+  never which document legally governs on a conflict (the v12 §3 corollary-3
+  bright line, carried forward).
+- Thrust B (a browser-UI two-round bundle card) and Thrust C (a DOCX section) are
+  proposed (Steps 190–191); both wait on a two-bundle comparison surface that
+  does not yet exist in the browser UI.
+
 ## [9.8.0] — 2026-06-13 — Posture coherence in the browser bundle + bundle DOCX (spec-v12 Thrusts B & C)
 
 ### Added

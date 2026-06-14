@@ -36,6 +36,11 @@ import {
   type CoherenceInput,
   type PostureCoherence,
 } from "../../src/report/posture-coherence.js";
+import {
+  compareCoherence,
+  coherenceRegressed,
+  type CoherenceMovement,
+} from "../../src/report/coherence-movement.js";
 
 const SUPPORTED_EXT = new Set([".txt", ".md", ".markdown", ".text", ".docx", ".pdf"]);
 const SEVERITY_RANK: Record<Severity, number> = { critical: 0, warning: 1, info: 2 };
@@ -66,6 +71,10 @@ type Args = {
   posture?: boolean;
   /** spec-v12 Thrust A — exit non-zero when a posture front diverges across the bundle. */
   failOnDivergence?: boolean;
+  /** spec-v13 Thrust A — a baseline bundle (path|glob|dir) to diff the coherence against. */
+  baseline?: string;
+  /** spec-v13 Thrust A — exit non-zero when the bundle's binding floor regressed vs. the baseline. */
+  failOnCoherenceRegression?: boolean;
 };
 
 function parseArgs(argv: string[]): Args {
@@ -111,6 +120,13 @@ function parseArgs(argv: string[]): Args {
         break;
       case "--fail-on-divergence":
         args.failOnDivergence = true;
+        break;
+      case "--baseline":
+        args.baseline = val;
+        i++;
+        break;
+      case "--fail-on-coherence-regression":
+        args.failOnCoherenceRegression = true;
         break;
       default:
         throw new Error(`unknown flag "${flag}"`);
@@ -254,6 +270,16 @@ async function runAnalyze(argv: string[]): Promise<void> {
     process.exitCode = 1;
     return;
   }
+  if (args.baseline && !args.posture) {
+    process.stderr.write("--baseline requires --posture\n");
+    process.exitCode = 1;
+    return;
+  }
+  if (args.failOnCoherenceRegression && !args.baseline) {
+    process.stderr.write("--fail-on-coherence-regression requires --baseline\n");
+    process.exitCode = 1;
+    return;
+  }
 
   const inputs = await resolveInputs(args.target);
   if (inputs.length === 0) {
@@ -324,10 +350,35 @@ async function runAnalyze(argv: string[]): Promise<void> {
   // per front, whether the documents agree on the rung or one undercuts the
   // position, and surfaces the bundle's binding floor.
   let diverged = false;
+  let coherence: PostureCoherence | null = null;
   if (args.posture && postures.length >= 2) {
-    const coherence = await bundlePostureCoherence(postures);
+    coherence = await bundlePostureCoherence(postures);
     process.stdout.write(renderCoherenceSummary(coherence));
     diverged = hasDivergence(coherence);
+  }
+
+  // spec-v13 Thrust A — cross-document posture movement. Given a baseline bundle
+  // (a prior round of the same deal, classified against the SAME playbook), diff
+  // the two coherences front-by-front: how did each binding floor move, and did
+  // any front fracture or reconcile? Matched by dimension, so the baseline may
+  // carry different filenames or a different document count.
+  let regressed = false;
+  if (coherence && args.baseline) {
+    const baselineCoherence = await collectBaselineCoherence(args.baseline, {
+      deps,
+      playbookId: args.playbook,
+      customPlaybook,
+    });
+    if (!baselineCoherence) {
+      process.stderr.write(
+        `\n--baseline: ${args.baseline} yielded no cross-document coherence (need ≥2 documents with a posture).\n`,
+      );
+      process.exitCode = 1;
+      return;
+    }
+    const movement = await compareCoherence(baselineCoherence, coherence);
+    process.stdout.write(renderCoherenceMovementSummary(movement));
+    regressed = coherenceRegressed(movement);
   }
 
   if (args.out) process.stdout.write(`\nwrote ${args.formats.join(", ")} for ${inputs.length} file(s) → ${resolve(args.out)}\n`);
@@ -339,6 +390,79 @@ async function runAnalyze(argv: string[]): Promise<void> {
     process.stderr.write("\n✗ posture diverges across the bundle (--fail-on-divergence)\n");
     process.exitCode = 2;
   }
+  if (args.failOnCoherenceRegression && regressed) {
+    process.stderr.write(
+      "\n✗ the bundle's binding floor regressed vs. the baseline (--fail-on-coherence-regression)\n",
+    );
+    process.exitCode = 2;
+  }
+}
+
+/**
+ * Analyze a baseline bundle quietly (no per-file lines, no format output) and
+ * return its cross-document coherence — the prior round to diff the current
+ * bundle against (spec-v13). Returns `null` when fewer than two documents carry
+ * a posture (nothing cross-document to compare). Every document is classified
+ * against the SAME custom playbook the primary bundle used, so the two
+ * coherences sit on one ladder.
+ */
+async function collectBaselineCoherence(
+  target: string,
+  opts: {
+    deps: Awaited<ReturnType<typeof loadAccuracyDeps>>;
+    playbookId?: string;
+    customPlaybook?: import("../../src/playbooks/custom-playbook.js").CustomPlaybook;
+  },
+): Promise<PostureCoherence | null> {
+  const inputs = await resolveInputs(target);
+  const postures: CoherenceInput[] = [];
+  for (const file of inputs) {
+    const r = await analyzeFile(file, {
+      playbookId: opts.playbookId,
+      deps: opts.deps,
+      customPlaybook: opts.customPlaybook,
+      posture: true,
+    });
+    if (r.negotiation_posture) postures.push({ document: file, posture: r.negotiation_posture });
+  }
+  return postures.length >= 2 ? bundlePostureCoherence(postures) : null;
+}
+
+/**
+ * Render the cross-document posture movement (spec-v13) as human-readable lines:
+ * the floor-movement counts, then one line per front whose binding floor moved
+ * or whose package fractured/reconciled — the deal lead's round-over-round
+ * signal. A front that held on both axes is omitted (the summary surfaces only
+ * what changed).
+ */
+export function renderCoherenceMovementSummary(movement: CoherenceMovement): string {
+  const fc = movement.floor_counts;
+  const sc = movement.shift_counts;
+  const lines = [
+    "\nCross-document posture movement (vs. baseline):",
+    `  binding floor: ${fc.improved} improved, ${fc.regressed} regressed, ${fc["newly-stated"]} newly stated, ${fc["now-unstated"]} now unstated, ${fc.unchanged} unchanged.`,
+    `  coherence: ${sc.fractured} fractured, ${sc.reconciled} reconciled, ${sc.realigned} realigned.`,
+  ];
+  const arrow: Record<string, string> = {
+    improved: "↑ improved",
+    regressed: "↓ regressed",
+    "newly-stated": "+ newly stated",
+    "now-unstated": "− now unstated",
+  };
+  for (const f of movement.fronts) {
+    const floorMoved = f.floor_movement !== "unchanged" && arrow[f.floor_movement];
+    const shifted = f.coherence_shift === "fractured" || f.coherence_shift === "reconciled";
+    if (!floorMoved && !shifted) continue;
+    const parts: string[] = [];
+    if (floorMoved) {
+      parts.push(`binding floor ${arrow[f.floor_movement]} (${f.base_floor ?? "—"} → ${f.revised_floor ?? "—"})`);
+    }
+    if (shifted) parts.push(`${f.coherence_shift} (${f.base_coherence} → ${f.revised_coherence})`);
+    const mark = f.floor_movement === "regressed" || f.coherence_shift === "fractured" ? "⚠" : "•";
+    lines.push(`  ${mark} ${f.dimension}: ${parts.join("; ")}.`);
+  }
+  lines.push(`  movement_hash: ${movement.movement_hash}`);
+  return lines.join("\n") + "\n";
 }
 
 /**
@@ -400,6 +524,7 @@ Commands:
                           [--delivery] [--critical-dates] [--checklist]
                           [--playbook-file <path>] [--posture]
                           [--fail-on-divergence]
+                          [--baseline <path|glob|dir>] [--fail-on-coherence-regression]
   diff    <a.json> <b.json> [--format markdown|json] [--exit-code]
   compare <base> <revised> [--playbook <id>] [--playbook-file <path>] [--posture]
                           [--format json|markdown]

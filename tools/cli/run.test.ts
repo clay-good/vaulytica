@@ -2,8 +2,15 @@ import { afterAll, describe, expect, it } from "vitest";
 import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, basename } from "node:path";
-import { splitGlob, globToRegExp, resolveInputs, renderCoherenceSummary } from "./run.js";
+import {
+  splitGlob,
+  globToRegExp,
+  resolveInputs,
+  renderCoherenceSummary,
+  renderCoherenceMovementSummary,
+} from "./run.js";
 import { bundlePostureCoherence } from "../../src/report/posture-coherence.js";
+import { compareCoherence } from "../../src/report/coherence-movement.js";
 import type { NegotiationPosture, NegotiationTier } from "../../src/playbooks/custom-interpreter.js";
 
 describe("splitGlob (CLI glob resolution)", () => {
@@ -117,6 +124,52 @@ describe("renderCoherenceSummary (spec-v12 cross-document posture)", () => {
     ]);
     const out = renderCoherenceSummary(coherence);
     expect(out).toContain("1 aligned, 0 divergent");
+    expect(out).not.toContain("⚠");
+  });
+});
+
+describe("renderCoherenceMovementSummary (spec-v13 cross-document posture movement)", () => {
+  function posture(map: Record<string, NegotiationTier>): NegotiationPosture {
+    return {
+      positions: Object.entries(map).map(([dimension, tier]) => ({ dimension, tier })),
+      counts: { ideal: 0, acceptable: 0, below_acceptable: 0, unevaluable: 0 },
+      posture_hash: "test",
+    };
+  }
+
+  it("prints the floor/coherence counts, the movement_hash, and a line for each front that moved", async () => {
+    // Cap regressed (acceptable → below-acceptable) and fractured (aligned → divergent);
+    // Law held aligned at ideal (omitted from the per-front lines).
+    const base = await bundlePostureCoherence([
+      { document: "msa-v1.docx", posture: posture({ Cap: "acceptable", Law: "ideal" }) },
+      { document: "order-v1.docx", posture: posture({ Cap: "acceptable", Law: "ideal" }) },
+    ]);
+    const revised = await bundlePostureCoherence([
+      { document: "msa-v2.docx", posture: posture({ Cap: "ideal", Law: "ideal" }) },
+      { document: "order-v2.docx", posture: posture({ Cap: "below-acceptable", Law: "ideal" }) },
+    ]);
+    const out = renderCoherenceMovementSummary(await compareCoherence(base, revised));
+    expect(out).toContain("Cross-document posture movement (vs. baseline):");
+    expect(out).toContain("1 regressed");
+    expect(out).toContain("1 fractured");
+    expect(out).toContain("⚠ Cap:");
+    expect(out).toContain("binding floor ↓ regressed (acceptable → below-acceptable)");
+    expect(out).toContain("fractured (aligned → divergent)");
+    expect(out).not.toContain("Law:"); // an unmoved front is omitted
+    expect(out).toMatch(/movement_hash: [0-9a-f]{64}/);
+  });
+
+  it("marks an improvement with a • and the up arrow", async () => {
+    const base = await bundlePostureCoherence([
+      { document: "a.docx", posture: posture({ Cap: "below-acceptable" }) },
+      { document: "b.docx", posture: posture({ Cap: "below-acceptable" }) },
+    ]);
+    const revised = await bundlePostureCoherence([
+      { document: "a.docx", posture: posture({ Cap: "acceptable" }) },
+      { document: "b.docx", posture: posture({ Cap: "acceptable" }) },
+    ]);
+    const out = renderCoherenceMovementSummary(await compareCoherence(base, revised));
+    expect(out).toContain("• Cap: binding floor ↑ improved (below-acceptable → acceptable)");
     expect(out).not.toContain("⚠");
   });
 });
