@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { buildComparisonDocx } from "./compare-docx.js";
 import { compareRuns } from "./compare.js";
 import { buildClauseDiff } from "./clause-diff.js";
+import { comparePosture } from "./posture-movement.js";
 import type { EngineRun, Finding, Severity } from "../engine/finding.js";
 import type { DocumentTree } from "../ingest/types.js";
 
@@ -129,5 +130,61 @@ describe("buildComparisonDocx", () => {
     const { unzipSync, strFromU8 } = await import("fflate");
     const docXml = strFromU8(unzipSync(await bytes(await buildComparisonDocx(cmp)))["word/document.xml"]!);
     expect(docXml).not.toContain("Document Redline");
+  });
+
+  it("renders the Posture Movement section with each transition (spec-v11 Thrust B)", async () => {
+    const cmp = await compareRuns(
+      makeRun("v1.pdf", "b".repeat(64), [finding("A", "critical", 1)]),
+      makeRun("v2.pdf", "r".repeat(64), [finding("A", "critical", 1)]),
+    );
+    // Both postures classify the team's SAME positions, so the dimension set is
+    // identical on both sides; tiers move within it.
+    const movement = await comparePosture(
+      {
+        positions: [
+          { dimension: "Liability cap", tier: "below-acceptable" },
+          { dimension: "Governing law", tier: "ideal" },
+          { dimension: "Indemnity", tier: "acceptable" },
+          { dimension: "Audit rights", tier: "unevaluable" },
+          { dimension: "Termination", tier: "ideal" },
+        ],
+        counts: { ideal: 2, acceptable: 1, below_acceptable: 1, unevaluable: 1 },
+        posture_hash: "x".repeat(64),
+      },
+      {
+        positions: [
+          { dimension: "Liability cap", tier: "acceptable" }, // improved
+          { dimension: "Governing law", tier: "below-acceptable" }, // regressed
+          { dimension: "Indemnity", tier: "acceptable" }, // unchanged
+          { dimension: "Audit rights", tier: "ideal" }, // newly-stated
+          { dimension: "Termination", tier: "unevaluable" }, // now-unstated
+        ],
+        counts: { ideal: 1, acceptable: 2, below_acceptable: 1, unevaluable: 1 },
+        posture_hash: "y".repeat(64),
+      },
+    );
+    const { unzipSync, strFromU8 } = await import("fflate");
+    const docXml = strFromU8(
+      unzipSync(await bytes(await buildComparisonDocx(cmp, undefined, movement)))["word/document.xml"]!,
+    );
+    expect(docXml).toContain("Posture Movement");
+    expect(docXml).toContain(movement.movement_hash);
+    expect(docXml).toContain("Liability cap");
+    expect(docXml).toContain("Improved");
+    expect(docXml).toContain("Regressed");
+    expect(docXml).toContain("Newly stated");
+    // Termination dropped out of the revised posture → no longer stated.
+    expect(docXml).toContain("No longer stated");
+    expect(docXml).toContain("below floor");
+  });
+
+  it("omits the Posture Movement section when no movement is supplied", async () => {
+    const cmp = await compareRuns(
+      makeRun("v1.pdf", "b".repeat(64), [finding("A", "critical", 1)]),
+      makeRun("v2.pdf", "r".repeat(64), [finding("A", "critical", 1)]),
+    );
+    const { unzipSync, strFromU8 } = await import("fflate");
+    const docXml = strFromU8(unzipSync(await bytes(await buildComparisonDocx(cmp)))["word/document.xml"]!);
+    expect(docXml).not.toContain("Posture Movement");
   });
 });

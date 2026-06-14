@@ -17,6 +17,15 @@
  * cross-family pairing (the two documents matched different playbooks) is
  * refused unless `--confirm-pairing` is passed, mirroring the UI.
  *
+ * `--fail-on-regression` (spec-v11 Thrust C) exits non-zero (code 2) when the
+ * posture movement holds any **regressed** dimension — a front that moved to a
+ * strictly worse rung on the team's own ladder. It requires `--posture` (there
+ * is no movement to gate without it). The gate is the well-ordered rung
+ * worsening only; `now-unstated` (a term that dropped off the ladder) is
+ * reported but does not trip it — per the §3 honesty contract a dropped front
+ * is not conflated with a rung regression. A team that wants to gate on a
+ * dropped term composes it from the JSON `posture_movement.counts`.
+ *
  * Build/CI-only; never imported by `src/`.
  */
 
@@ -45,12 +54,19 @@ type CompareArgs = {
   posture: boolean;
   format: "json" | "markdown";
   failOn?: Severity;
+  /** spec-v11 Thrust C — exit non-zero when any posture dimension regressed. */
+  failOnRegression: boolean;
   confirmPairing: boolean;
 };
 
 export function parseCompareArgs(argv: string[]): CompareArgs {
   const positional: string[] = [];
-  const args: Partial<CompareArgs> = { format: "markdown", confirmPairing: false, posture: false };
+  const args: Partial<CompareArgs> = {
+    format: "markdown",
+    confirmPairing: false,
+    posture: false,
+    failOnRegression: false,
+  };
   for (let i = 0; i < argv.length; i++) {
     const flag = argv[i]!;
     switch (flag) {
@@ -77,6 +93,9 @@ export function parseCompareArgs(argv: string[]): CompareArgs {
         args.failOn = v;
         break;
       }
+      case "--fail-on-regression":
+        args.failOnRegression = true;
+        break;
       case "--confirm-pairing":
         args.confirmPairing = true;
         break;
@@ -86,10 +105,13 @@ export function parseCompareArgs(argv: string[]): CompareArgs {
     }
   }
   if (positional.length !== 2) {
-    throw new Error("usage: compare <base> <revised> [--playbook <id>] [--playbook-file <path>] [--posture] [--format json|markdown] [--fail-on <sev>] [--confirm-pairing]");
+    throw new Error("usage: compare <base> <revised> [--playbook <id>] [--playbook-file <path>] [--posture] [--format json|markdown] [--fail-on <sev>] [--fail-on-regression] [--confirm-pairing]");
   }
   if (args.posture && !args.playbookFile) {
     throw new Error("--posture requires --playbook-file <path>");
+  }
+  if (args.failOnRegression && !args.posture) {
+    throw new Error("--fail-on-regression requires --posture");
   }
   return {
     base: positional[0]!,
@@ -99,6 +121,7 @@ export function parseCompareArgs(argv: string[]): CompareArgs {
     posture: args.posture!,
     format: args.format!,
     ...(args.failOn ? { failOn: args.failOn } : {}),
+    failOnRegression: args.failOnRegression!,
     confirmPairing: args.confirmPairing!,
   };
 }
@@ -113,6 +136,16 @@ export function introducedBreaches(counts: SeverityCounts, threshold: Severity):
 
 function countPhrase(c: SeverityCounts): string {
   return `${c.total} (${c.critical}C ${c.warning}W ${c.info}I)`;
+}
+
+/**
+ * True when the posture movement holds a regressed dimension (spec-v11 Thrust
+ * C). The gate is the well-ordered rung worsening only; `now-unstated` is
+ * reported but never trips it (§3 honesty — a dropped front is not a rung
+ * regression).
+ */
+export function postureRegressed(pm: PostureMovement): boolean {
+  return pm.counts.regressed > 0;
 }
 
 /** Movement labels for the Markdown posture-movement section. */
@@ -271,6 +304,16 @@ export async function runCompare(argv: string[]): Promise<void> {
 
   if (args.failOn && introducedBreaches(cmp.delta.counts.introduced, args.failOn)) {
     process.stderr.write(`\n✗ this revision introduced a finding at or above --fail-on ${args.failOn}\n`);
+    process.exitCode = 2;
+  }
+
+  // spec-v11 Thrust C — gate on a posture regression. Reported alongside the
+  // introduced-finding gate; either tripping sets exit code 2.
+  if (args.failOnRegression && postureMovement && postureRegressed(postureMovement)) {
+    const n = postureMovement.counts.regressed;
+    process.stderr.write(
+      `\n✗ this revision regressed ${n} posture dimension${n === 1 ? "" : "s"} (--fail-on-regression)\n`,
+    );
     process.exitCode = 2;
   }
 }

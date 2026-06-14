@@ -4,6 +4,50 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.6.0] — 2026-06-13 — Posture-movement CI regression gate (spec-v11 Thrust C)
+
+### Added
+- **Posture-movement regression gate (spec-v11 Thrust C, Step 180).** The
+  headless `compare` command gains `--fail-on-regression` (requires `--posture`):
+  it exits non-zero (code 2) when the posture movement holds any **regressed**
+  dimension — a front that moved to a strictly worse rung on the team's own
+  ladder. This turns the advisory movement into a hard CI gate, exactly as
+  `--fail-on <sev>` does for the introduced-finding bucket; either tripping sets
+  exit 2. Per the §3 honesty contract, the gate is the well-ordered rung
+  worsening only: `now-unstated` (a term that dropped off the ladder) is reported
+  but never trips it — a dropped front is not conflated with a rung regression. A
+  team that wants to gate on a dropped term composes it from the JSON
+  `posture_movement.counts`. A small exported `postureRegressed(pm)` predicate
+  mirrors `introducedBreaches` for testability.
+
+### Tests
+- +6 tests: `--fail-on-regression` arg parsing (parses with `--posture`; rejected
+  without it; defaults off) and the `postureRegressed` predicate (trips on a
+  strict rung worsening; does not trip on improvement / unchanged / newly-stated;
+  does not trip on now-unstated).
+
+## [9.5.0] — 2026-06-13 — Posture movement in the Word comparison report (spec-v11 Thrust B)
+
+### Added
+- **Posture movement in the Word comparison report (spec-v11 Thrust B, Step
+  179).** [`buildComparisonDocx`](src/report/compare-docx.ts) now renders a
+  "Posture Movement" section into the DOCX comparison deliverable — the document
+  a negotiator hands to a partner. It carries an advisory headline (the movement
+  counts), the `movement_hash` for auditability, and a per-dimension table
+  (Dimension · Movement · Base · Revised) with the movement cell color-coded
+  (green improved / red regressed / amber dropped), reusing the single-document
+  posture table's visual contract. The `PostureMovement` is threaded as a
+  trailing optional argument (the v9/v10 surface-threading pattern), so the
+  section is omitted when no movement is supplied and the page flow plus every
+  existing comparison golden are unchanged. (The comparison deliverable is DOCX +
+  JSON; there is no standalone-HTML *comparison* report, so Thrust B is DOCX-only
+  by construction.)
+
+### Tests
+- +2 tests: the section renders every transition (improved / regressed /
+  newly-stated / now-unstated), the `movement_hash`, and the short rung labels;
+  it is omitted when no movement is supplied.
+
 ## [9.4.0] — 2026-06-13 — Negotiation posture movement (spec-v11 Thrust A)
 
 ### Added

@@ -463,7 +463,7 @@ async function runComparison(
     const stem = `${baseFilename(baseRun.source_file.name)}-vs-${baseFilename(revisedFile.name)}`;
     const build = async (confirmPairing: boolean): Promise<void> => {
       const cmp = await compareRuns(baseRun, revisedRun, { confirmPairing });
-      const docx = await buildComparisonDocx(cmp, clauseDiff);
+      const docx = await buildComparisonDocx(cmp, clauseDiff, postureMovement);
       const json = buildComparisonJson(cmp, clauseDiff, postureMovement);
       const { resolved, introduced, unchanged } = cmp.delta.counts;
       const verdict =

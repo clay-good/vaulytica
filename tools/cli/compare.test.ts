@@ -5,6 +5,7 @@ import { join } from "node:path";
 import {
   parseCompareArgs,
   introducedBreaches,
+  postureRegressed,
   formatCompareMarkdown,
   formatPostureMovementMarkdown,
   runCompare,
@@ -107,6 +108,21 @@ describe("parseCompareArgs", () => {
   it("defaults posture off", () => {
     expect(parseCompareArgs(["a", "b"]).posture).toBe(false);
   });
+
+  it("parses --fail-on-regression with --posture (spec-v11 Thrust C)", () => {
+    const a = parseCompareArgs(["a", "b", "--playbook-file", "pb.json", "--posture", "--fail-on-regression"]);
+    expect(a.failOnRegression).toBe(true);
+  });
+
+  it("rejects --fail-on-regression without --posture (no movement to gate)", () => {
+    expect(() => parseCompareArgs(["a", "b", "--fail-on-regression"])).toThrow(
+      /--fail-on-regression requires --posture/,
+    );
+  });
+
+  it("defaults fail-on-regression off", () => {
+    expect(parseCompareArgs(["a", "b"]).failOnRegression).toBe(false);
+  });
 });
 
 // --- gate logic -------------------------------------------------------------
@@ -130,6 +146,39 @@ describe("introducedBreaches", () => {
   it("info threshold fires on anything", () => {
     expect(introducedBreaches(counts(0, 0, 1), "info")).toBe(true);
     expect(introducedBreaches(counts(0, 0, 0), "info")).toBe(false);
+  });
+});
+
+describe("postureRegressed (spec-v11 Thrust C)", () => {
+  const mkPosture = (map: Record<string, NegotiationTier>): NegotiationPosture => ({
+    positions: Object.entries(map).map(([dimension, tier]) => ({ dimension, tier })),
+    counts: { ideal: 0, acceptable: 0, below_acceptable: 0, unevaluable: 0 },
+    posture_hash: "x",
+  });
+
+  it("trips when a dimension moved to a strictly worse rung", async () => {
+    const pm = await comparePosture(
+      mkPosture({ "Governing law": "ideal" }),
+      mkPosture({ "Governing law": "below-acceptable" }),
+    );
+    expect(postureRegressed(pm)).toBe(true);
+  });
+
+  it("does not trip on improvement, unchanged, or newly-stated", async () => {
+    const pm = await comparePosture(
+      mkPosture({ Cap: "below-acceptable", Law: "ideal", New: "unevaluable" }),
+      mkPosture({ Cap: "acceptable", Law: "ideal", New: "acceptable" }),
+    );
+    expect(postureRegressed(pm)).toBe(false);
+  });
+
+  it("does not trip on now-unstated (a dropped front is not a rung regression)", async () => {
+    const pm = await comparePosture(
+      mkPosture({ Indemnity: "ideal" }),
+      mkPosture({ Indemnity: "unevaluable" }),
+    );
+    expect(pm.counts["now-unstated"]).toBe(1);
+    expect(postureRegressed(pm)).toBe(false);
   });
 });
 

@@ -1,6 +1,6 @@
 # Vaulytica v11 — Negotiation Posture Movement
 
-> **Status:** **Thrust A implemented and shipped (9.4.0).** This spec extends the v10 **Negotiation Posture** feature along the v6 **version-comparison** axis: it reports how a team's posture *moved* between two drafts. It continues the global step numbering after v10's Step 175, beginning at **Step 176**. **Thrust A** — the pure [`comparePosture`](../src/report/posture-movement.ts) movement classifier, the additive `posture_movement` block in the comparison JSON, a mobile-safe "Posture movement" card in the comparison-complete tab, and the headless `vaulytica compare --posture` mode — is live.
+> **Status:** **Thrusts A, B, and C implemented and shipped (A 9.4.0 · B 9.5.0 · C 9.6.0).** This spec extends the v10 **Negotiation Posture** feature along the v6 **version-comparison** axis: it reports how a team's posture *moved* between two drafts. It continues the global step numbering after v10's Step 175, beginning at **Step 176**. **Thrust A** — the pure [`comparePosture`](../src/report/posture-movement.ts) movement classifier, the additive `posture_movement` block in the comparison JSON, a mobile-safe "Posture movement" card in the comparison-complete tab, and the headless `vaulytica compare --posture` mode — is live. **Thrust B** adds a "Posture Movement" section to the Word comparison report ([`buildComparisonDocx`](../src/report/compare-docx.ts), trailing optional arg). **Thrust C** adds the headless CI gate `vaulytica compare --posture --fail-on-regression`, which exits non-zero when any dimension regressed to a strictly worse rung.
 > **Scope:** one idea, sitting exactly at the intersection of two shipped axes. v6 compares two **drafts** (the finding delta: resolved / introduced / unchanged). v10 scores a **single** draft against the team's tiered ladder (which rung each dimension meets: ideal / acceptable / below-floor / not-stated). A negotiation is a *sequence* of drafts, and the question a negotiator most needs answered round-over-round is neither of those alone: *when the counterparty sends a revised draft, did my position on each front improve, regress, or stay put?* v11 answers it by diffing two v10 postures — no new extractor, no new predicate, no fuzzy logic.
 > **Posture (unchanged, non-negotiable):** deterministic (same two postures → identical `movement_hash`, on any machine, forever), no AI / no probabilistic path, no server (both drafts and the movement stay on the user's machine), citable (the movement is derived from two postures, each of which already cites the document's own clause and the team's own playbook), lints / references / positions — but never drafts, and never renders a legal conclusion. The movement is **advisory**: it states where the draft moved on the team's own ladder, never that a term became legally adequate, enforceable, or required. Every step passes the §3 filter or it does not ship.
 > **Cousin docs:** [`spec.md`](spec.md) (v1, the linter), [`spec-v6.md`](spec-v6.md) (Workflow — **the comparison axis**, §I version comparison), [`spec-v10.md`](spec-v10.md) (Negotiation Posture — **the posture axis** this deepens), [`spec-v8.md`](spec-v8.md) (Reach — the headless CLI and the clause-redline that `posture_movement` rides alongside). Progress in [`BUILD_PROGRESS.md`](../BUILD_PROGRESS.md).
@@ -57,7 +57,7 @@ Three v11-specific corollaries:
 
 ## §4. How the thrusts sequence
 
-**The movement engine and its surfaces (A) land first and complete the idea** — the classifier is a pure function over two existing postures, so it sits on a fully-proven base and adds no extractor, no predicate, and no fuzzy logic. Surfaces are render-side and additive (the v9/v10 trailing-optional-argument threading pattern), so no existing comparison caller, golden, or `result_hash` moves. Further thrusts (a DOCX/HTML comparison-report section; a CI `--fail-on-regression` gate) are noted as principled deferrals, not yet built.
+**The movement engine and its surfaces (A) land first and complete the idea** — the classifier is a pure function over two existing postures, so it sits on a fully-proven base and adds no extractor, no predicate, and no fuzzy logic. Surfaces are render-side and additive (the v9/v10 trailing-optional-argument threading pattern), so no existing comparison caller, golden, or `result_hash` moves. **Thrust B** (the Word comparison-report section) and **Thrust C** (the CI `--fail-on-regression` gate) follow the same additive pattern and are now shipped.
 
 ---
 
@@ -73,6 +73,26 @@ These steps add the `comparePosture` classifier and wire its `PostureMovement` i
 
 ---
 
+# THRUST B — THE WORD COMPARISON-REPORT SECTION (shipped, 9.5.0)
+
+A render-only follow-up: the movement already lives in the comparison JSON, the tab card, and the CLI; Thrust B renders it into the deliverable a negotiator hands to a partner — the Word comparison report.
+
+| # | Step | Output | Tier |
+|---|------|--------|------|
+| 179 ✅ | DOCX posture-movement section | [`buildComparisonDocx`](../src/report/compare-docx.ts) takes the `PostureMovement` as a trailing optional arg and renders a "Posture Movement" section: an advisory headline (the movement counts), the `movement_hash` for auditability, and a per-dimension table (Dimension · Movement · Base · Revised) with the movement cell color-coded (green improved / red regressed / amber dropped). Reuses the single-document posture table's visual contract; omitted when no movement is supplied, so the page flow and every existing golden are unchanged. | Movement |
+
+---
+
+# THRUST C — THE CI REGRESSION GATE (shipped, 9.6.0)
+
+The advisory movement becomes a hard gate, exactly as `--fail-on` does for the introduced-finding bucket.
+
+| # | Step | Output | Tier |
+|---|------|--------|------|
+| 180 ✅ | `--fail-on-regression` | The CLI `compare` command accepts `--fail-on-regression` (requires `--posture`): it exits non-zero (code 2) when the posture movement holds any **regressed** dimension — a front that moved to a strictly worse rung on the team's own ladder. The gate is the well-ordered rung worsening only; `now-unstated` (a term that dropped off the ladder) is reported but never trips it (§3 honesty — a dropped front is not conflated with a rung regression; a team that wants to gate on it composes from the JSON). Reported alongside `--fail-on`; either tripping sets exit 2. | Movement |
+
+---
+
 # Part XV — Build plan
 
 Each step is a prompt-sized unit, continuing the global numbering after v10's Step 175. Verification gate for every step: `npm run typecheck && lint && test && build` green; the v7 coverage/parity/property gates, the v8 fuzz + citation gates, the v9 no-wall-clock gate, and the responsiveness e2e (every view-state vertical-scroll-only 320–1280px, WCAG 2 AA) stay green.
@@ -84,15 +104,17 @@ Status legend: **✅ shipped** · ⬜ proposed.
 | 176 ✅ | Movement engine | `comparePosture` reusing the v10 tier labels; total rung order; unstated never ranked; `movement_hash`. Unit tests across every transition + determinism. | Movement |
 | 177 ✅ | JSON + tab | `posture_movement` JSON block; a mobile-safe "Posture movement" comparison-complete card; UI wiring (base posture + active playbook threaded through the comparison). | Movement |
 | 178 ✅ | Headless movement | CLI `compare --playbook-file <path> --posture` → `posture_movement` JSON / Markdown table. | Movement |
+| 179 ✅ | DOCX section | A "Posture Movement" section in the Word comparison report (`buildComparisonDocx` trailing optional arg); color-coded per-dimension transition table; omitted when no movement supplied. | Movement |
+| 180 ✅ | Regression gate | CLI `compare --posture --fail-on-regression` → exit 2 when any dimension regressed to a strictly worse rung. | Movement |
 
-Total work: **3 build steps (176–178), all shipped.** Thrust A is the foundation and is additive — a comparison run with no positions yields no movement, so the comparison `result_hash` never moves. Every surface is render-side; zero golden churn.
+Total work: **5 build steps (176–180), all shipped.** Every step is additive — a comparison run with no positions yields no movement, so the comparison `result_hash` never moves, and every surface is render-side or gate-side; zero golden churn.
 
 ---
 
 # Part XVI — Principled deferrals
 
-- **A DOCX/HTML comparison-report section.** v11 surfaces the movement in the comparison JSON, the tab, and the CLI. Rendering it into the Word and standalone-HTML comparison reports is a clean, additive follow-up (the exact v9/v10 surface-threading pattern), deferred only to bound this thrust — not a posture question.
-- **A CI `--fail-on-regression` gate.** `compare --posture` reports the movement; a flag that exits non-zero when any dimension regressed (or fell below floor) would make it a hard gate, exactly as `--fail-on` does for the introduced-finding bucket. Deferred; the recommendation mirrors v10's "advisory-only" default — a team that wants a hard gate composes it from the JSON today.
+- **A DOCX comparison-report section.** ✅ **Shipped in Thrust B (9.5.0)** — `buildComparisonDocx` now renders a "Posture Movement" section. (There is no standalone-HTML *comparison* report — the comparison deliverable is DOCX + JSON; the standalone-HTML surface is the single-document report. So Thrust B is DOCX-only, by construction.)
+- **A CI `--fail-on-regression` gate.** ✅ **Shipped in Thrust C (9.6.0)** — `compare --posture --fail-on-regression` exits non-zero when any dimension regressed to a strictly worse rung. Per the §3 honesty contract it gates on the well-ordered rung worsening only; `now-unstated` is reported but never trips it (a team that wants to gate on a dropped term composes it from the JSON `posture_movement.counts`).
 - **Three-rung movement.** If v10 ever grows a third authored rung (ideal / target / reservation), `TIER_RANK` is the single place to extend the order; the movement classifier needs no other change. Noted, not built (v10 ships two rungs).
 - **Cross-document posture movement.** Computing how a posture moved across a *bundle* (the MSA's cap vs. the SOW's, version-over-version) sits on the v4 cross-document axis, not this one; noted for a future spec, as in v10.
 

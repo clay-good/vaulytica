@@ -5,7 +5,7 @@
  *       [--playbook <id>] [--format json,sarif,html,md,csv] \
  *       [--out <dir>] [--fail-on critical|warning|info]
  *   tsx tools/cli/run.ts diff <a.json> <b.json> [--format markdown|json] [--exit-code]
- *   tsx tools/cli/run.ts compare <base> <revised> [--fail-on <sev>] [--format json|markdown]
+ *   tsx tools/cli/run.ts compare <base> <revised> [--fail-on <sev>] [--fail-on-regression] [--format json|markdown]
  *   tsx tools/cli/run.ts verify <report.json> <original> [--playbook <id>]
  *
  * One dispatcher over the reach commands: `analyze` runs the engine headless
@@ -342,7 +342,8 @@ Commands:
   diff    <a.json> <b.json> [--format markdown|json] [--exit-code]
   compare <base> <revised> [--playbook <id>] [--playbook-file <path>] [--posture]
                           [--format json|markdown]
-                          [--fail-on critical|warning|info] [--confirm-pairing]
+                          [--fail-on critical|warning|info] [--fail-on-regression]
+                          [--confirm-pairing]
   verify  <report.json> <original> [--playbook <id>]
 `;
 

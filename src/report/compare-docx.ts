@@ -38,6 +38,8 @@ import {
 import type { Finding, Severity } from "../engine/finding.js";
 import type { Comparison, SeverityCounts, UnchangedPair } from "./compare.js";
 import type { Clause, ClauseDiff, WordDiffSegment } from "./clause-diff.js";
+import type { NegotiationTier } from "../playbooks/custom-interpreter.js";
+import type { PostureMovement, PostureMovementKind } from "./posture-movement.js";
 
 /**
  * Cap on redline rows rendered per category. A pathological redline (a
@@ -60,10 +62,15 @@ const PRIVACY_STATEMENT =
 const NON_ADVICE_STATEMENT =
   "Vaulytica is a software tool, not a lawyer. This comparison is a mechanical diff of two rule-engine runs over documents you provided. It is not legal advice, and using Vaulytica does not create an attorney-client relationship with anyone. The decision to act on any change shown here, or not, is yours and your counsel's.";
 
-export async function buildComparisonDocx(cmp: Comparison, clauseDiff?: ClauseDiff): Promise<Blob> {
+export async function buildComparisonDocx(
+  cmp: Comparison,
+  clauseDiff?: ClauseDiff,
+  postureMovement?: PostureMovement,
+): Promise<Blob> {
   const children: (Paragraph | Table)[] = [
     ...renderCover(cmp),
     ...renderExecutiveSummary(cmp),
+    ...renderPostureMovementSection(postureMovement),
     ...renderBucket("Resolved", "Findings that fired on the base version and are absent on the revised version — these edits fixed an issue.", cmp.delta.resolved),
     ...renderBucket("Introduced", "Findings absent on the base version that fired on the revised version — these edits created an issue.", cmp.delta.introduced),
     ...renderUnchangedBucket(cmp.delta.unchanged),
@@ -185,6 +192,90 @@ function deltaTable(counts: { resolved: SeverityCounts; introduced: SeverityCoun
       row("Unchanged", counts.unchanged),
     ],
   });
+}
+
+// ---------------------------------------------------------------------------
+// Negotiation-posture movement (spec-v11 Thrust B)
+// ---------------------------------------------------------------------------
+
+/** Movement labels mirror the comparison-complete tab card (states.ts). */
+const MOVEMENT_LABEL: Record<PostureMovementKind, string> = {
+  improved: "Improved",
+  regressed: "Regressed — review",
+  unchanged: "Unchanged",
+  "newly-stated": "Newly stated",
+  "now-unstated": "No longer stated — verify",
+  appeared: "Added dimension",
+  disappeared: "Removed dimension",
+};
+
+/** Direction color for the movement cell — green up, red down, amber for a dropped front. */
+function movementColor(kind: PostureMovementKind): string {
+  switch (kind) {
+    case "improved":
+      return "1A7A4C";
+    case "regressed":
+      return "B00020";
+    case "now-unstated":
+    case "disappeared":
+      return "A86700";
+    default:
+      return "555555";
+  }
+}
+
+const POSTURE_TIER_SHORT: Record<NegotiationTier, string> = {
+  ideal: "ideal",
+  acceptable: "acceptable",
+  "below-acceptable": "below floor",
+  unevaluable: "not stated",
+};
+
+function tierShort(tier: NegotiationTier | null): string {
+  return tier === null ? "—" : POSTURE_TIER_SHORT[tier];
+}
+
+/**
+ * "Posture movement" — how each rung moved between the two drafts (spec-v11).
+ * A pure render of the {@link PostureMovement} the comparison already computed
+ * by diffing two v10 postures against the team's same positions. Advisory: it
+ * shows where each front moved on the team's own ladder, never that a term
+ * became legally adequate or enforceable. Omitted when no movement was supplied
+ * (no custom playbook with positions on the run), so the page flow is unchanged.
+ */
+function renderPostureMovementSection(pm: PostureMovement | undefined): (Paragraph | Table)[] {
+  if (!pm || pm.dimensions.length === 0) return [];
+  const c = pm.counts;
+  return [
+    h1("Posture Movement"),
+    para({
+      text:
+        `Where your position moved between the two drafts: ${c.improved} improved · ${c.regressed} regressed · ` +
+        `${c.unchanged} unchanged · ${c["newly-stated"]} newly stated · ${c["now-unstated"]} no longer stated. ` +
+        `Advisory movement computed deterministically by diffing the two postures against your team's same positions — ` +
+        `it shows where each front moved on your own ladder, not a legal conclusion about either draft.`,
+      italics: true,
+    }),
+    coverField("Movement hash", pm.movement_hash),
+    spacer(),
+    new Table({
+      width: { size: 100, type: WidthType.PERCENTAGE },
+      rows: [
+        headerRow(["Dimension", "Movement", "Base", "Revised"]),
+        ...pm.dimensions.map((d) =>
+          new TableRow({
+            children: [
+              bodyCell(d.dimension),
+              bodyCell(MOVEMENT_LABEL[d.movement], movementColor(d.movement), true),
+              bodyCell(tierShort(d.base_tier)),
+              bodyCell(tierShort(d.revised_tier)),
+            ],
+          }),
+        ),
+      ],
+    }),
+    pageBreak(),
+  ];
 }
 
 // ---------------------------------------------------------------------------
@@ -452,21 +543,20 @@ function headerRow(cells: string[]): TableRow {
   });
 }
 
-function bodyRow(cells: string[]): TableRow {
-  return new TableRow({
-    children: cells.map(
-      (text) =>
-        new TableCell({
-          borders: {
-            top: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC" },
-            bottom: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC" },
-            left: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC" },
-            right: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC" },
-          },
-          children: [new Paragraph({ children: [new TextRun({ text, font: DEFAULT_FONT, size: BODY_SIZE })] })],
-        }),
-    ),
+function bodyCell(text: string, color?: string, bold?: boolean): TableCell {
+  return new TableCell({
+    borders: {
+      top: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC" },
+      bottom: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC" },
+      left: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC" },
+      right: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC" },
+    },
+    children: [new Paragraph({ children: [new TextRun({ text, font: DEFAULT_FONT, size: BODY_SIZE, color, bold })] })],
   });
+}
+
+function bodyRow(cells: string[]): TableRow {
+  return new TableRow({ children: cells.map((text) => bodyCell(text)) });
 }
 
 function severityColor(severity: Severity): string {
