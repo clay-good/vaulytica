@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.10.1] — 2026-06-13 — Mobile overflow hardening (download status + uncovered-state line)
+
+### Fixed
+- **Long, space-free filenames no longer push the result card past the viewport
+  on a narrow phone.** The post-download status line (`.download-status`) is
+  filled by `saveBlob` with `Saved <filename>`, where the filename derives from
+  the user's upload — names like
+  `Master_Services_Agreement_..._FINAL_v12_executed.pdf` have no break
+  opportunities. The element lacked `overflow-wrap`, so on a 320px screen the
+  status text widened the card and reintroduced horizontal scroll (a regression
+  the static-render `responsiveness-states` e2e never caught, since it renders
+  states before any download has populated the line). Added
+  `overflow-wrap: anywhere` to `.download-status`, and a dedicated e2e that
+  injects the worst-case `Saved <long-filename>` text and re-asserts
+  vertical-scroll-only at 320 / 390 / 768 / 1280px.
+- **Jurisdiction "no overlay on file" line now wraps.** `.overlay-uncovered`
+  (the honest coverage-gap sentence listing uncovered states) gained the same
+  `overflow-wrap: anywhere` guard for safety against long state lists.
+
 ## [9.10.0] — 2026-06-13 — Cross-document posture movement in the browser + DOCX (spec-v13 Thrusts B & C)
 
 ### Added

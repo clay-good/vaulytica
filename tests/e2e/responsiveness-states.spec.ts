@@ -526,6 +526,22 @@ test.describe("every view-state scrolls vertically only (320–1280px)", () => {
   }
 });
 
+// The static renders above never exercise the post-download status line
+// (`.download-status`), which `saveBlob` later fills with "Saved <filename>"
+// where the filename derives from the user's upload — long, space-free names
+// (underscores) are the worst case. Inject that text the way the app does and
+// re-assert no horizontal overflow, pinning the `overflow-wrap` on the element.
+test("download-status with a long unbreakable filename never overflows", async ({ page }) => {
+  const complete = STATES.find((s) => s.name === "complete")!.state;
+  await page.setContent(pageHtml(complete));
+  await page.evaluate((name) => {
+    const el = document.querySelector<HTMLElement>('[data-role="download-status"]');
+    if (!el) throw new Error("download-status element not found in complete state");
+    el.textContent = `Saved vaulytica-analysis-${name}`;
+  }, LONG_NAME);
+  await expectNoHorizontalOverflow(page, "complete state w/ download-status");
+});
+
 // The live `a11y-axe.spec.ts` scans only the empty + complete states; this
 // covers the rest of the union — and both palettes, since contrast depends on
 // the theme (the default dark and the opt-in light) — so a low-contrast colour

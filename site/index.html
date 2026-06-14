@@ -884,6 +884,7 @@
         font-size: 13px;
         color: var(--muted);
         font-style: italic;
+        overflow-wrap: anywhere;
       }
       /* Pre-disclosure / "Clean to send" scan (spec-v9 Thrust A). A prominent
          block above the findings counts; presence-only, never a clean bill. */
@@ -1340,6 +1341,10 @@
         min-height: 1.25em;
         color: var(--muted);
         font-size: 14px;
+        /* Holds "Saved <filename>" where the filename derives from the user's
+           upload — long, space-free names (underscores) must wrap, not push the
+           card past the viewport on a narrow phone. */
+        overflow-wrap: anywhere;
       }
       .download-status:not(:empty) {
         color: var(--body);
