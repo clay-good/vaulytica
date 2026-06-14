@@ -2,6 +2,9 @@ import { describe, it, expect } from "vitest";
 import {
   bundlePostureCoherence,
   hasDivergence,
+  buildPostureCoherenceJson,
+  parsePostureCoherenceJson,
+  COHERENCE_ARTIFACT_SCHEMA,
   type CoherenceInput,
   type PostureCoherenceKind,
 } from "./posture-coherence.js";
@@ -140,5 +143,77 @@ describe("hasDivergence — the CI gate predicate", () => {
     );
     // Cap aligned, Law single, Indemnity unstated — no divergence.
     expect(hasDivergence(c)).toBe(false);
+  });
+});
+
+describe("posture coherence artifact (spec-v14 Thrust A — saved baseline)", () => {
+  const sample = () =>
+    bundlePostureCoherence(
+      bundle(
+        ["MSA.docx", { Cap: "ideal", Law: "ideal", Indemnity: "acceptable" }],
+        ["Order.docx", { Cap: "below-acceptable", Law: "ideal" }],
+      ),
+    );
+
+  it("round-trips a coherence through JSON byte-for-byte and preserves the hash", async () => {
+    const c = await sample();
+    const parsed = await parsePostureCoherenceJson(buildPostureCoherenceJson(c));
+    expect(parsed.ok).toBe(true);
+    if (!parsed.ok) return;
+    expect(parsed.coherence.coherence_hash).toBe(c.coherence_hash);
+    expect(parsed.coherence.dimensions).toEqual(c.dimensions);
+    expect(parsed.coherence.counts).toEqual(c.counts);
+    // Re-serializing the parsed coherence yields identical bytes (determinism).
+    expect(buildPostureCoherenceJson(parsed.coherence)).toBe(buildPostureCoherenceJson(c));
+  });
+
+  it("stamps the schema tag and a derivable coherence_hash", async () => {
+    const json = JSON.parse(buildPostureCoherenceJson(await sample()));
+    expect(json.schema).toBe(COHERENCE_ARTIFACT_SCHEMA);
+    expect(json.coherence_hash).toMatch(/^[0-9a-f]{64}$/);
+  });
+
+  it("rejects a tampered artifact whose hash no longer matches its dimensions", async () => {
+    const json = JSON.parse(buildPostureCoherenceJson(await sample()));
+    // Flip a stated tier without recomputing the hash — the integrity check must catch it.
+    json.dimensions[0].tiers[0].tier = "below-acceptable";
+    const parsed = await parsePostureCoherenceJson(JSON.stringify(json));
+    expect(parsed.ok).toBe(false);
+    if (parsed.ok) return;
+    expect(parsed.errors.join(" ")).toMatch(/coherence_hash mismatch/);
+  });
+
+  it("rejects the wrong schema tag", async () => {
+    const json = JSON.parse(buildPostureCoherenceJson(await sample()));
+    json.schema = "vaulytica.posture-coherence.v2";
+    const parsed = await parsePostureCoherenceJson(JSON.stringify(json));
+    expect(parsed.ok).toBe(false);
+    if (parsed.ok) return;
+    expect(parsed.errors.join(" ")).toMatch(/schema must be/);
+  });
+
+  it("rejects malformed JSON and a non-object top level without throwing", async () => {
+    expect((await parsePostureCoherenceJson("{not json")).ok).toBe(false);
+    expect((await parsePostureCoherenceJson("[]")).ok).toBe(false);
+    expect((await parsePostureCoherenceJson("42")).ok).toBe(false);
+  });
+
+  it("rejects an invalid tier or coherence kind", async () => {
+    const json = JSON.parse(buildPostureCoherenceJson(await sample()));
+    json.dimensions[0].coherence = "harmonious";
+    const parsed = await parsePostureCoherenceJson(JSON.stringify(json));
+    expect(parsed.ok).toBe(false);
+    if (parsed.ok) return;
+    expect(parsed.errors.join(" ")).toMatch(/coherence must be one of/);
+  });
+
+  it("recomputes counts from the verified dimensions, ignoring an importer-supplied tally", async () => {
+    const json = JSON.parse(buildPostureCoherenceJson(await sample()));
+    json.counts = { aligned: 99, divergent: 99, single: 99, unstated: 99 }; // not hash-covered
+    const parsed = await parsePostureCoherenceJson(JSON.stringify(json));
+    expect(parsed.ok).toBe(true);
+    if (!parsed.ok) return;
+    const total = Object.values(parsed.coherence.counts).reduce((a, b) => a + b, 0);
+    expect(total).toBe(parsed.coherence.dimensions.length);
   });
 });

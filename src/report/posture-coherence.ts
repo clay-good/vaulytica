@@ -156,7 +156,19 @@ export async function bundlePostureCoherence(
     return { dimension, tiers, weakest_tier, weakest_documents, coherence };
   });
 
-  const coherence_hash = await sha256Hex(
+  const coherence_hash = await coherenceHash(dimensions);
+
+  return { dimensions, counts, coherence_hash };
+}
+
+/**
+ * The canonical fingerprint of a coherence: SHA-256 over its dimension set, in
+ * the pinned dimension/document order. Factored out so {@link bundlePostureCoherence}
+ * computes it and {@link parsePostureCoherenceJson} re-derives it to verify a
+ * saved artifact has not been tampered with or hand-edited (spec-v14).
+ */
+async function coherenceHash(dimensions: PostureCoherenceDimension[]): Promise<string> {
+  return sha256Hex(
     stableStringify({
       dimensions: dimensions.map((d) => ({
         dimension: d.dimension,
@@ -167,8 +179,6 @@ export async function bundlePostureCoherence(
       })),
     }),
   );
-
-  return { dimensions, counts, coherence_hash };
 }
 
 /**
@@ -179,4 +189,146 @@ export async function bundlePostureCoherence(
  */
 export function hasDivergence(coherence: PostureCoherence): boolean {
   return coherence.counts.divergent > 0;
+}
+
+/** The schema tag stamped on (and required of) a saved coherence artifact. */
+export const COHERENCE_ARTIFACT_SCHEMA = "vaulytica.posture-coherence.v1";
+
+/**
+ * Serialize a {@link PostureCoherence} to a stable, pretty-printed JSON artifact
+ * (spec-v14 Thrust A) — a portable baseline a later round can gate against
+ * without re-checking-out the prior round's documents. The dimension and document
+ * order is already pinned by {@link bundlePostureCoherence}, and the key order is
+ * fixed here, so the same coherence always yields identical bytes; the embedded
+ * `coherence_hash` is the canonical fingerprint, re-derivable from `dimensions`.
+ */
+export function buildPostureCoherenceJson(coherence: PostureCoherence): string {
+  return JSON.stringify(
+    {
+      schema: COHERENCE_ARTIFACT_SCHEMA,
+      coherence_hash: coherence.coherence_hash,
+      counts: coherence.counts,
+      dimensions: coherence.dimensions.map((d) => ({
+        dimension: d.dimension,
+        tiers: d.tiers.map((t) => ({ document: t.document, tier: t.tier })),
+        weakest_tier: d.weakest_tier,
+        weakest_documents: d.weakest_documents,
+        coherence: d.coherence,
+      })),
+    },
+    null,
+    2,
+  );
+}
+
+const VALID_TIERS = new Set<NegotiationTier>(Object.keys(TIER_RANK) as NegotiationTier[]);
+const VALID_KINDS = new Set<PostureCoherenceKind>(["aligned", "divergent", "single", "unstated"]);
+
+export type ParsedCoherence =
+  | { ok: true; coherence: PostureCoherence }
+  | { ok: false; errors: string[] };
+
+function isObject(v: unknown): v is Record<string, unknown> {
+  return typeof v === "object" && v !== null && !Array.isArray(v);
+}
+
+/**
+ * Parse and **verify** a saved coherence artifact (spec-v14 Thrust A). Beyond a
+ * structural check, this re-derives the `coherence_hash` from the artifact's own
+ * `dimensions` and rejects the file when it does not match the embedded hash — so
+ * a corrupted, truncated, or hand-edited baseline can never silently drive a CI
+ * gate. The hash verifies the artifact's integrity; it cannot verify the two
+ * rounds used the **same** playbook ladder (the §3 cross-ladder contract the
+ * caller owns, exactly as v13's re-analyze path does).
+ *
+ * Returns a discriminated result mirroring `parseCustomPlaybookJson` — never
+ * throws on bad input, so the CLI can surface every error at once.
+ */
+export async function parsePostureCoherenceJson(text: string): Promise<ParsedCoherence> {
+  let raw: unknown;
+  try {
+    raw = JSON.parse(text);
+  } catch (e) {
+    return { ok: false, errors: [`not valid JSON: ${(e as Error).message}`] };
+  }
+  if (!isObject(raw)) return { ok: false, errors: ["top-level value must be an object"] };
+
+  const errors: string[] = [];
+  if (raw.schema !== COHERENCE_ARTIFACT_SCHEMA) {
+    errors.push(
+      `schema must be "${COHERENCE_ARTIFACT_SCHEMA}" (got ${JSON.stringify(raw.schema)})`,
+    );
+  }
+  if (typeof raw.coherence_hash !== "string") errors.push("coherence_hash must be a string");
+  if (!Array.isArray(raw.dimensions)) {
+    errors.push("dimensions must be an array");
+    return { ok: false, errors };
+  }
+
+  const dimensions: PostureCoherenceDimension[] = [];
+  raw.dimensions.forEach((d: unknown, i: number) => {
+    const at = `dimensions[${i}]`;
+    if (!isObject(d)) {
+      errors.push(`${at} must be an object`);
+      return;
+    }
+    if (typeof d.dimension !== "string") errors.push(`${at}.dimension must be a string`);
+    if (d.weakest_tier !== null && !VALID_TIERS.has(d.weakest_tier as NegotiationTier)) {
+      errors.push(`${at}.weakest_tier must be a tier or null`);
+    }
+    if (!VALID_KINDS.has(d.coherence as PostureCoherenceKind)) {
+      errors.push(`${at}.coherence must be one of ${[...VALID_KINDS].join(", ")}`);
+    }
+    if (
+      !Array.isArray(d.weakest_documents) ||
+      !d.weakest_documents.every((x) => typeof x === "string")
+    ) {
+      errors.push(`${at}.weakest_documents must be an array of strings`);
+    }
+    if (!Array.isArray(d.tiers)) {
+      errors.push(`${at}.tiers must be an array`);
+      return;
+    }
+    const tiers: DocumentTier[] = [];
+    d.tiers.forEach((t: unknown, j: number) => {
+      if (!isObject(t) || typeof t.document !== "string" || !VALID_TIERS.has(t.tier as NegotiationTier)) {
+        errors.push(`${at}.tiers[${j}] must be { document: string, tier: <tier> }`);
+        return;
+      }
+      tiers.push({ document: t.document, tier: t.tier as NegotiationTier });
+    });
+    dimensions.push({
+      dimension: d.dimension as string,
+      tiers,
+      weakest_tier: (d.weakest_tier ?? null) as NegotiationTier | null,
+      weakest_documents: (d.weakest_documents ?? []) as string[],
+      coherence: d.coherence as PostureCoherenceKind,
+    });
+  });
+
+  if (errors.length > 0) return { ok: false, errors };
+
+  // Integrity: re-derive the fingerprint and reject any drift from the embedded
+  // hash. This is what makes a saved baseline trustworthy as a CI gate input.
+  const recomputed = await coherenceHash(dimensions);
+  if (recomputed !== raw.coherence_hash) {
+    return {
+      ok: false,
+      errors: [
+        `coherence_hash mismatch — the artifact was modified or is corrupt (embedded ${String(
+          raw.coherence_hash,
+        ).slice(0, 12)}…, recomputed ${recomputed.slice(0, 12)}…)`,
+      ],
+    };
+  }
+
+  // Recompute counts from the verified dimensions rather than trusting the
+  // artifact's `counts` field — the hash covers `dimensions` only, so a derived
+  // tally is recomputed, never imported.
+  const counts = emptyCounts();
+  for (const d of dimensions) counts[d.coherence] += 1;
+  return {
+    ok: true,
+    coherence: { dimensions, counts, coherence_hash: raw.coherence_hash as string },
+  };
 }

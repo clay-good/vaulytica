@@ -3,7 +3,10 @@
  *
  *   tsx tools/cli/run.ts analyze <path|glob|dir> \
  *       [--playbook <id>] [--format json,sarif,html,md,csv] \
- *       [--out <dir>] [--fail-on critical|warning|info]
+ *       [--out <dir>] [--fail-on critical|warning|info] \
+ *       [--playbook-file <path> --posture [--fail-on-divergence]] \
+ *       [--baseline <bundle> | --baseline-coherence <coherence.json>] \
+ *       [--emit-coherence <path>] [--fail-on-coherence-regression]
  *   tsx tools/cli/run.ts diff <a.json> <b.json> [--format markdown|json] [--exit-code]
  *   tsx tools/cli/run.ts compare <base> <revised> [--fail-on <sev>] [--fail-on-regression] [--format json|markdown]
  *   tsx tools/cli/run.ts verify <report.json> <original> [--playbook <id>]
@@ -33,6 +36,8 @@ import { parseCustomPlaybookJson } from "../../src/playbooks/custom-playbook.js"
 import {
   bundlePostureCoherence,
   hasDivergence,
+  buildPostureCoherenceJson,
+  parsePostureCoherenceJson,
   type CoherenceInput,
   type PostureCoherence,
 } from "../../src/report/posture-coherence.js";
@@ -75,6 +80,10 @@ type Args = {
   baseline?: string;
   /** spec-v13 Thrust A — exit non-zero when the bundle's binding floor regressed vs. the baseline. */
   failOnCoherenceRegression?: boolean;
+  /** spec-v14 Thrust B — write this round's cross-document coherence to a portable artifact. */
+  emitCoherence?: string;
+  /** spec-v14 Thrust B — diff against a saved coherence artifact instead of re-analyzing a baseline bundle. */
+  baselineCoherence?: string;
 };
 
 function parseArgs(argv: string[]): Args {
@@ -127,6 +136,14 @@ function parseArgs(argv: string[]): Args {
         break;
       case "--fail-on-coherence-regression":
         args.failOnCoherenceRegression = true;
+        break;
+      case "--emit-coherence":
+        args.emitCoherence = val;
+        i++;
+        break;
+      case "--baseline-coherence":
+        args.baselineCoherence = val;
+        i++;
         break;
       default:
         throw new Error(`unknown flag "${flag}"`);
@@ -275,8 +292,28 @@ async function runAnalyze(argv: string[]): Promise<void> {
     process.exitCode = 1;
     return;
   }
-  if (args.failOnCoherenceRegression && !args.baseline) {
-    process.stderr.write("--fail-on-coherence-regression requires --baseline\n");
+  // spec-v14 — a saved coherence baseline is an alternative source for the same
+  // diff; it requires --posture (this round must produce a coherence) and is
+  // mutually exclusive with re-analyzing a baseline bundle.
+  if (args.baselineCoherence && !args.posture) {
+    process.stderr.write("--baseline-coherence requires --posture\n");
+    process.exitCode = 1;
+    return;
+  }
+  if (args.baseline && args.baselineCoherence) {
+    process.stderr.write("--baseline and --baseline-coherence are mutually exclusive\n");
+    process.exitCode = 1;
+    return;
+  }
+  if (args.failOnCoherenceRegression && !args.baseline && !args.baselineCoherence) {
+    process.stderr.write(
+      "--fail-on-coherence-regression requires --baseline or --baseline-coherence\n",
+    );
+    process.exitCode = 1;
+    return;
+  }
+  if (args.emitCoherence && !args.posture) {
+    process.stderr.write("--emit-coherence requires --posture\n");
     process.exitCode = 1;
     return;
   }
@@ -357,24 +394,58 @@ async function runAnalyze(argv: string[]): Promise<void> {
     diverged = hasDivergence(coherence);
   }
 
+  // spec-v14 Thrust B — emit this round's coherence as a portable, hash-verified
+  // baseline artifact, so a later round can gate against it (--baseline-coherence)
+  // without re-checking-out this round's documents. Off by default; additive.
+  if (args.emitCoherence) {
+    if (!coherence) {
+      process.stderr.write(
+        `\n--emit-coherence: no cross-document coherence to write (need ≥2 documents with a posture).\n`,
+      );
+    } else {
+      await writeFile(args.emitCoherence, buildPostureCoherenceJson(coherence));
+      process.stdout.write(`\nwrote coherence artifact → ${resolve(args.emitCoherence)}\n`);
+    }
+  }
+
   // spec-v13 Thrust A — cross-document posture movement. Given a baseline bundle
   // (a prior round of the same deal, classified against the SAME playbook), diff
   // the two coherences front-by-front: how did each binding floor move, and did
   // any front fracture or reconcile? Matched by dimension, so the baseline may
-  // carry different filenames or a different document count.
+  // carry different filenames or a different document count. spec-v14 adds a
+  // second baseline source: a saved coherence artifact, verified on load.
   let regressed = false;
-  if (coherence && args.baseline) {
-    const baselineCoherence = await collectBaselineCoherence(args.baseline, {
-      deps,
-      playbookId: args.playbook,
-      customPlaybook,
-    });
-    if (!baselineCoherence) {
-      process.stderr.write(
-        `\n--baseline: ${args.baseline} yielded no cross-document coherence (need ≥2 documents with a posture).\n`,
-      );
-      process.exitCode = 1;
-      return;
+  if (coherence && (args.baseline || args.baselineCoherence)) {
+    let baselineCoherence: PostureCoherence | null;
+    if (args.baselineCoherence) {
+      const text = await readFile(args.baselineCoherence, "utf8").catch(() => null);
+      if (text === null) {
+        process.stderr.write(`\n--baseline-coherence: cannot read ${args.baselineCoherence}\n`);
+        process.exitCode = 1;
+        return;
+      }
+      const parsed = await parsePostureCoherenceJson(text);
+      if (!parsed.ok) {
+        process.stderr.write(
+          `\n--baseline-coherence: invalid artifact ${args.baselineCoherence}:\n  ${parsed.errors.join("\n  ")}\n`,
+        );
+        process.exitCode = 1;
+        return;
+      }
+      baselineCoherence = parsed.coherence;
+    } else {
+      baselineCoherence = await collectBaselineCoherence(args.baseline!, {
+        deps,
+        playbookId: args.playbook,
+        customPlaybook,
+      });
+      if (!baselineCoherence) {
+        process.stderr.write(
+          `\n--baseline: ${args.baseline} yielded no cross-document coherence (need ≥2 documents with a posture).\n`,
+        );
+        process.exitCode = 1;
+        return;
+      }
     }
     const movement = await compareCoherence(baselineCoherence, coherence);
     process.stdout.write(renderCoherenceMovementSummary(movement));

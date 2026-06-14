@@ -4,6 +4,47 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.11.0] — 2026-06-14 — Saved coherence baselines (spec-v14)
+
+### Added
+- **A portable, hash-verified cross-document posture coherence artifact
+  (spec-v14, resolving spec-v13 Open Question #2).** A deal lead can now gate
+  round two of a negotiation against round one **without round one's documents
+  on disk**. Round one emits its coherence once; round two diffs against the
+  saved artifact. The diff is the same pure `compareCoherence` v13 ships — only
+  the *source* of the baseline coherence changes.
+  - **Thrust A — the artifact (engine).** `buildPostureCoherenceJson(coherence)`
+    serializes a `PostureCoherence` to stable, pretty-printed JSON tagged
+    `vaulytica.posture-coherence.v1` (the `coherence_hash`, the per-kind
+    `counts`, and the full per-front, per-document rung set, in the pinned
+    document order). `parsePostureCoherenceJson(text)` is the verifying inverse:
+    it structurally validates the file, **re-derives the `coherence_hash` from
+    the artifact's own dimensions**, and rejects any mismatch — a corrupted,
+    truncated, or hand-edited baseline is a hard, legible error
+    (`coherence_hash mismatch …`), never a silent gate input. `counts` is
+    recomputed from the verified dimensions on load (the hash covers dimensions
+    only). The fingerprint is factored into a single `coherenceHash` helper used
+    both to stamp (in `bundlePostureCoherence`) and to verify (in the parser).
+  - **Thrust B — emit & consume (headless).** `analyze --posture
+    --emit-coherence <path>` writes the round's coherence artifact (a clear
+    stderr note, not a silent no-op, when the round yields no cross-document
+    coherence). `analyze --posture --baseline-coherence <coherence.json>` diffs
+    against a saved, verified coherence instead of re-analyzing a baseline
+    bundle (mutually exclusive with `--baseline`). `--fail-on-coherence-regression`
+    now accepts **either** baseline source; the exit-2 regressed-binding-floor
+    gate is unchanged.
+  - **Additive.** Both flags are off by default — with neither set the CLI is
+    byte-identical to v13, so every per-document `result_hash`, `coherence_hash`,
+    `movement_hash`, and golden is byte-unchanged. A browser/DOCX surface is a
+    principled deferral (the artifact is a CI/headless concern; the browser
+    already does an in-session two-round comparison via v13 Thrust B).
+  - **+8 tests** (suite 2,992 → 3,000 passing + 2 skips): seven coherence-artifact
+    unit tests (round-trip identity, hash integrity, tamper rejection,
+    wrong-schema rejection, malformed-JSON/non-object rejection, invalid
+    tier/kind rejection, count recomputation) and one CLI integration test
+    proving a disk-round-tripped coherence yields the same `movement_hash` as the
+    in-memory `--baseline` diff. New [`docs/spec-v14.md`](docs/spec-v14.md).
+
 ## [9.10.1] — 2026-06-13 — Mobile overflow hardening (download status + uncovered-state line)
 
 ### Fixed

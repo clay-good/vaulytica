@@ -1,5 +1,5 @@
 import { afterAll, describe, expect, it } from "vitest";
-import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
+import { mkdtemp, mkdir, writeFile, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, basename } from "node:path";
 import {
@@ -9,8 +9,12 @@ import {
   renderCoherenceSummary,
   renderCoherenceMovementSummary,
 } from "./run.js";
-import { bundlePostureCoherence } from "../../src/report/posture-coherence.js";
-import { compareCoherence } from "../../src/report/coherence-movement.js";
+import {
+  bundlePostureCoherence,
+  buildPostureCoherenceJson,
+  parsePostureCoherenceJson,
+} from "../../src/report/posture-coherence.js";
+import { compareCoherence, coherenceRegressed } from "../../src/report/coherence-movement.js";
 import type { NegotiationPosture, NegotiationTier } from "../../src/playbooks/custom-interpreter.js";
 
 describe("splitGlob (CLI glob resolution)", () => {
@@ -171,5 +175,48 @@ describe("renderCoherenceMovementSummary (spec-v13 cross-document posture moveme
     const out = renderCoherenceMovementSummary(await compareCoherence(base, revised));
     expect(out).toContain("• Cap: binding floor ↑ improved (below-acceptable → acceptable)");
     expect(out).not.toContain("⚠");
+  });
+});
+
+describe("saved coherence baseline (spec-v14 — --emit-coherence / --baseline-coherence)", () => {
+  const dirs: string[] = [];
+  afterAll(async () => {
+    for (const d of dirs) await rm(d, { recursive: true, force: true });
+  });
+  function posture(map: Record<string, NegotiationTier>): NegotiationPosture {
+    return {
+      positions: Object.entries(map).map(([dimension, tier]) => ({ dimension, tier })),
+      counts: { ideal: 0, acceptable: 0, below_acceptable: 0, unevaluable: 0 },
+      posture_hash: "test",
+    };
+  }
+
+  it("a coherence emitted to disk then loaded yields the same movement as the in-memory path", async () => {
+    // Round one (the baseline) — emitted as an artifact, then round-tripped through disk.
+    const base = await bundlePostureCoherence([
+      { document: "msa-v1.docx", posture: posture({ Cap: "acceptable", Law: "ideal" }) },
+      { document: "order-v1.docx", posture: posture({ Cap: "acceptable", Law: "ideal" }) },
+    ]);
+    const revised = await bundlePostureCoherence([
+      { document: "msa-v2.docx", posture: posture({ Cap: "ideal", Law: "ideal" }) },
+      { document: "order-v2.docx", posture: posture({ Cap: "below-acceptable", Law: "ideal" }) },
+    ]);
+
+    const dir = await mkdtemp(join(tmpdir(), "vaulytica-coherence-"));
+    dirs.push(dir);
+    const artifact = join(dir, "round1.coherence.json");
+    await writeFile(artifact, buildPostureCoherenceJson(base));
+
+    const text = await readFile(artifact, "utf8");
+    const parsed = await parsePostureCoherenceJson(text);
+    expect(parsed.ok).toBe(true);
+    if (!parsed.ok) return;
+
+    // The movement computed from the disk artifact must be byte-identical to the
+    // movement the v13 --baseline path computes from the in-memory coherence.
+    const fromDisk = await compareCoherence(parsed.coherence, revised);
+    const inMemory = await compareCoherence(base, revised);
+    expect(fromDisk.movement_hash).toBe(inMemory.movement_hash);
+    expect(coherenceRegressed(fromDisk)).toBe(true); // Cap floor dropped acceptable → below-acceptable
   });
 });
