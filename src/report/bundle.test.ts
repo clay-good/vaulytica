@@ -23,6 +23,8 @@ import { loadStarterDkbSync } from "../engine/_test-fixtures.js";
 import type { BundleDocument, BundleReportInput } from "./bundle.js";
 import type { EngineRun, Finding } from "../engine/finding.js";
 import type { ConsistencyRun, ConsistencyFinding } from "../engine/consistency/types.js";
+import { bundlePostureCoherence } from "./posture-coherence.js";
+import type { NegotiationPosture, NegotiationTier } from "../playbooks/custom-interpreter.js";
 
 function finding(id: string, severity: Finding["severity"], rule_id = "STRUCT-001"): Finding {
   return {
@@ -248,6 +250,57 @@ describe("buildBundleDocxReport", () => {
     const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
     const docXml = strFromU8(entries["word/document.xml"]!);
     expect(docXml).not.toContain("Skipped Files");
+  });
+});
+
+describe("buildBundleDocxReport — Posture Coherence section (spec-v12 Thrust C)", () => {
+  function posture(map: Record<string, NegotiationTier>): NegotiationPosture {
+    return {
+      positions: Object.entries(map).map(([dimension, tier]) => ({ dimension, tier })),
+      counts: { ideal: 0, acceptable: 0, below_acceptable: 0, unevaluable: 0 },
+      posture_hash: "test",
+    };
+  }
+
+  it("renders the Posture Coherence section with the per-front spread + binding floor", async () => {
+    const coherence = await bundlePostureCoherence([
+      { document: "msa.docx", posture: posture({ "Liability cap": "ideal", "Governing law": "ideal" }) },
+      { document: "order.docx", posture: posture({ "Liability cap": "below-acceptable", "Governing law": "ideal" }) },
+    ]);
+    const input: BundleReportInput = { ...makeInput(), posture_coherence: coherence };
+    const blob = await buildBundleDocxReport(input);
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const docXml = strFromU8(entries["word/document.xml"]!);
+    expect(docXml).toContain("Posture Coherence");
+    // The divergent cap names both rungs and the binding floor document.
+    expect(docXml).toContain("Liability cap");
+    expect(docXml).toContain("Divergent");
+    expect(docXml).toContain("below floor");
+    // Governing law is aligned at ideal across both documents.
+    expect(docXml).toContain("Aligned");
+    // The binding-floor cell names the weakest document.
+    expect(docXml).toContain("order.docx");
+  });
+
+  it("omits the Posture Coherence section when no coherence is supplied (golden byte-stable)", async () => {
+    const blob = await buildBundleDocxReport(makeInput());
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const docXml = strFromU8(entries["word/document.xml"]!);
+    expect(docXml).not.toContain("Posture Coherence");
+  });
+
+  it("is deterministic: same coherence → identical rendered document body", async () => {
+    const coherence = await bundlePostureCoherence([
+      { document: "a.docx", posture: posture({ Cap: "ideal" }) },
+      { document: "b.docx", posture: posture({ Cap: "acceptable" }) },
+    ]);
+    const input: BundleReportInput = { ...makeInput(), posture_coherence: coherence };
+    const render = async (): Promise<string> => {
+      const blob = await buildBundleDocxReport(input);
+      const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+      return strFromU8(entries["word/document.xml"]!);
+    };
+    expect(await render()).toBe(await render());
   });
 });
 

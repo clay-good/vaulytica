@@ -630,7 +630,7 @@ no network, and no clock in the path.
 
 ### v12 — posture coherence (cross-document surface)
 
-The cross-document posture coherence (spec-v12 Thrust A) adds **no new read
+The cross-document posture coherence (spec-v12) adds **no new read
 surface, no new extraction, and no new predicate**. `bundlePostureCoherence(documents)`
 is a pure function over one already-computed `NegotiationPosture` per document — it
 compares tier *labels* across documents and emits a per-front coherence plus a
@@ -638,11 +638,15 @@ binding floor. There is no document parsing, no network, and no clock in the pat
 
 - **No new untrusted input.** The only inputs are postures the v10 evaluator
   produced; the author strings they carry (dimension labels) were already bounded
-  at the v10 surface. The coherence is a headless-only surface (the CLI `analyze`
-  bundle path) and is never rendered to HTML in v12, so there is no new injection
-  sink; the divergence ⚠ lines are printed to a terminal, where the closed-enum
-  tier/coherence values and the document paths the user themselves supplied are the
-  only interpolated text.
+  at the v10 surface. The coherence reaches three surfaces — the CLI `analyze`
+  bundle summary (terminal), the bundle-complete tab card (Thrust B), and the
+  consolidated bundle DOCX section (Thrust C) — and each renders the same already-
+  bounded data. **User-supplied strings are escaped at every render.** The tab card
+  escapes the `dimension` label and the document filenames through the same
+  `escapeHtml` choke point the v10/v11 cards use (a `<script>` in a dimension or
+  filename renders inert), and the DOCX writer emits them as plain text runs; the
+  tier/coherence values are a closed enum, not author text. A shareable bundle
+  report can never carry live markup from a playbook or a filename.
 - **Honest about unstated data.** A front a document does not state is
   `unevaluable`, which is unranked: it is never folded into a divergence and never
   lowers the binding floor. A front no document states (`unstated`) or only one

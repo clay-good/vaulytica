@@ -1166,6 +1166,22 @@
       .np-card.pm-unstated {
         border-left-color: #a86700;
       }
+      /* Cross-document posture-coherence card colors (spec-v12). Reuses the
+         .np-card base; the left border encodes whether the bundle holds one
+         line on a front: green aligned, red divergent, blue stated-by-one,
+         grey unstated. */
+      .np-card.pc-aligned {
+        border-left-color: #1a8f5a;
+      }
+      .np-card.pc-divergent {
+        border-left-color: #b00020;
+      }
+      .np-card.pc-single {
+        border-left-color: var(--accent, #2d6cdf);
+      }
+      .np-card.pc-unstated {
+        border-left-color: color-mix(in srgb, var(--muted) 55%, transparent);
+      }
       /* Closing-checklist view (spec-v9 Thrust B). The consolidated
          execution-readiness items, grouped and mobile-safe. */
       .closing-checklist-section {

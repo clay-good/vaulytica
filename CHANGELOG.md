@@ -4,6 +4,49 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.8.0] — 2026-06-13 — Posture coherence in the browser bundle + bundle DOCX (spec-v12 Thrusts B & C)
+
+### Added
+- **Per-document posture through the browser bundle pipeline (spec-v12 Thrust B,
+  Step 184).** [`prepareBundle`](src/ui/pipeline.ts) now evaluates a v10
+  negotiation posture for each document in a bundle when the active custom
+  playbook defines `negotiation_positions` — every document classified against
+  the **same** positions, independent of the matched built-in playbook that
+  drives its per-document engine run (which is untouched). The postures ride on
+  `BundlePerDocument.negotiation_posture` (their own `posture_hash`, outside
+  every `result_hash`). [`runBundleReport`](src/ui/pipeline.ts) collects them and
+  computes a [`bundlePostureCoherence`](src/report/posture-coherence.ts) when
+  every document carries one (a bundle is always ≥2 documents).
+  [main.ts](src/ui/main.ts) threads the active custom playbook into
+  `runBundlePipeline` so the bundle path sees the positions.
+- **Bundle-complete "Posture coherence" card (spec-v12 Thrust B, Step 185).** The
+  bundle-complete UI state renders a mobile-safe coherence card: the per-kind
+  counts (aligned / divergent / stated-by-one / unstated), one card per
+  negotiation front showing the rung spread across the documents and the
+  **binding floor** (the weakest stated rung + the document carrying it),
+  color-coded by a `pc-*` left border (green aligned, red divergent, blue
+  stated-by-one, grey unstated) reusing the v10 `np-*` overflow-wrap styles.
+  Hidden when no coherence was computed. Verified vertical-scroll-only across
+  320–1280px with zero axe WCAG 2 AA violations in both themes.
+- **Consolidated bundle DOCX "Posture Coherence" section (spec-v12 Thrust C,
+  Step 186).** [`buildBundleDocxReport`](src/report/bundle.ts) renders a trailing,
+  optional "Posture Coherence" section: the per-kind counts + a color-coded table
+  (Front · Coherence · per-document rung · binding floor). Omitted entirely when
+  no `posture_coherence` is supplied, so every existing bundle golden is
+  byte-unchanged. Advisory — it names the weakest document but never adjudicates
+  which document legally governs on a conflict (spec-v12 §3 corollary 3).
+
+### Notes
+- Additive and back-compatible: a bundle run with no active posture playbook
+  yields no coherence, so the bundle JSON, the consolidated DOCX, and every
+  per-document `result_hash` and bundle golden are byte-identical to 9.7.0.
+- In the bundle path the custom playbook contributes **only** its posture
+  positions; the per-document engine run is still driven by each document's
+  matched built-in playbook, and secondary-family activation continues to run
+  for every bundled document (the single-doc "custom mode redefines rule
+  semantics" skip does not apply here, since the custom playbook does not drive
+  the bundle's engine run).
+
 ## [9.7.0] — 2026-06-13 — Cross-document posture coherence (spec-v12 Thrust A)
 
 ### Added

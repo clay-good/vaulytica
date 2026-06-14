@@ -409,6 +409,43 @@ const STATES: Array<{ name: string; state: DropzoneState }> = [
           reason: "Unsupported file type — only PDF and DOCX are analyzed; this entry was skipped.",
         },
       ],
+      // spec-v12 posture coherence — long dimension labels + filenames stress wrap.
+      posture_coherence: {
+        counts: { aligned: 1, divergent: 1, single: 1, unstated: 0 },
+        dimensions: [
+          {
+            dimension:
+              "Aggregate limitation of liability cap as a multiple of trailing-twelve-month fees paid",
+            coherence: "divergent",
+            tiers: [
+              { document: `${LONG_NAME.slice(0, 40)}_master_services_agreement.pdf`, tier: "ideal" },
+              { document: `${LONG_NAME.slice(0, 40)}_order_form.pdf`, tier: "below-acceptable" },
+            ],
+            weakest_tier: "below-acceptable",
+            weakest_documents: [`${LONG_NAME.slice(0, 40)}_order_form.pdf`],
+          },
+          {
+            dimension: "Governing law and exclusive forum selection for all disputes arising hereunder",
+            coherence: "aligned",
+            tiers: [
+              { document: "msa.pdf", tier: "ideal" },
+              { document: "order_form.pdf", tier: "ideal" },
+            ],
+            weakest_tier: "ideal",
+            weakest_documents: ["msa.pdf", "order_form.pdf"],
+          },
+          {
+            dimension: "Mutuality of the indemnification obligations between the contracting parties",
+            coherence: "single",
+            tiers: [
+              { document: "msa.pdf", tier: "acceptable" },
+              { document: "order_form.pdf", tier: "unevaluable" },
+            ],
+            weakest_tier: "acceptable",
+            weakest_documents: ["msa.pdf"],
+          },
+        ],
+      },
       cross_doc_active: true,
     },
   },

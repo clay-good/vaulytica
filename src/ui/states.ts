@@ -387,6 +387,27 @@ export type DropzoneState =
        * user-facing string is already polished.
        */
       rejected?: ReadonlyArray<{ filename: string; reason: string }>;
+      /**
+       * Cross-document negotiation-posture coherence (spec-v12 Thrust B).
+       * Present only when the active custom playbook defined positions, so
+       * every document in the bundle carries a posture against the same
+       * ladder. When set, the bundle-complete state renders a "Posture
+       * coherence" card: one row per front (the rung spread across the
+       * documents + the binding floor), color-coded by coherence. Advisory —
+       * it reports where each front sits across the team's own ladder, never
+       * which document legally governs. Omitted (back-compat) when no
+       * positions were supplied.
+       */
+      posture_coherence?: {
+        dimensions: ReadonlyArray<{
+          dimension: string;
+          coherence: "aligned" | "divergent" | "single" | "unstated";
+          tiers: ReadonlyArray<{ document: string; tier: string }>;
+          weakest_tier: string | null;
+          weakest_documents: ReadonlyArray<string>;
+        }>;
+        counts: { aligned: number; divergent: number; single: number; unstated: number };
+      };
     }
   | {
       kind: "error";
@@ -488,6 +509,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
       <ul class="bundle-rejected-list" data-role="bundle-rejected-list" aria-label="Files skipped from this bundle"></ul>
     </div>
     <ul class="multi-doc-cards" data-role="multi-doc-cards" aria-label="Per-document summary" hidden></ul>
+    <div class="negotiation-section" data-role="bundle-posture-coherence" hidden></div>
     <button class="btn btn-primary" type="button" data-role="bundle-download">Download consolidated report (Word)</button>
     <button class="btn-link" type="button" data-role="bundle-json-download">Download bundle data (JSON)</button>
     <button class="btn-link" type="button" data-role="bundle-zip-download" hidden>Download everything (.zip)</button>
@@ -702,6 +724,7 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
     }
     renderRejectedFiles(dz, state.rejected);
     renderMultiDocCards(dz, state.documents);
+    renderPostureCoherence(dz, state.posture_coherence);
     const docxBtn = select<HTMLButtonElement>(dz, "bundle-download")!;
     const jsonBtn = select<HTMLButtonElement>(dz, "bundle-json-download")!;
     const status = select<HTMLElement>(dz, "download-status")!;
@@ -1244,6 +1267,73 @@ function renderPostureMovement(
     </div>
     <ul class="np-list">${cards}</ul>
     <div class="np-note">How each rung moved between the two drafts, deterministically — it shows where your position shifted on your own ladder, not a legal conclusion about either draft.</div>
+  `;
+}
+
+const COHERENCE_KIND_LABEL: Record<string, { label: string; cls: string }> = {
+  aligned: { label: "Aligned", cls: "pc-aligned" },
+  divergent: { label: "Divergent — reconcile", cls: "pc-divergent" },
+  single: { label: "Stated by one", cls: "pc-single" },
+  unstated: { label: "Unstated", cls: "pc-unstated" },
+};
+
+const COHERENCE_TIER_SHORT: Record<string, string> = {
+  ideal: "ideal",
+  acceptable: "acceptable",
+  "below-acceptable": "below floor",
+  unevaluable: "not stated",
+};
+
+function coherenceTierShort(tier: string): string {
+  return COHERENCE_TIER_SHORT[tier] ?? tier;
+}
+
+/**
+ * Cross-document posture-coherence view (spec-v12 Thrust B). Shows, per front,
+ * whether the bundle holds one rung across its documents (aligned), disagrees
+ * (divergent), is stated by one document (single), or stated by none
+ * (unstated) — plus the binding floor (the weakest stated rung + the document
+ * carrying it). Mobile-safe (reuses the `np-*` overflow-wrap card styles, with
+ * a `pc-*` coherence color on the left border); advisory — never a legal
+ * conclusion, never a precedence ruling. Hidden when no coherence was computed.
+ */
+function renderPostureCoherence(
+  dz: HTMLElement,
+  pc: Extract<DropzoneState, { kind: "bundle-complete" }>["posture_coherence"],
+): void {
+  const el = select<HTMLElement>(dz, "bundle-posture-coherence");
+  if (!el) return;
+  if (!pc || pc.dimensions.length === 0) {
+    el.hidden = true;
+    el.innerHTML = "";
+    return;
+  }
+  el.hidden = false;
+  const c = pc.counts;
+  const cards = pc.dimensions
+    .map((d) => {
+      const kind = COHERENCE_KIND_LABEL[d.coherence] ?? { label: d.coherence, cls: "pc-single" };
+      const spread = d.tiers
+        .map((t) => `${escapeHtml(t.document)}: ${escapeHtml(coherenceTierShort(t.tier))}`)
+        .join(" · ");
+      const floor =
+        d.weakest_tier === null
+          ? ""
+          : `<div class="np-detail">Binding floor: ${escapeHtml(coherenceTierShort(d.weakest_tier))} in ${escapeHtml(d.weakest_documents.join(", "))}</div>`;
+      return `<li class="np-card ${kind.cls}">
+        <div class="np-head"><span class="np-dim">${escapeHtml(d.dimension)}</span> <span class="np-tier">${escapeHtml(kind.label)}</span></div>
+        <div class="np-detail">${spread}</div>
+        ${floor}
+      </li>`;
+    })
+    .join("");
+  el.innerHTML = `
+    <div class="np-heading">
+      <span class="np-badge">Posture coherence</span>
+      <span class="np-summary">${c.aligned} aligned · ${c.divergent} divergent · ${c.single} stated by one · ${c.unstated} unstated</span>
+    </div>
+    <ul class="np-list">${cards}</ul>
+    <div class="np-note">How your posture sits across the whole bundle, deterministically — each document was classified against the same positions; it names the weakest document but does not decide which one legally governs.</div>
   `;
 }
 

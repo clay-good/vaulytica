@@ -76,6 +76,11 @@ import {
   type BundleDocument,
 } from "../report/bundle.js";
 import {
+  bundlePostureCoherence,
+  type PostureCoherence,
+  type CoherenceInput,
+} from "../report/posture-coherence.js";
+import {
   detectV3Family,
   defaultFramesForPlaybook,
   type ComplianceFrame,
@@ -810,6 +815,14 @@ export type BundlePerDocument = {
    * consolidated bundle report's per-document subsection.
    */
   secondary_families: SecondaryFamilyResult[];
+  /**
+   * Negotiation posture for this document (spec-v12 Thrust B). Present only
+   * when the active custom playbook defines `negotiation_positions`; each
+   * document in the bundle is classified against the **same** positions, so
+   * the postures can be diffed across the bundle into a cross-document
+   * coherence. Additive — its own `posture_hash`, outside `run.result_hash`.
+   */
+  negotiation_posture?: NegotiationPosture;
 };
 
 export type BundlePipelineResult = {
@@ -818,6 +831,16 @@ export type BundlePipelineResult = {
   consistency: ConsistencyRun;
   bundle_docx_blob: Blob;
   bundle_json_blob: Blob;
+  /**
+   * Cross-document negotiation-posture coherence (spec-v12 Thrust B). Present
+   * only when the active custom playbook defines `negotiation_positions` (so
+   * every document carries a posture against the **same** ladder). Reports,
+   * per front, whether the bundle holds one rung (`aligned`), disagrees
+   * (`divergent`), is stated by one (`single`), or stated by none (`unstated`),
+   * plus the binding floor. Additive — its own `coherence_hash`, outside every
+   * `result_hash` and the bundle fingerprint.
+   */
+  posture_coherence?: PostureCoherence;
   /**
    * Bundle "everything" archive (spec-v8 §25): a single deterministic ZIP
    * holding the consolidated DOCX, the bundle JSON, and per-document
@@ -1000,20 +1023,35 @@ export async function prepareBundle(
 
     // Multi-family activation (spec-v6): scan the other families this document
     // clearly contains so a composite document inside a bundle is treated the
-    // same as one dropped alone. Skipped under a custom playbook (its mode
-    // redefines the rule semantics), matching the single-doc path.
+    // same as one dropped alone. Unlike the single-doc path, the bundle's
+    // per-doc engine run is always driven by the matched built-in playbook
+    // (the custom playbook contributes only its posture positions, spec-v12
+    // Thrust B), so the "custom mode redefines rule semantics" rationale that
+    // skips secondaries single-doc does not apply here — they always run.
     const secondaryPlaybooks = selectSecondaryFamilies(
       extendedPlaybooks,
       { title: titleSource, body: bundleBody, classified: extracted.classified, extracted },
       match.playbook_id,
     );
-    const secondary_families = options.custom_playbook
-      ? []
-      : await runSecondaryFamilies(
-          secondaryPlaybooks,
-          { tree: ingest.tree, extracted, dkb, source_file: sourceFile },
-          options.active_frames,
-        );
+    const secondary_families = await runSecondaryFamilies(
+      secondaryPlaybooks,
+      { tree: ingest.tree, extracted, dkb, source_file: sourceFile },
+      options.active_frames,
+    );
+
+    // spec-v12 Thrust B — per-document negotiation posture, evaluated when the
+    // active custom playbook defines positions. Every document in the bundle is
+    // classified against the **same** positions so the postures can be diffed
+    // into a cross-document coherence. Additive (own posture_hash, independent
+    // of which rule set drove the engine run above).
+    let negotiation_posture: NegotiationPosture | undefined;
+    const bundlePositions = options.custom_playbook?.negotiation_positions;
+    if (bundlePositions && bundlePositions.length > 0) {
+      negotiation_posture = await evaluateNegotiationPosture(bundlePositions, {
+        tree: ingest.tree,
+        extracted,
+      });
+    }
 
     const docx_blob = await buildDocxReport(
       run,
@@ -1039,6 +1077,7 @@ export async function prepareBundle(
       json_blob,
       v3_detection,
       secondary_families,
+      negotiation_posture,
     });
     consistencyDocs.push({
       doc_id: `doc-${i + 1}-${entry.filename}`,
@@ -1082,12 +1121,27 @@ export async function runBundleReport(
     executed_at: new Date().toISOString(),
   });
 
+  // spec-v12 Thrust B — cross-document posture coherence. Computed only when
+  // every document carries a posture (the active custom playbook defined
+  // positions, applied to all of them against the same ladder). A bundle is
+  // always ≥2 documents, so when postures are present there is something to
+  // compare; absent positions, the coherence is omitted and every bundle
+  // golden is unchanged.
+  const coherenceInputs: CoherenceInput[] = prepared.documents
+    .filter((d) => d.negotiation_posture)
+    .map((d) => ({ document: d.filename, posture: d.negotiation_posture! }));
+  const posture_coherence =
+    coherenceInputs.length === prepared.documents.length && coherenceInputs.length >= 2
+      ? await bundlePostureCoherence(coherenceInputs)
+      : undefined;
+
   const bundleInput: {
     documents: BundleDocument[];
     consistency: typeof consistency;
     dkb: DKB;
     rejected?: ReadonlyArray<{ filename: string; reason: string }>;
     consistency_enabled?: boolean;
+    posture_coherence?: PostureCoherence;
   } = {
     documents: prepared.documents.map((d) => ({
       doc_id: `doc-${d.filename}`,
@@ -1111,6 +1165,7 @@ export async function runBundleReport(
     dkb: prepared.dkb,
     rejected: prepared.rejected.length > 0 ? prepared.rejected : undefined,
     consistency_enabled: consistencyEnabled,
+    posture_coherence,
   };
   const bundle_docx_blob = await buildBundleDocxReport(bundleInput);
   const bundle_json_blob = await buildBundleJsonBlob(bundleInput);
@@ -1128,6 +1183,7 @@ export async function runBundleReport(
     bundle_docx_blob,
     bundle_json_blob,
     bundle_zip_blob,
+    posture_coherence,
   };
 }
 

@@ -555,7 +555,14 @@ async function runBundle(
           setState(dz, { kind: "analyzing", filename: summary, dkb_version: version }),
       },
       {},
-      { cross_doc_consistency: options.cross_doc_consistency },
+      {
+        cross_doc_consistency: options.cross_doc_consistency,
+        // spec-v12 Thrust B — thread the active custom playbook so each document
+        // gets a posture against the same positions, diffed into a
+        // cross-document coherence card. The playbook drives only the posture
+        // here (not the per-doc engine run); absent positions, no coherence.
+        custom_playbook: activeCustomPlaybook ?? undefined,
+      },
     );
     // Retain the prepared bundle so a consistency toggle can re-run
     // just the consistency pass + bundle-report rebuild without
@@ -648,6 +655,20 @@ async function renderBundleComplete(
       bundle_zip_filename: "vaulytica-bundle.zip",
       detected_families: detectedFamilies.length > 0 ? detectedFamilies : undefined,
       documents: documentSummaries,
+      // spec-v12 Thrust B — cross-document posture coherence, present only when
+      // the active custom playbook defined positions (every doc carries one).
+      posture_coherence: result.posture_coherence
+        ? {
+            dimensions: result.posture_coherence.dimensions.map((d) => ({
+              dimension: d.dimension,
+              coherence: d.coherence,
+              tiers: d.tiers.map((t) => ({ document: t.document, tier: t.tier })),
+              weakest_tier: d.weakest_tier,
+              weakest_documents: d.weakest_documents,
+            })),
+            counts: result.posture_coherence.counts,
+          }
+        : undefined,
       rejected: result.rejected.length > 0 ? result.rejected : undefined,
       cross_doc_active: crossDocActive,
       // Spec-v3 §62 toggle: re-runs only the consistency pass + bundle

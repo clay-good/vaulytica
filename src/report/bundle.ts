@@ -53,6 +53,8 @@ import type { ReportSecondaryFamily } from "./json.js";
 import { buildJsonReport } from "./json.js";
 import { buildFixListMarkdown, buildFixListCsv, buildDeadlinesIcs } from "./exports.js";
 import type { ExtractedData } from "../extract/types.js";
+import type { PostureCoherence, PostureCoherenceKind } from "./posture-coherence.js";
+import type { NegotiationTier } from "../playbooks/custom-interpreter.js";
 import type { IngestResult } from "../ingest/types.js";
 import {
   buildPortfolioMatrix,
@@ -180,6 +182,18 @@ export type BundleReportInput = {
    * behavior for callers that don't set the field.
    */
   consistency_enabled?: boolean;
+  /**
+   * Cross-document negotiation-posture coherence (spec-v12 Thrust C). Present
+   * only when the active custom playbook defined `negotiation_positions`, so
+   * every document carries a posture against the **same** ladder. When set, the
+   * bundle DOCX renders a trailing "Posture Coherence" section: one row per
+   * front (Front · Coherence · per-document rung · binding floor), color-coded
+   * by coherence. Omitted (back-compat) when no positions were supplied — every
+   * existing bundle golden is byte-unchanged. Advisory: it reports where each
+   * front sits across the team's own ladder, never which document legally
+   * governs (spec-v12 §3 corollary 3).
+   */
+  posture_coherence?: PostureCoherence;
 };
 
 /**
@@ -427,6 +441,7 @@ export async function buildBundleDocxReport(input: BundleReportInput): Promise<B
     ...renderPerDocumentSection(input),
     ...renderCrossDocAppendix(input.consistency),
     ...renderSkippedFilesAppendix(input.rejected),
+    ...renderPostureCoherenceSection(input.posture_coherence),
     ...renderBibliography(bibliography),
     ...renderAuditTrail(input),
     ...renderDisclaimer(),
@@ -825,6 +840,110 @@ function renderSkippedFilesAppendix(
   }
   out.push(pageBreak());
   return out;
+}
+
+// Posture-coherence shading (spec-v12 Thrust C). The fill encodes whether the
+// bundle holds one line on a front: green = aligned, red = divergent, blue =
+// stated by one document, grey = stated by none.
+const COHERENCE_FILL: Record<PostureCoherenceKind, string> = {
+  aligned: "E6F4EA",
+  divergent: "FBE9E7",
+  single: "E8EEF9",
+  unstated: "EFEFEF",
+};
+const COHERENCE_TEXT: Record<PostureCoherenceKind, string> = {
+  aligned: "1A8F5A",
+  divergent: "B00020",
+  single: "2D6CDF",
+  unstated: "555555",
+};
+const COHERENCE_LABEL: Record<PostureCoherenceKind, string> = {
+  aligned: "Aligned",
+  divergent: "Divergent",
+  single: "Stated by one",
+  unstated: "Unstated",
+};
+const TIER_SHORT_LABEL: Record<NegotiationTier, string> = {
+  ideal: "ideal",
+  acceptable: "acceptable",
+  "below-acceptable": "below floor",
+  unevaluable: "not stated",
+};
+
+/**
+ * Posture Coherence section (spec-v12 Thrust C). A trailing, optional section:
+ * one row per negotiation front — Front · Coherence · per-document rung ·
+ * binding floor — color-coded by coherence. Omitted entirely when no posture
+ * coherence was supplied (no positions), so every existing bundle golden is
+ * byte-unchanged. Advisory: it reports where each front sits across the team's
+ * own ladder, never which document legally governs (spec-v12 §3 corollary 3).
+ */
+function renderPostureCoherenceSection(
+  coherence: PostureCoherence | undefined,
+): (Paragraph | Table)[] {
+  if (!coherence || coherence.dimensions.length === 0) return [];
+  const c = coherence.counts;
+  const out: (Paragraph | Table)[] = [h1("Posture Coherence")];
+  out.push(
+    para({
+      text: "How the team's negotiation posture sits across the whole bundle. Each document was classified against the same positions; this section reports, per front, whether the documents agree on the rung (aligned), disagree (divergent), are stated by only one document (stated by one), or stated by none (unstated). The binding floor is the weakest stated rung and the document(s) carrying it — in a deal package the weakest document usually governs exposure.",
+    }),
+  );
+  out.push(
+    para({
+      text: `${c.aligned} aligned · ${c.divergent} divergent · ${c.single} stated by one · ${c.unstated} unstated.`,
+      bold: true,
+    }),
+  );
+  out.push(spacer());
+
+  const header = headerRow(["Front", "Coherence", "Rung by document", "Binding floor"]);
+  const rows = coherence.dimensions.map((d) => {
+    const perDoc = d.tiers
+      .map((t) => `${t.document}: ${TIER_SHORT_LABEL[t.tier]}`)
+      .join("; ");
+    const floor =
+      d.weakest_tier === null
+        ? "—"
+        : `${TIER_SHORT_LABEL[d.weakest_tier]} (${d.weakest_documents.join(", ")})`;
+    return new TableRow({
+      children: [
+        styledCell(d.dimension, { bold: true }),
+        coherenceCell(d.coherence),
+        styledCell(perDoc),
+        styledCell(floor),
+      ],
+    });
+  });
+  out.push(new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [header, ...rows] }));
+  out.push(spacer());
+  out.push(
+    para({
+      text: "Computed deterministically from your playbook's positions — it reports where each front sits across your own ladder and names the weakest document; it is not a legal conclusion and does not decide which document legally governs on a conflict.",
+      italics: true,
+    }),
+  );
+  out.push(pageBreak());
+  return out;
+}
+
+function coherenceCell(kind: PostureCoherenceKind): TableCell {
+  return new TableCell({
+    shading: { type: ShadingType.CLEAR, fill: COHERENCE_FILL[kind], color: "auto" },
+    children: [
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: COHERENCE_LABEL[kind],
+            bold: true,
+            color: COHERENCE_TEXT[kind],
+            font: DEFAULT_FONT,
+            size: BODY_SIZE,
+          }),
+        ],
+      }),
+    ],
+  });
 }
 
 function renderCrossDocAppendix(consistency: ConsistencyRun): (Paragraph | Table)[] {

@@ -744,6 +744,77 @@ describe("renderState", () => {
     document.body.removeChild(dz);
   });
 
+  it("bundle-complete renders the posture-coherence card when present (spec-v12 Thrust B)", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 2,
+      counts: { critical: 0, warning: 0, info: 0 },
+      cross_doc_findings: 0,
+      bundle_docx_blob: new Blob(["docx"], { type: "application/octet-stream" }),
+      bundle_json_blob: new Blob(["{}"], { type: "application/json" }),
+      bundle_docx_filename: "vaulytica-bundle.docx",
+      bundle_json_filename: "vaulytica-bundle.json",
+      posture_coherence: {
+        counts: { aligned: 1, divergent: 1, single: 0, unstated: 0 },
+        dimensions: [
+          {
+            dimension: "Governing law",
+            coherence: "aligned",
+            tiers: [
+              { document: "msa.docx", tier: "ideal" },
+              { document: "order.docx", tier: "ideal" },
+            ],
+            weakest_tier: "ideal",
+            weakest_documents: ["msa.docx", "order.docx"],
+          },
+          {
+            dimension: "Liability cap",
+            coherence: "divergent",
+            tiers: [
+              { document: "msa.docx", tier: "ideal" },
+              { document: "order.docx", tier: "below-acceptable" },
+            ],
+            weakest_tier: "below-acceptable",
+            weakest_documents: ["order.docx"],
+          },
+        ],
+      },
+    });
+    const card = select(dz, "bundle-posture-coherence")!;
+    expect(card.hidden).toBe(false);
+    expect(card.textContent).toMatch(/Posture coherence/);
+    expect(card.textContent).toMatch(/1 aligned/);
+    expect(card.textContent).toMatch(/1 divergent/);
+    expect(card.textContent).toMatch(/Liability cap/);
+    expect(card.textContent).toMatch(/Divergent/);
+    // The binding floor names the weakest rung + document.
+    expect(card.textContent).toMatch(/Binding floor: below floor in order\.docx/);
+    // The card never asserts which document legally governs.
+    expect(card.textContent).toMatch(/does not decide which one legally governs/);
+    document.body.removeChild(dz);
+  });
+
+  it("bundle-complete hides the posture-coherence card when no coherence is supplied", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 2,
+      counts: { critical: 0, warning: 0, info: 0 },
+      cross_doc_findings: 0,
+      bundle_docx_blob: new Blob(["docx"], { type: "application/octet-stream" }),
+      bundle_json_blob: new Blob(["{}"], { type: "application/json" }),
+      bundle_docx_filename: "vaulytica-bundle.docx",
+      bundle_json_filename: "vaulytica-bundle.json",
+    });
+    const card = select(dz, "bundle-posture-coherence")!;
+    expect(card.hidden).toBe(true);
+    expect(card.innerHTML).toBe("");
+    document.body.removeChild(dz);
+  });
+
   it("bundle-complete reveals the 'everything' (.zip) link when the archive blob is present (spec-v8 §25)", () => {
     const dz = document.createElement("div");
     document.body.appendChild(dz);
