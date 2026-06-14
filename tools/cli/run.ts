@@ -30,6 +30,12 @@ import { buildSarifJson } from "../../src/report/sarif.js";
 import { buildHtmlReport } from "../../src/report/html.js";
 import { buildFixListMarkdown, buildFixListCsv } from "../../src/report/exports.js";
 import { parseCustomPlaybookJson } from "../../src/playbooks/custom-playbook.js";
+import {
+  bundlePostureCoherence,
+  hasDivergence,
+  type CoherenceInput,
+  type PostureCoherence,
+} from "../../src/report/posture-coherence.js";
 
 const SUPPORTED_EXT = new Set([".txt", ".md", ".markdown", ".text", ".docx", ".pdf"]);
 const SEVERITY_RANK: Record<Severity, number> = { critical: 0, warning: 1, info: 2 };
@@ -58,6 +64,8 @@ type Args = {
   playbookFile?: string;
   /** spec-v10 Thrust B — evaluate the custom playbook's negotiation posture. */
   posture?: boolean;
+  /** spec-v12 Thrust A — exit non-zero when a posture front diverges across the bundle. */
+  failOnDivergence?: boolean;
 };
 
 function parseArgs(argv: string[]): Args {
@@ -100,6 +108,9 @@ function parseArgs(argv: string[]): Args {
         break;
       case "--posture":
         args.posture = true;
+        break;
+      case "--fail-on-divergence":
+        args.failOnDivergence = true;
         break;
       default:
         throw new Error(`unknown flag "${flag}"`);
@@ -238,6 +249,11 @@ async function runAnalyze(argv: string[]): Promise<void> {
     process.exitCode = 1;
     return;
   }
+  if (args.failOnDivergence && !args.posture) {
+    process.stderr.write("--fail-on-divergence requires --posture\n");
+    process.exitCode = 1;
+    return;
+  }
 
   const inputs = await resolveInputs(args.target);
   if (inputs.length === 0) {
@@ -247,6 +263,10 @@ async function runAnalyze(argv: string[]): Promise<void> {
   }
 
   let breached = false;
+  // spec-v12 Thrust A — collect each document's posture so that, after the
+  // bundle is analyzed, we can report how each negotiation front sits *across*
+  // the documents (the cross-document axis of the v10 posture).
+  const postures: CoherenceInput[] = [];
   for (const file of inputs) {
     const r = await analyzeFile(file, {
       playbookId: args.playbook,
@@ -279,6 +299,7 @@ async function runAnalyze(argv: string[]): Promise<void> {
       process.stdout.write(
         `  Negotiation posture: ${c.ideal} ideal, ${c.acceptable} acceptable, ${c.below_acceptable} below floor, ${c.unevaluable} not stated.\n`,
       );
+      postures.push({ document: file, posture: r.negotiation_posture });
     }
 
     for (const fmt of args.formats) {
@@ -298,11 +319,50 @@ async function runAnalyze(argv: string[]): Promise<void> {
     }
   }
 
+  // spec-v12 Thrust A — cross-document posture coherence. Only meaningful for a
+  // bundle (≥2 documents) classified against the same playbook ladder: it shows,
+  // per front, whether the documents agree on the rung or one undercuts the
+  // position, and surfaces the bundle's binding floor.
+  let diverged = false;
+  if (args.posture && postures.length >= 2) {
+    const coherence = await bundlePostureCoherence(postures);
+    process.stdout.write(renderCoherenceSummary(coherence));
+    diverged = hasDivergence(coherence);
+  }
+
   if (args.out) process.stdout.write(`\nwrote ${args.formats.join(", ")} for ${inputs.length} file(s) → ${resolve(args.out)}\n`);
   if (breached) {
     process.stderr.write(`\n✗ findings breached --fail-on ${args.failOn}\n`);
     process.exitCode = 2;
   }
+  if (args.failOnDivergence && diverged) {
+    process.stderr.write("\n✗ posture diverges across the bundle (--fail-on-divergence)\n");
+    process.exitCode = 2;
+  }
+}
+
+/**
+ * Render the cross-document posture coherence (spec-v12) as human-readable
+ * lines: the per-kind counts, then one line per divergent front naming the
+ * binding floor and the document carrying it — the front a deal team most needs
+ * to reconcile across a package.
+ */
+export function renderCoherenceSummary(coherence: PostureCoherence): string {
+  const c = coherence.counts;
+  const lines = [
+    "\nCross-document posture coherence:",
+    `  ${c.aligned} aligned, ${c.divergent} divergent, ${c.single} stated by one, ${c.unstated} unstated.`,
+  ];
+  for (const d of coherence.dimensions) {
+    if (d.coherence !== "divergent") continue;
+    const spread = d.tiers
+      .filter((t) => t.tier !== "unevaluable")
+      .map((t) => `${t.document}=${t.tier}`)
+      .join(", ");
+    lines.push(`  ⚠ ${d.dimension}: divergent (${spread}); binding floor ${d.weakest_tier} in ${d.weakest_documents.join(", ")}.`);
+  }
+  lines.push(`  coherence_hash: ${coherence.coherence_hash}`);
+  return lines.join("\n") + "\n";
 }
 
 async function runVerify(argv: string[]): Promise<void> {
@@ -339,6 +399,7 @@ Commands:
                           [--out <dir>] [--fail-on critical|warning|info]
                           [--delivery] [--critical-dates] [--checklist]
                           [--playbook-file <path>] [--posture]
+                          [--fail-on-divergence]
   diff    <a.json> <b.json> [--format markdown|json] [--exit-code]
   compare <base> <revised> [--playbook <id>] [--playbook-file <path>] [--posture]
                           [--format json|markdown]

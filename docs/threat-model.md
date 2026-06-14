@@ -627,3 +627,30 @@ no network, and no clock in the path.
   team's own ladder — never a legal conclusion — and carries its own
   `movement_hash` outside the comparison `result_hash`, so it cannot perturb the
   reproducibility contract or any existing comparison golden.
+
+### v12 — posture coherence (cross-document surface)
+
+The cross-document posture coherence (spec-v12 Thrust A) adds **no new read
+surface, no new extraction, and no new predicate**. `bundlePostureCoherence(documents)`
+is a pure function over one already-computed `NegotiationPosture` per document — it
+compares tier *labels* across documents and emits a per-front coherence plus a
+binding floor. There is no document parsing, no network, and no clock in the path.
+
+- **No new untrusted input.** The only inputs are postures the v10 evaluator
+  produced; the author strings they carry (dimension labels) were already bounded
+  at the v10 surface. The coherence is a headless-only surface (the CLI `analyze`
+  bundle path) and is never rendered to HTML in v12, so there is no new injection
+  sink; the divergence ⚠ lines are printed to a terminal, where the closed-enum
+  tier/coherence values and the document paths the user themselves supplied are the
+  only interpolated text.
+- **Honest about unstated data.** A front a document does not state is
+  `unevaluable`, which is unranked: it is never folded into a divergence and never
+  lowers the binding floor. A front no document states (`unstated`) or only one
+  states (`single`) never trips the `--fail-on-divergence` gate — preserving the
+  v10 §3 honesty contract across the document axis.
+- **Advisory, deterministic, additive.** The coherence reports a spread on the
+  team's own ladder and names the weakest document — never that the weakest
+  document *legally governs* (order-of-precedence is the team's judgment) — and
+  carries its own `coherence_hash` outside every document's `result_hash` and the
+  bundle fingerprint, so it cannot perturb the reproducibility contract or any
+  existing per-document or bundle golden.

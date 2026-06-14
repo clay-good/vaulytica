@@ -76,7 +76,7 @@ export type PostureMovement = {
  * rung (spec-v10 §3 corollary 2). Adding a rung here is the single place to
  * extend the order.
  */
-const TIER_RANK: Record<NegotiationTier, number | null> = {
+export const TIER_RANK: Record<NegotiationTier, number | null> = {
   ideal: 3,
   acceptable: 2,
   "below-acceptable": 1,

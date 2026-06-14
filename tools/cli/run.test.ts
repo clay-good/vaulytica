@@ -2,7 +2,9 @@ import { afterAll, describe, expect, it } from "vitest";
 import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, basename } from "node:path";
-import { splitGlob, globToRegExp, resolveInputs } from "./run.js";
+import { splitGlob, globToRegExp, resolveInputs, renderCoherenceSummary } from "./run.js";
+import { bundlePostureCoherence } from "../../src/report/posture-coherence.js";
+import type { NegotiationPosture, NegotiationTier } from "../../src/playbooks/custom-interpreter.js";
 
 describe("splitGlob (CLI glob resolution)", () => {
   it("resolves a bare glob against the current directory", () => {
@@ -82,5 +84,39 @@ describe("resolveInputs (directory walk ordering)", () => {
     const file = join(dir, "only.txt");
     await writeFile(file, "x");
     expect((await resolveInputs(file)).map((p) => basename(p))).toEqual(["only.txt"]);
+  });
+});
+
+describe("renderCoherenceSummary (spec-v12 cross-document posture)", () => {
+  function posture(map: Record<string, NegotiationTier>): NegotiationPosture {
+    return {
+      positions: Object.entries(map).map(([dimension, tier]) => ({ dimension, tier })),
+      counts: { ideal: 0, acceptable: 0, below_acceptable: 0, unevaluable: 0 },
+      posture_hash: "test",
+    };
+  }
+
+  it("prints the counts line, the coherence_hash, and a ⚠ line only for divergent fronts", async () => {
+    const coherence = await bundlePostureCoherence([
+      { document: "MSA.docx", posture: posture({ Cap: "ideal", Law: "ideal" }) },
+      { document: "Order.docx", posture: posture({ Cap: "below-acceptable", Law: "ideal" }) },
+    ]);
+    const out = renderCoherenceSummary(coherence);
+    expect(out).toContain("Cross-document posture coherence:");
+    expect(out).toContain("1 aligned, 1 divergent");
+    // The divergent front names the spread + the binding floor; the aligned one does not appear.
+    expect(out).toContain("⚠ Cap: divergent (MSA.docx=ideal, Order.docx=below-acceptable); binding floor below-acceptable in Order.docx.");
+    expect(out).not.toContain("⚠ Law");
+    expect(out).toMatch(/coherence_hash: [0-9a-f]{64}/);
+  });
+
+  it("emits no ⚠ lines when every front is aligned, single, or unstated", async () => {
+    const coherence = await bundlePostureCoherence([
+      { document: "a.docx", posture: posture({ Cap: "ideal" }) },
+      { document: "b.docx", posture: posture({ Cap: "ideal" }) },
+    ]);
+    const out = renderCoherenceSummary(coherence);
+    expect(out).toContain("1 aligned, 0 divergent");
+    expect(out).not.toContain("⚠");
   });
 });

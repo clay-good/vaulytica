@@ -4,6 +4,54 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.7.0] — 2026-06-13 — Cross-document posture coherence (spec-v12 Thrust A)
+
+### Added
+- **Cross-document posture coherence engine (spec-v12 Thrust A, Step 181).** A
+  new pure module [`src/report/posture-coherence.ts`](src/report/posture-coherence.ts)
+  exports `bundlePostureCoherence(documents)`: given one v10 `NegotiationPosture`
+  per document — all classified against the **same** team positions — it reports,
+  per negotiation front, whether the documents **agree** on the rung (`aligned`),
+  **disagree** (`divergent`), are stated by only one (`single`), or stated by
+  none (`unstated`). For every stated front it surfaces the **binding floor** —
+  the weakest stated rung and the document(s) carrying it — since in a deal
+  package the weakest document usually governs exposure. It reuses v11's now-
+  exported `TIER_RANK` (so the rung order has one source of truth) and carries
+  its own `coherence_hash`, namespaced apart from every document's `result_hash`
+  and the bundle fingerprint. `unevaluable` stays unranked: an unstated front is
+  never folded into a divergence and never lowers the floor (the spec-v10 §3
+  honesty contract). A `hasDivergence(coherence)` predicate mirrors v11's
+  `postureRegressed`.
+- **Headless coherence over a bundle (spec-v12 Thrust A, Step 182).** The CLI
+  `analyze` command, run with `--posture` over a bundle (a directory or glob
+  resolving to ≥2 documents), now collects each document's posture and prints a
+  "Cross-document posture coherence" summary after the per-document lines: the
+  per-kind counts, one ⚠ line per divergent front (the rung spread + the binding
+  floor + the document carrying it), and the `coherence_hash`. A single-document
+  run emits no coherence (nothing to compare). The per-document JSON/SARIF/HTML
+  is unchanged — the coherence is an additive bundle-level summary.
+- **Divergence CI gate (spec-v12 Thrust A, Step 183).** The `analyze` command
+  gains `--fail-on-divergence` (requires `--posture`): it exits non-zero (code 2)
+  when any front is **divergent** — two or more documents stating the same front
+  on different rungs. Per the §3 honesty contract the gate is the well-ordered
+  spread only: a front only one document states (`single`) or no document states
+  (`unstated`) is reported but never trips it. Reported alongside `--fail-on`;
+  either tripping sets exit 2.
+
+### Tests
+- +15 tests: the coherence engine (every kind, the binding floor, `unevaluable`
+  never ranked as the floor, determinism, document-order sensitivity, the
+  single-document case, and the `hasDivergence` predicate — 13 tests) and the CLI
+  `renderCoherenceSummary` (the counts line, ⚠ only for divergent fronts, the
+  `coherence_hash` — 2 tests).
+
+### Docs
+- New [`docs/spec-v12.md`](docs/spec-v12.md) — Cross-Document Posture Coherence,
+  the v4 cross-document axis of the v10 posture (sibling to v11's version axis).
+  Thrust A shipped; the browser-UI bundle card and consolidated-DOCX section are
+  proposed as Thrusts B/C (the bundle pipeline does not yet compute per-document
+  postures).
+
 ## [9.6.0] — 2026-06-13 — Posture-movement CI regression gate (spec-v11 Thrust C)
 
 ### Added
