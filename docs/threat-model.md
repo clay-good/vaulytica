@@ -603,3 +603,27 @@ rules use — read as data, never code (no `eval`, no network, no clock).
   on the team's *own* ladder — never a legal conclusion — and carries its own
   `posture_hash` outside the engine `result_hash`, so it cannot perturb the
   reproducibility contract.
+
+### v11 — posture movement (version-comparison surface)
+
+The posture movement (spec-v11 Thrust A) adds **no new read surface, no new
+extraction, and no new predicate**. `comparePosture(base, revised)` is a pure
+function over two already-computed `NegotiationPosture` objects — it compares two
+tier *labels* per dimension and emits a transition. There is no document parsing,
+no network, and no clock in the path.
+
+- **No new untrusted input.** The only inputs are two postures the v10 evaluator
+  produced; the author strings they carry were already bounded and escaped at the
+  v10 surface. The movement adds one field per dimension (`dimension`,
+  `base_tier`, `revised_tier`, `movement`); the `dimension` label is escaped at
+  the tab card (`escapeHtml`) exactly as the v10 card does, and the tier/movement
+  values are a closed enum, not author text.
+- **Honest about unstated data.** A dimension that is `unevaluable` on either side
+  is never ranked, so a movement never asserts a draft got "better" or "worse" on
+  a front the document does not state — it is labeled `newly-stated`,
+  `now-unstated`, or `unchanged`, preserving the v10 §3 honesty contract across
+  the version diff.
+- **Advisory, deterministic, additive.** The movement reports a shift on the
+  team's own ladder — never a legal conclusion — and carries its own
+  `movement_hash` outside the comparison `result_hash`, so it cannot perturb the
+  reproducibility contract or any existing comparison golden.

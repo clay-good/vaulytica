@@ -257,6 +257,29 @@ export type DropzoneState =
         changed: number;
         truncated: boolean;
       };
+      /**
+       * Negotiation-posture movement (spec-v11). Present only when both drafts
+       * were classified against the same position-bearing custom playbook;
+       * renders a mobile-safe card showing how each rung moved between the two
+       * versions. Optional / back-compat: omitting it hides the card.
+       */
+      posture_movement?: {
+        counts: {
+          improved: number;
+          regressed: number;
+          unchanged: number;
+          "newly-stated": number;
+          "now-unstated": number;
+          appeared: number;
+          disappeared: number;
+        };
+        dimensions: ReadonlyArray<{
+          dimension: string;
+          base_tier: string | null;
+          revised_tier: string | null;
+          movement: string;
+        }>;
+      };
       docx_blob: Blob;
       json_blob: Blob;
       docx_filename: string;
@@ -444,6 +467,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     <div class="dropzone-sub comparison-verdict" data-role="comparison-verdict"></div>
     <div class="comparison-counts" data-role="comparison-counts"></div>
     <div class="dropzone-sub comparison-redline" data-role="comparison-redline" hidden></div>
+    <div class="negotiation-section" data-role="comparison-posture-movement" hidden></div>
     <div class="dropzone-sub comparison-dkb-warning" data-role="comparison-dkb-warning" hidden></div>
     <button class="btn btn-primary" type="button" data-role="comparison-docx-download">Download comparison (Word)</button>
     <button class="btn-link" type="button" data-role="comparison-json-download">Download comparison data (JSON)</button>
@@ -605,6 +629,7 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
       }
       redline.hidden = false;
     }
+    renderPostureMovement(dz, state.posture_movement);
     const dkbWarn = select<HTMLElement>(dz, "comparison-dkb-warning")!;
     if (state.dkb_mismatch) {
       dkbWarn.hidden = false;
@@ -1157,6 +1182,68 @@ function renderNegotiationPosture(
     </div>
     <ul class="np-list">${cards}</ul>
     <div class="np-note">Computed deterministically from your playbook's positions — it shows where the draft sits on your ladder; it is not a legal conclusion.</div>
+  `;
+}
+
+/** Short rung label for a posture-movement transition (null = absent/not in this posture). */
+const POSTURE_TIER_SHORT: Record<string, string> = {
+  ideal: "ideal",
+  acceptable: "acceptable",
+  "below-acceptable": "below floor",
+  unevaluable: "not stated",
+};
+
+function postureTierShort(tier: string | null): string {
+  if (tier === null) return "—";
+  return POSTURE_TIER_SHORT[tier] ?? tier;
+}
+
+const POSTURE_MOVEMENT_LABEL: Record<string, { label: string; cls: string }> = {
+  improved: { label: "Improved", cls: "pm-improved" },
+  regressed: { label: "Regressed — review", cls: "pm-regressed" },
+  unchanged: { label: "Unchanged", cls: "pm-unchanged" },
+  "newly-stated": { label: "Newly stated", cls: "pm-newly" },
+  "now-unstated": { label: "No longer stated — verify", cls: "pm-unstated" },
+  appeared: { label: "Added dimension", cls: "pm-newly" },
+  disappeared: { label: "Removed dimension", cls: "pm-unstated" },
+};
+
+/**
+ * Negotiation-posture movement view (spec-v11). Shows, per dimension, how the
+ * rung moved between the base draft and the revised one. Mobile-safe (reuses
+ * the `np-*` overflow-wrap card styles); advisory — never a legal conclusion.
+ * Hidden when no posture was computed for both drafts.
+ */
+function renderPostureMovement(
+  dz: HTMLElement,
+  pm: Extract<DropzoneState, { kind: "comparison-complete" }>["posture_movement"],
+): void {
+  const el = select<HTMLElement>(dz, "comparison-posture-movement");
+  if (!el) return;
+  if (!pm || pm.dimensions.length === 0) {
+    el.hidden = true;
+    el.innerHTML = "";
+    return;
+  }
+  el.hidden = false;
+  const c = pm.counts;
+  const cards = pm.dimensions
+    .map((d) => {
+      const m = POSTURE_MOVEMENT_LABEL[d.movement] ?? { label: d.movement, cls: "pm-unchanged" };
+      const transition = `${postureTierShort(d.base_tier)} → ${postureTierShort(d.revised_tier)}`;
+      return `<li class="np-card ${m.cls}">
+        <div class="np-head"><span class="np-dim">${escapeHtml(d.dimension)}</span> <span class="np-tier">${escapeHtml(m.label)}</span></div>
+        <div class="np-detail">${escapeHtml(transition)}</div>
+      </li>`;
+    })
+    .join("");
+  el.innerHTML = `
+    <div class="np-heading">
+      <span class="np-badge">Posture movement</span>
+      <span class="np-summary">${c.improved} improved · ${c.regressed} regressed · ${c.unchanged} unchanged · ${c["newly-stated"]} newly stated · ${c["now-unstated"]} no longer stated</span>
+    </div>
+    <ul class="np-list">${cards}</ul>
+    <div class="np-note">How each rung moved between the two drafts, deterministically — it shows where your position shifted on your own ladder, not a legal conclusion about either draft.</div>
   `;
 }
 

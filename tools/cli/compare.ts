@@ -20,6 +20,7 @@
  * Build/CI-only; never imported by `src/`.
  */
 
+import { readFile } from "node:fs/promises";
 import { analyzeFile, loadAccuracyDeps } from "./api.js";
 import {
   compareRuns,
@@ -28,6 +29,8 @@ import {
   type SeverityCounts,
 } from "../../src/report/compare.js";
 import { buildClauseDiff, type ClauseDiff } from "../../src/report/clause-diff.js";
+import { comparePosture, type PostureMovement } from "../../src/report/posture-movement.js";
+import { parseCustomPlaybookJson } from "../../src/playbooks/custom-playbook.js";
 import type { Severity } from "../../src/engine/index.js";
 
 const SEVERITY_RANK: Record<Severity, number> = { critical: 0, warning: 1, info: 2 };
@@ -36,6 +39,10 @@ type CompareArgs = {
   base: string;
   revised: string;
   playbook?: string;
+  /** spec-v11 — a custom playbook file whose positions drive `--posture`. */
+  playbookFile?: string;
+  /** spec-v11 — diff the negotiation posture between the two drafts. */
+  posture: boolean;
   format: "json" | "markdown";
   failOn?: Severity;
   confirmPairing: boolean;
@@ -43,12 +50,18 @@ type CompareArgs = {
 
 export function parseCompareArgs(argv: string[]): CompareArgs {
   const positional: string[] = [];
-  const args: Partial<CompareArgs> = { format: "markdown", confirmPairing: false };
+  const args: Partial<CompareArgs> = { format: "markdown", confirmPairing: false, posture: false };
   for (let i = 0; i < argv.length; i++) {
     const flag = argv[i]!;
     switch (flag) {
       case "--playbook":
         args.playbook = argv[++i];
+        break;
+      case "--playbook-file":
+        args.playbookFile = argv[++i];
+        break;
+      case "--posture":
+        args.posture = true;
         break;
       case "--format": {
         const v = argv[++i];
@@ -73,12 +86,17 @@ export function parseCompareArgs(argv: string[]): CompareArgs {
     }
   }
   if (positional.length !== 2) {
-    throw new Error("usage: compare <base> <revised> [--playbook <id>] [--format json|markdown] [--fail-on <sev>] [--confirm-pairing]");
+    throw new Error("usage: compare <base> <revised> [--playbook <id>] [--playbook-file <path>] [--posture] [--format json|markdown] [--fail-on <sev>] [--confirm-pairing]");
+  }
+  if (args.posture && !args.playbookFile) {
+    throw new Error("--posture requires --playbook-file <path>");
   }
   return {
     base: positional[0]!,
     revised: positional[1]!,
     ...(args.playbook ? { playbook: args.playbook } : {}),
+    ...(args.playbookFile ? { playbookFile: args.playbookFile } : {}),
+    posture: args.posture!,
     format: args.format!,
     ...(args.failOn ? { failOn: args.failOn } : {}),
     confirmPairing: args.confirmPairing!,
@@ -97,8 +115,55 @@ function countPhrase(c: SeverityCounts): string {
   return `${c.total} (${c.critical}C ${c.warning}W ${c.info}I)`;
 }
 
+/** Movement labels for the Markdown posture-movement section. */
+const MOVEMENT_LABEL: Record<string, string> = {
+  improved: "improved",
+  regressed: "regressed",
+  unchanged: "unchanged",
+  "newly-stated": "newly stated",
+  "now-unstated": "no longer stated",
+  appeared: "added dimension",
+  disappeared: "removed dimension",
+};
+
+function tierShort(tier: string | null): string {
+  if (tier === null) return "—";
+  return (
+    { ideal: "ideal", acceptable: "acceptable", "below-acceptable": "below floor", unevaluable: "not stated" }[
+      tier
+    ] ?? tier
+  );
+}
+
+/** Render the negotiation-posture movement as a Markdown section (pure, spec-v11). */
+export function formatPostureMovementMarkdown(pm: PostureMovement): string {
+  const c = pm.counts;
+  const lines: string[] = [];
+  lines.push("## Negotiation posture movement");
+  lines.push("");
+  lines.push(`- Movement hash: \`${pm.movement_hash}\``);
+  lines.push(
+    `- ${c.improved} improved · ${c.regressed} regressed · ${c.unchanged} unchanged · ` +
+      `${c["newly-stated"]} newly stated · ${c["now-unstated"]} no longer stated`,
+  );
+  lines.push("");
+  lines.push("| Dimension | Movement | Base | Revised |");
+  lines.push("|---|---|---|---|");
+  for (const d of pm.dimensions) {
+    lines.push(
+      `| ${d.dimension} | ${MOVEMENT_LABEL[d.movement] ?? d.movement} | ${tierShort(d.base_tier)} | ${tierShort(d.revised_tier)} |`,
+    );
+  }
+  lines.push("");
+  return lines.join("\n");
+}
+
 /** Render the comparison + redline as a human-readable Markdown summary (pure). */
-export function formatCompareMarkdown(cmp: Comparison, clauseDiff: ClauseDiff): string {
+export function formatCompareMarkdown(
+  cmp: Comparison,
+  clauseDiff: ClauseDiff,
+  postureMovement?: PostureMovement,
+): string {
   const { resolved, introduced, unchanged } = cmp.delta.counts;
   const lines: string[] = [];
   lines.push(`# Comparison: ${cmp.base.name} → ${cmp.revised.name}`);
@@ -137,6 +202,10 @@ export function formatCompareMarkdown(cmp: Comparison, clauseDiff: ClauseDiff): 
   for (const pair of clauseDiff.changed) {
     lines.push(`- **${pair.revised.heading || pair.revised.id}**: ${renderWordDiff(pair)}`);
   }
+  lines.push("");
+  if (postureMovement) {
+    lines.push(formatPostureMovementMarkdown(postureMovement));
+  }
   return lines.join("\n") + "\n";
 }
 
@@ -155,17 +224,49 @@ function renderWordDiff(pair: ClauseDiff["changed"][number]): string {
 
 export async function runCompare(argv: string[]): Promise<void> {
   const args = parseCompareArgs(argv);
+
+  // spec-v11 — load + validate the custom playbook whose positions drive the
+  // posture movement. A malformed file is a hard error, never a silent no-op.
+  let customPlaybook: import("../../src/playbooks/custom-playbook.js").CustomPlaybook | undefined;
+  if (args.playbookFile) {
+    const text = await readFile(args.playbookFile, "utf8").catch(() => null);
+    if (text === null) {
+      process.stderr.write(`cannot read playbook file: ${args.playbookFile}\n`);
+      process.exitCode = 1;
+      return;
+    }
+    const parsed = parseCustomPlaybookJson(text);
+    if (!parsed.ok) {
+      process.stderr.write(`invalid playbook ${args.playbookFile}:\n  ${parsed.errors.join("\n  ")}\n`);
+      process.exitCode = 1;
+      return;
+    }
+    customPlaybook = parsed.playbook;
+    if (args.posture && !customPlaybook.negotiation_positions?.length) {
+      process.stderr.write(`--posture: ${args.playbookFile} defines no negotiation_positions.\n`);
+    }
+  }
+
   const deps = await loadAccuracyDeps();
-  const baseR = await analyzeFile(args.base, { playbookId: args.playbook, deps });
-  const revisedR = await analyzeFile(args.revised, { playbookId: args.playbook, deps });
+  const analyzeOpts = { playbookId: args.playbook, deps, customPlaybook, posture: args.posture };
+  const baseR = await analyzeFile(args.base, analyzeOpts);
+  const revisedR = await analyzeFile(args.revised, analyzeOpts);
 
   const cmp = await compareRuns(baseR.run, revisedR.run, { confirmPairing: args.confirmPairing });
   const clauseDiff = buildClauseDiff(baseR.ingest.tree, revisedR.ingest.tree);
+  // The posture movement is computed only when both drafts were classified
+  // against the same positions (spec-v11). Outside the comparison result_hash.
+  const postureMovement =
+    args.posture && baseR.negotiation_posture && revisedR.negotiation_posture
+      ? await comparePosture(baseR.negotiation_posture, revisedR.negotiation_posture)
+      : undefined;
 
   if (args.format === "json") {
-    process.stdout.write(JSON.stringify(buildComparisonJsonObject(cmp, clauseDiff), null, 2) + "\n");
+    process.stdout.write(
+      JSON.stringify(buildComparisonJsonObject(cmp, clauseDiff, postureMovement), null, 2) + "\n",
+    );
   } else {
-    process.stdout.write(formatCompareMarkdown(cmp, clauseDiff));
+    process.stdout.write(formatCompareMarkdown(cmp, clauseDiff, postureMovement));
   }
 
   if (args.failOn && introducedBreaches(cmp.delta.counts.introduced, args.failOn)) {

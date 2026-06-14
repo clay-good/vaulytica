@@ -6,6 +6,8 @@ import {
   buildComparisonJsonObject,
 } from "./compare.js";
 import { buildClauseDiff } from "./clause-diff.js";
+import { comparePosture } from "./posture-movement.js";
+import type { NegotiationPosture, NegotiationTier } from "../playbooks/custom-interpreter.js";
 import type { EngineRun, Finding, Severity } from "../engine/finding.js";
 import type { ExecutionLogEntry } from "../engine/finding.js";
 import type { DocumentTree } from "../ingest/types.js";
@@ -252,5 +254,27 @@ describe("buildComparisonJsonObject", () => {
     expect(json.clause_diff?.changed[0]!.revised.text).toContain("$5,000,000");
     expect(json.clause_diff?.unchanged_count).toBe(1);
     expect(json.clause_diff?.truncated).toBe(false);
+  });
+
+  it("omits posture_movement when none is supplied (additive, zero churn)", async () => {
+    const cmp = await compareRuns(makeRun({ findings: [] }), makeRun({ findings: [] }));
+    expect(buildComparisonJsonObject(cmp).posture_movement).toBeUndefined();
+  });
+
+  it("renders a supplied posture_movement as an additive field outside result_hash", async () => {
+    const cmp = await compareRuns(makeRun({ findings: [] }), makeRun({ findings: [] }));
+    const mkPosture = (map: Record<string, NegotiationTier>): NegotiationPosture => ({
+      positions: Object.entries(map).map(([dimension, tier]) => ({ dimension, tier })),
+      counts: { ideal: 0, acceptable: 0, below_acceptable: 0, unevaluable: 0 },
+      posture_hash: "x",
+    });
+    const movement = await comparePosture(
+      mkPosture({ "Liability cap": "below-acceptable" }),
+      mkPosture({ "Liability cap": "acceptable" }),
+    );
+    const json = buildComparisonJsonObject(cmp, undefined, movement);
+    expect(json.result_hash).toBe(cmp.result_hash); // hash unchanged by the movement
+    expect(json.posture_movement?.dimensions[0]!.movement).toBe("improved");
+    expect(json.posture_movement?.movement_hash).toMatch(/^[0-9a-f]{64}$/);
   });
 });

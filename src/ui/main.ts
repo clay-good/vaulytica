@@ -392,7 +392,14 @@ function renderCompleteState(
     // v6 Part I comparison (Step 90). The base run is the one currently
     // rendered, so a frame-toggle re-run rebinds compare to the fresh run.
     on_compare: (revisedFile) => {
-      void runComparison(dz, filename, result.run, result.ingest.tree, revisedFile);
+      void runComparison(
+        dz,
+        filename,
+        result.run,
+        result.ingest.tree,
+        result.negotiation_posture,
+        revisedFile,
+      );
     },
   });
 }
@@ -408,6 +415,7 @@ async function runComparison(
   baseDisplayName: string,
   baseRun: import("./pipeline.js").PipelineResult["run"],
   baseTree: import("../ingest/types.js").DocumentTree,
+  basePosture: import("./pipeline.js").PipelineResult["negotiation_posture"],
   revisedFile: File,
 ): Promise<void> {
   try {
@@ -417,24 +425,46 @@ async function runComparison(
     const progress = createProgressBar(select(dz, "progress")!);
     const ticker = createRuleTicker(select(dz, "ticker")!);
     progress.reset();
-    const revised = await runPipeline(revisedFile, kind, {
-      onProgress: (fraction) => progress.set(fraction),
-      onRule: (rule) => ticker.push(rule.id, rule.name),
-    });
+    // The revised run reuses the active custom playbook so its negotiation
+    // posture is classified against the *same* ladder as the base (spec-v11) —
+    // a posture movement is only meaningful when both drafts were measured
+    // against identical positions.
+    const revised = await runPipeline(
+      revisedFile,
+      kind,
+      {
+        onProgress: (fraction) => progress.set(fraction),
+        onRule: (rule) => ticker.push(rule.id, rule.name),
+      },
+      {},
+      { custom_playbook: activeCustomPlaybook ?? undefined },
+    );
 
-    const { compareRuns, comparabilityOf, buildComparisonDocx, buildComparisonJson, buildClauseDiff } =
-      await import("../report/index.js");
+    const {
+      compareRuns,
+      comparabilityOf,
+      buildComparisonDocx,
+      buildComparisonJson,
+      buildClauseDiff,
+      comparePosture,
+    } = await import("../report/index.js");
     const revisedRun = revised.run;
     // Clause-level redline (spec-v8 Part XVIII): a verbatim text diff of the two
     // documents, rendered into the DOCX/JSON and summarized in the UI. Outside
     // the comparison result_hash.
     const clauseDiff = buildClauseDiff(baseTree, revised.ingest.tree);
+    // Negotiation-posture movement (spec-v11): how each rung moved between the
+    // two drafts. Only when both were classified against the same positions.
+    const postureMovement =
+      basePosture && revised.negotiation_posture
+        ? await comparePosture(basePosture, revised.negotiation_posture)
+        : undefined;
 
     const stem = `${baseFilename(baseRun.source_file.name)}-vs-${baseFilename(revisedFile.name)}`;
     const build = async (confirmPairing: boolean): Promise<void> => {
       const cmp = await compareRuns(baseRun, revisedRun, { confirmPairing });
       const docx = await buildComparisonDocx(cmp, clauseDiff);
-      const json = buildComparisonJson(cmp, clauseDiff);
+      const json = buildComparisonJson(cmp, clauseDiff, postureMovement);
       const { resolved, introduced, unchanged } = cmp.delta.counts;
       const verdict =
         introduced.total === 0 && resolved.total === 0
@@ -464,6 +494,17 @@ async function runComparison(
           changed: clauseDiff.changed.length,
           truncated: clauseDiff.truncated,
         },
+        posture_movement: postureMovement
+          ? {
+              counts: postureMovement.counts,
+              dimensions: postureMovement.dimensions.map((d) => ({
+                dimension: d.dimension,
+                base_tier: d.base_tier,
+                revised_tier: d.revised_tier,
+                movement: d.movement,
+              })),
+            }
+          : undefined,
         docx_blob: docx,
         json_blob: json,
         docx_filename: `${stem}-comparison.docx`,

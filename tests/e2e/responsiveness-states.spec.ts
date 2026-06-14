@@ -325,6 +325,51 @@ const STATES: Array<{ name: string; state: DropzoneState }> = [
         carried_clean_count: 4,
       },
       dkb_mismatch: true,
+      // spec-v11 negotiation-posture movement — long dimension labels stress wrap.
+      posture_movement: {
+        counts: {
+          improved: 1,
+          regressed: 1,
+          unchanged: 1,
+          "newly-stated": 1,
+          "now-unstated": 1,
+          appeared: 0,
+          disappeared: 0,
+        },
+        dimensions: [
+          {
+            dimension:
+              "Aggregate limitation of liability cap as a multiple of trailing-twelve-month fees paid",
+            base_tier: "below-acceptable",
+            revised_tier: "acceptable",
+            movement: "improved",
+          },
+          {
+            dimension: "Governing law and exclusive forum selection for all disputes arising hereunder",
+            base_tier: "ideal",
+            revised_tier: "acceptable",
+            movement: "regressed",
+          },
+          {
+            dimension: "Mutuality of the indemnification obligations between the contracting parties",
+            base_tier: "below-acceptable",
+            revised_tier: "below-acceptable",
+            movement: "unchanged",
+          },
+          {
+            dimension: "Auto-renewal non-renewal notice window expressed in calendar days before term end",
+            base_tier: "unevaluable",
+            revised_tier: "acceptable",
+            movement: "newly-stated",
+          },
+          {
+            dimension: "Uptime / availability service-level commitment as a percentage of the month",
+            base_tier: "acceptable",
+            revised_tier: "unevaluable",
+            movement: "now-unstated",
+          },
+        ],
+      },
       docx_blob: blob("d"),
       json_blob: blob("j"),
       docx_filename: "cmp.docx",

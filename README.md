@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,065 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `35 state-law overlays` · `9 export formats` · `0 servers` · `0 AI` · `2,922 passing tests` · `v9.3.0` · `MIT`
+`1,065 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `35 state-law overlays` · `9 export formats` · `0 servers` · `0 AI` · `2,939 passing tests` · `v9.4.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
 
@@ -210,6 +210,45 @@ An 8× cap → **acceptable** ("room to push toward 12×"); a 3× cap → **belo
 
 Full design: [`spec-v10`](docs/spec-v10.md).
 
+## Posture movement — your ladder, tracked round-over-round (v11)
+
+A negotiation is a *sequence* of drafts. v10 scores the latest one; v11 answers the question a negotiator carries between rounds: *when the counterparty sends a counter, which way did each front move?* Drop the revised draft into the version-comparison flow (or pass both to the CLI) and `comparePosture` diffs the two postures — both classified against the **same** ladder — into a per-dimension transition:
+
+| Movement | Meaning | Example |
+|---|---|---|
+| **improved** | both drafts state it; the revised rung is closer to ideal | below floor → acceptable |
+| **regressed** | both state it; the revised rung is worse | ideal → acceptable |
+| **unchanged** | the same rung on both (including both *not stated*) | acceptable → acceptable |
+| **newly-stated** | unstated before, on the ladder now | not stated → below floor |
+| **now-unstated** | on the ladder before, absent now | acceptable → not stated |
+
+```mermaid
+flowchart LR
+  B[Base draft<br/>posture] --> M{comparePosture<br/>·rung diff·}
+  R[Revised draft<br/>posture] --> M
+  M -->|rung closer to ideal| I[Improved]
+  M -->|rung further from ideal| G[Regressed]
+  M -->|same rung| S[Unchanged]
+  M -->|unstated → stated| N[Newly stated]
+  M -->|stated → unstated| O[Now unstated]
+  I --> H[Posture movement<br/>+ movement_hash]
+  G --> H
+  S --> H
+  N --> H
+  O --> H
+  style M fill:#00A883,color:#fff
+  style H fill:#00A883,color:#fff
+```
+
+`unevaluable` is deliberately **unranked** — "not stated" is never compared as better or worse than a stated rung, so a counter that *adds* a below-floor term reads as **newly-stated**, never a false *regression*. The movement is advisory and carries its own `movement_hash`, namespaced apart from the comparison `result_hash` (additive — a comparison with no positions yields no movement and moves no golden). It renders as a `posture_movement` JSON block, a mobile-safe "Posture movement" card in the comparison-complete tab, and a headless CLI mode:
+
+```bash
+vaulytica compare base.docx revised.docx --playbook-file team.json --posture
+# → a "Negotiation posture movement" table: dimension · movement · base rung → revised rung
+```
+
+Full design: [`spec-v11`](docs/spec-v11.md).
+
 ## What the result looks like
 
 <img src="docs/images/report-mobile.png" alt="Vaulytica report card on a phone: severity counts, a California non-compete jurisdiction overlay with citation, and one-click exports — Word, JSON, fix-list (Markdown/CSV), obligations, deadlines (.ics), HTML report, and SARIF" width="320" align="right" />
@@ -233,6 +272,7 @@ Every view is verified to render with **no horizontal scroll from 320 px to 1280
 | v8 | Hardening & Reach | (A) input-boundary guards + fuzz gate so the engine *survives* hostile input · (B) inline-everywhere/honest citations across every format · (C) SARIF, a headless CLI, a single-file HTML report, a playbook diff, a reproducibility verifier — the linter in the workflow · (D) clause-level redline for version comparison · (E) a GitHub Action + publish-ready `vaulytica` binary | **complete · 8.0.0** (Steps 127–147 + the Part-XVIII redline + the distribution surface; [`spec-v8`](docs/spec-v8.md) · [`docs/v8/`](docs/v8/README.md)). Deferred — attorney-gated publication dates, scheduled (not per-commit) citation reachability, the act of `npm publish` (maintainer credentials). |
 | v9 | The Last Look | **(A) Clean to Send** — a pre-disclosure scan over the *original container bytes*: tracked changes, comments, hidden content, cross-matter metadata, masked sensitive-data patterns (`HANDOFF-001…005`) with their own `delivery_hash` · **(B) Ready to Sign** — execution-readiness reconciliation (`STRUCT-017` signatures, `STRUCT-018` attachments, `STRUCT-019` recited formalities) + a Closing Checklist export · **(C) Tracked to Its Dates** — `deriveDate` calendar arithmetic → `DATE-001…005` + a `critical_dates` register with the wall-clock kept out of the hash | **Complete · 9.0.0** (Steps 148–165; [`spec-v9`](docs/spec-v9.md) · [`docs/v9/`](docs/v9/README.md)). |
 | v10 | Negotiation Posture | **(A) Tiered-position ladder** — a custom playbook can carry `negotiation_positions` (an `ideal`/`acceptable` pair per dimension, drawn from the v6 predicate DSL); the engine reports which rung the draft meets — ideal · acceptable · below-floor · not-stated — with a `posture_hash` outside the `result_hash` · **(B) Posture report & export** — a standalone action-grouped negotiation **sheet**, a Markdown/CSV posture export, and a headless CLI `--posture` mode (`--playbook-file`) · **(C) Dimension breadth** — four new `numeric_threshold` metrics (`cure_period_days`, `auto_renewal_notice_days`, `indemnity_cap_amount`, `uptime_sla_percent`) and a `clause_mutual` predicate, each measure-first (extractor fixtures before wiring) | **complete · 9.3.0** (Steps 166–175; [`spec-v10`](docs/spec-v10.md)). |
+| v11 | Negotiation Posture Movement | **(A) Movement engine & surfaces** — `comparePosture` diffs two v10 postures and reports, per dimension, how the rung *moved* between a base draft and a revised one — **improved · regressed · unchanged · newly-stated · now-unstated** — with a `movement_hash` outside the comparison `result_hash`; surfaced as a `posture_movement` JSON block, a mobile-safe "Posture movement" comparison-complete card, and a headless `compare --playbook-file <path> --posture` mode. `unevaluable` stays unranked, so "not stated" is never a false regression | **complete · 9.4.0** (Steps 176–178; [`spec-v11`](docs/spec-v11.md)). |
 
 ## v8 — hardening: a tool that cannot be made to hang
 
@@ -282,6 +322,9 @@ npm run cli -- diff team-standard-v1.json team-standard-v2.json --exit-code
 # revision introduced a critical finding (a redline gate on a pull request)
 npm run cli -- compare base.docx revised.docx --fail-on critical
 
+# compare + posture movement: how each negotiation front moved between two drafts
+npm run cli -- compare base.docx revised.docx --playbook-file team.json --posture
+
 # verify: re-derive a saved report's result_hash from the original document (audit receipt)
 npm run cli -- verify report.json original.txt
 
@@ -296,7 +339,7 @@ npm run citation:check -- --reachability   # + network sweep
 |---|---|---|
 | `analyze <path\|glob\|dir>` | run the engine headless, write `json,sarif,html,md,csv` | `2` when findings breach `--fail-on` |
 | `diff <a.json> <b.json>` | structural diff of two custom playbooks (Markdown/JSON) | `1` with `--exit-code` when they differ |
-| `compare <base> <revised>` | version-compare two documents + clause redline (Markdown/JSON) | `2` when the revision *introduced* a finding at/above `--fail-on` |
+| `compare <base> <revised>` | version-compare two documents + clause redline (Markdown/JSON); `--playbook-file <p> --posture` adds the posture movement | `2` when the revision *introduced* a finding at/above `--fail-on` |
 | `verify <report.json> <original>` | re-derive `result_hash`; report input/engine/DKB drift | `3` when not reproduced |
 
 | `analyze` flag | Meaning |

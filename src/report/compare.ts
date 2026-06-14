@@ -29,6 +29,7 @@ import { SEVERITY_RANK } from "../engine/finding.js";
 import { sha256Hex } from "../ingest/hash.js";
 import { stableStringify } from "../engine/runner.js";
 import type { ClauseDiff, WordDiffSegment } from "./clause-diff.js";
+import type { PostureMovement } from "./posture-movement.js";
 
 export type SeverityCounts = {
   critical: number;
@@ -309,6 +310,12 @@ export type ComparisonJson = {
    * the two documents. Omitted otherwise — additive, outside `result_hash`.
    */
   clause_diff?: ComparisonJsonClauseDiff;
+  /**
+   * Negotiation-posture movement (spec-v11), when both drafts were classified
+   * against a position-bearing custom playbook. Omitted otherwise — additive,
+   * carries its own `movement_hash`, outside the comparison `result_hash`.
+   */
+  posture_movement?: PostureMovement;
 };
 
 type ComparisonJsonClause = { section: string; heading: string; text: string };
@@ -375,7 +382,11 @@ function jsonFinding(f: Finding): ComparisonJsonFinding {
  * is supplied it is rendered as an additive `clause_diff` field — it never
  * enters `cmp.result_hash`, so passing it changes no existing comparison golden.
  */
-export function buildComparisonJsonObject(cmp: Comparison, clauseDiff?: ClauseDiff): ComparisonJson {
+export function buildComparisonJsonObject(
+  cmp: Comparison,
+  clauseDiff?: ClauseDiff,
+  postureMovement?: PostureMovement,
+): ComparisonJson {
   return {
     kind: "vaulytica-comparison",
     result_hash: cmp.result_hash,
@@ -396,12 +407,18 @@ export function buildComparisonJsonObject(cmp: Comparison, clauseDiff?: ClauseDi
       clause_changed: u.clause_changed,
     })),
     ...(clauseDiff ? { clause_diff: jsonClauseDiff(clauseDiff) } : {}),
+    ...(postureMovement ? { posture_movement: postureMovement } : {}),
   };
 }
 
 /** The comparison JSON as a downloadable Blob (human-formatted, 2-space). */
-export function buildComparisonJson(cmp: Comparison, clauseDiff?: ClauseDiff): Blob {
-  return new Blob([JSON.stringify(buildComparisonJsonObject(cmp, clauseDiff), null, 2)], {
-    type: "application/json",
-  });
+export function buildComparisonJson(
+  cmp: Comparison,
+  clauseDiff?: ClauseDiff,
+  postureMovement?: PostureMovement,
+): Blob {
+  return new Blob(
+    [JSON.stringify(buildComparisonJsonObject(cmp, clauseDiff, postureMovement), null, 2)],
+    { type: "application/json" },
+  );
 }

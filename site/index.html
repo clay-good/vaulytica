@@ -1149,6 +1149,23 @@
         font-style: italic;
         overflow-wrap: anywhere;
       }
+      /* Posture-movement card colors (spec-v11). Reuses the .np-card base; the
+         left border encodes the direction the rung moved between drafts. */
+      .np-card.pm-improved {
+        border-left-color: #1a8f5a;
+      }
+      .np-card.pm-regressed {
+        border-left-color: #b00020;
+      }
+      .np-card.pm-unchanged {
+        border-left-color: color-mix(in srgb, var(--muted) 55%, transparent);
+      }
+      .np-card.pm-newly {
+        border-left-color: var(--accent, #2d6cdf);
+      }
+      .np-card.pm-unstated {
+        border-left-color: #a86700;
+      }
       /* Closing-checklist view (spec-v9 Thrust B). The consolidated
          execution-readiness items, grouped and mobile-safe. */
       .closing-checklist-section {

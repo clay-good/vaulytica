@@ -76,6 +76,13 @@ export {
   type UnchangedPair,
 } from "./compare.js";
 export { buildComparisonDocx, comparisonDocxBlob } from "./compare-docx.js";
+// spec-v11 — negotiation-posture movement across versions.
+export {
+  comparePosture,
+  type PostureMovement,
+  type PostureDimensionMovement,
+  type PostureMovementKind,
+} from "./posture-movement.js";
 // spec-v8 Part XVIII — clause-level text redline for version comparison.
 export {
   buildClauseDiff,

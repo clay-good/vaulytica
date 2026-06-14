@@ -340,7 +340,8 @@ Commands:
                           [--delivery] [--critical-dates] [--checklist]
                           [--playbook-file <path>] [--posture]
   diff    <a.json> <b.json> [--format markdown|json] [--exit-code]
-  compare <base> <revised> [--playbook <id>] [--format json|markdown]
+  compare <base> <revised> [--playbook <id>] [--playbook-file <path>] [--posture]
+                          [--format json|markdown]
                           [--fail-on critical|warning|info] [--confirm-pairing]
   verify  <report.json> <original> [--playbook <id>]
 `;

@@ -4,6 +4,49 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.4.0] — 2026-06-13 — Negotiation posture movement (spec-v11 Thrust A)
+
+### Added
+- **Negotiation posture movement (spec-v11 Thrust A, Steps 176–178).** Extends
+  the v10 Negotiation Posture along the v6 version-comparison axis: it reports
+  how a team's posture *moved* between two drafts. When a counterparty sends a
+  revised draft, the comparison now answers the round-over-round question —
+  *which way did each front move?* — without a model and without a server. Fully
+  additive: a comparison with no positions yields no movement, and the movement
+  carries its own `movement_hash` namespaced apart from the comparison
+  `result_hash`, so no existing golden or hash moves.
+  - **Movement engine** (Step 176) — `comparePosture(base, revised)`
+    ([`src/report/posture-movement.ts`](src/report/posture-movement.ts)): a pure,
+    deterministic per-dimension transition classifier — **improved · regressed ·
+    unchanged · newly-stated · now-unstated** (plus defensive *appeared /
+    disappeared* for mismatched position sets). A single `TIER_RANK` table
+    (ideal > acceptable > below-acceptable) decides improved vs. regressed;
+    `unevaluable` is deliberately **unranked**, so "not stated" is never compared
+    as better or worse than a stated rung — a counter that *adds* a below-floor
+    term reads as `newly-stated`, never a false `regressed`.
+  - **JSON + tab** (Step 177) — an additive `posture_movement` block in the
+    comparison JSON (`buildComparisonJson`, trailing optional argument), and a
+    mobile-safe "Posture movement" card in the comparison-complete tab (reuses
+    the v10 `np-*` overflow-wrap styles + `pm-*` direction colors). The UI threads
+    the base posture and the active custom playbook through `runComparison`, so
+    the revised draft is classified against the *same* ladder as the base.
+  - **Headless movement** (Step 178) — the CLI `compare` command accepts
+    `--playbook-file <path>` + `--posture` (mirroring `analyze`): it classifies
+    both drafts against the playbook's `negotiation_positions` and emits a
+    `posture_movement` JSON block (or a Markdown table) — a CI redline gate can
+    now show how each negotiation front moved between two versions.
+- **Docs.** New [`docs/spec-v11.md`](docs/spec-v11.md); README gains a "Posture
+  movement" section (with a movement-kind cheat sheet and a Mermaid diagram), a
+  v11 row in the version table, and a CLI cheat-sheet entry; the threat model
+  notes the new advisory surface.
+
+### Tests
+- +17 tests (2,922 → 2,939): the full movement-transition matrix, determinism of
+  `movement_hash` (order-independent), the additive comparison-JSON block, CLI
+  arg parsing (`--posture` requires `--playbook-file`) and Markdown rendering;
+  the comparison-complete responsiveness e2e fixture gains an overflow-prone
+  posture-movement card (vertical-scroll-only 320–1280px, WCAG 2 AA, both themes).
+
 ## [9.3.0] — 2026-06-13 — Negotiation posture: dimension breadth (spec-v10 Thrust C)
 
 ### Added

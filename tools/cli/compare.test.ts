@@ -6,10 +6,13 @@ import {
   parseCompareArgs,
   introducedBreaches,
   formatCompareMarkdown,
+  formatPostureMovementMarkdown,
   runCompare,
 } from "./compare.js";
 import { compareRuns } from "../../src/report/compare.js";
 import { buildClauseDiff } from "../../src/report/clause-diff.js";
+import { comparePosture } from "../../src/report/posture-movement.js";
+import type { NegotiationPosture, NegotiationTier } from "../../src/playbooks/custom-interpreter.js";
 import type { EngineRun, Finding, Severity } from "../../src/engine/index.js";
 import type { DocumentTree } from "../../src/ingest/types.js";
 
@@ -90,6 +93,20 @@ describe("parseCompareArgs", () => {
     expect(() => parseCompareArgs(["a", "b", "--fail-on", "fatal"])).toThrow(/--fail-on/);
     expect(() => parseCompareArgs(["a", "b", "--nope"])).toThrow(/unknown flag/);
   });
+
+  it("parses --posture with --playbook-file (spec-v11)", () => {
+    const a = parseCompareArgs(["base.docx", "rev.docx", "--playbook-file", "pb.json", "--posture"]);
+    expect(a.playbookFile).toBe("pb.json");
+    expect(a.posture).toBe(true);
+  });
+
+  it("rejects --posture without --playbook-file (no silent no-op)", () => {
+    expect(() => parseCompareArgs(["a", "b", "--posture"])).toThrow(/--posture requires --playbook-file/);
+  });
+
+  it("defaults posture off", () => {
+    expect(parseCompareArgs(["a", "b"]).posture).toBe(false);
+  });
 });
 
 // --- gate logic -------------------------------------------------------------
@@ -144,6 +161,45 @@ describe("formatCompareMarkdown", () => {
     const md = formatCompareMarkdown(cmp, buildClauseDiff(docTree("Same."), docTree("Same.")));
     expect(md).not.toContain("### Introduced findings");
     expect(md).toContain("0 rewritten · 0 added · 0 removed");
+  });
+
+  it("appends a posture-movement section only when a movement is supplied (spec-v11)", async () => {
+    const cmp = await compareRuns(makeRun("a", "b".repeat(64), []), makeRun("b", "r".repeat(64), []));
+    const diff = buildClauseDiff(docTree("Same."), docTree("Same."));
+    expect(formatCompareMarkdown(cmp, diff)).not.toContain("Negotiation posture movement");
+
+    const mkPosture = (map: Record<string, NegotiationTier>): NegotiationPosture => ({
+      positions: Object.entries(map).map(([dimension, tier]) => ({ dimension, tier })),
+      counts: { ideal: 0, acceptable: 0, below_acceptable: 0, unevaluable: 0 },
+      posture_hash: "x",
+    });
+    const movement = await comparePosture(
+      mkPosture({ "Liability cap": "below-acceptable", "Governing law": "ideal" }),
+      mkPosture({ "Liability cap": "acceptable", "Governing law": "acceptable" }),
+    );
+    const md = formatCompareMarkdown(cmp, diff, movement);
+    expect(md).toContain("## Negotiation posture movement");
+    expect(md).toContain(`Movement hash: \`${movement.movement_hash}\``);
+    expect(md).toContain("| Liability cap | improved | below floor | acceptable |");
+    expect(md).toContain("| Governing law | regressed | ideal | acceptable |");
+  });
+});
+
+describe("formatPostureMovementMarkdown (spec-v11)", () => {
+  it("renders the summary line, hash, and a per-dimension table", async () => {
+    const mkPosture = (map: Record<string, NegotiationTier>): NegotiationPosture => ({
+      positions: Object.entries(map).map(([dimension, tier]) => ({ dimension, tier })),
+      counts: { ideal: 0, acceptable: 0, below_acceptable: 0, unevaluable: 0 },
+      posture_hash: "x",
+    });
+    const movement = await comparePosture(
+      mkPosture({ Indemnity: "unevaluable" }),
+      mkPosture({ Indemnity: "below-acceptable" }),
+    );
+    const md = formatPostureMovementMarkdown(movement);
+    expect(md).toContain("## Negotiation posture movement");
+    expect(md).toContain("1 newly stated");
+    expect(md).toContain("| Indemnity | newly stated | not stated | below floor |");
   });
 });
 
