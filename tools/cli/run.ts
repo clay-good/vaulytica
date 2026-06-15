@@ -16,6 +16,7 @@
  *   tsx tools/cli/run.ts compare-coherence <base.coherence.json> <revised.coherence.json> [--format markdown|json] [--fail-on-coherence-regression]
  *   tsx tools/cli/run.ts coherence-trend <r1.coherence.json> <r2.coherence.json> [<r3…> …] [--format markdown|json] [--fail-on-coherence-regression]
  *   tsx tools/cli/run.ts coherence-shift-trend <r1.coherence.json> <r2.coherence.json> [<r3…> …] [--format markdown|json] [--fail-on-fracture]
+ *   tsx tools/cli/run.ts coherence-arc <r1.coherence.json> <r2.coherence.json> [<r3…> …] [--format markdown|json] [--fail-on-regression-or-fracture]
  *   tsx tools/cli/run.ts verify <report.json> <original> [--playbook <id>]
  *
  * One dispatcher over the reach commands: `analyze` runs the engine headless
@@ -26,7 +27,9 @@
  * coherence artifacts and reports the per-front binding-floor trajectory across
  * the whole negotiation (spec-v17), `coherence-shift-trend` walks the same N
  * artifacts and reports the per-front fracture/reconcile trajectory (spec-v18),
- * and `verify` re-derives a saved report's `result_hash` (Step 145).
+ * `coherence-arc` joins those two trajectories into the v13 per-front combined
+ * view over N rounds with one combined gate (spec-v19), and `verify` re-derives
+ * a saved report's `result_hash` (Step 145).
  * The DKB ships with the tool — it opens no socket. The engine is the SAME engine
  * the tab runs (parity-proven), so a number on a CI dashboard describes
  * shipped behavior. Build/CI-only; never imported by `src/`.
@@ -41,6 +44,7 @@ import { runCompare } from "./compare.js";
 import { runCompareCoherence } from "./compare-coherence.js";
 import { runCoherenceTrend } from "./coherence-trend.js";
 import { runCoherenceShiftTrend } from "./coherence-shift-trend.js";
+import { runCoherenceArc } from "./coherence-arc.js";
 import { verifyReproducibility, explainReproResult, type SavedReport } from "./verify.js";
 import type { Severity } from "../../src/engine/index.js";
 import { buildJsonReport } from "../../src/report/json.js";
@@ -618,6 +622,8 @@ Commands:
                           [--format markdown|json] [--fail-on-coherence-regression]
   coherence-shift-trend <r1.coherence.json> <r2.coherence.json> [<r3…> …]
                           [--format markdown|json] [--fail-on-fracture]
+  coherence-arc <r1.coherence.json> <r2.coherence.json> [<r3…> …]
+                          [--format markdown|json] [--fail-on-regression-or-fracture]
   verify  <report.json> <original> [--playbook <id>]
 `;
 
@@ -636,6 +642,8 @@ async function main(): Promise<void> {
       return runCoherenceTrend(rest);
     case "coherence-shift-trend":
       return runCoherenceShiftTrend(rest);
+    case "coherence-arc":
+      return runCoherenceArc(rest);
     case "verify":
       return runVerify(rest);
     case undefined:
@@ -646,7 +654,7 @@ async function main(): Promise<void> {
       return;
     default:
       throw new Error(
-        `unknown command "${command}" (expected: analyze | diff | compare | compare-coherence | coherence-trend | coherence-shift-trend | verify)`,
+        `unknown command "${command}" (expected: analyze | diff | compare | compare-coherence | coherence-trend | coherence-shift-trend | coherence-arc | verify)`,
       );
   }
 }

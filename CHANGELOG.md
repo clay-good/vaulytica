@@ -4,6 +4,73 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.16.0] — 2026-06-15 — Document-free combined posture arc (spec-v19)
+
+### Added
+- **A `coherence-arc` headless subcommand — the v13 per-front combined view
+  (binding floor *and* fracture/reconcile, in one report), generalized to N
+  rounds and read from the archive alone (spec-v19, building v18 Part XVII open
+  question #2).** v17's `coherence-trend` reads N archived coherence artifacts on
+  the binding-*floor* axis; v18's `coherence-shift-trend` reads the same N on the
+  *agreement* axis. But v13 — the two-round movement both descend from — never
+  split those axes: it reports both `floor_movement` and `coherence_shift` per
+  front, because a deal lead reconciling a package reads them together (*did this
+  front erode, and did it also fracture? did the floor hold while the package
+  quietly split? did anything go wrong on either axis?*). v19 restores that
+  combined view for the N-round, document-free case, with one deal-level gate.
+  - **The join (pure).** `src/report/coherence-arc.ts` —
+    `compareCoherenceArc(rounds)` runs the two existing pure trajectory functions
+    (`compareCoherenceTrajectory` from v17, `compareCoherenceShiftTrajectory` from
+    v18) on the same rounds and joins their per-front results **positionally** on
+    `dimension` (both pin fronts by the same `localeCompare`, so the arrays align
+    index-for-index; a defensive dimension-equality check makes a broken join
+    loud). Each `CoherenceArcFront` carries the floor fields (`floors`, `steps`,
+    `net_floor_movement`, `trajectory`), the shift fields (`shifts`, `net_shift`,
+    `shift_trajectory`), and the shared `coherences[]` sequence once. The arc
+    carries all four count objects, the two component fingerprints **verbatim**
+    (`trajectory_hash`, `shift_trajectory_hash` — byte-identical to what the two
+    single-axis commands emit on the same inputs), and a namespaced `arc_hash` =
+    SHA-256 over `{ trajectory_hash, shift_trajectory_hash }`.
+    `arcRegressedOrFractured(arc)` is the combined gate predicate =
+    `trajectoryRegressed(floor) || shiftTrajectoryFractured(shift)` — the
+    deal-level "did anything go wrong on either axis" verdict neither single-axis
+    command exposes. **Zero new posture math:** v19 composes two existing pure
+    functions and needs nothing newly exported.
+  - **The command.** `tools/cli/coherence-arc.ts` —
+    `compareCoherenceArcArtifacts(texts, format?)` is the pure CLI core: it
+    verifies all N artifacts and runs the v15/v16 cross-ladder guard across the
+    whole sequence via the **shared `verifyCoherenceSequence` loader (unchanged
+    from v18)**, then computes and renders the arc (markdown summary or
+    `--format json`, `schema: vaulytica.posture-arc.v1`). `runCoherenceArc(argv)`
+    is the handler: it reads the N files, prints the arc, and — under
+    `--fail-on-regression-or-fracture` — exits 2 on a regression-or-fracture. A
+    malformed/tampered round is a hard exit-1 error, prefixed `round N:`; a
+    cross-ladder pair is refused, naming the two rounds; an unpinned (`v1`)
+    artifact proceeds with a note. Dispatcher + `USAGE` wired.
+  - **Not a flag on `coherence-trend`.** v18 Part XVI deferred a
+    `coherence-trend --with-shift` flag precisely to keep that command
+    single-purpose (one gate, one hash). v19 honors that: it is a separate
+    command whose single purpose is the combined view, with its own single gate
+    and its own single hash. The two single-axis commands are byte-for-byte
+    unchanged in output and goldens.
+  - **Tests (+17).** Arc identity disk-vs-in-memory; front-for-front join against
+    the two single-axis trajectories; component-hash equality (the arc's
+    `trajectory_hash`/`shift_trajectory_hash` equal the two commands' output
+    byte-for-byte, cross-checked end-to-end); combined-gate parity
+    (`= trajectoryRegressed || shiftTrajectoryFractured`); floor-only trip
+    (regress while the package stays aligned); shift-only trip (fracture while the
+    floor holds flat); both-quiet no-trip; determinism; ≥2-artifact requirement;
+    cross-ladder refusal across the sequence (naming both rounds); unpinned-`v1`
+    note; tamper rejection (round-prefixed); flat-and-stable front omitted from
+    the summary. Every existing command's suite passes unchanged.
+
+### Changed
+- Nothing in existing behavior. v19 is purely additive — a new subcommand and one
+  pure module that composes two existing pure functions; **no existing source
+  file's behavior changes.** Every existing surface (`analyze`, `diff`, `compare`,
+  `compare-coherence`, `coherence-trend`, `coherence-shift-trend`, `verify`) is
+  byte-for-byte unchanged in output and goldens.
+
 ## [9.15.0] — 2026-06-15 — Document-free coherence-shift trajectory (spec-v18)
 
 ### Added
