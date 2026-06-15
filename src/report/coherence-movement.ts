@@ -261,3 +261,42 @@ export function buildCoherenceMovementJson(movement: CoherenceMovement): string 
     2,
   );
 }
+
+/**
+ * Render a {@link CoherenceMovement} as human-readable terminal lines: the
+ * floor- and shift-count summary, then one line per front whose binding floor
+ * moved or whose package fractured/reconciled (a front that held on both axes
+ * is omitted — the summary surfaces only what changed), and the `movement_hash`.
+ * Shared by the headless `analyze --baseline*` path (spec-v13/v14) and the
+ * document-free `compare-coherence` command (spec-v16); lives beside its JSON
+ * sibling so both CLI surfaces render the movement identically.
+ */
+export function renderCoherenceMovementSummary(movement: CoherenceMovement): string {
+  const fc = movement.floor_counts;
+  const sc = movement.shift_counts;
+  const lines = [
+    "\nCross-document posture movement (vs. baseline):",
+    `  binding floor: ${fc.improved} improved, ${fc.regressed} regressed, ${fc["newly-stated"]} newly stated, ${fc["now-unstated"]} now unstated, ${fc.unchanged} unchanged.`,
+    `  coherence: ${sc.fractured} fractured, ${sc.reconciled} reconciled, ${sc.realigned} realigned.`,
+  ];
+  const arrow: Record<string, string> = {
+    improved: "↑ improved",
+    regressed: "↓ regressed",
+    "newly-stated": "+ newly stated",
+    "now-unstated": "− now unstated",
+  };
+  for (const f of movement.fronts) {
+    const floorMoved = f.floor_movement !== "unchanged" && arrow[f.floor_movement];
+    const shifted = f.coherence_shift === "fractured" || f.coherence_shift === "reconciled";
+    if (!floorMoved && !shifted) continue;
+    const parts: string[] = [];
+    if (floorMoved) {
+      parts.push(`binding floor ${arrow[f.floor_movement]} (${f.base_floor ?? "—"} → ${f.revised_floor ?? "—"})`);
+    }
+    if (shifted) parts.push(`${f.coherence_shift} (${f.base_coherence} → ${f.revised_coherence})`);
+    const mark = f.floor_movement === "regressed" || f.coherence_shift === "fractured" ? "⚠" : "•";
+    lines.push(`  ${mark} ${f.dimension}: ${parts.join("; ")}.`);
+  }
+  lines.push(`  movement_hash: ${movement.movement_hash}`);
+  return lines.join("\n") + "\n";
+}

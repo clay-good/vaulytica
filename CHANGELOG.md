@@ -4,6 +4,48 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.13.0] — 2026-06-15 — Document-free coherence movement (spec-v16)
+
+### Added
+- **A `compare-coherence` headless subcommand that diffs two saved coherence
+  artifacts with no documents on either side (spec-v16, building v14 Open
+  Question #2 / the v15 "recompute from two coherence artifacts" deferral into
+  the command that does it).** v14 let round one emit its coherence so round two
+  could gate without round one's documents on disk — but round two still
+  re-analyzed *its own* documents. v16 removes the documents from **both** sides:
+  archive each round's kilobyte coherence artifact (from `analyze --posture
+  --emit-coherence`), then `vaulytica compare-coherence round1.coherence.json
+  round2.coherence.json` shows or gates the round-over-round binding-floor
+  movement from the archive alone — no clause text, no re-ingestion, no engine
+  run. The use case is a dashboard or audit log that stores each negotiation
+  round's coherence and shows the delta without re-analysis.
+  - **The command.** `compareCoherenceArtifacts(baseText, revisedText, format?)`
+    is the pure, IO-free core: it verifies both artifacts via
+    `parsePostureCoherenceJson` (a tampered/corrupt side is a hard error, prefixed
+    `base:`/`revised:`), runs the spec-v15 cross-ladder guard **between the two
+    artifacts** (both ladder-pinned + equal → verified; both pinned + different →
+    refused; either unpinned → proceeds with a note), then diffs them with the
+    same pure `compareCoherence` the `--baseline-coherence` path uses and renders
+    the v13 movement summary (`--format markdown`, default) or its structured
+    JSON (`--format json`). `runCompareCoherence` is the handler: file IO + exit
+    codes. `--fail-on-coherence-regression` exits 2 when any front's binding
+    floor regressed to a strictly worse stated rung — the same gate contract
+    `analyze --fail-on-coherence-regression` ships, now over two artifacts. The
+    disk-artifact movement is byte-identical to the in-memory diff (proven by
+    test).
+  - **Additive.** A brand-new subcommand — every existing command (`analyze`,
+    `diff`, `compare`, `verify`) and every golden is byte-for-byte unchanged. No
+    new posture math and no new on-disk format: the movement stays derived,
+    recomputed on demand from the two auditable, ladder-pinned, hash-verified
+    coherence inputs.
+
+### Changed
+- `renderCoherenceMovementSummary` moved from `tools/cli/run.ts` to
+  `src/report/coherence-movement.ts` (beside its `buildCoherenceMovementJson`
+  sibling) so both the `analyze --baseline*` path and `compare-coherence` render
+  the movement from one definition with no cross-import between sibling CLI
+  modules; `run.ts` re-exports it, so existing importers are unaffected.
+
 ## [9.12.0] — 2026-06-15 — Ladder-pinned coherence baselines (spec-v15)
 
 ### Added

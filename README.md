@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,065 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `35 state-law overlays` · `9 export formats` · `0 servers` · `0 AI` · `3,012 passing tests` · `v9.12.0` · `MIT`
+`1,065 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `35 state-law overlays` · `9 export formats` · `0 servers` · `0 AI` · `3,020 passing tests` · `v9.13.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
 
@@ -342,6 +342,19 @@ The artifact carries the `coherence_hash`. On load, `--baseline-coherence` **re-
 
 **The ladder pin (v15).** The integrity hash proves the *bytes* were not altered, but `compareCoherence` matches fronts by dimension label, and two rungs are only comparable if they sit on the **same ladder** — the same `ideal`/`acceptable` predicates defining what "ideal" and "acceptable" *mean*. Gate round two against a baseline emitted under a *different* playbook and you get a regression gate driven by a movement over two unrelated ladders — a confident, wrong answer. v15 closes that hole: a newly emitted artifact is tagged `vaulytica.posture-coherence.v2` and carries a `ladder_hash` (a stable SHA-256 over the ladder's dimensions + `ideal`/`acceptable` predicates + referenced thresholds — per-tier guidance is excluded, so re-wording your talking-points never invalidates a baseline). `--baseline-coherence` computes this round's ladder hash and **refuses with exit 1** on a mismatch (`ladder mismatch — the artifact was computed against a different playbook ladder …`) instead of silently diffing nonsense; a pre-v15 unpinned `v1` artifact still loads, with a note that cross-ladder verification is unavailable. The `ladder_hash` is independent of `coherence_hash` (which still covers dimensions only), and omitting the pin emits a byte-identical `v1` — fully additive. Full design: [`spec-v15`](docs/spec-v15.md).
 
+**Document-free movement (v16).** v14 removed round one's documents from the gate; round two still re-analyzed its own. The `compare-coherence` subcommand removes documents from **both** sides — archive each round's kilobyte coherence artifact, then diff two of them with no documents on either side. The use case is a dashboard or audit log that stores each round's coherence and shows the binding-floor delta from the archive alone — no clause text, no re-ingestion, no engine run.
+
+```sh
+# Each round, archive its coherence:
+vaulytica analyze ./round-1/ --playbook-file team.json --posture --emit-coherence round1.coherence.json
+vaulytica analyze ./round-2/ --playbook-file team.json --posture --emit-coherence round2.coherence.json
+
+# Later — show/gate the round-over-round delta from the archive alone, no documents:
+vaulytica compare-coherence round1.coherence.json round2.coherence.json --fail-on-coherence-regression
+```
+
+It is the same pure `compareCoherence` the `--baseline-coherence` path uses; both artifacts are hash-verified on load (a tampered side is a hard error, prefixed `base:`/`revised:`), and the v15 cross-ladder guard now runs **between the two artifacts** — two rounds pinned to different ladders are refused, not silently diffed. `--fail-on-coherence-regression` exits 2 on a regressed binding floor, the same gate contract `analyze` ships, now over two saved files. No new posture math and no new on-disk format: the movement stays *derived*, recomputed on demand from the two auditable, ladder-pinned inputs. Full design: [`spec-v16`](docs/spec-v16.md).
+
 ## What the result looks like
 
 <img src="docs/images/report-mobile.png" alt="Vaulytica report card on a phone: severity counts, a California non-compete jurisdiction overlay with citation, and one-click exports — Word, JSON, fix-list (Markdown/CSV), obligations, deadlines (.ics), HTML report, and SARIF" width="320" align="right" />
@@ -370,6 +383,7 @@ Every view is verified to render with **no horizontal scroll from 320 px to 1280
 | v13 | Cross-Document Posture Movement | **(A) Movement engine & headless surface** — `compareCoherence` diffs two v12 coherences (a deal package at a **base** round and a **revised** round, same ladder) and reports, per front (matched by dimension, not by document), how the **binding floor** moved — **improved · regressed · unchanged · newly-stated · now-unstated** — and how the coherence kind shifted — **fractured · reconciled · realigned · unchanged**; reuses v11's `TIER_RANK`, carries a `movement_hash` outside every `result_hash`/`posture_hash`/`coherence_hash`. Surfaced in `analyze --posture --baseline <bundle>` (a "Cross-document posture movement" summary) and gated by `--fail-on-coherence-regression` (exit 2 when any front's binding floor regressed to a worse stated rung; `now-unstated` never trips it). The fourth corner of the posture matrix (across docs × across versions) · **(B) Browser-UI two-round card** — a "Compare a revised round…" affordance on the bundle result (shown only when the round produced a coherence) re-scores the revised round against the same playbook and renders a mobile-safe per-front movement card (binding-floor direction on the left border, fractured/reconciled shift inline; vertical-scroll-only 320–1280px, WCAG 2 AA both themes) · **(C) DOCX movement section** — a color-coded "Posture Movement (Across the Package)" table in the two-round Word deliverable (additive; omitted when no baseline, so no golden moves) + a structured movement JSON | **complete · 9.10.0** (Steps 187–191; [`spec-v13`](docs/spec-v13.md)). |
 | v14 | Saved Coherence Baselines | **(A) The artifact (engine)** — `buildPostureCoherenceJson` serializes a v12 coherence to stable JSON tagged `vaulytica.posture-coherence.v1` (the `coherence_hash` + every per-front, per-document rung, in the pinned order); `parsePostureCoherenceJson` is the verifying inverse — it **re-derives the hash from the artifact's own dimensions** and rejects any mismatch (a corrupted/hand-edited baseline is a hard error, never a silent gate input), recomputing `counts` from the verified dimensions. One `coherenceHash` helper stamps and verifies · **(B) Emit & consume (headless)** — `analyze --posture --emit-coherence <path>` writes the round's coherence; `--baseline-coherence <coherence.json>` diffs against a saved, verified coherence instead of re-analyzing a baseline bundle (mutually exclusive with `--baseline`); `--fail-on-coherence-regression` accepts either source. Gate round two without round one's documents on disk. Headless-only by design; fully additive (neither flag set ⇒ byte-identical to v13) | **complete · 9.11.0** (Steps 192–193; [`spec-v14`](docs/spec-v14.md)). |
 | v15 | Ladder-Pinned Coherence Baselines | **(A) Ladder fingerprint (engine)** — `ladderHash(playbook)` is a stable SHA-256 over exactly what determines a tier (each position's `dimension` + `ideal`/`acceptable` predicates + referenced `thresholds`; per-tier guidance excluded, so re-wording talking-points never invalidates a baseline); `null` for a playbook with no positions · **(B) Pinned artifact + cross-ladder guard (headless)** — a `vaulytica.posture-coherence.v2` artifact carries a `ladder_hash` (independent of `coherence_hash`); `--emit-coherence` pins the ladder automatically; `--baseline-coherence` **refuses with exit 1** when the artifact's ladder hash ≠ this round's (`ladder mismatch …`), turning a confident-wrong cross-ladder gate into a hard stop. A pre-v15 unpinned `v1` artifact still loads with a note. Omitting the pin emits a byte-identical `v1` — fully additive | **complete · 9.12.0** (Steps 194–195; [`spec-v15`](docs/spec-v15.md)). |
+| v16 | Document-Free Coherence Movement | **`compare-coherence` subcommand** — diffs two saved coherence artifacts (`compare-coherence base.coherence.json revised.coherence.json`) with **no documents on either side**, removing the last re-analysis from the round-over-round gate (v13 needed both rounds' docs, v14 only round two's, v16 none). The pure `compareCoherenceArtifacts` verifies both artifacts (the v14 integrity hash, errors prefixed `base:`/`revised:`), runs the v15 cross-ladder guard **between the two pins** (refuses a different-ladder diff), then the same pure `compareCoherence` and renders markdown or movement JSON; `--fail-on-coherence-regression` exits 2 on a regressed binding floor. Keeps the movement *derived* (no new on-disk format) from two auditable, ladder-pinned inputs. Purely additive — a new subcommand, every existing command/golden unchanged | **complete · 9.13.0** (Step 196; [`spec-v16`](docs/spec-v16.md)). |
 
 ## v8 — hardening: a tool that cannot be made to hang
 
@@ -390,7 +404,7 @@ The product is "a linter for legal documents," yet it spoke no linter format and
 
 - **SARIF 2.1.0** — each rule → a `reportingDescriptor` (with the citation as `helpUri`), each finding → a `result` (severity → level, section → location, `result_hash` + finding id → `partialFingerprints` so findings dedupe across runs). Annotate a pull request, populate a code-scanning dashboard. The output is gated by a `sarifConformanceViolations()` structural check (level enum, in-range `ruleIndex`, string fingerprints, absolute `helpUri`) — negative-tested, so a regression that would make GitHub reject the file fails the build.
 - **Standalone HTML report** — a self-contained `.html` (all CSS inlined, **no script**, no external resource) that renders the full report with wrapped inline citations and prints clean to PDF from any browser. The archivable, emailable, diff-able counterpart to the DOCX — and mobile-responsive by construction.
-- **Headless API + CLI** — a single dispatcher, `vaulytica analyze | diff | compare | verify`, over the **same parity-proven pipeline**. `analyze <path|glob|dir> --format json,sarif,html,md,csv --fail-on critical` runs the engine in CI, a pre-commit hook, or a folder sweep, exiting non-zero when findings breach a threshold. The DKB ships with the tool, so it opens **no socket** — "nothing leaves your machine" holds headless too.
+- **Headless API + CLI** — a single dispatcher, `vaulytica analyze | diff | compare | compare-coherence | verify`, over the **same parity-proven pipeline**. `analyze <path|glob|dir> --format json,sarif,html,md,csv --fail-on critical` runs the engine in CI, a pre-commit hook, or a folder sweep, exiting non-zero when findings breach a threshold. The DKB ships with the tool, so it opens **no socket** — "nothing leaves your machine" holds headless too.
 - **Playbook diff** — `vaulytica diff a.json b.json` (and the `diffPlaybooks(a, b)` API) gives custom-playbook authors version control for their team standard: which built-in rules were selected, which severity overrides moved, which custom rules were added/removed/edited, rendered as Markdown or JSON. `--exit-code` makes it a CI primitive (non-zero when the standard changed).
 - **Reproducibility verifier** — `vaulytica verify report.json original.txt` (and `verifyReproducibility(savedReport, original)`) re-derives the `result_hash` and reports *what* diverged — the input, the engine, or the DKB — turning the determinism promise into a checkable audit receipt.
 - **Export enhancements** — a bundle "everything" archive (per-document fix-list/CSV/ICS/JSON in one download) and a **clause-evidence coverage** surface that tells a reviewer which findings pin a verbatim quoted clause span vs. rest on a bare match.
@@ -399,7 +413,7 @@ Every Thrust-B change is render-side or additive (zero `result_hash` churn); eve
 
 ### CLI cheat sheet
 
-One dispatcher, four commands — `analyze`, `diff`, `compare`, `verify` — over the parity-proven engine (`npm run cli -- <command>`):
+One dispatcher, five commands — `analyze`, `diff`, `compare`, `compare-coherence`, `verify` — over the parity-proven engine (`npm run cli -- <command>`):
 
 ```
 # analyze: one file, print SARIF to stdout
@@ -454,6 +468,7 @@ npm run citation:check -- --reachability   # + network sweep
 | `analyze <path\|glob\|dir>` | run the engine headless, write `json,sarif,html,md,csv`; `--playbook-file <p> --posture` over a bundle adds cross-document posture coherence; `--fail-on-divergence` gates on it; `--baseline <bundle>` (or `--baseline-coherence <coherence.json>`, a saved artifact) adds cross-document posture *movement* vs. a prior round; `--emit-coherence <path>` writes the round's coherence artifact; `--fail-on-coherence-regression` gates on the movement | `2` when findings breach `--fail-on`, **or** (with `--fail-on-divergence`) when any posture front diverges across the bundle, **or** (with `--fail-on-coherence-regression`) when any front's binding floor regressed vs. the baseline |
 | `diff <a.json> <b.json>` | structural diff of two custom playbooks (Markdown/JSON) | `1` with `--exit-code` when they differ |
 | `compare <base> <revised>` | version-compare two documents + clause redline (Markdown/JSON); `--playbook-file <p> --posture` adds the posture movement; `--fail-on-regression` gates on it | `2` when the revision *introduced* a finding at/above `--fail-on`, **or** (with `--fail-on-regression`) when any posture front regressed |
+| `compare-coherence <base.json> <revised.json>` | diff two saved coherence artifacts with **no documents** on either side (Markdown/JSON); both hash-verified + cross-ladder-guarded; `--fail-on-coherence-regression` gates on a regressed binding floor | `1` on a tampered artifact or a cross-ladder mismatch, **or** (with `--fail-on-coherence-regression`) `2` when the binding floor regressed |
 | `verify <report.json> <original>` | re-derive `result_hash`; report input/engine/DKB drift | `3` when not reproduced |
 
 | `analyze` flag | Meaning |
@@ -668,12 +683,12 @@ npm run dev          # open the printed URL
 npm run build        # static site → dist/
 npm run typecheck    # tsc --noEmit
 npm run lint         # eslint
-npm run test         # vitest — 3,012 tests, ~30s
+npm run test         # vitest — 3,020 tests, ~30s
 npm run coverage     # vitest + V8 coverage, enforces the regression floor
 npm run accuracy     # v5 Ground Truth harness → tools/accuracy/SCOREBOARD.md
 npm run mutation     # Stryker mutation score (scoped to extractors; slow, off the per-push path)
 npm run citation:check   # v8 build-only citation URL well-formedness (+ --reachability for the network sweep)
-npm run cli -- analyze <path> --format sarif,html,json   # v8 headless CLI (also: diff, compare, verify)
+npm run cli -- analyze <path> --format sarif,html,json   # v8 headless CLI (also: diff, compare, compare-coherence, verify)
 ```
 
 The CI gate (`.github/workflows/ci.yml`) runs typecheck + lint + **coverage** + build on Ubuntu; the test matrix re-runs the plain suite on Ubuntu/macOS/Windows for cross-OS determinism, and Lighthouse enforces the mobile performance budget. Mutation testing runs on its own weekly/on-demand workflow, never the per-push path. A commit is "green" only when the per-push gates pass.
@@ -717,7 +732,7 @@ src/
   ui/          drop zone, pipeline, six-state result machine, theme toggle
 dkb/build/     offline fetchers (EDGAR, US Code, eCFR, Common Paper, …) → DKB
 tools/accuracy/ v5 Ground Truth harness (corpus loader, κ, metrics, scoreboard, legal-basis ledger)
-tools/cli/     v8 headless API (analyzeText/analyzeFile) + `vaulytica analyze | diff | compare | verify` CLI dispatcher
+tools/cli/     v8 headless API (analyzeText/analyzeFile) + `vaulytica analyze | diff | compare | compare-coherence | verify` CLI dispatcher
 tools/citation-check/ v8 build-only citation URL well-formedness + scheduled reachability
 corpus/        real-document accuracy corpus (build/CI-only; never in the bundle)
 docs/          architecture, determinism, threat model, legal-basis ledger, specs v1–v9

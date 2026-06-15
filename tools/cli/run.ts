@@ -13,12 +13,15 @@
  * a round computed on a different ladder (a cross-ladder compare is meaningless).
  *   tsx tools/cli/run.ts diff <a.json> <b.json> [--format markdown|json] [--exit-code]
  *   tsx tools/cli/run.ts compare <base> <revised> [--fail-on <sev>] [--fail-on-regression] [--format json|markdown]
+ *   tsx tools/cli/run.ts compare-coherence <base.coherence.json> <revised.coherence.json> [--format markdown|json] [--fail-on-coherence-regression]
  *   tsx tools/cli/run.ts verify <report.json> <original> [--playbook <id>]
  *
  * One dispatcher over the reach commands: `analyze` runs the engine headless
  * (CI gate), `diff` compares two custom playbooks (Step 144), `compare`
  * version-compares two documents + emits the clause redline (a CI redline
- * gate), and `verify` re-derives a saved report's `result_hash` (Step 145).
+ * gate), `compare-coherence` diffs two saved coherence artifacts with no
+ * documents on either side (spec-v16), and `verify` re-derives a saved report's
+ * `result_hash` (Step 145).
  * The DKB ships with the tool — it opens no socket. The engine is the SAME engine
  * the tab runs (parity-proven), so a number on a CI dashboard describes
  * shipped behavior. Build/CI-only; never imported by `src/`.
@@ -30,6 +33,7 @@ import { join, basename, extname, resolve } from "node:path";
 import { analyzeFile, loadAccuracyDeps, type AnalyzeResult } from "./api.js";
 import { runDiff } from "./diff.js";
 import { runCompare } from "./compare.js";
+import { runCompareCoherence } from "./compare-coherence.js";
 import { verifyReproducibility, explainReproResult, type SavedReport } from "./verify.js";
 import type { Severity } from "../../src/engine/index.js";
 import { buildJsonReport } from "../../src/report/json.js";
@@ -49,7 +53,7 @@ import {
 import {
   compareCoherence,
   coherenceRegressed,
-  type CoherenceMovement,
+  renderCoherenceMovementSummary,
 } from "../../src/report/coherence-movement.js";
 
 const SUPPORTED_EXT = new Set([".txt", ".md", ".markdown", ".text", ".docx", ".pdf"]);
@@ -529,42 +533,11 @@ async function collectBaselineCoherence(
   return postures.length >= 2 ? bundlePostureCoherence(postures) : null;
 }
 
-/**
- * Render the cross-document posture movement (spec-v13) as human-readable lines:
- * the floor-movement counts, then one line per front whose binding floor moved
- * or whose package fractured/reconciled — the deal lead's round-over-round
- * signal. A front that held on both axes is omitted (the summary surfaces only
- * what changed).
- */
-export function renderCoherenceMovementSummary(movement: CoherenceMovement): string {
-  const fc = movement.floor_counts;
-  const sc = movement.shift_counts;
-  const lines = [
-    "\nCross-document posture movement (vs. baseline):",
-    `  binding floor: ${fc.improved} improved, ${fc.regressed} regressed, ${fc["newly-stated"]} newly stated, ${fc["now-unstated"]} now unstated, ${fc.unchanged} unchanged.`,
-    `  coherence: ${sc.fractured} fractured, ${sc.reconciled} reconciled, ${sc.realigned} realigned.`,
-  ];
-  const arrow: Record<string, string> = {
-    improved: "↑ improved",
-    regressed: "↓ regressed",
-    "newly-stated": "+ newly stated",
-    "now-unstated": "− now unstated",
-  };
-  for (const f of movement.fronts) {
-    const floorMoved = f.floor_movement !== "unchanged" && arrow[f.floor_movement];
-    const shifted = f.coherence_shift === "fractured" || f.coherence_shift === "reconciled";
-    if (!floorMoved && !shifted) continue;
-    const parts: string[] = [];
-    if (floorMoved) {
-      parts.push(`binding floor ${arrow[f.floor_movement]} (${f.base_floor ?? "—"} → ${f.revised_floor ?? "—"})`);
-    }
-    if (shifted) parts.push(`${f.coherence_shift} (${f.base_coherence} → ${f.revised_coherence})`);
-    const mark = f.floor_movement === "regressed" || f.coherence_shift === "fractured" ? "⚠" : "•";
-    lines.push(`  ${mark} ${f.dimension}: ${parts.join("; ")}.`);
-  }
-  lines.push(`  movement_hash: ${movement.movement_hash}`);
-  return lines.join("\n") + "\n";
-}
+// `renderCoherenceMovementSummary` moved to `src/report/coherence-movement.ts`
+// (beside its JSON sibling) in spec-v16 so both the `analyze --baseline*` path
+// and the document-free `compare-coherence` command share one renderer; re-export
+// it here so existing importers (and the test suite) keep their `./run.js` import.
+export { renderCoherenceMovementSummary };
 
 /**
  * Render the cross-document posture coherence (spec-v12) as human-readable
@@ -632,6 +605,8 @@ Commands:
                           [--format json|markdown]
                           [--fail-on critical|warning|info] [--fail-on-regression]
                           [--confirm-pairing]
+  compare-coherence <base.coherence.json> <revised.coherence.json>
+                          [--format markdown|json] [--fail-on-coherence-regression]
   verify  <report.json> <original> [--playbook <id>]
 `;
 
@@ -644,6 +619,8 @@ async function main(): Promise<void> {
       return runDiff(rest);
     case "compare":
       return runCompare(rest);
+    case "compare-coherence":
+      return runCompareCoherence(rest);
     case "verify":
       return runVerify(rest);
     case undefined:
@@ -653,7 +630,9 @@ async function main(): Promise<void> {
       process.stdout.write(USAGE);
       return;
     default:
-      throw new Error(`unknown command "${command}" (expected: analyze | diff | compare | verify)`);
+      throw new Error(
+        `unknown command "${command}" (expected: analyze | diff | compare | compare-coherence | verify)`,
+      );
   }
 }
 
