@@ -4,6 +4,60 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.14.0] — 2026-06-15 — Document-free coherence trajectory (spec-v17)
+
+### Added
+- **A `coherence-trend` headless subcommand that walks N ≥ 2 saved coherence
+  artifacts and reports each front's binding-floor trajectory across the whole
+  negotiation (spec-v17, building v16's explicitly-deferred sequence walker into
+  the command that adds the signal pairwise diffs cannot).** v16's
+  `compare-coherence` answers "round 3 → round 4." It cannot answer the question
+  a deal lead asks across a long negotiation: *did the cap's binding floor climb
+  steadily, erode steadily, or whipsaw — dip below floor mid-deal and recover?*
+  A first-vs-last diff reports a recovered dip as `unchanged` and hides it; N−1
+  independent pairwise diffs never say "this front moved in both directions
+  across the deal." v17 walks the sequence as one object and classifies each
+  front's path — the same relationship v11's trajectory has to v10's snapshot.
+  - **The classifier (pure).** `src/report/coherence-trajectory.ts` —
+    `compareCoherenceTrajectory(rounds)` matches fronts by dimension across the
+    union of all N coherences (pinned by `localeCompare`), builds each front's
+    floor and coherence kind at every round, classifies each consecutive step
+    with the shared v11/v13 `classifyFloorMovement` (now **exported** from
+    `coherence-movement.ts` — no behavior change), computes the **net** movement
+    (round 1 → round N), and reduces the steps to a `FloorTrajectoryKind`:
+    `steady-improvement` (≥1 improved, 0 regressed steps) · `steady-regression`
+    (≥1 regressed, 0 improved) · `whipsaw` (both directions) · `flat` (no ranked
+    movement — an appear-only or drop-only front is `flat`, never a false
+    whipsaw, per §3 honesty). Carries a `trajectory_hash` namespaced apart from
+    every `coherence_hash`/`movement_hash`. `trajectoryRegressed` is the gate
+    predicate — true when any front is `steady-regression` or `whipsaw` (the
+    floor regressed at *some* step), the faithful multi-round generalization of
+    v13's `coherenceRegressed`.
+  - **The command.** `tools/cli/coherence-trend.ts` —
+    `compareCoherenceTrendArtifacts(texts, format?)` is the pure CLI core: it
+    verifies all N artifacts (a tampered/corrupt round is a hard error, prefixed
+    `round N:`), runs the v15/v16 cross-ladder guard across the **whole sequence**
+    (any two ladder-pinned rounds with differing pins → refused, naming both
+    rounds; any unpinned round → proceeds with a note), computes the trajectory,
+    and renders the markdown summary (default) or its structured JSON
+    (`schema: vaulytica.posture-trajectory.v1`). `runCoherenceTrend` is the
+    handler: file IO + exit codes. Requires ≥ 2 artifacts (a single coherence has
+    no trajectory). `--fail-on-coherence-regression` exits 2 on a floor that
+    regressed at **any** step — strictly stronger than a first-vs-last diff, so a
+    transient below-floor dip trips the gate even when the front recovered. The
+    disk-sequence trajectory is byte-identical to the in-memory one (proven by
+    test).
+  - **Additive.** A brand-new subcommand + one pure module — every existing
+    command (`analyze`, `diff`, `compare`, `compare-coherence`, `verify`) and
+    every golden is byte-for-byte unchanged; `coherence-movement.ts` changes only
+    by *exporting* an existing private function. No new posture math and no new
+    on-disk format: the trajectory stays derived, recomputed on demand from the N
+    auditable, ladder-pinned, hash-verified coherence inputs. 15 new tests
+    (whipsaw detection, steady-improvement/regression, flat-on-appear-only,
+    determinism, ≥2-artifact requirement, cross-ladder refusal naming both rounds,
+    unpinned-v1 note, round-prefixed tamper rejection, gate-predicate parity).
+    Suite 3,020 → 3,035.
+
 ## [9.13.0] — 2026-06-15 — Document-free coherence movement (spec-v16)
 
 ### Added

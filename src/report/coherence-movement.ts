@@ -120,7 +120,7 @@ function emptyShiftCounts(): Record<CoherenceShift, number> {
  * regressed (the §3 honesty contract — "not stated" is not a point on the
  * ideal→floor axis).
  */
-function classifyFloorMovement(
+export function classifyFloorMovement(
   base: NegotiationTier | null,
   revised: NegotiationTier | null,
 ): PostureMovementKind {
