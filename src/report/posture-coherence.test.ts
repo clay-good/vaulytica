@@ -5,6 +5,8 @@ import {
   buildPostureCoherenceJson,
   parsePostureCoherenceJson,
   COHERENCE_ARTIFACT_SCHEMA,
+  COHERENCE_ARTIFACT_SCHEMA_V1,
+  COHERENCE_ARTIFACT_SCHEMA_V2,
   type CoherenceInput,
   type PostureCoherenceKind,
 } from "./posture-coherence.js";
@@ -183,9 +185,9 @@ describe("posture coherence artifact (spec-v14 Thrust A — saved baseline)", ()
     expect(parsed.errors.join(" ")).toMatch(/coherence_hash mismatch/);
   });
 
-  it("rejects the wrong schema tag", async () => {
+  it("rejects an unknown schema tag", async () => {
     const json = JSON.parse(buildPostureCoherenceJson(await sample()));
-    json.schema = "vaulytica.posture-coherence.v2";
+    json.schema = "vaulytica.posture-coherence.v99";
     const parsed = await parsePostureCoherenceJson(JSON.stringify(json));
     expect(parsed.ok).toBe(false);
     if (parsed.ok) return;
@@ -215,5 +217,70 @@ describe("posture coherence artifact (spec-v14 Thrust A — saved baseline)", ()
     if (!parsed.ok) return;
     const total = Object.values(parsed.coherence.counts).reduce((a, b) => a + b, 0);
     expect(total).toBe(parsed.coherence.dimensions.length);
+  });
+
+  it("a v1 artifact (no ladder hash) parses with a null ladderHash", async () => {
+    const parsed = await parsePostureCoherenceJson(buildPostureCoherenceJson(await sample()));
+    expect(parsed.ok).toBe(true);
+    if (!parsed.ok) return;
+    expect(parsed.ladderHash).toBeNull();
+  });
+});
+
+describe("posture coherence artifact (spec-v15 — ladder-pinned v2)", () => {
+  const sample = () =>
+    bundlePostureCoherence(
+      bundle(
+        ["MSA.docx", { Cap: "ideal", Law: "ideal", Indemnity: "acceptable" }],
+        ["Order.docx", { Cap: "below-acceptable", Law: "ideal" }],
+      ),
+    );
+  const LADDER = "a".repeat(64);
+
+  it("emits a v2 artifact carrying the ladder hash when one is supplied", async () => {
+    const json = JSON.parse(buildPostureCoherenceJson(await sample(), LADDER));
+    expect(json.schema).toBe(COHERENCE_ARTIFACT_SCHEMA_V2);
+    expect(json.ladder_hash).toBe(LADDER);
+  });
+
+  it("omitting the ladder hash is byte-identical to a v1 artifact", async () => {
+    const c = await sample();
+    expect(buildPostureCoherenceJson(c, null)).toBe(buildPostureCoherenceJson(c));
+    expect(JSON.parse(buildPostureCoherenceJson(c)).schema).toBe(COHERENCE_ARTIFACT_SCHEMA_V1);
+  });
+
+  it("keeps coherence_hash independent of the ladder pin (same dimensions → same integrity hash)", async () => {
+    const c = await sample();
+    expect(JSON.parse(buildPostureCoherenceJson(c, LADDER)).coherence_hash).toBe(c.coherence_hash);
+  });
+
+  it("round-trips a v2 artifact and surfaces the pinned ladder hash", async () => {
+    const c = await sample();
+    const text = buildPostureCoherenceJson(c, LADDER);
+    const parsed = await parsePostureCoherenceJson(text);
+    expect(parsed.ok).toBe(true);
+    if (!parsed.ok) return;
+    expect(parsed.ladderHash).toBe(LADDER);
+    expect(parsed.coherence.coherence_hash).toBe(c.coherence_hash);
+    // Re-serializing with the same ladder hash yields identical bytes.
+    expect(buildPostureCoherenceJson(parsed.coherence, parsed.ladderHash)).toBe(text);
+  });
+
+  it("rejects a v2 artifact missing its ladder_hash", async () => {
+    const json = JSON.parse(buildPostureCoherenceJson(await sample(), LADDER));
+    delete json.ladder_hash;
+    const parsed = await parsePostureCoherenceJson(JSON.stringify(json));
+    expect(parsed.ok).toBe(false);
+    if (parsed.ok) return;
+    expect(parsed.errors.join(" ")).toMatch(/ladder_hash must be a string/);
+  });
+
+  it("rejects a v1 artifact that carries a stray ladder_hash", async () => {
+    const json = JSON.parse(buildPostureCoherenceJson(await sample()));
+    json.ladder_hash = LADDER;
+    const parsed = await parsePostureCoherenceJson(JSON.stringify(json));
+    expect(parsed.ok).toBe(false);
+    if (parsed.ok) return;
+    expect(parsed.errors.join(" ")).toMatch(/ladder_hash is only valid/);
   });
 });

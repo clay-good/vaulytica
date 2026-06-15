@@ -212,6 +212,35 @@ export async function evaluateNegotiationPosture(
 }
 
 /**
+ * Stable fingerprint of a playbook's negotiation-posture **ladder** (spec-v15).
+ *
+ * A coherence is a set of rungs on a team's ladder; comparing rungs computed
+ * from two *different* ladders is nonsense (the spec-v10 §3 cross-ladder
+ * contract, the same one v6 enforces for cross-family compares and v11 for
+ * cross-ladder movements). v14's saved-coherence artifact can be diffed against
+ * a later round, but nothing verified the two rounds shared a ladder. This hash
+ * is the verification key: SHA-256 over exactly what determines which tier a
+ * document lands on — each position's `dimension` and its `ideal`/`acceptable`
+ * predicates (sorted by dimension, machine-independent), plus the named
+ * `thresholds` those predicates may reference. Per-tier `guidance` is
+ * display-only and **excluded**, so editing advisory negotiation text never
+ * changes the ladder identity. A playbook with no `negotiation_positions` has
+ * no ladder; returns `null`.
+ */
+export async function ladderHash(playbook: CustomPlaybook): Promise<string | null> {
+  const positions = playbook.negotiation_positions;
+  if (!positions || positions.length === 0) return null;
+  return sha256Hex(
+    stableStringify({
+      positions: [...positions]
+        .sort((a, b) => a.dimension.localeCompare(b.dimension, "en"))
+        .map((p) => ({ dimension: p.dimension, ideal: p.ideal, acceptable: p.acceptable })),
+      thresholds: playbook.thresholds ?? {},
+    }),
+  );
+}
+
+/**
  * Classify one position into a tier. The ladder is monotone: `ideal` is the
  * stricter predicate, `acceptable` the looser floor. We report
  * `below-acceptable` ONLY when both tiers are evaluable and both fail — if

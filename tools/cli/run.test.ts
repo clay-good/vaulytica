@@ -15,6 +15,8 @@ import {
   parsePostureCoherenceJson,
 } from "../../src/report/posture-coherence.js";
 import { compareCoherence, coherenceRegressed } from "../../src/report/coherence-movement.js";
+import { ladderHash } from "../../src/playbooks/custom-interpreter.js";
+import { validateCustomPlaybook, type CustomPlaybook } from "../../src/playbooks/custom-playbook.js";
 import type { NegotiationPosture, NegotiationTier } from "../../src/playbooks/custom-interpreter.js";
 
 describe("splitGlob (CLI glob resolution)", () => {
@@ -218,5 +220,48 @@ describe("saved coherence baseline (spec-v14 — --emit-coherence / --baseline-c
     const inMemory = await compareCoherence(base, revised);
     expect(fromDisk.movement_hash).toBe(inMemory.movement_hash);
     expect(coherenceRegressed(fromDisk)).toBe(true); // Cap floor dropped acceptable → below-acceptable
+  });
+});
+
+describe("ladder-pinned coherence baseline (spec-v15 — cross-ladder guard)", () => {
+  function posture(map: Record<string, NegotiationTier>): NegotiationPosture {
+    return {
+      positions: Object.entries(map).map(([dimension, tier]) => ({ dimension, tier })),
+      counts: { ideal: 0, acceptable: 0, below_acceptable: 0, unevaluable: 0 },
+      posture_hash: "test",
+    };
+  }
+  function ladder(capFloor: number): CustomPlaybook {
+    const v = validateCustomPlaybook({
+      schema_version: "1.0",
+      catalog_version: "0.1.0",
+      id: "team",
+      name: "Team",
+      description: "x",
+      negotiation_positions: [
+        {
+          dimension: "Cap",
+          ideal: { kind: "numeric_threshold", metric: "liability_cap_multiple", comparator: "gte", value: 2 },
+          acceptable: { kind: "numeric_threshold", metric: "liability_cap_multiple", comparator: "gte", value: capFloor },
+        },
+      ],
+    });
+    if (!v.ok) throw new Error(v.errors.join("; "));
+    return v.playbook;
+  }
+
+  it("the emitting round's ladder hash round-trips on the artifact and matches the same ladder", async () => {
+    const c = await bundlePostureCoherence([
+      { document: "msa.docx", posture: posture({ Cap: "ideal" }) },
+      { document: "order.docx", posture: posture({ Cap: "acceptable" }) },
+    ]);
+    const emitLadder = await ladderHash(ladder(1));
+    const parsed = await parsePostureCoherenceJson(buildPostureCoherenceJson(c, emitLadder));
+    expect(parsed.ok).toBe(true);
+    if (!parsed.ok) return;
+    // The guard's accept path: a consuming round on the *same* ladder matches.
+    expect(parsed.ladderHash).toBe(await ladderHash(ladder(1)));
+    // The guard's reject path: a *different* ladder (looser floor) does not match.
+    expect(parsed.ladderHash).not.toBe(await ladderHash(ladder(0.5)));
   });
 });

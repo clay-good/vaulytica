@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { runCustomPlaybook } from "./custom-interpreter.js";
+import { runCustomPlaybook, ladderHash } from "./custom-interpreter.js";
 import { validateCustomPlaybook, type CustomPlaybook } from "./custom-playbook.js";
 import type { DocumentTree } from "../ingest/types.js";
 import type { ExtractedData } from "../extract/types.js";
@@ -377,5 +377,58 @@ describe("runCustomPlaybook — determinism", () => {
     const present = await runCustomPlaybook(playbook, { tree: tree("X", "binding arbitration"), extracted: emptyExtracted() });
     const absent = await runCustomPlaybook(playbook, { tree: tree("X", "no such clause"), extracted: emptyExtracted() });
     expect(present.result_hash).not.toBe(absent.result_hash);
+  });
+});
+
+// --- ladder fingerprint (spec-v15) ------------------------------------------
+
+describe("ladderHash — playbook ladder fingerprint", () => {
+  const POS = [
+    {
+      dimension: "Liability cap",
+      ideal: { kind: "numeric_threshold", metric: "liability_cap_multiple", comparator: "gte", value: 2 },
+      acceptable: { kind: "numeric_threshold", metric: "liability_cap_multiple", comparator: "gte", value: 1 },
+      guidance: { ideal: "Push for 2x.", acceptable: "1x floor.", walk_away: "Below 1x, walk." },
+    },
+    {
+      dimension: "Governing law",
+      ideal: { kind: "governing_law_in", allowed: ["Delaware"] },
+      acceptable: { kind: "governing_law_in", allowed: ["Delaware", "New York"] },
+    },
+  ] as const;
+
+  it("returns null for a playbook with no negotiation positions", async () => {
+    expect(await ladderHash(pb())).toBeNull();
+  });
+
+  it("is a stable 64-hex fingerprint, independent of position order", async () => {
+    const a = await ladderHash(pb({ negotiation_positions: POS as never }));
+    const reordered = await ladderHash(pb({ negotiation_positions: [POS[1], POS[0]] as never }));
+    expect(a).toMatch(/^[0-9a-f]{64}$/);
+    expect(a).toBe(reordered);
+  });
+
+  it("ignores per-tier guidance (advisory text never changes ladder identity)", async () => {
+    const withGuidance = await ladderHash(pb({ negotiation_positions: POS as never }));
+    const stripped = JSON.parse(JSON.stringify(POS)).map((p: Record<string, unknown>) => {
+      delete p.guidance;
+      return p;
+    });
+    const without = await ladderHash(pb({ negotiation_positions: stripped as never }));
+    expect(withGuidance).toBe(without);
+  });
+
+  it("changes when a tier predicate or a referenced threshold changes", async () => {
+    const base = await ladderHash(pb({ negotiation_positions: POS as never }));
+    const looser = [
+      { ...POS[0], acceptable: { kind: "numeric_threshold", metric: "liability_cap_multiple", comparator: "gte", value: 0.5 } },
+      POS[1],
+    ];
+    expect(await ladderHash(pb({ negotiation_positions: looser as never }))).not.toBe(base);
+
+    const withThresholds = await ladderHash(
+      pb({ negotiation_positions: POS as never, thresholds: { liability_cap_multiple: 2 } }),
+    );
+    expect(withThresholds).not.toBe(base);
   });
 });

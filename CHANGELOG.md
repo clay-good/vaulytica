@@ -4,6 +4,52 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.12.0] — 2026-06-15 — Ladder-pinned coherence baselines (spec-v15)
+
+### Added
+- **A cross-ladder guard for saved coherence baselines (spec-v15, resolving
+  spec-v14 Open Question #1 and the Part XVI "Cross-ladder verification"
+  deferral).** v14 made the saved coherence artifact hash-verified for
+  *integrity* (a tampered baseline is a hard error). But integrity is not
+  identity: nothing stopped a team from gating round two against a baseline
+  emitted under a **different playbook ladder**, producing a regression gate
+  driven by a movement computed over two unrelated ladders. v15 closes that
+  hole — the artifact now fingerprints the ladder its rungs sit on, and the
+  consume path refuses a ladder mismatch.
+  - **Thrust A — the ladder fingerprint (engine).** `ladderHash(playbook)` in
+    `custom-interpreter.ts` is a stable SHA-256 over exactly what determines a
+    tier: each negotiation position's `dimension` and its `ideal`/`acceptable`
+    predicates (sorted by dimension, machine-independent), plus the named
+    `thresholds` those predicates may reference. Per-tier `guidance` is
+    **excluded** — advisory negotiation text never changes a document's tier, so
+    re-wording it must not invalidate an archived baseline. A playbook with no
+    `negotiation_positions` has no ladder and hashes to `null`.
+  - **Thrust B — the pinned artifact + guard (headless).** A new
+    `vaulytica.posture-coherence.v2` artifact (`COHERENCE_ARTIFACT_SCHEMA_V2`)
+    carries a `ladder_hash` alongside the v14 fields. `buildPostureCoherenceJson`
+    gained an optional ladder-hash argument: pass it and the artifact is a pinned
+    `v2`; omit it and the bytes are byte-identical to v14's `v1`. The
+    `ladder_hash` is **independent of `coherence_hash`** (which still covers
+    `dimensions` only), so the v1 and v2 artifacts of one coherence share the
+    same integrity hash. `parsePostureCoherenceJson` accepts both schemas,
+    requires `ladder_hash` on `v2`, rejects a stray `ladder_hash` on `v1`, and
+    returns `ladderHash: string | null`. The CLI `--emit-coherence` now pins the
+    ladder automatically (the ladder is always present — it requires
+    `--posture`/`--playbook-file`); `--baseline-coherence` computes this round's
+    `ladderHash` and **refuses with exit 1** on a mismatch
+    (`ladder mismatch — the artifact was computed against a different playbook
+    ladder …`). A `v1` (unpinned) artifact still loads, with a clear note that
+    cross-ladder verification is unavailable (v14's caller-owns-it contract).
+  - **Additive.** No ladder hash ⇒ a `v1` artifact byte-identical to v14; the
+    parser still accepts `v1`; every existing golden, round-trip, and the
+    `compareCoherence`/`coherenceRegressed` math are unchanged. With neither emit
+    nor consume flag the CLI is unchanged from v14.
+
+### Changed
+- The `analyze` command's `USAGE`/help text now lists `--emit-coherence`,
+  `--baseline-coherence`, and the `--baseline`/`--baseline-coherence` mutual
+  exclusion (they were wired in v14 but missing from the help block).
+
 ## [9.11.0] — 2026-06-14 — Saved coherence baselines (spec-v14)
 
 ### Added

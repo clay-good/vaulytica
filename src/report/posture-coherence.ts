@@ -191,8 +191,21 @@ export function hasDivergence(coherence: PostureCoherence): boolean {
   return coherence.counts.divergent > 0;
 }
 
-/** The schema tag stamped on (and required of) a saved coherence artifact. */
-export const COHERENCE_ARTIFACT_SCHEMA = "vaulytica.posture-coherence.v1";
+/**
+ * The schema tags a saved coherence artifact may carry.
+ *  - `v1` (spec-v14) — the unpinned artifact: rungs + integrity hash.
+ *  - `v2` (spec-v15) — additionally carries a `ladder_hash` pinning the playbook
+ *    ladder the rungs were computed against, so a consuming round can refuse a
+ *    cross-ladder diff (comparing floors from different ladders is nonsense).
+ *
+ * The parser accepts both. The builder emits `v2` only when given a ladder hash,
+ * so an emit without one is byte-identical to v14.
+ */
+export const COHERENCE_ARTIFACT_SCHEMA_V1 = "vaulytica.posture-coherence.v1";
+export const COHERENCE_ARTIFACT_SCHEMA_V2 = "vaulytica.posture-coherence.v2";
+/** Back-compat alias for the original (v1) schema tag. */
+export const COHERENCE_ARTIFACT_SCHEMA = COHERENCE_ARTIFACT_SCHEMA_V1;
+const VALID_SCHEMAS = new Set([COHERENCE_ARTIFACT_SCHEMA_V1, COHERENCE_ARTIFACT_SCHEMA_V2]);
 
 /**
  * Serialize a {@link PostureCoherence} to a stable, pretty-printed JSON artifact
@@ -201,31 +214,53 @@ export const COHERENCE_ARTIFACT_SCHEMA = "vaulytica.posture-coherence.v1";
  * order is already pinned by {@link bundlePostureCoherence}, and the key order is
  * fixed here, so the same coherence always yields identical bytes; the embedded
  * `coherence_hash` is the canonical fingerprint, re-derivable from `dimensions`.
+ *
+ * When `ladderHash` is supplied (spec-v15) the artifact is tagged `v2` and
+ * carries it, pinning the playbook ladder the rungs sit on so a consuming round
+ * can refuse a cross-ladder diff. Omit it and the bytes are identical to v14's
+ * `v1` artifact — the `ladder_hash` field is the only addition, and it is
+ * independent of `coherence_hash` (which still covers `dimensions` only, so the
+ * v1 and v2 artifacts of one coherence share the same integrity hash).
  */
-export function buildPostureCoherenceJson(coherence: PostureCoherence): string {
-  return JSON.stringify(
-    {
-      schema: COHERENCE_ARTIFACT_SCHEMA,
-      coherence_hash: coherence.coherence_hash,
-      counts: coherence.counts,
-      dimensions: coherence.dimensions.map((d) => ({
-        dimension: d.dimension,
-        tiers: d.tiers.map((t) => ({ document: t.document, tier: t.tier })),
-        weakest_tier: d.weakest_tier,
-        weakest_documents: d.weakest_documents,
-        coherence: d.coherence,
-      })),
-    },
-    null,
-    2,
-  );
+export function buildPostureCoherenceJson(
+  coherence: PostureCoherence,
+  ladderHash?: string | null,
+): string {
+  const dimensions = coherence.dimensions.map((d) => ({
+    dimension: d.dimension,
+    tiers: d.tiers.map((t) => ({ document: t.document, tier: t.tier })),
+    weakest_tier: d.weakest_tier,
+    weakest_documents: d.weakest_documents,
+    coherence: d.coherence,
+  }));
+  const body =
+    ladderHash != null
+      ? {
+          schema: COHERENCE_ARTIFACT_SCHEMA_V2,
+          coherence_hash: coherence.coherence_hash,
+          ladder_hash: ladderHash,
+          counts: coherence.counts,
+          dimensions,
+        }
+      : {
+          schema: COHERENCE_ARTIFACT_SCHEMA_V1,
+          coherence_hash: coherence.coherence_hash,
+          counts: coherence.counts,
+          dimensions,
+        };
+  return JSON.stringify(body, null, 2);
 }
 
 const VALID_TIERS = new Set<NegotiationTier>(Object.keys(TIER_RANK) as NegotiationTier[]);
 const VALID_KINDS = new Set<PostureCoherenceKind>(["aligned", "divergent", "single", "unstated"]);
 
 export type ParsedCoherence =
-  | { ok: true; coherence: PostureCoherence }
+  | {
+      ok: true;
+      coherence: PostureCoherence;
+      /** The pinned ladder fingerprint (spec-v15 `v2` artifact), or `null` for an unpinned `v1` artifact. */
+      ladderHash: string | null;
+    }
   | { ok: false; errors: string[] };
 
 function isObject(v: unknown): v is Record<string, unknown> {
@@ -254,12 +289,21 @@ export async function parsePostureCoherenceJson(text: string): Promise<ParsedCoh
   if (!isObject(raw)) return { ok: false, errors: ["top-level value must be an object"] };
 
   const errors: string[] = [];
-  if (raw.schema !== COHERENCE_ARTIFACT_SCHEMA) {
+  if (typeof raw.schema !== "string" || !VALID_SCHEMAS.has(raw.schema)) {
     errors.push(
-      `schema must be "${COHERENCE_ARTIFACT_SCHEMA}" (got ${JSON.stringify(raw.schema)})`,
+      `schema must be one of ${[...VALID_SCHEMAS].map((s) => `"${s}"`).join(", ")} (got ${JSON.stringify(raw.schema)})`,
     );
   }
   if (typeof raw.coherence_hash !== "string") errors.push("coherence_hash must be a string");
+  // A v2 artifact pins the ladder; a v1 artifact must not carry one (it would be
+  // an unverifiable claim the parser cannot honor).
+  const isV2 = raw.schema === COHERENCE_ARTIFACT_SCHEMA_V2;
+  if (isV2 && typeof raw.ladder_hash !== "string") {
+    errors.push(`ladder_hash must be a string for ${COHERENCE_ARTIFACT_SCHEMA_V2}`);
+  }
+  if (!isV2 && raw.ladder_hash !== undefined) {
+    errors.push(`ladder_hash is only valid for ${COHERENCE_ARTIFACT_SCHEMA_V2}`);
+  }
   if (!Array.isArray(raw.dimensions)) {
     errors.push("dimensions must be an array");
     return { ok: false, errors };
@@ -330,5 +374,6 @@ export async function parsePostureCoherenceJson(text: string): Promise<ParsedCoh
   return {
     ok: true,
     coherence: { dimensions, counts, coherence_hash: raw.coherence_hash as string },
+    ladderHash: isV2 ? (raw.ladder_hash as string) : null,
   };
 }

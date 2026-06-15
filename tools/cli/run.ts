@@ -7,6 +7,10 @@
  *       [--playbook-file <path> --posture [--fail-on-divergence]] \
  *       [--baseline <bundle> | --baseline-coherence <coherence.json>] \
  *       [--emit-coherence <path>] [--fail-on-coherence-regression]
+ *
+ * spec-v15: an emitted coherence artifact is pinned to the playbook ladder its
+ * rungs were computed against; `--baseline-coherence` refuses to diff it against
+ * a round computed on a different ladder (a cross-ladder compare is meaningless).
  *   tsx tools/cli/run.ts diff <a.json> <b.json> [--format markdown|json] [--exit-code]
  *   tsx tools/cli/run.ts compare <base> <revised> [--fail-on <sev>] [--fail-on-regression] [--format json|markdown]
  *   tsx tools/cli/run.ts verify <report.json> <original> [--playbook <id>]
@@ -33,6 +37,7 @@ import { buildSarifJson } from "../../src/report/sarif.js";
 import { buildHtmlReport } from "../../src/report/html.js";
 import { buildFixListMarkdown, buildFixListCsv } from "../../src/report/exports.js";
 import { parseCustomPlaybookJson } from "../../src/playbooks/custom-playbook.js";
+import { ladderHash } from "../../src/playbooks/custom-interpreter.js";
 import {
   bundlePostureCoherence,
   hasDivergence,
@@ -403,7 +408,11 @@ async function runAnalyze(argv: string[]): Promise<void> {
         `\n--emit-coherence: no cross-document coherence to write (need ≥2 documents with a posture).\n`,
       );
     } else {
-      await writeFile(args.emitCoherence, buildPostureCoherenceJson(coherence));
+      // spec-v15 — pin the ladder the rungs were computed against so a consuming
+      // round can refuse a cross-ladder diff. The ladder is always available here
+      // (--emit-coherence requires --posture requires --playbook-file).
+      const ladder = customPlaybook ? await ladderHash(customPlaybook) : null;
+      await writeFile(args.emitCoherence, buildPostureCoherenceJson(coherence, ladder));
       process.stdout.write(`\nwrote coherence artifact → ${resolve(args.emitCoherence)}\n`);
     }
   }
@@ -431,6 +440,27 @@ async function runAnalyze(argv: string[]): Promise<void> {
         );
         process.exitCode = 1;
         return;
+      }
+      // spec-v15 — cross-ladder guard. A v2 artifact pins the ladder its rungs
+      // sit on; refuse to diff it against a round computed on a different ladder
+      // (comparing floors from two ladders is nonsense). A v1 artifact carries no
+      // pin: fall back to v14's caller-owns-it contract with a clear note.
+      if (parsed.ladderHash !== null) {
+        const thisLadder = customPlaybook ? await ladderHash(customPlaybook) : null;
+        if (thisLadder !== parsed.ladderHash) {
+          process.stderr.write(
+            `\n--baseline-coherence: ladder mismatch — the artifact was computed against a different playbook ladder ` +
+              `(artifact ${parsed.ladderHash.slice(0, 12)}…, this round ${(thisLadder ?? "none").slice(0, 12)}…). ` +
+              `Comparing binding floors across different ladders is meaningless; use the same --playbook-file for both rounds.\n`,
+          );
+          process.exitCode = 1;
+          return;
+        }
+      } else {
+        process.stderr.write(
+          `\nnote: ${args.baselineCoherence} is an unpinned (v1) coherence artifact — cross-ladder verification unavailable; ` +
+            `ensure both rounds used the same --playbook-file (spec-v15 pins this automatically for newly emitted artifacts).\n`,
+        );
       }
       baselineCoherence = parsed.coherence;
     } else {
@@ -595,7 +625,8 @@ Commands:
                           [--delivery] [--critical-dates] [--checklist]
                           [--playbook-file <path>] [--posture]
                           [--fail-on-divergence]
-                          [--baseline <path|glob|dir>] [--fail-on-coherence-regression]
+                          [--baseline <path|glob|dir> | --baseline-coherence <coherence.json>]
+                          [--emit-coherence <path>] [--fail-on-coherence-regression]
   diff    <a.json> <b.json> [--format markdown|json] [--exit-code]
   compare <base> <revised> [--playbook <id>] [--playbook-file <path>] [--posture]
                           [--format json|markdown]
