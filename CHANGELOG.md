@@ -4,6 +4,63 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.18.0] — 2026-06-15 — Document-free exposure persistence / current standing (spec-v21)
+
+### Added
+- **A `coherence-persistence` headless subcommand — the whole-deal below-floor
+  *duration* and *current standing*, the orthogonal *time* axis v20's level view
+  never read (spec-v21).** v20's `coherence-exposure` reads the posture archive
+  for the *worst* binding floor each front ever reached (its low-water mark). But
+  a low-water mark is a single extreme with no memory of time: a front that dipped
+  to `below-acceptable` in round 2 and **recovered** to `acceptable` by round 4
+  carries the same `worst_floor`/`exposed` as a front **still** below floor in the
+  latest round — and v20's `--fail-on-exposure` fires on both, *forever* (the
+  worst point never changes once it has happened), so a team that resolved a dip
+  cannot make the gate go green. v21 reads the same N artifacts on the *duration*
+  axis: not "how low did it get" but "how long was it down, and is it still down?"
+  - **The persistence (pure).** `src/report/coherence-persistence.ts` —
+    `computeCoherencePersistence(rounds)` matches fronts by dimension (pinned by
+    the same `localeCompare` the trajectory/exposure functions use), scans each
+    front's binding floors (`weakest_tier`, v12) for the `below-acceptable` rung
+    (v10), and reports per front the `floors[]` sequence, `rounds_below` (count of
+    rounds below floor), `first_below_round`/`last_below_round` (the span),
+    `last_stated_round`, `currently_below` (latest *stated* floor is below floor),
+    and a `persistence` class — `open` (still below floor), `resolved`
+    (recovered), `none` (never below floor), `unstated` (never stated). Carries a
+    `class_counts` tally, an `open_count`, and a namespaced `persistence_hash`
+    (apart from every `coherence_hash`/`movement_hash`/`trajectory_hash`/
+    `shift_trajectory_hash`/`arc_hash`/`exposure_hash`). `exposureOpen` =
+    `open_count > 0` — the *current-standing* gate predicate that **clears when a
+    front recovers**, unlike v20's ever-below gate. Honest by construction: a
+    front no document ever states is `unstated`, never flagged; current standing
+    reads the latest *stated* round, so silence after an exposure keeps the last
+    *known* standing — neither an invented recovery nor a fresh exposure (§3).
+    `buildCoherencePersistenceJson` (`schema: vaulytica.posture-persistence.v1`) +
+    `renderCoherencePersistenceSummary` (class tally + open-front count, then one
+    line per open front and one per resolved front). **Zero new posture math
+    beyond a count and a last-stated lookup, and zero changes to any existing
+    source file** — v21 imports only the unchanged `verifyCoherenceSequence`
+    loader and a plain `below-acceptable` literal.
+  - **The command.** `tools/cli/coherence-persistence.ts` —
+    `computeCoherencePersistenceArtifacts(texts, format?)` is the pure core
+    (shared parse + hash-verify + cross-ladder guard via
+    `verifyCoherenceSequence`, then `computeCoherencePersistence` rendered
+    markdown/JSON), returning `{ok, output, open, ladderNote}`.
+    `runCoherencePersistence(argv)` is the handler; requires ≥2 positionals; under
+    `--fail-on-open-exposure` exits 2 only when a front is *still* below floor at
+    its latest stated round. A *separate* command, not a `coherence-exposure`
+    flag — each command keeps one gate, one hash. Wired into the run.ts dispatcher
+    (`case "coherence-persistence"`) + USAGE + header doc + unknown-command list.
+  - **Additive:** a brand-new subcommand + one pure module — every existing
+    command's output (analyze/diff/compare/compare-coherence/coherence-trend/
+    coherence-shift-trend/coherence-arc/coherence-exposure/verify) and every
+    golden byte-for-byte unchanged; no existing source file's behavior changes;
+    the persistence stays *derived* (no new on-disk format). +20 tests. New
+    [`docs/spec-v21.md`](docs/spec-v21.md); BUILD_PROGRESS v21 §; README extended
+    with the persistence workflow + v21 spec-table row + CLI cheat-sheet +
+    commands-table entry + specs list brought current v1–v21. Version 9.17.0 →
+    9.18.0.
+
 ## [9.17.0] — 2026-06-15 — Document-free posture exposure / low-water mark (spec-v20)
 
 ### Added
