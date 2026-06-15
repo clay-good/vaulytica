@@ -4,6 +4,66 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.15.0] — 2026-06-15 — Document-free coherence-shift trajectory (spec-v18)
+
+### Added
+- **A `coherence-shift-trend` headless subcommand — the fracture/reconcile
+  companion to v17's floor trajectory — that walks the same N ≥ 2 saved coherence
+  artifacts and reports each front's *agreement* path across the whole
+  negotiation (spec-v18, building v17 Part XVII open question #2).** v17's
+  `coherence-trend` answers "did each front's binding *floor* climb, slide, or
+  whipsaw?" — but the floor was never the only signal. Since v13, every
+  cross-document movement has carried a second axis: did the package **fracture**
+  (documents that agreed now disagree) or **reconcile** (a divergent front closed
+  up)? A bundle can hold its floor steady while quietly fracturing, and that
+  fracture is what a deal lead reconciling a multi-document package needs to see.
+  v16/v17 archived each round's coherence kind but classified the trajectory on
+  the floor only; v18 classifies the trajectory on that second axis.
+  - **The classifier (pure).** `src/report/coherence-shift-trajectory.ts` —
+    `compareCoherenceShiftTrajectory(rounds)` matches fronts by dimension across
+    the union of all N coherences (pinned by `localeCompare`), builds each front's
+    coherence kind at every round, classifies each consecutive step with the
+    shared v13 `classifyShift` (now **exported** from `coherence-movement.ts` — no
+    behavior change), computes the **net** shift (round 1 → round N), and reduces
+    the steps to a `CoherenceShiftTrajectoryKind`: `steady-fracture` (≥1 fractured,
+    0 reconciled steps) · `steady-reconcile` (≥1 reconciled, 0 fractured) ·
+    `oscillating` (both directions — split apart and re-merge) · `stable` (no
+    directional shift — a realign-only or appear-only front is `stable`, never a
+    false oscillation, per §3 honesty). Carries a `shift_trajectory_hash`
+    namespaced apart from every `coherence_hash`/`movement_hash`/`trajectory_hash`.
+    `shiftTrajectoryFractured` is the gate predicate — true when any front is
+    `steady-fracture` or `oscillating` (the package fractured at *some* step), the
+    fracture/reconcile companion to v17's `trajectoryRegressed`.
+  - **The command.** `tools/cli/coherence-shift-trend.ts` —
+    `compareCoherenceShiftTrendArtifacts(texts, format?)` is the pure CLI core: it
+    verifies all N artifacts and runs the v15/v16 cross-ladder guard across the
+    whole sequence via the shared loader, then computes and renders the shift
+    trajectory (markdown summary or `--format json`,
+    `schema: vaulytica.posture-shift-trajectory.v1`). `runCoherenceShiftTrend`
+    does the file IO and exit codes; `--fail-on-fracture` exits 2 when the package
+    fractured at any round. A tampered round (errors prefixed `round N:`) or a
+    cross-ladder pair (naming both rounds) is a hard exit-1 error.
+  - **A shared sequence loader.** `tools/cli/coherence-sequence.ts` —
+    `verifyCoherenceSequence(texts)` factors the parse + hash-verify +
+    cross-ladder guard out of `coherence-trend.ts` so both trend commands share
+    one verified-input path; `coherence-trend`'s output, errors, and exit codes
+    are unchanged (its full test suite passes as-is).
+  - **End-to-end demonstration.** A package that goes `aligned → divergent →
+    aligned` across three rounds reads `net unchanged` (a first-vs-last diff hides
+    the mid-deal fracture), but `coherence-shift-trend` classifies it
+    `oscillating` and `--fail-on-fracture` exits 2 — the fracture/reconcile analog
+    of v17's whipsaw gate.
+
+### Unchanged (the five promises, re-verified)
+- Deterministic (`shift_trajectory_hash` reproducible from the N artifacts on any
+  machine), no AI, no server (N local files in, one summary out), citable (the
+  artifacts carry v12's per-front coherence kinds — v18 adds no new claim), never
+  drafts. Purely additive: a new subcommand and one pure module, plus a
+  behavior-preserving loader extraction. Every existing command's output and
+  golden is byte-for-byte unchanged; `coherence-movement.ts` changes only by
+  exporting an existing function. Tests: **3,051** (was 3,035 — +16 across the new
+  module and CLI suites).
+
 ## [9.14.0] — 2026-06-15 — Document-free coherence trajectory (spec-v17)
 
 ### Added

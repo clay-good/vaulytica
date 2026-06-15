@@ -26,10 +26,7 @@
 
 import { readFile } from "node:fs/promises";
 
-import {
-  parsePostureCoherenceJson,
-  type PostureCoherence,
-} from "../../src/report/posture-coherence.js";
+import { verifyCoherenceSequence } from "./coherence-sequence.js";
 import {
   compareCoherenceTrajectory,
   trajectoryRegressed,
@@ -61,51 +58,18 @@ export async function compareCoherenceTrendArtifacts(
   texts: string[],
   format: CoherenceTrendFormat = "markdown",
 ): Promise<CoherenceTrendOutcome> {
-  if (texts.length < 2) {
-    return { ok: false, errors: ["a trajectory needs at least two coherence artifacts"] };
-  }
+  // spec-v18 — parse + hash-verify all N rounds and run the cross-ladder guard
+  // via the shared sequence loader (the same front end `coherence-shift-trend`
+  // uses); the two commands differ only in which trajectory they compute.
+  const seq = await verifyCoherenceSequence(texts);
+  if (!seq.ok) return seq;
 
-  const parsed = await Promise.all(texts.map((t) => parsePostureCoherenceJson(t)));
-  const errors: string[] = [];
-  parsed.forEach((p, i) => {
-    if (!p.ok) errors.push(...p.errors.map((e) => `round ${i + 1}: ${e}`));
-  });
-  if (errors.length > 0) return { ok: false, errors };
-
-  // spec-v15/v16 cross-ladder guard, now across the whole sequence. Two or more
-  // pinned artifacts whose pins differ → a hard error (name the two rounds). Any
-  // unpinned (pre-v15 v1) artifact → cannot verify, proceed with a note.
-  const ok = parsed as Extract<(typeof parsed)[number], { ok: true }>[];
-  let ladderNote: string | null = null;
-  const pinned = ok
-    .map((p, i) => ({ hash: p.ladderHash, round: i + 1 }))
-    .filter((p): p is { hash: string; round: number } => p.hash !== null);
-  if (pinned.length < ok.length) {
-    ladderNote =
-      "note: an unpinned (v1) coherence artifact is present — cross-ladder verification unavailable; " +
-      "ensure every round used the same --playbook-file (spec-v15 pins this automatically for newly emitted artifacts).";
-  } else {
-    const first = pinned[0]!;
-    const mismatch = pinned.find((p) => p.hash !== first.hash);
-    if (mismatch) {
-      return {
-        ok: false,
-        errors: [
-          `ladder mismatch — round ${first.round} and round ${mismatch.round} were computed against ` +
-            `different playbook ladders (${first.hash.slice(0, 12)}… vs ${mismatch.hash.slice(0, 12)}…). ` +
-            `Comparing binding floors across different ladders is meaningless; emit every round with the same --playbook-file.`,
-        ],
-      };
-    }
-  }
-
-  const rounds: PostureCoherence[] = ok.map((p) => p.coherence);
-  const trajectory = await compareCoherenceTrajectory(rounds);
+  const trajectory = await compareCoherenceTrajectory(seq.rounds);
   const output =
     format === "json"
       ? buildCoherenceTrajectoryJson(trajectory)
       : renderCoherenceTrajectorySummary(trajectory);
-  return { ok: true, output, regressed: trajectoryRegressed(trajectory), ladderNote };
+  return { ok: true, output, regressed: trajectoryRegressed(trajectory), ladderNote: seq.ladderNote };
 }
 
 type CoherenceTrendArgs = {

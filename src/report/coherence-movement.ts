@@ -134,8 +134,14 @@ export function classifyFloorMovement(
   return (TIER_RANK[revised] as number) > (TIER_RANK[base] as number) ? "improved" : "regressed";
 }
 
-/** Classify the coherence-kind shift between the two rounds (both kinds present). */
-function classifyShift(
+/**
+ * Classify the coherence-kind shift between two rounds (both kinds present).
+ * Exported (spec-v18) — with no behavior change — so the document-free
+ * coherence-*shift* trajectory ({@link compareCoherenceShiftTrajectory}) reuses
+ * the one fracture/reconcile classifier across a whole sequence, the same way
+ * v17's trajectory reuses {@link classifyFloorMovement}.
+ */
+export function classifyShift(
   base: PostureCoherenceKind,
   revised: PostureCoherenceKind,
 ): CoherenceShift {
