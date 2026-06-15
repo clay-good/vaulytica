@@ -4,6 +4,73 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.20.0] — 2026-06-15 — Document-free exposure recurrence / per-front below-floor episodes (spec-v23)
+
+### Added
+- **A `coherence-recurrence` headless subcommand — the per-front count of
+  *separate* below-floor episodes, the episode-count axis v21's duration sum
+  throws away (spec-v23).** v21 (`coherence-persistence`) reads the N-round archive
+  on the *duration* axis: per front, how many rounds it sat below the acceptable
+  floor (`rounds_below`) and whether it is *still* down. But `rounds_below` is a
+  **sum** — it adds every below-floor round and forgets their *shape*. A front whose
+  binding floor reads `below → below → below` (one steady descent) and a front that
+  reads `below → acceptable → below` (it fell, **recovered**, and fell **again**)
+  both report `rounds_below = 2` and `persistence = open`: the same duration, the
+  same standing, the same gate — yet the second is a concession won back and lost,
+  churn the first does not have. v17 (`unchanged` net), v20 (same worst point), and
+  v22 (blind to *which* front) cannot tell them apart either. v23 supplies the
+  missing axis: read the same N artifacts per front and count the maximal contiguous
+  below-floor **episodes**.
+  - **The recurrence (pure).** `src/report/coherence-recurrence.ts` —
+    `computeCoherenceRecurrence(rounds)` scans each front's `floors[]` for maximal
+    contiguous below-floor episodes (`below_runs`): one descent is one episode, a
+    recover-then-relapse is two, an oscillating front is three or more. Per front it
+    reports the floor path, `rounds_below` (the v21 sum, for context), `below_runs`,
+    the 1-based round range of each `episodes[]` entry, and a `recurrence` class —
+    `recurring` (≥ 2 episodes) / `single` (1) / `none` (stated, never below) /
+    `unstated` (§3) — plus the deal's `most_recurrent_dimension` / `max_runs` (the
+    front with the most episodes, earliest on a tie) and `recurring_count`.
+    `exposureRecurred` (= `recurring_count > 0`) is the gate predicate; JSON
+    (`schema: vaulytica.posture-recurrence.v1`) + markdown renderers ship beside it.
+    A namespaced `recurrence_hash` (SHA-256 over the canonical per-front set) keeps
+    it apart from every other hash, so computing it moves no golden.
+  - **§3 honesty — silence does not split an episode.** A round no document states
+    does **not** end a below-floor episode: per the v21 contract that current
+    standing reads the latest *stated* round, silence after an exposure keeps the
+    last known standing — it is neither a recovery nor a fresh fall. So
+    `below → unstated → below` is **one** episode (not a false recurrence); only a
+    *stated* at-or-above-floor round (a real recovery) splits one. A front never
+    stated is `unstated`, never `recurring`/`single`/`none`.
+  - **The command (headless).** `tools/cli/coherence-recurrence.ts` —
+    `computeCoherenceRecurrenceArtifacts` (pure: hash-verify + cross-ladder guard
+    via the **unchanged** `verifyCoherenceSequence` loader the six trend/exposure/
+    persistence/breadth commands share, then compute + render) and
+    `runCoherenceRecurrence` (file IO + exit codes). `--fail-on-recurring-exposure`
+    exits **2** when any front fell below floor in two or more separate episodes (it
+    recovered and relapsed) — the *churn* counterpart to v21's current-standing gate
+    and v20's ever gate, catching the unstable front the other side keeps re-opening
+    even after its latest stated floor has recovered. The dispatcher (`tools/cli/run.ts`)
+    gains the `coherence-recurrence` case and a `USAGE` entry.
+  - **Purely additive.** A new subcommand and one pure module that reads the binding
+    floor (`weakest_tier`, v12) already in every artifact for the `below-acceptable`
+    rung (v10); **no existing source file's behavior changes** and every existing
+    command's output and golden is byte-for-byte unchanged. Tests: recurrence
+    identity disk-vs-in-memory, recover-then-relapse vs steady descent (the pair v21
+    reports identically), silence-does-not-split (§3), stated-recovery-does-split,
+    recurred-then-resolved still trips, single-still-open does not, most-recurrent
+    front (earliest on tie), unstated never counted, determinism, ≥2-artifact
+    requirement, cross-ladder refusal (naming both rounds), unpinned-v1 note, tamper
+    rejection (round-prefixed), gate parity, render + JSON (19 new tests).
+
+### Posture command family (after v23)
+The N-round posture archive is now read on **five** orthogonal axes: MOVEMENT
+(v17 trajectory / v18 shift / v19 arc — which way a front moved), LEVEL (v20
+exposure — how low a front ever got), TIME (v21 persistence — how long a front was
+down, and is it still), BREADTH (v22 — the per-round transpose: how many fronts were
+down each round), and RECURRENCE (v23 — how many *separate times* a front fell). Each
+is a separate command with exactly one gate and one namespaced hash; none changes any
+other's behavior.
+
 ## [9.19.0] — 2026-06-15 — Document-free exposure breadth / per-round deal standing (spec-v22)
 
 ### Added

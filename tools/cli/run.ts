@@ -20,6 +20,7 @@
  *   tsx tools/cli/run.ts coherence-exposure <r1.coherence.json> <r2.coherence.json> [<r3…> …] [--format markdown|json] [--fail-on-exposure]
  *   tsx tools/cli/run.ts coherence-persistence <r1.coherence.json> <r2.coherence.json> [<r3…> …] [--format markdown|json] [--fail-on-open-exposure]
  *   tsx tools/cli/run.ts coherence-breadth <r1.coherence.json> <r2.coherence.json> [<r3…> …] [--format markdown|json] [--fail-on-widening-exposure]
+ *   tsx tools/cli/run.ts coherence-recurrence <r1.coherence.json> <r2.coherence.json> [<r3…> …] [--format markdown|json] [--fail-on-recurring-exposure]
  *   tsx tools/cli/run.ts verify <report.json> <original> [--playbook <id>]
  *
  * One dispatcher over the reach commands: `analyze` runs the engine headless
@@ -40,7 +41,10 @@
  * (spec-v21), `coherence-breadth` reads the same N artifacts on the transpose
  * *per-round* axis — how many fronts sat below the floor in each round, the deal's
  * worst round, and whether the package's exposure broadened first→latest, gating on
- * a widening deal (spec-v22) — and `verify` re-derives a saved report's
+ * a widening deal (spec-v22), `coherence-recurrence` reads the same N artifacts on
+ * the orthogonal *episode-count* axis — how many *separate* times each front fell
+ * below the floor (one steady descent vs a recover-then-relapse), gating on a front
+ * that recovered and relapsed (spec-v23) — and `verify` re-derives a saved report's
  * `result_hash` (Step 145).
  * The DKB ships with the tool — it opens no socket. The engine is the SAME engine
  * the tab runs (parity-proven), so a number on a CI dashboard describes
@@ -60,6 +64,7 @@ import { runCoherenceArc } from "./coherence-arc.js";
 import { runCoherenceExposure } from "./coherence-exposure.js";
 import { runCoherencePersistence } from "./coherence-persistence.js";
 import { runCoherenceBreadth } from "./coherence-breadth.js";
+import { runCoherenceRecurrence } from "./coherence-recurrence.js";
 import { verifyReproducibility, explainReproResult, type SavedReport } from "./verify.js";
 import type { Severity } from "../../src/engine/index.js";
 import { buildJsonReport } from "../../src/report/json.js";
@@ -645,6 +650,8 @@ Commands:
                           [--format markdown|json] [--fail-on-open-exposure]
   coherence-breadth <r1.coherence.json> <r2.coherence.json> [<r3…> …]
                           [--format markdown|json] [--fail-on-widening-exposure]
+  coherence-recurrence <r1.coherence.json> <r2.coherence.json> [<r3…> …]
+                          [--format markdown|json] [--fail-on-recurring-exposure]
   verify  <report.json> <original> [--playbook <id>]
 `;
 
@@ -671,6 +678,8 @@ async function main(): Promise<void> {
       return runCoherencePersistence(rest);
     case "coherence-breadth":
       return runCoherenceBreadth(rest);
+    case "coherence-recurrence":
+      return runCoherenceRecurrence(rest);
     case "verify":
       return runVerify(rest);
     case undefined:
@@ -681,7 +690,7 @@ async function main(): Promise<void> {
       return;
     default:
       throw new Error(
-        `unknown command "${command}" (expected: analyze | diff | compare | compare-coherence | coherence-trend | coherence-shift-trend | coherence-arc | coherence-exposure | coherence-persistence | coherence-breadth | verify)`,
+        `unknown command "${command}" (expected: analyze | diff | compare | compare-coherence | coherence-trend | coherence-shift-trend | coherence-arc | coherence-exposure | coherence-persistence | coherence-breadth | coherence-recurrence | verify)`,
       );
   }
 }
