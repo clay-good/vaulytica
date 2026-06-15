@@ -4,6 +4,67 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.19.0] — 2026-06-15 — Document-free exposure breadth / per-round deal standing (spec-v22)
+
+### Added
+- **A `coherence-breadth` headless subcommand — the whole-deal *per-round*
+  standing across all fronts, the transpose axis every command v16–v21 skipped
+  (spec-v22).** Every posture command from v16 to v21 reads the N-round archive
+  *down the front axis*: pick a front, summarize its history across rounds (v17
+  which way it moved, v20 how low it got, v21 how long it was down). None reads it
+  *down the round axis*: pick a round, summarize the whole deal across fronts. So
+  from the archive a deal lead can answer "is the Cap front still below floor?"
+  (v21) but not "how many fronts were below floor in round 3, and was that the
+  worst the package ever looked?" — to learn it from v20/v21 a consumer must read
+  every per-front row and re-tabulate the `floors[]` columns by hand. v22 supplies
+  the transpose: read the same N artifacts not per-front-across-rounds but
+  per-round-across-fronts.
+  - **The breadth (pure).** `src/report/coherence-breadth.ts` —
+    `computeCoherenceBreadth(rounds)` counts, *per round*, the fronts whose binding
+    floor (`weakest_tier`, v12) is the `below-acceptable` rung (v10), reporting per
+    round `exposed_fronts`, `stated_fronts` (the denominator), and
+    `exposed_dimensions` (the below-floor fronts, pinned by `localeCompare`), plus
+    the deal's `worst_round`/`worst_count` (the round with the most fronts below
+    floor at once, earliest on a tie), `first_count`/`latest_count`, and `widened`
+    (`latest_count > first_count`). Carries a namespaced `breadth_hash` (SHA-256
+    over the canonical per-round set — apart from every `coherence_hash`,
+    `movement_hash`, `trajectory_hash`, `shift_trajectory_hash`, `arc_hash`,
+    `exposure_hash`, and `persistence_hash`). `exposureWidened(breadth)` =
+    `breadth.widened` — the deal-level breadth-trend gate predicate; unlike
+    `exposureBreached` (any single front *ever* below floor) and `exposureOpen`
+    (any single front *still* below floor), this fires on the *aggregate trend*:
+    the package ended with more fronts below floor than it started. §3-honest: a
+    front no document states in a round is not counted as below floor that round
+    (silence is not exposure); `stated_fronts` gives the denominator.
+    `buildCoherenceBreadthJson` (`schema: vaulytica.posture-breadth.v1`) +
+    `renderCoherenceBreadthSummary` (widen/narrow/hold trend + worst round + one
+    line per round).
+  - **The command (headless).** `tools/cli/coherence-breadth.ts` —
+    `computeCoherenceBreadthArtifacts(texts, format?)` is the pure core
+    (`verifyCoherenceSequence` shared parse + hash-verify + cross-ladder guard,
+    unchanged from v18–v21, then `computeCoherenceBreadth` rendered markdown or
+    JSON), and `runCoherenceBreadth(argv)` is the handler (file IO + exit codes);
+    requires ≥2 positionals; under `--fail-on-widening-exposure` exits 2 only when
+    the latest round has strictly more fronts below floor than the first. A
+    separate command, not a flag on a per-front command — each keeps one gate, one
+    hash. Wired into the `run.ts` dispatcher (`case "coherence-breadth"`) + USAGE +
+    header + unknown-command list.
+  - **Verified live end-to-end.** Three ladder-pinned artifacts where the deal
+    widens (round 1: Cap below floor → round 3: Cap + Risk + Indemnity below
+    floor): `coherence-breadth --fail-on-widening-exposure` prints the per-round
+    series `1 → 2 → 3 fronts below floor`, names `worst round: round 3`, and exits
+    **2** (the package broadened), while `coherence-persistence` on the same files
+    lists three open fronts but cannot show the per-round breadth trend without
+    manual transposition — proving the new axis the per-front commands miss.
+  - **Additive.** A brand-new subcommand + one pure module — every existing
+    command's output (`analyze`/`diff`/`compare`/`compare-coherence`/
+    `coherence-trend`/`coherence-shift-trend`/`coherence-arc`/`coherence-exposure`/
+    `coherence-persistence`/`verify`) and every golden byte-for-byte unchanged; no
+    existing source file's behavior changes; no new on-disk format (the breadth
+    stays derived). +18 tests; suite 3,105 → 3,123 passing (+2 skips), 201 → 203
+    test files. New [`docs/spec-v22.md`](docs/spec-v22.md). The posture matrix now
+    has four axes: movement (v16–v19), level (v20), time (v21), and breadth (v22).
+
 ## [9.18.0] — 2026-06-15 — Document-free exposure persistence / current standing (spec-v21)
 
 ### Added
