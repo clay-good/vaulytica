@@ -4,6 +4,58 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.17.0] — 2026-06-15 — Document-free posture exposure / low-water mark (spec-v20)
+
+### Added
+- **A `coherence-exposure` headless subcommand — the whole-deal binding-floor
+  *low-water mark*, the orthogonal *level* axis the movement family never read
+  (spec-v20).** Every posture command from v10 to v19 reports *movement* — how a
+  rung, a binding floor, or a coherence kind *changed* between rounds. That axis
+  has a structural blind spot: a front sitting at `below-acceptable` in **every**
+  round never *moves*, so v17's `coherence-trend` calls it `flat`, the summary
+  omits it, and `--fail-on-coherence-regression` never fires (a floor only
+  "regresses" when it changes to a *worse* rung — one born at the bottom never
+  did). Yet it is the most exposed front in the deal. v20 reads the same N
+  artifacts on the *level* axis: not "which way did the floor move" but "how low
+  did it ever get."
+  - **The low-water mark (pure).** `src/report/coherence-exposure.ts` —
+    `compareCoherenceExposure(rounds)` matches fronts by dimension (pinned by the
+    same `localeCompare` the trajectory functions use), takes a per-front
+    **minimum** over the shared `TIER_RANK` (v11/v13) over the binding floor
+    (`weakest_tier`) v12 already derives, and reports per front the `floors[]`
+    sequence, the `worst_floor` (lowest-ranked stated rung, or `null` when never
+    stated), the `worst_round` (1-based index it first fell there), `rounds_stated`,
+    and an `exposed` flag (`worst_floor === "below-acceptable"`). Carries a
+    `worst_counts` tally, an `exposed_count`, and a namespaced `exposure_hash`
+    (apart from every `coherence_hash`/`movement_hash`/`trajectory_hash`/
+    `shift_trajectory_hash`/`arc_hash`). `exposureBreached` = `exposed_count > 0`
+    — the *level* gate predicate no movement command exposes. Honest by
+    construction: a front no document ever states is `unstated`, counted but never
+    flagged (silence is not below-floor, §3). `buildCoherenceExposureJson`
+    (`schema: vaulytica.posture-exposure.v1`) + `renderCoherenceExposureSummary`
+    (worst-level tally + exposed-front count, then one line per exposed front with
+    its floor path and first-below-floor round). **Zero new posture math beyond a
+    minimum over ranks, and zero changes to any existing source file** — v20
+    imports only already-public functions (`TIER_RANK`, `weakest_tier`) and the
+    unchanged `verifyCoherenceSequence` loader.
+  - **The command.** `tools/cli/coherence-exposure.ts` —
+    `compareCoherenceExposureArtifacts(texts, format?)` is the pure core (shared
+    parse + hash-verify + cross-ladder guard via `verifyCoherenceSequence`, then
+    `compareCoherenceExposure` rendered markdown/JSON), returning `{ok, output,
+    breached, ladderNote}`. `runCoherenceExposure(argv)` is the handler; requires
+    ≥2 positionals; under `--fail-on-exposure` exits 2 when any front sat below the
+    acceptable floor at any round. A *separate* command, not a `coherence-trend`
+    flag — each command keeps one gate, one hash. Wired into the run.ts dispatcher
+    (`case "coherence-exposure"`) + USAGE + header doc + unknown-command list.
+  - **Additive:** a brand-new subcommand + one pure module — every existing
+    command's output (analyze/diff/compare/compare-coherence/coherence-trend/
+    coherence-shift-trend/coherence-arc/verify) and every golden byte-for-byte
+    unchanged; no existing source file's behavior changes; the exposure stays
+    *derived* (no new on-disk format). +17 tests. New [`docs/spec-v20.md`](docs/spec-v20.md);
+    BUILD_PROGRESS v20 §; README "Saved coherence baselines" § extended with the
+    exposure workflow + v20 spec-table row + CLI cheat-sheet + commands-table
+    entry + specs list brought current v1–v20. Version 9.16.0 → 9.17.0.
+
 ## [9.16.0] — 2026-06-15 — Document-free combined posture arc (spec-v19)
 
 ### Added

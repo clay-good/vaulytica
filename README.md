@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,065 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `35 state-law overlays` · `9 export formats` · `0 servers` · `0 AI` · `3,068 passing tests` · `v9.16.0` · `MIT`
+`1,065 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `35 state-law overlays` · `9 export formats` · `0 servers` · `0 AI` · `3,085 passing tests` · `v9.17.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
 
@@ -416,6 +416,24 @@ Coherence arc across 3 rounds (floor + shift):
 
 `--fail-on-regression-or-fracture` is the single deal-level verdict — it trips when the floor regressed at **any** step **or** the package fractured at **any** step (exactly `trajectoryRegressed || shiftTrajectoryFractured`), computed from **one** read of the artifacts instead of `||`-ing two commands' exit codes. **Zero new posture math:** `compareCoherenceArc` runs the two existing pure trajectory functions and joins their per-front results positionally on `dimension` — and carries the two component fingerprints **verbatim** (`trajectory_hash` / `shift_trajectory_hash`, byte-identical to what `coherence-trend` and `coherence-shift-trend` emit on the same inputs) plus its own `arc_hash`, so the combined report is provably exactly the join of the two single-axis commands. It is a *separate* command, not a flag on `coherence-trend` — each of the three commands keeps exactly one gate and one hash; no existing source file's behavior changes. The arc stays *derived* — no new on-disk format. Full design: [`spec-v19`](docs/spec-v19.md).
 
+**Whole-deal exposure / low-water mark (v20).** v17–v19 all read the archive on the *movement* axis — how the floor and the coherence kind *changed*. That axis has one structural blind spot: a front sitting at `below-acceptable` in **every** round never *moves*, so `coherence-trend` calls it `flat`, the summary omits it, and `--fail-on-coherence-regression` never fires (a floor only "regresses" when it changes to a *worse* rung — one born at the bottom never did). Yet it is the most exposed front in the deal. The `coherence-exposure` subcommand reads the **same N artifacts** on the orthogonal *level* axis — not "which way did it move" but "how low did it ever get":
+
+```sh
+# Same archived artifacts — the worst binding floor of the whole deal, with a level gate:
+vaulytica coherence-exposure round1.coherence.json round2.coherence.json round3.coherence.json \
+  --fail-on-exposure
+```
+
+```
+Coherence exposure across 3 rounds (worst binding floor):
+  worst floor reached: 0 ideal, 1 acceptable, 1 below floor, 0 never stated.
+  exposed fronts (ever below floor): 1.
+  ⚠ Liability cap: worst below floor, first at round 2 (acceptable → below-acceptable → below-acceptable).
+  exposure_hash: 7b3e90a4…
+```
+
+`--fail-on-exposure` is the *level* counterpart to v17's *movement* gate: where `--fail-on-coherence-regression` fires only on a floor that *changed* to a worse rung, this fires on a floor that *sat* below the team's acceptable floor at **any** round — so a front pinned at `below-acceptable` for the whole deal, invisible to every movement command, trips it. **Near-zero new posture math:** `compareCoherenceExposure` takes a per-front minimum over the same `TIER_RANK` v11/v13 use, over the binding floor v12 already derives, through the same `verifyCoherenceSequence` loader the three trend commands share — and carries its own namespaced `exposure_hash`. Honest by construction: a front no document ever states is `unstated`, counted but never flagged (silence is not below-floor). It is a *separate* command, not a flag on `coherence-trend`; the exposure stays *derived* (no new on-disk format) and **no existing source file's behavior changes**. Full design: [`spec-v20`](docs/spec-v20.md).
+
 ## What the result looks like
 
 <img src="docs/images/report-mobile.png" alt="Vaulytica report card on a phone: severity counts, a California non-compete jurisdiction overlay with citation, and one-click exports — Word, JSON, fix-list (Markdown/CSV), obligations, deadlines (.ics), HTML report, and SARIF" width="320" align="right" />
@@ -448,6 +466,7 @@ Every view is verified to render with **no horizontal scroll from 320 px to 1280
 | v17 | Document-Free Coherence Trajectory | **`coherence-trend` subcommand** — walks **N ≥ 2** saved coherence artifacts in round order (`coherence-trend r1.json r2.json r3.json …`) and reports, per front, the binding floor at every round, the **net** movement (round 1 → round N), and a **trajectory** — `steady-improvement` · `steady-regression` · `whipsaw` · `flat`. The whipsaw (a below-floor dip that recovered) is the signal a pairwise diff hides: it reads `unchanged` first-vs-last, but `--fail-on-coherence-regression` still trips because the gate fires on a floor that regressed at **any** step (the faithful multi-round generalization of v13's predicate). Zero new posture math — the pure `compareCoherenceTrajectory` applies the shared v11/v13 `classifyFloorMovement` to each consecutive pair, then reduces; every artifact is hash-verified (errors prefixed `round N:`) and the cross-ladder guard runs across the whole sequence (any two differing pins refused, naming both). Trajectory stays *derived* — no new on-disk format. Purely additive — a new subcommand + one pure module, every existing command/golden unchanged | **complete · 9.14.0** (Step 197; [`spec-v17`](docs/spec-v17.md)). |
 | v18 | Document-Free Coherence-Shift Trajectory | **`coherence-shift-trend` subcommand** — reads the same **N ≥ 2** saved coherence artifacts as `coherence-trend`, but on the fracture/reconcile axis instead of the floor (`coherence-shift-trend r1.json r2.json r3.json …`), reporting per front the coherence kind at every round, the **net** shift (round 1 → round N), and a **shift trajectory** — `steady-fracture` · `steady-reconcile` · `oscillating` · `stable`. The oscillation (a fracture that re-merged) is the agreement-axis analog of v17's whipsaw: it reads `unchanged` first-vs-last, but `--fail-on-fracture` still trips because the gate fires on a package that fractured at **any** step. Zero new posture math — the pure `compareCoherenceShiftTrajectory` applies the shared v13 `classifyShift` to each consecutive pair, then reduces; both trend commands share one `verifyCoherenceSequence` loader (hash-verify + cross-ladder guard). Shift trajectory stays *derived* — no new on-disk format. Purely additive — a new subcommand + one pure module + a behavior-preserving loader extraction, every existing command/golden unchanged | **complete · 9.15.0** (Step 198; [`spec-v18`](docs/spec-v18.md)). |
 | v19 | Document-Free Combined Posture Arc | **`coherence-arc` subcommand** — walks the **same N ≥ 2** saved coherence artifacts once (`coherence-arc r1.json r2.json r3.json …`) and joins both trajectories: per front, the binding-floor path (v17) **and** the fracture/reconcile path (v18), the v13 per-front combined view generalized to N rounds. One combined gate — `--fail-on-regression-or-fracture` trips when the floor regressed at **any** step **or** the package fractured at **any** step (= `trajectoryRegressed \|\| shiftTrajectoryFractured`), from one read instead of `\|\|`-ing two commands. Zero new posture math — the pure `compareCoherenceArc` runs the two existing trajectory functions and joins their per-front results positionally on `dimension`, carrying the two component hashes **verbatim** (byte-identical to the single-axis commands) plus a namespaced `arc_hash`, so the report is provably their join. A *separate* command, not a `coherence-trend --with-shift` flag (each of the three keeps one gate, one hash); arc stays *derived* — no new on-disk format. Purely additive — a new subcommand + one pure module, **no existing source file's behavior changes**, every existing command/golden unchanged | **complete · 9.16.0** (Step 199; [`spec-v19`](docs/spec-v19.md)). |
+| v20 | Document-Free Posture Exposure | **`coherence-exposure` subcommand** — reads the **same N ≥ 2** saved coherence artifacts on the orthogonal *level* axis (not movement): per front, the **worst** binding floor reached across the whole deal (`coherence-exposure r1.json r2.json r3.json …`) — `ideal`/`acceptable`/`below-acceptable`/`unstated`, the round it first fell there, and an `exposed` flag. `--fail-on-exposure` gates on a front that ever sat below the acceptable floor at **any** round — the *level* counterpart to v17's *movement* gate, catching the front pinned at `below-acceptable` for the whole deal that never *regressed* (so `coherence-trend` calls it `flat` and every movement gate misses it). Near-zero new posture math — `compareCoherenceExposure` takes a per-front minimum over the shared `TIER_RANK` over v12's binding floor, through the shared `verifyCoherenceSequence` loader; honest by construction (an `unstated` front is counted but never flagged). A *separate* command, not a flag; exposure stays *derived* — no new on-disk format. Purely additive — a new subcommand + one pure module, **no existing source file's behavior changes**, every existing command/golden unchanged | **complete · 9.17.0** (Step 200; [`spec-v20`](docs/spec-v20.md)). |
 
 ## v8 — hardening: a tool that cannot be made to hang
 
@@ -468,7 +487,7 @@ The product is "a linter for legal documents," yet it spoke no linter format and
 
 - **SARIF 2.1.0** — each rule → a `reportingDescriptor` (with the citation as `helpUri`), each finding → a `result` (severity → level, section → location, `result_hash` + finding id → `partialFingerprints` so findings dedupe across runs). Annotate a pull request, populate a code-scanning dashboard. The output is gated by a `sarifConformanceViolations()` structural check (level enum, in-range `ruleIndex`, string fingerprints, absolute `helpUri`) — negative-tested, so a regression that would make GitHub reject the file fails the build.
 - **Standalone HTML report** — a self-contained `.html` (all CSS inlined, **no script**, no external resource) that renders the full report with wrapped inline citations and prints clean to PDF from any browser. The archivable, emailable, diff-able counterpart to the DOCX — and mobile-responsive by construction.
-- **Headless API + CLI** — a single dispatcher, `vaulytica analyze | diff | compare | compare-coherence | coherence-trend | coherence-shift-trend | coherence-arc | verify`, over the **same parity-proven pipeline**. `analyze <path|glob|dir> --format json,sarif,html,md,csv --fail-on critical` runs the engine in CI, a pre-commit hook, or a folder sweep, exiting non-zero when findings breach a threshold. The DKB ships with the tool, so it opens **no socket** — "nothing leaves your machine" holds headless too.
+- **Headless API + CLI** — a single dispatcher, `vaulytica analyze | diff | compare | compare-coherence | coherence-trend | coherence-shift-trend | coherence-arc | coherence-exposure | verify`, over the **same parity-proven pipeline**. `analyze <path|glob|dir> --format json,sarif,html,md,csv --fail-on critical` runs the engine in CI, a pre-commit hook, or a folder sweep, exiting non-zero when findings breach a threshold. The DKB ships with the tool, so it opens **no socket** — "nothing leaves your machine" holds headless too.
 - **Playbook diff** — `vaulytica diff a.json b.json` (and the `diffPlaybooks(a, b)` API) gives custom-playbook authors version control for their team standard: which built-in rules were selected, which severity overrides moved, which custom rules were added/removed/edited, rendered as Markdown or JSON. `--exit-code` makes it a CI primitive (non-zero when the standard changed).
 - **Reproducibility verifier** — `vaulytica verify report.json original.txt` (and `verifyReproducibility(savedReport, original)`) re-derives the `result_hash` and reports *what* diverged — the input, the engine, or the DKB — turning the determinism promise into a checkable audit receipt.
 - **Export enhancements** — a bundle "everything" archive (per-document fix-list/CSV/ICS/JSON in one download) and a **clause-evidence coverage** surface that tells a reviewer which findings pin a verbatim quoted clause span vs. rest on a bare match.
@@ -477,7 +496,7 @@ Every Thrust-B change is render-side or additive (zero `result_hash` churn); eve
 
 ### CLI cheat sheet
 
-One dispatcher, eight commands — `analyze`, `diff`, `compare`, `compare-coherence`, `coherence-trend`, `coherence-shift-trend`, `coherence-arc`, `verify` — over the parity-proven engine (`npm run cli -- <command>`):
+One dispatcher, nine commands — `analyze`, `diff`, `compare`, `compare-coherence`, `coherence-trend`, `coherence-shift-trend`, `coherence-arc`, `coherence-exposure`, `verify` — over the parity-proven engine (`npm run cli -- <command>`):
 
 ```
 # analyze: one file, print SARIF to stdout
@@ -531,6 +550,9 @@ npm run cli -- coherence-shift-trend round1.coherence.json round2.coherence.json
 # v19 — join both axes (floor + shift) into one whole-deal arc with one combined gate (no documents)
 npm run cli -- coherence-arc round1.coherence.json round2.coherence.json round3.coherence.json --fail-on-regression-or-fracture
 
+# v20 — the whole-deal worst binding floor (the LEVEL axis): how low did any front ever get?
+npm run cli -- coherence-exposure round1.coherence.json round2.coherence.json round3.coherence.json --fail-on-exposure
+
 # verify: re-derive a saved report's result_hash from the original document (audit receipt)
 npm run cli -- verify report.json original.txt
 
@@ -550,6 +572,7 @@ npm run citation:check -- --reachability   # + network sweep
 | `coherence-trend <r1.json> <r2.json> [<r3…>]` | walk **N ≥ 2** saved coherence artifacts in round order and report each front's binding-floor trajectory across the whole negotiation — `steady-improvement`/`steady-regression`/`whipsaw`/`flat` + net direction (Markdown/JSON); all hash-verified + cross-ladder-guarded across the sequence; `--fail-on-coherence-regression` gates on a floor that regressed at **any** step | `1` on a tampered artifact, a cross-ladder mismatch, or fewer than two artifacts, **or** (with `--fail-on-coherence-regression`) `2` when the binding floor regressed at any round |
 | `coherence-shift-trend <r1.json> <r2.json> [<r3…>]` | walk the **same N ≥ 2** artifacts on the fracture/reconcile axis and report each front's coherence-kind trajectory — `steady-fracture`/`steady-reconcile`/`oscillating`/`stable` + net direction (Markdown/JSON); shares `coherence-trend`'s hash-verify + cross-ladder guard; `--fail-on-fracture` gates on a package that fractured at **any** step | `1` on a tampered artifact, a cross-ladder mismatch, or fewer than two artifacts, **or** (with `--fail-on-fracture`) `2` when the package fractured at any round |
 | `coherence-arc <r1.json> <r2.json> [<r3…>]` | walk the **same N ≥ 2** artifacts once and report each front's **combined** arc — both the binding-floor trajectory and the fracture/reconcile trajectory joined (the v13 per-front view over N rounds) + both nets and all three hashes (Markdown/JSON); shares the same hash-verify + cross-ladder guard; `--fail-on-regression-or-fracture` gates on a floor that regressed **or** a package that fractured at **any** step | `1` on a tampered artifact, a cross-ladder mismatch, or fewer than two artifacts, **or** (with `--fail-on-regression-or-fracture`) `2` when the floor regressed or the package fractured at any round |
+| `coherence-exposure <r1.json> <r2.json> [<r3…>]` | walk the **same N ≥ 2** artifacts on the orthogonal *level* axis and report each front's **worst** binding floor across the deal (its low-water mark) — `ideal`/`acceptable`/`below-acceptable`/`unstated`, the round it first fell there, and an `exposed` flag (Markdown/JSON); shares the same hash-verify + cross-ladder guard; `--fail-on-exposure` gates on a front that ever sat below the acceptable floor (catching one pinned below floor all deal, which every *movement* gate calls `flat` and misses) | `1` on a tampered artifact, a cross-ladder mismatch, or fewer than two artifacts, **or** (with `--fail-on-exposure`) `2` when any front's binding floor was below acceptable at any round |
 | `verify <report.json> <original>` | re-derive `result_hash`; report input/engine/DKB drift | `3` when not reproduced |
 
 | `analyze` flag | Meaning |
@@ -769,7 +792,7 @@ npm run coverage     # vitest + V8 coverage, enforces the regression floor
 npm run accuracy     # v5 Ground Truth harness → tools/accuracy/SCOREBOARD.md
 npm run mutation     # Stryker mutation score (scoped to extractors; slow, off the per-push path)
 npm run citation:check   # v8 build-only citation URL well-formedness (+ --reachability for the network sweep)
-npm run cli -- analyze <path> --format sarif,html,json   # v8 headless CLI (also: diff, compare, compare-coherence, coherence-trend, coherence-shift-trend, coherence-arc, verify)
+npm run cli -- analyze <path> --format sarif,html,json   # v8 headless CLI (also: diff, compare, compare-coherence, coherence-trend, coherence-shift-trend, coherence-arc, coherence-exposure, verify)
 ```
 
 The CI gate (`.github/workflows/ci.yml`) runs typecheck + lint + **coverage** + build on Ubuntu; the test matrix re-runs the plain suite on Ubuntu/macOS/Windows for cross-OS determinism, and Lighthouse enforces the mobile performance budget. Mutation testing runs on its own weekly/on-demand workflow, never the per-push path. A commit is "green" only when the per-push gates pass.
@@ -813,7 +836,7 @@ src/
   ui/          drop zone, pipeline, six-state result machine, theme toggle
 dkb/build/     offline fetchers (EDGAR, US Code, eCFR, Common Paper, …) → DKB
 tools/accuracy/ v5 Ground Truth harness (corpus loader, κ, metrics, scoreboard, legal-basis ledger)
-tools/cli/     v8 headless API (analyzeText/analyzeFile) + `vaulytica analyze | diff | compare | compare-coherence | coherence-trend | coherence-shift-trend | coherence-arc | verify` CLI dispatcher
+tools/cli/     v8 headless API (analyzeText/analyzeFile) + `vaulytica analyze | diff | compare | compare-coherence | coherence-trend | coherence-shift-trend | coherence-arc | coherence-exposure | verify` CLI dispatcher
 tools/citation-check/ v8 build-only citation URL well-formedness + scheduled reachability
 corpus/        real-document accuracy corpus (build/CI-only; never in the bundle)
 docs/          architecture, determinism, threat model, legal-basis ledger, specs v1–v18
@@ -858,7 +881,7 @@ See [`docs/data-sources.md`](docs/data-sources.md) and [`docs/determinism.md`](d
 | v8 overview (hardening & reach) | [`docs/v8/README.md`](docs/v8/README.md) |
 | v8 robustness & fuzzing (Thrust A) | [`docs/v8/robustness-and-fuzzing.md`](docs/v8/robustness-and-fuzzing.md) |
 | v8 citation standard (Thrust B) | [`docs/v8/citation-standard.md`](docs/v8/citation-standard.md) |
-| Specs | [`docs/spec.md`](docs/spec.md) · [`spec-v3`](docs/spec-v3.md) · [`spec-v4`](docs/spec-v4.md) · [`spec-v5`](docs/spec-v5.md) · [`spec-v6`](docs/spec-v6.md) · [`spec-v7`](docs/spec-v7.md) · [`spec-v8`](docs/spec-v8.md) · [`spec-v9`](docs/spec-v9.md) · [`spec-v10`](docs/spec-v10.md) · [`spec-v11`](docs/spec-v11.md) · [`spec-v12`](docs/spec-v12.md) · [`spec-v13`](docs/spec-v13.md) · [`spec-v14`](docs/spec-v14.md) · [`spec-v15`](docs/spec-v15.md) · [`spec-v16`](docs/spec-v16.md) · [`spec-v17`](docs/spec-v17.md) · [`spec-v18`](docs/spec-v18.md) · [`spec-v19`](docs/spec-v19.md) |
+| Specs | [`docs/spec.md`](docs/spec.md) · [`spec-v3`](docs/spec-v3.md) · [`spec-v4`](docs/spec-v4.md) · [`spec-v5`](docs/spec-v5.md) · [`spec-v6`](docs/spec-v6.md) · [`spec-v7`](docs/spec-v7.md) · [`spec-v8`](docs/spec-v8.md) · [`spec-v9`](docs/spec-v9.md) · [`spec-v10`](docs/spec-v10.md) · [`spec-v11`](docs/spec-v11.md) · [`spec-v12`](docs/spec-v12.md) · [`spec-v13`](docs/spec-v13.md) · [`spec-v14`](docs/spec-v14.md) · [`spec-v15`](docs/spec-v15.md) · [`spec-v16`](docs/spec-v16.md) · [`spec-v17`](docs/spec-v17.md) · [`spec-v18`](docs/spec-v18.md) · [`spec-v19`](docs/spec-v19.md) · [`spec-v20`](docs/spec-v20.md) |
 | Contributing | [`CONTRIBUTING.md`](CONTRIBUTING.md) |
 
 ## What happened to the older project?
