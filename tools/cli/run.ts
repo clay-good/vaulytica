@@ -81,7 +81,11 @@
  * `coherence-recovery-affinity` reads the mirror of that pairwise axis on the *recovery*
  * direction — per pair of fronts, how reliably the two *recovered* together across the deal,
  * the deal's tightest such pairing, gating on a pair restored together more often than apart
- * (spec-v33) — and `verify` re-derives a saved report's `result_hash` (Step 145).
+ * (spec-v33), `coherence-opposition` reads the off-diagonal completion of those two pairwise
+ * axes — per pair of fronts, how often the two crossed the floor the same step in *opposite*
+ * directions (one fell as the other recovered), a see-saw the counterparty trades one against
+ * the other, gating on a pair that counter-moved more often than it aligned (spec-v34) — and
+ * `verify` re-derives a saved report's `result_hash` (Step 145).
  * The DKB ships with the tool — it opens no socket. The engine is the SAME engine
  * the tab runs (parity-proven), so a number on a CI dashboard describes
  * shipped behavior. Build/CI-only; never imported by `src/`.
@@ -111,6 +115,7 @@ import { runCoherenceRelapse } from "./coherence-relapse.js";
 import { runCoherenceTenure } from "./coherence-tenure.js";
 import { runCoherenceAffinity } from "./coherence-affinity.js";
 import { runCoherenceRecoveryAffinity } from "./coherence-recovery-affinity.js";
+import { runCoherenceOpposition } from "./coherence-opposition.js";
 import { verifyReproducibility, explainReproResult, type SavedReport } from "./verify.js";
 import type { Severity } from "../../src/engine/index.js";
 import { buildJsonReport } from "../../src/report/json.js";
@@ -718,6 +723,8 @@ Commands:
                           [--format markdown|json] [--fail-on-coupled-fronts]
   coherence-recovery-affinity <r1.coherence.json> <r2.coherence.json> [<r3…> …]
                           [--format markdown|json] [--fail-on-coupled-recoveries]
+  coherence-opposition <r1.coherence.json> <r2.coherence.json> [<r3…> …]
+                          [--format markdown|json] [--fail-on-opposed-fronts]
   verify  <report.json> <original> [--playbook <id>]
 `;
 
@@ -766,6 +773,8 @@ async function main(): Promise<void> {
       return runCoherenceAffinity(rest);
     case "coherence-recovery-affinity":
       return runCoherenceRecoveryAffinity(rest);
+    case "coherence-opposition":
+      return runCoherenceOpposition(rest);
     case "verify":
       return runVerify(rest);
     case undefined:
@@ -776,7 +785,7 @@ async function main(): Promise<void> {
       return;
     default:
       throw new Error(
-        `unknown command "${command}" (expected: analyze | diff | compare | compare-coherence | coherence-trend | coherence-shift-trend | coherence-arc | coherence-exposure | coherence-persistence | coherence-breadth | coherence-recurrence | coherence-volatility | coherence-synchrony | coherence-settling | coherence-onset | coherence-latency | coherence-concurrency | coherence-relapse | coherence-tenure | coherence-affinity | coherence-recovery-affinity | verify)`,
+        `unknown command "${command}" (expected: analyze | diff | compare | compare-coherence | coherence-trend | coherence-shift-trend | coherence-arc | coherence-exposure | coherence-persistence | coherence-breadth | coherence-recurrence | coherence-volatility | coherence-synchrony | coherence-settling | coherence-onset | coherence-latency | coherence-concurrency | coherence-relapse | coherence-tenure | coherence-affinity | coherence-recovery-affinity | coherence-opposition | verify)`,
       );
   }
 }

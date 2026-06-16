@@ -4,6 +4,58 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.31.0] — 2026-06-16 — Document-free exposure counter-move affinity / pairwise opposition coupling (spec-v34)
+
+### Added
+- **A `coherence-opposition` headless subcommand — per unordered *pair* of fronts, how often the
+  two crossed the acceptable floor the same step in *opposite* directions (one fell as the other
+  recovered), the deal's most-opposed such pairing, and whether any pair counter-moved more often
+  than it aligned; the off-diagonal completion of v32's co-fall and v33's co-recovery affinities
+  (spec-v34).** v32 (`coherence-affinity`) and v33 (`coherence-recovery-affinity`) took the
+  posture family's first two pairwise reads — the two *aligned* directions: which two fronts
+  *fall* together (the concession block) and which two *recover* together (the restoration
+  block). Those are two of the four cells of the 2×2 of {front A falls / recovers} × {front B
+  falls / recovers}. The off-diagonal is unread: across the deal, **which two fronts does the
+  counterparty move in *opposite* directions at once?** A step where Cap *falls* exactly as Term
+  *recovers* is a *counter-move* — a trade-off, the counterparty giving ground on one front
+  precisely as it takes ground on another. The two fronts are *substitutes*, bargaining chips
+  swapped against each other. v34 reads, per pair, how reliably the two move against each other —
+  the substitution v32/v33 (aligned-only) and v29 (per-step counts) structurally cannot pose.
+  - **The affinity (pure).** `src/report/coherence-opposition.ts` —
+    `computeCoherenceOpposition(rounds)` derives each front's fall-step set and recovery-step set
+    (the v29 *fall* and *recovery* events, silence-skipping per §3), then for each unordered pair
+    intersects A's falls with B's recoveries and A's recoveries with B's falls for `opposed_moves`
+    (transitions the two moved opposite ways), computes the aligned split `co_falls` / `co_recoveries`,
+    the `joint_moves` (transitions both crossed, `co_falls + co_recoveries + opposed_moves`), the
+    `affinity` (`opposed_moves / joint_moves`), and a `class`: `opposed` (a strict majority of the
+    joint moves, `opposed_moves × 2 > joint_moves`) or `incidental` (≥1 counter-move but not a
+    majority, including an exact split). A pair that never counter-moved has no opposition edge and
+    is omitted. The deal-level report adds `most_opposed_pair` / `max_affinity` (the most-opposed
+    coupling, picked by **integer cross-multiplication** — never a float compare, so the ranking is
+    platform-exact), `total_opposed_moves` (= `Σ_t falling_t × recovering_t` over v29's per-step
+    counts) and `total_aligned_moves` (= v32's `total_co_falls` + v33's `total_co_recoveries`),
+    `class_counts`, the `opposed` verdict, and a namespaced `opposition_hash` over the integer move
+    counts + class (the derived float `affinity` and derived integer `joint_moves` omitted, so the
+    fingerprint is integer-exact over the inputs). `exposureOpposed` is the gate predicate;
+    `buildCoherenceOppositionJson` (`schema: vaulytica.posture-opposition.v1`) and
+    `renderCoherenceOppositionSummary` are the renderers.
+  - **The command (headless).** `tools/cli/coherence-opposition.ts` —
+    `computeCoherenceOppositionArtifacts(texts, format?)` verifies all N artifacts and runs the
+    spec-v15/v16 cross-ladder guard via the shared `verifyCoherenceSequence` loader (unchanged from
+    v18–v33); `runCoherenceOpposition(argv)` does the file IO and exit codes. `--fail-on-opposed-fronts`
+    exits 2 when any pair counter-moved for a strict majority of the steps both crossed — distinct
+    from v32's `--fail-on-coupled-fronts` and v33's `--fail-on-coupled-recoveries`. Dispatcher +
+    `USAGE` wired in `tools/cli/run.ts`.
+  - **Join invariants.** `total_opposed_moves` equals `Σ_t falling_t × recovering_t` (v29's per-step
+    fall count times its recovery count, summed); `total_aligned_moves` equals v32's `total_co_falls`
+    plus v33's `total_co_recoveries`; their sum equals `Σ_t C(crossing_t, 2)` (v25's per-step crossing
+    count choose-two'd). The three pairwise reads (v32 co-fall, v33 co-recovery, v34 opposed) partition
+    every pair's joint moves exactly.
+- **Purely additive — zero existing-source change.** Like v19–v33, v34 needs nothing newly exported;
+  `coherence-sequence.ts` and every trajectory/exposure/…/recovery-affinity function are byte-for-byte
+  unchanged, and every existing command's output and golden is unchanged. 23 new tests (14 pure-module,
+  9 CLI).
+
 ## [9.30.0] — 2026-06-16 — Document-free exposure co-recovery affinity / pairwise recovery coupling (spec-v33)
 
 ### Added
