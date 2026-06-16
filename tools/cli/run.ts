@@ -96,7 +96,11 @@
  * `coherence-recovery-order` reads the recovery mirror of that direction-resolved precedence —
  * restricted to *recoveries* only, per pair of fronts, which front climbs back above the floor *first*
  * (and so which recovers *last*, the laggard left exposed longest), gating on a front recovered first
- * for a strict majority of the comparisons — and so a consistent laggard (spec-v37) — and
+ * for a strict majority of the comparisons — and so a consistent laggard (spec-v37),
+ * `coherence-weak-front` reads the family's first *per-front* synthesis — the join of v36 and v37, per
+ * front, whether it both *concedes* first (a v36 first-conceder) *and* *recovers* last (a v37
+ * last-recoverer), gating on a single front that is the weak side of *both* orderings — the deal's
+ * persistent weak point (spec-v38) — and
  * `verify` re-derives a saved report's `result_hash` (Step 145).
  * The DKB ships with the tool — it opens no socket. The engine is the SAME engine
  * the tab runs (parity-proven), so a number on a CI dashboard describes
@@ -131,6 +135,7 @@ import { runCoherenceOpposition } from "./coherence-opposition.js";
 import { runCoherencePrecedence } from "./coherence-precedence.js";
 import { runCoherenceConcession } from "./coherence-concession.js";
 import { runCoherenceRecoveryOrder } from "./coherence-recovery-order.js";
+import { runCoherenceWeakFront } from "./coherence-weak-front.js";
 import { verifyReproducibility, explainReproResult, type SavedReport } from "./verify.js";
 import type { Severity } from "../../src/engine/index.js";
 import { buildJsonReport } from "../../src/report/json.js";
@@ -746,6 +751,8 @@ Commands:
                           [--format markdown|json] [--fail-on-leading-concession]
   coherence-recovery-order <r1.coherence.json> <r2.coherence.json> [<r3…> …]
                           [--format markdown|json] [--fail-on-lagging-recovery]
+  coherence-weak-front <r1.coherence.json> <r2.coherence.json> [<r3…> …]
+                          [--format markdown|json] [--fail-on-persistent-weak-front]
   verify  <report.json> <original> [--playbook <id>]
 `;
 
@@ -802,6 +809,8 @@ async function main(): Promise<void> {
       return runCoherenceConcession(rest);
     case "coherence-recovery-order":
       return runCoherenceRecoveryOrder(rest);
+    case "coherence-weak-front":
+      return runCoherenceWeakFront(rest);
     case "verify":
       return runVerify(rest);
     case undefined:
@@ -812,7 +821,7 @@ async function main(): Promise<void> {
       return;
     default:
       throw new Error(
-        `unknown command "${command}" (expected: analyze | diff | compare | compare-coherence | coherence-trend | coherence-shift-trend | coherence-arc | coherence-exposure | coherence-persistence | coherence-breadth | coherence-recurrence | coherence-volatility | coherence-synchrony | coherence-settling | coherence-onset | coherence-latency | coherence-concurrency | coherence-relapse | coherence-tenure | coherence-affinity | coherence-recovery-affinity | coherence-opposition | coherence-precedence | coherence-concession | coherence-recovery-order | verify)`,
+        `unknown command "${command}" (expected: analyze | diff | compare | compare-coherence | coherence-trend | coherence-shift-trend | coherence-arc | coherence-exposure | coherence-persistence | coherence-breadth | coherence-recurrence | coherence-volatility | coherence-synchrony | coherence-settling | coherence-onset | coherence-latency | coherence-concurrency | coherence-relapse | coherence-tenure | coherence-affinity | coherence-recovery-affinity | coherence-opposition | coherence-precedence | coherence-concession | coherence-recovery-order | coherence-weak-front | verify)`,
       );
   }
 }

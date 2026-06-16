@@ -4,6 +4,55 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.35.0] — 2026-06-16 — Document-free persistent weak front / the per-front join of v36 + v37 (spec-v38)
+
+### Added
+- **A `coherence-weak-front` headless subcommand — the posture family's first *per-front* synthesis:
+  the join of v36's concession order and v37's recovery order.** v36 (`coherence-concession`) names,
+  per pair, the front that *concedes* (falls below the acceptable floor) **first**; v37
+  (`coherence-recovery-order`) names the front that *recovers* (climbs back at-or-above the floor)
+  **last** — the laggard left exposed longest. Each is a directional half-truth, and each spec named
+  the same prize the other could not name alone: a front that **concedes first _and_ recovers last**
+  is the deal's **persistent weak point** — exposed coming and going — while a front that concedes
+  first but recovers *first* is merely *volatile*. v38 reduces the `leading` edges of both halves to a
+  per-front verdict. Per front (with a weak signal on either axis): the partners it
+  `concedes_first_against` (v36 `leading` pairs where it is the `first_conceder`), the partners it
+  `recovers_last_against` (v37 `leading` pairs where it is the `last_recoverer`), the
+  `confirmed_against` (the same-partner intersection — the sharpest evidence), and a `class`
+  (`persistent-weak` / `conceding` / `lagging`); plus the deal's `most_exposed_front`, the
+  `weak_fronts` list, and `has_persistent_weak_front`. Introduces no new fall/recovery/ordering math —
+  it reads only the `leading` pairs v36/v37 already classify. (`src/report/coherence-weak-front.ts`,
+  `tools/cli/coherence-weak-front.ts`.)
+- **A `--fail-on-persistent-weak-front` gate** — exits 2 when at least one front is **both** a
+  strict-majority first-conceder (v36) against some partner **and** a strict-majority last-recoverer
+  (v37) against some partner. *Strictly stronger* than v36's `--fail-on-leading-concession` or v37's
+  `--fail-on-lagging-recovery`, which each fire on a directional ordering existing at all; this
+  requires a single front to be the weak side of **both**. A deal can trip v36 and v37 (different
+  fronts lead each) yet clear v38 (no one front is weak on both). The conjunction of two already
+  tuning-free strict-majority verdicts; no knob.
+- **An integer-exact `weak_front_hash`** (`schema: vaulytica.posture-weak-front.v1`) over the
+  canonical per-front set (the front, its sorted `concedes_first_against`, its sorted
+  `recovers_last_against`, the class; the derived `confirmed_against`, `most_exposed_front`, and
+  `has_persistent_weak_front` omitted), namespaced apart from every prior hash. The most-exposed pick
+  uses integer leading-edge counts (earliest label on a tie), never a float compare.
+
+### Lineage
+- **The join v36 and v37 each deferred.** v36 Part XVI and v37 Part XVI both deferred the join as "a
+  downstream read over two independent reports, not a new command" — right while the recovery half was
+  unbuilt. With v37 shipped, v38 elevates it, exactly as v37 Open Question #1 steers (the next axis
+  should be *per-front*, not another pairwise direction).
+- **Distinct from v36 and v37.** v36/v37 are pairwise and directional; v38 is per-front and
+  bidirectional. A `first_conceder` in v36 is only `conceding` in v38 unless it is *also* a
+  `last_recoverer` in v37, and vice versa. The test suite includes a fixture that trips both halves on
+  *different* fronts yet has no persistent weak front (the join clears).
+
+### Unchanged (additive)
+- Purely additive — a new subcommand and one pure module reusing `verifyCoherenceSequence`,
+  `computeCoherenceConcession`, and `computeCoherenceRecoveryOrder` unchanged. **No existing source
+  file's behavior changes**; every other command's output and golden is byte-for-byte unchanged. The
+  report stays *derived* (no new on-disk format). Suite **3,482 passing + 2 skips** (was 3,463 + 2;
+  +19 new tests), 235 test files (was 233).
+
 ## [9.34.0] — 2026-06-16 — Document-free exposure recovery order / pairwise recovery-precedence (spec-v37)
 
 ### Added
