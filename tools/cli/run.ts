@@ -61,7 +61,11 @@
  * `coherence-onset` reads the mirror *time-of-first-movement* axis — the earliest
  * round-transition any front crossed the floor, the clean lead-in of steady rounds
  * before it, and whether the first transition crossed, gating on a deal that
- * degraded from the opening (spec-v27) — and `verify` re-derives a saved report's
+ * degraded from the opening (spec-v27), `coherence-latency` reads the same N
+ * artifacts on the orthogonal *recovery-latency* axis — per front, how many rounds
+ * its standing sat below the floor between a fall and the recovery that closes it, the
+ * deal's slowest recovery, and whether any fall went unrecovered, gating on a front
+ * that fell and never came back (spec-v28) — and `verify` re-derives a saved report's
  * `result_hash` (Step 145).
  * The DKB ships with the tool — it opens no socket. The engine is the SAME engine
  * the tab runs (parity-proven), so a number on a CI dashboard describes
@@ -86,6 +90,7 @@ import { runCoherenceVolatility } from "./coherence-volatility.js";
 import { runCoherenceSynchrony } from "./coherence-synchrony.js";
 import { runCoherenceSettling } from "./coherence-settling.js";
 import { runCoherenceOnset } from "./coherence-onset.js";
+import { runCoherenceLatency } from "./coherence-latency.js";
 import { verifyReproducibility, explainReproResult, type SavedReport } from "./verify.js";
 import type { Severity } from "../../src/engine/index.js";
 import { buildJsonReport } from "../../src/report/json.js";
@@ -681,6 +686,8 @@ Commands:
                           [--format markdown|json] [--fail-on-unsettled-exposure]
   coherence-onset <r1.coherence.json> <r2.coherence.json> [<r3…> …]
                           [--format markdown|json] [--fail-on-early-onset-exposure]
+  coherence-latency <r1.coherence.json> <r2.coherence.json> [<r3…> …]
+                          [--format markdown|json] [--fail-on-unrecovered-exposure]
   verify  <report.json> <original> [--playbook <id>]
 `;
 
@@ -717,6 +724,8 @@ async function main(): Promise<void> {
       return runCoherenceSettling(rest);
     case "coherence-onset":
       return runCoherenceOnset(rest);
+    case "coherence-latency":
+      return runCoherenceLatency(rest);
     case "verify":
       return runVerify(rest);
     case undefined:
@@ -727,7 +736,7 @@ async function main(): Promise<void> {
       return;
     default:
       throw new Error(
-        `unknown command "${command}" (expected: analyze | diff | compare | compare-coherence | coherence-trend | coherence-shift-trend | coherence-arc | coherence-exposure | coherence-persistence | coherence-breadth | coherence-recurrence | coherence-volatility | coherence-synchrony | coherence-settling | coherence-onset | verify)`,
+        `unknown command "${command}" (expected: analyze | diff | compare | compare-coherence | coherence-trend | coherence-shift-trend | coherence-arc | coherence-exposure | coherence-persistence | coherence-breadth | coherence-recurrence | coherence-volatility | coherence-synchrony | coherence-settling | coherence-onset | coherence-latency | verify)`,
       );
   }
 }

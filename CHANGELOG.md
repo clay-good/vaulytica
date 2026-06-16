@@ -4,6 +4,77 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.25.0] — 2026-06-15 — Document-free exposure recovery latency / rounds below floor per episode (spec-v28)
+
+### Added
+- **A `coherence-latency` headless subcommand — per front, how many rounds its
+  standing sat *below* the floor between a fall and the recovery that closes it, the
+  deal's slowest recovery, and whether any fall went unrecovered; the recovery-latency
+  reduction of the same crossings v24/v25/v26/v27 count (spec-v28).** v24
+  (`coherence-volatility`) counts a front's crossings (`crossings`); v25
+  (`coherence-synchrony`) re-buckets them per step; v26 (`coherence-settling`) /
+  v27 (`coherence-onset`) read the **index** of the *last* / *first* crossing. All four
+  reduce the crossings to a count or a single index — and a count and an index both
+  throw away the **gap between a fall and the recovery that closes it**. Two fronts with
+  the identical crossing count (both fell once and recovered once) can be opposites here:
+  a fall caught at the next exchange (one round below) vs. one that festered for rounds.
+  v28 supplies the missing axis: pair each fall with the recovery that closes it and read
+  the duration between them. (Fulfills v26/v27 Part XVI's deferred re-exposure-latency
+  stat.)
+  - **The latency (pure).** `src/report/coherence-latency.ts` —
+    `computeCoherenceLatency(rounds)` scans each front's binding floors, attributes each
+    stated crossing to the round that reveals it (the same §3 attribution v24/v25/v26/v27
+    use), and pairs each *fall* (at-or-above → below) with the next *recovery* (below →
+    at-or-above) into `episodes[]`. Each closed episode carries its `latency`
+    (`recovery_round − fall_round` — the rounds below floor); an unclosed fall is an *open*
+    episode (`recovery_round` `null`, an unbounded latency). The deal-level report adds
+    `max_latency` / `slowest_dimension` (the longest closed episode and the front that owns
+    it), `recovered_count` / `open_count`, a per-front `LatencyClass`
+    (`open` / `recovered` / `steady` / `unstated`), and `total_crossings` — equal by
+    construction to v24's per-front sum and v25/v26/v27's per-step sum.
+    `exposureUnrecovered(latency)` = `open_count > 0` — the gate predicate, **distinct
+    from v21's `exposureOpen`**: v21 fires on a front whose *current standing* is below
+    floor (including one stated below from round 1 that never *fell* in-sequence); v28
+    fires only on an in-sequence *fall that never closed*. **Honest by construction (§3):**
+    silence inside a gap does not reset the standing or invent a recovery; a front stated
+    below from round 1 has no in-sequence fall to pair (its descent predates the archive),
+    so it contributes no episode and is `steady`. `buildCoherenceLatencyJson`
+    (`schema: vaulytica.posture-latency.v1`) + `renderCoherenceLatencySummary`. A
+    namespaced `latency_hash` (SHA-256 over the canonical per-front episode set) keeps every
+    existing golden unmoved. **Zero changes to any existing source file** — v28 imports only
+    the already-public `PostureCoherence`/`NegotiationTier` types and the shared hashing
+    helpers.
+  - **The command (headless).** `tools/cli/coherence-latency.ts` —
+    `computeCoherenceLatencyArtifacts(texts, format?)` is the pure core (the shared
+    `verifyCoherenceSequence` loader — parse + hash-verify + cross-ladder guard, unchanged
+    — then `computeCoherenceLatency`, rendered markdown or JSON). `runCoherenceLatency(argv)`
+    is the handler (file IO + exit codes); requires ≥ 2 positionals; under
+    `--fail-on-unrecovered-exposure` exits 2 only when a front fell and never recovered.
+    Wired into the `run.ts` dispatcher (`case "coherence-latency"`) + `USAGE` + header doc +
+    unknown-command list. A separate command, not a `coherence-onset` flag — each command
+    keeps one gate and one hash.
+- **Verified live end-to-end:** a slow-but-recovered deal
+  (`acceptable → below → below → below → acceptable`) prints
+  `slowest recovery: Cap — sat below floor for 3 rounds` and exits **0**; an unrecovered
+  fall (`acceptable → below → below`) prints `⚠ Cap: open — fell round 2, never recovered`
+  and exits **2** — the recovery-latency axis no count or index can show.
+- **Tests:** +26 (`src/report/coherence-latency.test.ts` ×17, `tools/cli/coherence-latency.test.ts` ×9):
+  prompt vs slow recovery (same v24 crossing count, different latency), the unrecovered
+  episode (gate trips) vs the recovered one (gate clears), the v21 distinction (a front
+  below from round 1 is `open` to v21 but contributes no episode here), the reduction
+  invariant (`total_crossings` = v24's/v25's/v26's/v27's totals), the slowest-recovery pick
+  across fronts (earliest on a tie), silence-inside-a-gap and silence-attribution (§3),
+  two-episode fronts (a recovered then an unrecovered fall), above-floor whipsaw never pairs
+  (distinct from v17), no-front-ever-fell, unstated never counted, determinism, ≥2-artifact
+  requirement, cross-ladder refusal naming both rounds, unpinned-v1 note, round-prefixed
+  tamper, gate-predicate parity, render + JSON. Suite **3,252 passing + 2 skips** (was 3,226),
+  215 test files (was 213). Every existing command's output and golden is byte-for-byte
+  unchanged. New [`docs/spec-v28.md`](docs/spec-v28.md). The posture matrix now has **ten
+  axes** — MOVEMENT (v16–v19), LEVEL (v20), TIME/duration (v21), BREADTH (v22), RECURRENCE
+  (v23), VOLATILITY (v24, per-front crossings), SYNCHRONY (v25, per-step crossings), SETTLING
+  (v26, last-crossing index), ONSET (v27, first-crossing index), and LATENCY (v28,
+  fall-to-recovery gap).
+
 ## [9.24.0] — 2026-06-15 — Document-free exposure onset / first floor crossing (spec-v27)
 
 ### Added
