@@ -4,6 +4,83 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.21.0] — 2026-06-15 — Document-free exposure volatility / per-front floor crossings (spec-v24)
+
+### Added
+- **A `coherence-volatility` headless subcommand — the per-front count of times a
+  front's standing *crossed* the floor, the crossing-count axis v23's episode count
+  throws away (spec-v24).** v23 (`coherence-recurrence`) reads the N-round archive on
+  the *episode-count* axis: per front, how many *separate* times it fell below the
+  acceptable floor (`below_runs`). But an episode count counts only the **entries**
+  into below-floor — it is blind to the **recoveries** between them. A front whose
+  binding floor reads `below → below → below` (it never moved) and a front that reads
+  `acceptable → below → acceptable` (it fell once and **cleanly recovered**) both
+  report `below_runs = 1` and `recurrence = single`: the same episode count, the same
+  gate — yet the second *crossed the floor twice* (down, then up) and the first never
+  crossed it at all. v21 calls the first `open` and the second `resolved` (the current
+  *standing*, not the *movement*); v20 calls both `exposed`; v17 nets the second
+  `unchanged`. v24 supplies the missing axis: read the same N artifacts per front and
+  count the **floor crossings** — every *stated* transition across the floor boundary,
+  in either direction (falls **and** recoveries).
+  - **The volatility (pure).** `src/report/coherence-volatility.ts` —
+    `computeCoherenceVolatility(rounds)` scans each front's `floors[]` and counts every
+    stated transition across the floor (`crossings`): zero is `stable` (it stayed on
+    one side the whole deal), one is `monotone` (it crossed once, never back), two or
+    more is `volatile` (its standing reversed across the floor at least once). Per front
+    it reports the floor path, `rounds_below` (for context), `crossings`, and a
+    `volatility` class — `volatile` / `monotone` / `stable` / `unstated` (§3) — plus the
+    deal's `most_volatile_dimension` / `max_crossings` (the front with the most
+    crossings, earliest on a tie) and `volatile_count`. `exposureVolatile` (=
+    `volatile_count > 0`) is the gate predicate; JSON (`schema:
+    vaulytica.posture-volatility.v1`) + markdown renderers ship beside it. A namespaced
+    `volatility_hash` (SHA-256 over the canonical per-front set) keeps it apart from
+    every other hash, so computing it moves no golden.
+  - **§3 honesty — silence does not count as a crossing.** A round no document states
+    is **skipped**: it neither counts as a crossing nor resets the standing. So
+    `below → unstated → below` is **zero** crossings (silence keeps the last known
+    standing), and `below → unstated → acceptable` is **one** crossing (a real
+    recovery, just unstated in the gap round). A front never stated is `unstated`,
+    never `volatile`/`monotone`/`stable`.
+  - **Distinct from v17's whipsaw.** v17 fires on any improving *and* any regressing
+    rung-step *anywhere on the ladder* (including `acceptable → ideal → acceptable`, an
+    above-floor jitter that never risks the floor); v24's crossing count is specific to
+    the **floor boundary**, so that same above-floor whipsaw is `stable` (zero
+    crossings) to v24. v24 isolates instability that matters for exposure from rung
+    jitter that never crosses the floor.
+  - **The command (headless).** `tools/cli/coherence-volatility.ts` —
+    `computeCoherenceVolatilityArtifacts` (pure: hash-verify + cross-ladder guard via
+    the **unchanged** `verifyCoherenceSequence` loader the seven trend/exposure/
+    persistence/breadth/recurrence commands share, then compute + render) and
+    `runCoherenceVolatility` (file IO + exit codes). `--fail-on-volatile-exposure`
+    exits **2** when any front's standing crossed the floor two or more times (it
+    reversed at least once) — the *instability* counterpart to v23's churn gate and
+    v21's current-standing gate, catching the front that bounced even when it ended on
+    the right side of the floor, and ignoring the front that sat stably on the wrong
+    side. The dispatcher (`tools/cli/run.ts`) gains the `coherence-volatility` case and
+    a `USAGE` entry.
+  - **Purely additive.** A new subcommand and one pure module that reads the binding
+    floor (`weakest_tier`, v12) already in every artifact for the `below-acceptable`
+    rung (v10); **no existing source file's behavior changes** and every existing
+    command's output and golden is byte-for-byte unchanged. Tests: volatility identity
+    disk-vs-in-memory, bounced (2 crossings) vs stuck (0 crossings) — the pair v23
+    reports identically as `single`, single-fall (1 crossing, monotone),
+    silence-does-not-cross (§3), recovery-across-silence (1 crossing),
+    recover-then-relapse (2 crossings), above-floor whipsaw is stable (distinct from
+    v17), most-volatile front (earliest on tie), unstated never counted, no-front-ever-
+    crossed (max_crossings 0), determinism, ≥2-artifact requirement, cross-ladder
+    refusal (naming both rounds), unpinned-v1 note, tamper rejection (round-prefixed),
+    gate parity, render + JSON (20 new tests).
+
+### Posture command family (after v24)
+The N-round posture archive is now read on **six** orthogonal axes: MOVEMENT (v17
+trajectory / v18 shift / v19 arc — which way a front moved), LEVEL (v20 exposure — how
+low a front ever got), TIME (v21 persistence — how long a front was down, and is it
+still), BREADTH (v22 — the per-round transpose: how many fronts were down each round),
+RECURRENCE (v23 — how many *separate times* a front fell), and VOLATILITY (v24 — how
+many times a front's standing *crossed* the floor, recoveries included). Each is a
+separate command with exactly one gate and one namespaced hash; none changes any
+other's behavior.
+
 ## [9.20.0] — 2026-06-15 — Document-free exposure recurrence / per-front below-floor episodes (spec-v23)
 
 ### Added
