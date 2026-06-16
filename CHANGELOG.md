@@ -4,6 +4,69 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.30.0] — 2026-06-16 — Document-free exposure co-recovery affinity / pairwise recovery coupling (spec-v33)
+
+### Added
+- **A `coherence-recovery-affinity` headless subcommand — per unordered *pair* of fronts, how
+  reliably the two climbed back at-or-above the acceptable floor *together* across the deal,
+  the deal's tightest such pairing, and whether any pair coupled more often than it recovered
+  apart; the recovery-direction mirror of v32's co-fall affinity (spec-v33).** v32
+  (`coherence-affinity`) took the posture family's first pairwise read — which two fronts
+  *fall* below floor together (the concession linkage). But the floor is crossed two ways, and
+  v32 reads only one. v29 resolved each step into *falls* and *recoveries*; v32 paired the fall
+  direction. The mirror is unread: across the deal, **which two fronts does the counterparty
+  keep *restoring* as a block?** A recovery on front A that only ever lands alongside a recovery
+  on front B is a *linked recovery* — A is hostage to B, repaired as a bundle, never alone. Two
+  deals with byte-identical v32 co-fall affinity can have opposite recovery coupling. v33 is to
+  v32 as v30 (relapse) is to v28 (latency), and v27 (onset) is to v26 (settling): the exact
+  mirror on the opposite floor-crossing direction.
+  - **The affinity (pure).** `src/report/coherence-recovery-affinity.ts` —
+    `computeCoherenceRecoveryAffinity(rounds)` derives each front's recovery-step set (the v29
+    *recovery* event: below → at-or-above, silence-skipping per §3), then for each unordered
+    pair intersects the two sets for `co_recoveries` (transitions both recovered), computes
+    `union_recoveries` (transitions *either* recovered, `a_recoveries + b_recoveries −
+    co_recoveries`), the `affinity` (`co_recoveries / union_recoveries`, the Jaccard overlap),
+    and a `class`: `coupled` (a strict majority of the union, `co_recoveries × 2 >
+    union_recoveries`) or `incidental` (≥1 co-recovery but not a majority, including an exact
+    split). A pair that never both-recovered has no affinity edge and is omitted. The deal-level
+    report adds `tightest_pair` / `max_affinity` (the tightest coupling, picked by **integer
+    cross-multiplication** — never a float compare, so the ranking is platform-exact),
+    `total_co_recoveries` (= `Σ_t C(recovering_t, 2)` over v29's per-step recovery counts) and
+    `total_recoveries` (= v29's), `class_counts`, the `coupled` verdict, and a namespaced
+    `recovery_affinity_hash` over the integer recovery counts + class (the derived float
+    `affinity` and derived integer `union_recoveries` omitted, so the fingerprint is
+    integer-exact over the inputs). `exposureRecoveryCoupled` is the gate predicate;
+    `buildCoherenceRecoveryAffinityJson` (`schema: vaulytica.posture-recovery-affinity.v1`) and
+    `renderCoherenceRecoveryAffinitySummary` are the renderers.
+  - **The command (headless).** `tools/cli/coherence-recovery-affinity.ts` —
+    `computeCoherenceRecoveryAffinityArtifacts(texts, format?)` verifies all N artifacts and
+    runs the cross-ladder guard via the shared `verifyCoherenceSequence` loader (unchanged from
+    v18–v32), then computes and renders the affinity. `runCoherenceRecoveryAffinity(argv)` does
+    the file IO and exit codes; `--fail-on-coupled-recoveries` exits 2 when any pair recovered
+    together for a strict majority of the steps either recovered. The `run.ts` dispatcher gains
+    a `coherence-recovery-affinity` case and a `USAGE` entry.
+  - **Distinct from v32 and v29.** A pair `coupled` on falls (v32) can be `incidental` on
+    recoveries (v33) and vice versa — the two directions are independent relations over the same
+    `floors[]` matrix (a covered regression test builds a pair that falls together yet recovers
+    on opposite steps: v32 reports a co-fall edge, v33 reports none). Every co-recovery step is
+    a v29 `recovering ≥ 2` step, but three different pairs each recovering together once give
+    v29 three such steps yet leave every pair `incidental` to v33.
+  - **Purely additive.** A new subcommand + one pure module; `verifyCoherenceSequence` and every
+    existing source file are reused **without modification**. Every existing command's output
+    and golden is byte-for-byte unchanged. Tests: source (15) + CLI (9) — identity
+    disk-vs-in-memory, the linked vs the independent recovery, a co-recovery requires both
+    fronts to recover the same step, the exact-split incidental boundary, the `Σ C(recovering,
+    2)` and `total_recoveries` join invariants, the tightest-pair pick + tie-break,
+    no-pairing/§3-silence/both-recovered-once edges, the v32-divergence, determinism,
+    ≥2-artifact, cross-ladder refusal, unpinned-v1 note, tamper rejection, gate parity, render +
+    JSON.
+
+### Changed
+- **README** — new "Exposure co-recovery affinity" section with a worked example; the
+  posture-axis callout now reads **fifteen orthogonal axes** (adds RECOVERY-AFFINITY); the
+  version table, the dispatcher command lists, the command count (twenty-two), and the CLI
+  cheat-sheet all list `coherence-recovery-affinity`.
+
 ## [9.29.0] — 2026-06-16 — Document-free exposure co-fall affinity / pairwise concession coupling (spec-v32)
 
 ### Added
