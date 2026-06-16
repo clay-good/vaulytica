@@ -4,6 +4,66 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.29.0] — 2026-06-16 — Document-free exposure co-fall affinity / pairwise concession coupling (spec-v32)
+
+### Added
+- **A `coherence-affinity` headless subcommand — per unordered *pair* of fronts, how
+  reliably the two fell below the acceptable floor *together* across the deal, the deal's
+  tightest such pairing, and whether any pair coupled more often than it fell apart; the
+  first *pairwise* read the posture family has taken (spec-v32).** Every reduction through
+  v31 is a scalar — per front, per round, or per episode. v25/v29 come closest to a
+  relational read (they count, per step, *how many* fronts crossed or fell together) but
+  collapse the relation to a count the instant they record it: v29 knows round 3 saw two
+  fronts fall, even lists *which* two, but never asks across the sequence whether it is the
+  same two again and again. Two deals with byte-identical v29 concurrency profiles (same
+  per-step fall counts) can be opposites — one a single stable pair falling together every
+  time (a linked concession), the other a different co-falling pair every round (no
+  coupling). v32 supplies the missing pairwise axis.
+  - **The affinity (pure).** `src/report/coherence-affinity.ts` —
+    `computeCoherenceAffinity(rounds)` derives each front's fall-step set (the v29 *fall*
+    event: at-or-above → below, silence-skipping per §3), then for each unordered pair
+    intersects the two sets for `co_falls` (transitions both fell), computes `union_falls`
+    (transitions *either* fell, `a_falls + b_falls − co_falls`), the `affinity`
+    (`co_falls / union_falls`, the Jaccard overlap), and a `class`: `coupled` (a strict
+    majority of the union, `co_falls × 2 > union_falls`) or `incidental` (≥1 co-fall but not
+    a majority, including an exact split). A pair that never both-fell has no affinity edge
+    and is omitted. The deal-level report adds `tightest_pair` / `max_affinity` (the tightest
+    coupling, picked by **integer cross-multiplication** — never a float compare, so the
+    ranking is platform-exact), `total_co_falls` (= `Σ_t C(falling_t, 2)` over v29's per-step
+    fall counts) and `total_falls` (= v29's), `class_counts`, the `coupled` verdict, and a
+    namespaced `affinity_hash` over the integer fall counts + class (the derived float
+    `affinity` and derived integer `union_falls` omitted, so the fingerprint is integer-exact
+    over the inputs). `exposureCoupled` is the gate predicate; `buildCoherenceAffinityJson`
+    (`schema: vaulytica.posture-affinity.v1`) and `renderCoherenceAffinitySummary` are the
+    renderers.
+  - **The command (headless).** `tools/cli/coherence-affinity.ts` —
+    `computeCoherenceAffinityArtifacts(texts, format?)` verifies all N artifacts and runs the
+    cross-ladder guard via the shared `verifyCoherenceSequence` loader (unchanged from
+    v18–v31), then computes and renders the affinity. `runCoherenceAffinity(argv)` does the
+    file IO and exit codes; `--fail-on-coupled-fronts` exits 2 when any pair fell together for
+    a strict majority of the steps either fell. The `run.ts` dispatcher gains a
+    `coherence-affinity` case and a `USAGE` entry.
+  - **Distinct from v29's `--fail-on-concerted-fall`.** Every co-fall step *is* a v29
+    concerted-fall step (two fronts down at once), so `coupled ⟹ concerted` for that step —
+    but the reverse fails where it matters: three *different* pairs each falling together once
+    trip v29 (three concerted-fall steps) yet leave every pair `incidental` to v32 (each
+    co-fell once, apart more). v29 asks "did any step lurch?"; v32 asks "is there a *stable*
+    concession pairing?".
+  - **Purely additive.** A new subcommand + one pure module; `verifyCoherenceSequence` and
+    every existing source file are reused **without modification**. Every existing command's
+    output and golden is byte-for-byte unchanged. Tests: source (14) + CLI (9) — identity
+    disk-vs-in-memory, the coupling vs the coincidence (v29 trips, v32 clears), a co-fall
+    requires both fronts to fall the same step, the exact-split incidental boundary, the
+    `Σ C(falling, 2)` and `total_falls` join invariants, the tightest-pair pick + tie-break,
+    no-pairing/§3-silence/both-fell-once edges, determinism, ≥2-artifact, cross-ladder
+    refusal, unpinned-v1 note, tamper rejection, gate parity, render + JSON.
+
+### Changed
+- **README** — new "Exposure co-fall affinity" section with a worked example; the posture-axis
+  callout now reads **fourteen orthogonal axes** (adds AFFINITY); the version table, the
+  dispatcher command lists, the command count (twenty-one), and the CLI cheat-sheet all list
+  `coherence-affinity`.
+
 ## [9.28.0] — 2026-06-16 — Document-free exposure tenure / below-floor occupancy share (spec-v31)
 
 ### Added
