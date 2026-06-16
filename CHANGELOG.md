@@ -4,6 +4,52 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.33.0] — 2026-06-16 — Document-free exposure concession order / pairwise fall-precedence (spec-v36)
+
+### Added
+- **A `coherence-concession` headless subcommand — the posture family's first *direction-resolved*
+  precedence: per unordered *pair* of fronts, when the two both *fall* below the acceptable floor,
+  does one consistently concede *first*?** v35 (`coherence-precedence`) ordered v24's *crossings*
+  — a fall **or** a recovery — so it is *direction-blind*: a pair can lead there because one front
+  reliably *recovers* first, not because it *concedes* first. v36 restricts the ordering to *falls*
+  only, isolating the question a deal lead actually asks ("which front does the counterparty give
+  ground on **first**?"). Per pair, how many round-transition comparisons saw front A fall *before*
+  B (`a_concedes_first`), how many saw B first (`b_concedes_first`), how many were same-step ties
+  (`co_falls`), out of all `comparisons` (`a_concedes_first + b_concedes_first + co_falls`); the
+  pair's `first_conceder`, the `affinity` (the first-conceder's share of all comparisons), the
+  deal's most-conceding pairing (`max_affinity` / `most_conceding_pair` / `first_conceding_front`),
+  and a `class` (`leading`/`interleaved`). A *leading* pair has a front that reliably gives ground
+  first — an **early-warning indicator** that the follower is about to concede too; an *interleaved*
+  pair falls in mixed order with no first-conceder. Reuses v32's exact fall events (silence-skipping,
+  §3); adds no posture math beyond a per-pair *ordered* comparison of the fall-step lists.
+  (`src/report/coherence-concession.ts`, `tools/cli/coherence-concession.ts`.)
+- **A `--fail-on-leading-concession` gate** — exits 2 when at least one pair has a front that fell
+  below the floor first for a strict **majority** of the comparisons (`max(a_concedes_first,
+  b_concedes_first) × 2 > comparisons`, ties and reverse-order working against it). The
+  *direction-resolved* counterpart to v35's direction-blind `--fail-on-leading-front` — a stable
+  concession order that catches the warning a recovery-driven v35 lead would mask. No tuning knob; a
+  consumer wanting a different bar reads `affinity` / `max_affinity` from the JSON.
+- **An integer-exact `concession_hash`** (`schema: vaulytica.posture-concession.v1`) over the
+  canonical per-pair set (the integer `a_concedes_first`/`b_concedes_first`/`co_falls`, the
+  `first_conceder`, the class; the derived float `affinity` and derived integer `comparisons`
+  omitted), namespaced apart from every prior hash. The most-conceding pick uses integer
+  cross-multiplication, never a float compare.
+
+### Lineage
+- **Exact tie to v32 and v29.** By construction each pair's `co_falls` (the same-step fall ties)
+  equals v32's `co_falls` for that pair, and summed over all pairs `total_co_falls` equals
+  `Σ_t C(falling_t, 2)` (v29's per-step fall count choose-two'd) — the same total v32 reports.
+  Verified against `computeCoherenceAffinity` and `computeCoherenceConcurrency` in the test suite.
+- **Distinct from v35.** A pair `leading` on v35 (direction-blind, orders any crossing) can be
+  `interleaved` on v36 (it led only because one front *recovers* first); the test suite includes a
+  fixture that leads on all crossings but interleaves on falls.
+
+### Unchanged (additive)
+- Purely additive — a new subcommand and one pure module reusing `verifyCoherenceSequence`
+  unchanged. **No existing source file's behavior changes**; every other command's output and
+  golden is byte-for-byte unchanged. The report stays *derived* (no new on-disk format). Suite
+  **3,441 passing + 2 skips** (was 3,419 + 2; +22 new tests), 231 test files (was 229).
+
 ## [9.32.0] — 2026-06-16 — Document-free exposure precedence / pairwise lead-lag coupling (spec-v35)
 
 ### Added
