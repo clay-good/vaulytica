@@ -4,6 +4,74 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.22.0] — 2026-06-15 — Document-free exposure synchrony / per-round floor crossings (spec-v25)
+
+### Added
+- **A `coherence-synchrony` headless subcommand — the per-round-transition count of
+  how many fronts crossed the floor *together*, the per-step transpose of v24's
+  per-front crossing count (spec-v25).** v24 (`coherence-volatility`) reads the
+  N-round archive *down the front axis*: per front, how many times its standing
+  crossed the floor *across the whole deal* (`crossings`). v22 (`coherence-breadth`)
+  reads it *down the round axis*, but only on the *level*: per round, how many fronts
+  sat *below* the floor (a static standing). Neither reads the archive down the round
+  axis on the *movement*: per round-**transition**, how many fronts *crossed* the
+  floor in the **same step**. So a deal lead can learn "the Cap front crossed the
+  floor twice over the deal" (v24) and "four fronts were below floor in round 3" (v22)
+  but not "round 1→2 is where the package **lurched** — two fronts crossed the floor
+  at once." A deal with no single *volatile* front (each front crossed at most once)
+  can still have a round where several fronts crossed *together* — a coordinated shift
+  v24's per-front sum structurally cannot pose, because it slices the crossings by
+  front, not by step. v25 supplies the missing axis: re-bucket the **same** floor
+  crossings v24 counts — by *step* instead of by *front*.
+  - **The synchrony (pure).** `src/report/coherence-synchrony.ts` —
+    `computeCoherenceSynchrony(rounds)` attributes each front's stated floor crossing
+    to the transition that reveals it and buckets the crossings *per step*: each
+    transition reports `crossing_fronts` (the count), `crossed_dimensions` (which
+    fronts, `localeCompare`-pinned), and a `synchrony` class — `synchronized` (≥ 2
+    fronts crossed at once), `isolated` (exactly 1), `quiet` (0). The series carries
+    `peak_transition`/`peak_count` (the single step the most fronts crossed together,
+    earliest on a tie), `synchronized_count` (the gate-worthy count of synchronized
+    steps), and `total_crossings` — equal by construction to the sum of every front's
+    v24 `crossings` (v25 is the literal transpose: the same crossings sliced by step).
+    `exposureSynchronized(synchrony)` = `synchronized_count > 0` — the *co-movement*
+    gate predicate, distinct from `exposureVolatile` (a single front crossing ≥ 2 times
+    across the deal) and `exposureWidened` (the below-floor count grew first→latest).
+    **Honest by construction (§3):** silence does not count as a crossing and a crossing
+    across a silent gap is attributed to the transition into the round that *reveals*
+    the new standing — never to the silent step (`below → unstated → acceptable` is one
+    crossing on the step ending at the third round; `below → unstated → below` is zero).
+    **Distinct from v17's whipsaw:** an above-floor jitter (`acceptable → ideal →
+    acceptable`) is all-`quiet` (zero floor crossings) to v25. Carries a namespaced
+    `synchrony_hash` (SHA-256, apart from every other hash). `buildCoherenceSynchronyJson`
+    (`schema: vaulytica.posture-synchrony.v1`) + `renderCoherenceSynchronySummary` (peak
+    step + synchronized-step count, then one line per step). **Zero changes to any
+    existing source file** — v25 imports only the already-public `PostureCoherence`/
+    `NegotiationTier` types and the shared hashing helpers.
+  - **The command (headless).** `tools/cli/coherence-synchrony.ts` —
+    `computeCoherenceSynchronyArtifacts(texts, format?)` is the pure core
+    (`verifyCoherenceSequence` — the shared parse + hash-verify + cross-ladder guard,
+    unchanged — then `computeCoherenceSynchrony` rendered markdown/JSON);
+    `runCoherenceSynchrony(argv)` is the handler (file IO + exit codes), requiring ≥ 2
+    positionals and exiting 2 under `--fail-on-synchronized-exposure` only when a single
+    step crossed the floor with two or more fronts at once. A separate command, not a
+    `coherence-volatility` flag — one gate, one hash. Wired into the `run.ts` dispatcher
+    (`case "coherence-synchrony"`) + USAGE + header doc + unknown-command list.
+  - **Verified live end-to-end.** Drove the real CLI over three ladder-pinned artifacts
+    (Cap+Term both fall in round 1→2, Cap recovers in round 2→3): `coherence-synchrony
+    --fail-on-synchronized-exposure` prints `peak step: round 1→2 (2 fronts crossed the
+    floor at once)`, `⚠ round 1→2: 2 fronts crossed (Cap, Term)`, and exits **2** (the
+    lurch), with `total_crossings: 3` matching `coherence-volatility` on the same files
+    (Cap 2 + Term 1 = 3) — proving the per-step transpose the per-front count cannot show.
+  - **Additive.** A brand-new subcommand + one pure module — every existing command's
+    output and every golden byte-for-byte unchanged; no existing source file's behavior
+    changes; no new on-disk format (the synchrony stays *derived*). +20 tests
+    (`src/report/coherence-synchrony.test.ts` ×12, `tools/cli/coherence-synchrony.test.ts`
+    ×8); suite **3,182 passing + 2 skips** (was 3,162), 209 test files (was 207).
+  - **Docs.** New [`docs/spec-v25.md`](docs/spec-v25.md); BUILD_PROGRESS v25 §; README
+    badge + "Saved coherence baselines" § extended with the synchrony workflow + the
+    seven-axis summary callout + v25 spec-table row + CLI cheat-sheet + commands-table
+    entry + specs list brought current v1–v25.
+
 ## [9.21.0] — 2026-06-15 — Document-free exposure volatility / per-front floor crossings (spec-v24)
 
 ### Added
