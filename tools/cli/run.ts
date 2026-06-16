@@ -57,8 +57,12 @@
  * (spec-v25), `coherence-settling` reads the same N artifacts on the orthogonal
  * *time-of-last-movement* axis — the latest round-transition any front crossed the
  * floor, the quiet tail of steady rounds after it, and whether the final transition
- * still crossed, gating on a deal that never settled before the close (spec-v26) —
- * and `verify` re-derives a saved report's `result_hash` (Step 145).
+ * still crossed, gating on a deal that never settled before the close (spec-v26),
+ * `coherence-onset` reads the mirror *time-of-first-movement* axis — the earliest
+ * round-transition any front crossed the floor, the clean lead-in of steady rounds
+ * before it, and whether the first transition crossed, gating on a deal that
+ * degraded from the opening (spec-v27) — and `verify` re-derives a saved report's
+ * `result_hash` (Step 145).
  * The DKB ships with the tool — it opens no socket. The engine is the SAME engine
  * the tab runs (parity-proven), so a number on a CI dashboard describes
  * shipped behavior. Build/CI-only; never imported by `src/`.
@@ -81,6 +85,7 @@ import { runCoherenceRecurrence } from "./coherence-recurrence.js";
 import { runCoherenceVolatility } from "./coherence-volatility.js";
 import { runCoherenceSynchrony } from "./coherence-synchrony.js";
 import { runCoherenceSettling } from "./coherence-settling.js";
+import { runCoherenceOnset } from "./coherence-onset.js";
 import { verifyReproducibility, explainReproResult, type SavedReport } from "./verify.js";
 import type { Severity } from "../../src/engine/index.js";
 import { buildJsonReport } from "../../src/report/json.js";
@@ -674,6 +679,8 @@ Commands:
                           [--format markdown|json] [--fail-on-synchronized-exposure]
   coherence-settling <r1.coherence.json> <r2.coherence.json> [<r3…> …]
                           [--format markdown|json] [--fail-on-unsettled-exposure]
+  coherence-onset <r1.coherence.json> <r2.coherence.json> [<r3…> …]
+                          [--format markdown|json] [--fail-on-early-onset-exposure]
   verify  <report.json> <original> [--playbook <id>]
 `;
 
@@ -708,6 +715,8 @@ async function main(): Promise<void> {
       return runCoherenceSynchrony(rest);
     case "coherence-settling":
       return runCoherenceSettling(rest);
+    case "coherence-onset":
+      return runCoherenceOnset(rest);
     case "verify":
       return runVerify(rest);
     case undefined:
@@ -718,7 +727,7 @@ async function main(): Promise<void> {
       return;
     default:
       throw new Error(
-        `unknown command "${command}" (expected: analyze | diff | compare | compare-coherence | coherence-trend | coherence-shift-trend | coherence-arc | coherence-exposure | coherence-persistence | coherence-breadth | coherence-recurrence | coherence-volatility | coherence-synchrony | coherence-settling | verify)`,
+        `unknown command "${command}" (expected: analyze | diff | compare | compare-coherence | coherence-trend | coherence-shift-trend | coherence-arc | coherence-exposure | coherence-persistence | coherence-breadth | coherence-recurrence | coherence-volatility | coherence-synchrony | coherence-settling | coherence-onset | verify)`,
       );
   }
 }

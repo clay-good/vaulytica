@@ -4,6 +4,75 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.24.0] — 2026-06-15 — Document-free exposure onset / first floor crossing (spec-v27)
+
+### Added
+- **A `coherence-onset` headless subcommand — the round the package *first* crossed
+  the floor, and whether it degraded from the very opening; the time-of-first-movement
+  mirror of v26's last-crossing index (spec-v27).** v24 (`coherence-volatility`) reads
+  the N-round archive *down the front axis* (`crossings`); v25 (`coherence-synchrony`)
+  re-buckets those crossings *per step* (`crossing_fronts`); v26 (`coherence-settling`)
+  reads the **index of the last one** (`settling_round`, `unsettled`). v26 reads the
+  *latest* crossing — and the latest throws away *when the first crossing happened*. So a
+  deal lead can learn "the package's last floor crossing was the final round" (v26) but
+  not "and its *first* crossing was round 1→2 — it degraded from the opening." A deal
+  whose crossings were a front falling in round 1→2 and again in the final round (*early
+  onset*) is **identical to v26** (same `settling_round`, same `unsettled`) as a deal
+  whose crossings were a front falling in round 4→5 and again in the final round (a *clean
+  lead-in* of three rounds). The first and last crossing indices are independent whenever
+  a deal crosses the floor more than once. v27 supplies the missing axis: read the same
+  floor crossings v24/v25/v26 count for the **index** of the first one. (Fulfills v26
+  Part XVI's deferred first-crossing stat.)
+  - **The onset (pure).** `src/report/coherence-onset.ts` —
+    `computeCoherenceOnset(rounds)` attributes each front's stated floor crossing to the
+    transition that reveals it (the same attribution v24/v25/v26 use) and marks each
+    transition `active` (a front crossed) or `still` (none did). The series reports
+    `onset_round` (the `to_round` of the *earliest* active step — the round the package
+    first crossed the floor, `null` when none ever did), `lead_in` (the run of leading
+    `still` steps before it — the whole sequence when none crossed), `active_count` (steps
+    where any front crossed), `early_onset` (the *first* transition was active), and
+    `total_crossings` — equal by construction to v24's per-front sum and v25/v26's per-step
+    sum (v27 reads the same crossings for *where the first one falls*).
+    `exposureEarlyOnset(onset)` = `onset.early_onset` — the *time-of-first-movement* gate
+    predicate, distinct from `exposureVolatile` (a single front crossing ≥ 2 times),
+    `exposureSynchronized` (≥ 2 fronts crossing in one step), and `exposureUnsettled` (the
+    last crossing on the final step). **Honest by construction (§3):** silence does not
+    count as a crossing; a crossing across a silent gap is attributed to the transition
+    into the round that *reveals* the new standing, and an opening round left entirely
+    unstated reveals no crossing — so the lead-in stays honest (silence at the open is not
+    an onset). **Distinct from v26:** they are mirror reductions of the same crossings and
+    coincide only when a deal crosses the floor exactly once; the moment it crosses twice,
+    the first and last indices are independent — v27 separates two deals v26 reports
+    identically. Carries a namespaced `onset_hash` (SHA-256, apart from every other hash).
+    `buildCoherenceOnsetJson` (`schema: vaulytica.posture-onset.v1`) +
+    `renderCoherenceOnsetSummary` (the onset verdict + active-step count, then one line per
+    step). **Zero changes to any existing source file** — v27 imports only the
+    already-public `PostureCoherence`/`NegotiationTier` types and the shared hashing helpers.
+  - **The command (headless).** `tools/cli/coherence-onset.ts` —
+    `computeCoherenceOnsetArtifacts(texts, format?)` is the pure core
+    (`verifyCoherenceSequence` — the shared parse + hash-verify + cross-ladder guard,
+    unchanged — then `computeCoherenceOnset` rendered markdown/JSON);
+    `runCoherenceOnset(argv)` is the handler (file IO + exit codes), requiring ≥ 2
+    positionals and exiting 2 under `--fail-on-early-onset-exposure` only when the first
+    transition crossed the floor. A separate command, not a `coherence-settling` flag —
+    one gate, one hash. Wired into the `run.ts` dispatcher (`case "coherence-onset"`) +
+    USAGE + header doc + unknown-command list.
+  - **Verified live end-to-end.** Drove the real CLI over ladder-pinned artifacts: a clean
+    lead-in (`acceptable → acceptable → below`) prints `onset: at round 3 — … after 1
+    steady step of clean lead-in` and exits **0**; an early cross (`below → acceptable`)
+    prints `onset: EARLY — the floor was first crossed in round 1→2, the opening
+    transition` and exits **2** — proving the first-move axis v26's last-move index cannot
+    show.
+  - **Additive.** A brand-new subcommand + one pure module — every existing command's
+    output and every golden byte-for-byte unchanged; no existing source file's behavior
+    changes; no new on-disk format (the onset stays *derived*). +22 tests
+    (`src/report/coherence-onset.test.ts` ×14, `tools/cli/coherence-onset.test.ts` ×8);
+    suite **3,226 passing + 2 skips** (was 3,204), 213 test files (was 211).
+  - **Docs.** New [`docs/spec-v27.md`](docs/spec-v27.md); BUILD_PROGRESS v27 §; README
+    "Saved coherence baselines" § extended with the onset workflow + the nine-axis summary
+    callout + v27 spec-table row + CLI cheat-sheet + commands-table entry + specs list
+    brought current v1–v27.
+
 ## [9.23.0] — 2026-06-15 — Document-free exposure settling / latest floor crossing (spec-v26)
 
 ### Added
