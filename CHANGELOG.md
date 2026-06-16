@@ -4,6 +4,68 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.26.0] — 2026-06-16 — Document-free exposure concurrency / fronts falling vs recovering per step (spec-v29)
+
+### Added
+- **A `coherence-concurrency` headless subcommand — per step, how many fronts *fell*
+  below the floor vs. how many *recovered*, the deal's peak fall step, and whether any
+  step was a concerted fall; the direction-resolved split of v25's per-step crossing
+  count (spec-v29).** v25 (`coherence-synchrony`) counts the fronts crossing the floor in
+  each step — but **direction-blind**: a step where two fronts *fell* together and a step
+  where one fell while another recovered both register as the same "synchronized" (two
+  crossings). v29 supplies the missing axis: split each step's crossings by direction.
+  (Fulfills v25 Part XVI's deferred direction-homogeneous synchrony.)
+  - **The concurrency (pure).** `src/report/coherence-concurrency.ts` —
+    `computeCoherenceConcurrency(rounds)` scans each front's binding floors, attributes
+    each stated crossing to the round that reveals it (the same §3 attribution v24/v25 use),
+    and buckets it into that step's `falling` (a fall, at-or-above → below) or `recovering`
+    (a recovery, below → at-or-above) list. Each step is classed by direction —
+    `concerted-fall` (≥2 fell, the gate-worthy class), `concerted-recovery` (≥2 recovered,
+    <2 fell), `mixed` (both directions, neither reaching two), `isolated` (one crossing),
+    `quiet` (none). The deal-level report adds `peak_fall_transition` / `peak_fall_count`
+    (the step the most fronts fell at once, earliest on a tie), the
+    `concerted_fall_count` / `concerted_recovery_count` / `mixed_count`, and
+    `total_crossings` (equal by construction to v24's per-front sum and v25/v26/v27/v28's
+    totals), with `total_falls + total_recoveries = total_crossings`. `exposureConcerted` =
+    `concerted_fall_count > 0` — the gate predicate, **distinct from v25's
+    `exposureSynchronized`**: v25 fires on any step where ≥2 fronts crossed regardless of
+    direction (a one-down-one-up churn trips it); v29 fires only on ≥2 fronts moving the
+    same way, down. **Honest by construction (§3):** silence is neither a fall nor a
+    recovery; a crossing across a silent gap lands on the round that reveals it, never the
+    silent step. `buildCoherenceConcurrencyJson` (`schema: vaulytica.posture-concurrency.v1`)
+    + `renderCoherenceConcurrencySummary`. A namespaced `concurrency_hash` (SHA-256 over the
+    canonical per-transition set) keeps every existing golden unmoved. **Zero changes to any
+    existing source file** — v29 imports only the already-public `PostureCoherence`/
+    `NegotiationTier` types and the shared hashing helpers.
+  - **The command (headless).** `tools/cli/coherence-concurrency.ts` —
+    `computeCoherenceConcurrencyArtifacts(texts, format?)` is the pure core (the shared
+    `verifyCoherenceSequence` loader — parse + hash-verify + cross-ladder guard, unchanged —
+    then `computeCoherenceConcurrency`, rendered markdown or JSON).
+    `runCoherenceConcurrency(argv)` is the handler (file IO + exit codes); requires ≥ 2
+    positionals; under `--fail-on-concerted-fall` exits 2 only when a step saw ≥2 fronts fall
+    together. Wired into the `run.ts` dispatcher (`case "coherence-concurrency"`) + `USAGE` +
+    header doc + unknown-command list. A separate command, not a `coherence-synchrony` flag —
+    each command keeps one gate and one hash.
+- **Verified live end-to-end:** a concerted-fall deal (Cap and Term both fall in round
+  1→2) prints `⚠ round 1→2: 2 fell (Cap, Term), 0 recovered (—) [concerted-fall]` and exits
+  **2** under `--fail-on-concerted-fall`; a staggered deal (Cap then Term fall one at a
+  time) classes both steps `isolated` and exits **0** — the coordinated-collapse axis v25's
+  direction-blind count cannot isolate.
+- **Tests:** +24 (`src/report/coherence-concurrency.test.ts` ×15, `tools/cli/coherence-concurrency.test.ts` ×9):
+  concerted fall vs churn (same v25 crossing count, different concurrency class), concerted
+  recovery, concerted-fall dominates a step with a simultaneous recovery, isolated single
+  crossing, the reduction invariant (`total_crossings` = v24's/v25's/v28's totals;
+  `total_falls + total_recoveries = total_crossings`), silence-attribution and
+  silence-is-quiet (§3), above-floor whipsaw never crosses (distinct from v17),
+  no-front-ever-fell, earliest-peak-fall tiebreak, determinism, ≥2-artifact requirement,
+  cross-ladder refusal naming both rounds, unpinned-v1 note, round-prefixed tamper,
+  gate-predicate parity, render + JSON. Suite **3,276 passing + 2 skips** (was 3,252), 217
+  test files (was 215). Every existing command's output and golden is byte-for-byte
+  unchanged. New [`docs/spec-v29.md`](docs/spec-v29.md). The posture matrix now has **eleven
+  axes** — MOVEMENT (v16–v19), LEVEL (v20), TIME/duration (v21), BREADTH (v22), RECURRENCE
+  (v23), VOLATILITY (v24), SYNCHRONY (v25), SETTLING (v26), ONSET (v27), LATENCY (v28), and
+  CONCURRENCY (v29, the direction split of v25).
+
 ## [9.25.0] — 2026-06-15 — Document-free exposure recovery latency / rounds below floor per episode (spec-v28)
 
 ### Added
