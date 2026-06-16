@@ -4,6 +4,75 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.23.0] — 2026-06-15 — Document-free exposure settling / latest floor crossing (spec-v26)
+
+### Added
+- **A `coherence-settling` headless subcommand — the round the package *last* crossed
+  the floor, and whether it was still moving at the close; the time-of-last-movement
+  reduction the per-front (v24) and per-step (v25) crossing counts both leave out
+  (spec-v26).** v24 (`coherence-volatility`) reads the N-round archive *down the front
+  axis*: per front, how many times its standing crossed the floor across the whole deal
+  (`crossings`). v25 (`coherence-synchrony`) re-buckets those same crossings *per step*:
+  per round-transition, how many fronts crossed at once (`crossing_fronts`). Both reduce
+  the crossings to a **count** — and a count throws away *when the last crossing
+  happened*. So a deal lead can learn "the Cap front crossed the floor twice" (v24) and
+  "two fronts crossed together in round 1→2" (v25) but not "the package's *last* floor
+  crossing was the final round — it never settled." A deal whose only crossing was a
+  front falling in round 1→2 then five steady rounds (*settled early*) is identical to
+  v24 (one monotone front) and v25 (one isolated step) as a deal whose only crossing was
+  a front falling in the **final** round (*unsettled*). v26 supplies the missing axis:
+  read the same floor crossings v24/v25 count for the **index** of the last one.
+  - **The settling (pure).** `src/report/coherence-settling.ts` —
+    `computeCoherenceSettling(rounds)` attributes each front's stated floor crossing to
+    the transition that reveals it (the same attribution v24/v25 use) and marks each
+    transition `active` (a front crossed) or `still` (none did). The series reports
+    `settling_round` (the `to_round` of the *latest* active step — the round the package
+    last crossed the floor, `null` when none ever did), `quiet_tail` (the run of trailing
+    `still` steps after it — the whole sequence when none crossed), `active_count` (steps
+    where any front crossed), `unsettled` (the *final* transition was active), and
+    `total_crossings` — equal by construction to v24's per-front sum and v25's per-step
+    sum (v26 reads the same crossings for *where the last one falls*).
+    `exposureUnsettled(settling)` = `settling.unsettled` — the *time-of-last-movement*
+    gate predicate, distinct from `exposureVolatile` (a single front crossing ≥ 2 times)
+    and `exposureSynchronized` (≥ 2 fronts crossing in one step). **Honest by
+    construction (§3):** silence does not count as a crossing; a crossing across a silent
+    gap is attributed to the transition into the round that *reveals* the new standing,
+    and a final round left entirely unstated reveals no crossing — so the close is
+    `settled` (silence at the close is stability, not movement). **Distinct from v17's
+    whipsaw:** an above-floor jitter (`acceptable → ideal → acceptable`) crosses the floor
+    zero times, so it has no settling round and is `settled`. **Distinct from v21's
+    duration:** a front stuck below floor for all N rounds has a large `rounds_below` but
+    *zero* crossings — it never moved — so it is `settled` to v26. Carries a namespaced
+    `settling_hash` (SHA-256, apart from every other hash). `buildCoherenceSettlingJson`
+    (`schema: vaulytica.posture-settling.v1`) + `renderCoherenceSettlingSummary` (the
+    settling verdict + active-step count, then one line per step). **Zero changes to any
+    existing source file** — v26 imports only the already-public `PostureCoherence`/
+    `NegotiationTier` types and the shared hashing helpers.
+  - **The command (headless).** `tools/cli/coherence-settling.ts` —
+    `computeCoherenceSettlingArtifacts(texts, format?)` is the pure core
+    (`verifyCoherenceSequence` — the shared parse + hash-verify + cross-ladder guard,
+    unchanged — then `computeCoherenceSettling` rendered markdown/JSON);
+    `runCoherenceSettling(argv)` is the handler (file IO + exit codes), requiring ≥ 2
+    positionals and exiting 2 under `--fail-on-unsettled-exposure` only when the final
+    transition crossed the floor. A separate command, not a `coherence-synchrony` flag —
+    one gate, one hash. Wired into the `run.ts` dispatcher (`case "coherence-settling"`) +
+    USAGE + header doc + unknown-command list.
+  - **Verified live end-to-end.** Drove the real CLI over three ladder-pinned artifacts:
+    a late cross (`acceptable → acceptable → below`) prints `settling: UNSETTLED — the
+    floor was last crossed in round 2→3, the final transition` and exits **2**; an early
+    cross (`acceptable → below → below`) prints `settled at round 2 — … then 1 steady step
+    to the close` and exits **0** — proving the time axis the per-front/per-step counts
+    cannot show.
+  - **Additive.** A brand-new subcommand + one pure module — every existing command's
+    output and every golden byte-for-byte unchanged; no existing source file's behavior
+    changes; no new on-disk format (the settling stays *derived*). +22 tests
+    (`src/report/coherence-settling.test.ts` ×14, `tools/cli/coherence-settling.test.ts`
+    ×8); suite **3,204 passing + 2 skips** (was 3,182), 211 test files (was 209).
+  - **Docs.** New [`docs/spec-v26.md`](docs/spec-v26.md); BUILD_PROGRESS v26 §; README
+    "Saved coherence baselines" § extended with the settling workflow + the eight-axis
+    summary callout + v26 spec-table row + CLI cheat-sheet + commands-table entry + specs
+    list brought current v1–v26.
+
 ## [9.22.0] — 2026-06-15 — Document-free exposure synchrony / per-round floor crossings (spec-v25)
 
 ### Added

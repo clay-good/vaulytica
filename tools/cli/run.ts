@@ -23,6 +23,7 @@
  *   tsx tools/cli/run.ts coherence-recurrence <r1.coherence.json> <r2.coherence.json> [<r3…> …] [--format markdown|json] [--fail-on-recurring-exposure]
  *   tsx tools/cli/run.ts coherence-volatility <r1.coherence.json> <r2.coherence.json> [<r3…> …] [--format markdown|json] [--fail-on-volatile-exposure]
  *   tsx tools/cli/run.ts coherence-synchrony <r1.coherence.json> <r2.coherence.json> [<r3…> …] [--format markdown|json] [--fail-on-synchronized-exposure]
+ *   tsx tools/cli/run.ts coherence-settling <r1.coherence.json> <r2.coherence.json> [<r3…> …] [--format markdown|json] [--fail-on-unsettled-exposure]
  *   tsx tools/cli/run.ts verify <report.json> <original> [--playbook <id>]
  *
  * One dispatcher over the reach commands: `analyze` runs the engine headless
@@ -53,7 +54,11 @@
  * the same N artifacts on the per-round transpose of that crossing axis — how many
  * fronts crossed the floor *together* in each round-transition, the deal's peak step,
  * gating on a synchronized step where two or more fronts crossed at once
- * (spec-v25) — and `verify` re-derives a saved report's `result_hash` (Step 145).
+ * (spec-v25), `coherence-settling` reads the same N artifacts on the orthogonal
+ * *time-of-last-movement* axis — the latest round-transition any front crossed the
+ * floor, the quiet tail of steady rounds after it, and whether the final transition
+ * still crossed, gating on a deal that never settled before the close (spec-v26) —
+ * and `verify` re-derives a saved report's `result_hash` (Step 145).
  * The DKB ships with the tool — it opens no socket. The engine is the SAME engine
  * the tab runs (parity-proven), so a number on a CI dashboard describes
  * shipped behavior. Build/CI-only; never imported by `src/`.
@@ -75,6 +80,7 @@ import { runCoherenceBreadth } from "./coherence-breadth.js";
 import { runCoherenceRecurrence } from "./coherence-recurrence.js";
 import { runCoherenceVolatility } from "./coherence-volatility.js";
 import { runCoherenceSynchrony } from "./coherence-synchrony.js";
+import { runCoherenceSettling } from "./coherence-settling.js";
 import { verifyReproducibility, explainReproResult, type SavedReport } from "./verify.js";
 import type { Severity } from "../../src/engine/index.js";
 import { buildJsonReport } from "../../src/report/json.js";
@@ -666,6 +672,8 @@ Commands:
                           [--format markdown|json] [--fail-on-volatile-exposure]
   coherence-synchrony <r1.coherence.json> <r2.coherence.json> [<r3…> …]
                           [--format markdown|json] [--fail-on-synchronized-exposure]
+  coherence-settling <r1.coherence.json> <r2.coherence.json> [<r3…> …]
+                          [--format markdown|json] [--fail-on-unsettled-exposure]
   verify  <report.json> <original> [--playbook <id>]
 `;
 
@@ -698,6 +706,8 @@ async function main(): Promise<void> {
       return runCoherenceVolatility(rest);
     case "coherence-synchrony":
       return runCoherenceSynchrony(rest);
+    case "coherence-settling":
+      return runCoherenceSettling(rest);
     case "verify":
       return runVerify(rest);
     case undefined:
@@ -708,7 +718,7 @@ async function main(): Promise<void> {
       return;
     default:
       throw new Error(
-        `unknown command "${command}" (expected: analyze | diff | compare | compare-coherence | coherence-trend | coherence-shift-trend | coherence-arc | coherence-exposure | coherence-persistence | coherence-breadth | coherence-recurrence | coherence-volatility | coherence-synchrony | verify)`,
+        `unknown command "${command}" (expected: analyze | diff | compare | compare-coherence | coherence-trend | coherence-shift-trend | coherence-arc | coherence-exposure | coherence-persistence | coherence-breadth | coherence-recurrence | coherence-volatility | coherence-synchrony | coherence-settling | verify)`,
       );
   }
 }
