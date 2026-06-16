@@ -131,22 +131,32 @@ describe.skipIf(!RUN)("v4 bundle-size guard", () => {
   const V4_BUDGET_GZIPPED_KB = V3_BUDGET_GZIPPED_KB + 300; // 1065 KB ceiling
 
   beforeAll(() => {
-    // Wait for build artifacts. The v3 block's beforeAll already ensures
-    // `dist/` exists; we only re-check readiness without triggering an
-    // additional build, since concurrent rebuilds invalidate hashed
-    // filenames mid-iteration in sibling describes.
+    // Wait for build artifacts. The v3 block's beforeAll (and the SRI test)
+    // build `dist/`; we prefer to ride their artifact. As the suite grows,
+    // coverage-instrumented runs can leave the eager `main-*.js` chunk not
+    // yet written when this hook fires, so wait generously (up to 120s) for
+    // it. Only if it never appears do we build our own — a last resort that
+    // is safe because every size-reading test below skips files that vanish
+    // mid-rebuild (the SRI race the file already guards against).
     const looksReady = (): boolean => {
       if (!existsSync(ASSETS)) return false;
       return jsFiles().some((f) => /^main-[A-Za-z0-9_-]+\.js$/.test(f));
     };
     if (!looksReady()) {
-      const deadline = Date.now() + 60_000;
+      const deadline = Date.now() + 120_000;
       while (!looksReady() && Date.now() < deadline) {
         const wait = new Int32Array(new SharedArrayBuffer(4));
         Atomics.wait(wait, 0, 0, 250);
       }
     }
-  }, 90_000);
+    if (!looksReady()) {
+      execSync("npm run build", {
+        cwd: REPO_ROOT,
+        stdio: "pipe",
+        env: { ...process.env, CI: "1" },
+      });
+    }
+  }, 180_000);
 
   /** Snapshot of (name, bytes) pairs taken once per test to defeat the
    * SRI-test race that rebuilds `dist/` mid-iteration. Each call reads
