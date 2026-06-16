@@ -4,6 +4,48 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.32.0] — 2026-06-16 — Document-free exposure precedence / pairwise lead-lag coupling (spec-v35)
+
+### Added
+- **A `coherence-precedence` headless subcommand — the posture family's first *directional*
+  pairwise read: per unordered *pair* of fronts, when the two both cross the acceptable floor (in
+  any direction), does one consistently cross *first*?** v32/v33/v34 read three *same-step*
+  pairwise relations (which two fronts cross *together* in one transition — aligned co-fall,
+  aligned co-recovery, opposed counter-move) and are blind to order *across* transitions. v35
+  supplies the ordering: per pair, how many round-transition comparisons saw front A cross *before*
+  B (`a_leads`), how many saw B first (`b_leads`), how many were same-step ties (`co_crossings`),
+  out of all `comparisons` (`a_leads + b_leads + co_crossings`); the pair's `leader`, the
+  `affinity` (the leader's share of all comparisons), the deal's most-leading pairing
+  (`max_affinity` / `most_leading_pair` / `leading_front`), and a `class` (`leading`/`interleaved`).
+  A *leading* pair has a front that reliably moves first — an **early-warning indicator** for the
+  follower; an *interleaved* pair crosses in mixed order with no first-mover. Reuses v24's exact
+  crossing events (silence-skipping, §3); adds no posture math beyond a per-pair *ordered*
+  comparison of the crossing-step lists. (`src/report/coherence-precedence.ts`,
+  `tools/cli/coherence-precedence.ts`.)
+- **A `--fail-on-leading-front` gate** — exits 2 when at least one pair has a front that crossed
+  first for a strict **majority** of the comparisons (`max(a_leads, b_leads) × 2 > comparisons`,
+  ties and reverse-order working against it). The *directional* counterpart to v32's
+  `--fail-on-coupled-fronts`, v33's `--fail-on-coupled-recoveries`, and v34's
+  `--fail-on-opposed-fronts` — a stable lead-lag a same-step read cannot pose. No tuning knob; a
+  consumer wanting a different bar reads `affinity` / `max_affinity` from the JSON.
+- **An integer-exact `precedence_hash`** (`schema: vaulytica.posture-precedence.v1`) over the
+  canonical per-pair set (the integer `a_leads`/`b_leads`/`co_crossings`, the `leader`, the class;
+  the derived float `affinity` and derived integer `comparisons` omitted), namespaced apart from
+  every prior hash. The most-leading pick uses integer cross-multiplication, never a float compare.
+
+### Lineage
+- **Exact tie to v34 and v25.** By construction each pair's `co_crossings` (the same-step ties)
+  equals v34's `joint_moves` for that pair, and summed over all pairs `total_co_crossings` equals
+  `Σ_t C(crossing_t, 2)` (v25's per-step crossing count choose-two'd) — the same total v34 splits
+  into aligned + opposed moves. Verified against `computeCoherenceOpposition` and
+  `computeCoherenceSynchrony` in the test suite.
+
+### Unchanged (additive)
+- Purely additive — a new subcommand and one pure module reusing `verifyCoherenceSequence`
+  unchanged. **No existing source file's behavior changes**; every other command's output and
+  golden is byte-for-byte unchanged. The report stays *derived* (no new on-disk format). Suite
+  **3,419 passing + 2 skips** (was 3,397 + 2; +22 new tests), 229 test files (was 227).
+
 ## [9.31.0] — 2026-06-16 — Document-free exposure counter-move affinity / pairwise opposition coupling (spec-v34)
 
 ### Added
