@@ -4,6 +4,72 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.27.0] — 2026-06-16 — Document-free exposure relapse interval / rounds above floor per recovery-to-relapse span (spec-v30)
+
+### Added
+- **A `coherence-relapse` headless subcommand — per front, how many rounds its binding
+  floor held *above* the acceptable floor between a *recovery* and the *next fall* that
+  undoes it, the deal's quickest relapse, and whether any recovery was reversed the very
+  next round; the exact mirror of v28's recovery latency (spec-v30).** v28
+  (`coherence-latency`) pairs each *fall* forward with the *recovery* that closes it and
+  reads the rounds *below* floor (the slowest recovery, gated on a fall that never came
+  back). v30 supplies the missing mirror axis: pair each recovery forward with the next
+  fall that undoes it and read the rounds *above* floor. Two fronts v24 reports identically
+  (same crossing count) and that v28 cannot tell apart (a relapse is not a latency) — a fix
+  that held for rounds vs. one reversed the next exchange — are opposites here.
+  (Fulfills v28 Part XVI's deferred "clean interval" stat.)
+  - **The relapse (pure).** `src/report/coherence-relapse.ts` —
+    `computeCoherenceRelapse(rounds)` scans each front's binding floors, attributes each
+    stated crossing to the round that reveals it (the same §3 attribution v24/v28 use),
+    and pairs each `recovery` (below → at-or-above) forward with the next `fall`
+    (at-or-above → below) into `intervals[]`, each carrying its `clean_rounds`
+    (`fall_round − recovery_round`, the rounds above floor; `null` when the recovery held).
+    Each front is classed `relapsed` (a recovery undone in-sequence — the fix did not hold),
+    `held` (recovered and every recovery held), `steady` (never recovered in-sequence), or
+    `unstated` (§3). The deal-level report adds `min_interval` / `quickest_dimension` (the
+    quickest relapse, earliest on a tie), `relapse_count` / `held_count`, and
+    `total_crossings` (equal by construction to v24's per-front sum and v25/…/v29's totals).
+    `exposureImmediateRelapse` = `relapse.immediate` (any `clean_rounds === 1`) — the gate
+    predicate, **distinct from v28's `exposureUnrecovered`**: v28 fires on a fall that never
+    recovered (an unbounded gap *below*); v30 fires on a recovery undone the very next round
+    (a minimal gap *above*). **The mirror asymmetry:** a *leading recovery* (a front below
+    from round 1 that recovers) is `steady` to v28 but pairs forward here (`held`/`relapsed`).
+    **Honest by construction (§3):** silence is neither a recovery nor a fall; a relapse
+    revealed after a silent round spans the silent rounds (never *immediate*).
+    `buildCoherenceRelapseJson` (`schema: vaulytica.posture-relapse.v1`) +
+    `renderCoherenceRelapseSummary`. A namespaced `relapse_hash` (SHA-256 over the canonical
+    per-front interval set) keeps every existing golden unmoved. **Zero changes to any
+    existing source file** — v30 imports only the already-public `PostureCoherence`/
+    `NegotiationTier` types and the shared hashing helpers.
+  - **The command (headless).** `tools/cli/coherence-relapse.ts` —
+    `computeCoherenceRelapseArtifacts(texts, format?)` is the pure core (the shared
+    `verifyCoherenceSequence` loader — parse + hash-verify + cross-ladder guard, unchanged —
+    then `computeCoherenceRelapse`, rendered markdown or JSON). `runCoherenceRelapse(argv)`
+    is the handler (file IO + exit codes); requires ≥ 2 positionals; under
+    `--fail-on-immediate-relapse` exits 2 only when a recovery was undone at the very next
+    round. Wired into the `run.ts` dispatcher (`case "coherence-relapse"`) + `USAGE` + header
+    doc + unknown-command list. A separate command, not a `coherence-latency` flag — each
+    command keeps one gate and one hash.
+- **Verified live end-to-end:** a deal where Cap recovers round 3 and falls again round 4
+  prints `⚠ Cap: relapsed — recovered round 3 → fell again round 4 (1 round above)` and
+  exits **2** under `--fail-on-immediate-relapse`; a recovery that holds ≥2 rounds before
+  relapsing clears the gate — the fix-did-not-hold axis the crossing count (v24) and the
+  below-latency (v28) cannot isolate.
+- **Tests:** +27 (`src/report/coherence-relapse.test.ts` ×18, `tools/cli/coherence-relapse.test.ts` ×9):
+  immediate relapse, durable vs immediate fix (same v24 crossing count, different interval),
+  a held recovery, the v28 mirror (a fall that never recovered is `open` to v28 but `steady`
+  here; a leading recovery is `steady` to v28 but `held`/`relapsed` here), the reduction
+  invariant (`total_crossings` = v24's/v25's/v28's/v29's totals), the quickest-relapse pick
+  across fronts, silence-does-not-shorten and silence-attribution (§3), above-floor whipsaw
+  never pairs (distinct from v17), no-front-ever-recovered, unstated-never-counted (§3), two
+  intervals on one front, determinism, ≥2-artifact requirement, cross-ladder refusal naming
+  both rounds, unpinned-v1 note, round-prefixed tamper, gate-predicate parity, render + JSON.
+  Suite **3,303 passing + 2 skips** (was 3,276), 219 test files (was 217). Every existing
+  command's output and golden is byte-for-byte unchanged. New [`docs/spec-v30.md`](docs/spec-v30.md).
+  The posture matrix now has **twelve axes** — MOVEMENT (v16–v19), LEVEL (v20), TIME/duration
+  (v21), BREADTH (v22), RECURRENCE (v23), VOLATILITY (v24), SYNCHRONY (v25), SETTLING (v26),
+  ONSET (v27), LATENCY (v28), CONCURRENCY (v29), and RELAPSE (v30, the mirror of v28).
+
 ## [9.26.0] — 2026-06-16 — Document-free exposure concurrency / fronts falling vs recovering per step (spec-v29)
 
 ### Added
