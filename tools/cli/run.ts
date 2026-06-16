@@ -72,7 +72,10 @@
  * reads the mirror of v28's recovery-latency axis — per front, how many rounds its
  * standing held *above* the floor between a recovery and the next fall that undoes it,
  * the deal's quickest relapse, gating on a recovery undone at the very next round
- * (spec-v30) — and `verify` re-derives a saved report's `result_hash` (Step 145).
+ * (spec-v30), `coherence-tenure` reads the orthogonal *occupancy* axis — per front, what
+ * share of the rounds that stated it sat below the floor, the deal's heaviest such share,
+ * gating on a front below floor for a strict majority of its stated rounds (spec-v31) —
+ * and `verify` re-derives a saved report's `result_hash` (Step 145).
  * The DKB ships with the tool — it opens no socket. The engine is the SAME engine
  * the tab runs (parity-proven), so a number on a CI dashboard describes
  * shipped behavior. Build/CI-only; never imported by `src/`.
@@ -99,6 +102,7 @@ import { runCoherenceOnset } from "./coherence-onset.js";
 import { runCoherenceLatency } from "./coherence-latency.js";
 import { runCoherenceConcurrency } from "./coherence-concurrency.js";
 import { runCoherenceRelapse } from "./coherence-relapse.js";
+import { runCoherenceTenure } from "./coherence-tenure.js";
 import { verifyReproducibility, explainReproResult, type SavedReport } from "./verify.js";
 import type { Severity } from "../../src/engine/index.js";
 import { buildJsonReport } from "../../src/report/json.js";
@@ -700,6 +704,8 @@ Commands:
                           [--format markdown|json] [--fail-on-concerted-fall]
   coherence-relapse <r1.coherence.json> <r2.coherence.json> [<r3…> …]
                           [--format markdown|json] [--fail-on-immediate-relapse]
+  coherence-tenure <r1.coherence.json> <r2.coherence.json> [<r3…> …]
+                          [--format markdown|json] [--fail-on-majority-below]
   verify  <report.json> <original> [--playbook <id>]
 `;
 
@@ -742,6 +748,8 @@ async function main(): Promise<void> {
       return runCoherenceConcurrency(rest);
     case "coherence-relapse":
       return runCoherenceRelapse(rest);
+    case "coherence-tenure":
+      return runCoherenceTenure(rest);
     case "verify":
       return runVerify(rest);
     case undefined:
@@ -752,7 +760,7 @@ async function main(): Promise<void> {
       return;
     default:
       throw new Error(
-        `unknown command "${command}" (expected: analyze | diff | compare | compare-coherence | coherence-trend | coherence-shift-trend | coherence-arc | coherence-exposure | coherence-persistence | coherence-breadth | coherence-recurrence | coherence-volatility | coherence-synchrony | coherence-settling | coherence-onset | coherence-latency | coherence-concurrency | coherence-relapse | verify)`,
+        `unknown command "${command}" (expected: analyze | diff | compare | compare-coherence | coherence-trend | coherence-shift-trend | coherence-arc | coherence-exposure | coherence-persistence | coherence-breadth | coherence-recurrence | coherence-volatility | coherence-synchrony | coherence-settling | coherence-onset | coherence-latency | coherence-concurrency | coherence-relapse | coherence-tenure | verify)`,
       );
   }
 }

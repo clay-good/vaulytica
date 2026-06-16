@@ -4,6 +4,58 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.28.0] — 2026-06-16 — Document-free exposure tenure / below-floor occupancy share (spec-v31)
+
+### Added
+- **A `coherence-tenure` headless subcommand — per front, what *share* of the rounds that
+  stated it sat below the acceptable floor, the deal's heaviest such share, and whether any
+  front was below floor for a strict *majority* of its stated rounds; the occupancy axis the
+  posture family never read (spec-v31).** v21 (`coherence-persistence`) reads a raw
+  `rounds_below` count against the *total* round span and gates on the *endpoint* (a front
+  below floor *now*). v31 supplies the missing occupancy axis: read the same `floors[]`
+  matrix per front, but normalize the below-floor count by the front's *stated* rounds (the
+  §3-honest denominator) and headline the *burden*. A brief dip that recovered and a chronic
+  burden that recovered are identical to v21 (both `resolved`) — opposites here.
+  - **The tenure (pure).** `src/report/coherence-tenure.ts` —
+    `computeCoherenceTenure(rounds)` counts, per front, the rounds that *stated* it
+    (`stated_rounds`, the denominator) and the rounds it sat below floor (`below_rounds`, the
+    numerator; an unstated round counts toward neither, §3), and computes the `share`
+    (`below_rounds / stated_rounds`). Each front is classed `majority` (below floor for a
+    strict majority of its stated rounds, `below_rounds × 2 > stated_rounds`), `minority`
+    (below floor but not a majority, including an exact split), `none` (never below floor), or
+    `unstated` (§3). The deal-level report adds `max_share` / `heaviest_dimension` (the
+    heaviest occupancy, picked by **integer cross-multiplication** — never a float compare,
+    so the ranking is platform-exact; earliest dimension on a tie), `total_below_rounds`
+    (equal by construction to v21's `rounds_below` summed) and `total_stated_rounds`.
+    `exposureMajorityBelow` = `tenure.majority` — the gate predicate, **distinct from v21's
+    `exposureOpen`**: a front below floor only at the close is `open` to v21 (gate trips) but
+    a minority here (gate clears); a front below floor for rounds 1–4 of 5 that recovers at
+    round 5 is `resolved` to v21 (gate clears) but a majority here (gate trips). **Honest by
+    construction (§3):** silence dilutes neither the numerator nor the denominator, so a
+    front below floor both times it was on the table reads 100%, not 40% diluted by rounds it
+    was never part of. `buildCoherenceTenureJson` (`schema: vaulytica.posture-tenure.v1`) +
+    `renderCoherenceTenureSummary` (heaviest-occupancy verdict, class tally, then one line per
+    below-floor front, `majority` first). A namespaced `tenure_hash` (SHA-256 over the
+    canonical per-front occupancy set — the integer `stated_rounds`/`below_rounds` and class;
+    the derived float `share` is omitted, so the fingerprint is integer-exact), apart from
+    every `coherence_hash` … `relapse_hash`.
+  - **The command (headless).** `tools/cli/coherence-tenure.ts` —
+    `computeCoherenceTenureArtifacts(texts, format?)` verifies all N artifacts and runs the
+    spec-v15/v16 cross-ladder guard via the shared `verifyCoherenceSequence` loader
+    (unchanged from v18–v30), then renders markdown (default) or `--format json`.
+    `runCoherenceTenure(argv)` reads the files and exits 2 under `--fail-on-majority-below`
+    when any front was below floor for a strict majority of its stated rounds. Wired into the
+    `run.ts` dispatcher + `USAGE`. Requires ≥ 2 artifacts in round order.
+  - **Tests.** 24 new (15 pure + 9 CLI): the brief dip vs the chronic burden (both `resolved`
+    to v21, opposite tenure), the fresh late dip (`open` to v21 but minority here), the exact
+    split (minority, not majority), stated-vs-total normalization (§3), the join invariant
+    (`total_below_rounds` = v21's `rounds_below` sum), the heaviest-share pick by exact
+    integer ratio + tie-break, no-front-ever-below, unstated-never-counted, stated-once-and-
+    below → 100%/majority, determinism, ≥2-artifact requirement, cross-ladder refusal,
+    unpinned-v1 note, tamper rejection (round-prefixed), gate parity, render + JSON.
+  - **Purely additive.** No existing source file's behavior changes; every existing command's
+    output and golden is byte-for-byte unchanged. TWELVE → THIRTEEN posture axes.
+
 ## [9.27.0] — 2026-06-16 — Document-free exposure relapse interval / rounds above floor per recovery-to-relapse span (spec-v30)
 
 ### Added
