@@ -4,6 +4,56 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.34.0] — 2026-06-16 — Document-free exposure recovery order / pairwise recovery-precedence (spec-v37)
+
+### Added
+- **A `coherence-recovery-order` headless subcommand — the recovery mirror of v36's
+  direction-resolved precedence: per unordered *pair* of fronts, when the two both *recover* (climb
+  back at-or-above the acceptable floor), does one consistently recover *first* (and so the other
+  *last*)?** v36 (`coherence-concession`) ordered *falls* only — which front *concedes* first. The
+  floor is crossed two ways, and the recovery half was unread. v37 restricts the ordering to
+  *recoveries* only, isolating which front the counterparty restores first within a pair — and the
+  warning side of the same relation, the **laggard** it leaves exposed below the floor longest. Per
+  pair, how many round-transition comparisons saw front A recover *before* B (`a_recovers_first`),
+  how many saw B first (`b_recovers_first`), how many were same-step ties (`co_recoveries`), out of
+  all `comparisons` (`a_recovers_first + b_recovers_first + co_recoveries`); the pair's
+  `first_recoverer` and its `last_recoverer` (the laggard), the `affinity` (the first-recoverer's
+  share of all comparisons), the deal's clearest recovery order (`max_affinity` / `most_ordered_pair`
+  / `first_recovering_front` / `last_recovering_front`), and a `class` (`leading`/`interleaved`).
+  A *leading* pair has a front consistently restored last — the front the counterparty leaves
+  exposed longest; an *interleaved* pair recovers in mixed order with no laggard. Reuses v33's exact
+  recovery events (silence-skipping, §3); adds no posture math beyond a per-pair *ordered* comparison
+  of the recovery-step lists. (`src/report/coherence-recovery-order.ts`,
+  `tools/cli/coherence-recovery-order.ts`.)
+- **A `--fail-on-lagging-recovery` gate** — exits 2 when at least one pair has a front that recovered
+  above the floor first for a strict **majority** of the comparisons (`max(a_recovers_first,
+  b_recovers_first) × 2 > comparisons`, ties and reverse-order working against it) — and so a partner
+  restored *last* for that same majority. Recovering first is good news; the gate is on the laggard.
+  The recovery mirror of v36's `--fail-on-leading-concession`. No tuning knob; a consumer wanting a
+  different bar reads `affinity` / `max_affinity` from the JSON.
+- **An integer-exact `recovery_order_hash`** (`schema: vaulytica.posture-recovery-order.v1`) over the
+  canonical per-pair set (the integer `a_recovers_first`/`b_recovers_first`/`co_recoveries`, the
+  `first_recoverer`, the class; the derived `last_recoverer`, the float `affinity`, and derived
+  integer `comparisons` omitted), namespaced apart from every prior hash. The clearest-order pick
+  uses integer cross-multiplication, never a float compare.
+
+### Lineage
+- **Exact tie to v33 and v29.** By construction each pair's `co_recoveries` (the same-step recovery
+  ties) equals v33's `co_recoveries` for that pair, and summed over all pairs `total_co_recoveries`
+  equals `Σ_t C(recovering_t, 2)` (v29's per-step recovery count choose-two'd) — the same total v33
+  reports. Verified against `computeCoherenceRecoveryAffinity` and `computeCoherenceConcurrency` in
+  the test suite.
+- **Distinct from v36.** A pair `leading` on v36 (orders falls — who concedes first) can be
+  `interleaved` on v37 (orders recoveries — who is restored last) and vice versa; the test suite
+  includes a fixture that leads on falls but interleaves on recoveries. Joined with v36, v37 names
+  the deal's persistent weak front — the one that *concedes first and recovers last*.
+
+### Unchanged (additive)
+- Purely additive — a new subcommand and one pure module reusing `verifyCoherenceSequence`
+  unchanged. **No existing source file's behavior changes**; every other command's output and
+  golden is byte-for-byte unchanged. The report stays *derived* (no new on-disk format). Suite
+  **3,463 passing + 2 skips** (was 3,441 + 2; +22 new tests), 233 test files (was 231).
+
 ## [9.33.0] — 2026-06-16 — Document-free exposure concession order / pairwise fall-precedence (spec-v36)
 
 ### Added
