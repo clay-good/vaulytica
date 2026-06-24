@@ -4,6 +4,39 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.39.0] — 2026-06-24 — Document-free exposure lead chain / the transitive closure of v35's pairwise lead-lag relation (spec-v42)
+
+### Added
+- **A `coherence-chain` headless subcommand — the *transitive closure* of v35's pairwise lead-lag
+  relation.** v35 (`coherence-precedence`) reads each *pair* of fronts in isolation — does one cross
+  the acceptable floor *before* the other for a strict majority of their comparisons (`leads`)? It
+  never composes the pairs, so two facts a deal lead wants stay hidden: the **chain** (Cap leads Term,
+  Term leads Indemnity, so Cap is a transitive early-warning indicator for Indemnity *through* Term —
+  the deal's *headwater* — even with no direct Cap→Indemnity edge), and the **cycle** (Cap leads Term,
+  Term leads Indemnity, Indemnity leads Cap — three clean pairwise leads that cannot be globally ranked,
+  a Condorcet cycle no pairwise read can detect). v42 reuses `computeCoherencePrecedence` **unchanged**
+  (the join pattern v38/v40/v41 use), builds the directed graph whose edges are exactly v35's
+  strict-majority `leading` pairs (`leader → follower`), and computes its transitive closure. Per
+  front: the sorted `leads_directly` (direct out-neighbours), the transitive `reach` and `led_by`,
+  whether it sits on a cycle (`in_cycle`), and a `class` (`source` / `relay` / `sink` / `cyclic` /
+  `isolated`); plus the deal's `headwater` (the greatest-reach source — a front with nothing upstream),
+  `max_reach`, `edges` (= v35's `leading` tally, by construction), `acyclic`, and `cyclic`. Introduces
+  no new crossing/ordering math — it is a reachability fixpoint over the same lead-lag edges v35 already
+  derives. (`src/report/coherence-chain.ts`, `tools/cli/coherence-chain.ts`.)
+- **A `--fail-on-lead-cycle` gate** — exits 2 when the lead-lag relation contains a directed cycle:
+  three or more fronts each crossing the floor first over the next in a loop, so no single watch-order
+  ranks every front. A directed cycle either exists or it does not — a pure boolean over the
+  integer-derived edges, so the gate inherits no knob. It is the *transitive* verdict v35 structurally
+  cannot pose: every pair on the loop is individually `leading` to v35, so the intransitivity is
+  undetectable per-pair. *Distinct from* v35's `--fail-on-leading-front` (the *presence* of a stable
+  pair; v42 flags the *incoherence* of the composed global ordering instead — a deal whose every pair
+  is `leading` can be a clean acyclic pipeline or an intransitive loop).
+- **`vaulytica.posture-chain.v1` report schema** and an integer-exact `chain_hash` (over the canonical
+  per-front set — the front, its sorted `leads_directly`, and its `class`; the derived transitive
+  `reach` / `led_by` integers and the deal-level scalars omitted, since the edge set fully determines
+  them), namespaced apart from every prior hash so computing the chain moves no golden. Twenty-three
+  posture axes, 30 document-free coherence subcommands. (`docs/spec-v42.md`.)
+
 ## [9.38.0] — 2026-06-24 — Document-free recovery durability / per-front mean relapsed-interval length, the above-floor mirror of v40's below-floor mean (spec-v41)
 
 ### Added

@@ -113,7 +113,12 @@
  * relapse intervals — per front, the *mean* clean rounds its binding floor held above the floor across
  * its relapsed recoveries, gating on a front whose relapsed recoveries *typically* hold fewer than two
  * clean rounds: a chronically fragile front whose fix usually does not survive a single round, strictly
- * stronger evidence than v30's single-fast-relapse gate (spec-v41) — and
+ * stronger evidence than v30's single-fast-relapse gate (spec-v41),
+ * `coherence-chain` reads the *transitive closure* of v35's pairwise lead-lag relation — composing
+ * the strict-majority `leading` edges into a directed graph, naming the deal's *headwater* (the
+ * greatest-reach source front, the one to watch first across a whole cascade), and gating on a
+ * directed *cycle* (Cap leads Term leads Indemnity leads Cap — three clean pairwise leads that
+ * cannot be globally ranked, an intransitivity no pairwise read can see) (spec-v42) — and
  * `verify` re-derives a saved report's `result_hash` (Step 145).
  * The DKB ships with the tool — it opens no socket. The engine is the SAME engine
  * the tab runs (parity-proven), so a number on a CI dashboard describes
@@ -152,6 +157,7 @@ import { runCoherenceWeakFront } from "./coherence-weak-front.js";
 import { runCoherenceCadence } from "./coherence-cadence.js";
 import { runCoherenceDuration } from "./coherence-duration.js";
 import { runCoherenceDurability } from "./coherence-durability.js";
+import { runCoherenceChain } from "./coherence-chain.js";
 import { verifyReproducibility, explainReproResult, type SavedReport } from "./verify.js";
 import type { Severity } from "../../src/engine/index.js";
 import { buildJsonReport } from "../../src/report/json.js";
@@ -775,6 +781,8 @@ Commands:
                           [--format markdown|json] [--fail-on-lingering-exposure]
   coherence-durability <r1.coherence.json> <r2.coherence.json> [<r3…> …]
                           [--format markdown|json] [--fail-on-fragile-recovery]
+  coherence-chain <r1.coherence.json> <r2.coherence.json> [<r3…> …]
+                          [--format markdown|json] [--fail-on-lead-cycle]
   verify  <report.json> <original> [--playbook <id>]
 `;
 
@@ -839,6 +847,8 @@ async function main(): Promise<void> {
       return runCoherenceDuration(rest);
     case "coherence-durability":
       return runCoherenceDurability(rest);
+    case "coherence-chain":
+      return runCoherenceChain(rest);
     case "verify":
       return runVerify(rest);
     case undefined:
@@ -849,7 +859,7 @@ async function main(): Promise<void> {
       return;
     default:
       throw new Error(
-        `unknown command "${command}" (expected: analyze | diff | compare | compare-coherence | coherence-trend | coherence-shift-trend | coherence-arc | coherence-exposure | coherence-persistence | coherence-breadth | coherence-recurrence | coherence-volatility | coherence-synchrony | coherence-settling | coherence-onset | coherence-latency | coherence-concurrency | coherence-relapse | coherence-tenure | coherence-affinity | coherence-recovery-affinity | coherence-opposition | coherence-precedence | coherence-concession | coherence-recovery-order | coherence-weak-front | coherence-cadence | coherence-duration | coherence-durability | verify)`,
+        `unknown command "${command}" (expected: analyze | diff | compare | compare-coherence | coherence-trend | coherence-shift-trend | coherence-arc | coherence-exposure | coherence-persistence | coherence-breadth | coherence-recurrence | coherence-volatility | coherence-synchrony | coherence-settling | coherence-onset | coherence-latency | coherence-concurrency | coherence-relapse | coherence-tenure | coherence-affinity | coherence-recovery-affinity | coherence-opposition | coherence-precedence | coherence-concession | coherence-recovery-order | coherence-weak-front | coherence-cadence | coherence-duration | coherence-durability | coherence-chain | verify)`,
       );
   }
 }
