@@ -4,6 +4,45 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.40.0] — 2026-06-24 — Document-free recovery chain / the transitive closure of v37's pairwise recovery-order relation, the recovery mirror of v42 (spec-v43)
+
+### Added
+- **A `coherence-recovery-chain` headless subcommand — the *transitive closure* of v37's pairwise
+  recovery-order relation, the *recovery mirror* of v42.** v37 (`coherence-recovery-order`) reads each
+  *pair* of fronts in isolation — when both *recover* (climb back at-or-above the acceptable floor),
+  does one consistently recover *first* (and so the other *last*, the laggard)? It never composes the
+  pairs, so two facts a deal lead wants stay hidden: the **chain** (Cap recovers before Term, Term
+  before Indemnity, so Indemnity is restored *after* Cap *through* Term — the deal's *tailwater*, the
+  front exposed below the floor longest of all — even with no direct Cap→Indemnity edge), and the
+  **cycle** (Cap recovers before Term, Term before Indemnity, Indemnity before Cap — three clean
+  pairwise orders that cannot be globally ranked, a Condorcet cycle no pairwise read can detect). v43
+  reuses `computeCoherenceRecoveryOrder` **unchanged** (the join pattern v38/v40/v41/v42 use), builds
+  the directed graph whose edges are exactly v37's strict-majority `leading` pairs (`first_recoverer →
+  last_recoverer`), and computes its transitive closure. Per front: the sorted
+  `recovers_before_directly` (direct out-neighbours), the transitive `reach` and `recovered_before_by`,
+  whether it sits on a cycle (`in_cycle`), and a `class` (`source` / `relay` / `sink` / `cyclic` /
+  `isolated`); plus the deal's `tailwater` (the greatest-`recovered_before_by` sink — the front
+  restored last of all), `max_lag`, `edges` (= v37's `leading` tally, by construction), `acyclic`, and
+  `cyclic`. Where v42 names the *headwater* (the front to watch first), v43 names the *tailwater* (the
+  front exposed longest) — the two transitive reads the two directions of a floor crossing admit.
+  Introduces no new crossing/ordering math — it is a reachability fixpoint over the same recovery-order
+  edges v37 already derives. (`src/report/coherence-recovery-chain.ts`,
+  `tools/cli/coherence-recovery-chain.ts`.)
+- **A `--fail-on-recovery-cycle` gate** — exits 2 when the recovery-order relation contains a directed
+  cycle: three or more fronts each recovering above the floor first over the next in a loop, so no
+  single restoration order ranks every front. A directed cycle either exists or it does not — a pure
+  boolean over the integer-derived edges, so the gate inherits no knob. It is the *transitive* verdict
+  v37 structurally cannot pose: every pair on the loop is individually `leading` to v37, so the
+  intransitivity is undetectable per-pair. *Distinct from* v37's `--fail-on-lagging-recovery` (the
+  *presence* of a stable laggard; v43 flags the *incoherence* of the composed restoration order
+  instead).
+- **`vaulytica.posture-recovery-chain.v1` report schema** and an integer-exact `recovery_chain_hash`
+  (over the canonical per-front set — the front, its sorted `recovers_before_directly`, and its
+  `class`; the derived transitive `reach` / `recovered_before_by` integers and the deal-level scalars
+  omitted, since the edge set fully determines them), namespaced apart from every prior hash so
+  computing the chain moves no golden. Twenty-five posture axes, 31 document-free coherence
+  subcommands. (`docs/spec-v43.md`.)
+
 ## [9.39.0] — 2026-06-24 — Document-free exposure lead chain / the transitive closure of v35's pairwise lead-lag relation (spec-v42)
 
 ### Added
