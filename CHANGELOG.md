@@ -4,6 +4,41 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.37.0] — 2026-06-24 — Document-free exposure duration / per-front mean recovered-exposure length, the central tendency of v28's recovery episodes (spec-v40)
+
+### Added
+- **A `coherence-duration` headless subcommand — the *typical length* of an exposure, where v28 reads
+  its *extreme*.** v28 (`coherence-latency`) pairs each *fall* below the acceptable floor with the
+  *recovery* that closes it, then reduces the episode lengths two ways — the deal's **slowest** single
+  recovery (`max_latency`) and whether any fall went **unrecovered** (`open_count`). Both are extremes;
+  neither reads the **mean**. A front that recovers in one round three times and once takes five owns
+  the deal's slowest single recovery, yet it almost always recovers at once; a front that takes four
+  rounds *every* time has a shorter worst spell, yet it is the one that chronically lingers. v40
+  reuses `computeCoherenceLatency` **unchanged** (the join pattern v38 used for v36+v37) and averages
+  each front's recovered episode lengths. Per front: the recovered `latencies`, `closed_episodes`,
+  `open_episodes`, `total_rounds`, the `mean_duration` (`total_rounds / closed_episodes`), the
+  `max_latency` (carried for contrast), and a `class` (`lingering` / `brief` / `open` / `steady` /
+  `unstated`); plus the deal's `longest_mean_dimension`, `max_mean`, `total_closed_episodes`
+  (= v28's `recovered_count`), `total_open_episodes` (= v28's `open_count`), and `lingering`.
+  Introduces no new pairing/crossing math — it averages the same episodes v28 already pairs.
+  (`src/report/coherence-duration.ts`, `tools/cli/coherence-duration.ts`.)
+- **A `--fail-on-lingering-exposure` gate** — exits 2 when at least one front's recovered exposures
+  average at least two rounds below the acceptable floor (`total_rounds ≥ 2 × closed_episodes`): a
+  *lingering* front that, when it falls, typically does not recover the very next round. Two rounds is
+  the first integer above the metric's structural minimum (a fall and the immediately following
+  recovery is one round), so the bar is tuning-free. *Distinct from* v28's
+  `--fail-on-unrecovered-exposure` (the open fall, blind to the closed episodes' length — a front that
+  always recovers but slowly trips this gate and clears v28's; a front that recovers promptly then
+  falls and never returns trips v28's and clears this one) and from a `max_latency` extreme (the mean
+  can rank-swap against the worst case — episodes `[1, 6]` own the slowest single recovery yet a mean
+  of 3.5, while `[4, 4]` has a smaller worst spell yet a larger mean). An *open* (unrecovered) episode
+  is excluded from the mean — an unbounded duration v28's gate owns — but counted (`open_episodes`).
+- **`vaulytica.posture-duration.v1` report schema** and an integer-exact `duration_hash` (over the
+  canonical per-front set — the front, its `floors`, sorted `latencies`, `open_episodes`, and `class`;
+  the derived `mean_duration` / `max_latency` / `max_mean` / `lingering` omitted), namespaced apart
+  from every prior hash so computing the duration moves no golden. Twenty-one posture axes, 28
+  document-free coherence subcommands. (`docs/spec-v40.md`.)
+
 ## [9.36.0] — 2026-06-24 — Document-free exposure cadence / per-front floor-crossing churn rate, the churn mirror of v31's dwell (spec-v39)
 
 ### Added
