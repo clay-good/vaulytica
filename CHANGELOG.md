@@ -4,6 +4,54 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.36.0] — 2026-06-24 — Document-free exposure cadence / per-front floor-crossing churn rate, the churn mirror of v31's dwell (spec-v39)
+
+### Added
+- **A `coherence-cadence` headless subcommand — the *churn* counterpart to v31's *dwell*.** v31
+  (`coherence-tenure`) reads how *long* a front sits below the acceptable floor (its occupancy
+  *share*); v24 (`coherence-volatility`) counts how *many times* a front's standing crosses the floor.
+  Neither reads the **rate**: across the transitions a front actually had, how *often* did it flip
+  across the floor? Two fronts with identical below-floor share — both below half their stated rounds —
+  can be opposites: one dips once and holds, the other alternates every round; v31 calls them the
+  same, and v24, gating on the raw count, calls a front that crossed twice in twenty transitions just
+  as `volatile` as one that crossed twice in two. v39 normalizes the same crossings v24 counts by the
+  transitions between the rounds that *stated* the front. Per front: the floor `crossings` (both
+  directions), its `transitions` (= `stated_rounds − 1`), the `cadence` (`crossings / transitions`),
+  and a `class` (`oscillating` / `settled` / `static` / `unstated`); plus the deal's
+  `busiest_dimension`, `max_cadence`, `total_crossings` (= v24's `crossings` summed), and
+  `oscillating`. Introduces no new crossing/ordering math — it scans the same `floors[]` v24 reads.
+  (`src/report/coherence-cadence.ts`, `tools/cli/coherence-cadence.ts`.)
+- **A `--fail-on-oscillating-front` gate** — exits 2 when at least one front crossed the acceptable
+  floor for a strict **majority** of its transitions (`crossings × 2 > transitions`): an *oscillating*
+  front that flips sides more often than it holds one, never able to settle. *Distinct from* v24's
+  `--fail-on-volatile-exposure` (the raw crossing *count*, blind to opportunity — a front crossing
+  twice in twenty transitions is `volatile` to v24 but `settled` here; one crossing once in its single
+  transition is `monotone` to v24 but `oscillating` here) and v31's `--fail-on-majority-below` (the
+  *dwell* — a front below floor rounds 1–3 of 6 that holds is a `majority` tenure but a `settled`
+  cadence; a front flipping every round is a `minority` tenure but `oscillating`). A strict majority of
+  the transitions is the one churn boundary needing no knob.
+- **An integer-exact `cadence_hash`** (`schema: vaulytica.posture-cadence.v1`) over the canonical
+  per-front set (the front, its `floors`, `stated_rounds`, `transitions`, `crossings`, and class; the
+  derived float `cadence`, `busiest_dimension`, `max_cadence`, and `oscillating` omitted), namespaced
+  apart from every prior hash. The busiest-cadence pick uses integer cross-multiplication
+  (`crossings × transitions`, earliest label on a tie), never a float compare.
+
+### Lineage
+- **The per-front cadence v38 steered to.** v38 Open Question #1 named the next axis explicitly: with
+  the pairwise-precedence family and its first synthesis complete, the natural next read is "a fresh
+  *per-front cadence* read (below/above oscillation rate), not another pairwise direction or
+  conjunction." v39 is that read.
+- **Distinct from v24 and v31.** v24 gates on the raw crossing count (blind to opportunity); v31 on
+  the below-floor dwell (blind to order); v39 on the flip *rate* (crossings normalized by transitions).
+  The test suite includes a `volatile`-but-`settled` fixture (the v24 divergence) and a same-dwell /
+  opposite-churn fixture (the v31 divergence).
+
+### Unchanged (additive)
+- Purely additive — a new subcommand and one pure module reusing `verifyCoherenceSequence` unchanged.
+  **No existing source file's behavior changes**; every other command's output and golden is
+  byte-for-byte unchanged. The report stays *derived* (no new on-disk format). Suite **3,504 passing +
+  2 skips** (was 3,482 + 2; +22 new tests), 237 test files (was 235).
+
 ## [9.35.0] — 2026-06-16 — Document-free persistent weak front / the per-front join of v36 + v37 (spec-v38)
 
 ### Added
