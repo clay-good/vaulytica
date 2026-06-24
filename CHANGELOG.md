@@ -4,6 +4,48 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.41.0] — 2026-06-24 — Document-free exposure matrix / the per-front × per-round floor-state grid every other axis collapses (spec-v44)
+
+### Added
+- **A `coherence-matrix` headless subcommand — the raw *per-front × per-round* floor-state grid every
+  other posture axis collapses, the first *non-reduction* in the family.** Every `coherence-*` reading
+  from v16 to v43 takes the same N-round archive and *reduces* it to a scalar: v22 (`coherence-breadth`)
+  collapses each round (column) to a below-floor count; v24 (`coherence-volatility`) collapses each
+  front (row) to a crossing count; v28/v40 to a latency or a mean; v35/v42 to an edge set and its
+  transitive closure. None of them emits the grid *itself* — the full two-dimensional object whose cell
+  `(front, round)` is that front's binding-floor standing in that round (`below` the acceptable floor,
+  `above` it, or `unstated`). v44 is that grid: a posture **heatmap** a dashboard can render and a
+  spreadsheet can pivot, the raw substrate behind every scalar the family computes. This is a missing
+  **shape**, not a missing reduction — every prior axis is O(fronts) or O(rounds) scalars; the matrix is
+  the O(fronts × rounds) object they all collapse. Per front: the per-round `cells[]` (the raw row),
+  `below_rounds`, `stated_rounds`. Per round: `below_fronts`, `stated_fronts`, and `blackout` (≥ 1 front
+  stated and *every* stated front below floor). Plus the whole-grid `cell_counts`, the `blackout_rounds`
+  list, and `has_blackout` (the gate verdict). The markdown render is a terminal heatmap (`▓` below
+  floor, `░` at-or-above, `·` unstated, `*` marking each blackout column). It reads the same
+  `weakest_tier` binding floor v22/v24 already read — no new posture math. (`src/report/coherence-matrix.ts`,
+  `tools/cli/coherence-matrix.ts`.)
+- **A `--fail-on-blackout-round` CI gate (exit 2), on a whole-grid pathology no reduction poses.** It
+  fires when any round is a **blackout** — at least one front stated and *every* stated front below the
+  acceptable floor at once, the deal's worst cross-section, the moment no front held the line. "Every
+  stated front" is a structural all-quantifier, not a threshold knob, so the gate is tuning-free.
+  Distinct from v22's `widened` gate (a *trend* between two endpoint counts): a deal can black out in
+  round 1 and recover (not widened), or widen from one to three of five fronts without ever reaching a
+  full column (no blackout) — the two verdicts are independent.
+
+### Notes
+- **Honest by construction (spec-v10 §3).** An unstated front-round is `unstated`, never `below`; a
+  round in which no front is even stated is never a blackout (a blackout needs at least one stated
+  front, all of them below). The denominator each round is `stated_fronts`, never the front count.
+- **Deterministic & namespaced.** The report carries a `matrix_hash` (SHA-256 over the canonical grid —
+  each front's `dimension` and `cells` alone; the per-round summaries, cell tally, and blackout list,
+  all fully determined by the cells, are omitted), apart from every prior hash. Same N artifacts in the
+  same order → identical bytes.
+- **Purely additive.** A new subcommand and one pure module that reads the same binding floor v22/v24
+  already read, through the shared `verifyCoherenceSequence` loader (unchanged). No existing source
+  file's behavior changes; every existing command's output and golden is byte-for-byte unchanged; the
+  report stays *derived* (no new on-disk format). The posture archive is now read on **twenty-six**
+  orthogonal axes (thirty-three CLI commands). Full design in [`docs/spec-v44.md`](docs/spec-v44.md).
+
 ## [9.40.0] — 2026-06-24 — Document-free recovery chain / the transitive closure of v37's pairwise recovery-order relation, the recovery mirror of v42 (spec-v43)
 
 ### Added
