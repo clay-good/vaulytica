@@ -4,6 +4,42 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+## [9.38.0] — 2026-06-24 — Document-free recovery durability / per-front mean relapsed-interval length, the above-floor mirror of v40's below-floor mean (spec-v41)
+
+### Added
+- **A `coherence-durability` headless subcommand — the *typical length* of a fix, where v30 reads its
+  *extreme*.** v30 (`coherence-relapse`) pairs each *recovery* above the acceptable floor with the
+  *fall* that undoes it, then reduces the clean-interval lengths two ways — the deal's **quickest**
+  single relapse (`min_interval`) and whether any recovery was undone the very next round
+  (`immediate`). Both are extremes; neither reads the **mean**. A front that holds five rounds twice
+  and once bounces back the next round owns the deal's quickest single relapse, yet its fixes almost
+  always last; a front that holds one round *every* time has the same quickest relapse, yet it is the
+  one whose every fix is fragile. v41 reuses `computeCoherenceRelapse` **unchanged** (the join pattern
+  v38 used for v36+v37, v40 for v28) and averages each front's relapsed interval lengths — the
+  *above-floor* mirror of v40's *below-floor* mean. Per front: the relapsed `clean_intervals`,
+  `closed_intervals`, `open_intervals`, `total_rounds`, the `mean_durability`
+  (`total_rounds / closed_intervals`), the `min_interval` (carried for contrast), and a `class`
+  (`fragile` / `durable` / `held` / `steady` / `unstated`); plus the deal's `most_fragile_dimension`,
+  `min_mean`, `total_relapsed_intervals` (= v30's `relapse_count`), `total_held_intervals` (= v30's
+  `held_count`), and `fragile`. Introduces no new pairing/crossing math — it averages the same
+  intervals v30 already pairs. (`src/report/coherence-durability.ts`, `tools/cli/coherence-durability.ts`.)
+- **A `--fail-on-fragile-recovery` gate** — exits 2 when at least one front's relapsed recoveries
+  average fewer than two clean rounds above the acceptable floor (`total_rounds < 2 × closed_intervals`):
+  a *fragile* front whose fix, when it recovers, typically does not survive even one clean round before
+  relapsing. Two rounds is the first integer above the metric's structural minimum (a recovery and the
+  immediately following fall is one clean round), so the bar is tuning-free. *Strictly stronger
+  evidence than* v30's `--fail-on-immediate-relapse`: a fragile mean forces at least one clean interval
+  of one round, so every `fragile` front also trips v30's `immediate` gate — but the converse fails
+  (a front with intervals `[1, 5]`, mean 3, trips v30's gate on its single fast relapse yet is
+  `durable` here). *Distinct from* v40's `--fail-on-lingering-exposure` (the below-floor mean; v41 is
+  its above-floor mirror). A *held* recovery (one never undone) is excluded from the mean — an
+  unbounded clean interval, the durable best case — but counted (`open_intervals`).
+- **`vaulytica.posture-durability.v1` report schema** and an integer-exact `durability_hash` (over the
+  canonical per-front set — the front, its `floors`, sorted `clean_intervals`, `open_intervals`, and
+  `class`; the derived `mean_durability` / `min_interval` / `min_mean` / `fragile` omitted), namespaced
+  apart from every prior hash so computing the durability moves no golden. Twenty-two posture axes, 29
+  document-free coherence subcommands. (`docs/spec-v41.md`.)
+
 ## [9.37.0] — 2026-06-24 — Document-free exposure duration / per-front mean recovered-exposure length, the central tendency of v28's recovery episodes (spec-v40)
 
 ### Added
