@@ -1,0 +1,242 @@
+[
+  {
+    "id": "us-de",
+    "name": "Delaware",
+    "abbreviation": "DE",
+    "jurisdiction_type": "us-state",
+    "court_structure": "Delaware Court of Chancery (equity), Delaware Superior Court (law), Delaware Supreme Court (final review).",
+    "electronic_signature_law": {
+      "standard": "UETA",
+      "citation": {
+        "id": "del-c-12a",
+        "source": "Delaware Code Title 6, Chapter 12A — Uniform Electronic Transactions Act",
+        "source_url": "https://delcode.delaware.gov/title6/c012a/",
+        "retrieved_at": "2026-05-11T00:00:00Z",
+        "license": "Public domain (state government work)",
+        "license_url": "https://delcode.delaware.gov/"
+      }
+    },
+    "non_compete_enforceability": "limited",
+    "statute_of_limitations_contract_years": 3
+  },
+  {
+    "id": "us-ny",
+    "name": "New York",
+    "abbreviation": "NY",
+    "jurisdiction_type": "us-state",
+    "court_structure": "New York Supreme Court (trial court of general jurisdiction; Commercial Division for high-value disputes), Appellate Division, New York Court of Appeals (highest court).",
+    "electronic_signature_law": {
+      "standard": "ESRA",
+      "citation": {
+        "id": "ny-state-tech-law-art-iii",
+        "source": "New York State Technology Law, Article III — Electronic Signatures and Records Act (ESRA)",
+        "source_url": "https://www.nysenate.gov/legislation/laws/STT/A3",
+        "retrieved_at": "2026-05-11T00:00:00Z",
+        "license": "Public domain (state government work)",
+        "license_url": "https://www.nysenate.gov/"
+      }
+    },
+    "non_compete_enforceability": "limited",
+    "statute_of_limitations_contract_years": 6
+  },
+  {
+    "id": "us-ca",
+    "name": "California",
+    "abbreviation": "CA",
+    "jurisdiction_type": "us-state",
+    "court_structure": "Superior Court (trial), Court of Appeal (intermediate), California Supreme Court (final).",
+    "electronic_signature_law": {
+      "standard": "UETA",
+      "citation": {
+        "id": "ca-civ-code-1633",
+        "source": "California Civil Code §§ 1633.1–1633.17 — Uniform Electronic Transactions Act",
+        "source_url": "https://leginfo.legislature.ca.gov/faces/codes_displayText.xhtml?lawCode=CIV&division=3.&title=2.5.&part=2.&chapter=2.5.",
+        "retrieved_at": "2026-05-11T00:00:00Z",
+        "license": "Public domain (state government work)",
+        "license_url": "https://leginfo.legislature.ca.gov/"
+      }
+    },
+    "non_compete_enforceability": "void",
+    "statute_of_limitations_contract_years": 4
+  },
+  {
+    "id": "us-tx",
+    "name": "Texas",
+    "abbreviation": "TX",
+    "jurisdiction_type": "us-state",
+    "court_structure": "District Court (trial), Court of Appeals, Texas Supreme Court (civil) / Texas Court of Criminal Appeals (criminal).",
+    "electronic_signature_law": {
+      "standard": "UETA",
+      "citation": {
+        "id": "tx-bus-com-code-322",
+        "source": "Texas Business & Commerce Code, Chapter 322 — Uniform Electronic Transactions Act",
+        "source_url": "https://statutes.capitol.texas.gov/Docs/BC/htm/BC.322.htm",
+        "retrieved_at": "2026-05-11T00:00:00Z",
+        "license": "Public domain (state government work)",
+        "license_url": "https://statutes.capitol.texas.gov/"
+      }
+    },
+    "non_compete_enforceability": "limited",
+    "statute_of_limitations_contract_years": 4
+  },
+  {
+    "id": "us-fl",
+    "name": "Florida",
+    "abbreviation": "FL",
+    "jurisdiction_type": "us-state",
+    "court_structure": "Circuit Court (trial), District Court of Appeal, Florida Supreme Court.",
+    "electronic_signature_law": {
+      "standard": "UETA",
+      "citation": {
+        "id": "fl-stat-668-50",
+        "source": "Florida Statutes § 668.50 — Uniform Electronic Transactions Act",
+        "source_url": "http://www.leg.state.fl.us/statutes/index.cfm?App_mode=Display_Statute&URL=0600-0699/0668/Sections/0668.50.html",
+        "retrieved_at": "2026-05-11T00:00:00Z",
+        "license": "Public domain (state government work)",
+        "license_url": "http://www.leg.state.fl.us/"
+      }
+    },
+    "non_compete_enforceability": "enforced",
+    "statute_of_limitations_contract_years": 5
+  },
+  {
+    "id": "us-il",
+    "name": "Illinois",
+    "abbreviation": "IL",
+    "jurisdiction_type": "us-state",
+    "court_structure": "Circuit Court (trial), Illinois Appellate Court, Illinois Supreme Court.",
+    "electronic_signature_law": {
+      "standard": "UETA",
+      "citation": {
+        "id": "il-uniform-electronic-transactions-act",
+        "source": "Illinois Uniform Electronic Transactions Act, 815 ILCS 333/",
+        "source_url": "https://www.ilga.gov/legislation/ilcs/ilcs3.asp?ActID=4040",
+        "retrieved_at": "2026-05-11T00:00:00Z",
+        "license": "Public domain (state government work)",
+        "license_url": "https://www.ilga.gov/"
+      }
+    },
+    "non_compete_enforceability": "limited",
+    "statute_of_limitations_contract_years": 10
+  },
+  {
+    "id": "us-ma",
+    "name": "Massachusetts",
+    "abbreviation": "MA",
+    "jurisdiction_type": "us-state",
+    "court_structure": "Superior Court (trial), Appeals Court, Supreme Judicial Court.",
+    "electronic_signature_law": {
+      "standard": "UETA",
+      "citation": {
+        "id": "ma-gl-c-110g",
+        "source": "Massachusetts General Laws Chapter 110G — Uniform Electronic Transactions Act",
+        "source_url": "https://malegislature.gov/Laws/GeneralLaws/PartI/TitleXV/Chapter110G",
+        "retrieved_at": "2026-05-11T00:00:00Z",
+        "license": "Public domain (state government work)",
+        "license_url": "https://malegislature.gov/"
+      }
+    },
+    "non_compete_enforceability": "limited",
+    "statute_of_limitations_contract_years": 6
+  },
+  {
+    "id": "us-wa",
+    "name": "Washington",
+    "abbreviation": "WA",
+    "jurisdiction_type": "us-state",
+    "court_structure": "Superior Court (trial), Court of Appeals, Washington Supreme Court.",
+    "electronic_signature_law": {
+      "standard": "UETA",
+      "citation": {
+        "id": "rcw-1-80",
+        "source": "Revised Code of Washington Chapter 1.80 — Uniform Electronic Transactions Act",
+        "source_url": "https://app.leg.wa.gov/RCW/default.aspx?cite=1.80",
+        "retrieved_at": "2026-05-11T00:00:00Z",
+        "license": "Public domain (state government work)",
+        "license_url": "https://app.leg.wa.gov/"
+      }
+    },
+    "non_compete_enforceability": "limited",
+    "statute_of_limitations_contract_years": 6
+  },
+  {
+    "id": "us-ga",
+    "name": "Georgia",
+    "abbreviation": "GA",
+    "jurisdiction_type": "us-state",
+    "court_structure": "Superior Court (trial), Court of Appeals, Supreme Court of Georgia.",
+    "electronic_signature_law": {
+      "standard": "UETA",
+      "citation": {
+        "id": "ocga-10-12",
+        "source": "Official Code of Georgia Annotated, Title 10, Chapter 12 — Uniform Electronic Transactions Act",
+        "source_url": "https://law.justia.com/codes/georgia/2022/title-10/chapter-12/",
+        "retrieved_at": "2026-05-11T00:00:00Z",
+        "license": "Public domain (state government work) — Justia mirror",
+        "license_url": "https://law.justia.com/codes/georgia/"
+      }
+    },
+    "non_compete_enforceability": "limited",
+    "statute_of_limitations_contract_years": 6
+  },
+  {
+    "id": "us-pa",
+    "name": "Pennsylvania",
+    "abbreviation": "PA",
+    "jurisdiction_type": "us-state",
+    "court_structure": "Court of Common Pleas (trial), Superior Court / Commonwealth Court, Pennsylvania Supreme Court.",
+    "electronic_signature_law": {
+      "standard": "UETA",
+      "citation": {
+        "id": "pa-73-2260",
+        "source": "73 Pennsylvania Consolidated Statutes §§ 2260.101 et seq. — Electronic Transactions Act",
+        "source_url": "https://www.legis.state.pa.us/cfdocs/legis/LI/uconsCheck.cfm?txtType=HTM&yr=1999&sessInd=0&smthLwInd=0&act=0069.",
+        "retrieved_at": "2026-05-11T00:00:00Z",
+        "license": "Public domain (state government work)",
+        "license_url": "https://www.legis.state.pa.us/"
+      }
+    },
+    "non_compete_enforceability": "limited",
+    "statute_of_limitations_contract_years": 4
+  },
+  {
+    "id": "us-dc",
+    "name": "District of Columbia",
+    "abbreviation": "DC",
+    "jurisdiction_type": "us-territory",
+    "court_structure": "DC Superior Court (trial), DC Court of Appeals.",
+    "electronic_signature_law": {
+      "standard": "UETA",
+      "citation": {
+        "id": "dc-code-28-4901",
+        "source": "DC Code §§ 28-4901 et seq. — Uniform Electronic Transactions Act",
+        "source_url": "https://code.dccouncil.gov/us/dc/council/code/titles/28/chapters/49",
+        "retrieved_at": "2026-05-11T00:00:00Z",
+        "license": "Public domain (DC government work)",
+        "license_url": "https://code.dccouncil.gov/"
+      }
+    },
+    "non_compete_enforceability": "limited",
+    "statute_of_limitations_contract_years": 3
+  },
+  {
+    "id": "uk-england-wales",
+    "name": "England and Wales",
+    "abbreviation": "E&W",
+    "jurisdiction_type": "foreign-country",
+    "court_structure": "County Court / High Court of Justice (trial), Court of Appeal, Supreme Court of the United Kingdom.",
+    "electronic_signature_law": {
+      "standard": "other",
+      "citation": {
+        "id": "uk-electronic-communications-act-2000",
+        "source": "Electronic Communications Act 2000 (UK)",
+        "source_url": "https://www.legislation.gov.uk/ukpga/2000/7/contents",
+        "retrieved_at": "2026-05-11T00:00:00Z",
+        "license": "Open Government Licence v3.0",
+        "license_url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+      }
+    },
+    "non_compete_enforceability": "varies",
+    "statute_of_limitations_contract_years": 6
+  }
+]
