@@ -27,7 +27,7 @@ of the synthetic fixtures that were authored to make the rules fire.
    regression split, through the exact `ingest → extract → classify → engine`
    path the browser uses ([`tools/accuracy/pipeline.ts`](../../tools/accuracy/pipeline.ts)
    composes the same `src/` functions as `src/ui/pipeline.ts`; the full
-   1,062-rule catalog, all playbooks, the real `matchPlaybook`/candidate
+   1,065-rule catalog, all playbooks, the real `matchPlaybook`/candidate
    selection). A measured number reflects shipped behavior, not a test-only
    shortcut.
 3. **Grades** the fired-rule set against gold (spec-v5 §8): TP / FP / FN / TN

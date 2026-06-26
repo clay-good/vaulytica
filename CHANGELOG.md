@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Fixed
+- **Regenerated the accuracy scoreboard, which had drifted to a stale catalog count.**
+  `tools/accuracy/scoreboard.json` and `SCOREBOARD.md` (the spec-v5 §10 published trust
+  artifact) still reported `1062 rules`; the live engine ships `1065`. `npm run accuracy`
+  re-stamped the count and `scoreboard_hash`. No metrics changed — the corpus is still the
+  honest empty seed, so precision/recall stay unpublished by design.
+- **Added a regression guard so the scoreboard cannot silently desync again.**
+  `tools/accuracy/scoreboard-current.test.ts` pins the committed scoreboard's
+  `catalog.rules` / `catalog.playbooks` to the live engine count (the same integrity-guard
+  discipline as the docs-link and case-sensitivity tests), with a one-line fix in the failure
+  message: re-run `npm run accuracy`. It deliberately pins only the catalog counts, not the
+  hash or the precision/recall metrics, which legitimately move with the corpus.
+
 ### Security
 - **Bumped the transitive `ws` dependency 8.20.1 → 8.21.0 to clear GHSA-96hv-2xvq-fx4p** (a
   WebSocket memory-exhaustion DoS, high severity). `ws` is pulled in only by `happy-dom`, the

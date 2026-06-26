@@ -11,7 +11,7 @@ flowchart TB
         ingest[Ingest layer<br/>PDF.js · mammoth.js · Tesseract.js WASM]
         normalize[Normalizer<br/>structured document tree]
         extract[Extractors<br/>parties · dates · amounts ·<br/>definitions · sections · crossrefs<br/>· obligations · jurisdictions · classifier]
-        engine[Rule Engine<br/>112 launch · 1,062 total rules<br/>+ 20 cross-document checks]
+        engine[Rule Engine<br/>115 launch · 1,065 total rules<br/>+ 20 cross-document checks]
         playbook[Playbook matcher<br/>NDA · employment · MSA · lease · IC · SaaS · …]
         dkb[(Deterministic<br/>Knowledge Base<br/>shipped as static asset)]
         report[Report builder<br/>DOCX · JSON · SARIF · HTML ·<br/>fix-list · .ics · comparison redline]
