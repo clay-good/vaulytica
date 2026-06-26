@@ -37,12 +37,32 @@ const clone = <T>(x: T): T => JSON.parse(JSON.stringify(x)) as T;
 const FILES: { name: string; schema: ZodTypeAny; file: string; array: boolean }[] = [
   { name: "manifest", schema: DkbManifestSchema, file: "dkb-manifest.json", array: false },
   { name: "clauses", schema: ClauseLibrarySchema, file: "dkb-clauses.json", array: true },
-  { name: "jurisdictions", schema: JurisdictionSchema, file: "dkb-jurisdictions.json", array: true },
-  { name: "definitions", schema: DefinitionTemplateSchema, file: "dkb-definitions.json", array: true },
+  {
+    name: "jurisdictions",
+    schema: JurisdictionSchema,
+    file: "dkb-jurisdictions.json",
+    array: true,
+  },
+  {
+    name: "definitions",
+    schema: DefinitionTemplateSchema,
+    file: "dkb-definitions.json",
+    array: true,
+  },
   { name: "dark patterns", schema: DarkPatternSchema, file: "dkb-dark-patterns.json", array: true },
   { name: "statutes", schema: StatutorySchema, file: "dkb-statutes.json", array: true },
-  { name: "classifier vocab", schema: ClassifierVocabSchema, file: "dkb-classifier-vocab.json", array: true },
-  { name: "classifier patterns", schema: ClassifierPatternSchema, file: "dkb-classifier-patterns.json", array: true },
+  {
+    name: "classifier vocab",
+    schema: ClassifierVocabSchema,
+    file: "dkb-classifier-vocab.json",
+    array: true,
+  },
+  {
+    name: "classifier patterns",
+    schema: ClassifierPatternSchema,
+    file: "dkb-classifier-patterns.json",
+    array: true,
+  },
 ];
 
 describe("DKB schema — round-trip identity (spec-v7 Step 121)", () => {

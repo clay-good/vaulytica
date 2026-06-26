@@ -47,15 +47,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 // accepts .pdf / .docx). Falls back to the .txt fixture for older
 // checkouts; the .docx ships from `npm run fixtures:baa`.
 const DOCX_FIXTURE = join(__dirname, "baa-minimal-pass.docx");
-const TXT_FIXTURE = join(
-  __dirname,
-  "..",
-  "..",
-  "golden",
-  "v3",
-  "fixtures",
-  "baa-minimal-pass.txt",
-);
+const TXT_FIXTURE = join(__dirname, "..", "..", "golden", "v3", "fixtures", "baa-minimal-pass.txt");
 const DEFAULT_FIXTURE = existsSync(DOCX_FIXTURE) ? DOCX_FIXTURE : TXT_FIXTURE;
 
 const FIXTURE = process.env.VAULYTICA_E2E_V3_FIXTURE
@@ -108,10 +100,7 @@ test("v3 BAA flow makes zero non-asset network requests", async ({ page }) => {
   // transfers, subprocessor, insurance, consistency, citation index)
   // live; a regression that breaks the docx writer would manifest as
   // an empty or non-OOXML download.
-  const [download] = await Promise.all([
-    page.waitForEvent("download"),
-    downloadButton.click(),
-  ]);
+  const [download] = await Promise.all([page.waitForEvent("download"), downloadButton.click()]);
   const path = await download.path();
   expect(path).toBeTruthy();
   const bytes = readFileSync(path!);
@@ -121,8 +110,5 @@ test("v3 BAA flow makes zero non-asset network requests", async ({ page }) => {
   expect(bytes[2]).toBe(0x03);
   expect(bytes[3]).toBe(0x04);
 
-  expect(
-    requests,
-    "v3 analysis must not initiate any cross-origin request",
-  ).toEqual([]);
+  expect(requests, "v3 analysis must not initiate any cross-origin request").toEqual([]);
 });

@@ -63,7 +63,9 @@ export async function runFixture(path: string, fileName?: string): Promise<RunFi
     const buf = await readFile(path);
     const ab = buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) as ArrayBuffer;
     const mammoth = (await import("mammoth")) as unknown as {
-      convertToHtml: (input: { buffer: Buffer }) => Promise<{ value: string; messages: Array<{ type: string; message: string }> }>;
+      convertToHtml: (input: {
+        buffer: Buffer;
+      }) => Promise<{ value: string; messages: Array<{ type: string; message: string }> }>;
     };
     const result = await mammoth.convertToHtml({ buffer: buf });
     const warnings = result.messages
@@ -95,9 +97,7 @@ export async function runFixture(path: string, fileName?: string): Promise<RunFi
   // matching sees the whole document, not just section[0]. Matches what
   // the browser pipeline does in src/ui/pipeline.ts.
   const bodyParts: string[] = [];
-  const walkSections = (
-    sections: import("../../src/ingest/types.js").Section[],
-  ): void => {
+  const walkSections = (sections: import("../../src/ingest/types.js").Section[]): void => {
     for (const s of sections) {
       for (const p of s.paragraphs) {
         for (const r of p.runs) bodyParts.push(r.text);

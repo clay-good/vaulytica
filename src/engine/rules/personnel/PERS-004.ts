@@ -8,7 +8,8 @@ export const rule: Rule = {
   name: "Anti-poaching / no-hire between parties",
   category: "personnel",
   default_severity: "warning",
-  description: "Flags mutual no-hire clauses between parties (antitrust risk in competitor contexts).",
+  description:
+    "Flags mutual no-hire clauses between parties (antitrust risk in competitor contexts).",
   dkb_citations: ["stat-ftc-act-section-5", "stat-15-usc-45"],
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(

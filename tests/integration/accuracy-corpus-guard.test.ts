@@ -43,7 +43,10 @@ describe("v5 corpus privacy guard (spec-v5 §VIII, Step 83)", () => {
     const offenders: string[] = [];
     for (const file of tsFiles) {
       const text = readFileSync(file, "utf8");
-      if (/from\s+["'][^"']*tools\/accuracy/.test(text) || /from\s+["'][^"']*\/corpus\//.test(text)) {
+      if (
+        /from\s+["'][^"']*tools\/accuracy/.test(text) ||
+        /from\s+["'][^"']*\/corpus\//.test(text)
+      ) {
         offenders.push(file.replace(REPO_ROOT + "/", ""));
       }
     }
@@ -78,7 +81,9 @@ describe("v5 corpus privacy guard (spec-v5 §VIII, Step 83)", () => {
       const probe = doc.replace(/\s+/g, " ").trim().slice(0, 60);
       if (probe.length < 20) continue;
       for (const asset of assets) {
-        expect(asset.includes(probe), "corpus text must not appear in any shipped asset").toBe(false);
+        expect(asset.includes(probe), "corpus text must not appear in any shipped asset").toBe(
+          false,
+        );
       }
     }
   });
@@ -88,12 +93,19 @@ describe("corpus ⟂ unit fixtures (spec-v5 §4)", () => {
   it("no corpus document id collides with a unit fixture name", () => {
     const corpusIds = new Set(
       walk(join(CORPUS, "provenance"), (p) => p.endsWith(".json")).map((p) =>
-        p.split("/").pop()!.replace(/\.json$/, ""),
+        p
+          .split("/")
+          .pop()!
+          .replace(/\.json$/, ""),
       ),
     );
     const fixtureStems = new Set(
-      walk(FIXTURES, (p) => p.endsWith(".txt") || p.endsWith(".docx") || p.endsWith(".pdf")).map((p) =>
-        p.split("/").pop()!.replace(/\.(txt|docx|pdf)$/, ""),
+      walk(FIXTURES, (p) => p.endsWith(".txt") || p.endsWith(".docx") || p.endsWith(".pdf")).map(
+        (p) =>
+          p
+            .split("/")
+            .pop()!
+            .replace(/\.(txt|docx|pdf)$/, ""),
       ),
     );
     const overlap = [...corpusIds].filter((id) => fixtureStems.has(id));

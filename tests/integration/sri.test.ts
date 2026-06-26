@@ -42,7 +42,9 @@ describe.skipIf(!RUN)("SRI plugin", () => {
   });
 
   it("the integrity hash matches the on-disk asset bytes", () => {
-    const m = html.match(/<script[^>]*type="module"[^>]*src="([^"]+)"[^>]*integrity="(sha384-[A-Za-z0-9+/=]+)"/);
+    const m = html.match(
+      /<script[^>]*type="module"[^>]*src="([^"]+)"[^>]*integrity="(sha384-[A-Za-z0-9+/=]+)"/,
+    );
     expect(m, "main script tag with integrity should be present").not.toBeNull();
     const src = m![1]!;
     const expected = m![2]!.replace("sha384-", "");

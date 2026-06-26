@@ -118,57 +118,99 @@ describe("BAA ruleset — compliant fixture", () => {
 
 describe("BAA ruleset — failure modes", () => {
   it("missing breach notification clause fires BAA-019", async () => {
-    const ctx = withBaa(buildContext([
-      "BAA",
-      "This is a BAA referencing PHI and Covered Entity and Business Associate but with no breach notice.",
-    ]));
-    const run = await runEngine({ rules: BAA_RULES, ctx, executed_at: "2026-05-12T00:00:00Z", source_file: SRC });
+    const ctx = withBaa(
+      buildContext([
+        "BAA",
+        "This is a BAA referencing PHI and Covered Entity and Business Associate but with no breach notice.",
+      ]),
+    );
+    const run = await runEngine({
+      rules: BAA_RULES,
+      ctx,
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
     expect(run.findings.find((f) => f.rule_id === "BAA-019")).toBeTruthy();
   });
 
   it("breach notification of 90 days fires BAA-020", async () => {
-    const ctx = withBaa(buildContext([
-      "BAA",
-      "Business Associate shall notify Covered Entity of any breach of unsecured PHI within 90 calendar days after discovery.",
-    ]));
-    const run = await runEngine({ rules: BAA_RULES, ctx, executed_at: "2026-05-12T00:00:00Z", source_file: SRC });
+    const ctx = withBaa(
+      buildContext([
+        "BAA",
+        "Business Associate shall notify Covered Entity of any breach of unsecured PHI within 90 calendar days after discovery.",
+      ]),
+    );
+    const run = await runEngine({
+      rules: BAA_RULES,
+      ctx,
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
     expect(run.findings.find((f) => f.rule_id === "BAA-020")).toBeTruthy();
   });
 
   it("Security Incident narrowed to 'successful' fires BAA-023", async () => {
-    const ctx = withBaa(buildContext([
-      "BAA",
-      "Security Incident means only the successful unauthorized access to ePHI by an unauthorized person.",
-      "Business Associate shall notify Covered Entity of any breach of unsecured PHI within 60 calendar days after discovery without unreasonable delay.",
-    ]));
-    const run = await runEngine({ rules: BAA_RULES, ctx, executed_at: "2026-05-12T00:00:00Z", source_file: SRC });
+    const ctx = withBaa(
+      buildContext([
+        "BAA",
+        "Security Incident means only the successful unauthorized access to ePHI by an unauthorized person.",
+        "Business Associate shall notify Covered Entity of any breach of unsecured PHI within 60 calendar days after discovery without unreasonable delay.",
+      ]),
+    );
+    const run = await runEngine({
+      rules: BAA_RULES,
+      ctx,
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
     expect(run.findings.find((f) => f.rule_id === "BAA-023")).toBeTruthy();
   });
 
   it("CE indemnifies BA for HIPAA violations fires BAA-027", async () => {
-    const ctx = withBaa(buildContext([
-      "BAA",
-      "Covered Entity shall indemnify Business Associate for any claims arising under HIPAA including breach of unsecured PHI.",
-    ]));
-    const run = await runEngine({ rules: BAA_RULES, ctx, executed_at: "2026-05-12T00:00:00Z", source_file: SRC });
+    const ctx = withBaa(
+      buildContext([
+        "BAA",
+        "Covered Entity shall indemnify Business Associate for any claims arising under HIPAA including breach of unsecured PHI.",
+      ]),
+    );
+    const run = await runEngine({
+      rules: BAA_RULES,
+      ctx,
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
     expect(run.findings.find((f) => f.rule_id === "BAA-027")).toBeTruthy();
   });
 
   it("'as soon as practicable' return language fires BAA-024", async () => {
-    const ctx = withBaa(buildContext([
-      "BAA",
-      "Upon termination, Business Associate shall return or destroy all PHI as soon as practicable.",
-    ]));
-    const run = await runEngine({ rules: BAA_RULES, ctx, executed_at: "2026-05-12T00:00:00Z", source_file: SRC });
+    const ctx = withBaa(
+      buildContext([
+        "BAA",
+        "Upon termination, Business Associate shall return or destroy all PHI as soon as practicable.",
+      ]),
+    );
+    const run = await runEngine({
+      rules: BAA_RULES,
+      ctx,
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
     expect(run.findings.find((f) => f.rule_id === "BAA-024")).toBeTruthy();
   });
 
   it("a document with no PHI reference fires BAA-041", async () => {
-    const ctx = withBaa(buildContext([
-      "Agreement",
-      "This is a generic services agreement with no health-related terminology.",
-    ]));
-    const run = await runEngine({ rules: BAA_RULES, ctx, executed_at: "2026-05-12T00:00:00Z", source_file: SRC });
+    const ctx = withBaa(
+      buildContext([
+        "Agreement",
+        "This is a generic services agreement with no health-related terminology.",
+      ]),
+    );
+    const run = await runEngine({
+      rules: BAA_RULES,
+      ctx,
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
     expect(run.findings.find((f) => f.rule_id === "BAA-041")).toBeTruthy();
   });
 });
@@ -176,8 +218,18 @@ describe("BAA ruleset — failure modes", () => {
 describe("BAA ruleset — determinism", () => {
   it("two runs over the same input produce the same result_hash", async () => {
     const ctx = withBaa(buildContext(...COMPLIANT_BAA_SECTIONS));
-    const a = await runEngine({ rules: BAA_RULES, ctx, executed_at: "2026-05-12T00:00:00Z", source_file: SRC });
-    const b = await runEngine({ rules: BAA_RULES, ctx, executed_at: "2026-05-12T00:00:00Z", source_file: SRC });
+    const a = await runEngine({
+      rules: BAA_RULES,
+      ctx,
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
+    const b = await runEngine({
+      rules: BAA_RULES,
+      ctx,
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
     expect(a.result_hash).toBe(b.result_hash);
   });
 });

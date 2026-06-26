@@ -29,7 +29,8 @@ export const rule: Rule = {
       excerptText: unused.join(", "),
       explanation:
         "Defined terms that are not used downstream may be inherited from a template and obsolete. They clutter the contract and can confuse readers; either delete them or use them where intended.",
-      recommendation: "Review each unused term and either delete it or wire it into the relevant clause.",
+      recommendation:
+        "Review each unused term and either delete it or wire it into the relevant clause.",
       position,
       source_citations: [],
     });

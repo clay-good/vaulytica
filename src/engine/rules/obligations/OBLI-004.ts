@@ -15,7 +15,8 @@ export const rule: Rule = {
     if (!hit) return null;
     return emit(ctx, rule, {
       title: "'Best efforts' standard used",
-      description: "The contract uses 'best efforts' rather than 'reasonable efforts' or 'commercially reasonable efforts'.",
+      description:
+        "The contract uses 'best efforts' rather than 'reasonable efforts' or 'commercially reasonable efforts'.",
       excerpt: hit.text.slice(Math.max(0, hit.match.index - 40), hit.match.index + 120),
       explanation:
         "Courts in different US jurisdictions interpret 'best efforts' differently — some treat it as an extraordinary standard, others as a synonym for reasonable efforts. 'Commercially reasonable efforts' is generally clearer.",

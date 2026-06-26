@@ -62,7 +62,11 @@ describe("buildSarif (spec-v8 §20 — SARIF 2.1.0)", () => {
 
   it("maps severity → level (critical=error, warning=warning, info=note)", () => {
     const log = buildSarif(
-      run([finding("f1", "A", "critical"), finding("f2", "B", "warning"), finding("f3", "C", "info")]),
+      run([
+        finding("f1", "A", "critical"),
+        finding("f2", "B", "warning"),
+        finding("f3", "C", "info"),
+      ]),
     );
     expect(log.runs[0]!.results.map((r) => r.level)).toEqual(["error", "warning", "note"]);
   });
@@ -212,7 +216,10 @@ describe("buildSarif — v9 Last Look surfaces (HANDOFF-* + DATE-*)", () => {
   };
 
   it("emits HANDOFF-* and DATE-* as first-class, conformant results", () => {
-    const log = buildSarif(run([finding("f1", "STRUCT-001", "warning")]), { delivery, criticalDates });
+    const log = buildSarif(run([finding("f1", "STRUCT-001", "warning")]), {
+      delivery,
+      criticalDates,
+    });
     expect(sarifConformanceViolations(log)).toEqual([]);
     const results = log.runs[0]!.results;
     const ids = results.map((r) => r.ruleId);

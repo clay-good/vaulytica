@@ -76,8 +76,18 @@ export const CROSS_PARTY_001: ConsistencyRule = {
               recommendation:
                 "Pick one canonical legal name (the one on file with the Secretary of State of the formation jurisdiction is the safest default) and amend the other document to match.",
               excerpts: [
-                textExcerpt(a, m.a.name, m.a.positions[0]?.start ?? 0, m.a.positions[0]?.end ?? m.a.name.length),
-                textExcerpt(b, m.b.name, m.b.positions[0]?.start ?? 0, m.b.positions[0]?.end ?? m.b.name.length),
+                textExcerpt(
+                  a,
+                  m.a.name,
+                  m.a.positions[0]?.start ?? 0,
+                  m.a.positions[0]?.end ?? m.a.name.length,
+                ),
+                textExcerpt(
+                  b,
+                  m.b.name,
+                  m.b.positions[0]?.start ?? 0,
+                  m.b.positions[0]?.end ?? m.b.name.length,
+                ),
               ],
             }),
           );
@@ -101,7 +111,10 @@ export const CROSS_JURIS_001: ConsistencyRule = {
   requires: [],
   check(ctx): ConsistencyFinding[] {
     if (ctx.documents.length < 3) return [];
-    const laws = new Map<string, Array<{ doc_id: string; source_file_name: string; raw: string; start: number; end: number }>>();
+    const laws = new Map<
+      string,
+      Array<{ doc_id: string; source_file_name: string; raw: string; start: number; end: number }>
+    >();
     for (const doc of ctx.documents) {
       for (const j of doc.extracted.jurisdictions) {
         if (j.clause_kind !== "governing-law") continue;
@@ -177,7 +190,7 @@ export const CROSS_DEFTERM_001: ConsistencyRule = {
               explanation:
                 "Cross-document defined-term drift is the single most-litigated source of contract ambiguity. The party with the more favorable definition will read every operative clause back to its own document; resolving it after dispute costs orders of magnitude more than resolving it during drafting.",
               recommendation:
-                "Pick one canonical definition (typically the operative document's), then either remove the redundant definition from the other document or replace it with a back-reference (\"Capitalized terms not defined herein have the meanings given in [Operative Agreement]\").",
+                'Pick one canonical definition (typically the operative document\'s), then either remove the redundant definition from the other document or replace it with a back-reference ("Capitalized terms not defined herein have the meanings given in [Operative Agreement]").',
               excerpts: [
                 textExcerpt(a, m.a.definition, m.a.start, m.a.end),
                 textExcerpt(b, m.b.definition, m.b.start, m.b.end),
@@ -298,8 +311,16 @@ export const CROSS_AMOUNT_001: ConsistencyRule = {
 /* -------------------- CROSS-MISSING-001 --------------------------- */
 
 const COMPANION_REFERENCE_PATTERNS: Array<{ kind: DocKind; pattern: RegExp; label: string }> = [
-  { kind: "dpa", pattern: /\b(data\s+processing\s+(?:agreement|addendum))\b/i, label: "DPA / Data Processing Agreement" },
-  { kind: "baa", pattern: /\b(business\s+associate\s+agreement)\b/i, label: "BAA / Business Associate Agreement" },
+  {
+    kind: "dpa",
+    pattern: /\b(data\s+processing\s+(?:agreement|addendum))\b/i,
+    label: "DPA / Data Processing Agreement",
+  },
+  {
+    kind: "baa",
+    pattern: /\b(business\s+associate\s+agreement)\b/i,
+    label: "BAA / Business Associate Agreement",
+  },
   { kind: "sow", pattern: /\b(statement\s+of\s+work)\b/i, label: "SOW / Statement of Work" },
 ];
 
@@ -327,7 +348,12 @@ export const CROSS_MISSING_001: ConsistencyRule = {
         forEachParagraph(doc.tree, (p) => {
           if (slot.value) return;
           if (ref.pattern.test(p.text)) {
-            slot.value = { text: p.text, section_id: p.section.id || undefined, start: p.start, end: p.end };
+            slot.value = {
+              text: p.text,
+              section_id: p.section.id || undefined,
+              start: p.start,
+              end: p.end,
+            };
           }
         });
         if (!slot.value) continue;
@@ -340,7 +366,10 @@ export const CROSS_MISSING_001: ConsistencyRule = {
             explanation:
               "Operative cross-references that the linter cannot resolve are a flag the reviewing counsel needs. Either the companion document is missing from the package, or the reference is a leftover from a template that should have been removed.",
             recommendation:
-              "Either add the referenced ${ref.label} to the bundle or strike the reference if no companion document was intended.".replace("${ref.label}", ref.label),
+              "Either add the referenced ${ref.label} to the bundle or strike the reference if no companion document was intended.".replace(
+                "${ref.label}",
+                ref.label,
+              ),
             excerpts: [
               {
                 doc_id: doc.doc_id,
@@ -396,7 +425,12 @@ export const CROSS_PRECEDENCE_001: ConsistencyRule = {
       forEachParagraph(doc.tree, (p) => {
         if (slot.value) return;
         if (p.text.includes(m[0])) {
-          slot.value = { text: p.text, section_id: p.section.id || undefined, start: p.start, end: p.end };
+          slot.value = {
+            text: p.text,
+            section_id: p.section.id || undefined,
+            start: p.start,
+            end: p.end,
+          };
         }
       });
       const para = slot.value;
@@ -743,7 +777,10 @@ function truncate(text: string, limit: number): string {
 function canonicalLaw(raw: string): string {
   return raw
     .toLowerCase()
-    .replace(/\b(governed|construed|in\s+accordance\s+with|the\s+laws?\s+of|state\s+of|commonwealth\s+of|by)\b/g, " ")
+    .replace(
+      /\b(governed|construed|in\s+accordance\s+with|the\s+laws?\s+of|state\s+of|commonwealth\s+of|by)\b/g,
+      " ",
+    )
     .replace(/[^a-z]+/g, " ")
     .trim();
 }

@@ -115,7 +115,10 @@ describe("computeCoherencePrecedence (spec-v35 — pairwise lead-lag / who cross
     expect(prec.total_co_crossings).toBe(6);
     expect(prec.total_co_crossings).toBe(opp.total_opposed_moves + opp.total_aligned_moves);
     expect(prec.total_co_crossings).toBe(
-      sync.per_transition.reduce((s, t) => s + (t.crossing_fronts * (t.crossing_fronts - 1)) / 2, 0),
+      sync.per_transition.reduce(
+        (s, t) => s + (t.crossing_fronts * (t.crossing_fronts - 1)) / 2,
+        0,
+      ),
     );
   });
 
@@ -295,7 +298,9 @@ describe("computeCoherencePrecedence (spec-v35 — pairwise lead-lag / who cross
     const prec = await computeCoherencePrecedence(rounds);
     const summary = renderCoherencePrecedenceSummary(prec);
     expect(summary).toContain("Coherence exposure precedence across 3 rounds");
-    expect(summary).toMatch(/most-leading pairing: Cap leads Term — crossed first 100% of the comparisons/);
+    expect(summary).toMatch(
+      /most-leading pairing: Cap leads Term — crossed first 100% of the comparisons/,
+    );
     expect(summary).toMatch(/1 leading/);
     expect(summary).toMatch(/precedence_hash: [0-9a-f]{64}/);
 

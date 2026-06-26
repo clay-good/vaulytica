@@ -101,22 +101,23 @@ describe("selectBuiltinRuleIds", () => {
   });
 
   it("include narrows to the listed ids (catalog order preserved)", () => {
-    const got = selectBuiltinRuleIds(pb({ rule_selection: { include: ["CCC-003", "AAA-001"] } }), CATALOG);
+    const got = selectBuiltinRuleIds(
+      pb({ rule_selection: { include: ["CCC-003", "AAA-001"] } }),
+      CATALOG,
+    );
     expect(got).toEqual(["AAA-001", "CCC-003"]);
   });
 
   it("exclude drops the listed ids", () => {
-    expect(selectBuiltinRuleIds(pb({ rule_selection: { exclude: ["BBB-002"] } }), CATALOG)).toEqual([
-      "AAA-001",
-      "CCC-003",
-    ]);
+    expect(selectBuiltinRuleIds(pb({ rule_selection: { exclude: ["BBB-002"] } }), CATALOG)).toEqual(
+      ["AAA-001", "CCC-003"],
+    );
   });
 
   it("rule_overrides skip drops the rule too", () => {
-    expect(selectBuiltinRuleIds(pb({ rule_overrides: { "AAA-001": { skip: true } } }), CATALOG)).toEqual([
-      "BBB-002",
-      "CCC-003",
-    ]);
+    expect(
+      selectBuiltinRuleIds(pb({ rule_overrides: { "AAA-001": { skip: true } } }), CATALOG),
+    ).toEqual(["BBB-002", "CCC-003"]);
   });
 
   it("replace mode selects nothing from the catalog", () => {

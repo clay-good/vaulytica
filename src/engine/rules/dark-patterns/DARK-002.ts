@@ -8,14 +8,22 @@ export const rule: Rule = {
   name: "Auto-renewal with hidden notice window",
   category: "dark-patterns",
   default_severity: "warning",
-  description: "Flags auto-renewal where the notice window is buried (long or far from the term clause).",
+  description:
+    "Flags auto-renewal where the notice window is buried (long or far from the term clause).",
   dkb_citations: ["stat-16-cfr-425"],
   check(ctx: RuleContext): Finding | null {
-    const auto = firstParagraphMatch(ctx, /\b(?:auto(?:matic)?(?:ally)?\s+(?:renew|renewal|extend))\b/i);
+    const auto = firstParagraphMatch(
+      ctx,
+      /\b(?:auto(?:matic)?(?:ally)?\s+(?:renew|renewal|extend))\b/i,
+    );
     if (!auto) return null;
-    const notice = firstParagraphMatch(ctx, /\bnon[- ]renewal\b[\s\S]{0,200}?(\d{1,3})\s+days|notice\s+of\s+non[- ]renewal[\s\S]{0,80}?(\d{1,3})\s+days/i);
+    const notice = firstParagraphMatch(
+      ctx,
+      /\bnon[- ]renewal\b[\s\S]{0,200}?(\d{1,3})\s+days|notice\s+of\s+non[- ]renewal[\s\S]{0,80}?(\d{1,3})\s+days/i,
+    );
     const days = notice ? parseInt(notice.match[1] ?? notice.match[2] ?? "0", 10) : 0;
-    const buried = !!notice && (notice.position.section_id !== auto.position.section_id || days >= 90);
+    const buried =
+      !!notice && (notice.position.section_id !== auto.position.section_id || days >= 90);
     if (!buried) return null;
     return emit(ctx, rule, {
       title: "Auto-renewal with notice window buried or long",

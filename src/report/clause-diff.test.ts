@@ -56,13 +56,17 @@ describe("flattenClauses", () => {
           id: "s0",
           heading: "Liability",
           level: 1,
-          paragraphs: [{ id: "s0.p0", runs: [{ id: "r", text: "Cap applies.", start: 0, end: 12 }] }],
+          paragraphs: [
+            { id: "s0.p0", runs: [{ id: "r", text: "Cap applies.", start: 0, end: 12 }] },
+          ],
           children: [
             {
               id: "s0.0",
               heading: "", // unheaded subsection inherits "Liability"
               level: 2,
-              paragraphs: [{ id: "s0.0.p0", runs: [{ id: "r", text: "Carveout.", start: 0, end: 9 }] }],
+              paragraphs: [
+                { id: "s0.0.p0", runs: [{ id: "r", text: "Carveout.", start: 0, end: 9 }] },
+              ],
               children: [],
             },
           ],

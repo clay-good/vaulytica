@@ -162,7 +162,8 @@ const IP_ASSIGNMENT_RULES: Rule[] = [
   presence({
     id: "IPL-006",
     name: "Assignor reps — ownership, no encumbrances, no prior conveyance",
-    description: "Assignment must include assignor reps as to ownership and absence of encumbrances.",
+    description:
+      "Assignment must include assignor reps as to ownership and absence of encumbrances.",
     citation: iplPractice(
       "assignment-reps",
       "IP assignment — assignor reps baseline",
@@ -192,8 +193,7 @@ const PATENT_LICENSE_RULES: Rule[] = [
   presence({
     id: "IPL-007",
     name: "Licensed patents identified by number",
-    description:
-      "Patent license must identify Licensed Patents by patent / application number.",
+    description: "Patent license must identify Licensed Patents by patent / application number.",
     citation: patentAct("261", "Patent license"),
     playbooks: [IPL_PLAYBOOK_PATENT],
     missing_title: "Licensed Patents identification clause missing",
@@ -293,7 +293,8 @@ const PATENT_LICENSE_RULES: Rule[] = [
   presence({
     id: "IPL-012",
     name: "Improvements / grant-back",
-    description: "Patent license should address whether improvements made by licensee are licensed back.",
+    description:
+      "Patent license should address whether improvements made by licensee are licensed back.",
     citation: iplPractice(
       "patent-improvements",
       "Patent license — improvements / grant-back baseline",
@@ -306,10 +307,7 @@ const PATENT_LICENSE_RULES: Rule[] = [
       "Improvements made by licensee can be a valuable side-channel. Antitrust concerns require careful drafting: non-exclusive royalty-free grant-back is generally permissible; exclusive grant-back raises misuse concerns under DOJ / FTC IP guidelines.",
     recommendation:
       "Add 'Improvements' addressing ownership of improvements and grant-back (non-exclusive, royalty-free is the common safe-harbor).",
-    present_patterns: [
-      /(improvements?|enhancements?|derivative\s+works?)/i,
-      /grant.?back/i,
-    ],
+    present_patterns: [/(improvements?|enhancements?|derivative\s+works?)/i, /grant.?back/i],
     default_severity: "warning",
   }),
 ];
@@ -326,8 +324,7 @@ const TM_LICENSE_RULES: Rule[] = [
     citation: lanham("5", "Trademark license"),
     playbooks: [IPL_PLAYBOOK_TRADEMARK],
     missing_title: "Licensed Marks identification clause missing",
-    missing_description:
-      "No clause identifying the Licensed Marks (with reg. numbers) was found.",
+    missing_description: "No clause identifying the Licensed Marks (with reg. numbers) was found.",
     explanation:
       "Trademark licenses must identify the Licensed Marks by name and (where registered) by registration number; common-law marks should specify the goods / services and territory of use.",
     recommendation:
@@ -422,7 +419,8 @@ const TM_LICENSE_RULES: Rule[] = [
   presence({
     id: "IPL-018",
     name: "Termination — quality / non-payment / change-of-control",
-    description: "Trademark license must include termination rights tied to quality breach / non-payment / CoC.",
+    description:
+      "Trademark license must include termination rights tied to quality breach / non-payment / CoC.",
     citation: iplPractice(
       "tm-termination",
       "Trademark license — termination baseline",
@@ -479,16 +477,12 @@ const COPYRIGHT_LICENSE_RULES: Rule[] = [
       "Under 17 U.S.C. § 204(a), exclusive copyright transfers must be in writing signed by the owner; non-exclusive licenses can be oral or implied. Clarity prevents *Effects Associates v. Cohen*-style disputes.",
     recommendation:
       "Add 'Grant of Rights' stating exclusive vs non-exclusive; for exclusive grants, ensure a signed writing per § 204(a).",
-    present_patterns: [
-      /(exclusive|non.?exclusive|sole)/i,
-      /(in\s+writing|signed|executed)/i,
-    ],
+    present_patterns: [/(exclusive|non.?exclusive|sole)/i, /(in\s+writing|signed|executed)/i],
   }),
   presence({
     id: "IPL-021",
     name: "Rights granted — reproduction / distribution / display / performance / derivative",
-    description:
-      "Copyright license must specify which 17 U.S.C. § 106 rights are granted.",
+    description: "Copyright license must specify which 17 U.S.C. § 106 rights are granted.",
     citation: copyrightAct("106", "Exclusive rights"),
     playbooks: [IPL_PLAYBOOK_COPYRIGHT],
     missing_title: "§ 106 rights grant clause missing",
@@ -506,8 +500,7 @@ const COPYRIGHT_LICENSE_RULES: Rule[] = [
   presence({
     id: "IPL-022",
     name: "Term, territory, media / channels",
-    description:
-      "Copyright license must specify term, territory, and media / channels of use.",
+    description: "Copyright license must specify term, territory, and media / channels of use.",
     citation: iplPractice(
       "copyright-scope",
       "Copyright license — scope baseline",
@@ -539,10 +532,7 @@ const COPYRIGHT_LICENSE_RULES: Rule[] = [
       "17 U.S.C. § 106A (VARA) grants moral rights for visual works; many foreign jurisdictions recognize broader moral rights. Attribution requirements and moral-rights waivers (where waivable) should be addressed explicitly.",
     recommendation:
       "Add 'Attribution' specifying credit / byline conventions and addressing moral rights (waiver / non-assertion where waivable).",
-    present_patterns: [
-      /(attribution|credit|byline)/i,
-      /(moral\s+rights?|droit\s+moral|vara)/i,
-    ],
+    present_patterns: [/(attribution|credit|byline)/i, /(moral\s+rights?|droit\s+moral|vara)/i],
     default_severity: "warning",
   }),
   presence({
@@ -586,15 +576,13 @@ const CLA_RULES: Rule[] = [
       "ASF ICLA / corporate CLA distinguish individuals from corporate contributors because corporations need authority recitals and employer carve-outs.",
     recommendation:
       "Add 'Contributor' / 'You' definition with disambiguation between individual ICLA and corporate CCLA.",
-    present_patterns: [
-      /(contributor|you|i\b)/i,
-      /(individual|corporat(e|ion)|entity|employer)/i,
-    ],
+    present_patterns: [/(contributor|you|i\b)/i, /(individual|corporat(e|ion)|entity|employer)/i],
   }),
   presence({
     id: "IPL-026",
     name: "Copyright license grant to project",
-    description: "CLA must grant a copyright license sufficient for the project to use, modify, and redistribute.",
+    description:
+      "CLA must grant a copyright license sufficient for the project to use, modify, and redistribute.",
     citation: apacheCla(),
     playbooks: [IPL_PLAYBOOK_CLA],
     missing_title: "Copyright license grant clause missing",
@@ -652,8 +640,7 @@ const CLA_RULES: Rule[] = [
     citation: dco(),
     playbooks: [IPL_PLAYBOOK_CLA],
     missing_title: "DCO sign-off acknowledgment clause missing",
-    missing_description:
-      "No clause was found addressing the DCO 1.1 sign-off alternative.",
+    missing_description: "No clause was found addressing the DCO 1.1 sign-off alternative.",
     explanation:
       "Many OSS projects use DCO sign-off (e.g., Linux kernel) instead of a per-contributor CLA. Documents that intermix CLA and DCO should specify which path applies.",
     recommendation:
@@ -691,7 +678,8 @@ const OSS_COMPLIANCE_RULES: Rule[] = [
   presence({
     id: "IPL-031",
     name: "License enumeration per component",
-    description: "Each component must have its license enumerated (e.g., MIT, Apache-2.0, GPL-3.0).",
+    description:
+      "Each component must have its license enumerated (e.g., MIT, Apache-2.0, GPL-3.0).",
     citation: osiLicense("license-list", "OSI-approved license list (SPDX identifiers)"),
     playbooks: [IPL_PLAYBOOK_OSS_COMPLIANCE],
     missing_title: "Per-component license enumeration missing",
@@ -700,10 +688,7 @@ const OSS_COMPLIANCE_RULES: Rule[] = [
       "Compliance obligations differ per license family. Without per-component license identification, downstream notices and source-availability obligations cannot be determined.",
     recommendation:
       "Add a 'Licenses' column / sub-section using SPDX identifiers (e.g., MIT, Apache-2.0, GPL-3.0-only, AGPL-3.0-only, BSD-3-Clause).",
-    present_patterns: [
-      /(mit|apache.?2|bsd|gpl|agpl|lgpl|mpl|isc|cc.?by)/i,
-      /(license|spdx)/i,
-    ],
+    present_patterns: [/(mit|apache.?2|bsd|gpl|agpl|lgpl|mpl|isc|cc.?by)/i, /(license|spdx)/i],
   }),
   presence({
     id: "IPL-032",
@@ -749,14 +734,10 @@ const OSS_COMPLIANCE_RULES: Rule[] = [
     name: "Forbidden / discouraged-license list",
     description:
       "OSS compliance document should specify forbidden licenses (e.g., SSPL, BUSL non-OSI) or discouraged ones.",
-    citation: osiLicense(
-      "license-policy",
-      "Practitioner OSS-license policy baseline",
-    ),
+    citation: osiLicense("license-policy", "Practitioner OSS-license policy baseline"),
     playbooks: [IPL_PLAYBOOK_OSS_COMPLIANCE],
     missing_title: "Forbidden / discouraged-license policy missing",
-    missing_description:
-      "No policy on forbidden / discouraged licenses was found.",
+    missing_description: "No policy on forbidden / discouraged licenses was found.",
     explanation:
       "Source-available-but-not-OSI licenses (SSPL, BUSL, Commons Clause, ELv2) impose use restrictions that may not be compatible with downstream commercial use. A stated policy keeps the inventory clean.",
     recommendation:
@@ -785,10 +766,7 @@ const OSS_COMPLIANCE_RULES: Rule[] = [
       "Modern OSS-compliance programs (NIST SSDF, EO 14028, CISA SBOM) require continuous monitoring for vulnerabilities in third-party components.",
     recommendation:
       "Add 'Vulnerability Monitoring' requiring continuous CVE / advisory tracking against the SBOM, with severity thresholds and patch-window SLAs.",
-    present_patterns: [
-      /(cve|vulnerability|advisor(y|ies))/i,
-      /(monitor|track|patch)/i,
-    ],
+    present_patterns: [/(cve|vulnerability|advisor(y|ies))/i, /(monitor|track|patch)/i],
     default_severity: "warning",
   }),
 ];
@@ -806,8 +784,7 @@ const WFH_RULES: Rule[] = [
     citation: copyrightAct("101", "Work made for hire definition"),
     playbooks: [IPL_PLAYBOOK_WFH],
     missing_title: "§ 101 specially-commissioned recital missing",
-    missing_description:
-      "No clause was found reciting the § 101 work-for-hire category.",
+    missing_description: "No clause was found reciting the § 101 work-for-hire category.",
     explanation:
       "Under 17 U.S.C. § 101, a non-employee work is 'made for hire' only if (a) the parties expressly agree in writing AND (b) the work falls into one of nine categories (contribution to a collective work, part of a motion picture or audiovisual work, translation, supplementary work, compilation, instructional text, test, answer material, atlas). Outside those categories, an assignment is required instead.",
     recommendation:

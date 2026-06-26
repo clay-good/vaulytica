@@ -10,10 +10,7 @@ import {
   type CoherenceInput,
   type PostureCoherenceKind,
 } from "./posture-coherence.js";
-import type {
-  NegotiationPosture,
-  NegotiationTier,
-} from "../playbooks/custom-interpreter.js";
+import type { NegotiationPosture, NegotiationTier } from "../playbooks/custom-interpreter.js";
 
 /** Build a minimal posture from a `{ dimension: tier }` map (only the fields the engine reads). */
 function posture(map: Record<string, NegotiationTier>): NegotiationPosture {
@@ -32,7 +29,9 @@ function bundle(...docs: Array<[string, Record<string, NegotiationTier>]>): Cohe
 
 /** The coherence kind for the single dimension `Cap` across the given per-doc tiers. */
 async function coherenceOf(...tiers: NegotiationTier[]): Promise<PostureCoherenceKind> {
-  const docs = bundle(...tiers.map((t, i): [string, Record<string, NegotiationTier>] => [`doc${i}`, { Cap: t }]));
+  const docs = bundle(
+    ...tiers.map((t, i): [string, Record<string, NegotiationTier>] => [`doc${i}`, { Cap: t }]),
+  );
   const c = await bundlePostureCoherence(docs);
   return c.dimensions[0]!.coherence;
 }
@@ -65,7 +64,11 @@ describe("bundlePostureCoherence — coherence classification", () => {
   it("never ranks unstated as the binding floor (the §3 honesty contract)", async () => {
     // An unstated document is unranked; the floor is the weakest *stated* rung.
     const c = await bundlePostureCoherence(
-      bundle(["MSA", { Cap: "ideal" }], ["Order", { Cap: "acceptable" }], ["DPA", { Cap: "unevaluable" }]),
+      bundle(
+        ["MSA", { Cap: "ideal" }],
+        ["Order", { Cap: "acceptable" }],
+        ["DPA", { Cap: "unevaluable" }],
+      ),
     );
     const cap = c.dimensions[0]!;
     expect(cap.coherence).toBe("divergent");
@@ -89,7 +92,9 @@ describe("bundlePostureCoherence — binding floor", () => {
   });
 
   it("has no floor when no document states the front", async () => {
-    const c = await bundlePostureCoherence(bundle(["A", { Cap: "unevaluable" }], ["B", { Cap: "unevaluable" }]));
+    const c = await bundlePostureCoherence(
+      bundle(["A", { Cap: "unevaluable" }], ["B", { Cap: "unevaluable" }]),
+    );
     expect(c.dimensions[0]!.weakest_tier).toBeNull();
     expect(c.dimensions[0]!.weakest_documents).toEqual([]);
   });
@@ -118,8 +123,12 @@ describe("bundlePostureCoherence — structure & determinism", () => {
   });
 
   it("a re-ordered bundle is a different artifact (document order is meaningful)", async () => {
-    const ab = await bundlePostureCoherence(bundle(["A", { Cap: "ideal" }], ["B", { Cap: "acceptable" }]));
-    const ba = await bundlePostureCoherence(bundle(["B", { Cap: "acceptable" }], ["A", { Cap: "ideal" }]));
+    const ab = await bundlePostureCoherence(
+      bundle(["A", { Cap: "ideal" }], ["B", { Cap: "acceptable" }]),
+    );
+    const ba = await bundlePostureCoherence(
+      bundle(["B", { Cap: "acceptable" }], ["A", { Cap: "ideal" }]),
+    );
     expect(ab.coherence_hash).not.toBe(ba.coherence_hash);
   });
 
@@ -132,7 +141,9 @@ describe("bundlePostureCoherence — structure & determinism", () => {
 
 describe("hasDivergence — the CI gate predicate", () => {
   it("trips when any front is divergent", async () => {
-    const c = await bundlePostureCoherence(bundle(["A", { Cap: "ideal" }], ["B", { Cap: "below-acceptable" }]));
+    const c = await bundlePostureCoherence(
+      bundle(["A", { Cap: "ideal" }], ["B", { Cap: "below-acceptable" }]),
+    );
     expect(hasDivergence(c)).toBe(true);
   });
 

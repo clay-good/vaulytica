@@ -10,7 +10,10 @@ import {
   exposureLingers,
   buildCoherenceDurationJson,
 } from "../../src/report/coherence-duration.js";
-import type { NegotiationPosture, NegotiationTier } from "../../src/playbooks/custom-interpreter.js";
+import type {
+  NegotiationPosture,
+  NegotiationTier,
+} from "../../src/playbooks/custom-interpreter.js";
 
 function posture(map: Record<string, NegotiationTier>): NegotiationPosture {
   return {

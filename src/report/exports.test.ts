@@ -7,11 +7,7 @@ import {
   collectDeadlines,
 } from "./exports.js";
 import type { EngineRun, Finding, Severity } from "../engine/finding.js";
-import type {
-  DateReference,
-  ExtractedData,
-  Obligation,
-} from "../extract/types.js";
+import type { DateReference, ExtractedData, Obligation } from "../extract/types.js";
 
 // --- fixtures ---------------------------------------------------------------
 
@@ -23,7 +19,12 @@ function finding(rule_id: string, severity: Severity, position: number): Finding
     severity,
     title: `Issue with ${rule_id}`,
     description: "desc",
-    excerpt: { text: "excerpt", section_id: `s${position}`, start_offset: position, end_offset: position + 5 },
+    excerpt: {
+      text: "excerpt",
+      section_id: `s${position}`,
+      start_offset: position,
+      end_offset: position + 5,
+    },
     explanation: "Why this matters.",
     recommendation: "Fix the clause.",
     source_citations: [
@@ -97,10 +98,7 @@ function obligation(extra: Partial<Obligation>): Obligation {
 
 describe("buildFixListMarkdown", () => {
   it("groups findings by severity and renders checkboxes", () => {
-    const run = makeRun([
-      finding("MSA-006", "critical", 10),
-      finding("NDA-003", "warning", 20),
-    ]);
+    const run = makeRun([finding("MSA-006", "critical", 10), finding("NDA-003", "warning", 20)]);
     const md = buildFixListMarkdown(run);
     expect(md).toContain("# Vaulytica fix list");
     expect(md).toContain("## Critical (1)");

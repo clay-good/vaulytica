@@ -73,7 +73,13 @@ function collectBody(sections: readonly Section[]): string {
   return parts.join(" ");
 }
 
-type Row = { name: string; expected: V4SubDomain; predicted: V4SubDomain; confidence: number; runnerUp: V4SubDomain };
+type Row = {
+  name: string;
+  expected: V4SubDomain;
+  predicted: V4SubDomain;
+  confidence: number;
+  runnerUp: V4SubDomain;
+};
 
 let rows: Row[] = [];
 
@@ -119,7 +125,10 @@ describe("v4 sub-domain classifier — top-1 accuracy (Step 99)", () => {
       console.log(
         `top-1 ${correct}/${rows.length} = ${((100 * correct) / rows.length).toFixed(1)}%; misses:\n` +
           wrong
-            .map((w) => `  ${w.name}: exp ${w.expected} got ${w.predicted} (${w.confidence.toFixed(3)})`)
+            .map(
+              (w) =>
+                `  ${w.name}: exp ${w.expected} got ${w.predicted} (${w.confidence.toFixed(3)})`,
+            )
             .join("\n"),
       );
     }
@@ -137,7 +146,10 @@ describe("v4 sub-domain classifier — top-1 accuracy (Step 99)", () => {
     ];
     for (const [from, to] of confusions) {
       const leaked = rows.filter((r) => r.expected === from && r.predicted === to);
-      expect(leaked, `${from} leaking to ${to}: ${leaked.map((l) => l.name).join(", ")}`).toHaveLength(0);
+      expect(
+        leaked,
+        `${from} leaking to ${to}: ${leaked.map((l) => l.name).join(", ")}`,
+      ).toHaveLength(0);
     }
   });
 

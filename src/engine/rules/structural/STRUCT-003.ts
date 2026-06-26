@@ -68,9 +68,7 @@ export const rule: Rule = {
 
     // Strategy 1: a dedicated execution / signatures section anywhere
     // in the document. If found and it has ≥2 signature tokens, pass.
-    const execSectionParas = paragraphs.filter((p) =>
-      isInExecutionSection(ctx, p.sectionId),
-    );
+    const execSectionParas = paragraphs.filter((p) => isInExecutionSection(ctx, p.sectionId));
     if (execSectionParas.length > 0 && countSigSignals(execSectionParas) >= 2) return null;
 
     // Strategy 2: last 40% of non-exhibit paragraphs. Allow exhibits
@@ -89,7 +87,8 @@ export const rule: Rule = {
       if (countSigSignals(window) >= 2) return null;
     }
 
-    const last = (paragraphs.filter((p) => !p.inExhibit).slice(-1)[0] ?? paragraphs[paragraphs.length - 1])!;
+    const last = (paragraphs.filter((p) => !p.inExhibit).slice(-1)[0] ??
+      paragraphs[paragraphs.length - 1])!;
     const citations = [
       findStatuteCitation(ctx.dkb, "stat-ueta-section-7"),
       findStatuteCitation(ctx.dkb, "stat-15-usc-7001"),
@@ -104,7 +103,11 @@ export const rule: Rule = {
         "A contract without identifiable signatures may be unenforceable or invalid. Electronic signatures are permitted under ESIGN and state UETA equivalents, but the document must still record the parties' consent to be bound — typically via a 'By / Name / Title / Date' block.",
       recommendation:
         "Add a signature block for each party with lines for By, Name, Title, and Date. Electronic-signature platforms like DocuSign produce this automatically.",
-      position: { section_id: last.sectionId, start: last.start, end: last.start + last.text.length },
+      position: {
+        section_id: last.sectionId,
+        start: last.start,
+        end: last.start + last.text.length,
+      },
       source_citations: citations,
     });
   },

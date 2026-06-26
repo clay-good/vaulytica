@@ -49,12 +49,7 @@ export type ClauseLibraryEntry = {
 };
 
 export type ElectronicSignatureStandard = "UETA" | "ESIGN" | "ESRA" | "other";
-export type NonCompeteEnforceability =
-  | "enforced"
-  | "limited"
-  | "narrow"
-  | "void"
-  | "varies";
+export type NonCompeteEnforceability = "enforced" | "limited" | "narrow" | "void" | "varies";
 
 export type JurisdictionRecord = {
   id: string;

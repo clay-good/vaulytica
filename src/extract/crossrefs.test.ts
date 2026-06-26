@@ -62,7 +62,10 @@ describe("extractCrossRefs", () => {
           heading: "1. Terms",
           level: 1,
           paragraphs: [
-            { id: "", runs: [{ id: "", text: "Per Section 1.2(a)(ii) the fee applies.", start: 0, end: 0 }] },
+            {
+              id: "",
+              runs: [{ id: "", text: "Per Section 1.2(a)(ii) the fee applies.", start: 0, end: 0 }],
+            },
           ],
           children: [],
         },

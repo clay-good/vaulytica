@@ -180,6 +180,8 @@ describe("computeCoherenceRecoveryAffinityArtifacts (spec-v33 — document-free 
     );
     expect(outcome.ok).toBe(true);
     if (!outcome.ok) return;
-    expect(outcome.coupled).toBe(exposureRecoveryCoupled(await computeCoherenceRecoveryAffinity(cs)));
+    expect(outcome.coupled).toBe(
+      exposureRecoveryCoupled(await computeCoherenceRecoveryAffinity(cs)),
+    );
   });
 });

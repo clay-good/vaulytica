@@ -134,9 +134,7 @@ async function main(): Promise<void> {
     },
     {
       heading: "3. Governing Law",
-      paragraphs: [
-        `This Agreement shall be governed by the laws of the State of Delaware.`,
-      ],
+      paragraphs: [`This Agreement shall be governed by the laws of the State of Delaware.`],
     },
     {
       heading: "4. Signatures",
@@ -190,9 +188,7 @@ async function main(): Promise<void> {
     },
     {
       heading: "16. Governing Law",
-      paragraphs: [
-        `This Agreement shall be governed by the laws of the State of Delaware.`,
-      ],
+      paragraphs: [`This Agreement shall be governed by the laws of the State of Delaware.`],
     },
     {
       heading: "17. Signatures",
@@ -225,15 +221,11 @@ async function main(): Promise<void> {
     },
     {
       heading: "1. Position and Duties",
-      paragraphs: [
-        `Employee shall use best efforts to perform the duties of Senior Engineer.`,
-      ],
+      paragraphs: [`Employee shall use best efforts to perform the duties of Senior Engineer.`],
     },
     {
       heading: "2. Compensation",
-      paragraphs: [
-        `Base salary: $180,000 per year, paid bi-weekly.`,
-      ],
+      paragraphs: [`Base salary: $180,000 per year, paid bi-weekly.`],
     },
     {
       heading: "3. Confidentiality",
@@ -331,9 +323,7 @@ async function main(): Promise<void> {
     },
     {
       heading: "3. Insurance",
-      paragraphs: [
-        `Tenant shall maintain commercial general liability insurance during the Term.`,
-      ],
+      paragraphs: [`Tenant shall maintain commercial general liability insurance during the Term.`],
     },
     {
       heading: "4. Indemnification",
@@ -350,9 +340,7 @@ async function main(): Promise<void> {
     },
     {
       heading: "6. Governing Law",
-      paragraphs: [
-        `This Lease shall be governed by the laws of the State of New York.`,
-      ],
+      paragraphs: [`This Lease shall be governed by the laws of the State of New York.`],
     },
     {
       heading: "7. Signatures",
@@ -422,9 +410,7 @@ async function main(): Promise<void> {
     },
     {
       heading: "7. Governing Law",
-      paragraphs: [
-        `This Agreement shall be governed by the laws of the State of California.`,
-      ],
+      paragraphs: [`This Agreement shall be governed by the laws of the State of California.`],
     },
     {
       heading: "8. Signatures",
@@ -464,15 +450,11 @@ async function main(): Promise<void> {
     },
     {
       heading: "3. Survival",
-      paragraphs: [
-        `The notice provisions of this Agreement shall survive termination.`,
-      ],
+      paragraphs: [`The notice provisions of this Agreement shall survive termination.`],
     },
     {
       heading: "4. Governing Law",
-      paragraphs: [
-        `This Agreement shall be governed by the laws of the State of Delaware.`,
-      ],
+      paragraphs: [`This Agreement shall be governed by the laws of the State of Delaware.`],
     },
     {
       heading: "5. Signatures",
@@ -539,9 +521,7 @@ async function main(): Promise<void> {
     },
     {
       heading: "7. Governing Law",
-      paragraphs: [
-        `This Agreement shall be governed by the laws of the State of New York.`,
-      ],
+      paragraphs: [`This Agreement shall be governed by the laws of the State of New York.`],
     },
     {
       heading: "8. Signatures",
@@ -580,9 +560,7 @@ async function main(): Promise<void> {
     },
     {
       heading: "2. Fees",
-      paragraphs: [
-        `Customer shall pay all fees on Net 30 terms.`,
-      ],
+      paragraphs: [`Customer shall pay all fees on Net 30 terms.`],
     },
     {
       heading: "3. Conditions to Continued Performance",
@@ -671,9 +649,7 @@ async function main(): Promise<void> {
     },
     {
       heading: "6. Governing Law",
-      paragraphs: [
-        `This Agreement shall be governed by the laws of the State of Delaware.`,
-      ],
+      paragraphs: [`This Agreement shall be governed by the laws of the State of Delaware.`],
     },
     {
       heading: "7. Signatures",
@@ -705,9 +681,7 @@ async function main(): Promise<void> {
     },
     {
       heading: "2. Compensation",
-      paragraphs: [
-        `Customer shall pay Consultant a flat monthly retainer of $15,000.00.`,
-      ],
+      paragraphs: [`Customer shall pay Consultant a flat monthly retainer of $15,000.00.`],
     },
     {
       heading: "3. Deliverables and Best Efforts",
@@ -742,9 +716,7 @@ async function main(): Promise<void> {
     },
     {
       heading: "8. Governing Law",
-      paragraphs: [
-        `This Agreement shall be governed by the laws of the State of California.`,
-      ],
+      paragraphs: [`This Agreement shall be governed by the laws of the State of California.`],
     },
     {
       heading: "9. Signatures",
@@ -769,9 +741,7 @@ async function main(): Promise<void> {
     },
     {
       heading: "1. Services",
-      paragraphs: [
-        `Provider shall use best efforts to deliver the Deliverables described below.`,
-      ],
+      paragraphs: [`Provider shall use best efforts to deliver the Deliverables described below.`],
     },
     {
       heading: "2. Deliverables and Milestones",
@@ -853,9 +823,7 @@ async function main(): Promise<void> {
     },
     {
       heading: "6. Governing Law",
-      paragraphs: [
-        `This Agreement shall be governed by the laws of the State of Delaware.`,
-      ],
+      paragraphs: [`This Agreement shall be governed by the laws of the State of Delaware.`],
     },
     {
       heading: "7. Signatures",
@@ -898,9 +866,7 @@ async function main(): Promise<void> {
     },
     {
       heading: "4. Governing Law",
-      paragraphs: [
-        `This Agreement shall be governed by the laws of the State of New York.`,
-      ],
+      paragraphs: [`This Agreement shall be governed by the laws of the State of New York.`],
     },
     {
       heading: "5. Signatures",
@@ -925,9 +891,7 @@ async function main(): Promise<void> {
     },
     {
       heading: "1. Compensation",
-      paragraphs: [
-        `Base salary: $140,000 per year, paid bi-weekly.`,
-      ],
+      paragraphs: [`Base salary: $140,000 per year, paid bi-weekly.`],
     },
     {
       heading: "2. Training Repayment",
@@ -950,9 +914,7 @@ async function main(): Promise<void> {
     },
     {
       heading: "5. Governing Law",
-      paragraphs: [
-        `This Agreement shall be governed by the laws of the State of California.`,
-      ],
+      paragraphs: [`This Agreement shall be governed by the laws of the State of California.`],
     },
     {
       heading: "6. Signatures",
@@ -1044,9 +1006,7 @@ async function main(): Promise<void> {
     },
     {
       heading: "5. Governing Law",
-      paragraphs: [
-        `This Agreement shall be governed by the laws of the State of California.`,
-      ],
+      paragraphs: [`This Agreement shall be governed by the laws of the State of California.`],
     },
     {
       heading: "6. Signatures",
@@ -1098,9 +1058,7 @@ async function main(): Promise<void> {
     },
     {
       heading: "5. Governing Law",
-      paragraphs: [
-        `This Agreement shall be governed by the laws of the State of Delaware.`,
-      ],
+      paragraphs: [`This Agreement shall be governed by the laws of the State of Delaware.`],
     },
     {
       heading: "6. Signatures",
@@ -1149,9 +1107,7 @@ async function main(): Promise<void> {
     },
     {
       heading: "5. Governing Law",
-      paragraphs: [
-        `This Agreement shall be governed by the laws of the State of New York.`,
-      ],
+      paragraphs: [`This Agreement shall be governed by the laws of the State of New York.`],
     },
     {
       heading: "6. Signatures",
@@ -1201,9 +1157,7 @@ async function main(): Promise<void> {
     },
     {
       heading: "5. Governing Law",
-      paragraphs: [
-        `This Agreement shall be governed by the laws of the State of Delaware.`,
-      ],
+      paragraphs: [`This Agreement shall be governed by the laws of the State of Delaware.`],
     },
     {
       heading: "6. Signatures",
@@ -1261,9 +1215,7 @@ async function main(): Promise<void> {
     },
     {
       heading: "6. Governing Law",
-      paragraphs: [
-        `This Agreement shall be governed by the laws of the State of Delaware.`,
-      ],
+      paragraphs: [`This Agreement shall be governed by the laws of the State of Delaware.`],
     },
     {
       heading: "7. Signatures",
@@ -1289,9 +1241,7 @@ async function main(): Promise<void> {
     },
     {
       heading: "1. Term and Rent",
-      paragraphs: [
-        `Initial Term: five (5) years. Base Rent: $30,000 per month.`,
-      ],
+      paragraphs: [`Initial Term: five (5) years. Base Rent: $30,000 per month.`],
     },
     {
       heading: "2. Operating Expenses",
@@ -1325,15 +1275,11 @@ async function main(): Promise<void> {
     },
     {
       heading: "7. Insurance",
-      paragraphs: [
-        `Tenant shall maintain commercial general liability insurance during the Term.`,
-      ],
+      paragraphs: [`Tenant shall maintain commercial general liability insurance during the Term.`],
     },
     {
       heading: "8. Governing Law",
-      paragraphs: [
-        `This Lease shall be governed by the laws of the State of New York.`,
-      ],
+      paragraphs: [`This Lease shall be governed by the laws of the State of New York.`],
     },
     {
       heading: "9. Signatures",
@@ -1359,9 +1305,7 @@ async function main(): Promise<void> {
     },
     {
       heading: "1. Rent and Term",
-      paragraphs: [
-        `Initial Term: 12 months. Base Rent: $2,500 per month.`,
-      ],
+      paragraphs: [`Initial Term: 12 months. Base Rent: $2,500 per month.`],
     },
     {
       heading: "2. Security Deposit",
@@ -1395,9 +1339,7 @@ async function main(): Promise<void> {
     },
     {
       heading: "7. Governing Law",
-      paragraphs: [
-        `This Agreement shall be governed by the laws of the State of California.`,
-      ],
+      paragraphs: [`This Agreement shall be governed by the laws of the State of California.`],
     },
     {
       heading: "8. Signatures",
@@ -1462,9 +1404,7 @@ async function main(): Promise<void> {
     },
     {
       heading: "7. Governing Law",
-      paragraphs: [
-        `This Agreement shall be governed by the laws of the State of California.`,
-      ],
+      paragraphs: [`This Agreement shall be governed by the laws of the State of California.`],
     },
     {
       heading: "8. Signatures",
@@ -1489,6 +1429,6 @@ async function main(): Promise<void> {
 }
 
 void main().catch((err) => {
-  process.stderr.write(`${err instanceof Error ? err.stack ?? err.message : String(err)}\n`);
+  process.stderr.write(`${err instanceof Error ? (err.stack ?? err.message) : String(err)}\n`);
   process.exit(1);
 });

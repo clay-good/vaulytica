@@ -19,9 +19,7 @@ const SUBP_RX = /\b(?:sub[- ]?processor|subcontractor)s?\b/i;
 const NOTICE_RX =
   /\b(?:no less than |at least |minimum |with )?(\d{1,3})\s+(?:business days?|calendar days?|days?)['’]?\s+(?:prior )?(?:written )?notice\b/i;
 
-export function extractSubprocessorInventory(
-  tree: DocumentTree,
-): SubprocessorInventory | null {
+export function extractSubprocessorInventory(tree: DocumentTree): SubprocessorInventory | null {
   let best: SubprocessorInventory | null = null;
   forEachParagraph(tree, (ctx) => {
     const m = SUBP_RX.exec(ctx.text);
@@ -51,14 +49,15 @@ export function extractSubprocessorInventory(
 
     const objection = /\bobject\b|\bobjection\b|\breasonable objection\b/i.test(text);
 
-    const consequence: SubprocessorObjectionConsequence =
-      /\bterminate for convenience\b/i.test(text)
-        ? "terminate-for-convenience"
-        : /\bterminate the affected services\b|\bterminate the impacted services\b/i.test(text)
-          ? "terminate-affected-services"
-          : objection
-            ? "unspecified"
-            : "no-right";
+    const consequence: SubprocessorObjectionConsequence = /\bterminate for convenience\b/i.test(
+      text,
+    )
+      ? "terminate-for-convenience"
+      : /\bterminate the affected services\b|\bterminate the impacted services\b/i.test(text)
+        ? "terminate-affected-services"
+        : objection
+          ? "unspecified"
+          : "no-right";
 
     const flow =
       /\bsame (?:data protection )?obligations\b|\bequivalent (?:data protection )?obligations\b|\bflow[- ]down\b/i.test(

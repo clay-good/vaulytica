@@ -44,13 +44,13 @@ export type CitationFamily = "us-statutory" | "eu" | "standard" | "secondary" | 
  * parenthetical year.
  */
 const US_LEGAL_PATTERNS: RegExp[] = [
-  /\bU\.?S\.?C\.?\s*§/i,        // 9 U.S.C. § 2
-  /\bC\.?F\.?R\.?\s*§/i,        // 17 C.F.R. § 240; 45 C.F.R. § 164.410(a)(1)
-  /\bPub\.?\s*L\.?\s*\d/i,       // Pub. L. 116-...
-  /\bStat\.?\s*\d/i,             // 86 Stat. 1241
-  /\bU\.?S\.?\s+\d+\b/,          // 410 U.S. 113
+  /\bU\.?S\.?C\.?\s*§/i, // 9 U.S.C. § 2
+  /\bC\.?F\.?R\.?\s*§/i, // 17 C.F.R. § 240; 45 C.F.R. § 164.410(a)(1)
+  /\bPub\.?\s*L\.?\s*\d/i, // Pub. L. 116-...
+  /\bStat\.?\s*\d/i, // 86 Stat. 1241
+  /\bU\.?S\.?\s+\d+\b/, // 410 U.S. 113
   /^[A-Z][a-z]+\.?\s*(?:Code|Stat\.?|Rev\.?)\s*§/, // Cal. Civ. Code § 1542
-  /\bUCC\s*§/i,                  // UCC § 2-201
+  /\bUCC\s*§/i, // UCC § 2-201
 ];
 
 /**
@@ -58,9 +58,9 @@ const US_LEGAL_PATTERNS: RegExp[] = [
  * to the citation, so no parenthetical is appended.
  */
 const EU_PATTERNS: RegExp[] = [
-  /\bGDPR\b/i,                              // GDPR Art. 28; UK GDPR
-  /\bRegulation\s*\(EU\)\s*\d{4}\/\d+/i,    // Regulation (EU) 2016/679
-  /\bDirective\s*\d{4}\/\d+/i,              // Directive 2016/680; 2002/58/EC
+  /\bGDPR\b/i, // GDPR Art. 28; UK GDPR
+  /\bRegulation\s*\(EU\)\s*\d{4}\/\d+/i, // Regulation (EU) 2016/679
+  /\bDirective\s*\d{4}\/\d+/i, // Directive 2016/680; 2002/58/EC
 ];
 
 /**
@@ -68,16 +68,16 @@ const EU_PATTERNS: RegExp[] = [
  * intrinsic to the citation.
  */
 const STANDARD_PATTERNS: RegExp[] = [
-  /\bISO(?:\/IEC)?\s*\d/i,                  // ISO/IEC 27001:2022
-  /\bNIST\b/i,                              // NIST SP 800-53 Rev. 5; NIST AI RMF 1.0
+  /\bISO(?:\/IEC)?\s*\d/i, // ISO/IEC 27001:2022
+  /\bNIST\b/i, // NIST SP 800-53 Rev. 5; NIST AI RMF 1.0
 ];
 
 /**
  * Secondary sources — Restatements and model/uniform acts.
  */
 const SECONDARY_PATTERNS: RegExp[] = [
-  /\bRestatement\b/i,                       // Restatement (Third) of Unfair Competition § 39
-  /\b(?:Model|Uniform)\s+[A-Z]/,            // Uniform Easement Relocation Act; ABA Model Rule
+  /\bRestatement\b/i, // Restatement (Third) of Unfair Competition § 39
+  /\b(?:Model|Uniform)\s+[A-Z]/, // Uniform Easement Relocation Act; ABA Model Rule
 ];
 
 /**

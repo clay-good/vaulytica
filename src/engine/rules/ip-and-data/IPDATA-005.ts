@@ -8,12 +8,22 @@ export const rule: Rule = {
   name: "Data regime reference (GDPR / CCPA / HIPAA)",
   category: "ip-and-data",
   default_severity: "info",
-  description: "Flags data-heavy contracts that lack references to the applicable data-protection regime.",
+  description:
+    "Flags data-heavy contracts that lack references to the applicable data-protection regime.",
   dkb_citations: ["stat-gdpr-art-28", "stat-ccpa-1798-140", "stat-45-cfr-164-504"],
   check(ctx: RuleContext): Finding | null {
-    const personalData = firstParagraphMatch(ctx, /\bpersonal\s+(?:data|information)\b|\bprotected\s+health\s+information\b|\bPHI\b/i);
+    const personalData = firstParagraphMatch(
+      ctx,
+      /\bpersonal\s+(?:data|information)\b|\bprotected\s+health\s+information\b|\bPHI\b/i,
+    );
     if (!personalData) return null;
-    if (firstParagraphMatch(ctx, /\b(?:GDPR|General\s+Data\s+Protection\s+Regulation|CCPA|California\s+Consumer\s+Privacy\s+Act|HIPAA|Business\s+Associate\s+Agreement|BAA)\b/i)) return null;
+    if (
+      firstParagraphMatch(
+        ctx,
+        /\b(?:GDPR|General\s+Data\s+Protection\s+Regulation|CCPA|California\s+Consumer\s+Privacy\s+Act|HIPAA|Business\s+Associate\s+Agreement|BAA)\b/i,
+      )
+    )
+      return null;
     return emit(ctx, rule, {
       title: "Data-regime references missing",
       description: "Contract references personal data but does not cite GDPR / CCPA / HIPAA.",

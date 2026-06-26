@@ -102,11 +102,7 @@ function detectFallback(tail: string): string | undefined {
   return m?.[1]?.trim() || undefined;
 }
 
-function runRegex(
-  re: RegExp,
-  text: string,
-  fn: (m: RegExpExecArray) => void,
-): void {
+function runRegex(re: RegExp, text: string, fn: (m: RegExpExecArray) => void): void {
   re.lastIndex = 0;
   let m: RegExpExecArray | null;
   while ((m = re.exec(text)) !== null) fn(m);

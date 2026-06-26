@@ -126,9 +126,7 @@ export async function runV3Fixture(path: string, fileName?: string): Promise<Run
 
   const titleSource = ingest.tree.sections[0]?.heading ?? name;
   const bodyParts: string[] = [];
-  const walkSections = (
-    sections: import("../../../src/ingest/types.js").Section[],
-  ): void => {
+  const walkSections = (sections: import("../../../src/ingest/types.js").Section[]): void => {
     for (const s of sections) {
       for (const p of s.paragraphs) {
         for (const r of p.runs) bodyParts.push(r.text);
@@ -150,9 +148,7 @@ export async function runV3Fixture(path: string, fileName?: string): Promise<Run
     ctx: { tree: ingest.tree, extracted, dkb, playbook },
     source_file: { name, sha256: ingest.sha256, size_bytes: ingest.tree.sections.length },
     playbook_match_confidence: forced ? 1 : match.confidence,
-    playbook_match_reasoning: forced
-      ? `forced via sidecar to ${forced}`
-      : match.reasoning,
+    playbook_match_reasoning: forced ? `forced via sidecar to ${forced}` : match.reasoning,
     executed_at: "",
   });
 
@@ -168,9 +164,7 @@ async function readForcedPlaybook(fixturePath: string): Promise<string | null> {
 export async function listV3Fixtures(dir: string): Promise<string[]> {
   if (!existsSync(dir)) return [];
   const entries = await readdir(dir);
-  return entries
-    .filter((n) => n.endsWith(".docx") || n.endsWith(".txt"))
-    .sort();
+  return entries.filter((n) => n.endsWith(".docx") || n.endsWith(".txt")).sort();
 }
 
 function basename(p: string): string {

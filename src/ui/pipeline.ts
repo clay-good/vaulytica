@@ -376,9 +376,7 @@ export async function prepareDocument(
       walkSections(s.children as typeof sections);
     }
   };
-  walkSections(
-    ingest.tree.sections as unknown as Parameters<typeof walkSections>[0],
-  );
+  walkSections(ingest.tree.sections as unknown as Parameters<typeof walkSections>[0]);
   const bodyText = bodyParts.join(" ");
   // Family-gated candidate set: launch playbooks always, plus the v3/v4
   // playbooks the document clearly signals (spec-v6 full-catalog wiring).
@@ -946,9 +944,7 @@ export async function prepareBundle(
     // Spec-v4 §8: the bundle path is for ≥ 2 ingestable documents.
     // Smaller bundles are routed through the single-doc pipeline by the
     // UI; this error is the defensive fallback if a caller bypasses it.
-    throw new Error(
-      `Bundle requires at least 2 ingestable documents; got ${accepted.length}.`,
-    );
+    throw new Error(`Bundle requires at least 2 ingestable documents; got ${accepted.length}.`);
   }
 
   // 3. Ingest each accepted entry (parallel). Reuse the cached DKB.
@@ -999,9 +995,7 @@ export async function prepareBundle(
         walkSections(s.children as typeof sections);
       }
     };
-    walkSections(
-      ingest.tree.sections as unknown as Parameters<typeof walkSections>[0],
-    );
+    walkSections(ingest.tree.sections as unknown as Parameters<typeof walkSections>[0]);
 
     const titleSource = ingest.tree.sections[0]?.heading ?? entry.filename;
     const bundleBody = bodyParts.join(" ");

@@ -296,7 +296,9 @@ describe("computeCoherenceAffinity (spec-v32 — pairwise co-fall coupling)", ()
     const aff = await computeCoherenceAffinity(rounds);
     const summary = renderCoherenceAffinitySummary(aff);
     expect(summary).toContain("Coherence exposure co-fall affinity across 2 rounds");
-    expect(summary).toMatch(/tightest pairing: Cap \+ Term — fell together 100% of the steps either fell/);
+    expect(summary).toMatch(
+      /tightest pairing: Cap \+ Term — fell together 100% of the steps either fell/,
+    );
     expect(summary).toMatch(/1 coupled/);
     expect(summary).toMatch(/affinity_hash: [0-9a-f]{64}/);
 

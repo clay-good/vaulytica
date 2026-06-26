@@ -59,10 +59,7 @@ export {
   type V4ClassifierInput,
 } from "./classifier.js";
 
-import {
-  classifyV4SubDomain,
-  type SubDomainFeatures,
-} from "./classifier.js";
+import { classifyV4SubDomain, type SubDomainFeatures } from "./classifier.js";
 
 /**
  * Convenience entry: run the stage-1 sub-domain classifier. The

@@ -38,18 +38,12 @@ describe("FIN-009 — late fee above 18%/year", () => {
   });
 
   it("is silent at 1.5% per month (18%/year — boundary)", () => {
-    const ctx = buildContext([
-      "Payment Terms",
-      "A late fee of 1.5% per month applies.",
-    ]);
+    const ctx = buildContext(["Payment Terms", "A late fee of 1.5% per month applies."]);
     expect(FIN_009.check(ctx)).toBeNull();
   });
 
   it("is silent when no rate is specified", () => {
-    const ctx = buildContext([
-      "Fees",
-      "Customer shall pay all invoices within thirty (30) days.",
-    ]);
+    const ctx = buildContext(["Fees", "Customer shall pay all invoices within thirty (30) days."]);
     expect(FIN_009.check(ctx)).toBeNull();
   });
 });

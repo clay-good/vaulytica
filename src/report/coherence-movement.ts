@@ -297,7 +297,9 @@ export function renderCoherenceMovementSummary(movement: CoherenceMovement): str
     if (!floorMoved && !shifted) continue;
     const parts: string[] = [];
     if (floorMoved) {
-      parts.push(`binding floor ${arrow[f.floor_movement]} (${f.base_floor ?? "—"} → ${f.revised_floor ?? "—"})`);
+      parts.push(
+        `binding floor ${arrow[f.floor_movement]} (${f.base_floor ?? "—"} → ${f.revised_floor ?? "—"})`,
+      );
     }
     if (shifted) parts.push(`${f.coherence_shift} (${f.base_coherence} → ${f.revised_coherence})`);
     const mark = f.floor_movement === "regressed" || f.coherence_shift === "fractured" ? "⚠" : "•";

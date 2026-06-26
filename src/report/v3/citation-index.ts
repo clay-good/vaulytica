@@ -28,9 +28,7 @@ export function renderCitationIndex(
   dkbBuildDate?: string,
 ): (Paragraph | Table)[] {
   if (bibliography.length === 0) return [];
-  const rows: TableRow[] = [
-    headerRow(["#", "Citation", "URL", "DKB", "Retrieved"]),
-  ];
+  const rows: TableRow[] = [headerRow(["#", "Citation", "URL", "DKB", "Retrieved"])];
   for (const b of bibliography) {
     rows.push(
       new TableRow({
@@ -48,7 +46,12 @@ export function renderCitationIndex(
     );
   }
   const caption: Paragraph[] = dkbBuildDate
-    ? [para({ text: `Citations as of ${dkbBuildDate.slice(0, 10)} (DKB build date).`, italics: true })]
+    ? [
+        para({
+          text: `Citations as of ${dkbBuildDate.slice(0, 10)} (DKB build date).`,
+          italics: true,
+        }),
+      ]
     : [];
   return [
     h1("Citation Index"),

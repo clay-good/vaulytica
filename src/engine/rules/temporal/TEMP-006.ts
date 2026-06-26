@@ -11,7 +11,10 @@ export const rule: Rule = {
   description: "Detects 'survives termination' clauses.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
-    const hit = firstParagraphMatch(ctx, /\b(?:survive|survives|surviving)\b[\s\S]{0,40}\btermination\b/i);
+    const hit = firstParagraphMatch(
+      ctx,
+      /\b(?:survive|survives|surviving)\b[\s\S]{0,40}\btermination\b/i,
+    );
     if (!hit) return null;
     return emit(ctx, rule, {
       title: "Survival clause present",

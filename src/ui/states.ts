@@ -220,7 +220,12 @@ export type DropzoneState =
        * never a legal conclusion. Optional / back-compat: omitting hides it.
        */
       negotiation_posture?: {
-        counts: { ideal: number; acceptable: number; below_acceptable: number; unevaluable: number };
+        counts: {
+          ideal: number;
+          acceptable: number;
+          below_acceptable: number;
+          unevaluable: number;
+        };
         positions: ReadonlyArray<{
           dimension: string;
           tier: "ideal" | "acceptable" | "below-acceptable" | "unevaluable";
@@ -609,14 +614,12 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
   if (state.kind === "complete") {
     select(dz, "complete-filename")!.textContent = state.filename;
     select(dz, "counts")!.innerHTML = countsHtml(state.counts);
-    const baseReasoning =
-      state.match_reasoning ?? `Auto-selected ${state.playbook_name}.`;
-    const legacySuffix =
-      state.playbook_deprecation
-        ? state.playbook_deprecation.superseded_by
-          ? ` Legacy playbook — superseded by ${state.playbook_deprecation.superseded_by}.`
-          : " Legacy playbook."
-        : "";
+    const baseReasoning = state.match_reasoning ?? `Auto-selected ${state.playbook_name}.`;
+    const legacySuffix = state.playbook_deprecation
+      ? state.playbook_deprecation.superseded_by
+        ? ` Legacy playbook — superseded by ${state.playbook_deprecation.superseded_by}.`
+        : " Legacy playbook."
+      : "";
     select(dz, "reasoning")!.textContent = `${baseReasoning}${legacySuffix}`;
     renderV3FamilyChip(dz, state.v3_family);
     renderDelivery(dz, state.delivery);
@@ -654,17 +657,29 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
       // spec-v9 Thrust B — closing checklist, shown only when there is a readiness item.
       if (ex.closing_checklist_md_blob && ex.closing_checklist_md_filename) {
         select<HTMLButtonElement>(dz, "export-closing-checklist-md")!.removeAttribute("hidden");
-        wire("export-closing-checklist-md", ex.closing_checklist_md_blob, ex.closing_checklist_md_filename);
+        wire(
+          "export-closing-checklist-md",
+          ex.closing_checklist_md_blob,
+          ex.closing_checklist_md_filename,
+        );
       }
       if (ex.closing_checklist_csv_blob && ex.closing_checklist_csv_filename) {
         select<HTMLButtonElement>(dz, "export-closing-checklist-csv")!.removeAttribute("hidden");
-        wire("export-closing-checklist-csv", ex.closing_checklist_csv_blob, ex.closing_checklist_csv_filename);
+        wire(
+          "export-closing-checklist-csv",
+          ex.closing_checklist_csv_blob,
+          ex.closing_checklist_csv_filename,
+        );
       }
       // spec-v9 Thrust C — critical-dates calendar / register, shown only when present.
       if (ex.critical_dates_ics_blob && ex.critical_dates_ics_filename) {
         const btn = select<HTMLButtonElement>(dz, "export-critical-dates-ics")!;
         btn.removeAttribute("hidden");
-        wire("export-critical-dates-ics", ex.critical_dates_ics_blob, ex.critical_dates_ics_filename);
+        wire(
+          "export-critical-dates-ics",
+          ex.critical_dates_ics_blob,
+          ex.critical_dates_ics_filename,
+        );
       }
       if (ex.critical_dates_md_blob && ex.critical_dates_md_filename) {
         const btn = select<HTMLButtonElement>(dz, "export-critical-dates-md")!;
@@ -678,11 +693,19 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
       }
       if (ex.negotiation_posture_md_blob && ex.negotiation_posture_md_filename) {
         select<HTMLButtonElement>(dz, "export-negotiation-md")!.removeAttribute("hidden");
-        wire("export-negotiation-md", ex.negotiation_posture_md_blob, ex.negotiation_posture_md_filename);
+        wire(
+          "export-negotiation-md",
+          ex.negotiation_posture_md_blob,
+          ex.negotiation_posture_md_filename,
+        );
       }
       if (ex.negotiation_posture_csv_blob && ex.negotiation_posture_csv_filename) {
         select<HTMLButtonElement>(dz, "export-negotiation-csv")!.removeAttribute("hidden");
-        wire("export-negotiation-csv", ex.negotiation_posture_csv_blob, ex.negotiation_posture_csv_filename);
+        wire(
+          "export-negotiation-csv",
+          ex.negotiation_posture_csv_blob,
+          ex.negotiation_posture_csv_filename,
+        );
       }
       wire("export-html", ex.html_blob, ex.html_filename);
       wire("export-sarif", ex.sarif_blob, ex.sarif_filename);
@@ -754,8 +777,7 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
     }
   }
   if (state.kind === "bundle-complete") {
-    select(dz, "bundle-title")!.textContent =
-      `${state.document_count} documents analyzed`;
+    select(dz, "bundle-title")!.textContent = `${state.document_count} documents analyzed`;
     select(dz, "counts")!.innerHTML = countsHtml(state.counts);
     const summaryEl = select(dz, "cross-doc-summary")!;
     const renderCrossDocSummary = (active: boolean): void => {
@@ -971,9 +993,7 @@ function renderMultiDocCards(
     .map((d, i) => {
       const conf = typeof d.detection_confidence === "number" ? d.detection_confidence : null;
       const confSuffix =
-        conf !== null
-          ? ` <span class="multi-doc-card-confidence">(${conf.toFixed(2)})</span>`
-          : "";
+        conf !== null ? ` <span class="multi-doc-card-confidence">(${conf.toFixed(2)})</span>` : "";
       const family = d.family_label
         ? `<span class="multi-doc-card-family">${escapeHtml(d.family_label)}${confSuffix}</span>`
         : "";
@@ -1008,30 +1028,26 @@ function renderMultiDocCards(
   // the shared `[data-role="download-status"]` element rendered in
   // the bundle-complete template (aria-live="polite").
   const status = select<HTMLElement>(dz, "download-status");
-  list.querySelectorAll<HTMLButtonElement>('[data-role="card-docx-download"]').forEach(
-    (btn) => {
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const idx = Number(btn.getAttribute("data-card-index"));
-        const doc = documents[idx];
-        if (doc && status) {
-          void saveBlob(doc.docx_blob, doc.docx_filename, status);
-        }
-      });
-    },
-  );
-  list.querySelectorAll<HTMLButtonElement>('[data-role="card-json-download"]').forEach(
-    (btn) => {
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const idx = Number(btn.getAttribute("data-card-index"));
-        const doc = documents[idx];
-        if (doc && status) {
-          void saveBlob(doc.json_blob, doc.json_filename, status);
-        }
-      });
-    },
-  );
+  list.querySelectorAll<HTMLButtonElement>('[data-role="card-docx-download"]').forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const idx = Number(btn.getAttribute("data-card-index"));
+      const doc = documents[idx];
+      if (doc && status) {
+        void saveBlob(doc.docx_blob, doc.docx_filename, status);
+      }
+    });
+  });
+  list.querySelectorAll<HTMLButtonElement>('[data-role="card-json-download"]').forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const idx = Number(btn.getAttribute("data-card-index"));
+      const doc = documents[idx];
+      if (doc && status) {
+        void saveBlob(doc.json_blob, doc.json_filename, status);
+      }
+    });
+  });
 }
 
 /**
@@ -1111,7 +1127,12 @@ function renderV3FamilyChip(
 function renderPlaybookProvenance(
   dz: HTMLElement,
   custom:
-    | { name: string; mode: "augment" | "replace"; custom_finding_count: number; unevaluable_count: number }
+    | {
+        name: string;
+        mode: "augment" | "replace";
+        custom_finding_count: number;
+        unevaluable_count: number;
+      }
     | undefined,
 ): void {
   const el = select<HTMLElement>(dz, "playbook-provenance");
@@ -1122,7 +1143,8 @@ function renderPlaybookProvenance(
     return;
   }
   el.hidden = false;
-  const modeWord = custom.mode === "replace" ? "only your playbook" : "your playbook + the built-in catalog";
+  const modeWord =
+    custom.mode === "replace" ? "only your playbook" : "your playbook + the built-in catalog";
   const findings = `${custom.custom_finding_count} finding${custom.custom_finding_count === 1 ? "" : "s"} from ${escapeHtml(custom.name)}`;
   const unevaluable =
     custom.unevaluable_count > 0
@@ -1214,8 +1236,7 @@ function renderDelivery(
         .slice(0, 6)
         .map((e) => `<li>${escapeHtml(e)}</li>`)
         .join("");
-      const more =
-        f.count > 6 ? `<li class="delivery-more">…and ${f.count - 6} more</li>` : "";
+      const more = f.count > 6 ? `<li class="delivery-more">…and ${f.count - 6} more</li>` : "";
       return `<li class="delivery-card delivery-${f.severity}">
         <div class="delivery-card-head"><span class="delivery-rule">${escapeHtml(
           f.rule_id,
@@ -1311,8 +1332,12 @@ function renderNegotiationPosture(
     .map((p) => {
       const tier = NEGOTIATION_TIER_LABEL[p.tier] ?? { label: p.tier, cls: "cd-unresolved" };
       const detail = p.detail ?? p.reason ?? "";
-      const guide = p.guidance ? `<div class="np-guide">Guidance: ${escapeHtml(p.guidance)}</div>` : "";
-      const where = p.section_id ? ` <span class="cd-kind">§${escapeHtml(p.section_id)}</span>` : "";
+      const guide = p.guidance
+        ? `<div class="np-guide">Guidance: ${escapeHtml(p.guidance)}</div>`
+        : "";
+      const where = p.section_id
+        ? ` <span class="cd-kind">§${escapeHtml(p.section_id)}</span>`
+        : "";
       return `<li class="np-card ${tier.cls}">
         <div class="np-head"><span class="np-dim">${escapeHtml(p.dimension)}</span> <span class="np-tier">${escapeHtml(tier.label)}</span>${where}</div>
         ${detail ? `<div class="np-detail">${escapeHtml(detail)}</div>` : ""}
@@ -1585,7 +1610,8 @@ function renderCriticalDates(
       if (r.anchor) meta.push(`anchor: ${escapeHtml(r.anchor)}`);
       if (r.responsible) meta.push(`responsible: ${escapeHtml(r.responsible)}`);
       if (r.section) meta.push(`§${escapeHtml(r.section)}`);
-      const reason = !r.resolved && r.reason ? `<div class="cd-reason">${escapeHtml(r.reason)}</div>` : "";
+      const reason =
+        !r.resolved && r.reason ? `<div class="cd-reason">${escapeHtml(r.reason)}</div>` : "";
       return `<li class="cd-card cd-${r.resolved ? "resolved" : "unresolved"}">
         <div class="cd-card-head"><span class="cd-date">${date}</span> <span class="cd-kind">${escapeHtml(label)}</span></div>
         <div class="cd-trigger">${escapeHtml(r.trigger)}</div>
@@ -1769,11 +1795,7 @@ type FsaWindow = Window & {
  * Empty / zero-byte blobs are caught up front so a silent pipeline
  * bug surfaces as a visible error message instead of a phantom save.
  */
-export async function saveBlob(
-  blob: Blob,
-  filename: string,
-  statusEl: HTMLElement,
-): Promise<void> {
+export async function saveBlob(blob: Blob, filename: string, statusEl: HTMLElement): Promise<void> {
   if (!blob || blob.size === 0) {
     statusEl.textContent = `Could not save ${filename}: the report blob is empty.`;
     return;
@@ -1783,8 +1805,7 @@ export async function saveBlob(
   // Defensively re-wrap if the upstream blob lost its MIME type. macOS
   // associates files by MIME, and a blob of type "" lands as an
   // unrecognized binary in some browsers.
-  const typedBlob =
-    blob.type === "" ? new Blob([blob], { type: fileType.mime }) : blob;
+  const typedBlob = blob.type === "" ? new Blob([blob], { type: fileType.mime }) : blob;
 
   const fsa = (window as FsaWindow).showSaveFilePicker;
   if (typeof fsa === "function") {

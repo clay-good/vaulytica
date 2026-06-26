@@ -67,10 +67,7 @@ export const FAMILY_TO_PLAYBOOK: Record<V3Family, string | null> = {
  * with the highest weighted sum wins. Ties resolve by detector order
  * (the order listed below — BAA before DPA before SCC, etc.).
  */
-export function detectV3Family(
-  extracted: ExtractedData,
-  body_text: string,
-): V3Detection {
+export function detectV3Family(extracted: ExtractedData, body_text: string): V3Detection {
   const text = body_text;
   const candidates: Array<{ family: V3Family; signals: DetectionSignal[] }> = [
     { family: "baa", signals: detectBaa(extracted, text) },
@@ -239,11 +236,7 @@ function detectDpaUsState(extracted: ExtractedData, text: string): DetectionSign
   return out;
 }
 
-function detectSccModule(
-  extracted: ExtractedData,
-  text: string,
-  module: 2 | 3,
-): DetectionSignal[] {
+function detectSccModule(extracted: ExtractedData, text: string, module: 2 | 3): DetectionSignal[] {
   const out: DetectionSignal[] = [];
   if (/\b(?:standard\s+contractual\s+clauses|SCCs?)\b/i.test(text)) {
     out.push({ source: "phrase", evidence: "Standard Contractual Clauses", weight: 1 });
@@ -283,7 +276,11 @@ function detectUkIdta(extracted: ExtractedData, text: string): DetectionSignal[]
 function detectNdaDeep(extracted: ExtractedData, text: string): DetectionSignal[] {
   const out: DetectionSignal[] = [];
   if (/\bnon-?disclosure\s+agreement\b|\bconfidentiality\s+agreement\b/i.test(text)) {
-    out.push({ source: "header", evidence: "Non-Disclosure / Confidentiality Agreement", weight: 2 });
+    out.push({
+      source: "header",
+      evidence: "Non-Disclosure / Confidentiality Agreement",
+      weight: 2,
+    });
   }
   if (/\btrade\s+secrets?\b/i.test(text)) {
     out.push({ source: "phrase", evidence: "Trade secrets", weight: 1 });
@@ -356,7 +353,11 @@ function detectMsaDeep(extracted: ExtractedData, text: string): DetectionSignal[
 function detectCoi(extracted: ExtractedData, text: string): DetectionSignal[] {
   const out: DetectionSignal[] = [];
   if (/\bACORD\s*25\b|\bcertificate\s+of\s+liability\s+insurance\b/i.test(text)) {
-    out.push({ source: "header", evidence: "ACORD 25 / Certificate of Liability Insurance", weight: 3 });
+    out.push({
+      source: "header",
+      evidence: "ACORD 25 / Certificate of Liability Insurance",
+      weight: 3,
+    });
   }
   if (/\binsurer\b|\bcarrier\b/i.test(text) && /\bcoverage\b/i.test(text)) {
     out.push({ source: "phrase", evidence: "Insurer + Coverage", weight: 1 });

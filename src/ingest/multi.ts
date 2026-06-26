@@ -190,9 +190,7 @@ export async function enumerateFolderEntry(
   return out;
 }
 
-function readAllDirectoryEntries(
-  reader: FileSystemDirectoryReader,
-): Promise<FileSystemEntry[]> {
+function readAllDirectoryEntries(reader: FileSystemDirectoryReader): Promise<FileSystemEntry[]> {
   // `readEntries` returns batches; spec requires draining until empty.
   return new Promise((resolve, reject) => {
     const acc: FileSystemEntry[] = [];
@@ -242,9 +240,7 @@ export function extractZipEntries(
       if (name.endsWith("/") || name.startsWith("__MACOSX/")) return false;
       const basename = name.split("/").pop() ?? name;
       if (basename.toLowerCase().endsWith(".zip")) {
-        throw new ArchiveTooLargeError(
-          `Nested archive "${name}" is not allowed inside a bundle.`,
-        );
+        throw new ArchiveTooLargeError(`Nested archive "${name}" is not allowed inside a bundle.`);
       }
       if (classifyExtension(basename) === null) return false; // not inflated
       const ratio = file.size > 0 ? file.originalSize / file.size : file.originalSize;

@@ -48,7 +48,11 @@ describe("diffPlaybooks (spec-v8 §23)", () => {
     expect(d.rule_selection.exclude.added).toEqual(["NDA-009"]);
     expect(d.rule_overrides.changed[0]).toMatchObject({ rule_id: "NDA-003" });
     expect(d.rule_overrides.added[0]).toMatchObject({ rule_id: "NDA-004" });
-    expect(d.thresholds.changed[0]).toMatchObject({ key: "liability_cap_multiple", from: 1, to: 2 });
+    expect(d.thresholds.changed[0]).toMatchObject({
+      key: "liability_cap_multiple",
+      from: 1,
+      to: 2,
+    });
     expect(d.required_clauses.changed[0]).toMatchObject({ category: "confidentiality" });
     expect(d.custom_rules.added).toEqual(["c3"]);
     expect(d.custom_rules.removed).toEqual(["c2"]);
@@ -57,12 +61,20 @@ describe("diffPlaybooks (spec-v8 §23)", () => {
 
   it("is deterministic and symmetric in shape", () => {
     const next = { ...structuredClone(base), name: "v2" };
-    expect(JSON.stringify(diffPlaybooks(base, next))).toBe(JSON.stringify(diffPlaybooks(base, next)));
+    expect(JSON.stringify(diffPlaybooks(base, next))).toBe(
+      JSON.stringify(diffPlaybooks(base, next)),
+    );
   });
 
   it("renders a Markdown summary; 'no differences' when identical", () => {
-    expect(diffPlaybooksMarkdown(base, structuredClone(base))).toContain("No structural differences");
-    const next = { ...structuredClone(base), name: "v2", custom_rules: [rule("c1"), rule("c2"), rule("c4")] };
+    expect(diffPlaybooksMarkdown(base, structuredClone(base))).toContain(
+      "No structural differences",
+    );
+    const next = {
+      ...structuredClone(base),
+      name: "v2",
+      custom_rules: [rule("c1"), rule("c2"), rule("c4")],
+    };
     const md = diffPlaybooksMarkdown(base, next);
     expect(md).toContain("# Playbook diff:");
     expect(md).toContain("## Custom rules");

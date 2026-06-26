@@ -33,10 +33,12 @@ export const BAA_RULES: Rule[] = [
   presence({
     id: "BAA-001",
     name: "Permitted uses and disclosures of PHI",
-    description: "BAA must establish the permitted and required uses and disclosures of PHI by the business associate.",
+    description:
+      "BAA must establish the permitted and required uses and disclosures of PHI by the business associate.",
     citation: "45 C.F.R. § 164.504(e)(2)(i)",
     missing_title: "Permitted uses-and-disclosures clause missing",
-    missing_description: "No clause was found establishing the permitted and required uses and disclosures of PHI.",
+    missing_description:
+      "No clause was found establishing the permitted and required uses and disclosures of PHI.",
     explanation:
       "45 CFR § 164.504(e)(2)(i) requires the BAA to set out the permitted and required uses and disclosures of Protected Health Information by the business associate. Without this clause, the agreement does not satisfy HIPAA's core contracting standard.",
     recommendation:
@@ -50,10 +52,12 @@ export const BAA_RULES: Rule[] = [
   presence({
     id: "BAA-002",
     name: "Use limited to permitted purposes",
-    description: "Business associate may not use PHI for any purpose other than as permitted by the BAA or required by law.",
+    description:
+      "Business associate may not use PHI for any purpose other than as permitted by the BAA or required by law.",
     citation: "45 C.F.R. § 164.504(e)(2)(ii)(A)",
     missing_title: "Use-limitation clause missing",
-    missing_description: "No clause was found prohibiting use of PHI other than as permitted or required by law.",
+    missing_description:
+      "No clause was found prohibiting use of PHI other than as permitted or required by law.",
     explanation:
       "Under § 164.504(e)(2)(ii)(A), the contract must require the BA not to use or further disclose PHI other than as permitted by the contract or as required by law.",
     recommendation:
@@ -64,52 +68,66 @@ export const BAA_RULES: Rule[] = [
   presence({
     id: "BAA-003",
     name: "Appropriate safeguards clause",
-    description: "BAA must require BA to use appropriate safeguards, including Security Rule administrative, physical, and technical safeguards.",
+    description:
+      "BAA must require BA to use appropriate safeguards, including Security Rule administrative, physical, and technical safeguards.",
     citation: "45 C.F.R. § 164.504(e)(2)(ii)(B)",
     missing_title: "Appropriate-safeguards clause missing",
-    missing_description: "No safeguards clause was found covering administrative, physical, or technical protections for PHI.",
+    missing_description:
+      "No safeguards clause was found covering administrative, physical, or technical protections for PHI.",
     explanation:
       "Section 164.504(e)(2)(ii)(B) requires the BA to use appropriate safeguards to prevent use or disclosure of PHI other than as provided for by the contract.",
     recommendation:
       "Add a clause obligating the Business Associate to implement appropriate administrative, physical, and technical safeguards.",
-    present_patterns: [/(appropriate\s+safeguards|administrative.*physical.*technical|reasonable\s+safeguards)/i],
+    present_patterns: [
+      /(appropriate\s+safeguards|administrative.*physical.*technical|reasonable\s+safeguards)/i,
+    ],
   }),
 
   presence({
     id: "BAA-004",
     name: "Report improper uses or disclosures",
-    description: "BAA must require BA to report to the covered entity any use or disclosure not provided for by the contract.",
+    description:
+      "BAA must require BA to report to the covered entity any use or disclosure not provided for by the contract.",
     citation: "45 C.F.R. § 164.504(e)(2)(ii)(C)",
     missing_title: "Incident-reporting clause missing",
-    missing_description: "No clause was found requiring the BA to report uses or disclosures not provided for by the contract.",
+    missing_description:
+      "No clause was found requiring the BA to report uses or disclosures not provided for by the contract.",
     explanation:
       "Section 164.504(e)(2)(ii)(C) requires the BAA to obligate the BA to report any use or disclosure not authorized by the contract.",
     recommendation:
       "Add: 'Business Associate shall report to Covered Entity any use or disclosure of PHI not provided for by this Agreement.'",
-    present_patterns: [/(report\s+(to|the)\s+covered\s+entity|notify\s+covered\s+entity).*?(use|disclosure|breach|incident)/i],
+    present_patterns: [
+      /(report\s+(to|the)\s+covered\s+entity|notify\s+covered\s+entity).*?(use|disclosure|breach|incident)/i,
+    ],
   }),
 
   presence({
     id: "BAA-005",
     name: "Subcontractor flow-down",
-    description: "BA must ensure subcontractors that handle PHI agree in writing to the same restrictions and conditions.",
+    description:
+      "BA must ensure subcontractors that handle PHI agree in writing to the same restrictions and conditions.",
     citation: "45 C.F.R. § 164.504(e)(2)(ii)(D)",
     missing_title: "Subcontractor flow-down clause missing",
-    missing_description: "No clause was found requiring subcontractors handling PHI to be bound by the same restrictions.",
+    missing_description:
+      "No clause was found requiring subcontractors handling PHI to be bound by the same restrictions.",
     explanation:
       "Section 164.504(e)(2)(ii)(D) requires the BA to ensure that any subcontractor that creates, receives, maintains, or transmits PHI agrees in writing to the same restrictions and conditions that apply to the BA.",
     recommendation:
       "Add a 'Subcontractors' clause requiring written agreements imposing the same restrictions on any subcontractor handling PHI.",
-    present_patterns: [/(subcontractor|sub[- ]processor).*?(same restrictions|same conditions|written contract|agree)/is],
+    present_patterns: [
+      /(subcontractor|sub[- ]processor).*?(same restrictions|same conditions|written contract|agree)/is,
+    ],
   }),
 
   presence({
     id: "BAA-006",
     name: "Access to PHI (164.524)",
-    description: "BAA must require BA to make PHI available in a Designated Record Set to satisfy 45 CFR 164.524.",
+    description:
+      "BAA must require BA to make PHI available in a Designated Record Set to satisfy 45 CFR 164.524.",
     citation: "45 C.F.R. § 164.504(e)(2)(ii)(E)",
     missing_title: "Individual access clause missing",
-    missing_description: "No clause was found requiring the BA to make PHI available for individual access under 45 CFR 164.524.",
+    missing_description:
+      "No clause was found requiring the BA to make PHI available for individual access under 45 CFR 164.524.",
     explanation:
       "BAAs must allow the covered entity to comply with individuals' right of access under § 164.524.",
     recommendation:
@@ -120,10 +138,12 @@ export const BAA_RULES: Rule[] = [
   presence({
     id: "BAA-007",
     name: "Amendment of PHI (164.526)",
-    description: "BAA must require BA to make PHI available for amendment to satisfy 45 CFR 164.526.",
+    description:
+      "BAA must require BA to make PHI available for amendment to satisfy 45 CFR 164.526.",
     citation: "45 C.F.R. § 164.504(e)(2)(ii)(F)",
     missing_title: "Amendment-of-PHI clause missing",
-    missing_description: "No clause was found requiring the BA to make PHI available for amendment under 45 CFR 164.526.",
+    missing_description:
+      "No clause was found requiring the BA to make PHI available for amendment under 45 CFR 164.526.",
     explanation:
       "BAAs must allow the covered entity to comply with individuals' right to amend PHI under § 164.526.",
     recommendation:
@@ -134,10 +154,12 @@ export const BAA_RULES: Rule[] = [
   presence({
     id: "BAA-008",
     name: "Accounting of disclosures (164.528)",
-    description: "BAA must require BA to maintain and make available the information required to provide an accounting of disclosures.",
+    description:
+      "BAA must require BA to maintain and make available the information required to provide an accounting of disclosures.",
     citation: "45 C.F.R. § 164.504(e)(2)(ii)(G)",
     missing_title: "Accounting-of-disclosures clause missing",
-    missing_description: "No clause was found supporting individuals' right to an accounting of disclosures under 45 CFR 164.528.",
+    missing_description:
+      "No clause was found supporting individuals' right to an accounting of disclosures under 45 CFR 164.528.",
     explanation:
       "BAAs must enable covered entities to satisfy § 164.528's accounting-of-disclosures requirements.",
     recommendation:
@@ -148,24 +170,30 @@ export const BAA_RULES: Rule[] = [
   presence({
     id: "BAA-009",
     name: "Books and records available to HHS Secretary",
-    description: "BAA must require BA to make its internal practices, books, and records available to HHS for compliance review.",
+    description:
+      "BAA must require BA to make its internal practices, books, and records available to HHS for compliance review.",
     citation: "45 C.F.R. § 164.504(e)(2)(ii)(H)",
     missing_title: "HHS books-and-records access clause missing",
-    missing_description: "No clause was found making BA's books and records available to the HHS Secretary.",
+    missing_description:
+      "No clause was found making BA's books and records available to the HHS Secretary.",
     explanation:
       "Section 164.504(e)(2)(ii)(H) requires BAs to make their internal practices, books, and records available to the Secretary of HHS for determining compliance.",
     recommendation:
       "Add: 'Business Associate shall make its internal practices, books, and records relating to the use and disclosure of PHI available to the Secretary of HHS for purposes of determining compliance.'",
-    present_patterns: [/(internal\s+practices.*books.*records|books.*records.*secretary|HHS\s+secretary)/is],
+    present_patterns: [
+      /(internal\s+practices.*books.*records|books.*records.*secretary|HHS\s+secretary)/is,
+    ],
   }),
 
   presence({
     id: "BAA-010",
     name: "Return or destruction at termination",
-    description: "BA must, at termination, return or destroy all PHI received from, or created on behalf of, the covered entity.",
+    description:
+      "BA must, at termination, return or destroy all PHI received from, or created on behalf of, the covered entity.",
     citation: "45 C.F.R. § 164.504(e)(2)(ii)(I)",
     missing_title: "Return-or-destruction clause missing",
-    missing_description: "No clause was found requiring return or destruction of PHI at termination of the agreement.",
+    missing_description:
+      "No clause was found requiring return or destruction of PHI at termination of the agreement.",
     explanation:
       "Section 164.504(e)(2)(ii)(I) requires the BA to return or destroy all PHI received from the covered entity, including PHI in the possession of subcontractors, at termination if feasible.",
     recommendation:
@@ -176,10 +204,12 @@ export const BAA_RULES: Rule[] = [
   presence({
     id: "BAA-011",
     name: "Termination right for material breach",
-    description: "Covered entity must have the right to terminate the BAA for material breach by the business associate.",
+    description:
+      "Covered entity must have the right to terminate the BAA for material breach by the business associate.",
     citation: "45 C.F.R. § 164.504(e)(2)(iii)",
     missing_title: "Termination-for-breach clause missing",
-    missing_description: "No clause was found giving Covered Entity the right to terminate for material breach.",
+    missing_description:
+      "No clause was found giving Covered Entity the right to terminate for material breach.",
     explanation:
       "Section 164.504(e)(2)(iii) requires the BAA to allow the covered entity to terminate if the BA has violated a material term and either failed to cure or cure is not feasible.",
     recommendation:
@@ -193,12 +223,15 @@ export const BAA_RULES: Rule[] = [
     description: "BAA should authorize termination when cure of a material breach is not feasible.",
     citation: "45 C.F.R. § 164.504(e)(2)(iii)",
     missing_title: "No 'cure infeasible' termination right",
-    missing_description: "Termination clause does not address the case where cure of a material breach is infeasible.",
+    missing_description:
+      "Termination clause does not address the case where cure of a material breach is infeasible.",
     explanation:
       "BAAs should permit termination when a cure is not feasible, mirroring HHS's expected drafting.",
     recommendation:
       "Add language allowing termination if cure is infeasible or if BA fails to cure within a reasonable period.",
-    present_patterns: [/(cure\s+is\s+not\s+feasible|cure\s+is\s+infeasible|infeasible\s+to\s+cure|fail.*cure)/i],
+    present_patterns: [
+      /(cure\s+is\s+not\s+feasible|cure\s+is\s+infeasible|infeasible\s+to\s+cure|fail.*cure)/i,
+    ],
     default_severity: "warning",
   }),
 
@@ -208,10 +241,12 @@ export const BAA_RULES: Rule[] = [
   presence({
     id: "BAA-013",
     name: "Security Rule compliance required",
-    description: "BAA must require BA to comply, where applicable, with the Security Rule with respect to ePHI.",
+    description:
+      "BAA must require BA to comply, where applicable, with the Security Rule with respect to ePHI.",
     citation: "45 C.F.R. § 164.314(a)(2)(i)",
     missing_title: "Security Rule compliance clause missing",
-    missing_description: "No clause was found requiring BA to comply with the HIPAA Security Rule (45 CFR Part 164 Subpart C).",
+    missing_description:
+      "No clause was found requiring BA to comply with the HIPAA Security Rule (45 CFR Part 164 Subpart C).",
     explanation:
       "Section 164.314(a)(2)(i) requires BAs that maintain ePHI to comply with the Security Rule.",
     recommendation:
@@ -279,15 +314,19 @@ export const BAA_RULES: Rule[] = [
   presence({
     id: "BAA-018",
     name: "Subcontractor flow-down for Security Rule",
-    description: "BA must ensure subcontractors handling ePHI agree to the Security Rule restrictions.",
+    description:
+      "BA must ensure subcontractors handling ePHI agree to the Security Rule restrictions.",
     citation: "45 C.F.R. § 164.314(a)(2)(ii)",
     missing_title: "Security Rule subcontractor flow-down missing",
-    missing_description: "No clause was found extending Security Rule obligations to subcontractors that maintain ePHI.",
+    missing_description:
+      "No clause was found extending Security Rule obligations to subcontractors that maintain ePHI.",
     explanation:
       "Section 164.314(a)(2)(ii) requires BAs to ensure that any subcontractor that maintains ePHI agrees to comply with applicable Security Rule requirements.",
     recommendation:
       "Add: 'Business Associate shall ensure that any subcontractor that creates, receives, maintains, or transmits ePHI on behalf of Business Associate agrees in writing to comply with applicable Security Rule requirements.'",
-    present_patterns: [/(subcontractor|sub[- ]processor).*?(security\s+rule|safeguards|same\s+(restrictions|conditions))/is],
+    present_patterns: [
+      /(subcontractor|sub[- ]processor).*?(security\s+rule|safeguards|same\s+(restrictions|conditions))/is,
+    ],
   }),
 
   // ────────────────────────────────────────────────────────────────
@@ -310,10 +349,12 @@ export const BAA_RULES: Rule[] = [
   language({
     id: "BAA-020",
     name: "Breach notification looser than 60 days",
-    description: "Flags breach-notice timing that exceeds the 60-day outer bound or shifts the trigger to a later event.",
+    description:
+      "Flags breach-notice timing that exceeds the 60-day outer bound or shifts the trigger to a later event.",
     citation: "45 C.F.R. § 164.410(b)",
     bad_title: "Breach notification timing exceeds 60-day HIPAA cap",
-    bad_description: "Detected breach-notification timing greater than 60 days or tied to an event later than discovery.",
+    bad_description:
+      "Detected breach-notification timing greater than 60 days or tied to an event later than discovery.",
     explanation:
       "Section 164.410(b) requires notification 'without unreasonable delay and in no case later than 60 calendar days after discovery of the breach.' Longer windows or shifted triggers violate HIPAA.",
     recommendation:
@@ -329,10 +370,12 @@ export const BAA_RULES: Rule[] = [
   presence({
     id: "BAA-021",
     name: "Breach trigger is 'discovery'",
-    description: "Breach-notification timing should be measured from 'discovery,' not a stricter post-discovery event.",
+    description:
+      "Breach-notification timing should be measured from 'discovery,' not a stricter post-discovery event.",
     citation: "45 C.F.R. § 164.410(a)(2)",
     missing_title: "Breach trigger not anchored to 'discovery'",
-    missing_description: "Could not find language tying the breach-notice clock to discovery of the breach.",
+    missing_description:
+      "Could not find language tying the breach-notice clock to discovery of the breach.",
     explanation:
       "Section 164.410(a)(2) defines 'discovery' as the date the breach is known, or by exercising reasonable diligence would have been known. Shifting the trigger to a later assessment, confirmation, or harm-determination date violates HIPAA.",
     recommendation:
@@ -344,10 +387,12 @@ export const BAA_RULES: Rule[] = [
   presence({
     id: "BAA-022",
     name: "'Without unreasonable delay' language present",
-    description: "BAA should include 'without unreasonable delay' to match HIPAA's inner timing bound.",
+    description:
+      "BAA should include 'without unreasonable delay' to match HIPAA's inner timing bound.",
     citation: "45 C.F.R. § 164.410(b)",
     missing_title: "'Without unreasonable delay' language missing",
-    missing_description: "Breach-notice clause does not include HIPAA's 'without unreasonable delay' standard.",
+    missing_description:
+      "Breach-notice clause does not include HIPAA's 'without unreasonable delay' standard.",
     explanation:
       "HIPAA's inner bound is 'without unreasonable delay' — drafters should preserve this language in addition to the 60-day outer bound.",
     recommendation:
@@ -362,10 +407,12 @@ export const BAA_RULES: Rule[] = [
   language({
     id: "BAA-023",
     name: "Security Incident narrowed to 'successful' access",
-    description: "Flags clauses that limit 'Security Incident' to only successful unauthorized accesses — a narrowing OCR has criticized.",
+    description:
+      "Flags clauses that limit 'Security Incident' to only successful unauthorized accesses — a narrowing OCR has criticized.",
     citation: "45 C.F.R. § 164.304 (Security Incident definition)",
     bad_title: "Security Incident narrowed to 'successful' access",
-    bad_description: "Detected a definition of 'Security Incident' that excludes unsuccessful attempts.",
+    bad_description:
+      "Detected a definition of 'Security Incident' that excludes unsuccessful attempts.",
     explanation:
       "OCR's interpretation of 45 CFR § 164.304 is that 'Security Incident' includes unsuccessful attempts. Narrowing to 'successful' access lets material attack telemetry escape reporting.",
     recommendation:
@@ -379,10 +426,12 @@ export const BAA_RULES: Rule[] = [
   language({
     id: "BAA-024",
     name: "Return-or-destruction lacks definite outer bound",
-    description: "Flags return-or-destruction language that is open-ended ('as soon as practicable', 'commercially reasonable').",
+    description:
+      "Flags return-or-destruction language that is open-ended ('as soon as practicable', 'commercially reasonable').",
     citation: "45 C.F.R. § 164.504(e)(2)(ii)(I)",
     bad_title: "Return-or-destruction lacks definite outer bound",
-    bad_description: "Detected return-or-destruction obligation without a definite outer time bound.",
+    bad_description:
+      "Detected return-or-destruction obligation without a definite outer time bound.",
     explanation:
       "HHS guidance expects a definite outer bound for return or destruction of PHI at termination. Open-ended timing risks indefinite PHI retention.",
     recommendation:
@@ -396,10 +445,12 @@ export const BAA_RULES: Rule[] = [
   language({
     id: "BAA-025",
     name: "Indemnity cap impairing HIPAA remedies",
-    description: "Flags liability caps that limit damages below the covered entity's potential HIPAA penalty exposure.",
+    description:
+      "Flags liability caps that limit damages below the covered entity's potential HIPAA penalty exposure.",
     citation: "45 C.F.R. § 160.404 (Civil Money Penalty caps)",
     bad_title: "Indemnity cap may impair HIPAA remedies",
-    bad_description: "Detected an aggregate-liability cap that may not cover HIPAA Tier 4 penalties (up to $2,067,813 per violation category).",
+    bad_description:
+      "Detected an aggregate-liability cap that may not cover HIPAA Tier 4 penalties (up to $2,067,813 per violation category).",
     explanation:
       "HIPAA civil money penalties can reach over $2M per violation category per year (45 CFR § 160.404, adjusted annually). A liability cap below that effectively shifts HIPAA risk back to the Covered Entity.",
     recommendation:
@@ -416,7 +467,8 @@ export const BAA_RULES: Rule[] = [
     description: "BAA should preserve the covered entity's right to audit BA's HIPAA compliance.",
     citation: "45 C.F.R. § 164.504(e)(2)(ii)(H)",
     missing_title: "Covered-entity audit rights not preserved",
-    missing_description: "No clause was found granting Covered Entity audit rights over BA's PHI handling.",
+    missing_description:
+      "No clause was found granting Covered Entity audit rights over BA's PHI handling.",
     explanation:
       "HHS guidance encourages audit rights as a substantive complement to the books-and-records access requirement. Without audit rights, the covered entity has limited ability to verify ongoing compliance.",
     recommendation:
@@ -428,10 +480,12 @@ export const BAA_RULES: Rule[] = [
   language({
     id: "BAA-027",
     name: "Covered entity indemnifies BA for HIPAA violations",
-    description: "Flags clauses where the covered entity indemnifies the business associate for HIPAA violations — a common vendor overreach.",
+    description:
+      "Flags clauses where the covered entity indemnifies the business associate for HIPAA violations — a common vendor overreach.",
     citation: "45 C.F.R. § 164.504(e)",
     bad_title: "Covered entity indemnifies BA for HIPAA violations",
-    bad_description: "Detected indemnification language requiring the covered entity to indemnify BA for HIPAA-related liability.",
+    bad_description:
+      "Detected indemnification language requiring the covered entity to indemnify BA for HIPAA-related liability.",
     explanation:
       "HHS-frowned-upon drafting: shifting HIPAA liability from BA to the covered entity inverts the regulatory burden. The covered entity should not indemnify the BA for the BA's own HIPAA violations.",
     recommendation:
@@ -456,7 +510,9 @@ export const BAA_RULES: Rule[] = [
       "Section 160.103 defines PHI and ePHI. Drafters should either define these terms locally or incorporate the HIPAA definition by reference.",
     recommendation:
       "Add a definitions clause that incorporates 'Protected Health Information' and 'electronic PHI' as defined at 45 CFR § 160.103.",
-    present_patterns: [/(protected\s+health\s+information.{0,80}(means|shall\s+have)|160\.103|PHI.*shall\s+have\s+the\s+meaning)/is],
+    present_patterns: [
+      /(protected\s+health\s+information.{0,80}(means|shall\s+have)|160\.103|PHI.*shall\s+have\s+the\s+meaning)/is,
+    ],
     default_severity: "warning",
   }),
 
@@ -478,10 +534,12 @@ export const BAA_RULES: Rule[] = [
   presence({
     id: "BAA-030",
     name: "Mitigation obligation",
-    description: "BAA should require BA to mitigate harmful effects of any improper use or disclosure.",
+    description:
+      "BAA should require BA to mitigate harmful effects of any improper use or disclosure.",
     citation: "45 C.F.R. § 164.530(f) (covered-entity duty, flowed through)",
     missing_title: "Mitigation obligation missing",
-    missing_description: "No clause was found requiring BA to mitigate harm from improper uses or disclosures.",
+    missing_description:
+      "No clause was found requiring BA to mitigate harm from improper uses or disclosures.",
     explanation:
       "Section 164.530(f) requires covered entities to mitigate, to the extent practicable, any harmful effect known to them of a use or disclosure in violation of HIPAA. BAs commonly inherit this duty.",
     recommendation:
@@ -492,14 +550,15 @@ export const BAA_RULES: Rule[] = [
   presence({
     id: "BAA-031",
     name: "Workforce training requirement",
-    description: "BAA should require BA's workforce members handling PHI to be trained on its obligations.",
+    description:
+      "BAA should require BA's workforce members handling PHI to be trained on its obligations.",
     citation: "45 C.F.R. § 164.530(b) / 164.308(a)(5)",
     missing_title: "Workforce training requirement missing",
-    missing_description: "No clause was found requiring training of BA's workforce on HIPAA / BAA obligations.",
+    missing_description:
+      "No clause was found requiring training of BA's workforce on HIPAA / BAA obligations.",
     explanation:
       "Sections 164.530(b) and 164.308(a)(5) require workforce training; BAs should flow this obligation down to their personnel.",
-    recommendation:
-      "Add a workforce-training clause referring to BA's HIPAA training program.",
+    recommendation: "Add a workforce-training clause referring to BA's HIPAA training program.",
     present_patterns: [/(workforce\s+training|HIPAA\s+training|trained\s+on.{0,40}(HIPAA|PHI))/i],
     default_severity: "warning",
   }),
@@ -507,10 +566,12 @@ export const BAA_RULES: Rule[] = [
   presence({
     id: "BAA-032",
     name: "Encryption or NIST safeguards referenced",
-    description: "BAA should reference encryption / NIST-style safeguards for ePHI at rest and in transit.",
+    description:
+      "BAA should reference encryption / NIST-style safeguards for ePHI at rest and in transit.",
     citation: "45 C.F.R. § 164.312(a)(2)(iv), (e)(2)(ii)",
     missing_title: "Encryption / NIST safeguards not referenced",
-    missing_description: "No reference to encryption (or equivalent NIST-style safeguards) was found.",
+    missing_description:
+      "No reference to encryption (or equivalent NIST-style safeguards) was found.",
     explanation:
       "Encryption is an addressable specification under § 164.312, but is the 'safe harbor' for breach notification under HITECH. Strong BAAs reference encryption or NIST 800-53/800-66 explicitly.",
     recommendation:
@@ -537,12 +598,13 @@ export const BAA_RULES: Rule[] = [
   presence({
     id: "BAA-034",
     name: "Sanctions policy / personnel discipline",
-    description: "BAA should reference BA's sanctions policy for workforce members who violate HIPAA/BAA.",
+    description:
+      "BAA should reference BA's sanctions policy for workforce members who violate HIPAA/BAA.",
     citation: "45 C.F.R. § 164.308(a)(1)(ii)(C)",
     missing_title: "Sanctions / personnel discipline policy not referenced",
-    missing_description: "No clause was found referencing BA's sanctions policy for workforce HIPAA violations.",
-    explanation:
-      "Section 164.308(a)(1)(ii)(C) requires workforce sanctions for HIPAA violations.",
+    missing_description:
+      "No clause was found referencing BA's sanctions policy for workforce HIPAA violations.",
+    explanation: "Section 164.308(a)(1)(ii)(C) requires workforce sanctions for HIPAA violations.",
     recommendation:
       "Add a sanctions / discipline clause noting that BA maintains a written sanctions policy.",
     present_patterns: [/(sanction|discipline)\s+(policy|workforce|employees)/i],
@@ -552,7 +614,8 @@ export const BAA_RULES: Rule[] = [
   presence({
     id: "BAA-035",
     name: "Subprocessor / vendor disclosure",
-    description: "BAA should require BA to disclose subprocessors / downstream vendors that handle PHI.",
+    description:
+      "BAA should require BA to disclose subprocessors / downstream vendors that handle PHI.",
     citation: "45 C.F.R. § 164.504(e)(2)(ii)(D)",
     missing_title: "Subprocessor disclosure clause missing",
     missing_description: "No clause was found requiring BA to disclose subprocessors handling PHI.",
@@ -560,7 +623,9 @@ export const BAA_RULES: Rule[] = [
       "Although § 164.504(e)(2)(ii)(D) speaks to flow-down, modern BAAs additionally require disclosure of the subprocessor identity for vetting.",
     recommendation:
       "Add: 'Business Associate shall maintain and make available to Covered Entity a current list of subcontractors that create, receive, maintain, or transmit PHI.'",
-    present_patterns: [/(list\s+of\s+subprocessors|list\s+of\s+subcontractors|subprocessor.{0,60}(disclos|maintain.*list))/is],
+    present_patterns: [
+      /(list\s+of\s+subprocessors|list\s+of\s+subcontractors|subprocessor.{0,60}(disclos|maintain.*list))/is,
+    ],
     default_severity: "warning",
   }),
 
@@ -570,7 +635,8 @@ export const BAA_RULES: Rule[] = [
   presence({
     id: "BAA-036",
     name: "Signed by authorized representative",
-    description: "BAA should be signed by an authorized representative of each party (satisfactory assurances).",
+    description:
+      "BAA should be signed by an authorized representative of each party (satisfactory assurances).",
     citation: "45 C.F.R. § 164.504(e)(5)",
     missing_title: "Signature block missing",
     missing_description: "No signature block was detected in the document.",
@@ -578,7 +644,9 @@ export const BAA_RULES: Rule[] = [
       "Section 164.504(e)(5) requires the covered entity to obtain satisfactory assurances through a written contract — a signed instrument.",
     recommendation:
       "Add signature blocks for both parties with name, title, and date of authorized representatives.",
-    present_patterns: [/By:\s*[_\-\s]+|signature\s+block|authorized\s+(signatory|representative)|sign(ed)?\s+by/i],
+    present_patterns: [
+      /By:\s*[_\-\s]+|signature\s+block|authorized\s+(signatory|representative)|sign(ed)?\s+by/i,
+    ],
   }),
 
   presence({
@@ -590,8 +658,7 @@ export const BAA_RULES: Rule[] = [
     missing_description: "No effective date was detected in the document.",
     explanation:
       "An effective date anchors the timing rules in the BAA (term, breach windows, termination).",
-    recommendation:
-      "Add an 'Effective Date' clause near the preamble.",
+    recommendation: "Add an 'Effective Date' clause near the preamble.",
     present_patterns: [/effective\s+date/i],
     default_severity: "warning",
   }),
@@ -606,7 +673,9 @@ export const BAA_RULES: Rule[] = [
     explanation:
       "BAAs should state how long the agreement is in effect, including renewal handling.",
     recommendation: "Add a 'Term' clause specifying initial term and renewal.",
-    present_patterns: [/(\bterm\b.{0,40}(year|month|day)|term\s+of\s+(this\s+)?agreement|initial\s+term)/i],
+    present_patterns: [
+      /(\bterm\b.{0,40}(year|month|day)|term\s+of\s+(this\s+)?agreement|initial\s+term)/i,
+    ],
     default_severity: "warning",
   }),
 
@@ -619,8 +688,11 @@ export const BAA_RULES: Rule[] = [
     missing_description: "No governing-law clause was detected.",
     explanation:
       "Although HIPAA is federal, BAAs typically include a governing-law clause to anchor non-HIPAA contract disputes.",
-    recommendation: "Add a governing-law clause naming the applicable state law for non-HIPAA contract matters.",
-    present_patterns: [/(governing\s+law|governed\s+by\s+the\s+laws|laws\s+of\s+the\s+State\s+of)/i],
+    recommendation:
+      "Add a governing-law clause naming the applicable state law for non-HIPAA contract matters.",
+    present_patterns: [
+      /(governing\s+law|governed\s+by\s+the\s+laws|laws\s+of\s+the\s+State\s+of)/i,
+    ],
     default_severity: "warning",
   }),
 
@@ -633,8 +705,11 @@ export const BAA_RULES: Rule[] = [
     missing_description: "No notice clause was detected.",
     explanation:
       "A notice clause anchors how breach notifications and other formal communications travel between the parties.",
-    recommendation: "Add a notice clause naming the methods (email, certified mail), addresses, and timing requirements.",
-    present_patterns: [/(notice\s+(shall|must)\s+be|notices\s+(under|hereunder|shall)|notice\s+address)/i],
+    recommendation:
+      "Add a notice clause naming the methods (email, certified mail), addresses, and timing requirements.",
+    present_patterns: [
+      /(notice\s+(shall|must)\s+be|notices\s+(under|hereunder|shall)|notice\s+address)/i,
+    ],
     default_severity: "warning",
   }),
 
@@ -644,7 +719,8 @@ export const BAA_RULES: Rule[] = [
   presence({
     id: "BAA-041",
     name: "PHI referenced in document",
-    description: "BAA should explicitly reference PHI or ePHI; absence likely means the wrong template.",
+    description:
+      "BAA should explicitly reference PHI or ePHI; absence likely means the wrong template.",
     citation: "45 C.F.R. § 160.103",
     missing_title: "Document does not reference PHI / ePHI",
     missing_description: "No references to Protected Health Information were detected.",
@@ -657,7 +733,8 @@ export const BAA_RULES: Rule[] = [
   language({
     id: "BAA-042",
     name: "Choice-of-law overrides federal HIPAA",
-    description: "Flags clauses that purport to make state law control over HIPAA — preempted but indicates poor drafting.",
+    description:
+      "Flags clauses that purport to make state law control over HIPAA — preempted but indicates poor drafting.",
     citation: "45 C.F.R. § 160.203 (preemption)",
     bad_title: "Choice-of-law attempts to override HIPAA",
     bad_description: "Detected language that may purport to subordinate HIPAA to state law.",
@@ -677,7 +754,8 @@ export const BAA_RULES: Rule[] = [
     description: "BAA should state that HIPAA-related obligations survive termination.",
     citation: "45 C.F.R. § 164.504(e)(2)(ii)(I)",
     missing_title: "Survival clause for HIPAA obligations missing",
-    missing_description: "No survival clause was found extending HIPAA obligations past termination.",
+    missing_description:
+      "No survival clause was found extending HIPAA obligations past termination.",
     explanation:
       "Section 164.504(e)(2)(ii)(I) and HHS guidance expect HIPAA obligations to survive termination for any PHI retained after termination.",
     recommendation:
@@ -689,7 +767,8 @@ export const BAA_RULES: Rule[] = [
   presence({
     id: "BAA-044",
     name: "Definitions track current HIPAA terminology",
-    description: "BAA should track current HIPAA / HITECH terminology (Breach, Unsecured PHI, Covered Entity, Business Associate).",
+    description:
+      "BAA should track current HIPAA / HITECH terminology (Breach, Unsecured PHI, Covered Entity, Business Associate).",
     citation: "45 C.F.R. § 160.103; § 164.402",
     missing_title: "HIPAA-current terminology not present",
     missing_description: "Could not detect the post-HITECH defined terms (Breach, Unsecured PHI).",
@@ -697,22 +776,27 @@ export const BAA_RULES: Rule[] = [
       "Post-HITECH BAAs should track the modern definitions of 'Breach' (§ 164.402) and 'Unsecured PHI' (§ 164.402).",
     recommendation:
       "Add definitions for 'Breach' and 'Unsecured PHI' that cross-reference 45 CFR § 164.402.",
-    present_patterns: [/(unsecured\s+PHI|unsecured\s+protected\s+health\s+information|164\.402|breach\s+(means|shall\s+have))/i],
+    present_patterns: [
+      /(unsecured\s+PHI|unsecured\s+protected\s+health\s+information|164\.402|breach\s+(means|shall\s+have))/i,
+    ],
     default_severity: "warning",
   }),
 
   presence({
     id: "BAA-045",
     name: "Covered entity / business associate roles named",
-    description: "BAA should clearly identify which party is the Covered Entity and which is the Business Associate.",
+    description:
+      "BAA should clearly identify which party is the Covered Entity and which is the Business Associate.",
     citation: "45 C.F.R. § 160.103",
     missing_title: "Covered entity / business associate roles unclear",
-    missing_description: "Could not detect both 'Covered Entity' and 'Business Associate' role labels.",
-    explanation:
-      "Both party roles must be named so the regulatory framework attaches correctly.",
+    missing_description:
+      "Could not detect both 'Covered Entity' and 'Business Associate' role labels.",
+    explanation: "Both party roles must be named so the regulatory framework attaches correctly.",
     recommendation:
       "Use 'Covered Entity' and 'Business Associate' (capitalized defined terms) consistently in the preamble and throughout.",
-    present_patterns: [/covered\s+entity.*?business\s+associate|business\s+associate.*?covered\s+entity/is],
+    present_patterns: [
+      /covered\s+entity.*?business\s+associate|business\s+associate.*?covered\s+entity/is,
+    ],
   }),
 ];
 

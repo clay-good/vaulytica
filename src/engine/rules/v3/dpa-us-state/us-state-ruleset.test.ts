@@ -99,38 +99,64 @@ describe("DPA-US-state ruleset — compliant fixture (CCPA Service Provider)", (
 
 describe("DPA-US-state ruleset — failure modes", () => {
   it("missing no-sale clause fires USDPA-002", async () => {
-    const ctx = withPb(buildContext([
-      "Agreement",
-      "Service Provider processes Personal Information for the specific business purpose enumerated.",
-    ]), CCPA);
-    const run = await runEngine({ rules: DPA_US_STATE_RULES, ctx, executed_at: "2026-05-13T00:00:00Z", source_file: SRC });
+    const ctx = withPb(
+      buildContext([
+        "Agreement",
+        "Service Provider processes Personal Information for the specific business purpose enumerated.",
+      ]),
+      CCPA,
+    );
+    const run = await runEngine({
+      rules: DPA_US_STATE_RULES,
+      ctx,
+      executed_at: "2026-05-13T00:00:00Z",
+      source_file: SRC,
+    });
     expect(run.findings.find((f) => f.rule_id === "USDPA-002")).toBeTruthy();
   });
 
   it("claimed Service Provider without required elements fires USDPA-020", async () => {
-    const ctx = withPb(buildContext([
-      "Agreement",
-      "Vendor has Service Provider status under the CCPA.",
-    ]), CCPA);
-    const run = await runEngine({ rules: DPA_US_STATE_RULES, ctx, executed_at: "2026-05-13T00:00:00Z", source_file: SRC });
+    const ctx = withPb(
+      buildContext(["Agreement", "Vendor has Service Provider status under the CCPA."]),
+      CCPA,
+    );
+    const run = await runEngine({
+      rules: DPA_US_STATE_RULES,
+      ctx,
+      executed_at: "2026-05-13T00:00:00Z",
+      source_file: SRC,
+    });
     expect(run.findings.find((f) => f.rule_id === "USDPA-020")).toBeTruthy();
   });
 
   it("multi-state contract triggers USDPA-021 informational flag", async () => {
-    const ctx = withPb(buildContext([
-      "Agreement",
-      "This Agreement covers several US states with personal data processing.",
-    ]), MULTI);
-    const run = await runEngine({ rules: DPA_US_STATE_RULES, ctx, executed_at: "2026-05-13T00:00:00Z", source_file: SRC });
+    const ctx = withPb(
+      buildContext([
+        "Agreement",
+        "This Agreement covers several US states with personal data processing.",
+      ]),
+      MULTI,
+    );
+    const run = await runEngine({
+      rules: DPA_US_STATE_RULES,
+      ctx,
+      executed_at: "2026-05-13T00:00:00Z",
+      source_file: SRC,
+    });
     expect(run.findings.find((f) => f.rule_id === "USDPA-021")).toBeTruthy();
   });
 
   it("document with no personal info reference fires USDPA-025", async () => {
-    const ctx = withPb(buildContext([
-      "Agreement",
-      "Generic services agreement with no privacy terminology.",
-    ]), MULTI);
-    const run = await runEngine({ rules: DPA_US_STATE_RULES, ctx, executed_at: "2026-05-13T00:00:00Z", source_file: SRC });
+    const ctx = withPb(
+      buildContext(["Agreement", "Generic services agreement with no privacy terminology."]),
+      MULTI,
+    );
+    const run = await runEngine({
+      rules: DPA_US_STATE_RULES,
+      ctx,
+      executed_at: "2026-05-13T00:00:00Z",
+      source_file: SRC,
+    });
     expect(run.findings.find((f) => f.rule_id === "USDPA-025")).toBeTruthy();
   });
 });
@@ -138,8 +164,18 @@ describe("DPA-US-state ruleset — failure modes", () => {
 describe("DPA-US-state ruleset — determinism", () => {
   it("two runs over the same input produce the same result_hash", async () => {
     const ctx = withPb(buildContext(...COMPLIANT_US_DPA), CCPA);
-    const a = await runEngine({ rules: DPA_US_STATE_RULES, ctx, executed_at: "2026-05-13T00:00:00Z", source_file: SRC });
-    const b = await runEngine({ rules: DPA_US_STATE_RULES, ctx, executed_at: "2026-05-13T00:00:00Z", source_file: SRC });
+    const a = await runEngine({
+      rules: DPA_US_STATE_RULES,
+      ctx,
+      executed_at: "2026-05-13T00:00:00Z",
+      source_file: SRC,
+    });
+    const b = await runEngine({
+      rules: DPA_US_STATE_RULES,
+      ctx,
+      executed_at: "2026-05-13T00:00:00Z",
+      source_file: SRC,
+    });
     expect(a.result_hash).toBe(b.result_hash);
   });
 });

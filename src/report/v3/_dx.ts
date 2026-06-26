@@ -85,7 +85,15 @@ export function headerRow(cells: string[]): TableRow {
           shading: { type: ShadingType.CLEAR, fill: MINT, color: "auto" },
           children: [
             new Paragraph({
-              children: [new TextRun({ text, bold: true, color: "FFFFFF", font: DEFAULT_FONT, size: BODY_SIZE })],
+              children: [
+                new TextRun({
+                  text,
+                  bold: true,
+                  color: "FFFFFF",
+                  font: DEFAULT_FONT,
+                  size: BODY_SIZE,
+                }),
+              ],
             }),
           ],
         }),
@@ -102,9 +110,7 @@ export type CellOpts = {
 
 export function styledCell(text: string, opts: CellOpts = {}): TableCell {
   return new TableCell({
-    shading: opts.fill
-      ? { type: ShadingType.CLEAR, fill: opts.fill, color: "auto" }
-      : undefined,
+    shading: opts.fill ? { type: ShadingType.CLEAR, fill: opts.fill, color: "auto" } : undefined,
     borders: {
       top: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC" },
       bottom: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC" },
@@ -143,7 +149,11 @@ export function buildTable(rows: TableRow[]): Table {
 }
 
 /** Build a paragraph containing a hyperlink. */
-export function hyperlinkParagraph(label: string, url: string, opts: { bold?: boolean; italics?: boolean } = {}): Paragraph {
+export function hyperlinkParagraph(
+  label: string,
+  url: string,
+  opts: { bold?: boolean; italics?: boolean } = {},
+): Paragraph {
   // Split the (often long) URL label into wrap-friendly runs so Word can
   // break it at the cell margin rather than overflow the page (spec-v8 §18).
   // The concatenated run text equals `label` exactly — never truncated.

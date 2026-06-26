@@ -69,7 +69,12 @@ export function renderComplianceMatrix(matrix: ComplianceMatrix): (Paragraph | T
     }),
   ]);
   const caption: Paragraph[] = matrix.dkb_build_date
-    ? [para({ text: `Citations as of ${formatDate(matrix.dkb_build_date)} (DKB build date).`, italics: true })]
+    ? [
+        para({
+          text: `Citations as of ${formatDate(matrix.dkb_build_date)} (DKB build date).`,
+          italics: true,
+        }),
+      ]
     : [];
   return [
     h1("Compliance Matrix"),

@@ -42,8 +42,16 @@ describe("validateCustomPlaybook — happy path", () => {
             title: "Liability cap must be at least 12x fees",
             description: "We do not accept a cap below 12x trailing fees.",
             severity: "critical",
-            assert: { kind: "numeric_threshold", metric: "liability_cap_multiple", comparator: "gte", value: 12 },
-            citation: { reference: "Acme Contracting Policy §4.2", url: "https://example.com/policy" },
+            assert: {
+              kind: "numeric_threshold",
+              metric: "liability_cap_multiple",
+              comparator: "gte",
+              value: 12,
+            },
+            citation: {
+              reference: "Acme Contracting Policy §4.2",
+              url: "https://example.com/policy",
+            },
           },
           {
             id: "ACME-2",
@@ -105,7 +113,11 @@ describe("validateCustomPlaybook — rejections with readable errors", () => {
   });
 
   it("rejects a non-http(s) citation URL (javascript:/data: XSS guard)", () => {
-    for (const url of ["javascript:alert(1)", "data:text/html,<script>alert(1)</script>", "file:///etc/passwd"]) {
+    for (const url of [
+      "javascript:alert(1)",
+      "data:text/html,<script>alert(1)</script>",
+      "file:///etc/passwd",
+    ]) {
       const r = validateCustomPlaybook(
         minimal({
           custom_rules: [
@@ -152,8 +164,13 @@ describe("validateCustomPlaybook — rejections with readable errors", () => {
             title: "t",
             description: "d",
             severity: "info",
-            // @ts-expect-error — exercising the runtime guard
-            assert: { kind: "numeric_threshold", metric: "moon_phase", comparator: "gte", value: 1 },
+            assert: {
+              kind: "numeric_threshold",
+              // @ts-expect-error — exercising the runtime guard
+              metric: "moon_phase",
+              comparator: "gte",
+              value: 1,
+            },
           },
         ],
       }),
@@ -249,7 +266,10 @@ describe("custom-playbook caps (spec-v8 §10)", () => {
       severity: "info" as const,
       assert: { kind: "cross_ref_resolves" as const },
     };
-    const rules = Array.from({ length: MAX_CUSTOM_RULES + 1 }, (_, i) => ({ ...rule, id: `r-${i}` }));
+    const rules = Array.from({ length: MAX_CUSTOM_RULES + 1 }, (_, i) => ({
+      ...rule,
+      id: `r-${i}`,
+    }));
     const r = validateCustomPlaybook(minimal({ custom_rules: rules }));
     expect(r.ok).toBe(false);
   });
@@ -279,8 +299,18 @@ describe("validateCustomPlaybook — negotiation positions (spec-v10)", () => {
         negotiation_positions: [
           {
             dimension: "Liability cap",
-            ideal: { kind: "numeric_threshold", metric: "liability_cap_multiple", comparator: "gte", value: 12 },
-            acceptable: { kind: "numeric_threshold", metric: "liability_cap_multiple", comparator: "gte", value: 6 },
+            ideal: {
+              kind: "numeric_threshold",
+              metric: "liability_cap_multiple",
+              comparator: "gte",
+              value: 12,
+            },
+            acceptable: {
+              kind: "numeric_threshold",
+              metric: "liability_cap_multiple",
+              comparator: "gte",
+              value: 6,
+            },
             guidance: { ideal: "12 months", acceptable: "6 months", walk_away: "Escalate." },
           },
         ],
@@ -295,7 +325,9 @@ describe("validateCustomPlaybook — negotiation positions (spec-v10)", () => {
       ideal: { kind: "clause_present", pattern: "cap" },
       acceptable: { kind: "clause_present", pattern: "limit" },
     };
-    const r = validateCustomPlaybook(minimal({ negotiation_positions: [pos, { ...pos }] as never }));
+    const r = validateCustomPlaybook(
+      minimal({ negotiation_positions: [pos, { ...pos }] as never }),
+    );
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.errors.join(" ")).toMatch(/duplicate.*dimension/i);
   });

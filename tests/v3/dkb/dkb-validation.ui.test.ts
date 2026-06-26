@@ -40,7 +40,9 @@ describe("hydrateDkbValidation", () => {
     })) as unknown as typeof fetch;
     const result = await hydrateDkbValidation({ fetchImpl: fakeFetch });
     expect(result?.stale_citations_pending_review).toBe(0);
-    expect(document.querySelector('[data-role="dkb-validated-at"]')!.textContent).toBe("2026-05-01");
+    expect(document.querySelector('[data-role="dkb-validated-at"]')!.textContent).toBe(
+      "2026-05-01",
+    );
   });
 
   it("returns null and leaves DOM unchanged on a bad payload", async () => {

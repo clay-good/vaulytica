@@ -147,7 +147,10 @@ export function parseDocxHtml(html: string): DocumentTree {
     // Promote them based on dot depth: `3` → level 2, `3.2` → level 3,
     // `3.2.1` → level 4, with `Article N` and `ARTICLE N` mapped to
     // level 1.
-    const paragraphText = runs.map((r) => r.text).join("").trim();
+    const paragraphText = runs
+      .map((r) => r.text)
+      .join("")
+      .trim();
     const numbered = detectNumberedHeading(paragraphText);
     if (numbered) {
       pushSection(paragraphText, numbered.level);
@@ -235,5 +238,8 @@ function parseHtmlDocument(html: string): Document {
       "ingest/docx: DOMParser is not available. In the browser this is built-in; in tests, set the Vitest environment to 'happy-dom' or 'jsdom'.",
     );
   }
-  return new DOMParser().parseFromString(`<!doctype html><html><body>${html}</body></html>`, "text/html");
+  return new DOMParser().parseFromString(
+    `<!doctype html><html><body>${html}</body></html>`,
+    "text/html",
+  );
 }

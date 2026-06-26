@@ -165,7 +165,11 @@ describe("crossrefs — resolve/flag invariants (spec-v7 Step 118 follow-up)", (
 
   /** Build a normalized tree with the given numbered sections + a body that
    *  references one existing and one missing section. */
-  function buildNumberedTree(existing: string[], refExisting: string, refMissing: string): DocumentTree {
+  function buildNumberedTree(
+    existing: string[],
+    refExisting: string,
+    refMissing: string,
+  ): DocumentTree {
     return normalize({
       type: "document",
       sections: [
@@ -203,7 +207,10 @@ describe("crossrefs — resolve/flag invariants (spec-v7 Step 118 follow-up)", (
     fc.assert(
       fc.property(
         // A non-empty, deduped subset of the pool to exist.
-        fc.uniqueArray(fc.constantFrom(...LABEL_POOL), { minLength: 1, maxLength: LABEL_POOL.length }),
+        fc.uniqueArray(fc.constantFrom(...LABEL_POOL), {
+          minLength: 1,
+          maxLength: LABEL_POOL.length,
+        }),
         (existing) => {
           const present = existing[0]!;
           const missing = LABEL_POOL.find((l) => !existing.includes(l));

@@ -354,7 +354,9 @@ export type BundleJson = {
  * (encoded via the per-document `result_hash`, which itself folds in
  * the source file SHA-256) joined by a single newline and re-hashed.
  */
-export async function bundleFingerprint(per_doc_result_hashes: ReadonlyArray<string>): Promise<string> {
+export async function bundleFingerprint(
+  per_doc_result_hashes: ReadonlyArray<string>,
+): Promise<string> {
   const sorted = [...per_doc_result_hashes].sort();
   return sha256Hex(sorted.join("\n"));
 }
@@ -591,7 +593,13 @@ function renderCover(input: BundleReportInput, fingerprint: string): Paragraph[]
   const iso = input.executed_at ?? "";
   const human = iso ? formatHumanDate(iso) : "(omitted from hash)";
   return [
-    para({ text: "Vaulytica Bundle Report", heading: HeadingLevel.TITLE, color: MINT, bold: true, alignment: AlignmentType.CENTER }),
+    para({
+      text: "Vaulytica Bundle Report",
+      heading: HeadingLevel.TITLE,
+      color: MINT,
+      bold: true,
+      alignment: AlignmentType.CENTER,
+    }),
     spacer(),
     coverField("Documents", String(input.documents.length)),
     coverField("Bundle fingerprint", fingerprint),
@@ -677,7 +685,15 @@ function renderPortfolioMatrix(matrix: PortfolioMatrix): (Paragraph | Table)[] {
           shading: { type: ShadingType.CLEAR, fill: MINT, color: "auto" },
           children: [
             new Paragraph({
-              children: [new TextRun({ text, bold: true, color: "FFFFFF", font: DEFAULT_FONT, size: BODY_SIZE })],
+              children: [
+                new TextRun({
+                  text,
+                  bold: true,
+                  color: "FFFFFF",
+                  font: DEFAULT_FONT,
+                  size: BODY_SIZE,
+                }),
+              ],
             }),
           ],
         }),
@@ -692,7 +708,9 @@ function renderPortfolioMatrix(matrix: PortfolioMatrix): (Paragraph | Table)[] {
         ],
       }),
   );
-  out.push(new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [header, ...dataRows] }));
+  out.push(
+    new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [header, ...dataRows] }),
+  );
   out.push(spacer());
 
   if (matrix.truncated) {
@@ -703,7 +721,12 @@ function renderPortfolioMatrix(matrix: PortfolioMatrix): (Paragraph | Table)[] {
       }),
     );
   } else {
-    out.push(para({ text: `${matrix.total} ${matrix.total === 1 ? "document" : "documents"} included.`, italics: true }));
+    out.push(
+      para({
+        text: `${matrix.total} ${matrix.total === 1 ? "document" : "documents"} included.`,
+        italics: true,
+      }),
+    );
   }
 
   if (matrix.rollups.length > 0) {
@@ -921,9 +944,7 @@ function renderPostureCoherenceSection(
 
   const header = headerRow(["Front", "Coherence", "Rung by document", "Binding floor"]);
   const rows = coherence.dimensions.map((d) => {
-    const perDoc = d.tiers
-      .map((t) => `${t.document}: ${TIER_SHORT_LABEL[t.tier]}`)
-      .join("; ");
+    const perDoc = d.tiers.map((t) => `${t.document}: ${TIER_SHORT_LABEL[t.tier]}`).join("; ");
     const floor =
       d.weakest_tier === null
         ? "—"
@@ -937,7 +958,9 @@ function renderPostureCoherenceSection(
       ],
     });
   });
-  out.push(new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [header, ...rows] }));
+  out.push(
+    new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [header, ...rows] }),
+  );
   out.push(spacer());
   out.push(
     para({
@@ -1055,7 +1078,12 @@ function renderPostureMovementSection(
   out.push(coverField("Movement hash", movement.movement_hash));
   out.push(spacer());
 
-  const header = headerRow(["Front", "Floor movement", "Binding floor (base → revised)", "Coherence shift"]);
+  const header = headerRow([
+    "Front",
+    "Floor movement",
+    "Binding floor (base → revised)",
+    "Coherence shift",
+  ]);
   const rows = movement.fronts.map(
     (f) =>
       new TableRow({
@@ -1067,7 +1095,9 @@ function renderPostureMovementSection(
         ],
       }),
   );
-  out.push(new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [header, ...rows] }));
+  out.push(
+    new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [header, ...rows] }),
+  );
   out.push(spacer());
   out.push(
     para({
@@ -1182,7 +1212,11 @@ function renderBibliography(entries: BundleBibliographyEntry[]): Paragraph[] {
 
 function renderAuditTrail(input: BundleReportInput): Paragraph[] {
   const out: Paragraph[] = [h1("Audit Trail")];
-  out.push(para({ text: `Engine version: ${input.engine_version ?? input.documents[0]?.run.version ?? "0.0.0"}` }));
+  out.push(
+    para({
+      text: `Engine version: ${input.engine_version ?? input.documents[0]?.run.version ?? "0.0.0"}`,
+    }),
+  );
   out.push(para({ text: `DKB version: ${input.dkb.manifest.version}` }));
   out.push(para({ text: `Consistency engine version: ${input.consistency.version}` }));
   out.push(spacer());
@@ -1362,7 +1396,15 @@ function headerRow(cells: string[]): TableRow {
           shading: { type: ShadingType.CLEAR, fill: MINT, color: "auto" },
           children: [
             new Paragraph({
-              children: [new TextRun({ text, bold: true, color: "FFFFFF", font: DEFAULT_FONT, size: BODY_SIZE })],
+              children: [
+                new TextRun({
+                  text,
+                  bold: true,
+                  color: "FFFFFF",
+                  font: DEFAULT_FONT,
+                  size: BODY_SIZE,
+                }),
+              ],
             }),
           ],
         }),

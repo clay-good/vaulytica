@@ -138,7 +138,9 @@ export function renderScoreboardMarkdown(a: ScoreboardArtifact): string {
       "Reproducible: same `(corpus, dkb, engine)` → identical `scoreboard_hash`.",
   );
   lines.push("");
-  lines.push(`- **Corpus:** \`${a.corpus_version}\` · **DKB:** \`${a.dkb_version}\` · **Engine:** \`${a.engine_version}\``);
+  lines.push(
+    `- **Corpus:** \`${a.corpus_version}\` · **DKB:** \`${a.dkb_version}\` · **Engine:** \`${a.engine_version}\``,
+  );
   lines.push(`- **Status:** ${a.corpus_status}`);
   lines.push(
     `- **Real graded pairs:** ${a.doc_counts.real_graded_pairs} · **Bootstrap (excluded):** ${a.doc_counts.bootstrap_pairs}`,
@@ -153,8 +155,12 @@ export function renderScoreboardMarkdown(a: ScoreboardArtifact): string {
   lines.push("");
   lines.push("| Average | Precision | Recall | F1 |");
   lines.push("|---|---|---|---|");
-  lines.push(`| Micro | ${pct(a.headline.micro.precision)} | ${pct(a.headline.micro.recall)} | ${pct(a.headline.micro.f1)} |`);
-  lines.push(`| Macro | ${pct(a.headline.macro.precision)} | ${pct(a.headline.macro.recall)} | ${pct(a.headline.macro.f1)} |`);
+  lines.push(
+    `| Micro | ${pct(a.headline.micro.precision)} | ${pct(a.headline.micro.recall)} | ${pct(a.headline.micro.f1)} |`,
+  );
+  lines.push(
+    `| Macro | ${pct(a.headline.macro.precision)} | ${pct(a.headline.macro.recall)} | ${pct(a.headline.macro.f1)} |`,
+  );
   lines.push("");
 
   if (a.notes.length > 0) {
@@ -180,7 +186,9 @@ export function renderScoreboardMarkdown(a: ScoreboardArtifact): string {
 
   lines.push("## Worst offenders");
   lines.push("");
-  lines.push(`- **Lowest precision:** ${a.worst_precision.map((r) => r.rule_id).join(", ") || "—"}`);
+  lines.push(
+    `- **Lowest precision:** ${a.worst_precision.map((r) => r.rule_id).join(", ") || "—"}`,
+  );
   lines.push(`- **Lowest recall:** ${a.worst_recall.map((r) => r.rule_id).join(", ") || "—"}`);
   lines.push("");
   lines.push("## Unmeasured rules");

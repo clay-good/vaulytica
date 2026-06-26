@@ -11,7 +11,10 @@ export const rule: Rule = {
   description: "Flags MFN / most-favored-nation clauses for review.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
-    const hit = firstParagraphMatch(ctx, /\b(?:most[- ]favored[- ]nation|MFN|no[- ]less[- ]favorable\s+terms)\b/i);
+    const hit = firstParagraphMatch(
+      ctx,
+      /\b(?:most[- ]favored[- ]nation|MFN|no[- ]less[- ]favorable\s+terms)\b/i,
+    );
     if (!hit) return null;
     return emit(ctx, rule, {
       title: "Most-favored-nation clause present",

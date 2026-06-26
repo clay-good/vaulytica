@@ -24,11 +24,7 @@
 import type { ConsistencyRule, ConsistencyFinding, ConsistencyDocument } from "../types.js";
 import { findByKind, findParagraph, fullText } from "../_helpers.js";
 import { forEachParagraph } from "../../../extract/walk.js";
-import {
-  paragraphExcerpt,
-  textExcerpt,
-  makeConsistencyFinding,
-} from "./_finding.js";
+import { paragraphExcerpt, textExcerpt, makeConsistencyFinding } from "./_finding.js";
 
 const RULE_VERSION = "1.0.0";
 
@@ -57,8 +53,10 @@ export const CC_001_BAA_PURPOSE: ConsistencyRule = {
 
     // Locate the MSA's services / purpose anchor.
     const msaServices =
-      findParagraph(msa, /\b(scope\s+of\s+services|the\s+services|services\s+description|purpose\s+of\s+(?:this|the)\s+agreement)\b/i) ??
-      findParagraph(msa, /\bservice(?:s)?\s+to\s+be\s+provided\b/i);
+      findParagraph(
+        msa,
+        /\b(scope\s+of\s+services|the\s+services|services\s+description|purpose\s+of\s+(?:this|the)\s+agreement)\b/i,
+      ) ?? findParagraph(msa, /\bservice(?:s)?\s+to\s+be\s+provided\b/i);
     if (!msaServices) return [];
 
     return [
@@ -125,17 +123,32 @@ export const CC_002_DPA_PURPOSE: ConsistencyRule = {
 /* -------------------- CC-003 DPA-data-categories-not-broader ---- */
 
 const SENSITIVE_CATEGORY_TERMS: Array<{ term: RegExp; label: string }> = [
-  { term: /\b(health(?:care)?\s+data|medical\s+(?:data|records)|health\s+information)\b/i, label: "health data" },
+  {
+    term: /\b(health(?:care)?\s+data|medical\s+(?:data|records)|health\s+information)\b/i,
+    label: "health data",
+  },
   { term: /\b(biometric\s+data|biometric\s+identifiers?)\b/i, label: "biometric data" },
   { term: /\bgenetic\s+data\b/i, label: "genetic data" },
   { term: /\b(racial|ethnic)\s+origin\b/i, label: "racial or ethnic origin" },
   { term: /\b(religious|philosophical)\s+beliefs?\b/i, label: "religious beliefs" },
   { term: /\b(political\s+opinions?)\b/i, label: "political opinions" },
   { term: /\b(trade[-\s]?union\s+membership)\b/i, label: "trade-union membership" },
-  { term: /\b(sex(?:ual)?\s+life|sexual\s+orientation)\b/i, label: "sex life / sexual orientation" },
-  { term: /\b(children'?s?\s+data|data\s+(?:of|concerning)\s+children|minors?'?\s+data)\b/i, label: "children's data" },
-  { term: /\b(financial\s+account\s+numbers?|payment\s+card\s+(?:data|numbers?)|bank\s+account\s+(?:numbers?|details))\b/i, label: "financial account / payment card data" },
-  { term: /\b(government[-\s]?issued\s+identifier|social\s+security\s+number|passport\s+number|driver'?s?\s+licen[cs]e\s+number)\b/i, label: "government-issued identifiers" },
+  {
+    term: /\b(sex(?:ual)?\s+life|sexual\s+orientation)\b/i,
+    label: "sex life / sexual orientation",
+  },
+  {
+    term: /\b(children'?s?\s+data|data\s+(?:of|concerning)\s+children|minors?'?\s+data)\b/i,
+    label: "children's data",
+  },
+  {
+    term: /\b(financial\s+account\s+numbers?|payment\s+card\s+(?:data|numbers?)|bank\s+account\s+(?:numbers?|details))\b/i,
+    label: "financial account / payment card data",
+  },
+  {
+    term: /\b(government[-\s]?issued\s+identifier|social\s+security\s+number|passport\s+number|driver'?s?\s+licen[cs]e\s+number)\b/i,
+    label: "government-issued identifiers",
+  },
 ];
 
 export const CC_003_DPA_CATEGORIES: ConsistencyRule = {
@@ -165,12 +178,10 @@ export const CC_003_DPA_CATEGORIES: ConsistencyRule = {
           makeConsistencyFinding({
             rule: CC_003_DPA_CATEGORIES,
             title: `DPA lists ${label} but the MSA does not contemplate it`,
-            description:
-              `The DPA names ${label} as a category of personal data processed, while the MSA's services description contains no anchor for it.`,
+            description: `The DPA names ${label} as a category of personal data processed, while the MSA's services description contains no anchor for it.`,
             explanation:
               "Art. 28(3) requires the DPA's type-of-personal-data section to reflect what the services actually involve. A DPA that grants the processor a broader category set than the MSA scopes is unenforceable as a scope cap and may itself be a GDPR violation.",
-            recommendation:
-              `Remove ${label} from the DPA's Annex I.B unless the MSA's services description is updated to make the basis explicit.`,
+            recommendation: `Remove ${label} from the DPA's Annex I.B unless the MSA's services description is updated to make the basis explicit.`,
             excerpts: [
               paragraphExcerpt(dpa, p),
               {
@@ -213,22 +224,34 @@ export const CC_004_BAA_TERM: ConsistencyRule = {
     // and correct drafting ("this BAA is co-terminous with the Master
     // Services Agreement").
     const baaText = fullText(baa);
-    if (/\b(co-?terminous|coextensive)\s+with\s+(?:the\s+)?(?:master\s+services?\s+agreement|msa|underlying\s+agreement|services\s+agreement)\b/i.test(baaText)) {
+    if (
+      /\b(co-?terminous|coextensive)\s+with\s+(?:the\s+)?(?:master\s+services?\s+agreement|msa|underlying\s+agreement|services\s+agreement)\b/i.test(
+        baaText,
+      )
+    ) {
       return [];
     }
-    if (/\bterm[s]?\s+of\s+(?:this\s+)?baa\s+(?:shall\s+)?(?:run|continue|remain)\s+(?:co-?incident|in\s+effect)\s+with\s+(?:the\s+)?(?:msa|services\s+agreement)\b/i.test(baaText)) {
+    if (
+      /\bterm[s]?\s+of\s+(?:this\s+)?baa\s+(?:shall\s+)?(?:run|continue|remain)\s+(?:co-?incident|in\s+effect)\s+with\s+(?:the\s+)?(?:msa|services\s+agreement)\b/i.test(
+        baaText,
+      )
+    ) {
       return [];
     }
 
     // Find independent term language in the BAA.
     const baaTermPara =
-      findParagraph(baa, /\bthis\s+(?:agreement|baa)\s+shall\s+(?:commence|be\s+effective|remain\s+in\s+effect)\b[^.\n]{0,200}\b(?:until\s+terminated|in\s+perpetuity|for\s+a\s+term\s+of\s+\d|until\s+\w+\s+\d{4})\b/i) ??
-      findParagraph(baa, /\beffective\s+date\b[^.\n]{0,80}\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/i);
+      findParagraph(
+        baa,
+        /\bthis\s+(?:agreement|baa)\s+shall\s+(?:commence|be\s+effective|remain\s+in\s+effect)\b[^.\n]{0,200}\b(?:until\s+terminated|in\s+perpetuity|for\s+a\s+term\s+of\s+\d|until\s+\w+\s+\d{4})\b/i,
+      ) ?? findParagraph(baa, /\beffective\s+date\b[^.\n]{0,80}\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/i);
     if (!baaTermPara) return [];
 
     const msaTermPara =
-      findParagraph(msa, /\bthis\s+agreement\s+shall\s+(?:commence|be\s+effective|remain\s+in\s+effect)\b/i) ??
-      findParagraph(msa, /\b(initial\s+term|term\s+of\s+this\s+agreement)\b/i);
+      findParagraph(
+        msa,
+        /\bthis\s+agreement\s+shall\s+(?:commence|be\s+effective|remain\s+in\s+effect)\b/i,
+      ) ?? findParagraph(msa, /\b(initial\s+term|term\s+of\s+this\s+agreement)\b/i);
     if (!msaTermPara) return [];
 
     return [
@@ -261,17 +284,35 @@ export const CC_005_GOVERNING_LAW: ConsistencyRule = {
   requires: [],
   check(ctx): ConsistencyFinding[] {
     if (ctx.documents.length < 2) return [];
-    const seen = new Map<string, { doc: ConsistencyDocument; raw: string; start: number; end: number; section_id?: string }>();
+    const seen = new Map<
+      string,
+      { doc: ConsistencyDocument; raw: string; start: number; end: number; section_id?: string }
+    >();
 
     for (const doc of ctx.documents) {
       const law = extractGoverningLaw(doc);
       if (!law) continue;
-      seen.set(doc.doc_id, { doc, raw: law.raw, start: law.start, end: law.end, section_id: law.section_id });
+      seen.set(doc.doc_id, {
+        doc,
+        raw: law.raw,
+        start: law.start,
+        end: law.end,
+        section_id: law.section_id,
+      });
     }
     if (seen.size < 2) return [];
 
     // Normalize: compare canonicalized jurisdiction strings.
-    const buckets = new Map<string, Array<{ doc: ConsistencyDocument; raw: string; start: number; end: number; section_id?: string }>>();
+    const buckets = new Map<
+      string,
+      Array<{
+        doc: ConsistencyDocument;
+        raw: string;
+        start: number;
+        end: number;
+        section_id?: string;
+      }>
+    >();
     for (const entry of seen.values()) {
       const key = canonicalizeJurisdiction(entry.raw);
       const list = buckets.get(key) ?? [];
@@ -319,7 +360,16 @@ export const CC_006_NOTICE: ConsistencyRule = {
   requires: [],
   check(ctx): ConsistencyFinding[] {
     if (ctx.documents.length < 2) return [];
-    const buckets = new Map<string, Array<{ doc: ConsistencyDocument; raw: string; start: number; end: number; section_id?: string }>>();
+    const buckets = new Map<
+      string,
+      Array<{
+        doc: ConsistencyDocument;
+        raw: string;
+        start: number;
+        end: number;
+        section_id?: string;
+      }>
+    >();
     for (const doc of ctx.documents) {
       const n = extractNoticeBlock(doc);
       if (!n) continue;
@@ -374,18 +424,39 @@ export const CC_007_ORDER_OF_PRECEDENCE: ConsistencyRule = {
     // within a ~400-char window for the controlling-document declaration.
     // We allow newlines so the anchor (often a heading) and the operative
     // text (often the paragraph below) compose into one span.
-    const anchor = msaText.match(/\b(?:in\s+the\s+event\s+of\s+(?:any\s+)?conflict|order\s+of\s+precedence)\b/i);
+    const anchor = msaText.match(
+      /\b(?:in\s+the\s+event\s+of\s+(?:any\s+)?conflict|order\s+of\s+precedence)\b/i,
+    );
     if (!anchor || anchor.index === undefined) return [];
     const window = msaText.slice(anchor.index, anchor.index + 400);
-    const msaControls = /\b(msa|master\s+services?\s+agreement|this\s+agreement)\s+(?:shall\s+)?(?:controls?|govern[s]?|prevails?|takes?\s+precedence)\b/i.test(window);
+    const msaControls =
+      /\b(msa|master\s+services?\s+agreement|this\s+agreement)\s+(?:shall\s+)?(?:controls?|govern[s]?|prevails?|takes?\s+precedence)\b/i.test(
+        window,
+      );
     if (!msaControls) return [];
 
     // Look for operative-terms language in non-MSA subordinate docs.
     const operativePatterns: Array<{ pattern: RegExp; subject: string }> = [
-      { pattern: /\bindemnif(?:y|ication|ies)\b.{0,200}\b(losses?|claims?|damages?|liabilit(?:y|ies))\b/is, subject: "indemnification" },
-      { pattern: /\b(aggregate\s+(?:cap|liability)|limitation\s+of\s+liability|liability\s+cap)\b[^.\n]{0,200}\b(?:exceed|capped|limited)\b/i, subject: "aggregate liability cap" },
-      { pattern: /\b(?:intellectual\s+property|work\s+product|deliverables?)\b[^.\n]{0,200}\b(?:owns?|assigns?|ownership|title)\b/i, subject: "IP ownership allocation" },
-      { pattern: /\b(warrants?|warranty|warranties)\b[^.\n]{0,200}\b(?:workmanlike|conform|free\s+of\s+defects)\b/i, subject: "warranty" },
+      {
+        pattern:
+          /\bindemnif(?:y|ication|ies)\b.{0,200}\b(losses?|claims?|damages?|liabilit(?:y|ies))\b/is,
+        subject: "indemnification",
+      },
+      {
+        pattern:
+          /\b(aggregate\s+(?:cap|liability)|limitation\s+of\s+liability|liability\s+cap)\b[^.\n]{0,200}\b(?:exceed|capped|limited)\b/i,
+        subject: "aggregate liability cap",
+      },
+      {
+        pattern:
+          /\b(?:intellectual\s+property|work\s+product|deliverables?)\b[^.\n]{0,200}\b(?:owns?|assigns?|ownership|title)\b/i,
+        subject: "IP ownership allocation",
+      },
+      {
+        pattern:
+          /\b(warrants?|warranty|warranties)\b[^.\n]{0,200}\b(?:workmanlike|conform|free\s+of\s+defects)\b/i,
+        subject: "warranty",
+      },
     ];
 
     const findings: ConsistencyFinding[] = [];
@@ -401,14 +472,19 @@ export const CC_007_ORDER_OF_PRECEDENCE: ConsistencyRule = {
           makeConsistencyFinding({
             rule: CC_007_ORDER_OF_PRECEDENCE,
             title: `Operative ${subject} terms live in the subordinate document but the MSA states MSA controls`,
-            description:
-              `The MSA names itself as controlling in conflicts, yet ${subject} terms appear in the subordinate ${sub.playbook_id} document. If the MSA is silent on those terms, "MSA controls" reads as "no ${subject}".`,
+            description: `The MSA names itself as controlling in conflicts, yet ${subject} terms appear in the subordinate ${sub.playbook_id} document. If the MSA is silent on those terms, "MSA controls" reads as "no ${subject}".`,
             explanation:
               "Order-of-precedence clauses only work when the controlling document contains the operative terms. Subordinate-only operative terms are either nullified by the precedence clause or — more often — read as a tacit carve-out, which is litigation-bait.",
-            recommendation:
-              `Either move the ${subject} terms into the MSA, or amend the order-of-precedence clause to carve out ${subject} (e.g., "except for indemnification, which is governed by [DOC]").`,
+            recommendation: `Either move the ${subject} terms into the MSA, or amend the order-of-precedence clause to carve out ${subject} (e.g., "except for indemnification, which is governed by [DOC]").`,
             excerpts: [
-              textExcerpt(msa, precedenceText, precedenceStart >= 0 ? precedenceStart : 0, precedenceStart >= 0 ? precedenceStart + precedenceText.length : precedenceText.length),
+              textExcerpt(
+                msa,
+                precedenceText,
+                precedenceStart >= 0 ? precedenceStart : 0,
+                precedenceStart >= 0
+                  ? precedenceStart + precedenceText.length
+                  : precedenceText.length,
+              ),
               paragraphExcerpt(sub, hit),
             ],
           }),
@@ -449,7 +525,9 @@ function gdpr28() {
 
 /* -------------------- Internal extraction helpers ---------------- */
 
-function extractGoverningLaw(doc: ConsistencyDocument): { raw: string; start: number; end: number; section_id?: string } | null {
+function extractGoverningLaw(
+  doc: ConsistencyDocument,
+): { raw: string; start: number; end: number; section_id?: string } | null {
   // Prefer the v2 extracted jurisdictions when available.
   for (const j of doc.extracted.jurisdictions) {
     if (j.clause_kind === "governing-law") {
@@ -461,7 +539,10 @@ function extractGoverningLaw(doc: ConsistencyDocument): { raw: string; start: nu
       };
     }
   }
-  const p = findParagraph(doc, /\bgovern(?:ed|ing)\s+(?:by\s+)?(?:and\s+construed\s+in\s+accordance\s+with\s+)?the\s+laws?\s+of\b/i);
+  const p = findParagraph(
+    doc,
+    /\bgovern(?:ed|ing)\s+(?:by\s+)?(?:and\s+construed\s+in\s+accordance\s+with\s+)?the\s+laws?\s+of\b/i,
+  );
   if (!p) return null;
   return { raw: p.text, start: p.start, end: p.end, section_id: p.section.id || undefined };
 }
@@ -469,16 +550,27 @@ function extractGoverningLaw(doc: ConsistencyDocument): { raw: string; start: nu
 function canonicalizeJurisdiction(raw: string): string {
   return raw
     .toLowerCase()
-    .replace(/\b(governed|construed|in\s+accordance\s+with|the\s+laws?\s+of|state\s+of|commonwealth\s+of|by)\b/g, " ")
+    .replace(
+      /\b(governed|construed|in\s+accordance\s+with|the\s+laws?\s+of|state\s+of|commonwealth\s+of|by)\b/g,
+      " ",
+    )
     .replace(/[^a-z]+/g, " ")
     .trim();
 }
 
-function extractNoticeBlock(doc: ConsistencyDocument): { raw: string; start: number; end: number; section_id?: string } | null {
+function extractNoticeBlock(
+  doc: ConsistencyDocument,
+): { raw: string; start: number; end: number; section_id?: string } | null {
   const p =
-    findParagraph(doc, /\b(any\s+)?notices?\s+(?:required|permitted)\s+(?:under|by)\s+this\s+agreement\b/i) ??
+    findParagraph(
+      doc,
+      /\b(any\s+)?notices?\s+(?:required|permitted)\s+(?:under|by)\s+this\s+agreement\b/i,
+    ) ??
     findParagraph(doc, /\bnotices?\s+(?:shall\s+)?(?:be\s+)?(?:in\s+writing|sent|delivered)\b/i) ??
-    findParagraph(doc, /\battention\s*[:.]?\s*(?:general\s+counsel|legal\s+department|chief\s+(?:executive|legal)\s+officer)\b/i);
+    findParagraph(
+      doc,
+      /\battention\s*[:.]?\s*(?:general\s+counsel|legal\s+department|chief\s+(?:executive|legal)\s+officer)\b/i,
+    );
   if (!p) return null;
   return { raw: p.text, start: p.start, end: p.end, section_id: p.section.id || undefined };
 }
@@ -487,7 +579,10 @@ function canonicalizeNotice(raw: string): string {
   return raw
     .toLowerCase()
     .replace(/[^a-z0-9@]+/g, " ")
-    .replace(/\b(notice|notices|shall|be|in|writing|sent|delivered|to|the|of|and|or|attention|attn|by)\b/g, " ")
+    .replace(
+      /\b(notice|notices|shall|be|in|writing|sent|delivered|to|the|of|and|or|attention|attn|by)\b/g,
+      " ",
+    )
     .replace(/\s+/g, " ")
     .trim();
 }

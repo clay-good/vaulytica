@@ -1,8 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  buildNegotiationPostureMarkdown,
-  buildNegotiationPostureCsv,
-} from "./exports.js";
+import { buildNegotiationPostureMarkdown, buildNegotiationPostureCsv } from "./exports.js";
 import { buildNegotiationSheet } from "./negotiation-sheet.js";
 import type { NegotiationPosture } from "../playbooks/custom-interpreter.js";
 
@@ -58,9 +55,15 @@ describe("negotiation posture export (spec-v10 Step 171)", () => {
   });
 
   it("handles an empty posture honestly", () => {
-    const empty: NegotiationPosture = { counts: { ideal: 0, acceptable: 0, below_acceptable: 0, unevaluable: 0 }, posture_hash: "0".repeat(64), positions: [] };
+    const empty: NegotiationPosture = {
+      counts: { ideal: 0, acceptable: 0, below_acceptable: 0, unevaluable: 0 },
+      posture_hash: "0".repeat(64),
+      positions: [],
+    };
     expect(buildNegotiationPostureMarkdown(empty)).toContain("No negotiation positions");
-    expect(buildNegotiationPostureCsv(empty).trim()).toBe("dimension,tier,finding,guidance,section");
+    expect(buildNegotiationPostureCsv(empty).trim()).toBe(
+      "dimension,tier,finding,guidance,section",
+    );
   });
 });
 
@@ -82,7 +85,9 @@ describe("negotiation sheet (spec-v10 Step 170)", () => {
   it("escapes author-supplied content (never live markup in a shared sheet)", () => {
     const xss: NegotiationPosture = {
       ...posture,
-      positions: [{ dimension: "<b>Cap</b>", tier: "ideal", guidance: "<script>alert(1)</script>" }],
+      positions: [
+        { dimension: "<b>Cap</b>", tier: "ideal", guidance: "<script>alert(1)</script>" },
+      ],
     };
     const html = buildNegotiationSheet(xss);
     expect(html).toContain("&lt;b&gt;Cap&lt;/b&gt;");
@@ -91,7 +96,11 @@ describe("negotiation sheet (spec-v10 Step 170)", () => {
   });
 
   it("is deterministic and handles an empty posture", () => {
-    const empty: NegotiationPosture = { counts: { ideal: 0, acceptable: 0, below_acceptable: 0, unevaluable: 0 }, posture_hash: "0".repeat(64), positions: [] };
+    const empty: NegotiationPosture = {
+      counts: { ideal: 0, acceptable: 0, below_acceptable: 0, unevaluable: 0 },
+      posture_hash: "0".repeat(64),
+      positions: [],
+    };
     const a = buildNegotiationSheet(empty);
     expect(a).toBe(buildNegotiationSheet(empty));
     expect(a).toContain("No negotiation positions were defined");

@@ -48,16 +48,22 @@ describe("computeCoherenceBreadth (spec-v22 — per-round deal standing)", () =>
   it("identifies the worst round (most fronts below floor at once), earliest on a tie", async () => {
     // Breadth path: 1 → 3 → 3 → 1. Worst is round 2 (first to reach 3), not round 3.
     const rounds = await Promise.all([
-      mk({ Cap: "below-acceptable", Law: "ideal", Risk: "ideal" }, { Cap: "ideal", Law: "ideal", Risk: "ideal" }),
       mk(
-        { Cap: "below-acceptable", Law: "below-acceptable", Risk: "below-acceptable" },
+        { Cap: "below-acceptable", Law: "ideal", Risk: "ideal" },
         { Cap: "ideal", Law: "ideal", Risk: "ideal" },
       ),
       mk(
         { Cap: "below-acceptable", Law: "below-acceptable", Risk: "below-acceptable" },
         { Cap: "ideal", Law: "ideal", Risk: "ideal" },
       ),
-      mk({ Cap: "below-acceptable", Law: "ideal", Risk: "ideal" }, { Cap: "ideal", Law: "ideal", Risk: "ideal" }),
+      mk(
+        { Cap: "below-acceptable", Law: "below-acceptable", Risk: "below-acceptable" },
+        { Cap: "ideal", Law: "ideal", Risk: "ideal" },
+      ),
+      mk(
+        { Cap: "below-acceptable", Law: "ideal", Risk: "ideal" },
+        { Cap: "ideal", Law: "ideal", Risk: "ideal" },
+      ),
     ]);
     const b = await computeCoherenceBreadth(rounds);
     expect(b.worst_round).toBe(2);

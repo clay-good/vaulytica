@@ -33,7 +33,10 @@ const fixtures = await listV3Fixtures(FIXTURES);
 
 describe("v3 golden-output", () => {
   it("at least one v3 fixture is present", () => {
-    expect(fixtures.length, "drop a `.txt` or `.docx` into tests/golden/v3/fixtures").toBeGreaterThan(0);
+    expect(
+      fixtures.length,
+      "drop a `.txt` or `.docx` into tests/golden/v3/fixtures",
+    ).toBeGreaterThan(0);
   });
 
   if (REGEN) {
@@ -80,9 +83,7 @@ describe("v3 golden-output", () => {
       const b = await runV3Fixture(path);
       expect(b.run.result_hash).toBe(a.run.result_hash);
       // Bigger guarantee: canonical bytes are identical.
-      expect(prettyStable(normalizeForGolden(b.run))).toBe(
-        prettyStable(normalizeForGolden(a.run)),
-      );
+      expect(prettyStable(normalizeForGolden(b.run))).toBe(prettyStable(normalizeForGolden(a.run)));
     });
   }
 });

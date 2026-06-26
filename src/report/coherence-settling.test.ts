@@ -103,9 +103,18 @@ describe("computeCoherenceSettling (spec-v26 — time of the last floor crossing
 
   it("is a reduction of the same crossings — total_crossings equals v24's and v25's totals", async () => {
     const rounds = await Promise.all([
-      mk({ Cap: "acceptable", Term: "below-acceptable", Fee: "ideal" }, { Cap: "ideal", Term: "ideal", Fee: "ideal" }),
-      mk({ Cap: "below-acceptable", Term: "acceptable", Fee: "ideal" }, { Cap: "ideal", Term: "ideal", Fee: "ideal" }),
-      mk({ Cap: "acceptable", Term: "below-acceptable", Fee: "below-acceptable" }, { Cap: "ideal", Term: "ideal", Fee: "ideal" }),
+      mk(
+        { Cap: "acceptable", Term: "below-acceptable", Fee: "ideal" },
+        { Cap: "ideal", Term: "ideal", Fee: "ideal" },
+      ),
+      mk(
+        { Cap: "below-acceptable", Term: "acceptable", Fee: "ideal" },
+        { Cap: "ideal", Term: "ideal", Fee: "ideal" },
+      ),
+      mk(
+        { Cap: "acceptable", Term: "below-acceptable", Fee: "below-acceptable" },
+        { Cap: "ideal", Term: "ideal", Fee: "ideal" },
+      ),
     ]);
     const settling = await computeCoherenceSettling(rounds);
     const vol = await computeCoherenceVolatility(rounds);

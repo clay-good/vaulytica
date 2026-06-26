@@ -11,9 +11,18 @@ export const rule: Rule = {
   description: "For data-heavy contracts, flags missing distinction between IP and data ownership.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
-    const dataMention = firstParagraphMatch(ctx, /\b(?:customer\s+data|usage\s+data|service\s+data)\b/i);
+    const dataMention = firstParagraphMatch(
+      ctx,
+      /\b(?:customer\s+data|usage\s+data|service\s+data)\b/i,
+    );
     if (!dataMention) return null;
-    if (firstParagraphMatch(ctx, /\b(?:customer\s+data|usage\s+data)\s+ownership\b|owns?\s+(?:the\s+)?(?:customer\s+|usage\s+)?data\b/i)) return null;
+    if (
+      firstParagraphMatch(
+        ctx,
+        /\b(?:customer\s+data|usage\s+data)\s+ownership\b|owns?\s+(?:the\s+)?(?:customer\s+|usage\s+)?data\b/i,
+      )
+    )
+      return null;
     return emit(ctx, rule, {
       title: "Data ownership not separately addressed",
       description: "The contract references data but does not separately allocate data ownership.",

@@ -75,8 +75,10 @@ export const PORTFOLIO_CHECKS: ReadonlyArray<PortfolioCheckDef> = [
     label: "Liability cap",
     rollup: { statuses: ["risk"], phrase: "lack a capped liability clause" },
     evaluate: (run) => {
-      if (fired(run, "RISK-009")) return { status: "risk", label: "Uncapped", rule_ids: ["RISK-009"] };
-      if (fired(run, "RISK-005")) return { status: "risk", label: "No cap clause", rule_ids: ["RISK-005"] };
+      if (fired(run, "RISK-009"))
+        return { status: "risk", label: "Uncapped", rule_ids: ["RISK-009"] };
+      if (fired(run, "RISK-005"))
+        return { status: "risk", label: "No cap clause", rule_ids: ["RISK-005"] };
       if (ran(run, "RISK-005")) return { status: "ok", label: "Capped", rule_ids: ["RISK-005"] };
       return { status: "na", label: "N/A" };
     },
@@ -86,8 +88,10 @@ export const PORTFOLIO_CHECKS: ReadonlyArray<PortfolioCheckDef> = [
     label: "Auto-renewal",
     rollup: { statuses: ["flag"], phrase: "auto-renew" },
     evaluate: (run) => {
-      if (fired(run, "TEMP-004")) return { status: "flag", label: "Auto-renews", rule_ids: ["TEMP-004"] };
-      if (ran(run, "TEMP-004")) return { status: "ok", label: "No auto-renew", rule_ids: ["TEMP-004"] };
+      if (fired(run, "TEMP-004"))
+        return { status: "flag", label: "Auto-renews", rule_ids: ["TEMP-004"] };
+      if (ran(run, "TEMP-004"))
+        return { status: "ok", label: "No auto-renew", rule_ids: ["TEMP-004"] };
       return { status: "na", label: "N/A" };
     },
   },
@@ -96,8 +100,10 @@ export const PORTFOLIO_CHECKS: ReadonlyArray<PortfolioCheckDef> = [
     label: "Governing law",
     rollup: { statuses: ["risk"], phrase: "do not specify governing law" },
     evaluate: (run) => {
-      if (fired(run, "CHOICE-001")) return { status: "risk", label: "Unspecified", rule_ids: ["CHOICE-001"] };
-      if (ran(run, "CHOICE-001")) return { status: "ok", label: "Specified", rule_ids: ["CHOICE-001"] };
+      if (fired(run, "CHOICE-001"))
+        return { status: "risk", label: "Unspecified", rule_ids: ["CHOICE-001"] };
+      if (ran(run, "CHOICE-001"))
+        return { status: "ok", label: "Specified", rule_ids: ["CHOICE-001"] };
       return { status: "na", label: "N/A" };
     },
   },

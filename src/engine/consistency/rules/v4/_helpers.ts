@@ -161,9 +161,13 @@ export function effectiveDateOf(doc: ConsistencyDocument): string | null {
  * fee-multiple caps ("12 months of fees") the function returns null —
  * those aren't directly comparable as dollar amounts.
  */
-export function firstLiabilityCap(
-  doc: ConsistencyDocument,
-): { amount_usd: number; raw_text: string; section_id?: string; start: number; end: number } | null {
+export function firstLiabilityCap(doc: ConsistencyDocument): {
+  amount_usd: number;
+  raw_text: string;
+  section_id?: string;
+  start: number;
+  end: number;
+} | null {
   // The body-text scan looks for the cap anchor; the matched paragraph
   // then surfaces its highest dollar amount as the cap value.
   const tree = doc.tree;
@@ -180,7 +184,9 @@ export function firstLiabilityCap(
   if (!slot.value) return null;
   const found: Hit = slot.value;
   // Find the largest $X dollar amount in the paragraph.
-  const amounts = [...found.paragraph_text.matchAll(/\$\s*([\d,]+(?:\.\d+)?)\s*(million|thousand|m|k)?/gi)];
+  const amounts = [
+    ...found.paragraph_text.matchAll(/\$\s*([\d,]+(?:\.\d+)?)\s*(million|thousand|m|k)?/gi),
+  ];
   if (amounts.length === 0) return null;
   let max = 0;
   for (const m of amounts) {
@@ -219,8 +225,12 @@ import { fullText } from "../../_helpers.js";
 export function hasIncorporationByReference(doc: ConsistencyDocument): boolean {
   const text = fullText(doc);
   return (
-    /capitalized\s+terms?\s+(?:not|used|that\s+are\s+not)\b[^.]{0,80}?(?:defined|meaning)/i.test(text) ||
-    /(?:meanings?|definitions?)\s+(?:given|set\s+forth|assigned|ascribed)\b[^.]{0,60}?\b(?:in|under)\b/i.test(text)
+    /capitalized\s+terms?\s+(?:not|used|that\s+are\s+not)\b[^.]{0,80}?(?:defined|meaning)/i.test(
+      text,
+    ) ||
+    /(?:meanings?|definitions?)\s+(?:given|set\s+forth|assigned|ascribed)\b[^.]{0,60}?\b(?:in|under)\b/i.test(
+      text,
+    )
   );
 }
 
@@ -237,7 +247,12 @@ export function findDefinedTermUsageDrift(
 ): Array<{ term: string; definition: string; def_pos: DocPosition; use_pos: DocPosition }> {
   if (hasIncorporationByReference(user)) return [];
   const userDefined = new Set(user.extracted.definitions.entries.map((e) => e.term.toLowerCase()));
-  const out: Array<{ term: string; definition: string; def_pos: DocPosition; use_pos: DocPosition }> = [];
+  const out: Array<{
+    term: string;
+    definition: string;
+    def_pos: DocPosition;
+    use_pos: DocPosition;
+  }> = [];
   for (const def of definer.extracted.definitions.entries) {
     const key = def.term.toLowerCase();
     if (userDefined.has(key)) continue;
@@ -254,7 +269,12 @@ export function findDefinedTermUsageDrift(
       if (idx >= 0) usePos = { section_id: p.section.id, start: p.start, end: p.end };
     });
     if (!usePos) continue;
-    out.push({ term: def.term, definition: def.definition, def_pos: def.defined_at, use_pos: usePos });
+    out.push({
+      term: def.term,
+      definition: def.definition,
+      def_pos: def.defined_at,
+      use_pos: usePos,
+    });
   }
   return out;
 }
@@ -271,17 +291,27 @@ function escapeRegExp(s: string): string {
  * / CROSS-AMOUNT-001 — indemnity caps commonly sit above the general
  * liability cap, and an order form that re-states one stacks ambiguously.
  */
-export function firstIndemnityCap(
-  doc: ConsistencyDocument,
-): { amount_usd: number; raw_text: string; section_id?: string; start: number; end: number } | null {
+export function firstIndemnityCap(doc: ConsistencyDocument): {
+  amount_usd: number;
+  raw_text: string;
+  section_id?: string;
+  start: number;
+  end: number;
+} | null {
   const capRe = /\b(indemnif\w+)\b/i;
-  const limitRe = /\b(not\s+to\s+exceed|shall\s+not\s+exceed|capped\s+at|limited\s+to|up\s+to|maximum\s+(?:aggregate\s+)?(?:amount|liability))\b/i;
+  const limitRe =
+    /\b(not\s+to\s+exceed|shall\s+not\s+exceed|capped\s+at|limited\s+to|up\s+to|maximum\s+(?:aggregate\s+)?(?:amount|liability))\b/i;
   type Hit = { text: string; section_id?: string; start: number; end: number };
   const slot: { value: Hit | null } = { value: null };
   forEachParagraph(doc.tree, (p) => {
     if (slot.value) return;
     if (capRe.test(p.text) && limitRe.test(p.text) && /\$/.test(p.text)) {
-      slot.value = { text: p.text, section_id: p.section.id || undefined, start: p.start, end: p.end };
+      slot.value = {
+        text: p.text,
+        section_id: p.section.id || undefined,
+        start: p.start,
+        end: p.end,
+      };
     }
   });
   if (!slot.value) return null;
@@ -292,11 +322,22 @@ export function firstIndemnityCap(
     const num = Number(m[1]!.replace(/,/g, ""));
     if (!Number.isFinite(num)) continue;
     const s = (m[2] ?? "").toLowerCase();
-    const scaled = s === "million" || s === "m" ? num * 1_000_000 : s === "thousand" || s === "k" ? num * 1_000 : num;
+    const scaled =
+      s === "million" || s === "m"
+        ? num * 1_000_000
+        : s === "thousand" || s === "k"
+          ? num * 1_000
+          : num;
     if (scaled > max) max = scaled;
   }
   if (max === 0) return null;
-  return { amount_usd: max, raw_text: found.text, section_id: found.section_id, start: found.start, end: found.end };
+  return {
+    amount_usd: max,
+    raw_text: found.text,
+    section_id: found.section_id,
+    start: found.start,
+    end: found.end,
+  };
 }
 
 /**
@@ -306,21 +347,42 @@ export function firstIndemnityCap(
  * confidentiality-survival statement is found. Cross-doc conflict = two
  * documents that survive confidentiality for materially different periods.
  */
-export function confidentialitySurvival(
-  doc: ConsistencyDocument,
-): { descriptor: string; years: number | "perpetual"; raw_text: string; section_id?: string; start: number; end: number } | null {
+export function confidentialitySurvival(doc: ConsistencyDocument): {
+  descriptor: string;
+  years: number | "perpetual";
+  raw_text: string;
+  section_id?: string;
+  start: number;
+  end: number;
+} | null {
   type Hit = { text: string; section_id?: string; start: number; end: number };
   const slot: { value: Hit | null } = { value: null };
   forEachParagraph(doc.tree, (p) => {
     if (slot.value) return;
     if (/\bsurviv\w+/i.test(p.text) && /\bconfidential/i.test(p.text)) {
-      slot.value = { text: p.text, section_id: p.section.id || undefined, start: p.start, end: p.end };
+      slot.value = {
+        text: p.text,
+        section_id: p.section.id || undefined,
+        start: p.start,
+        end: p.end,
+      };
     }
   });
   if (!slot.value) return null;
   const found: Hit = slot.value;
-  if (/\b(perpetu\w+|indefinit\w+|in\s+perpetuity|no\s+expiration|without\s+(?:limit|expiration)|forever)\b/i.test(found.text)) {
-    return { descriptor: "perpetual", years: "perpetual", raw_text: found.text, section_id: found.section_id, start: found.start, end: found.end };
+  if (
+    /\b(perpetu\w+|indefinit\w+|in\s+perpetuity|no\s+expiration|without\s+(?:limit|expiration)|forever)\b/i.test(
+      found.text,
+    )
+  ) {
+    return {
+      descriptor: "perpetual",
+      years: "perpetual",
+      raw_text: found.text,
+      section_id: found.section_id,
+      start: found.start,
+      end: found.end,
+    };
   }
   // Match the number of years, tolerating the "three (3) years" drafting
   // form (grab the parenthetical digit) as well as a plain "3 years".
@@ -328,7 +390,14 @@ export function confidentialitySurvival(
   if (ym) {
     const y = Number(ym[1]);
     if (Number.isFinite(y) && y > 0) {
-      return { descriptor: `${y} year(s)`, years: y, raw_text: found.text, section_id: found.section_id, start: found.start, end: found.end };
+      return {
+        descriptor: `${y} year(s)`,
+        years: y,
+        raw_text: found.text,
+        section_id: found.section_id,
+        start: found.start,
+        end: found.end,
+      };
     }
   }
   return null;
@@ -375,9 +444,13 @@ export function dominantCurrency(
  * convenience-terminable master over a cause-only companion, where
  * early termination of the master orphans the bound companion.
  */
-export function terminationPosture(
-  doc: ConsistencyDocument,
-): { posture: "convenience" | "cause-only"; raw_text: string; section_id?: string; start: number; end: number } | null {
+export function terminationPosture(doc: ConsistencyDocument): {
+  posture: "convenience" | "cause-only";
+  raw_text: string;
+  section_id?: string;
+  start: number;
+  end: number;
+} | null {
   type Hit = { text: string; section_id?: string; start: number; end: number };
   const slot: { convenience: Hit | null; causeOnly: Hit | null } = {
     convenience: null,
@@ -399,11 +472,23 @@ export function terminationPosture(
   });
   if (slot.causeOnly) {
     const h = slot.causeOnly;
-    return { posture: "cause-only", raw_text: h.text, section_id: h.section_id, start: h.start, end: h.end };
+    return {
+      posture: "cause-only",
+      raw_text: h.text,
+      section_id: h.section_id,
+      start: h.start,
+      end: h.end,
+    };
   }
   if (slot.convenience) {
     const h = slot.convenience;
-    return { posture: "convenience", raw_text: h.text, section_id: h.section_id, start: h.start, end: h.end };
+    return {
+      posture: "convenience",
+      raw_text: h.text,
+      section_id: h.section_id,
+      start: h.start,
+      end: h.end,
+    };
   }
   return null;
 }
@@ -436,12 +521,14 @@ export function liabilityCarveouts(
   const slot: { value: Hit | null } = { value: null };
   walkParagraphs(doc.tree, (p) => {
     if (slot.value) return;
-    const capContext = /\b(?:liability|limitation\s+of\s+liability|shall\s+not\s+exceed|aggregate\s+liability)\b/i.test(
-      p.text,
-    );
-    const exception = /\b(?:shall\s+not\s+apply|do(?:es)?\s+not\s+apply|except(?:ions?)?|excluding|other\s+than)\b/i.test(
-      p.text,
-    );
+    const capContext =
+      /\b(?:liability|limitation\s+of\s+liability|shall\s+not\s+exceed|aggregate\s+liability)\b/i.test(
+        p.text,
+      );
+    const exception =
+      /\b(?:shall\s+not\s+apply|do(?:es)?\s+not\s+apply|except(?:ions?)?|excluding|other\s+than)\b/i.test(
+        p.text,
+      );
     if (capContext && exception) {
       slot.value = { text: p.text, section_id: p.section_id, start: p.start, end: p.end };
     }
@@ -450,7 +537,13 @@ export function liabilityCarveouts(
   const found: Hit = slot.value;
   const set = CARVEOUT_TERMS.filter(([, re]) => re.test(found.text)).map(([label]) => label);
   if (set.length === 0) return null;
-  return { set, raw_text: found.text, section_id: found.section_id, start: found.start, end: found.end };
+  return {
+    set,
+    raw_text: found.text,
+    section_id: found.section_id,
+    start: found.start,
+    end: found.end,
+  };
 }
 
 function walkParagraphs(

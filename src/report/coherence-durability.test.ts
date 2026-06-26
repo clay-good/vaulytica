@@ -250,7 +250,9 @@ describe("computeCoherenceDurability (spec-v41 — per-front mean clean-interval
     const dur = await computeCoherenceDurability(rounds);
     const summary = renderCoherenceDurabilitySummary(dur);
     expect(summary).toContain("Coherence recovery durability across 3 rounds");
-    expect(summary).toMatch(/most fragile recovery: Cap — relapsed fixes held above floor for 1 round on average/);
+    expect(summary).toMatch(
+      /most fragile recovery: Cap — relapsed fixes held above floor for 1 round on average/,
+    );
     expect(summary).toMatch(/1 fragile/);
     expect(summary).toMatch(/durability_hash: [0-9a-f]{64}/);
 

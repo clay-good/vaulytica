@@ -21,7 +21,12 @@ const bundle = (...docs: Array<[string, Record<string, NegotiationTier>]>): Cohe
 
 /** A bundle whose binding floor on `Cap` is the weakest of two docs; `Law` held at ideal. */
 const round = (cap: NegotiationTier) =>
-  bundlePostureCoherence(bundle(["msa.docx", { Cap: "ideal", Law: "ideal" }], ["order.docx", { Cap: cap, Law: "ideal" }]));
+  bundlePostureCoherence(
+    bundle(
+      ["msa.docx", { Cap: "ideal", Law: "ideal" }],
+      ["order.docx", { Cap: cap, Law: "ideal" }],
+    ),
+  );
 
 describe("compareCoherenceTrajectory (spec-v17 — document-free coherence trajectory)", () => {
   it("classifies a whipsaw: dip below floor mid-deal that recovers", async () => {
@@ -47,7 +52,11 @@ describe("compareCoherenceTrajectory (spec-v17 — document-free coherence traje
   });
 
   it("classifies steady improvement (no step regressed) and does not trip the gate", async () => {
-    const rounds = await Promise.all([round("below-acceptable"), round("acceptable"), round("ideal")]);
+    const rounds = await Promise.all([
+      round("below-acceptable"),
+      round("acceptable"),
+      round("ideal"),
+    ]);
     const t = await compareCoherenceTrajectory(rounds);
     const cap = t.fronts.find((f) => f.dimension === "Cap")!;
     expect(cap.trajectory).toBe("steady-improvement");
@@ -56,7 +65,11 @@ describe("compareCoherenceTrajectory (spec-v17 — document-free coherence traje
   });
 
   it("classifies steady regression and trips the gate", async () => {
-    const rounds = await Promise.all([round("ideal"), round("acceptable"), round("below-acceptable")]);
+    const rounds = await Promise.all([
+      round("ideal"),
+      round("acceptable"),
+      round("below-acceptable"),
+    ]);
     const t = await compareCoherenceTrajectory(rounds);
     const cap = t.fronts.find((f) => f.dimension === "Cap")!;
     expect(cap.trajectory).toBe("steady-regression");
@@ -68,8 +81,12 @@ describe("compareCoherenceTrajectory (spec-v17 — document-free coherence traje
     // `Term` is unstated in round 1, stated in rounds 2 and 3 — newly-stated then
     // unchanged are not ranked movements, so the trajectory is flat.
     const r1 = await bundlePostureCoherence(bundle(["a.docx", { Cap: "ideal" }]));
-    const r2 = await bundlePostureCoherence(bundle(["a.docx", { Cap: "ideal", Term: "acceptable" }]));
-    const r3 = await bundlePostureCoherence(bundle(["a.docx", { Cap: "ideal", Term: "acceptable" }]));
+    const r2 = await bundlePostureCoherence(
+      bundle(["a.docx", { Cap: "ideal", Term: "acceptable" }]),
+    );
+    const r3 = await bundlePostureCoherence(
+      bundle(["a.docx", { Cap: "ideal", Term: "acceptable" }]),
+    );
     const t = await compareCoherenceTrajectory([r1, r2, r3]);
     const term = t.fronts.find((f) => f.dimension === "Term")!;
     expect(term.floors).toEqual([null, "acceptable", "acceptable"]);
@@ -92,7 +109,11 @@ describe("compareCoherenceTrajectory (spec-v17 — document-free coherence traje
   });
 
   it("renders a human-readable summary and stable JSON", async () => {
-    const rounds = await Promise.all([round("acceptable"), round("below-acceptable"), round("ideal")]);
+    const rounds = await Promise.all([
+      round("acceptable"),
+      round("below-acceptable"),
+      round("ideal"),
+    ]);
     const t = await compareCoherenceTrajectory(rounds);
     const summary = renderCoherenceTrajectorySummary(t);
     expect(summary).toContain("Coherence trajectory across 3 rounds");

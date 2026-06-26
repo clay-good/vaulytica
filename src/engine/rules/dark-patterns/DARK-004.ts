@@ -8,10 +8,13 @@ export const rule: Rule = {
   name: "Mandatory arbitration + class waiver (consumer)",
   category: "dark-patterns",
   default_severity: "warning",
-  description: "Flags mandatory arbitration combined with a class-action waiver in consumer contexts.",
+  description:
+    "Flags mandatory arbitration combined with a class-action waiver in consumer contexts.",
   dkb_citations: ["stat-9-usc-2", "stat-frcp-rule-23"],
   check(ctx: RuleContext): Finding | null {
-    const consumer = ctx.tree.sections.some((s) => /(lease|residential|terms\s+of\s+service|employment|consumer)/i.test(s.heading));
+    const consumer = ctx.tree.sections.some((s) =>
+      /(lease|residential|terms\s+of\s+service|employment|consumer)/i.test(s.heading),
+    );
     if (!consumer) return null;
     const arb = firstParagraphMatch(ctx, /\barbitrat/i);
     const cw = firstParagraphMatch(ctx, /class\s+action\s+waiver|waive[\s\S]{0,40}class\s+action/i);

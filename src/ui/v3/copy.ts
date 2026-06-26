@@ -34,15 +34,18 @@ export const V3_ERROR_COPY: Record<V3ErrorCode, V3ErrorMessage> = {
   },
   "scc-module-2-empty-annex": {
     title: "This looks like SCC Module 2 but Annex I is empty.",
-    detail: "Vaulytica cannot lint an empty annex. Fill in Annex I.A (Parties), I.B (Description of the transfer), and II (TOMs), then re-run.",
+    detail:
+      "Vaulytica cannot lint an empty annex. Fill in Annex I.A (Parties), I.B (Description of the transfer), and II (TOMs), then re-run.",
   },
   "scc-module-3-empty-annex": {
     title: "This looks like SCC Module 3 but Annex I is empty.",
-    detail: "Vaulytica cannot lint an empty annex. Fill in Annex I.A (Parties), I.B (Description of the transfer), and II (TOMs), then re-run.",
+    detail:
+      "Vaulytica cannot lint an empty annex. Fill in Annex I.A (Parties), I.B (Description of the transfer), and II (TOMs), then re-run.",
   },
   "acord-25-illegible": {
     title: "This looks like an ACORD 25 but the certificate-holder block is illegible.",
-    detail: "Try a higher-resolution scan (300 DPI or better), or paste the certificate text directly.",
+    detail:
+      "Try a higher-resolution scan (300 DPI or better), or paste the certificate text directly.",
   },
   "max-documents-exceeded": {
     title: "Vaulytica accepts up to four files in a single drop.",

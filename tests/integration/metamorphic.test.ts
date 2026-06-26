@@ -123,8 +123,16 @@ describe("metamorphic invariants (spec-v7 Step 119)", () => {
       "The Customer shall pay all undisputed fees within thirty days of invoice.",
       "Each party shall keep the other's Confidential Information secret.",
     ];
-    const dateTop: [string, ...string[]] = ["Agreement", "This Agreement is dated 2025-01-01.", ...filler];
-    const dateBottom: [string, ...string[]] = ["Agreement", ...filler, "This Agreement is dated 2025-01-01."];
+    const dateTop: [string, ...string[]] = [
+      "Agreement",
+      "This Agreement is dated 2025-01-01.",
+      ...filler,
+    ];
+    const dateBottom: [string, ...string[]] = [
+      "Agreement",
+      ...filler,
+      "This Agreement is dated 2025-01-01.",
+    ];
 
     const top = await run([dateTop]);
     const bottom = await run([dateBottom]);

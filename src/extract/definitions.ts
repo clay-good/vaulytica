@@ -146,13 +146,21 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       const bare = DEFINITION_BARE.exec(text);
       if (bare) {
         const term = bare[1]!.trim();
-        const def = text.slice(bare.index + bare[0].length).trim().replace(/^[-:]+\s*/, "");
+        const def = text
+          .slice(bare.index + bare[0].length)
+          .trim()
+          .replace(/^[-:]+\s*/, "");
         const start = p.runs[0]?.start ?? 0;
         const reference = cleanRef(DEFINITION_REFERENCE.exec(def)?.[1]);
         registerDefinition(definitions, {
           term,
           definition: def,
-          defined_at: { section_id: section.id, paragraph_id: p.id, start, end: start + text.length },
+          defined_at: {
+            section_id: section.id,
+            paragraph_id: p.id,
+            start,
+            end: start + text.length,
+          },
           used_at: [],
           ...(reference ? { reference } : {}),
         });

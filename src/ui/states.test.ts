@@ -161,8 +161,16 @@ describe("renderState", () => {
       docx_filename: "msa-vaulytica.docx",
       json_filename: "msa-vaulytica.json",
       secondary_families: [
-        { playbook_id: "dpa-controller-processor", playbook_name: "DPA (Controller–Processor)", counts: { critical: 1, warning: 0, info: 0 } },
-        { playbook_id: "ip-licensing-patent", playbook_name: "Patent License", counts: { critical: 0, warning: 0, info: 0 } },
+        {
+          playbook_id: "dpa-controller-processor",
+          playbook_name: "DPA (Controller–Processor)",
+          counts: { critical: 1, warning: 0, info: 0 },
+        },
+        {
+          playbook_id: "ip-licensing-patent",
+          playbook_name: "Patent License",
+          counts: { critical: 0, warning: 0, info: 0 },
+        },
       ],
     });
     const block = select(dz, "secondary-families")!;
@@ -427,9 +435,7 @@ describe("renderState", () => {
       docx_filename: "nda.docx",
       json_filename: "nda.json",
     });
-    expect(select(dz, "reasoning")!.textContent).toBe(
-      "Auto-selected Mutual NDA. Legacy playbook.",
-    );
+    expect(select(dz, "reasoning")!.textContent).toBe("Auto-selected Mutual NDA. Legacy playbook.");
   });
 
   it("complete-state reasoning omits the legacy annotation when playbook_deprecation is absent", () => {
@@ -480,7 +486,9 @@ describe("renderState", () => {
       expect(seen[0]?.href).toMatch(/^blob:/);
       // happy-dom does not expose `showSaveFilePicker`, so we exercise
       // the anchor fallback path. Status reports "Download started".
-      expect(select(dz, "download-status")!.textContent).toMatch(/Download started: nda-vaulytica\.docx/);
+      expect(select(dz, "download-status")!.textContent).toMatch(
+        /Download started: nda-vaulytica\.docx/,
+      );
     } finally {
       HTMLAnchorElement.prototype.click = origClick;
       document.body.removeChild(dz);
@@ -503,9 +511,9 @@ describe("renderState", () => {
     });
     const written: BlobPart[] = [];
     let closed = false;
-    (window as unknown as { showSaveFilePicker: unknown }).showSaveFilePicker = async (
-      opts: { suggestedName?: string },
-    ) => {
+    (window as unknown as { showSaveFilePicker: unknown }).showSaveFilePicker = async (opts: {
+      suggestedName?: string;
+    }) => {
       expect(opts.suggestedName).toBe("nda-vaulytica.docx");
       return {
         createWritable: async () => ({
@@ -691,7 +699,9 @@ describe("renderState", () => {
     expect(chip.getAttribute("aria-checked")).toBe("false");
     chip.dispatchEvent(new KeyboardEvent("keydown", { key: " ", bubbles: true, cancelable: true }));
     expect(chip.getAttribute("aria-checked")).toBe("true");
-    chip.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true, cancelable: true }));
+    chip.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "Enter", bubbles: true, cancelable: true }),
+    );
     expect(chip.getAttribute("aria-checked")).toBe("false");
     document.body.removeChild(dz);
   });
@@ -1027,8 +1037,8 @@ describe("renderState", () => {
       bundle_docx_filename: "x.docx",
       bundle_json_filename: "x.json",
       rejected: [
-        { filename: "README.md", reason: "Vaulytica accepts .pdf and .docx — not \"README.md\"." },
-        { filename: "scan.tiff", reason: "Vaulytica accepts .pdf and .docx — not \"scan.tiff\"." },
+        { filename: "README.md", reason: 'Vaulytica accepts .pdf and .docx — not "README.md".' },
+        { filename: "scan.tiff", reason: 'Vaulytica accepts .pdf and .docx — not "scan.tiff".' },
       ],
     });
     const wrap = select(dz, "bundle-rejected")!;
@@ -1131,12 +1141,8 @@ describe("renderState", () => {
     expect(cards[1]!.querySelector(".multi-doc-card-meta")?.textContent).not.toMatch(/·/);
     // Each card exposes per-doc Word + JSON download buttons with
     // aria-labels that name the document.
-    const wordBtns = list.querySelectorAll<HTMLButtonElement>(
-      '[data-role="card-docx-download"]',
-    );
-    const jsonBtns = list.querySelectorAll<HTMLButtonElement>(
-      '[data-role="card-json-download"]',
-    );
+    const wordBtns = list.querySelectorAll<HTMLButtonElement>('[data-role="card-docx-download"]');
+    const jsonBtns = list.querySelectorAll<HTMLButtonElement>('[data-role="card-json-download"]');
     expect(wordBtns.length).toBe(2);
     expect(jsonBtns.length).toBe(2);
     expect(wordBtns[0]!.getAttribute("aria-label")).toMatch(/Word.*msa\.docx/);
@@ -1310,19 +1316,12 @@ describe("renderState", () => {
       seen.push({ download: this.download });
     };
     try {
-      const wordBtns = dz.querySelectorAll<HTMLButtonElement>(
-        '[data-role="card-docx-download"]',
-      );
-      const jsonBtns = dz.querySelectorAll<HTMLButtonElement>(
-        '[data-role="card-json-download"]',
-      );
+      const wordBtns = dz.querySelectorAll<HTMLButtonElement>('[data-role="card-docx-download"]');
+      const jsonBtns = dz.querySelectorAll<HTMLButtonElement>('[data-role="card-json-download"]');
       wordBtns[0]!.click(); // msa Word
       jsonBtns[1]!.click(); // dpa JSON
       for (let i = 0; i < 5; i++) await Promise.resolve();
-      expect(seen.map((s) => s.download)).toEqual([
-        "msa-vaulytica.docx",
-        "dpa-vaulytica.json",
-      ]);
+      expect(seen.map((s) => s.download)).toEqual(["msa-vaulytica.docx", "dpa-vaulytica.json"]);
       expect(select(dz, "download-status")!.textContent).toMatch(/dpa-vaulytica\.json/);
     } finally {
       HTMLAnchorElement.prototype.click = origClick;
@@ -1357,9 +1356,7 @@ describe("renderState", () => {
       /* swallow */
     };
     try {
-      const btn = dz.querySelector<HTMLButtonElement>(
-        '[data-role="card-docx-download"]',
-      )!;
+      const btn = dz.querySelector<HTMLButtonElement>('[data-role="card-docx-download"]')!;
       btn.click();
       expect(onDzClick).not.toHaveBeenCalled();
     } finally {
@@ -1408,12 +1405,8 @@ describe("renderState", () => {
     // back into HTML, but that's a payload-in-an-attribute, not a
     // tag — the parser never executes it.
     expect(card.querySelector("script")).toBeNull();
-    expect(card.querySelector(".multi-doc-card-filename")!.textContent).toBe(
-      "evil<script>.docx",
-    );
-    expect(card.querySelector(".multi-doc-card-meta")!.textContent).toContain(
-      "Playbook & Co.",
-    );
+    expect(card.querySelector(".multi-doc-card-filename")!.textContent).toBe("evil<script>.docx");
+    expect(card.querySelector(".multi-doc-card-meta")!.textContent).toContain("Playbook & Co.");
   });
 
   it("bundle-complete hides detected-families line when none provided", () => {

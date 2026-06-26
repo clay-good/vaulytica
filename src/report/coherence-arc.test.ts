@@ -30,7 +30,9 @@ const bundle = (...docs: Array<[string, Record<string, NegotiationTier>]>): Cohe
  * `Law` is held aligned at ideal throughout (stable on both axes, never reported).
  */
 const round = (capA: NegotiationTier, capB: NegotiationTier) =>
-  bundlePostureCoherence(bundle(["msa.docx", { Cap: capA, Law: "ideal" }], ["order.docx", { Cap: capB, Law: "ideal" }]));
+  bundlePostureCoherence(
+    bundle(["msa.docx", { Cap: capA, Law: "ideal" }], ["order.docx", { Cap: capB, Law: "ideal" }]),
+  );
 
 const aligned = () => round("ideal", "ideal"); // floor ideal, aligned
 const divergent = () => round("ideal", "acceptable"); // floor acceptable, divergent

@@ -50,7 +50,8 @@ export function upc(section: string, label?: string): SourceCitation {
   return v4Cite({
     id: `upc-${section.replace(/[^A-Za-z0-9]+/g, "-").toLowerCase()}`,
     source: `Uniform Probate Code § ${section}${label ? ` (${label})` : ""}`,
-    source_url: "https://www.uniformlaws.org/committees/community-home?communitykey=a539920d-c477-44b8-84fe-b0d7b1a4cca8",
+    source_url:
+      "https://www.uniformlaws.org/committees/community-home?communitykey=a539920d-c477-44b8-84fe-b0d7b1a4cca8",
     license: "Uniform Law Commission",
     license_url: "https://www.uniformlaws.org/",
   });
@@ -61,7 +62,8 @@ export function utc(section: string, label?: string): SourceCitation {
   return v4Cite({
     id: `utc-${section.replace(/[^A-Za-z0-9]+/g, "-").toLowerCase()}`,
     source: `Uniform Trust Code § ${section}${label ? ` (${label})` : ""}`,
-    source_url: "https://www.uniformlaws.org/committees/community-home?communitykey=193ff839-7955-4846-b257-deb0c1c4c965",
+    source_url:
+      "https://www.uniformlaws.org/committees/community-home?communitykey=193ff839-7955-4846-b257-deb0c1c4c965",
     license: "Uniform Law Commission",
     license_url: "https://www.uniformlaws.org/",
   });
@@ -72,7 +74,8 @@ export function upoaa(section?: string, label?: string): SourceCitation {
   return v4Cite({
     id: `upoaa-${(section ?? "general").replace(/[^A-Za-z0-9]+/g, "-").toLowerCase()}`,
     source: `Uniform Power of Attorney Act${section ? ` § ${section}` : ""}${label ? ` (${label})` : ""}`,
-    source_url: "https://www.uniformlaws.org/committees/community-home?communitykey=b1975254-8370-4a7c-947f-e5e35b56d4c8",
+    source_url:
+      "https://www.uniformlaws.org/committees/community-home?communitykey=b1975254-8370-4a7c-947f-e5e35b56d4c8",
     license: "Uniform Law Commission",
     license_url: "https://www.uniformlaws.org/",
   });
@@ -83,7 +86,8 @@ export function upmaa(section?: string, label?: string): SourceCitation {
   return v4Cite({
     id: `upmaa-${(section ?? "general").replace(/[^A-Za-z0-9]+/g, "-").toLowerCase()}`,
     source: `Uniform Premarital and Marital Agreements Act${section ? ` § ${section}` : ""}${label ? ` (${label})` : ""}`,
-    source_url: "https://www.uniformlaws.org/committees/community-home?communitykey=77f6bf12-67f3-44d2-8e30-4dbaaa1ae0db",
+    source_url:
+      "https://www.uniformlaws.org/committees/community-home?communitykey=77f6bf12-67f3-44d2-8e30-4dbaaa1ae0db",
     license: "Uniform Law Commission",
     license_url: "https://www.uniformlaws.org/",
   });

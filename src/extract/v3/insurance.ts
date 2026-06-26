@@ -16,21 +16,37 @@ import type {
 import { forEachParagraph, posInParagraph } from "../walk.js";
 
 const LINE_PATTERNS: { line: InsuranceLine; rx: RegExp }[] = [
-  { line: "commercial-general-liability", rx: /\bcommercial general liabilit(?:y|ies)\b|\bCGL\b|\bgeneral liabilit(?:y|ies)\b/i },
-  { line: "professional-liability", rx: /\bprofessional liabilit(?:y|ies)\b|\berrors? (?:and|&) omissions\b|\bE&O\b/i },
-  { line: "cyber-liability", rx: /\bcyber liabilit(?:y|ies)\b|\bcyber insurance\b|\bcyber risk\b/i },
+  {
+    line: "commercial-general-liability",
+    rx: /\bcommercial general liabilit(?:y|ies)\b|\bCGL\b|\bgeneral liabilit(?:y|ies)\b/i,
+  },
+  {
+    line: "professional-liability",
+    rx: /\bprofessional liabilit(?:y|ies)\b|\berrors? (?:and|&) omissions\b|\bE&O\b/i,
+  },
+  {
+    line: "cyber-liability",
+    rx: /\bcyber liabilit(?:y|ies)\b|\bcyber insurance\b|\bcyber risk\b/i,
+  },
   { line: "umbrella-excess", rx: /\bumbrella\b|\bexcess liabilit(?:y|ies)\b/i },
   { line: "workers-compensation", rx: /\bworkers'?\s*compensation\b|\bworker[s']*\s*comp\b/i },
   { line: "employers-liability", rx: /\bemployers'?\s+liabilit(?:y|ies)\b/i },
-  { line: "automobile-liability", rx: /\bauto(?:mobile)?\s+liabilit(?:y|ies)\b|\bbusiness auto\b/i },
-  { line: "employment-practices-liability", rx: /\bemployment practices liabilit(?:y|ies)\b|\bEPLI\b/i },
+  {
+    line: "automobile-liability",
+    rx: /\bauto(?:mobile)?\s+liabilit(?:y|ies)\b|\bbusiness auto\b/i,
+  },
+  {
+    line: "employment-practices-liability",
+    rx: /\bemployment practices liabilit(?:y|ies)\b|\bEPLI\b/i,
+  },
   { line: "fiduciary-liability", rx: /\bfiduciary liabilit(?:y|ies)\b/i },
 ];
 
 const AMOUNT_RX =
   /\$\s*([\d,]+(?:\.\d+)?)\s*(?:(million|mm|m\b|thousand|k\b))?\s*(?:USD)?\s*(per occurrence|each occurrence|aggregate|in the aggregate|annual aggregate)?/gi;
 
-const AM_BEST_RX = /\bA\.?M\.?\s*Best\b[^.]{0,80}?\b([A-Z]\+?\+?(?:[- ](?:I{1,3}|IV|V|VI{0,3}|IX|X{1,2}))?)\b/i;
+const AM_BEST_RX =
+  /\bA\.?M\.?\s*Best\b[^.]{0,80}?\b([A-Z]\+?\+?(?:[- ](?:I{1,3}|IV|V|VI{0,3}|IX|X{1,2}))?)\b/i;
 
 const ENDORSEMENT_RX = /\b(CG\s*\d{2}\s*\d{2}(?:\s*\d{2})?|CA\s*\d{2}\s*\d{2})\b/g;
 

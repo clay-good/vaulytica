@@ -25,14 +25,17 @@ const LIST_LOCATION_LABEL: Record<SubprocessorInventory["list_location"], string
   absent: "Not located",
 };
 
-const OBJECTION_CONSEQUENCE_LABEL: Record<SubprocessorInventory["objection_consequence"], string> = {
-  "terminate-for-convenience": "Right to terminate the affected agreement for convenience",
-  "terminate-affected-services": "Right to terminate the affected services only",
-  "no-right": "No termination right on objection",
-  unspecified: "Consequence of objection not specified",
-};
+const OBJECTION_CONSEQUENCE_LABEL: Record<SubprocessorInventory["objection_consequence"], string> =
+  {
+    "terminate-for-convenience": "Right to terminate the affected agreement for convenience",
+    "terminate-affected-services": "Right to terminate the affected services only",
+    "no-right": "No termination right on objection",
+    unspecified: "Consequence of objection not specified",
+  };
 
-export function renderSubprocessorPage(inv: SubprocessorInventory | null | undefined): (Paragraph | Table)[] {
+export function renderSubprocessorPage(
+  inv: SubprocessorInventory | null | undefined,
+): (Paragraph | Table)[] {
   if (!inv) return [];
   const rows = [
     headerRow(["Attribute", "Value"]),

@@ -25,7 +25,9 @@ const bundle = (...docs: Array<[string, Record<string, NegotiationTier>]>): Cohe
  * aligned at ideal throughout, so it is `stable` and never reported.
  */
 const round = (capA: NegotiationTier, capB: NegotiationTier) =>
-  bundlePostureCoherence(bundle(["msa.docx", { Cap: capA, Law: "ideal" }], ["order.docx", { Cap: capB, Law: "ideal" }]));
+  bundlePostureCoherence(
+    bundle(["msa.docx", { Cap: capA, Law: "ideal" }], ["order.docx", { Cap: capB, Law: "ideal" }]),
+  );
 
 const aligned = () => round("ideal", "ideal");
 const divergent = () => round("ideal", "acceptable");
@@ -71,9 +73,15 @@ describe("compareCoherenceShiftTrajectory (spec-v18 — document-free coherence-
     // `Term`: stated by one doc (single) → both docs same tier (aligned) → one
     // doc (single). The stating set changed but never crossed the divergence
     // line, so every step is `realigned` and the trajectory is stable.
-    const r1 = await bundlePostureCoherence(bundle(["a.docx", { Term: "acceptable" }], ["b.docx", { Cap: "ideal" }]));
-    const r2 = await bundlePostureCoherence(bundle(["a.docx", { Term: "acceptable" }], ["b.docx", { Term: "acceptable" }]));
-    const r3 = await bundlePostureCoherence(bundle(["a.docx", { Term: "acceptable" }], ["b.docx", { Cap: "ideal" }]));
+    const r1 = await bundlePostureCoherence(
+      bundle(["a.docx", { Term: "acceptable" }], ["b.docx", { Cap: "ideal" }]),
+    );
+    const r2 = await bundlePostureCoherence(
+      bundle(["a.docx", { Term: "acceptable" }], ["b.docx", { Term: "acceptable" }]),
+    );
+    const r3 = await bundlePostureCoherence(
+      bundle(["a.docx", { Term: "acceptable" }], ["b.docx", { Cap: "ideal" }]),
+    );
     const t = await compareCoherenceShiftTrajectory([r1, r2, r3]);
     const term = t.fronts.find((f) => f.dimension === "Term")!;
     expect(term.coherences).toEqual(["single", "aligned", "single"]);
@@ -83,9 +91,14 @@ describe("compareCoherenceShiftTrajectory (spec-v18 — document-free coherence-
   });
 
   it("treats an appear-only front as stable (an absent side carries no shift)", async () => {
-    const r1 = await bundlePostureCoherence(bundle(["a.docx", { Cap: "ideal" }], ["b.docx", { Cap: "ideal" }]));
+    const r1 = await bundlePostureCoherence(
+      bundle(["a.docx", { Cap: "ideal" }], ["b.docx", { Cap: "ideal" }]),
+    );
     const r2 = await bundlePostureCoherence(
-      bundle(["a.docx", { Cap: "ideal", Term: "acceptable" }], ["b.docx", { Cap: "ideal", Term: "acceptable" }]),
+      bundle(
+        ["a.docx", { Cap: "ideal", Term: "acceptable" }],
+        ["b.docx", { Cap: "ideal", Term: "acceptable" }],
+      ),
     );
     const t = await compareCoherenceShiftTrajectory([r1, r2]);
     const term = t.fronts.find((f) => f.dimension === "Term")!;

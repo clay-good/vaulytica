@@ -49,7 +49,14 @@ describe("package.json distribution metadata", () => {
   });
 
   it("ships the engine, CLI, starter DKB, and playbooks in the published files", () => {
-    for (const needed of ["src/", "tools/cli/", "tools/accuracy/", "dkb/dist/v0.0.1-starter/", "playbooks/", "bin/"]) {
+    for (const needed of [
+      "src/",
+      "tools/cli/",
+      "tools/accuracy/",
+      "dkb/dist/v0.0.1-starter/",
+      "playbooks/",
+      "bin/",
+    ]) {
       expect(pkg.files).toContain(needed);
     }
   });
@@ -78,7 +85,16 @@ describe("action.yml (GitHub composite Action)", () => {
   });
 
   it("exposes the documented inputs with safe defaults", () => {
-    for (const input of ["command", "files", "base", "revised", "format", "fail-on", "playbook", "out"]) {
+    for (const input of [
+      "command",
+      "files",
+      "base",
+      "revised",
+      "format",
+      "fail-on",
+      "playbook",
+      "out",
+    ]) {
       expect(action.inputs[input]).toBeDefined();
     }
     expect(action.inputs.command!.default).toBe("analyze");

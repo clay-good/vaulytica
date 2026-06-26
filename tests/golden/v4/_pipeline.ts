@@ -137,9 +137,7 @@ export async function runV4Fixture(path: string, fileName?: string): Promise<Run
     ctx: { tree: ingest.tree, extracted, dkb, playbook },
     source_file: { name, sha256: ingest.sha256, size_bytes: ingest.tree.sections.length },
     playbook_match_confidence: forced ? 1 : match.confidence,
-    playbook_match_reasoning: forced
-      ? `forced via sidecar to ${forced}`
-      : match.reasoning,
+    playbook_match_reasoning: forced ? `forced via sidecar to ${forced}` : match.reasoning,
     executed_at: "",
   });
 
@@ -177,7 +175,10 @@ export async function listV4Fixtures(dir: string): Promise<string[]> {
 export async function listV4Bundles(dir: string): Promise<string[]> {
   if (!existsSync(dir)) return [];
   const entries = await readdir(dir, { withFileTypes: true });
-  return entries.filter((e) => e.isDirectory()).map((e) => e.name).sort();
+  return entries
+    .filter((e) => e.isDirectory())
+    .map((e) => e.name)
+    .sort();
 }
 
 function basename(p: string): string {

@@ -161,7 +161,12 @@ describe("computeCoherenceWeakFront (spec-v38 — persistent weak front: concede
         { Aaa: "ideal", Bbb: "ideal", Ccc: "ideal", Mmm: "ideal" },
       ), // r1: Aaa↓, Mmm↓ (t0) — they concede first (before Bbb/Ccc)
       mk(
-        { Aaa: "below-acceptable", Bbb: "below-acceptable", Ccc: "below-acceptable", Mmm: "below-acceptable" },
+        {
+          Aaa: "below-acceptable",
+          Bbb: "below-acceptable",
+          Ccc: "below-acceptable",
+          Mmm: "below-acceptable",
+        },
         { Aaa: "ideal", Bbb: "ideal", Ccc: "ideal", Mmm: "ideal" },
       ), // r2: Bbb↓, Ccc↓ (t1)
       mk(
@@ -229,7 +234,9 @@ describe("computeCoherenceWeakFront (spec-v38 — persistent weak front: concede
     const wf = await computeCoherenceWeakFront(rounds);
     const summary = renderCoherenceWeakFrontSummary(wf);
     expect(summary).toContain("Coherence persistent weak front across 5 rounds");
-    expect(summary).toMatch(/most-exposed front: Term — concedes first vs Cap; recovers last vs Cap/);
+    expect(summary).toMatch(
+      /most-exposed front: Term — concedes first vs Cap; recovers last vs Cap/,
+    );
     expect(summary).toMatch(/1 persistent-weak/);
     expect(summary).toMatch(/weak_front_hash: [0-9a-f]{64}/);
 

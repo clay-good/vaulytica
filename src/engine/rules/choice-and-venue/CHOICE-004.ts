@@ -8,14 +8,20 @@ export const rule: Rule = {
   name: "Venue / governing-law mismatch",
   category: "choice-and-venue",
   default_severity: "warning",
-  description: "Surfaces the mismatch when governing law and venue point to different jurisdictions.",
+  description:
+    "Surfaces the mismatch when governing law and venue point to different jurisdictions.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
     const gov = ctx.extracted.jurisdictions.find((j) => j.clause_kind === "governing-law");
     const venue = ctx.extracted.jurisdictions.find((j) => j.clause_kind === "venue");
     if (!gov || !venue) return null;
     if (gov.raw_text.toLowerCase() === venue.raw_text.toLowerCase()) return null;
-    if (gov.jurisdiction_id && venue.jurisdiction_id && gov.jurisdiction_id === venue.jurisdiction_id) return null;
+    if (
+      gov.jurisdiction_id &&
+      venue.jurisdiction_id &&
+      gov.jurisdiction_id === venue.jurisdiction_id
+    )
+      return null;
     return emit(ctx, rule, {
       title: `Governing law (${gov.raw_text}) and venue (${venue.raw_text}) differ`,
       description: `Governing law: ${gov.raw_text}. Venue: ${venue.raw_text}.`,

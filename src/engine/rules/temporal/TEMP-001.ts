@@ -22,7 +22,10 @@ export const rule: Rule = {
     const bad = ctx.extracted.dates.filter((d) => d.type === "absolute" && !d.iso);
     if (bad.length === 0) return null;
     const first = bad[0]!;
-    const list = bad.slice(0, 6).map((d) => d.raw_text).join(", ");
+    const list = bad
+      .slice(0, 6)
+      .map((d) => d.raw_text)
+      .join(", ");
     const extra = bad.length > 6 ? `, …(${bad.length - 6} more)` : "";
     return makeFinding({
       rule,
@@ -31,7 +34,8 @@ export const rule: Rule = {
       excerptText: first.raw_text,
       explanation:
         "A date that is not a real calendar date (e.g., February 30) is a drafting error. It usually points to a typo — for example, intending the last day of the month and writing the wrong number.",
-      recommendation: "Confirm the intended date with the drafter and correct each impossible date.",
+      recommendation:
+        "Confirm the intended date with the drafter and correct each impossible date.",
       position: first.position,
       source_citations: [],
     });

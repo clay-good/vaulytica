@@ -335,7 +335,11 @@ export async function parsePostureCoherenceJson(text: string): Promise<ParsedCoh
     }
     const tiers: DocumentTier[] = [];
     d.tiers.forEach((t: unknown, j: number) => {
-      if (!isObject(t) || typeof t.document !== "string" || !VALID_TIERS.has(t.tier as NegotiationTier)) {
+      if (
+        !isObject(t) ||
+        typeof t.document !== "string" ||
+        !VALID_TIERS.has(t.tier as NegotiationTier)
+      ) {
         errors.push(`${at}.tiers[${j}] must be { document: string, tier: <tier> }`);
         return;
       }

@@ -10,7 +10,10 @@ import {
   coherenceRegressed,
   buildCoherenceMovementJson,
 } from "../../src/report/coherence-movement.js";
-import type { NegotiationPosture, NegotiationTier } from "../../src/playbooks/custom-interpreter.js";
+import type {
+  NegotiationPosture,
+  NegotiationTier,
+} from "../../src/playbooks/custom-interpreter.js";
 
 function posture(map: Record<string, NegotiationTier>): NegotiationPosture {
   return {
@@ -28,10 +31,20 @@ const LADDER_B = "b".repeat(64);
 
 /** Round one: cap acceptable, law ideal (both docs agree). */
 const round1 = () =>
-  bundlePostureCoherence(bundle(["msa.docx", { Cap: "acceptable", Law: "ideal" }], ["order.docx", { Cap: "acceptable", Law: "ideal" }]));
+  bundlePostureCoherence(
+    bundle(
+      ["msa.docx", { Cap: "acceptable", Law: "ideal" }],
+      ["order.docx", { Cap: "acceptable", Law: "ideal" }],
+    ),
+  );
 /** Round two: MSA ideal cap, order form below-floor cap → binding floor regressed + fractured. */
 const round2 = () =>
-  bundlePostureCoherence(bundle(["msa.docx", { Cap: "ideal", Law: "ideal" }], ["order.docx", { Cap: "below-acceptable", Law: "ideal" }]));
+  bundlePostureCoherence(
+    bundle(
+      ["msa.docx", { Cap: "ideal", Law: "ideal" }],
+      ["order.docx", { Cap: "below-acceptable", Law: "ideal" }],
+    ),
+  );
 
 describe("compareCoherenceArtifacts (spec-v16 — document-free coherence-to-coherence movement)", () => {
   it("diffs two saved artifacts and matches the in-memory compareCoherence", async () => {
@@ -109,7 +122,10 @@ describe("compareCoherenceArtifacts (spec-v16 — document-free coherence-to-coh
   });
 
   it("rejects malformed JSON, prefixing the offending side", async () => {
-    const outcome = await compareCoherenceArtifacts("{not json", buildPostureCoherenceJson(await round2(), LADDER_A));
+    const outcome = await compareCoherenceArtifacts(
+      "{not json",
+      buildPostureCoherenceJson(await round2(), LADDER_A),
+    );
     expect(outcome.ok).toBe(false);
     if (outcome.ok) return;
     expect(outcome.errors.some((e) => e.startsWith("base:"))).toBe(true);

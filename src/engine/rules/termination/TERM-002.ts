@@ -11,7 +11,10 @@ export const rule: Rule = {
   description: "Verifies the contract has a termination-for-cause path.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
-    if (firstParagraphMatch(ctx, /\bterminate\b[\s\S]{0,80}\bfor\s+cause\b|material(?:ly)?\s+breach/i)) return null;
+    if (
+      firstParagraphMatch(ctx, /\bterminate\b[\s\S]{0,80}\bfor\s+cause\b|material(?:ly)?\s+breach/i)
+    )
+      return null;
     return emit(ctx, rule, {
       title: "No termination-for-cause clause detected",
       description: "The contract does not state a path to terminate for material breach.",

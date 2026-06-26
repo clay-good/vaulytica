@@ -21,12 +21,7 @@
 import type { EngineRun, Finding } from "../engine/finding.js";
 
 /** The readiness category a checklist item belongs to. */
-export type ChecklistCategory =
-  | "signature"
-  | "attachment"
-  | "formality"
-  | "blank"
-  | "handoff";
+export type ChecklistCategory = "signature" | "attachment" | "formality" | "blank" | "handoff";
 
 export type ChecklistItem = {
   category: ChecklistCategory;

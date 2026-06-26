@@ -8,7 +8,8 @@ export const rule: Rule = {
   name: "License grant scope",
   category: "ip-and-data",
   default_severity: "info",
-  description: "Surfaces the scope of an IP license grant (exclusive / transferable / territory / term).",
+  description:
+    "Surfaces the scope of an IP license grant (exclusive / transferable / territory / term).",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(

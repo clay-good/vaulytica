@@ -32,17 +32,38 @@ const TWO_DIGIT_YEAR_PIVOT = 70;
 
 const ISO = /\b(\d{4})-(\d{2})-(\d{2})\b/g;
 const US_NUMERIC = /\b(\d{1,2})\/(\d{1,2})\/(\d{2,4})\b/g;
-const PROSE = new RegExp(
-  String.raw`\b(${MONTHS})\.?\s+(\d{1,2}),?\s+(\d{4})\b`,
-  "gi",
-);
+const PROSE = new RegExp(String.raw`\b(${MONTHS})\.?\s+(\d{1,2}),?\s+(\d{4})\b`, "gi");
 
 const NUMBER_WORDS: Record<string, number> = {
-  zero: 0, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7,
-  eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12, thirteen: 13,
-  fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18,
-  nineteen: 19, twenty: 20, thirty: 30, forty: 40, fifty: 50, sixty: 60,
-  seventy: 70, eighty: 80, ninety: 90, hundred: 100,
+  zero: 0,
+  one: 1,
+  two: 2,
+  three: 3,
+  four: 4,
+  five: 5,
+  six: 6,
+  seven: 7,
+  eight: 8,
+  nine: 9,
+  ten: 10,
+  eleven: 11,
+  twelve: 12,
+  thirteen: 13,
+  fourteen: 14,
+  fifteen: 15,
+  sixteen: 16,
+  seventeen: 17,
+  eighteen: 18,
+  nineteen: 19,
+  twenty: 20,
+  thirty: 30,
+  forty: 40,
+  fifty: 50,
+  sixty: 60,
+  seventy: 70,
+  eighty: 80,
+  ninety: 90,
+  hundred: 100,
 };
 
 /**
@@ -84,10 +105,7 @@ const RELATIVE = new RegExp(
 const ANCHOR_ALIASES =
   "Effective|Closing|Commencement|Termination|Expiration|Renewal|Execution|Signing|Start|Term Start|Delivery|Acceptance|Go-Live|Hire|Grant|Vesting|Maturity|Funding|Disbursement|Completion|Onboarding";
 
-const NAMED_ANCHOR = new RegExp(
-  String.raw`\bthe\s+(${ANCHOR_ALIASES})\s+Date\b`,
-  "gi",
-);
+const NAMED_ANCHOR = new RegExp(String.raw`\bthe\s+(${ANCHOR_ALIASES})\s+Date\b`, "gi");
 
 /** Bare "Date Hereof" / "date hereof" — an anchor with no "Date" suffix. */
 const DATE_HEREOF = /\bthe\s+(Date\s+Hereof)\b/gi;
@@ -272,10 +290,30 @@ function titleCaseAnchor(raw: string): string {
 
 function monthNumber(name: string): number | null {
   const map: Record<string, number> = {
-    january: 1, jan: 1, february: 2, feb: 2, march: 3, mar: 3, april: 4, apr: 4,
-    may: 5, june: 6, jun: 6, july: 7, jul: 7, august: 8, aug: 8,
-    september: 9, sep: 9, sept: 9, october: 10, oct: 10,
-    november: 11, nov: 11, december: 12, dec: 12,
+    january: 1,
+    jan: 1,
+    february: 2,
+    feb: 2,
+    march: 3,
+    mar: 3,
+    april: 4,
+    apr: 4,
+    may: 5,
+    june: 6,
+    jun: 6,
+    july: 7,
+    jul: 7,
+    august: 8,
+    aug: 8,
+    september: 9,
+    sep: 9,
+    sept: 9,
+    october: 10,
+    oct: 10,
+    november: 11,
+    nov: 11,
+    december: 12,
+    dec: 12,
   };
   const v = map[name.toLowerCase().replace(/\./g, "")];
   return v ?? null;

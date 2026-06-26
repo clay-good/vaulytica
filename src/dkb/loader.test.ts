@@ -44,7 +44,8 @@ describe("loadDkb", () => {
   });
 
   it("throws DkbLoadError when the manifest is missing", async () => {
-    const f: typeof fetch = (async () => new Response("", { status: 404 })) as unknown as typeof fetch;
+    const f: typeof fetch = (async () =>
+      new Response("", { status: 404 })) as unknown as typeof fetch;
     await expect(loadDkb({ fetchImpl: f, useCache: false })).rejects.toBeInstanceOf(DkbLoadError);
   });
 });

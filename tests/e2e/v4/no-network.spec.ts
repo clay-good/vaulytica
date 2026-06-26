@@ -88,9 +88,7 @@ const MULTI_DOC_SELECTORS = [
   '[data-role="bundle-download"]',
 ];
 
-test("v4 multi-doc drop makes zero non-asset network requests", async ({
-  page,
-}) => {
+test("v4 multi-doc drop makes zero non-asset network requests", async ({ page }) => {
   const fixtures = resolveFixtures();
   test.skip(
     fixtures === null,
@@ -141,8 +139,7 @@ test("v4 multi-doc drop makes zero non-asset network requests", async ({
   // doc dropzone input, fall back to any multi/webkitdirectory input
   // inside #dropzone, then fall back to the standard single-file input
   // (the bundle-download button path may not need a file input at all).
-  let fileInput =
-    page.locator('[data-role="multi-doc-dropzone"] input[type="file"]').first();
+  let fileInput = page.locator('[data-role="multi-doc-dropzone"] input[type="file"]').first();
   if ((await fileInput.count()) === 0) {
     fileInput = page
       .locator(
@@ -175,10 +172,7 @@ test("v4 multi-doc drop makes zero non-asset network requests", async ({
   // Download the file and assert it is a valid OOXML zip. Belt-and-
   // suspenders: a regression that breaks the docx writer would manifest
   // as an empty or non-OOXML download. Mirror v3 spec's check exactly.
-  const [download] = await Promise.all([
-    page.waitForEvent("download"),
-    downloadButton.click(),
-  ]);
+  const [download] = await Promise.all([page.waitForEvent("download"), downloadButton.click()]);
   const path = await download.path();
   expect(path).toBeTruthy();
   const bytes = readFileSync(path!);
@@ -188,8 +182,5 @@ test("v4 multi-doc drop makes zero non-asset network requests", async ({
   expect(bytes[2]).toBe(0x03);
   expect(bytes[3]).toBe(0x04);
 
-  expect(
-    requests,
-    "v4 multi-doc analysis must not initiate any cross-origin request",
-  ).toEqual([]);
+  expect(requests, "v4 multi-doc analysis must not initiate any cross-origin request").toEqual([]);
 });

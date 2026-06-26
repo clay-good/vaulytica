@@ -142,7 +142,9 @@ describe("computeCoherenceRecoveryAffinity (spec-v33 — pairwise co-recovery co
     const conc = await computeCoherenceConcurrency(rounds);
     // Per-transition recovering counts: [3, 0, 2] → C(3,2)+C(0,2)+C(2,2)=3+0+1=4.
     expect(conc.per_transition.map((t) => t.recovering)).toEqual([3, 0, 2]);
-    expect(aff.total_co_recoveries).toBe(chooseTwoSum(conc.per_transition.map((t) => t.recovering)));
+    expect(aff.total_co_recoveries).toBe(
+      chooseTwoSum(conc.per_transition.map((t) => t.recovering)),
+    );
     expect(aff.total_co_recoveries).toBe(4);
     expect(aff.total_recoveries).toBe(conc.total_recoveries);
   });
@@ -309,7 +311,9 @@ describe("computeCoherenceRecoveryAffinity (spec-v33 — pairwise co-recovery co
     const aff = await computeCoherenceRecoveryAffinity(rounds);
     const summary = renderCoherenceRecoveryAffinitySummary(aff);
     expect(summary).toContain("Coherence exposure co-recovery affinity across 2 rounds");
-    expect(summary).toMatch(/tightest pairing: Cap \+ Term — recovered together 100% of the steps either recovered/);
+    expect(summary).toMatch(
+      /tightest pairing: Cap \+ Term — recovered together 100% of the steps either recovered/,
+    );
     expect(summary).toMatch(/1 coupled/);
     expect(summary).toMatch(/recovery_affinity_hash: [0-9a-f]{64}/);
 

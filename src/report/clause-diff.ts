@@ -225,7 +225,9 @@ function lcsOps(base: Clause[], revised: Clause[]): Op[] {
  * the surplus on either side stays a plain remove/add. This is the standard
  * unified-diff "replace hunk" pairing.
  */
-function classify(ops: Op[]): Pick<ClauseDiff, "added" | "removed" | "changed" | "unchanged_count"> {
+function classify(
+  ops: Op[],
+): Pick<ClauseDiff, "added" | "removed" | "changed" | "unchanged_count"> {
   const added: Clause[] = [];
   const removed: Clause[] = [];
   const changed: ClausePair[] = [];

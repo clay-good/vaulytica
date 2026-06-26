@@ -74,7 +74,10 @@ function normalizeJurisdiction(raw: string): string | undefined {
     .toLowerCase()
     // Drop venue-prefix noise the extractor sometimes captures as part
     // of the raw_text on the simple-regex fallback path.
-    .replace(/^the\s+(?:state\s+and\s+federal\s+|federal\s+and\s+state\s+|state\s+|federal\s+)?courts?\s+(?:located\s+in\s+|sitting\s+in\s+|of\s+|in\s+)?/, "")
+    .replace(
+      /^the\s+(?:state\s+and\s+federal\s+|federal\s+and\s+state\s+|state\s+|federal\s+)?courts?\s+(?:located\s+in\s+|sitting\s+in\s+|of\s+|in\s+)?/,
+      "",
+    )
     .replace(/^the\s+/, "")
     .replace(/\b(?:state|commonwealth)\s+of\s+/g, "")
     .replace(/\s+/g, " ")
@@ -82,18 +85,18 @@ function normalizeJurisdiction(raw: string): string | undefined {
   if (!trimmed) return undefined;
   // Common shorthand and abbreviation normalizations.
   const ALIAS: Record<string, string> = {
-    "del": "delaware",
+    del: "delaware",
     "del.": "delaware",
-    "ny": "new york",
+    ny: "new york",
     "n.y.": "new york",
-    "ca": "california",
-    "cal": "california",
+    ca: "california",
+    cal: "california",
     "cal.": "california",
-    "tex": "texas",
+    tex: "texas",
     "tex.": "texas",
-    "mass": "massachusetts",
+    mass: "massachusetts",
     "mass.": "massachusetts",
-    "uk": "united kingdom",
+    uk: "united kingdom",
     "england and wales": "england",
   };
   return ALIAS[trimmed] ?? trimmed;

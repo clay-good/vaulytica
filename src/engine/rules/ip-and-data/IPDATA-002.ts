@@ -16,7 +16,10 @@ export const rule: Rule = {
       /\b(?:hereby\s+)?assigns?\b[\s\S]{0,200}intellectual\s+property|\b(?:works?\s+made\s+for\s+hire)\b/i,
     );
     if (!hit) return null;
-    if (/\b(?:pre[- ]?existing|background|prior)\s+(?:IP|intellectual\s+property)\b/i.test(hit.text)) return null;
+    if (
+      /\b(?:pre[- ]?existing|background|prior)\s+(?:IP|intellectual\s+property)\b/i.test(hit.text)
+    )
+      return null;
     return emit(ctx, rule, {
       title: "Pre-existing IP carve-out not stated",
       description: "An IP assignment is present but pre-existing IP is not expressly carved out.",

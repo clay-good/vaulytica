@@ -109,9 +109,9 @@ export function deriveHandoffFindings(
       title: "Sensitive-data patterns are present",
       description: `${facts.sensitive.length} span${plural(facts.sensitive.length)} match sensitive-data formats that are routinely redacted before disclosure.`,
       count: facts.sensitive.length,
-      evidence: facts.sensitive.slice(0, 30).map(
-        (s) => `${s.type} (${s.confidence} confidence): ${s.masked}`,
-      ),
+      evidence: facts.sensitive
+        .slice(0, 30)
+        .map((s) => `${s.type} (${s.confidence} confidence): ${s.masked}`),
     });
   }
 

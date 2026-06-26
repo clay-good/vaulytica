@@ -30,7 +30,7 @@ Decimal.set({ precision: 50 });
 const MAX_AMOUNT_DIGITS = 30;
 
 const CURRENCY_SYMBOLS: Record<string, string> = {
-  "$": "USD",
+  $: "USD",
   "€": "EUR",
   "£": "GBP",
   "¥": "JPY",
@@ -40,8 +40,26 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
 };
 
 const CURRENCY_CODES = new Set([
-  "USD", "EUR", "GBP", "JPY", "CAD", "AUD", "NZD", "CHF", "CNY", "INR",
-  "KRW", "BRL", "MXN", "ZAR", "SGD", "HKD", "SEK", "NOK", "DKK", "RUB",
+  "USD",
+  "EUR",
+  "GBP",
+  "JPY",
+  "CAD",
+  "AUD",
+  "NZD",
+  "CHF",
+  "CNY",
+  "INR",
+  "KRW",
+  "BRL",
+  "MXN",
+  "ZAR",
+  "SGD",
+  "HKD",
+  "SEK",
+  "NOK",
+  "DKK",
+  "RUB",
 ]);
 
 const CUR = String.raw`[$€£¥₹₩₽]|\b(?:USD|EUR|GBP|JPY|CAD|AUD|NZD|CHF|CNY|INR|KRW|BRL|MXN|ZAR|SGD|HKD|SEK|NOK|DKK|RUB)\b`;
@@ -61,10 +79,7 @@ const SCALE = String.raw`k|kk|m|mm|mn|bn|b`;
 // required amount fails — O(n²) per pass. `\s` matches NBSP (which `normalize`
 // keeps), so a crafted NBSP run is a reachable hang. No real money expression
 // has > 8 chars between the symbol, digits, and scale, so this is byte-identical.
-const NUMERIC = new RegExp(
-  String.raw`(${CUR})?\s{0,8}(${AMT})\s{0,8}(${SCALE})?`,
-  "gi",
-);
+const NUMERIC = new RegExp(String.raw`(${CUR})?\s{0,8}(${AMT})\s{0,8}(${SCALE})?`, "gi");
 
 /**
  * Range amounts: "$100k to $200k", "between USD 50,000 and USD 100,000".
@@ -101,11 +116,34 @@ const SCALES: Record<string, string> = {
 };
 
 const NUMBER_WORDS: Record<string, number> = {
-  zero: 0, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7,
-  eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12, thirteen: 13,
-  fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18,
-  nineteen: 19, twenty: 20, thirty: 30, forty: 40, fifty: 50, sixty: 60,
-  seventy: 70, eighty: 80, ninety: 90,
+  zero: 0,
+  one: 1,
+  two: 2,
+  three: 3,
+  four: 4,
+  five: 5,
+  six: 6,
+  seven: 7,
+  eight: 8,
+  nine: 9,
+  ten: 10,
+  eleven: 11,
+  twelve: 12,
+  thirteen: 13,
+  fourteen: 14,
+  fifteen: 15,
+  sixteen: 16,
+  seventeen: 17,
+  eighteen: 18,
+  nineteen: 19,
+  twenty: 20,
+  thirty: 30,
+  forty: 40,
+  fifty: 50,
+  sixty: 60,
+  seventy: 70,
+  eighty: 80,
+  ninety: 90,
 };
 
 const WORD_SCALES: Record<string, string> = {
@@ -265,7 +303,10 @@ function resolveCurrency(symOrCode: string): string {
 }
 
 function parseWordPhrase(phrase: string): Decimal | null {
-  const tokens = phrase.replace(/-/g, " ").split(/\s+/).filter((t) => t && t !== "and");
+  const tokens = phrase
+    .replace(/-/g, " ")
+    .split(/\s+/)
+    .filter((t) => t && t !== "and");
   if (tokens.length === 0) return null;
   let current = new Decimal(0);
   let total = new Decimal(0);

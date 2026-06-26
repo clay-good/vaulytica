@@ -217,7 +217,9 @@ export function buildFixListCsv(run: EngineRun): string {
  */
 export function buildObligationsCsv(extracted: ExtractedData): string {
   const rows: string[] = [];
-  rows.push(csvRow(["obligor", "modal", "action", "trigger", "qualifier", "section", "source_text"]));
+  rows.push(
+    csvRow(["obligor", "modal", "action", "trigger", "qualifier", "section", "source_text"]),
+  );
   for (const o of extracted.obligations) {
     rows.push(
       csvRow([
@@ -271,10 +273,30 @@ const ABS_MONTHS =
 const ABS_PROSE = new RegExp(String.raw`\b(${ABS_MONTHS})\.?\s+(\d{1,2}),?\s+(\d{4})\b`, "i");
 
 const MONTH_NUM: Record<string, number> = {
-  january: 1, jan: 1, february: 2, feb: 2, march: 3, mar: 3, april: 4, apr: 4,
-  may: 5, june: 6, jun: 6, july: 7, jul: 7, august: 8, aug: 8,
-  september: 9, sep: 9, sept: 9, october: 10, oct: 10, november: 11, nov: 11,
-  december: 12, dec: 12,
+  january: 1,
+  jan: 1,
+  february: 2,
+  feb: 2,
+  march: 3,
+  mar: 3,
+  april: 4,
+  apr: 4,
+  may: 5,
+  june: 6,
+  jun: 6,
+  july: 7,
+  jul: 7,
+  august: 8,
+  aug: 8,
+  september: 9,
+  sep: 9,
+  sept: 9,
+  october: 10,
+  oct: 10,
+  november: 11,
+  nov: 11,
+  december: 12,
+  dec: 12,
 };
 
 function isValidIso(y: number, mo: number, d: number): boolean {
@@ -291,18 +313,22 @@ function pad(n: number, w: number): string {
 function firstAbsoluteIso(text: string): string | undefined {
   let m = ABS_ISO.exec(text);
   if (m) {
-    const y = +m[1]!, mo = +m[2]!, d = +m[3]!;
+    const y = +m[1]!,
+      mo = +m[2]!,
+      d = +m[3]!;
     if (isValidIso(y, mo, d)) return `${pad(y, 4)}-${pad(mo, 2)}-${pad(d, 2)}`;
   }
   m = ABS_PROSE.exec(text);
   if (m) {
     const mo = MONTH_NUM[m[1]!.toLowerCase().replace(/\./g, "")];
-    const d = +m[2]!, y = +m[3]!;
+    const d = +m[2]!,
+      y = +m[3]!;
     if (mo !== undefined && isValidIso(y, mo, d)) return `${pad(y, 4)}-${pad(mo, 2)}-${pad(d, 2)}`;
   }
   m = ABS_US.exec(text);
   if (m) {
-    const mo = +m[1]!, d = +m[2]!;
+    const mo = +m[1]!,
+      d = +m[2]!;
     let y = +m[3]!;
     if (m[3]!.length === 2) y = y < 70 ? 2000 + y : 1900 + y;
     if (isValidIso(y, mo, d)) return `${pad(y, 4)}-${pad(mo, 2)}-${pad(d, 2)}`;
@@ -423,10 +449,7 @@ export function collectDeadlines(extracted: ExtractedData): DeadlinesResult {
   return { events, unresolved };
 }
 
-function resolveRelative(
-  date: DateReference,
-  anchors: Map<string, string>,
-): DeadlineEvent | null {
+function resolveRelative(date: DateReference, anchors: Map<string, string>): DeadlineEvent | null {
   if (date.anchor === undefined || date.offset_days === undefined) return null;
   const base = anchors.get(normalizeAnchor(date.anchor));
   if (!base) return null;
@@ -688,7 +711,8 @@ export function buildCriticalDatesIcs(register: CriticalDatesRegister): string {
     const summary = `${KIND_LABEL[r.kind]}: ${r.trigger}`;
     const respPart = r.responsible ? ` Responsible: ${r.responsible}.` : "";
     const desc = `Computed from ${r.section ? `section ${r.section}` : "the document"} (anchor: ${r.anchor || "—"}).${respPart} ${r.trigger}`;
-    const alarm = r.kind === "auto-renewal-notice" || r.kind === "opt-out-window" || r.kind === "cure-window";
+    const alarm =
+      r.kind === "auto-renewal-notice" || r.kind === "opt-out-window" || r.kind === "cure-window";
     lines.push("BEGIN:VEVENT");
     lines.push(`UID:${uid}`);
     lines.push(`DTSTAMP:${FIXED_DTSTAMP}`);

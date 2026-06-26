@@ -70,7 +70,13 @@ function makeRun(): EngineRun {
     executed_at: "2026-05-12T12:00:00Z",
     findings: [finding("c1", "critical"), finding("w1", "warning"), finding("i1", "info")],
     execution_log: [
-      { rule_id: "STRUCT-001", rule_version: "1.0.0", fired: true, finding_id: "c1", elapsed_ms: 0.1 },
+      {
+        rule_id: "STRUCT-001",
+        rule_version: "1.0.0",
+        fired: true,
+        finding_id: "c1",
+        elapsed_ms: 0.1,
+      },
       { rule_id: "STRUCT-002", rule_version: "1.0.0", fired: false, elapsed_ms: 0.05 },
     ],
     result_hash: "b".repeat(64),
@@ -148,7 +154,11 @@ const sampleInsurance: InsuranceSchedule = {
     },
   ],
   endorsements: [
-    { form_number: "CG 20 10", raw_text: "CG 20 10", position: { section_id: "s8", start: 60, end: 70 } },
+    {
+      form_number: "CG 20 10",
+      raw_text: "CG 20 10",
+      position: { section_id: "s8", start: 60, end: 70 },
+    },
   ],
   required_am_best_rating: "A- VII",
   notice_of_cancellation_days: 30,
@@ -290,20 +300,14 @@ describe("buildV3Footer", () => {
 describe("buildDocxReport with v3 inputs", () => {
   it("produces a Blob larger than the v2-only report when all v3 sections are passed", async () => {
     const v2Blob = await buildDocxReport(makeRun(), ingest, loadStarterDkbSync(), loadMutualNda());
-    const v3Blob = await buildDocxReport(
-      makeRun(),
-      ingest,
-      loadStarterDkbSync(),
-      loadMutualNda(),
-      {
-        matrix: sampleMatrix,
-        transfers: sampleTransfers,
-        subprocessor: sampleSubprocessor,
-        insurance: sampleInsurance,
-        consistency: sampleConsistencyRun,
-        dkb_build_date: "2026-05-13T00:00:00Z",
-      },
-    );
+    const v3Blob = await buildDocxReport(makeRun(), ingest, loadStarterDkbSync(), loadMutualNda(), {
+      matrix: sampleMatrix,
+      transfers: sampleTransfers,
+      subprocessor: sampleSubprocessor,
+      insurance: sampleInsurance,
+      consistency: sampleConsistencyRun,
+      dkb_build_date: "2026-05-13T00:00:00Z",
+    });
     expect(v3Blob.size).toBeGreaterThan(v2Blob.size);
     // ZIP local-file-header magic
     const bytes = new Uint8Array(await v3Blob.arrayBuffer());
@@ -318,13 +322,9 @@ describe("buildDocxReport with v3 inputs", () => {
 
   it("omits each conditional section when its input is absent", async () => {
     // Pass only the matrix; the other v3 inputs are absent.
-    const blob = await buildDocxReport(
-      makeRun(),
-      ingest,
-      loadStarterDkbSync(),
-      loadMutualNda(),
-      { matrix: sampleMatrix },
-    );
+    const blob = await buildDocxReport(makeRun(), ingest, loadStarterDkbSync(), loadMutualNda(), {
+      matrix: sampleMatrix,
+    });
     expect(blob.size).toBeGreaterThan(1000);
   });
 });

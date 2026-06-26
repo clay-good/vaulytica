@@ -38,7 +38,8 @@ const EXEMPT_PLAYBOOK_IDS: Record<string, string> = {
   // alphabetically. Vendor-specific surface is exercised via
   // bad-saas-vendor.docx but matched as saas-customer; the
   // fixture-sanity test for that fixture is playbook-agnostic.
-  "saas-vendor": "exercised via bad-saas-vendor.docx (matched as saas-customer due to feature overlap)",
+  "saas-vendor":
+    "exercised via bad-saas-vendor.docx (matched as saas-customer due to feature overlap)",
 };
 
 const fixtures = await listFixtures(CONTRACTS);

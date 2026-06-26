@@ -164,9 +164,10 @@ describe("custom-playbook privacy guard (spec-v6 Part VII)", () => {
     expect(result.run.result_hash).not.toBe("");
 
     // The load-bearing assertions: no egress, and the marker never escaped.
-    expect(trap.captures, `unexpected network egress: ${safeStringify(trap.captures)}`).toHaveLength(
-      0,
-    );
+    expect(
+      trap.captures,
+      `unexpected network egress: ${safeStringify(trap.captures)}`,
+    ).toHaveLength(0);
     const allPayloads = trap.captures.map((c) => c.payload).join("\n");
     expect(allPayloads).not.toContain(MARKER);
   });

@@ -44,17 +44,12 @@ const CONSTRUCTION_CONTRACT_RULES: Rule[] = [
     citation: aia("A101", "Owner-Contractor Agreement (Stipulated Sum)"),
     playbooks: [CON_PLAYBOOK_CONTRACT],
     missing_title: "Owner / contractor / architect clause missing",
-    missing_description:
-      "No clause was found identifying owner, contractor, and architect.",
+    missing_description: "No clause was found identifying owner, contractor, and architect.",
     explanation:
       "AIA A101 / A201 contemplate owner, contractor, and architect as the three principal parties. Without identification the General Conditions cannot apply.",
     recommendation:
       "Add 'Parties' clause identifying owner, contractor, and architect with addresses and licenses.",
-    present_patterns: [
-      /owner/i,
-      /contractor/i,
-      /(architect|design\s+professional)/i,
-    ],
+    present_patterns: [/owner/i, /contractor/i, /(architect|design\s+professional)/i],
   }),
   presence({
     id: "CON-002",
@@ -64,8 +59,7 @@ const CONSTRUCTION_CONTRACT_RULES: Rule[] = [
     citation: aia("A201", "General Conditions"),
     playbooks: [CON_PLAYBOOK_CONTRACT],
     missing_title: "Scope of work / contract documents clause missing",
-    missing_description:
-      "No scope-of-work or contract-documents clause was found.",
+    missing_description: "No scope-of-work or contract-documents clause was found.",
     explanation:
       "AIA A201 § 1.1.1 defines the Contract Documents (Agreement + Conditions + Drawings + Specifications + addenda + Modifications). Without enumeration the contract is ambiguous.",
     recommendation:
@@ -78,7 +72,8 @@ const CONSTRUCTION_CONTRACT_RULES: Rule[] = [
   presence({
     id: "CON-003",
     name: "Contract sum + price / payment terms",
-    description: "Contract must state contract sum (stipulated sum / GMP / cost-plus) and progress payments.",
+    description:
+      "Contract must state contract sum (stipulated sum / GMP / cost-plus) and progress payments.",
     citation: aia("A101", "Contract Sum / Payment"),
     playbooks: [CON_PLAYBOOK_CONTRACT],
     missing_title: "Contract sum / payment terms clause missing",
@@ -100,8 +95,7 @@ const CONSTRUCTION_CONTRACT_RULES: Rule[] = [
     citation: aia("A101", "Date of Substantial Completion"),
     playbooks: [CON_PLAYBOOK_CONTRACT],
     missing_title: "Time / completion / LD clause missing",
-    missing_description:
-      "No time-of-completion or liquidated-damages clause was found.",
+    missing_description: "No time-of-completion or liquidated-damages clause was found.",
     explanation:
       "AIA A101 § 3 requires dates for commencement, substantial completion, and final completion. Schedule slip drives most disputes; liquidated damages are common where the owner has measurable delay damages.",
     recommendation:
@@ -139,8 +133,7 @@ const CONSTRUCTION_CONTRACT_RULES: Rule[] = [
     citation: caCiv2782(),
     playbooks: [CON_PLAYBOOK_CONTRACT],
     missing_title: "Indemnification / insurance / waiver clause missing",
-    missing_description:
-      "No indemnification / insurance / waiver-of-subrogation clause was found.",
+    missing_description: "No indemnification / insurance / waiver-of-subrogation clause was found.",
     explanation:
       "AIA A201 §§ 3.18 (indemnification) + 11 (insurance) provide the standard pattern. State anti-indemnity statutes (CA Civ. § 2782, NY Gen. Oblig. § 5-322.1, TX Ins. § 151) void indemnity for owner's own / sole negligence.",
     recommendation:
@@ -154,20 +147,17 @@ const CONSTRUCTION_CONTRACT_RULES: Rule[] = [
   presence({
     id: "CON-007",
     name: "Termination — convenience + cause",
-    description:
-      "Contract must include termination for cause AND termination for convenience.",
+    description: "Contract must include termination for cause AND termination for convenience.",
     citation: aia("A201", "Termination of the Contract"),
     playbooks: [CON_PLAYBOOK_CONTRACT],
     missing_title: "Termination clause missing",
-    missing_description: "No termination-for-cause or termination-for-convenience clause was found.",
+    missing_description:
+      "No termination-for-cause or termination-for-convenience clause was found.",
     explanation:
       "AIA A201 § 14 provides for termination by the owner for convenience and by either party for cause. Termination provisions drive both early-exit and dispute-resolution mechanics.",
     recommendation:
       "Add 'Termination for Cause' (with cure) and 'Termination for Convenience' (with overhead / profit on completed work).",
-    present_patterns: [
-      /termination/i,
-      /(for\s+cause|for\s+convenience|notice\s+to\s+cure)/i,
-    ],
+    present_patterns: [/termination/i, /(for\s+cause|for\s+convenience|notice\s+to\s+cure)/i],
     default_severity: "warning",
   }),
 ];
@@ -189,8 +179,7 @@ const SUBCONTRACTOR_RULES: Rule[] = [
     ),
     playbooks: [CON_PLAYBOOK_SUBCONTRACTOR],
     missing_title: "GC / subk / project identification missing",
-    missing_description:
-      "No clause was found identifying the GC, subcontractor, and project.",
+    missing_description: "No clause was found identifying the GC, subcontractor, and project.",
     explanation:
       "Subcontract rights depend on identification of the parties and incorporation of the prime contract by reference.",
     recommendation:
@@ -209,8 +198,7 @@ const SUBCONTRACTOR_RULES: Rule[] = [
     citation: aia("A401", "Subcontractor flow-down"),
     playbooks: [CON_PLAYBOOK_SUBCONTRACTOR],
     missing_title: "Subcontract scope / flow-down clause missing",
-    missing_description:
-      "No subcontract-scope or flow-down clause was found.",
+    missing_description: "No subcontract-scope or flow-down clause was found.",
     explanation:
       "AIA A401 § 1.1 binds subcontractor to GC's obligations to owner so far as applicable. Without flow-down, GC bears risk it could have transferred down.",
     recommendation:
@@ -232,8 +220,7 @@ const SUBCONTRACTOR_RULES: Rule[] = [
     ),
     playbooks: [CON_PLAYBOOK_SUBCONTRACTOR],
     missing_title: "Pay-when-paid / pay-if-paid clause missing",
-    missing_description:
-      "No clause was found addressing pay-when-paid vs pay-if-paid.",
+    missing_description: "No clause was found addressing pay-when-paid vs pay-if-paid.",
     explanation:
       "Pay-if-paid (condition precedent) is unenforceable in many states (CA, NC, NY, WI, others); pay-when-paid (timing) is generally enforceable. Many subcontracts use the wrong language for the desired effect.",
     recommendation:
@@ -256,8 +243,7 @@ const SUBCONTRACTOR_RULES: Rule[] = [
     ),
     playbooks: [CON_PLAYBOOK_SUBCONTRACTOR],
     missing_title: "Schedule / coordination / cleanup clause missing",
-    missing_description:
-      "No clause was found addressing schedule, coordination, or cleanup.",
+    missing_description: "No clause was found addressing schedule, coordination, or cleanup.",
     explanation:
       "Job-site coordination is the most common source of subcontractor disputes (interference, delay, cleanup). Standard practice requires subk to comply with GC schedule and clean daily.",
     recommendation:
@@ -326,8 +312,7 @@ const LIEN_WAIVER_RULES: Rule[] = [
   presence({
     id: "CON-014",
     name: "Waiver type — conditional / unconditional + progress / final",
-    description:
-      "Lien waiver must identify type: conditional vs unconditional, progress vs final.",
+    description: "Lien waiver must identify type: conditional vs unconditional, progress vs final.",
     citation: caLienWaiver("8132"),
     playbooks: [CON_PLAYBOOK_LIEN_WAIVER],
     missing_title: "Lien-waiver type clause missing",
@@ -377,16 +362,12 @@ const LIEN_WAIVER_RULES: Rule[] = [
       "California statutory forms expressly limit the waiver to the dollar amount received and to work through a stated date — otherwise the waiver can be argued to extend beyond payments actually made.",
     recommendation:
       "Add 'Scope' limiting the waiver to the amount paid and through the through-date specified.",
-    present_patterns: [
-      /(amount\s+of\s+\$|through\s+(the\s+)?date)/i,
-      /(waives?|releases?)/i,
-    ],
+    present_patterns: [/(amount\s+of\s+\$|through\s+(the\s+)?date)/i, /(waives?|releases?)/i],
   }),
   presence({
     id: "CON-017",
     name: "Conditional waiver — payment condition",
-    description:
-      "Conditional waivers must condition effectiveness on actual receipt of payment.",
+    description: "Conditional waivers must condition effectiveness on actual receipt of payment.",
     citation: caLienWaiver("8132"),
     playbooks: [CON_PLAYBOOK_LIEN_WAIVER],
     missing_title: "Conditional-waiver payment-condition clause missing",
@@ -430,8 +411,7 @@ const LIEN_WAIVER_RULES: Rule[] = [
     citation: caLienWaiver("8132"),
     playbooks: [CON_PLAYBOOK_LIEN_WAIVER],
     missing_title: "Signature / form recital missing",
-    missing_description:
-      "No signature / date / statutory-form recital was found.",
+    missing_description: "No signature / date / statutory-form recital was found.",
     explanation:
       "California § 8132 (and analogous statutes) require the lien waiver to follow the statutory form to be valid; the form must include specific notice language about the effect of the waiver.",
     recommendation:
@@ -456,23 +436,16 @@ const BOND_RULES: Rule[] = [
     citation: millerAct(),
     playbooks: [CON_PLAYBOOK_BOND],
     missing_title: "Principal / surety / obligee clause missing",
-    missing_description:
-      "No clause was found identifying principal, surety, and obligee.",
+    missing_description: "No clause was found identifying principal, surety, and obligee.",
     explanation:
       "Bonds are tri-party instruments — principal (contractor), surety (bonding company), obligee (owner / claimants). Identification is essential for claim procedure.",
-    recommendation:
-      "Add 'Parties' identifying principal, surety (with NAIC number), and obligee.",
-    present_patterns: [
-      /(principal|contractor)/i,
-      /surety/i,
-      /(obligee|owner|government)/i,
-    ],
+    recommendation: "Add 'Parties' identifying principal, surety (with NAIC number), and obligee.",
+    present_patterns: [/(principal|contractor)/i, /surety/i, /(obligee|owner|government)/i],
   }),
   presence({
     id: "CON-021",
     name: "Bond type — payment / performance / dual-obligee",
-    description:
-      "Bond must clearly state whether it is a payment bond, performance bond, or dual.",
+    description: "Bond must clearly state whether it is a payment bond, performance bond, or dual.",
     citation: millerAct(),
     playbooks: [CON_PLAYBOOK_BOND],
     missing_title: "Bond-type clause missing",
@@ -497,12 +470,8 @@ const BOND_RULES: Rule[] = [
     missing_description: "No penal-sum clause was found.",
     explanation:
       "Surety liability is capped at the penal sum; the bond must state it. Miller Act and Little Miller Acts require it.",
-    recommendation:
-      "Add 'Penal Sum' specifying the maximum surety obligation in dollars.",
-    present_patterns: [
-      /(penal\s+sum|sum\s+of\s+\$|in\s+the\s+penal\s+amount)/i,
-      /\$\s*[\d,]+/,
-    ],
+    recommendation: "Add 'Penal Sum' specifying the maximum surety obligation in dollars.",
+    present_patterns: [/(penal\s+sum|sum\s+of\s+\$|in\s+the\s+penal\s+amount)/i, /\$\s*[\d,]+/],
   }),
   presence({
     id: "CON-023",
@@ -511,8 +480,7 @@ const BOND_RULES: Rule[] = [
     citation: millerAct(),
     playbooks: [CON_PLAYBOOK_BOND],
     missing_title: "Underlying-contract incorporation clause missing",
-    missing_description:
-      "No clause was found incorporating the underlying construction contract.",
+    missing_description: "No clause was found incorporating the underlying construction contract.",
     explanation:
       "The bond's scope is defined by the underlying contract; that contract must be identified and incorporated.",
     recommendation:
@@ -530,8 +498,7 @@ const BOND_RULES: Rule[] = [
     citation: millerAct(),
     playbooks: [CON_PLAYBOOK_BOND],
     missing_title: "Claimant / notice procedure clause missing",
-    missing_description:
-      "No clause was found defining claimants or the notice / suit procedure.",
+    missing_description: "No clause was found defining claimants or the notice / suit procedure.",
     explanation:
       "Miller Act 40 U.S.C. § 3133: subcontractors without contractual privity with principal must give 90-day notice; suit must be filed within 1 year of last labor / materials. State Little Miller Acts vary but follow similar pattern.",
     recommendation:
@@ -551,8 +518,7 @@ const BOND_RULES: Rule[] = [
     citation: littleMiller(),
     playbooks: [CON_PLAYBOOK_BOND],
     missing_title: "Performance-bond default / remedies clause missing",
-    missing_description:
-      "No clause was found specifying performance-bond default mechanics.",
+    missing_description: "No clause was found specifying performance-bond default mechanics.",
     explanation:
       "AIA A312 § 3 / § 5 prescribe owner notice → declaration of default → surety options (complete, tender new contractor, pay damages, or deny). Without this, owner-surety disputes follow.",
     recommendation:
@@ -579,8 +545,7 @@ const CHANGE_ORDER_RULES: Rule[] = [
     citation: aia("G701", "Change Order"),
     playbooks: [CON_PLAYBOOK_CHANGE_ORDER],
     missing_title: "Original / revised contract sum clause missing",
-    missing_description:
-      "No clause was found stating original / revised contract sum.",
+    missing_description: "No clause was found stating original / revised contract sum.",
     explanation:
       "AIA G701 § 5 requires the four-line summary: original contract sum, net change by previously authorized CO, contract sum prior to this CO, sum of this CO, new contract sum.",
     recommendation:
@@ -599,8 +564,7 @@ const CHANGE_ORDER_RULES: Rule[] = [
     citation: aia("G701", "Change description"),
     playbooks: [CON_PLAYBOOK_CHANGE_ORDER],
     missing_title: "Description-of-change clause missing",
-    missing_description:
-      "No clause was found describing the change in work.",
+    missing_description: "No clause was found describing the change in work.",
     explanation:
       "AIA G701 § 1 requires a description of the change; without it the CO is ambiguous and likely unenforceable.",
     recommendation:
@@ -613,8 +577,7 @@ const CHANGE_ORDER_RULES: Rule[] = [
   presence({
     id: "CON-028",
     name: "Time impact — contract time adjustment",
-    description:
-      "Change order must address contract-time adjustment (or expressly state none).",
+    description: "Change order must address contract-time adjustment (or expressly state none).",
     citation: aia("G701", "Time adjustment"),
     playbooks: [CON_PLAYBOOK_CHANGE_ORDER],
     missing_title: "Time-adjustment clause missing",
@@ -631,22 +594,16 @@ const CHANGE_ORDER_RULES: Rule[] = [
   presence({
     id: "CON-029",
     name: "Signatures — owner + architect + contractor",
-    description:
-      "Change order must be signed by owner, architect, and contractor.",
+    description: "Change order must be signed by owner, architect, and contractor.",
     citation: aia("G701", "Signatures"),
     playbooks: [CON_PLAYBOOK_CHANGE_ORDER],
     missing_title: "Signatures clause missing",
-    missing_description:
-      "No signature block (owner / architect / contractor) was found.",
+    missing_description: "No signature block (owner / architect / contractor) was found.",
     explanation:
       "AIA G701 requires all three signatures. Unsigned COs are often treated as 'directives' that may not bind on price / time.",
     recommendation:
       "Add signature blocks for owner, architect, and contractor with name / title / date lines.",
-    present_patterns: [
-      /(owner)/i,
-      /(architect|design\s+professional)/i,
-      /(contractor)/i,
-    ],
+    present_patterns: [/(owner)/i, /(architect|design\s+professional)/i, /(contractor)/i],
   }),
   presence({
     id: "CON-030",
@@ -660,8 +617,7 @@ const CHANGE_ORDER_RULES: Rule[] = [
     ),
     playbooks: [CON_PLAYBOOK_CHANGE_ORDER],
     missing_title: "Waiver-of-further-claims clause missing",
-    missing_description:
-      "No waiver-of-further-claims clause was found.",
+    missing_description: "No waiver-of-further-claims clause was found.",
     explanation:
       "Owners typically include language stating the contractor waives further claims (cost + time) related to the scope of this change order.",
     recommendation:

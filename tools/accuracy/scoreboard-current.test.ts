@@ -27,9 +27,9 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 describe("committed scoreboard is current with the live catalog", () => {
   it("scoreboard.json catalog counts match the live engine (run `npm run accuracy` if this fails)", async () => {
     const deps = await loadAccuracyDeps();
-    const scoreboard = JSON.parse(
-      await readFile(join(__dirname, "scoreboard.json"), "utf8"),
-    ) as { catalog: { rules: number; playbooks: number } };
+    const scoreboard = JSON.parse(await readFile(join(__dirname, "scoreboard.json"), "utf8")) as {
+      catalog: { rules: number; playbooks: number };
+    };
 
     expect(scoreboard.catalog.rules).toBe(deps.rules.length);
     expect(scoreboard.catalog.playbooks).toBe(

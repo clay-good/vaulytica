@@ -24,7 +24,14 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(__dirname, "..", "..");
 
 /** Directories whose markdown is not authored by us (vendored, generated, cached). */
-const SKIP_RELDIRS = new Set(["node_modules", ".git", "dist", "dkb/dist", "dkb/build/cache", ".lighthouseci"]);
+const SKIP_RELDIRS = new Set([
+  "node_modules",
+  ".git",
+  "dist",
+  "dkb/dist",
+  "dkb/build/cache",
+  ".lighthouseci",
+]);
 
 function walkMarkdown(dir: string): string[] {
   const out: string[] = [];

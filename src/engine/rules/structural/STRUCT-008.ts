@@ -32,7 +32,11 @@ export const rule: Rule = {
       } else if (top < expected) {
         issues.push({ numbered_label: label, reason: "out-of-order", sectionId: node.id });
       } else if (top > expected) {
-        issues.push({ numbered_label: label, reason: `skipped ${expected}..${top - 1}`, sectionId: node.id });
+        issues.push({
+          numbered_label: label,
+          reason: `skipped ${expected}..${top - 1}`,
+          sectionId: node.id,
+        });
       }
       seen.add(label);
       expected = top + 1;

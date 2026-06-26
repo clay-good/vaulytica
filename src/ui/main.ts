@@ -28,7 +28,6 @@ import { bindPlaybookPanel, type LoadedPlaybook } from "./playbook-panel.js";
  */
 let activeCustomPlaybook: LoadedPlaybook | null = null;
 
-
 /**
  * Preload the analysis pipeline as a side-effect of user intent —
  * dragover, mouse-over, or idle. The chunk download usually races
@@ -160,15 +159,7 @@ async function runFile(dz: HTMLElement, file: File, kind: "pdf" | "docx"): Promi
       }
     };
 
-    renderCompleteState(
-      dz,
-      file.name,
-      stem,
-      result,
-      countsBySeverity,
-      result.v3_frames.on,
-      rerun,
-    );
+    renderCompleteState(dz, file.name, stem, result, countsBySeverity, result.v3_frames.on, rerun);
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     setState(dz, { kind: "error", message });
@@ -598,102 +589,97 @@ async function renderBundleComplete(
 ): Promise<void> {
   const { countsBySeverity } = await import("./pipeline.js");
 
-    // Aggregate per-doc severity counts across the whole bundle.
-    const counts = { critical: 0, warning: 0, info: 0 };
-    for (const d of result.documents) {
-      const c = countsBySeverity(d.run);
-      counts.critical += c.critical;
-      counts.warning += c.warning;
-      counts.info += c.info;
-    }
+  // Aggregate per-doc severity counts across the whole bundle.
+  const counts = { critical: 0, warning: 0, info: 0 };
+  for (const d of result.documents) {
+    const c = countsBySeverity(d.run);
+    counts.critical += c.critical;
+    counts.warning += c.warning;
+    counts.info += c.info;
+  }
 
-    const detectedFamilies = result.documents
-      .map((d) => d.v3_detection.family)
-      .filter((f) => f !== "unknown")
-      .map((f) => V3_FAMILY_LABELS[f] ?? f);
-    // Per-doc summary cards (spec-v3 §62). Each card surfaces the
-    // filename, detected family (when known), matched playbook,
-    // per-doc finding totals, and two download buttons that save
-    // that document's own DOCX / JSON report so multi-doc users can
-    // drill into a single file without re-running the analysis.
-    const documentSummaries = result.documents.map((d) => {
-      const stem = baseFilename(d.filename);
-      return {
-        filename: d.filename,
-        family_label:
-          d.v3_detection.family === "unknown"
-            ? undefined
-            : V3_FAMILY_LABELS[d.v3_detection.family] ?? d.v3_detection.family,
-        detection_confidence:
-          d.v3_detection.family === "unknown" ? undefined : d.v3_detection.confidence,
-        playbook_name: d.playbook.name,
-        playbook_deprecated: d.playbook.deprecated === true ? true : undefined,
-        counts: countsBySeverity(d.run),
-        secondary_families:
-          d.secondary_families.length > 0
-            ? d.secondary_families.map((f) => ({
-                playbook_name: f.playbook_name,
-                counts: f.counts,
-              }))
-            : undefined,
-        docx_blob: d.docx_blob,
-        json_blob: d.json_blob,
-        docx_filename: `${stem}-vaulytica.docx`,
-        json_filename: `${stem}-vaulytica.json`,
-      };
-    });
-    setState(dz, {
-      kind: "bundle-complete",
-      document_count: result.documents.length,
-      counts,
-      cross_doc_findings: result.consistency.findings.length,
-      bundle_docx_blob: result.bundle_docx_blob,
-      bundle_json_blob: result.bundle_json_blob,
-      bundle_docx_filename: "vaulytica-bundle.docx",
-      bundle_json_filename: "vaulytica-bundle.json",
-      bundle_zip_blob: result.bundle_zip_blob,
-      bundle_zip_filename: "vaulytica-bundle.zip",
-      detected_families: detectedFamilies.length > 0 ? detectedFamilies : undefined,
-      documents: documentSummaries,
-      // spec-v12 Thrust B — cross-document posture coherence, present only when
-      // the active custom playbook defined positions (every doc carries one).
-      posture_coherence: result.posture_coherence
-        ? {
-            dimensions: result.posture_coherence.dimensions.map((d) => ({
-              dimension: d.dimension,
-              coherence: d.coherence,
-              tiers: d.tiers.map((t) => ({ document: t.document, tier: t.tier })),
-              weakest_tier: d.weakest_tier,
-              weakest_documents: d.weakest_documents,
-            })),
-            counts: result.posture_coherence.counts,
-          }
-        : undefined,
-      rejected: result.rejected.length > 0 ? result.rejected : undefined,
-      cross_doc_active: crossDocActive,
-      // Spec-v3 §62 toggle: re-runs only the consistency pass + bundle
-      // report rebuild via the cached PreparedBundle, so the flip
-      // doesn't re-ingest every document.
-      on_consistency_toggle: (active) => {
-        void rerunBundleReport(dz, prepared, active);
-      },
-      // spec-v13 Thrust B — "Compare a revised round…" affordance. Offered only
-      // when this round produced a posture coherence (a positions-bearing custom
-      // playbook was active), so there is a binding floor to track across rounds.
-      // Picking the revised round's files re-analyzes them against the *same*
-      // playbook, diffs the two coherences, and transitions to the
-      // bundle-comparison-complete state.
-      on_compare_round: result.posture_coherence
-        ? (files) => {
-            void runBundleComparison(
-              dz,
-              result.posture_coherence!,
-              result.documents.length,
-              files,
-            );
-          }
-        : undefined,
-    });
+  const detectedFamilies = result.documents
+    .map((d) => d.v3_detection.family)
+    .filter((f) => f !== "unknown")
+    .map((f) => V3_FAMILY_LABELS[f] ?? f);
+  // Per-doc summary cards (spec-v3 §62). Each card surfaces the
+  // filename, detected family (when known), matched playbook,
+  // per-doc finding totals, and two download buttons that save
+  // that document's own DOCX / JSON report so multi-doc users can
+  // drill into a single file without re-running the analysis.
+  const documentSummaries = result.documents.map((d) => {
+    const stem = baseFilename(d.filename);
+    return {
+      filename: d.filename,
+      family_label:
+        d.v3_detection.family === "unknown"
+          ? undefined
+          : (V3_FAMILY_LABELS[d.v3_detection.family] ?? d.v3_detection.family),
+      detection_confidence:
+        d.v3_detection.family === "unknown" ? undefined : d.v3_detection.confidence,
+      playbook_name: d.playbook.name,
+      playbook_deprecated: d.playbook.deprecated === true ? true : undefined,
+      counts: countsBySeverity(d.run),
+      secondary_families:
+        d.secondary_families.length > 0
+          ? d.secondary_families.map((f) => ({
+              playbook_name: f.playbook_name,
+              counts: f.counts,
+            }))
+          : undefined,
+      docx_blob: d.docx_blob,
+      json_blob: d.json_blob,
+      docx_filename: `${stem}-vaulytica.docx`,
+      json_filename: `${stem}-vaulytica.json`,
+    };
+  });
+  setState(dz, {
+    kind: "bundle-complete",
+    document_count: result.documents.length,
+    counts,
+    cross_doc_findings: result.consistency.findings.length,
+    bundle_docx_blob: result.bundle_docx_blob,
+    bundle_json_blob: result.bundle_json_blob,
+    bundle_docx_filename: "vaulytica-bundle.docx",
+    bundle_json_filename: "vaulytica-bundle.json",
+    bundle_zip_blob: result.bundle_zip_blob,
+    bundle_zip_filename: "vaulytica-bundle.zip",
+    detected_families: detectedFamilies.length > 0 ? detectedFamilies : undefined,
+    documents: documentSummaries,
+    // spec-v12 Thrust B — cross-document posture coherence, present only when
+    // the active custom playbook defined positions (every doc carries one).
+    posture_coherence: result.posture_coherence
+      ? {
+          dimensions: result.posture_coherence.dimensions.map((d) => ({
+            dimension: d.dimension,
+            coherence: d.coherence,
+            tiers: d.tiers.map((t) => ({ document: t.document, tier: t.tier })),
+            weakest_tier: d.weakest_tier,
+            weakest_documents: d.weakest_documents,
+          })),
+          counts: result.posture_coherence.counts,
+        }
+      : undefined,
+    rejected: result.rejected.length > 0 ? result.rejected : undefined,
+    cross_doc_active: crossDocActive,
+    // Spec-v3 §62 toggle: re-runs only the consistency pass + bundle
+    // report rebuild via the cached PreparedBundle, so the flip
+    // doesn't re-ingest every document.
+    on_consistency_toggle: (active) => {
+      void rerunBundleReport(dz, prepared, active);
+    },
+    // spec-v13 Thrust B — "Compare a revised round…" affordance. Offered only
+    // when this round produced a posture coherence (a positions-bearing custom
+    // playbook was active), so there is a binding floor to track across rounds.
+    // Picking the revised round's files re-analyzes them against the *same*
+    // playbook, diffs the two coherences, and transitions to the
+    // bundle-comparison-complete state.
+    on_compare_round: result.posture_coherence
+      ? (files) => {
+          void runBundleComparison(dz, result.posture_coherence!, result.documents.length, files);
+        }
+      : undefined,
+  });
 }
 
 /**

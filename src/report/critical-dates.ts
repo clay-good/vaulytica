@@ -181,7 +181,10 @@ export function deriveDate(reference: DateReference, anchorIso: string | null): 
   }
   const apply = (count: number): string => addByUnit(anchorIso, unit, count);
   // Disjunctive range → derive both bounds; the register shows the window.
-  if (reference.offset_count_max !== undefined && reference.offset_count_max !== reference.offset_count) {
+  if (
+    reference.offset_count_max !== undefined &&
+    reference.offset_count_max !== reference.offset_count
+  ) {
     const a = apply(reference.offset_count);
     const b = apply(reference.offset_count_max);
     const lo = a <= b ? a : b;
@@ -218,10 +221,30 @@ const ABS_MONTHS =
 const ABS_PROSE = new RegExp(String.raw`\b(${ABS_MONTHS})\.?\s+(\d{1,2}),?\s+(\d{4})\b`, "i");
 const ABS_US = /\b(\d{1,2})\/(\d{1,2})\/(\d{2,4})\b/;
 const MONTH_NUM: Record<string, number> = {
-  january: 1, jan: 1, february: 2, feb: 2, march: 3, mar: 3, april: 4, apr: 4,
-  may: 5, june: 6, jun: 6, july: 7, jul: 7, august: 8, aug: 8,
-  september: 9, sep: 9, sept: 9, october: 10, oct: 10, november: 11, nov: 11,
-  december: 12, dec: 12,
+  january: 1,
+  jan: 1,
+  february: 2,
+  feb: 2,
+  march: 3,
+  mar: 3,
+  april: 4,
+  apr: 4,
+  may: 5,
+  june: 6,
+  jun: 6,
+  july: 7,
+  jul: 7,
+  august: 8,
+  aug: 8,
+  september: 9,
+  sep: 9,
+  sept: 9,
+  october: 10,
+  oct: 10,
+  november: 11,
+  nov: 11,
+  december: 12,
+  dec: 12,
 };
 
 function validIso(y: number, m: number, d: number): boolean {
@@ -249,7 +272,11 @@ function firstAbsoluteIso(text: string): string | undefined {
 }
 
 function normalizeAnchor(anchor: string): string {
-  return anchor.trim().toLowerCase().replace(/^the\s+/, "").replace(/\s+/g, " ");
+  return anchor
+    .trim()
+    .toLowerCase()
+    .replace(/^the\s+/, "")
+    .replace(/\s+/g, " ");
 }
 
 /**
@@ -271,7 +298,8 @@ export function resolveAnchors(extracted: ExtractedData, tree?: DocumentTree): M
   if (tree) {
     // Co-location: a paragraph that both states an absolute date and
     // names an anchor (via "(the 'X Date')" or a bare "X Date") binds them.
-    const anchorParen = /\(\s*(?:the\s+)?["“”']?([A-Z][\w\s-]{2,40}?\s+Date|Date\s+Hereof)["“”']?\s*\)/g;
+    const anchorParen =
+      /\(\s*(?:the\s+)?["“”']?([A-Z][\w\s-]{2,40}?\s+Date|Date\s+Hereof)["“”']?\s*\)/g;
     forEachParagraph(tree, (ctx) => {
       const iso = firstAbsoluteIso(ctx.text);
       if (!iso) return;
@@ -291,10 +319,22 @@ export function resolveAnchors(extracted: ExtractedData, tree?: DocumentTree): M
 // ---------------------------------------------------------------------------
 
 const KIND_PATTERNS: Array<{ kind: CriticalDateKind; re: RegExp }> = [
-  { kind: "auto-renewal-notice", re: /\b(?:auto[-\s]?renew\w*|renew\w*|non[-\s]?renewal|anniversary|roll(?:s|ing)?\s+over|evergreen)\b/i },
-  { kind: "cure-window", re: /\b(?:cure|cured|remed\w+|default|breach|failure\s+to\s+(?:pay|perform))\b/i },
-  { kind: "opt-out-window", re: /\b(?:terminat\w+\s+for\s+convenience|opt[-\s]?out|terminat\w+\s+(?:this\s+)?(?:agreement|contract)|without\s+cause|for\s+any\s+reason)\b/i },
-  { kind: "survival-end", re: /\b(?:surviv\w+|continue\s+in\s+(?:full\s+)?(?:force|effect)\s+for|remain\s+in\s+effect\s+for)\b/i },
+  {
+    kind: "auto-renewal-notice",
+    re: /\b(?:auto[-\s]?renew\w*|renew\w*|non[-\s]?renewal|anniversary|roll(?:s|ing)?\s+over|evergreen)\b/i,
+  },
+  {
+    kind: "cure-window",
+    re: /\b(?:cure|cured|remed\w+|default|breach|failure\s+to\s+(?:pay|perform))\b/i,
+  },
+  {
+    kind: "opt-out-window",
+    re: /\b(?:terminat\w+\s+for\s+convenience|opt[-\s]?out|terminat\w+\s+(?:this\s+)?(?:agreement|contract)|without\s+cause|for\s+any\s+reason)\b/i,
+  },
+  {
+    kind: "survival-end",
+    re: /\b(?:surviv\w+|continue\s+in\s+(?:full\s+)?(?:force|effect)\s+for|remain\s+in\s+effect\s+for)\b/i,
+  },
 ];
 
 /**

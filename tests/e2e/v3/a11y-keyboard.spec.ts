@@ -45,9 +45,7 @@ test("dropzone is keyboard-reachable via its hidden file input", async ({ page }
   // visually-hidden <input type="file"> with an aria-label. Tab
   // through the page until that input gets focus.
   await expect(page.locator("#dropzone")).toBeVisible();
-  const fileInput = page.locator(
-    '#dropzone input[type="file"]:not([webkitdirectory])',
-  );
+  const fileInput = page.locator('#dropzone input[type="file"]:not([webkitdirectory])');
   await expect(fileInput).toHaveCount(1);
 
   let onInput = false;
@@ -68,13 +66,9 @@ test("theme toggle is keyboard-operable", async ({ page }) => {
   const toggle = page.locator("#theme-toggle");
   await expect(toggle).toBeVisible();
   await toggle.focus();
-  const before = await page.evaluate(() =>
-    document.documentElement.getAttribute("data-theme"),
-  );
+  const before = await page.evaluate(() => document.documentElement.getAttribute("data-theme"));
   await page.keyboard.press("Enter");
-  const after = await page.evaluate(() =>
-    document.documentElement.getAttribute("data-theme"),
-  );
+  const after = await page.evaluate(() => document.documentElement.getAttribute("data-theme"));
   expect(after, "theme toggle must flip data-theme on Enter").not.toBe(before);
 });
 
@@ -105,9 +99,7 @@ test("v3 compliance-frame chip row is keyboard-operable", async ({ page }) => {
   });
   await page.goto("/");
 
-  const fileInput = page.locator(
-    '#dropzone input[type="file"]:not([webkitdirectory])',
-  );
+  const fileInput = page.locator('#dropzone input[type="file"]:not([webkitdirectory])');
   await fileInput.setInputFiles(BAA_FIXTURE);
 
   // Wait for the complete-state DOM (chip row is rendered alongside
@@ -136,19 +128,14 @@ test("multi-doc card download buttons are keyboard-operable", async ({ page }) =
   const dir = join(__dirname, "..", "..", "fixtures", "contracts");
   const A = join(dir, "mutual-nda.docx");
   const B = join(dir, "bad-nda.docx");
-  test.skip(
-    !existsSync(A) || !existsSync(B),
-    `bundle fixtures missing: ${A} / ${B}`,
-  );
+  test.skip(!existsSync(A) || !existsSync(B), `bundle fixtures missing: ${A} / ${B}`);
 
   await page.addInitScript(() => {
     delete (window as { showSaveFilePicker?: unknown }).showSaveFilePicker;
   });
   await page.goto("/");
 
-  const fileInput = page.locator(
-    '#dropzone input[type="file"]:not([webkitdirectory])',
-  );
+  const fileInput = page.locator('#dropzone input[type="file"]:not([webkitdirectory])');
   await fileInput.setInputFiles([A, B]);
 
   // Wait for bundle-complete; the per-doc cards land alongside the
@@ -165,9 +152,7 @@ test("multi-doc card download buttons are keyboard-operable", async ({ page }) =
   // so keyboard-focusable by default). Focus the first card's Word
   // button via Tab from the page root and confirm it has the right
   // aria-label.
-  const firstWordBtn = cards
-    .nth(0)
-    .locator('[data-role="card-docx-download"]');
+  const firstWordBtn = cards.nth(0).locator('[data-role="card-docx-download"]');
   await firstWordBtn.focus();
   const isFocused = await firstWordBtn.evaluate((el) => el === document.activeElement);
   expect(isFocused, "card Word button must be programmatically focusable").toBe(true);

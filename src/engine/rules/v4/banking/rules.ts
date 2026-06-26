@@ -43,17 +43,14 @@ const PROMISSORY_NOTE_RULES: Rule[] = [
   presence({
     id: "BNK-001",
     name: "Maker, payee, and principal amount",
-    description:
-      "Promissory note must identify maker, payee, and principal amount.",
+    description: "Promissory note must identify maker, payee, and principal amount.",
     citation: ucc("3-104", "Negotiable instrument requirements"),
     playbooks: [BNK_PLAYBOOK_PROMISSORY],
     missing_title: "Maker / payee / principal clause missing",
-    missing_description:
-      "No clause was found identifying the maker, payee, and principal amount.",
+    missing_description: "No clause was found identifying the maker, payee, and principal amount.",
     explanation:
       "UCC § 3-104 requires a definite obligation to pay a fixed amount of money — these three elements must appear for negotiability.",
-    recommendation:
-      "Add 'Maker', 'Payee', and 'Principal Amount' lines stating each clearly.",
+    recommendation: "Add 'Maker', 'Payee', and 'Principal Amount' lines stating each clearly.",
     present_patterns: [
       /(maker|borrower)/i,
       /(payee|lender|holder)/i,
@@ -117,8 +114,7 @@ const PROMISSORY_NOTE_RULES: Rule[] = [
   presence({
     id: "BNK-005",
     name: "Default + acceleration",
-    description:
-      "Promissory note must address events of default and acceleration on default.",
+    description: "Promissory note must address events of default and acceleration on default.",
     citation: bnkPractice(
       "note-default",
       "Promissory note — default / acceleration baseline",
@@ -286,8 +282,7 @@ const LOAN_AGREEMENT_RULES: Rule[] = [
     ),
     playbooks: [BNK_PLAYBOOK_LOAN],
     missing_title: "Events of default / cross-default clause missing",
-    missing_description:
-      "No EoD / cross-default / cure-period clause was found.",
+    missing_description: "No EoD / cross-default / cure-period clause was found.",
     explanation:
       "Late payment, covenant breach (with cure), insolvency, rep / warranty breach, cross-default to material indebtedness, change of control, judgment threshold — these are the universal EoDs.",
     recommendation:
@@ -306,8 +301,7 @@ const LOAN_AGREEMENT_RULES: Rule[] = [
     citation: regZ("18", "Closed-end credit disclosures"),
     playbooks: [BNK_PLAYBOOK_LOAN],
     missing_title: "Reg Z / TILA disclosures clause missing (consumer)",
-    missing_description:
-      "No Reg Z / TILA disclosure clause was found for a consumer-purpose loan.",
+    missing_description: "No Reg Z / TILA disclosure clause was found for a consumer-purpose loan.",
     explanation:
       "Regulation Z (12 C.F.R. § 1026.18) requires the four TILA disclosures (APR, finance charge, amount financed, total of payments) in segregated form for closed-end consumer credit.",
     recommendation:
@@ -329,21 +323,16 @@ const SECURITY_AGREEMENT_RULES: Rule[] = [
   presence({
     id: "BNK-014",
     name: "Debtor / secured party identification",
-    description:
-      "Security agreement must identify debtor and secured party with full legal names.",
+    description: "Security agreement must identify debtor and secured party with full legal names.",
     citation: ucc("9-203", "Attachment"),
     playbooks: [BNK_PLAYBOOK_SECURITY],
     missing_title: "Debtor / secured party clause missing",
-    missing_description:
-      "No clause was found identifying debtor and secured party.",
+    missing_description: "No clause was found identifying debtor and secured party.",
     explanation:
       "UCC § 9-203 requires debtor authentication; § 9-502 requires the financing statement to identify both parties.",
     recommendation:
       "Add 'Debtor' and 'Secured Party' lines stating each party's full legal name and organizational form.",
-    present_patterns: [
-      /(debtor|borrower)/i,
-      /(secured\s+party|lender|holder)/i,
-    ],
+    present_patterns: [/(debtor|borrower)/i, /(secured\s+party|lender|holder)/i],
   }),
   presence({
     id: "BNK-015",
@@ -353,8 +342,7 @@ const SECURITY_AGREEMENT_RULES: Rule[] = [
     citation: ucc("9-203", "Granting clause"),
     playbooks: [BNK_PLAYBOOK_SECURITY],
     missing_title: "Granting clause missing",
-    missing_description:
-      "No granting clause creating the security interest was found.",
+    missing_description: "No granting clause creating the security interest was found.",
     explanation:
       "UCC § 9-203 requires the debtor's authentication to include language granting a security interest. Without grant language attachment fails.",
     recommendation:
@@ -367,8 +355,7 @@ const SECURITY_AGREEMENT_RULES: Rule[] = [
   presence({
     id: "BNK-016",
     name: "Collateral description — reasonably identifies (§ 9-108)",
-    description:
-      "Collateral must be described with reasonable specificity per UCC § 9-108.",
+    description: "Collateral must be described with reasonable specificity per UCC § 9-108.",
     citation: ucc("9-108", "Sufficiency of description"),
     playbooks: [BNK_PLAYBOOK_SECURITY],
     missing_title: "Collateral description clause missing",
@@ -391,16 +378,12 @@ const SECURITY_AGREEMENT_RULES: Rule[] = [
     citation: ucc("9-204", "After-acquired property"),
     playbooks: [BNK_PLAYBOOK_SECURITY],
     missing_title: "After-acquired / proceeds clause missing",
-    missing_description:
-      "No after-acquired property or proceeds clause was found.",
+    missing_description: "No after-acquired property or proceeds clause was found.",
     explanation:
       "Under UCC § 9-204, after-acquired property requires express language for most collateral categories (consumer-goods exception); § 9-315 attaches proceeds automatically but conventions confirm.",
     recommendation:
       "Add 'After-Acquired Property and Proceeds' covering all after-acquired collateral of the listed types and identifiable proceeds.",
-    present_patterns: [
-      /after.acquired/i,
-      /proceeds/i,
-    ],
+    present_patterns: [/after.acquired/i, /proceeds/i],
     default_severity: "warning",
   }),
   presence({
@@ -495,8 +478,7 @@ const GUARANTY_RULES: Rule[] = [
     citation: suretyship(),
     playbooks: [BNK_PLAYBOOK_GUARANTY],
     missing_title: "Payment / collection clause missing",
-    missing_description:
-      "No clause was found distinguishing guaranty of payment vs collection.",
+    missing_description: "No clause was found distinguishing guaranty of payment vs collection.",
     explanation:
       "Guaranty of payment lets the lender pursue guarantor immediately on default; guaranty of collection requires exhaustion against the borrower / collateral. The distinction drives litigation strategy.",
     recommendation:
@@ -537,8 +519,7 @@ const GUARANTY_RULES: Rule[] = [
     ),
     playbooks: [BNK_PLAYBOOK_GUARANTY],
     missing_title: "Continuing-guaranty / cap clause missing",
-    missing_description:
-      "No clause was found addressing continuing nature or any maximum amount.",
+    missing_description: "No clause was found addressing continuing nature or any maximum amount.",
     explanation:
       "Continuing guaranties cover future advances; limited guaranties cap exposure. Ambiguity causes disputes over scope.",
     recommendation:
@@ -586,10 +567,7 @@ const GUARANTY_RULES: Rule[] = [
       "If borrower payments are clawed back as preferences (Bankr. Code § 547) or fraudulent transfers (§ 548), the guaranty must be reinstated to cover the restored liability.",
     recommendation:
       "Add 'Reinstatement' clause restoring the guaranty if any payment is recovered as a preference, fraudulent transfer, or otherwise.",
-    present_patterns: [
-      /reinstat/i,
-      /(preference|fraudulent\s+transfer|avoidance|clawback)/i,
-    ],
+    present_patterns: [/reinstat/i, /(preference|fraudulent\s+transfer|avoidance|clawback)/i],
     default_severity: "warning",
   }),
 ];
@@ -607,8 +585,7 @@ const INTERCREDITOR_RULES: Rule[] = [
     citation: ucc("9-339", "Subordination by agreement"),
     playbooks: [BNK_PLAYBOOK_INTERCREDITOR],
     missing_title: "Senior / junior / priority clause missing",
-    missing_description:
-      "No clause was found identifying senior / junior creditors or priorities.",
+    missing_description: "No clause was found identifying senior / junior creditors or priorities.",
     explanation:
       "Lien priority and payment priority are the core of the agreement; ambiguity invites litigation when collateral is constrained.",
     recommendation:
@@ -674,8 +651,7 @@ const INTERCREDITOR_RULES: Rule[] = [
     ),
     playbooks: [BNK_PLAYBOOK_INTERCREDITOR],
     missing_title: "Bankruptcy / DIP / 363-sale clause missing",
-    missing_description:
-      "No bankruptcy / DIP financing / 363-sale clause was found.",
+    missing_description: "No bankruptcy / DIP financing / 363-sale clause was found.",
     explanation:
       "Intercreditors live or die in bankruptcy. Junior typically pre-agrees to senior DIP, 363 sales, plan support, and 1129(b) cramdown.",
     recommendation:
@@ -697,8 +673,7 @@ const INTERCREDITOR_RULES: Rule[] = [
     ),
     playbooks: [BNK_PLAYBOOK_INTERCREDITOR],
     missing_title: "Junior buy-out / option clause missing",
-    missing_description:
-      "No junior buy-out option (par) was found.",
+    missing_description: "No junior buy-out option (par) was found.",
     explanation:
       "Junior often negotiates an option to purchase the senior facility at par + accrued interest on enforcement, to take control of the workout.",
     recommendation:
@@ -721,8 +696,7 @@ const INTERCREDITOR_RULES: Rule[] = [
     ),
     playbooks: [BNK_PLAYBOOK_INTERCREDITOR],
     missing_title: "Amendment / consent-rights clause missing",
-    missing_description:
-      "No amendment / consent-rights clause was found.",
+    missing_description: "No amendment / consent-rights clause was found.",
     explanation:
       "Without enumerated consent rights, junior or senior can be cornered by unilateral amendments to the other's documents.",
     recommendation:
@@ -743,8 +717,7 @@ const SUBORDINATION_RULES: Rule[] = [
   presence({
     id: "BNK-033",
     name: "Subordinated debt identified",
-    description:
-      "Subordination agreement must identify the subordinated debt with specificity.",
+    description: "Subordination agreement must identify the subordinated debt with specificity.",
     citation: ucc("9-339", "Subordination by agreement"),
     playbooks: [BNK_PLAYBOOK_SUBORDINATION],
     missing_title: "Subordinated-debt identification clause missing",
@@ -753,10 +726,7 @@ const SUBORDINATION_RULES: Rule[] = [
       "UCC § 9-339 honors subordination by agreement; the agreement must identify the debt being subordinated by note / facility reference.",
     recommendation:
       "Add 'Subordinated Debt' identifying the note / loan agreement, principal, and date.",
-    present_patterns: [
-      /(subordinated\s+debt|junior\s+debt)/i,
-      /(note|loan\s+agreement|facility)/i,
-    ],
+    present_patterns: [/(subordinated\s+debt|junior\s+debt)/i, /(note|loan\s+agreement|facility)/i],
   }),
   presence({
     id: "BNK-034",
@@ -770,8 +740,7 @@ const SUBORDINATION_RULES: Rule[] = [
     ),
     playbooks: [BNK_PLAYBOOK_SUBORDINATION],
     missing_title: "Senior-debt identification clause missing",
-    missing_description:
-      "No clause identifying the senior debt was found.",
+    missing_description: "No clause identifying the senior debt was found.",
     explanation:
       "Subordination should reach the senior debt as-amended and any permitted refinancing — otherwise senior must re-negotiate on every refinance.",
     recommendation:
@@ -793,8 +762,7 @@ const SUBORDINATION_RULES: Rule[] = [
     ),
     playbooks: [BNK_PLAYBOOK_SUBORDINATION],
     missing_title: "Payment subordination / blockage clause missing",
-    missing_description:
-      "No payment-subordination / blockage / turnover clause was found.",
+    missing_description: "No payment-subordination / blockage / turnover clause was found.",
     explanation:
       "Payment subordination defers junior payment during senior default. Blockage windows (typically 180 days per 360) plus turnover preserve senior priority.",
     recommendation:
@@ -816,8 +784,7 @@ const SUBORDINATION_RULES: Rule[] = [
     ),
     playbooks: [BNK_PLAYBOOK_SUBORDINATION],
     missing_title: "Permitted-payments clause missing",
-    missing_description:
-      "No permitted-payments clause was found.",
+    missing_description: "No permitted-payments clause was found.",
     explanation:
       "Total deferral is rare; junior typically receives scheduled interest in the absence of senior default. The permitted-payment window should be explicit.",
     recommendation:
@@ -845,11 +812,7 @@ const SUBORDINATION_RULES: Rule[] = [
       "Without standstill the junior creditor can race senior to enforcement; standard period is 120–180 days.",
     recommendation:
       "Add 'Standstill' barring junior enforcement actions during a stated period after notice of senior default.",
-    present_patterns: [
-      /standstill/i,
-      /(120|180)\s+days?/i,
-      /(enforcement|remedies)/i,
-    ],
+    present_patterns: [/standstill/i, /(120|180)\s+days?/i, /(enforcement|remedies)/i],
     default_severity: "warning",
   }),
   presence({
@@ -864,8 +827,7 @@ const SUBORDINATION_RULES: Rule[] = [
     ),
     playbooks: [BNK_PLAYBOOK_SUBORDINATION],
     missing_title: "§ 510(a) bankruptcy-enforceability clause missing",
-    missing_description:
-      "No clause was found invoking § 510(a) bankruptcy enforceability.",
+    missing_description: "No clause was found invoking § 510(a) bankruptcy enforceability.",
     explanation:
       "11 U.S.C. § 510(a) enforces subordination agreements in bankruptcy as outside of bankruptcy. Express acknowledgment + plan-support language strengthens enforcement.",
     recommendation:
@@ -891,8 +853,7 @@ const DEED_OF_TRUST_RULES: Rule[] = [
     citation: recordingAct(),
     playbooks: [BNK_PLAYBOOK_DOT],
     missing_title: "Grantor / trustee / beneficiary clause missing",
-    missing_description:
-      "No clause was found identifying grantor, trustee, and beneficiary.",
+    missing_description: "No clause was found identifying grantor, trustee, and beneficiary.",
     explanation:
       "Recording acts require identification of the parties; the deed-of-trust / mortgage distinction also drives the foreclosure procedure (trustee non-judicial vs court judicial).",
     recommendation:
@@ -937,8 +898,7 @@ const DEED_OF_TRUST_RULES: Rule[] = [
     ),
     playbooks: [BNK_PLAYBOOK_DOT],
     missing_title: "Granting / habendum clause missing",
-    missing_description:
-      "No granting / habendum clause was found.",
+    missing_description: "No granting / habendum clause was found.",
     explanation:
       "The granting / habendum clause is the operative conveyance — without it the instrument may be defective even when the parties intend to encumber.",
     recommendation:
@@ -960,8 +920,7 @@ const DEED_OF_TRUST_RULES: Rule[] = [
     ),
     playbooks: [BNK_PLAYBOOK_DOT],
     missing_title: "Power-of-sale / foreclosure clause missing",
-    missing_description:
-      "No power-of-sale / foreclosure clause was found.",
+    missing_description: "No power-of-sale / foreclosure clause was found.",
     explanation:
       "Power-of-sale enables non-judicial foreclosure in deed-of-trust states (CA / TX / VA / WA / etc.); the clause must follow state-specific notice / sale formalities.",
     recommendation:
@@ -983,8 +942,7 @@ const DEED_OF_TRUST_RULES: Rule[] = [
     ),
     playbooks: [BNK_PLAYBOOK_DOT],
     missing_title: "Due-on-sale / encumbrance clause missing",
-    missing_description:
-      "No due-on-sale / encumbrance acceleration clause was found.",
+    missing_description: "No due-on-sale / encumbrance acceleration clause was found.",
     explanation:
       "Garn-St Germain (12 U.S.C. § 1701j-3) preempts most state restrictions on due-on-sale enforcement; the clause permits acceleration on transfer / further encumbrance, with statutory consumer carve-outs (intra-family transfers, etc.).",
     recommendation:
@@ -1031,8 +989,7 @@ const UCC1_RULES: Rule[] = [
     citation: ucc("9-503", "Sufficiency of debtor's name"),
     playbooks: [BNK_PLAYBOOK_UCC1],
     missing_title: "Debtor exact-legal-name clause missing",
-    missing_description:
-      "No clause was found stating debtor's exact legal name.",
+    missing_description: "No clause was found stating debtor's exact legal name.",
     explanation:
       "§ 9-503 requires the financing statement to use the debtor's exact legal name — for registered organizations, the name on the most recent public organic record. Errors are seriously misleading and can defeat perfection (§ 9-506).",
     recommendation:
@@ -1045,21 +1002,16 @@ const UCC1_RULES: Rule[] = [
   presence({
     id: "BNK-046",
     name: "Secured party name + address",
-    description:
-      "UCC-1 must list secured party name and address (§ 9-502).",
+    description: "UCC-1 must list secured party name and address (§ 9-502).",
     citation: ucc("9-502", "Contents of financing statement"),
     playbooks: [BNK_PLAYBOOK_UCC1],
     missing_title: "Secured party / address clause missing",
-    missing_description:
-      "No clause was found stating secured party's name and address.",
+    missing_description: "No clause was found stating secured party's name and address.",
     explanation:
       "§ 9-502(a)(2) requires the name and mailing address of the secured party of record.",
     recommendation:
       "State secured party's exact name and mailing address (and, where used, the filing-agent's address).",
-    present_patterns: [
-      /secured\s+party/i,
-      /(address|mailing\s+address|c\/o)/i,
-    ],
+    present_patterns: [/secured\s+party/i, /(address|mailing\s+address|c\/o)/i],
   }),
   presence({
     id: "BNK-047",
@@ -1087,8 +1039,7 @@ const UCC1_RULES: Rule[] = [
     citation: ucc("9-307", "Debtor's location"),
     playbooks: [BNK_PLAYBOOK_UCC1],
     missing_title: "Filing-office identification clause missing",
-    missing_description:
-      "No filing-office identification was found.",
+    missing_description: "No filing-office identification was found.",
     explanation:
       "Under § 9-307, a registered organization is located in the state of organization. The UCC-1 must be filed in the proper state's UCC office.",
     recommendation:
@@ -1122,8 +1073,7 @@ const UCC1_RULES: Rule[] = [
   presence({
     id: "BNK-050",
     name: "Authorization by debtor (§ 9-509)",
-    description:
-      "UCC-1 must be filed with debtor's authentication / authorization (§ 9-509(a)).",
+    description: "UCC-1 must be filed with debtor's authentication / authorization (§ 9-509(a)).",
     citation: ucc("9-509", "Authorization to file"),
     playbooks: [BNK_PLAYBOOK_UCC1],
     missing_title: "Debtor-authorization clause missing",

@@ -45,7 +45,11 @@ describe("STRUCT-003 — signature block present", () => {
     expect(STRUCT_003.check(ctx)?.severity).toBe("critical");
   });
   it("silent when a By/Name/Title/Date block appears at the end", () => {
-    const ctx = buildContext(["H", "Body paragraph.", "By: ____ Name: Jane Doe Title: CEO Date: 2025-01-01"]);
+    const ctx = buildContext([
+      "H",
+      "Body paragraph.",
+      "By: ____ Name: Jane Doe Title: CEO Date: 2025-01-01",
+    ]);
     expect(STRUCT_003.check(ctx)).toBeNull();
   });
 });
@@ -66,10 +70,7 @@ describe("STRUCT-004 — defined terms identifiable", () => {
 
 describe("STRUCT-005 — defined-but-never-used", () => {
   it("fires when a defined term is never used", () => {
-    const ctx = buildContext([
-      "Definitions",
-      '"Unused Term" means a thing not referenced again.',
-    ]);
+    const ctx = buildContext(["Definitions", '"Unused Term" means a thing not referenced again.']);
     expect(STRUCT_005.check(ctx)).not.toBeNull();
   });
 });
@@ -86,46 +87,30 @@ describe("STRUCT-006 — used-but-never-defined", () => {
 
 describe("STRUCT-007 — cross-reference resolution", () => {
   it("fires on a phantom Section reference", () => {
-    const ctx = buildContext([
-      "1. Body",
-      "Cross to Section 99.4 which does not exist.",
-    ]);
+    const ctx = buildContext(["1. Body", "Cross to Section 99.4 which does not exist."]);
     expect(STRUCT_007.check(ctx)).not.toBeNull();
   });
 });
 
 describe("STRUCT-008 — numbering integrity", () => {
   it("fires on duplicate / skipped / out-of-order numbers", () => {
-    const ctx = buildContext(
-      ["1. First", "Body."],
-      ["3. Third (skipped 2)", "Body."],
-    );
+    const ctx = buildContext(["1. First", "Body."], ["3. Third (skipped 2)", "Body."]);
     expect(STRUCT_008.check(ctx)).not.toBeNull();
   });
   it("silent on a clean 1, 2, 3 sequence", () => {
-    const ctx = buildContext(
-      ["1. First", "Body."],
-      ["2. Second", "Body."],
-      ["3. Third", "Body."],
-    );
+    const ctx = buildContext(["1. First", "Body."], ["2. Second", "Body."], ["3. Third", "Body."]);
     expect(STRUCT_008.check(ctx)).toBeNull();
   });
 });
 
 describe("FIN-001 — word-numeral mismatch", () => {
   it("fires when the word and numeral disagree", () => {
-    const ctx = buildContext([
-      "Fees",
-      "The fee is one million dollars ($1,500,000).",
-    ]);
+    const ctx = buildContext(["Fees", "The fee is one million dollars ($1,500,000)."]);
     const finding = FIN_001.check(ctx);
     expect(finding?.severity).toBe("critical");
   });
   it("silent when the word and numeral agree", () => {
-    const ctx = buildContext([
-      "Fees",
-      "The fee is one million dollars ($1,000,000).",
-    ]);
+    const ctx = buildContext(["Fees", "The fee is one million dollars ($1,000,000)."]);
     expect(FIN_001.check(ctx)).toBeNull();
   });
 });
@@ -160,7 +145,10 @@ describe("TEMP-001 — impossible date", () => {
 
 describe("RISK-009 — uncapped liability", () => {
   it("fires when 'unlimited liability' appears", () => {
-    const ctx = buildContext(["Liability", "Provider has unlimited liability under this Agreement."]);
+    const ctx = buildContext([
+      "Liability",
+      "Provider has unlimited liability under this Agreement.",
+    ]);
     expect(RISK_009.check(ctx)?.severity).toBe("critical");
   });
   it("silent when liability is capped", () => {

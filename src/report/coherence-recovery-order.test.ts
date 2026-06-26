@@ -207,11 +207,21 @@ describe("computeCoherenceRecoveryOrder (spec-v37 — recovery-precedence / who 
     // Four fronts recover one transition apart → every pair leads 1.0; the earliest pair wins.
     const rounds = await Promise.all([
       mk(
-        { Aaa: "below-acceptable", Bbb: "below-acceptable", Yyy: "below-acceptable", Zzz: "below-acceptable" },
+        {
+          Aaa: "below-acceptable",
+          Bbb: "below-acceptable",
+          Yyy: "below-acceptable",
+          Zzz: "below-acceptable",
+        },
         { Aaa: "ideal", Bbb: "ideal", Yyy: "ideal", Zzz: "ideal" },
       ),
       mk(
-        { Aaa: "acceptable", Bbb: "below-acceptable", Yyy: "below-acceptable", Zzz: "below-acceptable" },
+        {
+          Aaa: "acceptable",
+          Bbb: "below-acceptable",
+          Yyy: "below-acceptable",
+          Zzz: "below-acceptable",
+        },
         { Aaa: "ideal", Bbb: "ideal", Yyy: "ideal", Zzz: "ideal" },
       ), // Aaa↑ (t0)
       mk(
@@ -351,7 +361,9 @@ describe("computeCoherenceRecoveryOrder (spec-v37 — recovery-precedence / who 
       mk({ Cap: "below-acceptable", Term: "below-acceptable" }, { Cap: "ideal", Term: "ideal" }),
       mk({ Cap: "acceptable", Term: "acceptable" }, { Cap: "ideal", Term: "ideal" }), // both↑ (t0)
     ]);
-    const summary = renderCoherenceRecoveryOrderSummary(await computeCoherenceRecoveryOrder(rounds));
+    const summary = renderCoherenceRecoveryOrderSummary(
+      await computeCoherenceRecoveryOrder(rounds),
+    );
     expect(summary).toMatch(/clearest recovery order: none/);
   });
 });

@@ -19,8 +19,7 @@ export const rule: Rule = {
   name: "Auto-renewal notice window shorter than 30 days",
   category: "temporal",
   default_severity: "warning",
-  description:
-    "Flags auto-renewal clauses whose non-renewal notice window is fewer than 30 days.",
+  description: "Flags auto-renewal clauses whose non-renewal notice window is fewer than 30 days.",
   dkb_citations: ["stat-16-cfr-425"],
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(

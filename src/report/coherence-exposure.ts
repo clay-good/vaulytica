@@ -118,9 +118,9 @@ export async function compareCoherenceExposure(
   }
 
   const byDim = rounds.map((c) => new Map(c.dimensions.map((d) => [d.dimension, d])));
-  const labels = Array.from(new Set(rounds.flatMap((c) => c.dimensions.map((d) => d.dimension)))).sort(
-    (a, b) => a.localeCompare(b, "en"),
-  );
+  const labels = Array.from(
+    new Set(rounds.flatMap((c) => c.dimensions.map((d) => d.dimension))),
+  ).sort((a, b) => a.localeCompare(b, "en"));
 
   const worst_counts = emptyWorstCounts();
   let exposed_count = 0;
@@ -230,9 +230,7 @@ export function renderCoherenceExposureSummary(exposure: CoherenceExposure): str
   for (const f of exposure.fronts) {
     if (!f.exposed) continue;
     const path = f.floors.map((t) => t ?? "—").join(" → ");
-    lines.push(
-      `  ⚠ ${f.dimension}: worst below floor, first at round ${f.worst_round} (${path}).`,
-    );
+    lines.push(`  ⚠ ${f.dimension}: worst below floor, first at round ${f.worst_round} (${path}).`);
   }
   lines.push(`  exposure_hash: ${exposure.exposure_hash}`);
   return lines.join("\n") + "\n";

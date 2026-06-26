@@ -80,8 +80,7 @@ export function zubulake(): SourceCitation {
     id: "zubulake-v-ubs",
     source:
       "Zubulake v. UBS Warburg LLC, 220 F.R.D. 212 (S.D.N.Y. 2003) — duty to preserve and litigation hold",
-    source_url:
-      "https://www.law.cornell.edu/rules/frcp/rule_37",
+    source_url: "https://www.law.cornell.edu/rules/frcp/rule_37",
     license: "Public-domain US judicial opinion",
     license_url: "https://www.usa.gov/government-works",
   });
@@ -100,7 +99,8 @@ export function fdcpa(): SourceCitation {
 export function lanham43(): SourceCitation {
   return v4Cite({
     id: "lanham-15-usc-1125",
-    source: "Lanham Act § 43(a) (15 U.S.C. § 1125) — false designation of origin / unfair competition",
+    source:
+      "Lanham Act § 43(a) (15 U.S.C. § 1125) — false designation of origin / unfair competition",
     source_url: "https://www.law.cornell.edu/uscode/text/15/1125",
   });
 }

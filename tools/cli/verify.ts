@@ -113,7 +113,9 @@ export function explainReproResult(r: ReproResult): string {
   if (r.reproduced) {
     return `✓ Reproduced. The re-derived result_hash matches the recorded one (${r.expected_result_hash}).`;
   }
-  const lines = [`✗ Not reproduced. Recorded ${r.expected_result_hash}, re-derived ${r.actual_result_hash}.`];
+  const lines = [
+    `✗ Not reproduced. Recorded ${r.expected_result_hash}, re-derived ${r.actual_result_hash}.`,
+  ];
   const causes = r.divergences.filter((d) => d.kind !== "result-hash");
   if (causes.length === 0) {
     lines.push(

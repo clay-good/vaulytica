@@ -189,7 +189,12 @@ function renderCover(run: EngineRun, ingest: IngestResult, playbook: Playbook): 
   const humanDate = formatHumanDate(isoDate);
 
   return [
-    para({ text: "Vaulytica Report", heading: HeadingLevel.TITLE, color: MINT, alignment: AlignmentType.CENTER }),
+    para({
+      text: "Vaulytica Report",
+      heading: HeadingLevel.TITLE,
+      color: MINT,
+      alignment: AlignmentType.CENTER,
+    }),
     spacer(),
     coverField("Input file", ingest_filename(ingest, run)),
     coverField("Analysis date", `${isoDate}  (${humanDate})`),
@@ -235,11 +240,7 @@ function ingest_filename(ingest: IngestResult, run: EngineRun): string {
 function renderExecutiveSummary(run: EngineRun, playbook: Playbook): Paragraph[] {
   const counts = countFindings(run.findings);
   const summary = `This report was generated against the ${playbook.name} playbook. It contains ${plural(counts.critical, "critical finding")}, ${plural(counts.warning, "warning")}, and ${plural(counts.info, "informational item")}; review the critical section first.`;
-  return [
-    h1("Executive Summary"),
-    para({ text: summary }),
-    pageBreak(),
-  ];
+  return [h1("Executive Summary"), para({ text: summary }), pageBreak()];
 }
 
 // ---------------------------------------------------------------------------
@@ -283,7 +284,9 @@ function renderFinding(f: Finding, bibliography: BibliographyEntry[]): Paragraph
       italics: true,
     }),
     para({ text: f.explanation }),
-    ...(f.recommendation ? [para({ text: `Recommendation: ${f.recommendation}`, bold: true })] : []),
+    ...(f.recommendation
+      ? [para({ text: `Recommendation: ${f.recommendation}`, bold: true })]
+      : []),
     ...(citationNumbers.length > 0
       ? [para({ text: `Sources: ${citationNumbers.map((n) => `[${n}]`).join(" ")}` })]
       : []),
@@ -317,10 +320,7 @@ function renderModelClauseReference(f: Finding): Paragraph[] {
 // ---------------------------------------------------------------------------
 // Obligations Ledger
 
-function renderObligationsLedger(
-  run: EngineRun,
-  extracted?: ExtractedData,
-): (Paragraph | Table)[] {
+function renderObligationsLedger(run: EngineRun, extracted?: ExtractedData): (Paragraph | Table)[] {
   // Preferred path: render the full obligor / action / trigger ledger
   // from ExtractedData when the caller threaded it through. Falls back
   // to the finding-derived two-column table when not provided
@@ -343,8 +343,7 @@ function renderObligationsLedger(
     return [
       h1("Obligations Ledger"),
       para({
-        text:
-          `${extracted.obligations.length} obligation${extracted.obligations.length === 1 ? "" : "s"} extracted from the document.`,
+        text: `${extracted.obligations.length} obligation${extracted.obligations.length === 1 ? "" : "s"} extracted from the document.`,
       }),
       ledger,
       pageBreak(),
@@ -357,14 +356,22 @@ function renderObligationsLedger(
     rows[0]!.push(f);
   }
   if (rows[0]!.length === 0) {
-    return [h1("Obligations Ledger"), para({ text: "No obligations extracted from findings." }), pageBreak()];
+    return [
+      h1("Obligations Ledger"),
+      para({ text: "No obligations extracted from findings." }),
+      pageBreak(),
+    ];
   }
   const table = new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
     rows: [
       headerRow(["Source", "Severity", "Obligation"]),
       ...rows[0]!.map((f) =>
-        bodyRow([f.excerpt.section_id ?? "doc", f.severity.toUpperCase(), truncate(f.description, 200)]),
+        bodyRow([
+          f.excerpt.section_id ?? "doc",
+          f.severity.toUpperCase(),
+          truncate(f.description, 200),
+        ]),
       ),
     ],
   });
@@ -390,8 +397,7 @@ function renderSecondaryFamiliesSection(
   const out: (Paragraph | Table)[] = [
     h1("Additional Checks From Other Detected Families"),
     para({
-      text:
-        "Beyond the primary playbook, this document also contains content from the families below. Each was scanned with its own rule set. These checks are kept separate from the primary findings above.",
+      text: "Beyond the primary playbook, this document also contains content from the families below. Each was scanned with its own rule set. These checks are kept separate from the primary findings above.",
       italics: true,
     }),
   ];
@@ -404,7 +410,9 @@ function renderSecondaryFamiliesSection(
       }),
     );
     if (fam.findings.length === 0) {
-      out.push(para({ text: "No findings — this family's requirements appear to be met.", italics: true }));
+      out.push(
+        para({ text: "No findings — this family's requirements appear to be met.", italics: true }),
+      );
       continue;
     }
     out.push(
@@ -452,8 +460,7 @@ function renderDeliverySection(delivery: DeliveryReport | undefined): (Paragraph
       ],
     }),
     para({
-      text:
-        "Vaulytica reports what it found in the original file and where — it never removes it (that is your edit in Word) and never certifies the document clean.",
+      text: "Vaulytica reports what it found in the original file and where — it never removes it (that is your edit in Word) and never certifies the document clean.",
       italics: true,
       size: 18,
     }),
@@ -639,9 +646,17 @@ function renderJurisdictionOverlaysSection(
     );
     for (const o of overlays.matched) {
       out.push(
-        para({ text: `${o.state_name}: ${o.headline}`, bold: true, color: severityColor(o.severity) }),
+        para({
+          text: `${o.state_name}: ${o.headline}`,
+          bold: true,
+          color: severityColor(o.severity),
+        }),
         para({ text: o.recommendation }),
-        para({ text: `Authority: ${o.citation.source} — ${o.citation.source_url}`, italics: true, size: 18 }),
+        para({
+          text: `Authority: ${o.citation.source} — ${o.citation.source_url}`,
+          italics: true,
+          size: 18,
+        }),
         spacer(),
       );
     }
@@ -666,10 +681,7 @@ function renderJurisdictionOverlaysSection(
 // ---------------------------------------------------------------------------
 // Extracted Data Appendix
 
-function renderExtractedAppendix(
-  run: EngineRun,
-  extracted?: ExtractedData,
-): (Paragraph | Table)[] {
+function renderExtractedAppendix(run: EngineRun, extracted?: ExtractedData): (Paragraph | Table)[] {
   // Preferred path: surface parties / dates / amounts / definitions /
   // jurisdictions tables from ExtractedData (spec.md §22, Step 9
   // follow-up). Falls back to the counts-only summary when extracted
@@ -702,7 +714,12 @@ function renderExtractedAppendix(
         rows: [
           headerRow(["Name", "Role", "Entity type", "Formation jurisdiction"]),
           ...extracted.parties.map((p) =>
-            bodyRow([p.name, p.role ?? "—", p.entity_type ?? "—", p.jurisdiction_of_formation ?? "—"]),
+            bodyRow([
+              p.name,
+              p.role ?? "—",
+              p.entity_type ?? "—",
+              p.jurisdiction_of_formation ?? "—",
+            ]),
           ),
         ],
       }),
@@ -720,7 +737,7 @@ function renderExtractedAppendix(
             const anchor =
               d.anchor && typeof d.offset_days === "number"
                 ? `${d.anchor} ${d.offset_days >= 0 ? "+" : ""}${d.offset_days}d`
-                : d.anchor ?? "—";
+                : (d.anchor ?? "—");
             return bodyRow([truncate(d.raw_text, 80), d.type, d.iso ?? "—", anchor]);
           }),
         ],
@@ -832,7 +849,9 @@ function renderAuditTrail(
     h2("Bibliography"),
     ...(bibliography.length === 0
       ? [para({ text: "No DKB sources were referenced by any finding in this report." })]
-      : bibliography.map((b) => wrappingPara({ text: formatBibliographyEntry(b.index, b.source) }))),
+      : bibliography.map((b) =>
+          wrappingPara({ text: formatBibliographyEntry(b.index, b.source) }),
+        )),
     pageBreak(),
   ];
 }
@@ -933,7 +952,15 @@ function headerRow(cells: string[]): TableRow {
           shading: { type: ShadingType.CLEAR, fill: MINT, color: "auto" },
           children: [
             new Paragraph({
-              children: [new TextRun({ text, bold: true, color: "FFFFFF", font: DEFAULT_FONT, size: BODY_SIZE })],
+              children: [
+                new TextRun({
+                  text,
+                  bold: true,
+                  color: "FFFFFF",
+                  font: DEFAULT_FONT,
+                  size: BODY_SIZE,
+                }),
+              ],
             }),
           ],
         }),

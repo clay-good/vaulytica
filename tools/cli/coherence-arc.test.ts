@@ -10,7 +10,10 @@ import {
   arcRegressedOrFractured,
   buildCoherenceArcJson,
 } from "../../src/report/coherence-arc.js";
-import type { NegotiationPosture, NegotiationTier } from "../../src/playbooks/custom-interpreter.js";
+import type {
+  NegotiationPosture,
+  NegotiationTier,
+} from "../../src/playbooks/custom-interpreter.js";
 
 function posture(map: Record<string, NegotiationTier>): NegotiationPosture {
   return {
@@ -27,7 +30,9 @@ const LADDER_A = "a".repeat(64);
 const LADDER_B = "b".repeat(64);
 
 const round = (capA: NegotiationTier, capB: NegotiationTier) =>
-  bundlePostureCoherence(bundle(["msa.docx", { Cap: capA, Law: "ideal" }], ["order.docx", { Cap: capB, Law: "ideal" }]));
+  bundlePostureCoherence(
+    bundle(["msa.docx", { Cap: capA, Law: "ideal" }], ["order.docx", { Cap: capB, Law: "ideal" }]),
+  );
 
 const aligned = () => round("ideal", "ideal");
 const divergent = () => round("ideal", "acceptable");

@@ -65,7 +65,12 @@ export async function compareCoherenceShiftTrendArtifacts(
     format === "json"
       ? buildCoherenceShiftTrajectoryJson(trajectory)
       : renderCoherenceShiftTrajectorySummary(trajectory);
-  return { ok: true, output, fractured: shiftTrajectoryFractured(trajectory), ladderNote: seq.ladderNote };
+  return {
+    ok: true,
+    output,
+    fractured: shiftTrajectoryFractured(trajectory),
+    ladderNote: seq.ladderNote,
+  };
 }
 
 type CoherenceShiftTrendArgs = {

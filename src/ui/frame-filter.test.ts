@@ -114,9 +114,7 @@ describe("filterRulesByFrames", () => {
   ];
 
   it("undefined activeFrames keeps every rule (preserves default behavior)", () => {
-    expect(filterRulesByFrames(rules, undefined).map((r) => r.id)).toEqual(
-      rules.map((r) => r.id),
-    );
+    expect(filterRulesByFrames(rules, undefined).map((r) => r.id)).toEqual(rules.map((r) => r.id));
   });
 
   it("empty activeFrames drops every frame-gated rule, keeps the unframed ones", () => {
@@ -131,13 +129,7 @@ describe("filterRulesByFrames", () => {
 
   it("GDPR-only keeps DPA-* + TRANSFER-* + ADDENDA-020 + unframed rules", () => {
     const out = filterRulesByFrames(rules, ["GDPR"]).map((r) => r.id);
-    expect(out).toEqual([
-      "STRUCT-001",
-      "DPA-007",
-      "TRANSFER-003",
-      "ADDENDA-020",
-      "NDA-D-001",
-    ]);
+    expect(out).toEqual(["STRUCT-001", "DPA-007", "TRANSFER-003", "ADDENDA-020", "NDA-D-001"]);
   });
 
   it("CCPA-only keeps USDPA-* + ADDENDA-020 + unframed rules", () => {

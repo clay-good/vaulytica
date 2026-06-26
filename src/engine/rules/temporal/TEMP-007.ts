@@ -18,10 +18,12 @@ export const rule: Rule = {
   description: "Cross-checks the survival list against the typical surviving categories.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
-    const survival = firstParagraphMatch(ctx, /\b(?:survive|survives|surviving)\b[\s\S]{0,400}\btermination\b/i);
+    const survival = firstParagraphMatch(
+      ctx,
+      /\b(?:survive|survives|surviving)\b[\s\S]{0,400}\btermination\b/i,
+    );
     if (!survival) return null;
-    const missing = EXPECTED.filter(([, re]) => !re.test(survival.text))
-      .map(([name]) => name);
+    const missing = EXPECTED.filter(([, re]) => !re.test(survival.text)).map(([name]) => name);
     if (missing.length === 0) return null;
     return emit(ctx, rule, {
       title: `Survival list may be missing categories: ${missing.join(", ")}`,

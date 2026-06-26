@@ -18,8 +18,20 @@ function entry(over: Partial<LegalBasisEntry> = {}): LegalBasisEntry {
   return {
     rule_id: "BAA-019",
     claim: "A BAA must require the BA to report breaches of unsecured PHI to the CE.",
-    legal_basis: [{ authority: "45 C.F.R. § 164.410", pinpoint: "(a)(1)", dkb_node: "hipaa-baa-breach-notification" }],
-    review: { reviewer: "att-007", credential: "JD, NY bar (on file)", date: "2026-06-15", verdict: "sound", tier: "established" },
+    legal_basis: [
+      {
+        authority: "45 C.F.R. § 164.410",
+        pinpoint: "(a)(1)",
+        dkb_node: "hipaa-baa-breach-notification",
+      },
+    ],
+    review: {
+      reviewer: "att-007",
+      credential: "JD, NY bar (on file)",
+      date: "2026-06-15",
+      verdict: "sound",
+      tier: "established",
+    },
     ...over,
   };
 }
@@ -44,8 +56,12 @@ describe("LegalBasisEntrySchema", () => {
   });
 
   it("rejects an unknown verdict / tier", () => {
-    expect(() => LegalBasisEntrySchema.parse({ ...entry(), review: { ...entry().review, verdict: "ok" } })).toThrow();
-    expect(() => LegalBasisEntrySchema.parse({ ...entry(), review: { ...entry().review, tier: "gut-feel" } })).toThrow();
+    expect(() =>
+      LegalBasisEntrySchema.parse({ ...entry(), review: { ...entry().review, verdict: "ok" } }),
+    ).toThrow();
+    expect(() =>
+      LegalBasisEntrySchema.parse({ ...entry(), review: { ...entry().review, tier: "gut-feel" } }),
+    ).toThrow();
   });
 });
 
@@ -77,7 +93,16 @@ describe("tierForRule (spec-v5 §14 verdict→tier derivation)", () => {
 
 describe("ledgerCoverage", () => {
   it("reports honest signed/total and per-verdict/tier rollups", () => {
-    const cov = ledgerCoverage([entry(), entry({ rule_id: "MSA-006", review: { ...entry().review, verdict: "disputed", tier: "opinion" } })], 1062);
+    const cov = ledgerCoverage(
+      [
+        entry(),
+        entry({
+          rule_id: "MSA-006",
+          review: { ...entry().review, verdict: "disputed", tier: "opinion" },
+        }),
+      ],
+      1062,
+    );
     expect(cov).toMatchObject({
       total_rules: 1062,
       signed: 2,

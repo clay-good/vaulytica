@@ -39,7 +39,12 @@ function finding(id: string, severity: Finding["severity"]): Finding {
     title:
       "Missing sub-processor governance: the agreement does not bind sub-processors to the same data-protection terms required of the processor under GDPR Article 28(4)",
     description: "d",
-    excerpt: { text: "x", section_id: "section-12.3.4-confidentiality-and-data-protection", start_offset: 0, end_offset: 1 },
+    excerpt: {
+      text: "x",
+      section_id: "section-12.3.4-confidentiality-and-data-protection",
+      start_offset: 0,
+      end_offset: 1,
+    },
     explanation:
       "Article 28(4) requires the processor to impose, by contract, the same obligations on any sub-processor it engages.",
     recommendation: "Add a flow-down clause binding sub-processors to the Article 28(3) terms.",
@@ -153,7 +158,8 @@ const posture = {
     {
       dimension: "Liability cap (as a multiple of trailing twelve months of fees paid)",
       tier: "below-acceptable" as const,
-      detail: "Found liability_cap_multiple = 3; your playbook requires liability_cap_multiple ≥ 6.",
+      detail:
+        "Found liability_cap_multiple = 3; your playbook requires liability_cap_multiple ≥ 6.",
       guidance: "Below our 6x floor — escalate to the deal lead before agreeing to anything lower.",
       section_id: "s7.4",
     },
@@ -187,7 +193,10 @@ async function expectNoHorizontalOverflow(page: Page): Promise<void> {
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
     );
-    expect(overflow, `HTML report overflows horizontally by ${overflow}px at ${bp.label}`).toBeLessThanOrEqual(1);
+    expect(
+      overflow,
+      `HTML report overflows horizontally by ${overflow}px at ${bp.label}`,
+    ).toBeLessThanOrEqual(1);
   }
 }
 

@@ -102,9 +102,7 @@ describe("bindDropzone", () => {
     const input = dz.querySelector<HTMLInputElement>("input[type=file]")!;
     expect(input.multiple).toBe(true);
     // spec-v4 §8 accept list must include .zip alongside .pdf/.docx
-    expect(input.accept.split(",")).toEqual(
-      expect.arrayContaining([".pdf", ".docx", ".zip"]),
-    );
+    expect(input.accept.split(",")).toEqual(expect.arrayContaining([".pdf", ".docx", ".zip"]));
     document.body.removeChild(dz);
   });
 
@@ -183,9 +181,7 @@ describe("folder picker (webkitdirectory)", () => {
     const dz = document.createElement("div");
     document.body.appendChild(dz);
     bindDropzone(dz, { onFile: () => {} });
-    const dirInput = dz.querySelector<HTMLInputElement>(
-      'input[type="file"][webkitdirectory]',
-    );
+    const dirInput = dz.querySelector<HTMLInputElement>('input[type="file"][webkitdirectory]');
     expect(dirInput).not.toBeNull();
     expect(dirInput!.multiple).toBe(true);
     document.body.removeChild(dz);
@@ -215,9 +211,7 @@ describe("folder picker (webkitdirectory)", () => {
       onFile: () => {},
       onFiles: (fs) => bundles.push(fs),
     });
-    const dirInput = dz.querySelector<HTMLInputElement>(
-      'input[type="file"][webkitdirectory]',
-    )!;
+    const dirInput = dz.querySelector<HTMLInputElement>('input[type="file"][webkitdirectory]')!;
     const a = fakeFile("a.pdf");
     const b = fakeFile("b.docx");
     const junk = fakeFile(".DS_Store", "application/octet-stream");
@@ -247,10 +241,7 @@ describe("collectFilesFromEntries", () => {
       getParent: () => {},
     } as unknown as FileSystemFileEntry;
   }
-  function makeDirEntry(
-    name: string,
-    children: FileSystemEntry[],
-  ): FileSystemDirectoryEntry {
+  function makeDirEntry(name: string, children: FileSystemEntry[]): FileSystemDirectoryEntry {
     let read = false;
     return {
       isFile: false,
@@ -259,9 +250,7 @@ describe("collectFilesFromEntries", () => {
       fullPath: `/${name}`,
       filesystem: null as unknown as FileSystem,
       createReader: () => ({
-        readEntries: (
-          ok: (entries: FileSystemEntry[]) => void,
-        ) => {
+        readEntries: (ok: (entries: FileSystemEntry[]) => void) => {
           if (read) {
             ok([]);
             return;
@@ -286,10 +275,7 @@ describe("collectFilesFromEntries", () => {
   });
 
   it("flattens a flat list of FileSystemFileEntries", async () => {
-    const files = await collectFilesFromEntries([
-      makeFileEntry("a.pdf"),
-      makeFileEntry("b.docx"),
-    ]);
+    const files = await collectFilesFromEntries([makeFileEntry("a.pdf"), makeFileEntry("b.docx")]);
     expect(files.map((f) => f.name)).toEqual(["a.pdf", "b.docx"]);
   });
 });

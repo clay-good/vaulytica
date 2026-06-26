@@ -82,9 +82,14 @@ describe("citation formatter breadth (spec-v8 §16 — pinned to real DKB forms)
   it("renders an EU regulation verbatim with no redundant retrieval-year", () => {
     expect(
       formatCitation(
-        cite("Regulation (EU) 2016/679 (GDPR), Article 28", "https://eur-lex.europa.eu/eli/reg/2016/679"),
+        cite(
+          "Regulation (EU) 2016/679 (GDPR), Article 28",
+          "https://eur-lex.europa.eu/eli/reg/2016/679",
+        ),
       ),
-    ).toBe("Regulation (EU) 2016/679 (GDPR), Article 28 — https://eur-lex.europa.eu/eli/reg/2016/679");
+    ).toBe(
+      "Regulation (EU) 2016/679 (GDPR), Article 28 — https://eur-lex.europa.eu/eli/reg/2016/679",
+    );
   });
 
   it("renders an EU directive verbatim", () => {
@@ -94,7 +99,9 @@ describe("citation formatter breadth (spec-v8 §16 — pinned to real DKB forms)
   });
 
   it("renders ISO/NIST standards verbatim (version is intrinsic)", () => {
-    expect(formatCitation(cite("ISO/IEC 27001:2022"))).toBe("ISO/IEC 27001:2022 — https://example.gov/x");
+    expect(formatCitation(cite("ISO/IEC 27001:2022"))).toBe(
+      "ISO/IEC 27001:2022 — https://example.gov/x",
+    );
     expect(formatCitation(cite("NIST SP 800-53 Rev. 5 — Security and Privacy Controls"))).toBe(
       "NIST SP 800-53 Rev. 5 — Security and Privacy Controls — https://example.gov/x",
     );

@@ -48,15 +48,7 @@ export const ClauseLibrarySchema = z.array(
     jurisdiction: z.string().optional(),
     deal_types: z.array(z.string()),
     side: z
-      .enum([
-        "provider",
-        "customer",
-        "employer",
-        "employee",
-        "discloser",
-        "recipient",
-        "neutral",
-      ])
+      .enum(["provider", "customer", "employer", "employee", "discloser", "recipient", "neutral"])
       .optional(),
     source: SourceCitationSchema,
   }),
@@ -172,12 +164,14 @@ export const DkbManifestSchema = z.object({
  * surfaces the divergence here.
  */
 type _CheckManifest = z.infer<typeof DkbManifestSchema> extends DkbManifest ? true : false;
-type _CheckClauses = z.infer<typeof ClauseLibrarySchema> extends ClauseLibraryEntry[] ? true : false;
+type _CheckClauses =
+  z.infer<typeof ClauseLibrarySchema> extends ClauseLibraryEntry[] ? true : false;
 type _CheckJurisdictions =
   z.infer<typeof JurisdictionSchema> extends JurisdictionRecord[] ? true : false;
 type _CheckDefinitions =
   z.infer<typeof DefinitionTemplateSchema> extends DefinitionTemplate[] ? true : false;
-type _CheckDarkPatterns = z.infer<typeof DarkPatternSchema> extends DarkPatternEntry[] ? true : false;
+type _CheckDarkPatterns =
+  z.infer<typeof DarkPatternSchema> extends DarkPatternEntry[] ? true : false;
 type _CheckStatutes = z.infer<typeof StatutorySchema> extends StatutoryIndexEntry[] ? true : false;
 type _CheckDkb = DKB extends DKB ? true : false;
 // References silenced so TS treats them as used.

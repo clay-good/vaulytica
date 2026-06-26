@@ -20,7 +20,8 @@ export const rule: Rule = {
       title: "Indemnity cap stated",
       description: hit.match[0].slice(0, 240),
       excerpt: hit.text.slice(0, 240),
-      explanation: "A cap on indemnity exposure is stated. Verify it is reasonable for the deal size.",
+      explanation:
+        "A cap on indemnity exposure is stated. Verify it is reasonable for the deal size.",
       position: hit.position,
     });
   },

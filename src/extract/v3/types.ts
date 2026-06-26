@@ -26,11 +26,7 @@ export type Role =
   | "service-recipient"
   | "service-supplier";
 
-export type RoleEvidence =
-  | "definition"
-  | "recital"
-  | "clause-usage"
-  | "classifier";
+export type RoleEvidence = "definition" | "recital" | "clause-usage" | "classifier";
 
 export type RoleAssignment = {
   /** Party id from the v2 Party extractor when matched; else a synthetic id. */
@@ -185,11 +181,7 @@ export type AuditMethod =
   | "soc2-substitution"
   | "third-party-auditor";
 
-export type AuditCostAllocation =
-  | "auditee"
-  | "auditor"
-  | "cost-shift-on-findings"
-  | "unspecified";
+export type AuditCostAllocation = "auditee" | "auditor" | "cost-shift-on-findings" | "unspecified";
 
 export type AuditRights = {
   /** Times-per-year frequency when numeric (1, 2, …); null for vague. */
@@ -209,11 +201,7 @@ export type AuditRights = {
 
 export type SubprocessorConsentForm = "general-written" | "specific-prior" | "silent";
 
-export type SubprocessorListLocation =
-  | "annex"
-  | "url"
-  | "on-request"
-  | "absent";
+export type SubprocessorListLocation = "annex" | "url" | "on-request" | "absent";
 
 export type SubprocessorObjectionConsequence =
   | "terminate-for-convenience"

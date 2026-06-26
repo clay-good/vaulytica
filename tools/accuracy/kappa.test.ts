@@ -64,7 +64,9 @@ describe("Cohen's κ (spec-v5 §5)", () => {
   });
 
   it("flags low confidence below the 0.6 threshold", () => {
-    expect(isLowConfidence(cohensKappa([pair(F, F), pair(F, N), pair(F, F), pair(F, N)]))).toBe(true);
+    expect(isLowConfidence(cohensKappa([pair(F, F), pair(F, N), pair(F, F), pair(F, N)]))).toBe(
+      true,
+    );
     expect(isLowConfidence(cohensKappa([pair(F, F), pair(N, N)]))).toBe(false);
   });
 });

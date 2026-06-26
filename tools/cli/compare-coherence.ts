@@ -90,7 +90,9 @@ export async function compareCoherenceArtifacts(
   const revisedCoherence: PostureCoherence = revised.coherence;
   const movement = await compareCoherence(baseCoherence, revisedCoherence);
   const output =
-    format === "json" ? buildCoherenceMovementJson(movement) : renderCoherenceMovementSummary(movement);
+    format === "json"
+      ? buildCoherenceMovementJson(movement)
+      : renderCoherenceMovementSummary(movement);
   return { ok: true, output, regressed: coherenceRegressed(movement), ladderNote };
 }
 

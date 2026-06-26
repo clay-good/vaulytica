@@ -11,7 +11,10 @@ export const rule: Rule = {
   description: "Detects jury-trial waivers.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
-    const hit = firstParagraphMatch(ctx, /\bwaive[\s\S]{0,40}(?:right\s+to\s+)?(?:a\s+)?trial\s+by\s+jury\b|\bjury\s+trial\s+waiver\b/i);
+    const hit = firstParagraphMatch(
+      ctx,
+      /\bwaive[\s\S]{0,40}(?:right\s+to\s+)?(?:a\s+)?trial\s+by\s+jury\b|\bjury\s+trial\s+waiver\b/i,
+    );
     if (!hit) return null;
     return emit(ctx, rule, {
       title: "Jury trial waiver present",

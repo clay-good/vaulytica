@@ -32,12 +32,7 @@ import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import {
-  LAUNCH_RULES,
-  V3_RULES,
-  V4_RULES,
-  type Rule,
-} from "../../../src/engine/index.js";
+import { LAUNCH_RULES, V3_RULES, V4_RULES, type Rule } from "../../../src/engine/index.js";
 import { runEngineMulti, stableStringify } from "../../../src/engine/runner.js";
 import {
   ALL_CONSISTENCY_RULES,
@@ -70,10 +65,7 @@ describe("v4 bundle golden-output", () => {
       await mkdir(EXPECTED, { recursive: true });
       for (const name of bundles) {
         const result = await runBundle(name);
-        await writeFile(
-          join(EXPECTED, `${name}.json`),
-          stableStringify(summarize(result)),
-        );
+        await writeFile(join(EXPECTED, `${name}.json`), stableStringify(summarize(result)));
       }
       for (const name of bundles) {
         expect(existsSync(join(EXPECTED, `${name}.json`)), name).toBe(true);
@@ -109,7 +101,11 @@ describe("v4 bundle golden-output", () => {
 });
 
 type BundleResult = {
-  per_document: Array<{ doc_id: string; source_file_name: string; run: { result_hash: string; findings: unknown[] } }>;
+  per_document: Array<{
+    doc_id: string;
+    source_file_name: string;
+    run: { result_hash: string; findings: unknown[] };
+  }>;
   consistency: ConsistencyRun;
 };
 
@@ -141,9 +137,7 @@ async function runBundle(name: string): Promise<BundleResult> {
     };
     walk(ingest.tree.sections);
     const sidecar = `${fixturePath}.playbook`;
-    const forced = existsSync(sidecar)
-      ? (await readFile(sidecar, "utf8")).trim()
-      : null;
+    const forced = existsSync(sidecar) ? (await readFile(sidecar, "utf8")).trim() : null;
     const match = matchPlaybook(extracted, extracted.classified, playbooks, {
       title: titleSource,
       body_text: bodyParts.join(" "),
@@ -163,9 +157,7 @@ async function runBundle(name: string): Promise<BundleResult> {
           size_bytes: ingest.tree.sections.length,
         },
         playbook_match_confidence: forced ? 1 : match.confidence,
-        playbook_match_reasoning: forced
-          ? `forced via sidecar to ${forced}`
-          : match.reasoning,
+        playbook_match_reasoning: forced ? `forced via sidecar to ${forced}` : match.reasoning,
         executed_at: "",
       },
     });

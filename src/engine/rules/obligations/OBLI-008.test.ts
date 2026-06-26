@@ -31,7 +31,10 @@ describe("OBLI-008 — efforts standard undefined", () => {
 
   it("is silent when `best efforts` is defined in the document", () => {
     const ctx = buildContext(
-      ["Definitions", `"Best efforts" means obtaining all consents, devoting professional staff, and absorbing reasonable costs but not requiring litigation.`],
+      [
+        "Definitions",
+        `"Best efforts" means obtaining all consents, devoting professional staff, and absorbing reasonable costs but not requiring litigation.`,
+      ],
       ["Performance", "Vendor shall use best efforts to provide the Service."],
     );
     expect(OBLI_008.check(ctx)).toBeNull();

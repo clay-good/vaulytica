@@ -92,7 +92,12 @@ export const rule: Rule = {
     if (gaps.length === 0) return null;
 
     const what = gaps.join(" and ");
-    const blockWord = gaps.length === 1 ? (gaps[0] === "notarization" ? "notary block" : "witness block") : "notary / witness blocks";
+    const blockWord =
+      gaps.length === 1
+        ? gaps[0] === "notarization"
+          ? "notary block"
+          : "witness block"
+        : "notary / witness blocks";
     return makeFinding({
       rule,
       title: `Recited ${what} with no ${blockWord}`,

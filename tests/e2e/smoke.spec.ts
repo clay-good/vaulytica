@@ -29,7 +29,9 @@ test("drop-zone → analyze → DOCX download path is intact", async ({ page }, 
   // Compare against the configured baseURL rather than `page.url()` —
   // the latter is "about:blank" for the very first navigation, which
   // would mis-classify the initial document request as cross-origin.
-  const baseURL = process.env.VAULYTICA_E2E_BASE_URL ?? `http://127.0.0.1:${process.env.VAULYTICA_E2E_PORT ?? "4173"}`;
+  const baseURL =
+    process.env.VAULYTICA_E2E_BASE_URL ??
+    `http://127.0.0.1:${process.env.VAULYTICA_E2E_PORT ?? "4173"}`;
   const pageOrigin = new URL(baseURL).origin;
   const externalRequests: string[] = [];
   page.on("request", (req) => {
@@ -70,7 +72,10 @@ test("drop-zone → analyze → DOCX download path is intact", async ({ page }, 
   expect(bytes[2]).toBe(0x03);
   expect(bytes[3]).toBe(0x04);
 
-  await testInfo.attach("report.docx", { path: path!, contentType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+  await testInfo.attach("report.docx", {
+    path: path!,
+    contentType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  });
 
   expect(externalRequests, "expected zero cross-origin requests during analysis").toEqual([]);
 });

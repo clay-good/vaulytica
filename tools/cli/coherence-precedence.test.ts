@@ -122,7 +122,10 @@ describe("computeCoherencePrecedenceArtifacts (spec-v35 — document-free exposu
         LADDER_A,
       ),
       buildPostureCoherenceJson(
-        await mk({ Cap: "below-acceptable", Term: "below-acceptable" }, { Cap: "ideal", Term: "ideal" }),
+        await mk(
+          { Cap: "below-acceptable", Term: "below-acceptable" },
+          { Cap: "ideal", Term: "ideal" },
+        ),
         LADDER_B,
       ),
     ]);

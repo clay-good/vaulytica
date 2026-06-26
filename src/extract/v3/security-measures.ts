@@ -17,8 +17,14 @@ import { forEachParagraph, posInParagraph } from "../walk.js";
 type MeasureDef = { slug: SecurityMeasureSlug; rx: RegExp };
 
 const MEASURE_CATALOG: MeasureDef[] = [
-  { slug: "encryption-at-rest", rx: /\bencryption (?:at|of data at) rest\b|\bencrypted at rest\b/i },
-  { slug: "encryption-in-transit", rx: /\bencryption in transit\b|\bencrypted in transit\b|\bTLS\b/i },
+  {
+    slug: "encryption-at-rest",
+    rx: /\bencryption (?:at|of data at) rest\b|\bencrypted at rest\b/i,
+  },
+  {
+    slug: "encryption-in-transit",
+    rx: /\bencryption in transit\b|\bencrypted in transit\b|\bTLS\b/i,
+  },
   { slug: "mfa", rx: /\bmulti[- ]?factor authentication\b|\bMFA\b|\b2FA\b/i },
   { slug: "sso", rx: /\bsingle sign[- ]?on\b|\bSSO\b|\bSAML\b/i },
   { slug: "vulnerability-scanning", rx: /\bvulnerability scan(?:s|ning)?\b/i },
@@ -26,7 +32,10 @@ const MEASURE_CATALOG: MeasureDef[] = [
   { slug: "security-training", rx: /\bsecurity (?:awareness )?training\b/i },
   { slug: "bcp-dr", rx: /\bbusiness continuity\b|\bdisaster recovery\b|\bBCP\b|\bDR plan\b/i },
   { slug: "incident-response", rx: /\bincident response\b/i },
-  { slug: "access-controls-rbac", rx: /\brole[- ]based access control\b|\bRBAC\b|\baccess controls?\b/i },
+  {
+    slug: "access-controls-rbac",
+    rx: /\brole[- ]based access control\b|\bRBAC\b|\baccess controls?\b/i,
+  },
   { slug: "logging-audit", rx: /\baudit log(?:s|ging)?\b|\blogging and monitoring\b/i },
   { slug: "network-segmentation", rx: /\bnetwork segmentation\b/i },
   { slug: "hardware-tokens", rx: /\bhardware tokens?\b|\bsecurity keys?\b|\bYubiKey\b/i },

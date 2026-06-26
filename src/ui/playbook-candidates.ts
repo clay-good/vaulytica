@@ -65,7 +65,9 @@ export function familySignalStrength(playbook: Playbook, signals: CandidateSigna
   const distHits = f.distinguishing_phrases.filter((p) => body.includes(p.toLowerCase())).length;
 
   const categories = new Set(signals.classified.map((c) => c.category));
-  const definedTerms = new Set(signals.extracted.definitions.entries.map((e) => e.term.toLowerCase()));
+  const definedTerms = new Set(
+    signals.extracted.definitions.entries.map((e) => e.term.toLowerCase()),
+  );
   const reqHits = f.required_clauses.filter(
     (cat) => categories.has(cat) || definedTerms.has(cat.toLowerCase()),
   ).length;
@@ -117,7 +119,9 @@ export function familyIsPresent(playbook: Playbook, signals: CandidateSignals): 
 
   const distHits = f.distinguishing_phrases.filter((p) => body.includes(p.toLowerCase())).length;
   const categories = new Set(signals.classified.map((c) => c.category));
-  const definedTerms = new Set(signals.extracted.definitions.entries.map((e) => e.term.toLowerCase()));
+  const definedTerms = new Set(
+    signals.extracted.definitions.entries.map((e) => e.term.toLowerCase()),
+  );
   const reqHits = f.required_clauses.filter(
     (cat) => categories.has(cat) || definedTerms.has(cat.toLowerCase()),
   ).length;

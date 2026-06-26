@@ -134,7 +134,7 @@ describe("citation-completeness gate (spec-v8 §18 — every format, every cited
     expect(await docxText(run)).toContain(DKB_URL);
 
     // JSON — inline source_citations[].source_url.
-    const json = JSON.parse(await (buildJsonReport(run, ingest)).text());
+    const json = JSON.parse(await buildJsonReport(run, ingest).text());
     const jsonUrls = json.run.findings.flatMap((f: Finding) =>
       f.source_citations.map((c) => c.source_url),
     );
@@ -166,7 +166,9 @@ describe("citation-completeness gate (spec-v8 §18 — every format, every cited
     expect(md).not.toContain("Policy 4.2 — ]"); // no empty markdown link target
 
     const sarif = JSON.parse(buildSarifJson(run));
-    const customResult = sarif.runs[0].results.find((r: { ruleId: string }) => r.ruleId === "POLICY-4-2");
+    const customResult = sarif.runs[0].results.find(
+      (r: { ruleId: string }) => r.ruleId === "POLICY-4-2",
+    );
     expect(customResult.properties.citations[0].formatted).toBe("Policy 4.2");
 
     const html = buildHtmlReport(run, ingest, loadStarterDkbSync());

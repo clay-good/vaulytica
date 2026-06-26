@@ -1,7 +1,8 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit } from "../_helpers.js";
 
-const AMBIGUOUS = /\b(?:from\s+time\s+to\s+time|as\s+needed|as\s+appropriate|as\s+reasonably\s+requested)\b/i;
+const AMBIGUOUS =
+  /\b(?:from\s+time\s+to\s+time|as\s+needed|as\s+appropriate|as\s+reasonably\s+requested)\b/i;
 
 /** OBLI-003 — Trigger condition ambiguity (info). */
 export const rule: Rule = {

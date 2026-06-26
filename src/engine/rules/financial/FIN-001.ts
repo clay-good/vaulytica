@@ -13,14 +13,38 @@ import { forEachParagraph } from "../../../extract/walk.js";
  * but the dispute itself can be expensive.
  */
 
-const PAIR = /\b((?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion|trillion|and|[-\s])+)\s+(?:dollars?|euros?|pounds?\s+sterling|pounds?)?\s*\(\s*[$€£¥]?\s*([\d,]+(?:\.\d+)?)\s*(?:k|m|mm|b|bn)?\s*\)/gi;
+const PAIR =
+  /\b((?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion|trillion|and|[-\s])+)\s+(?:dollars?|euros?|pounds?\s+sterling|pounds?)?\s*\(\s*[$€£¥]?\s*([\d,]+(?:\.\d+)?)\s*(?:k|m|mm|b|bn)?\s*\)/gi;
 
 const NUMBER_WORDS: Record<string, number> = {
-  zero: 0, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7,
-  eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12, thirteen: 13,
-  fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18,
-  nineteen: 19, twenty: 20, thirty: 30, forty: 40, fifty: 50, sixty: 60,
-  seventy: 70, eighty: 80, ninety: 90,
+  zero: 0,
+  one: 1,
+  two: 2,
+  three: 3,
+  four: 4,
+  five: 5,
+  six: 6,
+  seven: 7,
+  eight: 8,
+  nine: 9,
+  ten: 10,
+  eleven: 11,
+  twelve: 12,
+  thirteen: 13,
+  fourteen: 14,
+  fifteen: 15,
+  sixteen: 16,
+  seventeen: 17,
+  eighteen: 18,
+  nineteen: 19,
+  twenty: 20,
+  thirty: 30,
+  forty: 40,
+  fifty: 50,
+  sixty: 60,
+  seventy: 70,
+  eighty: 80,
+  ninety: 90,
 };
 const WORD_SCALES: Record<string, string> = {
   hundred: "100",
@@ -82,7 +106,8 @@ export const rule: Rule = {
       excerptText: fm.raw,
       explanation:
         "When a contract states an amount in words followed by a numeral in parentheses, the two forms must match. Courts in most US jurisdictions resolve a conflict in favor of the spelled-out form, but the inconsistency itself is a drafting error worth catching before signature.",
-      recommendation: "Verify the intended amount with the drafter and correct whichever form is wrong.",
+      recommendation:
+        "Verify the intended amount with the drafter and correct whichever form is wrong.",
       position: { section_id: fm.sectionId, start: fm.start, end: fm.end },
       source_citations: [],
     });
@@ -90,7 +115,11 @@ export const rule: Rule = {
 };
 
 function parseWords(phrase: string): Decimal | null {
-  const tokens = phrase.toLowerCase().replace(/-/g, " ").split(/\s+/).filter((t) => t && t !== "and");
+  const tokens = phrase
+    .toLowerCase()
+    .replace(/-/g, " ")
+    .split(/\s+/)
+    .filter((t) => t && t !== "and");
   if (tokens.length === 0) return null;
   let current = new Decimal(0);
   let total = new Decimal(0);

@@ -13,10 +13,7 @@ import { makeFinding } from "../../../finding.js";
 import { forEachParagraph, forEachSection } from "../../../../extract/walk.js";
 import type { DocPosition } from "../../../../extract/types.js";
 
-const NDA_PLAYBOOKS_ALL = [
-  "mutual-nda-deep",
-  "unilateral-nda-deep",
-] as const;
+const NDA_PLAYBOOKS_ALL = ["mutual-nda-deep", "unilateral-nda-deep"] as const;
 const NDA_PLAYBOOKS_MUTUAL = ["mutual-nda-deep"] as const;
 const NDA_PLAYBOOKS_UNILATERAL = ["unilateral-nda-deep"] as const;
 
@@ -52,10 +49,12 @@ export function utsaCite(): SourceCitation {
   return {
     id: "utsa-1985",
     source: "Uniform Trade Secrets Act (UTSA) (1985 amended)",
-    source_url: "https://www.uniformlaws.org/committees/community-home?CommunityKey=3a2538fb-e030-4e2d-a9e2-90373dc05792",
+    source_url:
+      "https://www.uniformlaws.org/committees/community-home?CommunityKey=3a2538fb-e030-4e2d-a9e2-90373dc05792",
     retrieved_at: "2026-05-12T00:00:00Z",
     license: "Public uniform-law text",
-    license_url: "https://www.uniformlaws.org/HigherLogic/System/DownloadDocumentFile.ashx?DocumentFileKey=e19b2528-e0b1-0054-23c4-8069701a4b62",
+    license_url:
+      "https://www.uniformlaws.org/HigherLogic/System/DownloadDocumentFile.ashx?DocumentFileKey=e19b2528-e0b1-0054-23c4-8069701a4b62",
   };
 }
 

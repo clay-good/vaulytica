@@ -17,13 +17,18 @@ export const rule: Rule = {
     // truly vague obligors: "the appropriate party", "the relevant
     // party", or an empty/missing obligor.
     const ambiguous = ctx.extracted.obligations.filter((o) =>
-      /^(the\s+appropriate\s+party|the\s+relevant\s+party|the\s+responsible\s+party|the\s+other\s+party|\s*)$/i.test(o.obligor.trim()),
+      /^(the\s+appropriate\s+party|the\s+relevant\s+party|the\s+responsible\s+party|the\s+other\s+party|\s*)$/i.test(
+        o.obligor.trim(),
+      ),
     );
     if (ambiguous.length === 0) return null;
     const first = ambiguous[0]!;
     return emit(ctx, rule, {
       title: `${ambiguous.length} obligation${ambiguous.length > 1 ? "s" : ""} with ambiguous obligor`,
-      description: ambiguous.slice(0, 3).map((o) => o.raw_text.slice(0, 120)).join(" | "),
+      description: ambiguous
+        .slice(0, 3)
+        .map((o) => o.raw_text.slice(0, 120))
+        .join(" | "),
       excerpt: first.raw_text,
       explanation:
         "An obligation that names 'the parties' or 'the appropriate party' without specifying which is hard to enforce. Identify the obligor explicitly.",

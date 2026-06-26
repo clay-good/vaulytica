@@ -48,9 +48,7 @@ export function formatPlaybookDiff(
   const pbB: CustomPlaybook = b.playbook;
   const diff = diffPlaybooks(pbA, pbB);
   const output =
-    format === "json"
-      ? JSON.stringify(diff, null, 2)
-      : diffPlaybooksMarkdown(pbA, pbB);
+    format === "json" ? JSON.stringify(diff, null, 2) : diffPlaybooksMarkdown(pbA, pbB);
   return { ok: true, output, identical: diff.identical };
 }
 
@@ -90,13 +88,12 @@ function parseDiffArgs(argv: string[]): DiffArgs {
 /** CLI handler for `diff`. Reads the two files and prints/exits. */
 export async function runDiff(argv: string[]): Promise<void> {
   const args = parseDiffArgs(argv);
-  const [aText, bText] = await Promise.all([
-    readFile(args.a, "utf8"),
-    readFile(args.b, "utf8"),
-  ]);
+  const [aText, bText] = await Promise.all([readFile(args.a, "utf8"), readFile(args.b, "utf8")]);
   const outcome = formatPlaybookDiff(aText, bText, args.format);
   if (!outcome.ok) {
-    process.stderr.write(`✗ invalid playbook:\n${outcome.errors.map((e) => `  ${e}`).join("\n")}\n`);
+    process.stderr.write(
+      `✗ invalid playbook:\n${outcome.errors.map((e) => `  ${e}`).join("\n")}\n`,
+    );
     process.exitCode = 1;
     return;
   }

@@ -188,7 +188,8 @@ function computeDelta(base: EngineRun, revised: EngineRun): ComparisonDelta {
         rule_id: rid,
         finding: rf,
         base_finding: baseFinding,
-        clause_changed: normalizeClause(baseFinding.excerpt.text) !== normalizeClause(rf.excerpt.text),
+        clause_changed:
+          normalizeClause(baseFinding.excerpt.text) !== normalizeClause(rf.excerpt.text),
       });
     }
   }

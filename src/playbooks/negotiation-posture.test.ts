@@ -12,9 +12,23 @@ function posture(doc: string[], positions: NegotiationPosition[]) {
 
 const liabilityLadder: NegotiationPosition = {
   dimension: "Liability cap",
-  ideal: { kind: "numeric_threshold", metric: "liability_cap_multiple", comparator: "gte", value: 12 },
-  acceptable: { kind: "numeric_threshold", metric: "liability_cap_multiple", comparator: "gte", value: 6 },
-  guidance: { ideal: "12 months fees", acceptable: "6 months fees", walk_away: "Escalate — below our floor." },
+  ideal: {
+    kind: "numeric_threshold",
+    metric: "liability_cap_multiple",
+    comparator: "gte",
+    value: 12,
+  },
+  acceptable: {
+    kind: "numeric_threshold",
+    metric: "liability_cap_multiple",
+    comparator: "gte",
+    value: 6,
+  },
+  guidance: {
+    ideal: "12 months fees",
+    acceptable: "6 months fees",
+    walk_away: "Escalate — below our floor.",
+  },
 };
 
 describe("evaluateNegotiationPosture — tier classification (spec-v10 Thrust A)", () => {
@@ -121,8 +135,18 @@ describe("evaluateNegotiationPosture — tier classification (spec-v10 Thrust A)
   it("classifies a Thrust C temporal ladder (cure period in days)", async () => {
     const cure: NegotiationPosition = {
       dimension: "Cure period",
-      ideal: { kind: "numeric_threshold", metric: "cure_period_days", comparator: "gte", value: 30 },
-      acceptable: { kind: "numeric_threshold", metric: "cure_period_days", comparator: "gte", value: 15 },
+      ideal: {
+        kind: "numeric_threshold",
+        metric: "cure_period_days",
+        comparator: "gte",
+        value: 30,
+      },
+      acceptable: {
+        kind: "numeric_threshold",
+        metric: "cure_period_days",
+        comparator: "gte",
+        value: 15,
+      },
     };
     const acceptable = await posture(
       ["The breaching party shall have a cure period of 20 days to remedy the default."],
@@ -133,7 +157,11 @@ describe("evaluateNegotiationPosture — tier classification (spec-v10 Thrust A)
 
   it("is deterministic, sorted by dimension, with a stable posture_hash", async () => {
     const positions: NegotiationPosition[] = [
-      { dimension: "Zeta", ideal: { kind: "clause_present", pattern: "zzz" }, acceptable: { kind: "clause_present", pattern: "yyy" } },
+      {
+        dimension: "Zeta",
+        ideal: { kind: "clause_present", pattern: "zzz" },
+        acceptable: { kind: "clause_present", pattern: "yyy" },
+      },
       liabilityLadder,
     ];
     const a = await posture(["The liability cap is 8x the total fees paid."], positions);

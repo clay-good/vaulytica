@@ -37,7 +37,10 @@ describe("STRUCT-019 — recited formality without a fillable block", () => {
 
   it("stays silent when a witness block is present", () => {
     const ctx = buildContext(
-      ["Execution", "This Agreement shall be executed in the presence of the undersigned witnesses."],
+      [
+        "Execution",
+        "This Agreement shall be executed in the presence of the undersigned witnesses.",
+      ],
       ["Witnesses", "Witness 1: ______  Name of Witness: ______\nWitness 2: ______"],
     );
     expect(STRUCT_019.check(ctx)).toBeNull();

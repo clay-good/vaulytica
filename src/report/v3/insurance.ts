@@ -25,9 +25,16 @@ const LINE_LABEL: Record<InsuranceLine, string> = {
   other: "Other",
 };
 
-export function renderInsurancePage(schedule: InsuranceSchedule | undefined): (Paragraph | Table)[] {
+export function renderInsurancePage(
+  schedule: InsuranceSchedule | undefined,
+): (Paragraph | Table)[] {
   if (!schedule) return [];
-  if (schedule.amounts.length === 0 && schedule.endorsements.length === 0 && !schedule.required_am_best_rating && schedule.notice_of_cancellation_days === null) {
+  if (
+    schedule.amounts.length === 0 &&
+    schedule.endorsements.length === 0 &&
+    !schedule.required_am_best_rating &&
+    schedule.notice_of_cancellation_days === null
+  ) {
     return [];
   }
   const out: (Paragraph | Table)[] = [
@@ -58,10 +65,14 @@ export function renderInsurancePage(schedule: InsuranceSchedule | undefined): (P
     );
   }
   if (schedule.required_am_best_rating) {
-    out.push(para({ text: `Required carrier rating: ${schedule.required_am_best_rating} (AM Best).` }));
+    out.push(
+      para({ text: `Required carrier rating: ${schedule.required_am_best_rating} (AM Best).` }),
+    );
   }
   if (schedule.notice_of_cancellation_days !== null) {
-    out.push(para({ text: `Notice of cancellation: ${schedule.notice_of_cancellation_days} days.` }));
+    out.push(
+      para({ text: `Notice of cancellation: ${schedule.notice_of_cancellation_days} days.` }),
+    );
   }
   out.push(pageBreak());
   return out;

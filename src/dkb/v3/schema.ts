@@ -154,11 +154,21 @@ export const V3DkbNodeListSchema = z.array(V3DkbNodeSchema);
 type _Pinned = z.infer<typeof PinnedCitationSchema> extends PinnedCitation ? true : false;
 type _Rmf = z.infer<typeof RegulatorModelFormSchema> extends RegulatorModelForm ? true : false;
 type _Scr =
-  z.infer<typeof StatutoryClauseRequirementSchema> extends StatutoryClauseRequirement ? true : false;
+  z.infer<typeof StatutoryClauseRequirementSchema> extends StatutoryClauseRequirement
+    ? true
+    : false;
 type _Tm = z.infer<typeof TransferMechanismSchema> extends TransferMechanism ? true : false;
 type _Sub =
   z.infer<typeof SubprocessorRequirementSchema> extends SubprocessorRequirement ? true : false;
 type _Ins = z.infer<typeof InsuranceNormSchema> extends InsuranceNorm ? true : false;
 type _Cc = z.infer<typeof ConsistencyCheckSchema> extends ConsistencyCheck ? true : false;
-const _checks: [_Pinned, _Rmf, _Scr, _Tm, _Sub, _Ins, _Cc] = [true, true, true, true, true, true, true];
+const _checks: [_Pinned, _Rmf, _Scr, _Tm, _Sub, _Ins, _Cc] = [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+];
 void _checks;

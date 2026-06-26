@@ -58,7 +58,10 @@ describe("computeCoherenceSynchronyArtifacts (spec-v25 — document-free exposur
         LADDER_A,
       ),
       buildPostureCoherenceJson(
-        await mk({ Cap: "below-acceptable", Term: "below-acceptable" }, { Cap: "ideal", Term: "ideal" }),
+        await mk(
+          { Cap: "below-acceptable", Term: "below-acceptable" },
+          { Cap: "ideal", Term: "ideal" },
+        ),
         LADDER_A,
       ),
     ]);
@@ -80,7 +83,10 @@ describe("computeCoherenceSynchronyArtifacts (spec-v25 — document-free exposur
         LADDER_A,
       ),
       buildPostureCoherenceJson(
-        await mk({ Cap: "below-acceptable", Term: "below-acceptable" }, { Cap: "ideal", Term: "ideal" }),
+        await mk(
+          { Cap: "below-acceptable", Term: "below-acceptable" },
+          { Cap: "ideal", Term: "ideal" },
+        ),
         LADDER_A,
       ),
     ]);
@@ -147,6 +153,8 @@ describe("computeCoherenceSynchronyArtifacts (spec-v25 — document-free exposur
     );
     expect(outcome.ok).toBe(true);
     if (!outcome.ok) return;
-    expect(outcome.synchronized).toBe(exposureSynchronized(await computeCoherenceSynchrony([c1, c2])));
+    expect(outcome.synchronized).toBe(
+      exposureSynchronized(await computeCoherenceSynchrony([c1, c2])),
+    );
   });
 });

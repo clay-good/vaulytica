@@ -169,7 +169,9 @@ describe("computeCoherenceRecurrence (spec-v23 — per-front below-floor episode
     const summary = renderCoherenceRecurrenceSummary(r);
     expect(summary).toContain("Coherence exposure recurrence across 3 rounds");
     expect(summary).toMatch(/1 recurring \(recovered & relapsed\)/);
-    expect(summary).toMatch(/⚠ Cap: recurring — below floor in 2 separate episodes \(round 1, round 3\)/);
+    expect(summary).toMatch(
+      /⚠ Cap: recurring — below floor in 2 separate episodes \(round 1, round 3\)/,
+    );
     expect(summary).toMatch(/recurrence_hash: [0-9a-f]{64}/);
 
     const json = JSON.parse(buildCoherenceRecurrenceJson(r));

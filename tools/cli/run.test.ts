@@ -16,8 +16,14 @@ import {
 } from "../../src/report/posture-coherence.js";
 import { compareCoherence, coherenceRegressed } from "../../src/report/coherence-movement.js";
 import { ladderHash } from "../../src/playbooks/custom-interpreter.js";
-import { validateCustomPlaybook, type CustomPlaybook } from "../../src/playbooks/custom-playbook.js";
-import type { NegotiationPosture, NegotiationTier } from "../../src/playbooks/custom-interpreter.js";
+import {
+  validateCustomPlaybook,
+  type CustomPlaybook,
+} from "../../src/playbooks/custom-playbook.js";
+import type {
+  NegotiationPosture,
+  NegotiationTier,
+} from "../../src/playbooks/custom-interpreter.js";
 
 describe("splitGlob (CLI glob resolution)", () => {
   it("resolves a bare glob against the current directory", () => {
@@ -118,7 +124,9 @@ describe("renderCoherenceSummary (spec-v12 cross-document posture)", () => {
     expect(out).toContain("Cross-document posture coherence:");
     expect(out).toContain("1 aligned, 1 divergent");
     // The divergent front names the spread + the binding floor; the aligned one does not appear.
-    expect(out).toContain("⚠ Cap: divergent (MSA.docx=ideal, Order.docx=below-acceptable); binding floor below-acceptable in Order.docx.");
+    expect(out).toContain(
+      "⚠ Cap: divergent (MSA.docx=ideal, Order.docx=below-acceptable); binding floor below-acceptable in Order.docx.",
+    );
     expect(out).not.toContain("⚠ Law");
     expect(out).toMatch(/coherence_hash: [0-9a-f]{64}/);
   });
@@ -241,8 +249,18 @@ describe("ladder-pinned coherence baseline (spec-v15 — cross-ladder guard)", (
       negotiation_positions: [
         {
           dimension: "Cap",
-          ideal: { kind: "numeric_threshold", metric: "liability_cap_multiple", comparator: "gte", value: 2 },
-          acceptable: { kind: "numeric_threshold", metric: "liability_cap_multiple", comparator: "gte", value: capFloor },
+          ideal: {
+            kind: "numeric_threshold",
+            metric: "liability_cap_multiple",
+            comparator: "gte",
+            value: 2,
+          },
+          acceptable: {
+            kind: "numeric_threshold",
+            metric: "liability_cap_multiple",
+            comparator: "gte",
+            value: capFloor,
+          },
         },
       ],
     });

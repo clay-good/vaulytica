@@ -72,9 +72,7 @@ export function matchPlaybook(
   const title = (input.title ?? "").toLowerCase();
   const body = (input.body_text ?? input.title ?? "").toLowerCase();
   const present_categories = new Set(classified.map((c) => c.category));
-  const defined_terms = new Set(
-    extracted.definitions.entries.map((e) => e.term.toLowerCase()),
-  );
+  const defined_terms = new Set(extracted.definitions.entries.map((e) => e.term.toLowerCase()));
 
   const scored: ScoredPlaybook[] = available.map((playbook) => {
     const f = playbook.match_features;
@@ -147,8 +145,12 @@ export function matchPlaybook(
     return {
       playbook_id: GENERIC_FALLBACK_ID,
       confidence: top ? round3(top.score) : 0,
-      alternatives: top ? scored.slice(0, 3).filter((s) => s.playbook.id !== GENERIC_FALLBACK_ID)
-        .map((s) => ({ playbook_id: s.playbook.id, confidence: round3(s.score) })) : [],
+      alternatives: top
+        ? scored
+            .slice(0, 3)
+            .filter((s) => s.playbook.id !== GENERIC_FALLBACK_ID)
+            .map((s) => ({ playbook_id: s.playbook.id, confidence: round3(s.score) }))
+        : [],
       reasoning: buildFallbackReasoning(top),
     };
   }

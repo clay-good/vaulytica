@@ -210,7 +210,8 @@ describe("matchPlaybook — ambiguous fixtures fall to generic-fallback", () => 
 describe("matchPlaybook — determinism", () => {
   it("returns identical results across runs", () => {
     const title = "Mutual Non-Disclosure Agreement";
-    const body = "This is a mutual NDA between Discloser and Recipient regarding Confidential Information.";
+    const body =
+      "This is a mutual NDA between Discloser and Recipient regarding Confidential Information.";
     const a = runMatch(title, body);
     const b = runMatch(title, body);
     expect(b).toEqual(a);
@@ -311,7 +312,7 @@ describe("PlaybookSchema accepts + validates the deprecation metadata (Step 27 f
     expect(() => PlaybookSchema.parse(raw)).toThrow();
   });
 
-  it("rejects superseded_by: \"\" (empty string is a meaningless successor pointer)", () => {
+  it('rejects superseded_by: "" (empty string is a meaningless successor pointer)', () => {
     const raw = { ...basePlaybook, deprecated: true, superseded_by: "" };
     expect(() => PlaybookSchema.parse(raw)).toThrow();
   });

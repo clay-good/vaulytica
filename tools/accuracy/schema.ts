@@ -42,7 +42,15 @@ export type CorpusOrigin = z.infer<typeof CorpusOriginSchema>;
  */
 export const RedactionEntrySchema = z.object({
   /** What category of detail was masked. */
-  kind: z.enum(["party-name", "signature", "account-number", "address", "email", "phone", "other-pii"]),
+  kind: z.enum([
+    "party-name",
+    "signature",
+    "account-number",
+    "address",
+    "email",
+    "phone",
+    "other-pii",
+  ]),
   /** Opaque count of occurrences masked (never the original value). */
   count: z.number().int().nonnegative(),
   /** The placeholder token the original was replaced with, e.g. "[PARTY-A]". */

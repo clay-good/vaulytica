@@ -26,7 +26,7 @@ const COMPLIANT_MUTUAL_SECTIONS: [string, ...string[]][] = [
   ],
   [
     "1. Definitions",
-    "\"Confidential Information\" means any non-public information disclosed by either party. \"Purpose\" means evaluating a potential business relationship between the parties. Confidential Information does not include information that (a) is or becomes generally available to the public other than as a result of a breach; (b) was already known to the receiving party prior to disclosure; (c) was received from a third party without breach of any obligation of confidentiality; or (d) was independently developed by the receiving party without reference to the Confidential Information.",
+    '"Confidential Information" means any non-public information disclosed by either party. "Purpose" means evaluating a potential business relationship between the parties. Confidential Information does not include information that (a) is or becomes generally available to the public other than as a result of a breach; (b) was already known to the receiving party prior to disclosure; (c) was received from a third party without breach of any obligation of confidentiality; or (d) was independently developed by the receiving party without reference to the Confidential Information.',
   ],
   [
     "2. Permitted Use",

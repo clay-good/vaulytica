@@ -84,10 +84,7 @@ const COOKIE_NOTICE_RULES: Rule[] = [
     name: "Per-cookie disclosure — name / provider / purpose / duration",
     description:
       "Cookie notice should disclose per-cookie details: name, provider, purpose, and retention duration.",
-    citation: edpb(
-      "cookie-guidance",
-      "EDPB Guidelines 5/2020 on consent + ICO cookie guidance",
-    ),
+    citation: edpb("cookie-guidance", "EDPB Guidelines 5/2020 on consent + ICO cookie guidance"),
     playbooks: [PRV_PLAYBOOK_COOKIE],
     missing_title: "Per-cookie disclosure table missing",
     missing_description:
@@ -274,10 +271,7 @@ const NPP_RULES: Rule[] = [
     explanation:
       "§ 164.520(b)(1)(v)(C) requires the NPP to state its effective date. Without it, individuals cannot tell which version applies.",
     recommendation: "Add 'Effective Date' with the date the notice took effect.",
-    present_patterns: [
-      /(effective\s+date|effective\s+as\s+of)/i,
-      /(20\d{2}|19\d{2})/,
-    ],
+    present_patterns: [/(effective\s+date|effective\s+as\s+of)/i, /(20\d{2}|19\d{2})/],
   }),
   presence({
     id: "PRV-013",
@@ -401,8 +395,7 @@ const ROPA_RULES: Rule[] = [
   presence({
     id: "PRV-019",
     name: "International transfers — Art. 30(1)(e)",
-    description:
-      "ROPA must identify transfers to third countries with the safeguards in place.",
+    description: "ROPA must identify transfers to third countries with the safeguards in place.",
     citation: gdprArt("30", "Transfers"),
     playbooks: [PRV_PLAYBOOK_ROPA],
     missing_title: "International-transfers clause missing",
@@ -452,8 +445,7 @@ const DPIA_RULES: Rule[] = [
     citation: gdprArt("35", "DPIA contents"),
     playbooks: [PRV_PLAYBOOK_DPIA],
     missing_title: "Systematic description clause missing",
-    missing_description:
-      "No section was found systematically describing the envisaged processing.",
+    missing_description: "No section was found systematically describing the envisaged processing.",
     explanation:
       "Art. 35(7)(a) requires the DPIA to describe the processing operations, purposes, and (where applicable) the legitimate-interest pursued.",
     recommendation:
@@ -471,8 +463,7 @@ const DPIA_RULES: Rule[] = [
     citation: gdprArt("35", "Necessity and proportionality"),
     playbooks: [PRV_PLAYBOOK_DPIA],
     missing_title: "Necessity / proportionality assessment missing",
-    missing_description:
-      "No section was found assessing necessity and proportionality.",
+    missing_description: "No section was found assessing necessity and proportionality.",
     explanation:
       "Art. 35(7)(b) requires an assessment of whether the processing is necessary and proportionate; if it is not, the processing should be modified.",
     recommendation:
@@ -529,8 +520,7 @@ const DPIA_RULES: Rule[] = [
     missing_description: "No record of DPO consultation was found.",
     explanation:
       "Art. 35(2) requires the controller to seek the advice of the DPO when carrying out a DPIA. Documentation evidences the consultation (and any non-acceptance with reasons).",
-    recommendation:
-      "Add 'DPO Advice' summarizing the DPO's input and the controller's response.",
+    recommendation: "Add 'DPO Advice' summarizing the DPO's input and the controller's response.",
     present_patterns: [
       /(dpo|data\s+protection\s+officer)/i,
       /(advice|consult|consultation|opinion)/i,
@@ -567,13 +557,11 @@ const VENDOR_QUESTIONNAIRE_RULES: Rule[] = [
   presence({
     id: "PRV-027",
     name: "Information security policy / governance",
-    description:
-      "VSQ must confirm a written information security policy approved by management.",
+    description: "VSQ must confirm a written information security policy approved by management.",
     citation: nistIso(),
     playbooks: [PRV_PLAYBOOK_VSQ],
     missing_title: "Information security policy clause missing",
-    missing_description:
-      "No clause was found confirming a written information security policy.",
+    missing_description: "No clause was found confirming a written information security policy.",
     explanation:
       "ISO 27001 A.5 and NIST CSF Govern require a documented, management-approved security policy. Absent vendor must remediate before processing.",
     recommendation:
@@ -628,8 +616,7 @@ const VENDOR_QUESTIONNAIRE_RULES: Rule[] = [
     citation: nistIso(),
     playbooks: [PRV_PLAYBOOK_VSQ],
     missing_title: "Audit / certifications clause missing",
-    missing_description:
-      "No clause was found identifying SOC 2 / ISO 27001 / equivalent audits.",
+    missing_description: "No clause was found identifying SOC 2 / ISO 27001 / equivalent audits.",
     explanation:
       "Customers rely on third-party attestations (SOC 2 Type II, ISO 27001, HITRUST) to validate VSQ claims.",
     recommendation:
@@ -682,8 +669,7 @@ const VENDOR_QUESTIONNAIRE_RULES: Rule[] = [
   presence({
     id: "PRV-033",
     name: "Subprocessor / fourth-party disclosure",
-    description:
-      "VSQ must list material subprocessors / fourth parties and their function.",
+    description: "VSQ must list material subprocessors / fourth parties and their function.",
     citation: gdprArt("28", "Subprocessor disclosure"),
     playbooks: [PRV_PLAYBOOK_VSQ],
     missing_title: "Subprocessor / fourth-party disclosure missing",
@@ -692,10 +678,7 @@ const VENDOR_QUESTIONNAIRE_RULES: Rule[] = [
       "GDPR Art. 28(2)–(4) require controller authorization of subprocessors and contractual flow-down. Customers expect a current list with function and location.",
     recommendation:
       "Add 'Subprocessors' listing each material subprocessor, function, and location, with a process for change notification.",
-    present_patterns: [
-      /(subprocessors?|sub.processors?|fourth.?part(y|ies))/i,
-      /(list|register)/i,
-    ],
+    present_patterns: [/(subprocessors?|sub.processors?|fourth.?part(y|ies))/i, /(list|register)/i],
     default_severity: "warning",
   }),
 ];
@@ -708,8 +691,7 @@ const INCIDENT_NOTIFICATION_RULES: Rule[] = [
   presence({
     id: "PRV-034",
     name: "Nature of the incident",
-    description:
-      "Incident notification must describe the nature of the personal-data breach.",
+    description: "Incident notification must describe the nature of the personal-data breach.",
     citation: gdprArt("33", "Breach notification"),
     playbooks: [PRV_PLAYBOOK_INCIDENT],
     missing_title: "Nature-of-incident clause missing",
@@ -752,8 +734,7 @@ const INCIDENT_NOTIFICATION_RULES: Rule[] = [
     missing_description: "No DPO / privacy contact was identified.",
     explanation:
       "GDPR Art. 33(3)(b) requires DPO (or equivalent contact) identification. US state laws typically require a toll-free / privacy contact for affected individuals.",
-    recommendation:
-      "Add 'Contact' with DPO / privacy contact name, email, and phone.",
+    recommendation: "Add 'Contact' with DPO / privacy contact name, email, and phone.",
     present_patterns: [
       /(dpo|data\s+protection\s+officer|privacy\s+officer|privacy\s+contact)/i,
       /(@|phone|telephone)/i,
@@ -766,8 +747,7 @@ const INCIDENT_NOTIFICATION_RULES: Rule[] = [
     citation: gdprArt("33", "Consequences"),
     playbooks: [PRV_PLAYBOOK_INCIDENT],
     missing_title: "Likely-consequences clause missing",
-    missing_description:
-      "No clause describing likely consequences for individuals was found.",
+    missing_description: "No clause describing likely consequences for individuals was found.",
     explanation:
       "GDPR Art. 33(3)(c) requires description of likely consequences (financial loss, identity theft, reputational damage, discrimination, etc.).",
     recommendation:

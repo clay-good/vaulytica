@@ -250,8 +250,7 @@ export async function computeCoherencePrecedence(
       // the ranking is exact — no float comparison, no platform drift.
       if (
         leader !== null &&
-        (most_leading_pair === null ||
-          leaderLeads * bestComparisons > bestLeads * comparisons)
+        (most_leading_pair === null || leaderLeads * bestComparisons > bestLeads * comparisons)
       ) {
         bestLeads = leaderLeads;
         bestComparisons = comparisons;

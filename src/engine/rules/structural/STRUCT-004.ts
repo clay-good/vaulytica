@@ -16,7 +16,8 @@ export const rule: Rule = {
   name: "Defined terms section identifiable",
   category: "structural",
   default_severity: "info",
-  description: "Looks for a Definitions / Defined Terms / Glossary section or any inline-defined term.",
+  description:
+    "Looks for a Definitions / Defined Terms / Glossary section or any inline-defined term.",
   dkb_citations: [],
 
   check(ctx: RuleContext): Finding | null {
@@ -39,7 +40,7 @@ export const rule: Rule = {
       description: "Vaulytica did not find a Definitions section or any inline-defined terms.",
       excerptText: "(no definitions located)",
       explanation:
-        "Most non-trivial contracts capitalize defined terms and either set them out in a Definitions section or define them inline (\"X\" means …). Their absence is not by itself a problem, but downstream rules that check for use of specific defined terms will be skipped.",
+        'Most non-trivial contracts capitalize defined terms and either set them out in a Definitions section or define them inline ("X" means …). Their absence is not by itself a problem, but downstream rules that check for use of specific defined terms will be skipped.',
       position: { section_id: firstSectionId, start: 0, end: 0 },
       source_citations: [],
     });

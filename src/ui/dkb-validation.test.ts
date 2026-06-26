@@ -35,7 +35,7 @@ function mkFetch(opts: {
   json?: unknown;
   throws?: Error;
 }): typeof fetch {
-  return ((async () => {
+  return (async () => {
     if (opts.throws) throw opts.throws;
     return {
       ok: opts.ok ?? true,
@@ -44,7 +44,7 @@ function mkFetch(opts: {
         return opts.json;
       },
     } as unknown as Response;
-  }) as unknown) as typeof fetch;
+  }) as unknown as typeof fetch;
 }
 
 describe("renderDkbValidation", () => {
@@ -55,12 +55,10 @@ describe("renderDkbValidation", () => {
       stale_citations_pending_review: 3,
     };
     renderDkbValidation(root, status);
-    expect(
-      root.querySelector<HTMLElement>('[data-role="dkb-validated-at"]')!.textContent,
-    ).toBe("2026-03-05");
-    expect(
-      root.querySelector<HTMLElement>('[data-role="dkb-stale-count"]')!.textContent,
-    ).toBe("3");
+    expect(root.querySelector<HTMLElement>('[data-role="dkb-validated-at"]')!.textContent).toBe(
+      "2026-03-05",
+    );
+    expect(root.querySelector<HTMLElement>('[data-role="dkb-stale-count"]')!.textContent).toBe("3");
     const wrapper = root.querySelector<HTMLElement>('[data-role="dkb-validation"]')!;
     expect(wrapper.dataset.validatedAt).toBe("2026-03-05T14:00:00.000Z");
     expect(wrapper.dataset.staleCount).toBe("3");
@@ -72,9 +70,9 @@ describe("renderDkbValidation", () => {
       dkb_last_validated_at: "not-a-date",
       stale_citations_pending_review: 0,
     });
-    expect(
-      root.querySelector<HTMLElement>('[data-role="dkb-validated-at"]')!.textContent,
-    ).toBe("not-a-date");
+    expect(root.querySelector<HTMLElement>('[data-role="dkb-validated-at"]')!.textContent).toBe(
+      "not-a-date",
+    );
   });
 
   it("renders zero stale-citation count as the literal '0'", () => {
@@ -83,9 +81,7 @@ describe("renderDkbValidation", () => {
       dkb_last_validated_at: "2026-01-01T00:00:00.000Z",
       stale_citations_pending_review: 0,
     });
-    expect(
-      root.querySelector<HTMLElement>('[data-role="dkb-stale-count"]')!.textContent,
-    ).toBe("0");
+    expect(root.querySelector<HTMLElement>('[data-role="dkb-stale-count"]')!.textContent).toBe("0");
   });
 
   it("is a no-op when the footer DOM is absent (no targets to fill)", () => {
@@ -118,12 +114,10 @@ describe("hydrateDkbValidation", () => {
       dkb_last_validated_at: "2026-04-15T00:00:00.000Z",
       stale_citations_pending_review: 7,
     });
-    expect(
-      root.querySelector<HTMLElement>('[data-role="dkb-validated-at"]')!.textContent,
-    ).toBe("2026-04-15");
-    expect(
-      root.querySelector<HTMLElement>('[data-role="dkb-stale-count"]')!.textContent,
-    ).toBe("7");
+    expect(root.querySelector<HTMLElement>('[data-role="dkb-validated-at"]')!.textContent).toBe(
+      "2026-04-15",
+    );
+    expect(root.querySelector<HTMLElement>('[data-role="dkb-stale-count"]')!.textContent).toBe("7");
   });
 
   it("hits the configured base URL exactly", async () => {
@@ -146,17 +140,15 @@ describe("hydrateDkbValidation", () => {
 
   it("returns null and leaves the DOM untouched on a 404", async () => {
     const root = makeFooter();
-    const baseline = root.querySelector<HTMLElement>(
-      '[data-role="dkb-validated-at"]',
-    )!.textContent;
+    const baseline = root.querySelector<HTMLElement>('[data-role="dkb-validated-at"]')!.textContent;
     const status = await hydrateDkbValidation({
       fetchImpl: mkFetch({ ok: false, status: 404 }),
       root,
     });
     expect(status).toBeNull();
-    expect(
-      root.querySelector<HTMLElement>('[data-role="dkb-validated-at"]')!.textContent,
-    ).toBe(baseline);
+    expect(root.querySelector<HTMLElement>('[data-role="dkb-validated-at"]')!.textContent).toBe(
+      baseline,
+    );
   });
 
   it("returns null on malformed JSON shape (missing field)", async () => {

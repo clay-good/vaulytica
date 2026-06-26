@@ -83,16 +83,34 @@ describe("kindOf", () => {
 
 describe("runConsistency — determinism", () => {
   it("produces identical result_hash on repeated runs", async () => {
-    const msa = makeDoc("msa", "msa-vendor-deep",
-      ["Services", "Provider shall provide the Services described herein. Scope of services: claims processing."],
+    const msa = makeDoc(
+      "msa",
+      "msa-vendor-deep",
+      [
+        "Services",
+        "Provider shall provide the Services described herein. Scope of services: claims processing.",
+      ],
       ["Governing Law", "This Agreement shall be governed by the laws of the State of Delaware."],
     );
-    const baa = makeDoc("baa", "baa",
-      ["Permitted Uses", "Business Associate may use PHI for any business purpose authorized by Covered Entity."],
+    const baa = makeDoc(
+      "baa",
+      "baa",
+      [
+        "Permitted Uses",
+        "Business Associate may use PHI for any business purpose authorized by Covered Entity.",
+      ],
       ["Governing Law", "This Agreement is governed by the laws of the State of California."],
     );
-    const run1 = await runConsistency({ rules: CONSISTENCY_RULES, documents: [msa, baa], dkb: STARTER_DKB });
-    const run2 = await runConsistency({ rules: CONSISTENCY_RULES, documents: [msa, baa], dkb: STARTER_DKB });
+    const run1 = await runConsistency({
+      rules: CONSISTENCY_RULES,
+      documents: [msa, baa],
+      dkb: STARTER_DKB,
+    });
+    const run2 = await runConsistency({
+      rules: CONSISTENCY_RULES,
+      documents: [msa, baa],
+      dkb: STARTER_DKB,
+    });
     expect(run1.result_hash).toBe(run2.result_hash);
     expect(run1.version).toBe(CONSISTENCY_ENGINE_VERSION);
   });
@@ -117,13 +135,19 @@ describe("runConsistency — determinism", () => {
 
 describe("CC-001 BAA purpose no broader than MSA", () => {
   it("fires when the BAA permits 'any business purpose' use of PHI", async () => {
-    const msa = makeDoc("msa", "msa-vendor-deep",
-      ["Scope of Services", "The Services to be provided are claims processing on behalf of Customer."],
-    );
-    const baa = makeDoc("baa", "baa",
-      ["Permitted Uses", "Business Associate may use PHI for any business purpose authorized by Covered Entity."],
-    );
-    const run = await runConsistency({ rules: [CC_001_BAA_PURPOSE], documents: [msa, baa], dkb: STARTER_DKB });
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Scope of Services",
+      "The Services to be provided are claims processing on behalf of Customer.",
+    ]);
+    const baa = makeDoc("baa", "baa", [
+      "Permitted Uses",
+      "Business Associate may use PHI for any business purpose authorized by Covered Entity.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_001_BAA_PURPOSE],
+      documents: [msa, baa],
+      dkb: STARTER_DKB,
+    });
     expect(run.findings).toHaveLength(1);
     expect(run.findings[0]!.rule_id).toBe("CC-001");
     expect(run.findings[0]!.excerpts).toHaveLength(2);
@@ -131,20 +155,30 @@ describe("CC-001 BAA purpose no broader than MSA", () => {
   });
 
   it("does not fire when the BAA's permitted uses are bounded", async () => {
-    const msa = makeDoc("msa", "msa-vendor-deep",
-      ["Scope of Services", "The Services to be provided are claims processing on behalf of Customer."],
-    );
-    const baa = makeDoc("baa", "baa",
-      ["Permitted Uses", "Business Associate may use PHI only to perform the Services described in the Master Services Agreement."],
-    );
-    const run = await runConsistency({ rules: [CC_001_BAA_PURPOSE], documents: [msa, baa], dkb: STARTER_DKB });
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Scope of Services",
+      "The Services to be provided are claims processing on behalf of Customer.",
+    ]);
+    const baa = makeDoc("baa", "baa", [
+      "Permitted Uses",
+      "Business Associate may use PHI only to perform the Services described in the Master Services Agreement.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_001_BAA_PURPOSE],
+      documents: [msa, baa],
+      dkb: STARTER_DKB,
+    });
     expect(run.findings).toHaveLength(0);
   });
 
   it("is skipped (ran=false) when the bundle has no BAA", async () => {
     const msa = makeDoc("msa", "msa-vendor-deep", ["A", "x"]);
     const dpa = makeDoc("dpa", "dpa-controller-processor", ["A", "y"]);
-    const run = await runConsistency({ rules: [CC_001_BAA_PURPOSE], documents: [msa, dpa], dkb: STARTER_DKB });
+    const run = await runConsistency({
+      rules: [CC_001_BAA_PURPOSE],
+      documents: [msa, dpa],
+      dkb: STARTER_DKB,
+    });
     expect(run.findings).toHaveLength(0);
     expect(run.execution_log[0]!.ran).toBe(false);
   });
@@ -152,13 +186,19 @@ describe("CC-001 BAA purpose no broader than MSA", () => {
 
 describe("CC-002 DPA purpose matches MSA services", () => {
   it("fires when the DPA's purpose is open-ended", async () => {
-    const msa = makeDoc("msa", "msa-vendor-deep",
-      ["Scope of Services", "Provider shall provide payroll processing services to Customer."],
-    );
-    const dpa = makeDoc("dpa", "dpa-controller-processor",
-      ["Subject Matter", "The processing purposes shall be any purpose authorized by Controller from time to time."],
-    );
-    const run = await runConsistency({ rules: [CC_002_DPA_PURPOSE], documents: [msa, dpa], dkb: STARTER_DKB });
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Scope of Services",
+      "Provider shall provide payroll processing services to Customer.",
+    ]);
+    const dpa = makeDoc("dpa", "dpa-controller-processor", [
+      "Subject Matter",
+      "The processing purposes shall be any purpose authorized by Controller from time to time.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_002_DPA_PURPOSE],
+      documents: [msa, dpa],
+      dkb: STARTER_DKB,
+    });
     expect(run.findings).toHaveLength(1);
     expect(run.findings[0]!.rule_id).toBe("CC-002");
   });
@@ -166,88 +206,130 @@ describe("CC-002 DPA purpose matches MSA services", () => {
 
 describe("CC-003 DPA data categories not broader than MSA", () => {
   it("fires when the DPA names health data but the MSA does not", async () => {
-    const msa = makeDoc("msa", "msa-vendor-deep",
-      ["Scope of Services", "Provider shall provide logistics and shipping services to Customer."],
-    );
-    const dpa = makeDoc("dpa", "dpa-controller-processor",
-      ["Annex I.B Categories", "The categories of personal data include names, email addresses, and health data."],
-    );
-    const run = await runConsistency({ rules: [CC_003_DPA_CATEGORIES], documents: [msa, dpa], dkb: STARTER_DKB });
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Scope of Services",
+      "Provider shall provide logistics and shipping services to Customer.",
+    ]);
+    const dpa = makeDoc("dpa", "dpa-controller-processor", [
+      "Annex I.B Categories",
+      "The categories of personal data include names, email addresses, and health data.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_003_DPA_CATEGORIES],
+      documents: [msa, dpa],
+      dkb: STARTER_DKB,
+    });
     expect(run.findings.length).toBeGreaterThanOrEqual(1);
     expect(run.findings[0]!.title).toMatch(/health data/);
   });
 
   it("does not fire when the MSA anchors the category", async () => {
-    const msa = makeDoc("msa", "msa-vendor-deep",
-      ["Scope of Services", "Provider shall provide health data analytics services."],
-    );
-    const dpa = makeDoc("dpa", "dpa-controller-processor",
-      ["Annex I.B Categories", "Categories include health data and demographic data."],
-    );
-    const run = await runConsistency({ rules: [CC_003_DPA_CATEGORIES], documents: [msa, dpa], dkb: STARTER_DKB });
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Scope of Services",
+      "Provider shall provide health data analytics services.",
+    ]);
+    const dpa = makeDoc("dpa", "dpa-controller-processor", [
+      "Annex I.B Categories",
+      "Categories include health data and demographic data.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_003_DPA_CATEGORIES],
+      documents: [msa, dpa],
+      dkb: STARTER_DKB,
+    });
     expect(run.findings).toHaveLength(0);
   });
 });
 
 describe("CC-004 BAA term aligns with MSA", () => {
   it("fires when the BAA sets its own independent term", async () => {
-    const msa = makeDoc("msa", "msa-vendor-deep",
-      ["Term", "This Agreement shall commence on the Effective Date and continue for an initial term of three years."],
-    );
-    const baa = makeDoc("baa", "baa",
-      ["Term", "This BAA shall be effective and remain in effect for a term of 5 years from the Effective Date."],
-    );
-    const run = await runConsistency({ rules: [CC_004_BAA_TERM], documents: [msa, baa], dkb: STARTER_DKB });
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Term",
+      "This Agreement shall commence on the Effective Date and continue for an initial term of three years.",
+    ]);
+    const baa = makeDoc("baa", "baa", [
+      "Term",
+      "This BAA shall be effective and remain in effect for a term of 5 years from the Effective Date.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_004_BAA_TERM],
+      documents: [msa, baa],
+      dkb: STARTER_DKB,
+    });
     expect(run.findings).toHaveLength(1);
     expect(run.findings[0]!.rule_id).toBe("CC-004");
   });
 
   it("does not fire when the BAA is co-terminous with the MSA", async () => {
-    const msa = makeDoc("msa", "msa-vendor-deep",
-      ["Term", "This Agreement shall commence on the Effective Date for an initial term of three years."],
-    );
-    const baa = makeDoc("baa", "baa",
-      ["Term", "This BAA shall be co-terminous with the Master Services Agreement, and the return-or-destruction obligations shall survive termination."],
-    );
-    const run = await runConsistency({ rules: [CC_004_BAA_TERM], documents: [msa, baa], dkb: STARTER_DKB });
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Term",
+      "This Agreement shall commence on the Effective Date for an initial term of three years.",
+    ]);
+    const baa = makeDoc("baa", "baa", [
+      "Term",
+      "This BAA shall be co-terminous with the Master Services Agreement, and the return-or-destruction obligations shall survive termination.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_004_BAA_TERM],
+      documents: [msa, baa],
+      dkb: STARTER_DKB,
+    });
     expect(run.findings).toHaveLength(0);
   });
 });
 
 describe("CC-005 governing-law alignment", () => {
   it("fires when two documents pick different governing laws", async () => {
-    const msa = makeDoc("msa", "msa-vendor-deep",
-      ["Governing Law", "This Agreement shall be governed by and construed in accordance with the laws of the State of Delaware."],
-    );
-    const dpa = makeDoc("dpa", "dpa-controller-processor",
-      ["Governing Law", "This DPA shall be governed by the laws of Ireland."],
-    );
-    const run = await runConsistency({ rules: [CC_005_GOVERNING_LAW], documents: [msa, dpa], dkb: STARTER_DKB });
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Governing Law",
+      "This Agreement shall be governed by and construed in accordance with the laws of the State of Delaware.",
+    ]);
+    const dpa = makeDoc("dpa", "dpa-controller-processor", [
+      "Governing Law",
+      "This DPA shall be governed by the laws of Ireland.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_005_GOVERNING_LAW],
+      documents: [msa, dpa],
+      dkb: STARTER_DKB,
+    });
     expect(run.findings).toHaveLength(1);
     expect(run.findings[0]!.severity).toBe("warning");
   });
 
   it("does not fire when the governing-law clauses agree", async () => {
-    const msa = makeDoc("msa", "msa-vendor-deep",
-      ["Governing Law", "This Agreement shall be governed by the laws of the State of Delaware."],
-    );
-    const dpa = makeDoc("dpa", "dpa-controller-processor",
-      ["Governing Law", "This DPA shall be governed by the laws of the State of Delaware."],
-    );
-    const run = await runConsistency({ rules: [CC_005_GOVERNING_LAW], documents: [msa, dpa], dkb: STARTER_DKB });
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Governing Law",
+      "This Agreement shall be governed by the laws of the State of Delaware.",
+    ]);
+    const dpa = makeDoc("dpa", "dpa-controller-processor", [
+      "Governing Law",
+      "This DPA shall be governed by the laws of the State of Delaware.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_005_GOVERNING_LAW],
+      documents: [msa, dpa],
+      dkb: STARTER_DKB,
+    });
     expect(run.findings).toHaveLength(0);
   });
 });
 
 describe("CC-006 notice alignment", () => {
   it("fires when notice clauses differ across documents", async () => {
-    const msa = makeDoc("msa", "msa-vendor-deep",
-      ["Notices", "Any notices required under this Agreement shall be sent to Customer at 1 Main Street, Wilmington, Delaware, Attention: General Counsel."],
-    );
-    const dpa = makeDoc("dpa", "dpa-controller-processor",
-      ["Notices", "Any notices required under this Agreement shall be sent to Customer at 99 Privacy Lane, Dublin, Ireland, Attention: Data Protection Officer."],
-    );
-    const run = await runConsistency({ rules: [CC_006_NOTICE], documents: [msa, dpa], dkb: STARTER_DKB });
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Notices",
+      "Any notices required under this Agreement shall be sent to Customer at 1 Main Street, Wilmington, Delaware, Attention: General Counsel.",
+    ]);
+    const dpa = makeDoc("dpa", "dpa-controller-processor", [
+      "Notices",
+      "Any notices required under this Agreement shall be sent to Customer at 99 Privacy Lane, Dublin, Ireland, Attention: Data Protection Officer.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_006_NOTICE],
+      documents: [msa, dpa],
+      dkb: STARTER_DKB,
+    });
     expect(run.findings).toHaveLength(1);
     expect(run.findings[0]!.severity).toBe("info");
   });
@@ -255,26 +337,42 @@ describe("CC-006 notice alignment", () => {
 
 describe("CC-007 order of precedence consistency", () => {
   it("fires when the MSA controls but indemnity lives only in the SOW", async () => {
-    const msa = makeDoc("msa", "msa-vendor-deep",
-      ["Order of Precedence", "In the event of any conflict between this MSA and any Statement of Work, the MSA shall control."],
+    const msa = makeDoc(
+      "msa",
+      "msa-vendor-deep",
+      [
+        "Order of Precedence",
+        "In the event of any conflict between this MSA and any Statement of Work, the MSA shall control.",
+      ],
       ["Services", "Provider shall provide the Services as described in each SOW."],
     );
-    const sow = makeDoc("sow", "sow",
-      ["Indemnification", "Provider shall indemnify Customer against all losses, claims, damages, or liabilities arising from Provider's breach."],
-    );
-    const run = await runConsistency({ rules: [CC_007_ORDER_OF_PRECEDENCE], documents: [msa, sow], dkb: STARTER_DKB });
+    const sow = makeDoc("sow", "sow", [
+      "Indemnification",
+      "Provider shall indemnify Customer against all losses, claims, damages, or liabilities arising from Provider's breach.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_007_ORDER_OF_PRECEDENCE],
+      documents: [msa, sow],
+      dkb: STARTER_DKB,
+    });
     expect(run.findings.length).toBeGreaterThanOrEqual(1);
     expect(run.findings[0]!.rule_id).toBe("CC-007");
   });
 
   it("does not fire when the MSA does not name itself controlling", async () => {
-    const msa = makeDoc("msa", "msa-vendor-deep",
-      ["Services", "Provider shall provide the Services as described in each SOW."],
-    );
-    const sow = makeDoc("sow", "sow",
-      ["Indemnification", "Provider shall indemnify Customer against all losses."],
-    );
-    const run = await runConsistency({ rules: [CC_007_ORDER_OF_PRECEDENCE], documents: [msa, sow], dkb: STARTER_DKB });
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Services",
+      "Provider shall provide the Services as described in each SOW.",
+    ]);
+    const sow = makeDoc("sow", "sow", [
+      "Indemnification",
+      "Provider shall indemnify Customer against all losses.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_007_ORDER_OF_PRECEDENCE],
+      documents: [msa, sow],
+      dkb: STARTER_DKB,
+    });
     expect(run.findings).toHaveLength(0);
   });
 });
@@ -283,21 +381,31 @@ describe("CC-007 order of precedence consistency", () => {
 
 describe("runConsistency — finding ordering", () => {
   it("sorts findings by (severity, rule_id, doc_id, start_offset)", async () => {
-    const msa = makeDoc("msa", "msa-vendor-deep",
+    const msa = makeDoc(
+      "msa",
+      "msa-vendor-deep",
       ["Scope of Services", "Provider shall provide logistics services."],
       ["Order of Precedence", "In the event of any conflict, the MSA shall control."],
       ["Governing Law", "Governed by Delaware law."],
     );
-    const baa = makeDoc("baa", "baa",
+    const baa = makeDoc(
+      "baa",
+      "baa",
       ["Permitted Uses", "Business Associate may use PHI for any business purpose."],
       ["Governing Law", "Governed by Ireland law."],
       ["Term", "This BAA shall remain in effect until terminated by either party."],
     );
-    const run = await runConsistency({ rules: CONSISTENCY_RULES, documents: [msa, baa], dkb: STARTER_DKB });
+    const run = await runConsistency({
+      rules: CONSISTENCY_RULES,
+      documents: [msa, baa],
+      dkb: STARTER_DKB,
+    });
     // Severity ranks must be non-decreasing.
     const rank = { critical: 0, warning: 1, info: 2 } as const;
     for (let i = 1; i < run.findings.length; i++) {
-      expect(rank[run.findings[i]!.severity]).toBeGreaterThanOrEqual(rank[run.findings[i - 1]!.severity]);
+      expect(rank[run.findings[i]!.severity]).toBeGreaterThanOrEqual(
+        rank[run.findings[i - 1]!.severity],
+      );
     }
     // CC-001 (critical) appears before CC-005 (warning).
     const ids = run.findings.map((f) => f.rule_id);

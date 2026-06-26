@@ -14,7 +14,9 @@ import { renderState, type DropzoneState } from "../../src/ui/states.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..", "..");
-const CSS = readFileSync(join(ROOT, "site", "index.html"), "utf8").match(/<style[^>]*>([\s\S]*?)<\/style>/)![1];
+const CSS = readFileSync(join(ROOT, "site", "index.html"), "utf8").match(
+  /<style[^>]*>([\s\S]*?)<\/style>/,
+)![1];
 const blob = (s: string): Blob => new Blob([s]);
 const c = { critical: 2, warning: 7, info: 3 };
 
@@ -24,23 +26,45 @@ const state: DropzoneState = {
   playbook_name: "Master Services Agreement",
   counts: c,
   match_reasoning: "Selected Master Services Agreement (vendor side).",
-  docx_blob: blob("d"), json_blob: blob("j"), docx_filename: "r.docx", json_filename: "r.json",
+  docx_blob: blob("d"),
+  json_blob: blob("j"),
+  docx_filename: "r.docx",
+  json_filename: "r.json",
   exports: {
-    fixlist_md_blob: blob("m"), fixlist_csv_blob: blob("c"), obligations_csv_blob: blob("o"),
-    deadlines_ics_blob: blob("i"), sarif_blob: blob("s"), html_blob: blob("h"),
-    fixlist_md_filename: "f.md", fixlist_csv_filename: "f.csv", obligations_csv_filename: "o.csv",
-    deadlines_ics_filename: "d.ics", sarif_filename: "r.sarif.json", html_filename: "r.html",
+    fixlist_md_blob: blob("m"),
+    fixlist_csv_blob: blob("c"),
+    obligations_csv_blob: blob("o"),
+    deadlines_ics_blob: blob("i"),
+    sarif_blob: blob("s"),
+    html_blob: blob("h"),
+    fixlist_md_filename: "f.md",
+    fixlist_csv_filename: "f.csv",
+    obligations_csv_filename: "o.csv",
+    deadlines_ics_filename: "d.ics",
+    sarif_filename: "r.sarif.json",
+    html_filename: "r.html",
   },
   v3_family: { family: "msa", label: "Master Services Agreement", confidence: 0.88 },
   jurisdiction_overlays: {
-    family: "employment-noncompete", states_in_catalog: 15,
-    matched: [{
-      state_name: "California", posture: "prohibited", topic: "Non-compete enforceability",
-      headline: "Non-competes are void and unenforceable for employees",
-      summary: "California voids employee non-compete covenants as a matter of public policy, with narrow statutory exceptions.",
-      recommendation: "Remove the non-compete; do not rely on an out-of-state choice-of-law clause.",
-      citation: { source: "Cal. Bus. & Prof. Code § 16600", source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=16600" },
-    }],
+    family: "employment-noncompete",
+    states_in_catalog: 15,
+    matched: [
+      {
+        state_name: "California",
+        posture: "prohibited",
+        topic: "Non-compete enforceability",
+        headline: "Non-competes are void and unenforceable for employees",
+        summary:
+          "California voids employee non-compete covenants as a matter of public policy, with narrow statutory exceptions.",
+        recommendation:
+          "Remove the non-compete; do not rely on an out-of-state choice-of-law clause.",
+        citation: {
+          source: "Cal. Bus. & Prof. Code § 16600",
+          source_url:
+            "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=16600",
+        },
+      },
+    ],
     uncovered_states: [],
   },
   on_compare: () => {},
@@ -49,9 +73,12 @@ const state: DropzoneState = {
 test("capture report-mobile.png", async ({ page }) => {
   const g = globalThis as { document?: unknown; window?: unknown };
   const win = new Window();
-  g.document = win.document; g.window = win;
+  g.document = win.document;
+  g.window = win;
   const dz = win.document.createElement("div");
-  dz.className = "dropzone"; dz.id = "dropzone"; dz.setAttribute("data-state", "complete");
+  dz.className = "dropzone";
+  dz.id = "dropzone";
+  dz.setAttribute("data-state", "complete");
   renderState(dz as unknown as HTMLElement, state);
   const html = `<!doctype html><html lang="en" data-theme="dark"><head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1"><title>Vaulytica</title>

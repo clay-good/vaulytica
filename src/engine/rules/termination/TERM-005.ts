@@ -11,7 +11,13 @@ export const rule: Rule = {
   description: "Verifies the contract explains what happens upon termination.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
-    if (firstParagraphMatch(ctx, /\b(?:effect|consequences)\s+of\s+termination\b|\bupon\s+termination[\s\S]{0,200}\b(?:cease|return|destroy|transition)\b/i)) return null;
+    if (
+      firstParagraphMatch(
+        ctx,
+        /\b(?:effect|consequences)\s+of\s+termination\b|\bupon\s+termination[\s\S]{0,200}\b(?:cease|return|destroy|transition)\b/i,
+      )
+    )
+      return null;
     return emit(ctx, rule, {
       title: "No effect-of-termination clause detected",
       description: "The contract does not state what happens upon termination.",

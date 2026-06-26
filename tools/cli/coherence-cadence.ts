@@ -59,9 +59,7 @@ export async function computeCoherenceCadenceArtifacts(
 
   const cadence = await computeCoherenceCadence(seq.rounds);
   const output =
-    format === "json"
-      ? buildCoherenceCadenceJson(cadence)
-      : renderCoherenceCadenceSummary(cadence);
+    format === "json" ? buildCoherenceCadenceJson(cadence) : renderCoherenceCadenceSummary(cadence);
   return {
     ok: true,
     output,

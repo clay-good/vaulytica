@@ -3,10 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import {
-  loadAcks,
-  runStalenessCheck,
-} from "../../../dkb/build/v3/check-staleness.js";
+import { loadAcks, runStalenessCheck } from "../../../dkb/build/v3/check-staleness.js";
 import { sha256Hex } from "../../../dkb/build/v3/staleness.js";
 
 const NOW = "2026-05-12T00:00:00Z";

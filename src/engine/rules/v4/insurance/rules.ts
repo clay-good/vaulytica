@@ -43,7 +43,8 @@ const POLICY_SUMMARY_RULES: Rule[] = [
   presence({
     id: "INS-001",
     name: "Named Insured + producer / broker",
-    description: "Declarations must identify Named Insured (and any additional insureds) and producer.",
+    description:
+      "Declarations must identify Named Insured (and any additional insureds) and producer.",
     citation: stateInsCode(),
     playbooks: [INS_PLAYBOOK_POLICY],
     missing_title: "Named Insured / producer clause missing",
@@ -52,10 +53,7 @@ const POLICY_SUMMARY_RULES: Rule[] = [
       "Coverage rights run to the Named Insured. State insurance codes require declarations to identify the insured and producer / broker.",
     recommendation:
       "Add 'Named Insured' (full legal entity) and 'Producer / Broker' (agent name + license number).",
-    present_patterns: [
-      /named\s+insured/i,
-      /(producer|broker|agent)/i,
-    ],
+    present_patterns: [/named\s+insured/i, /(producer|broker|agent)/i],
   }),
   presence({
     id: "INS-002",
@@ -105,10 +103,7 @@ const POLICY_SUMMARY_RULES: Rule[] = [
       "Premium + deductible / SIR are the economic core of the policy and must appear on the declarations.",
     recommendation:
       "Add 'Premium' (total + by coverage part) and 'Deductible / SIR' applicable to each coverage.",
-    present_patterns: [
-      /premium/i,
-      /(deductible|self.?insured\s+retention|sir)/i,
-    ],
+    present_patterns: [/premium/i, /(deductible|self.?insured\s+retention|sir)/i],
   }),
   presence({
     id: "INS-005",
@@ -169,8 +164,7 @@ const ENDORSEMENT_RULES: Rule[] = [
     citation: isoForm("various", "ISO endorsement library"),
     playbooks: [INS_PLAYBOOK_ENDORSEMENT],
     missing_title: "Form number / edition clause missing",
-    missing_description:
-      "No form number or edition identification was found in the endorsement.",
+    missing_description: "No form number or edition identification was found in the endorsement.",
     explanation:
       "Endorsement effect depends on exact ISO / AAIS form + edition. Without identification, coverage cannot be verified.",
     recommendation:
@@ -209,12 +203,8 @@ const ENDORSEMENT_RULES: Rule[] = [
     missing_description: "No effective date was found for the endorsement.",
     explanation:
       "Endorsements may attach mid-term; the effective date is essential for coverage-trigger / claims analysis.",
-    recommendation:
-      "Add 'Effective Date' (date or 'at policy inception').",
-    present_patterns: [
-      /(effective\s+date|effective\s+as\s+of|effective\s+at)/i,
-      /\d|inception/i,
-    ],
+    recommendation: "Add 'Effective Date' (date or 'at policy inception').",
+    present_patterns: [/(effective\s+date|effective\s+as\s+of|effective\s+at)/i, /\d|inception/i],
   }),
   language({
     id: "INS-010",
@@ -269,8 +259,7 @@ const ENDORSEMENT_RULES: Rule[] = [
     citation: isoForm("CG 24 04", "Waiver of Transfer of Rights of Recovery Against Others To Us"),
     playbooks: [INS_PLAYBOOK_ENDORSEMENT],
     missing_title: "Waiver-of-subrogation endorsement missing",
-    missing_description:
-      "No waiver-of-subrogation endorsement was found.",
+    missing_description: "No waiver-of-subrogation endorsement was found.",
     explanation:
       "Many leases, construction contracts, and service agreements require a waiver of subrogation in favor of the other party. Without the CG 24 04 (or equivalent), the insurer can sue under subrogation.",
     recommendation:
@@ -296,8 +285,7 @@ const INDEMNIFICATION_AGREEMENT_RULES: Rule[] = [
     citation: antiIndemnity(),
     playbooks: [INS_PLAYBOOK_INDEMNIFICATION],
     missing_title: "Indemnitor / indemnitee identification missing",
-    missing_description:
-      "No clause was found identifying the indemnitor and indemnitee.",
+    missing_description: "No clause was found identifying the indemnitor and indemnitee.",
     explanation:
       "Indemnity rights run between identified parties; affiliates / officers / agents who benefit should be enumerated.",
     recommendation:
@@ -315,8 +303,7 @@ const INDEMNIFICATION_AGREEMENT_RULES: Rule[] = [
     citation: antiIndemnity(),
     playbooks: [INS_PLAYBOOK_INDEMNIFICATION],
     missing_title: "Scope of indemnity (Type I / II / III) clause missing",
-    missing_description:
-      "No clause was found specifying the type / scope of the indemnity.",
+    missing_description: "No clause was found specifying the type / scope of the indemnity.",
     explanation:
       "The three Types describe ascending breadth: Type III (limited — only indemnitor's own fault), Type II (intermediate — indemnitor's + concurrent negligence), Type I (broad — including indemnitee's sole negligence — often void by anti-indemnity statute).",
     recommendation:
@@ -365,10 +352,7 @@ const INDEMNIFICATION_AGREEMENT_RULES: Rule[] = [
       "Under *Crawford v. Weather Shield*, an indemnity agreement may impose an immediate duty to defend against any claim potentially within indemnity even before liability is established. Practice: state the duty separately or expressly disclaim it.",
     recommendation:
       "Add 'Duty to Defend' clause separately articulating the obligation (including counsel selection, control of defense, and reimbursement timing) — or expressly disclaim it.",
-    present_patterns: [
-      /(duty\s+to\s+defend|defense\s+obligation)/i,
-      /(defend|defense)/i,
-    ],
+    present_patterns: [/(duty\s+to\s+defend|defense\s+obligation)/i, /(defend|defense)/i],
     default_severity: "warning",
   }),
   presence({
@@ -436,10 +420,7 @@ const INDEMNIFICATION_AGREEMENT_RULES: Rule[] = [
       "Without explicit survival, indemnity may terminate with the contract — leaving long-tail claims (latent defects, third-party IP) without an indemnitor.",
     recommendation:
       "Add 'Survival' clause stating indemnity obligations survive termination of this Agreement for the applicable statute of limitations / repose.",
-    present_patterns: [
-      /(surviv(e|es|ing|al))/i,
-      /(termination|expiration|expir)/i,
-    ],
+    present_patterns: [/(surviv(e|es|ing|al))/i, /(termination|expiration|expir)/i],
     default_severity: "warning",
   }),
 ];
@@ -477,16 +458,12 @@ const HOLD_HARMLESS_RULES: Rule[] = [
     ),
     playbooks: [INS_PLAYBOOK_HOLD_HARMLESS],
     missing_title: "Activity / scope clause missing",
-    missing_description:
-      "No clause was found identifying the activity / scope of risk covered.",
+    missing_description: "No clause was found identifying the activity / scope of risk covered.",
     explanation:
       "A hold-harmless without an identified activity invites argument over reach; tie it to a specific event, location, premises, or activity period.",
     recommendation:
       "Add 'Activity / Scope' identifying the activity, location, and duration of the risk being held harmless.",
-    present_patterns: [
-      /(activity|event|premises|location)/i,
-      /(scope|period|while|during)/i,
-    ],
+    present_patterns: [/(activity|event|premises|location)/i, /(scope|period|while|during)/i],
   }),
   language({
     id: "INS-022",
@@ -524,8 +501,7 @@ const HOLD_HARMLESS_RULES: Rule[] = [
     ),
     playbooks: [INS_PLAYBOOK_HOLD_HARMLESS],
     missing_title: "Acknowledgment / assumption-of-risk clause missing",
-    missing_description:
-      "No acknowledgment of risk / assumption-of-risk clause was found.",
+    missing_description: "No acknowledgment of risk / assumption-of-risk clause was found.",
     explanation:
       "Express assumption-of-risk language helps overcome the *Tunkl* factor analysis and signals an informed waiver — particularly important for consumer / volunteer hold-harmless forms.",
     recommendation:
@@ -549,23 +525,19 @@ const HOLD_HARMLESS_RULES: Rule[] = [
     ),
     playbooks: [INS_PLAYBOOK_HOLD_HARMLESS],
     missing_title: "Signature / minor recital missing",
-    missing_description:
-      "No signature line / date / minor-or-guardian recital was found.",
+    missing_description: "No signature line / date / minor-or-guardian recital was found.",
     explanation:
       "Without signature + date the document is incomplete; for minor participants, many states limit enforceability of parent-signed releases (e.g., Atkins v. Swimwest Family Fitness Center).",
     recommendation:
       "Add signature + date lines; for minor participants, add 'Parent / Guardian Signature' with a recital acknowledging the parent / guardian has authority.",
-    present_patterns: [
-      /(signature|signed|sign\s+here)/i,
-      /(date)/i,
-      /(parent|guardian|minor)/i,
-    ],
+    present_patterns: [/(signature|signed|sign\s+here)/i, /(date)/i, /(parent|guardian|minor)/i],
     default_severity: "warning",
   }),
   presence({
     id: "INS-025",
     name: "Severability / partial-enforcement clause",
-    description: "Hold-harmless should include severability so an over-broad portion does not void the whole.",
+    description:
+      "Hold-harmless should include severability so an over-broad portion does not void the whole.",
     citation: insPractice(
       "hh-severability",
       "Severability / partial-enforcement baseline",

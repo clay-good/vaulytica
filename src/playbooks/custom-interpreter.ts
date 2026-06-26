@@ -74,7 +74,13 @@ type DocFacts = {
 
 type PredicateOutcome =
   | { kind: "compliant" }
-  | { kind: "violated"; detail: string; section_id?: string; clause_text?: string; position?: number }
+  | {
+      kind: "violated";
+      detail: string;
+      section_id?: string;
+      clause_text?: string;
+      position?: number;
+    }
   | { kind: "unevaluable"; reason: string };
 
 // ---------------------------------------------------------------------------
@@ -518,8 +524,14 @@ function extractMetricValues(metric: string, facts: DocFacts): number[] {
 
   switch (metric) {
     case "notice_period_days":
-      all(/(\d+)\s+(?:calendar\s+|business\s+)?days(?:['’]s)?\s+(?:prior\s+|advance\s+)?(?:written\s+)?notice/g, (m) => Number(m[1]));
-      all(/notice\s+(?:period\s+)?of\s+(?:at\s+least\s+)?(\d+)\s+(?:calendar\s+|business\s+)?days/g, (m) => Number(m[1]));
+      all(
+        /(\d+)\s+(?:calendar\s+|business\s+)?days(?:['’]s)?\s+(?:prior\s+|advance\s+)?(?:written\s+)?notice/g,
+        (m) => Number(m[1]),
+      );
+      all(
+        /notice\s+(?:period\s+)?of\s+(?:at\s+least\s+)?(\d+)\s+(?:calendar\s+|business\s+)?days/g,
+        (m) => Number(m[1]),
+      );
       break;
     case "term_length_days":
       all(/term\s+of\s+(\d+)\s+(year|month|day)s?/g, (m) => unitToDays(Number(m[1]), m[2]!));
@@ -530,30 +542,54 @@ function extractMetricValues(metric: string, facts: DocFacts): number[] {
       all(/within\s+(\d+)\s+days[^.]{0,40}?(?:invoice|payment|receipt)/g, (m) => Number(m[1]));
       break;
     case "liability_cap_multiple":
-      all(/(\d+(?:\.\d+)?)\s*(?:x|times|×)\s+(?:the\s+)?(?:total\s+|aggregate\s+|annual\s+|trailing\s+)*(?:fees|amounts?\s+paid)/g, (m) => Number(m[1]));
+      all(
+        /(\d+(?:\.\d+)?)\s*(?:x|times|×)\s+(?:the\s+)?(?:total\s+|aggregate\s+|annual\s+|trailing\s+)*(?:fees|amounts?\s+paid)/g,
+        (m) => Number(m[1]),
+      );
       break;
     case "liability_cap_amount":
-      all(/liab[a-z]*[^.$]{0,120}?\$\s?([\d,]+(?:\.\d+)?)/g, (m) => Number(m[1]!.replace(/,/g, "")));
+      all(/liab[a-z]*[^.$]{0,120}?\$\s?([\d,]+(?:\.\d+)?)/g, (m) =>
+        Number(m[1]!.replace(/,/g, "")),
+      );
       all(/\$\s?([\d,]+(?:\.\d+)?)[^.$]{0,60}?liab[a-z]*/g, (m) => Number(m[1]!.replace(/,/g, "")));
       break;
     // spec-v10 Thrust C — temporal dimensions (Step 173).
     case "cure_period_days":
-      all(/cure[a-z]*[^.]{0,40}?within\s+(\d+)\s+(?:calendar\s+|business\s+)?days/g, (m) => Number(m[1]));
-      all(/within\s+(\d+)\s+(?:calendar\s+|business\s+)?days[^.]{0,40}?(?:to\s+)?cure\b/g, (m) => Number(m[1]));
+      all(/cure[a-z]*[^.]{0,40}?within\s+(\d+)\s+(?:calendar\s+|business\s+)?days/g, (m) =>
+        Number(m[1]),
+      );
+      all(/within\s+(\d+)\s+(?:calendar\s+|business\s+)?days[^.]{0,40}?(?:to\s+)?cure\b/g, (m) =>
+        Number(m[1]),
+      );
       all(/cure\s+period\s+of\s+(\d+)\s+(?:calendar\s+|business\s+)?days/g, (m) => Number(m[1]));
       break;
     case "auto_renewal_notice_days":
-      all(/(?:auto(?:matic(?:ally)?)?[\s-]*renew\w*|renew\w*\s+automatically)[^.]{0,160}?(\d+)\s+(?:calendar\s+|business\s+)?days/g, (m) => Number(m[1]));
-      all(/(?:non-?renewal|not\s+to\s+renew|intent\s+not\s+to\s+renew)[^.]{0,80}?(\d+)\s+(?:calendar\s+|business\s+)?days/g, (m) => Number(m[1]));
-      all(/(\d+)\s+(?:calendar\s+|business\s+)?days[^.]{0,60}?(?:before|prior\s+to)[^.]{0,40}?(?:renew|the\s+end\s+of\s+the[^.]{0,20}?term|expir)/g, (m) => Number(m[1]));
+      all(
+        /(?:auto(?:matic(?:ally)?)?[\s-]*renew\w*|renew\w*\s+automatically)[^.]{0,160}?(\d+)\s+(?:calendar\s+|business\s+)?days/g,
+        (m) => Number(m[1]),
+      );
+      all(
+        /(?:non-?renewal|not\s+to\s+renew|intent\s+not\s+to\s+renew)[^.]{0,80}?(\d+)\s+(?:calendar\s+|business\s+)?days/g,
+        (m) => Number(m[1]),
+      );
+      all(
+        /(\d+)\s+(?:calendar\s+|business\s+)?days[^.]{0,60}?(?:before|prior\s+to)[^.]{0,40}?(?:renew|the\s+end\s+of\s+the[^.]{0,20}?term|expir)/g,
+        (m) => Number(m[1]),
+      );
       break;
     // spec-v10 Thrust C — financial dimensions (Step 174).
     case "indemnity_cap_amount":
-      all(/indemnif[a-z]*[^.$]{0,120}?\$\s?([\d,]+(?:\.\d+)?)/g, (m) => Number(m[1]!.replace(/,/g, "")));
-      all(/\$\s?([\d,]+(?:\.\d+)?)[^.$]{0,60}?indemnif[a-z]*/g, (m) => Number(m[1]!.replace(/,/g, "")));
+      all(/indemnif[a-z]*[^.$]{0,120}?\$\s?([\d,]+(?:\.\d+)?)/g, (m) =>
+        Number(m[1]!.replace(/,/g, "")),
+      );
+      all(/\$\s?([\d,]+(?:\.\d+)?)[^.$]{0,60}?indemnif[a-z]*/g, (m) =>
+        Number(m[1]!.replace(/,/g, "")),
+      );
       break;
     case "uptime_sla_percent":
-      all(/(?:up\s?time|availability|service\s+level)[^.%]{0,80}?(\d{2,3}(?:\.\d+)?)\s*%/g, (m) => Number(m[1]));
+      all(/(?:up\s?time|availability|service\s+level)[^.%]{0,80}?(\d{2,3}(?:\.\d+)?)\s*%/g, (m) =>
+        Number(m[1]),
+      );
       all(/(\d{2,3}(?:\.\d+)?)\s*%[^.]{0,40}?(?:up\s?time|availability)/g, (m) => Number(m[1]));
       break;
     default:

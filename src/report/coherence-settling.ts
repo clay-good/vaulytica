@@ -150,10 +150,7 @@ export async function computeCoherenceSettling(
   // crossing is attributed to the step into the round that *reveals* the new
   // standing (the same attribution v24/v25 use), so the per-transition total
   // re-buckets v24's per-front crossings.
-  const crossedByTransition: string[][] = Array.from(
-    { length: rounds.length - 1 },
-    () => [],
-  );
+  const crossedByTransition: string[][] = Array.from({ length: rounds.length - 1 }, () => []);
 
   for (const dimension of labels) {
     const floors = byDim.map((m) => m.get(dimension)?.weakest_tier ?? null);
@@ -175,36 +172,32 @@ export async function computeCoherenceSettling(
   let active_count = 0;
   let settling_round: number | null = null;
 
-  const per_transition: CoherenceSettlingTransition[] = crossedByTransition.map(
-    (dims, idx) => {
-      // The labels were iterated in localeCompare order, so `dims` is already
-      // pinned; the explicit sort keeps the list deterministic regardless.
-      dims.sort((a, b) => a.localeCompare(b, "en"));
-      const crossing_fronts = dims.length;
-      total_crossings += crossing_fronts;
-      const state: SettlingState = crossing_fronts > 0 ? "active" : "still";
-      if (state === "active") {
-        active_count += 1;
-        // The latest active step wins: a plain forward scan keeps the last one.
-        settling_round = idx + 2;
-      }
-      return {
-        from_round: idx + 1,
-        to_round: idx + 2,
-        crossing_fronts,
-        crossed_dimensions: dims,
-        state,
-      };
-    },
-  );
+  const per_transition: CoherenceSettlingTransition[] = crossedByTransition.map((dims, idx) => {
+    // The labels were iterated in localeCompare order, so `dims` is already
+    // pinned; the explicit sort keeps the list deterministic regardless.
+    dims.sort((a, b) => a.localeCompare(b, "en"));
+    const crossing_fronts = dims.length;
+    total_crossings += crossing_fronts;
+    const state: SettlingState = crossing_fronts > 0 ? "active" : "still";
+    if (state === "active") {
+      active_count += 1;
+      // The latest active step wins: a plain forward scan keeps the last one.
+      settling_round = idx + 2;
+    }
+    return {
+      from_round: idx + 1,
+      to_round: idx + 2,
+      crossing_fronts,
+      crossed_dimensions: dims,
+      state,
+    };
+  });
 
   // The quiet tail is the run of `still` steps after the last `active` one — the
   // rounds of stability the package held before the close. When nothing ever
   // crossed, every step is quiet (the whole sequence is the tail).
   const quiet_tail =
-    settling_round === null
-      ? per_transition.length
-      : per_transition.length - (settling_round - 1);
+    settling_round === null ? per_transition.length : per_transition.length - (settling_round - 1);
   // Unsettled iff the *final* transition crossed the floor — the package was still
   // moving across the floor as the deal closed (equivalently, quiet_tail === 0 with
   // at least one crossing).

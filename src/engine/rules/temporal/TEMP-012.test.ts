@@ -5,7 +5,10 @@ import { buildContext } from "../../_test-fixtures.js";
 describe("TEMP-012 — survival clause silent on sticky obligations", () => {
   it("fires when confidentiality + IP exist but survival names neither", () => {
     const ctx = buildContext(
-      ["Confidentiality", "Recipient shall protect Confidential Information using reasonable care."],
+      [
+        "Confidentiality",
+        "Recipient shall protect Confidential Information using reasonable care.",
+      ],
       ["IP Assignment", "All work for hire produced by Consultant shall be owned by Company."],
       ["Survival", "Sections 4 and 5 of this Agreement shall survive termination."],
     );
@@ -28,7 +31,10 @@ describe("TEMP-012 — survival clause silent on sticky obligations", () => {
     const ctx = buildContext(
       ["Confidentiality", "Recipient shall protect Confidential Information."],
       ["Indemnification", "Vendor shall indemnify Customer."],
-      ["Survival", "The provisions regarding confidentiality and indemnification obligations shall survive termination of this Agreement."],
+      [
+        "Survival",
+        "The provisions regarding confidentiality and indemnification obligations shall survive termination of this Agreement.",
+      ],
     );
     expect(TEMP_012.check(ctx)).toBeNull();
   });

@@ -104,9 +104,9 @@ describe("detectV3Family", () => {
     expect(d.suggested_playbook).toBe("mutual-nda-deep");
     // Resolver appends its own signals to the audit trail so the user
     // (and a future reviewer) can see why the variant was picked.
-    expect(
-      d.signals.some((s) => /Mutual \/ two-way \/ bilateral NDA/i.test(s.evidence)),
-    ).toBe(true);
+    expect(d.signals.some((s) => /Mutual \/ two-way \/ bilateral NDA/i.test(s.evidence))).toBe(
+      true,
+    );
   });
 
   it("routes nda-deep to unilateral-nda-deep on one-way / discloser-recipient framing", () => {
@@ -117,9 +117,7 @@ describe("detectV3Family", () => {
     expect(d.family).toBe("nda-deep");
     expect(d.suggested_playbook).toBe("unilateral-nda-deep");
     // Resolver appends its own signals to the audit trail.
-    expect(
-      d.signals.some((s) => /Unilateral \/ one-way NDA/i.test(s.evidence)),
-    ).toBe(true);
+    expect(d.signals.some((s) => /Unilateral \/ one-way NDA/i.test(s.evidence))).toBe(true);
   });
 
   it("picks up nda-deep on the defined-term signal even when the body text is sparse", () => {
@@ -143,10 +141,8 @@ describe("detectV3Family", () => {
 
   it("picks up msa-deep on a defined Services + SOW signal even when MSA-specific phrases are absent", () => {
     const ext = emptyExtracted({
-      Services:
-        "means the services to be provided by Vendor to Customer as described in each SOW.",
-      "Statement of Work":
-        "means each ordering document executed under this Agreement.",
+      Services: "means the services to be provided by Vendor to Customer as described in each SOW.",
+      "Statement of Work": "means each ordering document executed under this Agreement.",
     });
     const text = "Master Services Agreement. Limitation of liability applies.";
     const d = detectV3Family(ext, text);
@@ -285,7 +281,8 @@ describe("multi-doc state model", () => {
 
   it("transitions queued → analyzing → complete", () => {
     let s = EMPTY_MULTI_DOC_STATE;
-    s = (addDocument(s, { id: "a", filename: "a.docx", kind: "docx" }) as { state: typeof s }).state;
+    s = (addDocument(s, { id: "a", filename: "a.docx", kind: "docx" }) as { state: typeof s })
+      .state;
     s = markAnalyzing(s, "a", 0.5, "v0.0.1-starter");
     const a1 = s.documents[0]!;
     expect(a1.status).toBe("analyzing");
@@ -302,8 +299,10 @@ describe("multi-doc state model", () => {
 
   it("records errors per document without affecting siblings", () => {
     let s = EMPTY_MULTI_DOC_STATE;
-    s = (addDocument(s, { id: "a", filename: "a.docx", kind: "docx" }) as { state: typeof s }).state;
-    s = (addDocument(s, { id: "b", filename: "b.docx", kind: "docx" }) as { state: typeof s }).state;
+    s = (addDocument(s, { id: "a", filename: "a.docx", kind: "docx" }) as { state: typeof s })
+      .state;
+    s = (addDocument(s, { id: "b", filename: "b.docx", kind: "docx" }) as { state: typeof s })
+      .state;
     s = markError(s, "a", "ingest failed");
     s = markComplete(s, "b", {
       playbook_id: "mutual-nda",
@@ -317,8 +316,10 @@ describe("multi-doc state model", () => {
 
   it("removes a document by id", () => {
     let s = EMPTY_MULTI_DOC_STATE;
-    s = (addDocument(s, { id: "a", filename: "a.docx", kind: "docx" }) as { state: typeof s }).state;
-    s = (addDocument(s, { id: "b", filename: "b.docx", kind: "docx" }) as { state: typeof s }).state;
+    s = (addDocument(s, { id: "a", filename: "a.docx", kind: "docx" }) as { state: typeof s })
+      .state;
+    s = (addDocument(s, { id: "b", filename: "b.docx", kind: "docx" }) as { state: typeof s })
+      .state;
     s = removeDocument(s, "a");
     expect(s.documents).toHaveLength(1);
     expect(s.documents[0]!.id).toBe("b");
@@ -326,9 +327,11 @@ describe("multi-doc state model", () => {
 
   it("isReadyForConsistency only when ≥2 docs and all terminal", () => {
     let s = EMPTY_MULTI_DOC_STATE;
-    s = (addDocument(s, { id: "a", filename: "a.docx", kind: "docx" }) as { state: typeof s }).state;
+    s = (addDocument(s, { id: "a", filename: "a.docx", kind: "docx" }) as { state: typeof s })
+      .state;
     expect(isReadyForConsistency(s)).toBe(false);
-    s = (addDocument(s, { id: "b", filename: "b.docx", kind: "docx" }) as { state: typeof s }).state;
+    s = (addDocument(s, { id: "b", filename: "b.docx", kind: "docx" }) as { state: typeof s })
+      .state;
     expect(isReadyForConsistency(s)).toBe(false); // both queued
     s = markComplete(s, "a", {
       playbook_id: "x",
@@ -348,8 +351,10 @@ describe("multi-doc state model", () => {
 
   it("hasUsableConsistencyBundle is false when only one doc succeeded", () => {
     let s = EMPTY_MULTI_DOC_STATE;
-    s = (addDocument(s, { id: "a", filename: "a.docx", kind: "docx" }) as { state: typeof s }).state;
-    s = (addDocument(s, { id: "b", filename: "b.docx", kind: "docx" }) as { state: typeof s }).state;
+    s = (addDocument(s, { id: "a", filename: "a.docx", kind: "docx" }) as { state: typeof s })
+      .state;
+    s = (addDocument(s, { id: "b", filename: "b.docx", kind: "docx" }) as { state: typeof s })
+      .state;
     s = markComplete(s, "a", {
       playbook_id: "x",
       playbook_name: "X",

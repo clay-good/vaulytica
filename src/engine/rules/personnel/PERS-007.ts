@@ -39,25 +39,33 @@ export const rule: Rule = {
       if (!labelsIc && /\bindependent\s+contractor\b/i.test(p.text)) labelsIc = true;
       if (
         signals.indexOf("fixed-hours") < 0 &&
-        /\b(?:from|between)\s+\d{1,2}(?:[:.]\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|noon)|\bregular\s+business\s+hours\s+(?:of|from)\s+\d|monday\s+through\s+friday|9[:.]00\s*a\.?m\.?\s+to\s+5[:.]00\s*p\.?m\.?/i.test(p.text)
+        /\b(?:from|between)\s+\d{1,2}(?:[:.]\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|noon)|\bregular\s+business\s+hours\s+(?:of|from)\s+\d|monday\s+through\s+friday|9[:.]00\s*a\.?m\.?\s+to\s+5[:.]00\s*p\.?m\.?/i.test(
+          p.text,
+        )
       ) {
         signals.push("fixed-hours");
       }
       if (
         signals.indexOf("company-equipment") < 0 &&
-        /\bcompany-?supplied\s+(?:equipment|computer|laptop|hardware|tools)|use\s+(?:the\s+)?company['s]+\s+(?:equipment|computer|laptop|systems)|company\s+shall\s+provide\s+(?:all\s+)?(?:equipment|hardware)/i.test(p.text)
+        /\bcompany-?supplied\s+(?:equipment|computer|laptop|hardware|tools)|use\s+(?:the\s+)?company['s]+\s+(?:equipment|computer|laptop|systems)|company\s+shall\s+provide\s+(?:all\s+)?(?:equipment|hardware)/i.test(
+          p.text,
+        )
       ) {
         signals.push("company-equipment");
       }
       if (
         signals.indexOf("daily-reporting") < 0 &&
-        /\breport\s+(?:daily|on\s+a\s+daily\s+basis)\s+to|daily\s+to\s+(?:company|the\s+designated\s+supervisor)|\bsupervisor\b[^.]{0,80}\bdaily/i.test(p.text)
+        /\breport\s+(?:daily|on\s+a\s+daily\s+basis)\s+to|daily\s+to\s+(?:company|the\s+designated\s+supervisor)|\bsupervisor\b[^.]{0,80}\bdaily/i.test(
+          p.text,
+        )
       ) {
         signals.push("daily-reporting");
       }
       if (
         signals.indexOf("exclusivity") < 0 &&
-        /\bshall\s+not\s+(?:directly\s+or\s+indirectly\s+)?(?:perform\s+services\s+for|engage\s+with|work\s+for)\s+(?:any\s+other|any\s+third|another)\s+party/i.test(p.text)
+        /\bshall\s+not\s+(?:directly\s+or\s+indirectly\s+)?(?:perform\s+services\s+for|engage\s+with|work\s+for)\s+(?:any\s+other|any\s+third|another)\s+party/i.test(
+          p.text,
+        )
       ) {
         signals.push("exclusivity");
       }
@@ -69,7 +77,9 @@ export const rule: Rule = {
       }
       if (
         signals.indexOf("on-site-required") < 0 &&
-        /\bat\s+(?:company['s]+|employer['s]+|our)\s+offices\s+located\s+in|on-site\s+at\s+company['s]+\s+(?:office|premises)/i.test(p.text)
+        /\bat\s+(?:company['s]+|employer['s]+|our)\s+offices\s+located\s+in|on-site\s+at\s+company['s]+\s+(?:office|premises)/i.test(
+          p.text,
+        )
       ) {
         signals.push("on-site-required");
       }

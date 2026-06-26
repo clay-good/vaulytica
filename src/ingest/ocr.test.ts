@@ -13,7 +13,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const recognize =
   vi.fn<
-    (img: unknown) => Promise<{ data: { text: string; words?: { text: string; confidence: number }[] } }>
+    (
+      img: unknown,
+    ) => Promise<{ data: { text: string; words?: { text: string; confidence: number }[] } }>
   >();
 const terminate = vi.fn(async () => {});
 const createWorker = vi.fn(async (_lang?: string) => ({ recognize, terminate }));

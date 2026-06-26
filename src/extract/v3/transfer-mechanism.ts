@@ -16,11 +16,26 @@ import { forEachParagraph, posInParagraph } from "../walk.js";
 type MechanismPattern = { kind: TransferMechanismKind; rx: RegExp };
 
 const PATTERNS: MechanismPattern[] = [
-  { kind: "scc-module-1", rx: /\b(?:SCC[s]?\s+Module\s+(?:1|One)|Module\s+(?:1|One)\b[^\n]{0,80}?Standard Contractual Clauses)/i },
-  { kind: "scc-module-2", rx: /\b(?:SCC[s]?\s+Module\s+(?:2|Two)|Module\s+(?:2|Two)\b[^\n]{0,80}?Standard Contractual Clauses)/i },
-  { kind: "scc-module-3", rx: /\b(?:SCC[s]?\s+Module\s+(?:3|Three)|Module\s+(?:3|Three)\b[^\n]{0,80}?Standard Contractual Clauses)/i },
-  { kind: "scc-module-4", rx: /\b(?:SCC[s]?\s+Module\s+(?:4|Four)|Module\s+(?:4|Four)\b[^\n]{0,80}?Standard Contractual Clauses)/i },
-  { kind: "scc-unspecified", rx: /\bStandard Contractual Clauses\b|\bEU SCCs?\b|\bSCCs?\b(?!\s*Module)/i },
+  {
+    kind: "scc-module-1",
+    rx: /\b(?:SCC[s]?\s+Module\s+(?:1|One)|Module\s+(?:1|One)\b[^\n]{0,80}?Standard Contractual Clauses)/i,
+  },
+  {
+    kind: "scc-module-2",
+    rx: /\b(?:SCC[s]?\s+Module\s+(?:2|Two)|Module\s+(?:2|Two)\b[^\n]{0,80}?Standard Contractual Clauses)/i,
+  },
+  {
+    kind: "scc-module-3",
+    rx: /\b(?:SCC[s]?\s+Module\s+(?:3|Three)|Module\s+(?:3|Three)\b[^\n]{0,80}?Standard Contractual Clauses)/i,
+  },
+  {
+    kind: "scc-module-4",
+    rx: /\b(?:SCC[s]?\s+Module\s+(?:4|Four)|Module\s+(?:4|Four)\b[^\n]{0,80}?Standard Contractual Clauses)/i,
+  },
+  {
+    kind: "scc-unspecified",
+    rx: /\bStandard Contractual Clauses\b|\bEU SCCs?\b|\bSCCs?\b(?!\s*Module)/i,
+  },
   { kind: "uk-idta", rx: /\bInternational Data Transfer Agreement\b|\bIDTA\b/i },
   { kind: "uk-addendum", rx: /\bUK Addendum\b|\bInternational Data Transfer Addendum\b/i },
   { kind: "swiss-addendum", rx: /\bSwiss Addendum\b/i },
@@ -40,9 +55,7 @@ function inferLocation(text: string): TransferMechanismLocation {
   return "inline";
 }
 
-export function extractTransferMechanisms(
-  tree: DocumentTree,
-): TransferMechanismReference[] {
+export function extractTransferMechanisms(tree: DocumentTree): TransferMechanismReference[] {
   const seen = new Set<string>();
   const out: TransferMechanismReference[] = [];
   forEachParagraph(tree, (ctx) => {

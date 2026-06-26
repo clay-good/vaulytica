@@ -161,7 +161,10 @@ describe("classifyV4 — sub-domain detection", () => {
 
 describe("classifyV4 — threshold + fallback", () => {
   it("returns null sub-domain when no signals match", () => {
-    const r = classifyFromBody("Notes", "This document is entirely unrelated to any of the catalogued legal families.");
+    const r = classifyFromBody(
+      "Notes",
+      "This document is entirely unrelated to any of the catalogued legal families.",
+    );
     expect(r.sub_domain).toBeNull();
     expect(r.confidence).toBe(0);
   });
@@ -231,7 +234,11 @@ describe("rankedAlternatives", () => {
       "This Stock Purchase Agreement contemplates the Closing on the Closing Date. The Purchase Price is set. Representations and warranties of the Seller survive. Voting Agreement is referenced.",
     ]);
     const alts = rankedAlternatives(
-      { extracted: ctx.extracted, body_text: "Stock Purchase Agreement ... Voting Agreement is referenced.", features: FEATURES },
+      {
+        extracted: ctx.extracted,
+        body_text: "Stock Purchase Agreement ... Voting Agreement is referenced.",
+        features: FEATURES,
+      },
       3,
     );
     expect(alts.length).toBeLessThanOrEqual(3);
@@ -285,7 +292,9 @@ describe("sub-domain-features.json — registry contract", () => {
   it("every sub-domain has at least one title keyword and one distinguishing phrase", () => {
     for (const [id, entry] of Object.entries(FEATURES.sub_domains)) {
       expect(entry.title_keywords.length, `${id}.title_keywords`).toBeGreaterThan(0);
-      expect(entry.distinguishing_phrases.length, `${id}.distinguishing_phrases`).toBeGreaterThan(0);
+      expect(entry.distinguishing_phrases.length, `${id}.distinguishing_phrases`).toBeGreaterThan(
+        0,
+      );
     }
   });
 

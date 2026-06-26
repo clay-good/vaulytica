@@ -53,10 +53,7 @@ import { stableStringify } from "../engine/runner.js";
 import type { CoherenceShift } from "./coherence-movement.js";
 import type { PostureMovementKind } from "./posture-movement.js";
 import type { PostureCoherence, PostureCoherenceKind } from "./posture-coherence.js";
-import {
-  compareCoherenceTrajectory,
-  type FloorTrajectoryKind,
-} from "./coherence-trajectory.js";
+import { compareCoherenceTrajectory, type FloorTrajectoryKind } from "./coherence-trajectory.js";
 import {
   compareCoherenceShiftTrajectory,
   type CoherenceShiftTrajectoryKind,
@@ -186,7 +183,8 @@ export async function compareCoherenceArc(
  * `shift_trajectory_counts`.
  */
 export function arcRegressedOrFractured(arc: CoherenceArc): boolean {
-  const floorRegressed = arc.trajectory_counts["steady-regression"] + arc.trajectory_counts.whipsaw > 0;
+  const floorRegressed =
+    arc.trajectory_counts["steady-regression"] + arc.trajectory_counts.whipsaw > 0;
   const fractured =
     arc.shift_trajectory_counts["steady-fracture"] + arc.shift_trajectory_counts.oscillating > 0;
   return floorRegressed || fractured;

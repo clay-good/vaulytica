@@ -103,7 +103,9 @@ export function redact(text: string, partyNames: ReadonlyArray<string> = []): Re
 
   // Stable log order: by kind then replacement, so the provenance record is
   // byte-reproducible regardless of pattern evaluation order.
-  log.sort((a, b) => (a.kind < b.kind ? -1 : a.kind > b.kind ? 1 : a.replacement < b.replacement ? -1 : 1));
+  log.sort((a, b) =>
+    a.kind < b.kind ? -1 : a.kind > b.kind ? 1 : a.replacement < b.replacement ? -1 : 1,
+  );
   return { text: out, log };
 }
 

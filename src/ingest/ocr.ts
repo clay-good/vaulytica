@@ -118,7 +118,9 @@ export async function ocrCanvas(canvas: HTMLCanvasElement, lang = "eng"): Promis
 }
 
 async function loadTesseract(): Promise<TesseractLike> {
-  const mod = (await import("tesseract.js")) as unknown as { default?: TesseractLike } & TesseractLike;
+  const mod = (await import("tesseract.js")) as unknown as {
+    default?: TesseractLike;
+  } & TesseractLike;
   return (mod.default ?? mod) as TesseractLike;
 }
 

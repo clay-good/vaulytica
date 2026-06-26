@@ -37,10 +37,7 @@ const MODALS = [
   "hereby covenants",
 ];
 
-const MODAL_RE = new RegExp(
-  String.raw`\b(${MODALS.join("|").replace(/ /g, "\\s+")})\b`,
-  "gi",
-);
+const MODAL_RE = new RegExp(String.raw`\b(${MODALS.join("|").replace(/ /g, "\\s+")})\b`, "gi");
 
 const TRIGGER_RE =
   /\b(upon\s[^,;.]+|if\s[^,;.]+|when\s[^,;.]+|promptly\s+after\s[^,;.]+|within\s+(?:\d+|\w+(?:[-\s]\w+)?)\s*(?:\(\d+\)\s*)?(?:business\s+)?(?:days?|weeks?|months?|years?)\b[^,;.]*)/i;
@@ -50,9 +47,7 @@ const QUALIFIER_RE =
 
 export function extractObligations(tree: DocumentTree, parties: Party[]): Obligation[] {
   const partyNames = new Set(parties.map((p) => p.name.toLowerCase()));
-  const partyRoles = new Set(
-    parties.flatMap((p) => (p.role ? [p.role.toLowerCase()] : [])),
-  );
+  const partyRoles = new Set(parties.flatMap((p) => (p.role ? [p.role.toLowerCase()] : [])));
 
   const out: Obligation[] = [];
   let counter = 0;
@@ -151,11 +146,7 @@ function splitSentences(text: string): { text: string; start: number }[] {
   return out;
 }
 
-function resolveObligor(
-  subject: string,
-  partyNames: Set<string>,
-  partyRoles: Set<string>,
-): string {
+function resolveObligor(subject: string, partyNames: Set<string>, partyRoles: Set<string>): string {
   const trimmed = trimEdges(subject, /[,;.\s]/);
   const lower = trimmed.toLowerCase();
   // Direct party-name match.

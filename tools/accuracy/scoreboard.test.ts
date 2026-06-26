@@ -116,7 +116,9 @@ describe("end-to-end: real pipeline → grade → scoreboard (spec-v5 §9)", () 
       annotator_a: "test",
       kappa_input: false,
       dkb_version_at_annotation: "v0.0.1-starter",
-      expected_findings: [{ rule_id: run.findings[0]?.rule_id ?? "STRUCT-001", verdict: "should_fire" }],
+      expected_findings: [
+        { rule_id: run.findings[0]?.rule_id ?? "STRUCT-001", verdict: "should_fire" },
+      ],
     };
     const graded = gradeAnnotation(
       provenance,

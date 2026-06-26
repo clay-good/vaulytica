@@ -50,7 +50,11 @@ export const rule: Rule = {
       }
       if (/\bconfidential(?:ity)?\s+(?:information|obligations?|provisions?)/i.test(p.text))
         hasConfidentiality = true;
-      if (/\b(?:work\s+for\s+hire|ip\s+(?:ownership|assignment)|intellectual\s+property\s+(?:ownership|assignment)|all\s+(?:right(?:s)?,?\s+title(?:,)?\s+and\s+interest)\s+in\s+(?:and\s+to\s+)?(?:the\s+)?work\s+product)/i.test(p.text))
+      if (
+        /\b(?:work\s+for\s+hire|ip\s+(?:ownership|assignment)|intellectual\s+property\s+(?:ownership|assignment)|all\s+(?:right(?:s)?,?\s+title(?:,)?\s+and\s+interest)\s+in\s+(?:and\s+to\s+)?(?:the\s+)?work\s+product)/i.test(
+          p.text,
+        )
+      )
         hasIpOwnership = true;
       if (/\b(?:indemnif|hold\s+\w+\s+harmless|defend\s+and\s+indemnify)/i.test(p.text))
         hasIndemnity = true;
@@ -62,9 +66,13 @@ export const rule: Rule = {
 
     const missing: string[] = [];
     if (hasConfidentiality && !/confidential/i.test(text)) missing.push("confidentiality");
-    if (hasIpOwnership && !/(?:intellectual\s+property|ip\s+|work\s+for\s+hire|ownership)/i.test(text))
+    if (
+      hasIpOwnership &&
+      !/(?:intellectual\s+property|ip\s+|work\s+for\s+hire|ownership)/i.test(text)
+    )
       missing.push("IP ownership / assignment");
-    if (hasIndemnity && !/(?:indemnif|hold\s+\w+\s+harmless)/i.test(text)) missing.push("indemnification");
+    if (hasIndemnity && !/(?:indemnif|hold\s+\w+\s+harmless)/i.test(text))
+      missing.push("indemnification");
 
     if (missing.length === 0) return null;
 
@@ -74,8 +82,7 @@ export const rule: Rule = {
       excerpt: text.slice(0, 280),
       explanation:
         "Survival language is what keeps sticky obligations alive after a contract terminates. A survival clause that doesn't expressly enumerate the present-in-document confidentiality / IP / indemnity obligations creates ambiguity at the moment those obligations matter most — post-termination, when the contract has already ended.",
-      recommendation:
-        `Add explicit named references to the missing obligation(s): ${missing.join(", ")}. Standard drafting names every sticky section by number or category in the survival clause.`,
+      recommendation: `Add explicit named references to the missing obligation(s): ${missing.join(", ")}. Standard drafting names every sticky section by number or category in the survival clause.`,
       position: { section_id: survivalSection, start: survivalStart, end: survivalEnd },
     });
   },

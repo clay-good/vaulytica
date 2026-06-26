@@ -24,9 +24,7 @@ export default defineConfig({
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
   },
-  projects: [
-    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
-  ],
+  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   /**
    * If `VAULYTICA_E2E_BASE_URL` is set (CI hitting a Pages deploy),
    * skip the local web server. Otherwise spin up the Vite preview

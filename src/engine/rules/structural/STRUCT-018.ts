@@ -92,7 +92,11 @@ export const rule: Rule = {
       explanation:
         "The agreement refers to an exhibit, schedule, annex, appendix, or attachment that is not present in the document. If the referenced material carries operative terms, those terms are missing from the contract. (In folder mode, a referenced attachment that is a sibling file is reconciled before this is reported.) This is an internal-consistency check, not an assertion that the attachment is legally required.",
       recommendation: `Attach each referenced item (${absentList}) before execution, or remove the reference if it is no longer needed. Reconcile every cross-reference to a present attachment as part of the closing checklist.`,
-      position: { section_id: first.section ?? "", start: first.start, end: first.start + first.label.length },
+      position: {
+        section_id: first.section ?? "",
+        start: first.start,
+        end: first.start + first.label.length,
+      },
       source_citations: [],
     });
   },

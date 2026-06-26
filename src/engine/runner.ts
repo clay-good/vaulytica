@@ -1,11 +1,15 @@
-import type { EngineRun, ExecutionLogEntry, Finding, PlaybookOverride, Rule, RuleContext, Severity } from "./finding.js";
+import type {
+  EngineRun,
+  ExecutionLogEntry,
+  Finding,
+  PlaybookOverride,
+  Rule,
+  RuleContext,
+  Severity,
+} from "./finding.js";
 import { sortFindings, sortRules } from "./ordering.js";
 import { sha256Hex } from "../ingest/hash.js";
-import type {
-  ConsistencyDocument,
-  ConsistencyRule,
-  ConsistencyRun,
-} from "./consistency/types.js";
+import type { ConsistencyDocument, ConsistencyRule, ConsistencyRun } from "./consistency/types.js";
 import { runConsistency } from "./consistency/runner.js";
 import { CONSISTENCY_RULES } from "./consistency/rules/index.js";
 import type { DKB } from "../dkb/types.js";

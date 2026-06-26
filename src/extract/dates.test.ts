@@ -29,7 +29,9 @@ describe("extractDates", () => {
   it("captures named anchors like 'the Effective Date'", () => {
     const tree = buildTree(["Body", "The Effective Date is the date of execution."]);
     const dates = extractDates(tree);
-    expect(dates.some((d) => d.type === "named-anchor" && d.anchor === "Effective Date")).toBe(true);
+    expect(dates.some((d) => d.type === "named-anchor" && d.anchor === "Effective Date")).toBe(
+      true,
+    );
   });
 
   it("flags impossible dates with no ISO (leaves iso undefined)", () => {
@@ -74,13 +76,19 @@ describe("extractDates", () => {
   });
 
   it("converts units to days and signs 'before' offsets negative", () => {
-    const weeks = extractDates(buildTree(["Notice", "Pay within two weeks after the Effective Date."]));
+    const weeks = extractDates(
+      buildTree(["Notice", "Pay within two weeks after the Effective Date."]),
+    );
     expect(weeks.find((d) => d.type === "relative")?.offset_days).toBe(14);
-    const months = extractDates(buildTree(["Notice", "Pay within three months after the Effective Date."]));
+    const months = extractDates(
+      buildTree(["Notice", "Pay within three months after the Effective Date."]),
+    );
     expect(months.find((d) => d.type === "relative")?.offset_days).toBe(90);
     const years = extractDates(buildTree(["Notice", "Renew one year after the Effective Date."]));
     expect(years.find((d) => d.type === "relative")?.offset_days).toBe(365);
-    const before = extractDates(buildTree(["Notice", "Notify sixty (60) days before the Termination Date."]));
+    const before = extractDates(
+      buildTree(["Notice", "Notify sixty (60) days before the Termination Date."]),
+    );
     expect(before.find((d) => d.type === "relative")?.offset_days).toBe(-60);
   });
 

@@ -14,10 +14,7 @@ import { forEachParagraph, posInParagraph } from "./walk.js";
 const REF_RE =
   /\b(?:Section|Sections|Article|Articles|Exhibit|Schedule|Attachment|§§?)\s+([0-9]+(?:\.[0-9]+)*(?:\([a-z]\))?|[IVXLCDM]+)/gi;
 
-export function extractCrossRefs(
-  tree: DocumentTree,
-  outline: SectionOutline,
-): CrossRef[] {
+export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): CrossRef[] {
   const refs: CrossRef[] = [];
   const labelIndex = buildLabelIndex(outline);
 

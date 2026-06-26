@@ -11,7 +11,13 @@ export const rule: Rule = {
   description: "Detects IP-ownership / assignment / work-for-hire language; fires when absent.",
   dkb_citations: ["stat-17-usc-101", "stat-17-usc-201"],
   check(ctx: RuleContext): Finding | null {
-    if (firstParagraphMatch(ctx, /\b(?:work(?:s)?\s+made\s+for\s+hire|intellectual\s+property|IP\s+ownership|hereby\s+assigns)\b/i)) return null;
+    if (
+      firstParagraphMatch(
+        ctx,
+        /\b(?:work(?:s)?\s+made\s+for\s+hire|intellectual\s+property|IP\s+ownership|hereby\s+assigns)\b/i,
+      )
+    )
+      return null;
     return emit(ctx, rule, {
       title: "No IP-ownership clause detected",
       description: "The contract does not allocate ownership of intellectual property.",

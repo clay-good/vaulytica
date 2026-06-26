@@ -219,7 +219,8 @@ export function buildJsonReport(
   // spec-v9 Thrust C — the critical-dates register, outside `run` so `result_hash` is unchanged.
   if (criticalDates && criticalDates.register.length > 0) payload.critical_dates = criticalDates;
   // spec-v9 Thrust B — the closing checklist, a render-side projection of `run.findings`.
-  if (closingChecklist && closingChecklist.items.length > 0) payload.closing_checklist = closingChecklist;
+  if (closingChecklist && closingChecklist.items.length > 0)
+    payload.closing_checklist = closingChecklist;
   // spec-v10 Thrust A — the negotiation posture, additive (own posture_hash).
   if (negotiationPosture && negotiationPosture.positions.length > 0) {
     payload.negotiation_posture = negotiationPosture;

@@ -124,13 +124,17 @@ describe("parsers", () => {
     const frcp = PROCEDURAL_SOURCES["frcp"]!;
     const fre = PROCEDURAL_SOURCES["fre"]!;
     expect(
-      // @ts-expect-error narrow shape OK
-      parseProceduralRule(frcp, "rule 37(e) spoliation litigation hold rule 41 voluntary dismissal", NOW)
-        .length,
+      parseProceduralRule(
+        // @ts-expect-error narrow shape OK
+        frcp,
+        "rule 37(e) spoliation litigation hold rule 41 voluntary dismissal",
+        NOW,
+      ).length,
     ).toBe(2);
     expect(
       // @ts-expect-error narrow shape OK
-      parseProceduralRule(fre, "rule 408 settlement negotiation rule 502 privilege waiver", NOW).length,
+      parseProceduralRule(fre, "rule 408 settlement negotiation rule 502 privilege waiver", NOW)
+        .length,
     ).toBe(2);
   });
 
@@ -142,10 +146,7 @@ describe("parsers", () => {
       NOW,
     );
     expect(nodes.map((n) => n.id)).toEqual(
-      expect.arrayContaining([
-        "ca-civ-1950.5-security-deposit",
-        "ca-civ-1942-habitability",
-      ]),
+      expect.arrayContaining(["ca-civ-1950.5-security-deposit", "ca-civ-1942-habitability"]),
     );
   });
 
@@ -210,7 +211,8 @@ describe("staleness gate covers v4 nodes", () => {
       reader,
       repoRoot: REPO_ROOT,
     });
-    const drifted = (reader.read(UCC_ARTICLE_2_URL) ?? "") + "\nDRIFT — Amendment adopted 2026-05-17.";
+    const drifted =
+      (reader.read(UCC_ARTICLE_2_URL) ?? "") + "\nDRIFT — Amendment adopted 2026-05-17.";
     const report = await detectStaleness({
       nodes: result.nodes,
       fetchAuthority: async () => ({ text: drifted, fetched_at: NOW }),

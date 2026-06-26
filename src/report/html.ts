@@ -155,9 +155,12 @@ function renderFinding(f: Finding, bibliography: ReturnType<typeof buildBibliogr
   parts.push(
     `<h3><span class="sev ${f.severity}">${f.severity}</span> ${esc(f.title)} ${refs ? `<span class="ruleid">${refs}</span>` : ""}</h3>`,
   );
-  parts.push(`<div class="ruleid">${esc(f.rule_id)} v${esc(f.rule_version)}${f.excerpt.section_id ? ` · §${esc(f.excerpt.section_id)}` : ""}</div>`);
+  parts.push(
+    `<div class="ruleid">${esc(f.rule_id)} v${esc(f.rule_version)}${f.excerpt.section_id ? ` · §${esc(f.excerpt.section_id)}` : ""}</div>`,
+  );
   if (f.explanation) parts.push(`<p>${esc(f.explanation)}</p>`);
-  if (f.recommendation) parts.push(`<p><strong>Recommendation:</strong> ${esc(f.recommendation)}</p>`);
+  if (f.recommendation)
+    parts.push(`<p><strong>Recommendation:</strong> ${esc(f.recommendation)}</p>`);
   for (const c of f.source_citations) parts.push(renderCitation(c));
   parts.push("</div>");
   return parts.join("\n");
@@ -308,7 +311,9 @@ export function buildHtmlReport(
 
   // Cover proof fields (mirrors the DOCX cover).
   body.push('<dl class="proof">');
-  body.push(`<dt>Playbook</dt><dd>${esc(run.playbook_id)}${playbook?.deprecated ? " (legacy)" : ""}</dd>`);
+  body.push(
+    `<dt>Playbook</dt><dd>${esc(run.playbook_id)}${playbook?.deprecated ? " (legacy)" : ""}</dd>`,
+  );
   body.push(`<dt>DKB version</dt><dd>${esc(run.dkb_version)}</dd>`);
   body.push(`<dt>Engine version</dt><dd>${esc(run.version)}</dd>`);
   body.push(

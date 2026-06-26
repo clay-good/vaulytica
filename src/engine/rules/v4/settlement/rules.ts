@@ -78,7 +78,8 @@ const RELEASE_RULES: Rule[] = [
   presence({
     id: "SET-002",
     name: "Scope of released claims — broad release language",
-    description: "Release must state the scope of claims released (known / unknown, past / present).",
+    description:
+      "Release must state the scope of claims released (known / unknown, past / present).",
     citation: settlePractice(
       "release-scope",
       "General release — scope of claims baseline",
@@ -120,7 +121,8 @@ const RELEASE_RULES: Rule[] = [
   presence({
     id: "SET-004",
     name: "No admission of liability",
-    description: "Release should state that settlement is not an admission of liability or wrongdoing.",
+    description:
+      "Release should state that settlement is not an admission of liability or wrongdoing.",
     citation: fre408(),
     playbooks: [SETTLE_PLAYBOOK_RELEASE, SETTLE_PLAYBOOK_SETTLEMENT],
     missing_title: "No-admission clause missing",
@@ -308,7 +310,8 @@ const DEMAND_LETTER_RULES: Rule[] = [
   presence({
     id: "SET-012",
     name: "Specific demand and response deadline",
-    description: "Demand letter must state the specific demand (amount / action) and a response deadline.",
+    description:
+      "Demand letter must state the specific demand (amount / action) and a response deadline.",
     citation: settlePractice(
       "demand-deadline",
       "Demand letter — response-deadline baseline",
@@ -442,7 +445,8 @@ const CEASE_DESIST_RULES: Rule[] = [
   presence({
     id: "SET-018",
     name: "Demand to cease and specific remedial actions",
-    description: "C&D must demand cessation and specify the remedial actions (recall, transfer, accounting).",
+    description:
+      "C&D must demand cessation and specify the remedial actions (recall, transfer, accounting).",
     citation: settlePractice(
       "cd-demand",
       "Cease-and-desist letter — demand baseline",
@@ -515,11 +519,13 @@ const TOLLING_RULES: Rule[] = [
   presence({
     id: "SET-021",
     name: "Identification of tolled claims",
-    description: "Tolling agreement must identify the claims and statutes of limitations being tolled.",
+    description:
+      "Tolling agreement must identify the claims and statutes of limitations being tolled.",
     citation: stateLimitations(),
     playbooks: [SETTLE_PLAYBOOK_TOLLING],
     missing_title: "Identification of tolled claims missing",
-    missing_description: "No identification of the claims / limitations periods being tolled was found.",
+    missing_description:
+      "No identification of the claims / limitations periods being tolled was found.",
     explanation:
       "A tolling agreement that does not identify the claims tolled may be construed narrowly or as covering only the specifically-named cause of action.",
     recommendation:
@@ -533,11 +539,13 @@ const TOLLING_RULES: Rule[] = [
   presence({
     id: "SET-022",
     name: "Tolling period — start and end dates / triggering events",
-    description: "Tolling agreement must state the tolling period (start date / end date / triggers).",
+    description:
+      "Tolling agreement must state the tolling period (start date / end date / triggers).",
     citation: stateLimitations(),
     playbooks: [SETTLE_PLAYBOOK_TOLLING],
     missing_title: "Tolling-period clause missing",
-    missing_description: "No clause specifying the tolling period (start / end / triggers) was found.",
+    missing_description:
+      "No clause specifying the tolling period (start / end / triggers) was found.",
     explanation:
       "Without explicit start / end dates or events, the tolling period is ambiguous and the limitations defense may not be effectively waived.",
     recommendation:
@@ -599,11 +607,13 @@ const LIT_HOLD_RULES: Rule[] = [
   presence({
     id: "SET-025",
     name: "Triggering event / pending or anticipated litigation",
-    description: "Litigation hold must describe the triggering event (filed or anticipated litigation / investigation).",
+    description:
+      "Litigation hold must describe the triggering event (filed or anticipated litigation / investigation).",
     citation: zubulake(),
     playbooks: [SETTLE_PLAYBOOK_LITHOLD],
     missing_title: "Triggering-event description missing",
-    missing_description: "No description of the litigation / investigation triggering the hold was found.",
+    missing_description:
+      "No description of the litigation / investigation triggering the hold was found.",
     explanation:
       "Under *Zubulake* and FRCP 37(e), the duty to preserve attaches when litigation is reasonably anticipated. The hold notice should describe the trigger so recipients understand scope.",
     recommendation:
@@ -635,7 +645,8 @@ const LIT_HOLD_RULES: Rule[] = [
   presence({
     id: "SET-027",
     name: "Suspension of routine deletion / retention policies",
-    description: "Hold notice must suspend routine deletion / records-retention policies on covered materials.",
+    description:
+      "Hold notice must suspend routine deletion / records-retention policies on covered materials.",
     citation: frcp37e(),
     playbooks: [SETTLE_PLAYBOOK_LITHOLD],
     missing_title: "Suspension-of-deletion clause missing",
@@ -662,16 +673,14 @@ const LIT_HOLD_RULES: Rule[] = [
       "*Zubulake V* requires counsel to oversee preservation. Acknowledgment establishes that custodians received and understood the hold; the custodian list scopes preservation.",
     recommendation:
       "Identify covered custodians and require each to return a signed acknowledgment within a stated period (typically 5–7 business days).",
-    present_patterns: [
-      /(custodian|recipient)/i,
-      /(acknowledg(e|ment)|confirm\s+receipt)/i,
-    ],
+    present_patterns: [/(custodian|recipient)/i, /(acknowledg(e|ment)|confirm\s+receipt)/i],
     default_severity: "warning",
   }),
   presence({
     id: "SET-029",
     name: "Point of contact for questions",
-    description: "Hold notice should designate a point of contact (in-house or outside counsel) for questions.",
+    description:
+      "Hold notice should designate a point of contact (in-house or outside counsel) for questions.",
     citation: settlePractice(
       "lit-hold-poc",
       "Litigation hold — point-of-contact baseline",
@@ -684,10 +693,7 @@ const LIT_HOLD_RULES: Rule[] = [
       "Custodians often have questions about scope, format, and what to do with specific items. A designated POC ensures consistent answers and helps document the preservation effort.",
     recommendation:
       "Add 'Questions' identifying the in-house or outside counsel POC and contact information.",
-    present_patterns: [
-      /(questions?|contact|point\s+of\s+contact)/i,
-      /(@|telephone|phone|email)/i,
-    ],
+    present_patterns: [/(questions?|contact|point\s+of\s+contact)/i, /(@|telephone|phone|email)/i],
     default_severity: "warning",
   }),
   presence({

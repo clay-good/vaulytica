@@ -48,7 +48,10 @@ const PATTERNS: Array<{ re: RegExp; label: string }> = [
     ),
     label: "[Field Name] bracketed placeholder",
   },
-  { re: /\[(?:TBD|TBA|REDACTED|PENDING|PLACEHOLDER|FILL\s*IN|TODO)\b[^\]]{0,60}\]/gi, label: "[TBD]-family placeholder" },
+  {
+    re: /\[(?:TBD|TBA|REDACTED|PENDING|PLACEHOLDER|FILL\s*IN|TODO)\b[^\]]{0,60}\]/gi,
+    label: "[TBD]-family placeholder",
+  },
   { re: /\{\{[^}]{1,80}\}\}/g, label: "{{mustache}} placeholder" },
   { re: /<<[^>]{1,80}>>/g, label: "<<placeholder>>" },
   { re: /\bX{3,}\b/g, label: "XXX placeholder" },
@@ -121,6 +124,10 @@ export const rule: Rule = {
  * "By: __ | Name: __ | Title: __ | Date: __" line.
  */
 function isSignatureContext(text: string): boolean {
-  const tokens = (text.match(/\b(By|Name|Title|Date|Signature|Signed|Print(?:ed)?\s+Name|Authorized\s+Signatory)\b\s*:?/gi) ?? []).length;
+  const tokens = (
+    text.match(
+      /\b(By|Name|Title|Date|Signature|Signed|Print(?:ed)?\s+Name|Authorized\s+Signatory)\b\s*:?/gi,
+    ) ?? []
+  ).length;
   return tokens >= 2;
 }

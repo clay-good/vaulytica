@@ -22,7 +22,9 @@ const bundle = (...docs: Array<[string, Record<string, NegotiationTier>]>): Cohe
 
 /** A round whose `Cap` floor is the weaker of the two docs' tiers; `Law` held ideal throughout. */
 const round = (capA: NegotiationTier, capB: NegotiationTier) =>
-  bundlePostureCoherence(bundle(["msa.docx", { Cap: capA, Law: "ideal" }], ["order.docx", { Cap: capB, Law: "ideal" }]));
+  bundlePostureCoherence(
+    bundle(["msa.docx", { Cap: capA, Law: "ideal" }], ["order.docx", { Cap: capB, Law: "ideal" }]),
+  );
 
 describe("compareCoherenceExposure (spec-v20 — whole-deal binding-floor low-water mark)", () => {
   it("reports the worst floor each front reached and which round first hit it", async () => {
@@ -118,7 +120,8 @@ describe("compareCoherenceExposure (spec-v20 — whole-deal binding-floor low-wa
   });
 
   it("is deterministic: identical rounds in identical order → identical exposure_hash", async () => {
-    const mk = () => Promise.all([round("ideal", "below-acceptable"), round("acceptable", "acceptable")]);
+    const mk = () =>
+      Promise.all([round("ideal", "below-acceptable"), round("acceptable", "acceptable")]);
     const a = await compareCoherenceExposure(await mk());
     const b = await compareCoherenceExposure(await mk());
     expect(a.exposure_hash).toBe(b.exposure_hash);
@@ -131,10 +134,7 @@ describe("compareCoherenceExposure (spec-v20 — whole-deal binding-floor low-wa
   });
 
   it("renders a summary listing only exposed fronts and stable JSON", async () => {
-    const rounds = await Promise.all([
-      round("ideal", "ideal"),
-      round("ideal", "below-acceptable"),
-    ]);
+    const rounds = await Promise.all([round("ideal", "ideal"), round("ideal", "below-acceptable")]);
     const exposure = await compareCoherenceExposure(rounds);
     const summary = renderCoherenceExposureSummary(exposure);
     expect(summary).toContain("Coherence exposure across 2 rounds (worst binding floor)");

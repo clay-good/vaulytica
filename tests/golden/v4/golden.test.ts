@@ -36,9 +36,10 @@ const fixtures = await listV4Fixtures(FIXTURES);
 
 describe("v4 golden-output", () => {
   it("at least one v4 fixture is present", () => {
-    expect(fixtures.length, "drop a `.txt` or `.docx` into tests/golden/v4/fixtures").toBeGreaterThan(
-      0,
-    );
+    expect(
+      fixtures.length,
+      "drop a `.txt` or `.docx` into tests/golden/v4/fixtures",
+    ).toBeGreaterThan(0);
   });
 
   if (REGEN) {
@@ -80,9 +81,7 @@ describe("v4 golden-output", () => {
       const a = await runV4Fixture(path);
       const b = await runV4Fixture(path);
       expect(b.run.result_hash).toBe(a.run.result_hash);
-      expect(prettyStable(normalizeForGolden(b.run))).toBe(
-        prettyStable(normalizeForGolden(a.run)),
-      );
+      expect(prettyStable(normalizeForGolden(b.run))).toBe(prettyStable(normalizeForGolden(a.run)));
     });
 
     it(`${name} satisfies the sanity guard (matches a v4 playbook + emits findings)`, async () => {

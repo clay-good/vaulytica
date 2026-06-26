@@ -245,7 +245,10 @@ function parseArgs(argv: string[]): Args {
         i++;
         break;
       case "--format":
-        args.formats = (val ?? "").split(",").map((f) => f.trim()).filter(Boolean) as Format[];
+        args.formats = (val ?? "")
+          .split(",")
+          .map((f) => f.trim())
+          .filter(Boolean) as Format[];
         i++;
         break;
       case "--out":
@@ -411,15 +414,15 @@ async function runAnalyze(argv: string[]): Promise<void> {
     }
     const parsed = parseCustomPlaybookJson(text);
     if (!parsed.ok) {
-      process.stderr.write(`invalid playbook ${args.playbookFile}:\n  ${parsed.errors.join("\n  ")}\n`);
+      process.stderr.write(
+        `invalid playbook ${args.playbookFile}:\n  ${parsed.errors.join("\n  ")}\n`,
+      );
       process.exitCode = 1;
       return;
     }
     customPlaybook = parsed.playbook;
-    if (args.posture && !(customPlaybook.negotiation_positions?.length)) {
-      process.stderr.write(
-        `--posture: ${args.playbookFile} defines no negotiation_positions.\n`,
-      );
+    if (args.posture && !customPlaybook.negotiation_positions?.length) {
+      process.stderr.write(`--posture: ${args.playbookFile} defines no negotiation_positions.\n`);
     }
   }
   if (args.posture && !args.playbookFile) {
@@ -622,7 +625,10 @@ async function runAnalyze(argv: string[]): Promise<void> {
     regressed = coherenceRegressed(movement);
   }
 
-  if (args.out) process.stdout.write(`\nwrote ${args.formats.join(", ")} for ${inputs.length} file(s) → ${resolve(args.out)}\n`);
+  if (args.out)
+    process.stdout.write(
+      `\nwrote ${args.formats.join(", ")} for ${inputs.length} file(s) → ${resolve(args.out)}\n`,
+    );
   if (breached) {
     process.stderr.write(`\n✗ findings breached --fail-on ${args.failOn}\n`);
     process.exitCode = 2;
@@ -693,7 +699,9 @@ export function renderCoherenceSummary(coherence: PostureCoherence): string {
       .filter((t) => t.tier !== "unevaluable")
       .map((t) => `${t.document}=${t.tier}`)
       .join(", ");
-    lines.push(`  ⚠ ${d.dimension}: divergent (${spread}); binding floor ${d.weakest_tier} in ${d.weakest_documents.join(", ")}.`);
+    lines.push(
+      `  ⚠ ${d.dimension}: divergent (${spread}); binding floor ${d.weakest_tier} in ${d.weakest_documents.join(", ")}.`,
+    );
   }
   lines.push(`  coherence_hash: ${coherence.coherence_hash}`);
   return lines.join("\n") + "\n";

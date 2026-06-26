@@ -40,9 +40,7 @@ async function expectNoHorizontalOverflow(page: Page, state: string): Promise<vo
   for (const bp of BREAKPOINTS) {
     await page.setViewportSize({ width: bp.width, height: bp.height });
     // Let layout settle after the resize before measuring.
-    await page.evaluate(
-      () => new Promise<void>((r) => requestAnimationFrame(() => r())),
-    );
+    await page.evaluate(() => new Promise<void>((r) => requestAnimationFrame(() => r())));
     const overflow = await page.evaluate(() => {
       const el = document.documentElement;
       return el.scrollWidth - el.clientWidth;

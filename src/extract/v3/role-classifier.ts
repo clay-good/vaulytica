@@ -53,13 +53,9 @@ const PARENS_ROLE_RX =
 const RECITAL_RX =
   /\b(Controller|Processor|Covered Entity|Business Associate|Customer|Service Provider)\s+(?:wishes|desires|agrees|engages|appoints|retains|has engaged)\s+(?:to\s+)?(?:engage|retain|appoint|act as|provide)/i;
 
-const CCPA_CLAUSE_RX =
-  /\bas\s+(?:a|the)\s+([A-Za-z][A-Za-z\s-]{2,40})\s+under\s+the\s+CCPA\b/i;
+const CCPA_CLAUSE_RX = /\bas\s+(?:a|the)\s+([A-Za-z][A-Za-z\s-]{2,40})\s+under\s+the\s+CCPA\b/i;
 
-function partyForName(
-  parties: Party[],
-  name: string,
-): { id: string; name: string } {
+function partyForName(parties: Party[], name: string): { id: string; name: string } {
   const trimmed = name.trim();
   const lower = trimmed.toLowerCase();
   for (const p of parties) {
@@ -72,10 +68,7 @@ function partyForName(
   return { id: `role:${lower.replace(/\s+/g, "-")}`, name: trimmed };
 }
 
-export function classifyRoles(
-  tree: DocumentTree,
-  parties: Party[] = [],
-): RoleAssignment[] {
+export function classifyRoles(tree: DocumentTree, parties: Party[] = []): RoleAssignment[] {
   const seen = new Set<string>();
   const out: RoleAssignment[] = [];
 

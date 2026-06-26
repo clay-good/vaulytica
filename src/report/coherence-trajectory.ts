@@ -58,11 +58,7 @@ import type { PostureCoherence, PostureCoherenceKind } from "./posture-coherence
  *                           between two stated rungs, is `flat` — never a false
  *                           whipsaw (§3 honesty).
  */
-export type FloorTrajectoryKind =
-  | "steady-improvement"
-  | "steady-regression"
-  | "whipsaw"
-  | "flat";
+export type FloorTrajectoryKind = "steady-improvement" | "steady-regression" | "whipsaw" | "flat";
 
 /** How one negotiation front's binding floor moved across N rounds. */
 export type CoherenceFrontTrajectory = {
@@ -152,9 +148,9 @@ export async function compareCoherenceTrajectory(
   }
 
   const byDim = rounds.map((c) => new Map(c.dimensions.map((d) => [d.dimension, d])));
-  const labels = Array.from(new Set(rounds.flatMap((c) => c.dimensions.map((d) => d.dimension)))).sort(
-    (a, b) => a.localeCompare(b, "en"),
-  );
+  const labels = Array.from(
+    new Set(rounds.flatMap((c) => c.dimensions.map((d) => d.dimension))),
+  ).sort((a, b) => a.localeCompare(b, "en"));
 
   const trajectory_counts = emptyTrajectoryCounts();
   const net_counts = emptyNetCounts();
@@ -203,7 +199,9 @@ export async function compareCoherenceTrajectory(
  * net-only gate reads `net_counts.regressed` instead.
  */
 export function trajectoryRegressed(trajectory: CoherenceTrajectory): boolean {
-  return trajectory.trajectory_counts["steady-regression"] + trajectory.trajectory_counts.whipsaw > 0;
+  return (
+    trajectory.trajectory_counts["steady-regression"] + trajectory.trajectory_counts.whipsaw > 0
+  );
 }
 
 /**

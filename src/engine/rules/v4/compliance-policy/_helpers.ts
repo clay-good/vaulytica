@@ -135,7 +135,8 @@ export function whistleblowerLaw(): SourceCitation {
 export function sedona(): SourceCitation {
   return v4Cite({
     id: "sedona-principles",
-    source: "The Sedona Principles, Third Edition — best practices for ESI preservation and production",
+    source:
+      "The Sedona Principles, Third Edition — best practices for ESI preservation and production",
     source_url: "https://thesedonaconference.org/publication/The_Sedona_Principles",
     license: "The Sedona Conference (citation only)",
     license_url: "https://thesedonaconference.org/",

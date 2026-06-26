@@ -36,7 +36,9 @@ describe("STRUCT-013 — unfilled template placeholders", () => {
 
   it("fires on long underscore lines and XXX placeholders", () => {
     expect(STRUCT_013.check(buildContext(["H", "Signed: __________________"]))).not.toBeNull();
-    expect(STRUCT_013.check(buildContext(["H", "Order number XXXX from supplier."]))).not.toBeNull();
+    expect(
+      STRUCT_013.check(buildContext(["H", "Order number XXXX from supplier."])),
+    ).not.toBeNull();
   });
 
   it("silent on bracketed footnotes like [1] or [a]", () => {

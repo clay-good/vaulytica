@@ -69,7 +69,8 @@ export function readContainer(
   });
 
   if (source === "paste") return empty("Pasted text has no container to inspect.");
-  if (source === "image") return empty("Image-only input carries no document container to inspect.");
+  if (source === "image")
+    return empty("Image-only input carries no document container to inspect.");
   if (bytes.byteLength === 0) return empty("Empty input — no container to inspect.");
   if (bytes.byteLength > MAX_CONTAINER_BYTES) {
     return empty("Input exceeds the container-scan size limit; skipped.");
@@ -143,8 +144,7 @@ function parseRevisions(xml: string): RevisionFact[] {
     const author = TAG_AUTHOR.exec(attrs)?.[1];
     // Bounded forward scan for the revision's text, for location only.
     const tail = xml.slice(m.index, m.index + 2000);
-    const txt =
-      /<w:(?:t|delText)\b[^>]{0,200}>([^<]{0,200})<\/w:(?:t|delText)>/.exec(tail)?.[1];
+    const txt = /<w:(?:t|delText)\b[^>]{0,200}>([^<]{0,200})<\/w:(?:t|delText)>/.exec(tail)?.[1];
     facts.push(compact({ kind, author: clean(author), excerpt: excerpt(txt) }));
   }
   return facts;
@@ -235,14 +235,16 @@ function parseDocxMetadata(core: string, app: string): MetadataFact[] {
  */
 function readPdf(bytes: ArrayBuffer, text: string): ContainerFacts {
   // Decode as latin1 so byte offsets map 1:1 to characters (PDF is byte-oriented).
-  const ascii = strFromU8(new Uint8Array(bytes.slice(0, Math.min(bytes.byteLength, MAX_PART_BYTES))), true);
+  const ascii = strFromU8(
+    new Uint8Array(bytes.slice(0, Math.min(bytes.byteLength, MAX_PART_BYTES))),
+    true,
+  );
   const metadata = parsePdfInfo(ascii);
   const comments = parsePdfAnnotations(ascii);
   return {
     source: "pdf",
     inspectable: true,
-    note:
-      "PDF scan reads authoring metadata and reviewer annotations (sticky notes, text markup) from the uncompressed byte regions; annotations or metadata inside a compressed object stream or an encrypted region are not recovered.",
+    note: "PDF scan reads authoring metadata and reviewer annotations (sticky notes, text markup) from the uncompressed byte regions; annotations or metadata inside a compressed object stream or an encrypted region are not recovered.",
     revisions: [],
     comments,
     hidden: [],
@@ -290,11 +292,21 @@ function parsePdfAnnotations(ascii: string): CommentFact[] {
 
     const authorLit = /\/T\s{0,8}\(([^)]{0,200})\)/.exec(window)?.[1];
     const authorHex = /\/T\s{0,8}<([0-9A-Fa-f]{0,400})>/.exec(window)?.[1];
-    const author = authorLit !== undefined ? decodePdfLiteral(authorLit) : authorHex !== undefined ? decodePdfHex(authorHex) : undefined;
+    const author =
+      authorLit !== undefined
+        ? decodePdfLiteral(authorLit)
+        : authorHex !== undefined
+          ? decodePdfHex(authorHex)
+          : undefined;
 
     const contentsLit = /\/Contents\s{0,8}\(([^)]{0,400})\)/.exec(window)?.[1];
     const contentsHex = /\/Contents\s{0,8}<([0-9A-Fa-f]{0,800})>/.exec(window)?.[1];
-    const contents = contentsLit !== undefined ? decodePdfLiteral(contentsLit) : contentsHex !== undefined ? decodePdfHex(contentsHex) : undefined;
+    const contents =
+      contentsLit !== undefined
+        ? decodePdfLiteral(contentsLit)
+        : contentsHex !== undefined
+          ? decodePdfHex(contentsHex)
+          : undefined;
 
     const exc = excerpt(contents) ?? `[${PDF_ANNOT_LABEL[subtype] ?? subtype.toLowerCase()}]`;
     facts.push(compact({ author: clean(author), excerpt: exc }));
@@ -318,7 +330,8 @@ function parsePdfInfo(ascii: string): MetadataFact[] {
     // /Key (literal string) or /Key <hex string>, bounded.
     const lit = new RegExp(`/${key}\\s*\\(([^)]{0,400})\\)`).exec(ascii)?.[1];
     const hex = new RegExp(`/${key}\\s*<([0-9A-Fa-f]{0,800})>`).exec(ascii)?.[1];
-    const value = lit !== undefined ? decodePdfLiteral(lit) : hex !== undefined ? decodePdfHex(hex) : undefined;
+    const value =
+      lit !== undefined ? decodePdfLiteral(lit) : hex !== undefined ? decodePdfHex(hex) : undefined;
     const v = clean(value);
     if (v && facts.length < MAX_FACTS) facts.push({ field, value: v });
   }
@@ -328,11 +341,10 @@ function parsePdfInfo(ascii: string): MetadataFact[] {
 function decodePdfLiteral(s: string): string {
   // Minimal PDF literal-string unescaping: \) \( \\ and \n \r \t. Whitespace
   // normalization and trimming happen downstream in `clean()`.
-  return s
-    .replace(/\\([nrtbf()\\])/g, (_, c: string) => {
-      const map: Record<string, string> = { n: "\n", r: "\r", t: "\t", b: "\b", f: "\f" };
-      return map[c] ?? c;
-    });
+  return s.replace(/\\([nrtbf()\\])/g, (_, c: string) => {
+    const map: Record<string, string> = { n: "\n", r: "\r", t: "\t", b: "\b", f: "\f" };
+    return map[c] ?? c;
+  });
 }
 
 function decodePdfHex(h: string): string {

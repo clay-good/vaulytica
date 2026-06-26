@@ -130,10 +130,7 @@ function termFrequency(tokens: string[]): Record<string, number> {
   return tf;
 }
 
-function cosineSimilarity(
-  a: Record<string, number>,
-  b: Record<string, number>,
-): number {
+function cosineSimilarity(a: Record<string, number>, b: Record<string, number>): number {
   let dot = 0;
   let magA = 0;
   let magB = 0;
@@ -152,10 +149,56 @@ function cosineSimilarity(
 }
 
 const DEFAULT_STOPWORDS = [
-  "the", "a", "an", "and", "or", "of", "to", "in", "on", "at", "by", "for",
-  "with", "as", "is", "it", "be", "this", "that", "these", "those",
-  "shall", "party", "agreement", "section", "hereof", "hereunder",
-  "thereof", "thereto", "herein", "therein", "such", "any", "all", "each",
-  "no", "not", "but", "if", "then", "so", "may", "will", "would", "could",
-  "should", "do", "does", "did", "has", "have", "had",
+  "the",
+  "a",
+  "an",
+  "and",
+  "or",
+  "of",
+  "to",
+  "in",
+  "on",
+  "at",
+  "by",
+  "for",
+  "with",
+  "as",
+  "is",
+  "it",
+  "be",
+  "this",
+  "that",
+  "these",
+  "those",
+  "shall",
+  "party",
+  "agreement",
+  "section",
+  "hereof",
+  "hereunder",
+  "thereof",
+  "thereto",
+  "herein",
+  "therein",
+  "such",
+  "any",
+  "all",
+  "each",
+  "no",
+  "not",
+  "but",
+  "if",
+  "then",
+  "so",
+  "may",
+  "will",
+  "would",
+  "could",
+  "should",
+  "do",
+  "does",
+  "did",
+  "has",
+  "have",
+  "had",
 ];

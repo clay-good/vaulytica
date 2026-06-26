@@ -16,11 +16,7 @@ export function kindOf(doc: ConsistencyDocument): DocKind {
   if (p === "sow" || p.startsWith("sow-")) return "sow";
   if (p.startsWith("msa-") || p === "msa-general") return "msa";
   if (p.startsWith("baa")) return "baa";
-  if (
-    p.startsWith("dpa-") ||
-    p === "dpa" ||
-    p.startsWith("scc-")
-  ) {
+  if (p.startsWith("dpa-") || p === "dpa" || p.startsWith("scc-")) {
     return "dpa";
   }
   if (p.includes("nda")) return "nda";
@@ -56,10 +52,7 @@ export function fullText(doc: ConsistencyDocument): string {
  * because anchors like "Scope of Services" frequently live in the heading
  * while the operative text is in the paragraph below.
  */
-export function findParagraph(
-  doc: ConsistencyDocument,
-  pattern: RegExp,
-): ParagraphContext | null {
+export function findParagraph(doc: ConsistencyDocument, pattern: RegExp): ParagraphContext | null {
   let hit: ParagraphContext | null = null;
   forEachParagraph(doc.tree, (p) => {
     if (hit) return;

@@ -61,15 +61,13 @@ const CODE_OF_CONDUCT_RULES: Rule[] = [
     citation: nyse303A(),
     playbooks: [POL_PLAYBOOK_CODE_OF_CONDUCT],
     missing_title: "Scope clause missing",
-    missing_description: "No clause was found stating the Code applies to directors, officers, and employees.",
+    missing_description:
+      "No clause was found stating the Code applies to directors, officers, and employees.",
     explanation:
       "NYSE § 303A.10 / Nasdaq 5610 require listed-issuer codes to cover all directors, officers, and employees.",
     recommendation:
       "Add 'Scope' applying the Code to directors, officers, employees (and contractors / agents where appropriate).",
-    present_patterns: [
-      /(directors?|officers?|employees?)/i,
-      /(apply|applies|applicable|cover)/i,
-    ],
+    present_patterns: [/(directors?|officers?|employees?)/i, /(apply|applies|applicable|cover)/i],
   }),
   presence({
     id: "POL-002",
@@ -112,13 +110,11 @@ const CODE_OF_CONDUCT_RULES: Rule[] = [
   presence({
     id: "POL-004",
     name: "Reporting violations + non-retaliation",
-    description:
-      "Code must establish a confidential reporting channel and prohibit retaliation.",
+    description: "Code must establish a confidential reporting channel and prohibit retaliation.",
     citation: whistleblowerLaw(),
     playbooks: [POL_PLAYBOOK_CODE_OF_CONDUCT],
     missing_title: "Reporting / non-retaliation clause missing",
-    missing_description:
-      "No clause was found establishing reporting channel and non-retaliation.",
+    missing_description: "No clause was found establishing reporting channel and non-retaliation.",
     explanation:
       "SOX § 806 (18 U.S.C. § 1514A) + Dodd-Frank § 922 + SOX § 301 audit-committee complaint procedures require confidential / anonymous reporting and non-retaliation.",
     recommendation:
@@ -141,10 +137,7 @@ const CODE_OF_CONDUCT_RULES: Rule[] = [
       "The compliance-with-law obligation is the baseline. Listed-issuer codes always include this; private-company codes routinely do.",
     recommendation:
       "Add 'Compliance with Laws' requiring conformance with all applicable laws, rules, and regulations.",
-    present_patterns: [
-      /(compliance\s+with|comply\s+with)/i,
-      /(laws|regulations|rules|statutes)/i,
-    ],
+    present_patterns: [/(compliance\s+with|comply\s+with)/i, /(laws|regulations|rules|statutes)/i],
   }),
 ];
 
@@ -174,8 +167,7 @@ const FCPA_RULES: Rule[] = [
   presence({
     id: "POL-007",
     name: "Third-party / agent / intermediary due diligence",
-    description:
-      "Policy must require due diligence on third parties / agents / intermediaries.",
+    description: "Policy must require due diligence on third parties / agents / intermediaries.",
     citation: polPractice(
       "dojfcpa-third-party",
       "DOJ-SEC FCPA Resource Guide — third-party due diligence",
@@ -342,8 +334,7 @@ const AML_RULES: Rule[] = [
   presence({
     id: "POL-015",
     name: "Customer identification program (CIP) + beneficial ownership",
-    description:
-      "Policy must establish CIP and FinCEN beneficial-ownership identification rule.",
+    description: "Policy must establish CIP and FinCEN beneficial-ownership identification rule.",
     citation: polPractice(
       "fincen-cdd",
       "FinCEN CDD final rule — beneficial ownership (31 C.F.R. § 1010.230)",
@@ -385,8 +376,7 @@ const AML_RULES: Rule[] = [
   presence({
     id: "POL-017",
     name: "Recordkeeping + retention",
-    description:
-      "AML records must be retained for at least 5 years (31 C.F.R. § 1010.430).",
+    description: "AML records must be retained for at least 5 years (31 C.F.R. § 1010.430).",
     citation: bsa(),
     playbooks: [POL_PLAYBOOK_AML],
     missing_title: "AML recordkeeping / retention clause missing",
@@ -411,8 +401,7 @@ const INSIDER_TRADING_RULES: Rule[] = [
   presence({
     id: "POL-018",
     name: "Material non-public information (MNPI) prohibition",
-    description:
-      "Policy must prohibit trading on material non-public information (Rule 10b-5).",
+    description: "Policy must prohibit trading on material non-public information (Rule 10b-5).",
     citation: rule10b5(false),
     playbooks: [POL_PLAYBOOK_INSIDER],
     missing_title: "MNPI / insider-trading prohibition clause missing",
@@ -501,8 +490,7 @@ const INSIDER_TRADING_RULES: Rule[] = [
     ),
     playbooks: [POL_PLAYBOOK_INSIDER],
     missing_title: "Short sales / hedging restrictions clause missing",
-    missing_description:
-      "No clause was found restricting short sales / hedging / derivatives.",
+    missing_description: "No clause was found restricting short sales / hedging / derivatives.",
     explanation:
       "Item 407(i) of Reg S-K (Dodd-Frank § 955) requires disclosure of hedging policies. Most issuers prohibit insiders from hedging / pledging / short-selling company stock.",
     recommendation:
@@ -529,8 +517,7 @@ const WHISTLEBLOWER_RULES: Rule[] = [
     citation: whistleblowerLaw(),
     playbooks: [POL_PLAYBOOK_WHISTLEBLOWER],
     missing_title: "Reporting channels clause missing",
-    missing_description:
-      "No clause was found establishing reporting channels.",
+    missing_description: "No clause was found establishing reporting channels.",
     explanation:
       "SOX § 301 audit-committee complaints + Dodd-Frank § 922 SEC bounty + agency-specific programs (CFTC, DOL OSHA) create overlapping options. Policy should support internal reporting without restricting external rights.",
     recommendation:
@@ -548,8 +535,7 @@ const WHISTLEBLOWER_RULES: Rule[] = [
     citation: whistleblowerLaw(),
     playbooks: [POL_PLAYBOOK_WHISTLEBLOWER, POL_PLAYBOOK_CODE_OF_CONDUCT],
     missing_title: "Non-retaliation / statutory-protection clause missing",
-    missing_description:
-      "No non-retaliation / statutory-protection clause was found.",
+    missing_description: "No non-retaliation / statutory-protection clause was found.",
     explanation:
       "SOX § 806 (18 U.S.C. § 1514A) + Dodd-Frank § 922 (15 U.S.C. § 78u-6(h)) prohibit retaliation against whistleblowers; remedies include reinstatement, back pay, and special damages.",
     recommendation:
@@ -589,16 +575,12 @@ const WHISTLEBLOWER_RULES: Rule[] = [
     citation: soxSection("301", "Audit-committee complaint procedures"),
     playbooks: [POL_PLAYBOOK_WHISTLEBLOWER],
     missing_title: "Confidentiality / anonymous reporting clause missing",
-    missing_description:
-      "No confidentiality / anonymous reporting clause was found.",
+    missing_description: "No confidentiality / anonymous reporting clause was found.",
     explanation:
       "SOX § 301 requires audit-committee complaint procedures with confidentiality and anonymity. Anonymous channels (third-party hotline) drive higher reporting rates.",
     recommendation:
       "Add 'Confidentiality and Anonymity' establishing confidential handling and anonymous reporting (typically via third-party hotline).",
-    present_patterns: [
-      /(confidential(ity)?|anonymous(ly)?|anonymity)/i,
-      /(hotline|third.?party)/i,
-    ],
+    present_patterns: [/(confidential(ity)?|anonymous(ly)?|anonymity)/i, /(hotline|third.?party)/i],
   }),
   presence({
     id: "POL-027",
@@ -654,8 +636,7 @@ const DOC_RETENTION_RULES: Rule[] = [
   presence({
     id: "POL-029",
     name: "Legal hold + e-discovery suspension override",
-    description:
-      "Policy must provide for legal-hold override that suspends routine destruction.",
+    description: "Policy must provide for legal-hold override that suspends routine destruction.",
     citation: sedona(),
     playbooks: [POL_PLAYBOOK_RETENTION],
     missing_title: "Legal-hold override clause missing",
@@ -699,8 +680,7 @@ const DOC_RETENTION_RULES: Rule[] = [
     ),
     playbooks: [POL_PLAYBOOK_RETENTION],
     missing_title: "Regulatory minimum retention clause missing",
-    missing_description:
-      "No regulatory-minimum retention clause was found.",
+    missing_description: "No regulatory-minimum retention clause was found.",
     explanation:
       "SEC Rule 17a-4 (broker-dealers), IRC § 6501 (tax assessment 3-year minimum + 7-year fraud), ERISA § 107 (6 years), HIPAA § 164.530(j) (6 years) — policy must align with the longest applicable.",
     recommendation:
@@ -723,8 +703,7 @@ const DOC_RETENTION_RULES: Rule[] = [
     ),
     playbooks: [POL_PLAYBOOK_RETENTION],
     missing_title: "Secure-destruction clause missing",
-    missing_description:
-      "No secure-destruction clause was found.",
+    missing_description: "No secure-destruction clause was found.",
     explanation:
       "Without secure destruction, retained records risk identity theft / breach (e.g., PHI / PII). Standard practice: NAID-AAA shred + certificate of destruction.",
     recommendation:
@@ -766,8 +745,7 @@ const COI_POLICY_RULES: Rule[] = [
     citation: form990(),
     playbooks: [POL_PLAYBOOK_COI],
     missing_title: "Annual disclosure clause missing",
-    missing_description:
-      "No annual disclosure / ongoing-duty clause was found.",
+    missing_description: "No annual disclosure / ongoing-duty clause was found.",
     explanation:
       "IRS Form 990 governance questions ask whether annual disclosure is required and reviewed.",
     recommendation:
@@ -789,8 +767,7 @@ const COI_POLICY_RULES: Rule[] = [
     ),
     playbooks: [POL_PLAYBOOK_COI],
     missing_title: "Recusal / review procedure clause missing",
-    missing_description:
-      "No recusal / review-procedure clause was found.",
+    missing_description: "No recusal / review-procedure clause was found.",
     explanation:
       "IRC § 4958 (intermediate sanctions) creates rebuttable presumption of reasonableness when independent body approves + relies on comparable data + documents the basis.",
     recommendation:
@@ -804,8 +781,7 @@ const COI_POLICY_RULES: Rule[] = [
   presence({
     id: "POL-036",
     name: "Sanctions for violations",
-    description:
-      "Policy must address sanctions for violations (board removal, employment action).",
+    description: "Policy must address sanctions for violations (board removal, employment action).",
     citation: polPractice(
       "coi-sanctions",
       "COI policy — sanctions baseline",
@@ -813,8 +789,7 @@ const COI_POLICY_RULES: Rule[] = [
     ),
     playbooks: [POL_PLAYBOOK_COI],
     missing_title: "Sanctions for violations clause missing",
-    missing_description:
-      "No sanctions-for-violations clause was found.",
+    missing_description: "No sanctions-for-violations clause was found.",
     explanation:
       "Without articulated sanctions, the policy is toothless. Standard: board removal for directors, discipline up to termination for employees.",
     recommendation:
@@ -835,12 +810,12 @@ const AI_AUP_RULES: Rule[] = [
   presence({
     id: "POL-037",
     name: "Approved AI tools list + procurement gate",
-    description: "AI AUP must specify approved AI tools and procurement / approval gate for new tools.",
+    description:
+      "AI AUP must specify approved AI tools and procurement / approval gate for new tools.",
     citation: nistAiRmf(),
     playbooks: [POL_PLAYBOOK_AI_AUP],
     missing_title: "Approved AI tools clause missing",
-    missing_description:
-      "No approved-AI-tools / procurement-gate clause was found.",
+    missing_description: "No approved-AI-tools / procurement-gate clause was found.",
     explanation:
       "Shadow AI (employees using unapproved tools) is the leading AI-governance risk; an approved-tools list with procurement gate is the first line of defense.",
     recommendation:
@@ -880,8 +855,7 @@ const AI_AUP_RULES: Rule[] = [
     citation: euAiAct(),
     playbooks: [POL_PLAYBOOK_AI_AUP],
     missing_title: "Human-in-the-loop review clause missing",
-    missing_description:
-      "No human-in-the-loop / output-review clause was found.",
+    missing_description: "No human-in-the-loop / output-review clause was found.",
     explanation:
       "EU AI Act Art. 14 requires human oversight for high-risk systems. NIST AI RMF Govern function emphasizes accountable human review. Standard practice: AI assists, humans decide for high-impact outputs.",
     recommendation:
@@ -903,8 +877,7 @@ const AI_AUP_RULES: Rule[] = [
     ),
     playbooks: [POL_PLAYBOOK_AI_AUP],
     missing_title: "IP / hallucination disclaimer clause missing",
-    missing_description:
-      "No IP / hallucination / attribution clause was found.",
+    missing_description: "No IP / hallucination / attribution clause was found.",
     explanation:
       "USPTO guidance + Thaler v. Vidal: AI-generated outputs raise copyright / patent ownership questions. Hallucinations require verification before reliance.",
     recommendation:
@@ -923,8 +896,7 @@ const AI_AUP_RULES: Rule[] = [
     citation: nistAiRmf(),
     playbooks: [POL_PLAYBOOK_AI_AUP],
     missing_title: "Training / incident-reporting clause missing",
-    missing_description:
-      "No training / incident-reporting clause was found.",
+    missing_description: "No training / incident-reporting clause was found.",
     explanation:
       "NIST AI RMF Govern function emphasizes training + incident reporting as the operational backbone of AI governance.",
     recommendation:
@@ -970,8 +942,7 @@ const SOCIAL_MEDIA_POLICY_RULES: Rule[] = [
     citation: ftcEndorsement(),
     playbooks: [POL_PLAYBOOK_SOCIAL_MEDIA],
     missing_title: "FTC endorsement disclosure clause missing",
-    missing_description:
-      "No FTC endorsement / material-connection disclosure clause was found.",
+    missing_description: "No FTC endorsement / material-connection disclosure clause was found.",
     explanation:
       "FTC Endorsement Guides (16 C.F.R. Part 255, 2023 revision) require clear and conspicuous disclosure of material connections (employment / payment / free product) for any endorsement.",
     recommendation:
@@ -984,8 +955,7 @@ const SOCIAL_MEDIA_POLICY_RULES: Rule[] = [
   presence({
     id: "POL-044",
     name: "Reg FD / SEC compliance for material disclosures",
-    description:
-      "Policy must address Reg FD compliance for public-company communications.",
+    description: "Policy must address Reg FD compliance for public-company communications.",
     citation: polPractice(
       "reg-fd",
       "SEC Regulation FD (17 C.F.R. §§ 243.100–.103)",
@@ -993,8 +963,7 @@ const SOCIAL_MEDIA_POLICY_RULES: Rule[] = [
     ),
     playbooks: [POL_PLAYBOOK_SOCIAL_MEDIA],
     missing_title: "Reg FD compliance clause missing",
-    missing_description:
-      "No Reg FD compliance clause was found.",
+    missing_description: "No Reg FD compliance clause was found.",
     explanation:
       "Reg FD requires public companies to disseminate material information broadly + simultaneously. SEC has confirmed that social-media may satisfy Reg FD if the channel is recognized as a means of communication.",
     recommendation:
@@ -1017,8 +986,7 @@ const SOCIAL_MEDIA_POLICY_RULES: Rule[] = [
     ),
     playbooks: [POL_PLAYBOOK_SOCIAL_MEDIA],
     missing_title: "Brand-voice / personal-disclaimer clause missing",
-    missing_description:
-      "No brand-voice / personal-disclaimer clause was found.",
+    missing_description: "No brand-voice / personal-disclaimer clause was found.",
     explanation:
       "Distinguishing personal speech from company speech avoids attribution risk + minimizes endorsement-disclosure exposure for casual employee posts.",
     recommendation:
@@ -1039,13 +1007,11 @@ const LOBBYING_POLICY_RULES: Rule[] = [
   presence({
     id: "POL-046",
     name: "LDA registration + quarterly reporting",
-    description:
-      "Policy must address LDA registration thresholds + quarterly LD-2 reporting.",
+    description: "Policy must address LDA registration thresholds + quarterly LD-2 reporting.",
     citation: lda(),
     playbooks: [POL_PLAYBOOK_LOBBYING],
     missing_title: "LDA registration / quarterly reporting clause missing",
-    missing_description:
-      "No LDA registration / quarterly reporting clause was found.",
+    missing_description: "No LDA registration / quarterly reporting clause was found.",
     explanation:
       "Lobbying Disclosure Act of 1995 (2 U.S.C. §§ 1601–1614) requires registration when income ≥ $14,000/quarter (in-house) and quarterly LD-2 reports. Honest Leadership and Open Government Act of 2007 adds semiannual LD-203 reports.",
     recommendation:
@@ -1113,8 +1079,7 @@ const LOBBYING_POLICY_RULES: Rule[] = [
     ),
     playbooks: [POL_PLAYBOOK_LOBBYING],
     missing_title: "State / local lobbying compliance clause missing",
-    missing_description:
-      "No state / local lobbying compliance clause was found.",
+    missing_description: "No state / local lobbying compliance clause was found.",
     explanation:
       "State lobbying laws vary widely (NY, CA, IL have aggressive registration / contribution-reporting + revolving-door rules). Multi-state lobbyists need a 50-state matrix.",
     recommendation:

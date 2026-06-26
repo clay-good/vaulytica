@@ -13,7 +13,10 @@ import {
 import { compareRuns } from "../../src/report/compare.js";
 import { buildClauseDiff } from "../../src/report/clause-diff.js";
 import { comparePosture } from "../../src/report/posture-movement.js";
-import type { NegotiationPosture, NegotiationTier } from "../../src/playbooks/custom-interpreter.js";
+import type {
+  NegotiationPosture,
+  NegotiationTier,
+} from "../../src/playbooks/custom-interpreter.js";
 import type { EngineRun, Finding, Severity } from "../../src/engine/index.js";
 import type { DocumentTree } from "../../src/ingest/types.js";
 
@@ -27,7 +30,12 @@ function finding(rule_id: string, severity: Severity, position: number): Finding
     severity,
     title: `Issue with ${rule_id}`,
     description: "desc",
-    excerpt: { text: "clause", section_id: `s${position}`, start_offset: position, end_offset: position + 5 },
+    excerpt: {
+      text: "clause",
+      section_id: `s${position}`,
+      start_offset: position,
+      end_offset: position + 5,
+    },
     explanation: "Why.",
     source_citations: [],
     document_position: position,
@@ -42,7 +50,12 @@ function makeRun(name: string, hash: string, findings: Finding[]): EngineRun {
     source_file: { name, sha256: "a".repeat(64), size_bytes: 1024 },
     executed_at: "2026-06-09T00:00:00Z",
     findings,
-    execution_log: findings.map((f) => ({ rule_id: f.rule_id, rule_version: "1.0.0", fired: true, elapsed_ms: 0 })),
+    execution_log: findings.map((f) => ({
+      rule_id: f.rule_id,
+      rule_version: "1.0.0",
+      fired: true,
+      elapsed_ms: 0,
+    })),
     result_hash: hash,
   };
 }
@@ -74,7 +87,15 @@ describe("parseCompareArgs", () => {
   });
 
   it("parses positionals and flags", () => {
-    const a = parseCompareArgs(["base.docx", "rev.docx", "--fail-on", "warning", "--format", "json", "--confirm-pairing"]);
+    const a = parseCompareArgs([
+      "base.docx",
+      "rev.docx",
+      "--fail-on",
+      "warning",
+      "--format",
+      "json",
+      "--confirm-pairing",
+    ]);
     expect(a.base).toBe("base.docx");
     expect(a.revised).toBe("rev.docx");
     expect(a.failOn).toBe("warning");
@@ -96,13 +117,21 @@ describe("parseCompareArgs", () => {
   });
 
   it("parses --posture with --playbook-file (spec-v11)", () => {
-    const a = parseCompareArgs(["base.docx", "rev.docx", "--playbook-file", "pb.json", "--posture"]);
+    const a = parseCompareArgs([
+      "base.docx",
+      "rev.docx",
+      "--playbook-file",
+      "pb.json",
+      "--posture",
+    ]);
     expect(a.playbookFile).toBe("pb.json");
     expect(a.posture).toBe(true);
   });
 
   it("rejects --posture without --playbook-file (no silent no-op)", () => {
-    expect(() => parseCompareArgs(["a", "b", "--posture"])).toThrow(/--posture requires --playbook-file/);
+    expect(() => parseCompareArgs(["a", "b", "--posture"])).toThrow(
+      /--posture requires --playbook-file/,
+    );
   });
 
   it("defaults posture off", () => {
@@ -110,7 +139,14 @@ describe("parseCompareArgs", () => {
   });
 
   it("parses --fail-on-regression with --posture (spec-v11 Thrust C)", () => {
-    const a = parseCompareArgs(["a", "b", "--playbook-file", "pb.json", "--posture", "--fail-on-regression"]);
+    const a = parseCompareArgs([
+      "a",
+      "b",
+      "--playbook-file",
+      "pb.json",
+      "--posture",
+      "--fail-on-regression",
+    ]);
     expect(a.failOnRegression).toBe(true);
   });
 
@@ -206,14 +242,20 @@ describe("formatCompareMarkdown", () => {
   });
 
   it("omits the introduced-findings section when none were introduced", async () => {
-    const cmp = await compareRuns(makeRun("a", "b".repeat(64), []), makeRun("b", "r".repeat(64), []));
+    const cmp = await compareRuns(
+      makeRun("a", "b".repeat(64), []),
+      makeRun("b", "r".repeat(64), []),
+    );
     const md = formatCompareMarkdown(cmp, buildClauseDiff(docTree("Same."), docTree("Same.")));
     expect(md).not.toContain("### Introduced findings");
     expect(md).toContain("0 rewritten · 0 added · 0 removed");
   });
 
   it("appends a posture-movement section only when a movement is supplied (spec-v11)", async () => {
-    const cmp = await compareRuns(makeRun("a", "b".repeat(64), []), makeRun("b", "r".repeat(64), []));
+    const cmp = await compareRuns(
+      makeRun("a", "b".repeat(64), []),
+      makeRun("b", "r".repeat(64), []),
+    );
     const diff = buildClauseDiff(docTree("Same."), docTree("Same."));
     expect(formatCompareMarkdown(cmp, diff)).not.toContain("Negotiation posture movement");
 
@@ -268,8 +310,10 @@ describe("runCompare (integration)", () => {
     vi.setConfig({ testTimeout: 30_000 });
     const dir = await mkdtemp(join(tmpdir(), "vaulytica-compare-"));
     try {
-      const baseText = "MUTUAL NONDISCLOSURE AGREEMENT\n\nThe term of this Agreement is one (1) year.\n";
-      const revisedText = "MUTUAL NONDISCLOSURE AGREEMENT\n\nThe term of this Agreement is three (3) years.\n";
+      const baseText =
+        "MUTUAL NONDISCLOSURE AGREEMENT\n\nThe term of this Agreement is one (1) year.\n";
+      const revisedText =
+        "MUTUAL NONDISCLOSURE AGREEMENT\n\nThe term of this Agreement is three (3) years.\n";
       const basePath = join(dir, "base.txt");
       const revPath = join(dir, "revised.txt");
       await writeFile(basePath, baseText);

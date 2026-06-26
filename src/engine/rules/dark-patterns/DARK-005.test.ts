@@ -20,7 +20,10 @@ describe("DARK-005 — class-action waiver", () => {
   });
 
   it("fires on `no class action`", () => {
-    const ctx = buildContext(["H", "There shall be no class action or class-wide proceedings under this Agreement."]);
+    const ctx = buildContext([
+      "H",
+      "There shall be no class action or class-wide proceedings under this Agreement.",
+    ]);
     expect(DARK_005.check(ctx)).not.toBeNull();
   });
 
@@ -41,7 +44,10 @@ describe("DARK-005 — class-action waiver", () => {
   });
 
   it("silent on a clause that merely mentions class actions in passing", () => {
-    const ctx = buildContext(["H", "Class actions have been recognized by US courts for over a century."]);
+    const ctx = buildContext([
+      "H",
+      "Class actions have been recognized by US courts for over a century.",
+    ]);
     expect(DARK_005.check(ctx)).toBeNull();
   });
 });

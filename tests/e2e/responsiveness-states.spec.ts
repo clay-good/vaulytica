@@ -91,7 +91,10 @@ async function expectNoHorizontalOverflow(page: Page, label: string): Promise<vo
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
     );
-    expect(overflow, `${label} overflows horizontally by ${overflow}px at ${bp.label}`).toBeLessThanOrEqual(1);
+    expect(
+      overflow,
+      `${label} overflows horizontally by ${overflow}px at ${bp.label}`,
+    ).toBeLessThanOrEqual(1);
   }
 }
 
@@ -105,7 +108,10 @@ const counts4 = (n: number) => ({ critical: n, warning: n, info: n, total: n * 3
 /** Every state in the union, with overflow-stressing data. */
 const STATES: Array<{ name: string; state: DropzoneState }> = [
   { name: "empty", state: { kind: "empty" } },
-  { name: "analyzing", state: { kind: "analyzing", filename: LONG_NAME, dkb_version: "v2026-06-07-local" } },
+  {
+    name: "analyzing",
+    state: { kind: "analyzing", filename: LONG_NAME, dkb_version: "v2026-06-07-local" },
+  },
   {
     name: "complete",
     state: {
@@ -134,13 +140,30 @@ const STATES: Array<{ name: string; state: DropzoneState }> = [
         html_filename: "r.html",
       },
       secondary_families: [
-        { playbook_id: "baa", playbook_name: "Business Associate Agreement (HIPAA §164.504(e))", counts: counts3 },
+        {
+          playbook_id: "baa",
+          playbook_name: "Business Associate Agreement (HIPAA §164.504(e))",
+          counts: counts3,
+        },
       ],
       // Rich complete-state content — these render long citations, chips, and
       // provenance lines that are prime overflow / contrast candidates.
-      v3_family: { family: "dpa-controller-processor", label: "Data Processing Agreement (Controller↔Processor)", confidence: 0.92 },
+      v3_family: {
+        family: "dpa-controller-processor",
+        label: "Data Processing Agreement (Controller↔Processor)",
+        confidence: 0.92,
+      },
       v3_frames: {
-        available: ["GDPR", "CCPA", "HIPAA", "UK GDPR", "ISO 27001", "SOC 2", "PCI DSS", "NIST 800-53"],
+        available: [
+          "GDPR",
+          "CCPA",
+          "HIPAA",
+          "UK GDPR",
+          "ISO 27001",
+          "SOC 2",
+          "PCI DSS",
+          "NIST 800-53",
+        ],
         on: ["GDPR", "CCPA", "HIPAA"],
         hint: "Toggle a framework to re-scan against its specific obligations.",
       },
@@ -161,9 +184,11 @@ const STATES: Array<{ name: string; state: DropzoneState }> = [
             headline: "Non-competes are void and unenforceable for employees",
             summary:
               "California voids employee non-compete covenants as a matter of public policy, with narrow statutory exceptions (sale of business, dissolution of partnership). A choice-of-law clause selecting another state generally will not save a non-compete against a California-resident employee.",
-            recommendation: "Remove the non-compete or scope it to a permitted statutory exception; do not rely on an out-of-state choice-of-law clause.",
+            recommendation:
+              "Remove the non-compete or scope it to a permitted statutory exception; do not rely on an out-of-state choice-of-law clause.",
             citation: {
-              source: "California Business and Professions Code § 16600 (and §§ 16601–16602.5 exceptions)",
+              source:
+                "California Business and Professions Code § 16600 (and §§ 16601–16602.5 exceptions)",
               source_url:
                 "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=16600",
             },
@@ -193,7 +218,8 @@ const STATES: Array<{ name: string; state: DropzoneState }> = [
             rule_id: "HANDOFF-004",
             severity: "critical",
             title: "Authoring metadata is present",
-            description: "5 authoring-metadata fields are embedded in the container. 2 identity fields name an entity not among the document's parties (a likely cross-matter leak).",
+            description:
+              "5 authoring-metadata fields are embedded in the container. 2 identity fields name an entity not among the document's parties (a likely cross-matter leak).",
             count: 5,
             evidence: [
               "template: C:\\Users\\jdrafter\\AppData\\Roaming\\Microsoft\\Templates\\PriorClient_Globex_MSA_FINAL_v7.dotx ⚠ not a named party",
@@ -204,9 +230,13 @@ const STATES: Array<{ name: string; state: DropzoneState }> = [
             rule_id: "HANDOFF-005",
             severity: "critical",
             title: "Sensitive-data patterns are present",
-            description: "4 spans match sensitive-data formats that are routinely redacted before disclosure.",
+            description:
+              "4 spans match sensitive-data formats that are routinely redacted before disclosure.",
             count: 4,
-            evidence: ["ssn (high confidence): ***-**-6789", "card (high confidence): ************4242"],
+            evidence: [
+              "ssn (high confidence): ***-**-6789",
+              "card (high confidence): ************4242",
+            ],
           },
         ],
       },
@@ -289,8 +319,10 @@ const STATES: Array<{ name: string; state: DropzoneState }> = [
           {
             dimension: "Liability cap (as a multiple of trailing twelve months of fees)",
             tier: "below-acceptable",
-            detail: "Found liability_cap_multiple = 3; your playbook requires liability_cap_multiple ≥ 6.",
-            guidance: "Below our 6x floor — escalate to the deal lead before agreeing to anything lower.",
+            detail:
+              "Found liability_cap_multiple = 3; your playbook requires liability_cap_multiple ≥ 6.",
+            guidance:
+              "Below our 6x floor — escalate to the deal lead before agreeing to anything lower.",
             section_id: "s7.4",
           },
           {
@@ -300,7 +332,11 @@ const STATES: Array<{ name: string; state: DropzoneState }> = [
             guidance: "Up to 60 days is tolerable; push for 30 if you have leverage.",
             section_id: "s12",
           },
-          { dimension: "Governing law", tier: "ideal", guidance: "Delaware — our preferred forum; hold." },
+          {
+            dimension: "Governing law",
+            tier: "ideal",
+            guidance: "Delaware — our preferred forum; hold.",
+          },
           {
             dimension: "Uptime service-level commitment",
             tier: "unevaluable",
@@ -345,25 +381,29 @@ const STATES: Array<{ name: string; state: DropzoneState }> = [
             movement: "improved",
           },
           {
-            dimension: "Governing law and exclusive forum selection for all disputes arising hereunder",
+            dimension:
+              "Governing law and exclusive forum selection for all disputes arising hereunder",
             base_tier: "ideal",
             revised_tier: "acceptable",
             movement: "regressed",
           },
           {
-            dimension: "Mutuality of the indemnification obligations between the contracting parties",
+            dimension:
+              "Mutuality of the indemnification obligations between the contracting parties",
             base_tier: "below-acceptable",
             revised_tier: "below-acceptable",
             movement: "unchanged",
           },
           {
-            dimension: "Auto-renewal non-renewal notice window expressed in calendar days before term end",
+            dimension:
+              "Auto-renewal non-renewal notice window expressed in calendar days before term end",
             base_tier: "unevaluable",
             revised_tier: "acceptable",
             movement: "newly-stated",
           },
           {
-            dimension: "Uptime / availability service-level commitment as a percentage of the month",
+            dimension:
+              "Uptime / availability service-level commitment as a percentage of the month",
             base_tier: "acceptable",
             revised_tier: "unevaluable",
             movement: "now-unstated",
@@ -397,7 +437,9 @@ const STATES: Array<{ name: string; state: DropzoneState }> = [
         playbook_name: "DPA — Controller/Processor",
         playbook_deprecated: i === 0,
         counts: counts3,
-        secondary_families: [{ playbook_name: "Business Associate Agreement (HIPAA)", counts: counts3 }],
+        secondary_families: [
+          { playbook_name: "Business Associate Agreement (HIPAA)", counts: counts3 },
+        ],
         docx_blob: blob("d"),
         json_blob: blob("j"),
         docx_filename: `doc${i}.docx`,
@@ -418,14 +460,18 @@ const STATES: Array<{ name: string; state: DropzoneState }> = [
               "Aggregate limitation of liability cap as a multiple of trailing-twelve-month fees paid",
             coherence: "divergent",
             tiers: [
-              { document: `${LONG_NAME.slice(0, 40)}_master_services_agreement.pdf`, tier: "ideal" },
+              {
+                document: `${LONG_NAME.slice(0, 40)}_master_services_agreement.pdf`,
+                tier: "ideal",
+              },
               { document: `${LONG_NAME.slice(0, 40)}_order_form.pdf`, tier: "below-acceptable" },
             ],
             weakest_tier: "below-acceptable",
             weakest_documents: [`${LONG_NAME.slice(0, 40)}_order_form.pdf`],
           },
           {
-            dimension: "Governing law and exclusive forum selection for all disputes arising hereunder",
+            dimension:
+              "Governing law and exclusive forum selection for all disputes arising hereunder",
             coherence: "aligned",
             tiers: [
               { document: "msa.pdf", tier: "ideal" },
@@ -435,7 +481,8 @@ const STATES: Array<{ name: string; state: DropzoneState }> = [
             weakest_documents: ["msa.pdf", "order_form.pdf"],
           },
           {
-            dimension: "Mutuality of the indemnification obligations between the contracting parties",
+            dimension:
+              "Mutuality of the indemnification obligations between the contracting parties",
             coherence: "single",
             tiers: [
               { document: "msa.pdf", tier: "acceptable" },
@@ -482,7 +529,8 @@ const STATES: Array<{ name: string; state: DropzoneState }> = [
             coherence_shift: "fractured",
           },
           {
-            dimension: "Governing law and exclusive forum selection for all disputes arising hereunder",
+            dimension:
+              "Governing law and exclusive forum selection for all disputes arising hereunder",
             base_coherence: "divergent",
             revised_coherence: "aligned",
             base_floor: "below-acceptable",
@@ -491,7 +539,8 @@ const STATES: Array<{ name: string; state: DropzoneState }> = [
             coherence_shift: "reconciled",
           },
           {
-            dimension: "Mutuality of the indemnification obligations between the contracting parties",
+            dimension:
+              "Mutuality of the indemnification obligations between the contracting parties",
             base_coherence: null,
             revised_coherence: "single",
             base_floor: null,

@@ -11,7 +11,8 @@ export const rule: Rule = {
   name: "Hanging template placeholder",
   category: "structural",
   default_severity: "critical",
-  description: "Detects placeholders left unfilled (`[insert]`, `[Counterparty Name]`, `TBD`, etc.).",
+  description:
+    "Detects placeholders left unfilled (`[insert]`, `[Counterparty Name]`, `TBD`, etc.).",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(ctx, PLACEHOLDER);

@@ -11,7 +11,10 @@ const NDA = [
   "Governed by the laws of the State of Delaware.",
 ].join("\n");
 
-async function savedReportFor(text: string, deps: Awaited<ReturnType<typeof loadAccuracyDeps>>): Promise<SavedReport> {
+async function savedReportFor(
+  text: string,
+  deps: Awaited<ReturnType<typeof loadAccuracyDeps>>,
+): Promise<SavedReport> {
   const r = await analyzeText(text, "nda.txt", { deps });
   return {
     run: {

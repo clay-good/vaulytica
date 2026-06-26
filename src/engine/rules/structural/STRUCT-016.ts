@@ -77,13 +77,21 @@ export const rule: Rule = {
     const anchors = new Set<string>();
     const anchorParaCounts = new Map<string, number>();
     forEachSection(ctx.tree, (s) => {
-      const m = /^\s*(Exhibit|Schedule|Attachment|Appendix|Annex)\s+([A-Z]|\d{1,2})\b/i.exec(s.heading);
+      const m = /^\s*(Exhibit|Schedule|Attachment|Appendix|Annex)\s+([A-Z]|\d{1,2})\b/i.exec(
+        s.heading,
+      );
       if (m) {
         const key = `${m[1]!.toLowerCase()}:${m[2]!.toLowerCase()}`;
         anchors.add(key);
         // Count substantive paragraphs (≥30 chars) to decide whether
         // the exhibit was actually filled in or left as a stub.
-        const count = s.paragraphs.filter((p) => p.runs.map((r) => r.text).join("").trim().length >= 30).length;
+        const count = s.paragraphs.filter(
+          (p) =>
+            p.runs
+              .map((r) => r.text)
+              .join("")
+              .trim().length >= 30,
+        ).length;
         anchorParaCounts.set(key, count);
       }
     });
@@ -98,15 +106,16 @@ export const rule: Rule = {
 
       const niceKind = (r.match[1] ?? "").replace(/^./, (c) => c.toUpperCase());
       const niceId = (r.match[2] ?? "").toUpperCase();
-      const status = present ? "is present but empty / placeholder" : "is not attached to the document";
+      const status = present
+        ? "is present but empty / placeholder"
+        : "is not attached to the document";
       return emit(ctx, rule, {
         title: `${niceKind} ${niceId} referenced but ${present ? "empty" : "missing"}`,
         description: `${r.match[0]} — ${niceKind} ${niceId} ${status}.`,
         excerpt: r.text.slice(Math.max(0, r.match.index - 40), r.match.index + 240),
         explanation:
           "The agreement refers to an exhibit / schedule / attachment as the source of operative terms, but the referenced exhibit is missing or empty. The operative terms are therefore not in the contract. If the exhibit is meant to be supplied later, that later supplement is a new contractual document and should be governed by an amendment process.",
-        recommendation:
-          `Attach a substantive ${niceKind} ${niceId} before execution, or remove the reference. If the exhibit is genuinely intended to be filled in later, mark it 'to be agreed' and add a process: who proposes, by when, what happens if the parties cannot agree.`,
+        recommendation: `Attach a substantive ${niceKind} ${niceId} before execution, or remove the reference. If the exhibit is genuinely intended to be filled in later, mark it 'to be agreed' and add a process: who proposes, by when, what happens if the parties cannot agree.`,
         position: r.position,
       });
     }

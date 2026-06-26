@@ -76,7 +76,8 @@ export function stateBreach(): SourceCitation {
     id: "state-breach-notification",
     source:
       "State data-breach notification statutes (all 50 + DC + territories; e.g., CA Civ. § 1798.82, NY GBL § 899-aa, MA G.L. c. 93H, IL 815 ILCS 530, TX Bus. & Com. § 521)",
-    source_url: "https://www.ncsl.org/technology-and-communication/security-breach-notification-laws",
+    source_url:
+      "https://www.ncsl.org/technology-and-communication/security-breach-notification-laws",
   });
 }
 

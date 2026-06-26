@@ -137,7 +137,8 @@ export function tierForRule(
   ledger: LegalBasisLedger | Map<string, LegalBasisEntry>,
   ruleId: string,
 ): LedgerTier | undefined {
-  const entry = ledger instanceof Map ? ledger.get(ruleId) : ledger.find((e) => e.rule_id === ruleId);
+  const entry =
+    ledger instanceof Map ? ledger.get(ruleId) : ledger.find((e) => e.rule_id === ruleId);
   if (!entry) return undefined;
   if (entry.review.verdict === "unsound") return undefined;
   if (entry.review.verdict === "disputed") return "opinion";

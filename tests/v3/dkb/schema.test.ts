@@ -23,7 +23,9 @@ const loadJson = (name: string): unknown =>
 
 describe("v3 DKB node schemas", () => {
   it("accepts the regulator_model_form fixture", () => {
-    expect(() => RegulatorModelFormSchema.parse(loadJson("regulator_model_form.sample.json"))).not.toThrow();
+    expect(() =>
+      RegulatorModelFormSchema.parse(loadJson("regulator_model_form.sample.json")),
+    ).not.toThrow();
   });
 
   it("accepts the statutory_clause_requirement fixture", () => {
@@ -33,7 +35,9 @@ describe("v3 DKB node schemas", () => {
   });
 
   it("accepts the transfer_mechanism fixture", () => {
-    expect(() => TransferMechanismSchema.parse(loadJson("transfer_mechanism.sample.json"))).not.toThrow();
+    expect(() =>
+      TransferMechanismSchema.parse(loadJson("transfer_mechanism.sample.json")),
+    ).not.toThrow();
   });
 
   it("accepts the subprocessor_requirement fixture", () => {
@@ -47,7 +51,9 @@ describe("v3 DKB node schemas", () => {
   });
 
   it("accepts the consistency_check fixture", () => {
-    expect(() => ConsistencyCheckSchema.parse(loadJson("consistency_check.sample.json"))).not.toThrow();
+    expect(() =>
+      ConsistencyCheckSchema.parse(loadJson("consistency_check.sample.json")),
+    ).not.toThrow();
   });
 
   it("discriminated-union parseV3Node accepts every fixture", () => {

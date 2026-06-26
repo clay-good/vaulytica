@@ -52,7 +52,13 @@ function makeRun(): EngineRun {
     executed_at: "2026-05-12T12:00:00Z",
     findings: [finding("c1", "critical"), finding("w1", "warning"), finding("i1", "info")],
     execution_log: [
-      { rule_id: "STRUCT-001", rule_version: "1.0.0", fired: true, finding_id: "c1", elapsed_ms: 0.1 },
+      {
+        rule_id: "STRUCT-001",
+        rule_version: "1.0.0",
+        fired: true,
+        finding_id: "c1",
+        elapsed_ms: 0.1,
+      },
       { rule_id: "STRUCT-002", rule_version: "1.0.0", fired: false, elapsed_ms: 0.05 },
     ],
     result_hash: "b".repeat(64),
@@ -87,7 +93,8 @@ describe("buildDocxReport", () => {
   it("renders citations in full and wraps long URLs (spec-v8 §18 never-truncate)", async () => {
     const longUrl =
       "https://www.govinfo.gov/content/pkg/CFR-2024-title45-vol2/xml/CFR-2024-title45-vol2-sec164-410.xml";
-    const longSource = "45 C.F.R. § 164.410(a)(1) — Notification to the Secretary of a breach of unsecured protected health information";
+    const longSource =
+      "45 C.F.R. § 164.410(a)(1) — Notification to the Secretary of a breach of unsecured protected health information";
     const run = makeRun();
     run.findings = [
       {
@@ -180,19 +187,60 @@ describe("buildDocxReport", () => {
     );
     const extracted = {
       parties: [
-        { id: "p1", name: "Acme Inc.", role: "Disclosing Party", entity_type: "corporation", jurisdiction_of_formation: "Delaware", positions: [] },
-        { id: "p2", name: "Northwind Ltd.", role: "Receiving Party", entity_type: "limited company", positions: [] },
+        {
+          id: "p1",
+          name: "Acme Inc.",
+          role: "Disclosing Party",
+          entity_type: "corporation",
+          jurisdiction_of_formation: "Delaware",
+          positions: [],
+        },
+        {
+          id: "p2",
+          name: "Northwind Ltd.",
+          role: "Receiving Party",
+          entity_type: "limited company",
+          positions: [],
+        },
       ],
       dates: [
-        { id: "d1", type: "absolute" as const, raw_text: "January 1, 2026", iso: "2026-01-01", position: { start_offset: 0, end_offset: 15 } },
-        { id: "d2", type: "relative" as const, raw_text: "thirty (30) days after the Effective Date", anchor: "Effective Date", offset_days: 30, position: { start_offset: 0, end_offset: 40 } },
+        {
+          id: "d1",
+          type: "absolute" as const,
+          raw_text: "January 1, 2026",
+          iso: "2026-01-01",
+          position: { start_offset: 0, end_offset: 15 },
+        },
+        {
+          id: "d2",
+          type: "relative" as const,
+          raw_text: "thirty (30) days after the Effective Date",
+          anchor: "Effective Date",
+          offset_days: 30,
+          position: { start_offset: 0, end_offset: 40 },
+        },
       ],
       amounts: [
-        { id: "m1", raw_text: "$50,000", amount: "50000", currency: "USD", word_form: false, position: { start_offset: 0, end_offset: 7 } },
+        {
+          id: "m1",
+          raw_text: "$50,000",
+          amount: "50000",
+          currency: "USD",
+          word_form: false,
+          position: { start_offset: 0, end_offset: 7 },
+        },
       ],
       definitions: {
         entries: [
-          { term: "Confidential Information", definition: "Any non-public information disclosed under this Agreement.", defined_at: { start_offset: 0, end_offset: 50 }, used_at: [{ start_offset: 60, end_offset: 85 }, { start_offset: 100, end_offset: 125 }] },
+          {
+            term: "Confidential Information",
+            definition: "Any non-public information disclosed under this Agreement.",
+            defined_at: { start_offset: 0, end_offset: 50 },
+            used_at: [
+              { start_offset: 60, end_offset: 85 },
+              { start_offset: 100, end_offset: 125 },
+            ],
+          },
         ],
         unused_terms: ["Vintage Term"],
         undefined_capitalized: [],
@@ -200,10 +248,24 @@ describe("buildDocxReport", () => {
       outline: { nodes: [], by_id: {} },
       crossrefs: [],
       obligations: [
-        { id: "o1", obligor: "Receiving Party", action: "treat the Confidential Information as confidential", trigger: "upon disclosure", qualifier: "for two years", modal: "shall", raw_text: "...", position: { start_offset: 0, end_offset: 0 } },
+        {
+          id: "o1",
+          obligor: "Receiving Party",
+          action: "treat the Confidential Information as confidential",
+          trigger: "upon disclosure",
+          qualifier: "for two years",
+          modal: "shall",
+          raw_text: "...",
+          position: { start_offset: 0, end_offset: 0 },
+        },
       ],
       jurisdictions: [
-        { clause_kind: "governing-law" as const, jurisdiction_id: "us-de", raw_text: "State of Delaware", position: { start_offset: 0, end_offset: 18 } },
+        {
+          clause_kind: "governing-law" as const,
+          jurisdiction_id: "us-de",
+          raw_text: "State of Delaware",
+          position: { start_offset: 0, end_offset: 18 },
+        },
       ],
       classified: [],
     };
@@ -326,7 +388,9 @@ describe("buildDocxReport", () => {
     const blob = await buildDocxReport(makeRun(), ingest, loadStarterDkbSync(), loadMutualNda());
     const { unzipSync, strFromU8 } = await import("fflate");
     const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
-    const runText = (strFromU8(entries["word/document.xml"]!).match(/<w:t[^>]*>([^<]*)<\/w:t>/g) ?? [])
+    const runText = (
+      strFromU8(entries["word/document.xml"]!).match(/<w:t[^>]*>([^<]*)<\/w:t>/g) ?? []
+    )
       .map((m) => m.replace(/<[^>]+>/g, ""))
       .join("");
     expect(runText).not.toContain("Clean to Send");
@@ -355,7 +419,9 @@ describe("buildDocxReport", () => {
     );
     const { unzipSync, strFromU8 } = await import("fflate");
     const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
-    const runText = (strFromU8(entries["word/document.xml"]!).match(/<w:t[^>]*>([^<]*)<\/w:t>/g) ?? [])
+    const runText = (
+      strFromU8(entries["word/document.xml"]!).match(/<w:t[^>]*>([^<]*)<\/w:t>/g) ?? []
+    )
       .map((m) => m.replace(/<[^>]+>/g, ""))
       .join("");
     expect(runText).toContain("Negotiation Posture");
@@ -531,7 +597,13 @@ describe("jurisdiction overlays (spec-v6 Part VI §21, Step 101)", () => {
   });
 
   it("omits jurisdiction_overlays for a family with no overlay catalog", async () => {
-    const blob = buildJsonReport(makeRun(), ingest, undefined, undefined, extractedWithGovLaw("California"));
+    const blob = buildJsonReport(
+      makeRun(),
+      ingest,
+      undefined,
+      undefined,
+      extractedWithGovLaw("California"),
+    );
     const parsed = JSON.parse(await blob.text());
     expect(parsed.jurisdiction_overlays).toBeUndefined();
   });
@@ -539,7 +611,13 @@ describe("jurisdiction overlays (spec-v6 Part VI §21, Step 101)", () => {
   it("does not change the run result_hash (overlays live outside the run)", async () => {
     const run = empRun();
     const before = run.result_hash;
-    const blob = buildJsonReport(run, ingest, undefined, undefined, extractedWithGovLaw("California"));
+    const blob = buildJsonReport(
+      run,
+      ingest,
+      undefined,
+      undefined,
+      extractedWithGovLaw("California"),
+    );
     const parsed = JSON.parse(await blob.text());
     expect(parsed.run.result_hash).toBe(before);
   });
@@ -620,7 +698,9 @@ describe("report-structure validation (spec-v7 Step 122)", () => {
 
   it("DOCX carries the title and the proof fields (engine/DKB versions, file fingerprint, result hash)", async () => {
     const run = makeRun();
-    const xml = await docXmlOf(await buildDocxReport(run, ingest, loadStarterDkbSync(), loadMutualNda()));
+    const xml = await docXmlOf(
+      await buildDocxReport(run, ingest, loadStarterDkbSync(), loadMutualNda()),
+    );
     expect(xml).toContain("Vaulytica Report");
     expect(xml).toContain(`Engine version: ${run.version}`);
     expect(xml).toContain(`DKB version: ${run.dkb_version}`);
@@ -629,7 +709,9 @@ describe("report-structure validation (spec-v7 Step 122)", () => {
   });
 
   it("DOCX groups findings Critical → Warning → Info, in that order", async () => {
-    const xml = await docXmlOf(await buildDocxReport(makeRun(), ingest, loadStarterDkbSync(), loadMutualNda()));
+    const xml = await docXmlOf(
+      await buildDocxReport(makeRun(), ingest, loadStarterDkbSync(), loadMutualNda()),
+    );
     // Anchor ordering on the per-finding severity badges, which appear only in
     // the findings sections (the counts tables use the plain words), so the
     // order reflects the findings grouping, not an incidental earlier mention.
@@ -644,13 +726,17 @@ describe("report-structure validation (spec-v7 Step 122)", () => {
   });
 
   it("DOCX renders a Sources line for cited findings plus a Bibliography section", async () => {
-    const xml = await docXmlOf(await buildDocxReport(makeRun(), ingest, loadStarterDkbSync(), loadMutualNda()));
+    const xml = await docXmlOf(
+      await buildDocxReport(makeRun(), ingest, loadStarterDkbSync(), loadMutualNda()),
+    );
     expect(xml).toMatch(/Sources: \[\d+\]/);
     expect(xml).toContain("Bibliography");
   });
 
   it("DOCX carries the verbatim determinism, privacy, and non-advice posture statements", async () => {
-    const xml = await docXmlOf(await buildDocxReport(makeRun(), ingest, loadStarterDkbSync(), loadMutualNda()));
+    const xml = await docXmlOf(
+      await buildDocxReport(makeRun(), ingest, loadStarterDkbSync(), loadMutualNda()),
+    );
     expect(xml).toContain("This report was produced by a deterministic process");
     expect(xml).toContain("performed entirely inside the user"); // privacy (apostrophe-free prefix)
     expect(xml).toContain("Vaulytica is a software tool, not a lawyer"); // non-advice disclaimer
@@ -658,7 +744,16 @@ describe("report-structure validation (spec-v7 Step 122)", () => {
 
   it("JSON report is shape-complete: run + ingest envelopes with well-formed findings", async () => {
     const parsed = JSON.parse(await buildJsonReport(makeRun(), ingest).text());
-    for (const k of ["version", "dkb_version", "playbook_id", "result_hash", "executed_at", "findings", "execution_log", "source_file"]) {
+    for (const k of [
+      "version",
+      "dkb_version",
+      "playbook_id",
+      "result_hash",
+      "executed_at",
+      "findings",
+      "execution_log",
+      "source_file",
+    ]) {
       expect(parsed.run).toHaveProperty(k);
     }
     expect(Array.isArray(parsed.run.findings)).toBe(true);

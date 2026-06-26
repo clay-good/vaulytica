@@ -99,14 +99,8 @@ describe("computeCoherenceCadence (spec-v39 — per-front floor-crossing churn r
     // Both fronts sit below floor in 2 of their 4 stated rounds (a 50% tenure, minority to v31), but
     // Cap dips once and holds (settled churn) while Flip alternates every round (oscillating churn).
     const rounds = await Promise.all([
-      mk(
-        { Cap: "below-acceptable", Flip: "below-acceptable" },
-        { Cap: "ideal", Flip: "ideal" },
-      ), // r0: Cap below, Flip below
-      mk(
-        { Cap: "below-acceptable", Flip: "acceptable" },
-        { Cap: "ideal", Flip: "ideal" },
-      ), // r1: Cap below, Flip↑
+      mk({ Cap: "below-acceptable", Flip: "below-acceptable" }, { Cap: "ideal", Flip: "ideal" }), // r0: Cap below, Flip below
+      mk({ Cap: "below-acceptable", Flip: "acceptable" }, { Cap: "ideal", Flip: "ideal" }), // r1: Cap below, Flip↑
       mk({ Cap: "acceptable", Flip: "below-acceptable" }, { Cap: "ideal", Flip: "ideal" }), // r2: Cap↑, Flip↓
       mk({ Cap: "acceptable", Flip: "acceptable" }, { Cap: "ideal", Flip: "ideal" }), // r3: Flip↑
     ]);

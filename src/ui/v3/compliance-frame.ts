@@ -132,7 +132,11 @@ export function defaultFramesForPlaybook(playbookId: string): FrameDefaults {
 
   // Vendor security addendum
   if (id === "vendor-security-addendum") {
-    return { on: [], available: ALL_FRAMES, hint: "Pair with a DPA or BAA for regulator coverage." };
+    return {
+      on: [],
+      available: ALL_FRAMES,
+      hint: "Pair with a DPA or BAA for regulator coverage.",
+    };
   }
 
   // AI addendum

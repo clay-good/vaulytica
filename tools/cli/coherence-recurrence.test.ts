@@ -129,6 +129,8 @@ describe("computeCoherenceRecurrenceArtifacts (spec-v23 — document-free exposu
     );
     expect(outcome.ok).toBe(true);
     if (!outcome.ok) return;
-    expect(outcome.recurring).toBe(exposureRecurred(await computeCoherenceRecurrence([c1, c2, c3])));
+    expect(outcome.recurring).toBe(
+      exposureRecurred(await computeCoherenceRecurrence([c1, c2, c3])),
+    );
   });
 });

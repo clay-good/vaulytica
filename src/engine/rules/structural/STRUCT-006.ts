@@ -14,8 +14,7 @@ export const rule: Rule = {
   name: "Used-but-never-defined capitalized terms",
   category: "structural",
   default_severity: "warning",
-  description:
-    "Reports Title-Case multi-word phrases that are used in the body but never defined.",
+  description: "Reports Title-Case multi-word phrases that are used in the body but never defined.",
   dkb_citations: [],
 
   check(ctx: RuleContext): Finding | null {
@@ -26,7 +25,10 @@ export const rule: Rule = {
     if (candidates.length === 0) return null;
 
     const first = candidates[0]!;
-    const list = candidates.slice(0, 12).map((c) => c.term).join(", ");
+    const list = candidates
+      .slice(0, 12)
+      .map((c) => c.term)
+      .join(", ");
     const extra = candidates.length > 12 ? `, …(${candidates.length - 12} more)` : "";
     return makeFinding({
       rule,

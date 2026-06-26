@@ -25,12 +25,18 @@ describe("OBLI-007 — Material Adverse Change clause", () => {
   });
 
   it("is silent when no MAC language is present", () => {
-    const ctx = buildContext(["Indemnity", "Each party shall indemnify the other for third-party claims."]);
+    const ctx = buildContext([
+      "Indemnity",
+      "Each party shall indemnify the other for third-party claims.",
+    ]);
     expect(OBLI_007.check(ctx)).toBeNull();
   });
 
   it("is silent on the unrelated word `material` alone", () => {
-    const ctx = buildContext(["H", "Material breach by either party shall give rise to termination."]);
+    const ctx = buildContext([
+      "H",
+      "Material breach by either party shall give rise to termination.",
+    ]);
     expect(OBLI_007.check(ctx)).toBeNull();
   });
 });

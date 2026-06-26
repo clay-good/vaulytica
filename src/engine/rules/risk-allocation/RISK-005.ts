@@ -11,7 +11,8 @@ export const rule: Rule = {
   description: "Detects a limitation-of-liability clause; fires when absent.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
-    if (firstParagraphMatch(ctx, /\blimitation\s+of\s+liability\b|\baggregate\s+liability\b/i)) return null;
+    if (firstParagraphMatch(ctx, /\blimitation\s+of\s+liability\b|\baggregate\s+liability\b/i))
+      return null;
     return emit(ctx, rule, {
       title: "No limitation-of-liability clause detected",
       description: "Vaulytica did not find a limitation-of-liability clause.",

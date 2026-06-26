@@ -115,7 +115,11 @@ describe("selectStateOverlays", () => {
 
   it("ignores venue / arbitration-seat clauses (governing law controls)", () => {
     const r = selectStateOverlays("executive-employment", [
-      { clause_kind: "venue", raw_text: "California", position: { section_id: "s", start: 0, end: 1 } },
+      {
+        clause_kind: "venue",
+        raw_text: "California",
+        position: { section_id: "s", start: 0, end: 1 },
+      },
     ]);
     expect(r?.matched).toEqual([]);
     expect(r?.detected_states).toEqual([]);
@@ -128,10 +132,7 @@ describe("selectStateOverlays", () => {
       gov("California"),
     ]);
     expect(r?.detected_states).toEqual(["us-ca", "us-tx"]);
-    expect(r?.matched.map((o) => o.id)).toEqual([
-      "emp-noncompete-us-ca",
-      "emp-noncompete-us-tx",
-    ]);
+    expect(r?.matched.map((o) => o.id)).toEqual(["emp-noncompete-us-ca", "emp-noncompete-us-tx"]);
   });
 
   it("is a pure function — two calls byte-identical", () => {

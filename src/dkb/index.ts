@@ -39,9 +39,5 @@ export {
 export { loadDkb, DkbLoadError, validateV3Nodes } from "./loader.js";
 export type { LoadDkbOptions } from "./loader.js";
 
-export {
-  compareDkbVersions,
-  isValidDkbVersion,
-  parseDkbVersion,
-} from "./version.js";
+export { compareDkbVersions, isValidDkbVersion, parseDkbVersion } from "./version.js";
 export type { ParsedDkbVersion } from "./version.js";

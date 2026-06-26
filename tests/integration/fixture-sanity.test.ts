@@ -280,9 +280,10 @@ describe("fixture sanity guards", () => {
       const { run } = await runFixture(join(CONTRACTS, name));
       const fired = new Set(run.findings.map((f) => f.rule_id));
       const missing = required.filter((id) => !fired.has(id));
-      expect(missing, `expected these rules to fire but they did not: ${missing.join(", ")}`).toEqual(
-        [],
-      );
+      expect(
+        missing,
+        `expected these rules to fire but they did not: ${missing.join(", ")}`,
+      ).toEqual([]);
     });
   }
 });

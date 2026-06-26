@@ -76,8 +76,7 @@ const INFORMED_CONSENT_RULES: Rule[] = [
     citation: commonRule("116(b)(3)", "Benefits"),
     playbooks: [HC_PLAYBOOK_INFORMED_CONSENT],
     missing_title: "Benefits clause missing",
-    missing_description:
-      "No clause was found describing benefits (or absence of direct benefit).",
+    missing_description: "No clause was found describing benefits (or absence of direct benefit).",
     explanation:
       "§ 46.116(b)(3) requires a description of any reasonably expected benefits to the subject or to others — and a candid statement when there is no direct benefit.",
     recommendation:
@@ -99,10 +98,7 @@ const INFORMED_CONSENT_RULES: Rule[] = [
       "§ 46.116(b)(4) requires disclosure of appropriate alternative procedures or courses of treatment, if any, that might be advantageous to the subject.",
     recommendation:
       "Add 'Alternatives' describing available alternative procedures or treatments and any decision to forgo treatment.",
-    present_patterns: [
-      /alternative/i,
-      /(procedures?|treatments?|courses?\s+of\s+treatment)/i,
-    ],
+    present_patterns: [/alternative/i, /(procedures?|treatments?|courses?\s+of\s+treatment)/i],
   }),
   presence({
     id: "HC-005",
@@ -170,8 +166,7 @@ const INFORMED_CONSENT_RULES: Rule[] = [
     citation: fdaIc("25", "FDA additional elements"),
     playbooks: [HC_PLAYBOOK_INFORMED_CONSENT],
     missing_title: "FDA § 50.25 additional elements clause missing",
-    missing_description:
-      "No § 50.25 additional elements were found for an FDA-regulated study.",
+    missing_description: "No § 50.25 additional elements were found for an FDA-regulated study.",
     explanation:
       "21 C.F.R. § 50.25 requires additional elements for FDA-regulated trials including disclosure that the trial is registered on clinicaltrials.gov and that FDA may inspect records.",
     recommendation:
@@ -196,10 +191,7 @@ const INFORMED_CONSENT_RULES: Rule[] = [
       "§ 46.116(b)(6) requires a statement (for research involving more than minimal risk) explaining whether compensation and medical treatments are available for injury.",
     recommendation:
       "Add 'Research-Related Injury' describing available compensation / medical treatment and where additional information can be obtained.",
-    present_patterns: [
-      /(injury|injuries|harm)/i,
-      /(compensation|medical\s+(treatment|care))/i,
-    ],
+    present_patterns: [/(injury|injuries|harm)/i, /(compensation|medical\s+(treatment|care))/i],
     default_severity: "warning",
   }),
 ];
@@ -217,8 +209,7 @@ const PHI_AUTHORIZATION_RULES: Rule[] = [
     citation: hipaa("508(c)(1)(i)", "Specific information"),
     playbooks: [HC_PLAYBOOK_PHI_AUTH],
     missing_title: "Specific information description missing",
-    missing_description:
-      "No specific description of information to be used / disclosed was found.",
+    missing_description: "No specific description of information to be used / disclosed was found.",
     explanation:
       "45 C.F.R. § 164.508(c)(1)(i) requires a specific and meaningful description of the information ('all medical records' is acceptable; 'any and all information' is not specific enough in practice).",
     recommendation:
@@ -256,10 +247,8 @@ const PHI_AUTHORIZATION_RULES: Rule[] = [
     citation: hipaa("508(c)(1)(iii)", "Recipient"),
     playbooks: [HC_PLAYBOOK_PHI_AUTH],
     missing_title: "Recipient identification missing",
-    missing_description:
-      "No clause was found identifying the recipient of the disclosure.",
-    explanation:
-      "§ 164.508(c)(1)(iii) requires identification of the recipient (person or class).",
+    missing_description: "No clause was found identifying the recipient of the disclosure.",
+    explanation: "§ 164.508(c)(1)(iii) requires identification of the recipient (person or class).",
     recommendation:
       "Add a line identifying the recipient (e.g., 'attorney John Doe', 'Acme Life Insurance underwriting department').",
     present_patterns: [
@@ -287,13 +276,11 @@ const PHI_AUTHORIZATION_RULES: Rule[] = [
   presence({
     id: "HC-014",
     name: "Expiration date or event",
-    description:
-      "Authorization must include an expiration date or expiration event.",
+    description: "Authorization must include an expiration date or expiration event.",
     citation: hipaa("508(c)(1)(v)", "Expiration"),
     playbooks: [HC_PLAYBOOK_PHI_AUTH],
     missing_title: "Expiration date / event missing",
-    missing_description:
-      "No expiration date or expiration event was found.",
+    missing_description: "No expiration date or expiration event was found.",
     explanation:
       "§ 164.508(c)(1)(v) requires an expiration date or an expiration event that relates to the individual or the purpose ('end of the research study' is acceptable; 'none' is generally not).",
     recommendation:
@@ -311,8 +298,7 @@ const PHI_AUTHORIZATION_RULES: Rule[] = [
     citation: hipaa("508(c)(2)(i)", "Right to revoke"),
     playbooks: [HC_PLAYBOOK_PHI_AUTH],
     missing_title: "Right-to-revoke statement missing",
-    missing_description:
-      "No statement of the right to revoke the authorization was found.",
+    missing_description: "No statement of the right to revoke the authorization was found.",
     explanation:
       "§ 164.508(c)(2)(i) requires a statement of the right to revoke the authorization in writing, the exceptions to the right to revoke (e.g., actions already taken in reliance), and how to revoke.",
     recommendation:
@@ -368,8 +354,7 @@ const PHI_AUTHORIZATION_RULES: Rule[] = [
     citation: hipaa("508(c)(1)(vi)", "Signature / authority"),
     playbooks: [HC_PLAYBOOK_PHI_AUTH],
     missing_title: "Signature / date / authority clause missing",
-    missing_description:
-      "No signature / date / authority clause was found.",
+    missing_description: "No signature / date / authority clause was found.",
     explanation:
       "§ 164.508(c)(1)(vi) requires the signature of the individual (or a personal representative with a description of authority) and the date.",
     recommendation:
@@ -416,10 +401,7 @@ const NPP_ACK_RULES: Rule[] = [
     explanation:
       "The acknowledgment must include the date the NPP was received so the covered entity can document compliance with the timing requirements.",
     recommendation: "Add a 'Date Received' line.",
-    present_patterns: [
-      /(date\s+(received|of\s+receipt)|received\s+on|signed\s+on)/i,
-      /\d/,
-    ],
+    present_patterns: [/(date\s+(received|of\s+receipt)|received\s+on|signed\s+on)/i, /\d/],
   }),
   presence({
     id: "HC-021",
@@ -429,8 +411,7 @@ const NPP_ACK_RULES: Rule[] = [
     citation: hipaa("520(c)(2)(ii)", "Signature"),
     playbooks: [HC_PLAYBOOK_NPP_ACK],
     missing_title: "Signature clause missing",
-    missing_description:
-      "No signature clause was found.",
+    missing_description: "No signature clause was found.",
     explanation:
       "The acknowledgment must be signed by the individual or a personal representative. Identify the representative's authority where applicable.",
     recommendation:
@@ -490,10 +471,7 @@ const NPP_ACK_RULES: Rule[] = [
       "The acknowledgment should identify the covered entity (provider / health plan) so individuals can later request a copy or file a complaint.",
     recommendation:
       "Add identification of the covered entity (name and any DBA) at the top of the acknowledgment.",
-    present_patterns: [
-      /(covered\s+entity|provider|hospital|clinic|health\s+plan)/i,
-      /(name)/i,
-    ],
+    present_patterns: [/(covered\s+entity|provider|hospital|clinic|health\s+plan)/i, /(name)/i],
     default_severity: "warning",
   }),
   presence({
@@ -508,8 +486,7 @@ const NPP_ACK_RULES: Rule[] = [
     ),
     playbooks: [HC_PLAYBOOK_NPP_ACK],
     missing_title: "Retention notation missing",
-    missing_description:
-      "No notation reflecting the 6-year retention requirement was found.",
+    missing_description: "No notation reflecting the 6-year retention requirement was found.",
     explanation:
       "§ 164.530(j)(2) requires retention of NPP acknowledgments for 6 years from creation or last effective date. A template should reflect that retention is needed.",
     recommendation:

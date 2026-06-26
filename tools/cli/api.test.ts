@@ -60,7 +60,10 @@ describe("CLI/API parity with the parity-proven pipeline (spec-v8 Step 143)", ()
 
   it("forcing a playbook overrides the auto-match", async () => {
     const deps = await loadAccuracyDeps();
-    const forced = await analyzeText(NDA, "nda.txt", { deps, playbookId: deps.launchPlaybooks[0]!.id });
+    const forced = await analyzeText(NDA, "nda.txt", {
+      deps,
+      playbookId: deps.launchPlaybooks[0]!.id,
+    });
     expect(forced.run.playbook_id).toBe(deps.launchPlaybooks[0]!.id);
   });
 

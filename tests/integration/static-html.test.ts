@@ -40,7 +40,14 @@ function getMeta(html: string, attr: "name" | "property", key: string): string |
 
 describe("Open Graph / Twitter Card meta tags (LAUNCH row j)", () => {
   it("every required OG property is present", () => {
-    for (const key of ["og:title", "og:description", "og:image", "og:url", "og:type", "og:site_name"]) {
+    for (const key of [
+      "og:title",
+      "og:description",
+      "og:image",
+      "og:url",
+      "og:type",
+      "og:site_name",
+    ]) {
       const value = getMeta(html, "property", key);
       expect(value, `${key} missing`).toBeTruthy();
       expect(value!.length, `${key} empty`).toBeGreaterThan(2);
@@ -131,7 +138,7 @@ describe("Static accessibility checks (LAUNCH row h)", () => {
     }
   });
 
-  it("every role=\"button\" element has tabindex=\"0\" (or is a native button/a)", () => {
+  it('every role="button" element has tabindex="0" (or is a native button/a)', () => {
     const buttons = html.match(/<[^>]+role=["']button["'][^>]*>/g) ?? [];
     for (const tag of buttons) {
       const isNative = /<(?:button|a)\b/i.test(tag);
@@ -140,9 +147,9 @@ describe("Static accessibility checks (LAUNCH row h)", () => {
     }
   });
 
-  it("no `<a href=\"#\">` placeholder anchors", () => {
+  it('no `<a href="#">` placeholder anchors', () => {
     const anchors = html.match(/<a\b[^>]*\shref=["']#["'][^>]*>/g) ?? [];
-    expect(anchors, "use a real href or a <button>, not <a href=\"#\">").toHaveLength(0);
+    expect(anchors, 'use a real href or a <button>, not <a href="#">').toHaveLength(0);
   });
 
   it("nav has aria-label (best practice when multiple navs / landmarks exist)", () => {
@@ -151,7 +158,9 @@ describe("Static accessibility checks (LAUNCH row h)", () => {
     const navs = html.match(/<nav\b[^>]*>/g) ?? [];
     if (navs.length > 1) {
       for (const n of navs) {
-        expect(n, `multi-nav docs need aria-label on each <nav>: ${n}`).toMatch(/\saria-label(?:ledby)?=/);
+        expect(n, `multi-nav docs need aria-label on each <nav>: ${n}`).toMatch(
+          /\saria-label(?:ledby)?=/,
+        );
       }
     }
   });
@@ -167,7 +176,10 @@ describe("v4 surface a11y (LAUNCH row v4-h)", () => {
     // is not cleanly parseable (defensive).
     const source = sectionMatch ? sectionMatch[0] : html;
     const h3s = source.match(/<h3\b[^>]*>/gi) ?? [];
-    expect(h3s.length, `expected at least 6 tile <h3> headings in #what-it-checks, got ${h3s.length}`).toBeGreaterThanOrEqual(6);
+    expect(
+      h3s.length,
+      `expected at least 6 tile <h3> headings in #what-it-checks, got ${h3s.length}`,
+    ).toBeGreaterThanOrEqual(6);
   });
 
   it("every tile heading is a <h3>", () => {
@@ -195,10 +207,7 @@ describe("v4 surface a11y (LAUNCH row v4-h)", () => {
     // runtime in `src/ui/dropzone.ts` and asserted there in unit tests.
     const dzMatch = html.match(/<div\b[^>]*id=["']dropzone["'][^>]*>[^]*?<\/div>/i);
     expect(dzMatch, "dropzone div not found in static HTML").not.toBeNull();
-    expect(
-      dzMatch![0],
-      "dropzone visible content must mention PDF or DOCX",
-    ).toMatch(/PDF|DOCX/i);
+    expect(dzMatch![0], "dropzone visible content must mention PDF or DOCX").toMatch(/PDF|DOCX/i);
   });
 
   it('footer wordmark has aria-label="Vaulytica home"', () => {
@@ -252,8 +261,7 @@ describe("Static a11y hardening (LAUNCH rows h / v4-f)", () => {
     while ((m = buttonRe.exec(html)) !== null) {
       const attrs = m[1] ?? "";
       const inner = (m[2] ?? "").trim();
-      const hasAria =
-        /\saria-label(?:ledby)?=["'][^"']+["']/.test(attrs);
+      const hasAria = /\saria-label(?:ledby)?=["'][^"']+["']/.test(attrs);
       // Strip nested tags to test if there is any text-like content. An
       // SVG-only button without aria-label is the canonical regression
       // we want to catch.

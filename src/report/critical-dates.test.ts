@@ -127,13 +127,18 @@ describe("deriveDate — properties (companion §3)", () => {
 
   it("day arithmetic is monotonic in the offset", () => {
     fc.assert(
-      fc.property(isoArb, fc.integer({ min: 0, max: 1000 }), fc.integer({ min: 0, max: 1000 }), (anchor, a, b) => {
-        const lo = Math.min(a, b);
-        const hi = Math.max(a, b);
-        const dlo = deriveDate(rel("X Date", "days", lo), anchor).computed_date!;
-        const dhi = deriveDate(rel("X Date", "days", hi), anchor).computed_date!;
-        expect(dlo <= dhi).toBe(true);
-      }),
+      fc.property(
+        isoArb,
+        fc.integer({ min: 0, max: 1000 }),
+        fc.integer({ min: 0, max: 1000 }),
+        (anchor, a, b) => {
+          const lo = Math.min(a, b);
+          const hi = Math.max(a, b);
+          const dlo = deriveDate(rel("X Date", "days", lo), anchor).computed_date!;
+          const dhi = deriveDate(rel("X Date", "days", hi), anchor).computed_date!;
+          expect(dlo <= dhi).toBe(true);
+        },
+      ),
       { numRuns: 300 },
     );
   });

@@ -10,7 +10,10 @@ import {
   shiftTrajectoryFractured,
   buildCoherenceShiftTrajectoryJson,
 } from "../../src/report/coherence-shift-trajectory.js";
-import type { NegotiationPosture, NegotiationTier } from "../../src/playbooks/custom-interpreter.js";
+import type {
+  NegotiationPosture,
+  NegotiationTier,
+} from "../../src/playbooks/custom-interpreter.js";
 
 function posture(map: Record<string, NegotiationTier>): NegotiationPosture {
   return {
@@ -28,7 +31,9 @@ const LADDER_B = "b".repeat(64);
 
 /** `Cap` is aligned when both docs agree, divergent when they disagree; `Law` aligned throughout. */
 const round = (capA: NegotiationTier, capB: NegotiationTier) =>
-  bundlePostureCoherence(bundle(["msa.docx", { Cap: capA, Law: "ideal" }], ["order.docx", { Cap: capB, Law: "ideal" }]));
+  bundlePostureCoherence(
+    bundle(["msa.docx", { Cap: capA, Law: "ideal" }], ["order.docx", { Cap: capB, Law: "ideal" }]),
+  );
 
 const aligned = () => round("ideal", "ideal");
 const divergent = () => round("ideal", "acceptable");
@@ -44,7 +49,9 @@ describe("compareCoherenceShiftTrendArtifacts (spec-v18 — document-free cohere
     );
     expect(outcome.ok).toBe(true);
     if (!outcome.ok) return;
-    const inMemory = buildCoherenceShiftTrajectoryJson(await compareCoherenceShiftTrajectory([c1, c2, c3]));
+    const inMemory = buildCoherenceShiftTrajectoryJson(
+      await compareCoherenceShiftTrajectory([c1, c2, c3]),
+    );
     expect(outcome.output).toBe(inMemory);
     expect(outcome.fractured).toBe(true); // a mid-deal fracture in round 2
     expect(outcome.ladderNote).toBeNull(); // all pinned + equal → verified

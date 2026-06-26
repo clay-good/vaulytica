@@ -18,10 +18,7 @@ const REPO = join(__dirname, "..", "..");
 
 // --- fixtures ---------------------------------------------------------------
 
-function pb(
-  id: string,
-  features: Partial<Playbook["match_features"]>,
-): Playbook {
+function pb(id: string, features: Partial<Playbook["match_features"]>): Playbook {
   return {
     id,
     version: "1.0.0",
@@ -65,7 +62,10 @@ describe("familySignalStrength", () => {
   });
 
   it("a specific title keyword alone clears the admit threshold", () => {
-    const s = familySignalStrength(baa, signals("Business Associate Agreement", "...generic body..."));
+    const s = familySignalStrength(
+      baa,
+      signals("Business Associate Agreement", "...generic body..."),
+    );
     expect(s).toBeGreaterThanOrEqual(ADMIT_THRESHOLD);
   });
 
@@ -89,7 +89,10 @@ describe("selectMatchCandidates", () => {
   const launch = [pb("mutual-nda", { title_keywords: ["non-disclosure agreement"] })];
   const extended = [
     pb("baa", { title_keywords: ["business associate agreement"] }),
-    pb("bylaws-corporation", { title_keywords: ["bylaws"], distinguishing_phrases: ["board of directors", "quorum"] }),
+    pb("bylaws-corporation", {
+      title_keywords: ["bylaws"],
+      distinguishing_phrases: ["board of directors", "quorum"],
+    }),
     pb("asset-purchase-agreement", { title_keywords: ["asset purchase agreement"] }),
   ];
 
@@ -111,7 +114,11 @@ describe("selectMatchCandidates", () => {
   });
 
   it("admits nothing extra for a plain document (today's behavior preserved)", () => {
-    const got = selectMatchCandidates(launch, extended, signals("Services Agreement", "generic terms"));
+    const got = selectMatchCandidates(
+      launch,
+      extended,
+      signals("Services Agreement", "generic terms"),
+    );
     expect(got.map((p) => p.id)).toEqual(["mutual-nda"]);
   });
 });
@@ -130,7 +137,10 @@ describe("familyIsPresent", () => {
 
   it("activates on three or more distinguishing phrases (no title hit)", () => {
     expect(
-      familyIsPresent(dpa, signals("Exhibit C", "the controller instructs the processor per article 28")),
+      familyIsPresent(
+        dpa,
+        signals("Exhibit C", "the controller instructs the processor per article 28"),
+      ),
     ).toBe(true);
   });
 

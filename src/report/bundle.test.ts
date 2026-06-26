@@ -62,7 +62,13 @@ function makeRun(name: string, hashSeed: string, findings: Finding[]): EngineRun
     executed_at: "2026-05-12T12:00:00Z",
     findings,
     execution_log: [
-      { rule_id: "STRUCT-001", rule_version: "1.0.0", fired: true, finding_id: "c1", elapsed_ms: 0.1 },
+      {
+        rule_id: "STRUCT-001",
+        rule_version: "1.0.0",
+        fired: true,
+        finding_id: "c1",
+        elapsed_ms: 0.1,
+      },
       { rule_id: "STRUCT-002", rule_version: "1.0.0", fired: false, elapsed_ms: 0.05 },
     ],
     result_hash: hashSeed.repeat(64).slice(0, 64),
@@ -90,8 +96,20 @@ function crossFinding(id: string, severity: ConsistencyFinding["severity"]): Con
     recommendation: "Reconcile party names",
     source_citations: [],
     excerpts: [
-      { doc_id: "a", source_file_name: "a.docx", text: "Acme Corp.", start_offset: 0, end_offset: 10 },
-      { doc_id: "b", source_file_name: "b.docx", text: "Acme, Inc.", start_offset: 0, end_offset: 10 },
+      {
+        doc_id: "a",
+        source_file_name: "a.docx",
+        text: "Acme Corp.",
+        start_offset: 0,
+        end_offset: 10,
+      },
+      {
+        doc_id: "b",
+        source_file_name: "b.docx",
+        text: "Acme, Inc.",
+        start_offset: 0,
+        end_offset: 10,
+      },
     ],
   };
 }
@@ -107,8 +125,20 @@ function makeConsistency(findings: ConsistencyFinding[] = []): ConsistencyRun {
     executed_at: "2026-05-12T12:00:00Z",
     findings,
     execution_log: [
-      { rule_id: "CROSS-PARTY-001", rule_version: "1.0.0", ran: true, findings_count: findings.length, elapsed_ms: 0.2 },
-      { rule_id: "CROSS-JURIS-001", rule_version: "1.0.0", ran: false, findings_count: 0, elapsed_ms: 0 },
+      {
+        rule_id: "CROSS-PARTY-001",
+        rule_version: "1.0.0",
+        ran: true,
+        findings_count: findings.length,
+        elapsed_ms: 0.2,
+      },
+      {
+        rule_id: "CROSS-JURIS-001",
+        rule_version: "1.0.0",
+        ran: false,
+        findings_count: 0,
+        elapsed_ms: 0,
+      },
     ],
     result_hash: "f".repeat(64),
   };
@@ -265,8 +295,14 @@ describe("buildBundleDocxReport — Posture Coherence section (spec-v12 Thrust C
 
   it("renders the Posture Coherence section with the per-front spread + binding floor", async () => {
     const coherence = await bundlePostureCoherence([
-      { document: "msa.docx", posture: posture({ "Liability cap": "ideal", "Governing law": "ideal" }) },
-      { document: "order.docx", posture: posture({ "Liability cap": "below-acceptable", "Governing law": "ideal" }) },
+      {
+        document: "msa.docx",
+        posture: posture({ "Liability cap": "ideal", "Governing law": "ideal" }),
+      },
+      {
+        document: "order.docx",
+        posture: posture({ "Liability cap": "below-acceptable", "Governing law": "ideal" }),
+      },
     ]);
     const input: BundleReportInput = { ...makeInput(), posture_coherence: coherence };
     const blob = await buildBundleDocxReport(input);
@@ -361,7 +397,10 @@ describe("buildBundleDocxReport — Posture Movement section (spec-v13 Thrust C)
   });
 
   it("is deterministic: same movement → identical rendered document body", async () => {
-    const m = await movement([{ Cap: "ideal" }, { Cap: "acceptable" }], [{ Cap: "acceptable" }, { Cap: "acceptable" }]);
+    const m = await movement(
+      [{ Cap: "ideal" }, { Cap: "acceptable" }],
+      [{ Cap: "acceptable" }, { Cap: "acceptable" }],
+    );
     const input: BundleReportInput = { ...makeInput(), posture_movement: m };
     const render = async (): Promise<string> => {
       const blob = await buildBundleDocxReport(input);
@@ -379,9 +418,7 @@ describe("buildBundleDocxReport — consistency_enabled", () => {
     const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
     const docXml = strFromU8(entries["word/document.xml"]!);
     expect(docXml).toContain("disabled by user");
-    expect(docXml).toContain(
-      "The cross-document consistency pass was disabled by the user",
-    );
+    expect(docXml).toContain("The cross-document consistency pass was disabled by the user");
   });
 
   it("cover + intro reflect rules executed when consistency_enabled=true", async () => {
@@ -503,10 +540,7 @@ describe("buildBundleJson — per-document metadata (spec-v3 §60 follow-up)", (
   it("surfaces detection_confidence when threaded through, omits when absent", async () => {
     const input: BundleReportInput = {
       ...makeInput(),
-      documents: [
-        { ...bundleDoc("a", "a"), detection_confidence: 0.83 },
-        bundleDoc("b", "b"),
-      ],
+      documents: [{ ...bundleDoc("a", "a"), detection_confidence: 0.83 }, bundleDoc("b", "b")],
     };
     const out = await buildBundleJson(input);
     expect(out.documents![0]!.detection_confidence).toBe(0.83);
@@ -516,10 +550,7 @@ describe("buildBundleJson — per-document metadata (spec-v3 §60 follow-up)", (
   it("DOCX per-document subsection prints '(confidence X.XX)' when detection_confidence is threaded", async () => {
     const input: BundleReportInput = {
       ...makeInput(),
-      documents: [
-        { ...bundleDoc("a", "a"), detection_confidence: 0.83 },
-        bundleDoc("b", "b"),
-      ],
+      documents: [{ ...bundleDoc("a", "a"), detection_confidence: 0.83 }, bundleDoc("b", "b")],
     };
     const blob = await buildBundleDocxReport(input);
     const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
@@ -554,7 +585,11 @@ describe("buildBundleJson — per-document metadata (spec-v3 §60 follow-up)", (
     const input: BundleReportInput = {
       ...makeInput(),
       documents: [
-        { ...bundleDoc("a", "a"), playbook_deprecated: true, playbook_superseded_by: "mutual-nda-deep" },
+        {
+          ...bundleDoc("a", "a"),
+          playbook_deprecated: true,
+          playbook_superseded_by: "mutual-nda-deep",
+        },
         { ...bundleDoc("b", "b"), playbook_deprecated: true },
         bundleDoc("c", "c"),
       ],
@@ -584,7 +619,11 @@ describe("buildBundleJson — per-document metadata (spec-v3 §60 follow-up)", (
     const input: BundleReportInput = {
       ...makeInput(),
       documents: [
-        { ...bundleDoc("a", "a"), playbook_deprecated: true, playbook_superseded_by: "mutual-nda-deep" },
+        {
+          ...bundleDoc("a", "a"),
+          playbook_deprecated: true,
+          playbook_superseded_by: "mutual-nda-deep",
+        },
         { ...bundleDoc("b", "b"), playbook_deprecated: true },
         bundleDoc("c", "c"),
       ],

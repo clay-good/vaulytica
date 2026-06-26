@@ -23,10 +23,17 @@ import { ingestPdfBuffer } from "../../src/ingest/pdf.js";
 import type { IngestResult } from "../../src/ingest/types.js";
 import { flattenText } from "../../src/ingest/types.js";
 import type { EngineRun } from "../../src/engine/index.js";
-import { scanDelivery, type DeliveryReport, type ContainerSource } from "../../src/delivery/index.js";
+import {
+  scanDelivery,
+  type DeliveryReport,
+  type ContainerSource,
+} from "../../src/delivery/index.js";
 import { extractAll } from "../../src/extract/index.js";
 import { buildCriticalDates, type CriticalDatesRegister } from "../../src/report/critical-dates.js";
-import { buildClosingChecklist, type ClosingChecklist } from "../../src/report/closing-checklist.js";
+import {
+  buildClosingChecklist,
+  type ClosingChecklist,
+} from "../../src/report/closing-checklist.js";
 import {
   evaluateNegotiationPosture,
   type NegotiationPosture,

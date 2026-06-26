@@ -28,9 +28,16 @@ afterEach(() => {
 });
 
 const TREE = buildTree(
-  ["Definitions", '"Effective Date" means January 1, 2025.', '"Renewal Date" means December 31, 2025.'],
+  [
+    "Definitions",
+    '"Effective Date" means January 1, 2025.',
+    '"Renewal Date" means December 31, 2025.',
+  ],
   ["Term", "The initial term runs for 12 months after the Effective Date."],
-  ["Auto-renewal", "This Agreement renews automatically. Either party may opt out 60 days before the Renewal Date."],
+  [
+    "Auto-renewal",
+    "This Agreement renews automatically. Either party may opt out 60 days before the Renewal Date.",
+  ],
   ["Cure", "Provider shall cure within 30 days after the Notice Date."],
 );
 

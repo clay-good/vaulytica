@@ -24,10 +24,7 @@ describe("STRUCT-015 — numbered section gaps", () => {
   });
 
   it("is silent when fewer than 3 numbered siblings exist (one stray)", () => {
-    const ctx = buildContext(
-      ["1. Definitions", "Body."],
-      ["4. Term", "Body."],
-    );
+    const ctx = buildContext(["1. Definitions", "Body."], ["4. Term", "Body."]);
     expect(STRUCT_015.check(ctx)).toBeNull();
   });
 
@@ -41,11 +38,7 @@ describe("STRUCT-015 — numbered section gaps", () => {
   });
 
   it("fires when two gaps appear and reports them all", () => {
-    const ctx = buildContext(
-      ["1. A", "Body."],
-      ["3. B", "Body."],
-      ["5. C", "Body."],
-    );
+    const ctx = buildContext(["1. A", "Body."], ["3. B", "Body."], ["5. C", "Body."]);
     const f = STRUCT_015.check(ctx);
     expect(f).not.toBeNull();
     expect(f!.description).toMatch(/2.*4|missing.*2/);

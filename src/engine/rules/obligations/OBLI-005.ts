@@ -17,7 +17,10 @@ export const rule: Rule = {
     if (negs.length === 0) return null;
     return emit(ctx, rule, {
       title: `Negative covenants: ${negs.length}`,
-      description: negs.slice(0, 4).map((n) => n.raw_text.slice(0, 120)).join(" | "),
+      description: negs
+        .slice(0, 4)
+        .map((n) => n.raw_text.slice(0, 120))
+        .join(" | "),
       excerpt: negs[0]!.raw_text,
       explanation:
         "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",

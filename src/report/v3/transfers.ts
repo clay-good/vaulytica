@@ -33,11 +33,7 @@ export function renderTransfersSummary(refs: TransferMechanismReference[]): (Par
   const table = buildTable([
     headerRow(["Mechanism", "Location in document", "Excerpt (truncated)"]),
     ...refs.map((r) =>
-      bodyRow([
-        KIND_LABEL[r.kind] ?? r.kind,
-        r.location,
-        truncate(r.raw_text, 160),
-      ]),
+      bodyRow([KIND_LABEL[r.kind] ?? r.kind, r.location, truncate(r.raw_text, 160)]),
     ),
   ]);
   const tiaMentioned = refs.some((r) => /\bTIA\b|transfer\s+impact\s+assessment/i.test(r.raw_text));

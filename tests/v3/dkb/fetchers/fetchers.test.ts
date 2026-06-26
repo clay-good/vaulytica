@@ -136,7 +136,9 @@ describe("parseEuScc", () => {
     const nodes = parseEuScc(text, "2026-05-12T00:00:00Z");
     expect(nodes.filter((n) => n.node_type === "regulator_model_form")).toHaveLength(4);
     expect(nodes.filter((n) => n.node_type === "transfer_mechanism")).toHaveLength(4);
-    const m2 = nodes.find((n) => n.node_type === "transfer_mechanism" && n.id === "transfer-scc-module-2");
+    const m2 = nodes.find(
+      (n) => n.node_type === "transfer_mechanism" && n.id === "transfer-scc-module-2",
+    );
     expect(m2?.node_type).toBe("transfer_mechanism");
     if (m2 && m2.node_type === "transfer_mechanism") {
       expect(m2.required_ancillary_documents).toContain("Annex III (List of Sub-processors)");
@@ -181,10 +183,7 @@ describe("parseUkGdpr / parseSwissFadp / parseSwissAddendum / parseEdpbGuideline
   });
 
   it("emits a Swiss Addendum form + transfer-mechanism", () => {
-    const nodes = parseSwissAddendum(
-      "Swiss FDPIC Addendum to the EU SCCs",
-      "2026-05-12T00:00:00Z",
-    );
+    const nodes = parseSwissAddendum("Swiss FDPIC Addendum to the EU SCCs", "2026-05-12T00:00:00Z");
     expect(nodes).toHaveLength(2);
   });
 
@@ -200,7 +199,8 @@ describe("parseUkGdpr / parseSwissFadp / parseSwissAddendum / parseEdpbGuideline
 describe("parseIntl (PIPEDA / LGPD / APPI / PIPL)", () => {
   it("PIPL parser carries the translation provenance in the authority field", () => {
     const pipl = INTL_SOURCES.pipl!;
-    const text = "Article 21 personal information handler entrusted; Article 38 cross-border outbound";
+    const text =
+      "Article 21 personal information handler entrusted; Article 38 cross-border outbound";
     const nodes = parseIntl(pipl, text, "2026-05-12T00:00:00Z");
     expect(nodes.length).toBeGreaterThanOrEqual(2);
     expect(nodes[0]!.authority).toContain("National People's Congress");
@@ -208,7 +208,11 @@ describe("parseIntl (PIPEDA / LGPD / APPI / PIPL)", () => {
 
   it("LGPD parser recognises operator language", () => {
     const lgpd = INTL_SOURCES.lgpd!;
-    const nodes = parseIntl(lgpd, "Art. 39 operador tratamento instructions controller", "2026-05-12T00:00:00Z");
+    const nodes = parseIntl(
+      lgpd,
+      "Art. 39 operador tratamento instructions controller",
+      "2026-05-12T00:00:00Z",
+    );
     expect(nodes).toHaveLength(1);
   });
 });

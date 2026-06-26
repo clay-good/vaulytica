@@ -230,7 +230,9 @@ describe("computeCoherenceDuration (spec-v40 — per-front mean recovered-exposu
     const dur = await computeCoherenceDuration(rounds);
     const summary = renderCoherenceDurationSummary(dur);
     expect(summary).toContain("Coherence exposure duration across 5 rounds");
-    expect(summary).toMatch(/chronic lingerer: Cap — recovered exposures averaged 3 rounds below floor/);
+    expect(summary).toMatch(
+      /chronic lingerer: Cap — recovered exposures averaged 3 rounds below floor/,
+    );
     expect(summary).toMatch(/1 lingering/);
     expect(summary).toMatch(/duration_hash: [0-9a-f]{64}/);
 

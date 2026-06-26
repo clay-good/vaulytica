@@ -1,8 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  bundlePostureCoherence,
-  type CoherenceInput,
-} from "./posture-coherence.js";
+import { bundlePostureCoherence, type CoherenceInput } from "./posture-coherence.js";
 import {
   compareCoherence,
   coherenceRegressed,
@@ -29,7 +26,9 @@ function bundle(...docs: Array<[string, Record<string, NegotiationTier>]>): Cohe
 /** Coherence of a one-front (`Cap`) bundle from a list of per-document tiers. */
 async function coherenceOfCap(...tiers: NegotiationTier[]) {
   return bundlePostureCoherence(
-    bundle(...tiers.map((t, i): [string, Record<string, NegotiationTier>] => [`doc${i}`, { Cap: t }])),
+    bundle(
+      ...tiers.map((t, i): [string, Record<string, NegotiationTier>] => [`doc${i}`, { Cap: t }]),
+    ),
   );
 }
 

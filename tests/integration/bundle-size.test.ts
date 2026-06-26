@@ -78,7 +78,10 @@ describe.skipIf(!RUN)("v3 bundle-size guard", () => {
     const main = jsFiles().find((f) => /^main-[A-Za-z0-9_-]+\.js$/.test(f));
     expect(main, "expected a main-*.js entry chunk in dist/assets/").toBeDefined();
     const size = gzippedKb(resolve(ASSETS, main!));
-    expect(size, `${main} gzipped (${size.toFixed(2)} KB) exceeds the ${EAGER_ENTRY_GZIPPED_KB} KB eager-entry budget`).toBeLessThan(EAGER_ENTRY_GZIPPED_KB);
+    expect(
+      size,
+      `${main} gzipped (${size.toFixed(2)} KB) exceeds the ${EAGER_ENTRY_GZIPPED_KB} KB eager-entry budget`,
+    ).toBeLessThan(EAGER_ENTRY_GZIPPED_KB);
   });
 
   it("total gzipped JS payload stays under v2 + 600 KB", () => {
@@ -120,7 +123,10 @@ describe.skipIf(!RUN)("v3 bundle-size guard", () => {
       const size = statSync(resolve(ASSETS, name)).size;
       if (size <= 600 * 1024) continue;
       const allowed = ALLOW.some((re) => re.test(name));
-      expect(allowed, `${name} is ${(size / 1024).toFixed(0)} KB raw but not in the allow-list`).toBe(true);
+      expect(
+        allowed,
+        `${name} is ${(size / 1024).toFixed(0)} KB raw but not in the allow-list`,
+      ).toBe(true);
     }
   });
 });
@@ -177,7 +183,10 @@ describe.skipIf(!RUN)("v4 bundle-size guard", () => {
 
   it("total gzipped JS payload stays under v2 + v3 + v4 budget (1065 KB)", () => {
     const snapshot = snapshotJsFiles();
-    const files = snapshot.map((f) => ({ name: f.name, size: gzipSync(f.bytes).byteLength / 1024 }));
+    const files = snapshot.map((f) => ({
+      name: f.name,
+      size: gzipSync(f.bytes).byteLength / 1024,
+    }));
     const total = files.reduce((s, f) => s + f.size, 0);
     const breakdown = files.map((f) => `${f.name}: ${f.size.toFixed(2)} KB`).join("\n  ");
     expect(
@@ -199,9 +208,7 @@ describe.skipIf(!RUN)("v4 bundle-size guard", () => {
       expect(main, "expected a main-*.js entry chunk in dist/assets/").toBeDefined();
       for (const chunk of v4Chunks) {
         // The chunk must not be named main-*.js — it is a separate split.
-        expect(chunk, `v4 chunk ${chunk} appears to be the main entry`).not.toMatch(
-          /^main-/,
-        );
+        expect(chunk, `v4 chunk ${chunk} appears to be the main entry`).not.toMatch(/^main-/);
       }
     } else {
       // No v4 chunk yet — main entry must still be within eager budget.

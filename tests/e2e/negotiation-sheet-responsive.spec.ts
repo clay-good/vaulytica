@@ -21,10 +21,13 @@ const posture: NegotiationPosture = {
   posture_hash: "f".repeat(64),
   positions: [
     {
-      dimension: "Liability cap (as a multiple of trailing twelve months of fees paid under the agreement)",
+      dimension:
+        "Liability cap (as a multiple of trailing twelve months of fees paid under the agreement)",
       tier: "below-acceptable",
-      detail: "Found liability_cap_multiple = 3; your playbook requires liability_cap_multiple ≥ 6.",
-      guidance: "Below our 6x floor — escalate to the deal lead before agreeing to anything lower; do not concede on this without sign-off from the principal.",
+      detail:
+        "Found liability_cap_multiple = 3; your playbook requires liability_cap_multiple ≥ 6.",
+      guidance:
+        "Below our 6x floor — escalate to the deal lead before agreeing to anything lower; do not concede on this without sign-off from the principal.",
       section_id: "s7.4",
     },
     {
@@ -34,7 +37,11 @@ const posture: NegotiationPosture = {
       guidance: "Up to 60 days is tolerable; push for 30 if you have leverage on price.",
       section_id: "s12",
     },
-    { dimension: "Governing law", tier: "ideal", guidance: "Delaware — our preferred forum; hold." },
+    {
+      dimension: "Governing law",
+      tier: "ideal",
+      guidance: "Delaware — our preferred forum; hold.",
+    },
     {
       dimension: "Uptime service-level commitment",
       tier: "unevaluable",
@@ -59,7 +66,10 @@ async function expectNoHorizontalOverflow(page: Page): Promise<void> {
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
     );
-    expect(overflow, `negotiation sheet overflows horizontally by ${overflow}px at ${bp.label}`).toBeLessThanOrEqual(1);
+    expect(
+      overflow,
+      `negotiation sheet overflows horizontally by ${overflow}px at ${bp.label}`,
+    ).toBeLessThanOrEqual(1);
   }
 }
 

@@ -3,12 +3,7 @@
  */
 
 import type { DocumentTree } from "../../ingest/types.js";
-import type {
-  BreachAddressee,
-  BreachChannel,
-  BreachTiming,
-  BreachTrigger,
-} from "./types.js";
+import type { BreachAddressee, BreachChannel, BreachTiming, BreachTrigger } from "./types.js";
 import { forEachParagraph, posInParagraph } from "../walk.js";
 
 /**
@@ -26,7 +21,10 @@ const VAGUE_TIME_RX =
   /\b(without unreasonable delay|without undue delay|promptly|as soon as practicable|as soon as reasonably practicable|immediately)\b/i;
 
 const TRIGGERS: { rx: RegExp; trigger: BreachTrigger }[] = [
-  { rx: /\b(?:upon|after|of|following|on)\s+(?:its )?discovery\b|\bbecoming aware\b/i, trigger: "discovery" },
+  {
+    rx: /\b(?:upon|after|of|following|on)\s+(?:its )?discovery\b|\bbecoming aware\b/i,
+    trigger: "discovery",
+  },
   { rx: /\b(?:once|upon|after)\s+confirm/i, trigger: "confirmation" },
   { rx: /\bsuspect/i, trigger: "suspicion" },
   { rx: /\bdetermin/i, trigger: "determination" },
@@ -39,7 +37,10 @@ const ADDRESSEES: { rx: RegExp; addressee: BreachAddressee }[] = [
   { rx: /\blaw enforcement\b/i, addressee: "law-enforcement" },
   { rx: /\bcontroller\b/i, addressee: "controller" },
   { rx: /\bcovered entity\b/i, addressee: "controller" },
-  { rx: /\bcustomer(?:'s)? (?:named|designated) contact\b|\bdesignated contact\b/i, addressee: "customer-named-contact" },
+  {
+    rx: /\bcustomer(?:'s)? (?:named|designated) contact\b|\bdesignated contact\b/i,
+    addressee: "customer-named-contact",
+  },
 ];
 
 const CHANNELS: { rx: RegExp; channel: BreachChannel }[] = [
@@ -76,7 +77,9 @@ export function extractBreachTimings(tree: DocumentTree): BreachTiming[] {
       trigger,
       addressee,
       max_delay_hours:
-        numeric && numeric[1] && numeric[2] ? normalizeToHours(Number(numeric[1]), numeric[2]) : null,
+        numeric && numeric[1] && numeric[2]
+          ? normalizeToHours(Number(numeric[1]), numeric[2])
+          : null,
       max_delay_phrase: vague && vague[1] ? vague[1].toLowerCase() : null,
       channel,
       raw_text: window,

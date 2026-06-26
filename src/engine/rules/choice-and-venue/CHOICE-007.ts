@@ -15,7 +15,10 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const isConsumer = ctx.tree.sections.some((s) => CONSUMER_HEADINGS.test(s.heading));
     if (!isConsumer) return null;
-    const hit = firstParagraphMatch(ctx, /\bclass\s+(?:action\s+)?waiver\b|\bwaive[\s\S]{0,40}class\s+action\b/i);
+    const hit = firstParagraphMatch(
+      ctx,
+      /\bclass\s+(?:action\s+)?waiver\b|\bwaive[\s\S]{0,40}class\s+action\b/i,
+    );
     if (!hit) return null;
     return emit(ctx, rule, {
       title: "Class-action waiver in a consumer-facing contract",

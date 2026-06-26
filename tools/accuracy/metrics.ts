@@ -188,7 +188,7 @@ export function computeScoreboard(docs: ReadonlyArray<GradedDocument>): Scoreboa
 export function worstByPrecision(board: Scoreboard, n: number): RuleMetric[] {
   return board.per_rule
     .filter((r) => r.precision !== null && r.tp + r.fp > 0)
-    .sort((a, b) => (a.precision! - b.precision!) || (a.rule_id < b.rule_id ? -1 : 1))
+    .sort((a, b) => a.precision! - b.precision! || (a.rule_id < b.rule_id ? -1 : 1))
     .slice(0, n);
 }
 
@@ -196,6 +196,6 @@ export function worstByPrecision(board: Scoreboard, n: number): RuleMetric[] {
 export function worstByRecall(board: Scoreboard, n: number): RuleMetric[] {
   return board.per_rule
     .filter((r) => r.recall !== null && r.tp + r.fn > 0)
-    .sort((a, b) => (a.recall! - b.recall!) || (a.rule_id < b.rule_id ? -1 : 1))
+    .sort((a, b) => a.recall! - b.recall! || (a.rule_id < b.rule_id ? -1 : 1))
     .slice(0, n);
 }

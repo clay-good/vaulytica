@@ -36,9 +36,7 @@ export const rule: Rule = {
     const govId = gov.jurisdiction_id;
     const venueId = venue.jurisdiction_id;
     const same =
-      govId && venueId
-        ? govId === venueId
-        : normalize(gov.raw_text) === normalize(venue.raw_text);
+      govId && venueId ? govId === venueId : normalize(gov.raw_text) === normalize(venue.raw_text);
     if (same) return null;
 
     return emit(ctx, rule, {

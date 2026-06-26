@@ -35,9 +35,7 @@ export type RunConsistencyInput = {
   executed_at?: string;
 };
 
-export async function runConsistency(
-  input: RunConsistencyInput,
-): Promise<ConsistencyRun> {
+export async function runConsistency(input: RunConsistencyInput): Promise<ConsistencyRun> {
   if (input.documents.length < 2) {
     throw new Error(
       "runConsistency requires at least two documents; got " + input.documents.length,
@@ -52,9 +50,7 @@ export async function runConsistency(
     seen.add(d.doc_id);
   }
 
-  const sorted = [...input.rules].sort((a, b) =>
-    a.id < b.id ? -1 : a.id > b.id ? 1 : 0,
-  );
+  const sorted = [...input.rules].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
 
   const ctx: ConsistencyContext = {
     documents: [...input.documents],
@@ -119,9 +115,7 @@ export async function runConsistency(
   return run;
 }
 
-function sortConsistencyFindings(
-  findings: ConsistencyFinding[],
-): ConsistencyFinding[] {
+function sortConsistencyFindings(findings: ConsistencyFinding[]): ConsistencyFinding[] {
   return [...findings].sort((a, b) => {
     const sevDiff = SEVERITY_RANK[a.severity] - SEVERITY_RANK[b.severity];
     if (sevDiff !== 0) return sevDiff;

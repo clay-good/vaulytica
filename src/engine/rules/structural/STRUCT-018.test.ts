@@ -26,7 +26,10 @@ describe("STRUCT-018 — attachment completeness", () => {
   it("treats an in-paragraph title line as presence", () => {
     const ctx = buildContext(
       ["Body", "Pricing is set forth in Schedule 2."],
-      ["Appendix", "Schedule 2 — Pricing\nThe fees are $1,000 per month for the duration of the term."],
+      [
+        "Appendix",
+        "Schedule 2 — Pricing\nThe fees are $1,000 per month for the duration of the term.",
+      ],
     );
     expect(STRUCT_018.check(ctx)).toBeNull();
   });
@@ -39,7 +42,10 @@ describe("STRUCT-018 — attachment completeness", () => {
   it("reports only the absent one when one of two is present", () => {
     const ctx = buildContext(
       ["Body", "See Exhibit A for services and Exhibit B for pricing."],
-      ["Exhibit A — Services", "The detailed scope of services to be provided under this Agreement."],
+      [
+        "Exhibit A — Services",
+        "The detailed scope of services to be provided under this Agreement.",
+      ],
     );
     const f = STRUCT_018.check(ctx);
     expect(f).not.toBeNull();

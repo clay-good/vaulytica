@@ -71,8 +71,16 @@ export async function buildComparisonDocx(
     ...renderCover(cmp),
     ...renderExecutiveSummary(cmp),
     ...renderPostureMovementSection(postureMovement),
-    ...renderBucket("Resolved", "Findings that fired on the base version and are absent on the revised version — these edits fixed an issue.", cmp.delta.resolved),
-    ...renderBucket("Introduced", "Findings absent on the base version that fired on the revised version — these edits created an issue.", cmp.delta.introduced),
+    ...renderBucket(
+      "Resolved",
+      "Findings that fired on the base version and are absent on the revised version — these edits fixed an issue.",
+      cmp.delta.resolved,
+    ),
+    ...renderBucket(
+      "Introduced",
+      "Findings absent on the base version that fired on the revised version — these edits created an issue.",
+      cmp.delta.introduced,
+    ),
     ...renderUnchangedBucket(cmp.delta.unchanged),
     ...renderClauseDeltaAppendix(cmp.delta.unchanged),
     ...(clauseDiff ? renderRedline(clauseDiff) : []),
@@ -112,23 +120,40 @@ export async function buildComparisonDocx(
 
 function renderCover(cmp: Comparison): Paragraph[] {
   const out: Paragraph[] = [
-    para({ text: "Vaulytica Comparison Report", heading: HeadingLevel.TITLE, color: MINT, alignment: AlignmentType.CENTER }),
+    para({
+      text: "Vaulytica Comparison Report",
+      heading: HeadingLevel.TITLE,
+      color: MINT,
+      alignment: AlignmentType.CENTER,
+    }),
     spacer(),
     coverField("Base version", cmp.base.name),
     coverField("Base result hash", cmp.base.result_hash),
     coverField("Revised version", cmp.revised.name),
     coverField("Revised result hash", cmp.revised.result_hash),
     coverField("Comparison hash", cmp.result_hash),
-    coverField("DKB version", cmp.dkb_mismatch ? `${cmp.base.dkb_version} → ${cmp.revised.dkb_version} (MISMATCH)` : cmp.base.dkb_version),
-    coverField("Family", cmp.family_mismatch ? `${cmp.base.playbook_id} vs ${cmp.revised.playbook_id} (pairing confirmed by user)` : cmp.base.playbook_id),
+    coverField(
+      "DKB version",
+      cmp.dkb_mismatch
+        ? `${cmp.base.dkb_version} → ${cmp.revised.dkb_version} (MISMATCH)`
+        : cmp.base.dkb_version,
+    ),
+    coverField(
+      "Family",
+      cmp.family_mismatch
+        ? `${cmp.base.playbook_id} vs ${cmp.revised.playbook_id} (pairing confirmed by user)`
+        : cmp.base.playbook_id,
+    ),
   ];
   if (cmp.dkb_mismatch) {
     out.push(spacer());
-    out.push(para({
-      text: "Warning: the two runs used different DKB versions, so this comparison is not strictly apples-to-apples — a finding may differ because the underlying authority changed, not because the document did.",
-      bold: true,
-      color: "A86700",
-    }));
+    out.push(
+      para({
+        text: "Warning: the two runs used different DKB versions, so this comparison is not strictly apples-to-apples — a finding may differ because the underlying authority changed, not because the document did.",
+        bold: true,
+        color: "A86700",
+      }),
+    );
   }
   out.push(spacer());
   out.push(para({ text: DETERMINISM_STATEMENT, italics: true }));
@@ -180,7 +205,11 @@ function renderExecutiveSummary(cmp: Comparison): (Paragraph | Table)[] {
   ];
 }
 
-function deltaTable(counts: { resolved: SeverityCounts; introduced: SeverityCounts; unchanged: SeverityCounts }): Table {
+function deltaTable(counts: {
+  resolved: SeverityCounts;
+  introduced: SeverityCounts;
+  unchanged: SeverityCounts;
+}): Table {
   const row = (label: string, c: SeverityCounts) =>
     bodyRow([label, String(c.critical), String(c.warning), String(c.info), String(c.total)]);
   return new Table({
@@ -262,15 +291,16 @@ function renderPostureMovementSection(pm: PostureMovement | undefined): (Paragra
       width: { size: 100, type: WidthType.PERCENTAGE },
       rows: [
         headerRow(["Dimension", "Movement", "Base", "Revised"]),
-        ...pm.dimensions.map((d) =>
-          new TableRow({
-            children: [
-              bodyCell(d.dimension),
-              bodyCell(MOVEMENT_LABEL[d.movement], movementColor(d.movement), true),
-              bodyCell(tierShort(d.base_tier)),
-              bodyCell(tierShort(d.revised_tier)),
-            ],
-          }),
+        ...pm.dimensions.map(
+          (d) =>
+            new TableRow({
+              children: [
+                bodyCell(d.dimension),
+                bodyCell(MOVEMENT_LABEL[d.movement], movementColor(d.movement), true),
+                bodyCell(tierShort(d.base_tier)),
+                bodyCell(tierShort(d.revised_tier)),
+              ],
+            }),
         ),
       ],
     }),
@@ -283,7 +313,10 @@ function renderPostureMovementSection(pm: PostureMovement | undefined): (Paragra
 // ---------------------------------------------------------------------------
 
 function renderBucket(heading: string, blurb: string, findings: Finding[]): (Paragraph | Table)[] {
-  const out: (Paragraph | Table)[] = [h1(`${heading} (${findings.length})`), para({ text: blurb, italics: true })];
+  const out: (Paragraph | Table)[] = [
+    h1(`${heading} (${findings.length})`),
+    para({ text: blurb, italics: true }),
+  ];
   if (findings.length === 0) {
     out.push(para({ text: "None.", italics: true }));
     out.push(pageBreak());
@@ -297,7 +330,10 @@ function renderBucket(heading: string, blurb: string, findings: Finding[]): (Par
 function renderUnchangedBucket(unchanged: UnchangedPair[]): (Paragraph | Table)[] {
   const out: (Paragraph | Table)[] = [
     h1(`Unchanged (${unchanged.length})`),
-    para({ text: "Findings that fired on both versions — still open after this revision.", italics: true }),
+    para({
+      text: "Findings that fired on both versions — still open after this revision.",
+      italics: true,
+    }),
   ];
   if (unchanged.length === 0) {
     out.push(para({ text: "None.", italics: true }));
@@ -307,11 +343,13 @@ function renderUnchangedBucket(unchanged: UnchangedPair[]): (Paragraph | Table)[
   for (const u of unchanged) {
     out.push(...renderFinding(u.finding));
     if (u.clause_changed) {
-      out.push(para({
-        text: "The triggering clause text changed between versions, but the finding still fires — see the clause-level delta appendix.",
-        italics: true,
-        color: "A86700",
-      }));
+      out.push(
+        para({
+          text: "The triggering clause text changed between versions, but the finding still fires — see the clause-level delta appendix.",
+          italics: true,
+          color: "A86700",
+        }),
+      );
       out.push(spacer());
     }
   }
@@ -322,7 +360,11 @@ function renderUnchangedBucket(unchanged: UnchangedPair[]): (Paragraph | Table)[
 function renderFinding(f: Finding): Paragraph[] {
   return [
     para({ text: f.title, bold: true, size: 26 }),
-    para({ text: `[${f.severity.toUpperCase()}] ${f.description}`, color: severityColor(f.severity), bold: true }),
+    para({
+      text: `[${f.severity.toUpperCase()}] ${f.description}`,
+      color: severityColor(f.severity),
+      bold: true,
+    }),
     para({
       text: `Clause (${f.excerpt.section_id ?? "doc"}): "${truncate(f.excerpt.text, 360)}"`,
       italics: true,
@@ -345,19 +387,29 @@ function renderClauseDeltaAppendix(unchanged: UnchangedPair[]): (Paragraph | Tab
     }),
   ];
   if (changed.length === 0) {
-    out.push(para({ text: "No unchanged finding's triggering clause changed text between versions.", italics: true }));
+    out.push(
+      para({
+        text: "No unchanged finding's triggering clause changed text between versions.",
+        italics: true,
+      }),
+    );
     out.push(pageBreak());
     return out;
   }
   for (const u of changed) {
     out.push(para({ text: `${u.rule_id} — ${u.finding.title}`, bold: true, size: 24 }));
-    out.push(new Table({
-      width: { size: 100, type: WidthType.PERCENTAGE },
-      rows: [
-        headerRow(["Base", "Revised"]),
-        bodyRow([truncate(u.base_finding.excerpt.text, 600), truncate(u.finding.excerpt.text, 600)]),
-      ],
-    }));
+    out.push(
+      new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        rows: [
+          headerRow(["Base", "Revised"]),
+          bodyRow([
+            truncate(u.base_finding.excerpt.text, 600),
+            truncate(u.finding.excerpt.text, 600),
+          ]),
+        ],
+      }),
+    );
     out.push(spacer());
   }
   out.push(pageBreak());
@@ -377,10 +429,22 @@ function redlineParagraph(segments: WordDiffSegment[]): Paragraph {
   return new Paragraph({
     children: segments.map((s) => {
       if (s.status === "removed") {
-        return new TextRun({ text: s.text, strike: true, color: "B00020", font: DEFAULT_FONT, size: BODY_SIZE });
+        return new TextRun({
+          text: s.text,
+          strike: true,
+          color: "B00020",
+          font: DEFAULT_FONT,
+          size: BODY_SIZE,
+        });
       }
       if (s.status === "added") {
-        return new TextRun({ text: s.text, underline: {}, color: "1A7A4C", font: DEFAULT_FONT, size: BODY_SIZE });
+        return new TextRun({
+          text: s.text,
+          underline: {},
+          color: "1A7A4C",
+          font: DEFAULT_FONT,
+          size: BODY_SIZE,
+        });
       }
       return new TextRun({ text: s.text, font: DEFAULT_FONT, size: BODY_SIZE });
     }),
@@ -391,8 +455,7 @@ function renderRedline(diff: ClauseDiff): (Paragraph | Table)[] {
   const out: (Paragraph | Table)[] = [
     h1("Document Redline"),
     para({
-      text:
-        "A clause-level text diff of the two documents — which paragraphs were added, removed, or rewritten between the base and the revised version. This is a verbatim comparison of the documents' own text (deterministic LCS alignment), independent of the findings above. No generated language.",
+      text: "A clause-level text diff of the two documents — which paragraphs were added, removed, or rewritten between the base and the revised version. This is a verbatim comparison of the documents' own text (deterministic LCS alignment), independent of the findings above. No generated language.",
     }),
     para({
       text:
@@ -402,24 +465,30 @@ function renderRedline(diff: ClauseDiff): (Paragraph | Table)[] {
     }),
   ];
   if (diff.truncated) {
-    out.push(para({
-      text: "Note: the documents were large enough that a full alignment was not computed; rewrites are listed as a separate add and remove rather than paired, and clause order is not considered.",
-      italics: true,
-      color: "A86700",
-    }));
+    out.push(
+      para({
+        text: "Note: the documents were large enough that a full alignment was not computed; rewrites are listed as a separate add and remove rather than paired, and clause order is not considered.",
+        italics: true,
+        color: "A86700",
+      }),
+    );
   }
   if (diff.changed.length + diff.added.length + diff.removed.length === 0) {
-    out.push(para({ text: "No clause-level text changes between the two documents.", italics: true }));
+    out.push(
+      para({ text: "No clause-level text changes between the two documents.", italics: true }),
+    );
     out.push(pageBreak());
     return out;
   }
 
   if (diff.changed.length > 0) {
     out.push(h3("Rewritten clauses"));
-    out.push(para({
-      text: "Inline redline: struck-through text was removed, underlined text was added.",
-      italics: true,
-    }));
+    out.push(
+      para({
+        text: "Inline redline: struck-through text was removed, underlined text was added.",
+        italics: true,
+      }),
+    );
     for (const pair of diff.changed.slice(0, MAX_REDLINE_ROWS)) {
       out.push(para({ text: clauseLabel(pair.revised), bold: true, size: 24 }));
       if (pair.word_diff) {
@@ -427,13 +496,15 @@ function renderRedline(diff: ClauseDiff): (Paragraph | Table)[] {
         out.push(redlineParagraph(pair.word_diff));
       } else {
         // Clause too long to word-align — show the two full texts side by side.
-        out.push(new Table({
-          width: { size: 100, type: WidthType.PERCENTAGE },
-          rows: [
-            headerRow(["Base", "Revised"]),
-            bodyRow([truncate(pair.base.text, 600), truncate(pair.revised.text, 600)]),
-          ],
-        }));
+        out.push(
+          new Table({
+            width: { size: 100, type: WidthType.PERCENTAGE },
+            rows: [
+              headerRow(["Base", "Revised"]),
+              bodyRow([truncate(pair.base.text, 600), truncate(pair.revised.text, 600)]),
+            ],
+          }),
+        );
       }
       out.push(spacer());
     }
@@ -462,10 +533,12 @@ function renderRedline(diff: ClauseDiff): (Paragraph | Table)[] {
 
 function pushOverflowNote(out: (Paragraph | Table)[], total: number, label: string): void {
   if (total > MAX_REDLINE_ROWS) {
-    out.push(para({
-      text: `… and ${total - MAX_REDLINE_ROWS} more ${label} (showing the first ${MAX_REDLINE_ROWS}).`,
-      italics: true,
-    }));
+    out.push(
+      para({
+        text: `… and ${total - MAX_REDLINE_ROWS} more ${label} (showing the first ${MAX_REDLINE_ROWS}).`,
+        italics: true,
+      }),
+    );
   }
   out.push(spacer());
 }
@@ -511,7 +584,11 @@ function para(opts: ParaOpts): Paragraph {
     font: DEFAULT_FONT,
     size: opts.size ?? BODY_SIZE,
   };
-  return new Paragraph({ heading: opts.heading, alignment: opts.alignment, children: [new TextRun(runOpts)] });
+  return new Paragraph({
+    heading: opts.heading,
+    alignment: opts.alignment,
+    children: [new TextRun(runOpts)],
+  });
 }
 
 function h1(text: string): Paragraph {
@@ -537,7 +614,19 @@ function headerRow(cells: string[]): TableRow {
       (text) =>
         new TableCell({
           shading: { type: ShadingType.CLEAR, fill: MINT, color: "auto" },
-          children: [new Paragraph({ children: [new TextRun({ text, bold: true, color: "FFFFFF", font: DEFAULT_FONT, size: BODY_SIZE })] })],
+          children: [
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text,
+                  bold: true,
+                  color: "FFFFFF",
+                  font: DEFAULT_FONT,
+                  size: BODY_SIZE,
+                }),
+              ],
+            }),
+          ],
         }),
     ),
   });
@@ -551,7 +640,11 @@ function bodyCell(text: string, color?: string, bold?: boolean): TableCell {
       left: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC" },
       right: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC" },
     },
-    children: [new Paragraph({ children: [new TextRun({ text, font: DEFAULT_FONT, size: BODY_SIZE, color, bold })] })],
+    children: [
+      new Paragraph({
+        children: [new TextRun({ text, font: DEFAULT_FONT, size: BODY_SIZE, color, bold })],
+      }),
+    ],
   });
 }
 

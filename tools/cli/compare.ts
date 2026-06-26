@@ -105,7 +105,9 @@ export function parseCompareArgs(argv: string[]): CompareArgs {
     }
   }
   if (positional.length !== 2) {
-    throw new Error("usage: compare <base> <revised> [--playbook <id>] [--playbook-file <path>] [--posture] [--format json|markdown] [--fail-on <sev>] [--fail-on-regression] [--confirm-pairing]");
+    throw new Error(
+      "usage: compare <base> <revised> [--playbook <id>] [--playbook-file <path>] [--posture] [--format json|markdown] [--fail-on <sev>] [--fail-on-regression] [--confirm-pairing]",
+    );
   }
   if (args.posture && !args.playbookFile) {
     throw new Error("--posture requires --playbook-file <path>");
@@ -162,9 +164,12 @@ const MOVEMENT_LABEL: Record<string, string> = {
 function tierShort(tier: string | null): string {
   if (tier === null) return "—";
   return (
-    { ideal: "ideal", acceptable: "acceptable", "below-acceptable": "below floor", unevaluable: "not stated" }[
-      tier
-    ] ?? tier
+    {
+      ideal: "ideal",
+      acceptable: "acceptable",
+      "below-acceptable": "below floor",
+      unevaluable: "not stated",
+    }[tier] ?? tier
   );
 }
 
@@ -270,7 +275,9 @@ export async function runCompare(argv: string[]): Promise<void> {
     }
     const parsed = parseCustomPlaybookJson(text);
     if (!parsed.ok) {
-      process.stderr.write(`invalid playbook ${args.playbookFile}:\n  ${parsed.errors.join("\n  ")}\n`);
+      process.stderr.write(
+        `invalid playbook ${args.playbookFile}:\n  ${parsed.errors.join("\n  ")}\n`,
+      );
       process.exitCode = 1;
       return;
     }
@@ -303,7 +310,9 @@ export async function runCompare(argv: string[]): Promise<void> {
   }
 
   if (args.failOn && introducedBreaches(cmp.delta.counts.introduced, args.failOn)) {
-    process.stderr.write(`\n✗ this revision introduced a finding at or above --fail-on ${args.failOn}\n`);
+    process.stderr.write(
+      `\n✗ this revision introduced a finding at or above --fail-on ${args.failOn}\n`,
+    );
     process.exitCode = 2;
   }
 

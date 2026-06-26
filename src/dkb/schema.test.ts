@@ -43,7 +43,9 @@ describe("starter DKB conforms to the published schemas", () => {
     expect(() => ClassifierVocabSchema.parse(loadJson("dkb-classifier-vocab.json"))).not.toThrow();
   });
   it("classifier patterns", () => {
-    expect(() => ClassifierPatternSchema.parse(loadJson("dkb-classifier-patterns.json"))).not.toThrow();
+    expect(() =>
+      ClassifierPatternSchema.parse(loadJson("dkb-classifier-patterns.json")),
+    ).not.toThrow();
   });
 
   it("rejects entries missing a license", () => {

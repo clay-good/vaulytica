@@ -88,7 +88,9 @@ describe("legal-basis ledger (spec-v5 §12–§15, Step 75)", () => {
       if (inlineTier === undefined) continue; // unsigned rule — fine, field omitted
       const expected = tierForRule(byRule, rule.id);
       if (expected !== inlineTier) {
-        violations.push(`${rule.id}: inline tier "${inlineTier}" but ledger derives "${expected ?? "none"}"`);
+        violations.push(
+          `${rule.id}: inline tier "${inlineTier}" but ledger derives "${expected ?? "none"}"`,
+        );
       }
     }
     expect(

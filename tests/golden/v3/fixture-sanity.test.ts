@@ -37,19 +37,13 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // duty in DPA-006 also fires because removing §4 also lost the
   // "Controller shall provide Processor with documented instructions"
   // sentence.
-  "dpa-controller-processor-missing-documented-instructions-fail.txt": [
-    "DPA-007",
-    "DPA-006",
-  ],
+  "dpa-controller-processor-missing-documented-instructions-fail.txt": ["DPA-007", "DPA-006"],
 
   // AI Addendum that explicitly permits training on Customer Data on
   // an opt-out basis. ADDENDA-011 fires (critical) per FTC enforcement
   // posture on AI-training disclosures; IPDATA-009 also fires because
   // the broader v2 AI / model-training detector matches the same text.
-  "ai-addendum-training-without-optin-fail.txt": [
-    "ADDENDA-011",
-    "IPDATA-009",
-  ],
+  "ai-addendum-training-without-optin-fail.txt": ["ADDENDA-011", "IPDATA-009"],
 
   // Vendor Security Addendum that swaps the 24-hour incident-notification
   // window for vague "promptly and without undue delay" language.
@@ -308,9 +302,7 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // all information necessary to demonstrate compliance with Article 28
   // and must allow for and contribute to audits, including inspections,
   // conducted by the controller or its mandated auditor.
-  "dpa-controller-processor-missing-compliance-demonstration-fail.txt": [
-    "DPA-014",
-  ],
+  "dpa-controller-processor-missing-compliance-demonstration-fail.txt": ["DPA-014"],
 
   // Multi-state US DPA with Section 9 (Annual Security Program) replacing
   // the audit-cooperation clause — no "allow and cooperate with reasonable
@@ -331,9 +323,7 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // warranty anchor, and now neither appears in the warranty section;
   // without this clause the customer has no contractual representation
   // that the vendor's services comply with applicable law.
-  "msa-vendor-deep-missing-compliance-noninfringement-warranty-fail.txt": [
-    "MSA-014",
-  ],
+  "msa-vendor-deep-missing-compliance-noninfringement-warranty-fail.txt": ["MSA-014"],
 
   // Mutual NDA with the "already known / prior to disclosure" exclusion
   // removed from Section 2 (Carveouts) — the standard four-exclusion list
@@ -368,9 +358,7 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // absent the statutory anchor and the enumerated TOMs, the controller
   // cannot verify that the processor has implemented the required security
   // of processing framework.
-  "dpa-controller-processor-missing-art32-security-measures-fail.txt": [
-    "DPA-009",
-  ],
+  "dpa-controller-processor-missing-art32-security-measures-fail.txt": ["DPA-009"],
 
   // Mutual NDA with the "third party lawfully obtained" carve-out removed
   // from Section 2 (Carveouts) — the standard four-exclusion list now
@@ -423,9 +411,7 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // R&D by the Receiving Party's workforce could be captured as a
   // confidentiality breach merely because parallel work was conducted
   // while accessing the Disclosing Party's information.
-  "mutual-nda-deep-missing-independent-development-exclusion-fail.txt": [
-    "NDA-D-009",
-  ],
+  "mutual-nda-deep-missing-independent-development-exclusion-fail.txt": ["NDA-D-009"],
 
   // BAA with the breach-notification clause rewritten to trigger from
   // "confirmation and written assessment that a reportable breach has
@@ -449,9 +435,7 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // available demonstrating compliance; without this clause the
   // controller has no contractual basis to obtain the compliance
   // documentation required by the Applicable State Laws.
-  "dpa-multi-state-us-missing-compliance-demonstration-fail.txt": [
-    "USDPA-019",
-  ],
+  "dpa-multi-state-us-missing-compliance-demonstration-fail.txt": ["USDPA-019"],
 
   // BAA with the Reporting section rewritten to drop "without
   // unreasonable delay" from the breach-notification clause — the
@@ -474,9 +458,7 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // without this clause the controller has no contractual guarantee
   // that downstream subprocessors are bound by the same data
   // protection requirements.
-  "dpa-multi-state-us-missing-subcontractor-written-contract-fail.txt": [
-    "USDPA-018",
-  ],
+  "dpa-multi-state-us-missing-subcontractor-written-contract-fail.txt": ["USDPA-018"],
 
   // Vendor-form MSA with the Section 7(c) Indemnification Procedure
   // block stripped — no "promptly notify", "control of the defense",
@@ -3853,9 +3835,6 @@ describe("v3 fixture sanity — coverage gate", () => {
       readdirSync(FIXTURES).filter((n) => n.endsWith(".txt.playbook")),
     );
     const missing = txtFixtures.filter((n) => !sidecarPresent.has(`${n}.playbook`));
-    expect(
-      missing,
-      `add a .playbook sidecar next to: ${missing.join(", ")}`,
-    ).toEqual([]);
+    expect(missing, `add a .playbook sidecar next to: ${missing.join(", ")}`).toEqual([]);
   });
 });

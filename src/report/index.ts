@@ -118,11 +118,7 @@ export {
   type ClauseEvidenceSummary,
   type FindingEvidence,
 } from "./clause-evidence.js";
-export {
-  buildBibliography,
-  citationIndex,
-  type BibliographyEntry,
-} from "./bibliography.js";
+export { buildBibliography, citationIndex, type BibliographyEntry } from "./bibliography.js";
 
 // v3 report extensions (spec-v3.md §§54–59). Each renderer is conditional;
 // the v2 builder accepts an optional `v3?: V3ReportInputs` and inserts the

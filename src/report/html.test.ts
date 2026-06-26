@@ -91,7 +91,7 @@ describe("buildHtmlReport (spec-v8 §21 — standalone single-file HTML)", () =>
 
   it("escapes HTML metacharacters in finding content", () => {
     const run = makeRun();
-    run.findings = [{ ...finding("x", "info"), title: "Cap <script>alert(1)</script> & \"q\"" }];
+    run.findings = [{ ...finding("x", "info"), title: 'Cap <script>alert(1)</script> & "q"' }];
     const html = buildHtmlReport(run, ingest, loadStarterDkbSync());
     expect(html).not.toContain("<script>alert(1)</script>");
     expect(html).toContain("&lt;script&gt;");

@@ -10,7 +10,10 @@ import {
   trajectoryRegressed,
   buildCoherenceTrajectoryJson,
 } from "../../src/report/coherence-trajectory.js";
-import type { NegotiationPosture, NegotiationTier } from "../../src/playbooks/custom-interpreter.js";
+import type {
+  NegotiationPosture,
+  NegotiationTier,
+} from "../../src/playbooks/custom-interpreter.js";
 
 function posture(map: Record<string, NegotiationTier>): NegotiationPosture {
   return {
@@ -28,7 +31,12 @@ const LADDER_B = "b".repeat(64);
 
 /** A round whose `Cap` binding floor is `cap`; `Law` held at ideal throughout. */
 const round = (cap: NegotiationTier) =>
-  bundlePostureCoherence(bundle(["msa.docx", { Cap: "ideal", Law: "ideal" }], ["order.docx", { Cap: cap, Law: "ideal" }]));
+  bundlePostureCoherence(
+    bundle(
+      ["msa.docx", { Cap: "ideal", Law: "ideal" }],
+      ["order.docx", { Cap: cap, Law: "ideal" }],
+    ),
+  );
 
 describe("compareCoherenceTrendArtifacts (spec-v17 — document-free coherence trajectory)", () => {
   it("walks N artifacts and matches the in-memory compareCoherenceTrajectory byte-for-byte", async () => {
@@ -126,6 +134,8 @@ describe("compareCoherenceTrendArtifacts (spec-v17 — document-free coherence t
     );
     expect(outcome.ok).toBe(true);
     if (!outcome.ok) return;
-    expect(outcome.regressed).toBe(trajectoryRegressed(await compareCoherenceTrajectory([c1, c2, c3])));
+    expect(outcome.regressed).toBe(
+      trajectoryRegressed(await compareCoherenceTrajectory([c1, c2, c3])),
+    );
   });
 });

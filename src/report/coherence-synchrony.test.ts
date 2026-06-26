@@ -63,9 +63,18 @@ describe("computeCoherenceSynchrony (spec-v25 — per-round-transition floor cro
 
   it("is the transpose of v24 — total_crossings equals the sum of every front's v24 crossings", async () => {
     const rounds = await Promise.all([
-      mk({ Cap: "acceptable", Term: "below-acceptable", Fee: "ideal" }, { Cap: "ideal", Term: "ideal", Fee: "ideal" }),
-      mk({ Cap: "below-acceptable", Term: "acceptable", Fee: "ideal" }, { Cap: "ideal", Term: "ideal", Fee: "ideal" }),
-      mk({ Cap: "acceptable", Term: "below-acceptable", Fee: "below-acceptable" }, { Cap: "ideal", Term: "ideal", Fee: "ideal" }),
+      mk(
+        { Cap: "acceptable", Term: "below-acceptable", Fee: "ideal" },
+        { Cap: "ideal", Term: "ideal", Fee: "ideal" },
+      ),
+      mk(
+        { Cap: "below-acceptable", Term: "acceptable", Fee: "ideal" },
+        { Cap: "ideal", Term: "ideal", Fee: "ideal" },
+      ),
+      mk(
+        { Cap: "acceptable", Term: "below-acceptable", Fee: "below-acceptable" },
+        { Cap: "ideal", Term: "ideal", Fee: "ideal" },
+      ),
     ]);
     const sync = await computeCoherenceSynchrony(rounds);
     const vol = await computeCoherenceVolatility(rounds);
@@ -118,10 +127,22 @@ describe("computeCoherenceSynchrony (spec-v25 — per-round-transition floor cro
     // step 1→2: Cap+Term fall (2). step 2→3: Cap recovers, Fee falls (2 — a tie). step 3→4: Term recovers (1).
     // Both step 1→2 and step 2→3 have 2 crossings; the earliest (step 1→2) wins.
     const rounds = await Promise.all([
-      mk({ Cap: "acceptable", Term: "acceptable", Fee: "acceptable" }, { Cap: "ideal", Term: "ideal", Fee: "ideal" }),
-      mk({ Cap: "below-acceptable", Term: "below-acceptable", Fee: "acceptable" }, { Cap: "ideal", Term: "ideal", Fee: "ideal" }),
-      mk({ Cap: "acceptable", Term: "below-acceptable", Fee: "below-acceptable" }, { Cap: "ideal", Term: "ideal", Fee: "ideal" }),
-      mk({ Cap: "acceptable", Term: "acceptable", Fee: "below-acceptable" }, { Cap: "ideal", Term: "ideal", Fee: "ideal" }),
+      mk(
+        { Cap: "acceptable", Term: "acceptable", Fee: "acceptable" },
+        { Cap: "ideal", Term: "ideal", Fee: "ideal" },
+      ),
+      mk(
+        { Cap: "below-acceptable", Term: "below-acceptable", Fee: "acceptable" },
+        { Cap: "ideal", Term: "ideal", Fee: "ideal" },
+      ),
+      mk(
+        { Cap: "acceptable", Term: "below-acceptable", Fee: "below-acceptable" },
+        { Cap: "ideal", Term: "ideal", Fee: "ideal" },
+      ),
+      mk(
+        { Cap: "acceptable", Term: "acceptable", Fee: "below-acceptable" },
+        { Cap: "ideal", Term: "ideal", Fee: "ideal" },
+      ),
     ]);
     const r = await computeCoherenceSynchrony(rounds);
     expect(r.per_transition.map((t) => t.crossing_fronts)).toEqual([2, 2, 1]);

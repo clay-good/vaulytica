@@ -11,9 +11,7 @@ describe("parseDocxHtml", () => {
   });
 
   it("nests h2 under h1", () => {
-    const tree = parseDocxHtml(
-      "<h1>Top</h1><p>p1</p><h2>Sub</h2><p>p2</p>",
-    );
+    const tree = parseDocxHtml("<h1>Top</h1><p>p1</p><h2>Sub</h2><p>p2</p>");
     expect(tree.sections).toHaveLength(1);
     const top = tree.sections[0]!;
     expect(top.heading).toBe("Top");
@@ -44,9 +42,7 @@ describe("parseDocxHtml", () => {
     const tree = parseDocxHtml(
       "<h1>H</h1><table><tr><td>A</td><td>B</td></tr><tr><td>1</td><td>2</td></tr></table>",
     );
-    const lines = tree.sections[0]!.paragraphs.map((p) =>
-      p.runs.map((r) => r.text).join(""),
-    );
+    const lines = tree.sections[0]!.paragraphs.map((p) => p.runs.map((r) => r.text).join(""));
     expect(lines.some((l) => l.includes("A | B"))).toBe(true);
     expect(lines.some((l) => l.includes("1 | 2"))).toBe(true);
   });

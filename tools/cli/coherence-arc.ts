@@ -61,8 +61,7 @@ export async function compareCoherenceArcArtifacts(
   if (!seq.ok) return seq;
 
   const arc = await compareCoherenceArc(seq.rounds);
-  const output =
-    format === "json" ? buildCoherenceArcJson(arc) : renderCoherenceArcSummary(arc);
+  const output = format === "json" ? buildCoherenceArcJson(arc) : renderCoherenceArcSummary(arc);
   return {
     ok: true,
     output,

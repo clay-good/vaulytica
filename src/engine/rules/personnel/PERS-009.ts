@@ -47,10 +47,27 @@ const DURATION_RE =
   /\b(\d{1,3}|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|eighteen|twenty(?:-(?:one|two|three|four))?|thirty(?:-six)?)\s*(?:\(\d{1,3}\)\s*)?(year|years|month|months)\b/i;
 
 const NUM_WORDS: Record<string, number> = {
-  one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10,
-  eleven: 11, twelve: 12, fifteen: 15, eighteen: 18,
-  twenty: 20, "twenty-one": 21, "twenty-two": 22, "twenty-three": 23, "twenty-four": 24,
-  thirty: 30, "thirty-six": 36,
+  one: 1,
+  two: 2,
+  three: 3,
+  four: 4,
+  five: 5,
+  six: 6,
+  seven: 7,
+  eight: 8,
+  nine: 9,
+  ten: 10,
+  eleven: 11,
+  twelve: 12,
+  fifteen: 15,
+  eighteen: 18,
+  twenty: 20,
+  "twenty-one": 21,
+  "twenty-two": 22,
+  "twenty-three": 23,
+  "twenty-four": 24,
+  thirty: 30,
+  "thirty-six": 36,
 };
 
 function durationToMonths(amount: string, unit: string): number | null {
@@ -72,7 +89,13 @@ export const rule: Rule = {
     "Flags non-solicit / no-hire clauses lasting longer than 12 months; escalates the description when the duration is ≥ 24 months.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
-    type Hit = { months: number; raw: string; text: string; position: DocPosition; matchIndex: number };
+    type Hit = {
+      months: number;
+      raw: string;
+      text: string;
+      position: DocPosition;
+      matchIndex: number;
+    };
     let hit: Hit | null = null;
     forEachParagraph(ctx.tree, (p) => {
       if (hit) return;

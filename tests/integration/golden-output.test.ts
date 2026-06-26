@@ -75,7 +75,9 @@ describe("golden-output", () => {
   }
 });
 
-function normalizeForGolden(run: import("../../src/engine/finding.js").EngineRun): import("../../src/engine/finding.js").EngineRun {
+function normalizeForGolden(
+  run: import("../../src/engine/finding.js").EngineRun,
+): import("../../src/engine/finding.js").EngineRun {
   return {
     ...run,
     executed_at: "",

@@ -29,7 +29,11 @@ import { compareDkbVersions } from "./version.js";
 
 export class DkbLoadError extends Error {
   readonly cause_kind: "network" | "schema" | "no-cache" | "manifest-missing";
-  constructor(cause_kind: DkbLoadError["cause_kind"], message: string, public override cause?: unknown) {
+  constructor(
+    cause_kind: DkbLoadError["cause_kind"],
+    message: string,
+    public override cause?: unknown,
+  ) {
     super(message);
     this.name = "DkbLoadError";
     this.cause_kind = cause_kind;
@@ -73,7 +77,11 @@ export async function loadDkb(options: LoadDkbOptions = {}): Promise<DKB> {
       const fallback = await readLatestCache();
       if (fallback) return fallback;
     }
-    throw new DkbLoadError("network", "could not load DKB manifest and no cached DKB is available", err);
+    throw new DkbLoadError(
+      "network",
+      "could not load DKB manifest and no cached DKB is available",
+      err,
+    );
   }
 
   if (useCache) {

@@ -73,8 +73,7 @@ const WILL_RULES: Rule[] = [
     missing_description: "No clause was found revoking prior wills / codicils.",
     explanation:
       "UPC § 2-507(a) recognizes revocation by subsequent writing. Without an express revocation clause, prior wills may control to the extent not inconsistent.",
-    recommendation:
-      "Add 'Revocation' expressly revoking all prior wills and codicils.",
+    recommendation: "Add 'Revocation' expressly revoking all prior wills and codicils.",
     present_patterns: [
       /(revoke|revoking|revocation)/i,
       /(prior\s+wills?|all\s+(former|previous)\s+wills?|codicils?)/i,
@@ -87,8 +86,7 @@ const WILL_RULES: Rule[] = [
     citation: upc("3-203", "Priority for appointment"),
     playbooks: [EST_PLAYBOOK_WILL],
     missing_title: "Executor / personal representative clause missing",
-    missing_description:
-      "No clause was found nominating an executor / personal representative.",
+    missing_description: "No clause was found nominating an executor / personal representative.",
     explanation:
       "Without a nomination, the court appoints from statutory priority list (often surviving spouse). Successor nominations avoid contested appointments.",
     recommendation:
@@ -106,8 +104,7 @@ const WILL_RULES: Rule[] = [
     citation: upc("3-603", "Bond not required"),
     playbooks: [EST_PLAYBOOK_WILL],
     missing_title: "Fiduciary-bond waiver clause missing",
-    missing_description:
-      "No clause was found waiving bond / surety for fiduciaries.",
+    missing_description: "No clause was found waiving bond / surety for fiduciaries.",
     explanation:
       "UPC § 3-603 permits bond waiver in the will. Without waiver, bond may be required, adding cost and friction.",
     recommendation:
@@ -138,13 +135,11 @@ const WILL_RULES: Rule[] = [
   presence({
     id: "EST-006",
     name: "Guardianship nomination for minor children",
-    description:
-      "Wills involving minor children should nominate a guardian (and successors).",
+    description: "Wills involving minor children should nominate a guardian (and successors).",
     citation: upc("5-202", "Testamentary appointment of guardian"),
     playbooks: [EST_PLAYBOOK_WILL],
     missing_title: "Guardianship nomination clause missing",
-    missing_description:
-      "No guardianship nomination for minor children was found.",
+    missing_description: "No guardianship nomination for minor children was found.",
     explanation:
       "UPC § 5-202 recognizes testamentary appointment of guardian for unmarried minor child. Without it, the court chooses from family members based on statutory factors.",
     recommendation:
@@ -168,10 +163,7 @@ const WILL_RULES: Rule[] = [
       "UPC § 2-504 self-proving affidavit makes witness testimony unnecessary in probate, speeding the process.",
     recommendation:
       "Add 'Self-Proving Affidavit' adopting the statutory form (or state-specific equivalent).",
-    present_patterns: [
-      /(self.proving|self.proved)\s+affidavit/i,
-      /(witness|notary|notar(y|ial))/i,
-    ],
+    present_patterns: [/(self.proving|self.proved)\s+affidavit/i, /(witness|notary|notar(y|ial))/i],
     default_severity: "warning",
   }),
   presence({
@@ -204,73 +196,55 @@ const REVOCABLE_TRUST_RULES: Rule[] = [
   presence({
     id: "EST-009",
     name: "Settlor / grantor / trustor identification",
-    description:
-      "Revocable living trust must identify settlor (also called grantor / trustor).",
+    description: "Revocable living trust must identify settlor (also called grantor / trustor).",
     citation: utc("103", "Definitions"),
     playbooks: [EST_PLAYBOOK_REVOCABLE_TRUST],
     missing_title: "Settlor / grantor identification clause missing",
     missing_description: "No clause was found identifying the settlor / grantor.",
     explanation:
       "UTC § 103 defines settlor as the person creating the trust. Identification is required for capacity / formation purposes.",
-    recommendation:
-      "Add 'Settlor' (or 'Grantor' / 'Trustor') line identifying the trust creator.",
-    present_patterns: [
-      /(settlor|grantor|trustor)/i,
-      /(creates?|establishes?|declares?)/i,
-    ],
+    recommendation: "Add 'Settlor' (or 'Grantor' / 'Trustor') line identifying the trust creator.",
+    present_patterns: [/(settlor|grantor|trustor)/i, /(creates?|establishes?|declares?)/i],
   }),
   presence({
     id: "EST-010",
     name: "Trustee + successor trustees",
-    description:
-      "Trust must identify the initial trustee and at least one successor trustee.",
+    description: "Trust must identify the initial trustee and at least one successor trustee.",
     citation: utc("704", "Vacancy in trusteeship"),
     playbooks: [EST_PLAYBOOK_REVOCABLE_TRUST],
     missing_title: "Trustee / successor trustees clause missing",
-    missing_description:
-      "No trustee / successor-trustee clause was found.",
+    missing_description: "No trustee / successor-trustee clause was found.",
     explanation:
       "UTC § 704 governs vacancies. Without successor designation, the court appoints, creating delay and unintended outcomes.",
     recommendation:
       "Add 'Trustees' identifying initial trustee + at least one successor (and remove / replace procedures).",
-    present_patterns: [
-      /(trustee)/i,
-      /(successor|alternate)\s+trustee/i,
-    ],
+    present_patterns: [/(trustee)/i, /(successor|alternate)\s+trustee/i],
   }),
   presence({
     id: "EST-011",
     name: "Revocability / amendment power",
-    description:
-      "Revocable trust must clearly state it is revocable and amendable by the settlor.",
+    description: "Revocable trust must clearly state it is revocable and amendable by the settlor.",
     citation: utc("602", "Revocation or amendment"),
     playbooks: [EST_PLAYBOOK_REVOCABLE_TRUST],
     missing_title: "Revocability / amendment clause missing",
-    missing_description:
-      "No clause was found stating the trust is revocable / amendable.",
+    missing_description: "No clause was found stating the trust is revocable / amendable.",
     explanation:
       "UTC § 602(a) presumes revocability for trusts created after the UTC's adoption in a state — but explicit revocability + amendment language avoids dispute, especially in non-UTC states.",
     recommendation:
       "Add 'Revocation and Amendment' stating settlor may revoke or amend at any time by written instrument.",
-    present_patterns: [
-      /(revoke|revocation|revocable)/i,
-      /(amend|amendment|alter)/i,
-    ],
+    present_patterns: [/(revoke|revocation|revocable)/i, /(amend|amendment|alter)/i],
   }),
   presence({
     id: "EST-012",
     name: "Funding — initial trust property identified",
-    description:
-      "Trust should identify initial trust property (often Schedule A).",
+    description: "Trust should identify initial trust property (often Schedule A).",
     citation: utc("401", "Methods of creating trust"),
     playbooks: [EST_PLAYBOOK_REVOCABLE_TRUST],
     missing_title: "Funding / trust property clause missing",
-    missing_description:
-      "No funding / initial trust-property clause was found.",
+    missing_description: "No funding / initial trust-property clause was found.",
     explanation:
       "UTC § 401 requires property for trust formation. Without funding, the trust is unfunded and inoperative.",
-    recommendation:
-      "Add 'Trust Property' (or Schedule A) describing the initial trust corpus.",
+    recommendation: "Add 'Trust Property' (or Schedule A) describing the initial trust corpus.",
     present_patterns: [
       /(trust\s+property|trust\s+corpus|schedule\s+a|initial\s+funding)/i,
       /(transfer(s|red)?|conveyed?|assign(s|ed)?)/i,
@@ -284,8 +258,7 @@ const REVOCABLE_TRUST_RULES: Rule[] = [
     citation: utc("813", "Duty to inform and report"),
     playbooks: [EST_PLAYBOOK_REVOCABLE_TRUST],
     missing_title: "Lifetime-distribution clause missing",
-    missing_description:
-      "No lifetime-distribution clause was found.",
+    missing_description: "No lifetime-distribution clause was found.",
     explanation:
       "Without explicit lifetime-distribution direction, ambiguity about whether trustee may distribute principal can defeat estate-planning intent.",
     recommendation:
@@ -303,8 +276,7 @@ const REVOCABLE_TRUST_RULES: Rule[] = [
     citation: utc("103", "Beneficiary"),
     playbooks: [EST_PLAYBOOK_REVOCABLE_TRUST],
     missing_title: "Death-distribution clause missing",
-    missing_description:
-      "No clause was found specifying disposition on settlor's death.",
+    missing_description: "No clause was found specifying disposition on settlor's death.",
     explanation:
       "The post-death distribution is the trust's principal estate-planning function; named beneficiaries with stated shares should be identified.",
     recommendation:
@@ -331,10 +303,7 @@ const REVOCABLE_TRUST_RULES: Rule[] = [
       "Pour-over wills devise residuary to the trust. Coordination prevents probate of trust-funded property — but unfunded property must be addressed.",
     recommendation:
       "Add 'Pour-Over' clause referencing the testator's pour-over will (or noting absence).",
-    present_patterns: [
-      /(pour.?over|pourover)/i,
-      /(will|last\s+will)/i,
-    ],
+    present_patterns: [/(pour.?over|pourover)/i, /(will|last\s+will)/i],
     default_severity: "warning",
   }),
   presence({
@@ -350,10 +319,7 @@ const REVOCABLE_TRUST_RULES: Rule[] = [
       "UTC § 502 enforces spendthrift provisions restricting both voluntary and involuntary transfers of beneficial interests. Standard estate-planning practice.",
     recommendation:
       "Add 'Spendthrift Provision' restraining voluntary and involuntary transfers of beneficial interests.",
-    present_patterns: [
-      /spendthrift/i,
-      /(creditor|involuntary\s+transfer|attachment)/i,
-    ],
+    present_patterns: [/spendthrift/i, /(creditor|involuntary\s+transfer|attachment)/i],
     default_severity: "warning",
   }),
 ];
@@ -368,11 +334,13 @@ const ADVANCE_DIRECTIVE_RULES: Rule[] = [
     name: "Declarant identification + capacity recital",
     description:
       "Advance directive must identify the declarant and recite competence at execution.",
-    citation: stateAdv("advance-directive", "State advance-directive statutes (e.g., CA Prob. § 4670 et seq.; NY Pub. Health § 2980 et seq.)"),
+    citation: stateAdv(
+      "advance-directive",
+      "State advance-directive statutes (e.g., CA Prob. § 4670 et seq.; NY Pub. Health § 2980 et seq.)",
+    ),
     playbooks: [EST_PLAYBOOK_ADVANCE_DIRECTIVE],
     missing_title: "Declarant identification / capacity clause missing",
-    missing_description:
-      "No clause was found identifying declarant and capacity at execution.",
+    missing_description: "No clause was found identifying declarant and capacity at execution.",
     explanation:
       "Advance directives require competent declarant; identification + capacity recital protect against later challenge.",
     recommendation:
@@ -390,8 +358,7 @@ const ADVANCE_DIRECTIVE_RULES: Rule[] = [
     citation: stateAdv("end-of-life", "State end-of-life decision-making statutes"),
     playbooks: [EST_PLAYBOOK_ADVANCE_DIRECTIVE],
     missing_title: "End-of-life preferences clause missing",
-    missing_description:
-      "No clause was found stating end-of-life treatment preferences.",
+    missing_description: "No clause was found stating end-of-life treatment preferences.",
     explanation:
       "The core function of a living will is to instruct providers about life-sustaining treatment in terminal / persistent-vegetative / end-stage conditions.",
     recommendation:
@@ -404,8 +371,7 @@ const ADVANCE_DIRECTIVE_RULES: Rule[] = [
   presence({
     id: "EST-019",
     name: "Pain management / comfort care directive",
-    description:
-      "Advance directive should address pain management / comfort care preferences.",
+    description: "Advance directive should address pain management / comfort care preferences.",
     citation: stateAdv("comfort-care", "State comfort-care / hospice directives"),
     playbooks: [EST_PLAYBOOK_ADVANCE_DIRECTIVE],
     missing_title: "Pain-management / comfort-care clause missing",
@@ -423,8 +389,7 @@ const ADVANCE_DIRECTIVE_RULES: Rule[] = [
   presence({
     id: "EST-020",
     name: "Organ donation / anatomical gift",
-    description:
-      "Advance directive should address organ-donation / anatomical-gift preferences.",
+    description: "Advance directive should address organ-donation / anatomical-gift preferences.",
     citation: stateAdv("uagd", "Uniform Anatomical Gift Act (revised 2006)"),
     playbooks: [EST_PLAYBOOK_ADVANCE_DIRECTIVE],
     missing_title: "Organ donation / anatomical gift clause missing",
@@ -447,16 +412,12 @@ const ADVANCE_DIRECTIVE_RULES: Rule[] = [
     citation: stateAdv("ad-execution", "State advance-directive execution-formality statutes"),
     playbooks: [EST_PLAYBOOK_ADVANCE_DIRECTIVE],
     missing_title: "Witnesses / notary clause missing",
-    missing_description:
-      "No witnesses / notary clause was found in the text.",
+    missing_description: "No witnesses / notary clause was found in the text.",
     explanation:
       "States vary: two witnesses common; some require notary; many disqualify health-care provider / agent / heir from witnessing. Execution formalities cannot be verified from text — see EST-060.",
     recommendation:
       "Add execution block with two witnesses (non-providers, non-agents, non-heirs) + notary block where required.",
-    present_patterns: [
-      /(witness(es)?|attested)/i,
-      /(notary|notar(y|ial))/i,
-    ],
+    present_patterns: [/(witness(es)?|attested)/i, /(notary|notar(y|ial))/i],
   }),
   presence({
     id: "EST-022",
@@ -466,8 +427,7 @@ const ADVANCE_DIRECTIVE_RULES: Rule[] = [
     citation: stateAdv("trigger", "Advance-directive triggering-condition statutes"),
     playbooks: [EST_PLAYBOOK_ADVANCE_DIRECTIVE],
     missing_title: "Triggering-condition clause missing",
-    missing_description:
-      "No triggering-condition / effective-on clause was found.",
+    missing_description: "No triggering-condition / effective-on clause was found.",
     explanation:
       "Common triggers: terminal condition, irreversible coma, persistent vegetative state, end-stage condition. Without trigger, providers cannot determine when the directive applies.",
     recommendation:
@@ -490,10 +450,7 @@ const ADVANCE_DIRECTIVE_RULES: Rule[] = [
       "Most states allow oral revocation by competent declarant. Clear revocation language reduces ambiguity.",
     recommendation:
       "Add 'Revocation' describing the methods (oral, written, physical destruction, contrary directive).",
-    present_patterns: [
-      /(revoke|revocation|revoking)/i,
-      /(oral|written|destroy(ed)?|contrary)/i,
-    ],
+    present_patterns: [/(revoke|revocation|revoking)/i, /(oral|written|destroy(ed)?|contrary)/i],
     default_severity: "warning",
   }),
 ];
@@ -506,13 +463,11 @@ const HEALTHCARE_POA_RULES: Rule[] = [
   presence({
     id: "EST-024",
     name: "Principal + agent identification",
-    description:
-      "Healthcare proxy must identify principal and agent (and successor agent).",
+    description: "Healthcare proxy must identify principal and agent (and successor agent).",
     citation: stateAdv("hcp", "State healthcare-proxy / POA statutes"),
     playbooks: [EST_PLAYBOOK_HC_POA],
     missing_title: "Principal / agent identification clause missing",
-    missing_description:
-      "No clause was found identifying principal and agent.",
+    missing_description: "No clause was found identifying principal and agent.",
     explanation:
       "Healthcare proxies designate a surrogate decision-maker. Identification of principal + agent (with successor) is the core operative step.",
     recommendation:
@@ -530,8 +485,7 @@ const HEALTHCARE_POA_RULES: Rule[] = [
     citation: stateAdv("hc-scope", "State healthcare-POA scope statutes"),
     playbooks: [EST_PLAYBOOK_HC_POA],
     missing_title: "Scope of authority clause missing",
-    missing_description:
-      "No clause was found defining the scope of agent's authority.",
+    missing_description: "No clause was found defining the scope of agent's authority.",
     explanation:
       "Authority varies — some forms grant general authority, others enumerate treatment decisions, records access, end-of-life decisions. Explicit scope avoids dispute.",
     recommendation:
@@ -544,13 +498,11 @@ const HEALTHCARE_POA_RULES: Rule[] = [
   presence({
     id: "EST-026",
     name: "HIPAA authorization for agent",
-    description:
-      "Healthcare proxy should include HIPAA authorization for agent to access PHI.",
+    description: "Healthcare proxy should include HIPAA authorization for agent to access PHI.",
     citation: stateAdv("hipaa-agent", "45 C.F.R. § 164.502(g) — personal representative"),
     playbooks: [EST_PLAYBOOK_HC_POA],
     missing_title: "HIPAA authorization for agent clause missing",
-    missing_description:
-      "No HIPAA authorization for agent clause was found.",
+    missing_description: "No HIPAA authorization for agent clause was found.",
     explanation:
       "45 C.F.R. § 164.502(g) makes the agent a personal representative for HIPAA purposes; an explicit recital in the proxy avoids provider hesitation.",
     recommendation:
@@ -569,8 +521,7 @@ const HEALTHCARE_POA_RULES: Rule[] = [
     citation: stateAdv("hc-activation", "State healthcare-POA activation statutes"),
     playbooks: [EST_PLAYBOOK_HC_POA],
     missing_title: "Activation / capacity trigger clause missing",
-    missing_description:
-      "No activation / capacity-trigger clause was found.",
+    missing_description: "No activation / capacity-trigger clause was found.",
     explanation:
       "Springing vs immediate: springing proxies activate on incapacity per physician; immediate proxies operate concurrently with principal.",
     recommendation:
@@ -588,8 +539,7 @@ const HEALTHCARE_POA_RULES: Rule[] = [
     citation: stateAdv("eol", "State end-of-life / DNR statutes"),
     playbooks: [EST_PLAYBOOK_HC_POA],
     missing_title: "End-of-life / DNR instructions clause missing",
-    missing_description:
-      "No end-of-life / DNR instructions clause was found.",
+    missing_description: "No end-of-life / DNR instructions clause was found.",
     explanation:
       "Without instruction or cross-reference to a living will, the agent may face ambiguity in end-of-life decisions.",
     recommendation:
@@ -608,12 +558,10 @@ const HEALTHCARE_POA_RULES: Rule[] = [
     citation: stateAdv("hc-limits", "State healthcare-POA limitation statutes"),
     playbooks: [EST_PLAYBOOK_HC_POA],
     missing_title: "Limitations on agent clause missing",
-    missing_description:
-      "No limitations / restrictions on agent clause was found.",
+    missing_description: "No limitations / restrictions on agent clause was found.",
     explanation:
       "Express limitations protect the principal's preferences. Drafters often leave this blank but should give the principal the option.",
-    recommendation:
-      "Add 'Limitations' enumerating any restrictions or expressly stating 'none'.",
+    recommendation: "Add 'Limitations' enumerating any restrictions or expressly stating 'none'.",
     present_patterns: [
       /(limitation|restriction|except)/i,
       /(may\s+not|shall\s+not|prohibit|forbid)/i,
@@ -628,16 +576,12 @@ const HEALTHCARE_POA_RULES: Rule[] = [
     citation: stateAdv("hc-execution", "State healthcare-POA execution-formality statutes"),
     playbooks: [EST_PLAYBOOK_HC_POA],
     missing_title: "Witnesses / notary clause missing",
-    missing_description:
-      "No witnesses / notary execution block was found in the text.",
+    missing_description: "No witnesses / notary execution block was found in the text.",
     explanation:
       "States require witnesses (often two non-providers / non-agents) + notary in many states. Execution formalities cannot be verified from text — see EST-060.",
     recommendation:
       "Add execution block with required witnesses + notary acknowledgment where applicable.",
-    present_patterns: [
-      /(witness(es)?|attested)/i,
-      /(notary|notar(y|ial)|sworn)/i,
-    ],
+    present_patterns: [/(witness(es)?|attested)/i, /(notary|notar(y|ial)|sworn)/i],
   }),
 ];
 
@@ -649,32 +593,25 @@ const DURABLE_POA_RULES: Rule[] = [
   presence({
     id: "EST-031",
     name: "Principal + agent identification (financial)",
-    description:
-      "Durable POA must identify principal and agent (and successor agent).",
+    description: "Durable POA must identify principal and agent (and successor agent).",
     citation: upoaa("110", "Co-agents and successor agents"),
     playbooks: [EST_PLAYBOOK_DURABLE_POA],
     missing_title: "Principal / agent identification clause missing",
-    missing_description:
-      "No clause was found identifying principal and agent.",
+    missing_description: "No clause was found identifying principal and agent.",
     explanation:
       "UPOAA § 110 contemplates co-agents and successor agents. Identification is the operative core.",
     recommendation:
       "Add 'Principal and Agent' identifying the principal and primary / successor agents.",
-    present_patterns: [
-      /(principal|grantor)/i,
-      /(agent|attorney.in.fact)/i,
-    ],
+    present_patterns: [/(principal|grantor)/i, /(agent|attorney.in.fact)/i],
   }),
   presence({
     id: "EST-032",
     name: "Durable language — survives incapacity",
-    description:
-      "POA must include durable language stating it survives principal's incapacity.",
+    description: "POA must include durable language stating it survives principal's incapacity.",
     citation: upoaa("104", "Power of attorney is durable"),
     playbooks: [EST_PLAYBOOK_DURABLE_POA],
     missing_title: "Durability / durable-language clause missing",
-    missing_description:
-      "No durability clause was found.",
+    missing_description: "No durability clause was found.",
     explanation:
       "UPOAA § 104 makes POAs durable by default; non-UPOAA states require express durability language. Without it, the POA terminates on incapacity.",
     recommendation:
@@ -705,13 +642,11 @@ const DURABLE_POA_RULES: Rule[] = [
   presence({
     id: "EST-034",
     name: "Springing vs immediate effectiveness",
-    description:
-      "POA must state whether it is immediately effective or springing (on incapacity).",
+    description: "POA must state whether it is immediately effective or springing (on incapacity).",
     citation: upoaa("109", "When power of attorney is effective"),
     playbooks: [EST_PLAYBOOK_DURABLE_POA],
     missing_title: "Springing / immediate effectiveness clause missing",
-    missing_description:
-      "No clause was found stating immediate or springing effectiveness.",
+    missing_description: "No clause was found stating immediate or springing effectiveness.",
     explanation:
       "Springing POAs activate only on incapacity; immediate POAs operate from signing. UPOAA § 109 permits springing on incapacity with a stated mechanism for verifying incapacity.",
     recommendation:
@@ -729,8 +664,7 @@ const DURABLE_POA_RULES: Rule[] = [
     citation: upoaa("114", "Agent's duties"),
     playbooks: [EST_PLAYBOOK_DURABLE_POA],
     missing_title: "Agent fiduciary duties clause missing",
-    missing_description:
-      "No clause was found reciting agent's fiduciary duties.",
+    missing_description: "No clause was found reciting agent's fiduciary duties.",
     explanation:
       "UPOAA § 114 imposes duties of loyalty, good faith, recordkeeping. Without recital, principal protections are weaker and third parties may hesitate to honor the POA.",
     recommendation:
@@ -749,16 +683,12 @@ const DURABLE_POA_RULES: Rule[] = [
     citation: upoaa("119", "Acceptance of and reliance upon acknowledged power of attorney"),
     playbooks: [EST_PLAYBOOK_DURABLE_POA],
     missing_title: "Third-party reliance / acceptance clause missing",
-    missing_description:
-      "No third-party reliance / acceptance clause was found.",
+    missing_description: "No third-party reliance / acceptance clause was found.",
     explanation:
       "UPOAA §§ 119–120 protect third parties who accept the POA in good faith; reciting this encourages banks / institutions to honor the POA without delay.",
     recommendation:
       "Add 'Third-Party Reliance' clause invoking UPOAA § 119–120 (or state equivalent) protection for accepting institutions.",
-    present_patterns: [
-      /(third.?party|reliance|acceptance)/i,
-      /(good\s+faith|119|120|liability)/i,
-    ],
+    present_patterns: [/(third.?party|reliance|acceptance)/i, /(good\s+faith|119|120|liability)/i],
     default_severity: "warning",
   }),
   presence({
@@ -794,8 +724,7 @@ const PRENUP_RULES: Rule[] = [
     citation: upmaa("3", "Formation"),
     playbooks: [EST_PLAYBOOK_PRENUP],
     missing_title: "Parties / contemplation-of-marriage clause missing",
-    missing_description:
-      "No clause was found identifying parties and contemplation of marriage.",
+    missing_description: "No clause was found identifying parties and contemplation of marriage.",
     explanation:
       "UPMAA / UPAA require contemplation-of-marriage recital; absent the recital, the document is not a prenup.",
     recommendation:
@@ -813,8 +742,7 @@ const PRENUP_RULES: Rule[] = [
     citation: upmaa("9", "Disclosure"),
     playbooks: [EST_PLAYBOOK_PRENUP],
     missing_title: "Financial disclosure / adequacy clause missing",
-    missing_description:
-      "No financial-disclosure / adequacy-recital clause was found.",
+    missing_description: "No financial-disclosure / adequacy-recital clause was found.",
     explanation:
       "Failure to disclose is the leading ground for invalidation. UPMAA § 9 requires fair and reasonable disclosure or knowing waiver.",
     recommendation:
@@ -832,8 +760,7 @@ const PRENUP_RULES: Rule[] = [
     citation: upmaa("9", "Permitted terms"),
     playbooks: [EST_PLAYBOOK_PRENUP],
     missing_title: "Property characterization clause missing",
-    missing_description:
-      "No property-characterization clause was found.",
+    missing_description: "No property-characterization clause was found.",
     explanation:
       "The central operative function of a prenup is to override default state characterization rules. State-by-state distinctions (community vs equitable distribution) drive drafting.",
     recommendation:
@@ -851,8 +778,7 @@ const PRENUP_RULES: Rule[] = [
     citation: upmaa("10", "Limitations"),
     playbooks: [EST_PLAYBOOK_PRENUP],
     missing_title: "Alimony / spousal-support clause missing",
-    missing_description:
-      "No alimony / spousal-support clause was found.",
+    missing_description: "No alimony / spousal-support clause was found.",
     explanation:
       "Alimony waivers are heavily scrutinized and unenforceable in some states (CA permits with counsel; some states refuse). UPMAA § 10(a)(4) permits with limitations.",
     recommendation:
@@ -870,8 +796,7 @@ const PRENUP_RULES: Rule[] = [
     citation: upmaa("9", "Permitted terms"),
     playbooks: [EST_PLAYBOOK_PRENUP],
     missing_title: "Estate / inheritance rights clause missing",
-    missing_description:
-      "No estate / inheritance rights clause was found.",
+    missing_description: "No estate / inheritance rights clause was found.",
     explanation:
       "UPMAA § 9 expressly permits waiver of elective share, homestead, and intestate rights. Without waiver, surviving spouse retains default elective-share rights.",
     recommendation:
@@ -890,8 +815,7 @@ const PRENUP_RULES: Rule[] = [
     citation: upmaa("9", "Voluntary execution"),
     playbooks: [EST_PLAYBOOK_PRENUP],
     missing_title: "Independent counsel recital missing",
-    missing_description:
-      "No independent-counsel recital was found.",
+    missing_description: "No independent-counsel recital was found.",
     explanation:
       "Independent counsel is critical to enforceability (and required in CA for alimony waivers per Fam. § 1612(c)). Adequate time to review is also a factor.",
     recommendation:
@@ -914,10 +838,7 @@ const PRENUP_RULES: Rule[] = [
       "UPMAA § 11 honors the parties' choice of law; absent choice, the law of the state where the agreement is signed applies.",
     recommendation:
       "Add 'Governing Law and Venue' specifying state law that will govern enforceability and venue.",
-    present_patterns: [
-      /(governing\s+law|choice\s+of\s+law)/i,
-      /(venue|jurisdiction)/i,
-    ],
+    present_patterns: [/(governing\s+law|choice\s+of\s+law)/i, /(venue|jurisdiction)/i],
     default_severity: "warning",
   }),
   presence({
@@ -928,8 +849,7 @@ const PRENUP_RULES: Rule[] = [
     citation: upmaa("4", "Execution"),
     playbooks: [EST_PLAYBOOK_PRENUP],
     missing_title: "Execution / notary clause missing",
-    missing_description:
-      "No execution / notary clause was found.",
+    missing_description: "No execution / notary clause was found.",
     explanation:
       "UPMAA § 4 requires a signed writing. Signing under duress, on the eve of the wedding, can be an enforceability red flag. Execution formalities cannot be verified from text — see EST-060.",
     recommendation:
@@ -955,8 +875,7 @@ const POSTNUP_RULES: Rule[] = [
     citation: upmaa("3", "Formation"),
     playbooks: [EST_PLAYBOOK_POSTNUP],
     missing_title: "Parties / during-marriage clause missing",
-    missing_description:
-      "No clause was found identifying spouses and the during-marriage status.",
+    missing_description: "No clause was found identifying spouses and the during-marriage status.",
     explanation:
       "Postnups are more scrutinized than prenups because spouses owe heightened fiduciary duties (CA Fam. § 721, IL, NY). The during-marriage recital frames the analysis.",
     recommendation:
@@ -997,8 +916,7 @@ const POSTNUP_RULES: Rule[] = [
     citation: upmaa("9", "Disclosure"),
     playbooks: [EST_PLAYBOOK_POSTNUP],
     missing_title: "Fiduciary disclosure clause missing",
-    missing_description:
-      "No fiduciary-disclosure / disclosure-schedules clause was found.",
+    missing_description: "No fiduciary-disclosure / disclosure-schedules clause was found.",
     explanation:
       "Spouses owe each other fiduciary duties (e.g., CA Fam. § 721); disclosure is heightened compared to prenup. Failure to fully disclose is the leading ground for invalidation.",
     recommendation:
@@ -1016,8 +934,7 @@ const POSTNUP_RULES: Rule[] = [
     citation: upmaa("9", "Permitted terms"),
     playbooks: [EST_PLAYBOOK_POSTNUP],
     missing_title: "Property characterization / transmutation clause missing",
-    missing_description:
-      "No property-characterization / transmutation clause was found.",
+    missing_description: "No property-characterization / transmutation clause was found.",
     explanation:
       "Transmutation rules vary sharply (CA Fam. § 852 requires express written waiver). The postnup commonly recharacterizes property to define separate / community ownership going forward.",
     recommendation:
@@ -1030,13 +947,11 @@ const POSTNUP_RULES: Rule[] = [
   presence({
     id: "EST-050",
     name: "Spousal support / waiver",
-    description:
-      "Postnup should address spousal support — waiver, formula, or state-default.",
+    description: "Postnup should address spousal support — waiver, formula, or state-default.",
     citation: upmaa("10", "Limitations"),
     playbooks: [EST_PLAYBOOK_POSTNUP],
     missing_title: "Spousal support clause missing",
-    missing_description:
-      "No spousal-support / waiver clause was found.",
+    missing_description: "No spousal-support / waiver clause was found.",
     explanation:
       "Same scrutiny as prenup; some states refuse alimony waivers in postnups. CA requires independent counsel for alimony waivers in postnups.",
     recommendation:
@@ -1059,8 +974,7 @@ const POSTNUP_RULES: Rule[] = [
     ),
     playbooks: [EST_PLAYBOOK_POSTNUP],
     missing_title: "Independent counsel / voluntariness clause missing",
-    missing_description:
-      "No independent-counsel / voluntariness clause was found.",
+    missing_description: "No independent-counsel / voluntariness clause was found.",
     explanation:
       "Independent counsel is heavily weighted in postnup enforceability. Coercion / duress between spouses is a particular concern.",
     recommendation:
@@ -1073,21 +987,16 @@ const POSTNUP_RULES: Rule[] = [
   presence({
     id: "EST-052",
     name: "Execution — signatures + notarial acknowledgment",
-    description:
-      "Postnup must be executed in writing, signed, and (in many states) notarized.",
+    description: "Postnup must be executed in writing, signed, and (in many states) notarized.",
     citation: upmaa("4", "Execution"),
     playbooks: [EST_PLAYBOOK_POSTNUP],
     missing_title: "Execution / notary clause missing",
-    missing_description:
-      "No execution / notary clause was found.",
+    missing_description: "No execution / notary clause was found.",
     explanation:
       "Written + signed + (in many states) notarized. Execution formalities cannot be verified from text — see EST-060.",
     recommendation:
       "Add execution block with signatures and notarial acknowledgment where required.",
-    present_patterns: [
-      /(signature|signed)/i,
-      /(notary|notar(y|ial)|acknowledg(ment|ed))/i,
-    ],
+    present_patterns: [/(signature|signed)/i, /(notary|notar(y|ial)|acknowledg(ment|ed))/i],
   }),
 ];
 
@@ -1099,13 +1008,14 @@ const FAMILY_MSA_RULES: Rule[] = [
   presence({
     id: "EST-053",
     name: "Parties + separation date recital",
-    description:
-      "Family-law MSA must identify the spouses and recite the date of separation.",
-    citation: stateAdv("divorce-codes", "State divorce / family law codes (CA Fam. § 70; NY DRL § 170)"),
+    description: "Family-law MSA must identify the spouses and recite the date of separation.",
+    citation: stateAdv(
+      "divorce-codes",
+      "State divorce / family law codes (CA Fam. § 70; NY DRL § 170)",
+    ),
     playbooks: [EST_PLAYBOOK_FAMILY_MSA],
     missing_title: "Parties / separation date clause missing",
-    missing_description:
-      "No clause was found identifying spouses and date of separation.",
+    missing_description: "No clause was found identifying spouses and date of separation.",
     explanation:
       "Date of separation drives property characterization in community-property states (CA Fam. § 70). Identification is required for incorporation into divorce judgment.",
     recommendation:
@@ -1118,13 +1028,11 @@ const FAMILY_MSA_RULES: Rule[] = [
   presence({
     id: "EST-054",
     name: "Division of marital / community property + debts",
-    description:
-      "MSA must allocate property and debts between the parties.",
+    description: "MSA must allocate property and debts between the parties.",
     citation: stateAdv("property-div", "State property-division statutes"),
     playbooks: [EST_PLAYBOOK_FAMILY_MSA],
     missing_title: "Property / debt division clause missing",
-    missing_description:
-      "No property / debt division clause was found.",
+    missing_description: "No property / debt division clause was found.",
     explanation:
       "Property + debt allocation is the central operative function of the MSA. Equitable distribution (most states) or community property (CA / TX / etc.) drives the framework.",
     recommendation:
@@ -1137,13 +1045,11 @@ const FAMILY_MSA_RULES: Rule[] = [
   presence({
     id: "EST-055",
     name: "Spousal support / alimony — amount + duration",
-    description:
-      "MSA must address spousal support / alimony or expressly waive.",
+    description: "MSA must address spousal support / alimony or expressly waive.",
     citation: stateAdv("alimony", "State alimony / spousal-support statutes"),
     playbooks: [EST_PLAYBOOK_FAMILY_MSA],
     missing_title: "Spousal support clause missing",
-    missing_description:
-      "No spousal-support / alimony / waiver clause was found.",
+    missing_description: "No spousal-support / alimony / waiver clause was found.",
     explanation:
       "MSAs that fail to address spousal support leave the issue for later judicial determination — often contrary to parties' intent.",
     recommendation:
@@ -1158,7 +1064,10 @@ const FAMILY_MSA_RULES: Rule[] = [
     name: "Child custody + parenting plan + child support",
     description:
       "MSAs involving minor children must address custody, parenting plan, and child support.",
-    citation: stateAdv("custody-support", "State child-custody and support statutes; UMDA / state child-support guidelines"),
+    citation: stateAdv(
+      "custody-support",
+      "State child-custody and support statutes; UMDA / state child-support guidelines",
+    ),
     playbooks: [EST_PLAYBOOK_FAMILY_MSA],
     missing_title: "Custody / parenting plan / child support clause missing",
     missing_description:
@@ -1207,8 +1116,7 @@ const FAMILY_MSA_RULES: Rule[] = [
     ),
     playbooks: [EST_PLAYBOOK_FAMILY_MSA],
     missing_title: "QDRO / retirement division clause missing",
-    missing_description:
-      "No QDRO / DRO retirement-plan division clause was found.",
+    missing_description: "No QDRO / DRO retirement-plan division clause was found.",
     explanation:
       "Under ERISA 29 U.S.C. § 1056(d)(3), a Qualified Domestic Relations Order is required to divide qualified plans; DRO required for federal employees (FERS / CSRS / TSP).",
     recommendation:
@@ -1227,8 +1135,7 @@ const FAMILY_MSA_RULES: Rule[] = [
     citation: stateAdv("merger", "State merger / incorporation doctrine (modifiability)"),
     playbooks: [EST_PLAYBOOK_FAMILY_MSA],
     missing_title: "Incorporation / merger / execution clause missing",
-    missing_description:
-      "No incorporation / merger / execution clause was found.",
+    missing_description: "No incorporation / merger / execution clause was found.",
     explanation:
       "Merger affects modifiability of spousal support and contempt enforcement. The parties typically choose incorporation without merger to preserve contractual enforcement.",
     recommendation:

@@ -38,7 +38,10 @@ export const rule: Rule = {
     if (!firstHit) return null;
     const hit: Hit = firstHit;
 
-    const excerpt = hit.text.slice(Math.max(0, hit.start - 40 - (hit.start - hit.start)), Math.min(hit.text.length, 200));
+    const excerpt = hit.text.slice(
+      Math.max(0, hit.start - 40 - (hit.start - hit.start)),
+      Math.min(hit.text.length, 200),
+    );
     return makeFinding({
       rule,
       title: "Uncapped or unlimited liability",

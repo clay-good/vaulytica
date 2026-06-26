@@ -16,10 +16,7 @@ describe("extractJurisdictions", () => {
   });
 
   it("normalizes via the DKB lookup when provided", () => {
-    const tree = buildTree([
-      "Body",
-      "Governed by the laws of the State of California.",
-    ]);
+    const tree = buildTree(["Body", "Governed by the laws of the State of California."]);
     const refs = extractJurisdictions(tree, (raw) =>
       /California/.test(raw) ? "us-ca" : undefined,
     );

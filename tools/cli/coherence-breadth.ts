@@ -62,9 +62,7 @@ export async function computeCoherenceBreadthArtifacts(
 
   const breadth = await computeCoherenceBreadth(seq.rounds);
   const output =
-    format === "json"
-      ? buildCoherenceBreadthJson(breadth)
-      : renderCoherenceBreadthSummary(breadth);
+    format === "json" ? buildCoherenceBreadthJson(breadth) : renderCoherenceBreadthSummary(breadth);
   return {
     ok: true,
     output,

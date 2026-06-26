@@ -69,7 +69,12 @@ export async function compareCoherenceTrendArtifacts(
     format === "json"
       ? buildCoherenceTrajectoryJson(trajectory)
       : renderCoherenceTrajectorySummary(trajectory);
-  return { ok: true, output, regressed: trajectoryRegressed(trajectory), ladderNote: seq.ladderNote };
+  return {
+    ok: true,
+    output,
+    regressed: trajectoryRegressed(trajectory),
+    ladderNote: seq.ladderNote,
+  };
 }
 
 type CoherenceTrendArgs = {

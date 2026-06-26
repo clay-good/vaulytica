@@ -1,9 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { comparePosture, type PostureMovementKind } from "./posture-movement.js";
-import type {
-  NegotiationPosture,
-  NegotiationTier,
-} from "../playbooks/custom-interpreter.js";
+import type { NegotiationPosture, NegotiationTier } from "../playbooks/custom-interpreter.js";
 
 /** Build a minimal posture from a `{ dimension: tier }` map (only the fields comparePosture reads). */
 function posture(map: Record<string, NegotiationTier>): NegotiationPosture {
@@ -69,11 +66,7 @@ describe("comparePosture — structure & determinism", () => {
       posture({ Liability: "acceptable", Governing: "ideal", Indemnity: "unevaluable" }),
       posture({ Liability: "ideal", Governing: "acceptable", Indemnity: "below-acceptable" }),
     );
-    expect(pm.dimensions.map((d) => d.dimension)).toEqual([
-      "Governing",
-      "Indemnity",
-      "Liability",
-    ]);
+    expect(pm.dimensions.map((d) => d.dimension)).toEqual(["Governing", "Indemnity", "Liability"]);
     expect(pm.counts.improved).toBe(1); // Liability
     expect(pm.counts.regressed).toBe(1); // Governing
     expect(pm.counts["newly-stated"]).toBe(1); // Indemnity
@@ -81,10 +74,7 @@ describe("comparePosture — structure & determinism", () => {
   });
 
   it("carries each transition's base and revised tier", async () => {
-    const pm = await comparePosture(
-      posture({ Cap: "acceptable" }),
-      posture({ Cap: "ideal" }),
-    );
+    const pm = await comparePosture(posture({ Cap: "acceptable" }), posture({ Cap: "ideal" }));
     expect(pm.dimensions[0]).toMatchObject({
       dimension: "Cap",
       base_tier: "acceptable",

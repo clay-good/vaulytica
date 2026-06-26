@@ -73,7 +73,11 @@ describe("authoring metadata (HANDOFF-004)", () => {
     // name never elevates on its own (§12).
     const core = `<?xml version="1.0"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:creator>Alex Drafter</dc:creator></cp:coreProperties>`;
     const app = `<?xml version="1.0"?><Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"><Company>Globex Corporation</Company></Properties>`;
-    const bytes = buildDocx({ document: documentXml(`<w:p><w:r><w:t>Body.</w:t></w:r></w:p>`), core, app });
+    const bytes = buildDocx({
+      document: documentXml(`<w:p><w:r><w:t>Body.</w:t></w:r></w:p>`),
+      core,
+      app,
+    });
     const facts = readContainer(bytes, "docx", "Body.");
     const findings = deriveHandoffFindings(facts, ["Globex Corporation", "Acme LLC"]);
     const h4 = findings.find((f) => f.rule_id === "HANDOFF-004");
@@ -104,7 +108,11 @@ describe("sensitive-data scan (HANDOFF-005)", () => {
 
   it("never echoes an unmasked value (the §Part XIV invariant)", () => {
     const text = "SSN 123-45-6789, card 4242424242424242, dob 01/02/1980, jane@example.com";
-    const facts = readContainer(buildDocx({ document: documentXml(`<w:p><w:r><w:t>${text}</w:t></w:r></w:p>`) }), "docx", text);
+    const facts = readContainer(
+      buildDocx({ document: documentXml(`<w:p><w:r><w:t>${text}</w:t></w:r></w:p>`) }),
+      "docx",
+      text,
+    );
     const findings = deriveHandoffFindings(facts);
     const joined = JSON.stringify(findings);
     expect(joined).not.toContain("123-45-6789");
@@ -235,12 +243,16 @@ describe("PDF container read", () => {
     // throw (the repo's ReDoS-free + totality contract).
     const evil =
       "%PDF-1.7\n" +
-      "/Subtype /Text /Contents (" + "A".repeat(50000) + // never closed
+      "/Subtype /Text /Contents (" +
+      "A".repeat(50000) + // never closed
       "/Subtype /Highlight ".repeat(5000) +
       "(".repeat(20000) +
       "\n%%EOF\n";
     const bytes = new TextEncoder().encode(evil);
-    const buf = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
+    const buf = bytes.buffer.slice(
+      bytes.byteOffset,
+      bytes.byteOffset + bytes.byteLength,
+    ) as ArrayBuffer;
     const start = performance.now();
     const facts = readContainer(buf, "pdf", "x");
     expect(performance.now() - start).toBeLessThan(1000);
@@ -282,13 +294,23 @@ describe("delivery report aggregate", () => {
   });
 
   it("never claims a clean bill of health on an uninspectable input", async () => {
-    const report = await scanDelivery({ bytes: new ArrayBuffer(4), source: "paste", text: "hello" });
+    const report = await scanDelivery({
+      bytes: new ArrayBuffer(4),
+      source: "paste",
+      text: "hello",
+    });
     expect(report.summary).not.toMatch(/\bclean\b|\bsafe\b/i);
   });
 
   it("a metadata-clean, text-only document yields no findings (additive — no result_hash move)", async () => {
-    const bytes = buildDocx({ document: documentXml(`<w:p><w:r><w:t>Just plain prose, nothing else.</w:t></w:r></w:p>`) });
-    const report = await scanDelivery({ bytes, source: "docx", text: "Just plain prose, nothing else." });
+    const bytes = buildDocx({
+      document: documentXml(`<w:p><w:r><w:t>Just plain prose, nothing else.</w:t></w:r></w:p>`),
+    });
+    const report = await scanDelivery({
+      bytes,
+      source: "docx",
+      text: "Just plain prose, nothing else.",
+    });
     expect(report.findings).toHaveLength(0);
   });
 });

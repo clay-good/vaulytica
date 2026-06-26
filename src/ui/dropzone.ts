@@ -130,8 +130,7 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
 
   const dispatch = (files: File[]): void => {
     if (files.length === 0) return;
-    const isBundle =
-      files.length >= 2 || (files.length === 1 && isZipFile(files[0]!));
+    const isBundle = files.length >= 2 || (files.length === 1 && isZipFile(files[0]!));
     if (isBundle && opts.onFiles) {
       opts.onFiles(files);
       return;
@@ -213,8 +212,9 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
     // present we use the cheaper `dataTransfer.files` path below.
     const items = e.dataTransfer?.items;
     const hasItemsApi =
-      items && items.length > 0 && typeof (items[0] as DataTransferItem | undefined)
-        ?.webkitGetAsEntry === "function";
+      items &&
+      items.length > 0 &&
+      typeof (items[0] as DataTransferItem | undefined)?.webkitGetAsEntry === "function";
     if (hasItemsApi) {
       const entries: FileSystemEntry[] = [];
       let anyDir = false;
@@ -321,9 +321,7 @@ async function walkEntry(entry: FileSystemEntry, out: File[]): Promise<void> {
   }
 }
 
-function readAllDirectoryEntries(
-  reader: FileSystemDirectoryReader,
-): Promise<FileSystemEntry[]> {
+function readAllDirectoryEntries(reader: FileSystemDirectoryReader): Promise<FileSystemEntry[]> {
   return new Promise((resolve, reject) => {
     const acc: FileSystemEntry[] = [];
     const next = (): void => {

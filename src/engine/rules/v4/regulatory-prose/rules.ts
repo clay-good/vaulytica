@@ -11,7 +11,13 @@
  */
 
 import { makeFinding, type Finding, type Rule, type RuleContext } from "../../../finding.js";
-import { buildV4PresenceRule, buildV4LanguageRule, docTop, type V4PresenceSpec, type V4LanguageSpec } from "../_helpers.js";
+import {
+  buildV4PresenceRule,
+  buildV4LanguageRule,
+  docTop,
+  type V4PresenceSpec,
+  type V4LanguageSpec,
+} from "../_helpers.js";
 import {
   REG_PLAYBOOK_FORM_D,
   REG_PLAYBOOK_FORM_ADV,
@@ -45,12 +51,12 @@ const FORM_D_RULES: Rule[] = [
   presence({
     id: "REG-001",
     name: "Issuer identification",
-    description: "Form D narrative must identify the issuer (name, jurisdiction of organization, CIK).",
+    description:
+      "Form D narrative must identify the issuer (name, jurisdiction of organization, CIK).",
     citation: formDInstructions(),
     playbooks: [REG_PLAYBOOK_FORM_D],
     missing_title: "Issuer identification clause missing",
-    missing_description:
-      "No clause was found identifying the issuer (name + jurisdiction + CIK).",
+    missing_description: "No clause was found identifying the issuer (name + jurisdiction + CIK).",
     explanation:
       "Form D Item 1 requires issuer identification — name, jurisdiction of organization, CIK / EDGAR file number.",
     recommendation:
@@ -63,21 +69,15 @@ const FORM_D_RULES: Rule[] = [
   presence({
     id: "REG-002",
     name: "Exemption claimed — Rule 504 / 506(b) / 506(c)",
-    description:
-      "Form D narrative must identify the exemption claimed (Rule 504, 506(b), 506(c)).",
+    description: "Form D narrative must identify the exemption claimed (Rule 504, 506(b), 506(c)).",
     citation: regD("506", "Rule 506(b) / 506(c) safe harbor"),
     playbooks: [REG_PLAYBOOK_FORM_D],
     missing_title: "Exemption identification clause missing",
-    missing_description:
-      "No clause was found identifying the Reg D exemption claimed.",
+    missing_description: "No clause was found identifying the Reg D exemption claimed.",
     explanation:
       "Form D Item 6 requires identification of the exemption(s) claimed. 506(c) permits general solicitation but requires verified accredited-investor status; 506(b) prohibits general solicitation.",
-    recommendation:
-      "Add 'Exemption' identifying Rule 504, 506(b), or 506(c) claimed.",
-    present_patterns: [
-      /(rule\s+50[46]|rule\s+506\(b\)|rule\s+506\(c\))/i,
-      /(exempt|exemption)/i,
-    ],
+    recommendation: "Add 'Exemption' identifying Rule 504, 506(b), or 506(c) claimed.",
+    present_patterns: [/(rule\s+50[46]|rule\s+506\(b\)|rule\s+506\(c\))/i, /(exempt|exemption)/i],
   }),
   presence({
     id: "REG-003",
@@ -87,16 +87,12 @@ const FORM_D_RULES: Rule[] = [
     citation: regD("501", "Accredited investor definition"),
     playbooks: [REG_PLAYBOOK_FORM_D],
     missing_title: "Accredited-investor reps / verification clause missing",
-    missing_description:
-      "No accredited-investor reps / verification clause was found.",
+    missing_description: "No accredited-investor reps / verification clause was found.",
     explanation:
       "506(c) Rule 506(c) requires issuer to take 'reasonable steps to verify' accredited status; 506(b) accepts reasonable belief based on questionnaire.",
     recommendation:
       "Add 'Accredited Investor' covering reps and (for 506(c)) verification methods (income / net-worth / third-party letter).",
-    present_patterns: [
-      /(accredited\s+investor)/i,
-      /(verif(y|ication|ied)|reasonable\s+steps)/i,
-    ],
+    present_patterns: [/(accredited\s+investor)/i, /(verif(y|ication|ied)|reasonable\s+steps)/i],
   }),
   presence({
     id: "REG-004",
@@ -106,27 +102,21 @@ const FORM_D_RULES: Rule[] = [
     citation: regD("502", "General solicitation"),
     playbooks: [REG_PLAYBOOK_FORM_D],
     missing_title: "General solicitation policy clause missing",
-    missing_description:
-      "No general-solicitation policy clause was found.",
+    missing_description: "No general-solicitation policy clause was found.",
     explanation:
       "Rule 502(c) prohibits general solicitation for Rule 506(b) offerings; Rule 506(c) permits with verification. Misalignment is the most common Reg D foot-fault.",
     recommendation:
       "Add 'General Solicitation' stating policy — prohibited (506(b)) or permitted with verification (506(c)).",
-    present_patterns: [
-      /general\s+solicit/i,
-      /(prohibit|forbid|permit|advertising|web)/i,
-    ],
+    present_patterns: [/general\s+solicit/i, /(prohibit|forbid|permit|advertising|web)/i],
   }),
   presence({
     id: "REG-005",
     name: "Bad-actor disqualification — Rule 506(d)",
-    description:
-      "Form D issuers must address Rule 506(d) bad-actor disqualification screening.",
+    description: "Form D issuers must address Rule 506(d) bad-actor disqualification screening.",
     citation: regD("506", "Rule 506(d) bad-actor disqualification"),
     playbooks: [REG_PLAYBOOK_FORM_D],
     missing_title: "Bad-actor disqualification clause missing",
-    missing_description:
-      "No Rule 506(d) bad-actor disqualification clause was found.",
+    missing_description: "No Rule 506(d) bad-actor disqualification clause was found.",
     explanation:
       "Rule 506(d) disqualifies covered persons (directors, officers, 20%+ owners, etc.) with disqualifying events from relying on Rule 506. Disclosure of pre-2013 events is required.",
     recommendation:
@@ -145,8 +135,7 @@ const FORM_D_RULES: Rule[] = [
     citation: formDInstructions(),
     playbooks: [REG_PLAYBOOK_FORM_D],
     missing_title: "Offering amount / minimum investment clause missing",
-    missing_description:
-      "No offering-amount / minimum-investment clause was found.",
+    missing_description: "No offering-amount / minimum-investment clause was found.",
     explanation:
       "Form D Items 13–14 require aggregate offering amount and minimum-investment information.",
     recommendation:
@@ -160,21 +149,16 @@ const FORM_D_RULES: Rule[] = [
   presence({
     id: "REG-007",
     name: "State blue-sky notice filings",
-    description:
-      "Form D narrative should address state blue-sky notice filings.",
+    description: "Form D narrative should address state blue-sky notice filings.",
     citation: blueSky(),
     playbooks: [REG_PLAYBOOK_FORM_D],
     missing_title: "State blue-sky notice clause missing",
-    missing_description:
-      "No state blue-sky notice clause was found.",
+    missing_description: "No state blue-sky notice clause was found.",
     explanation:
       "Most states require notice filings for Reg D offerings (NSMIA-preempted but most states require Form D copies + filing fees). Failure to file blocks resale.",
     recommendation:
       "Add 'State Blue-Sky' addressing notice filings in each state where investors reside.",
-    present_patterns: [
-      /(blue.sky|state\s+notice|nsmia)/i,
-      /(notice\s+filing|state\s+securities)/i,
-    ],
+    present_patterns: [/(blue.sky|state\s+notice|nsmia)/i, /(notice\s+filing|state\s+securities)/i],
     default_severity: "warning",
   }),
 ];
@@ -192,31 +176,24 @@ const FORM_ADV_RULES: Rule[] = [
     citation: formAdv("1", "Cover page"),
     playbooks: [REG_PLAYBOOK_FORM_ADV],
     missing_title: "Cover page / material-changes clause missing",
-    missing_description:
-      "No cover-page / material-changes clause was found.",
+    missing_description: "No cover-page / material-changes clause was found.",
     explanation:
       "Form ADV Part 2A Items 1 + 2 require a cover page (firm name + contact + date) plus a summary of material changes since the prior annual update.",
     recommendation:
       "Add 'Cover Page' (firm + contact + date) and 'Item 2 — Material Changes' summary.",
-    present_patterns: [
-      /(cover\s+page|brochure|part\s+2a)/i,
-      /(material\s+changes|item\s+2)/i,
-    ],
+    present_patterns: [/(cover\s+page|brochure|part\s+2a)/i, /(material\s+changes|item\s+2)/i],
   }),
   presence({
     id: "REG-009",
     name: "Advisory business + services description",
-    description:
-      "Brochure must describe advisory business + types of services (Item 4).",
+    description: "Brochure must describe advisory business + types of services (Item 4).",
     citation: formAdv("4", "Advisory business"),
     playbooks: [REG_PLAYBOOK_FORM_ADV],
     missing_title: "Advisory business / services clause missing",
-    missing_description:
-      "No advisory-business / services clause was found.",
+    missing_description: "No advisory-business / services clause was found.",
     explanation:
       "Form ADV Part 2A Item 4 requires description of the advisory firm, its services, and assets under management.",
-    recommendation:
-      "Add 'Item 4 — Advisory Business' describing services, AUM, and tailoring.",
+    recommendation: "Add 'Item 4 — Advisory Business' describing services, AUM, and tailoring.",
     present_patterns: [
       /(advisory\s+business|investment\s+advisory\s+services|item\s+4)/i,
       /(aum|assets\s+under\s+management)/i,
@@ -234,10 +211,7 @@ const FORM_ADV_RULES: Rule[] = [
       "Form ADV Part 2A Item 5 requires description of fees, billing method, refund policy, and other compensation.",
     recommendation:
       "Add 'Item 5 — Fees and Compensation' describing fee schedule, billing, refunds, and other compensation.",
-    present_patterns: [
-      /(fees|compensation|fee\s+schedule)/i,
-      /(billing|refund|item\s+5)/i,
-    ],
+    present_patterns: [/(fees|compensation|fee\s+schedule)/i, /(billing|refund|item\s+5)/i],
   }),
   presence({
     id: "REG-011",
@@ -247,12 +221,10 @@ const FORM_ADV_RULES: Rule[] = [
     citation: formAdv("8", "Methods + strategies + risks"),
     playbooks: [REG_PLAYBOOK_FORM_ADV],
     missing_title: "Methods / strategies / risks clause missing",
-    missing_description:
-      "No methods / strategies / risks clause was found.",
+    missing_description: "No methods / strategies / risks clause was found.",
     explanation:
       "Form ADV Part 2A Item 8 requires methods of analysis, investment strategies, and material risks of loss.",
-    recommendation:
-      "Add 'Item 8 — Methods of Analysis, Investment Strategies and Risk of Loss'.",
+    recommendation: "Add 'Item 8 — Methods of Analysis, Investment Strategies and Risk of Loss'.",
     present_patterns: [
       /(methods\s+of\s+analysis|investment\s+strateg)/i,
       /(risk\s+of\s+loss|material\s+risks?)/i,
@@ -261,13 +233,11 @@ const FORM_ADV_RULES: Rule[] = [
   presence({
     id: "REG-012",
     name: "Disciplinary information (Item 9)",
-    description:
-      "Brochure must disclose disciplinary events (or state none).",
+    description: "Brochure must disclose disciplinary events (or state none).",
     citation: formAdv("9", "Disciplinary information"),
     playbooks: [REG_PLAYBOOK_FORM_ADV],
     missing_title: "Disciplinary information clause missing",
-    missing_description:
-      "No disciplinary-information clause was found.",
+    missing_description: "No disciplinary-information clause was found.",
     explanation:
       "Form ADV Part 2A Item 9 requires disclosure of legal or disciplinary events material to evaluation of advisory business.",
     recommendation:
@@ -280,13 +250,11 @@ const FORM_ADV_RULES: Rule[] = [
   presence({
     id: "REG-013",
     name: "Code of ethics + personal trading (Item 11)",
-    description:
-      "Brochure must describe code of ethics and personal-trading policies (Item 11).",
+    description: "Brochure must describe code of ethics and personal-trading policies (Item 11).",
     citation: formAdv("11", "Code of ethics"),
     playbooks: [REG_PLAYBOOK_FORM_ADV],
     missing_title: "Code of ethics / personal trading clause missing",
-    missing_description:
-      "No code-of-ethics / personal-trading clause was found.",
+    missing_description: "No code-of-ethics / personal-trading clause was found.",
     explanation:
       "Form ADV Part 2A Item 11 requires description of the code of ethics, personal trading, and participation / interest in client transactions.",
     recommendation:
@@ -304,8 +272,7 @@ const FORM_ADV_RULES: Rule[] = [
     citation: formAdv("12", "Brokerage practices"),
     playbooks: [REG_PLAYBOOK_FORM_ADV],
     missing_title: "Brokerage practices clause missing",
-    missing_description:
-      "No brokerage-practices clause was found.",
+    missing_description: "No brokerage-practices clause was found.",
     explanation:
       "Form ADV Part 2A Item 12 requires description of broker selection, soft-dollar arrangements, directed brokerage, and order aggregation.",
     recommendation:
@@ -350,16 +317,11 @@ const RISK_FACTORS_RULES: Rule[] = [
     citation: regSk105(),
     playbooks: [REG_PLAYBOOK_S1, REG_PLAYBOOK_10K],
     missing_title: "Risk Factors section heading clause missing",
-    missing_description:
-      "No clearly labeled 'Risk Factors' section was found.",
-    explanation:
-      "Reg S-K Item 105 requires a separately captioned 'Risk Factors' section.",
+    missing_description: "No clearly labeled 'Risk Factors' section was found.",
+    explanation: "Reg S-K Item 105 requires a separately captioned 'Risk Factors' section.",
     recommendation:
       "Add a 'Risk Factors' section with introductory paragraph framing the risks discussed.",
-    present_patterns: [
-      /risk\s+factors/i,
-      /(material\s+risks?|principal\s+risks?)/i,
-    ],
+    present_patterns: [/risk\s+factors/i, /(material\s+risks?|principal\s+risks?)/i],
   }),
   presence({
     id: "REG-017",
@@ -369,23 +331,18 @@ const RISK_FACTORS_RULES: Rule[] = [
     citation: regSk105(),
     playbooks: [REG_PLAYBOOK_S1, REG_PLAYBOOK_10K],
     missing_title: "Item 105 materiality / summary clause missing",
-    missing_description:
-      "No Item 105 materiality / risk-factor-summary clause was found.",
+    missing_description: "No Item 105 materiality / risk-factor-summary clause was found.",
     explanation:
       "Item 105 (revised 2020) requires materiality threshold + a separate 2-page summary when the Risk Factors section exceeds 15 pages.",
     recommendation:
       "Limit to material risks; if section > 15 pages, add a separately captioned 2-page summary of risk factors.",
-    present_patterns: [
-      /(material\s+risks?|item\s+105)/i,
-      /(summary|2.?page|15.?page)/i,
-    ],
+    present_patterns: [/(material\s+risks?|item\s+105)/i, /(summary|2.?page|15.?page)/i],
     default_severity: "warning",
   }),
   language({
     id: "REG-018",
     name: "Generic / boilerplate risk factor flagged",
-    description:
-      "Risk factors must not be generic boilerplate applicable to any company.",
+    description: "Risk factors must not be generic boilerplate applicable to any company.",
     citation: regSk105(),
     playbooks: [REG_PLAYBOOK_S1, REG_PLAYBOOK_10K],
     bad_patterns: [
@@ -430,16 +387,12 @@ const RISK_FACTORS_RULES: Rule[] = [
     citation: plainEnglish(),
     playbooks: [REG_PLAYBOOK_S1, REG_PLAYBOOK_10K],
     missing_title: "Risk-factor headlines clause missing",
-    missing_description:
-      "No risk-factor subheadings / headlines were found.",
+    missing_description: "No risk-factor subheadings / headlines were found.",
     explanation:
       "Securities Act Rule 421(b) plain-English rule + Item 105 require risk-factor subheadings that adequately describe each risk.",
     recommendation:
       "Add concise subheadings (1-line) describing each risk factor; avoid generic captions.",
-    present_patterns: [
-      /(subheading|headline|caption)/i,
-      /(plain\s+english|item\s+105)/i,
-    ],
+    present_patterns: [/(subheading|headline|caption)/i, /(plain\s+english|item\s+105)/i],
     default_severity: "warning",
   }),
   presence({
@@ -454,8 +407,7 @@ const RISK_FACTORS_RULES: Rule[] = [
     ),
     playbooks: [REG_PLAYBOOK_S1, REG_PLAYBOOK_10K],
     missing_title: "PSLRA safe-harbor cross-reference clause missing",
-    missing_description:
-      "No PSLRA safe-harbor cross-reference was found.",
+    missing_description: "No PSLRA safe-harbor cross-reference was found.",
     explanation:
       "PSLRA safe harbor (15 U.S.C. §§ 77z-2, 78u-5) protects forward-looking statements accompanied by meaningful cautionary statements identifying specific risk factors.",
     recommendation:
@@ -501,8 +453,7 @@ const RISK_FACTORS_RULES: Rule[] = [
     ),
     playbooks: [REG_PLAYBOOK_S1, REG_PLAYBOOK_10K],
     missing_title: "Climate / environmental risk factor clause missing",
-    missing_description:
-      "No climate / environmental risk factor was found.",
+    missing_description: "No climate / environmental risk factor was found.",
     explanation:
       "SEC climate disclosure rules (where stayed / litigated) + Reg S-K Item 105 materiality + investor expectations + EU CSRD increasingly require climate-related risk disclosure for material exposures.",
     recommendation:
@@ -570,16 +521,12 @@ const PPM_RULES: Rule[] = [
     citation: regSk105(),
     playbooks: [REG_PLAYBOOK_PPM],
     missing_title: "PPM risk-factor section clause missing",
-    missing_description:
-      "No risk-factor section was found in the PPM.",
+    missing_description: "No risk-factor section was found in the PPM.",
     explanation:
       "Even though Reg D doesn't require specific PPM content, risk-factor disclosure protects against 10b-5 fraud claims.",
     recommendation:
       "Add 'Risk Factors' section with offering-specific material risks (liquidity, dilution, control, regulatory).",
-    present_patterns: [
-      /risk\s+factors/i,
-      /(material\s+risks?|principal\s+risks?)/i,
-    ],
+    present_patterns: [/risk\s+factors/i, /(material\s+risks?|principal\s+risks?)/i],
   }),
   presence({
     id: "REG-027",
@@ -589,8 +536,7 @@ const PPM_RULES: Rule[] = [
     citation: regD("501", "Accredited investor"),
     playbooks: [REG_PLAYBOOK_PPM],
     missing_title: "Suitability / qualification clause missing",
-    missing_description:
-      "No suitability / investor-qualification clause was found.",
+    missing_description: "No suitability / investor-qualification clause was found.",
     explanation:
       "Reg D 506(b)/(c) and state blue-sky require accredited-investor qualifications. PPM should articulate the standard.",
     recommendation:
@@ -603,8 +549,7 @@ const PPM_RULES: Rule[] = [
   presence({
     id: "REG-028",
     name: "Subscription procedure + minimum / maximum",
-    description:
-      "PPM must describe subscription procedure and any minimum / maximum.",
+    description: "PPM must describe subscription procedure and any minimum / maximum.",
     citation: regPractice(
       "ppm-subscription",
       "PPM subscription procedure baseline",
@@ -612,8 +557,7 @@ const PPM_RULES: Rule[] = [
     ),
     playbooks: [REG_PLAYBOOK_PPM],
     missing_title: "Subscription procedure clause missing",
-    missing_description:
-      "No subscription procedure / minimum / maximum clause was found.",
+    missing_description: "No subscription procedure / minimum / maximum clause was found.",
     explanation:
       "PPM should explain how investors subscribe — questionnaire, subscription agreement, funding mechanism, closing process.",
     recommendation:
@@ -657,8 +601,7 @@ const PPM_RULES: Rule[] = [
     ),
     playbooks: [REG_PLAYBOOK_PPM],
     missing_title: "Conflicts of interest disclosure clause missing",
-    missing_description:
-      "No conflicts-of-interest disclosure was found.",
+    missing_description: "No conflicts-of-interest disclosure was found.",
     explanation:
       "Material conflicts (sponsor / GP related-party transactions, fee-sharing) must be disclosed; failure is a leading 10b-5 fraud claim.",
     recommendation:
@@ -693,13 +636,11 @@ const PPM_RULES: Rule[] = [
   presence({
     id: "REG-032",
     name: "State blue-sky notice + selling-agent compliance",
-    description:
-      "PPM must address state blue-sky notice filings + selling-agent registration.",
+    description: "PPM must address state blue-sky notice filings + selling-agent registration.",
     citation: blueSky(),
     playbooks: [REG_PLAYBOOK_PPM],
     missing_title: "State blue-sky / selling-agent clause missing",
-    missing_description:
-      "No state blue-sky / selling-agent clause was found.",
+    missing_description: "No state blue-sky / selling-agent clause was found.",
     explanation:
       "State blue-sky laws + FINRA registration (where selling agents are involved) must be addressed in PPM marketing channels.",
     recommendation:
@@ -720,27 +661,20 @@ const REG_A_RULES: Rule[] = [
   presence({
     id: "REG-033",
     name: "Tier 1 vs Tier 2 election + offering-size cap",
-    description:
-      "Offering circular must identify Tier 1 ($20M cap) or Tier 2 ($75M cap) election.",
+    description: "Offering circular must identify Tier 1 ($20M cap) or Tier 2 ($75M cap) election.",
     citation: regA("Tier 1 / Tier 2"),
     playbooks: [REG_PLAYBOOK_REG_A],
     missing_title: "Tier 1 / Tier 2 election clause missing",
-    missing_description:
-      "No Tier 1 / Tier 2 election clause was found.",
+    missing_description: "No Tier 1 / Tier 2 election clause was found.",
     explanation:
       "Reg A Tier 1 caps at $20M / 12 months; Tier 2 at $75M (after 2024 amendments). Tier 2 preempts state blue-sky but requires audited financials + ongoing reporting.",
-    recommendation:
-      "Add 'Tier' identifying Tier 1 or Tier 2 election and applicable offering cap.",
-    present_patterns: [
-      /(tier\s+1|tier\s+2|tier\s+i|tier\s+ii)/i,
-      /\$\s*(20|75)\s*(million|m)/i,
-    ],
+    recommendation: "Add 'Tier' identifying Tier 1 or Tier 2 election and applicable offering cap.",
+    present_patterns: [/(tier\s+1|tier\s+2|tier\s+i|tier\s+ii)/i, /\$\s*(20|75)\s*(million|m)/i],
   }),
   presence({
     id: "REG-034",
     name: "Form 1-A item structure followed",
-    description:
-      "Circular must follow Form 1-A item structure (Parts I / II / III).",
+    description: "Circular must follow Form 1-A item structure (Parts I / II / III).",
     citation: regA("Form 1-A"),
     playbooks: [REG_PLAYBOOK_REG_A],
     missing_title: "Form 1-A structure clause missing",
@@ -761,27 +695,21 @@ const REG_A_RULES: Rule[] = [
     citation: regSk105(),
     playbooks: [REG_PLAYBOOK_REG_A],
     missing_title: "Reg A+ risk factors clause missing",
-    missing_description:
-      "No risk-factors section was found in the offering circular.",
+    missing_description: "No risk-factors section was found in the offering circular.",
     explanation:
       "Form 1-A Item 1 (Part II) requires risk factors; standard practice mirrors Reg S-K Item 105.",
     recommendation:
       "Add 'Risk Factors' with offering-specific material risks (operating, financial, regulatory, investor-protection).",
-    present_patterns: [
-      /risk\s+factors/i,
-      /(material\s+risks?|principal\s+risks?)/i,
-    ],
+    present_patterns: [/risk\s+factors/i, /(material\s+risks?|principal\s+risks?)/i],
   }),
   presence({
     id: "REG-036",
     name: "Use of proceeds + plan of distribution",
-    description:
-      "Circular must describe use of proceeds + plan of distribution.",
+    description: "Circular must describe use of proceeds + plan of distribution.",
     citation: regA("Form 1-A"),
     playbooks: [REG_PLAYBOOK_REG_A],
     missing_title: "Use of proceeds / plan of distribution clause missing",
-    missing_description:
-      "No use-of-proceeds / plan-of-distribution clause was found.",
+    missing_description: "No use-of-proceeds / plan-of-distribution clause was found.",
     explanation:
       "Form 1-A Items 3 + 4 require use of proceeds and plan of distribution. Use-of-proceeds drift drives investor protection scrutiny.",
     recommendation:
@@ -805,10 +733,7 @@ const REG_A_RULES: Rule[] = [
       "17 C.F.R. § 230.251(d)(2)(i)(C) limits non-accredited Tier 2 investors to 10% of greater of annual income or net worth per offering.",
     recommendation:
       "Add 'Investment Limitations' explaining the 10% cap on non-accredited Tier 2 investors.",
-    present_patterns: [
-      /(10\s?%|ten\s+percent)/i,
-      /(annual\s+income|net\s+worth|non.accredited)/i,
-    ],
+    present_patterns: [/(10\s?%|ten\s+percent)/i, /(annual\s+income|net\s+worth|non.accredited)/i],
     default_severity: "warning",
   }),
   presence({
@@ -839,12 +764,10 @@ const REG_A_RULES: Rule[] = [
     citation: regA("Tier 2"),
     playbooks: [REG_PLAYBOOK_REG_A],
     missing_title: "Ongoing reporting clause missing (Tier 2)",
-    missing_description:
-      "No clause was found addressing Tier 2 ongoing reporting.",
+    missing_description: "No clause was found addressing Tier 2 ongoing reporting.",
     explanation:
       "Tier 2 issuers must file Form 1-K (annual), Form 1-SA (semi-annual), and Form 1-U (current). Tier 1 issuers have lighter reporting.",
-    recommendation:
-      "Add 'Ongoing Reporting' covering Form 1-K / 1-SA / 1-U deadlines and content.",
+    recommendation: "Add 'Ongoing Reporting' covering Form 1-K / 1-SA / 1-U deadlines and content.",
     present_patterns: [
       /(form\s+1.?k|form\s+1.?sa|form\s+1.?u)/i,
       /(annual\s+report|semi.?annual|current\s+report)/i,

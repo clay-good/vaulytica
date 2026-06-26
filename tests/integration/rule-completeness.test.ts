@@ -65,9 +65,10 @@ describe("per-rule completeness — launch set (spec-v7 Step 117)", () => {
     expect(withNegative, "launch rules seen silent on a clean doc").toBeGreaterThanOrEqual(
       FLOOR_NEGATIVE,
     );
-    expect(withBoth, "launch rules with both a positive and a negative case").toBeGreaterThanOrEqual(
-      FLOOR_BOTH,
-    );
+    expect(
+      withBoth,
+      "launch rules with both a positive and a negative case",
+    ).toBeGreaterThanOrEqual(FLOOR_BOTH);
   });
 });
 

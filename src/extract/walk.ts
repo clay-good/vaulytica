@@ -23,10 +23,7 @@ export type ParagraphContext = {
  * walk — a section's paragraphs, then its children in order — so output is
  * byte-unchanged.
  */
-export function forEachParagraph(
-  tree: DocumentTree,
-  fn: (ctx: ParagraphContext) => void,
-): void {
+export function forEachParagraph(tree: DocumentTree, fn: (ctx: ParagraphContext) => void): void {
   const stack: Section[] = [...tree.sections].reverse();
   while (stack.length > 0) {
     const s = stack.pop()!;

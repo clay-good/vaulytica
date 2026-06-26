@@ -20,7 +20,9 @@ describe("ingestPaste", () => {
   });
 
   it("detects Setext headings (=== for H1, --- for H2)", async () => {
-    const r = await ingestPaste("Big Title\n===========\n\nBody.\n\nSubsection\n----------\n\nMore.");
+    const r = await ingestPaste(
+      "Big Title\n===========\n\nBody.\n\nSubsection\n----------\n\nMore.",
+    );
     expect(r.tree.sections[0]!.heading).toBe("Big Title");
     expect(r.tree.sections[0]!.children[0]!.heading).toBe("Subsection");
     expect(r.tree.sections[0]!.children[0]!.level).toBe(2);

@@ -18,7 +18,9 @@ export const rule: Rule = {
   description: "Flags employee-like language in an independent contractor agreement.",
   dkb_citations: ["stat-irs-rev-rul-87-41"],
   check(ctx: RuleContext): Finding | null {
-    const isICAgreement = ctx.tree.sections.some((s) => /\bindependent\s+contractor\b/i.test(s.heading));
+    const isICAgreement = ctx.tree.sections.some((s) =>
+      /\bindependent\s+contractor\b/i.test(s.heading),
+    );
     if (!isICAgreement) return null;
     for (const re of EMPLOYEE_INDICATORS) {
       const hit = firstParagraphMatch(ctx, re);

@@ -99,9 +99,7 @@ describe("computeScoreboard confusion model (spec-v5 §8)", () => {
 
   it("is deterministic — two runs byte-identical", () => {
     const input = [doc("d1", ["R1", "R2"], { R1: "should_fire", R2: "should_not_fire" })];
-    expect(JSON.stringify(computeScoreboard(input))).toBe(
-      JSON.stringify(computeScoreboard(input)),
-    );
+    expect(JSON.stringify(computeScoreboard(input))).toBe(JSON.stringify(computeScoreboard(input)));
   });
 
   it("sorts worst-offenders deterministically", () => {

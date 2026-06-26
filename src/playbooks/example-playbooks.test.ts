@@ -12,11 +12,7 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import {
-  parseCustomPlaybookJson,
-  previewCustomPlaybook,
-  RULE_CATALOG_VERSION,
-} from "./index.js";
+import { parseCustomPlaybookJson, previewCustomPlaybook, RULE_CATALOG_VERSION } from "./index.js";
 import { LAUNCH_RULES, V3_RULES } from "../engine/index.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

@@ -37,8 +37,7 @@ export const NDA_DEEP_RULES: Rule[] = [
       "NDAs with employees, contractors, or consultants must contain the DTSA notice of immunity for confidential disclosure of trade secrets to government or in court filings.",
     citation: dtsaCite(),
     missing_title: "DTSA whistleblower-immunity notice missing",
-    missing_description:
-      "No 18 U.S.C. § 1833(b) immunity notice was detected in the agreement.",
+    missing_description: "No 18 U.S.C. § 1833(b) immunity notice was detected in the agreement.",
     explanation:
       "Under 18 U.S.C. § 1833(b), an employer that does not include the immunity notice in agreements with employees, contractors, or consultants cannot recover exemplary damages or attorneys' fees in a DTSA action against that individual.",
     recommendation:
@@ -118,12 +117,10 @@ export const NDA_DEEP_RULES: Rule[] = [
   presence({
     id: "NDA-D-005",
     name: "Confidential Information defined",
-    description:
-      "NDA must define 'Confidential Information' (or equivalent capitalized term).",
+    description: "NDA must define 'Confidential Information' (or equivalent capitalized term).",
     citation: genericNdaCite(),
     missing_title: "Definition of Confidential Information missing",
-    missing_description:
-      "No defined-term definition for 'Confidential Information' was detected.",
+    missing_description: "No defined-term definition for 'Confidential Information' was detected.",
     explanation:
       "Without an explicit definition, the scope of the obligation is ambiguous and may be construed narrowly against the disclosing party.",
     recommendation:
@@ -223,10 +220,7 @@ export const NDA_DEEP_RULES: Rule[] = [
       "Residuals clauses are a known carve-out that materially weakens NDA protection for the disclosing party. Vaulytica flags presence so the discloser can make a deliberate choice; it does not assert wrongness.",
     recommendation:
       "If you are the disclosing party, consider deleting the residuals clause or narrowing it to non-trade-secret information explicitly.",
-    bad_patterns: [
-      /\bresiduals?\b/i,
-      /(retained\s+in.{0,40}(unaided\s+)?memory)/is,
-    ],
+    bad_patterns: [/\bresiduals?\b/i, /(retained\s+in.{0,40}(unaided\s+)?memory)/is],
     default_severity: "info",
   }),
 
@@ -260,8 +254,7 @@ export const NDA_DEEP_RULES: Rule[] = [
       "No clause was found limiting use of Confidential Information to a defined Purpose.",
     explanation:
       "A defined Purpose narrows the field of permitted use and creates a contractual basis for objecting to unrelated downstream use.",
-    recommendation:
-      "Define 'Purpose' and require use 'solely for the Purpose.'",
+    recommendation: "Define 'Purpose' and require use 'solely for the Purpose.'",
     present_patterns: [
       /solely\s+(for|to)\s+(the\s+)?purpose/i,
       /to\s+(evaluate|assess|consider)\s+(a\s+)?(potential|the)\s+(business|transaction)/i,
@@ -341,8 +334,7 @@ export const NDA_DEEP_RULES: Rule[] = [
       "Best-practice NDAs waive the requirement to post a bond when seeking injunctive relief.",
     citation: genericNdaCite(),
     missing_title: "Waiver-of-bond language missing",
-    missing_description:
-      "Injunctive-relief clause does not include a waiver of bond.",
+    missing_description: "Injunctive-relief clause does not include a waiver of bond.",
     explanation:
       "Many courts require a movant to post a bond as a condition of preliminary injunctive relief. A contractual waiver smooths the emergency-motion path.",
     recommendation:
@@ -360,12 +352,10 @@ export const NDA_DEEP_RULES: Rule[] = [
   presence({
     id: "NDA-D-017",
     name: "Governing-law clause present",
-    description:
-      "NDA should specify the governing law of the agreement.",
+    description: "NDA should specify the governing law of the agreement.",
     citation: genericNdaCite(),
     missing_title: "Governing-law clause missing",
-    missing_description:
-      "No governing-law clause was detected.",
+    missing_description: "No governing-law clause was detected.",
     explanation:
       "Without a chosen governing law, default conflict-of-laws rules apply and may produce an unintended jurisdiction.",
     recommendation:
@@ -477,12 +467,10 @@ export const NDA_DEEP_RULES: Rule[] = [
   presence({
     id: "NDA-D-023",
     name: "Successors-and-assigns with consent",
-    description:
-      "Assignment should require consent and bind successors.",
+    description: "Assignment should require consent and bind successors.",
     citation: genericNdaCite(),
     missing_title: "Successors-and-assigns / consent-to-assignment missing",
-    missing_description:
-      "No successors-and-assigns clause with consent-to-assignment was found.",
+    missing_description: "No successors-and-assigns clause with consent-to-assignment was found.",
     explanation:
       "Without a consent-to-assignment clause, an acquirer of the receiving party could inherit access to Confidential Information without the discloser's approval.",
     recommendation:
@@ -511,9 +499,7 @@ export const NDA_DEEP_RULES: Rule[] = [
       "Mutual NDAs are typically drafted with each party as both Disclosing and Receiving Party. Asymmetric drafting suggests either (a) the wrong template was used, or (b) one party is silently advantaged.",
     recommendation:
       "Rewrite the obligation as bilateral: 'Each party shall ...' rather than 'Receiving Party shall ...'.",
-    bad_patterns: [
-      /^(?=.*receiving\s+party)(?!.*each\s+(party|of\s+the\s+parties)).{0,300}$/im,
-    ],
+    bad_patterns: [/^(?=.*receiving\s+party)(?!.*each\s+(party|of\s+the\s+parties)).{0,300}$/im],
     default_severity: "warning",
   }),
 

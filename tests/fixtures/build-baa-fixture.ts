@@ -141,9 +141,7 @@ const baa: Block[] = [
   },
   {
     heading: "Governing Law",
-    paragraphs: [
-      `This BAA shall be governed by the laws of the State of Delaware.`,
-    ],
+    paragraphs: [`This BAA shall be governed by the laws of the State of Delaware.`],
   },
   {
     heading: "Notice",

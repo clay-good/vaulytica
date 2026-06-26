@@ -20,10 +20,7 @@ const formatDate = (iso: string): string => {
   return d.toISOString().slice(0, 10);
 };
 
-export function renderDkbValidation(
-  root: ParentNode,
-  status: DkbValidationStatus,
-): void {
+export function renderDkbValidation(root: ParentNode, status: DkbValidationStatus): void {
   const dateEl = root.querySelector<HTMLElement>('[data-role="dkb-validated-at"]');
   const countEl = root.querySelector<HTMLElement>('[data-role="dkb-stale-count"]');
   if (dateEl) dateEl.textContent = formatDate(status.dkb_last_validated_at);

@@ -8,7 +8,8 @@ export const rule: Rule = {
   name: "Past-dated effective date",
   category: "temporal",
   default_severity: "info",
-  description: "Flags an Effective Date more than 30 days before the earliest other absolute date in the document.",
+  description:
+    "Flags an Effective Date more than 30 days before the earliest other absolute date in the document.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
     const abs = ctx.extracted.dates.filter((d) => d.type === "absolute" && d.iso);

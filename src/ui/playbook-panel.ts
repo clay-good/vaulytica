@@ -58,10 +58,7 @@ const defaultValidator: PlaybookValidator = async (text) => {
   return mod.validateAndPreviewPlaybook(text) as PlaybookValidationResult;
 };
 
-export function bindPlaybookPanel(
-  container: HTMLElement,
-  opts: PlaybookPanelOptions,
-): () => void {
+export function bindPlaybookPanel(container: HTMLElement, opts: PlaybookPanelOptions): () => void {
   const validate = opts.validate ?? defaultValidator;
   container.innerHTML = PANEL_HTML;
 
@@ -171,9 +168,7 @@ function renderPreview(
     preview.mode === "replace"
       ? "Built-in catalog: <strong>disabled</strong> (replace mode)."
       : `Built-in catalog: <strong>${preview.selected_builtin_rule_ids.length}</strong> rules` +
-        (preview.excluded_builtin_count > 0
-          ? ` (${preview.excluded_builtin_count} excluded)`
-          : "");
+        (preview.excluded_builtin_count > 0 ? ` (${preview.excluded_builtin_count} excluded)` : "");
 
   status.innerHTML = `
     <div class="playbook-loaded" data-role="playbook-loaded">

@@ -15,11 +15,7 @@
  * neither.
  */
 
-import type {
-  CustomPlaybook,
-  CustomPlaybookRuleOverride,
-  CustomRule,
-} from "./custom-playbook.js";
+import type { CustomPlaybook, CustomPlaybookRuleOverride, CustomRule } from "./custom-playbook.js";
 
 export type FieldChange = { field: string; from: unknown; to: unknown };
 
@@ -130,7 +126,8 @@ function diffRequiredClauses(
     const to = mb.get(category);
     if (from === undefined && to !== undefined) added.push({ category, severity: to });
     else if (from !== undefined && to === undefined) removed.push({ category, severity: from });
-    else if (from !== undefined && to !== undefined && from !== to) changed.push({ category, from, to });
+    else if (from !== undefined && to !== undefined && from !== to)
+      changed.push({ category, from, to });
   }
   return { added, removed, changed };
 }
@@ -143,10 +140,7 @@ const CUSTOM_RULE_FIELDS: Array<keyof CustomRule> = [
   "citation",
 ];
 
-function diffCustomRules(
-  a: CustomRule[] = [],
-  b: CustomRule[] = [],
-): PlaybookDiff["custom_rules"] {
+function diffCustomRules(a: CustomRule[] = [], b: CustomRule[] = []): PlaybookDiff["custom_rules"] {
   const ma = new Map(a.map((r) => [r.id, r]));
   const mb = new Map(b.map((r) => [r.id, r]));
   const added: string[] = [];
@@ -237,15 +231,28 @@ export function diffPlaybooksMarkdown(a: CustomPlaybook, b: CustomPlaybook): str
 
   if (d.metadata.length > 0) {
     lines.push("## Metadata");
-    for (const m of d.metadata) lines.push(`- **${m.field}:** \`${String(m.from)}\` → \`${String(m.to)}\``);
+    for (const m of d.metadata)
+      lines.push(`- **${m.field}:** \`${String(m.from)}\` → \`${String(m.to)}\``);
     lines.push("");
   }
 
   const selLines = [
-    ...bullets("Rules included", d.rule_selection.include.added.map((x) => `+${x}`)),
-    ...bullets("Rules un-included", d.rule_selection.include.removed.map((x) => `-${x}`)),
-    ...bullets("Rules excluded", d.rule_selection.exclude.added.map((x) => `+${x}`)),
-    ...bullets("Rules un-excluded", d.rule_selection.exclude.removed.map((x) => `-${x}`)),
+    ...bullets(
+      "Rules included",
+      d.rule_selection.include.added.map((x) => `+${x}`),
+    ),
+    ...bullets(
+      "Rules un-included",
+      d.rule_selection.include.removed.map((x) => `-${x}`),
+    ),
+    ...bullets(
+      "Rules excluded",
+      d.rule_selection.exclude.added.map((x) => `+${x}`),
+    ),
+    ...bullets(
+      "Rules un-excluded",
+      d.rule_selection.exclude.removed.map((x) => `-${x}`),
+    ),
   ];
   if (selLines.length > 0) {
     lines.push("## Built-in rule selection");

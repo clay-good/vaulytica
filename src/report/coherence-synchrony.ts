@@ -151,10 +151,7 @@ export async function computeCoherenceSynchrony(
   // One bucket per round-transition (round k → round k+1, k = 1…N−1). Each front's
   // crossing is attributed to the step into the round that *reveals* the new
   // standing, so the per-transition total re-buckets v24's per-front crossings.
-  const crossedByTransition: string[][] = Array.from(
-    { length: rounds.length - 1 },
-    () => [],
-  );
+  const crossedByTransition: string[][] = Array.from({ length: rounds.length - 1 }, () => []);
 
   for (const dimension of labels) {
     const floors = byDim.map((m) => m.get(dimension)?.weakest_tier ?? null);
@@ -177,31 +174,29 @@ export async function computeCoherenceSynchrony(
   let peak_count = 0;
   let synchronized_count = 0;
 
-  const per_transition: CoherenceSynchronyTransition[] = crossedByTransition.map(
-    (dims, idx) => {
-      // The labels were iterated in localeCompare order, so `dims` is already
-      // pinned; the explicit sort keeps the list deterministic regardless.
-      dims.sort((a, b) => a.localeCompare(b, "en"));
-      const crossing_fronts = dims.length;
-      total_crossings += crossing_fronts;
-      if (crossing_fronts >= 2) synchronized_count += 1;
-      // The peak step is the one the most fronts crossed at once; the first such
-      // step wins a tie (earliest-peak, mirroring v22's earliest-worst-round tiebreak).
-      if (crossing_fronts > peak_count) {
-        peak_count = crossing_fronts;
-        peak_transition = idx + 1;
-      }
-      const synchrony: SynchronyClass =
-        crossing_fronts >= 2 ? "synchronized" : crossing_fronts === 1 ? "isolated" : "quiet";
-      return {
-        from_round: idx + 1,
-        to_round: idx + 2,
-        crossing_fronts,
-        crossed_dimensions: dims,
-        synchrony,
-      };
-    },
-  );
+  const per_transition: CoherenceSynchronyTransition[] = crossedByTransition.map((dims, idx) => {
+    // The labels were iterated in localeCompare order, so `dims` is already
+    // pinned; the explicit sort keeps the list deterministic regardless.
+    dims.sort((a, b) => a.localeCompare(b, "en"));
+    const crossing_fronts = dims.length;
+    total_crossings += crossing_fronts;
+    if (crossing_fronts >= 2) synchronized_count += 1;
+    // The peak step is the one the most fronts crossed at once; the first such
+    // step wins a tie (earliest-peak, mirroring v22's earliest-worst-round tiebreak).
+    if (crossing_fronts > peak_count) {
+      peak_count = crossing_fronts;
+      peak_transition = idx + 1;
+    }
+    const synchrony: SynchronyClass =
+      crossing_fronts >= 2 ? "synchronized" : crossing_fronts === 1 ? "isolated" : "quiet";
+    return {
+      from_round: idx + 1,
+      to_round: idx + 2,
+      crossing_fronts,
+      crossed_dimensions: dims,
+      synchrony,
+    };
+  });
 
   const synchrony_hash = await sha256Hex(
     stableStringify({

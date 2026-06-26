@@ -66,7 +66,10 @@ describe("detectStaleness", () => {
   it("flags a node when the authority text drifts", async () => {
     const report = await detectStaleness({
       nodes: [node()],
-      fetchAuthority: async () => ({ text: `${sampleAuthorityText} (amended 2026)`, fetched_at: NOW }),
+      fetchAuthority: async () => ({
+        text: `${sampleAuthorityText} (amended 2026)`,
+        fetched_at: NOW,
+      }),
       nowIso: NOW,
     });
     expect(report.stale_citations).toBe(1);

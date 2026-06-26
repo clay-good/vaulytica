@@ -127,56 +127,95 @@ describe("DPA-GDPR ruleset — compliant fixture", () => {
 
 describe("DPA-GDPR ruleset — failure modes", () => {
   it("missing breach notification fires DPA-024", async () => {
-    const ctx = withDpa(buildContext([
-      "DPA",
-      "This DPA references personal data and controller and processor but says nothing about breaches.",
-    ]));
-    const run = await runEngine({ rules: DPA_GDPR_RULES, ctx, executed_at: "2026-05-12T00:00:00Z", source_file: SRC });
+    const ctx = withDpa(
+      buildContext([
+        "DPA",
+        "This DPA references personal data and controller and processor but says nothing about breaches.",
+      ]),
+    );
+    const run = await runEngine({
+      rules: DPA_GDPR_RULES,
+      ctx,
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
     expect(run.findings.find((f) => f.rule_id === "DPA-024")).toBeTruthy();
   });
 
   it("processor-chooses-delete-or-return fires DPA-035", async () => {
-    const ctx = withDpa(buildContext([
-      "DPA",
-      "Processor may choose to delete personal data at the end of services.",
-    ]));
-    const run = await runEngine({ rules: DPA_GDPR_RULES, ctx, executed_at: "2026-05-12T00:00:00Z", source_file: SRC });
+    const ctx = withDpa(
+      buildContext(["DPA", "Processor may choose to delete personal data at the end of services."]),
+    );
+    const run = await runEngine({
+      rules: DPA_GDPR_RULES,
+      ctx,
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
     expect(run.findings.find((f) => f.rule_id === "DPA-035")).toBeTruthy();
   });
 
   it("SOC 2 in lieu of audit fires DPA-036", async () => {
-    const ctx = withDpa(buildContext([
-      "DPA",
-      "SOC 2 reports shall be the sole means of compliance demonstration in lieu of any audit. Processor shall notify Controller of Personal Data Breaches without undue delay.",
-    ]));
-    const run = await runEngine({ rules: DPA_GDPR_RULES, ctx, executed_at: "2026-05-12T00:00:00Z", source_file: SRC });
+    const ctx = withDpa(
+      buildContext([
+        "DPA",
+        "SOC 2 reports shall be the sole means of compliance demonstration in lieu of any audit. Processor shall notify Controller of Personal Data Breaches without undue delay.",
+      ]),
+    );
+    const run = await runEngine({
+      rules: DPA_GDPR_RULES,
+      ctx,
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
     expect(run.findings.find((f) => f.rule_id === "DPA-036")).toBeTruthy();
   });
 
   it("controller indemnifies processor for GDPR fines fires DPA-048", async () => {
-    const ctx = withDpa(buildContext([
-      "DPA",
-      "Controller shall indemnify Processor for any GDPR fine arising from processing of Personal Data.",
-    ]));
-    const run = await runEngine({ rules: DPA_GDPR_RULES, ctx, executed_at: "2026-05-12T00:00:00Z", source_file: SRC });
+    const ctx = withDpa(
+      buildContext([
+        "DPA",
+        "Controller shall indemnify Processor for any GDPR fine arising from processing of Personal Data.",
+      ]),
+    );
+    const run = await runEngine({
+      rules: DPA_GDPR_RULES,
+      ctx,
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
     expect(run.findings.find((f) => f.rule_id === "DPA-048")).toBeTruthy();
   });
 
   it("'industry-standard security' without annex fires DPA-023", async () => {
-    const ctx = withDpa(buildContext([
-      "DPA",
-      "Processor implements industry-standard security to protect Personal Data.",
-    ]));
-    const run = await runEngine({ rules: DPA_GDPR_RULES, ctx, executed_at: "2026-05-12T00:00:00Z", source_file: SRC });
+    const ctx = withDpa(
+      buildContext([
+        "DPA",
+        "Processor implements industry-standard security to protect Personal Data.",
+      ]),
+    );
+    const run = await runEngine({
+      rules: DPA_GDPR_RULES,
+      ctx,
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
     expect(run.findings.find((f) => f.rule_id === "DPA-023")).toBeTruthy();
   });
 
   it("document with no 'personal data' reference fires DPA-050", async () => {
-    const ctx = withDpa(buildContext([
-      "Agreement",
-      "Generic services agreement with no privacy terminology whatsoever.",
-    ]));
-    const run = await runEngine({ rules: DPA_GDPR_RULES, ctx, executed_at: "2026-05-12T00:00:00Z", source_file: SRC });
+    const ctx = withDpa(
+      buildContext([
+        "Agreement",
+        "Generic services agreement with no privacy terminology whatsoever.",
+      ]),
+    );
+    const run = await runEngine({
+      rules: DPA_GDPR_RULES,
+      ctx,
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
     expect(run.findings.find((f) => f.rule_id === "DPA-050")).toBeTruthy();
   });
 });
@@ -184,8 +223,18 @@ describe("DPA-GDPR ruleset — failure modes", () => {
 describe("DPA-GDPR ruleset — determinism", () => {
   it("two runs over the same input produce the same result_hash", async () => {
     const ctx = withDpa(buildContext(...COMPLIANT_DPA_SECTIONS));
-    const a = await runEngine({ rules: DPA_GDPR_RULES, ctx, executed_at: "2026-05-12T00:00:00Z", source_file: SRC });
-    const b = await runEngine({ rules: DPA_GDPR_RULES, ctx, executed_at: "2026-05-12T00:00:00Z", source_file: SRC });
+    const a = await runEngine({
+      rules: DPA_GDPR_RULES,
+      ctx,
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
+    const b = await runEngine({
+      rules: DPA_GDPR_RULES,
+      ctx,
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
     expect(a.result_hash).toBe(b.result_hash);
   });
 });
@@ -196,7 +245,12 @@ describe("DPA-GDPR ruleset — SCC Module 2 playbook scope", () => {
       ...buildContext(...COMPLIANT_DPA_SECTIONS),
       playbook: { id: "scc-module-2", version: "1.0.0" },
     };
-    const run = await runEngine({ rules: DPA_GDPR_RULES, ctx, executed_at: "2026-05-12T00:00:00Z", source_file: SRC });
+    const run = await runEngine({
+      rules: DPA_GDPR_RULES,
+      ctx,
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
     // At least one rule should have fired (non-skipped) since playbook matches.
     expect(run.execution_log.filter((e) => e.elapsed_ms === 0).length).toBeLessThan(55);
   });

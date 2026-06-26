@@ -34,7 +34,10 @@ const mk = (a: Record<string, NegotiationTier>, b: Record<string, NegotiationTie
 
 describe("computeCoherenceBreadthArtifacts (spec-v22 — document-free exposure breadth)", () => {
   it("walks N artifacts and matches the in-memory computeCoherenceBreadth byte-for-byte", async () => {
-    const c1 = await mk({ Cap: "below-acceptable", Risk: "ideal" }, { Cap: "ideal", Risk: "ideal" });
+    const c1 = await mk(
+      { Cap: "below-acceptable", Risk: "ideal" },
+      { Cap: "ideal", Risk: "ideal" },
+    );
     const c2 = await mk(
       { Cap: "below-acceptable", Risk: "below-acceptable" },
       { Cap: "ideal", Risk: "ideal" },
@@ -105,10 +108,7 @@ describe("computeCoherenceBreadthArtifacts (spec-v22 — document-free exposure 
     const outcome = await computeCoherenceBreadthArtifacts([
       buildPostureCoherenceJson(await mk({ Cap: "ideal" }, { Cap: "ideal" }), LADDER_A),
       buildPostureCoherenceJson(await mk({ Cap: "ideal" }, { Cap: "ideal" }), LADDER_A),
-      buildPostureCoherenceJson(
-        await mk({ Cap: "below-acceptable" }, { Cap: "ideal" }),
-        LADDER_B,
-      ),
+      buildPostureCoherenceJson(await mk({ Cap: "below-acceptable" }, { Cap: "ideal" }), LADDER_B),
     ]);
     expect(outcome.ok).toBe(false);
     if (outcome.ok) return;
@@ -119,10 +119,7 @@ describe("computeCoherenceBreadthArtifacts (spec-v22 — document-free exposure 
   it("proceeds with a note when any artifact is unpinned (v1)", async () => {
     const outcome = await computeCoherenceBreadthArtifacts([
       buildPostureCoherenceJson(await mk({ Cap: "ideal" }, { Cap: "ideal" })), // v1, no ladder pin
-      buildPostureCoherenceJson(
-        await mk({ Cap: "below-acceptable" }, { Cap: "ideal" }),
-        LADDER_A,
-      ),
+      buildPostureCoherenceJson(await mk({ Cap: "below-acceptable" }, { Cap: "ideal" }), LADDER_A),
     ]);
     expect(outcome.ok).toBe(true);
     if (!outcome.ok) return;
@@ -144,7 +141,10 @@ describe("computeCoherenceBreadthArtifacts (spec-v22 — document-free exposure 
   });
 
   it("the widened verdict matches exposureWidened on the same breadth", async () => {
-    const c1 = await mk({ Cap: "below-acceptable", Risk: "ideal" }, { Cap: "ideal", Risk: "ideal" });
+    const c1 = await mk(
+      { Cap: "below-acceptable", Risk: "ideal" },
+      { Cap: "ideal", Risk: "ideal" },
+    );
     const c2 = await mk(
       { Cap: "below-acceptable", Risk: "below-acceptable" },
       { Cap: "ideal", Risk: "ideal" },

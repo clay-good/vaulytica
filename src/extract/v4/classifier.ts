@@ -99,7 +99,11 @@ export function scoreSubDomains(input: V4ClassifierInput): SubDomainScore[] {
 
   for (const sub_domain of Object.keys(input.features.sub_domains) as V4SubDomain[]) {
     const entry = input.features.sub_domains[sub_domain];
-    const matched = { title: [] as string[], distinguishing: [] as string[], negative: [] as string[] };
+    const matched = {
+      title: [] as string[],
+      distinguishing: [] as string[],
+      negative: [] as string[],
+    };
 
     for (const kw of entry.title_keywords) {
       const k = kw.toLowerCase();
@@ -156,7 +160,11 @@ export function classifyV4SubDomain(input: V4ClassifierInput): V4Classification 
         family_id: mapped.family_id,
         confidence: input.v3_detection.confidence,
         signals: [
-          { stage: "sub-domain", evidence: `v3 detector matched ${input.v3_detection.family}`, weight: 1 },
+          {
+            stage: "sub-domain",
+            evidence: `v3 detector matched ${input.v3_detection.family}`,
+            weight: 1,
+          },
           ...input.v3_detection.signals.map((s) => ({
             stage: "family" as const,
             evidence: s.evidence,
@@ -240,7 +248,8 @@ function domainCeiling(
   // document with three or more title matches still normalizes near 1.0.
   const titleAnchor = Math.min(2, entry.title_keywords.length);
   const phraseAnchor = Math.min(4, entry.distinguishing_phrases.length);
-  const ceiling = titleAnchor * weights.title_keyword + phraseAnchor * weights.distinguishing_phrase;
+  const ceiling =
+    titleAnchor * weights.title_keyword + phraseAnchor * weights.distinguishing_phrase;
   // Avoid divide-by-zero in case a sub-domain table is empty (it shouldn't be).
   return ceiling > 0 ? ceiling : 1;
 }
@@ -257,7 +266,9 @@ function clamp01(n: number): number {
  * already cover a v4 sub-domain are mapped; everything else returns
  * null and falls through to the v4 stage-1 scorer.
  */
-function v3FamilyToV4(family: V3Detection["family"]): { sub_domain: V4SubDomain; family_id: string } | null {
+function v3FamilyToV4(
+  family: V3Detection["family"],
+): { sub_domain: V4SubDomain; family_id: string } | null {
   switch (family) {
     case "baa":
       return { sub_domain: "I-privacy", family_id: "I.1" };

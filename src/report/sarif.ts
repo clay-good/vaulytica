@@ -176,9 +176,7 @@ export function buildSarif(run: EngineRun, v9?: V9Surfaces): SarifLog {
               charLength: Math.max(0, f.excerpt.end_offset - f.excerpt.start_offset),
             },
           },
-          logicalLocations: [
-            { name: f.excerpt.section_id ?? "document", kind: "section" },
-          ],
+          logicalLocations: [{ name: f.excerpt.section_id ?? "document", kind: "section" }],
         },
       ],
       // Deterministic dedupe key: the finding id is `${rule}-${section}-${offset}`,
@@ -203,12 +201,16 @@ export function buildSarif(run: EngineRun, v9?: V9Surfaces): SarifLog {
   // HANDOFF-* (Thrust A): pre-disclosure facts cited to the container, not a
   // text offset — so no `region`, and the logicalLocation names the container.
   const deliveryHash = v9?.delivery?.delivery_hash ?? "";
-  const handoffResults: SarifResult[] = handoff.map((f) => handoffResult(f, ruleIndex, run, deliveryHash));
+  const handoffResults: SarifResult[] = handoff.map((f) =>
+    handoffResult(f, ruleIndex, run, deliveryHash),
+  );
 
   // DATE-* (Thrust C): computed deadlines, surfaced at "note" level (a date to
   // track, not a violation), anchored to the source section.
   const datesHash = v9?.criticalDates?.critical_dates_hash ?? "";
-  const dateResults: SarifResult[] = register.map((r, i) => dateResult(r, ruleIndex, run, datesHash, i));
+  const dateResults: SarifResult[] = register.map((r, i) =>
+    dateResult(r, ruleIndex, run, datesHash, i),
+  );
 
   const results = [...findingResults, ...handoffResults, ...dateResults];
 
@@ -348,7 +350,8 @@ export function sarifConformanceViolations(log: SarifLog): string[] {
   };
   const LEVELS = new Set(["error", "warning", "note", "none"]);
 
-  if (log.version !== "2.1.0") v.push(`version must be "2.1.0", got ${JSON.stringify(log.version)}`);
+  if (log.version !== "2.1.0")
+    v.push(`version must be "2.1.0", got ${JSON.stringify(log.version)}`);
   if (!isNonEmpty(log.$schema)) v.push("$schema must be a non-empty string");
   if (!Array.isArray(log.runs) || log.runs.length === 0) {
     v.push("runs must be a non-empty array");
@@ -383,7 +386,9 @@ export function sarifConformanceViolations(log: SarifLog): string[] {
       if (!isInt(res.ruleIndex) || res.ruleIndex < 0 || res.ruleIndex >= rules.length) {
         v.push(`${at}.ruleIndex ${res.ruleIndex} out of range [0, ${rules.length - 1}]`);
       } else if (rules[res.ruleIndex]!.id !== res.ruleId) {
-        v.push(`${at}.ruleIndex points to "${rules[res.ruleIndex]!.id}", not ruleId "${res.ruleId}"`);
+        v.push(
+          `${at}.ruleIndex points to "${rules[res.ruleIndex]!.id}", not ruleId "${res.ruleId}"`,
+        );
       }
       if (!LEVELS.has(res.level)) v.push(`${at}.level "${res.level}" is not a valid SARIF level`);
       if (!isNonEmpty(res.message?.text)) v.push(`${at}.message.text must be a non-empty string`);
@@ -392,7 +397,8 @@ export function sarifConformanceViolations(log: SarifLog): string[] {
       } else {
         res.locations.forEach((loc, li) => {
           const uri = loc.physicalLocation?.artifactLocation?.uri;
-          if (!isNonEmpty(uri)) v.push(`${at}.locations[${li}] artifactLocation.uri must be non-empty`);
+          if (!isNonEmpty(uri))
+            v.push(`${at}.locations[${li}] artifactLocation.uri must be non-empty`);
           const region = loc.physicalLocation?.region;
           if (region) {
             if (!isInt(region.charOffset) || region.charOffset < 0) {

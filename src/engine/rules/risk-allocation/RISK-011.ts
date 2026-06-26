@@ -14,7 +14,8 @@ export const rule: Rule = {
   name: "Indemnity procedure clause",
   category: "risk-allocation",
   default_severity: "info",
-  description: "Verifies the indemnity includes notice, defense-control, and settlement-consent procedural elements.",
+  description:
+    "Verifies the indemnity includes notice, defense-control, and settlement-consent procedural elements.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
     const indem = firstParagraphMatch(ctx, /\bindemnif/i);

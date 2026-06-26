@@ -33,7 +33,12 @@ function docTree(...paras: string[]): DocumentTree {
   };
 }
 
-function finding(rule_id: string, severity: Severity, position: number, text = "the clause text"): Finding {
+function finding(
+  rule_id: string,
+  severity: Severity,
+  position: number,
+  text = "the clause text",
+): Finding {
   return {
     id: `${rule_id}-s${position}-${position}`,
     rule_id,
@@ -110,8 +115,12 @@ describe("compareRuns — buckets", () => {
   });
 
   it("flags a clause-level text change on an unchanged finding", async () => {
-    const base = makeRun({ findings: [finding("R", "critical", 10, "liability capped at 1x fees")] });
-    const revised = makeRun({ findings: [finding("R", "critical", 10, "liability capped at 2x fees")] });
+    const base = makeRun({
+      findings: [finding("R", "critical", 10, "liability capped at 1x fees")],
+    });
+    const revised = makeRun({
+      findings: [finding("R", "critical", 10, "liability capped at 2x fees")],
+    });
     const cmp = await compareRuns(base, revised);
     expect(cmp.delta.unchanged[0]!.clause_changed).toBe(true);
   });
@@ -152,7 +161,10 @@ describe("compareRuns — buckets", () => {
 describe("compareRuns — determinism", () => {
   it("is byte-identical across two runs (same comparison hash)", async () => {
     const base = makeRun({ result_hash: "b".repeat(64), findings: [finding("A", "critical", 1)] });
-    const revised = makeRun({ result_hash: "r".repeat(64), findings: [finding("A", "critical", 1), finding("B", "info", 2)] });
+    const revised = makeRun({
+      result_hash: "r".repeat(64),
+      findings: [finding("A", "critical", 1), finding("B", "info", 2)],
+    });
     const a = await compareRuns(base, revised);
     const b = await compareRuns(base, revised);
     expect(a.result_hash).toBe(b.result_hash);
@@ -162,7 +174,10 @@ describe("compareRuns — determinism", () => {
   it("comparison hash changes when the delta changes", async () => {
     const base = makeRun({ result_hash: "b".repeat(64), findings: [finding("A", "critical", 1)] });
     const rev1 = makeRun({ result_hash: "r".repeat(64), findings: [finding("A", "critical", 1)] });
-    const rev2 = makeRun({ result_hash: "r".repeat(64), findings: [finding("A", "critical", 1), finding("B", "info", 2)] });
+    const rev2 = makeRun({
+      result_hash: "r".repeat(64),
+      findings: [finding("A", "critical", 1), finding("B", "info", 2)],
+    });
     const c1 = await compareRuns(base, rev1);
     const c2 = await compareRuns(base, rev2);
     expect(c1.result_hash).not.toBe(c2.result_hash);
@@ -206,7 +221,10 @@ describe("comparability and family-mismatch refusal", () => {
 
   it("allows a cross-family comparison when the pairing is confirmed", async () => {
     const base = makeRun({ playbook_id: "mutual-nda", findings: [finding("A", "critical", 1)] });
-    const revised = makeRun({ playbook_id: "saas-subscription", findings: [finding("A", "critical", 1)] });
+    const revised = makeRun({
+      playbook_id: "saas-subscription",
+      findings: [finding("A", "critical", 1)],
+    });
     const cmp = await compareRuns(base, revised, { confirmPairing: true });
     expect(cmp.family_mismatch).toBe(true);
     expect(cmp.delta.unchanged).toHaveLength(1);

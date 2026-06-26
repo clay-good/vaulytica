@@ -111,12 +111,13 @@ export async function ingestPdfBuffer(
       // Both `pdf.ts` and `ocr.ts` declare local structural `PdfDocument`
       // types; they're identical in shape but TS treats them as
       // unrelated nominal aliases. Cast through `unknown` to bridge.
-      const ocrText = await runOcr(pdfDoc as unknown as Parameters<typeof runOcr>[0], options.onProgress);
+      const ocrText = await runOcr(
+        pdfDoc as unknown as Parameters<typeof runOcr>[0],
+        options.onProgress,
+      );
       const tree = buildTreeFromOcrText(ocrText);
       const normalized = normalize(tree);
-      warnings.push(
-        `${layer.reason}; OCR fallback was used. Some structure may be lost.`,
-      );
+      warnings.push(`${layer.reason}; OCR fallback was used. Some structure may be lost.`);
       if (pdfDoc.numPages > MAX_OCR_PAGES) {
         warnings.push(
           `Document has ${pdfDoc.numPages} pages; OCR was bounded to the first ${MAX_OCR_PAGES}. The remaining ${pdfDoc.numPages - MAX_OCR_PAGES} page(s) were not OCR'd.`,
@@ -271,9 +272,7 @@ function buildTreeFromPages(pages: PageContent[]): DocumentTree {
         .replace(/\s+/g, " ")
         .trim();
       if (!allText) continue;
-      const maxSize = Math.max(
-        ...paraLines.flat().map((it) => Math.round(it.transform[0] ?? 0)),
-      );
+      const maxSize = Math.max(...paraLines.flat().map((it) => Math.round(it.transform[0] ?? 0)));
       const isLikelyHeading =
         maxSize >= page.medianFontSize + 2 && allText.length < 120 && paraLines.length === 1;
       if (isLikelyHeading) {

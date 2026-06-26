@@ -101,7 +101,10 @@ export const rule: Rule = {
     }
     if (blockParas.size === 0) return null;
     const block = [...blockParas.values()].sort((a, b) => a.start - b.start);
-    const blockLower = block.map((p) => p.text).join("\n").toLowerCase();
+    const blockLower = block
+      .map((p) => p.text)
+      .join("\n")
+      .toLowerCase();
 
     const present = (party: Party): boolean => {
       for (const surface of surfacesOf(party)) {
@@ -133,7 +136,11 @@ export const rule: Rule = {
       explanation:
         "Every party bound by the agreement needs a line to sign. The signature block here is party-labeled but a declared party has no line attributable to it — a closing blocker, since the agreement cannot be fully executed until each named party has a place to sign. This reconciles the parties against the signature block; it does not assert the document is or is not validly executed (a jurisdiction-specific legal judgment).",
       recommendation: `Add a signature line (By / Name / Title / Date) for ${names}, or confirm the party is intentionally a non-signatory (e.g., a named beneficiary). Reconcile every preamble party to a signature line before closing.`,
-      position: { section_id: anchor.sectionId, start: anchor.start, end: anchor.start + anchor.text.length },
+      position: {
+        section_id: anchor.sectionId,
+        start: anchor.start,
+        end: anchor.start + anchor.text.length,
+      },
       source_citations: [],
     });
   },
@@ -175,5 +182,8 @@ function escapeRegExp(s: string): string {
 
 /** Normalize a name/term for comparison: trim trailing punctuation, lowercase. */
 function normalizeName(s: string): string {
-  return s.trim().replace(/[.,;:]+$/, "").toLowerCase();
+  return s
+    .trim()
+    .replace(/[.,;:]+$/, "")
+    .toLowerCase();
 }

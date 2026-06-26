@@ -74,9 +74,7 @@ test("v3 complete-state (post-analysis) has zero axe violations", async ({ page 
 
   // Drive the page into its complete-state so the chip row, downloads,
   // <details>, and counts are all rendered.
-  const fileInput = page.locator(
-    '#dropzone input[type="file"]:not([webkitdirectory])',
-  );
+  const fileInput = page.locator('#dropzone input[type="file"]:not([webkitdirectory])');
   await fileInput.setInputFiles(BAA_FIXTURE);
   await page.locator('[data-role="docx-download"]').waitFor({
     state: "visible",

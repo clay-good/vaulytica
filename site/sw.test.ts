@@ -15,10 +15,7 @@ import vm from "node:vm";
 
 type Listener = (event: unknown) => void;
 
-function loadSw(opts: {
-  fetchImpl: typeof fetch;
-  precachedHtml?: Response;
-}): {
+function loadSw(opts: { fetchImpl: typeof fetch; precachedHtml?: Response }): {
   dispatch: (type: string, event: unknown) => void;
   caches: Map<string, Map<string, Response>>;
 } {

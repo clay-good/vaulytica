@@ -76,10 +76,7 @@ describe("v4 IP & licensing — compliant assignment fixture", () => {
 describe("v4 IP & licensing — failure cases", () => {
   it("IPL-001 fires when assignment omits parties", async () => {
     const ctx = withPb(
-      buildContext([
-        "Assignment",
-        "All rights are conveyed. Patent No. 8,000,000 transfers.",
-      ]),
+      buildContext(["Assignment", "All rights are conveyed. Patent No. 8,000,000 transfers."]),
       ASSIGN_PB,
     );
     const run = await runEngine({ rules: IP_LICENSING_RULES, ctx, source_file: SRC });

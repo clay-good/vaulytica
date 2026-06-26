@@ -6,7 +6,7 @@ describe("extractAmounts", () => {
   it("normalizes $1,500,000.00, USD 1.5MM, $1.5M, and the word form to the same decimal", () => {
     const tree = buildTree([
       "Fees",
-      'The fee is $1,500,000.00 (one million five hundred thousand dollars). Equivalent: USD 1.5MM. Equivalent: $1.5M.',
+      "The fee is $1,500,000.00 (one million five hundred thousand dollars). Equivalent: USD 1.5MM. Equivalent: $1.5M.",
     ]);
     const amounts = extractAmounts(tree);
     const numericValues = amounts.filter((a) => !a.word_form).map((a) => a.amount);

@@ -78,7 +78,16 @@ function deployAssets(): Plugin {
     name: "vaulytica-deploy-assets",
     apply: "build",
     closeBundle() {
-      const sitePublic = ["sw.js", "manifest.webmanifest", "favicon.svg", "og-image.svg", "og-image.png", "icon-192.png", "icon-512.png", "icon-maskable-512.png"];
+      const sitePublic = [
+        "sw.js",
+        "manifest.webmanifest",
+        "favicon.svg",
+        "og-image.svg",
+        "og-image.png",
+        "icon-192.png",
+        "icon-512.png",
+        "icon-maskable-512.png",
+      ];
       for (const name of sitePublic) {
         const src = resolve(REPO_ROOT, "site", name);
         if (existsSync(src)) copyFileSync(src, resolve(DIST, name));
@@ -150,7 +159,10 @@ function subresourceIntegrity(): Plugin {
         /<(script|link)\b([^>]*)>/gi,
         (full, tag: string, attrs: string) => {
           if (/\sintegrity=/i.test(attrs)) return full;
-          if (tag.toLowerCase() === "link" && !/\brel=["']?(modulepreload|preload|stylesheet)\b/i.test(attrs)) {
+          if (
+            tag.toLowerCase() === "link" &&
+            !/\brel=["']?(modulepreload|preload|stylesheet)\b/i.test(attrs)
+          ) {
             return full;
           }
           const refMatch = /\b(?:src|href)\s*=\s*["']([^"']+)["']/i.exec(attrs);
@@ -398,9 +410,7 @@ export default defineConfig({
           // before the broader rules/ test.
           if (id.includes("/engine/rules/v4/")) {
             const family = id.match(/\/engine\/rules\/v4\/([^/]+)\//)?.[1];
-            return family && V4_CORP_FAMILIES.has(family)
-              ? "v4-rules-corp"
-              : "v4-rules-reg";
+            return family && V4_CORP_FAMILIES.has(family) ? "v4-rules-corp" : "v4-rules-reg";
           }
           if (id.includes("/engine/rules/")) return "rules-core";
           return undefined;

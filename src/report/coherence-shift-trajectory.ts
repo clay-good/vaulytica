@@ -158,9 +158,9 @@ export async function compareCoherenceShiftTrajectory(
   }
 
   const byDim = rounds.map((c) => new Map(c.dimensions.map((d) => [d.dimension, d])));
-  const labels = Array.from(new Set(rounds.flatMap((c) => c.dimensions.map((d) => d.dimension)))).sort(
-    (a, b) => a.localeCompare(b, "en"),
-  );
+  const labels = Array.from(
+    new Set(rounds.flatMap((c) => c.dimensions.map((d) => d.dimension))),
+  ).sort((a, b) => a.localeCompare(b, "en"));
 
   const shift_trajectory_counts = emptyShiftTrajectoryCounts();
   const net_shift_counts = emptyNetShiftCounts();
@@ -194,7 +194,13 @@ export async function compareCoherenceShiftTrajectory(
     }),
   );
 
-  return { rounds: rounds.length, fronts, shift_trajectory_counts, net_shift_counts, shift_trajectory_hash };
+  return {
+    rounds: rounds.length,
+    fronts,
+    shift_trajectory_counts,
+    net_shift_counts,
+    shift_trajectory_hash,
+  };
 }
 
 /**
@@ -257,7 +263,9 @@ const NET_MARK: Partial<Record<CoherenceShift, string>> = {
  * sequence and net direction, and the `shift_trajectory_hash`. Lives beside its
  * JSON sibling so the CLI renders the trajectory from one definition.
  */
-export function renderCoherenceShiftTrajectorySummary(trajectory: CoherenceShiftTrajectory): string {
+export function renderCoherenceShiftTrajectorySummary(
+  trajectory: CoherenceShiftTrajectory,
+): string {
   const tc = trajectory.shift_trajectory_counts;
   const nc = trajectory.net_shift_counts;
   const n = trajectory.rounds;
@@ -270,7 +278,8 @@ export function renderCoherenceShiftTrajectorySummary(trajectory: CoherenceShift
     if (f.shift_trajectory === "stable") continue;
     const path = f.coherences.map((c) => c ?? "—").join(" → ");
     const net = NET_MARK[f.net_shift] ?? f.net_shift;
-    const mark = f.shift_trajectory === "steady-fracture" || f.shift_trajectory === "oscillating" ? "⚠" : "•";
+    const mark =
+      f.shift_trajectory === "steady-fracture" || f.shift_trajectory === "oscillating" ? "⚠" : "•";
     lines.push(`  ${mark} ${f.dimension}: ${f.shift_trajectory} (${path}); net ${net}.`);
   }
   lines.push(`  shift_trajectory_hash: ${trajectory.shift_trajectory_hash}`);

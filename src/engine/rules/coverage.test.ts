@@ -93,23 +93,38 @@ describe("Financial — FIN-003 to FIN-008", () => {
 
 describe("Temporal — TEMP-002 to TEMP-010", () => {
   it("TEMP-004 fires on auto-renewal language", () => {
-    const ctx = buildContext(["Term", "This Agreement renews automatically for successive one-year terms."]);
+    const ctx = buildContext([
+      "Term",
+      "This Agreement renews automatically for successive one-year terms.",
+    ]);
     expect(TEMP_004.check(ctx)).not.toBeNull();
   });
   it("TEMP-005 fires on a 120-day notice window", () => {
-    const ctx = buildContext(["Term", "Auto-renewal applies unless notice of non-renewal is given 120 days prior."]);
+    const ctx = buildContext([
+      "Term",
+      "Auto-renewal applies unless notice of non-renewal is given 120 days prior.",
+    ]);
     expect(TEMP_005.check(ctx)).not.toBeNull();
   });
   it("TEMP-006 fires when survival is stated", () => {
-    const ctx = buildContext(["Survival", "Confidentiality survives termination of this Agreement."]);
+    const ctx = buildContext([
+      "Survival",
+      "Confidentiality survives termination of this Agreement.",
+    ]);
     expect(TEMP_006.check(ctx)).not.toBeNull();
   });
   it("TEMP-008 fires on a stated cure period", () => {
-    const ctx = buildContext(["Breach", "The breaching party shall have a cure period of 30 days."]);
+    const ctx = buildContext([
+      "Breach",
+      "The breaching party shall have a cure period of 30 days.",
+    ]);
     expect(TEMP_008.check(ctx)).not.toBeNull();
   });
   it("TEMP-009 fires on a 5-day cure period", () => {
-    const ctx = buildContext(["Breach", "The breaching party shall have an opportunity to cure within 5 days."]);
+    const ctx = buildContext([
+      "Breach",
+      "The breaching party shall have an opportunity to cure within 5 days.",
+    ]);
     expect(TEMP_009.check(ctx)).not.toBeNull();
   });
 });
@@ -151,7 +166,10 @@ describe("Risk — RISK-001, 005, 006, 007, 011, 013", () => {
     expect(RISK_006.check(ctx)).not.toBeNull();
   });
   it("RISK-007 fires on consequential damages waiver", () => {
-    const ctx = buildContext(["Damages", "Neither party shall be liable for consequential, special, incidental, or punitive damages."]);
+    const ctx = buildContext([
+      "Damages",
+      "Neither party shall be liable for consequential, special, incidental, or punitive damages.",
+    ]);
     expect(RISK_007.check(ctx)).not.toBeNull();
   });
   it("RISK-011 flags incomplete indemnity procedure", () => {
@@ -172,18 +190,27 @@ describe("Choice & venue — CHOICE-001, 003, 006, 008", () => {
     expect(CHOICE_003.check(buildContext(["H", "Body."]))).not.toBeNull();
   });
   it("CHOICE-006 fires when arbitration appears", () => {
-    const ctx = buildContext(["Disputes", "All disputes shall be resolved by binding arbitration."]);
+    const ctx = buildContext([
+      "Disputes",
+      "All disputes shall be resolved by binding arbitration.",
+    ]);
     expect(CHOICE_006.check(ctx)).not.toBeNull();
   });
   it("CHOICE-008 fires on a jury trial waiver", () => {
-    const ctx = buildContext(["Disputes", "Each party hereby waives the right to a trial by jury."]);
+    const ctx = buildContext([
+      "Disputes",
+      "Each party hereby waives the right to a trial by jury.",
+    ]);
     expect(CHOICE_008.check(ctx)).not.toBeNull();
   });
 });
 
 describe("Termination — TERM-001, 002, 005, 006", () => {
   it("TERM-001 fires on convenience + days", () => {
-    const ctx = buildContext(["Termination", "Either party may terminate for convenience upon 30 days' notice."]);
+    const ctx = buildContext([
+      "Termination",
+      "Either party may terminate for convenience upon 30 days' notice.",
+    ]);
     expect(TERM_001.check(ctx)).not.toBeNull();
   });
   it("TERM-002 fires when no for-cause termination", () => {
@@ -193,7 +220,10 @@ describe("Termination — TERM-001, 002, 005, 006", () => {
     expect(TERM_005.check(buildContext(["H", "Body."]))).not.toBeNull();
   });
   it("TERM-006 fires on wind-down language", () => {
-    const ctx = buildContext(["Termination", "Provider shall provide transition services for 30 days."]);
+    const ctx = buildContext([
+      "Termination",
+      "Provider shall provide transition services for 30 days.",
+    ]);
     expect(TERM_006.check(ctx)).not.toBeNull();
   });
 });
@@ -210,7 +240,10 @@ describe("IP & data — IPDATA-001, 003, 006", () => {
     expect(IPDATA_003.check(ctx)).not.toBeNull();
   });
   it("IPDATA-006 fires on source-code escrow", () => {
-    const ctx = buildContext(["Escrow", "The parties shall enter into a source code escrow agreement."]);
+    const ctx = buildContext([
+      "Escrow",
+      "The parties shall enter into a source code escrow agreement.",
+    ]);
     expect(IPDATA_006.check(ctx)).not.toBeNull();
   });
 });
@@ -221,7 +254,10 @@ describe("Personnel — PERS-001, PERS-002", () => {
     expect(PERS_001.check(ctx)).not.toBeNull();
   });
   it("PERS-002 fires on a non-solicit", () => {
-    const ctx = buildContext(["Restrictions", "Each party agrees to a non-solicitation of the other's employees."]);
+    const ctx = buildContext([
+      "Restrictions",
+      "Each party agrees to a non-solicitation of the other's employees.",
+    ]);
     expect(PERS_002.check(ctx)).not.toBeNull();
   });
 });

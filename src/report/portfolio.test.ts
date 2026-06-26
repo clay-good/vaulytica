@@ -47,23 +47,37 @@ describe("portfolio risk matrix (spec-v6 Part V)", () => {
 
   it("liability-cap cell: uncapped → risk, missing → risk, present → ok, not run → na", () => {
     const i = checkIndex("liability_cap");
-    expect(buildPortfolioMatrix([doc("u", { "RISK-009": true })]).rows[0]!.cells[i]!.status).toBe("risk");
-    expect(buildPortfolioMatrix([doc("m", { "RISK-005": true })]).rows[0]!.cells[i]!.status).toBe("risk");
-    expect(buildPortfolioMatrix([doc("c", { "RISK-005": false })]).rows[0]!.cells[i]!.status).toBe("ok");
+    expect(buildPortfolioMatrix([doc("u", { "RISK-009": true })]).rows[0]!.cells[i]!.status).toBe(
+      "risk",
+    );
+    expect(buildPortfolioMatrix([doc("m", { "RISK-005": true })]).rows[0]!.cells[i]!.status).toBe(
+      "risk",
+    );
+    expect(buildPortfolioMatrix([doc("c", { "RISK-005": false })]).rows[0]!.cells[i]!.status).toBe(
+      "ok",
+    );
     expect(buildPortfolioMatrix([doc("n", {})]).rows[0]!.cells[i]!.status).toBe("na");
   });
 
   it("auto-renewal cell flags presence", () => {
     const i = checkIndex("auto_renew");
-    expect(buildPortfolioMatrix([doc("y", { "TEMP-004": true })]).rows[0]!.cells[i]!.status).toBe("flag");
-    expect(buildPortfolioMatrix([doc("n", { "TEMP-004": false })]).rows[0]!.cells[i]!.status).toBe("ok");
+    expect(buildPortfolioMatrix([doc("y", { "TEMP-004": true })]).rows[0]!.cells[i]!.status).toBe(
+      "flag",
+    );
+    expect(buildPortfolioMatrix([doc("n", { "TEMP-004": false })]).rows[0]!.cells[i]!.status).toBe(
+      "ok",
+    );
     expect(buildPortfolioMatrix([doc("z", {})]).rows[0]!.cells[i]!.status).toBe("na");
   });
 
   it("breach-notice cell reflects the DPA-024 outcome", () => {
     const i = checkIndex("breach_notice");
-    expect(buildPortfolioMatrix([doc("g", { "DPA-024": true })]).rows[0]!.cells[i]!.status).toBe("risk");
-    expect(buildPortfolioMatrix([doc("p", { "DPA-024": false })]).rows[0]!.cells[i]!.status).toBe("ok");
+    expect(buildPortfolioMatrix([doc("g", { "DPA-024": true })]).rows[0]!.cells[i]!.status).toBe(
+      "risk",
+    );
+    expect(buildPortfolioMatrix([doc("p", { "DPA-024": false })]).rows[0]!.cells[i]!.status).toBe(
+      "ok",
+    );
     expect(buildPortfolioMatrix([doc("na", {})]).rows[0]!.cells[i]!.status).toBe("na");
   });
 
@@ -138,7 +152,11 @@ describe("portfolio executive summary (spec-v7 §17)", () => {
   it("rolls up severity counts across the bundle and digests each document", async () => {
     const { buildPortfolioExecutiveSummary } = await import("./portfolio.js");
     const docs: PortfolioInputDocument[] = [
-      { doc_id: "msa", source_file_name: "msa.txt", run: runWithFindings(["critical", "warning", "info"]) },
+      {
+        doc_id: "msa",
+        source_file_name: "msa.txt",
+        run: runWithFindings(["critical", "warning", "info"]),
+      },
       { doc_id: "dpa", source_file_name: "dpa.txt", run: runWithFindings(["info"]) },
     ];
     const summary = buildPortfolioExecutiveSummary(docs);

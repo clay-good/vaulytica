@@ -1071,9 +1071,6 @@ describe("v4 fixture sanity — coverage gate", () => {
       readdirSync(FIXTURES).filter((n) => n.endsWith(".txt.playbook")),
     );
     const missing = txtFixtures.filter((n) => !sidecarPresent.has(`${n}.playbook`));
-    expect(
-      missing,
-      `add a .playbook sidecar next to: ${missing.join(", ")}`,
-    ).toEqual([]);
+    expect(missing, `add a .playbook sidecar next to: ${missing.join(", ")}`).toEqual([]);
   });
 });

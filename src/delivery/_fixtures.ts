@@ -28,8 +28,7 @@ const DOC_RELS = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationship Id="rIdC" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" Target="comments.xml"/>
 </Relationships>`;
 
-const W_NS =
-  'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"';
+const W_NS = 'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"';
 const CP_NS =
   'xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/"';
 
@@ -52,7 +51,10 @@ export function buildDocx(parts: DocxParts): ArrayBuffer {
   if (parts.core !== undefined) files["docProps/core.xml"] = strToU8(parts.core);
   if (parts.app !== undefined) files["docProps/app.xml"] = strToU8(parts.app);
   const zipped = zipSync(files);
-  return zipped.buffer.slice(zipped.byteOffset, zipped.byteOffset + zipped.byteLength) as ArrayBuffer;
+  return zipped.buffer.slice(
+    zipped.byteOffset,
+    zipped.byteOffset + zipped.byteLength,
+  ) as ArrayBuffer;
 }
 
 /** A clean document body wrapping the given inner run XML. */
@@ -91,7 +93,9 @@ export function metadataLeakDocx(): ArrayBuffer {
 
 /** A "DOCX" whose document.xml is truncated mid-element. */
 export function truncatedDocx(): ArrayBuffer {
-  return buildDocx({ document: `<?xml version="1.0"?><w:document ${W_NS}><w:body><w:p><w:ins w:author="X"` });
+  return buildDocx({
+    document: `<?xml version="1.0"?><w:document ${W_NS}><w:body><w:p><w:ins w:author="X"`,
+  });
 }
 
 /** A DOCX with a comments part but a malformed comments.xml. */

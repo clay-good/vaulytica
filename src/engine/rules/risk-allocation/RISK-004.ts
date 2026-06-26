@@ -8,7 +8,8 @@ export const rule: Rule = {
   name: "Indemnity vs. LoL cap interaction",
   category: "risk-allocation",
   default_severity: "warning",
-  description: "Flags when an indemnity is carved out of the liability cap, creating uncapped exposure.",
+  description:
+    "Flags when an indemnity is carved out of the liability cap, creating uncapped exposure.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
     const carveOut = firstParagraphMatch(
@@ -18,7 +19,8 @@ export const rule: Rule = {
     if (!carveOut) return null;
     return emit(ctx, rule, {
       title: "Indemnity carved out of the liability cap",
-      description: "The limitation-of-liability clause appears to except indemnification, potentially creating uncapped indemnity exposure.",
+      description:
+        "The limitation-of-liability clause appears to except indemnification, potentially creating uncapped indemnity exposure.",
       excerpt: carveOut.text.slice(0, 320),
       explanation:
         "When indemnity is carved out of the LoL cap, the indemnifying party may face uncapped exposure on third-party claims. Verify a separate indemnity-specific cap exists, or that the carve-out is intended.",
