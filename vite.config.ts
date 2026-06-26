@@ -16,6 +16,23 @@ const REPO_ROOT = resolve(__dirname);
 const DIST = resolve(REPO_ROOT, "dist");
 
 /**
+ * v4 sub-domain rule families bundled into the `v4-rules-corp` chunk
+ * (corporate / finance). Every other v4 family — and any new one — lands
+ * in `v4-rules-reg` (regulatory / sector). The split is purely a
+ * cache-granularity / chunk-size boundary (see docs/bundle-splitting.md);
+ * it has no effect on which rules run. Keep the two buckets roughly
+ * balanced so neither crosses Vite's 600 KB warning threshold.
+ */
+const V4_CORP_FAMILIES = new Set([
+  "m-and-a",
+  "governance",
+  "equity",
+  "trust-estate",
+  "banking",
+  "ip-licensing",
+]);
+
+/**
  * Dev middleware that serves directories that live outside the Vite
  * root (`site/`) as virtual public paths. Production builds copy the
  * same content into `dist/` via {@link deployAssets}.
@@ -362,6 +379,30 @@ export default defineConfig({
           if (id.includes("node_modules/tesseract.js")) return "vendor-tesseract";
           if (id.includes("node_modules/decimal.js")) return "vendor-decimal";
           if (id.includes("node_modules/zod")) return "vendor-zod";
+          // App-code rule-catalog split (see docs/bundle-splitting.md).
+          // The rule catalog is ~40% of the analysis code and changes far
+          // more often than the engine core / report builder, so peeling it
+          // into its own immutable chunks means a rule-only commit no longer
+          // re-downloads the whole pipeline for returning users. It also
+          // brings every chunk under Vite's 600 KB warning threshold. This
+          // is a code-split only: the engine still imports every rule
+          // synchronously, so these chunks load together with `pipeline-*`
+          // behind the file-drop gesture — same bytes, off the first-paint
+          // path, byte-identical engine behavior. The 15 v4 sub-domain
+          // families (the larger, faster-moving half) split apart from the
+          // launch/compliance rule set so a v4-family edit and a core-rule
+          // edit invalidate independently. The v4 set is split again into
+          // two thematic buckets (corporate/finance vs regulatory/sector) so
+          // no single chunk crosses 600 KB; a new v4 family joins the
+          // regulatory bucket by default. Order matters: the v4 test runs
+          // before the broader rules/ test.
+          if (id.includes("/engine/rules/v4/")) {
+            const family = id.match(/\/engine\/rules\/v4\/([^/]+)\//)?.[1];
+            return family && V4_CORP_FAMILIES.has(family)
+              ? "v4-rules-corp"
+              : "v4-rules-reg";
+          }
+          if (id.includes("/engine/rules/")) return "rules-core";
           return undefined;
         },
       },
