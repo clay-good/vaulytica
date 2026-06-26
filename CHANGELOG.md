@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Security
+- **Bumped the transitive `ws` dependency 8.20.1 → 8.21.0 to clear GHSA-96hv-2xvq-fx4p** (a
+  WebSocket memory-exhaustion DoS, high severity). `ws` is pulled in only by `happy-dom`, the
+  vitest test environment — it is a dev/test-only dependency and never reaches the shipped
+  browser bundle, so production was never exposed. `npm audit` is now clean (0 vulnerabilities).
+  The same `npm install` re-synced the `package-lock.json` root version field, which had drifted
+  to `9.4.0`, back to the `package.json` version (`9.41.0`).
+
 ## [9.41.0] — 2026-06-24 — Document-free exposure matrix / the per-front × per-round floor-state grid every other axis collapses (spec-v44)
 
 ### Added
