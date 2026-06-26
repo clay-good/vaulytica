@@ -1,0 +1,33 @@
+# Prettier scope guard.
+#
+# Prettier only auto-ignores node_modules — it does NOT read .gitignore —
+# so without this file `npm run format` (`prettier --write .`) reaches into
+# build output and, more dangerously, the tracked *generated* artifacts
+# below. The DKB dist files are content-hashed (the determinism contract);
+# reformatting their JSON would silently break the manifest hash / SRI.
+# Keep this list to genuinely generated or data files — hand-authored
+# source under src/, tests/, tools/, docs/ stays in scope.
+
+# Dependencies
+node_modules/
+
+# Build / tool output (also gitignored, but prettier scans them anyway)
+dist/
+coverage/
+reports/
+test-results/
+playwright-report/
+.lighthouseci/
+
+# Generated, content-hashed Deterministic Knowledge Base artifacts
+dkb/dist/
+
+# Data corpus (fixtures / golden data, not prose to reflow)
+corpus/
+
+# Generated / append-only logs — large and not meant to be reflowed
+CHANGELOG.md
+BUILD_PROGRESS.md
+
+# Lockfile
+package-lock.json
