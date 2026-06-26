@@ -60,6 +60,7 @@
     "cli": "tsx tools/cli/run.ts",
     "analyze": "tsx tools/cli/run.ts",
     "fixtures": "tsx tests/fixtures/build-fixtures.ts",
+    "e2e:samples": "tsx tests/e2e/sample-docs/build-sample-docs.ts",
     "fixtures:baa": "tsx tests/fixtures/build-baa-fixture.ts",
     "fixtures:regen-golden": "VAULYTICA_REGEN_GOLDEN=1 vitest run tests/integration/golden-output.test.ts",
     "mutation": "stryker run",
