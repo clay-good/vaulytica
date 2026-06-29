@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Fixed
+- **Corrected the stale per-category rule-count comments in the launch registry.**
+  The section comments in `src/engine/rules/index.ts` (e.g. `// Personnel — 4`,
+  `// Risk allocation — 14`) had never been updated as rules were added, while the
+  arrays themselves shipped the current counts (Personnel 9, Risk 17, …). They summed
+  to 87 against the 115 rules actually exported. The comments now read the true
+  per-category counts (Structural 19, Financial 9, Temporal 12, Obligations 9,
+  Risk 17, Choice & venue 12, Termination 9, IP & data 10, Personnel 9, Dark 9 = 115),
+  matching the breakdown the README publishes. No runtime behavior changed.
+- **Added a regression guard so the per-category breakdown cannot silently drift again.**
+  `src/engine/rules/all-rules.test.ts` now pins each category's rule count (by id prefix)
+  to the documented numbers and asserts they sum to `LAUNCH_RULES.length` — the same
+  integrity-guard discipline as the docs-link, scoreboard, and case-sensitivity tests.
+  This is exactly the check whose absence let the comments drift unnoticed.
 - **Regenerated the accuracy scoreboard, which had drifted to a stale catalog count.**
   `tools/accuracy/scoreboard.json` and `SCOREBOARD.md` (the spec-v5 §10 published trust
   artifact) still reported `1062 rules`; the live engine ships `1065`. `npm run accuracy`

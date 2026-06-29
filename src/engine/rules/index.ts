@@ -169,7 +169,7 @@ export const LAUNCH_RULES: readonly Rule[] = [
   STRUCT_017,
   STRUCT_018,
   STRUCT_019,
-  // Financial — 8
+  // Financial — 9
   FIN_001,
   FIN_002,
   FIN_003,
@@ -179,7 +179,7 @@ export const LAUNCH_RULES: readonly Rule[] = [
   FIN_007,
   FIN_008,
   FIN_009,
-  // Temporal — 10
+  // Temporal — 12
   TEMP_001,
   TEMP_002,
   TEMP_003,
@@ -192,7 +192,7 @@ export const LAUNCH_RULES: readonly Rule[] = [
   TEMP_010,
   TEMP_011,
   TEMP_012,
-  // Obligations — 6
+  // Obligations — 9
   OBLI_001,
   OBLI_002,
   OBLI_003,
@@ -202,7 +202,7 @@ export const LAUNCH_RULES: readonly Rule[] = [
   OBLI_007,
   OBLI_008,
   OBLI_009,
-  // Risk allocation — 14
+  // Risk allocation — 17
   RISK_001,
   RISK_002,
   RISK_003,
@@ -220,7 +220,7 @@ export const LAUNCH_RULES: readonly Rule[] = [
   RISK_015,
   RISK_016,
   RISK_017,
-  // Choice & venue — 8
+  // Choice & venue — 12
   CHOICE_001,
   CHOICE_002,
   CHOICE_003,
@@ -233,7 +233,7 @@ export const LAUNCH_RULES: readonly Rule[] = [
   CHOICE_010,
   CHOICE_011,
   CHOICE_012,
-  // Termination — 8
+  // Termination — 9
   TERM_001,
   TERM_002,
   TERM_003,
@@ -243,7 +243,7 @@ export const LAUNCH_RULES: readonly Rule[] = [
   TERM_007,
   TERM_008,
   TERM_009,
-  // IP & data — 6
+  // IP & data — 10
   IPDATA_001,
   IPDATA_002,
   IPDATA_003,
@@ -254,7 +254,7 @@ export const LAUNCH_RULES: readonly Rule[] = [
   IPDATA_008,
   IPDATA_009,
   IPDATA_010,
-  // Personnel — 4
+  // Personnel — 9
   PERS_001,
   PERS_002,
   PERS_003,
@@ -264,7 +264,7 @@ export const LAUNCH_RULES: readonly Rule[] = [
   PERS_007,
   PERS_008,
   PERS_009,
-  // Dark patterns — 4
+  // Dark patterns — 9
   DARK_001,
   DARK_002,
   DARK_003,

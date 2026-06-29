@@ -26,6 +26,33 @@ describe("Launch rule registry", () => {
     const prefix = /^(STRUCT|FIN|TEMP|OBLI|RISK|CHOICE|TERM|IPDATA|PERS|DARK)-\d{3}$/;
     for (const r of LAUNCH_RULES) expect(r.id, r.id).toMatch(prefix);
   });
+
+  // Pins the per-category breakdown the README publishes and the inline
+  // section comments in index.ts annotate. Without this guard the comments
+  // silently drift as rules are added (they had: e.g. "Personnel — 4" while
+  // PERS-001..009 shipped). The counts must sum to LAUNCH_RULES.length.
+  it("matches the documented per-category rule counts", () => {
+    const expected: Record<string, number> = {
+      STRUCT: 19,
+      FIN: 9,
+      TEMP: 12,
+      OBLI: 9,
+      RISK: 17,
+      CHOICE: 12,
+      TERM: 9,
+      IPDATA: 10,
+      PERS: 9,
+      DARK: 9,
+    };
+    const actual: Record<string, number> = {};
+    for (const r of LAUNCH_RULES) {
+      const prefix = r.id.slice(0, r.id.indexOf("-"));
+      actual[prefix] = (actual[prefix] ?? 0) + 1;
+    }
+    expect(actual).toEqual(expected);
+    const sum = Object.values(expected).reduce((a, b) => a + b, 0);
+    expect(sum).toBe(LAUNCH_RULES.length);
+  });
 });
 
 describe("Engine + all 115 rules", () => {
