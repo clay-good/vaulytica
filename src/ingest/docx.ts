@@ -23,7 +23,7 @@ import { assertDocumentBytes } from "./limits.js";
  */
 
 type MammothLike = {
-  convertToHtml: (input: { arrayBuffer: ArrayBuffer }) => Promise<{
+  convertToHtml: (input: { arrayBuffer: ArrayBuffer; buffer?: Uint8Array }) => Promise<{
     value: string;
     messages: Array<{ type: string; message: string }>;
   }>;
@@ -45,7 +45,15 @@ export async function ingestDocxBuffer(buf: ArrayBuffer): Promise<IngestResult> 
   assertDocumentBytes(buf.byteLength); // spec-v8 §7 — reject before parsing
   const warnings: string[] = [];
   const mammoth = await loadMammoth();
-  const result = await mammoth.convertToHtml({ arrayBuffer: buf });
+  // mammoth resolves to two builds: the browser build's `openZip` reads
+  // `arrayBuffer`, but the Node build (lib/unzip.js, used by the headless
+  // `vaulytica analyze` CLI) reads only `path`/`buffer`/`file` and rejects a
+  // bare `arrayBuffer` with "Could not find file in options". Supply a Node
+  // `Buffer` when the runtime has one (it shares memory with `buf`, no copy);
+  // the browser build has no `Buffer` and reads `arrayBuffer` as before.
+  const input: { arrayBuffer: ArrayBuffer; buffer?: Uint8Array } = { arrayBuffer: buf };
+  if (typeof Buffer !== "undefined") input.buffer = Buffer.from(buf);
+  const result = await mammoth.convertToHtml(input);
   for (const m of result.messages) {
     if (m.type === "warning" || m.type === "error") {
       warnings.push(`mammoth: ${m.message}`);

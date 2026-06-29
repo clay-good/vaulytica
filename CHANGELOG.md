@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Fixed
+- **The headless CLI can now actually analyze DOCX files — `vaulytica analyze contract.docx`
+  was broken end-to-end in Node.** Two Node-only failures, both masked because the test suite
+  runs under happy-dom (browser-build mammoth + a built-in `DOMParser`) while no test ever
+  exercised the real CLI path in plain Node: (1) mammoth resolves to its Node build, whose
+  `openZip` accepts only `path`/`buffer`/`file` and rejected the `{ arrayBuffer }` we passed
+  with "Could not find file in options"; the DOCX ingest now also supplies a Node `Buffer`
+  when the runtime has one (the browser build still reads `arrayBuffer`). (2) `parseDocxHtml`
+  needs a `DOMParser`, which Node lacks; the CLI now lazily registers happy-dom's
+  window-bound `DOMParser` the first time a binary document is ingested — the same DOM engine
+  the suite validates DOCX parsing against, so the headless run stays byte-identical to the
+  browser. `happy-dom` moved from dev to runtime dependencies for this. A new
+  `tools/cli/api-docx-node.test.ts` (`@vitest-environment node`) pins the whole path so it
+  cannot silently regress.
+- **`vaulytica verify` now works for DOCX/PDF reports, not just text.** The verifier read the
+  original document as UTF-8 text and re-hashed it, so a binary input always reported a
+  spurious "the input document differs" and never reproduced. A new
+  `verifyReproducibilityFromFile` re-ingests the original by extension through `analyzeFile`
+  (binary bytes for DOCX/PDF, UTF-8 for paste), matching how the report was produced; the
+  text-based `verifyReproducibility` is retained for in-memory callers.
 - **Corrected the stale per-category rule-count comments in the launch registry.**
   The section comments in `src/engine/rules/index.ts` (e.g. `// Personnel — 4`,
   `// Risk allocation — 14`) had never been updated as rules were added, while the

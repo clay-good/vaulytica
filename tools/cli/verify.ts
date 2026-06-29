@@ -18,7 +18,7 @@
 import { readFile } from "node:fs/promises";
 
 import { sha256Hex } from "../../src/ingest/hash.js";
-import { analyzeText, loadAccuracyDeps, type AnalyzeResult } from "./api.js";
+import { analyzeText, analyzeFile, loadAccuracyDeps, type AnalyzeResult } from "./api.js";
 import type { AccuracyDeps } from "../accuracy/pipeline.js";
 
 /** The fields of a saved JSON report the verifier needs. */
@@ -64,8 +64,36 @@ export async function verifyReproducibility(
     deps,
     playbookId: saved.run.playbook_id,
   });
+  return assembleReproResult(saved, re, await sha256Hex(originalText), deps.dkb.manifest.version);
+}
 
-  const actualInputSha = await sha256Hex(originalText);
+/**
+ * Re-derive the run from the original document *on disk*, re-ingesting it by
+ * extension exactly as `analyze` did. This is the verifier the CLI uses: a
+ * DOCX or PDF report's input is binary, so re-reading it as UTF-8 text (the
+ * {@link verifyReproducibility} path) would re-hash garbled bytes and always
+ * report a spurious input divergence. Routing through {@link analyzeFile}
+ * makes the receipt checkable for every input format the linter accepts.
+ */
+export async function verifyReproducibilityFromFile(
+  saved: SavedReport,
+  path: string,
+  opts: { deps?: AccuracyDeps } = {},
+): Promise<ReproResult> {
+  const deps = opts.deps ?? (await loadAccuracyDeps());
+  const re = await analyzeFile(path, { deps, playbookId: saved.run.playbook_id });
+  // The recorded `source_file.sha256` is the ingest hash (binary bytes for
+  // DOCX/PDF, the UTF-8 text for paste); `re.ingest.sha256` is its mirror.
+  return assembleReproResult(saved, re, re.ingest.sha256, deps.dkb.manifest.version);
+}
+
+/** Assemble the divergence list + receipt from a re-derived run. */
+function assembleReproResult(
+  saved: SavedReport,
+  re: AnalyzeResult,
+  actualInputSha: string,
+  actualDkb: string,
+): ReproResult {
   const divergences: ReproResult["divergences"] = [];
 
   // Input integrity: does the document we were handed match the one the
@@ -85,7 +113,6 @@ export async function verifyReproducibility(
   }
 
   // DKB version drift.
-  const actualDkb = deps.dkb.manifest.version;
   if (saved.run.dkb_version !== actualDkb) {
     divergences.push({ kind: "dkb", expected: saved.run.dkb_version, actual: actualDkb });
   }
@@ -144,8 +171,7 @@ async function main(): Promise<void> {
     return;
   }
   const saved = JSON.parse(await readFile(reportPath, "utf8")) as SavedReport;
-  const original = await readFile(originalPath, "utf8");
-  const result = await verifyReproducibility(saved, original);
+  const result = await verifyReproducibilityFromFile(saved, originalPath);
   process.stdout.write(explainReproResult(result) + "\n");
   if (!result.reproduced) process.exitCode = 3;
 }

@@ -97,10 +97,32 @@ function toArrayBuffer(bytes: Buffer): ArrayBuffer {
   return ab;
 }
 
+/**
+ * The DOCX ingest path parses mammoth's HTML output with `DOMParser`, which
+ * the browser provides natively but Node does not. Register happy-dom's
+ * `DOMParser` — the same DOM engine the test suite validates DOCX parsing
+ * against, so the headless CLI stays byte-identical to the browser run — the
+ * first time a binary document needs it. Lazy and Node-only: this file lives
+ * under `tools/cli` and is never imported by `src/` (asserted by
+ * `accuracy-corpus-guard.test.ts`), so happy-dom never reaches the web bundle.
+ */
+async function ensureDomParser(): Promise<void> {
+  const g = globalThis as { DOMParser?: unknown };
+  if (typeof g.DOMParser !== "undefined") return;
+  // happy-dom's `DOMParser` must be bound to a `Window` (the bare class export
+  // dereferences its owning window for `HTMLDocument`); take the window's
+  // instance, which is wired to a real document context.
+  const { Window } = await import("happy-dom");
+  g.DOMParser = new Window().DOMParser;
+}
+
 async function ingestByExtension(path: string, bytes: Buffer): Promise<IngestResult> {
   const ext = extname(path).toLowerCase();
   if (TEXT_EXT.has(ext)) return ingestPaste(bytes.toString("utf8"));
-  if (ext === ".docx") return ingestDocxBuffer(toArrayBuffer(bytes));
+  if (ext === ".docx") {
+    await ensureDomParser();
+    return ingestDocxBuffer(toArrayBuffer(bytes));
+  }
   if (ext === ".pdf") return ingestPdfBuffer(toArrayBuffer(bytes));
   // Unknown extension: treat as UTF-8 text (the most forgiving default; a
   // truly binary blob produces an empty/garbled tree, never a crash —

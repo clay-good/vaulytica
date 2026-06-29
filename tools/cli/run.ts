@@ -170,7 +170,7 @@ import { runCoherenceDurability } from "./coherence-durability.js";
 import { runCoherenceChain } from "./coherence-chain.js";
 import { runCoherenceRecoveryChain } from "./coherence-recovery-chain.js";
 import { runCoherenceMatrix } from "./coherence-matrix.js";
-import { verifyReproducibility, explainReproResult, type SavedReport } from "./verify.js";
+import { verifyReproducibilityFromFile, explainReproResult, type SavedReport } from "./verify.js";
 import type { Severity } from "../../src/engine/index.js";
 import { buildJsonReport } from "../../src/report/json.js";
 import { buildSarifJson } from "../../src/report/sarif.js";
@@ -727,9 +727,8 @@ async function runVerify(argv: string[]): Promise<void> {
     throw new Error("usage: verify <report.json> <original> [--playbook <id>]");
   }
   const saved = JSON.parse(await readFile(reportPath, "utf8")) as SavedReport;
-  const original = await readFile(originalPath, "utf8");
   if (playbookId) saved.run.playbook_id = playbookId;
-  const result = await verifyReproducibility(saved, original);
+  const result = await verifyReproducibilityFromFile(saved, originalPath);
   process.stdout.write(explainReproResult(result) + "\n");
   if (!result.reproduced) process.exitCode = 3;
 }
