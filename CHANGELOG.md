@@ -37,6 +37,17 @@ All notable changes to this project will be documented in this file. Format adap
   to the documented numbers and asserts they sum to `LAUNCH_RULES.length` — the same
   integrity-guard discipline as the docs-link, scoreboard, and case-sensitivity tests.
   This is exactly the check whose absence let the comments drift unnoticed.
+- **Corrected the stale launch rule count on the public landing page.** `site/index.html`
+  still advertised "112 rules at launch" — the pre-v9 count — while the always-on launch
+  set has been 115 since v9 added its three execution-readiness reconciliations
+  (`LAUNCH_RULES.length === 115`, test-pinned). The "What I check" copy now reads 115, so
+  the per-tier breakdown sums to the 1,065-rule catalog the scoreboard reports
+  (115 launch + 220 v3 + 730 v4). The DKB-/version-independent "1,000+" claims were already
+  correct and are unchanged.
+- **Refreshed two stale present-tense counts in `tests/integration/rule-completeness.test.ts`
+  doc comments** — "1,062 rules" → 1,065 (current catalog) and "the 112 rules that run on
+  every document" → 115 (current launch set). The dated 2026-06-05 baseline narrative is
+  left as the point-in-time record it documents. Comments only; no assertion or floor changed.
 - **Regenerated the accuracy scoreboard, which had drifted to a stale catalog count.**
   `tools/accuracy/scoreboard.json` and `SCOREBOARD.md` (the spec-v5 §10 published trust
   artifact) still reported `1062 rules`; the live engine ships `1065`. `npm run accuracy`

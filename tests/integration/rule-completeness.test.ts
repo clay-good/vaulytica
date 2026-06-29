@@ -7,13 +7,13 @@ import { listFixtures, runFixture } from "./_pipeline-helpers.js";
 /**
  * spec-v7 Part IX (Step 117) — per-rule completeness.
  *
- * With 1,062 rules, "the suite is green" says nothing about whether each rule
+ * With 1,065 rules, "the suite is green" says nothing about whether each rule
  * has been seen to BOTH fire (a positive case — it can catch its defect) and
  * stay silent on a clean document (a negative case — it does not false-alarm).
  * A rule with no positive is untested for false negatives; one with no clean
  * negative is untested for false positives.
  *
- * This meta-test enumerates the always-on launch set (the 112 rules that run on
+ * This meta-test enumerates the always-on launch set (the 115 rules that run on
  * every document, regardless of family) and measures, across the golden corpus,
  * how many have a positive case, a negative case, and both. It is a
  * regression-only gate, set just under the first measured value (the same
