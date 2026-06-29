@@ -48,6 +48,9 @@ All notable changes to this project will be documented in this file. Format adap
   doc comments** — "1,062 rules" → 1,065 (current catalog) and "the 112 rules that run on
   every document" → 115 (current launch set). The dated 2026-06-05 baseline narrative is
   left as the point-in-time record it documents. Comments only; no assertion or floor changed.
+- **Corrected a stale test count in the README "Build & verify" block.** The `npm run test`
+  comment still read "3,051 tests" while the suite — and the header badge — report 3,616.
+  The badge was already current; only the inline command comment had drifted.
 - **Regenerated the accuracy scoreboard, which had drifted to a stale catalog count.**
   `tools/accuracy/scoreboard.json` and `SCOREBOARD.md` (the spec-v5 §10 published trust
   artifact) still reported `1062 rules`; the live engine ships `1065`. `npm run accuracy`
