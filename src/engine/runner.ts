@@ -13,14 +13,20 @@ import type { ConsistencyDocument, ConsistencyRule, ConsistencyRun } from "./con
 import { runConsistency } from "./consistency/runner.js";
 import { CONSISTENCY_RULES } from "./consistency/rules/index.js";
 import type { DKB } from "../dkb/types.js";
+import { version as PACKAGE_VERSION } from "../../package.json";
 
 /**
  * Engine version. Embedded in every EngineRun and contributes to the
- * determinism contract. Bumped by hand when the engine semantics change
- * (rule ordering, hash composition, etc.). Independent of the
- * package.json version.
+ * determinism contract. Derived from the released package version
+ * (fix-engine-version-provenance): the stamp was frozen at "0.1.0" across
+ * ~40 behavior-changing releases, which made "same version → same report"
+ * unfalsifiable — two reports carrying identical provenance could
+ * legitimately differ. Tying it to the release means any published change
+ * to engine behavior necessarily changes the stamped provenance (and,
+ * because the stamp is inside the hashed run, the `result_hash`). A guard
+ * test pins `ENGINE_VERSION === package.json version`.
  */
-export const ENGINE_VERSION = "0.1.0";
+export const ENGINE_VERSION: string = PACKAGE_VERSION;
 
 /**
  * Rule-taxonomy version: the vocabulary of rule categories/families the

@@ -1,8 +1,8 @@
 # Tasks
 
-- [ ] 1. Introduce a build-safe single source for the version (generated `src/engine/version.ts` from `package.json` via a prebuild step, or vite `define` + Node fallback — pick the one that keeps the browser bundle static and the CLI dependency-free).
-- [ ] 2. Set `ENGINE_VERSION` from it; delete the hardcoded literal.
-- [ ] 3. Guard test: `ENGINE_VERSION` equals `package.json` version.
-- [ ] 4. Re-baseline goldens that embed `result_hash` / `version`.
-- [ ] 5. Update README's reproducibility paragraph to state the stamp tracks the release version and changes on every release.
-- [ ] 6. Full gate green.
+- [x] 1. Introduce a build-safe single source for the version (generated `src/engine/version.ts` from `package.json` via a prebuild step, or vite `define` + Node fallback — pick the one that keeps the browser bundle static and the CLI dependency-free). *(Chose a named JSON import — `import { version } from "../../package.json"` (`resolveJsonModule` was already on): vite tree-shakes it to a static string in the browser bundle, and tsx/vitest resolve it natively, so no prebuild step, no generated file, no define plumbing.)*
+- [x] 2. Set `ENGINE_VERSION` from it; delete the hardcoded literal. *(Note: `CONSISTENCY_ENGINE_VERSION` in `src/engine/consistency/runner.ts` is also frozen at "0.1.0" — same smell, separate stamp and hash, outside this change's spec; left untouched.)*
+- [x] 3. Guard test: `ENGINE_VERSION` equals `package.json` version. *(`src/engine/engine-version.test.ts`, reading package.json via fs so the guard doesn't share the module graph it guards; also rejects the literal frozen stamp.)*
+- [x] 4. Re-baseline goldens that embed `result_hash` / `version`. *(All three golden suites regenerated: `tests/fixtures/expected` (25), `tests/golden/v3`, `tests/golden/v4` incl. bundles — ~330 files, one-time churn as documented; accuracy scoreboard restamped Engine 9.41.0.)*
+- [x] 5. Update README's reproducibility paragraph to state the stamp tracks the release version and changes on every release. *(README + `docs/determinism.md` reproduce-elsewhere steps.)*
+- [x] 6. Full gate green. *(typecheck, lint, format:check, 3,658 tests / 257 files, build; live report stamps `version: 9.41.0` in run + provenance.)*

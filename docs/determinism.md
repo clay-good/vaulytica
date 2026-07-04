@@ -58,7 +58,9 @@ Everything else, including the `playbook_match_reasoning` string and the per-rul
 Suppose you have a `Vaulytica-Report.docx`. Its cover page lists:
 
 - Input file SHA-256
-- Engine version (e.g., `0.1.0`)
+- Engine version (the released package version, e.g., `9.41.0` — the stamp
+  tracks the release, so any release that can change engine behavior changes
+  the stamped provenance; a guard test pins the two together)
 - DKB version (e.g., `v2026-05-12-a1b2c3d`)
 - Playbook (e.g., `mutual-nda v1.0.0`)
 - Result hash (in the audit trail)
@@ -66,7 +68,7 @@ Suppose you have a `Vaulytica-Report.docx`. Its cover page lists:
 To reproduce:
 
 1. Get a copy of the input file. Verify its SHA-256 matches the report's.
-2. Check out the Vaulytica tag that matches the engine version (`git checkout v0.1.0`).
+2. Check out the Vaulytica release that matches the engine version (e.g., `git checkout v9.41.0`, or the commit whose `package.json` carries that version).
 3. Download the matching DKB version from `https://vaulytica.com/dkb/<version>/` (or rebuild it locally; the DKB itself is reproducible — see [data-sources.md](data-sources.md)).
 4. Run Vaulytica against the input. The new report's `result_hash` should match the original.
 

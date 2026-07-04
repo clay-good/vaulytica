@@ -13,7 +13,7 @@
 
 import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { basename, join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
 
 import { resolveInputs, runAnalyze } from "../../tools/cli/run.js";
@@ -99,7 +99,7 @@ describe("direct file targets honor the supported-input allowlist", () => {
     cpSync(TXT_FIXTURE, join(dir, "a.txt"));
     cpSync(TXT_FIXTURE, join(dir, "b.rtf"));
     const inputs = await resolveInputs(dir);
-    expect(inputs.map((p) => p.split("/").pop())).toEqual(["a.txt"]);
+    expect(inputs.map((p) => basename(p))).toEqual(["a.txt"]);
   });
 });
 
