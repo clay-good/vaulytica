@@ -1,0 +1,8 @@
+# Tasks
+
+- [ ] 1. DKB citation grammar: reporter-abbreviation and format-pattern nodes sourced from The Indigo Book 2.0 (CC0; cite it by name — never "Bluebook", which is a live trademark), each with source URL + `retrieved_at`; build + manifest wiring; floor check counts grammar entries (per `fix-dkb-build-integrity`'s section-floor pattern).
+- [ ] 2. `src/extract/citations.ts`: parse full citations (case: volume/reporter/page/court-year; statute: title/code/section; rules), `id.`, `supra`, and case short forms, with positions; study eyecite's tokenization approach for edge cases (parallel citations, pin cites) but implement clean-room against the grammar. Property test: extractor is total (never throws) and position-stable.
+- [ ] 3. CITE-001 malformed citation; CITE-002 orphaned `id.` (scope = section boundary, footnote boundary if detectable); CITE-003 dangling `supra`/short form; CITE-005 inconsistent short forms. All gated to filing playbooks.
+- [ ] 4. CITE-004 TOA reconciliation: locate the TOA block (heading pattern), parse its entries, reconcile both directions against body citations; findings list each unmatched authority; cite FRAP 28(a)(3) (and profile-specific analogs: Cal. R. Ct. 8.204(a)(1)(A), Tex. R. App. P. 38.1(c) when those profiles are active).
+- [ ] 5. Non-goal rendering: the pack's scope statement ("formats and internal consistency checked; existence and current validity of authorities NOT checked") on every report and in the certification receipt's scope block when both features are used together.
+- [ ] 6. Fixtures: a brief with seeded defects (bad reporter, orphan id., dangling supra, TOA over/under-inclusion) and a clean brief; determinism goldens; full gate green.

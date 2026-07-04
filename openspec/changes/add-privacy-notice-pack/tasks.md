@@ -1,0 +1,9 @@
+# Tasks
+
+- [ ] 1. Regime data in DKB: per-regime enumerated content items with citation + URL + `retrieved_at` — `ccpa` (Civ. Code § 1798.130(a)(5)(A)–(C) incl. the § 1798.106 correction right; 11 CCR § 7011(e) items incl. sensitive-PI, opt-out link, last-updated date; note the 2026-01-01 amendment package: mobile-app link item included, ADMT pre-use notice explicitly out of scope), `gdpr-13`, `gdpr-14` (Art. 14 adds categories-of-data and source items), `co` (C.R.S. § 6-1-1308(1)(a); 4 CCR 904-3 Rule 6.03), `va` (§ 59.1-578(C)), `tx` (§ 541.102, including the exact (b)–(c) statutory notice texts), `or` (ORS 646A.578(4), incl. the third-party-detail item).
+- [ ] 2. Playbooks `privacy-notice-us` and `privacy-notice-gdpr` + classifier features; fixture notices classify above threshold; a DPA fixture does not match the notice playbooks.
+- [ ] 3. PNOT presence rules generated from the regime data via `_regulated-rule.ts` (one rule per item, `applies_to_playbooks` = notice playbooks, active only when the item's regime is asserted); id scheme PNOT-<regime>-###.
+- [ ] 4. Texas exact-wording rules: whitespace-normalized quote match of the § 541.102(b)–(c) mandated texts; finding distinguishes "absent" from "present but altered" (quoting the diff region).
+- [ ] 5. `--regime` flag (comma-separated) + tab multi-select; asserted regimes stamped into the hashed run; dormant with none asserted.
+- [ ] 6. Regime coverage table (found / not detected per item, per regime) in tab + DOCX/JSON/markdown exports; scope-of-review block (presence of content, not adequacy or actual practices; never a compliance conclusion).
+- [ ] 7. Fixtures: a strong CCPA+GDPR notice, a notice missing the correction right and the "none" statements, a Texas notice with altered mandatory wording; determinism goldens; full gate green.

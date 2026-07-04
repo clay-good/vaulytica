@@ -1,0 +1,9 @@
+# Tasks
+
+- [ ] 1. Court-profile schema (Zod): `{id, court_name, authority: [{cite, url, retrieved_at}], limits: {principal_words?, reply_words?, principal_pages?, reply_pages?}, required_blocks: [...], count_exclusions: [...]}`; loader + validation test; profiles: `frap-default.json`, `ca9-appellate.json` (9th Cir. R. 32-1 override), `cal-rules-8.204.json`.
+- [ ] 2. Classifier + playbooks: `appellate-brief`, `trial-motion`, `petition` playbooks (match features: caption patterns, "STATEMENT OF THE ISSUES", "TABLE OF AUTHORITIES", relief clauses); new sub-domain feature entry; verify a fixture brief classifies above threshold and an NDA does not.
+- [ ] 3. Excludable-block detection: locate cover, TOC, TOA, and certificate sections in the outline (heading patterns) so the type-volume rule can compute the post-exclusion lower bound per FRAP 32(f).
+- [ ] 4. FILE rules, each `applies_to_playbooks: FILING_PLAYBOOK_IDS` and dormant without a selected court profile: FILE-001 type-volume (two-bound logic: fire critical only when lower bound exceeds the limit; info margin note otherwise), FILE-002 page limit (PDF only; DOCX → explicit "page count unmeasurable for DOCX" info), FILE-003 certificate of compliance presence, FILE-004 certificate of service presence, FILE-005 table of contents presence (FRAP 28(a)(2)), FILE-006 table of authorities presence (FRAP 28(a)(3)), FILE-007 caption block, FILE-008 signature block.
+- [ ] 5. `--court <profile-id>` CLI flag + tab picker; profile id and version stamped into the hashed run when the pack fires; USAGE + docs.
+- [ ] 6. Scope-of-review statement for the pack: reviewed for the listed presence/volume checks under the selected profile; NOT reviewed for typeface, margins, local formatting, substance, or citation validity.
+- [ ] 7. Fixtures + tests: brief over/under/near each bound, DOCX and PDF variants, dormancy without profile, hash isolation for non-filing documents; full gate green.
