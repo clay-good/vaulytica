@@ -48,6 +48,18 @@ jobs:
           npm run dkb:build
           echo "version=$(ls -t dkb/dist | grep -v starter | head -n1)" >> "$GITHUB_OUTPUT"
 
+      # Real validation attestation (fix-build-attestation-honesty): the
+      # citation check writes dkb/v3/validation-status.json — the timestamp
+      # of THIS run and the count of citations left pending review. The
+      # site build copies a committed attestation through verbatim and
+      # never invents one; a citation failure still records the truthful
+      # pending count (the || keeps the rebuild flow alive so the
+      # regression gate below decides commit vs PR).
+      - name: Validate citations + write attestation
+        run: |
+          npx tsx tools/citation-check/run.ts --reachability --attest dkb/v3/validation-status.json \
+            || echo "citation check reported issues — attestation records the pending count"
+
       - name: Run regression check
         id: regression
         run: |
@@ -60,7 +72,7 @@ jobs:
         run: |
           git config user.name "vaulytica-bot"
           git config user.email "bot@vaulytica.com"
-          git add dkb/dist/${{ steps.build.outputs.version }}
+          git add dkb/dist/${{ steps.build.outputs.version }} dkb/v3/validation-status.json
           if git diff --cached --quiet; then
             echo "No DKB changes to commit"
           else

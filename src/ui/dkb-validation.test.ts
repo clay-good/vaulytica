@@ -213,3 +213,32 @@ describe("hydrateDkbValidation", () => {
     }
   });
 });
+
+describe("explicit-unknown attestation (fix-build-attestation-honesty)", () => {
+  const UNKNOWN = {
+    attested: false,
+    dkb_last_validated_at: null,
+    stale_citations_pending_review: null,
+  } as const;
+
+  it("renders 'not recorded' — never a fabricated date or zero count", () => {
+    const root = makeFooter();
+    renderDkbValidation(root, UNKNOWN);
+    const wrapper = root.querySelector<HTMLElement>('[data-role="dkb-validation"]')!;
+    expect(wrapper.textContent).toBe("DKB validation status not recorded");
+    expect(wrapper.dataset.attested).toBe("false");
+    expect(wrapper.textContent).not.toContain("Last validated");
+  });
+
+  it("hydrate accepts the unknown shape and renders it", async () => {
+    const root = makeFooter();
+    const status = await hydrateDkbValidation({
+      fetchImpl: mkFetch({ json: UNKNOWN }),
+      root,
+    });
+    expect(status).toEqual(UNKNOWN);
+    expect(root.querySelector<HTMLElement>('[data-role="dkb-validation"]')!.textContent).toBe(
+      "DKB validation status not recorded",
+    );
+  });
+});

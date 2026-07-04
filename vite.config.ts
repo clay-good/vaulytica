@@ -126,19 +126,21 @@ function deployAssets(): Plugin {
 
       // Ensure /dkb/v3/validation-status.json always resolves (200) so the
       // footer fetch in src/ui/dkb-validation.ts does not log a console
-      // error that Lighthouse's `errors-in-console` audit flags. The DKB
-      // rebuild workflow overwrites this file with real values; here we
-      // just guarantee a parseable default exists in dist/.
+      // error that Lighthouse's `errors-in-console` audit flags. A REAL
+      // attestation (committed by the DKB rebuild workflow's citation-check
+      // step at dkb/v3/validation-status.json) is copied through verbatim;
+      // otherwise the build writes an explicit UNKNOWN — it never invents
+      // a validation date or a "0 stale citations" claim nothing performed
+      // (fix-build-attestation-honesty; the old fallback stamped
+      // `new Date()` + 0 on every build, a fabricated attestation that
+      // also made dist/ nondeterministic).
       const validationPath = resolve(DIST, "dkb", "v3", "validation-status.json");
       if (!existsSync(validationPath)) {
         mkdirSync(resolve(DIST, "dkb", "v3"), { recursive: true });
+        const committed = resolve(REPO_ROOT, "dkb", "v3", "validation-status.json");
         writeFileSync(
           validationPath,
-          JSON.stringify(
-            { dkb_last_validated_at: new Date().toISOString(), stale_citations_pending_review: 0 },
-            null,
-            2,
-          ),
+          existsSync(committed) ? readFileSync(committed, "utf8") : buildUnknownValidationStatus(),
           "utf8",
         );
       }
@@ -350,6 +352,21 @@ export function buildSitemapXml(): string {
     "</urlset>",
     "",
   ].join("\n");
+}
+
+/**
+ * The explicit-unknown DKB validation status (fix-build-attestation-
+ * honesty): when no real attestation exists, the build says so instead
+ * of fabricating one. Pure and byte-deterministic — two builds from the
+ * same tree ship the identical file; unstated is never conflated with
+ * validated.
+ */
+export function buildUnknownValidationStatus(): string {
+  return JSON.stringify(
+    { dkb_last_validated_at: null, stale_citations_pending_review: null, attested: false },
+    null,
+    2,
+  );
 }
 
 /**
