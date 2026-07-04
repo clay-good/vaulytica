@@ -206,6 +206,8 @@ function renderCompleteState(
     negotiation_posture_csv_blob?: Blob;
     negotiation_sheet_blob?: Blob;
     reviewed_docx_blob?: Blob;
+    certificate_docx_blob: Blob;
+    certificate_json_blob: Blob;
   },
   countsBySeverity: (r: import("./pipeline.js").PipelineResult["run"]) => {
     critical: number;
@@ -262,6 +264,11 @@ function renderCompleteState(
       // add-word-comment-export — the reviewed copy of the uploaded DOCX.
       reviewed_docx_blob: result.reviewed_docx_blob,
       reviewed_docx_filename: `${stem}.reviewed.docx`,
+      // add-court-certification-receipt — the verification certificate.
+      certificate_docx_blob: result.certificate_docx_blob,
+      certificate_json_blob: result.certificate_json_blob,
+      certificate_docx_filename: `${stem}.certificate.docx`,
+      certificate_json_filename: `${stem}.certificate.json`,
     },
     v3_family:
       result.v3_detection.family === "unknown"

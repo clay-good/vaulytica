@@ -2308,6 +2308,34 @@
         </details>
       </section>
 
+      <!-- Court & ethics compliance -->
+      <section aria-labelledby="compliance-h2" id="court-compliance">
+        <h2 id="compliance-h2">For court and ethics compliance.</h2>
+        <p style="max-width: 760px">
+          Courts increasingly regulate generative-AI use in filings: the Ropes &amp; Gray AI Court
+          Order Tracker lists 300+ judge- and court-level directives, and the Legal AI Governance
+          tracker counts roughly 113 orders that bind attorney filings — most requiring disclosure
+          of AI use, verification of AI output, or a certification that neither occurred (New
+          York's court-system-wide 22 NYCRR Part 161 took effect June 1, 2026). Privilege case law
+          on consumer AI tools is diverging, not settled — compare
+          <em>United States v. Heppner</em> (S.D.N.Y. 2026, no privilege for material run through
+          a public generative-AI tool) with <em>Warner v. Gilbarco</em> (E.D. Mich. 2026, no
+          waiver) — and ABA Formal Opinion 512 puts the verification duty on the lawyer.
+        </p>
+        <p style="max-width: 760px">
+          Vaulytica can make the no-generative-AI certification provable rather than asserted:
+          every report can ship with a one-page <strong>verification certificate</strong>
+          (Word&nbsp;+ JSON) stating the engine and knowledge-base versions, the input's SHA-256,
+          the result hash, and that the analysis was a deterministic rule evaluation with no
+          generative-AI, machine-learning, or probabilistic component — performed locally, with no
+          document content transmitted. The certificate carries its own tamper-evident hash, and
+          anyone can re-run <code>vaulytica verify &lt;report&gt; &lt;file&gt;</code> to reproduce
+          the analysis exactly. It certifies what this tool did — never your overall compliance;
+          the reviewing attorney remains responsible for verifying findings and meeting the
+          applicable orders and professional-conduct rules.
+        </p>
+      </section>
+
       <!-- Sources -->
       <section aria-labelledby="sources-h2">
         <h2 id="sources-h2">Where the rules come from.</h2>

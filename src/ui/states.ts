@@ -74,6 +74,11 @@ export type DropzoneState =
          */
         reviewed_docx_blob?: Blob;
         reviewed_docx_filename?: string;
+        /** Verification certificate (add-court-certification-receipt). */
+        certificate_docx_blob?: Blob;
+        certificate_json_blob?: Blob;
+        certificate_docx_filename?: string;
+        certificate_json_filename?: string;
       };
       /**
        * v3 family detection (spec-v3 §60). When `family === "unknown"`
@@ -549,6 +554,8 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
       <button class="btn-link" type="button" data-role="export-html">HTML report</button>
       <button class="btn-link" type="button" data-role="export-sarif">SARIF</button>
       <button class="btn-link" type="button" data-role="export-reviewed-docx">Reviewed copy (.docx)</button>
+      <button class="btn-link" type="button" data-role="export-certificate-docx">Verification certificate (Word)</button>
+      <button class="btn-link" type="button" data-role="export-certificate-json">Verification certificate (JSON)</button>
     </div>
     <div class="compare-row" data-role="compare-row" hidden>
       <button class="btn-link" type="button" data-role="compare-button">Compare a revised version…</button>
@@ -721,6 +728,16 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
       // Reviewed copy: enabled only for DOCX uploads; for PDF/paste the
       // button stays visible but disabled, saying why (there is no
       // original Word container to annotate).
+      if (ex.certificate_docx_blob && ex.certificate_docx_filename) {
+        wire("export-certificate-docx", ex.certificate_docx_blob, ex.certificate_docx_filename);
+      } else {
+        select<HTMLButtonElement>(dz, "export-certificate-docx")!.setAttribute("hidden", "");
+      }
+      if (ex.certificate_json_blob && ex.certificate_json_filename) {
+        wire("export-certificate-json", ex.certificate_json_blob, ex.certificate_json_filename);
+      } else {
+        select<HTMLButtonElement>(dz, "export-certificate-json")!.setAttribute("hidden", "");
+      }
       const reviewedBtn = select<HTMLButtonElement>(dz, "export-reviewed-docx")!;
       if (ex.reviewed_docx_blob && ex.reviewed_docx_filename) {
         wire("export-reviewed-docx", ex.reviewed_docx_blob, ex.reviewed_docx_filename);

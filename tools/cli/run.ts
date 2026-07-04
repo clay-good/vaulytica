@@ -178,6 +178,13 @@ import { buildHtmlReport } from "../../src/report/html.js";
 import { buildFixListMarkdown, buildFixListCsv } from "../../src/report/exports.js";
 import { dkbCurrency } from "../../src/report/citations.js";
 import { buildReviewedDocx } from "../../src/report/docx-comments.js";
+import {
+  buildCertificateDocx,
+  buildCertificateJson,
+  verifyCertificateHash,
+  CERTIFICATE_SCHEMA,
+  type VerificationCertificate,
+} from "../../src/report/certificate.js";
 import { parseCustomPlaybookJson } from "../../src/playbooks/custom-playbook.js";
 import { ladderHash } from "../../src/playbooks/custom-interpreter.js";
 import {
@@ -244,6 +251,8 @@ type Args = {
   dkb?: string;
   /** Ingest the target(s) as UTF-8 text regardless of extension (never .docx/.pdf). */
   asText?: boolean;
+  /** Write the verification certificate (<name>.certificate.{docx,json}) alongside the report. */
+  certificate?: boolean;
 };
 
 function parseArgs(argv: string[]): Args {
@@ -329,6 +338,9 @@ function parseArgs(argv: string[]): Args {
         break;
       case "--as-text":
         args.asText = true;
+        break;
+      case "--certificate":
+        args.certificate = true;
         break;
       default:
         throw new Error(`unknown flag "${flag}"`);
@@ -557,6 +569,9 @@ export async function runAnalyze(argv: string[]): Promise<void> {
         `${inputs.length} input(s) × ${args.formats.length} format(s) would render with nowhere to go`,
     );
   }
+  if (!args.out && args.certificate) {
+    throw new Error("--certificate writes binary .docx output and requires --out <dir>");
+  }
   if (!args.out && args.formats.includes("docx-comments")) {
     throw new Error(
       "--format docx-comments produces a binary .docx and requires --out <dir> (never stdout)",
@@ -647,6 +662,21 @@ export async function runAnalyze(argv: string[]): Promise<void> {
         // so stdout is a complete delivery target — never render-and-drop.
         process.stdout.write(content + "\n");
       }
+    }
+
+    if (args.certificate) {
+      // Verification certificate (add-court-certification-receipt): the
+      // one-page compliance artifact + tamper-evident JSON companion.
+      await mkdir(args.out!, { recursive: true });
+      const stem = basename(file, extname(file));
+      const certJson = await buildCertificateJson(r.run);
+      await writeFile(join(args.out!, `${stem}.certificate.json`), certJson);
+      const certDocx = await buildCertificateDocx(r.run);
+      await writeFile(
+        join(args.out!, `${stem}.certificate.docx`),
+        new Uint8Array(await certDocx.arrayBuffer()),
+      );
+      human(`  Verification certificate → ${stem}.certificate.{docx,json}\n`);
     }
 
     if (args.failOn) {
@@ -860,7 +890,34 @@ async function runVerify(argv: string[]): Promise<void> {
       "usage: verify <report.json> <original> [--playbook <id>] [--dkb <dir>] [--as-text]",
     );
   }
-  const saved = JSON.parse(await readFile(reportPath, "utf8")) as SavedReport;
+  const parsed = JSON.parse(await readFile(reportPath, "utf8")) as Record<string, unknown>;
+  // A verification certificate is an alternative provenance source
+  // (add-court-certification-receipt): same fields as the report block,
+  // hash-verified before use so a doctored certificate is a hard error.
+  let saved: SavedReport;
+  if (parsed.schema === CERTIFICATE_SCHEMA) {
+    const cert = parsed as unknown as VerificationCertificate;
+    if (!(await verifyCertificateHash(cert))) {
+      throw new Error(
+        "certificate_hash mismatch — the certificate was edited after it was produced",
+      );
+    }
+    saved = {
+      run: {
+        version: cert.tool.engine_version,
+        dkb_version: cert.tool.dkb_version,
+        playbook_id: cert.playbook_id,
+        source_file: { name: cert.input.name, sha256: cert.input.sha256 },
+        result_hash: cert.result_hash,
+      },
+      provenance: {
+        engine_version: cert.tool.engine_version,
+        dkb_version: cert.tool.dkb_version,
+      },
+    };
+  } else {
+    saved = parsed as unknown as SavedReport;
+  }
   // The override is passed as an option, never written into `saved` — the
   // body-integrity check must see the report exactly as it was produced.
   const result = await verifyReproducibilityFromFile(saved, originalPath, {
@@ -880,7 +937,7 @@ Commands:
                           [--out <dir>] [--fail-on critical|warning|info]
                           [--delivery] [--critical-dates] [--checklist]
                           [--playbook-file <path>] [--posture]
-                          [--fail-on-divergence] [--dkb <dir>] [--as-text]
+                          [--fail-on-divergence] [--dkb <dir>] [--as-text] [--certificate]
                           [--baseline <path|glob|dir> | --baseline-coherence <coherence.json>]
                           [--emit-coherence <path>] [--fail-on-coherence-regression]
   diff    <a.json> <b.json> [--format markdown|json] [--exit-code]
@@ -946,7 +1003,7 @@ Commands:
                           [--format markdown|json] [--fail-on-recovery-cycle]
   coherence-matrix <r1.coherence.json> <r2.coherence.json> [<r3…> …]
                           [--format markdown|json] [--fail-on-blackout-round]
-  verify  <report.json> <original> [--playbook <id>] [--dkb <dir>] [--as-text]
+  verify  <report.json|certificate.json> <original> [--playbook <id>] [--dkb <dir>] [--as-text]
 
 Output delivery: one input × one format streams the artifact to stdout;
 any multi-format or multi-input run requires --out <dir> — rendered

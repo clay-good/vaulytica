@@ -57,6 +57,11 @@ import {
 } from "../report/index.js";
 import { dkbCurrency } from "../report/citations.js";
 import { reviewedDocxBlob } from "../report/docx-comments.js";
+import {
+  buildCertificateDocx,
+  buildCertificateJson,
+  certificateJsonBlob,
+} from "../report/certificate.js";
 import { buildCriticalDates, type CriticalDatesRegister } from "../report/critical-dates.js";
 import { buildClosingChecklist, type ClosingChecklist } from "../report/closing-checklist.js";
 import {
@@ -193,6 +198,13 @@ export type PipelineResult = {
    * own draft, never a generated redline.
    */
   reviewed_docx_blob?: Blob;
+  /**
+   * Verification certificate (add-court-certification-receipt): the
+   * one-page no-generative-AI compliance artifact + its tamper-evident
+   * JSON companion, built with every report.
+   */
+  certificate_docx_blob: Blob;
+  certificate_json_blob: Blob;
   /**
    * v3 family auto-detection (spec-v3.md §60, LAUNCH row v3-o). Always
    * computed alongside the v2 playbook match so the UI can surface
@@ -672,6 +684,8 @@ export async function runReport(
     prepared.original_docx_bytes && run.findings.length > 0
       ? reviewedDocxBlob(prepared.original_docx_bytes, run)
       : undefined;
+  const certificate_docx_blob = await buildCertificateDocx(run);
+  const certificate_json_blob = certificateJsonBlob(await buildCertificateJson(run));
 
   return {
     ingest: prepared.ingest,
@@ -687,6 +701,8 @@ export async function runReport(
     sarif_blob,
     html_blob,
     ...(reviewed_docx_blob ? { reviewed_docx_blob } : {}),
+    certificate_docx_blob,
+    certificate_json_blob,
     v3_detection,
     v3_frames,
     custom_playbook: customProvenance,
