@@ -203,6 +203,7 @@ type Format = "json" | "sarif" | "html" | "md" | "csv";
  * goes to stderr, so `analyze x.docx --format json | jq .` just works.
  */
 const MACHINE_FORMATS: ReadonlySet<Format> = new Set(["json", "sarif", "csv"]);
+const VALID_FORMATS = ["json", "sarif", "html", "md", "csv"] as const;
 const FORMAT_EXT: Record<Format, string> = {
   json: ".json",
   sarif: ".sarif.json",
@@ -256,13 +257,28 @@ function parseArgs(argv: string[]): Args {
         args.playbook = val;
         i++;
         break;
-      case "--format":
-        args.formats = (val ?? "")
+      case "--format": {
+        // Empty / unknown / duplicate values are usage errors, never a
+        // silent no-op (fix-cli-output-completeness).
+        const values = (val ?? "")
           .split(",")
           .map((f) => f.trim())
-          .filter(Boolean) as Format[];
+          .filter(Boolean);
+        if (values.length === 0) {
+          throw new Error(`--format requires a value: ${VALID_FORMATS.join(", ")}`);
+        }
+        for (const v of values) {
+          if (!(VALID_FORMATS as readonly string[]).includes(v)) {
+            throw new Error(`unknown --format "${v}" (valid: ${VALID_FORMATS.join(", ")})`);
+          }
+        }
+        if (new Set(values).size !== values.length) {
+          throw new Error(`duplicate --format value in "${val}"`);
+        }
+        args.formats = values as Format[];
         i++;
         break;
+      }
       case "--out":
         args.out = val;
         i++;
@@ -525,6 +541,16 @@ export async function runAnalyze(argv: string[]): Promise<void> {
   }
 
   const inputs = await resolveInputs(args.target, { asText: args.asText });
+  // Delivery completeness (fix-cli-output-completeness): every rendered
+  // artifact must have a destination. Multi-format or multi-input runs
+  // used to render everything and silently drop it (summary line, exit 0)
+  // whenever --out was absent.
+  if (!args.out && (args.formats.length > 1 || inputs.length > 1)) {
+    throw new Error(
+      `multiple formats/inputs require --out <dir> — ` +
+        `${inputs.length} input(s) × ${args.formats.length} format(s) would render with nowhere to go`,
+    );
+  }
   if (inputs.length === 0) {
     process.stderr.write(`no analyzable files matched: ${args.target}\n`);
     process.exitCode = 1;
@@ -576,7 +602,9 @@ export async function runAnalyze(argv: string[]): Promise<void> {
         await mkdir(args.out, { recursive: true });
         const outName = basename(file, extname(file)) + FORMAT_EXT[fmt];
         await writeFile(join(args.out, outName), content);
-      } else if (inputs.length === 1 && args.formats.length === 1) {
+      } else {
+        // By construction single input × single format (validated above),
+        // so stdout is a complete delivery target — never render-and-drop.
         process.stdout.write(content + "\n");
       }
     }
@@ -879,6 +907,10 @@ Commands:
   coherence-matrix <r1.coherence.json> <r2.coherence.json> [<r3…> …]
                           [--format markdown|json] [--fail-on-blackout-round]
   verify  <report.json> <original> [--playbook <id>] [--dkb <dir>] [--as-text]
+
+Output delivery: one input × one format streams the artifact to stdout;
+any multi-format or multi-input run requires --out <dir> — rendered
+output is never silently dropped.
 
 Input types: a directly named file must carry a supported extension
 (.txt, .md, .markdown, .text, .docx, .pdf) — an unknown extension is a
