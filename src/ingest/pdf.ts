@@ -68,7 +68,22 @@ async function loadPdfJs(): Promise<PdfJsLike> {
   const mod = (await import("pdfjs-dist/legacy/build/pdf.mjs")) as unknown as PdfJsLike & {
     default?: PdfJsLike;
   };
-  return (mod.default ?? mod) as PdfJsLike;
+  const pdfjs = (mod.default ?? mod) as PdfJsLike;
+  // Same-origin worker pin (fix-privacy-claim-accuracy). Without an explicit
+  // `workerSrc` the browser build throws ('No "GlobalWorkerOptions.workerSrc"
+  // specified') before parsing a single byte — real-browser PDF analysis was
+  // fully broken while the happy-dom suite exercised Node's fake-worker path.
+  // The app serves the exact matching worker build from /pdf-worker/ (dev
+  // middleware + dist copy in vite.config.ts), so PDF analysis works and
+  // never resolves an asset off-origin. Node (CLI, vitest) keeps the fake
+  // worker: same output, no Worker global needed.
+  const isNode =
+    typeof process !== "undefined" &&
+    !!(process as { versions?: { node?: string } }).versions?.node;
+  if (!isNode && pdfjs.GlobalWorkerOptions && !pdfjs.GlobalWorkerOptions.workerSrc) {
+    pdfjs.GlobalWorkerOptions.workerSrc = "/pdf-worker/pdf.worker.min.mjs";
+  }
+  return pdfjs;
 }
 
 export async function ingestPdf(file: File, options: IngestPdfOptions = {}): Promise<IngestResult> {
@@ -139,7 +154,7 @@ export async function ingestPdfBuffer(
       };
     }
     warnings.push(
-      `${layer.reason}. Pass { allowOcr: true } to run OCR via tesseract.js, or supply a digitally-generated PDF.`,
+      `${layer.reason}. This looks like a scanned PDF without a text layer; OCR is not available in the browser build (its models would have to load from a third-party CDN, which the privacy posture blocks), so analysis covers only the extractable text. Supply a digitally-generated PDF for full coverage.`,
     );
   }
 

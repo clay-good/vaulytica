@@ -41,6 +41,11 @@ function serveExtras(): Plugin {
   const mounts: Record<string, string> = {
     "/playbooks": resolve(REPO_ROOT, "playbooks"),
     "/dkb": pickLatestDkb(resolve(REPO_ROOT, "dkb", "dist")),
+    // Same-origin pdf.js worker (fix-privacy-claim-accuracy): the ingest
+    // pins GlobalWorkerOptions.workerSrc to /pdf-worker/pdf.worker.min.mjs,
+    // so PDF analysis never resolves assets off-origin — and actually works
+    // in a real browser (without the pin pdfjs throws before parsing).
+    "/pdf-worker": resolve(REPO_ROOT, "node_modules", "pdfjs-dist", "legacy", "build"),
   };
   return {
     name: "vaulytica-serve-extras",
@@ -102,6 +107,21 @@ function deployAssets(): Plugin {
       if (existsSync(latestDkb) && statSync(latestDkb).isDirectory()) {
         assertShippableDkb(latestDkb);
         cpSync(latestDkb, resolve(DIST, "dkb"), { recursive: true });
+      }
+
+      // Same-origin pdf.js worker (see serveExtras): ship the exact worker
+      // build matching the bundled pdfjs-dist version.
+      const pdfWorker = resolve(
+        REPO_ROOT,
+        "node_modules",
+        "pdfjs-dist",
+        "legacy",
+        "build",
+        "pdf.worker.min.mjs",
+      );
+      if (existsSync(pdfWorker)) {
+        mkdirSync(resolve(DIST, "pdf-worker"), { recursive: true });
+        copyFileSync(pdfWorker, resolve(DIST, "pdf-worker", "pdf.worker.min.mjs"));
       }
 
       // Ensure /dkb/v3/validation-status.json always resolves (200) so the
@@ -361,7 +381,7 @@ export function assertShippableDkb(dkbDir: string): void {
 
 function contentType(path: string): string {
   if (path.endsWith(".json")) return "application/json";
-  if (path.endsWith(".js")) return "application/javascript";
+  if (path.endsWith(".js") || path.endsWith(".mjs")) return "application/javascript";
   return "application/octet-stream";
 }
 

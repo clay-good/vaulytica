@@ -20,7 +20,7 @@ Vaulytica is the opposite. It is a **pure function**:
 report = engine(documents, DKB, playbook)
 ```
 
-Same document + same engine version + same Deterministic Knowledge Base version → **byte-identical report on any machine, at any time.** The report carries a `result_hash` so you can prove it. The stamped engine version is the released package version — it changes on every release, so identical provenance really does mean identical behavior (a guard test pins the stamp to `package.json`). Every finding traces to a numbered rule; findings that assert what the law is cite a pinned public source, and findings that rest on drafting practice say so instead of borrowing legal authority they don't have. Nothing leaves the browser tab — open DevTools and watch the network panel go quiet.
+Same document + same engine version + same Deterministic Knowledge Base version → **byte-identical report on any machine, at any time.** The report carries a `result_hash` so you can prove it. The stamped engine version is the released package version — it changes on every release, so identical provenance really does mean identical behavior (a guard test pins the stamp to `package.json`). Every finding traces to a numbered rule; findings that assert what the law is cite a pinned public source, and findings that rest on drafting practice say so instead of borrowing legal authority they don't have. Your document never leaves the browser tab — open DevTools and check: the only network requests are same-origin GETs of the app's own static assets (rule data, playbooks), and none carries document content. An e2e gate intercepts every request during a full DOCX and PDF analysis to keep that claim true.
 
 ## How it works (end to end)
 
@@ -827,7 +827,7 @@ It prints one row per front (its per-round `cells`), the per-round column summar
 
 The drop zone transforms in place into a result card: severity counts (critical / warning / informational), the matched playbook with a "why," any jurisdiction overlays for the governing-law state, and one-click exports — the **Word report** you can cite, the structured **JSON** with its `result_hash`, **SARIF 2.1.0** for code-scanning/PR annotation, a self-contained **single-file HTML** report that prints clean to PDF, the **fix-list** (Markdown / CSV), the obligations ledger (CSV), and deadlines as an **`.ics` calendar**. As of v8 **every** one of those carries each finding's resolvable citation — the URL rides into the spreadsheet row, the SARIF result, and the calendar event, not just the Word doc.
 
-Every view is verified to render with **no horizontal scroll from 320 px to 1280 px** — the shot at right is the live card at a 390 px phone width. The whole flow runs in the tab; open DevTools and the network panel stays empty.
+Every view is verified to render with **no horizontal scroll from 320 px to 1280 px** — the shot at right is the live card at a 390 px phone width. The whole flow runs in the tab; open DevTools and the only traffic you'll see is the app fetching its own same-origin static assets — never your document.
 
 <br clear="all" />
 

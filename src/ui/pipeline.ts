@@ -344,7 +344,12 @@ export async function prepareDocument(
   const dkbPromise = ensureDkb(config.dkb_base ?? DEFAULT_DKB_BASE);
   const ingest: IngestResult =
     kind === "pdf"
-      ? await ingestPdfBuffer(buffer, { allowOcr: true })
+      ? // OCR stays off in the browser (fix-privacy-claim-accuracy):
+        // tesseract.js's default worker/wasm/language assets load from a
+        // third-party CDN, which the shipped connect-src 'self' CSP blocks —
+        // so shipped OCR could never run; the ingest emits an honest
+        // scanned-PDF warning instead of failing mid-analysis.
+        await ingestPdfBuffer(buffer, { allowOcr: false })
       : await ingestDocxBuffer(buffer);
 
   const dkb = await dkbPromise;
@@ -978,7 +983,7 @@ export async function prepareBundle(
     const entry = accepted[i]!;
     const ingest: IngestResult =
       entry.kind === "pdf"
-        ? await ingestPdfBuffer(entry.bytes, { allowOcr: true })
+        ? await ingestPdfBuffer(entry.bytes, { allowOcr: false }) // see single-doc note
         : await ingestDocxBuffer(entry.bytes);
 
     hooks.onDocumentReady?.(entry.filename, i, total);

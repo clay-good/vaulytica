@@ -1789,7 +1789,7 @@
           "HIPAA Business Associate Agreement (BAA) checker",
           "EU SCCs + UK IDTA / Addendum + Swiss FADP transfer-mechanism checks",
           "Microsoft Word (DOCX) report output",
-          "100% browser-side processing — zero network calls during analysis",
+          "100% browser-side processing — your document never leaves the tab; the only network requests are same-origin fetches of the app's own rule data and playbooks, none carrying document content",
           "PWA / offline capable",
           "MIT licensed, open source"
         ],
@@ -1910,7 +1910,7 @@
             "name": "Do you train models on my data?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "There is no server. Your contract never leaves the tab. Nothing is logged, nothing is uploaded, nothing is retained. Open DevTools, open the Network tab, and confirm zero requests during analysis."
+              "text": "There is no server. Your contract never leaves the tab. Nothing is logged, nothing is uploaded, nothing is retained. Open DevTools, open the Network tab, and confirm it: the only requests are same-origin fetches of the app's own rule data and playbooks, and none carries any of your document."
             }
           },
           {
@@ -2249,7 +2249,9 @@
           </li>
           <li>
             I do not see your data. There is no server. Your contract never leaves the tab. Open
-            DevTools and watch the network panel if you want to confirm.
+            DevTools if you want to confirm: the only requests you will see are same-origin GETs of
+            my own static assets — rule data, playbooks, code — and none of them carries a byte of
+            your document.
           </li>
         </ul>
       </section>
@@ -2282,7 +2284,8 @@
         <p style="max-width: 760px">
           Vaulytica runs entirely in your browser. There is no server to send your file to, because
           there is no server. Open DevTools, open the Network tab, drop your contract, and confirm
-          zero requests. Verify it yourself. The site is a static page on Cloudflare Pages, the
+          it: the only requests are same-origin fetches of the app's own static assets — rule data,
+          playbooks, code — and not one of them carries a byte of your document. Verify it yourself. The site is a static page on Cloudflare Pages, the
           code is on GitHub under MIT, and there is no analytics, no telemetry, no error reporting,
           no fonts from CDNs. Every byte your browser fetches comes from vaulytica.com.
         </p>
@@ -2295,8 +2298,10 @@
             <li>Click the <strong>Network</strong> tab and check "Disable cache."</li>
             <li>Reload the page once to capture initial asset loads, then click <strong>Clear</strong>.</li>
             <li>
-              Drop a contract onto the drop zone. Watch the network tab during analysis. There
-              should be zero requests.
+              Drop a contract onto the drop zone. Watch the network tab during analysis. You may
+              see the app fetch its own rule data and playbooks from this same origin — every
+              request is a GET with no body, and nothing from your document appears in any of
+              them.
             </li>
           </ol>
         </details>
