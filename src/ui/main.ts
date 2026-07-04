@@ -205,6 +205,7 @@ function renderCompleteState(
     negotiation_posture_md_blob?: Blob;
     negotiation_posture_csv_blob?: Blob;
     negotiation_sheet_blob?: Blob;
+    reviewed_docx_blob?: Blob;
   },
   countsBySeverity: (r: import("./pipeline.js").PipelineResult["run"]) => {
     critical: number;
@@ -258,6 +259,9 @@ function renderCompleteState(
       negotiation_posture_md_filename: `${stem}-vaulytica-negotiation-posture.md`,
       negotiation_posture_csv_filename: `${stem}-vaulytica-negotiation-posture.csv`,
       negotiation_sheet_filename: `${stem}-vaulytica-negotiation-sheet.html`,
+      // add-word-comment-export — the reviewed copy of the uploaded DOCX.
+      reviewed_docx_blob: result.reviewed_docx_blob,
+      reviewed_docx_filename: `${stem}.reviewed.docx`,
     },
     v3_family:
       result.v3_detection.family === "unknown"

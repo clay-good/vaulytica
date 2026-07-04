@@ -177,6 +177,7 @@ import { buildSarifJson } from "../../src/report/sarif.js";
 import { buildHtmlReport } from "../../src/report/html.js";
 import { buildFixListMarkdown, buildFixListCsv } from "../../src/report/exports.js";
 import { dkbCurrency } from "../../src/report/citations.js";
+import { buildReviewedDocx } from "../../src/report/docx-comments.js";
 import { parseCustomPlaybookJson } from "../../src/playbooks/custom-playbook.js";
 import { ladderHash } from "../../src/playbooks/custom-interpreter.js";
 import {
@@ -195,7 +196,7 @@ import {
 
 const SUPPORTED_EXT = new Set([".txt", ".md", ".markdown", ".text", ".docx", ".pdf"]);
 const SEVERITY_RANK: Record<Severity, number> = { critical: 0, warning: 1, info: 2 };
-type Format = "json" | "sarif" | "html" | "md" | "csv";
+type Format = "json" | "sarif" | "html" | "md" | "csv" | "docx-comments";
 /**
  * Formats a machine consumes (`jq`, SARIF uploaders, spreadsheets). Stream
  * contract (fix-cli-json-purity): when any of these is selected, stdout
@@ -203,13 +204,14 @@ type Format = "json" | "sarif" | "html" | "md" | "csv";
  * goes to stderr, so `analyze x.docx --format json | jq .` just works.
  */
 const MACHINE_FORMATS: ReadonlySet<Format> = new Set(["json", "sarif", "csv"]);
-const VALID_FORMATS = ["json", "sarif", "html", "md", "csv"] as const;
+const VALID_FORMATS = ["json", "sarif", "html", "md", "csv", "docx-comments"] as const;
 const FORMAT_EXT: Record<Format, string> = {
   json: ".json",
   sarif: ".sarif.json",
   html: ".html",
   md: ".fixlist.md",
   csv: ".fixlist.csv",
+  "docx-comments": ".reviewed.docx",
 };
 
 type Args = {
@@ -407,7 +409,11 @@ export async function resolveInputs(
   throw new Error(`no such file or directory: ${target}`);
 }
 
-async function renderFormat(fmt: Format, r: AnalyzeResult, dkb: Dkb): Promise<string> {
+async function renderFormat(
+  fmt: Exclude<Format, "docx-comments">,
+  r: AnalyzeResult,
+  dkb: Dkb,
+): Promise<string> {
   // Deterministic citation-currency reference — the DKB's own build date.
   const currency = dkbCurrency(dkb.manifest);
   // The v9 "Last Look" surfaces, populated only when the matching flag ran
@@ -551,6 +557,19 @@ export async function runAnalyze(argv: string[]): Promise<void> {
         `${inputs.length} input(s) × ${args.formats.length} format(s) would render with nowhere to go`,
     );
   }
+  if (!args.out && args.formats.includes("docx-comments")) {
+    throw new Error(
+      "--format docx-comments produces a binary .docx and requires --out <dir> (never stdout)",
+    );
+  }
+  if (args.formats.includes("docx-comments")) {
+    const nonDocx = inputs.filter((f) => extname(f).toLowerCase() !== ".docx");
+    if (nonDocx.length > 0) {
+      throw new Error(
+        `--format docx-comments annotates a copy of the uploaded DOCX and only applies to .docx inputs; not: ${nonDocx.join(", ")}`,
+      );
+    }
+  }
   if (inputs.length === 0) {
     process.stderr.write(`no analyzable files matched: ${args.target}\n`);
     process.exitCode = 1;
@@ -597,6 +616,27 @@ export async function runAnalyze(argv: string[]): Promise<void> {
     }
 
     for (const fmt of args.formats) {
+      if (fmt === "docx-comments") {
+        // Binary reviewed copy: the uploaded container plus anchored Word
+        // comments (add-word-comment-export). Validated above: .docx input
+        // and --out are both guaranteed here.
+        const originalBytes = await readFile(file);
+        const reviewed = buildReviewedDocx(
+          originalBytes.buffer.slice(
+            originalBytes.byteOffset,
+            originalBytes.byteOffset + originalBytes.byteLength,
+          ) as ArrayBuffer,
+          r.run,
+        );
+        await mkdir(args.out!, { recursive: true });
+        const outName = basename(file, extname(file)) + FORMAT_EXT[fmt];
+        await writeFile(join(args.out!, outName), reviewed.bytes);
+        human(
+          `  Reviewed copy: ${reviewed.anchored} comment(s) anchored` +
+            `${reviewed.unanchored > 0 ? `, ${reviewed.unanchored} collected at document start` : ""} → ${outName}\n`,
+        );
+        continue;
+      }
       const content = await renderFormat(fmt, r, deps.dkb);
       if (args.out) {
         await mkdir(args.out, { recursive: true });
@@ -836,7 +876,7 @@ async function runVerify(argv: string[]): Promise<void> {
 const USAGE = `vaulytica — deterministic legal-document linter (headless)
 
 Commands:
-  analyze <path|glob|dir> [--playbook <id>] [--format json,sarif,html,md,csv]
+  analyze <path|glob|dir> [--playbook <id>] [--format json,sarif,html,md,csv,docx-comments]
                           [--out <dir>] [--fail-on critical|warning|info]
                           [--delivery] [--critical-dates] [--checklist]
                           [--playbook-file <path>] [--posture]

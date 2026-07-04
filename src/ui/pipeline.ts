@@ -56,6 +56,7 @@ import {
   negotiationSheetBlob,
 } from "../report/index.js";
 import { dkbCurrency } from "../report/citations.js";
+import { reviewedDocxBlob } from "../report/docx-comments.js";
 import { buildCriticalDates, type CriticalDatesRegister } from "../report/critical-dates.js";
 import { buildClosingChecklist, type ClosingChecklist } from "../report/closing-checklist.js";
 import {
@@ -131,6 +132,13 @@ export type PreparedDocument = {
   dkb: DKB;
   playbook: Playbook;
   source_file: { name: string; sha256: string; size_bytes: number };
+  /**
+   * The uploaded container bytes, retained ONLY for DOCX uploads so the
+   * reviewed-copy export (add-word-comment-export) can annotate a byte-copy
+   * of the attorney's own draft. Absent for PDF (no Word container to
+   * annotate) and paste input.
+   */
+  original_docx_bytes?: ArrayBuffer;
   match: { playbook_id: string; confidence: number; reasoning: string };
   /**
    * Secondary families the document *also* clearly contains (spec-v6
@@ -178,6 +186,13 @@ export type PipelineResult = {
    */
   sarif_blob: Blob;
   html_blob: Blob;
+  /**
+   * Reviewed copy (add-word-comment-export): the uploaded DOCX byte-copy
+   * with one anchored Word comment per finding. Present only for DOCX
+   * uploads with at least one finding — review metadata in the attorney's
+   * own draft, never a generated redline.
+   */
+  reviewed_docx_blob?: Blob;
   /**
    * v3 family auto-detection (spec-v3.md §60, LAUNCH row v3-o). Always
    * computed alongside the v2 playbook match so the UI can surface
@@ -423,6 +438,7 @@ export async function prepareDocument(
     dkb,
     playbook,
     source_file: { name: file.name, sha256: ingest.sha256, size_bytes: buffer.byteLength },
+    ...(kind === "docx" ? { original_docx_bytes: buffer } : {}),
     match: {
       playbook_id: match.playbook_id,
       confidence: match.confidence,
@@ -652,6 +668,11 @@ export async function runReport(
     prepared.extracted.jurisdictions,
   );
 
+  const reviewed_docx_blob =
+    prepared.original_docx_bytes && run.findings.length > 0
+      ? reviewedDocxBlob(prepared.original_docx_bytes, run)
+      : undefined;
+
   return {
     ingest: prepared.ingest,
     run,
@@ -665,6 +686,7 @@ export async function runReport(
     deadlines_ics_blob,
     sarif_blob,
     html_blob,
+    ...(reviewed_docx_blob ? { reviewed_docx_blob } : {}),
     v3_detection,
     v3_frames,
     custom_playbook: customProvenance,

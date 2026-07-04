@@ -66,6 +66,14 @@ export type DropzoneState =
         negotiation_posture_md_filename?: string;
         negotiation_posture_csv_filename?: string;
         negotiation_sheet_filename?: string;
+        /**
+         * Reviewed copy (add-word-comment-export): the uploaded DOCX with
+         * one anchored Word comment per finding. Present only for DOCX
+         * uploads; the button renders disabled with an explanation for
+         * PDF/paste input, where there is no Word container to annotate.
+         */
+        reviewed_docx_blob?: Blob;
+        reviewed_docx_filename?: string;
       };
       /**
        * v3 family detection (spec-v3 §60). When `family === "unknown"`
@@ -540,6 +548,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
       <button class="btn-link" type="button" data-role="export-negotiation-csv" hidden>Negotiation posture (CSV)</button>
       <button class="btn-link" type="button" data-role="export-html">HTML report</button>
       <button class="btn-link" type="button" data-role="export-sarif">SARIF</button>
+      <button class="btn-link" type="button" data-role="export-reviewed-docx">Reviewed copy (.docx)</button>
     </div>
     <div class="compare-row" data-role="compare-row" hidden>
       <button class="btn-link" type="button" data-role="compare-button">Compare a revised version…</button>
@@ -709,6 +718,17 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
       }
       wire("export-html", ex.html_blob, ex.html_filename);
       wire("export-sarif", ex.sarif_blob, ex.sarif_filename);
+      // Reviewed copy: enabled only for DOCX uploads; for PDF/paste the
+      // button stays visible but disabled, saying why (there is no
+      // original Word container to annotate).
+      const reviewedBtn = select<HTMLButtonElement>(dz, "export-reviewed-docx")!;
+      if (ex.reviewed_docx_blob && ex.reviewed_docx_filename) {
+        wire("export-reviewed-docx", ex.reviewed_docx_blob, ex.reviewed_docx_filename);
+      } else {
+        reviewedBtn.disabled = true;
+        reviewedBtn.title =
+          "Available for DOCX uploads only — PDF and pasted text have no original Word container to annotate.";
+      }
     }
     if (state.on_compare) {
       const onCompare = state.on_compare;
