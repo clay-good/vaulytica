@@ -208,6 +208,8 @@ function renderCompleteState(
     reviewed_docx_blob?: Blob;
     certificate_docx_blob: Blob;
     certificate_json_blob: Blob;
+    definitions_csv_blob: Blob;
+    definitions_json_blob: Blob;
   },
   countsBySeverity: (r: import("./pipeline.js").PipelineResult["run"]) => {
     critical: number;
@@ -269,6 +271,11 @@ function renderCompleteState(
       certificate_json_blob: result.certificate_json_blob,
       certificate_docx_filename: `${stem}.certificate.docx`,
       certificate_json_filename: `${stem}.certificate.json`,
+      // add-defined-terms-report — the definitions report.
+      definitions_csv_blob: result.definitions_csv_blob,
+      definitions_json_blob: result.definitions_json_blob,
+      definitions_csv_filename: `${stem}-vaulytica-definitions.csv`,
+      definitions_json_filename: `${stem}-vaulytica-definitions.json`,
     },
     v3_family:
       result.v3_detection.family === "unknown"

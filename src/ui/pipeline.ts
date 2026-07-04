@@ -62,6 +62,11 @@ import {
   buildCertificateJson,
   certificateJsonBlob,
 } from "../report/certificate.js";
+import {
+  buildDefinitionsReport,
+  definitionsCsvBlob,
+  definitionsJsonBlob,
+} from "../report/definitions.js";
 import { buildCriticalDates, type CriticalDatesRegister } from "../report/critical-dates.js";
 import { buildClosingChecklist, type ClosingChecklist } from "../report/closing-checklist.js";
 import {
@@ -205,6 +210,9 @@ export type PipelineResult = {
    */
   certificate_docx_blob: Blob;
   certificate_json_blob: Blob;
+  /** Definitions report (add-defined-terms-report): CSV + JSON exports. */
+  definitions_csv_blob: Blob;
+  definitions_json_blob: Blob;
   /**
    * v3 family auto-detection (spec-v3.md §60, LAUNCH row v3-o). Always
    * computed alongside the v2 playbook match so the UI can surface
@@ -686,6 +694,9 @@ export async function runReport(
       : undefined;
   const certificate_docx_blob = await buildCertificateDocx(run);
   const certificate_json_blob = certificateJsonBlob(await buildCertificateJson(run));
+  const definitionsReport = await buildDefinitionsReport(prepared.extracted);
+  const definitions_csv_blob = definitionsCsvBlob(definitionsReport);
+  const definitions_json_blob = definitionsJsonBlob(definitionsReport);
 
   return {
     ingest: prepared.ingest,
@@ -703,6 +714,8 @@ export async function runReport(
     ...(reviewed_docx_blob ? { reviewed_docx_blob } : {}),
     certificate_docx_blob,
     certificate_json_blob,
+    definitions_csv_blob,
+    definitions_json_blob,
     v3_detection,
     v3_frames,
     custom_playbook: customProvenance,

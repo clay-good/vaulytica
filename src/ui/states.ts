@@ -79,6 +79,11 @@ export type DropzoneState =
         certificate_json_blob?: Blob;
         certificate_docx_filename?: string;
         certificate_json_filename?: string;
+        /** Definitions report (add-defined-terms-report). */
+        definitions_csv_blob?: Blob;
+        definitions_json_blob?: Blob;
+        definitions_csv_filename?: string;
+        definitions_json_filename?: string;
       };
       /**
        * v3 family detection (spec-v3 §60). When `family === "unknown"`
@@ -556,6 +561,8 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
       <button class="btn-link" type="button" data-role="export-reviewed-docx">Reviewed copy (.docx)</button>
       <button class="btn-link" type="button" data-role="export-certificate-docx">Verification certificate (Word)</button>
       <button class="btn-link" type="button" data-role="export-certificate-json">Verification certificate (JSON)</button>
+      <button class="btn-link" type="button" data-role="export-definitions-csv">Definitions report (CSV)</button>
+      <button class="btn-link" type="button" data-role="export-definitions-json">Definitions report (JSON)</button>
     </div>
     <div class="compare-row" data-role="compare-row" hidden>
       <button class="btn-link" type="button" data-role="compare-button">Compare a revised version…</button>
@@ -737,6 +744,16 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
         wire("export-certificate-json", ex.certificate_json_blob, ex.certificate_json_filename);
       } else {
         select<HTMLButtonElement>(dz, "export-certificate-json")!.setAttribute("hidden", "");
+      }
+      if (ex.definitions_csv_blob && ex.definitions_csv_filename) {
+        wire("export-definitions-csv", ex.definitions_csv_blob, ex.definitions_csv_filename);
+      } else {
+        select<HTMLButtonElement>(dz, "export-definitions-csv")!.setAttribute("hidden", "");
+      }
+      if (ex.definitions_json_blob && ex.definitions_json_filename) {
+        wire("export-definitions-json", ex.definitions_json_blob, ex.definitions_json_filename);
+      } else {
+        select<HTMLButtonElement>(dz, "export-definitions-json")!.setAttribute("hidden", "");
       }
       const reviewedBtn = select<HTMLButtonElement>(dz, "export-reviewed-docx")!;
       if (ex.reviewed_docx_blob && ex.reviewed_docx_filename) {

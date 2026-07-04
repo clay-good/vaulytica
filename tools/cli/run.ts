@@ -172,6 +172,7 @@ import { runCoherenceRecoveryChain } from "./coherence-recovery-chain.js";
 import { runCoherenceMatrix } from "./coherence-matrix.js";
 import { verifyReproducibilityFromFile, explainReproResult, type SavedReport } from "./verify.js";
 import type { Severity } from "../../src/engine/index.js";
+import { extractAll } from "../../src/extract/index.js";
 import { buildJsonReport } from "../../src/report/json.js";
 import { buildSarifJson } from "../../src/report/sarif.js";
 import { buildHtmlReport } from "../../src/report/html.js";
@@ -185,6 +186,7 @@ import {
   CERTIFICATE_SCHEMA,
   type VerificationCertificate,
 } from "../../src/report/certificate.js";
+import { buildDefinitionsReport, buildDefinitionsMarkdown } from "../../src/report/definitions.js";
 import { parseCustomPlaybookJson } from "../../src/playbooks/custom-playbook.js";
 import { ladderHash } from "../../src/playbooks/custom-interpreter.js";
 import {
@@ -253,6 +255,8 @@ type Args = {
   asText?: boolean;
   /** Write the verification certificate (<name>.certificate.{docx,json}) alongside the report. */
   certificate?: boolean;
+  /** Add the definitions report to the JSON output and the md summary. */
+  definitions?: boolean;
 };
 
 function parseArgs(argv: string[]): Args {
@@ -342,6 +346,9 @@ function parseArgs(argv: string[]): Args {
       case "--certificate":
         args.certificate = true;
         break;
+      case "--definitions":
+        args.definitions = true;
+        break;
       default:
         throw new Error(`unknown flag "${flag}"`);
     }
@@ -425,6 +432,7 @@ async function renderFormat(
   fmt: Exclude<Format, "docx-comments">,
   r: AnalyzeResult,
   dkb: Dkb,
+  definitions?: import("../../src/report/definitions.js").DefinitionsReport,
 ): Promise<string> {
   // Deterministic citation-currency reference — the DKB's own build date.
   const currency = dkbCurrency(dkb.manifest);
@@ -448,13 +456,16 @@ async function renderFormat(
         r.closing_checklist,
         r.negotiation_posture,
         currency,
+        definitions,
       ).text();
     case "sarif":
       return buildSarifJson(r.run, v9surfaces, currency);
     case "html":
       return buildHtmlReport(r.run, r.ingest, dkb, undefined, v9surfaces);
-    case "md":
-      return buildFixListMarkdown(r.run, undefined, currency);
+    case "md": {
+      const md = buildFixListMarkdown(r.run, undefined, currency);
+      return definitions ? `${md}\n${buildDefinitionsMarkdown(definitions)}` : md;
+    }
     case "csv":
       return buildFixListCsv(r.run, currency);
   }
@@ -630,6 +641,12 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       postures.push({ document: documentLabel(file, inputs), posture: r.negotiation_posture });
     }
 
+    // add-defined-terms-report — projection over a classifier-free
+    // re-extract (definitions don't need the classifier), outside the run.
+    const definitions = args.definitions
+      ? await buildDefinitionsReport(extractAll(r.ingest.tree))
+      : undefined;
+
     for (const fmt of args.formats) {
       if (fmt === "docx-comments") {
         // Binary reviewed copy: the uploaded container plus anchored Word
@@ -652,7 +669,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
         );
         continue;
       }
-      const content = await renderFormat(fmt, r, deps.dkb);
+      const content = await renderFormat(fmt, r, deps.dkb, definitions);
       if (args.out) {
         await mkdir(args.out, { recursive: true });
         const outName = basename(file, extname(file)) + FORMAT_EXT[fmt];
@@ -938,6 +955,7 @@ Commands:
                           [--delivery] [--critical-dates] [--checklist]
                           [--playbook-file <path>] [--posture]
                           [--fail-on-divergence] [--dkb <dir>] [--as-text] [--certificate]
+                          [--definitions]
                           [--baseline <path|glob|dir> | --baseline-coherence <coherence.json>]
                           [--emit-coherence <path>] [--fail-on-coherence-regression]
   diff    <a.json> <b.json> [--format markdown|json] [--exit-code]

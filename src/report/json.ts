@@ -124,6 +124,12 @@ export type JsonReport = {
    */
   citation_currency_notes?: Array<{ rule_id: string; citation_id: string; label: string }>;
   /**
+   * Definitions report (add-defined-terms-report), populated only when
+   * `--definitions` is passed (or the tab export is used). Outside `run`,
+   * so `result_hash` is unchanged; carries its own `definitions_hash`.
+   */
+  definitions?: import("./definitions.js").DefinitionsReport;
+  /**
    * Pre-disclosure / "Clean to Send" scan (spec-v9 Thrust A). Container facts
    * recovered from the document's ORIGINAL bytes — tracked changes, comments,
    * hidden content, authoring metadata, sensitive-data patterns — aggregated
@@ -174,6 +180,7 @@ export function buildJsonReport(
   closingChecklist?: ClosingChecklist,
   negotiationPosture?: NegotiationPosture,
   currency?: CitationCurrency,
+  definitions?: import("./definitions.js").DefinitionsReport,
 ): Blob {
   // spec-v6 Part IV — one model-clause reference per distinct fired rule that
   // has one, in first-seen finding order (findings arrive pre-sorted).
@@ -235,6 +242,8 @@ export function buildJsonReport(
   if (negotiationPosture && negotiationPosture.positions.length > 0) {
     payload.negotiation_posture = negotiationPosture;
   }
+  // add-defined-terms-report — the definitions block, outside `run`.
+  if (definitions) payload.definitions = definitions;
   // fix-legal-authority-currency — deterministic "verify currency" notes.
   if (currency) {
     const notes: Array<{ rule_id: string; citation_id: string; label: string }> = [];

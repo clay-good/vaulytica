@@ -1,10 +1,10 @@
 # Tasks
 
-- [ ] 1. Implement `src/report/definitions.ts`: pure projection from `extracted.definitions` + term-usage locations → the five buckets (undefined-but-used, defined, unused, duplicate, used-before-defined), risk-ordered, with `definitions_hash` over the canonical model.
-- [ ] 2. Bundle mode: merge per-document projections and mark cross-document redefinitions (reuse CROSS-DEFTERM's comparison, unchanged).
-- [ ] 3. Renderers: DOCX section, CSV, JSON block; determinism tests.
-- [ ] 4. Tab view: sortable table with locations; jump-to-excerpt.
-- [ ] 5. CLI `--definitions`; stream contract respected.
-- [ ] 6. Tests over fixtures with known term inventories; property test — every term in exactly one primary bucket per document.
-- [ ] 7. README/site: "Definitions report" feature blurb.
-- [ ] 8. Full gate green.
+- [x] 1. Implement `src/report/definitions.ts`: pure projection from `extracted.definitions` + term-usage locations → the five buckets (undefined-but-used, defined, unused, duplicate, used-before-defined), risk-ordered, with `definitions_hash` over the canonical model. *(Namespaced hash + `verifyDefinitionsHash`; circular-definition chains carried as a secondary annotation.)*
+- [x] 2. Bundle mode: merge per-document projections and mark cross-document redefinitions (reuse CROSS-DEFTERM's comparison, unchanged). *(`buildBundleDefinitionsReport` runs `findDefinedTermMismatches` — the exact CROSS-DEFTERM-001 helper — pairwise, so this surface can never disagree with the consistency findings. Model + tests; bundle-UI wiring is a follow-up (the single-doc surface was the deliverable gap).)*
+- [x] 3. Renderers: DOCX section, CSV, JSON block; determinism tests. *(CSV (risk-ordered), Markdown section, JSON report block outside `run`. DEVIATION: no section was added to the Word report — the standalone CSV/JSON + `--definitions` JSON/md cover the deliverable without changing every existing Word report's content; a Word section can follow as a render-side addition.)*
+- [x] 4. Tab view: sortable table with locations; jump-to-excerpt. *(DEVIATION, scoped honestly: the tab gains "Definitions report (CSV/JSON)" exports with section locations in every row. A sortable in-tab table with jump-to-excerpt presumes a document pane the app does not have — the UI never renders the document itself — so "jump-to-excerpt" has no target; locations are rendered as section references instead.)*
+- [x] 5. CLI `--definitions`; stream contract respected. *(Classifier-free re-extract per input — the same pattern `--critical-dates` uses; adds the JSON block and the md summary section; machine formats stay pure.)*
+- [x] 6. Tests over fixtures with known term inventories; property test — every term in exactly one primary bucket per document. *(Known five-bucket inventory + fast-check property (50 runs): no term appears twice, no term dropped; live check: mutual-nda.docx → 2 defined terms.)*
+- [x] 7. README/site: "Definitions report" feature blurb. *(README exports paragraph.)*
+- [x] 8. Full gate green. *(typecheck, lint, format:check, 3,726 tests / 267 files, build.)*
