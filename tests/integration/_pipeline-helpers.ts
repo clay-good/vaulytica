@@ -56,11 +56,13 @@ export type RunFixtureResult = {
 export async function runFixture(path: string, fileName?: string): Promise<RunFixtureResult> {
   const name = fileName ?? basename(path);
   let ingest: IngestResult;
+  let sizeBytes: number;
   if (path.endsWith(".docx")) {
     // Node mammoth doesn't accept `arrayBuffer`; pass the Node Buffer
     // directly. Then funnel through the same `parseDocxHtml` →
     // `normalize` path the browser ingest uses.
     const buf = await readFile(path);
+    sizeBytes = buf.byteLength;
     const ab = buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) as ArrayBuffer;
     const mammoth = (await import("mammoth")) as unknown as {
       convertToHtml: (input: {
@@ -81,6 +83,7 @@ export async function runFixture(path: string, fileName?: string): Promise<RunFi
     };
   } else if (path.endsWith(".txt")) {
     const text = await readFile(path, "utf8");
+    sizeBytes = Buffer.byteLength(text);
     ingest = await ingestPaste(text);
   } else {
     throw new Error(`unsupported fixture type: ${path}`);
@@ -116,7 +119,9 @@ export async function runFixture(path: string, fileName?: string): Promise<RunFi
   const run = await runEngine({
     rules: LAUNCH_RULES,
     ctx: { tree: ingest.tree, extracted, dkb, playbook },
-    source_file: { name, sha256: ingest.sha256, size_bytes: ingest.tree.sections.length },
+    // The input's byte length — the same basis every product surface stamps
+    // (fix-cli-browser-parity); `source_file` is inside the hashed run.
+    source_file: { name, sha256: ingest.sha256, size_bytes: sizeBytes },
     playbook_match_confidence: match.confidence,
     playbook_match_reasoning: match.reasoning,
     // Empty string keeps `executed_at` out of the hash and out of the

@@ -58,4 +58,29 @@ describe("verifyReproducibility (spec-v8 §24)", () => {
     const result = await verifyReproducibility(saved, NDA, { deps });
     expect(result.divergences.some((d) => d.kind === "engine")).toBe(true);
   });
+
+  it("re-runs under the report's stamped dkb_version when still present (fix-cli-browser-parity)", async () => {
+    // A report produced under an OLDER artifact (the starter) must stay
+    // checkable after a DKB release: verify resolves the pinned version
+    // from dkb/dist/ instead of re-running under latest and mis-reporting
+    // a dkb divergence.
+    const starterDeps = await loadAccuracyDeps({ dkbDir: "dkb/dist/v0.0.1-starter" });
+    const saved = await savedReportFor(NDA, starterDeps);
+    expect(saved.run.dkb_version).toBe("v0.0.1-starter");
+    const result = await verifyReproducibility(saved, NDA); // no deps: pinned resolution
+    expect(result.divergences.filter((d) => d.kind === "dkb")).toEqual([]);
+    expect(result.reproduced).toBe(true);
+  });
+
+  it("reports a dkb divergence only when the stamped version is absent", async () => {
+    const deps = await loadAccuracyDeps();
+    const saved = await savedReportFor(NDA, deps);
+    saved.run.dkb_version = "v9999-99-99-gone";
+    saved.provenance!.dkb_version = "v9999-99-99-gone";
+    const result = await verifyReproducibility(saved, NDA); // falls back to latest
+    const dkb = result.divergences.filter((d) => d.kind === "dkb");
+    expect(dkb).toHaveLength(1);
+    expect(dkb[0]!.expected).toBe("v9999-99-99-gone");
+    expect(dkb[0]!.actual.length).toBeGreaterThan(0);
+  });
 });

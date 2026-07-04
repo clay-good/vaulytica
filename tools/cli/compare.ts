@@ -57,6 +57,8 @@ type CompareArgs = {
   /** spec-v11 Thrust C — exit non-zero when any posture dimension regressed. */
   failOnRegression: boolean;
   confirmPairing: boolean;
+  /** Explicit DKB artifact directory; default resolves the latest `dkb/dist/` version. */
+  dkb?: string;
 };
 
 export function parseCompareArgs(argv: string[]): CompareArgs {
@@ -99,6 +101,9 @@ export function parseCompareArgs(argv: string[]): CompareArgs {
       case "--confirm-pairing":
         args.confirmPairing = true;
         break;
+      case "--dkb":
+        args.dkb = argv[++i];
+        break;
       default:
         if (flag.startsWith("--")) throw new Error(`unknown flag "${flag}"`);
         positional.push(flag);
@@ -106,7 +111,7 @@ export function parseCompareArgs(argv: string[]): CompareArgs {
   }
   if (positional.length !== 2) {
     throw new Error(
-      "usage: compare <base> <revised> [--playbook <id>] [--playbook-file <path>] [--posture] [--format json|markdown] [--fail-on <sev>] [--fail-on-regression] [--confirm-pairing]",
+      "usage: compare <base> <revised> [--playbook <id>] [--playbook-file <path>] [--posture] [--format json|markdown] [--fail-on <sev>] [--fail-on-regression] [--confirm-pairing] [--dkb <dir>]",
     );
   }
   if (args.posture && !args.playbookFile) {
@@ -287,7 +292,7 @@ export async function runCompare(argv: string[]): Promise<void> {
     }
   }
 
-  const deps = await loadAccuracyDeps();
+  const deps = await loadAccuracyDeps({ dkbDir: args.dkb });
   const analyzeOpts = { playbookId: args.playbook, deps, customPlaybook, posture: args.posture };
   const baseR = await analyzeFile(args.base, analyzeOpts);
   const revisedR = await analyzeFile(args.revised, analyzeOpts);

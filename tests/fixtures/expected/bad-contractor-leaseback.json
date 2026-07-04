@@ -889,11 +889,11 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "81e9823f6aa670e812fb4f52e3d7049912ff99f7c308840b88f3a35a58b6f5a8",
+  "result_hash": "d4f9cd26d50c70a3ae35e82209046cd879edc3a8ad3ce7e77fbb16bb68ea33ca",
   "source_file": {
     "name": "bad-contractor-leaseback.docx",
     "sha256": "82496f664a3abe77b7ed03c7c77b47c9ffbd8c5f883389cb761b7ba68b31f98d",
-    "size_bytes": 1
+    "size_bytes": 9466
   },
   "version": "0.1.0"
 }

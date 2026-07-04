@@ -6,8 +6,9 @@
  * browser `runReport` by `parity.test.ts`), so a team can run the engine
  * headless — in CI, a pre-commit hook, or a folder sweep — with the *same
  * determinism the browser gives*. The DKB ships *with* the tool (the
- * committed starter DKB), so analysis opens **no socket** — posture-
- * preserving "nothing leaves your machine."
+ * latest committed `dkb/dist/` artifact — the same one the site build
+ * serves, so browser reports verify headless), so analysis opens **no
+ * socket** — posture-preserving "nothing leaves your machine."
  *
  * Build/CI-only and never imported by `src/` (asserted by
  * `accuracy-corpus-guard.test.ts`). It composes `src/` ingest + the
@@ -140,6 +141,8 @@ export async function analyzeFile(
   opts: {
     playbookId?: string;
     deps?: AccuracyDeps;
+    /** Explicit DKB artifact directory (`--dkb`); default resolves latest. */
+    dkbDir?: string;
     delivery?: boolean;
     criticalDates?: boolean;
     checklist?: boolean;
@@ -148,10 +151,10 @@ export async function analyzeFile(
     posture?: boolean;
   } = {},
 ): Promise<AnalyzeResult> {
-  const deps = opts.deps ?? (await loadAccuracyDeps());
+  const deps = opts.deps ?? (await loadAccuracyDeps({ dkbDir: opts.dkbDir }));
   const bytes = await readFile(path);
   const ingest = await ingestByExtension(path, bytes);
-  const result = await runIngested(ingest, basename(path), opts.playbookId, deps);
+  const result = await runIngested(ingest, basename(path), opts.playbookId, deps, bytes.byteLength);
   const out: AnalyzeResult = { ...result, ingest };
   if (opts.delivery) {
     out.delivery = await scanDelivery({
@@ -199,11 +202,17 @@ export async function analyzeFile(
 export async function analyzeText(
   text: string,
   filename: string,
-  opts: { playbookId?: string; deps?: AccuracyDeps } = {},
+  opts: { playbookId?: string; deps?: AccuracyDeps; dkbDir?: string } = {},
 ): Promise<AnalyzeResult> {
-  const deps = opts.deps ?? (await loadAccuracyDeps());
+  const deps = opts.deps ?? (await loadAccuracyDeps({ dkbDir: opts.dkbDir }));
   const ingest = await ingestPaste(text);
-  const result = await runIngested(ingest, filename, opts.playbookId, deps);
+  const result = await runIngested(
+    ingest,
+    filename,
+    opts.playbookId,
+    deps,
+    Buffer.byteLength(text),
+  );
   return { ...result, ingest };
 }
 

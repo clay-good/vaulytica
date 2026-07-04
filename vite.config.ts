@@ -1,5 +1,6 @@
 import { defineConfig, type Plugin } from "vite";
 import { resolve } from "node:path";
+import { pickLatestDkb } from "./tools/dkb/resolve.js";
 import { createHash } from "node:crypto";
 import {
   copyFileSync,
@@ -7,7 +8,6 @@ import {
   existsSync,
   mkdirSync,
   readFileSync,
-  readdirSync,
   statSync,
   writeFileSync,
 } from "node:fs";
@@ -357,15 +357,6 @@ export function assertShippableDkb(dkbDir: string): void {
         `${empty.join(", ")} — rebuild the DKB (npm run dkb:build) before building the site`,
     );
   }
-}
-
-function pickLatestDkb(distRoot: string): string {
-  if (!existsSync(distRoot)) return distRoot;
-  const entries = readdirSync(distRoot)
-    .map((name) => ({ name, path: resolve(distRoot, name) }))
-    .filter((e) => statSync(e.path).isDirectory())
-    .sort((a, b) => a.name.localeCompare(b.name));
-  return entries.length > 0 ? entries[entries.length - 1]!.path : distRoot;
 }
 
 function contentType(path: string): string {

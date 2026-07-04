@@ -24,7 +24,7 @@
  *   tsx tools/cli/run.ts coherence-volatility <r1.coherence.json> <r2.coherence.json> [<r3…> …] [--format markdown|json] [--fail-on-volatile-exposure]
  *   tsx tools/cli/run.ts coherence-synchrony <r1.coherence.json> <r2.coherence.json> [<r3…> …] [--format markdown|json] [--fail-on-synchronized-exposure]
  *   tsx tools/cli/run.ts coherence-settling <r1.coherence.json> <r2.coherence.json> [<r3…> …] [--format markdown|json] [--fail-on-unsettled-exposure]
- *   tsx tools/cli/run.ts verify <report.json> <original> [--playbook <id>]
+ *   tsx tools/cli/run.ts verify <report.json> <original> [--playbook <id>] [--dkb <dir>]
  *
  * One dispatcher over the reach commands: `analyze` runs the engine headless
  * (CI gate), `diff` compares two custom playbooks (Step 144), `compare`
@@ -229,6 +229,8 @@ type Args = {
   emitCoherence?: string;
   /** spec-v14 Thrust B — diff against a saved coherence artifact instead of re-analyzing a baseline bundle. */
   baselineCoherence?: string;
+  /** Explicit DKB artifact directory; default resolves the latest `dkb/dist/` version (browser parity). */
+  dkb?: string;
 };
 
 function parseArgs(argv: string[]): Args {
@@ -291,6 +293,10 @@ function parseArgs(argv: string[]): Args {
         break;
       case "--baseline-coherence":
         args.baselineCoherence = val;
+        i++;
+        break;
+      case "--dkb":
+        args.dkb = val;
         i++;
         break;
       default:
@@ -399,7 +405,7 @@ function worstSeverity(r: AnalyzeResult): Severity | null {
 
 async function runAnalyze(argv: string[]): Promise<void> {
   const args = parseArgs(argv);
-  const deps = await loadAccuracyDeps();
+  const deps = await loadAccuracyDeps({ dkbDir: args.dkb });
 
   // spec-v10 Thrust B — load + validate a custom playbook file (its
   // `negotiation_positions` drive `--posture`). A malformed playbook is a hard
@@ -713,9 +719,12 @@ async function runVerify(argv: string[]): Promise<void> {
   // approach would mis-assign the report path).
   const positional: string[] = [];
   let playbookId: string | undefined;
+  let dkbDir: string | undefined;
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === "--playbook") {
       playbookId = argv[++i];
+    } else if (argv[i] === "--dkb") {
+      dkbDir = argv[++i];
     } else if (argv[i]!.startsWith("--")) {
       throw new Error(`unknown flag "${argv[i]}"`);
     } else {
@@ -724,11 +733,11 @@ async function runVerify(argv: string[]): Promise<void> {
   }
   const [reportPath, originalPath] = positional;
   if (!reportPath || !originalPath) {
-    throw new Error("usage: verify <report.json> <original> [--playbook <id>]");
+    throw new Error("usage: verify <report.json> <original> [--playbook <id>] [--dkb <dir>]");
   }
   const saved = JSON.parse(await readFile(reportPath, "utf8")) as SavedReport;
   if (playbookId) saved.run.playbook_id = playbookId;
-  const result = await verifyReproducibilityFromFile(saved, originalPath);
+  const result = await verifyReproducibilityFromFile(saved, originalPath, { dkbDir });
   process.stdout.write(explainReproResult(result) + "\n");
   if (!result.reproduced) process.exitCode = 3;
 }
@@ -740,14 +749,14 @@ Commands:
                           [--out <dir>] [--fail-on critical|warning|info]
                           [--delivery] [--critical-dates] [--checklist]
                           [--playbook-file <path>] [--posture]
-                          [--fail-on-divergence]
+                          [--fail-on-divergence] [--dkb <dir>]
                           [--baseline <path|glob|dir> | --baseline-coherence <coherence.json>]
                           [--emit-coherence <path>] [--fail-on-coherence-regression]
   diff    <a.json> <b.json> [--format markdown|json] [--exit-code]
   compare <base> <revised> [--playbook <id>] [--playbook-file <path>] [--posture]
                           [--format json|markdown]
                           [--fail-on critical|warning|info] [--fail-on-regression]
-                          [--confirm-pairing]
+                          [--confirm-pairing] [--dkb <dir>]
   compare-coherence <base.coherence.json> <revised.coherence.json>
                           [--format markdown|json] [--fail-on-coherence-regression]
   coherence-trend <r1.coherence.json> <r2.coherence.json> [<r3…> …]
@@ -806,7 +815,7 @@ Commands:
                           [--format markdown|json] [--fail-on-recovery-cycle]
   coherence-matrix <r1.coherence.json> <r2.coherence.json> [<r3…> …]
                           [--format markdown|json] [--fail-on-blackout-round]
-  verify  <report.json> <original> [--playbook <id>]
+  verify  <report.json> <original> [--playbook <id>] [--dkb <dir>]
 `;
 
 async function main(): Promise<void> {

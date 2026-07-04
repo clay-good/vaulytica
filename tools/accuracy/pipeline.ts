@@ -17,7 +17,8 @@ import { fileURLToPath } from "node:url";
 
 import { ingestPaste } from "../../src/ingest/paste.js";
 import { extractAll } from "../../src/extract/index.js";
-import { loadStarterDkbSync } from "../../src/engine/_test-fixtures.js";
+import type { DKB } from "../../src/dkb/types.js";
+import { loadDkbDirSync, resolveDkbDir } from "../dkb/resolve.js";
 import {
   LAUNCH_RULES,
   V3_RULES,
@@ -39,21 +40,26 @@ const REPO_ROOT = join(__dirname, "..", "..");
 const PLAYBOOK_DIR = join(REPO_ROOT, "playbooks");
 
 export type AccuracyDeps = {
-  dkb: ReturnType<typeof loadStarterDkbSync>;
+  dkb: DKB;
   launchPlaybooks: Playbook[];
   extendedPlaybooks: Playbook[];
   /** The full live rule catalog (LAUNCH + V3 + V4), exactly as the UI runs it. */
   rules: readonly Rule[];
 };
 
-let cached: AccuracyDeps | null = null;
+const cachedByDir = new Map<string, AccuracyDeps>();
 
-/** Load the engine dependencies once. The DKB is the committed starter (the
- * same load path the engine's integration tests use); the scoreboard stamps
- * `dkb.manifest.version` so a published number is always reproducible. */
-export async function loadAccuracyDeps(): Promise<AccuracyDeps> {
-  if (cached) return cached;
-  const dkb = loadStarterDkbSync();
+/** Load the engine dependencies once per DKB directory. The default DKB is
+ * the latest `dkb/dist/` artifact — the SAME one the site build ships
+ * (`dkb_version` is inside `result_hash`, so anything else makes browser
+ * reports unverifiable headless); `--dkb` pins an explicit artifact. The
+ * scoreboard stamps `dkb.manifest.version` so a published number is always
+ * reproducible. */
+export async function loadAccuracyDeps(opts: { dkbDir?: string } = {}): Promise<AccuracyDeps> {
+  const dkbDir = resolveDkbDir({ explicit: opts.dkbDir });
+  const hit = cachedByDir.get(dkbDir);
+  if (hit) return hit;
+  const dkb = loadDkbDirSync(dkbDir);
   const launchPlaybooks: Playbook[] = [];
   for (const id of LAUNCH_PLAYBOOK_IDS) {
     const text = await readFile(join(PLAYBOOK_DIR, `${id}.json`), "utf8");
@@ -68,13 +74,14 @@ export async function loadAccuracyDeps(): Promise<AccuracyDeps> {
   } catch {
     extendedPlaybooks = [];
   }
-  cached = {
+  const deps: AccuracyDeps = {
     dkb,
     launchPlaybooks,
     extendedPlaybooks,
     rules: [...LAUNCH_RULES, ...V3_RULES, ...V4_RULES] as readonly Rule[],
   };
-  return cached;
+  cachedByDir.set(dkbDir, deps);
+  return deps;
 }
 
 export type DocumentRun = {
@@ -110,7 +117,8 @@ export async function runDocument(
   playbookId: string | undefined,
   deps: AccuracyDeps,
 ): Promise<DocumentRun> {
-  return runIngested(await ingestPaste(text), filename, playbookId, deps);
+  // UTF-8 byte length — what the browser stamps for the same text input.
+  return runIngested(await ingestPaste(text), filename, playbookId, deps, Buffer.byteLength(text));
 }
 
 /**
@@ -125,6 +133,14 @@ export async function runIngested(
   filename: string,
   playbookId: string | undefined,
   deps: AccuracyDeps,
+  /**
+   * Byte length of the ingested input — file bytes for binary inputs,
+   * UTF-8 byte length for text — matching what the browser stamps
+   * (`src/ui/pipeline.ts` uses `buffer.byteLength`). `source_file` is
+   * inside the hashed run, so any other basis breaks cross-surface
+   * verification.
+   */
+  sizeBytes: number,
 ): Promise<DocumentRun> {
   const extracted = extractAll(ingest.tree, {
     classifier: { vocab: { vocab: {} }, patterns: deps.dkb.classifier.patterns },
@@ -151,7 +167,7 @@ export async function runIngested(
   const run = await runEngine({
     rules: deps.rules,
     ctx: { tree: ingest.tree, extracted, dkb: deps.dkb, playbook },
-    source_file: { name: filename, sha256: ingest.sha256, size_bytes: ingest.tree.sections.length },
+    source_file: { name: filename, sha256: ingest.sha256, size_bytes: sizeBytes },
     playbook_match_confidence: match.confidence,
     playbook_match_reasoning: match.reasoning,
     executed_at: "",

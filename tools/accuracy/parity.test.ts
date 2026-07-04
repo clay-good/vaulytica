@@ -101,11 +101,12 @@ describe("Node↔browser pipeline parity (spec-v7 Step 120)", () => {
         body_text: body,
         dkb: deps.dkb,
         playbook,
-        // Identical to runDocument's source_file construction.
+        // Identical to runDocument's source_file construction: the UTF-8
+        // byte length of the input, the same basis the browser stamps.
         source_file: {
           name: fx.name,
           sha256: ingest.sha256,
-          size_bytes: ingest.tree.sections.length,
+          size_bytes: Buffer.byteLength(fx.text),
         },
         match: {
           playbook_id: match.playbook_id,

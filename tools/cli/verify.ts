@@ -20,6 +20,7 @@ import { readFile } from "node:fs/promises";
 import { sha256Hex } from "../../src/ingest/hash.js";
 import { analyzeText, analyzeFile, loadAccuracyDeps, type AnalyzeResult } from "./api.js";
 import type { AccuracyDeps } from "../accuracy/pipeline.js";
+import { resolveDkbDir } from "../dkb/resolve.js";
 
 /** The fields of a saved JSON report the verifier needs. */
 export type SavedReport = {
@@ -57,9 +58,9 @@ export type ReproResult = {
 export async function verifyReproducibility(
   saved: SavedReport,
   originalText: string,
-  opts: { deps?: AccuracyDeps } = {},
+  opts: { deps?: AccuracyDeps; dkbDir?: string } = {},
 ): Promise<ReproResult> {
-  const deps = opts.deps ?? (await loadAccuracyDeps());
+  const deps = opts.deps ?? (await loadVerifyDeps(saved, opts.dkbDir));
   const re: AnalyzeResult = await analyzeText(originalText, saved.run.source_file.name, {
     deps,
     playbookId: saved.run.playbook_id,
@@ -78,13 +79,26 @@ export async function verifyReproducibility(
 export async function verifyReproducibilityFromFile(
   saved: SavedReport,
   path: string,
-  opts: { deps?: AccuracyDeps } = {},
+  opts: { deps?: AccuracyDeps; dkbDir?: string } = {},
 ): Promise<ReproResult> {
-  const deps = opts.deps ?? (await loadAccuracyDeps());
+  const deps = opts.deps ?? (await loadVerifyDeps(saved, opts.dkbDir));
   const re = await analyzeFile(path, { deps, playbookId: saved.run.playbook_id });
   // The recorded `source_file.sha256` is the ingest hash (binary bytes for
   // DOCX/PDF, the UTF-8 text for paste); `re.ingest.sha256` is its mirror.
   return assembleReproResult(saved, re, re.ingest.sha256, deps.dkb.manifest.version);
+}
+
+/**
+ * Resolve the DKB a verification re-run should load: an explicit `--dkb`
+ * wins; otherwise the saved report's stamped `dkb_version` is used when
+ * that artifact is still present in `dkb/dist/` (so old receipts stay
+ * checkable after a DKB release), falling back to latest. A `dkb`
+ * divergence therefore fires only when the pinned version is absent.
+ */
+async function loadVerifyDeps(saved: SavedReport, dkbDir?: string): Promise<AccuracyDeps> {
+  return loadAccuracyDeps({
+    dkbDir: resolveDkbDir({ explicit: dkbDir, pinnedVersion: saved.run.dkb_version }),
+  });
 }
 
 /** Assemble the divergence list + receipt from a re-derived run. */
