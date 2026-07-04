@@ -90,6 +90,8 @@ function containerSource(path: string): ContainerSource {
 
 /** Format families the CLI can ingest, by extension. */
 const TEXT_EXT = new Set([".txt", ".md", ".markdown", ".text"]);
+/** Every extension the CLI ingests without `--as-text`. */
+export const SUPPORTED_INPUT_EXT: ReadonlySet<string> = new Set([...TEXT_EXT, ".docx", ".pdf"]);
 
 /** Copy a Node Buffer into a fresh, standalone ArrayBuffer. */
 function toArrayBuffer(bytes: Buffer): ArrayBuffer {
@@ -117,18 +119,34 @@ async function ensureDomParser(): Promise<void> {
   g.DOMParser = new Window().DOMParser;
 }
 
-async function ingestByExtension(path: string, bytes: Buffer): Promise<IngestResult> {
+async function ingestByExtension(
+  path: string,
+  bytes: Buffer,
+  asText = false,
+): Promise<IngestResult> {
   const ext = extname(path).toLowerCase();
+  if (asText) {
+    // Explicit opt-in for extensionless / unconventionally named text files.
+    // Binary containers must never be decoded as text, flag or not.
+    if (ext === ".docx" || ext === ".pdf") {
+      throw new Error(`--as-text cannot apply to a binary ${ext} document: ${path}`);
+    }
+    return ingestPaste(bytes.toString("utf8"));
+  }
   if (TEXT_EXT.has(ext)) return ingestPaste(bytes.toString("utf8"));
   if (ext === ".docx") {
     await ensureDomParser();
     return ingestDocxBuffer(toArrayBuffer(bytes));
   }
   if (ext === ".pdf") return ingestPdfBuffer(toArrayBuffer(bytes));
-  // Unknown extension: treat as UTF-8 text (the most forgiving default; a
-  // truly binary blob produces an empty/garbled tree, never a crash —
-  // Thrust A guards the ingest functions).
-  return ingestPaste(bytes.toString("utf8"));
+  // No silent fallback (fix-cli-input-type-honesty): decoding unknown bytes
+  // as UTF-8 produced a full, confidently wrong findings report on garbage.
+  // An unrecognized extension is a hard error unless the user opts the file
+  // into text ingestion with --as-text.
+  throw new Error(
+    `unsupported input type "${ext || "(no extension)"}": ${path} — supported: ` +
+      `${[...SUPPORTED_INPUT_EXT].sort().join(", ")}; pass --as-text to ingest as UTF-8 text`,
+  );
 }
 
 /**
@@ -143,6 +161,8 @@ export async function analyzeFile(
     deps?: AccuracyDeps;
     /** Explicit DKB artifact directory (`--dkb`); default resolves latest. */
     dkbDir?: string;
+    /** `--as-text`: ingest as UTF-8 text regardless of extension (never .docx/.pdf). */
+    asText?: boolean;
     delivery?: boolean;
     criticalDates?: boolean;
     checklist?: boolean;
@@ -153,7 +173,7 @@ export async function analyzeFile(
 ): Promise<AnalyzeResult> {
   const deps = opts.deps ?? (await loadAccuracyDeps({ dkbDir: opts.dkbDir }));
   const bytes = await readFile(path);
-  const ingest = await ingestByExtension(path, bytes);
+  const ingest = await ingestByExtension(path, bytes, opts.asText);
   const result = await runIngested(ingest, basename(path), opts.playbookId, deps, bytes.byteLength);
   const out: AnalyzeResult = { ...result, ingest };
   if (opts.delivery) {

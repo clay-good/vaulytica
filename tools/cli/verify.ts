@@ -79,10 +79,14 @@ export async function verifyReproducibility(
 export async function verifyReproducibilityFromFile(
   saved: SavedReport,
   path: string,
-  opts: { deps?: AccuracyDeps; dkbDir?: string } = {},
+  opts: { deps?: AccuracyDeps; dkbDir?: string; asText?: boolean } = {},
 ): Promise<ReproResult> {
   const deps = opts.deps ?? (await loadVerifyDeps(saved, opts.dkbDir));
-  const re = await analyzeFile(path, { deps, playbookId: saved.run.playbook_id });
+  const re = await analyzeFile(path, {
+    deps,
+    playbookId: saved.run.playbook_id,
+    asText: opts.asText,
+  });
   // The recorded `source_file.sha256` is the ingest hash (binary bytes for
   // DOCX/PDF, the UTF-8 text for paste); `re.ingest.sha256` is its mirror.
   return assembleReproResult(saved, re, re.ingest.sha256, deps.dkb.manifest.version);

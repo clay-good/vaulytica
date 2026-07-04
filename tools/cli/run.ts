@@ -238,6 +238,8 @@ type Args = {
   baselineCoherence?: string;
   /** Explicit DKB artifact directory; default resolves the latest `dkb/dist/` version (browser parity). */
   dkb?: string;
+  /** Ingest the target(s) as UTF-8 text regardless of extension (never .docx/.pdf). */
+  asText?: boolean;
 };
 
 function parseArgs(argv: string[]): Args {
@@ -306,6 +308,9 @@ function parseArgs(argv: string[]): Args {
         args.dkb = val;
         i++;
         break;
+      case "--as-text":
+        args.asText = true;
+        break;
       default:
         throw new Error(`unknown flag "${flag}"`);
     }
@@ -351,10 +356,26 @@ export function globToRegExp(pattern: string): RegExp {
 }
 
 /** Resolve the target into a deterministic, sorted list of input files. */
-export async function resolveInputs(target: string): Promise<string[]> {
+export async function resolveInputs(
+  target: string,
+  opts: { asText?: boolean } = {},
+): Promise<string[]> {
   const st = await stat(target).catch(() => null);
   if (st?.isDirectory()) return walkDir(target);
-  if (st?.isFile()) return [target];
+  if (st?.isFile()) {
+    // A directly named file honors the same allowlist directory and glob
+    // resolution apply (fix-cli-input-type-honesty): an unknown extension
+    // used to fall through to a silent UTF-8 decode and a full,
+    // confidently wrong findings report. `--as-text` is the explicit
+    // opt-in for extensionless / unconventionally named text files.
+    if (!opts.asText && !SUPPORTED_EXT.has(extname(target).toLowerCase())) {
+      throw new Error(
+        `unsupported input type: ${target} (supported: ` +
+          `${[...SUPPORTED_EXT].sort().join(", ")}; pass --as-text to ingest as UTF-8 text)`,
+      );
+    }
+    return [target];
+  }
   // Treat as a simple `dir/*.ext` glob (one wildcard segment).
   if (target.includes("*")) {
     const { dir, pattern } = splitGlob(target);
@@ -362,6 +383,7 @@ export async function resolveInputs(target: string): Promise<string[]> {
     const names = await readdir(dir).catch(() => [] as string[]);
     return names
       .filter((n) => re.test(n))
+      .filter((n) => opts.asText || SUPPORTED_EXT.has(extname(n).toLowerCase()))
       .sort()
       .map((n) => join(dir, n));
   }
@@ -484,7 +506,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
     return;
   }
 
-  const inputs = await resolveInputs(args.target);
+  const inputs = await resolveInputs(args.target, { asText: args.asText });
   if (inputs.length === 0) {
     process.stderr.write(`no analyzable files matched: ${args.target}\n`);
     process.exitCode = 1;
@@ -500,6 +522,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
     const r = await analyzeFile(file, {
       playbookId: args.playbook,
       deps,
+      asText: args.asText,
       delivery: args.delivery,
       criticalDates: args.criticalDates,
       checklist: args.checklist,
@@ -730,11 +753,14 @@ async function runVerify(argv: string[]): Promise<void> {
   const positional: string[] = [];
   let playbookId: string | undefined;
   let dkbDir: string | undefined;
+  let asText = false;
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === "--playbook") {
       playbookId = argv[++i];
     } else if (argv[i] === "--dkb") {
       dkbDir = argv[++i];
+    } else if (argv[i] === "--as-text") {
+      asText = true;
     } else if (argv[i]!.startsWith("--")) {
       throw new Error(`unknown flag "${argv[i]}"`);
     } else {
@@ -743,11 +769,13 @@ async function runVerify(argv: string[]): Promise<void> {
   }
   const [reportPath, originalPath] = positional;
   if (!reportPath || !originalPath) {
-    throw new Error("usage: verify <report.json> <original> [--playbook <id>] [--dkb <dir>]");
+    throw new Error(
+      "usage: verify <report.json> <original> [--playbook <id>] [--dkb <dir>] [--as-text]",
+    );
   }
   const saved = JSON.parse(await readFile(reportPath, "utf8")) as SavedReport;
   if (playbookId) saved.run.playbook_id = playbookId;
-  const result = await verifyReproducibilityFromFile(saved, originalPath, { dkbDir });
+  const result = await verifyReproducibilityFromFile(saved, originalPath, { dkbDir, asText });
   process.stdout.write(explainReproResult(result) + "\n");
   if (!result.reproduced) process.exitCode = 3;
 }
@@ -759,7 +787,7 @@ Commands:
                           [--out <dir>] [--fail-on critical|warning|info]
                           [--delivery] [--critical-dates] [--checklist]
                           [--playbook-file <path>] [--posture]
-                          [--fail-on-divergence] [--dkb <dir>]
+                          [--fail-on-divergence] [--dkb <dir>] [--as-text]
                           [--baseline <path|glob|dir> | --baseline-coherence <coherence.json>]
                           [--emit-coherence <path>] [--fail-on-coherence-regression]
   diff    <a.json> <b.json> [--format markdown|json] [--exit-code]
@@ -825,7 +853,13 @@ Commands:
                           [--format markdown|json] [--fail-on-recovery-cycle]
   coherence-matrix <r1.coherence.json> <r2.coherence.json> [<r3…> …]
                           [--format markdown|json] [--fail-on-blackout-round]
-  verify  <report.json> <original> [--playbook <id>] [--dkb <dir>]
+  verify  <report.json> <original> [--playbook <id>] [--dkb <dir>] [--as-text]
+
+Input types: a directly named file must carry a supported extension
+(.txt, .md, .markdown, .text, .docx, .pdf) — an unknown extension is a
+hard error, never a silent UTF-8 decode. \`--as-text\` explicitly opts a
+text file with an unconventional (or no) extension into UTF-8 ingestion;
+it never applies to .docx/.pdf.
 
 Stream contract: with a machine-readable format (json, sarif, csv), stdout
 carries exactly one serialized artifact — summaries, notes, and progress
