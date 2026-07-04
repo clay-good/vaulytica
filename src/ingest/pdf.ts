@@ -300,7 +300,11 @@ function buildTreeFromPages(pages: PageContent[]): DocumentTree {
     }
   }
 
-  if (!promoted && sections.length > 1) sections.shift();
+  // Drop the synthetic root ONLY when it is genuinely empty (the paste-path
+  // guard, fix-ingest-preamble-integrity) — never the pre-heading preamble.
+  if (sections.length > 1 && sections[0] === root && root.paragraphs.length === 0) {
+    sections.shift();
+  }
   return { type: "document", sections };
 }
 

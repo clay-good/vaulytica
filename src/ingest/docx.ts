@@ -167,7 +167,14 @@ export function parseDocxHtml(html: string): DocumentTree {
     appendParagraph(runs);
   }
 
-  if (!promoted && sections.length > 1) sections.shift();
+  // Drop the synthetic root ONLY when it is genuinely empty (the paste-path
+  // guard, fix-ingest-preamble-integrity). The old `!promoted` condition
+  // fired precisely when the root held real content — the contract preamble
+  // (title, parties, recitals, effective date) typed before the first
+  // heading — and silently deleted it from every scan.
+  if (sections.length > 1 && sections[0] === root && root.paragraphs.length === 0) {
+    sections.shift();
+  }
   return { type: "document", sections };
 }
 
