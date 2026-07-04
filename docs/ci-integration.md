@@ -106,7 +106,9 @@ npx vaulytica verify report.json original.txt
 
 Exit codes are CI-meaningful: `2` when `--fail-on` is breached (analyze) or the
 revision introduced a finding at/above the threshold (compare), `1` for a
-playbook diff change (`--exit-code`), `3` when a report fails to reproduce.
+playbook diff change (`--exit-code`), `3` when a report fails to reproduce, and
+`4` when the saved report body was tampered with — its findings no longer hash
+to its own recorded `result_hash` (checked before the document is re-analyzed).
 
 **Stream contract.** With a machine-readable format active (`json`, `sarif`,
 `csv`), stdout carries exactly one serialized artifact — every human summary,

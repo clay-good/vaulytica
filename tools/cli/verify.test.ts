@@ -72,6 +72,36 @@ describe("verifyReproducibility (spec-v8 §24)", () => {
     expect(result.reproduced).toBe(true);
   });
 
+  it("catches a doctored report body (fix-verify-receipt-depth)", async () => {
+    // Save a FULL report body, flip one finding's severity, keep the
+    // recorded result_hash untouched — the exact tampering `verify` exists
+    // to catch. Pre-fix this printed "✓ Reproduced" and exited 0.
+    const deps = await loadAccuracyDeps();
+    const r = await analyzeText(NDA, "nda.txt", { deps });
+    const full = JSON.parse(JSON.stringify({ run: r.run })) as SavedReport & {
+      run: { findings: Array<{ severity: string }> };
+    };
+    expect(full.run.findings.length).toBeGreaterThan(0);
+    full.run.findings[0]!.severity = full.run.findings[0]!.severity === "info" ? "warning" : "info";
+
+    const result = await verifyReproducibility(full, NDA, { deps });
+    expect(result.body_tampered).toBe(true);
+    expect(result.reproduced).toBe(false);
+    expect(result.divergences).toEqual([
+      { kind: "report-body", expected: r.run.result_hash, actual: expect.any(String) },
+    ]);
+    expect(explainReproResult(result)).toContain("Report body tampered");
+  });
+
+  it("an untampered full report body passes the body check and reproduces", async () => {
+    const deps = await loadAccuracyDeps();
+    const r = await analyzeText(NDA, "nda.txt", { deps });
+    const full = JSON.parse(JSON.stringify({ run: r.run })) as SavedReport;
+    const result = await verifyReproducibility(full, NDA, { deps });
+    expect(result.body_tampered).toBeUndefined();
+    expect(result.reproduced).toBe(true);
+  });
+
   it("reports a dkb divergence only when the stamped version is absent", async () => {
     const deps = await loadAccuracyDeps();
     const saved = await savedReportFor(NDA, deps);

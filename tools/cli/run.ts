@@ -428,6 +428,20 @@ async function renderFormat(fmt: Format, r: AnalyzeResult, dkb: Dkb): Promise<st
 
 type Dkb = Awaited<ReturnType<typeof loadAccuracyDeps>>["dkb"];
 
+/**
+ * Portable document identifier for coherence/posture artifacts
+ * (fix-verify-receipt-depth): the basename, so an artifact hashes
+ * identically no matter which machine or directory the bundle was
+ * verified from — and never leaks the author's local paths. Collision
+ * rule: when two inputs in the bundle share a basename, both keep their
+ * as-given path (normalized to forward slashes), which must differ.
+ */
+export function documentLabel(file: string, all: readonly string[]): string {
+  const base = basename(file);
+  const collides = all.some((f) => f !== file && basename(f) === base);
+  return collides ? file.split("\\").join("/") : base;
+}
+
 function worstSeverity(r: AnalyzeResult): Severity | null {
   let worst: Severity | null = null;
   for (const f of r.run.findings) {
@@ -553,7 +567,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       human(
         `  Negotiation posture: ${c.ideal} ideal, ${c.acceptable} acceptable, ${c.below_acceptable} below floor, ${c.unevaluable} not stated.\n`,
       );
-      postures.push({ document: file, posture: r.negotiation_posture });
+      postures.push({ document: documentLabel(file, inputs), posture: r.negotiation_posture });
     }
 
     for (const fmt of args.formats) {
@@ -713,7 +727,8 @@ async function collectBaselineCoherence(
       customPlaybook: opts.customPlaybook,
       posture: true,
     });
-    if (r.negotiation_posture) postures.push({ document: file, posture: r.negotiation_posture });
+    if (r.negotiation_posture)
+      postures.push({ document: documentLabel(file, inputs), posture: r.negotiation_posture });
   }
   return postures.length >= 2 ? bundlePostureCoherence(postures) : null;
 }
@@ -778,10 +793,16 @@ async function runVerify(argv: string[]): Promise<void> {
     );
   }
   const saved = JSON.parse(await readFile(reportPath, "utf8")) as SavedReport;
-  if (playbookId) saved.run.playbook_id = playbookId;
-  const result = await verifyReproducibilityFromFile(saved, originalPath, { dkbDir, asText });
+  // The override is passed as an option, never written into `saved` — the
+  // body-integrity check must see the report exactly as it was produced.
+  const result = await verifyReproducibilityFromFile(saved, originalPath, {
+    dkbDir,
+    asText,
+    playbookId,
+  });
   process.stdout.write(explainReproResult(result) + "\n");
-  if (!result.reproduced) process.exitCode = 3;
+  if (result.body_tampered) process.exitCode = 4;
+  else if (!result.reproduced) process.exitCode = 3;
 }
 
 const USAGE = `vaulytica — deterministic legal-document linter (headless)

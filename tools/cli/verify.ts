@@ -18,6 +18,7 @@
 import { readFile } from "node:fs/promises";
 
 import { sha256Hex } from "../../src/ingest/hash.js";
+import { computeResultHash, type EngineRun } from "../../src/engine/index.js";
 import { analyzeText, analyzeFile, loadAccuracyDeps, type AnalyzeResult } from "./api.js";
 import type { AccuracyDeps } from "../accuracy/pipeline.js";
 import { resolveDkbDir } from "../dkb/resolve.js";
@@ -30,6 +31,10 @@ export type SavedReport = {
     playbook_id: string;
     source_file: { name: string; sha256: string };
     result_hash: string;
+    /** Present in a full report body — enables the body-integrity check. */
+    findings?: unknown[];
+    /** Present in a full report body — enables the body-integrity check. */
+    execution_log?: unknown[];
   };
   provenance?: {
     engine_version: string;
@@ -38,16 +43,45 @@ export type SavedReport = {
   };
 };
 
-export type DivergenceKind = "input" | "engine" | "dkb" | "result-hash";
+export type DivergenceKind = "input" | "engine" | "dkb" | "result-hash" | "report-body";
 
 export type ReproResult = {
   /** True iff the re-derived result_hash equals the saved one. */
   reproduced: boolean;
+  /**
+   * True when the saved report's own body no longer hashes to its recorded
+   * `result_hash` — the report was edited after it was produced. Checked
+   * BEFORE the original document is re-analyzed; when set, no re-run happens.
+   */
+  body_tampered?: boolean;
   expected_result_hash: string;
   actual_result_hash: string;
   /** Which dimensions diverged, in a stable order. Empty ⇒ reproduced. */
   divergences: Array<{ kind: DivergenceKind; expected: string; actual: string }>;
 };
+
+/**
+ * Body-integrity check (fix-verify-receipt-depth): re-hash the saved
+ * report's own body — the same blanked-field canonicalization the engine
+ * uses — and compare it to the report's recorded `result_hash`. Before
+ * this check existed, flipping a finding's severity inside a saved report
+ * (recorded hash untouched) still printed "✓ Reproduced": the receipt
+ * green-lit exactly the tampering it exists to catch. Reports that carry
+ * only the provenance subset (no findings/execution_log body) cannot be
+ * body-checked and return `null`.
+ */
+async function checkSavedBody(saved: SavedReport): Promise<ReproResult | null> {
+  if (!Array.isArray(saved.run.findings) || !Array.isArray(saved.run.execution_log)) return null;
+  const recomputed = await computeResultHash(saved.run as unknown as EngineRun);
+  if (recomputed === saved.run.result_hash) return null;
+  return {
+    reproduced: false,
+    body_tampered: true,
+    expected_result_hash: saved.run.result_hash,
+    actual_result_hash: recomputed,
+    divergences: [{ kind: "report-body", expected: saved.run.result_hash, actual: recomputed }],
+  };
+}
 
 /**
  * Re-derive the run from `originalText` and compare against the saved
@@ -58,12 +92,14 @@ export type ReproResult = {
 export async function verifyReproducibility(
   saved: SavedReport,
   originalText: string,
-  opts: { deps?: AccuracyDeps; dkbDir?: string } = {},
+  opts: { deps?: AccuracyDeps; dkbDir?: string; playbookId?: string } = {},
 ): Promise<ReproResult> {
+  const tampered = await checkSavedBody(saved);
+  if (tampered) return tampered;
   const deps = opts.deps ?? (await loadVerifyDeps(saved, opts.dkbDir));
   const re: AnalyzeResult = await analyzeText(originalText, saved.run.source_file.name, {
     deps,
-    playbookId: saved.run.playbook_id,
+    playbookId: opts.playbookId ?? saved.run.playbook_id,
   });
   return assembleReproResult(saved, re, await sha256Hex(originalText), deps.dkb.manifest.version);
 }
@@ -79,12 +115,14 @@ export async function verifyReproducibility(
 export async function verifyReproducibilityFromFile(
   saved: SavedReport,
   path: string,
-  opts: { deps?: AccuracyDeps; dkbDir?: string; asText?: boolean } = {},
+  opts: { deps?: AccuracyDeps; dkbDir?: string; asText?: boolean; playbookId?: string } = {},
 ): Promise<ReproResult> {
+  const tampered = await checkSavedBody(saved);
+  if (tampered) return tampered;
   const deps = opts.deps ?? (await loadVerifyDeps(saved, opts.dkbDir));
   const re = await analyzeFile(path, {
     deps,
-    playbookId: saved.run.playbook_id,
+    playbookId: opts.playbookId ?? saved.run.playbook_id,
     asText: opts.asText,
   });
   // The recorded `source_file.sha256` is the ingest hash (binary bytes for
@@ -158,6 +196,13 @@ export function explainReproResult(r: ReproResult): string {
   if (r.reproduced) {
     return `✓ Reproduced. The re-derived result_hash matches the recorded one (${r.expected_result_hash}).`;
   }
+  if (r.body_tampered) {
+    return [
+      `✗ Report body tampered. The saved report's own findings no longer hash to its recorded result_hash`,
+      `(recorded ${r.expected_result_hash}, body hashes to ${r.actual_result_hash}).`,
+      `The report was edited after it was produced; the original document was not re-analyzed.`,
+    ].join("\n");
+  }
   const lines = [
     `✗ Not reproduced. Recorded ${r.expected_result_hash}, re-derived ${r.actual_result_hash}.`,
   ];
@@ -191,7 +236,8 @@ async function main(): Promise<void> {
   const saved = JSON.parse(await readFile(reportPath, "utf8")) as SavedReport;
   const result = await verifyReproducibilityFromFile(saved, originalPath);
   process.stdout.write(explainReproResult(result) + "\n");
-  if (!result.reproduced) process.exitCode = 3;
+  if (result.body_tampered) process.exitCode = 4;
+  else if (!result.reproduced) process.exitCode = 3;
 }
 
 // Run as a CLI only when invoked directly, not when imported by a test.

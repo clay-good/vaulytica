@@ -6,6 +6,7 @@ import {
   splitGlob,
   globToRegExp,
   resolveInputs,
+  documentLabel,
   renderCoherenceSummary,
   renderCoherenceMovementSummary,
 } from "./run.js";
@@ -185,6 +186,25 @@ describe("renderCoherenceMovementSummary (spec-v13 cross-document posture moveme
     const out = renderCoherenceMovementSummary(await compareCoherence(base, revised));
     expect(out).toContain("• Cap: binding floor ↑ improved (below-acceptable → acceptable)");
     expect(out).not.toContain("⚠");
+  });
+});
+
+describe("documentLabel — portable coherence identifiers (fix-verify-receipt-depth)", () => {
+  it("uses the basename, so the same bundle hashes identically from any directory", () => {
+    // Two machines, two roots, one bundle — identical identifiers.
+    const machineA = ["/home/alice/deals/acme/msa.docx", "/home/alice/deals/acme/order.docx"];
+    const machineB = ["/Users/bob/work/msa.docx", "/Users/bob/work/order.docx"];
+    expect(machineA.map((f) => documentLabel(f, machineA))).toEqual(["msa.docx", "order.docx"]);
+    expect(machineB.map((f) => documentLabel(f, machineB))).toEqual(["msa.docx", "order.docx"]);
+  });
+
+  it("collision rule: colliding basenames keep their as-given paths", () => {
+    const inputs = ["deals/acme/msa.docx", "deals/globex/msa.docx", "deals/order.docx"];
+    expect(inputs.map((f) => documentLabel(f, inputs))).toEqual([
+      "deals/acme/msa.docx",
+      "deals/globex/msa.docx",
+      "order.docx",
+    ]);
   });
 });
 
