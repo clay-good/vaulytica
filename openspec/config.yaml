@@ -1,0 +1,25 @@
+# OpenSpec project configuration — injected into every planning request.
+project:
+  name: Vaulytica
+  description: >
+    Free, deterministic, no-AI, no-server contract linter for attorneys.
+    Runs entirely in the browser tab (and byte-identically from a headless
+    CLI). 1,065 single-document rules, 20 cross-document checks, playbooks,
+    negotiation-posture tracking, pre-disclosure (metadata/tracked-changes)
+    scanning. Every report carries a result_hash and is reproducible.
+context: |
+  Non-negotiable posture for every change (the "§3 filter" from docs/spec-v*.md):
+  1. Deterministic — same inputs → byte-identical output, on any machine, forever.
+     No wall clock, no randomness, no locale drift in anything hashed.
+  2. Honest — the tool never claims more than it verified. Presence-only scans
+     never issue a clean bill. Unstated is never conflated with failing.
+  3. Advisory — lints, cites, and positions; NEVER drafts contract language of
+     its own and never renders a legal conclusion.
+  4. No server — nothing leaves the browser tab / local machine. No socket.
+  5. Verifiable — every artifact is hash-fingerprinted; tampering is a hard error.
+  Verification gate for every task: npm run typecheck && npm run lint &&
+  npm test && npm run build all green, plus the coverage/parity/property,
+  fuzz + citation, no-wall-clock, and responsiveness e2e gates.
+conventions:
+  specs_dir: openspec/specs
+  changes_dir: openspec/changes
