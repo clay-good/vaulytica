@@ -220,7 +220,8 @@ export function buildReviewedDocx(original: ArrayBuffer, run: EngineRun): Review
   }
 
   if (unanchoredFindings.length > 0) {
-    const id = nextId++;
+    // Last id issued — no post-increment (nothing reads nextId after this).
+    const id = nextId;
     const lines = unanchoredFindings.map(commentBody).join("");
     const header = `<w:p><w:r><w:t xml:space="preserve">${escapeXml(
       `${unanchoredFindings.length} finding(s) could not be anchored to a location in this document and are collected here:`,
