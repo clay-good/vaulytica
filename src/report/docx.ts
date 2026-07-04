@@ -50,7 +50,12 @@ import type { ClosingChecklist, ChecklistCategory } from "./closing-checklist.js
 import type { CriticalDatesRegister, CriticalDateKind } from "./critical-dates.js";
 import type { NegotiationPosture, NegotiationTier } from "../playbooks/custom-interpreter.js";
 import { buildBibliography, citationIndex, type BibliographyEntry } from "./bibliography.js";
-import { formatCitation, formatBibliographyEntry, breakLongTokens } from "./citations.js";
+import {
+  formatCitation,
+  formatBibliographyEntry,
+  breakLongTokens,
+  dkbCurrency,
+} from "./citations.js";
 import { modelClauseForRule, MODEL_CLAUSE_COVERAGE } from "../dkb/model-clauses.js";
 import { selectStateOverlays, type StateOverlayResult } from "../dkb/state-overlays.js";
 import type { V3ReportInputs } from "./v3/types.js";
@@ -127,7 +132,7 @@ export async function buildDocxReport(
       extracted ? selectStateOverlays(run.playbook_id, extracted.jurisdictions) : undefined,
     ),
     ...renderExtractedAppendix(run, extracted),
-    ...renderAuditTrail(run, playbook, bibliography),
+    ...renderAuditTrail(run, playbook, bibliography, dkbCurrency(dkb.manifest)),
     // v3 §59 — two-document consistency appendix.
     ...(v3?.consistency ? renderConsistencyAppendix(v3.consistency) : []),
     // v3 §55 — citation depth verification appendix.
@@ -808,6 +813,7 @@ function renderAuditTrail(
   run: EngineRun,
   playbook: Playbook,
   bibliography: BibliographyEntry[],
+  currency?: import("./citations.js").CitationCurrency,
 ): (Paragraph | Table)[] {
   const matched = run.playbook_match_reasoning
     ? `auto-selected (${run.playbook_match_reasoning})`
@@ -850,7 +856,7 @@ function renderAuditTrail(
     ...(bibliography.length === 0
       ? [para({ text: "No DKB sources were referenced by any finding in this report." })]
       : bibliography.map((b) =>
-          wrappingPara({ text: formatBibliographyEntry(b.index, b.source) }),
+          wrappingPara({ text: formatBibliographyEntry(b.index, b.source, currency) }),
         )),
     pageBreak(),
   ];

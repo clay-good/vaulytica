@@ -38,12 +38,7 @@
     "International Transfers",
     "Contact"
   ],
-  "expected_defined_terms": [
-    "Personal Information",
-    "Personal Data",
-    "Service",
-    "User"
-  ],
+  "expected_defined_terms": ["Personal Information", "Personal Data", "Service", "User"],
   "rule_overrides": {},
   "balanced_defaults": [],
   "sources": [

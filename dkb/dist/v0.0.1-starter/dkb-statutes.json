@@ -161,11 +161,11 @@
   },
   {
     "id": "stat-16-cfr-910",
-    "citation": "16 C.F.R. Part 910 (FTC Non-Compete Clause Rule — status as of 2026 may be subject to litigation)",
-    "canonical_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-J/part-910",
+    "citation": "16 C.F.R. Part 910 (FTC Non-Compete Clause Rule — vacated nationwide, Ryan LLC v. FTC, No. 3:24-cv-00986 (N.D. Tex. Aug. 20, 2024); never took effect; FTC appeals dismissed Sept. 2025, acceding to vacatur — federal posture is case-by-case FTC Act § 5 enforcement; non-compete enforceability rests on state law)",
+    "canonical_url": "https://www.federalregister.gov/documents/2024/05/07/2024-09171/non-compete-clause-rule",
     "jurisdiction": "us-federal",
-    "excerpt": "It is an unfair method of competition for an employer to enter into or attempt to enter into a non-compete clause with a worker; enforce or attempt to enforce a non-compete clause with a worker; or represent to a worker that the worker is subject to a non-compete clause.",
-    "retrieved_at": "2026-05-11T00:00:00Z"
+    "excerpt": "[Vacated; never took effect] The rule would have provided: it is an unfair method of competition for an employer to enter into or attempt to enter into a non-compete clause with a worker; enforce or attempt to enforce a non-compete clause with a worker; or represent to a worker that the worker is subject to a non-compete clause.",
+    "retrieved_at": "2026-07-04T00:00:00Z"
   },
   {
     "id": "stat-29-usc-206",

@@ -584,16 +584,17 @@ describe("jurisdiction overlays (spec-v6 Part VI §21, Step 101)", () => {
   });
 
   it("reports an uncovered governing-law state honestly", async () => {
+    // Montana: no non-compete overlay node (Wyoming gained one via SF 107).
     const blob = buildJsonReport(
       empRun(),
       ingest,
       undefined,
       undefined,
-      extractedWithGovLaw("Wyoming"),
+      extractedWithGovLaw("Montana"),
     );
     const parsed = JSON.parse(await blob.text());
     expect(parsed.jurisdiction_overlays.matched).toHaveLength(0);
-    expect(parsed.jurisdiction_overlays.uncovered_states).toEqual(["us-wy"]);
+    expect(parsed.jurisdiction_overlays.uncovered_states).toEqual(["us-mt"]);
   });
 
   it("omits jurisdiction_overlays for a family with no overlay catalog", async () => {

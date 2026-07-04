@@ -48,7 +48,7 @@ import type {
 import type { DKB, SourceCitation } from "../dkb/types.js";
 import { sha256Hex } from "../ingest/hash.js";
 import { stableStringify } from "../engine/runner.js";
-import { formatBibliographyEntry } from "./citations.js";
+import { formatBibliographyEntry, dkbCurrency } from "./citations.js";
 import type { ReportSecondaryFamily } from "./json.js";
 import { buildJsonReport } from "./json.js";
 import { buildFixListMarkdown, buildFixListCsv, buildDeadlinesIcs } from "./exports.js";
@@ -466,7 +466,7 @@ export async function buildBundleDocxReport(input: BundleReportInput): Promise<B
     ...renderSkippedFilesAppendix(input.rejected),
     ...renderPostureCoherenceSection(input.posture_coherence),
     ...renderPostureMovementSection(input.posture_movement),
-    ...renderBibliography(bibliography),
+    ...renderBibliography(bibliography, dkbCurrency(input.dkb.manifest)),
     ...renderAuditTrail(input),
     ...renderDisclaimer(),
   ];
@@ -560,8 +560,12 @@ export async function buildBundleZip(input: BundleZipInput): Promise<Blob> {
     const enc = new TextEncoder();
     for (const doc of input.documents) {
       const stem = `per-document/${doc.doc_id}`;
-      files[`${stem}.fixlist.md`] = enc.encode(buildFixListMarkdown(doc.run, doc.extracted));
-      files[`${stem}.fixlist.csv`] = enc.encode(buildFixListCsv(doc.run));
+      files[`${stem}.fixlist.md`] = enc.encode(
+        buildFixListMarkdown(doc.run, doc.extracted, dkbCurrency(input.dkb.manifest)),
+      );
+      files[`${stem}.fixlist.csv`] = enc.encode(
+        buildFixListCsv(doc.run, dkbCurrency(input.dkb.manifest)),
+      );
       if (doc.extracted) {
         files[`${stem}.deadlines.ics`] = enc.encode(buildDeadlinesIcs(doc.extracted));
       }
@@ -1196,7 +1200,10 @@ function renderCrossDocAppendix(consistency: ConsistencyRun): (Paragraph | Table
   return out;
 }
 
-function renderBibliography(entries: BundleBibliographyEntry[]): Paragraph[] {
+function renderBibliography(
+  entries: BundleBibliographyEntry[],
+  currency?: import("./citations.js").CitationCurrency,
+): Paragraph[] {
   const out: Paragraph[] = [h1("Citation Bibliography")];
   if (entries.length === 0) {
     out.push(para({ text: "No DKB sources were referenced by any finding in this bundle." }));
@@ -1204,7 +1211,7 @@ function renderBibliography(entries: BundleBibliographyEntry[]): Paragraph[] {
     return out;
   }
   for (const e of entries) {
-    out.push(para({ text: formatBibliographyEntry(e.index, e.source) }));
+    out.push(para({ text: formatBibliographyEntry(e.index, e.source, currency) }));
   }
   out.push(pageBreak());
   return out;

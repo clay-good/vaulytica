@@ -26,7 +26,12 @@
 import type { EngineRun, Finding, Severity } from "../engine/finding.js";
 import type { SourceCitation } from "../dkb/types.js";
 import { ENGINE_VERSION } from "../engine/runner.js";
-import { formatCitation, freshnessSignal } from "./citations.js";
+import {
+  currencyLabel,
+  formatCitation,
+  freshnessSignal,
+  type CitationCurrency,
+} from "./citations.js";
 import type { V9Surfaces } from "./v9-surfaces.js";
 import type { HandoffFinding } from "../delivery/types.js";
 import type { CriticalDate, CriticalDateKind } from "./critical-dates.js";
@@ -55,6 +60,7 @@ type SarifCitationProperty = {
   source: string;
   source_url?: string;
   freshness?: string;
+  verify_currency?: string;
   formatted: string;
 };
 
@@ -94,12 +100,15 @@ export type SarifLog = {
   }>;
 };
 
-function citationProperty(c: SourceCitation): SarifCitationProperty {
+function citationProperty(c: SourceCitation, currency?: CitationCurrency): SarifCitationProperty {
   const url = c.source_url?.trim();
   const prop: SarifCitationProperty = { source: c.source, formatted: formatCitation(c) };
   if (url) prop.source_url = url;
   const fresh = freshnessSignal(c);
   if (fresh) prop.freshness = fresh;
+  // Deterministic currency label — anchored to the DKB's built_at.
+  const stale = currencyLabel(c, currency);
+  if (stale) prop.verify_currency = stale;
   return prop;
 }
 
@@ -115,7 +124,7 @@ function primaryHelpUri(f: Finding): string | undefined {
 type SarifRule = SarifLog["runs"][0]["tool"]["driver"]["rules"][0];
 type SarifResult = SarifLog["runs"][0]["results"][0];
 
-export function buildSarif(run: EngineRun, v9?: V9Surfaces): SarifLog {
+export function buildSarif(run: EngineRun, v9?: V9Surfaces, currency?: CitationCurrency): SarifLog {
   // One reportingDescriptor per distinct rule that produced a finding, in
   // sorted rule-id order for determinism. The v9 surfaces extend this with the
   // HANDOFF-* (pre-disclosure) and DATE-* (derived-deadline) rule families, so
@@ -142,7 +151,9 @@ export function buildSarif(run: EngineRun, v9?: V9Surfaces): SarifLog {
     };
     if (helpUri) descriptor.helpUri = helpUri;
     if (f.source_citations.length > 0) {
-      descriptor.properties = { citations: f.source_citations.map(citationProperty) };
+      descriptor.properties = {
+        citations: f.source_citations.map((c) => citationProperty(c, currency)),
+      };
     }
     return descriptor;
   });
@@ -159,7 +170,7 @@ export function buildSarif(run: EngineRun, v9?: V9Surfaces): SarifLog {
   const findingResults: SarifResult[] = run.findings.map((f) => {
     const idx = ruleIndex.get(f.rule_id)!;
     const helpUri = primaryHelpUri(f);
-    const citations = f.source_citations.map(citationProperty);
+    const citations = f.source_citations.map((c) => citationProperty(c, currency));
     return {
       ruleId: f.rule_id,
       ruleIndex: idx,
@@ -306,12 +317,16 @@ function dateResult(
 }
 
 /** Canonical, pretty-printed SARIF JSON string (deterministic). */
-export function buildSarifJson(run: EngineRun, v9?: V9Surfaces): string {
-  return JSON.stringify(buildSarif(run, v9), null, 2);
+export function buildSarifJson(
+  run: EngineRun,
+  v9?: V9Surfaces,
+  currency?: CitationCurrency,
+): string {
+  return JSON.stringify(buildSarif(run, v9, currency), null, 2);
 }
 
-export function sarifBlob(run: EngineRun, v9?: V9Surfaces): Blob {
-  return new Blob([buildSarifJson(run, v9)], { type: "application/sarif+json" });
+export function sarifBlob(run: EngineRun, v9?: V9Surfaces, currency?: CitationCurrency): Blob {
+  return new Blob([buildSarifJson(run, v9, currency)], { type: "application/sarif+json" });
 }
 
 // ---------------------------------------------------------------------------

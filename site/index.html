@@ -1783,7 +1783,7 @@
         "description": "A deterministic contract review and compliance utility. Drop a PDF or DOCX — NDA, MSA, SaaS, DPA (GDPR / CCPA), BAA (HIPAA), employment, lease — and get a Microsoft Word report with findings, regulator citations, and a full audit trail. No AI, no account, no server, no telemetry.",
         "featureList": [
           "Deterministic rule engine — 1,000+ rules across launch + v3 + v4 rulesets",
-          "Cited findings — every rule references a regulator, statute, or vendored source",
+          "Cited findings — rules that assert what the law is cite a regulator or statute; drafting-practice rules cite their practice source",
           "NDA / MSA / SaaS / Employment / Lease playbooks",
           "GDPR / CCPA / VCDPA / CPA / CTDPA / UCPA / TDPSA / OCPA / DPDPA processor-contract checks",
           "HIPAA Business Associate Agreement (BAA) checker",
@@ -1902,7 +1902,7 @@
             "name": "Can I trust the report?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "The report is the output of a deterministic rule engine, not a model. Given the same input file, the same engine version, and the same Deterministic Knowledge Base version, you will get the same report. Every finding cites a rule by id and a source by URL. The audit trail at the end of every report names every rule that ran, including the silent ones."
+              "text": "The report is the output of a deterministic rule engine, not a model. Given the same input file, the same engine version, and the same Deterministic Knowledge Base version, you will get the same report. Every finding cites a rule by id; findings that assert what the law is cite a statute or regulator by URL, and drafting-practice findings cite their practice source instead. The audit trail at the end of every report names every rule that ran, including the silent ones."
             }
           },
           {
@@ -2056,7 +2056,7 @@
         <h2 id="checks-h2">What I check.</h2>
         <p>
           115 rules at launch across ten categories — 220 more in v3, 730 more in v4 (1,000+ in
-          total). Every finding cites the rule by id and the source by URL.
+          total). Every finding cites the rule by id; legal assertions cite a statute or regulator by URL, drafting-practice findings cite their practice source.
         </p>
 
         <div class="grid grid-3" style="margin-top: 28px">
@@ -2387,7 +2387,7 @@
           <div>
             The report is the output of a deterministic rule engine, not a model. Given the same
             input file, the same engine version, and the same Deterministic Knowledge Base version,
-            you will get the same report. Every finding cites a rule by id and a source by URL. The
+            you will get the same report. Every finding cites a rule by id; findings that assert what the law is cite a statute or regulator by URL, and drafting-practice findings cite their practice source instead. The
             audit trail at the end of every report names every rule that ran, including the silent
             ones.
           </div>

@@ -82,7 +82,12 @@
   ],
   "regulator_frame": "commercial",
   "applicable_jurisdictions": ["US", "EU", "UK"],
-  "companion_playbooks": ["dpa-controller-processor", "baa", "vendor-security-addendum", "ai-addendum"],
+  "companion_playbooks": [
+    "dpa-controller-processor",
+    "baa",
+    "vendor-security-addendum",
+    "ai-addendum"
+  ],
   "compliance_matrix_columns": [
     "Indemnification scope",
     "Indemnification procedure",

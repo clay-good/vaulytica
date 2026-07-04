@@ -4,9 +4,24 @@
   "name": "Family-Law MSA (Separation / Marital Settlement)",
   "description": "Family-law marital settlement / separation agreement under state divorce codes. Per spec §6.N caveat: execution formalities cannot be verified from text alone (EST-060). Selects the §6.N ruleset (EST-053..EST-059).",
   "match_features": {
-    "title_keywords": ["marital settlement agreement", "separation agreement", "divorce settlement", "msa", "stipulated judgment"],
+    "title_keywords": [
+      "marital settlement agreement",
+      "separation agreement",
+      "divorce settlement",
+      "msa",
+      "stipulated judgment"
+    ],
     "required_clauses": [],
-    "distinguishing_phrases": ["petitioner", "respondent", "date of separation", "spousal support", "child support", "qdro", "custody", "parenting plan"],
+    "distinguishing_phrases": [
+      "petitioner",
+      "respondent",
+      "date of separation",
+      "spousal support",
+      "child support",
+      "qdro",
+      "custody",
+      "parenting plan"
+    ],
     "negative_features": ["master services agreement", "prenuptial", "postnuptial"]
   },
   "expected_clauses": [],

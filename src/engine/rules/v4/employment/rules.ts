@@ -504,22 +504,22 @@ const SEPARATION_RULES: Rule[] = [
 const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
   language({
     id: "EMP-024",
-    name: "FTC NCR — worker non-compete potentially unlawful",
+    name: "Worker non-compete — state-law enforceability scrutiny",
     description:
-      "Worker non-competes are subject to the FTC Non-Compete Rule (16 C.F.R. § 910) prohibition, currently in litigation.",
+      "Worker non-competes turn on state law; the FTC's 2024 rule that would have banned most of them (16 C.F.R. Part 910) was vacated and never took effect.",
     citation: ftcNcr(),
     playbooks: [EMP_PLAYBOOK_RC],
     bad_patterns: [
       /(employee|worker).{0,40}shall\s+not.{0,40}(compete|engage\s+in\s+any\s+business)/is,
       /non.?compete\s+(period|covenant).{0,200}(employee|worker)/is,
     ],
-    bad_title: "Worker non-compete flagged for FTC NCR scrutiny",
+    bad_title: "Worker non-compete flagged for state-law enforceability scrutiny",
     bad_description:
-      "The agreement contains an employee / worker non-compete covenant subject to FTC NCR § 910 scrutiny.",
+      "The agreement contains an employee / worker non-compete covenant whose enforceability turns on state law.",
     explanation:
-      "The FTC Non-Compete Rule (2024) bans most worker non-competes; the rule is in litigation but the trend across state law (CA, MN, ND, OK, plus targeted bans in NY, MA, WA, CO) is sharply restrictive.",
+      "The FTC Non-Compete Rule (2024) would have banned most worker non-competes, but it was set aside nationwide in Ryan LLC v. FTC (N.D. Tex. 2024) and never took effect; the FTC dismissed its appeals in September 2025 and retains only case-by-case FTC Act § 5 enforcement. The state-law trend (statutory bans in CA, MN, ND, OK, WY; targeted bans and thresholds in NY, MA, WA, CO, VA, IL, DC) remains sharply restrictive.",
     recommendation:
-      "Confirm enforceability under the applicable state law and current FTC NCR status; consider narrower non-solicits or NDA-only protection.",
+      "Confirm enforceability under the applicable state's non-compete law; consider narrower non-solicits or NDA-only protection.",
     default_severity: "warning",
   }),
   presence({

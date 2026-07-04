@@ -175,6 +175,13 @@ export type DkbManifest = {
   sources: SourceCitation[];
   /** Acknowledged entry-count decreases vs. the prior released version. */
   shrinkage_acknowledgments?: DkbShrinkageAck[];
+  /**
+   * Citation-currency horizon in months (default 12): a finding citing a
+   * node whose `retrieved_at` is older than this — measured against the
+   * artifact's own `built_at`, never the wall clock, so rendering stays
+   * deterministic — carries a "verify currency" label.
+   */
+  currency_horizon_months?: number;
 };
 
 /**

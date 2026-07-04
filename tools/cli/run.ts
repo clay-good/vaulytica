@@ -176,6 +176,7 @@ import { buildJsonReport } from "../../src/report/json.js";
 import { buildSarifJson } from "../../src/report/sarif.js";
 import { buildHtmlReport } from "../../src/report/html.js";
 import { buildFixListMarkdown, buildFixListCsv } from "../../src/report/exports.js";
+import { dkbCurrency } from "../../src/report/citations.js";
 import { parseCustomPlaybookJson } from "../../src/playbooks/custom-playbook.js";
 import { ladderHash } from "../../src/playbooks/custom-interpreter.js";
 import {
@@ -391,6 +392,8 @@ export async function resolveInputs(
 }
 
 async function renderFormat(fmt: Format, r: AnalyzeResult, dkb: Dkb): Promise<string> {
+  // Deterministic citation-currency reference — the DKB's own build date.
+  const currency = dkbCurrency(dkb.manifest);
   // The v9 "Last Look" surfaces, populated only when the matching flag ran
   // (--delivery / --critical-dates / --checklist). Threaded into every format.
   const v9surfaces = {
@@ -410,15 +413,16 @@ async function renderFormat(fmt: Format, r: AnalyzeResult, dkb: Dkb): Promise<st
         r.critical_dates,
         r.closing_checklist,
         r.negotiation_posture,
+        currency,
       ).text();
     case "sarif":
-      return buildSarifJson(r.run, v9surfaces);
+      return buildSarifJson(r.run, v9surfaces, currency);
     case "html":
       return buildHtmlReport(r.run, r.ingest, dkb, undefined, v9surfaces);
     case "md":
-      return buildFixListMarkdown(r.run);
+      return buildFixListMarkdown(r.run, undefined, currency);
     case "csv":
-      return buildFixListCsv(r.run);
+      return buildFixListCsv(r.run, currency);
   }
 }
 

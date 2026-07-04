@@ -6,7 +6,14 @@
   "match_features": {
     "title_keywords": ["ai use policy", "ai policy", "generative ai", "ai acceptable use"],
     "required_clauses": [],
-    "distinguishing_phrases": ["approved ai tools", "human review", "prohibited inputs", "hallucination", "nist ai", "eu ai act"],
+    "distinguishing_phrases": [
+      "approved ai tools",
+      "human review",
+      "prohibited inputs",
+      "hallucination",
+      "nist ai",
+      "eu ai act"
+    ],
     "negative_features": ["aml", "anti-bribery", "insider trading"]
   },
   "expected_clauses": [],

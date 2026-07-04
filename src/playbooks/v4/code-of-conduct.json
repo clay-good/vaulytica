@@ -6,7 +6,14 @@
   "match_features": {
     "title_keywords": ["code of conduct", "code of ethics", "code of business conduct"],
     "required_clauses": [],
-    "distinguishing_phrases": ["directors", "officers", "employees", "waiver", "ethical conduct", "compliance with law"],
+    "distinguishing_phrases": [
+      "directors",
+      "officers",
+      "employees",
+      "waiver",
+      "ethical conduct",
+      "compliance with law"
+    ],
     "negative_features": ["anti-bribery", "aml", "whistleblower"]
   },
   "expected_clauses": [],

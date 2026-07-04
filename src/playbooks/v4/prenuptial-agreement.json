@@ -6,7 +6,13 @@
   "match_features": {
     "title_keywords": ["prenuptial agreement", "premarital agreement", "prenup"],
     "required_clauses": [],
-    "distinguishing_phrases": ["prospective spouses", "contemplation of marriage", "separate property", "spousal support waiver", "elective share"],
+    "distinguishing_phrases": [
+      "prospective spouses",
+      "contemplation of marriage",
+      "separate property",
+      "spousal support waiver",
+      "elective share"
+    ],
     "negative_features": ["postnuptial", "marital settlement", "during the marriage"]
   },
   "expected_clauses": [],

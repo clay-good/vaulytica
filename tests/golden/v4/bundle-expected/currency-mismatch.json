@@ -1,1 +1,22 @@
-{"consistency":{"execution_log_count":20,"finding_count":1,"finding_rule_ids":["CROSS-CURRENCY-001"],"result_hash":"13a4a635fba1c6e5c792c0a370ef4eeaf8662974caafc608db3fc1bb1c4084f9"},"per_document":[{"doc_id":"appendix","finding_count":12,"result_hash":"14c5becbe0418516f7d65f9a9a7f16d6ed7262ca159e4e55821597459ae73eae","source_file_name":"appendix.txt"},{"doc_id":"msa","finding_count":12,"result_hash":"18a726ec0343892deb3e1b90157ef2a22177641e0609470f8dde7d2776657997","source_file_name":"msa.txt"}]}
+{
+  "consistency": {
+    "execution_log_count": 20,
+    "finding_count": 1,
+    "finding_rule_ids": ["CROSS-CURRENCY-001"],
+    "result_hash": "13a4a635fba1c6e5c792c0a370ef4eeaf8662974caafc608db3fc1bb1c4084f9"
+  },
+  "per_document": [
+    {
+      "doc_id": "appendix",
+      "finding_count": 12,
+      "result_hash": "25182102e1b86793a35cba6ae66181d3911ccbce1624e491ce3bd07dc533c6e0",
+      "source_file_name": "appendix.txt"
+    },
+    {
+      "doc_id": "msa",
+      "finding_count": 12,
+      "result_hash": "033a2e435418ab0cf06a8c78baf52009eeaf3bc9be8b9c0c01b3fc335139cdfd",
+      "source_file_name": "msa.txt"
+    }
+  ]
+}

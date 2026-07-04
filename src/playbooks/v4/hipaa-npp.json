@@ -4,11 +4,7 @@
   "name": "HIPAA Notice of Privacy Practices",
   "description": "HIPAA Notice of Privacy Practices under 45 C.F.R. § 164.520. Selects the §6.I ruleset (PRV-007..PRV-014).",
   "match_features": {
-    "title_keywords": [
-      "notice of privacy practices",
-      "npp",
-      "hipaa notice"
-    ],
+    "title_keywords": ["notice of privacy practices", "npp", "hipaa notice"],
     "required_clauses": [],
     "distinguishing_phrases": [
       "protected health information",

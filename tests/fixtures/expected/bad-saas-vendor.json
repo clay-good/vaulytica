@@ -182,7 +182,7 @@
       "finding_id": "FIN-009-s1.2-559",
       "fired": true,
       "rule_id": "FIN-009",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -761,7 +761,7 @@
       "id": "FIN-009-s1.2-559",
       "recommendation": "Confirm the rate is enforceable under the controlling state's usury rules. For consumer-facing contracts, consider capping at 18% annualized. For commercial contracts, document the parties' acknowledgement of the rate.",
       "rule_id": "FIN-009",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1065,7 +1065,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\", \"uptime\".",
-  "result_hash": "4e05f5cdc58af93a0e3bb8a7baac5713323a9d16a9c4c8b34b4ba690f88f22ed",
+  "result_hash": "a9c24d992ccbad877d060b9600d44fb43e8d0ecdb0e29b9c67add797d78a3c59",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",

@@ -4,9 +4,20 @@
   "name": "Durable Power of Attorney (Financial)",
   "description": "Durable POA under UPOAA + state POA statutes with 'hot powers' specific grant. Per spec §6.N caveat: execution formalities cannot be verified from text alone (EST-060). Selects the §6.N ruleset (EST-031..EST-037).",
   "match_features": {
-    "title_keywords": ["durable power of attorney", "general power of attorney", "financial power of attorney"],
+    "title_keywords": [
+      "durable power of attorney",
+      "general power of attorney",
+      "financial power of attorney"
+    ],
     "required_clauses": [],
-    "distinguishing_phrases": ["principal", "attorney-in-fact", "durable", "incapacity", "hot powers", "third-party reliance"],
+    "distinguishing_phrases": [
+      "principal",
+      "attorney-in-fact",
+      "durable",
+      "incapacity",
+      "hot powers",
+      "third-party reliance"
+    ],
     "negative_features": ["healthcare proxy", "advance directive", "trust"]
   },
   "expected_clauses": [],

@@ -164,6 +164,7 @@ export const DkbManifestSchema = z.object({
   }),
   sources: z.array(SourceCitationSchema),
   shrinkage_acknowledgments: z.array(ShrinkageAck).optional(),
+  currency_horizon_months: z.number().int().positive().optional(),
 });
 
 /**

@@ -21,7 +21,12 @@
       "progress payment",
       "final payment"
     ],
-    "negative_features": ["construction contract", "subcontract", "performance bond", "change order"]
+    "negative_features": [
+      "construction contract",
+      "subcontract",
+      "performance bond",
+      "change order"
+    ]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Claimant", "Property", "Through Date"],

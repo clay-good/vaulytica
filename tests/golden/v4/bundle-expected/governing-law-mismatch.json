@@ -1,1 +1,28 @@
-{"consistency":{"execution_log_count":20,"finding_count":3,"finding_rule_ids":["CC-005","CROSS-DATE-001","CROSS-JURIS-001"],"result_hash":"d54bcf85d78e6b6c37151f54dda2964db8262170fc202ce2259099f710d0b29c"},"per_document":[{"doc_id":"dpa","finding_count":86,"result_hash":"51731fb42abaa617e51c7fadcada533a4d3ce7124582229dbeda56689ba03a34","source_file_name":"dpa.txt"},{"doc_id":"msa","finding_count":9,"result_hash":"6d672e68522489960d7cc69cf9763d7751c3692ac38c0a638032ff806956e036","source_file_name":"msa.txt"},{"doc_id":"sow","finding_count":9,"result_hash":"09bb0b682fa4766f78536b99c1ca6a18828eb745b80554ee8534fce0f3d0b8e2","source_file_name":"sow.txt"}]}
+{
+  "consistency": {
+    "execution_log_count": 20,
+    "finding_count": 3,
+    "finding_rule_ids": ["CC-005", "CROSS-DATE-001", "CROSS-JURIS-001"],
+    "result_hash": "d54bcf85d78e6b6c37151f54dda2964db8262170fc202ce2259099f710d0b29c"
+  },
+  "per_document": [
+    {
+      "doc_id": "dpa",
+      "finding_count": 86,
+      "result_hash": "81ee10225aad373e4106aa1f8dcfba0aa7e326bd7f8b45f403d2f9fbef458084",
+      "source_file_name": "dpa.txt"
+    },
+    {
+      "doc_id": "msa",
+      "finding_count": 9,
+      "result_hash": "810b1299c7b91cd0e03ea571a745b917e665c588058934e55b361b03235f009d",
+      "source_file_name": "msa.txt"
+    },
+    {
+      "doc_id": "sow",
+      "finding_count": 9,
+      "result_hash": "0d5d519e0fd1f8f9e46840c67c08cc61136d0f766ede554a8a0b5716ca814f0a",
+      "source_file_name": "sow.txt"
+    }
+  ]
+}

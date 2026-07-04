@@ -22,6 +22,7 @@
  */
 
 import type { EngineRun, Finding, Severity } from "../engine/finding.js";
+import { currencyLabel, type CitationCurrency } from "./citations.js";
 import type { DateReference, ExtractedData } from "../extract/types.js";
 import type { CriticalDate, CriticalDatesRegister } from "./critical-dates.js";
 import type { ChecklistCategory, ClosingChecklist } from "./closing-checklist.js";
@@ -43,14 +44,15 @@ const SEVERITY_LABEL: Record<Severity, string> = {
 // ---------------------------------------------------------------------------
 
 /** Source-authority names for a finding (deduped, in citation order). */
-function citationLine(f: Finding): string {
+function citationLine(f: Finding, currency?: CitationCurrency): string {
   const seen = new Set<string>();
   const out: string[] = [];
   for (const c of f.source_citations) {
     const s = c.source.trim();
     if (s && !seen.has(s)) {
       seen.add(s);
-      out.push(s);
+      const stale = currencyLabel(c, currency);
+      out.push(stale ? `${s} — ${stale}` : s);
     }
   }
   return out.join("; ");
@@ -62,7 +64,7 @@ function citationLine(f: Finding): string {
  * fix-list a user pastes into a ticket stays *verifiable*, not stripped to a
  * bare name as it was before v8.
  */
-function citationLineMarkdown(f: Finding): string {
+function citationLineMarkdown(f: Finding, currency?: CitationCurrency): string {
   const seen = new Set<string>();
   const out: string[] = [];
   for (const c of f.source_citations) {
@@ -70,7 +72,9 @@ function citationLineMarkdown(f: Finding): string {
     if (!s || seen.has(s)) continue;
     seen.add(s);
     const url = c.source_url?.trim();
-    out.push(url ? `[${s}](${url})` : s);
+    const stale = currencyLabel(c, currency);
+    const head = url ? `[${s}](${url})` : s;
+    out.push(stale ? `${head} — ${stale}` : head);
   }
   return out.join("; ");
 }
@@ -96,7 +100,11 @@ function citationUrls(f: Finding): string {
  * ambiguous date becomes a manual-verify action item rather than silence
  * (spec-v6 §13).
  */
-export function buildFixListMarkdown(run: EngineRun, extracted?: ExtractedData): string {
+export function buildFixListMarkdown(
+  run: EngineRun,
+  extracted?: ExtractedData,
+  currency?: CitationCurrency,
+): string {
   const lines: string[] = [];
   lines.push("# Vaulytica fix list");
   lines.push("");
@@ -126,7 +134,7 @@ export function buildFixListMarkdown(run: EngineRun, extracted?: ExtractedData):
       if (section) lines.push(`  - Section: ${section}`);
       if (f.explanation) lines.push(`  - ${f.explanation}`);
       if (f.recommendation) lines.push(`  - Recommendation: ${f.recommendation}`);
-      const cites = citationLineMarkdown(f);
+      const cites = citationLineMarkdown(f, currency);
       if (cites) lines.push(`  - Authority: ${cites}`);
     }
   }
@@ -174,7 +182,7 @@ function csvRow(fields: string[]): string {
 }
 
 /** The findings as a CSV, one row per finding, in the run's sorted order. */
-export function buildFixListCsv(run: EngineRun): string {
+export function buildFixListCsv(run: EngineRun, currency?: CitationCurrency): string {
   const rows: string[] = [];
   rows.push(
     csvRow([
@@ -197,7 +205,7 @@ export function buildFixListCsv(run: EngineRun): string {
         f.title,
         f.explanation ?? "",
         f.recommendation ?? "",
-        citationLine(f),
+        citationLine(f, currency),
         citationUrls(f), // spec-v8 §14 — verifiable URL alongside the name
       ]),
     );
@@ -597,12 +605,16 @@ const SENTINEL_VERIFY_DATE = "2020-01-01";
 // Blob helpers (UI convenience — same pattern as report/json.ts)
 // ---------------------------------------------------------------------------
 
-export function fixListMarkdownBlob(run: EngineRun, extracted?: ExtractedData): Blob {
-  return new Blob([buildFixListMarkdown(run, extracted)], { type: "text/markdown" });
+export function fixListMarkdownBlob(
+  run: EngineRun,
+  extracted?: ExtractedData,
+  currency?: CitationCurrency,
+): Blob {
+  return new Blob([buildFixListMarkdown(run, extracted, currency)], { type: "text/markdown" });
 }
 
-export function fixListCsvBlob(run: EngineRun): Blob {
-  return new Blob([buildFixListCsv(run)], { type: "text/csv" });
+export function fixListCsvBlob(run: EngineRun, currency?: CitationCurrency): Blob {
+  return new Blob([buildFixListCsv(run, currency)], { type: "text/csv" });
 }
 
 export function obligationsCsvBlob(extracted: ExtractedData): Blob {

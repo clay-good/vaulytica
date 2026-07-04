@@ -6,7 +6,14 @@
   "match_features": {
     "title_keywords": ["advance directive", "living will", "advance health care directive"],
     "required_clauses": [],
-    "distinguishing_phrases": ["declarant", "life-sustaining", "artificial nutrition", "terminal", "persistent vegetative", "organ donation"],
+    "distinguishing_phrases": [
+      "declarant",
+      "life-sustaining",
+      "artificial nutrition",
+      "terminal",
+      "persistent vegetative",
+      "organ donation"
+    ],
     "negative_features": ["healthcare proxy", "agent", "power of attorney"]
   },
   "expected_clauses": [],

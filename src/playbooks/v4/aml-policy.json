@@ -6,7 +6,15 @@
   "match_features": {
     "title_keywords": ["aml", "anti-money-laundering", "bsa policy"],
     "required_clauses": [],
-    "distinguishing_phrases": ["fincen", "ofac", "sar", "ctr", "beneficial ownership", "customer identification", "five pillars"],
+    "distinguishing_phrases": [
+      "fincen",
+      "ofac",
+      "sar",
+      "ctr",
+      "beneficial ownership",
+      "customer identification",
+      "five pillars"
+    ],
     "negative_features": ["anti-bribery", "insider trading", "code of conduct"]
   },
   "expected_clauses": [],

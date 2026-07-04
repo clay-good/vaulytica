@@ -92,12 +92,18 @@ export function dealPoints(slug: string, label: string): SourceCitation {
   });
 }
 
-/** FTC Non-Compete Rule (final rule 2024, currently in litigation). */
+/**
+ * Sale-of-business non-compete authority. The FTC Non-Compete Rule —
+ * whose § 910.2(a)(2) would have preserved sale-of-business covenants —
+ * was vacated nationwide (Ryan LLC v. FTC, N.D. Tex. 2024) and never
+ * took effect, so the operative anchor is state-law goodwill doctrine
+ * (e.g., Cal. Bus. & Prof. Code § 16601's sale-of-business exception).
+ */
 export function ftcNcr(): SourceCitation {
   return v4Cite({
     id: "ftc-non-compete-rule",
     source:
-      "FTC Non-Compete Clause Final Rule (16 C.F.R. § 910) — sale-of-business exception § 910.2(a)(2)",
+      "Sale-of-business non-competes: state-law goodwill doctrine (e.g., Cal. Bus. & Prof. Code § 16601); the vacated FTC Non-Compete Rule (16 C.F.R. Part 910, set aside in Ryan LLC v. FTC (N.D. Tex. 2024), never effective) would likewise have preserved them (§ 910.2(a)(2))",
     source_url:
       "https://www.federalregister.gov/documents/2024/05/07/2024-09171/non-compete-clause-rule",
   });

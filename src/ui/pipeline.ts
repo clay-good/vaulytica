@@ -55,6 +55,7 @@ import {
   htmlReportBlob,
   negotiationSheetBlob,
 } from "../report/index.js";
+import { dkbCurrency } from "../report/citations.js";
 import { buildCriticalDates, type CriticalDatesRegister } from "../report/critical-dates.js";
 import { buildClosingChecklist, type ClosingChecklist } from "../report/closing-checklist.js";
 import {
@@ -617,14 +618,19 @@ export async function runReport(
     hasCriticalDates ? critical_dates : undefined,
     hasChecklist ? closing_checklist : undefined,
     negotiationPosture,
+    dkbCurrency(prepared.dkb.manifest),
   );
-  const fixlist_md_blob = fixListMarkdownBlob(run, prepared.extracted);
-  const fixlist_csv_blob = fixListCsvBlob(run);
+  const fixlist_md_blob = fixListMarkdownBlob(
+    run,
+    prepared.extracted,
+    dkbCurrency(prepared.dkb.manifest),
+  );
+  const fixlist_csv_blob = fixListCsvBlob(run, dkbCurrency(prepared.dkb.manifest));
   const obligations_csv_blob = obligationsCsvBlob(prepared.extracted);
   const deadlines_ics_blob = deadlinesIcsBlob(prepared.extracted);
   // v8 Steps 141–142 — SARIF (machine-readable) + standalone HTML (print-clean),
   // now carrying the v9 surfaces (HANDOFF-*/DATE-* results · the three sections).
-  const sarif_blob = sarifBlob(run, v9surfaces);
+  const sarif_blob = sarifBlob(run, v9surfaces, dkbCurrency(prepared.dkb.manifest));
   const html_blob = htmlReportBlob(
     run,
     prepared.ingest,
@@ -1077,7 +1083,18 @@ export async function prepareBundle(
       extracted,
       secondary_families,
     );
-    const json_blob = buildJsonReport(run, ingest, playbook, secondary_families, extracted);
+    const json_blob = buildJsonReport(
+      run,
+      ingest,
+      playbook,
+      secondary_families,
+      extracted,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      dkbCurrency(dkb.manifest),
+    );
 
     const v3_detection = detectV3Family(extracted, bodyParts.join(" "));
 

@@ -23,11 +23,7 @@
       "human review",
       "prompt"
     ],
-    "negative_features": [
-      "protected health information",
-      "non-disclosure agreement",
-      "this nda"
-    ]
+    "negative_features": ["protected health information", "non-disclosure agreement", "this nda"]
   },
   "expected_clauses": [
     "Definitions",
@@ -75,7 +71,12 @@
   ],
   "regulator_frame": "consensus-practice",
   "applicable_jurisdictions": ["US", "EU", "UK"],
-  "companion_playbooks": ["msa-vendor-deep", "msa-customer-deep", "dpa-controller-processor", "vendor-security-addendum"],
+  "companion_playbooks": [
+    "msa-vendor-deep",
+    "msa-customer-deep",
+    "dpa-controller-processor",
+    "vendor-security-addendum"
+  ],
   "compliance_matrix_columns": [
     "AI definitions",
     "Prohibited training on customer data",

@@ -338,14 +338,14 @@ const SPA_RULES: Rule[] = [
     id: "MNA-016",
     name: "Non-solicit / non-compete on selling stockholders",
     description:
-      "Selling stockholders typically agree to non-compete and non-solicit covenants (FTC NCR sale-of-business exception).",
+      "Selling stockholders typically agree to non-compete and non-solicit covenants (enforceable under state-law sale-of-business doctrine).",
     citation: ftcNcr(),
     playbooks: [MA_PLAYBOOK_SPA],
     missing_title: "Selling-stockholder restrictive covenants missing",
     missing_description:
       "No non-compete or non-solicit clause binding selling stockholders was found.",
     explanation:
-      "FTC NCR § 910.2(a)(2) preserves sale-of-business non-competes. Goodwill protection is universally expected from selling principals.",
+      "Sale-of-business non-competes are enforceable under state-law goodwill doctrine (e.g., Cal. Bus. & Prof. Code § 16601) — even California's ban gives way here. Goodwill protection is universally expected from selling principals. (The vacated, never-effective FTC Non-Compete Rule would likewise have preserved them.)",
     recommendation:
       "Add 'Article IX — Restrictive Covenants' with non-compete (3–5 years), non-solicit (employees / customers), and confidentiality undertakings.",
     present_patterns: [/(non.?compete|non.?solicit)/i, /restrictive\s+covenant/i],
@@ -1412,16 +1412,16 @@ const EARNOUT_RULES: Rule[] = [
 const MA_RESTRICTIVE_COVENANT_RULES: Rule[] = [
   presence({
     id: "MNA-072",
-    name: "Sale-of-business identification (FTC NCR exception)",
+    name: "Sale-of-business identification (goodwill nexus)",
     description:
-      "Restrictive covenants must be tied to the sale of a business to qualify for the FTC NCR sale-of-business exception (16 C.F.R. § 910.2(a)(2)).",
+      "Restrictive covenants must be tied to the sale of a business to qualify for the state-law sale-of-business exceptions (e.g., Cal. Bus. & Prof. Code § 16601).",
     citation: ftcNcr(),
     playbooks: [MA_PLAYBOOK_MA_RC],
     missing_title: "Sale-of-business recital missing",
     missing_description:
-      "No sale-of-business recital was found tying the covenants to the FTC NCR exception.",
+      "No sale-of-business recital was found tying the covenants to the transaction's goodwill.",
     explanation:
-      "FTC NCR § 910.2(a)(2) preserves non-competes 'made in connection with a bona fide sale of a business entity'. Without that nexus, the covenant may be invalid post-rule.",
+      "State sale-of-business exceptions (e.g., Cal. Bus. & Prof. Code § 16601) preserve non-competes made in connection with a bona fide sale of a business and its goodwill. Without that nexus, the covenant is judged under the far stricter employee-covenant rules and may be void.",
     recommendation: "Add a recital identifying the sale of the business / acquisition transaction.",
     present_patterns: [
       /sale\s+of\s+the\s+business/i,

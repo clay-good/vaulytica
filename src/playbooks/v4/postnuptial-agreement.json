@@ -6,8 +6,18 @@
   "match_features": {
     "title_keywords": ["postnuptial agreement", "post-nuptial agreement", "postnup"],
     "required_clauses": [],
-    "distinguishing_phrases": ["during the marriage", "spouses", "transmutation", "fiduciary duties"],
-    "negative_features": ["prenuptial", "premarital", "contemplation of marriage", "marital settlement"]
+    "distinguishing_phrases": [
+      "during the marriage",
+      "spouses",
+      "transmutation",
+      "fiduciary duties"
+    ],
+    "negative_features": [
+      "prenuptial",
+      "premarital",
+      "contemplation of marriage",
+      "marital settlement"
+    ]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Spouses"],

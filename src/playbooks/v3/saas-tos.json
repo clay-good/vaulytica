@@ -38,12 +38,7 @@
     "Termination",
     "Acceptable Use"
   ],
-  "expected_defined_terms": [
-    "Service",
-    "User",
-    "Account",
-    "Subscription"
-  ],
+  "expected_defined_terms": ["Service", "User", "Account", "Subscription"],
   "rule_overrides": {},
   "balanced_defaults": [],
   "sources": [

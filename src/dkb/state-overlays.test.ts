@@ -106,11 +106,20 @@ describe("selectStateOverlays", () => {
   });
 
   it("reports an uncovered state honestly rather than guessing", () => {
-    // Wyoming has no non-compete overlay node → uncovered, never a wrong answer.
-    const r = selectStateOverlays("executive-employment", [gov("Wyoming")]);
+    // Montana has no non-compete overlay node → uncovered, never a wrong answer.
+    const r = selectStateOverlays("executive-employment", [gov("Montana")]);
     expect(r?.matched).toEqual([]);
-    expect(r?.detected_states).toEqual(["us-wy"]);
-    expect(r?.uncovered_states).toEqual(["us-wy"]);
+    expect(r?.detected_states).toEqual(["us-mt"]);
+    expect(r?.uncovered_states).toEqual(["us-mt"]);
+  });
+
+  it("covers the 2025 statutory wave (Wyoming SF 107, Arkansas Act 232)", () => {
+    const wy = selectStateOverlays("executive-employment", [gov("Wyoming")]);
+    expect(wy?.matched.map((o) => o.id)).toEqual(["emp-noncompete-us-wy"]);
+    expect(wy?.matched[0]?.summary).toContain("SF 107");
+    const ar = selectStateOverlays("executive-employment", [gov("Arkansas")]);
+    expect(ar?.matched.map((o) => o.id)).toEqual(["emp-noncompete-us-ar"]);
+    expect(ar?.matched[0]?.summary).toContain("physician");
   });
 
   it("ignores venue / arbitration-seat clauses (governing law controls)", () => {

@@ -6,7 +6,13 @@
   "match_features": {
     "title_keywords": ["conflict of interest", "coi policy"],
     "required_clauses": [],
-    "distinguishing_phrases": ["conflict of interest", "related party", "recusal", "disclosure", "annual certification"],
+    "distinguishing_phrases": [
+      "conflict of interest",
+      "related party",
+      "recusal",
+      "disclosure",
+      "annual certification"
+    ],
     "negative_features": ["aml", "anti-bribery", "insider trading"]
   },
   "expected_clauses": [],

@@ -131,6 +131,52 @@ export function freshnessSignal(source: SourceCitation): string | undefined {
 }
 
 /**
+ * Citation-currency reference (fix-legal-authority-currency): the anchor
+ * date and horizon a renderer uses to decide whether a cited authority is
+ * old enough to need re-verification. `as_of` is the DKB's own `built_at`
+ * — never the wall clock — so identical inputs render identical labels on
+ * any machine, forever.
+ */
+export type CitationCurrency = { as_of: string; horizon_months: number };
+
+/** Default currency horizon when the DKB manifest carries no knob. */
+export const DEFAULT_CURRENCY_HORIZON_MONTHS = 12;
+
+/** Build a {@link CitationCurrency} from a DKB manifest. */
+export function dkbCurrency(manifest: {
+  built_at: string;
+  currency_horizon_months?: number;
+}): CitationCurrency {
+  return {
+    as_of: manifest.built_at,
+    horizon_months: manifest.currency_horizon_months ?? DEFAULT_CURRENCY_HORIZON_MONTHS,
+  };
+}
+
+/**
+ * "verify currency (retrieved <date>)" when the citation's retrieval date
+ * is more than `horizon_months` before `as_of`; `undefined` otherwise.
+ * Pure calendar arithmetic on the two ISO dates — no wall clock.
+ */
+export function currencyLabel(
+  source: SourceCitation,
+  currency: CitationCurrency | undefined,
+): string | undefined {
+  if (!currency) return undefined;
+  const retrieved = isoDate(source.retrieved_at);
+  const asOf = isoDate(currency.as_of);
+  if (!retrieved || !asOf) return undefined;
+  const [ry, rm, rd] = retrieved.split("-").map(Number);
+  const [ay, am, ad] = asOf.split("-").map(Number);
+  // The node ages out the day after `retrieved + horizon months`. Date.UTC
+  // on the two *stored* dates — never a clock read — so the label is a pure
+  // function of (citation, DKB build date).
+  const threshold = Date.UTC(ry!, rm! - 1 + currency.horizon_months, rd!);
+  if (Date.UTC(ay!, am! - 1, ad!) <= threshold) return undefined;
+  return `verify currency (retrieved ${retrieved})`;
+}
+
+/**
  * Split a string into wrap-friendly segments whose concatenation is the
  * original text exactly (no characters added or removed). A long unbroken
  * token — in practice a citation URL — is sub-split *after* a
@@ -188,7 +234,11 @@ export function formatCitation(source: SourceCitation): string {
  * when present, retrieval date, and license. Suitable for the
  * audit-trail "Bibliography" section.
  */
-export function formatBibliographyEntry(index: number, source: SourceCitation): string {
+export function formatBibliographyEntry(
+  index: number,
+  source: SourceCitation,
+  currency?: CitationCurrency,
+): string {
   const parts: string[] = [];
   parts.push(`[${index}]`);
   parts.push(formatCitation(source));
@@ -207,5 +257,10 @@ export function formatBibliographyEntry(index: number, source: SourceCitation): 
   if (retrieved && license) parts.push(`[retrieved ${retrieved}; license: ${license}]`);
   else if (retrieved) parts.push(`[retrieved ${retrieved}]`);
   else if (license) parts.push(`(cited — ${license})`);
+  // Citation-currency label (fix-legal-authority-currency): flags a node
+  // retrieved further back than the DKB's horizon, relative to the DKB's
+  // own build date — deterministic, never wall-clock.
+  const stale = currencyLabel(source, currency);
+  if (stale) parts.push(`⚠ ${stale}`);
   return parts.join(" ");
 }

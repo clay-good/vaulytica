@@ -4,12 +4,7 @@
   "name": "Records of Processing Activities (GDPR Art. 30)",
   "description": "GDPR Art. 30 records of processing activities for controllers / processors. Selects the §6.I ruleset (PRV-015..PRV-020).",
   "match_features": {
-    "title_keywords": [
-      "records of processing",
-      "ropa",
-      "article 30",
-      "processing register"
-    ],
+    "title_keywords": ["records of processing", "ropa", "article 30", "processing register"],
     "required_clauses": [],
     "distinguishing_phrases": [
       "controller",

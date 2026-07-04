@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,065 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `35 state-law overlays` · `9 export formats` · `0 servers` · `0 AI` · `3,658 passing tests` · `v9.41.0` · `MIT`
+`1,065 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `37 state-law overlays (non-compete · security deposit · usury)` · `9 export formats` · `0 servers` · `0 AI` · `3,669 passing tests` · `v9.41.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
 
@@ -20,7 +20,7 @@ Vaulytica is the opposite. It is a **pure function**:
 report = engine(documents, DKB, playbook)
 ```
 
-Same document + same engine version + same Deterministic Knowledge Base version → **byte-identical report on any machine, at any time.** The report carries a `result_hash` so you can prove it. The stamped engine version is the released package version — it changes on every release, so identical provenance really does mean identical behavior (a guard test pins the stamp to `package.json`). Every finding traces to a numbered rule and a pinned public source. Nothing leaves the browser tab — open DevTools and watch the network panel go quiet.
+Same document + same engine version + same Deterministic Knowledge Base version → **byte-identical report on any machine, at any time.** The report carries a `result_hash` so you can prove it. The stamped engine version is the released package version — it changes on every release, so identical provenance really does mean identical behavior (a guard test pins the stamp to `package.json`). Every finding traces to a numbered rule; findings that assert what the law is cite a pinned public source, and findings that rest on drafting practice say so instead of borrowing legal authority they don't have. Nothing leaves the browser tab — open DevTools and watch the network panel go quiet.
 
 ## How it works (end to end)
 
@@ -1294,7 +1294,7 @@ npm run dev          # open the printed URL
 npm run build        # static site → dist/
 npm run typecheck    # tsc --noEmit
 npm run lint         # eslint
-npm run test         # vitest — 3,658 tests, ~30s
+npm run test         # vitest — 3,669 tests, ~30s
 npm run coverage     # vitest + V8 coverage, enforces the regression floor
 npm run accuracy     # v5 Ground Truth harness → tools/accuracy/SCOREBOARD.md
 npm run mutation     # Stryker mutation score (scoped to extractors; slow, off the per-push path)

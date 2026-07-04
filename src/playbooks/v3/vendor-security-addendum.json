@@ -22,11 +22,7 @@
       "penetration test",
       "secure development"
     ],
-    "negative_features": [
-      "protected health information",
-      "data processing agreement",
-      "this nda"
-    ]
+    "negative_features": ["protected health information", "data processing agreement", "this nda"]
   },
   "expected_clauses": [
     "Access Control",
@@ -36,11 +32,7 @@
     "Audit Rights",
     "Penetration Testing"
   ],
-  "expected_defined_terms": [
-    "Security Incident",
-    "Customer Data",
-    "Personnel"
-  ],
+  "expected_defined_terms": ["Security Incident", "Customer Data", "Personnel"],
   "rule_overrides": {},
   "balanced_defaults": [],
   "sources": [

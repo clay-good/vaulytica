@@ -6,7 +6,14 @@
   "match_features": {
     "title_keywords": ["form d", "regulation d", "exempt offering narrative"],
     "required_clauses": [],
-    "distinguishing_phrases": ["rule 506", "rule 504", "accredited investor", "general solicitation", "edgar", "cik"],
+    "distinguishing_phrases": [
+      "rule 506",
+      "rule 504",
+      "accredited investor",
+      "general solicitation",
+      "edgar",
+      "cik"
+    ],
     "negative_features": ["form adv", "10-k", "ppm", "reg a+"]
   },
   "expected_clauses": [],

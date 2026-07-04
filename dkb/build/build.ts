@@ -482,13 +482,20 @@ async function writeJsonFile(path: string, value: unknown): Promise<void> {
 // ---------------------------------------------------------------------------
 // CLI entry point. `npm run dkb:build` executes this with no args;
 // `npm run dkb:build -- --offline` builds from the repo's curated
-// sources without touching the network.
+// sources without touching the network; `--version <v>` overrides the
+// date-derived version (a released version's content is immutable — the
+// browser caches DKBs by version, so a same-day content change must ship
+// under a new version name, e.g. `v2026-07-04-r2-local`).
 
 const isMain = import.meta.url === `file://${process.argv[1]}`;
 if (isMain) {
+  const versionIdx = process.argv.indexOf("--version");
   void runBuild({
     dry_run: process.argv.includes("--dry-run"),
     ...(process.argv.includes("--offline") ? { records: [] } : {}),
+    ...(versionIdx >= 0 && process.argv[versionIdx + 1]
+      ? { version: process.argv[versionIdx + 1] }
+      : {}),
   })
     .then((r) => {
       process.stdout.write(

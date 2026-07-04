@@ -113,6 +113,22 @@ const cite = (id: string, source: string, source_url: string): SourceCitation =>
   ...PUBLIC_LAW_LICENSE,
 });
 
+/** Like {@link cite}, but with the entry's own verification date — used for
+ * overlays re-verified after the catalog-wide `CURATED_AT` pass (the 2025
+ * non-compete wave was checked against primary sources on 2026-07-04). */
+const citeAt = (
+  id: string,
+  source: string,
+  source_url: string,
+  retrieved_at: string,
+): SourceCitation => ({
+  id,
+  source,
+  source_url,
+  retrieved_at,
+  ...PUBLIC_LAW_LICENSE,
+});
+
 /**
  * Employment — non-compete enforceability. The single most state-specific
  * employment question: identical covenant language is void in California and
@@ -280,16 +296,17 @@ const EMPLOYMENT_NONCOMPETE: readonly StateOverlay[] = [
     jurisdiction: "us-va",
     state_name: "Virginia",
     posture: "restricted",
-    headline: "Void for low-wage employees",
+    headline: "Void for low-wage and all overtime-eligible employees",
     summary:
-      "Virginia prohibits non-competes for 'low-wage employees' (those earning below the state average weekly wage, and any worker paid primarily by tips/commission/incentive). Covenants for higher earners remain subject to common-law reasonableness review.",
+      "Virginia prohibits non-competes for 'low-wage employees' — those earning below the state average weekly wage, any worker paid primarily by tips/commission/incentive, and (per SB 1218, eff. 2025-07-01) any employee entitled to FLSA overtime for hours over 40, regardless of earnings. Covenants for exempt higher earners remain subject to common-law reasonableness review.",
     recommendation:
-      "Confirm the employee earns above the current low-wage threshold; if not, the non-compete is prohibited and exposes the employer to statutory penalties.",
+      "Confirm the employee is FLSA-exempt AND earns above the current low-wage threshold; if either fails, the non-compete is prohibited and exposes the employer to statutory penalties (and the required workplace posting must reflect the amended statute).",
     severity: "warning",
-    citation: cite(
+    citation: citeAt(
       "va-code-40-1-28-7-8",
-      "Va. Code § 40.1-28.7:8",
+      "Va. Code § 40.1-28.7:8 (as amended by SB 1218, eff. July 1, 2025)",
       "https://law.lis.virginia.gov/vacode/title40.1/chapter3/section40.1-28.7:8/",
+      "2026-07-04",
     ),
   },
   {
@@ -375,16 +392,17 @@ const EMPLOYMENT_NONCOMPETE: readonly StateOverlay[] = [
     jurisdiction: "us-fl",
     state_name: "Florida",
     posture: "permitted",
-    headline: "Enforceable; statutorily favored",
+    headline: "Enforceable; statutorily favored — CHOICE Act adds up to 4 years",
     summary:
-      "Florida enforces non-competes that protect a legitimate business interest and are reasonable in time and area, with statutory presumptions of reasonableness for stated durations (e.g. up to 2 years for a former employee). Courts must not narrowly construe the covenant against the drafter and must modify overbroad terms.",
+      "Florida enforces non-competes that protect a legitimate business interest and are reasonable in time and area (Fla. Stat. § 542.335, with presumptions of reasonableness, e.g. up to 2 years for a former employee). The 2025 CHOICE Act (Fla. Stat. §§ 542.41–542.45, eff. 2025-07-01) goes further for 'covered' high earners (above twice the county annual mean wage): covered non-compete and paid garden-leave agreements of up to 4 years carry a presumption of enforceability when the Act's notice and acknowledgment formalities are met — the pro-enforcement outlier of the 2025 state wave.",
     recommendation:
-      "Tie the covenant to a statutorily-recognized legitimate business interest and keep the duration within the presumed-reasonable range; Florida is among the most enforcement-friendly states.",
+      "Tie the covenant to a statutorily-recognized legitimate business interest; for high earners, consider whether the covenant qualifies under the CHOICE Act (earnings threshold, written notice of the right to counsel, 7-day review period) for its up-to-4-year presumption. Florida is the most enforcement-friendly state.",
     severity: "info",
-    citation: cite(
-      "fl-stat-542-335",
-      "Fla. Stat. § 542.335",
-      "https://www.flsenate.gov/Laws/Statutes/2023/542.335",
+    citation: citeAt(
+      "fl-stat-542-choice-act",
+      "Fla. Stat. §§ 542.335, 542.41–542.45 (CHOICE Act, eff. July 1, 2025)",
+      "https://www.flsenate.gov/Laws/Statutes/2025/542.335",
+      "2026-07-04",
     ),
   },
   {
@@ -404,6 +422,46 @@ const EMPLOYMENT_NONCOMPETE: readonly StateOverlay[] = [
       "ny-bdo-seidman",
       "BDO Seidman v. Hyatt, 93 N.Y.2d 382 (1999) (New York common-law non-compete test)",
       "https://www.nycourts.gov/reporter/archives/bdo_hyatt.htm",
+    ),
+  },
+  {
+    id: "emp-noncompete-us-wy",
+    family: "employment",
+    topic: "non-compete enforceability",
+    jurisdiction: "us-wy",
+    state_name: "Wyoming",
+    posture: "restricted",
+    headline: "Void by statute with carve-outs (contracts on/after 2025-07-01)",
+    summary:
+      "Wyoming's SF 107 (Wyo. Stat. § 1-23-108, eff. 2025-07-01) voids covenants not to compete that restrict the right to receive compensation for labor, for contracts entered on or after July 1, 2025 — with carve-outs for sale-of-business covenants, trade-secret protection, recovery of relocation/education/training expenses, and executive/management personnel (and their professional staff). Physician non-competes are void outright, and a departing physician may notify patients with rare disorders of their continuing practice.",
+    recommendation:
+      "For Wyoming agreements signed on or after 2025-07-01, rely on a statutory carve-out (sale of business, trade secrets, executive/management role) or use non-solicit/NDA protection instead; physician non-competes are void regardless of role.",
+    severity: "warning",
+    citation: citeAt(
+      "wy-stat-1-23-108",
+      "Wyo. Stat. § 1-23-108 (SF 107, 2025 Wyo. Sess. Laws, Enrolled Act No. 87; eff. July 1, 2025)",
+      "https://www.wyoleg.gov/Legislation/2025/SF0107",
+      "2026-07-04",
+    ),
+  },
+  {
+    id: "emp-noncompete-us-ar",
+    family: "employment",
+    topic: "non-compete enforceability",
+    jurisdiction: "us-ar",
+    state_name: "Arkansas",
+    posture: "restricted",
+    headline: "Enforceable generally; void for physicians (2025)",
+    summary:
+      "Arkansas enforces reasonable employee non-competes under its covenant statute (Ark. Code § 4-75-101), but Act 232 of 2025 (SB 139, eff. August 2025) voids any covenant that restricts a physician's right to practice within the physician's scope of practice — covering anyone licensed under the Arkansas Medical Practice Act or licensed to practice osteopathy.",
+    recommendation:
+      "For physicians, treat any Arkansas non-compete as void and rely on non-solicit/confidentiality protection; for other employees, confirm the covenant meets § 4-75-101's reasonableness requirements.",
+    severity: "warning",
+    citation: citeAt(
+      "ar-code-4-75-101",
+      "Ark. Code § 4-75-101 (as amended by Act 232 of 2025 (SB 139); physician non-competes void, eff. Aug. 2025)",
+      "https://arkleg.state.ar.us/Bills/Detail?id=SB139&ddBienniumSession=2025%2F2025R",
+      "2026-07-04",
     ),
   },
 ];

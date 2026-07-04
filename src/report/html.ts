@@ -24,7 +24,13 @@ import { isHttpUrl } from "../dkb/url-safety.js";
 import type { IngestResult } from "../ingest/types.js";
 import type { Playbook } from "../playbooks/types.js";
 import { buildBibliography, citationIndex } from "./bibliography.js";
-import { formatBibliographyEntry, freshnessSignal } from "./citations.js";
+import {
+  currencyLabel,
+  dkbCurrency,
+  formatBibliographyEntry,
+  freshnessSignal,
+  type CitationCurrency,
+} from "./citations.js";
 import { buildClauseEvidence } from "./clause-evidence.js";
 import type { V9Surfaces } from "./v9-surfaces.js";
 import type { DeliveryReport } from "../delivery/types.js";
@@ -126,10 +132,15 @@ const STYLE = `
   @media (max-width: 32rem) { body { padding: .75rem; } h1 { font-size: 1.35rem; } }
 `;
 
-function renderCitation(c: SourceCitation): string {
+function renderCitation(c: SourceCitation, currency?: CitationCurrency): string {
   const url = c.source_url?.trim();
   const fresh = freshnessSignal(c);
-  const freshPart = fresh ? ` <span class="fresh">(${esc(fresh)})</span>` : "";
+  // Currency label (fix-legal-authority-currency): deterministic — anchored
+  // to the DKB's own built_at, never the wall clock.
+  const stale = currencyLabel(c, currency);
+  const freshPart =
+    (fresh ? ` <span class="fresh">(${esc(fresh)})</span>` : "") +
+    (stale ? ` <span class="fresh">⚠ ${esc(stale)}</span>` : "");
   if (url) {
     const href = safeHref(url);
     // Safe scheme → clickable link. Unsafe scheme → render the source + the
@@ -144,7 +155,11 @@ function renderCitation(c: SourceCitation): string {
   return `<div class="cite">Authority: ${esc(c.source)} <span class="fresh">(cited — ${esc(c.license || "team policy")})</span></div>`;
 }
 
-function renderFinding(f: Finding, bibliography: ReturnType<typeof buildBibliography>): string {
+function renderFinding(
+  f: Finding,
+  bibliography: ReturnType<typeof buildBibliography>,
+  currency?: CitationCurrency,
+): string {
   const refs = f.source_citations
     .map((c) => citationIndex(bibliography, c.id))
     .filter((n): n is number => n !== undefined)
@@ -161,7 +176,7 @@ function renderFinding(f: Finding, bibliography: ReturnType<typeof buildBibliogr
   if (f.explanation) parts.push(`<p>${esc(f.explanation)}</p>`);
   if (f.recommendation)
     parts.push(`<p><strong>Recommendation:</strong> ${esc(f.recommendation)}</p>`);
-  for (const c of f.source_citations) parts.push(renderCitation(c));
+  for (const c of f.source_citations) parts.push(renderCitation(c, currency));
   parts.push("</div>");
   return parts.join("\n");
 }
@@ -303,6 +318,7 @@ export function buildHtmlReport(
   negotiationPosture?: NegotiationPosture,
 ): string {
   const bibliography = buildBibliography(run.findings, dkb);
+  const currency = dkbCurrency(dkb.manifest);
   const counts = { critical: 0, warning: 0, info: 0 } as Record<Severity, number>;
   for (const f of run.findings) counts[f.severity]++;
 
@@ -335,7 +351,7 @@ export function buildHtmlReport(
       body.push("<p><em>None.</em></p>");
       continue;
     }
-    for (const f of group) body.push(renderFinding(f, bibliography));
+    for (const f of group) body.push(renderFinding(f, bibliography, currency));
   }
 
   // v9 "Last Look" surfaces — render-side, outside `result_hash`. Each is
@@ -355,7 +371,7 @@ export function buildHtmlReport(
     for (const b of bibliography) {
       const url = b.source.source_url?.trim();
       // Strip the leading "[N] " — the <ol> supplies the number.
-      const text = formatBibliographyEntry(b.index, b.source).replace(/^\[\d+\]\s*/, "");
+      const text = formatBibliographyEntry(b.index, b.source, currency).replace(/^\[\d+\]\s*/, "");
       // Escape the whole line, then turn the (escaped) URL into a link so a
       // reader can click through and the URL still wraps (.biblio li has
       // overflow-wrap). Never truncated — the full entry is rendered.

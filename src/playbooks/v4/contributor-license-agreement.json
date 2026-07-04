@@ -4,11 +4,7 @@
   "name": "Contributor License Agreement (CLA)",
   "description": "OSS contributor license agreement (ASF ICLA / corporate CCLA pattern) with defensive-termination patent grant. Selects the §6.H ruleset (IPL-025..IPL-029).",
   "match_features": {
-    "title_keywords": [
-      "contributor license agreement",
-      "cla",
-      "individual contributor license"
-    ],
+    "title_keywords": ["contributor license agreement", "cla", "individual contributor license"],
     "required_clauses": [],
     "distinguishing_phrases": [
       "contributor",

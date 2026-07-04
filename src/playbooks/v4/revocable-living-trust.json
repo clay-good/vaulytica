@@ -6,7 +6,15 @@
   "match_features": {
     "title_keywords": ["revocable living trust", "living trust", "declaration of trust"],
     "required_clauses": [],
-    "distinguishing_phrases": ["settlor", "grantor", "trustor", "trustee", "trust property", "revocable", "spendthrift"],
+    "distinguishing_phrases": [
+      "settlor",
+      "grantor",
+      "trustor",
+      "trustee",
+      "trust property",
+      "revocable",
+      "spendthrift"
+    ],
     "negative_features": ["last will and testament", "advance directive", "power of attorney"]
   },
   "expected_clauses": [],

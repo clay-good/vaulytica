@@ -4,12 +4,7 @@
   "name": "Work-for-Hire Agreement",
   "description": "Work-made-for-hire agreement under 17 U.S.C. § 101 with backup assignment + DTSA notice. Selects the §6.H ruleset (IPL-036..IPL-040).",
   "match_features": {
-    "title_keywords": [
-      "work for hire",
-      "work-for-hire",
-      "work made for hire",
-      "wfh agreement"
-    ],
+    "title_keywords": ["work for hire", "work-for-hire", "work made for hire", "wfh agreement"],
     "required_clauses": [],
     "distinguishing_phrases": [
       "work made for hire",

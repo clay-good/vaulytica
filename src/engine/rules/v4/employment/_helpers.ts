@@ -61,12 +61,12 @@ export function irc(section: string, label?: string): SourceCitation {
   });
 }
 
-/** FTC Non-Compete Clause Final Rule. */
+/** FTC Non-Compete Clause Rule — vacated nationwide; never took effect. */
 export function ftcNcr(): SourceCitation {
   return v4Cite({
     id: "ftc-non-compete-rule",
     source:
-      "FTC Non-Compete Clause Final Rule (16 C.F.R. § 910); employment-side worker non-compete prohibition (subject to ongoing litigation)",
+      "FTC Non-Compete Clause Rule (16 C.F.R. Part 910) — vacated nationwide, Ryan LLC v. FTC, No. 3:24-cv-00986 (N.D. Tex. Aug. 20, 2024); never took effect (FTC appeals dismissed Sept. 2025); federal posture is case-by-case FTC Act § 5 enforcement",
     source_url:
       "https://www.federalregister.gov/documents/2024/05/07/2024-09171/non-compete-clause-rule",
   });

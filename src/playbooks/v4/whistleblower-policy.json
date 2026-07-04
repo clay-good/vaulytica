@@ -6,7 +6,14 @@
   "match_features": {
     "title_keywords": ["whistleblower policy", "whistleblower"],
     "required_clauses": [],
-    "distinguishing_phrases": ["non-retaliation", "anonymous reporting", "audit committee", "hotline", "21f-17", "sox 806"],
+    "distinguishing_phrases": [
+      "non-retaliation",
+      "anonymous reporting",
+      "audit committee",
+      "hotline",
+      "21f-17",
+      "sox 806"
+    ],
     "negative_features": ["aml", "anti-bribery"]
   },
   "expected_clauses": [],

@@ -6,7 +6,15 @@
   "match_features": {
     "title_keywords": ["anti-bribery", "anti-corruption", "fcpa policy"],
     "required_clauses": [],
-    "distinguishing_phrases": ["fcpa", "foreign corrupt practices act", "foreign official", "bribe", "uk bribery act", "ukba", "facilitating payment"],
+    "distinguishing_phrases": [
+      "fcpa",
+      "foreign corrupt practices act",
+      "foreign official",
+      "bribe",
+      "uk bribery act",
+      "ukba",
+      "facilitating payment"
+    ],
     "negative_features": ["aml", "insider trading", "lobbying"]
   },
   "expected_clauses": [],

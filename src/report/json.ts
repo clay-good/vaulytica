@@ -8,6 +8,7 @@
 
 import type { EngineRun, Finding } from "../engine/finding.js";
 import { RULE_TAXONOMY_VERSION } from "../engine/runner.js";
+import { currencyLabel, type CitationCurrency } from "./citations.js";
 import type { IngestResult } from "../ingest/types.js";
 import type { Playbook } from "../playbooks/types.js";
 import {
@@ -115,6 +116,14 @@ export type JsonReport = {
    */
   clause_evidence: ClauseEvidenceSummary;
   /**
+   * Citation-currency notes (fix-legal-authority-currency): findings whose
+   * cited authority was retrieved further back than the DKB's currency
+   * horizon, measured against the DKB's own build date (deterministic —
+   * never wall-clock). Outside `run`, so `result_hash` is unchanged;
+   * omitted when every cited authority is within the horizon.
+   */
+  citation_currency_notes?: Array<{ rule_id: string; citation_id: string; label: string }>;
+  /**
    * Pre-disclosure / "Clean to Send" scan (spec-v9 Thrust A). Container facts
    * recovered from the document's ORIGINAL bytes — tracked changes, comments,
    * hidden content, authoring metadata, sensitive-data patterns — aggregated
@@ -164,6 +173,7 @@ export function buildJsonReport(
   criticalDates?: CriticalDatesRegister,
   closingChecklist?: ClosingChecklist,
   negotiationPosture?: NegotiationPosture,
+  currency?: CitationCurrency,
 ): Blob {
   // spec-v6 Part IV — one model-clause reference per distinct fired rule that
   // has one, in first-seen finding order (findings arrive pre-sorted).
@@ -224,6 +234,22 @@ export function buildJsonReport(
   // spec-v10 Thrust A — the negotiation posture, additive (own posture_hash).
   if (negotiationPosture && negotiationPosture.positions.length > 0) {
     payload.negotiation_posture = negotiationPosture;
+  }
+  // fix-legal-authority-currency — deterministic "verify currency" notes.
+  if (currency) {
+    const notes: Array<{ rule_id: string; citation_id: string; label: string }> = [];
+    const seenNote = new Set<string>();
+    for (const f of run.findings) {
+      for (const c of f.source_citations) {
+        const label = currencyLabel(c, currency);
+        const key = `${f.rule_id}:${c.id}`;
+        if (label && !seenNote.has(key)) {
+          seenNote.add(key);
+          notes.push({ rule_id: f.rule_id, citation_id: c.id, label });
+        }
+      }
+    }
+    if (notes.length > 0) payload.citation_currency_notes = notes;
   }
   const json = JSON.stringify(payload, null, 2);
   return new Blob([json], { type: "application/json" });

@@ -6,7 +6,15 @@
   "match_features": {
     "title_keywords": ["form adv", "form adv part 2a", "investment adviser brochure"],
     "required_clauses": [],
-    "distinguishing_phrases": ["investment adviser", "advisory business", "code of ethics", "brokerage practices", "custody", "item 4", "item 8"],
+    "distinguishing_phrases": [
+      "investment adviser",
+      "advisory business",
+      "code of ethics",
+      "brokerage practices",
+      "custody",
+      "item 4",
+      "item 8"
+    ],
     "negative_features": ["form d", "10-k", "ppm"]
   },
   "expected_clauses": [],

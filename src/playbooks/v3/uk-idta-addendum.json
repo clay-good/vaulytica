@@ -26,12 +26,7 @@
     "negative_features": []
   },
   "expected_clauses": [],
-  "expected_defined_terms": [
-    "Exporter",
-    "Importer",
-    "UK GDPR",
-    "Personal Data"
-  ],
+  "expected_defined_terms": ["Exporter", "Importer", "UK GDPR", "Personal Data"],
   "rule_overrides": {},
   "balanced_defaults": [],
   "sources": [

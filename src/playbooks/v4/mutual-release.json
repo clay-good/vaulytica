@@ -4,7 +4,12 @@
   "name": "Mutual / General Release",
   "description": "Mutual or general release of claims with optional California Civil Code § 1542 waiver. Selects the §6.G settlement ruleset (SET-001..SET-005, SET-008).",
   "match_features": {
-    "title_keywords": ["mutual release", "general release", "release of claims", "release agreement"],
+    "title_keywords": [
+      "mutual release",
+      "general release",
+      "release of claims",
+      "release agreement"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "releasor",

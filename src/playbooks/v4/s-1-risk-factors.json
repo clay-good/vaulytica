@@ -6,7 +6,12 @@
   "match_features": {
     "title_keywords": ["s-1", "form s-1", "registration statement", "ipo prospectus"],
     "required_clauses": [],
-    "distinguishing_phrases": ["risk factors", "we may not be able to", "registration statement", "item 105"],
+    "distinguishing_phrases": [
+      "risk factors",
+      "we may not be able to",
+      "registration statement",
+      "item 105"
+    ],
     "negative_features": ["form d", "form adv", "10-k", "ppm", "reg a+"]
   },
   "expected_clauses": [],

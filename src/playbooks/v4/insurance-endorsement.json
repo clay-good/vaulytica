@@ -4,11 +4,7 @@
   "name": "Insurance Endorsement Review",
   "description": "Insurance endorsement review (ISO / AAIS forms + state filings). Selects the §6.K ruleset (INS-007..INS-012).",
   "match_features": {
-    "title_keywords": [
-      "endorsement",
-      "policy endorsement",
-      "amendatory endorsement"
-    ],
+    "title_keywords": ["endorsement", "policy endorsement", "amendatory endorsement"],
     "required_clauses": [],
     "distinguishing_phrases": [
       "this endorsement modifies",

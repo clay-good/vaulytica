@@ -17,3 +17,14 @@
 # refreshed. The ack only allows the build to publish.
 
 acknowledgments: []
+
+# Citation-currency acknowledgments (fix-legal-authority-currency).
+#
+# The currency gate (tests/integration/dkb-currency-gate.test.ts) fails CI
+# when any statute node in the LATEST dkb/dist artifact was retrieved more
+# than the manifest's currency horizon ago (default 12 months) and is not
+# listed below. Re-verifying the node against its source and bumping its
+# `retrieved_at` is the fix; an acknowledgment only defers it visibly.
+#   - node_id: the statute node id (e.g. stat-16-cfr-910)
+#   - ack:     a short human note (e.g. "re-verification scheduled — VAUL-99")
+currency_acknowledgments: []

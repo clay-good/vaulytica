@@ -4,9 +4,20 @@
   "name": "Private Placement Memorandum (PPM) Narrative",
   "description": "Private placement memorandum narrative under Reg D + state blue-sky. Per spec §6.P caveat: v4 lints prose only (REG-040). Selects the §6.P ruleset (REG-025..REG-032).",
   "match_features": {
-    "title_keywords": ["private placement memorandum", "ppm", "confidential offering memorandum", "offering memorandum"],
+    "title_keywords": [
+      "private placement memorandum",
+      "ppm",
+      "confidential offering memorandum",
+      "offering memorandum"
+    ],
     "required_clauses": [],
-    "distinguishing_phrases": ["subscription", "accredited investor", "transfer restrictions", "rule 144 legend", "use of proceeds"],
+    "distinguishing_phrases": [
+      "subscription",
+      "accredited investor",
+      "transfer restrictions",
+      "rule 144 legend",
+      "use of proceeds"
+    ],
     "negative_features": ["form d", "form adv", "10-k", "reg a+"]
   },
   "expected_clauses": [],

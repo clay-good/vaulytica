@@ -1,1 +1,22 @@
-{"consistency":{"execution_log_count":20,"finding_count":1,"finding_rule_ids":["CROSS-DATE-001"],"result_hash":"e9462e90035f4f78244529bb2489faf0e842ee53a074b3669ccbd3db8f7db93a"},"per_document":[{"doc_id":"baa","finding_count":43,"result_hash":"4f33935a9ac8609b3c1cd9007a0fd805910b47a527ab0d4cd526d212c9f61874","source_file_name":"baa.txt"},{"doc_id":"msa","finding_count":13,"result_hash":"71c23d6279d60648c9c44f106a9b613dd6fd81842ee37bde6e158997eac4b158","source_file_name":"msa.txt"}]}
+{
+  "consistency": {
+    "execution_log_count": 20,
+    "finding_count": 1,
+    "finding_rule_ids": ["CROSS-DATE-001"],
+    "result_hash": "e9462e90035f4f78244529bb2489faf0e842ee53a074b3669ccbd3db8f7db93a"
+  },
+  "per_document": [
+    {
+      "doc_id": "baa",
+      "finding_count": 43,
+      "result_hash": "0d0e885cfbf6cc3f1b2111ce32a995bc91664be91755653b69a507cf6a27a75d",
+      "source_file_name": "baa.txt"
+    },
+    {
+      "doc_id": "msa",
+      "finding_count": 13,
+      "result_hash": "5695a00afe11f81de31512182d9f639f3b79e83c62c4f4ff28caef2e00f32561",
+      "source_file_name": "msa.txt"
+    }
+  ]
+}
