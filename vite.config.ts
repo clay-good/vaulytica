@@ -100,6 +100,7 @@ function deployAssets(): Plugin {
 
       const latestDkb = pickLatestDkb(resolve(REPO_ROOT, "dkb", "dist"));
       if (existsSync(latestDkb) && statSync(latestDkb).isDirectory()) {
+        assertShippableDkb(latestDkb);
         cpSync(latestDkb, resolve(DIST, "dkb"), { recursive: true });
       }
 
@@ -329,6 +330,33 @@ export function buildSitemapXml(): string {
     "</urlset>",
     "",
   ].join("\n");
+}
+
+/**
+ * Ship-time floor check on the DKB artifact the build is about to copy
+ * into `dist/dkb/`. A manifest reporting zero entries for any content
+ * section means the knowledge base is empty — shipping it would break
+ * the "every finding traces to a pinned source" promise, so the whole
+ * build fails instead (the v2026-06-28-local artifact shipped exactly
+ * this way with every CI check green).
+ */
+export function assertShippableDkb(dkbDir: string): void {
+  const manifestPath = resolve(dkbDir, "dkb-manifest.json");
+  if (!existsSync(manifestPath)) {
+    throw new Error(`refusing to ship DKB from ${dkbDir}: dkb-manifest.json is missing`);
+  }
+  const manifest = JSON.parse(readFileSync(manifestPath, "utf8")) as {
+    version?: string;
+    files?: Record<string, { entries?: number }>;
+  };
+  const contentSections = ["clauses", "jurisdictions", "definitions", "dark_patterns", "statutes"];
+  const empty = contentSections.filter((s) => !((manifest.files?.[s]?.entries ?? 0) > 0));
+  if (empty.length > 0) {
+    throw new Error(
+      `refusing to ship DKB ${manifest.version ?? dkbDir}: empty content section(s): ` +
+        `${empty.join(", ")} — rebuild the DKB (npm run dkb:build) before building the site`,
+    );
+  }
 }
 
 function pickLatestDkb(distRoot: string): string {

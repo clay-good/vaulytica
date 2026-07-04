@@ -142,6 +142,13 @@ const FileRef = z.object({
   entries: z.number().int().nonnegative().optional(),
 });
 
+const ShrinkageAck = z.object({
+  section: z.string().min(1),
+  prior_count: z.number().int().nonnegative(),
+  new_count: z.number().int().nonnegative(),
+  reason: z.string().min(1),
+});
+
 export const DkbManifestSchema = z.object({
   version: z.string().min(1),
   schema_version: z.string().min(1),
@@ -156,6 +163,7 @@ export const DkbManifestSchema = z.object({
     classifier_patterns: FileRef,
   }),
   sources: z.array(SourceCitationSchema),
+  shrinkage_acknowledgments: z.array(ShrinkageAck).optional(),
 });
 
 /**

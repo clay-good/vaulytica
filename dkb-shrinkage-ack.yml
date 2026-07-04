@@ -1,0 +1,20 @@
+# dkb-shrinkage-ack.yml — human-acknowledged entry-count decreases.
+#
+# Every DKB build compares each manifest `files` section's entry count
+# against the most recent prior version in `dkb/dist/`. If any count
+# decreases and the (section, new_count) pair is not listed below, the
+# build exits non-zero — a knowledge base must never silently shrink
+# (the v2026-06-28-local incident shipped 0 statutes/clauses/definitions/
+# jurisdictions/dark-patterns with every CI check green).
+#
+# To acknowledge an intentional drop, add an entry under
+# `acknowledgments:` with:
+#   - section:   the manifest files key (e.g. `clauses`)
+#   - new_count: the entry count the new build produces
+#   - reason:    a short human note explaining the disposition
+#                (e.g. "duplicate CUAD clauses deduplicated — VAUL-1234")
+#
+# Used acknowledgments are recorded in the built manifest under
+# `shrinkage_acknowledgments` so the artifact carries the audit trail.
+
+acknowledgments: []

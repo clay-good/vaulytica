@@ -141,6 +141,20 @@ export type DkbFileRef = {
   entries?: number;
 };
 
+/**
+ * Human acknowledgment of an intentional entry-count decrease vs. the
+ * previous released DKB version (`dkb-shrinkage-ack.yml`). The build
+ * refuses unacknowledged shrinkage; acknowledged drops are recorded
+ * here so the manifest carries the audit trail.
+ */
+export type DkbShrinkageAck = {
+  /** Manifest `files` key, e.g. `clauses`. */
+  section: string;
+  prior_count: number;
+  new_count: number;
+  reason: string;
+};
+
 export type DkbManifest = {
   /** e.g. `v2026-05-11-a1b2c3d`. */
   version: string;
@@ -159,6 +173,8 @@ export type DkbManifest = {
   };
   /** Deduplicated source citations across the whole DKB. */
   sources: SourceCitation[];
+  /** Acknowledged entry-count decreases vs. the prior released version. */
+  shrinkage_acknowledgments?: DkbShrinkageAck[];
 };
 
 /**
