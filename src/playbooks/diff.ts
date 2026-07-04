@@ -15,7 +15,13 @@
  * neither.
  */
 
-import type { CustomPlaybook, CustomPlaybookRuleOverride, CustomRule } from "./custom-playbook.js";
+import type {
+  CustomPlaybook,
+  CustomPlaybookRuleOverride,
+  CustomPredicate,
+  CustomRule,
+  NegotiationPosition,
+} from "./custom-playbook.js";
 
 export type FieldChange = { field: string; from: unknown; to: unknown };
 
@@ -60,9 +66,76 @@ export type PlaybookDiff = {
     removed: string[];
     changed: CustomRuleChange[];
   };
+  /**
+   * Negotiation-position (walk-away ladder) drift — the field the entire
+   * posture/coherence family polices. Added at fix-playbook-diff-
+   * completeness: two playbooks differing only in an acceptable floor
+   * used to diff as "No structural differences" and exit 0.
+   */
+  negotiation_positions: {
+    added: string[];
+    removed: string[];
+    changed: PositionChange[];
+  };
   /** True when the two playbooks are structurally identical. */
   identical: boolean;
 };
+
+export type PositionChange = {
+  dimension: string;
+  /** Attorney-terms summaries, one per changed aspect of the position. */
+  changes: string[];
+};
+
+/**
+ * Attorney-terms description of a rung change: a numeric threshold whose
+ * metric/comparator held still renders as a moved floor ("acceptable floor
+ * for Liability cap moved 6 → 4"); anything else states the tier changed.
+ */
+function describePredicateChange(
+  dimension: string,
+  tier: "ideal" | "acceptable",
+  from: CustomPredicate,
+  to: CustomPredicate,
+): string {
+  const label = tier === "acceptable" ? "acceptable floor" : "ideal position";
+  if (
+    from.kind === "numeric_threshold" &&
+    to.kind === "numeric_threshold" &&
+    from.metric === to.metric &&
+    from.comparator === to.comparator
+  ) {
+    return `${label} for ${dimension} moved ${from.value} → ${to.value}`;
+  }
+  return `${label} for ${dimension} changed (${JSON.stringify(from)} → ${JSON.stringify(to)})`;
+}
+
+function diffNegotiationPositions(
+  a: NegotiationPosition[] = [],
+  b: NegotiationPosition[] = [],
+): PlaybookDiff["negotiation_positions"] {
+  const aMap = new Map(a.map((p) => [p.dimension, p]));
+  const bMap = new Map(b.map((p) => [p.dimension, p]));
+  const added = [...bMap.keys()].filter((d) => !aMap.has(d)).sort();
+  const removed = [...aMap.keys()].filter((d) => !bMap.has(d)).sort();
+  const changed: PositionChange[] = [];
+  for (const [dimension, pa] of aMap) {
+    const pb = bMap.get(dimension);
+    if (!pb) continue;
+    const changes: string[] = [];
+    for (const tier of ["ideal", "acceptable"] as const) {
+      if (JSON.stringify(pa[tier]) !== JSON.stringify(pb[tier])) {
+        changes.push(describePredicateChange(dimension, tier, pa[tier], pb[tier]));
+      }
+    }
+    if (JSON.stringify(pa.guidance ?? null) !== JSON.stringify(pb.guidance ?? null)) {
+      changes.push(`negotiation guidance for ${dimension} changed`);
+    }
+    if (changes.length > 0) changed.push({ dimension, changes });
+  }
+  changed.sort((x, y) => (x.dimension < y.dimension ? -1 : x.dimension > y.dimension ? 1 : 0));
+  return { added, removed, changed };
+}
 
 function setDiff(a: string[], b: string[]): { added: string[]; removed: string[] } {
   const sa = new Set(a);
@@ -175,6 +248,10 @@ export function diffPlaybooks(a: CustomPlaybook, b: CustomPlaybook): PlaybookDif
   const thresholds = diffThresholds(a.thresholds, b.thresholds);
   const required_clauses = diffRequiredClauses(a.required_clauses, b.required_clauses);
   const custom_rules = diffCustomRules(a.custom_rules, b.custom_rules);
+  const negotiation_positions = diffNegotiationPositions(
+    a.negotiation_positions,
+    b.negotiation_positions,
+  );
 
   const identical =
     metadata.length === 0 &&
@@ -193,7 +270,10 @@ export function diffPlaybooks(a: CustomPlaybook, b: CustomPlaybook): PlaybookDif
     required_clauses.changed.length === 0 &&
     custom_rules.added.length === 0 &&
     custom_rules.removed.length === 0 &&
-    custom_rules.changed.length === 0;
+    custom_rules.changed.length === 0 &&
+    negotiation_positions.added.length === 0 &&
+    negotiation_positions.removed.length === 0 &&
+    negotiation_positions.changed.length === 0;
 
   return {
     from: { id: a.id, name: a.name, catalog_version: a.catalog_version },
@@ -204,6 +284,7 @@ export function diffPlaybooks(a: CustomPlaybook, b: CustomPlaybook): PlaybookDif
     thresholds,
     required_clauses,
     custom_rules,
+    negotiation_positions,
     identical,
   };
 }
@@ -294,6 +375,15 @@ export function diffPlaybooksMarkdown(a: CustomPlaybook, b: CustomPlaybook): str
     lines.push(...bullets("Added", cr.added));
     lines.push(...bullets("Removed", cr.removed));
     for (const c of cr.changed) lines.push(`- **${c.id}:** changed (${c.fields.join(", ")})`);
+    lines.push("");
+  }
+
+  const np = d.negotiation_positions;
+  if (np.added.length || np.removed.length || np.changed.length) {
+    lines.push("## Negotiation positions");
+    lines.push(...bullets("Added", np.added));
+    lines.push(...bullets("Removed", np.removed));
+    for (const c of np.changed) for (const summary of c.changes) lines.push(`- ${summary}`);
     lines.push("");
   }
 

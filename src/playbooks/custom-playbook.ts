@@ -361,7 +361,7 @@ const negotiationPositionSchema = z
     }
   });
 
-export const CustomPlaybookSchema = z
+const customPlaybookObjectSchema = z
   .object({
     schema_version: z.literal(CUSTOM_PLAYBOOK_SCHEMA_VERSION),
     catalog_version: z.string().min(1),
@@ -392,55 +392,67 @@ export const CustomPlaybookSchema = z
       .max(MAX_NEGOTIATION_POSITIONS)
       .optional(),
   })
-  .strict()
-  .superRefine((pb, ctx) => {
-    // A replace-mode playbook with no positions of its own would silently
-    // run nothing — almost certainly an authoring mistake. Negotiation
-    // positions count: a posture-only replace playbook is a legitimate use.
-    if (
-      pb.mode === "replace" &&
-      (pb.custom_rules === undefined || pb.custom_rules.length === 0) &&
-      (pb.required_clauses === undefined || pb.required_clauses.length === 0) &&
-      (pb.negotiation_positions === undefined || pb.negotiation_positions.length === 0)
-    ) {
-      ctx.addIssue({
-        code: "custom",
-        message:
-          "a replace-mode playbook must define at least one custom_rule or required_clause, otherwise it checks nothing",
-        path: ["mode"],
-      });
-    }
-    // Custom-rule ids must be unique so findings are addressable.
-    if (pb.custom_rules) {
-      const seen = new Set<string>();
-      pb.custom_rules.forEach((r, i) => {
-        if (seen.has(r.id)) {
-          ctx.addIssue({
-            code: "custom",
-            message: `duplicate custom_rule id "${r.id}"`,
-            path: ["custom_rules", i, "id"],
-          });
-        }
-        seen.add(r.id);
-      });
-    }
-    // Negotiation-position dimensions must be unique so each is addressable in
-    // the posture report.
-    if (pb.negotiation_positions) {
-      const seen = new Set<string>();
-      pb.negotiation_positions.forEach((p, i) => {
-        const key = p.dimension.trim().toLowerCase();
-        if (seen.has(key)) {
-          ctx.addIssue({
-            code: "custom",
-            message: `duplicate negotiation_positions dimension "${p.dimension}"`,
-            path: ["negotiation_positions", i, "dimension"],
-          });
-        }
-        seen.add(key);
-      });
-    }
-  });
+  .strict();
+
+/**
+ * Every top-level playbook field, derived from the schema itself — the
+ * source of truth for the diff-completeness guard (fix-playbook-diff-
+ * completeness): `diffPlaybooks` must declare a comparator for each of
+ * these, so a future field cannot ship silently un-diffed the way
+ * `negotiation_positions` did.
+ */
+export const CUSTOM_PLAYBOOK_FIELDS: readonly string[] = Object.keys(
+  customPlaybookObjectSchema.shape,
+);
+
+export const CustomPlaybookSchema = customPlaybookObjectSchema.superRefine((pb, ctx) => {
+  // A replace-mode playbook with no positions of its own would silently
+  // run nothing — almost certainly an authoring mistake. Negotiation
+  // positions count: a posture-only replace playbook is a legitimate use.
+  if (
+    pb.mode === "replace" &&
+    (pb.custom_rules === undefined || pb.custom_rules.length === 0) &&
+    (pb.required_clauses === undefined || pb.required_clauses.length === 0) &&
+    (pb.negotiation_positions === undefined || pb.negotiation_positions.length === 0)
+  ) {
+    ctx.addIssue({
+      code: "custom",
+      message:
+        "a replace-mode playbook must define at least one custom_rule or required_clause, otherwise it checks nothing",
+      path: ["mode"],
+    });
+  }
+  // Custom-rule ids must be unique so findings are addressable.
+  if (pb.custom_rules) {
+    const seen = new Set<string>();
+    pb.custom_rules.forEach((r, i) => {
+      if (seen.has(r.id)) {
+        ctx.addIssue({
+          code: "custom",
+          message: `duplicate custom_rule id "${r.id}"`,
+          path: ["custom_rules", i, "id"],
+        });
+      }
+      seen.add(r.id);
+    });
+  }
+  // Negotiation-position dimensions must be unique so each is addressable in
+  // the posture report.
+  if (pb.negotiation_positions) {
+    const seen = new Set<string>();
+    pb.negotiation_positions.forEach((p, i) => {
+      const key = p.dimension.trim().toLowerCase();
+      if (seen.has(key)) {
+        ctx.addIssue({
+          code: "custom",
+          message: `duplicate negotiation_positions dimension "${p.dimension}"`,
+          path: ["negotiation_positions", i, "dimension"],
+        });
+      }
+      seen.add(key);
+    });
+  }
+});
 
 // ---------------------------------------------------------------------------
 // Validation with human-readable errors (spec-v6 §10)
