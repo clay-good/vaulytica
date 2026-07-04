@@ -133,7 +133,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "FIN-001",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -188,7 +188,7 @@
       "finding_id": "IPDATA-001-s1-0",
       "fired": true,
       "rule_id": "IPDATA-001",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -351,7 +351,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "PERS-009",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -589,7 +589,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "TEMP-003",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -715,7 +715,7 @@
       "explanation": "Without an IP-ownership clause, default copyright and patent rules apply: under 17 U.S.C. § 201, copyright vests in the author/employee unless work-for-hire or assignment applies.",
       "id": "IPDATA-001-s1-0",
       "rule_id": "IPDATA-001",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -888,7 +888,7 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "d5a43ecb51b43611f62ab741c1256c3226d9b2bfd969a90316ce00451bd85055",
+  "result_hash": "e1b62227bbd27842f785709330ca672e0dedd791ec5f845170ca9556df3daeeb",
   "source_file": {
     "name": "bad-nda-no-dtsa.docx",
     "sha256": "6843694916dfef439851e84aca5bf213e35090b1a39f2b027f1e56d6382f2c29",

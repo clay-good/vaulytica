@@ -140,7 +140,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "FIN-001",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -195,7 +195,7 @@
       "finding_id": "IPDATA-001-s1-0",
       "fired": true,
       "rule_id": "IPDATA-001",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -364,7 +364,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "PERS-009",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -603,7 +603,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "TEMP-003",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -856,7 +856,7 @@
       "explanation": "Without an IP-ownership clause, default copyright and patent rules apply: under 17 U.S.C. § 201, copyright vests in the author/employee unless work-for-hire or assignment applies.",
       "id": "IPDATA-001-s1-0",
       "rule_id": "IPDATA-001",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1240,7 +1240,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
-  "result_hash": "8cde6a6c2ed962207043c6b2b44504bd11d63eb849edef91d286a7ac20fe0307",
+  "result_hash": "1bbad45f7541ba0e617f06d6492f8ab2d1993525b62ce0308cf82423363c880a",
   "source_file": {
     "name": "bad-employment.docx",
     "sha256": "44e689f2fe4e8767866844995363dda962260fd37d54469e6d0fdf443136013c",

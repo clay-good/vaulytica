@@ -133,7 +133,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "FIN-001",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -188,7 +188,7 @@
       "finding_id": "IPDATA-001-s1-0",
       "fired": true,
       "rule_id": "IPDATA-001",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -357,7 +357,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "PERS-009",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -595,7 +595,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "TEMP-003",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -720,7 +720,7 @@
       "explanation": "Without an IP-ownership clause, default copyright and patent rules apply: under 17 U.S.C. § 201, copyright vests in the author/employee unless work-for-hire or assignment applies.",
       "id": "IPDATA-001-s1-0",
       "rule_id": "IPDATA-001",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1008,7 +1008,7 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"consulting agreement\". Distinguishing phrases: \"Consultant\", \"advisory services\", \"deliverables\", \"independent contractor\", \"the Consulting Services\".",
-  "result_hash": "7ca02c0725b60071c959d5da7adaad60dee9fbc88dca22cae9c23e39bcc46c41",
+  "result_hash": "05c3734c313d79f826fec513ab03bebb676a80454a98d9596c06c8611049c4c3",
   "source_file": {
     "name": "bad-consulting.docx",
     "sha256": "f66f070f4bb768dbc3f21ee6782418bca5ed64451d483dab533b345a8ddbe691",

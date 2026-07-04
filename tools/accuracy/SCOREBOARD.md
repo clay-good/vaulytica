@@ -11,10 +11,10 @@
 
 ## Headline
 
-| Average | Precision | Recall | F1  |
-| ------- | --------- | ------ | --- |
-| Micro   | —         | —      | —   |
-| Macro   | —         | —      | —   |
+| Average | Precision | Recall | F1 |
+|---|---|---|---|
+| Micro | — | — | — |
+| Macro | — | — | — |
 
 ## Notes
 
@@ -28,3 +28,4 @@
 ## Unmeasured rules
 
 None — every graded rule had at least one κ-confident document.
+

@@ -133,7 +133,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "FIN-001",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -187,7 +187,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "IPDATA-001",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -352,7 +352,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "PERS-009",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -589,7 +589,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "TEMP-003",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -872,7 +872,7 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 0.8,
   "playbook_match_reasoning": "Selected msa-general (score 0.8). Required clauses present: \"indemnification\". Distinguishing phrases: \"Services\", \"Provider\", \"Customer\". Negative features penalized: \"lease\", \"Premises\".",
-  "result_hash": "3bb15ed6a930c1daa2b8f88ca305460dc444aad439861802b0e249143d6db133",
+  "result_hash": "bc6df73b3fa6f53e415f06f2a708ca03253dd857e86ed104b6025c96a0982327",
   "source_file": {
     "name": "bad-saas-vendor-uncapped-ip.docx",
     "sha256": "8ae94b74fdbe0bc441724e390612c07a1fd3fdc05bf782e829c1e4dda8a69083",

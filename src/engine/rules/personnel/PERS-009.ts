@@ -81,7 +81,7 @@ function durationToMonths(amount: string, unit: string): number | null {
 
 export const rule: Rule = {
   id: "PERS-009",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Long non-solicit duration",
   category: "personnel",
   default_severity: "warning",
@@ -101,35 +101,45 @@ export const rule: Rule = {
       if (hit) return;
       const text = p.text;
       if (!NON_SOLICIT_KEYWORD.test(text)) return;
-      // Confirm a negative-obligation framing.
-      let negFound = false;
-      for (const re of NON_SOLICIT_NEGATIVES) {
-        if (re.test(text)) {
-          negFound = true;
-          break;
+      // Duration attribution is SENTENCE-scoped (fix-rule-detection-
+      // fidelity): the old logic attributed the first >12-month duration
+      // found anywhere in the paragraph to the non-solicit, so a 24-month
+      // support commitment sharing a paragraph with a non-solicit sentence
+      // was flagged as a 24-month non-solicit. Now the negative-obligation
+      // framing and the duration must sit in the same sentence.
+      let offset = 0;
+      for (const sentence of text.split(/(?<=[.;])\s+/)) {
+        const sentenceStart = text.indexOf(sentence, offset);
+        offset = sentenceStart + sentence.length;
+        if (!NON_SOLICIT_KEYWORD.test(sentence)) continue;
+        let negFound = false;
+        for (const re of NON_SOLICIT_NEGATIVES) {
+          if (re.test(sentence)) {
+            negFound = true;
+            break;
+          }
         }
-      }
-      if (!negFound) return;
-      // Find the first long-enough duration.
-      const re = new RegExp(DURATION_RE.source, DURATION_RE.flags + "g");
-      re.lastIndex = 0;
-      let dm: RegExpExecArray | null;
-      while ((dm = re.exec(text)) !== null) {
-        const months = durationToMonths(dm[1] ?? "", dm[2] ?? "");
-        if (months == null || months <= 12) continue;
-        hit = {
-          months,
-          raw: dm[0],
-          text,
-          position: {
-            section_id: p.section.id,
-            paragraph_id: p.paragraph.id,
-            start: p.start + dm.index,
-            end: p.start + dm.index + dm[0].length,
-          },
-          matchIndex: dm.index,
-        };
-        return;
+        if (!negFound) continue;
+        const re = new RegExp(DURATION_RE.source, DURATION_RE.flags + "g");
+        re.lastIndex = 0;
+        let dm: RegExpExecArray | null;
+        while ((dm = re.exec(sentence)) !== null) {
+          const months = durationToMonths(dm[1] ?? "", dm[2] ?? "");
+          if (months == null || months <= 12) continue;
+          hit = {
+            months,
+            raw: dm[0],
+            text,
+            position: {
+              section_id: p.section.id,
+              paragraph_id: p.paragraph.id,
+              start: p.start + sentenceStart + dm.index,
+              end: p.start + sentenceStart + dm.index + dm[0].length,
+            },
+            matchIndex: sentenceStart + dm.index,
+          };
+          return;
+        }
       }
     });
     if (!hit) return null;

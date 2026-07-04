@@ -14,7 +14,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
  */
 
 const PAIR =
-  /\b((?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion|trillion|and|[-\s])+)\s+(?:dollars?|euros?|pounds?\s+sterling|pounds?)?\s*\(\s*[$€£¥]?\s*([\d,]+(?:\.\d+)?)\s*(?:k|m|mm|b|bn)?\s*\)/gi;
+  /\b((?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion|trillion|and|[-\s])+)\s+(?:dollars?|euros?|pounds?\s+sterling|pounds?)?\s*\(\s*[$€£¥]?\s*([\d,]+(?:\.\d+)?)\s*(k|m|mm|b|bn)?\s*\)/gi;
 
 const NUMBER_WORDS: Record<string, number> = {
   zero: 0,
@@ -56,7 +56,7 @@ const WORD_SCALES: Record<string, string> = {
 
 export const rule: Rule = {
   id: "FIN-001",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Word-numeral amount mismatch",
   category: "financial",
   default_severity: "critical",
@@ -81,7 +81,7 @@ export const rule: Rule = {
       let m: RegExpExecArray | null;
       while ((m = PAIR.exec(p.text)) !== null) {
         const word = parseWords(m[1] ?? "");
-        const numeral = parseNumeral(m[2] ?? "");
+        const numeral = parseNumeral(m[2] ?? "", m[3]);
         if (!word || !numeral) continue;
         if (!word.equals(numeral)) {
           firstMismatch = {
@@ -144,9 +144,26 @@ function parseWords(phrase: string): Decimal | null {
   return recognized ? total.plus(current) : null;
 }
 
-function parseNumeral(raw: string): Decimal | null {
+/**
+ * Magnitude suffixes the PAIR regex tolerates. They MUST be applied
+ * (fix-rule-detection-fidelity): the regex always accepted "$1M" but the
+ * suffix was never multiplied in, so "one million dollars ($1M)" fired a
+ * false CRITICAL ("1000000 does not match numeral 1") on a perfectly
+ * consistent, commonly drafted amount.
+ */
+const MAGNITUDES: Record<string, string> = {
+  k: "1000",
+  m: "1000000",
+  mm: "1000000",
+  b: "1000000000",
+  bn: "1000000000",
+};
+
+function parseNumeral(raw: string, suffix?: string): Decimal | null {
   try {
-    return new Decimal(raw.replace(/,/g, ""));
+    const base = new Decimal(raw.replace(/,/g, ""));
+    const scale = suffix ? MAGNITUDES[suffix.toLowerCase()] : undefined;
+    return scale ? base.mul(scale) : base;
   } catch {
     return null;
   }
