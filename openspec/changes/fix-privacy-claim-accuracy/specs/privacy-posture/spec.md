@@ -34,3 +34,22 @@ The PDF ingestion path SHALL explicitly configure its worker script and any auxi
 
 - **WHEN** the app is loaded and a PDF is analyzed with all foreign origins unreachable
 - **THEN** ingestion completes normally using the bundled worker and font assets
+
+### Requirement: OCR engine assets are pinned same-origin
+
+The OCR path (`src/ingest/ocr.ts`, invoked for scanned PDFs via
+`allowOcr: true`) SHALL configure `workerPath`, `corePath`, and `langPath` to
+bundled same-origin assets. Today `tesseract.createWorker("eng")` runs on
+library defaults that fetch the worker, wasm core, and `eng.traineddata` from
+CDNs — which the shipped `connect-src 'self'` CSP blocks, so scanned-PDF OCR
+either violates the no-cross-origin requirement or fails outright. Either the
+assets are bundled or OCR is explicitly disabled with an honest
+"scanned PDF not supported" message; a silent broken path is not acceptable.
+
+#### Scenario: Scanned PDF under interception
+
+- **WHEN** the e2e suite analyzes a PDF with no text layer (OCR path) with all
+  requests intercepted
+- **THEN** either OCR completes using only same-origin assets, or the UI
+  reports scanned-PDF ingestion as unsupported — no cross-origin request fires
+  and no silent failure occurs

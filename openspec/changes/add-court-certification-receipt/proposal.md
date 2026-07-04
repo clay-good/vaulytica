@@ -6,7 +6,7 @@ Court directives on generative-AI use in filings now number 300+ per the Ropes &
 
 ## What Changes
 
-- New export: "Verification certificate" — a one-page DOCX/PDF + JSON companion generated with any report, stating: the tool and engine version; the DKB version; the input file's SHA-256 and name; the `result_hash`; that the analysis is a deterministic rule evaluation involving no generative-AI, machine-learning, or probabilistic component and no network transmission; and the exact reproduction command (`vaulytica verify <report> <file>`).
+- New export: "Verification certificate" — a one-page DOCX/PDF + JSON companion generated with any report, stating: the tool and engine version; the DKB version; the input file's SHA-256 and name; the `result_hash`; that the analysis is a deterministic rule evaluation involving no generative-AI, machine-learning, or probabilistic component, performed locally with no transmission of document content (the privacy-approved wording from `fix-privacy-claim-accuracy` — never an absolute "no network transmission" claim, which same-origin asset fetches make false); and the exact reproduction command (`vaulytica verify <report> <file>`).
 - The certificate is factual and self-limiting: it certifies what the tool did, never the filer's overall compliance; it carries the standing disclaimer and states the attorney remains responsible for verification (mirroring Op. 512's competence/supervision duties).
 - The JSON companion carries its own namespaced `certificate_hash` so the certificate itself is tamper-evident and re-derivable.
 - The site gains a short "For court and ethics compliance" section explaining the standing-order landscape and how the certificate + `verify` fit it.

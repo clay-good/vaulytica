@@ -4,13 +4,18 @@
 
 ### Requirement: Machine formats own stdout exclusively
 
-When a machine-readable format (`json`, `sarif`) is selected, the CLI SHALL write exactly one serialized artifact to stdout and nothing else; all human-readable summaries, notes, and progress lines MUST be written to stderr.
+When a machine-readable format (`json`, `sarif`, `csv`) is selected, the CLI SHALL write exactly one serialized artifact to stdout and nothing else; all human-readable summaries, notes, and progress lines MUST be written to stderr.
 
 #### Scenario: Piping analyze to jq
 
 - **WHEN** `vaulytica analyze contract.docx --format json` runs with stdout piped to a JSON parser
 - **THEN** stdout parses as a single valid JSON document
 - **AND** the per-file summary line appears on stderr
+
+#### Scenario: Redirecting csv to a file
+
+- **WHEN** `vaulytica analyze contract.docx --format csv > out.csv` runs
+- **THEN** `out.csv` begins with the CSV header row — no summary line precedes it
 
 #### Scenario: Coherence command with a ladder note
 

@@ -5,6 +5,6 @@
 - [ ] 3. Prove default-path stability: with no profile, every existing critical-dates golden byte-identical (explicit regression test).
 - [ ] 4. CLI `--deadline-profile <id>` + `--service-method <method>`; tab picker; USAGE; the profile assertion rendered in the report header ("computed under Fed. R. Civ. P. 6 as asserted by the user").
 - [ ] 5. Arithmetic test battery: FRCP 6(a)(1) worked examples (trigger-day exclusion; weekend roll; holiday roll incl. observed holidays), 6(d) mail +3 then roll, e-service +0 (2016 amendment), CCP § 12a Saturday roll; property tests (rolling is idempotent; resolved date ≥ unrolled date; steps replay to the same result).
-- [ ] 6. DDL-001 (document's own math lands on a non-day pre-roll) and DDL-002 (two clauses imply conflicting dates for one obligation), gated per the framework.
+- [ ] 6. DDL-001 (document's own math lands on a non-day pre-roll) and DDL-002 (two clauses imply conflicting dates for one obligation), assertion-gated on `--deadline-profile` (register the assertion in the vertical registry per the framework's assertion-gate path; no playbook gate).
 - [ ] 7. .ics: resolved events carry profile provenance in DESCRIPTION; unresolved rows keep the sentinel behavior; goldens.
 - [ ] 8. Full gate green; docs page on the profile vocabulary and its limits.

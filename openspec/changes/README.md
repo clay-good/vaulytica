@@ -33,9 +33,14 @@ a grounding pass over the code (playbook gating via `applies_to_playbooks`,
 the v3 presence-rule factory, critical-dates arithmetic, bundle ingest) and
 web-verified legal anchors (FRAP 32/28, FRCP 6 and the 2025-12-01 privilege-log
 amendments, UPC wills formalities with state corrections, CCPA/GDPR notice
-content lists, The Indigo Book's CC0 status). The framework change lands first;
-the six packs are independent of each other. All packs are gated and
-dormant-by-default: none can change an existing document's `result_hash`.
+content lists, The Indigo Book's CC0 status). The framework change lands
+first. `add-authority-citation-lint` additionally requires
+`add-filing-format-lint` (which creates the filing playbooks and court
+profiles the CITE rules gate to); the other packs are independent of each
+other. All packs are gated and dormant-by-default — via playbook gates or
+registered opt-in assertions (deadline profiles, `--estate-checks`) — so none
+can change an existing document's `result_hash` without an explicit user
+assertion.
 
 | # | Change | One-line intent | Value |
 |---|--------|-----------------|-------|
@@ -46,6 +51,39 @@ dormant-by-default: none can change an existing document's `result_hash`.
 | 19 | [add-production-qa-pack](add-production-qa-pack/proposal.md) | Bates sequence integrity, privilege-log CSV reconciliation (FRCP 26(b)(5)(A); 2025-12-01 amendments), bundle-wide pre-production sweep | Timely: privilege-log rules newly effective |
 | 20 | [add-estate-planning-pack](add-estate-planning-pack/proposal.md) | Will execution-recital checks with verified state overlays (PA/LA/CO/ND corrections), residuary-share arithmetic (UPC § 2-604(b)) | Deepens the existing EST pack |
 | 21 | [add-privacy-notice-pack](add-privacy-notice-pack/proposal.md) | PNOT presence rules per asserted regime (CCPA/GDPR/CO/VA/TX/OR), Texas exact-wording match, coverage table without a verdict | Purest checklist fit for the presence factory |
+
+## Wave 3 — 2026-07-03 second audit round (6 fixes)
+
+A fresh three-lens audit (spec-set consistency, rule-substance bug hunt with
+live CLI reproduction, gate-honesty exercise of the real bin shim) after waves
+1–2 were written. Every finding below was reproduced through the shipped CLI
+or confirmed by direct source reading before being specced. Ordering is by
+severity; `fix-ingest-preamble-integrity` should land with the other
+hash-affecting wave-1 fixes so goldens re-baseline once.
+
+| # | Change | One-line intent | Severity |
+|---|--------|-----------------|----------|
+| 22 | [fix-ingest-preamble-integrity](fix-ingest-preamble-integrity/proposal.md) | DOCX/PDF ingest silently discards everything before the first heading — the preamble, parties, and recitals are never scanned (paste ingest has the correct guard; docx/pdf forgot it) | Critical — silent under-scan, browser + CLI |
+| 23 | [fix-verify-receipt-depth](fix-verify-receipt-depth/proposal.md) | `verify` prints "✓ Reproduced" (exit 0) for a report whose findings were doctored — it never re-hashes the saved body; also artifacts embed absolute local paths | High — the audit receipt green-lights tampering |
+| 24 | [fix-playbook-diff-completeness](fix-playbook-diff-completeness/proposal.md) | `diff --exit-code` never compares `negotiation_positions`, so walk-away-floor drift exits 0 against documented semantics | High — documented CI gate passes material drift |
+| 25 | [fix-rule-detection-fidelity](fix-rule-detection-fidelity/proposal.md) | Four launch rules mis-detect on realistic language: FIN-001 false **critical** on "$1M" shorthand, IPDATA-001 false negative on any non-IP assignment, PERS-009 and TEMP-003 false positives | High — attorney trust in findings |
+| 26 | [fix-cli-output-completeness](fix-cli-output-completeness/proposal.md) | `analyze --format json,md` without `--out` renders everything, delivers nothing, exits 0 | Medium-high — green exit with withheld output |
+| 27 | [fix-build-attestation-honesty](fix-build-attestation-honesty/proposal.md) | Every production build fabricates the DKB validation attestation (`new Date()` + "0 stale citations") the footer then displays | Medium — false attestation, nondeterministic dist |
+
+Wave-3 corrections to the existing set (same round): declared the
+citation-lint → filing-format-lint dependency; made the estate pack truly
+dormant (assertion-gated — will/trust playbooks already ship, so playbook
+gating alone would have changed existing hashes, contradicting the wave-2
+dormancy promise); extended the framework's gate contract with registered
+opt-in assertions (resolving the DDL-rule gating ambiguity); added the
+tesseract/OCR CDN gap to `fix-privacy-claim-accuracy` (scanned-PDF OCR would
+violate the no-cross-origin requirement or fail under the shipped CSP); added
+`csv` to `fix-cli-json-purity`'s machine-format stream contract; corrected
+"23 built-in model clauses" to the verified 10 (referenced by 24 rules);
+corrected the estate pack's "`--state` flag reuse" (no such flag exists —
+overlays are auto-selected today); aligned the court certificate's wording
+with the privacy-approved claim (no absolute "no network transmission");
+marked `playbooks` as a new capability spec.
 
 Verification-round notes (2026-07-03): every repo-verifiable factual claim in
 the original twelve changes was independently re-checked and confirmed true.

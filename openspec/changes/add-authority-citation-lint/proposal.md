@@ -13,5 +13,6 @@ Citation hygiene is the highest-anxiety mechanical task in brief-writing, and th
 ## Impact
 
 - Affected specs: `filing-compliance`
+- Depends on: `add-document-vertical-framework` (pack contract) **and** `add-filing-format-lint` — the filing playbooks (`appellate-brief`, `trial-motion`, `petition`), classifier family, and court profiles the CITE rules gate to are created there; this change adds none of its own and cannot land first.
 - Affected code: new `src/extract/citations.ts` + types, DKB citation-grammar nodes + build, `src/engine/rules/filing/` CITE rules, tests (grammar fixtures, brief fixtures with seeded defects)
 - Risk: none to existing hashes (gated pack; new extractor output enters `extracted` only for filing-family documents — verify with the framework's isolation property test).

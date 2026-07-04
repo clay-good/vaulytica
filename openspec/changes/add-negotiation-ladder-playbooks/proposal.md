@@ -2,7 +2,7 @@
 
 ## Why
 
-Deal teams keep positions as multi-tier ladders with role- and size-dependent floors; the market consensus is "invest in the playbook first — clause standards, fallback positions, escalation triggers." Vaulytica's custom playbook stops short three ways (`src/playbooks/custom-playbook.ts`): the ladder has exactly two predicate rungs (`ideal`, `acceptable`) with `walk_away` as prose; one playbook cannot express both sides of a deal (no party-role switch — you author two files); and positions cannot vary by deal size (thresholds are static). Separately, teams cannot carry their own approved fallback language into the report — the 23 built-in model clauses cover ~2% of rules. All four are schema/evaluation extensions of machinery that already exists; the binary floor (`below-acceptable` as the only sub-floor rung) stays untouched so all 29 coherence commands remain valid.
+Deal teams keep positions as multi-tier ladders with role- and size-dependent floors; the market consensus is "invest in the playbook first — clause standards, fallback positions, escalation triggers." Vaulytica's custom playbook stops short three ways (`src/playbooks/custom-playbook.ts`): the ladder has exactly two predicate rungs (`ideal`, `acceptable`) with `walk_away` as prose; one playbook cannot express both sides of a deal (no party-role switch — you author two files); and positions cannot vary by deal size (thresholds are static). Separately, teams cannot carry their own approved fallback language into the report — the 10 built-in model clauses are referenced by only 24 of 1,065 rules (~2%). All four are schema/evaluation extensions of machinery that already exists; the binary floor (`below-acceptable` as the only sub-floor rung) stays untouched so all 29 coherence commands remain valid.
 
 ## What Changes
 
@@ -11,6 +11,7 @@ Deal teams keep positions as multi-tier ladders with role- and size-dependent fl
 
 ## Impact
 
-- Affected specs: `playbooks`
+- Affected specs: `playbooks` (new capability spec)
 - Affected code: `src/playbooks/custom-playbook.ts` (schema + validation), posture evaluation (`evaluateNegotiationPosture`) for rung refinement and role/band resolution, `src/report/negotiation-sheet.ts`, CLI flags; extensive tests
+- Coordinates with `fix-playbook-diff-completeness`: every schema-v3 field added here is covered by its schema-derived diff-completeness guard, so ladder drift is diffable from day one.
 - Risk: must not disturb the binary floor contract — guarded by the existing coherence test suites plus new invariants (a v3 playbook's `weakest_tier` values remain drawn from the v2 value set).

@@ -2,7 +2,7 @@
 
 ## Why
 
-`vaulytica analyze <file> --format json` prints the human summary line (`bad-nda.docx  [mutual-nda]  3C 7W 3I`) to **stdout** ahead of the JSON document. stdout is therefore not valid JSON: `vaulytica analyze x.docx --format json | jq .` fails at line 1, and every CI consumer must know to strip an undocumented prefix line. Verified live: with stderr fully redirected away, stdout still begins with the summary line and `python3 -m json.tool` rejects it. The same contract question applies to every machine format (`json`, `sarif`) across all 33 subcommands.
+`vaulytica analyze <file> --format json` prints the human summary line (`bad-nda.docx  [mutual-nda]  3C 7W 3I`) to **stdout** ahead of the JSON document. stdout is therefore not valid JSON: `vaulytica analyze x.docx --format json | jq .` fails at line 1, and every CI consumer must know to strip an undocumented prefix line. Verified live: with stderr fully redirected away, stdout still begins with the summary line and `python3 -m json.tool` rejects it. The same contract question applies to every machine format (`json`, `sarif`, and `csv` — `analyze x.docx --format csv > out.csv` produces a corrupted CSV with the summary line as row 1) across all 33 subcommands.
 
 ## What Changes
 

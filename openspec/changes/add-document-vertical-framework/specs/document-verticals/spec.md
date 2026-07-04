@@ -19,20 +19,39 @@ When document classification resolves to the generic fallback (no playbook match
 
 ### Requirement: Vertical rule packs are gated to their document families
 
-Every rule added outside the v1/v2 launch set SHALL declare a non-empty `applies_to_playbooks`, and a guard test MUST fail the suite naming any rule that omits it.
+Every rule added outside the v1/v2 launch set SHALL declare exactly one gate:
+a non-empty `applies_to_playbooks` (the rule runs only for those playbooks),
+or a registered opt-in assertion (the rule runs only when the user asserts a
+named flag/toggle — e.g. a deadline-computation profile or
+`--estate-checks`). Assertion gates MUST be registered in the vertical
+registry alongside the namespace table. A guard test MUST fail the suite
+naming any non-launch rule that declares neither gate.
 
 #### Scenario: A new pack rule without a gate
 
-- **WHEN** a rule file is added with no `applies_to_playbooks` and it is not part of `LAUNCH_RULES`
+- **WHEN** a rule file is added with no `applies_to_playbooks` and no
+  registered assertion gate, and it is not part of `LAUNCH_RULES`
 - **THEN** the guard test fails naming the rule id
+
+#### Scenario: An assertion-gated rule with an unregistered assertion
+
+- **WHEN** a rule declares an assertion gate whose name is absent from the
+  vertical registry
+- **THEN** the guard test fails naming the rule id and the unregistered
+  assertion
 
 ### Requirement: Adding a pack cannot change existing hashes
 
-The suite SHALL contain a property test proving that registering an additional gated vertical pack leaves the `result_hash` of every launch golden byte-identical when the active playbook is outside the pack's gate.
+The suite SHALL contain a property test proving that registering an additional gated vertical pack leaves the `result_hash` of every launch golden byte-identical when the active playbook is outside the pack's gate — and, for assertion-gated rules, whenever the assertion is not made, regardless of playbook.
 
 #### Scenario: Synthetic pack registered against launch fixtures
 
 - **WHEN** the property test registers a synthetic pack (fake playbook id, one gated rule) and re-runs each launch golden fixture
+- **THEN** every fixture's `result_hash` equals its stored golden exactly
+
+#### Scenario: Assertion-gated rule without the assertion
+
+- **WHEN** the property test registers a synthetic assertion-gated rule and re-runs each launch golden fixture with no assertion made
 - **THEN** every fixture's `result_hash` equals its stored golden exactly
 
 ### Requirement: Every pack declares and renders its scope of review
