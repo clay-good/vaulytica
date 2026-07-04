@@ -1,7 +1,7 @@
 # Tasks
 
-- [ ] 1. Inventory every stdout write in `tools/cli/` that can precede or follow a machine-format document (per-file summary in `run.ts`, ladder notes, verify messages).
-- [ ] 2. Route human/progress lines to stderr whenever the active format is a machine format; keep them on stdout for human formats.
-- [ ] 3. Add `tests/integration/cli-stream-contract.test.ts`: for each subcommand × machine format, capture stdout/stderr separately; `JSON.parse(stdout)` succeeds; summary text appears on stderr only.
-- [ ] 4. Update `USAGE` and `docs/ci-integration.md` with the stream contract (one artifact on stdout; diagnostics on stderr; exit codes unchanged).
-- [ ] 5. Full gate green.
+- [x] 1. Inventory every stdout write in `tools/cli/` that can precede or follow a machine-format document (per-file summary in `run.ts`, ladder notes, verify messages). *(Finding: `runAnalyze` was the only offender — per-file summary, delivery/critical-dates/checklist/posture lines, coherence summaries, and the `--out`/`--emit-coherence` notes all printed to stdout. The 28 `coherence-*` commands, `compare-coherence`, `compare`, and `diff` already wrote one artifact to stdout with notes/errors on stderr; `verify` has no machine format.)*
+- [x] 2. Route human/progress lines to stderr whenever the active format is a machine format; keep them on stdout for human formats. *(`MACHINE_FORMATS = {json, sarif, csv}`; one `human()` writer in `runAnalyze` picks the stream.)*
+- [x] 3. Add `tests/integration/cli-stream-contract.test.ts`: for each subcommand × machine format, capture stdout/stderr separately; `JSON.parse(stdout)` succeeds; summary text appears on stderr only. *(Sweeps all 33 subcommands: analyze json/sarif/csv/md, compare, diff, and all 29 coherence consumers — fed unpinned v1 artifacts so each one's advisory ladder note is asserted onto stderr. The subcommand list is parsed from `run.ts`'s own dispatch switch, so a new subcommand fails the coverage assertion by name.)*
+- [x] 4. Update `USAGE` and `docs/ci-integration.md` with the stream contract (one artifact on stdout; diagnostics on stderr; exit codes unchanged).
+- [x] 5. Full gate green. *(typecheck, lint, format:check, 3,647 tests / 255 files, build; live pipe checks: `--format json | python3 -m json.tool` parses, csv starts at the header row, summary on stderr.)*

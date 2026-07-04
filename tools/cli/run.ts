@@ -195,6 +195,13 @@ import {
 const SUPPORTED_EXT = new Set([".txt", ".md", ".markdown", ".text", ".docx", ".pdf"]);
 const SEVERITY_RANK: Record<Severity, number> = { critical: 0, warning: 1, info: 2 };
 type Format = "json" | "sarif" | "html" | "md" | "csv";
+/**
+ * Formats a machine consumes (`jq`, SARIF uploaders, spreadsheets). Stream
+ * contract (fix-cli-json-purity): when any of these is selected, stdout
+ * carries ONLY the serialized artifact — every human summary/progress line
+ * goes to stderr, so `analyze x.docx --format json | jq .` just works.
+ */
+const MACHINE_FORMATS: ReadonlySet<Format> = new Set(["json", "sarif", "csv"]);
 const FORMAT_EXT: Record<Format, string> = {
   json: ".json",
   sarif: ".sarif.json",
@@ -403,8 +410,13 @@ function worstSeverity(r: AnalyzeResult): Severity | null {
   return worst;
 }
 
-async function runAnalyze(argv: string[]): Promise<void> {
+export async function runAnalyze(argv: string[]): Promise<void> {
   const args = parseArgs(argv);
+  // Stream contract: with a machine format active, human lines → stderr.
+  const machine = args.formats.some((f) => MACHINE_FORMATS.has(f));
+  const human = (s: string): void => {
+    (machine ? process.stderr : process.stdout).write(s);
+  };
   const deps = await loadAccuracyDeps({ dkbDir: args.dkb });
 
   // spec-v10 Thrust B — load + validate a custom playbook file (its
@@ -497,23 +509,21 @@ async function runAnalyze(argv: string[]): Promise<void> {
 
     const counts = { critical: 0, warning: 0, info: 0 };
     for (const f of r.run.findings) counts[f.severity]++;
-    process.stdout.write(
-      `${file}  [${r.playbook_id}]  ${counts.critical}C ${counts.warning}W ${counts.info}I\n`,
-    );
-    if (r.delivery) process.stdout.write(`  ${r.delivery.summary}\n`);
+    human(`${file}  [${r.playbook_id}]  ${counts.critical}C ${counts.warning}W ${counts.info}I\n`);
+    if (r.delivery) human(`  ${r.delivery.summary}\n`);
     if (r.critical_dates) {
-      process.stdout.write(
+      human(
         `  Critical dates: ${r.critical_dates.resolved_count} computed, ${r.critical_dates.unresolved_count} to verify manually.\n`,
       );
     }
     if (r.closing_checklist) {
-      process.stdout.write(
+      human(
         `  Closing checklist: ${r.closing_checklist.open_count} readiness item(s) to resolve.\n`,
       );
     }
     if (r.negotiation_posture) {
       const c = r.negotiation_posture.counts;
-      process.stdout.write(
+      human(
         `  Negotiation posture: ${c.ideal} ideal, ${c.acceptable} acceptable, ${c.below_acceptable} below floor, ${c.unevaluable} not stated.\n`,
       );
       postures.push({ document: file, posture: r.negotiation_posture });
@@ -544,7 +554,7 @@ async function runAnalyze(argv: string[]): Promise<void> {
   let coherence: PostureCoherence | null = null;
   if (args.posture && postures.length >= 2) {
     coherence = await bundlePostureCoherence(postures);
-    process.stdout.write(renderCoherenceSummary(coherence));
+    human(renderCoherenceSummary(coherence));
     diverged = hasDivergence(coherence);
   }
 
@@ -562,7 +572,7 @@ async function runAnalyze(argv: string[]): Promise<void> {
       // (--emit-coherence requires --posture requires --playbook-file).
       const ladder = customPlaybook ? await ladderHash(customPlaybook) : null;
       await writeFile(args.emitCoherence, buildPostureCoherenceJson(coherence, ladder));
-      process.stdout.write(`\nwrote coherence artifact → ${resolve(args.emitCoherence)}\n`);
+      human(`\nwrote coherence artifact → ${resolve(args.emitCoherence)}\n`);
     }
   }
 
@@ -627,12 +637,12 @@ async function runAnalyze(argv: string[]): Promise<void> {
       }
     }
     const movement = await compareCoherence(baselineCoherence, coherence);
-    process.stdout.write(renderCoherenceMovementSummary(movement));
+    human(renderCoherenceMovementSummary(movement));
     regressed = coherenceRegressed(movement);
   }
 
   if (args.out)
-    process.stdout.write(
+    human(
       `\nwrote ${args.formats.join(", ")} for ${inputs.length} file(s) → ${resolve(args.out)}\n`,
     );
   if (breached) {
@@ -816,6 +826,11 @@ Commands:
   coherence-matrix <r1.coherence.json> <r2.coherence.json> [<r3…> …]
                           [--format markdown|json] [--fail-on-blackout-round]
   verify  <report.json> <original> [--playbook <id>] [--dkb <dir>]
+
+Stream contract: with a machine-readable format (json, sarif, csv), stdout
+carries exactly one serialized artifact — summaries, notes, and progress
+lines go to stderr, so \`analyze x.docx --format json | jq .\` just works.
+Human formats (md, default summaries) keep stdout. Exit codes are unchanged.
 `;
 
 async function main(): Promise<void> {

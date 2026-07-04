@@ -108,6 +108,14 @@ Exit codes are CI-meaningful: `2` when `--fail-on` is breached (analyze) or the
 revision introduced a finding at/above the threshold (compare), `1` for a
 playbook diff change (`--exit-code`), `3` when a report fails to reproduce.
 
+**Stream contract.** With a machine-readable format active (`json`, `sarif`,
+`csv`), stdout carries exactly one serialized artifact — every human summary,
+note, and progress line goes to stderr. So `vaulytica analyze x.docx --format
+json | jq .` and `--format csv > out.csv` just work, and a pipeline never has
+to strip a prefix line. Human formats (`md`, the default summaries) keep
+stdout. Exit codes are unaffected by the format choice. The contract is pinned
+per subcommand by `tests/integration/cli-stream-contract.test.ts`.
+
 Inside this repository the same commands run through `npm run cli -- <command>`.
 
 ## 3. Plain `node` (no install step)
