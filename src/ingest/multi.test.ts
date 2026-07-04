@@ -187,6 +187,32 @@ describe("extractZipEntries", () => {
     expect(() => extractZipEntries(archive)).toThrow(ArchiveTooLargeError);
   });
 
+  it("an under-declaring header never yields more bytes than it declared (harden-determinism-guards)", () => {
+    // Craft an archive whose headers lie small: 100,000 real bytes declared
+    // as 1,000. The declared-size budget in the filter is attacker-
+    // controlled data, so the extraction must be bounded by MEASURED
+    // production: fflate stops inflating at the declared size, and the
+    // post-inflate honesty check pins that invariant so a library upgrade
+    // that starts trusting the stream over the header fails here loudly.
+    const real = 100_000;
+    const declared = 1_000;
+    const zip = Buffer.from(new Uint8Array(buildZip({ "doc.pdf": new Uint8Array(real).fill(65) })));
+    let patched = 0;
+    for (let i = 0; i + 4 <= zip.length; i++) {
+      if (zip.readUInt32LE(i) === real) {
+        zip.writeUInt32LE(declared, i);
+        patched++;
+      }
+    }
+    expect(patched).toBeGreaterThanOrEqual(2); // local header + central directory
+    const entries = extractZipEntries(
+      zip.buffer.slice(zip.byteOffset, zip.byteOffset + zip.byteLength) as ArrayBuffer,
+    );
+    expect(entries).toHaveLength(1);
+    // Never past the declared ceiling — allocation is bounded by it.
+    expect(entries[0]!.size_bytes).toBeLessThanOrEqual(declared);
+  });
+
   it("produces a deterministic order regardless of zip producer order", () => {
     const a = buildZip({ "z.docx": strToU8("x"), "a.docx": strToU8("y") });
     const b = buildZip({ "a.docx": strToU8("y"), "z.docx": strToU8("x") });

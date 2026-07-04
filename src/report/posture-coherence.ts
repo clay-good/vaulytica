@@ -200,6 +200,18 @@ export function hasDivergence(coherence: PostureCoherence): boolean {
  *
  * The parser accepts both. The builder emits `v2` only when given a ladder hash,
  * so an emit without one is byte-identical to v14.
+ *
+ * Hash-boundary design note (harden-determinism-guards): `ladder_hash` is
+ * DELIBERATELY outside `coherence_hash`. The integrity hash covers exactly
+ * `dimensions` — the rung content — so it stays re-derivable from the
+ * artifact's own body and byte-identical between a `v1` and `v2` emit of
+ * the same coherence. `ladder_hash` is a *cross-round consistency pin*
+ * (does round 2 sit on the same ideal/acceptable ladder as round 1?), not
+ * an integrity field: tampering with it cannot forge rung content (the
+ * consumer recomputes this round's ladder hash from the playbook itself
+ * and compares), it can only cause a refused diff. Including it in
+ * `coherence_hash` would break v1/v2 emit equivalence for no integrity
+ * gain. This is design, not oversight.
  */
 export const COHERENCE_ARTIFACT_SCHEMA_V1 = "vaulytica.posture-coherence.v1";
 export const COHERENCE_ARTIFACT_SCHEMA_V2 = "vaulytica.posture-coherence.v2";

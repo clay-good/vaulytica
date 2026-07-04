@@ -179,19 +179,46 @@ export async function computeResultHash(run: EngineRun): Promise<string> {
  * already deterministic across the standard library, but we sort keys
  * explicitly to defend against any future serializer changes and to
  * make the hashed payload reviewable.
+ *
+ * Cycle handling (harden-determinism-guards): hash inputs are trees by
+ * contract. A genuine cycle — a value that appears on its OWN ancestor
+ * chain — throws a `TypeError` naming the key path, because truncating
+ * the hash input silently is the one thing this function must never do.
+ * A merely SHARED (aliased, acyclic) reference serializes completely at
+ * every occurrence. The previous implementation treated any second
+ * visit as a cycle and emitted `undefined` for it, so two hashed fields
+ * sharing one sub-object would quietly drop the second from the
+ * fingerprint — wrong hash input, no error, on the exact path backing
+ * "byte-identical forever."
  */
 export function stableStringify(value: unknown): string {
-  return JSON.stringify(value, replacer(new WeakSet()));
+  return JSON.stringify(value, replacer());
 }
 
-function replacer(seen: WeakSet<object>): (key: string, value: unknown) => unknown {
-  return (_key, value) => {
-    if (value && typeof value === "object" && !Array.isArray(value)) {
+function replacer(): (this: unknown, key: string, value: unknown) => unknown {
+  // The active ancestor chain. JSON.stringify visits depth-first and hands
+  // the replacer its holder as `this`, so unwinding the stack until the top
+  // frame's emitted value is the current holder reconstructs the exact
+  // recursion path (frames track the ORIGINAL object for cycle identity and
+  // the EMITTED object — the sorted clone — for holder matching).
+  const stack: Array<{ holder: unknown; original: unknown; key: string }> = [];
+  return function (this: unknown, key: string, value: unknown) {
+    if (value && typeof value === "object") {
+      while (stack.length > 0 && stack[stack.length - 1]!.holder !== this) stack.pop();
+      if (stack.some((f) => f.original === value)) {
+        const path = [...stack.map((f) => f.key), key].filter(Boolean).join(".");
+        throw new TypeError(
+          `stableStringify: cyclic reference at "${path}" — hash inputs must be trees`,
+        );
+      }
+      if (Array.isArray(value)) {
+        stack.push({ holder: value, original: value, key });
+        return value;
+      }
       const obj = value as Record<string, unknown>;
-      if (seen.has(obj)) return undefined;
-      seen.add(obj);
       const sorted: Record<string, unknown> = {};
       for (const k of Object.keys(obj).sort()) sorted[k] = obj[k];
+      stack.push({ holder: sorted, original: value, key });
       return sorted;
     }
     return value;

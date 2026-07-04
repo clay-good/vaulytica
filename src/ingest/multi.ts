@@ -234,6 +234,8 @@ export function extractZipEntries(
   // entries the filter rejects (returns false), so non-target files are never
   // inflated; only candidate (.pdf/.docx) entries count toward the budget.
   let cumulativeUncompressed = 0;
+  // Declared per-entry sizes, captured for the post-inflate honesty check.
+  const declaredSize = new Map<string, number>();
   const unzipped = unzipSync(new Uint8Array(archive), {
     filter: (file) => {
       const name = file.name;
@@ -255,9 +257,32 @@ export function extractZipEntries(
           `Archive inflates to over ${MAX_BUNDLE_BYTES.toLocaleString("en-US")} uncompressed bytes; rejected before full expansion.`,
         );
       }
+      declaredSize.set(name, file.originalSize);
       return true;
     },
   });
+  // Produced-bytes checks (harden-determinism-guards): the filter above
+  // reads DECLARED sizes — attacker-controlled header data. Measure what
+  // inflation actually produced: any entry that out-inflates its own
+  // header is a lying archive, and the cumulative produced bytes must
+  // respect the bundle budget regardless of what the headers claimed.
+  let producedBytes = 0;
+  for (const [path, data] of Object.entries(unzipped)) {
+    if (path.endsWith("/") || path.startsWith("__MACOSX/")) continue;
+    const declared = declaredSize.get(path);
+    if (declared !== undefined && data.byteLength > declared) {
+      throw new ArchiveTooLargeError(
+        `Archive entry "${path}" inflated to ${data.byteLength.toLocaleString("en-US")} bytes but declared ${declared.toLocaleString("en-US")} — dishonest header (possible zip bomb).`,
+      );
+    }
+    producedBytes += data.byteLength;
+    if (producedBytes > MAX_BUNDLE_BYTES) {
+      throw new ArchiveTooLargeError(
+        `Archive produced over ${MAX_BUNDLE_BYTES.toLocaleString("en-US")} uncompressed bytes — more than its headers declared (possible zip bomb).`,
+      );
+    }
+  }
+
   const out: Array<{ filename: string; bytes: ArrayBuffer; size_bytes: number }> = [];
   for (const [path, data] of Object.entries(unzipped)) {
     if (path.endsWith("/")) continue; // directory entry
