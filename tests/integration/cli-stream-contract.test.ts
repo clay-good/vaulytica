@@ -151,6 +151,7 @@ const COHERENCE_IMPORTS: Record<string, () => Promise<Record<string, unknown>>> 
   "coherence-chain": () => import("../../tools/cli/coherence-chain.js"),
   "coherence-recovery-chain": () => import("../../tools/cli/coherence-recovery-chain.js"),
   "coherence-matrix": () => import("../../tools/cli/coherence-matrix.js"),
+  "posture-review": () => import("../../tools/cli/posture-review.js"),
 };
 
 describe("CLI stream contract (machine formats own stdout)", () => {

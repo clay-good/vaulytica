@@ -186,6 +186,7 @@ import { runDiff } from "./diff.js";
 import { runCompare } from "./compare.js";
 import { runCompareCoherence } from "./compare-coherence.js";
 import { runCoherenceTrend } from "./coherence-trend.js";
+import { runPostureReview } from "./posture-review.js";
 import { runCoherenceShiftTrend } from "./coherence-shift-trend.js";
 import { runCoherenceArc } from "./coherence-arc.js";
 import { runCoherenceExposure } from "./coherence-exposure.js";
@@ -1140,6 +1141,9 @@ Commands:
                           [--confirm-pairing] [--dkb <dir>]
   compare-coherence <base.coherence.json> <revised.coherence.json>
                           [--format markdown|json] [--fail-on-coherence-regression]
+  posture-review <r1.coherence.json> <r2.coherence.json> [<r3…> …] [--format markdown|json]
+      One attorney-facing view over a round archive: position drift, exposure
+      map, and weakest front — each naming the command to drill into.
   coherence-trend <r1.coherence.json> <r2.coherence.json> [<r3…> …]
                           [--format markdown|json] [--fail-on-coherence-regression]
   coherence-shift-trend <r1.coherence.json> <r2.coherence.json> [<r3…> …]
@@ -1225,6 +1229,8 @@ async function main(): Promise<void> {
       return runCompare(rest);
     case "compare-coherence":
       return runCompareCoherence(rest);
+    case "posture-review":
+      return runPostureReview(rest);
     case "coherence-trend":
       return runCoherenceTrend(rest);
     case "coherence-shift-trend":
