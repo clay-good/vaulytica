@@ -28,6 +28,8 @@ import type { Playbook } from "../playbooks/types.js";
 import { activateFiling } from "../filing/activate.js";
 import type { CourtProfile } from "../filing/court-profile.js";
 import type { BriefKind } from "../filing/run-options.js";
+import { activatePrivacyNotice } from "../privacy/activate.js";
+import type { RegimeId } from "../privacy/regime-data.js";
 import {
   runWithCustomPlaybook,
   previewCustomPlaybook,
@@ -336,6 +338,12 @@ export type PipelineOptions = {
    */
   filing?: { profile: CourtProfile; brief_kind: BriefKind };
   /**
+   * add-privacy-notice-pack — asserted privacy regimes. When set and the
+   * document matches a privacy-notice playbook, the PNOT presence rules for
+   * those regimes run. Omit to keep the pack dormant (default).
+   */
+  regimes?: readonly RegimeId[];
+  /**
    * v6 Part II bring-your-own-playbook (Step 92). When set, the run is
    * driven by the user-supplied playbook: the built-in catalog is narrowed
    * per its `rule_selection` / `rule_overrides` (or dropped entirely in
@@ -601,8 +609,14 @@ export async function runReport(
       prepared.ingest,
       ruleSet as readonly Rule[],
     );
+    // add-privacy-notice-pack — layer the PNOT rules for the asserted regimes.
+    const privacyWiring = activatePrivacyNotice(
+      options.regimes ?? [],
+      prepared.playbook.id,
+      filingWiring.rules,
+    );
     run = await runEngine({
-      rules: filingWiring.rules,
+      rules: privacyWiring.rules,
       ctx: {
         tree: prepared.ingest.tree,
         extracted: prepared.extracted,
@@ -614,6 +628,7 @@ export async function runReport(
       playbook_match_confidence: prepared.match.confidence,
       playbook_match_reasoning: prepared.match.reasoning,
       ...(filingWiring.filing_profile ? { filing_profile: filingWiring.filing_profile } : {}),
+      ...(privacyWiring.asserted_regimes ? { asserted_regimes: privacyWiring.asserted_regimes } : {}),
       executed_at: new Date().toISOString(),
       onRule: onRuleProgress,
     });

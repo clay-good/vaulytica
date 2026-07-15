@@ -65,6 +65,11 @@ export type RunEngineInput = {
    * so the run is byte-identical to before this feature.
    */
   filing_profile?: import("./finding.js").FilingProfileStamp;
+  /**
+   * Asserted privacy regimes to stamp into the hashed run — set by the pipeline
+   * only when the privacy-notice pack fired. Omitted otherwise.
+   */
+  asserted_regimes?: string[];
   /** ISO 8601. Excluded from the result hash. Defaults to "" so test runs are reproducible. */
   executed_at?: string;
   /**
@@ -178,6 +183,11 @@ export async function runEngine(input: RunEngineInput): Promise<EngineRun> {
   // filing pack fired. Assigned conditionally so non-filing runs omit it.
   if (input.filing_profile) {
     run.filing_profile = input.filing_profile;
+  }
+
+  // add-privacy-notice-pack — stamp the asserted regimes when the pack fired.
+  if (input.asserted_regimes && input.asserted_regimes.length > 0) {
+    run.asserted_regimes = input.asserted_regimes;
   }
 
   run.result_hash = await computeResultHash(run);

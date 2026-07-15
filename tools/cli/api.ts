@@ -33,6 +33,7 @@ import {
 import { extractAll } from "../../src/extract/index.js";
 import type { CourtProfile } from "../../src/filing/court-profile.js";
 import type { BriefKind } from "../../src/filing/run-options.js";
+import type { RegimeId } from "../../src/privacy/regime-data.js";
 import {
   buildCriticalDates,
   type CriticalDatesRegister,
@@ -188,6 +189,12 @@ export async function analyzeFile(
      * roll-forward offsets under the profile; otherwise the register is unchanged.
      */
     deadline?: DeadlineResolution;
+    /**
+     * Privacy-notice regimes (`--regime`). When set and the document matches a
+     * privacy-notice playbook, the PNOT presence rules for those regimes run;
+     * otherwise the run is unchanged.
+     */
+    regimes?: readonly RegimeId[];
   } = {},
 ): Promise<AnalyzeResult> {
   const deps = opts.deps ?? (await loadAccuracyDeps({ dkbDir: opts.dkbDir }));
@@ -200,6 +207,7 @@ export async function analyzeFile(
     deps,
     bytes.byteLength,
     opts.filing,
+    opts.regimes,
   );
   const out: AnalyzeResult = { ...result, ingest };
   if (opts.delivery) {

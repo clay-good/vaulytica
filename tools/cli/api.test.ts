@@ -188,6 +188,35 @@ describe("CLI/API parity with the parity-proven pipeline (spec-v8 Step 143)", ()
     }
   });
 
+  it("--regime activates the PNOT pack on a privacy notice and stays dormant without it", async () => {
+    const deps = await loadAccuracyDeps();
+    const dir = await mkdtemp(join(tmpdir(), "vaulytica-pnot-"));
+    try {
+      const notice = [
+        "PRIVACY POLICY",
+        "Last updated: January 1, 2026.",
+        "Categories of Personal Information We Collect. We collect identifiers.",
+        "Your Privacy Rights. Right to know, delete, opt-out, and correct.",
+        "Do Not Sell or Share My Personal Information. We do not sell.",
+        "Contact Us. privacy@example.com.",
+      ].join("\n\n");
+      const path = join(dir, "privacy.txt");
+      await writeFile(path, notice);
+
+      const dormant = await analyzeFile(path, { deps });
+      expect(dormant.run.playbook_id).toBe("privacy-notice-us");
+      expect(dormant.run.asserted_regimes).toBeUndefined();
+      expect(dormant.run.findings.some((f) => f.rule_id.startsWith("PNOT-"))).toBe(false);
+
+      const active = await analyzeFile(path, { deps, regimes: ["ccpa"] });
+      expect(active.run.asserted_regimes).toEqual(["ccpa"]);
+      expect(active.run.findings.some((f) => f.rule_id.startsWith("PNOT-CCPA-"))).toBe(true);
+      expect(active.run.result_hash).not.toBe(dormant.run.result_hash);
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
   it("runProductionQa reconciles a directory production set", async () => {
     const dir = await mkdtemp(join(tmpdir(), "vaulytica-prod-"));
     try {

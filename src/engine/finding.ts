@@ -182,6 +182,13 @@ export type EngineRun = {
    */
   filing_profile?: FilingProfileStamp;
   /**
+   * Privacy regimes the user asserted (`--regime`) when the privacy-notice pack
+   * ran (add-privacy-notice-pack). Inside the hash; present only when the pack
+   * fired, so a run without an asserted regime is byte-identical. Sorted for
+   * determinism.
+   */
+  asserted_regimes?: string[];
+  /**
    * Present only when the document matched no known family and the generic
    * fallback ran. Inside the hash; omitted for matched runs. See
    * {@link ClassificationNotice}.

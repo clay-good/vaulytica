@@ -69,6 +69,19 @@ consistency only — never whether a cited authority exists, is quoted
 accurately, or is still good law (a database check the no-server posture
 excludes), which is the honest complement to the certification receipt.
 
+**privacy-notice content (`PNOT`)** — presence checks for the content items a
+privacy regime enumerates, over the `privacy-notice-us` / `privacy-notice-gdpr`
+playbooks. Dormant unless a regime is asserted (`--regime ccpa,gdpr`): the PNOT
+rules join the rule set only then, so a notice analyzed with no regime has an
+unchanged hash. Built on the v3 `_regulated-rule.ts` presence-rule factory, one
+rule per enumerated item (CCPA/CPRA per Cal. Civ. Code § 1798.130 + 11 CCR
+§ 7011; GDPR Articles 13 and 14), each citing its statutory item. The report
+carries a per-regime coverage table (found / not detected) and stamps the
+asserted regimes into the run. Presence-only: it never states a notice is
+adequate, accurate, or compliant, and which law applies is the attorney's
+assertion. Texas exact-wording and the other state analogs (CO/VA/OR) are a
+separate change pending statutory-text verification.
+
 ## Namespace reservation
 
 Every finding id is `PREFIX-NNN`. Each prefix has one owner, so ids stay
@@ -90,7 +103,7 @@ rule uses a registered prefix.
 | CITE | authority-citation lint (same filing playbooks) |
 | DDL | deadline computation (register resolution; no rule pack yet) |
 | PROD | production QA (Bates + privilege-log reconciliation, CLI) |
-| **PNOT** | privacy notice *(reserved)* |
+| PNOT | privacy notice (CCPA + GDPR Art. 13/14; TX/state analogs pending) |
 
 The estate pack deepens the already-owned **EST** prefix rather than reserving a
 new one.

@@ -1,0 +1,198 @@
+{
+  "id": "privacy-notice-us",
+  "version": "1.0.0",
+  "name": "Privacy Notice (US / CCPA)",
+  "description": "A consumer-facing US privacy notice / policy. Selects the privacy-notice pack (PNOT presence rules) when a regime is asserted via --regime; dormant otherwise. Contract-lint rules are suppressed as on generic-fallback.",
+  "match_features": {
+    "title_keywords": [
+      "privacy policy",
+      "privacy notice",
+      "california privacy notice",
+      "notice at collection",
+      "ccpa privacy notice",
+      "consumer privacy notice"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "categories of personal information",
+      "do not sell or share",
+      "your privacy rights",
+      "right to opt-out",
+      "sensitive personal information",
+      "right to know"
+    ],
+    "negative_features": [
+      "data processing agreement",
+      "business associate agreement",
+      "this agreement",
+      "the parties agree",
+      "in witness whereof"
+    ]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {
+    "OBLI-001": {
+      "skip": true
+    },
+    "OBLI-002": {
+      "skip": true
+    },
+    "OBLI-003": {
+      "skip": true
+    },
+    "OBLI-004": {
+      "skip": true
+    },
+    "OBLI-005": {
+      "skip": true
+    },
+    "OBLI-006": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-002": {
+      "skip": true
+    },
+    "RISK-003": {
+      "skip": true
+    },
+    "RISK-004": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "RISK-006": {
+      "skip": true
+    },
+    "RISK-007": {
+      "skip": true
+    },
+    "RISK-008": {
+      "skip": true
+    },
+    "RISK-010": {
+      "skip": true
+    },
+    "RISK-011": {
+      "skip": true
+    },
+    "RISK-012": {
+      "skip": true
+    },
+    "RISK-013": {
+      "skip": true
+    },
+    "RISK-014": {
+      "skip": true
+    },
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-002": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "CHOICE-004": {
+      "skip": true
+    },
+    "CHOICE-005": {
+      "skip": true
+    },
+    "CHOICE-006": {
+      "skip": true
+    },
+    "CHOICE-007": {
+      "skip": true
+    },
+    "CHOICE-008": {
+      "skip": true
+    },
+    "TERM-001": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-003": {
+      "skip": true
+    },
+    "TERM-004": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    },
+    "TERM-006": {
+      "skip": true
+    },
+    "TERM-007": {
+      "skip": true
+    },
+    "TERM-008": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "IPDATA-002": {
+      "skip": true
+    },
+    "IPDATA-003": {
+      "skip": true
+    },
+    "IPDATA-004": {
+      "skip": true
+    },
+    "IPDATA-005": {
+      "skip": true
+    },
+    "IPDATA-006": {
+      "skip": true
+    },
+    "PERS-001": {
+      "skip": true
+    },
+    "PERS-002": {
+      "skip": true
+    },
+    "PERS-003": {
+      "skip": true
+    },
+    "PERS-004": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "FIN-006": {
+      "skip": true
+    },
+    "FIN-007": {
+      "skip": true
+    },
+    "FIN-008": {
+      "skip": true
+    }
+  },
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-PRIVACY-NOTICE",
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "Categories collected",
+    "Rights disclosure",
+    "Opt-out / limit",
+    "Retention",
+    "Contact",
+    "Last updated"
+  ]
+}

@@ -37,6 +37,8 @@ import { selectMatchCandidates } from "../../src/ui/playbook-candidates.js";
 import { activateFiling } from "../../src/filing/activate.js";
 import type { CourtProfile } from "../../src/filing/court-profile.js";
 import type { BriefKind } from "../../src/filing/run-options.js";
+import { activatePrivacyNotice } from "../../src/privacy/activate.js";
+import type { RegimeId } from "../../src/privacy/regime-data.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, "..", "..");
@@ -151,6 +153,11 @@ export async function runIngested(
    * document's hash is unchanged even with `--court` set.
    */
   filing?: { profile: CourtProfile; brief_kind: BriefKind },
+  /**
+   * Privacy-notice regimes the user asserted (`--regime`). Present only when
+   * the user opts in; the PNOT pack fires only for a notice playbook.
+   */
+  regimes?: readonly RegimeId[],
 ): Promise<DocumentRun> {
   const extracted = extractAll(ingest.tree, {
     classifier: { vocab: { vocab: {} }, patterns: deps.dkb.classifier.patterns },
@@ -175,9 +182,10 @@ export async function runIngested(
     deps.launchPlaybooks[0]!;
 
   const activation = activateFiling(filing, playbook.id, ingest, deps.rules);
+  const privacy = activatePrivacyNotice(regimes ?? [], playbook.id, activation.rules);
 
   const run = await runEngine({
-    rules: activation.rules,
+    rules: privacy.rules,
     ctx: {
       tree: ingest.tree,
       extracted,
@@ -189,6 +197,7 @@ export async function runIngested(
     playbook_match_confidence: match.confidence,
     playbook_match_reasoning: match.reasoning,
     ...(activation.filing_profile ? { filing_profile: activation.filing_profile } : {}),
+    ...(privacy.asserted_regimes ? { asserted_regimes: privacy.asserted_regimes } : {}),
     executed_at: "",
   });
 

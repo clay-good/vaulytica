@@ -8,6 +8,8 @@
 
 import type { EngineRun, Finding } from "../engine/finding.js";
 import { scopeForPlaybook, type ScopeStatement } from "../verticals/registry.js";
+import { buildRegimeCoverage } from "../privacy/coverage.js";
+import type { RegimeId } from "../privacy/regime-data.js";
 import { RULE_TAXONOMY_VERSION } from "../engine/runner.js";
 import { currencyLabel, type CitationCurrency } from "./citations.js";
 import type { IngestResult } from "../ingest/types.js";
@@ -176,6 +178,13 @@ export type JsonReport = {
    * rides inside `run.classification_notice`. (add-document-vertical-framework.)
    */
   scope_of_review?: ScopeStatement;
+  /**
+   * Privacy-notice regime coverage (add-privacy-notice-pack). Present only when
+   * the PNOT pack ran (the run carries `asserted_regimes`): per regime, which
+   * enumerated content items were found vs not detected. A render-side
+   * projection of the run's findings; outside `result_hash`.
+   */
+  regime_coverage?: import("../privacy/coverage.js").RegimeCoverage[];
 };
 
 export function buildJsonReport(
@@ -256,6 +265,11 @@ export function buildJsonReport(
   // add-document-vertical-framework — the active pack's scope-of-review.
   const scope = scopeForPlaybook(run.playbook_id);
   if (scope) payload.scope_of_review = scope;
+  // add-privacy-notice-pack — the regime coverage table, when the PNOT pack ran.
+  if (run.asserted_regimes && run.asserted_regimes.length > 0) {
+    const fired = new Set(run.findings.filter((f) => f.rule_id.startsWith("PNOT-")).map((f) => f.rule_id));
+    payload.regime_coverage = buildRegimeCoverage(run.asserted_regimes as RegimeId[], fired);
+  }
   // fix-legal-authority-currency — deterministic "verify currency" notes.
   if (currency) {
     const notes: Array<{ rule_id: string; citation_id: string; label: string }> = [];

@@ -133,6 +133,17 @@ export const SCOPE_OF_REVIEW: Readonly<Record<string, ScopeStatement>> = {
       ],
     },
   ),
+  ...scopeForIds(["privacy-notice-us", "privacy-notice-gdpr"], {
+    pack: "Privacy Notice Content",
+    reviewed_for: [
+      "presence of the content items the asserted regime(s) enumerate — collection categories, rights disclosures, opt-out/limit mechanisms, retention, sources/recipients, and contact — when a --regime is asserted (CCPA/CPRA, GDPR Art. 13/14)",
+    ],
+    not_reviewed_for: [
+      "privacy-notice content at all unless a regime is asserted (--regime); which law applies is the attorney's call",
+      "the adequacy or accuracy of any disclosure, or whether it matches the business's actual data practices",
+      "regimes beyond CCPA and GDPR Art. 13/14 (Texas exact-wording and other state analogs are a separate change), and any compliance conclusion",
+    ],
+  }),
   ...scopeForIds(["appellate-brief", "trial-motion", "petition"], {
     pack: "Litigation Filing Format & Citations",
     reviewed_for: [

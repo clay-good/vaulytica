@@ -28,6 +28,12 @@
  * `--fail-on-production-gap` exits non-zero (2) when a Bates gap is found, for a
  * CI check before a production goes out.
  *
+ * `--regime <ccpa,gdpr,gdpr-13,gdpr-14>` (comma-separated; `gdpr` = both
+ * articles) runs the privacy-notice content checks (PNOT presence rules) for
+ * the asserted regime(s) when the document matches a privacy-notice playbook;
+ * dormant with none asserted. The asserted regimes are stamped into the run and
+ * a per-regime coverage table (found / not detected) is added to the JSON.
+ *
  * spec-v15: an emitted coherence artifact is pinned to the playbook ladder its
  * rungs were computed against; `--baseline-coherence` refuses to diff it against
  * a round computed on a different ladder (a cross-ladder compare is meaningless).
@@ -165,6 +171,11 @@ import type { BriefKind } from "../../src/filing/run-options.js";
 import { DEADLINE_PROFILE_IDS, getDeadlineProfile } from "../../src/deadlines/profile.js";
 import { SERVICE_METHODS } from "../../src/deadlines/profile.js";
 import type { DeadlineResolution } from "../../src/report/critical-dates.js";
+import { REGIME_IDS } from "../../src/privacy/regime-data.js";
+import type { RegimeId } from "../../src/privacy/regime-data.js";
+
+/** Values the `--regime` flag accepts (`gdpr` expands to both articles). */
+const REGIME_FLAG_VALUES = ["ccpa", "gdpr", "gdpr-13", "gdpr-14"] as const;
 import { runDiff } from "./diff.js";
 import { runCompare } from "./compare.js";
 import { runCompareCoherence } from "./compare-coherence.js";
@@ -295,6 +306,8 @@ type Args = {
   productionQa?: boolean;
   /** add-production-qa-pack — exit non-zero when a Bates sequence gap is found. */
   failOnProductionGap?: boolean;
+  /** add-privacy-notice-pack — asserted privacy regimes for the PNOT pack. */
+  regimes?: string[];
 };
 
 /** Build the filing activation from parsed args, or undefined when no `--court`. */
@@ -445,6 +458,28 @@ function parseArgs(argv: string[]): Args {
         args.serviceMethod = val;
         i++;
         break;
+      case "--regime": {
+        if (!val || val.startsWith("--")) {
+          throw new Error(`--regime requires a value (${REGIME_FLAG_VALUES.join(", ")})`);
+        }
+        const requested = val
+          .split(",")
+          .map((r) => r.trim().toLowerCase())
+          .filter(Boolean);
+        const resolved: string[] = [];
+        for (const r of requested) {
+          if (r === "gdpr") {
+            resolved.push("gdpr-13", "gdpr-14");
+          } else if ((REGIME_IDS as readonly string[]).includes(r)) {
+            resolved.push(r);
+          } else {
+            throw new Error(`unknown --regime "${r}" (valid: ${REGIME_FLAG_VALUES.join(", ")})`);
+          }
+        }
+        args.regimes = [...new Set(resolved)];
+        i++;
+        break;
+      }
       case "--production-qa":
         args.productionQa = true;
         break;
@@ -744,6 +779,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       posture: args.posture,
       filing,
       deadline,
+      regimes: args.regimes as RegimeId[] | undefined,
     });
 
     const counts = { critical: 0, warning: 0, info: 0 };
