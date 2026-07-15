@@ -1,0 +1,52 @@
+{
+  "id": "cal-rules-8.204",
+  "court_name": "California Courts of Appeal — Cal. Rules of Court, rule 8.204",
+  "version": "2026-07-15",
+  "authority": [
+    {
+      "cite": "Cal. Rules of Court, rule 8.204",
+      "url": "https://www.courts.ca.gov/cms/rules/index.cfm?title=eight&linkid=rule8_204",
+      "retrieved_at": "2026-07-15"
+    }
+  ],
+  "limits": {
+    "principal_words": {
+      "value": 14000,
+      "cite": "Cal. Rules of Court, rule 8.204(c)(1)",
+      "url": "https://www.courts.ca.gov/cms/rules/index.cfm?title=eight&linkid=rule8_204",
+      "retrieved_at": "2026-07-15"
+    }
+  },
+  "required_blocks": [
+    {
+      "block": "table-of-contents",
+      "cite": "Cal. Rules of Court, rule 8.204(a)(1)(A)",
+      "url": "https://www.courts.ca.gov/cms/rules/index.cfm?title=eight&linkid=rule8_204",
+      "retrieved_at": "2026-07-15"
+    },
+    {
+      "block": "table-of-authorities",
+      "cite": "Cal. Rules of Court, rule 8.204(a)(1)(A)",
+      "url": "https://www.courts.ca.gov/cms/rules/index.cfm?title=eight&linkid=rule8_204",
+      "retrieved_at": "2026-07-15"
+    },
+    {
+      "block": "certificate-of-compliance",
+      "cite": "Cal. Rules of Court, rule 8.204(c)(1)",
+      "url": "https://www.courts.ca.gov/cms/rules/index.cfm?title=eight&linkid=rule8_204",
+      "retrieved_at": "2026-07-15"
+    },
+    {
+      "block": "caption",
+      "cite": "Cal. Rules of Court, rule 8.204(b)(10)",
+      "url": "https://www.courts.ca.gov/cms/rules/index.cfm?title=eight&linkid=rule8_204",
+      "retrieved_at": "2026-07-15"
+    }
+  ],
+  "count_exclusions": [
+    "cover",
+    "table-of-contents",
+    "table-of-authorities",
+    "certificate-of-compliance"
+  ]
+}

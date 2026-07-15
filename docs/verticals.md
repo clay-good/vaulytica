@@ -43,6 +43,21 @@ gate, or an assertion gate that is not registered.
 | --- | --- | --- |
 | _(none yet)_ | — | The first assertion-gated pack registers its gate here. |
 
+### Shipped packs
+
+**filing-format lint (`FILE`)** — litigation-filing compliance for appellate
+briefs, trial motions, and petitions. Gated by `applies_to_playbooks`, and
+dormant unless a court profile is selected (`--court <id>`); the FILE rules join
+the rule set only then, so a document analyzed without a profile has an
+unchanged hash. Court profiles are versioned, cited data
+(`src/filing/profiles/*.json`): FRAP default, a 9th Circuit override, and a
+California example. The type-volume rule reports a violation only when the
+post-exclusion word count exceeds the limit and always states the filer's
+word-processor count governs; the page-limit rule runs only for PDFs; presence
+checks report each required block as found or not detected and never certify the
+filing compliant. Not reviewed: typeface, margins, and substance (see the pack's
+scope-of-review statement).
+
 ## Namespace reservation
 
 Every finding id is `PREFIX-NNN`. Each prefix has one owner, so ids stay
@@ -60,7 +75,7 @@ rule uses a registered prefix.
 | ADDENDA | addenda |
 | MSA, NDA | deep MSA / NDA packs |
 | BNK, CON, EMP, EQT, EST, GOV, HC, INS, IPL, MNA, POL, PRV, RE, REG, SET | v4 sub-domain families |
-| **FILE** | filing-format lint *(reserved)* |
+| FILE | filing-format lint (appellate-brief / trial-motion / petition) |
 | **CITE** | authority-citation lint *(reserved)* |
 | **DDL** | deadline computation *(reserved)* |
 | **PROD** | production QA *(reserved)* |

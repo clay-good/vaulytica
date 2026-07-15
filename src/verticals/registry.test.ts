@@ -5,6 +5,7 @@ import { buildContext } from "../engine/_test-fixtures.js";
 import { LAUNCH_RULES } from "../engine/rules/index.js";
 import { V3_RULES } from "../engine/rules/v3/index.js";
 import { V4_RULES } from "../engine/rules/v4/index.js";
+import { FILING_RULES } from "../engine/rules/filing/index.js";
 import {
   NAMESPACE_OWNERS,
   REGISTERED_ASSERTION_GATES,
@@ -15,7 +16,9 @@ import {
 } from "./registry.js";
 
 const LAUNCH_IDS = new Set(LAUNCH_RULES.map((r) => r.id));
-const NON_LAUNCH: readonly Rule[] = [...V3_RULES, ...V4_RULES].filter((r) => !LAUNCH_IDS.has(r.id));
+const NON_LAUNCH: readonly Rule[] = [...V3_RULES, ...V4_RULES, ...FILING_RULES].filter(
+  (r) => !LAUNCH_IDS.has(r.id),
+);
 
 // The registry gate contract (add-document-vertical-framework, Requirement:
 // "Vertical rule packs are gated to their document families").

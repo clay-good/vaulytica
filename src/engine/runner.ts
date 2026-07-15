@@ -59,6 +59,12 @@ export type RunEngineInput = {
   source_file: { name: string; sha256: string; size_bytes: number };
   playbook_match_confidence?: number;
   playbook_match_reasoning?: string;
+  /**
+   * Court-profile provenance to stamp into the hashed run — set by the
+   * pipeline only when the filing-format-lint pack fired. Omitted otherwise,
+   * so the run is byte-identical to before this feature.
+   */
+  filing_profile?: import("./finding.js").FilingProfileStamp;
   /** ISO 8601. Excluded from the result hash. Defaults to "" so test runs are reproducible. */
   executed_at?: string;
   /**
@@ -166,6 +172,12 @@ export async function runEngine(input: RunEngineInput): Promise<EngineRun> {
   // unchanged from before this feature existed.
   if (playbookId === GENERIC_FALLBACK_ID) {
     run.classification_notice = GENERIC_FALLBACK_NOTICE;
+  }
+
+  // add-filing-format-lint — stamp the court-profile provenance when the
+  // filing pack fired. Assigned conditionally so non-filing runs omit it.
+  if (input.filing_profile) {
+    run.filing_profile = input.filing_profile;
   }
 
   run.result_hash = await computeResultHash(run);

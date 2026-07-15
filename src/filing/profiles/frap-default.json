@@ -1,0 +1,90 @@
+{
+  "id": "frap-default",
+  "court_name": "U.S. Courts of Appeals — Federal Rules of Appellate Procedure (default)",
+  "version": "2026-07-15",
+  "authority": [
+    {
+      "cite": "Fed. R. App. P. 32",
+      "url": "https://www.law.cornell.edu/rules/frap/rule_32",
+      "retrieved_at": "2026-07-15"
+    },
+    {
+      "cite": "Fed. R. App. P. 28",
+      "url": "https://www.law.cornell.edu/rules/frap/rule_28",
+      "retrieved_at": "2026-07-15"
+    }
+  ],
+  "limits": {
+    "principal_words": {
+      "value": 13000,
+      "cite": "Fed. R. App. P. 32(a)(7)(B)(i)",
+      "url": "https://www.law.cornell.edu/rules/frap/rule_32",
+      "retrieved_at": "2026-07-15"
+    },
+    "reply_words": {
+      "value": 6500,
+      "cite": "Fed. R. App. P. 32(a)(7)(B)(ii)",
+      "url": "https://www.law.cornell.edu/rules/frap/rule_32",
+      "retrieved_at": "2026-07-15"
+    },
+    "principal_pages": {
+      "value": 30,
+      "cite": "Fed. R. App. P. 32(a)(7)(A)",
+      "url": "https://www.law.cornell.edu/rules/frap/rule_32",
+      "retrieved_at": "2026-07-15"
+    },
+    "reply_pages": {
+      "value": 15,
+      "cite": "Fed. R. App. P. 32(a)(7)(A)",
+      "url": "https://www.law.cornell.edu/rules/frap/rule_32",
+      "retrieved_at": "2026-07-15"
+    }
+  },
+  "required_blocks": [
+    {
+      "block": "table-of-contents",
+      "cite": "Fed. R. App. P. 28(a)(2)",
+      "url": "https://www.law.cornell.edu/rules/frap/rule_28",
+      "retrieved_at": "2026-07-15"
+    },
+    {
+      "block": "table-of-authorities",
+      "cite": "Fed. R. App. P. 28(a)(3)",
+      "url": "https://www.law.cornell.edu/rules/frap/rule_28",
+      "retrieved_at": "2026-07-15"
+    },
+    {
+      "block": "certificate-of-compliance",
+      "cite": "Fed. R. App. P. 32(g)",
+      "url": "https://www.law.cornell.edu/rules/frap/rule_32",
+      "retrieved_at": "2026-07-15"
+    },
+    {
+      "block": "certificate-of-service",
+      "cite": "Fed. R. App. P. 25(d)",
+      "url": "https://www.law.cornell.edu/rules/frap/rule_25",
+      "retrieved_at": "2026-07-15"
+    },
+    {
+      "block": "caption",
+      "cite": "Fed. R. App. P. 32(a)(2)",
+      "url": "https://www.law.cornell.edu/rules/frap/rule_32",
+      "retrieved_at": "2026-07-15"
+    },
+    {
+      "block": "signature-block",
+      "cite": "Fed. R. App. P. 32(d)",
+      "url": "https://www.law.cornell.edu/rules/frap/rule_32",
+      "retrieved_at": "2026-07-15"
+    }
+  ],
+  "count_exclusions": [
+    "cover",
+    "disclosure-statement",
+    "table-of-contents",
+    "table-of-authorities",
+    "certificate-of-compliance",
+    "certificate-of-service",
+    "signature-block"
+  ]
+}

@@ -153,6 +153,22 @@ export type ClassificationNotice = {
   message: string;
 };
 
+/**
+ * Court-profile provenance stamped into the hashed run when the
+ * filing-format-lint pack fires (add-filing-format-lint). Records which court
+ * profile's limits were applied, so a filing receipt proves the basis. Present
+ * only when a `--court` profile was selected and a filing playbook matched;
+ * omitted otherwise, so every other run's hash is unchanged.
+ */
+export type FilingProfileStamp = {
+  id: string;
+  version: string;
+  court_name: string;
+  brief_kind: "principal" | "reply";
+  /** The profile's top-level cited authorities (e.g. "Fed. R. App. P. 32"). */
+  authority: string[];
+};
+
 export type EngineRun = {
   /** Engine semver. */
   version: string;
@@ -160,6 +176,11 @@ export type EngineRun = {
   playbook_id: string;
   playbook_match_confidence?: number;
   playbook_match_reasoning?: string;
+  /**
+   * Present only when the filing-format-lint pack fired. Inside the hash; see
+   * {@link FilingProfileStamp}.
+   */
+  filing_profile?: FilingProfileStamp;
   /**
    * Present only when the document matched no known family and the generic
    * fallback ran. Inside the hash; omitted for matched runs. See

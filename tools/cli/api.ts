@@ -30,6 +30,8 @@ import {
   type ContainerSource,
 } from "../../src/delivery/index.js";
 import { extractAll } from "../../src/extract/index.js";
+import type { CourtProfile } from "../../src/filing/court-profile.js";
+import type { BriefKind } from "../../src/filing/run-options.js";
 import { buildCriticalDates, type CriticalDatesRegister } from "../../src/report/critical-dates.js";
 import {
   buildClosingChecklist,
@@ -169,12 +171,25 @@ export async function analyzeFile(
     /** A validated custom playbook; its `negotiation_positions` drive `--posture`. */
     customPlaybook?: CustomPlaybook;
     posture?: boolean;
+    /**
+     * Filing-format-lint activation (`--court`). When set and the document
+     * matches a filing playbook, the FILE pack runs against the profile's
+     * limits; otherwise it is ignored and the run is unchanged.
+     */
+    filing?: { profile: CourtProfile; brief_kind: BriefKind };
   } = {},
 ): Promise<AnalyzeResult> {
   const deps = opts.deps ?? (await loadAccuracyDeps({ dkbDir: opts.dkbDir }));
   const bytes = await readFile(path);
   const ingest = await ingestByExtension(path, bytes, opts.asText);
-  const result = await runIngested(ingest, basename(path), opts.playbookId, deps, bytes.byteLength);
+  const result = await runIngested(
+    ingest,
+    basename(path),
+    opts.playbookId,
+    deps,
+    bytes.byteLength,
+    opts.filing,
+  );
   const out: AnalyzeResult = { ...result, ingest };
   if (opts.delivery) {
     out.delivery = await scanDelivery({

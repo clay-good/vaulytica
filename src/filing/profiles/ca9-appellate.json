@@ -1,0 +1,78 @@
+{
+  "id": "ca9-appellate",
+  "court_name": "U.S. Court of Appeals for the Ninth Circuit (Circuit Rule 32-1 override)",
+  "version": "2026-07-15",
+  "authority": [
+    {
+      "cite": "9th Cir. R. 32-1",
+      "url": "https://www.ca9.uscourts.gov/rules/",
+      "retrieved_at": "2026-07-15"
+    },
+    {
+      "cite": "Fed. R. App. P. 28",
+      "url": "https://www.law.cornell.edu/rules/frap/rule_28",
+      "retrieved_at": "2026-07-15"
+    }
+  ],
+  "limits": {
+    "principal_words": {
+      "value": 14000,
+      "cite": "9th Cir. R. 32-1(a)",
+      "url": "https://www.ca9.uscourts.gov/rules/",
+      "retrieved_at": "2026-07-15"
+    },
+    "reply_words": {
+      "value": 7000,
+      "cite": "9th Cir. R. 32-1(b)",
+      "url": "https://www.ca9.uscourts.gov/rules/",
+      "retrieved_at": "2026-07-15"
+    }
+  },
+  "required_blocks": [
+    {
+      "block": "table-of-contents",
+      "cite": "Fed. R. App. P. 28(a)(2)",
+      "url": "https://www.law.cornell.edu/rules/frap/rule_28",
+      "retrieved_at": "2026-07-15"
+    },
+    {
+      "block": "table-of-authorities",
+      "cite": "Fed. R. App. P. 28(a)(3)",
+      "url": "https://www.law.cornell.edu/rules/frap/rule_28",
+      "retrieved_at": "2026-07-15"
+    },
+    {
+      "block": "certificate-of-compliance",
+      "cite": "Fed. R. App. P. 32(g); 9th Cir. R. 32-1",
+      "url": "https://www.ca9.uscourts.gov/rules/",
+      "retrieved_at": "2026-07-15"
+    },
+    {
+      "block": "certificate-of-service",
+      "cite": "Fed. R. App. P. 25(d)",
+      "url": "https://www.law.cornell.edu/rules/frap/rule_25",
+      "retrieved_at": "2026-07-15"
+    },
+    {
+      "block": "caption",
+      "cite": "Fed. R. App. P. 32(a)(2)",
+      "url": "https://www.law.cornell.edu/rules/frap/rule_32",
+      "retrieved_at": "2026-07-15"
+    },
+    {
+      "block": "signature-block",
+      "cite": "Fed. R. App. P. 32(d)",
+      "url": "https://www.law.cornell.edu/rules/frap/rule_32",
+      "retrieved_at": "2026-07-15"
+    }
+  ],
+  "count_exclusions": [
+    "cover",
+    "disclosure-statement",
+    "table-of-contents",
+    "table-of-authorities",
+    "certificate-of-compliance",
+    "certificate-of-service",
+    "signature-block"
+  ]
+}

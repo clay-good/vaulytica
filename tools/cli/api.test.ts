@@ -67,6 +67,60 @@ describe("CLI/API parity with the parity-proven pipeline (spec-v8 Step 143)", ()
     expect(forced.run.playbook_id).toBe(deps.launchPlaybooks[0]!.id);
   });
 
+  it("--court activates the filing pack on a brief and stays dormant without it", async () => {
+    const { getCourtProfile } = await import("../../src/filing/court-profile.js");
+    const deps = await loadAccuracyDeps();
+    const dir = await mkdtemp(join(tmpdir(), "vaulytica-cli-filing-"));
+    try {
+      const brief = [
+        "IN THE UNITED STATES COURT OF APPEALS FOR THE NINTH CIRCUIT",
+        "No. 24-1. Acme v. Globex.",
+        "BRIEF FOR APPELLANT",
+        "TABLE OF CONTENTS",
+        "TABLE OF AUTHORITIES",
+        "STATEMENT OF THE ISSUES",
+        "SUMMARY OF THE ARGUMENT",
+        "ARGUMENT. The standard of review is de novo. Respectfully submitted.",
+      ].join("\n\n");
+      const path = join(dir, "brief.txt");
+      await writeFile(path, brief);
+
+      const dormant = await analyzeFile(path, { deps });
+      expect(dormant.run.playbook_id).toBe("appellate-brief");
+      expect(dormant.run.filing_profile).toBeUndefined();
+      expect(dormant.run.findings.some((f) => f.rule_id.startsWith("FILE-"))).toBe(false);
+
+      const active = await analyzeFile(path, {
+        deps,
+        filing: { profile: getCourtProfile("frap-default")!, brief_kind: "principal" },
+      });
+      expect(active.run.filing_profile?.id).toBe("frap-default");
+      expect(active.run.findings.some((f) => f.rule_id.startsWith("FILE-"))).toBe(true);
+      // The filing pack is inside the hashed run, so the two receipts differ.
+      expect(active.run.result_hash).not.toBe(dormant.run.result_hash);
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("--court on a non-filing document leaves the hash byte-identical", async () => {
+    const { getCourtProfile } = await import("../../src/filing/court-profile.js");
+    const deps = await loadAccuracyDeps();
+    const dir = await mkdtemp(join(tmpdir(), "vaulytica-cli-filing-nda-"));
+    try {
+      const path = join(dir, "nda.txt");
+      await writeFile(path, NDA);
+      const plain = await analyzeFile(path, { deps });
+      const withCourt = await analyzeFile(path, {
+        deps,
+        filing: { profile: getCourtProfile("frap-default")!, brief_kind: "principal" },
+      });
+      expect(withCourt.run.result_hash).toBe(plain.run.result_hash);
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
   it("evaluates negotiation posture from a custom playbook (spec-v10 Step 172)", async () => {
     const deps = await loadAccuracyDeps();
     const dir = await mkdtemp(join(tmpdir(), "vaulytica-cli-"));

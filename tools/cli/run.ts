@@ -4,9 +4,15 @@
  *   tsx tools/cli/run.ts analyze <path|glob|dir> \
  *       [--playbook <id>] [--format json,sarif,html,md,csv] \
  *       [--out <dir>] [--fail-on critical|warning|info] \
+ *       [--court <frap-default|ca9-appellate|cal-rules-8.204> [--reply]] \
  *       [--playbook-file <path> --posture [--fail-on-divergence]] \
  *       [--baseline <bundle> | --baseline-coherence <coherence.json>] \
  *       [--emit-coherence <path>] [--fail-on-coherence-regression]
+ *
+ * `--court` selects a court profile and runs the filing-format-lint pack
+ * (FILE-001..008) against its limits, but only when the document matches a
+ * filing playbook (appellate-brief / trial-motion / petition); without it the
+ * pack is dormant. `--reply` applies the profile's reply-brief limits.
  *
  * spec-v15: an emitted coherence artifact is pinned to the playbook ladder its
  * rungs were computed against; `--baseline-coherence` refuses to diff it against
@@ -139,6 +145,9 @@ import { mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
 import { join, basename, extname, resolve } from "node:path";
 
 import { analyzeFile, loadAccuracyDeps, type AnalyzeResult } from "./api.js";
+import { COURT_PROFILE_IDS, getCourtProfile } from "../../src/filing/court-profile.js";
+import type { CourtProfile } from "../../src/filing/court-profile.js";
+import type { BriefKind } from "../../src/filing/run-options.js";
 import { runDiff } from "./diff.js";
 import { runCompare } from "./compare.js";
 import { runCompareCoherence } from "./compare-coherence.js";
@@ -257,7 +266,21 @@ type Args = {
   certificate?: boolean;
   /** Add the definitions report to the JSON output and the md summary. */
   definitions?: boolean;
+  /** add-filing-format-lint — the court profile id whose limits the FILE pack applies. */
+  court?: string;
+  /** add-filing-format-lint — treat the document as a reply brief (reply limits). */
+  reply?: boolean;
 };
+
+/** Build the filing activation from parsed args, or undefined when no `--court`. */
+function filingOptionFrom(
+  args: Args,
+): { profile: CourtProfile; brief_kind: BriefKind } | undefined {
+  if (!args.court) return undefined;
+  const profile = getCourtProfile(args.court);
+  if (!profile) return undefined; // already validated in parseArgs; defensive
+  return { profile, brief_kind: args.reply ? "reply" : "principal" };
+}
 
 function parseArgs(argv: string[]): Args {
   // argv: [target, ...flags] (the "analyze" command word is already stripped)
@@ -348,6 +371,19 @@ function parseArgs(argv: string[]): Args {
         break;
       case "--definitions":
         args.definitions = true;
+        break;
+      case "--court":
+        if (!val || val.startsWith("--")) {
+          throw new Error(`--court requires a profile id (one of: ${COURT_PROFILE_IDS.join(", ")})`);
+        }
+        if (!COURT_PROFILE_IDS.includes(val)) {
+          throw new Error(`unknown --court profile "${val}" (valid: ${COURT_PROFILE_IDS.join(", ")})`);
+        }
+        args.court = val;
+        i++;
+        break;
+      case "--reply":
+        args.reply = true;
         break;
       default:
         throw new Error(`unknown flag "${flag}"`);
@@ -607,6 +643,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
   // bundle is analyzed, we can report how each negotiation front sits *across*
   // the documents (the cross-document axis of the v10 posture).
   const postures: CoherenceInput[] = [];
+  const filing = filingOptionFrom(args);
   for (const file of inputs) {
     const r = await analyzeFile(file, {
       playbookId: args.playbook,
@@ -617,6 +654,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       checklist: args.checklist,
       customPlaybook,
       posture: args.posture,
+      filing,
     });
 
     const counts = { critical: 0, warning: 0, info: 0 };

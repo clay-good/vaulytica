@@ -25,6 +25,9 @@ import { loadDkb } from "../dkb/index.js";
 import type { DKB } from "../dkb/types.js";
 import { matchPlaybook, parsePlaybook, LAUNCH_PLAYBOOK_IDS } from "../playbooks/index.js";
 import type { Playbook } from "../playbooks/types.js";
+import { activateFiling } from "../filing/activate.js";
+import type { CourtProfile } from "../filing/court-profile.js";
+import type { BriefKind } from "../filing/run-options.js";
 import {
   runWithCustomPlaybook,
   previewCustomPlaybook,
@@ -326,6 +329,13 @@ export type PipelineOptions = {
    */
   active_frames?: ReadonlyArray<ComplianceFrame>;
   /**
+   * add-filing-format-lint — the selected court profile and brief kind. When
+   * set and the document matches a filing playbook, the FILE pack runs against
+   * the profile's limits; otherwise it is ignored and the run is unchanged.
+   * Omit to keep the filing pack dormant (default).
+   */
+  filing?: { profile: CourtProfile; brief_kind: BriefKind };
+  /**
    * v6 Part II bring-your-own-playbook (Step 92). When set, the run is
    * driven by the user-supplied playbook: the built-in catalog is narrowed
    * per its `rule_selection` / `rule_overrides` (or dropped entirely in
@@ -582,17 +592,28 @@ export async function runReport(
       });
     }
   } else {
+    // add-filing-format-lint — activate the FILE pack when a court profile is
+    // selected and a filing playbook matched. A no-op otherwise, so the run is
+    // byte-identical to before this feature.
+    const filingWiring = activateFiling(
+      options.filing,
+      prepared.playbook.id,
+      prepared.ingest,
+      ruleSet as readonly Rule[],
+    );
     run = await runEngine({
-      rules: ruleSet as readonly Rule[],
+      rules: filingWiring.rules,
       ctx: {
         tree: prepared.ingest.tree,
         extracted: prepared.extracted,
         dkb: prepared.dkb,
         playbook: prepared.playbook,
+        ...(filingWiring.options ? { options: filingWiring.options } : {}),
       },
       source_file: prepared.source_file,
       playbook_match_confidence: prepared.match.confidence,
       playbook_match_reasoning: prepared.match.reasoning,
+      ...(filingWiring.filing_profile ? { filing_profile: filingWiring.filing_profile } : {}),
       executed_at: new Date().toISOString(),
       onRule: onRuleProgress,
     });

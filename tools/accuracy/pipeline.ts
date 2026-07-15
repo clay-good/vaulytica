@@ -34,6 +34,9 @@ import {
   type Playbook,
 } from "../../src/playbooks/index.js";
 import { selectMatchCandidates } from "../../src/ui/playbook-candidates.js";
+import { activateFiling } from "../../src/filing/activate.js";
+import type { CourtProfile } from "../../src/filing/court-profile.js";
+import type { BriefKind } from "../../src/filing/run-options.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, "..", "..");
@@ -141,6 +144,13 @@ export async function runIngested(
    * verification.
    */
   sizeBytes: number,
+  /**
+   * Filing-format-lint activation (add-filing-format-lint). Present only when
+   * the user selected a `--court` profile. The pack fires only when the matched
+   * playbook is a filing playbook; otherwise this is ignored, so a non-filing
+   * document's hash is unchanged even with `--court` set.
+   */
+  filing?: { profile: CourtProfile; brief_kind: BriefKind },
 ): Promise<DocumentRun> {
   const extracted = extractAll(ingest.tree, {
     classifier: { vocab: { vocab: {} }, patterns: deps.dkb.classifier.patterns },
@@ -164,12 +174,21 @@ export async function runIngested(
     candidates.find((p) => p.id === match.playbook_id) ||
     deps.launchPlaybooks[0]!;
 
+  const activation = activateFiling(filing, playbook.id, ingest, deps.rules);
+
   const run = await runEngine({
-    rules: deps.rules,
-    ctx: { tree: ingest.tree, extracted, dkb: deps.dkb, playbook },
+    rules: activation.rules,
+    ctx: {
+      tree: ingest.tree,
+      extracted,
+      dkb: deps.dkb,
+      playbook,
+      ...(activation.options ? { options: activation.options } : {}),
+    },
     source_file: { name: filename, sha256: ingest.sha256, size_bytes: sizeBytes },
     playbook_match_confidence: match.confidence,
     playbook_match_reasoning: match.reasoning,
+    ...(activation.filing_profile ? { filing_profile: activation.filing_profile } : {}),
     executed_at: "",
   });
 
