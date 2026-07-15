@@ -123,6 +123,53 @@ describe("renderState", () => {
     expect(select(dz, "playbook-provenance")!.hasAttribute("hidden")).toBe(true);
   });
 
+  it("renders the unmatched-document banner and hides scope when generic-fallback", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "complete",
+      filename: "mystery.pdf",
+      playbook_name: "Generic Fallback",
+      counts: { critical: 0, warning: 1, info: 3 },
+      docx_blob: new Blob(["docx"]),
+      json_blob: new Blob(["{}"]),
+      docx_filename: "x.docx",
+      json_filename: "x.json",
+      classification_notice: { message: "No known document family matched this document." },
+    });
+    const banner = select(dz, "classification-notice")!;
+    expect(banner.hasAttribute("hidden")).toBe(false);
+    expect(banner.textContent).toContain("Document type not recognized");
+    expect(banner.textContent).toContain("No known document family matched");
+    // No registered pack → scope block stays hidden.
+    expect(select(dz, "scope-of-review")!.hasAttribute("hidden")).toBe(true);
+  });
+
+  it("renders the scope-of-review block for a regulated pack", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "complete",
+      filename: "baa.docx",
+      playbook_name: "HIPAA BAA",
+      counts: { critical: 0, warning: 0, info: 0 },
+      docx_blob: new Blob(["docx"]),
+      json_blob: new Blob(["{}"]),
+      docx_filename: "x.docx",
+      json_filename: "x.json",
+      scope_of_review: {
+        pack: "HIPAA Business Associate Agreement",
+        reviewed_for: ["breach-notification terms"],
+        not_reviewed_for: ["any determination of HIPAA compliance"],
+      },
+    });
+    const scope = select(dz, "scope-of-review")!;
+    expect(scope.hasAttribute("hidden")).toBe(false);
+    expect(scope.textContent).toContain("HIPAA Business Associate Agreement");
+    expect(scope.textContent).toContain("breach-notification terms");
+    expect(scope.textContent).toContain("any determination of HIPAA compliance");
+    // The unmatched banner stays hidden for a matched pack.
+    expect(select(dz, "classification-notice")!.hasAttribute("hidden")).toBe(true);
+  });
+
   it("renders the v6 custom-playbook provenance line when a playbook drove the run", () => {
     const dz = document.createElement("div");
     renderState(dz, {

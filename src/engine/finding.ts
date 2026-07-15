@@ -108,6 +108,17 @@ export type Rule = {
    */
   applies_to_playbooks?: string[];
   /**
+   * Opt-in assertion gate (add-document-vertical-framework). If present, the
+   * rule is a candidate only when the named assertion is made (a flag/toggle,
+   * e.g. a deadline-computation profile or `--estate-checks`). The gate name
+   * must be registered in the vertical registry. An alternative to
+   * `applies_to_playbooks` for packs that deepen already-shipped playbooks or
+   * attach to opt-in machinery; a non-launch rule must declare exactly one of
+   * the two gates. Pure rule metadata — never serialized into `EngineRun`, so
+   * it does not affect `result_hash`.
+   */
+  assertion_gate?: string;
+  /**
    * Legal-confidence tier (spec-v5 §15, Step 75). Set inline on the rule
    * **only after** a credentialed attorney signs the rule's legal-basis
    * ledger entry (`docs/legal-basis/`) with a matching `tier`. Unset for an
@@ -127,6 +138,21 @@ export type ExecutionLogEntry = {
   elapsed_ms: number;
 };
 
+/**
+ * Stamped into the run when classification fell to the generic fallback —
+ * no known document family matched, yet contract-lint rules were applied
+ * anyway. Present only in that case (assigned like {@link Finding.tier}), so
+ * a matched run omits the field and its `result_hash` is unchanged. Because
+ * it lives inside the hashed run, a generic-fallback receipt is
+ * distinguishable from a matched one forever. (add-document-vertical-framework.)
+ */
+export type ClassificationNotice = {
+  /** Machine tag for the notice kind. Only the generic-fallback case today. */
+  reason: "generic-fallback";
+  /** Banner text rendered before any finding on every report surface. */
+  message: string;
+};
+
 export type EngineRun = {
   /** Engine semver. */
   version: string;
@@ -134,6 +160,12 @@ export type EngineRun = {
   playbook_id: string;
   playbook_match_confidence?: number;
   playbook_match_reasoning?: string;
+  /**
+   * Present only when the document matched no known family and the generic
+   * fallback ran. Inside the hash; omitted for matched runs. See
+   * {@link ClassificationNotice}.
+   */
+  classification_notice?: ClassificationNotice;
   source_file: { name: string; sha256: string; size_bytes: number };
   /** ISO 8601. Recorded for display only — excluded from the hash. */
   executed_at: string;

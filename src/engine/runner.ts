@@ -1,4 +1,5 @@
 import type {
+  ClassificationNotice,
   EngineRun,
   ExecutionLogEntry,
   Finding,
@@ -7,6 +8,7 @@ import type {
   RuleContext,
   Severity,
 } from "./finding.js";
+import { GENERIC_FALLBACK_ID } from "../playbooks/types.js";
 import { sortFindings, sortRules } from "./ordering.js";
 import { sha256Hex } from "../ingest/hash.js";
 import type { ConsistencyDocument, ConsistencyRule, ConsistencyRun } from "./consistency/types.js";
@@ -38,6 +40,18 @@ export const ENGINE_VERSION: string = PACKAGE_VERSION;
  * STRUCT-017/018/019 execution-readiness reconciliation rules). (spec-v7 §17.)
  */
 export const RULE_TAXONOMY_VERSION = "9.0.0";
+
+/**
+ * Banner stamped into the run when classification fell to the generic
+ * fallback. Fixed, canonical text — it feeds `result_hash`, so it must be
+ * byte-stable across releases. (add-document-vertical-framework: unmatched
+ * documents are reported as unmatched.)
+ */
+export const GENERIC_FALLBACK_NOTICE: ClassificationNotice = {
+  reason: "generic-fallback",
+  message:
+    "No known document family matched this document, so Vaulytica used its generic fallback: it applied the structural, basic-financial, temporal, and dark-pattern contract-lint rules and skipped every family-specific rule. The findings below may be irrelevant or misleading for a document that is not a contract. Treat this report as a best-effort scan of an unrecognized document, not an analysis of its actual type.",
+};
 
 export type RunEngineInput = {
   rules: readonly Rule[];
@@ -145,6 +159,14 @@ export async function runEngine(input: RunEngineInput): Promise<EngineRun> {
     execution_log,
     result_hash: "",
   };
+
+  // Stamp the unmatched-document banner into the hashed run when — and only
+  // when — the generic fallback ran. Assigned conditionally (like
+  // `finding.tier`) so a matched run omits the field and its hash is
+  // unchanged from before this feature existed.
+  if (playbookId === GENERIC_FALLBACK_ID) {
+    run.classification_notice = GENERIC_FALLBACK_NOTICE;
+  }
 
   run.result_hash = await computeResultHash(run);
   return run;

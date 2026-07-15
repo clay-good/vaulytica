@@ -89,6 +89,26 @@ describe("buildHtmlReport (spec-v8 §21 — standalone single-file HTML)", () =>
     expect(html).toContain("Vaulytica is a software tool, not a lawyer");
   });
 
+  it("renders the unmatched-document banner only when the run carries a notice", () => {
+    const matched = buildHtmlReport(makeRun(), ingest, loadStarterDkbSync());
+    expect(matched).not.toContain("Document Type Not Recognized");
+    const unmatched = makeRun();
+    unmatched.playbook_id = "generic-fallback";
+    unmatched.classification_notice = { reason: "generic-fallback", message: "No known family matched." };
+    const html = buildHtmlReport(unmatched, ingest, loadStarterDkbSync());
+    expect(html).toContain("Document Type Not Recognized");
+    expect(html).toContain("No known family matched.");
+  });
+
+  it("renders the scope-of-review block for a regulated pack (DPA/BAA)", () => {
+    const run = makeRun();
+    run.playbook_id = "baa";
+    const html = buildHtmlReport(run, ingest, loadStarterDkbSync());
+    expect(html).toContain("Scope of Review — HIPAA Business Associate Agreement");
+    expect(html).toContain("Reviewed for");
+    expect(html).toContain("Not reviewed for");
+  });
+
   it("escapes HTML metacharacters in finding content", () => {
     const run = makeRun();
     run.findings = [{ ...finding("x", "info"), title: 'Cap <script>alert(1)</script> & "q"' }];

@@ -19,6 +19,7 @@
  */
 
 import type { EngineRun, Finding, Severity } from "../engine/finding.js";
+import { scopeForPlaybook } from "../verticals/registry.js";
 import type { DKB, SourceCitation } from "../dkb/types.js";
 import { isHttpUrl } from "../dkb/url-safety.js";
 import type { IngestResult } from "../ingest/types.js";
@@ -342,6 +343,28 @@ export function buildHtmlReport(
     `<dt>Findings</dt><dd>${counts.critical} critical · ${counts.warning} warning · ${counts.info} info (${run.findings.length} total)</dd>`,
   );
   body.push("</dl>");
+
+  // Unmatched-document banner + scope-of-review, above the findings (mirrors
+  // the DOCX order). Each emits nothing when not applicable.
+  if (run.classification_notice) {
+    body.push('<div class="classification-notice">');
+    body.push("<h2>Document Type Not Recognized</h2>");
+    body.push(`<p>${esc(run.classification_notice.message)}</p>`);
+    body.push("</div>");
+  }
+  const scope = scopeForPlaybook(run.playbook_id);
+  if (scope) {
+    body.push('<div class="scope-of-review">');
+    body.push(`<h2>Scope of Review — ${esc(scope.pack)}</h2>`);
+    body.push(
+      '<p class="v9-note">This report reflects only the checks listed below. Where a check found nothing, that means the reviewed language was present, not that the document is compliant or complete.</p>',
+    );
+    body.push("<h3>Reviewed for</h3><ul>");
+    for (const item of scope.reviewed_for) body.push(`<li>${esc(item)}</li>`);
+    body.push("</ul><h3>Not reviewed for</h3><ul>");
+    for (const item of scope.not_reviewed_for) body.push(`<li>${esc(item)}</li>`);
+    body.push("</ul></div>");
+  }
 
   // Findings, grouped by severity.
   for (const sev of SEVERITY_ORDER) {

@@ -38,10 +38,11 @@ import {
   type IRunOptions,
 } from "docx";
 
-import type { EngineRun, Finding } from "../engine/finding.js";
+import type { ClassificationNotice, EngineRun, Finding } from "../engine/finding.js";
 import type { DKB } from "../dkb/types.js";
 import type { IngestResult } from "../ingest/types.js";
 import type { Playbook } from "../playbooks/types.js";
+import { scopeForPlaybook } from "../verticals/registry.js";
 import type { ExtractedData } from "../extract/types.js";
 import type { ReportSecondaryFamily } from "./json.js";
 import type { V9Surfaces } from "./v9-surfaces.js";
@@ -98,6 +99,10 @@ export async function buildDocxReport(
   const bibliography = buildBibliography(run.findings, dkb);
   const children: (Paragraph | Table)[] = [
     ...renderCover(run, ingest, playbook),
+    // Unmatched-document banner + scope-of-review, both above the findings so
+    // a reader sees the honesty caveat before any finding.
+    ...renderClassificationNotice(run.classification_notice),
+    ...renderScopeOfReview(run.playbook_id),
     ...renderExecutiveSummary(run, playbook),
     // v3 §54 — compliance matrix sits between the executive summary and
     // the findings list. Conditional on `v3.matrix` being present.
@@ -521,6 +526,43 @@ const CRITICAL_DATE_KIND_LABEL: Record<CriticalDateKind, string> = {
   "survival-end": "Survival end",
   "notice-period": "Notice deadline",
 };
+
+/**
+ * Unmatched-document banner. Rendered only when the run carries a
+ * classification notice (generic fallback), above every finding so the caveat
+ * is unmissable. The text comes from the hashed run, not this renderer.
+ */
+function renderClassificationNotice(
+  notice: ClassificationNotice | undefined,
+): (Paragraph | Table)[] {
+  if (!notice) return [];
+  return [
+    h1("Document Type Not Recognized"),
+    para({ text: notice.message, italics: true }),
+  ];
+}
+
+/**
+ * Scope-of-review block for the active regulated pack: what it checked and
+ * what it did not. Presence-only — it never states the document is compliant
+ * or clean, only what the listed checks looked for.
+ */
+function renderScopeOfReview(playbookId: string): (Paragraph | Table)[] {
+  const scope = scopeForPlaybook(playbookId);
+  if (!scope) return [];
+  const out: (Paragraph | Table)[] = [
+    h1(`Scope of Review — ${scope.pack}`),
+    para({
+      text: "This report reflects only the checks listed below. Where a check found nothing, that means the reviewed language was present, not that the document is compliant or complete.",
+      italics: true,
+    }),
+    h3("Reviewed for"),
+  ];
+  for (const item of scope.reviewed_for) out.push(para({ text: `• ${item}` }));
+  out.push(h3("Not reviewed for"));
+  for (const item of scope.not_reviewed_for) out.push(para({ text: `• ${item}` }));
+  return out;
+}
 
 /** "Your calendar, computed" — the critical-dates register (Thrust C). */
 function renderCriticalDatesSection(

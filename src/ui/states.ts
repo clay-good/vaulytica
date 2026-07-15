@@ -253,6 +253,24 @@ export type DropzoneState =
           section_id?: string;
         }>;
       };
+      /**
+       * Unmatched-document banner (add-document-vertical-framework). Present
+       * only when classification fell to the generic fallback; rendered above
+       * every finding so the reader sees the caveat first. The message rides
+       * inside the hashed run. Optional / back-compat: omitting hides it.
+       */
+      classification_notice?: { message: string };
+      /**
+       * Scope-of-review statement for the active regulated pack
+       * (add-document-vertical-framework). Presence-only: what the pack checked
+       * and what it did not — never a clean bill of health. Optional /
+       * back-compat: omitting hides the block.
+       */
+      scope_of_review?: {
+        pack: string;
+        reviewed_for: ReadonlyArray<string>;
+        not_reviewed_for: ReadonlyArray<string>;
+      };
     }
   | {
       kind: "comparison-complete";
@@ -526,6 +544,8 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
   `,
   complete: `
     <div class="dropzone-title" data-role="complete-filename"></div>
+    <div class="classification-notice" data-role="classification-notice" hidden></div>
+    <div class="scope-of-review" data-role="scope-of-review" hidden></div>
     <div class="v3-family-chip" data-role="v3-family" hidden></div>
     <div class="delivery-section" data-role="delivery" hidden></div>
     <div class="closing-checklist-section" data-role="closing-checklist" hidden></div>
@@ -644,6 +664,8 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
         : " Legacy playbook."
       : "";
     select(dz, "reasoning")!.textContent = `${baseReasoning}${legacySuffix}`;
+    renderClassificationNotice(dz, state.classification_notice);
+    renderScopeOfReview(dz, state.scope_of_review);
     renderV3FamilyChip(dz, state.v3_family);
     renderDelivery(dz, state.delivery);
     renderClosingChecklist(dz, state.closing_checklist);
@@ -1258,6 +1280,56 @@ function renderSecondaryFamilies(
  * families. A citable reference block, not findings; honest about the states
  * it does not cover. Hidden when there is no overlay to show.
  */
+/**
+ * Unmatched-document banner (add-document-vertical-framework). Rendered above
+ * the findings when classification fell to the generic fallback; hidden
+ * otherwise. The text comes from the hashed run, not this renderer.
+ */
+function renderClassificationNotice(
+  dz: HTMLElement,
+  notice: Extract<DropzoneState, { kind: "complete" }>["classification_notice"],
+): void {
+  const el = select<HTMLElement>(dz, "classification-notice");
+  if (!el) return;
+  if (!notice) {
+    el.hidden = true;
+    el.innerHTML = "";
+    return;
+  }
+  el.hidden = false;
+  el.innerHTML = `
+    <div class="classification-notice-head">Document type not recognized</div>
+    <div class="classification-notice-body">${escapeHtml(notice.message)}</div>
+  `;
+}
+
+/**
+ * Scope-of-review block (add-document-vertical-framework). Presence-only: what
+ * the active regulated pack checked and what it did not. Hidden when the
+ * playbook has no registered pack. Never certifies the document compliant.
+ */
+function renderScopeOfReview(
+  dz: HTMLElement,
+  scope: Extract<DropzoneState, { kind: "complete" }>["scope_of_review"],
+): void {
+  const el = select<HTMLElement>(dz, "scope-of-review");
+  if (!el) return;
+  if (!scope) {
+    el.hidden = true;
+    el.innerHTML = "";
+    return;
+  }
+  el.hidden = false;
+  const reviewed = scope.reviewed_for.map((s) => `<li>${escapeHtml(s)}</li>`).join("");
+  const notReviewed = scope.not_reviewed_for.map((s) => `<li>${escapeHtml(s)}</li>`).join("");
+  el.innerHTML = `
+    <div class="scope-head">Scope of review — ${escapeHtml(scope.pack)}</div>
+    <div class="scope-note">This report reflects only the checks below. Where a check found nothing, that means the reviewed language was present, not that the document is compliant or complete.</div>
+    <div class="scope-group"><span class="scope-label">Reviewed for</span><ul>${reviewed}</ul></div>
+    <div class="scope-group"><span class="scope-label">Not reviewed for</span><ul>${notReviewed}</ul></div>
+  `;
+}
+
 function renderDelivery(
   dz: HTMLElement,
   delivery: Extract<DropzoneState, { kind: "complete" }>["delivery"],

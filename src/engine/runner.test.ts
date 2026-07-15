@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Rule, RuleContext, Finding } from "./finding.js";
-import { runEngine, ENGINE_VERSION } from "./runner.js";
+import { runEngine, computeResultHash, ENGINE_VERSION } from "./runner.js";
 import { LAUNCH_RULES } from "./rules/index.js";
 import { buildContext } from "./_test-fixtures.js";
 
@@ -123,5 +123,48 @@ describe("runEngine — determinism", () => {
     });
     expect(run.version).toBe(ENGINE_VERSION);
     expect(run.dkb_version).toBe(ctx.dkb.manifest.version);
+  });
+});
+
+// add-document-vertical-framework — the unmatched-document banner.
+describe("classification notice", () => {
+  it("stamps a generic-fallback notice into the hashed run when the fallback ran", async () => {
+    const ctx = buildContext(["H", "Body."]); // buildContext defaults to generic-fallback
+    expect(ctx.playbook.id).toBe("generic-fallback");
+    const run = await runEngine({
+      rules: [],
+      ctx,
+      source_file: { name: "x", sha256: "0".repeat(64), size_bytes: 1 },
+    });
+    expect(run.classification_notice).toBeDefined();
+    expect(run.classification_notice!.reason).toBe("generic-fallback");
+    expect(run.classification_notice!.message.length).toBeGreaterThan(0);
+  });
+
+  it("omits the notice for a matched playbook", async () => {
+    const ctx = buildContext(["H", "Body."]);
+    ctx.playbook = { id: "mutual-nda", version: "1.0.0" };
+    const run = await runEngine({
+      rules: [],
+      ctx,
+      source_file: { name: "x", sha256: "0".repeat(64), size_bytes: 1 },
+    });
+    expect(run.classification_notice).toBeUndefined();
+  });
+
+  it("the notice is inside the hash — stripping it changes result_hash", async () => {
+    const ctx = buildContext(["H", "Body."]); // generic-fallback
+    const run = await runEngine({
+      rules: [],
+      ctx,
+      source_file: { name: "x", sha256: "0".repeat(64), size_bytes: 1 },
+    });
+    expect(run.classification_notice).toBeDefined();
+    // Recompute the hash over the same run with the notice removed: it must
+    // differ, i.e. the notice is a hashed field (a fallback receipt is
+    // permanently distinguishable from a matched one).
+    const withoutNotice = { ...run, classification_notice: undefined };
+    const strippedHash = await computeResultHash(withoutNotice);
+    expect(strippedHash).not.toBe(run.result_hash);
   });
 });

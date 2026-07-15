@@ -986,6 +986,63 @@
         font-style: italic;
         overflow-wrap: anywhere;
       }
+      /* Unmatched-document banner + scope-of-review (add-document-vertical-framework).
+         Both sit above the findings; presence-only, never a clean bill of health. */
+      .classification-notice {
+        margin: 4px 0 14px;
+        text-align: left;
+        padding: 10px 12px;
+        border-radius: 8px;
+        border: 1px solid color-mix(in srgb, var(--muted) 35%, transparent);
+        border-left: 4px solid #a86700;
+        background: var(--surface);
+        overflow-wrap: anywhere;
+      }
+      .classification-notice-head {
+        font-weight: 600;
+        color: var(--body);
+        margin-bottom: 4px;
+      }
+      .classification-notice-body {
+        color: var(--body);
+        font-size: 14px;
+      }
+      .scope-of-review {
+        margin: 4px 0 14px;
+        text-align: left;
+        padding: 10px 12px;
+        border-radius: 8px;
+        border: 1px solid color-mix(in srgb, var(--muted) 35%, transparent);
+        border-left: 4px solid var(--muted);
+        background: var(--surface);
+        overflow-wrap: anywhere;
+      }
+      .scope-head {
+        font-weight: 600;
+        color: var(--body);
+        margin-bottom: 4px;
+      }
+      .scope-note {
+        font-size: 12px;
+        color: var(--muted);
+        font-style: italic;
+        margin-bottom: 8px;
+      }
+      .scope-group {
+        margin-top: 6px;
+      }
+      .scope-label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--muted);
+      }
+      .scope-group ul {
+        margin: 4px 0 0;
+        padding-left: 18px;
+        color: var(--body);
+        font-size: 14px;
+      }
       /* Critical-dates view (spec-v9 Thrust C). The deadlines the document's
          own terms compute to, as absolute dates — never a relative-to-today
          value. Mobile-safe: every cell wraps, no horizontal overflow. */

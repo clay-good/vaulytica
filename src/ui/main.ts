@@ -19,6 +19,7 @@ import { createRuleTicker } from "./ticker.js";
 import { registerServiceWorker } from "./sw-register.js";
 import { hydrateDkbValidation } from "./dkb-validation.js";
 import { V3_FAMILY_LABELS } from "./v3-labels.js";
+import { scopeForPlaybook } from "../verticals/registry.js";
 import { bindPlaybookPanel, type LoadedPlaybook } from "./playbook-panel.js";
 
 /**
@@ -398,6 +399,12 @@ function renderCompleteState(
           })),
         }
       : undefined,
+    // add-document-vertical-framework — the unmatched-document banner (rides
+    // inside the hashed run) and the active pack's scope-of-review statement.
+    classification_notice: result.run.classification_notice
+      ? { message: result.run.classification_notice.message }
+      : undefined,
+    scope_of_review: scopeForPlaybook(result.run.playbook_id),
     // v6 Part I comparison (Step 90). The base run is the one currently
     // rendered, so a frame-toggle re-run rebinds compare to the fresh run.
     on_compare: (revisedFile) => {

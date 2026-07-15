@@ -7,6 +7,7 @@
  */
 
 import type { EngineRun, Finding } from "../engine/finding.js";
+import { scopeForPlaybook, type ScopeStatement } from "../verticals/registry.js";
 import { RULE_TAXONOMY_VERSION } from "../engine/runner.js";
 import { currencyLabel, type CitationCurrency } from "./citations.js";
 import type { IngestResult } from "../ingest/types.js";
@@ -167,6 +168,14 @@ export type JsonReport = {
    * its own `posture_hash`, outside `run.result_hash`.
    */
   negotiation_posture?: NegotiationPosture;
+  /**
+   * Scope-of-review statement for the active regulated pack (what it checked,
+   * what it did not). A render-side projection of `run.playbook_id`; lives
+   * outside `run`, so `result_hash` is unchanged. Absent for playbooks with no
+   * registered pack. The unmatched-document banner needs no field here — it
+   * rides inside `run.classification_notice`. (add-document-vertical-framework.)
+   */
+  scope_of_review?: ScopeStatement;
 };
 
 export function buildJsonReport(
@@ -244,6 +253,9 @@ export function buildJsonReport(
   }
   // add-defined-terms-report — the definitions block, outside `run`.
   if (definitions) payload.definitions = definitions;
+  // add-document-vertical-framework — the active pack's scope-of-review.
+  const scope = scopeForPlaybook(run.playbook_id);
+  if (scope) payload.scope_of_review = scope;
   // fix-legal-authority-currency — deterministic "verify currency" notes.
   if (currency) {
     const notes: Array<{ rule_id: string; citation_id: string; label: string }> = [];

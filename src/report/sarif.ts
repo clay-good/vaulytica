@@ -49,6 +49,9 @@ const SARIF_SCHEMA =
   "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json";
 const INFORMATION_URI = "https://github.com/clay-good/vaulytica";
 
+/** Synthetic rule id for the unmatched-document banner in SARIF output. */
+const CLASSIFICATION_NOTICE_RULE_ID = "VAULYTICA-CLASSIFICATION-NOTICE";
+
 /** Severity → SARIF result level. */
 const LEVEL: Record<Severity, "error" | "warning" | "note"> = {
   critical: "error",
@@ -135,9 +138,12 @@ export function buildSarif(run: EngineRun, v9?: V9Surfaces, currency?: CitationC
   const engineRuleIds = [...new Set(run.findings.map((f) => f.rule_id))].sort();
   const handoffRuleIds = [...new Set(handoff.map((f) => f.rule_id))].sort();
   const dateRuleIds = [...new Set(register.map((r) => r.rule_id))].sort();
-  // Engine / handoff / date rule-id namespaces are disjoint, so the combined
-  // index is collision-free and every result's ruleIndex resolves to its id.
-  const allRuleIds = [...engineRuleIds, ...handoffRuleIds, ...dateRuleIds];
+  // add-document-vertical-framework — the unmatched-document banner as a
+  // note-level result so a CI/code-scanning consumer sees the caveat too.
+  const noticeRuleIds = run.classification_notice ? [CLASSIFICATION_NOTICE_RULE_ID] : [];
+  // Engine / handoff / date / notice rule-id namespaces are disjoint, so the
+  // combined index is collision-free and every result's ruleIndex resolves.
+  const allRuleIds = [...engineRuleIds, ...handoffRuleIds, ...dateRuleIds, ...noticeRuleIds];
   const ruleIndex = new Map(allRuleIds.map((id, i) => [id, i]));
 
   const engineRules: SarifRule[] = engineRuleIds.map((id) => {
@@ -165,7 +171,12 @@ export function buildSarif(run: EngineRun, v9?: V9Surfaces, currency?: CitationC
     const r = register.find((x) => x.rule_id === id)!;
     return { id, name: id, shortDescription: { text: CRITICAL_DATE_KIND_LABEL[r.kind] } };
   });
-  const rules = [...engineRules, ...handoffRules, ...dateRules];
+  const noticeRules: SarifRule[] = noticeRuleIds.map((id) => ({
+    id,
+    name: id,
+    shortDescription: { text: "Document type not recognized" },
+  }));
+  const rules = [...engineRules, ...handoffRules, ...dateRules, ...noticeRules];
 
   const findingResults: SarifResult[] = run.findings.map((f) => {
     const idx = ruleIndex.get(f.rule_id)!;
@@ -223,7 +234,31 @@ export function buildSarif(run: EngineRun, v9?: V9Surfaces, currency?: CitationC
     dateResult(r, ruleIndex, run, datesHash, i),
   );
 
-  const results = [...findingResults, ...handoffResults, ...dateResults];
+  // add-document-vertical-framework — the unmatched-document banner, at note
+  // level (a caveat to read, not a violation), located to the whole document.
+  const noticeResults: SarifResult[] = run.classification_notice
+    ? [
+        {
+          ruleId: CLASSIFICATION_NOTICE_RULE_ID,
+          ruleIndex: ruleIndex.get(CLASSIFICATION_NOTICE_RULE_ID)!,
+          level: "note",
+          message: { text: run.classification_notice.message },
+          locations: [
+            {
+              physicalLocation: { artifactLocation: { uri: run.source_file.name } },
+              logicalLocations: [{ name: "document", kind: "container" }],
+            },
+          ],
+          partialFingerprints: {
+            "vaulyticaClassificationNotice/v1": run.classification_notice.reason,
+            "vaulyticaResultHash/v1": run.result_hash,
+          },
+          properties: { surface: "classification-notice", reason: run.classification_notice.reason },
+        },
+      ]
+    : [];
+
+  const results = [...findingResults, ...handoffResults, ...dateResults, ...noticeResults];
 
   return {
     $schema: SARIF_SCHEMA,

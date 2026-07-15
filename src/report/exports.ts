@@ -22,6 +22,7 @@
  */
 
 import type { EngineRun, Finding, Severity } from "../engine/finding.js";
+import { scopeForPlaybook } from "../verticals/registry.js";
 import { currencyLabel, type CitationCurrency } from "./citations.js";
 import type { DateReference, ExtractedData } from "../extract/types.js";
 import type { CriticalDate, CriticalDatesRegister } from "./critical-dates.js";
@@ -114,9 +115,28 @@ export function buildFixListMarkdown(
   );
   lines.push(`**Result hash:** \`${run.result_hash}\``);
   lines.push("");
+  if (run.classification_notice) {
+    lines.push(`> **Document type not recognized.** ${run.classification_notice.message}`);
+    lines.push("");
+  }
   lines.push(
     "Each item below is a finding to resolve, ordered by severity. This list is a deterministic projection of the run — it adds no judgment beyond what the report contains.",
   );
+  const scope = scopeForPlaybook(run.playbook_id);
+  if (scope) {
+    lines.push("");
+    lines.push(`## Scope of review — ${scope.pack}`);
+    lines.push("");
+    lines.push(
+      "This report reflects only the checks below. Where a check found nothing, that means the reviewed language was present, not that the document is compliant or complete.",
+    );
+    lines.push("");
+    lines.push("**Reviewed for:**");
+    for (const item of scope.reviewed_for) lines.push(`- ${item}`);
+    lines.push("");
+    lines.push("**Not reviewed for:**");
+    for (const item of scope.not_reviewed_for) lines.push(`- ${item}`);
+  }
 
   for (const sev of SEVERITY_ORDER) {
     const group = run.findings.filter((f) => f.severity === sev);
