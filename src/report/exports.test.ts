@@ -115,6 +115,19 @@ describe("buildFixListMarkdown", () => {
     expect(buildFixListMarkdown(run)).toBe(buildFixListMarkdown(run));
   });
 
+  it("renders the per-regime coverage table when the PNOT pack ran", () => {
+    const run = makeRun([finding("PNOT-CCPA-002", "warning", 1)]);
+    run.playbook_id = "privacy-notice-us";
+    run.asserted_regimes = ["ccpa"];
+    const md = buildFixListMarkdown(run);
+    expect(md).toContain("Regime coverage — CCPA/CPRA privacy policy");
+    // PNOT-CCPA-002 fired → its item is not found; another is found.
+    expect(md).toMatch(/- \[ \] .*(sources)/i);
+    expect(md).toMatch(/- \[x\] /);
+    // Absent when no regime asserted.
+    expect(buildFixListMarkdown(makeRun([]))).not.toContain("Regime coverage");
+  });
+
   it("appends a manual-verify section for unresolved dates when extracted is supplied", () => {
     const ex = emptyExtracted();
     ex.dates = [date("absolute", "13/13/2025", {})]; // invalid → no iso

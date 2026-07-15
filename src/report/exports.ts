@@ -23,6 +23,8 @@
 
 import type { EngineRun, Finding, Severity } from "../engine/finding.js";
 import { scopeForPlaybook } from "../verticals/registry.js";
+import { buildRegimeCoverage } from "../privacy/coverage.js";
+import type { RegimeId } from "../privacy/regime-data.js";
 import { currencyLabel, type CitationCurrency } from "./citations.js";
 import type { DateReference, ExtractedData } from "../extract/types.js";
 import type { CriticalDate, CriticalDatesRegister } from "./critical-dates.js";
@@ -136,6 +138,24 @@ export function buildFixListMarkdown(
     lines.push("");
     lines.push("**Not reviewed for:**");
     for (const item of scope.not_reviewed_for) lines.push(`- ${item}`);
+  }
+
+  // add-privacy-notice-pack — the per-regime coverage table (found / not
+  // detected), present only when the PNOT pack ran. A projection of the fired
+  // PNOT findings; no wall-clock, no judgment.
+  if (run.asserted_regimes && run.asserted_regimes.length > 0) {
+    const fired = new Set(
+      run.findings.filter((f) => f.rule_id.startsWith("PNOT-")).map((f) => f.rule_id),
+    );
+    const coverage = buildRegimeCoverage(run.asserted_regimes as RegimeId[], fired);
+    for (const c of coverage) {
+      lines.push("");
+      lines.push(`## Regime coverage — ${c.regime_name} (${c.found_count}/${c.total} found)`);
+      lines.push("");
+      for (const item of c.items) {
+        lines.push(`- [${item.found ? "x" : " "}] ${item.item}`);
+      }
+    }
   }
 
   for (const sev of SEVERITY_ORDER) {
