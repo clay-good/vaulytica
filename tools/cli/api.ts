@@ -32,7 +32,11 @@ import {
 import { extractAll } from "../../src/extract/index.js";
 import type { CourtProfile } from "../../src/filing/court-profile.js";
 import type { BriefKind } from "../../src/filing/run-options.js";
-import { buildCriticalDates, type CriticalDatesRegister } from "../../src/report/critical-dates.js";
+import {
+  buildCriticalDates,
+  type CriticalDatesRegister,
+  type DeadlineResolution,
+} from "../../src/report/critical-dates.js";
 import {
   buildClosingChecklist,
   type ClosingChecklist,
@@ -177,6 +181,12 @@ export async function analyzeFile(
      * limits; otherwise it is ignored and the run is unchanged.
      */
     filing?: { profile: CourtProfile; brief_kind: BriefKind };
+    /**
+     * Deadline-computation resolution (`--deadline-profile` / `--service-method`).
+     * When set, the critical-dates register resolves business-day/court-day and
+     * roll-forward offsets under the profile; otherwise the register is unchanged.
+     */
+    deadline?: DeadlineResolution;
   } = {},
 ): Promise<AnalyzeResult> {
   const deps = opts.deps ?? (await loadAccuracyDeps({ dkbDir: opts.dkbDir }));
@@ -198,11 +208,12 @@ export async function analyzeFile(
       text: flattenText(ingest.tree),
     });
   }
-  if (opts.criticalDates) {
+  if (opts.criticalDates || opts.deadline) {
     // The register reads only dates/definitions/obligations, so a classifier-
-    // free re-extract suffices; outside `run.result_hash`.
+    // free re-extract suffices; outside `run.result_hash`. A `--deadline-profile`
+    // implies the register (it is what the profile resolves).
     const extracted = extractAll(ingest.tree);
-    const register = await buildCriticalDates(extracted, ingest.tree);
+    const register = await buildCriticalDates(extracted, ingest.tree, opts.deadline);
     if (register.register.length > 0) out.critical_dates = register;
   }
   if (opts.checklist) {

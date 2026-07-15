@@ -37,6 +37,8 @@ import type { DateReference, ExtractedData, Obligation } from "../extract/types.
 import { sha256Hex } from "../ingest/hash.js";
 import { stableStringify } from "../engine/runner.js";
 import { forEachParagraph } from "../extract/walk.js";
+import { computeCourtDays, computeDeadline, type DeadlineStep } from "../deadlines/compute.js";
+import type { DeadlineProfile, ServiceMethod } from "../deadlines/profile.js";
 
 /** The five derived-deadline families (spec §27 / companion §4). */
 export type CriticalDateKind =
@@ -86,7 +88,20 @@ export type CriticalDate = {
   section?: string;
   /** Why unresolved (verify-manually reason), when applicable. */
   reason?: string;
+  /**
+   * Deadline-computation provenance (add-deadline-computation). Present ONLY
+   * when a `--deadline-profile` was asserted and this row was resolved (or
+   * re-rolled) under it — the applied steps, the profile id, and the calendar
+   * version. Omitted otherwise, so an unprofiled register is byte-identical to
+   * before this feature and its `critical_dates_hash` is unchanged.
+   */
+  deadline_steps?: DeadlineStep[];
+  deadline_profile_id?: string;
+  deadline_calendar_version?: string;
 };
+
+/** Opt-in court-deadline resolution config (add-deadline-computation). */
+export type DeadlineResolution = { profile: DeadlineProfile; service_method?: ServiceMethod };
 
 export type CriticalDatesRegister = {
   register: CriticalDate[];
@@ -376,9 +391,56 @@ function responsibleFor(ref: DateReference, obligations: readonly Obligation[]):
  * the absolute date computed (or marked unresolved). Pure and clock-free;
  * carries its own hash, namespaced apart from `result_hash`.
  */
+/**
+ * Apply an asserted deadline profile to one register row. Handles exactly two
+ * offset kinds — "business-days" (court-day counting) and "days" (FRCP 6(a)
+ * roll-forward + 6(d) service) — leaving every other unit and any unanchored
+ * row untouched. Returns a new row carrying the computed date and the applied
+ * steps, or the original row unchanged when the profile does not apply or the
+ * computation lands outside the calendar's covered range.
+ */
+function resolveUnderProfile(
+  row: CriticalDate,
+  ref: DateReference,
+  anchorIso: string,
+  deadline: DeadlineResolution,
+): CriticalDate {
+  const count = ref.offset_count;
+  if (count === undefined) return row;
+  const { profile, service_method } = deadline;
+
+  const result =
+    ref.offset_unit === "business-days"
+      ? computeCourtDays({ trigger: anchorIso, days: Math.abs(count), profile })
+      : ref.offset_unit === "days"
+        ? computeDeadline({ trigger: anchorIso, days: Math.abs(count), profile, service_method })
+        : null;
+  if (!result) return row; // unit the profile does not compute (weeks/months/years)
+
+  if (!result.resolved) {
+    // The profile could not compute (e.g. outside the calendar's covers). If the
+    // row was already resolved by plain arithmetic (a "days" offset needs no
+    // calendar), keep that resolved date — the profile just adds nothing here.
+    // If it was unresolved (a "business-days" offset), keep it unresolved but
+    // attribute the reason to the asserted profile.
+    if (row.resolved) return row;
+    return { ...row, resolved: false, computed_date: null, reason: result.reason };
+  }
+  return {
+    ...row,
+    resolved: true,
+    computed_date: result.date,
+    reason: undefined,
+    deadline_steps: result.steps,
+    deadline_profile_id: result.profile_id,
+    deadline_calendar_version: result.calendar_version,
+  };
+}
+
 export async function buildCriticalDates(
   extracted: ExtractedData,
   tree?: DocumentTree,
+  deadline?: DeadlineResolution,
 ): Promise<CriticalDatesRegister> {
   const anchors = resolveAnchors(extracted, tree);
   const sectionText = tree ? buildSectionText(tree) : new Map<string, string>();
@@ -393,7 +455,7 @@ export async function buildCriticalDates(
     const context = sectionText.get(ref.position.section_id ?? "") ?? "";
     const kind = classifyDeadline(ref, context);
     const responsible = responsibleFor(ref, extracted.obligations);
-    rows.push({
+    const base: CriticalDate = {
       rule_id: KIND_RULE_ID[kind],
       kind,
       resolved: derived.resolved,
@@ -404,7 +466,12 @@ export async function buildCriticalDates(
       responsible,
       ...(ref.position.section_id ? { section: ref.position.section_id } : {}),
       ...(derived.reason ? { reason: derived.reason } : {}),
-    });
+    };
+    // add-deadline-computation — opt-in resolution. Only touches "business-days"
+    // (court-day counting) and "days" (roll-forward + service adjustment) units
+    // and only when a profile is asserted and an anchor is present. Every other
+    // row is left byte-identical, so an unprofiled register never moves.
+    rows.push(deadline && anchorIso ? resolveUnderProfile(base, ref, anchorIso, deadline) : base);
   }
 
   // Canonical order: resolved dates ascending, then unresolved grouped at

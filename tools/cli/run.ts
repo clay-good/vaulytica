@@ -14,6 +14,13 @@
  * filing playbook (appellate-brief / trial-motion / petition); without it the
  * pack is dormant. `--reply` applies the profile's reply-brief limits.
  *
+ * `--deadline-profile <frcp-6|cal-ccp-12>` (+ optional `--service-method
+ * <electronic|mail|clerk|other-consented|personal>`) resolves the
+ * critical-dates register's business-day/court-day and calendar-day offsets
+ * under the selected rule (FRCP 6 / CCP 12): court-day counting for "business
+ * days", and FRCP 6(a) roll-forward + 6(d) service for "days". Without it the
+ * register — and every existing hash — is unchanged.
+ *
  * spec-v15: an emitted coherence artifact is pinned to the playbook ladder its
  * rungs were computed against; `--baseline-coherence` refuses to diff it against
  * a round computed on a different ladder (a cross-ladder compare is meaningless).
@@ -148,6 +155,9 @@ import { analyzeFile, loadAccuracyDeps, type AnalyzeResult } from "./api.js";
 import { COURT_PROFILE_IDS, getCourtProfile } from "../../src/filing/court-profile.js";
 import type { CourtProfile } from "../../src/filing/court-profile.js";
 import type { BriefKind } from "../../src/filing/run-options.js";
+import { DEADLINE_PROFILE_IDS, getDeadlineProfile } from "../../src/deadlines/profile.js";
+import { SERVICE_METHODS } from "../../src/deadlines/profile.js";
+import type { DeadlineResolution } from "../../src/report/critical-dates.js";
 import { runDiff } from "./diff.js";
 import { runCompare } from "./compare.js";
 import { runCompareCoherence } from "./compare-coherence.js";
@@ -270,6 +280,10 @@ type Args = {
   court?: string;
   /** add-filing-format-lint — treat the document as a reply brief (reply limits). */
   reply?: boolean;
+  /** add-deadline-computation — the deadline profile id for critical-dates resolution. */
+  deadlineProfile?: string;
+  /** add-deadline-computation — the service method for the FRCP 6(d) / CCP 1013 add-on. */
+  serviceMethod?: string;
 };
 
 /** Build the filing activation from parsed args, or undefined when no `--court`. */
@@ -280,6 +294,17 @@ function filingOptionFrom(
   const profile = getCourtProfile(args.court);
   if (!profile) return undefined; // already validated in parseArgs; defensive
   return { profile, brief_kind: args.reply ? "reply" : "principal" };
+}
+
+/** Build the deadline resolution from parsed args, or undefined when no profile. */
+function deadlineOptionFrom(args: Args): DeadlineResolution | undefined {
+  if (!args.deadlineProfile) return undefined;
+  const profile = getDeadlineProfile(args.deadlineProfile);
+  if (!profile) return undefined; // validated in parseArgs; defensive
+  return {
+    profile,
+    ...(args.serviceMethod ? { service_method: args.serviceMethod as never } : {}),
+  };
 }
 
 function parseArgs(argv: string[]): Args {
@@ -384,6 +409,30 @@ function parseArgs(argv: string[]): Args {
         break;
       case "--reply":
         args.reply = true;
+        break;
+      case "--deadline-profile":
+        if (!val || val.startsWith("--")) {
+          throw new Error(
+            `--deadline-profile requires a profile id (one of: ${DEADLINE_PROFILE_IDS.join(", ")})`,
+          );
+        }
+        if (!DEADLINE_PROFILE_IDS.includes(val)) {
+          throw new Error(
+            `unknown --deadline-profile "${val}" (valid: ${DEADLINE_PROFILE_IDS.join(", ")})`,
+          );
+        }
+        args.deadlineProfile = val;
+        i++;
+        break;
+      case "--service-method":
+        if (!val || val.startsWith("--")) {
+          throw new Error(`--service-method requires a value (${SERVICE_METHODS.join(", ")})`);
+        }
+        if (!(SERVICE_METHODS as readonly string[]).includes(val)) {
+          throw new Error(`unknown --service-method "${val}" (valid: ${SERVICE_METHODS.join(", ")})`);
+        }
+        args.serviceMethod = val;
+        i++;
         break;
       default:
         throw new Error(`unknown flag "${flag}"`);
@@ -644,6 +693,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
   // the documents (the cross-document axis of the v10 posture).
   const postures: CoherenceInput[] = [];
   const filing = filingOptionFrom(args);
+  const deadline = deadlineOptionFrom(args);
   for (const file of inputs) {
     const r = await analyzeFile(file, {
       playbookId: args.playbook,
@@ -655,6 +705,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       customPlaybook,
       posture: args.posture,
       filing,
+      deadline,
     });
 
     const counts = { critical: 0, warning: 0, info: 0 };

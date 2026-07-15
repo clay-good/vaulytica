@@ -305,3 +305,59 @@ describe("critical-dates exports (spec-v9 §29/§30, Step 163)", () => {
     expect(buildCriticalDatesIcs(reg)).toBe(ics);
   });
 });
+
+describe("buildCriticalDates — opt-in deadline resolution (add-deadline-computation)", () => {
+  it("resolves a business-days deadline that is unresolved without a profile", async () => {
+    const { getDeadlineProfile } = await import("../deadlines/profile.js");
+    const frcp = getDeadlineProfile("frcp-6")!;
+    const tree = buildTree(
+      ["Definitions", '"Effective Date" means July 1, 2026.'],
+      ["Cure", "The breaching party shall cure within 10 business days after the Effective Date."],
+    );
+    const extracted = extractAll(tree);
+    const without = await buildCriticalDates(extracted, tree);
+    const wo = without.register.find((r) => r.anchor === "Effective Date")!;
+    expect(wo.resolved).toBe(false); // business-days is punted with no profile
+
+    const withProfile = await buildCriticalDates(extracted, tree, { profile: frcp });
+    const wp = withProfile.register.find((r) => r.anchor === "Effective Date")!;
+    expect(wp.resolved).toBe(true);
+    expect(wp.deadline_profile_id).toBe("frcp-6");
+    expect(wp.deadline_calendar_version).toBeTruthy();
+    expect(wp.deadline_steps!.length).toBeGreaterThan(0);
+  });
+
+  it("rolls a 'days' deadline off a weekend under the profile", async () => {
+    const { getDeadlineProfile } = await import("../deadlines/profile.js");
+    const frcp = getDeadlineProfile("frcp-6")!;
+    const tree = buildTree(
+      ["Definitions", '"Effective Date" means July 1, 2026.'],
+      ["A", "Respond within 3 days after the Effective Date."],
+    );
+    const extracted = extractAll(tree);
+    // Without a profile: 2026-07-01 + 3 = 2026-07-04 (Saturday), no roll.
+    const without = await buildCriticalDates(extracted, tree);
+    expect(without.register.find((r) => r.anchor === "Effective Date")!.computed_date).toBe(
+      "2026-07-04",
+    );
+    // With FRCP: rolls Sat → Mon 2026-07-06.
+    const withProfile = await buildCriticalDates(extracted, tree, { profile: frcp });
+    const row = withProfile.register.find((r) => r.anchor === "Effective Date")!;
+    expect(row.computed_date).toBe("2026-07-06");
+    expect(row.deadline_profile_id).toBe("frcp-6");
+  });
+
+  it("default path (no profile) yields a byte-identical hash", async () => {
+    const tree = buildTree(
+      ["Definitions", '"Effective Date" means January 1, 2025.'],
+      ["A", "Deliver within 90 days after the Effective Date."],
+      ["B", "Cure within 10 business days after the Effective Date."],
+    );
+    const extracted = extractAll(tree);
+    const a = await buildCriticalDates(extracted, tree);
+    const b = await buildCriticalDates(extracted, tree, undefined);
+    expect(b.critical_dates_hash).toBe(a.critical_dates_hash);
+    // And no row carries deadline provenance without a profile.
+    expect(a.register.every((r) => r.deadline_profile_id === undefined)).toBe(true);
+  });
+});

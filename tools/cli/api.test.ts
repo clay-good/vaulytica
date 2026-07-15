@@ -103,6 +103,38 @@ describe("CLI/API parity with the parity-proven pipeline (spec-v8 Step 143)", ()
     }
   });
 
+  it("--deadline-profile resolves a business-days deadline the register otherwise punts", async () => {
+    const { getDeadlineProfile } = await import("../../src/deadlines/profile.js");
+    const deps = await loadAccuracyDeps();
+    const dir = await mkdtemp(join(tmpdir(), "vaulytica-cli-ddl-"));
+    try {
+      const contract = [
+        '"Effective Date" means July 1, 2026.',
+        "The breaching party shall cure within 10 business days after the Effective Date.",
+      ].join("\n\n");
+      const path = join(dir, "contract.txt");
+      await writeFile(path, contract);
+
+      const plain = await analyzeFile(path, { deps, criticalDates: true });
+      const punted = plain.critical_dates!.register.find((r) => r.anchor === "Effective Date")!;
+      expect(punted.resolved).toBe(false); // business-days, no profile
+
+      const resolved = await analyzeFile(path, {
+        deps,
+        deadline: { profile: getDeadlineProfile("frcp-6")! },
+      });
+      const row = resolved.critical_dates!.register.find((r) => r.anchor === "Effective Date")!;
+      expect(row.resolved).toBe(true);
+      expect(row.deadline_profile_id).toBe("frcp-6");
+      // Default register hash is unchanged by adding the profile only where it applies.
+      expect(resolved.critical_dates!.critical_dates_hash).not.toBe(
+        plain.critical_dates!.critical_dates_hash,
+      );
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
   it("--court on a non-filing document leaves the hash byte-identical", async () => {
     const { getCourtProfile } = await import("../../src/filing/court-profile.js");
     const deps = await loadAccuracyDeps();

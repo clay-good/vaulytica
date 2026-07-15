@@ -742,7 +742,12 @@ export function buildCriticalDatesIcs(register: CriticalDatesRegister): string {
     const uid = `cd-${pad(i, 4)}-${fnv1a(`${iso}|${r.kind}|${r.trigger}|${r.section ?? ""}`)}@vaulytica`;
     const summary = `${KIND_LABEL[r.kind]}: ${r.trigger}`;
     const respPart = r.responsible ? ` Responsible: ${r.responsible}.` : "";
-    const desc = `Computed from ${r.section ? `section ${r.section}` : "the document"} (anchor: ${r.anchor || "—"}).${respPart} ${r.trigger}`;
+    // add-deadline-computation — when the date was resolved under a court
+    // profile, record which profile/calendar version and rule steps applied.
+    const profilePart = r.deadline_profile_id
+      ? ` Computed under ${r.deadline_profile_id} (calendar ${r.deadline_calendar_version ?? "?"}) as asserted by the user: ${(r.deadline_steps ?? []).map((s) => s.detail).join("; ")}.`
+      : "";
+    const desc = `Computed from ${r.section ? `section ${r.section}` : "the document"} (anchor: ${r.anchor || "—"}).${respPart}${profilePart} ${r.trigger}`;
     const alarm =
       r.kind === "auto-renewal-notice" || r.kind === "opt-out-window" || r.kind === "cure-window";
     lines.push("BEGIN:VEVENT");
