@@ -1166,7 +1166,7 @@ The **measurement machinery is built and unit-tested** (`tools/accuracy/`, run w
 ```mermaid
 flowchart LR
   C[(corpus/<br/>real redacted docs<br/>+ gold annotations)] --> H[Accuracy harness]
-  R[(full engine<br/>1,065 rules · 135 playbooks)] --> H
+  R[(full engine<br/>1,065 rules · 141 playbooks)] --> H
   H --> M[TP / FP / FN / TN<br/>precision · recall · F1<br/>macro + micro]
   M --> S[SCOREBOARD.md + scoreboard.json<br/>reproducible SHA-256]
   K[Cohen's κ<br/>inter-annotator agreement] --> M
