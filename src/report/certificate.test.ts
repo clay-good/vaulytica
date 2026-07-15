@@ -58,6 +58,32 @@ describe("buildCertificate", () => {
     ).toBe(false);
   });
 
+  it("records asserted opt-in packs (present, verifiable, absent by default)", async () => {
+    // Plain run: no asserted_packs, byte-identical certificate.
+    const plain = await buildCertificate(run);
+    expect(plain.asserted_packs).toBeUndefined();
+
+    const withPacks = {
+      ...run,
+      filing_profile: {
+        id: "frap-default",
+        version: "2026-07-15",
+        court_name: "FRAP",
+        brief_kind: "principal",
+        authority: [],
+      },
+      estate_checks_asserted: true,
+    } as unknown as EngineRun;
+    const cert = await buildCertificate(withPacks);
+    expect(cert.asserted_packs?.court_profile).toBe("frap-default");
+    expect(cert.asserted_packs?.estate_checks).toBe(true);
+    expect(await verifyCertificateHash(cert)).toBe(true);
+    // The asserted packs are inside the tamper-evident hash.
+    expect(await verifyCertificateHash({ ...cert, asserted_packs: undefined })).toBe(false);
+    // And a plain-run certificate hash is unaffected.
+    expect(plain.certificate_hash).toBe((await buildCertificate(run)).certificate_hash);
+  });
+
   it("never embeds document text beyond the file name", async () => {
     const json = await buildCertificateJson(run);
     expect(json).toContain("nda.docx");

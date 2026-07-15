@@ -36,6 +36,17 @@ export type VerificationCertificate = {
   tool: { name: "Vaulytica"; engine_version: string; dkb_version: string };
   input: { name: string; sha256: string; size_bytes: number };
   playbook_id: string;
+  /**
+   * The opt-in packs the user asserted for this analysis (add-*-pack). Present
+   * only when something was asserted, so a plain-run certificate — and its
+   * `certificate_hash` — is byte-identical to before. Records, on the provable
+   * receipt, which deterministic checks the filer turned on.
+   */
+  asserted_packs?: {
+    court_profile?: string;
+    privacy_regimes?: string[];
+    estate_checks?: boolean;
+  };
   result_hash: string;
   /** The fixed certification statements, in render order. */
   statements: string[];
@@ -53,6 +64,26 @@ export function certificateStatements(run: EngineRun): string[] {
     "Verification. The recorded result hash makes the analysis a checkable receipt: re-running the tool on the same input under the same versions must reproduce it exactly, and a doctored report fails verification.",
     "Attorney responsibility. The reviewing attorney remains responsible for verifying the findings and for compliance with all applicable court orders and professional-conduct rules, including the duties of competence and supervision discussed in ABA Formal Opinion 512. Vaulytica is a software tool, not a lawyer; its output is not legal advice.",
   ];
+}
+
+/** Human-readable one-line label for the asserted packs (DOCX field). */
+function assertedPacksLabel(p: NonNullable<VerificationCertificate["asserted_packs"]>): string {
+  const parts: string[] = [];
+  if (p.court_profile) parts.push(`court profile ${p.court_profile}`);
+  if (p.privacy_regimes && p.privacy_regimes.length > 0)
+    parts.push(`privacy regimes ${p.privacy_regimes.join(", ")}`);
+  if (p.estate_checks) parts.push("estate checks");
+  return `${parts.join("; ")} (asserted by the user)`;
+}
+
+/** The asserted opt-in packs on a run, or undefined when none. */
+function assertedPacksOf(run: EngineRun): VerificationCertificate["asserted_packs"] | undefined {
+  const packs: NonNullable<VerificationCertificate["asserted_packs"]> = {};
+  if (run.filing_profile) packs.court_profile = run.filing_profile.id;
+  if (run.asserted_regimes && run.asserted_regimes.length > 0)
+    packs.privacy_regimes = run.asserted_regimes;
+  if (run.estate_checks_asserted) packs.estate_checks = true;
+  return Object.keys(packs).length > 0 ? packs : undefined;
 }
 
 async function certificateHash(
@@ -74,6 +105,7 @@ export async function buildCertificate(run: EngineRun): Promise<VerificationCert
       size_bytes: run.source_file.size_bytes,
     },
     playbook_id: run.playbook_id,
+    ...(assertedPacksOf(run) ? { asserted_packs: assertedPacksOf(run) } : {}),
     result_hash: run.result_hash,
     statements: certificateStatements(run),
     reproduce_command: `vaulytica verify <report.json> "${run.source_file.name}"`,
@@ -113,6 +145,7 @@ export async function buildCertificateDocx(run: EngineRun): Promise<Blob> {
     field("Input SHA-256", cert.input.sha256),
     field("Input size", `${cert.input.size_bytes.toLocaleString("en-US")} bytes`),
     field("Playbook", cert.playbook_id),
+    ...(cert.asserted_packs ? [field("Asserted checks", assertedPacksLabel(cert.asserted_packs))] : []),
     field("Result hash", cert.result_hash),
     field("Certificate hash", cert.certificate_hash),
     new Paragraph({ children: [new TextRun("")] }),
