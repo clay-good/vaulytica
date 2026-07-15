@@ -1132,8 +1132,13 @@ Commands:
                           [--playbook-file <path>] [--posture]
                           [--fail-on-divergence] [--dkb <dir>] [--as-text] [--certificate]
                           [--definitions]
+                          [--court <frap-default|ca9-appellate|cal-rules-8.204> [--reply]]
+                          [--deadline-profile <frcp-6|cal-ccp-12> [--service-method <method>]]
+                          [--regime <ccpa,gdpr,gdpr-13,gdpr-14>] [--estate-checks]
                           [--baseline <path|glob|dir> | --baseline-coherence <coherence.json>]
                           [--emit-coherence <path>] [--fail-on-coherence-regression]
+  analyze <dir|.zip> --production-qa [--fail-on-production-gap]
+                          Bates + privilege-log reconciliation over a production set.
   diff    <a.json> <b.json> [--format markdown|json] [--exit-code]
   compare <base> <revised> [--playbook <id>] [--playbook-file <path>] [--posture]
                           [--format json|markdown]
