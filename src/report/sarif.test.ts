@@ -245,3 +245,40 @@ describe("buildSarif — v9 Last Look surfaces (HANDOFF-* + DATE-*)", () => {
     expect(buildSarifJson(run(findings))).toBe(buildSarifJson(run(findings), {}));
   });
 });
+
+describe("SARIF run provenance (asserted opt-in packs)", () => {
+  function baseRun(): EngineRun {
+    return {
+      version: "0.1.0",
+      dkb_version: "v0.0.1-starter",
+      playbook_id: "appellate-brief",
+      source_file: { name: "brief.pdf", sha256: "a".repeat(64), size_bytes: 10 },
+      executed_at: "",
+      findings: [],
+      execution_log: [],
+      result_hash: "b".repeat(64),
+    };
+  }
+
+  it("omits run.properties when nothing was asserted", () => {
+    const sarif = buildSarif(baseRun());
+    expect(sarif.runs[0]!.properties).toBeUndefined();
+  });
+
+  it("records the asserted packs when present", () => {
+    const run = baseRun();
+    run.filing_profile = {
+      id: "frap-default",
+      version: "2026-07-15",
+      court_name: "FRAP",
+      brief_kind: "principal",
+      authority: [],
+    };
+    run.asserted_regimes = ["ccpa"];
+    run.estate_checks_asserted = true;
+    const p = buildSarif(run).runs[0]!.properties!;
+    expect(p.court_profile).toBe("frap-default");
+    expect(p.privacy_regimes).toEqual(["ccpa"]);
+    expect(p.estate_checks).toBe(true);
+  });
+});

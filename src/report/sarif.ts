@@ -100,6 +100,8 @@ export type SarifLog = {
       partialFingerprints: Record<string, string>;
       properties: Record<string, unknown>;
     }>;
+    /** Tool-run provenance: the opt-in packs the user asserted. */
+    properties?: Record<string, unknown>;
   }>;
 };
 
@@ -260,6 +262,17 @@ export function buildSarif(run: EngineRun, v9?: V9Surfaces, currency?: CitationC
 
   const results = [...findingResults, ...handoffResults, ...dateResults, ...noticeResults];
 
+  // Tool-run provenance: which opt-in packs were asserted (each rides in the
+  // hashed run). Emitted only when something was asserted, so a plain run's
+  // SARIF is unchanged. Lets a CI/code-scanning dashboard record what was checked.
+  const provenance: Record<string, unknown> = {};
+  if (run.playbook_id) provenance.playbook_id = run.playbook_id;
+  if (run.filing_profile) provenance.court_profile = run.filing_profile.id;
+  if (run.asserted_regimes && run.asserted_regimes.length > 0)
+    provenance.privacy_regimes = run.asserted_regimes;
+  if (run.estate_checks_asserted) provenance.estate_checks = true;
+  const hasProvenance = run.filing_profile || run.asserted_regimes?.length || run.estate_checks_asserted;
+
   return {
     $schema: SARIF_SCHEMA,
     version: "2.1.0",
@@ -274,6 +287,7 @@ export function buildSarif(run: EngineRun, v9?: V9Surfaces, currency?: CitationC
           },
         },
         results,
+        ...(hasProvenance ? { properties: provenance } : {}),
       },
     ],
   };
