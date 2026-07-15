@@ -5,3 +5,4 @@
  * `--court` sees exactly the pre-existing rule set and its hash is unchanged.
  */
 export { FILING_RULES, FILING_PLAYBOOK_IDS } from "./rules.js";
+export { CITE_RULES } from "./cite-rules.js";

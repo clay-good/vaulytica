@@ -134,15 +134,17 @@ export const SCOPE_OF_REVIEW: Readonly<Record<string, ScopeStatement>> = {
     },
   ),
   ...scopeForIds(["appellate-brief", "trial-motion", "petition"], {
-    pack: "Litigation Filing Format",
+    pack: "Litigation Filing Format & Citations",
     reviewed_for: [
-      "type-volume (word count against the selected court profile's limit) and page limit where measurable, when a --court profile is selected",
+      "citation format and internal consistency: malformed citations, orphaned id., dangling supra/short forms, table-of-authorities reconciliation (by authority), and inconsistent short forms",
+      "type-volume (word count against the selected court profile's limit) and page limit where measurable — only when a --court profile is selected",
       "presence of the required filing blocks the selected profile lists (certificate of compliance, certificate of service, tables of contents/authorities, caption, signature block)",
     ],
     not_reviewed_for: [
-      "filing-format compliance at all unless a court profile is selected (--court)",
-      "typeface, point size, line spacing, and margins (not determinable from the flattened text)",
-      "the substance of the argument, the validity of any citation, or whether the correct court profile was chosen",
+      "whether any cited authority exists, is quoted accurately, or is still good law — a database check the no-server posture excludes; this remains the filer's duty",
+      "table-of-authorities page-number accuracy (the flattened text carries no page boundaries; reconciliation is by authority, not page)",
+      "filing-format limits (type-volume, pages, required blocks) unless a court profile is selected (--court)",
+      "typeface, point size, line spacing, margins, and the substance of the argument",
     ],
   }),
 };

@@ -58,6 +58,17 @@ checks report each required block as found or not detected and never certify the
 filing compliant. Not reviewed: typeface, margins, and substance (see the pack's
 scope-of-review statement).
 
+**authority-citation lint (`CITE`)** — deterministic citation hygiene for the
+same filing briefs, active whenever a filing playbook matches (no `--court`
+needed): CITE-001 malformed citation (unknown reporter / missing page, checked
+against The Indigo Book 2.0 reporter table — never "Bluebook"), CITE-002
+orphaned `id.`, CITE-003 dangling `supra`/short form, CITE-004
+table-of-authorities reconciliation (by authority, both directions, FRAP
+28(a)(3)), CITE-005 inconsistent short forms. It checks format and internal
+consistency only — never whether a cited authority exists, is quoted
+accurately, or is still good law (a database check the no-server posture
+excludes), which is the honest complement to the certification receipt.
+
 ## Namespace reservation
 
 Every finding id is `PREFIX-NNN`. Each prefix has one owner, so ids stay
@@ -76,7 +87,7 @@ rule uses a registered prefix.
 | MSA, NDA | deep MSA / NDA packs |
 | BNK, CON, EMP, EQT, EST, GOV, HC, INS, IPL, MNA, POL, PRV, RE, REG, SET | v4 sub-domain families |
 | FILE | filing-format lint (appellate-brief / trial-motion / petition) |
-| **CITE** | authority-citation lint *(reserved)* |
+| CITE | authority-citation lint (same filing playbooks) |
 | **DDL** | deadline computation *(reserved)* |
 | **PROD** | production QA *(reserved)* |
 | **PNOT** | privacy notice *(reserved)* |

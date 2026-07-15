@@ -14,7 +14,7 @@
 
 import type { FilingProfileStamp, Rule } from "../engine/finding.js";
 import type { IngestResult } from "../ingest/types.js";
-import { FILING_RULES, FILING_PLAYBOOK_IDS } from "../engine/rules/filing/index.js";
+import { FILING_RULES, FILING_PLAYBOOK_IDS, CITE_RULES } from "../engine/rules/filing/index.js";
 import type { CourtProfile } from "./court-profile.js";
 import { FILING_OPTIONS_KEY, type BriefKind, type FilingRunOptions } from "./run-options.js";
 
@@ -34,7 +34,17 @@ export function activateFiling(
   ingest: IngestResult,
   baseRules: readonly Rule[],
 ): FilingWiring {
-  if (!filing || !FILING_IDS.includes(playbookId)) return { rules: baseRules };
+  // Nothing to do unless the document matched a filing playbook. Non-filing
+  // documents never match one, so their rule set (and hash) is untouched.
+  if (!FILING_IDS.includes(playbookId)) return { rules: baseRules };
+
+  // The citation-lint pack (CITE-###) runs on any filing brief — it checks
+  // citation format/consistency and needs no court profile. The format pack
+  // (FILE-###) additionally requires a selected court profile.
+  let rules: readonly Rule[] = [...baseRules, ...CITE_RULES];
+  if (!filing) return { rules };
+
+  rules = [...rules, ...FILING_RULES];
   const filingOpts: FilingRunOptions = {
     profile: filing.profile,
     brief_kind: filing.brief_kind,
@@ -43,7 +53,7 @@ export function activateFiling(
     source: ingest.source,
   };
   return {
-    rules: [...baseRules, ...FILING_RULES],
+    rules,
     options: { [FILING_OPTIONS_KEY]: filingOpts },
     filing_profile: {
       id: filing.profile.id,
