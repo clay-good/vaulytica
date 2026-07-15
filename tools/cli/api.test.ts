@@ -18,7 +18,7 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 
 import { loadAccuracyDeps, runDocument } from "../accuracy/pipeline.js";
-import { analyzeText, analyzeFile } from "./api.js";
+import { analyzeText, analyzeFile, runProductionQa } from "./api.js";
 
 const NDA = [
   "Mutual Non-Disclosure Agreement",
@@ -183,6 +183,28 @@ describe("CLI/API parity with the parity-proven pipeline (spec-v8 Step 143)", ()
       // Without --posture, no posture is computed.
       const noPosture = await analyzeFile(path, { deps, customPlaybook });
       expect(noPosture.negotiation_posture).toBeUndefined();
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("runProductionQa reconciles a directory production set", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "vaulytica-prod-"));
+    try {
+      await writeFile(join(dir, "ACME_000001.pdf"), "doc");
+      await writeFile(join(dir, "ACME_000002.pdf"), "doc");
+      await writeFile(join(dir, "ACME_000004.pdf"), "doc"); // gap at 000003
+      await writeFile(
+        join(dir, "privlog.csv"),
+        "BegBates,EndBates,Privilege,Description\nACME_000002,ACME_000002,Attorney-Client,Email\n",
+      );
+      const report = await runProductionQa(dir);
+      expect(report.member_count).toBe(4);
+      expect(report.log_present).toBe(true);
+      const codes = report.findings.map((f) => f.code);
+      expect(codes).toContain("PROD-001"); // Bates gap
+      expect(codes).toContain("PROD-010"); // withheld-but-produced
+      expect(report.production_qa_hash).toMatch(/^[0-9a-f]{64}$/);
     } finally {
       await rm(dir, { recursive: true, force: true });
     }

@@ -21,6 +21,13 @@
  * days", and FRCP 6(a) roll-forward + 6(d) service for "days". Without it the
  * register — and every existing hash — is unchanged.
  *
+ * `analyze <dir|.zip> --production-qa` runs production QA over a document
+ * production set (not per-document analysis): Bates sequence + privilege-log
+ * (the single `.csv` member) reconciliation and a pre-production HANDOFF sweep,
+ * emitting a JSON report with its own `production_qa_hash`.
+ * `--fail-on-production-gap` exits non-zero (2) when a Bates gap is found, for a
+ * CI check before a production goes out.
+ *
  * spec-v15: an emitted coherence artifact is pinned to the playbook ladder its
  * rungs were computed against; `--baseline-coherence` refuses to diff it against
  * a round computed on a different ladder (a cross-ladder compare is meaningless).
@@ -151,7 +158,7 @@
 import { mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
 import { join, basename, extname, resolve } from "node:path";
 
-import { analyzeFile, loadAccuracyDeps, type AnalyzeResult } from "./api.js";
+import { analyzeFile, loadAccuracyDeps, runProductionQa, type AnalyzeResult } from "./api.js";
 import { COURT_PROFILE_IDS, getCourtProfile } from "../../src/filing/court-profile.js";
 import type { CourtProfile } from "../../src/filing/court-profile.js";
 import type { BriefKind } from "../../src/filing/run-options.js";
@@ -284,6 +291,10 @@ type Args = {
   deadlineProfile?: string;
   /** add-deadline-computation — the service method for the FRCP 6(d) / CCP 1013 add-on. */
   serviceMethod?: string;
+  /** add-production-qa-pack — run production QA over a directory/.zip production set. */
+  productionQa?: boolean;
+  /** add-production-qa-pack — exit non-zero when a Bates sequence gap is found. */
+  failOnProductionGap?: boolean;
 };
 
 /** Build the filing activation from parsed args, or undefined when no `--court`. */
@@ -433,6 +444,12 @@ function parseArgs(argv: string[]): Args {
         }
         args.serviceMethod = val;
         i++;
+        break;
+      case "--production-qa":
+        args.productionQa = true;
+        break;
+      case "--fail-on-production-gap":
+        args.failOnProductionGap = true;
         break;
       default:
         throw new Error(`unknown flag "${flag}"`);
@@ -587,6 +604,27 @@ export async function runAnalyze(argv: string[]): Promise<void> {
   const human = (s: string): void => {
     (machine ? process.stderr : process.stdout).write(s);
   };
+
+  // add-production-qa-pack — a distinct mode over a production SET (a directory
+  // or .zip), not per-document analysis: Bates + privilege-log reconciliation
+  // and a pre-production sweep. Handled here before the document flow.
+  if (args.productionQa) {
+    const report = await runProductionQa(args.target);
+    process.stdout.write(JSON.stringify(report, null, 2) + "\n");
+    const gapCount = report.findings.filter(
+      (f) => f.code === "PROD-001" || f.code === "PROD-011",
+    ).length;
+    process.stderr.write(
+      `Production QA: ${report.member_count} members, ${report.findings.length} finding(s)` +
+        `${report.log_present ? ", privilege log reconciled" : ", no privilege log"}.\n`,
+    );
+    if (args.failOnProductionGap && gapCount > 0) {
+      process.stderr.write(`--fail-on-production-gap: ${gapCount} Bates gap finding(s).\n`);
+      process.exitCode = 2;
+    }
+    return;
+  }
+
   const deps = await loadAccuracyDeps({ dkbDir: args.dkb });
 
   // spec-v10 Thrust B — load + validate a custom playbook file (its

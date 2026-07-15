@@ -88,8 +88,8 @@ rule uses a registered prefix.
 | BNK, CON, EMP, EQT, EST, GOV, HC, INS, IPL, MNA, POL, PRV, RE, REG, SET | v4 sub-domain families |
 | FILE | filing-format lint (appellate-brief / trial-motion / petition) |
 | CITE | authority-citation lint (same filing playbooks) |
-| **DDL** | deadline computation *(reserved)* |
-| **PROD** | production QA *(reserved)* |
+| DDL | deadline computation (register resolution; no rule pack yet) |
+| PROD | production QA (Bates + privilege-log reconciliation, CLI) |
 | **PNOT** | privacy notice *(reserved)* |
 
 The estate pack deepens the already-owned **EST** prefix rather than reserving a

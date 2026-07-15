@@ -15,8 +15,9 @@
  * parity-proven downstream; it re-implements no engine logic.
  */
 
-import { readFile } from "node:fs/promises";
-import { extname, basename } from "node:path";
+import { readFile, readdir, stat } from "node:fs/promises";
+import { extname, basename, join } from "node:path";
+import { unzipSync, strFromU8 } from "fflate";
 
 import { ingestPaste } from "../../src/ingest/paste.js";
 import { ingestDocxBuffer } from "../../src/ingest/docx.js";
@@ -263,3 +264,79 @@ export async function analyzeText(
 }
 
 export { loadAccuracyDeps };
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * Production QA (add-production-qa-pack) — a bundle-level pass over a
+ * directory or .zip production set: Bates + privilege-log reconciliation and a
+ * pre-production HANDOFF sweep. CLI-only in v1; self-contained (does not touch
+ * the browser bundle pipeline or the consistency engine).
+ * ──────────────────────────────────────────────────────────────────────── */
+
+type ProductionMember = { filename: string; bytes: ArrayBuffer };
+
+/** Enumerate the members of a production set (a directory or a `.zip`). */
+async function collectProductionMembers(target: string): Promise<ProductionMember[]> {
+  const info = await stat(target);
+  if (info.isDirectory()) {
+    const names = await readdir(target);
+    const members: ProductionMember[] = [];
+    for (const name of names.sort()) {
+      const p = join(target, name);
+      const s = await stat(p);
+      if (!s.isFile()) continue;
+      const buf = await readFile(p);
+      members.push({ filename: name, bytes: toArrayBuffer(buf) });
+    }
+    return members;
+  }
+  if (target.toLowerCase().endsWith(".zip")) {
+    const buf = await readFile(target);
+    const entries = unzipSync(new Uint8Array(buf));
+    return Object.keys(entries)
+      .filter((name) => !name.endsWith("/") && !name.startsWith("__MACOSX/"))
+      .sort()
+      .map((name) => {
+        const data = entries[name]!;
+        return { filename: basename(name), bytes: toArrayBuffer(Buffer.from(data)) };
+      });
+  }
+  throw new Error(`--production-qa expects a directory or a .zip, got: ${target}`);
+}
+
+/**
+ * Analyze a production set: reconcile Bates numbering and the privilege log,
+ * and sweep each document member for pre-production leaks. The single `.csv`
+ * member (if present) is the privilege log.
+ */
+export async function runProductionQa(
+  target: string,
+): Promise<import("../../src/production/report.js").ProductionQaReport> {
+  const { buildProductionQaReport } = await import("../../src/production/report.js");
+  const members = await collectProductionMembers(target);
+  const filenames = members.map((m) => m.filename);
+  const csvMembers = members.filter((m) => m.filename.toLowerCase().endsWith(".csv"));
+  const logCsv =
+    csvMembers.length === 1 ? strFromU8(new Uint8Array(csvMembers[0]!.bytes)) : undefined;
+
+  // Pre-production sweep: HANDOFF scan over each .docx/.pdf member.
+  const deliveries: DeliveryReport[] = [];
+  for (const m of members) {
+    const ext = extname(m.filename).toLowerCase();
+    if (ext !== ".docx" && ext !== ".pdf") continue;
+    const source: ContainerSource = ext === ".pdf" ? "pdf" : "docx";
+    let text = "";
+    try {
+      const ingest = ext === ".pdf" ? await ingestPdfBuffer(m.bytes) : await ingestDocxBuffer(m.bytes);
+      text = flattenText(ingest.tree);
+    } catch {
+      // A member that fails to ingest still gets a container-level scan.
+    }
+    deliveries.push(await scanDelivery({ bytes: m.bytes, source, text }));
+  }
+
+  return buildProductionQaReport({
+    filenames,
+    logCsv,
+    deliveries: deliveries.length > 0 ? deliveries : undefined,
+  });
+}
