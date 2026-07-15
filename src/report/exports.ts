@@ -709,6 +709,17 @@ export function buildCriticalDatesMarkdown(register: CriticalDatesRegister): str
     }
   }
 
+  // add-deadline-computation (DDL follow-up) — drafting notes, present only when
+  // a deadline profile was asserted.
+  if (register.deadline_notes && register.deadline_notes.length > 0) {
+    lines.push("");
+    lines.push("## Drafting notes");
+    for (const n of register.deadline_notes) {
+      lines.push("");
+      lines.push(`**${n.code} — ${n.title}.** ${n.detail}`);
+    }
+  }
+
   lines.push("");
   return lines.join("\n");
 }

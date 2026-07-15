@@ -388,3 +388,23 @@ describe("DDL-001 deadline drafting notes (add-deadline-computation follow-up)",
     expect(b.critical_dates_hash).toBe(a.critical_dates_hash);
   });
 });
+
+describe("DDL-001 renders in the critical-dates markdown (add-deadline-computation)", () => {
+  it("shows a Drafting notes section when a profile rolled a deadline", async () => {
+    const { getDeadlineProfile } = await import("../deadlines/profile.js");
+    const { buildCriticalDatesMarkdown } = await import("./exports.js");
+    const frcp = getDeadlineProfile("frcp-6")!;
+    const tree = buildTree(
+      ["Definitions", '"Effective Date" means July 1, 2026.'],
+      ["A", "Respond within 3 days after the Effective Date."],
+    );
+    const extracted = extractAll(tree);
+    const reg = await buildCriticalDates(extracted, tree, { profile: frcp });
+    const md = buildCriticalDatesMarkdown(reg);
+    expect(md).toContain("Drafting notes");
+    expect(md).toContain("DDL-001");
+    // Absent without a profile.
+    const plain = await buildCriticalDates(extracted, tree);
+    expect(buildCriticalDatesMarkdown(plain)).not.toContain("Drafting notes");
+  });
+});
