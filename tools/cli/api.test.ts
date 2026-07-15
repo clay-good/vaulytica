@@ -268,5 +268,8 @@ describe("CLI/API parity with the parity-proven pipeline (spec-v8 Step 143)", ()
     } finally {
       await rm(dir, { recursive: true, force: true });
     }
-  });
+    // runProductionQa runs a per-member HANDOFF sweep (ingest + scanDelivery of
+    // each .pdf/.docx member); pdfjs worker init is far slower on cold Windows
+    // CI than locally, so this multi-member ingest needs a generous timeout.
+  }, 30000);
 });
