@@ -33,7 +33,8 @@ describe("vertical rule-pack gating", () => {
   it("every non-launch rule declares exactly one registered gate", () => {
     const offenders: string[] = [];
     for (const r of NON_LAUNCH) {
-      const hasPlaybookGate = Array.isArray(r.applies_to_playbooks) && r.applies_to_playbooks.length > 0;
+      const hasPlaybookGate =
+        Array.isArray(r.applies_to_playbooks) && r.applies_to_playbooks.length > 0;
       const hasAssertionGate = r.assertion_gate !== undefined;
       if (!hasPlaybookGate && !hasAssertionGate) {
         offenders.push(`${r.id} (no applies_to_playbooks and no assertion_gate)`);
@@ -151,7 +152,9 @@ describe("pack hash isolation", () => {
       selectActiveRules([synthPlaybookGated], "synthetic-pack-playbook").map((r) => r.id),
     ).toEqual(["SYNTH-001"]);
     expect(
-      selectActiveRules([synthAssertionGated], "anything", ["synthetic-assertion"]).map((r) => r.id),
+      selectActiveRules([synthAssertionGated], "anything", ["synthetic-assertion"]).map(
+        (r) => r.id,
+      ),
     ).toEqual(["SYNTH-002"]);
   });
 });

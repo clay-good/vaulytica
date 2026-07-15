@@ -14,7 +14,12 @@ import {
   type PresenceSpec,
   type RegulatedRuleConfig,
 } from "../v3/_regulated-rule.js";
-import { REGIMES, type ContentItem, type Regime, type RegimeId } from "../../../privacy/regime-data.js";
+import {
+  REGIMES,
+  type ContentItem,
+  type Regime,
+  type RegimeId,
+} from "../../../privacy/regime-data.js";
 
 export const PRIVACY_NOTICE_PLAYBOOK_IDS = ["privacy-notice-us", "privacy-notice-gdpr"] as const;
 

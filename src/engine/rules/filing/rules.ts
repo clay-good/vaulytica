@@ -77,7 +77,10 @@ export const FILE_001: Rule = {
   check(ctx: RuleContext): Finding | null {
     const opts = readFilingOptions(ctx);
     if (!opts) return null;
-    const limit = opts.brief_kind === "reply" ? opts.profile.limits.reply_words : opts.profile.limits.principal_words;
+    const limit =
+      opts.brief_kind === "reply"
+        ? opts.profile.limits.reply_words
+        : opts.profile.limits.principal_words;
     if (!limit) return null;
     const total = opts.word_count;
     const excludable: Set<string> = new Set(opts.profile.count_exclusions);
@@ -132,7 +135,10 @@ export const FILE_002: Rule = {
   check(ctx: RuleContext): Finding | null {
     const opts = readFilingOptions(ctx);
     if (!opts) return null;
-    const limit = opts.brief_kind === "reply" ? opts.profile.limits.reply_pages : opts.profile.limits.principal_pages;
+    const limit =
+      opts.brief_kind === "reply"
+        ? opts.profile.limits.reply_pages
+        : opts.profile.limits.principal_pages;
     if (!limit) return null;
     const cite = profileCitation(limit);
     if (opts.source !== "pdf" || opts.page_count === undefined) {
@@ -228,7 +234,12 @@ export const FILE_006 = presenceRule(
   "Table of authorities present",
   "table of authorities",
 );
-export const FILE_007 = presenceRule("FILE-007", "caption", "Caption block present", "caption block");
+export const FILE_007 = presenceRule(
+  "FILE-007",
+  "caption",
+  "Caption block present",
+  "caption block",
+);
 export const FILE_008 = presenceRule(
   "FILE-008",
   "signature-block",

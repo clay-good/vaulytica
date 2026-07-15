@@ -4,7 +4,10 @@ import {
   bundlePostureCoherence,
   buildPostureCoherenceJson,
 } from "../../src/report/posture-coherence.js";
-import type { NegotiationPosture, NegotiationTier } from "../../src/playbooks/custom-interpreter.js";
+import type {
+  NegotiationPosture,
+  NegotiationTier,
+} from "../../src/playbooks/custom-interpreter.js";
 import { buildPostureReview } from "./posture-review.js";
 // The individual commands, to prove the composition does not drift from them.
 import { compareCoherenceTrendArtifacts } from "./coherence-trend.js";
@@ -28,7 +31,10 @@ async function artifacts(): Promise<string[]> {
   const out: string[] = [];
   for (const [cap, term] of rounds) {
     const c = await bundlePostureCoherence(
-      bundle(["msa.docx", { Cap: cap!, Term: term! }], ["order.docx", { Cap: "ideal", Term: "ideal" }]),
+      bundle(
+        ["msa.docx", { Cap: cap!, Term: term! }],
+        ["order.docx", { Cap: "ideal", Term: "ideal" }],
+      ),
     );
     out.push(buildPostureCoherenceJson(c, null));
   }
@@ -89,7 +95,10 @@ describe("buildPostureReview", () => {
 
   it("reports a tampered artifact as a hard error, not a crash", async () => {
     const texts = await artifacts();
-    const tampered = texts[1]!.replace(/"coherence_hash":\s*"[0-9a-f]+"/, '"coherence_hash":"deadbeef"');
+    const tampered = texts[1]!.replace(
+      /"coherence_hash":\s*"[0-9a-f]+"/,
+      '"coherence_hash":"deadbeef"',
+    );
     const out = await buildPostureReview([texts[0]!, tampered], "markdown");
     expect(out.ok).toBe(false);
     if (!out.ok) expect(out.errors.join(" ")).toMatch(/round 2|hash|tamper/i);

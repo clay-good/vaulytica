@@ -40,8 +40,7 @@ const CASE_RE = /\b(\d+)\s+([A-Z][A-Za-z0-9.' ]{1,40}?)\s+(\d+)\b/g;
 const STATUTE_USC_RE = /\b(\d+)\s+(U\.S\.C\.|C\.F\.R\.)\s+§+\s*([\d.]+[a-z0-9()]*)/g;
 
 /** State code: "Cal. Rev. Stat. § 123" / "Tex. Code § 45.6". */
-const STATUTE_STATE_RE =
-  /\b([A-Z][a-z]+\.?\s+(?:Rev\.\s+)?(?:Stat\.|Code))\s+§+\s*([\d.]+)/g;
+const STATUTE_STATE_RE = /\b([A-Z][a-z]+\.?\s+(?:Rev\.\s+)?(?:Stat\.|Code))\s+§+\s*([\d.]+)/g;
 
 /** Procedural rule: "Fed. R. App. P. 32" / "FRAP 32" / "FRCP 12(b)". */
 const RULE_RE =

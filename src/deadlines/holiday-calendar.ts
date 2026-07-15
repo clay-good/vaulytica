@@ -51,12 +51,7 @@ export function dayOfWeek(iso: string): number {
   const k = year % 100;
   const j = Math.floor(year / 100);
   const h =
-    (day +
-      Math.floor((13 * (month + 1)) / 5) +
-      k +
-      Math.floor(k / 4) +
-      Math.floor(j / 4) -
-      2 * j) %
+    (day + Math.floor((13 * (month + 1)) / 5) + k + Math.floor(k / 4) + Math.floor(j / 4) - 2 * j) %
     7;
   const hMod = ((h % 7) + 7) % 7; // h: 0 = Saturday … 6 = Friday
   return (hMod + 6) % 7; // remap to 0 = Sunday … 6 = Saturday

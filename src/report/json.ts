@@ -267,7 +267,9 @@ export function buildJsonReport(
   if (scope) payload.scope_of_review = scope;
   // add-privacy-notice-pack — the regime coverage table, when the PNOT pack ran.
   if (run.asserted_regimes && run.asserted_regimes.length > 0) {
-    const fired = new Set(run.findings.filter((f) => f.rule_id.startsWith("PNOT-")).map((f) => f.rule_id));
+    const fired = new Set(
+      run.findings.filter((f) => f.rule_id.startsWith("PNOT-")).map((f) => f.rule_id),
+    );
     payload.regime_coverage = buildRegimeCoverage(run.asserted_regimes as RegimeId[], fired);
   }
   // fix-legal-authority-currency — deterministic "verify currency" notes.

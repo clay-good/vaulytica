@@ -32,9 +32,12 @@ describe("buildRegimeCoverage", () => {
     expect(cov!.regime).toBe("ccpa");
     expect(cov!.total).toBe(ccpaRules.length);
     expect(cov!.found_count).toBe(ccpaRules.length - 2);
-    expect(cov!.items.filter((i) => !i.found).map((i) => i.rule_id).sort()).toEqual(
-      [ccpaRules[0]!.id, ccpaRules[1]!.id].sort(),
-    );
+    expect(
+      cov!.items
+        .filter((i) => !i.found)
+        .map((i) => i.rule_id)
+        .sort(),
+    ).toEqual([ccpaRules[0]!.id, ccpaRules[1]!.id].sort());
   });
 
   it("every PNOT rule maps to exactly one regime's coverage", () => {

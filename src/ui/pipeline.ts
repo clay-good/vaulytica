@@ -641,7 +641,9 @@ export async function runReport(
       playbook_match_confidence: prepared.match.confidence,
       playbook_match_reasoning: prepared.match.reasoning,
       ...(filingWiring.filing_profile ? { filing_profile: filingWiring.filing_profile } : {}),
-      ...(privacyWiring.asserted_regimes ? { asserted_regimes: privacyWiring.asserted_regimes } : {}),
+      ...(privacyWiring.asserted_regimes
+        ? { asserted_regimes: privacyWiring.asserted_regimes }
+        : {}),
       ...(estateWiring.estate_checks_asserted ? { estate_checks_asserted: true } : {}),
       executed_at: new Date().toISOString(),
       onRule: onRuleProgress,

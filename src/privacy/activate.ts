@@ -11,7 +11,10 @@
  */
 
 import type { Rule } from "../engine/finding.js";
-import { PRIVACY_NOTICE_PLAYBOOK_IDS, pnotRulesForRegimes } from "../engine/rules/privacy-notice/rules.js";
+import {
+  PRIVACY_NOTICE_PLAYBOOK_IDS,
+  pnotRulesForRegimes,
+} from "../engine/rules/privacy-notice/rules.js";
 import type { RegimeId } from "./regime-data.js";
 
 export type PrivacyWiring = { rules: readonly Rule[]; asserted_regimes?: string[] };

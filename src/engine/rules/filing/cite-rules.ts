@@ -217,7 +217,8 @@ export const CITE_003: Rule = {
       title: `${dangling.length} dangling short-form reference${dangling.length === 1 ? "" : "s"}`,
       description: `${dangling.length} short-form reference${dangling.length === 1 ? "" : "s"} point to an authority never cited in full earlier: ${examples}.`,
       explanation: `A "supra" or case short form must follow a full citation of the same authority. ${NON_VERIFICATION}`,
-      recommendation: "Add a full citation for the authority before its first short-form reference.",
+      recommendation:
+        "Add a full citation for the authority before its first short-form reference.",
       position: dangling[0]!.pos,
       citations: [INDIGO_CITE],
     });
@@ -302,9 +303,15 @@ export const CITE_005: Rule = {
     const uniq = [...new Set(inconsistent)];
     return cite(CITE_005, {
       title: `Inconsistent short form${uniq.length === 1 ? "" : "s"} for ${uniq.length} authorit${uniq.length === 1 ? "y" : "ies"}`,
-      description: `${uniq.slice(0, 5).map((s) => `"${s}"`).join(", ")} ${uniq.length === 1 ? "is" : "are"} short-cited by both party names, which reads as two different authorities.`,
+      description: `${uniq
+        .slice(0, 5)
+        .map((s) => `"${s}"`)
+        .join(
+          ", ",
+        )} ${uniq.length === 1 ? "is" : "are"} short-cited by both party names, which reads as two different authorities.`,
       explanation: `Use one consistent short form per authority. ${NON_VERIFICATION}`,
-      recommendation: "Pick one short form (usually the first-named party) and use it consistently.",
+      recommendation:
+        "Pick one short form (usually the first-named party) and use it consistently.",
       position: topPos(ctx),
       citations: [INDIGO_CITE],
     });

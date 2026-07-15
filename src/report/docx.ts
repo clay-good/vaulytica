@@ -210,7 +210,9 @@ function renderCover(run: EngineRun, ingest: IngestResult, playbook: Playbook): 
     );
   }
   if (run.asserted_regimes && run.asserted_regimes.length > 0) {
-    asserted.push(coverField("Privacy regimes", `${run.asserted_regimes.join(", ")} — asserted by the user`));
+    asserted.push(
+      coverField("Privacy regimes", `${run.asserted_regimes.join(", ")} — asserted by the user`),
+    );
   }
   if (run.estate_checks_asserted) {
     asserted.push(coverField("Estate checks", "asserted by the user (--estate-checks)"));
@@ -555,10 +557,7 @@ function renderClassificationNotice(
   notice: ClassificationNotice | undefined,
 ): (Paragraph | Table)[] {
   if (!notice) return [];
-  return [
-    h1("Document Type Not Recognized"),
-    para({ text: notice.message, italics: true }),
-  ];
+  return [h1("Document Type Not Recognized"), para({ text: notice.message, italics: true })];
 }
 
 /**

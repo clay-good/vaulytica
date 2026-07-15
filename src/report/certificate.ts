@@ -145,7 +145,9 @@ export async function buildCertificateDocx(run: EngineRun): Promise<Blob> {
     field("Input SHA-256", cert.input.sha256),
     field("Input size", `${cert.input.size_bytes.toLocaleString("en-US")} bytes`),
     field("Playbook", cert.playbook_id),
-    ...(cert.asserted_packs ? [field("Asserted checks", assertedPacksLabel(cert.asserted_packs))] : []),
+    ...(cert.asserted_packs
+      ? [field("Asserted checks", assertedPacksLabel(cert.asserted_packs))]
+      : []),
     field("Result hash", cert.result_hash),
     field("Certificate hash", cert.certificate_hash),
     new Paragraph({ children: [new TextRun("")] }),

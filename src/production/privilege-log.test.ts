@@ -14,7 +14,16 @@ function encodeRow(fields: string[]): string {
   return fields.map(encodeField).join(",");
 }
 
-const HEADER = ["Control", "Bates Start", "Bates End", "Date", "Author", "Recipients", "Privilege", "Description"];
+const HEADER = [
+  "Control",
+  "Bates Start",
+  "Bates End",
+  "Date",
+  "Author",
+  "Recipients",
+  "Privilege",
+  "Description",
+];
 
 function encodeLog(rows: string[][]): string {
   return [HEADER, ...rows].map(encodeRow).join("\r\n");
@@ -23,7 +32,16 @@ function encodeLog(rows: string[][]): string {
 describe("parsePrivilegeLog — header mapping", () => {
   it("maps synonym headers case-insensitively", () => {
     const csv = encodeLog([
-      ["LOG-1", "ACME_000010", "ACME_000012", "2024-01-01", "Alice", "Bob", "Attorney-Client", "Legal advice re: merger"],
+      [
+        "LOG-1",
+        "ACME_000010",
+        "ACME_000012",
+        "2024-01-01",
+        "Alice",
+        "Bob",
+        "Attorney-Client",
+        "Legal advice re: merger",
+      ],
     ]);
     const log = parsePrivilegeLog(csv);
     expect(log.unmapped_columns).toEqual([]);
@@ -42,14 +60,16 @@ describe("parsePrivilegeLog — header mapping", () => {
   });
 
   it("splits a combined bates range column on a hyphen", () => {
-    const csv = "Control,Bates Range,Privilege,Description\r\nLOG-1,ACME_000010-ACME_000012,AC,desc";
+    const csv =
+      "Control,Bates Range,Privilege,Description\r\nLOG-1,ACME_000010-ACME_000012,AC,desc";
     const log = parsePrivilegeLog(csv);
     expect(log.entries[0]?.bates_start).toBe("ACME_000010");
     expect(log.entries[0]?.bates_end).toBe("ACME_000012");
   });
 
   it("splits a combined bates range column on 'to'", () => {
-    const csv = "Control,Bates Range,Privilege,Description\r\nLOG-1,ACME_000010 to ACME_000012,AC,desc";
+    const csv =
+      "Control,Bates Range,Privilege,Description\r\nLOG-1,ACME_000010 to ACME_000012,AC,desc";
     const log = parsePrivilegeLog(csv);
     expect(log.entries[0]?.bates_start).toBe("ACME_000010");
     expect(log.entries[0]?.bates_end).toBe("ACME_000012");
@@ -113,7 +133,9 @@ describe("parsePrivilegeLog — properties", () => {
   });
 
   it("round-trips CSVs produced by a matching RFC-4180 encoder", () => {
-    const cell = fc.string({ minLength: 1 }).filter((s) => s.trim().length > 0 && !/^[-–]|to$/i.test(s));
+    const cell = fc
+      .string({ minLength: 1 })
+      .filter((s) => s.trim().length > 0 && !/^[-–]|to$/i.test(s));
     fc.assert(
       fc.property(
         fc.array(fc.tuple(cell, cell, cell, cell), { minLength: 1, maxLength: 8 }),

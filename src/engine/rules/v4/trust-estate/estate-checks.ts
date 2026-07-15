@@ -20,7 +20,13 @@
  *     fiduciary, guardian for minors, survivorship clause).
  */
 
-import { makeFinding, type Finding, type Rule, type RuleContext, type Severity } from "../../../finding.js";
+import {
+  makeFinding,
+  type Finding,
+  type Rule,
+  type RuleContext,
+  type Severity,
+} from "../../../finding.js";
 import { fullText, docTop } from "../_helpers.js";
 import { upc } from "./_helpers.js";
 import type { SourceCitation } from "../../../../dkb/types.js";
@@ -94,10 +100,12 @@ const EST_101: Rule = absenceRule({
     /witness(es)?.{0,40}(presence|request|signed)/,
   ],
   missingTitle: "No attestation clause detected",
-  missingDescription: "No clause was found reciting that the witnesses attested execution of the will.",
+  missingDescription:
+    "No clause was found reciting that the witnesses attested execution of the will.",
   explanation:
     "UPC § 2-502 requires the will to be signed by at least two witnesses who witnessed the signing or the testator's acknowledgment. An attestation clause is the standard evidence of that formality.",
-  recommendation: "Add an attestation clause reciting that the witnesses signed in the testator's presence and at the testator's request.",
+  recommendation:
+    "Add an attestation clause reciting that the witnesses signed in the testator's presence and at the testator's request.",
   citations: [upc("2-502", "execution; witnessed wills")],
 });
 
@@ -115,7 +123,8 @@ const EST_102: Rule = absenceRule({
   missingDescription: "No self-proving affidavit was found attached to or referenced by the will.",
   explanation:
     "UPC § 2-504 lets a will be made self-proved by a sworn affidavit of the testator and witnesses, so probate does not require locating and calling the witnesses to testify.",
-  recommendation: "Attach a self-proving affidavit in the statutory form (or the applicable state's equivalent).",
+  recommendation:
+    "Attach a self-proving affidavit in the statutory form (or the applicable state's equivalent).",
   citations: [upc("2-504", "self-proved wills")],
 });
 
@@ -133,7 +142,8 @@ const EST_103: Rule = absenceRule({
   missingDescription: "No notarial acknowledgment block was found in the document text.",
   explanation:
     "A self-proving affidavit under UPC § 2-504 must be notarized; a notary block is the concrete evidence of that step.",
-  recommendation: "Add a notary block (notary public, acknowledgment, commission-expiration recital) alongside the self-proving affidavit.",
+  recommendation:
+    "Add a notary block (notary public, acknowledgment, commission-expiration recital) alongside the self-proving affidavit.",
   citations: [upc("2-504")],
 });
 
@@ -162,12 +172,17 @@ const EST_105: Rule = absenceRule({
   // Presence-only in v1 — this does not attempt to count the detected
   // witness signature lines against a number the will recites elsewhere
   // (e.g. "two witnesses"); that comparison is a future refinement.
-  patterns: [/_{3,}\s*witness/, /witness.{0,20}(signature|sign|_{3,})/, /signature of.{0,20}witness/],
+  patterns: [
+    /_{3,}\s*witness/,
+    /witness.{0,20}(signature|sign|_{3,})/,
+    /signature of.{0,20}witness/,
+  ],
   missingTitle: "No witness signature blocks detected",
   missingDescription: "No witness signature blocks were found in the document text.",
   explanation:
     "UPC § 2-502 requires at least two witnesses to sign the will. Witness signature blocks are the concrete evidence of that formality.",
-  recommendation: "Add at least two witness signature blocks (signature line, printed name, address).",
+  recommendation:
+    "Add at least two witness signature blocks (signature line, printed name, address).",
   citations: [upc("2-502")],
 });
 
@@ -220,13 +235,23 @@ type ShareMatch = {
 function collectRawShareMatches(text: string): ShareMatch[] {
   const out: ShareMatch[] = [];
   for (const m of text.matchAll(PERCENT_RE)) {
-    out.push({ index: m.index, end: m.index + m[0].length, value: parseFloat(m[1]!), kind: "percent" });
+    out.push({
+      index: m.index,
+      end: m.index + m[0].length,
+      value: parseFloat(m[1]!),
+      kind: "percent",
+    });
   }
   for (const m of text.matchAll(WORD_FRACTION_RE)) {
     const num = NUMERATOR_WORDS[m[1]!];
     const den = DENOMINATOR_WORDS[m[2]!];
     if (num === undefined || den === undefined) continue;
-    out.push({ index: m.index, end: m.index + m[0].length, value: (num / den) * 100, kind: "word-fraction" });
+    out.push({
+      index: m.index,
+      end: m.index + m[0].length,
+      value: (num / den) * 100,
+      kind: "word-fraction",
+    });
   }
   for (const m of text.matchAll(EXPLICIT_FRACTION_RE)) {
     const num = Number(m[1]!);
@@ -327,7 +352,8 @@ const EST_301: Rule = absenceRule({
   missingDescription: "No clause was found naming an executor or personal representative.",
   explanation:
     "Without a nomination, the court appoints from the statutory priority list rather than the testator's chosen fiduciary.",
-  recommendation: "Add a clause nominating an executor / personal representative (and a successor).",
+  recommendation:
+    "Add a clause nominating an executor / personal representative (and a successor).",
   citations: [upc("3-703", "general duties")],
 });
 
@@ -341,7 +367,8 @@ const EST_302: Rule = absenceRule({
     /(unable|unwilling|fails?|ceases?) to (serve|act|continue)/,
   ],
   missingTitle: "No successor fiduciary named",
-  missingDescription: "No successor / alternate fiduciary was found named for when the primary fiduciary cannot serve.",
+  missingDescription:
+    "No successor / alternate fiduciary was found named for when the primary fiduciary cannot serve.",
   explanation:
     "Without a successor, a court must appoint one if the named fiduciary cannot or will not serve, creating delay and a fiduciary the testator did not choose.",
   recommendation: "Name at least one successor / alternate fiduciary.",
@@ -349,7 +376,8 @@ const EST_302: Rule = absenceRule({
 });
 
 const MINOR_REF_RE = /minor child|minor children|my children.{0,60}(minor|under the age|under age)/;
-const GUARDIAN_RE = /nominate.{0,20}guardian|appoint.{0,20}guardian|guardian (of|for) (the |my )?(minor|child|person)/;
+const GUARDIAN_RE =
+  /nominate.{0,20}guardian|appoint.{0,20}guardian|guardian (of|for) (the |my )?(minor|child|person)/;
 
 const EST_303: Rule = {
   id: "EST-303",
@@ -369,11 +397,13 @@ const EST_303: Rule = {
     return makeFinding({
       rule: this as Rule,
       title: "No guardian nomination for minor children detected",
-      description: "The document references minor children but no clause was found nominating a guardian for them.",
+      description:
+        "The document references minor children but no clause was found nominating a guardian for them.",
       excerptText: "(clause absent from the document)",
       explanation:
         "UPC § 5-202 recognizes testamentary appointment of a guardian for an unmarried minor child. Without a nomination, the court chooses a guardian from family members based on statutory factors, not the testator's stated preference.",
-      recommendation: "Add a clause nominating a guardian (and a successor guardian) for the minor children.",
+      recommendation:
+        "Add a clause nominating a guardian (and a successor guardian) for the minor children.",
       position: docTop(ctx),
       source_citations: [upc("5-202", "testamentary appointment of guardian")],
     });
@@ -384,12 +414,16 @@ const EST_304: Rule = absenceRule({
   id: "EST-304",
   name: "Survivorship / simultaneous-death provision present",
   severity: "info",
-  patterns: [/survivorship|simultaneous death|survive(s)? me by|common disaster|order of death|predecease/],
+  patterns: [
+    /survivorship|simultaneous death|survive(s)? me by|common disaster|order of death|predecease/,
+  ],
   missingTitle: "No survivorship / simultaneous-death provision detected",
-  missingDescription: "No survivorship or simultaneous-death clause was found in the document text.",
+  missingDescription:
+    "No survivorship or simultaneous-death clause was found in the document text.",
   explanation:
     "UPC § 2-702 requires an individual to survive an event (e.g., the testator's death) by 120 hours to take under the will, absent contrary language. Without an explicit survivorship provision, simultaneous or near-simultaneous deaths can produce unintended results.",
-  recommendation: "Add a survivorship / simultaneous-death provision (e.g., a 120-hour survival requirement or a stated order-of-death rule).",
+  recommendation:
+    "Add a survivorship / simultaneous-death provision (e.g., a 120-hour survival requirement or a stated order-of-death rule).",
   citations: [upc("2-702", "requirement of survival by 120 hours")],
 });
 

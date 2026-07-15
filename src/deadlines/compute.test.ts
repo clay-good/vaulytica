@@ -114,7 +114,8 @@ describe("computeDeadline — property tests", () => {
         fc.integer({ min: 1, max: 28 }),
         fc.integer({ min: 0, max: 60 }),
         (profile, y, m, d, days) => {
-          const trigger = `${y}`.padStart(4, "0") + "-" + `${m}`.padStart(2, "0") + "-" + `${d}`.padStart(2, "0");
+          const trigger =
+            `${y}`.padStart(4, "0") + "-" + `${m}`.padStart(2, "0") + "-" + `${d}`.padStart(2, "0");
           const first = computeDeadline({ trigger, days, profile });
           if (!first.resolved) return; // outside-covers edge, skip
           const second = computeDeadline({ trigger: first.date, days: 0, profile });
@@ -134,7 +135,8 @@ describe("computeDeadline — property tests", () => {
         fc.integer({ min: 1, max: 28 }),
         fc.integer({ min: 0, max: 60 }),
         (profile, y, m, d, days) => {
-          const trigger = `${y}`.padStart(4, "0") + "-" + `${m}`.padStart(2, "0") + "-" + `${d}`.padStart(2, "0");
+          const trigger =
+            `${y}`.padStart(4, "0") + "-" + `${m}`.padStart(2, "0") + "-" + `${d}`.padStart(2, "0");
           const r = computeDeadline({ trigger, days, profile });
           if (!r.resolved) return;
           expect(r.date.localeCompare(trigger)).toBeGreaterThanOrEqual(0);
@@ -153,7 +155,8 @@ describe("computeDeadline — property tests", () => {
         fc.integer({ min: 0, max: 400 }),
         fc.constantFrom(undefined, "electronic", "mail", "clerk", "other-consented", "personal"),
         (profile, y, m, d, days, service_method) => {
-          const trigger = `${y}`.padStart(4, "0") + "-" + `${m}`.padStart(2, "0") + "-" + `${d}`.padStart(2, "0");
+          const trigger =
+            `${y}`.padStart(4, "0") + "-" + `${m}`.padStart(2, "0") + "-" + `${d}`.padStart(2, "0");
           expect(() => computeDeadline({ trigger, days, profile, service_method })).not.toThrow();
         },
       ),

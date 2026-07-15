@@ -70,8 +70,8 @@ describe("regime-data — ccpa", () => {
     const item = REGIMES.ccpa.items.find((i) => i.key === "correction-right");
     expect(item?.citation).toBe("Cal. Civ. Code § 1798.106");
     const soldShared = REGIMES.ccpa.items.find((i) => i.key === "sold-shared-or-none");
-    expect(soldShared?.present_patterns.some((p) => /do not sell/i.test(new RegExp(p, "i").source))).toBe(
-      true,
-    );
+    expect(
+      soldShared?.present_patterns.some((p) => /do not sell/i.test(new RegExp(p, "i").source)),
+    ).toBe(true);
   });
 });

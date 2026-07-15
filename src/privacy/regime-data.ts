@@ -46,7 +46,10 @@ const CCPA_ITEMS: ContentItem[] = [
     citation: "Cal. Civ. Code § 1798.130(a)(5)(B)",
     url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=1798.130&lawCode=CIV",
     retrieved_at: RETRIEVED_AT,
-    present_patterns: ["categor(y|ies) of personal information", "personal information .{0,20}collect"],
+    present_patterns: [
+      "categor(y|ies) of personal information",
+      "personal information .{0,20}collect",
+    ],
   },
   {
     key: "sources",
@@ -78,7 +81,12 @@ const CCPA_ITEMS: ContentItem[] = [
     citation: "Cal. Civ. Code § 1798.130(a)(5)(C)",
     url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=1798.130&lawCode=CIV",
     retrieved_at: RETRIEVED_AT,
-    present_patterns: ["sold or shared", "do not sell", "we do not sell", "not .{0,10}sell.{0,10}share"],
+    present_patterns: [
+      "sold or shared",
+      "do not sell",
+      "we do not sell",
+      "not .{0,10}sell.{0,10}share",
+    ],
   },
   {
     key: "consumer-rights",
@@ -86,7 +94,11 @@ const CCPA_ITEMS: ContentItem[] = [
     citation: "Cal. Civ. Code § 1798.130(a)(5)(A)",
     url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=1798.130&lawCode=CIV",
     retrieved_at: RETRIEVED_AT,
-    present_patterns: ["right to (know|access|delete|correct)", "your (privacy )?rights", "right to opt.?out"],
+    present_patterns: [
+      "right to (know|access|delete|correct)",
+      "your (privacy )?rights",
+      "right to opt.?out",
+    ],
   },
   {
     key: "correction-right",
@@ -94,7 +106,11 @@ const CCPA_ITEMS: ContentItem[] = [
     citation: "Cal. Civ. Code § 1798.106",
     url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=1798.106&lawCode=CIV",
     retrieved_at: RETRIEVED_AT,
-    present_patterns: ["right to correct", "correct .{0,20}inaccurate", "request .{0,10}correction"],
+    present_patterns: [
+      "right to correct",
+      "correct .{0,20}inaccurate",
+      "request .{0,10}correction",
+    ],
   },
   {
     key: "request-methods",
@@ -102,7 +118,12 @@ const CCPA_ITEMS: ContentItem[] = [
     citation: "11 CCR § 7011(e)",
     url: "https://leginfo.legislature.ca.gov/faces/codes_displayText.xhtml?division=1.&part=4.&title=1.81.&chapter=&article=",
     retrieved_at: RETRIEVED_AT,
-    present_patterns: ["submit a request", "to exercise .{0,20}right", "toll.?free", "verify(ing)? your"],
+    present_patterns: [
+      "submit a request",
+      "to exercise .{0,20}right",
+      "toll.?free",
+      "verify(ing)? your",
+    ],
   },
   {
     key: "opt-out-link",
@@ -134,7 +155,12 @@ const CCPA_ITEMS: ContentItem[] = [
     citation: "11 CCR § 7011(e)",
     url: "https://leginfo.legislature.ca.gov/faces/codes_displayText.xhtml?division=1.&part=4.&title=1.81.&chapter=&article=",
     retrieved_at: RETRIEVED_AT,
-    present_patterns: ["last updated", "effective date", "last revised", "date of .{0,10}(last )?revision"],
+    present_patterns: [
+      "last updated",
+      "effective date",
+      "last revised",
+      "date of .{0,10}(last )?revision",
+    ],
   },
   {
     key: "contact",
@@ -242,7 +268,11 @@ const GDPR_13_ITEMS: ContentItem[] = [
     citation: "GDPR Art. 13(2)(e)",
     url: "https://gdpr-info.eu/art-13-gdpr/",
     retrieved_at: RETRIEVED_AT,
-    present_patterns: ["obliged to provide", "statutory .{0,10}requirement", "consequence.{0,20}(fail|not provid)"],
+    present_patterns: [
+      "obliged to provide",
+      "statutory .{0,10}requirement",
+      "consequence.{0,20}(fail|not provid)",
+    ],
   },
   {
     key: "automated-decisions",
@@ -290,7 +320,8 @@ export const REGIMES: Readonly<Record<RegimeId, Regime>> = Object.freeze({
   ccpa: {
     id: "ccpa",
     name: "CCPA/CPRA privacy policy",
-    authority_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=1798.130&lawCode=CIV",
+    authority_url:
+      "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=1798.130&lawCode=CIV",
     items: CCPA_ITEMS,
   },
   "gdpr-13": {

@@ -73,7 +73,12 @@ export function detectFilingBlocks(tree: DocumentTree): DetectedBlock[] {
 
   const record = (block: DetectableBlock, s: Section, where: string): void => {
     if (found.has(block)) return;
-    found.set(block, { block, section_id: s.id, where: where.slice(0, 120), words: wordsInSection(s) });
+    found.set(block, {
+      block,
+      section_id: s.id,
+      where: where.slice(0, 120),
+      words: wordsInSection(s),
+    });
   };
 
   sections.forEach((s, i) => {

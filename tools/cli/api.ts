@@ -340,7 +340,8 @@ export async function runProductionQa(
     const source: ContainerSource = ext === ".pdf" ? "pdf" : "docx";
     let text = "";
     try {
-      const ingest = ext === ".pdf" ? await ingestPdfBuffer(m.bytes) : await ingestDocxBuffer(m.bytes);
+      const ingest =
+        ext === ".pdf" ? await ingestPdfBuffer(m.bytes) : await ingestDocxBuffer(m.bytes);
       text = flattenText(ingest.tree);
     } catch {
       // A member that fails to ingest still gets a container-level scan.

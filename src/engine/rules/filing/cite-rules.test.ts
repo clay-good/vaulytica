@@ -77,10 +77,7 @@ describe("CITE-004 TOA reconciliation", () => {
 describe("CITE-005 inconsistent short forms", () => {
   it("flags an authority short-cited by both party names", () => {
     const ctx = briefCtx([
-      [
-        "ARGUMENT",
-        "See Roe v. Wade, 410 U.S. 113. Roe, supra. But Wade, supra, says otherwise.",
-      ],
+      ["ARGUMENT", "See Roe v. Wade, 410 U.S. 113. Roe, supra. But Wade, supra, says otherwise."],
     ]);
     const f = CITE_005.check(ctx)!;
     expect(f.title).toMatch(/[Ii]nconsistent short form/);
@@ -91,10 +88,7 @@ describe("a clean brief produces no CITE findings", () => {
   it("all rules silent", () => {
     const ctx = briefCtx([
       ["TABLE OF AUTHORITIES", "Roe v. Wade, 410 U.S. 113 ... 2"],
-      [
-        "ARGUMENT",
-        "See Roe v. Wade, 410 U.S. 113 (1973). Id. at 120. Roe, supra, controls here.",
-      ],
+      ["ARGUMENT", "See Roe v. Wade, 410 U.S. 113 (1973). Id. at 120. Roe, supra, controls here."],
     ]);
     for (const r of CITE_RULES) expect(r.check(ctx), r.id).toBeNull();
   });

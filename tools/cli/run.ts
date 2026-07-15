@@ -432,10 +432,14 @@ function parseArgs(argv: string[]): Args {
         break;
       case "--court":
         if (!val || val.startsWith("--")) {
-          throw new Error(`--court requires a profile id (one of: ${COURT_PROFILE_IDS.join(", ")})`);
+          throw new Error(
+            `--court requires a profile id (one of: ${COURT_PROFILE_IDS.join(", ")})`,
+          );
         }
         if (!COURT_PROFILE_IDS.includes(val)) {
-          throw new Error(`unknown --court profile "${val}" (valid: ${COURT_PROFILE_IDS.join(", ")})`);
+          throw new Error(
+            `unknown --court profile "${val}" (valid: ${COURT_PROFILE_IDS.join(", ")})`,
+          );
         }
         args.court = val;
         i++;
@@ -462,7 +466,9 @@ function parseArgs(argv: string[]): Args {
           throw new Error(`--service-method requires a value (${SERVICE_METHODS.join(", ")})`);
         }
         if (!(SERVICE_METHODS as readonly string[]).includes(val)) {
-          throw new Error(`unknown --service-method "${val}" (valid: ${SERVICE_METHODS.join(", ")})`);
+          throw new Error(
+            `unknown --service-method "${val}" (valid: ${SERVICE_METHODS.join(", ")})`,
+          );
         }
         args.serviceMethod = val;
         i++;

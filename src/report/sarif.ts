@@ -255,7 +255,10 @@ export function buildSarif(run: EngineRun, v9?: V9Surfaces, currency?: CitationC
             "vaulyticaClassificationNotice/v1": run.classification_notice.reason,
             "vaulyticaResultHash/v1": run.result_hash,
           },
-          properties: { surface: "classification-notice", reason: run.classification_notice.reason },
+          properties: {
+            surface: "classification-notice",
+            reason: run.classification_notice.reason,
+          },
         },
       ]
     : [];
@@ -271,7 +274,8 @@ export function buildSarif(run: EngineRun, v9?: V9Surfaces, currency?: CitationC
   if (run.asserted_regimes && run.asserted_regimes.length > 0)
     provenance.privacy_regimes = run.asserted_regimes;
   if (run.estate_checks_asserted) provenance.estate_checks = true;
-  const hasProvenance = run.filing_profile || run.asserted_regimes?.length || run.estate_checks_asserted;
+  const hasProvenance =
+    run.filing_profile || run.asserted_regimes?.length || run.estate_checks_asserted;
 
   return {
     $schema: SARIF_SCHEMA,

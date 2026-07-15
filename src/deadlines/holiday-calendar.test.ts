@@ -155,7 +155,8 @@ describe("property: dayOfWeek is stable and 7-cyclic", () => {
         fc.integer({ min: 1, max: 12 }),
         fc.integer({ min: 1, max: 27 }),
         (y, m, d) => {
-          const iso = `${y}`.padStart(4, "0") + "-" + `${m}`.padStart(2, "0") + "-" + `${d}`.padStart(2, "0");
+          const iso =
+            `${y}`.padStart(4, "0") + "-" + `${m}`.padStart(2, "0") + "-" + `${d}`.padStart(2, "0");
           const dow = dayOfWeek(iso);
           expect(dow).toBeGreaterThanOrEqual(0);
           expect(dow).toBeLessThanOrEqual(6);

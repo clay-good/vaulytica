@@ -184,19 +184,31 @@ describe("approved_language (add-negotiation-ladder-playbooks)", () => {
   };
 
   it("carries the team's approved language onto a below-floor row only", async () => {
-    const below = await posture(["The liability cap is 3x the total fees paid."], [ladderWithFallback]);
+    const below = await posture(
+      ["The liability cap is 3x the total fees paid."],
+      [ladderWithFallback],
+    );
     expect(below.positions[0]!.tier).toBe("below-acceptable");
     expect(below.positions[0]!.approved_language).toMatch(/capped at 6x fees/);
 
     // Not carried when at or above the floor (only actionable below).
-    const ok = await posture(["The liability cap is 8x the total fees paid."], [ladderWithFallback]);
+    const ok = await posture(
+      ["The liability cap is 8x the total fees paid."],
+      [ladderWithFallback],
+    );
     expect(ok.positions[0]!.tier).toBe("acceptable");
     expect(ok.positions[0]!.approved_language).toBeUndefined();
   });
 
   it("does not affect posture_hash (hash covers dimension + tier only)", async () => {
-    const withLang = await posture(["The liability cap is 3x the total fees paid."], [ladderWithFallback]);
-    const without = await posture(["The liability cap is 3x the total fees paid."], [liabilityLadder]);
+    const withLang = await posture(
+      ["The liability cap is 3x the total fees paid."],
+      [ladderWithFallback],
+    );
+    const without = await posture(
+      ["The liability cap is 3x the total fees paid."],
+      [liabilityLadder],
+    );
     expect(withLang.posture_hash).toBe(without.posture_hash);
   });
 

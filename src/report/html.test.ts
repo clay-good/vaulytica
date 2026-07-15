@@ -94,7 +94,10 @@ describe("buildHtmlReport (spec-v8 §21 — standalone single-file HTML)", () =>
     expect(matched).not.toContain("Document Type Not Recognized");
     const unmatched = makeRun();
     unmatched.playbook_id = "generic-fallback";
-    unmatched.classification_notice = { reason: "generic-fallback", message: "No known family matched." };
+    unmatched.classification_notice = {
+      reason: "generic-fallback",
+      message: "No known family matched.",
+    };
     const html = buildHtmlReport(unmatched, ingest, loadStarterDkbSync());
     expect(html).toContain("Document Type Not Recognized");
     expect(html).toContain("No known family matched.");

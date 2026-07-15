@@ -215,5 +215,11 @@ export function computeCourtDays(args: {
     if (!isNonCourtDay(cal, current)) counted += 1;
   }
   steps.push({ rule: cite, detail: `landed on the ${days}th court day: ${current}` });
-  return { resolved: true, date: current, steps, profile_id: profile.id, calendar_version: cal.version };
+  return {
+    resolved: true,
+    date: current,
+    steps,
+    profile_id: profile.id,
+    calendar_version: cal.version,
+  };
 }

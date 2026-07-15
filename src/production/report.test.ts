@@ -32,7 +32,14 @@ describe("buildProductionQaReport", () => {
       source: "docx",
       inspectable: true,
       findings: [
-        { rule_id: rule, severity: "warning", title: rule, description: "", count: 1, evidence: [] },
+        {
+          rule_id: rule,
+          severity: "warning",
+          title: rule,
+          description: "",
+          count: 1,
+          evidence: [],
+        },
       ],
       summary: "",
       delivery_hash: "0".repeat(64),
