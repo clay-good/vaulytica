@@ -361,3 +361,30 @@ describe("buildCriticalDates — opt-in deadline resolution (add-deadline-comput
     expect(a.register.every((r) => r.deadline_profile_id === undefined)).toBe(true);
   });
 });
+
+describe("DDL-001 deadline drafting notes (add-deadline-computation follow-up)", () => {
+  it("notes a deadline whose own math lands on a weekend and rolls", async () => {
+    const { getDeadlineProfile } = await import("../deadlines/profile.js");
+    const frcp = getDeadlineProfile("frcp-6")!;
+    // 2026-07-01 + 3 days = 2026-07-04 (Saturday) → rolls to Monday.
+    const tree = buildTree(
+      ["Definitions", '"Effective Date" means July 1, 2026.'],
+      ["A", "Respond within 3 days after the Effective Date."],
+    );
+    const extracted = extractAll(tree);
+    const reg = await buildCriticalDates(extracted, tree, { profile: frcp });
+    expect(reg.deadline_notes?.some((n) => n.code === "DDL-001")).toBe(true);
+  });
+
+  it("is absent without a profile (and does not affect the hash)", async () => {
+    const tree = buildTree(
+      ["Definitions", '"Effective Date" means July 1, 2026.'],
+      ["A", "Respond within 3 days after the Effective Date."],
+    );
+    const extracted = extractAll(tree);
+    const a = await buildCriticalDates(extracted, tree);
+    expect(a.deadline_notes).toBeUndefined();
+    const b = await buildCriticalDates(extracted, tree, undefined);
+    expect(b.critical_dates_hash).toBe(a.critical_dates_hash);
+  });
+});

@@ -103,13 +103,55 @@ export type CriticalDate = {
 /** Opt-in court-deadline resolution config (add-deadline-computation). */
 export type DeadlineResolution = { profile: DeadlineProfile; service_method?: ServiceMethod };
 
+/**
+ * A drafting note derived from the resolved register (add-deadline-computation,
+ * DDL follow-up). Advisory — computed only when a deadline profile is asserted,
+ * lives OUTSIDE `critical_dates_hash` (the hash is over `register` only).
+ */
+export type DeadlineNote = {
+  code: "DDL-001";
+  severity: "info";
+  title: string;
+  detail: string;
+};
+
 export type CriticalDatesRegister = {
   register: CriticalDate[];
   resolved_count: number;
   unresolved_count: number;
   /** SHA-256 over the canonical register — independent of `result_hash`. */
   critical_dates_hash: string;
+  /**
+   * Deadline drafting notes (DDL-###). Present only when a deadline profile was
+   * asserted and at least one note applies. Outside the hash.
+   */
+  deadline_notes?: DeadlineNote[];
 };
+
+/**
+ * DDL-001 — the document's own math lands on a non-court day before rolling.
+ * A drafting observation: the drafter chose a period that expires on a
+ * weekend/holiday, so the court rule rolls it forward. Derived from the roll
+ * steps the profile recorded.
+ */
+function buildDeadlineNotes(rows: readonly CriticalDate[]): DeadlineNote[] {
+  const rolled = rows.filter(
+    (r) => r.resolved && r.deadline_steps?.some((s) => /rolled forward/.test(s.detail)),
+  );
+  if (rolled.length === 0) return [];
+  const examples = rolled
+    .slice(0, 6)
+    .map((r) => `"${r.trigger}" → ${r.computed_date}`)
+    .join("; ");
+  return [
+    {
+      code: "DDL-001",
+      severity: "info",
+      title: `${rolled.length} deadline${rolled.length === 1 ? " falls" : "s fall"} on a non-court day before rolling forward`,
+      detail: `The document's own date math lands on a weekend or holiday; the selected court rule rolls it to the next court day: ${examples}. Confirm the intended deadline.`,
+    },
+  ];
+}
 
 // ---------------------------------------------------------------------------
 // The arithmetic (spec §25, companion §3) — pure, clock-free.
@@ -491,11 +533,14 @@ export async function buildCriticalDates(
 
   const resolved_count = rows.filter((r) => r.resolved).length;
   const critical_dates_hash = await sha256Hex(stableStringify({ register: rows }));
+  // DDL drafting notes — advisory, only when a profile was asserted; outside the hash.
+  const deadline_notes = deadline ? buildDeadlineNotes(rows) : [];
   return {
     register: rows,
     resolved_count,
     unresolved_count: rows.length - resolved_count,
     critical_dates_hash,
+    ...(deadline_notes.length > 0 ? { deadline_notes } : {}),
   };
 }
 

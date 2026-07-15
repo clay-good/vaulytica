@@ -5,7 +5,7 @@
 - [x] 3. Prove default-path stability: with no profile, every existing critical-dates golden byte-identical (explicit regression test).
 - [x] 4. CLI `--deadline-profile <id>` + `--service-method <method>`; tab picker; USAGE; the profile assertion rendered in the report header ("computed under Fed. R. Civ. P. 6 as asserted by the user").
 - [x] 5. Arithmetic test battery: FRCP 6(a)(1) worked examples (trigger-day exclusion; weekend roll; holiday roll incl. observed holidays), 6(d) mail +3 then roll, e-service +0 (2016 amendment), CCP § 12a Saturday roll; property tests (rolling is idempotent; resolved date ≥ unrolled date; steps replay to the same result).
-- [ ] 6. (DEFERRED — see Deviations) DDL-001 (document's own math lands on a non-day pre-roll) and DDL-002 (two clauses imply conflicting dates for one obligation), assertion-gated on `--deadline-profile` (register the assertion in the vertical registry per the framework's assertion-gate path; no playbook gate).
+- [~] 6. DDL-001 SHIPPED as a register drafting note (post-register advisory, gated by --deadline-profile); DDL-002 still deferred. DDL-001 (document's own math lands on a non-day pre-roll) and DDL-002 (two clauses imply conflicting dates for one obligation), assertion-gated on `--deadline-profile` (register the assertion in the vertical registry per the framework's assertion-gate path; no playbook gate).
 - [x] 7. .ics: resolved events carry profile provenance in DESCRIPTION; unresolved rows keep the sentinel behavior; goldens.
 - [x] 8. Full gate green; docs page on the profile vocabulary and its limits.
 
@@ -36,3 +36,16 @@
   applies only to calendar-day ("days") deadlines.
 - **Court limit/holiday data should get an attorney/citation verification pass**
   before reliance (carries `retrieved_at`; structured for the currency mechanism).
+
+## Follow-up landed (2026-07-15)
+
+- **DDL-001 shipped** as a register drafting note, not an engine rule: computed
+  as a post-register advisory pass (`buildDeadlineNotes`) over the already-built
+  register, gated by the same `--deadline-profile` assertion, and carried in
+  `CriticalDatesRegister.deadline_notes` OUTSIDE `critical_dates_hash`. It flags
+  deadlines whose own math lands on a weekend/holiday before the court rule
+  rolls them forward. No pipeline reorder was needed. **DDL-002** (two clauses
+  imply conflicting dates for one obligation) remains deferred — reliable
+  same-obligation detection needs obligation-identity the register does not
+  track, and a naive anchor-grouping heuristic produces false positives (two
+  different offsets from one anchor are two valid deadlines, not a conflict).
