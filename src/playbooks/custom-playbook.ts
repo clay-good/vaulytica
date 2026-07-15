@@ -196,6 +196,14 @@ export type NegotiationPosition = {
   acceptable: CustomPredicate;
   /** Optional per-tier negotiation guidance to surface in the report. */
   guidance?: NegotiationTierGuidance;
+  /**
+   * The team's own pre-approved fallback language for this dimension
+   * (add-negotiation-ladder-playbooks). When the draft sits below the
+   * acceptable floor, the negotiation sheet quotes this text — clearly
+   * attributed to the playbook, never generated — beside the below-floor row.
+   * Advisory only: it does not affect the tier evaluation or `posture_hash`.
+   */
+  approved_language?: string;
 };
 
 export type CustomPlaybook = {
@@ -338,6 +346,7 @@ const negotiationPositionSchema = z
     ideal: predicateSchema,
     acceptable: predicateSchema,
     guidance: guidanceSchema.optional(),
+    approved_language: z.string().min(1).max(MAX_PLAYBOOK_STRING_LEN).optional(),
   })
   .strict()
   .superRefine((pos, ctx) => {

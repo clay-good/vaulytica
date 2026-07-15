@@ -80,10 +80,15 @@ function renderPosition(p: NegotiationPositionResult, action: Action): string {
   const found = (p.detail ?? p.reason ?? "").trim();
   const guide = p.guidance?.trim();
   const sec = p.section_id ? ` <span class="sec">§${esc(p.section_id)}</span>` : "";
+  // The team's own pre-approved fallback language, quoted verbatim and clearly
+  // attributed to the playbook (never generated). Carried only on below-floor
+  // rows (add-negotiation-ladder-playbooks).
+  const approved = p.approved_language?.trim();
   return `<li class="${action}">
     <div class="dim">${esc(p.dimension)}${sec}</div>
     ${found ? `<div class="found">${esc(found)}</div>` : ""}
     ${guide ? `<div class="guide">${esc(guide)}</div>` : ""}
+    ${approved ? `<blockquote class="approved-language"><div class="approved-label">Your playbook's approved fallback language:</div>${esc(approved)}</blockquote>` : ""}
   </li>`;
 }
 

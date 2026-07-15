@@ -102,6 +102,14 @@ export type NegotiationPositionResult = {
   section_id?: string;
   /** Why unevaluable, when the metric/clause is not stated in the document. */
   reason?: string;
+  /**
+   * The team's pre-approved fallback language for this dimension, carried
+   * through ONLY on a below-acceptable row (where it is actionable). Quoted in
+   * the negotiation sheet, attributed to the playbook. Not part of
+   * `posture_hash` (which hashes only dimension + tier).
+   * (add-negotiation-ladder-playbooks.)
+   */
+  approved_language?: string;
 };
 
 export type NegotiationPosture = {
@@ -278,6 +286,8 @@ function classifyPosition(pos: NegotiationPosition, facts: DocFacts): Negotiatio
       detail: acceptable.detail,
       excerpt: excerptOf(acceptable.clause_text ?? ideal.clause_text),
       section_id: acceptable.section_id ?? ideal.section_id,
+      // The team's fallback language is actionable only when below the floor.
+      approved_language: pos.approved_language,
     });
   }
   const reason =

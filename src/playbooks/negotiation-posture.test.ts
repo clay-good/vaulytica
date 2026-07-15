@@ -176,3 +176,35 @@ describe("evaluateNegotiationPosture — tier classification (spec-v10 Thrust A)
     expect(p.counts).toEqual({ ideal: 0, acceptable: 0, below_acceptable: 0, unevaluable: 0 });
   });
 });
+
+describe("approved_language (add-negotiation-ladder-playbooks)", () => {
+  const ladderWithFallback: NegotiationPosition = {
+    ...liabilityLadder,
+    approved_language: "Notwithstanding the foregoing, liability shall be capped at 6x fees.",
+  };
+
+  it("carries the team's approved language onto a below-floor row only", async () => {
+    const below = await posture(["The liability cap is 3x the total fees paid."], [ladderWithFallback]);
+    expect(below.positions[0]!.tier).toBe("below-acceptable");
+    expect(below.positions[0]!.approved_language).toMatch(/capped at 6x fees/);
+
+    // Not carried when at or above the floor (only actionable below).
+    const ok = await posture(["The liability cap is 8x the total fees paid."], [ladderWithFallback]);
+    expect(ok.positions[0]!.tier).toBe("acceptable");
+    expect(ok.positions[0]!.approved_language).toBeUndefined();
+  });
+
+  it("does not affect posture_hash (hash covers dimension + tier only)", async () => {
+    const withLang = await posture(["The liability cap is 3x the total fees paid."], [ladderWithFallback]);
+    const without = await posture(["The liability cap is 3x the total fees paid."], [liabilityLadder]);
+    expect(withLang.posture_hash).toBe(without.posture_hash);
+  });
+
+  it("the negotiation sheet quotes it, attributed to the playbook", async () => {
+    const { buildNegotiationSheet } = await import("../report/negotiation-sheet.js");
+    const p = await posture(["The liability cap is 3x the total fees paid."], [ladderWithFallback]);
+    const html = buildNegotiationSheet(p, "Test");
+    expect(html).toContain("approved fallback language");
+    expect(html).toContain("capped at 6x fees");
+  });
+});
