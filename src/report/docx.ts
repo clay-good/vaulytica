@@ -595,6 +595,14 @@ function renderCriticalDatesSection(
       ],
     }),
   ];
+  // add-deadline-computation (DDL follow-up) — drafting notes, present only when
+  // a deadline profile was asserted.
+  if (register.deadline_notes && register.deadline_notes.length > 0) {
+    out.push(h3("Drafting notes"));
+    for (const n of register.deadline_notes) {
+      out.push(para({ text: `${n.code} — ${n.title}. ${n.detail}`, italics: true }));
+    }
+  }
   out.push(pageBreak());
   return out;
 }
