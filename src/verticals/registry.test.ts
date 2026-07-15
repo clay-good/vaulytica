@@ -7,6 +7,7 @@ import { V3_RULES } from "../engine/rules/v3/index.js";
 import { V4_RULES } from "../engine/rules/v4/index.js";
 import { FILING_RULES, CITE_RULES } from "../engine/rules/filing/index.js";
 import { PNOT_RULES } from "../engine/rules/privacy-notice/rules.js";
+import { ESTATE_CHECK_RULES } from "../engine/rules/v4/trust-estate/estate-checks.js";
 import {
   NAMESPACE_OWNERS,
   REGISTERED_ASSERTION_GATES,
@@ -23,6 +24,7 @@ const NON_LAUNCH: readonly Rule[] = [
   ...FILING_RULES,
   ...CITE_RULES,
   ...PNOT_RULES,
+  ...ESTATE_CHECK_RULES,
 ].filter((r) => !LAUNCH_IDS.has(r.id));
 
 // The registry gate contract (add-document-vertical-framework, Requirement:

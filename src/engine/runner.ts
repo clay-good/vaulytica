@@ -70,6 +70,8 @@ export type RunEngineInput = {
    * only when the privacy-notice pack fired. Omitted otherwise.
    */
   asserted_regimes?: string[];
+  /** True to stamp that the estate-checks pack ran (add-estate-planning-pack). */
+  estate_checks_asserted?: boolean;
   /** ISO 8601. Excluded from the result hash. Defaults to "" so test runs are reproducible. */
   executed_at?: string;
   /**
@@ -188,6 +190,11 @@ export async function runEngine(input: RunEngineInput): Promise<EngineRun> {
   // add-privacy-notice-pack — stamp the asserted regimes when the pack fired.
   if (input.asserted_regimes && input.asserted_regimes.length > 0) {
     run.asserted_regimes = input.asserted_regimes;
+  }
+
+  // add-estate-planning-pack — stamp that the estate-checks pack ran.
+  if (input.estate_checks_asserted) {
+    run.estate_checks_asserted = true;
   }
 
   run.result_hash = await computeResultHash(run);

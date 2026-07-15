@@ -217,6 +217,37 @@ describe("CLI/API parity with the parity-proven pipeline (spec-v8 Step 143)", ()
     }
   });
 
+  it("--estate-checks activates the EST pack on a will and stays dormant/hash-stable without it", async () => {
+    const deps = await loadAccuracyDeps();
+    const dir = await mkdtemp(join(tmpdir(), "vaulytica-est-"));
+    try {
+      const will = [
+        "LAST WILL AND TESTAMENT OF JOHN DOE",
+        "I, John Doe, being of sound mind, declare this to be my last will and testament, and I revoke all prior wills and codicils.",
+        "ARTICLE I. I appoint Jane Doe as Executor of my estate.",
+        "ARTICLE II. Residuary Estate. I give the rest, residue and remainder of my estate as follows: 40% to my son Alan, and 50% to my daughter Beth.",
+        "ARTICLE III. I direct that my just debts be paid. I make the following specific bequests to my devisees.",
+        "IN WITNESS WHEREOF, I have signed my name to this my last will and testament.",
+        "_______________________ Testator",
+      ].join("\n\n");
+      const path = join(dir, "will.txt");
+      await writeFile(path, will);
+
+      const dormant = await analyzeFile(path, { deps });
+      expect(dormant.run.playbook_id).toBe("last-will-and-testament");
+      expect(dormant.run.estate_checks_asserted).toBeUndefined();
+      expect(dormant.run.findings.some((f) => /^EST-(1|2|3)\d\d/.test(f.rule_id))).toBe(false);
+
+      const active = await analyzeFile(path, { deps, estateChecks: true });
+      expect(active.run.estate_checks_asserted).toBe(true);
+      // EST-201 catches the 40%+50%=90% residue split.
+      expect(active.run.findings.some((f) => f.rule_id === "EST-201")).toBe(true);
+      expect(active.run.result_hash).not.toBe(dormant.run.result_hash);
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
   it("runProductionQa reconciles a directory production set", async () => {
     const dir = await mkdtemp(join(tmpdir(), "vaulytica-prod-"));
     try {

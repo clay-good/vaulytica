@@ -195,6 +195,11 @@ export async function analyzeFile(
      * otherwise the run is unchanged.
      */
     regimes?: readonly RegimeId[];
+    /**
+     * Estate-checks assertion (`--estate-checks`). When set and the document is
+     * a will/trust/codicil, the EST deepening rules run; otherwise unchanged.
+     */
+    estateChecks?: boolean;
   } = {},
 ): Promise<AnalyzeResult> {
   const deps = opts.deps ?? (await loadAccuracyDeps({ dkbDir: opts.dkbDir }));
@@ -208,6 +213,7 @@ export async function analyzeFile(
     bytes.byteLength,
     opts.filing,
     opts.regimes,
+    opts.estateChecks,
   );
   const out: AnalyzeResult = { ...result, ingest };
   if (opts.delivery) {

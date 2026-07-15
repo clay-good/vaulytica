@@ -39,6 +39,7 @@ import type { CourtProfile } from "../../src/filing/court-profile.js";
 import type { BriefKind } from "../../src/filing/run-options.js";
 import { activatePrivacyNotice } from "../../src/privacy/activate.js";
 import type { RegimeId } from "../../src/privacy/regime-data.js";
+import { activateEstateChecks } from "../../src/estate/activate.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, "..", "..");
@@ -158,6 +159,8 @@ export async function runIngested(
    * the user opts in; the PNOT pack fires only for a notice playbook.
    */
   regimes?: readonly RegimeId[],
+  /** Estate-checks assertion (`--estate-checks`). Fires the pack on will/trust/codicil. */
+  estateChecks?: boolean,
 ): Promise<DocumentRun> {
   const extracted = extractAll(ingest.tree, {
     classifier: { vocab: { vocab: {} }, patterns: deps.dkb.classifier.patterns },
@@ -183,9 +186,10 @@ export async function runIngested(
 
   const activation = activateFiling(filing, playbook.id, ingest, deps.rules);
   const privacy = activatePrivacyNotice(regimes ?? [], playbook.id, activation.rules);
+  const estate = activateEstateChecks(estateChecks ?? false, playbook.id, privacy.rules);
 
   const run = await runEngine({
-    rules: privacy.rules,
+    rules: estate.rules,
     ctx: {
       tree: ingest.tree,
       extracted,
@@ -198,6 +202,7 @@ export async function runIngested(
     playbook_match_reasoning: match.reasoning,
     ...(activation.filing_profile ? { filing_profile: activation.filing_profile } : {}),
     ...(privacy.asserted_regimes ? { asserted_regimes: privacy.asserted_regimes } : {}),
+    ...(estate.estate_checks_asserted ? { estate_checks_asserted: true } : {}),
     executed_at: "",
   });
 

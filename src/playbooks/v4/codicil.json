@@ -1,0 +1,50 @@
+{
+  "id": "codicil",
+  "version": "1.0.0",
+  "name": "Codicil (Will Amendment)",
+  "description": "A codicil amending a last will and testament. Selects the estate-planning checks (EST-1xx/2xx/3xx) when the user asserts --estate-checks; dormant otherwise. Execution formalities cannot be verified from text alone — the pack checks recitals, not valid execution.",
+  "match_features": {
+    "title_keywords": [
+      "codicil",
+      "first codicil",
+      "second codicil",
+      "codicil to my will",
+      "codicil to the last will"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "republish",
+      "codicil to",
+      "amend my will",
+      "confirm my will",
+      "last will and testament dated",
+      "in all other respects i confirm"
+    ],
+    "negative_features": [
+      "this agreement",
+      "the parties agree",
+      "master services agreement"
+    ]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [
+    "Testator"
+  ],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "UPC-STATE-WILL-CODES",
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "last-will-and-testament"
+  ],
+  "compliance_matrix_columns": [
+    "Republication recital",
+    "Attestation",
+    "Self-proving affidavit",
+    "Testator signature",
+    "Witness signatures"
+  ]
+}

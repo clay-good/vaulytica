@@ -189,6 +189,12 @@ export type EngineRun = {
    */
   asserted_regimes?: string[];
   /**
+   * True when the user asserted `--estate-checks` and the estate deepening pack
+   * ran on a will/trust/codicil (add-estate-planning-pack). Inside the hash;
+   * present only then, so an unasserted will/trust run is byte-identical.
+   */
+  estate_checks_asserted?: boolean;
+  /**
    * Present only when the document matched no known family and the generic
    * fallback ran. Inside the hash; omitted for matched runs. See
    * {@link ClassificationNotice}.

@@ -80,7 +80,13 @@ export const NAMESPACE_OWNERS: Readonly<Record<string, string>> = {
  * deadline-computation profiles or `--estate-checks`); a rule naming a gate
  * absent from this list fails the guard test.
  */
-export const REGISTERED_ASSERTION_GATES: readonly string[] = [];
+export const REGISTERED_ASSERTION_GATES: readonly string[] = [
+  // add-estate-planning-pack — the estate deepening rules (EST-1xx/2xx/3xx)
+  // gate on this assertion because the will/trust playbooks already ship;
+  // playbook gating alone would change every existing will/trust hash, so the
+  // pack runs only when the user asserts `--estate-checks`.
+  "estate-checks",
+];
 
 /** A pack's honesty-bounded statement of what it did and did not review. */
 export type ScopeStatement = {
@@ -133,6 +139,18 @@ export const SCOPE_OF_REVIEW: Readonly<Record<string, ScopeStatement>> = {
       ],
     },
   ),
+  ...scopeForIds(["last-will-and-testament", "revocable-living-trust", "codicil"], {
+    pack: "Estate Instrument Checks",
+    reviewed_for: [
+      "presence of execution-formality recitals (attestation clause, self-proving affidavit, notary block, testator and witness signature blocks) when --estate-checks is asserted",
+      "residuary share arithmetic (numeric shares that do not sum to 100%) and fiduciary/survivorship recitals (executor, successor, guardian for minors, survivorship)",
+    ],
+    not_reviewed_for: [
+      "estate-instrument checks at all unless --estate-checks is asserted",
+      "whether the will is validly executed, or that witnesses were competent, disinterested, or present — recitals are checked, not valid execution",
+      "state-specific execution formalities (per-state witness/notary rules are a separate change pending statutory verification), and any conclusion that the instrument is effective in any jurisdiction",
+    ],
+  }),
   ...scopeForIds(["privacy-notice-us", "privacy-notice-gdpr"], {
     pack: "Privacy Notice Content",
     reviewed_for: [

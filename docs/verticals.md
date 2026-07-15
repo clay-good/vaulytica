@@ -41,7 +41,7 @@ gate, or an assertion gate that is not registered.
 
 | Assertion | Pack | Status |
 | --- | --- | --- |
-| _(none yet)_ | — | The first assertion-gated pack registers its gate here. |
+| `estate-checks` | estate deepening (EST-1xx/2xx/3xx) | Shipped — gated because the will/trust playbooks already ship, so playbook gating alone would change existing hashes. Runs only under `--estate-checks`. |
 
 ### Shipped packs
 
@@ -98,7 +98,7 @@ rule uses a registered prefix.
 | TRANSFER | cross-border transfer |
 | ADDENDA | addenda |
 | MSA, NDA | deep MSA / NDA packs |
-| BNK, CON, EMP, EQT, EST, GOV, HC, INS, IPL, MNA, POL, PRV, RE, REG, SET | v4 sub-domain families |
+| BNK, CON, EMP, EQT, EST, GOV, HC, INS, IPL, MNA, POL, PRV, RE, REG, SET | v4 sub-domain families (EST also owns the assertion-gated EST-1xx/2xx/3xx estate-check rules) |
 | FILE | filing-format lint (appellate-brief / trial-motion / petition) |
 | CITE | authority-citation lint (same filing playbooks) |
 | DDL | deadline computation (register resolution; no rule pack yet) |

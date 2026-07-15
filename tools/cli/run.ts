@@ -34,6 +34,12 @@
  * dormant with none asserted. The asserted regimes are stamped into the run and
  * a per-regime coverage table (found / not detected) is added to the JSON.
  *
+ * `--estate-checks` runs the estate deepening rules (EST-1xx recital presence,
+ * EST-2xx residuary share arithmetic, EST-3xx fiduciary/survivorship) when the
+ * document is a will, revocable trust, or codicil. Assertion-gated: without the
+ * flag the pack is dormant and existing will/trust hashes are unchanged. It
+ * checks recitals, not valid execution.
+ *
  * spec-v15: an emitted coherence artifact is pinned to the playbook ladder its
  * rungs were computed against; `--baseline-coherence` refuses to diff it against
  * a round computed on a different ladder (a cross-ladder compare is meaningless).
@@ -308,6 +314,8 @@ type Args = {
   failOnProductionGap?: boolean;
   /** add-privacy-notice-pack — asserted privacy regimes for the PNOT pack. */
   regimes?: string[];
+  /** add-estate-planning-pack — assert the estate-checks pack on wills/trusts/codicils. */
+  estateChecks?: boolean;
 };
 
 /** Build the filing activation from parsed args, or undefined when no `--court`. */
@@ -480,6 +488,9 @@ function parseArgs(argv: string[]): Args {
         i++;
         break;
       }
+      case "--estate-checks":
+        args.estateChecks = true;
+        break;
       case "--production-qa":
         args.productionQa = true;
         break;
@@ -780,6 +791,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       filing,
       deadline,
       regimes: args.regimes as RegimeId[] | undefined,
+      estateChecks: args.estateChecks,
     });
 
     const counts = { critical: 0, warning: 0, info: 0 };

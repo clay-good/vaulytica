@@ -30,6 +30,7 @@ import type { CourtProfile } from "../filing/court-profile.js";
 import type { BriefKind } from "../filing/run-options.js";
 import { activatePrivacyNotice } from "../privacy/activate.js";
 import type { RegimeId } from "../privacy/regime-data.js";
+import { activateEstateChecks } from "../estate/activate.js";
 import {
   runWithCustomPlaybook,
   previewCustomPlaybook,
@@ -344,6 +345,12 @@ export type PipelineOptions = {
    */
   regimes?: readonly RegimeId[];
   /**
+   * add-estate-planning-pack — assert the estate-checks pack. When true and the
+   * document is a will/trust/codicil, the EST deepening rules run. Omit to keep
+   * the pack dormant (default), preserving existing will/trust hashes.
+   */
+  estate_checks?: boolean;
+  /**
    * v6 Part II bring-your-own-playbook (Step 92). When set, the run is
    * driven by the user-supplied playbook: the built-in catalog is narrowed
    * per its `rule_selection` / `rule_overrides` (or dropped entirely in
@@ -615,8 +622,14 @@ export async function runReport(
       prepared.playbook.id,
       filingWiring.rules,
     );
+    // add-estate-planning-pack — layer the estate-checks rules when asserted.
+    const estateWiring = activateEstateChecks(
+      options.estate_checks ?? false,
+      prepared.playbook.id,
+      privacyWiring.rules,
+    );
     run = await runEngine({
-      rules: privacyWiring.rules,
+      rules: estateWiring.rules,
       ctx: {
         tree: prepared.ingest.tree,
         extracted: prepared.extracted,
@@ -629,6 +642,7 @@ export async function runReport(
       playbook_match_reasoning: prepared.match.reasoning,
       ...(filingWiring.filing_profile ? { filing_profile: filingWiring.filing_profile } : {}),
       ...(privacyWiring.asserted_regimes ? { asserted_regimes: privacyWiring.asserted_regimes } : {}),
+      ...(estateWiring.estate_checks_asserted ? { estate_checks_asserted: true } : {}),
       executed_at: new Date().toISOString(),
       onRule: onRuleProgress,
     });
