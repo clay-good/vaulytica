@@ -695,6 +695,15 @@ export function buildCriticalDatesMarkdown(register: CriticalDatesRegister): str
   lines.push(
     "Each deadline below is computed from the document's own terms by calendar arithmetic (`anchor ± N`). These are the dates the document places on your calendar; they are not legal determinations that a deadline is met, missed, or binding.",
   );
+  // add-deadline-computation — when a court profile was asserted, name it in the
+  // header so the receipt records the basis for any rolled/court-day date.
+  const profileRow = register.register.find((r) => r.deadline_profile_id);
+  if (profileRow) {
+    lines.push("");
+    lines.push(
+      `**Business-day and roll-forward deadlines were computed under \`${profileRow.deadline_profile_id}\` (calendar ${profileRow.deadline_calendar_version ?? "?"}) as asserted by the user.** The filer's own count governs for any certification.`,
+    );
+  }
 
   const resolved = register.register.filter((r) => r.resolved);
   const unresolved = register.register.filter((r) => !r.resolved);

@@ -575,6 +575,14 @@ function renderCriticalDatesSection(
       text: `${register.resolved_count} computed, ${register.unresolved_count} to verify manually. Each date is calendar arithmetic over the document's own terms — not a determination that a deadline is met, missed, or binding.`,
       italics: true,
     }),
+    ...(register.register.find((r) => r.deadline_profile_id)
+      ? [
+          para({
+            text: `Business-day and roll-forward deadlines were computed under ${register.register.find((r) => r.deadline_profile_id)!.deadline_profile_id} as asserted by the user; the filer's own count governs for any certification.`,
+            italics: true,
+          }),
+        ]
+      : []),
     new Table({
       width: { size: 100, type: WidthType.PERCENTAGE },
       rows: [
