@@ -198,6 +198,24 @@ function renderCover(run: EngineRun, ingest: IngestResult, playbook: Playbook): 
   const isoDate = run.executed_at || new Date(0).toISOString();
   const humanDate = formatHumanDate(isoDate);
 
+  // Asserted opt-in packs, recorded on the cover so the receipt shows what the
+  // user turned on (each rides inside the hashed run).
+  const asserted: Paragraph[] = [];
+  if (run.filing_profile) {
+    asserted.push(
+      coverField(
+        "Court profile",
+        `${run.filing_profile.id} (${run.filing_profile.brief_kind} brief) — asserted by the user`,
+      ),
+    );
+  }
+  if (run.asserted_regimes && run.asserted_regimes.length > 0) {
+    asserted.push(coverField("Privacy regimes", `${run.asserted_regimes.join(", ")} — asserted by the user`));
+  }
+  if (run.estate_checks_asserted) {
+    asserted.push(coverField("Estate checks", "asserted by the user (--estate-checks)"));
+  }
+
   return [
     para({
       text: "Vaulytica Report",
@@ -223,6 +241,7 @@ function renderCover(run: EngineRun, ingest: IngestResult, playbook: Playbook): 
           : ""
       }`,
     ),
+    ...asserted,
     spacer(),
     para({ text: DETERMINISM_STATEMENT, italics: true }),
     spacer(2),

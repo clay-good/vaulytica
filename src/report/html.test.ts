@@ -100,6 +100,27 @@ describe("buildHtmlReport (spec-v8 §21 — standalone single-file HTML)", () =>
     expect(html).toContain("No known family matched.");
   });
 
+  it("records asserted opt-in packs on the cover (court profile / regimes / estate)", () => {
+    const base = makeRun();
+    expect(buildHtmlReport(base, ingest, loadStarterDkbSync())).not.toContain("Court profile");
+
+    const filing = makeRun();
+    filing.filing_profile = {
+      id: "frap-default",
+      version: "2026-07-15",
+      court_name: "FRAP",
+      brief_kind: "principal",
+      authority: ["Fed. R. App. P. 32"],
+    };
+    filing.asserted_regimes = ["ccpa"];
+    filing.estate_checks_asserted = true;
+    const html = buildHtmlReport(filing, ingest, loadStarterDkbSync());
+    expect(html).toContain("Court profile");
+    expect(html).toContain("frap-default");
+    expect(html).toContain("Privacy regimes");
+    expect(html).toContain("Estate checks");
+  });
+
   it("renders the scope-of-review block for a regulated pack (DPA/BAA)", () => {
     const run = makeRun();
     run.playbook_id = "baa";

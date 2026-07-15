@@ -337,6 +337,19 @@ export function buildHtmlReport(
     `<dt>Document</dt><dd>${esc(ingest.source)} · ${ingest.word_count} words${ingest.page_count ? ` · ${ingest.page_count} pages` : ""}</dd>`,
   );
   body.push(`<dt>File fingerprint (SHA-256)</dt><dd>${esc(run.source_file.sha256)}</dd>`);
+  if (run.filing_profile) {
+    body.push(
+      `<dt>Court profile</dt><dd>${esc(run.filing_profile.id)} (${esc(run.filing_profile.brief_kind)} brief) — asserted by the user</dd>`,
+    );
+  }
+  if (run.asserted_regimes && run.asserted_regimes.length > 0) {
+    body.push(
+      `<dt>Privacy regimes</dt><dd>${esc(run.asserted_regimes.join(", "))} — asserted by the user</dd>`,
+    );
+  }
+  if (run.estate_checks_asserted) {
+    body.push("<dt>Estate checks</dt><dd>asserted by the user (--estate-checks)</dd>");
+  }
   body.push(`<dt>Result hash</dt><dd>${esc(run.result_hash)}</dd>`);
   body.push(`<dt>Executed at</dt><dd>${esc(run.executed_at || "(omitted from hash)")}</dd>`);
   body.push(
