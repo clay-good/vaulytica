@@ -44,10 +44,14 @@ export const CC_001_BAA_PURPOSE: ConsistencyRule = {
     const baa = findByKind(ctx.documents, "baa");
     if (!msa || !baa) return [];
 
-    // Detect open-ended permitted-uses language in the BAA.
+    // Detect open-ended permitted-uses language in the BAA. The gap is a
+    // tempered token that stops at a "not": a clause that *restricts* PHI use
+    // ("may NOT use … for any purpose OTHER THAN the Services") contains the
+    // substring "any purpose" but is the opposite of open-ended, so it must not
+    // trip a false-positive critical cross-doc finding. (bounded → no ReDoS.)
     const baaBroad = findParagraph(
       baa,
-      /(?:permitted\s+uses?[^.\n]{0,80}|business\s+associate\s+may[^.\n]{0,80})\b(any\s+(?:business\s+)?purpose|any\s+lawful\s+purpose|any\s+purpose\s+permitted|for\s+any\s+reason)\b/i,
+      /(?:permitted\s+uses?(?:(?!\bnot\b)[^.\n]){0,80}|business\s+associate\s+may(?:(?!\bnot\b)[^.\n]){0,80})\b(any\s+(?:business\s+)?purpose|any\s+lawful\s+purpose|any\s+purpose\s+permitted|for\s+any\s+reason)\b/i,
     );
     if (!baaBroad) return [];
 
@@ -92,9 +96,12 @@ export const CC_002_DPA_PURPOSE: ConsistencyRule = {
     const dpa = findByKind(ctx.documents, "dpa");
     if (!msa || !dpa) return [];
 
+    // Tempered gap (stops at "not") for the same reason as CC-001: a clause
+    // that tethers processing ("shall NOT extend to any purpose OTHER THAN the
+    // Services") is Art. 28(3)-compliant, not open-ended, so it must not fire.
     const dpaBroad = findParagraph(
       dpa,
-      /\b(?:processing\s+(?:purposes?|shall\s+be|will\s+be)|purpose\s+of\s+the\s+processing)\b[^.\n]{0,120}\b(any\s+purpose|any\s+lawful\s+purpose|as\s+(?:the\s+)?controller\s+(?:may\s+)?direct|any\s+purpose\s+authori[sz]ed)\b/i,
+      /\b(?:processing\s+(?:purposes?|shall\s+be|will\s+be)|purpose\s+of\s+the\s+processing)\b(?:(?!\bnot\b)[^.\n]){0,120}\b(any\s+purpose|any\s+lawful\s+purpose|as\s+(?:the\s+)?controller\s+(?:may\s+)?direct|any\s+purpose\s+authori[sz]ed)\b/i,
     );
     if (!dpaBroad) return [];
 

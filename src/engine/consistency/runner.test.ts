@@ -171,6 +171,25 @@ describe("CC-001 BAA purpose no broader than MSA", () => {
     expect(run.findings).toHaveLength(0);
   });
 
+  it("does NOT fire on a narrowing clause that merely contains 'any purpose'", async () => {
+    // Regression: "may NOT use … for any purpose OTHER THAN the Services" is a
+    // restriction, not an open-ended grant — it must not trip a false critical.
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Scope of Services",
+      "The Services to be provided are claims processing on behalf of Customer.",
+    ]);
+    const baa = makeDoc("baa", "baa", [
+      "Permitted Uses",
+      "Business Associate may not use or disclose PHI for any purpose other than performing the Services described in the Master Services Agreement.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_001_BAA_PURPOSE],
+      documents: [msa, baa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+  });
+
   it("is skipped (ran=false) when the bundle has no BAA", async () => {
     const msa = makeDoc("msa", "msa-vendor-deep", ["A", "x"]);
     const dpa = makeDoc("dpa", "dpa-controller-processor", ["A", "y"]);
@@ -201,6 +220,25 @@ describe("CC-002 DPA purpose matches MSA services", () => {
     });
     expect(run.findings).toHaveLength(1);
     expect(run.findings[0]!.rule_id).toBe("CC-002");
+  });
+
+  it("does NOT fire on a clause that tethers processing to the MSA (Art. 28(3))", async () => {
+    // Regression: "shall NOT extend to any purpose OTHER THAN the Services" is
+    // compliant tethering, not an open-ended grant.
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Scope of Services",
+      "Provider shall provide payroll processing services to Customer.",
+    ]);
+    const dpa = makeDoc("dpa", "dpa-controller-processor", [
+      "Subject Matter",
+      "The processing purposes shall not extend to any purpose other than delivering the Services described in the Master Services Agreement.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_002_DPA_PURPOSE],
+      documents: [msa, dpa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
   });
 });
 
