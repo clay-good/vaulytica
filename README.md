@@ -1036,6 +1036,29 @@ npm run cli -- coherence-recovery-chain round1.coherence.json round2.coherence.j
 # coherence-matrix: the per-front × per-round floor-state GRID every other axis collapses — a posture HEATMAP (▓ below / ░ above / · unstated) — a gate on a BLACKOUT round (every stated front below floor at once, no front held the line) (spec-v44)
 npm run cli -- coherence-matrix round1.coherence.json round2.coherence.json round3.coherence.json --fail-on-blackout-round
 
+# vertical packs — opt-in, dormant by default (a document/bundle is byte-identical without the flag):
+
+# filing-format lint against a court's type-volume + structural limits (only when the doc is an
+# appellate brief / trial motion / petition); --reply applies the reply-brief limits
+npm run cli -- analyze brief.docx --court frap-default --reply
+
+# resolve the critical-dates register's court-day / calendar-day deadlines under a cited rule
+# (FRCP 6 / CCP 12); without the flag those offsets stay "verify manually" and the hash is unchanged
+npm run cli -- analyze complaint.docx --deadline-profile frcp-6 --service-method mail
+
+# production QA over a production set (a directory or .zip, not per-document analysis): Bates +
+# privilege-log (.csv) reconciliation + a pre-production sweep; the gate exits 2 on a Bates gap
+# (also in the browser: drop a privilege-log .csv alongside a document bundle)
+npm run cli -- analyze ./production/ --production-qa --fail-on-production-gap
+
+# privacy-notice content checks (PNOT presence rules) for the asserted regime(s), when the doc
+# matches a privacy-notice playbook; adds a per-regime found/not-detected coverage table
+npm run cli -- analyze privacy-policy.docx --regime ccpa,gdpr
+
+# estate deepening: recital presence + residuary-share arithmetic, when the doc is a will / trust /
+# codicil; assertion-gated — existing will/trust hashes are unchanged without the flag
+npm run cli -- analyze last-will.docx --estate-checks
+
 # verify: re-derive a saved report's result_hash from the original document (audit receipt)
 npm run cli -- verify report.json original.txt
 
@@ -1094,6 +1117,11 @@ npm run citation:check -- --reachability   # + network sweep
 | `--baseline-coherence <coherence.json>` | a saved, fingerprinted coherence artifact (from `--emit-coherence`) as the baseline — gate round two without round one's documents on disk; rejected on a `coherence_hash` mismatch, and (for a v15 `v2` artifact) on a **ladder mismatch** — refusing to diff against a baseline emitted under a different playbook ladder (requires `--posture`; mutually exclusive with `--baseline`) |
 | `--emit-coherence <path>` | write this round's cross-document coherence to a portable, hash-verified artifact for a later round to gate against; pins the playbook ladder (`ladder_hash`) so the consuming round can refuse a cross-ladder diff (requires `--posture`) |
 | `--fail-on-coherence-regression` | exit non-zero (code 2) when any front's binding floor regressed to a worse stated rung vs. the baseline (requires `--baseline` or `--baseline-coherence`) |
+| `--court <frap-default\|ca9-appellate\|cal-rules-8.204>` `--reply` | run the filing-format-lint pack (FILE-001..008) against the court profile's type-volume + structural limits, only when the document matches a filing playbook (appellate-brief / trial-motion / petition); `--reply` uses the reply-brief limits. Dormant without the flag |
+| `--deadline-profile <frcp-6\|cal-ccp-12>` `--service-method <…>` | resolve the critical-dates register's business-day/court-day and calendar-day offsets under the cited rule (FRCP 6 / CCP 12); `--service-method` picks the FRCP 6(d) service add-on. Dormant without the flag — the register and its hash are unchanged |
+| `--production-qa` `--fail-on-production-gap` | over a directory or `.zip` **production set** (not per-document analysis): Bates sequence + privilege-log (`.csv`) reconciliation + a pre-production HANDOFF sweep, emitting a JSON report with its own `production_qa_hash`; the gate exits 2 on a Bates gap. Also available in the browser bundle (drop a privilege-log `.csv` with the documents) |
+| `--regime <ccpa,gdpr,gdpr-13,gdpr-14>` | run the privacy-notice content checks (PNOT presence rules) for the asserted regime(s) — `gdpr` = both articles — when the document matches a privacy-notice playbook; stamps the regimes and adds a per-regime coverage table. Dormant without the flag |
+| `--estate-checks` | run the estate deepening rules (recital presence, residuary-share arithmetic, fiduciary/survivorship) when the document is a will, revocable trust, or codicil. Assertion-gated — dormant without the flag, existing will/trust hashes unchanged. Checks recitals, not valid execution |
 
 ### Drop it into CI — GitHub Action
 
