@@ -4,9 +4,9 @@
 - [x] 2. `tools/legal-basis/queue.ts` + `npm run queue:legal`: generates `docs/legal-basis/review-queue.md` — top-100 UNREVIEWED rules by severity × scoreboard firing frequency, each with its DKB-node citations to check. Deterministic (no wall clock); a golden guard (`queue.test.ts`) pins the committed artifact to the generator.
 - [x] 3. Report rendering: report-level "N of M findings cite attorney-reviewed rules" count in JSON (`review_coverage`), HTML, and DOCX — a render-side projection of `run.findings.tier`, outside `result_hash`, always emitted and honest ("0 of N" until a rule is signed). Per-finding tier badge on HTML; per-finding `tier` already carried in JSON `run.findings[]`. Absence renders as no badge, never a fabricated tier (verified end-to-end through the real CLI + unit tests with a synthetic signed tier). (DOCX per-finding badge deferred — dormant until a rule is signed.)
 - [x] 4. Universal scope-of-review block (`src/report/engagement-scope.ts`, versioned `ENGAGEMENT_SCOPE_VERSION`) rendered near the disclaimer on every HTML and DOCX report — limited-scope-engagement framing (reviewed for / not reviewed for), distinct from the per-pack "Scope of Review — <pack>" block. Fixed text, outside `run`/`result_hash` (verified: CLI hash unchanged).
-- [ ] 5. Site trust section: live signed-rule count read from the ledger at build time (guard test pins site count == ledger length).
+- [x] 5. Site trust section ("Where the rules come from"): states the honest attorney-signed count in a `<span data-ledger-signed>` marker (0 today). A CI guard (`tests/integration/site-ledger-count.test.ts`) pins the site's stated count == the live ledger length, so it can never drift — the day the first rule is signed, the guard fails until the site is updated in the same change.
 - [x] 6. `docs/legal-basis/README.md`: added "The signing workflow (for a reviewing attorney)" — the six-step loop from picking the next queued rule through verifying its authorities, assigning verdict + tier, writing the ledger entry (author ≠ reviewer), and surfacing the tier inline (machine-mirror-guarded). Links the queue (task 2) as the entry point.
-- [ ] 7. Full gate green.
+- [x] 7. Full gate green (typecheck, lint, format:check, 3,979 tests, build; report result_hash verified byte-identical through the real CLI).
 
 ## Deviations
 
