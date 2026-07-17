@@ -48,6 +48,17 @@ function buildTreeFromText(text: string): DocumentTree {
   // Stack of (section, level) so that pushing a new heading nests properly.
   const stack: Section[] = [root];
 
+  // A Setext underline (`===` / `---`) turns the PRECEDING single line into a
+  // heading. Headings leave the paragraph stream, so a body clause promoted to
+  // a heading escapes every paragraph-based rule — a silent false negative.
+  // Legal text is full of separator/rule lines ("Signature: ___", a row of
+  // dashes between sections), so promote only a line that actually reads like a
+  // heading: short, and not a sentence (no terminal `.`/`;`/`:`/`,`). When it
+  // looks like a sentence, keep it as body text — a missed heading is safe; a
+  // clause dropped from scanning is not.
+  const looksLikeHeading = (line: string): boolean =>
+    line.length > 0 && line.length <= 80 && !/[.;:,]$/.test(line);
+
   let currentParaLines: string[] = [];
   const flushParagraph = (): void => {
     if (currentParaLines.length === 0) return;
@@ -89,17 +100,22 @@ function buildTreeFromText(text: string): DocumentTree {
     const line = lines[i]!;
     const trimmed = line.trim();
 
-    // Setext heading: previous line is text, this line is === or ---
-    if (currentParaLines.length === 1 && /^=+$/.test(trimmed) && trimmed.length >= 3) {
-      const headingText = currentParaLines[0]!.trim();
-      currentParaLines = [];
-      pushSection(headingText, 1);
-      continue;
-    }
-    if (currentParaLines.length === 1 && /^-+$/.test(trimmed) && trimmed.length >= 3) {
-      const headingText = currentParaLines[0]!.trim();
-      currentParaLines = [];
-      pushSection(headingText, 2);
+    // A pure rule line — only `=` (3+) or only `-` (3+). It is either a Setext
+    // heading underline for the preceding single line, or a horizontal-rule
+    // separator. Setext promotes only a heading-like preceding line (see
+    // looksLikeHeading): `===` → H1, `---` → H2. Otherwise the rule is a visual
+    // separator with no contract meaning — drop it and break the paragraph, so
+    // a clause before the rule stays in the scannable paragraph stream (and the
+    // dashes never pollute its text).
+    const ruleChar = /^=+$/.test(trimmed) ? "=" : /^-+$/.test(trimmed) ? "-" : null;
+    if (ruleChar && trimmed.length >= 3) {
+      if (currentParaLines.length === 1 && looksLikeHeading(currentParaLines[0]!.trim())) {
+        const headingText = currentParaLines[0]!.trim();
+        currentParaLines = [];
+        pushSection(headingText, ruleChar === "=" ? 1 : 2);
+      } else {
+        flushParagraph();
+      }
       continue;
     }
 
