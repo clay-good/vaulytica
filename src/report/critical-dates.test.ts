@@ -347,6 +347,26 @@ describe("buildCriticalDates — opt-in deadline resolution (add-deadline-comput
     expect(row.deadline_profile_id).toBe("frcp-6");
   });
 
+  it("profiles BOTH bounds of a range deadline (window is not left stale/un-profiled)", async () => {
+    const { getDeadlineProfile } = await import("../deadlines/profile.js");
+    const frcp = getDeadlineProfile("frcp-6")!;
+    const tree = buildTree(
+      ["Definitions", '"Effective Date" means July 1, 2026.'],
+      ["A", "Respond within thirty to sixty days after the Effective Date."],
+    );
+    const reg = await buildCriticalDates(extractAll(tree), tree, { profile: frcp });
+    const row = reg.register.find((r) => r.anchor === "Effective Date")!;
+    expect(row.deadline_profile_id).toBe("frcp-6");
+    // Both bounds profiled: +30 = 2026-07-31 (no roll), +60 = 2026-08-30 (Sun) →
+    // rolled to Mon 2026-08-31. Before the fix the window kept the RAW upper
+    // (2026-08-30) while the header claimed frcp-6 — the artifacts disagreed.
+    expect(row.window).toEqual(["2026-07-31", "2026-08-31"]);
+    expect(row.computed_date).toBe(row.window![0]);
+    // The Markdown and ICS now show the profiled upper bound + a range note.
+    expect(buildCriticalDatesMarkdown(reg)).toContain("2026-08-31");
+    expect(buildCriticalDatesIcs(reg)).toContain("Range deadline: 2026-07-31 to 2026-08-31");
+  });
+
   it("default path (no profile) yields a byte-identical hash", async () => {
     const tree = buildTree(
       ["Definitions", '"Effective Date" means January 1, 2025.'],

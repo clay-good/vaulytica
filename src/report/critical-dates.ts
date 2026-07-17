@@ -37,7 +37,12 @@ import type { DateReference, ExtractedData, Obligation } from "../extract/types.
 import { sha256Hex } from "../ingest/hash.js";
 import { stableStringify } from "../engine/runner.js";
 import { forEachParagraph } from "../extract/walk.js";
-import { computeCourtDays, computeDeadline, type DeadlineStep } from "../deadlines/compute.js";
+import {
+  computeCourtDays,
+  computeDeadline,
+  type DeadlineStep,
+  type DeadlineResult,
+} from "../deadlines/compute.js";
 import type { DeadlineProfile, ServiceMethod } from "../deadlines/profile.js";
 
 /** The five derived-deadline families (spec §27 / companion §4). */
@@ -451,12 +456,14 @@ function resolveUnderProfile(
   if (count === undefined) return row;
   const { profile, service_method } = deadline;
 
-  const result =
+  const computeOne = (c: number): DeadlineResult | null =>
     ref.offset_unit === "business-days"
-      ? computeCourtDays({ trigger: anchorIso, days: Math.abs(count), profile })
+      ? computeCourtDays({ trigger: anchorIso, days: Math.abs(c), profile })
       : ref.offset_unit === "days"
-        ? computeDeadline({ trigger: anchorIso, days: Math.abs(count), profile, service_method })
+        ? computeDeadline({ trigger: anchorIso, days: Math.abs(c), profile, service_method })
         : null;
+
+  const result = computeOne(count);
   if (!result) return row; // unit the profile does not compute (weeks/months/years)
 
   if (!result.resolved) {
@@ -468,10 +475,25 @@ function resolveUnderProfile(
     if (row.resolved) return row;
     return { ...row, resolved: false, computed_date: null, reason: result.reason };
   }
+
+  // A disjunctive range ("30 to 60 days after…") carries a `window`. Profile the
+  // UPPER bound too and rebuild the window, so the renderers (which prefer
+  // `window`) show the profile-computed range — never the stale, un-profiled one
+  // the header would otherwise contradict. If the upper bound can't be profiled,
+  // drop the window (undefined) rather than leave it un-profiled.
+  const isRange = ref.offset_count_max !== undefined && ref.offset_count_max !== count;
+  let window: [string, string] | undefined;
+  if (isRange) {
+    const upper = computeOne(ref.offset_count_max!);
+    if (upper?.resolved) {
+      window = result.date <= upper.date ? [result.date, upper.date] : [upper.date, result.date];
+    }
+  }
   return {
     ...row,
     resolved: true,
-    computed_date: result.date,
+    computed_date: window ? window[0] : result.date,
+    window,
     reason: undefined,
     deadline_steps: result.steps,
     deadline_profile_id: result.profile_id,

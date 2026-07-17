@@ -777,8 +777,12 @@ export function buildCriticalDatesIcs(register: CriticalDatesRegister): string {
   const resolved = register.register.filter((r) => r.resolved && r.computed_date);
   resolved.forEach((r, i) => {
     const iso = r.computed_date!;
-    const ymd = iso.replace(/-/g, "");
-    const ymdEnd = addDays(iso, 1).replace(/-/g, "");
+    // A disjunctive-range deadline ("30 to 60 days after…") spans its whole
+    // window; the all-day VEVENT runs [window[0], window[1]] (DTEND is
+    // exclusive, so +1 on the upper bound). A single deadline is one day.
+    const startIso = r.window ? r.window[0] : iso;
+    const ymd = startIso.replace(/-/g, "");
+    const ymdEnd = addDays(r.window ? r.window[1] : iso, 1).replace(/-/g, "");
     const uid = `cd-${pad(i, 4)}-${fnv1a(`${iso}|${r.kind}|${r.trigger}|${r.section ?? ""}`)}@vaulytica`;
     const summary = `${KIND_LABEL[r.kind]}: ${r.trigger}`;
     const respPart = r.responsible ? ` Responsible: ${r.responsible}.` : "";
@@ -787,7 +791,12 @@ export function buildCriticalDatesIcs(register: CriticalDatesRegister): string {
     const profilePart = r.deadline_profile_id
       ? ` Computed under ${r.deadline_profile_id} (calendar ${r.deadline_calendar_version ?? "?"}) as asserted by the user: ${(r.deadline_steps ?? []).map((s) => s.detail).join("; ")}.`
       : "";
-    const desc = `Computed from ${r.section ? `section ${r.section}` : "the document"} (anchor: ${r.anchor || "—"}).${respPart}${profilePart} ${r.trigger}`;
+    // A range deadline: state both bounds so the calendar user never mistakes
+    // the earliest date for the controlling one.
+    const rangePart = r.window
+      ? ` Range deadline: ${r.window[0]} to ${r.window[1]} — verify the controlling bound.`
+      : "";
+    const desc = `Computed from ${r.section ? `section ${r.section}` : "the document"} (anchor: ${r.anchor || "—"}).${respPart}${profilePart}${rangePart} ${r.trigger}`;
     const alarm =
       r.kind === "auto-renewal-notice" || r.kind === "opt-out-window" || r.kind === "cure-window";
     lines.push("BEGIN:VEVENT");
