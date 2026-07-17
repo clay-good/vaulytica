@@ -149,4 +149,136 @@ describe("bindPlaybookPanel", () => {
     clearBtn.dispatchEvent(new MouseEvent("click"));
     expect(changes[changes.length - 1]).toBeNull();
   });
+
+  // add-negotiation-ladder-playbooks — the tab counterpart of the CLI's --role.
+  describe("party-role picker", () => {
+    function roleVarying(): LoadedPlaybook {
+      return {
+        ...loaded("augment"),
+        party_roles: ["vendor", "customer"],
+        negotiation_positions: [
+          {
+            dimension: "Liability cap",
+            ideal: { kind: "clause_absent", pattern: "unlimited liability" },
+            acceptable: { kind: "clause_present", section_heading: "Limitation of Liability" },
+            role_variants: {
+              customer: {
+                ideal: { kind: "clause_present", section_heading: "Indemnification" },
+                acceptable: {
+                  kind: "clause_present",
+                  section_heading: "Limitation of Liability",
+                },
+              },
+            },
+          },
+        ],
+      };
+    }
+
+    const resolvedMarker = [
+      {
+        dimension: "Liability cap",
+        ideal: { kind: "clause_present" as const, section_heading: "Indemnification" },
+        acceptable: { kind: "clause_present" as const, section_heading: "Limitation of Liability" },
+      },
+    ];
+
+    async function loadRoleVarying(
+      changes: Array<LoadedPlaybook | null>,
+      resolveRole?: Parameters<typeof bindPlaybookPanel>[1]["resolveRole"],
+    ): Promise<HTMLElement> {
+      const el = panel();
+      const validate = vi.fn(
+        (): PlaybookValidationResult => ({
+          ok: true,
+          playbook: roleVarying(),
+          preview: makePreview(),
+        }),
+      );
+      bindPlaybookPanel(el, {
+        onActiveChange: (p) => changes.push(p),
+        validate,
+        ...(resolveRole ? { resolveRole } : {}),
+      });
+      pickFile(el, "{}");
+      await flush();
+      return el;
+    }
+
+    it("renders no picker for a single-role playbook", async () => {
+      const el = panel();
+      const validate = vi.fn(
+        (): PlaybookValidationResult => ({
+          ok: true,
+          playbook: loaded("augment"),
+          preview: makePreview(),
+        }),
+      );
+      bindPlaybookPanel(el, { onActiveChange: () => {}, validate });
+      pickFile(el, "{}");
+      await flush();
+      expect(el.querySelector('[data-role="playbook-role-picker"]')).toBeNull();
+    });
+
+    it("stays inactive until a side is chosen — never a silent default", async () => {
+      const changes: Array<LoadedPlaybook | null> = [];
+      const el = await loadRoleVarying(changes);
+      const picker = el.querySelector('[data-role="playbook-role-picker"]')!;
+      expect(picker).not.toBeNull();
+      const options = [
+        ...el.querySelectorAll<HTMLOptionElement>('[data-role="playbook-role-select"] option'),
+      ].map((o) => o.value);
+      expect(options).toEqual(["", "vendor", "customer"]);
+      expect(picker.textContent).toMatch(/vary by party role/);
+      // Loaded but NOT activated: the only notification is the deactivation.
+      expect(changes).toEqual([null]);
+    });
+
+    it("activates with the chosen role's resolved positions", async () => {
+      const changes: Array<LoadedPlaybook | null> = [];
+      const resolveRole = vi.fn(() => ({ ok: true as const, positions: resolvedMarker }));
+      const el = await loadRoleVarying(changes, resolveRole);
+      const select = el.querySelector<HTMLSelectElement>('[data-role="playbook-role-select"]')!;
+      select.value = "customer";
+      select.dispatchEvent(new Event("change"));
+      await flush();
+      expect(resolveRole).toHaveBeenCalledWith(expect.objectContaining({ id: "team" }), "customer");
+      const active = changes[changes.length - 1]!;
+      expect(active.mode).toBe("augment");
+      expect(active.negotiation_positions).toEqual(resolvedMarker);
+      expect(el.querySelector('[data-role="playbook-role-hint"]')!.textContent).toMatch(
+        /scored as customer/i,
+      );
+    });
+
+    it("keeps the resolved role when the enforcement mode toggles", async () => {
+      const changes: Array<LoadedPlaybook | null> = [];
+      const resolveRole = vi.fn(() => ({ ok: true as const, positions: resolvedMarker }));
+      const el = await loadRoleVarying(changes, resolveRole);
+      const select = el.querySelector<HTMLSelectElement>('[data-role="playbook-role-select"]')!;
+      select.value = "vendor";
+      select.dispatchEvent(new Event("change"));
+      await flush();
+      const replaceRadio = el.querySelector<HTMLInputElement>('[data-role="mode-replace"]')!;
+      replaceRadio.checked = true;
+      replaceRadio.dispatchEvent(new Event("change"));
+      const active = changes[changes.length - 1]!;
+      expect(active.mode).toBe("replace");
+      expect(active.negotiation_positions).toEqual(resolvedMarker);
+    });
+
+    it("shows the resolver's error and stays inactive when resolution fails", async () => {
+      const changes: Array<LoadedPlaybook | null> = [];
+      const resolveRole = vi.fn(() => ({ ok: false as const, error: "undeclared role" }));
+      const el = await loadRoleVarying(changes, resolveRole);
+      const select = el.querySelector<HTMLSelectElement>('[data-role="playbook-role-select"]')!;
+      select.value = "vendor";
+      select.dispatchEvent(new Event("change"));
+      await flush();
+      expect(el.querySelector('[data-role="playbook-role-hint"]')!.textContent).toMatch(
+        /undeclared role/,
+      );
+      expect(changes[changes.length - 1]).toBeNull();
+    });
+  });
 });

@@ -33,6 +33,25 @@ export type PlaybookValidator = (
   text: string,
 ) => Promise<PlaybookValidationResult> | PlaybookValidationResult;
 
+/** Positions with the chosen party role applied (`role_variants` stripped). */
+export type ResolvedPositions = NonNullable<CustomPlaybook["negotiation_positions"]>;
+
+export type RoleResolutionResult =
+  | { ok: true; positions: ResolvedPositions; role?: string }
+  | { ok: false; error: string };
+
+/**
+ * Resolve a playbook's positions for a chosen party role
+ * (add-negotiation-ladder-playbooks — the tab counterpart of the CLI's
+ * `--role`). Defaults to dynamic-importing the pipeline chunk's
+ * `resolvePositionsForRole` (same bundle discipline as `validate`).
+ * Injected in tests.
+ */
+export type RoleResolver = (
+  playbook: LoadedPlaybook,
+  role: string,
+) => Promise<RoleResolutionResult> | RoleResolutionResult;
+
 export type PlaybookPanelOptions = {
   /**
    * Called whenever the active playbook changes: the validated playbook with
@@ -45,6 +64,8 @@ export type PlaybookPanelOptions = {
    * pipeline chunk's `validateAndPreviewPlaybook`. Injected in tests.
    */
   validate?: PlaybookValidator;
+  /** Apply a chosen party role to the loaded playbook's positions. */
+  resolveRole?: RoleResolver;
 };
 
 const PANEL_HTML = `
@@ -58,8 +79,14 @@ const defaultValidator: PlaybookValidator = async (text) => {
   return mod.validateAndPreviewPlaybook(text) as PlaybookValidationResult;
 };
 
+const defaultRoleResolver: RoleResolver = async (playbook, role) => {
+  const mod = await import("./pipeline.js");
+  return mod.resolvePositionsForRole(playbook, role) as RoleResolutionResult;
+};
+
 export function bindPlaybookPanel(container: HTMLElement, opts: PlaybookPanelOptions): () => void {
   const validate = opts.validate ?? defaultValidator;
+  const resolveRole = opts.resolveRole ?? defaultRoleResolver;
   container.innerHTML = PANEL_HTML;
 
   const loadBtn = sel<HTMLButtonElement>(container, "playbook-load")!;
@@ -98,9 +125,16 @@ export function bindPlaybookPanel(container: HTMLElement, opts: PlaybookPanelOpt
       opts.onActiveChange(null);
       return;
     }
-    renderPreview(status, file.name, result.playbook, result.preview, opts.onActiveChange);
-    // Activate immediately with the preview's mode (the default / authored mode).
-    opts.onActiveChange({ ...result.playbook, mode: result.preview.mode });
+    // Renders the preview and activates the playbook — immediately for a
+    // single-role one, or once a party role is chosen for a role-varying one.
+    renderPreview(
+      status,
+      file.name,
+      result.playbook,
+      result.preview,
+      opts.onActiveChange,
+      resolveRole,
+    );
   };
 
   loadBtn.addEventListener("click", openPicker);
@@ -130,6 +164,7 @@ function renderPreview(
   playbook: LoadedPlaybook,
   preview: PlaybookPreview,
   onActiveChange: (playbook: LoadedPlaybook | null) => void,
+  resolveRole: RoleResolver,
 ): void {
   const warnings: string[] = [];
   if (preview.catalog_version_mismatch) {
@@ -170,6 +205,27 @@ function renderPreview(
       : `Built-in catalog: <strong>${preview.selected_builtin_rule_ids.length}</strong> rules` +
         (preview.excluded_builtin_count > 0 ? ` (${preview.excluded_builtin_count} excluded)` : "");
 
+  // add-negotiation-ladder-playbooks — the tab counterpart of the CLI's
+  // `--role`. A playbook whose positions vary by party role activates only
+  // once a side is chosen (never a silent default); the chosen role's ladder
+  // is resolved into concrete positions BEFORE anything evaluates or hashes.
+  const declaredRoles = playbook.party_roles ?? [];
+  const variesByRole = (playbook.negotiation_positions ?? []).some(
+    (p) => p.role_variants && Object.keys(p.role_variants).length > 0,
+  );
+  const roleHtml = variesByRole
+    ? `<fieldset class="playbook-role" data-role="playbook-role-picker">
+        <legend>Party role</legend>
+        <div class="playbook-role-hint" data-role="playbook-role-hint">This playbook's positions vary by party role — choose your side to activate it.</div>
+        <select data-role="playbook-role-select" aria-label="Party role">
+          <option value="" selected disabled>Choose a role…</option>
+          ${declaredRoles
+            .map((r) => `<option value="${escapeHtml(r)}">${escapeHtml(r)}</option>`)
+            .join("")}
+        </select>
+      </fieldset>`
+    : "";
+
   status.innerHTML = `
     <div class="playbook-loaded" data-role="playbook-loaded">
       <div class="playbook-loaded-name"><strong>${escapeHtml(playbook.name)}</strong> <span class="playbook-loaded-file">(${escapeHtml(
@@ -189,6 +245,7 @@ function renderPreview(
         <label><input type="radio" name="playbook-mode" value="augment" data-role="mode-augment" /> Augment — built-in catalog + your positions</label>
         <label><input type="radio" name="playbook-mode" value="replace" data-role="mode-replace" /> Replace — only your positions</label>
       </fieldset>
+      ${roleHtml}
       <button type="button" class="btn-link" data-role="playbook-clear">Clear playbook</button>
     </div>
   `;
@@ -198,13 +255,60 @@ function renderPreview(
   augmentRadio.checked = preview.mode === "augment";
   replaceRadio.checked = preview.mode === "replace";
 
+  // Positions with the chosen role applied; null while a role-varying playbook
+  // still awaits a choice (it stays inactive until then).
+  let resolvedPositions: ResolvedPositions | null = null;
+
+  const notify = (): void => {
+    const mode = replaceRadio.checked ? "replace" : "augment";
+    if (variesByRole && resolvedPositions === null) {
+      onActiveChange(null);
+      return;
+    }
+    onActiveChange({
+      ...playbook,
+      mode,
+      ...(resolvedPositions ? { negotiation_positions: resolvedPositions } : {}),
+    });
+  };
+
   const notifyMode = (e: Event): void => {
     e.stopPropagation();
-    const mode = replaceRadio.checked ? "replace" : "augment";
-    onActiveChange({ ...playbook, mode });
+    notify();
   };
   augmentRadio.addEventListener("change", notifyMode);
   replaceRadio.addEventListener("change", notifyMode);
+
+  const roleSelect = sel<HTMLSelectElement>(status, "playbook-role-select");
+  if (roleSelect) {
+    roleSelect.addEventListener("click", (e) => e.stopPropagation());
+    roleSelect.addEventListener("change", (e) => {
+      e.stopPropagation();
+      void (async () => {
+        const role = roleSelect.value;
+        const hint = sel<HTMLElement>(status, "playbook-role-hint")!;
+        let result: RoleResolutionResult;
+        try {
+          result = await resolveRole(playbook, role);
+        } catch (err) {
+          result = { ok: false, error: errMsg(err) };
+        }
+        if (!result.ok) {
+          resolvedPositions = null;
+          hint.textContent = `Could not apply the role: ${result.error}`;
+          onActiveChange(null);
+          return;
+        }
+        resolvedPositions = result.positions;
+        hint.textContent = `Positions scored as ${role}.`;
+        notify();
+      })();
+    });
+  }
+
+  // Activate immediately with the preview's mode (the default / authored
+  // mode) — or report inactive when a party role must be chosen first.
+  notify();
 
   const clearBtn = sel<HTMLButtonElement>(status, "playbook-clear")!;
   clearBtn.addEventListener("click", (e) => {

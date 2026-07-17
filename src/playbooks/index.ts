@@ -53,6 +53,9 @@ export {
   type NegotiationPosture,
   type NegotiationPositionResult,
   type NegotiationTier,
+  // add-negotiation-ladder-playbooks — party-role resolution (tab role picker).
+  resolvePositionsForRole,
+  type RoleResolution,
 } from "./custom-interpreter.js";
 
 // spec-v8 §23 — custom-playbook structural diff (Step 144).

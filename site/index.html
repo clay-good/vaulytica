@@ -772,6 +772,29 @@
         font-size: 14px;
         cursor: pointer;
       }
+      /* Party-role picker (add-negotiation-ladder-playbooks) — the tab
+         counterpart of the CLI's --role. Same fieldset styling as the mode. */
+      .playbook-role {
+        margin: 8px 0;
+        border: 1px solid var(--border, #ddd);
+        border-radius: 8px;
+        padding: 6px 10px;
+      }
+      .playbook-role legend {
+        font-size: 13px;
+        color: var(--muted);
+        padding: 0 4px;
+      }
+      .playbook-role-hint {
+        font-size: 13px;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+      .playbook-role select {
+        font: inherit;
+        font-size: 14px;
+        max-width: 100%;
+      }
       /* Custom-playbook provenance line in the complete state. */
       .playbook-provenance {
         margin: 4px 0 8px;

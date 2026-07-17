@@ -822,6 +822,11 @@ export function catalogRuleIds(): string[] {
  * preview in one call — the shape the playbook panel renders. Re-exported
  * through this (lazy) chunk so the eager UI bundle stays free of `zod`.
  */
+// add-negotiation-ladder-playbooks — party-role resolution for the tab's role
+// picker. Re-exported through this (lazy) chunk, like the validator above, so
+// the eager UI bundle stays free of `zod`.
+export { resolvePositionsForRole } from "../playbooks/index.js";
+
 export function validateAndPreviewPlaybook(
   text: string,
 ):
