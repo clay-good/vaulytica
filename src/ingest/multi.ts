@@ -118,8 +118,16 @@ export type PrivilegeLogMember = { filename: string; csv: string };
  * Pull the single privilege-log `.csv` out of a candidate list. Documents
  * (`.pdf`/`.docx`) are left for the normal bundle flow; a lone `.csv` is
  * decoded to text as the privilege log (matching the CLI's `--production-qa`
- * one-log-per-set rule). Zero CSVs → no member. More than one → a bundle-level
- * rejection, since a production set has a single privilege log.
+ * one-log-per-set rule). Zero CSVs → no member.
+ *
+ * More than one CSV → no member, and every CSV is returned as a
+ * rejected-with-reason entry. A production set has exactly one privilege log, so
+ * multiple logs are ambiguous; rather than fail the whole bundle (which would
+ * throw away the document review too), the caller surfaces each rejected CSV in
+ * the bundle's skipped-files list with {@link MULTIPLE_PRIVILEGE_LOGS_MESSAGE}
+ * and proceeds with the document analysis — production-QA is simply skipped
+ * (no `production_qa` section) until the user removes the extra log. The
+ * skipped-files entry is the user-visible reason.
  *
  * Pure over the candidate bytes — works in Node and the browser.
  */

@@ -146,6 +146,22 @@ describe("browser bundle + privilege-log CSV → production_qa (add-production-q
     expect(result.production_qa!.findings.some((f) => f.code === "PROD-001")).toBe(true);
   }, 30000);
 
+  it("skips production_qa and surfaces both logs when more than one privilege-log CSV is present", async () => {
+    // Two privilege logs are ambiguous — a production set has exactly one. The
+    // bundle still reviews the documents, but production-QA is skipped and each
+    // extra CSV is surfaced in the rejected/skipped-files list.
+    const { json, result } = await runBundle([
+      ...docs(),
+      new File([PRIVILEGE_LOG_CSV], "log-a.csv", { type: "text/csv" }),
+      new File([PRIVILEGE_LOG_CSV], "log-b.csv", { type: "text/csv" }),
+    ]);
+    expect(result.production_qa).toBeUndefined();
+    expect(json.production_qa).toBeUndefined();
+    const rejectedNames = result.rejected.map((r) => r.filename).sort();
+    expect(rejectedNames).toEqual(["log-a.csv", "log-b.csv"]);
+    expect(result.rejected.every((r) => /at most one privilege-log/.test(r.reason))).toBe(true);
+  }, 30000);
+
   it("omits production_qa and leaves bundle_fingerprint byte-identical without a CSV", async () => {
     const withoutLog = await bundleJson(docs());
     const withLog = await bundleJson([...docs(), logFile()]);
