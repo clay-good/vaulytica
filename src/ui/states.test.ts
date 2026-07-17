@@ -877,7 +877,7 @@ describe("renderState", () => {
     });
     const card = select(dz, "bundle-posture-coherence")!;
     expect(card.hidden).toBe(false);
-    expect(card.textContent).toMatch(/Posture coherence/);
+    expect(card.textContent).toMatch(/Weakest front/);
     expect(card.textContent).toMatch(/1 aligned/);
     expect(card.textContent).toMatch(/1 divergent/);
     expect(card.textContent).toMatch(/Liability cap/);
@@ -1069,7 +1069,7 @@ describe("renderState", () => {
     );
     const card = select(dz, "bundle-coherence-movement")!;
     expect(card.hidden).toBe(false);
-    expect(card.textContent).toMatch(/Posture movement/);
+    expect(card.textContent).toMatch(/Position drift/);
     expect(card.textContent).toMatch(/Liability cap/);
     expect(card.textContent).toMatch(/Floor regressed/);
     expect(card.textContent).toMatch(/Reconciled/);

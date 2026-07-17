@@ -662,7 +662,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     <div class="download-status" data-role="download-status" aria-live="polite"></div>
   `,
   "bundle-comparison-complete": `
-    <div class="dropzone-title" data-role="bundle-comparison-title">Posture movement across the package</div>
+    <div class="dropzone-title" data-role="bundle-comparison-title">Position drift across the package</div>
     <div class="dropzone-sub" data-role="bundle-comparison-rounds"></div>
     <div class="negotiation-section" data-role="bundle-coherence-movement" hidden></div>
     <button class="btn btn-primary" type="button" data-role="bundle-comparison-docx-download">Download two-round report (Word)</button>
@@ -1585,11 +1585,11 @@ function renderPostureMovement(
     .join("");
   el.innerHTML = `
     <div class="np-heading">
-      <span class="np-badge">Posture movement</span>
+      <span class="np-badge">Position drift</span>
       <span class="np-summary">${c.improved} improved · ${c.regressed} regressed · ${c.unchanged} unchanged · ${c["newly-stated"]} newly stated · ${c["now-unstated"]} no longer stated</span>
     </div>
     <ul class="np-list">${cards}</ul>
-    <div class="np-note">How each rung moved between the two drafts, deterministically — it shows where your position shifted on your own ladder, not a legal conclusion about either draft.</div>
+    <div class="np-note">Did your position slip between drafts? How each rung moved between the two drafts, deterministically — it shows where your position shifted on your own ladder, not a legal conclusion about either draft.</div>
   `;
 }
 
@@ -1652,11 +1652,11 @@ function renderPostureCoherence(
     .join("");
   el.innerHTML = `
     <div class="np-heading">
-      <span class="np-badge">Posture coherence</span>
+      <span class="np-badge">Weakest front</span>
       <span class="np-summary">${c.aligned} aligned · ${c.divergent} divergent · ${c.single} stated by one · ${c.unstated} unstated</span>
     </div>
     <ul class="np-list">${cards}</ul>
-    <div class="np-note">How your posture sits across the whole bundle, deterministically — each document was classified against the same positions; it names the weakest document but does not decide which one legally governs.</div>
+    <div class="np-note">Which front is weakest, and are your documents consistent? Each document was classified against the same positions, deterministically — it names the weakest document per front but does not decide which one legally governs.</div>
   `;
 }
 
@@ -1792,11 +1792,11 @@ function renderCoherenceMovement(
     .join("");
   el.innerHTML = `
     <div class="np-heading">
-      <span class="np-badge">Posture movement</span>
+      <span class="np-badge">Position drift</span>
       <span class="np-summary">${fc.improved} floor improved · ${fc.regressed} regressed · ${fc.unchanged} unchanged · ${fc["newly-stated"]} newly stated · ${fc["now-unstated"]} no longer stated · ${sc.fractured} fractured · ${sc.reconciled} reconciled</span>
     </div>
     <ul class="np-list">${cards}</ul>
-    <div class="np-note">How the binding floor that governs your exposure moved across the whole package, deterministically — both rounds were scored against the same positions; it reports where the floor moved on your own ladder and whether the package fractured or reconciled, not a legal conclusion about either round.</div>
+    <div class="np-note">Did the package's position slip between rounds? How the binding floor that governs your exposure moved across the whole package, deterministically — both rounds were scored against the same positions; it reports where the floor moved on your own ladder and whether the package fractured or reconciled, not a legal conclusion about either round.</div>
   `;
 }
 
