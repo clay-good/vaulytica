@@ -954,11 +954,16 @@ export function buildNegotiationPostureMarkdown(posture: NegotiationPosture): st
     return lines.join("\n");
   }
   lines.push("");
-  lines.push("| Dimension | Tier | What we found | Guidance | Section |");
-  lines.push("|---|---|---|---|---|");
+  // Band / Met rung / Approved fallback are the schema-v3 ladder detail
+  // (add-negotiation-ladder-playbooks); columns are "—" when a position does
+  // not use that feature.
+  lines.push(
+    "| Dimension | Tier | Band | Met rung | What we found | Guidance | Approved fallback | Section |",
+  );
+  lines.push("|---|---|---|---|---|---|---|---|");
   for (const p of posture.positions) {
     lines.push(
-      `| ${mdCell(p.dimension)} | ${NEGOTIATION_TIER_LABEL[p.tier]} | ${mdCell(postureFinding(p) || "—")} | ${mdCell(p.guidance ?? "—")} | ${mdCell(p.section_id ?? "—")} |`,
+      `| ${mdCell(p.dimension)} | ${NEGOTIATION_TIER_LABEL[p.tier]} | ${mdCell(p.size_band ?? "—")} | ${mdCell(p.met_rung ?? "—")} | ${mdCell(postureFinding(p) || "—")} | ${mdCell(p.guidance ?? "—")} | ${mdCell(p.approved_language ?? "—")} | ${mdCell(p.section_id ?? "—")} |`,
     );
   }
   lines.push("");
@@ -972,14 +977,30 @@ export function buildNegotiationPostureMarkdown(posture: NegotiationPosture): st
  */
 export function buildNegotiationPostureCsv(posture: NegotiationPosture): string {
   const rows: string[] = [];
-  rows.push(csvRow(["dimension", "tier", "finding", "guidance", "section"]));
+  // Additive schema-v3 columns (add-negotiation-ladder-playbooks): deal_size_band,
+  // met_rung, approved_language — empty when the position does not use them.
+  rows.push(
+    csvRow([
+      "dimension",
+      "tier",
+      "deal_size_band",
+      "met_rung",
+      "finding",
+      "guidance",
+      "approved_language",
+      "section",
+    ]),
+  );
   for (const p of posture.positions) {
     rows.push(
       csvRow([
         p.dimension,
         NEGOTIATION_TIER_LABEL[p.tier],
+        p.size_band ?? "",
+        p.met_rung ?? "",
         postureFinding(p),
         p.guidance ?? "",
+        p.approved_language ?? "",
         p.section_id ?? "",
       ]),
     );

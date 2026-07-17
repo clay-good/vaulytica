@@ -48,7 +48,9 @@ describe("negotiation posture export (spec-v10 Step 171)", () => {
       positions: [{ dimension: "=cmd|' /c calc'!A1", tier: "ideal", guidance: "+hack" }],
     };
     const csv = buildNegotiationPostureCsv(evil);
-    expect(csv.split("\r\n")[0]).toBe("dimension,tier,finding,guidance,section");
+    expect(csv.split("\r\n")[0]).toBe(
+      "dimension,tier,deal_size_band,met_rung,finding,guidance,approved_language,section",
+    );
     // Leading formula triggers are neutralized with a single quote.
     expect(csv).toContain("'=cmd");
     expect(csv).toContain("'+hack");
@@ -62,8 +64,37 @@ describe("negotiation posture export (spec-v10 Step 171)", () => {
     };
     expect(buildNegotiationPostureMarkdown(empty)).toContain("No negotiation positions");
     expect(buildNegotiationPostureCsv(empty).trim()).toBe(
-      "dimension,tier,finding,guidance,section",
+      "dimension,tier,deal_size_band,met_rung,finding,guidance,approved_language,section",
     );
+  });
+
+  it("carries the v3 ladder detail (band, met rung, approved fallback) into markdown + csv", () => {
+    const v3: NegotiationPosture = {
+      counts: { ideal: 0, acceptable: 1, below_acceptable: 1, unevaluable: 0 },
+      posture_hash: "a".repeat(64),
+      positions: [
+        {
+          dimension: "Liability cap",
+          tier: "acceptable",
+          detail: "8x",
+          met_rung: "7x cap",
+          size_band: "≥ $1M",
+        },
+        {
+          dimension: "Indemnity",
+          tier: "below-acceptable",
+          approved_language: "Indemnity shall be mutual.",
+        },
+      ],
+    };
+    const md = buildNegotiationPostureMarkdown(v3);
+    expect(md).toContain("7x cap");
+    expect(md).toContain("≥ $1M");
+    expect(md).toContain("Indemnity shall be mutual.");
+    const csv = buildNegotiationPostureCsv(v3);
+    expect(csv).toContain("≥ $1M");
+    expect(csv).toContain("7x cap");
+    expect(csv).toContain("Indemnity shall be mutual.");
   });
 });
 
