@@ -232,7 +232,7 @@ import {
 } from "../../src/report/certificate.js";
 import { buildDefinitionsReport, buildDefinitionsMarkdown } from "../../src/report/definitions.js";
 import { parseCustomPlaybookJson } from "../../src/playbooks/custom-playbook.js";
-import { ladderHash } from "../../src/playbooks/custom-interpreter.js";
+import { ladderHash, resolvePositionsForRole } from "../../src/playbooks/custom-interpreter.js";
 import {
   bundlePostureCoherence,
   hasDivergence,
@@ -283,6 +283,8 @@ type Args = {
   playbookFile?: string;
   /** spec-v10 Thrust B — evaluate the custom playbook's negotiation posture. */
   posture?: boolean;
+  /** add-negotiation-ladder-playbooks — the party role to evaluate role-varying positions as. */
+  role?: string;
   /** spec-v12 Thrust A — exit non-zero when a posture front diverges across the bundle. */
   failOnDivergence?: boolean;
   /** spec-v13 Thrust A — a baseline bundle (path|glob|dir) to diff the coherence against. */
@@ -398,6 +400,10 @@ function parseArgs(argv: string[]): Args {
         break;
       case "--posture":
         args.posture = true;
+        break;
+      case "--role":
+        args.role = val;
+        i++;
         break;
       case "--fail-on-divergence":
         args.failOnDivergence = true;
@@ -703,6 +709,24 @@ export async function runAnalyze(argv: string[]): Promise<void> {
     if (args.posture && !customPlaybook.negotiation_positions?.length) {
       process.stderr.write(`--posture: ${args.playbookFile} defines no negotiation_positions.\n`);
     }
+    // add-negotiation-ladder-playbooks — resolve the party role (`--role`) into
+    // a concrete single-role ladder BEFORE anything evaluates or hashes it, so
+    // ladderHash distinguishes roles automatically and a roleless playbook is a
+    // no-op. An unresolved role (varies-by-role with none selected, or an
+    // undeclared role) is a hard error, never a silent default.
+    if (customPlaybook.negotiation_positions?.length) {
+      const resolved = resolvePositionsForRole(customPlaybook, args.role);
+      if (!resolved.ok) {
+        process.stderr.write(`${resolved.error}\n`);
+        process.exitCode = 1;
+        return;
+      }
+      customPlaybook = { ...customPlaybook, negotiation_positions: resolved.positions };
+    }
+  } else if (args.role !== undefined) {
+    process.stderr.write("--role requires --playbook-file <path>\n");
+    process.exitCode = 1;
+    return;
   }
   if (args.posture && !args.playbookFile) {
     process.stderr.write("--posture requires --playbook-file <path>\n");
@@ -1135,7 +1159,7 @@ Commands:
   analyze <path|glob|dir> [--playbook <id>] [--format json,sarif,html,md,csv,docx-comments]
                           [--out <dir>] [--fail-on critical|warning|info]
                           [--delivery] [--critical-dates] [--checklist]
-                          [--playbook-file <path>] [--posture]
+                          [--playbook-file <path>] [--posture] [--role <name>]
                           [--fail-on-divergence] [--dkb <dir>] [--as-text] [--certificate]
                           [--definitions]
                           [--court <frap-default|ca9-appellate|cal-rules-8.204> [--reply]]

@@ -181,6 +181,7 @@ describe("diff completeness guard — every schema field has a comparator", () =
       required_clauses: "section",
       custom_rules: "section",
       negotiation_positions: "section",
+      party_roles: "section",
     };
     const missing = CUSTOM_PLAYBOOK_FIELDS.filter((f) => !(f in COVERED));
     expect(

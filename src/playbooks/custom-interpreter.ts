@@ -40,6 +40,73 @@ import type {
   NumericComparator,
 } from "./custom-playbook.js";
 
+/**
+ * Result of resolving a playbook's positions for a chosen party role
+ * (add-negotiation-ladder-playbooks). On success the positions have their
+ * role-specific ladder applied and `role_variants` stripped, so every
+ * downstream consumer (evaluation, `ladderHash`, the negotiation sheet) sees a
+ * concrete single-role ladder and needs no role awareness.
+ */
+export type RoleResolution =
+  | { ok: true; positions: NegotiationPosition[]; role?: string }
+  | { ok: false; error: string };
+
+/**
+ * Apply the selected party role to a playbook's negotiation positions
+ * (add-negotiation-ladder-playbooks). A position's `role_variants[role]`, when
+ * present, REPLACES its base ladder; otherwise the base is used. Because the
+ * role is resolved into concrete `ideal`/`acceptable`/`rungs` BEFORE anything
+ * hashes them, `ladderHash` distinguishes roles automatically and no existing
+ * (roleless) ladder's hash moves.
+ *
+ * Honest failures, never a silent default: if any position varies by role and
+ * no role was selected, or a role is passed that the playbook does not declare,
+ * this returns `{ ok: false }` with a readable message.
+ */
+export function resolvePositionsForRole(
+  playbook: CustomPlaybook,
+  role: string | undefined,
+): RoleResolution {
+  const positions = playbook.negotiation_positions ?? [];
+  const declared = playbook.party_roles ?? [];
+  const anyVariants = positions.some((p) => Object.keys(p.role_variants ?? {}).length > 0);
+
+  if (role !== undefined) {
+    if (declared.length === 0) {
+      return { ok: false, error: `--role "${role}" but this playbook declares no party_roles` };
+    }
+    if (!declared.includes(role)) {
+      return {
+        ok: false,
+        error: `--role "${role}" is not a declared party_role (choose one of: ${declared.join(", ")})`,
+      };
+    }
+  } else if (anyVariants) {
+    return {
+      ok: false,
+      error: `this playbook's positions vary by party role; pass --role (one of: ${declared.join(", ")})`,
+    };
+  }
+
+  const resolved = positions.map((p) => {
+    const variant = role !== undefined ? p.role_variants?.[role] : undefined;
+    // Strip role_variants from the resolved position either way, so the ladder
+    // downstream is concrete and single-role.
+    const { role_variants: _drop, ...base } = p;
+    if (!variant) return base;
+    return {
+      dimension: p.dimension,
+      ideal: variant.ideal,
+      acceptable: variant.acceptable,
+      ...(variant.rungs ? { rungs: variant.rungs } : {}),
+      ...(variant.guidance ? { guidance: variant.guidance } : {}),
+      ...(variant.approved_language ? { approved_language: variant.approved_language } : {}),
+    };
+  });
+
+  return { ok: true, positions: resolved, ...(role !== undefined ? { role } : {}) };
+}
+
 export type CustomPlaybookFinding = Finding & {
   source: "custom-playbook";
   /** "cited" when the rule carried a citation, else "uncited (team policy)". */

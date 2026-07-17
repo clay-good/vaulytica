@@ -23,6 +23,11 @@
       "description": "augment = built-in catalog + custom positions (default); replace = custom positions only.",
       "enum": ["augment", "replace"]
     },
+    "party_roles": {
+      "type": "array",
+      "description": "The party roles this playbook's positions can be evaluated as, e.g. [\"vendor\", \"customer\"] (add-negotiation-ladder-playbooks). Required when any position declares role_variants; --role must name one of these.",
+      "items": { "type": "string", "minLength": 1 }
+    },
     "rule_selection": {
       "type": "object",
       "additionalProperties": false,
@@ -130,6 +135,42 @@
           "type": "string",
           "minLength": 1,
           "description": "The team's own pre-approved fallback language, quoted beside a below-floor position (never generated). Advisory; outside posture_hash."
+        },
+        "role_variants": {
+          "type": "object",
+          "description": "Per-party-role ladder overrides (add-negotiation-ladder-playbooks), keyed by a role in the playbook's party_roles. When --role X is selected and role_variants[X] exists, its ladder replaces the base ideal/acceptable/rungs for this dimension.",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["ideal", "acceptable"],
+            "properties": {
+              "ideal": { "$ref": "#/$defs/predicate" },
+              "acceptable": { "$ref": "#/$defs/predicate" },
+              "rungs": {
+                "type": "array",
+                "maxItems": 8,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["label", "predicate"],
+                  "properties": {
+                    "label": { "type": "string", "minLength": 1 },
+                    "predicate": { "$ref": "#/$defs/predicate" }
+                  }
+                }
+              },
+              "guidance": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "ideal": { "type": "string", "minLength": 1 },
+                  "acceptable": { "type": "string", "minLength": 1 },
+                  "walk_away": { "type": "string", "minLength": 1 }
+                }
+              },
+              "approved_language": { "type": "string", "minLength": 1 }
+            }
+          }
         }
       }
     },

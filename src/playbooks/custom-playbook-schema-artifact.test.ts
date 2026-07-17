@@ -75,7 +75,15 @@ describe("playbook.schema.json artifact", () => {
     // schema accepts. Pin the exact set so a new field can't ship undocumented.
     const props = Object.keys(schema.$defs.negotiationPosition.properties).sort();
     expect(props).toEqual(
-      ["acceptable", "approved_language", "dimension", "guidance", "ideal", "rungs"].sort(),
+      [
+        "acceptable",
+        "approved_language",
+        "dimension",
+        "guidance",
+        "ideal",
+        "role_variants",
+        "rungs",
+      ].sort(),
     );
     // A rung is a labeled predicate, capped to match MAX_NEGOTIATION_RUNGS.
     const rungs = schema.$defs.negotiationPosition.properties.rungs;

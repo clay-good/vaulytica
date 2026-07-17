@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { runCustomPlaybook, ladderHash } from "./custom-interpreter.js";
+import { runCustomPlaybook, ladderHash, resolvePositionsForRole } from "./custom-interpreter.js";
 import { validateCustomPlaybook, type CustomPlaybook } from "./custom-playbook.js";
 import type { DocumentTree } from "../ingest/types.js";
 import type { ExtractedData } from "../extract/types.js";
@@ -673,5 +673,83 @@ describe("ladderHash — playbook ladder fingerprint", () => {
       pb({ negotiation_positions: POS as never, thresholds: { liability_cap_multiple: 2 } }),
     );
     expect(withThresholds).not.toBe(base);
+  });
+});
+
+describe("resolvePositionsForRole — party-role variants (add-negotiation-ladder-playbooks)", () => {
+  const num = (value: number) =>
+    ({
+      kind: "numeric_threshold",
+      metric: "liability_cap_multiple",
+      comparator: "gte",
+      value,
+    }) as const;
+  // A two-sided ladder: base (vendor) wants a LOW cap; the customer variant
+  // wants a HIGH cap. Same dimension, opposite ideals.
+  const twoSided = () =>
+    pb({
+      party_roles: ["vendor", "customer"],
+      negotiation_positions: [
+        {
+          dimension: "Liability cap",
+          ideal: num(1),
+          acceptable: num(0.5),
+          role_variants: { customer: { ideal: num(12), acceptable: num(6) } },
+        },
+      ] as never,
+    });
+
+  it("applies the selected role's variant and strips role_variants", () => {
+    const r = resolvePositionsForRole(twoSided(), "customer");
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      expect(r.role).toBe("customer");
+      const pos = r.positions[0]! as Record<string, unknown>;
+      expect(pos.ideal).toEqual(num(12));
+      expect(pos.acceptable).toEqual(num(6));
+      expect(pos.role_variants).toBeUndefined();
+    }
+  });
+
+  it("uses the base ladder for a role with no variant", () => {
+    const r = resolvePositionsForRole(twoSided(), "vendor");
+    expect(r.ok).toBe(true);
+    if (r.ok) expect((r.positions[0]! as Record<string, unknown>).ideal).toEqual(num(1));
+  });
+
+  it("is a hard error when positions vary by role and none is selected", () => {
+    const r = resolvePositionsForRole(twoSided(), undefined);
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.error).toMatch(/vary by party role/);
+  });
+
+  it("is a hard error for an undeclared role", () => {
+    const r = resolvePositionsForRole(twoSided(), "reseller");
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.error).toMatch(/not a declared party_role/);
+  });
+
+  it("is a no-op for a roleless (v2) playbook — same ladderHash regardless of role", async () => {
+    const roleless = pb({
+      negotiation_positions: [{ dimension: "Cap", ideal: num(2), acceptable: num(1) }] as never,
+    });
+    const base = await ladderHash(roleless);
+    const resolved = resolvePositionsForRole(roleless, undefined);
+    expect(resolved.ok).toBe(true);
+    if (resolved.ok) {
+      const asPlaybook = pb({ negotiation_positions: resolved.positions as never });
+      expect(await ladderHash(asPlaybook)).toBe(base);
+    }
+  });
+
+  it("gives each role a DISTINCT ladderHash (cross-role compares are rejected downstream)", async () => {
+    const vendor = resolvePositionsForRole(twoSided(), "vendor");
+    const customer = resolvePositionsForRole(twoSided(), "customer");
+    expect(vendor.ok && customer.ok).toBe(true);
+    if (vendor.ok && customer.ok) {
+      const vh = await ladderHash(pb({ negotiation_positions: vendor.positions as never }));
+      const ch = await ladderHash(pb({ negotiation_positions: customer.positions as never }));
+      expect(vh).not.toBe(ch);
+    }
   });
 });

@@ -77,6 +77,8 @@ export type PlaybookDiff = {
     removed: string[];
     changed: PositionChange[];
   };
+  /** Party roles the playbook can be evaluated as (add-negotiation-ladder-playbooks). */
+  party_roles: { added: string[]; removed: string[] };
   /** True when the two playbooks are structurally identical. */
   identical: boolean;
 };
@@ -136,6 +138,11 @@ function diffNegotiationPositions(
     // surfacing even though it never moves the floor itself.
     if (JSON.stringify(pa.rungs ?? null) !== JSON.stringify(pb.rungs ?? null)) {
       changes.push(`intermediate rungs for ${dimension} changed`);
+    }
+    // Role-variant drift (add-negotiation-ladder-playbooks): the per-role
+    // ladders for this dimension changed.
+    if (JSON.stringify(pa.role_variants ?? null) !== JSON.stringify(pb.role_variants ?? null)) {
+      changes.push(`role variants for ${dimension} changed`);
     }
     if (changes.length > 0) changed.push({ dimension, changes });
   }
@@ -258,6 +265,7 @@ export function diffPlaybooks(a: CustomPlaybook, b: CustomPlaybook): PlaybookDif
     a.negotiation_positions,
     b.negotiation_positions,
   );
+  const party_roles = setDiff(a.party_roles ?? [], b.party_roles ?? []);
 
   const identical =
     metadata.length === 0 &&
@@ -279,7 +287,9 @@ export function diffPlaybooks(a: CustomPlaybook, b: CustomPlaybook): PlaybookDif
     custom_rules.changed.length === 0 &&
     negotiation_positions.added.length === 0 &&
     negotiation_positions.removed.length === 0 &&
-    negotiation_positions.changed.length === 0;
+    negotiation_positions.changed.length === 0 &&
+    party_roles.added.length === 0 &&
+    party_roles.removed.length === 0;
 
   return {
     from: { id: a.id, name: a.name, catalog_version: a.catalog_version },
@@ -291,6 +301,7 @@ export function diffPlaybooks(a: CustomPlaybook, b: CustomPlaybook): PlaybookDif
     required_clauses,
     custom_rules,
     negotiation_positions,
+    party_roles,
     identical,
   };
 }
@@ -390,6 +401,14 @@ export function diffPlaybooksMarkdown(a: CustomPlaybook, b: CustomPlaybook): str
     lines.push(...bullets("Added", np.added));
     lines.push(...bullets("Removed", np.removed));
     for (const c of np.changed) for (const summary of c.changes) lines.push(`- ${summary}`);
+    lines.push("");
+  }
+
+  const pr = d.party_roles;
+  if (pr.added.length || pr.removed.length) {
+    lines.push("## Party roles");
+    lines.push(...bullets("Added", pr.added));
+    lines.push(...bullets("Removed", pr.removed));
     lines.push("");
   }
 

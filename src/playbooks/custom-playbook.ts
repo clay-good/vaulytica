@@ -190,6 +190,20 @@ export type NegotiationRung = {
 };
 
 /**
+ * A role-specific override of one position's ladder
+ * (add-negotiation-ladder-playbooks). A single playbook can express both sides
+ * of a deal: the base `ideal`/`acceptable` is one side; a `role_variants` entry
+ * gives the other side's ladder for the same dimension. Selected by `--role`.
+ */
+export type NegotiationRoleVariant = {
+  ideal: CustomPredicate;
+  acceptable: CustomPredicate;
+  rungs?: NegotiationRung[];
+  guidance?: NegotiationTierGuidance;
+  approved_language?: string;
+};
+
+/**
  * A tiered negotiation position (spec-v10 "Negotiation Posture", Thrust A).
  *
  * Encodes a team's fallback ladder for one negotiable dimension as two
@@ -218,6 +232,16 @@ export type NegotiationPosition = {
    * depend on it are unchanged. Absent for a v2 playbook.
    */
   rungs?: NegotiationRung[];
+  /**
+   * Per-party-role ladder overrides (add-negotiation-ladder-playbooks), keyed
+   * by a role name declared in the playbook's `party_roles`. When `--role X` is
+   * selected and `role_variants[X]` exists, its ladder REPLACES the base
+   * `ideal`/`acceptable`/`rungs`/`guidance`/`approved_language` for this
+   * dimension — so one file expresses both sides of a deal. If any position
+   * carries `role_variants`, a role MUST be selected (never a silent default).
+   * Absent for a single-role (v2) playbook.
+   */
+  role_variants?: Record<string, NegotiationRoleVariant>;
   /** Optional per-tier negotiation guidance to surface in the report. */
   guidance?: NegotiationTierGuidance;
   /**
@@ -246,6 +270,12 @@ export type CustomPlaybook = {
   };
   /** Per-built-in-rule severity override / skip. */
   rule_overrides?: Record<string, CustomPlaybookRuleOverride>;
+  /**
+   * The party roles this playbook's positions can be evaluated as
+   * (add-negotiation-ladder-playbooks), e.g. `["vendor", "customer"]`. Required
+   * when any position declares `role_variants`; `--role` must name one of these.
+   */
+  party_roles?: string[];
   /** Named threshold parameters the team's positions reference. */
   thresholds?: Record<string, number>;
   /** Clauses the team requires; a finding fires when one is missing. */
@@ -380,9 +410,50 @@ function isEmptyClausePredicate(pred: CustomPredicate): boolean {
   );
 }
 
-const negotiationPositionSchema = z
+/**
+ * Shared validation for a ladder body ({@link NegotiationPosition} or a
+ * {@link NegotiationRoleVariant}): each tier and rung predicate must be able to
+ * match a concrete clause, and rung labels must be unique. `basePath` prefixes
+ * the issue paths so the error points at the right place in the position or
+ * role variant.
+ */
+function addLadderTrapIssues(
+  ladder: { ideal: CustomPredicate; acceptable: CustomPredicate; rungs?: NegotiationRung[] },
+  ctx: z.RefinementCtx,
+  basePath: (string | number)[],
+): void {
+  for (const tier of ["ideal", "acceptable"] as const) {
+    if (isEmptyClausePredicate(ladder[tier])) {
+      ctx.addIssue({
+        code: "custom",
+        message: `the ${tier} clause_present/clause_absent predicate needs \`pattern\` or \`section_heading\``,
+        path: [...basePath, tier],
+      });
+    }
+  }
+  const seenLabels = new Set<string>();
+  (ladder.rungs ?? []).forEach((rung, i) => {
+    if (isEmptyClausePredicate(rung.predicate)) {
+      ctx.addIssue({
+        code: "custom",
+        message: `rung "${rung.label}" clause_present/clause_absent predicate needs \`pattern\` or \`section_heading\``,
+        path: [...basePath, "rungs", i, "predicate"],
+      });
+    }
+    const key = rung.label.trim().toLowerCase();
+    if (seenLabels.has(key)) {
+      ctx.addIssue({
+        code: "custom",
+        message: `duplicate rung label "${rung.label}"`,
+        path: [...basePath, "rungs", i, "label"],
+      });
+    }
+    seenLabels.add(key);
+  });
+}
+
+const roleVariantSchema = z
   .object({
-    dimension: z.string().min(1).max(MAX_PLAYBOOK_STRING_LEN),
     ideal: predicateSchema,
     acceptable: predicateSchema,
     rungs: z.array(rungSchema).max(MAX_NEGOTIATION_RUNGS).optional(),
@@ -390,41 +461,21 @@ const negotiationPositionSchema = z
     approved_language: z.string().min(1).max(MAX_PLAYBOOK_STRING_LEN).optional(),
   })
   .strict()
+  .superRefine((variant, ctx) => addLadderTrapIssues(variant, ctx, []));
+
+const negotiationPositionSchema = z
+  .object({
+    dimension: z.string().min(1).max(MAX_PLAYBOOK_STRING_LEN),
+    ideal: predicateSchema,
+    acceptable: predicateSchema,
+    rungs: z.array(rungSchema).max(MAX_NEGOTIATION_RUNGS).optional(),
+    role_variants: z.record(z.string().min(1), roleVariantSchema).optional(),
+    guidance: guidanceSchema.optional(),
+    approved_language: z.string().min(1).max(MAX_PLAYBOOK_STRING_LEN).optional(),
+  })
+  .strict()
   .superRefine((pos, ctx) => {
-    // Same trap the custom-rule refinement guards: a clause_present/absent
-    // predicate with neither a pattern nor a section heading can never match a
-    // concrete clause, so a tier built on it would silently always (or never)
-    // hold. Reject it on whichever tier carries it.
-    for (const tier of ["ideal", "acceptable"] as const) {
-      if (isEmptyClausePredicate(pos[tier])) {
-        ctx.addIssue({
-          code: "custom",
-          message: `the ${tier} clause_present/clause_absent predicate needs \`pattern\` or \`section_heading\``,
-          path: [tier],
-        });
-      }
-    }
-    // Rungs carry the same trap on their predicate, and their labels must be
-    // unique so a met rung is addressable.
-    const seenLabels = new Set<string>();
-    (pos.rungs ?? []).forEach((rung, i) => {
-      if (isEmptyClausePredicate(rung.predicate)) {
-        ctx.addIssue({
-          code: "custom",
-          message: `rung "${rung.label}" clause_present/clause_absent predicate needs \`pattern\` or \`section_heading\``,
-          path: ["rungs", i, "predicate"],
-        });
-      }
-      const key = rung.label.trim().toLowerCase();
-      if (seenLabels.has(key)) {
-        ctx.addIssue({
-          code: "custom",
-          message: `duplicate rung label "${rung.label}"`,
-          path: ["rungs", i, "label"],
-        });
-      }
-      seenLabels.add(key);
-    });
+    addLadderTrapIssues(pos, ctx, []);
   });
 
 const customPlaybookObjectSchema = z
@@ -435,6 +486,7 @@ const customPlaybookObjectSchema = z
     name: z.string().min(1),
     description: z.string().min(1),
     mode: z.enum(["augment", "replace"]).optional(),
+    party_roles: z.array(z.string().min(1)).optional(),
     rule_selection: z
       .object({
         include: z.array(z.string().min(1)).optional(),
@@ -518,6 +570,45 @@ export const CustomPlaybookSchema = customPlaybookObjectSchema.superRefine((pb, 
       seen.add(key);
     });
   }
+  // party_roles must be unique, and every role a position varies by must be a
+  // declared role (add-negotiation-ladder-playbooks). A position that varies by
+  // role requires the playbook to declare `party_roles`, so `--role` can never
+  // reference an undeclared, un-typo-checked role.
+  const declaredRoles = new Set(pb.party_roles ?? []);
+  if (pb.party_roles) {
+    const seen = new Set<string>();
+    pb.party_roles.forEach((role, i) => {
+      const key = role.trim().toLowerCase();
+      if (seen.has(key)) {
+        ctx.addIssue({
+          code: "custom",
+          message: `duplicate party_role "${role}"`,
+          path: ["party_roles", i],
+        });
+      }
+      seen.add(key);
+    });
+  }
+  (pb.negotiation_positions ?? []).forEach((p, i) => {
+    const variantRoles = Object.keys(p.role_variants ?? {});
+    if (variantRoles.length === 0) return;
+    if (declaredRoles.size === 0) {
+      ctx.addIssue({
+        code: "custom",
+        message: `position "${p.dimension}" declares role_variants but the playbook declares no party_roles`,
+        path: ["negotiation_positions", i, "role_variants"],
+      });
+    }
+    for (const role of variantRoles) {
+      if (!declaredRoles.has(role)) {
+        ctx.addIssue({
+          code: "custom",
+          message: `position "${p.dimension}" role_variant "${role}" is not a declared party_role`,
+          path: ["negotiation_positions", i, "role_variants", role],
+        });
+      }
+    }
+  });
 });
 
 // ---------------------------------------------------------------------------

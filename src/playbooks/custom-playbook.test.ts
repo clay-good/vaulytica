@@ -459,4 +459,57 @@ describe("validateCustomPlaybook — negotiation positions (spec-v10)", () => {
     );
     expect(r.ok).toBe(false);
   });
+
+  // Party-role variants (add-negotiation-ladder-playbooks).
+  const variant = (ideal: number, acceptable: number) => ({
+    ideal: {
+      kind: "numeric_threshold",
+      metric: "liability_cap_multiple",
+      comparator: "gte",
+      value: ideal,
+    },
+    acceptable: {
+      kind: "numeric_threshold",
+      metric: "liability_cap_multiple",
+      comparator: "gte",
+      value: acceptable,
+    },
+  });
+
+  it("accepts role variants when party_roles declares the role", () => {
+    const r = validateCustomPlaybook(
+      minimal({
+        party_roles: ["vendor", "customer"],
+        negotiation_positions: [{ ...rungBase, role_variants: { customer: variant(12, 6) } }],
+      } as never),
+    );
+    expect(r.ok).toBe(true);
+  });
+
+  it("rejects a role variant for a role not in party_roles", () => {
+    const r = validateCustomPlaybook(
+      minimal({
+        party_roles: ["vendor"],
+        negotiation_positions: [{ ...rungBase, role_variants: { customer: variant(12, 6) } }],
+      } as never),
+    );
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.errors.join(" ")).toMatch(/not a declared party_role/i);
+  });
+
+  it("rejects role_variants when the playbook declares no party_roles", () => {
+    const r = validateCustomPlaybook(
+      minimal({
+        negotiation_positions: [{ ...rungBase, role_variants: { customer: variant(12, 6) } }],
+      } as never),
+    );
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.errors.join(" ")).toMatch(/no party_roles/i);
+  });
+
+  it("rejects a duplicate party_role", () => {
+    const r = validateCustomPlaybook(minimal({ party_roles: ["vendor", "vendor"] } as never));
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.errors.join(" ")).toMatch(/duplicate party_role/i);
+  });
 });
