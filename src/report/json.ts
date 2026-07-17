@@ -22,6 +22,7 @@ import {
 import { selectStateOverlays, type StateOverlayResult } from "../dkb/state-overlays.js";
 import type { ExtractedData } from "../extract/types.js";
 import { buildClauseEvidence, type ClauseEvidenceSummary } from "./clause-evidence.js";
+import { buildReviewCoverage, type ReviewCoverage } from "./review-coverage.js";
 import type { DeliveryReport } from "../delivery/types.js";
 import type { CriticalDatesRegister } from "./critical-dates.js";
 import type { ClosingChecklist } from "./closing-checklist.js";
@@ -118,6 +119,14 @@ export type JsonReport = {
    * all findings are quoted).
    */
   clause_evidence: ClauseEvidenceSummary;
+  /**
+   * Attorney-review coverage (add-attorney-review-ledger): how many findings
+   * cite a rule whose legal basis a licensed attorney has signed off on
+   * (`Finding.tier`). A projection of the run computed at report time; lives
+   * outside `run`, so `result_hash` is unchanged. Always emitted, and honest:
+   * until a rule is signed the count is "0 of N" — never a fabricated badge.
+   */
+  review_coverage: ReviewCoverage;
   /**
    * Citation-currency notes (fix-legal-authority-currency): findings whose
    * cited authority was retrieved further back than the DKB's currency
@@ -231,6 +240,7 @@ export function buildJsonReport(
       model_clauses: MODEL_CLAUSE_COVERAGE.model_clauses,
     },
     clause_evidence: buildClauseEvidence(run),
+    review_coverage: buildReviewCoverage(run.findings),
   };
   if (modelRefs.length > 0) payload.model_clause_references = modelRefs;
   // spec-v6 Part VI §21 — jurisdiction overlays for the governing-law state(s).

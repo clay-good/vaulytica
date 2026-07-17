@@ -33,6 +33,7 @@ import {
   type CitationCurrency,
 } from "./citations.js";
 import { buildClauseEvidence } from "./clause-evidence.js";
+import { buildReviewCoverage, reviewCoverageSentence, tierBadgeLabel } from "./review-coverage.js";
 import type { V9Surfaces } from "./v9-surfaces.js";
 import type { DeliveryReport } from "../delivery/types.js";
 import type { ClosingChecklist, ChecklistCategory } from "./closing-checklist.js";
@@ -107,6 +108,8 @@ const STYLE = `
   .sev.warning { background: var(--warn); }
   .sev.info { background: var(--info); }
   .ruleid { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .8rem; color: #666; }
+  .tier-badge { display: inline-block; margin-top: .25rem; padding: .1rem .4rem; border-radius: 3px;
+    font-size: .7rem; font-weight: bold; background: #1f6feb; color: #fff; }
   .cite, .cite a { overflow-wrap: anywhere; word-break: break-word; }
   .cite { font-size: .85rem; color: #333; margin-top: .4rem; }
   /* #6b6b6b ≈ 5.0:1 on white — clears WCAG 2 AA (4.5:1) for this small,
@@ -174,6 +177,9 @@ function renderFinding(
   parts.push(
     `<div class="ruleid">${esc(f.rule_id)} v${esc(f.rule_version)}${f.excerpt.section_id ? ` · §${esc(f.excerpt.section_id)}` : ""}</div>`,
   );
+  // add-attorney-review-ledger — the tier badge, only on a finding whose rule
+  // an attorney signed (dormant until the ledger is signed; never fabricated).
+  if (f.tier) parts.push(`<div class="tier-badge">${esc(tierBadgeLabel(f.tier))}</div>`);
   if (f.explanation) parts.push(`<p>${esc(f.explanation)}</p>`);
   if (f.recommendation)
     parts.push(`<p><strong>Recommendation:</strong> ${esc(f.recommendation)}</p>`);
@@ -435,6 +441,13 @@ export function buildHtmlReport(
     body.push(
       `<p>${evidence.quoted} of ${evidence.total} findings (${Math.round(evidence.coverage_ratio * 100)}%) pin a verbatim quoted clause span; ${evidence.bare} rest on a bare structural/pattern match. Quoted findings are quickest to confirm.</p>`,
     );
+  }
+
+  // Attorney-review coverage (add-attorney-review-ledger) — honest "N of M".
+  const reviewCoverage = buildReviewCoverage(run.findings);
+  if (reviewCoverage.total > 0) {
+    body.push("<h2>Attorney review coverage</h2>");
+    body.push(`<p>${esc(reviewCoverageSentence(reviewCoverage))}</p>`);
   }
 
   // Posture block (verbatim, same statements as the DOCX disclaimer).

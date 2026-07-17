@@ -90,6 +90,34 @@ describe("buildDocxReport", () => {
     expect(bytes[3]).toBe(0x04);
   });
 
+  it("renders an honest attorney-review-coverage section (0 of N until signed)", async () => {
+    const blob = await buildDocxReport(makeRun(), ingest, loadStarterDkbSync(), loadMutualNda());
+    const { unzipSync, strFromU8 } = await import("fflate");
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const runText = (
+      strFromU8(entries["word/document.xml"]!).match(/<w:t[^>]*>([^<]*)<\/w:t>/g) ?? []
+    )
+      .map((m) => m.replace(/<[^>]+>/g, ""))
+      .join("");
+    expect(runText).toContain("Attorney review coverage");
+    expect(runText).toContain("findings cite an attorney-reviewed rule");
+  });
+
+  it("emits review_coverage in the JSON report (a projection outside result_hash)", () => {
+    const run = makeRun();
+    const blob = buildJsonReport(run, ingest, loadMutualNda());
+    return blob.text().then((text) => {
+      const report = JSON.parse(text) as {
+        review_coverage: { total: number; attorney_reviewed: number };
+        run: { result_hash: string };
+      };
+      expect(report.review_coverage.total).toBe(run.findings.length);
+      expect(report.review_coverage.attorney_reviewed).toBe(0);
+      // Outside the hash: the run's own result_hash is untouched.
+      expect(report.run.result_hash).toBe(run.result_hash);
+    });
+  });
+
   it("renders citations in full and wraps long URLs (spec-v8 §18 never-truncate)", async () => {
     const longUrl =
       "https://www.govinfo.gov/content/pkg/CFR-2024-title45-vol2/xml/CFR-2024-title45-vol2-sec164-410.xml";

@@ -70,6 +70,26 @@ describe("buildHtmlReport (spec-v8 §21 — standalone single-file HTML)", () =>
     expect(html).toContain("b".repeat(64)); // result hash
   });
 
+  it("reports attorney-review coverage honestly (0 of N until a rule is signed)", () => {
+    const html = buildHtmlReport(makeRun(), ingest, loadStarterDkbSync());
+    expect(html).toContain("Attorney review coverage");
+    expect(html).toContain("0 of 2 findings cite an attorney-reviewed rule");
+  });
+
+  it("counts a finding that carries a signed tier as attorney-reviewed and badges it", () => {
+    const run = makeRun();
+    run.findings[0] = { ...run.findings[0]!, tier: "established" };
+    const html = buildHtmlReport(run, ingest, loadStarterDkbSync());
+    expect(html).toContain("1 of 2 findings cite a rule whose legal basis a licensed attorney");
+    expect(html).toContain('<div class="tier-badge">attorney-reviewed · established</div>');
+  });
+
+  it("shows no tier badge for an unsigned (author-asserted) finding", () => {
+    const html = buildHtmlReport(makeRun(), ingest, loadStarterDkbSync());
+    // The CSS rule mentions the class; the rendered badge div must not appear.
+    expect(html).not.toContain('<div class="tier-badge">');
+  });
+
   it("groups findings by severity and renders inline citations in full (never truncated)", () => {
     const html = buildHtmlReport(makeRun(), ingest, loadStarterDkbSync());
     expect(html).toContain("Critical Findings (1)");

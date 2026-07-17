@@ -43,6 +43,7 @@ import type { DKB } from "../dkb/types.js";
 import type { IngestResult } from "../ingest/types.js";
 import type { Playbook } from "../playbooks/types.js";
 import { scopeForPlaybook } from "../verticals/registry.js";
+import { buildReviewCoverage, reviewCoverageSentence } from "./review-coverage.js";
 import type { ExtractedData } from "../extract/types.js";
 import type { ReportSecondaryFamily } from "./json.js";
 import type { V9Surfaces } from "./v9-surfaces.js";
@@ -142,6 +143,9 @@ export async function buildDocxReport(
     ...(v3?.consistency ? renderConsistencyAppendix(v3.consistency) : []),
     // v3 §55 — citation depth verification appendix.
     ...renderCitationIndex(bibliography, run.dkb_version, v3?.dkb_build_date),
+    // add-attorney-review-ledger — honest "N of M findings cite an
+    // attorney-reviewed rule", a projection of run.findings (not in the hash).
+    ...renderReviewCoverageSection(run),
     ...renderDisclaimer(),
   ];
 
@@ -939,6 +943,14 @@ function renderAuditTrail(
 }
 
 // ---------------------------------------------------------------------------
+// Attorney-review coverage block (add-attorney-review-ledger)
+
+function renderReviewCoverageSection(run: EngineRun): Paragraph[] {
+  const coverage = buildReviewCoverage(run.findings);
+  if (coverage.total === 0) return [];
+  return [h2("Attorney review coverage"), para({ text: reviewCoverageSentence(coverage) })];
+}
+
 // Disclaimer block
 
 function renderDisclaimer(): Paragraph[] {
