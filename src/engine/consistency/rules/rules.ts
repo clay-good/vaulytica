@@ -179,8 +179,21 @@ export const CC_003_DPA_CATEGORIES: ConsistencyRule = {
     // anchoring keyword. If absent, the DPA is unilaterally widening scope.
     forEachParagraph(dpa.tree, (p) => {
       for (const { term, label } of SENSITIVE_CATEGORY_TERMS) {
-        if (!term.test(p.text)) continue;
+        const m = p.text.match(term);
+        if (!m || m.index === undefined) continue;
         if (term.test(msaText)) continue;
+        // Skip an explicit EXCLUSION — "the DPA does not process biometric
+        // data", "excludes biometric identifiers". A stated exclusion means the
+        // DPA is NARROWER than the MSA's scope, not broader; flagging it as
+        // unauthorized scope-creep is a confident false conflict (the opposite
+        // of what this rule detects).
+        const before = p.text.slice(Math.max(0, m.index - 60), m.index);
+        if (
+          /\b(?:do(?:es)?\s+not\s+(?:process|include|collect|contain|cover|store|use|involve|handle)|(?:shall|will)\s+not\s+(?:process|include|collect|contain|cover|store|use)|excludes?|excluding|(?:contain|include|collect|process|store)s?\s+no)\b/i.test(
+            before,
+          )
+        )
+          continue;
         findings.push(
           makeConsistencyFinding({
             rule: CC_003_DPA_CATEGORIES,
@@ -240,6 +253,18 @@ export const CC_004_BAA_TERM: ConsistencyRule = {
     }
     if (
       /\bterm[s]?\s+of\s+(?:this\s+)?baa\s+(?:shall\s+)?(?:run|continue|remain)\s+(?:co-?incident|in\s+effect)\s+with\s+(?:the\s+)?(?:msa|services\s+agreement)\b/i.test(
+        baaText,
+      )
+    ) {
+      return [];
+    }
+    // A tie stated in different wording is still an explicit tie — "matching
+    // the term of the Master Services Agreement", "the same term as the MSA",
+    // "tied to / aligned with the MSA term". The two patterns above are only a
+    // narrow phrase allowlist; without this, a correctly-drafted alignment is
+    // reported as a silent divergence (a false "independent term" conflict).
+    if (
+      /\b(?:matching|tied\s+to|aligned\s+with|coincident\s+with|co-?terminous\s+with|coextensive\s+with|(?:the\s+)?same\s+(?:term\s+)?as|identical\s+to)\s+(?:the\s+)?(?:term\s+of\s+)?(?:the\s+)?(?:master\s+services?\s+agreement|msa|underlying\s+agreement|services\s+agreement)\b/i.test(
         baaText,
       )
     ) {
@@ -475,6 +500,18 @@ export const CC_007_ORDER_OF_PRECEDENCE: ConsistencyRule = {
       for (const { pattern, subject } of operativePatterns) {
         const hit = findParagraph(sub, pattern);
         if (!hit) continue;
+        // Skip a carve-out that DEFERS to the MSA rather than placing operative
+        // terms in the subordinate — "this SOW does not modify the
+        // indemnification obligations, which are governed exclusively by the
+        // MSA", "no indemnification obligations arise under this SOW". Such
+        // language AFFIRMS the precedence order; flagging it inverts the
+        // clause's actual meaning into a false conflict.
+        if (
+          /\b(?:do(?:es)?\s+not\s+(?:modify|restate|create|impose|alter|contain|include|govern|apply|supersede)|governed\s+(?:solely\s+|exclusively\s+)?by\s+(?:the\s+)?(?:msa|master\s+services?\s+agreement)|no\s+\w+(?:\s+\w+)?\s+obligations?\s+arise|shall\s+not\s+(?:apply|create|impose|modify|supersede))\b/i.test(
+            hit.text,
+          )
+        )
+          continue;
         findings.push(
           makeConsistencyFinding({
             rule: CC_007_ORDER_OF_PRECEDENCE,

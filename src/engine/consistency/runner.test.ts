@@ -277,6 +277,26 @@ describe("CC-003 DPA data categories not broader than MSA", () => {
     });
     expect(run.findings).toHaveLength(0);
   });
+
+  it("does not fire on a category the DPA explicitly EXCLUDES", async () => {
+    // An exclusion ("the DPA does not process biometric data") means the DPA is
+    // narrower than the MSA's scope — the opposite of the scope-creep this rule
+    // detects. Firing on it is a confident false conflict.
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Scope of Services",
+      "Provider shall perform payroll processing services.",
+    ]);
+    const dpa = makeDoc("dpa", "dpa-controller-processor", [
+      "Annex I.B Categories",
+      "The DPA does not process biometric data or biometric identifiers of any kind.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_003_DPA_CATEGORIES],
+      documents: [msa, dpa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+  });
 });
 
 describe("CC-004 BAA term aligns with MSA", () => {
@@ -306,6 +326,26 @@ describe("CC-004 BAA term aligns with MSA", () => {
     const baa = makeDoc("baa", "baa", [
       "Term",
       "This BAA shall be co-terminous with the Master Services Agreement, and the return-or-destruction obligations shall survive termination.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_004_BAA_TERM],
+      documents: [msa, baa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+  });
+
+  it("does not fire when the BAA ties its term to the MSA in different wording", async () => {
+    // "matching the term of the Master Services Agreement" is an explicit tie,
+    // just phrased outside the two canned co-terminous patterns. Reporting it as
+    // an independent term is a false "silent divergence".
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Term",
+      "This Agreement shall be effective for an initial term of 3 years from the Effective Date.",
+    ]);
+    const baa = makeDoc("baa", "baa", [
+      "Term",
+      "This Agreement shall remain in effect for a term of 3 years from the Effective Date, matching the term of the Master Services Agreement referenced herein.",
     ]);
     const run = await runConsistency({
       rules: [CC_004_BAA_TERM],
@@ -405,6 +445,36 @@ describe("CC-007 order of precedence consistency", () => {
     const sow = makeDoc("sow", "sow", [
       "Indemnification",
       "Provider shall indemnify Customer against all losses.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_007_ORDER_OF_PRECEDENCE],
+      documents: [msa, sow],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+  });
+
+  it("does not fire on a subordinate carve-out that DEFERS to the MSA", async () => {
+    // A SOW paragraph that says indemnification is "governed exclusively by the
+    // MSA" and that "no indemnification obligations arise under this SOW"
+    // AFFIRMS the precedence order — it does not place operative terms in the
+    // subordinate. Flagging it inverts the clause's meaning into a false
+    // conflict.
+    const msa = makeDoc(
+      "msa",
+      "msa-vendor-deep",
+      [
+        "Order of Precedence",
+        "In the event of any conflict between this MSA and any Statement of Work, the MSA shall control.",
+      ],
+      [
+        "Indemnification",
+        "Provider shall indemnify Customer against all losses, claims, and damages arising from Provider's breach.",
+      ],
+    );
+    const sow = makeDoc("sow", "sow", [
+      "Scope",
+      "For the avoidance of doubt, this SOW does not modify the indemnification obligations, which are governed exclusively by the MSA. No indemnification obligations arise under this SOW for losses, claims, damages, or liabilities.",
     ]);
     const run = await runConsistency({
       rules: [CC_007_ORDER_OF_PRECEDENCE],
