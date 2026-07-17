@@ -8,6 +8,7 @@ import { rule as PERS_001 } from "./personnel/PERS-001.js";
 import { rule as PERS_002 } from "./personnel/PERS-002.js";
 import { rule as PERS_005 } from "./personnel/PERS-005.js";
 import { rule as IPDATA_010 } from "./ip-and-data/IPDATA-010.js";
+import { rule as OBLI_004 } from "./obligations/OBLI-004.js";
 
 /**
  * Negation-blindness regressions: an always-on rule must not fire on the
@@ -118,6 +119,28 @@ describe("launch-rule negation guards", () => {
         ctx(
           "Customer hereby grants Vendor a perpetual, irrevocable, worldwide, royalty-free, sublicensable license to use Feedback.",
         ),
+      ),
+    ).not.toBeNull();
+  });
+
+  it("OBLI-004 does not flag a declined best-efforts standard, but flags real and emphatic ones", () => {
+    // Declined — the contract chose reasonable efforts, not best efforts.
+    expect(
+      OBLI_004.check(
+        ctx(
+          "The parties shall use commercially reasonable efforts, and not best efforts, to perform.",
+        ),
+      ),
+    ).toBeNull();
+    // Genuine best-efforts obligation.
+    expect(
+      OBLI_004.check(ctx("Contractor shall use best efforts to deliver the software.")),
+    ).not.toBeNull();
+    // Emphatic obligation — "not less than best efforts" is still a best-efforts
+    // standard; the negator governs "less than", not the phrase, so it must fire.
+    expect(
+      OBLI_004.check(
+        ctx("Contractor shall use not less than best efforts to deliver the software."),
       ),
     ).not.toBeNull();
   });

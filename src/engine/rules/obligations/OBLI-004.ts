@@ -13,6 +13,15 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(ctx, /\bbest\s+efforts\b/i);
     if (!hit) return null;
+    // Suppress a DISCLAIMER of the best-efforts standard — "commercially
+    // reasonable efforts, and not best efforts", "reasonable efforts rather
+    // than best efforts". Asserting "'Best efforts' standard used" about a
+    // contract that explicitly declined it is a confident false statement.
+    // Guard on a negator DIRECTLY adjacent to the phrase so a real emphatic
+    // obligation ("not less than best efforts") still fires (its adjacent token
+    // is "than", not the negator).
+    const before = hit.text.slice(Math.max(0, hit.match.index - 24), hit.match.index);
+    if (/\b(?:not|rather\s+than|instead\s+of)\s+$/i.test(before)) return null;
     return emit(ctx, rule, {
       title: "'Best efforts' standard used",
       description:
