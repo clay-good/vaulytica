@@ -44,6 +44,7 @@ import type { IngestResult } from "../ingest/types.js";
 import type { Playbook } from "../playbooks/types.js";
 import { scopeForPlaybook } from "../verticals/registry.js";
 import { buildReviewCoverage, reviewCoverageSentence } from "./review-coverage.js";
+import { ENGAGEMENT_SCOPE } from "./engagement-scope.js";
 import type { ExtractedData } from "../extract/types.js";
 import type { ReportSecondaryFamily } from "./json.js";
 import type { V9Surfaces } from "./v9-surfaces.js";
@@ -964,6 +965,15 @@ function renderDisclaimer(): Paragraph[] {
     spacer(),
     h3("Not legal advice"),
     para({ text: NON_ADVICE_STATEMENT }),
+    spacer(),
+    // Universal scope-of-review — limited-scope-engagement framing on every
+    // report (add-attorney-review-ledger). Distinct from the per-pack block.
+    h3("Scope of this review"),
+    para({ text: ENGAGEMENT_SCOPE.intro }),
+    para({ text: "Reviewed for", bold: true }),
+    ...ENGAGEMENT_SCOPE.reviewed_for.map((item) => para({ text: `• ${item}` })),
+    para({ text: "Not reviewed for", bold: true }),
+    ...ENGAGEMENT_SCOPE.not_reviewed_for.map((item) => para({ text: `• ${item}` })),
   ];
 }
 

@@ -34,6 +34,7 @@ import {
 } from "./citations.js";
 import { buildClauseEvidence } from "./clause-evidence.js";
 import { buildReviewCoverage, reviewCoverageSentence, tierBadgeLabel } from "./review-coverage.js";
+import { ENGAGEMENT_SCOPE } from "./engagement-scope.js";
 import type { V9Surfaces } from "./v9-surfaces.js";
 import type { DeliveryReport } from "../delivery/types.js";
 import type { ClosingChecklist, ChecklistCategory } from "./closing-checklist.js";
@@ -459,6 +460,15 @@ export function buildHtmlReport(
   body.push(`<p>${esc(PRIVACY_STATEMENT)}</p>`);
   body.push("<h3>Not legal advice</h3>");
   body.push(`<p>${esc(NON_ADVICE_STATEMENT)}</p>`);
+  // Universal scope-of-review — limited-scope-engagement framing on every report
+  // (add-attorney-review-ledger). Distinct from the per-pack "Scope of Review".
+  body.push("<h3>Scope of this review</h3>");
+  body.push(`<p>${esc(ENGAGEMENT_SCOPE.intro)}</p>`);
+  body.push("<h4>Reviewed for</h4><ul>");
+  for (const item of ENGAGEMENT_SCOPE.reviewed_for) body.push(`<li>${esc(item)}</li>`);
+  body.push("</ul><h4>Not reviewed for</h4><ul>");
+  for (const item of ENGAGEMENT_SCOPE.not_reviewed_for) body.push(`<li>${esc(item)}</li>`);
+  body.push("</ul>");
   body.push("</div>");
 
   return [

@@ -103,6 +103,19 @@ describe("buildDocxReport", () => {
     expect(runText).toContain("findings cite an attorney-reviewed rule");
   });
 
+  it("renders the universal scope-of-review block in the disclaimer", async () => {
+    const blob = await buildDocxReport(makeRun(), ingest, loadStarterDkbSync(), loadMutualNda());
+    const { unzipSync, strFromU8 } = await import("fflate");
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const runText = (
+      strFromU8(entries["word/document.xml"]!).match(/<w:t[^>]*>([^<]*)<\/w:t>/g) ?? []
+    )
+      .map((m) => m.replace(/<[^>]+>/g, ""))
+      .join("");
+    expect(runText).toContain("Scope of this review");
+    expect(runText).toContain("commercial adequacy");
+  });
+
   it("emits review_coverage in the JSON report (a projection outside result_hash)", () => {
     const run = makeRun();
     const blob = buildJsonReport(run, ingest, loadMutualNda());

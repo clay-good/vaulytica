@@ -90,6 +90,15 @@ describe("buildHtmlReport (spec-v8 §21 — standalone single-file HTML)", () =>
     expect(html).not.toContain('<div class="tier-badge">');
   });
 
+  it("renders the universal scope-of-review block near the disclaimer", () => {
+    const html = buildHtmlReport(makeRun(), ingest, loadStarterDkbSync());
+    expect(html).toContain("Scope of this review");
+    expect(html).toContain("limited-scope, mechanical review");
+    expect(html).toContain("Reviewed for");
+    expect(html).toContain("Not reviewed for");
+    expect(html).toContain("commercial adequacy");
+  });
+
   it("groups findings by severity and renders inline citations in full (never truncated)", () => {
     const html = buildHtmlReport(makeRun(), ingest, loadStarterDkbSync());
     expect(html).toContain("Critical Findings (1)");
