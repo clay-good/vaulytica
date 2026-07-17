@@ -94,6 +94,43 @@ export function firstUnnegatedParagraphMatch(
   return hit;
 }
 
+/**
+ * Markers that a clause or obligation is ABSENT / DISCLAIMED rather than
+ * present: "does not include a X clause", "contains no X", "shall not [do X]",
+ * "need not", "no obligation to X", "not be required to X". Used by
+ * presence-detector rules ("X clause present") so they do not fire on a
+ * document's explicit statement that X is NOT present — a confident false
+ * accusation, the worst honesty failure for an always-on rule.
+ *
+ * Deliberately SPECIFIC — "not" must attach to an inclusion/action verb
+ * ("does not include", "shall not use", "need not") or an explicit absence
+ * phrase — NOT a bare "aux + not". A genuine operative clause routinely carries
+ * an unrelated negator ("Neither party shall be liable … force majeure",
+ * "Employee agrees not to disparage", "the breach would not result in a
+ * material adverse effect") and must still fire; only language negating the
+ * clause's PRESENCE or the actor's OBLIGATION to do the thing suppresses.
+ */
+const CLAUSE_ABSENCE =
+  /\b(?:(?:do(?:es)?|shall|will|may|must)\s+not\s+(?:include|contain|provide\s+for|provide|require|impose|create|permit|allow|grant|obligate|contemplate|use)|(?:contain|include)s?\s+no\b|ha[sv]e\s+no\b|need\s+not\b|no\s+(?:obligation|provision|provisions|requirement|right|duty)\b|not\s+(?:be\s+(?:required|obligated|permitted|entitled|held|deemed|subject|construed)|have\s+(?:the\s+)?right))/i;
+
+/**
+ * True when the trigger at `matchIndex` sits in a sentence whose text BEFORE
+ * the match disclaims the clause's presence (see {@link CLAUSE_ABSENCE}).
+ * Scoped to the enclosing sentence (cut at the last `.`/`;`/newline before the
+ * match) so a disclaimer in a prior sentence never suppresses a genuine clause
+ * in this one. Honesty-first: a presence-detector that would fire on the
+ * disclaimed form suppresses instead — a missed flag is safer than a false one.
+ */
+export function isPresenceDisclaimed(paragraph: string, matchIndex: number): boolean {
+  const start = Math.max(
+    paragraph.lastIndexOf(". ", matchIndex),
+    paragraph.lastIndexOf("; ", matchIndex),
+    paragraph.lastIndexOf("\n", matchIndex),
+  );
+  const before = paragraph.slice(start + 1, matchIndex);
+  return CLAUSE_ABSENCE.test(before);
+}
+
 /** Returns true if any classified paragraph belongs to `category`. */
 export function hasCategory(ctx: RuleContext, category: string): boolean {
   return ctx.extracted.classified.some((c) => c.category === category);

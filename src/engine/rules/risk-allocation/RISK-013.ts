@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
 
 /** RISK-013 — Force majeure clause present (info). */
 export const rule: Rule = {
@@ -13,6 +13,7 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(ctx, /\bforce\s+majeure\b|\bact\s+of\s+god\b/i);
     if (!hit) return null;
+    if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;
     return emit(ctx, rule, {
       title: "Force majeure clause present",
       description: hit.match[0],

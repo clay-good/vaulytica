@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
 
 /** PERS-004 — Anti-poaching language (warning). */
 export const rule: Rule = {
@@ -17,6 +17,7 @@ export const rule: Rule = {
       /\b(?:no[- ]hire|will\s+not\s+hire|will\s+not\s+employ)\b[\s\S]{0,80}\b(?:other\s+party|employees?)\b/i,
     );
     if (!hit) return null;
+    if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;
     return emit(ctx, rule, {
       title: "Anti-poaching / no-hire clause present",
       description: hit.match[0],

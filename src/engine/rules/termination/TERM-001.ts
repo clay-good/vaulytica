@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
 
 /** TERM-001 — Termination for convenience present (info). */
 export const rule: Rule = {
@@ -16,6 +16,7 @@ export const rule: Rule = {
       /\bterminate\b[\s\S]{0,80}\bfor\s+convenience\b[\s\S]{0,80}?(\d{1,3})\s+days/i,
     );
     if (!hit) return null;
+    if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;
     const days = parseInt(hit.match[1] ?? "0", 10);
     return emit(ctx, rule, {
       title: `Termination for convenience: ${days} days' notice`,

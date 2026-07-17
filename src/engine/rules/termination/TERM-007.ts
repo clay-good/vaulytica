@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
 
 /** TERM-007 — Post-termination obligations enumerated (info). */
 export const rule: Rule = {
@@ -16,6 +16,11 @@ export const rule: Rule = {
       /upon\s+termination[\s\S]{0,500}?(return|destroy|certify|delete|cease\s+use)/i,
     );
     if (!hit) return null;
+    // The trigger spans from "upon termination" to the obligation verb, so the
+    // disclaimer ("no obligation to return", "shall not return") sits inside the
+    // match, right before the captured verb. Check at the obligation verb.
+    const kwIndex = hit.match.index + hit.match[0].length - (hit.match[1]?.length ?? 0);
+    if (isPresenceDisclaimed(hit.text, kwIndex)) return null;
     return emit(ctx, rule, {
       title: "Post-termination obligations enumerated",
       description: hit.match[0],

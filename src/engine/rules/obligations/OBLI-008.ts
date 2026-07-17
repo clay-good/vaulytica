@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
 import { forEachParagraph } from "../../../extract/walk.js";
 
 /**
@@ -35,6 +35,7 @@ export const rule: Rule = {
       /\b(best\s+efforts|reasonable\s+(?:best\s+)?efforts|commercially\s+reasonable\s+efforts|good\s+faith\s+efforts|diligent\s+efforts)\b/i,
     );
     if (!hit) return null;
+    if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;
     const phrase = hit.match[1] ?? hit.match[0];
 
     // Check the document for a definition of the matched phrase.

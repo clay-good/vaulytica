@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
 
 /**
  * PERS-006 — Mandatory non-disparagement on separation (warning,
@@ -35,6 +35,7 @@ export const rule: Rule = {
       /\b(?:non[-\s]?disparagement|shall\s+not\s+disparage|agrees?\s+not\s+to\s+disparage|will\s+not\s+(?:make\s+)?(?:any\s+)?disparaging\s+(?:remarks?|comments?|statements?))/i,
     );
     if (!hit) return null;
+    if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;
     return emit(ctx, rule, {
       title: "Non-disparagement clause present",
       description: hit.match[0],

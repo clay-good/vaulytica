@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
 
 /** TERM-006 — Wind-down or transition services (info). */
 export const rule: Rule = {
@@ -16,6 +16,7 @@ export const rule: Rule = {
       /\b(?:wind[- ]down|transition\s+services|post[- ]termination\s+services)\b/i,
     );
     if (!hit) return null;
+    if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;
     return emit(ctx, rule, {
       title: "Wind-down / transition services clause present",
       description: hit.match[0],

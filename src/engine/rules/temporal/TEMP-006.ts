@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
 
 /** TEMP-006 — Survival clause present (info). */
 export const rule: Rule = {
@@ -16,6 +16,7 @@ export const rule: Rule = {
       /\b(?:survive|survives|surviving)\b[\s\S]{0,40}\btermination\b/i,
     );
     if (!hit) return null;
+    if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;
     return emit(ctx, rule, {
       title: "Survival clause present",
       description: "Provisions are stated to survive termination.",

@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
 
 /**
  * PERS-008 — Training-Repayment ("TRAP") / Stay-or-Pay clause
@@ -33,6 +33,7 @@ export const rule: Rule = {
       /\b(?:repay(?:ment)?\s+(?:of\s+)?(?:the\s+full\s+)?training\s+cost|reimburse\s+(?:Company\s+|Employer\s+)?(?:for\s+)?(?:the\s+)?(?:cost\s+of\s+)?training|in\s+consideration\s+of\s+(?:the\s+)?(?:specialized\s+|specific\s+)?training\s+provided[^.]{0,200}repay|repay\s+(?:the\s+)?signing\s+bonus|claw[-\s]?back\s+(?:of\s+)?(?:training|signing|sign[-\s]?on|relocation))/i,
     );
     if (!hit) return null;
+    if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;
     return emit(ctx, rule, {
       title: "Training-repayment / stay-or-pay clause",
       description: hit.match[0],

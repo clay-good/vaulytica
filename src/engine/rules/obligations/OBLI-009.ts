@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
 
 /**
  * OBLI-009 — Residuals clause swallows confidentiality (warning,
@@ -31,6 +31,7 @@ export const rule: Rule = {
       /\b(?:Residuals|unaided\s+memory|retained\s+in\s+the\s+(?:unaided\s+)?memor(?:y|ies)\s+of)|general\s+(?:knowledge|know-?how)[,\s]+skills(?:\s+and\s+experience)?\b/i,
     );
     if (!hit) return null;
+    if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;
     return emit(ctx, rule, {
       title: "Residuals clause present",
       description: hit.match[0],

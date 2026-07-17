@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
 
 /**
  * OBLI-007 — Material Adverse Change (MAC) clause present (warning).
@@ -31,6 +31,7 @@ export const rule: Rule = {
       /\b(?:material\s+adverse\s+(?:change|effect)|MAC\s+(?:clause|event|condition)|MAE\s+(?:clause|event|condition))\b/i,
     );
     if (!hit) return null;
+    if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;
     return emit(ctx, rule, {
       title: "Material Adverse Change clause present",
       description: hit.match[0],

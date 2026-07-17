@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
 
 /**
  * IPDATA-009 — AI / ML training rights over Customer Data (critical,
@@ -31,6 +31,17 @@ export const rule: Rule = {
       /\b(?:license\s+to\s+(?:use|reproduce)|right\s+to\s+(?:use|process|reproduce))[^.]{0,200}\bCustomer\s+Data[^.]{0,200}\b(?:train(?:ing)?\s+(?:Vendor's\s+)?(?:services|models|AI|machine[-\s]?learning|ML)|model[-\s]?training|machine[-\s]?learning|AI\s+models?|develop(?:ing)?\s+(?:our\s+|Vendor's\s+|Provider's\s+)?(?:AI|ML|machine[-\s]?learning))|use\s+(?:Customer\s+Data|your\s+content|your\s+data)[^.]{0,200}\b(?:train(?:ing)?|improve\s+our\s+models|develop\s+our\s+models|machine[-\s]?learning)/i,
     );
     if (!hit) return null;
+    // "Vendor shall NOT use Customer Data to train …" disclaims the training
+    // grant — a critical false accusation if flagged. The trigger's "use …
+    // train" alternative starts at "use", so the negator straddles the match
+    // boundary; check the text immediately before the match for a trailing
+    // "shall/will/may/does not" in addition to the sentence-scoped guard.
+    const before = hit.text.slice(0, hit.match.index);
+    if (
+      isPresenceDisclaimed(hit.text, hit.match.index) ||
+      /\b(?:shall|will|may|must|do(?:es)?|is|are)\s+not\s+$/i.test(before)
+    )
+      return null;
     return emit(ctx, rule, {
       title: "AI / model-training rights over Customer Data",
       description: hit.match[0],
