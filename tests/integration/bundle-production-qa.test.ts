@@ -107,6 +107,9 @@ describe("browser bundle + privilege-log CSV → production_qa (add-production-q
     // populate the bundle-complete "Production QA" card and the bundle DOCX.
     expect(result.production_qa).toBeDefined();
     expect(result.production_qa!.log_present).toBe(true);
+    // The pre-production HANDOFF sweep ran over the three document members
+    // (the .csv log is not itself swept).
+    expect(result.production_qa!.delivery_rollup?.members_scanned).toBe(3);
 
     const pq = json.production_qa as
       | {

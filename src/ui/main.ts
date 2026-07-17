@@ -699,6 +699,16 @@ async function renderBundleComplete(
             title: f.title,
             detail: f.detail,
           })),
+          delivery_sweep: result.production_qa.delivery_rollup
+            ? {
+                members_scanned: result.production_qa.delivery_rollup.members_scanned,
+                flags: Object.values(result.production_qa.delivery_rollup.by_check).reduce(
+                  (a, b) => a + b,
+                  0,
+                ),
+                uninspectable: result.production_qa.delivery_rollup.uninspectable,
+              }
+            : undefined,
           production_qa_hash: result.production_qa.production_qa_hash,
         }
       : undefined,

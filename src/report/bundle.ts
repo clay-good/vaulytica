@@ -1052,6 +1052,20 @@ function renderProductionQaSection(
       new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [header, ...rows] }),
     );
   }
+  if (pq.delivery_rollup) {
+    const dr = pq.delivery_rollup;
+    const checks = Object.entries(dr.by_check);
+    const summary =
+      checks.length === 0
+        ? "no tracked changes, comments, hidden text, authoring metadata, or sensitive-data patterns surfaced"
+        : checks.map(([check, n]) => `${check}: ${n}`).join(" · ");
+    out.push(spacer());
+    out.push(
+      para({
+        text: `Pre-production sweep: ${dr.members_scanned} members scanned${dr.uninspectable > 0 ? ` (${dr.uninspectable} uninspectable)` : ""} — ${summary}.`,
+      }),
+    );
+  }
   out.push(spacer());
   out.push(h2("Scope of review"));
   out.push(para({ text: "Reviewed for:", bold: true }));

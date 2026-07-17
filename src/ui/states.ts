@@ -468,6 +468,14 @@ export type DropzoneState =
           title: string;
           detail: string;
         }>;
+        /**
+         * Pre-production HANDOFF sweep roll-up, present only when the members
+         * were scanned (i.e. a privilege log was supplied). `members_scanned`
+         * documents were checked for tracked changes / comments / hidden text /
+         * authoring metadata / sensitive-data patterns; `flags` is the total
+         * check-hits across them (0 = clean).
+         */
+        delivery_sweep?: { members_scanned: number; flags: number; uninspectable: number };
         production_qa_hash: string;
       };
       /**
@@ -1658,6 +1666,9 @@ function renderProductionQa(
   const warnings = pq.log_warnings
     .map((w) => `<div class="np-detail">Privilege log: ${escapeHtml(w)}</div>`)
     .join("");
+  const sweep = pq.delivery_sweep
+    ? `<div class="np-detail">Pre-production sweep: ${pq.delivery_sweep.members_scanned} members scanned${pq.delivery_sweep.uninspectable > 0 ? ` (${pq.delivery_sweep.uninspectable} uninspectable)` : ""} — ${pq.delivery_sweep.flags === 0 ? "nothing flagged for review" : `${pq.delivery_sweep.flags} flagged for review`}.</div>`
+    : "";
   const body =
     pq.findings.length === 0
       ? `<div class="np-detail">No Bates or privilege-log reconciliation issues found.</div>`
@@ -1677,6 +1688,7 @@ function renderProductionQa(
       <span class="np-summary">${pq.member_count} members · ${pq.bates_count} Bates-numbered · privilege log ${pq.log_present ? "present" : "not supplied"} · ${pq.findings.length} ${pq.findings.length === 1 ? "issue" : "issues"}</span>
     </div>
     ${warnings}
+    ${sweep}
     ${body}
     <div class="np-note">Bates numbering and privilege-log reconciliation, deterministically — read from the member filenames and the supplied log. It does not read in-page Bates stamps, check redaction integrity, or assess whether any privilege claim is valid. The full report (with scope of review) is in the Word and JSON downloads.</div>
   `;

@@ -897,6 +897,7 @@ describe("renderState", () => {
             detail: "ACME-000002 is withheld per the log but is a gap in the produced set.",
           },
         ],
+        delivery_sweep: { members_scanned: 3, flags: 0, uninspectable: 0 },
         production_qa_hash: "a".repeat(64),
       },
     });
@@ -906,6 +907,9 @@ describe("renderState", () => {
     expect(card.textContent).toMatch(/4 members/);
     expect(card.textContent).toMatch(/privilege log present/);
     expect(card.textContent).toMatch(/PROD-001 — Produced-set gap/);
+    // The pre-production sweep summary appears (clean set → nothing flagged).
+    expect(card.textContent).toMatch(/Pre-production sweep: 3 members scanned/);
+    expect(card.textContent).toMatch(/nothing flagged for review/);
     // The honest scope disclaimer is always shown.
     expect(card.textContent).toMatch(/does not read in-page Bates stamps/);
     document.body.removeChild(dz);

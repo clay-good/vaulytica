@@ -1020,6 +1020,13 @@ export type PreparedBundle = {
    * (documents-only) bundle, so those bundles are byte-unchanged.
    */
   privilege_log?: PrivilegeLogMember;
+  /**
+   * Per-document pre-production HANDOFF scans (add-production-qa-pack),
+   * populated only when a privilege log rode in with the bundle. Fed into the
+   * production-QA report's delivery roll-up in `runBundleReport`. Absent for an
+   * ordinary (documents-only) bundle.
+   */
+  production_deliveries?: DeliveryReport[];
 };
 
 /**
@@ -1107,6 +1114,11 @@ export async function prepareBundle(
   // Parallel array keeping each doc's tree + extracted so the
   // consistency pass can re-use them without re-ingesting.
   const consistencyDocs: ConsistencyDocument[] = [];
+  // Pre-production HANDOFF sweep per document (add-production-qa-pack): only
+  // run when a privilege log rode in with the bundle (i.e. this is a production
+  // set about to go out), so an ordinary bundle pays nothing. Fills the
+  // production-QA report's delivery roll-up.
+  const productionDeliveries: DeliveryReport[] = [];
 
   // Per-doc progress accumulator: each doc contributes 1/total of the
   // overall bar; within a doc, progress runs 0 → 1 as rules fire.
@@ -1119,12 +1131,27 @@ export async function prepareBundle(
 
   for (let i = 0; i < accepted.length; i++) {
     const entry = accepted[i]!;
+    // Copy the container bytes before ingest ONLY when a HANDOFF sweep is due —
+    // pdfjs may transfer/neuter its input buffer, and the delivery scan (run
+    // after ingest, since it needs the extracted text) still needs the raw
+    // container. Skipped entirely for csv-free bundles, so they are unaffected.
+    const deliveryBytes = privilege_log ? entry.bytes.slice(0) : undefined;
     const ingest: IngestResult =
       entry.kind === "pdf"
         ? await ingestPdfBuffer(entry.bytes, { allowOcr: false }) // see single-doc note
         : await ingestDocxBuffer(entry.bytes);
 
     hooks.onDocumentReady?.(entry.filename, i, total);
+
+    if (deliveryBytes) {
+      productionDeliveries.push(
+        await scanDelivery({
+          bytes: deliveryBytes,
+          source: entry.kind,
+          text: flattenText(ingest.tree),
+        }),
+      );
+    }
 
     const extracted = extractAll(ingest.tree, {
       classifier: { vocab: { vocab: {} }, patterns: dkb.classifier.patterns },
@@ -1269,6 +1296,7 @@ export async function prepareBundle(
     consistency_docs: consistencyDocs,
     dkb,
     ...(privilege_log ? { privilege_log } : {}),
+    ...(productionDeliveries.length > 0 ? { production_deliveries: productionDeliveries } : {}),
   };
 }
 
@@ -1320,6 +1348,10 @@ export async function runBundleReport(
     ? await buildProductionQaReport({
         filenames: [...prepared.documents.map((d) => d.filename), prepared.privilege_log.filename],
         logCsv: prepared.privilege_log.csv,
+        deliveries:
+          prepared.production_deliveries && prepared.production_deliveries.length > 0
+            ? prepared.production_deliveries
+            : undefined,
       })
     : undefined;
 

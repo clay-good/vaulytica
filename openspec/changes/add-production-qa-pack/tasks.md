@@ -36,9 +36,13 @@
   a `.zip` bundle (`extractZipEntries` now inflates the `.csv` privilege-log member
   under the same zip-bomb guards, and `prepareBundle` partitions it out of the
   candidate list before doc planning — so the capture is uniform across both
-  paths). Remaining v1 scope limit: the per-member pre-production HANDOFF sweep is
-  CLI-only in the browser (the browser reconciles from filenames + log only, since
-  raw member bytes are not retained on `PreparedBundle`).
+  paths). The per-member pre-production **HANDOFF sweep** also runs in the browser
+  now: when a privilege log is present, `prepareBundle` runs `scanDelivery` over
+  each document during ingest (copying the container bytes first, since pdfjs may
+  transfer its input) and threads the reports into `buildProductionQaReport`'s
+  `delivery_rollup` — surfaced in the JSON, the DOCX section, and the UI card, at
+  full CLI parity. A csv-free bundle runs no sweep and copies no bytes, so it is
+  untouched. **The browser integration of the production-QA pack is now complete.**
 - **PROD is a bundle-level pass, not a consistency (CC-*) rule.** The
   `requires:DocKind[]` pairwise consistency model does not fit a data-member vs
   produced-set reconciliation; production QA is its own aggregator with its own
