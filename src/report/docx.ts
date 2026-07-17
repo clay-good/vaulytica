@@ -661,14 +661,25 @@ function renderNegotiationPostureSection(
       width: { size: 100, type: WidthType.PERCENTAGE },
       rows: [
         headerRow(["Dimension", "Tier", "What we found / guidance", "Section"]),
-        ...posture.positions.map((p) =>
-          bodyRow([
+        ...posture.positions.map((p) => {
+          // Tier cell carries the highest met rung above the floor, when present
+          // (add-negotiation-ladder-playbooks — detail only).
+          const tierText =
+            NEGOTIATION_TIER_LABEL[p.tier] + (p.met_rung ? ` (met rung: ${p.met_rung})` : "");
+          // The detail cell assembles the deal-size band (if any), the found /
+          // guidance text, and the team's approved fallback on a below-floor row.
+          const detail: string[] = [];
+          if (p.size_band) detail.push(`Deal-size band: ${p.size_band}`);
+          const found = p.detail ?? p.reason ?? p.guidance ?? "";
+          if (found) detail.push(found);
+          if (p.approved_language) detail.push(`Your approved fallback: ${p.approved_language}`);
+          return bodyRow([
             p.dimension,
-            NEGOTIATION_TIER_LABEL[p.tier],
-            truncate(p.detail ?? p.reason ?? p.guidance ?? "—", 280),
+            tierText,
+            truncate(detail.length > 0 ? detail.join(" · ") : "—", 400),
             p.section_id ?? "—",
-          ]),
-        ),
+          ]);
+        }),
       ],
     }),
   ];

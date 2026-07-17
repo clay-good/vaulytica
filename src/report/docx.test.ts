@@ -469,6 +469,49 @@ describe("buildDocxReport", () => {
     expect(runText).toContain("Liability cap");
     expect(runText).toContain("Acceptable");
   });
+
+  it("surfaces the v3 ladder detail (met rung, deal-size band, approved fallback) in the posture table", async () => {
+    const posture = {
+      counts: { ideal: 0, acceptable: 1, below_acceptable: 1, unevaluable: 0 },
+      positions: [
+        {
+          dimension: "Liability cap",
+          tier: "acceptable" as const,
+          detail: "8x",
+          met_rung: "7x cap",
+          size_band: "≥ $1M",
+          section_id: "s4",
+        },
+        {
+          dimension: "Indemnity",
+          tier: "below-acceptable" as const,
+          approved_language: "Indemnity shall be mutual and capped at fees.",
+        },
+      ],
+      posture_hash: "f".repeat(64),
+    };
+    const blob = await buildDocxReport(
+      makeRun(),
+      ingest,
+      loadStarterDkbSync(),
+      loadMutualNda(),
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      posture,
+    );
+    const { unzipSync, strFromU8 } = await import("fflate");
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const runText = (
+      strFromU8(entries["word/document.xml"]!).match(/<w:t[^>]*>([^<]*)<\/w:t>/g) ?? []
+    )
+      .map((m) => m.replace(/<[^>]+>/g, ""))
+      .join("");
+    expect(runText).toContain("met rung: 7x cap");
+    expect(runText).toContain("Deal-size band: ≥ $1M");
+    expect(runText).toContain("Your approved fallback: Indemnity shall be mutual");
+  });
 });
 
 describe("buildJsonReport", () => {
