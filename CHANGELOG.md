@@ -19,8 +19,11 @@ All notable changes to this project will be documented in this file. Format adap
   whether or not a log rode along. A lone `.csv` is still rejected (a privilege
   log is only meaningful next to the documents it describes). The bundle-complete
   screen also shows a "Production QA" card summarizing the reconciliation with the
-  honest scope note. This completes the browser integration of the production-QA
-  pack (the per-member pre-production HANDOFF sweep stays CLI-only in v1).
+  honest scope note. The privilege log is picked up from either input path — a
+  multi-file/folder drop or a `.zip` bundle (the archive extractor now inflates the
+  `.csv` member under the same zip-bomb guards). This completes the browser
+  integration of the production-QA pack (the per-member pre-production HANDOFF
+  sweep stays CLI-only in v1).
 
 ### Fixed
 - **The headless CLI can now actually analyze DOCX files — `vaulytica analyze contract.docx`

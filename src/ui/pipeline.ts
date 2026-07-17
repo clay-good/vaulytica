@@ -1037,8 +1037,12 @@ export async function expandBundleInputs(
   }
   // Defensive: ignore unsupported extensions up-front; `planBundle`
   // would reject them with per-file messages, but for the UI we want a
-  // tighter, deterministic list to feed the engine.
-  const accepted = files.filter((f) => classifyExtension(f.name) !== null);
+  // tighter, deterministic list to feed the engine. Documents plus the
+  // `.csv` privilege-log data member (add-production-qa-pack) are kept;
+  // `prepareBundle` partitions the log out before doc planning.
+  const accepted = files.filter(
+    (f) => classifyExtension(f.name) !== null || classifyDataMember(f.name) !== null,
+  );
   return filesToCandidates(accepted);
 }
 
@@ -1058,22 +1062,20 @@ export async function prepareBundle(
 ): Promise<PreparedBundle> {
   if (files.length === 0) throw new Error(BUNDLE_CAP_MESSAGE);
 
-  // 1. Resolve raw bytes (handles single-zip and multi-file).
+  // 1. Resolve raw bytes (handles single-zip and multi-file). The candidate
+  // list may include a `.csv` privilege-log data member (add-production-qa-pack)
+  // for either input path — a multi-file/folder drop or a `.zip` bundle.
   const candidates = await expandBundleInputs(files);
-  const plan = planBundle(candidates);
-  if (!plan.ok) throw new Error(plan.reason);
 
-  // 1b. Privilege-log data member (add-production-qa-pack). A `.csv` dropped
-  // alongside the documents is the privilege log, not a document to ingest.
-  // `expandBundleInputs` already drops it from the doc-candidate list, so pull
-  // it from the raw drop. v1: multi-file / folder drop only — a `.csv` embedded
-  // inside a `.zip` is deferred (`extractZipEntries` inflates only .pdf/.docx).
-  const isZipDrop = files.length === 1 && files[0]!.name.toLowerCase().endsWith(".zip");
-  const dataCandidates = isZipDrop
-    ? []
-    : await filesToCandidates(files.filter((f) => classifyDataMember(f.name) !== null));
-  const { member: privilege_log, rejected: dataRejected } =
-    selectPrivilegeLogMember(dataCandidates);
+  // 1b. Partition the privilege-log `.csv` out of the candidates before doc
+  // planning: it is the privilege log, not a document to ingest. Done at the
+  // candidate level (not the raw drop) so it works uniformly whether the log was
+  // dropped alongside the documents or lived inside a `.zip` bundle.
+  const { member: privilege_log, rejected: dataRejected } = selectPrivilegeLogMember(candidates);
+  const docCandidates = candidates.filter((c) => classifyDataMember(c.filename) === null);
+
+  const plan = planBundle(docCandidates);
+  if (!plan.ok) throw new Error(plan.reason);
 
   // 2. Load DKB + playbooks in parallel.
   const bundlePlaybookBase = config.playbook_base ?? DEFAULT_PLAYBOOK_BASE;

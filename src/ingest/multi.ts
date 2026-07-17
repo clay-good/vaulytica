@@ -295,7 +295,12 @@ export function extractZipEntries(
       if (basename.toLowerCase().endsWith(".zip")) {
         throw new ArchiveTooLargeError(`Nested archive "${name}" is not allowed inside a bundle.`);
       }
-      if (classifyExtension(basename) === null) return false; // not inflated
+      // Documents plus the `.csv` privilege-log data member (add-production-qa-pack)
+      // are inflated; anything else is skipped (not inflated). The privilege log
+      // is subject to the same decompression-ratio / budget guards as documents.
+      if (classifyExtension(basename) === null && classifyDataMember(basename) === null) {
+        return false;
+      }
       const ratio = file.size > 0 ? file.originalSize / file.size : file.originalSize;
       if (ratio > MAX_COMPRESSION_RATIO) {
         throw new ArchiveTooLargeError(
@@ -345,10 +350,11 @@ export function extractZipEntries(
       continue;
     }
     const basename = path.split("/").pop() ?? path;
-    if (classifyExtension(basename) === null) {
-      // Spec §8: silently skip non-PDF/DOCX entries inside the zip;
-      // the user's intent is plainly the legal docs, and bundling a
-      // README.txt alongside a contract shouldn't fail the bundle.
+    if (classifyExtension(basename) === null && classifyDataMember(basename) === null) {
+      // Spec §8: silently skip non-document entries inside the zip; the
+      // user's intent is plainly the legal docs (plus an optional privilege-log
+      // .csv), and bundling a README.txt alongside a contract shouldn't fail the
+      // bundle.
       continue;
     }
     const bytes = data.buffer.slice(

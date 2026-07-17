@@ -32,11 +32,13 @@
   + honest scope note, reusing the `np-*`/`pc-*` card styles — no new CSS). It is
   held **outside** `bundle_fingerprint` — the `posture_coherence` precedent — so
   every csv-free bundle is byte-identical (unit, golden, states, and end-to-end
-  tests pin this). Remaining v1 scope limits: the per-member pre-production HANDOFF
-  sweep is CLI-only in the browser (the browser reconciles from filenames + log
-  only, since raw member bytes are not retained on `PreparedBundle`), and a
-  zip-embedded `.csv` is deferred (a multi-file/folder drop is the browser path;
-  `extractZipEntries` inflates only `.pdf`/`.docx`).
+  tests pin this). Both input paths carry the log: a multi-file/folder drop **and**
+  a `.zip` bundle (`extractZipEntries` now inflates the `.csv` privilege-log member
+  under the same zip-bomb guards, and `prepareBundle` partitions it out of the
+  candidate list before doc planning — so the capture is uniform across both
+  paths). Remaining v1 scope limit: the per-member pre-production HANDOFF sweep is
+  CLI-only in the browser (the browser reconciles from filenames + log only, since
+  raw member bytes are not retained on `PreparedBundle`).
 - **PROD is a bundle-level pass, not a consistency (CC-*) rule.** The
   `requires:DocKind[]` pairwise consistency model does not fit a data-member vs
   produced-set reconciliation; production QA is its own aggregator with its own

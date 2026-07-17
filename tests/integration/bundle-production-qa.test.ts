@@ -19,6 +19,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
+import { zipSync, strToU8 } from "fflate";
 
 import { prepareBundle, runBundleReport } from "../../src/ui/pipeline.js";
 import { resolveDkbDir } from "../../tools/dkb/resolve.js";
@@ -123,6 +124,23 @@ describe("browser bundle + privilege-log CSV → production_qa (add-production-q
     // ACME-000002 is withheld per the log but is a gap in the produced set —
     // the pack flags the produced-set gap (PROD-001).
     expect(pq!.findings.some((f) => f.code === "PROD-001")).toBe(true);
+  }, 30000);
+
+  it("reconciles a privilege-log CSV embedded inside a .zip bundle", async () => {
+    const zipBytes = zipSync({
+      "ACME-000001.docx": new Uint8Array(
+        readFileSync(join(BUNDLE_DIR, "master-services-agreement.docx")),
+      ),
+      "ACME-000003.docx": new Uint8Array(readFileSync(join(BUNDLE_DIR, "statement-of-work.docx"))),
+      "privilege-log.csv": strToU8(PRIVILEGE_LOG_CSV),
+    });
+    const zipFile = new File([zipBytes], "production.zip", { type: "application/zip" });
+    const { result } = await runBundle([zipFile]);
+    expect(result.production_qa).toBeDefined();
+    expect(result.production_qa!.log_present).toBe(true);
+    // Two documents + the log = three members.
+    expect(result.production_qa!.member_count).toBe(3);
+    expect(result.production_qa!.findings.some((f) => f.code === "PROD-001")).toBe(true);
   }, 30000);
 
   it("omits production_qa and leaves bundle_fingerprint byte-identical without a CSV", async () => {

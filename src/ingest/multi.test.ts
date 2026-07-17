@@ -159,6 +159,16 @@ describe("extractZipEntries", () => {
     expect(entries.map((e) => e.filename).sort()).toEqual(["baa.pdf", "msa.docx"]);
   });
 
+  it("extracts a .csv privilege-log data member alongside the documents (add-production-qa-pack)", () => {
+    const archive = buildZip({
+      "msa.docx": strToU8("docx-bytes"),
+      "privilege-log.csv": strToU8("bates_begin,bates_end\nACME-1,ACME-1"),
+      "README.md": strToU8("skip me"),
+    });
+    const entries = extractZipEntries(archive);
+    expect(entries.map((e) => e.filename).sort()).toEqual(["msa.docx", "privilege-log.csv"]);
+  });
+
   it("flattens nested folders and uses the basename as the entry name", () => {
     const archive = buildZip({
       "deal-2026/contracts/msa.docx": strToU8("x"),
