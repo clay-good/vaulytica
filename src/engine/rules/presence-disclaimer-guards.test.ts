@@ -177,6 +177,19 @@ describe("presence-detector disclaimer guards", () => {
     ).toBe(true);
   });
 
+  it("OBLI-009 suppresses a 'no <trigger>' disclaimer (bare determiner negates the trigger)", () => {
+    // "no residuals clause is granted" negates the trigger noun directly — the
+    // clause-absence markers reached "does not include" / "contains no" but not a
+    // bare "no" sitting immediately before the trigger. A missed flag is safer
+    // than a confident false accusation on a document that declined the clause.
+    expect(
+      fires(
+        OBLI_009,
+        "The receiving party shall not use residual knowledge; no residuals clause is granted.",
+      ),
+    ).toBe(false);
+  });
+
   it("OBLI-007 still fires on an operative MAC materiality qualifier", () => {
     // "would not result in a material adverse effect" is an operative qualifier,
     // not a disclaimer of a MAC clause — the concept is present and must fire.

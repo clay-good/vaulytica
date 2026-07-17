@@ -109,9 +109,16 @@ export function firstUnnegatedParagraphMatch(
  * "Employee agrees not to disparage", "the breach would not result in a
  * material adverse effect") and must still fire; only language negating the
  * clause's PRESENCE or the actor's OBLIGATION to do the thing suppresses.
+ *
+ * The final `no\s*$` branch matches a bare "no" sitting immediately before the
+ * trigger ("no residuals clause is granted", "grants no source-code escrow") —
+ * the determiner negates the trigger noun itself. Anchored to the end of the
+ * pre-trigger slice, so it only fires on "no <trigger>", never on an unrelated
+ * "no" earlier in the sentence, and never on "not"/"no-hire" (no trailing
+ * whitespace-to-trigger).
  */
 const CLAUSE_ABSENCE =
-  /\b(?:(?:do(?:es)?|shall|will|may|must)\s+not\s+(?:include|contain|provide\s+for|provide|require|impose|create|permit|allow|grant|obligate|contemplate|use)|(?:contain|include)s?\s+no\b|ha[sv]e\s+no\b|need\s+not\b|no\s+(?:obligation|provision|provisions|requirement|right|duty)\b|not\s+(?:be\s+(?:required|obligated|permitted|entitled|held|deemed|subject|construed)|have\s+(?:the\s+)?right))/i;
+  /\b(?:(?:do(?:es)?|shall|will|may|must)\s+not\s+(?:include|contain|provide\s+for|provide|require|impose|create|permit|allow|grant|obligate|contemplate|use)|(?:contain|include)s?\s+no\b|ha[sv]e\s+no\b|need\s+not\b|no\s+(?:obligation|provision|provisions|requirement|right|duty)\b|not\s+(?:be\s+(?:required|obligated|permitted|entitled|held|deemed|subject|construed)|have\s+(?:the\s+)?right)|no\s*$)/i;
 
 /**
  * True when the trigger at `matchIndex` sits in a sentence whose text BEFORE
