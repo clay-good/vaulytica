@@ -32,8 +32,9 @@ import type { RegimeId } from "../privacy/regime-data.js";
 let activeCustomPlaybook: LoadedPlaybook | null = null;
 
 // add-privacy-notice-pack — regimes asserted in the tab (the `--regime`
-// counterpart). Empty = pack dormant. Applied to single-document analyses;
-// the bundle pipeline does not yet take regimes.
+// counterpart). Empty = pack dormant. Applied to single-document analyses
+// and to every bundle member (each member activates only if it matched a
+// privacy-notice playbook).
 let activeRegimes: readonly RegimeId[] = [];
 
 /**
@@ -608,6 +609,9 @@ async function runBundle(
         // cross-document coherence card. The playbook drives only the posture
         // here (not the per-doc engine run); absent positions, no coherence.
         custom_playbook: activeCustomPlaybook ?? undefined,
+        // add-privacy-notice-pack — the asserted regimes reach each bundle
+        // member; dormant per member unless it matched a notice playbook.
+        regimes: activeRegimes.length > 0 ? activeRegimes : undefined,
       },
     );
     // Retain the prepared bundle so a consistency toggle can re-run
@@ -800,7 +804,12 @@ async function runBundleComparison(
         onDocumentReady: (filename) => ticker.push("DOC", filename),
       },
       {},
-      { custom_playbook: activeCustomPlaybook ?? undefined },
+      {
+        custom_playbook: activeCustomPlaybook ?? undefined,
+        // add-privacy-notice-pack — keep the revised round's member runs on the
+        // same asserted regimes as the baseline round.
+        regimes: activeRegimes.length > 0 ? activeRegimes : undefined,
+      },
     );
 
     if (!revised.posture_coherence) {

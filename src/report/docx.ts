@@ -43,6 +43,8 @@ import type { DKB } from "../dkb/types.js";
 import type { IngestResult } from "../ingest/types.js";
 import type { Playbook } from "../playbooks/types.js";
 import { scopeForPlaybook } from "../verticals/registry.js";
+import { buildRegimeCoverage } from "../privacy/coverage.js";
+import type { RegimeId } from "../privacy/regime-data.js";
 import { buildReviewCoverage, reviewCoverageSentence } from "./review-coverage.js";
 import { ENGAGEMENT_SCOPE } from "./engagement-scope.js";
 import type { ExtractedData } from "../extract/types.js";
@@ -130,6 +132,10 @@ export async function buildDocxReport(
     ...(v3?.transfers ? renderTransfersSummary(v3.transfers) : []),
     ...(v3?.subprocessor ? renderSubprocessorPage(v3.subprocessor) : []),
     ...(v3?.insurance ? renderInsurancePage(v3.insurance) : []),
+    // add-privacy-notice-pack — per-regime coverage table when the PNOT pack
+    // ran (the run carries `asserted_regimes`). A render-side projection of
+    // the fired PNOT findings, outside result_hash; [] otherwise.
+    ...renderRegimeCoverageSection(run),
     ...renderObligationsLedger(run, extracted),
     // spec-v6 Part VI §21 — jurisdiction overlays. State-law deltas for the
     // detected governing-law state(s), surfaced as an advisory reference layer
@@ -956,6 +962,40 @@ function renderAuditTrail(
 
 // ---------------------------------------------------------------------------
 // Attorney-review coverage block (add-attorney-review-ledger)
+
+// add-privacy-notice-pack — per-regime coverage table. "Found" means the
+// item's language was detected in the document — never that the notice is
+// adequate or compliant. Mirrors the JSON `regime_coverage` block.
+function renderRegimeCoverageSection(run: EngineRun): (Paragraph | Table)[] {
+  const regimes = run.asserted_regimes;
+  if (!regimes || regimes.length === 0) return [];
+  const fired = new Set(
+    run.findings.filter((f) => f.rule_id.startsWith("PNOT-")).map((f) => f.rule_id),
+  );
+  const coverage = buildRegimeCoverage(regimes as RegimeId[], fired);
+  const out: (Paragraph | Table)[] = [
+    h1("Privacy Regime Coverage"),
+    para({
+      text:
+        "For each privacy regime asserted by the user, the enumerated notice-content items and whether each item's language was found in this document. " +
+        '"Found" means the item\'s language was detected — never that the notice is adequate or compliant. Items not detected also appear as findings above.',
+    }),
+  ];
+  for (const c of coverage) {
+    out.push(spacer(), h2(`${c.regime_name} — ${c.found_count} of ${c.total} items found`));
+    out.push(
+      new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        rows: [
+          headerRow(["Item", "Status", "Rule"]),
+          ...c.items.map((i) => bodyRow([i.item, i.found ? "Found" : "Not detected", i.rule_id])),
+        ],
+      }),
+    );
+  }
+  out.push(pageBreak());
+  return out;
+}
 
 function renderReviewCoverageSection(run: EngineRun): Paragraph[] {
   const coverage = buildReviewCoverage(run.findings);

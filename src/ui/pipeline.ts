@@ -345,7 +345,8 @@ export type PipelineOptions = {
   /**
    * add-privacy-notice-pack — asserted privacy regimes. When set and the
    * document matches a privacy-notice playbook, the PNOT presence rules for
-   * those regimes run. Omit to keep the pack dormant (default).
+   * those regimes run. In a bundle, each member activates independently under
+   * the same test. Omit to keep the pack dormant (default).
    */
   regimes?: readonly RegimeId[];
   /**
@@ -1204,12 +1205,24 @@ export async function prepareBundle(
       sha256: ingest.sha256,
       size_bytes: entry.size_bytes,
     };
+    // add-privacy-notice-pack — layer the PNOT rules for the asserted regimes
+    // onto this member, mirroring the single-document path. A no-op (member
+    // run byte-identical) unless regimes are asserted AND this member matched
+    // a privacy-notice playbook, so regime-free bundles keep their fingerprint.
+    const privacyWiring = activatePrivacyNotice(
+      options.regimes ?? [],
+      playbook.id,
+      ruleSet as readonly Rule[],
+    );
     const run = await runEngine({
-      rules: ruleSet as readonly Rule[],
+      rules: privacyWiring.rules,
       ctx: { tree: ingest.tree, extracted, dkb, playbook },
       source_file: sourceFile,
       playbook_match_confidence: match.confidence,
       playbook_match_reasoning: match.reasoning,
+      ...(privacyWiring.asserted_regimes
+        ? { asserted_regimes: privacyWiring.asserted_regimes }
+        : {}),
       executed_at: new Date().toISOString(),
       onRule: ({ index, total: ruleTotal }) => {
         perDocProgress[docIndex] = (index + 1) / ruleTotal;

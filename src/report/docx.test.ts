@@ -116,6 +116,37 @@ describe("buildDocxReport", () => {
     expect(runText).toContain("commercial adequacy");
   });
 
+  it("renders the privacy-regime coverage section only when regimes were asserted", async () => {
+    const extractText = async (blob: Blob): Promise<string> => {
+      const { unzipSync, strFromU8 } = await import("fflate");
+      const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+      return (strFromU8(entries["word/document.xml"]!).match(/<w:t[^>]*>([^<]*)<\/w:t>/g) ?? [])
+        .map((m) => m.replace(/<[^>]+>/g, ""))
+        .join("");
+    };
+
+    // Default run (no asserted regimes) — the section must be absent.
+    const withoutText = await extractText(
+      await buildDocxReport(makeRun(), ingest, loadStarterDkbSync(), loadMutualNda()),
+    );
+    expect(withoutText).not.toContain("Privacy Regime Coverage");
+
+    // Run with ccpa asserted and one PNOT finding fired (item not detected).
+    const run = makeRun();
+    run.asserted_regimes = ["ccpa"];
+    run.findings = [...run.findings, { ...finding("p1", "warning"), rule_id: "PNOT-CCPA-001" }];
+    const withText = await extractText(
+      await buildDocxReport(run, ingest, loadStarterDkbSync(), loadMutualNda()),
+    );
+    expect(withText).toContain("Privacy Regime Coverage");
+    expect(withText).toContain("CCPA/CPRA privacy policy — 11 of 12 items found");
+    // The fired rule's item reads Not detected; its rule id is listed.
+    expect(withText).toContain("Not detected");
+    expect(withText).toContain("PNOT-CCPA-001");
+    // Honesty caveat: found ≠ adequate/compliant.
+    expect(withText).toContain("never that the notice is adequate or compliant");
+  });
+
   it("emits review_coverage in the JSON report (a projection outside result_hash)", () => {
     const run = makeRun();
     const blob = buildJsonReport(run, ingest, loadMutualNda());
