@@ -68,10 +68,19 @@ function logFile(csv = PRIVILEGE_LOG_CSV): File {
   return new File([csv], "privilege-log.csv", { type: "text/csv" });
 }
 
-async function bundleJson(files: File[]): Promise<Record<string, unknown>> {
+async function runBundle(
+  files: File[],
+): Promise<{ json: Record<string, unknown>; result: Awaited<ReturnType<typeof runBundleReport>> }> {
   const prepared = await prepareBundle(files, {}, CONFIG);
-  const report = await runBundleReport(prepared);
-  return JSON.parse(await report.bundle_json_blob.text()) as Record<string, unknown>;
+  const result = await runBundleReport(prepared);
+  return {
+    json: JSON.parse(await result.bundle_json_blob.text()) as Record<string, unknown>,
+    result,
+  };
+}
+
+async function bundleJson(files: File[]): Promise<Record<string, unknown>> {
+  return (await runBundle(files)).json;
 }
 
 describe("browser bundle + privilege-log CSV → production_qa (add-production-qa-pack)", () => {
@@ -91,7 +100,12 @@ describe("browser bundle + privilege-log CSV → production_qa (add-production-q
       at("statement-of-work.docx", "ACME-000003.docx"),
       at("data-processing-addendum.docx", "ACME-000004.docx"),
     ];
-    const json = await bundleJson([...members, logFile()]);
+    const { json, result } = await runBundle([...members, logFile()]);
+
+    // The pipeline result carries production_qa too — the field main.ts reads to
+    // populate the bundle-complete "Production QA" card and the bundle DOCX.
+    expect(result.production_qa).toBeDefined();
+    expect(result.production_qa!.log_present).toBe(true);
 
     const pq = json.production_qa as
       | {
@@ -109,7 +123,7 @@ describe("browser bundle + privilege-log CSV → production_qa (add-production-q
     // ACME-000002 is withheld per the log but is a gap in the produced set —
     // the pack flags the produced-set gap (PROD-001).
     expect(pq!.findings.some((f) => f.code === "PROD-001")).toBe(true);
-  });
+  }, 30000);
 
   it("omits production_qa and leaves bundle_fingerprint byte-identical without a CSV", async () => {
     const withoutLog = await bundleJson(docs());
@@ -120,5 +134,7 @@ describe("browser bundle + privilege-log CSV → production_qa (add-production-q
     // its own result_hash — so the fingerprint of the same three documents is
     // unchanged whether or not a log rode along.
     expect(withLog.bundle_fingerprint).toBe(withoutLog.bundle_fingerprint);
-  });
+    // This test runs the full bundle pipeline three times; under coverage
+    // instrumentation on cold CI that comfortably exceeds the 5s default.
+  }, 30000);
 });

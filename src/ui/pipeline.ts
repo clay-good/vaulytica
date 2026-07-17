@@ -985,6 +985,14 @@ export type BundlePipelineResult = {
    * review is one download instead of a dozen.
    */
   bundle_zip_blob: Blob;
+  /**
+   * Bundle-level production-QA reconciliation (add-production-qa-pack). Present
+   * only when a privilege-log `.csv` rode in with the bundle. The UI surfaces it
+   * as a "Production QA" section in the bundle-complete state; both the bundle
+   * DOCX and JSON downloads also carry it. Additive — its own
+   * `production_qa_hash`, outside the bundle fingerprint.
+   */
+  production_qa?: ProductionQaReport;
 };
 
 /**
@@ -1370,6 +1378,7 @@ export async function runBundleReport(
     bundle_json_blob,
     bundle_zip_blob,
     posture_coherence,
+    production_qa,
   };
 }
 

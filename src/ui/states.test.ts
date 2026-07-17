@@ -872,6 +872,64 @@ describe("renderState", () => {
     document.body.removeChild(dz);
   });
 
+  it("bundle-complete renders the production-QA card when a privilege log was present (add-production-qa-pack)", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 3,
+      counts: { critical: 0, warning: 0, info: 0 },
+      cross_doc_findings: 0,
+      bundle_docx_blob: new Blob(["docx"], { type: "application/octet-stream" }),
+      bundle_json_blob: new Blob(["{}"], { type: "application/json" }),
+      bundle_docx_filename: "vaulytica-bundle.docx",
+      bundle_json_filename: "vaulytica-bundle.json",
+      production_qa: {
+        member_count: 4,
+        bates_count: 3,
+        log_present: true,
+        log_warnings: [],
+        findings: [
+          {
+            code: "PROD-001",
+            severity: "warning",
+            title: "Produced-set gap",
+            detail: "ACME-000002 is withheld per the log but is a gap in the produced set.",
+          },
+        ],
+        production_qa_hash: "a".repeat(64),
+      },
+    });
+    const card = select(dz, "bundle-production-qa")!;
+    expect(card.hidden).toBe(false);
+    expect(card.textContent).toMatch(/Production QA/);
+    expect(card.textContent).toMatch(/4 members/);
+    expect(card.textContent).toMatch(/privilege log present/);
+    expect(card.textContent).toMatch(/PROD-001 — Produced-set gap/);
+    // The honest scope disclaimer is always shown.
+    expect(card.textContent).toMatch(/does not read in-page Bates stamps/);
+    document.body.removeChild(dz);
+  });
+
+  it("bundle-complete hides the production-QA card when no privilege log was supplied", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 2,
+      counts: { critical: 0, warning: 0, info: 0 },
+      cross_doc_findings: 0,
+      bundle_docx_blob: new Blob(["docx"], { type: "application/octet-stream" }),
+      bundle_json_blob: new Blob(["{}"], { type: "application/json" }),
+      bundle_docx_filename: "vaulytica-bundle.docx",
+      bundle_json_filename: "vaulytica-bundle.json",
+    });
+    const card = select(dz, "bundle-production-qa")!;
+    expect(card.hidden).toBe(true);
+    expect(card.innerHTML).toBe("");
+    document.body.removeChild(dz);
+  });
+
   it("bundle-complete hides the compare-round row unless on_compare_round is supplied (spec-v13 Thrust B)", () => {
     const dz = document.createElement("div");
     document.body.appendChild(dz);

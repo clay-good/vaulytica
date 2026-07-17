@@ -17,8 +17,10 @@ All notable changes to this project will be documented in this file. Format adap
   production, not a document with its own `result_hash`, so it is held outside
   `bundle_fingerprint`: a bundle of the same documents fingerprints identically
   whether or not a log rode along. A lone `.csv` is still rejected (a privilege
-  log is only meaningful next to the documents it describes). A dedicated
-  interactive report tab remains a follow-up.
+  log is only meaningful next to the documents it describes). The bundle-complete
+  screen also shows a "Production QA" card summarizing the reconciliation with the
+  honest scope note. This completes the browser integration of the production-QA
+  pack (the per-member pre-production HANDOFF sweep stays CLI-only in v1).
 
 ### Fixed
 - **The headless CLI can now actually analyze DOCX files — `vaulytica analyze contract.docx`

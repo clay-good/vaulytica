@@ -450,6 +450,27 @@ export type DropzoneState =
         counts: { aligned: number; divergent: number; single: number; unstated: number };
       };
       /**
+       * Bundle-level production-QA reconciliation (add-production-qa-pack).
+       * Present only when a privilege-log `.csv` rode in with the bundle. When
+       * set, the bundle-complete state renders a "Production QA" card: the Bates
+       * / privilege-log reconciliation findings plus the honest scope note. Both
+       * the bundle DOCX and JSON downloads carry the full report; the card is the
+       * at-a-glance summary. Omitted (back-compat) for a csv-free bundle.
+       */
+      production_qa?: {
+        member_count: number;
+        bates_count: number;
+        log_present: boolean;
+        log_warnings: ReadonlyArray<string>;
+        findings: ReadonlyArray<{
+          code: string;
+          severity: "warning" | "info";
+          title: string;
+          detail: string;
+        }>;
+        production_qa_hash: string;
+      };
+      /**
        * spec-v13 Thrust B — two-round comparison affordance. Present only when
        * this bundle produced a posture coherence (a positions-bearing custom
        * playbook was active), so there is a binding floor to track round over
@@ -618,6 +639,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     </div>
     <ul class="multi-doc-cards" data-role="multi-doc-cards" aria-label="Per-document summary" hidden></ul>
     <div class="negotiation-section" data-role="bundle-posture-coherence" hidden></div>
+    <div class="negotiation-section" data-role="bundle-production-qa" hidden></div>
     <button class="btn btn-primary" type="button" data-role="bundle-download">Download consolidated report (Word)</button>
     <button class="btn-link" type="button" data-role="bundle-json-download">Download bundle data (JSON)</button>
     <button class="btn-link" type="button" data-role="bundle-zip-download" hidden>Download everything (.zip)</button>
@@ -896,6 +918,7 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
     renderRejectedFiles(dz, state.rejected);
     renderMultiDocCards(dz, state.documents);
     renderPostureCoherence(dz, state.posture_coherence);
+    renderProductionQa(dz, state.production_qa);
     const docxBtn = select<HTMLButtonElement>(dz, "bundle-download")!;
     const jsonBtn = select<HTMLButtonElement>(dz, "bundle-json-download")!;
     const status = select<HTMLElement>(dz, "download-status")!;
@@ -1607,6 +1630,55 @@ function renderPostureCoherence(
     </div>
     <ul class="np-list">${cards}</ul>
     <div class="np-note">How your posture sits across the whole bundle, deterministically — each document was classified against the same positions; it names the weakest document but does not decide which one legally governs.</div>
+  `;
+}
+
+/**
+ * Production-QA card (add-production-qa-pack). Present only when a privilege-log
+ * `.csv` rode in with the bundle: the Bates / privilege-log reconciliation
+ * findings plus the honest scope note. Reuses the `np-*` card styles (a
+ * `pc-divergent` left border for a warning, `pc-single` for info), so it is
+ * mobile-safe with no new CSS. Advisory — numbering was read from filenames and
+ * reconciled against the supplied log; it does not read in-page Bates stamps,
+ * check redaction integrity, or assess the merits of any privilege claim.
+ * Hidden when no privilege log was supplied.
+ */
+function renderProductionQa(
+  dz: HTMLElement,
+  pq: Extract<DropzoneState, { kind: "bundle-complete" }>["production_qa"],
+): void {
+  const el = select<HTMLElement>(dz, "bundle-production-qa");
+  if (!el) return;
+  if (!pq) {
+    el.hidden = true;
+    el.innerHTML = "";
+    return;
+  }
+  el.hidden = false;
+  const warnings = pq.log_warnings
+    .map((w) => `<div class="np-detail">Privilege log: ${escapeHtml(w)}</div>`)
+    .join("");
+  const body =
+    pq.findings.length === 0
+      ? `<div class="np-detail">No Bates or privilege-log reconciliation issues found.</div>`
+      : `<ul class="np-list">${pq.findings
+          .map((f) => {
+            const cls = f.severity === "warning" ? "pc-divergent" : "pc-single";
+            const sev = f.severity === "warning" ? "Warning" : "Info";
+            return `<li class="np-card ${cls}">
+        <div class="np-head"><span class="np-dim">${escapeHtml(f.code)} — ${escapeHtml(f.title)}</span> <span class="np-tier">${sev}</span></div>
+        <div class="np-detail">${escapeHtml(f.detail)}</div>
+      </li>`;
+          })
+          .join("")}</ul>`;
+  el.innerHTML = `
+    <div class="np-heading">
+      <span class="np-badge">Production QA</span>
+      <span class="np-summary">${pq.member_count} members · ${pq.bates_count} Bates-numbered · privilege log ${pq.log_present ? "present" : "not supplied"} · ${pq.findings.length} ${pq.findings.length === 1 ? "issue" : "issues"}</span>
+    </div>
+    ${warnings}
+    ${body}
+    <div class="np-note">Bates numbering and privilege-log reconciliation, deterministically — read from the member filenames and the supplied log. It does not read in-page Bates stamps, check redaction integrity, or assess whether any privilege claim is valid. The full report (with scope of review) is in the Word and JSON downloads.</div>
   `;
 }
 

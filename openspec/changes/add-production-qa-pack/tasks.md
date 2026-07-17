@@ -19,23 +19,24 @@
   case. It does NOT touch `src/ingest/multi.ts`, `src/engine/consistency/`, or
   `src/report/bundle.ts`, so every existing bundle golden is byte-identical (no
   csv member enters the hashed bundle path).
-- **Browser bundle integration — JSON, DOCX section, and dropzone landed; only the
-  report tab still deferred.** The `.csv` privilege-log member now rides the browser
-  bundle path: a dedicated `selectPrivilegeLogMember` (rather than overloading
-  `AcceptedKind`, so the document flow is untouched) pulls the single log aside in
-  `prepareBundle`, and `runBundleReport` reconciles it via the same pure
-  `buildProductionQaReport` core the CLI uses. The result ships both in the bundle
-  **JSON** (`production_qa` block) and as a **Production QA section** in the
+- **Browser bundle integration — COMPLETE (JSON, DOCX section, bundle-complete
+  card, and dropzone).** The `.csv` privilege-log member rides the browser bundle
+  path end to end: the dropzone lets it through in the multi-file/folder path (a
+  lone `.csv` is still rejected); a dedicated `selectPrivilegeLogMember` (rather
+  than overloading `AcceptedKind`, so the document flow is untouched) pulls the
+  single log aside in `prepareBundle`; and `runBundleReport` reconciles it via the
+  same pure `buildProductionQaReport` core the CLI uses. The result ships in the
+  bundle **JSON** (`production_qa` block), as a **Production QA section** in the
   consolidated bundle **DOCX** (and the "everything" ZIP, which reuses the same
-  input) — findings table + scope-of-review + `production_qa_hash`, modelled on the
-  posture-coherence section. It is held **outside** `bundle_fingerprint` — the
-  `posture_coherence` precedent — so every csv-free bundle is byte-identical (unit,
-  golden, and end-to-end tests pin this). Still deferred: the interactive report
-  **tab** surface (both downloadable reports carry the section today); the
-  per-member pre-production HANDOFF sweep in the browser (the CLI runs it; the
-  browser v1 reconciles from filenames + log only, since raw member bytes are not
-  retained on `PreparedBundle`); and zip-embedded `.csv` (a multi-file/folder drop
-  is the browser path; `extractZipEntries` inflates only `.pdf`/`.docx`).
+  input), and as a **Production QA card** in the bundle-complete UI state (findings
+  + honest scope note, reusing the `np-*`/`pc-*` card styles — no new CSS). It is
+  held **outside** `bundle_fingerprint` — the `posture_coherence` precedent — so
+  every csv-free bundle is byte-identical (unit, golden, states, and end-to-end
+  tests pin this). Remaining v1 scope limits: the per-member pre-production HANDOFF
+  sweep is CLI-only in the browser (the browser reconciles from filenames + log
+  only, since raw member bytes are not retained on `PreparedBundle`), and a
+  zip-embedded `.csv` is deferred (a multi-file/folder drop is the browser path;
+  `extractZipEntries` inflates only `.pdf`/`.docx`).
 - **PROD is a bundle-level pass, not a consistency (CC-*) rule.** The
   `requires:DocKind[]` pairwise consistency model does not fit a data-member vs
   produced-set reconciliation; production QA is its own aggregator with its own

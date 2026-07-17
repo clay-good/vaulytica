@@ -685,6 +685,23 @@ async function renderBundleComplete(
           counts: result.posture_coherence.counts,
         }
       : undefined,
+    // add-production-qa-pack — Bates + privilege-log reconciliation, present only
+    // when a privilege-log .csv rode in with the bundle.
+    production_qa: result.production_qa
+      ? {
+          member_count: result.production_qa.member_count,
+          bates_count: result.production_qa.bates.length,
+          log_present: result.production_qa.log_present,
+          log_warnings: result.production_qa.log_warnings,
+          findings: result.production_qa.findings.map((f) => ({
+            code: f.code,
+            severity: f.severity,
+            title: f.title,
+            detail: f.detail,
+          })),
+          production_qa_hash: result.production_qa.production_qa_hash,
+        }
+      : undefined,
     rejected: result.rejected.length > 0 ? result.rejected : undefined,
     cross_doc_active: crossDocActive,
     // Spec-v3 §62 toggle: re-runs only the consistency pass + bundle
