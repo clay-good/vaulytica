@@ -123,6 +123,42 @@ describe("renderState", () => {
     expect(select(dz, "playbook-provenance")!.hasAttribute("hidden")).toBe(true);
   });
 
+  it("renders the v3 ladder detail (band, met rung, approved fallback) in the posture card", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "complete",
+      filename: "msa.docx",
+      playbook_name: "Team ladder",
+      counts: { critical: 0, warning: 0, info: 0 },
+      docx_blob: new Blob(["docx"]),
+      json_blob: new Blob(["{}"]),
+      docx_filename: "msa-vaulytica.docx",
+      json_filename: "msa-vaulytica.json",
+      negotiation_posture: {
+        counts: { ideal: 0, acceptable: 1, below_acceptable: 1, unevaluable: 0 },
+        positions: [
+          {
+            dimension: "Liability cap",
+            tier: "acceptable",
+            detail: "8x",
+            met_rung: "7x cap",
+            size_band: "≥ $1M",
+          },
+          {
+            dimension: "Indemnity",
+            tier: "below-acceptable",
+            approved_language: "Indemnity shall be mutual.",
+          },
+        ],
+      },
+    });
+    const card = select(dz, "negotiation")!;
+    expect(card.hidden).toBe(false);
+    expect(card.textContent).toContain("Deal-size band: ≥ $1M");
+    expect(card.textContent).toContain("met rung: 7x cap");
+    expect(card.textContent).toContain("Your approved fallback: Indemnity shall be mutual.");
+  });
+
   it("renders the unmatched-document banner and hides scope when generic-fallback", () => {
     const dz = document.createElement("div");
     renderState(dz, {

@@ -251,6 +251,10 @@ export type DropzoneState =
           detail?: string;
           reason?: string;
           section_id?: string;
+          /** add-negotiation-ladder-playbooks — v3 ladder detail. */
+          met_rung?: string;
+          size_band?: string;
+          approved_language?: string;
         }>;
       };
       /**
@@ -1495,10 +1499,25 @@ function renderNegotiationPosture(
       const where = p.section_id
         ? ` <span class="cd-kind">§${escapeHtml(p.section_id)}</span>`
         : "";
+      // add-negotiation-ladder-playbooks — v3 ladder detail: the deal-size band
+      // applied, the highest met rung above the floor, and the team's approved
+      // fallback language on a below-floor row. Rendering-only detail.
+      const band = p.size_band
+        ? `<div class="np-detail">Deal-size band: ${escapeHtml(p.size_band)}</div>`
+        : "";
+      const rung = p.met_rung
+        ? `<div class="np-detail">Above your floor — met rung: ${escapeHtml(p.met_rung)}</div>`
+        : "";
+      const approved = p.approved_language
+        ? `<div class="np-guide">Your approved fallback: ${escapeHtml(p.approved_language)}</div>`
+        : "";
       return `<li class="np-card ${tier.cls}">
         <div class="np-head"><span class="np-dim">${escapeHtml(p.dimension)}</span> <span class="np-tier">${escapeHtml(tier.label)}</span>${where}</div>
+        ${band}
+        ${rung}
         ${detail ? `<div class="np-detail">${escapeHtml(detail)}</div>` : ""}
         ${guide}
+        ${approved}
       </li>`;
     })
     .join("");

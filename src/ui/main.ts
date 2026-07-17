@@ -396,6 +396,10 @@ function renderCompleteState(
             detail: p.detail,
             reason: p.reason,
             section_id: p.section_id,
+            // add-negotiation-ladder-playbooks — v3 ladder detail.
+            met_rung: p.met_rung,
+            size_band: p.size_band,
+            approved_language: p.approved_language,
           })),
         }
       : undefined,
