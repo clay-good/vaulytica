@@ -41,6 +41,16 @@ describe("RISK-015 — indemnification without aggregate cap", () => {
     expect(RISK_015.check(ctx)).toBeNull();
   });
 
+  it("is silent when indemnification is expressly disclaimed", () => {
+    // The bare `indemnification obligation` trigger must not fire on a document
+    // that states the obligation is ABSENT — a confident false accusation.
+    const ctx = buildContext([
+      "Indemnification",
+      "There is no indemnification obligation under this Agreement.",
+    ]);
+    expect(RISK_015.check(ctx)).toBeNull();
+  });
+
   it("fires on `hold harmless` framing without a cap", () => {
     const ctx = buildContext([
       "Indemnity",

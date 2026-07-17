@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit } from "../_helpers.js";
+import { emit, isPresenceDisclaimed } from "../_helpers.js";
 import { forEachParagraph } from "../../../extract/walk.js";
 
 /**
@@ -46,7 +46,12 @@ export const rule: Rule = {
     forEachParagraph(ctx.tree, (p) => {
       if (!indemnityHit) {
         const m = INDEMNITY.exec(p.text);
-        if (m) {
+        // The `indemnification obligation(s)` branch is a bare noun phrase that
+        // also matches its own disclaimer ("there is no indemnification
+        // obligation") — a false accusation. Suppress a disclaimed match; the
+        // verb branches ("shall indemnify") never match a negated "shall not
+        // indemnify", so this only affects the noun-phrase form.
+        if (m && !isPresenceDisclaimed(p.text, m.index)) {
           indemnityHit = {
             sectionId: p.section.id,
             start: p.start + m.index,
