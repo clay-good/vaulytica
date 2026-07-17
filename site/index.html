@@ -729,6 +729,37 @@
         max-width: 56ch;
         text-align: left;
       }
+      /* Privacy-regime assertion panel (add-privacy-notice-pack) — the tab
+         counterpart of the CLI's --regime. Same footprint as the playbook
+         panel; nothing asserted by default. */
+      .regime-panel {
+        max-width: 56ch;
+        text-align: left;
+      }
+      .regime-details summary {
+        cursor: pointer;
+      }
+      .regime-fieldset {
+        margin: 8px 0;
+        border: 1px solid var(--border, #ddd);
+        border-radius: 8px;
+        padding: 6px 10px;
+      }
+      .regime-fieldset legend {
+        font-size: 13px;
+        color: var(--muted);
+        padding: 0 4px;
+      }
+      .regime-fieldset label {
+        display: block;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      .regime-hint {
+        margin-top: 6px;
+        font-size: 13px;
+        color: var(--muted);
+      }
       .playbook-panel .playbook-status {
         margin-top: 8px;
         font-size: 14px;
@@ -2131,6 +2162,7 @@
           <button type="button" class="btn-link" data-role="folder-pick">choose a folder…</button>
         </p>
         <div class="playbook-panel dropzone-extras" id="playbook-panel" role="group" aria-label="Bring your own playbook"></div>
+        <div class="regime-panel dropzone-extras" id="regime-panel" role="group" aria-label="Assert privacy-notice regimes"></div>
       </section>
 
       <!-- What it checks -->

@@ -21,6 +21,8 @@ import { hydrateDkbValidation } from "./dkb-validation.js";
 import { V3_FAMILY_LABELS } from "./v3-labels.js";
 import { scopeForPlaybook } from "../verticals/registry.js";
 import { bindPlaybookPanel, type LoadedPlaybook } from "./playbook-panel.js";
+import { bindRegimePanel } from "./regime-panel.js";
+import type { RegimeId } from "../privacy/regime-data.js";
 
 /**
  * The user-supplied playbook currently loaded in the tab (spec-v6 Part II,
@@ -28,6 +30,11 @@ import { bindPlaybookPanel, type LoadedPlaybook } from "./playbook-panel.js";
  * set, the next single-document analysis enforces it.
  */
 let activeCustomPlaybook: LoadedPlaybook | null = null;
+
+// add-privacy-notice-pack — regimes asserted in the tab (the `--regime`
+// counterpart). Empty = pack dormant. Applied to single-document analyses;
+// the bundle pipeline does not yet take regimes.
+let activeRegimes: readonly RegimeId[] = [];
 
 /**
  * Preload the analysis pipeline as a side-effect of user intent —
@@ -56,6 +63,12 @@ export async function bootUi(opts: {
    * absent, the playbook affordance is simply not rendered.
    */
   playbookPanelContainer?: HTMLElement | null;
+  /**
+   * Container hosting the privacy-regime assertion panel
+   * (add-privacy-notice-pack). Defaults to the `#regime-panel` node if one
+   * exists. When absent, the affordance is simply not rendered.
+   */
+  regimePanelContainer?: HTMLElement | null;
 }): Promise<void> {
   const persisted = readPersistedTheme();
   if (persisted) applyTheme(opts.root, persisted);
@@ -65,6 +78,14 @@ export async function bootUi(opts: {
     bindPlaybookPanel(opts.playbookPanelContainer, {
       onActiveChange: (playbook) => {
         activeCustomPlaybook = playbook;
+      },
+    });
+  }
+
+  if (opts.regimePanelContainer) {
+    bindRegimePanel(opts.regimePanelContainer, {
+      onChange: (regimes) => {
+        activeRegimes = regimes;
       },
     });
   }
@@ -117,7 +138,10 @@ async function runFile(dz: HTMLElement, file: File, kind: "pdf" | "docx"): Promi
           setState(dz, { kind: "analyzing", filename: file.name, dkb_version: version }),
       },
       {},
-      { custom_playbook: activeCustomPlaybook ?? undefined },
+      {
+        custom_playbook: activeCustomPlaybook ?? undefined,
+        regimes: activeRegimes.length > 0 ? activeRegimes : undefined,
+      },
     );
 
     const stem = baseFilename(file.name);
@@ -145,6 +169,8 @@ async function runFile(dz: HTMLElement, file: File, kind: "pdf" | "docx"): Promi
           active_frames: frames as readonly never[],
           // Preserve the active playbook across frame-toggle re-runs.
           custom_playbook: activeCustomPlaybook ?? undefined,
+          // ...and the asserted privacy regimes (add-privacy-notice-pack).
+          regimes: activeRegimes.length > 0 ? activeRegimes : undefined,
         });
         renderCompleteState(dz, file.name, stem, fresh, countsBySeverity, frames, rerun);
       } catch (err) {
@@ -839,12 +865,14 @@ if (typeof document !== "undefined") {
     if (!dz) return;
     const folderHost = document.getElementById("dropzone-extras") ?? undefined;
     const playbookHost = document.getElementById("playbook-panel") ?? undefined;
+    const regimeHost = document.getElementById("regime-panel") ?? undefined;
     void bootUi({
       root,
       dropzone: dz,
       themeButton: theme,
       folderPickContainer: folderHost,
       playbookPanelContainer: playbookHost,
+      regimePanelContainer: regimeHost,
     });
     void registerServiceWorker({ badge: document.getElementById("offline-badge") });
     void hydrateDkbValidation();

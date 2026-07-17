@@ -33,10 +33,14 @@
   the hashed run. A non-notice document (or one with no `--regime`) is
   byte-identical — verified (an NDA with `--regime ccpa,gdpr` has an unchanged
   `result_hash`).
-- **Coverage table in JSON; DOCX/tab rendering deferred.** The per-regime
+- **Coverage table in JSON; DOCX section still deferred.** The per-regime
   found/not-detected table ships in the CLI JSON (`regime_coverage`, a render-
   side projection outside the hash) and the not-detected items are the PNOT
-  findings themselves. A dedicated DOCX section and a tab multi-select are a
-  UI follow-up (consistent with the tab-picker deferrals in the filing pack).
+  findings themselves. The tab multi-select SHIPPED (follow-up, 2026-07-17):
+  a collapsed "Reviewing a privacy notice? Assert its regimes…" panel beside
+  the drop zone (nothing asserted by default), threading the asserted regimes
+  into single-document analyses and frame-toggle re-runs; the bundle pipeline
+  does not yet take regimes, and a dedicated DOCX coverage section remains a
+  follow-up.
 - **Regime data in `src/privacy/` as cited constants**, not DKB build nodes
   (same rationale as the filing/deadline packs).
