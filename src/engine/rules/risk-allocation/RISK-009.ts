@@ -21,7 +21,15 @@ export const rule: Rule = {
   dkb_citations: [],
 
   check(ctx: RuleContext): Finding | null {
-    type Hit = { text: string; sectionId: string; start: number; end: number; raw: string };
+    type Hit = {
+      text: string;
+      sectionId: string;
+      /** Match offset within the paragraph text (`local`) and in the document (`start`). */
+      local: number;
+      start: number;
+      end: number;
+      raw: string;
+    };
     let firstHit: Hit | null = null;
     forEachParagraph(ctx.tree, (p) => {
       if (firstHit) return;
@@ -31,6 +39,7 @@ export const rule: Rule = {
         text: p.text,
         raw: m[0],
         sectionId: p.section.id,
+        local: m.index,
         start: p.start + m.index,
         end: p.start + m.index + m[0].length,
       };
@@ -38,9 +47,14 @@ export const rule: Rule = {
     if (!firstHit) return null;
     const hit: Hit = firstHit;
 
+    // Slice the excerpt with the PARAGRAPH-LOCAL match offset — the previous
+    // code sliced with the document-absolute `hit.start` into the local
+    // `hit.text`, yielding an empty (or garbled) excerpt for any clause not in
+    // the document's first ~240 chars, so this critical finding shipped with no
+    // supporting text.
     const excerpt = hit.text.slice(
-      Math.max(0, hit.start - 40 - (hit.start - hit.start)),
-      Math.min(hit.text.length, 200),
+      Math.max(0, hit.local - 40),
+      Math.min(hit.text.length, hit.local + 200),
     );
     return makeFinding({
       rule,

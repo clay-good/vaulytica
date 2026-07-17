@@ -819,7 +819,7 @@
         "end_offset": 576,
         "section_id": "s1.2",
         "start_offset": 478,
-        "text": ""
+        "text": "Recipient shall be liable for all damages, direct, indirect, consequential, special, and punitive, without limitation, arising from any breach of this Agreement."
       },
       "explanation": "An uncapped or unlimited liability clause exposes a party to an open-ended financial risk. Even mutually agreed-upon caps usually carve out specific categories (fraud, willful misconduct, IP indemnity); a blanket 'no cap' is unusual outside those carve-outs.",
       "id": "RISK-009-s1.2-478",
@@ -964,7 +964,7 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\", \"Recipient\", \"Confidential Information\".",
-  "result_hash": "9336b37a28539286441a2337d73f7c69861a16b91f6d60ef0f9a1e5f2725da9c",
+  "result_hash": "1f6aed0768108d9c02b0ff4ca9d6b1aa7562110c19eb663aba5d0c29e9e603fd",
   "source_file": {
     "name": "bad-nda.docx",
     "sha256": "06ef03390c5dc6e696e8d41505220db6858f8f47c987bebe2b381f9f7d53a58b",

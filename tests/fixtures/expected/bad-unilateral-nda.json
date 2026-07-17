@@ -715,7 +715,7 @@
         "end_offset": 477,
         "section_id": "s1.2",
         "start_offset": 436,
-        "text": ""
+        "text": "n for an indefinite period and shall be liable for all damages without limitation."
       },
       "explanation": "An uncapped or unlimited liability clause exposes a party to an open-ended financial risk. Even mutually agreed-upon caps usually carve out specific categories (fraud, willful misconduct, IP indemnity); a blanket 'no cap' is unusual outside those carve-outs.",
       "id": "RISK-009-s1.2-436",
@@ -981,7 +981,7 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "75eb563dd5dccbdf65c7ed9c7b9afd06d5cea67049bc8621fa4c2bb2bd32522d",
+  "result_hash": "319c78c24888147bb24bb397ad07519792b8a56e8182b537f5c05c4bbc68b02f",
   "source_file": {
     "name": "bad-unilateral-nda.docx",
     "sha256": "be3d09f211f21ac2141d1ff1d2ec9023dafe4f56502a8a6b66aec83361fdeca6",
