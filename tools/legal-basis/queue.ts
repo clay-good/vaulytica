@@ -1,0 +1,204 @@
+/**
+ * Attorney review queue generator (add-attorney-review-ledger, task 2).
+ *
+ * `npm run queue:legal` writes `docs/legal-basis/review-queue.md` — the
+ * prioritized first tranche of rules for a licensed attorney to sign into the
+ * legal-basis ledger (`docs/legal-basis/ledger.json`). The queue is **data,
+ * not code**: it ranks the still-unreviewed rules so the human review effort
+ * (Steps 76/77, out of band) starts where it buys the most trust, and lists
+ * each rule's DKB-node citations so the reviewer knows exactly what to check.
+ *
+ * Build-and-CI-only. Like the rest of the ledger tooling this module is never
+ * imported by `src/` (the corpus-privacy guard asserts it). It is deterministic
+ * and offline: same `(catalog, scoreboard, ledger)` → byte-identical markdown,
+ * no wall clock. The committed artifact is pinned by `queue.test.ts` (a golden
+ * guard, the same discipline as the scoreboard-current guard): change a rule's
+ * severity or re-run the accuracy harness and forget to regenerate, and CI
+ * fails with a one-line fix — `npm run queue:legal`.
+ *
+ * ## Ranking — severity × firing frequency
+ *
+ * spec: "top-100 rules by severity × firing frequency." Score is
+ * `severityWeight × (1 + firing)`, where `firing` is how many graded documents
+ * the rule fired on in the committed scoreboard (`tp + fp`). The `1 +` keeps
+ * severity the primary key while the corpus is empty — firing is uniformly 0
+ * today, so the queue is ordered severity-then-id, and the header says so
+ * honestly. Once real annotated documents land, firing refines the order
+ * within and across severity bands without any code change. Ties break on
+ * `rule_id` ascending, so the order is a deterministic total order.
+ *
+ * Already-signed rules (present in the ledger) are excluded — the queue is the
+ * work that remains, so it shrinks as attorneys sign, never re-listing a rule
+ * that has a verdict.
+ */
+
+import { readFile, writeFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+import type { Rule, Severity } from "../../src/engine/index.js";
+import { SEVERITY_RANK } from "../../src/engine/index.js";
+import { loadAccuracyDeps } from "../accuracy/pipeline.js";
+import { loadLegalBasisLedger, indexLedger } from "../accuracy/legal-basis.js";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const REPO_ROOT = join(__dirname, "..", "..");
+export const QUEUE_PATH = join(REPO_ROOT, "docs", "legal-basis", "review-queue.md");
+const SCOREBOARD_PATH = join(REPO_ROOT, "tools", "accuracy", "scoreboard.json");
+
+/** How many rules the first tranche lists (spec: "top-100"). */
+export const QUEUE_LIMIT = 100;
+
+/** Severity → ranking weight (higher = reviewed sooner). Mirrors {@link SEVERITY_RANK}. */
+function severityWeight(sev: Severity): number {
+  // SEVERITY_RANK: critical 0, warning 1, info 2 (lower = more severe).
+  return Object.keys(SEVERITY_RANK).length - SEVERITY_RANK[sev];
+}
+
+/** One row in the review queue. */
+export type QueueEntry = {
+  rank: number;
+  rule_id: string;
+  name: string;
+  category: string;
+  severity: Severity;
+  /** Graded documents this rule fired on in the committed scoreboard (0 until a corpus lands). */
+  firing: number;
+  score: number;
+  /** DKB node ids the reviewer must check the rule's claim against. */
+  citations: string[];
+};
+
+/** Provenance stamped into the queue header — all read from committed artifacts, no wall clock. */
+export type QueueMeta = {
+  engine_version: string;
+  corpus_version: string;
+  corpus_status: string;
+  catalog_rules: number;
+  signed: number;
+};
+
+/**
+ * Rank the unreviewed single-document catalog by severity × firing frequency.
+ * Pure: no IO. `firingByRule` maps a rule id to its scoreboard firing count
+ * (absent = 0); `signedRuleIds` are the rules already in the ledger (excluded).
+ */
+export function buildReviewQueue(
+  rules: readonly Rule[],
+  firingByRule: ReadonlyMap<string, number>,
+  signedRuleIds: ReadonlySet<string>,
+  limit: number = QUEUE_LIMIT,
+): QueueEntry[] {
+  const scored = rules
+    .filter((r) => !signedRuleIds.has(r.id))
+    .map((r) => {
+      const firing = firingByRule.get(r.id) ?? 0;
+      return {
+        rule: r,
+        firing,
+        score: severityWeight(r.default_severity) * (1 + firing),
+      };
+    });
+  scored.sort((a, b) => b.score - a.score || (a.rule.id < b.rule.id ? -1 : 1));
+  return scored.slice(0, limit).map((s, i) => ({
+    rank: i + 1,
+    rule_id: s.rule.id,
+    name: s.rule.name,
+    category: s.rule.category,
+    severity: s.rule.default_severity,
+    firing: s.firing,
+    score: s.score,
+    citations: [...s.rule.dkb_citations],
+  }));
+}
+
+/** Render the queue as deterministic markdown. Pure. */
+export function renderQueueMarkdown(entries: QueueEntry[], meta: QueueMeta): string {
+  const lines: string[] = [];
+  lines.push("# Legal-basis review queue");
+  lines.push("");
+  lines.push("> Generated by `npm run queue:legal` from the live rule catalog, the committed");
+  lines.push("> accuracy scoreboard, and the ledger. **Do not edit by hand** — a golden guard");
+  lines.push("> (`tools/legal-basis/queue.test.ts`) pins this file to the generator. It is the");
+  lines.push("> prioritized first tranche of rules for a licensed reviewer to sign into");
+  lines.push("> [`ledger.json`](ledger.json); the workflow lives in [`README.md`](README.md).");
+  lines.push("");
+  lines.push(
+    `- **Engine:** \`${meta.engine_version}\` · **Corpus:** \`${meta.corpus_version}\` (${meta.corpus_status}) · **Catalog:** ${meta.catalog_rules} single-document rules`,
+  );
+  lines.push(
+    `- **Signed:** ${meta.signed} of ${meta.catalog_rules} · **Queued (unreviewed, top ${QUEUE_LIMIT}):** ${entries.length}`,
+  );
+  lines.push("");
+  lines.push("## Ranking");
+  lines.push("");
+  lines.push("Rules are ranked by **severity × firing frequency** — score = severity weight");
+  lines.push("(critical 3, warning 2, info 1) × (1 + graded documents the rule fired on).");
+  if (meta.corpus_status === "empty") {
+    lines.push("");
+    lines.push("The ground-truth corpus is **empty**, so firing frequency is 0 for every rule");
+    lines.push("today and the order is severity-then-id. When real annotated documents land,");
+    lines.push("firing refines the order automatically — re-run `npm run accuracy` then");
+    lines.push("`npm run queue:legal`.");
+  }
+  lines.push("");
+  lines.push("## Queue");
+  lines.push("");
+  lines.push("| # | Rule | Severity | Category | Fired | Citations to check |");
+  lines.push("|---|---|---|---|---|---|");
+  for (const e of entries) {
+    const cites = e.citations.length > 0 ? e.citations.map((c) => `\`${c}\``).join(", ") : "—";
+    lines.push(
+      `| ${e.rank} | \`${e.rule_id}\` — ${e.name} | ${e.severity} | ${e.category} | ${e.firing} | ${cites} |`,
+    );
+  }
+  lines.push("");
+  return lines.join("\n");
+}
+
+/** Firing count per rule from the committed scoreboard: `tp + fp` (0 until a corpus lands). */
+async function loadFiringCounts(): Promise<Map<string, number>> {
+  const firing = new Map<string, number>();
+  const raw = JSON.parse(await readFile(SCOREBOARD_PATH, "utf8")) as {
+    per_rule?: { rule_id: string; tp: number; fp: number }[];
+  };
+  for (const m of raw.per_rule ?? []) firing.set(m.rule_id, m.tp + m.fp);
+  return firing;
+}
+
+/** Assemble the queue markdown from committed artifacts. Deterministic. */
+export async function generateReviewQueue(): Promise<string> {
+  const [deps, ledger, firing] = await Promise.all([
+    loadAccuracyDeps(),
+    loadLegalBasisLedger(),
+    loadFiringCounts(),
+  ]);
+  const scoreboard = JSON.parse(await readFile(SCOREBOARD_PATH, "utf8")) as {
+    engine_version: string;
+    corpus_version: string;
+    corpus_status: string;
+  };
+  const signed = new Set(indexLedger(ledger).keys());
+  const entries = buildReviewQueue(deps.rules, firing, signed);
+  return renderQueueMarkdown(entries, {
+    engine_version: scoreboard.engine_version,
+    corpus_version: scoreboard.corpus_version,
+    corpus_status: scoreboard.corpus_status,
+    catalog_rules: deps.rules.length,
+    signed: signed.size,
+  });
+}
+
+async function main(): Promise<void> {
+  const markdown = await generateReviewQueue();
+  await writeFile(QUEUE_PATH, markdown + "\n");
+  console.log("Wrote docs/legal-basis/review-queue.md");
+}
+
+const invokedDirectly = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
+if (invokedDirectly) {
+  main().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}

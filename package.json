@@ -57,6 +57,7 @@
     "screenshots": "playwright test tools/screenshots/capture.spec.ts --config=tools/screenshots/pw.config.ts",
     "playbooks:bundle": "tsx tools/build-extended-playbooks.ts",
     "accuracy": "tsx tools/accuracy/run.ts",
+    "queue:legal": "tsx tools/legal-basis/queue.ts",
     "citation:check": "tsx tools/citation-check/run.ts",
     "cli": "tsx tools/cli/run.ts",
     "analyze": "tsx tools/cli/run.ts",
