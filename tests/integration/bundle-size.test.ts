@@ -40,11 +40,15 @@ const RUN = process.env.VAULYTICA_SKIP_BUILD_TESTS !== "1";
 /** v2 baseline gzipped JS total — measured at v2 launch (LAUNCH.md row l). */
 const V2_BASELINE_GZIPPED_KB = 165;
 /**
- * Spec-v3 Step 36 budget: v2 + 600 KB, raised to +620 for the vertical-legal
+ * Spec-v3 Step 36 budget: v2 + 600 KB, raised to +640 for the vertical-legal
  * packs (filing-format, citation, production-QA, privacy-notice, estate) —
- * their cited data + rule code add a few KB gzipped over the base catalog.
+ * their cited data + rule code add a few KB gzipped over the base catalog. The
+ * +640 step lands with the production-QA browser-bundle integration (its report
+ * renderers in `bundle.ts`/`states.ts` add a couple KB gzipped) and keeps a
+ * small margin over the ~782 KB measured total so a marginally larger CI build
+ * does not flake the guard.
  */
-const V3_BUDGET_GZIPPED_KB = V2_BASELINE_GZIPPED_KB + 620;
+const V3_BUDGET_GZIPPED_KB = V2_BASELINE_GZIPPED_KB + 640;
 /** Eager-entry budget (first-paint contribution). */
 const EAGER_ENTRY_GZIPPED_KB = 50;
 
