@@ -186,6 +186,66 @@ describe("runCustomPlaybook — predicates", () => {
     expect(run.findings[0]!.explanation).toContain("us-ca");
   });
 
+  it("governing_law_in distinguishes 'West Virginia' from an allowed 'Virginia'", async () => {
+    // Regression: naive substring containment matched "Virginia" against "West
+    // Virginia" (a different state) and falsely PASSED a governing-law check.
+    const run = await runCustomPlaybook(
+      pb({
+        custom_rules: [
+          {
+            id: "R1",
+            title: "Gov law must be Virginia",
+            description: "d",
+            severity: "warning",
+            assert: { kind: "governing_law_in", allowed: ["Virginia"] },
+          },
+        ],
+      }),
+      {
+        tree: tree("Governing Law", "the laws of the State of West Virginia"),
+        extracted: emptyExtracted({
+          jurisdictions: [
+            {
+              clause_kind: "governing-law",
+              raw_text: "State of West Virginia",
+              position: { section_id: "s1", start: 0, end: 10 },
+            },
+          ],
+        }),
+      },
+    );
+    expect(run.findings).toHaveLength(1); // West Virginia ≠ allowed Virginia
+  });
+
+  it("governing_law_in still matches a 'State of X' phrasing of an allowed name", async () => {
+    const run = await runCustomPlaybook(
+      pb({
+        custom_rules: [
+          {
+            id: "R1",
+            title: "Gov law must be Virginia",
+            description: "d",
+            severity: "warning",
+            assert: { kind: "governing_law_in", allowed: ["Virginia"] },
+          },
+        ],
+      }),
+      {
+        tree: tree("Governing Law", "the laws of the Commonwealth of Virginia"),
+        extracted: emptyExtracted({
+          jurisdictions: [
+            {
+              clause_kind: "governing-law",
+              raw_text: "Commonwealth of Virginia",
+              position: { section_id: "s1", start: 0, end: 10 },
+            },
+          ],
+        }),
+      },
+    );
+    expect(run.findings).toHaveLength(0); // Commonwealth of Virginia == allowed Virginia
+  });
+
   it("governing_law_in is unevaluable when no governing-law clause resolves", async () => {
     const run = await runCustomPlaybook(
       pb({
@@ -515,6 +575,65 @@ describe("runCustomPlaybook — clause_mutual predicate", () => {
     );
     expect(run.findings).toHaveLength(0);
     expect(run.unevaluable).toHaveLength(0);
+  });
+
+  // Regression: the marker scan must read the ACTUAL clause, not a 480-char
+  // section prefix. A mutual clause located past the cap was misread as one-way.
+  it("finds mutuality in a clause located past the 480-char section prefix", async () => {
+    const padding = "This agreement contains many recitals and definitions herein. ".repeat(9);
+    const run = await runCustomPlaybook(
+      pb({
+        custom_rules: [
+          {
+            id: "R1",
+            title: "Mutual indemnity",
+            description: "d",
+            severity: "warning",
+            assert: { kind: "clause_mutual", clause: "indemnification" },
+          },
+        ],
+      }),
+      {
+        tree: tree(
+          "Terms",
+          padding +
+            "Indemnification. Each party shall indemnify the other party for third-party claims.",
+        ),
+        extracted: emptyExtracted(),
+      },
+    );
+    expect(run.findings).toHaveLength(0);
+  });
+
+  // Regression (the dangerous direction): stray "mutual" language earlier in the
+  // section must NOT mask a genuinely one-way clause located past the cap.
+  it("flags a one-way clause even when unrelated 'mutual' language precedes it", async () => {
+    const preamble = "The parties acknowledge their mutual obligations of good faith. ";
+    const padding = "Additional background terms and definitions follow here now. ".repeat(8);
+    const run = await runCustomPlaybook(
+      pb({
+        custom_rules: [
+          {
+            id: "R1",
+            title: "Mutual indemnity",
+            description: "d",
+            severity: "warning",
+            assert: { kind: "clause_mutual", clause: "indemnification" },
+          },
+        ],
+      }),
+      {
+        tree: tree(
+          "Terms",
+          preamble +
+            padding +
+            "Indemnification. Provider shall indemnify and hold harmless Customer against all third-party claims; Customer has no such obligation to Provider.",
+        ),
+        extracted: emptyExtracted(),
+      },
+    );
+    expect(run.findings).toHaveLength(1);
+    expect(run.findings[0]!.explanation.toLowerCase()).toContain("one-way");
   });
 });
 

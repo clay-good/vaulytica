@@ -515,8 +515,15 @@ function evaluatePredicate(p: CustomPredicate, facts: DocFacts): PredicateOutcom
       const isAllowed = (g: (typeof usable)[number]): boolean => {
         const id = g.jurisdiction_id?.toLowerCase();
         const raw = norm(g.raw_text);
+        // Match on the jurisdiction NAME after stripping location affixes
+        // ("State of Delaware", "the laws of Virginia", "Delaware law" all
+        // reduce to the bare name). Whole-name equality — NOT substring
+        // containment, which falsely matched "Virginia" against "West
+        // Virginia" (a different state) and passed a high-stakes governing-law
+        // check it should have failed.
+        const rawName = stripLawAffixes(raw);
         return allowed.some(
-          (a) => a === id || a === raw || (raw.length > 0 && (raw.includes(a) || a.includes(raw))),
+          (a) => a === id || a === raw || a === rawName || stripLawAffixes(a) === rawName,
         );
       };
       if (usable.some(isAllowed)) return { kind: "compliant" };
@@ -542,8 +549,16 @@ function evaluatePredicate(p: CustomPredicate, facts: DocFacts): PredicateOutcom
           reason: `no ${p.clause} clause was found to assess mutuality`,
         };
       }
-      // hit.text is already lower-cased (section text from sectionTextLower).
-      const mutual = MUTUALITY_MARKERS.some((m) => hit.text.includes(m));
+      // Scan a window of the FULL section text AROUND the matched clause for
+      // reciprocity markers — NOT hit.text, which is a capped 480-char PREFIX of
+      // the section. Scanning the prefix misreads a mutual clause located past
+      // the cap as one-way, and lets stray "mutual" language earlier in the
+      // section mask a genuinely one-way clause. The window (some text before
+      // the anchor, more after) is the clause's own neighbourhood.
+      const section = facts.sectionTextLower.get(hit.section_id) ?? hit.text;
+      const scanFrom = Math.max(0, hit.position - MUTUAL_SCAN_BACK);
+      const scanText = section.slice(scanFrom, hit.position + MUTUAL_SCAN_FWD);
+      const mutual = MUTUALITY_MARKERS.some((m) => scanText.includes(m));
       if (mutual) return { kind: "compliant" };
       return {
         kind: "violated",
@@ -816,6 +831,32 @@ function buildDocFacts(tree: DocumentTree, extracted: ExtractedData): DocFacts {
 function norm(s: string): string {
   return s.trim().toLowerCase().replace(/\s+/g, " ");
 }
+
+/**
+ * Reduce a normalized governing-law phrase to its bare jurisdiction name by
+ * stripping common leading ("state of", "commonwealth of", "the laws of the
+ * state of") and trailing ("law", "laws", "jurisdiction") affixes. Lets
+ * "State of Delaware" / "the laws of Delaware" / "Delaware law" all match an
+ * allowed "Delaware" while keeping distinct names (Virginia vs West Virginia)
+ * distinct — the input is already `norm`-ed (lowercased, single-spaced).
+ */
+function stripLawAffixes(s: string): string {
+  return s
+    .replace(
+      /^(?:the\s+)?(?:laws?\s+of\s+)?(?:the\s+)?(?:state\s+of\s+|commonwealth\s+of\s+|province\s+of\s+)?/,
+      "",
+    )
+    .replace(/\s+(?:law|laws|jurisdiction)$/, "")
+    .trim();
+}
+
+/**
+ * Window (chars before / after the clause anchor) the `clause_mutual` marker
+ * scan reads, so reciprocity language that sits just before ("each party
+ * shall…") or after the anchor is seen, without bleeding into adjacent clauses.
+ */
+const MUTUAL_SCAN_BACK = 240;
+const MUTUAL_SCAN_FWD = 520;
 
 /** Trim a section's text for a finding excerpt (first 480 chars). */
 function cap(text: string): string {
