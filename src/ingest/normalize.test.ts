@@ -73,6 +73,27 @@ describe("normalize", () => {
     const twice = normalize(once);
     expect(twice).toEqual(once);
   });
+
+  it("strips mid-word zero-width and soft-hyphen format characters so a word rejoins", () => {
+    // Word/PDF line-wrapping injects these mid-word; JS `\s` does NOT match
+    // them, so left in place they split a word for every downstream literal
+    // regex — silently defeating a presence disclaimer into a false accusation.
+    const cases: Array<[string, string]> = [
+      ["does not in\u00ADclude", "does not include"], // SOFT HYPHEN
+      ["does not in\u200Bclude", "does not include"], // ZERO WIDTH SPACE
+      ["ter\u200Cmi\u200Dnate", "terminate"], // ZWNJ + ZWJ
+      ["word\u2060joiner", "wordjoiner"], // WORD JOINER
+    ];
+    for (const [input, expected] of cases) {
+      const out = normalize(treeOf("H", [[input]]));
+      expect(out.sections[0]!.paragraphs[0]!.runs[0]!.text).toBe(expected);
+    }
+  });
+
+  it("still folds true whitespace (NBSP, ideographic space) to a single space", () => {
+    const out = normalize(treeOf("H", [["a\u00A0\u3000b"]]));
+    expect(out.sections[0]!.paragraphs[0]!.runs[0]!.text).toBe("a b");
+  });
 });
 
 describe("countWords", () => {

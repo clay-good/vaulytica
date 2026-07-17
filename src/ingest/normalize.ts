@@ -47,7 +47,16 @@ export function normalize(tree: DocumentTree): DocumentTree {
   // spec-v8 §5). Folding them here removes the run at the source for every
   // extractor at once. ASCII-only documents (every fixture) are byte-unchanged.
   const normalizeRunText = (text: string): string => {
-    return text.replace(/\s+/g, " ");
+    // First strip zero-width / soft-hyphen format characters that carry no
+    // semantic content and, crucially, are NOT matched by JS `\s`: SOFT HYPHEN
+    // (U+00AD) and the zero-width family (U+200B ZWSP, U+200C ZWNJ, U+200D ZWJ,
+    // U+2060 WORD JOINER). Word and PDF line-wrapping routinely inject these
+    // mid-word ("in­clude"); left in place they split a word for every
+    // downstream literal/word-boundary regex — silently defeating a presence
+    // disclaimer ("does not include …") into a false accusation, or a trigger
+    // word into a silent under-scan. Removing (not spacing) them rejoins the
+    // word. ASCII-only documents (every fixture) are byte-unchanged.
+    return text.replace(/[\u00AD\u200B-\u200D\u2060]/g, "").replace(/\s+/g, " ");
   };
 
   const normalizeParagraph = (
