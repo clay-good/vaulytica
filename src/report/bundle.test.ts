@@ -19,6 +19,7 @@ import {
   buildBundleZip,
   BUNDLE_TOP_N,
 } from "./bundle.js";
+import { buildProductionQaReport } from "../production/report.js";
 import { loadStarterDkbSync } from "../engine/_test-fixtures.js";
 import type { BundleDocument, BundleReportInput } from "./bundle.js";
 import type { EngineRun, Finding } from "../engine/finding.js";
@@ -454,6 +455,39 @@ describe("buildBundleJson — rejected entries", () => {
     expect(a.rejected).toBeUndefined();
     const b = await buildBundleJson({ ...makeInput(), rejected: [] });
     expect(b.rejected).toBeUndefined();
+  });
+});
+
+describe("buildBundleJson — production_qa (add-production-qa-pack)", () => {
+  it("emits the production_qa block, keyed by its own hash, when a privilege log was present", async () => {
+    const production_qa = await buildProductionQaReport({
+      filenames: ["ACME-000001.pdf", "ACME-000003.pdf", "privilege-log.csv"],
+      logCsv: "bates_begin,bates_end,description,privilege\nACME-000002,ACME-000002,Memo,AC",
+    });
+    const out = await buildBundleJson({ ...makeInput(), production_qa });
+    expect(out.production_qa).toBe(production_qa);
+    expect(out.production_qa!.production_qa_hash).toMatch(/^[0-9a-f]{64}$/);
+    // The block carries the standalone report's hash verbatim — the browser
+    // bundle path reconciles through the same pure core the CLI uses.
+    const standalone = await buildProductionQaReport({
+      filenames: ["ACME-000001.pdf", "ACME-000003.pdf", "privilege-log.csv"],
+      logCsv: "bates_begin,bates_end,description,privilege\nACME-000002,ACME-000002,Memo,AC",
+    });
+    expect(out.production_qa!.production_qa_hash).toBe(standalone.production_qa_hash);
+  });
+
+  it("omits production_qa and leaves the bundle fingerprint unchanged for a csv-free bundle", async () => {
+    const withoutLog = await buildBundleJson(makeInput());
+    expect(withoutLog.production_qa).toBeUndefined();
+    // A privilege log is metadata about the production, not a document with its
+    // own result_hash — adding it must never move the bundle fingerprint.
+    const production_qa = await buildProductionQaReport({
+      filenames: ["a.docx", "b.docx", "log.csv"],
+      logCsv: "bates_begin,bates_end\nA-1,A-1",
+    });
+    const withLog = await buildBundleJson({ ...makeInput(), production_qa });
+    expect(withLog.bundle_fingerprint).toBe(withoutLog.bundle_fingerprint);
+    expect(withLog.portfolio_fingerprint).toBe(withoutLog.portfolio_fingerprint);
   });
 });
 

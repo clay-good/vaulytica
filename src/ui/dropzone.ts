@@ -64,6 +64,20 @@ export function isZipFile(file: File): boolean {
   return file.name.toLowerCase().endsWith(".zip");
 }
 
+/**
+ * Extensions that may ride in a **multi-document bundle**: the two document
+ * kinds plus the `.csv` privilege-log data member (add-production-qa-pack).
+ * Used to filter folder / multi-file drops so a privilege log dropped
+ * alongside the produced documents survives to the bundle pipeline (which
+ * reconciles Bates numbering and the log). A lone `.csv` is still rejected by
+ * {@link validateFile} — the privilege log is only meaningful next to the
+ * documents it describes.
+ */
+export function isBundleMemberName(name: string): boolean {
+  const n = name.toLowerCase();
+  return n.endsWith(".pdf") || n.endsWith(".docx") || n.endsWith(".csv");
+}
+
 export type DropzoneOptions = {
   /** Called with the validated single file. */
   onFile: (result: DropResult) => void;
@@ -95,7 +109,7 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
   // The pipeline still distinguishes ≥ 2 files vs a single `.zip` and
   // rejects unsupported extensions upstream via `validateFile` /
   // `planBundle`.
-  input.accept = ".pdf,.docx,.zip";
+  input.accept = ".pdf,.docx,.csv,.zip";
   input.multiple = true;
   // Visually hidden but keyboard-focusable. The dropzone wrapper has
   // no role/tabindex of its own; this input is the page's keyboard
@@ -114,7 +128,7 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
   // so the bundle pipeline can de-duplicate by basename if needed.
   const inputDir = document.createElement("input");
   inputDir.type = "file";
-  inputDir.accept = ".pdf,.docx";
+  inputDir.accept = ".pdf,.docx,.csv";
   inputDir.multiple = true;
   // Set both the property and the attribute so the e2e probe selector
   // `#dropzone input[type="file"][webkitdirectory]` matches.
@@ -163,10 +177,7 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
     // also keeps the file-count cap (50) measured against the
     // accepted set rather than the raw tree.
     const all = filesFromList(inputDir.files);
-    const accepted = all.filter((f) => {
-      const n = f.name.toLowerCase();
-      return n.endsWith(".pdf") || n.endsWith(".docx");
-    });
+    const accepted = all.filter((f) => isBundleMemberName(f.name));
     dispatch(accepted);
   };
   const onClick = (e: Event): void => {
@@ -226,10 +237,7 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
       }
       if (anyDir && entries.length > 0) {
         void collectFilesFromEntries(entries).then((files) => {
-          const accepted = files.filter((f) => {
-            const n = f.name.toLowerCase();
-            return n.endsWith(".pdf") || n.endsWith(".docx");
-          });
+          const accepted = files.filter((f) => isBundleMemberName(f.name));
           dispatch(accepted);
         });
         return;

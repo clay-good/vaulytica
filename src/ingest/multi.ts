@@ -92,6 +92,57 @@ export function rejectionForFilename(filename: string): string {
   return `Vaulytica accepts .pdf and .docx — not "${filename}".`;
 }
 
+/* ---------------- Production-QA data members ---------------- */
+
+/**
+ * Non-document bundle members (add-production-qa-pack). A `.csv` dropped
+ * alongside the documents is the **privilege log**, not something to ingest as
+ * a document — it rides beside the doc set and drives Bates / privilege-log
+ * reconciliation. v1 recognizes exactly one data-member class: the privilege
+ * log CSV.
+ */
+export type DataMemberKind = "csv";
+
+export function classifyDataMember(filename: string): DataMemberKind | null {
+  return filename.toLowerCase().endsWith(".csv") ? "csv" : null;
+}
+
+/** User-facing copy when a bundle carries more than one privilege-log CSV. */
+export const MULTIPLE_PRIVILEGE_LOGS_MESSAGE =
+  "A production set may include at most one privilege-log .csv. Remove the extras and re-upload.";
+
+/** The single privilege-log member, decoded to text for {@link parsePrivilegeLog}. */
+export type PrivilegeLogMember = { filename: string; csv: string };
+
+/**
+ * Pull the single privilege-log `.csv` out of a candidate list. Documents
+ * (`.pdf`/`.docx`) are left for the normal bundle flow; a lone `.csv` is
+ * decoded to text as the privilege log (matching the CLI's `--production-qa`
+ * one-log-per-set rule). Zero CSVs → no member. More than one → a bundle-level
+ * rejection, since a production set has a single privilege log.
+ *
+ * Pure over the candidate bytes — works in Node and the browser.
+ */
+export function selectPrivilegeLogMember(
+  candidates: ReadonlyArray<{ filename: string; bytes: ArrayBuffer }>,
+): { member?: PrivilegeLogMember; rejected: Array<{ filename: string; reason: string }> } {
+  const logs = candidates.filter((c) => classifyDataMember(c.filename) === "csv");
+  if (logs.length === 0) return { rejected: [] };
+  if (logs.length > 1) {
+    return {
+      rejected: logs.map((c) => ({
+        filename: c.filename,
+        reason: MULTIPLE_PRIVILEGE_LOGS_MESSAGE,
+      })),
+    };
+  }
+  const only = logs[0]!;
+  return {
+    member: { filename: only.filename, csv: strFromU8(new Uint8Array(only.bytes)) },
+    rejected: [],
+  };
+}
+
 /* ---------------- Bundle planning ---------------- */
 
 /**

@@ -13,11 +13,14 @@
 import { ingestPdfBuffer, ingestDocxBuffer } from "../ingest/index.js";
 import {
   classifyExtension,
+  classifyDataMember,
   extractZipEntries,
   filesToCandidates,
   planBundle,
+  selectPrivilegeLogMember,
   BUNDLE_CAP_MESSAGE,
   type MultiIngestEntry,
+  type PrivilegeLogMember,
 } from "../ingest/multi.js";
 import type { IngestResult } from "../ingest/types.js";
 import { extractAll } from "../extract/index.js";
@@ -93,6 +96,7 @@ import {
   buildBundleZip,
   type BundleDocument,
 } from "../report/bundle.js";
+import { buildProductionQaReport, type ProductionQaReport } from "../production/report.js";
 import {
   bundlePostureCoherence,
   type PostureCoherence,
@@ -1000,6 +1004,14 @@ export type PreparedBundle = {
    */
   consistency_docs: ConsistencyDocument[];
   dkb: DKB;
+  /**
+   * The single privilege-log `.csv` dropped alongside the documents
+   * (add-production-qa-pack), decoded to text. Present only when the bundle
+   * carried exactly one `.csv` data member; drives the trailing Production-QA
+   * reconciliation in `runBundleReport`. Absent for every ordinary
+   * (documents-only) bundle, so those bundles are byte-unchanged.
+   */
+  privilege_log?: PrivilegeLogMember;
 };
 
 /**
@@ -1043,6 +1055,18 @@ export async function prepareBundle(
   const plan = planBundle(candidates);
   if (!plan.ok) throw new Error(plan.reason);
 
+  // 1b. Privilege-log data member (add-production-qa-pack). A `.csv` dropped
+  // alongside the documents is the privilege log, not a document to ingest.
+  // `expandBundleInputs` already drops it from the doc-candidate list, so pull
+  // it from the raw drop. v1: multi-file / folder drop only — a `.csv` embedded
+  // inside a `.zip` is deferred (`extractZipEntries` inflates only .pdf/.docx).
+  const isZipDrop = files.length === 1 && files[0]!.name.toLowerCase().endsWith(".zip");
+  const dataCandidates = isZipDrop
+    ? []
+    : await filesToCandidates(files.filter((f) => classifyDataMember(f.name) !== null));
+  const { member: privilege_log, rejected: dataRejected } =
+    selectPrivilegeLogMember(dataCandidates);
+
   // 2. Load DKB + playbooks in parallel.
   const bundlePlaybookBase = config.playbook_base ?? DEFAULT_PLAYBOOK_BASE;
   const dkbPromise = ensureDkb(config.dkb_base ?? DEFAULT_DKB_BASE);
@@ -1052,7 +1076,8 @@ export async function prepareBundle(
   const accepted = plan.entries.filter((e): e is Extract<MultiIngestEntry, { ok: true }> => e.ok);
   const rejected: Array<{ filename: string; reason: string }> = plan.entries
     .filter((e): e is Extract<MultiIngestEntry, { ok: false }> => !e.ok)
-    .map((e) => ({ filename: e.filename, reason: e.reason }));
+    .map((e) => ({ filename: e.filename, reason: e.reason }))
+    .concat(dataRejected);
 
   if (accepted.length < 2) {
     // Spec-v4 §8: the bundle path is for ≥ 2 ingestable documents.
@@ -1233,6 +1258,7 @@ export async function prepareBundle(
     rejected,
     consistency_docs: consistencyDocs,
     dkb,
+    ...(privilege_log ? { privilege_log } : {}),
   };
 }
 
@@ -1275,6 +1301,18 @@ export async function runBundleReport(
       ? await bundlePostureCoherence(coherenceInputs)
       : undefined;
 
+  // add-production-qa-pack — when a privilege-log `.csv` rode in with the
+  // bundle, reconcile Bates numbering (from the document filenames) and the
+  // log against the produced set. The privilege log's own filename is a member
+  // too (matching the CLI's `--production-qa`). Held outside the bundle
+  // fingerprint; omitted for csv-free bundles so they stay byte-identical.
+  const production_qa: ProductionQaReport | undefined = prepared.privilege_log
+    ? await buildProductionQaReport({
+        filenames: [...prepared.documents.map((d) => d.filename), prepared.privilege_log.filename],
+        logCsv: prepared.privilege_log.csv,
+      })
+    : undefined;
+
   const bundleInput: {
     documents: BundleDocument[];
     consistency: typeof consistency;
@@ -1283,6 +1321,7 @@ export async function runBundleReport(
     consistency_enabled?: boolean;
     posture_coherence?: PostureCoherence;
     posture_movement?: CoherenceMovement;
+    production_qa?: ProductionQaReport;
   } = {
     documents: prepared.documents.map((d) => ({
       doc_id: `doc-${d.filename}`,
@@ -1312,6 +1351,7 @@ export async function runBundleReport(
     // carries the trailing "Posture Movement (Across the Package)" section.
     // Absent on a plain bundle run, so every bundle golden is byte-unchanged.
     posture_movement: options.posture_movement,
+    production_qa,
   };
   const bundle_docx_blob = await buildBundleDocxReport(bundleInput);
   const bundle_json_blob = await buildBundleJsonBlob(bundleInput);

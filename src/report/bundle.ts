@@ -62,6 +62,7 @@ import type {
 import type { PostureMovementKind } from "./posture-movement.js";
 import type { NegotiationTier } from "../playbooks/custom-interpreter.js";
 import type { IngestResult } from "../ingest/types.js";
+import type { ProductionQaReport } from "../production/report.js";
 import {
   buildPortfolioMatrix,
   buildPortfolioExecutiveSummary,
@@ -215,6 +216,21 @@ export type BundleReportInput = {
    * (spec-v13 §3 corollary 3).
    */
   posture_movement?: CoherenceMovement;
+  /**
+   * Production-QA reconciliation (add-production-qa-pack) for a bundle that
+   * carried a privilege-log `.csv` data member alongside its documents. Present
+   * only when a single `.csv` privilege log was dropped with the bundle, so the
+   * bundle then reconciles Bates numbering (from the document filenames) and the
+   * privilege log against the produced set. Held **outside** the
+   * `bundle_fingerprint` — a privilege log is metadata about the production, not
+   * a document with its own `result_hash` — and carries its own
+   * `production_qa_hash`. Omitted (back-compat) when no CSV was present, so every
+   * csv-free bundle is byte-unchanged. Advisory posture: numbering and log
+   * reconciliation were checked from filenames and the supplied log; in-page
+   * Bates stamps, redaction integrity, and the validity of any privilege claim
+   * were not checked.
+   */
+  production_qa?: ProductionQaReport;
 };
 
 /**
@@ -347,6 +363,14 @@ export type BundleJson = {
    * aggregation over the per-document runs; outside every result_hash.
    */
   executive_summary: PortfolioExecutiveSummary;
+  /**
+   * Production-QA reconciliation (add-production-qa-pack) — emitted only when
+   * the bundle carried a privilege-log `.csv` data member. Outside
+   * `bundle_fingerprint`; keyed by its own `production_qa_hash`. Omitted
+   * (back-compat) for every csv-free bundle, so existing bundle JSON is
+   * byte-unchanged.
+   */
+  production_qa?: ProductionQaReport;
 };
 
 /**
@@ -397,6 +421,9 @@ export async function buildBundleJson(input: BundleReportInput): Promise<BundleJ
   }
   if (input.consistency_enabled === false) {
     out.consistency_enabled = false;
+  }
+  if (input.production_qa) {
+    out.production_qa = input.production_qa;
   }
   const anyFamily = input.documents.some(
     (d) => typeof d.detected_family === "string" && d.detected_family.length > 0,

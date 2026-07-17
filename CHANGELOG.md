@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Added
+- **Production-QA now works in the browser bundle, not just the CLI.** Drop a
+  privilege-log `.csv` alongside the produced documents (multi-file or folder
+  drop) and the bundle report reconciles Bates numbering (from the document
+  filenames) and the log against the produced set — the same
+  `buildProductionQaReport` core the `vaulytica analyze <dir> --production-qa`
+  mode uses. The result rides in the bundle JSON export as a `production_qa`
+  block with its own `production_qa_hash`. A privilege log is metadata about the
+  production, not a document with its own `result_hash`, so it is held outside
+  `bundle_fingerprint`: a bundle of the same documents fingerprints identically
+  whether or not a log rode along. A lone `.csv` is still rejected (a privilege
+  log is only meaningful next to the documents it describes). The consolidated
+  DOCX Production-QA section and a dedicated report tab remain follow-ups.
+
 ### Fixed
 - **The headless CLI can now actually analyze DOCX files — `vaulytica analyze contract.docx`
   was broken end-to-end in Node.** Two Node-only failures, both masked because the test suite

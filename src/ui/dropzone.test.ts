@@ -203,7 +203,7 @@ describe("folder picker (webkitdirectory)", () => {
     document.body.removeChild(dz);
   });
 
-  it("folder-picker change filters to .pdf/.docx and routes to onFiles", () => {
+  it("folder-picker change keeps .pdf/.docx + the privilege-log .csv, drops junk, routes to onFiles", () => {
     const dz = document.createElement("div");
     document.body.appendChild(dz);
     const bundles: File[][] = [];
@@ -214,15 +214,35 @@ describe("folder picker (webkitdirectory)", () => {
     const dirInput = dz.querySelector<HTMLInputElement>('input[type="file"][webkitdirectory]')!;
     const a = fakeFile("a.pdf");
     const b = fakeFile("b.docx");
+    // add-production-qa-pack: a privilege log dropped with the production set
+    // must survive to the bundle pipeline (it drives Bates/log reconciliation).
+    const log = fakeFile("privilege-log.csv", "text/csv");
     const junk = fakeFile(".DS_Store", "application/octet-stream");
     const readme = fakeFile("README.md", "text/plain");
     Object.defineProperty(dirInput, "files", {
       configurable: true,
-      get: () => [a, junk, b, readme],
+      get: () => [a, junk, b, log, readme],
     });
     dirInput.dispatchEvent(new Event("change"));
     expect(bundles).toHaveLength(1);
-    expect(bundles[0]!.map((f) => f.name).sort()).toEqual(["a.pdf", "b.docx"]);
+    expect(bundles[0]!.map((f) => f.name).sort()).toEqual(["a.pdf", "b.docx", "privilege-log.csv"]);
+    document.body.removeChild(dz);
+  });
+
+  it("still rejects a lone .csv — a privilege log is not a document to analyze alone", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    const results: DropResult[] = [];
+    bindDropzone(dz, {
+      onFile: (r) => results.push(r),
+      onFiles: () => {},
+    });
+    const input = dz.querySelector<HTMLInputElement>('input[type="file"]:not([webkitdirectory])')!;
+    const log = fakeFile("privilege-log.csv", "text/csv");
+    Object.defineProperty(input, "files", { configurable: true, get: () => [log] });
+    input.dispatchEvent(new Event("change"));
+    expect(results).toHaveLength(1);
+    expect(results[0]!.ok).toBe(false);
     document.body.removeChild(dz);
   });
 });

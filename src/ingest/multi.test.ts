@@ -6,11 +6,14 @@ import {
   MAX_BUNDLE_BYTES,
   MAX_BUNDLE_FILES,
   MAX_FILE_BYTES,
+  MULTIPLE_PRIVILEGE_LOGS_MESSAGE,
+  classifyDataMember,
   classifyExtension,
   extractZipEntries,
   looksLikeZip,
   planBundle,
   rejectionForFilename,
+  selectPrivilegeLogMember,
   ArchiveTooLargeError,
 } from "./multi.js";
 
@@ -228,5 +231,56 @@ describe("extractZipEntries", () => {
     // the function still returns a clean list for a normal archive.
     const archive = buildZip({ "ok.docx": strToU8("x") });
     expect(extractZipEntries(archive)).toHaveLength(1);
+  });
+});
+
+/* ---------------- Production-QA data members ---------------- */
+
+describe("classifyDataMember", () => {
+  it("recognizes .csv as the privilege-log data member (case-insensitive)", () => {
+    expect(classifyDataMember("privilege-log.csv")).toBe("csv");
+    expect(classifyDataMember("LOG.CSV")).toBe("csv");
+  });
+  it("returns null for documents and other extensions", () => {
+    expect(classifyDataMember("contract.docx")).toBeNull();
+    expect(classifyDataMember("brief.pdf")).toBeNull();
+    expect(classifyDataMember("notes.txt")).toBeNull();
+  });
+});
+
+describe("selectPrivilegeLogMember", () => {
+  const csv = (name: string, text: string): { filename: string; bytes: ArrayBuffer } => {
+    const u = strToU8(text);
+    return { filename: name, bytes: u.buffer.slice(u.byteOffset, u.byteOffset + u.byteLength) };
+  };
+
+  it("returns no member and no rejection when there is no CSV", () => {
+    const out = selectPrivilegeLogMember([
+      { filename: "a.docx", bytes: fakeBytes(4) },
+      { filename: "b.pdf", bytes: fakeBytes(4) },
+    ]);
+    expect(out.member).toBeUndefined();
+    expect(out.rejected).toEqual([]);
+  });
+
+  it("decodes the single privilege-log CSV to text", () => {
+    const out = selectPrivilegeLogMember([
+      { filename: "a.docx", bytes: fakeBytes(4) },
+      csv("privilege-log.csv", "control,description\n1,Memo"),
+    ]);
+    expect(out.member).toEqual({
+      filename: "privilege-log.csv",
+      csv: "control,description\n1,Memo",
+    });
+    expect(out.rejected).toEqual([]);
+  });
+
+  it("rejects a production set carrying more than one privilege-log CSV", () => {
+    const out = selectPrivilegeLogMember([csv("log-a.csv", "x"), csv("log-b.csv", "y")]);
+    expect(out.member).toBeUndefined();
+    expect(out.rejected).toEqual([
+      { filename: "log-a.csv", reason: MULTIPLE_PRIVILEGE_LOGS_MESSAGE },
+      { filename: "log-b.csv", reason: MULTIPLE_PRIVILEGE_LOGS_MESSAGE },
+    ]);
   });
 });
