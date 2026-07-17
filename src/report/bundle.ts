@@ -493,6 +493,7 @@ export async function buildBundleDocxReport(input: BundleReportInput): Promise<B
     ...renderSkippedFilesAppendix(input.rejected),
     ...renderPostureCoherenceSection(input.posture_coherence),
     ...renderPostureMovementSection(input.posture_movement),
+    ...renderProductionQaSection(input.production_qa),
     ...renderBibliography(bibliography, dkbCurrency(input.dkb.manifest)),
     ...renderAuditTrail(input),
     ...renderDisclaimer(),
@@ -999,6 +1000,66 @@ function renderPostureCoherenceSection(
       italics: true,
     }),
   );
+  out.push(pageBreak());
+  return out;
+}
+
+/**
+ * Production-QA section (add-production-qa-pack). A trailing, optional section:
+ * present only when a privilege-log `.csv` rode in with the bundle. Reports the
+ * Bates / privilege-log reconciliation findings, the honest scope of review,
+ * and the namespaced `production_qa_hash`. Omitted entirely for a csv-free
+ * bundle, so every existing bundle golden is byte-unchanged. Advisory:
+ * numbering and log reconciliation were checked from filenames and the supplied
+ * log; in-page Bates stamps, redaction integrity, and the validity of any
+ * privilege claim were not checked.
+ */
+function renderProductionQaSection(
+  production_qa: ProductionQaReport | undefined,
+): (Paragraph | Table)[] {
+  if (!production_qa) return [];
+  const pq = production_qa;
+  const out: (Paragraph | Table)[] = [h1("Production QA")];
+  out.push(
+    para({
+      text: "Bates numbering and privilege-log reconciliation across the produced set. Numbering was read from the member filenames and reconciled against the supplied privilege log — ranges the log claims withheld but that appear produced, produced-sequence gaps no log entry explains, overlapping or duplicate log rows, and rows missing the FRCP 26(b)(5)(A) minimum fields.",
+    }),
+  );
+  out.push(
+    para({
+      text: `${pq.member_count} members · ${pq.bates.length} Bates-numbered · privilege log ${pq.log_present ? "present" : "not supplied"} · ${pq.findings.length} reconciliation ${pq.findings.length === 1 ? "issue" : "issues"}.`,
+      bold: true,
+    }),
+  );
+  for (const w of pq.log_warnings) out.push(para({ text: `Privilege log: ${w}`, italics: true }));
+  out.push(spacer());
+
+  if (pq.findings.length === 0) {
+    out.push(para({ text: "No Bates or privilege-log reconciliation issues found." }));
+  } else {
+    const header = headerRow(["Check", "Severity", "Detail"]);
+    const rows = pq.findings.map(
+      (f) =>
+        new TableRow({
+          children: [
+            styledCell(`${f.code} — ${f.title}`, { bold: true }),
+            styledCell(f.severity === "warning" ? "Warning" : "Info"),
+            styledCell(f.detail),
+          ],
+        }),
+    );
+    out.push(
+      new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [header, ...rows] }),
+    );
+  }
+  out.push(spacer());
+  out.push(h2("Scope of review"));
+  out.push(para({ text: "Reviewed for:", bold: true }));
+  for (const s of pq.scope.reviewed_for) out.push(para({ text: `• ${s}` }));
+  out.push(para({ text: "Not reviewed for:", bold: true }));
+  for (const s of pq.scope.not_reviewed_for) out.push(para({ text: `• ${s}` }));
+  out.push(spacer());
+  out.push(para({ text: `Production-QA hash: ${pq.production_qa_hash}`, italics: true }));
   out.push(pageBreak());
   return out;
 }

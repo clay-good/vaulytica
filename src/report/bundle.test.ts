@@ -491,6 +491,32 @@ describe("buildBundleJson — production_qa (add-production-qa-pack)", () => {
   });
 });
 
+describe("buildBundleDocxReport — Production-QA section (add-production-qa-pack)", () => {
+  it("renders the Production QA section, its findings, and the scope of review", async () => {
+    const production_qa = await buildProductionQaReport({
+      filenames: ["ACME-000001.pdf", "ACME-000003.pdf", "privilege-log.csv"],
+      logCsv: "bates_begin,bates_end,description,privilege\nACME-000002,ACME-000002,Memo,AC",
+    });
+    const blob = await buildBundleDocxReport({ ...makeInput(), production_qa });
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const docXml = strFromU8(entries["word/document.xml"]!);
+    expect(docXml).toContain("Production QA");
+    // The withheld ACME-000002 is a produced-set gap → PROD-001 fires.
+    expect(docXml).toContain("PROD-001");
+    expect(docXml).toContain("Scope of review");
+    // The honesty posture is rendered — no page-stamp / redaction / merits check.
+    expect(docXml).toContain("redaction integrity");
+    expect(docXml).toContain(production_qa.production_qa_hash);
+  });
+
+  it("omits the Production QA section when no privilege log was supplied (golden byte-stable)", async () => {
+    const blob = await buildBundleDocxReport(makeInput());
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const docXml = strFromU8(entries["word/document.xml"]!);
+    expect(docXml).not.toContain("Production QA");
+  });
+});
+
 describe("buildBundleJson — consistency_enabled", () => {
   it("surfaces consistency_enabled=false when the user disabled the toggle", async () => {
     const input: BundleReportInput = { ...makeInput(), consistency_enabled: false };
