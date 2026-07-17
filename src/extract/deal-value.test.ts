@@ -112,4 +112,21 @@ describe("extractDealValue — labeled total only (never a guess)", () => {
     const r = dealValue("Total fees are described in Exhibit B. Total contract value: $4,000,000.");
     expect(r?.value).toBe(4_000_000);
   });
+
+  // Form 2 — amount first, parenthetically labeled (common in purchase agreements).
+  it("reads the parenthetical amount-first form", () => {
+    expect(dealValue('The purchase price is $5,000,000 (the "Total Contract Value").')?.value).toBe(
+      5_000_000,
+    );
+    expect(dealValue("Consideration of $2.5 million (Total Consideration) is due.")?.value).toBe(
+      2_500_000,
+    );
+  });
+
+  it("does not match a parenthetical that is not the label alone", () => {
+    // A non-label parenthetical, and a negated label in parens, must not match.
+    expect(dealValue("A fee of $500 (a late charge) applies.")).toBeNull();
+    expect(dealValue("The $500 (not the total contract value) is a deposit.")).toBeNull();
+    expect(dealValue("$500 (the total contract value is stated elsewhere).")).toBeNull();
+  });
 });

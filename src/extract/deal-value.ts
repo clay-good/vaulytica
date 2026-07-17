@@ -73,10 +73,35 @@ export type DealValue = {
  * several labels match, the earliest in document order wins (ties broken by the
  * longer, more-specific label), so the result is a deterministic total order.
  */
+/** Parse a `$` amount + optional scale into a positive number, or null. */
+function amountValue(digits: string | undefined, scaleTok: string | undefined): number | null {
+  if (digits === undefined) return null;
+  const num = Number(digits.replace(/,/g, ""));
+  const scale = scaleTok ? (SCALE_WORDS[scaleTok.toLowerCase()] ?? 1) : 1;
+  const value = num * scale;
+  return Number.isFinite(value) && value > 0 ? value : null;
+}
+
+/**
+ * The parenthetical / amount-first form common in purchase agreements —
+ * `$5,000,000 (the "Total Contract Value")`. The label must stand ALONE inside
+ * the parentheses (optionally `the` and quotes), so `$500 (a late fee)` and
+ * `$500 (not the total contract value)` do not match.
+ */
+const PAREN_FORM = new RegExp(
+  `\\$\\s?([0-9]{1,3}(?:,[0-9]{3})*(?:\\.[0-9]+)?|[0-9]+(?:\\.[0-9]+)?)\\s*(thousand|million|billion|k|m|b)?\\s*\\(\\s*(?:the\\s+)?["']?(${DEAL_VALUE_LABELS.join("|")})["']?\\s*\\)`,
+  "gi",
+);
+
 export function extractDealValue(tree: DocumentTree): DealValue | null {
   const text = flattenText(tree);
   const lower = text.toLowerCase();
-  let best: (DealValue & { idx: number }) | null = null;
+  const candidates: (DealValue & { idx: number })[] = [];
+  const consider = (value: number, label: string, idx: number): void => {
+    candidates.push({ value, label, idx });
+  };
+
+  // Form 1 — label first: "total contract value is $5,000,000".
   for (const label of DEAL_VALUE_LABELS) {
     for (let from = 0; ; ) {
       const idx = lower.indexOf(label, from);
@@ -94,20 +119,22 @@ export function extractDealValue(tree: DocumentTree): DealValue | null {
       // The amount must be joined to the label by only a connector — otherwise
       // it is some other figure that merely shares the sentence.
       if (!CONNECTOR.test(window.slice(0, m.index))) continue;
-      const num = Number(m[1].replace(/,/g, ""));
-      const scale = m[2] ? (SCALE_WORDS[m[2].toLowerCase()] ?? 1) : 1;
-      const value = num * scale;
-      if (!Number.isFinite(value) || value <= 0) continue;
-      // Earliest label wins; on a tie (same index, e.g. overlapping labels),
-      // prefer the longer, more specific label.
-      if (
-        best === null ||
-        idx < best.idx ||
-        (idx === best.idx && label.length > best.label.length)
-      ) {
-        best = { value, label, idx };
-      }
+      const value = amountValue(m[1], m[2]);
+      if (value !== null) consider(value, label, idx);
     }
   }
-  return best ? { value: best.value, label: best.label } : null;
+
+  // Form 2 — amount first, parenthetically labeled.
+  PAREN_FORM.lastIndex = 0;
+  for (let pm = PAREN_FORM.exec(text); pm !== null; pm = PAREN_FORM.exec(text)) {
+    const value = amountValue(pm[1], pm[2]);
+    if (value !== null && pm[3]) consider(value, pm[3].toLowerCase(), pm.index);
+  }
+
+  if (candidates.length === 0) return null;
+  // Earliest match in the document wins; on a tie, the longer (more specific)
+  // label. Deterministic total order across both detection forms.
+  candidates.sort((a, b) => a.idx - b.idx || b.label.length - a.label.length);
+  const best = candidates[0]!;
+  return { value: best.value, label: best.label };
 }
