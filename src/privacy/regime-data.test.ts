@@ -65,6 +65,38 @@ describe("regime-data — gdpr-14 composition", () => {
   });
 });
 
+describe("regime-data — colorado", () => {
+  it("carries the statutory items plus the four unconditional Rule 6.03 items", () => {
+    const keys = REGIMES.co.items.map((i) => i.key);
+    for (const statutory of [
+      "categories-processed",
+      "purposes",
+      "rights-and-appeal",
+      "shared-categories",
+      "third-party-categories",
+    ]) {
+      expect(keys).toContain(statutory);
+    }
+    for (const rule603 of [
+      "sale-targeted-ads-profiling",
+      "request-methods",
+      "contact-info",
+      "last-updated",
+    ]) {
+      expect(keys).toContain(rule603);
+    }
+    // The conditional Rule 6.03 items (profiling per Rule 9.03, sensitive-data
+    // inferences per Rule 6.10) are intentionally NOT presence-linted.
+    expect(keys).not.toContain("profiling-disclosures");
+    expect(keys).not.toContain("sensitive-data-inferences");
+    const rule603Items = REGIMES.co.items.filter((i) => i.citation.includes("904-3"));
+    expect(rule603Items).toHaveLength(4);
+    for (const item of rule603Items) {
+      expect(item.citation).toMatch(/^4 CCR 904-3, Rule 6\.03/);
+    }
+  });
+});
+
 describe("regime-data — ccpa", () => {
   it("includes the § 1798.106 correction right and the sold/shared 'none' alternative", () => {
     const item = REGIMES.ccpa.items.find((i) => i.key === "correction-right");

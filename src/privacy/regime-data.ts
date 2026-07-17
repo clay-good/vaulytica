@@ -7,11 +7,10 @@
  * item IS present in a notice.
  *
  * Scope: CCPA/CPRA, GDPR Articles 13 and 14, and the state acts' statutory
- * notice lists — Colorado (C.R.S. § 6-1-1308(1)(a)), Virginia
- * (§ 59.1-578(C)), Texas (Tex. Bus. & Com. Code § 541.102, including the
- * exact (b)–(c) mandated notice texts), and Oregon (ORS 646A.578(4)).
- * The Colorado CPA *rule* items (4 CCR 904-3 Rule 6.03) remain deferred
- * pending verification against the adopted regulation text.
+ * notice lists — Colorado (C.R.S. § 6-1-1308(1)(a), plus the unconditional
+ * 4 CCR 904-3 Rule 6.03 regulation items), Virginia (§ 59.1-578(C)), Texas
+ * (Tex. Bus. & Com. Code § 541.102, including the exact (b)–(c) mandated
+ * notice texts), and Oregon (ORS 646A.578(4)).
  *
  * Data, not code: content changes are additions to this file, never silent
  * edits to shipped citations.
@@ -336,6 +335,8 @@ const GDPR_14_ITEMS: ContentItem[] = [
 
 const STATE_RETRIEVED_AT = "2026-07-17";
 
+const CO_RULES_URL = "https://www.law.cornell.edu/regulations/colorado/4-CCR-904-3-6.03";
+
 const CO_URL =
   "https://law.justia.com/codes/colorado/title-6/fair-trade-and-restraint-of-trade/article-1/part-13/section-6-1-1308/";
 
@@ -395,6 +396,55 @@ const CO_ITEMS: ContentItem[] = [
     url: CO_URL,
     retrieved_at: STATE_RETRIEVED_AT,
     present_patterns: ["categor(y|ies) of third part", "third part(y|ies)"],
+  },
+  // CPA regulation items (4 CCR 904-3 Rule 6.03, eff. 2023-07-01) that add
+  // content beyond the statutory list above. The rule's CONDITIONAL items —
+  // profiling disclosures per Rule 9.03 (6.03(A)(2)) and sensitive-data-
+  // inference deletion per Rule 6.10 (6.03(A)(5)) — are intentionally
+  // omitted: an unconditional presence rule cannot know whether a controller
+  // profiles or draws such inferences, so demanding them of every notice
+  // would be a false positive for controllers that do neither.
+  {
+    key: "sale-targeted-ads-profiling",
+    label: "Whether personal data is sold or used for targeted advertising or profiling",
+    citation: "4 CCR 904-3, Rule 6.03(A)(1)(c)",
+    url: CO_RULES_URL,
+    retrieved_at: STATE_RETRIEVED_AT,
+    present_patterns: [
+      "targeted advertising",
+      "profiling",
+      "\\bsell\\b.{0,40}personal (data|information)",
+      "do not sell",
+    ],
+  },
+  {
+    key: "request-methods",
+    label: "Methods through which a consumer may submit data-rights requests",
+    citation: "4 CCR 904-3, Rule 6.03(A)(4)",
+    url: CO_RULES_URL,
+    retrieved_at: STATE_RETRIEVED_AT,
+    present_patterns: [
+      "submit a request",
+      "to exercise .{0,30}right",
+      "method(s)? .{0,30}request",
+      "toll.?free",
+    ],
+  },
+  {
+    key: "contact-info",
+    label: "Controller contact information",
+    citation: "4 CCR 904-3, Rule 6.03(A)(6)",
+    url: CO_RULES_URL,
+    retrieved_at: STATE_RETRIEVED_AT,
+    present_patterns: ["contact us", "privacy@", "e-?mail .{0,20}(address|us)", "mailing address"],
+  },
+  {
+    key: "last-updated",
+    label: "Date the privacy notice was last updated",
+    citation: "4 CCR 904-3, Rule 6.03(A)(8)",
+    url: CO_RULES_URL,
+    retrieved_at: STATE_RETRIEVED_AT,
+    present_patterns: ["last updated", "effective date", "last revised"],
   },
 ];
 

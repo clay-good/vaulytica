@@ -1,6 +1,6 @@
 # Tasks
 
-- [x] 1. (CCPA + GDPR 13/14 at launch; co/va/tx/or landed 2026-07-17 — statutory lists verified against the primary source or a faithful mirror; the 4 CCR 904-3 Rule 6.03 items remain deferred pending the adopted regulation text) Regime data: per-regime enumerated content items with citation + URL + `retrieved_at` — `ccpa` (Civ. Code § 1798.130(a)(5)(A)–(C) incl. the § 1798.106 correction right; 11 CCR § 7011(e) items incl. sensitive-PI, opt-out link, last-updated date; note the 2026-01-01 amendment package: mobile-app link item included, ADMT pre-use notice explicitly out of scope), `gdpr-13`, `gdpr-14` (Art. 14 adds categories-of-data and source items), `co` (C.R.S. § 6-1-1308(1)(a); 4 CCR 904-3 Rule 6.03), `va` (§ 59.1-578(C)), `tx` (§ 541.102, including the exact (b)–(c) statutory notice texts), `or` (ORS 646A.578(4), incl. the third-party-detail item).
+- [x] 1. (CCPA + GDPR 13/14 at launch; co/va/tx/or landed 2026-07-17 — statutory lists + the unconditional CO Rule 6.03 items, all verified against the primary source or a faithful mirror) Regime data: per-regime enumerated content items with citation + URL + `retrieved_at` — `ccpa` (Civ. Code § 1798.130(a)(5)(A)–(C) incl. the § 1798.106 correction right; 11 CCR § 7011(e) items incl. sensitive-PI, opt-out link, last-updated date; note the 2026-01-01 amendment package: mobile-app link item included, ADMT pre-use notice explicitly out of scope), `gdpr-13`, `gdpr-14` (Art. 14 adds categories-of-data and source items), `co` (C.R.S. § 6-1-1308(1)(a); 4 CCR 904-3 Rule 6.03), `va` (§ 59.1-578(C)), `tx` (§ 541.102, including the exact (b)–(c) statutory notice texts), `or` (ORS 646A.578(4), incl. the third-party-detail item).
 - [x] 2. Playbooks `privacy-notice-us` and `privacy-notice-gdpr` + classifier features; fixture notices classify above threshold; a DPA fixture does not match the notice playbooks.
 - [x] 3. PNOT presence rules generated from the regime data via `_regulated-rule.ts` (one rule per item, `applies_to_playbooks` = notice playbooks, active only when the item's regime is asserted); id scheme PNOT-<regime>-###.
 - [x] 4. (landed 2026-07-17) Texas exact-wording rules: whitespace-normalized quote match of the § 541.102(b)–(c) mandated texts; finding distinguishes "absent" from "present but altered" (quoting the diff region). *(PNOT-TX-007/008: verbatim match is case-sensitive and whitespace-normalized; a near-variant paragraph → "present but altered" quoting it; a sale indication with no notice → "missing"; a document that never suggests such a sale is silent (§3 honesty — the statute mandates the text only for a controller that sells that data). Mandated texts verified against Tex. Bus. & Com. Code § 541.102 via texas.public.law (official capitol site is script-rendered); verified end-to-end through the real CLI: a re-cased notice fires "present but altered", the exact text is silent.)*
@@ -16,10 +16,17 @@
   VA 5 (§ 59.1-578(C)(1)–(5)), TX 6 (§ 541.102(a)(1)–(6)) + the 2 exact-wording
   rules (§ 541.102(b)–(c)), OR 9 (ORS 646A.578(4)(a)–(i), incl. the (4)(e)
   third-party-detail item) — each item verified against the primary source or a
-  faithful mirror on the stamped retrieval date. Still deferred: the Colorado
-  CPA *regulation* items (4 CCR 904-3 Rule 6.03) pending the adopted regulation
-  text, and the VA/CO/TX sale/targeted-advertising opt-out subsections beyond
-  each task's cited list.
+  faithful mirror on the stamped retrieval date. Same-day follow-up: the four
+  UNCONDITIONAL Colorado Rule 6.03 items landed too (6.03(A)(1)(c) sale/
+  targeted-ads/profiling disclosure, (A)(4) request methods, (A)(6) contact
+  info, (A)(8) last-updated — verified against the adopted 4 CCR 904-3 text,
+  eff. 2023-07-01, via the LII mirror), bringing `co` to 9 items. The rule's
+  CONDITIONAL items (profiling disclosures per Rule 9.03; sensitive-data-
+  inference deletion per Rule 6.10) are intentionally omitted: an
+  unconditional presence rule cannot know whether a controller profiles or
+  draws such inferences, so demanding them of every notice would be a false
+  positive. Still deferred: the VA/TX sale/targeted-advertising opt-out
+  subsections beyond each task's cited list.
 - **Regime activation by conditional rule inclusion**, mirroring the filing
   pack: `activatePrivacyNotice` adds the asserted regimes' PNOT rules only when
   the matched playbook is a notice playbook, and stamps `asserted_regimes` into
