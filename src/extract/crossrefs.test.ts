@@ -53,6 +53,41 @@ describe("extractCrossRefs", () => {
     expect(phantom?.unresolved).toBe(true);
   });
 
+  it("does not resolve a Schedule/Exhibit reference to a same-numbered section", () => {
+    const outline = extractSections(tree);
+    const t = normalize({
+      type: "document",
+      sections: [
+        {
+          id: "",
+          heading: "Refs",
+          level: 1,
+          paragraphs: [
+            {
+              id: "",
+              runs: [
+                {
+                  id: "",
+                  text: "As set out in Schedule 1.1, and per Section 1.1 above.",
+                  start: 0,
+                  end: 0,
+                },
+              ],
+            },
+          ],
+          children: [],
+        },
+      ],
+    });
+    const refs = extractCrossRefs(t, outline);
+    // Section 1.1 is a real outline node — it resolves.
+    expect(refs.find((r) => /Section 1\.1/i.test(r.raw_text))?.unresolved).toBe(false);
+    // Schedule 1.1 is a different entity type — it must NOT link to Section 1.1.
+    const sched = refs.find((r) => /Schedule 1\.1/i.test(r.raw_text));
+    expect(sched?.unresolved).toBe(true);
+    expect(sched?.resolved_id).toBeUndefined();
+  });
+
   it("captures a trailing parenthetical sub-reference chain", () => {
     const t = normalize({
       type: "document",

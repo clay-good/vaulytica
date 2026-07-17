@@ -34,10 +34,30 @@ export function extractJurisdictions(
   forEachParagraph(tree, (ctx) => {
     runRegex(GOV_LAW, ctx.text, (m) => {
       const raw = (m[2] ?? "").trim();
+      const tail = ctx.text.slice(m.index + m[0].length);
+      // A DISCLAIMED governing law ("shall NOT be governed by the laws of
+      // California, but rather … Delaware") must not be reported as the chosen
+      // law — asserting a jurisdiction the contract explicitly rejects is a
+      // confident false statement, and downstream jurisdiction-consistency
+      // rules rely on this fact directly. When the match is negated, drop the
+      // rejected jurisdiction and instead capture the "rather/instead by the
+      // laws of X" jurisdiction the clause actually selects, if stated.
+      if (isNegatedGovLaw(ctx.text, m.index)) {
+        const actual = detectAlternativeLaw(tail);
+        if (actual) {
+          out.push({
+            clause_kind: "governing-law",
+            jurisdiction_id: lookup(actual),
+            raw_text: actual,
+            position: posInParagraph(ctx, m.index, m.index + m[0].length),
+          });
+        }
+        return;
+      }
       // Exception / fallback structure: capture the jurisdiction this
       // clause yields to on the primary record (precedence is explicit)
       // rather than emitting a second, equal governing-law record.
-      const fallback = detectFallback(ctx.text.slice(m.index + m[0].length));
+      const fallback = detectFallback(tail);
       out.push({
         clause_kind: "governing-law",
         jurisdiction_id: lookup(raw),
@@ -98,6 +118,31 @@ function detectFallback(tail: string): string | undefined {
   const m =
     /\b(?:except|provided\s+that|otherwise|failing\s+which|if\s+such\s+courts?\b[^.;]*?(?:then|,))\b[^.;]*?\b(?:the\s+)?(?:laws?\s+of\s+|courts?\s+of\s+|then\s+)(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?)/.exec(
       window,
+    );
+  return m?.[1]?.trim() || undefined;
+}
+
+/**
+ * True when a "governed by the laws of …" match at `matchIndex` is negated by
+ * a preceding "not" / "never" / "in no event" in the same clause (bounded to
+ * the ~40 chars before the match, cut at the last sentence break, allowing a
+ * few intervening words like "shall not be governed", "is not governed").
+ */
+function isNegatedGovLaw(text: string, matchIndex: number): boolean {
+  const raw = text.slice(Math.max(0, matchIndex - 40), matchIndex);
+  const clause = raw.split(/[.;]\s/).pop() ?? raw;
+  return /\b(?:not|never|no\s+event)\b(?:\s+\w+){0,3}\s*$/i.test(clause);
+}
+
+/**
+ * In the tail after a negated governing-law clause, capture the jurisdiction
+ * the clause actually selects: "…, but rather by the laws of Delaware",
+ * "instead governed by the laws of New York". Bounded to the clause tail.
+ */
+function detectAlternativeLaw(tail: string): string | undefined {
+  const m =
+    /\b(?:rather|instead)\b[^.;]{0,60}?\bthe\s+laws?\s+of\s+(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+(?:without|excluding|and|regardless)|$)/.exec(
+      tail,
     );
   return m?.[1]?.trim() || undefined;
 }

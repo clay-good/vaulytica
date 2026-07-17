@@ -12,7 +12,7 @@ import { forEachParagraph, posInParagraph } from "./walk.js";
  */
 
 const REF_RE =
-  /\b(?:Section|Sections|Article|Articles|Exhibit|Schedule|Attachment|§§?)\s+([0-9]+(?:\.[0-9]+)*(?:\([a-z]\))?|[IVXLCDM]+)/gi;
+  /\b(Section|Sections|Article|Articles|Exhibit|Schedule|Attachment|§§?)\s+([0-9]+(?:\.[0-9]+)*(?:\([a-z]\))?|[IVXLCDM]+)/gi;
 
 export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): CrossRef[] {
   const refs: CrossRef[] = [];
@@ -22,13 +22,22 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
     REF_RE.lastIndex = 0;
     let m: RegExpExecArray | null;
     while ((m = REF_RE.exec(ctx.text)) !== null) {
-      const label = (m[1] ?? "").replace(/\(.*\)$/, "");
-      const normalized = normalizeLabel(label);
+      const keyword = m[1] ?? "";
+      const label = (m[2] ?? "").replace(/\(.*\)$/, "");
+      // The outline models Section / Article headings only. An Exhibit,
+      // Schedule, or Attachment reference must NOT resolve to a section that
+      // merely shares its number — "Schedule 4.2" is not "Section 4.2". The
+      // old code keyed on the number alone and confidently linked a schedule
+      // to an unrelated section (unresolved:false). Attachment-type refs key
+      // into a namespace absent from the section index, so they surface as
+      // unresolved for STRUCT-007 instead of a wrong-entity link.
+      const isAttachment = /^(?:Exhibit|Schedule|Attachment)$/i.test(keyword);
+      const normalized = isAttachment ? undefined : normalizeLabel(label);
       const resolved = normalized ? labelIndex.get(normalized) : undefined;
       // Capture any trailing parenthetical sub-reference chain
       // ("(a)(ii)") that follows the matched label, without disturbing
       // resolution (which keys on the section number) or `raw_text`.
-      const inMatch = /(\([a-z0-9]+\))+$/i.exec(m[1] ?? "")?.[0] ?? "";
+      const inMatch = /(\([a-z0-9]+\))+$/i.exec(m[2] ?? "")?.[0] ?? "";
       const trailing = /^(\([a-z0-9]+\))+/i.exec(ctx.text.slice(m.index + m[0].length))?.[0] ?? "";
       const subRef = `${inMatch}${trailing}`;
       refs.push({

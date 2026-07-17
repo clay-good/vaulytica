@@ -34,4 +34,16 @@ describe("extractJurisdictions", () => {
     // The primary record carries the fallback precedence link.
     expect(gov?.fallback_jurisdiction).toBe("Texas");
   });
+
+  it("does not report a disclaimed governing law, and captures the one actually chosen", () => {
+    const tree = buildTree([
+      "Governing Law",
+      "This Agreement shall not be governed by the laws of California, but rather by the laws of Delaware.",
+    ]);
+    const gov = extractJurisdictions(tree).filter((r) => r.clause_kind === "governing-law");
+    // California is explicitly rejected — it must not be reported as the law.
+    expect(gov.some((r) => /California/.test(r.raw_text))).toBe(false);
+    // Delaware is the law the clause actually selects.
+    expect(gov.map((r) => r.raw_text)).toEqual(["Delaware"]);
+  });
 });
