@@ -41,6 +41,8 @@ export const MAX_PLAYBOOK_STRING_LEN = 2000;
 export const MAX_NEGOTIATION_POSITIONS = 500;
 /** Cap on intermediate rungs per negotiation position (add-negotiation-ladder-playbooks). */
 export const MAX_NEGOTIATION_RUNGS = 8;
+/** Cap on deal-size bands per negotiation position (add-negotiation-ladder-playbooks). */
+export const MAX_NEGOTIATION_SIZE_BANDS = 8;
 
 /**
  * Numeric metrics a `numeric_threshold` predicate may assert on. Bounded by
@@ -204,6 +206,26 @@ export type NegotiationRoleVariant = {
 };
 
 /**
+ * A deal-size band for one position's ladder (add-negotiation-ladder-playbooks).
+ * A team's floor often depends on the size of the deal — a $10M contract
+ * warrants a higher liability cap than a $50k one. Each band supplies a full
+ * ladder that applies when the resolved deal value is at least `min_value`; the
+ * position's base `ideal`/`acceptable` is the default when no band applies (or
+ * no deal value is known). Selected by `--deal-value`.
+ */
+export type NegotiationSizeBand = {
+  /** The band applies when the deal value is ≥ this amount. */
+  min_value: number;
+  /** Human label for the band, e.g. "≥ $1M". Defaults to `≥ <min_value>`. */
+  label?: string;
+  ideal: CustomPredicate;
+  acceptable: CustomPredicate;
+  rungs?: NegotiationRung[];
+  guidance?: NegotiationTierGuidance;
+  approved_language?: string;
+};
+
+/**
  * A tiered negotiation position (spec-v10 "Negotiation Posture", Thrust A).
  *
  * Encodes a team's fallback ladder for one negotiable dimension as two
@@ -242,6 +264,23 @@ export type NegotiationPosition = {
    * Absent for a single-role (v2) playbook.
    */
   role_variants?: Record<string, NegotiationRoleVariant>;
+  /**
+   * Deal-size bands (add-negotiation-ladder-playbooks), ordered or not — the
+   * highest `min_value` at or below the resolved `--deal-value` wins; the base
+   * `ideal`/`acceptable` is the default when none applies or no deal value is
+   * known. Resolved into a concrete ladder BEFORE evaluation/hashing, so
+   * `ladderHash` distinguishes deal sizes and a bandless (v2) playbook is a
+   * byte-identical no-op. Absent for a size-agnostic playbook.
+   */
+  size_bands?: NegotiationSizeBand[];
+  /**
+   * Internal resolution marker (add-negotiation-ladder-playbooks): the label of
+   * the deal-size band applied by `resolvePositionsForDealValue`, or "default".
+   * NOT part of the authored schema (the strict validator rejects it on input);
+   * set only by the resolver so the report can say which band was used. Never
+   * enters `posture_hash`.
+   */
+  _resolved_band?: string;
   /** Optional per-tier negotiation guidance to surface in the report. */
   guidance?: NegotiationTierGuidance;
   /**
@@ -463,6 +502,19 @@ const roleVariantSchema = z
   .strict()
   .superRefine((variant, ctx) => addLadderTrapIssues(variant, ctx, []));
 
+const sizeBandSchema = z
+  .object({
+    min_value: z.number().finite().nonnegative(),
+    label: z.string().min(1).max(MAX_PLAYBOOK_STRING_LEN).optional(),
+    ideal: predicateSchema,
+    acceptable: predicateSchema,
+    rungs: z.array(rungSchema).max(MAX_NEGOTIATION_RUNGS).optional(),
+    guidance: guidanceSchema.optional(),
+    approved_language: z.string().min(1).max(MAX_PLAYBOOK_STRING_LEN).optional(),
+  })
+  .strict()
+  .superRefine((band, ctx) => addLadderTrapIssues(band, ctx, []));
+
 const negotiationPositionSchema = z
   .object({
     dimension: z.string().min(1).max(MAX_PLAYBOOK_STRING_LEN),
@@ -470,12 +522,26 @@ const negotiationPositionSchema = z
     acceptable: predicateSchema,
     rungs: z.array(rungSchema).max(MAX_NEGOTIATION_RUNGS).optional(),
     role_variants: z.record(z.string().min(1), roleVariantSchema).optional(),
+    size_bands: z.array(sizeBandSchema).max(MAX_NEGOTIATION_SIZE_BANDS).optional(),
     guidance: guidanceSchema.optional(),
     approved_language: z.string().min(1).max(MAX_PLAYBOOK_STRING_LEN).optional(),
   })
   .strict()
   .superRefine((pos, ctx) => {
     addLadderTrapIssues(pos, ctx, []);
+    // Deal-size band min_values must be distinct so band selection is
+    // unambiguous (add-negotiation-ladder-playbooks).
+    const seenMin = new Set<number>();
+    (pos.size_bands ?? []).forEach((band, i) => {
+      if (seenMin.has(band.min_value)) {
+        ctx.addIssue({
+          code: "custom",
+          message: `duplicate size_band min_value ${band.min_value}`,
+          path: ["size_bands", i, "min_value"],
+        });
+      }
+      seenMin.add(band.min_value);
+    });
   });
 
 const customPlaybookObjectSchema = z

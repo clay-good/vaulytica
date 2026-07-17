@@ -83,6 +83,7 @@ describe("playbook.schema.json artifact", () => {
         "ideal",
         "role_variants",
         "rungs",
+        "size_bands",
       ].sort(),
     );
     // A rung is a labeled predicate, capped to match MAX_NEGOTIATION_RUNGS.

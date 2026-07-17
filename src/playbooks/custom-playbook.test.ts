@@ -512,4 +512,56 @@ describe("validateCustomPlaybook — negotiation positions (spec-v10)", () => {
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.errors.join(" ")).toMatch(/duplicate party_role/i);
   });
+
+  // Deal-size bands (add-negotiation-ladder-playbooks).
+  const band = (min_value: number, ideal: number, acceptable: number) => ({
+    min_value,
+    ideal: {
+      kind: "numeric_threshold",
+      metric: "liability_cap_multiple",
+      comparator: "gte",
+      value: ideal,
+    },
+    acceptable: {
+      kind: "numeric_threshold",
+      metric: "liability_cap_multiple",
+      comparator: "gte",
+      value: acceptable,
+    },
+  });
+
+  it("accepts deal-size bands", () => {
+    const r = validateCustomPlaybook(
+      minimal({
+        negotiation_positions: [{ ...rungBase, size_bands: [band(1_000_000, 12, 6)] }],
+      } as never),
+    );
+    expect(r.ok).toBe(true);
+  });
+
+  it("rejects duplicate size_band min_values", () => {
+    const r = validateCustomPlaybook(
+      minimal({
+        negotiation_positions: [
+          { ...rungBase, size_bands: [band(1_000_000, 12, 6), band(1_000_000, 9, 5)] },
+        ],
+      } as never),
+    );
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.errors.join(" ")).toMatch(/duplicate size_band min_value/i);
+  });
+
+  it("rejects a negative size_band min_value", () => {
+    const r = validateCustomPlaybook(
+      minimal({ negotiation_positions: [{ ...rungBase, size_bands: [band(-1, 12, 6)] }] } as never),
+    );
+    expect(r.ok).toBe(false);
+  });
+
+  it("rejects the internal _resolved_band on an authored position (strict schema)", () => {
+    const r = validateCustomPlaybook(
+      minimal({ negotiation_positions: [{ ...rungBase, _resolved_band: "sneaky" }] } as never),
+    );
+    expect(r.ok).toBe(false);
+  });
 });

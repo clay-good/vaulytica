@@ -50,6 +50,7 @@ const STYLE = `
   li.hold { border-left-color: var(--hold); }
   .dim { font-weight: bold; }
   .met-rung { font-size:.8rem; color:#1f6feb; font-weight:600; margin-top:.15rem; }
+  .size-band { font-size:.8rem; color:#555; margin-top:.15rem; }
   .found { font-size:.85rem; color:#444; margin-top:.15rem; }
   .guide { font-size:.85rem; color:#333; margin-top:.15rem; }
   .sec { font-size:.8rem; color:#6b6b6b; }
@@ -89,8 +90,12 @@ function renderPosition(p: NegotiationPositionResult, action: Action): string {
   // (add-negotiation-ladder-playbooks). Detail only — refines where above the
   // floor the draft landed; the action/tier is unchanged.
   const rung = p.met_rung?.trim();
+  // The deal-size band this position was evaluated under (add-negotiation-
+  // ladder-playbooks), when the position defines size_bands.
+  const band = p.size_band?.trim();
   return `<li class="${action}">
     <div class="dim">${esc(p.dimension)}${sec}</div>
+    ${band ? `<div class="size-band">Deal-size band: ${esc(band)}</div>` : ""}
     ${rung ? `<div class="met-rung">Above your floor — met rung: ${esc(rung)}</div>` : ""}
     ${found ? `<div class="found">${esc(found)}</div>` : ""}
     ${guide ? `<div class="guide">${esc(guide)}</div>` : ""}

@@ -144,6 +144,10 @@ function diffNegotiationPositions(
     if (JSON.stringify(pa.role_variants ?? null) !== JSON.stringify(pb.role_variants ?? null)) {
       changes.push(`role variants for ${dimension} changed`);
     }
+    // Deal-size-band drift (add-negotiation-ladder-playbooks).
+    if (JSON.stringify(pa.size_bands ?? null) !== JSON.stringify(pb.size_bands ?? null)) {
+      changes.push(`deal-size bands for ${dimension} changed`);
+    }
     if (changes.length > 0) changed.push({ dimension, changes });
   }
   changed.sort((x, y) => (x.dimension < y.dimension ? -1 : x.dimension > y.dimension ? 1 : 0));

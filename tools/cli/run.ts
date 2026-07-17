@@ -232,7 +232,11 @@ import {
 } from "../../src/report/certificate.js";
 import { buildDefinitionsReport, buildDefinitionsMarkdown } from "../../src/report/definitions.js";
 import { parseCustomPlaybookJson } from "../../src/playbooks/custom-playbook.js";
-import { ladderHash, resolvePositionsForRole } from "../../src/playbooks/custom-interpreter.js";
+import {
+  ladderHash,
+  resolvePositionsForRole,
+  resolvePositionsForDealValue,
+} from "../../src/playbooks/custom-interpreter.js";
 import {
   bundlePostureCoherence,
   hasDivergence,
@@ -285,6 +289,8 @@ type Args = {
   posture?: boolean;
   /** add-negotiation-ladder-playbooks — the party role to evaluate role-varying positions as. */
   role?: string;
+  /** add-negotiation-ladder-playbooks — the deal value that selects a position's size band. */
+  dealValue?: number;
   /** spec-v12 Thrust A — exit non-zero when a posture front diverges across the bundle. */
   failOnDivergence?: boolean;
   /** spec-v13 Thrust A — a baseline bundle (path|glob|dir) to diff the coherence against. */
@@ -403,6 +409,10 @@ function parseArgs(argv: string[]): Args {
         break;
       case "--role":
         args.role = val;
+        i++;
+        break;
+      case "--deal-value":
+        args.dealValue = Number(val);
         i++;
         break;
       case "--fail-on-divergence":
@@ -721,10 +731,21 @@ export async function runAnalyze(argv: string[]): Promise<void> {
         process.exitCode = 1;
         return;
       }
-      customPlaybook = { ...customPlaybook, negotiation_positions: resolved.positions };
+      let positions = resolved.positions;
+      // add-negotiation-ladder-playbooks — then resolve the deal size
+      // (`--deal-value`) into the concrete band, also before any hashing. An
+      // unresolvable value falls back to each position's default band and the
+      // report says so (never a silent guess).
+      if (args.dealValue !== undefined && !Number.isFinite(args.dealValue)) {
+        process.stderr.write("--deal-value must be a finite number\n");
+        process.exitCode = 1;
+        return;
+      }
+      positions = resolvePositionsForDealValue(positions, args.dealValue);
+      customPlaybook = { ...customPlaybook, negotiation_positions: positions };
     }
-  } else if (args.role !== undefined) {
-    process.stderr.write("--role requires --playbook-file <path>\n");
+  } else if (args.role !== undefined || args.dealValue !== undefined) {
+    process.stderr.write("--role/--deal-value require --playbook-file <path>\n");
     process.exitCode = 1;
     return;
   }
@@ -1159,7 +1180,7 @@ Commands:
   analyze <path|glob|dir> [--playbook <id>] [--format json,sarif,html,md,csv,docx-comments]
                           [--out <dir>] [--fail-on critical|warning|info]
                           [--delivery] [--critical-dates] [--checklist]
-                          [--playbook-file <path>] [--posture] [--role <name>]
+                          [--playbook-file <path>] [--posture] [--role <name>] [--deal-value <n>]
                           [--fail-on-divergence] [--dkb <dir>] [--as-text] [--certificate]
                           [--definitions]
                           [--court <frap-default|ca9-appellate|cal-rules-8.204> [--reply]]

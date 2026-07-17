@@ -107,6 +107,45 @@ export function resolvePositionsForRole(
   return { ok: true, positions: resolved, ...(role !== undefined ? { role } : {}) };
 }
 
+/**
+ * Apply the deal size (`--deal-value`) to a playbook's positions
+ * (add-negotiation-ladder-playbooks). For a position with `size_bands`, the
+ * band with the highest `min_value` at or below the resolved deal value wins;
+ * its ladder REPLACES the base for that position. When no deal value is known,
+ * or the value falls below every band, the base ladder is the default — and the
+ * resolver stamps `_resolved_band` so the report can say which applied, never a
+ * silent guess. Like the role resolver, this runs BEFORE anything hashes the
+ * ladder, so `ladderHash` distinguishes deal sizes and a bandless position is a
+ * byte-identical no-op. Runs after role resolution (a role-varying position
+ * carries no bands, so it passes through unchanged).
+ */
+export function resolvePositionsForDealValue(
+  positions: readonly NegotiationPosition[],
+  dealValue: number | undefined,
+): NegotiationPosition[] {
+  return positions.map((p) => {
+    const bands = p.size_bands ?? [];
+    if (bands.length === 0) return p;
+    const { size_bands: _drop, ...base } = p;
+    const applicable = dealValue === undefined ? [] : bands.filter((b) => b.min_value <= dealValue);
+    if (applicable.length === 0) {
+      const why =
+        dealValue === undefined ? "default (no --deal-value)" : "default (below all bands)";
+      return { ...base, _resolved_band: why };
+    }
+    const band = applicable.reduce((hi, b) => (b.min_value > hi.min_value ? b : hi));
+    return {
+      dimension: p.dimension,
+      ideal: band.ideal,
+      acceptable: band.acceptable,
+      ...(band.rungs ? { rungs: band.rungs } : {}),
+      ...(band.guidance ? { guidance: band.guidance } : {}),
+      ...(band.approved_language ? { approved_language: band.approved_language } : {}),
+      _resolved_band: band.label ?? `≥ ${band.min_value}`,
+    };
+  });
+}
+
 export type CustomPlaybookFinding = Finding & {
   source: "custom-playbook";
   /** "cited" when the rule carried a citation, else "uncited (team policy)". */
@@ -174,6 +213,13 @@ export type NegotiationPositionResult = {
    * the position has no rungs.
    */
   met_rung?: string;
+  /**
+   * The deal-size band applied to this position (add-negotiation-ladder-
+   * playbooks), or a "default (…)" note when no band applied. Detail only, set
+   * from the resolver's `_resolved_band`; NOT part of `posture_hash`. Absent
+   * when the position defines no `size_bands`.
+   */
+  size_band?: string;
   /** A short excerpt of the clause that set the tier, when known. */
   excerpt?: string;
   section_id?: string;
@@ -286,7 +332,11 @@ export async function evaluateNegotiationPosture(
   input: { tree: DocumentTree; extracted: ExtractedData },
 ): Promise<NegotiationPosture> {
   const facts = buildDocFacts(input.tree, input.extracted);
-  const results = positions.map((pos) => classifyPosition(pos, facts));
+  const results = positions.map((pos) => {
+    const r = classifyPosition(pos, facts);
+    // Attach the resolver's deal-size-band note as detail (outside posture_hash).
+    return pos._resolved_band ? compact({ ...r, size_band: pos._resolved_band }) : r;
+  });
   // Deterministic order: by dimension label (machine-independent).
   results.sort((a, b) => a.dimension.localeCompare(b.dimension, "en"));
   const counts = { ideal: 0, acceptable: 0, below_acceptable: 0, unevaluable: 0 };

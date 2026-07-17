@@ -171,6 +171,45 @@
               "approved_language": { "type": "string", "minLength": 1 }
             }
           }
+        },
+        "size_bands": {
+          "type": "array",
+          "maxItems": 8,
+          "description": "Deal-size bands (add-negotiation-ladder-playbooks): the band with the highest min_value at or below the resolved --deal-value replaces this dimension's base ladder. The base is the default when none applies or no deal value is known.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["min_value", "ideal", "acceptable"],
+            "properties": {
+              "min_value": { "type": "number", "minimum": 0 },
+              "label": { "type": "string", "minLength": 1 },
+              "ideal": { "$ref": "#/$defs/predicate" },
+              "acceptable": { "$ref": "#/$defs/predicate" },
+              "rungs": {
+                "type": "array",
+                "maxItems": 8,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["label", "predicate"],
+                  "properties": {
+                    "label": { "type": "string", "minLength": 1 },
+                    "predicate": { "$ref": "#/$defs/predicate" }
+                  }
+                }
+              },
+              "guidance": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "ideal": { "type": "string", "minLength": 1 },
+                  "acceptable": { "type": "string", "minLength": 1 },
+                  "walk_away": { "type": "string", "minLength": 1 }
+                }
+              },
+              "approved_language": { "type": "string", "minLength": 1 }
+            }
+          }
         }
       }
     },

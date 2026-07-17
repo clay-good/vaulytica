@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { evaluateNegotiationPosture } from "./custom-interpreter.js";
+import { evaluateNegotiationPosture, resolvePositionsForDealValue } from "./custom-interpreter.js";
 import type { NegotiationPosition } from "./custom-playbook.js";
 import { buildTree } from "../extract/_fixtures.js";
 import { extractAll } from "../extract/index.js";
@@ -298,5 +298,54 @@ describe("intermediate rungs (add-negotiation-ladder-playbooks)", () => {
     const p = await posture(["The liability cap is 8x the total fees paid."], [ladderWithRungs]);
     const html = buildNegotiationSheet(p, "Test");
     expect(html).toContain("met rung: 7x cap");
+  });
+});
+
+describe("deal-size bands end-to-end (add-negotiation-ladder-playbooks)", () => {
+  const num = (value: number) =>
+    ({
+      kind: "numeric_threshold",
+      metric: "liability_cap_multiple",
+      comparator: "gte",
+      value,
+    }) as const;
+  const banded: NegotiationPosition = {
+    dimension: "Liability cap",
+    ideal: num(3),
+    acceptable: num(2),
+    size_bands: [{ min_value: 1_000_000, label: "≥ $1M", ideal: num(12), acceptable: num(6) }],
+  };
+
+  it("evaluates against the resolved band and reports which band, tier stays in the v2 set", async () => {
+    const V2 = new Set(["ideal", "acceptable", "below-acceptable", "unevaluable"]);
+    // 8x cap: under the big-deal band (floor 6) it is acceptable; under the
+    // small default (floor 2) it is ideal. The band changes the outcome.
+    const big = await posture(
+      ["The liability cap is 8x the total fees paid."],
+      resolvePositionsForDealValue([banded], 5_000_000),
+    );
+    expect(big.positions[0]!.tier).toBe("acceptable");
+    expect(big.positions[0]!.size_band).toBe("≥ $1M");
+    expect(V2.has(big.positions[0]!.tier)).toBe(true);
+
+    const small = await posture(
+      ["The liability cap is 8x the total fees paid."],
+      resolvePositionsForDealValue([banded], undefined),
+    );
+    expect(small.positions[0]!.tier).toBe("ideal");
+    expect(small.positions[0]!.size_band).toBe("default (no --deal-value)");
+  });
+
+  it("does not put size_band in posture_hash (detail only)", async () => {
+    const withBand = await posture(
+      ["The liability cap is 8x the total fees paid."],
+      resolvePositionsForDealValue([banded], 5_000_000),
+    );
+    // The same resolved ladder authored directly, with no size_bands/_resolved_band.
+    const plain = await posture(
+      ["The liability cap is 8x the total fees paid."],
+      [{ dimension: "Liability cap", ideal: num(12), acceptable: num(6) }],
+    );
+    expect(withBand.posture_hash).toBe(plain.posture_hash);
   });
 });

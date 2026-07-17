@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { runCustomPlaybook, ladderHash, resolvePositionsForRole } from "./custom-interpreter.js";
+import {
+  runCustomPlaybook,
+  ladderHash,
+  resolvePositionsForRole,
+  resolvePositionsForDealValue,
+} from "./custom-interpreter.js";
 import { validateCustomPlaybook, type CustomPlaybook } from "./custom-playbook.js";
 import type { DocumentTree } from "../ingest/types.js";
 import type { ExtractedData } from "../extract/types.js";
@@ -751,5 +756,80 @@ describe("resolvePositionsForRole — party-role variants (add-negotiation-ladde
       const ch = await ladderHash(pb({ negotiation_positions: customer.positions as never }));
       expect(vh).not.toBe(ch);
     }
+  });
+});
+
+describe("resolvePositionsForDealValue — deal-size bands (add-negotiation-ladder-playbooks)", () => {
+  const num = (value: number) =>
+    ({
+      kind: "numeric_threshold",
+      metric: "liability_cap_multiple",
+      comparator: "gte",
+      value,
+    }) as const;
+  // Base (small deal) wants 3x; a ≥$1M band wants 6x; a ≥$10M band wants 12x.
+  const banded = () =>
+    pb({
+      negotiation_positions: [
+        {
+          dimension: "Liability cap",
+          ideal: num(3),
+          acceptable: num(2),
+          size_bands: [
+            { min_value: 1_000_000, label: "≥ $1M", ideal: num(6), acceptable: num(4) },
+            { min_value: 10_000_000, label: "≥ $10M", ideal: num(12), acceptable: num(8) },
+          ],
+        },
+      ] as never,
+    }).negotiation_positions!;
+
+  it("applies the highest band at or below the deal value and stamps the label", () => {
+    const r = resolvePositionsForDealValue(banded(), 5_000_000)[0]! as Record<string, unknown>;
+    expect(r.ideal).toEqual(num(6));
+    expect(r._resolved_band).toBe("≥ $1M");
+    expect(r.size_bands).toBeUndefined();
+
+    const big = resolvePositionsForDealValue(banded(), 50_000_000)[0]! as Record<string, unknown>;
+    expect(big.ideal).toEqual(num(12));
+    expect(big._resolved_band).toBe("≥ $10M");
+  });
+
+  it("falls back to the base default when the value is below every band, and says so", () => {
+    const r = resolvePositionsForDealValue(banded(), 100_000)[0]! as Record<string, unknown>;
+    expect(r.ideal).toEqual(num(3));
+    expect(r._resolved_band).toBe("default (below all bands)");
+  });
+
+  it("falls back to the base default when no deal value is provided, and says so", () => {
+    const r = resolvePositionsForDealValue(banded(), undefined)[0]! as Record<string, unknown>;
+    expect(r.ideal).toEqual(num(3));
+    expect(r._resolved_band).toBe("default (no --deal-value)");
+  });
+
+  it("is a no-op for a bandless position — same ladderHash at any deal value", async () => {
+    const bandless = pb({
+      negotiation_positions: [{ dimension: "Cap", ideal: num(2), acceptable: num(1) }] as never,
+    });
+    const base = await ladderHash(bandless);
+    const resolved = resolvePositionsForDealValue(bandless.negotiation_positions!, 5_000_000);
+    expect(await ladderHash(pb({ negotiation_positions: resolved as never }))).toBe(base);
+  });
+
+  it("gives each deal size a DISTINCT ladderHash (cross-size compares are rejected downstream)", async () => {
+    // Resolved positions carry the internal `_resolved_band` (which the strict
+    // validator rejects, by design), so build the playbook raw for ladderHash —
+    // ladderHash reads only dimension/ideal/acceptable and never validates.
+    const raw = (positions: unknown): CustomPlaybook =>
+      ({
+        schema_version: "1.0",
+        catalog_version: "0.1.0",
+        id: "t",
+        name: "t",
+        description: "t",
+        negotiation_positions: positions,
+      }) as unknown as CustomPlaybook;
+    const sh = await ladderHash(raw(resolvePositionsForDealValue(banded(), 500_000)));
+    const lh = await ladderHash(raw(resolvePositionsForDealValue(banded(), 20_000_000)));
+    expect(sh).not.toBe(lh);
   });
 });
