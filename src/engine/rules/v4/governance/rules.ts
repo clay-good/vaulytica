@@ -232,6 +232,10 @@ const BYLAWS_RULES: Rule[] = [
     bad_patterns: [
       /exclusive\s+forum.{0,120}(state\s+of\s+delaware|chancery).{0,200}(exchange\s+act|1934\s+act|federal\s+securities)/is,
     ],
+    exclude_if: [
+      /(?:shall|will|does|do)\s+not\s+apply\s+to[^.]{0,100}(?:exchange\s+act|federal\s+securities|1934\s+act)/i,
+      /(?:exclud(?:e|es|ing)|except\s+for|other\s+than)[^.]{0,60}(?:exchange\s+act|federal\s+securities|1934\s+act)/i,
+    ],
     bad_title: "Exclusive-forum bylaw extends to Exchange Act claims",
     bad_description:
       "The exclusive-forum bylaw appears to designate Delaware as the exclusive forum for Securities Exchange Act of 1934 claims.",
@@ -414,6 +418,10 @@ const OP_AGREEMENT_RULES: Rule[] = [
     bad_patterns: [
       /waiv(e|er|ed|es).{0,80}implied\s+covenant.{0,40}good\s+faith/is,
       /waive.{0,40}good\s+faith\s+and\s+fair\s+dealing/i,
+    ],
+    exclude_if: [
+      /(?:does|do|shall|will)\s+not\s+(?:be\s+deemed\s+to\s+)?waive/i,
+      /\bnothing\b[^.]{0,60}waive/i,
     ],
     bad_title: "Implied-covenant waiver is statutorily prohibited",
     bad_description:
@@ -1289,6 +1297,10 @@ const PARTNERSHIP_RULES: Rule[] = [
     citation: drulpa("1101"),
     playbooks: [GOV_PLAYBOOK_PARTNERSHIP],
     bad_patterns: [/(waive|eliminate|disclaim).{0,80}implied\s+covenant.{0,40}good\s+faith/is],
+    exclude_if: [
+      /(?:does|do|shall|will)\s+not\s+(?:waive|eliminate|disclaim)/i,
+      /\bnothing\b[^.]{0,60}(?:waive|eliminate|disclaim)/i,
+    ],
     bad_title: "Implied-covenant waiver flagged",
     bad_description:
       "The agreement appears to waive or eliminate the implied covenant of good faith and fair dealing.",

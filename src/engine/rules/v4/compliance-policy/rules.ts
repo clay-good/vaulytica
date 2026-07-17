@@ -925,6 +925,9 @@ const SOCIAL_MEDIA_POLICY_RULES: Rule[] = [
       /employees?\s+(shall|may)\s+not\s+(discuss|post|comment).{0,80}(wages?|salary|compensation|working\s+conditions)/is,
       /(social\s+media|online).{0,80}(prohibit(s|ed)?|may\s+not).{0,80}(company|employer|business)/is,
     ],
+    exclude_if: [
+      /(?:does|do|shall|will)\s+not\s+(?:prohibit|restrict|prevent|preclude|bar|limit)/i,
+    ],
     bad_title: "Overbroad social-media restriction flagged (NLRA § 7)",
     bad_description:
       "Policy appears to broadly restrict discussion of wages / working conditions or company-related online activity.",

@@ -6,6 +6,8 @@ import { SETTLEMENT_RULES } from "./settlement/rules.js";
 import { EQUITY_RULES } from "./equity/rules.js";
 import { INSURANCE_RULES } from "./insurance/rules.js";
 import { EMPLOYMENT_RULES } from "./employment/rules.js";
+import { GOVERNANCE_RULES } from "./governance/rules.js";
+import { COMPLIANCE_POLICY_RULES } from "./compliance-policy/rules.js";
 
 /**
  * v4 language-quality rules built by buildV4LanguageRule fire when a
@@ -23,6 +25,8 @@ describe("v4 language-rule carve-out guards", () => {
     ...EQUITY_RULES,
     ...INSURANCE_RULES,
     ...EMPLOYMENT_RULES,
+    ...GOVERNANCE_RULES,
+    ...COMPLIANCE_POLICY_RULES,
   ];
   const byId = (id: string): Rule => {
     const r = all.find((x) => x.id === id);
@@ -93,6 +97,34 @@ describe("v4 language-rule carve-out guards", () => {
         "This confidentiality provision does not restrict Employee's right to discuss the terms of this agreement with an attorney or government agency.",
       violation:
         "Employee shall not disparage any person and shall keep confidential the terms of this agreement and any aspect thereof.",
+    },
+    {
+      id: "GOV-011",
+      compliant:
+        "The exclusive forum shall be the Delaware Court of Chancery; provided that this provision shall not apply to any claim arising under the Securities Exchange Act of 1934.",
+      violation:
+        "The exclusive forum for all claims shall be the Delaware Court of Chancery, including any claim arising under the Securities Exchange Act of 1934.",
+    },
+    {
+      id: "GOV-022",
+      compliant:
+        "Nothing in this Agreement shall waive or be deemed to waive the implied covenant of good faith and fair dealing.",
+      violation:
+        "Each Member waives the implied covenant of good faith and fair dealing to the fullest extent permitted.",
+    },
+    {
+      id: "GOV-070",
+      compliant:
+        "This Agreement does not waive, eliminate, or disclaim the implied covenant of good faith and fair dealing.",
+      violation:
+        "The Manager may eliminate the implied covenant of good faith to the maximum extent permitted by law.",
+    },
+    {
+      id: "POL-042",
+      compliant:
+        "This social media policy does not prohibit employees from discussing the company, their wages, or working conditions.",
+      violation:
+        "On social media, employees may not criticize the company or the employer in any public forum.",
     },
   ];
 
