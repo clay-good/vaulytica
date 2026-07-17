@@ -97,4 +97,19 @@ describe("extractDealValue — labeled total only (never a guess)", () => {
       dealValue("The total contract value, less the $500 processing deposit noted above, remains."),
     ).toBeNull();
   });
+
+  it("matches the label case-insensitively", () => {
+    expect(dealValue("TOTAL CONTRACT VALUE: $5,000,000.")?.value).toBe(5_000_000);
+  });
+
+  it("does not read a non-dollar quantity after 'not to exceed' (e.g. a day count)", () => {
+    expect(dealValue("The cure period shall not to exceed 30 days.")).toBeNull();
+  });
+
+  it("skips a label with no valid amount and uses a later labeled total", () => {
+    // First 'total fees' has no adjacent amount; the later 'total contract
+    // value: $4,000,000' is the real, earliest VALID labeled total.
+    const r = dealValue("Total fees are described in Exhibit B. Total contract value: $4,000,000.");
+    expect(r?.value).toBe(4_000_000);
+  });
 });
