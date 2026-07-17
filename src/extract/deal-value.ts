@@ -47,8 +47,19 @@ const SCALE_WORDS: Record<string, number> = {
 const AMOUNT =
   /\$\s?([0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]+)?|[0-9]+(?:\.[0-9]+)?)\s*(thousand|million|billion|k|m|b)?\b/i;
 
-/** How far after a label to look for the amount (chars). */
+/** How far after a label to look for the amount (chars) — capped further by the sentence boundary. */
 const WINDOW = 60;
+/**
+ * The text between the label and the amount must be a *connector* — whitespace,
+ * a colon/dash/comma, and at most a short linking verb ("is", "of", "shall
+ * be", "equals", …). Anything else (", less the …", "excludes …", "under this
+ * Agreement is …") means the nearby amount is not the labeled total, so we bail
+ * to the honest default rather than misattribute it. Honesty-first: a legitimate
+ * total behind an unusual clause is a false negative (base default), never a
+ * false positive that fabricates a deal size.
+ */
+const CONNECTOR =
+  /^[\s]*[:=,–—-]?[\s]*(?:is|of|shall be|will be|equals?|amounts? to|totall?ing)?[\s]*$/i;
 
 export type DealValue = {
   /** The resolved numeric deal value (USD). */
@@ -71,9 +82,18 @@ export function extractDealValue(tree: DocumentTree): DealValue | null {
       const idx = lower.indexOf(label, from);
       if (idx === -1) break;
       from = idx + label.length;
-      const window = text.slice(idx + label.length, idx + label.length + WINDOW);
+      let window = text.slice(idx + label.length, idx + label.length + WINDOW);
+      // Stay within the labeled clause: a sentence terminator (a period NOT part
+      // of a decimal, a semicolon, or a newline) ends it. An amount in a LATER
+      // sentence — a stray fee, an unrelated figure, a real total stated
+      // elsewhere — must never be read as this label's total.
+      const boundary = /[;\n]|\.(?!\d)/.exec(window);
+      if (boundary) window = window.slice(0, boundary.index);
       const m = AMOUNT.exec(window);
       if (!m || m[1] === undefined) continue;
+      // The amount must be joined to the label by only a connector — otherwise
+      // it is some other figure that merely shares the sentence.
+      if (!CONNECTOR.test(window.slice(0, m.index))) continue;
       const num = Number(m[1].replace(/,/g, ""));
       const scale = m[2] ? (SCALE_WORDS[m[2].toLowerCase()] ?? 1) : 1;
       const value = num * scale;

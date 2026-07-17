@@ -49,4 +49,52 @@ describe("extractDealValue — labeled total only (never a guess)", () => {
     const doc = "The total contract value is $7,500,000.";
     expect(dealValue(doc)).toEqual(dealValue(doc));
   });
+
+  it("does not read an unlabeled amount that merely sits near other text", () => {
+    expect(dealValue("The cap is 8x fees and a $50,000 penalty applies on default.")).toBeNull();
+    expect(dealValue("Payment of $9,999,999 is due to the vendor each quarter.")).toBeNull();
+  });
+
+  it("ignores a labeled total whose amount is zero or missing (no false deal size)", () => {
+    // A '$0' placeholder is filtered (value must be > 0); with no other labeled
+    // amount the result is null, not a bogus 0.
+    expect(dealValue("Total contract value: $0 (to be set in Schedule A).")).toBeNull();
+  });
+
+  it("handles a colon and a k-suffix on a labeled total", () => {
+    expect(dealValue("Total Fees: $750k.")?.value).toBe(750_000);
+  });
+
+  // Regression (reviewer P1): the amount must be the labeled total, not a stray
+  // figure in a LATER sentence that merely follows the label phrase.
+  it("does not read an amount from a later sentence than the label", () => {
+    expect(
+      dealValue(
+        "This clause has nothing to do with the total contract value. A late fee of $500 applies per invoice.",
+      ),
+    ).toBeNull();
+    expect(
+      dealValue(
+        "The total contract value excludes taxes. See $75 filing fee below. The actual total is $9,000,000 in Exhibit A.",
+      ),
+    ).toBeNull();
+  });
+
+  it("reads a labeled total joined by a connector (is / of / equals / colon)", () => {
+    expect(dealValue("The total contract value equals $8,000,000.")?.value).toBe(8_000_000);
+    expect(dealValue("Total consideration of $8,000,000.")?.value).toBe(8_000_000);
+  });
+
+  it("falls back to null (honest default) when a non-connector clause separates label and amount", () => {
+    // Honesty-first: rather than risk misattributing the amount, an unusual
+    // clause between the label and the figure yields no deal value (the run
+    // then uses the base default and the user can pass --deal-value).
+    expect(dealValue("The total contract value under this Agreement is $8,000,000.")).toBeNull();
+  });
+
+  it("does not read an unrelated figure buried mid-clause after the label", () => {
+    expect(
+      dealValue("The total contract value, less the $500 processing deposit noted above, remains."),
+    ).toBeNull();
+  });
 });
