@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { PNOT_RULES, PRIVACY_NOTICE_PLAYBOOK_IDS, pnotRulesForRegimes } from "./rules.js";
+import {
+  PNOT_RULES,
+  PRIVACY_NOTICE_PLAYBOOK_IDS,
+  TX_EXACT_RULES,
+  pnotRulesForRegimes,
+} from "./rules.js";
 import { buildContext } from "../../_test-fixtures.js";
 import { runEngine } from "../../runner.js";
 import type { Playbook, RuleContext } from "../../finding.js";
@@ -18,7 +23,7 @@ describe("PNOT rules — registry contract", () => {
     const ids = PNOT_RULES.map((r) => r.id);
     expect(new Set(ids).size).toBe(ids.length);
     for (const r of PNOT_RULES) {
-      expect(r.id).toMatch(/^PNOT-(CCPA|GDPR13|GDPR14)-\d{3}$/);
+      expect(r.id).toMatch(/^PNOT-(CCPA|GDPR13|GDPR14|CO|VA|TX|OR)-\d{3}$/);
       expect(r.category).toBe("privacy-notice");
     }
   });
@@ -31,10 +36,10 @@ describe("PNOT rules — registry contract", () => {
     }
   });
 
-  it("one rule per content item, per regime", () => {
+  it("one rule per content item, per regime (Texas adds the two exact-wording rules)", () => {
     for (const [id, regime] of Object.entries(REGIMES)) {
       const count = PNOT_RULES.filter((r) => r.regime === id).length;
-      expect(count).toBe(regime.items.length);
+      expect(count).toBe(regime.items.length + (id === "tx" ? TX_EXACT_RULES.length : 0));
     }
   });
 
@@ -121,6 +126,67 @@ describe("PNOT rules — presence behavior", () => {
       source_file: SRC,
     });
     expect(run.findings.find((f) => f.rule_id === rule.id)).toBeTruthy();
+  });
+});
+
+describe("PNOT-TX exact-wording rules (§ 541.102(b)–(c))", () => {
+  const sensitiveRule = TX_EXACT_RULES.find((r) => r.id === "PNOT-TX-007")!;
+  const biometricRule = TX_EXACT_RULES.find((r) => r.id === "PNOT-TX-008")!;
+
+  async function findingsFor(rule: (typeof TX_EXACT_RULES)[number], paragraphs: string[]) {
+    const ctx = withPnot(buildContext(["Privacy Policy", ...paragraphs]));
+    const run = await runEngine({
+      rules: [rule],
+      ctx,
+      executed_at: "2026-07-17T00:00:00Z",
+      source_file: SRC,
+    });
+    return run.findings.filter((f) => f.rule_id === rule.id);
+  }
+
+  it("is silent when the exact mandated notice is present (whitespace-normalized)", async () => {
+    const found = await findingsFor(sensitiveRule, [
+      "We may sell data as described below.",
+      "NOTICE: We  may sell your\nsensitive personal data.",
+    ]);
+    expect(found).toHaveLength(0);
+  });
+
+  it("fires 'present but altered' on a paraphrased or re-cased notice, quoting it", async () => {
+    const found = await findingsFor(sensitiveRule, [
+      "Notice: we may sell your sensitive personal data.",
+    ]);
+    expect(found).toHaveLength(1);
+    expect(found[0]!.title).toMatch(/present but altered/);
+    expect(found[0]!.excerpt.text).toMatch(/we may sell your sensitive personal data/i);
+  });
+
+  it("fires 'missing' when the document indicates a sale of sensitive data with no notice", async () => {
+    const found = await findingsFor(sensitiveRule, [
+      "We may disclose or sell certain categories of sensitive data to our partners.",
+    ]);
+    expect(found).toHaveLength(1);
+    expect(found[0]!.title).toMatch(/missing/);
+  });
+
+  it("is silent when the document never suggests selling that data (§3 honesty)", async () => {
+    const found = await findingsFor(sensitiveRule, [
+      "We collect your name and email. We do not sell personal data of any kind.",
+      "We process sensitive data only with your consent.",
+    ]);
+    expect(found).toHaveLength(0);
+  });
+
+  it("the biometric rule mirrors the sensitive one and matches its own mandated text", async () => {
+    const compliant = await findingsFor(biometricRule, [
+      "NOTICE: We may sell your biometric personal data.",
+    ]);
+    expect(compliant).toHaveLength(0);
+    const missing = await findingsFor(biometricRule, [
+      "Biometric data we hold may be sold to verification vendors.",
+    ]);
+    expect(missing).toHaveLength(1);
+    expect(missing[0]!.title).toMatch(/missing/);
   });
 });
 

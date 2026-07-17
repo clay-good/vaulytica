@@ -3,6 +3,7 @@ import { LAUNCH_RULES } from "../engine/rules/index.js";
 import { PNOT_RULES, pnotRulesForRegimes } from "../engine/rules/privacy-notice/rules.js";
 import { activatePrivacyNotice } from "./activate.js";
 import { buildRegimeCoverage } from "./coverage.js";
+import { REGIME_IDS } from "./regime-data.js";
 
 describe("activatePrivacyNotice", () => {
   it("is a no-op when no regime is asserted", () => {
@@ -41,8 +42,7 @@ describe("buildRegimeCoverage", () => {
   });
 
   it("every PNOT rule maps to exactly one regime's coverage", () => {
-    const allRegimes = ["ccpa", "gdpr-13", "gdpr-14"] as const;
-    const cov = buildRegimeCoverage(allRegimes, new Set());
+    const cov = buildRegimeCoverage(REGIME_IDS, new Set());
     const totalItems = cov.reduce((n, c) => n + c.total, 0);
     expect(totalItems).toBe(PNOT_RULES.length);
   });

@@ -103,7 +103,7 @@ rule uses a registered prefix.
 | CITE | authority-citation lint (same filing playbooks) |
 | DDL | deadline computation (register resolution; no rule pack yet) |
 | PROD | production QA (Bates + privilege-log reconciliation, CLI) |
-| PNOT | privacy notice (CCPA + GDPR Art. 13/14; TX/state analogs pending) |
+| PNOT | privacy notice (CCPA + GDPR Art. 13/14 + CO/VA/TX/OR, incl. the TX § 541.102(b)–(c) exact-wording checks) |
 
 The estate pack deepens the already-owned **EST** prefix rather than reserving a
 new one.

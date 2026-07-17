@@ -28,7 +28,7 @@
  * `--fail-on-production-gap` exits non-zero (2) when a Bates gap is found, for a
  * CI check before a production goes out.
  *
- * `--regime <ccpa,gdpr,gdpr-13,gdpr-14>` (comma-separated; `gdpr` = both
+ * `--regime <ccpa,gdpr,gdpr-13,gdpr-14,co,va,tx,or>` (comma-separated; `gdpr` = both
  * articles) runs the privacy-notice content checks (PNOT presence rules) for
  * the asserted regime(s) when the document matches a privacy-notice playbook;
  * dormant with none asserted. The asserted regimes are stamped into the run and
@@ -181,7 +181,7 @@ import { REGIME_IDS } from "../../src/privacy/regime-data.js";
 import type { RegimeId } from "../../src/privacy/regime-data.js";
 
 /** Values the `--regime` flag accepts (`gdpr` expands to both articles). */
-const REGIME_FLAG_VALUES = ["ccpa", "gdpr", "gdpr-13", "gdpr-14"] as const;
+const REGIME_FLAG_VALUES = ["ccpa", "gdpr", "gdpr-13", "gdpr-14", "co", "va", "tx", "or"] as const;
 import { runDiff } from "./diff.js";
 import { runCompare } from "./compare.js";
 import { runCompareCoherence } from "./compare-coherence.js";
@@ -1219,7 +1219,7 @@ Commands:
                           [--definitions]
                           [--court <frap-default|ca9-appellate|cal-rules-8.204> [--reply]]
                           [--deadline-profile <frcp-6|cal-ccp-12> [--service-method <method>]]
-                          [--regime <ccpa,gdpr,gdpr-13,gdpr-14>] [--estate-checks]
+                          [--regime <ccpa,gdpr,gdpr-13,gdpr-14,co,va,tx,or>] [--estate-checks]
                           [--baseline <path|glob|dir> | --baseline-coherence <coherence.json>]
                           [--emit-coherence <path>] [--fail-on-coherence-regression]
   analyze <dir|.zip> --production-qa [--fail-on-production-gap]
