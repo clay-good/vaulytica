@@ -16,8 +16,18 @@ export const rule: Rule = {
       /(lease|residential|terms\s+of\s+service|employment|consumer)/i.test(s.heading),
     );
     if (!consumer) return null;
-    const arb = firstParagraphMatch(ctx, /\barbitrat/i);
-    const cw = firstParagraphMatch(ctx, /class\s+action\s+waiver|waive[\s\S]{0,40}class\s+action/i);
+    // Arbitration must be framed as MANDATORY — optional / non-binding
+    // arbitration ("either party MAY elect non-binding arbitration") is not the
+    // pattern. And the class-action waiver must not be NEGATED ("contains no
+    // class action waiver" is the honest opposite).
+    const arb = firstParagraphMatch(
+      ctx,
+      /\b(?:mandatory|binding)\s+arbitration|(?:shall|must|agree\s+to)\s+(?:[^.]{0,30}?)?arbitrat|arbitration\s+(?:is|shall\s+be)\s+(?:mandatory|binding|required|the\s+(?:sole|exclusive))/i,
+    );
+    const cw = firstParagraphMatch(
+      ctx,
+      /(?<!\b(?:no|without|not)\s)class\s+action\s+waiver|\bwaives?\b[\s\S]{0,40}class\s+action/i,
+    );
     if (!arb || !cw) return null;
     return emit(ctx, rule, {
       title: "Mandatory arbitration plus class-action waiver in a consumer-facing contract",

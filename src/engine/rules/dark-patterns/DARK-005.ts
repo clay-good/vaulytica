@@ -29,7 +29,10 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /\b(?:waives?|waiv(?:er|ing)|gives?\s+up|relinquishes?|shall\s+not\s+(?:participate|be\s+entitled))\b[^.]{0,200}\b(?:class\s+action|class[-\s]wide|collective\s+action|representative\s+action|consolidated\s+(?:claims|arbitration))\b|\b(?:no|not)\s+(?:class\s+action|class[-\s]wide|collective\s+action|representative\s+action)\b|\bon\s+an\s+individual\s+basis\s+(?:only|and\s+not)\b/i,
+      // The bare "no/not class action" alternative must NOT match "no class
+      // action WAIVER" — that is a clause disclaiming any waiver ("there is no
+      // class action waiver"), the honest opposite of the dark pattern.
+      /\b(?:waives?|waiv(?:er|ing)|gives?\s+up|relinquishes?|shall\s+not\s+(?:participate|be\s+entitled))\b[^.]{0,200}\b(?:class\s+action|class[-\s]wide|collective\s+action|representative\s+action|consolidated\s+(?:claims|arbitration))\b|\b(?:no|not)\s+(?:class\s+action|class[-\s]wide|collective\s+action|representative\s+action)\b(?!\s+waiver)|\bon\s+an\s+individual\s+basis\s+(?:only|and\s+not)\b/i,
     );
     if (!hit) return null;
     return emit(ctx, rule, {

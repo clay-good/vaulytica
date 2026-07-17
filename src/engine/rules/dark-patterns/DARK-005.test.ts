@@ -50,4 +50,13 @@ describe("DARK-005 — class-action waiver", () => {
     ]);
     expect(DARK_005.check(ctx)).toBeNull();
   });
+
+  // Regression: a clause DISCLAIMING any waiver must not be flagged as a waiver.
+  it("silent on `no class action waiver` (a disclaimer, the honest opposite)", () => {
+    const ctx = buildContext([
+      "Disputes",
+      "There is no class action waiver in this Agreement. You retain the full right to participate in a class action against the Company at any time.",
+    ]);
+    expect(DARK_005.check(ctx)).toBeNull();
+  });
 });

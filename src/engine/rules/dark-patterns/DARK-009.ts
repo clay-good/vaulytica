@@ -59,7 +59,11 @@ export const rule: Rule = {
     // sentence of the amendment-by-posting block.
     const b = firstParagraphMatch(
       ctx,
-      /\b(?:modif(?:y|ied)|amend(?:ed)?|chang(?:e|ed)|updat(?:e|ed)|revis(?:e|ed))\b[\s\S]{0,200}\bcontinued\s+(?:use|access)\b[\s\S]{0,120}\b(?:constitut\w+|deem\w+|signif\w+|will\s+be|shall\s+be)[\s\S]{0,40}(?:acceptance|consent|agreement|assent|binding)\b/i,
+      // The tempered gap before the acceptance verb stops at a negation, so a
+      // clause that REJECTS continued-use-as-acceptance ("continued use does
+      // NOT constitute acceptance … unless separately signed") — the compliant
+      // opposite of the pattern — does not fire.
+      /\b(?:modif(?:y|ied)|amend(?:ed)?|chang(?:e|ed)|updat(?:e|ed)|revis(?:e|ed))\b[\s\S]{0,200}\bcontinued\s+(?:use|access)\b(?:(?!\b(?:not|never)\b)[\s\S]){0,120}\b(?:constitut\w+|deem\w+|signif\w+|will\s+be|shall\s+be)[\s\S]{0,40}(?:acceptance|consent|agreement|assent|binding)\b/i,
     );
     if (b) {
       return emit(ctx, rule, {

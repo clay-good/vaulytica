@@ -32,6 +32,17 @@ export const rule: Rule = {
       /\b(?:Vendor|Provider|Company|Licensor)\s+may\s+suspend\s+(?:Customer's\s+access\s+to\s+)?the\s+(?:Service|Services|Software|Platform|Application)[^.]{0,200}(?:immediately\s+and\s+without\s+notice|without\s+notice|at\s+any\s+time|in\s+(?:its\s+)?sole\s+discretion)/i,
     );
     if (!hit) return null;
+    // The broad trigger can span a COMPLIANT clause and land on a negated phrase
+    // — "may suspend … only after 30 days' notice and an opportunity to cure;
+    // Vendor will never suspend … without notice." A notice-and-cure commitment
+    // or an explicit "never … without notice" promise is the opposite of the
+    // dark pattern, so it must not fire.
+    if (
+      /\bnever\b|\bonly\s+after\b|opportunity\s+to\s+cure|\bafter\b[^.]{0,60}\bcure\b/i.test(
+        hit.match[0],
+      )
+    )
+      return null;
     return emit(ctx, rule, {
       title: "Unilateral suspension without notice or cure",
       description: hit.match[0],

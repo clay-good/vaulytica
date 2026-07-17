@@ -28,4 +28,14 @@ describe("DARK-008 — unilateral suspension without notice or cure", () => {
     ]);
     expect(DARK_008.check(ctx)).toBeNull();
   });
+
+  // Regression: a notice-and-cure suspension with an explicit "never without
+  // notice" promise is the compliant opposite of the dark pattern.
+  it("is silent on a notice-and-cure suspension clause", () => {
+    const ctx = buildContext([
+      "Suspension",
+      "Vendor may suspend the Service only after providing Customer thirty (30) days written notice of the breach and a reasonable opportunity to cure; Vendor will never suspend the Service without notice.",
+    ]);
+    expect(DARK_008.check(ctx)).toBeNull();
+  });
 });

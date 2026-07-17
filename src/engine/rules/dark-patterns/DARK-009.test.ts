@@ -36,4 +36,13 @@ describe("DARK-009 — unilateral amendment by posting", () => {
     ]);
     expect(DARK_009.check(ctx)).toBeNull();
   });
+
+  // Regression: a clause that REJECTS continued-use-as-acceptance is compliant.
+  it("silent on `continued use does NOT constitute acceptance`", () => {
+    const ctx = buildContext([
+      "Amendments",
+      "We may amend this Agreement only by a written amendment signed by both parties. Continued use of the Service does not constitute acceptance of any change that has not been separately signed by Customer.",
+    ]);
+    expect(DARK_009.check(ctx)).toBeNull();
+  });
 });
