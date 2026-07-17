@@ -63,6 +63,8 @@ import type { PostureMovementKind } from "./posture-movement.js";
 import type { NegotiationTier } from "../playbooks/custom-interpreter.js";
 import type { IngestResult } from "../ingest/types.js";
 import type { ProductionQaReport } from "../production/report.js";
+import { buildRegimeCoverage } from "../privacy/coverage.js";
+import type { RegimeId } from "../privacy/regime-data.js";
 import {
   buildPortfolioMatrix,
   buildPortfolioExecutiveSummary,
@@ -854,11 +856,38 @@ function renderPerDocumentSection(input: BundleReportInput): (Paragraph | Table)
         out.push(para({ text: f.description }));
       }
     }
+    out.push(...renderPerDocumentRegimeCoverage(doc.run));
     out.push(...renderPerDocumentSecondaryFamilies(doc.secondary_families));
     out.push(spacer());
   }
   out.push(pageBreak());
   return out;
+}
+
+// add-privacy-notice-pack — compact per-regime coverage when this member ran
+// the PNOT pack (its run carries `asserted_regimes`). One line per regime;
+// the document's own per-document DOCX inside the bundle archive carries the
+// full item table. A render-side projection of the fired PNOT findings,
+// outside every hash; [] for members the pack stayed dormant on.
+function renderPerDocumentRegimeCoverage(run: EngineRun): Paragraph[] {
+  const regimes = run.asserted_regimes;
+  if (!regimes || regimes.length === 0) return [];
+  const fired = new Set(
+    run.findings.filter((f) => f.rule_id.startsWith("PNOT-")).map((f) => f.rule_id),
+  );
+  const coverage = buildRegimeCoverage(regimes as RegimeId[], fired);
+  return [
+    para({ text: "Privacy regime coverage (asserted by the user):", bold: true, italics: true }),
+    ...coverage.map((c) =>
+      para({
+        text: `${c.regime_name}: ${c.found_count} of ${c.total} items found — items not detected appear as PNOT findings.`,
+      }),
+    ),
+    para({
+      text: '"Found" means the item\'s language was detected — never that the notice is adequate or compliant.',
+      italics: true,
+    }),
+  ];
 }
 
 // Additional families a bundled document also contains beyond its primary

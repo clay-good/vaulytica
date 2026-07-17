@@ -517,6 +517,35 @@ describe("buildBundleDocxReport — Production-QA section (add-production-qa-pac
   });
 });
 
+describe("buildBundleDocxReport — per-document regime coverage (add-privacy-notice-pack)", () => {
+  it("renders a compact coverage line for a member that ran the PNOT pack", async () => {
+    // One member analyzed as a privacy notice with ccpa asserted and one item
+    // not detected (its PNOT rule fired); the other member untouched.
+    const notice = bundleDoc("notice", "n1", [
+      { ...finding("p1", "warning"), rule_id: "PNOT-CCPA-001" },
+    ]);
+    notice.run.asserted_regimes = ["ccpa"];
+    const input: BundleReportInput = {
+      ...makeInput(),
+      documents: [notice, bundleDoc("b", "b", [finding("i1", "info")])],
+    };
+    const blob = await buildBundleDocxReport(input);
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const docXml = strFromU8(entries["word/document.xml"]!);
+    expect(docXml).toContain("Privacy regime coverage (asserted by the user):");
+    expect(docXml).toContain("CCPA/CPRA privacy policy: 11 of 12 items found");
+    // Honesty caveat: found ≠ adequate/compliant.
+    expect(docXml).toContain("never that the notice is adequate or compliant");
+  });
+
+  it("omits the coverage lines when no member asserted regimes (golden byte-stable)", async () => {
+    const blob = await buildBundleDocxReport(makeInput());
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const docXml = strFromU8(entries["word/document.xml"]!);
+    expect(docXml).not.toContain("Privacy regime coverage");
+  });
+});
+
 describe("buildBundleJson — consistency_enabled", () => {
   it("surfaces consistency_enabled=false when the user disabled the toggle", async () => {
     const input: BundleReportInput = { ...makeInput(), consistency_enabled: false };
