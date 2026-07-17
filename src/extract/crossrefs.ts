@@ -11,8 +11,24 @@ import { forEachParagraph, posInParagraph } from "./walk.js";
  * for matching against the outline's numbered labels.
  */
 
+// The numeral may carry a trailing letter suffix ("409A", "280G") — captured
+// so the raw text is never silently truncated to "409" and so the external
+// citation guard below sees the whole label. The trailing `(?![A-Za-z])` keeps
+// a bare roman numeral from matching inside a word ("Schedule i" must not match
+// "Schedule identifying"; "Article V" must not match "Article Video").
 const REF_RE =
-  /\b(Section|Sections|Article|Articles|Exhibit|Schedule|Attachment|§§?)\s+([0-9]+(?:\.[0-9]+)*(?:\([a-z]\))?|[IVXLCDM]+)/gi;
+  /\b(Section|Sections|Article|Articles|Exhibit|Schedule|Attachment|§§?)\s+([0-9]+(?:\.[0-9]+)*[A-Za-z]?(?:\([a-z]\))?|[IVXLCDM]+)(?![A-Za-z])/gi;
+
+// An external statutory citation ("Section 409A of the Internal Revenue Code",
+// "Section 12 of the Securities Exchange Act of 1934") is NOT a broken
+// intra-document cross-reference — the document was never meant to resolve it
+// against its own outline. Detected by the "of the … Code/Act/Regulations"
+// qualifier that trails such a citation, or the "U.S.C." / "C.F.R." reporter
+// that fronts a bare-section statutory cite. A reference matching this is
+// dropped so STRUCT-007 never fabricates a broken internal reference from it.
+const EXTERNAL_TRAILER_RE =
+  /^\s+of\s+(?:the\s+)?[A-Z][^.;,]*?\b(?:Code|Acts?|Regulations?|Rules?|U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?)\b/;
+const EXTERNAL_LEADER_RE = /\b(?:U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?|Stat\.)\s*$/;
 
 export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): CrossRef[] {
   const refs: CrossRef[] = [];
@@ -23,6 +39,11 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
     let m: RegExpExecArray | null;
     while ((m = REF_RE.exec(ctx.text)) !== null) {
       const keyword = m[1] ?? "";
+      // Skip external statutory citations — a reference into another
+      // authority's numbering, not this document's outline.
+      const after = ctx.text.slice(m.index + m[0].length);
+      const before = ctx.text.slice(0, m.index);
+      if (EXTERNAL_TRAILER_RE.test(after) || EXTERNAL_LEADER_RE.test(before)) continue;
       const label = (m[2] ?? "").replace(/\(.*\)$/, "");
       // The outline models Section / Article headings only. An Exhibit,
       // Schedule, or Attachment reference must NOT resolve to a section that

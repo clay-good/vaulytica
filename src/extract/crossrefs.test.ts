@@ -88,6 +88,73 @@ describe("extractCrossRefs", () => {
     expect(sched?.resolved_id).toBeUndefined();
   });
 
+  it("does not fabricate a broken internal reference from an external statute citation", () => {
+    // "Section 409A of the Internal Revenue Code" is a reference into another
+    // authority's numbering, not this document's outline. The old regex also
+    // truncated the "A", reporting a made-up "Section 409" broken reference.
+    const t = normalize({
+      type: "document",
+      sections: [
+        {
+          id: "",
+          heading: "Tax Matters",
+          level: 1,
+          paragraphs: [
+            {
+              id: "",
+              runs: [
+                {
+                  id: "",
+                  text: "This Agreement is intended to comply with Section 409A of the Internal Revenue Code of 1986, as amended, and Section 12 of the Securities Exchange Act of 1934. Nothing in 15 U.S.C. § 78j applies.",
+                  start: 0,
+                  end: 0,
+                },
+              ],
+            },
+          ],
+          children: [],
+        },
+      ],
+    });
+    const refs = extractCrossRefs(t, extractSections(t));
+    // No external citation is surfaced as a cross-reference at all.
+    expect(refs).toHaveLength(0);
+  });
+
+  it("reports a genuinely unresolved letter-suffixed section with its honest raw text", () => {
+    // A bare "Section 409A" with no external qualifier and no matching outline
+    // node is genuinely unresolved — but it must be reported as "Section 409A",
+    // never silently truncated to "Section 409".
+    const t = normalize({
+      type: "document",
+      sections: [
+        {
+          id: "",
+          heading: "Misc",
+          level: 1,
+          paragraphs: [
+            {
+              id: "",
+              runs: [
+                {
+                  id: "",
+                  text: "The obligations under Section 409A shall survive.",
+                  start: 0,
+                  end: 0,
+                },
+              ],
+            },
+          ],
+          children: [],
+        },
+      ],
+    });
+    const refs = extractCrossRefs(t, extractSections(t));
+    const ref = refs.find((r) => /409A/.test(r.raw_text));
+    expect(ref?.raw_text).toBe("Section 409A");
+    expect(ref?.unresolved).toBe(true);
+  });
+
   it("captures a trailing parenthetical sub-reference chain", () => {
     const t = normalize({
       type: "document",
