@@ -261,6 +261,9 @@ const CONVERTIBLE_NOTE_RULES: Rule[] = [
     citation: usuryGeneric(),
     playbooks: [EQT_PLAYBOOK_CONV_NOTE],
     bad_patterns: [/(2[5-9]|[3-9]\d|1\d{2,})\s*%\s*per\s+annum/i],
+    exclude_if: [
+      /(?:not\s+to\s+exceed|shall\s+not\s+exceed|maximum\s+(?:rate\s+)?(?:permitted|allowed)|highest\s+lawful\s+rate|permitted\s+by\s+(?:applicable\s+)?law)/i,
+    ],
     bad_title: "Interest rate may exceed state usury cap",
     bad_description:
       "The convertible note carries an interest rate at or above 25% per annum, which exceeds many state usury caps.",
@@ -558,6 +561,7 @@ const OPTION_GRANT_RULES: Rule[] = [
     ),
     playbooks: [EQT_PLAYBOOK_OPTION_GRANT],
     bad_patterns: [/reprice.{0,80}without.{0,40}(stockholder|shareholder)\s+approval/is],
+    exclude_if: [/(?:shall|will|may)\s+not\s+reprice/i, /\bno\s+repricing\b/i],
     bad_title: "Repricing without stockholder approval permitted",
     bad_description:
       "The grant permits the board to reprice the option without stockholder approval, in tension with listed-issuer governance and most plan terms.",

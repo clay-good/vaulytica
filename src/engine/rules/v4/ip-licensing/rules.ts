@@ -239,6 +239,10 @@ const PATENT_LICENSE_RULES: Rule[] = [
       /royalt(y|ies).{0,200}(after|beyond|notwithstanding).{0,80}(expiration|expir|term\s+of\s+the\s+patent)/is,
       /(perpetual|indefinite|in\s+perpetuity).{0,80}royalt/is,
     ],
+    exclude_if: [
+      /\bshall\s+not\s+(?:extend|accrue|continue|survive|be\s+(?:payable|owed|due|owing))\b/i,
+      /\bno\s+royalt(?:y|ies)?\b[^.]{0,80}(?:after|beyond|following)\b/i,
+    ],
     bad_title: "Royalty obligation potentially extends beyond patent expiration",
     bad_description:
       "Royalty language appears to require payment past patent expiration without a Brulotte-compliant step-down or unbundled consideration.",

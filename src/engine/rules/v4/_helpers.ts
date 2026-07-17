@@ -110,6 +110,15 @@ export type V4LanguageSpec = {
   citation: SourceCitation;
   playbooks: readonly string[];
   bad_patterns: RegExp[];
+  /**
+   * Carve-out / disclaimer guards. When a paragraph matches a `bad_pattern`
+   * but ALSO matches any `exclude_if` pattern, the finding is suppressed — the
+   * paragraph states the flagged pattern in its DISCLAIMED or COMPLIANT form
+   * ("royalties shall NOT extend beyond expiration", "this release does NOT
+   * apply to gross negligence"). Firing on the compliant form is a confident
+   * false accusation. Optional; rules without it are unchanged.
+   */
+  exclude_if?: readonly RegExp[];
   bad_title: string;
   bad_description: string;
   explanation: string;
@@ -137,6 +146,11 @@ export function buildV4LanguageRule(spec: V4LanguageSpec): Rule {
           r.lastIndex = 0;
           const m = r.exec(p.text);
           if (m) {
+            // Skip a paragraph that DISCLAIMS or CARVES OUT the flagged pattern
+            // (the compliant/negated form) — reporting it as the violation is a
+            // false accusation. Skipping this paragraph still lets a genuine
+            // violation in a later paragraph fire.
+            if (spec.exclude_if?.some((ex) => ex.test(p.text))) return;
             hit = {
               text: p.text,
               position: {

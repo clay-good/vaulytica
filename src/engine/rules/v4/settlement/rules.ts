@@ -152,6 +152,9 @@ const RELEASE_RULES: Rule[] = [
       /releases?.{0,80}(future|hereafter\s+arising|may\s+arise).{0,80}claims?/is,
       /(future|prospective)\s+claims?.{0,80}(of\s+any\s+kind|whatsoever)/is,
     ],
+    exclude_if: [
+      /releases?\s+(?:does|do|shall|will)\s+not\s+(?:extend|apply|cover|include|reach)\b/i,
+    ],
     bad_title: "Overbroad future-claims release flagged",
     bad_description:
       "The release appears to cover unaccrued / future claims; courts (including CA under § 1668) limit prospective releases.",
@@ -344,6 +347,10 @@ const DEMAND_LETTER_RULES: Rule[] = [
       /(seize\s+(your|the)\s+(home|property|wages)|garnish.{0,40}without\s+(court|judgment))/is,
       /threat.{0,40}(violence|harm)/is,
     ],
+    exclude_if: [
+      /(?:does|do|shall|will)\s+not\s+(?:threaten|seek|pursue|constitute|contain\s+(?:any\s+)?threat|make\s+any\s+threat)/i,
+      /\bnothing\b[^.]{0,60}(?:threat|constitute|arrest|prosecut)/i,
+    ],
     bad_title: "Potentially FDCPA-violative threatening language flagged",
     bad_description:
       "Demand letter appears to contain threats of arrest, criminal prosecution, or non-judicial seizure that may violate FDCPA § 1692e.",
@@ -499,6 +506,10 @@ const CEASE_DESIST_RULES: Rule[] = [
       /threat.{0,80}(criminal\s+prosecution|report\s+to.{0,40}authorities)/is,
       /(extortion|blackmail|expose)/is,
       /if\s+you\s+do\s+not.{0,60}we\s+will\s+(contact|notify).{0,40}(employer|family|customers)/is,
+    ],
+    exclude_if: [
+      /\bnothing\b[^.]{0,60}(?:constitutes?|amounts?\s+to|is\s+(?:intended|a\s+threat))/i,
+      /(?:does|do|shall|will)\s+not\s+(?:constitute|amount\s+to|threaten|contain\s+(?:any\s+)?threat)/i,
     ],
     bad_title: "Potentially overreaching threats flagged",
     bad_description:

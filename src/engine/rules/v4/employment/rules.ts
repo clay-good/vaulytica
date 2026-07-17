@@ -428,6 +428,9 @@ const SEPARATION_RULES: Rule[] = [
       /(non.?disparag).{0,200}(broadly|any\s+(person|individual|entity))/is,
       /confidentiality.{0,80}(terms\s+of\s+this\s+agreement|any\s+aspect)/is,
     ],
+    exclude_if: [
+      /(?:does|do|shall|will)\s+not\s+(?:restrict|prohibit|prevent|preclude|limit|bar|apply\s+to)\b/i,
+    ],
     bad_title: "Overbroad confidentiality / non-disparagement flagged",
     bad_description:
       "The separation agreement appears to contain confidentiality or non-disparagement language broad enough to chill protected concerted activity.",

@@ -222,6 +222,7 @@ const ENDORSEMENT_RULES: Rule[] = [
       /sublimit.{0,80}(\$\s*\d{1,2}[,.]?\d{0,3}\s*(thousand|k\b))/is,
       /excludes?\s+all\s+coverage/i,
     ],
+    exclude_if: [/(?:does|do|shall|will)\s+not\s+exclude/i],
     bad_title: "Coverage-restricting endorsement flagged for review",
     bad_description:
       "The endorsement contains an absolute exclusion, severe sublimit, or all-coverage exclusion that warrants underwriter / broker review.",
@@ -325,6 +326,10 @@ const INDEMNIFICATION_AGREEMENT_RULES: Rule[] = [
     bad_patterns: [
       /indemnif(y|ies|ied|ying).{0,200}(including|even\s+(for|where)|regardless\s+of|notwithstanding).{0,200}(sole\s+negligence|own\s+negligence|active\s+negligence)/is,
       /indemnif(y|ies|ied|ying).{0,200}(any\s+and\s+all).{0,80}(claims|liabilit).{0,80}(caused\s+by\s+indemnitee|negligence\s+of\s+indemnitee)/is,
+    ],
+    exclude_if: [
+      /(?:shall|will)\s+not\s+be\s+(?:obligated|required|liable)\s+to\s+indemnif/i,
+      /\bnot\s+(?:be\s+)?(?:obligated|required)\s+to\s+indemnif/i,
     ],
     bad_title: "Type I broad-form indemnity flagged for anti-indemnity review",
     bad_description:
@@ -479,6 +484,10 @@ const HOLD_HARMLESS_RULES: Rule[] = [
     bad_patterns: [
       /(release|hold\s+harmless).{0,200}(any\s+and\s+all|all)\s+(future|prospective)\s+claims?/is,
       /(release|hold\s+harmless).{0,200}(gross\s+negligence|willful\s+misconduct|intentional)/is,
+    ],
+    exclude_if: [
+      /(?:release|releases?|hold\s+harmless)\s+(?:does|do|shall|will)\s+not\s+(?:apply|extend|cover|include|reach)\b/i,
+      /(?:does|do|shall|will)\s+not\s+(?:apply|extend|release|cover)\b[^.]{0,80}(?:gross\s+negligence|willful|intentional)/i,
     ],
     bad_title: "Pre-dispute release / hold-harmless overreach flagged",
     bad_description:
