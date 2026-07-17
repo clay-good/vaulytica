@@ -70,6 +70,20 @@ describe("extractAmounts", () => {
     expect(list.every((a) => a.range_max === undefined)).toBe(true);
   });
 
+  it("orders a descending range so range_max is the controlling (upper) bound", () => {
+    // Regression: "between $500,000 and $200,000" used to emit amount=500000,
+    // range_max=200000 — a cap rule reading range_max got the SMALLER figure.
+    const range = extractAmounts(
+      buildTree([
+        "Cap",
+        "The penalty shall be between $500,000 and $200,000 depending on severity.",
+      ]),
+    );
+    expect(range).toHaveLength(1);
+    expect(range[0]?.amount).toBe("200000");
+    expect(range[0]?.range_max).toBe("500000");
+  });
+
   it("preserves a per-unit qualifier", () => {
     const out = extractAmounts(buildTree(["Fees", "The price is USD 50 per user, per month."]));
     const perUser = out.find((a) => a.per_unit);

@@ -65,6 +65,21 @@ describe("extractDates", () => {
     expect(range?.anchor).toMatch(/Effective Date/);
   });
 
+  it("keeps offset_count/_max consistent with offset_days for a 'before' range", () => {
+    // Regression: for direction=-1 ("before"), offset_count/_max were signed
+    // AFTER min/max, so `_max` (-60) read smaller than offset_count (-30).
+    const tree = buildTree([
+      "Notice",
+      "Notice must be given between thirty and sixty days before the Closing Date.",
+    ]);
+    const range = extractDates(tree).find((d) => d.offset_days_max !== undefined)!;
+    expect(range.offset_days).toBe(-60);
+    expect(range.offset_days_max).toBe(-30);
+    // The count pair must track the days pair: offset_count <= offset_count_max.
+    expect(range.offset_count).toBe(-60);
+    expect(range.offset_count_max).toBe(-30);
+  });
+
   it("does not double-count a range as a separate single-bound relative date", () => {
     const tree = buildTree([
       "Notice",

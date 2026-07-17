@@ -21,12 +21,12 @@ const MONTHS =
 
 /**
  * Two-digit-year century pivot. A bare two-digit year `YY < PIVOT`
- * resolves to `2000 + YY`, otherwise `1900 + YY`. This follows the
- * POSIX `strptime` convention (years 69–99 → 1969–1999, 00–68 →
- * 2000–2068); 70 is the documented boundary. It is a heuristic: a
- * decades-old trust instrument or a far-future refinancing date can sit
- * on the wrong side of it, so a two-digit year is a candidate for
- * surrounding-context confirmation, not a guarantee.
+ * resolves to `2000 + YY`, otherwise `1900 + YY` — so with `PIVOT = 70`,
+ * `00–69 → 2000–2069` and `70–99 → 1970–1999` (a 1970-based variant of the
+ * two-digit-year heuristic, one year off POSIX `strptime`'s 1969 pivot). It
+ * is a heuristic: a decades-old trust instrument or a far-future refinancing
+ * date can sit on the wrong side of it, so a two-digit year is a candidate
+ * for surrounding-context confirmation, not a guarantee.
  */
 const TWO_DIGIT_YEAR_PIVOT = 70;
 
@@ -193,8 +193,11 @@ export function extractDates(tree: DocumentTree): DateReference[] {
         offset_days: Math.min(lo, hi),
         offset_days_max: Math.max(lo, hi),
         offset_unit: calUnit,
-        offset_count: Math.min(lower, upper) * direction,
-        offset_count_max: Math.max(lower, upper) * direction,
+        // Sign FIRST, then min/max — mirroring offset_days above. Taking min/max
+        // of the unsigned counts and signing afterward inverted the pair for
+        // "before"/"prior to" (direction = -1) ranges, so `_max` read smaller.
+        offset_count: Math.min(lower * direction, upper * direction),
+        offset_count_max: Math.max(lower * direction, upper * direction),
         position: posInParagraph(ctx, m.index, m.index + m[0].length),
       });
     }

@@ -194,9 +194,18 @@ export function extractAmounts(tree: DocumentTree): MoneyReference[] {
       // "and" is only a range connector after "between" — otherwise
       // "€500 and £1,000" is a currency list, not a range.
       if (connector === "and" && !between) continue;
-      const lo = computeAmount(m[2], m[3], m[4]);
-      const hi = computeAmount(m[6] ?? m[2], m[7], m[8]);
-      if (!lo || !hi) continue;
+      const first = computeAmount(m[2], m[3], m[4]);
+      const second = computeAmount(m[6] ?? m[2], m[7], m[8]);
+      if (!first || !second) continue;
+      // Order the bounds so `amount` is the lower and `range_max` the upper
+      // (the controlling cap), even when the phrase lists them descending
+      // ("between $500,000 and $200,000"). Only reorder within one currency —
+      // comparing magnitudes across currencies would be meaningless.
+      const descending =
+        first.currency === second.currency &&
+        new Decimal(second.amount).lt(new Decimal(first.amount));
+      const lo = descending ? second : first;
+      const hi = descending ? first : second;
       rangeSpans.push([m.index, m.index + m[0].length]);
       const idx = out.length;
       out.push({
