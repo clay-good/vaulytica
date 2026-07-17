@@ -45,8 +45,10 @@ import {
 } from "../../src/report/closing-checklist.js";
 import {
   evaluateNegotiationPosture,
+  resolvePositionsForDealValue,
   type NegotiationPosture,
 } from "../../src/playbooks/custom-interpreter.js";
+import { extractDealValue } from "../../src/extract/deal-value.js";
 import type { CustomPlaybook } from "../../src/playbooks/custom-playbook.js";
 
 import { loadAccuracyDeps, runIngested, type AccuracyDeps } from "../accuracy/pipeline.js";
@@ -247,10 +249,22 @@ export async function analyzeFile(
   // custom rules are not merged into the run in this pass).
   if (opts.posture && opts.customPlaybook?.negotiation_positions?.length) {
     const extracted = extractAll(ingest.tree);
-    out.negotiation_posture = await evaluateNegotiationPosture(
-      opts.customPlaybook.negotiation_positions,
-      { tree: ingest.tree, extracted },
-    );
+    let positions = opts.customPlaybook.negotiation_positions;
+    // add-negotiation-ladder-playbooks — when the caller left size_bands
+    // unresolved (no explicit `--deal-value`), resolve them from the document's
+    // *labeled* total value. Honest: only a stated total ("total contract
+    // value: $X") is used, never a guess; an unlabeled document keeps each
+    // position's base default (and the report says so).
+    if (positions.some((p) => p.size_bands?.length)) {
+      const dv = extractDealValue(ingest.tree);
+      // Plain, locale-independent formatting (deterministic; no Intl/ICU).
+      const source = dv ? `auto-detected from "${dv.label}": $${dv.value}` : undefined;
+      positions = resolvePositionsForDealValue(positions, dv?.value, source);
+    }
+    out.negotiation_posture = await evaluateNegotiationPosture(positions, {
+      tree: ingest.tree,
+      extracted,
+    });
   }
   return out;
 }

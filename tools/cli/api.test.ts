@@ -58,6 +58,58 @@ describe("CLI/API parity with the parity-proven pipeline (spec-v8 Step 143)", ()
     }
   });
 
+  it("auto-resolves size bands from the document's labeled deal value (add-negotiation-ladder-playbooks)", async () => {
+    const deps = await loadAccuracyDeps();
+    const num = (value: number) => ({
+      kind: "numeric_threshold" as const,
+      metric: "liability_cap_multiple" as const,
+      comparator: "gte" as const,
+      value,
+    });
+    const playbook = {
+      schema_version: "1.0" as const,
+      catalog_version: "0.1.0",
+      id: "banded",
+      name: "Banded",
+      description: "cap floor scales with the deal",
+      mode: "replace" as const,
+      negotiation_positions: [
+        {
+          dimension: "Liability cap",
+          ideal: num(3),
+          acceptable: num(2),
+          size_bands: [
+            { min_value: 1_000_000, label: "1M-plus", ideal: num(12), acceptable: num(6) },
+          ],
+        },
+      ],
+    };
+    const dir = await mkdtemp(join(tmpdir(), "vaulytica-cli-"));
+    try {
+      // Labeled total → the ≥$1M band applies (floor 6): an 8x cap is acceptable.
+      const labeled = join(dir, "labeled.txt");
+      await writeFile(
+        labeled,
+        "MSA\nThe total contract value is $5,000,000.\nThe liability cap is 8x fees.\n",
+      );
+      const r1 = await analyzeFile(labeled, { deps, posture: true, customPlaybook: playbook });
+      const p1 = r1.negotiation_posture!.positions[0]!;
+      expect(p1.tier).toBe("acceptable");
+      expect(p1.size_band).toContain("1M-plus");
+      expect(p1.size_band).toContain("auto-detected");
+
+      // No labeled total → base default (floor 2): the same 8x cap is ideal.
+      const unlabeled = join(dir, "unlabeled.txt");
+      await writeFile(unlabeled, "MSA\nThe liability cap is 8x fees.\n");
+      const r2 = await analyzeFile(unlabeled, { deps, posture: true, customPlaybook: playbook });
+      const p2 = r2.negotiation_posture!.positions[0]!;
+      expect(p2.tier).toBe("ideal");
+      expect(p2.size_band).toBe("default (no --deal-value)");
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
   it("forcing a playbook overrides the auto-match", async () => {
     const deps = await loadAccuracyDeps();
     const forced = await analyzeText(NDA, "nda.txt", {

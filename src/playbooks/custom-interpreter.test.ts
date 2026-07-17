@@ -794,6 +794,15 @@ describe("resolvePositionsForDealValue — deal-size bands (add-negotiation-ladd
     expect(big._resolved_band).toBe("≥ $10M");
   });
 
+  it("names the value source in the band note when given (auto-detection provenance)", () => {
+    const r = resolvePositionsForDealValue(
+      banded(),
+      5_000_000,
+      'auto-detected from "total contract value": $5000000',
+    )[0]! as Record<string, unknown>;
+    expect(r._resolved_band).toBe('≥ $1M (auto-detected from "total contract value": $5000000)');
+  });
+
   it("falls back to the base default when the value is below every band, and says so", () => {
     const r = resolvePositionsForDealValue(banded(), 100_000)[0]! as Record<string, unknown>;
     expect(r.ideal).toEqual(num(3));

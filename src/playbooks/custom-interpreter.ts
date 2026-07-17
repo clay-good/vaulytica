@@ -122,6 +122,13 @@ export function resolvePositionsForRole(
 export function resolvePositionsForDealValue(
   positions: readonly NegotiationPosition[],
   dealValue: number | undefined,
+  /**
+   * How the deal value was obtained, for honest reporting — e.g. "auto-detected
+   * from 'total contract value': $5,000,000". When given and a band applies,
+   * the `_resolved_band` note names the source so an auto-detected value is
+   * never mistaken for an explicit `--deal-value`. Omit for the explicit path.
+   */
+  valueSource?: string,
 ): NegotiationPosition[] {
   return positions.map((p) => {
     const bands = p.size_bands ?? [];
@@ -134,6 +141,7 @@ export function resolvePositionsForDealValue(
       return { ...base, _resolved_band: why };
     }
     const band = applicable.reduce((hi, b) => (b.min_value > hi.min_value ? b : hi));
+    const label = band.label ?? `≥ ${band.min_value}`;
     return {
       dimension: p.dimension,
       ideal: band.ideal,
@@ -141,7 +149,7 @@ export function resolvePositionsForDealValue(
       ...(band.rungs ? { rungs: band.rungs } : {}),
       ...(band.guidance ? { guidance: band.guidance } : {}),
       ...(band.approved_language ? { approved_language: band.approved_language } : {}),
-      _resolved_band: band.label ?? `≥ ${band.min_value}`,
+      _resolved_band: valueSource ? `${label} (${valueSource})` : label,
     };
   });
 }

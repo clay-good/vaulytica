@@ -106,6 +106,8 @@ A position's core is two predicates from the same DSL: **`ideal`** (best) and **
 
 `--role` and `--deal-value` resolve into a concrete ladder **before** the posture is evaluated or hashed, so a coherence artifact is pinned to the exact role- and size-resolved ladder it was computed from, and a playbook that uses neither hashes identically to before.
 
+**Auto-detecting the deal value.** For a single-document `--posture` run, if a position has `size_bands` and you pass no `--deal-value`, Vaulytica reads the document's **explicitly labeled** total value — a phrase like `total contract value`, `total consideration`, `aggregate fees`, or `not to exceed` immediately followed by a `$` amount — and selects the band from it, naming the source in the report (`size_band: "≥ $1M (auto-detected from \"total contract value\": $5000000)"`). It never guesses from a stray amount: an unlabeled document keeps each position's base default and says so. Because auto-detection is per-document, a **multi-document (bundle) posture run** and **coherence emission/diff** (`--emit-coherence` / `--baseline-coherence`) require an explicit `--deal-value` with size-banded positions, so every document is scored against one shared ladder.
+
 ### Worked example — both sides, three rungs, two size bands
 
 ```jsonc

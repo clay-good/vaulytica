@@ -732,16 +732,32 @@ export async function runAnalyze(argv: string[]): Promise<void> {
         return;
       }
       let positions = resolved.positions;
-      // add-negotiation-ladder-playbooks — then resolve the deal size
-      // (`--deal-value`) into the concrete band, also before any hashing. An
-      // unresolvable value falls back to each position's default band and the
-      // report says so (never a silent guess).
-      if (args.dealValue !== undefined && !Number.isFinite(args.dealValue)) {
-        process.stderr.write("--deal-value must be a finite number\n");
+      // add-negotiation-ladder-playbooks — deal-size bands. With an explicit
+      // `--deal-value`, resolve them here (before any hashing). WITHOUT one,
+      // leave `size_bands` in place: analysis auto-resolves them from the
+      // document's *labeled* total value (api.ts), so the band is data-driven
+      // rather than a silent default.
+      if (args.dealValue !== undefined) {
+        if (!Number.isFinite(args.dealValue)) {
+          process.stderr.write("--deal-value must be a finite number\n");
+          process.exitCode = 1;
+          return;
+        }
+        positions = resolvePositionsForDealValue(positions, args.dealValue);
+      } else if (
+        (args.emitCoherence !== undefined || args.baselineCoherence !== undefined) &&
+        positions.some((p) => p.size_bands?.length)
+      ) {
+        // Coherence emission/diff pins a ladderHash and compares ladders across
+        // rounds. An auto-detected deal value can differ per document, so it
+        // would break that comparability silently — require an explicit,
+        // declared `--deal-value` here rather than guess.
+        process.stderr.write(
+          "size-banded positions require --deal-value when emitting or diffing coherence (comparability)\n",
+        );
         process.exitCode = 1;
         return;
       }
-      positions = resolvePositionsForDealValue(positions, args.dealValue);
       customPlaybook = { ...customPlaybook, negotiation_positions: positions };
     }
   } else if (args.role !== undefined || args.dealValue !== undefined) {
@@ -816,6 +832,24 @@ export async function runAnalyze(argv: string[]): Promise<void> {
         `--format docx-comments annotates a copy of the uploaded DOCX and only applies to .docx inputs; not: ${nonDocx.join(", ")}`,
       );
     }
+  }
+  // add-negotiation-ladder-playbooks — deal-value auto-detection is per-document,
+  // so it is only sound for a single document. A bundle's cross-document posture
+  // coherence scores every document against ONE ladder; if each auto-resolved its
+  // size bands from its own labeled value the ladders would differ silently. So a
+  // multi-input posture run with size-banded positions requires an explicit
+  // --deal-value (which resolves one shared ladder before analysis).
+  if (
+    inputs.length > 1 &&
+    args.posture &&
+    args.dealValue === undefined &&
+    customPlaybook?.negotiation_positions?.some((p) => p.size_bands?.length)
+  ) {
+    process.stderr.write(
+      "size-banded positions require --deal-value for a multi-document (bundle) posture run\n",
+    );
+    process.exitCode = 1;
+    return;
   }
   if (inputs.length === 0) {
     process.stderr.write(`no analyzable files matched: ${args.target}\n`);
