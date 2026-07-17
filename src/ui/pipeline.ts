@@ -1355,6 +1355,22 @@ export async function runBundleReport(
       })
     : undefined;
 
+  // Disambiguate `doc_id` when two members share a basename (e.g. `sub1/x.pdf`
+  // and `sub2/x.pdf` in a zip). Otherwise both collapse to `doc-x.pdf`, and the
+  // "everything" archive (keyed by doc_id) silently overwrites one document's
+  // exports while the bundle JSON emits duplicate ids. Suffix ONLY collisions,
+  // so a bundle of uniquely-named members is byte-identical to before.
+  const nameCounts = new Map<string, number>();
+  for (const d of prepared.documents)
+    nameCounts.set(d.filename, (nameCounts.get(d.filename) ?? 0) + 1);
+  const nameIndex = new Map<string, number>();
+  const docIdFor = (filename: string): string => {
+    if ((nameCounts.get(filename) ?? 0) <= 1) return `doc-${filename}`;
+    const n = (nameIndex.get(filename) ?? 0) + 1;
+    nameIndex.set(filename, n);
+    return `doc-${n}-${filename}`;
+  };
+
   const bundleInput: {
     documents: BundleDocument[];
     consistency: typeof consistency;
@@ -1366,7 +1382,7 @@ export async function runBundleReport(
     production_qa?: ProductionQaReport;
   } = {
     documents: prepared.documents.map((d) => ({
-      doc_id: `doc-${d.filename}`,
+      doc_id: docIdFor(d.filename),
       source_file_name: d.filename,
       // Prefer the v3 family label when the detector fired with non-
       // "unknown"; fall back to the playbook name (e.g. "Mutual NDA",

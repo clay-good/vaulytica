@@ -174,4 +174,23 @@ describe("browser bundle + privilege-log CSV → production_qa (add-production-q
     // This test runs the full bundle pipeline three times; under coverage
     // instrumentation on cold CI that comfortably exceeds the 5s default.
   }, 30000);
+
+  it("gives two members that share a basename DISTINCT doc_ids (no silent overwrite)", async () => {
+    // Regression: two documents named "contract.docx" (distinct content) used to
+    // collapse to a single doc_id (`doc-contract.docx`), so the "everything"
+    // archive silently overwrote one document's exports and the JSON emitted a
+    // duplicate id. Now the collision is disambiguated.
+    const at = (src: string, name: string): File =>
+      new File([new Uint8Array(readFileSync(join(BUNDLE_DIR, src)))], name);
+    const members = [
+      at("master-services-agreement.docx", "contract.docx"),
+      at("statement-of-work.docx", "contract.docx"),
+    ];
+    const json = await bundleJson(members);
+    const documents = json.documents as Array<{ doc_id: string; result_hash: string }>;
+    expect(documents).toHaveLength(2);
+    // Distinct content ⇒ distinct result_hash ⇒ the doc_ids MUST be distinct.
+    expect(documents[0]!.result_hash).not.toBe(documents[1]!.result_hash);
+    expect(new Set(documents.map((d) => d.doc_id)).size).toBe(2);
+  }, 30000);
 });
