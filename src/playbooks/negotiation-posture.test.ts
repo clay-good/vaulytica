@@ -220,3 +220,83 @@ describe("approved_language (add-negotiation-ladder-playbooks)", () => {
     expect(html).toContain("capped at 6x fees");
   });
 });
+
+describe("intermediate rungs (add-negotiation-ladder-playbooks)", () => {
+  const num = (value: number) =>
+    ({
+      kind: "numeric_threshold",
+      metric: "liability_cap_multiple",
+      comparator: "gte",
+      value,
+    }) as const;
+  // Ladder: ideal 12x, floor 6x, with two intermediate rungs 9x and 7x
+  // (best-first). Same ideal/acceptable as `liabilityLadder`.
+  const ladderWithRungs: NegotiationPosition = {
+    ...liabilityLadder,
+    rungs: [
+      { label: "9x cap", predicate: num(9) },
+      { label: "7x cap", predicate: num(7) },
+    ],
+  };
+
+  it("reports the HIGHEST met rung above the floor as detail only", async () => {
+    const ten = await posture(["The liability cap is 10x the total fees paid."], [ladderWithRungs]);
+    expect(ten.positions[0]!.tier).toBe("acceptable");
+    expect(ten.positions[0]!.met_rung).toBe("9x cap");
+
+    const eight = await posture(
+      ["The liability cap is 8x the total fees paid."],
+      [ladderWithRungs],
+    );
+    expect(eight.positions[0]!.tier).toBe("acceptable");
+    expect(eight.positions[0]!.met_rung).toBe("7x cap");
+  });
+
+  it("omits met_rung when only the floor is met (no rung reached)", async () => {
+    const p = await posture(["The liability cap is 6x the total fees paid."], [ladderWithRungs]);
+    expect(p.positions[0]!.tier).toBe("acceptable");
+    expect(p.positions[0]!.met_rung).toBeUndefined();
+  });
+
+  it("never carries a met_rung below the floor or at ideal", async () => {
+    const below = await posture(
+      ["The liability cap is 3x the total fees paid."],
+      [ladderWithRungs],
+    );
+    expect(below.positions[0]!.tier).toBe("below-acceptable");
+    expect(below.positions[0]!.met_rung).toBeUndefined();
+
+    const ideal = await posture(
+      ["The liability cap is 15x the total fees paid."],
+      [ladderWithRungs],
+    );
+    expect(ideal.positions[0]!.tier).toBe("ideal");
+    expect(ideal.positions[0]!.met_rung).toBeUndefined();
+  });
+
+  // THE BINARY-FLOOR INVARIANT: rungs are detail only. For every draft, the
+  // reported tier stays in the v2 value set, and the posture_hash is identical
+  // to the same ladder WITHOUT rungs — so the coherence subsystem and its 29
+  // commands/goldens are provably unaffected.
+  it("keeps tier in the v2 value set and posture_hash byte-identical to a no-rungs ladder", async () => {
+    const V2_TIERS = new Set(["ideal", "acceptable", "below-acceptable", "unevaluable"]);
+    for (const cap of ["15x", "10x", "8x", "6x", "3x", "unstated"]) {
+      const doc =
+        cap === "unstated"
+          ? ["No cap is stated."]
+          : [`The liability cap is ${cap} the total fees paid.`];
+      const withRungs = await posture(doc, [ladderWithRungs]);
+      const without = await posture(doc, [liabilityLadder]);
+      expect(V2_TIERS.has(withRungs.positions[0]!.tier)).toBe(true);
+      expect(withRungs.positions[0]!.tier).toBe(without.positions[0]!.tier);
+      expect(withRungs.posture_hash).toBe(without.posture_hash);
+    }
+  });
+
+  it("the negotiation sheet shows the met rung above the floor", async () => {
+    const { buildNegotiationSheet } = await import("../report/negotiation-sheet.js");
+    const p = await posture(["The liability cap is 8x the total fees paid."], [ladderWithRungs]);
+    const html = buildNegotiationSheet(p, "Test");
+    expect(html).toContain("met rung: 7x cap");
+  });
+});

@@ -362,4 +362,101 @@ describe("validateCustomPlaybook — negotiation positions (spec-v10)", () => {
     );
     expect(r.ok).toBe(true);
   });
+
+  // Intermediate rungs (add-negotiation-ladder-playbooks). A v2 file (no
+  // `rungs`) still validates unchanged; a v3 file with rungs validates; the
+  // rung predicate and labels are guarded like the tier predicates.
+  const rungBase = {
+    dimension: "Liability cap",
+    ideal: {
+      kind: "numeric_threshold",
+      metric: "liability_cap_multiple",
+      comparator: "gte",
+      value: 12,
+    },
+    acceptable: {
+      kind: "numeric_threshold",
+      metric: "liability_cap_multiple",
+      comparator: "gte",
+      value: 6,
+    },
+  };
+
+  it("accepts intermediate rungs between ideal and the floor", () => {
+    const r = validateCustomPlaybook(
+      minimal({
+        negotiation_positions: [
+          {
+            ...rungBase,
+            rungs: [
+              {
+                label: "9x cap",
+                predicate: {
+                  kind: "numeric_threshold",
+                  metric: "liability_cap_multiple",
+                  comparator: "gte",
+                  value: 9,
+                },
+              },
+              {
+                label: "7x cap",
+                predicate: {
+                  kind: "numeric_threshold",
+                  metric: "liability_cap_multiple",
+                  comparator: "gte",
+                  value: 7,
+                },
+              },
+            ],
+          },
+        ] as never,
+      }),
+    );
+    expect(r.ok).toBe(true);
+  });
+
+  it("rejects a duplicate rung label", () => {
+    const r = validateCustomPlaybook(
+      minimal({
+        negotiation_positions: [
+          {
+            ...rungBase,
+            rungs: [
+              { label: "9x", predicate: { kind: "clause_present", pattern: "cap" } },
+              { label: "9x", predicate: { kind: "clause_present", pattern: "limit" } },
+            ],
+          },
+        ] as never,
+      }),
+    );
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.errors.join(" ")).toMatch(/duplicate rung label/i);
+  });
+
+  it("rejects a rung clause predicate with neither pattern nor heading", () => {
+    const r = validateCustomPlaybook(
+      minimal({
+        negotiation_positions: [
+          { ...rungBase, rungs: [{ label: "bad", predicate: { kind: "clause_present" } }] },
+        ] as never,
+      }),
+    );
+    expect(r.ok).toBe(false);
+  });
+
+  it("rejects more than the rung cap", () => {
+    const rungs = Array.from({ length: 9 }, (_, i) => ({
+      label: `r${i}`,
+      predicate: {
+        kind: "numeric_threshold",
+        metric: "liability_cap_multiple",
+        comparator: "gte",
+        value: i,
+      },
+    }));
+    const r = validateCustomPlaybook(
+      minimal({ negotiation_positions: [{ ...rungBase, rungs }] as never }),
+    );
+    expect(r.ok).toBe(false);
+  });
 });

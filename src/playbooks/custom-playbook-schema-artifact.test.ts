@@ -69,6 +69,20 @@ describe("playbook.schema.json artifact", () => {
     );
   });
 
+  it("documents every negotiation-position property (drift guard: approved_language was once missed)", () => {
+    // additionalProperties:false means an undocumented field REJECTS a valid
+    // v3 playbook, so the artifact must carry every position property the Zod
+    // schema accepts. Pin the exact set so a new field can't ship undocumented.
+    const props = Object.keys(schema.$defs.negotiationPosition.properties).sort();
+    expect(props).toEqual(
+      ["acceptable", "approved_language", "dimension", "guidance", "ideal", "rungs"].sort(),
+    );
+    // A rung is a labeled predicate, capped to match MAX_NEGOTIATION_RUNGS.
+    const rungs = schema.$defs.negotiationPosition.properties.rungs;
+    expect(rungs.maxItems).toBe(8);
+    expect(rungs.items.required.sort()).toEqual(["label", "predicate"]);
+  });
+
   it("mirrors the bounded mutual-clause enum exactly", () => {
     const predicate = schema.$defs.predicate.oneOf.find(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

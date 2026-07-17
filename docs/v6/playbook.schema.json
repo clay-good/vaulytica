@@ -103,6 +103,20 @@
         "dimension": { "type": "string", "minLength": 1 },
         "ideal": { "$ref": "#/$defs/predicate" },
         "acceptable": { "$ref": "#/$defs/predicate" },
+        "rungs": {
+          "type": "array",
+          "maxItems": 8,
+          "description": "Optional intermediate rungs between ideal and the acceptable floor (add-negotiation-ladder-playbooks), ordered best-first. Detail only: they refine which rung above the floor the draft met and never change the reported tier or posture_hash.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["label", "predicate"],
+            "properties": {
+              "label": { "type": "string", "minLength": 1 },
+              "predicate": { "$ref": "#/$defs/predicate" }
+            }
+          }
+        },
         "guidance": {
           "type": "object",
           "additionalProperties": false,
@@ -111,6 +125,11 @@
             "acceptable": { "type": "string", "minLength": 1 },
             "walk_away": { "type": "string", "minLength": 1 }
           }
+        },
+        "approved_language": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The team's own pre-approved fallback language, quoted beside a below-floor position (never generated). Advisory; outside posture_hash."
         }
       }
     },

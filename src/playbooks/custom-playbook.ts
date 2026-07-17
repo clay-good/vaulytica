@@ -39,6 +39,8 @@ export const MAX_PLAYBOOK_JSON_BYTES = 5 * 1024 * 1024;
 export const MAX_CUSTOM_RULES = 5000;
 export const MAX_PLAYBOOK_STRING_LEN = 2000;
 export const MAX_NEGOTIATION_POSITIONS = 500;
+/** Cap on intermediate rungs per negotiation position (add-negotiation-ladder-playbooks). */
+export const MAX_NEGOTIATION_RUNGS = 8;
 
 /**
  * Numeric metrics a `numeric_threshold` predicate may assert on. Bounded by
@@ -176,6 +178,18 @@ export type NegotiationTierGuidance = {
 };
 
 /**
+ * One intermediate rung on a team's ladder, between `ideal` and the
+ * `acceptable` floor (add-negotiation-ladder-playbooks). Each is a labeled
+ * predicate; a rung is "met" when its predicate holds.
+ */
+export type NegotiationRung = {
+  /** Human label for this rung, e.g. "1.5× cap". */
+  label: string;
+  /** The predicate that must hold for the draft to have reached this rung. */
+  predicate: CustomPredicate;
+};
+
+/**
  * A tiered negotiation position (spec-v10 "Negotiation Posture", Thrust A).
  *
  * Encodes a team's fallback ladder for one negotiable dimension as two
@@ -194,6 +208,16 @@ export type NegotiationPosition = {
   ideal: CustomPredicate;
   /** The acceptable floor. Evaluated only when `ideal` does not hold. */
   acceptable: CustomPredicate;
+  /**
+   * Optional intermediate rungs between `ideal` and the `acceptable` floor
+   * (add-negotiation-ladder-playbooks), ordered best-first (just below ideal →
+   * just above the floor). **Detail only:** they refine *which* rung above the
+   * floor the draft met; they NEVER change the reported `tier` (still one of
+   * `ideal` / `acceptable` / `below-acceptable` / `unevaluable`) or the
+   * `posture_hash`, so the binary floor and the coherence subsystem that
+   * depend on it are unchanged. Absent for a v2 playbook.
+   */
+  rungs?: NegotiationRung[];
   /** Optional per-tier negotiation guidance to surface in the report. */
   guidance?: NegotiationTierGuidance;
   /**
@@ -340,11 +364,28 @@ const guidanceSchema = z
   })
   .strict();
 
+const rungSchema = z
+  .object({
+    label: z.string().min(1).max(MAX_PLAYBOOK_STRING_LEN),
+    predicate: predicateSchema,
+  })
+  .strict();
+
+/** True when a predicate can never match a concrete clause (the clause trap). */
+function isEmptyClausePredicate(pred: CustomPredicate): boolean {
+  return (
+    (pred.kind === "clause_present" || pred.kind === "clause_absent") &&
+    pred.pattern === undefined &&
+    pred.section_heading === undefined
+  );
+}
+
 const negotiationPositionSchema = z
   .object({
     dimension: z.string().min(1).max(MAX_PLAYBOOK_STRING_LEN),
     ideal: predicateSchema,
     acceptable: predicateSchema,
+    rungs: z.array(rungSchema).max(MAX_NEGOTIATION_RUNGS).optional(),
     guidance: guidanceSchema.optional(),
     approved_language: z.string().min(1).max(MAX_PLAYBOOK_STRING_LEN).optional(),
   })
@@ -355,12 +396,7 @@ const negotiationPositionSchema = z
     // concrete clause, so a tier built on it would silently always (or never)
     // hold. Reject it on whichever tier carries it.
     for (const tier of ["ideal", "acceptable"] as const) {
-      const pred = pos[tier];
-      if (
-        (pred.kind === "clause_present" || pred.kind === "clause_absent") &&
-        pred.pattern === undefined &&
-        pred.section_heading === undefined
-      ) {
+      if (isEmptyClausePredicate(pos[tier])) {
         ctx.addIssue({
           code: "custom",
           message: `the ${tier} clause_present/clause_absent predicate needs \`pattern\` or \`section_heading\``,
@@ -368,6 +404,27 @@ const negotiationPositionSchema = z
         });
       }
     }
+    // Rungs carry the same trap on their predicate, and their labels must be
+    // unique so a met rung is addressable.
+    const seenLabels = new Set<string>();
+    (pos.rungs ?? []).forEach((rung, i) => {
+      if (isEmptyClausePredicate(rung.predicate)) {
+        ctx.addIssue({
+          code: "custom",
+          message: `rung "${rung.label}" clause_present/clause_absent predicate needs \`pattern\` or \`section_heading\``,
+          path: ["rungs", i, "predicate"],
+        });
+      }
+      const key = rung.label.trim().toLowerCase();
+      if (seenLabels.has(key)) {
+        ctx.addIssue({
+          code: "custom",
+          message: `duplicate rung label "${rung.label}"`,
+          path: ["rungs", i, "label"],
+        });
+      }
+      seenLabels.add(key);
+    });
   });
 
 const customPlaybookObjectSchema = z

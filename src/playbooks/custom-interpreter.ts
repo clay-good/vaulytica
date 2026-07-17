@@ -97,6 +97,16 @@ export type NegotiationPositionResult = {
   guidance?: string;
   /** The evaluator's plain explanation of why this tier (from the violated predicate). */
   detail?: string;
+  /**
+   * The highest intermediate rung the draft met, when the position defines
+   * `rungs` and the draft sits at the `acceptable` tier (above the floor but
+   * below ideal) — add-negotiation-ladder-playbooks. **Detail only:** it
+   * refines *where* above the floor the draft landed and is NOT part of
+   * `posture_hash` (which hashes only dimension + tier), so the binary floor
+   * and the coherence subsystem are unaffected. Absent when no rung is met or
+   * the position has no rungs.
+   */
+  met_rung?: string;
   /** A short excerpt of the clause that set the tier, when known. */
   excerpt?: string;
   section_id?: string;
@@ -276,6 +286,9 @@ function classifyPosition(pos: NegotiationPosition, facts: DocFacts): Negotiatio
       detail: ideal.kind === "violated" ? ideal.detail : undefined,
       excerpt: ideal.kind === "violated" ? excerptOf(ideal.clause_text) : undefined,
       section_id: ideal.kind === "violated" ? ideal.section_id : undefined,
+      // Detail-only refinement: the highest intermediate rung the draft met,
+      // between the floor and ideal. Never affects `tier` or `posture_hash`.
+      met_rung: highestMetRung(pos, facts),
     });
   }
   if (ideal.kind === "violated" && acceptable.kind === "violated") {
@@ -297,6 +310,20 @@ function classifyPosition(pos: NegotiationPosition, facts: DocFacts): Negotiatio
         ? ideal.reason
         : "could not be evaluated on this document";
   return compact({ dimension, tier: "unevaluable", reason });
+}
+
+/**
+ * The highest intermediate rung the draft met (add-negotiation-ladder-playbooks).
+ * Rungs are ordered best-first, so the first whose predicate holds is the
+ * highest reached. Pure detail — the caller only reaches here when the draft
+ * already meets the `acceptable` floor, so the `tier` is fixed regardless.
+ * Returns `undefined` when the position has no rungs or none are met.
+ */
+function highestMetRung(pos: NegotiationPosition, facts: DocFacts): string | undefined {
+  for (const rung of pos.rungs ?? []) {
+    if (evaluatePredicate(rung.predicate, facts).kind === "compliant") return rung.label;
+  }
+  return undefined;
 }
 
 /** Drop undefined fields so the canonical posture body is stable and minimal. */

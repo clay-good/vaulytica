@@ -137,6 +137,30 @@ describe("negotiation-position drift (fix-playbook-diff-completeness)", () => {
     const a = { ...structuredClone(base), negotiation_positions: [position(6)] };
     expect(diffPlaybooks(a, structuredClone(a)).identical).toBe(true);
   });
+
+  it("an intermediate-rung change is surfaced as drift (add-negotiation-ladder-playbooks)", () => {
+    const withRung = (label: string): NegotiationPosition => ({
+      ...position(6),
+      rungs: [
+        {
+          label,
+          predicate: {
+            kind: "numeric_threshold",
+            metric: "liability_cap_multiple",
+            comparator: "gte",
+            value: 9,
+          },
+        },
+      ],
+    });
+    const a = { ...structuredClone(base), negotiation_positions: [withRung("9x cap")] };
+    const b = { ...structuredClone(base), negotiation_positions: [withRung("nine times fees")] };
+    const d = diffPlaybooks(a, b);
+    expect(d.identical).toBe(false);
+    expect(d.negotiation_positions.changed[0]!.changes).toContain(
+      "intermediate rungs for Liability cap changed",
+    );
+  });
 });
 
 describe("diff completeness guard — every schema field has a comparator", () => {

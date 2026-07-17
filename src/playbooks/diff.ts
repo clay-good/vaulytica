@@ -131,6 +131,12 @@ function diffNegotiationPositions(
     if (JSON.stringify(pa.guidance ?? null) !== JSON.stringify(pb.guidance ?? null)) {
       changes.push(`negotiation guidance for ${dimension} changed`);
     }
+    // Intermediate-rung drift (add-negotiation-ladder-playbooks): the rungs
+    // between ideal and the floor refine the ladder, so a change is worth
+    // surfacing even though it never moves the floor itself.
+    if (JSON.stringify(pa.rungs ?? null) !== JSON.stringify(pb.rungs ?? null)) {
+      changes.push(`intermediate rungs for ${dimension} changed`);
+    }
     if (changes.length > 0) changed.push({ dimension, changes });
   }
   changed.sort((x, y) => (x.dimension < y.dimension ? -1 : x.dimension > y.dimension ? 1 : 0));
