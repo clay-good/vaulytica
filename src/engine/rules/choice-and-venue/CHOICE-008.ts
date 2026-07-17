@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
 
 /** CHOICE-008 — Jury trial waiver (info). */
 export const rule: Rule = {
@@ -11,7 +11,7 @@ export const rule: Rule = {
   description: "Detects jury-trial waivers.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
-    const hit = firstParagraphMatch(
+    const hit = firstUnnegatedParagraphMatch(
       ctx,
       /\bwaive[\s\S]{0,40}(?:right\s+to\s+)?(?:a\s+)?trial\s+by\s+jury\b|\bjury\s+trial\s+waiver\b/i,
     );

@@ -36,6 +36,17 @@ export const rule: Rule = {
       /\b(?:non[-\s]?compete|covenant\s+not\s+to\s+compete|shall\s+not\s+(?:directly\s+or\s+indirectly\s+)?compete|agrees?\s+not\s+to\s+(?:directly\s+or\s+indirectly\s+)?engage\s+in\s+(?:any\s+)?(?:business|activity)\s+(?:that\s+)?compet)/i,
     );
     if (!hit) return null;
+    // Suppress a DISCLAIMER of a non-compete ("nothing shall be construed as a
+    // covenant not to compete", "does not contain a non-compete") — but NOT the
+    // operative covenant itself ("Executive shall not compete"), whose "not" is
+    // the restriction, not a disclaimer. The generic negation helper can't tell
+    // these apart, so this rule checks disclaimer markers specifically.
+    if (
+      /\bconstrued\s+(?:as|to)\b|\b(?:does|shall|will)\s+not\s+(?:contain|include|impose|create|constitute|be\s+deemed)\b|for\s+the\s+avoidance\s+of\s+doubt[\s\S]{0,80}\bnothing\b|\bnothing\b[\s\S]{0,80}\bconstrued\b|\bno\s+(?:non[-\s]?compete|covenant\s+not\s+to\s+compete|restrictive\s+covenant)\b/i.test(
+        hit.text,
+      )
+    )
+      return null;
     return emit(ctx, rule, {
       title: "Non-compete clause present",
       description: hit.match[0],

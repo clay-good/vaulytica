@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
 
 /** TERM-008 — Termination linked to payment status (warning). */
 export const rule: Rule = {
@@ -11,7 +11,7 @@ export const rule: Rule = {
   description: "Flags clauses that terminate on payment default with no cure period.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
-    const hit = firstParagraphMatch(
+    const hit = firstUnnegatedParagraphMatch(
       ctx,
       /\bimmediately\s+terminate\b[\s\S]{0,80}\b(?:non[- ]payment|payment\s+default|fail(?:ure|s)?\s+to\s+pay)\b/i,
     );

@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
 
 /** TEMP-004 — Auto-renewal present and parseable (warning). */
 export const rule: Rule = {
@@ -11,7 +11,7 @@ export const rule: Rule = {
   description: "Detects auto-renewal clauses; surfaces the renewal term length and notice window.",
   dkb_citations: ["stat-16-cfr-425"],
   check(ctx: RuleContext): Finding | null {
-    const hit = firstParagraphMatch(
+    const hit = firstUnnegatedParagraphMatch(
       ctx,
       /(?:automatically|automatic)\s+(?:renew|renewal|extend)|renews?\s+(?:automatically\s+)?(?:for\s+)?(?:successive|additional|further|one|two|three|annual)|shall\s+renew\s+(?:automatically|for)|auto-?renew/i,
     );

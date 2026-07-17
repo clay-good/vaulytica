@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
 
 /** CHOICE-006 — Arbitration clause present (info). */
 export const rule: Rule = {
@@ -11,7 +11,7 @@ export const rule: Rule = {
   description: "Detects an arbitration clause and surfaces its scope.",
   dkb_citations: ["stat-9-usc-2"],
   check(ctx: RuleContext): Finding | null {
-    const hit = firstParagraphMatch(ctx, /\barbitrat(?:ion|ed?)\b/i);
+    const hit = firstUnnegatedParagraphMatch(ctx, /\barbitrat(?:ion|ed?)\b/i);
     if (!hit) return null;
     const seat = ctx.extracted.jurisdictions.find((j) => j.clause_kind === "arbitration-seat");
     return emit(ctx, rule, {

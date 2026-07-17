@@ -39,6 +39,61 @@ export function firstParagraphMatch(ctx: RuleContext, re: RegExp): ParagraphHit 
   return hit;
 }
 
+/**
+ * Negators that flip a trigger phrase to its disclaiming form. Checked in a
+ * short window immediately before a match — "shall NOT auto-renew", "NO waiver
+ * of…", "does NOT contain a non-compete", "NOTHING shall be CONSTRUED AS a
+ * covenant not to compete", "shall not be subject to arbitration".
+ */
+const NEGATION_BEFORE =
+  /\b(?:not|no|never|neither|nor|without|excludes?|excluding|nothing)\b|\bconstrued\s+(?:as|to)\b/i;
+
+/**
+ * Like {@link firstParagraphMatch}, but SKIPS a match that is negated — one
+ * preceded within ~50 chars (in the same clause) by a negator. A trigger-phrase
+ * rule that fires on the *disclaimed* form of its own clause ("shall not
+ * auto-renew" → "auto-renewal present") is a confident false accusation, the
+ * worst honesty failure for an always-on rule. Returns the first UN-negated
+ * match so a paragraph carrying both a disclaimer and a real clause still fires
+ * on the real one. Honesty-first: an ambiguous negation suppresses the finding
+ * (a missed flag is safer than a false one).
+ */
+export function firstUnnegatedParagraphMatch(
+  ctx: RuleContext,
+  re: RegExp,
+  window = 50,
+): ParagraphHit | null {
+  let hit: ParagraphHit | null = null;
+  forEachParagraph(ctx.tree, (p) => {
+    if (hit) return;
+    const r = new RegExp(re.source, re.flags.includes("g") ? re.flags : re.flags + "g");
+    let m: RegExpExecArray | null;
+    while ((m = r.exec(p.text)) !== null) {
+      const from = Math.max(0, m.index - window);
+      // Confine the negator search to the current clause (after the last
+      // sentence/clause break before the match), so a negation in a prior
+      // sentence never suppresses a genuine trigger.
+      const before = p.text.slice(from, m.index);
+      const clause = before.split(/[.;]\s|\n/).pop() ?? before;
+      if (!NEGATION_BEFORE.test(clause)) {
+        hit = {
+          text: p.text,
+          match: m,
+          position: {
+            section_id: p.section.id,
+            paragraph_id: p.paragraph.id,
+            start: p.start + m.index,
+            end: p.start + m.index + m[0].length,
+          },
+        };
+        return;
+      }
+      if (m[0].length === 0) r.lastIndex += 1;
+    }
+  });
+  return hit;
+}
+
 /** Returns true if any classified paragraph belongs to `category`. */
 export function hasCategory(ctx: RuleContext, category: string): boolean {
   return ctx.extracted.classified.some((c) => c.category === category);

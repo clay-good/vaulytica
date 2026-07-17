@@ -52,16 +52,20 @@ export const rule: Rule = {
       /\b(?:Feedback|Suggestions?|Comments?|Ideas?|Improvements?|Customer\s+Data|Customer\s+Content|User\s+(?:Content|Generated\s+Content|Submissions?)|Submissions?|Likeness|Name\s+and\s+(?:image|likeness)|Image\s+and\s+likeness)\b/i;
     if (!SUBJECT.test(para)) return null;
 
-    // Tally the overreach modifiers. Three or more is the signal.
+    // Tally the overreach modifiers. Three or more is the signal. A leading
+    // `\b` treats a hyphen as a word boundary, so `\bperpetual\b` would match
+    // inside `non-perpetual` — the NARROWING opposite. The `(?<!non[- ])`
+    // guards keep a favorable "non-perpetual, non-transferable, non-
+    // sublicensable" grant from being read as overreach.
     const MODIFIERS = [
-      /\bperpetual\b/i,
-      /\birrevocable\b/i,
+      /(?<!non[- ])\bperpetual\b/i,
+      /(?<!non[- ])\birrevocable\b/i,
       /\broyalty[- ]free\b/i,
       /\bworldwide\b/i,
-      /\bsublicens(?:e|able|ed)\b/i,
-      /\btransferable\b/i,
+      /(?<!non[- ])\bsublicens(?:e|able|ed)\b/i,
+      /(?<!non[- ])\btransferable\b/i,
       /\bfully\s+paid[- ]up\b/i,
-      /\bunrestricted\b/i,
+      /(?<!non[- ])\bunrestricted\b/i,
       /\bin\s+perpetuity\b/i,
     ];
     const matched = MODIFIERS.filter((re) => re.test(para));

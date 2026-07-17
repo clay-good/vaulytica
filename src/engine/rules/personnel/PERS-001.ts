@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
 
 /** PERS-001 — Non-compete present (info). */
 export const rule: Rule = {
@@ -11,7 +11,10 @@ export const rule: Rule = {
   description: "Detects non-compete; surfaces geographic and temporal scope.",
   dkb_citations: ["stat-16-cfr-910", "stat-ca-bp-16600"],
   check(ctx: RuleContext): Finding | null {
-    const hit = firstParagraphMatch(ctx, /\bnon[- ]compete\b|\bcovenant\s+not\s+to\s+compete\b/i);
+    const hit = firstUnnegatedParagraphMatch(
+      ctx,
+      /\bnon[- ]compete\b|\bcovenant\s+not\s+to\s+compete\b/i,
+    );
     if (!hit) return null;
     return emit(ctx, rule, {
       title: "Non-compete clause present",

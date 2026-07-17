@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
 
 /** TEMP-005 — Auto-renewal notice window unusual (warning). */
 export const rule: Rule = {
@@ -11,7 +11,7 @@ export const rule: Rule = {
   description: "Flags auto-renewal notice windows greater than 90 days or less than 30 days.",
   dkb_citations: ["stat-16-cfr-425"],
   check(ctx: RuleContext): Finding | null {
-    const hit = firstParagraphMatch(
+    const hit = firstUnnegatedParagraphMatch(
       ctx,
       /(?:auto(?:matic)?(?:ally)?\s+(?:renew|renewal|extend)|non[- ]renewal)[\s\S]{0,200}?(\d{1,3})\s+days/i,
     );
