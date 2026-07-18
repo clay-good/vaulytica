@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,065 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `37 state-law overlays (non-compete · security deposit · usury)` · `10 export formats` · `0 servers` · `0 AI` · `4,190 passing tests` · `v9.41.0` · `MIT`
+`1,065 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `42 state-law overlays (non-compete · security deposit · usury · will formalities)` · `10 export formats` · `0 servers` · `0 AI` · `4,207 passing tests` · `v9.41.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
 
@@ -1063,6 +1063,11 @@ npm run cli -- analyze privacy-policy.docx --regime ccpa,gdpr
 # codicil; assertion-gated — existing will/trust hashes are unchanged without the flag
 npm run cli -- analyze last-will.docx --estate-checks
 
+# assert the will's state: with a verified formalities overlay (PA, LA, CO, ND, VT) the recital
+# rules speak that state's statute — e.g. under PA, absent witness blocks are an info note
+# citing 20 Pa. C.S. § 2502, not a warning (implies --estate-checks; unseeded states run neutral)
+npm run cli -- analyze last-will.docx --state pa
+
 # verify: re-derive a saved report's result_hash from the original document (audit receipt)
 npm run cli -- verify report.json original.txt
 
@@ -1126,6 +1131,7 @@ npm run citation:check -- --reachability   # + network sweep
 | `--production-qa` `--fail-on-production-gap` | over a directory or `.zip` **production set** (not per-document analysis): Bates sequence + privilege-log (`.csv`) reconciliation + a pre-production HANDOFF sweep, emitting a JSON report with its own `production_qa_hash`; the gate exits 2 on a Bates gap. Also available in the browser bundle (drop a privilege-log `.csv` with the documents) |
 | `--regime <ccpa,gdpr,gdpr-13,gdpr-14,co,va,tx,or>` | run the privacy-notice content checks (PNOT presence rules) for the asserted regime(s) — `gdpr` = both articles — when the document matches a privacy-notice playbook; stamps the regimes and adds a per-regime coverage table. `tx` adds the § 541.102(b)–(c) exact-wording checks. Dormant without the flag |
 | `--estate-checks` | run the estate deepening rules (recital presence, residuary-share arithmetic, fiduciary/survivorship) when the document is a will, revocable trust, or codicil. Assertion-gated — dormant without the flag, existing will/trust hashes unchanged. Checks recitals, not valid execution |
+| `--state <xx>` | assert the will's state (implies `--estate-checks`). With a primary-source-verified formalities overlay (PA, LA, CO, ND, VT) the EST-1xx recital rules speak that state's statute — under PA (20 Pa. C.S. § 2502, no witnesses for an ordinary signed will) absent attestation/witness blocks become info notes; under LA (arts. 1576–1577) a missing notary block escalates to a warning; CO/ND rewording states the notarized-acknowledgment alternative. An unseeded state runs the neutral rules unchanged (honest N/A) and is still stamped into the run |
 
 ### Drop it into CI — GitHub Action
 
@@ -1326,7 +1332,7 @@ npm run dev          # open the printed URL
 npm run build        # static site → dist/
 npm run typecheck    # tsc --noEmit
 npm run lint         # eslint
-npm run test         # vitest — 4,190 tests, ~30s
+npm run test         # vitest — 4,207 tests, ~30s
 npm run coverage     # vitest + V8 coverage, enforces the regression floor
 npm run accuracy     # v5 Ground Truth harness → tools/accuracy/SCOREBOARD.md
 npm run mutation     # Stryker mutation score (scoped to extractors; slow, off the per-push path)

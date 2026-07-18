@@ -300,6 +300,48 @@ describe("CLI/API parity with the parity-proven pipeline (spec-v8 Step 143)", ()
     }
   });
 
+  it("--state pa stamps the asserted state and downgrades witness absence to info", async () => {
+    const deps = await loadAccuracyDeps();
+    const dir = await mkdtemp(join(tmpdir(), "vaulytica-est-state-"));
+    try {
+      // A PA-style signed will: testator signature, NO witness blocks, no
+      // attestation clause — the exact shape 20 Pa. C.S. § 2502 permits.
+      const will = [
+        "LAST WILL AND TESTAMENT OF JOHN DOE",
+        "I, John Doe, being of sound mind, declare this to be my last will and testament, and I revoke all prior wills and codicils.",
+        "ARTICLE I. I appoint Jane Doe as Executor of my estate, and my brother Sam Doe as successor executor if she is unable to serve.",
+        "ARTICLE II. Residuary Estate. I give the rest, residue and remainder of my estate to my children in equal shares.",
+        "ARTICLE III. I direct that my just debts be paid. I make the following specific bequests to my devisees.",
+        "Signed at Philadelphia, Pennsylvania.",
+        "By: _______________________ Testator",
+      ].join("\n\n");
+      const path = join(dir, "will.txt");
+      await writeFile(path, will);
+
+      const neutral = await analyzeFile(path, { deps, estateChecks: true });
+      expect(neutral.run.playbook_id).toBe("last-will-and-testament");
+      expect(neutral.run.asserted_state).toBeUndefined();
+      const neutral105 = neutral.run.findings.find((f) => f.rule_id === "EST-105");
+      expect(neutral105?.severity).toBe("warning");
+
+      const pa = await analyzeFile(path, { deps, estateState: "us-pa" });
+      expect(pa.run.estate_checks_asserted).toBe(true);
+      expect(pa.run.asserted_state).toBe("us-pa");
+      const pa105 = pa.run.findings.find((f) => f.rule_id === "EST-105");
+      expect(pa105?.severity).toBe("info");
+      expect(pa105?.explanation).toContain("Pennsylvania");
+      expect(pa.run.result_hash).not.toBe(neutral.run.result_hash);
+
+      // An unseeded state runs the neutral rules but still stamps the state.
+      const ca = await analyzeFile(path, { deps, estateState: "us-ca" });
+      expect(ca.run.asserted_state).toBe("us-ca");
+      const ca105 = ca.run.findings.find((f) => f.rule_id === "EST-105");
+      expect(ca105?.severity).toBe("warning");
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
   it("runProductionQa reconciles a directory production set", async () => {
     const dir = await mkdtemp(join(tmpdir(), "vaulytica-prod-"));
     try {

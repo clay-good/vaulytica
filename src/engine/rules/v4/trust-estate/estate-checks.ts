@@ -31,6 +31,7 @@ import { fullText, docTop } from "../_helpers.js";
 import { forEachParagraph } from "../../../../extract/walk.js";
 import { upc } from "./_helpers.js";
 import type { SourceCitation } from "../../../../dkb/types.js";
+import type { EstateFormalityOverlay } from "../../../../dkb/estate-formalities.js";
 
 const CATEGORY = "estate-checks";
 const GATE = "estate-checks";
@@ -90,7 +91,7 @@ function absenceRule(spec: AbsenceSpec): Rule {
 // EST-1xx — recital presence.
 // ────────────────────────────────────────────────────────────────────
 
-const EST_101: Rule = absenceRule({
+const SPEC_101: AbsenceSpec = {
   id: "EST-101",
   name: "Attestation clause present",
   severity: "warning",
@@ -108,7 +109,8 @@ const EST_101: Rule = absenceRule({
   recommendation:
     "Add an attestation clause reciting that the witnesses signed in the testator's presence and at the testator's request.",
   citations: [upc("2-502", "execution; witnessed wills")],
-});
+};
+const EST_101: Rule = absenceRule(SPEC_101);
 
 const EST_102: Rule = absenceRule({
   id: "EST-102",
@@ -129,7 +131,7 @@ const EST_102: Rule = absenceRule({
   citations: [upc("2-504", "self-proved wills")],
 });
 
-const EST_103: Rule = absenceRule({
+const SPEC_103: AbsenceSpec = {
   id: "EST-103",
   name: "Notary block present",
   severity: "info",
@@ -146,7 +148,8 @@ const EST_103: Rule = absenceRule({
   recommendation:
     "Add a notary block (notary public, acknowledgment, commission-expiration recital) alongside the self-proving affidavit.",
   citations: [upc("2-504")],
-});
+};
+const EST_103: Rule = absenceRule(SPEC_103);
 
 const EST_104: Rule = absenceRule({
   id: "EST-104",
@@ -166,7 +169,7 @@ const EST_104: Rule = absenceRule({
   citations: [upc("2-502")],
 });
 
-const EST_105: Rule = absenceRule({
+const SPEC_105: AbsenceSpec = {
   id: "EST-105",
   name: "Witness signature blocks present",
   severity: "warning",
@@ -185,7 +188,8 @@ const EST_105: Rule = absenceRule({
   recommendation:
     "Add at least two witness signature blocks (signature line, printed name, address).",
   citations: [upc("2-502")],
-});
+};
+const EST_105: Rule = absenceRule(SPEC_105);
 
 // ────────────────────────────────────────────────────────────────────
 // EST-2xx — share arithmetic.
@@ -455,3 +459,102 @@ export const ESTATE_CHECK_RULES: readonly Rule[] = [
 ];
 
 export const ESTATE_CHECK_RULE_IDS: readonly string[] = ESTATE_CHECK_RULES.map((r) => r.id);
+
+// ────────────────────────────────────────────────────────────────────
+// Overlay-aware variants (--state). With a verified state-formalities
+// overlay, the recital rules speak the asserted state's law instead of
+// the UPC default. Reachable only via the new `--state` assertion, so
+// every existing run — including `--estate-checks` without a state —
+// keeps its exact rules and hash: no overlay returns ESTATE_CHECK_RULES
+// unchanged.
+// ────────────────────────────────────────────────────────────────────
+
+/**
+ * The estate-checks rule set for an asserted state. Findings stay
+ * presence-of-recital observations — the overlay changes what absence
+ * *means* under the asserted state's verified statute:
+ *
+ *   - `witnesses_expected === 0` (PA): a missing attestation clause or
+ *     witness blocks is an INFO note citing the state statute, not a
+ *     warning — 20 Pa. C.S. § 2502 requires neither for an ordinary
+ *     signed will.
+ *   - `notarial_testament` (LA): a missing notary block escalates to a
+ *     WARNING — the notarial testament requires a notary, two witnesses,
+ *     per-page signatures, and the prescribed attestation declaration
+ *     (arts. 1576–1577).
+ *   - `notarization_alternative` (CO/ND): missing witness blocks keep
+ *     their severity but the explanation states the notarized-
+ *     acknowledgment alternative, so absence is not read as per-se
+ *     non-compliance when a notary block is present.
+ */
+export function estateCheckRulesForOverlay(
+  overlay: EstateFormalityOverlay | undefined,
+): readonly Rule[] {
+  if (!overlay) return ESTATE_CHECK_RULES;
+
+  const stateNote = ` Asserted state: ${overlay.state_name} — ${overlay.headline} (${overlay.citation.source}).`;
+  const variants = new Map<string, Rule>();
+
+  if (overlay.witnesses_expected === 0) {
+    variants.set(
+      "EST-101",
+      absenceRule({
+        ...SPEC_101,
+        severity: "info",
+        explanation:
+          `${overlay.state_name} does not require attesting witnesses for an ordinary signed will, so an absent attestation clause is not an execution defect under the asserted state's statute. An attestation clause remains useful evidence at probate.` +
+          stateNote,
+        recommendation:
+          "No attestation clause is required under the asserted state's statute; consider one anyway as probate-proof convenience.",
+        citations: [...SPEC_101.citations, overlay.citation],
+      }),
+    );
+    variants.set(
+      "EST-105",
+      absenceRule({
+        ...SPEC_105,
+        severity: "info",
+        explanation:
+          `${overlay.state_name} does not require witness signatures for an ordinary signed will (witnesses are required only for a signature by mark or a proxy signature), so absent witness blocks are not an execution defect under the asserted state's statute.` +
+          stateNote,
+        recommendation:
+          "No witness signature blocks are required under the asserted state's statute; witnesses who can prove the signature at probate remain useful.",
+        citations: [...SPEC_105.citations, overlay.citation],
+      }),
+    );
+  }
+
+  if (overlay.notarial_testament) {
+    variants.set(
+      "EST-103",
+      absenceRule({
+        ...SPEC_103,
+        severity: "warning",
+        explanation:
+          `${overlay.state_name}'s notarial testament requires execution in the presence of a notary AND two competent witnesses, with the testator signing at the end and on each other separate page and the notary and witnesses signing the prescribed attestation declaration — a missing notary block is a formality gap for this form, not an optional extra.` +
+          stateNote,
+        recommendation:
+          "Add the notary's signature block to the prescribed attestation declaration (notary + two witnesses), and confirm the testator signed at the end and on each other separate page.",
+        citations: [...SPEC_103.citations, overlay.citation],
+      }),
+    );
+  }
+
+  if (overlay.notarization_alternative) {
+    variants.set(
+      "EST-105",
+      absenceRule({
+        ...SPEC_105,
+        explanation:
+          `${overlay.state_name} accepts EITHER at least two witnesses signing within a reasonable time OR the testator's acknowledgment before a notary public, so absent witness blocks are not per-se non-compliance when a notarial acknowledgment is present.` +
+          stateNote,
+        recommendation:
+          "Add at least two witness signature blocks, or confirm the will carries a notarial acknowledgment — the asserted state accepts notarization in lieu of witnesses.",
+        citations: [...SPEC_105.citations, overlay.citation],
+      }),
+    );
+  }
+
+  if (variants.size === 0) return ESTATE_CHECK_RULES;
+  return ESTATE_CHECK_RULES.map((r) => variants.get(r.id) ?? r);
+}

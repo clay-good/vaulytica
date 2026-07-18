@@ -46,6 +46,8 @@ export type VerificationCertificate = {
     court_profile?: string;
     privacy_regimes?: string[];
     estate_checks?: boolean;
+    /** Normalized `us-xx` state asserted via `--state` (formalities overlay). */
+    estate_state?: string;
   };
   result_hash: string;
   /** The fixed certification statements, in render order. */
@@ -72,7 +74,8 @@ function assertedPacksLabel(p: NonNullable<VerificationCertificate["asserted_pac
   if (p.court_profile) parts.push(`court profile ${p.court_profile}`);
   if (p.privacy_regimes && p.privacy_regimes.length > 0)
     parts.push(`privacy regimes ${p.privacy_regimes.join(", ")}`);
-  if (p.estate_checks) parts.push("estate checks");
+  if (p.estate_checks)
+    parts.push(p.estate_state ? `estate checks (state ${p.estate_state})` : "estate checks");
   return `${parts.join("; ")} (asserted by the user)`;
 }
 
@@ -83,6 +86,7 @@ function assertedPacksOf(run: EngineRun): VerificationCertificate["asserted_pack
   if (run.asserted_regimes && run.asserted_regimes.length > 0)
     packs.privacy_regimes = run.asserted_regimes;
   if (run.estate_checks_asserted) packs.estate_checks = true;
+  if (run.asserted_state) packs.estate_state = run.asserted_state;
   return Object.keys(packs).length > 0 ? packs : undefined;
 }
 

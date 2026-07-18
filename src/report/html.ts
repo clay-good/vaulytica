@@ -355,7 +355,11 @@ export function buildHtmlReport(
     );
   }
   if (run.estate_checks_asserted) {
-    body.push("<dt>Estate checks</dt><dd>asserted by the user (--estate-checks)</dd>");
+    body.push(
+      run.asserted_state
+        ? `<dt>Estate checks</dt><dd>asserted by the user (--state ${esc(run.asserted_state)})</dd>`
+        : "<dt>Estate checks</dt><dd>asserted by the user (--estate-checks)</dd>",
+    );
   }
   body.push(`<dt>Result hash</dt><dd>${esc(run.result_hash)}</dd>`);
   body.push(`<dt>Executed at</dt><dd>${esc(run.executed_at || "(omitted from hash)")}</dd>`);

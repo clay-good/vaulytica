@@ -356,6 +356,12 @@ export type PipelineOptions = {
    */
   estate_checks?: boolean;
   /**
+   * add-estate-planning-pack — normalized `us-xx` state for the verified
+   * formalities overlay. Implies the estate-checks assertion. Omit for the
+   * jurisdiction-neutral rules (default).
+   */
+  estate_state?: string;
+  /**
    * v6 Part II bring-your-own-playbook (Step 92). When set, the run is
    * driven by the user-supplied playbook: the built-in catalog is narrowed
    * per its `rule_selection` / `rule_overrides` (or dropped entirely in
@@ -632,6 +638,7 @@ export async function runReport(
       options.estate_checks ?? false,
       prepared.playbook.id,
       privacyWiring.rules,
+      options.estate_state,
     );
     run = await runEngine({
       rules: estateWiring.rules,
@@ -650,6 +657,7 @@ export async function runReport(
         ? { asserted_regimes: privacyWiring.asserted_regimes }
         : {}),
       ...(estateWiring.estate_checks_asserted ? { estate_checks_asserted: true } : {}),
+      ...(estateWiring.asserted_state ? { asserted_state: estateWiring.asserted_state } : {}),
       executed_at: new Date().toISOString(),
       onRule: onRuleProgress,
     });

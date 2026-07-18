@@ -202,6 +202,12 @@ export async function analyzeFile(
      * a will/trust/codicil, the EST deepening rules run; otherwise unchanged.
      */
     estateChecks?: boolean;
+    /**
+     * Normalized `us-xx` state (`--state`). Implies the estate-checks pack on
+     * a will/trust/codicil and selects the verified per-state formalities
+     * overlay when the state is seeded; otherwise unchanged.
+     */
+    estateState?: string;
   } = {},
 ): Promise<AnalyzeResult> {
   const deps = opts.deps ?? (await loadAccuracyDeps({ dkbDir: opts.dkbDir }));
@@ -216,6 +222,7 @@ export async function analyzeFile(
     opts.filing,
     opts.regimes,
     opts.estateChecks,
+    opts.estateState,
   );
   const out: AnalyzeResult = { ...result, ingest };
   if (opts.delivery) {
@@ -277,7 +284,17 @@ export async function analyzeFile(
 export async function analyzeText(
   text: string,
   filename: string,
-  opts: { playbookId?: string; deps?: AccuracyDeps; dkbDir?: string } = {},
+  opts: {
+    playbookId?: string;
+    deps?: AccuracyDeps;
+    dkbDir?: string;
+    /** Same asserted-pack options as {@link analyzeFile} — the verifier
+     * re-derives assertion-gated reports through this path. */
+    filing?: { profile: CourtProfile; brief_kind: BriefKind };
+    regimes?: readonly RegimeId[];
+    estateChecks?: boolean;
+    estateState?: string;
+  } = {},
 ): Promise<AnalyzeResult> {
   const deps = opts.deps ?? (await loadAccuracyDeps({ dkbDir: opts.dkbDir }));
   const ingest = await ingestPaste(text);
@@ -287,6 +304,10 @@ export async function analyzeText(
     opts.playbookId,
     deps,
     Buffer.byteLength(text),
+    opts.filing,
+    opts.regimes,
+    opts.estateChecks,
+    opts.estateState,
   );
   return { ...result, ingest };
 }

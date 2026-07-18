@@ -226,7 +226,14 @@ function renderCover(run: EngineRun, ingest: IngestResult, playbook: Playbook): 
     );
   }
   if (run.estate_checks_asserted) {
-    asserted.push(coverField("Estate checks", "asserted by the user (--estate-checks)"));
+    asserted.push(
+      coverField(
+        "Estate checks",
+        run.asserted_state
+          ? `asserted by the user (--state ${run.asserted_state})`
+          : "asserted by the user (--estate-checks)",
+      ),
+    );
   }
 
   return [

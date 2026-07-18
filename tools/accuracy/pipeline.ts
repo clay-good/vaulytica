@@ -161,6 +161,8 @@ export async function runIngested(
   regimes?: readonly RegimeId[],
   /** Estate-checks assertion (`--estate-checks`). Fires the pack on will/trust/codicil. */
   estateChecks?: boolean,
+  /** Normalized `us-xx` state (`--state`) — selects the formalities overlay and implies the pack. */
+  estateState?: string,
 ): Promise<DocumentRun> {
   const extracted = extractAll(ingest.tree, {
     classifier: { vocab: { vocab: {} }, patterns: deps.dkb.classifier.patterns },
@@ -186,7 +188,12 @@ export async function runIngested(
 
   const activation = activateFiling(filing, playbook.id, ingest, deps.rules);
   const privacy = activatePrivacyNotice(regimes ?? [], playbook.id, activation.rules);
-  const estate = activateEstateChecks(estateChecks ?? false, playbook.id, privacy.rules);
+  const estate = activateEstateChecks(
+    estateChecks ?? false,
+    playbook.id,
+    privacy.rules,
+    estateState,
+  );
 
   const run = await runEngine({
     rules: estate.rules,
@@ -203,6 +210,7 @@ export async function runIngested(
     ...(activation.filing_profile ? { filing_profile: activation.filing_profile } : {}),
     ...(privacy.asserted_regimes ? { asserted_regimes: privacy.asserted_regimes } : {}),
     ...(estate.estate_checks_asserted ? { estate_checks_asserted: true } : {}),
+    ...(estate.asserted_state ? { asserted_state: estate.asserted_state } : {}),
     executed_at: "",
   });
 

@@ -1,0 +1,102 @@
+import { describe, expect, it } from "vitest";
+import {
+  ESTATE_FORMALITIES,
+  ESTATE_FORMALITIES_STATE_COUNT,
+  EstateFormalityOverlaySchema,
+  US_STATE_CODES,
+  estateFormalitiesForState,
+  normalizeUsStateId,
+} from "./estate-formalities.js";
+
+describe("estate formalities catalog", () => {
+  it("every node validates against the schema", () => {
+    for (const node of ESTATE_FORMALITIES) {
+      const parsed = EstateFormalityOverlaySchema.safeParse(node);
+      expect(
+        parsed.success,
+        `${node.id}: ${JSON.stringify(parsed.success ? "" : parsed.error.issues)}`,
+      ).toBe(true);
+    }
+  });
+
+  it("ids are unique, sorted, and match their jurisdiction", () => {
+    const ids = ESTATE_FORMALITIES.map((n) => n.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    expect([...ids].sort()).toEqual(ids);
+    for (const node of ESTATE_FORMALITIES) {
+      expect(node.id).toBe(`est-formalities-${node.jurisdiction}`);
+    }
+  });
+
+  it("pins the verified seed facts (the anti-folk-wisdom corrections)", () => {
+    // PA: no attesting witnesses for an ordinary signed will (20 Pa. C.S. § 2502).
+    const pa = estateFormalitiesForState("us-pa")!;
+    expect(pa.witnesses_expected).toBe(0);
+    expect(pa.notarization_alternative).toBe(false);
+    expect(pa.citation.source).toContain("2502");
+
+    // LA: notarial testament — notary + 2 witnesses + per-page signatures.
+    const la = estateFormalitiesForState("us-la")!;
+    expect(la.notarial_testament).toBe(true);
+    expect(la.witnesses_expected).toBe(2);
+    expect(la.summary).toContain("each other separate page");
+    expect(la.citation.source).toMatch(/157[67]/);
+
+    // CO + ND: the only notarization-alternative adopters (UPC § 2-502(a)(3)(B) pattern).
+    const adopters = ESTATE_FORMALITIES.filter((n) => n.notarization_alternative).map(
+      (n) => n.jurisdiction,
+    );
+    expect(adopters).toEqual(["us-co", "us-nd"]);
+    for (const j of adopters) {
+      expect(estateFormalitiesForState(j)!.reasonable_time_phrasing).toBe(true);
+    }
+
+    // VT: reduced 3 → 2 witnesses; the resolved session-law citation is
+    // 2005, No. 106 (Adj. Sess.) per the official annotated statute.
+    const vt = estateFormalitiesForState("us-vt")!;
+    expect(vt.witnesses_expected).toBe(2);
+    expect(vt.citation.source).toContain("2005, No. 106 (Adj. Sess.)");
+  });
+
+  it("no state expects more than two attesting witnesses", () => {
+    for (const node of ESTATE_FORMALITIES) {
+      expect(node.witnesses_expected, node.id).toBeLessThanOrEqual(2);
+    }
+  });
+
+  it("unverified holographic/e-will flags are omitted, never false-guessed", () => {
+    // PA's holographic posture and every e-will flag were not primary-source
+    // verified — honest N/A means the key is absent, not false.
+    const pa = estateFormalitiesForState("us-pa")!;
+    expect("holographic_recognized" in pa).toBe(false);
+    for (const node of ESTATE_FORMALITIES) {
+      expect("e_will_regime" in node, node.id).toBe(false);
+    }
+  });
+
+  it("returns undefined for unseeded states (honest N/A) and publishes the denominator", () => {
+    expect(estateFormalitiesForState("us-ca")).toBeUndefined();
+    expect(estateFormalitiesForState("us-tx")).toBeUndefined();
+    expect(ESTATE_FORMALITIES_STATE_COUNT).toBe(ESTATE_FORMALITIES.length);
+  });
+});
+
+describe("normalizeUsStateId", () => {
+  it("accepts two-letter codes, any case, and the us- prefix", () => {
+    expect(normalizeUsStateId("pa")).toBe("us-pa");
+    expect(normalizeUsStateId("PA")).toBe("us-pa");
+    expect(normalizeUsStateId(" us-La ")).toBe("us-la");
+    expect(normalizeUsStateId("dc")).toBe("us-dc");
+  });
+
+  it("rejects unknown or malformed input", () => {
+    expect(normalizeUsStateId("zz")).toBeUndefined();
+    expect(normalizeUsStateId("pennsylvania")).toBeUndefined();
+    expect(normalizeUsStateId("")).toBeUndefined();
+  });
+
+  it("covers the 50 states + DC exactly once", () => {
+    expect(US_STATE_CODES.length).toBe(51);
+    expect(new Set(US_STATE_CODES).size).toBe(51);
+  });
+});

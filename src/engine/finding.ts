@@ -195,6 +195,12 @@ export type EngineRun = {
    */
   estate_checks_asserted?: boolean;
   /**
+   * Normalized `us-xx` state the user asserted via `--state` when the estate
+   * pack ran (add-estate-planning-pack state overlay). Inside the hash;
+   * present only when asserted, so a stateless run is byte-identical.
+   */
+  asserted_state?: string;
+  /**
    * Present only when the document matched no known family and the generic
    * fallback ran. Inside the hash; omitted for matched runs. See
    * {@link ClassificationNotice}.

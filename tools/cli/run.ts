@@ -40,6 +40,13 @@
  * flag the pack is dormant and existing will/trust hashes are unchanged. It
  * checks recitals, not valid execution.
  *
+ * `--state <xx>` (implies `--estate-checks`) asserts the will's state and,
+ * when the state is in the verified formalities catalog (PA, LA, CO, ND, VT),
+ * swaps the EST-1xx recital rules for overlay-aware variants — e.g. under PA,
+ * absent witness blocks are an info note citing 20 Pa. C.S. § 2502, not a
+ * warning. An unseeded state runs the jurisdiction-neutral rules unchanged
+ * (honest N/A — never a guessed overlay) and is still stamped into the run.
+ *
  * spec-v15: an emitted coherence artifact is pinned to the playbook ladder its
  * rungs were computed against; `--baseline-coherence` refuses to diff it against
  * a round computed on a different ladder (a cross-ladder compare is meaningless).
@@ -179,6 +186,7 @@ import { SERVICE_METHODS } from "../../src/deadlines/profile.js";
 import type { DeadlineResolution } from "../../src/report/critical-dates.js";
 import { REGIME_IDS } from "../../src/privacy/regime-data.js";
 import type { RegimeId } from "../../src/privacy/regime-data.js";
+import { normalizeUsStateId } from "../../src/dkb/estate-formalities.js";
 
 /** Values the `--regime` flag accepts (`gdpr` expands to both articles). */
 const REGIME_FLAG_VALUES = ["ccpa", "gdpr", "gdpr-13", "gdpr-14", "co", "va", "tx", "or"] as const;
@@ -325,6 +333,8 @@ type Args = {
   regimes?: string[];
   /** add-estate-planning-pack — assert the estate-checks pack on wills/trusts/codicils. */
   estateChecks?: boolean;
+  /** add-estate-planning-pack — normalized `us-xx` state for the formalities overlay. */
+  estateState?: string;
 };
 
 /** Build the filing activation from parsed args, or undefined when no `--court`. */
@@ -514,6 +524,19 @@ function parseArgs(argv: string[]): Args {
       case "--estate-checks":
         args.estateChecks = true;
         break;
+      case "--state": {
+        const value = argv[i + 1];
+        if (!value || value.startsWith("--")) {
+          throw new Error('--state requires a two-letter state value (e.g. "pa" or "us-pa")');
+        }
+        const normalized = normalizeUsStateId(value);
+        if (!normalized) {
+          throw new Error(`unknown --state "${value}" (expected a US state code, e.g. pa, la, co)`);
+        }
+        args.estateState = normalized;
+        i++;
+        break;
+      }
       case "--production-qa":
         args.productionQa = true;
         break;
@@ -878,6 +901,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       deadline,
       regimes: args.regimes as RegimeId[] | undefined,
       estateChecks: args.estateChecks,
+      estateState: args.estateState,
     });
 
     const counts = { critical: 0, warning: 0, info: 0 };
@@ -1220,6 +1244,7 @@ Commands:
                           [--court <frap-default|ca9-appellate|cal-rules-8.204> [--reply]]
                           [--deadline-profile <frcp-6|cal-ccp-12> [--service-method <method>]]
                           [--regime <ccpa,gdpr,gdpr-13,gdpr-14,co,va,tx,or>] [--estate-checks]
+                          [--state <xx>]
                           [--baseline <path|glob|dir> | --baseline-coherence <coherence.json>]
                           [--emit-coherence <path>] [--fail-on-coherence-regression]
   analyze <dir|.zip> --production-qa [--fail-on-production-gap]

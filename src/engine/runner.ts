@@ -72,6 +72,8 @@ export type RunEngineInput = {
   asserted_regimes?: string[];
   /** True to stamp that the estate-checks pack ran (add-estate-planning-pack). */
   estate_checks_asserted?: boolean;
+  /** Normalized `us-xx` state asserted via `--state` when the estate pack ran. */
+  asserted_state?: string;
   /** ISO 8601. Excluded from the result hash. Defaults to "" so test runs are reproducible. */
   executed_at?: string;
   /**
@@ -192,9 +194,13 @@ export async function runEngine(input: RunEngineInput): Promise<EngineRun> {
     run.asserted_regimes = input.asserted_regimes;
   }
 
-  // add-estate-planning-pack — stamp that the estate-checks pack ran.
+  // add-estate-planning-pack — stamp that the estate-checks pack ran, and
+  // the asserted state when `--state` selected a formalities posture.
   if (input.estate_checks_asserted) {
     run.estate_checks_asserted = true;
+  }
+  if (input.asserted_state) {
+    run.asserted_state = input.asserted_state;
   }
 
   run.result_hash = await computeResultHash(run);
