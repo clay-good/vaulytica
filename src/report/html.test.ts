@@ -153,6 +153,27 @@ describe("buildHtmlReport (spec-v8 §21 — standalone single-file HTML)", () =>
     expect(html).toContain("Estate checks");
   });
 
+  it("renders the per-regime coverage table when regimes were asserted (mirrors md/docx)", () => {
+    const base = makeRun();
+    expect(buildHtmlReport(base, ingest, loadStarterDkbSync())).not.toContain(
+      "Privacy Regime Coverage",
+    );
+
+    const run = makeRun();
+    run.asserted_regimes = ["ccpa"];
+    // One fired PNOT finding — its item must render as "Not detected".
+    const fired = finding("p1", "warning");
+    (fired as { rule_id: string }).rule_id = "PNOT-CCPA-001";
+    run.findings = [fired];
+    const html = buildHtmlReport(run, ingest, loadStarterDkbSync());
+    expect(html).toContain("Privacy Regime Coverage");
+    expect(html).toContain("CCPA/CPRA privacy policy");
+    expect(html).toContain("Not detected");
+    expect(html).toContain("PNOT-CCPA-001");
+    // The presence-only caveat travels with the table.
+    expect(html).toContain("never that the notice is adequate or compliant");
+  });
+
   it("renders the scope-of-review block for a regulated pack (DPA/BAA)", () => {
     const run = makeRun();
     run.playbook_id = "baa";

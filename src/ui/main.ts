@@ -250,6 +250,7 @@ function renderCompleteState(
     custom_playbook?: import("./pipeline.js").PipelineResult["custom_playbook"];
     secondary_families?: import("./pipeline.js").PipelineResult["secondary_families"];
     jurisdiction_overlays?: import("./pipeline.js").PipelineResult["jurisdiction_overlays"];
+    regime_coverage?: import("./pipeline.js").PipelineResult["regime_coverage"];
     delivery?: import("./pipeline.js").PipelineResult["delivery"];
     critical_dates?: import("./pipeline.js").PipelineResult["critical_dates"];
     critical_dates_md_blob?: Blob;
@@ -464,6 +465,9 @@ function renderCompleteState(
       ? { message: result.run.classification_notice.message }
       : undefined,
     scope_of_review: scopeForPlaybook(result.run.playbook_id),
+    // add-privacy-notice-pack — per-regime coverage table, computed in the
+    // lazy pipeline chunk; undefined when no regimes were asserted.
+    regime_coverage: result.regime_coverage,
     // v6 Part I comparison (Step 90). The base run is the one currently
     // rendered, so a frame-toggle re-run rebinds compare to the fresh run.
     on_compare: (revisedFile) => {

@@ -275,6 +275,20 @@ export type DropzoneState =
         reviewed_for: ReadonlyArray<string>;
         not_reviewed_for: ReadonlyArray<string>;
       };
+      /**
+       * Per-regime coverage table (add-privacy-notice-pack). Present only
+       * when the reviewer asserted privacy regimes and the document matched a
+       * privacy-notice playbook. "Found" means the item's language was
+       * detected — never that the notice is adequate or compliant. Optional /
+       * back-compat: omitting hides the block.
+       */
+      regime_coverage?: ReadonlyArray<{
+        regime: string;
+        regime_name: string;
+        found_count: number;
+        total: number;
+        items: ReadonlyArray<{ rule_id: string; item: string; found: boolean }>;
+      }>;
     }
   | {
       kind: "comparison-complete";
@@ -579,6 +593,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     <div class="dropzone-title" data-role="complete-filename"></div>
     <div class="classification-notice" data-role="classification-notice" hidden></div>
     <div class="scope-of-review" data-role="scope-of-review" hidden></div>
+    <div class="scope-of-review regime-coverage" data-role="regime-coverage" hidden></div>
     <div class="v3-family-chip" data-role="v3-family" hidden></div>
     <div class="delivery-section" data-role="delivery" hidden></div>
     <div class="closing-checklist-section" data-role="closing-checklist" hidden></div>
@@ -700,6 +715,7 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
     select(dz, "reasoning")!.textContent = `${baseReasoning}${legacySuffix}`;
     renderClassificationNotice(dz, state.classification_notice);
     renderScopeOfReview(dz, state.scope_of_review);
+    renderRegimeCoverage(dz, state.regime_coverage);
     renderV3FamilyChip(dz, state.v3_family);
     renderDelivery(dz, state.delivery);
     renderClosingChecklist(dz, state.closing_checklist);
@@ -1362,6 +1378,35 @@ function renderScopeOfReview(
     <div class="scope-note">This report reflects only the checks below. Where a check found nothing, that means the reviewed language was present, not that the document is compliant or complete.</div>
     <div class="scope-group"><span class="scope-label">Reviewed for</span><ul>${reviewed}</ul></div>
     <div class="scope-group"><span class="scope-label">Not reviewed for</span><ul>${notReviewed}</ul></div>
+  `;
+}
+
+function renderRegimeCoverage(
+  dz: HTMLElement,
+  coverage: Extract<DropzoneState, { kind: "complete" }>["regime_coverage"],
+): void {
+  const el = select<HTMLElement>(dz, "regime-coverage");
+  if (!el) return;
+  if (!coverage || coverage.length === 0) {
+    el.hidden = true;
+    el.innerHTML = "";
+    return;
+  }
+  el.hidden = false;
+  el.innerHTML = `
+    <div class="scope-head">Regime coverage</div>
+    <div class="scope-note">For each asserted regime, the enumerated notice-content items and whether each item's language was found. "Found" means the language was detected — never that the notice is adequate or compliant.</div>
+    ${coverage
+      .map(
+        (c) => `
+    <div class="scope-group"><span class="scope-label">${escapeHtml(c.regime_name)} — ${c.found_count} of ${c.total} items found</span><ul>${c.items
+      .map(
+        (i) =>
+          `<li>${i.found ? "Found" : "Not detected"} — ${escapeHtml(i.item)} (${escapeHtml(i.rule_id)})</li>`,
+      )
+      .join("")}</ul></div>`,
+      )
+      .join("")}
   `;
 }
 

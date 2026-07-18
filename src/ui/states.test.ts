@@ -206,6 +206,52 @@ describe("renderState", () => {
     expect(select(dz, "classification-notice")!.hasAttribute("hidden")).toBe(true);
   });
 
+  it("renders the regime-coverage block when regimes were asserted, hides it otherwise", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "complete",
+      filename: "notice.docx",
+      playbook_name: "Privacy Notice",
+      counts: { critical: 0, warning: 1, info: 0 },
+      docx_blob: new Blob(["docx"]),
+      json_blob: new Blob(["{}"]),
+      docx_filename: "x.docx",
+      json_filename: "x.json",
+      regime_coverage: [
+        {
+          regime: "ccpa",
+          regime_name: "California (CCPA/CPRA)",
+          found_count: 1,
+          total: 2,
+          items: [
+            { rule_id: "PNOT-CA-001", item: "Categories of personal information", found: true },
+            { rule_id: "PNOT-CA-002", item: "Right to delete", found: false },
+          ],
+        },
+      ],
+    });
+    const el = select(dz, "regime-coverage")!;
+    expect(el.hasAttribute("hidden")).toBe(false);
+    expect(el.textContent).toContain("California (CCPA/CPRA) — 1 of 2 items found");
+    expect(el.textContent).toContain("Found — Categories of personal information (PNOT-CA-001)");
+    expect(el.textContent).toContain("Not detected — Right to delete (PNOT-CA-002)");
+    // The presence-only caveat travels with the table.
+    expect(el.textContent).toContain("never that the notice is adequate or compliant");
+
+    const bare = document.createElement("div");
+    renderState(bare, {
+      kind: "complete",
+      filename: "nda.docx",
+      playbook_name: "Mutual NDA",
+      counts: { critical: 0, warning: 0, info: 0 },
+      docx_blob: new Blob(["docx"]),
+      json_blob: new Blob(["{}"]),
+      docx_filename: "x.docx",
+      json_filename: "x.json",
+    });
+    expect(select(bare, "regime-coverage")!.hasAttribute("hidden")).toBe(true);
+  });
+
   it("renders the v6 custom-playbook provenance line when a playbook drove the run", () => {
     const dz = document.createElement("div");
     renderState(dz, {

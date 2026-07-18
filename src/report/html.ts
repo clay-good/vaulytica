@@ -20,6 +20,8 @@
 
 import type { EngineRun, Finding, Severity } from "../engine/finding.js";
 import { scopeForPlaybook } from "../verticals/registry.js";
+import { buildRegimeCoverage } from "../privacy/coverage.js";
+import type { RegimeId } from "../privacy/regime-data.js";
 import type { DKB, SourceCitation } from "../dkb/types.js";
 import { isHttpUrl } from "../dkb/url-safety.js";
 import type { IngestResult } from "../ingest/types.js";
@@ -388,6 +390,31 @@ export function buildHtmlReport(
     body.push("</ul><h3>Not reviewed for</h3><ul>");
     for (const item of scope.not_reviewed_for) body.push(`<li>${esc(item)}</li>`);
     body.push("</ul></div>");
+  }
+
+  // add-privacy-notice-pack — per-regime coverage table (found / not
+  // detected), present only when the PNOT pack ran. Mirrors the Markdown and
+  // DOCX exports: a projection of the fired PNOT findings, outside result_hash.
+  if (run.asserted_regimes && run.asserted_regimes.length > 0) {
+    const fired = new Set(
+      run.findings.filter((f) => f.rule_id.startsWith("PNOT-")).map((f) => f.rule_id),
+    );
+    body.push('<div class="regime-coverage">');
+    body.push("<h2>Privacy Regime Coverage</h2>");
+    body.push(
+      '<p class="v9-note">For each privacy regime asserted by the user, the enumerated notice-content items and whether each item\'s language was found. "Found" means the language was detected — never that the notice is adequate or compliant. Items not detected also appear as findings below.</p>',
+    );
+    for (const c of buildRegimeCoverage(run.asserted_regimes as RegimeId[], fired)) {
+      body.push(`<h3>${esc(c.regime_name)} — ${c.found_count} of ${c.total} items found</h3>`);
+      body.push("<ul>");
+      for (const item of c.items) {
+        body.push(
+          `<li>${item.found ? "Found" : "Not detected"} — ${esc(item.item)} (${esc(item.rule_id)})</li>`,
+        );
+      }
+      body.push("</ul>");
+    }
+    body.push("</div>");
   }
 
   // Findings, grouped by severity.

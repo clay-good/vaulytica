@@ -32,6 +32,7 @@ import { activateFiling } from "../filing/activate.js";
 import type { CourtProfile } from "../filing/court-profile.js";
 import type { BriefKind } from "../filing/run-options.js";
 import { activatePrivacyNotice } from "../privacy/activate.js";
+import { buildRegimeCoverage, type RegimeCoverage } from "../privacy/coverage.js";
 import type { RegimeId } from "../privacy/regime-data.js";
 import { activateEstateChecks } from "../estate/activate.js";
 import {
@@ -309,6 +310,14 @@ export type PipelineResult = {
   closing_checklist?: ClosingChecklist;
   closing_checklist_md_blob?: Blob;
   closing_checklist_csv_blob?: Blob;
+  /**
+   * add-privacy-notice-pack — the per-regime coverage table when regimes were
+   * asserted and the document matched a privacy-notice playbook. A render-side
+   * projection of the fired PNOT findings (a rule fires iff its item was NOT
+   * detected), outside `run.result_hash`. `undefined` when no regimes were
+   * asserted on the run.
+   */
+  regime_coverage?: RegimeCoverage[];
 };
 
 /** One additional detected family's scan results (spec-v6 multi-family activation). */
@@ -753,6 +762,19 @@ export async function runReport(
     prepared.extracted.jurisdictions,
   );
 
+  // add-privacy-notice-pack — per-regime coverage table (found / not
+  // detected), present only when the PNOT pack ran on this document. Same
+  // projection the JSON/Markdown/DOCX exports render; outside result_hash.
+  const regime_coverage =
+    run.asserted_regimes && run.asserted_regimes.length > 0
+      ? buildRegimeCoverage(
+          run.asserted_regimes as RegimeId[],
+          new Set(
+            run.findings.filter((f) => f.rule_id.startsWith("PNOT-")).map((f) => f.rule_id),
+          ),
+        )
+      : undefined;
+
   const reviewed_docx_blob =
     prepared.original_docx_bytes && run.findings.length > 0
       ? reviewedDocxBlob(prepared.original_docx_bytes, run)
@@ -786,6 +808,7 @@ export async function runReport(
     custom_playbook: customProvenance,
     secondary_families,
     jurisdiction_overlays,
+    ...(regime_coverage ? { regime_coverage } : {}),
     delivery: prepared.delivery,
     ...(negotiationPosture
       ? {
