@@ -129,6 +129,22 @@ const TX_EXACT_SPECS: TxExactSpec[] = [
 
 const normalizeWs = (s: string): string => s.replace(/\s+/g, " ").trim();
 
+// The § 541.102 notices are mandated only for a controller that SELLS the data.
+// A document that affirmatively DISCLAIMS selling ("we do not sell …", "we
+// never sell or share …") does not owe the notice — treating its disclaimer as
+// a sale indication is a false accusation. True when the sentence negates the
+// sale/share verb.
+const SALE_DISCLAIMED =
+  /\b(?:do(?:es)?\s+not|did\s+not|will\s+not|would\s+not|won'?t|shall\s+not|cannot|can'?t|never|not)\b[^.;\n]{0,40}\b(?:sell|sells|selling|sold|sale|share|shares|shared)\b|\bno\s+(?:sale|selling|sharing)\b/i;
+
+/** The single sentence of `text` containing `index`, for the negation check. */
+function sentenceAround(text: string, index: number): string {
+  const start = Math.max(text.lastIndexOf(".", index), text.lastIndexOf("\n", index)) + 1;
+  const relEnd = text.slice(index).search(/[.\n]/);
+  const end = relEnd === -1 ? text.length : index + relEnd;
+  return text.slice(start, end);
+}
+
 function txCite(spec: TxExactSpec): SourceCitation {
   return {
     id: `privacy-item:${spec.citation}`,
@@ -167,7 +183,8 @@ function buildTxExactRule(spec: TxExactSpec): PnotRule {
           exact = true;
           return;
         }
-        if (!altered && spec.variant.test(p.text)) {
+        const vm = !altered ? spec.variant.exec(p.text) : null;
+        if (vm && !SALE_DISCLAIMED.test(sentenceAround(p.text, vm.index))) {
           altered = { text: p.text, section_id: p.section.id, paragraph_id: p.paragraph.id };
         }
       });
@@ -185,7 +202,9 @@ function buildTxExactRule(spec: TxExactSpec): PnotRule {
           source_citations: [txCite(spec)],
         });
       }
-      if (spec.trigger.test(fullText(ctx))) {
+      const ft = fullText(ctx);
+      const tm = spec.trigger.exec(ft);
+      if (tm && !SALE_DISCLAIMED.test(sentenceAround(ft, tm.index))) {
         return makeFinding({
           rule: this as Rule,
           title: `Mandated ${spec.kind}-data sale notice missing`,

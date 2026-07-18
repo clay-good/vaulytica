@@ -28,6 +28,7 @@ import {
   type Severity,
 } from "../../../finding.js";
 import { fullText, docTop } from "../_helpers.js";
+import { forEachParagraph } from "../../../../extract/walk.js";
 import { upc } from "./_helpers.js";
 import type { SourceCitation } from "../../../../dkb/types.js";
 
@@ -309,8 +310,17 @@ const EST_201: Rule = {
   applies_to_playbooks: [...PLAYBOOKS],
   assertion_gate: GATE,
   check(ctx: RuleContext): Finding | null {
-    const text = fullTextLower(ctx);
-    if (!RESIDUE_RE.test(text)) return null;
+    // Scope the share arithmetic to the residuary clause's OWN paragraph(s) —
+    // over the whole document an unrelated percentage (e.g. a trustee-fee cap
+    // "3% of the estate") was summed into the residuary total (false positive),
+    // and an unrelated "per stirpes" bequest suppressed the rule entirely
+    // (false negative).
+    let text = "";
+    forEachParagraph(ctx.tree, (p) => {
+      const t = p.text.toLowerCase();
+      if (RESIDUE_RE.test(t)) text += " " + t;
+    });
+    if (!text) return null;
     if (EQUAL_DIVISION_RE.test(text)) return null;
 
     const shares = dedupShares(collectRawShareMatches(text), text);
