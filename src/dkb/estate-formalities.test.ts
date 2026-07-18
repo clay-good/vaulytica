@@ -369,6 +369,38 @@ describe("estate formalities catalog", () => {
     expect(ri.citation.source).toContain("33-5-5");
   });
 
+  it("pins the eleventh-wave facts (MT, DE, AK, SD)", () => {
+    // MT: 1990 UPC — reasonable time, holographic OK, full harmless
+    // error (§ 72-2-523); NO notarization alternative (CO/ND pin stands).
+    const mt = estateFormalitiesForState("us-mt")!;
+    expect(mt.reasonable_time_phrasing).toBe(true);
+    expect(mt.holographic_recognized).toBe(true);
+    expect(mt.notarization_alternative).toBe(false);
+    expect(mt.citation.source).toContain("72-2-522");
+
+    // DE: witnesses attest in the testator's presence (one-directional);
+    // noncompliance = void; NO holographic.
+    const de = estateFormalitiesForState("us-de")!;
+    expect(de.holographic_recognized).toBe(false);
+    expect(de.summary).toContain("shall be void");
+    expect(de.citation.source).toContain("202");
+
+    // AK: pure 1990 UPC — reasonable time, material-portions holographic.
+    const ak = estateFormalitiesForState("us-ak")!;
+    expect(ak.reasonable_time_phrasing).toBe(true);
+    expect(ak.holographic_recognized).toBe(true);
+    expect(ak.citation.source).toContain("13.12.502");
+
+    // SD: deleted the reasonable-time clause — witnesses observe AND
+    // sign in the testator's conscious presence; subsection order
+    // inverted vs. the UPC (holographic is (a)).
+    const sd = estateFormalitiesForState("us-sd")!;
+    expect(sd.reasonable_time_phrasing).toBe(false);
+    expect(sd.holographic_recognized).toBe(true);
+    expect(sd.summary).toContain("CONSCIOUS PRESENCE");
+    expect(sd.citation.source).toContain("29A-2-502");
+  });
+
   it("returns undefined for unseeded states (honest N/A) and publishes the denominator", () => {
     expect(estateFormalitiesForState("us-wy")).toBeUndefined();
     expect(estateFormalitiesForState("us-ms")).toBeUndefined();

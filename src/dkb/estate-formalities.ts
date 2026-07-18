@@ -116,6 +116,24 @@ const cite = (id: string, source: string, source_url: string): SourceCitation =>
 /** The seed catalog — only primary-source-verified states, ordered by id. */
 export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
   {
+    id: "est-formalities-us-ak",
+    jurisdiction: "us-ak",
+    state_name: "Alaska",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: true,
+    holographic_recognized: true,
+    headline: "2 witnesses (reasonable time); holographic OK (material portions)",
+    summary:
+      "Alaska follows the 1990 UPC pattern: the will must be in writing, signed by the testator (or by another in the testator's conscious presence and at the testator's direction), and signed by at least two individuals each signing within a reasonable time after witnessing the signing or the testator's acknowledgment — witnesses need not sign in the testator's presence (Alaska Stat. § 13.12.502(a)). A non-complying document is valid as a holographic will, witnessed or not, when the signature and material portions are in the testator's handwriting (§ 13.12.502(b)). No notarization alternative was adopted, and both the formalities and the holographic rule are expressly subject to the AS 13.06.068 choice-of-law provision.",
+    citation: cite(
+      "ak-stat-13-12-502",
+      "Alaska Stat. § 13.12.502 (execution; witnessed wills; holographic wills)",
+      "https://codes.findlaw.com/ak/title-13-decedents-estates-guardianships-transfers-trusts-and-health-care-decisions/ak-st-sect-13-12-502/",
+    ),
+  },
+  {
     id: "est-formalities-us-al",
     jurisdiction: "us-al",
     state_name: "Alabama",
@@ -221,6 +239,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
       "ct-gen-stat-45a-251",
       "Conn. Gen. Stat. § 45a-251 (making and execution of wills; wills executed outside the state)",
       "https://www.cga.ct.gov/current/pub/chap_802a.htm",
+    ),
+  },
+  {
+    id: "est-formalities-us-de",
+    jurisdiction: "us-de",
+    state_name: "Delaware",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: false,
+    headline: "2+ credible witnesses, attesting in the testator's presence; noncompliance = VOID",
+    summary:
+      "Delaware requires every will to be in writing, signed by the testator (or by proxy in the testator's presence at express direction), and attested and subscribed in the testator's presence by 2 or more credible witnesses (12 Del. C. § 202(a)) — presence runs one direction only (the statute never requires the testator to sign or acknowledge before the witnesses), with no notarization alternative and no 'reasonable time' window. The statute is unusually blunt: any will not complying 'shall be void' (§ 202(b)). No holographic provision exists; § 1306's choice-of-law rule saves wills validly executed under the law of the place of execution or the testator's domicile, abode, or nationality. Interested witnesses do not invalidate (§ 203(b)).",
+    citation: cite(
+      "de-12-del-c-202",
+      "12 Del. C. §§ 202, 203, 1306 (execution; interested witnesses; choice of law)",
+      "https://delcode.delaware.gov/title12/c002/sc01/index.html",
     ),
   },
   {
@@ -514,6 +550,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     ),
   },
   {
+    id: "est-formalities-us-mt",
+    jurisdiction: "us-mt",
+    state_name: "Montana",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: true,
+    holographic_recognized: true,
+    headline: "2 witnesses (reasonable time); holographic OK; full harmless error",
+    summary:
+      "Montana enacted the 1990 UPC: the will must be in writing, signed by the testator (or by another in the testator's conscious presence and at direction), and signed by at least two individuals within a reasonable time after witnessing the signing or the testator's acknowledgment — witnesses need not sign in the testator's presence (Mont. Code Ann. § 72-2-522(1)). Montana did NOT adopt the 2008 notarized-acknowledgment alternative — (1)(c) remains the witnesses-only clause. Holographic wills are valid when the signature and material portions are handwritten (§ 72-2-522(2)), and § 72-2-523 supplies the full clear-and-convincing harmless-error cure covering wills, revocations, alterations, and revivals.",
+    citation: cite(
+      "mt-mca-72-2-522",
+      "Mont. Code Ann. §§ 72-2-522, 72-2-523 (execution; witnessed wills; holographic wills; writings intended as wills)",
+      "https://mca.legmt.gov/bills/mca/title_0720/chapter_0020/part_0050/section_0220/0720-0020-0050-0220.html",
+    ),
+  },
+  {
     id: "est-formalities-us-nc",
     jurisdiction: "us-nc",
     state_name: "North Carolina",
@@ -763,6 +817,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
       "sc-code-62-2-502",
       "S.C. Code Ann. §§ 62-2-502, 62-2-505 (execution; choice of law)",
       "https://www.scstatehouse.gov/code/t62c002.php",
+    ),
+  },
+  {
+    id: "est-formalities-us-sd",
+    jurisdiction: "us-sd",
+    state_name: "South Dakota",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: true,
+    headline: "2+ witnesses, conscious presence (no reasonable-time grace); holographic OK",
+    summary:
+      "South Dakota tightened the 1990 UPC: a non-holographic will must be in writing, signed by the testator (or by proxy in the testator's conscious presence and at direction), and signed by two or more individuals IN THE TESTATOR'S CONSCIOUS PRESENCE who also witnessed the signing or the acknowledgment of the signature in that same conscious presence (S.D. Codified Laws § 29A-2-502(b)) — the 'within a reasonable time' clause was deleted, the 'acknowledgment of the will' alternative omitted, and no notarization option adopted. Holographic wills are valid when the signature and material portions are handwritten — at subsection (a), not (b): South Dakota inverted the UPC's subsection order, a citation trap for UPC-keyed references.",
+    citation: cite(
+      "sd-scl-29a-2-502",
+      "S.D. Codified Laws § 29A-2-502 (holographic will; validity of non-holographic will; establishing intent)",
+      "https://sdlegislature.gov/api/Statutes/29A-2-502.html",
     ),
   },
   {
