@@ -21,8 +21,13 @@ import { forEachParagraph, forEachSection, posInParagraph } from "./walk.js";
  * `undefined_capitalized`. The list is downstream input to STRUCT-006.
  */
 
-const DEFINITION_INLINE = /["“”']([A-Z][\w\s\-&]{1,80}?)["“”']\s+(?:shall\s+)?means?\b/g;
-const DEFINITION_BARE = /^\s*([A-Z][\w\s\-&]{1,80}?)\s+(?:shall\s+)?means?\b/;
+// Case-insensitive on `means`: a quoted term followed by "Means"/"MEANS" (common
+// after a list marker, in ALL-CAPS drafting, or from OCR) is still a definition;
+// without the `i` flag the whole defined term was silently dropped from
+// STRUCT-004/005/006 and the definitions appendix. The quoted-term requirement
+// keeps this from matching an ordinary sentence that merely contains "means".
+const DEFINITION_INLINE = /["“”']([A-Z][\w\s\-&]{1,80}?)["“”']\s+(?:shall\s+)?means?\b/gi;
+const DEFINITION_BARE = /^\s*([A-Z][\w\s\-&]{1,80}?)\s+(?:shall\s+)?means?\b/i;
 
 /** A definition that points at an exhibit/schedule/section rather than stating its own text. */
 const DEFINITION_REFERENCE =
@@ -283,6 +288,12 @@ function cleanRef(raw: string | undefined): string | undefined {
   return v || undefined;
 }
 
+/** The first clause of a string — up to the first sentence-ending `.`/`;`. */
+function firstClause(text: string): string {
+  const m = /[.;]/.exec(text);
+  return m ? text.slice(0, m.index) : text;
+}
+
 function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry[] {
   const out: DefinitionEntry[] = [];
   DEFINITION_INLINE.lastIndex = 0;
@@ -291,7 +302,11 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
     const term = m[1]!.trim();
     const after = text.slice(m.index + m[0].length).trim();
     if (!after) continue;
-    const reference = cleanRef(DEFINITION_REFERENCE.exec(after)?.[1]);
+    // Only the term's own defining clause (up to the first sentence break) can
+    // supply its by-reference target — otherwise an unrelated later sentence in
+    // the same paragraph ("… Exhibit B for reference only.") is mis-attributed
+    // as this term's reference.
+    const reference = cleanRef(DEFINITION_REFERENCE.exec(firstClause(after))?.[1]);
     const scope = cleanRef(DEFINITION_SCOPE.exec(text.slice(0, m.index))?.[1]);
     out.push({
       term,
