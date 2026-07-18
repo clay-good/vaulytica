@@ -74,9 +74,32 @@ describe("estate formalities catalog", () => {
     }
   });
 
+  it("pins the high-traffic-state facts (CA, TX, NY, FL)", () => {
+    // CA: 2 witnesses present at the same time; holographic per § 6111.
+    const ca = estateFormalitiesForState("us-ca")!;
+    expect(ca.witnesses_expected).toBe(2);
+    expect(ca.holographic_recognized).toBe(true);
+    expect(ca.citation.source).toContain("6110");
+
+    // TX: 2+ credible witnesses age 14+; holographic per § 251.052.
+    const tx = estateFormalitiesForState("us-tx")!;
+    expect(tx.holographic_recognized).toBe(true);
+    expect(tx.citation.source).toContain("251.051");
+
+    // NY: 30-day window recital; holographic only for armed forces/mariners.
+    const ny = estateFormalitiesForState("us-ny")!;
+    expect(ny.holographic_recognized).toBe(false);
+    expect(ny.summary).toContain("thirty-day");
+
+    // FL: mutual-presence attestation; holographic NOT recognized.
+    const fl = estateFormalitiesForState("us-fl")!;
+    expect(fl.holographic_recognized).toBe(false);
+    expect(fl.citation.source).toContain("732.502");
+  });
+
   it("returns undefined for unseeded states (honest N/A) and publishes the denominator", () => {
-    expect(estateFormalitiesForState("us-ca")).toBeUndefined();
-    expect(estateFormalitiesForState("us-tx")).toBeUndefined();
+    expect(estateFormalitiesForState("us-wy")).toBeUndefined();
+    expect(estateFormalitiesForState("us-ga")).toBeUndefined();
     expect(ESTATE_FORMALITIES_STATE_COUNT).toBe(ESTATE_FORMALITIES.length);
   });
 });

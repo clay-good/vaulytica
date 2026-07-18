@@ -333,10 +333,10 @@ describe("CLI/API parity with the parity-proven pipeline (spec-v8 Step 143)", ()
       expect(pa.run.result_hash).not.toBe(neutral.run.result_hash);
 
       // An unseeded state runs the neutral rules but still stamps the state.
-      const ca = await analyzeFile(path, { deps, estateState: "us-ca" });
-      expect(ca.run.asserted_state).toBe("us-ca");
-      const ca105 = ca.run.findings.find((f) => f.rule_id === "EST-105");
-      expect(ca105?.severity).toBe("warning");
+      const ga = await analyzeFile(path, { deps, estateState: "us-ga" });
+      expect(ga.run.asserted_state).toBe("us-ga");
+      const ga105 = ga.run.findings.find((f) => f.rule_id === "EST-105");
+      expect(ga105?.severity).toBe("warning");
     } finally {
       await rm(dir, { recursive: true, force: true });
     }

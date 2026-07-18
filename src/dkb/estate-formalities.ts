@@ -22,6 +22,14 @@
  *     the session-law citation verified against the official annotated
  *     statute).
  *
+ * Plus the four highest-traffic states, verified the same way: **CA**
+ * (§§ 6110–6111: two witnesses present at the same time; holographic OK),
+ * **TX** (§§ 251.051–.052: 2+ credible witnesses age 14+; holographic OK),
+ * **NY** (EPTL §§ 3-2.1–3-2.2: two witnesses within one 30-day period,
+ * signed at the end; holographic only for armed forces/mariners), and
+ * **FL** (§ 732.502: mutual-presence attestation; holographic NOT
+ * recognized, even for nonresident-executed wills).
+ *
  * Honest-N/A discipline (same as `state-overlays.ts`): a state with no
  * node yields `undefined` — never a guessed answer — and the optional
  * `holographic_recognized` / `e_will_regime` flags are OMITTED (not
@@ -108,6 +116,24 @@ const cite = (id: string, source: string, source_url: string): SourceCitation =>
 /** The seed catalog — only primary-source-verified states, ordered by id. */
 export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
   {
+    id: "est-formalities-us-ca",
+    jurisdiction: "us-ca",
+    state_name: "California",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: true,
+    headline: "2 witnesses, present at the same time; holographic OK",
+    summary:
+      "California requires the will to be signed during the testator's lifetime by at least two persons who, being present at the same time, witnessed the signing or the testator's acknowledgment of the signature or of the will, and who understand the instrument is the testator's will (Prob. Code § 6110). A non-complying will is valid as a holographic will, whether or not witnessed, if the signature and the material provisions are in the testator's handwriting (§ 6111).",
+    citation: cite(
+      "ca-prob-code-6110",
+      "Cal. Prob. Code §§ 6110–6111 (execution; holographic wills)",
+      "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=6110.&lawCode=PROB",
+    ),
+  },
+  {
     id: "est-formalities-us-co",
     jurisdiction: "us-co",
     state_name: "Colorado",
@@ -123,6 +149,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
       "co-rev-stat-15-11-502",
       "Colo. Rev. Stat. § 15-11-502 (execution — witnessed or notarized wills — holographic wills)",
       "https://colorado.public.law/statutes/crs_15-11-502",
+    ),
+  },
+  {
+    id: "est-formalities-us-fl",
+    jurisdiction: "us-fl",
+    state_name: "Florida",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: false,
+    headline: "2 witnesses, mutual presence; holographic NOT recognized",
+    summary:
+      "Florida requires the testator to sign (or acknowledge) in the presence of at least two attesting witnesses, and the witnesses to sign in the presence of the testator and of each other (Fla. Stat. § 732.502(1)). Holographic wills are not recognized: an unwitnessed handwritten will is invalid, and even a nonresident's will valid where executed is excluded from Florida recognition if holographic (§ 732.502(2)). A handwritten will executed with the full formalities is simply a valid will, not a 'holographic' one.",
+    citation: cite(
+      "fl-stat-732-502",
+      "Fla. Stat. § 732.502 (execution of wills)",
+      "https://www.flsenate.gov/Laws/Statutes/2025/0732.502",
     ),
   },
   {
@@ -162,6 +206,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     ),
   },
   {
+    id: "est-formalities-us-ny",
+    jurisdiction: "us-ny",
+    state_name: "New York",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: false,
+    headline: "2 witnesses within one 30-day period; signed at the end",
+    summary:
+      "New York requires the will to be signed at the end by the testator and attested by at least two witnesses who, within one thirty-day period, attest the testator's signature as affixed or acknowledged in their presence and sign their names with residence addresses at the end of the will (EPTL § 3-2.1; the 30-day requirement carries a rebuttable presumption of fulfillment). Holographic and nuncupative wills are valid only for members of the armed forces during armed conflict, persons serving with them, and mariners at sea (EPTL § 3-2.2) — not for ordinary testators.",
+    citation: cite(
+      "ny-eptl-3-2-1",
+      "N.Y. EPTL §§ 3-2.1, 3-2.2 (execution and attestation; nuncupative and holographic wills)",
+      "https://www.nysenate.gov/legislation/laws/EPT/3-2.1",
+    ),
+  },
+  {
     id: "est-formalities-us-pa",
     jurisdiction: "us-pa",
     state_name: "Pennsylvania",
@@ -176,6 +238,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
       "pa-20-pacs-2502",
       "20 Pa. C.S. § 2502 (form and execution of a will)",
       "https://www.legis.state.pa.us/WU01/LI/LI/CT/HTM/20/00.025.002.000..HTM",
+    ),
+  },
+  {
+    id: "est-formalities-us-tx",
+    jurisdiction: "us-tx",
+    state_name: "Texas",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: true,
+    headline: "2+ credible witnesses (age 14+); holographic OK",
+    summary:
+      "Texas requires an attested will to be signed by the testator (or another at the testator's direction and in the testator's presence) and attested by two or more credible witnesses at least 14 years of age who subscribe their names in their own handwriting in the testator's presence (Est. Code § 251.051). A will written wholly in the testator's handwriting is exempt from the attestation requirement (§ 251.052 — the holographic exception).",
+    citation: cite(
+      "tx-est-code-251-051",
+      "Tex. Est. Code §§ 251.051–251.052 (written, signed, and attested; holographic exception)",
+      "https://law.justia.com/codes/texas/estates-code/title-2/subtitle-f/chapter-251/subchapter-b/section-251-051/",
     ),
   },
   {
