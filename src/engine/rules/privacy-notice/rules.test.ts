@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  OPT_OUT_RULES,
   PNOT_RULES,
   PRIVACY_NOTICE_PLAYBOOK_IDS,
   TX_EXACT_RULES,
@@ -36,10 +37,13 @@ describe("PNOT rules — registry contract", () => {
     }
   });
 
-  it("one rule per content item, per regime (Texas adds the two exact-wording rules)", () => {
+  it("one rule per content item, per regime, plus the TX exact-wording and VA/TX opt-out rules", () => {
     for (const [id, regime] of Object.entries(REGIMES)) {
       const count = PNOT_RULES.filter((r) => r.regime === id).length;
-      expect(count).toBe(regime.items.length + (id === "tx" ? TX_EXACT_RULES.length : 0));
+      const extras =
+        (id === "tx" ? TX_EXACT_RULES.length : 0) +
+        OPT_OUT_RULES.filter((r) => r.regime === id).length;
+      expect(count).toBe(regime.items.length + extras);
     }
   });
 
@@ -187,6 +191,62 @@ describe("PNOT-TX exact-wording rules (§ 541.102(b)–(c))", () => {
     ]);
     expect(missing).toHaveLength(1);
     expect(missing[0]!.title).toMatch(/missing/);
+  });
+});
+
+describe("PNOT opt-out disclosure rules (VA § 59.1-578(D) / TX § 541.103)", () => {
+  const vaRule = OPT_OUT_RULES.find((r) => r.id === "PNOT-VA-007")!;
+  const txRule = OPT_OUT_RULES.find((r) => r.id === "PNOT-TX-009")!;
+
+  async function findingsFor(rule: (typeof OPT_OUT_RULES)[number], paragraphs: string[]) {
+    const ctx = withPnot(buildContext(["Privacy Policy", ...paragraphs]));
+    const run = await runEngine({
+      rules: [rule],
+      ctx,
+      executed_at: "2026-07-17T00:00:00Z",
+      source_file: SRC,
+    });
+    return run.findings.filter((f) => f.rule_id === rule.id);
+  }
+
+  it("fires when the notice says personal data is sold but never mentions opting out", async () => {
+    const found = await findingsFor(vaRule, [
+      "We may sell your personal information to marketing partners.",
+    ]);
+    expect(found).toHaveLength(1);
+    expect(found[0]!.title).toMatch(/Opt-out disclosure missing/);
+    expect(found[0]!.description).toMatch(/selling personal data/);
+  });
+
+  it("fires on targeted advertising with no opt-out (TX § 541.103)", async () => {
+    const found = await findingsFor(txRule, [
+      "We process your personal data for targeted advertising across our services.",
+    ]);
+    expect(found).toHaveLength(1);
+    expect(found[0]!.description).toMatch(/targeted advertising/);
+  });
+
+  it("is silent when an opt-out disclosure is present", async () => {
+    const found = await findingsFor(vaRule, [
+      "We may sell your personal information to marketing partners.",
+      "You may opt out of the sale of your personal data at any time via our rights form.",
+    ]);
+    expect(found).toHaveLength(0);
+  });
+
+  it("is silent when the notice disclaims selling and targeted advertising (§3 honesty)", async () => {
+    const found = await findingsFor(txRule, [
+      "We do not sell your personal information.",
+      "We do not process personal data for targeted advertising.",
+    ]);
+    expect(found).toHaveLength(0);
+  });
+
+  it("is silent when the notice never touches the subject at all", async () => {
+    const found = await findingsFor(vaRule, [
+      "We collect your name and email to provide the service.",
+    ]);
+    expect(found).toHaveLength(0);
   });
 });
 

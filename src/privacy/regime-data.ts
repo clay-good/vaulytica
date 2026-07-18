@@ -507,6 +507,24 @@ const VA_ITEMS: ContentItem[] = [
     retrieved_at: STATE_RETRIEVED_AT,
     present_patterns: ["categor(y|ies) of third part", "third part(y|ies)"],
   },
+  // § 59.1-578(E) — beyond the (C)(1)-(5) content list: the controller must
+  // "establish, and ... describe in a privacy notice, one or more secure and
+  // reliable means" for consumers to submit rights requests. Unconditional
+  // (every VCDPA notice owes it), unlike the (D) sale/targeted-advertising
+  // disclosure, which is conditional and lives in the PNOT opt-out rule.
+  {
+    key: "request-methods",
+    label: "Description of the means for consumers to submit rights requests",
+    citation: "Va. Code § 59.1-578(E)",
+    url: VA_URL,
+    retrieved_at: "2026-07-17",
+    present_patterns: [
+      "submit a request",
+      "method(s)? .{0,30}request",
+      "means .{0,40}(submit|exercise)",
+      "secure and reliable means",
+    ],
+  },
 ];
 
 const TX_URL = "https://statutes.capitol.texas.gov/Docs/BC/htm/BC.541.htm";

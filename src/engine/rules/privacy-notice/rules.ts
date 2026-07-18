@@ -13,6 +13,12 @@
  * mandated wording ("present but altered", quoting the altered text). A
  * document that never suggests such a sale is silent — the statute mandates
  * the text only for controllers that sell that data.
+ *
+ * Virginia and Texas additionally carry a CONDITIONAL opt-out disclosure rule
+ * each (Va. Code § 59.1-578(D); Tex. Bus. & Com. Code § 541.103): fired only
+ * when the notice itself evidences a sale of personal data or targeted-
+ * advertising processing (negation-guarded) while never mentioning an
+ * opt-out. A notice that does neither is silent.
  */
 
 import type { Finding, Rule, RuleContext } from "../../finding.js";
@@ -226,9 +232,111 @@ export const TX_EXACT_RULES: readonly PnotRule[] = Object.freeze(
   TX_EXACT_SPECS.map(buildTxExactRule),
 );
 
+// ---------------------------------------------------------------------------
+// VA § 59.1-578(D) / TX § 541.103 — conditional sale/targeted-advertising
+// opt-out disclosure. Both statutes require a controller that sells personal
+// data or processes it for targeted advertising to "clearly and conspicuously
+// disclose" that processing AND the manner in which a consumer may opt out.
+// The obligation is conditional, so a blanket presence rule would falsely
+// accuse controllers that do neither; like the § 541.102(b)-(c) exact-wording
+// rules, these fire only when the notice ITSELF evidences the condition — it
+// says personal data is sold or processed for targeted advertising (negation-
+// guarded) — while never mentioning an opt-out.
+// ---------------------------------------------------------------------------
+
+type OptOutSpec = {
+  id: string;
+  regime: RegimeId;
+  citation: string;
+  statute: string;
+};
+
+const OPT_OUT_SPECS: OptOutSpec[] = [
+  {
+    id: "PNOT-VA-007",
+    regime: "va",
+    citation: "Va. Code § 59.1-578(D)",
+    statute: "the VCDPA",
+  },
+  {
+    id: "PNOT-TX-009",
+    regime: "tx",
+    citation: "Tex. Bus. & Com. Code § 541.103",
+    statute: "the TDPSA",
+  },
+];
+
+/** The notice affirms a sale of personal data (negation handled separately). */
+const SALE_OF_PERSONAL_DATA =
+  /\bsell(?:s|ing)?\b[^.]{0,60}\bpersonal\s+(?:data|information)\b|\bsale\s+of\s+personal\s+(?:data|information)\b/i;
+
+const TARGETED_ADS = /\btargeted\s+advertising\b/i;
+
+/** The sentence negates the targeted-advertising processing ("we do not …"). */
+const ADS_DISCLAIMED =
+  /\b(?:do(?:es)?\s+not|did\s+not|will\s+not|would\s+not|won'?t|shall\s+not|cannot|can'?t|never|not)\b[^.;\n]{0,60}\btargeted\s+advertising\b|\bno\s+targeted\s+advertising\b/i;
+
+function buildOptOutRule(spec: OptOutSpec): PnotRule {
+  return {
+    id: spec.id,
+    version: "1.0.0",
+    name: "Sale / targeted-advertising opt-out disclosure",
+    category: "privacy-notice",
+    default_severity: "warning",
+    description: `${spec.citation} requires a controller that sells personal data or processes it for targeted advertising to disclose that processing and how consumers may opt out.`,
+    dkb_citations: [`privacy-item:${spec.citation}`],
+    applies_to_playbooks: [...PRIVACY_NOTICE_PLAYBOOK_IDS],
+    regime: spec.regime,
+    check(ctx: RuleContext): Finding | null {
+      const ft = fullText(ctx);
+      // Any opt-out language satisfies the "manner … to opt out" half; this
+      // is a presence check, never a sufficiency conclusion.
+      if (/\bopt[- ]?out\b/i.test(ft)) return null;
+
+      const saleMatch = SALE_OF_PERSONAL_DATA.exec(ft);
+      const saleEvidenced =
+        saleMatch !== null && !SALE_DISCLAIMED.test(sentenceAround(ft, saleMatch.index));
+      const adsMatch = TARGETED_ADS.exec(ft);
+      const adsEvidenced =
+        adsMatch !== null && !ADS_DISCLAIMED.test(sentenceAround(ft, adsMatch.index));
+      if (!saleEvidenced && !adsEvidenced) return null;
+
+      const processing = saleEvidenced
+        ? adsEvidenced
+          ? "selling personal data and processing it for targeted advertising"
+          : "selling personal data"
+        : "processing personal data for targeted advertising";
+      return makeFinding({
+        rule: this as Rule,
+        title: "Opt-out disclosure missing for sale / targeted advertising",
+        description: `The notice indicates ${processing}, but no language describing how a consumer may opt out of that processing was found, as ${spec.citation} requires.`,
+        excerptText: "(opt-out disclosure absent from the document)",
+        explanation: `Under ${spec.statute}, a controller that sells personal data or processes it for targeted advertising must clearly and conspicuously disclose that processing AND the manner in which a consumer may exercise the right to opt out (${spec.citation}).`,
+        recommendation:
+          "Add a clearly labeled opt-out disclosure (e.g. how to opt out of the sale of personal data or targeted advertising) alongside the processing disclosure.",
+        position: docTop(ctx),
+        source_citations: [
+          {
+            id: `privacy-item:${spec.citation}`,
+            source: spec.citation,
+            source_url: REGIMES[spec.regime].authority_url,
+            retrieved_at: "2026-07-17T00:00:00Z",
+            license: "Public domain or regulator re-use",
+            license_url: "https://www.usa.gov/government-works",
+          },
+        ],
+      });
+    },
+  };
+}
+
+/** The conditional opt-out disclosure rules (VA + TX), appended per regime. */
+export const OPT_OUT_RULES: readonly PnotRule[] = Object.freeze(OPT_OUT_SPECS.map(buildOptOutRule));
+
 export const PNOT_RULES: readonly PnotRule[] = Object.freeze([
   ...(Object.values(REGIMES) as Regime[]).flatMap(buildRegimeRules),
   ...TX_EXACT_RULES,
+  ...OPT_OUT_RULES,
 ]);
 
 /** Filter the full PNOT rule set down to the rules for the given regimes. */
