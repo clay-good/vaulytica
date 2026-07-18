@@ -69,11 +69,12 @@ describe("estate formalities catalog", () => {
     // verified — honest N/A means the key is absent, not false. Three
     // exceptions carry a verified flag: MD (2021 § 4-102(c)-(f) certified
     // wills), IN (IC 29-1-21, P.L. 40-2018), NV (NRS 133.085, added 2001,
-    // amended 2017), and UT (Uniform Electronic Wills Act, §§ 75-2-1401 to
-    // -1411, effective 2020-08-31).
+    // amended 2017), UT (Uniform Electronic Wills Act, §§ 75-2-1401 to
+    // -1411, effective 2020-08-31), and DC (UEWA, tit. 18 ch. 9, added
+    // 2023 and cross-referenced in § 18-103 itself).
     const pa = estateFormalitiesForState("us-pa")!;
     expect("holographic_recognized" in pa).toBe(false);
-    const E_WILL_VERIFIED = new Set(["us-md", "us-in", "us-nv", "us-ut"]);
+    const E_WILL_VERIFIED = new Set(["us-md", "us-in", "us-nv", "us-ut", "us-dc"]);
     for (const node of ESTATE_FORMALITIES) {
       if (E_WILL_VERIFIED.has(node.jurisdiction)) continue;
       expect("e_will_regime" in node, node.id).toBe(false);
@@ -401,9 +402,41 @@ describe("estate formalities catalog", () => {
     expect(sd.citation.source).toContain("29A-2-502");
   });
 
-  it("returns undefined for unseeded states (honest N/A) and publishes the denominator", () => {
-    expect(estateFormalitiesForState("us-wy")).toBeUndefined();
-    expect(estateFormalitiesForState("us-ms")).toBeUndefined();
+  it("pins the final-wave facts (WY, DC, MS) — the catalog-completing states", () => {
+    // WY: no statutory presence requirement on witnesses at all; 2023
+    // remote AV witnessing is NOT an e-wills act (the agent negative-
+    // checked 2020-2022 session laws), so e_will_regime stays omitted.
+    const wy = estateFormalitiesForState("us-wy")!;
+    expect(wy.holographic_recognized).toBe(true);
+    expect("e_will_regime" in wy).toBe(false);
+    expect(wy.summary).toContain("ENTIRELY");
+    expect(wy.citation.source).toContain("2-6-112");
+
+    // DC: one-directional presence; fifth verified e-will node (UEWA
+    // tit. 18 ch. 9, 2023, cross-referenced in § 18-103 itself).
+    const dc = estateFormalitiesForState("us-dc")!;
+    expect(dc.holographic_recognized).toBe(false);
+    expect(dc.e_will_regime).toBe(true);
+    expect(dc.citation.source).toContain("18-103");
+
+    // MS: wholly-written-and-subscribed wills need no witnesses — the
+    // statute never uses the word "holographic".
+    const ms = estateFormalitiesForState("us-ms")!;
+    expect(ms.holographic_recognized).toBe(true);
+    expect(ms.summary).toContain("WHOLLY WRITTEN AND SUBSCRIBED");
+    expect(ms.citation.source).toContain("91-5-1");
+  });
+
+  it("covers all 50 states + DC; unknown ids stay honest-N/A undefined", () => {
+    // The 50-state sweep is COMPLETE: every code `--state` accepts has a
+    // primary-source-verified node. The undefined path survives in code
+    // for unknown ids (unreachable via the CLI, which normalizes first).
+    expect(ESTATE_FORMALITIES_STATE_COUNT).toBe(US_STATE_CODES.length);
+    expect(ESTATE_FORMALITIES_STATE_COUNT).toBe(51);
+    for (const code of US_STATE_CODES) {
+      expect(estateFormalitiesForState(`us-${code}`), code).toBeDefined();
+    }
+    expect(estateFormalitiesForState("us-zz")).toBeUndefined();
     expect(ESTATE_FORMALITIES_STATE_COUNT).toBe(ESTATE_FORMALITIES.length);
   });
 });

@@ -53,10 +53,12 @@ describe("activateEstateChecks", () => {
   });
 
   it("an unseeded state runs the neutral rules unchanged (honest N/A) but is still stamped", () => {
-    // us-ms has no formalities node — earlier examples here (us-ca, then
-    // us-tn) became seeded by later formalities waves and gained EST-107.
-    const w = activateEstateChecks(false, "last-will-and-testament", LAUNCH_RULES, "us-ms");
-    expect(w.asserted_state).toBe("us-ms");
+    // The formalities catalog now covers all 50 states + DC, so no real
+    // state exercises this path — but the honest-N/A fallback survives in
+    // code for ids the catalog lacks (the CLI normalizes and rejects
+    // these first; direct callers still get neutral rules, never a guess).
+    const w = activateEstateChecks(false, "last-will-and-testament", LAUNCH_RULES, "us-zz");
+    expect(w.asserted_state).toBe("us-zz");
     const appended = w.rules.slice(LAUNCH_RULES.length);
     expect(appended.length).toBe(ESTATE_CHECK_RULES.length);
     for (let i = 0; i < ESTATE_CHECK_RULES.length; i++) {

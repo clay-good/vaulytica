@@ -30,6 +30,11 @@
  * **FL** (§ 732.502: mutual-presence attestation; holographic NOT
  * recognized, even for nonresident-executed wills).
  *
+ * 2026-07-17: the sweep is COMPLETE — every code `--state` accepts
+ * (all 50 states + DC) now has a primary-source-verified node, added in
+ * twelve web-verified waves. The honest-N/A discipline below still
+ * governs the OPTIONAL fields and any future jurisdiction.
+ *
  * Honest-N/A discipline (same as `state-overlays.ts`): a state with no
  * node yields `undefined` — never a guessed answer — and the optional
  * `holographic_recognized` / `e_will_regime` flags are OMITTED (not
@@ -239,6 +244,25 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
       "ct-gen-stat-45a-251",
       "Conn. Gen. Stat. § 45a-251 (making and execution of wills; wills executed outside the state)",
       "https://www.cga.ct.gov/current/pub/chap_802a.htm",
+    ),
+  },
+  {
+    id: "est-formalities-us-dc",
+    jurisdiction: "us-dc",
+    state_name: "District of Columbia",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: false,
+    e_will_regime: true,
+    headline: "2 credible witnesses, attesting in the testator's presence; e-wills (2023); holographic NOT recognized",
+    summary:
+      "The District of Columbia voids any will that is not in writing, signed by the testator (or by another in the testator's presence and by express direction), and attested and subscribed in the presence of the testator by at least two credible witnesses (D.C. Code § 18-103) — presence runs one direction only: the statute never requires the testator to sign before the witnesses or the witnesses to act simultaneously. No notarization option and no holographic wills; the only alternatives are § 18-107 oral nuncupative wills for military personnel and mariners at sea (personal property, last illness, written down within 10 days) and electronic wills under the Uniform Electronic Wills Act (Title 18, Chapter 9, added by D.C. Law 24-296, effective 2023-03-10, and cross-referenced in § 18-103 itself).",
+    citation: cite(
+      "dc-code-18-103",
+      "D.C. Code §§ 18-103, 18-107; tit. 18, ch. 9 (execution; nuncupative wills; Uniform Electronic Wills Act)",
+      "https://code.dccouncil.gov/us/dc/council/code/sections/18-103",
     ),
   },
   {
@@ -547,6 +571,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
       "mo-rev-stat-474-320",
       "Mo. Rev. Stat. §§ 474.320, 474.330, 474.360 (execution; interested witnesses; foreign execution)",
       "https://revisor.mo.gov/main/OneSection.aspx?section=474.320",
+    ),
+  },
+  {
+    id: "est-formalities-us-ms",
+    jurisdiction: "us-ms",
+    state_name: "Mississippi",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: true,
+    headline: "2+ credible witnesses, testator's presence — unless wholly written and subscribed by the testator",
+    summary:
+      "Mississippi packs capacity, signature, and attestation into a single section: any person 18 or older of sound and disposing mind may make a written will or codicil, signed by the testator (or by another in the testator's presence at express direction), and — unless the will is WHOLLY WRITTEN AND SUBSCRIBED by the testator — attested by two or more credible witnesses in the presence of the testator (Miss. Code Ann. § 91-5-1). The holographic path is by negative implication of the attestation clause (the statute never uses the word 'holographic'). No notarization option, no 'reasonable time' window, and presence runs one direction only: witnesses attest in the testator's presence, never the reverse.",
+    citation: cite(
+      "ms-code-91-5-1",
+      "Miss. Code Ann. § 91-5-1 (who may execute; signature; attestation)",
+      "https://codes.findlaw.com/ms/title-91-trusts-and-estates/ms-code-sect-91-5-1/",
     ),
   },
   {
@@ -979,6 +1021,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
       "wv-code-41-1-3",
       "W. Va. Code § 41-1-3 (must be in writing; witnesses)",
       "https://code.wvlegislature.gov/41-1-3/",
+    ),
+  },
+  {
+    id: "est-formalities-us-wy",
+    jurisdiction: "us-wy",
+    state_name: "Wyoming",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: true,
+    headline: "2 competent witnesses (no statutory presence requirement); holographic OK if ENTIRELY handwritten",
+    summary:
+      "Wyoming requires a will to be in writing or typewritten, witnessed by two competent witnesses, and signed by the testator (or by another in the testator's presence at express direction) — the enacted text imposes NO requirement that witnesses sign in the testator's presence or vice versa (Wyo. Stat. § 2-6-112(a)), and a purge-style interested-witness rule is built into the same subsection. Since 2023 Sess. Laws ch. 170 (effective 2023-07-01), witnesses may appear by real-time audio-video technology and sign electronically (§ 2-6-112(b)) — remote WITNESSING of a paper will, not an electronic-wills act: no UEWA appears in the current code despite ULC tracking claims (2020-2022 session laws negative-checked). A holographic will is valid unwitnessed when ENTIRELY in the testator's handwriting and signed by the testator's hand (§ 2-6-113).",
+    citation: cite(
+      "wy-stat-2-6-112",
+      "Wyo. Stat. §§ 2-6-112, 2-6-113 (execution; holographic will; 2023 Sess. Laws ch. 170 remote witnessing)",
+      "https://wyoleg.gov/statutes/compress/title02.pdf",
     ),
   },
 ];
