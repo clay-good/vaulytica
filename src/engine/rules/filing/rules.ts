@@ -66,7 +66,7 @@ function finding(
 // FILE-001 — Type-volume (word limit), honest about measurement.
 export const FILE_001: Rule = {
   id: "FILE-001",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Type-volume within the word limit",
   category: "filing",
   default_severity: "critical",
@@ -92,9 +92,13 @@ export const FILE_001: Rule = {
     // isolated (a flat document), nothing is subtracted and the rule falls
     // back to the total, which is the safe direction for a compliance check.
     const excludableSections = new Map<string, number>();
+    let unisolatable = false;
     for (const b of detectFilingBlocks(ctx.tree)) {
-      if (excludable.has(b.block) && b.words <= EXCLUSION_SECTION_CAP) {
+      if (!excludable.has(b.block)) continue;
+      if (b.words <= EXCLUSION_SECTION_CAP) {
         excludableSections.set(b.section_id, b.words);
+      } else {
+        unisolatable = true;
       }
     }
     const excluded = [...excludableSections.values()].reduce((a, b) => a + b, 0);
@@ -102,6 +106,21 @@ export const FILE_001: Rule = {
     const cite = profileCitation(limit);
     const kind = opts.brief_kind === "reply" ? "reply" : "principal";
     if (lower > limit.value) {
+      // Excludable blocks were DETECTED but share an over-cap section (the
+      // single-section text-ingest shape), so nothing could be subtracted —
+      // the countable total may be under the limit. A critical verdict here
+      // was a false accusation on a compliant brief with a large ToA
+      // (audit); the honest verdict is a warning naming the uncertainty.
+      if (excluded === 0 && unisolatable) {
+        return finding(ctx, FILE_001, {
+          severity: "warning",
+          title: `Measured ${total.toLocaleString("en-US")} words against the ${limit.value.toLocaleString("en-US")}-word limit — excludable blocks could not be isolated`,
+          description: `The total measured count (${total.toLocaleString("en-US")}) exceeds the ${limit.value.toLocaleString("en-US")}-word limit for a ${kind} brief, but detected excludable blocks (cover / tables / certificate) share a section with the body and could not be subtracted — the countable total may be lower.`,
+          explanation: `This ingest carries no section boundaries around the excludable blocks, so the post-exclusion count cannot be computed. The filer's word-processing software count governs for the ${cite.source} certification.`,
+          recommendation: `Verify the ${cite.source} count with the word processor (excluding the items the rule excludes) — this measure cannot confirm a violation.`,
+          citations: [cite],
+        });
+      }
       return finding(ctx, FILE_001, {
         severity: "critical",
         title: `Over the ${limit.value.toLocaleString("en-US")}-word limit`,

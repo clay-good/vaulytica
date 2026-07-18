@@ -54,6 +54,20 @@ describe("FILE-001 type-volume", () => {
     expect(f.severity).toBe("info");
     expect(f.explanation).toMatch(/word-processing software count governs/);
   });
+
+  it("downgrades to a warning when excludable blocks exist but cannot be isolated (audit)", () => {
+    // Single-section text ingest: the ToA shares the (over-cap) section with
+    // the body, so nothing can be subtracted — a compliant brief with a big
+    // ToA was branded critical over-limit. The honest verdict is a warning.
+    const filler = Array.from({ length: 700 }, (_, i) => `word${i}`).join(" ");
+    const ctx = briefCtx({ word_count: 13500 }, [
+      ["BRIEF FOR APPELLANT", `TABLE OF AUTHORITIES\nSmith v. Jones ... 4\n${filler}`],
+    ]);
+    const f = FILE_001.check(ctx)!;
+    expect(f.severity).toBe("warning");
+    expect(f.title).toMatch(/could not be isolated/);
+    expect(f.recommendation).toMatch(/cannot confirm a violation/);
+  });
 });
 
 describe("FILE-002 page limit", () => {
