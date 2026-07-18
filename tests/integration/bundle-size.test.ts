@@ -46,9 +46,13 @@ const V2_BASELINE_GZIPPED_KB = 165;
  * +640 step lands with the production-QA browser-bundle integration (its report
  * renderers in `bundle.ts`/`states.ts` add a couple KB gzipped) and keeps a
  * small margin over the ~782 KB measured total so a marginally larger CI build
- * does not flake the guard.
+ * does not flake the guard. Raised to +660 as the estate formalities catalog
+ * grew from 5 to 36 primary-source-verified state nodes (statute summaries +
+ * citations are real product data shipped in the lazy engine chunk; measured
+ * total ~805 KB) — the margin covers the remaining states of the 50-state
+ * sweep without re-raising every wave.
  */
-const V3_BUDGET_GZIPPED_KB = V2_BASELINE_GZIPPED_KB + 640;
+const V3_BUDGET_GZIPPED_KB = V2_BASELINE_GZIPPED_KB + 660;
 /** Eager-entry budget (first-paint contribution). */
 const EAGER_ENTRY_GZIPPED_KB = 50;
 

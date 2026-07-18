@@ -134,6 +134,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     ),
   },
   {
+    id: "est-formalities-us-ar",
+    jurisdiction: "us-ar",
+    state_name: "Arkansas",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: true,
+    headline: "2 witnesses, publication + signature at the end; holographic OK (proved by 3 disinterested witnesses)",
+    summary:
+      "Arkansas requires an attested will to be signed AT THE END by the testator (or by mark or proxy with extra writing formalities) after declaring to the witnesses that the instrument is his or her will (publication), all in the presence of at least two attesting witnesses, who must sign at the testator's request and in the testator's presence (Ark. Code Ann. § 28-25-103) — no notarization alternative, no 'reasonable time' window, and no requirement that witnesses sign in each other's presence. A will whose ENTIRE body and signature are in the testator's handwriting needs no attesting witnesses, but establishing it requires at least three credible disinterested witnesses to the handwriting and signature (§ 28-25-104) — a heavier proof burden than the two witnesses typical elsewhere.",
+    citation: cite(
+      "ar-code-28-25-103",
+      "Ark. Code Ann. §§ 28-25-103, 28-25-104 (execution generally; holographic wills)",
+      "https://codes.findlaw.com/ar/title-28-wills-estates-and-fiduciary-relationships/ar-code-sect-28-25-103.html",
+    ),
+  },
+  {
     id: "est-formalities-us-az",
     jurisdiction: "us-az",
     state_name: "Arizona",
@@ -242,6 +260,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     ),
   },
   {
+    id: "est-formalities-us-ia",
+    jurisdiction: "us-ia",
+    state_name: "Iowa",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: false,
+    headline: "2 witnesses, mutual presence + publication; holographic NOT recognized in-state",
+    summary:
+      "Iowa makes every domestic will valid only if written, signed by the testator (or proxy in the testator's presence at express direction), DECLARED by the testator to be the testator's will (publication), and witnessed at the testator's request by two competent persons who signed in the presence of the testator AND of each other (Iowa Code § 633.279(1)) — no notarization alternative and no 'reasonable time' allowance. Witnesses may be as young as 16 (§ 633.280). Since 2023, 'presence' is statutorily defined to include electronic real-time see-and-hear presence, with counterpart execution permitted (§ 633.279(3), (5)). Unwitnessed holographs are not recognized domestically; § 633.283 imports only foreign-execution law.",
+    citation: cite(
+      "ia-code-633-279",
+      "Iowa Code §§ 633.279, 633.280, 633.283 (signed and witnessed; witness age; foreign execution)",
+      "https://www.legis.iowa.gov/docs/code/633.279.pdf",
+    ),
+  },
+  {
     id: "est-formalities-us-il",
     jurisdiction: "us-il",
     state_name: "Illinois",
@@ -276,6 +312,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
       "in-code-29-1-5-3",
       "Ind. Code §§ 29-1-5-3, 29-1-21-4 (execution; electronic wills)",
       "https://codes.findlaw.com/in/title-29-probate/in-code-sect-29-1-5-3/",
+    ),
+  },
+  {
+    id: "est-formalities-us-ks",
+    jurisdiction: "us-ks",
+    state_name: "Kansas",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: false,
+    headline: "2+ witnesses, testator's presence, signed at the end; holographic NOT recognized in-state",
+    summary:
+      "Kansas requires every will (except a § 59-608 oral will) to be in writing, signed AT THE END by the testator (or by another in the testator's presence and at express direction), and attested and subscribed in the testator's presence by two or more competent witnesses who saw the testator subscribe or heard the testator acknowledge the will (Kan. Stat. Ann. § 59-606) — no notarization alternative and no 'reasonable time' window; a self-proving affidavit executed at signing can substitute for the attestation clause but never for the witnesses. No domestic holographic wills; § 59-609 saves out-of-state wills valid where executed, provided they are written and subscribed. Kansas is one of the few states still recognizing oral deathbed wills for personal property (§ 59-608).",
+    citation: cite(
+      "ks-ksa-59-606",
+      "Kan. Stat. Ann. §§ 59-606, 59-608, 59-609 (execution and attestation; oral wills; wills executed without the state)",
+      "https://ksrevisor.gov/statutes/chapters/ch59/059_006_0006.html",
     ),
   },
   {
@@ -619,6 +673,25 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
       "tx-est-code-251-051",
       "Tex. Est. Code §§ 251.051–251.052 (written, signed, and attested; holographic exception)",
       "https://law.justia.com/codes/texas/estates-code/title-2/subtitle-f/chapter-251/subchapter-b/section-251-051/",
+    ),
+  },
+  {
+    id: "est-formalities-us-ut",
+    jurisdiction: "us-ut",
+    state_name: "Utah",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: true,
+    holographic_recognized: true,
+    e_will_regime: true,
+    headline: "2 witnesses (reasonable time); holographic OK; Uniform Electronic Wills Act (2020)",
+    summary:
+      "Utah follows the 1990 UPC pattern: writing, testator signature (or conscious-presence proxy), and at least two individuals signing within a reasonable time after witnessing the signing or the testator's acknowledgment, with no requirement they sign in the testator's presence (Utah Code § 75-2-502(1)). Utah did NOT enact the 2008 UPC notarized-acknowledgment alternative — a paper will cannot substitute notarization for the two witnesses (§ 75-2-502 was re-enacted in 1998 and never updated; listings calling Utah a notarization-alternative state are wrong). A non-complying will is valid as a holographic will if the signature and material portions are handwritten (§ 75-2-502(2)). Utah separately enacted the Uniform Electronic Wills Act (§§ 75-2-1401 to -1411, effective 2020-08-31): text-readable e-wills witnessed by two individuals in the testator's physical or ELECTRONIC presence.",
+    citation: cite(
+      "ut-code-75-2-502",
+      "Utah Code §§ 75-2-502, 75-2-1401 to 75-2-1411 (execution; holographic wills; Uniform Electronic Wills Act)",
+      "https://le.utah.gov/xcode/Title75/Chapter2/C75-2-S502_1800010118000101.pdf",
     ),
   },
   {

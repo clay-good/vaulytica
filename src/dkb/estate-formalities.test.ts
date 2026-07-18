@@ -68,11 +68,12 @@ describe("estate formalities catalog", () => {
     // PA's holographic posture and the e-will flags were not primary-source
     // verified — honest N/A means the key is absent, not false. Three
     // exceptions carry a verified flag: MD (2021 § 4-102(c)-(f) certified
-    // wills), IN (IC 29-1-21, P.L. 40-2018), and NV (NRS 133.085, added
-    // 2001, amended 2017).
+    // wills), IN (IC 29-1-21, P.L. 40-2018), NV (NRS 133.085, added 2001,
+    // amended 2017), and UT (Uniform Electronic Wills Act, §§ 75-2-1401 to
+    // -1411, effective 2020-08-31).
     const pa = estateFormalitiesForState("us-pa")!;
     expect("holographic_recognized" in pa).toBe(false);
-    const E_WILL_VERIFIED = new Set(["us-md", "us-in", "us-nv"]);
+    const E_WILL_VERIFIED = new Set(["us-md", "us-in", "us-nv", "us-ut"]);
     for (const node of ESTATE_FORMALITIES) {
       if (E_WILL_VERIFIED.has(node.jurisdiction)) continue;
       expect("e_will_regime" in node, node.id).toBe(false);
@@ -268,6 +269,40 @@ describe("estate formalities catalog", () => {
     expect(nv.e_will_regime).toBe(true);
     expect(nv.summary).toContain("DATE");
     expect(nv.citation.source).toContain("133.040");
+  });
+
+  it("pins the eighth-wave facts (UT, IA, AR, KS)", () => {
+    // UT: 1990 UPC — reasonable time, holographic OK; NO notarization
+    // alternative (the 1998 re-enactment predates the 2008 UPC option —
+    // listings calling Utah a notarization state are wrong); fourth
+    // verified e-will node (UEWA, effective 2020-08-31).
+    const ut = estateFormalitiesForState("us-ut")!;
+    expect(ut.reasonable_time_phrasing).toBe(true);
+    expect(ut.holographic_recognized).toBe(true);
+    expect(ut.notarization_alternative).toBe(false);
+    expect(ut.e_will_regime).toBe(true);
+    expect(ut.citation.source).toContain("75-2-502");
+
+    // IA: mutual presence + publication; witnesses may be 16; NO
+    // holographic; electronic real-time presence since 2023.
+    const ia = estateFormalitiesForState("us-ia")!;
+    expect(ia.holographic_recognized).toBe(false);
+    expect(ia.summary).toContain("16");
+    expect(ia.citation.source).toContain("633.279");
+
+    // AR: publication + signature at the end; holographic proved by
+    // THREE disinterested handwriting witnesses (§ 28-25-104).
+    const ar = estateFormalitiesForState("us-ar")!;
+    expect(ar.holographic_recognized).toBe(true);
+    expect(ar.summary).toContain("three");
+    expect(ar.citation.source).toContain("28-25-103");
+
+    // KS: signed at the end, witnesses saw-or-heard; NO holographic;
+    // oral deathbed wills for personalty survive (§ 59-608).
+    const ks = estateFormalitiesForState("us-ks")!;
+    expect(ks.holographic_recognized).toBe(false);
+    expect(ks.summary).toContain("oral");
+    expect(ks.citation.source).toContain("59-606");
   });
 
   it("returns undefined for unseeded states (honest N/A) and publishes the denominator", () => {
