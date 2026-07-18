@@ -188,6 +188,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     ),
   },
   {
+    id: "est-formalities-us-ga",
+    jurisdiction: "us-ga",
+    state_name: "Georgia",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: false,
+    headline: "2+ competent witnesses (age 14+), in the testator's presence; holographic NOT recognized",
+    summary:
+      "Georgia requires the will to be in writing, signed by the testator (or by another in the testator's presence and at the testator's express direction), and attested and subscribed in the presence of the testator by two or more competent witnesses, who may be as young as 14 (O.C.G.A. §§ 53-4-20, 53-4-22) — with no mutual-presence requirement and no notarization substitute. Holographic wills are not recognized: a handwritten will is valid only with the same two-witness attestation. A gift to a subscribing witness is void unless two other non-beneficiary witnesses subscribed (§ 53-4-23(a)); the § 53-4-24 self-proving affidavit affects only proof at probate, not validity.",
+    citation: cite(
+      "ga-ocga-53-4-20",
+      "O.C.G.A. §§ 53-4-20, 53-4-22, 53-4-23 (execution and attestation; witness competency; interested witnesses)",
+      "https://law.onecle.com/georgia/title-53/53-4-20.html",
+    ),
+  },
+  {
     id: "est-formalities-us-il",
     jurisdiction: "us-il",
     state_name: "Illinois",
@@ -221,6 +239,43 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
       "la-civ-code-1577",
       "La. Civ. Code arts. 1576–1577 (notarial testament; requirements of form)",
       "https://codes.findlaw.com/la/civil-code/la-civ-code-tit-ii-art-1577",
+    ),
+  },
+  {
+    id: "est-formalities-us-ma",
+    jurisdiction: "us-ma",
+    state_name: "Massachusetts",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: false,
+    headline: "2 witnesses (no timing clause); holographic NOT recognized; strict compliance",
+    summary:
+      "Massachusetts enacted UPC § 2-502 with the flexibility stripped out: the will must be in writing, signed by the testator (or by proxy in the testator's conscious presence and at the testator's direction), and signed by at least 2 individuals who each witnessed the signing or the testator's acknowledgment of the signature or of the will (G.L. c. 190B, § 2-502(a)) — with NO 'within a reasonable time' clause, no notarization alternative, and no holographic-will subsection. UPC § 2-503 (harmless error) was left unenacted ('Reserved'), so strict compliance governs, though § 2-506 recognizes out-of-state wills valid where executed. A devise to an interested witness is void absent 2 disinterested witnesses or proof of no fraud/undue influence (§ 2-505(b)).",
+    citation: cite(
+      "ma-gl-190b-2-502",
+      "Mass. Gen. Laws ch. 190B, §§ 2-502, 2-503 (Reserved), 2-505, 2-506 (execution; interested witnesses; choice of law)",
+      "https://malegislature.gov/Laws/GeneralLaws/PartII/TitleII/Chapter190B/Section2-502",
+    ),
+  },
+  {
+    id: "est-formalities-us-md",
+    jurisdiction: "us-md",
+    state_name: "Maryland",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: false,
+    e_will_regime: true,
+    headline: "2+ credible witnesses, testator's presence; e-will/remote witnessing regime (2021)",
+    summary:
+      "Maryland requires every will to be in writing, signed by the testator (or by another in the testator's physical presence and by the testator's express direction), and attested and signed by two or more credible witnesses in the testator's physical presence — or in the testator's ELECTRONIC presence when the § 4-102(c)/(d) certified-will requirements are met (testator in Maryland, witnesses in the U.S., paper certification; the attorney-supervised path per (c)) — the electronic-will regime enacted in 2021 (Md. Code, Est. & Trusts § 4-102). Notarization never substitutes for the witnesses. Holographic wills are recognized only for a testator serving in the U.S. armed services who signs outside any U.S. state, D.C., or territory, and become void one year after discharge unless the testator died within the year or then lacks capacity (§ 4-103).",
+    citation: cite(
+      "md-est-trusts-4-102",
+      "Md. Code, Est. & Trusts §§ 4-102, 4-103 (execution; electronic wills; armed-services holographic wills)",
+      "https://mgaleg.maryland.gov/mgawebsite/Laws/StatuteText?article=get&section=4-102",
     ),
   },
   {
@@ -364,6 +419,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
       "tx-est-code-251-051",
       "Tex. Est. Code §§ 251.051–251.052 (written, signed, and attested; holographic exception)",
       "https://law.justia.com/codes/texas/estates-code/title-2/subtitle-f/chapter-251/subchapter-b/section-251-051/",
+    ),
+  },
+  {
+    id: "est-formalities-us-va",
+    jurisdiction: "us-va",
+    state_name: "Virginia",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: true,
+    headline: "2 witnesses, present at the same time; holographic OK (proved by 2 disinterested witnesses)",
+    summary:
+      "Virginia requires the testator to sign the will — or acknowledge it — in the presence of at least two competent witnesses who are present at the same time and who subscribe the will in the testator's presence; no form of attestation clause is necessary (Va. Code § 64.2-403(C)). A will wholly in the testator's handwriting and signed is valid with no witnesses at execution, provided the handwriting and signature are proved at probate by at least two disinterested witnesses (§ 64.2-403(B)). § 64.2-404 adds a harmless-error remedy on clear and convincing evidence (filed within one year of death), which cannot excuse the testator's signature except in swapped-wills or self-proving-certificate mix-ups.",
+    citation: cite(
+      "va-code-64-2-403",
+      "Va. Code §§ 64.2-403, 64.2-404 (execution of wills; writings intended as wills)",
+      "https://law.lis.virginia.gov/vacode/title64.2/section64.2-403/",
     ),
   },
   {

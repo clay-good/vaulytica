@@ -65,13 +65,17 @@ describe("estate formalities catalog", () => {
   });
 
   it("unverified holographic/e-will flags are omitted, never false-guessed", () => {
-    // PA's holographic posture and every e-will flag were not primary-source
-    // verified — honest N/A means the key is absent, not false.
+    // PA's holographic posture and the e-will flags were not primary-source
+    // verified — honest N/A means the key is absent, not false. MD is the
+    // one exception: its 2021 electronic-will regime WAS verified against
+    // the official § 4-102(c)-(f) text, so its flag is present and true.
     const pa = estateFormalitiesForState("us-pa")!;
     expect("holographic_recognized" in pa).toBe(false);
     for (const node of ESTATE_FORMALITIES) {
+      if (node.jurisdiction === "us-md") continue;
       expect("e_will_regime" in node, node.id).toBe(false);
     }
+    expect(estateFormalitiesForState("us-md")!.e_will_regime).toBe(true);
   });
 
   it("pins the high-traffic-state facts (CA, TX, NY, FL)", () => {
@@ -138,9 +142,42 @@ describe("estate formalities catalog", () => {
     expect(wa.citation.source).toContain("11.12.020");
   });
 
+  it("pins the fourth-wave facts (GA, VA, MA, MD)", () => {
+    // GA: 2+ competent witnesses (age 14+ per § 53-4-22); NO holographic.
+    const ga = estateFormalitiesForState("us-ga")!;
+    expect(ga.holographic_recognized).toBe(false);
+    expect(ga.reasonable_time_phrasing).toBe(false);
+    expect(ga.summary).toContain("14");
+    expect(ga.citation.source).toContain("53-4-20");
+
+    // VA: 2 witnesses present at the same time; holographic proved by
+    // 2 disinterested witnesses at probate (§ 64.2-403(B)).
+    const va = estateFormalitiesForState("us-va")!;
+    expect(va.holographic_recognized).toBe(true);
+    expect(va.reasonable_time_phrasing).toBe(false);
+    expect(va.summary).toContain("disinterested");
+    expect(va.citation.source).toContain("64.2-403");
+
+    // MA: UPC with the flexibility stripped — no reasonable-time clause,
+    // no holographic subsection, § 2-503 harmless error left "Reserved".
+    const ma = estateFormalitiesForState("us-ma")!;
+    expect(ma.holographic_recognized).toBe(false);
+    expect(ma.reasonable_time_phrasing).toBe(false);
+    expect(ma.summary).toContain("Reserved");
+    expect(ma.citation.source).toContain("2-502");
+
+    // MD: 2+ credible witnesses; holographic only for armed-services
+    // testators signing abroad (§ 4-103); verified 2021 e-will regime.
+    const md = estateFormalitiesForState("us-md")!;
+    expect(md.holographic_recognized).toBe(false);
+    expect(md.e_will_regime).toBe(true);
+    expect(md.summary).toContain("armed services");
+    expect(md.citation.source).toContain("4-102");
+  });
+
   it("returns undefined for unseeded states (honest N/A) and publishes the denominator", () => {
     expect(estateFormalitiesForState("us-wy")).toBeUndefined();
-    expect(estateFormalitiesForState("us-ga")).toBeUndefined();
+    expect(estateFormalitiesForState("us-tn")).toBeUndefined();
     expect(ESTATE_FORMALITIES_STATE_COUNT).toBe(ESTATE_FORMALITIES.length);
   });
 });
