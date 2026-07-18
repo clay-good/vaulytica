@@ -173,9 +173,8 @@ const SPEC_105: AbsenceSpec = {
   id: "EST-105",
   name: "Witness signature blocks present",
   severity: "warning",
-  // Presence-only in v1 — this does not attempt to count the detected
-  // witness signature lines against a number the will recites elsewhere
-  // (e.g. "two witnesses"); that comparison is a future refinement.
+  // Presence-only — EST-106 below does the count comparison against the
+  // number the will recites (e.g. "two witnesses").
   patterns: [
     /_{3,}\s*witness/,
     /witness.{0,20}(signature|sign|_{3,})/,
@@ -190,6 +189,88 @@ const SPEC_105: AbsenceSpec = {
   citations: [upc("2-502")],
 };
 const EST_105: Rule = absenceRule(SPEC_105);
+
+// ────────────────────────────────────────────────────────────────────
+// EST-106 — witness signature blocks vs. the attestation recital's
+// count (the "future refinement" EST-105's presence-only v1 noted).
+// Internal consistency, deliberately statute-independent: whatever the
+// asserted state requires, a will that RECITES N witnesses and shows
+// fewer than N witness signature blocks is inconsistent with itself.
+// Fires only when at least one block is present — the zero-block case
+// is EST-105's finding, and double-reporting it would be noise.
+// ────────────────────────────────────────────────────────────────────
+
+const RECITED_WITNESS_RE =
+  /\b(one|two|three|1|2|3)\s*(?:\(\s*[123]\s*\))?\s*(?:or more\s+)?(?:credible|competent|attesting|subscribing|adult|disinterested)?\s*witnesses?\b/g;
+
+const WITNESS_COUNT_WORDS: Record<string, number> = {
+  one: 1,
+  two: 2,
+  three: 3,
+  "1": 1,
+  "2": 2,
+  "3": 3,
+};
+
+/** The highest witness count the document recites, or undefined when none. */
+function recitedWitnessCount(text: string): number | undefined {
+  let max: number | undefined;
+  for (const m of text.matchAll(RECITED_WITNESS_RE)) {
+    const n = WITNESS_COUNT_WORDS[m[1]!];
+    if (n !== undefined && (max === undefined || n > max)) max = n;
+  }
+  return max;
+}
+
+/**
+ * Count witness signature blocks: paragraphs that carry both a witness
+ * token and at least one signature line, counting one block per
+ * signature line in the paragraph (two blocks on one line — "Witness:
+ * ___ Witness: ___" — count as two).
+ */
+function witnessSignatureBlockCount(ctx: RuleContext): number {
+  let count = 0;
+  forEachParagraph(ctx.tree, (p) => {
+    const t = p.text.toLowerCase();
+    if (!/witness/.test(t)) return;
+    // Attestation prose ("in the presence of two witnesses") has no
+    // signature line; only underscore runs mark a block.
+    const lines = t.match(/_{3,}/g);
+    if (lines) count += lines.length;
+  });
+  return count;
+}
+
+const EST_106: Rule = {
+  id: "EST-106",
+  version: "1.0.0",
+  name: "Witness signature blocks fewer than the recital",
+  category: CATEGORY,
+  default_severity: "warning",
+  description:
+    "The number of witness signature blocks should be at least the witness count the will itself recites.",
+  dkb_citations: ["upc-2-502"],
+  applies_to_playbooks: [...PLAYBOOKS],
+  assertion_gate: GATE,
+  check(ctx: RuleContext): Finding | null {
+    const recited = recitedWitnessCount(fullTextLower(ctx));
+    if (recited === undefined) return null;
+    const blocks = witnessSignatureBlockCount(ctx);
+    if (blocks === 0 || blocks >= recited) return null;
+    return makeFinding({
+      rule: this as Rule,
+      title: `Will recites ${recited} witnesses but shows ${blocks} witness signature block${blocks === 1 ? "" : "s"}`,
+      description: `The document's own text recites ${recited} witnesses, but only ${blocks} witness signature block${blocks === 1 ? " was" : "s were"} detected.`,
+      excerptText: "(witness signature blocks fewer than the recited count)",
+      explanation:
+        "A will that recites more witnesses than it provides signature blocks for is internally inconsistent: either the recital overstates the attestation or a witness signature block is missing. Under UPC § 2-502 at least two witnesses must sign; a probate court compares the recital against the actual signatures.",
+      recommendation:
+        "Add the missing witness signature block(s) or correct the recited witness count so the recital matches the signature blocks.",
+      position: docTop(ctx),
+      source_citations: [upc("2-502", "execution; witnessed wills")],
+    });
+  },
+};
 
 // ────────────────────────────────────────────────────────────────────
 // EST-2xx — share arithmetic.
@@ -451,6 +532,7 @@ export const ESTATE_CHECK_RULES: readonly Rule[] = [
   EST_103,
   EST_104,
   EST_105,
+  EST_106,
   EST_201,
   EST_301,
   EST_302,

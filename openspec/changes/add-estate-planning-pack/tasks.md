@@ -35,5 +35,8 @@
   modified — the safest way to keep every existing amounts golden stable. The
   `amounts.ts` percent/fraction extension is deferred as unnecessary for this
   slice.
-- **EST-105 is presence-only in v1** (witness-block present/absent), not a
-  witness-count-vs-recital comparison — noted for a future refinement.
+- **EST-105 is presence-only; the count comparison landed as EST-106**
+  (2026-07-17): the will's own recited witness count ("two (2) competent
+  witnesses") vs. detected witness signature blocks, firing only when at least
+  one block exists (the zero-block case stays EST-105's finding). Internal
+  consistency, deliberately statute-independent — no overlay variants needed.

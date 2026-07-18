@@ -62,6 +62,69 @@ describe("EST-101 — attestation clause presence", () => {
   });
 });
 
+describe("EST-106 — witness blocks vs. recital count", () => {
+  it("fires when the will recites two witnesses but shows one block", () => {
+    const ctx = willContext([
+      "Last Will and Testament",
+      "Signed in the presence of two (2) competent witnesses.",
+      "_______________________ Witness",
+    ]);
+    const finding = findRule("EST-106").check(ctx);
+    expect(finding).not.toBeNull();
+    expect(finding?.title).toContain("recites 2 witnesses");
+    expect(finding?.title).toContain("1 witness signature block");
+  });
+
+  it("is silent when the blocks match the recital", () => {
+    const ctx = willContext([
+      "Last Will and Testament",
+      "Signed in the presence of two witnesses.",
+      "_______________________ Witness",
+      "_______________________ Witness",
+    ]);
+    expect(findRule("EST-106").check(ctx)).toBeNull();
+  });
+
+  it("counts two blocks on one line and handles 'two or more credible witnesses'", () => {
+    const ctx = willContext([
+      "Last Will and Testament",
+      "Signed in the presence of two or more credible witnesses.",
+      "Witness: __________    Witness: __________",
+    ]);
+    expect(findRule("EST-106").check(ctx)).toBeNull();
+  });
+
+  it("stays silent with zero blocks — that absence is EST-105's finding", () => {
+    const ctx = willContext([
+      "Last Will and Testament",
+      "Signed in the presence of two witnesses who attested this will.",
+    ]);
+    expect(findRule("EST-106").check(ctx)).toBeNull();
+  });
+
+  it("stays silent when the will recites no witness count at all", () => {
+    const ctx = willContext([
+      "Last Will and Testament",
+      "I, John Doe, revoke all prior wills.",
+      "_______________________ Witness",
+    ]);
+    expect(findRule("EST-106").check(ctx)).toBeNull();
+  });
+
+  it("ignores testator/notary signature lines when counting witness blocks", () => {
+    const ctx = willContext([
+      "Last Will and Testament",
+      "Signed in the presence of two witnesses.",
+      "By: _______________________ Testator",
+      "_______________________ Notary Public, my commission expires",
+      "_______________________ Witness",
+    ]);
+    const finding = findRule("EST-106").check(ctx);
+    expect(finding).not.toBeNull();
+    expect(finding?.title).toContain("1 witness signature block");
+  });
+});
+
 describe("EST-201 — residuary share arithmetic", () => {
   it("fires when a residue split sums to 90%", () => {
     const ctx = willContext([
