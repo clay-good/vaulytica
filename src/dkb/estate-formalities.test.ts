@@ -66,12 +66,13 @@ describe("estate formalities catalog", () => {
 
   it("unverified holographic/e-will flags are omitted, never false-guessed", () => {
     // PA's holographic posture and the e-will flags were not primary-source
-    // verified — honest N/A means the key is absent, not false. Two
+    // verified — honest N/A means the key is absent, not false. Three
     // exceptions carry a verified flag: MD (2021 § 4-102(c)-(f) certified
-    // wills) and IN (IC 29-1-21, P.L. 40-2018).
+    // wills), IN (IC 29-1-21, P.L. 40-2018), and NV (NRS 133.085, added
+    // 2001, amended 2017).
     const pa = estateFormalitiesForState("us-pa")!;
     expect("holographic_recognized" in pa).toBe(false);
-    const E_WILL_VERIFIED = new Set(["us-md", "us-in"]);
+    const E_WILL_VERIFIED = new Set(["us-md", "us-in", "us-nv"]);
     for (const node of ESTATE_FORMALITIES) {
       if (E_WILL_VERIFIED.has(node.jurisdiction)) continue;
       expect("e_will_regime" in node, node.id).toBe(false);
@@ -235,6 +236,38 @@ describe("estate formalities catalog", () => {
     expect(ky.holographic_recognized).toBe(true);
     expect(ky.summary).toContain("each other");
     expect(ky.citation.source).toContain("394.040");
+  });
+
+  it("pins the seventh-wave facts (OK, CT, OR, NV)", () => {
+    // OK: 1910 formalism — end placement + publication; holographic must
+    // be DATED (84 O.S. § 54, the minority rule shared with NV).
+    const ok = estateFormalitiesForState("us-ok")!;
+    expect(ok.holographic_recognized).toBe(true);
+    expect(ok.summary).toContain("DATED");
+    expect(ok.citation.source).toContain("§§ 54, 55");
+
+    // CT: single-sentence statute, two witnesses since 1971 (was three);
+    // NO domestic holographic; same-sentence borrowing clause.
+    const ct = estateFormalitiesForState("us-ct")!;
+    expect(ct.holographic_recognized).toBe(false);
+    expect(ct.summary).toContain("1971");
+    expect(ct.citation.source).toContain("45a-251");
+
+    // OR: reasonable time runs BEFORE death (2015 amendment), not the
+    // UPC's after-witnessing window; e-wills expressly banned.
+    const or_ = estateFormalitiesForState("us-or")!;
+    expect(or_.reasonable_time_phrasing).toBe(true);
+    expect(or_.holographic_recognized).toBe(false);
+    expect(or_.summary).toContain("BEFORE the testator's death");
+    expect(or_.citation.source).toContain("112.235");
+
+    // NV: dated holographic (NRS 133.090) + the third verified e-will
+    // regime (NRS 133.085, added 2001, amended 2017).
+    const nv = estateFormalitiesForState("us-nv")!;
+    expect(nv.holographic_recognized).toBe(true);
+    expect(nv.e_will_regime).toBe(true);
+    expect(nv.summary).toContain("DATE");
+    expect(nv.citation.source).toContain("133.040");
   });
 
   it("returns undefined for unseeded states (honest N/A) and publishes the denominator", () => {

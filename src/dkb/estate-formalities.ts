@@ -188,6 +188,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     ),
   },
   {
+    id: "est-formalities-us-ct",
+    jurisdiction: "us-ct",
+    state_name: "Connecticut",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: false,
+    headline: "2 witnesses, each subscribing in the testator's presence; holographic NOT recognized in-state",
+    summary:
+      "Connecticut makes a will invalid to pass property unless it is in writing, subscribed by the testator, and attested by two witnesses each subscribing in the testator's presence (Conn. Gen. Stat. § 45a-251) — the statute's only presence requirement, with no reciprocal requirement that the testator sign before the witnesses, no notarization alternative, and no 'reasonable time' language. Two witnesses only since a 1971 act reduced the former three-witness requirement. Unwitnessed holographic wills are not recognized domestically; the same sentence's borrowing clause admits any will executed according to the laws of the state or country where it was executed.",
+    citation: cite(
+      "ct-gen-stat-45a-251",
+      "Conn. Gen. Stat. § 45a-251 (making and execution of wills; wills executed outside the state)",
+      "https://www.cga.ct.gov/current/pub/chap_802a.htm",
+    ),
+  },
+  {
     id: "est-formalities-us-fl",
     jurisdiction: "us-fl",
     state_name: "Florida",
@@ -442,6 +460,25 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     ),
   },
   {
+    id: "est-formalities-us-nv",
+    jurisdiction: "us-nv",
+    state_name: "Nevada",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: true,
+    e_will_regime: true,
+    headline: "2 witnesses, in the testator's presence; holographic OK if DATED; e-wills (2001)",
+    summary:
+      "Nevada requires a written will signed by the testator (or by an attending person at the testator's express direction) and attested by at least two competent witnesses who subscribe their names in the presence of the testator (NRS 133.040) — no notarization alternative for paper wills and no 'reasonable time' language. A holographic will is valid whether or not witnessed when the signature, DATE, and material provisions are in the testator's handwriting (NRS 133.090) — the handwritten date is statutorily required, unlike UPC-pattern states. NRS 133.085 (added 2001, amended 2017) validates electronic wills carrying the testator's date and e-signature plus an authentication characteristic, an e-notary's signature and seal, or two witnesses' e-signatures.",
+    citation: cite(
+      "nv-nrs-133-040",
+      "Nev. Rev. Stat. §§ 133.040, 133.085, 133.090 (valid wills; electronic wills; holographic wills)",
+      "https://www.leg.state.nv.us/NRS/NRS-133.html",
+    ),
+  },
+  {
     id: "est-formalities-us-ny",
     jurisdiction: "us-ny",
     state_name: "New York",
@@ -475,6 +512,42 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
       "oh-rc-2107-03",
       "Ohio Rev. Code § 2107.03 (method of making will)",
       "https://codes.ohio.gov/ohio-revised-code/section-2107.03",
+    ),
+  },
+  {
+    id: "est-formalities-us-ok",
+    jurisdiction: "us-ok",
+    state_name: "Oklahoma",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: true,
+    headline: "2 witnesses signing at the end, testator's presence + publication; holographic OK if DATED",
+    summary:
+      "Oklahoma keeps 1910-vintage formalism: the will must be subscribed at the end by the testator (or by proxy in the testator's presence and at direction), the subscription made or acknowledged in the presence of two attesting witnesses, the testator must declare to them that the instrument is his will (publication), and each witness must sign at the end at the testator's request and in the testator's presence (84 O.S. § 55) — though witnesses need not sign in each other's presence, and there is no notarization alternative. A holographic will must be ENTIRELY written, DATED, and signed by the testator's hand (§ 54) — the date is an element of validity, a minority rule shared with Nevada.",
+    citation: cite(
+      "ok-84-os-55",
+      "84 O.S. §§ 54, 55 (holographic wills; execution and attestation)",
+      "https://www.oscn.net/applications/oscn/DeliverDocument.asp?CiteID=72959",
+    ),
+  },
+  {
+    id: "est-formalities-us-or",
+    jurisdiction: "us-or",
+    state_name: "Oregon",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: true,
+    holographic_recognized: false,
+    headline: "2 witnesses (reasonable time BEFORE death); holographic NOT recognized; e-wills banned",
+    summary:
+      "Oregon requires a written — expressly non-electronic — will that the testator signs, directs signed, or acknowledges in the presence of each of at least two witnesses, who must each see, hear, or observe the act and attest by signing within a reasonable time BEFORE the testator's death (ORS 112.235, the 2015 amendment's outer deadline — not the UPC's 'after witnessing' formulation; witnesses who sign after death fail the statute). No notarization alternative and no presence requirement on the witnesses' own signatures. Unwitnessed holographs are not a valid domestic execution method, though ORS 112.238 harmless error can excuse defects on clear and convincing evidence of intent, and ORS 112.255 honors wills valid where executed.",
+    citation: cite(
+      "or-ors-112-235",
+      "Or. Rev. Stat. §§ 112.235, 112.238, 112.255 (execution; harmless error; choice of law)",
+      "https://www.oregonlegislature.gov/bills_laws/ors/ors112.html",
     ),
   },
   {
