@@ -45,6 +45,27 @@ describe("extractAmounts", () => {
     expect(extractAmounts(buildTree(["F", "Fee is $750."]))[0]?.amount).toBe("750");
   });
 
+  it("recognizes spelled-out scale words after a numeral", () => {
+    expect(extractAmounts(buildTree(["F", "Fee is $150 thousand."]))[0]?.amount).toBe("150000");
+    const m = extractAmounts(buildTree(["F", "Price is $2.5 million."]))[0];
+    expect(m?.amount).toBe("2500000");
+    // The raw text is honest — the whole word, not a truncated "$2.5 m".
+    expect(m?.raw_text).toContain("million");
+    expect(extractAmounts(buildTree(["F", "Cap is $3 billion."]))[0]?.amount).toBe("3000000000");
+  });
+
+  it("never treats the leading letter of an adjacent word as a scale suffix", () => {
+    // "$500 monthly" must be $500, not $500,000,000 (the "m" of monthly);
+    // "$50 by" must be $50, not $50 billion (the "b" of by).
+    expect(extractAmounts(buildTree(["F", "Fee is $500 monthly."]))[0]?.amount).toBe("500");
+    expect(extractAmounts(buildTree(["F", "A late fee of $50 by the tenth."]))[0]?.amount).toBe(
+      "50",
+    );
+    expect(extractAmounts(buildTree(["F", "Deposit of $5 kilobytes of data."]))[0]?.amount).toBe(
+      "5",
+    );
+  });
+
   it("captures a range amount with lower and upper bounds, not two endpoints", () => {
     const tree = buildTree(["Cap", "Liability is capped at $100k to $200k under this Agreement."]);
     const out = extractAmounts(tree);

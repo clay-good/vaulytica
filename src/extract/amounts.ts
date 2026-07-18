@@ -7,8 +7,11 @@ import { forEachParagraph, posInParagraph } from "./walk.js";
  * Extract every monetary reference. Normalization rules:
  *
  * - Numeric form: `$1,500,000.00`, `USD 1.5MM`, `EUR 200k`, `£500`,
- *   `1,500,000 USD`. Multiplier suffixes recognized: `k` (×1e3),
- *   `m`, `mm`, `mn` (×1e6), `b`, `bn` (×1e9).
+ *   `1,500,000 USD`, `$150 thousand`, `$2.5 million`. Multiplier suffixes
+ *   recognized: `k` (×1e3), `m`, `mm`, `mn` (×1e6), `b`, `bn` (×1e9), and the
+ *   spelled-out `hundred`/`thousand`/`million`/`billion`/`trillion` — each
+ *   matched only as a whole word so an adjacent word ("monthly", "by") is
+ *   never mistaken for a scale.
  * - Word form: `one million five hundred thousand dollars`.
  *
  * Currency defaults to USD when the symbol is `$` and is otherwise
@@ -71,7 +74,15 @@ const CUR = String.raw`[$€£¥₹₩₽]|\b(?:USD|EUR|GBP|JPY|CAD|AUD|NZD|CHF|
 // to be bounded here is dropped by `computeAmount` regardless: byte-identical
 // extraction on every real amount, linear on a hostile digit run.
 const AMT = String.raw`[\d]{1,3}(?:,\d{3}){0,40}(?:\.\d{1,40})?|\d{1,40}(?:\.\d{1,40})?`;
-const SCALE = String.raw`k|kk|m|mm|mn|bn|b`;
+// Scale suffixes: the abbreviations AND the spelled-out words. A trailing `\b`
+// is REQUIRED so a suffix only matches a standalone token — without it the bare
+// "m" matched the first letter of "monthly" ("$500 monthly" → $500,000,000) and
+// "b" matched "by" ("$50 by the tenth" → $50 billion), a 1,000,000x overstatement
+// of a plain amount. Full words are listed before the single letters so "million"
+// matches whole rather than truncating to "m" (the `\b` also forces that backtrack,
+// but explicit ordering keeps `raw_text` honest). "$150 thousand" was previously
+// dropped to $150 entirely — a 1,000x undercount — because no word form existed.
+const SCALE = String.raw`(?:thousand|hundred|million|billion|trillion|kk|mm|mn|bn|k|m|b)\b`;
 
 // Whitespace gaps are BOUNDED (`\s{0,8}`, not `\s*`): an optional currency
 // prefix leaves `\s*` as the first real token, so a global exec-loop over a long
@@ -113,6 +124,11 @@ const SCALES: Record<string, string> = {
   mn: "1000000",
   b: "1000000000",
   bn: "1000000000",
+  hundred: "100",
+  thousand: "1000",
+  million: "1000000",
+  billion: "1000000000",
+  trillion: "1000000000000",
 };
 
 const NUMBER_WORDS: Record<string, number> = {
