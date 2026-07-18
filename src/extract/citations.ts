@@ -84,6 +84,13 @@ function matchCases(text: string): ParsedCitation[] {
     const reporterRaw = m[2] ?? "";
     const page = m[3] ?? "";
     const reporter = reporterRaw.trim().replace(/\s+/g, " ");
+    // A real reporter abbreviation carries a period ("U.S.", "F.3d", "N.W.2d")
+    // or is a recognized period-less form. Without this guard the permissive
+    // reporter group matched any capitalized run between two numbers, so an
+    // ordinary address or quantity clause ("123 Main St Suite 4400", "10 Widget
+    // Units 200") produced a malformed-citation candidate and a false CITE-001
+    // accusation. Prose has no period and is not a known reporter — skip it.
+    if (!reporter.includes(".") && !isKnownReporter(reporter)) continue;
     const start = m.index ?? 0;
     out.push({
       kind: "case",

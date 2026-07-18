@@ -104,3 +104,20 @@ describe("extractCitations — totality (never throws)", () => {
     );
   });
 });
+
+describe("extractCitations — prose is not a citation", () => {
+  it("does not treat a number-Word-number prose run as a malformed case citation", () => {
+    // The reporter group used to accept any capitalized run, so an address or
+    // quantity clause produced a well_formed:false case candidate that CITE-001
+    // then flagged as a malformed citation — a false accusation on plain prose.
+    for (const prose of [
+      "Notices shall be sent to 123 Main St Suite 4400, and copies to Legal.",
+      "The Company shall deliver 10 Widget Units 200 to the warehouse by Friday.",
+    ]) {
+      expect(extractCitations(prose).filter((c) => c.kind === "case")).toHaveLength(0);
+    }
+    // A real reporter (with a period) is still recognized.
+    const real = extractCitations("See 410 U.S. 113 and 123 F.3d 456.");
+    expect(real.filter((c) => c.kind === "case" && c.well_formed)).toHaveLength(2);
+  });
+});
