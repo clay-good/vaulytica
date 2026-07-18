@@ -33,8 +33,18 @@ export type ParsedCitation = {
   refers_to?: string;
 };
 
-/** Full case citation: "410 U.S. 113" / "123 Fake Rep. 45" (malformed). */
-const CASE_RE = /\b(\d+)\s+([A-Z][A-Za-z0-9.' ]{1,40}?)\s+(\d+)\b/g;
+/**
+ * Full case citation: "410 U.S. 113" / "123 Fake Rep. 45" (malformed).
+ * The reporter is a run of abbreviation TOKENS each starting uppercase or
+ * with a digit ("Cal. App. 5th") — a lowercase word ends the run, so the
+ * pin-cite "950 F.3d at 106" no longer swallows " at" into the reporter
+ * and prose like "15 U.S.C. class sizes exceed 40" no longer reads as a
+ * malformed case (audit). Volume and reporter must share a line: a TOA
+ * page-leader digit followed by a rule cite on the next line ("…1983 … 4\n
+ * Fed. R. App. P. 32") is not a case citation.
+ */
+const CASE_RE =
+  /\b(\d{1,4})[ \t]+([A-Z][A-Za-z0-9.']*(?:[ ][A-Z0-9][A-Za-z0-9.']*){0,5})[ \t]+(\d+)\b/g;
 
 /** Federal statute: "28 U.S.C. § 1331". */
 const STATUTE_USC_RE = /\b(\d+)\s+(U\.S\.C\.|C\.F\.R\.)\s+§+\s*([\d.]+[a-z0-9()]*)/g;
@@ -54,6 +64,30 @@ const SUPRA_NAMED_RE = /\b([A-Z][A-Za-z]+)\s*,?\s+[Ss]upra\b/g;
 
 /** Bare "supra" with no preceding name captured. */
 const SUPRA_BARE_RE = /\b[Ss]upra\b/g;
+
+/**
+ * Citation signals that precede "supra" without being a case name — "See
+ * supra Part II" captured "See" as the referenced authority and flagged a
+ * ubiquitous internal cross-reference as dangling (audit).
+ */
+const SUPRA_SIGNAL_WORDS = new Set([
+  "see",
+  "compare",
+  "accord",
+  "contra",
+  "cf",
+  "but",
+  "and",
+  "also",
+  "id",
+  "the",
+]);
+
+/** "supra Part II" / "supra note 3" / "supra pp. 4-5" — an internal
+ * cross-reference to this document, not a short-form authority cite. */
+function isInternalCrossRef(text: string, endOfSupra: number): boolean {
+  return /^\s*(?:part|note|section|§|p\.|pp\.|ch\.)/i.test(text.slice(endOfSupra, endOfSupra + 12));
+}
 
 /** Short-form case reference: "Brown v. Board". */
 const SHORT_CASE_RE = /\b([A-Z][A-Za-z]+)\s+v\.\s+([A-Z][A-Za-z]+)\b/g;
@@ -91,6 +125,11 @@ function matchCases(text: string): ParsedCitation[] {
     // Units 200") produced a malformed-citation candidate and a false CITE-001
     // accusation. Prose has no period and is not a known reporter — skip it.
     if (!reporter.includes(".") && !isKnownReporter(reporter)) continue;
+    // A TOA page-leader digit followed by a rule citation ("… 4" + "Fed. R.
+    // App. P. 32" on the next line, joined by flattening) is a RULE cite,
+    // not a malformed case — and the longer bogus case match would swallow
+    // it in overlap resolution (audit).
+    if (/^Fed\.\s*R\./.test(reporter) || /^(?:FRAP|FRCP)\b/.test(reporter)) continue;
     const start = m.index ?? 0;
     out.push({
       kind: "case",
@@ -167,11 +206,16 @@ function matchSupraNamed(text: string): ParsedCitation[] {
   const out: ParsedCitation[] = [];
   for (const m of text.matchAll(SUPRA_NAMED_RE)) {
     const start = m.index ?? 0;
+    const end = start + m[0].length;
+    // "See supra …" — the captured word is a signal, not an authority; an
+    // internal cross-reference ("supra Part II") is not a citation at all.
+    if (SUPRA_SIGNAL_WORDS.has((m[1] ?? "").toLowerCase())) continue;
+    if (isInternalCrossRef(text, end)) continue;
     out.push({
       kind: "supra",
       raw: m[0],
       start,
-      end: start + m[0].length,
+      end,
       refers_to: m[1],
     });
   }
@@ -182,7 +226,9 @@ function matchSupraBare(text: string): ParsedCitation[] {
   const out: ParsedCitation[] = [];
   for (const m of text.matchAll(SUPRA_BARE_RE)) {
     const start = m.index ?? 0;
-    out.push({ kind: "supra", raw: m[0], start, end: start + m[0].length });
+    const end = start + m[0].length;
+    if (isInternalCrossRef(text, end)) continue;
+    out.push({ kind: "supra", raw: m[0], start, end });
   }
   return out;
 }

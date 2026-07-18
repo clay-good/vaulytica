@@ -118,13 +118,10 @@ export const CITE_001: Rule = {
     const { located } = analyze(ctx);
     const bad = located.filter((l) => l.c.kind === "case" && l.c.well_formed === false);
     if (bad.length === 0) return null;
-    const examples = bad
-      .slice(0, 5)
-      .map((l) => `"${l.c.raw.trim()}"`)
-      .join(", ");
+    const examples = [...new Set(bad.map((l) => `"${l.c.raw.trim()}"`))].slice(0, 5).join(", ");
     return cite(CITE_001, {
       title: `${bad.length} malformed citation${bad.length === 1 ? "" : "s"}`,
-      description: `${bad.length} citation-shaped reference${bad.length === 1 ? "" : "s"} use an unrecognized reporter abbreviation or lack a page: ${examples}.`,
+      description: `${bad.length} citation-shaped reference${bad.length === 1 ? " uses" : "s use"} an unrecognized reporter abbreviation or lack${bad.length === 1 ? "s" : ""} a page: ${examples}.`,
       explanation: `Checked against the Indigo Book reporter table. ${NON_VERIFICATION}`,
       recommendation: "Confirm the reporter abbreviation and page against The Indigo Book 2.0.",
       position: bad[0]!.pos,
@@ -215,7 +212,7 @@ export const CITE_003: Rule = {
       .join(", ");
     return cite(CITE_003, {
       title: `${dangling.length} dangling short-form reference${dangling.length === 1 ? "" : "s"}`,
-      description: `${dangling.length} short-form reference${dangling.length === 1 ? "" : "s"} point to an authority never cited in full earlier: ${examples}.`,
+      description: `${dangling.length} short-form reference${dangling.length === 1 ? " points" : "s point"} to an authority never cited in full earlier: ${examples}.`,
       explanation: `A "supra" or case short form must follow a full citation of the same authority. ${NON_VERIFICATION}`,
       recommendation:
         "Add a full citation for the authority before its first short-form reference.",
@@ -254,6 +251,12 @@ export const CITE_004: Rule = {
       if (l.sectionId === toaSectionId) toaKeys.add(k);
       else bodyKeys.add(k);
     }
+    // Single-section ingest (plain text / paste) puts the TOA and the body
+    // in ONE section, so every citation lands in the TOA bucket and the
+    // rule could never pass — a structural 100% false accusation (audit).
+    // With no citations outside the TOA's section, reconciliation is
+    // meaningless, not a violation: refuse.
+    if (bodyKeys.size === 0) return null;
     const bodyNotInToa = [...bodyKeys].filter((k) => !toaKeys.has(k));
     const toaNotInBody = [...toaKeys].filter((k) => !bodyKeys.has(k));
     if (bodyNotInToa.length === 0 && toaNotInBody.length === 0) return null;
@@ -286,6 +289,15 @@ export const CITE_005: Rule = {
   applies_to_playbooks: GATE,
   check(ctx: RuleContext): Finding | null {
     const { located } = analyze(ctx);
+    // Lead parties of every introduced authority: a later "Wade, supra"
+    // presumptively refers to *Wade v. Hunt* when that case was introduced
+    // too — not an inconsistent short form of *Roe v. Wade* (audit).
+    const introducedLeads = new Set<string>();
+    for (const l of located) {
+      if (l.c.kind !== "short-case" || !l.c.refers_to) continue;
+      const m = /^([A-Za-z]+)\s+v\.\s+/.exec(l.c.refers_to);
+      if (m) introducedLeads.add(m[1]!.toLowerCase());
+    }
     const inconsistent: string[] = [];
     for (const l of located) {
       if (l.c.kind !== "short-case" || !l.c.refers_to) continue;
@@ -293,6 +305,7 @@ export const CITE_005: Rule = {
       if (!m) continue;
       const a = m[1]!.toLowerCase();
       const b = m[2]!.toLowerCase();
+      if (introducedLeads.has(b)) continue; // b is another authority's lead party
       // Later supra/short references by first party token.
       const later = located.filter((o) => o.flatStart > l.flatStart);
       const usesA = later.some((o) => firstParty(o.c.refers_to) === a);

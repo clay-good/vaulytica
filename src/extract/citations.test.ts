@@ -61,6 +61,28 @@ describe("extractCitations — negative cases", () => {
     const hits = extractCitations("the 3 blind 5 mice ran away");
     expect(hits.some((h) => h.kind === "case")).toBe(false);
   });
+
+  it("audit pins: pin cites, prose, cross-references, and rule cites are not malformed cases", () => {
+    // "at"-form pin cite: the reporter must not swallow " at".
+    const pin = extractCitations("Smith, 950 F.3d at 458.");
+    expect(pin.filter((h) => h.kind === "case" && h.well_formed === false)).toHaveLength(0);
+    // Prose after a dotted token between two numbers.
+    const prose = extractCitations("15 U.S.C. class sizes exceed 40 students.");
+    expect(prose.filter((h) => h.kind === "case")).toHaveLength(0);
+    // Modern reporters are known.
+    const modern = extractCitations("See 12 F.4th 300 and 61 Cal. App. 5th 500.");
+    expect(modern.filter((h) => h.kind === "case" && h.well_formed === false)).toHaveLength(0);
+    // TOA leader digit + rule cite is a RULE, not a malformed case.
+    const toa = extractCitations("42 U.S.C. § 1983 ...... 4 Fed. R. App. P. 32 ...... 5");
+    expect(toa.filter((h) => h.kind === "case" && h.well_formed === false)).toHaveLength(0);
+    expect(toa.some((h) => h.kind === "rule")).toBe(true);
+    // "See supra Part II" is an internal cross-reference, not a citation.
+    const xref = extractCitations("See supra Part II; see also supra note 3.");
+    expect(xref.filter((h) => h.kind === "supra")).toHaveLength(0);
+    // The malformed space-in-series form is still caught.
+    const bad = extractCitations("Smith v. Jones, 123 F. 3d 456 (9th Cir. 1997).");
+    expect(bad.some((h) => h.kind === "case" && h.well_formed === false)).toBe(true);
+  });
 });
 
 describe("extractCitations — overlap and ordering", () => {
