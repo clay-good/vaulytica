@@ -22,6 +22,7 @@ import { V3_FAMILY_LABELS } from "./v3-labels.js";
 import { scopeForPlaybook } from "../verticals/registry.js";
 import { bindPlaybookPanel, type LoadedPlaybook } from "./playbook-panel.js";
 import { bindRegimePanel } from "./regime-panel.js";
+import { bindEstatePanel, type EstateAssertion } from "./estate-panel.js";
 import type { RegimeId } from "../privacy/regime-data.js";
 
 /**
@@ -36,6 +37,12 @@ let activeCustomPlaybook: LoadedPlaybook | null = null;
 // and to every bundle member (each member activates only if it matched a
 // privacy-notice playbook).
 let activeRegimes: readonly RegimeId[] = [];
+
+// add-estate-planning-pack — the tab counterpart of `--estate-checks` /
+// `--state`. Nothing asserted = pack dormant. Applied to single-document
+// analyses and frame-toggle re-runs; the pack activates only when the
+// document matched a will / trust / codicil playbook.
+let activeEstate: EstateAssertion = { checks: false };
 
 /**
  * Preload the analysis pipeline as a side-effect of user intent —
@@ -70,6 +77,12 @@ export async function bootUi(opts: {
    * exists. When absent, the affordance is simply not rendered.
    */
   regimePanelContainer?: HTMLElement | null;
+  /**
+   * Container hosting the estate-checks assertion panel
+   * (add-estate-planning-pack). Defaults to the `#estate-panel` node if one
+   * exists. When absent, the affordance is simply not rendered.
+   */
+  estatePanelContainer?: HTMLElement | null;
 }): Promise<void> {
   const persisted = readPersistedTheme();
   if (persisted) applyTheme(opts.root, persisted);
@@ -87,6 +100,14 @@ export async function bootUi(opts: {
     bindRegimePanel(opts.regimePanelContainer, {
       onChange: (regimes) => {
         activeRegimes = regimes;
+      },
+    });
+  }
+
+  if (opts.estatePanelContainer) {
+    bindEstatePanel(opts.estatePanelContainer, {
+      onChange: (assertion) => {
+        activeEstate = assertion;
       },
     });
   }
@@ -142,6 +163,10 @@ async function runFile(dz: HTMLElement, file: File, kind: "pdf" | "docx"): Promi
       {
         custom_playbook: activeCustomPlaybook ?? undefined,
         regimes: activeRegimes.length > 0 ? activeRegimes : undefined,
+        // add-estate-planning-pack — the asserted checks / state, dormant
+        // unless the document matched a will/trust/codicil playbook.
+        estate_checks: activeEstate.checks || undefined,
+        estate_state: activeEstate.state,
       },
     );
 
@@ -172,6 +197,9 @@ async function runFile(dz: HTMLElement, file: File, kind: "pdf" | "docx"): Promi
           custom_playbook: activeCustomPlaybook ?? undefined,
           // ...and the asserted privacy regimes (add-privacy-notice-pack).
           regimes: activeRegimes.length > 0 ? activeRegimes : undefined,
+          // ...and the asserted estate checks / state (add-estate-planning-pack).
+          estate_checks: activeEstate.checks || undefined,
+          estate_state: activeEstate.state,
         });
         renderCompleteState(dz, file.name, stem, fresh, countsBySeverity, frames, rerun);
       } catch (err) {
@@ -875,6 +903,7 @@ if (typeof document !== "undefined") {
     const folderHost = document.getElementById("dropzone-extras") ?? undefined;
     const playbookHost = document.getElementById("playbook-panel") ?? undefined;
     const regimeHost = document.getElementById("regime-panel") ?? undefined;
+    const estateHost = document.getElementById("estate-panel") ?? undefined;
     void bootUi({
       root,
       dropzone: dz,
@@ -882,6 +911,7 @@ if (typeof document !== "undefined") {
       folderPickContainer: folderHost,
       playbookPanelContainer: playbookHost,
       regimePanelContainer: regimeHost,
+      estatePanelContainer: estateHost,
     });
     void registerServiceWorker({ badge: document.getElementById("offline-badge") });
     void hydrateDkbValidation();
