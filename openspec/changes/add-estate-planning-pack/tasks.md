@@ -45,5 +45,7 @@
   only in `estateCheckRulesForOverlay` for seeded states expecting witnesses,
   so the neutral path and PA keep their exact rule lists. Fires when ≥1 block
   is present but fewer than the statute expects; silent when the will's own
-  recital overstates the blocks (EST-106's finding); info, not warning, under
-  the CO/ND notarization alternative.
+  recital overstates the blocks (EST-106's finding). Under the CO/ND
+  notarization alternative (v1.1.0): silent when a notarial acknowledgment is
+  detected — the alternative satisfies the statute — and a both-paths-missing
+  warning otherwise.

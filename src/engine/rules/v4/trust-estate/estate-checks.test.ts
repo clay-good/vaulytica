@@ -180,16 +180,39 @@ describe("EST-107 — witness blocks vs. the asserted state's statute", () => {
     expect(est107For("us-va")!.check(ctx)).toBeNull();
   });
 
-  it("is an info note under a notarization-alternative state and names the alternative", () => {
+  it("under a notarization-alternative state, a detected notary block silences the shortfall", () => {
+    // CO accepts notarized acknowledgment in lieu of witnesses — with a
+    // notary block present, the witness shortfall is not non-compliance.
+    const ctx = willContext([
+      "Execution",
+      "Witness: ______________",
+      "Acknowledged before me, a notary public. My commission expires 2027.",
+    ]);
+    expect(est107For("us-co")!.check(ctx)).toBeNull();
+  });
+
+  it("under a notarization-alternative state with NO notary language, warns naming both paths", () => {
     const ctx = willContext([
       "Execution",
       "Witness: ______________",
     ]);
     const rule = est107For("us-co")!;
-    expect(rule.default_severity).toBe("info");
+    expect(rule.default_severity).toBe("warning");
     const finding = rule.check(ctx);
     expect(finding).not.toBeNull();
+    expect(finding?.explanation).toContain("neither path is evidenced");
     expect(finding?.explanation).toContain("notary public");
+  });
+
+  it("a notary block does NOT silence the shortfall in a non-alternative state", () => {
+    // Virginia has no notarization alternative — a notary block (e.g. a
+    // self-proving affidavit) never substitutes for the witnesses.
+    const ctx = willContext([
+      "Execution",
+      "Witness: ______________",
+      "Acknowledged before me, a notary public.",
+    ]);
+    expect(est107For("us-va")!.check(ctx)).not.toBeNull();
   });
 });
 

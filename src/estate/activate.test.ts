@@ -83,10 +83,11 @@ describe("activateEstateChecks", () => {
     const pa = activateEstateChecks(false, "last-will-and-testament", LAUNCH_RULES, "us-pa");
     expect(pa.rules.some((r) => r.id === "EST-107")).toBe(false);
 
-    // CO's notarization alternative downgrades the shortfall to info.
+    // CO's EST-107 is conditional in check() (silent when a notarial
+    // acknowledgment is detected), not severity-downgraded.
     const co = activateEstateChecks(false, "last-will-and-testament", LAUNCH_RULES, "us-co");
     const coEst107 = co.rules.find((r) => r.id === "EST-107")!;
-    expect(coEst107.default_severity).toBe("info");
+    expect(coEst107.default_severity).toBe("warning");
     expect(coEst107.dkb_citations).toContain("co-rev-stat-15-11-502");
   });
 
