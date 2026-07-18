@@ -305,6 +305,38 @@ describe("estate formalities catalog", () => {
     expect(ks.citation.source).toContain("59-606");
   });
 
+  it("pins the ninth-wave facts (NE, NM, WV, ID)", () => {
+    // NE: pre-1990 UPC; holographic needs a handwritten DATE indication,
+    // softened by the 1980 savings clause (§ 30-2328).
+    const ne = estateFormalitiesForState("us-ne")!;
+    expect(ne.holographic_recognized).toBe(true);
+    expect(ne.summary).toContain("DATE OF SIGNING");
+    expect(ne.citation.source).toContain("30-2327");
+
+    // NM: strictest wave-9 posture — mutual presence, witnesses must see
+    // the actual signing; "will" definitionally excludes holographs.
+    const nm = estateFormalitiesForState("us-nm")!;
+    expect(nm.holographic_recognized).toBe(false);
+    expect(nm.reasonable_time_phrasing).toBe(false);
+    expect(nm.summary).toContain("Reserved");
+    expect(nm.citation.source).toContain("45-2-502");
+
+    // WV: witnesses simultaneously present AND subscribing before each
+    // other — the Virginia-derived pattern VA itself relaxed; wholly
+    // handwritten wills fully excused.
+    const wv = estateFormalitiesForState("us-wv")!;
+    expect(wv.holographic_recognized).toBe(true);
+    expect(wv.summary).toContain("PRESENT AT THE SAME TIME");
+    expect(wv.citation.source).toContain("41-1-3");
+
+    // ID: pre-1990 UPC, most permissive two-witness statute; § 51-109 is
+    // a notarial proxy-signature, NOT a notarization alternative.
+    const id_ = estateFormalitiesForState("us-id")!;
+    expect(id_.holographic_recognized).toBe(true);
+    expect(id_.notarization_alternative).toBe(false);
+    expect(id_.citation.source).toContain("15-2-502");
+  });
+
   it("returns undefined for unseeded states (honest N/A) and publishes the denominator", () => {
     expect(estateFormalitiesForState("us-wy")).toBeUndefined();
     expect(estateFormalitiesForState("us-ms")).toBeUndefined();

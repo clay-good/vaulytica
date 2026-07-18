@@ -278,6 +278,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     ),
   },
   {
+    id: "est-formalities-us-id",
+    jurisdiction: "us-id",
+    state_name: "Idaho",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: true,
+    headline: "2 witnesses (pre-1990 UPC, no timing or presence constraint); holographic OK",
+    summary:
+      "Idaho keeps the classic pre-1990 UPC pattern: the will must be in writing, signed by the testator (or by another in the testator's presence and at direction), and signed by at least two persons who each witnessed the signing or the testator's acknowledgment (Idaho Code § 15-2-502) — no 'reasonable time' clause and no presence, location, or timing constraint on the witnesses' own signatures, among the most permissive two-witness statutes. A holographic will is valid unwitnessed when the signature and material provisions are in the testator's handwriting (§ 15-2-503, unchanged since 1971). The 2017 cross-reference to § 51-109 is a notarial proxy-signature for testators physically unable to sign — NOT a notarization substitute for the two witnesses.",
+    citation: cite(
+      "id-code-15-2-502",
+      "Idaho Code §§ 15-2-502, 15-2-503 (execution; holographic will)",
+      "https://legislature.idaho.gov/statutesrules/idstat/Title15/T15CH2/SECT15-2-502/",
+    ),
+  },
+  {
     id: "est-formalities-us-il",
     jurisdiction: "us-il",
     state_name: "Illinois",
@@ -496,6 +514,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     ),
   },
   {
+    id: "est-formalities-us-ne",
+    jurisdiction: "us-ne",
+    state_name: "Nebraska",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: true,
+    headline: "2 witnesses (pre-1990 UPC); holographic OK with handwritten date indication (curable)",
+    summary:
+      "Nebraska enacted the pre-1990 UPC § 2-502: the will must be in writing, signed by the testator (or by proxy in the testator's presence and at direction), and signed by at least two individuals who each witnessed the signing or the testator's acknowledgment (Neb. Rev. Stat. § 30-2327) — no notarization alternative, no 'reasonable time' clause, and no presence requirement on the witnesses' own signatures. A holographic will is valid unwitnessed if the signature, material provisions, and an indication of the DATE OF SIGNING are in the testator's handwriting (§ 30-2328) — but a 1980 savings clause forgives a missing date when the instrument is the only one, is consistent with any like instrument, or the date is determinable from contents, extrinsic circumstances, or any other evidence.",
+    citation: cite(
+      "ne-rev-stat-30-2327",
+      "Neb. Rev. Stat. §§ 30-2327, 30-2328 (execution; holographic will)",
+      "https://nebraskalegislature.gov/laws/statutes.php?statute=30-2327",
+    ),
+  },
+  {
     id: "est-formalities-us-nj",
     jurisdiction: "us-nj",
     state_name: "New Jersey",
@@ -511,6 +547,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
       "nj-3b-3-2",
       "N.J.S.A. § 3B:3-2 (execution; witnessed wills; writings intended as wills)",
       "https://law.justia.com/codes/new-jersey/title-3b/section-3b-3-2/",
+    ),
+  },
+  {
+    id: "est-formalities-us-nm",
+    jurisdiction: "us-nm",
+    state_name: "New Mexico",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: false,
+    headline: "2 witnesses, mutual presence, must witness the actual signing; holographic NOT recognized",
+    summary:
+      "New Mexico stripped the UPC's flexibility in the strict direction: the will must be in writing, signed by the testator (or by proxy in the testator's conscious presence and at direction), and signed by at least two individuals each of whom signed in the presence of the testator AND of each other AFTER each witnessed the signing of the will itself (N.M. Stat. Ann. § 45-2-502) — no 'reasonable time' window, no acknowledgment alternative (witnesses must see the actual signing), and no notarization option. Neither the holographic subsection nor harmless error was adopted (§ 45-2-503 is Reserved), and § 45-1-201 states outright that 'will' does not include a holographic will; § 45-2-506 choice of law may still admit out-of-state wills.",
+    citation: cite(
+      "nm-stat-45-2-502",
+      "N.M. Stat. Ann. §§ 45-2-502, 45-1-201, 45-2-506 (execution; definitions; choice of law)",
+      "https://codes.findlaw.com/nm/chapter-45-uniform-probate-code/nm-st-sect-45-2-502.html",
     ),
   },
   {
@@ -763,6 +817,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
       "wi-stat-853-03",
       "Wis. Stat. §§ 853.03, 853.05 (execution of wills; wills validly executed elsewhere)",
       "https://docs.legis.wisconsin.gov/statutes/statutes/853/i/03",
+    ),
+  },
+  {
+    id: "est-formalities-us-wv",
+    jurisdiction: "us-wv",
+    state_name: "West Virginia",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: true,
+    headline: "2 witnesses, simultaneously present, subscribing before testator AND each other; holographic OK",
+    summary:
+      "West Virginia requires the will to be signed by the testator (or by proxy in the testator's presence and at direction) in such manner as to make it manifest that the name is intended as a signature, with the signature made or acknowledged in the presence of at least two competent witnesses PRESENT AT THE SAME TIME, who must subscribe in the presence of the testator AND of each other — no attestation clause necessary (W. Va. Code § 41-1-3). The mutual-presence subscription requirement is a Virginia-derived pattern WV retained after Virginia relaxed it — a common out-of-state execution trap. A will WHOLLY in the testator's handwriting is exempt from all witnessing (the carve-out is embedded mid-sentence in § 41-1-3 itself); no notarization alternative and no harmless-error provision exist in the article.",
+    citation: cite(
+      "wv-code-41-1-3",
+      "W. Va. Code § 41-1-3 (must be in writing; witnesses)",
+      "https://code.wvlegislature.gov/41-1-3/",
     ),
   },
 ];
