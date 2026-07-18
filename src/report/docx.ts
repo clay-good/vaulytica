@@ -44,6 +44,7 @@ import type { IngestResult } from "../ingest/types.js";
 import type { Playbook } from "../playbooks/types.js";
 import { scopeForPlaybook } from "../verticals/registry.js";
 import { buildRegimeCoverage } from "../privacy/coverage.js";
+import { estateFormalitiesForState } from "../dkb/estate-formalities.js";
 import type { RegimeId } from "../privacy/regime-data.js";
 import { buildReviewCoverage, reviewCoverageSentence } from "./review-coverage.js";
 import { ENGAGEMENT_SCOPE } from "./engagement-scope.js";
@@ -226,11 +227,15 @@ function renderCover(run: EngineRun, ingest: IngestResult, playbook: Playbook): 
     );
   }
   if (run.estate_checks_asserted) {
+    // When the asserted state has a verified formalities node, name the
+    // posture the overlay is speaking (render-side; the hashed run carries
+    // only the normalized state id).
+    const overlay = run.asserted_state ? estateFormalitiesForState(run.asserted_state) : undefined;
     asserted.push(
       coverField(
         "Estate checks",
         run.asserted_state
-          ? `asserted by the user (--state ${run.asserted_state})`
+          ? `asserted by the user (--state ${run.asserted_state})${overlay ? ` — ${overlay.state_name}: ${overlay.headline} (${overlay.citation.source})` : ""}`
           : "asserted by the user (--estate-checks)",
       ),
     );

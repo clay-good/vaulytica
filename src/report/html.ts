@@ -21,6 +21,7 @@
 import type { EngineRun, Finding, Severity } from "../engine/finding.js";
 import { scopeForPlaybook } from "../verticals/registry.js";
 import { buildRegimeCoverage } from "../privacy/coverage.js";
+import { estateFormalitiesForState } from "../dkb/estate-formalities.js";
 import type { RegimeId } from "../privacy/regime-data.js";
 import type { DKB, SourceCitation } from "../dkb/types.js";
 import { isHttpUrl } from "../dkb/url-safety.js";
@@ -357,9 +358,12 @@ export function buildHtmlReport(
     );
   }
   if (run.estate_checks_asserted) {
+    // Mirror the DOCX cover: name the verified formality posture the
+    // overlay is speaking when the asserted state has a catalog node.
+    const overlay = run.asserted_state ? estateFormalitiesForState(run.asserted_state) : undefined;
     body.push(
       run.asserted_state
-        ? `<dt>Estate checks</dt><dd>asserted by the user (--state ${esc(run.asserted_state)})</dd>`
+        ? `<dt>Estate checks</dt><dd>asserted by the user (--state ${esc(run.asserted_state)})${overlay ? ` — ${esc(overlay.state_name)}: ${esc(overlay.headline)} (${esc(overlay.citation.source)})` : ""}</dd>`
         : "<dt>Estate checks</dt><dd>asserted by the user (--estate-checks)</dd>",
     );
   }

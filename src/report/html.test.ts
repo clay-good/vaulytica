@@ -153,6 +153,16 @@ describe("buildHtmlReport (spec-v8 §21 — standalone single-file HTML)", () =>
     expect(html).toContain("Estate checks");
   });
 
+  it("names the verified formality posture when --state resolves to a catalog node", () => {
+    const run = makeRun();
+    run.estate_checks_asserted = true;
+    run.asserted_state = "us-pa";
+    const html = buildHtmlReport(run, ingest, loadStarterDkbSync());
+    // The cover speaks the overlay's verified posture, not just the code.
+    expect(html).toContain("Pennsylvania: No attesting witnesses required (ordinary signed will)");
+    expect(html).toContain("20 Pa. C.S. § 2502");
+  });
+
   it("renders the per-regime coverage table when regimes were asserted (mirrors md/docx)", () => {
     const base = makeRun();
     expect(buildHtmlReport(base, ingest, loadStarterDkbSync())).not.toContain(
