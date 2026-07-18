@@ -907,6 +907,22 @@ export async function runAnalyze(argv: string[]): Promise<void> {
     const counts = { critical: 0, warning: 0, info: 0 };
     for (const f of r.run.findings) counts[f.severity]++;
     human(`${file}  [${r.playbook_id}]  ${counts.critical}C ${counts.warning}W ${counts.info}I\n`);
+
+    // Asserted opt-in packs are activation-gated on the matched playbook.
+    // Silence here is a trap: the reviewer asserted --regime / --estate
+    // and got a normal-looking report with zero pack checks in it (audit
+    // finding — a plain privacy notice can classify as privacy-policy-lint
+    // and drop --regime without a word). Say so, loudly, on stderr.
+    if (args.regimes && args.regimes.length > 0 && !r.run.asserted_regimes) {
+      process.stderr.write(
+        `vaulytica: warning: --regime ${args.regimes.join(",")} was asserted but ${file} classified as "${r.playbook_id}", not a privacy-notice playbook — the regime notice-content checks did NOT run\n`,
+      );
+    }
+    if ((args.estateChecks || args.estateState) && !r.run.estate_checks_asserted) {
+      process.stderr.write(
+        `vaulytica: warning: estate checks were asserted but ${file} classified as "${r.playbook_id}", not a will/trust/codicil playbook — the estate checks did NOT run\n`,
+      );
+    }
     if (r.delivery) human(`  ${r.delivery.summary}\n`);
     if (r.critical_dates) {
       human(

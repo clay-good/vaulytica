@@ -218,6 +218,36 @@ describe("PNOT opt-out disclosure rules (VA § 59.1-578(D) / TX § 541.103)", ()
     expect(found[0]!.description).toMatch(/selling personal data/);
   });
 
+  it("still fires when the only opt-out mention is a DENIAL ('you cannot opt out')", async () => {
+    // Audit finding: the silencer accepted any opt-out token, including
+    // the denial of the right — the opposite of the mandated disclosure.
+    const found = await findingsFor(vaRule, [
+      "We sell personal information to advertising partners.",
+      "You cannot opt out of the sale of personal information.",
+    ]);
+    expect(found).toHaveLength(1);
+  });
+
+  it("catches an affirmative sale after a guarded CCPA link-text mention (all matches scanned)", async () => {
+    // Audit finding: .exec inspected only the FIRST sale match — inside
+    // the disclaimed 'Do Not Sell' link text — hiding the later sale.
+    const found = await findingsFor(vaRule, [
+      "Do Not Sell Or Share My Personal Information: California residents may submit requests under the CCPA.",
+      "Separately, we sell personal information to advertising partners for consideration.",
+    ]);
+    expect(found).toHaveLength(1);
+  });
+
+  it("a disclaimer survives a citation dot ('as stated in Section 59.1 …')", async () => {
+    // Audit finding: the '.' in '59.1' read as a sentence boundary,
+    // truncating away 'We do not' and flipping the disclaimer into a
+    // false accusation.
+    const found = await findingsFor(vaRule, [
+      "We do not, as stated in Section 59.1 of our charter, sell personal information to anyone.",
+    ]);
+    expect(found).toHaveLength(0);
+  });
+
   it("fires on targeted advertising with no opt-out (TX § 541.103)", async () => {
     const found = await findingsFor(txRule, [
       "We process your personal data for targeted advertising across our services.",

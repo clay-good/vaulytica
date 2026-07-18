@@ -141,14 +141,62 @@ const normalizeWs = (s: string): string => s.replace(/\s+/g, " ").trim();
 // a sale indication is a false accusation. True when the sentence negates the
 // sale/share verb.
 const SALE_DISCLAIMED =
-  /\b(?:do(?:es)?\s+not|did\s+not|will\s+not|would\s+not|won'?t|shall\s+not|cannot|can'?t|never|not)\b[^.;\n]{0,40}\b(?:sell|sells|selling|sold|sale|share|shares|shared)\b|\bno\s+(?:sale|selling|sharing)\b/i;
+  /\b(?:do(?:es)?\s+not|did\s+not|will\s+not|would\s+not|won'?t|shall\s+not|cannot|can'?t|never|not)\b(?:\.(?=\d)|[^.;\n]){0,80}\b(?:sell|sells|selling|sold|sale|share|shares|shared)\b|\bno\s+(?:sale|selling|sharing)\b/i;
+
+/**
+ * True when position `i` in `text` ends a sentence. A "." is a boundary
+ * only when it is not between digits (§ 59.1, 7.5%) and not the dot of a
+ * single-letter abbreviation (e.g., i.e., U.S.) — otherwise a citation dot
+ * truncates the sentence and defeats the negation guards (audit finding:
+ * "We do not, as stated in Section 59.1 …, sell personal information"
+ * read as an undisclaimed sale).
+ */
+function isSentenceBoundary(text: string, i: number): boolean {
+  const ch = text[i];
+  if (ch === "\n" || ch === ";") return true;
+  if (ch !== ".") return false;
+  const prev = text[i - 1] ?? "";
+  const next = text[i + 1] ?? "";
+  if (/\d/.test(prev) && /\d/.test(next)) return false;
+  const prev2 = text[i - 2] ?? " ";
+  if (/[a-z]/i.test(prev) && !/[a-z]/i.test(prev2)) return false;
+  return true;
+}
+
+/** Start index of the sentence of `text` containing `index`. */
+function sentenceStart(text: string, index: number): number {
+  for (let i = index - 1; i >= 0; i--) {
+    if (isSentenceBoundary(text, i)) return i + 1;
+  }
+  return 0;
+}
 
 /** The single sentence of `text` containing `index`, for the negation check. */
 function sentenceAround(text: string, index: number): string {
-  const start = Math.max(text.lastIndexOf(".", index), text.lastIndexOf("\n", index)) + 1;
-  const relEnd = text.slice(index).search(/[.\n]/);
-  const end = relEnd === -1 ? text.length : index + relEnd;
+  const start = sentenceStart(text, index);
+  let end = text.length;
+  for (let i = index; i < text.length; i++) {
+    if (isSentenceBoundary(text, i)) {
+      end = i;
+      break;
+    }
+  }
   return text.slice(start, end);
+}
+
+/**
+ * True when ANY match of `re` sits in a sentence the `disclaimed` guard does
+ * not negate. `.exec` alone inspects only the FIRST match — a multi-state
+ * notice whose first "sell" token is inside guarded CCPA link text ("Do Not
+ * Sell Or Share My Personal Information") hid a later affirmative sale
+ * sentence entirely (audit finding).
+ */
+function anyUndisclaimedMatch(re: RegExp, text: string, disclaimed: RegExp): boolean {
+  const global = new RegExp(re.source, re.flags.includes("g") ? re.flags : re.flags + "g");
+  for (const m of text.matchAll(global)) {
+    if (!disclaimed.test(sentenceAround(text, m.index))) return true;
+  }
+  return false;
 }
 
 function txCite(spec: TxExactSpec): SourceCitation {
@@ -172,7 +220,7 @@ function txCite(spec: TxExactSpec): SourceCitation {
 function buildTxExactRule(spec: TxExactSpec): PnotRule {
   return {
     id: spec.id,
-    version: "1.0.0",
+    version: "1.1.0",
     name: `Mandated ${spec.kind}-data sale notice (exact wording)`,
     category: "privacy-notice",
     default_severity: "warning",
@@ -209,8 +257,7 @@ function buildTxExactRule(spec: TxExactSpec): PnotRule {
         });
       }
       const ft = fullText(ctx);
-      const tm = spec.trigger.exec(ft);
-      if (tm && !SALE_DISCLAIMED.test(sentenceAround(ft, tm.index))) {
+      if (anyUndisclaimedMatch(spec.trigger, ft, SALE_DISCLAIMED)) {
         return makeFinding({
           rule: this as Rule,
           title: `Mandated ${spec.kind}-data sale notice missing`,
@@ -274,12 +321,31 @@ const TARGETED_ADS = /\btargeted\s+advertising\b/i;
 
 /** The sentence negates the targeted-advertising processing ("we do not …"). */
 const ADS_DISCLAIMED =
-  /\b(?:do(?:es)?\s+not|did\s+not|will\s+not|would\s+not|won'?t|shall\s+not|cannot|can'?t|never|not)\b[^.;\n]{0,60}\btargeted\s+advertising\b|\bno\s+targeted\s+advertising\b/i;
+  /\b(?:do(?:es)?\s+not|did\s+not|will\s+not|would\s+not|won'?t|shall\s+not|cannot|can'?t|never|not)\b(?:\.(?=\d)|[^.;\n]){0,80}\btargeted\s+advertising\b|\bno\s+targeted\s+advertising\b/i;
+
+const OPT_OUT_TOKEN = /\bopt[- ]?out\b/gi;
+/**
+ * The opt-out mention is itself a DENIAL ("you cannot opt out", "no right
+ * to opt out") — a denial is not the § 59.1-578(D) / § 541.103 disclosure
+ * of the manner to opt out (audit finding: "You cannot opt out of the sale"
+ * silenced the rule).
+ */
+const OPT_OUT_NEGATED =
+  /\b(?:cannot|can'?t|may\s+not|will\s+not|won'?t|shall\s+not|not\s+(?:able|permitted|allowed|entitled)\s+to|no\s+(?:right|ability|way|option)\s+to|unable\s+to|do(?:es)?\s+not\s+(?:allow|permit|offer|provide))\b(?:\.(?=\d)|[^.;\n]){0,40}$/i;
+
+/** True when some opt-out mention is a genuine disclosure, not a denial. */
+function optOutDisclosed(text: string): boolean {
+  for (const m of text.matchAll(OPT_OUT_TOKEN)) {
+    const prefix = text.slice(sentenceStart(text, m.index), m.index);
+    if (!OPT_OUT_NEGATED.test(prefix)) return true;
+  }
+  return false;
+}
 
 function buildOptOutRule(spec: OptOutSpec): PnotRule {
   return {
     id: spec.id,
-    version: "1.0.0",
+    version: "1.1.0",
     name: "Sale / targeted-advertising opt-out disclosure",
     category: "privacy-notice",
     default_severity: "warning",
@@ -289,16 +355,13 @@ function buildOptOutRule(spec: OptOutSpec): PnotRule {
     regime: spec.regime,
     check(ctx: RuleContext): Finding | null {
       const ft = fullText(ctx);
-      // Any opt-out language satisfies the "manner … to opt out" half; this
-      // is a presence check, never a sufficiency conclusion.
-      if (/\bopt[- ]?out\b/i.test(ft)) return null;
+      // A genuine opt-out disclosure satisfies the "manner … to opt out"
+      // half (presence check, never a sufficiency conclusion) — but a
+      // DENIAL of the right does not.
+      if (optOutDisclosed(ft)) return null;
 
-      const saleMatch = SALE_OF_PERSONAL_DATA.exec(ft);
-      const saleEvidenced =
-        saleMatch !== null && !SALE_DISCLAIMED.test(sentenceAround(ft, saleMatch.index));
-      const adsMatch = TARGETED_ADS.exec(ft);
-      const adsEvidenced =
-        adsMatch !== null && !ADS_DISCLAIMED.test(sentenceAround(ft, adsMatch.index));
+      const saleEvidenced = anyUndisclaimedMatch(SALE_OF_PERSONAL_DATA, ft, SALE_DISCLAIMED);
+      const adsEvidenced = anyUndisclaimedMatch(TARGETED_ADS, ft, ADS_DISCLAIMED);
       if (!saleEvidenced && !adsEvidenced) return null;
 
       const processing = saleEvidenced

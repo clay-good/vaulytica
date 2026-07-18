@@ -94,8 +94,8 @@ const CCPA_ITEMS: ContentItem[] = [
     retrieved_at: RETRIEVED_AT,
     present_patterns: [
       "sold or shared",
+      // "we do not sell" was a dead subset of "do not sell" (audit).
       "do not sell",
-      "we do not sell",
       "not .{0,10}sell.{0,10}share",
     ],
   },
