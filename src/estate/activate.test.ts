@@ -53,10 +53,10 @@ describe("activateEstateChecks", () => {
   });
 
   it("an unseeded state runs the neutral rules unchanged (honest N/A) but is still stamped", () => {
-    // us-tn has no formalities node — the previous example here, us-ca,
-    // became seeded in the CA/TX/NY/FL wave and now gains EST-107.
-    const w = activateEstateChecks(false, "last-will-and-testament", LAUNCH_RULES, "us-tn");
-    expect(w.asserted_state).toBe("us-tn");
+    // us-ms has no formalities node — earlier examples here (us-ca, then
+    // us-tn) became seeded by later formalities waves and gained EST-107.
+    const w = activateEstateChecks(false, "last-will-and-testament", LAUNCH_RULES, "us-ms");
+    expect(w.asserted_state).toBe("us-ms");
     const appended = w.rules.slice(LAUNCH_RULES.length);
     expect(appended.length).toBe(ESTATE_CHECK_RULES.length);
     for (let i = 0; i < ESTATE_CHECK_RULES.length; i++) {

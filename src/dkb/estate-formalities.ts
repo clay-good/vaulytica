@@ -224,6 +224,25 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     ),
   },
   {
+    id: "est-formalities-us-in",
+    jurisdiction: "us-in",
+    state_name: "Indiana",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: false,
+    e_will_regime: true,
+    headline: "2+ witnesses, mutual presence + publication; holographic NOT recognized; e-wills (2018)",
+    summary:
+      "Indiana requires the testator to signify to two or more attesting witnesses that the instrument is the testator's will and to sign, acknowledge, or direct a proxy signature in their presence, and the witnesses must sign in the presence of the testator AND each other (Ind. Code § 29-1-5-3(b)) — stricter mutual presence than the UPC, with no notarization alternative and no 'reasonable time' softening. Unwitnessed holographic wills are not valid under Indiana's own law; only nuncupative wills are excepted. Indiana separately enacted IC 29-1-21 (P.L. 40-2018), one of the first US electronic-wills statutes: two electronic witness signatures in mutual presence, with audiovisual presence only under attorney or directed-paralegal supervision (§ 29-1-21-4).",
+    citation: cite(
+      "in-code-29-1-5-3",
+      "Ind. Code §§ 29-1-5-3, 29-1-21-4 (execution; electronic wills)",
+      "https://codes.findlaw.com/in/title-29-probate/in-code-sect-29-1-5-3/",
+    ),
+  },
+  {
     id: "est-formalities-us-la",
     jurisdiction: "us-la",
     state_name: "Louisiana",
@@ -294,6 +313,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
       "mi-mcl-700-2502",
       "Mich. Comp. Laws § 700.2502 (execution; witnessed wills; holographic wills)",
       "https://www.legislature.mi.gov/mileg.aspx?page=getobject&objectname=mcl-700-2502",
+    ),
+  },
+  {
+    id: "est-formalities-us-mo",
+    jurisdiction: "us-mo",
+    state_name: "Missouri",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: false,
+    headline: "2+ competent witnesses, subscribing in the testator's presence; holographic NOT recognized",
+    summary:
+      "Missouri requires every will to be in writing, signed by the testator (or by a proxy at the testator's direction and in the testator's presence), and attested by two or more competent witnesses subscribing their names in the presence of the testator (Mo. Rev. Stat. § 474.320) — pre-UPC strict presence, with no notarization alternative and no 'reasonable time' softening. There is no holographic exception: an unwitnessed holograph executed in Missouri fails, though § 474.360 admits wills validly executed under the law of the place of execution or the testator's domicile. An interested witness does not invalidate the will but forfeits any benefit exceeding the intestate share unless two disinterested witnesses also attested (§ 474.330).",
+    citation: cite(
+      "mo-rev-stat-474-320",
+      "Mo. Rev. Stat. §§ 474.320, 474.330, 474.360 (execution; interested witnesses; foreign execution)",
+      "https://revisor.mo.gov/main/OneSection.aspx?section=474.320",
     ),
   },
   {
@@ -404,6 +441,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     ),
   },
   {
+    id: "est-formalities-us-tn",
+    jurisdiction: "us-tn",
+    state_name: "Tennessee",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: true,
+    headline: "2 witnesses, mutual presence + publication; holographic OK (handwriting proved by 2)",
+    summary:
+      "Tennessee requires the testator to signify to the attesting witnesses that the instrument is the testator's will (publication) and to sign, acknowledge, or direct a proxy signature in the presence of at least two attesting witnesses, who must then sign in the presence of the testator AND of each other (Tenn. Code Ann. § 32-1-104(a)) — stricter than the UPC, with no notarization alternative and no 'reasonable time' flexibility. A holographic will needs no witnesses to execution, but the signature and all material provisions must be in the testator's handwriting, proved by two witnesses to the handwriting (§ 32-1-105). For wills executed before July 1, 2016, § 32-1-104(b) retroactively counts witness signatures on a § 32-2-110 affidavit as will signatures when made simultaneously with the testator's signing.",
+    citation: cite(
+      "tn-tca-32-1-104",
+      "Tenn. Code Ann. §§ 32-1-104, 32-1-105 (execution; holographic wills)",
+      "https://codes.findlaw.com/tn/title-32-wills/tn-code-sect-32-1-104/",
+    ),
+  },
+  {
     id: "est-formalities-us-tx",
     jurisdiction: "us-tx",
     state_name: "Texas",
@@ -472,6 +527,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
       "wa-rcw-11-12-020",
       "Wash. Rev. Code § 11.12.020 (requisites of wills — foreign wills)",
       "https://app.leg.wa.gov/rcw/default.aspx?cite=11.12.020",
+    ),
+  },
+  {
+    id: "est-formalities-us-wi",
+    jurisdiction: "us-wi",
+    state_name: "Wisconsin",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: true,
+    holographic_recognized: false,
+    headline: "2 witnesses (reasonable time), conscious presence; holographic NOT recognized in-state",
+    summary:
+      "Wisconsin requires the will to be signed by the testator (or with assistance, or by proxy in the testator's conscious presence) and signed by at least 2 witnesses within a reasonable time after witnessing the signing or the testator's implicit or explicit acknowledgment, each in the witness's conscious presence — and the two witnesses may observe at different times (Wis. Stat. § 853.03(2)(am)-(bm)). 'Conscious presence' statutorily includes attorney-supervised 2-way real-time audiovisual appearance with in-state location attestations (§ 853.03(2)(c)). No notarization alternative and no domestic holographic wills; a holograph valid under the law of the place of execution or the testator's domicile is recognized via § 853.05.",
+    citation: cite(
+      "wi-stat-853-03",
+      "Wis. Stat. §§ 853.03, 853.05 (execution of wills; wills validly executed elsewhere)",
+      "https://docs.legis.wisconsin.gov/statutes/statutes/853/i/03",
     ),
   },
 ];

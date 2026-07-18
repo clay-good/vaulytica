@@ -66,16 +66,19 @@ describe("estate formalities catalog", () => {
 
   it("unverified holographic/e-will flags are omitted, never false-guessed", () => {
     // PA's holographic posture and the e-will flags were not primary-source
-    // verified — honest N/A means the key is absent, not false. MD is the
-    // one exception: its 2021 electronic-will regime WAS verified against
-    // the official § 4-102(c)-(f) text, so its flag is present and true.
+    // verified — honest N/A means the key is absent, not false. Two
+    // exceptions carry a verified flag: MD (2021 § 4-102(c)-(f) certified
+    // wills) and IN (IC 29-1-21, P.L. 40-2018).
     const pa = estateFormalitiesForState("us-pa")!;
     expect("holographic_recognized" in pa).toBe(false);
+    const E_WILL_VERIFIED = new Set(["us-md", "us-in"]);
     for (const node of ESTATE_FORMALITIES) {
-      if (node.jurisdiction === "us-md") continue;
+      if (E_WILL_VERIFIED.has(node.jurisdiction)) continue;
       expect("e_will_regime" in node, node.id).toBe(false);
     }
-    expect(estateFormalitiesForState("us-md")!.e_will_regime).toBe(true);
+    for (const j of E_WILL_VERIFIED) {
+      expect(estateFormalitiesForState(j)!.e_will_regime, j).toBe(true);
+    }
   });
 
   it("pins the high-traffic-state facts (CA, TX, NY, FL)", () => {
@@ -175,9 +178,38 @@ describe("estate formalities catalog", () => {
     expect(md.citation.source).toContain("4-102");
   });
 
+  it("pins the fifth-wave facts (TN, MO, IN, WI)", () => {
+    // TN: mutual presence + publication; holographic OK, handwriting
+    // proved by 2 witnesses (§ 32-1-105).
+    const tn = estateFormalitiesForState("us-tn")!;
+    expect(tn.holographic_recognized).toBe(true);
+    expect(tn.reasonable_time_phrasing).toBe(false);
+    expect(tn.citation.source).toContain("32-1-104");
+
+    // MO: pre-UPC strict presence; NO holographic.
+    const mo = estateFormalitiesForState("us-mo")!;
+    expect(mo.holographic_recognized).toBe(false);
+    expect(mo.reasonable_time_phrasing).toBe(false);
+    expect(mo.citation.source).toContain("474.320");
+
+    // IN: mutual presence + publication; NO holographic; verified 2018
+    // electronic-wills chapter (IC 29-1-21).
+    const in_ = estateFormalitiesForState("us-in")!;
+    expect(in_.holographic_recognized).toBe(false);
+    expect(in_.e_will_regime).toBe(true);
+    expect(in_.citation.source).toContain("29-1-5-3");
+
+    // WI: the only fifth-wave UPC reasonable-time state; conscious-presence
+    // witnessing; NO domestic holographic.
+    const wi = estateFormalitiesForState("us-wi")!;
+    expect(wi.reasonable_time_phrasing).toBe(true);
+    expect(wi.holographic_recognized).toBe(false);
+    expect(wi.citation.source).toContain("853.03");
+  });
+
   it("returns undefined for unseeded states (honest N/A) and publishes the denominator", () => {
     expect(estateFormalitiesForState("us-wy")).toBeUndefined();
-    expect(estateFormalitiesForState("us-tn")).toBeUndefined();
+    expect(estateFormalitiesForState("us-ms")).toBeUndefined();
     expect(ESTATE_FORMALITIES_STATE_COUNT).toBe(ESTATE_FORMALITIES.length);
   });
 });
