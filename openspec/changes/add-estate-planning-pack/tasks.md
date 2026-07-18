@@ -40,3 +40,10 @@
   witnesses") vs. detected witness signature blocks, firing only when at least
   one block exists (the zero-block case stays EST-105's finding). Internal
   consistency, deliberately statute-independent — no overlay variants needed.
+- **The statute-aware count landed as EST-107** (2026-07-17, once the
+  overlay's verified `witnesses_expected` existed to compare against): built
+  only in `estateCheckRulesForOverlay` for seeded states expecting witnesses,
+  so the neutral path and PA keep their exact rule lists. Fires when ≥1 block
+  is present but fewer than the statute expects; silent when the will's own
+  recital overstates the blocks (EST-106's finding); info, not warning, under
+  the CO/ND notarization alternative.

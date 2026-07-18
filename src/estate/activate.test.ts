@@ -53,12 +53,39 @@ describe("activateEstateChecks", () => {
   });
 
   it("an unseeded state runs the neutral rules unchanged (honest N/A) but is still stamped", () => {
-    const w = activateEstateChecks(false, "last-will-and-testament", LAUNCH_RULES, "us-ca");
-    expect(w.asserted_state).toBe("us-ca");
+    // us-tn has no formalities node — the previous example here, us-ca,
+    // became seeded in the CA/TX/NY/FL wave and now gains EST-107.
+    const w = activateEstateChecks(false, "last-will-and-testament", LAUNCH_RULES, "us-tn");
+    expect(w.asserted_state).toBe("us-tn");
     const appended = w.rules.slice(LAUNCH_RULES.length);
+    expect(appended.length).toBe(ESTATE_CHECK_RULES.length);
     for (let i = 0; i < ESTATE_CHECK_RULES.length; i++) {
       expect(appended[i]).toBe(ESTATE_CHECK_RULES[i]);
     }
+  });
+
+  it("a seeded witness-expecting state appends EST-107; PA (zero-witness) does not", () => {
+    const ca = activateEstateChecks(false, "last-will-and-testament", LAUNCH_RULES, "us-ca");
+    const caAppended = ca.rules.slice(LAUNCH_RULES.length);
+    expect(caAppended.length).toBe(ESTATE_CHECK_RULES.length + 1);
+    const est107 = caAppended[caAppended.length - 1]!;
+    expect(est107.id).toBe("EST-107");
+    expect(est107.default_severity).toBe("warning");
+    expect(est107.assertion_gate).toBe("estate-checks");
+    // The neutral constants come first, unswapped (CA has no variants).
+    for (let i = 0; i < ESTATE_CHECK_RULES.length; i++) {
+      expect(caAppended[i]).toBe(ESTATE_CHECK_RULES[i]);
+    }
+
+    // PA expects zero witnesses — no statute count to enforce.
+    const pa = activateEstateChecks(false, "last-will-and-testament", LAUNCH_RULES, "us-pa");
+    expect(pa.rules.some((r) => r.id === "EST-107")).toBe(false);
+
+    // CO's notarization alternative downgrades the shortfall to info.
+    const co = activateEstateChecks(false, "last-will-and-testament", LAUNCH_RULES, "us-co");
+    const coEst107 = co.rules.find((r) => r.id === "EST-107")!;
+    expect(coEst107.default_severity).toBe("info");
+    expect(coEst107.dkb_citations).toContain("co-rev-stat-15-11-502");
   });
 
   it("a seeded state swaps in overlay-aware variants for the adapted rules only", () => {

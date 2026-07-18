@@ -568,6 +568,9 @@ export const ESTATE_CHECK_RULE_IDS: readonly string[] = ESTATE_CHECK_RULES.map((
  *     their severity but the explanation states the notarized-
  *     acknowledgment alternative, so absence is not read as per-se
  *     non-compliance when a notary block is present.
+ *   - `witnesses_expected > 0` (every seeded state but PA): EST-107 is
+ *     appended — witness signature blocks counted against the statute's
+ *     expected witnesses (info, not warning, under CO/ND).
  */
 export function estateCheckRulesForOverlay(
   overlay: EstateFormalityOverlay | undefined,
@@ -637,6 +640,63 @@ export function estateCheckRulesForOverlay(
     );
   }
 
-  if (variants.size === 0) return ESTATE_CHECK_RULES;
-  return ESTATE_CHECK_RULES.map((r) => variants.get(r.id) ?? r);
+  const rules =
+    variants.size === 0
+      ? ESTATE_CHECK_RULES
+      : ESTATE_CHECK_RULES.map((r) => variants.get(r.id) ?? r);
+  if (overlay.witnesses_expected === 0) return rules;
+  return [...rules, statuteWitnessCountRule(overlay)];
+}
+
+// ────────────────────────────────────────────────────────────────────
+// EST-107 — witness signature blocks vs. the asserted state's statute
+// (the statute-aware companion to EST-106's internal-consistency check,
+// unlocked by the overlay's verified `witnesses_expected`). Exists only
+// under a seeded overlay that expects witnesses — the neutral path and
+// the PA zero-witness path keep their exact rule lists. Fires when at
+// least one block is present (zero blocks stays EST-105's finding) but
+// fewer than the statute expects, and stays silent when the will's own
+// recital already overstates the blocks — that mismatch is EST-106's
+// finding, and double-reporting it would be noise. Under a
+// notarization-alternative state (CO/ND) the shortfall is an info note,
+// not a warning: a notarized acknowledgment can stand in for the
+// witnesses entirely.
+// ────────────────────────────────────────────────────────────────────
+
+function statuteWitnessCountRule(overlay: EstateFormalityOverlay): Rule {
+  const expected = overlay.witnesses_expected;
+  const alternative = overlay.notarization_alternative;
+  return {
+    id: "EST-107",
+    version: "1.0.0",
+    name: "Witness signature blocks fewer than the asserted state expects",
+    category: CATEGORY,
+    default_severity: alternative ? "info" : "warning",
+    description: `The number of witness signature blocks should be at least the ${expected} the asserted state's statute expects.`,
+    dkb_citations: ["upc-2-502", overlay.citation.id],
+    applies_to_playbooks: [...PLAYBOOKS],
+    assertion_gate: GATE,
+    check(ctx: RuleContext): Finding | null {
+      const blocks = witnessSignatureBlockCount(ctx);
+      if (blocks === 0 || blocks >= expected) return null;
+      const recited = recitedWitnessCount(fullTextLower(ctx));
+      if (recited !== undefined && blocks < recited) return null;
+      return makeFinding({
+        rule: this as Rule,
+        title: `Will shows ${blocks} witness signature block${blocks === 1 ? "" : "s"}; ${overlay.state_name} expects ${expected}`,
+        description: `${blocks} witness signature block${blocks === 1 ? " was" : "s were"} detected, but the asserted state's statute expects at least ${expected} attesting witnesses.`,
+        excerptText: "(witness signature blocks fewer than the asserted state's statute expects)",
+        explanation:
+          (alternative
+            ? `${overlay.state_name} expects at least ${expected} attesting witnesses — OR the testator's acknowledgment before a notary public in lieu of witnesses — so fewer witness signature blocks are not per-se non-compliance when a notarial acknowledgment is present.`
+            : `${overlay.state_name}'s statute expects at least ${expected} attesting witnesses, and fewer witness signature blocks were detected. This is a recital observation, not a determination of invalid execution.`) +
+          ` Asserted state: ${overlay.state_name} — ${overlay.headline} (${overlay.citation.source}).`,
+        recommendation: alternative
+          ? `Add the missing witness signature block(s) or confirm the will carries a notarial acknowledgment — ${overlay.state_name} accepts notarization in lieu of witnesses.`
+          : `Add the missing witness signature block(s) so the will shows at least ${expected} witness signatures.`,
+        position: docTop(ctx),
+        source_citations: [upc("2-502", "execution; witnessed wills"), overlay.citation],
+      });
+    },
+  };
 }

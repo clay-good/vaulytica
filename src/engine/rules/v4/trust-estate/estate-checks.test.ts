@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { ESTATE_CHECK_RULES } from "./estate-checks.js";
+import { ESTATE_CHECK_RULES, estateCheckRulesForOverlay } from "./estate-checks.js";
+import { estateFormalitiesForState } from "../../../../dkb/estate-formalities.js";
 import { buildContext } from "../../../_test-fixtures.js";
 import type { Playbook, Rule, RuleContext } from "../../../finding.js";
 
@@ -122,6 +123,73 @@ describe("EST-106 — witness blocks vs. recital count", () => {
     const finding = findRule("EST-106").check(ctx);
     expect(finding).not.toBeNull();
     expect(finding?.title).toContain("1 witness signature block");
+  });
+});
+
+describe("EST-107 — witness blocks vs. the asserted state's statute", () => {
+  function est107For(state: string): Rule {
+    const overlay = estateFormalitiesForState(state);
+    const rule = estateCheckRulesForOverlay(overlay).find((r) => r.id === "EST-107");
+    if (!rule) throw new Error(`EST-107 not built for ${state}`);
+    return rule;
+  }
+
+  it("fires when the will shows one block and the state expects two, with no recital", () => {
+    const ctx = willContext([
+      "Execution",
+      "Signed by the testator on the date below.",
+      "Witness: ______________",
+    ]);
+    const finding = est107For("us-va")!.check(ctx);
+    expect(finding).not.toBeNull();
+    expect(finding?.title).toBe("Will shows 1 witness signature block; Virginia expects 2");
+    expect(finding?.source_citations?.some((c) => c.id === "va-code-64-2-403")).toBe(true);
+  });
+
+  it("fires when the recital is internally consistent but short of the statute", () => {
+    // Recites one witness and shows one block — EST-106 is silent
+    // (blocks >= recited); only the statute comparison catches it.
+    const ctx = willContext([
+      "Execution",
+      "Signed in the presence of one witness.",
+      "Witness: ______________",
+    ]);
+    expect(est107For("us-ga")!.check(ctx)).not.toBeNull();
+  });
+
+  it("is silent when the blocks meet the statute's count", () => {
+    const ctx = willContext([
+      "Execution",
+      "Witness: ______________",
+      "Witness: ______________",
+    ]);
+    expect(est107For("us-va")!.check(ctx)).toBeNull();
+  });
+
+  it("stays silent with zero blocks — that absence is EST-105's finding", () => {
+    const ctx = willContext(["Execution", "Signed by the testator on the date below."]);
+    expect(est107For("us-va")!.check(ctx)).toBeNull();
+  });
+
+  it("stays silent when the recital overstates the blocks — that mismatch is EST-106's", () => {
+    const ctx = willContext([
+      "Execution",
+      "Signed in the presence of two competent witnesses.",
+      "Witness: ______________",
+    ]);
+    expect(est107For("us-va")!.check(ctx)).toBeNull();
+  });
+
+  it("is an info note under a notarization-alternative state and names the alternative", () => {
+    const ctx = willContext([
+      "Execution",
+      "Witness: ______________",
+    ]);
+    const rule = est107For("us-co")!;
+    expect(rule.default_severity).toBe("info");
+    const finding = rule.check(ctx);
+    expect(finding).not.toBeNull();
+    expect(finding?.explanation).toContain("notary public");
   });
 });
 
