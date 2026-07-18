@@ -46,7 +46,7 @@ export function firstParagraphMatch(ctx: RuleContext, re: RegExp): ParagraphHit 
  * covenant not to compete", "shall not be subject to arbitration".
  */
 const NEGATION_BEFORE =
-  /\b(?:not|no|never|neither|nor|without|excludes?|excluding|nothing)\b|\bconstrued\s+(?:as|to)\b/i;
+  /\b(?:not|no|never|neither|nor|without|excludes?|excluding|nothing|waives?|waiver\s+of|waive\s+any\s+right\s+to)\b|\bconstrued\s+(?:as|to)\b/i;
 
 /**
  * Like {@link firstParagraphMatch}, but SKIPS a match that is negated — one

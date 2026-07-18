@@ -9,7 +9,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
  * Cross-references CUAD's "Uncapped Liability" category.
  */
 const UNCAPPED =
-  /\b(?:unlimited\s+liability|no\s+(?:limitation|cap)\s+on\s+liability|liability\s+(?:is|shall\s+be)\s+unlimited|without\s+(?:any\s+)?(?:cap|limitation)\s+on\s+(?:its\s+)?liability|(?:liable|responsible)\s+for\s+all\s+damages[^.]*?without\s+limitation|all\s+damages[^.]*?without\s+(?:any\s+)?(?:cap|limit(?:ation)?))/i;
+  /\b(?:unlimited\s+liability|no\s+(?:limitation|cap)\s+on\s+liability|liability\b[^.;\n]{0,40}?\b(?:is|shall\s+be)\s+unlimited|without\s+(?:any\s+)?(?:cap|limitation)\s+on\s+(?:its\s+)?liability|(?:liable|responsible)\s+for\s+all\s+damages[^.]*?without\s+limitation|all\s+damages[^.]*?without\s+(?:any\s+)?(?:cap|limit(?:ation)?))/i;
 
 export const rule: Rule = {
   id: "RISK-009",

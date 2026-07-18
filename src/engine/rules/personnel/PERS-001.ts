@@ -13,7 +13,9 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstUnnegatedParagraphMatch(
       ctx,
-      /\bnon[- ]compete\b|\bcovenant\s+not\s+to\s+compete\b/i,
+      // The classic own/manage/operate formulation carries neither token —
+      // its absence made a textbook non-compete invisible (audit).
+      /\bnon[- ]compete\b|\bcovenant\s+not\s+to\s+compete\b|\bshall\s+not[^.;]{0,60}?\b(?:own|manage|operate|control|be\s+employed\s+by|participate\s+in)\b[^.;]{0,120}?\bcompeting\s+business\b/i,
     );
     if (!hit) return null;
     return emit(ctx, rule, {

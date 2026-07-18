@@ -17,7 +17,9 @@ export const rule: Rule = {
       // the SAME sentence as "not solicit" — otherwise a "not solicit
       // <non-personnel>" clause borrowed "employees" from an unrelated next
       // sentence and was misreported as a personnel non-solicit.
-      /\bnon[- ]solicit(?:ation)?\b|\bnot\s+solicit\b[^.;\n]{0,80}\b(?:employees?|customers?)\b/i,
+      // "induce/encourage/persuade … to terminate" is the same covenant
+      // without the solicit token (audit).
+      /\bnon[- ]solicit(?:ation)?\b|\bnot\s+(?:solicit|induce|encourage|persuade|recruit)\b[^.;\n]{0,80}\b(?:employees?|customers?)\b/i,
     );
     if (!hit) return null;
     return emit(ctx, rule, {

@@ -11,7 +11,13 @@ export const rule: Rule = {
   description: "Flags single-party discretionary phrases ('in its sole discretion').",
   dkb_citations: ["stat-restatement-205-good-faith"],
   check(ctx: RuleContext): Finding | null {
-    const hit = firstParagraphMatch(ctx, /\bin\s+its\s+sole\s+discretion\b/i);
+    // "in Supplier's sole discretion" is the same clause as "in its sole
+    // discretion" — the literal-pronoun form missed every named-party
+    // formulation (audit).
+    const hit = firstParagraphMatch(
+      ctx,
+      /\bin\s+(?:its|his|her|their|[A-Z][A-Za-z]+'s)\s+(?:sole\s+(?:and\s+absolute\s+)?)discretion\b/i,
+    );
     if (!hit) return null;
     return emit(ctx, rule, {
       title: "'In its sole discretion' clause present",

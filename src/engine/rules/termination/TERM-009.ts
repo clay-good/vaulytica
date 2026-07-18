@@ -29,7 +29,7 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const convenienceHit = firstParagraphMatch(
       ctx,
-      /\b(Vendor|Provider|Company|Licensor|Employer|Landlord|Disclosing\s+Party)\s+may\s+terminate\s+(?:this\s+Agreement\s+)?(?:at\s+any\s+time|for\s+(?:any|its)\s+(?:reason|convenience)|in\s+its\s+(?:sole\s+)?discretion)/i,
+      /\b(Vendor|Provider|Company|Licensor|Employer|Landlord|Supplier|Contractor|Consultant|Disclosing\s+Party)\s+may\s+terminate\s+(?:this\s+Agreement\s+)?(?:at\s+any\s+time|for\s+(?:any|its)\s+(?:reason|convenience)|in\s+its\s+(?:sole\s+)?discretion)/i,
     );
     if (!convenienceHit) return null;
 

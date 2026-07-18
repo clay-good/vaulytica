@@ -22,6 +22,10 @@ export const rule: Rule = {
     // is "than", not the negator).
     const before = hit.text.slice(Math.max(0, hit.match.index - 24), hit.match.index);
     if (/\b(?:not|rather\s+than|instead\s+of)\s+$/i.test(before)) return null;
+    // "nothing in this Agreement shall be construed to require best efforts"
+    // — the wider disclaimer class the 24-char window can't see (audit).
+    const clause = hit.text.slice(Math.max(0, hit.match.index - 90), hit.match.index);
+    if (/\bnothing\b[^.;]*\b(?:construed|require[sd]?)\b[^.;]*$/i.test(clause)) return null;
     return emit(ctx, rule, {
       title: "'Best efforts' standard used",
       description:

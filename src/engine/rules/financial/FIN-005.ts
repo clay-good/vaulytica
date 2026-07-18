@@ -20,6 +20,11 @@ const PAYMENT_TERMS = new RegExp(
     `\\bpayment\\s+terms?\\s*[:–-]\\s*${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*days?`,
     `\\b(?:payment|invoice|invoices|amount[s]?\\s+(?:due|owed)|fees?)\\s+[\\s\\w,]{0,40}?(?:is|are|shall\\s+be|must\\s+be|to\\s+be)?\\s*(?:due\\s+(?:and\\s+payable\\s+)?|payable\\s+|paid\\s+)within\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*days?`,
     `\\b(?:due\\s+(?:and\\s+payable\\s+)?|payable\\s+|paid\\s+)within\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*days?\\s+(?:of|from|after)\\s+(?:the\\s+)?(?:invoice|receipt)`,
+    // Active voice — "Customer shall pay the fees … within 15 days of
+    // invoice" — arguably the most common formulation; its absence made
+    // the rule warn 'no payment-term clause' on a plainly stated term
+    // (audit).
+    `\\bshall\\s+pay\\b[\\s\\w,()$.]{0,80}?within\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*days?`,
   ].join("|"),
   "i",
 );

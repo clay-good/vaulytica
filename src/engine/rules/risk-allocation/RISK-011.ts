@@ -26,15 +26,31 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const indem = firstParagraphMatch(ctx, /\bindemnif/i);
     if (!indem) return null;
-    const missing = PROCEDURE.filter(([, re]) => !re.test(indem.text)).map(([n]) => n);
+    // The first match is often the SECTION HEADING ("7. INDEMNIFICATION"),
+    // and testing the procedure regexes against a heading declared every
+    // element missing while they sat one paragraph below — with the excerpt
+    // anchored to the heading (audit). Evaluate the whole containing
+    // section, and anchor to its first substantive indemnity paragraph.
+    const section = ctx.tree.sections.find((s) => s.id === indem.position.section_id);
+    const paraText = (p: { runs: { text: string }[] }): string =>
+      p.runs.map((r) => r.text).join("");
+    const sectionText = section
+      ? [section.heading ?? "", ...section.paragraphs.map(paraText)].join("\n")
+      : indem.text;
+    const missing = PROCEDURE.filter(([, re]) => !re.test(sectionText)).map(([n]) => n);
     if (missing.length === 0) return null;
+    const substantive = section?.paragraphs
+      .map(paraText)
+      .find((t) => /\bindemnif/i.test(t) && t.length > 60);
     return emit(ctx, rule, {
       title: `Indemnity procedural elements missing: ${missing.join(", ")}`,
       description: `Indemnity clause appears to be missing: ${missing.join(", ")}.`,
-      excerpt: indem.text.slice(0, 280),
+      excerpt: (substantive ?? indem.text).slice(0, 280),
       explanation:
         "A complete indemnity clause specifies (a) the timeline and form for notice of a claim, (b) which party controls defense, and (c) whether settlement requires consent.",
-      position: indem.position,
+      position: substantive
+        ? { section_id: indem.position.section_id, start: 0, end: 0 }
+        : indem.position,
     });
   },
 };

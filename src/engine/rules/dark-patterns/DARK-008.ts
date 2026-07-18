@@ -29,7 +29,7 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /\b(?:Vendor|Provider|Company|Licensor)\s+may\s+suspend\s+(?:Customer's\s+access\s+to\s+)?the\s+(?:Service|Services|Software|Platform|Application)[^.]{0,200}(?:immediately\s+and\s+without\s+notice|without\s+notice|at\s+any\s+time|in\s+(?:its\s+)?sole\s+discretion)/i,
+      /\b(?:Vendor|Provider|Company|Licensor|Supplier|Contractor|Licensee)\s+may\s+suspend\s+(?:Customer's\s+access\s+to\s+)?the\s+(?:Service|Services|Software|Platform|Application)[^.]{0,200}(?:immediately\s+and\s+without\s+notice|without\s+notice|at\s+any\s+time|in\s+(?:its\s+)?sole\s+discretion)/i,
     );
     if (!hit) return null;
     // The broad trigger can span a COMPLIANT clause and land on a negated phrase

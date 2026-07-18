@@ -13,7 +13,7 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /(?:Provider|Vendor|Company)\s+may\s+(?:modify|amend|change)\s+(?:these|this|the)\s+(?:terms|Agreement|Terms)\s+(?:at\s+any\s+time|from\s+time\s+to\s+time)|reserves\s+the\s+right\s+to\s+(?:modify|amend|change)\s+(?:these|this|the)\s+(?:terms|Agreement|Terms)/i,
+      /(?:Provider|Vendor|Company|Supplier|Contractor|Licensor)\s+may\s+(?:modify|amend|change)\s+(?:these|this|the)\s+(?:terms|Agreement|Terms)\s+(?:at\s+any\s+time|from\s+time\s+to\s+time)|(?:this|these|the)\s+(?:terms|Agreement|Terms)\s+may\s+be\s+(?:modified|amended|changed)\s+by\s+(?:Provider|Vendor|Company|Supplier|Contractor|Licensor)\s+at\s+any\s+time|reserves\s+the\s+right\s+to\s+(?:modify|amend|change)\s+(?:these|this|the)\s+(?:terms|Agreement|Terms)/i,
     );
     if (!hit) return null;
     if (/\b(?:right\s+to\s+terminate|customer\s+may\s+terminate)\b/i.test(hit.text)) return null;

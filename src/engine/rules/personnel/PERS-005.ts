@@ -33,7 +33,7 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /\b(?:non[-\s]?compete|covenant\s+not\s+to\s+compete|shall\s+not\s+(?:directly\s+or\s+indirectly\s+)?compete|agrees?\s+not\s+to\s+(?:directly\s+or\s+indirectly\s+)?engage\s+in\s+(?:any\s+)?(?:business|activity)\s+(?:that\s+)?compet)/i,
+      /\b(?:non[-\s]?compete|covenant\s+not\s+to\s+compete|shall\s+not\s+(?:directly\s+or\s+indirectly\s+)?compete|agrees?\s+not\s+to\s+(?:directly\s+or\s+indirectly\s+)?engage\s+in\s+(?:any\s+)?(?:business|activity)\s+(?:that\s+)?compet|shall\s+not[^.;]{0,60}?\b(?:own|manage|operate|control|be\s+employed\s+by|participate\s+in)\b[^.;]{0,120}?\bcompeting\s+business)/i,
     );
     if (!hit) return null;
     // Suppress a DISCLAIMER of a non-compete ("nothing shall be construed as a
