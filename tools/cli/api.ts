@@ -323,26 +323,43 @@ export { loadAccuracyDeps };
 
 type ProductionMember = { filename: string; bytes: ArrayBuffer };
 
-/** Enumerate the members of a production set (a directory or a `.zip`). */
+/** Enumerate the members of a production set (a directory or a `.zip`).
+ * Directories are walked RECURSIVELY — real productions arrive volume-
+ * structured (`VOL001/…`), and the old non-recursive readdir returned zero
+ * members with exit 0 (audit finding: zip/dir parity break). Hidden files
+ * (`.DS_Store`) are skipped in both paths so the same substantive set
+ * hashes identically across machines. */
 async function collectProductionMembers(target: string): Promise<ProductionMember[]> {
   const info = await stat(target);
   if (info.isDirectory()) {
-    const names = await readdir(target);
     const members: ProductionMember[] = [];
-    for (const name of names.sort()) {
-      const p = join(target, name);
-      const s = await stat(p);
-      if (!s.isFile()) continue;
-      const buf = await readFile(p);
-      members.push({ filename: name, bytes: toArrayBuffer(buf) });
-    }
+    const walk = async (dir: string): Promise<void> => {
+      const names = await readdir(dir);
+      for (const name of names.sort()) {
+        if (name.startsWith(".")) continue;
+        const p = join(dir, name);
+        const s = await stat(p);
+        if (s.isDirectory()) {
+          await walk(p);
+          continue;
+        }
+        if (!s.isFile()) continue;
+        const buf = await readFile(p);
+        members.push({ filename: name, bytes: toArrayBuffer(buf) });
+      }
+    };
+    await walk(target);
+    members.sort((a, b) => a.filename.localeCompare(b.filename, "en"));
     return members;
   }
   if (target.toLowerCase().endsWith(".zip")) {
     const buf = await readFile(target);
     const entries = unzipSync(new Uint8Array(buf));
     return Object.keys(entries)
-      .filter((name) => !name.endsWith("/") && !name.startsWith("__MACOSX/"))
+      .filter(
+        (name) =>
+          !name.endsWith("/") && !name.startsWith("__MACOSX/") && !basename(name).startsWith("."),
+      )
       .sort()
       .map((name) => {
         const data = entries[name]!;
@@ -364,8 +381,20 @@ export async function runProductionQa(
   const members = await collectProductionMembers(target);
   const filenames = members.map((m) => m.filename);
   const csvMembers = members.filter((m) => m.filename.toLowerCase().endsWith(".csv"));
-  const logCsv =
-    csvMembers.length === 1 ? strFromU8(new Uint8Array(csvMembers[0]!.bytes)) : undefined;
+  // With several CSVs (a load file beside the log), prefer the one whose
+  // name says privilege log; ambiguity is REPORTED, never silently dropped
+  // (audit finding: privlog.csv + loadfile.csv → "no privilege log" with
+  // no warning, then a false PROD-011 on the logged gap).
+  let chosenCsv = csvMembers.length === 1 ? csvMembers[0] : undefined;
+  if (!chosenCsv && csvMembers.length > 1) {
+    const privNamed = csvMembers.filter((m) => /priv/i.test(m.filename));
+    if (privNamed.length === 1) chosenCsv = privNamed[0];
+    else
+      process.stderr.write(
+        `vaulytica: warning: ${csvMembers.length} .csv members found (${csvMembers.map((m) => m.filename).join(", ")}) and none is unambiguously the privilege log — the log reconciliation checks did NOT run\n`,
+      );
+  }
+  const logCsv = chosenCsv ? strFromU8(new Uint8Array(chosenCsv.bytes)) : undefined;
 
   // Pre-production sweep: HANDOFF scan over each .docx/.pdf member.
   const deliveries: DeliveryReport[] = [];

@@ -27,6 +27,36 @@ describe("reconcileProduction — PROD-001 sequence gaps", () => {
   });
 });
 
+describe("reconcileProduction — audit-round pins", () => {
+  it("a huge span (1e11) completes instantly via range-walk, no per-integer loop", () => {
+    const bates = extractBatesSet(["ABC_00000000001.pdf", "ABC_99999999999.pdf"]);
+    const start = performance.now();
+    const findings = reconcileProduction({ bates, log: EMPTY_LOG });
+    expect(performance.now() - start).toBeLessThan(1000);
+    const gap = findings.find((f) => f.code === "PROD-001");
+    expect(gap?.detail).toContain("ABC_00000000002–ABC_99999999998");
+  });
+
+  it("case-mismatched log prefixes reconcile: PROD-010 fires, no false PROD-011", () => {
+    const bates = extractBatesSet(filenames("ABC", [1, 2, 4]));
+    const log = parsePrivilegeLog(
+      "Bates Start,Bates End,Privilege,Description\nabc_000002,abc_000003,AC,Email\n",
+    );
+    const findings = reconcileProduction({ bates, log });
+    expect(findings.some((f) => f.code === "PROD-010")).toBe(true);
+    expect(findings.some((f) => f.code === "PROD-011")).toBe(false);
+  });
+
+  it("hyphen-convention Bates in a combined range column parses (PROD-010 fires)", () => {
+    const bates = extractBatesSet(["ABC-000123.pdf", "ABC-000124.pdf", "ABC-000125.pdf"]);
+    const log = parsePrivilegeLog(
+      "Bates Range,Privilege,Description\nABC-000124 - ABC-000124,AC,Memo\n",
+    );
+    const findings = reconcileProduction({ bates, log });
+    expect(findings.some((f) => f.code === "PROD-010")).toBe(true);
+  });
+});
+
 describe("reconcileProduction — PROD-002 duplicates", () => {
   it("detects the same bates number on two filenames", () => {
     const bates = extractBatesSet(["ACME_000001.pdf", "ACME_000002.pdf", "ACME_000002.docx"]);

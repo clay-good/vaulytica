@@ -717,6 +717,14 @@ export async function runAnalyze(argv: string[]): Promise<void> {
     return;
   }
 
+  // The gate flag is meaningless outside --production-qa; silently ignoring
+  // it let a CI pipeline believe it was gated when it was not (audit).
+  if (args.failOnProductionGap) {
+    process.stderr.write("vaulytica: --fail-on-production-gap requires --production-qa\n");
+    process.exitCode = 1;
+    return;
+  }
+
   const deps = await loadAccuracyDeps({ dkbDir: args.dkb });
 
   // spec-v10 Thrust B — load + validate a custom playbook file (its

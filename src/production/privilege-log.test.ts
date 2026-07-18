@@ -123,6 +123,15 @@ describe("parsePrivilegeLog — RFC-4180 quoting", () => {
   });
 });
 
+describe("parsePrivilegeLog — audit-round pins", () => {
+  it("skips Excel-style all-empty ',,,' trailing rows instead of accusing them", () => {
+    const log = parsePrivilegeLog(
+      "Bates Start,Privilege,Description\r\nABC_000001,AC,Email\r\n,,\r\n,,\r\n",
+    );
+    expect(log.entries).toHaveLength(1);
+  });
+});
+
 describe("parsePrivilegeLog — properties", () => {
   it("never throws on arbitrary strings", () => {
     fc.assert(

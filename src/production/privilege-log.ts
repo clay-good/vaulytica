@@ -9,6 +9,8 @@
  * back through this parser.
  */
 
+import { parseBates } from "./bates.js";
+
 export type PrivilegeLogEntry = {
   control?: string;
   bates_start?: string;
@@ -161,15 +163,35 @@ function mapHeader(cell: string): MappedField | null {
   return SYNONYMS[key] ?? null;
 }
 
-/** Split a combined "bates range" cell into start/end on `-`, `–`, or "to". */
+/**
+ * Split a combined "bates range" cell into start/end on `-`, `–`, or "to".
+ * Hyphen-convention Bates numbers contain hyphens themselves
+ * ("ABC-000124 - ABC-000125"), so a first-hyphen split yielded start="ABC"
+ * and the entry was silently skipped for every range check (audit finding).
+ * Whitespace-delimited separators win; a bare hyphen splits only where BOTH
+ * halves parse as Bates ids.
+ */
 function splitBatesRange(value: string): { start?: string; end?: string } {
   const trimmed = value.trim();
   if (trimmed.length === 0) return {};
-  const m = /^(.+?)\s*(?:-|–|\bto\b)\s*(.+)$/i.exec(trimmed);
+  const spaced = /^(.+?)\s+(?:-|–|to)\s+(.+)$/i.exec(trimmed);
+  if (spaced) {
+    return { start: spaced[1]?.trim() || undefined, end: spaced[2]?.trim() || undefined };
+  }
+  const enDash = /^(.+?)\s*–\s*(.+)$/.exec(trimmed); // en-dash never appears inside a Bates id
+  if (enDash) {
+    return { start: enDash[1]?.trim() || undefined, end: enDash[2]?.trim() || undefined };
+  }
+  for (let i = trimmed.indexOf("-"); i !== -1; i = trimmed.indexOf("-", i + 1)) {
+    const left = trimmed.slice(0, i).trim();
+    const right = trimmed.slice(i + 1).trim();
+    if (left && right && parseBates(left) && parseBates(right)) {
+      return { start: left, end: right };
+    }
+  }
+  const m = /^(.+?)\s*(?:-|\bto\b)\s*(.+)$/i.exec(trimmed);
   if (!m) return { start: trimmed };
-  const start = m[1]?.trim();
-  const end = m[2]?.trim();
-  return { start: start || undefined, end: end || undefined };
+  return { start: m[1]?.trim() || undefined, end: m[2]?.trim() || undefined };
 }
 
 /**
@@ -207,7 +229,10 @@ export function parsePrivilegeLog(csv: string): PrivilegeLog {
   for (let r = 1; r < rows.length; r++) {
     const dataRow = rows[r];
     if (!dataRow) continue;
-    if (dataRow.length === 1 && (dataRow[0] ?? "").trim().length === 0) continue; // blank line
+    // Blank line — including Excel-export artifacts like ",,," where every
+    // field is empty; those rows were accused of missing FRCP 26(b)(5)(A)
+    // fields (audit finding).
+    if (dataRow.every((f) => (f ?? "").trim().length === 0)) continue;
     const entry: PrivilegeLogEntry = { row_index: rowIndex };
     for (let c = 0; c < dataRow.length; c++) {
       const field = columnMap[c];
