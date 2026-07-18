@@ -207,6 +207,36 @@ describe("estate formalities catalog", () => {
     expect(wi.citation.source).toContain("853.03");
   });
 
+  it("pins the sixth-wave facts (MN, SC, AL, KY)", () => {
+    // MN: pre-2008 UPC — reasonable time, no notary alternative, NO
+    // holographic subsection; non-uniform conservator-signing option.
+    const mn = estateFormalitiesForState("us-mn")!;
+    expect(mn.reasonable_time_phrasing).toBe(true);
+    expect(mn.holographic_recognized).toBe(false);
+    expect(mn.summary).toContain("conservator");
+    expect(mn.citation.source).toContain("524.2-502");
+
+    // SC: UPC two-witness with the timing clause stripped; NO holographic.
+    const sc = estateFormalitiesForState("us-sc")!;
+    expect(sc.reasonable_time_phrasing).toBe(false);
+    expect(sc.holographic_recognized).toBe(false);
+    expect(sc.citation.source).toContain("62-2-502");
+
+    // AL: pre-1990 UPC; holographic non-recognition verified. No Alabama
+    // e-wills act could be evidenced, so e_will_regime stays omitted.
+    const al = estateFormalitiesForState("us-al")!;
+    expect(al.holographic_recognized).toBe(false);
+    expect("e_will_regime" in al).toBe(false);
+    expect(al.citation.source).toContain("43-8-131");
+
+    // KY: wholly-handwritten wills need NO witnesses; otherwise 2 credible
+    // witnesses in the presence of the testator AND each other.
+    const ky = estateFormalitiesForState("us-ky")!;
+    expect(ky.holographic_recognized).toBe(true);
+    expect(ky.summary).toContain("each other");
+    expect(ky.citation.source).toContain("394.040");
+  });
+
   it("returns undefined for unseeded states (honest N/A) and publishes the denominator", () => {
     expect(estateFormalitiesForState("us-wy")).toBeUndefined();
     expect(estateFormalitiesForState("us-ms")).toBeUndefined();

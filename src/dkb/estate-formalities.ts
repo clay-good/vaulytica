@@ -116,6 +116,24 @@ const cite = (id: string, source: string, source_url: string): SourceCitation =>
 /** The seed catalog — only primary-source-verified states, ordered by id. */
 export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
   {
+    id: "est-formalities-us-al",
+    jurisdiction: "us-al",
+    state_name: "Alabama",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: false,
+    headline: "2 witnesses (pre-1990 UPC, no timing clause); holographic NOT recognized in-state",
+    summary:
+      "Alabama enacted the pre-1990 UPC § 2-502 formula: every will must be in writing, signed by the testator (or by proxy in the testator's presence and at the testator's direction), and signed by at least two persons who each witnessed the signing or the testator's acknowledgment (Ala. Code § 43-8-131) — no notarization alternative, no 'reasonable time' clause, and no requirement that the witnesses sign in the testator's presence. Interested witnesses do not invalidate the will (§ 43-8-134(b)). Unwitnessed holographic wills executed in Alabama are invalid; the § 43-8-135 choice-of-law rule admits wills valid where executed or where the testator was domiciled.",
+    citation: cite(
+      "al-code-43-8-131",
+      "Ala. Code §§ 43-8-131, 43-8-134, 43-8-135 (execution; witnesses; choice of law)",
+      "https://law.onecle.com/alabama/title-43/43-8-131.html",
+    ),
+  },
+  {
     id: "est-formalities-us-az",
     jurisdiction: "us-az",
     state_name: "Arizona",
@@ -243,6 +261,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     ),
   },
   {
+    id: "est-formalities-us-ky",
+    jurisdiction: "us-ky",
+    state_name: "Kentucky",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: true,
+    headline: "2 credible witnesses, mutual presence — unless wholly in the testator's handwriting",
+    summary:
+      "Kentucky requires every will to be in writing with the testator's name subscribed by the testator (or by a proxy in the testator's presence and at the testator's direction). If the will is not wholly written by the testator, the testator must subscribe or acknowledge it in the presence of at least two credible witnesses, who must subscribe their names in the presence of the testator AND of each other (KRS § 394.040) — an express mutual-presence requirement rare among the states, with no notarization alternative and no 'reasonable time' window. A will wholly written by the testator is valid without any witnesses — Kentucky's holographic path, with no date requirement and no 'material provisions' test.",
+    citation: cite(
+      "ky-krs-394-040",
+      "Ky. Rev. Stat. § 394.040 (requisites of a valid will)",
+      "https://apps.legislature.ky.gov/law/statutes/statute.aspx?id=36237",
+    ),
+  },
+  {
     id: "est-formalities-us-la",
     jurisdiction: "us-la",
     state_name: "Louisiana",
@@ -313,6 +349,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
       "mi-mcl-700-2502",
       "Mich. Comp. Laws § 700.2502 (execution; witnessed wills; holographic wills)",
       "https://www.legislature.mi.gov/mileg.aspx?page=getobject&objectname=mcl-700-2502",
+    ),
+  },
+  {
+    id: "est-formalities-us-mn",
+    jurisdiction: "us-mn",
+    state_name: "Minnesota",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: true,
+    holographic_recognized: false,
+    headline: "2 witnesses (reasonable time); holographic NOT recognized in-state",
+    summary:
+      "Minnesota retains the pre-2008 UPC form: the will must be in writing, signed by the testator (or by proxy in the testator's conscious presence and at the testator's direction, or by a court-authorized conservator under § 524.5-411 — a non-uniform Minnesota addition), and signed by at least two individuals within a reasonable time after witnessing the signing or the testator's acknowledgment (Minn. Stat. § 524.2-502). Neither the notarized-acknowledgment alternative nor the holographic-will subsection was enacted, so an unwitnessed holograph executed in Minnesota is invalid; out-of-state holographs may be admitted via the § 524.2-506 choice-of-law rule.",
+    citation: cite(
+      "mn-stat-524-2-502",
+      "Minn. Stat. §§ 524.2-502, 524.2-506 (execution; witnessed wills; choice of law)",
+      "https://www.revisor.mn.gov/statutes/cite/524.2-502",
     ),
   },
   {
@@ -438,6 +492,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
       "pa-20-pacs-2502",
       "20 Pa. C.S. § 2502 (form and execution of a will)",
       "https://www.legis.state.pa.us/WU01/LI/LI/CT/HTM/20/00.025.002.000..HTM",
+    ),
+  },
+  {
+    id: "est-formalities-us-sc",
+    jurisdiction: "us-sc",
+    state_name: "South Carolina",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: false,
+    headline: "2 witnesses (no timing clause); holographic NOT recognized in-state",
+    summary:
+      "South Carolina follows the UPC two-witness pattern with the timing language stripped: the will must be in writing, signed by the testator (or by proxy in the testator's presence and at the testator's direction), and signed by at least two individuals who each witnessed the signing or the testator's acknowledgment (S.C. Code Ann. § 62-2-502) — no 'reasonable time' clause, no notarization alternative, and no presence requirement for the witnesses' own signatures. Unwitnessed holographic wills are not valid under SC law, though § 62-2-505 admits wills valid where executed or where the testator was domiciled. Numbering trap: § 62-2-503 is the self-proving-affidavit section, not UPC harmless error, which SC has not adopted.",
+    citation: cite(
+      "sc-code-62-2-502",
+      "S.C. Code Ann. §§ 62-2-502, 62-2-505 (execution; choice of law)",
+      "https://www.scstatehouse.gov/code/t62c002.php",
     ),
   },
   {
