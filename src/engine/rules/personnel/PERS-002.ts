@@ -13,7 +13,11 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstUnnegatedParagraphMatch(
       ctx,
-      /\bnon[- ]solicit(?:ation)?\b|\bnot\s+solicit\b[\s\S]{0,80}\b(?:employees?|customers?)\b/i,
+      // `[^.;\n]` (not `[\s\S]`) so the employees/customers object must sit in
+      // the SAME sentence as "not solicit" — otherwise a "not solicit
+      // <non-personnel>" clause borrowed "employees" from an unrelated next
+      // sentence and was misreported as a personnel non-solicit.
+      /\bnon[- ]solicit(?:ation)?\b|\bnot\s+solicit\b[^.;\n]{0,80}\b(?:employees?|customers?)\b/i,
     );
     if (!hit) return null;
     return emit(ctx, rule, {

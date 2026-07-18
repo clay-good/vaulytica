@@ -17,7 +17,11 @@ export const rule: Rule = {
     // truly vague obligors: "the appropriate party", "the relevant
     // party", or an empty/missing obligor.
     const ambiguous = ctx.extracted.obligations.filter((o) =>
-      /^(the\s+appropriate\s+party|the\s+relevant\s+party|the\s+responsible\s+party|the\s+other\s+party|\s*)$/i.test(
+      // "the other party" is a precise counterparty reference in a bilateral
+      // agreement, not a vague obligor — dropped so a routine "the other party
+      // shall be notified" is not flagged. Only genuinely unidentified obligors
+      // (appropriate / relevant / responsible party, or empty) remain.
+      /^(the\s+appropriate\s+party|the\s+relevant\s+party|the\s+responsible\s+party|\s*)$/i.test(
         o.obligor.trim(),
       ),
     );

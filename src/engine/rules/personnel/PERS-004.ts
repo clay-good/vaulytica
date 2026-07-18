@@ -14,7 +14,11 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /\b(?:no[- ]hire|will\s+not\s+hire|will\s+not\s+employ)\b[\s\S]{0,80}\b(?:other\s+party|employees?)\b/i,
+      // `[^.;\n]` (not `[\s\S]`) so the object must sit in the SAME sentence as
+      // the no-hire trigger — otherwise an unrelated "will not hire <thing>"
+      // clause borrowed "employees"/"other party" from the next sentence and was
+      // misreported as an anti-poaching clause.
+      /\b(?:no[- ]hire|will\s+not\s+hire|will\s+not\s+employ)\b[^.;\n]{0,80}\b(?:other\s+party|employees?)\b/i,
     );
     if (!hit) return null;
     if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;

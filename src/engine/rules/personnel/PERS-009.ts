@@ -43,8 +43,11 @@ const NON_SOLICIT_NEGATIVES = [
 // Conservative duration regex — avoids backtracking by keeping the
 // quantifier tree shallow. Matches either a bare number / spelled-out
 // number, then optional "(NN)" gloss, then the unit.
+// `[\s-]*` between the number and the unit so the common adjectival hyphenation
+// "24-month" is caught, not only the spaced "24 month" form — otherwise a
+// genuinely over-long "24-month" non-solicit was silently missed.
 const DURATION_RE =
-  /\b(\d{1,3}|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|eighteen|twenty(?:-(?:one|two|three|four))?|thirty(?:-six)?)\s*(?:\(\d{1,3}\)\s*)?(year|years|month|months)\b/i;
+  /\b(\d{1,3}|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|eighteen|twenty(?:-(?:one|two|three|four))?|thirty(?:-six)?)[\s-]*(?:\(\d{1,3}\)\s*)?(year|years|month|months)\b/i;
 
 const NUM_WORDS: Record<string, number> = {
   one: 1,
