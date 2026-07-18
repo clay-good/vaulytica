@@ -48,7 +48,12 @@ export const rule: Rule = {
     forEachParagraph(ctx.tree, (p) => {
       if (counterpartyCureFound) return;
       if (
-        /\b(Customer|Licensee|Recipient|Employee|Tenant|Receiving\s+Party|Contractor)\s+(?:shall|must|may\s+only)\s+terminate[^.]{0,160}\b(?:material\s+breach|cure\s+(?:period|window)|30\s+days?\s+(?:to\s+cure|notice)|provide\s+written\s+notice)/i.test(
+        // Only a genuine cause/cure GATE on the counterparty makes the drafter's
+        // convenience right asymmetric. A bare "provide written notice" is an
+        // ordinary notice requirement, not a cure gate — including it fired this
+        // warning (with its "wait through a cure period or prove a material
+        // breach" explanation) on a symmetric notice-based termination right.
+        /\b(Customer|Licensee|Recipient|Employee|Tenant|Receiving\s+Party|Contractor)\s+(?:shall|must|may\s+only)\s+terminate[^.]{0,160}\b(?:material\s+breach|cure\s+(?:period|window)|30\s+days?\s+to\s+cure)/i.test(
           p.text,
         )
       ) {

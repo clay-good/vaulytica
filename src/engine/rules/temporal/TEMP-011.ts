@@ -34,6 +34,18 @@ export const rule: Rule = {
       /(\d+)\s*(?:-?day-?\(?s?\)?)\s*(?:prior\s+(?:written\s+)?)?(?:written\s+)?notice|(?:prior|written)\s+notice\s+(?:of\s+)?(?:at\s+least\s+)?(\d+)\s*days?|(\d+)\s*days?\s*(?:prior|before|in\s+advance)/i,
     );
     if (!noticeMatch) return null;
+    // The notice must govern non-renewal, not a different termination path in
+    // the same paragraph: if a for-cause / convenience / breach termination
+    // clause immediately precedes the notice, that notice belongs to it, not to
+    // the auto-renewal non-renewal window.
+    const noticeStart = noticeMatch.index ?? 0;
+    const preNotice = hit.text.slice(Math.max(0, noticeStart - 60), noticeStart);
+    if (
+      /\bfor\s+(?:cause|convenience)\b|\bmaterial(?:ly)?\s+breach\b|\bdefault\b|\buncured\b/i.test(
+        preNotice,
+      )
+    )
+      return null;
     const daysStr = noticeMatch[1] ?? noticeMatch[2] ?? noticeMatch[3];
     if (!daysStr) return null;
     const days = Number(daysStr);

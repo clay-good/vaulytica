@@ -12,7 +12,14 @@ export const rule: Rule = {
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
     if (
-      firstParagraphMatch(ctx, /\bterminate\b[\s\S]{0,80}\bfor\s+cause\b|material(?:ly)?\s+breach/i)
+      firstParagraphMatch(
+        ctx,
+        // `\b` before "material" so "immaterial breach" — which DISCLAIMS a
+        // termination right — does not satisfy the for-cause path and suppress
+        // this "no for-cause clause" warning. No trailing boundary, so the
+        // common plural "material breaches" still matches.
+        /\bterminate\b[\s\S]{0,80}\bfor\s+cause\b|\bmaterial(?:ly)?\s+breach/i,
+      )
     )
       return null;
     return emit(ctx, rule, {

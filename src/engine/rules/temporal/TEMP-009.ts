@@ -13,7 +13,9 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /(?:cure\s+such\s+breach|opportunity\s+to\s+cure|cure\s+period)[\s\S]{0,80}?(\d{1,3})\s+days/i,
+      // `\b` before "cure" so "procure such breach-free …" is not read as a
+      // breach-cure period.
+      /(?:\bcure\s+such\s+breach|opportunity\s+to\s+cure|cure\s+period)[\s\S]{0,80}?(\d{1,3})\s+days/i,
     );
     if (!hit) return null;
     const days = parseInt(hit.match[1] ?? "0", 10);
