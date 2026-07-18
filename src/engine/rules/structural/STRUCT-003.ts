@@ -2,8 +2,13 @@ import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { findStatuteCitation, makeFinding } from "../../finding.js";
 import { forEachParagraph, forEachSection } from "../../../extract/walk.js";
 
-const SIG_LINE = /^\s*(?:By|Name|Title|Date|Signed|Print(?:ed)?\s+Name)\s*:?\s*/im;
-const SIG_TOKEN = /\b(?:By|Name|Title|Date|Signature|Signed|Authorized\s+Signatory)\b\s*:?/i;
+// A signature-block label is followed by a colon ("By:") or an underscore fill
+// line ("By ____"). WITHOUT that anchor the bare words "by" / "date" / "title"
+// occur constantly as ordinary prose ("passes by that date", "Title to the
+// Goods"), which counted as signature signals and SILENTLY SUPPRESSED the
+// critical "no signature block" finding on documents that have none.
+const SIG_LINE = /^\s*(?:By|Name|Title|Date|Signed|Print(?:ed)?\s+Name)\b\s*(?::|_)/im;
+const SIG_TOKEN = /\b(?:By|Name|Title|Date|Signature|Signed|Authorized\s+Signatory)\b\s*:/i;
 const EXHIBIT_HEADING = /\b(?:exhibit|schedule|attachment|appendix|annex|annexure)\b/i;
 
 /**

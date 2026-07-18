@@ -1,6 +1,12 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, allMatches } from "../_helpers.js";
+import { emit, allMatches, enclosingSentence } from "../_helpers.js";
 import { forEachSection } from "../../../extract/walk.js";
+
+// A reference the document itself carves out ("not part of this Agreement",
+// "for convenience only", "for informational purposes") is not an operative
+// incorporation-by-reference — flagging it is a false accusation.
+const INCORP_DISCLAIMER =
+  /\bnot\s+(?:a\s+)?part\s+of\s+this\s+Agreement|does\s+not\s+form\s+(?:a\s+)?part|for\s+(?:convenience|informational?\s+purposes?|reference)\s+(?:only|purposes)|for\s+information(?:al)?\s+purposes?\s+only/i;
 
 /**
  * STRUCT-016 — Incorporation by reference to an external / unattached
@@ -49,8 +55,12 @@ export const rule: Rule = {
     // Pass A: URL-based incorporation.
     const urlMatches = allMatches(
       ctx,
-      /\b(?:incorporated\s+(?:by|herein\s+by|into\s+this\s+Agreement\s+by)\s+reference|subject\s+to|governed\s+by|in\s+accordance\s+with|comply\s+with)\b[\s\S]{0,200}\b(?:Acceptable\s+Use\s+Policy|Privacy\s+Policy|Cookie\s+Policy|SLA|Service\s+Level\s+Agreement|Documentation|Service\s+Description|Terms\s+of\s+Use|Terms\s+of\s+Service|Code\s+of\s+Conduct|Security\s+Policy|Data\s+Processing\s+Addendum|DPA)\b[\s\S]{0,200}(?:https?:\/\/[^\s,)]+|located\s+at\s+[^\s,]+|available\s+at\s+[^\s,]+|on\s+(?:Vendor|Provider|Company|Licensor)'?s?\s+website|on\s+the\s+(?:Vendor|Provider|Company)\s+(?:website|portal))/i,
-    );
+      // `[^.;\n]` (not `[\s\S]`) so the incorporation trigger, the policy name,
+      // and the URL must all sit in ONE sentence — otherwise the window stitched
+      // an unrelated governing-law clause to a later, disclaimed support-portal
+      // URL and reported it as an incorporation.
+      /\b(?:incorporated\s+(?:by|herein\s+by|into\s+this\s+Agreement\s+by)\s+reference|subject\s+to|governed\s+by|in\s+accordance\s+with|comply\s+with)\b[^.;\n]{0,200}\b(?:Acceptable\s+Use\s+Policy|Privacy\s+Policy|Cookie\s+Policy|SLA|Service\s+Level\s+Agreement|Documentation|Service\s+Description|Terms\s+of\s+Use|Terms\s+of\s+Service|Code\s+of\s+Conduct|Security\s+Policy|Data\s+Processing\s+Addendum|DPA)\b[^.;\n]{0,200}(?:https?:\/\/[^\s,)]+|located\s+at\s+[^\s,]+|available\s+at\s+[^\s,]+|on\s+(?:Vendor|Provider|Company|Licensor)'?s?\s+website|on\s+the\s+(?:Vendor|Provider|Company)\s+(?:website|portal))/i,
+    ).filter((mm) => !INCORP_DISCLAIMER.test(enclosingSentence(mm.text, mm.match.index)));
     if (urlMatches.length > 0) {
       const first = urlMatches[0]!;
       return emit(ctx, rule, {

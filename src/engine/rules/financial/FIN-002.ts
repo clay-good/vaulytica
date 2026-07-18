@@ -2,6 +2,14 @@ import Decimal from "decimal.js";
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { makeFinding } from "../../finding.js";
 import { forEachParagraph } from "../../../extract/walk.js";
+import { enclosingSentence } from "../_helpers.js";
+
+// An escalation / tiered schedule reuses the same named amount at different
+// values ON PURPOSE, tying each to a distinct period. Differing values with
+// this language are intended, not a drafting inconsistency, so the "conflicting
+// values" warning must not fire on them.
+const ESCALATION_OR_PERIOD =
+  /\b(?:escalat|increas|step[-\s]?up|adjust(?:ed|ment)|Lease\s+Year|(?:first|second|third|fourth|fifth|initial|subsequent)\s+(?:Lease\s+)?(?:Year|Term|Period|Phase)|(?:Year|Month|Term|Phase|Period)\s+(?:\d|one|two|three|four|five)|per\s+annum|each\s+(?:year|anniversary)|thereafter|renewal\s+term)/i;
 
 /**
  * FIN-002 — Inconsistent named amounts (warning).
@@ -27,7 +35,14 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const byName = new Map<
       string,
-      { value: Decimal; raw: string; sectionId: string; start: number; end: number }[]
+      {
+        value: Decimal;
+        raw: string;
+        sectionId: string;
+        start: number;
+        end: number;
+        scheduled: boolean;
+      }[]
     >();
 
     forEachParagraph(ctx.tree, (p) => {
@@ -43,6 +58,7 @@ export const rule: Rule = {
           sectionId: p.section.id,
           start: p.start + m.index,
           end: p.start + m.index + m[0].length,
+          scheduled: ESCALATION_OR_PERIOD.test(enclosingSentence(p.text, m.index)),
         });
         byName.set(name, list);
       }
@@ -52,6 +68,9 @@ export const rule: Rule = {
       if (list.length < 2) continue;
       const distinct = new Set(list.map((e) => e.value.toString()));
       if (distinct.size < 2) continue;
+      // An intentional escalation / tiered schedule (each value tied to a
+      // distinct period) is not a conflict.
+      if (list.some((e) => e.scheduled)) continue;
       const first = list[0]!;
       const values = [...distinct].join(", ");
       return makeFinding({
