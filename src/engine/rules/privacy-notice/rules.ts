@@ -43,7 +43,17 @@ import {
 
 export const PRIVACY_NOTICE_PLAYBOOK_IDS = ["privacy-notice-us", "privacy-notice-gdpr"] as const;
 
-export type PnotRule = Rule & { regime: RegimeId };
+export type PnotRule = Rule & {
+  regime: RegimeId;
+  /**
+   * The rule fires only when the notice itself evidences a trigger (a sale
+   * of sensitive/biometric data, sale/targeted-advertising processing). A
+   * conditional rule that produced NO finding proves nothing about the
+   * item's presence — the trigger may simply be absent — so the coverage
+   * table must not claim it was "found" (audit finding).
+   */
+  conditional?: true;
+};
 
 /** Maps a `RegimeId` to the uppercase token used in `PNOT-<TOKEN>-nnn` ids. */
 const REGIME_TOKENS: Record<RegimeId, string> = {
@@ -224,6 +234,7 @@ function buildTxExactRule(spec: TxExactSpec): PnotRule {
   return {
     id: spec.id,
     version: "1.1.0",
+    conditional: true,
     name: `Mandated ${spec.kind}-data sale notice (exact wording)`,
     category: "privacy-notice",
     default_severity: "warning",
@@ -349,6 +360,7 @@ function buildOptOutRule(spec: OptOutSpec): PnotRule {
   return {
     id: spec.id,
     version: "1.1.0",
+    conditional: true,
     name: "Sale / targeted-advertising opt-out disclosure",
     category: "privacy-notice",
     default_severity: "warning",

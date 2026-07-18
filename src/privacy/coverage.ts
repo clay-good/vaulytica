@@ -32,11 +32,19 @@ export function buildRegimeCoverage(
   const out: RegimeCoverage[] = [];
   for (const regime of regimes) {
     const rules = pnotRulesForRegimes([regime]) as PnotRule[];
-    const items = rules.map((r) => ({
-      rule_id: r.id,
-      item: r.name,
-      found: !firedRuleIds.has(r.id),
-    }));
+    // A CONDITIONAL rule (TX exact-wording, VA/TX opt-out) that produced
+    // no finding proves nothing: its trigger may simply be absent, so a
+    // "found" row would be a lie (audit: a no-sale notice showed the
+    // § 541.102 mandated sentences as found=true though they appear
+    // nowhere). Conditional rules get a row ONLY when they fired — no
+    // row, no claim.
+    const items = rules
+      .filter((r) => !r.conditional || firedRuleIds.has(r.id))
+      .map((r) => ({
+        rule_id: r.id,
+        item: r.name,
+        found: !firedRuleIds.has(r.id),
+      }));
     out.push({
       regime,
       regime_name: REGIMES[regime]?.name ?? regime,
