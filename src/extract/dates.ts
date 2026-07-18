@@ -178,7 +178,7 @@ export function extractDates(tree: DocumentTree): DateReference[] {
       const lower = countOf(m[1], m[2]);
       const upper = countOf(m[3], m[4]);
       const unit = (m[5] ?? "").toLowerCase().replace(/\s+/g, " ").trim();
-      const anchor = (m[6] ?? "").trim();
+      const anchor = trimAnchorQualifier((m[6] ?? "").trim());
       if (lower === null || upper === null) continue;
       const direction = /\bbefore\b|\bprior\s+to\b/i.test(m[0]) ? -1 : 1;
       const lo = lower * unitToDays(unit) * direction;
@@ -209,7 +209,7 @@ export function extractDates(tree: DocumentTree): DateReference[] {
       const wordCount = m[1] ? parseWordNumber(m[1]) : null;
       const numericCount = m[2] ? parseInt(m[2], 10) : null;
       const unit = (m[3] ?? "").toLowerCase().replace(/\s+/g, " ").trim();
-      const anchor = (m[4] ?? "").trim();
+      const anchor = trimAnchorQualifier((m[4] ?? "").trim());
       const count = numericCount ?? wordCount;
       const direction = /\bbefore\b|\bprior\s+to\b/i.test(m[0]) ? -1 : 1;
       const days = count !== null ? count * unitToDays(unit) * direction : undefined;
@@ -277,6 +277,23 @@ function countOf(wordGroup: string | undefined, digitGroup: string | undefined):
   const w = parseWordNumber(wordGroup);
   if (w !== null) return w;
   return /^\d+$/.test(wordGroup.trim()) ? parseInt(wordGroup.trim(), 10) : null;
+}
+
+/**
+ * Strip a trailing document self-reference qualifier from a captured anchor —
+ * "Effective Date of this Agreement" / "Closing Date hereof" over-extend the
+ * capture (the lookahead only stops at punctuation), so they never match the
+ * "effective date" resolution key and a computable deadline is reported
+ * unresolved. Only removes "of this/the <doc>" / "hereof|hereto|hereunder" /
+ * "under this/the <doc>" — a substantive "Date of Termination" is untouched.
+ */
+function trimAnchorQualifier(anchor: string): string {
+  return anchor
+    .replace(
+      /\s+(?:of\s+(?:this|the)\s+\w+(?:\s+\w+){0,2}|hereof|hereto|hereunder|under\s+(?:this|the)\s+\w+(?:\s+\w+){0,2})\s*$/i,
+      "",
+    )
+    .trim();
 }
 
 /** Title-case a (possibly multi-word, hyphenated) anchor alias. */

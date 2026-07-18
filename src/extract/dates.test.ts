@@ -26,6 +26,22 @@ describe("extractDates", () => {
     expect(rel?.anchor).toMatch(/Effective Date/);
   });
 
+  it("trims a trailing document self-reference so the anchor still resolves", () => {
+    // "of the Effective Date of this Agreement" over-extends the capture; the
+    // anchor must normalize to "Effective Date" (the resolution key), not the
+    // whole qualified phrase, so a computable deadline is not reported unresolved.
+    const rel = (t: string) =>
+      extractDates(buildTree(["Body", t])).find((d) => d.type === "relative");
+    expect(
+      rel("Payment is due within 30 days of the Effective Date of this Agreement.")?.anchor,
+    ).toBe("Effective Date");
+    expect(rel("Notice within 10 days of the Closing Date hereof.")?.anchor).toBe("Closing Date");
+    // A substantive "Date of X" phrase is NOT truncated.
+    expect(rel("Cure within 5 days of the Date of Termination.")?.anchor).toBe(
+      "Date of Termination",
+    );
+  });
+
   it("captures named anchors like 'the Effective Date'", () => {
     const tree = buildTree(["Body", "The Effective Date is the date of execution."]);
     const dates = extractDates(tree);
