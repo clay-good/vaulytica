@@ -170,6 +170,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     ),
   },
   {
+    id: "est-formalities-us-il",
+    jurisdiction: "us-il",
+    state_name: "Illinois",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: false,
+    headline: "2+ credible witnesses, in the testator's presence; holographic NOT recognized",
+    summary:
+      "Illinois requires every will to be in writing, signed by the testator (or by another in the testator's presence and by the testator's direction), and attested in the presence of the testator by two or more credible witnesses (755 ILCS 5/4-3). Holographic (unwitnessed handwritten) wills are not valid under Illinois's own law; an out-of-state will is recognized only if it complied with the law where executed or of the testator's domicile (755 ILCS 5/7-1).",
+    citation: cite(
+      "il-755-ilcs-5-4-3",
+      "755 ILCS 5/4-3 (signing and attestation)",
+      "https://www.ilga.gov/documents/legislation/ilcs/documents/075500050K4-3.htm",
+    ),
+  },
+  {
     id: "est-formalities-us-la",
     jurisdiction: "us-la",
     state_name: "Louisiana",
@@ -188,6 +206,42 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     ),
   },
   {
+    id: "est-formalities-us-mi",
+    jurisdiction: "us-mi",
+    state_name: "Michigan",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: true,
+    holographic_recognized: true,
+    headline: "2 witnesses (reasonable time); holographic OK if DATED",
+    summary:
+      "Michigan follows the UPC witnessing pattern: the will must be signed by at least two individuals, each signing within a reasonable time after witnessing the signing or the testator's acknowledgment (MCL § 700.2502(1)(c)). A non-complying will is valid as a holographic will, whether or not witnessed, if it is DATED and the signature and material portions are in the testator's handwriting (§ 700.2502(2)) — the dating requirement is a Michigan addition most UPC states omit.",
+    citation: cite(
+      "mi-mcl-700-2502",
+      "Mich. Comp. Laws § 700.2502 (execution; witnessed wills; holographic wills)",
+      "https://www.legislature.mi.gov/mileg.aspx?page=getobject&objectname=mcl-700-2502",
+    ),
+  },
+  {
+    id: "est-formalities-us-nc",
+    jurisdiction: "us-nc",
+    state_name: "North Carolina",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: true,
+    headline: "2 competent witnesses, in the testator's presence; holographic OK",
+    summary:
+      "North Carolina requires an attested written will to be signed by the testator (or by another at the testator's direction and in the testator's presence) and attested by at least two competent witnesses, each of whom witnessed the signing or the testator's acknowledgment of the signature (N.C.G.S. § 31-3.3). A holographic will — written entirely in the testator's handwriting and signed — is valid with no attesting witness (§ 31-3.4); extraneous printed matter not in the testator's hand does not defeat it.",
+    citation: cite(
+      "nc-gs-31-3-3",
+      "N.C. Gen. Stat. §§ 31-3.3, 31-3.4 (attested written will; holographic will)",
+      "https://www.ncleg.net/enactedlegislation/statutes/html/bysection/chapter_31/gs_31-3.4.html",
+    ),
+  },
+  {
     id: "est-formalities-us-nd",
     jurisdiction: "us-nd",
     state_name: "North Dakota",
@@ -203,6 +257,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
       "nd-cent-code-30-1-08-02",
       "N.D. Cent. Code § 30.1-08-02 (2-502) (execution; witnessed wills; holographic wills)",
       "https://ndlegis.gov/cencode/t30-1c08.pdf",
+    ),
+  },
+  {
+    id: "est-formalities-us-nj",
+    jurisdiction: "us-nj",
+    state_name: "New Jersey",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: true,
+    holographic_recognized: true,
+    headline: "2 witnesses (reasonable time); handwritten 'writing intended as will' OK",
+    summary:
+      "New Jersey follows the UPC witnessing pattern: the will must be signed by at least two individuals, each signing within a reasonable time after witnessing the signing or the testator's acknowledgment (N.J.S.A. § 3B:3-2(a)(3)). A non-complying document is valid as a writing intended as a will, whether or not witnessed, if the signature and material portions are in the testator's handwriting (§ 3B:3-2(b)) — New Jersey's holographic-equivalent; testamentary intent may be shown by extrinsic evidence (§ 3B:3-2(c)).",
+    citation: cite(
+      "nj-3b-3-2",
+      "N.J.S.A. § 3B:3-2 (execution; witnessed wills; writings intended as wills)",
+      "https://law.justia.com/codes/new-jersey/title-3b/section-3b-3-2/",
     ),
   },
   {

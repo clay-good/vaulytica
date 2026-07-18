@@ -97,6 +97,30 @@ describe("estate formalities catalog", () => {
     expect(fl.citation.source).toContain("732.502");
   });
 
+  it("pins the second-wave facts (IL, MI, NJ, NC)", () => {
+    // IL: 2+ credible witnesses in the testator's presence; NO holographic.
+    const il = estateFormalitiesForState("us-il")!;
+    expect(il.holographic_recognized).toBe(false);
+    expect(il.reasonable_time_phrasing).toBe(false);
+    expect(il.citation.source).toContain("4-3");
+
+    // MI: UPC reasonable-time; holographic requires DATING (the MI addition).
+    const mi = estateFormalitiesForState("us-mi")!;
+    expect(mi.reasonable_time_phrasing).toBe(true);
+    expect(mi.holographic_recognized).toBe(true);
+    expect(mi.summary).toContain("DATED");
+
+    // NJ: UPC reasonable-time; writing-intended-as-will holographic equivalent.
+    const nj = estateFormalitiesForState("us-nj")!;
+    expect(nj.reasonable_time_phrasing).toBe(true);
+    expect(nj.holographic_recognized).toBe(true);
+
+    // NC: attested in testator's presence; holographic per § 31-3.4.
+    const nc = estateFormalitiesForState("us-nc")!;
+    expect(nc.holographic_recognized).toBe(true);
+    expect(nc.citation.source).toContain("31-3.3");
+  });
+
   it("returns undefined for unseeded states (honest N/A) and publishes the denominator", () => {
     expect(estateFormalitiesForState("us-wy")).toBeUndefined();
     expect(estateFormalitiesForState("us-ga")).toBeUndefined();
