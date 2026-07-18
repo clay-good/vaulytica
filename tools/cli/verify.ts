@@ -22,6 +22,8 @@ import { computeResultHash, type EngineRun } from "../../src/engine/index.js";
 import { analyzeText, analyzeFile, loadAccuracyDeps, type AnalyzeResult } from "./api.js";
 import type { AccuracyDeps } from "../accuracy/pipeline.js";
 import { resolveDkbDir } from "../dkb/resolve.js";
+import { getCourtProfile } from "../../src/filing/court-profile.js";
+import type { RegimeId } from "../../src/privacy/regime-data.js";
 
 /** The fields of a saved JSON report the verifier needs. */
 export type SavedReport = {
@@ -35,6 +37,16 @@ export type SavedReport = {
     findings?: unknown[];
     /** Present in a full report body — enables the body-integrity check. */
     execution_log?: unknown[];
+    /**
+     * Asserted-pack stamps (present only when the pack fired). The re-run
+     * must re-assert them: an `--estate-checks` / `--regime` / `--court` /
+     * `--state` report re-derived WITHOUT its assertions runs the base rule
+     * set and can never reproduce the recorded hash.
+     */
+    filing_profile?: { id: string; brief_kind: "principal" | "reply" };
+    asserted_regimes?: string[];
+    estate_checks_asserted?: boolean;
+    asserted_state?: string;
   };
   provenance?: {
     engine_version: string;
@@ -84,6 +96,35 @@ async function checkSavedBody(saved: SavedReport): Promise<ReproResult | null> {
 }
 
 /**
+ * Reconstruct the analyze options for the packs the saved run asserts
+ * (fix: an assertion-gated report — `--estate-checks`, `--state`,
+ * `--regime`, `--court` — was previously re-derived with NO assertions,
+ * so `verify` reported "not reproduced / possible determinism defect" on
+ * every such receipt). A stamped court profile whose id is no longer
+ * shipped is skipped; the resulting hash divergence then surfaces
+ * honestly instead of crashing the verifier.
+ */
+function savedAssertionsOf(saved: SavedReport): {
+  filing?: NonNullable<Parameters<typeof analyzeFile>[1]>["filing"];
+  regimes?: readonly RegimeId[];
+  estateChecks?: boolean;
+  estateState?: string;
+} {
+  const run = saved.run;
+  const out: ReturnType<typeof savedAssertionsOf> = {};
+  if (run.filing_profile) {
+    const profile = getCourtProfile(run.filing_profile.id);
+    if (profile) out.filing = { profile, brief_kind: run.filing_profile.brief_kind };
+  }
+  if (run.asserted_regimes && run.asserted_regimes.length > 0) {
+    out.regimes = run.asserted_regimes as RegimeId[];
+  }
+  if (run.estate_checks_asserted) out.estateChecks = true;
+  if (run.asserted_state) out.estateState = run.asserted_state;
+  return out;
+}
+
+/**
  * Re-derive the run from `originalText` and compare against the saved
  * report. `originalText` is the document's text (the same input the report
  * was produced from); the verifier recomputes its `sha256` and re-runs
@@ -100,6 +141,7 @@ export async function verifyReproducibility(
   const re: AnalyzeResult = await analyzeText(originalText, saved.run.source_file.name, {
     deps,
     playbookId: opts.playbookId ?? saved.run.playbook_id,
+    ...savedAssertionsOf(saved),
   });
   return assembleReproResult(saved, re, await sha256Hex(originalText), deps.dkb.manifest.version);
 }
@@ -124,6 +166,7 @@ export async function verifyReproducibilityFromFile(
     deps,
     playbookId: opts.playbookId ?? saved.run.playbook_id,
     asText: opts.asText,
+    ...savedAssertionsOf(saved),
   });
   // The recorded `source_file.sha256` is the ingest hash (binary bytes for
   // DOCX/PDF, the UTF-8 text for paste); `re.ingest.sha256` is its mirror.

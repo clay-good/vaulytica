@@ -102,6 +102,39 @@ describe("verifyReproducibility (spec-v8 §24)", () => {
     expect(result.reproduced).toBe(true);
   });
 
+  it("re-asserts the packs stamped in the saved run (estate-checks + --state)", async () => {
+    const deps = await loadAccuracyDeps();
+    const will = [
+      "LAST WILL AND TESTAMENT OF JOHN DOE",
+      "",
+      "I, John Doe, being of sound mind, declare this to be my last will and testament, and I revoke all prior wills and codicils.",
+      "ARTICLE I. I appoint Jane Doe as Executor of my estate.",
+      "ARTICLE II. Residuary Estate. I give the rest, residue and remainder of my estate to my children in equal shares.",
+      "ARTICLE III. I make the following specific bequests to my devisees.",
+      "By: _______________________ Testator",
+    ].join("\n");
+
+    // Before the fix, an assertion-gated report was re-derived with NO
+    // assertions, so verify always printed "not reproduced" on it.
+    const asserted = await analyzeText(will, "will.txt", { deps, estateState: "us-pa" });
+    expect(asserted.run.asserted_state).toBe("us-pa");
+    const saved: SavedReport = {
+      run: {
+        version: asserted.run.version,
+        dkb_version: asserted.run.dkb_version,
+        playbook_id: asserted.run.playbook_id,
+        source_file: { name: "will.txt", sha256: await sha256Hex(will) },
+        result_hash: asserted.run.result_hash,
+        estate_checks_asserted: true,
+        asserted_state: "us-pa",
+      },
+      provenance: { engine_version: asserted.run.version, dkb_version: asserted.run.dkb_version },
+    };
+    const result = await verifyReproducibility(saved, will, { deps });
+    expect(result.reproduced).toBe(true);
+    expect(result.divergences).toEqual([]);
+  });
+
   it("reports a dkb divergence only when the stamped version is absent", async () => {
     const deps = await loadAccuracyDeps();
     const saved = await savedReportFor(NDA, deps);
