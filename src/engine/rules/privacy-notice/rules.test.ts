@@ -103,6 +103,42 @@ describe("PNOT rules — presence behavior", () => {
     expect(presentRun.findings.find((f) => f.rule_id === rule.id)).toBeFalsy();
   });
 
+  it("a DENIAL of a right does not count as its disclosure (negation guard)", async () => {
+    // Audit finding: "You have no right to access or delete personal
+    // information" satisfied /right to (know|access|delete)/ and scored
+    // the rights item as disclosed.
+    const rule = PNOT_RULES.find((r) => r.id === "PNOT-CCPA-006")!;
+    const denialCtx = withPnot(
+      buildContext([
+        "Privacy Policy",
+        "You have no right to access or delete personal information under this policy.",
+      ]),
+    );
+    const denialRun = await runEngine({
+      rules: [rule],
+      ctx: denialCtx,
+      executed_at: "2026-07-15T00:00:00Z",
+      source_file: SRC,
+    });
+    expect(denialRun.findings.find((f) => f.rule_id === rule.id)).toBeTruthy();
+
+    // An unrelated nearby negation must NOT suppress a genuine disclosure
+    // (over-suppression risk from the negation-FP campaign).
+    const genuineCtx = withPnot(
+      buildContext([
+        "Privacy Policy",
+        "We will not discriminate against you for exercising your right to access personal information.",
+      ]),
+    );
+    const genuineRun = await runEngine({
+      rules: [rule],
+      ctx: genuineCtx,
+      executed_at: "2026-07-15T00:00:00Z",
+      source_file: SRC,
+    });
+    expect(genuineRun.findings.find((f) => f.rule_id === rule.id)).toBeFalsy();
+  });
+
   it("does not run when the playbook is not a privacy-notice playbook", async () => {
     const ctx = buildContext(["Agreement", "Generic services agreement, not a privacy notice."]);
     const run = await runEngine({

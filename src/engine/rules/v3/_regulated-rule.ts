@@ -24,7 +24,33 @@ export type RegulatedRuleConfig = {
   applies_to_playbooks: string[];
   /** Maps a citation string to (id, url) for the SourceCitation. */
   cite_for(citation: string): { id: string; source_url: string };
+  /**
+   * Opt-in (privacy-notice pack): a presence-pattern match immediately
+   * governed by a negator ("You have NO right to access", "you may NOT
+   * request a correction") is a DENIAL of the item, not its disclosure —
+   * without this guard, a notice that affirmatively strips rights scores
+   * as disclosing them. The negator window is deliberately short so a
+   * nearby unrelated negation ("we will not discriminate against you for
+   * exercising the right to …") does not suppress a genuine disclosure.
+   * Off by default: other regulated packs keep their exact behavior.
+   */
+  negation_guarded?: boolean;
 };
+
+/** Negator directly governing an upcoming match: short same-sentence window. */
+const NEGATION_PREFIX = /\b(?:no|not|cannot|can'?t|never|nor)\b[^.;\n]{0,20}$/i;
+
+/** True when some match of some pattern is NOT negation-prefixed. */
+function presentUnnegated(patterns: readonly RegExp[], text: string): boolean {
+  for (const re of patterns) {
+    const global = new RegExp(re.source, re.flags.includes("g") ? re.flags : re.flags + "g");
+    for (const m of text.matchAll(global)) {
+      const prefix = text.slice(Math.max(0, m.index - 40), m.index);
+      if (!NEGATION_PREFIX.test(prefix)) return true;
+    }
+  }
+  return false;
+}
 
 export type PresenceSpec = {
   id: string;
@@ -92,7 +118,10 @@ export function buildPresenceRule(spec: PresenceSpec, config: RegulatedRuleConfi
     applies_to_playbooks: [...config.applies_to_playbooks],
     check(ctx: RuleContext): Finding | null {
       const text = fullText(ctx);
-      if (spec.present_patterns.some((re) => re.test(text))) return null;
+      const present = config.negation_guarded
+        ? presentUnnegated(spec.present_patterns, text)
+        : spec.present_patterns.some((re) => re.test(text));
+      if (present) return null;
       return makeFinding({
         rule: this as Rule,
         title: spec.missing_title,

@@ -66,6 +66,7 @@ function specFor(regime: Regime, item: ContentItem, index: number): PresenceSpec
   const id = `PNOT-${token}-${String(index + 1).padStart(3, "0")}`;
   return {
     id,
+    version: "1.1.0",
     name: item.label,
     description: `${regime.name} requires: ${item.label}.`,
     citation: item.citation,
@@ -82,6 +83,8 @@ function buildRegimeRules(regime: Regime): PnotRule[] {
   const regimeConfig: RegulatedRuleConfig = {
     category: "privacy-notice",
     applies_to_playbooks: [...PRIVACY_NOTICE_PLAYBOOK_IDS],
+    // A denial of a right must not score as its disclosure (audit).
+    negation_guarded: true,
     cite_for(citation: string) {
       return {
         id: `privacy-item:${citation}`,
