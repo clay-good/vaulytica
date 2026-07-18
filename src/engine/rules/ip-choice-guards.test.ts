@@ -10,7 +10,7 @@ import { rule as CHOICE007 } from "./choice-and-venue/CHOICE-007.js";
 import { rule as IPDATA004 } from "./ip-and-data/IPDATA-004.js";
 import { rule as IPDATA010 } from "./ip-and-data/IPDATA-010.js";
 
-const doc = (...sections: string[]) => buildContext(sections);
+const doc = (heading: string, ...rest: string[]) => buildContext([heading, ...rest]);
 
 describe("CHOICE-007 — consumer-contract detection", () => {
   it("does not treat a 'Release of Claims' heading as a consumer lease", () => {
