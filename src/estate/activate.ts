@@ -22,6 +22,7 @@
 import type { Rule } from "../engine/finding.js";
 import {
   ESTATE_CHECK_RULES,
+  adaptBaseRulesForOverlay,
   estateCheckRulesForOverlay,
 } from "../engine/rules/v4/trust-estate/estate-checks.js";
 import { estateFormalitiesForState } from "../dkb/estate-formalities.js";
@@ -53,8 +54,12 @@ export function activateEstateChecks(
     return { rules: [...baseRules, ...ESTATE_CHECK_RULES], estate_checks_asserted: true };
   }
   const overlay = estateFormalitiesForState(state);
+  // Under a zero-witness state the always-on EST-008 is rewritten to an
+  // info note speaking the state's statute — otherwise it contradicts the
+  // overlay's EST-101/105 in the same report. No overlay (or a
+  // witness-expecting one) passes baseRules through untouched.
   return {
-    rules: [...baseRules, ...estateCheckRulesForOverlay(overlay)],
+    rules: [...adaptBaseRulesForOverlay(baseRules, overlay), ...estateCheckRulesForOverlay(overlay)],
     estate_checks_asserted: true,
     asserted_state: state,
   };

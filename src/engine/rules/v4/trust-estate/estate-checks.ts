@@ -49,6 +49,7 @@ function fullTextLower(ctx: RuleContext): string {
 
 type AbsenceSpec = {
   id: string;
+  version?: string;
   name: string;
   severity: Severity;
   patterns: RegExp[];
@@ -62,7 +63,7 @@ type AbsenceSpec = {
 function absenceRule(spec: AbsenceSpec): Rule {
   return {
     id: spec.id,
-    version: "1.0.0",
+    version: spec.version ?? "1.0.0",
     name: spec.name,
     category: CATEGORY,
     default_severity: spec.severity,
@@ -171,13 +172,16 @@ const EST_104: Rule = absenceRule({
 
 const SPEC_105: AbsenceSpec = {
   id: "EST-105",
+  version: "1.1.0",
   name: "Witness signature blocks present",
   severity: "warning",
   // Presence-only — EST-106 below does the count comparison against the
-  // number the will recites (e.g. "two witnesses").
+  // number the will recites (e.g. "two witnesses"). The second pattern
+  // guards against testator-side boilerplate: "witnesseth" and "in
+  // witness whereof, I sign" must not read as witness-block evidence.
   patterns: [
     /_{3,}\s*witness/,
-    /witness.{0,20}(signature|sign|_{3,})/,
+    /witness(?!eth)(?!\s+whereof).{0,20}(signature|sign|_{3,})/,
     /signature of.{0,20}witness/,
   ],
   missingTitle: "No witness signature blocks detected",
@@ -231,7 +235,13 @@ function recitedWitnessCount(text: string): number | undefined {
 function witnessSignatureBlockCount(ctx: RuleContext): number {
   let count = 0;
   forEachParagraph(ctx.tree, (p) => {
-    const t = p.text.toLowerCase();
+    // Testator-side boilerplate carries the token without being a witness
+    // block: "IN WITNESS WHEREOF, I sign: ___" is the testator's own
+    // signature line, and a "WITNESSETH:" preamble is recital prose. Strip
+    // those phrases before testing, or the testator's line counts as a
+    // witness block (silencing EST-107) and a WITNESSETH paragraph makes
+    // the counter disagree with EST-105's presence patterns.
+    const t = p.text.toLowerCase().replace(/in witness whereof|witnesseth/g, "");
     if (!/witness/.test(t)) return;
     // Attestation prose ("in the presence of two witnesses") has no
     // signature line; only underscore runs mark a block.
@@ -243,7 +253,7 @@ function witnessSignatureBlockCount(ctx: RuleContext): number {
 
 const EST_106: Rule = {
   id: "EST-106",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Witness signature blocks fewer than the recital",
   category: CATEGORY,
   default_severity: "warning",
@@ -667,6 +677,49 @@ export function estateCheckRulesForOverlay(
 // either, neither statutory path is evidenced and the shortfall is a
 // warning naming both paths.
 // ────────────────────────────────────────────────────────────────────
+
+/**
+ * Adapt the always-on EST-0NN base rules to the asserted state's overlay
+ * (audit finding: under `--state pa`, shipped EST-008 fired a critical
+ * "UPC § 2-502 requires at least two competent witnesses" in the same
+ * report where the overlay's EST-101/105 said PA requires none — the
+ * loudest possible contradiction for an attorney). Under a zero-witness
+ * state, EST-008's finding is rewritten to an info note speaking the
+ * state's statute. Every other rule object passes through UNTOUCHED, and
+ * with no overlay (or a witness-expecting one) the input array is
+ * returned as-is — the `--state` path already changes `result_hash`, so
+ * only asserted runs can see the rewrite.
+ */
+export function adaptBaseRulesForOverlay(
+  baseRules: readonly Rule[],
+  overlay: EstateFormalityOverlay | undefined,
+): readonly Rule[] {
+  if (!overlay || overlay.witnesses_expected !== 0) return baseRules;
+  return baseRules.map((base) => {
+    if (base.id !== "EST-008") return base;
+    const variant: Rule = {
+      ...base,
+      version: "1.1.0",
+      default_severity: "info",
+      check(ctx: RuleContext): Finding | null {
+        const f = base.check(ctx);
+        if (!f) return null;
+        return {
+          ...f,
+          rule_version: "1.1.0",
+          severity: "info",
+          explanation:
+            `${overlay.state_name} does not require attesting witnesses for an ordinary signed will, so an absent witnesses/notary execution block is not an execution defect under the asserted state's statute — a testator signature block is what matters. Witness and notary blocks remain useful probate-proof convenience.` +
+            ` Asserted state: ${overlay.state_name} — ${overlay.headline} (${overlay.citation.source}).`,
+          recommendation:
+            "No witness or notary block is required under the asserted state's statute; confirm the testator signature block, and consider witness lines anyway as probate-proof convenience.",
+          source_citations: [...f.source_citations, overlay.citation],
+        };
+      },
+    };
+    return variant;
+  });
+}
 
 function statuteWitnessCountRule(overlay: EstateFormalityOverlay): Rule {
   const expected = overlay.witnesses_expected;

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { LAUNCH_RULES } from "../engine/rules/index.js";
+import { TRUST_ESTATE_RULES } from "../engine/rules/v4/trust-estate/rules.js";
 import { ESTATE_CHECK_RULES } from "../engine/rules/v4/trust-estate/estate-checks.js";
 import { activateEstateChecks, ESTATE_CHECK_PLAYBOOK_IDS } from "./activate.js";
 
@@ -64,6 +65,26 @@ describe("activateEstateChecks", () => {
     for (let i = 0; i < ESTATE_CHECK_RULES.length; i++) {
       expect(appended[i]).toBe(ESTATE_CHECK_RULES[i]);
     }
+  });
+
+  it("under PA (zero-witness) the always-on EST-008 is rewritten to an info variant", () => {
+    // Audit finding: shipped EST-008 fired critical "UPC § 2-502 requires
+    // at least two competent witnesses" in the same --state pa report
+    // where EST-101/105 said PA requires none. EST-008 is a v4 rule, so
+    // the base list here mirrors the pipeline's (launch + trust-estate).
+    const baseRules = [...LAUNCH_RULES, ...TRUST_ESTATE_RULES];
+    const pa = activateEstateChecks(false, "last-will-and-testament", baseRules, "us-pa");
+    const est008 = pa.rules.find((r) => r.id === "EST-008")!;
+    expect(est008.default_severity).toBe("info");
+    expect(est008.version).toBe("1.1.0");
+
+    // Witness-expecting states and the neutral path keep the exact base object.
+    const base = TRUST_ESTATE_RULES.find((r) => r.id === "EST-008")!;
+    expect(base.default_severity).not.toBe("info");
+    const va = activateEstateChecks(false, "last-will-and-testament", baseRules, "us-va");
+    expect(va.rules.find((r) => r.id === "EST-008")).toBe(base);
+    const neutral = activateEstateChecks(true, "last-will-and-testament", baseRules);
+    expect(neutral.rules.find((r) => r.id === "EST-008")).toBe(base);
   });
 
   it("a seeded witness-expecting state appends EST-107; PA (zero-witness) does not", () => {

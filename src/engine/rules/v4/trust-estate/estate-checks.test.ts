@@ -112,6 +112,47 @@ describe("EST-106 — witness blocks vs. recital count", () => {
     expect(findRule("EST-106").check(ctx)).toBeNull();
   });
 
+  it("does not count 'IN WITNESS WHEREOF, I sign: ___' (testator boilerplate) as a witness block", () => {
+    // Audit finding: the testator's own execution line contains the token
+    // "witness" and an underscore run, so it silenced EST-107 on a will
+    // with only one real witness. Recites two, shows one real block.
+    const ctx = willContext([
+      "Execution",
+      "Signed in the presence of two competent witnesses.",
+      "IN WITNESS WHEREOF, I sign: ______________",
+      "Witness signature: ______________",
+    ]);
+    const finding = findRule("EST-106").check(ctx);
+    expect(finding).not.toBeNull();
+    expect(finding?.title).toContain("shows 1 witness signature block");
+  });
+
+  it("does not count a 'WITNESSETH:' preamble with underscores as a witness block", () => {
+    // Audit finding: "WITNESSETH: ... this day ____" tripped the counter
+    // while EST-105's presence patterns said zero blocks — the same report
+    // asserted both 0 and 1 blocks. With zero real blocks, EST-106/107
+    // must stay silent (EST-105 owns the zero-block case).
+    const ctx = willContext([
+      "Recitals",
+      "WITNESSETH: this instrument, made this day ______",
+      "The testator recites two witnesses.",
+    ]);
+    expect(findRule("EST-106").check(ctx)).toBeNull();
+    const overlay = estateFormalitiesForState("us-ca");
+    const est107 = estateCheckRulesForOverlay(overlay).find((r) => r.id === "EST-107")!;
+    expect(est107.check(ctx)).toBeNull();
+    // And EST-105 still reports the absence — no self-contradiction.
+    expect(findRule("EST-105").check(ctx)).not.toBeNull();
+  });
+
+  it("'in witness whereof, I sign' no longer satisfies EST-105's presence patterns", () => {
+    const ctx = willContext([
+      "Execution",
+      "IN WITNESS WHEREOF, I sign this will on the date below: ______________",
+    ]);
+    expect(findRule("EST-105").check(ctx)).not.toBeNull();
+  });
+
   it("ignores testator/notary signature lines when counting witness blocks", () => {
     const ctx = willContext([
       "Last Will and Testament",

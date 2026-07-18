@@ -840,7 +840,7 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     citation: cite(
       "ri-gen-laws-33-5-5",
       "R.I. Gen. Laws §§ 33-5-5, 33-5-6, 33-5-7 (execution; military service; foreign execution)",
-      "http://webserver.rilegislature.gov/Statutes/TITLE33/33-5/33-5-5.htm",
+      "https://webserver.rilegislature.gov/Statutes/TITLE33/33-5/33-5-5.htm",
     ),
   },
   {
