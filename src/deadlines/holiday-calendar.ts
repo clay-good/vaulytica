@@ -154,6 +154,7 @@ const US_FEDERAL_HOLIDAYS: string[] = [
   "2027-11-11",
   "2027-11-25",
   "2027-12-24", // Christmas observed — Dec 25 falls on Saturday
+  "2027-12-31", // New Year's Day 2028 observed — Jan 1, 2028 falls on Saturday
 ];
 
 const US_FEDERAL: HolidayCalendar = {
@@ -176,27 +177,51 @@ const US_FEDERAL: HolidayCalendar = {
   ],
 };
 
+/**
+ * California JUDICIAL holidays diverge from the federal list (CCP § 135,
+ * which incorporates Gov. Code § 6700 EXCEPT Columbus Day, and adds the
+ * day after Thanksgiving; audit finding — the old federal+Chavez list
+ * rolled deadlines on Columbus Day when CA courts are open, and failed to
+ * roll on the day after Thanksgiving when they are closed):
+ *   - Columbus Day (2nd Monday of October) is NOT a judicial holiday.
+ *   - The day after Thanksgiving IS.
+ *   - Lincoln's Birthday (Feb 12) IS.
+ *   - Native American Day (4th Friday of September) IS.
+ */
+const CA_COLUMBUS_DAYS = new Set(["2024-10-14", "2025-10-13", "2026-10-12", "2027-10-11"]);
 const CALIFORNIA_HOLIDAYS: string[] = [
-  ...US_FEDERAL_HOLIDAYS,
-  "2024-03-31", // Cesar Chavez Day
-  "2025-03-31",
+  ...US_FEDERAL_HOLIDAYS.filter((d) => !CA_COLUMBUS_DAYS.has(d)),
+  "2024-02-12", // Lincoln's Birthday
+  "2025-02-12",
+  "2026-02-12",
+  "2027-02-12",
+  "2024-04-01", // Cesar Chavez Day observed — Mar 31, 2024 falls on Sunday
+  "2025-03-31", // Cesar Chavez Day
   "2026-03-31",
   "2027-03-31",
+  "2024-09-27", // Native American Day (4th Friday of September)
+  "2025-09-26",
+  "2026-09-25",
+  "2027-09-24",
+  "2024-11-29", // Day after Thanksgiving
+  "2025-11-28",
+  "2026-11-27",
+  "2027-11-26",
 ].sort();
 
 const CALIFORNIA: HolidayCalendar = {
   id: "california",
-  name: "California State Holidays",
-  version: "2026-07-15",
+  name: "California Judicial Holidays",
+  version: "2026-07-18",
   covers: { from: 2024, to: 2027 },
   all_saturdays_holiday: true,
   all_sundays_holiday: true,
   holidays: CALIFORNIA_HOLIDAYS,
   authority: [
     {
-      cite: "Cal. Gov. Code § 6700; Cal. Civ. Proc. Code § 12a",
-      url: "https://leginfo.legislature.ca.gov/",
-      retrieved_at: "2026-07-15",
+      cite: "Cal. Civ. Proc. Code § 135 (judicial holidays); Cal. Gov. Code § 6700; Cal. Civ. Proc. Code § 12a",
+      url: "https://courts.ca.gov/about/court-holidays",
+      retrieved_at: "2026-07-18",
     },
   ],
 };

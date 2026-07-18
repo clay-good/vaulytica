@@ -931,6 +931,11 @@ export async function runAnalyze(argv: string[]): Promise<void> {
         `vaulytica: warning: estate checks were asserted but ${file} classified as "${r.playbook_id}", not a will/trust/codicil playbook — the estate checks did NOT run\n`,
       );
     }
+    if (filing && !r.run.filing_profile) {
+      process.stderr.write(
+        `vaulytica: warning: --court ${filing.profile.id} was asserted but ${file} classified as "${r.playbook_id}", not a filing playbook — the format checks did NOT run\n`,
+      );
+    }
     if (r.delivery) human(`  ${r.delivery.summary}\n`);
     if (r.critical_dates) {
       human(

@@ -456,11 +456,39 @@ function resolveUnderProfile(
   if (count === undefined) return row;
   const { profile, service_method } = deadline;
 
+  // Backward-counted period ("at least 14 days BEFORE the hearing"): the
+  // profile arithmetic below counts forward — Math.abs() previously flipped
+  // the direction and moved the answer 2N days late (audit). Keep the plain
+  // backward arithmetic and say why the profile was not applied.
+  if (count < 0) {
+    if (!row.resolved) return row;
+    return {
+      ...row,
+      deadline_steps: [
+        {
+          rule: profile.id,
+          detail:
+            "backward-counted period: the asserted profile's forward-counting arithmetic was not applied; the plain backward count is shown — verify the count-back and any roll rules manually",
+        },
+      ],
+    };
+  }
+
+  // FRCP 6(d) / CCP § 1013 extend only periods that run after SERVICE; a
+  // contract deadline measured from an effective date owes no mail days
+  // (audit: '(Rule 6(d))' was printed as authority on non-service rows).
+  const serviceTriggered = /\bserv(?:e|ed|ice|ing)\b/i.test(`${row.trigger} ${row.anchor}`);
+
   const computeOne = (c: number): DeadlineResult | null =>
     ref.offset_unit === "business-days"
       ? computeCourtDays({ trigger: anchorIso, days: Math.abs(c), profile })
       : ref.offset_unit === "days"
-        ? computeDeadline({ trigger: anchorIso, days: Math.abs(c), profile, service_method })
+        ? computeDeadline({
+            trigger: anchorIso,
+            days: Math.abs(c),
+            profile,
+            ...(serviceTriggered ? { service_method } : {}),
+          })
         : null;
 
   const result = computeOne(count);
@@ -469,10 +497,20 @@ function resolveUnderProfile(
   if (!result.resolved) {
     // The profile could not compute (e.g. outside the calendar's covers). If the
     // row was already resolved by plain arithmetic (a "days" offset needs no
-    // calendar), keep that resolved date — the profile just adds nothing here.
-    // If it was unresolved (a "business-days" offset), keep it unresolved but
-    // attribute the reason to the asserted profile.
-    if (row.resolved) return row;
+    // calendar), keep that resolved date — but SAY the profile did not apply,
+    // or the register silently mixes court-rule-correct rows with plain
+    // arithmetic under one asserted profile (audit).
+    if (row.resolved) {
+      return {
+        ...row,
+        deadline_steps: [
+          {
+            rule: profile.id,
+            detail: `the asserted profile could not compute this row (${result.reason ?? "outside the calendar's covered range"}); plain calendar arithmetic is shown WITHOUT roll or service rules — verify manually`,
+          },
+        ],
+      };
+    }
     return { ...row, resolved: false, computed_date: null, reason: result.reason };
   }
 

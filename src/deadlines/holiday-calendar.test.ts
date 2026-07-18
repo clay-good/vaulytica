@@ -113,11 +113,32 @@ describe("shipped calendars", () => {
     expect(cal.holidays).not.toContain("2026-07-04");
   });
 
-  it("california includes Cesar Chavez Day (Mar 31) each covered year", () => {
+  it("california includes Cesar Chavez Day each covered year (2024 observed Monday — Mar 31 fell on Sunday)", () => {
     const cal = getHolidayCalendar("california")!;
-    for (const y of [2024, 2025, 2026, 2027]) {
+    expect(cal.holidays).toContain("2024-04-01");
+    for (const y of [2025, 2026, 2027]) {
       expect(cal.holidays).toContain(`${y}-03-31`);
     }
+  });
+
+  it("california is the CCP § 135 JUDICIAL list, not the federal list (audit pins)", () => {
+    const cal = getHolidayCalendar("california")!;
+    // Columbus Day: CA courts are OPEN — must not roll.
+    for (const d of ["2024-10-14", "2025-10-13", "2026-10-12", "2027-10-11"]) {
+      expect(cal.holidays, d).not.toContain(d);
+    }
+    // Day after Thanksgiving: CA courts are CLOSED — must roll.
+    for (const d of ["2024-11-29", "2025-11-28", "2026-11-27", "2027-11-26"]) {
+      expect(cal.holidays, d).toContain(d);
+    }
+    // Lincoln's Birthday + Native American Day (4th Friday of September).
+    expect(cal.holidays).toContain("2026-02-12");
+    expect(cal.holidays).toContain("2026-09-25");
+  });
+
+  it("us-federal covers the observed New Year's Day 2028 inside its range (2027-12-31)", () => {
+    const cal = getHolidayCalendar("us-federal")!;
+    expect(cal.holidays).toContain("2027-12-31");
   });
 });
 
