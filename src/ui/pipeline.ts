@@ -1222,8 +1222,17 @@ export async function prepareBundle(
       playbook.id,
       ruleSet as readonly Rule[],
     );
+    // add-estate-planning-pack — the asserted checks / state reach each bundle
+    // member the same way, dormant unless this member matched a will/trust/
+    // codicil playbook, so estate-free bundles keep their fingerprint.
+    const estateWiring = activateEstateChecks(
+      options.estate_checks ?? false,
+      playbook.id,
+      privacyWiring.rules,
+      options.estate_state,
+    );
     const run = await runEngine({
-      rules: privacyWiring.rules,
+      rules: estateWiring.rules,
       ctx: { tree: ingest.tree, extracted, dkb, playbook },
       source_file: sourceFile,
       playbook_match_confidence: match.confidence,
@@ -1231,6 +1240,8 @@ export async function prepareBundle(
       ...(privacyWiring.asserted_regimes
         ? { asserted_regimes: privacyWiring.asserted_regimes }
         : {}),
+      ...(estateWiring.estate_checks_asserted ? { estate_checks_asserted: true } : {}),
+      ...(estateWiring.asserted_state ? { asserted_state: estateWiring.asserted_state } : {}),
       executed_at: new Date().toISOString(),
       onRule: ({ index, total: ruleTotal }) => {
         perDocProgress[docIndex] = (index + 1) / ruleTotal;

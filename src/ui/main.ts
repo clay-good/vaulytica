@@ -640,6 +640,9 @@ async function runBundle(
         // add-privacy-notice-pack — the asserted regimes reach each bundle
         // member; dormant per member unless it matched a notice playbook.
         regimes: activeRegimes.length > 0 ? activeRegimes : undefined,
+        // add-estate-planning-pack — likewise for the estate checks / state.
+        estate_checks: activeEstate.checks || undefined,
+        estate_state: activeEstate.state,
       },
     );
     // Retain the prepared bundle so a consistency toggle can re-run
@@ -837,6 +840,9 @@ async function runBundleComparison(
         // add-privacy-notice-pack — keep the revised round's member runs on the
         // same asserted regimes as the baseline round.
         regimes: activeRegimes.length > 0 ? activeRegimes : undefined,
+        // add-estate-planning-pack — likewise for the estate checks / state.
+        estate_checks: activeEstate.checks || undefined,
+        estate_state: activeEstate.state,
       },
     );
 
