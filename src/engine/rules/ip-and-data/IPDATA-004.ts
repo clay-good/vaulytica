@@ -19,7 +19,11 @@ export const rule: Rule = {
     if (
       firstParagraphMatch(
         ctx,
-        /\b(?:customer\s+data|usage\s+data)\s+ownership\b|owns?\s+(?:the\s+)?(?:customer\s+|usage\s+)?data\b/i,
+        // "service" must be an accepted prefix here too — otherwise an explicit
+        // "Vendor owns the Service Data" fails the suppression and the rule
+        // falsely reports ownership as unaddressed (Service Data is one of the
+        // three trigger terms above).
+        /\b(?:customer\s+data|usage\s+data|service\s+data)\s+ownership\b|owns?\s+(?:the\s+)?(?:customer\s+|usage\s+|service\s+)?data\b/i,
       )
     )
       return null;

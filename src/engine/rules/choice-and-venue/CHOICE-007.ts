@@ -1,7 +1,10 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch } from "../_helpers.js";
 
-const CONSUMER_HEADINGS = /(lease|residential|terms\s+of\s+service|employment|consumer)/i;
+// `\b` boundaries so "lease" does not match inside "Release" — a routine B2B /
+// settlement "Release of Claims" heading is not a consumer contract, and the
+// class-action-waiver warning is scoped to genuinely consumer-facing documents.
+const CONSUMER_HEADINGS = /\b(lease|residential|terms\s+of\s+service|employment|consumer)\b/i;
 
 /** CHOICE-007 — Class-action waiver in consumer-facing contract (warning). */
 export const rule: Rule = {

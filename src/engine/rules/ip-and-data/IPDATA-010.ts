@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, enclosingSentence, firstParagraphMatch } from "../_helpers.js";
 
 /**
  * IPDATA-010 — Perpetual / irrevocable license over user-side content
@@ -45,12 +45,19 @@ export const rule: Rule = {
     );
     if (!hit) return null;
     const para = hit.text;
+    // Scope the subject + modifier tally to the SENTENCE that holds the grant,
+    // not the whole paragraph: otherwise a separate, deliberately narrow
+    // Feedback license ("non-exclusive, non-transferable, non-sublicensable")
+    // in the same paragraph as an unrelated broad Documentation license was
+    // flagged by summing the Documentation clause's modifiers with the Feedback
+    // clause's subject. Display (excerpt) still uses the full paragraph.
+    const clause = enclosingSentence(para, hit.match.index);
 
     // Must reference a counterparty-side subject (otherwise this is
     // probably the regular Vendor → Customer software license).
     const SUBJECT =
       /\b(?:Feedback|Suggestions?|Comments?|Ideas?|Improvements?|Customer\s+Data|Customer\s+Content|User\s+(?:Content|Generated\s+Content|Submissions?)|Submissions?|Likeness|Name\s+and\s+(?:image|likeness)|Image\s+and\s+likeness)\b/i;
-    if (!SUBJECT.test(para)) return null;
+    if (!SUBJECT.test(clause)) return null;
 
     // Tally the overreach modifiers. Three or more is the signal. A leading
     // `\b` treats a hyphen as a word boundary, so `\bperpetual\b` would match
@@ -68,7 +75,7 @@ export const rule: Rule = {
       /(?<!non[- ])\bunrestricted\b/i,
       /\bin\s+perpetuity\b/i,
     ];
-    const matched = MODIFIERS.filter((re) => re.test(para));
+    const matched = MODIFIERS.filter((re) => re.test(clause));
     if (matched.length < 3) return null;
 
     return emit(ctx, rule, {

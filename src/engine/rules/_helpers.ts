@@ -138,6 +138,23 @@ export function isPresenceDisclaimed(paragraph: string, matchIndex: number): boo
   return CLAUSE_ABSENCE.test(before);
 }
 
+/**
+ * The single sentence of `paragraph` containing `matchIndex` — bounded by the
+ * `.`/`;`/newline before it and the next `.`/`;`/newline after. Lets a rule
+ * tally modifiers/subjects within one clause without absorbing an unrelated
+ * neighbouring sentence in the same paragraph.
+ */
+export function enclosingSentence(paragraph: string, matchIndex: number): string {
+  const start = Math.max(
+    paragraph.lastIndexOf(". ", matchIndex),
+    paragraph.lastIndexOf("; ", matchIndex),
+    paragraph.lastIndexOf("\n", matchIndex),
+  );
+  const rel = paragraph.slice(matchIndex).search(/[.;\n]/);
+  const end = rel === -1 ? paragraph.length : matchIndex + rel + 1;
+  return paragraph.slice(start + 1, end);
+}
+
 /** Returns true if any classified paragraph belongs to `category`. */
 export function hasCategory(ctx: RuleContext, category: string): boolean {
   return ctx.extracted.classified.some((c) => c.category === category);
