@@ -121,6 +121,23 @@ describe("estate formalities catalog", () => {
     expect(nc.citation.source).toContain("31-3.3");
   });
 
+  it("pins the third-wave facts (OH, AZ, WA)", () => {
+    // OH: conscious-presence attestation; NO unwitnessed holographic.
+    const oh = estateFormalitiesForState("us-oh")!;
+    expect(oh.holographic_recognized).toBe(false);
+    expect(oh.citation.source).toContain("2107.03");
+
+    // AZ: UPC reasonable-time (verified verbatim); holographic per § 14-2503.
+    const az = estateFormalitiesForState("us-az")!;
+    expect(az.reasonable_time_phrasing).toBe(true);
+    expect(az.holographic_recognized).toBe(true);
+
+    // WA: attested by 2+ competent witnesses; holographic NOT recognized.
+    const wa = estateFormalitiesForState("us-wa")!;
+    expect(wa.holographic_recognized).toBe(false);
+    expect(wa.citation.source).toContain("11.12.020");
+  });
+
   it("returns undefined for unseeded states (honest N/A) and publishes the denominator", () => {
     expect(estateFormalitiesForState("us-wy")).toBeUndefined();
     expect(estateFormalitiesForState("us-ga")).toBeUndefined();

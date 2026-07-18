@@ -116,6 +116,24 @@ const cite = (id: string, source: string, source_url: string): SourceCitation =>
 /** The seed catalog — only primary-source-verified states, ordered by id. */
 export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
   {
+    id: "est-formalities-us-az",
+    jurisdiction: "us-az",
+    state_name: "Arizona",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: true,
+    holographic_recognized: true,
+    headline: "2 witnesses (reasonable time); holographic OK",
+    summary:
+      "Arizona follows the UPC witnessing pattern for paper wills: signed by at least two people, each signing within a reasonable time after witnessing the signing or the testator's acknowledgment (A.R.S. § 14-2502(A)(3)). A holographic will is valid, whether or not witnessed, if the signature and the material provisions are in the testator's handwriting (§ 14-2503); testamentary intent may be shown by extrinsic evidence, including non-handwritten portions (§ 14-2502(B)).",
+    citation: cite(
+      "az-ars-14-2502",
+      "Ariz. Rev. Stat. §§ 14-2502, 14-2503 (execution of paper wills; holographic wills)",
+      "https://www.azleg.gov/ars/14/02502.htm",
+    ),
+  },
+  {
     id: "est-formalities-us-ca",
     jurisdiction: "us-ca",
     state_name: "California",
@@ -296,6 +314,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     ),
   },
   {
+    id: "est-formalities-us-oh",
+    jurisdiction: "us-oh",
+    state_name: "Ohio",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: false,
+    headline: "2+ competent witnesses, conscious presence; no unwitnessed holographic",
+    summary:
+      "Ohio requires every will to be in writing (handwritten or typewritten), signed at the end by the testator (or by another in the testator's conscious presence and at the testator's express direction), and attested and subscribed in the conscious presence of the testator by two or more competent witnesses who saw the testator subscribe or heard the acknowledgment (R.C. § 2107.03; 'conscious presence' excludes telephonic/electronic sensing). A handwritten will is valid ONLY with that attestation — Ohio has no unwitnessed holographic doctrine.",
+    citation: cite(
+      "oh-rc-2107-03",
+      "Ohio Rev. Code § 2107.03 (method of making will)",
+      "https://codes.ohio.gov/ohio-revised-code/section-2107.03",
+    ),
+  },
+  {
     id: "est-formalities-us-pa",
     jurisdiction: "us-pa",
     state_name: "Pennsylvania",
@@ -345,6 +381,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
       "vt-14-vsa-5",
       "14 V.S.A. § 5 (execution of will; requisites; amended 2005, No. 106 (Adj. Sess.), § 1)",
       "https://legislature.vermont.gov/statutes/section/14/001/00005",
+    ),
+  },
+  {
+    id: "est-formalities-us-wa",
+    jurisdiction: "us-wa",
+    state_name: "Washington",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: false,
+    headline: "2+ competent witnesses; holographic NOT recognized in-state",
+    summary:
+      "Washington requires every will to be in writing, signed by the testator (or by another at the testator's direction and in the testator's presence), and attested by two or more competent witnesses by subscribing their names or signing an affidavit while in the presence (including electronic presence) of and at the direction or request of the testator (RCW § 11.12.020). An unattested holographic will made in Washington is not valid, though a holographic will validly executed in a state that permits them is recognized as a foreign will.",
+    citation: cite(
+      "wa-rcw-11-12-020",
+      "Wash. Rev. Code § 11.12.020 (requisites of wills — foreign wills)",
+      "https://app.leg.wa.gov/rcw/default.aspx?cite=11.12.020",
     ),
   },
 ];

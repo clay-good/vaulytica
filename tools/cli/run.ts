@@ -41,7 +41,7 @@
  * checks recitals, not valid execution.
  *
  * `--state <xx>` (implies `--estate-checks`) asserts the will's state and,
- * when the state is in the verified formalities catalog (13 verified states),
+ * when the state is in the verified formalities catalog (16 verified states),
  * swaps the EST-1xx recital rules for overlay-aware variants — e.g. under PA,
  * absent witness blocks are an info note citing 20 Pa. C.S. § 2502, not a
  * warning. An unseeded state runs the jurisdiction-neutral rules unchanged
