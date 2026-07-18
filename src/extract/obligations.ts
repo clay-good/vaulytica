@@ -56,38 +56,97 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
   forEachParagraph(tree, (ctx) => {
     const sentences = splitSentences(ctx.text);
     for (const { text: sentence, start } of sentences) {
-      MODAL_RE.lastIndex = 0;
-      const m = MODAL_RE.exec(sentence);
-      if (!m) continue;
-      const modal = m[1]!.toLowerCase().replace(/\s+/g, " ");
-      const subject = sentence.slice(0, m.index).trim();
-      const predicate = sentence.slice(m.index + m[0].length).trim();
-      const obligor = resolveObligor(subject, partyNames, partyRoles);
-      const obligorExclusion = scopeExclusion(subject);
-      const trigger = TRIGGER_RE.exec(predicate)?.[0]?.trim();
-      const nested = trigger ? decomposeNestedTriggers(trigger) : undefined;
-      const qualifier = QUALIFIER_RE.exec(predicate)?.[0]?.trim();
-      let action = predicate;
-      if (trigger) action = action.replace(trigger, "").trim();
-      if (qualifier) action = action.replace(qualifier, "").trim();
-      action = action.replace(/[.,;]$/, "").trim();
+      // A single sentence can carry more than one obligation when independent
+      // clauses are coordinated ("Provider shall deliver …, and Customer shall
+      // pay …"). Split into per-modal clauses so the second obligation is not
+      // dropped and its text absorbed into the first (v7 §8 follow-up).
+      for (const cl of splitModalClauses(sentence)) {
+        const modal = cl.modal.toLowerCase().replace(/\s+/g, " ");
+        const subject = cl.subject;
+        const predicate = cl.predicate;
+        const obligorExclusion = scopeExclusion(subject);
+        // Resolve the obligor from the subject with any "except <party>"
+        // carve-out removed — otherwise the trailing excluded name wins the
+        // `endsWith` match and the EXCLUDED party is reported as the obligor
+        // ("Each party except the Provider" → obligor "Provider").
+        const subjectForObligor = obligorExclusion
+          ? subject.replace(/\bexcept\b[\s\S]*$/i, "").trim()
+          : subject;
+        const obligor = resolveObligor(subjectForObligor, partyNames, partyRoles);
+        const trigger = TRIGGER_RE.exec(predicate)?.[0]?.trim();
+        const nested = trigger ? decomposeNestedTriggers(trigger) : undefined;
+        const qualifier = QUALIFIER_RE.exec(predicate)?.[0]?.trim();
+        let action = predicate;
+        if (trigger) action = action.replace(trigger, "").trim();
+        if (qualifier) action = action.replace(qualifier, "").trim();
+        action = action.replace(/[.,;]$/, "").trim();
 
-      out.push({
-        id: nextId(),
-        obligor,
-        action,
-        trigger,
-        qualifier,
-        ...(nested ? { nested_triggers: nested } : {}),
-        ...(obligorExclusion ? { obligor_exclusion: obligorExclusion } : {}),
-        modal,
-        raw_text: sentence.trim(),
-        position: posInParagraph(ctx, start, start + sentence.length),
-      });
+        out.push({
+          id: nextId(),
+          obligor,
+          action,
+          trigger,
+          qualifier,
+          ...(nested ? { nested_triggers: nested } : {}),
+          ...(obligorExclusion ? { obligor_exclusion: obligorExclusion } : {}),
+          modal,
+          raw_text: sentence.trim(),
+          position: posInParagraph(ctx, start, start + sentence.length),
+        });
+      }
     }
   });
 
   return out;
+}
+
+/**
+ * Split a sentence into independent modal-verb clauses. A single modal yields
+ * one clause byte-identical to the pre-split behavior (subject before the
+ * modal, predicate after). A second modal starts a NEW clause only when a
+ * comma-and / semicolon boundary separates it from the previous clause AND a
+ * non-empty new subject sits between that boundary and the modal — so a bare
+ * "goods and services" or an elided subject ("shall deliver and shall install")
+ * does not over-split, and a subordinate "goods that the Customer shall inspect"
+ * is kept with the first obligation. Conservative by design: an ambiguous
+ * coordination stays one obligation rather than fabricating a second.
+ */
+function splitModalClauses(
+  sentence: string,
+): { subject: string; predicate: string; modal: string }[] {
+  const modals: { index: number; len: number; text: string }[] = [];
+  MODAL_RE.lastIndex = 0;
+  let m: RegExpExecArray | null;
+  while ((m = MODAL_RE.exec(sentence)) !== null) {
+    modals.push({ index: m.index, len: m[0].length, text: m[1]! });
+  }
+  if (modals.length === 0) return [];
+
+  const CONJ = /(?:,\s+and\s+|;\s+and\s+|;\s+)/gi;
+  // Each clause records where its subject starts and which modal it owns.
+  const clauses: { subjectStart: number; modal: (typeof modals)[number]; predEnd?: number }[] = [
+    { subjectStart: 0, modal: modals[0]! },
+  ];
+  for (let k = 1; k < modals.length; k += 1) {
+    const prev = clauses[clauses.length - 1]!.modal;
+    const regionStart = prev.index + prev.len;
+    const region = sentence.slice(regionStart, modals[k]!.index);
+    CONJ.lastIndex = 0;
+    let last: RegExpExecArray | null = null;
+    let cm: RegExpExecArray | null;
+    while ((cm = CONJ.exec(region)) !== null) last = cm;
+    if (!last) continue; // no clause boundary → subordinate modal, keep merged
+    const subjectStart = regionStart + last.index + last[0].length;
+    if (sentence.slice(subjectStart, modals[k]!.index).trim().length === 0) continue; // elided subject
+    clauses[clauses.length - 1]!.predEnd = regionStart + last.index;
+    clauses.push({ subjectStart, modal: modals[k]! });
+  }
+
+  return clauses.map((c) => ({
+    subject: sentence.slice(c.subjectStart, c.modal.index).trim(),
+    predicate: sentence.slice(c.modal.index + c.modal.len, c.predEnd ?? sentence.length).trim(),
+    modal: c.modal.text,
+  }));
 }
 
 /**

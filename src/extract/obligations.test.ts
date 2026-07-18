@@ -41,6 +41,63 @@ describe("extractObligations", () => {
     expect(obli?.obligor_exclusion).toMatch(/Provider/);
   });
 
+  it("does not report the excluded party as the obligor", () => {
+    // With real parties, the trailing excluded name used to win the obligor
+    // `endsWith` match, so "Each party except the Provider" reported obligor
+    // "Provider" — the very party the sentence carves out.
+    const parties = extractParties(
+      buildTree([
+        "Parties",
+        'This Agreement is between Acme Corp. ("Provider") and Globex Inc. ("Customer").',
+      ]),
+    );
+    const tree = buildTree([
+      "Insurance",
+      "Each party except the Provider shall maintain insurance at all times.",
+    ]);
+    const obli = extractObligations(tree, parties).find((o) => o.obligor_exclusion);
+    expect(obli?.obligor_exclusion).toMatch(/Provider/);
+    // The obligor is the parties (minus the carve-out), never the excluded one.
+    expect(obli?.obligor).not.toMatch(/^Provider$/);
+    expect(obli?.obligor).toBe("the parties");
+  });
+
+  it("splits a coordinated sentence into one obligation per party", () => {
+    const parties = extractParties(
+      buildTree([
+        "Parties",
+        'This Agreement is between Acme Corp. ("Provider") and Globex Inc. ("Customer").',
+      ]),
+    );
+    const tree = buildTree([
+      "Delivery",
+      "The Provider shall deliver the goods, and the Customer shall pay the invoice within thirty (30) days.",
+    ]);
+    const obs = extractObligations(tree, parties);
+    // Both obligations are recovered — the Customer's payment is not dropped
+    // nor folded into the Provider's action.
+    expect(obs).toHaveLength(2);
+    const provider = obs.find((o) => /Provider/.test(o.obligor));
+    const customer = obs.find((o) => /Customer/.test(o.obligor));
+    expect(provider?.action).toBe("deliver the goods");
+    expect(customer?.action).toBe("pay the invoice");
+    expect(customer?.trigger).toMatch(/thirty/);
+  });
+
+  it("does not over-split a subordinate or elided-subject coordination", () => {
+    // "goods and services that the Customer shall inspect" is one obligation
+    // (subordinate relative clause), and "shall deliver and shall install" is
+    // one obligation (elided shared subject) — neither fabricates a second.
+    const tree = buildTree([
+      "Scope",
+      "The Provider shall deliver goods and services that the Customer shall inspect.",
+      "The Provider shall deliver and shall install the equipment.",
+    ]);
+    const obs = extractObligations(tree, []);
+    expect(obs).toHaveLength(2);
+    expect(obs.every((o) => o.obligor.trim().length > 0)).toBe(true);
+  });
+
   it("captures prohibitive and permissive boundary modals", () => {
     const tree = buildTree([
       "Restrictions",
