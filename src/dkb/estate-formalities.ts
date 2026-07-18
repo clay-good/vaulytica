@@ -260,6 +260,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     ),
   },
   {
+    id: "est-formalities-us-hi",
+    jurisdiction: "us-hi",
+    state_name: "Hawaii",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: true,
+    holographic_recognized: true,
+    headline: "2 witnesses (reasonable time); holographic OK; harmless error available",
+    summary:
+      "Hawaii enacted the 1990 UPC in 1996: the will must be in writing, signed by the testator (or by proxy in the testator's conscious presence and at direction), and signed by at least two individuals each signing within a reasonable time after witnessing the signing or the testator's acknowledgment — witnesses need not sign in anyone's presence (Haw. Rev. Stat. § 560:2-502(a)). A non-complying will is valid as a holographic will if the signature and material portions are in the testator's handwriting (§ 560:2-502(b)), with intent provable by extrinsic evidence including non-handwritten portions (pre-printed form blanks filled in by hand can qualify). No 2008 notarization alternative was adopted; UPC harmless error is available on clear and convincing evidence (§ 560:2-503).",
+    citation: cite(
+      "hi-hrs-560-2-502",
+      "Haw. Rev. Stat. §§ 560:2-502, 560:2-503 (execution; witnessed wills; holographic wills; writings intended as wills)",
+      "https://codes.findlaw.com/hi/division-3-property-family/hi-rev-st-sect-560-2-502/",
+    ),
+  },
+  {
     id: "est-formalities-us-ia",
     jurisdiction: "us-ia",
     state_name: "Iowa",
@@ -424,6 +442,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     ),
   },
   {
+    id: "est-formalities-us-me",
+    jurisdiction: "us-me",
+    state_name: "Maine",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: true,
+    holographic_recognized: true,
+    headline: "2 witnesses (reasonable time); holographic OK; NO harmless error despite the modern-UPC base",
+    summary:
+      "Maine's 2019 Probate Code (tit. 18-C, effective 2019-09-01) requires the will to be in writing, signed by the testator (or by proxy in the testator's conscious presence and at direction), and signed by at least 2 individuals within a reasonable time after witnessing the signing or an acknowledgment — witnesses need not sign in anyone's presence (18-C § 2-502(1)). Holographic wills are valid when the signature and material portions are handwritten (§ 2-502(2)). Though modeled on the modern UPC, Maine omitted BOTH the 2008 notarized-will alternative AND harmless error — numbering trap: Maine's § 2-503 is the self-proved-will section, not harmless error. Maine also ships a statutory will form (§ 2-517), unusual among UPC states.",
+    citation: cite(
+      "me-18c-2-502",
+      "Me. Rev. Stat. tit. 18-C, §§ 2-502, 2-503, 2-517 (execution; holographic wills; self-proved will; statutory will form)",
+      "https://legislature.maine.gov/statutes/18-C/title18-Csec2-502.html",
+    ),
+  },
+  {
     id: "est-formalities-us-mi",
     jurisdiction: "us-mi",
     state_name: "Michigan",
@@ -529,6 +565,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
       "ne-rev-stat-30-2327",
       "Neb. Rev. Stat. §§ 30-2327, 30-2328 (execution; holographic will)",
       "https://nebraskalegislature.gov/laws/statutes.php?statute=30-2327",
+    ),
+  },
+  {
+    id: "est-formalities-us-nh",
+    jurisdiction: "us-nh",
+    state_name: "New Hampshire",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: false,
+    headline: "2+ credible witnesses, testator's request + presence; holographic NOT recognized",
+    summary:
+      "New Hampshire requires the will to be in writing, signed by the testator (or by proxy at express direction in the testator's presence), and signed by 2 or more credible witnesses who attest to the testator's signature at the testator's request and in the testator's presence (RSA 551:2) — no seal, no notarization substitute, no 'reasonable time' language, and no holographic exception anywhere in chapter 551. Since 2020, remote witnesses are deemed 'present' only via simultaneous sight-and-sound communication supervised by an NH-licensed attorney or supervised paralegal — and the same paragraph expressly disallows electronic wills. Nuncupative wills survive for soldiers in service and mariners at sea (RSA 551:15-16).",
+    citation: cite(
+      "nh-rsa-551-2",
+      "N.H. Rev. Stat. Ann. §§ 551:2, 551:2-a (requisites of a will; self-proved wills)",
+      "https://gc.nh.gov/rsa/html/LVI/551/551-2.htm",
     ),
   },
   {
@@ -673,6 +727,24 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
       "pa-20-pacs-2502",
       "20 Pa. C.S. § 2502 (form and execution of a will)",
       "https://www.legis.state.pa.us/WU01/LI/LI/CT/HTM/20/00.025.002.000..HTM",
+    ),
+  },
+  {
+    id: "est-formalities-us-ri",
+    jurisdiction: "us-ri",
+    state_name: "Rhode Island",
+    witnesses_expected: 2,
+    notarization_alternative: false,
+    notarial_testament: false,
+    reasonable_time_phrasing: false,
+    holographic_recognized: false,
+    headline: "2 witnesses, simultaneously present at signing; holographic NOT recognized in-state",
+    summary:
+      "Rhode Island keeps the near-verbatim English Wills Act 1837 pattern: the will must be signed by the testator (or by proxy in the testator's presence at express direction), with the signature made or acknowledged in the presence of two or more witnesses PRESENT AT THE SAME TIME, who then attest and subscribe in the testator's presence — though no attestation form or publication is necessary (R.I. Gen. Laws § 33-5-5). No notarization alternative, no 'reasonable time' softening, and no domestic holographic wills; the only exceptions are § 33-5-6 (soldiers in actual military service and mariners at sea, personal estate only) and the § 33-5-7 foreign-execution conformity clause.",
+    citation: cite(
+      "ri-gen-laws-33-5-5",
+      "R.I. Gen. Laws §§ 33-5-5, 33-5-6, 33-5-7 (execution; military service; foreign execution)",
+      "http://webserver.rilegislature.gov/Statutes/TITLE33/33-5/33-5-5.htm",
     ),
   },
   {

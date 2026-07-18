@@ -337,6 +337,38 @@ describe("estate formalities catalog", () => {
     expect(id_.citation.source).toContain("15-2-502");
   });
 
+  it("pins the tenth-wave facts (HI, NH, ME, RI)", () => {
+    // HI: clean 1990 UPC — reasonable time, holographic OK, harmless
+    // error available (§ 560:2-503).
+    const hi = estateFormalitiesForState("us-hi")!;
+    expect(hi.reasonable_time_phrasing).toBe(true);
+    expect(hi.holographic_recognized).toBe(true);
+    expect(hi.citation.source).toContain("560:2-502");
+
+    // NH: attorney-gated remote attestation but e-wills expressly
+    // barred; NO holographic.
+    const nh = estateFormalitiesForState("us-nh")!;
+    expect(nh.holographic_recognized).toBe(false);
+    expect(nh.summary).toContain("disallows electronic wills");
+    expect(nh.citation.source).toContain("551:2");
+
+    // ME: modern-UPC base but NO notarization alternative (CO/ND pin
+    // stands) and NO harmless error — its § 2-503 is self-proving.
+    const me = estateFormalitiesForState("us-me")!;
+    expect(me.notarization_alternative).toBe(false);
+    expect(me.reasonable_time_phrasing).toBe(true);
+    expect(me.holographic_recognized).toBe(true);
+    expect(me.summary).toContain("not harmless error");
+    expect(me.citation.source).toContain("2-502");
+
+    // RI: Wills Act 1837 pattern — witnesses simultaneously present at
+    // signing/acknowledgment; NO holographic.
+    const ri = estateFormalitiesForState("us-ri")!;
+    expect(ri.holographic_recognized).toBe(false);
+    expect(ri.summary).toContain("PRESENT AT THE SAME TIME");
+    expect(ri.citation.source).toContain("33-5-5");
+  });
+
   it("returns undefined for unseeded states (honest N/A) and publishes the denominator", () => {
     expect(estateFormalitiesForState("us-wy")).toBeUndefined();
     expect(estateFormalitiesForState("us-ms")).toBeUndefined();
