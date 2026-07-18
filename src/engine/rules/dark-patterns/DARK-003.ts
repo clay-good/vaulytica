@@ -16,7 +16,11 @@ export const rule: Rule = {
       /\b(?:Customer|Licensee|Employee)\s+shall\s+(?:pay|reimburse)\s+(?:Provider|Vendor|Company|Licensor|Employer)['’]s\s+(?:reasonable\s+)?attorneys?[’']?\s+fees\b/i,
     );
     if (!oneSided) return null;
-    if (firstParagraphMatch(ctx, /\bprevailing\s+party\b/i)) return null;
+    // The "prevailing party" balanced-formulation carve-out must be checked in
+    // the SAME clause as the one-sided obligation, not document-wide — otherwise
+    // a routine "prevailing party" phrase in an unrelated indemnity/costs clause
+    // silently suppressed a genuinely one-way fee-shift finding.
+    if (/\bprevailing\s+party\b/i.test(oneSided.text)) return null;
     return emit(ctx, rule, {
       title: "One-way attorneys' fee-shifting",
       description: oneSided.match[0],

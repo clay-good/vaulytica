@@ -19,7 +19,11 @@ export const rule: Rule = {
     if (!auto) return null;
     const notice = firstParagraphMatch(
       ctx,
-      /\bnon[- ]renewal\b[\s\S]{0,200}?(\d{1,3})\s+days|notice\s+of\s+non[- ]renewal[\s\S]{0,80}?(\d{1,3})\s+days/i,
+      // `[^.;\n]` so the day count must sit in the SAME sentence as the
+      // non-renewal notice — otherwise an unrelated day-count in another
+      // sentence (an invoice term, a cure period) was grabbed as the notice
+      // window, mis-reporting the days and hiding a genuinely long window.
+      /\bnon[- ]renewal\b[^.;\n]{0,200}?(\d{1,3})\s+days|notice\s+of\s+non[- ]renewal[^.;\n]{0,80}?(\d{1,3})\s+days/i,
     );
     const days = notice ? parseInt(notice.match[1] ?? notice.match[2] ?? "0", 10) : 0;
     const buried =
