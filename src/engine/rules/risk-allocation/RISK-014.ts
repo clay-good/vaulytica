@@ -13,7 +13,11 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /confidentiality[\s\S]{0,200}?(?:survive|continue|remain\s+in\s+effect)[\s\S]{0,40}?(?:for|until)\s+(\w+\s+\(\d+\)|\d+)\s+(year|years|month|months)/i,
+      // `[^.;\n]` so the survival term is tied to confidentiality in ONE
+      // sentence — otherwise an unrelated survival clause in a later sentence
+      // (e.g. indemnification surviving for 10 years) was reported as the
+      // confidentiality term length.
+      /confidentiality[^.;\n]{0,200}?(?:survive|continue|remain\s+in\s+effect)[^.;\n]{0,40}?(?:for|until)\s+(\w+\s+\(\d+\)|\d+)\s+(year|years|month|months)/i,
     );
     if (!hit) return null;
     return emit(ctx, rule, {

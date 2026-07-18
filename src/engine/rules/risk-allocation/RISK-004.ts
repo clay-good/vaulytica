@@ -14,7 +14,11 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const carveOut = firstParagraphMatch(
       ctx,
-      /\b(?:limitation\s+of\s+liability|aggregate\s+liability)\b[\s\S]{0,400}\b(?:except\s+for|excluding|other\s+than)\b[\s\S]{0,200}\bindemnif/i,
+      // `[^.;\n]` after "except for" so the indemnity carve-out must be in the
+      // SAME sentence as the exception — otherwise a later, unrelated "indemnif"
+      // mention (e.g. a clause stating indemnity IS inside the cap) satisfied the
+      // pattern and produced a false "indemnity carved out of the cap".
+      /\b(?:limitation\s+of\s+liability|aggregate\s+liability)\b[\s\S]{0,400}\b(?:except\s+for|excluding|other\s+than)\b[^.;\n]{0,200}\bindemnif/i,
     );
     if (!carveOut) return null;
     return emit(ctx, rule, {

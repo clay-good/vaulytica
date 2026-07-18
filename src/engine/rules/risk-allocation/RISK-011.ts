@@ -3,7 +3,13 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 
 const PROCEDURE = [
   ["notice", /prompt(?:ly)?\s+notice|written\s+notice/i],
-  ["defense control", /control\s+of\s+the\s+defense|sole\s+control/i],
+  // "defense control" must be tied to the defense/claim — a bare "sole control"
+  // matched an unrelated clause ("sole control over its own systems") and
+  // wrongly reported this element as present.
+  [
+    "defense control",
+    /(?:sole\s+|exclusive\s+)?control\s+of\s+the\s+(?:defense|claim|litigation|proceeding|action)|control\s+the\s+defense|(?:assume|conduct)\s+(?:the\s+)?defense/i,
+  ],
   ["settlement consent", /settle(?:ment)?[\s\S]{0,40}consent/i],
 ] as const;
 

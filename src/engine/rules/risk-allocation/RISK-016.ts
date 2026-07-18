@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, enclosingSentence, firstParagraphMatch } from "../_helpers.js";
 
 /**
  * RISK-016 — Insurance requirement without coverage minimum
@@ -34,7 +34,10 @@ export const rule: Rule = {
     // `at least $X`, `not less than $X`, or `$X per occurrence`.
     const COVERAGE_MIN =
       /\$\s*[\d,]+(?:\.\d+)?\s*(?:k|m|mm|million|thousand)?|(?:at\s+least|not\s+less\s+than|minimum\s+of)\s+\$?[\d,]+|(?:one|two|three|four|five|six|seven|eight|nine|ten)\s+million\s+dollars?|per\s+occurrence|aggregate\s+(?:of|limit)|combined\s+single\s+limit/i;
-    if (COVERAGE_MIN.test(hit.text)) return null;
+    // Scope the coverage-minimum check to the insurance clause's own sentence —
+    // otherwise an unrelated dollar figure elsewhere in the paragraph (e.g. the
+    // contract fee) suppressed the "no coverage minimum" warning entirely.
+    if (COVERAGE_MIN.test(enclosingSentence(hit.text, hit.match.index))) return null;
 
     return emit(ctx, rule, {
       title: "Insurance requirement without coverage minimum",

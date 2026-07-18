@@ -60,7 +60,13 @@ export const rule: Rule = {
     const asymHit = ASYM_TO.exec(para) ?? ASYM_SUBJECT.exec(para);
     const COUNTERPARTY =
       /(?:to|in\s+favor\s+of|for)\s+(Customer|Client|Buyer|Licensee|Tenant|Employee|Contractor|Subscriber|End\s+User)\b/i;
-    const counterHit = COUNTERPARTY.exec(para);
+    // Also recognize the counterparty as the SUBJECT of its own fees-recovery
+    // grant (a reciprocal second sentence: "Customer shall likewise be entitled
+    // to recover its attorneys' fees from Vendor"). Without this, a fully mutual
+    // two-sentence clause was misread as one-way.
+    const COUNTER_SUBJECT =
+      /\b(Customer|Client|Buyer|Licensee|Tenant|Employee|Contractor|Subscriber|End\s+User)\b[\s\S]{0,80}\b(?:shall\s+(?:likewise\s+)?be\s+entitled\s+to\s+recover|may\s+recover|is\s+entitled\s+to\s+recover)\b[\s\S]{0,80}\b(?:reasonable\s+)?(?:attorneys?'?\s*fees|legal\s+fees|counsel\s+fees)\b/i;
+    const counterHit = COUNTERPARTY.exec(para) ?? COUNTER_SUBJECT.exec(para);
 
     // Reciprocal? Same paragraph awards fees to a counterparty as
     // well. Not asymmetric.

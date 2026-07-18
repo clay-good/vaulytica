@@ -21,7 +21,11 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /\blimitation\s+of\s+liability\b[\s\S]{0,600}?\b(?:except\s+for|excluding|other\s+than)\b[\s\S]{0,400}/i,
+      // `[^.;\n]` after "except for" so the carve-out list is read from the
+      // exception clause's OWN sentence — otherwise carve-out names ("fraud",
+      // "willful misconduct") from an unrelated later sentence were reported as
+      // part of the limitation-of-liability exceptions.
+      /\blimitation\s+of\s+liability\b[\s\S]{0,600}?\b(?:except\s+for|excluding|other\s+than)\b[^.;\n]{0,400}/i,
     );
     if (!hit) return null;
     const present = TYPICAL.filter(([, re]) => re.test(hit.match[0])).map(([name]) => name);

@@ -13,7 +13,10 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /\b(?:commercial\s+general\s+liability|professional\s+liability|errors\s+and\s+omissions|cyber\s+liability)\b[\s\S]{0,160}?\$([\d,]+)/i,
+      // `[^.;\n]` so the dollar amount must be in the SAME sentence as the
+      // coverage type — otherwise an unrelated figure (e.g. the contract price
+      // in the next sentence) was reported as the coverage minimum.
+      /\b(?:commercial\s+general\s+liability|professional\s+liability|errors\s+and\s+omissions|cyber\s+liability)\b[^.;\n]{0,160}?\$([\d,]+)/i,
     );
     if (!hit) return null;
     return emit(ctx, rule, {
