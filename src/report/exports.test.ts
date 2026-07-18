@@ -115,6 +115,22 @@ describe("buildFixListMarkdown", () => {
     expect(buildFixListMarkdown(run)).toBe(buildFixListMarkdown(run));
   });
 
+  it("records asserted opt-in packs, naming the estate posture for a seeded state", () => {
+    const bare = makeRun([]);
+    expect(buildFixListMarkdown(bare)).not.toContain("Estate checks");
+
+    const run = makeRun([]);
+    run.asserted_regimes = ["ccpa"];
+    run.estate_checks_asserted = true;
+    run.asserted_state = "us-pa";
+    const md = buildFixListMarkdown(run);
+    expect(md).toContain("**Privacy regimes:** ccpa — asserted by the user");
+    expect(md).toContain("**Estate checks:** asserted by the user (--state us-pa)");
+    // The estate line speaks the verified posture, not just the code.
+    expect(md).toContain("Pennsylvania: No attesting witnesses required (ordinary signed will)");
+    expect(md).toContain("20 Pa. C.S. § 2502");
+  });
+
   it("renders the per-regime coverage table when the PNOT pack ran", () => {
     const run = makeRun([finding("PNOT-CCPA-002", "warning", 1)]);
     run.playbook_id = "privacy-notice-us";

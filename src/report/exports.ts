@@ -24,6 +24,7 @@
 import type { EngineRun, Finding, Severity } from "../engine/finding.js";
 import { scopeForPlaybook } from "../verticals/registry.js";
 import { buildRegimeCoverage } from "../privacy/coverage.js";
+import { estateFormalitiesForState } from "../dkb/estate-formalities.js";
 import type { RegimeId } from "../privacy/regime-data.js";
 import { currencyLabel, type CitationCurrency } from "./citations.js";
 import type { DateReference, ExtractedData } from "../extract/types.js";
@@ -116,6 +117,25 @@ export function buildFixListMarkdown(
     `**Playbook:** ${run.playbook_id} · **DKB:** ${run.dkb_version} · **Engine:** ${run.version}`,
   );
   lines.push(`**Result hash:** \`${run.result_hash}\``);
+  // Asserted opt-in packs (mirrors the DOCX/HTML covers) — which optional
+  // rule packs the user switched on, with the estate line naming the
+  // verified formality posture when the asserted state has a catalog node.
+  if (run.filing_profile) {
+    lines.push(
+      `**Court profile:** ${run.filing_profile.id} (${run.filing_profile.brief_kind} brief) — asserted by the user`,
+    );
+  }
+  if (run.asserted_regimes && run.asserted_regimes.length > 0) {
+    lines.push(`**Privacy regimes:** ${run.asserted_regimes.join(", ")} — asserted by the user`);
+  }
+  if (run.estate_checks_asserted) {
+    const overlay = run.asserted_state ? estateFormalitiesForState(run.asserted_state) : undefined;
+    lines.push(
+      run.asserted_state
+        ? `**Estate checks:** asserted by the user (--state ${run.asserted_state})${overlay ? ` — ${overlay.state_name}: ${overlay.headline} (${overlay.citation.source})` : ""}`
+        : "**Estate checks:** asserted by the user (--estate-checks)",
+    );
+  }
   lines.push("");
   if (run.classification_notice) {
     lines.push(`> **Document type not recognized.** ${run.classification_notice.message}`);
