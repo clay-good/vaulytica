@@ -241,6 +241,10 @@ export const NDA_DEEP_RULES: Rule[] = [
       /(for\s+any\s+(business\s+)?purpose|any\s+lawful\s+purpose)/i,
       /(unrestricted\s+use|any\s+use)\s+of\s+(the\s+)?confidential/is,
     ],
+    // "for any purpose OTHER THAN the Purpose" is the narrow best-practice
+    // framing NDA-D-012 checks for — the exact opposite of the unbounded grant
+    // this rule targets.
+    exclude_if: [/\bpurpose\s+other\s+than\b/i],
   }),
 
   presence({
@@ -419,9 +423,12 @@ export const NDA_DEEP_RULES: Rule[] = [
       "Without a general-solicitation carve-out, ordinary recruiting (LinkedIn posts, conference recruiters) becomes a contractual breach risk. The standard fix is a general-solicitation safe harbor.",
     recommendation:
       "Carve out: 'Nothing in this clause shall restrict general solicitations of employment not specifically directed at employees of the other party.'",
-    bad_patterns: [
-      /(non[- ]solicit|shall\s+not\s+solicit|will\s+not\s+solicit)(?![\s\S]{0,300}(general\s+solicitation|not\s+specifically\s+directed|general\s+advertis))/is,
-    ],
+    bad_patterns: [/(non[- ]solicit|shall\s+not\s+solicit|will\s+not\s+solicit)/i],
+    // Was a forward-only negative lookahead, so a carve-out drafted BEFORE the
+    // trigger ("Notwithstanding the foregoing, this Section shall not restrict
+    // general solicitations ... each party shall not solicit ...") went unseen.
+    // The guard reads the whole paragraph, in both directions.
+    exclude_if: [/(general\s+solicitation|not\s+specifically\s+directed|general\s+advertis)/i],
     default_severity: "warning",
   }),
 

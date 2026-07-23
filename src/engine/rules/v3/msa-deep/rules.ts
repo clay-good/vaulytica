@@ -598,9 +598,12 @@ export const MSA_DEEP_RULES: Rule[] = [
       "Without a change-of-control hook, an acquirer can effectively step into the contract without the counterparty's consent.",
     recommendation:
       "Add: 'a change of control of either party shall be deemed an assignment requiring consent (or notice)' with an affiliate carve-out as desired.",
-    bad_patterns: [
-      /(?:neither\s+party\s+may\s+assign|no\s+assignment)(?![^.]{0,200}(?:change\s+of\s+control|merger|acquisition))/is,
-    ],
+    bad_patterns: [/(?:neither\s+party\s+may\s+assign|no\s+assignment)/i],
+    // Was a forward-only negative lookahead, so a change-of-control hook stated
+    // BEFORE the assignment sentence ("a change of control ... shall be deemed
+    // an assignment requiring consent. Except as set forth above, neither party
+    // may assign ...") was reported as absent.
+    exclude_if: [/(?:change\s+of\s+control|merger|acquisition)/i],
     default_severity: "info",
   }),
 

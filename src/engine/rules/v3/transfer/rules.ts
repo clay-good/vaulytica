@@ -111,6 +111,14 @@ export const TRANSFER_RULES: Rule[] = [
       /(?:standard\s+contractual\s+clauses|SCCs?).{0,80}(?:as\s+modified|as\s+amended|notwithstanding|except\s+for|with\s+the\s+exception)/is,
       /(?:notwithstanding\s+(?:any\s+)?provision\s+of\s+the\s+SCCs?|modified\s+SCCs?)/i,
     ],
+    // A non-derogation savings clause runs the other way: it incorporates the
+    // SCCs "in full and without modification" and makes them override
+    // conflicting business terms. That is what Clause 2 requires, so reading
+    // its "notwithstanding" as modification accuses the compliant form.
+    exclude_if: [
+      /without\s+(?:any\s+)?modification/i,
+      /SCCs?\s+shall\s+(?:govern|prevail|control|take\s+precedence)/i,
+    ],
     default_severity: "critical",
   }),
   presence({

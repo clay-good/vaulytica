@@ -373,9 +373,13 @@ export const DPA_US_STATE_RULES: Rule[] = [
       "Claiming Service Provider status without meeting the § 7051 contract requirements means the recipient may be reclassified as a 'third party' — triggering sale / share consequences for the disclosing party.",
     recommendation:
       "Add the missing § 7051(a)(1)–(8) elements, or remove the Service Provider claim and treat the recipient as a third party.",
-    bad_patterns: [
-      /(service\s+provider\s+(?:status|under\s+the\s+ccpa))(?!.{0,500}(?:specific\s+business\s+purpose|same\s+level\s+of\s+privacy\s+protection))/is,
-    ],
+    bad_patterns: [/(service\s+provider\s+(?:status|under\s+the\s+ccpa))/i],
+    // Was a forward-only negative lookahead, so § 7051 elements recited BEFORE
+    // the status claim ("Service Provider shall not retain ... for any purpose
+    // other than the specific business purpose ... Based on the foregoing,
+    // Vendor qualifies for Service Provider status") were treated as missing —
+    // a critical-severity accusation against a compliant clause.
+    exclude_if: [/(?:specific\s+business\s+purpose|same\s+level\s+of\s+privacy\s+protection)/i],
     default_severity: "critical",
   }),
   language({

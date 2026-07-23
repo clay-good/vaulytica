@@ -128,6 +128,18 @@ export type NdaLanguageSpec = {
   description: string;
   citation: SourceCitation;
   bad_patterns: RegExp[];
+  /**
+   * Carve-out guards, mirroring the v4 and shared-v3 language builders. When a
+   * paragraph matches a `bad_pattern` but ALSO matches any `exclude_if`
+   * pattern, the finding is suppressed — the paragraph states the flagged
+   * pattern in its COMPLIANT form ("for any purpose OTHER THAN the Purpose", a
+   * general-solicitation carve-out sitting BEFORE the non-solicit trigger).
+   * Firing on the compliant form is a confident false accusation. Because it is
+   * tested against the whole paragraph, it also fixes carve-outs that a
+   * forward-only negative lookahead in `bad_patterns` cannot see. Optional;
+   * rules without it are unchanged.
+   */
+  exclude_if?: readonly RegExp[];
   bad_title: string;
   bad_description: string;
   explanation: string;
@@ -157,6 +169,10 @@ export function buildNdaLanguageRule(spec: NdaLanguageSpec): Rule {
           r.lastIndex = 0;
           const m = r.exec(p.text);
           if (m) {
+            // Skip a paragraph that states the flagged pattern in its COMPLIANT
+            // form. Skipping this paragraph still lets a genuine violation in a
+            // later paragraph fire.
+            if (spec.exclude_if?.some((ex) => ex.test(p.text))) return;
             hit = {
               text: p.text,
               match: m[0],
