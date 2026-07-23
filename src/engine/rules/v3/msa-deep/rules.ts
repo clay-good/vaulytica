@@ -624,6 +624,14 @@ export const MSA_DEEP_RULES: Rule[] = [
     bad_patterns: [
       /governed\s+by\s+the\s+laws?\s+of\s+(?:the\s+state\s+of\s+)?(California|New\s+York|Delaware|Texas|Washington|Massachusetts|Illinois|Florida)[^.]{0,400}(?:courts?|venue|jurisdiction|forum)[^.]{0,80}(?!(?:\1))(California|New\s+York|Delaware|Texas|Washington|Massachusetts|Illinois|Florida)/is,
     ],
+    // The `(?!\1)` guard only blocks a repeat of the governing-law state at the
+    // one position tested, so the engine backtracks until it finds ANY other
+    // state in the window — including one the clause expressly EXCLUDES
+    // ("venue shall be in Delaware only, and not in California"). A stated
+    // exclusion is alignment, not a mismatch.
+    exclude_if: [
+      /\bnot\s+in\s+(?:the\s+state\s+of\s+)?(?:California|New\s+York|Delaware|Texas|Washington|Massachusetts|Illinois|Florida)/i,
+    ],
     default_severity: "info",
   }),
 
