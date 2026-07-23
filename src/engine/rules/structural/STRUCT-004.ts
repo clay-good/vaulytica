@@ -12,7 +12,7 @@ const DEF_HEADING = /\b(definitions?|defined\s+terms|glossary)\b/i;
  */
 export const rule: Rule = {
   id: "STRUCT-004",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Defined terms section identifiable",
   category: "structural",
   default_severity: "info",
@@ -21,7 +21,11 @@ export const rule: Rule = {
   dkb_citations: [],
 
   check(ctx: RuleContext): Finding | null {
-    if (ctx.extracted.definitions.entries.length > 0) return null;
+    // A cover-block field ("Effective Date: January 1, 2026") constitutes a
+    // term for STRUCT-006's purposes, but it is not a Definitions section or
+    // an inline definition — a document whose only "definition" is a date
+    // header has still set out no defined terms in this rule's sense.
+    if (ctx.extracted.definitions.entries.some((e) => e.form !== "field-label")) return null;
 
     let hasHeading = false;
     const walk = (sections: typeof ctx.tree.sections): void => {

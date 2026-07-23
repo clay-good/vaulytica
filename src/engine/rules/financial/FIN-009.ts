@@ -26,7 +26,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "FIN-009",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Late fee exceeds typical 18%/year threshold",
   category: "financial",
   default_severity: "warning",
@@ -34,9 +34,13 @@ export const rule: Rule = {
     "Parses late-payment interest / penalty rates with a stated period and fires when the implied annual rate exceeds 18%; unstated periods and one-time flat fees get an info-level clarification, never a usury assertion.",
   dkb_citations: ["stat-ny-gol-5-501"],
   check(ctx: RuleContext): Finding | null {
+    // The optional `\)?,?` between the percent sign and the period admits the
+    // spelled-then-numeric drafting convention — "six percent (6%) per annum"
+    // puts the number inside a parenthetical, and without it the period went
+    // undetected and a plainly per-annum rate was reported as period-less.
     const hit = firstParagraphMatch(
       ctx,
-      /\b(?:late\s+(?:fee|charge|payment\s+(?:fee|charge))|interest|finance\s+charge)[:\s][^.]{0,80}?(\d+(?:\.\d+)?)\s*%\s*(?:per\s+(month|year|annum|day)|monthly|annually|daily)?/i,
+      /\b(?:late\s+(?:fee|charge|payment\s+(?:fee|charge))|interest|finance\s+charge)[:\s][^.]{0,80}?(\d+(?:\.\d+)?)\s*%\s*\)?,?\s*(?:per\s+(month|year|annum|day)|monthly|annually|daily)?/i,
     );
     if (!hit) return null;
     const rate = Number(hit.match[1]);

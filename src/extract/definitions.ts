@@ -89,6 +89,19 @@ const DEFINITION_CONSTRUED_TAIL =
 /** A quoted Title-Case phrase inside a term list. */
 const QUOTED_TERM = /["“]([A-Z][\w\s\-&/'’.]{0,60}?)["”]/g;
 
+/**
+ * A cover-block field label: `Issue Date: May 15, 2026` / `Principal
+ * Amount: $500,000`. Term sheets, notes, and order forms constitute their
+ * terms this way, and the body then uses them ("from the Issue Date") —
+ * STRUCT-006 called every such term used-but-undefined. Ingest joins
+ * adjacent cover lines into one paragraph, so a qualifying paragraph
+ * (short, opening with a label) may carry several label:value pairs; each
+ * value runs to the next label. Two-to-five Title-Case words per label, so
+ * a signature block's "By:"/"Date:" or a notice's "Attn:" never registers.
+ */
+const FIELD_LABEL = /\b([A-Z][A-Za-z]*(?:\s+[A-Z][A-Za-z]*){1,4}):\s+/g;
+const FIELD_BLOCK_MAX_LENGTH = 240;
+
 /** A definition that points at an exhibit/schedule/section rather than stating its own text. */
 const DEFINITION_REFERENCE =
   /\b(?:attached\s+(?:hereto\s+)?as|set\s+forth\s+in|described\s+in|defined\s+in|as\s+set\s+out\s+in|in)\s+((?:Exhibit|Schedule|Appendix|Annex|Attachment|Section|Article)\s+[A-Z0-9][\w.()-]*)/i;
@@ -303,6 +316,37 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
     })) {
       registerDefinition(definitions, d);
     }
+    if (ctx.text.trim().length <= FIELD_BLOCK_MAX_LENGTH) {
+      FIELD_LABEL.lastIndex = 0;
+      const labels: { term: string; start: number; valueStart: number }[] = [];
+      let f: RegExpExecArray | null;
+      while ((f = FIELD_LABEL.exec(ctx.text)) !== null) {
+        labels.push({ term: f[1]!.trim(), start: f.index, valueStart: f.index + f[0].length });
+      }
+      // Only a paragraph that OPENS with a label is a cover block — a
+      // sentence that happens to contain "Wire Instructions: …" mid-flow
+      // is prose, not a field sheet.
+      if (labels.length > 0 && /^\s*$/.test(ctx.text.slice(0, labels[0]!.start))) {
+        for (let i = 0; i < labels.length; i++) {
+          const value = ctx.text
+            .slice(labels[i]!.valueStart, labels[i + 1]?.start ?? ctx.text.length)
+            .trim();
+          if (!value) continue;
+          registerDefinition(definitions, {
+            term: labels[i]!.term,
+            definition: value,
+            defined_at: {
+              section_id: ctx.section.id,
+              paragraph_id: ctx.paragraph.id,
+              start: ctx.start,
+              end: ctx.end,
+            },
+            used_at: [],
+            form: "field-label",
+          });
+        }
+      }
+    }
   });
 
   // Pass 3: record every use of each term outside its definition.
@@ -317,21 +361,31 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // routinely goes on to use it ('any Statement of Work ("SOW") … the SOW
       // shall control'). Skipping that whole paragraph reported the term as
       // never used.
-      if (entry.form !== "parenthetical" && ctx.paragraph.id === entry.defined_at.paragraph_id) {
-        return;
-      }
+      const inDefiningParagraph =
+        entry.form !== "parenthetical" && ctx.paragraph.id === entry.defined_at.paragraph_id;
       needle.lastIndex = 0;
       let m: RegExpExecArray | null;
       while ((m = needle.exec(ctx.text)) !== null) {
         const pos = posInParagraph(ctx, m.index, m.index + m[0].length);
         if (pos.start >= entry.defined_at.start && pos.end <= entry.defined_at.end) continue;
+        // Inside the defining paragraph, only text BEFORE the definition
+        // marker is operative use — an embedded definition ('… consummates a
+        // Change of Control … "Change of Control" means a merger …') is used
+        // by the clause that precedes it, while a repetition AFTER the marker
+        // is the definition body talking about itself ("… but Confidential
+        // Information does not include …").
+        if (inDefiningParagraph && pos.end > entry.defined_at.start) continue;
         entry.used_at.push(pos);
       }
     });
   }
 
+  // A field-label term is a fact-sheet entry — "Effective Date: January 1,
+  // 2026" states its fact whether or not the body ever repeats the label, so
+  // its non-reuse is not the template-leftover signal unused_terms exists to
+  // report.
   const unused_terms = [...definitions.values()]
-    .filter((e) => e.used_at.length === 0)
+    .filter((e) => e.used_at.length === 0 && e.form !== "field-label")
     .map((e) => e.term)
     .sort();
 

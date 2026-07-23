@@ -157,7 +157,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "FIN-005",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -182,7 +182,7 @@
       "finding_id": "FIN-009-s1.2-559",
       "fired": true,
       "rule_id": "FIN-009",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -488,7 +488,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "STRUCT-004",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -498,8 +498,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-006-s1-200",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-006",
       "rule_version": "1.1.0"
     },
@@ -762,7 +761,7 @@
       "id": "FIN-009-s1.2-559",
       "recommendation": "Confirm the rate is enforceable under the controlling state's usury rules. For consumer-facing contracts, consider capping at 18% annualized. For commercial contracts, document the parties' acknowledgement of the rate.",
       "rule_id": "FIN-009",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -897,24 +896,6 @@
       "severity": "warning",
       "source_citations": [],
       "title": "No Effective Date found"
-    },
-    {
-      "description": "Used but not defined: Subscription Term.",
-      "document_position": 200,
-      "excerpt": {
-        "end_offset": 217,
-        "section_id": "s1",
-        "start_offset": 200,
-        "text": "Subscription Term"
-      },
-      "explanation": "Title-Case phrases in a contract usually signal a defined term. When they aren't defined, readers must guess at the intended meaning. Either define them or use lowercase if the term is intended in its ordinary sense.",
-      "id": "STRUCT-006-s1-200",
-      "recommendation": "Add a definition for each genuinely defined term, or change the casing if the phrase is being used in its ordinary sense.",
-      "rule_id": "STRUCT-006",
-      "rule_version": "1.1.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "Undefined Title-Case terms: 1"
     },
     {
       "description": "The contract does not state a path to terminate for material breach.",
@@ -1083,7 +1064,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\", \"uptime\".",
-  "result_hash": "d39b9f53685054895c0cbd85b44603f76ab152b78ed6d9baa445e745d16afc66",
+  "result_hash": "9200844eca636217dc21bec5c8ead54fb400d43add4cdd5b511df3638659ef61",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",

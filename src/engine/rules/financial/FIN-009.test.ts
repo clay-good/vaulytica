@@ -84,3 +84,31 @@ describe("FIN-009 — late fee above 18%/year", () => {
     expect(f?.title).toMatch(/30/);
   });
 });
+
+describe("FIN-009 — the spelled-then-numeric rate states its period (v1.2.0)", () => {
+  const doc = (...paras: string[]) => buildContext(["Interest", ...paras]);
+
+  it("reads 'six percent (6%) per annum' as a 6%/year rate and stays silent", () => {
+    expect(
+      FIN_009.check(
+        doc(
+          "This Note shall bear simple interest at a rate of six percent (6%) per annum, accruing daily from the Issue Date.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires the info note when no period is stated anywhere", () => {
+    const f = FIN_009.check(doc("A late fee of 5% applies to overdue invoices."));
+    expect(f).not.toBeNull();
+    expect(f?.severity).toBe("info");
+  });
+
+  it("still annualizes '(2%) per month' through the parenthetical to 24%", () => {
+    const f = FIN_009.check(
+      doc("Interest shall accrue at a rate of two percent (2%) per month on past-due amounts."),
+    );
+    expect(f).not.toBeNull();
+    expect(f?.title).toMatch(/24\.0/);
+  });
+});

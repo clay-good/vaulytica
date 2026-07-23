@@ -384,3 +384,55 @@ describe("statute names, officer titles, and entity names are not defined terms"
     expect(map.undefined_capitalized.map((u) => u.term)).not.toContain("Restated Bylaws");
   });
 });
+
+describe("cover-block field labels and embedded definitions", () => {
+  it("registers a field label and counts the body's uses", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Note",
+        "Principal Amount: $500,000 Issue Date: May 15, 2026",
+        "Interest accrues from the Issue Date until paid.",
+      ]),
+    );
+    const entry = map.entries.find((e) => e.term === "Issue Date");
+    expect(entry?.form).toBe("field-label");
+    expect(entry?.definition).toBe("May 15, 2026");
+    expect(map.undefined_capitalized.map((u) => u.term)).not.toContain("Issue Date");
+    expect(map.unused_terms).not.toContain("Issue Date");
+  });
+
+  it("a signature-block 'Date:' line does not register (single word)", () => {
+    const map = extractDefinitions(buildTree(["Signatures", "Date: March 10, 2026"]));
+    expect(map.entries.map((e) => e.term)).not.toContain("Date");
+  });
+
+  it("counts a use that precedes its embedded same-paragraph definition", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Change of Control",
+        'If the Company consummates a Change of Control, the Investor may elect a cash payment. "Change of Control" means a merger, consolidation, or sale of all or substantially all of the Company\'s assets.',
+      ]),
+    );
+    expect(map.unused_terms).not.toContain("Change of Control");
+  });
+
+  it("a self-reference inside the definition body is still not a use", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Definitions",
+        '"Confidential Information" means non-public information, but Confidential Information does not include public data.',
+      ]),
+    );
+    expect(map.unused_terms).toContain("Confidential Information");
+  });
+});
+
+describe("field-label terms are facts, not template leftovers", () => {
+  it("an unreferenced cover field is not an unused term", () => {
+    const map = extractDefinitions(
+      buildTree(["BAA", "Effective Date: January 1, 2026.", "The parties agree as follows."]),
+    );
+    expect(map.entries.some((e) => e.term === "Effective Date")).toBe(true);
+    expect(map.unused_terms).not.toContain("Effective Date");
+  });
+});

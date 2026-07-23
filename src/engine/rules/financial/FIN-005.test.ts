@@ -59,3 +59,21 @@ describe("FIN-005 — settlement-style payment routing (v1.2.0)", () => {
     ).toBeNull();
   });
 });
+
+describe("FIN-005 — a note's maturity date is its payment term (v1.3.0)", () => {
+  it("reads 'due and payable on May 15, 2028'", () => {
+    expect(
+      FIN_005.check(
+        doc(
+          "Unless earlier converted, the outstanding principal and accrued interest shall be due and payable on May 15, 2028, upon written demand of the Investor.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("reads 'due and payable on the Maturity Date'", () => {
+    expect(
+      FIN_005.check(doc("All outstanding amounts are due and payable on the Maturity Date.")),
+    ).toBeNull();
+  });
+});

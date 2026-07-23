@@ -155,8 +155,11 @@ export type DefinitionEntry = {
    * construed accordingly'). Both usually import a statute's vocabulary,
    * which the statute itself writes in lowercase — so, like parenthetical
    * terms, their lowercase uses are the source's wording, not slips.
+   *
+   * `"field-label"` is the cover-block convention (`Issue Date: May 15,
+   * 2026`) — a labeled field constitutes the term for the body to use.
    */
-  form?: "means" | "parenthetical" | "meaning-reference" | "construed";
+  form?: "means" | "parenthetical" | "meaning-reference" | "construed" | "field-label";
 };
 
 export type DefinitionMap = {

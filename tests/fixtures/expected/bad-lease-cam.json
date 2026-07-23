@@ -158,7 +158,7 @@
       "finding_id": "FIN-005-s1-0",
       "fired": true,
       "rule_id": "FIN-005",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -182,7 +182,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "FIN-009",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -480,7 +480,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "STRUCT-004",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -491,7 +491,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-006-s1.1-262",
+      "finding_id": "STRUCT-006-s1.2-362",
       "fired": true,
       "rule_id": "STRUCT-006",
       "rule_version": "1.1.0"
@@ -716,7 +716,7 @@
       "explanation": "Commercial contracts should state when payment is due. 'Net 30' or 'due within X days of invoice' is the typical formulation. Without it, payment timing defaults to the governing-law rule.",
       "id": "FIN-005-s1-0",
       "rule_id": "FIN-005",
-      "rule_version": "1.2.0",
+      "rule_version": "1.3.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No payment-term clause detected"
@@ -775,22 +775,22 @@
       "title": "No Effective Date found"
     },
     {
-      "description": "Used but not defined: Base Rent, Operating Expenses.",
-      "document_position": 262,
+      "description": "Used but not defined: Operating Expenses.",
+      "document_position": 362,
       "excerpt": {
-        "end_offset": 271,
-        "section_id": "s1.1",
-        "start_offset": 262,
-        "text": "Base Rent"
+        "end_offset": 380,
+        "section_id": "s1.2",
+        "start_offset": 362,
+        "text": "Operating Expenses"
       },
       "explanation": "Title-Case phrases in a contract usually signal a defined term. When they aren't defined, readers must guess at the intended meaning. Either define them or use lowercase if the term is intended in its ordinary sense.",
-      "id": "STRUCT-006-s1.1-262",
+      "id": "STRUCT-006-s1.2-362",
       "recommendation": "Add a definition for each genuinely defined term, or change the casing if the phrase is being used in its ordinary sense.",
       "rule_id": "STRUCT-006",
       "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [],
-      "title": "Undefined Title-Case terms: 2"
+      "title": "Undefined Title-Case terms: 1"
     },
     {
       "description": "The contract does not state a path to terminate for material breach.",
@@ -891,7 +891,7 @@
   "playbook_id": "lease-commercial-multitenant",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected lease-commercial-multitenant (score 0.9). Title matched: \"office lease\". Distinguishing phrases: \"Landlord\", \"Tenant\", \"Premises\", \"Rentable Square Feet\", \"Base Rent\", \"Operating Expenses\".",
-  "result_hash": "939b4053a703774fdcc45c66fb417d34192d28a109576805b7a435d39c05f562",
+  "result_hash": "f4bfca5d0b4b83537259fae561fef09dc174ecb0c10a54754c902f0bbfcc2d7a",
   "source_file": {
     "name": "bad-lease-cam.docx",
     "sha256": "1de7804edf376ad66d1a78b0c998aa4a479a18835fa4e104e20057385337a0b6",
