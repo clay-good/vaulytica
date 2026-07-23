@@ -70,10 +70,64 @@ describe("extractJurisdictions", () => {
     );
   });
 
-  it("leaves a venue that is already a jurisdiction alone", () => {
+  it("resolves a foreign venue to its country", () => {
+    // Enforceability is a country's treaty position, never a city's.
     const tree = buildTree(["Venue", "Exclusive venue shall be in the courts of Paris, France."]);
     expect(extractJurisdictions(tree).find((r) => r.clause_kind === "venue")?.raw_text).toBe(
-      "Paris",
+      "France",
     );
+  });
+
+  it("leaves a locality alone when the document names no jurisdiction after it", () => {
+    const tree = buildTree(["Venue", "Exclusive venue shall be in the courts of Ulaanbaatar."]);
+    expect(extractJurisdictions(tree).find((r) => r.clause_kind === "venue")?.raw_text).toBe(
+      "Ulaanbaatar",
+    );
+  });
+
+  it("finds the forum clause the corpus actually writes", () => {
+    // Each of these was reported as having NO venue clause — CHOICE-003
+    // asserting "The document does not state where disputes must be brought"
+    // about a document with a forum-selection clause.
+    const venue = (text: string) =>
+      extractJurisdictions(buildTree(["Forum", text])).find((r) => r.clause_kind === "venue")
+        ?.raw_text;
+    // a long recital of what the clause covers, an uncommon verb, and an
+    // adjective on the court
+    expect(
+      venue(
+        "Any controversy, claim, or dispute arising out of, related to, or in connection with these Clauses, including any matter concerning their validity, interpretation, performance, breach, or termination, shall be commenced exclusively before the competent courts located in Dublin, Ireland.",
+      ),
+    ).toBe("Ireland");
+    // "resolved BY the courts of"
+    expect(
+      venue("Disputes arising from these Clauses shall be resolved by the courts of France."),
+    ).toBe("France");
+    // "disagreement" as the dispute noun
+    expect(
+      venue(
+        "Any disagreement concerning this Policy shall be resolved in the state or federal courts of New Castle County, Delaware.",
+      ),
+    ).toBe("Delaware");
+  });
+
+  it("does not read a court reference in an unrelated clause as a forum clause", () => {
+    const refs = extractJurisdictions(
+      buildTree([
+        "Records",
+        "Processor shall not be obligated to share them with Controller except as required by a court of competent jurisdiction or supervisory authority.",
+      ]),
+    );
+    expect(refs.filter((r) => r.clause_kind === "venue")).toEqual([]);
+  });
+
+  it("takes the jurisdiction a descriptive governing-law clause goes on to name", () => {
+    const refs = extractJurisdictions(
+      buildTree([
+        "Governing Law",
+        "These Clauses shall be governed by the law of the European Union Member State in which the data exporter is established, namely France.",
+      ]),
+    );
+    expect(refs.find((r) => r.clause_kind === "governing-law")?.raw_text).toBe("France");
   });
 });

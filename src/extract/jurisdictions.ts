@@ -30,11 +30,16 @@ export const US_STATE_PATTERN =
  * that was four simultaneous false findings, one of them calling Wilmington a
  * "foreign venue without standard enforceability treaty".
  *
- * When the document names the state immediately after the locality, that
- * state is the venue's jurisdiction, so record the state.
+ * When the document names the state — or, for a foreign forum, the country —
+ * immediately after the locality, that is the venue's jurisdiction, so record
+ * it. "Dublin, Ireland" resolves to Ireland for the same reason: the treaty
+ * that makes a foreign judgment enforceable is a country's, never a city's.
  */
-const STATE_AFTER_LOCALITY = new RegExp(
-  `^\\s*,\\s*(?:the\\s+(?:State|Commonwealth)\\s+of\\s+)?(${US_STATE_PATTERN})\\b`,
+const COUNTRY_PATTERN =
+  "United\\s+States|Canada|Mexico|United\\s+Kingdom|England(?:\\s+and\\s+Wales)?|Scotland|Wales|Ireland|Germany|France|Japan|Australia|New\\s+Zealand|Singapore|Hong\\s+Kong|China|India|Brazil|Spain|Italy|Netherlands|Switzerland|South\\s+Korea|Sweden|Israel|Norway|Belgium|Austria|Denmark|Finland|Portugal|Poland|Luxembourg";
+
+const JURISDICTION_AFTER_LOCALITY = new RegExp(
+  `^\\s*,\\s*(?:the\\s+(?:State|Commonwealth)\\s+of\\s+)?(${US_STATE_PATTERN}|${COUNTRY_PATTERN})\\b`,
   "i",
 );
 
@@ -51,9 +56,28 @@ const VENUE_SIMPLE =
  * state and federal courts located in New York County". Its absence made
  * CHOICE-003 fire "no venue clause" on textbook forum clauses and blinded
  * the law/venue-mismatch rules (audit).
+ *
+ * Each slot below was too narrow for drafting the corpus actually contains,
+ * and every miss became CHOICE-003 asserting "The document does not state
+ * where disputes must be brought" about a document with a forum-selection
+ * clause — a false absence, the worst thing this tool can say:
+ *   - the noun: "Any **disagreement** concerning this Policy …", "Any
+ *     **controversy**, claim, or dispute …";
+ *   - the run-up: a recital of what the clause covers ("arising out of,
+ *     related to, or in connection with these Clauses, including any matter
+ *     concerning their validity, interpretation, performance, breach, or
+ *     termination") runs past 120 characters;
+ *   - the verb: "shall be **commenced** exclusively before …";
+ *   - the preposition: "shall be resolved **by** the courts of France";
+ *   - the court: "before the **competent** courts located in Dublin".
  */
-const VENUE_RESOLVED_IN =
-  /\b(?:disputes?|claims?|actions?|proceedings?|litigation)\b[^.;)]{0,120}?\bshall\s+be\s+(?:resolved|brought|litigated|adjudicated|heard|instituted)\s+(?:exclusively\s+)?(?:in|before)\s+(?:any\s+|the\s+|a\s+)?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+|in\s+|within\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)/gi;
+const DISPUTE_NOUN = String.raw`disputes?|claims?|actions?|proceedings?|litigation|controvers(?:y|ies)|disagreements?|suits?`;
+const FORUM_VERB = String.raw`resolved|brought|litigated|adjudicated|heard|instituted|commenced|filed|maintained|tried|venued|determined`;
+const COURT_ADJECTIVE = String.raw`competent\s+|appropriate\s+|proper\s+|applicable\s+`;
+const VENUE_RESOLVED_IN = new RegExp(
+  String.raw`\b(?:${DISPUTE_NOUN})\b[^.;)]{0,200}?\bshall\s+be\s+(?:${FORUM_VERB})\s+(?:exclusively\s+|solely\s+|finally\s+)?(?:in|before|by)\s+(?:any\s+|the\s+|a\s+)?(?:${COURT_ADJECTIVE})?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_ADJECTIVE})?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+|in\s+|within\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
+  "gi",
+);
 
 const ARBITRATION_SEAT =
   /\b(?:seat\s+of\s+arbitration|arbitration\s+(?:shall\s+take\s+place|shall\s+be\s+(?:seated|conducted))\s+in)\s+([A-Z][A-Za-z\s&\-,]+?)(?=[.,;)]|\s+under|\s+pursuant|$)/gi;
@@ -93,10 +117,17 @@ export function extractJurisdictions(
       // clause yields to on the primary record (precedence is explicit)
       // rather than emitting a second, equal governing-law record.
       const fallback = detectFallback(tail);
+      // A clause that describes its law by formula and then names it —
+      // "governed by the law of the European Union Member State in which the
+      // data exporter is established, namely France" — has stated France. The
+      // description alone matches no venue clause ever written, so reporting
+      // it as the governing law made the SCC's own France forum read as a
+      // law/venue mismatch.
+      const named = detectNamedJurisdiction(tail);
       out.push({
         clause_kind: "governing-law",
-        jurisdiction_id: lookup(raw),
-        raw_text: raw,
+        jurisdiction_id: lookup(named ?? raw),
+        raw_text: named ?? raw,
         ...(fallback ? { fallback_jurisdiction: fallback } : {}),
         position: posInParagraph(ctx, m.index, m.index + m[0].length),
       });
@@ -106,8 +137,8 @@ export function extractJurisdictions(
       const captured = (m[1] ?? "").trim();
       if (!captured) return;
       const end = m.index + m[0].length;
-      const state = STATE_AFTER_LOCALITY.exec(ctx.text.slice(end))?.[1];
-      const raw = state ? state.replace(/\s+/g, " ") : captured;
+      const jurisdiction = JURISDICTION_AFTER_LOCALITY.exec(ctx.text.slice(end))?.[1];
+      const raw = jurisdiction ? jurisdiction.replace(/\s+/g, " ") : captured;
       const key = `${m.index}:${raw.toLowerCase()}`;
       if (seenVenue.has(key)) return;
       seenVenue.add(key);
@@ -146,6 +177,20 @@ function detectFallback(tail: string): string | undefined {
   const m =
     /\b(?:except|provided\s+that|otherwise|failing\s+which|if\s+such\s+courts?\b[^.;]*?(?:then|,))\b[^.;]*?\b(?:the\s+)?(?:laws?\s+of\s+|courts?\s+of\s+|then\s+)(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?)/.exec(
       window,
+    );
+  return m?.[1]?.trim() || undefined;
+}
+
+/**
+ * The concrete jurisdiction a descriptive governing-law clause goes on to
+ * name: "…the Member State in which the data exporter is established, **namely
+ * France**". Anchored to the start of the clause tail so a jurisdiction named
+ * later in the sentence for some other reason is not mistaken for the law.
+ */
+function detectNamedJurisdiction(tail: string): string | undefined {
+  const m =
+    /^\s*,?\s*(?:namely|i\.e\.,?|that\s+is,?|specifically)\s+(?:the\s+)?([A-Z][A-Za-z\s&-]*?)(?=[.,;)]|$)/.exec(
+      tail,
     );
   return m?.[1]?.trim() || undefined;
 }
