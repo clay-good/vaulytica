@@ -30,9 +30,25 @@ const EXTERNAL_TRAILER_RE =
   /^\s+of\s+(?:the\s+)?[A-Z][^.;,]*?\b(?:Code|Acts?|Regulations?|Rules?|U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?)\b/;
 const EXTERNAL_LEADER_RE = /\b(?:U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?|Stat\.)\s*$/;
 
+// A paragraph that OPENS with "6. Vendor Indemnity …" is section 6, even when
+// the ingester never promoted it to a heading. The paste path (any pasted
+// contract) keeps numbered clauses as flat paragraphs under one empty-heading
+// section, so the outline carries no numbered labels and a self-reference
+// ("under this Section 6") resolved to nothing — STRUCT-007 then reported a
+// broken cross-reference to a section printed two lines above it. The number
+// must be followed by a capitalized clause title, so a paragraph opening with a
+// list marker or an amount ("5,000") is not mistaken for a section.
+const LEADING_SECTION_RE = /^\s*(\d+(?:\.\d+)*)\.\s+[A-Z(]/;
+
 export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): CrossRef[] {
   const refs: CrossRef[] = [];
   const labelIndex = buildLabelIndex(outline);
+  // Augment the index with paragraph-leading section numbers the outline missed.
+  forEachParagraph(tree, (ctx) => {
+    const m = LEADING_SECTION_RE.exec(ctx.text);
+    const norm = m ? normalizeLabel(m[1]!) : undefined;
+    if (norm && !labelIndex.has(norm)) labelIndex.set(norm, ctx.paragraph.id);
+  });
 
   forEachParagraph(tree, (ctx) => {
     REF_RE.lastIndex = 0;

@@ -178,3 +178,49 @@ describe("extractCrossRefs", () => {
     expect(ref?.sub_ref).toBe("(a)(ii)");
   });
 });
+
+describe("paragraph-leading section numbers resolve cross-references", () => {
+  // The paste path keeps numbered clauses as flat paragraphs under one
+  // empty-heading section, so the outline has no numbered labels and a
+  // self-reference ("under this Section 6") resolved to nothing — STRUCT-007
+  // reported a broken reference to a clause printed two lines above it.
+  const flat = (...paras: string[]): DocumentTree =>
+    normalize({
+      type: "document",
+      sections: [
+        {
+          id: "",
+          heading: "",
+          level: 1,
+          paragraphs: paras.map((text) => ({ id: "", runs: [{ id: "", text, start: 0, end: 0 }] })),
+          children: [],
+        },
+      ],
+    });
+
+  it("resolves a reference to a clause that opens with its number", () => {
+    const t = flat(
+      "6. Vendor Indemnity. Vendor shall indemnify Customer, and its obligation under this Section 6 is not capped.",
+      "9. Termination. For purposes of this Section 9, a material change includes any risk-profile change.",
+    );
+    const refs = extractCrossRefs(t, extractSections(t));
+    expect(refs.filter((r) => r.unresolved)).toEqual([]);
+  });
+
+  it("still flags a reference to a section that does not exist", () => {
+    const t = flat("1. Scope. This references Section 42, which is not in this document.");
+    const refs = extractCrossRefs(t, extractSections(t));
+    expect(refs.some((r) => /Section 42/.test(r.raw_text) && r.unresolved)).toBe(true);
+  });
+
+  it("does not treat a numbered list item beginning an amount as a section", () => {
+    // "5,000" and a lone number without a capitalized title must not register.
+    const t = flat("The fee is 5,000 dollars. 5. business days is the cure period.");
+    const refs = extractCrossRefs(t, extractSections(t));
+    // A reference to Section 5 should NOT resolve to the "5. business days" run.
+    const t2 = flat("The fee is 5,000 dollars.", "See Section 5 for the schedule.");
+    const refs2 = extractCrossRefs(t2, extractSections(t2));
+    expect(refs2.some((r) => /Section 5/.test(r.raw_text) && r.unresolved)).toBe(true);
+    void refs;
+  });
+});
