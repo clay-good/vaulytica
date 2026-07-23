@@ -469,6 +469,14 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
         )
       )
         continue;
+      // An ordinal instrument name ("First Amendment", "Second Addendum") is
+      // the TITLE of a companion document, not a term this one defines.
+      if (
+        /^(?:First|Second|Third|Fourth|Fifth|Sixth|Seventh|Eighth|Ninth|Tenth)\s+(?:Amendment|Addendum|Modification|Restatement|Supplement)$/.test(
+          phrase,
+        )
+      )
+        continue;
       if (TITLE_CASE_LEADING_STOPWORDS.has(phrase)) continue;
       // Only strip sentence-initial-stopword patterns from the candidate
       // list when the phrase is short (2 words). Longer phrases like

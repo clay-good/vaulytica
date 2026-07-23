@@ -487,3 +487,16 @@ describe("counties are places, not defined terms", () => {
     expect(map.undefined_capitalized.map((u) => u.term)).not.toContain("Pierce County");
   });
 });
+
+describe("ordinal instrument names are document titles, not defined terms", () => {
+  it("does not flag 'First Amendment' from a lease reference", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Re",
+        "Lease dated March 1, 2024, as amended by First Amendment dated November 15, 2025.",
+        "The Lease has not been modified except by the First Amendment identified above.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((u) => u.term)).not.toContain("First Amendment");
+  });
+});

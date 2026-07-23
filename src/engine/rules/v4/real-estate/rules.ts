@@ -888,6 +888,7 @@ const ESTOPPEL_RULES: Rule[] = [
   }),
   presence({
     id: "RE-044",
+    version: "1.1.0",
     name: "Reliance / addressee identification",
     description: "Estoppel should identify who may rely on it (lender, buyer, successor).",
     citation: rePractice(
@@ -900,11 +901,19 @@ const ESTOPPEL_RULES: Rule[] = [
     missing_description: "No reliance / addressee clause was found.",
     explanation: "Estoppels bind only those entitled to rely; identification is essential.",
     recommendation: "Add 'Reliance' identifying the lender / buyer / successor entitled to rely.",
-    present_patterns: [/entitled\s+to\s+rely/i, /reliance/i, /(addressee|recipient)/i],
+    present_patterns: [
+      /entitled\s+to\s+rely/i,
+      /reliance/i,
+      /(addressee|recipient)/i,
+      // "each of them … WILL RELY on the statements in this Certificate" —
+      // the verb form, which the noun-only branch missed.
+      /\brel(?:y|ies)\s+(?:up)?on\b/i,
+    ],
     default_severity: "warning",
   }),
   presence({
     id: "RE-045",
+    version: "1.1.0",
     name: "Knowledge / authority qualifier",
     description: "Estoppel reps should carry a knowledge / authority qualifier.",
     citation: rePractice(
@@ -921,6 +930,9 @@ const ESTOPPEL_RULES: Rule[] = [
     present_patterns: [
       /to\s+(the\s+)?(undersigned|signer|signing\s+officer)('s)?\s+knowledge/is,
       /knowledge\s+of\s+the\s+undersigned/i,
+      // The standard form qualifies by the PARTY ROLE — "to Tenant's actual
+      // knowledge", "to Seller's knowledge" — not by "the undersigned".
+      /to\s+(?:the\s+)?[A-Z]\w+[''\u2019]s\s+(?:actual\s+)?knowledge/,
     ],
     default_severity: "warning",
   }),

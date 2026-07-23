@@ -129,3 +129,33 @@ describe("v4 Real-estate — failure cases", () => {
     expect(run.findings.some((f) => f.rule_id === "RE-042")).toBe(true);
   });
 });
+
+describe("RE-044/045 — the estoppel formulas drafting actually uses (v1.1.0)", () => {
+  const ESTOPPEL_PB_LOCAL: Playbook = { id: "estoppel-certificate", version: "1.0.0" };
+
+  it("verb-form reliance and role-possessive knowledge both satisfy", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Certificate",
+        "Tenant certifies that Lender and Purchaser will rely on the statements in this Certificate.",
+        "The statements in this Certificate are made to Tenant's actual knowledge, without independent investigation.",
+      ]),
+      ESTOPPEL_PB_LOCAL,
+    );
+    const run = await runEngine({ rules: REAL_ESTATE_RULES, ctx, source_file: SRC });
+    const ids = run.findings.map((f) => f.rule_id);
+    expect(ids).not.toContain("RE-044");
+    expect(ids).not.toContain("RE-045");
+  });
+
+  it("both still fire when neither clause exists", async () => {
+    const ctx = withPb(
+      buildContext(["Certificate", "Tenant certifies the lease is in full force and effect."]),
+      ESTOPPEL_PB_LOCAL,
+    );
+    const run = await runEngine({ rules: REAL_ESTATE_RULES, ctx, source_file: SRC });
+    const ids = run.findings.map((f) => f.rule_id);
+    expect(ids).toContain("RE-044");
+    expect(ids).toContain("RE-045");
+  });
+});
