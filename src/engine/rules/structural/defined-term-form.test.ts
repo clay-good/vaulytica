@@ -34,3 +34,41 @@ describe("capitalization rules and the parenthetical form", () => {
     expect(STRUCT_009.check(ctx)).not.toBeNull();
   });
 });
+
+describe("the reasonable-care 'own confidential information' idiom is not a slip", () => {
+  const ctx = () =>
+    buildContext(
+      ["Mutual NDA", "This Agreement is between Acme Inc. and Globex Inc."],
+      [
+        "Definitions",
+        '"Confidential Information" means any non-public information disclosed by a party.',
+      ],
+      [
+        "Care",
+        "Each party shall protect the other party's Confidential Information using the same degree of care it uses to protect its own confidential information of like importance, but in no event less than reasonable care.",
+      ],
+    );
+
+  it("STRUCT-009 stays silent on 'its own confidential information'", () => {
+    expect(STRUCT_009.check(ctx())).toBeNull();
+  });
+
+  it("STRUCT-014 stays silent on 'its own confidential information'", () => {
+    expect(STRUCT_014.check(ctx())).toBeNull();
+  });
+
+  it("STRUCT-009 still fires on a genuine lowercase use of the defined term", () => {
+    const slip = buildContext(
+      ["Mutual NDA", "This Agreement is between Acme Inc. and Globex Inc."],
+      [
+        "Definitions",
+        '"Confidential Information" means any non-public information disclosed by a party.',
+      ],
+      [
+        "Use",
+        "The receiving party shall not disclose the confidential information to any third party.",
+      ],
+    );
+    expect(STRUCT_009.check(slip)).not.toBeNull();
+  });
+});

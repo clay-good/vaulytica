@@ -1,6 +1,7 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { makeFinding } from "../../finding.js";
 import { forEachParagraph } from "../../../extract/walk.js";
+import { isGenericOwnUse } from "./STRUCT-009.js";
 
 /**
  * STRUCT-014 — Inconsistent defined-term casing (info).
@@ -55,6 +56,9 @@ export const rule: Rule = {
           // by `. ` or paragraph start.
           const before = p.text.slice(Math.max(0, m.index - 2), m.index);
           if (/^\.\s$/.test(before)) continue;
+          // "its own confidential information" is a generic reference (the
+          // NDA reasonable-care standard), not a miscapitalized defined term.
+          if (isGenericOwnUse(p.text, m.index)) continue;
           hits.push({
             term: def.term,
             section_id: p.section.id,

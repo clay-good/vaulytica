@@ -507,8 +507,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-009-s1-0",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-009",
       "rule_version": "1.0.0"
     },
@@ -538,8 +537,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-014-s1.2-613",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-014",
       "rule_version": "1.0.0"
     },
@@ -847,47 +845,12 @@
       "severity": "info",
       "source_citations": [],
       "title": "No indemnification clause detected"
-    },
-    {
-      "description": "Confidential Information",
-      "document_position": 0,
-      "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "Confidential Information"
-      },
-      "explanation": "Defined terms should be capitalized identically wherever they appear. A lowercase use of a defined term reads as ordinary usage and can change the meaning.",
-      "id": "STRUCT-009-s1-0",
-      "rule_id": "STRUCT-009",
-      "rule_version": "1.0.0",
-      "severity": "info",
-      "source_citations": [],
-      "title": "Inconsistent capitalization for 1 defined term"
-    },
-    {
-      "description": "1 reference uses the lowercase form of a defined term — likely a drafting slip. Affected terms: \"Confidential Information\".",
-      "document_position": 613,
-      "excerpt": {
-        "end_offset": 637,
-        "section_id": "s1.2",
-        "start_offset": 613,
-        "text": "Confidential Information"
-      },
-      "explanation": "A defined term carries its contractual meaning only when it is referenced with the same casing as its definition. A lowercase occurrence either creates a genuine ambiguity (the reader cannot tell if the defined meaning was intended) or signals a missed capitalization. Courts in commercial drafting jurisdictions sometimes read lowercase variants as the plain-English meaning rather than the defined meaning.",
-      "id": "STRUCT-014-s1.2-613",
-      "recommendation": "Recapitalize each lowercase occurrence to match the defined casing, or remove the term entirely if the unaltered plain-English meaning was intended.",
-      "rule_id": "STRUCT-014",
-      "rule_version": "1.0.0",
-      "severity": "info",
-      "source_citations": [],
-      "title": "Defined terms used in lowercase: 1"
     }
   ],
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\", \"Recipient\", \"Confidential Information\", \"Permitted Purpose\". Negative features penalized: \"employee\".",
-  "result_hash": "64fc6d88f55a12b2013f3c6b5d8ca206398f433691d2fab316882c00999daa04",
+  "result_hash": "ff1f125574e73e8e43ba5b69e6bb230689c650f617a652878f46d0fa6d9f6457",
   "source_file": {
     "name": "mutual-nda.docx",
     "sha256": "ef50f0dcb7abba00b9213ddb4a8a77a2ab5f0bc1f3ee2394f809706622bf8151",

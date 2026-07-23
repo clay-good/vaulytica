@@ -31,7 +31,7 @@ export const rule: Rule = {
         let m: RegExpExecArray | null;
         while ((m = re.exec(text)) !== null) {
           const slice = text.slice(m.index, m.index + m[0].length);
-          if (slice !== target) {
+          if (slice !== target && !isGenericOwnUse(text, m.index)) {
             foundLower = true;
             break;
           }
@@ -53,4 +53,17 @@ export const rule: Rule = {
 
 function escape(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/**
+ * A lowercase use immediately preceded by "own" is a GENERIC reference, not a
+ * miscapitalized defined term: the universal NDA reasonable-care standard is
+ * "the same degree of care it uses for its OWN confidential information" —
+ * that "confidential information" is the party's own (generic), deliberately
+ * distinct from the defined "Confidential Information". A real slip never
+ * writes "own <Term>" meaning the defined term, so this idiom must not read as
+ * an inconsistency.
+ */
+export function isGenericOwnUse(text: string, index: number): boolean {
+  return /\bown\s+$/i.test(text.slice(Math.max(0, index - 12), index));
 }
