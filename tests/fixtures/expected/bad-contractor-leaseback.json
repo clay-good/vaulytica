@@ -823,7 +823,7 @@
         "end_offset": 0,
         "section_id": "s1",
         "start_offset": 0,
-        "text": "Obligation kind matching /\\bindemnif/i"
+        "text": "indemnification obligation"
       },
       "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
       "id": "OBLI-002-s1-0",
@@ -831,7 +831,7 @@
       "rule_version": "1.0.0",
       "severity": "info",
       "source_citations": [],
-      "title": "Asymmetric obligation under '\\bindemnif'"
+      "title": "Asymmetric indemnification obligation"
     },
     {
       "description": "Contractor may not use any vehicle or device not leased from or pre-approved by Company.",
@@ -871,7 +871,7 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "dc0844643e44b141f4d4014e4dd8324d502fa331c2a798206d0667bab6745030",
+  "result_hash": "fa4aa51366d203fcdf77c2e41e144df650d310858fa23ba36333a478cd02fa77",
   "source_file": {
     "name": "bad-contractor-leaseback.docx",
     "sha256": "82496f664a3abe77b7ed03c7c77b47c9ffbd8c5f883389cb761b7ba68b31f98d",

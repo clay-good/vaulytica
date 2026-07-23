@@ -72,3 +72,17 @@ describe("OBLI-002 — reciprocity accounting", () => {
     ).toBeNull();
   });
 });
+
+describe("OBLI-002 — how the finding reads", () => {
+  it("names the obligation, not the pattern that found it", () => {
+    const ctx = buildContext([
+      "Agreement",
+      'This Agreement is between Acme Corp, a Delaware corporation ("Vendor"), and Globex LLC, a New York limited liability company ("Customer").',
+      "Vendor shall hold all Confidential Information of Customer in strict confidence.",
+    ]);
+    const f = obli002.check(ctx);
+    expect(f?.title).toBe("Asymmetric confidentiality obligation");
+    // Engine internals must never reach an attorney.
+    expect(JSON.stringify(f)).not.toMatch(/\\b|\(\?:/);
+  });
+});

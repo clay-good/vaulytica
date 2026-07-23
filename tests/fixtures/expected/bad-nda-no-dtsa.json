@@ -875,7 +875,7 @@
         "end_offset": 0,
         "section_id": "s1",
         "start_offset": 0,
-        "text": "Obligation kind matching /\\bconfidential/i"
+        "text": "confidentiality obligation"
       },
       "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
       "id": "OBLI-002-s1-0",
@@ -883,7 +883,7 @@
       "rule_version": "1.0.0",
       "severity": "info",
       "source_citations": [],
-      "title": "Asymmetric obligation under '\\bconfidential'"
+      "title": "Asymmetric confidentiality obligation"
     },
     {
       "description": "The Receiving Party agrees to maintain in strict confidence all Confidential Information and shall not disclose any such",
@@ -906,7 +906,7 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "899163d8f46e74bef3d00dfc6f00df6864293c29891adbe7e4a32572bc8a50e4",
+  "result_hash": "9d3548a72075bc002fe7d40085bbaa09065986a9d1eb93107bb7a12fe5c9665f",
   "source_file": {
     "name": "bad-nda-no-dtsa.docx",
     "sha256": "6843694916dfef439851e84aca5bf213e35090b1a39f2b027f1e56d6382f2c29",

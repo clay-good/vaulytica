@@ -998,7 +998,7 @@
         "end_offset": 0,
         "section_id": "s1",
         "start_offset": 0,
-        "text": "Obligation kind matching /\\bindemnif/i"
+        "text": "indemnification obligation"
       },
       "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
       "id": "OBLI-002-s1-0",
@@ -1006,7 +1006,7 @@
       "rule_version": "1.0.0",
       "severity": "info",
       "source_citations": [],
-      "title": "Asymmetric obligation under '\\bindemnif'"
+      "title": "Asymmetric indemnification obligation"
     },
     {
       "description": "Vendor shall not have any reciprocal indemnification obligation.",
@@ -1064,7 +1064,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "cb4b64d9e3951babc405daa821027a613bc943ee3554765864eb4421b4cd7a8f",
+  "result_hash": "e77c169e09366ca96feb2d39f5d983fe50085e34c30a76f0f44816399fe60094",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",

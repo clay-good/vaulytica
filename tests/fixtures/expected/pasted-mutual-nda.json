@@ -821,7 +821,7 @@
         "end_offset": 0,
         "section_id": "s1",
         "start_offset": 0,
-        "text": "Obligation kind matching /\\bconfidential/i"
+        "text": "confidentiality obligation"
       },
       "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
       "id": "OBLI-002-s1-0",
@@ -829,7 +829,7 @@
       "rule_version": "1.0.0",
       "severity": "info",
       "source_citations": [],
-      "title": "Asymmetric obligation under '\\bconfidential'"
+      "title": "Asymmetric confidentiality obligation"
     },
     {
       "description": "Neither 'indemnify' nor 'hold harmless' appears in the document.",
@@ -887,7 +887,7 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected mutual-nda (score 0.9). Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\", \"Recipient\", \"Confidential Information\", \"Permitted Purpose\". Negative features penalized: \"employee\".",
-  "result_hash": "068cfcacb41265b0cc86ba8d77ac878dc8b0901210db553124f8c23932c2e667",
+  "result_hash": "1fcf47842d926cff55feb1e6d8b191bb90a0061b14de50f0a513f1e058e3c165",
   "source_file": {
     "name": "pasted-mutual-nda.txt",
     "sha256": "908fab1cfc67064f69fefb5bd7aed92907945bf54c100eba2dcdb9d75c0e6d40",

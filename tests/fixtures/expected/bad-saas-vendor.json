@@ -1000,7 +1000,7 @@
         "end_offset": 0,
         "section_id": "s1",
         "start_offset": 0,
-        "text": "Obligation kind matching /\\bindemnif/i"
+        "text": "indemnification obligation"
       },
       "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
       "id": "OBLI-002-s1-0",
@@ -1008,7 +1008,7 @@
       "rule_version": "1.0.0",
       "severity": "info",
       "source_citations": [],
-      "title": "Asymmetric obligation under '\\bindemnif'"
+      "title": "Asymmetric indemnification obligation"
     },
     {
       "description": "The contract uses 'best efforts' rather than 'reasonable efforts' or 'commercially reasonable efforts'.",
@@ -1083,7 +1083,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\", \"uptime\".",
-  "result_hash": "1cf85fd4ba5c8bffd7711167354a595d119ae4dd754f6b1bc4f72f524348c75d",
+  "result_hash": "0ae9c302ef6bfc947352fbbbb9496605961a38042c78967ad8f148dcfe20014e",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",

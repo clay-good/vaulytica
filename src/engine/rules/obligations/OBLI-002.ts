@@ -10,11 +10,19 @@ import { emit, topPosition } from "../_helpers.js";
  */
 const NEGATED_ACTION = /^(?:not|never)\b/i;
 
+/**
+ * The obligations that are mutual by default, each with the name a reader
+ * would use for it. The label is not decoration: the finding's title and
+ * excerpt used to interpolate the pattern itself, so every OBLI-002 finding
+ * this tool has ever emitted read "Asymmetric obligation under
+ * '\bconfidential'" and "Obligation kind matching /\bconfidential/i" —
+ * engine internals printed at an attorney.
+ */
 const RECIPROCAL_PATTERNS = [
-  /\bconfidential/i,
-  /\bindemnif/i,
-  /\brepresentation/i,
-  /\bwarrant/i,
+  { label: "confidentiality", pattern: /\bconfidential/i },
+  { label: "indemnification", pattern: /\bindemnif/i },
+  { label: "representations", pattern: /\brepresentation/i },
+  { label: "warranties", pattern: /\bwarrant/i },
 ] as const;
 
 /** OBLI-002 — Reciprocity asymmetry (info). */
@@ -37,7 +45,7 @@ export const rule: Rule = {
     const partySet = new Set(
       parties.flatMap((p) => [p.name.toLowerCase(), ...(p.role ? [p.role.toLowerCase()] : [])]),
     );
-    for (const pattern of RECIPROCAL_PATTERNS) {
+    for (const { label, pattern } of RECIPROCAL_PATTERNS) {
       const seenObligors = new Set<string>();
       for (const o of ctx.extracted.obligations) {
         if (!pattern.test(o.action)) continue;
@@ -47,9 +55,9 @@ export const rule: Rule = {
       }
       if (seenObligors.size === 1 && partySet.size >= 2) {
         return emit(ctx, rule, {
-          title: `Asymmetric obligation under '${pattern.source}'`,
+          title: `Asymmetric ${label} obligation`,
           description: `Only ${[...seenObligors][0]} bears this typically-mutual obligation.`,
-          excerpt: `Obligation kind matching ${pattern}`,
+          excerpt: `${label} obligation`,
           explanation:
             "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
           position: topPosition(ctx),

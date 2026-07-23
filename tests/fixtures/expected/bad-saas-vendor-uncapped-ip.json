@@ -824,7 +824,7 @@
         "end_offset": 0,
         "section_id": "s1",
         "start_offset": 0,
-        "text": "Obligation kind matching /\\bindemnif/i"
+        "text": "indemnification obligation"
       },
       "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
       "id": "OBLI-002-s1-0",
@@ -832,7 +832,7 @@
       "rule_version": "1.0.0",
       "severity": "info",
       "source_citations": [],
-      "title": "Asymmetric obligation under '\\bindemnif'"
+      "title": "Asymmetric indemnification obligation"
     },
     {
       "description": "The foregoing obligation shall not be subject to any limitation of liability set forth in this Agreement.",
@@ -890,7 +890,7 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 0.8,
   "playbook_match_reasoning": "Selected msa-general (score 0.8). Required clauses present: \"indemnification\". Distinguishing phrases: \"Services\", \"Provider\", \"Customer\". Negative features penalized: \"lease\", \"Premises\".",
-  "result_hash": "99c465002b697c68e7b68cd912b36368d3be50517edf20a72ab8368eab464a9b",
+  "result_hash": "678df1354a86126fe6a4fcb98f18e0e142a4108e81273bdc3cfb6b276c8f10a7",
   "source_file": {
     "name": "bad-saas-vendor-uncapped-ip.docx",
     "sha256": "8ae94b74fdbe0bc441724e390612c07a1fd3fdc05bf782e829c1e4dda8a69083",
