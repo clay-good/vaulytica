@@ -43,8 +43,33 @@ const JURISDICTION_AFTER_LOCALITY = new RegExp(
   "i",
 );
 
-const GOV_LAW =
-  /\b(governed\s+by\s+(?:and\s+construed\s+(?:in\s+accordance\s+with\s+)?)?the\s+laws?\s+of\s+(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?))(?=[.,;)]|\s+(?:without|excluding|and|regardless)|$)/gi;
+/**
+ * `governed by … the laws of X`.
+ *
+ * The commas matter: the textbook clause is written both ways, and "governed
+ * by**,** and construed in accordance with**,** the laws of the Republic of
+ * Ireland" matched nothing — so CHOICE-001 reported "Vaulytica did not find a
+ * governing-law clause" on a document whose Governing Law section says
+ * precisely that. `the Republic of` needs naming too, or the capture keeps
+ * the descriptor and "Republic of Ireland" never reconciles against an
+ * "Ireland" venue.
+ */
+const SOVEREIGN_PREFIX = String.raw`the\s+(?:State|Commonwealth|Republic|Kingdom|Province)\s+of\s+|the\s+`;
+const GOV_LAW = new RegExp(
+  String.raw`\b(governed\s+by\s*,?\s*(?:and\s+construed\s+(?:in\s+accordance\s+with\s*,?\s*)?)?the\s+laws?\s+of\s+(?:${SOVEREIGN_PREFIX})?([A-Z][A-Za-z\s&-]+?))(?=[.,;)]|\s+(?:without|excluding|and|regardless)|$)`,
+  "gi",
+);
+
+/**
+ * The other half of the same clause, written as a statement rather than a
+ * command: "The governing law of this Addendum **is** the law of England and
+ * Wales" — the UK IDTA's own wording, and eight corpus fixtures were told
+ * they had no governing-law clause because of it.
+ */
+const GOV_LAW_IS = new RegExp(
+  String.raw`\bgoverning\s+law\b(?:\s+of\s+[^.;)]{0,60}?)?\s+(?:is|shall\s+be|will\s+be)\s+(?:the\s+laws?\s+of\s+)?(?:${SOVEREIGN_PREFIX})?([A-Z][A-Za-z&-]+(?:\s+(?:and\s+)?[A-Z][A-Za-z&-]+){0,3})`,
+  "gi",
+);
 
 const VENUE =
   /\b(?:venue|forum|exclusive\s+jurisdiction|exclusive\s+venue|jurisdiction\s+and\s+venue|sole\s+and\s+exclusive\s+(?:venue|jurisdiction|forum))\b[^.;)]{0,80}?(?:shall\s+(?:be|lie)|is|lies|shall\s+rest|will\s+be)\s+(?:in|with|within)?\s*(?:any\s+|the\s+|a\s+)?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+|in\s+|within\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)/gi;
@@ -90,6 +115,8 @@ export function extractJurisdictions(
 ): JurisdictionReference[] {
   const out: JurisdictionReference[] = [];
 
+  const seenGovLaw = new Set<string>();
+
   forEachParagraph(tree, (ctx) => {
     runRegex(GOV_LAW, ctx.text, (m) => {
       const raw = (m[2] ?? "").trim();
@@ -124,11 +151,28 @@ export function extractJurisdictions(
       // it as the governing law made the SCC's own France forum read as a
       // law/venue mismatch.
       const named = detectNamedJurisdiction(tail);
+      seenGovLaw.add((named ?? raw).toLowerCase());
       out.push({
         clause_kind: "governing-law",
         jurisdiction_id: lookup(named ?? raw),
         raw_text: named ?? raw,
         ...(fallback ? { fallback_jurisdiction: fallback } : {}),
+        position: posInParagraph(ctx, m.index, m.index + m[0].length),
+      });
+    });
+    runRegex(GOV_LAW_IS, ctx.text, (m) => {
+      const raw = (m[1] ?? "").trim();
+      // The `i` flag makes `[A-Z]` match any letter, so require the
+      // capitalization a jurisdiction name always carries — otherwise "The
+      // governing law of this Addendum is determined by …" registers
+      // "determined" as the law.
+      if (!/^[A-Z]/.test(raw)) return;
+      if (seenGovLaw.has(raw.toLowerCase())) return;
+      seenGovLaw.add(raw.toLowerCase());
+      out.push({
+        clause_kind: "governing-law",
+        jurisdiction_id: lookup(raw),
+        raw_text: raw,
         position: posInParagraph(ctx, m.index, m.index + m[0].length),
       });
     });

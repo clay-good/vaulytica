@@ -130,4 +130,34 @@ describe("extractJurisdictions", () => {
     );
     expect(refs.find((r) => r.clause_kind === "governing-law")?.raw_text).toBe("France");
   });
+  it("finds the governing-law clause the corpus actually writes", () => {
+    const gov = (text: string) =>
+      extractJurisdictions(buildTree(["Governing Law", text])).find(
+        (r) => r.clause_kind === "governing-law",
+      )?.raw_text;
+    // The commas are ordinary drafting, and they matched nothing — CHOICE-001
+    // reported "no governing-law clause" on a Governing Law section. The
+    // sovereign descriptor has to come off too, or "Republic of Ireland" never
+    // reconciles against an "Ireland" venue.
+    expect(
+      gov(
+        "These Clauses shall be governed by, and construed in accordance with, the laws of the Republic of Ireland, without reference to its conflict-of-laws principles.",
+      ),
+    ).toBe("Ireland");
+    // The UK IDTA's own wording — a statement, not a command.
+    expect(gov("The governing law of this Addendum is the law of England and Wales.")).toBe(
+      "England and Wales",
+    );
+  });
+
+  it("does not read a non-jurisdiction as the governing law", () => {
+    expect(
+      extractJurisdictions(
+        buildTree([
+          "Governing Law",
+          "The governing law of this Addendum is determined by the parties' agreement.",
+        ]),
+      ).filter((r) => r.clause_kind === "governing-law"),
+    ).toEqual([]);
+  });
 });
