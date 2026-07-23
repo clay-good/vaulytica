@@ -771,6 +771,18 @@ const CCR_RULES: Rule[] = [
       /(no|not).{0,40}(african|asian|black|hispanic|jewish|negro|persons\s+of\s+color)/is,
       /restricted\s+to\s+(persons\s+of\s+the\s+)?caucasian/is,
     ],
+    // The bad_patterns are proximity-only, so a modern fair-housing compliance
+    // or repudiation clause ("occupancy shall not be denied to any person who
+    // is Black …", "any prior restriction purporting to exclude such persons is
+    // void") trips the same `no/not` + protected-class window as the covenant
+    // it repudiates. Accusing the remediation clause of being the covenant is
+    // the worst false accusation this rule can make.
+    exclude_if: [
+      /\bfair\s+housing\b/i,
+      /shall\s+not\s+be\s+denied/i,
+      /purport(?:ing|s)?\s+to\s+(?:exclude|restrict|discriminate)/i,
+      /\bvoid\b[^.]{0,60}(?:force|effect|unenforceable)/i,
+    ],
     bad_title: "Discriminatory restrictive covenant flagged",
     bad_description:
       "The CC&Rs appear to contain a discriminatory covenant based on race, color, religion, or national origin.",

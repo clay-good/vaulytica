@@ -240,7 +240,7 @@ const PATENT_LICENSE_RULES: Rule[] = [
       /(perpetual|indefinite|in\s+perpetuity).{0,80}royalt/is,
     ],
     exclude_if: [
-      /\bshall\s+not\s+(?:extend|accrue|continue|survive|be\s+(?:payable|owed|due|owing))\b/i,
+      /\b(?:shall|do|does|will)\s+not\s+(?:extend|accrue|continue|survive|be\s+(?:payable|owed|due|owing))\b/i,
       /\bno\s+royalt(?:y|ies)?\b[^.]{0,80}(?:after|beyond|following)\b/i,
     ],
     bad_title: "Royalty obligation potentially extends beyond patent expiration",

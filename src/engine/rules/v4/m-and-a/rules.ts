@@ -1458,8 +1458,12 @@ const MA_RESTRICTIVE_COVENANT_RULES: Rule[] = [
     ),
     playbooks: [MA_PLAYBOOK_MA_RC],
     bad_patterns: [
-      /([6-9]|1[0-9])\s+years?.{0,40}(non.?compete|restricted\s+period)/is,
-      /(non.?compete|restricted\s+period).{0,40}([6-9]|1[0-9])\s+years/is,
+      // The year count must be the covenant's DURATION, not merely a number
+      // sharing a sentence with it — "the Company has 10 years of history
+      // supporting the restricted period" is not a 10-year non-compete.
+      /(?:non.?compete|non.?competition|restricted\s+period)[^.]{0,40}(?:of|shall\s+be|is|are|equal\s+to|not\s+exceed(?:ing)?)\s+(?:a\s+period\s+of\s+)?([6-9]|1[0-9])\s+years?/is,
+      /(?:for|of)\s+(?:a\s+)?(?:period\s+of\s+)?([6-9]|1[0-9])\s+years?[^.]{0,40}(?:non.?compete|non.?competition|restricted\s+period|shall\s+not\s+compete)/is,
+      /([6-9]|1[0-9])[\s-]*year\s+(?:non.?compete|non.?competition|restricted\s+period)/is,
     ],
     bad_title: "Non-compete duration appears > 5 years",
     bad_description:
