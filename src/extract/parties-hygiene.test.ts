@@ -186,4 +186,26 @@ describe("party extraction hygiene", () => {
       ),
     ).toEqual([]);
   });
+  it("does not keep a role label the preamble put in front of the name", () => {
+    // "between Covered Entity, Acme Health LLC, …, and Business Associate,
+    // Globex Services Inc." produced parties literally named "Covered Entity,
+    // Acme Health LLC" — a string that appears nowhere else in the document,
+    // so every rule matching a party surface against the text missed it. The
+    // same preamble also registered the bare role as a third and fourth party.
+    const got = parties(
+      "Business Associate Agreement",
+      'This Business Associate Agreement ("BAA") is entered into pursuant to the requirements of 45 CFR § 164.504(e) between Covered Entity, Acme Health LLC, a Delaware limited liability company ("Covered Entity"), and Business Associate, Globex Services Inc., a New York corporation ("Business Associate").',
+    );
+    expect(got.map((p) => p.name)).toEqual(["Acme Health LLC", "Globex Services Inc"]);
+    expect(got.map((p) => p.role)).toEqual(["Covered Entity", "Business Associate"]);
+  });
+
+  it("leaves a company whose name starts with a role word alone", () => {
+    expect(
+      names(
+        "Agreement",
+        "This Agreement is between Trustee Services LLC, a Delaware limited liability company, and Globex Inc., a New York corporation.",
+      ),
+    ).toEqual(["Trustee Services LLC", "Globex Inc"]);
+  });
 });

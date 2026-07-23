@@ -126,8 +126,25 @@ const PREAMBLE_LEAD = new RegExp(
  * descriptive sentence ("Recipient: the party receiving Confidential
  * Information") is not read as a party name.
  */
-const LABELED_PARTY =
-  /(?:^|\n)\s*(Data\s+Exporter|Data\s+Importer|Exporter|Importer|Discloser|Disclosing\s+Party|Recipient|Receiving\s+Party|Covered\s+Entity|Business\s+Associate|Controller|Processor|Sub-?processor|Landlord|Tenant|Lessor|Lessee|Licensor|Licensee|Buyer|Seller|Purchaser|Vendor|Supplier|Provider|Customer|Client|Company|Employer|Employee|Contractor|Consultant|Borrower|Lender|Guarantor|Trustee|Grantor|Settlor|Insured|Insurer|Party\s+[AB])\s*:\s*(?!\s)([A-Z][^\n,;.]{2,80})/g;
+/** The role labels a party line or a role-first preamble uses. */
+const PARTY_ROLE_LABEL = String.raw`Data\s+Exporter|Data\s+Importer|Exporter|Importer|Discloser|Disclosing\s+Party|Recipient|Receiving\s+Party|Covered\s+Entity|Business\s+Associate|Controller|Processor|Sub-?processor|Service\s+Provider|Subcontractor|Sublicensee|Sublessee|Landlord|Tenant|Lessor|Lessee|Licensor|Licensee|Buyer|Seller|Purchaser|Vendor|Supplier|Provider|Customer|Client|Company|Employer|Employee|Contractor|Consultant|Borrower|Lender|Guarantor|Trustee|Grantor|Settlor|Insured|Insurer|Party\s+[AB]`;
+
+const LABELED_PARTY = new RegExp(
+  String.raw`(?:^|\n)\s*(${PARTY_ROLE_LABEL})\s*:\s*(?!\s)([A-Z][^\n,;.]{2,80})`,
+  "g",
+);
+
+/**
+ * A role-first preamble names the party as `<Role>, <Legal Name>`: "between
+ * Covered Entity, Acme Health LLC, a Delaware limited liability company
+ * (\"Covered Entity\"), and Business Associate, Globex Services Inc." The
+ * label is not part of the name, and keeping it produced parties literally
+ * named "Covered Entity, Acme Health LLC" — a string that appears nowhere else
+ * in the document, so every rule matching a party surface against the text
+ * missed it. The comma is required, so a company whose name simply starts with
+ * a role word ("Trustee Services LLC") is untouched.
+ */
+const LEADING_ROLE = new RegExp(String.raw`^(${PARTY_ROLE_LABEL})\s*,\s*(?=[A-Z])`, "i");
 
 const SIGNATURE_LINE = /^(?:By|Name|Title|Date)\s*:?\s*/i;
 
@@ -287,6 +304,20 @@ export function extractParties(tree: DocumentTree): Party[] {
     }
   }
 
+  // A role-first preamble ("between Covered Entity, Acme Health LLC, …, and
+  // Business Associate, Globex Services Inc.") also matches the `between` path
+  // at the comma, so the ROLE registers as if it were a second party. Fold any
+  // party whose whole name is another party's role into that party — a
+  // two-party BAA reports two parties, not four.
+  for (const [key, p] of [...partyMap]) {
+    const owner = [...partyMap.values()].find(
+      (q) => q !== p && q.role && q.role.toLowerCase() === p.name.toLowerCase(),
+    );
+    if (!owner) continue;
+    owner.positions.push(...p.positions);
+    partyMap.delete(key);
+  }
+
   // Resolve alias / role chains: a short form, an upper-cased variant,
   // the defined role, and any d/b/a name all point at one entity.
   for (const party of partyMap.values()) {
@@ -427,6 +458,8 @@ function splitNameAndRole(raw: string): { name: string; role?: string } {
 
 function cleanPartyName(raw: string): string {
   let n = trimEdges(raw.trim(), /["“”'’\s]/);
+  // Strip a role label the preamble put in FRONT of the legal name.
+  n = n.replace(LEADING_ROLE, "");
   // Strip trailing entity descriptor like ", a Delaware corporation".
   n = n.replace(/,\s*(?:a|an)\s+.+$/i, "");
   n = trimEnd(n, /[.,;]/);
