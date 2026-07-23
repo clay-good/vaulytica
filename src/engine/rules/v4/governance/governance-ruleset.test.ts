@@ -142,3 +142,40 @@ describe("v4 Governance — failure cases", () => {
     expect(run.findings.some((f) => f.rule_id === "GOV-080")).toBe(true);
   });
 });
+
+describe("GOV-028/031/032 — the charter formulas drafting actually uses (v1.1.0)", () => {
+  const CHARTER_PB_LOCAL: Playbook = { id: "charter-incorporation", version: "1.0.0" };
+  const CLEAN_CHARTER: [string, ...string[]][] = [
+    [
+      "Certificate of Incorporation",
+      "FOURTH: The Board of Directors is authorized, by resolution and without stockholder approval, to provide for the issuance of the Preferred Stock in one or more series, and to fix the designations, powers, preferences, and rights of the shares of each such series.",
+      "SIXTH: To the fullest extent permitted by the General Corporation Law of the State of Delaware, no director or officer of the Corporation shall be personally liable to the Corporation or its stockholders for monetary damages for breach of fiduciary duty.",
+      "NINTH: The Corporation reserves the right to amend, alter, change, or repeal any provision contained in this Certificate of Incorporation in the manner now or hereafter prescribed by statute.",
+    ],
+  ];
+
+  it("none of the three absence findings fire on the standard formulas", async () => {
+    const ctx = withPb(buildContext(...CLEAN_CHARTER), CHARTER_PB_LOCAL);
+    const run = await runEngine({ rules: GOVERNANCE_RULES, ctx, source_file: SRC });
+    const ids = run.findings.map((f) => f.rule_id);
+    expect(ids).not.toContain("GOV-028");
+    expect(ids).not.toContain("GOV-031");
+    expect(ids).not.toContain("GOV-032");
+  });
+
+  it("all three still fire on a charter that omits the clauses", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Certificate of Incorporation",
+        "FIRST: The name of the corporation is Bare Charter Corp.",
+        "SECOND: The registered office is in Wilmington, Delaware.",
+      ]),
+      CHARTER_PB_LOCAL,
+    );
+    const run = await runEngine({ rules: GOVERNANCE_RULES, ctx, source_file: SRC });
+    const ids = run.findings.map((f) => f.rule_id);
+    expect(ids).toContain("GOV-028");
+    expect(ids).toContain("GOV-031");
+    expect(ids).toContain("GOV-032");
+  });
+});

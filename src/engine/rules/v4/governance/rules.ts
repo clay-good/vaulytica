@@ -526,6 +526,7 @@ const CHARTER_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-028",
+    version: "1.1.0",
     name: "Director-exculpation clause (DGCL § 102(b)(7))",
     description:
       "Charter should include the optional § 102(b)(7) director-exculpation clause; absent it, directors are exposed to monetary liability for breaches of fiduciary duty of care.",
@@ -541,6 +542,10 @@ const CHARTER_RULES: Rule[] = [
       /section\s+102\s*\(b\)\s*\(7\)/i,
       /eliminat(e|ed|ing)\s+.{0,40}liability\s+of\s+(a\s+)?director/is,
       /director(s)?\s+shall\s+not\s+be\s+personally\s+liable/i,
+      // The dominant modern formulation carries its negation in the SUBJECT —
+      // "NO director or officer … shall be personally liable" — so the
+      // verb-negated branch above never matched it.
+      /\bno\s+director[^.]{0,60}?shall\s+be\s+personally\s+liable/i,
     ],
     default_severity: "warning",
   }),
@@ -578,6 +583,7 @@ const CHARTER_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-031",
+    version: "1.1.0",
     name: "Preferred-stock blank check authority",
     description:
       "Charter should grant the board blank-check preferred-stock authority (DGCL § 151(g)).",
@@ -593,11 +599,17 @@ const CHARTER_RULES: Rule[] = [
       /blank.check/i,
       /series\s+of\s+preferred/i,
       /board\s+may.{0,40}designate.{0,40}preferred/is,
+      // The charter formula inverts the noun order — "issuance of the
+      // Preferred Stock in one or more series … and to fix the
+      // designations, powers, preferences" — and no branch above reads it.
+      /preferred\s+stock\s+in\s+one\s+or\s+more\s+series/i,
+      /fix\s+the\s+designations?,?\s+powers?,?\s+preferences?/i,
     ],
     default_severity: "info",
   }),
   presence({
     id: "GOV-032",
+    version: "1.1.0",
     name: "Amendment of certificate of incorporation",
     description: "Charter should address amendment procedures (DGCL § 242).",
     citation: dgcl("242"),
@@ -611,6 +623,12 @@ const CHARTER_RULES: Rule[] = [
     present_patterns: [
       /amend(ment)?\s+(of|to)?\s*(the\s+)?certificate/i,
       /article.{0,30}amendment/i,
+      // The § 242 reservation formula enumerates its verbs — "reserves the
+      // right to amend, alter, change, or repeal any provision contained in
+      // this Certificate" — putting 40+ characters between "amend" and
+      // "certificate", past the first branch's reach.
+      /reserves\s+the\s+right\s+to\s+amend/i,
+      /amend,\s*alter,\s*change,?\s+or\s+repeal/i,
     ],
     default_severity: "info",
   }),
