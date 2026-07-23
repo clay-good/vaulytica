@@ -450,3 +450,28 @@ describe("a sentence-initial article on a defined term is that term's use", () =
     expect(map.undefined_capitalized.map((u) => u.term)).not.toContain("The Escrow Agent");
   });
 });
+
+describe("handbook-style captions and parenthetical subjects", () => {
+  it("does not flag the document's own title or a parenthetical's subject", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Body",
+        "Employee Handbook — Halcyon Grid Systems, Inc.",
+        'This Employee Handbook (this "Handbook") describes the policies of the Company. Employees should direct questions about the Employee Handbook to Human Resources.',
+      ]),
+    );
+    const terms = map.undefined_capitalized.map((u) => u.term);
+    expect(terms).not.toContain("Employee Handbook");
+    expect(terms).not.toContain("Human Resources");
+  });
+
+  it("still flags an undefined phrase merely used near an unrelated parenthetical", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Body",
+        "Each site shall follow the Quality Assurance Plan at all times. Every site manager shall maintain the Quality Assurance Plan on file.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((u) => u.term)).toContain("Quality Assurance Plan");
+  });
+});

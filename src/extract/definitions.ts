@@ -153,6 +153,11 @@ const COMMON_WORDS = new Set([
   "Exhibit",
   "Schedule",
   "Attachment",
+  // Organizational units referenced by name ("report it to Human
+  // Resources") — proper nouns, never document-defined terms.
+  "Human Resources",
+  "Legal Department",
+  "Information Technology",
 ]);
 
 /**
@@ -407,6 +412,17 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // or inside an echo of it ("This Confidential Settlement Agreement and
       // Mutual Release (this 'Agreement') …") is title vocabulary.
       if (caption && insideOccurrenceOf(ctx.text, caption, m.index, phrase.length)) continue;
+      // A phrase soon followed by a defining parenthetical is the SUBJECT
+      // that parenthetical names — "This Employee Handbook (this
+      // 'Handbook') …" defined the whole phrase as "Handbook"; its words are
+      // not a separate undefined term.
+      if (
+        /^[^().;]{0,40}\(\s*(?:the|this|each|an?|collectively|together|individually|hereinafter|referred\s+to\s+as)?[,]?\s*["“]/.test(
+          ctx.text.slice(m.index + phrase.length, m.index + phrase.length + 60),
+        )
+      ) {
+        continue;
+      }
       // A candidate whose first word is immediately preceded by a hyphen is the
       // tail of a hyphenated compound, not a standalone term: "Software-as-a-
       // Service Terms of Service" yielded the phantom term "Service Terms".
@@ -712,6 +728,8 @@ function isTitleCaseSegment(segment: string): boolean {
   for (const w of words) {
     if (/^[A-Z0-9(&]/.test(w)) continue;
     if (HEADING_CONNECTORS.test(w)) continue;
+    // Title punctuation: "Employee Handbook — Halcyon Grid Systems, Inc."
+    if (/^[—–-]$/.test(w)) continue;
     return false;
   }
   return true;

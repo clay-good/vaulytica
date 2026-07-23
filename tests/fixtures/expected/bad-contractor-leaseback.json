@@ -491,8 +491,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-006-s1-130",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-006",
       "rule_version": "1.1.0"
     },
@@ -756,24 +755,6 @@
       "title": "No Effective Date found"
     },
     {
-      "description": "Used but not defined: Driver Owner.",
-      "document_position": 130,
-      "excerpt": {
-        "end_offset": 142,
-        "section_id": "s1",
-        "start_offset": 130,
-        "text": "Driver Owner"
-      },
-      "explanation": "Title-Case phrases in a contract usually signal a defined term. When they aren't defined, readers must guess at the intended meaning. Either define them or use lowercase if the term is intended in its ordinary sense.",
-      "id": "STRUCT-006-s1-130",
-      "recommendation": "Add a definition for each genuinely defined term, or change the casing if the phrase is being used in its ordinary sense.",
-      "rule_id": "STRUCT-006",
-      "rule_version": "1.1.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "Undefined Title-Case terms: 1"
-    },
-    {
       "description": "The contract does not state what happens upon termination.",
       "document_position": 0,
       "excerpt": {
@@ -871,7 +852,7 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "a2a8037154240ec507e5fc29992c08c05975f709858e3f75f27a02f3f772f508",
+  "result_hash": "14bf8373d6efa2409883733de51c4a3bcbc1fa833aad29c0ae3415edf3b9dacc",
   "source_file": {
     "name": "bad-contractor-leaseback.docx",
     "sha256": "82496f664a3abe77b7ed03c7c77b47c9ffbd8c5f883389cb761b7ba68b31f98d",
