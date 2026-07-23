@@ -163,4 +163,27 @@ describe("party extraction hygiene", () => {
     expect(got.map((p) => p.name)).toContain("End User");
     expect(got.find((p) => p.name === "End User")?.role).toBe("End User");
   });
+  it("reads a labeled party line", () => {
+    // An SCC annex, an IDTA table or a certificate of insurance has no
+    // preamble and no "between", and often a foreign entity type the
+    // declaration pattern does not know — so STRUCT-001 reported "no parties
+    // identified" about a document naming them under a Parties heading.
+    const got = parties(
+      "Standard Contractual Clauses",
+      "Parties",
+      "Data Exporter: Globex EU SARL, a French société à responsabilité limitée, 15 rue Lafayette, 75009 Paris, France, acting as data processor.",
+      "Data Importer: Stark Cloud Ireland Ltd., an Irish private limited company, One Grand Canal Square, Dublin 2, Ireland.",
+    );
+    expect(got.map((p) => p.name)).toEqual(["Globex EU SARL", "Stark Cloud Ireland Ltd"]);
+    expect(got.map((p) => p.role)).toEqual(["Data Exporter", "Data Importer"]);
+  });
+
+  it("does not read a labeled description as a party name", () => {
+    expect(
+      names(
+        "Definitions",
+        "Recipient: the party receiving Confidential Information under this Agreement.",
+      ),
+    ).toEqual([]);
+  });
 });

@@ -112,6 +112,23 @@ const PREAMBLE_LEAD = new RegExp(
   "i",
 );
 
+/**
+ * A LABELED party line: "Data Exporter: Globex EU SARL, a French société à
+ * responsabilité limitée, 15 rue Lafayette, 75009 Paris, France".
+ *
+ * The SCC annexes, the UK IDTA tables and certificates of insurance name their
+ * parties this way — no preamble, no "between", and often a foreign entity
+ * type the declaration pattern does not know. Without this path STRUCT-001
+ * reported "Vaulytica could not identify the parties to this Agreement" about
+ * a document naming them under a "Parties" heading.
+ *
+ * The label must open the line and the name must be capitalized, so a
+ * descriptive sentence ("Recipient: the party receiving Confidential
+ * Information") is not read as a party name.
+ */
+const LABELED_PARTY =
+  /(?:^|\n)\s*(Data\s+Exporter|Data\s+Importer|Exporter|Importer|Discloser|Disclosing\s+Party|Recipient|Receiving\s+Party|Covered\s+Entity|Business\s+Associate|Controller|Processor|Sub-?processor|Landlord|Tenant|Lessor|Lessee|Licensor|Licensee|Buyer|Seller|Purchaser|Vendor|Supplier|Provider|Customer|Client|Company|Employer|Employee|Contractor|Consultant|Borrower|Lender|Guarantor|Trustee|Grantor|Settlor|Insured|Insurer|Party\s+[AB])\s*:\s*(?!\s)([A-Z][^\n,;.]{2,80})/g;
+
 const SIGNATURE_LINE = /^(?:By|Name|Title|Date)\s*:?\s*/i;
 
 /**
@@ -223,6 +240,23 @@ export function extractParties(tree: DocumentTree): Party[] {
           ),
         });
       }
+    }
+  }
+
+  // Labeled party lines, anywhere in the document — an SCC annex or an IDTA
+  // table has no preamble to scan, and its "Parties" block may sit well past
+  // the first quarter.
+  for (const { text, pos } of allText) {
+    LABELED_PARTY.lastIndex = 0;
+    let lm: RegExpExecArray | null;
+    while ((lm = LABELED_PARTY.exec(text)) !== null) {
+      const role = (lm[1] ?? "").replace(/\s+/g, " ").trim();
+      const name = cleanPartyName(lm[2] ?? "");
+      if (!name || isBoilerplateName(name)) continue;
+      registerParty(partyMap, name, {
+        role,
+        position: pos(lm.index, lm.index + lm[0].length),
+      });
     }
   }
 
