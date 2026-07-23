@@ -257,7 +257,8 @@
     },
     {
       "elapsed_ms": 0,
-      "fired": false,
+      "finding_id": "OBLI-002-s1-0",
+      "fired": true,
       "rule_id": "OBLI-002",
       "rule_version": "1.0.0"
     },
@@ -959,6 +960,23 @@
       "title": "Data-regime references missing"
     },
     {
+      "description": "Only vendor bears this typically-mutual obligation.",
+      "document_position": 0,
+      "excerpt": {
+        "end_offset": 0,
+        "section_id": "s1",
+        "start_offset": 0,
+        "text": "Obligation kind matching /\\bindemnif/i"
+      },
+      "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
+      "id": "OBLI-002-s1-0",
+      "rule_id": "OBLI-002",
+      "rule_version": "1.0.0",
+      "severity": "info",
+      "source_citations": [],
+      "title": "Asymmetric obligation under '\\bindemnif'"
+    },
+    {
       "description": "Indemnity clause appears to be missing: notice, defense control, settlement consent.",
       "document_position": 958,
       "excerpt": {
@@ -996,7 +1014,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "ae526bf3bfb4a0894c382865b0c4c35301430b8f33dfeb68e35b27b272a3423a",
+  "result_hash": "3dcf8338d028e6e9db18cb9b3326b35045c9b9e8b92ae6b9ff658193cd28537b",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
     "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",

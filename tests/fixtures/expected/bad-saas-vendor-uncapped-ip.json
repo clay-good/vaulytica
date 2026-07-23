@@ -253,7 +253,8 @@
     },
     {
       "elapsed_ms": 0,
-      "fired": false,
+      "finding_id": "OBLI-002-s1-0",
+      "fired": true,
       "rule_id": "OBLI-002",
       "rule_version": "1.0.0"
     },
@@ -817,6 +818,23 @@
       "title": "Data ownership not separately addressed"
     },
     {
+      "description": "Only provider bears this typically-mutual obligation.",
+      "document_position": 0,
+      "excerpt": {
+        "end_offset": 0,
+        "section_id": "s1",
+        "start_offset": 0,
+        "text": "Obligation kind matching /\\bindemnif/i"
+      },
+      "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
+      "id": "OBLI-002-s1-0",
+      "rule_id": "OBLI-002",
+      "rule_version": "1.0.0",
+      "severity": "info",
+      "source_citations": [],
+      "title": "Asymmetric obligation under '\\bindemnif'"
+    },
+    {
       "description": "The foregoing obligation shall not be subject to any limitation of liability set forth in this Agreement.",
       "document_position": 376,
       "excerpt": {
@@ -872,7 +890,7 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 0.8,
   "playbook_match_reasoning": "Selected msa-general (score 0.8). Required clauses present: \"indemnification\". Distinguishing phrases: \"Services\", \"Provider\", \"Customer\". Negative features penalized: \"lease\", \"Premises\".",
-  "result_hash": "bc6df73b3fa6f53e415f06f2a708ca03253dd857e86ed104b6025c96a0982327",
+  "result_hash": "99c465002b697c68e7b68cd912b36368d3be50517edf20a72ab8368eab464a9b",
   "source_file": {
     "name": "bad-saas-vendor-uncapped-ip.docx",
     "sha256": "8ae94b74fdbe0bc441724e390612c07a1fd3fdc05bf782e829c1e4dda8a69083",

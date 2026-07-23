@@ -255,7 +255,8 @@
     },
     {
       "elapsed_ms": 0,
-      "fired": false,
+      "finding_id": "OBLI-002-s1-0",
+      "fired": true,
       "rule_id": "OBLI-002",
       "rule_version": "1.0.0"
     },
@@ -976,6 +977,23 @@
       "title": "Data ownership not separately addressed"
     },
     {
+      "description": "Only provider bears this typically-mutual obligation.",
+      "document_position": 0,
+      "excerpt": {
+        "end_offset": 0,
+        "section_id": "s1",
+        "start_offset": 0,
+        "text": "Obligation kind matching /\\bindemnif/i"
+      },
+      "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
+      "id": "OBLI-002-s1-0",
+      "rule_id": "OBLI-002",
+      "rule_version": "1.0.0",
+      "severity": "info",
+      "source_citations": [],
+      "title": "Asymmetric obligation under '\\bindemnif'"
+    },
+    {
       "description": "The contract uses 'best efforts' rather than 'reasonable efforts' or 'commercially reasonable efforts'.",
       "document_position": 253,
       "excerpt": {
@@ -1065,7 +1083,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\", \"uptime\".",
-  "result_hash": "60ee96b854b2433cac8d07a8a881bd81a8778bf905ba471e22b1a5bfe0ae749d",
+  "result_hash": "29bbc706636d0f0da8d6b6c6e0fe27c1320e6ef737193ac39d2456dbf486578f",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",

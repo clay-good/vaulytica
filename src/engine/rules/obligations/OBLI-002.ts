@@ -1,6 +1,15 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, topPosition } from "../_helpers.js";
 
+/**
+ * An obligation whose action is DISCLAIMED — "Vendor shall **not have any
+ * reciprocal indemnification obligation**". The extractor records the obligor
+ * and the action verbatim, so counting it as that party bearing the obligation
+ * inverts the clause's meaning and hides the very asymmetry this rule exists to
+ * report.
+ */
+const NEGATED_ACTION = /^(?:not|never)\b/i;
+
 const RECIPROCAL_PATTERNS = [
   /\bconfidential/i,
   /\bindemnif/i,
@@ -20,11 +29,19 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const parties = ctx.extracted.parties;
     if (parties.length < 2) return null;
-    const partySet = new Set(parties.map((p) => p.name.toLowerCase()));
+    // Obligations name the party by whichever surface form the drafter used,
+    // and contracts overwhelmingly write the ROLE ("Employee shall …", "the
+    // Company shall …") rather than the legal name. Matching on `name` alone
+    // silently dropped every role-phrased obligor, so a genuinely one-sided
+    // clause went unreported whenever the document used its own defined roles.
+    const partySet = new Set(
+      parties.flatMap((p) => [p.name.toLowerCase(), ...(p.role ? [p.role.toLowerCase()] : [])]),
+    );
     for (const pattern of RECIPROCAL_PATTERNS) {
       const seenObligors = new Set<string>();
       for (const o of ctx.extracted.obligations) {
         if (!pattern.test(o.action)) continue;
+        if (NEGATED_ACTION.test(o.action.trim())) continue;
         const o2 = o.obligor.toLowerCase().trim();
         if (partySet.has(o2)) seenObligors.add(o2);
       }

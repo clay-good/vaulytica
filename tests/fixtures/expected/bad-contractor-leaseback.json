@@ -253,7 +253,8 @@
     },
     {
       "elapsed_ms": 0,
-      "fired": false,
+      "finding_id": "OBLI-002-s1-0",
+      "fired": true,
       "rule_id": "OBLI-002",
       "rule_version": "1.0.0"
     },
@@ -835,6 +836,23 @@
       "title": "No venue / forum clause detected"
     },
     {
+      "description": "Only contractor bears this typically-mutual obligation.",
+      "document_position": 0,
+      "excerpt": {
+        "end_offset": 0,
+        "section_id": "s1",
+        "start_offset": 0,
+        "text": "Obligation kind matching /\\bindemnif/i"
+      },
+      "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
+      "id": "OBLI-002-s1-0",
+      "rule_id": "OBLI-002",
+      "rule_version": "1.0.0",
+      "severity": "info",
+      "source_citations": [],
+      "title": "Asymmetric obligation under '\\bindemnif'"
+    },
+    {
       "description": "Contractor may not use any vehicle or device not leased from or pre-approved by Company.",
       "document_position": 402,
       "excerpt": {
@@ -889,7 +907,7 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "703c1d5bb0d324a6d9c91cf3c8eb756e2acd6d5aaab614cc3b69f0bb2fcc680e",
+  "result_hash": "4606ffb72b346e575f32671b087b0396437c236f87c5b8595d94b24341cc802f",
   "source_file": {
     "name": "bad-contractor-leaseback.docx",
     "sha256": "82496f664a3abe77b7ed03c7c77b47c9ffbd8c5f883389cb761b7ba68b31f98d",

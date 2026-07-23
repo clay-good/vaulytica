@@ -52,7 +52,14 @@ const PARTY_DECL = new RegExp(
   // run, fails to find the suffix, and backtracks the run from every start
   // position — O(n²) on a hostile uppercase run (a ReDoS hang, spec-v8 §5). No
   // real name token exceeds 80 chars, so this is byte-identical and now linear.
-  String.raw`([A-Z][\w&.,'’-]{0,80}(?:\s+[A-Z][\w&.,'’-]{0,80}){0,6})\s*,?\s*(?:a|an)?\s*(?:(${US_STATE})\s+)?(${ENTITY_TYPES.join("|")})\s*(?:\(\s*["“”']([^"”'’\)]+)["“”']\s*\))?`,
+  // The entity-type group needs a trailing non-letter boundary. Without it the
+  // short types match INSIDE ordinary words — `inc` in "including", `ag` in
+  // "agreement" — manufacturing parties out of whatever Title-Case phrase
+  // preceded them ("Business Purpose, including …" -> party "Business Purpose").
+  // Those junk names are not harmless: rules that compare a phrase against the
+  // party set (STRUCT-006) treat them as real, and party-tallying rules
+  // (RISK-002) report counts against them.
+  String.raw`([A-Z][\w&.,'’-]{0,80}(?:\s+[A-Z][\w&.,'’-]{0,80}){0,6})\s*,?\s*(?:a|an)?\s*(?:(${US_STATE})\s+)?(${ENTITY_TYPES.join("|")})(?![A-Za-z])\s*(?:\(\s*["“”']([^"”'’\)]+)["“”']\s*\))?`,
   "g",
 );
 
@@ -100,7 +107,12 @@ export function extractParties(tree: DocumentTree): Party[] {
     PARTY_DECL.lastIndex = 0;
     let m: RegExpExecArray | null;
     while ((m = PARTY_DECL.exec(text)) !== null) {
-      const name = (m[1] ?? "").trim();
+      // Every other extraction path runs its captured name through
+      // cleanPartyName; this one did not, so the name char-class baked a
+      // trailing comma in ("Acme Corp,") and the same entity registered twice —
+      // once dirty here, once cleanly from the `between` preamble, since
+      // registerParty keys on the lowercased name.
+      const name = cleanPartyName(m[1] ?? "");
       const state = m[2];
       const entity = m[3];
       const role = m[4];
@@ -124,7 +136,9 @@ export function extractParties(tree: DocumentTree): Party[] {
       let pm: RegExpExecArray | null;
       let legal = "";
       while ((pm = PARTY_DECL.exec(before)) !== null) {
-        const cand = (pm[1] ?? "").trim();
+        // Must match how the party was REGISTERED above (cleaned), or this
+        // partyMap lookup misses and the d/b/a silently fails to attach.
+        const cand = cleanPartyName(pm[1] ?? "");
         if (cand && !isBoilerplateName(cand)) legal = cand;
       }
       const target = legal ? partyMap.get(legal.toLowerCase()) : undefined;
@@ -132,15 +146,17 @@ export function extractParties(tree: DocumentTree): Party[] {
     }
     const betweenMatch = BETWEEN_RE.exec(text);
     if (betweenMatch) {
-      const a = cleanPartyName(betweenMatch[1] ?? "");
-      const b = cleanPartyName(betweenMatch[2] ?? "");
+      const { name: a, role: roleA } = splitNameAndRole(betweenMatch[1] ?? "");
+      const { name: b, role: roleB } = splitNameAndRole(betweenMatch[2] ?? "");
       if (a) {
         registerParty(partyMap, a, {
+          ...(roleA ? { role: roleA } : {}),
           position: pos(betweenMatch.index, betweenMatch.index + (betweenMatch[1]?.length ?? 0)),
         });
       }
       if (b) {
         registerParty(partyMap, b, {
+          ...(roleB ? { role: roleB } : {}),
           position: pos(
             betweenMatch.index + (betweenMatch[1]?.length ?? 0) + 5,
             betweenMatch.index + betweenMatch[0].length,
@@ -272,6 +288,34 @@ function computeAliases(party: Party): string[] {
   const upper = party.name.toUpperCase();
   if (upper !== party.name && party.name.length <= 24) add(upper);
   return out;
+}
+
+/** A trailing defined-role parenthetical: `Alex Smith ("Employee")`. */
+const ROLE_PAREN = /\(\s*["“”']([^"”'’)]+)["“”']\s*\)\s*$/;
+
+/**
+ * Split a preamble party phrase into its name and its defined role.
+ *
+ * `PARTY_DECL` already captures the role for entities, because it anchors on an
+ * entity-type suffix ("a Delaware corporation"). A natural person has no such
+ * suffix, so `Alex Smith ("Employee")` only ever reached the `between` path,
+ * which kept the whole parenthetical inside the name — yielding a party literally
+ * named `Alex Smith ("Employee")` and losing the role that identifies them.
+ */
+function splitNameAndRole(raw: string): { name: string; role?: string } {
+  const trimmed = raw.trim();
+  const m = ROLE_PAREN.exec(trimmed);
+  if (!m) return { name: cleanPartyName(trimmed) };
+  const role = m[1]?.trim();
+  const name = cleanPartyName(trimmed.slice(0, m.index));
+  // A counterparty is often identified ONLY by role, with no usable name —
+  // `… and the individual or entity accepting this EULA ("End User")`. The
+  // descriptive phrase is not a name (cleanPartyName rejects it), but the
+  // document plainly does name that party: "End User". Dropping the whole
+  // party left its role looking like an undefined term to STRUCT-006 and left
+  // its obligations unattributable.
+  if (!name && role) return { name: role, role };
+  return { name, ...(role ? { role } : {}) };
 }
 
 function cleanPartyName(raw: string): string {

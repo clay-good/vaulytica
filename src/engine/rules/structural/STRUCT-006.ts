@@ -18,7 +18,17 @@ export const rule: Rule = {
   dkb_citations: [],
 
   check(ctx: RuleContext): Finding | null {
-    const partyNames = new Set(ctx.extracted.parties.map((p) => p.name.toLowerCase()));
+    // A party's defined ROLE is introduced in the preamble exactly like any
+    // other defined term — `… the individual or entity accepting this EULA
+    // ("End User")` — so the body's later use of "End User" is defined, not
+    // undefined. Matching party NAMES alone reported those roles as never
+    // defined.
+    const partyNames = new Set(
+      ctx.extracted.parties.flatMap((p) => [
+        p.name.toLowerCase(),
+        ...(p.role ? [p.role.toLowerCase()] : []),
+      ]),
+    );
     const candidates = ctx.extracted.definitions.undefined_capitalized.filter(
       (e) => !partyNames.has(e.term.toLowerCase()),
     );

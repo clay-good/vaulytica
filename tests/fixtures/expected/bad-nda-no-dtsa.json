@@ -252,7 +252,8 @@
     },
     {
       "elapsed_ms": 0,
-      "fired": false,
+      "finding_id": "OBLI-002-s1-0",
+      "fired": true,
       "rule_id": "OBLI-002",
       "rule_version": "1.0.0"
     },
@@ -490,7 +491,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-006-s1-90",
+      "finding_id": "STRUCT-006-s1-149",
       "fired": true,
       "rule_id": "STRUCT-006",
       "rule_version": "1.0.0"
@@ -790,22 +791,22 @@
       "title": "No Effective Date found"
     },
     {
-      "description": "Used but not defined: Disclosing Party, The Receiving Party.",
-      "document_position": 90,
+      "description": "Used but not defined: The Receiving Party.",
+      "document_position": 149,
       "excerpt": {
-        "end_offset": 106,
+        "end_offset": 168,
         "section_id": "s1",
-        "start_offset": 90,
-        "text": "Disclosing Party"
+        "start_offset": 149,
+        "text": "The Receiving Party"
       },
       "explanation": "Title-Case phrases in a contract usually signal a defined term. When they aren't defined, readers must guess at the intended meaning. Either define them or use lowercase if the term is intended in its ordinary sense.",
-      "id": "STRUCT-006-s1-90",
+      "id": "STRUCT-006-s1-149",
       "recommendation": "Add a definition for each genuinely defined term, or change the casing if the phrase is being used in its ordinary sense.",
       "rule_id": "STRUCT-006",
       "rule_version": "1.0.0",
       "severity": "warning",
       "source_citations": [],
-      "title": "Undefined Title-Case terms: 2"
+      "title": "Undefined Title-Case terms: 1"
     },
     {
       "description": "The contract does not state a path to terminate for material breach.",
@@ -868,6 +869,23 @@
       "title": "No venue / forum clause detected"
     },
     {
+      "description": "Only receiving party bears this typically-mutual obligation.",
+      "document_position": 0,
+      "excerpt": {
+        "end_offset": 0,
+        "section_id": "s1",
+        "start_offset": 0,
+        "text": "Obligation kind matching /\\bconfidential/i"
+      },
+      "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
+      "id": "OBLI-002-s1-0",
+      "rule_id": "OBLI-002",
+      "rule_version": "1.0.0",
+      "severity": "info",
+      "source_citations": [],
+      "title": "Asymmetric obligation under '\\bconfidential'"
+    },
+    {
       "description": "The Receiving Party agrees to maintain in strict confidence all Confidential Information and shall not disclose any such",
       "document_position": 385,
       "excerpt": {
@@ -888,7 +906,7 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "e1b62227bbd27842f785709330ca672e0dedd791ec5f845170ca9556df3daeeb",
+  "result_hash": "899163d8f46e74bef3d00dfc6f00df6864293c29891adbe7e4a32572bc8a50e4",
   "source_file": {
     "name": "bad-nda-no-dtsa.docx",
     "sha256": "6843694916dfef439851e84aca5bf213e35090b1a39f2b027f1e56d6382f2c29",

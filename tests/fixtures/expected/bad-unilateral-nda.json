@@ -491,8 +491,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-006-s1-105",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-006",
       "rule_version": "1.0.0"
     },
@@ -831,24 +830,6 @@
       "title": "No Effective Date found"
     },
     {
-      "description": "Used but not defined: Disclosing Party, Receiving Party.",
-      "document_position": 105,
-      "excerpt": {
-        "end_offset": 121,
-        "section_id": "s1",
-        "start_offset": 105,
-        "text": "Disclosing Party"
-      },
-      "explanation": "Title-Case phrases in a contract usually signal a defined term. When they aren't defined, readers must guess at the intended meaning. Either define them or use lowercase if the term is intended in its ordinary sense.",
-      "id": "STRUCT-006-s1-105",
-      "recommendation": "Add a definition for each genuinely defined term, or change the casing if the phrase is being used in its ordinary sense.",
-      "rule_id": "STRUCT-006",
-      "rule_version": "1.0.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "Undefined Title-Case terms: 2"
-    },
-    {
       "description": "The survival clause exists but does not name: confidentiality.",
       "document_position": 491,
       "excerpt": {
@@ -981,7 +962,7 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "319c78c24888147bb24bb397ad07519792b8a56e8182b537f5c05c4bbc68b02f",
+  "result_hash": "ad584ef6008f1beb1f33582910250448cb94b25d8d3c6d05bf700ce7a6836b6d",
   "source_file": {
     "name": "bad-unilateral-nda.docx",
     "sha256": "be3d09f211f21ac2141d1ff1d2ec9023dafe4f56502a8a6b66aec83361fdeca6",
