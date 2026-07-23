@@ -1,29 +1,38 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { allMatches, emit, expandSurvivalSectionRefs } from "../_helpers.js";
 
 const EXPECTED = [
   ["confidentiality", /confidential/i],
   ["indemnity", /indemnif/i],
   ["payment", /payment|fees?\s+accrued/i],
-  ["governing law", /governing\s+law/i],
+  ["governing law", /governing\s+law|governed\s+by\s+the\s+laws?\b/i],
 ] as const;
 
 /** TEMP-007 — Survival list completeness (info). */
 export const rule: Rule = {
   id: "TEMP-007",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Survival list completeness",
   category: "temporal",
   default_severity: "info",
   description: "Cross-checks the survival list against the typical surviving categories.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
-    const survival = firstParagraphMatch(
+    // Survival can be distributed across clauses, and a numbered list
+    // ("Sections 2, 5, 7, and 9 survive") incorporates those sections
+    // wholesale — check the categories against every survival sentence plus
+    // the sections a numbered list names, not just the first sentence.
+    const survivals = allMatches(
       ctx,
       /\b(?:survive|survives|surviving)\b[\s\S]{0,400}\btermination\b/i,
     );
+    const survival = survivals[0];
     if (!survival) return null;
-    const missing = EXPECTED.filter(([, re]) => !re.test(survival.text)).map(([name]) => name);
+    const combined = expandSurvivalSectionRefs(
+      ctx,
+      survivals.map((s) => s.text).join("\n"),
+    );
+    const missing = EXPECTED.filter(([, re]) => !re.test(combined)).map(([name]) => name);
     if (missing.length === 0) return null;
     return emit(ctx, rule, {
       title: `Survival list may be missing categories: ${missing.join(", ")}`,

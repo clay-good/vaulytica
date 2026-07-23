@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit } from "../_helpers.js";
+import { emit, expandSurvivalSectionRefs } from "../_helpers.js";
 import { forEachParagraph } from "../../../extract/walk.js";
 
 /**
@@ -25,7 +25,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
  */
 export const rule: Rule = {
   id: "TEMP-012",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Survival clause silent on confidentiality / IP / indemnity",
   category: "temporal",
   default_severity: "warning",
@@ -33,7 +33,11 @@ export const rule: Rule = {
     "Fires when sticky obligations (confidentiality / IP / indemnity) are present but the survival clause doesn't name them.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
-    let survivalText: string | null = null;
+    // Survival can be distributed ("These obligations survive…" in the
+    // confidentiality clause AND "Sections 2, 5, 7, and 9 survive" in the
+    // termination clause) — keying on the FIRST survival sentence alone
+    // reported obligations the second sentence keeps alive as un-named.
+    const survivalParas: string[] = [];
     let survivalSection = "";
     let survivalStart = 0;
     let survivalEnd = 0;
@@ -42,11 +46,13 @@ export const rule: Rule = {
     let hasIndemnity = false;
 
     forEachParagraph(ctx.tree, (p) => {
-      if (survivalText === null && /\bsurviv(?:e|es|ed|ing|al)\b/i.test(p.text)) {
-        survivalText = p.text;
-        survivalSection = p.section.id;
-        survivalStart = p.start;
-        survivalEnd = p.end;
+      if (/\bsurviv(?:e|es|ed|ing|al)\b/i.test(p.text)) {
+        if (survivalParas.length === 0) {
+          survivalSection = p.section.id;
+          survivalStart = p.start;
+          survivalEnd = p.end;
+        }
+        survivalParas.push(p.text);
       }
       if (/\bconfidential(?:ity)?\s+(?:information|obligations?|provisions?)/i.test(p.text))
         hasConfidentiality = true;
@@ -60,8 +66,10 @@ export const rule: Rule = {
         hasIndemnity = true;
     });
 
-    if (survivalText === null) return null;
-    const text: string = survivalText;
+    if (survivalParas.length === 0) return null;
+    // A numbered list ("Sections 2, 5, 7, and 9 survive") incorporates those
+    // sections wholesale — expand it so their categories count as named.
+    const text = expandSurvivalSectionRefs(ctx, survivalParas.join("\n"));
     if (!hasConfidentiality && !hasIpOwnership && !hasIndemnity) return null;
 
     const missing: string[] = [];
@@ -79,7 +87,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: `Survival clause does not name ${missing.length} sticky obligation${missing.length === 1 ? "" : "s"}`,
       description: `The survival clause exists but does not name: ${missing.join(", ")}.`,
-      excerpt: text.slice(0, 280),
+      excerpt: survivalParas[0]!.slice(0, 280),
       explanation:
         "Survival language is what keeps sticky obligations alive after a contract terminates. A survival clause that doesn't expressly enumerate the present-in-document confidentiality / IP / indemnity obligations creates ambiguity at the moment those obligations matter most — post-termination, when the contract has already ended.",
       recommendation: `Add explicit named references to the missing obligation(s): ${missing.join(", ")}. Standard drafting names every sticky section by number or category in the survival clause.`,

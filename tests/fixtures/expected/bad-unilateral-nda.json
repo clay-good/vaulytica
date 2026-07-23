@@ -616,7 +616,7 @@
       "finding_id": "TEMP-007-s1.3-537",
       "fired": true,
       "rule_id": "TEMP-007",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -647,7 +647,7 @@
       "finding_id": "TEMP-012-s1.3-491",
       "fired": true,
       "rule_id": "TEMP-012",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -842,7 +842,7 @@
       "id": "TEMP-012-s1.3-491",
       "recommendation": "Add explicit named references to the missing obligation(s): confidentiality. Standard drafting names every sticky section by number or category in the survival clause.",
       "rule_id": "TEMP-012",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Survival clause does not name 1 sticky obligation"
@@ -953,7 +953,7 @@
       "explanation": "Typical surviving obligations include confidentiality, indemnity, accrued payment obligations, and governing law. Missing any of these is common and worth confirming.",
       "id": "TEMP-007-s1.3-537",
       "rule_id": "TEMP-007",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "info",
       "source_citations": [],
       "title": "Survival list may be missing categories: confidentiality, indemnity, payment, governing law"
@@ -962,7 +962,7 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "78d9239e01a192e0abbea93d8d461b66efdaa31e8fe8d0a8725554248a7db271",
+  "result_hash": "2861c90c199ae67ccd742be0bfa3e6421a6e387e6c6267f139d9365aeb6902fc",
   "source_file": {
     "name": "bad-unilateral-nda.docx",
     "sha256": "be3d09f211f21ac2141d1ff1d2ec9023dafe4f56502a8a6b66aec83361fdeca6",

@@ -252,3 +252,29 @@ export function emit(
 export function topPosition(ctx: RuleContext): DocPosition {
   return { section_id: ctx.tree.sections[0]?.id ?? "", start: 0, end: 0 };
 }
+
+/**
+ * Expand a survival clause's numbered section list into the text of the
+ * sections it names. "Sections 2, 5, 7, and 9 survive termination" keeps
+ * everything in those sections alive, but a keyword test against the survival
+ * sentence alone reported the categories those sections carry as un-named —
+ * telling a drafter whose survival list includes the assignment section that
+ * it "does not name IP ownership". Paste-ingested documents have no section
+ * outline, so the numbers resolve against paragraphs opening "N. Title", the
+ * same way the cross-reference resolver reads them.
+ */
+export function expandSurvivalSectionRefs(ctx: RuleContext, survivalText: string): string {
+  // The separator must absorb the Oxford ", and" — a single-token separator
+  // stopped the capture at "8" in "Sections 4, 5, 7, 8, and 15".
+  const m = /\bSections?\s+(\d+(?:\.\d+)*(?:(?:\s*(?:,|and|&)\s*)+\d+(?:\.\d+)*)*)/i.exec(
+    survivalText,
+  );
+  if (!m) return survivalText;
+  const nums = new Set(m[1]!.split(/[^0-9.]+/).filter(Boolean));
+  const named: string[] = [];
+  forEachParagraph(ctx.tree, (p) => {
+    const label = /^\s*(\d+(?:\.\d+)*)[.)]\s+/.exec(p.text)?.[1];
+    if (label && nums.has(label)) named.push(p.text);
+  });
+  return named.length > 0 ? `${survivalText}\n${named.join("\n")}` : survivalText;
+}

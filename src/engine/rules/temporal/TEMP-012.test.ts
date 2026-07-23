@@ -55,3 +55,24 @@ describe("TEMP-012 — survival clause silent on sticky obligations", () => {
     expect(TEMP_012.check(ctx)).toBeNull();
   });
 });
+
+describe("numbered survival lists and distributed survival (v1.1.0)", () => {
+  it("resolves 'Sections 2, 5, 7, and 9 survive' against the sections it names", () => {
+    const ctx = buildContext([
+      "Agreement",
+      "2. Work Made for Hire; Assignment. Artist hereby irrevocably assigns to Company all right, title, and interest in and to the Work.",
+      "7. Confidentiality. Artist shall keep confidential all non-public information. These obligations survive termination of this Agreement for three (3) years.",
+      "8. Termination. Either party may terminate for material breach. Sections 2, 5, 7, and 9 survive termination.",
+    ]);
+    expect(TEMP_012.check(ctx)).toBeNull();
+  });
+
+  it("still fires when neither survival sentence covers a present sticky obligation", () => {
+    const ctx = buildContext([
+      "Agreement",
+      "2. Assignment. Contractor agrees to ip assignment of all deliverables to Company.",
+      "7. Confidentiality. Recipient shall protect Confidential Information. Confidentiality obligations survive termination.",
+    ]);
+    expect(TEMP_012.check(ctx)?.description).toContain("IP ownership");
+  });
+});
