@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, isPresenceDisclaimed } from "../_helpers.js";
+import { emit, enclosingSentence, isPresenceDisclaimed } from "../_helpers.js";
 import { forEachParagraph } from "../../../extract/walk.js";
 
 /**
@@ -23,7 +23,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
  */
 export const rule: Rule = {
   id: "RISK-015",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Indemnification without aggregate cap",
   category: "risk-allocation",
   default_severity: "warning",
@@ -38,8 +38,13 @@ export const rule: Rule = {
 
     const INDEMNITY =
       /\b(?:shall|will|agrees?\s+to)\s+indemnify|\bhold\s+\w+\s+harmless|\bdefend\s+and\s+indemnify\b|\bindemnification\s+obligations?\b/i;
+    // "Each party's total liability under this Agreement shall not exceed
+    // the Contract Price" — the dominant aggregate-cap sentence — matched no
+    // branch ("not to exceed" is not "shall not exceed", and the adjective is
+    // "total", not "aggregate"), so the rule reported an indemnity as
+    // uncapped in the same run where RISK-003 reported its cap.
     const CAP_PRESENT =
-      /\b(?:liability\s+(?:shall|will|is|may)?\s*(?:be\s+)?(?:limited|capped)|aggregate\s+liability.*?(?:not\s+exceed|cap(?:ped)?)|not\s+to\s+exceed|cap\s+on\s+(?:liability|indemnification)|limited\s+to\s+(?:twelve|six|three|\d+)\s+months)/i;
+      /\b(?:liability\s+(?:shall|will|is|may)?\s*(?:be\s+)?(?:limited|capped)|aggregate\s+liability.*?(?:not\s+exceed|cap(?:ped)?)|not\s+to\s+exceed|liability\b[^.]{0,80}?\bnot\s+exceed|cap\s+on\s+(?:liability|indemnification)|limited\s+to\s+(?:twelve|six|three|\d+)\s+months)/i;
     const CARVE_OUT_INDEMNITY =
       /\b(?:except\s+(?:for|with\s+respect\s+to)|excluding|other\s+than|not\s+including|carve[-\s]out\s+for)\s+[^.]{0,80}\bindemnif/i;
 
@@ -61,7 +66,18 @@ export const rule: Rule = {
         }
       }
       if (CAP_PRESENT.test(p.text)) hasCap = true;
-      if (CARVE_OUT_INDEMNITY.test(p.text)) capCarvesOutIndemnity = true;
+      // A carve-out only uncaps the indemnity when it modifies the CAP. A
+      // limitation-of-liability paragraph routinely carves indemnity out of
+      // its CONSEQUENTIAL-DAMAGES waiver ("neither party is liable for
+      // indirect damages, except … indemnification obligations") and then
+      // states an unqualified aggregate cap in the next sentence — reading
+      // the paragraph-level carve-out against that cap accused a capped
+      // indemnity of being uncapped. The carve-out must share a sentence
+      // with a cap phrase.
+      const carve = CARVE_OUT_INDEMNITY.exec(p.text);
+      if (carve && CAP_PRESENT.test(enclosingSentence(p.text, carve.index))) {
+        capCarvesOutIndemnity = true;
+      }
     });
 
     if (!indemnityHit) return null;

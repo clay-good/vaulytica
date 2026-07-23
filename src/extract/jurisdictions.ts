@@ -71,8 +71,10 @@ const GOV_LAW_IS = new RegExp(
   "gi",
 );
 
-const VENUE =
-  /\b(?:venue|forum|exclusive\s+jurisdiction|exclusive\s+venue|jurisdiction\s+and\s+venue|sole\s+and\s+exclusive\s+(?:venue|jurisdiction|forum))\b[^.;)]{0,80}?(?:shall\s+(?:be|lie)|is|lies|shall\s+rest|will\s+be)\s+(?:in|with|within)?\s*(?:any\s+|the\s+|a\s+)?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+|in\s+|within\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)/gi;
+const VENUE = new RegExp(
+  String.raw`\b(?:venue|forum|exclusive\s+jurisdiction|exclusive\s+venue|jurisdiction\s+and\s+venue|sole\s+and\s+exclusive\s+(?:venue|jurisdiction|forum))\b(?:\([0-9]+\)|[^.;)]){0,80}?(?:shall\s+(?:be|lie)|is|lies|shall\s+rest|will\s+be)\s+(?:in|with|within)?\s*(?:any\s+|the\s+|a\s+)?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+|in\s+|within\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
+  "gi",
+);
 const VENUE_SIMPLE =
   /\b(?:venue|forum|exclusive\s+jurisdiction|exclusive\s+venue)\b[^.;)]{0,80}?\s+(?:shall\s+be|is|lies|will\s+be)\s+(?:in\s+|within\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|$)/gi;
 /**
@@ -99,8 +101,15 @@ const VENUE_SIMPLE =
 const DISPUTE_NOUN = String.raw`disputes?|claims?|actions?|proceedings?|litigation|controvers(?:y|ies)|disagreements?|suits?`;
 const FORUM_VERB = String.raw`resolved|brought|litigated|adjudicated|heard|instituted|commenced|filed|maintained|tried|venued|determined`;
 const COURT_ADJECTIVE = String.raw`competent\s+|appropriate\s+|proper\s+|applicable\s+`;
+// The run-up window between the dispute noun and its forum verb excludes ")"
+// so a list marker never bridges two clauses — but that also broke on the
+// numeric parenthetical ordinary drafting puts there: "Any dispute not
+// resolved within thirty (30) days shall be resolved in the … courts" was
+// reported as having no venue clause. A digits-only parenthetical is a day
+// count, never a clause boundary, so it is admitted as a unit.
+const RUNUP = String.raw`(?:\([0-9]+\)|[^.;)])`;
 const VENUE_RESOLVED_IN = new RegExp(
-  String.raw`\b(?:${DISPUTE_NOUN})\b[^.;)]{0,200}?\bshall\s+be\s+(?:${FORUM_VERB})\s+(?:exclusively\s+|solely\s+|finally\s+)?(?:in|before|by)\s+(?:any\s+|the\s+|a\s+)?(?:${COURT_ADJECTIVE})?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_ADJECTIVE})?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+|in\s+|within\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
+  String.raw`\b(?:${DISPUTE_NOUN})\b${RUNUP}{0,200}?\bshall\s+be\s+(?:${FORUM_VERB})\s+(?:exclusively\s+|solely\s+|finally\s+)?(?:in|before|by)\s+(?:any\s+|the\s+|a\s+)?(?:${COURT_ADJECTIVE})?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_ADJECTIVE})?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+|in\s+|within\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
   "gi",
 );
 

@@ -230,3 +230,25 @@ describe("England and Wales — the compound jurisdiction name", () => {
     ).toBe("Delaware");
   });
 });
+
+describe("a numeric parenthetical does not break the forum run-up", () => {
+  it("reads the escalation-then-forum clause construction contracts write", () => {
+    const refs = extractJurisdictions(
+      buildTree([
+        "Dispute Resolution; Governing Law",
+        "The parties shall first attempt in good faith to resolve any dispute by negotiation between executives. Any dispute not resolved within thirty (30) days shall be resolved in the state or federal courts located in Franklin County, Ohio, and this Agreement is governed by the laws of the State of Ohio.",
+      ]),
+    );
+    expect(refs.find((r) => r.clause_kind === "venue")?.raw_text).toBe("Ohio");
+  });
+
+  it("a list marker still does not bridge two clauses", () => {
+    const refs = extractJurisdictions(
+      buildTree([
+        "Miscellaneous",
+        "Any dispute notice must state (a) the basis of the dispute; matters shall be handled per Section 4. Fees shall be resolved in the ordinary course of the courts of accounting practice.",
+      ]),
+    );
+    expect(refs.filter((r) => r.clause_kind === "venue")).toEqual([]);
+  });
+});

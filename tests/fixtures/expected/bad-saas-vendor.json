@@ -451,7 +451,7 @@
       "finding_id": "RISK-015-s1.3-610",
       "fired": true,
       "rule_id": "RISK-015",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -875,7 +875,7 @@
       "id": "RISK-015-s1.3-610",
       "recommendation": "Either subject indemnification to a per-claim and aggregate cap, or confirm the carve-out is a deliberate trade for higher pricing / different insurance.",
       "rule_id": "RISK-015",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Indemnification carved out of liability cap"
@@ -1083,7 +1083,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\", \"uptime\".",
-  "result_hash": "4c022bc23d4f717ab19e7cfd5a041405487b32eafa721d2de7696bea0c06f6d4",
+  "result_hash": "064db630786bd727b327d66ce120c5671139e6d0078ff1499134f2d81439ac36",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",

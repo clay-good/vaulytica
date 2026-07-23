@@ -448,7 +448,7 @@
       "finding_id": "RISK-015-s1.5-1478",
       "fired": true,
       "rule_id": "RISK-015",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -771,7 +771,7 @@
       "id": "RISK-015-s1.5-1478",
       "recommendation": "Either subject indemnification to a per-claim and aggregate cap, or confirm the carve-out is a deliberate trade for higher pricing / different insurance.",
       "rule_id": "RISK-015",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Indemnification without aggregate cap"
@@ -944,7 +944,7 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"advisory agreement\". Distinguishing phrases: \"advisory services\", \"deliverables\", \"independent contractor\".",
-  "result_hash": "fcb800ae68dd0c67bf050d8be7434c958ae4e602c6ec5da990b03e7d36daa463",
+  "result_hash": "743df7a86279eedc71525308e7346e2121ef17bce462db8397d5615690c677a9",
   "source_file": {
     "name": "bad-consulting-success-fee.docx",
     "sha256": "6bc505eb0c1641cda4c3466a62f0b3eead258e2dc3a385e792e79f4a717ad6a5",

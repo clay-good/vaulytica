@@ -11,6 +11,7 @@ import { rule as R006 } from "./risk-allocation/RISK-006.js";
 import { rule as R010 } from "./risk-allocation/RISK-010.js";
 import { rule as R011 } from "./risk-allocation/RISK-011.js";
 import { rule as R014 } from "./risk-allocation/RISK-014.js";
+import { rule as R015 } from "./risk-allocation/RISK-015.js";
 import { rule as R016 } from "./risk-allocation/RISK-016.js";
 import { rule as R017 } from "./risk-allocation/RISK-017.js";
 
@@ -191,5 +192,31 @@ describe("RISK-011 — a reference to a parent agreement's indemnity is not a cl
         ),
       )?.title,
     ).toMatch(/procedural elements missing/);
+  });
+});
+
+describe("RISK-015 — a consequential-damages carve-out is not a cap carve-out (v1.1.0)", () => {
+  it("stays silent when the carve-out modifies the waiver and the cap sentence is unqualified", () => {
+    expect(
+      R015.check(
+        doc(
+          "Limitation of Liability",
+          "9. Indemnification. Contractor shall indemnify, defend, and hold harmless Owner from claims for bodily injury to the extent caused by Contractor's negligence.",
+          "10. Limitation of Liability. Neither party shall be liable to the other for indirect, incidental, or consequential damages, except that this limitation does not apply to Contractor's indemnification obligations. Each party's total liability under this Agreement shall not exceed the Contract Price.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires when the cap sentence itself carves out indemnification", () => {
+    expect(
+      R015.check(
+        doc(
+          "Limitation of Liability",
+          "8. Indemnification. Each party shall indemnify, defend, and hold harmless the other party from third-party claims.",
+          "9. Limitation of Liability. Except for indemnification obligations, each party's total cumulative liability under this Agreement shall not exceed the fees paid in the twelve months preceding the claim.",
+        ),
+      )?.title,
+    ).toMatch(/carved out/);
   });
 });
