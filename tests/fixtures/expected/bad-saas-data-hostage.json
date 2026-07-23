@@ -677,8 +677,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "TERM-005-s1-0",
-      "fired": true,
+      "fired": false,
       "rule_id": "TERM-005",
       "rule_version": "1.0.0"
     },
@@ -858,23 +857,6 @@
       "title": "No termination-for-cause clause detected"
     },
     {
-      "description": "The contract does not state what happens upon termination.",
-      "document_position": 0,
-      "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "(no effect-of-termination clause)"
-      },
-      "explanation": "An effect-of-termination clause spells out the rights and obligations that survive, the return or destruction of materials, and the wind-down rules.",
-      "id": "TERM-005-s1-0",
-      "rule_id": "TERM-005",
-      "rule_version": "1.0.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "No effect-of-termination clause detected"
-    },
-    {
       "description": "The document does not state where disputes must be brought.",
       "document_position": 0,
       "excerpt": {
@@ -1014,7 +996,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "3dcf8338d028e6e9db18cb9b3326b35045c9b9e8b92ae6b9ff658193cd28537b",
+  "result_hash": "d6db1fe998f68be49338e747300235ecaac894eab7dae965280c4d8cd9a411b0",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
     "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",

@@ -1,6 +1,36 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
 
+/**
+ * The trigger a wind-down clause opens with. Requiring the bare "upon
+ * termination" missed the form the corpus actually writes — "Upon expiration
+ * **or** termination of this BAA, Business Associate shall … return … or
+ * destroy all PHI" — so the rule reported "The contract does not state what
+ * happens upon termination" about a clause that states it.
+ */
+const TERMINATION_TRIGGER = String.raw`(?:up)?on\s+(?:the\s+)?(?:any\s+)?(?:expiration|expiry|termination|cessation)(?:\s+or\s+(?:expiration|expiry|termination|cessation))?`;
+
+/**
+ * What the clause says happens. "delete" and "export" belong here: a modern
+ * data clause returns data by exporting it, and the SaaS corpus writes
+ * "Customer shall have thirty (30) days to export all Customer Data".
+ */
+const CONSEQUENCE = String.raw`ceases?|cease|return|destroy|delete|purge|transition|export|refund|revert|discontinue|wind[\s-]down`;
+
+/**
+ * Either order, within one sentence. A consequence drafted BEFORE its trigger
+ * ("Processing shall cease upon termination of the MSA") is ordinary drafting,
+ * and a forward-only scan reads it as absent; the old `[\s\S]{0,200}` window
+ * had the opposite failing, crossing sentence boundaries to borrow a verb from
+ * an unrelated clause.
+ */
+const EFFECT_OF_TERMINATION = new RegExp(
+  String.raw`\b(?:effect|consequences)\s+of\s+termination\b` +
+    `|\\b${TERMINATION_TRIGGER}\\b[^.]{0,220}\\b(?:${CONSEQUENCE})\\b` +
+    `|\\b(?:${CONSEQUENCE})\\b[^.]{0,120}\\b${TERMINATION_TRIGGER}\\b`,
+  "i",
+);
+
 /** TERM-005 — Effect of termination clause present (warning). */
 export const rule: Rule = {
   id: "TERM-005",
@@ -11,13 +41,7 @@ export const rule: Rule = {
   description: "Verifies the contract explains what happens upon termination.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
-    if (
-      firstParagraphMatch(
-        ctx,
-        /\b(?:effect|consequences)\s+of\s+termination\b|\bupon\s+termination[\s\S]{0,200}\b(?:cease|return|destroy|transition)\b/i,
-      )
-    )
-      return null;
+    if (firstParagraphMatch(ctx, EFFECT_OF_TERMINATION)) return null;
     return emit(ctx, rule, {
       title: "No effect-of-termination clause detected",
       description: "The contract does not state what happens upon termination.",
