@@ -179,3 +179,52 @@ describe("DPA-US-state ruleset — determinism", () => {
     expect(a.result_hash).toBe(b.result_hash);
   });
 });
+
+describe("DPA-US-state ruleset — GDPR-verbatim presence forms (v1.1.0)", () => {
+  it("Art. 28(3) verbatim wording satisfies USDPA-016 and USDPA-017", async () => {
+    const ctx = withPb(
+      buildContext(
+        [
+          "Agreement",
+          "This agreement concerns personal information processed by the service provider.",
+        ],
+        [
+          "5. Confidentiality",
+          "Processor shall ensure that persons authorized to process Personal Data have committed themselves to confidentiality or are under an appropriate statutory obligation of confidentiality.",
+        ],
+        [
+          "11. Audits",
+          "Processor shall allow for and contribute to audits, including inspections, conducted by Controller or another auditor mandated by Controller.",
+        ],
+      ),
+      MULTI,
+    );
+    const run = await runEngine({
+      rules: DPA_US_STATE_RULES,
+      ctx,
+      executed_at: "2026-05-13T00:00:00Z",
+      source_file: SRC,
+    });
+    const fired = new Set(run.findings.map((f) => f.rule_id));
+    expect(fired.has("USDPA-016"), "USDPA-016 should accept 'committed themselves to'").toBe(false);
+    expect(fired.has("USDPA-017"), "USDPA-017 should accept 'allow for and contribute to'").toBe(
+      false,
+    );
+  });
+
+  it("still reports both when the clauses are genuinely absent", async () => {
+    const ctx = withPb(
+      buildContext(["Agreement", "The service provider processes personal information."]),
+      MULTI,
+    );
+    const run = await runEngine({
+      rules: DPA_US_STATE_RULES,
+      ctx,
+      executed_at: "2026-05-13T00:00:00Z",
+      source_file: SRC,
+    });
+    const fired = new Set(run.findings.map((f) => f.rule_id));
+    expect(fired.has("USDPA-016")).toBe(true);
+    expect(fired.has("USDPA-017")).toBe(true);
+  });
+});

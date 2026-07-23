@@ -297,6 +297,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
   }),
   presence({
     id: "USDPA-016",
+    version: "1.1.0",
     name: "Multi-state: confidentiality duty",
     description:
       "Processor must ensure persons processing personal data are subject to a duty of confidentiality.",
@@ -307,12 +308,15 @@ export const DPA_US_STATE_RULES: Rule[] = [
       "Every state requires the processor to subject authorized personnel to a duty of confidentiality.",
     recommendation:
       "Add: 'Processor shall ensure that each person processing Personal Data is subject to a duty of confidentiality.'",
+    // GDPR Art. 28(3)(b)'s own wording is "have committed THEMSELVES to
+    // confidentiality" — a DPA quoting the regulation verbatim must count.
     present_patterns: [
-      /(duty\s+of\s+confidentiality|committed\s+to\s+confidentiality|bound\s+by\s+confidentiality)/i,
+      /(duty\s+of\s+confidentiality|committed\s+(themselves\s+)?to\s+confidentiality|bound\s+by\s+confidentiality)/i,
     ],
   }),
   presence({
     id: "USDPA-017",
+    version: "1.1.0",
     name: "Multi-state: audit cooperation",
     description: "Processor must cooperate with reasonable assessments / audits by the controller.",
     citation: "Va. Code § 59.1-579 / Colo. Rev. Stat. § 6-1-1305 / similar",
@@ -323,8 +327,10 @@ export const DPA_US_STATE_RULES: Rule[] = [
       "VCDPA and several state statutes require the processor to allow and cooperate with reasonable assessments by the controller.",
     recommendation:
       "Add: 'Processor shall allow and cooperate with reasonable assessments by Controller or Controller's designated assessor.'",
+    // GDPR Art. 28(3)(h)'s own wording is "allow FOR and contribute to
+    // audits" — a DPA quoting the regulation verbatim must count.
     present_patterns: [
-      /(reasonable\s+assessments|allow\s+(?:and\s+)?(?:cooperate\s+with|contribute\s+to)\s+(?:audits|assessments)|right\s+to\s+(?:audit|assess))/i,
+      /(reasonable\s+assessments|allow\s+(?:for\s+)?(?:and\s+)?(?:cooperate\s+with|contribute\s+to)\s+(?:audits|assessments)|right\s+to\s+(?:audit|assess))/i,
     ],
   }),
   presence({

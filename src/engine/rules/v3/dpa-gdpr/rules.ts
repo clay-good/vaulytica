@@ -48,6 +48,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "DPA-001",
+    version: "1.1.0",
     name: "Subject-matter of processing identified",
     description: "DPA must identify the subject-matter of the processing.",
     citation: "GDPR Art. 28(3) introductory",
@@ -57,7 +58,14 @@ export const DPA_GDPR_RULES: Rule[] = [
       "Article 28(3) requires the controller-processor contract to set out the subject-matter and duration of the processing, the nature and purpose, the type of personal data, the categories of data subjects, and the obligations and rights of the controller.",
     recommendation:
       "Add a 'Subject-matter of Processing' clause or an Annex describing the services giving rise to processing.",
-    present_patterns: [/subject[- ]matter\s+of\s+(the\s+)?processing/i, /scope\s+of\s+processing/i],
+    // "Subject Matter and Duration" is the SCC Annex I.B heading and the
+    // standard section heading of a commercial DPA — a clause so headed that
+    // then describes the processing has identified its subject matter.
+    present_patterns: [
+      /subject[- ]matter\s+of\s+(the\s+)?processing/i,
+      /scope\s+of\s+processing/i,
+      /subject[- ]matter\s+and\s+duration/i,
+    ],
   }),
   presence({
     id: "DPA-002",
@@ -178,6 +186,11 @@ export const DPA_GDPR_RULES: Rule[] = [
       "Art. 28(3)(c) requires the processor to take all measures required pursuant to Article 32 (security of processing).",
     recommendation:
       "Add a security clause cross-referencing Article 32 and an Annex of technical and organisational measures.",
+    // NOT broadened to American "organizational": the Art. 28(3)(e)
+    // DSR-assistance clause contains the same phrase verbatim, so the bare
+    // TOMs phrase is not evidence of an Art. 32 security clause (the
+    // missing-art32 fixture proves it — its only TOMs mention is in the DSR
+    // clause).
     present_patterns: [/article\s*32|technical\s+and\s+organisational\s+measures/i],
   }),
   presence({
@@ -264,6 +277,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "DPA-015",
+    version: "1.1.0",
     name: "Subprocessor prior written authorisation (Art. 28(2))",
     description:
       "Processor must obtain prior specific or general written authorisation before engaging a subprocessor.",
@@ -275,12 +289,16 @@ export const DPA_GDPR_RULES: Rule[] = [
       "Art. 28(2) requires the processor not to engage another processor without prior specific or general written authorisation. With general authorisation, the processor must inform the controller of intended changes and give the controller the opportunity to object.",
     recommendation:
       "Add: 'Processor shall not engage another processor without prior specific or general written authorisation of Controller.'",
+    // The clause is as often written as a GRANT ("Controller provides/grants
+    // general written authorization for Processor to engage …") as the Art.
+    // 28(2) prohibition form — the grant form satisfies the same requirement.
     present_patterns: [
-      /(prior\s+(specific\s+or\s+general\s+)?written\s+authori[sz]ation|authori[sz]ation\s+of\s+(the\s+)?controller).*?(processor|subprocessor)/is,
+      /(prior\s+(specific\s+or\s+general\s+)?written\s+authori[sz]ation|(specific\s+or\s+)?general\s+written\s+authori[sz]ation|authori[sz]ation\s+of\s+(the\s+)?controller).*?(processor|subprocessor)/is,
     ],
   }),
   presence({
     id: "DPA-016",
+    version: "1.1.0",
     name: "Subprocessor change notification + objection right",
     description:
       "Where general authorisation is used, controller must be informed of intended changes and have the opportunity to object.",
@@ -292,12 +310,18 @@ export const DPA_GDPR_RULES: Rule[] = [
       "Art. 28(2) requires informing the controller of intended subprocessor changes and giving an opportunity to object.",
     recommendation:
       "Add: 'Processor shall inform Controller of any intended changes concerning the addition or replacement of Sub-processors with reasonable notice, giving Controller the opportunity to object.'",
+    // "Controller may (reasonably) object" grants the same objection right as
+    // the Art. 28(2) "opportunity to object" wording. The processor mention
+    // may come BEFORE the objection ("… replacement of a Sub-processor, and
+    // Controller may object …"), so that order is accepted too.
     present_patterns: [
-      /(opportunity\s+to\s+object|right\s+to\s+object).*?(sub[- ]?processor|processor)/is,
+      /(opportunity\s+to\s+object|right\s+to\s+object|may\s+(reasonably\s+)?object).*?(sub[- ]?processor|processor)/is,
+      /(sub[- ]?processor|processor).*?(opportunity\s+to\s+object|right\s+to\s+object|may\s+(reasonably\s+)?object)/is,
     ],
   }),
   presence({
     id: "DPA-017",
+    version: "1.1.0",
     name: "Subprocessor flow-down of same obligations (Art. 28(4))",
     description:
       "Where the processor engages a subprocessor, the same data-protection obligations must be imposed on the subprocessor by contract.",
@@ -309,8 +333,11 @@ export const DPA_GDPR_RULES: Rule[] = [
       "Art. 28(4) requires the processor to impose, by contract or other legal act, the same data-protection obligations on the subprocessor as set out in the contract between the controller and processor.",
     recommendation:
       "Add: 'Where Processor engages a Sub-processor, the same data protection obligations shall be imposed on the Sub-processor by contract.'",
+    // "obligations no less protective/onerous/stringent than" is the dominant
+    // commercial flow-down formulation and imposes at least the Art. 28(4)
+    // "same obligations" standard.
     present_patterns: [
-      /(sub[- ]?processor|another\s+processor).*?(same\s+(data[- ]protection\s+)?obligations|same\s+obligations|same\s+terms|equivalent\s+obligations)/is,
+      /(sub[- ]?processor|another\s+processor).*?(same\s+(data[- ]protection\s+)?obligations|same\s+obligations|same\s+terms|equivalent\s+obligations|obligations\s+no\s+less\s+(protective|onerous|stringent|restrictive))/is,
     ],
   }),
   presence({
@@ -688,6 +715,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   presence({
     id: "DPA-039",
+    version: "1.1.0",
     name: "Technical and organisational measures annex",
     description:
       "DPA should include an Annex describing technical and organisational measures (Annex II for SCCs).",
@@ -696,14 +724,19 @@ export const DPA_GDPR_RULES: Rule[] = [
     missing_description: "No Annex of technical and organisational measures was found.",
     explanation: "Annex II of the SCCs (and the equivalent in DPAs) lists the TOMs.",
     recommendation: "Add an Annex II describing the technical and organisational measures.",
+    // American drafting spells it "organizational", and the TOMs are as often
+    // named BEFORE the annex ("technical and organizational measures …
+    // described in Annex 2") as after it.
     present_patterns: [
-      /(annex|appendix|exhibit|schedule)\s+(II|2|B).{0,40}(technical|organisational|TOM)/i,
-      /annex\s+of\s+technical\s+and\s+organisational/i,
+      /(annex|appendix|exhibit|schedule)\s+(II|2|B).{0,40}(technical|organi[sz]ational|TOM)/i,
+      /annex\s+of\s+technical\s+and\s+organi[sz]ational/i,
+      /(technical\s+and\s+organi[sz]ational\s+measures|TOMs?\b).{0,160}(annex|appendix|exhibit|schedule)\s+(II|2|B)\b/is,
     ],
     default_severity: "warning",
   }),
   presence({
     id: "DPA-040",
+    version: "1.1.0",
     name: "Subprocessor list annex",
     description:
       "DPA should include a list of approved subprocessors (Annex III for SCCs Modules 2 & 3).",
@@ -714,9 +747,12 @@ export const DPA_GDPR_RULES: Rule[] = [
       "SCC Modules 2 and 3 require Annex III listing sub-processors at the time of signature.",
     recommendation:
       "Add an Annex III listing approved sub-processors with the categories of data they process.",
+    // "the Sub-processors listed in Annex 3" names the subprocessors BEFORE
+    // the annex; the annex-first pattern alone missed that order.
     present_patterns: [
       /(annex|appendix|exhibit|schedule)\s+(III|3|C).{0,40}(sub[- ]?processor|sub-processor\s+list)/i,
       /list\s+of\s+sub[- ]?processors/i,
+      /sub[- ]?processors?\s+(listed|set\s+(out|forth)|identified|specified|named)\s+(in|on)\s+(annex|appendix|exhibit|schedule)\s+(III|3|C)\b/i,
     ],
     default_severity: "warning",
   }),

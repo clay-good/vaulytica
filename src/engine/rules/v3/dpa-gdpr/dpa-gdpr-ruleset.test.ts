@@ -255,3 +255,62 @@ describe("DPA-GDPR ruleset — SCC Module 2 playbook scope", () => {
     expect(run.execution_log.filter((e) => e.elapsed_ms === 0).length).toBeLessThan(55);
   });
 });
+
+describe("DPA-GDPR ruleset — commercial-drafting presence forms (v1.1.0)", () => {
+  // A well-drafted commercial DPA that satisfies each requirement using the
+  // dominant US-drafting phrasings rather than the GDPR's own words:
+  // heading-style subject matter, grant-form subprocessor authorization,
+  // "may object", "no less protective" flow-down, American "organizational",
+  // and TOMs/sub-processor lists named BEFORE their annex numbers.
+  const COMMERCIAL_DPA: [string, ...string[]][] = [
+    [
+      "Data Processing Agreement",
+      "This DPA is entered into by and between Controller and Processor in accordance with Article 28 GDPR.",
+    ],
+    [
+      "2. Subject Matter and Duration",
+      "This DPA governs the Processing of Personal Data by Processor in the course of providing the hosted services. The duration of the processing is the term of the Agreement.",
+    ],
+    [
+      "7. Sub-processors",
+      "Controller provides general written authorization for Processor to engage the Sub-processors listed in Annex 3. Processor shall give Controller thirty (30) days prior written notice of any intended addition or replacement of a Sub-processor, and Controller may object on reasonable data-protection grounds within that period. Processor shall impose on each Sub-processor, by way of a written contract, data protection obligations no less protective than those set out in this DPA.",
+    ],
+    [
+      "6. Security",
+      "Processor shall implement appropriate technical and organizational measures to ensure a level of security appropriate to the risk, in accordance with Article 32 GDPR, including the measures described in Annex 2 (encryption of Personal Data in transit and at rest, and access controls).",
+    ],
+  ];
+
+  it("does not report the six clauses this fixture contains as missing", async () => {
+    const ctx = withDpa(buildContext(...COMMERCIAL_DPA));
+    const run = await runEngine({
+      rules: DPA_GDPR_RULES,
+      ctx,
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
+    const fired = new Set(run.findings.map((f) => f.rule_id));
+    for (const id of ["DPA-001", "DPA-015", "DPA-016", "DPA-017", "DPA-039", "DPA-040"]) {
+      expect(fired.has(id), `${id} should not fire on the commercial drafting form`).toBe(false);
+    }
+  });
+
+  it("still reports all six when the document genuinely lacks them", async () => {
+    const ctx = withDpa(
+      buildContext([
+        "DPA",
+        "This DPA concerns personal data handled by the processor for the controller.",
+      ]),
+    );
+    const run = await runEngine({
+      rules: DPA_GDPR_RULES,
+      ctx,
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
+    const fired = new Set(run.findings.map((f) => f.rule_id));
+    for (const id of ["DPA-001", "DPA-015", "DPA-016", "DPA-017", "DPA-039", "DPA-040"]) {
+      expect(fired.has(id), `${id} should fire when the clause is absent`).toBe(true);
+    }
+  });
+});
