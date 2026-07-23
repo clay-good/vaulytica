@@ -430,6 +430,7 @@ const SEPARATION_RULES: Rule[] = [
     ],
     exclude_if: [
       /(?:does|do|shall|will)\s+not\s+(?:restrict|prohibit|prevent|preclude|limit|bar|apply\s+to)\b/i,
+      /\bnothing\b[^.]{0,60}(?:restrict|prohibit|prevent|preclude|limit|bar|interfere)/i,
     ],
     bad_title: "Overbroad confidentiality / non-disparagement flagged",
     bad_description:

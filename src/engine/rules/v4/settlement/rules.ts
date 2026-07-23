@@ -205,6 +205,10 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
       /confidentiality.{0,80}(terms\s+of\s+this\s+agreement|existence\s+of\s+this\s+settlement|any\s+aspect)/is,
       /non.?disparag.{0,200}(any|all)\s+(person|individual|entity)/is,
     ],
+    exclude_if: [
+      /(?:does|do|shall|will)\s+not\s+(?:restrict|prohibit|prevent|preclude|limit|bar|apply\s+to)\b/i,
+      /\bnothing\b[^.]{0,60}(?:restrict|prohibit|prevent|preclude|limit|bar|interfere)/i,
+    ],
     bad_title: "Overbroad confidentiality / non-disparagement flagged",
     bad_description:
       "Settlement appears to contain confidentiality or non-disparagement language broad enough to chill protected concerted activity (NLRA § 7).",
