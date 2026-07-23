@@ -161,3 +161,35 @@ describe("extractJurisdictions", () => {
     ).toEqual([]);
   });
 });
+
+describe("consent-to-jurisdiction forum clauses", () => {
+  const venue = (t: string) =>
+    extractJurisdictions(buildTree(["Governing Law; Venue", t])).find(
+      (r) => r.clause_kind === "venue",
+    )?.raw_text;
+
+  it("reads 'consent to the exclusive jurisdiction of the courts located in X'", () => {
+    // No dispute noun, no "shall be resolved" verb — the parties simply consent
+    // to a court's jurisdiction, one of the most common forum forms, and every
+    // verb-driven pattern missed it, so CHOICE-003 reported no venue clause.
+    expect(
+      venue(
+        "The parties consent to the exclusive jurisdiction of the state and federal courts located in New York County, New York.",
+      ),
+    ).toBe("New York");
+  });
+
+  it("reads 'submit to the jurisdiction of the courts of X'", () => {
+    expect(
+      venue(
+        "Each party irrevocably submits to the jurisdiction of the courts of England and Wales.",
+      ),
+    ).toBe("England");
+  });
+
+  it("does not read an ordinary 'jurisdiction' mention as a forum clause", () => {
+    expect(
+      venue("The Company operates in every jurisdiction where it does business."),
+    ).toBeUndefined();
+  });
+});

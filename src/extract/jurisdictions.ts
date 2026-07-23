@@ -104,6 +104,21 @@ const VENUE_RESOLVED_IN = new RegExp(
   "gi",
 );
 
+/**
+ * The other dominant forum formulation names no dispute and no "shall be
+ * resolved" verb — the parties simply consent to a court's jurisdiction: "the
+ * parties consent to the exclusive jurisdiction of the state and federal
+ * courts located in New York County, New York", "each party irrevocably
+ * submits to the jurisdiction of the courts of England and Wales". None of the
+ * verb-driven patterns above match it, so CHOICE-003 reported "no venue
+ * clause" on a document whose forum clause is one of the most common ones
+ * written.
+ */
+const VENUE_CONSENT = new RegExp(
+  String.raw`\b(?:consent|submit|agree|attorn)\w*\s+(?:[^.;)]{0,40}?\s+)?to\s+the\s+(?:${COURT_ADJECTIVE}|exclusive\s+|non-?exclusive\s+|personal\s+|sole\s+|general\s+)*jurisdiction\s+(?:and\s+venue\s+)?of\s+(?:any\s+|the\s+|a\s+)?(?:${COURT_ADJECTIVE})?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_ADJECTIVE})?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+|in\s+|within\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
+  "gi",
+);
+
 const ARBITRATION_SEAT =
   /\b(?:seat\s+of\s+arbitration|arbitration\s+(?:shall\s+take\s+place|shall\s+be\s+(?:seated|conducted))\s+in)\s+([A-Z][A-Za-z\s&\-,]+?)(?=[.,;)]|\s+under|\s+pursuant|$)/gi;
 
@@ -196,6 +211,7 @@ export function extractJurisdictions(
     runRegex(VENUE, ctx.text, recordVenue);
     runRegex(VENUE_SIMPLE, ctx.text, recordVenue);
     runRegex(VENUE_RESOLVED_IN, ctx.text, recordVenue);
+    runRegex(VENUE_CONSENT, ctx.text, recordVenue);
     runRegex(ARBITRATION_SEAT, ctx.text, (m) => {
       const raw = (m[1] ?? "").trim();
       out.push({
