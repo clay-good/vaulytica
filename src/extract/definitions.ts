@@ -461,8 +461,14 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
         continue;
       // A street address ("88 Dockside Avenue") is a proper noun, never a
       // contractual defined term — same reasoning as PLACE_NAMES, keyed on
-      // the unambiguous street-suffix last word.
-      if (/\s(?:Avenue|Street|Road|Boulevard|Drive|Lane|Parkway|Highway)$/.test(phrase)) continue;
+      // the unambiguous street-suffix last word. Likewise a named county or
+      // parish ("Pierce County") in a legal description or venue recital.
+      if (
+        /\s(?:Avenue|Street|Road|Boulevard|Drive|Lane|Parkway|Highway|County|Parish|Borough)$/.test(
+          phrase,
+        )
+      )
+        continue;
       if (TITLE_CASE_LEADING_STOPWORDS.has(phrase)) continue;
       // Only strip sentence-initial-stopword patterns from the candidate
       // list when the phrase is short (2 words). Longer phrases like

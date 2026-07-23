@@ -28,7 +28,7 @@ const RECIPROCAL_PATTERNS = [
 /** OBLI-002 — Reciprocity asymmetry (info). */
 export const rule: Rule = {
   id: "OBLI-002",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Reciprocity asymmetry",
   category: "obligations",
   default_severity: "info",
@@ -48,8 +48,15 @@ export const rule: Rule = {
     for (const { label, pattern } of RECIPROCAL_PATTERNS) {
       const seenObligors = new Set<string>();
       for (const o of ctx.extracted.obligations) {
-        if (!pattern.test(o.action)) continue;
+        const m = pattern.exec(o.action);
+        if (!m) continue;
         if (NEGATED_ACTION.test(o.action.trim())) continue;
+        // The keyword may be DISCLAIMED mid-action: a trustee obligated to
+        // "reconvey the Property WITHOUT WARRANTY" bears no warranties
+        // obligation, and counting it inverted the clause. Same for
+        // "makes no representation", "with no indemnification".
+        const lead = o.action.slice(Math.max(0, m.index - 12), m.index);
+        if (/\b(?:without|no)\s+$/i.test(lead)) continue;
         const o2 = o.obligor.toLowerCase().trim();
         if (partySet.has(o2)) seenObligors.add(o2);
       }

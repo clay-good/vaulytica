@@ -8,6 +8,7 @@ import { describe, expect, it } from "vitest";
 import { buildContext } from "../_test-fixtures.js";
 import { rule as OBLI001 } from "./obligations/OBLI-001.js";
 import { rule as OBLI003 } from "./obligations/OBLI-003.js";
+import { rule as OBLI002 } from "./obligations/OBLI-002.js";
 import { rule as PERS002 } from "./personnel/PERS-002.js";
 import { rule as PERS004 } from "./personnel/PERS-004.js";
 import { rule as PERS009 } from "./personnel/PERS-009.js";
@@ -111,5 +112,32 @@ describe("OBLI-003 — 'from time to time by resolution' names its mechanism (v1
         ),
       ),
     ).not.toBeNull();
+  });
+});
+
+describe("OBLI-002 — a disclaimed keyword is not the obligation (v1.1.0)", () => {
+  it("does not read 'reconvey without warranty' as a trustee warranties obligation", () => {
+    expect(
+      OBLI002.check(
+        doc(
+          "Deed of Trust",
+          'This Deed of Trust is made by Orchard Flats LLC ("Grantor") to Pacific Title Co ("Trustee").',
+          "Grantor warrants that it holds fee simple title to the Property. Trustee shall reconvey the Property without warranty to the persons legally entitled thereto.",
+        ),
+      ),
+    ).toBeNull();
+  });
+});
+
+describe("OBLI-003 — a statutory appointment power is not an ambiguous trigger (v1.2.0)", () => {
+  it("does not flag 'from time to time as provided by statute'", () => {
+    expect(
+      OBLI003.check(
+        doc(
+          "Successor Trustee",
+          "Beneficiary may, from time to time as provided by statute, appoint a successor trustee to any Trustee appointed hereunder, and the successor trustee shall succeed to all duties.",
+        ),
+      ),
+    ).toBeNull();
   });
 });

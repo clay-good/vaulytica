@@ -475,3 +475,15 @@ describe("handbook-style captions and parenthetical subjects", () => {
     expect(map.undefined_capitalized.map((u) => u.term)).toContain("Quality Assurance Plan");
   });
 });
+
+describe("counties are places, not defined terms", () => {
+  it("does not flag 'Pierce County' from a legal description", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Legal Description",
+        "The real property is situated in Pierce County, Washington, according to the records of Pierce County.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((u) => u.term)).not.toContain("Pierce County");
+  });
+});
