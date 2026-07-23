@@ -59,7 +59,10 @@ export function activateEstateChecks(
   // overlay's EST-101/105 in the same report. No overlay (or a
   // witness-expecting one) passes baseRules through untouched.
   return {
-    rules: [...adaptBaseRulesForOverlay(baseRules, overlay), ...estateCheckRulesForOverlay(overlay)],
+    rules: [
+      ...adaptBaseRulesForOverlay(baseRules, overlay),
+      ...estateCheckRulesForOverlay(overlay),
+    ],
     estate_checks_asserted: true,
     asserted_state: state,
   };

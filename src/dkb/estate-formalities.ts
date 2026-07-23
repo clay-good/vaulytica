@@ -165,7 +165,8 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     notarial_testament: false,
     reasonable_time_phrasing: false,
     holographic_recognized: true,
-    headline: "2 witnesses, publication + signature at the end; holographic OK (proved by 3 disinterested witnesses)",
+    headline:
+      "2 witnesses, publication + signature at the end; holographic OK (proved by 3 disinterested witnesses)",
     summary:
       "Arkansas requires an attested will to be signed AT THE END by the testator (or by mark or proxy with extra writing formalities) after declaring to the witnesses that the instrument is his or her will (publication), all in the presence of at least two attesting witnesses, who must sign at the testator's request and in the testator's presence (Ark. Code Ann. § 28-25-103) — no notarization alternative, no 'reasonable time' window, and no requirement that witnesses sign in each other's presence. A will whose ENTIRE body and signature are in the testator's handwriting needs no attesting witnesses, but establishing it requires at least three credible disinterested witnesses to the handwriting and signature (§ 28-25-104) — a heavier proof burden than the two witnesses typical elsewhere.",
     citation: cite(
@@ -237,7 +238,8 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     notarial_testament: false,
     reasonable_time_phrasing: false,
     holographic_recognized: false,
-    headline: "2 witnesses, each subscribing in the testator's presence; holographic NOT recognized in-state",
+    headline:
+      "2 witnesses, each subscribing in the testator's presence; holographic NOT recognized in-state",
     summary:
       "Connecticut makes a will invalid to pass property unless it is in writing, subscribed by the testator, and attested by two witnesses each subscribing in the testator's presence (Conn. Gen. Stat. § 45a-251) — the statute's only presence requirement, with no reciprocal requirement that the testator sign before the witnesses, no notarization alternative, and no 'reasonable time' language. Two witnesses only since a 1971 act reduced the former three-witness requirement. Unwitnessed holographic wills are not recognized domestically; the same sentence's borrowing clause admits any will executed according to the laws of the state or country where it was executed.",
     citation: cite(
@@ -256,7 +258,8 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     reasonable_time_phrasing: false,
     holographic_recognized: false,
     e_will_regime: true,
-    headline: "2 credible witnesses, attesting in the testator's presence; e-wills (2023); holographic NOT recognized",
+    headline:
+      "2 credible witnesses, attesting in the testator's presence; e-wills (2023); holographic NOT recognized",
     summary:
       "The District of Columbia voids any will that is not in writing, signed by the testator (or by another in the testator's presence and by express direction), and attested and subscribed in the presence of the testator by at least two credible witnesses (D.C. Code § 18-103) — presence runs one direction only: the statute never requires the testator to sign before the witnesses or the witnesses to act simultaneously. No notarization option and no holographic wills; the only alternatives are § 18-107 oral nuncupative wills for military personnel and mariners at sea (personal property, last illness, written down within 10 days) and electronic wills under the Uniform Electronic Wills Act (Title 18, Chapter 9, added by D.C. Law 24-296, effective 2023-03-10, and cross-referenced in § 18-103 itself).",
     citation: cite(
@@ -310,7 +313,8 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     notarial_testament: false,
     reasonable_time_phrasing: false,
     holographic_recognized: false,
-    headline: "2+ competent witnesses (age 14+), in the testator's presence; holographic NOT recognized",
+    headline:
+      "2+ competent witnesses (age 14+), in the testator's presence; holographic NOT recognized",
     summary:
       "Georgia requires the will to be in writing, signed by the testator (or by another in the testator's presence and at the testator's express direction), and attested and subscribed in the presence of the testator by two or more competent witnesses, who may be as young as 14 (O.C.G.A. §§ 53-4-20, 53-4-22) — with no mutual-presence requirement and no notarization substitute. Holographic wills are not recognized: a handwritten will is valid only with the same two-witness attestation. A gift to a subscribing witness is void unless two other non-beneficiary witnesses subscribed (§ 53-4-23(a)); the § 53-4-24 self-proving affidavit affects only proof at probate, not validity.",
     citation: cite(
@@ -401,7 +405,8 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     reasonable_time_phrasing: false,
     holographic_recognized: false,
     e_will_regime: true,
-    headline: "2+ witnesses, mutual presence + publication; holographic NOT recognized; e-wills (2018)",
+    headline:
+      "2+ witnesses, mutual presence + publication; holographic NOT recognized; e-wills (2018)",
     summary:
       "Indiana requires the testator to signify to two or more attesting witnesses that the instrument is the testator's will and to sign, acknowledge, or direct a proxy signature in their presence, and the witnesses must sign in the presence of the testator AND each other (Ind. Code § 29-1-5-3(b)) — stricter mutual presence than the UPC, with no notarization alternative and no 'reasonable time' softening. Unwitnessed holographic wills are not valid under Indiana's own law; only nuncupative wills are excepted. Indiana separately enacted IC 29-1-21 (P.L. 40-2018), one of the first US electronic-wills statutes: two electronic witness signatures in mutual presence, with audiovisual presence only under attorney or directed-paralegal supervision (§ 29-1-21-4).",
     citation: cite(
@@ -419,7 +424,8 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     notarial_testament: false,
     reasonable_time_phrasing: false,
     holographic_recognized: false,
-    headline: "2+ witnesses, testator's presence, signed at the end; holographic NOT recognized in-state",
+    headline:
+      "2+ witnesses, testator's presence, signed at the end; holographic NOT recognized in-state",
     summary:
       "Kansas requires every will (except a § 59-608 oral will) to be in writing, signed AT THE END by the testator (or by another in the testator's presence and at express direction), and attested and subscribed in the testator's presence by two or more competent witnesses who saw the testator subscribe or heard the testator acknowledge the will (Kan. Stat. Ann. § 59-606) — no notarization alternative and no 'reasonable time' window; a self-proving affidavit executed at signing can substitute for the attestation clause but never for the witnesses. No domestic holographic wills; § 59-609 saves out-of-state wills valid where executed, provided they are written and subscribed. Kansas is one of the few states still recognizing oral deathbed wills for personal property (§ 59-608).",
     citation: cite(
@@ -510,7 +516,8 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     notarial_testament: false,
     reasonable_time_phrasing: true,
     holographic_recognized: true,
-    headline: "2 witnesses (reasonable time); holographic OK; NO harmless error despite the modern-UPC base",
+    headline:
+      "2 witnesses (reasonable time); holographic OK; NO harmless error despite the modern-UPC base",
     summary:
       "Maine's 2019 Probate Code (tit. 18-C, effective 2019-09-01) requires the will to be in writing, signed by the testator (or by proxy in the testator's conscious presence and at direction), and signed by at least 2 individuals within a reasonable time after witnessing the signing or an acknowledgment — witnesses need not sign in anyone's presence (18-C § 2-502(1)). Holographic wills are valid when the signature and material portions are handwritten (§ 2-502(2)). Though modeled on the modern UPC, Maine omitted BOTH the 2008 notarized-will alternative AND harmless error — numbering trap: Maine's § 2-503 is the self-proved-will section, not harmless error. Maine also ships a statutory will form (§ 2-517), unusual among UPC states.",
     citation: cite(
@@ -564,7 +571,8 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     notarial_testament: false,
     reasonable_time_phrasing: false,
     holographic_recognized: false,
-    headline: "2+ competent witnesses, subscribing in the testator's presence; holographic NOT recognized",
+    headline:
+      "2+ competent witnesses, subscribing in the testator's presence; holographic NOT recognized",
     summary:
       "Missouri requires every will to be in writing, signed by the testator (or by a proxy at the testator's direction and in the testator's presence), and attested by two or more competent witnesses subscribing their names in the presence of the testator (Mo. Rev. Stat. § 474.320) — pre-UPC strict presence, with no notarization alternative and no 'reasonable time' softening. There is no holographic exception: an unwitnessed holograph executed in Missouri fails, though § 474.360 admits wills validly executed under the law of the place of execution or the testator's domicile. An interested witness does not invalidate the will but forfeits any benefit exceeding the intestate share unless two disinterested witnesses also attested (§ 474.330).",
     citation: cite(
@@ -582,7 +590,8 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     notarial_testament: false,
     reasonable_time_phrasing: false,
     holographic_recognized: true,
-    headline: "2+ credible witnesses, testator's presence — unless wholly written and subscribed by the testator",
+    headline:
+      "2+ credible witnesses, testator's presence — unless wholly written and subscribed by the testator",
     summary:
       "Mississippi packs capacity, signature, and attestation into a single section: any person 18 or older of sound and disposing mind may make a written will or codicil, signed by the testator (or by another in the testator's presence at express direction), and — unless the will is WHOLLY WRITTEN AND SUBSCRIBED by the testator — attested by two or more credible witnesses in the presence of the testator (Miss. Code Ann. § 91-5-1). The holographic path is by negative implication of the attestation clause (the statute never uses the word 'holographic'). No notarization option, no 'reasonable time' window, and presence runs one direction only: witnesses attest in the testator's presence, never the reverse.",
     citation: cite(
@@ -654,7 +663,8 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     notarial_testament: false,
     reasonable_time_phrasing: false,
     holographic_recognized: true,
-    headline: "2 witnesses (pre-1990 UPC); holographic OK with handwritten date indication (curable)",
+    headline:
+      "2 witnesses (pre-1990 UPC); holographic OK with handwritten date indication (curable)",
     summary:
       "Nebraska enacted the pre-1990 UPC § 2-502: the will must be in writing, signed by the testator (or by proxy in the testator's presence and at direction), and signed by at least two individuals who each witnessed the signing or the testator's acknowledgment (Neb. Rev. Stat. § 30-2327) — no notarization alternative, no 'reasonable time' clause, and no presence requirement on the witnesses' own signatures. A holographic will is valid unwitnessed if the signature, material provisions, and an indication of the DATE OF SIGNING are in the testator's handwriting (§ 30-2328) — but a 1980 savings clause forgives a missing date when the instrument is the only one, is consistent with any like instrument, or the date is determinable from contents, extrinsic circumstances, or any other evidence.",
     citation: cite(
@@ -708,7 +718,8 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     notarial_testament: false,
     reasonable_time_phrasing: false,
     holographic_recognized: false,
-    headline: "2 witnesses, mutual presence, must witness the actual signing; holographic NOT recognized",
+    headline:
+      "2 witnesses, mutual presence, must witness the actual signing; holographic NOT recognized",
     summary:
       "New Mexico stripped the UPC's flexibility in the strict direction: the will must be in writing, signed by the testator (or by proxy in the testator's conscious presence and at direction), and signed by at least two individuals each of whom signed in the presence of the testator AND of each other AFTER each witnessed the signing of the will itself (N.M. Stat. Ann. § 45-2-502) — no 'reasonable time' window, no acknowledgment alternative (witnesses must see the actual signing), and no notarization option. Neither the holographic subsection nor harmless error was adopted (§ 45-2-503 is Reserved), and § 45-1-201 states outright that 'will' does not include a holographic will; § 45-2-506 choice of law may still admit out-of-state wills.",
     citation: cite(
@@ -781,7 +792,8 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     notarial_testament: false,
     reasonable_time_phrasing: false,
     holographic_recognized: true,
-    headline: "2 witnesses signing at the end, testator's presence + publication; holographic OK if DATED",
+    headline:
+      "2 witnesses signing at the end, testator's presence + publication; holographic OK if DATED",
     summary:
       "Oklahoma keeps 1910-vintage formalism: the will must be subscribed at the end by the testator (or by proxy in the testator's presence and at direction), the subscription made or acknowledged in the presence of two attesting witnesses, the testator must declare to them that the instrument is his will (publication), and each witness must sign at the end at the testator's request and in the testator's presence (84 O.S. § 55) — though witnesses need not sign in each other's presence, and there is no notarization alternative. A holographic will must be ENTIRELY written, DATED, and signed by the testator's hand (§ 54) — the date is an element of validity, a minority rule shared with Nevada.",
     citation: cite(
@@ -799,7 +811,8 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     notarial_testament: false,
     reasonable_time_phrasing: true,
     holographic_recognized: false,
-    headline: "2 witnesses (reasonable time BEFORE death); holographic NOT recognized; e-wills banned",
+    headline:
+      "2 witnesses (reasonable time BEFORE death); holographic NOT recognized; e-wills banned",
     summary:
       "Oregon requires a written — expressly non-electronic — will that the testator signs, directs signed, or acknowledges in the presence of each of at least two witnesses, who must each see, hear, or observe the act and attest by signing within a reasonable time BEFORE the testator's death (ORS 112.235, the 2015 amendment's outer deadline — not the UPC's 'after witnessing' formulation; witnesses who sign after death fail the statute). No notarization alternative and no presence requirement on the witnesses' own signatures. Unwitnessed holographs are not a valid domestic execution method, though ORS 112.238 harmless error can excuse defects on clear and convincing evidence of intent, and ORS 112.255 honors wills valid where executed.",
     citation: cite(
@@ -888,7 +901,8 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     notarial_testament: false,
     reasonable_time_phrasing: false,
     holographic_recognized: true,
-    headline: "2 witnesses, mutual presence + publication; holographic OK (handwriting proved by 2)",
+    headline:
+      "2 witnesses, mutual presence + publication; holographic OK (handwriting proved by 2)",
     summary:
       "Tennessee requires the testator to signify to the attesting witnesses that the instrument is the testator's will (publication) and to sign, acknowledge, or direct a proxy signature in the presence of at least two attesting witnesses, who must then sign in the presence of the testator AND of each other (Tenn. Code Ann. § 32-1-104(a)) — stricter than the UPC, with no notarization alternative and no 'reasonable time' flexibility. A holographic will needs no witnesses to execution, but the signature and all material provisions must be in the testator's handwriting, proved by two witnesses to the handwriting (§ 32-1-105). For wills executed before July 1, 2016, § 32-1-104(b) retroactively counts witness signatures on a § 32-2-110 affidavit as will signatures when made simultaneously with the testator's signing.",
     citation: cite(
@@ -943,7 +957,8 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     notarial_testament: false,
     reasonable_time_phrasing: false,
     holographic_recognized: true,
-    headline: "2 witnesses, present at the same time; holographic OK (proved by 2 disinterested witnesses)",
+    headline:
+      "2 witnesses, present at the same time; holographic OK (proved by 2 disinterested witnesses)",
     summary:
       "Virginia requires the testator to sign the will — or acknowledge it — in the presence of at least two competent witnesses who are present at the same time and who subscribe the will in the testator's presence; no form of attestation clause is necessary (Va. Code § 64.2-403(C)). A will wholly in the testator's handwriting and signed is valid with no witnesses at execution, provided the handwriting and signature are proved at probate by at least two disinterested witnesses (§ 64.2-403(B)). § 64.2-404 adds a harmless-error remedy on clear and convincing evidence (filed within one year of death), which cannot excuse the testator's signature except in swapped-wills or self-proving-certificate mix-ups.",
     citation: cite(
@@ -996,7 +1011,8 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     notarial_testament: false,
     reasonable_time_phrasing: true,
     holographic_recognized: false,
-    headline: "2 witnesses (reasonable time), conscious presence; holographic NOT recognized in-state",
+    headline:
+      "2 witnesses (reasonable time), conscious presence; holographic NOT recognized in-state",
     summary:
       "Wisconsin requires the will to be signed by the testator (or with assistance, or by proxy in the testator's conscious presence) and signed by at least 2 witnesses within a reasonable time after witnessing the signing or the testator's implicit or explicit acknowledgment, each in the witness's conscious presence — and the two witnesses may observe at different times (Wis. Stat. § 853.03(2)(am)-(bm)). 'Conscious presence' statutorily includes attorney-supervised 2-way real-time audiovisual appearance with in-state location attestations (§ 853.03(2)(c)). No notarization alternative and no domestic holographic wills; a holograph valid under the law of the place of execution or the testator's domicile is recognized via § 853.05.",
     citation: cite(
@@ -1014,7 +1030,8 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     notarial_testament: false,
     reasonable_time_phrasing: false,
     holographic_recognized: true,
-    headline: "2 witnesses, simultaneously present, subscribing before testator AND each other; holographic OK",
+    headline:
+      "2 witnesses, simultaneously present, subscribing before testator AND each other; holographic OK",
     summary:
       "West Virginia requires the will to be signed by the testator (or by proxy in the testator's presence and at direction) in such manner as to make it manifest that the name is intended as a signature, with the signature made or acknowledged in the presence of at least two competent witnesses PRESENT AT THE SAME TIME, who must subscribe in the presence of the testator AND of each other — no attestation clause necessary (W. Va. Code § 41-1-3). The mutual-presence subscription requirement is a Virginia-derived pattern WV retained after Virginia relaxed it — a common out-of-state execution trap. A will WHOLLY in the testator's handwriting is exempt from all witnessing (the carve-out is embedded mid-sentence in § 41-1-3 itself); no notarization alternative and no harmless-error provision exist in the article.",
     citation: cite(
@@ -1032,7 +1049,8 @@ export const ESTATE_FORMALITIES: readonly EstateFormalityOverlay[] = [
     notarial_testament: false,
     reasonable_time_phrasing: false,
     holographic_recognized: true,
-    headline: "2 competent witnesses (no statutory presence requirement); holographic OK if ENTIRELY handwritten",
+    headline:
+      "2 competent witnesses (no statutory presence requirement); holographic OK if ENTIRELY handwritten",
     summary:
       "Wyoming requires a will to be in writing or typewritten, witnessed by two competent witnesses, and signed by the testator (or by another in the testator's presence at express direction) — the enacted text imposes NO requirement that witnesses sign in the testator's presence or vice versa (Wyo. Stat. § 2-6-112(a)), and a purge-style interested-witness rule is built into the same subsection. Since 2023 Sess. Laws ch. 170 (effective 2023-07-01), witnesses may appear by real-time audio-video technology and sign electronically (§ 2-6-112(b)) — remote WITNESSING of a paper will, not an electronic-wills act: no UEWA appears in the current code despite ULC tracking claims (2020-2022 session laws negative-checked). A holographic will is valid unwitnessed when ENTIRELY in the testator's handwriting and signed by the testator's hand (§ 2-6-113).",
     citation: cite(

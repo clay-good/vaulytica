@@ -769,9 +769,7 @@ export async function runReport(
     run.asserted_regimes && run.asserted_regimes.length > 0
       ? buildRegimeCoverage(
           run.asserted_regimes as RegimeId[],
-          new Set(
-            run.findings.filter((f) => f.rule_id.startsWith("PNOT-")).map((f) => f.rule_id),
-          ),
+          new Set(run.findings.filter((f) => f.rule_id.startsWith("PNOT-")).map((f) => f.rule_id)),
         )
       : undefined;
 

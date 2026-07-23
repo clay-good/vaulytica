@@ -199,11 +199,7 @@ describe("EST-107 — witness blocks vs. the asserted state's statute", () => {
   });
 
   it("is silent when the blocks meet the statute's count", () => {
-    const ctx = willContext([
-      "Execution",
-      "Witness: ______________",
-      "Witness: ______________",
-    ]);
+    const ctx = willContext(["Execution", "Witness: ______________", "Witness: ______________"]);
     expect(est107For("us-va")!.check(ctx)).toBeNull();
   });
 
@@ -233,10 +229,7 @@ describe("EST-107 — witness blocks vs. the asserted state's statute", () => {
   });
 
   it("under a notarization-alternative state with NO notary language, warns naming both paths", () => {
-    const ctx = willContext([
-      "Execution",
-      "Witness: ______________",
-    ]);
+    const ctx = willContext(["Execution", "Witness: ______________"]);
     const rule = est107For("us-co")!;
     expect(rule.default_severity).toBe("warning");
     const finding = rule.check(ctx);
