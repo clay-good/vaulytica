@@ -100,7 +100,13 @@ export function extractParties(tree: DocumentTree): Party[] {
   });
 
   // Determine the preamble: first 25% by paragraph count.
-  const preambleCount = Math.max(1, Math.ceil(allText.length * 0.25));
+  // A purely proportional window collapses on short documents: a four-paragraph
+  // agreement scans only paragraph 1 — usually the title — so a preamble
+  // sitting in paragraph 2 is never read and the document reports "could not
+  // identify the parties" while naming them in plain sight. The preamble is a
+  // fixed feature of the front matter, not a proportion of the body, so give it
+  // a floor of the first few paragraphs.
+  const preambleCount = Math.max(3, Math.ceil(allText.length * 0.25));
 
   for (let i = 0; i < preambleCount && i < allText.length; i += 1) {
     const { text, pos } = allText[i]!;

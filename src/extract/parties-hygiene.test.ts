@@ -63,6 +63,21 @@ describe("party extraction hygiene", () => {
     expect(got.find((p) => p.name === "Initech Inc")?.role).toBe("Company");
   });
 
+  it("reads the preamble of a short document", () => {
+    // The scan window used to be a pure proportion of the paragraph count, so a
+    // four-paragraph agreement examined only paragraph 1 — the title — and
+    // reported "could not identify the parties" about a document naming them in
+    // the very next line.
+    expect(
+      names(
+        "Triple Net Lease Agreement",
+        'This Triple Net Lease ("Lease") is between Landlord, REIT Holdings LLC, and Tenant, Retailer Inc.',
+        "Rent. Tenant shall pay base rent monthly in advance.",
+        "Insurance. Tenant shall maintain commercial general liability coverage.",
+      ).length,
+    ).toBeGreaterThanOrEqual(2);
+  });
+
   it("does not turn a document reference into a party", () => {
     // `between` also matches ordinary prose about instruments. Taking the
     // parenthetical here would invent a party named "SOW", which then skews
