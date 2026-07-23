@@ -107,6 +107,22 @@ const ANCHOR_ALIASES =
 
 const NAMED_ANCHOR = new RegExp(String.raw`\bthe\s+(${ANCHOR_ALIASES})\s+Date\b`, "gi");
 
+/**
+ * The same anchor stated as a labeled line or a copula instead of a reference:
+ * "Effective Date: January 1, 2026", "Commencement Date is March 1".
+ *
+ * Requiring "the" missed these entirely, so 58 corpus fixtures carrying a
+ * literal `Effective Date: January 1, 2026` line were told "No Effective Date
+ * is named, defined, or stated near the top of this Agreement" — by a rule
+ * whose own recommendation is to add "an explicit 'Effective Date: [date]'
+ * line". The label or copula is required; a bare mention in prose is a
+ * reference to the anchor, not a statement of it.
+ */
+const LABELED_ANCHOR = new RegExp(
+  String.raw`\b(${ANCHOR_ALIASES})\s+Date\b(?=\s*[:=—-]|\s+(?:is|shall\s+be|means)\b)`,
+  "gi",
+);
+
 /** Bare "Date Hereof" / "date hereof" — an anchor with no "Date" suffix. */
 const DATE_HEREOF = /\bthe\s+(Date\s+Hereof)\b/gi;
 
@@ -225,12 +241,26 @@ export function extractDates(tree: DocumentTree): DateReference[] {
         position: posInParagraph(ctx, start, end),
       });
     }
+    const seenAnchor = new Set<number>();
     NAMED_ANCHOR.lastIndex = 0;
     while ((m = NAMED_ANCHOR.exec(ctx.text)) !== null) {
+      seenAnchor.add(m.index + m[0].toLowerCase().indexOf(m[1]!.toLowerCase()));
       out.push({
         id: nextId(),
         type: "named-anchor",
         raw_text: m[0].replace(/^the\s+/i, ""),
+        anchor: `${titleCaseAnchor(m[1]!)} Date`,
+        position: posInParagraph(ctx, m.index, m.index + m[0].length),
+      });
+    }
+    LABELED_ANCHOR.lastIndex = 0;
+    while ((m = LABELED_ANCHOR.exec(ctx.text)) !== null) {
+      // "the Effective Date:" matches both patterns — keep one record.
+      if (seenAnchor.has(m.index)) continue;
+      out.push({
+        id: nextId(),
+        type: "named-anchor",
+        raw_text: m[0],
         anchor: `${titleCaseAnchor(m[1]!)} Date`,
         position: posInParagraph(ctx, m.index, m.index + m[0].length),
       });

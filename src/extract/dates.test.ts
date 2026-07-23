@@ -158,3 +158,30 @@ describe("extractDates", () => {
     expect(Array.isArray(out)).toBe(true);
   });
 });
+
+describe("labeled date anchors", () => {
+  it("reads an Effective Date stated as a labeled line", () => {
+    // Requiring "the" missed this entirely, so 58 corpus fixtures carrying a
+    // literal "Effective Date: January 1, 2026" line were told no Effective
+    // Date was named — by a rule whose own recommendation is to add exactly
+    // such a line.
+    const dates = extractDates(buildTree(["Signatures", "Effective Date: January 1, 2026"]));
+    expect(dates.some((d) => d.type === "named-anchor" && d.anchor === "Effective Date")).toBe(
+      true,
+    );
+  });
+
+  it("reads an anchor stated with a copula", () => {
+    const dates = extractDates(buildTree(["Term", "The Commencement Date is March 1, 2026."]));
+    expect(dates.filter((d) => d.anchor === "Commencement Date")).toHaveLength(1);
+  });
+
+  it("does not turn a bare prose mention into a second anchor record", () => {
+    const dates = extractDates(
+      buildTree(["Term", "Vendor shall deliver within thirty (30) days after the Effective Date."]),
+    );
+    expect(
+      dates.filter((d) => d.type === "named-anchor" && d.anchor === "Effective Date"),
+    ).toHaveLength(1);
+  });
+});
