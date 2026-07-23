@@ -52,3 +52,37 @@ describe("TEMP-002 — past-dated effective date", () => {
     ).toBeNull();
   });
 });
+
+describe("TEMP-002 — a referenced instrument's date is not this document's", () => {
+  it("stays silent when the earliest date belongs to the parent agreement", () => {
+    // "incorporated into the Master Services Agreement between the parties
+    // dated January 1, 2026" is the MSA's date, not the DPA's effective date,
+    // so it cannot evidence that the DPA was back-dated.
+    expect(
+      TEMP_002.check(
+        buildContext(
+          [
+            "DPA",
+            'This Data Processing Agreement ("DPA") is entered into as of February 1, 2026, between Globex Inc. and Wayne Enterprises LLC.',
+          ],
+          [
+            "Incorporation",
+            'This DPA supplements and is incorporated into the Master Services Agreement between the parties dated January 1, 2026 (the "MSA").',
+          ],
+          ["Notice", "Processor shall notify Controller by March 1, 2026."],
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still counts the document's OWN 'This Agreement, dated …' date", () => {
+    expect(
+      TEMP_002.check(
+        buildContext([
+          "Agreement",
+          "This Agreement, dated January 1, 2024, is between A and B. Payment is due March 1, 2026. Delivery March 15, 2026. Ends April 1, 2026.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

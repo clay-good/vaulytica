@@ -1,5 +1,32 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, topPosition } from "../_helpers.js";
+import { forEachParagraph } from "../../../extract/walk.js";
+
+/**
+ * A date that belongs to a DIFFERENT, referenced instrument — "incorporated
+ * into the Master Services Agreement between the parties dated January 1,
+ * 2026" — is not this document's effective date, so it cannot evidence that
+ * THIS document was back-dated. Requiring the determiner "the" (never "this")
+ * before the instrument keeps the document's own "This Agreement, dated …"
+ * out of the exclusion.
+ */
+const REFERENCED_INSTRUMENT_DATE =
+  /\bthe\s+[^.;]{0,70}?\b(?:agreement|msa|dpa|baa|contract|sow|order\s+form|lease|note|policy|addendum|indenture)\b[^.;]{0,40}?\bdated\s+(?:as\s+of\s+)?$/i;
+
+/** Absolute-date start offsets whose text reads as another instrument's date. */
+function referencedDateStarts(ctx: RuleContext): Set<number> {
+  const out = new Set<number>();
+  forEachParagraph(ctx.tree, (p) => {
+    for (const d of ctx.extracted.dates) {
+      if (d.type !== "absolute" || !d.iso) continue;
+      const start = d.position?.start;
+      if (start === undefined || start < p.start || start >= p.start + p.text.length) continue;
+      const before = p.text.slice(0, start - p.start);
+      if (REFERENCED_INSTRUMENT_DATE.test(before)) out.add(start);
+    }
+  });
+  return out;
+}
 
 /** TEMP-002 — Past-dated effective date in a forward-looking contract (info). */
 export const rule: Rule = {
@@ -12,7 +39,13 @@ export const rule: Rule = {
     "Flags an Effective Date more than 30 days before the earliest other absolute date in the document.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
-    const abs = ctx.extracted.dates.filter((d) => d.type === "absolute" && d.iso);
+    const referenced = referencedDateStarts(ctx);
+    const abs = ctx.extracted.dates.filter(
+      (d) =>
+        d.type === "absolute" &&
+        d.iso &&
+        !(d.position?.start !== undefined && referenced.has(d.position.start)),
+    );
     // Back-dating shows up as the earliest date being an OUTLIER before the
     // document's other dates. With only two dates there is nothing to be an
     // outlier from: an effective date and a maturity/expiration date are the
