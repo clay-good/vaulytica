@@ -273,6 +273,10 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
     let m: RegExpExecArray | null;
     while ((m = TITLE_CASE_PHRASE.exec(ctx.text)) !== null) {
       const phrase = m[1]!;
+      // A candidate whose first word is immediately preceded by a hyphen is the
+      // tail of a hyphenated compound, not a standalone term: "Software-as-a-
+      // Service Terms of Service" yielded the phantom term "Service Terms".
+      if (ctx.text[m.index - 1] === "-") continue;
       if (definedNames.has(phrase.toLowerCase())) continue;
       if (COMMON_WORDS.has(phrase)) continue;
       if (PLACE_NAMES.has(phrase)) continue;

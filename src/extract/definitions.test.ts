@@ -156,3 +156,25 @@ describe("place names are not undefined defined-terms", () => {
     expect(map.undefined_capitalized.map((e) => e.term)).toContain("The Special Reserve Fund");
   });
 });
+
+describe("hyphenated-compound fragments are not undefined terms", () => {
+  it("does not flag 'Disclosure Agreement' from 'Non-Disclosure Agreement'", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "NDA",
+        "This Non-Disclosure Agreement governs the exchange. This Non-Disclosure Agreement is binding on both parties.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Disclosure Agreement");
+  });
+
+  it("does not flag 'Border Transfer' from 'Cross-Border Transfer'", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Transfers",
+        "The Cross-Border Transfer Mechanism applies. The Cross-Border Transfer Mechanism is Annex II.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term).join(" ")).not.toContain("Border Transfer");
+  });
+});
