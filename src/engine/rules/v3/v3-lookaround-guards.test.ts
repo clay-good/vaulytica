@@ -21,6 +21,11 @@
  *    and without modification, notwithstanding any other term … the SCCs shall
  *    govern") as forbidden modification of the SCCs.
  *
+ * And one scanned past the thing it was comparing:
+ *  - MSA-024 took ANY state name in the window after the venue trigger as the
+ *    venue, so an aligned New York clause that mentioned a Delaware
+ *    counterparty read as a governing-law/venue mismatch.
+ *
  * Both directions are pinned for each rule.
  */
 import { describe, expect, it } from "vitest";
@@ -248,6 +253,33 @@ describe("TRANSFER-003 — SCC non-derogation savings clause", () => {
         doc(
           "Liability",
           "Notwithstanding any provision of the SCCs, each party's liability shall be capped at the fees paid.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});
+
+describe("MSA-024 — governing-law / venue alignment", () => {
+  it("stays silent when the venue names the governing-law state", () => {
+    // The second state must be the VENUE's, not any state name that happens
+    // to follow it. Here "Delaware" is only the counterparty's state of
+    // incorporation, and the forum is the governing-law state itself.
+    expect(
+      find(MSA_DEEP_RULES, "MSA-024").check(
+        doc(
+          "Governing Law and Venue",
+          "This Agreement is governed by the laws of the State of New York, and the parties consent to the exclusive jurisdiction and venue of the state and federal courts located in New York County, New York, notwithstanding that Customer is a Delaware corporation with its principal place of business elsewhere.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still flags a venue in a different state", () => {
+    expect(
+      find(MSA_DEEP_RULES, "MSA-024").check(
+        doc(
+          "Governing Law and Venue",
+          "This Agreement is governed by the laws of the State of New York, and the parties consent to the exclusive jurisdiction and venue of the state and federal courts located in Wilmington, Delaware, and waive any objection to that forum.",
         ),
       ),
     ).not.toBeNull();

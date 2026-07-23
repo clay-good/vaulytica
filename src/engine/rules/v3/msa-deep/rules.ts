@@ -46,6 +46,9 @@ import {
 
 const MSA_PLAYBOOKS = ["msa-vendor-deep", "msa-customer-deep"];
 
+/** The commercial-contract forum states MSA-024 reconciles. */
+const FORUM_STATE = String.raw`California|New\s+York|Delaware|Texas|Washington|Massachusetts|Illinois|Florida`;
+
 const CONFIG: RegulatedRuleConfig = {
   category: "msa-deep",
   applies_to_playbooks: MSA_PLAYBOOKS,
@@ -633,15 +636,26 @@ export const MSA_DEEP_RULES: Rule[] = [
     recommendation:
       "Either align the two or document the rationale (e.g., NY law / Delaware courts for incorporated entities).",
     bad_patterns: [
-      /governed\s+by\s+the\s+laws?\s+of\s+(?:the\s+state\s+of\s+)?(California|New\s+York|Delaware|Texas|Washington|Massachusetts|Illinois|Florida)[^.]{0,400}(?:courts?|venue|jurisdiction|forum)[^.]{0,80}(?!(?:\1))(California|New\s+York|Delaware|Texas|Washington|Massachusetts|Illinois|Florida)/is,
+      // The state after the venue trigger must be the FIRST one there — the
+      // venue's OWN state. `[^.]{0,80}(?!\1)(STATE)` scanned the whole window
+      // instead, so it walked PAST a matching venue to any other state name in
+      // the sentence: "governed by the laws of the State of New York, and the
+      // parties consent to the exclusive jurisdiction and venue of the …
+      // courts located in New York County, New York, notwithstanding that
+      // Customer is a **Delaware** corporation" was reported as a
+      // governing-law/venue mismatch, when the two are perfectly aligned and
+      // "Delaware" is the counterparty's state of incorporation. Tempering the
+      // window against every state name makes the second capture the venue's
+      // state, which is what the finding claims to compare.
+      new RegExp(
+        String.raw`governed\s+by\s+the\s+laws?\s+of\s+(?:the\s+state\s+of\s+)?(${FORUM_STATE})[^.]{0,400}(?:courts?|venue|jurisdiction|forum)(?:(?!${FORUM_STATE})[^.]){0,80}(?!\1)(${FORUM_STATE})`,
+        "is",
+      ),
     ],
-    // The `(?!\1)` guard only blocks a repeat of the governing-law state at the
-    // one position tested, so the engine backtracks until it finds ANY other
-    // state in the window — including one the clause expressly EXCLUDES
-    // ("venue shall be in Delaware only, and not in California"). A stated
-    // exclusion is alignment, not a mismatch.
+    // A stated EXCLUSION is alignment, not a mismatch ("venue shall be in
+    // Delaware only, and not in California").
     exclude_if: [
-      /\bnot\s+in\s+(?:the\s+state\s+of\s+)?(?:California|New\s+York|Delaware|Texas|Washington|Massachusetts|Illinois|Florida)/i,
+      new RegExp(String.raw`\bnot\s+in\s+(?:the\s+state\s+of\s+)?(?:${FORUM_STATE})`, "i"),
     ],
     default_severity: "info",
   }),
