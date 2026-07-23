@@ -27,6 +27,7 @@ import { describe, expect, it } from "vitest";
 import { buildContext } from "../../_test-fixtures.js";
 import type { Rule } from "../../finding.js";
 import { NDA_DEEP_RULES } from "./nda-deep/index.js";
+import { DPA_GDPR_RULES } from "./dpa-gdpr/index.js";
 import { DPA_US_STATE_RULES } from "./dpa-us-state/index.js";
 import { MSA_DEEP_RULES } from "./msa-deep/index.js";
 import { TRANSFER_RULES } from "./transfer/index.js";
@@ -121,6 +122,51 @@ describe("MSA-023 — change-of-control hook before the assignment sentence", ()
         doc(
           "Assignment",
           "Neither party may assign this Agreement without the prior written consent of the other party.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});
+
+describe("DPA-049 — audit-cost clause that does carry an exception", () => {
+  it("stays silent when the material-breach carve-out the rule recommends is present", () => {
+    expect(
+      find(DPA_GDPR_RULES, "DPA-049").check(
+        doc(
+          "Audit",
+          "Controller shall bear all costs of any audit conducted under this Section, except where the audit reveals a material breach by Processor, in which case Processor shall bear the full cost of the audit.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still flags an audit-cost clause with no exception at all", () => {
+    expect(
+      find(DPA_GDPR_RULES, "DPA-049").check(
+        doc("Audit", "Controller shall bear all costs of any audit conducted under this Section."),
+      ),
+    ).not.toBeNull();
+  });
+});
+
+describe("MSA-012 — feedback grant that is scope-limited", () => {
+  it("stays silent when the grant is limited to a stated purpose", () => {
+    expect(
+      find(MSA_DEEP_RULES, "MSA-012").check(
+        doc(
+          "Feedback",
+          "Customer grants Vendor all right, title and interest in Feedback solely for the limited purpose of improving the Services, and for no other purpose.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still flags an unbounded feedback grant", () => {
+    expect(
+      find(MSA_DEEP_RULES, "MSA-012").check(
+        doc(
+          "Feedback",
+          "Customer grants Vendor all right, title and interest in Feedback, which Vendor may exploit for any purpose without restriction.",
         ),
       ),
     ).not.toBeNull();

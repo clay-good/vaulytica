@@ -861,6 +861,14 @@ export const DPA_GDPR_RULES: Rule[] = [
       /controller\s+(shall|will)\s+bear\s+(all|the\s+entire|the\s+full)\s+costs?\s+of\s+(any\s+)?audit/i,
       /audit.{0,80}(at\s+(the\s+)?controller'?s?\s+(sole\s+)?(cost|expense))/is,
     ],
+    // The finding claims costs are allocated "without exception", but the
+    // patterns never look for one. A clause carrying the exact carve-out this
+    // rule recommends ("except where the audit reveals a material breach, in
+    // which case Processor shall bear the cost") was flagged all the same.
+    exclude_if: [
+      /\bexcept\s+(?:where|when|if|that|as|to\s+the\s+extent|in\s+the\s+event)\b/i,
+      /\bunless\b/i,
+    ],
     default_severity: "warning",
   }),
 

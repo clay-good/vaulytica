@@ -392,6 +392,11 @@ export const MSA_DEEP_RULES: Rule[] = [
       /feedback.{0,80}(?:perpetual|irrevocable|royalty[- ]free|worldwide).{0,80}(?:any\s+purpose|without\s+(?:any\s+)?restriction)/is,
       /(?:assign|transfer|grant).{0,40}all\s+right.{0,40}feedback/is,
     ],
+    // The finding claims the grant carries no scope limits, but the second
+    // pattern only proves that rights in Feedback were granted. A grant reading
+    // "solely for the limited purpose of improving the Services, and for no
+    // other purpose" is scope-limited — it is the fix this rule recommends.
+    exclude_if: [/\bsolely\s+for\b/i, /\blimited\s+purpose\b/i, /\bfor\s+no\s+other\s+purpose\b/i],
     default_severity: "info",
   }),
 
