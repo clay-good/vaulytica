@@ -5,7 +5,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
 /** STRUCT-009 — Defined-term capitalization consistency (info). */
 export const rule: Rule = {
   id: "STRUCT-009",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Defined-term capitalization consistency",
   category: "structural",
   default_severity: "info",
@@ -90,7 +90,16 @@ export function isStatutoryIdiomUse(
   term: string,
   matchLength: number,
 ): boolean {
-  if (term.toLowerCase() !== "personal data") return false;
+  const lower = term.toLowerCase();
+  // "a Delaware limited liability company" is the statutory entity type, not
+  // a lowercase use of a defined "Company" — every agreement that defines
+  // "Company" also recites at least one party's entity type this way.
+  if (lower === "company" || lower === "corporation" || lower === "partnership") {
+    return /\b(?:limited\s+liability|joint\s+stock|professional|nonprofit|non-profit|limited|general|holding)\s+$/i.test(
+      text.slice(Math.max(0, index - 24), index),
+    );
+  }
+  if (lower !== "personal data") return false;
   if (/^\s+breach/i.test(text.slice(index + matchLength, index + matchLength + 10))) return true;
   return /\bspecial\s+categories\s+of\s+$/i.test(text.slice(Math.max(0, index - 30), index));
 }

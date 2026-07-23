@@ -149,3 +149,25 @@ describe("statute vocabulary imported by reference is not a casing slip", () => 
     expect(STRUCT_014.check(ctx)).not.toBeNull();
   });
 });
+
+describe("the entity-type recital is not a lowercase use of 'Company' (v1.3.0)", () => {
+  it("does not flag 'a Delaware limited liability company' against a defined Company", () => {
+    const ctx = buildContext(
+      [
+        "Parties",
+        'This Agreement is between Copperfield Holdings LLC, a Delaware limited liability company ("Buyer"), and the Sellers.',
+      ],
+      ["Definitions", '"Company" means Tidewater Analytics, Inc., the entity acquired at closing.'],
+      ["Operations", "Buyer shall operate the Company as a separate reporting unit."],
+    );
+    expect(STRUCT_009.check(ctx)).toBeNull();
+  });
+
+  it("still reports a genuine lowercase use of the defined Company", () => {
+    const ctx = buildContext(
+      ["Definitions", '"Company" means Tidewater Analytics, Inc.'],
+      ["Operations", "Buyer shall provide the company with adequate working capital."],
+    );
+    expect(STRUCT_009.check(ctx)).not.toBeNull();
+  });
+});
