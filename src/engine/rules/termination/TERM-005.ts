@@ -34,14 +34,21 @@ const EFFECT_OF_TERMINATION = new RegExp(
     // trigger the branches above require. The full phrase is unambiguous;
     // "pay" is deliberately NOT added to CONSEQUENCE (a failure-to-pay
     // termination TRIGGER would then read as an effect clause).
-    String.raw`|\bpay\b[^.]{0,160}\bthrough\s+the\s+(?:date\s+of\s+termination|termination\s+date|effective\s+date\s+of\s+termination)\b`,
+    String.raw`|\bpay\b[^.]{0,160}\bthrough\s+the\s+(?:date\s+of\s+termination|termination\s+date|effective\s+date\s+of\s+termination)\b` +
+    // "If Buyer terminates for Seller's material breach, the earnest deposit
+    // shall be returned" — the conditional form states a termination
+    // consequence with no "upon termination" trigger at all.
+    // `\w*` on the consequence: the conditional form conjugates its verb
+    // ("the deposit shall be returnED") and a bare \b-wrapped stem rejects
+    // every inflection.
+    String.raw`|\bif\s+[^.]{0,80}?\bterminat(?:es|ed)\b[^.]{0,160}?\b(?:${CONSEQUENCE})\w*`,
   "i",
 );
 
 /** TERM-005 — Effect of termination clause present (warning). */
 export const rule: Rule = {
   id: "TERM-005",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Effect of termination clause",
   category: "termination",
   default_severity: "warning",

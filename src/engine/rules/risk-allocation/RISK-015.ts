@@ -43,8 +43,11 @@ export const rule: Rule = {
     // branch ("not to exceed" is not "shall not exceed", and the adjective is
     // "total", not "aggregate"), so the rule reported an indemnity as
     // uncapped in the same run where RISK-003 reported its cap.
+    // "NEITHER party's aggregate indemnification liability shall exceed the
+    // Purchase Price" carries its negation in the subject — no "not" ever
+    // appears, so every branch missed this cap form too.
     const CAP_PRESENT =
-      /\b(?:liability\s+(?:shall|will|is|may)?\s*(?:be\s+)?(?:limited|capped)|aggregate\s+liability.*?(?:not\s+exceed|cap(?:ped)?)|not\s+to\s+exceed|liability\b[^.]{0,80}?\bnot\s+exceed|cap\s+on\s+(?:liability|indemnification)|limited\s+to\s+(?:twelve|six|three|\d+)\s+months)/i;
+      /\b(?:liability\s+(?:shall|will|is|may)?\s*(?:be\s+)?(?:limited|capped)|aggregate\s+liability.*?(?:not\s+exceed|cap(?:ped)?)|not\s+to\s+exceed|liability\b[^.]{0,80}?\bnot\s+exceed|neither\s+part(?:y|ies)(?:'s)?[^.]{0,60}?\bliabilit(?:y|ies)\b[^.]{0,60}?\bexceed|cap\s+on\s+(?:liability|indemnification)|limited\s+to\s+(?:twelve|six|three|\d+)\s+months)/i;
     const CARVE_OUT_INDEMNITY =
       /\b(?:except\s+(?:for|with\s+respect\s+to)|excluding|other\s+than|not\s+including|carve[-\s]out\s+for)\s+[^.]{0,80}\bindemnif/i;
 

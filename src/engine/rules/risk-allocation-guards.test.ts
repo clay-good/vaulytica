@@ -220,3 +220,16 @@ describe("RISK-015 — a consequential-damages carve-out is not a cap carve-out 
     ).toMatch(/carved out/);
   });
 });
+
+describe("RISK-015 — the negated-subject cap form (v1.1.0)", () => {
+  it("reads 'Neither party's aggregate indemnification liability shall exceed …' as a cap", () => {
+    expect(
+      R015.check(
+        doc(
+          "Indemnification",
+          "Seller shall indemnify and hold harmless Buyer from losses arising from the Excluded Liabilities. Neither party's aggregate indemnification liability shall exceed the Purchase Price, except for fraud.",
+        ),
+      ),
+    ).toBeNull();
+  });
+});

@@ -77,3 +77,13 @@ describe("the pay-through-termination-date wind-down (v1.1.0)", () => {
     expect(TERM_005.check(ctx)).not.toBeNull();
   });
 });
+
+describe("the conditional-termination consequence (v1.2.0)", () => {
+  it("reads 'If Buyer terminates …, the deposit shall be returned' as an effect clause", () => {
+    const ctx = buildContext([
+      "Termination",
+      "Either party may terminate this Agreement by written notice if the Closing has not occurred by November 30, 2026. If Buyer terminates for Seller's material breach, the earnest deposit shall be returned to Buyer.",
+    ]);
+    expect(TERM_005.check(ctx)).toBeNull();
+  });
+});

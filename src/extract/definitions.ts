@@ -303,6 +303,10 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       if (prefixOfDefined) continue;
       if (COMMON_WORDS.has(phrase)) continue;
       if (PLACE_NAMES.has(phrase)) continue;
+      // A street address ("88 Dockside Avenue") is a proper noun, never a
+      // contractual defined term — same reasoning as PLACE_NAMES, keyed on
+      // the unambiguous street-suffix last word.
+      if (/\s(?:Avenue|Street|Road|Boulevard|Drive|Lane|Parkway|Highway)$/.test(phrase)) continue;
       if (TITLE_CASE_LEADING_STOPWORDS.has(phrase)) continue;
       // Only strip sentence-initial-stopword patterns from the candidate
       // list when the phrase is short (2 words). Longer phrases like

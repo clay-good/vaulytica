@@ -9,6 +9,7 @@ import { buildContext } from "../_test-fixtures.js";
 import { rule as STRUCT003 } from "./structural/STRUCT-003.js";
 import { rule as STRUCT016 } from "./structural/STRUCT-016.js";
 import { rule as FIN002 } from "./financial/FIN-002.js";
+import { rule as FIN005 } from "./financial/FIN-005.js";
 
 const doc = (heading: string, ...rest: string[]) => buildContext([heading, ...rest]);
 
@@ -122,6 +123,38 @@ describe("STRUCT-003 — the individual signatory (v1.1.0)", () => {
           "General",
           "IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above. The parties are done.",
         ),
+      ),
+    ).not.toBeNull();
+  });
+});
+
+describe("FIN-005 — a purchase-price schedule is a payment term (v1.1.0)", () => {
+  it("accepts 'payable as follows' with business-day intervals", () => {
+    expect(
+      FIN005.check(
+        doc(
+          "Purchase Price",
+          "The purchase price for the Purchased Assets is $410,000, payable as follows: (a) $41,000 as an earnest deposit within three (3) business days after the Effective Date; and (b) $369,000 in cash at the Closing.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("accepts the installment form", () => {
+    expect(
+      FIN005.check(
+        doc(
+          "Note",
+          "The note fee is payable in twelve (12) equal monthly installments beginning thirty (30) days after the Closing Date.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires when payment is referenced with no stated term", () => {
+    expect(
+      FIN005.check(
+        doc("Fees", "Customer shall make payment for the services set forth in the Order Form."),
       ),
     ).not.toBeNull();
   });

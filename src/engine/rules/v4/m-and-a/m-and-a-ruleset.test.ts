@@ -132,3 +132,46 @@ describe("v4 M&A — failure cases", () => {
     expect(run.findings.some((f) => f.rule_id === "MNA-024")).toBe(true);
   });
 });
+
+describe("MNA presence forms an APA actually writes (v1.1.0)", () => {
+  it("accepts 'governed by the laws of' and a named third-party consent", async () => {
+    const ctx = withPb(
+      buildContext(
+        [
+          "8. Conditions to Closing",
+          "Buyer's obligation to close is conditioned on assignment of the lease for the premises with the landlord's written consent.",
+        ],
+        [
+          "11. General",
+          "This Agreement is governed by the laws of the State of Michigan, and any dispute arising out of this Agreement shall be resolved in the state courts located in Grand Traverse County, Michigan.",
+        ],
+      ),
+      APA_PB,
+    );
+    const run = await runEngine({
+      rules: M_AND_A_RULES,
+      ctx,
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
+    const fired = new Set(run.findings.map((f) => f.rule_id));
+    expect(fired.has("MNA-019"), "MNA-019 should accept 'governed by the laws of'").toBe(false);
+    expect(fired.has("MNA-026"), "MNA-026 should accept a named third-party consent").toBe(false);
+  });
+
+  it("still reports both when genuinely absent", async () => {
+    const ctx = withPb(
+      buildContext(["APA", "Seller sells the purchased assets to Buyer at the closing."]),
+      APA_PB,
+    );
+    const run = await runEngine({
+      rules: M_AND_A_RULES,
+      ctx,
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
+    const fired = new Set(run.findings.map((f) => f.rule_id));
+    expect(fired.has("MNA-019")).toBe(true);
+    expect(fired.has("MNA-026")).toBe(true);
+  });
+});

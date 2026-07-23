@@ -115,3 +115,21 @@ describe("TEMP-003 — term/notice pairing awareness", () => {
     expect(finding?.explanation).toContain("lower-confidence");
   });
 });
+
+describe("PERS-009 — a sale-of-business covenant is a different regime (v1.2.0)", () => {
+  it("does not apply the post-employment 12-month bound to a seller covenant protecting purchased goodwill", () => {
+    const ctx = buildContext([
+      "Covenants",
+      "For five (5) years after the Closing Date, Seller and its owners shall not solicit members or employees of the Business; the parties agree these restrictions are necessary to protect the goodwill Buyer is purchasing.",
+    ]);
+    expect(PERS_009.check(ctx)).toBeNull();
+  });
+
+  it("still flags a long post-employment non-solicit", () => {
+    const ctx = buildContext([
+      "Restrictive Covenants",
+      "For twenty-four (24) months after termination of employment, Employee shall not solicit any customer or employee of the Company.",
+    ]);
+    expect(PERS_009.check(ctx)).not.toBeNull();
+  });
+});

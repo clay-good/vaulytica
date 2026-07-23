@@ -17,14 +17,14 @@ const NUM_WORDS =
 const PAYMENT_TERMS = new RegExp(
   [
     `\\bNet\\s+\\d{1,3}\\b`,
-    `\\bpayment\\s+terms?\\s*[:–-]\\s*${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*days?`,
-    `\\b(?:payment|invoice|invoices|amount[s]?\\s+(?:due|owed)|fees?)\\s+[\\s\\w,]{0,40}?(?:is|are|shall\\s+be|must\\s+be|to\\s+be)?\\s*(?:due\\s+(?:and\\s+payable\\s+)?|payable\\s+|paid\\s+)within\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*days?`,
-    `\\b(?:due\\s+(?:and\\s+payable\\s+)?|payable\\s+|paid\\s+)within\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*days?\\s+(?:of|from|after)\\s+(?:the\\s+)?(?:invoice|receipt)`,
+    `\\bpayment\\s+terms?\\s*[:–-]\\s*${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?`,
+    `\\b(?:payment|invoice|invoices|amount[s]?\\s+(?:due|owed)|fees?)\\s+[\\s\\w,]{0,40}?(?:is|are|shall\\s+be|must\\s+be|to\\s+be)?\\s*(?:due\\s+(?:and\\s+payable\\s+)?|payable\\s+|paid\\s+)within\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?`,
+    `\\b(?:due\\s+(?:and\\s+payable\\s+)?|payable\\s+|paid\\s+)within\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?\\s+(?:of|from|after)\\s+(?:the\\s+)?(?:invoice|receipt)`,
     // Active voice — "Customer shall pay the fees … within 15 days of
     // invoice" — arguably the most common formulation; its absence made
     // the rule warn 'no payment-term clause' on a plainly stated term
     // (audit).
-    `\\bshall\\s+pay\\b[\\s\\w,()$.]{0,80}?within\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*days?`,
+    `\\bshall\\s+pay\\b[\\s\\w,()$.]{0,80}?within\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?`,
     // A recurring charge states its term as a DUE DATE, not an interval from
     // an invoice: "Base Rent: $20,000 per month, payable in advance on the
     // first of each month" is a payment term, and every branch above is
@@ -33,6 +33,13 @@ const PAYMENT_TERMS = new RegExp(
     `\\b(?:due|payable|paid)\\s+(?:monthly|quarterly|annually|weekly|bi-?weekly|semi-?annually)\\b`,
     `\\b(?:monthly|quarterly|annually)\\s+in\\s+(?:advance|arrears)\\b`,
     `\\bdue\\s+upon\\s+receipt\\b`,
+    // A purchase-price schedule is a payment term: "payable as follows:
+    // (a) $41,000 … within three (3) business days …" / "payable in twelve
+    // (12) equal monthly installments". Tight anchors only — FIN-005's
+    // conservatism is load-bearing (see the rejected plural-money-word
+    // broadening).
+    `\\bpayable\\s+as\\s+follows\\b`,
+    `\\bpayable\\s+in\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\)\\s*)?(?:equal\\s+)?(?:monthly|quarterly|weekly|annual|semi-?annual)\\s+installments\\b`,
   ].join("|"),
   "i",
 );
@@ -41,7 +48,7 @@ const ANY_PAYMENT = /\b(fee|payment|invoice|amount\s+due|payable)\b/i;
 /** FIN-005 — Payment terms presence and parseability (warning). */
 export const rule: Rule = {
   id: "FIN-005",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Payment terms presence and parseability",
   category: "financial",
   default_severity: "warning",

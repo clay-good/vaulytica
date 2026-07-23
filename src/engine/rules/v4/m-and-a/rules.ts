@@ -393,6 +393,7 @@ const SPA_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-019",
+    version: "1.1.0",
     name: "Governing law and forum",
     description: "SPA must include governing-law and forum-selection clauses.",
     citation: dgcl("115"),
@@ -401,7 +402,14 @@ const SPA_RULES: Rule[] = [
     missing_description: "No governing-law or forum-selection clause was found.",
     explanation: "Delaware Chancery is the typical forum for private-target M&A.",
     recommendation: "Add 'Governing Law' (Delaware) and 'Forum' (Delaware Chancery) selections.",
-    present_patterns: [/governing\s+law/i, /(jurisdiction|forum).{0,40}(chancery|delaware)/is],
+    // "This Agreement is governed by the laws of the State of X" is the
+    // dominant §-body form; requiring the noun phrase "governing law" called
+    // a present clause missing (critical) on a clean APA.
+    present_patterns: [
+      /governing\s+law/i,
+      /governed\s+by\s+the\s+laws?\b/i,
+      /(jurisdiction|forum).{0,40}(chancery|delaware)/is,
+    ],
   }),
 ];
 
@@ -507,6 +515,7 @@ const APA_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-026",
+    version: "1.1.0",
     name: "Required consents and assignment mechanics",
     description:
       "APA must address required consents and the mechanics for transferring non-assignable contracts (§ 9-406 UCC anti-assignment overrides where applicable).",
@@ -518,10 +527,14 @@ const APA_RULES: Rule[] = [
       "Asset deals routinely depend on third-party consents — landlords, key customers, lenders.",
     recommendation:
       "Add 'Required Consents' identifying the consents needed for closing and an 'Assignment of Non-Transferable Contracts' fallback (alternative arrangement / pass-through).",
+    // A consents CONDITION names its consent-giver: "assignment of the lease
+    // … with the landlord's written consent". The generic branches missed
+    // every named third party.
     present_patterns: [
       /required\s+consents/i,
       /(assignment|transfer).{0,40}(third.party\s+consent|consent\s+to\s+assign)/is,
       /non.assignable/i,
+      /(?:assignment|assign|transfer)[^.]{0,120}?\b(?:landlord|lessor|licensor|lender|counterpart(?:y|ies)|third\s+part(?:y|ies))(?:'s)?\s+(?:prior\s+)?written\s+consent/is,
     ],
   }),
   presence({

@@ -84,7 +84,7 @@ function durationToMonths(amount: string, unit: string): number | null {
 
 export const rule: Rule = {
   id: "PERS-009",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Long non-solicit duration",
   category: "personnel",
   default_severity: "warning",
@@ -104,6 +104,16 @@ export const rule: Rule = {
       if (hit) return;
       const text = p.text;
       if (!NON_SOLICIT_KEYWORD.test(text)) return;
+      // A covenant ancillary to the SALE OF A BUSINESS is a different legal
+      // regime from the post-employment authorities this rule cites: multi-
+      // year seller covenants are standard and enforceable (Cal. Bus. &
+      // Prof. Code § 16601 expressly permits them even where § 16600 voids
+      // employment restraints). A paragraph that recites the purchased
+      // goodwill it protects is a seller covenant, and its 3–5 year duration
+      // is not the drafting risk this rule warns about.
+      if (/\bgoodwill\b/i.test(text) && /\b(?:purchas\w*|sale|sell(?:s|ing)?|acquir\w*)\b/i.test(text)) {
+        return;
+      }
       // Duration attribution is SENTENCE-scoped (fix-rule-detection-
       // fidelity): the old logic attributed the first >12-month duration
       // found anywhere in the paragraph to the non-solicit, so a 24-month

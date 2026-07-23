@@ -211,3 +211,15 @@ describe("the double-alias definition form", () => {
     );
   });
 });
+
+describe("street addresses are not defined terms", () => {
+  it("does not report a street name as an undefined Title-Case term", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Premises",
+        "The studio at 88 Dockside Avenue is the location. The lease for 88 Dockside Avenue shall be assigned at the Closing.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Dockside Avenue");
+  });
+});
