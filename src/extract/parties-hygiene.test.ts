@@ -63,6 +63,19 @@ describe("party extraction hygiene", () => {
     expect(got.find((p) => p.name === "Initech Inc")?.role).toBe("Company");
   });
 
+  it("does not turn a document reference into a party", () => {
+    // `between` also matches ordinary prose about instruments. Taking the
+    // parenthetical here would invent a party named "SOW", which then skews
+    // every rule that tallies by party.
+    expect(
+      names(
+        "Master Services Agreement",
+        'This MSA is between Acme Corp, a Delaware corporation ("Vendor"), and Wayne Enterprises LLC, a Delaware limited liability company ("Customer").',
+        'In the event of any conflict between this MSA and any Statement of Work ("SOW"), the terms of this MSA control.',
+      ),
+    ).toEqual(["Acme Corp", "Wayne Enterprises LLC"]);
+  });
+
   it("names a counterparty identified only by its role", () => {
     const got = parties(
       "End User License Agreement",

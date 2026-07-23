@@ -294,6 +294,14 @@ function computeAliases(party: Party): string[] {
 const ROLE_PAREN = /\(\s*["“”']([^"”'’)]+)["“”']\s*\)\s*$/;
 
 /**
+ * Words that mark a descriptive phrase as naming a PARTY rather than an
+ * instrument — "the individual or entity accepting this EULA" versus "any
+ * Statement of Work".
+ */
+const PARTY_DESCRIPTOR =
+  /\b(?:individual|entity|person|persons|company|corporation|partnership|party|parties|undersigned|customer|client|purchaser|buyer|seller|licensee|licensor|employee|contractor|subscriber|user)\b/i;
+
+/**
  * Split a preamble party phrase into its name and its defined role.
  *
  * `PARTY_DECL` already captures the role for entities, because it anchors on an
@@ -314,7 +322,12 @@ function splitNameAndRole(raw: string): { name: string; role?: string } {
   // document plainly does name that party: "End User". Dropping the whole
   // party left its role looking like an undefined term to STRUCT-006 and left
   // its obligations unattributable.
-  if (!name && role) return { name: role, role };
+  //
+  // The phrase must actually DESCRIBE A PARTY, though. `between` also matches
+  // ordinary prose about documents — "any conflict between this MSA and any
+  // Statement of Work ("SOW")" — and taking the parenthetical there invents a
+  // party named "SOW", which then skews every rule that tallies by party.
+  if (!name && role && PARTY_DESCRIPTOR.test(trimmed)) return { name: role, role };
   return { name, ...(role ? { role } : {}) };
 }
 

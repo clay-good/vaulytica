@@ -18,11 +18,27 @@ export const rule: Rule = {
     const counts = new Map<string, number>();
     for (const p of parties) counts.set(p.name.toLowerCase(), 0);
     for (const line of lines) {
+      const sentence = line.match[0].toLowerCase();
+      const idx = sentence.indexOf("indemnif");
+      if (idx < 0) continue;
+      const before = sentence.slice(0, idx);
+      // Count the INDEMNITOR, not every party the sentence happens to name.
+      // "Customer shall indemnify Vendor" names both, so tallying any mention
+      // scored them equally and the asymmetry cancelled itself out. The
+      // indemnitor is the surface form closest before the verb.
+      //
+      // Surface forms include the party's defined ROLE, because contracts
+      // overwhelmingly write "Vendor shall indemnify …" rather than the legal
+      // name — matching names alone left this rule inert on ordinary drafting.
+      let best: { key: string; at: number } | null = null;
       for (const p of parties) {
-        if (line.match[0].toLowerCase().includes(p.name.toLowerCase())) {
-          counts.set(p.name.toLowerCase(), (counts.get(p.name.toLowerCase()) ?? 0) + 1);
+        const key = p.name.toLowerCase();
+        for (const surface of [key, ...(p.role ? [p.role.toLowerCase()] : [])]) {
+          const at = before.lastIndexOf(surface);
+          if (at >= 0 && (!best || at > best.at)) best = { key, at };
         }
       }
+      if (best) counts.set(best.key, (counts.get(best.key) ?? 0) + 1);
     }
     const values = [...counts.values()];
     const max = Math.max(...values);

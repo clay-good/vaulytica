@@ -367,7 +367,8 @@
     },
     {
       "elapsed_ms": 0,
-      "fired": false,
+      "finding_id": "RISK-002-s1.3-601",
+      "fired": true,
       "rule_id": "RISK-002",
       "rule_version": "1.0.0"
     },
@@ -829,6 +830,23 @@
       "title": "Data retention period unspecified"
     },
     {
+      "description": "Indemnity sentence counts by party: vendor co=2, customer inc=0, vince vendor=0, caryn customer=0.",
+      "document_position": 601,
+      "excerpt": {
+        "end_offset": 756,
+        "section_id": "s1.3",
+        "start_offset": 601,
+        "text": "Provider shall indemnify, defend, and hold Customer harmless from any third-party claim that the Service infringes a US patent, copyright, or trade secret."
+      },
+      "explanation": "One party appears to bear materially more indemnity scope than the other. Confirm the asymmetry is intentional and reciprocated by other consideration (e.g., a fee discount).",
+      "id": "RISK-002-s1.3-601",
+      "rule_id": "RISK-002",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [],
+      "title": "Indemnity appears asymmetric"
+    },
+    {
       "description": "The limitation-of-liability clause appears to except indemnification, potentially creating uncapped indemnity exposure.",
       "document_position": 795,
       "excerpt": {
@@ -1083,7 +1101,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\", \"uptime\".",
-  "result_hash": "29bbc706636d0f0da8d6b6c6e0fe27c1320e6ef737193ac39d2456dbf486578f",
+  "result_hash": "15f0b2d25f023a23b48f1530ca8abfe698519e4505fdd731b9825b320eea9c29",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",
