@@ -13,10 +13,19 @@ const PROCEDURE = [
   ["settlement consent", /settle(?:ment)?[\s\S]{0,40}consent/i],
 ] as const;
 
+// An operative indemnity promise, as distinct from a passing reference. A
+// SOW that incorporates "the MSA's … indemnification … provisions" by
+// reference contains no indemnity clause of its own — auditing that
+// cross-reference for defense-control and settlement-consent mechanics
+// accused a correctly drafted document of an incomplete clause it never
+// purported to contain.
+const OPERATIVE_INDEMNITY =
+  /\b(?:shall|will|must|agrees?\s+to|hereby)\s+(?:(?:further|also|fully|jointly\s+and\s+severally|at\s+all\s+times)\s+)?(?:defend,?\s+)?indemnif|\bindemnifies\b|\bindemnification\s+by\b/i;
+
 /** RISK-011 — Indemnity procedure clause present (info). */
 export const rule: Rule = {
   id: "RISK-011",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Indemnity procedure clause",
   category: "risk-allocation",
   default_severity: "info",
@@ -37,6 +46,10 @@ export const rule: Rule = {
     const sectionText = section
       ? [section.heading ?? "", ...section.paragraphs.map(paraText)].join("\n")
       : indem.text;
+    // No operative promise anywhere in the containing section means the match
+    // was a passing reference (an incorporation of a parent agreement's
+    // indemnity, a liability-cap carve-out) — there is no clause to audit.
+    if (!OPERATIVE_INDEMNITY.test(sectionText)) return null;
     const missing = PROCEDURE.filter(([, re]) => !re.test(sectionText)).map(([n]) => n);
     if (missing.length === 0) return null;
     const substantive = section?.paragraphs

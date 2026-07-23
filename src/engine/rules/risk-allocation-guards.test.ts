@@ -169,3 +169,27 @@ describe("RISK-017 — asymmetric attorneys' fees", () => {
     ).not.toBeNull();
   });
 });
+
+describe("RISK-011 — a reference to a parent agreement's indemnity is not a clause (v1.1.0)", () => {
+  it("stays silent when the only indemnity mention incorporates the MSA's provisions", () => {
+    expect(
+      R011.check(
+        doc(
+          "Relationship to MSA",
+          "This SOW is subject to the terms of the MSA. All Services and Deliverables under this SOW constitute Services and Deliverables under the MSA, including for purposes of the MSA's confidentiality, intellectual property, warranty, indemnification, and limitation-of-liability provisions.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still audits an operative indemnity clause for missing procedure", () => {
+    expect(
+      R011.check(
+        doc(
+          "Indemnification",
+          "Each party shall indemnify, defend, and hold harmless the other party from third-party claims arising from its breach of this Agreement.",
+        ),
+      )?.title,
+    ).toMatch(/procedural elements missing/);
+  });
+});

@@ -421,10 +421,9 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "RISK-011-s1.3-958",
-      "fired": true,
+      "fired": false,
       "rule_id": "RISK-011",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -503,7 +502,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "STRUCT-007",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -678,7 +677,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "TERM-005",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -956,29 +955,12 @@
       "severity": "info",
       "source_citations": [],
       "title": "Asymmetric indemnification obligation"
-    },
-    {
-      "description": "Indemnity clause appears to be missing: notice, defense control, settlement consent.",
-      "document_position": 958,
-      "excerpt": {
-        "end_offset": 966,
-        "section_id": "s1.3",
-        "start_offset": 958,
-        "text": "Vendor shall have no obligation to indemnify Customer to the extent a claim arises from (i) use of the Services in combination with any software, hardware, data, or services not furnished by Vendor; or (ii) any modification of the Services not made by Vendor."
-      },
-      "explanation": "A complete indemnity clause specifies (a) the timeline and form for notice of a claim, (b) which party controls defense, and (c) whether settlement requires consent.",
-      "id": "RISK-011-s1.3-958",
-      "rule_id": "RISK-011",
-      "rule_version": "1.0.0",
-      "severity": "info",
-      "source_citations": [],
-      "title": "Indemnity procedural elements missing: notice, defense control, settlement consent"
     }
   ],
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "fd8f17357db64ea20304431acc5f718fc5edf39e0dd781120e38436d1e97182e",
+  "result_hash": "a8d2a42a3e9428c16e777ed5499426f95d02b803a35f75fcd5567c77eaf0e6aa",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
     "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",

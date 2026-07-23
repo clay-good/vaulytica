@@ -27,14 +27,21 @@ const CONSEQUENCE = String.raw`ceases?|cease|return|destroy|delete|purge|transit
 const EFFECT_OF_TERMINATION = new RegExp(
   String.raw`\b(?:effect|consequences)\s+of\s+termination\b` +
     `|\\b${TERMINATION_TRIGGER}\\b[^.]{0,220}\\b(?:${CONSEQUENCE})\\b` +
-    `|\\b(?:${CONSEQUENCE})\\b[^.]{0,120}\\b${TERMINATION_TRIGGER}\\b`,
+    `|\\b(?:${CONSEQUENCE})\\b[^.]{0,120}\\b${TERMINATION_TRIGGER}\\b` +
+    // "Customer shall pay for all Services performed … through the
+    // termination date" — the pay-for-work-performed wind-down consequence
+    // states what happens on termination without the "upon termination"
+    // trigger the branches above require. The full phrase is unambiguous;
+    // "pay" is deliberately NOT added to CONSEQUENCE (a failure-to-pay
+    // termination TRIGGER would then read as an effect clause).
+    String.raw`|\bpay\b[^.]{0,160}\bthrough\s+the\s+(?:date\s+of\s+termination|termination\s+date|effective\s+date\s+of\s+termination)\b`,
   "i",
 );
 
 /** TERM-005 — Effect of termination clause present (warning). */
 export const rule: Rule = {
   id: "TERM-005",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Effect of termination clause",
   category: "termination",
   default_severity: "warning",

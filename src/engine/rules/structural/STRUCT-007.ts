@@ -8,9 +8,18 @@ import { makeFinding } from "../../finding.js";
  * that cannot be resolved against the document outline. Common after
  * sections are inserted or deleted without updating references.
  */
+// An Exhibit / Schedule / Attachment reference keys into a namespace the
+// section outline never models, so the extractor leaves it unresolved BY
+// DESIGN (resolving "Schedule 4.2" to Section 4.2 would be a wrong-entity
+// link). Reporting it here as a reference that "does not resolve to any
+// section" both mislabels it and duplicates STRUCT-016/STRUCT-018, which own
+// attachment presence — a well-formed SOW referencing Attachments 1–3 drew
+// three findings for one drafting fact.
+const ATTACHMENT_REF = /^(?:Exhibit|Schedule|Attachment)\b/i;
+
 export const rule: Rule = {
   id: "STRUCT-007",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Cross-reference resolution",
   category: "structural",
   default_severity: "warning",
@@ -18,7 +27,9 @@ export const rule: Rule = {
   dkb_citations: [],
 
   check(ctx: RuleContext): Finding | null {
-    const broken = ctx.extracted.crossrefs.filter((c) => c.unresolved);
+    const broken = ctx.extracted.crossrefs.filter(
+      (c) => c.unresolved && !ATTACHMENT_REF.test(c.raw_text),
+    );
     if (broken.length === 0) return null;
     const first = broken[0]!;
     const list = broken

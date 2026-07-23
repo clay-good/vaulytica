@@ -172,3 +172,23 @@ describe("STRUCT-006 — party-name prefixes (v1.1.0)", () => {
     expect(STRUCT_006.check(ctx)).toBeNull();
   });
 });
+
+describe("STRUCT-007 — attachment references are not section references (v1.1.0)", () => {
+  it("does not report a referenced attachment as an unresolved section", () => {
+    // Attachment refs never resolve by design (the outline models sections
+    // only); their presence or absence is STRUCT-016/018's finding.
+    const ctx = buildContext([
+      "2. Scope",
+      "Vendor shall configure the forms listed in Attachment 1 and meet the criteria in Attachment 2.",
+    ]);
+    expect(STRUCT_007.check(ctx)).toBeNull();
+  });
+
+  it("still fires on a phantom Section reference alongside attachment refs", () => {
+    const ctx = buildContext([
+      "2. Scope",
+      "The forms listed in Attachment 1 shall meet the standards of Section 44.",
+    ]);
+    expect(STRUCT_007.check(ctx)?.description).toContain("Section 44");
+  });
+});

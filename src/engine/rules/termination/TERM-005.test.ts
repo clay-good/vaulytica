@@ -59,3 +59,21 @@ describe("TERM-005 — effect of termination", () => {
     ).not.toBeNull();
   });
 });
+
+describe("the pay-through-termination-date wind-down (v1.1.0)", () => {
+  it("reads pay-for-work-performed as an effect of termination", () => {
+    const ctx = buildContext([
+      "Term and Termination",
+      "Customer may terminate this SOW for convenience on thirty (30) days written notice, in which case Customer shall pay for all Services performed and Deliverables completed or in progress through the termination date.",
+    ]);
+    expect(TERM_005.check(ctx)).toBeNull();
+  });
+
+  it("a failure-to-pay termination trigger is not an effect clause", () => {
+    const ctx = buildContext([
+      "Termination",
+      "Either party may terminate this Agreement if the other party fails to pay any amount when due and does not cure within ten (10) days.",
+    ]);
+    expect(TERM_005.check(ctx)).not.toBeNull();
+  });
+});
