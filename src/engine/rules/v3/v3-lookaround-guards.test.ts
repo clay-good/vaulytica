@@ -127,6 +127,27 @@ describe("MSA-023 — change-of-control hook before the assignment sentence", ()
   });
 });
 
+describe("MSA-015 — merchantability named before the disclaimer", () => {
+  it("stays silent on the UCC-safe form that names merchantability first", () => {
+    expect(
+      find(MSA_DEEP_RULES, "MSA-015").check(
+        doc(
+          "Warranties",
+          "THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE HEREBY EXPRESSLY EXCLUDED, AND VENDOR DISCLAIMS ALL OTHER WARRANTIES.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still flags a generic disclaimer that never mentions merchantability", () => {
+    expect(
+      find(MSA_DEEP_RULES, "MSA-015").check(
+        doc("Warranties", "Vendor disclaims all warranties of any kind whatsoever."),
+      ),
+    ).not.toBeNull();
+  });
+});
+
 describe("TRANSFER-003 — SCC non-derogation savings clause", () => {
   it("stays silent on SCCs incorporated in full and without modification", () => {
     expect(

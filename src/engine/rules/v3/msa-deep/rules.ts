@@ -450,6 +450,12 @@ export const MSA_DEEP_RULES: Rule[] = [
       /(?:as\s+is|with\s+all\s+faults)(?![A-Z]).{0,160}without\s+(?:any\s+)?(?:other\s+)?warrant/is,
       /disclaims?\s+all\s+(?:other\s+)?warranties(?![^.]*merchantability)/is,
     ],
+    // The lookahead scans only FORWARD, so the UCC-safe form that names the
+    // implied warranties first ("THE IMPLIED WARRANTIES OF MERCHANTABILITY …
+    // ARE EXCLUDED, AND VENDOR DISCLAIMS ALL OTHER WARRANTIES") was flagged for
+    // failing to mention merchantability — which it does. § 2-316 cares that
+    // the word appears, not where.
+    exclude_if: [/\bmerchantability\b/i],
     default_severity: "info",
   }),
 
