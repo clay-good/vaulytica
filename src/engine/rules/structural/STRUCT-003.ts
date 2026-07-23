@@ -31,6 +31,14 @@ const CONFORMED_SIG = /^\s*\/s\/\s+\S/m;
 // so an amendment clause's "may be adopted by the Board" is not a signal.
 const CERTIFICATION = /\bcertified\s+as\s+adopted\b|\bcertif(?:y|ies)\s+that\s+the\s+foregoing\b/i;
 
+// A governance instrument's dated adoption recital — "Adopted by the Board of
+// Directors on August 15, 2026" — IS its execution: committee charters and
+// policies are adopted by resolution, not signed by parties, and demanding a
+// By:/Name: block of one is a critical false positive. The DATE is required,
+// so an amendment clause's undated "may be adopted by the Board" never counts.
+const DATED_ADOPTION =
+  /\badopted\s+by\s+the\s+board(?:\s+of\s+directors)?\s+(?:on|as\s+of)\s+[A-Z][a-z]+\s+\d{1,2},\s+\d{4}/i;
+
 /**
  * STRUCT-003 — Signature block present (critical).
  *
@@ -52,7 +60,7 @@ const CERTIFICATION = /\bcertified\s+as\s+adopted\b|\bcertif(?:y|ies)\s+that\s+t
  */
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",
@@ -91,6 +99,12 @@ export const rule: Rule = {
         if (!certified && CERTIFICATION.test(text)) {
           certified = true;
           signals += 1;
+        }
+        // Self-sufficient: a dated adoption recital is the complete
+        // execution of an adopted instrument.
+        if (!certified && DATED_ADOPTION.test(text)) {
+          certified = true;
+          signals += 2;
         }
         // Count distinct sig tokens in the paragraph; a single
         // paragraph can carry the full table row "By: ___ Name: ___".

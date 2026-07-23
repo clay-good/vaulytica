@@ -182,3 +182,22 @@ describe("STRUCT-003 — conformed signatures and certification (v1.2.0)", () =>
     expect(STRUCT003.check(ctx)).not.toBeNull();
   });
 });
+
+describe("STRUCT-003 — a dated adoption recital executes an adopted instrument (v1.3.0)", () => {
+  it("accepts a committee charter adopted by board resolution", () => {
+    const ctx = buildContext(
+      ["Audit Committee Charter", "Adopted by the Board of Directors on August 15, 2026."],
+      ["Purpose", "The Committee oversees the integrity of the financial statements."],
+      ["Reports", "The Committee shall report regularly to the Board."],
+    );
+    expect(STRUCT003.check(ctx)).toBeNull();
+  });
+
+  it("an undated 'may be adopted by the Board' amendment clause is not execution", () => {
+    const ctx = buildContext(
+      ["Charter", "The Committee oversees the audit function."],
+      ["Amendment", "This Charter may be adopted, amended, or repealed by the Board."],
+    );
+    expect(STRUCT003.check(ctx)).not.toBeNull();
+  });
+});

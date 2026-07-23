@@ -179,3 +179,28 @@ describe("GOV-028/031/032 — the charter formulas drafting actually uses (v1.1.
     expect(ids).toContain("GOV-032");
   });
 });
+
+describe("GOV-058 — 'report regularly to the Board' is the reporting clause (v1.1.0)", () => {
+  const COMMITTEE_PB_LOCAL: Playbook = { id: "committee-charter", version: "1.0.0" };
+
+  it("does not fire when the clause carries an adverb", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Reports",
+        "The Committee shall report regularly to the Board on its activities, findings, and recommendations.",
+      ]),
+      COMMITTEE_PB_LOCAL,
+    );
+    const run = await runEngine({ rules: GOVERNANCE_RULES, ctx, source_file: SRC });
+    expect(run.findings.map((f) => f.rule_id)).not.toContain("GOV-058");
+  });
+
+  it("still fires when no reporting clause exists", async () => {
+    const ctx = withPb(
+      buildContext(["Purpose", "The Committee oversees the audit function."]),
+      COMMITTEE_PB_LOCAL,
+    );
+    const run = await runEngine({ rules: GOVERNANCE_RULES, ctx, source_file: SRC });
+    expect(run.findings.map((f) => f.rule_id)).toContain("GOV-058");
+  });
+});

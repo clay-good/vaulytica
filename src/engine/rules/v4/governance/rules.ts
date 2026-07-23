@@ -1103,6 +1103,7 @@ const COMMITTEE_CHARTER_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-058",
+    version: "1.1.0",
     name: "Reporting to the full board",
     description: "Committee charter must require periodic reporting to the full board.",
     citation: nyse303A("06"),
@@ -1116,6 +1117,9 @@ const COMMITTEE_CHARTER_RULES: Rule[] = [
     present_patterns: [
       /report\s+to\s+the\s+(full\s+)?board/i,
       /\breport(s)?\s+to\s+the\s+board\b/i,
+      // "shall report REGULARLY/periodically to the Board" — the standard
+      // formulation carries an adverb both branches above rejected.
+      /\breport(?:s|ing)?\s+\w+\s+to\s+the\s+(?:full\s+)?board\b/i,
     ],
   }),
   presence({
