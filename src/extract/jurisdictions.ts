@@ -12,6 +12,32 @@ import { forEachParagraph, posInParagraph } from "./walk.js";
  * empty function and `jurisdiction_id` will be `undefined` everywhere.
  */
 
+/**
+ * Every US state plus DC, as a regex alternation. Exported because the rules
+ * that reason about whether a venue is domestic need the same list — a
+ * partial one silently reclassifies the states it omits as foreign.
+ */
+export const US_STATE_PATTERN =
+  "Alabama|Alaska|Arizona|Arkansas|California|Colorado|Connecticut|Delaware|Florida|Georgia|Hawaii|Idaho|Illinois|Indiana|Iowa|Kansas|Kentucky|Louisiana|Maine|Maryland|Massachusetts|Michigan|Minnesota|Mississippi|Missouri|Montana|Nebraska|Nevada|New\\s+Hampshire|New\\s+Jersey|New\\s+Mexico|New\\s+York|North\\s+Carolina|North\\s+Dakota|Ohio|Oklahoma|Oregon|Pennsylvania|Rhode\\s+Island|South\\s+Carolina|South\\s+Dakota|Tennessee|Texas|Utah|Vermont|Virginia|Washington|West\\s+Virginia|Wisconsin|Wyoming|District\\s+of\\s+Columbia";
+
+/**
+ * A venue clause names a COURTHOUSE, and a courthouse sits in a city: "the
+ * state or federal courts located in Wilmington, Delaware". Every venue
+ * pattern stops its capture at that comma, so the venue was recorded as
+ * "Wilmington" — a name no governing-law clause ever uses. Each rule that
+ * reconciles law against venue then reported a mismatch the document does not
+ * contain: on the corpus's minimal-PASS MSA (Delaware law, Wilmington courts)
+ * that was four simultaneous false findings, one of them calling Wilmington a
+ * "foreign venue without standard enforceability treaty".
+ *
+ * When the document names the state immediately after the locality, that
+ * state is the venue's jurisdiction, so record the state.
+ */
+const STATE_AFTER_LOCALITY = new RegExp(
+  `^\\s*,\\s*(?:the\\s+(?:State|Commonwealth)\\s+of\\s+)?(${US_STATE_PATTERN})\\b`,
+  "i",
+);
+
 const GOV_LAW =
   /\b(governed\s+by\s+(?:and\s+construed\s+(?:in\s+accordance\s+with\s+)?)?the\s+laws?\s+of\s+(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?))(?=[.,;)]|\s+(?:without|excluding|and|regardless)|$)/gi;
 
@@ -76,9 +102,12 @@ export function extractJurisdictions(
       });
     });
     const seenVenue = new Set<string>();
-    runRegex(VENUE, ctx.text, (m) => {
-      const raw = (m[1] ?? "").trim();
-      if (!raw) return;
+    const recordVenue = (m: RegExpExecArray): void => {
+      const captured = (m[1] ?? "").trim();
+      if (!captured) return;
+      const end = m.index + m[0].length;
+      const state = STATE_AFTER_LOCALITY.exec(ctx.text.slice(end))?.[1];
+      const raw = state ? state.replace(/\s+/g, " ") : captured;
       const key = `${m.index}:${raw.toLowerCase()}`;
       if (seenVenue.has(key)) return;
       seenVenue.add(key);
@@ -86,35 +115,12 @@ export function extractJurisdictions(
         clause_kind: "venue",
         jurisdiction_id: lookup(raw),
         raw_text: raw,
-        position: posInParagraph(ctx, m.index, m.index + m[0].length),
+        position: posInParagraph(ctx, m.index, end),
       });
-    });
-    runRegex(VENUE_SIMPLE, ctx.text, (m) => {
-      const raw = (m[1] ?? "").trim();
-      if (!raw) return;
-      const key = `${m.index}:${raw.toLowerCase()}`;
-      if (seenVenue.has(key)) return;
-      seenVenue.add(key);
-      out.push({
-        clause_kind: "venue",
-        jurisdiction_id: lookup(raw),
-        raw_text: raw,
-        position: posInParagraph(ctx, m.index, m.index + m[0].length),
-      });
-    });
-    runRegex(VENUE_RESOLVED_IN, ctx.text, (m) => {
-      const raw = (m[1] ?? "").trim();
-      if (!raw) return;
-      const key = `${m.index}:${raw.toLowerCase()}`;
-      if (seenVenue.has(key)) return;
-      seenVenue.add(key);
-      out.push({
-        clause_kind: "venue",
-        jurisdiction_id: lookup(raw),
-        raw_text: raw,
-        position: posInParagraph(ctx, m.index, m.index + m[0].length),
-      });
-    });
+    };
+    runRegex(VENUE, ctx.text, recordVenue);
+    runRegex(VENUE_SIMPLE, ctx.text, recordVenue);
+    runRegex(VENUE_RESOLVED_IN, ctx.text, recordVenue);
     runRegex(ARBITRATION_SEAT, ctx.text, (m) => {
       const raw = (m[1] ?? "").trim();
       out.push({

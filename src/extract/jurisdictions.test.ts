@@ -46,4 +46,34 @@ describe("extractJurisdictions", () => {
     // Delaware is the law the clause actually selects.
     expect(gov.map((r) => r.raw_text)).toEqual(["Delaware"]);
   });
+  it("reports the state when the venue names a city inside it", () => {
+    // A venue clause names a courthouse, and a courthouse sits in a city. The
+    // capture stopped at the comma, so "courts located in Wilmington,
+    // Delaware" was recorded as venue "Wilmington" — a name no governing-law
+    // clause uses — and every law-vs-venue rule reported a mismatch the
+    // document does not contain.
+    const tree = buildTree([
+      "Governing Law; Venue",
+      "This Agreement shall be governed by the laws of the State of Delaware. Any dispute shall be resolved exclusively in the state or federal courts located in Wilmington, Delaware, and the parties consent to such jurisdiction.",
+    ]);
+    const refs = extractJurisdictions(tree);
+    expect(refs.find((r) => r.clause_kind === "venue")?.raw_text).toBe("Delaware");
+  });
+
+  it("resolves a county-and-state venue to the state", () => {
+    const tree = buildTree([
+      "Venue",
+      "Exclusive venue shall be in the state courts located in New Castle County, Delaware.",
+    ]);
+    expect(extractJurisdictions(tree).find((r) => r.clause_kind === "venue")?.raw_text).toBe(
+      "Delaware",
+    );
+  });
+
+  it("leaves a venue that is already a jurisdiction alone", () => {
+    const tree = buildTree(["Venue", "Exclusive venue shall be in the courts of Paris, France."]);
+    expect(extractJurisdictions(tree).find((r) => r.clause_kind === "venue")?.raw_text).toBe(
+      "Paris",
+    );
+  });
 });

@@ -22,15 +22,13 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "CHOICE-004-s1.3-840",
-      "fired": true,
+      "fired": false,
       "rule_id": "CHOICE-004",
       "rule_version": "1.0.0"
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "CHOICE-005-s1.3-975",
-      "fired": true,
+      "fired": false,
       "rule_id": "CHOICE-005",
       "rule_version": "1.0.0"
     },
@@ -54,8 +52,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "CHOICE-009-s1.3-840",
-      "fired": true,
+      "fired": false,
       "rule_id": "CHOICE-009",
       "rule_version": "1.0.0"
     },
@@ -74,8 +71,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "CHOICE-012-s1.3-975",
-      "fired": true,
+      "fired": false,
       "rule_id": "CHOICE-012",
       "rule_version": "1.0.0"
     },
@@ -709,40 +705,6 @@
   ],
   "findings": [
     {
-      "description": "Governing law: Delaware. Venue: New Castle County.",
-      "document_position": 840,
-      "excerpt": {
-        "end_offset": 918,
-        "section_id": "s1.3",
-        "start_offset": 840,
-        "text": "Delaware → New Castle County"
-      },
-      "explanation": "Choosing one jurisdiction's law but another's courts is sometimes deliberate, but courts in the chosen-venue jurisdiction may apply their own procedural rules differently than the governing-law jurisdiction would expect.",
-      "id": "CHOICE-004-s1.3-840",
-      "rule_id": "CHOICE-004",
-      "rule_version": "1.0.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "Governing law (Delaware) and venue (New Castle County) differ"
-    },
-    {
-      "description": "Venue: New Castle County.",
-      "document_position": 975,
-      "excerpt": {
-        "end_offset": 1091,
-        "section_id": "s1.3",
-        "start_offset": 975,
-        "text": "New Castle County"
-      },
-      "explanation": "Enforcing a US judgment in a jurisdiction outside the New York or Hague convention can be expensive and uncertain. Confirm a clear path to enforcement exists.",
-      "id": "CHOICE-005-s1.3-975",
-      "rule_id": "CHOICE-005",
-      "rule_version": "1.0.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "Foreign venue without standard enforceability treaty: New Castle County"
-    },
-    {
       "description": "Worker / party is identified as California-based but the contract selects Delaware law.",
       "document_position": 840,
       "excerpt": {
@@ -768,24 +730,6 @@
         }
       ],
       "title": "Out-of-state choice-of-law on California-based party"
-    },
-    {
-      "description": "Governing law is Delaware; venue / exclusive jurisdiction is New Castle County.",
-      "document_position": 975,
-      "excerpt": {
-        "end_offset": 1091,
-        "section_id": "s1.3",
-        "start_offset": 975,
-        "text": "Delaware → New Castle County"
-      },
-      "explanation": "When the governing-law and venue clauses name different jurisdictions, the court hearing the dispute must apply foreign law as a question of fact. Each side pays for an expert on the other state's law, the local judge applies an unfamiliar framework, and outcomes become unpredictable. The mismatch is almost always a drafting accident — one side copy-pasted from a different template — rather than a deliberate strategic choice.",
-      "id": "CHOICE-012-s1.3-975",
-      "recommendation": "Align governing law and venue to the same jurisdiction unless the mismatch is deliberate and documented. If deliberate, add a brief explanation in the choice-of-law section noting the rationale (typical use case: a neutral arbitral seat with a different governing law).",
-      "rule_id": "CHOICE-012",
-      "rule_version": "1.0.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "Governing law (Delaware) and venue (New Castle County) name different jurisdictions"
     },
     {
       "description": "The contract does not allocate ownership of intellectual property.",
@@ -935,24 +879,6 @@
       "title": "No effect-of-termination clause detected"
     },
     {
-      "description": "Governing law: `Delaware` — venue: `New Castle County`.",
-      "document_position": 840,
-      "excerpt": {
-        "end_offset": 918,
-        "section_id": "s1.3",
-        "start_offset": 840,
-        "text": "Delaware / New Castle County"
-      },
-      "explanation": "Picking one jurisdiction's law and another's forum means a court applies foreign law — adding legal-research cost, raising the risk of jurisdiction-specific surprises (e.g., consumer-protection statutes the chosen-law state didn't anticipate), and sometimes triggering choice-of-law analysis the parties didn't expect. The pairing is legitimate (Delaware law + NY/DE forum is common in M&A) but a mismatch in routine commercial contracts is often unintentional.",
-      "id": "CHOICE-009-s1.3-840",
-      "recommendation": "Confirm the pairing is deliberate. If not, align them — typically by changing venue to the chosen-law state. If the mismatch is intentional, note the reason in counsel's notes for future reference.",
-      "rule_id": "CHOICE-009",
-      "rule_version": "1.0.0",
-      "severity": "info",
-      "source_citations": [],
-      "title": "Governing law differs from venue jurisdiction"
-    },
-    {
       "description": "For a period of twelve (12) months following termination, Employee shall not directly or indirectly compete with Company",
       "document_position": 637,
       "excerpt": {
@@ -990,7 +916,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.9). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"exempt\", \"Employee\".",
-  "result_hash": "a2d21dc91aaacf85c86fce7cfa031a4ec11b57fa36c64d9ad81e3e1e48d7909c",
+  "result_hash": "861e681c7917da1d0063b39b6bd2a6b9e2d9144685d491cd048934e633fe5128",
   "source_file": {
     "name": "bad-employment-choice-of-law.docx",
     "sha256": "432c209852332e09cdc68eec7a183f61c5da1fa8aafe36b92e3b8bf6fd2e6c26",

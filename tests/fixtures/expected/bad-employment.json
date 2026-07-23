@@ -29,8 +29,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "CHOICE-005-s1.10-1682",
-      "fired": true,
+      "fired": false,
       "rule_id": "CHOICE-005",
       "rule_version": "1.0.0"
     },
@@ -748,13 +747,13 @@
       "title": "Class-action waiver present"
     },
     {
-      "description": "Governing law: Delaware. Venue: San Francisco.",
+      "description": "Governing law: Delaware. Venue: California.",
       "document_position": 1635,
       "excerpt": {
         "end_offset": 1680,
         "section_id": "s1.10",
         "start_offset": 1635,
-        "text": "Delaware → San Francisco"
+        "text": "Delaware → California"
       },
       "explanation": "Choosing one jurisdiction's law but another's courts is sometimes deliberate, but courts in the chosen-venue jurisdiction may apply their own procedural rules differently than the governing-law jurisdiction would expect.",
       "id": "CHOICE-004-s1.10-1635",
@@ -762,24 +761,7 @@
       "rule_version": "1.0.0",
       "severity": "warning",
       "source_citations": [],
-      "title": "Governing law (Delaware) and venue (San Francisco) differ"
-    },
-    {
-      "description": "Venue: San Francisco.",
-      "document_position": 1682,
-      "excerpt": {
-        "end_offset": 1753,
-        "section_id": "s1.10",
-        "start_offset": 1682,
-        "text": "San Francisco"
-      },
-      "explanation": "Enforcing a US judgment in a jurisdiction outside the New York or Hague convention can be expensive and uncertain. Confirm a clear path to enforcement exists.",
-      "id": "CHOICE-005-s1.10-1682",
-      "rule_id": "CHOICE-005",
-      "rule_version": "1.0.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "Foreign venue without standard enforceability treaty: San Francisco"
+      "title": "Governing law (Delaware) and venue (California) differ"
     },
     {
       "description": "Employee hereby waives any right to trial by jury",
@@ -827,13 +809,13 @@
       "title": "Out-of-state choice-of-law on California-based party"
     },
     {
-      "description": "Governing law is Delaware; venue / exclusive jurisdiction is San Francisco.",
+      "description": "Governing law is Delaware; venue / exclusive jurisdiction is California.",
       "document_position": 1682,
       "excerpt": {
         "end_offset": 1753,
         "section_id": "s1.10",
         "start_offset": 1682,
-        "text": "Delaware → San Francisco"
+        "text": "Delaware → California"
       },
       "explanation": "When the governing-law and venue clauses name different jurisdictions, the court hearing the dispute must apply foreign law as a question of fact. Each side pays for an expert on the other state's law, the local judge applies an unfamiliar framework, and outcomes become unpredictable. The mismatch is almost always a drafting accident — one side copy-pasted from a different template — rather than a deliberate strategic choice.",
       "id": "CHOICE-012-s1.10-1682",
@@ -842,7 +824,7 @@
       "rule_version": "1.0.0",
       "severity": "warning",
       "source_citations": [],
-      "title": "Governing law (Delaware) and venue (San Francisco) name different jurisdictions"
+      "title": "Governing law (Delaware) and venue (California) name different jurisdictions"
     },
     {
       "description": "The contract does not allocate ownership of intellectual property.",
@@ -1073,13 +1055,13 @@
       "title": "Jury trial waiver present"
     },
     {
-      "description": "Governing law: `Delaware` — venue: `San Francisco`.",
+      "description": "Governing law: `Delaware` — venue: `California`.",
       "document_position": 1635,
       "excerpt": {
         "end_offset": 1680,
         "section_id": "s1.10",
         "start_offset": 1635,
-        "text": "Delaware / San Francisco"
+        "text": "Delaware / California"
       },
       "explanation": "Picking one jurisdiction's law and another's forum means a court applies foreign law — adding legal-research cost, raising the risk of jurisdiction-specific surprises (e.g., consumer-protection statutes the chosen-law state didn't anticipate), and sometimes triggering choice-of-law analysis the parties didn't expect. The pairing is legitimate (Delaware law + NY/DE forum is common in M&A) but a mismatch in routine commercial contracts is often unintentional.",
       "id": "CHOICE-009-s1.10-1635",
@@ -1240,7 +1222,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
-  "result_hash": "1bbad45f7541ba0e617f06d6492f8ab2d1993525b62ce0308cf82423363c880a",
+  "result_hash": "b2fd096d42e6d29a308481b9750695256794aacc26b30859f06401f172ac3edb",
   "source_file": {
     "name": "bad-employment.docx",
     "sha256": "44e689f2fe4e8767866844995363dda962260fd37d54469e6d0fdf443136013c",
