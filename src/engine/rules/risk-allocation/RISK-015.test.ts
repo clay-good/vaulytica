@@ -59,3 +59,28 @@ describe("RISK-015 — indemnification without aggregate cap", () => {
     expect(RISK_015.check(ctx)).not.toBeNull();
   });
 });
+
+describe("statutory D&O indemnification is uncapped by design (v1.2.0)", () => {
+  const DANDO =
+    "The Corporation shall indemnify and hold harmless, to the fullest extent permitted by the General Corporation Law of the State of Delaware, any person who was or is made a party to any proceeding by reason of the fact that such person is or was a director or officer of the Corporation.";
+
+  it("stays silent on bylaws-style DGCL § 145 indemnification", () => {
+    expect(RISK_015.check(buildContext(["Indemnification", DANDO]))).toBeNull();
+  });
+
+  it("still fires on a commercial indemnity with no cap", () => {
+    const ctx = buildContext([
+      "Indemnity",
+      "Vendor shall indemnify and hold Customer harmless from all third-party claims arising out of Vendor's breach of this Agreement.",
+    ]);
+    expect(RISK_015.check(ctx)).not.toBeNull();
+  });
+
+  it("'fullest extent permitted by law' alone is not the statutory form", () => {
+    const ctx = buildContext([
+      "Indemnity",
+      "Supplier shall indemnify Buyer to the fullest extent permitted by law from all claims arising from the Services.",
+    ]);
+    expect(RISK_015.check(ctx)).not.toBeNull();
+  });
+});

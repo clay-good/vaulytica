@@ -252,3 +252,30 @@ describe("a numeric parenthetical does not break the forum run-up", () => {
     expect(refs.filter((r) => r.clause_kind === "venue")).toEqual([]);
   });
 });
+
+describe("inverted exclusive-forum clauses (Delaware Chancery bylaws)", () => {
+  it("extracts Delaware from 'Court of Chancery … shall be the sole and exclusive forum'", () => {
+    const refs = extractJurisdictions(
+      buildTree([
+        "Forum",
+        "Unless the Corporation consents in writing to the selection of an alternative forum, the Court of Chancery of the State of Delaware shall be the sole and exclusive forum for any derivative action brought on behalf of the Corporation.",
+      ]),
+    );
+    const venues = refs.filter((r) => r.clause_kind === "venue").map((r) => r.raw_text);
+    expect(venues).toContain("Delaware");
+    // The old case-insensitive capture read the lowercase clause tail as the venue.
+    expect(venues.some((v) => v.startsWith("the sole"))).toBe(false);
+  });
+
+  it("extracts the inverted generic form 'the courts of X shall be the exclusive forum'", () => {
+    const refs = extractJurisdictions(
+      buildTree([
+        "Forum",
+        "The state and federal courts located in the State of New York shall be the exclusive forum for all disputes under this Agreement.",
+      ]),
+    );
+    expect(refs.filter((r) => r.clause_kind === "venue").map((r) => r.raw_text)).toContain(
+      "New York",
+    );
+  });
+});

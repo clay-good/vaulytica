@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch } from "../_helpers.js";
+import { isStatutoryDandOIndemnity } from "./RISK-015.js";
 
 const PROCEDURE = [
   ["notice", /prompt(?:ly)?\s+notice|written\s+notice/i],
@@ -25,7 +26,7 @@ const OPERATIVE_INDEMNITY =
 /** RISK-011 — Indemnity procedure clause present (info). */
 export const rule: Rule = {
   id: "RISK-011",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Indemnity procedure clause",
   category: "risk-allocation",
   default_severity: "info",
@@ -50,6 +51,10 @@ export const rule: Rule = {
     // was a passing reference (an incorporation of a parent agreement's
     // indemnity, a liability-cap carve-out) — there is no clause to audit.
     if (!OPERATIVE_INDEMNITY.test(sectionText)) return null;
+    // Statutory D&O indemnification (bylaws/charter) is not a commercial
+    // indemnity clause; demanding defense-control and settlement-consent
+    // mechanics of DGCL § 145 language audits the wrong instrument.
+    if (isStatutoryDandOIndemnity(sectionText)) return null;
     const missing = PROCEDURE.filter(([, re]) => !re.test(sectionText)).map(([n]) => n);
     if (missing.length === 0) return null;
     const substantive = section?.paragraphs

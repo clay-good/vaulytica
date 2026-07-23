@@ -143,6 +143,32 @@ const COMMON_WORDS = new Set([
 ]);
 
 /**
+ * Proper-noun statute titles are the law's name, not a term the document
+ * defines — bylaws cite "the General Corporation Law of the State of
+ * Delaware" the way a contract cites "New York", and STRUCT-006 reported
+ * the statute as "used but not defined". Same reasoning as PLACE_NAMES.
+ */
+const STATUTE_NAMES = new Set([
+  "General Corporation Law",
+  "Securities Act",
+  "Securities Exchange Act",
+  "Internal Revenue Code",
+  "Uniform Commercial Code",
+  "Code of Civil Procedure",
+  "Fair Labor Standards Act",
+  "National Labor Relations Act",
+]);
+
+/**
+ * Corporate-office titles are designations, not defined terms: bylaws that
+ * empower "the Chief Executive Officer" to call a special meeting have not
+ * left a defined term undefined — the office is constituted by the officers
+ * article, and every governance document capitalizes titles this way.
+ */
+const OFFICER_TITLES =
+  /^(?:Chief\s+[A-Z][a-z]+\s+Officer|Vice\s+President|Executive\s+Vice\s+President|General\s+Counsel|Chair(?:person|man|woman)(?:\s+of\s+the\s+Board)?|Board\s+of\s+Directors|Managing\s+Member|Managing\s+Director)$/;
+
+/**
  * Sentence-initial words that are commonly capitalized but never
  * function as defined terms. Filtering by *first word* eliminates the
  * "Each Party," "If Client," "Neither Party" style false positives
@@ -352,6 +378,17 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       if (isCompoundOfDefined(phraseLower, definedNames)) continue;
       if (COMMON_WORDS.has(phrase)) continue;
       if (PLACE_NAMES.has(phrase)) continue;
+      if (STATUTE_NAMES.has(phrase)) continue;
+      if (OFFICER_TITLES.test(phrase)) continue;
+      // A phrase immediately followed by a corporate suffix (", Inc.",
+      // " LLC") is an entity NAME, not a defined term — same reasoning as
+      // the street-address guard, keyed on the unambiguous suffix.
+      if (
+        /^,?\s*(?:Inc|LLC|L\.L\.C|Ltd|Corp|Co|N\.A|P\.C|GmbH|S\.A)\b/.test(
+          ctx.text.slice(m.index + phrase.length, m.index + phrase.length + 12),
+        )
+      )
+        continue;
       // A street address ("88 Dockside Avenue") is a proper noun, never a
       // contractual defined term — same reasoning as PLACE_NAMES, keyed on
       // the unambiguous street-suffix last word.
@@ -631,7 +668,13 @@ function captionText(tree: DocumentTree): string | undefined {
     .join("")
     .trim();
   if (text.length < 8 || text.length > 90) return undefined;
-  if (/[.;:!?]$/.test(text)) return undefined;
+  // A trailing period only disqualifies a caption when it is sentence
+  // punctuation — "Amended and Restated Bylaws of Beacon Instruments, Inc."
+  // ends with the entity suffix's abbreviation point, and rejecting it left
+  // every phrase in the caption a defined-term candidate.
+  if (/[.;:!?]$/.test(text) && !/\b(?:Inc|LLC|L\.L\.C|Ltd|Corp|Co|N\.A|P\.C|S\.A)\.$/.test(text)) {
+    return undefined;
+  }
   if (text.split(/\s+/).length < 2) return undefined;
   return isTitleCaseSegment(text) ? text : undefined;
 }

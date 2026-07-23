@@ -424,7 +424,7 @@
       "finding_id": "RISK-011-s1.4-1029",
       "fired": true,
       "rule_id": "RISK-011",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -449,7 +449,7 @@
       "finding_id": "RISK-015-s1.4-1023",
       "fired": true,
       "rule_id": "RISK-015",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -480,7 +480,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "STRUCT-003",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -847,7 +847,7 @@
       "id": "RISK-015-s1.4-1023",
       "recommendation": "Either subject indemnification to a per-claim and aggregate cap, or confirm the carve-out is a deliberate trade for higher pricing / different insurance.",
       "rule_id": "RISK-015",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Indemnification without aggregate cap"
@@ -1037,7 +1037,7 @@
       "explanation": "A complete indemnity clause specifies (a) the timeline and form for notice of a claim, (b) which party controls defense, and (c) whether settlement requires consent.",
       "id": "RISK-011-s1.4-1029",
       "rule_id": "RISK-011",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "info",
       "source_citations": [],
       "title": "Indemnity procedural elements missing: notice, defense control, settlement consent"
@@ -1064,7 +1064,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "afc018d1f4879203868bc1441664509d7c99b847f8a0d887575d5e4718b2dcfc",
+  "result_hash": "73b73f14c02bf638abfd3d90125c986a6d092a2d5b30dc059b016667281b9603",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",

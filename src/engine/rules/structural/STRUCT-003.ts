@@ -21,6 +21,16 @@ const EXHIBIT_HEADING = /\b(?:exhibit|schedule|attachment|appendix|annex|annexur
 const ATTESTATION =
   /\bin\s+witness\s+whereof\b|\bthe\s+parties\s+(?:have\s+(?:executed|signed)|hereto\s+have\s+(?:executed|signed))\b/i;
 
+// A conformed signature ("/s/ Jane Smith") is an executed signature even with
+// no "By:/Name:/Title:" labels — bylaws, board consents, and court filings
+// sign this way, and the label-anchored tokens alone read a certified set of
+// bylaws as unsigned (a critical false positive on a well-formed document).
+const CONFORMED_SIG = /^\s*\/s\/\s+\S/m;
+// The secretary's certification formula that closes bylaws and resolutions.
+// Deliberately narrow ("certified as adopted", "certify that the foregoing")
+// so an amendment clause's "may be adopted by the Board" is not a signal.
+const CERTIFICATION = /\bcertified\s+as\s+adopted\b|\bcertif(?:y|ies)\s+that\s+the\s+foregoing\b/i;
+
 /**
  * STRUCT-003 — Signature block present (critical).
  *
@@ -42,7 +52,7 @@ const ATTESTATION =
  */
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",
@@ -70,10 +80,16 @@ export const rule: Rule = {
     const countSigSignals = (slice: P[]): number => {
       let signals = 0;
       let attested = false;
+      let certified = false;
       for (const p of slice) {
         const text = p.text;
         if (!attested && ATTESTATION.test(text)) {
           attested = true;
+          signals += 1;
+        }
+        if (CONFORMED_SIG.test(text)) signals += 1;
+        if (!certified && CERTIFICATION.test(text)) {
+          certified = true;
           signals += 1;
         }
         // Count distinct sig tokens in the paragraph; a single

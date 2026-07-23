@@ -21,9 +21,30 @@ import { forEachParagraph } from "../../../extract/walk.js";
  * as sufficient (the rule stays silent). Many MSAs structure caps
  * this way.
  */
+/**
+ * Statutory D&O indemnification (charter/bylaws under DGCL § 145 and its
+ * analogues) is DESIGNED to be uncapped and unconditioned — "to the fullest
+ * extent permitted by the General Corporation Law" is the operative promise,
+ * made to a person "by reason of the fact that" they hold corporate office.
+ * Demanding an aggregate cap or commercial claims-procedure mechanics on it
+ * tells the drafter to break the corporate form. Scoped to the
+ * corporate-office context: a commercial indemnity that merely says "to the
+ * fullest extent permitted by law" still requires its cap.
+ */
+export function isStatutoryDandOIndemnity(text: string): boolean {
+  return (
+    /\bby\s+reason\s+of\s+the\s+fact\s+that\b[^.]{0,120}?\b(?:director|officer|trustee)\b/i.test(
+      text,
+    ) ||
+    /\bfullest\s+extent\s+permitted\s+by\s+the\b[^.]{0,60}?\bcorporation\s+(?:law|act)\b/i.test(
+      text,
+    )
+  );
+}
+
 export const rule: Rule = {
   id: "RISK-015",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Indemnification without aggregate cap",
   category: "risk-allocation",
   default_severity: "warning",
@@ -59,7 +80,9 @@ export const rule: Rule = {
         // obligation") — a false accusation. Suppress a disclaimed match; the
         // verb branches ("shall indemnify") never match a negated "shall not
         // indemnify", so this only affects the noun-phrase form.
-        if (m && !isPresenceDisclaimed(p.text, m.index)) {
+        // Statutory D&O indemnification is uncapped by design — see
+        // isStatutoryDandOIndemnity.
+        if (m && !isPresenceDisclaimed(p.text, m.index) && !isStatutoryDandOIndemnity(p.text)) {
           indemnityHit = {
             sectionId: p.section.id,
             start: p.start + m.index,

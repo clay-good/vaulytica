@@ -159,3 +159,26 @@ describe("FIN-005 — a purchase-price schedule is a payment term (v1.1.0)", () 
     ).not.toBeNull();
   });
 });
+
+describe("STRUCT-003 — conformed signatures and certification (v1.2.0)", () => {
+  it("accepts a bylaws certification with a conformed /s/ signature", () => {
+    const ctx = buildContext(
+      ["Bylaws", "These Bylaws were adopted by the Board of Directors."],
+      ["Amendment", "These Bylaws may be amended by the Board."],
+      [
+        "Certification",
+        "Certified as adopted by the Board of Directors as of April 2, 2026.",
+        "/s/ Priya Raman Priya Raman, Secretary",
+      ],
+    );
+    expect(STRUCT003.check(ctx)).toBeNull();
+  });
+
+  it("still fires when a document has a certification recital but no signature line", () => {
+    const ctx = buildContext(
+      ["Bylaws", "These Bylaws were adopted by the Board of Directors."],
+      ["Amendment", "These Bylaws may be amended by the Board of Directors at any meeting."],
+    );
+    expect(STRUCT003.check(ctx)).not.toBeNull();
+  });
+});

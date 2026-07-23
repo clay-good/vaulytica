@@ -128,6 +128,21 @@ const VENUE_CONSENT = new RegExp(
   "gi",
 );
 
+/**
+ * The inverted forum-selection formulation puts the COURT first: "the Court
+ * of Chancery of the State of Delaware shall be the sole and exclusive forum
+ * for any derivative action …" — the standard Delaware exclusive-forum bylaw.
+ * Every pattern above expects the forum token or dispute noun BEFORE the
+ * court, so the clause's venue went unextracted — and VENUE_SIMPLE's
+ * case-insensitive capture instead grabbed the lowercase text after "shall
+ * be", reporting the venue as "the sole and exclusive forum for any
+ * derivative action" (a foreign venue, per CHOICE-005, with no treaty).
+ */
+const VENUE_SUBJECT = new RegExp(
+  String.raw`\b(?:Court\s+of\s+Chancery\s+of\s+|(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+|in\s+))(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)\s+(?:shall\s+be|is|are|will\s+be|shall\s+constitute)\s+the\s+(?:sole\s+|and\s+|exclusive\s+)+(?:forum|venue)\b`,
+  "g",
+);
+
 const ARBITRATION_SEAT =
   /\b(?:seat\s+of\s+arbitration|arbitration\s+(?:shall\s+take\s+place|shall\s+be\s+(?:seated|conducted))\s+in)\s+([A-Z][A-Za-z\s&\-,]+?)(?=[.,;)]|\s+under|\s+pursuant|$)/gi;
 
@@ -227,6 +242,11 @@ export function extractJurisdictions(
       const ext = extendEnglandAndWales(ctx.text, (m[1] ?? "").trim(), m.index + m[0].length);
       const captured = ext.raw;
       if (!captured) return;
+      // The `i` flag makes `[A-Z]` match any letter, so require the
+      // capitalization a jurisdiction name always carries — otherwise "shall
+      // be the sole and exclusive forum for any derivative action" registers
+      // the lowercase clause tail as the venue.
+      if (!/^[A-Z]/.test(captured)) return;
       const end = ext.end;
       const jurisdiction = JURISDICTION_AFTER_LOCALITY.exec(ctx.text.slice(end))?.[1];
       const raw = jurisdiction ? jurisdiction.replace(/\s+/g, " ") : captured;
@@ -244,6 +264,7 @@ export function extractJurisdictions(
     runRegex(VENUE_SIMPLE, ctx.text, recordVenue);
     runRegex(VENUE_RESOLVED_IN, ctx.text, recordVenue);
     runRegex(VENUE_CONSENT, ctx.text, recordVenue);
+    runRegex(VENUE_SUBJECT, ctx.text, recordVenue);
     runRegex(ARBITRATION_SEAT, ctx.text, (m) => {
       const raw = (m[1] ?? "").trim();
       out.push({

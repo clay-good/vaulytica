@@ -426,7 +426,7 @@
       "finding_id": "RISK-011-s1.3-616",
       "fired": true,
       "rule_id": "RISK-011",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -451,7 +451,7 @@
       "finding_id": "RISK-015-s1.3-610",
       "fired": true,
       "rule_id": "RISK-015",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -482,7 +482,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "STRUCT-003",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -875,7 +875,7 @@
       "id": "RISK-015-s1.3-610",
       "recommendation": "Either subject indemnification to a per-claim and aggregate cap, or confirm the carve-out is a deliberate trade for higher pricing / different insurance.",
       "rule_id": "RISK-015",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Indemnification carved out of liability cap"
@@ -1074,7 +1074,7 @@
       "explanation": "A complete indemnity clause specifies (a) the timeline and form for notice of a claim, (b) which party controls defense, and (c) whether settlement requires consent.",
       "id": "RISK-011-s1.3-616",
       "rule_id": "RISK-011",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "info",
       "source_citations": [],
       "title": "Indemnity procedural elements missing: notice, defense control, settlement consent"
@@ -1083,7 +1083,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\", \"uptime\".",
-  "result_hash": "eadadb8091a2ff33b1fe114373a5b823422a8ec4ca3ed9a251a73f618e6453fc",
+  "result_hash": "e1bd037c294f0971f49c1b100a9a1de6d2a485937665996ae910be5abfc28cb3",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",

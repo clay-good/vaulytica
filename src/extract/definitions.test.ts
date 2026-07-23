@@ -348,3 +348,39 @@ describe("caption and run-in heading phrases are not defined-term candidates", (
     expect(map.undefined_capitalized.map((u) => u.term)).toContain("Statement Deliverables");
   });
 });
+
+describe("statute names, officer titles, and entity names are not defined terms", () => {
+  it("does not flag a cited statute title or a corporate office", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Body",
+        "The Corporation shall indemnify officers to the fullest extent permitted by the General Corporation Law of the State of Delaware. Special meetings may be called by the Chief Executive Officer.",
+        "Any committee may exercise powers permitted under the General Corporation Law of the State of Delaware, subject to direction from the Chief Executive Officer.",
+      ]),
+    );
+    const terms = map.undefined_capitalized.map((u) => u.term);
+    expect(terms).not.toContain("General Corporation Law");
+    expect(terms).not.toContain("Chief Executive Officer");
+  });
+
+  it("does not flag a company name followed by its corporate suffix", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Body",
+        "This agreement is with Beacon Instruments, Inc., a Delaware corporation. Beacon Instruments, Inc. maintains its office in Wilmington.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((u) => u.term)).not.toContain("Beacon Instruments");
+  });
+
+  it("treats a caption ending in an entity abbreviation as a caption", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Body",
+        "Amended and Restated Bylaws of Beacon Instruments, Inc.",
+        'These Amended and Restated Bylaws (these "Bylaws") govern the Corporation.',
+      ]),
+    );
+    expect(map.undefined_capitalized.map((u) => u.term)).not.toContain("Restated Bylaws");
+  });
+});
