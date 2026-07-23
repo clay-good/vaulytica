@@ -351,8 +351,12 @@ const RISK_FACTORS_RULES: Rule[] = [
       /(our|the)\s+business\s+(may|could).{0,40}be\s+affected\s+by.{0,40}factors\s+beyond\s+our\s+control/is,
     ],
     bad_title: "Generic / boilerplate risk factor flagged",
+    // The patterns match a boilerplate OPENING clause; they never read the rest
+    // of the sentence, so the description must not assert the whole risk factor
+    // lacks specificity — a highly specific, quantified risk factor can open
+    // with this phrasing.
     bad_description:
-      "Risk factor appears to be generic boilerplate that could apply to any company without specificity.",
+      "Risk factor opens with boilerplate phrasing that could apply to any company; confirm the disclosure goes on to state issuer-specific detail.",
     explanation:
       "SEC staff have repeatedly cautioned against generic risk factors. Item 105 (2020 revision) emphasized the materiality threshold to drive out boilerplate.",
     recommendation:
@@ -369,6 +373,13 @@ const RISK_FACTORS_RULES: Rule[] = [
     bad_patterns: [
       /(we\s+may|could|might)\s+(experience|face|be\s+subject\s+to)\s+(cyber|security|data\s+breach)/i,
       /(potential|hypothetical).{0,40}(risk|impact)/is,
+    ],
+    // The whole point of the Pearson / First American line is framing an
+    // ALREADY-MATERIALIZED risk as hypothetical. A paragraph that narrates the
+    // actual incident has done exactly what the rule asks for, so reporting it
+    // as "merely hypothetical" is contradicted by the excerpt itself.
+    exclude_if: [
+      /\bwe\s+(?:have\s+)?(?:experienced|suffered|sustained|identified|discovered|disclosed|reported|been\s+subject\s+to)\b/i,
     ],
     bad_title: "Hypothetical / hedged risk factor flagged",
     bad_description:

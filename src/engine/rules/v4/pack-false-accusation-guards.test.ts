@@ -21,10 +21,12 @@ import { buildContext } from "../../_test-fixtures.js";
 import { REAL_ESTATE_RULES } from "./real-estate/index.js";
 import { IP_LICENSING_RULES } from "./ip-licensing/index.js";
 import { M_AND_A_RULES } from "./m-and-a/index.js";
+import { REGULATORY_PROSE_RULES } from "./regulatory-prose/index.js";
 
 const re038 = REAL_ESTATE_RULES.find((r) => r.id === "RE-038")!;
 const ipl009 = IP_LICENSING_RULES.find((r) => r.id === "IPL-009")!;
 const mna074 = M_AND_A_RULES.find((r) => r.id === "MNA-074")!;
+const reg019 = REGULATORY_PROSE_RULES.find((r) => r.id === "REG-019")!;
 const doc = (heading: string, ...rest: string[]) => buildContext([heading, ...rest]);
 
 describe("RE-038 — fair-housing compliance clause is not a discriminatory covenant", () => {
@@ -133,5 +135,29 @@ describe("MNA-074 — the year count must be the covenant's own duration", () =>
     expect(
       mna074.check(doc("Restrictive Covenants", "The Restricted Period shall be 3 years.")),
     ).toBeNull();
+  });
+});
+
+describe("REG-019 — a disclosed actual incident is not a hypothetical risk", () => {
+  it("stays silent when the paragraph discloses the incident that already occurred", () => {
+    expect(
+      reg019.check(
+        doc(
+          "Risk Factors",
+          "In March 2026, we experienced and disclosed an actual data breach affecting 40,000 customers, for which we incurred 2.3 million dollars in remediation costs. We may face cyber incidents again in the future, which could adversely affect our reputation.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still flags a purely hypothetical cyber risk factor", () => {
+    expect(
+      reg019.check(
+        doc(
+          "Risk Factors",
+          "We may experience cyber incidents in the future, which could adversely affect our reputation and results of operations.",
+        ),
+      ),
+    ).not.toBeNull();
   });
 });

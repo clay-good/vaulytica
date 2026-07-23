@@ -801,8 +801,12 @@ const DISCLOSURE_SCHEDULE_RULES: Rule[] = [
       /materials?\s+in\s+(the\s+)?data.room/is,
     ],
     bad_title: "Disclosure by data-room reference flagged",
+    // The patterns prove only that a data-room reference EXISTS, not that it is
+    // the entire disclosure for the item, so the description must not claim the
+    // schedule discloses "solely" that way — schedules routinely describe an
+    // item specifically and point to the data room for executed copies.
     bad_description:
-      "The schedule discloses solely by reference to a data-room folder; this typically does not constitute proper disclosure.",
+      "The schedule discloses by reference to a data-room folder; a bare reference typically does not constitute proper disclosure unless the item is also described specifically.",
     explanation:
       "Delaware Chancery has cautioned that mere availability of documents in the data room is insufficient; the schedules must identify or summarize the matter disclosed.",
     recommendation:
