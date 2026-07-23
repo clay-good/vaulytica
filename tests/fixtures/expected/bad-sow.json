@@ -263,7 +263,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "OBLI-003",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -990,7 +990,7 @@
   "playbook_id": "sow",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected sow (score 0.9). Title matched: \"statement of work\". Distinguishing phrases: \"this SOW\", \"Master Agreement\", \"Deliverables\", \"milestones\".",
-  "result_hash": "12479f3ce41e6f14b426e52c97f00857c96a85d0b66a4c0ab72feabcb4518a24",
+  "result_hash": "00f571828559e754c88c711446f912abfb04c3b65b3d529b255cf9e88c624174",
   "source_file": {
     "name": "bad-sow.docx",
     "sha256": "cd7208763b891cf8cb8e1c853b54f63fb70fe10004a489fbeb95921a14b84c3c",

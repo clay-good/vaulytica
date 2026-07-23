@@ -1,13 +1,18 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit } from "../_helpers.js";
 
+// "from time to time BY RESOLUTION" is not an ambiguous trigger — it names
+// the exact corporate mechanism that exercises the power ("the number of
+// directors shall be fixed from time to time by resolution of the Board"),
+// which is how every set of bylaws allocates that authority. The bare phrase
+// with no mechanism still flags.
 const AMBIGUOUS =
-  /\b(?:from\s+time\s+to\s+time|as\s+needed|as\s+appropriate|as\s+reasonably\s+requested)\b/i;
+  /\b(?:from\s+time\s+to\s+time(?!\s+by\s+resolution\b)|as\s+needed|as\s+appropriate|as\s+reasonably\s+requested)\b/i;
 
 /** OBLI-003 — Trigger condition ambiguity (info). */
 export const rule: Rule = {
   id: "OBLI-003",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Trigger condition ambiguity",
   category: "obligations",
   default_severity: "info",

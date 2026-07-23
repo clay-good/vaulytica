@@ -37,8 +37,12 @@ const REF_RE =
 // numbers before it lands — "Article 28(4) of the … Regulation", "Articles 33
 // and 34 GDPR", "Articles 32 to 36 of the GDPR". Skip that connective run, then
 // require the statutory qualifier.
+// "Laws?" belongs in the qualifier list: "Section 220 of the General
+// Corporation Law of the State of Delaware" is a statutory cite, and its
+// absence made STRUCT-007 report a broken internal reference to a
+// "Section 220" every set of Delaware bylaws cites externally.
 const EXTERNAL_TRAILER_RE =
-  /^(?:\(\d+[a-z]?\))*(?:\s+(?:to|through|and|or|,)\s+\d+[A-Za-z]?(?:\(\d+[a-z]?\))*)*\s+(?:of\s+(?:the\s+)?[A-Z][^.;,]*?\b(?:Code|Acts?|Regulations?|Rules?|U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?)\b|(?:UK\s+|EU\s+)?(?:GDPR|CCPA|CPRA|HIPAA|LGPD|PIPEDA|DPA\s+20\d\d)\b)/;
+  /^(?:\(\d+[a-z]?\))*(?:\s+(?:to|through|and|or|,)\s+\d+[A-Za-z]?(?:\(\d+[a-z]?\))*)*\s+(?:of\s+(?:the\s+)?[A-Z][^.;,]*?\b(?:Code|Acts?|Laws?|Regulations?|Rules?|U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?)\b|(?:UK\s+|EU\s+)?(?:GDPR|CCPA|CPRA|HIPAA|LGPD|PIPEDA|DPA\s+20\d\d)\b)/;
 const EXTERNAL_LEADER_RE = /\b(?:U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?|Stat\.)\s*$/;
 
 // A paragraph that OPENS with "6. Vendor Indemnity …" is section 6, even when
@@ -51,21 +55,42 @@ const EXTERNAL_LEADER_RE = /\b(?:U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?|Stat\.)\s
 // list marker or an amount ("5,000") is not mistaken for a section.
 const LEADING_SECTION_RE = /^\s*(\d+(?:\.\d+)*)\.\s+[A-Z(]/;
 
+// Bylaws style writes the multi-level number with NO trailing period —
+// "7.1 Exclusive Forum. Unless …" — so LEADING_SECTION_RE never registered
+// it and "this Section 7.1" reported as broken. Multi-level only: a bare
+// integer without its period ("2026 Annual Meeting") is a year or an
+// amount, not a clause number.
+const LEADING_SUBSECTION_RE = /^\s*(\d+(?:\.\d+)+)\.?\s+[A-Z(]/;
+
+// The flat-paste ARTICLE heading — "ARTICLE VII — FORUM SELECTION" — is a
+// DECLARATION of the article, not a reference to it. It both feeds the
+// label index (so "Article VII" elsewhere resolves) and is skipped as a
+// reference (so STRUCT-007 stops reporting every article heading in the
+// document as a broken cross-reference).
+const LEADING_ARTICLE_RE = /^\s*(?:ARTICLE|Article)\s+([IVXLCDM]+|\d+)\b/;
+
 export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): CrossRef[] {
   const refs: CrossRef[] = [];
   const labelIndex = buildLabelIndex(outline);
   // Augment the index with paragraph-leading section numbers the outline missed.
   forEachParagraph(tree, (ctx) => {
-    const m = LEADING_SECTION_RE.exec(ctx.text);
+    const m = LEADING_SECTION_RE.exec(ctx.text) ?? LEADING_SUBSECTION_RE.exec(ctx.text);
     const norm = m ? normalizeLabel(m[1]!) : undefined;
     if (norm && !labelIndex.has(norm)) labelIndex.set(norm, ctx.paragraph.id);
+    const a = LEADING_ARTICLE_RE.exec(ctx.text);
+    const aNorm = a ? normalizeLabel(`article ${a[1]!}`) : undefined;
+    if (aNorm && !labelIndex.has(aNorm)) labelIndex.set(aNorm, ctx.paragraph.id);
   });
 
   forEachParagraph(tree, (ctx) => {
+    const leadingArticle = LEADING_ARTICLE_RE.exec(ctx.text);
     REF_RE.lastIndex = 0;
     let m: RegExpExecArray | null;
     while ((m = REF_RE.exec(ctx.text)) !== null) {
       const keyword = m[1] ?? "";
+      // The paragraph-leading article heading is the article's declaration,
+      // not a reference into the outline.
+      if (leadingArticle && m.index < leadingArticle[0].length) continue;
       // Skip external statutory citations — a reference into another
       // authority's numbering, not this document's outline.
       const after = ctx.text.slice(m.index + m[0].length);

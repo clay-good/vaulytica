@@ -264,3 +264,60 @@ describe("external statutory article citations are not internal cross-references
     expect(unresolved("As set out in Article 9, the parties agree.")).toContain("Article 9");
   });
 });
+
+describe("flat-paste ARTICLE layouts (bylaws style)", () => {
+  const doc = (...texts: string[]): DocumentTree =>
+    normalize({
+      type: "document",
+      sections: [
+        {
+          id: "",
+          heading: "",
+          level: 1,
+          paragraphs: texts.map((text) => ({
+            id: "",
+            runs: [{ id: "", text, start: 0, end: 0 }],
+          })),
+          children: [],
+        },
+      ],
+    });
+  const unresolvedIn = (...texts: string[]) =>
+    extractCrossRefs(doc(...texts), extractSections(doc(...texts)))
+      .filter((r) => r.unresolved)
+      .map((r) => r.raw_text);
+
+  it("an ARTICLE heading line is a declaration, not a broken reference", () => {
+    expect(
+      unresolvedIn(
+        "ARTICLE I — OFFICES",
+        "1.1 Registered Office. The registered office shall be in Delaware.",
+        "ARTICLE II — MEETINGS",
+        "2.1 Annual Meeting. The annual meeting is held as provided in Article I.",
+      ),
+    ).toEqual([]);
+  });
+
+  it("a dotless subsection heading registers, so its self-reference resolves", () => {
+    expect(
+      unresolvedIn("7.1 Exclusive Forum. This Section 7.1 does not apply to federal claims."),
+    ).toEqual([]);
+  });
+
+  it("a statutory cite into a named Law is external, not broken", () => {
+    expect(
+      unresolvedIn(
+        "Inspection is available as provided by Section 220 of the General Corporation Law of the State of Delaware.",
+      ),
+    ).toEqual([]);
+  });
+
+  it("a genuinely dangling Article reference still reports", () => {
+    expect(
+      unresolvedIn(
+        "ARTICLE I — OFFICES",
+        "1.1 Offices. Indemnification is addressed in Article VI of these Bylaws.",
+      ),
+    ).toContain("Article VI");
+  });
+});

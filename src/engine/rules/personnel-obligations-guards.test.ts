@@ -7,6 +7,7 @@
 import { describe, expect, it } from "vitest";
 import { buildContext } from "../_test-fixtures.js";
 import { rule as OBLI001 } from "./obligations/OBLI-001.js";
+import { rule as OBLI003 } from "./obligations/OBLI-003.js";
 import { rule as PERS002 } from "./personnel/PERS-002.js";
 import { rule as PERS004 } from "./personnel/PERS-004.js";
 import { rule as PERS009 } from "./personnel/PERS-009.js";
@@ -86,5 +87,29 @@ describe("PERS-009 — non-solicit duration", () => {
     );
     expect(PERS009.check(hyphen)).not.toBeNull();
     expect(PERS009.check(spaced)).not.toBeNull();
+  });
+});
+
+describe("OBLI-003 — 'from time to time by resolution' names its mechanism (v1.1.0)", () => {
+  it("does not flag the bylaws board-sizing formula", () => {
+    expect(
+      OBLI003.check(
+        doc(
+          "Directors",
+          "The number of directors constituting the Board shall be not fewer than three (3) nor more than nine (9), with the exact number fixed from time to time by resolution of the Board.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still flags a bare 'from time to time' obligation trigger", () => {
+    expect(
+      OBLI003.check(
+        doc(
+          "Services",
+          "Vendor shall update the security policies from time to time as it deems appropriate.",
+        ),
+      ),
+    ).not.toBeNull();
   });
 });
