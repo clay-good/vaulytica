@@ -73,6 +73,17 @@ export type LanguageSpec = {
   description: string;
   citation: string;
   bad_patterns: RegExp[];
+  /**
+   * Carve-out / disclaimer guards, mirroring the v4 language builder. When a
+   * paragraph matches a `bad_pattern` but ALSO matches any `exclude_if`
+   * pattern, the finding is suppressed — the paragraph states the flagged
+   * pattern in its COMPLIANT form (HIPAA's own "attempted or successful"
+   * Security Incident definition, a return-or-destroy clause that does carry a
+   * definite day count, an "appropriate measures" clause that does cite an
+   * Annex). Firing on the compliant form is a confident false accusation.
+   * Optional; rules without it are unchanged.
+   */
+  exclude_if?: readonly RegExp[];
   bad_title: string;
   bad_description: string;
   explanation: string;
@@ -157,6 +168,10 @@ export function buildLanguageRule(spec: LanguageSpec, config: RegulatedRuleConfi
           r.lastIndex = 0;
           const m = r.exec(p.text);
           if (m) {
+            // Skip a paragraph that states the flagged pattern in its COMPLIANT
+            // form. Skipping this paragraph still lets a genuine violation in a
+            // later paragraph fire.
+            if (spec.exclude_if?.some((ex) => ex.test(p.text))) return;
             hit = {
               text: p.text,
               position: {

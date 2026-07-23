@@ -412,6 +412,12 @@ export const DPA_GDPR_RULES: Rule[] = [
       /commercially\s+reasonable\s+(security|measures)/i,
       /industry[- ]standard\s+security\b(?!.*?(?:annex|appendix|exhibit))/is,
     ],
+    // The second pattern's lookahead only scans FORWARD, so an Annex named
+    // before the trigger ("As set forth in Annex II ... industry-standard
+    // security") did not suppress it. This rule's own description is "without
+    // an Annex of technical and organisational measures", so a paragraph that
+    // cites one anywhere is by definition not the hand-waving it targets.
+    exclude_if: [/\b(?:annex|appendix|exhibit|schedule)\b/i],
   }),
 
   // ────────────────────────────────────────────────────────────────

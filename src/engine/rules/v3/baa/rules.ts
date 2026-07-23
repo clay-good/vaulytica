@@ -421,6 +421,11 @@ export const BAA_RULES: Rule[] = [
       /Security\s+Incident.{0,200}successful\s+(unauthorized|access)/is,
       /only\s+successful\s+(unauthorized\s+access|incidents)/i,
     ],
+    // "attempted or successful" IS HIPAA's full definition — the very wording
+    // this rule's own recommendation asks for. Reading the "successful" half of
+    // it as a narrowing accuses the compliant definition of the narrowing it
+    // forecloses.
+    exclude_if: [/attempted\s+or\s+successful/i],
   }),
 
   language({
@@ -439,6 +444,10 @@ export const BAA_RULES: Rule[] = [
     bad_patterns: [
       /(return|destroy|destruction).{0,80}(as\s+soon\s+as\s+practicable|commercially\s+reasonable|reasonable\s+time)/i,
     ],
+    // "commercially reasonable EFFORTS" describes the manner of performance,
+    // not the timing. A clause that also states a day count ("within 30 days of
+    // termination") has the definite outer bound this rule demands.
+    exclude_if: [/\b\d+\s+(?:calendar\s+|business\s+)?days?\b/i],
     default_severity: "warning",
   }),
 
