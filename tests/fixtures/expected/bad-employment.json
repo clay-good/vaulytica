@@ -502,8 +502,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-006-s1-209",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-006",
       "rule_version": "1.0.0"
     },
@@ -966,24 +965,6 @@
       "title": "No Effective Date found"
     },
     {
-      "description": "Used but not defined: San Francisco.",
-      "document_position": 209,
-      "excerpt": {
-        "end_offset": 222,
-        "section_id": "s1",
-        "start_offset": 209,
-        "text": "San Francisco"
-      },
-      "explanation": "Title-Case phrases in a contract usually signal a defined term. When they aren't defined, readers must guess at the intended meaning. Either define them or use lowercase if the term is intended in its ordinary sense.",
-      "id": "STRUCT-006-s1-209",
-      "recommendation": "Add a definition for each genuinely defined term, or change the casing if the phrase is being used in its ordinary sense.",
-      "rule_id": "STRUCT-006",
-      "rule_version": "1.0.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "Undefined Title-Case terms: 1"
-    },
-    {
       "description": "The survival clause exists but does not name: confidentiality, IP ownership / assignment.",
       "document_position": 1505,
       "excerpt": {
@@ -1204,7 +1185,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
-  "result_hash": "9cb73acdc53d714b6fbd651f7df16ce722d1f7893d68daed12cb5a979f99dcb3",
+  "result_hash": "e86df07b5d4816e423094967f3446bd5b6bf99b761114b031ea506fb41dfdca9",
   "source_file": {
     "name": "bad-employment.docx",
     "sha256": "44e689f2fe4e8767866844995363dda962260fd37d54469e6d0fdf443136013c",

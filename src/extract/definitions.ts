@@ -55,6 +55,39 @@ const DEFINITION_SCOPE =
 
 const DEFINITIONS_HEADING = /\b(definitions?|defined\s+terms|glossary)\b/i;
 const TITLE_CASE_PHRASE = /\b((?:[A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,4}))\b/g;
+
+/**
+ * Place names are proper nouns, never contractual defined terms. A
+ * governing-law or address clause naming "New York" or "New Jersey" was
+ * reported by STRUCT-006 as a Title-Case term "used but not defined" — a place
+ * is not a term a contract defines. The two-word US states (New York, New
+ * Jersey, New Mexico, New Hampshire, North/South Carolina/Dakota, West
+ * Virginia, Rhode Island, District of Columbia) are the ones TITLE_CASE_PHRASE
+ * captures as multi-word candidates; the single-word states never reach the
+ * multi-word phrase list.
+ */
+const PLACE_NAMES = new Set([
+  "New York",
+  "New Jersey",
+  "New Mexico",
+  "New Hampshire",
+  "North Carolina",
+  "South Carolina",
+  "North Dakota",
+  "South Dakota",
+  "West Virginia",
+  "Rhode Island",
+  "District of Columbia",
+  "United States",
+  "United Kingdom",
+  "New York County",
+  "New Castle County",
+  "Los Angeles",
+  "San Francisco",
+  "Santa Clara",
+  "Hong Kong",
+  "England and Wales",
+]);
 const COMMON_WORDS = new Set([
   "Effective Date",
   "Agreement",
@@ -242,6 +275,7 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       const phrase = m[1]!;
       if (definedNames.has(phrase.toLowerCase())) continue;
       if (COMMON_WORDS.has(phrase)) continue;
+      if (PLACE_NAMES.has(phrase)) continue;
       if (TITLE_CASE_LEADING_STOPWORDS.has(phrase)) continue;
       // Only strip sentence-initial-stopword patterns from the candidate
       // list when the phrase is short (2 words). Longer phrases like

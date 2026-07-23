@@ -133,3 +133,26 @@ describe("parenthetical definitions", () => {
     expect(map.entries.map((e) => e.term)).not.toContain("Services");
   });
 });
+
+describe("place names are not undefined defined-terms", () => {
+  it("does not flag a US state named in a governing-law clause", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Governing Law",
+        "This Agreement is governed by the laws of the State of New York, and the parties consent to the jurisdiction of the courts located in New York County, New York.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("New York");
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("New York County");
+  });
+
+  it("still flags an ordinary undefined Title-Case business term", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Body",
+        "The Special Reserve Fund shall be maintained. The Special Reserve Fund covers losses.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).toContain("The Special Reserve Fund");
+  });
+});
