@@ -10,7 +10,7 @@ import { makeFinding } from "../../finding.js";
  */
 export const rule: Rule = {
   id: "STRUCT-006",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Used-but-never-defined capitalized terms",
   category: "structural",
   default_severity: "warning",
@@ -29,9 +29,18 @@ export const rule: Rule = {
         ...(p.role ? [p.role.toLowerCase()] : []),
       ]),
     );
-    const candidates = ctx.extracted.definitions.undefined_capitalized.filter(
-      (e) => !partyNames.has(e.term.toLowerCase()),
-    );
+    // A candidate that is a word-boundary prefix of a party's name is that
+    // party, colloquially shortened — "Halewood Media" for the party
+    // "Halewood Media LLC" (TITLE_CASE_PHRASE cannot include the all-caps
+    // suffix) — never an undefined term.
+    const candidates = ctx.extracted.definitions.undefined_capitalized.filter((e) => {
+      const lower = e.term.toLowerCase();
+      if (partyNames.has(lower)) return false;
+      for (const name of partyNames) {
+        if (name.startsWith(`${lower} `)) return false;
+      }
+      return true;
+    });
     if (candidates.length === 0) return null;
 
     const first = candidates[0]!;

@@ -11,6 +11,16 @@ const SIG_LINE = /^\s*(?:By|Name|Title|Date|Signed|Print(?:ed)?\s+Name)\b\s*(?::
 const SIG_TOKEN = /\b(?:By|Name|Title|Date|Signature|Signed|Authorized\s+Signatory)\b\s*:/i;
 const EXHIBIT_HEADING = /\b(?:exhibit|schedule|attachment|appendix|annex|annexure)\b/i;
 
+// The attestation formula that introduces every executed signature page. An
+// individual party signs with a bare typed name — no "By:/Name:/Title:"
+// labels — so a contract between a company and a person can carry exactly ONE
+// anchored token, and the two-token floor called its executed signature page
+// missing. The formula is never ordinary prose, so it counts as one signal
+// (once); a document with the recital but no signature line at all still
+// fires.
+const ATTESTATION =
+  /\bin\s+witness\s+whereof\b|\bthe\s+parties\s+(?:have\s+(?:executed|signed)|hereto\s+have\s+(?:executed|signed))\b/i;
+
 /**
  * STRUCT-003 — Signature block present (critical).
  *
@@ -32,7 +42,7 @@ const EXHIBIT_HEADING = /\b(?:exhibit|schedule|attachment|appendix|annex|annexur
  */
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",
@@ -59,8 +69,13 @@ export const rule: Rule = {
 
     const countSigSignals = (slice: P[]): number => {
       let signals = 0;
+      let attested = false;
       for (const p of slice) {
         const text = p.text;
+        if (!attested && ATTESTATION.test(text)) {
+          attested = true;
+          signals += 1;
+        }
         // Count distinct sig tokens in the paragraph; a single
         // paragraph can carry the full table row "By: ___ Name: ___".
         const m = text.match(/\b(By|Name|Title|Date|Signature|Signed|Authorized\s+Signatory)\b/gi);

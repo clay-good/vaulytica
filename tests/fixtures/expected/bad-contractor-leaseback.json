@@ -475,7 +475,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "STRUCT-003",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -494,7 +494,7 @@
       "finding_id": "STRUCT-006-s1-130",
       "fired": true,
       "rule_id": "STRUCT-006",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -768,7 +768,7 @@
       "id": "STRUCT-006-s1-130",
       "recommendation": "Add a definition for each genuinely defined term, or change the casing if the phrase is being used in its ordinary sense.",
       "rule_id": "STRUCT-006",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Undefined Title-Case terms: 1"
@@ -871,7 +871,7 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "65f353bc0e498dedf7ce9be655a3347329a13e7ad655670de48d28ddaf68c475",
+  "result_hash": "88f8812870486308c3d38da82ee6b116e88a0ea0584d2cff38e884244610d869",
   "source_file": {
     "name": "bad-contractor-leaseback.docx",
     "sha256": "82496f664a3abe77b7ed03c7c77b47c9ffbd8c5f883389cb761b7ba68b31f98d",

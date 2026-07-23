@@ -178,3 +178,18 @@ describe("hyphenated-compound fragments are not undefined terms", () => {
     expect(map.undefined_capitalized.map((e) => e.term).join(" ")).not.toContain("Border Transfer");
   });
 });
+
+describe("truncated candidates of longer defined terms", () => {
+  it("does not report a word-boundary prefix of a defined term as undefined", () => {
+    // TITLE_CASE_PHRASE cannot cross an all-caps word, so the defined
+    // "Contractor Background IP" yields the candidate "Contractor Background".
+    const map = extractDefinitions(
+      buildTree([
+        "IP",
+        'Contractor retains its pre-existing tools and methodologies ("Contractor Background IP").',
+        "Company receives a license to use Contractor Background IP as incorporated. Contractor Background IP remains Contractor's property.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Contractor Background");
+  });
+});

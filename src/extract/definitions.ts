@@ -277,7 +277,20 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // tail of a hyphenated compound, not a standalone term: "Software-as-a-
       // Service Terms of Service" yielded the phantom term "Service Terms".
       if (ctx.text[m.index - 1] === "-") continue;
-      if (definedNames.has(phrase.toLowerCase())) continue;
+      const phraseLower = phrase.toLowerCase();
+      if (definedNames.has(phraseLower)) continue;
+      // TITLE_CASE_PHRASE cannot cross an all-caps word, so a candidate is
+      // often a truncation of a longer defined term — "Contractor Background"
+      // cut from the defined "Contractor Background IP". A word-boundary
+      // prefix of a defined term is that term's use, not a new undefined one.
+      let prefixOfDefined = false;
+      for (const name of definedNames) {
+        if (name.startsWith(`${phraseLower} `)) {
+          prefixOfDefined = true;
+          break;
+        }
+      }
+      if (prefixOfDefined) continue;
       if (COMMON_WORDS.has(phrase)) continue;
       if (PLACE_NAMES.has(phrase)) continue;
       if (TITLE_CASE_LEADING_STOPWORDS.has(phrase)) continue;

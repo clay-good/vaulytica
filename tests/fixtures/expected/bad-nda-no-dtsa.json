@@ -475,7 +475,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "STRUCT-003",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -494,7 +494,7 @@
       "finding_id": "STRUCT-006-s1-149",
       "fired": true,
       "rule_id": "STRUCT-006",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -803,7 +803,7 @@
       "id": "STRUCT-006-s1-149",
       "recommendation": "Add a definition for each genuinely defined term, or change the casing if the phrase is being used in its ordinary sense.",
       "rule_id": "STRUCT-006",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Undefined Title-Case terms: 1"
@@ -906,7 +906,7 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "e7bbfdffcff45c15fd10251fe10cfc1aa39d5fa1941ae28babe0293601a69113",
+  "result_hash": "29a6a5f6643a172502aa790315c376a7b2d34788e2c27c9c30337a5ffcf16d95",
   "source_file": {
     "name": "bad-nda-no-dtsa.docx",
     "sha256": "6843694916dfef439851e84aca5bf213e35090b1a39f2b027f1e56d6382f2c29",

@@ -94,3 +94,35 @@ describe("FIN-002 — inconsistent named amounts", () => {
     ).not.toBeNull();
   });
 });
+
+describe("STRUCT-003 — the individual signatory (v1.1.0)", () => {
+  it("attestation formula plus a single By: line is an executed signature page", () => {
+    // An individual signs with a bare typed name — no By/Name/Title labels —
+    // so a company-and-person contract carries exactly one anchored token.
+    // The IN WITNESS WHEREOF recital supplies the second signal.
+    expect(
+      STRUCT003.check(
+        doc(
+          "General",
+          "This Agreement may be amended only in writing.",
+          "IN WITNESS WHEREOF, the parties have executed this Agreement as of the Effective Date.",
+          "Halewood Media LLC",
+          "By: Jordan Feld, Managing Member",
+          "Priya Raman",
+          "Contractor",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("the recital alone, with no signature line at all, still fires", () => {
+    expect(
+      STRUCT003.check(
+        doc(
+          "General",
+          "IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above. The parties are done.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});

@@ -159,3 +159,16 @@ describe("RISK-009 — uncapped liability", () => {
     expect(RISK_009.check(ctx)).toBeNull();
   });
 });
+
+describe("STRUCT-006 — party-name prefixes (v1.1.0)", () => {
+  it("does not call a party's shortened name an undefined term", () => {
+    // TITLE_CASE_PHRASE cannot include the all-caps suffix, so the candidate
+    // "Halewood Media" is the party "Halewood Media LLC", not a new term.
+    const ctx = buildContext([
+      "Preamble",
+      'This Agreement is entered into by and between Halewood Media LLC, a New York limited liability company ("Company"), and Priya Raman, an individual ("Contractor").',
+      "Halewood Media handles scheduling. Halewood Media provides the equipment.",
+    ]);
+    expect(STRUCT_006.check(ctx)).toBeNull();
+  });
+});

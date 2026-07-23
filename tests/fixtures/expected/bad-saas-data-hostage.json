@@ -478,7 +478,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "STRUCT-003",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -497,7 +497,7 @@
       "finding_id": "STRUCT-006-s1.1-400",
       "fired": true,
       "rule_id": "STRUCT-006",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -833,7 +833,7 @@
       "id": "STRUCT-006-s1.1-400",
       "recommendation": "Add a definition for each genuinely defined term, or change the casing if the phrase is being used in its ordinary sense.",
       "rule_id": "STRUCT-006",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Undefined Title-Case terms: 1"
@@ -978,7 +978,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "702abb609bdfa97b248bc88604cd4c60a9227b9d74acf19bf79a16d6877e3e35",
+  "result_hash": "fd8f17357db64ea20304431acc5f718fc5edf39e0dd781120e38436d1e97182e",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
     "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",
