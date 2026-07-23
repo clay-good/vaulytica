@@ -30,6 +30,16 @@ const DEFINITION_INLINE = /["“”']([A-Z][\w\s\-&]{1,80}?)["“”']\s+(?:shal
 const DEFINITION_BARE = /^\s*([A-Z][\w\s\-&]{1,80}?)\s+(?:shall\s+)?means?\b/i;
 
 /**
+ * The double-alias definition: `"Protected Health Information" or "PHI"
+ * means …`. DEFINITION_INLINE requires `means` right after the closing
+ * quote, so only the SECOND term registered and the first — the term the
+ * document then uses everywhere — was reported by STRUCT-006 as never
+ * defined. Both names name the same definition.
+ */
+const DEFINITION_ALIASED =
+  /["“”']([A-Z][\w\s\-&]{1,80}?)["“”']\s+or\s+["“”']([A-Z][\w\s\-&/'’.]{1,60}?)["“”']\s+(?:shall\s+)?means?\b/gi;
+
+/**
  * The other inline convention, and the dominant one in commercial drafting:
  * the term is introduced by a parenthetical after the phrase it names —
  * `Acme Corp, a Delaware corporation ("Customer")`, `any Statement of Work
@@ -374,8 +384,26 @@ function firstClause(text: string): string {
 
 function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry[] {
   const out: DefinitionEntry[] = [];
-  DEFINITION_INLINE.lastIndex = 0;
+  DEFINITION_ALIASED.lastIndex = 0;
   let m: RegExpExecArray | null;
+  while ((m = DEFINITION_ALIASED.exec(text)) !== null) {
+    const definition = text.slice(m.index + m[0].length).trim();
+    if (!definition) continue;
+    for (const term of [m[1]!.trim(), m[2]!.trim()]) {
+      out.push({
+        term,
+        definition,
+        defined_at: {
+          section_id: base.section_id,
+          paragraph_id: base.paragraph_id,
+          start: base.start + m.index,
+          end: base.start + m.index + m[0].length,
+        },
+        used_at: [],
+      });
+    }
+  }
+  DEFINITION_INLINE.lastIndex = 0;
   while ((m = DEFINITION_INLINE.exec(text)) !== null) {
     const term = m[1]!.trim();
     const after = text.slice(m.index + m[0].length).trim();

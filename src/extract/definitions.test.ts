@@ -193,3 +193,21 @@ describe("truncated candidates of longer defined terms", () => {
     expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Contractor Background");
   });
 });
+
+describe("the double-alias definition form", () => {
+  it('registers both names of \'"X" or "Y" means …\'', () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Definitions",
+        '"Protected Health Information" or "PHI" means individually identifiable health information transmitted or maintained in any form.',
+        "Business Associate shall safeguard Protected Health Information. Access to Protected Health Information is limited. PHI shall not be sold. PHI records are retained.",
+      ]),
+    );
+    const terms = map.entries.map((e) => e.term);
+    expect(terms).toContain("Protected Health Information");
+    expect(terms).toContain("PHI");
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain(
+      "Protected Health Information",
+    );
+  });
+});

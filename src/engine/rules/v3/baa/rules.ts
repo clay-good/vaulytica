@@ -256,6 +256,7 @@ export const BAA_RULES: Rule[] = [
 
   presence({
     id: "BAA-014",
+    version: "1.1.0",
     name: "Administrative safeguards referenced",
     description: "BAA should reference administrative safeguards required by the Security Rule.",
     citation: "45 C.F.R. § 164.308",
@@ -265,12 +266,18 @@ export const BAA_RULES: Rule[] = [
       "Section 164.308 requires administrative safeguards (workforce training, contingency planning, periodic risk assessment).",
     recommendation:
       "Reference 45 CFR § 164.308 (Administrative Safeguards) in the security clause.",
-    present_patterns: [/administrative\s+safeguards|164\.308/i],
+    // The § 164.504(e)(2)(ii)(B) coordinated list — "administrative,
+    // physical, and technical safeguards" — is the single most common BAA
+    // safeguards wording; the adjacent-bigram pattern alone missed it.
+    present_patterns: [
+      /administrative\s+safeguards|administrative\s*(?:,|\s+and\b)[^.]{0,40}?\bsafeguards|164\.308/i,
+    ],
     default_severity: "warning",
   }),
 
   presence({
     id: "BAA-015",
+    version: "1.1.0",
     name: "Physical safeguards referenced",
     description: "BAA should reference physical safeguards required by the Security Rule.",
     citation: "45 C.F.R. § 164.310",
@@ -279,7 +286,10 @@ export const BAA_RULES: Rule[] = [
     explanation:
       "Section 164.310 requires physical safeguards (facility access controls, workstation security, device controls).",
     recommendation: "Reference 45 CFR § 164.310 (Physical Safeguards) in the security clause.",
-    present_patterns: [/physical\s+safeguards|164\.310/i],
+    // "administrative, physical, and technical safeguards" — see BAA-014.
+    present_patterns: [
+      /physical\s+safeguards|physical\s*(?:,|\s+and\b)[^.]{0,40}?\bsafeguards|164\.310/i,
+    ],
     default_severity: "warning",
   }),
 
@@ -674,6 +684,7 @@ export const BAA_RULES: Rule[] = [
 
   presence({
     id: "BAA-038",
+    version: "1.1.0",
     name: "Term / duration clause present",
     description: "BAA should specify its term.",
     citation: "45 C.F.R. § 164.504(e)",
@@ -682,8 +693,12 @@ export const BAA_RULES: Rule[] = [
     explanation:
       "BAAs should state how long the agreement is in effect, including renewal handling.",
     recommendation: "Add a 'Term' clause specifying initial term and renewal.",
+    // A BAA's canonical term is not a year count — it runs until PHI
+    // disposition: "effective as of the Effective Date and terminates when
+    // all PHI is destroyed or returned" (§ 164.504(e) shape).
     present_patterns: [
       /(\bterm\b.{0,40}(year|month|day)|term\s+of\s+(this\s+)?agreement|initial\s+term)/i,
+      /terminates?\s+when\s+all\s+(?:the\s+)?(?:PHI|protected\s+health\s+information)/i,
     ],
     default_severity: "warning",
   }),
@@ -759,6 +774,7 @@ export const BAA_RULES: Rule[] = [
 
   presence({
     id: "BAA-043",
+    version: "1.1.0",
     name: "Survival of HIPAA obligations after termination",
     description: "BAA should state that HIPAA-related obligations survive termination.",
     citation: "45 C.F.R. § 164.504(e)(2)(ii)(I)",
@@ -769,7 +785,14 @@ export const BAA_RULES: Rule[] = [
       "Section 164.504(e)(2)(ii)(I) and HHS guidance expect HIPAA obligations to survive termination for any PHI retained after termination.",
     recommendation:
       "Add: 'The obligations of Business Associate under Section [X] (Return or Destruction of PHI), and the obligations applicable to any PHI that BA retains, shall survive termination.'",
-    present_patterns: [/survive\s+(the\s+)?termination|survival/i],
+    // § 164.504(e)(2)(ii)(J)'s own survival mechanism: when return or
+    // destruction is infeasible, "extend the protections of this BAA" to the
+    // retained PHI. A BAA quoting the regulation's mechanism has a survival
+    // clause, whether or not it uses the word.
+    present_patterns: [
+      /survive\s+(the\s+)?termination|survival/i,
+      /extend\s+the\s+protections\s+of\s+this\s+(?:BAA|Agreement)/i,
+    ],
     default_severity: "warning",
   }),
 

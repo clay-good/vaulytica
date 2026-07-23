@@ -14,7 +14,7 @@ Access, Amendment, Accounting. Business Associate shall make PHI available to Co
 
 Books, Records. Business Associate shall make its internal practices, books, and records relating to its use and disclosure of PHI available to the Secretary of Health and Human Services for purposes of determining Covered Entity's compliance with the HIPAA Rules.
 
-Return or Destruction. Upon termination of this BAA for any reason, Business Associate shall return to Covered Entity or destroy all PHI received from or created or received by Business Associate on behalf of Covered Entity. If return or destruction is infeasible, Business Associate shall extend the protections of this BAA to such PHI and limit further uses and disclosures to those purposes that make return or destruction infeasible.
+Return or Destruction. Upon termination of this BAA for any reason, Business Associate shall return to Covered Entity or destroy all PHI received from or created or received by Business Associate on behalf of Covered Entity.
 
 Minimum Necessary. Business Associate shall, when using or disclosing PHI or requesting PHI from Covered Entity, make reasonable efforts to limit such use or disclosure to the minimum necessary to accomplish the intended purpose.
 

@@ -233,3 +233,53 @@ describe("BAA ruleset — determinism", () => {
     expect(a.result_hash).toBe(b.result_hash);
   });
 });
+
+describe("BAA ruleset — regulation-verbatim presence forms (v1.1.0)", () => {
+  it("accepts the coordinated safeguards list, PHI-disposition term, and extend-protections survival", async () => {
+    const ctx = withBaa(
+      buildContext(
+        [
+          "4. Safeguards",
+          "Business Associate shall use appropriate administrative, physical, and technical safeguards to prevent use or disclosure of PHI other than as provided for by this BAA.",
+        ],
+        [
+          "11. Term and Termination",
+          "This BAA is effective as of the Effective Date and terminates when all PHI is destroyed or returned to Covered Entity.",
+        ],
+        [
+          "12. Return or Destruction",
+          "If return or destruction is infeasible, Business Associate shall extend the protections of this BAA to the retained PHI and limit further uses and disclosures.",
+        ],
+      ),
+    );
+    const run = await runEngine({
+      rules: BAA_RULES,
+      ctx,
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
+    const fired = new Set(run.findings.map((f) => f.rule_id));
+    for (const id of ["BAA-014", "BAA-015", "BAA-038", "BAA-043"]) {
+      expect(fired.has(id), `${id} should accept the regulation-verbatim form`).toBe(false);
+    }
+  });
+
+  it("still reports all four when the clauses are genuinely absent", async () => {
+    const ctx = withBaa(
+      buildContext([
+        "BAA",
+        "Business Associate shall handle protected health information for Covered Entity.",
+      ]),
+    );
+    const run = await runEngine({
+      rules: BAA_RULES,
+      ctx,
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
+    const fired = new Set(run.findings.map((f) => f.rule_id));
+    for (const id of ["BAA-014", "BAA-015", "BAA-038", "BAA-043"]) {
+      expect(fired.has(id), `${id} should fire when absent`).toBe(true);
+    }
+  });
+});

@@ -2270,7 +2270,11 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // retained after termination; a BAA whose Term clause sweeps
   // every obligation to a clean cut-off leaves the covered entity
   // with no contractual hook for retained-PHI handling after the
-  // commercial relationship ends.
+  // commercial relationship ends. (BAA-043 v1.1.0 recognizes the
+  // § 164.504(e)(2)(ii)(J) "extend the protections of this BAA"
+  // infeasibility mechanism as a survival clause, so this fixture's
+  // return-or-destruction clause deliberately omits that sentence —
+  // with it, the fixture was not actually missing survival.)
   "baa-missing-survival-clause-fail.txt": ["BAA-043"],
 
   // Mutual NDA-Deep with a complete Section 9 Injunctive Relief
