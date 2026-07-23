@@ -53,6 +53,28 @@ describe("STRUCT-017 — signature-block completeness", () => {
     expect(STRUCT_017.check(ctx)).toBeNull();
   });
 
+  it("still reconciles a party that defines its own name", () => {
+    // A party is routinely a defined term ("Northwind Trust" means the
+    // Delaware statutory trust acting as Escrow Agent). Excluding defined
+    // terms from the party set erased this finding entirely.
+    const ctx = buildContext(
+      [
+        "Agreement",
+        'This Escrow Agreement is among Acme Corp., a Delaware corporation ("Depositor"), Globex Industries, Inc., a New York corporation ("Beneficiary"), and Northwind Trust, a Delaware trust ("Escrow Agent").',
+      ],
+      [
+        "Definitions",
+        '"Northwind Trust" means the Delaware statutory trust acting as Escrow Agent hereunder, and its permitted successors.',
+      ],
+      ["Depositor sig", "Depositor"],
+      ["Depositor line", "By: ____ Name: Jane Roe Title: CEO"],
+      ["Beneficiary sig", "Beneficiary"],
+      ["Beneficiary line", "By: ____ Name: John Doe Title: COO"],
+    );
+    const f = STRUCT_017.check(ctx);
+    expect(f?.description).toMatch(/Northwind Trust/);
+  });
+
   it("stays silent with fewer than two declared parties", () => {
     const ctx = buildContext(
       ["Agreement", 'Acme Corp., a Delaware corporation ("Provider"), offers the Services.'],

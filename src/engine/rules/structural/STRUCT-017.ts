@@ -50,18 +50,7 @@ export const rule: Rule = {
   dkb_citations: [],
 
   check(ctx: RuleContext): Finding | null {
-    // A defined term occasionally slips into the party set when the
-    // preamble extractor mistakes a capitalized phrase + a word that opens
-    // with an entity token ("Confidential Information includes…" → entity
-    // "inc") for an entity. A genuine signing entity is not a defined term,
-    // so drop any principal whose name matches one — it keeps a spurious
-    // "party" from manufacturing a missing-signature finding.
-    const definedTerms = new Set(
-      ctx.extracted.definitions.entries.map((e) => normalizeName(e.term)),
-    );
-    const principals = ctx.extracted.parties.filter(
-      (p) => isDeclaredParty(p) && !definedTerms.has(normalizeName(p.name)),
-    );
+    const principals = ctx.extracted.parties.filter(isDeclaredParty);
     if (principals.length < 2) return null;
 
     // Collect paragraphs (skipping exhibits — a signature block does not
@@ -161,6 +150,13 @@ const CORP_SUFFIX =
  * reconciliation to entities that genuinely sign — precision over recall
  * (§18), so a non-corporate signatory (an individual, a trust by trustee) is
  * simply not reconciled rather than falsely flagged.
+ *
+ * The suffix test is also the ONLY phantom gate. An earlier version also
+ * dropped any party whose name matched a defined term, which mistook a
+ * drafting convention for a phantom: an entity that defines its own name
+ * ("Northwind Trust" means the Delaware statutory trust acting as Escrow
+ * Agent) is a real signatory, and excluding it silently erased its missing
+ * signature line — the exact closing blocker this rule exists to report.
  */
 function isDeclaredParty(p: Party): boolean {
   return Boolean(p.entity_type) && CORP_SUFFIX.test(p.name.trim());
@@ -178,12 +174,4 @@ function surfacesOf(p: Party): string[] {
 
 function escapeRegExp(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-/** Normalize a name/term for comparison: trim trailing punctuation, lowercase. */
-function normalizeName(s: string): string {
-  return s
-    .trim()
-    .replace(/[.,;:]+$/, "")
-    .toLowerCase();
 }
