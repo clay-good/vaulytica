@@ -26,8 +26,19 @@ const REF_RE =
 // qualifier that trails such a citation, or the "U.S.C." / "C.F.R." reporter
 // that fronts a bare-section statutory cite. A reference matching this is
 // dropped so STRUCT-007 never fabricates a broken internal reference from it.
+// The trailing qualifier that marks a reference as an EXTERNAL statutory
+// citation: either "of the … Code/Act/Regulation" or a regulation abbreviation
+// that directly follows the number ("Article 32 GDPR", "Article 6 UK GDPR",
+// "§ 1798.100 CCPA"). The EU data-protection style writes the regulation right
+// after the article, with no "of the", so the "of the …" form alone missed
+// every "Article NN GDPR" — 140+ in the corpus — and STRUCT-007 reported each
+// as a broken internal reference to an "Article 32" the document never has.
+// The qualifier can trail a sub-reference and a list or range of further
+// numbers before it lands — "Article 28(4) of the … Regulation", "Articles 33
+// and 34 GDPR", "Articles 32 to 36 of the GDPR". Skip that connective run, then
+// require the statutory qualifier.
 const EXTERNAL_TRAILER_RE =
-  /^\s+of\s+(?:the\s+)?[A-Z][^.;,]*?\b(?:Code|Acts?|Regulations?|Rules?|U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?)\b/;
+  /^(?:\(\d+[a-z]?\))*(?:\s+(?:to|through|and|or|,)\s+\d+[A-Za-z]?(?:\(\d+[a-z]?\))*)*\s+(?:of\s+(?:the\s+)?[A-Z][^.;,]*?\b(?:Code|Acts?|Regulations?|Rules?|U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?)\b|(?:UK\s+|EU\s+)?(?:GDPR|CCPA|CPRA|HIPAA|LGPD|PIPEDA|DPA\s+20\d\d)\b)/;
 const EXTERNAL_LEADER_RE = /\b(?:U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?|Stat\.)\s*$/;
 
 // A paragraph that OPENS with "6. Vendor Indemnity …" is section 6, even when

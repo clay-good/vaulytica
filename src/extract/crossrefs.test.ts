@@ -224,3 +224,43 @@ describe("paragraph-leading section numbers resolve cross-references", () => {
     void refs;
   });
 });
+
+describe("external statutory article citations are not internal cross-references", () => {
+  const para = (text: string): DocumentTree =>
+    normalize({
+      type: "document",
+      sections: [
+        {
+          id: "",
+          heading: "Security",
+          level: 1,
+          paragraphs: [{ id: "", runs: [{ id: "", text, start: 0, end: 0 }] }],
+          children: [],
+        },
+      ],
+    });
+  const unresolved = (t: string) =>
+    extractCrossRefs(para(t), extractSections(para(t)))
+      .filter((r) => r.unresolved)
+      .map((r) => r.raw_text);
+
+  it("drops a GDPR article citation trailing the number", () => {
+    expect(unresolved("The Processor shall comply with Article 32 GDPR at all times.")).toEqual([]);
+  });
+
+  it("drops a citation with a sub-reference before the regulation", () => {
+    expect(
+      unresolved(
+        "This is entered into pursuant to Article 28(4) of the General Data Protection Regulation.",
+      ),
+    ).toEqual([]);
+  });
+
+  it("drops a list or range of articles ending in the regulation", () => {
+    expect(unresolved("Processor shall assist under Articles 33 and 34 GDPR.")).toEqual([]);
+  });
+
+  it("still flags a bare internal Article reference that does not resolve", () => {
+    expect(unresolved("As set out in Article 9, the parties agree.")).toContain("Article 9");
+  });
+});
