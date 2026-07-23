@@ -223,3 +223,102 @@ describe("street addresses are not defined terms", () => {
     expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Dockside Avenue");
   });
 });
+
+describe("meaning-by-reference definitions", () => {
+  it("registers a bare list of terms defined by reference to a statute", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Definitions",
+        "Personal Data, Data Subject, Processing, Controller and Processor shall have the meaning given in Article 4 GDPR. Personal Data Breach shall have the meaning given in Article 4(12) GDPR.",
+        "Processor shall notify Controller of any Personal Data Breach without undue delay.",
+      ]),
+    );
+    const terms = map.entries.map((e) => e.term);
+    for (const t of [
+      "Personal Data",
+      "Data Subject",
+      "Processing",
+      "Controller",
+      "Processor",
+      "Personal Data Breach",
+    ]) {
+      expect(terms).toContain(t);
+    }
+    const pd = map.entries.find((e) => e.term === "Personal Data");
+    expect(pd?.form).toBe("meaning-reference");
+    expect(pd?.reference).toBe("Article 4");
+  });
+
+  it("registers a quoted term defined by reference to another instrument", () => {
+    const entry = extractDefinitions(
+      buildTree([
+        "Definitions",
+        '"Business Associate" shall have the meaning given to such term in 45 CFR § 160.103.',
+      ]),
+    ).entries.find((e) => e.term === "Business Associate");
+    expect(entry).toBeDefined();
+    expect(entry?.form).toBe("meaning-reference");
+    expect(entry?.definition).toContain("160.103");
+  });
+
+  it("handles camelCase acronyms in a bare term list", () => {
+    const terms = extractDefinitions(
+      buildTree([
+        "Definitions",
+        "Protected Health Information, PHI, and ePHI shall have the meaning given in 45 CFR § 160.103.",
+      ]),
+    ).entries.map((e) => e.term);
+    expect(terms).toContain("Protected Health Information");
+    expect(terms).toContain("PHI");
+    expect(terms).toContain("ePHI");
+  });
+
+  it("does not read an undefined-terms fallback clause as defining anything", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Definitions",
+        "Capitalized terms used but not defined herein shall have the meaning given in the MSA.",
+      ]),
+    );
+    expect(map.entries).toHaveLength(0);
+  });
+});
+
+describe("construed-accordingly derivative terms", () => {
+  it("registers the derivative forms next to their sibling definition", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Definitions",
+        '"Processing" means any operation performed on personal data, and "Process" and "Processed" shall be construed accordingly.',
+        "Processor shall Process the data only on documented instructions.",
+      ]),
+    );
+    const terms = map.entries.map((e) => e.term);
+    expect(terms).toContain("Processing");
+    expect(terms).toContain("Process");
+    expect(terms).toContain("Processed");
+    const process = map.entries.find((e) => e.term === "Process");
+    expect(process?.form).toBe("construed");
+    // The sibling express definition is not overwritten by the construed scan.
+    const processing = map.entries.find((e) => e.term === "Processing");
+    expect(processing?.form).toBeUndefined();
+    expect(processing?.definition).toContain("any operation");
+  });
+});
+
+describe("compounds of defined terms are not undefined phrases", () => {
+  it("does not flag a phrase that segments fully into defined terms", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Definitions",
+        'Personal Data and Processing shall have the meaning given in Article 4 GDPR, and "Process" shall be construed accordingly.',
+        "Processor may Process Personal Data solely as instructed. The parties shall follow the Data Retention Policy.",
+        "Any request to Process Personal Data shall be documented. Updates to the Data Retention Policy are reviewed annually.",
+      ]),
+    );
+    const undefinedTerms = map.undefined_capitalized.map((u) => u.term);
+    expect(undefinedTerms).not.toContain("Process Personal Data");
+    // A phrase that does NOT segment into defined terms is still reported.
+    expect(undefinedTerms).toContain("Data Retention Policy");
+  });
+});

@@ -21,7 +21,7 @@ import { isGenericOwnUse, isStatutoryIdiomUse } from "./STRUCT-009.js";
  */
 export const rule: Rule = {
   id: "STRUCT-014",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Inconsistent defined-term casing",
   category: "structural",
   default_severity: "info",
@@ -37,9 +37,13 @@ export const rule: Rule = {
       // A parenthetical term is named after the ordinary noun it follows, so
       // that noun keeps appearing in lowercase for its ordinary meaning — "is
       // a \"service provider\" as defined in Cal. Civ. Code", "more favorable
-      // than those offered to any other customer". Only an express definition
-      // ('"X" means …') constitutes a term whose lowercase use is a slip.
-      if (def.form === "parenthetical") continue;
+      // than those offered to any other customer". Meaning-reference and
+      // construed terms import a statute's vocabulary, which the statute
+      // itself writes in lowercase ("the processing of personal data"), so a
+      // lowercase use echoes the source, not a slip. Only an express
+      // definition ('"X" means …') constitutes a term whose lowercase use is
+      // the inconsistency this rule reports.
+      if (def.form && def.form !== "means") continue;
       if (!isMultiWordTitleCase(def.term)) continue;
       const escaped = escapeRegExp(def.term);
       // Match the term in lowercase, surrounded by word boundaries.

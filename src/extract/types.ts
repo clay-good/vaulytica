@@ -148,8 +148,15 @@ export type DefinitionEntry = {
    * in Cal. Civ. Code", "more favorable than those offered to any other
    * customer". Those are correct drafting, not the capitalization slip a
    * lowercase use of an express term would be.
+   *
+   * `"meaning-reference"` imports another instrument's definition ("Personal
+   * Data … shall have the meaning given in Article 4 GDPR");
+   * `"construed"` is the derivative-form convention ('"Process" shall be
+   * construed accordingly'). Both usually import a statute's vocabulary,
+   * which the statute itself writes in lowercase — so, like parenthetical
+   * terms, their lowercase uses are the source's wording, not slips.
    */
-  form?: "means" | "parenthetical";
+  form?: "means" | "parenthetical" | "meaning-reference" | "construed";
 };
 
 export type DefinitionMap = {

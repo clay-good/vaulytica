@@ -55,6 +55,40 @@ const DEFINITION_ALIASED =
 const DEFINITION_PARENTHETICAL =
   /\((?:\s*(?:the|each|an?|collectively|together|individually|hereinafter|referred\s+to\s+as)[,]?\s+)*["\u201C]([A-Z][\w\s\-&/'\u2019.]{1,60}?)["\u201D]\s*\)/g;
 
+/**
+ * Meaning-by-reference: a term (or a list of terms) is defined by pointing at
+ * another instrument's definition rather than stating one — the dominant
+ * convention in DPAs and BAAs importing a statute's vocabulary:
+ *
+ *   `Personal Data, Data Subject, Processing, Controller and Processor shall
+ *    have the meaning given in Article 4 GDPR.`
+ *   `"Business Associate" shall have the meaning given to such term in
+ *    45 CFR § 160.103.`
+ *
+ * Recognizing only `means …` left every such term unregistered: STRUCT-004
+ * reported "no defined terms", STRUCT-006 flagged the terms as
+ * used-but-undefined, and the capitalization rules never saw them at all.
+ * The match anchors on the verb tail; the term list is parsed back from the
+ * start of the sentence, so a fallback clause ("Capitalized terms not
+ * otherwise defined herein shall have the meaning given in the MSA")
+ * contributes nothing — its subject is not a Title-Case term list.
+ * The tail tolerates periods inside numeric citations (`45 CFR § 160.103`).
+ */
+const DEFINITION_MEANING_TAIL =
+  /\b(?:shall\s+|will\s+)?(?:each\s+)?ha(?:ve|s)\s+the\s+(?:respective\s+)?meanings?\s+(?:given|set\s+forth|set\s+out|ascribed|assigned|specified|defined|stated)\b(?:[^.;]|\.(?=\d))*/g;
+
+/**
+ * The derivative-form convention: `"Processing" means …, and "Process" and
+ * "Processed" shall be construed accordingly.` The construed terms carry a
+ * sibling definition's meaning — they are defined terms, not undefined
+ * capitalized phrases.
+ */
+const DEFINITION_CONSTRUED_TAIL =
+  /\b(?:shall|will|must|is\s+to|are\s+to)\s+(?:each\s+)?be\s+construed\s+accordingly\b/g;
+
+/** A quoted Title-Case phrase inside a term list. */
+const QUOTED_TERM = /["“]([A-Z][\w\s\-&/'’.]{0,60}?)["”]/g;
+
 /** A definition that points at an exhibit/schedule/section rather than stating its own text. */
 const DEFINITION_REFERENCE =
   /\b(?:attached\s+(?:hereto\s+)?as|set\s+forth\s+in|described\s+in|defined\s+in|as\s+set\s+out\s+in|in)\s+((?:Exhibit|Schedule|Appendix|Annex|Attachment|Section|Article)\s+[A-Z0-9][\w.()-]*)/i;
@@ -301,6 +335,11 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
         }
       }
       if (prefixOfDefined) continue;
+      // A phrase composed entirely of defined terms is a compound USE of
+      // those terms, not a new undefined one: "Process Personal Data" where
+      // "Process" and "Personal Data" are both defined (GDPR vocabulary
+      // imported by reference) is the two defined terms in sequence.
+      if (isCompoundOfDefined(phraseLower, definedNames)) continue;
       if (COMMON_WORDS.has(phrase)) continue;
       if (PLACE_NAMES.has(phrase)) continue;
       // A street address ("88 Dockside Avenue") is a proper noun, never a
@@ -432,6 +471,34 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
       ...(scope ? { scope } : {}),
     });
   }
+  for (const conv of [
+    { tail: DEFINITION_MEANING_TAIL, form: "meaning-reference" as const },
+    { tail: DEFINITION_CONSTRUED_TAIL, form: "construed" as const },
+  ]) {
+    conv.tail.lastIndex = 0;
+    while ((m = conv.tail.exec(text)) !== null) {
+      const listStart = sentenceStartBefore(text, m.index);
+      const terms = parseTermList(text.slice(listStart, m.index));
+      if (terms.length === 0) continue;
+      const definition = m[0].trim();
+      const reference = cleanRef(DEFINITION_REFERENCE.exec(definition)?.[1]);
+      for (const term of terms) {
+        out.push({
+          term,
+          definition,
+          defined_at: {
+            section_id: base.section_id,
+            paragraph_id: base.paragraph_id,
+            start: base.start + listStart,
+            end: base.start + m.index + m[0].length,
+          },
+          used_at: [],
+          ...(reference ? { reference } : {}),
+          form: conv.form,
+        });
+      }
+    }
+  }
   DEFINITION_PARENTHETICAL.lastIndex = 0;
   while ((m = DEFINITION_PARENTHETICAL.exec(text)) !== null) {
     const term = m[1]!.trim();
@@ -459,6 +526,84 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
     });
   }
   return out;
+}
+
+/**
+ * The offset just after the last sentence boundary (`.`, `;`, `:`) before
+ * `index`. A period followed by a digit is a numeric citation
+ * (`45 CFR § 160.103`), not a boundary.
+ */
+function sentenceStartBefore(text: string, index: number): number {
+  for (let i = index - 1; i >= 0; i--) {
+    const ch = text[i]!;
+    if ((ch === "." || ch === ";" || ch === ":") && !/\d/.test(text[i + 1] ?? "")) return i + 1;
+  }
+  return 0;
+}
+
+/**
+ * Parse the subject of a meaning-tail sentence into defined-term candidates.
+ * Quoted phrases win when present (they survive interior "and"s); otherwise
+ * the bare list is split on commas and "and". A subject that is ordinary
+ * prose ("Capitalized terms used but not defined herein") yields nothing.
+ */
+function parseTermList(listText: string): string[] {
+  const out: string[] = [];
+  QUOTED_TERM.lastIndex = 0;
+  let sawQuote = false;
+  let q: RegExpExecArray | null;
+  while ((q = QUOTED_TERM.exec(listText)) !== null) {
+    sawQuote = true;
+    const term = q[1]!.trim();
+    if (isPlausibleTerm(term)) out.push(term);
+  }
+  if (sawQuote) return out;
+  for (const raw of listText.split(/,|\band\b/)) {
+    const term = raw
+      .trim()
+      .replace(/^(?:the\s+)?(?:terms?\s+)?/i, "")
+      .trim();
+    if (isPlausibleTerm(term)) out.push(term);
+  }
+  return out;
+}
+
+/**
+ * A term-list candidate must read as a defined term: every word capitalized
+ * (up to two camelCase lead letters — "ePHI") or a lowercase connector, no
+ * more than six words, and a lone word must not be a sentence-flow stopword
+ * or boilerplate noun ("It", "Agreement").
+ */
+function isPlausibleTerm(term: string): boolean {
+  if (term.length < 2 || term.length > 60) return false;
+  const words = term.split(/\s+/);
+  if (words.length > 6) return false;
+  for (const w of words) {
+    if (/^[a-z]{0,2}[A-Z][\w\-&/'’.]*$/.test(w)) continue;
+    if (/^(?:of|and|or|for|to|in|the|a|an)$/.test(w)) continue;
+    return false;
+  }
+  if (words.length === 1 && (TITLE_CASE_LEADING_STOPWORDS.has(term) || COMMON_WORDS.has(term))) {
+    return false;
+  }
+  if (words.length === 2 && TITLE_CASE_LEADING_STOPWORDS.has(words[0]!)) return false;
+  return /^[a-z]{0,2}[A-Z]/.test(term);
+}
+
+/** True when the phrase's words segment fully into defined term names. */
+function isCompoundOfDefined(phraseLower: string, definedNames: Set<string>): boolean {
+  const words = phraseLower.split(/\s+/);
+  const reachable: boolean[] = new Array(words.length + 1).fill(false);
+  reachable[0] = true;
+  for (let i = 1; i <= words.length; i++) {
+    for (let j = 0; j < i; j++) {
+      if (reachable[j] && definedNames.has(words.slice(j, i).join(" "))) {
+        reachable[i] = true;
+        break;
+      }
+    }
+  }
+  return reachable[words.length]!;
 }
 
 function registerDefinition(map: Map<string, DefinitionEntry>, entry: DefinitionEntry): void {

@@ -119,3 +119,33 @@ describe("the GDPR's own lowercase compound terms are not slips (v1.1.0)", () =>
     expect(STRUCT_009.check(ctx)).not.toBeNull();
   });
 });
+
+describe("statute vocabulary imported by reference is not a casing slip", () => {
+  it("stays silent on lowercase statute wording under a meaning-reference definition", () => {
+    const ctx = buildContext(
+      [
+        "Definitions",
+        'Personal Data, Processing, Controller and Processor shall have the meaning given in Article 4 GDPR, and "Process" shall be construed accordingly.',
+      ],
+      [
+        "Instructions",
+        "Processor shall carry out the processing of personal data only on documented instructions from Controller.",
+      ],
+    );
+    expect(STRUCT_009.check(ctx)).toBeNull();
+    expect(STRUCT_014.check(ctx)).toBeNull();
+  });
+
+  it("still reports a lowercase use of a term the document defines expressly", () => {
+    const ctx = buildContext(
+      [
+        "Definitions",
+        "Personal Data shall have the meaning given in Article 4 GDPR.",
+        '"Confidential Information" means all non-public information disclosed by either party.',
+      ],
+      ["Use", "Recipient shall protect confidential information with reasonable care."],
+    );
+    expect(STRUCT_009.check(ctx)).not.toBeNull();
+    expect(STRUCT_014.check(ctx)).not.toBeNull();
+  });
+});
