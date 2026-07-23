@@ -235,6 +235,7 @@ const BYLAWS_RULES: Rule[] = [
     exclude_if: [
       /(?:shall|will|does|do)\s+not\s+apply\s+to[^.]{0,100}(?:exchange\s+act|federal\s+securities|1934\s+act)/i,
       /(?:exclud(?:e|es|ing)|except\s+for|other\s+than)[^.]{0,60}(?:exchange\s+act|federal\s+securities|1934\s+act)/i,
+      /\bnothing\b[^.]{0,120}(?:exchange\s+act|federal\s+securities|1934\s+act)/i,
     ],
     bad_title: "Exclusive-forum bylaw extends to Exchange Act claims",
     bad_description:
@@ -422,6 +423,7 @@ const OP_AGREEMENT_RULES: Rule[] = [
     exclude_if: [
       /(?:does|do|shall|will)\s+not\s+(?:be\s+deemed\s+to\s+)?waive/i,
       /\bnothing\b[^.]{0,60}waive/i,
+      /\bno\s+(?:provision|term)\b[^.]{0,60}waive/i,
     ],
     bad_title: "Implied-covenant waiver is statutorily prohibited",
     bad_description:
@@ -1125,6 +1127,11 @@ const COMMITTEE_CHARTER_RULES: Rule[] = [
     bad_patterns: [
       /non.independent\s+(director|member).{0,40}(may|shall|can)\s+serve.{0,40}audit/is,
     ],
+    // The rule's own recommendation treats an override *limited to* the Rule
+    // 10A-3 phase-in / controlled-company exceptions as the compliant fix, so
+    // flagging a charter that cites exactly those exceptions is a false
+    // accusation against the drafting the rule asks for.
+    exclude_if: [/(?:phase.?in|controlled.company)[^.]{0,40}exception/i, /10a-3\(b\)\(1\)\(iv\)/i],
     bad_title: "Audit-committee independence override flagged",
     bad_description:
       "The charter appears to permit a non-independent director to sit on the audit committee.",
@@ -1300,6 +1307,7 @@ const PARTNERSHIP_RULES: Rule[] = [
     exclude_if: [
       /(?:does|do|shall|will)\s+not\s+(?:waive|eliminate|disclaim)/i,
       /\bnothing\b[^.]{0,60}(?:waive|eliminate|disclaim)/i,
+      /\bno\s+(?:provision|term)\b[^.]{0,60}(?:waive|eliminate|disclaim)/i,
     ],
     bad_title: "Implied-covenant waiver flagged",
     bad_description:
