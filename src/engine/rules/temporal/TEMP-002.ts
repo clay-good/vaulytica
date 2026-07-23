@@ -13,6 +13,15 @@ import { forEachParagraph } from "../../../extract/walk.js";
 const REFERENCED_INSTRUMENT_DATE =
   /\bthe\s+[^.;]{0,70}?\b(?:agreement|msa|dpa|baa|contract|sow|order\s+form|lease|note|policy|addendum|indenture)\b[^.;]{0,40}?\bdated\s+(?:as\s+of\s+)?$/i;
 
+/**
+ * A date that opens a stated PERIOD is a range boundary, not an effective
+ * date: a HIPAA authorization covering "treatment notes from the period
+ * 2024-01-01 through 2026-12-31" is not back-dated to 2024 — that is the span
+ * of records it authorizes.
+ */
+const PERIOD_START_DATE =
+  /\b(?:for\s+|from\s+|covering\s+)?(?:the\s+)?period\s+(?:from\s+|of\s+)?$/i;
+
 /** Absolute-date start offsets whose text reads as another instrument's date. */
 function referencedDateStarts(ctx: RuleContext): Set<number> {
   const out = new Set<number>();
@@ -22,7 +31,7 @@ function referencedDateStarts(ctx: RuleContext): Set<number> {
       const start = d.position?.start;
       if (start === undefined || start < p.start || start >= p.start + p.text.length) continue;
       const before = p.text.slice(0, start - p.start);
-      if (REFERENCED_INSTRUMENT_DATE.test(before)) out.add(start);
+      if (REFERENCED_INSTRUMENT_DATE.test(before) || PERIOD_START_DATE.test(before)) out.add(start);
     }
   });
   return out;

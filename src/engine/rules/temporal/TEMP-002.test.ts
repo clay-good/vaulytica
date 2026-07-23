@@ -86,3 +86,22 @@ describe("TEMP-002 — a referenced instrument's date is not this document's", (
     ).not.toBeNull();
   });
 });
+
+describe("TEMP-002 — a stated period boundary is not an effective date", () => {
+  it("stays silent when the earliest date opens a records period", () => {
+    // A HIPAA authorization covering "the period 2024-01-01 through
+    // 2026-12-31" is not back-dated to 2024; that is the span of records.
+    expect(
+      TEMP_002.check(
+        buildContext(
+          [
+            "Authorization",
+            "I authorize release of medical records, lab results, and treatment notes from the period 2024-01-01 through 2026-12-31.",
+          ],
+          ["Expiration", "This authorization expires on 2026-12-31."],
+          ["Signature", "Signed on 2026-12-15."],
+        ),
+      ),
+    ).toBeNull();
+  });
+});
