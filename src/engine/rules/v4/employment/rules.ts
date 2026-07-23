@@ -517,6 +517,14 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
       /(employee|worker).{0,40}shall\s+not.{0,40}(compete|engage\s+in\s+any\s+business)/is,
       /non.?compete\s+(period|covenant).{0,200}(employee|worker)/is,
     ],
+    // "Employee shall not be subject to any covenant not to compete" satisfies
+    // the `shall not … compete` pattern while saying the OPPOSITE — reporting
+    // that the agreement "contains a non-compete covenant" is then flatly
+    // contradicted by the clause it quotes.
+    exclude_if: [
+      /\bno\s+non.?compete\b/i,
+      /not\s+be\s+subject\s+to[^.]{0,60}(?:non.?compete|covenant\s+not\s+to\s+compete)/i,
+    ],
     bad_title: "Worker non-compete flagged for state-law enforceability scrutiny",
     bad_description:
       "The agreement contains an employee / worker non-compete covenant whose enforceability turns on state law.",

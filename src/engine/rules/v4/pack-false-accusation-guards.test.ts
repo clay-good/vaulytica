@@ -22,11 +22,13 @@ import { REAL_ESTATE_RULES } from "./real-estate/index.js";
 import { IP_LICENSING_RULES } from "./ip-licensing/index.js";
 import { M_AND_A_RULES } from "./m-and-a/index.js";
 import { REGULATORY_PROSE_RULES } from "./regulatory-prose/index.js";
+import { EMPLOYMENT_V4_RULES } from "./employment/index.js";
 
 const re038 = REAL_ESTATE_RULES.find((r) => r.id === "RE-038")!;
 const ipl009 = IP_LICENSING_RULES.find((r) => r.id === "IPL-009")!;
 const mna074 = M_AND_A_RULES.find((r) => r.id === "MNA-074")!;
 const reg019 = REGULATORY_PROSE_RULES.find((r) => r.id === "REG-019")!;
+const emp024 = EMPLOYMENT_V4_RULES.find((r) => r.id === "EMP-024")!;
 const doc = (heading: string, ...rest: string[]) => buildContext([heading, ...rest]);
 
 describe("RE-038 — fair-housing compliance clause is not a discriminatory covenant", () => {
@@ -156,6 +158,30 @@ describe("REG-019 — a disclosed actual incident is not a hypothetical risk", (
         doc(
           "Risk Factors",
           "We may experience cyber incidents in the future, which could adversely affect our reputation and results of operations.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});
+
+describe("EMP-024 — an agreement that disclaims a non-compete has no non-compete", () => {
+  it("stays silent on a clause stating the employee is subject to no non-compete", () => {
+    expect(
+      emp024.check(
+        doc(
+          "No Non-Compete",
+          "Employee shall not be subject to any covenant not to compete following termination of employment. The Company relies solely on confidentiality and non-solicitation protections.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still flags a real worker non-compete", () => {
+    expect(
+      emp024.check(
+        doc(
+          "Non-Competition",
+          "Employee shall not compete with the Company for two years following termination of employment.",
         ),
       ),
     ).not.toBeNull();
