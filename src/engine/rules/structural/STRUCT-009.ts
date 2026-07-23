@@ -5,7 +5,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
 /** STRUCT-009 — Defined-term capitalization consistency (info). */
 export const rule: Rule = {
   id: "STRUCT-009",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Defined-term capitalization consistency",
   category: "structural",
   default_severity: "info",
@@ -31,7 +31,11 @@ export const rule: Rule = {
         let m: RegExpExecArray | null;
         while ((m = re.exec(text)) !== null) {
           const slice = text.slice(m.index, m.index + m[0].length);
-          if (slice !== target && !isGenericOwnUse(text, m.index)) {
+          if (
+            slice !== target &&
+            !isGenericOwnUse(text, m.index) &&
+            !isStatutoryIdiomUse(text, m.index, target, m[0].length)
+          ) {
             foundLower = true;
             break;
           }
@@ -66,4 +70,23 @@ function escape(s: string): string {
  */
 export function isGenericOwnUse(text: string, index: number): boolean {
   return /\bown\s+$/i.test(text.slice(Math.max(0, index - 12), index));
+}
+
+/**
+ * A lowercase "personal data" inside one of the GDPR's own compound terms of
+ * art is the regulation's wording, not a drafting slip. Article 33 writes
+ * "personal data breach" and Article 9 writes "special categories of personal
+ * data" in lowercase, and every DPA that defines "Personal Data" also quotes
+ * those phrases — flagging them told drafters to miscapitalize the statute.
+ * Deliberately scoped to the one term where the statutory idiom is universal.
+ */
+export function isStatutoryIdiomUse(
+  text: string,
+  index: number,
+  term: string,
+  matchLength: number,
+): boolean {
+  if (term.toLowerCase() !== "personal data") return false;
+  if (/^\s+breach/i.test(text.slice(index + matchLength, index + matchLength + 10))) return true;
+  return /\bspecial\s+categories\s+of\s+$/i.test(text.slice(Math.max(0, index - 30), index));
 }

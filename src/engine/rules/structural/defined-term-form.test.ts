@@ -72,3 +72,50 @@ describe("the reasonable-care 'own confidential information' idiom is not a slip
     expect(STRUCT_009.check(slip)).not.toBeNull();
   });
 });
+
+describe("the GDPR's own lowercase compound terms are not slips (v1.1.0)", () => {
+  const dpa = () =>
+    buildContext(
+      [
+        "Definitions",
+        '"Personal Data" means any information relating to an identified or identifiable natural person.',
+      ],
+      [
+        "Special Categories",
+        "No special categories of personal data are intended to be Processed under this DPA.",
+      ],
+      [
+        "Breach",
+        "Processor shall notify Controller without undue delay after becoming aware of a personal data breach affecting Personal Data.",
+      ],
+    );
+
+  it("does not flag 'personal data breach' or 'special categories of personal data'", () => {
+    const ctx = dpa();
+    expect(STRUCT_009.check(ctx)).toBeNull();
+    expect(STRUCT_014.check(ctx)).toBeNull();
+  });
+
+  it("still reports a genuine lowercase use of Personal Data", () => {
+    const ctx = buildContext(
+      [
+        "Definitions",
+        '"Personal Data" means any information relating to an identified or identifiable natural person.',
+      ],
+      ["Use", "Processor shall handle all personal data with due care."],
+    );
+    expect(STRUCT_009.check(ctx)).not.toBeNull();
+    expect(STRUCT_014.check(ctx)).not.toBeNull();
+  });
+
+  it("the guard is scoped to Personal Data, not other defined terms", () => {
+    const ctx = buildContext(
+      [
+        "Definitions",
+        '"Confidential Information" means all non-public information disclosed by either party.',
+      ],
+      ["Security", "Recipient shall report any confidential information breach without delay."],
+    );
+    expect(STRUCT_009.check(ctx)).not.toBeNull();
+  });
+});

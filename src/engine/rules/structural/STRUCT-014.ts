@@ -1,7 +1,7 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { makeFinding } from "../../finding.js";
 import { forEachParagraph } from "../../../extract/walk.js";
-import { isGenericOwnUse } from "./STRUCT-009.js";
+import { isGenericOwnUse, isStatutoryIdiomUse } from "./STRUCT-009.js";
 
 /**
  * STRUCT-014 — Inconsistent defined-term casing (info).
@@ -21,7 +21,7 @@ import { isGenericOwnUse } from "./STRUCT-009.js";
  */
 export const rule: Rule = {
   id: "STRUCT-014",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Inconsistent defined-term casing",
   category: "structural",
   default_severity: "info",
@@ -59,6 +59,9 @@ export const rule: Rule = {
           // "its own confidential information" is a generic reference (the
           // NDA reasonable-care standard), not a miscapitalized defined term.
           if (isGenericOwnUse(p.text, m.index)) continue;
+          // "personal data breach" / "special categories of personal data"
+          // are the GDPR's own lowercase terms of art, not slips.
+          if (isStatutoryIdiomUse(p.text, m.index, def.term, m[0].length)) continue;
           hits.push({
             term: def.term,
             section_id: p.section.id,
