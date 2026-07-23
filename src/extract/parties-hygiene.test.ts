@@ -78,6 +78,70 @@ describe("party extraction hygiene", () => {
     ).toBeGreaterThanOrEqual(2);
   });
 
+  it("does not turn ordinary prose containing 'between' into parties", () => {
+    // `between X and Y` is a preamble only when a preamble introduces it.
+    // Read as one, a fee sentence sitting in the front matter manufactures
+    // parties named "Gross Revenue" and "Net Revenue for the applicable
+    // period" — names STRUCT-006 then treats as real (so it stops reporting
+    // them as undefined terms) and RISK-002 reports indemnity counts against.
+    expect(
+      names(
+        "Agreement",
+        "The Service Fee is the difference between Gross Revenue and Net Revenue for the applicable period.",
+      ),
+    ).toEqual([]);
+    expect(
+      names(
+        "Agreement",
+        "Fees payable under this Agreement are the difference between Gross Revenue and Net Revenue.",
+      ),
+    ).toEqual([]);
+    expect(
+      names(
+        "Agreement",
+        "In the event of any conflict between this MSA and any Statement of Work, the MSA controls.",
+      ),
+    ).toEqual([]);
+  });
+
+  it("reads the preamble past a fee sentence in the same front matter", () => {
+    // The paragraph's FIRST `between` is not always the preamble's.
+    expect(
+      names(
+        "Agreement",
+        "The Service Fee is the difference between Gross Revenue and Net Revenue. This Agreement is between Acme Corp., a Delaware corporation, and Globex LLC, a New York limited liability company.",
+      ),
+    ).toEqual(["Acme Corp", "Globex LLC"]);
+  });
+
+  it("reads every preamble lead-in the corpus writes", () => {
+    // by and between
+    expect(
+      names(
+        "Agreement",
+        "This Master Services Agreement is made as of January 1, 2026, by and between Acme Corp. and Globex Industries.",
+      ),
+    ).toEqual(["Acme Corp", "Globex Industries"]);
+    // instrument as the sentence's own subject
+    expect(
+      names("Statement of Work", "This Statement of Work is between Acme Inc. and Globex Inc."),
+    ).toEqual(["Acme Inc", "Globex Inc"]);
+    // a long statutory recital between the verb and the word
+    expect(
+      names(
+        "Agreement",
+        "This Business Associate Agreement is entered into pursuant to the requirements of 45 CFR § 164.504(e) between Acme Health Corp. and Globex Billing.",
+      ),
+    ).toEqual(["Acme Health Corp", "Globex Billing"]);
+    // an SOW naming its parent contract
+    expect(
+      names(
+        "Statement of Work",
+        "Contractor shall perform the Services described in the Master Services Agreement between Acme Corp. and Globex Industries.",
+      ),
+    ).toEqual(["Acme Corp", "Globex Industries"]);
+  });
+
   it("does not turn a document reference into a party", () => {
     // `between` also matches ordinary prose about instruments. Taking the
     // parenthetical here would invent a party named "SOW", which then skews

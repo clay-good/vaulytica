@@ -63,7 +63,54 @@ const PARTY_DECL = new RegExp(
   "g",
 );
 
-const BETWEEN_RE = /\bbetween\s+(.+?)\s+and\s+(.+?)(?:[.;,]|$)/i;
+const BETWEEN_RE = /\bbetween\s+(.+?)\s+and\s+(.+?)(?:[.;,]|$)/gi;
+
+/**
+ * `between X and Y` names the contracting parties only inside an actual
+ * preamble. The same three words are everywhere in ordinary drafting — "the
+ * difference **between** Gross Revenue and Net Revenue", "any conflict
+ * **between** this MSA and any Statement of Work" — and reading those as a
+ * preamble invents parties named "Gross Revenue" and "Net Revenue for the
+ * applicable period". A junk party is not inert: STRUCT-006 treats it as a
+ * real name and stops reporting the term as undefined, and every rule that
+ * tallies by party (RISK-002) reports a count against it.
+ *
+ * So the phrase must be introduced the way a preamble introduces it. The
+ * corpus writes exactly three forms:
+ *   1. `… by and between X and Y`;
+ *   2. `… is made / entered into / executed / dated … between X and Y`;
+ *   3. `This Statement of Work is between X and Y` — the instrument names
+ *      ITSELF as the sentence's subject, so the lead-in is anchored to the
+ *      start of the sentence and must end on the copula. That anchor is what
+ *      keeps a fee sentence out: "The Service Fee **is the difference**
+ *      between Gross Revenue and Net Revenue" opens the same way but does not
+ *      end on `is`, and "**Fees payable** under this Agreement are …" does not
+ *      open with the instrument at all.
+ * A bare instrument noun immediately before the word also reads (`the Master
+ * Services Agreement between X and Y` — an SOW naming its parent contract).
+ * Anything else is prose that merely contains the word.
+ *
+ * The `\.(?!\s)` alternative keeps each lead-in window inside one sentence
+ * while tolerating an in-word period, so a statutory citation in the recital
+ * ("entered into pursuant to 45 CFR § 164.504(e) between …") still reads. The
+ * window is 160 chars because a real recital runs long: the DPA corpus writes
+ * 114 chars of statutory citation between "entered into" and "between".
+ */
+const INSTRUMENT =
+  "(?:agreement|contract|amendment|addendum|lease|deed|indenture|memorandum|mou|nda|msa|sow|dpa|baa|eula|guaranty|note|assignment|release|licence|license)";
+const SAME_SENTENCE = String.raw`(?:[^.;\n]|\.(?!\s))`;
+const PREAMBLE_LEAD = new RegExp(
+  "(?:" +
+    String.raw`\bby\s+and\s+` +
+    "|" +
+    `\\b${INSTRUMENT}\\s+` +
+    "|" +
+    String.raw`(?:^|[.;]\s)\s*(?:this|the)\s+${SAME_SENTENCE}{0,80}\b(?:is|are|was|were)\s+` +
+    "|" +
+    String.raw`\b(?:made|entered\s+into|executed|dated|effective)\b${SAME_SENTENCE}{0,160}` +
+    ")$",
+  "i",
+);
 
 const SIGNATURE_LINE = /^(?:By|Name|Title|Date)\s*:?\s*/i;
 
@@ -150,7 +197,14 @@ export function extractParties(tree: DocumentTree): Party[] {
       const target = legal ? partyMap.get(legal.toLowerCase()) : undefined;
       if (target && !target.dba) target.dba = dba;
     }
-    const betweenMatch = BETWEEN_RE.exec(text);
+    // Take the first `between` in the paragraph that a preamble lead-in
+    // introduces — not simply the first one, or a fee sentence sitting above
+    // the real preamble would consume the paragraph's only reading.
+    BETWEEN_RE.lastIndex = 0;
+    let betweenMatch: RegExpExecArray | null;
+    while ((betweenMatch = BETWEEN_RE.exec(text)) !== null) {
+      if (PREAMBLE_LEAD.test(text.slice(0, betweenMatch.index))) break;
+    }
     if (betweenMatch) {
       const { name: a, role: roleA } = splitNameAndRole(betweenMatch[1] ?? "");
       const { name: b, role: roleB } = splitNameAndRole(betweenMatch[2] ?? "");
