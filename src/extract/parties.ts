@@ -52,14 +52,15 @@ const PARTY_DECL = new RegExp(
   // run, fails to find the suffix, and backtracks the run from every start
   // position — O(n²) on a hostile uppercase run (a ReDoS hang, spec-v8 §5). No
   // real name token exceeds 80 chars, so this is byte-identical and now linear.
-  // The entity-type group needs a trailing non-letter boundary. Without it the
-  // short types match INSIDE ordinary words — `inc` in "including", `ag` in
-  // "agreement" — manufacturing parties out of whatever Title-Case phrase
-  // preceded them ("Business Purpose, including …" -> party "Business Purpose").
-  // Those junk names are not harmless: rules that compare a phrase against the
-  // party set (STRUCT-006) treat them as real, and party-tallying rules
-  // (RISK-002) report counts against them.
-  String.raw`([A-Z][\w&.,'’-]{0,80}(?:\s+[A-Z][\w&.,'’-]{0,80}){0,6})\s*,?\s*(?:a|an)?\s*(?:(${US_STATE})\s+)?(${ENTITY_TYPES.join("|")})(?![A-Za-z])\s*(?:\(\s*["“”']([^"”'’\)]+)["“”']\s*\))?`,
+  // The entity-type group needs a non-letter boundary on BOTH sides. Without a
+  // trailing one the short types match the START of ordinary words — `inc` in
+  // "including", `ag` in "agreement". Without a leading one they match the END
+  // of a longer word: `corporation` sits inside "In·corporation", so a heading
+  // "EU SCC Incorporation" yielded the party "EU SCC In". Either way a junk
+  // name is manufactured, and it is not harmless — rules that compare a phrase
+  // against the party set (STRUCT-006) treat it as real and party-tallying
+  // rules (RISK-002) report counts against it.
+  String.raw`([A-Z][\w&.,'’-]{0,80}(?:\s+[A-Z][\w&.,'’-]{0,80}){0,6})\s*,?\s*(?:a|an)?\s*(?:(${US_STATE})\s+)?(?<![A-Za-z])(${ENTITY_TYPES.join("|")})(?![A-Za-z])\s*(?:\(\s*["“”']([^"”'’\)]+)["“”']\s*\))?`,
   "g",
 );
 

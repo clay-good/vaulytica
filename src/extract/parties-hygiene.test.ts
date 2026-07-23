@@ -208,4 +208,15 @@ describe("party extraction hygiene", () => {
       ),
     ).toEqual(["Trustee Services LLC", "Globex Inc"]);
   });
+  it("does not invent a party from an entity type matched at the END of a word", () => {
+    // "corporation" sits inside "Incorporation"; without a leading boundary the
+    // heading "EU SCC Incorporation" yielded a party named "EU SCC In".
+    expect(
+      names(
+        "Addendum",
+        "EU SCC Incorporation",
+        "The Approved EU SCCs are incorporated by reference.",
+      ),
+    ).not.toContain("EU SCC In");
+  });
 });
