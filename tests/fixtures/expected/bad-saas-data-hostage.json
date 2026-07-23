@@ -482,8 +482,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-004-s1-0",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-004",
       "rule_version": "1.0.0"
     },
@@ -974,29 +973,12 @@
       "severity": "info",
       "source_citations": [],
       "title": "Indemnity procedural elements missing: notice, defense control, settlement consent"
-    },
-    {
-      "description": "Vaulytica did not find a Definitions section or any inline-defined terms.",
-      "document_position": 0,
-      "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "(no definitions located)"
-      },
-      "explanation": "Most non-trivial contracts capitalize defined terms and either set them out in a Definitions section or define them inline (\"X\" means …). Their absence is not by itself a problem, but downstream rules that check for use of specific defined terms will be skipped.",
-      "id": "STRUCT-004-s1-0",
-      "rule_id": "STRUCT-004",
-      "rule_version": "1.0.0",
-      "severity": "info",
-      "source_citations": [],
-      "title": "No defined terms detected"
     }
   ],
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "d6db1fe998f68be49338e747300235ecaac894eab7dae965280c4d8cd9a411b0",
+  "result_hash": "885dcb7a05c9f6c54411b82bbc3a2924d3212fe3b60ac2bbb38ac0f76273b8d3",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
     "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",

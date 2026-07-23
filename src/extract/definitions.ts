@@ -29,6 +29,22 @@ import { forEachParagraph, forEachSection, posInParagraph } from "./walk.js";
 const DEFINITION_INLINE = /["“”']([A-Z][\w\s\-&]{1,80}?)["“”']\s+(?:shall\s+)?means?\b/gi;
 const DEFINITION_BARE = /^\s*([A-Z][\w\s\-&]{1,80}?)\s+(?:shall\s+)?means?\b/i;
 
+/**
+ * The other inline convention, and the dominant one in commercial drafting:
+ * the term is introduced by a parenthetical after the phrase it names —
+ * `Acme Corp, a Delaware corporation ("Customer")`, `any Statement of Work
+ * ("SOW")`, `its pre-existing tools and methodologies ("Vendor Background
+ * IP")`. Recognizing only `"Term" means …` made STRUCT-004 report "Vaulytica
+ * did not find a Definitions section or any inline-defined terms" on 15 of the
+ * 19 minimal-PASS fixtures, every one of which defines its terms this way.
+ *
+ * The closing `)` must follow the quote immediately, so a quoted phrase used
+ * mid-parenthetical (`(the "Services" described in Exhibit A)`) is not read as
+ * a definition.
+ */
+const DEFINITION_PARENTHETICAL =
+  /\((?:\s*(?:the|each|an?|collectively|together|individually|hereinafter|referred\s+to\s+as)[,]?\s+)*["\u201C]([A-Z][\w\s\-&/'\u2019.]{1,60}?)["\u201D]\s*\)/g;
+
 /** A definition that points at an exhibit/schedule/section rather than stating its own text. */
 const DEFINITION_REFERENCE =
   /\b(?:attached\s+(?:hereto\s+)?as|set\s+forth\s+in|described\s+in|defined\s+in|as\s+set\s+out\s+in|in)\s+((?:Exhibit|Schedule|Appendix|Annex|Attachment|Section|Article)\s+[A-Z0-9][\w.()-]*)/i;
@@ -190,12 +206,23 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
   for (const entry of definitions.values()) {
     const needle = new RegExp(`\\b${escapeRegExp(entry.term)}\\b`, "g");
     forEachParagraph(tree, (ctx) => {
-      // Skip the paragraph where the definition lives.
-      if (ctx.paragraph.id === entry.defined_at.paragraph_id) return;
+      // Skip the definition itself. For an express definition that is the
+      // whole paragraph — a term repeated inside its own definition body
+      // ("… but Confidential Information does not include …") is a
+      // self-reference, not a use. A PARENTHETICAL is different: it defines
+      // the term mid-sentence in the operative text, and the same paragraph
+      // routinely goes on to use it ('any Statement of Work ("SOW") … the SOW
+      // shall control'). Skipping that whole paragraph reported the term as
+      // never used.
+      if (entry.form !== "parenthetical" && ctx.paragraph.id === entry.defined_at.paragraph_id) {
+        return;
+      }
       needle.lastIndex = 0;
       let m: RegExpExecArray | null;
       while ((m = needle.exec(ctx.text)) !== null) {
-        entry.used_at.push(posInParagraph(ctx, m.index, m.index + m[0].length));
+        const pos = posInParagraph(ctx, m.index, m.index + m[0].length);
+        if (pos.start >= entry.defined_at.start && pos.end <= entry.defined_at.end) continue;
+        entry.used_at.push(pos);
       }
     });
   }
@@ -320,6 +347,32 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
       used_at: [],
       ...(reference ? { reference } : {}),
       ...(scope ? { scope } : {}),
+    });
+  }
+  DEFINITION_PARENTHETICAL.lastIndex = 0;
+  while ((m = DEFINITION_PARENTHETICAL.exec(text)) !== null) {
+    const term = m[1]!.trim();
+    // The phrase the parenthetical names: the run of text before it, back to
+    // the nearest clause break. That is what the drafter defined the term to
+    // mean, and it keeps the entry's `definition` from swallowing the whole
+    // paragraph.
+    const before = text.slice(Math.max(0, m.index - 160), m.index);
+    const definition =
+      before
+        .split(/[.;]\s/)
+        .pop()
+        ?.trim() ?? "";
+    out.push({
+      term,
+      definition,
+      defined_at: {
+        section_id: base.section_id,
+        paragraph_id: base.paragraph_id,
+        start: base.start + m.index,
+        end: base.start + m.index + m[0].length,
+      },
+      used_at: [],
+      form: "parenthetical",
     });
   }
   return out;

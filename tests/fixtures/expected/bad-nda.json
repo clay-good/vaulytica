@@ -480,8 +480,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-004-s1-0",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-004",
       "rule_version": "1.0.0"
     },
@@ -960,29 +959,12 @@
       "severity": "info",
       "source_citations": [],
       "title": "No indemnification clause detected"
-    },
-    {
-      "description": "Vaulytica did not find a Definitions section or any inline-defined terms.",
-      "document_position": 0,
-      "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "(no definitions located)"
-      },
-      "explanation": "Most non-trivial contracts capitalize defined terms and either set them out in a Definitions section or define them inline (\"X\" means …). Their absence is not by itself a problem, but downstream rules that check for use of specific defined terms will be skipped.",
-      "id": "STRUCT-004-s1-0",
-      "rule_id": "STRUCT-004",
-      "rule_version": "1.0.0",
-      "severity": "info",
-      "source_citations": [],
-      "title": "No defined terms detected"
     }
   ],
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\", \"Recipient\", \"Confidential Information\".",
-  "result_hash": "aad528448cbbe368c2c2c3f5febbd79dcc32183e32ec7198e5cff50b81c5c471",
+  "result_hash": "62024e4ccb06acc9e766b83074d38dfb42028cef52f7d1bb0223ffaf997c981d",
   "source_file": {
     "name": "bad-nda.docx",
     "sha256": "06ef03390c5dc6e696e8d41505220db6858f8f47c987bebe2b381f9f7d53a58b",

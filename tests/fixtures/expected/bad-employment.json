@@ -490,8 +490,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-004-s1-0",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-004",
       "rule_version": "1.0.0"
     },
@@ -1168,23 +1167,6 @@
       "title": "Efforts standard \"best efforts\" undefined"
     },
     {
-      "description": "Vaulytica did not find a Definitions section or any inline-defined terms.",
-      "document_position": 0,
-      "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "(no definitions located)"
-      },
-      "explanation": "Most non-trivial contracts capitalize defined terms and either set them out in a Definitions section or define them inline (\"X\" means …). Their absence is not by itself a problem, but downstream rules that check for use of specific defined terms will be skipped.",
-      "id": "STRUCT-004-s1-0",
-      "rule_id": "STRUCT-004",
-      "rule_version": "1.0.0",
-      "severity": "info",
-      "source_citations": [],
-      "title": "No defined terms detected"
-    },
-    {
       "description": "Provisions are stated to survive termination.",
       "document_position": 1554,
       "excerpt": {
@@ -1222,7 +1204,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
-  "result_hash": "b2fd096d42e6d29a308481b9750695256794aacc26b30859f06401f172ac3edb",
+  "result_hash": "fce0bfdf9afc1521d2a8ac8b861fa938f8d24c8f2d266ae7ebfdf327f882d96a",
   "source_file": {
     "name": "bad-employment.docx",
     "sha256": "44e689f2fe4e8767866844995363dda962260fd37d54469e6d0fdf443136013c",

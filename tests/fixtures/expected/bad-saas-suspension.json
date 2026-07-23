@@ -480,8 +480,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-004-s1-0",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-004",
       "rule_version": "1.0.0"
     },
@@ -920,29 +919,12 @@
         }
       ],
       "title": "'In its sole discretion' clause present"
-    },
-    {
-      "description": "Vaulytica did not find a Definitions section or any inline-defined terms.",
-      "document_position": 0,
-      "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "(no definitions located)"
-      },
-      "explanation": "Most non-trivial contracts capitalize defined terms and either set them out in a Definitions section or define them inline (\"X\" means …). Their absence is not by itself a problem, but downstream rules that check for use of specific defined terms will be skipped.",
-      "id": "STRUCT-004-s1-0",
-      "rule_id": "STRUCT-004",
-      "rule_version": "1.0.0",
-      "severity": "info",
-      "source_citations": [],
-      "title": "No defined terms detected"
     }
   ],
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected saas-customer (score 0.9). Title matched: \"subscription agreement\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"uptime\".",
-  "result_hash": "2b5e606a2b825462bdb0c6ac3c1662ba89f7e70dfb6dd17563436ab35e5bc2fb",
+  "result_hash": "f04154ee4e3862f214f39a718b098886f4ae3a9e95df384971ad50c1d7e47a31",
   "source_file": {
     "name": "bad-saas-suspension.docx",
     "sha256": "9afd9de44c9b6a123f62c53a81c06b34ec7a515c4e5519fc63b2bc69223ac49b",

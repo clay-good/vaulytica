@@ -484,8 +484,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-004-s1-0",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-004",
       "rule_version": "1.0.0"
     },
@@ -1090,29 +1089,12 @@
       "severity": "info",
       "source_citations": [],
       "title": "Indemnity procedural elements missing: notice, defense control, settlement consent"
-    },
-    {
-      "description": "Vaulytica did not find a Definitions section or any inline-defined terms.",
-      "document_position": 0,
-      "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "(no definitions located)"
-      },
-      "explanation": "Most non-trivial contracts capitalize defined terms and either set them out in a Definitions section or define them inline (\"X\" means …). Their absence is not by itself a problem, but downstream rules that check for use of specific defined terms will be skipped.",
-      "id": "STRUCT-004-s1-0",
-      "rule_id": "STRUCT-004",
-      "rule_version": "1.0.0",
-      "severity": "info",
-      "source_citations": [],
-      "title": "No defined terms detected"
     }
   ],
   "playbook_id": "lease-commercial-multitenant",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected lease-commercial-multitenant (score 0.9). Title matched: \"office lease\". Distinguishing phrases: \"Landlord\", \"Tenant\", \"Premises\", \"Common Area\", \"Rentable Square Feet\", \"Base Rent\", \"Operating Expenses\".",
-  "result_hash": "3ae300dea8c62dd83c2628a1f738c9cc2c85fd52af49b0783b765cb3a64820f7",
+  "result_hash": "45ceff39e830069bc3d1df6e98567924b68b4882c1ce36059d659a41cd0bf043",
   "source_file": {
     "name": "bad-lease.docx",
     "sha256": "b9f12348ac5e0f56fe223c8e264370bf1159ebafc2e1c7e1fdb5a811ed1eea17",

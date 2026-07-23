@@ -478,14 +478,14 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-004-s1-0",
-      "fired": true,
+      "fired": false,
       "rule_id": "STRUCT-004",
       "rule_version": "1.0.0"
     },
     {
       "elapsed_ms": 0,
-      "fired": false,
+      "finding_id": "STRUCT-005-s1-158",
+      "fired": true,
       "rule_id": "STRUCT-005",
       "rule_version": "1.0.0"
     },
@@ -870,27 +870,28 @@
       "title": "Indemnity procedural elements missing: notice, defense control, settlement consent"
     },
     {
-      "description": "Vaulytica did not find a Definitions section or any inline-defined terms.",
-      "document_position": 0,
+      "description": "The following defined terms are never used outside their definition: Premises.",
+      "document_position": 158,
       "excerpt": {
-        "end_offset": 0,
+        "end_offset": 174,
         "section_id": "s1",
-        "start_offset": 0,
-        "text": "(no definitions located)"
+        "start_offset": 158,
+        "text": "Premises"
       },
-      "explanation": "Most non-trivial contracts capitalize defined terms and either set them out in a Definitions section or define them inline (\"X\" means …). Their absence is not by itself a problem, but downstream rules that check for use of specific defined terms will be skipped.",
-      "id": "STRUCT-004-s1-0",
-      "rule_id": "STRUCT-004",
+      "explanation": "Defined terms that are not used downstream may be inherited from a template and obsolete. They clutter the contract and can confuse readers; either delete them or use them where intended.",
+      "id": "STRUCT-005-s1-158",
+      "recommendation": "Review each unused term and either delete it or wire it into the relevant clause.",
+      "rule_id": "STRUCT-005",
       "rule_version": "1.0.0",
       "severity": "info",
       "source_citations": [],
-      "title": "No defined terms detected"
+      "title": "Defined terms with no uses: 1"
     }
   ],
   "playbook_id": "lease-commercial-multitenant",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected lease-commercial-multitenant (score 0.9). Title matched: \"office lease\". Distinguishing phrases: \"Landlord\", \"Tenant\", \"Premises\", \"Rentable Square Feet\", \"Base Rent\", \"Operating Expenses\".",
-  "result_hash": "910a256863335e98e07b8cb483db589b247cfb9c2ca81c1d6835799bf8a28245",
+  "result_hash": "37224bf723ea26dc9b71f4232df5a9de44f6abf62bb2598f7c6906f0c97a7bc4",
   "source_file": {
     "name": "bad-lease-cam.docx",
     "sha256": "1de7804edf376ad66d1a78b0c998aa4a479a18835fa4e104e20057385337a0b6",

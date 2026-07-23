@@ -136,6 +136,20 @@ export type DefinitionEntry = {
    * a section-local redefinition does not poison the whole document.
    */
   scope?: string;
+  /**
+   * How the drafter constituted the term. `"means"` is an express definition
+   * ('"Confidential Information" means …'); `"parenthetical"` names a term
+   * for the phrase it follows (`a California corporation acting as service
+   * provider ("Service Provider")`).
+   *
+   * The distinction matters downstream: a parenthetical term is usually named
+   * after the ordinary noun right before it, so that noun keeps appearing in
+   * lowercase for its ordinary meaning — "is a 'service provider' as defined
+   * in Cal. Civ. Code", "more favorable than those offered to any other
+   * customer". Those are correct drafting, not the capitalization slip a
+   * lowercase use of an express term would be.
+   */
+  form?: "means" | "parenthetical";
 };
 
 export type DefinitionMap = {

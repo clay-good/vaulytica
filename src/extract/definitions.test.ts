@@ -82,3 +82,54 @@ describe("extractDefinitions", () => {
     expect(specs?.reference).toBe("Exhibit A");
   });
 });
+
+describe("parenthetical definitions", () => {
+  it("reads the convention commercial drafting actually uses", () => {
+    // Recognizing only `"Term" means …` made STRUCT-004 report "Vaulytica did
+    // not find a Definitions section or any inline-defined terms" on 15 of the
+    // 19 minimal-PASS fixtures, every one of which defines its terms this way.
+    const map = extractDefinitions(
+      buildTree([
+        "Agreement",
+        'This MSA is between Acme Corp, a Delaware corporation ("Customer"), and Globex Solutions Inc., a California corporation ("Vendor").',
+        'Vendor retains its pre-existing tools and methodologies ("Vendor Background IP") and grants Customer a license to them.',
+      ]),
+    );
+    expect(map.entries.map((e) => e.term).sort()).toEqual([
+      "Customer",
+      "Vendor",
+      "Vendor Background IP",
+    ]);
+    expect(map.entries.every((e) => e.form === "parenthetical")).toBe(true);
+  });
+
+  it("counts a use in the same paragraph as the parenthetical", () => {
+    // The definition is mid-sentence in the operative text, and the same
+    // paragraph routinely goes on to use the term. Skipping the whole
+    // paragraph reported it as never used.
+    const map = extractDefinitions(
+      buildTree([
+        "Precedence",
+        'In the event of any conflict between this MSA and any Statement of Work ("SOW"), the SOW shall control as to the services it describes.',
+      ]),
+    );
+    expect(map.unused_terms).toEqual([]);
+  });
+
+  it("still reports a parenthetical term that is never used again", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Indemnity",
+        'Vendor shall indemnify Customer and its officers, directors, and agents ("Customer Indemnitees") from third-party claims.',
+      ]),
+    );
+    expect(map.unused_terms).toContain("Customer Indemnitees");
+  });
+
+  it("does not read a quoted phrase used mid-parenthetical as a definition", () => {
+    const map = extractDefinitions(
+      buildTree(["Services", 'Vendor shall provide the "Services" described in Exhibit A.']),
+    );
+    expect(map.entries.map((e) => e.term)).not.toContain("Services");
+  });
+});

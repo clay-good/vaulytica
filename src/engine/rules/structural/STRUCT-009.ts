@@ -14,6 +14,12 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const offenders: string[] = [];
     for (const def of ctx.extracted.definitions.entries) {
+      // A parenthetical term is named after the ordinary noun it follows, so
+      // that noun keeps appearing in lowercase for its ordinary meaning — "is
+      // a \"service provider\" as defined in Cal. Civ. Code", "more favorable
+      // than those offered to any other customer". Only an express definition
+      // ('"X" means …') constitutes a term whose lowercase use is a slip.
+      if (def.form === "parenthetical") continue;
       const target = def.term;
       const lower = target.toLowerCase();
       let foundLower = false;
