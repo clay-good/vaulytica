@@ -156,8 +156,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "FIN-005-s1-0",
-      "fired": true,
+      "fired": false,
       "rule_id": "FIN-005",
       "rule_version": "1.0.0"
     },
@@ -756,23 +755,6 @@
       "title": "Unfilled template placeholders: 3"
     },
     {
-      "description": "The document references fees but no 'Net X' or 'due within' clause was found.",
-      "document_position": 0,
-      "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "(no payment-term clause)"
-      },
-      "explanation": "Commercial contracts should state when payment is due. 'Net 30' or 'due within X days of invoice' is the typical formulation. Without it, payment timing defaults to the governing-law rule.",
-      "id": "FIN-005-s1-0",
-      "rule_id": "FIN-005",
-      "rule_version": "1.0.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "No payment-term clause detected"
-    },
-    {
       "description": "The contract does not allocate ownership of intellectual property.",
       "document_position": 0,
       "excerpt": {
@@ -1055,7 +1037,7 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "12ef3058ec4a6961a1d56570395ab740789832523d329f7036731ee53d1bdbc7",
+  "result_hash": "5ef2abd63b43b4dde8d351778fc396558a21164bb8a4f5882fbeb09c16ee3155",
   "source_file": {
     "name": "bad-contractor.docx",
     "sha256": "7a40a2e53d068557d47cf7690838b907085994f596a0c6e2380b8ac2607543df",

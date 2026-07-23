@@ -208,7 +208,11 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // signals not all yet covered by PERS-007's pattern set; STRUCT-013,
   // FIN-005, RISK-011 are the durable guards.
   // STRUCT-013 dropped — previously firing on signature underscores.
-  "bad-contractor-leaseback.docx": ["FIN-005", "RISK-011"],
+  // FIN-005 dropped — the fixture pays "$100.00 for all hours worked,
+  // payable bi-weekly on the same schedule as Company's regular payroll",
+  // which states when payment is due; the rule was reporting no payment term
+  // only because every branch of its pattern was invoice-shaped.
+  "bad-contractor-leaseback.docx": ["RISK-011"],
 
   // bad-saas-data-hostage.docx (saas-customer playbook). Showcases the
   // new IPDATA-009 rule (AI/ML training on Customer Data) alongside

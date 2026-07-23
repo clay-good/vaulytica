@@ -25,6 +25,14 @@ const PAYMENT_TERMS = new RegExp(
     // the rule warn 'no payment-term clause' on a plainly stated term
     // (audit).
     `\\bshall\\s+pay\\b[\\s\\w,()$.]{0,80}?within\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*days?`,
+    // A recurring charge states its term as a DUE DATE, not an interval from
+    // an invoice: "Base Rent: $20,000 per month, payable in advance on the
+    // first of each month" is a payment term, and every branch above is
+    // invoice-shaped, so the rule reported none was stated.
+    `\\b(?:due|payable|paid)\\s+(?:in\\s+advance\\s+)?on\\s+(?:or\\s+before\\s+)?the\\s+(?:first|1st|last|\\d{1,2}(?:st|nd|rd|th))\\s+(?:day\\s+)?of\\s+(?:each|every|the)\\b`,
+    `\\b(?:due|payable|paid)\\s+(?:monthly|quarterly|annually|weekly|bi-?weekly|semi-?annually)\\b`,
+    `\\b(?:monthly|quarterly|annually)\\s+in\\s+(?:advance|arrears)\\b`,
+    `\\bdue\\s+upon\\s+receipt\\b`,
   ].join("|"),
   "i",
 );
