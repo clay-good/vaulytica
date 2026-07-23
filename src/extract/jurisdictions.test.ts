@@ -184,12 +184,49 @@ describe("consent-to-jurisdiction forum clauses", () => {
       venue(
         "Each party irrevocably submits to the jurisdiction of the courts of England and Wales.",
       ),
-    ).toBe("England");
+    ).toBe("England and Wales");
+  });
+
+  it("does not truncate 'England and Wales' at the connector", () => {
+    expect(
+      venue(
+        "The parties consent to the exclusive jurisdiction of the courts of England and Wales, without prejudice to any mandatory rights.",
+      ),
+    ).toBe("England and Wales");
+  });
+
+  it("still stops a venue capture at a genuine clause connector", () => {
+    expect(
+      venue(
+        "The parties consent to the exclusive jurisdiction of the courts of Delaware and waive any objection to venue.",
+      ),
+    ).toBe("Delaware");
   });
 
   it("does not read an ordinary 'jurisdiction' mention as a forum clause", () => {
     expect(
       venue("The Company operates in every jurisdiction where it does business."),
     ).toBeUndefined();
+  });
+});
+
+describe("England and Wales — the compound jurisdiction name", () => {
+  const gov = (t: string) =>
+    extractJurisdictions(buildTree(["Governing Law", t])).find(
+      (r) => r.clause_kind === "governing-law",
+    )?.raw_text;
+
+  it("reads the full name from the classic comma'd governing-law clause", () => {
+    expect(
+      gov(
+        "This DPA is governed by, and construed in accordance with, the laws of England and Wales.",
+      ),
+    ).toBe("England and Wales");
+  });
+
+  it("still stops the law capture at a genuine connector", () => {
+    expect(
+      gov("This Agreement shall be governed by the laws of Delaware and applicable federal law."),
+    ).toBe("Delaware");
   });
 });

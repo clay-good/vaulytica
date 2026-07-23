@@ -14,13 +14,17 @@ const US_VENUE = new RegExp(
   "i",
 );
 
+// England, Scotland, and Wales are constituent parts of the United Kingdom —
+// "the courts of England" is standard drafting and carries the UK's own
+// New York / Hague convention status, so the bare names must not fall
+// through to the no-treaty warning.
 const NY_CONVENTION_PARTIES =
-  /\b(?:United\s+States|Canada|Mexico|United\s+Kingdom|Germany|France|Japan|Australia|Singapore|Hong\s+Kong|China|India|Brazil|Spain|Italy|Netherlands|Switzerland|South\s+Korea|Sweden|Ireland|Israel|UAE|Norway|Belgium|Austria|Denmark|Finland|Portugal|Poland|England\s+and\s+Wales)\b/i;
+  /\b(?:United\s+States|Canada|Mexico|United\s+Kingdom|Germany|France|Japan|Australia|Singapore|Hong\s+Kong|China|India|Brazil|Spain|Italy|Netherlands|Switzerland|South\s+Korea|Sweden|Ireland|Israel|UAE|Norway|Belgium|Austria|Denmark|Finland|Portugal|Poland|England(?:\s+and\s+Wales)?|Scotland|Wales)\b/i;
 
 /** CHOICE-005 — Foreign venue without enforceability treaty (warning). */
 export const rule: Rule = {
   id: "CHOICE-005",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Foreign venue without enforceability treaty",
   category: "choice-and-venue",
   default_severity: "warning",

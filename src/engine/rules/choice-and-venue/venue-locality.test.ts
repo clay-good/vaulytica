@@ -67,3 +67,21 @@ describe("CHOICE-005 — foreign venue", () => {
     expect(CHOICE_005.check(ctx)).not.toBeNull();
   });
 });
+
+describe("CHOICE-005 — United Kingdom constituents (v1.1.0)", () => {
+  it("the courts of England and Wales are not a no-treaty venue", () => {
+    const ctx = buildContext([
+      "Governing Law and Venue",
+      "This DPA is governed by the laws of England and Wales, and the parties consent to the exclusive jurisdiction of the courts of England and Wales.",
+    ]);
+    expect(CHOICE_005.check(ctx)).toBeNull();
+  });
+
+  it("the courts of England alone carry the UK's treaty status", () => {
+    const ctx = buildContext([
+      "Venue",
+      "The parties consent to the exclusive jurisdiction of the courts of England.",
+    ]);
+    expect(CHOICE_005.check(ctx)).toBeNull();
+  });
+});

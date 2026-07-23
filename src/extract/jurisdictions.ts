@@ -124,6 +124,27 @@ const ARBITRATION_SEAT =
 
 export type DkbLookup = (raw: string) => string | undefined;
 
+/**
+ * "England and Wales" is the one jurisdiction name that contains the clause
+ * connector every capture stops at ("and", or the comma-free `\s+and\b`
+ * lookahead), so both the governing-law and the venue captures truncated it
+ * to "England" — which CHOICE-005's treaty list does not know, and which
+ * reads as a mismatch against the full name extracted by the other clause.
+ * A capture ending in "England" whose tail continues " and Wales" is the
+ * compound name, not a connector.
+ */
+function extendEnglandAndWales(
+  text: string,
+  raw: string,
+  end: number,
+): { raw: string; end: number } {
+  const m = /^\s+and\s+Wales\b/.exec(text.slice(end));
+  if (m && /(^|\s)England$/i.test(raw)) {
+    return { raw: `${raw} and Wales`, end: end + m[0].length };
+  }
+  return { raw, end };
+}
+
 export function extractJurisdictions(
   tree: DocumentTree,
   lookup: DkbLookup = () => undefined,
@@ -134,8 +155,9 @@ export function extractJurisdictions(
 
   forEachParagraph(tree, (ctx) => {
     runRegex(GOV_LAW, ctx.text, (m) => {
-      const raw = (m[2] ?? "").trim();
-      const tail = ctx.text.slice(m.index + m[0].length);
+      const ext = extendEnglandAndWales(ctx.text, (m[2] ?? "").trim(), m.index + m[0].length);
+      const raw = ext.raw;
+      const tail = ctx.text.slice(ext.end);
       // A DISCLAIMED governing law ("shall NOT be governed by the laws of
       // California, but rather … Delaware") must not be reported as the chosen
       // law — asserting a jurisdiction the contract explicitly rejects is a
@@ -172,7 +194,7 @@ export function extractJurisdictions(
         jurisdiction_id: lookup(named ?? raw),
         raw_text: named ?? raw,
         ...(fallback ? { fallback_jurisdiction: fallback } : {}),
-        position: posInParagraph(ctx, m.index, m.index + m[0].length),
+        position: posInParagraph(ctx, m.index, ext.end),
       });
     });
     runRegex(GOV_LAW_IS, ctx.text, (m) => {
@@ -193,9 +215,10 @@ export function extractJurisdictions(
     });
     const seenVenue = new Set<string>();
     const recordVenue = (m: RegExpExecArray): void => {
-      const captured = (m[1] ?? "").trim();
+      const ext = extendEnglandAndWales(ctx.text, (m[1] ?? "").trim(), m.index + m[0].length);
+      const captured = ext.raw;
       if (!captured) return;
-      const end = m.index + m[0].length;
+      const end = ext.end;
       const jurisdiction = JURISDICTION_AFTER_LOCALITY.exec(ctx.text.slice(end))?.[1];
       const raw = jurisdiction ? jurisdiction.replace(/\s+/g, " ") : captured;
       const key = `${m.index}:${raw.toLowerCase()}`;
