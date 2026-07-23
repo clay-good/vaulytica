@@ -322,3 +322,29 @@ describe("compounds of defined terms are not undefined phrases", () => {
     expect(undefinedTerms).toContain("Data Retention Policy");
   });
 });
+
+describe("caption and run-in heading phrases are not defined-term candidates", () => {
+  it("does not read the document's own caption as an undefined term", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Body",
+        "Confidential Settlement Agreement and Mutual Release",
+        'This Confidential Settlement Agreement and Mutual Release (this "Agreement") is entered into by the parties.',
+        "4. Mutual Release by Meridian. Upon receipt of the payment, Meridian releases all claims.",
+        "5. Mutual Release by Harbor Point. Upon the Effective Date, Harbor Point releases all claims.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((u) => u.term)).not.toContain("Mutual Release");
+  });
+
+  it("a numbered sentence is not a run-in heading and its phrases still count", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Body",
+        "4. Vendor shall deliver the Statement Deliverables to Client. The Statement Deliverables are due monthly.",
+        "5. Client shall review the Statement Deliverables within ten days.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((u) => u.term)).toContain("Statement Deliverables");
+  });
+});

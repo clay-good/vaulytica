@@ -47,3 +47,15 @@ describe("FIN-005 — payment terms present", () => {
     ).toBeNull();
   });
 });
+
+describe("FIN-005 — settlement-style payment routing (v1.2.0)", () => {
+  it("reads 'shall pay … (the \"Settlement Payment\") … within thirty (30) days'", () => {
+    expect(
+      FIN_005.check(
+        doc(
+          'Harbor Point shall pay Meridian the total sum of $425,000 (the "Settlement Payment") by wire transfer to the trust account of Meridian\'s counsel within thirty (30) days after the Effective Date.',
+        ),
+      ),
+    ).toBeNull();
+  });
+});

@@ -23,8 +23,13 @@ const PAYMENT_TERMS = new RegExp(
     // Active voice — "Customer shall pay the fees … within 15 days of
     // invoice" — arguably the most common formulation; its absence made
     // the rule warn 'no payment-term clause' on a plainly stated term
-    // (audit).
-    `\\bshall\\s+pay\\b[\\s\\w,()$.]{0,80}?within\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?`,
+    // (audit). The window admits quote marks and runs to 160 chars: a
+    // settlement's "shall pay Meridian the total sum of $425,000 (the
+    // \"Settlement Payment\") by wire transfer to the trust account of
+    // Meridian's counsel within thirty (30) days" names the amount as a
+    // quoted defined term and routes the payment before stating the
+    // deadline, and the old 80-char quote-free window never reached it.
+    `\\bshall\\s+pay\\b[\\s\\w,()$."'“”’]{0,160}?within\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?`,
     // A recurring charge states its term as a DUE DATE, not an interval from
     // an invoice: "Base Rent: $20,000 per month, payable in advance on the
     // first of each month" is a payment term, and every branch above is
@@ -48,7 +53,7 @@ const ANY_PAYMENT = /\b(fee|payment|invoice|amount\s+due|payable)\b/i;
 /** FIN-005 — Payment terms presence and parseability (warning). */
 export const rule: Rule = {
   id: "FIN-005",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Payment terms presence and parseability",
   category: "financial",
   default_severity: "warning",

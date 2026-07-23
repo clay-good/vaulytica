@@ -70,6 +70,16 @@ export type V4PresenceSpec = {
   explanation: string;
   recommendation: string;
   present_patterns: RegExp[];
+  /**
+   * Applicability gate. When provided and NONE of these patterns match the
+   * document, the rule is inapplicable and its absence is not a defect — a
+   * New York commercial settlement is not missing a California § 1542
+   * waiver, and a freight dispute is not missing a § 162(q)
+   * sexual-harassment recital. Reporting an "(if applicable)" absence the
+   * document itself shows is inapplicable is a false positive. Optional;
+   * rules without it are unchanged.
+   */
+  applicable_if?: readonly RegExp[];
   default_severity?: Severity;
 };
 
@@ -85,6 +95,7 @@ export function buildV4PresenceRule(spec: V4PresenceSpec): Rule {
     applies_to_playbooks: [...spec.playbooks],
     check(ctx: RuleContext): Finding | null {
       const text = fullText(ctx);
+      if (spec.applicable_if && !spec.applicable_if.some((re) => re.test(text))) return null;
       if (spec.present_patterns.some((re) => re.test(text))) return null;
       return makeFinding({
         rule: this as Rule,

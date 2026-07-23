@@ -100,6 +100,7 @@ const RELEASE_RULES: Rule[] = [
   }),
   presence({
     id: "SET-003",
+    version: "1.1.0",
     name: "California § 1542 waiver (if applicable)",
     description:
       "California releases of unknown claims require a specific § 1542 waiver with the statutory text.",
@@ -116,6 +117,11 @@ const RELEASE_RULES: Rule[] = [
       /(unknown\s+claims|do\s+not\s+know\s+or\s+suspect)/i,
       /(waiv(es?|e|ed|ing)).{0,40}(1542|known\s+or\s+unknown)/is,
     ],
+    // § 1542 governs releases under CALIFORNIA law. A New York settlement
+    // between New York and Delaware parties is not missing a California
+    // waiver (v1.1.0 — the rule fired its "(if applicable)" absence on
+    // every settlement regardless of any California connection).
+    applicable_if: [/california/i, /\bcal\.\s*(?:civ|civil|lab|labor|code)/i, /,\s*CA\s+\d{5}/],
     default_severity: "warning",
   }),
   presence({
@@ -262,6 +268,7 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "SET-010",
+    version: "1.1.0",
     name: "Section 162(q) — Harvey Weinstein tax limitation (sexual harassment claims)",
     description:
       "IRC § 162(q) disallows deduction of settlements subject to nondisclosure for sexual harassment / abuse.",
@@ -282,6 +289,16 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
       /section\s+162.?q/i,
       /(harvey\s+weinstein|tcja|tax\s+cuts\s+and\s+jobs\s+act).{0,80}(harassment|abuse)/is,
       /no\s+deduction.{0,80}(harassment|abuse)/is,
+    ],
+    // § 162(q) reaches only settlements related to sexual harassment or
+    // sexual abuse. A commercial dispute with no such claim in the document
+    // is not missing the recital (v1.1.0 — the rule fired its
+    // "(if applicable)" absence on every confidential settlement).
+    applicable_if: [
+      /\bharassment\b/i,
+      /sexual\s+(?:abuse|assault|misconduct)/i,
+      /hostile\s+work\s+environment/i,
+      /\btitle\s+vii\b/i,
     ],
     default_severity: "warning",
   }),

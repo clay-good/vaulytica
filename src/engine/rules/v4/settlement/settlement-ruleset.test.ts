@@ -145,3 +145,45 @@ describe("v4 Settlement — failure cases", () => {
     expect(run.findings.some((f) => f.rule_id === "SET-027")).toBe(true);
   });
 });
+
+describe("SET-003 / SET-010 — '(if applicable)' absences require the nexus (v1.1.0)", () => {
+  const NY_SETTLEMENT: [string, ...string[]][] = [
+    [
+      "Confidential Settlement Agreement",
+      "The Parties settle all claims arising from a freight-services dispute. Defendant shall pay Plaintiff $425,000 as full consideration. The Parties shall keep the terms of this Agreement confidential.",
+      "This Agreement is governed by the laws of the State of New York.",
+    ],
+  ];
+
+  it("neither fires on a New York commercial settlement with no California or harassment nexus", async () => {
+    const ctx = withPb(buildContext(...NY_SETTLEMENT), SETTLEMENT_PB);
+    const run = await runEngine({ rules: SETTLEMENT_RULES, ctx, source_file: SRC });
+    const ids = run.findings.map((f) => f.rule_id);
+    expect(ids).not.toContain("SET-003");
+    expect(ids).not.toContain("SET-010");
+  });
+
+  it("SET-003 still fires when California law applies and no § 1542 waiver appears", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Settlement Agreement",
+        "The Parties settle all claims. This Agreement is governed by the laws of the State of California. The Parties shall keep this Agreement confidential.",
+      ]),
+      SETTLEMENT_PB,
+    );
+    const run = await runEngine({ rules: SETTLEMENT_RULES, ctx, source_file: SRC });
+    expect(run.findings.map((f) => f.rule_id)).toContain("SET-003");
+  });
+
+  it("SET-010 still fires when the settlement covers harassment claims without the recital", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Settlement Agreement",
+        "The Parties settle all claims of workplace harassment asserted in the charge. Employer shall pay Claimant $100,000. The Parties shall keep the terms of this Agreement confidential.",
+      ]),
+      SETTLEMENT_PB,
+    );
+    const run = await runEngine({ rules: SETTLEMENT_RULES, ctx, source_file: SRC });
+    expect(run.findings.map((f) => f.rule_id)).toContain("SET-010");
+  });
+});

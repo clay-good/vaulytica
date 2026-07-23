@@ -312,11 +312,21 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
   // Pass 4: undefined Title-Case phrases.
   const definedNames = new Set([...definitions.keys()]);
   const undefinedHits = new Map<string, DocPosition[]>();
+  const caption = captionText(tree);
   forEachParagraph(tree, (ctx) => {
+    // A run-in heading ("4. Mutual Release by Meridian. Upon receipt …")
+    // capitalizes its words as heading STYLE, not defined-term usage;
+    // occurrences inside the heading segment are not uses of a term.
+    const headingEnd = runInHeadingEnd(ctx.text);
     TITLE_CASE_PHRASE.lastIndex = 0;
     let m: RegExpExecArray | null;
     while ((m = TITLE_CASE_PHRASE.exec(ctx.text)) !== null) {
       const phrase = m[1]!;
+      if (m.index < headingEnd) continue;
+      // The document's caption is its NAME; a phrase inside the caption line
+      // or inside an echo of it ("This Confidential Settlement Agreement and
+      // Mutual Release (this 'Agreement') …") is title vocabulary.
+      if (caption && insideOccurrenceOf(ctx.text, caption, m.index, phrase.length)) continue;
       // A candidate whose first word is immediately preceded by a hyphen is the
       // tail of a hyphenated compound, not a standalone term: "Software-as-a-
       // Service Terms of Service" yielded the phantom term "Service Terms".
@@ -588,6 +598,70 @@ function isPlausibleTerm(term: string): boolean {
   }
   if (words.length === 2 && TITLE_CASE_LEADING_STOPWORDS.has(words[0]!)) return false;
   return /^[a-z]{0,2}[A-Z]/.test(term);
+}
+
+/** Lowercase words a Title-Case heading or caption legitimately leaves lowercase. */
+const HEADING_CONNECTORS = /^(?:of|and|or|by|to|in|for|the|a|an|with|under|on|at|from)$/;
+
+/** Every word capitalized (or a heading connector) — heading/caption style. */
+function isTitleCaseSegment(segment: string): boolean {
+  const words = segment.trim().split(/\s+/);
+  if (words.length === 0) return false;
+  for (const w of words) {
+    if (/^[A-Z0-9(&]/.test(w)) continue;
+    if (HEADING_CONNECTORS.test(w)) continue;
+    return false;
+  }
+  return true;
+}
+
+/**
+ * The document's caption line — the first paragraph, when it reads as a
+ * title (Title-Case throughout, short, no terminal sentence punctuation)
+ * rather than as prose. Plain-text ingest keeps the caption as an ordinary
+ * paragraph, so without this Pass 4 read the document's own name as a
+ * defined-term candidate ("Mutual Release" from "Confidential Settlement
+ * Agreement and Mutual Release").
+ */
+function captionText(tree: DocumentTree): string | undefined {
+  const first = tree.sections[0]?.paragraphs[0];
+  if (!first) return undefined;
+  const text = first.runs
+    .map((r) => r.text)
+    .join("")
+    .trim();
+  if (text.length < 8 || text.length > 90) return undefined;
+  if (/[.;:!?]$/.test(text)) return undefined;
+  if (text.split(/\s+/).length < 2) return undefined;
+  return isTitleCaseSegment(text) ? text : undefined;
+}
+
+/**
+ * The end offset of a run-in heading segment — a numbered or lettered list
+ * marker followed by a short Title-Case phrase and a sentence break
+ * ("4. Mutual Release by Meridian. Upon receipt …"). Returns 0 when the
+ * paragraph does not open with one (a numbered SENTENCE — "4. Client shall
+ * pay Vendor." — fails the Title-Case check and is not a heading).
+ */
+function runInHeadingEnd(text: string): number {
+  const m = /^\s*(?:\d+(?:\.\d+)*|[A-Z])[.)]\s+([A-Z][^.;:]{0,80}?)[.;:]\s/.exec(text);
+  if (!m) return 0;
+  return isTitleCaseSegment(m[1]!) ? m[0].length : 0;
+}
+
+/** True when [index, index+length) lies inside an occurrence of `container` in `text`. */
+function insideOccurrenceOf(
+  text: string,
+  container: string,
+  index: number,
+  length: number,
+): boolean {
+  let at = text.indexOf(container);
+  while (at !== -1) {
+    if (index >= at && index + length <= at + container.length) return true;
+    at = text.indexOf(container, at + 1);
+  }
+  return false;
 }
 
 /** True when the phrase's words segment fully into defined term names. */
