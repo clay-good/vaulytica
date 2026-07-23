@@ -1,6 +1,37 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
 
+/**
+ * A termination-for-cause path. The rule wanted the exact phrase "for cause"
+ * or "material breach", but a for-cause clause is far more often written as
+ * the mechanism — terminate on a breach that is not cured within a notice
+ * period:
+ *
+ *   "terminate this EULA immediately upon written notice if End User breaches
+ *    any term of this EULA and fails to cure such breach within 30 days"
+ *   "if non-compliance is not cured within thirty (30) days, terminate the
+ *    portion of the MSA concerning the processing of personal data"
+ *
+ * Both were reported as having no for-cause path. `\bmaterial(?:ly)?\s+breach`
+ * stays as its own alternative — the leading `\b` already excludes
+ * "immaterial breach" (no word boundary sits inside "immaterial"). The new
+ * one pairs a termination verb with an uncured breach/default/non-compliance,
+ * in either order, within one sentence (`[^.]`) so it cannot stitch a
+ * termination verb to an unrelated later clause.
+ */
+const BREACH = String.raw`\b(?:breach|default|non-?compliance|non-?performance|violation)\w*`;
+const UNCURED = String.raw`\b(?:not\s+(?:been\s+)?cured|fails?\s+to\s+cure|uncured|not\s+remedied|fails?\s+to\s+remedy)\b`;
+const FOR_CAUSE = new RegExp(
+  String.raw`\bterminat\w+\b[^.]{0,120}\bfor\s+cause\b` +
+    "|" +
+    String.raw`\bmaterial(?:ly)?\s+breach` +
+    "|" +
+    String.raw`\bterminat\w+\b[^.]{0,140}${BREACH}[^.]{0,80}${UNCURED}` +
+    "|" +
+    String.raw`${BREACH}[^.]{0,120}${UNCURED}[^.]{0,120}\bterminat`,
+  "i",
+);
+
 /** TERM-002 — Termination for cause present (warning). */
 export const rule: Rule = {
   id: "TERM-002",
@@ -11,17 +42,7 @@ export const rule: Rule = {
   description: "Verifies the contract has a termination-for-cause path.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
-    if (
-      firstParagraphMatch(
-        ctx,
-        // `\b` before "material" so "immaterial breach" — which DISCLAIMS a
-        // termination right — does not satisfy the for-cause path and suppress
-        // this "no for-cause clause" warning. No trailing boundary, so the
-        // common plural "material breaches" still matches.
-        /\bterminate\b[\s\S]{0,80}\bfor\s+cause\b|\bmaterial(?:ly)?\s+breach/i,
-      )
-    )
-      return null;
+    if (firstParagraphMatch(ctx, FOR_CAUSE)) return null;
     return emit(ctx, rule, {
       title: "No termination-for-cause clause detected",
       description: "The contract does not state a path to terminate for material breach.",

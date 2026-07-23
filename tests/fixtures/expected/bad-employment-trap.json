@@ -657,8 +657,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "TERM-002-s1-0",
-      "fired": true,
+      "fired": false,
       "rule_id": "TERM-002",
       "rule_version": "1.0.0"
     },
@@ -857,23 +856,6 @@
       "title": "No Effective Date found"
     },
     {
-      "description": "The contract does not state a path to terminate for material breach.",
-      "document_position": 0,
-      "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "(no for-cause termination)"
-      },
-      "explanation": "Without a for-cause termination path, parties must rely on common-law material-breach doctrines, which are jurisdiction-dependent.",
-      "id": "TERM-002-s1-0",
-      "rule_id": "TERM-002",
-      "rule_version": "1.0.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "No termination-for-cause clause detected"
-    },
-    {
       "description": "The contract does not state what happens upon termination.",
       "document_position": 0,
       "excerpt": {
@@ -980,7 +962,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.9). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
-  "result_hash": "043f5cb8798e57acad13cf625a39af5d53e5d6540e0fb929f7db6e90fa18ef70",
+  "result_hash": "5c55f70be1b314f68ad993aee325ac0352729d9d70c7c392887ce25390ebfb16",
   "source_file": {
     "name": "bad-employment-trap.docx",
     "sha256": "c0ef11cc8a800daead332bf1bc265f96d72af1c51953958734b1bf18c4058b2a",
