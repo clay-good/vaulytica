@@ -20,7 +20,13 @@ export const rule: Rule = {
     if (
       firstParagraphMatch(
         ctx,
-        /\b(?:work(?:s)?\s+made\s+for\s+hire|intellectual\s+property|IP\s+ownership|hereby\s+assigns[^.]{0,120}?\b(?:inventions?|work\s+product|works?\s+of\s+authorship|copyrights?|patents?|trademarks?|trade\s+secrets?|deliverables?|intellectual\s+property|moral\s+rights?|IP)\b)/i,
+        // `hereby assigns` also has to tolerate the adverb every assignment
+        // clause carries — "Employee hereby IRREVOCABLY assigns to the Company
+        // all right, title, and interest in any and all inventions" is the
+        // standard invention-assignment sentence, and requiring the two words
+        // to be adjacent made the rule report that the contract "does not
+        // allocate ownership of intellectual property".
+        /\b(?:work(?:s)?\s+made\s+for\s+hire|intellectual\s+property|IP\s+ownership|hereby\s+(?:\w+ly\s+)?assigns?[^.]{0,120}?\b(?:inventions?|work\s+product|works?\s+of\s+authorship|copyrights?|patents?|trademarks?|trade\s+secrets?|deliverables?|intellectual\s+property|moral\s+rights?|IP)\b)/i,
       )
     )
       return null;

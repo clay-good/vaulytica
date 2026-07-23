@@ -1,6 +1,21 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
 
+/**
+ * A limitation of liability is the CAP, not the heading. Matching only the
+ * labels "limitation of liability" / "aggregate liability" missed the clause
+ * itself: "EACH PARTY'S TOTAL CUMULATIVE LIABILITY ARISING OUT OF OR RELATED
+ * TO THIS AGREEMENT … SHALL NOT EXCEED THE FEES PAID BY CUSTOMER TO PROVIDER
+ * IN THE TWELVE (12) MONTHS PRECEDING THE EVENT GIVING RISE TO THE CLAIM" is a
+ * textbook cap that uses neither label, and the rule reported "Vaulytica did
+ * not find a limitation-of-liability clause".
+ *
+ * Both capping forms are sentence-scoped, so the word "liability" in one
+ * clause cannot borrow "shall not exceed" from another.
+ */
+const LIMITATION_OF_LIABILITY =
+  /\blimitation\s+of\s+liability\b|\baggregate\s+liability\b|\bliabilit(?:y|ies)\b[^.]{0,200}?\b(?:shall|will)\s+not\s+exceed\b|\bliabilit(?:y|ies)\b[^.]{0,160}?\b(?:capped|limited)\s+(?:at|to)\b|\bin\s+no\s+event\b[^.]{0,140}?\bliabilit(?:y|ies)\b[^.]{0,80}?\bexceed\b/i;
+
 /** RISK-005 — Limitation of liability present (warning). */
 export const rule: Rule = {
   id: "RISK-005",
@@ -11,8 +26,7 @@ export const rule: Rule = {
   description: "Detects a limitation-of-liability clause; fires when absent.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
-    if (firstParagraphMatch(ctx, /\blimitation\s+of\s+liability\b|\baggregate\s+liability\b/i))
-      return null;
+    if (firstParagraphMatch(ctx, LIMITATION_OF_LIABILITY)) return null;
     return emit(ctx, rule, {
       title: "No limitation-of-liability clause detected",
       description: "Vaulytica did not find a limitation-of-liability clause.",

@@ -185,8 +185,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "IPDATA-001-s1-0",
-      "fired": true,
+      "fired": false,
       "rule_id": "IPDATA-001",
       "rule_version": "1.1.0"
     },
@@ -732,40 +731,6 @@
       "title": "Out-of-state choice-of-law on California-based party"
     },
     {
-      "description": "The contract does not allocate ownership of intellectual property.",
-      "document_position": 0,
-      "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "(no IP-ownership clause)"
-      },
-      "explanation": "Without an IP-ownership clause, default copyright and patent rules apply: under 17 U.S.C. § 201, copyright vests in the author/employee unless work-for-hire or assignment applies.",
-      "id": "IPDATA-001-s1-0",
-      "rule_id": "IPDATA-001",
-      "rule_version": "1.1.0",
-      "severity": "warning",
-      "source_citations": [
-        {
-          "id": "stat-17-usc-101",
-          "license": "Public domain (US government work)",
-          "license_url": "https://www.usa.gov/government-works",
-          "retrieved_at": "2026-05-11T00:00:00Z",
-          "source": "17 U.S.C. § 101 — Definitions (work made for hire)",
-          "source_url": "https://www.law.cornell.edu/uscode/text/17/101"
-        },
-        {
-          "id": "stat-17-usc-201",
-          "license": "Public domain (US government work)",
-          "license_url": "https://www.usa.gov/government-works",
-          "retrieved_at": "2026-05-11T00:00:00Z",
-          "source": "17 U.S.C. § 201",
-          "source_url": "https://www.law.cornell.edu/uscode/text/17/201"
-        }
-      ],
-      "title": "No IP-ownership clause detected"
-    },
-    {
       "description": "shall not directly or indirectly compete",
       "document_position": 704,
       "excerpt": {
@@ -916,7 +881,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.9). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"exempt\", \"Employee\".",
-  "result_hash": "861e681c7917da1d0063b39b6bd2a6b9e2d9144685d491cd048934e633fe5128",
+  "result_hash": "4f4d8c91f9b2dc897bfbf411a5c7ab6933cbc5f24f2ea0407d82ed3642e90fbe",
   "source_file": {
     "name": "bad-employment-choice-of-law.docx",
     "sha256": "432c209852332e09cdc68eec7a183f61c5da1fa8aafe36b92e3b8bf6fd2e6c26",

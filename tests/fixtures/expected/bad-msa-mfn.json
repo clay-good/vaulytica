@@ -382,8 +382,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "RISK-005-s1-0",
-      "fired": true,
+      "fired": false,
       "rule_id": "RISK-005",
       "rule_version": "1.0.0"
     },
@@ -774,23 +773,6 @@
       "title": "No indemnification clause detected"
     },
     {
-      "description": "Vaulytica did not find a limitation-of-liability clause.",
-      "document_position": 0,
-      "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "(no LoL clause)"
-      },
-      "explanation": "Without a limitation-of-liability clause, exposure is bounded only by what the parties can prove in damages. Most commercial contracts cap liability.",
-      "id": "RISK-005-s1-0",
-      "rule_id": "RISK-005",
-      "rule_version": "1.0.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "No limitation-of-liability clause detected"
-    },
-    {
       "description": "No Effective Date is named, defined, or stated near the top of this Agreement.",
       "document_position": 0,
       "excerpt": {
@@ -932,7 +914,7 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected msa-general (score 1). Title matched: \"master services agreement\", \"services agreement\". Distinguishing phrases: \"SOW\", \"Services\", \"Deliverables\", \"Provider\", \"Customer\".",
-  "result_hash": "104f30e70e48d20d3a2b5a1e92c0cfc1c4e714bb74c6fe4fdcff8595059bab8e",
+  "result_hash": "e83b8d1019fbe9d2f1ed50cdbb73b55b93bc4c83ebf3640ccc3a9a0a9103066f",
   "source_file": {
     "name": "bad-msa-mfn.docx",
     "sha256": "6c82de5ccf5a22064c5da0ad551848546762dc4f0b2fecf127a52f93798fe73d",
