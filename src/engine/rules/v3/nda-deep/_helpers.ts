@@ -140,6 +140,16 @@ export type NdaLanguageSpec = {
    * rules without it are unchanged.
    */
   exclude_if?: readonly RegExp[];
+  /**
+   * Document-scoped carve-out guards. Same idea as `exclude_if`, but tested
+   * against the WHOLE document rather than the matched paragraph — for rules
+   * whose finding asserts something about the agreement as a whole ("imposes an
+   * obligation solely on the Receiving Party"). A mutual NDA defines the
+   * reciprocal roles once, in a different paragraph from the obligations that
+   * use them, so a paragraph-scoped guard can never see it. Optional; rules
+   * without it are unchanged.
+   */
+  exclude_if_document?: readonly RegExp[];
   bad_title: string;
   bad_description: string;
   explanation: string;
@@ -161,6 +171,10 @@ export function buildNdaLanguageRule(spec: NdaLanguageSpec): Rule {
     applies_to_playbooks: playbookList(spec.scope ?? "all"),
     check(ctx: RuleContext): Finding | null {
       type Hit = { text: string; position: DocPosition; match: string };
+      if (spec.exclude_if_document?.length) {
+        const whole = fullText(ctx);
+        if (spec.exclude_if_document.some((ex) => ex.test(whole))) return null;
+      }
       let hit: Hit | null = null;
       forEachParagraph(ctx.tree, (p) => {
         if (hit) return;

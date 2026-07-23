@@ -507,6 +507,13 @@ export const NDA_DEEP_RULES: Rule[] = [
     recommendation:
       "Rewrite the obligation as bilateral: 'Each party shall ...' rather than 'Receiving Party shall ...'.",
     bad_patterns: [/^(?=.*receiving\s+party)(?!.*each\s+(party|of\s+the\s+parties)).{0,300}$/im],
+    // The inline `(?!.*each party)` suppression is line-scoped, but a mutual
+    // NDA states the reciprocal roles ONCE — "each party shall act in both
+    // capacities" — and then writes obligations against the role, which is the
+    // standard and correct convention. Judging each line alone therefore
+    // accused the textbook mutual NDA of imposing obligations "solely" on the
+    // Receiving Party. The same signal, read across the whole agreement.
+    exclude_if_document: [/each\s+(?:party|of\s+the\s+parties)/i],
     default_severity: "warning",
   }),
 

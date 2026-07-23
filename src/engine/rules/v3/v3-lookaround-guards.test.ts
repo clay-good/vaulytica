@@ -127,6 +127,31 @@ describe("MSA-023 — change-of-control hook before the assignment sentence", ()
   });
 });
 
+describe("NDA-D-024 — reciprocal roles defined once, used throughout", () => {
+  it("stays silent on a mutual NDA that defines both parties in both capacities", () => {
+    expect(
+      find(NDA_DEEP_RULES, "NDA-D-024").check(
+        doc(
+          "Confidentiality",
+          'Each party may disclose Confidential Information to the other; the party disclosing is the "Disclosing Party" and the party receiving is the "Receiving Party", and each party shall act in both capacities.',
+          "The Receiving Party shall protect the Confidential Information using no less than reasonable care.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still flags a genuinely receiver-only mutual template", () => {
+    expect(
+      find(NDA_DEEP_RULES, "NDA-D-024").check(
+        doc(
+          "Confidentiality",
+          "The Receiving Party shall protect the Confidential Information using no less than reasonable care and shall not disclose it to any third party.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});
+
 describe("MSA-015 — merchantability named before the disclaimer", () => {
   it("stays silent on the UCC-safe form that names merchantability first", () => {
     expect(
