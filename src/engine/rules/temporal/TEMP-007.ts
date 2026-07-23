@@ -28,10 +28,7 @@ export const rule: Rule = {
     );
     const survival = survivals[0];
     if (!survival) return null;
-    const combined = expandSurvivalSectionRefs(
-      ctx,
-      survivals.map((s) => s.text).join("\n"),
-    );
+    const combined = expandSurvivalSectionRefs(ctx, survivals.map((s) => s.text).join("\n"));
     const missing = EXPECTED.filter(([, re]) => !re.test(combined)).map(([name]) => name);
     if (missing.length === 0) return null;
     return emit(ctx, rule, {

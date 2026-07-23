@@ -111,7 +111,10 @@ export const rule: Rule = {
       // employment restraints). A paragraph that recites the purchased
       // goodwill it protects is a seller covenant, and its 3–5 year duration
       // is not the drafting risk this rule warns about.
-      if (/\bgoodwill\b/i.test(text) && /\b(?:purchas\w*|sale|sell(?:s|ing)?|acquir\w*)\b/i.test(text)) {
+      if (
+        /\bgoodwill\b/i.test(text) &&
+        /\b(?:purchas\w*|sale|sell(?:s|ing)?|acquir\w*)\b/i.test(text)
+      ) {
         return;
       }
       // Duration attribution is SENTENCE-scoped (fix-rule-detection-
