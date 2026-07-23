@@ -147,6 +147,16 @@ const LABELED_PARTY = new RegExp(
  */
 const LEADING_ROLE = new RegExp(String.raw`^(${PARTY_ROLE_LABEL})\s*,\s*(?=[A-Z])`, "i");
 
+/**
+ * A lead-in that DISCLAIMS the very relationship its "between" names —
+ * "does not constitute a contract between", "creates no partnership between",
+ * "nothing herein forms a joint venture between". Scoped to the tail of the
+ * lead-in so an earlier unrelated negation in the paragraph does not suppress
+ * a real preamble.
+ */
+const NEGATED_PREAMBLE =
+  /\b(?:not|no|nothing|never|neither)\b(?:[^.;\n](?!\bbetween\b)){0,80}(?:constitute|create|form|imply|establish|give\s+rise\s+to|amount\s+to)\w*(?:[^.;\n](?!\bbetween\b)){0,40}$/i;
+
 const SIGNATURE_LINE = /^(?:By|Name|Title|Date)\s*:?\s*/i;
 
 /**
@@ -238,7 +248,14 @@ export function extractParties(tree: DocumentTree): Party[] {
     BETWEEN_RE.lastIndex = 0;
     let betweenMatch: RegExpExecArray | null;
     while ((betweenMatch = BETWEEN_RE.exec(text)) !== null) {
-      if (PREAMBLE_LEAD.test(text.slice(0, betweenMatch.index))) break;
+      const lead = text.slice(0, betweenMatch.index);
+      // A DISCLAIMED relationship is the opposite of a preamble: "THIS
+      // CERTIFICATE DOES NOT CONSTITUTE A CONTRACT BETWEEN THE ISSUING
+      // INSURER(S) … AND THE CERTIFICATE HOLDER" names the two roles precisely
+      // to say they are NOT contracting parties. Reading it as a preamble
+      // registered both as parties.
+      if (NEGATED_PREAMBLE.test(lead)) continue;
+      if (PREAMBLE_LEAD.test(lead)) break;
     }
     if (betweenMatch) {
       const { name: a, role: roleA } = splitNameAndRole(betweenMatch[1] ?? "");

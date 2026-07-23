@@ -219,4 +219,20 @@ describe("party extraction hygiene", () => {
       ),
     ).not.toContain("EU SCC In");
   });
+  it("does not read a disclaimed relationship as a preamble", () => {
+    // A certificate of insurance names two roles precisely to say they are NOT
+    // contracting parties: "does not constitute a contract between X and Y".
+    expect(
+      names(
+        "Certificate of Liability Insurance",
+        "THIS CERTIFICATE OF INSURANCE DOES NOT CONSTITUTE A CONTRACT BETWEEN THE ISSUING INSURER(S), AUTHORIZED REPRESENTATIVE OR PRODUCER, AND THE CERTIFICATE HOLDER.",
+      ),
+    ).toEqual([]);
+    expect(
+      names(
+        "Agreement",
+        "Nothing in this Agreement creates a partnership between Acme Corp and Globex Inc.",
+      ),
+    ).toEqual([]);
+  });
 });
