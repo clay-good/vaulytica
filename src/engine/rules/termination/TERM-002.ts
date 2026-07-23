@@ -19,8 +19,13 @@ import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
  * in either order, within one sentence (`[^.]`) so it cannot stitch a
  * termination verb to an unrelated later clause.
  */
-const BREACH = String.raw`\b(?:breach|default|non-?compliance|non-?performance|violation)\w*`;
-const UNCURED = String.raw`\b(?:not\s+(?:been\s+)?cured|fails?\s+to\s+cure|uncured|not\s+remedied|fails?\s+to\s+remedy)\b`;
+// The defaulting event is a "breach"/"default" OR the failure that constitutes
+// one — "fails to pay rent", "fails to perform" — the standard lease/loan
+// default trigger.
+const BREACH = String.raw`\b(?:(?:breach|default|non-?compliance|non-?performance|violation)\w*|fails?\s+to\s+(?:pay|perform|comply|observe|satisfy|make\b[^.]{0,20}?payment))`;
+// Uncured: also the present-tense "does not cure" (a lease writes "and does not
+// cure within ten days"), not just the past-tense "not cured".
+const UNCURED = String.raw`\b(?:(?:does\s+|has\s+|is\s+|are\s+)?not\s+(?:been\s+)?cured?|fails?\s+to\s+cure|uncured|not\s+(?:been\s+)?remedied|fails?\s+to\s+remedy|remains?\s+uncured)\b`;
 const FOR_CAUSE = new RegExp(
   String.raw`\bterminat\w+\b[^.]{0,120}\bfor\s+cause\b` +
     "|" +

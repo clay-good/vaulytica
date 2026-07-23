@@ -75,3 +75,37 @@ describe("TERM-002 — termination for cause present", () => {
     ).not.toBeNull();
   });
 });
+
+describe("TERM-002 — failure-to-pay / perform default triggers", () => {
+  const doc = (...paras: string[]) => buildContext(["Default", ...paras]);
+
+  it("reads a lease default: fails to pay and does not cure, then terminate", () => {
+    expect(
+      TERM_002.check(
+        doc(
+          "If Tenant fails to pay rent when due and does not cure within ten (10) days after written notice, Landlord may terminate this Lease and pursue all remedies available at law.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("reads a fails-to-perform default", () => {
+    expect(
+      TERM_002.check(
+        doc(
+          "If either party fails to perform a material obligation under this Agreement and does not cure such failure within thirty (30) days, the other party may terminate.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("does not treat a late-payment interest clause as a for-cause path", () => {
+    expect(
+      TERM_002.check(
+        doc(
+          "Customer shall pay each invoice; if it fails to pay, interest accrues at 1.5% per month.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});
