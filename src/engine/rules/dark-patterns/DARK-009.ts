@@ -41,7 +41,22 @@ export const rule: Rule = {
       ctx,
       /\b(?:Vendor|Provider|Company|Licensor|Customer|Operator|we|we\s+reserve\s+the\s+right\s+to)\s*(?:may|reserves?\s+the\s+right\s+to|shall\s+have\s+the\s+right\s+to)?\s*(?:modify|amend|change|update|revise|alter)\b[\s\S]{0,160}\b(?:terms?|agreement|service|policy|policies|conditions)\b[\s\S]{0,160}\b(?:post(?:ing)?|publish(?:ing)?|making\s+available|made\s+available|upload(?:ing)?|placing)\b[\s\S]{0,80}\b(?:website|site|portal|url|link|page|online|on\s+its\s+(?:website|site|portal)|at\s+(?:the\s+)?url)\b/i,
     );
-    if (a) {
+    // The dark pattern is amendment by posting ALONE — "we change the terms by
+    // putting a new version online; keep using = you agree." A clause that
+    // posts a notice AND gives the individual direct notice (email / in-app /
+    // "notify you") AND an advance-notice period is the compliant form this
+    // rule's own recommendation prescribes ("written notice (email + at least
+    // 30 days) with a defined objection right"); firing on it flags a document
+    // for doing exactly what the remedy asks.
+    const compliantNotice =
+      a &&
+      /\b(?:by\s+e-?mail|e-?mail\s+(?:you|notification)|in-?app\s+notification|notify\s+you\b|written\s+notice\s+to\s+you)\b/i.test(
+        a.text,
+      ) &&
+      /\b(?:thirty|sixty|ninety|\d+)\s*\(?\d*\)?\s*days?\s+(?:before|prior|in\s+advance|of\s+notice)|at\s+least\s+\d+\s*\(?\d*\)?\s*days?/i.test(
+        a.text,
+      );
+    if (a && !compliantNotice) {
       return emit(ctx, rule, {
         title: "Unilateral amendment by posting to a URL",
         description: a.match[0],
