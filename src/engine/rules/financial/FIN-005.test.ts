@@ -77,3 +77,15 @@ describe("FIN-005 — a note's maturity date is its payment term (v1.3.0)", () =
     ).toBeNull();
   });
 });
+
+describe("FIN-005 — anniversary and Effective Date fee terms (v1.4.0)", () => {
+  it("reads 'due and payable on the Effective Date and on each anniversary'", () => {
+    expect(
+      FIN_005.check(
+        doc(
+          "Buyer and Seller shall each pay one-half of the Escrow Agent's fees, due and payable on the Effective Date and on each anniversary of the Effective Date.",
+        ),
+      ),
+    ).toBeNull();
+  });
+});

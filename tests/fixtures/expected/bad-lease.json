@@ -161,7 +161,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "FIN-005",
-      "rule_version": "1.3.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -367,7 +367,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "RISK-002",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -423,7 +423,7 @@
       "finding_id": "RISK-011-s1.4-946",
       "fired": true,
       "rule_id": "RISK-011",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -1085,7 +1085,7 @@
       "explanation": "A complete indemnity clause specifies (a) the timeline and form for notice of a claim, (b) which party controls defense, and (c) whether settlement requires consent.",
       "id": "RISK-011-s1.4-946",
       "rule_id": "RISK-011",
-      "rule_version": "1.2.0",
+      "rule_version": "1.3.0",
       "severity": "info",
       "source_citations": [],
       "title": "Indemnity procedural elements missing: notice, defense control, settlement consent"
@@ -1094,7 +1094,7 @@
   "playbook_id": "lease-commercial-multitenant",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected lease-commercial-multitenant (score 0.9). Title matched: \"office lease\". Distinguishing phrases: \"Landlord\", \"Tenant\", \"Premises\", \"Common Area\", \"Rentable Square Feet\", \"Base Rent\", \"Operating Expenses\".",
-  "result_hash": "70f74dcbc877ffb0d16c4e789e8469e9751edf9e6366994ac12d71872dc53d40",
+  "result_hash": "f2b0bfa1bcf3ab35c42213162c59158b9f227bfd4e5351ae7593077ec13f8cf4",
   "source_file": {
     "name": "bad-lease.docx",
     "sha256": "b9f12348ac5e0f56fe223c8e264370bf1159ebafc2e1c7e1fdb5a811ed1eea17",

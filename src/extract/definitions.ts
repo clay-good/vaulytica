@@ -454,6 +454,17 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // ordinary capitalized noun phrases worth flagging when undefined.
       const words = phrase.split(/\s+/);
       if (words.length === 2 && TITLE_CASE_LEADING_STOPWORDS.has(words[0]!)) continue;
+      // A sentence-initial article fused onto a DEFINED term is that term's
+      // use: "The Escrow Agent shall release …" is the defined "Escrow
+      // Agent", not an undefined "The Escrow Agent". A stopword-led phrase
+      // whose remainder is NOT defined ("The Special Reserve Fund") still
+      // flags.
+      if (
+        TITLE_CASE_LEADING_STOPWORDS.has(words[0]!) &&
+        definedNames.has(words.slice(1).join(" ").toLowerCase())
+      ) {
+        continue;
+      }
       const list = undefinedHits.get(phrase) ?? [];
       list.push(posInParagraph(ctx, m.index, m.index + phrase.length));
       undefinedHits.set(phrase, list);

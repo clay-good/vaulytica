@@ -159,7 +159,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "FIN-005",
-      "rule_version": "1.3.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -367,7 +367,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "RISK-002",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -423,7 +423,7 @@
       "finding_id": "RISK-011-s1.5-717",
       "fired": true,
       "rule_id": "RISK-011",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -994,7 +994,7 @@
       "explanation": "A complete indemnity clause specifies (a) the timeline and form for notice of a claim, (b) which party controls defense, and (c) whether settlement requires consent.",
       "id": "RISK-011-s1.5-717",
       "rule_id": "RISK-011",
-      "rule_version": "1.2.0",
+      "rule_version": "1.3.0",
       "severity": "info",
       "source_citations": [],
       "title": "Indemnity procedural elements missing: notice, defense control, settlement consent"
@@ -1003,7 +1003,7 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected msa-general (score 1). Title matched: \"master services agreement\", \"services agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Statement of Work\", \"SOW\", \"Services\", \"Provider\", \"Customer\", \"Master Agreement\".",
-  "result_hash": "07004de30d30d2ec7a0e5b9461f4a05b9ac5770bf896f5ba34cd10d6a9d5f8ab",
+  "result_hash": "7b848179f714ec0e0887fb3728d9cc686d507976d9982bf37745a56a4ab7d29e",
   "source_file": {
     "name": "bad-msa.docx",
     "sha256": "230075c191089510c566f91a8020e1d82f4632510794cd80d8e78c744570f4f5",

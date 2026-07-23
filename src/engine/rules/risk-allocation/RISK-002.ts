@@ -4,7 +4,7 @@ import { emit, allMatches, topPosition } from "../_helpers.js";
 /** RISK-002 — Indemnity mutuality (warning). */
 export const rule: Rule = {
   id: "RISK-002",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Indemnity mutuality",
   category: "risk-allocation",
   default_severity: "warning",
@@ -21,6 +21,13 @@ export const rule: Rule = {
       const sentence = line.match[0].toLowerCase();
       const idx = sentence.indexOf("indemnif");
       if (idx < 0) continue;
+      // A sentence about indemnification "under the Purchase Agreement" (or
+      // any other named instrument) describes a PARENT deal's allocation, not
+      // an indemnity of this document — an escrow agreement securing
+      // "Seller's indemnification obligations under the Purchase Agreement"
+      // was scored as Seller-heavy asymmetry. "under this Agreement" is this
+      // document and still counts.
+      if (/indemnif[^.]{0,60}\bunder\s+the\s+[a-z]+\s+agreement\b/.test(sentence)) continue;
       const before = sentence.slice(0, idx);
       // Count the INDEMNITOR, not every party the sentence happens to name.
       // "Customer shall indemnify Vendor" names both, so tallying any mention
@@ -38,7 +45,22 @@ export const rule: Rule = {
           if (at >= 0 && (!best || at > best.at)) best = { key, at };
         }
       }
-      if (best) counts.set(best.key, (counts.get(best.key) ?? 0) + 1);
+      if (!best) continue;
+      // A JOINT indemnity ("Buyer and Seller shall jointly and severally
+      // indemnify the Escrow Agent") is every named indemnitor's obligation —
+      // crediting only the surface closest to the verb scored it as
+      // one-sided. Credit each party named in the joint subject.
+      const subject = before.slice(Math.max(0, best.at - 60));
+      const credited = new Set<string>([best.key]);
+      if (/\bjointly\b/.test(subject) || /\w+\s+and\s+\w+/.test(subject)) {
+        for (const p of parties) {
+          const key = p.name.toLowerCase();
+          for (const surface of [key, ...(p.role ? [p.role.toLowerCase()] : [])]) {
+            if (subject.includes(surface)) credited.add(key);
+          }
+        }
+      }
+      for (const key of credited) counts.set(key, (counts.get(key) ?? 0) + 1);
     }
     const values = [...counts.values()];
     const max = Math.max(...values);

@@ -47,7 +47,7 @@ const PAYMENT_TERMS = new RegExp(
     // "due and payable on May 15, 2028" / "due and payable on the Maturity
     // Date". Every branch above is interval- or cadence-shaped, so a
     // perfectly conventional note was told it has no payment term.
-    `\\b(?:due|payable|paid)\\s+(?:and\\s+payable\\s+)?on\\s+(?:or\\s+before\\s+)?(?:(?:January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{1,2},?\\s+\\d{4}|the\\s+Maturity\\s+Date\\b)`,
+    `\\b(?:due|payable|paid)\\s+(?:and\\s+payable\\s+)?on\\s+(?:or\\s+before\\s+)?(?:(?:January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{1,2},?\\s+\\d{4}|the\\s+(?:Maturity|Effective|Closing)\\s+Date\\b|each\\s+anniversary\\b)`,
     `\\bpayable\\s+as\\s+follows\\b`,
     `\\bpayable\\s+in\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\)\\s*)?(?:equal\\s+)?(?:monthly|quarterly|weekly|annual|semi-?annual)\\s+installments\\b`,
   ].join("|"),
@@ -58,7 +58,7 @@ const ANY_PAYMENT = /\b(fee|payment|invoice|amount\s+due|payable)\b/i;
 /** FIN-005 — Payment terms presence and parseability (warning). */
 export const rule: Rule = {
   id: "FIN-005",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Payment terms presence and parseability",
   category: "financial",
   default_severity: "warning",

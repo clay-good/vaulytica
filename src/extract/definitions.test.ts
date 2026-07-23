@@ -436,3 +436,17 @@ describe("field-label terms are facts, not template leftovers", () => {
     expect(map.unused_terms).not.toContain("Effective Date");
   });
 });
+
+describe("a sentence-initial article on a defined term is that term's use", () => {
+  it("does not flag 'The Escrow Agent' when 'Escrow Agent' is defined", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Escrow",
+        'First Meridian Trust Company, acting as escrow agent (the "Escrow Agent"), holds the deposit.',
+        "The Escrow Agent shall release the funds upon joint instruction.",
+        "The Escrow Agent may resign upon thirty days' notice.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((u) => u.term)).not.toContain("The Escrow Agent");
+  });
+});

@@ -26,7 +26,7 @@ const OPERATIVE_INDEMNITY =
 /** RISK-011 — Indemnity procedure clause present (info). */
 export const rule: Rule = {
   id: "RISK-011",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Indemnity procedure clause",
   category: "risk-allocation",
   default_severity: "info",
@@ -55,6 +55,18 @@ export const rule: Rule = {
     // indemnity clause; demanding defense-control and settlement-consent
     // mechanics of DGCL § 145 language audits the wrong instrument.
     if (isStatutoryDandOIndemnity(sectionText)) return null;
+    // Likewise the fiduciary-protection indemnity every escrow agreement and
+    // indenture gives its neutral agent ("Buyer and Seller shall jointly and
+    // severally indemnify and hold harmless the Escrow Agent") — the agent's
+    // protection is good-faith reliance and ministerial duties, not
+    // commercial claims-procedure mechanics.
+    if (
+      /indemnify\s+and\s+hold\s+harmless\s+the\s+(?:escrow\s+agent|trustee|administrative\s+agent|depositary|custodian)\b/i.test(
+        sectionText,
+      )
+    ) {
+      return null;
+    }
     const missing = PROCEDURE.filter(([, re]) => !re.test(sectionText)).map(([n]) => n);
     if (missing.length === 0) return null;
     const substantive = section?.paragraphs

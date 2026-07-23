@@ -159,7 +159,7 @@
       "finding_id": "FIN-005-s1-0",
       "fired": true,
       "rule_id": "FIN-005",
-      "rule_version": "1.3.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -367,7 +367,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "RISK-002",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -422,7 +422,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "RISK-011",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -773,7 +773,7 @@
       "explanation": "Commercial contracts should state when payment is due. 'Net 30' or 'due within X days of invoice' is the typical formulation. Without it, payment timing defaults to the governing-law rule.",
       "id": "FIN-005-s1-0",
       "rule_id": "FIN-005",
-      "rule_version": "1.3.0",
+      "rule_version": "1.4.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No payment-term clause detected"
@@ -990,7 +990,7 @@
   "playbook_id": "sow",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected sow (score 0.9). Title matched: \"statement of work\". Distinguishing phrases: \"this SOW\", \"Master Agreement\", \"Deliverables\", \"milestones\".",
-  "result_hash": "5069149ec913e24b2c11c184e8093d51eef51eb2b77cd562db30f830ec99d9ff",
+  "result_hash": "1d3e3b1be6ed84de87389567f98f1dd2ca364399c3545ed39671104ed40b6528",
   "source_file": {
     "name": "bad-sow.docx",
     "sha256": "cd7208763b891cf8cb8e1c853b54f63fb70fe10004a489fbeb95921a14b84c3c",
