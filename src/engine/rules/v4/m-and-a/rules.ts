@@ -1326,6 +1326,7 @@ const EARNOUT_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-065",
+    version: "1.1.0",
     name: "Conduct-of-business covenant during earnout period",
     description:
       "Buyer should covenant to operate the business in a way consistent with achieving earnout milestones.",
@@ -1340,6 +1341,13 @@ const EARNOUT_RULES: Rule[] = [
     present_patterns: [
       /(conduct\s+of\s+(the\s+)?business|operate.{0,40}business).{0,80}earnout/is,
       /(commercially\s+reasonable|good\s+faith).{0,80}earnout/is,
+      // The covenant as often leads with the period — "During the Earnout
+      // Period, the Buyer shall operate the acquired business in good faith" —
+      // putting "Earnout" BEFORE the operate/good-faith verb, and the "reduce
+      // the Earnout Payments" tail sits past the 80-char window of the
+      // operate-first branches.
+      /earnout\s+period.{0,120}(operate|conduct|good\s+faith|commercially\s+reasonable)/is,
+      /(operate|conduct).{0,60}business.{0,120}(reduc\w+|avoid\w+|frustrat\w+).{0,40}earnout/is,
       /no\s+action.{0,40}intended\s+to.{0,40}(reduce|frustrate)/is,
     ],
   }),
@@ -1415,6 +1423,7 @@ const EARNOUT_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-070",
+    version: "1.1.0",
     name: "Acceleration on change of control",
     description:
       "Earnout should address acceleration if buyer undergoes a subsequent change of control.",
@@ -1426,7 +1435,16 @@ const EARNOUT_RULES: Rule[] = [
       "Seller-protective: if buyer is acquired before earnout payment, the remaining unpaid earnout accelerates at maximum.",
     recommendation:
       "Add 'Acceleration on Change of Control' specifying that buyer's change of control triggers acceleration of the remaining earnout at maximum (or per-period max).",
-    present_patterns: [/accelerat(e|ion).{0,80}change\s+of\s+control/is],
+    // The trigger is as often stated as the EVENT rather than the label
+    // "change of control" — "If the Buyer sells the acquired business or
+    // terminates a majority of its employees … all unpaid Earnout Payments
+    // become immediately due" is a change-of-control acceleration whether or
+    // not it uses the phrase.
+    present_patterns: [
+      /accelerat(e|ion).{0,80}change\s+of\s+control/is,
+      /(sell|sale|dispos\w+|transfer).{0,60}(business|company|assets).{0,120}(immediately\s+due|accelerat\w+|become\s+(?:due|payable))/is,
+      /(immediately\s+due|accelerat\w+).{0,120}(sell|sale|dispos\w+|change\s+of\s+control)/is,
+    ],
     default_severity: "warning",
   }),
   presence({

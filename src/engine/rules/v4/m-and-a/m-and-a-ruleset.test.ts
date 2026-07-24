@@ -269,3 +269,38 @@ describe("Escrow release & termination in their real wording (v1.1.0)", () => {
     ).toBe(true);
   });
 });
+
+describe("Earnout conduct covenant & CoC acceleration in real wording (v1.1.0)", () => {
+  const EARNOUT_PB: Playbook = { id: "earnout-agreement", version: "1.0.0" };
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Earnout", body]), EARNOUT_PB);
+    const run = await runEngine({ rules: M_AND_A_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("MNA-065 reads a period-first 'operate the business in good faith' covenant", async () => {
+    expect(
+      (
+        await run1(
+          "During the Earnout Period, the Buyer shall operate the acquired business in good faith and shall not take any action for the primary purpose of reducing the Earnout Payments.",
+        )
+      ).has("MNA-065"),
+    ).toBe(false);
+    expect(
+      (await run1("The Buyer shall pay the Sellers based on revenue milestones.")).has("MNA-065"),
+    ).toBe(true);
+  });
+
+  it("MNA-070 reads acceleration stated as the event ('sells the business … immediately due')", async () => {
+    expect(
+      (
+        await run1(
+          "If the Buyer sells the acquired business during the Earnout Period, all unpaid Earnout Payments become immediately due.",
+        )
+      ).has("MNA-070"),
+    ).toBe(false);
+    expect(
+      (await run1("The Buyer shall pay each Earnout Payment within 10 days.")).has("MNA-070"),
+    ).toBe(true);
+  });
+});
