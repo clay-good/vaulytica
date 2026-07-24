@@ -400,6 +400,7 @@ const PSA_RULES: Rule[] = [
 const GROUND_LEASE_RULES: Rule[] = [
   presence({
     id: "RE-018",
+    version: "1.1.0",
     name: "Long-term term stated (49 / 50 / 99 years)",
     description: "Ground lease should state a long-term term (typically 49, 50, or 99 years).",
     citation: rePractice(
@@ -413,7 +414,12 @@ const GROUND_LEASE_RULES: Rule[] = [
     explanation:
       "Practice baseline: ground leases run 49 / 50 / 99 years to amortize tenant's improvements.",
     recommendation: "Add 'Term' stating the initial term (typically 49, 50, or 99 years).",
-    present_patterns: [/(49|50|99)\s+years/i, /(forty.nine|fifty|ninety.nine)\s+years/i],
+    // Tolerate the spelled-then-parenthetical form a lease actually writes:
+    // "a term of ninety-nine (99) years". The "(99)" between the number and
+    // "years" defeated the adjacent match.
+    present_patterns: [
+      /(49|50|99|forty.nine|fifty|ninety.nine)\s*(?:\(\s*\d{1,3}\s*\)\s*)?years/i,
+    ],
   }),
   presence({
     id: "RE-019",
@@ -454,6 +460,7 @@ const GROUND_LEASE_RULES: Rule[] = [
   }),
   presence({
     id: "RE-021",
+    version: "1.1.0",
     name: "Reversion / ownership of improvements at expiration",
     description: "Ground lease must address what happens to improvements at term expiration.",
     citation: rePractice(
@@ -470,7 +477,12 @@ const GROUND_LEASE_RULES: Rule[] = [
     present_patterns: [
       /(revert|reversion).{0,80}improvements/is,
       /improvements.{0,40}(revert|surrender)/is,
-      /title\s+to\s+improvements/i,
+      // "Title to THE improvements …" carries an article, and the reversion is
+      // as often stated as the improvements PASSING / BELONGING to the
+      // landlord ("Title to the improvements … passes to the Landlord upon
+      // expiration or termination") rather than "reverting".
+      /title\s+to\s+(?:the\s+)?improvements/i,
+      /improvements.{0,80}(?:pass(?:es|ed)?\s+to|belong\s+to|become\s+the\s+property\s+of|vest\s+in)\s+(?:the\s+)?(?:landlord|lessor|owner)/is,
     ],
   }),
   presence({

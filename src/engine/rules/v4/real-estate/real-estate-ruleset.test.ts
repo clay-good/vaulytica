@@ -221,3 +221,32 @@ describe("RE-038 — discriminatory covenants in their real wording (v1.1.0)", (
     ).toBe(false);
   });
 });
+
+describe("Ground lease term & reversion in real wording (v1.1.0)", () => {
+  const GROUND_LEASE_PB: Playbook = { id: "ground-lease", version: "1.0.0" };
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Ground Lease", body]), GROUND_LEASE_PB);
+    const run = await runEngine({ rules: REAL_ESTATE_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("RE-018 reads a 'ninety-nine (99) years' term", async () => {
+    expect((await run1("The term of this Lease is ninety-nine (99) years.")).has("RE-018")).toBe(
+      false,
+    );
+    expect((await run1("The term of this Lease is ten (10) years.")).has("RE-018")).toBe(true);
+  });
+
+  it("RE-021 reads 'Title to the improvements passes to the Landlord upon expiration'", async () => {
+    expect(
+      (
+        await run1(
+          "Title to the improvements passes to the Landlord upon expiration or termination of this Lease.",
+        )
+      ).has("RE-021"),
+    ).toBe(false);
+    expect((await run1("The Tenant shall maintain the Premises in good repair.")).has("RE-021")).toBe(
+      true,
+    );
+  });
+});
