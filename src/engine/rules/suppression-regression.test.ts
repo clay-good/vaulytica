@@ -299,6 +299,31 @@ const HIGH_STAKES: { rule: string; playbook: string; sections: [string, ...strin
       ],
     ],
   },
+  // The residential tenant-protection rules — each flags a void lease term that
+  // a landlord imposes on a consumer tenant. A false negative here lets an
+  // illegal clause pass unremarked, so they get the same permanent guard.
+  {
+    rule: "DARK-010",
+    playbook: "lease-residential-us",
+    sections: [["Lease", "Tenant hereby waives the implied warranty of habitability."]],
+  },
+  {
+    rule: "DARK-011",
+    playbook: "lease-residential-us",
+    sections: [["Lease", "Landlord may change the locks and remove the tenant without notice."]],
+  },
+  {
+    rule: "DARK-012",
+    playbook: "lease-residential-us",
+    sections: [["Lease", "The security deposit is non-refundable."]],
+  },
+  {
+    rule: "DARK-013",
+    playbook: "lease-residential-us",
+    sections: [
+      ["Lease", "Tenant hereby waives all rights and remedies under the landlord-tenant act."],
+    ],
+  },
   {
     rule: "BNK-051",
     playbook: "promissory-note",
