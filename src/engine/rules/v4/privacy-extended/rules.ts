@@ -62,6 +62,7 @@ const COOKIE_NOTICE_RULES: Rule[] = [
   }),
   presence({
     id: "PRV-002",
+    version: "1.1.0",
     name: "Consent mechanism (opt-in for non-essential)",
     description:
       "Cookie notice must disclose the consent mechanism for non-essential cookies (banner / preference center).",
@@ -74,9 +75,15 @@ const COOKIE_NOTICE_RULES: Rule[] = [
     recommendation:
       "Add 'How We Obtain Consent' describing the banner / preference center, the affirmative-action requirement, and how the user can change consent later.",
     present_patterns: [
-      /consent/i,
+      // The consent mechanism counts only when consent is OBTAINED, not
+      // denied. "we set cookies without your consent" / "no consent is
+      // required" is the violation this rule flags, so the negative lookbehind
+      // excludes the "without/no (your/our/the) consent" form while keeping
+      // "after you provide consent" and "consent through our banner" (the
+      // fake-carve-out false-negative class, keyed on consent).
+      /(?<!\bwithout\s)(?<!\bwithout\s(?:your|our|the)\s)(?<!\bno\s)(?<!\bno\s(?:prior\s|further\s)?)consent/i,
       /(banner|preference\s+center|cookie\s+preference)/i,
-      /(accept|reject|manage)/i,
+      /(accept|reject|manage)\s+(?:all\s+)?cookies/i,
     ],
   }),
   presence({

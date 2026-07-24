@@ -213,3 +213,36 @@ describe("PRV-005 — 'we do not provide an opt-out' is the denial, not the opt-
     expect(run.findings.map((f) => f.rule_id)).not.toContain("PRV-005");
   });
 });
+
+describe("PRV-002 — 'without your consent' is the violation, not the mechanism (v1.1.0)", () => {
+  const COOKIE_PB2: Playbook = { id: "cookie-notice", version: "1.0.0" };
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Cookies", body]), COOKIE_PB2);
+    const run = await runEngine({ rules: PRIVACY_EXTENDED_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("fires when non-essential cookies are set without consent", async () => {
+    expect(
+      (await run1("We set all non-essential cookies automatically without your consent.")).has(
+        "PRV-002",
+      ),
+    ).toBe(true);
+  });
+
+  it("is silent on a genuine opt-in consent mechanism", async () => {
+    expect(
+      (
+        await run1(
+          "We set non-essential cookies only after you provide consent through our banner.",
+        )
+      ).has("PRV-002"),
+    ).toBe(false);
+  });
+
+  it("is silent on an accept-all / reject-all banner", async () => {
+    expect(
+      (await run1("Our banner lets you accept all cookies or reject all cookies.")).has("PRV-002"),
+    ).toBe(false);
+  });
+});
