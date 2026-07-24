@@ -272,6 +272,7 @@ const BYLAWS_RULES: Rule[] = [
 const OP_AGREEMENT_RULES: Rule[] = [
   presence({
     id: "GOV-013",
+    version: "1.1.0",
     name: "Management structure (member-managed vs. manager-managed)",
     description: "LLC operating agreement must specify management structure (DE LLC Act § 18-402).",
     citation: delllca("402"),
@@ -283,7 +284,17 @@ const OP_AGREEMENT_RULES: Rule[] = [
       "DE LLC Act § 18-402 defaults to member-managed unless the operating agreement provides otherwise. Members deserve an explicit statement.",
     recommendation:
       "Add a 'Management' section explicitly designating the LLC as member-managed or manager-managed and listing the initial managers.",
-    present_patterns: [/member.managed/i, /manager.managed/i, /the\s+manager(s)?\s+shall/i],
+    // "member-managed"/"manager-managed" is the label, but the structure is
+    // just as often stated descriptively — "The Company is managed by its
+    // Members", "the Company shall be managed by one or more Managers" — which
+    // the hyphenated labels missed, reporting no management clause on a plain
+    // one (v1.1.0).
+    present_patterns: [
+      /member.managed/i,
+      /manager.managed/i,
+      /the\s+manager(s)?\s+shall/i,
+      /managed\s+by\s+(?:its|the|one\s+or\s+more|a)\s+(?:members?|managers?)/i,
+    ],
   }),
   presence({
     id: "GOV-014",
@@ -302,6 +313,7 @@ const OP_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-015",
+    version: "1.1.0",
     name: "Distributions clause",
     description:
       "Operating agreement must address distributions of cash and property to members (DE LLC Act § 18-504).",
@@ -313,7 +325,14 @@ const OP_AGREEMENT_RULES: Rule[] = [
       "DE LLC Act § 18-504 defaults distributions to be made in proportion to agreed value of contributions. Members usually intend percentage interests or waterfall — silence defaults to the statutory rule.",
     recommendation:
       "Add a 'Distributions' section specifying the timing and allocation method (pro rata by interest, waterfall, tax-distribution covenant, etc.).",
-    present_patterns: [/distribution(s)?\s+(of|to|made|shall)/i],
+    // The noun form "distributions of/to …" was recognized, but the clause is
+    // as often stated with the VERB — "The Company shall distribute available
+    // cash to the Members" — under a bare "Distributions." heading, which the
+    // noun-only pattern missed (v1.1.0).
+    present_patterns: [
+      /distribution(s)?\s+(of|to|made|shall)/i,
+      /\bdistribute[sd]?\s+(?:available\s+|net\s+|distributable\s+)?(?:cash|funds|profits?|proceeds|amounts|income|assets)/i,
+    ],
   }),
   presence({
     id: "GOV-016",

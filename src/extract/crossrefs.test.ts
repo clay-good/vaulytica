@@ -393,4 +393,18 @@ describe("tax-statute section numbering", () => {
       "Section 12",
     );
   });
+
+  it("treats a statutory qualifier that PRECEDES the section as external", () => {
+    // "Treasury Regulations under Section 704(b)" / "the Internal Revenue Code
+    // pursuant to Section 409A" put the Code/Regulations noun before the
+    // section — an external citation, not a broken internal cross-reference.
+    expect(
+      unres(
+        "Profits and losses are allocated subject to the regulatory allocations required by Treasury Regulations under Section 704(b).",
+      ),
+    ).toEqual([]);
+    expect(
+      unres("Payments shall comply with the Internal Revenue Code pursuant to Section 409A."),
+    ).toEqual([]);
+  });
 });

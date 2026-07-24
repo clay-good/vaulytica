@@ -45,6 +45,15 @@ const EXTERNAL_TRAILER_RE =
   /^(?:\(\d+[a-z]?\))*(?:\s+(?:to|through|and|or|,)\s+\d+[A-Za-z]?(?:\(\d+[a-z]?\))*)*\s+(?:of\s+(?:the\s+)?[A-Z][^.;,]*?\b(?:Code|Acts?|Laws?|Regulations?|Rules?|U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?)\b|(?:UK\s+|EU\s+)?(?:GDPR|CCPA|CPRA|HIPAA|LGPD|PIPEDA|DPA\s+20\d\d)\b)/;
 const EXTERNAL_LEADER_RE = /\b(?:U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?|Stat\.)\s*$/;
 
+// The statutory qualifier can also PRECEDE the section: "Treasury Regulations
+// under Section 704(b)", "the Internal Revenue Code pursuant to Section 409A".
+// Here the Code / Act / Regulations noun and an "under" / "pursuant to"
+// connector sit BEFORE the reference, so EXTERNAL_TRAILER_RE (which scans the
+// text after) never saw them and STRUCT-007 reported the external cite as a
+// broken internal cross-reference. Tested against the text before the match.
+const EXTERNAL_LEADING_RE =
+  /\b(?:Code|Acts?|Regulations?|U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?)\b[^.;,]{0,20}?\b(?:under|pursuant\s+to)\s+$/i;
+
 // A reference into ANOTHER INSTRUMENT'S numbering — "Section 3.7 of the
 // Agreement" in disclosure schedules refers to the SPA, "Article VIII
 // thereof" to its remedies article — is not a broken reference in THIS
@@ -129,6 +138,7 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
         EXTERNAL_TRAILER_RE.test(after) ||
         EXTERNAL_INSTRUMENT_RE.test(after) ||
         EXTERNAL_LEADER_RE.test(before) ||
+        EXTERNAL_LEADING_RE.test(before) ||
         STATUTE_SECTION_LABEL.test(m[2] ?? "") ||
         statutoryLabels.has((m[2] ?? "").toUpperCase())
       ) {

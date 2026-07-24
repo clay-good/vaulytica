@@ -141,6 +141,30 @@ describe("v4 Governance — failure cases", () => {
     const run = await runEngine({ rules: GOVERNANCE_RULES, ctx, source_file: SRC });
     expect(run.findings.some((f) => f.rule_id === "GOV-080")).toBe(true);
   });
+
+  it("GOV-013 reads the descriptive 'managed by its Members' structure (v1.1.0)", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Management",
+        "The Company is managed by its Members. Each Member has voting power in proportion to its percentage interest.",
+      ]),
+      OP_AGREEMENT_PB,
+    );
+    const run = await runEngine({ rules: GOVERNANCE_RULES, ctx, source_file: SRC });
+    expect(run.findings.some((f) => f.rule_id === "GOV-013")).toBe(false);
+  });
+
+  it("GOV-015 reads a verb-form 'shall distribute available cash' clause (v1.1.0)", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Distributions",
+        "The Company shall distribute available cash to the Members in proportion to their percentage interests.",
+      ]),
+      OP_AGREEMENT_PB,
+    );
+    const run = await runEngine({ rules: GOVERNANCE_RULES, ctx, source_file: SRC });
+    expect(run.findings.some((f) => f.rule_id === "GOV-015")).toBe(false);
+  });
 });
 
 describe("GOV-028/031/032 — the charter formulas drafting actually uses (v1.1.0)", () => {
