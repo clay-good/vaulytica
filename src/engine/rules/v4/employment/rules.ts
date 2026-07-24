@@ -301,6 +301,7 @@ const OFFER_LETTER_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-014",
+    version: "1.1.0",
     name: "Acceptance and signature line",
     description: "Offer letter must have an acceptance / signature line with a deadline.",
     citation: empPractice(
@@ -314,7 +315,18 @@ const OFFER_LETTER_RULES: Rule[] = [
     explanation: "Without an acceptance line the offer can be perpetually open.",
     recommendation:
       "Add an 'Accepted and Agreed' signature line with a stated acceptance deadline.",
-    present_patterns: [/accepted\s+and\s+agreed/i, /please\s+sign\s+and\s+return/i, /\bby:\s*_+/i],
+    // An offer letter's acceptance block is as often a bare "Accepted:" header
+    // over a signature line, and the instruction "indicate your acceptance …
+    // by signing below and returning this letter" — neither of which the old
+    // "accepted and agreed" / "please sign and return" phrasings matched.
+    present_patterns: [
+      /accepted\s+and\s+agreed/i,
+      /please\s+sign\s+and\s+return/i,
+      /\bby:\s*_+/i,
+      /(?:^|\n)\s*accepted\s*[:\-]/i,
+      /\bacceptance\b[^.]{0,60}\bsign(?:ing|ature)?\b/i,
+      /\bsign(?:ing)?\b[^.]{0,20}(?:below|and\s+return(?:ing)?)/i,
+    ],
   }),
 ];
 

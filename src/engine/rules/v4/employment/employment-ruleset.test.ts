@@ -211,6 +211,27 @@ describe("v4 Employment — failure cases", () => {
     expect(bareRun.findings.some((f) => f.rule_id === "EMP-041")).toBe(true);
   });
 
+  it("EMP-014 reads an 'Accepted:' block and 'by signing below' instruction (v1.1.0)", async () => {
+    const OFFER_PB: Playbook = { id: "offer-letter", version: "1.0.0" };
+    const ctx = withPb(
+      buildContext([
+        "Acceptance",
+        "Please indicate your acceptance of this offer by signing below and returning this letter. Accepted: Taylor Kim. Date: __________",
+      ]),
+      OFFER_PB,
+    );
+    const run = await runEngine({ rules: EMPLOYMENT_RULES, ctx, source_file: SRC });
+    expect(run.findings.some((f) => f.rule_id === "EMP-014")).toBe(false);
+    // An offer letter with no acceptance mechanism still fires; a "signing
+    // bonus" mention is not an acceptance line.
+    const bare = withPb(
+      buildContext(["Offer", "You will receive a signing bonus of $10,000. The role is full-time."]),
+      OFFER_PB,
+    );
+    const bareRun = await runEngine({ rules: EMPLOYMENT_RULES, ctx: bare, source_file: SRC });
+    expect(bareRun.findings.some((f) => f.rule_id === "EMP-014")).toBe(true);
+  });
+
   it("EMP-049 fires on overbroad NLRA § 7 confidentiality / wage-discussion ban", async () => {
     const ctx = withPb(
       buildContext([
