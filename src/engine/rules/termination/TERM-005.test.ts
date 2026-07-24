@@ -87,3 +87,21 @@ describe("the conditional-termination consequence (v1.2.0)", () => {
     expect(TERM_005.check(ctx)).toBeNull();
   });
 });
+
+describe("the lease surrender consequence (v1.3.0)", () => {
+  it("reads 'Upon expiration or termination, Tenant shall surrender the Premises'", () => {
+    const ctx = buildContext([
+      "Surrender",
+      "Upon expiration or termination of this Lease, Tenant shall surrender the Premises in the condition required by this Lease, ordinary wear and tear excepted.",
+    ]);
+    expect(TERM_005.check(ctx)).toBeNull();
+  });
+
+  it("reads 'Tenant shall surrender possession upon termination'", () => {
+    const ctx = buildContext([
+      "Surrender",
+      "Tenant shall surrender possession of the Premises to Landlord upon the termination of this Lease.",
+    ]);
+    expect(TERM_005.check(ctx)).toBeNull();
+  });
+});
