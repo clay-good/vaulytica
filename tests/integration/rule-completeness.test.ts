@@ -7,7 +7,7 @@ import { listFixtures, runFixture } from "./_pipeline-helpers.js";
 /**
  * spec-v7 Part IX (Step 117) — per-rule completeness.
  *
- * With 1,065 rules, "the suite is green" says nothing about whether each rule
+ * With 1,066 rules, "the suite is green" says nothing about whether each rule
  * has been seen to BOTH fire (a positive case — it can catch its defect) and
  * stay silent on a clean document (a negative case — it does not false-alarm).
  * A rule with no positive is untested for false negatives; one with no clean

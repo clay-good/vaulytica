@@ -22,10 +22,10 @@ function withPb(ctx: RuleContext, pb: Playbook): RuleContext {
 }
 
 describe("v4 Banking ruleset — registry contract", () => {
-  it("exports exactly 50 rules with stable BNK-NNN ids", () => {
-    expect(BANKING_RULES.length).toBe(50);
+  it("exports exactly 51 rules with stable BNK-NNN ids", () => {
+    expect(BANKING_RULES.length).toBe(51);
     const ids = BANKING_RULES.map((r) => r.id);
-    expect(new Set(ids).size).toBe(50);
+    expect(new Set(ids).size).toBe(51);
     for (const r of BANKING_RULES) {
       expect(r.id, r.id).toMatch(/^BNK-\d{3}$/);
       expect(r.version, r.id).toMatch(/^\d+\.\d+\.\d+$/);
@@ -169,5 +169,41 @@ describe("v4 Banking — failure cases", () => {
     );
     const run = await runEngine({ rules: BANKING_RULES, ctx, source_file: SRC });
     expect(run.findings.some((f) => f.rule_id === "BNK-027")).toBe(true);
+  });
+});
+
+describe("BNK-051 — confession of judgment / cognovit clause", () => {
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Note", body]), NOTE_PB);
+    const run = await runEngine({ rules: BANKING_RULES, ctx, source_file: SRC });
+    return run.findings.find((f) => f.rule_id === "BNK-051");
+  };
+
+  it("fires (critical) on a cognovit / attorney-to-confess clause", async () => {
+    const f = await run1(
+      "Maker irrevocably authorizes any attorney to appear and confess judgment against Maker for the unpaid balance, without prior notice or a hearing.",
+    );
+    expect(f).toBeDefined();
+    expect(f?.severity).toBe("critical");
+  });
+
+  it("fires on the phrase 'confession of judgment'", async () => {
+    expect(
+      await run1("Maker consents to the entry of a confession of judgment upon default."),
+    ).toBeDefined();
+  });
+
+  it("is silent when the clause is expressly disclaimed", async () => {
+    expect(
+      await run1("This Note contains no confession of judgment and no warrant of attorney."),
+    ).toBeUndefined();
+  });
+
+  it("is silent on a clean note", async () => {
+    expect(
+      await run1(
+        "Maker promises to pay Payee $50,000 with interest at 8% per annum, due on demand.",
+      ),
+    ).toBeUndefined();
   });
 });

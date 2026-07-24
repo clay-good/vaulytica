@@ -1,5 +1,5 @@
 /**
- * v4 Banking and lending ruleset — 50 rules
+ * v4 Banking and lending ruleset — 51 rules
  * (spec-v4.md §6.L, Step 55).
  *
  * Eight new playbooks (L.1–L.8). Citations anchor to UCC Article 3
@@ -8,11 +8,16 @@
  * state suretyship law, state recording acts, and practitioner
  * baselines.
  *
- * Rule ids are flat `BNK-NNN` (001..050).
+ * Rule ids are flat `BNK-NNN` (001..051).
  */
 
 import type { Rule } from "../../../finding.js";
-import { buildV4PresenceRule, type V4PresenceSpec } from "../_helpers.js";
+import {
+  buildV4PresenceRule,
+  buildV4LanguageRule,
+  type V4PresenceSpec,
+  type V4LanguageSpec,
+} from "../_helpers.js";
 import {
   BNK_PLAYBOOK_PROMISSORY,
   BNK_PLAYBOOK_LOAN,
@@ -34,6 +39,8 @@ const CATEGORY = "banking";
 
 const presence = (s: Omit<V4PresenceSpec, "category">): Rule =>
   buildV4PresenceRule({ ...s, category: CATEGORY });
+const language = (s: Omit<V4LanguageSpec, "category">): Rule =>
+  buildV4LanguageRule({ ...s, category: CATEGORY });
 
 // ────────────────────────────────────────────────────────────────────
 // L.1 — Promissory note. 6 rules: BNK-001..BNK-006.
@@ -152,6 +159,35 @@ const PROMISSORY_NOTE_RULES: Rule[] = [
       /(presentment|demand|notice\s+of\s+dishonor|protest)/i,
     ],
     default_severity: "warning",
+  }),
+  language({
+    id: "BNK-051",
+    name: "Confession of judgment / cognovit clause",
+    description:
+      "A confession-of-judgment (cognovit) clause lets the holder obtain judgment without notice or a hearing; it is void in consumer credit and prohibited or unenforceable in many states.",
+    citation: bnkPractice(
+      "ftc-credit-practices-cognovit",
+      "FTC Credit Practices Rule, 16 C.F.R. \u00a7 444.2(a)(1) (cognovit / confession of judgment)",
+      "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-D/part-444",
+    ),
+    playbooks: [BNK_PLAYBOOK_PROMISSORY, BNK_PLAYBOOK_LOAN, BNK_PLAYBOOK_GUARANTY],
+    bad_patterns: [
+      /confess(?:es|ion)?\s+(?:of\s+)?judgment/i,
+      /\bcognovit\b/i,
+      /authorizes?\s+any\s+attorney[^.]{0,80}(?:appear|confess|judgment)/i,
+      /warrant\s+of\s+attorney[^.]{0,60}(?:confess|judgment)/i,
+    ],
+    exclude_if: [
+      /\bno\b[^.]{0,40}confession\s+of\s+judgment|confession\s+of\s+judgment[^.]{0,40}\b(?:is\s+)?(?:not|prohibited|void|waived|disclaimed)\b/i,
+    ],
+    bad_title: "Confession-of-judgment (cognovit) clause present",
+    bad_description:
+      "The instrument authorizes entry of judgment against the obligor without prior notice or a hearing.",
+    explanation:
+      "A cognovit / confession-of-judgment clause waives the obligor's due-process rights to notice and a hearing before judgment. The FTC Credit Practices Rule (16 C.F.R. \u00a7 444.2(a)(1)) makes such clauses an unfair practice in consumer credit, and many states hold them void or unenforceable outside a narrow commercial exception. Even where permitted, they are a hallmark of predatory lending and merchant-cash-advance abuse.",
+    recommendation:
+      "Remove the confession-of-judgment / cognovit / warrant-of-attorney provision, or confirm the transaction is a permitted commercial one in a state that recognizes it and that the obligor received independent counsel.",
+    default_severity: "critical",
   }),
 ];
 
