@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 /** DARK-003 — Asymmetric fee-shifting (warning). */
 export const rule: Rule = {
   id: "DARK-003",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Asymmetric fee-shifting",
   category: "dark-patterns",
   default_severity: "warning",
@@ -16,7 +16,12 @@ export const rule: Rule = {
       // Consumer terms address the reader in the second person — "YOU shall pay
       // Vendor's attorneys' fees" — so a party-name-only subject list missed the
       // fee-shifting clause in exactly the contracts this rule exists for.
-      /\b(?:Customer|Licensee|Employee|User|Subscriber|you)\s+(?:shall|must|agrees?\s+to|will)\s+(?:pay|reimburse)\s+(?:Provider|Vendor|Company|Licensor|Employer|us|our)['’]?s?\s+(?:reasonable\s+)?attorneys?[’']?\s+fees\b/i,
+      // The one-way fee-shift also appears in leases (Tenant → Landlord) and
+      // loans (Borrower → Lender) — both classic consumer-facing forms, and
+      // both void-or-reciprocal by statute in many states (e.g., Cal. Civ.
+      // § 1717 makes any attorney-fee clause reciprocal). The party lists are
+      // extended so the residential and lending forms are caught too.
+      /\b(?:Customer|Licensee|Employee|User|Subscriber|Tenant|Lessee|Borrower|Guarantor|you)\s+(?:shall|must|agrees?\s+to|will)\s+(?:pay|reimburse)\s+(?:Provider|Vendor|Company|Licensor|Employer|Landlord|Lessor|Lender|Bank|Creditor|us|our)['’]?s?\s+(?:reasonable\s+)?attorneys?[’']?\s+fees\b/i,
     );
     if (!oneSided) return null;
     // The "prevailing party" balanced-formulation carve-out must be checked in

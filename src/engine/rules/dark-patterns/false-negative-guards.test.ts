@@ -109,3 +109,33 @@ describe("CHOICE-008 — 'waive any right to a jury trial' (v1.1.0)", () => {
     expect(CHOICE_008.check(ctx)).toBeNull();
   });
 });
+
+describe("DARK-003 — one-way fee shift in leases and loans (v1.2.0)", () => {
+  it("fires on 'Tenant shall pay Landlord's attorneys' fees'", () => {
+    expect(
+      DARK_003.check(
+        buildContext([
+          "Lease",
+          "Tenant shall pay Landlord's attorneys' fees in any action to enforce this Lease.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+  it("fires on 'Borrower shall pay Lender's attorneys' fees'", () => {
+    expect(
+      DARK_003.check(
+        buildContext(["Note", "Borrower shall pay Lender's attorneys' fees upon default."]),
+      ),
+    ).not.toBeNull();
+  });
+  it("stays silent on a reciprocal prevailing-party clause", () => {
+    expect(
+      DARK_003.check(
+        buildContext([
+          "Terms",
+          "The prevailing party shall be entitled to its reasonable attorneys' fees.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+});
