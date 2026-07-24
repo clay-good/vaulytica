@@ -874,6 +874,7 @@ const PIP_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-041",
+    version: "1.1.0",
     name: "Duration and review schedule (30 / 60 / 90 days)",
     description: "PIP must specify duration and review schedule.",
     citation: eeocGuidance(),
@@ -884,8 +885,13 @@ const PIP_RULES: Rule[] = [
     recommendation: "Add 'Duration and Review Schedule' specifying 30 / 60 / 90 day milestones.",
     present_patterns: [
       /(30|60|90)\s*[-\s/]\s*(60|90)?\s*day/i,
-      /(30|60|90)\s+days/i,
-      /weekly\s+(check.in|review)/i,
+      // Tolerate the spelled number and the parenthetical-numeric form a PIP
+      // actually writes: "a period of ninety (90) days", "within the ninety
+      // (90) day period". The numeric-only "(90)" and the singular "day" both
+      // defeated the old adjacent "(30|60|90) days" match.
+      /(30|60|90|thirty|sixty|ninety)\s*(?:\(\s*\d{1,3}\s*\)\s*)?days?/i,
+      /(weekly|bi-?weekly|every\s+(?:two|other)\s+weeks?)\s+(check.in|review|meeting)/i,
+      /(check.in|review|meet).{0,30}(weekly|bi-?weekly|every\s+(?:two|other)\s+weeks?)/i,
     ],
   }),
   presence({

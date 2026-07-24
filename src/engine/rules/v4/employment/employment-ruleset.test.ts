@@ -11,6 +11,7 @@ const SEPARATION_PB: Playbook = { id: "separation-agreement", version: "1.0.0" }
 const RC_PB: Playbook = { id: "employment-restrictive-covenant", version: "1.0.0" };
 const PIIA_PB: Playbook = { id: "piia", version: "1.0.0" };
 const HANDBOOK_PB: Playbook = { id: "employee-handbook", version: "1.0.0" };
+const PIP_PB: Playbook = { id: "pip", version: "1.0.0" };
 
 const SRC = { name: "test.docx", sha256: "0".repeat(64), size_bytes: 100 };
 
@@ -189,6 +190,25 @@ describe("v4 Employment — failure cases", () => {
     );
     expect(bareIds.has("EMP-015")).toBe(true);
     expect(bareIds.has("EMP-016")).toBe(true);
+  });
+
+  it("EMP-041 reads a 'ninety (90) days' PIP duration with a biweekly check-in (v1.1.0)", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Duration and Review Schedule",
+        "This PIP will remain in effect for a period of ninety (90) days from the date above. The Employee and Manager will meet for a check-in every two weeks to review progress.",
+      ]),
+      PIP_PB,
+    );
+    const run = await runEngine({ rules: EMPLOYMENT_RULES, ctx, source_file: SRC });
+    expect(run.findings.some((f) => f.rule_id === "EMP-041")).toBe(false);
+    // A PIP with no duration or review cadence still fires.
+    const bare = withPb(
+      buildContext(["Plan", "The Employee must improve performance in the identified areas."]),
+      PIP_PB,
+    );
+    const bareRun = await runEngine({ rules: EMPLOYMENT_RULES, ctx: bare, source_file: SRC });
+    expect(bareRun.findings.some((f) => f.rule_id === "EMP-041")).toBe(true);
   });
 
   it("EMP-049 fires on overbroad NLRA § 7 confidentiality / wage-discussion ban", async () => {
