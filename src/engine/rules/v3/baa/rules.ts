@@ -468,7 +468,14 @@ export const BAA_RULES: Rule[] = [
     // "commercially reasonable EFFORTS" describes the manner of performance,
     // not the timing. A clause that also states a day count ("within 30 days of
     // termination") has the definite outer bound this rule demands.
-    exclude_if: [/\b\d+\s+(?:calendar\s+|business\s+)?days?\b/i],
+    // A definite day count IS the outer bound this rule wants — but "thirty
+    // (30) days" wraps the digits in a parenthetical, so the exclude_if must
+    // tolerate the ")" or a compliant bounded clause fires as unbounded (the
+    // digit-in-paren class, on the suppression side).
+    exclude_if: [
+      /\b\d+\)?\s+(?:calendar\s+|business\s+)?days?\b/i,
+      /\(\d+\)\s+(?:calendar\s+|business\s+)?days?\b/i,
+    ],
     default_severity: "warning",
   }),
 

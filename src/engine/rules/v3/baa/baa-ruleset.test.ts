@@ -315,6 +315,17 @@ describe("BAA defect rules catch the pattern's real form (v1.1.0)", () => {
     ).toBe(false);
   });
 
+  it("BAA-024 is silent when a definite bound is written 'thirty (30) days'", async () => {
+    expect(
+      (
+        await run1(
+          "Return",
+          "Upon termination, Business Associate shall return or destroy all PHI within thirty (30) days.",
+        )
+      ).has("BAA-024"),
+    ).toBe(false);
+  });
+
   it("BAA-024 fires on 'when feasible' but not the statutory 'if infeasible' condition", async () => {
     expect(
       (
