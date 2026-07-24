@@ -66,6 +66,19 @@ describe("extractParties", () => {
     expect(roles).toContain("Summit Commercial Bank:Lender");
   });
 
+  it("captures an insurance policy's 'Named Insured:' / 'Insurer:' labeled parties", () => {
+    const tree = buildTree([
+      "Policy Summary",
+      "Named Insured: Harborview Manufacturing, Inc.",
+      "Insurer: Sentinel Casualty Insurance Company",
+    ]);
+    const roles = extractParties(tree).map((p) => p.role);
+    // The labeled-party name truncates at the comma (existing behavior), so
+    // assert on the roles, which are the point: two parties are now identified.
+    expect(roles).toContain("Named Insured");
+    expect(roles).toContain("Insurer");
+  });
+
   it("does NOT surface a reciprocal role as an extra party in a mutual agreement", () => {
     // "Receiving Party" / "Recipient" is a position BOTH parties occupy; adding
     // it as a party would make OBLI-002 read role-based mutuality as a one-
