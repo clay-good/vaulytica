@@ -57,6 +57,12 @@ const PAYMENT_TERMS = new RegExp(
   ].join("|"),
   "i",
 );
+// The "does this document opine on payment at all" gate. The fee token is
+// deliberately the SINGULAR `fee`, not `fees?`: widening it to the plural
+// makes the gate match "reasonable attorneys' fees" in an indemnity clause,
+// which fires "no payment-term clause" on BAAs and addenda that state no
+// commercial payment term because they are not supposed to (the term lives in
+// the master agreement). The singular form is the load-bearing conservatism.
 const ANY_PAYMENT = /\b(fee|payment|invoice|amount\s+due|payable)\b/i;
 
 /** FIN-005 — Payment terms presence and parseability (warning). */
