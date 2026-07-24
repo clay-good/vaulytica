@@ -606,3 +606,16 @@ describe("10-K style heading lines and self-references", () => {
     expect(undef).not.toContain("Annual Report");
   });
 });
+
+describe("entity short forms", () => {
+  it("does not flag 'Granite Peak' when 'Granite Peak Lenders LLC' appears", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Brief",
+        "Meridian sued Granite Peak Lenders LLC over the renewal condition.",
+        "Granite Peak conditioned renewal on a deposit transfer. Granite Peak imposed the condition for an affiliate's benefit.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((u) => u.term)).not.toContain("Granite Peak");
+  });
+});

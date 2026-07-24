@@ -30,6 +30,13 @@ const PERIOD_START_DATE =
  */
 const BIRTHDATE = /\bborn\s+(?:on\s+)?$/i;
 
+/**
+ * A date inside a case-citation parenthetical — "(Del. Ch. Oct. 1, 2018)",
+ * "(2d Cir. Mar. 3, 2021)" — dates the cited OPINION, not this document;
+ * a brief citing decade-old precedent is not back-dated.
+ */
+const CITATION_DATE = /\(\s*(?:[A-Z0-9][\w.]*\s+){0,4}$/;
+
 /** Absolute-date start offsets whose text reads as another instrument's date. */
 function referencedDateStarts(ctx: RuleContext): Set<number> {
   const out = new Set<number>();
@@ -42,7 +49,8 @@ function referencedDateStarts(ctx: RuleContext): Set<number> {
       if (
         REFERENCED_INSTRUMENT_DATE.test(before) ||
         PERIOD_START_DATE.test(before) ||
-        BIRTHDATE.test(before)
+        BIRTHDATE.test(before) ||
+        CITATION_DATE.test(before)
       ) {
         out.add(start);
       }
@@ -54,7 +62,7 @@ function referencedDateStarts(ctx: RuleContext): Set<number> {
 /** TEMP-002 — Past-dated effective date in a forward-looking contract (info). */
 export const rule: Rule = {
   id: "TEMP-002",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Past-dated effective date",
   category: "temporal",
   default_severity: "info",

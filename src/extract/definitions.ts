@@ -406,6 +406,11 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
   // recitals ("personally appeared Nora Castellanos") — are people, not
   // defined terms, wherever else they appear.
   const personNames = new Set<string>();
+  // Prefixes of full entity names — "Granite Peak Lenders LLC" yields
+  // "Granite Peak" and "Granite Peak Lenders" — are the SHORT FORMS a
+  // document uses after introducing the entity, not defined terms. Briefs
+  // and letters shorten this way without any parenthetical definition.
+  const entityPrefixes = new Set<string>();
   forEachParagraph(tree, (ctx) => {
     for (const re of [
       /\/s\/\s+([A-Z][\w'’-]+(?:\s+[A-Z][\w'’-]+){0,3})/g,
@@ -414,6 +419,14 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       re.lastIndex = 0;
       let pm: RegExpExecArray | null;
       while ((pm = re.exec(ctx.text)) !== null) personNames.add(pm[1]!.toLowerCase());
+    }
+    const ENTITY_NAME =
+      /\b([A-Z][\w'’-]+(?:\s+[A-Z][\w'’-]+){1,4}),?\s+(?:LLC|Inc\.?|Corp\.?|Ltd\.?|L\.P\.|LLP|PLLC|N\.A\.|GmbH)(?![\w])/g;
+    ENTITY_NAME.lastIndex = 0;
+    let em: RegExpExecArray | null;
+    while ((em = ENTITY_NAME.exec(ctx.text)) !== null) {
+      const words = em[1]!.toLowerCase().split(/\s+/);
+      for (let k = 2; k <= words.length; k++) entityPrefixes.add(words.slice(0, k).join(" "));
     }
   });
   forEachParagraph(tree, (ctx) => {
@@ -527,6 +540,7 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       if (/\sNo$/.test(phrase) && /^\.\s*\d/.test(ctx.text.slice(m.index + phrase.length)))
         continue;
       if (personNames.has(phraseLower)) continue;
+      if (entityPrefixes.has(phraseLower)) continue;
       // A phrase introduced with a residence or origin ("Diego Castellanos,
       // residing at 9 Elm Row", "Lucia Ferrante, of Burlington") is a natural
       // person, not a defined term.

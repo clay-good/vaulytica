@@ -116,3 +116,14 @@ describe("a birthdate is biography, not an effective date (v1.1.0)", () => {
     expect(TEMP_002.check(ctx)).toBeNull();
   });
 });
+
+describe("a case citation's date is the opinion's, not the document's (v1.2.0)", () => {
+  it("does not compare a cited opinion's date against the filing dates", () => {
+    const ctx = buildContext([
+      "Authorities",
+      "Akorn, Inc. v. Fresenius Kabi AG, 2018 WL 4719347 (Del. Ch. Oct. 1, 2018).",
+      "The district court entered judgment on August 29, 2026, and the notice of appeal was filed on September 24, 2026.",
+    ]);
+    expect(TEMP_002.check(ctx)).toBeNull();
+  });
+});
