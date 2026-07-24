@@ -331,11 +331,22 @@ const LOAN_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "BNK-013",
+    version: "1.1.0",
     name: "Reg Z disclosures (consumer loans only)",
     description:
       "Consumer-purpose loans must include TILA / Reg Z disclosures (APR, finance charge, amount financed, total of payments).",
     citation: regZ("18", "Closed-end credit disclosures"),
     playbooks: [BNK_PLAYBOOK_LOAN],
+    // TILA / Reg Z governs CONSUMER credit only; a commercial or business loan
+    // is exempt (12 C.F.R. § 1026.3(a)). Without a consumer-purpose signal the
+    // rule cannot assert the loan is consumer credit, so demanding the TILA
+    // disclosure block on a plainly commercial term loan is a false positive.
+    // Gate on an explicit consumer-credit purpose.
+    applicable_if: [
+      /\bconsumer\s+(?:credit|loan|purpose|borrower|transaction)\b/i,
+      /\bpersonal,?\s+family,?\s+or\s+household\b/i,
+      /\bfor\s+(?:personal|household|consumer)\s+(?:use|purposes?)\b/i,
+    ],
     missing_title: "Reg Z / TILA disclosures clause missing (consumer)",
     missing_description: "No Reg Z / TILA disclosure clause was found for a consumer-purpose loan.",
     explanation:

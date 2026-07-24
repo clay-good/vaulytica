@@ -207,3 +207,44 @@ describe("BNK-051 — confession of judgment / cognovit clause", () => {
     ).toBeUndefined();
   });
 });
+
+describe("BNK-013 — Reg Z / TILA disclosures apply to consumer credit only (v1.1.0)", () => {
+  const findBnk013 = async (paras: [string, ...string[]][]) => {
+    const ctx = withPb(buildContext(...paras), LOAN_PB);
+    const run = await runEngine({ rules: BANKING_RULES, ctx, source_file: SRC });
+    return run.findings.find((f) => f.rule_id === "BNK-013");
+  };
+
+  it("does not fire on a commercial term loan with no consumer-purpose signal", async () => {
+    expect(
+      await findBnk013([
+        [
+          "Term Loan Agreement",
+          "The Lender agrees to make a term loan to the Borrower, a Delaware corporation, in the principal amount of $5,000,000. Interest at 7.5% per annum, payable quarterly. The Borrower shall maintain a fixed-charge coverage ratio of not less than 1.20 to 1.00.",
+        ],
+      ]),
+    ).toBeUndefined();
+  });
+
+  it("fires on a consumer-purpose loan that omits the TILA disclosures", async () => {
+    expect(
+      await findBnk013([
+        [
+          "Consumer Loan Agreement",
+          "This is a consumer loan for personal, family, or household purposes. Lender lends Borrower $15,000 at 12% per annum, repaid in 36 monthly installments.",
+        ],
+      ]),
+    ).toBeDefined();
+  });
+
+  it("is silent on a consumer loan that includes the TILA disclosure block", async () => {
+    expect(
+      await findBnk013([
+        [
+          "Consumer Loan Agreement",
+          "This consumer loan for personal, family, or household purposes states the Annual Percentage Rate (APR), the finance charge, the amount financed, and the total of payments as required by the Truth in Lending Act.",
+        ],
+      ]),
+    ).toBeUndefined();
+  });
+});
