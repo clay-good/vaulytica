@@ -89,3 +89,29 @@ describe("FIN-005 — anniversary and Effective Date fee terms (v1.4.0)", () => 
     ).toBeNull();
   });
 });
+
+describe("FIN-005 — 'no later than N days' is a payment window (v1.4.1)", () => {
+  it("reads 'shall pay each invoice no later than thirty (30) days after receipt'", () => {
+    expect(
+      FIN_005.check(doc("Customer shall pay each invoice no later than thirty (30) days after receipt.")),
+    ).toBeNull();
+  });
+
+  it("reads 'payable no later than fifteen (15) days after the invoice date'", () => {
+    expect(
+      FIN_005.check(doc("Each invoice is payable no later than fifteen (15) days after the invoice date.")),
+    ).toBeNull();
+  });
+
+  it("reads 'the fees are due no later than thirty (30) days'", () => {
+    expect(
+      FIN_005.check(doc("The fees are due no later than thirty (30) days after the invoice date.")),
+    ).toBeNull();
+  });
+
+  it("still fires when payment is stated with no window at all", () => {
+    expect(
+      FIN_005.check(doc("Customer shall pay each invoice as set out in the applicable Order Form.")),
+    ).not.toBeNull();
+  });
+});
