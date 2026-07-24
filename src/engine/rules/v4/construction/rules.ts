@@ -385,6 +385,7 @@ const LIEN_WAIVER_RULES: Rule[] = [
   }),
   presence({
     id: "CON-018",
+    version: "1.1.0",
     name: "Carve-outs — disputed claims / future rights",
     description:
       "Waiver should preserve carve-outs for retention, disputed claims, items not within waiver, and future rights.",
@@ -398,8 +399,14 @@ const LIEN_WAIVER_RULES: Rule[] = [
     recommendation:
       "Add 'Exclusions / Carve-Outs' listing retention, disputed claims, extras / change orders, and items not included in the waiver amount.",
     present_patterns: [
-      /(disputed\s+claim|exclusion|carve.?out)/i,
-      /(retention|retainage|change\s+order|extras?)/i,
+      // A carve-out/exclusion counts only when it is ASSERTED, not denied.
+      // "this waiver contains NO carve-out for disputed claims" is the
+      // overbroad unconditional waiver this rule flags, so a negative
+      // lookbehind excludes the "no/without carve-out|exclusion" denial while
+      // keeping a genuine "expressly carved out" / "excludes disputed claims"
+      // (the fake-carve-out false-negative class).
+      /(?<!\b(?:no|not|without|any)\s)(?:disputed\s+claim|exclusion|carve.?out)/i,
+      /(?<!\b(?:no|not|without|any)\s)(?:retention|retainage|change\s+order|extras?)/i,
     ],
     default_severity: "warning",
   }),

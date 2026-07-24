@@ -132,3 +132,30 @@ describe("v4 Construction — failure cases", () => {
     expect(run.findings.some((f) => f.rule_id === "CON-028")).toBe(true);
   });
 });
+
+describe("CON-018 — a denied carve-out is absence, not presence (v1.1.0)", () => {
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Waiver", body]), LW_PB);
+    const run = await runEngine({ rules: CONSTRUCTION_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("fires on an unconditional waiver that denies any exclusion", async () => {
+    expect(
+      (await run1("This is an unconditional final waiver of all claims with no exclusions.")).has(
+        "CON-018",
+      ),
+    ).toBe(true);
+    expect(
+      (await run1("The undersigned waives all claims without any carve-out.")).has("CON-018"),
+    ).toBe(true);
+  });
+
+  it("is silent when a carve-out is genuinely reserved", async () => {
+    expect(
+      (await run1("Retainage is expressly carved out and reserved from this waiver.")).has(
+        "CON-018",
+      ),
+    ).toBe(false);
+  });
+});
