@@ -326,3 +326,26 @@ describe("MNA-012 reads the verb-form reps-and-warranties article (v1.1.0)", () 
     ).toBe(true);
   });
 });
+
+describe("MNA-032 reads 'approval by the stockholders' order (v1.1.0)", () => {
+  const MERGER_PB: Playbook = { id: "merger-agreement", version: "1.0.0" };
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Conditions", body]), MERGER_PB);
+    const run = await runEngine({ rules: M_AND_A_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("reads 'subject to approval by the Company's stockholders'", async () => {
+    expect(
+      (await run1("The merger is subject to approval by the Company's stockholders.")).has("MNA-032"),
+    ).toBe(false);
+  });
+
+  it("still fires when no stockholder approval condition is present", async () => {
+    expect(
+      (await run1("The merger is subject to the expiration of the antitrust waiting period.")).has(
+        "MNA-032",
+      ),
+    ).toBe(true);
+  });
+});

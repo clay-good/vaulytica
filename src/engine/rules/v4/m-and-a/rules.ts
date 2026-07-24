@@ -643,6 +643,7 @@ const MERGER_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-032",
+    version: "1.1.0",
     name: "Stockholder approval mechanism",
     description: "Merger agreement must address required stockholder approvals (DGCL § 251(c)).",
     citation: dgcl("251"),
@@ -657,6 +658,12 @@ const MERGER_RULES: Rule[] = [
       /stockholder\s+approval/i,
       /required\s+vote/i,
       /majority\s+of\s+(the\s+)?outstanding/i,
+      // The condition is as often phrased with the approval FIRST — "subject
+      // to approval by the Company's stockholders", "adoption of this
+      // Agreement by the stockholders", "the stockholders shall vote to
+      // adopt" — none of which is the adjacent "stockholder approval" phrase.
+      /(?:approv\w+|adopt\w+|consent)\s+(?:of|by)\s+[^.]{0,30}?\bstockholders?\b/i,
+      /\bstockholders?\b[^.]{0,30}?(?:approv\w+|adopt\w+|vote\s+(?:to|in\s+favor)|consent)/i,
     ],
   }),
   presence({
