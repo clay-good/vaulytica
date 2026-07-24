@@ -504,11 +504,13 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       if (COMMON_WORDS.has(phrase)) continue;
       if (PLACE_NAMES.has(phrase)) continue;
       if (STATUTE_NAMES.has(phrase)) continue;
-      // A Title-Case phrase ending in "Act" or "Code" is a statute's title
-      // ("Bank Secrecy Act", "USA PATRIOT Act", "Utah Code") — the law's
-      // name, not a term the document defines. Same reasoning as
-      // STATUTE_NAMES, generalized on the unambiguous suffix.
-      if (/\s(?:Act|Code)$/.test(phrase)) continue;
+      // A Title-Case phrase ending in "Act", "Code", or "Law" is a statute's
+      // title or a body of law ("Bank Secrecy Act", "Utah Code", "Delaware
+      // General Corporation Law", "Governing Law", "Applicable Law") — the
+      // law's name, not a term the document defines. A phrase the document
+      // genuinely defines this way ("Data Protection Law means …") is already
+      // excluded as a defined term; only the undefined law reference remains.
+      if (/\s(?:Act|Code|Law)$/.test(phrase)) continue;
       if (OFFICER_TITLES.test(phrase)) continue;
       // A phrase immediately followed by a corporate suffix (", Inc.",
       // " LLC") is an entity NAME, not a defined term — same reasoning as

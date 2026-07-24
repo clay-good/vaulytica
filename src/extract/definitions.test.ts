@@ -364,6 +364,19 @@ describe("statute names, officer titles, and entity names are not defined terms"
     expect(terms).not.toContain("Chief Executive Officer");
   });
 
+  it("does not flag a statute / body-of-law name ending in 'Law'", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Body",
+        "The Corporation is organized under the General Corporation Law of the State of Delaware, and all rights are subject to the Delaware General Corporation Law.",
+        "This Agreement is subject to Applicable State Law and the Delaware General Corporation Law.",
+      ]),
+    );
+    const terms = map.undefined_capitalized.map((u) => u.term);
+    expect(terms).not.toContain("Delaware General Corporation Law");
+    expect(terms).not.toContain("Applicable State Law");
+  });
+
   it("does not flag signature-block designations (Authorized Signatory, Managing Partner)", () => {
     const map = extractDefinitions(
       buildTree([
