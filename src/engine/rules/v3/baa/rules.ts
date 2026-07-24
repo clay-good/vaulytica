@@ -358,6 +358,7 @@ export const BAA_RULES: Rule[] = [
 
   language({
     id: "BAA-020",
+    version: "1.1.0",
     name: "Breach notification looser than 60 days",
     description:
       "Flags breach-notice timing that exceeds the 60-day outer bound or shifts the trigger to a later event.",
@@ -370,9 +371,13 @@ export const BAA_RULES: Rule[] = [
     recommendation:
       "Reduce the breach-notification window to no more than 60 calendar days from discovery; do not tie the trigger to confirmation, assessment, or harm.",
     bad_patterns: [
-      /\b(9[0-9]|1[0-9]{2}|[2-9][0-9]{2})\s*(calendar\s+)?days\b.{0,80}(breach|notif)/is,
-      /(breach|notif).{0,80}\b(9[0-9]|1[0-9]{2}|[2-9][0-9]{2})\s*(calendar\s+)?days\b/is,
-      /\b(within|no\s+later\s+than)\s+(\d+)\s+(business|working)\s+days?\b.{0,80}(breach|notif)/is,
+      // "ninety (90) days" wraps the operative digits in a parenthetical, so a
+      // `\d+\s*days` match must tolerate the ")" between the number and "days"
+      // — the spelled-then-numeric convention otherwise hides an over-long
+      // breach window entirely.
+      /\b(9[0-9]|1[0-9]{2}|[2-9][0-9]{2})\)?\s*(calendar\s+)?days\b.{0,80}(breach|notif)/is,
+      /(breach|notif).{0,80}\b(9[0-9]|1[0-9]{2}|[2-9][0-9]{2})\)?\s*(calendar\s+)?days\b/is,
+      /\b(within|no\s+later\s+than)\s+(\d+)\)?\s*(business|working)\s+days?\b.{0,80}(breach|notif)/is,
     ],
     default_severity: "critical",
   }),
@@ -440,6 +445,7 @@ export const BAA_RULES: Rule[] = [
 
   language({
     id: "BAA-024",
+    version: "1.1.0",
     name: "Return-or-destruction lacks definite outer bound",
     description:
       "Flags return-or-destruction language that is open-ended ('as soon as practicable', 'commercially reasonable').",
@@ -453,6 +459,11 @@ export const BAA_RULES: Rule[] = [
       "Specify a fixed number of days (e.g., 30 days) after termination for return or destruction of PHI.",
     bad_patterns: [
       /(return|destroy|destruction).{0,80}(as\s+soon\s+as\s+practicable|commercially\s+reasonable|reasonable\s+time)/i,
+      // "return or destroy PHI WHEN feasible" is open-ended timing. "IF
+      // feasible" is deliberately excluded — that is the statutory condition
+      // at 45 C.F.R. § 164.504(e)(2)(ii)(I) ("if it is infeasible to return
+      // or destroy … extend the protections"), which is correct drafting.
+      /(return|destroy|destruction)[^.]{0,60}\b(?:when|as)\s+feasible\b/i,
     ],
     // "commercially reasonable EFFORTS" describes the manner of performance,
     // not the timing. A clause that also states a day count ("within 30 days of
@@ -756,6 +767,7 @@ export const BAA_RULES: Rule[] = [
 
   language({
     id: "BAA-042",
+    version: "1.1.0",
     name: "Choice-of-law overrides federal HIPAA",
     description:
       "Flags clauses that purport to make state law control over HIPAA — preempted but indicates poor drafting.",
@@ -768,6 +780,10 @@ export const BAA_RULES: Rule[] = [
       "Revise the governing-law clause to make clear that HIPAA controls in the event of conflict.",
     bad_patterns: [
       /(notwithstanding\s+(any\s+)?(provision\s+of\s+)?HIPAA|state\s+law\s+(shall\s+)?controls?|state\s+law\s+governs)/is,
+      // "the laws of Texas, which shall CONTROL OVER any conflicting FEDERAL
+      // requirement" — a governing-law clause purporting to override HIPAA.
+      /\b(?:shall\s+)?(?:control|prevail|govern|take\s+precedence)\s+over\s+[^.]{0,60}\bfederal\b/is,
+      /\bexclusively\s+by\s+the\s+laws\s+of[^.]{0,60}\bover\s+(?:any\s+)?(?:conflicting\s+)?federal\b/is,
     ],
     default_severity: "warning",
   }),

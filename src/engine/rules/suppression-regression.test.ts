@@ -149,3 +149,44 @@ describe("false-negative regression — consumer dark patterns still fire", () =
     expect(run.findings.map((f) => f.rule_id)).toContain(ruleId);
   });
 });
+
+/**
+ * The BAA defect rules flag HIPAA-noncompliant clauses. Each was written to a
+ * narrower phrasing than the defect takes: an over-long breach window written
+ * "ninety (90) days", an open-ended "when feasible" return obligation, and a
+ * choice-of-law clause overriding federal HIPAA. This adversarial BAA carries
+ * all three and pins that they fire — while the statutory "if infeasible"
+ * condition (correct drafting) stays out of the return-obligation defect.
+ */
+const BAA_ADVERSARIAL: [string, ...string[]][] = [
+  [
+    "Business Associate Agreement",
+    "Effective Date: June 1, 2027. This Business Associate Agreement is entered into between Covered Entity and Business Associate.",
+  ],
+  [
+    "Breach Notification",
+    "Business Associate shall notify Covered Entity of any breach of unsecured PHI within ninety (90) days after discovery of the breach.",
+  ],
+  [
+    "Return or Destruction",
+    "Upon termination, Business Associate shall return or destroy all PHI when feasible.",
+  ],
+  [
+    "Governing Law",
+    "This Agreement is governed by the laws of the State of Texas, which shall control over any conflicting federal requirement.",
+  ],
+];
+
+const BAA_PLANTED: [string, string][] = [
+  ["BAA-020", "breach window of 'ninety (90) days'"],
+  ["BAA-024", "open-ended 'when feasible' return obligation"],
+  ["BAA-042", "choice-of-law overriding federal HIPAA"],
+];
+
+describe("false-negative regression — BAA defect rules still fire", () => {
+  it.each(BAA_PLANTED)("%s still fires on %s", async (ruleId) => {
+    const ctx = withPb(buildContext(...BAA_ADVERSARIAL), { id: "baa", version: "1.0.0" });
+    const run = await runEngine({ rules: ALL_RULES, ctx, source_file: SRC });
+    expect(run.findings.map((f) => f.rule_id)).toContain(ruleId);
+  });
+});

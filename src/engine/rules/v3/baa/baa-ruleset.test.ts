@@ -283,3 +283,70 @@ describe("BAA ruleset — regulation-verbatim presence forms (v1.1.0)", () => {
     }
   });
 });
+
+describe("BAA defect rules catch the pattern's real form (v1.1.0)", () => {
+  const run1 = async (heading: string, body: string) => {
+    const ctx = withBaa(buildContext([heading, body]));
+    const run = await runEngine({
+      rules: BAA_RULES,
+      ctx,
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("BAA-020 fires on 'ninety (90) days' and is silent on 'sixty (60) days'", async () => {
+    expect(
+      (
+        await run1(
+          "Breach",
+          "Business Associate shall notify Covered Entity of any breach within ninety (90) days after discovery.",
+        )
+      ).has("BAA-020"),
+    ).toBe(true);
+    expect(
+      (
+        await run1(
+          "Breach",
+          "Business Associate shall notify Covered Entity of any breach within sixty (60) days after discovery.",
+        )
+      ).has("BAA-020"),
+    ).toBe(false);
+  });
+
+  it("BAA-024 fires on 'when feasible' but not the statutory 'if infeasible' condition", async () => {
+    expect(
+      (
+        await run1(
+          "Return",
+          "Upon termination, Business Associate shall return or destroy all PHI when feasible.",
+        )
+      ).has("BAA-024"),
+    ).toBe(true);
+    expect(
+      (
+        await run1(
+          "Return",
+          "Upon termination, Business Associate shall return or destroy all PHI; if such return or destruction is infeasible, Business Associate shall extend the protections of this Agreement to the retained PHI.",
+        )
+      ).has("BAA-024"),
+    ).toBe(false);
+  });
+
+  it("BAA-042 fires on a choice-of-law clause overriding federal HIPAA", async () => {
+    expect(
+      (
+        await run1(
+          "Governing Law",
+          "This Agreement is governed by the laws of Texas, which shall control over any conflicting federal requirement.",
+        )
+      ).has("BAA-042"),
+    ).toBe(true);
+    expect(
+      (
+        await run1("Governing Law", "This Agreement is governed by the laws of the State of Texas.")
+      ).has("BAA-042"),
+    ).toBe(false);
+  });
+});
