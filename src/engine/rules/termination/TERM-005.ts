@@ -50,6 +50,15 @@ const EFFECT_OF_TERMINATION = new RegExp(
     // ("the deposit shall be returnED") and a bare \b-wrapped stem rejects
     // every inflection.
     String.raw`|\bif\s+[^.]{0,80}?\bterminat(?:es|ed)\b[^.]{0,160}?\b(?:${CONSEQUENCE})\w*` +
+    // The purchase-agreement form pairs the termination VERB with the
+    // consequence in one sentence and no "(up)on" noun trigger — "the Buyer
+    // may terminate this Agreement, in which case the Earnest Money is
+    // refunded", "may terminate … and receive a refund". The verb takes the
+    // AGREEMENT as its object (not "terminate any employee who fails to
+    // return property", which is a firing clause, not a wind-down), and a
+    // bare "terminate this Agreement for convenience" with no consequence
+    // word still fails this branch and correctly reports none.
+    String.raw`|\bterminat(?:es?|ed|ing)\s+(?:this\s+|the\s+)(?:Agreement|Lease|Contract|SOW|Note|Order)\b[^.]{0,120}?\b(?:${CONSEQUENCE})\w*` +
     // A survival clause is the paradigmatic effect-of-termination statement —
     // "Sections 3 through 7 shall survive termination of this Agreement." It
     // takes termination as a bare object of "survive", not "UPON termination",
@@ -68,7 +77,7 @@ const EFFECT_OF_TERMINATION = new RegExp(
 /** TERM-005 — Effect of termination clause present (warning). */
 export const rule: Rule = {
   id: "TERM-005",
-  version: "1.4.1",
+  version: "1.4.2",
   name: "Effect of termination clause",
   category: "termination",
   default_severity: "warning",

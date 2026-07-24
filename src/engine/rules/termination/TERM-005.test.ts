@@ -139,3 +139,29 @@ describe("the survival clause is an effect of termination (v1.4.0)", () => {
     expect(TERM_005.check(ctx)).toBeNull();
   });
 });
+
+describe("the purchase-agreement 'terminate this Agreement … refund' form (v1.4.2)", () => {
+  it("reads 'may terminate this Agreement, in which case the Earnest Money is refunded'", () => {
+    const ctx = buildContext([
+      "Due Diligence",
+      "The Buyer may terminate this Agreement before the end of the Due Diligence Period, in which case the Earnest Money is refunded.",
+    ]);
+    expect(TERM_005.check(ctx)).toBeNull();
+  });
+
+  it("reads 'may terminate this Agreement and receive a refund'", () => {
+    const ctx = buildContext([
+      "Casualty",
+      "If the Property is materially damaged before Closing, the Buyer may terminate this Agreement and receive a refund of the Earnest Money.",
+    ]);
+    expect(TERM_005.check(ctx)).toBeNull();
+  });
+
+  it("does not read 'terminate any employee who fails to return property' as a wind-down", () => {
+    const ctx = buildContext([
+      "Conduct",
+      "The Company may terminate any employee who fails to return company property after a warning.",
+    ]);
+    expect(TERM_005.check(ctx)).not.toBeNull();
+  });
+});
