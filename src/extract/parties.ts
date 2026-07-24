@@ -136,6 +136,28 @@ const LABELED_PARTY = new RegExp(
 );
 
 /**
+ * The role labels of a ONE-SIDED instrument, whose preamble names its parties
+ * as "<Name> (the \"<Role>\")" with no entity-type suffix — an individual
+ * guarantor, a trust settlor, an insured. PARTY_DECL requires an entity type,
+ * so those parties went uncaptured and STRUCT-001 reported "no parties" about
+ * a guaranty / security agreement / trust / insurance summary that names them
+ * plainly ("by Harold Vance (the \"Guarantor\") in favor of … (the
+ * \"Lender\")").
+ *
+ * Deliberately EXCLUDES the reciprocal roles (Receiving Party, Recipient,
+ * Discloser, Disclosing Party) a MUTUAL agreement uses: an obligation stated
+ * on "the Receiving Party" is borne by whichever party is receiving, so
+ * surfacing that role as a single party would make OBLI-002 read the
+ * role-based mutuality as a one-sided (asymmetric) obligation. These
+ * one-sided roles denote a fixed position only one party holds.
+ */
+const ONE_SIDED_ROLE = String.raw`Guarantor|Grantor|Grantee|Settlor|Trustor|Trustee|Beneficiary|Debtor|Secured\s+Party|Creditor|Mortgagor|Mortgagee|Pledgor|Pledgee|Assignor|Assignee|Surety|Maker|Payee|Borrower|Lender|Insured|Insurer|Named\s+Insured|Indemnitor|Indemnitee`;
+const ROLE_LABELED_PARTY = new RegExp(
+  String.raw`([A-Z][\w&.,'’-]{0,80}(?:\s+[A-Z][\w&.,'’-]{0,80}){0,5})\s*\(\s*(?:the\s+)?["“”'](${ONE_SIDED_ROLE})["“”']\s*\)`,
+  "g",
+);
+
+/**
  * A role-first preamble names the party as `<Role>, <Legal Name>`: "between
  * Covered Entity, Acme Health LLC, a Delaware limited liability company
  * (\"Covered Entity\"), and Business Associate, Globex Services Inc." The
@@ -220,6 +242,17 @@ export function extractParties(tree: DocumentTree): Party[] {
         entity_type: entity,
         jurisdiction_of_formation: state,
         position: pos(m.index, m.index + m[0].length),
+      });
+    }
+    ROLE_LABELED_PARTY.lastIndex = 0;
+    let rm: RegExpExecArray | null;
+    while ((rm = ROLE_LABELED_PARTY.exec(text)) !== null) {
+      const name = cleanPartyName(rm[1] ?? "");
+      const role = rm[2];
+      if (!name || isBoilerplateName(name)) continue;
+      registerParty(partyMap, name, {
+        role,
+        position: pos(rm.index, rm.index + rm[0].length),
       });
     }
     DBA_RE.lastIndex = 0;

@@ -52,4 +52,31 @@ describe("extractParties", () => {
     expect(names).toContain("Jane Roe");
     expect(names).toContain("John Doe");
   });
+
+  it("captures the parties of a one-sided instrument named '<Name> (the \"<Role>\")'", () => {
+    // A guaranty names an individual guarantor and a lender with no entity-type
+    // suffix, so PARTY_DECL misses them; the one-sided role-label path catches
+    // them and STRUCT-001 no longer reports "no parties".
+    const tree = buildTree([
+      "Continuing Guaranty",
+      'This Continuing Guaranty is made by Harold Vance (the "Guarantor") in favor of Summit Commercial Bank (the "Lender").',
+    ]);
+    const roles = extractParties(tree).map((p) => `${p.name}:${p.role ?? ""}`);
+    expect(roles).toContain("Harold Vance:Guarantor");
+    expect(roles).toContain("Summit Commercial Bank:Lender");
+  });
+
+  it("does NOT surface a reciprocal role as an extra party in a mutual agreement", () => {
+    // "Receiving Party" / "Recipient" is a position BOTH parties occupy; adding
+    // it as a party would make OBLI-002 read role-based mutuality as a one-
+    // sided obligation. Only the two entity parties are returned.
+    const tree = buildTree([
+      "Mutual NDA",
+      'This Agreement is between Alpha Systems, Inc. ("Alpha") and Beta Logic, LLC ("Beta"). The Receiving Party shall protect the Confidential Information of the Disclosing Party.',
+    ]);
+    const names = extractParties(tree).map((p) => p.name.toLowerCase());
+    expect(names.some((n) => n.includes("receiving party") || n.includes("disclosing party"))).toBe(
+      false,
+    );
+  });
 });
