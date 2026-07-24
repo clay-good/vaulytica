@@ -22,13 +22,21 @@ import { forEachParagraph, forEachSection } from "../../../extract/walk.js";
 
 const ATTACH_KINDS = "Exhibit|Schedule|Annex|Annexure|Appendix|Attachment|Addendum";
 // A reference in running text: "see Exhibit C", "as set forth in Schedule 2".
-const REF_RE = new RegExp(String.raw`\b(${ATTACH_KINDS})\s+([A-Z]|\d{1,2})\b`, "g");
+// Decimal designators ("Schedule 3.7") are the disclosure-schedule norm —
+// the integer-only capture truncated them to "Schedule 3" and reconciled a
+// reference the document never makes.
+const REF_RE = new RegExp(String.raw`\b(${ATTACH_KINDS})\s+(\d{1,2}(?:\.\d{1,2})*|[A-Z])\b`, "g");
 // A heading / title line that *is* the attachment: "Exhibit C — Data Terms".
-const TITLE_RE = new RegExp(String.raw`^\s*(${ATTACH_KINDS})\s+([A-Z]|\d{1,2})\b`, "i");
+// A title line may carry a leading clause number ("3. Schedule 3.7 —
+// Litigation" in a flat-paste layout) — the attachment is present.
+const TITLE_RE = new RegExp(
+  String.raw`^\s*(?:\d+(?:\.\d+)*\.\s+)?(${ATTACH_KINDS})\s+(\d{1,2}(?:\.\d{1,2})*|[A-Z])\b`,
+  "i",
+);
 
 export const rule: Rule = {
   id: "STRUCT-018",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Attachment completeness",
   category: "structural",
   default_severity: "warning",

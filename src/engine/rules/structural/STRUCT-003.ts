@@ -39,6 +39,15 @@ const CERTIFICATION = /\bcertified\s+as\s+adopted\b|\bcertif(?:y|ies)\s+that\s+t
 const DATED_ADOPTION =
   /\badopted\s+by\s+the\s+board(?:\s+of\s+directors)?\s+(?:on|as\s+of)\s+[A-Z][a-z]+\s+\d{1,2},\s+\d{4}/i;
 
+// A delivery instrument — disclosure schedules, closing certificates,
+// officer's certificates — is DELIVERED pursuant to a parent agreement, not
+// signed by counterparties; the delivery recital is its execution context.
+// The window admits periods ("delivered by Tidewater Analytics, Inc. (the
+// 'Seller') pursuant to …" carries an entity abbreviation) and blocks only
+// semicolons, so the recital's own punctuation cannot defeat it.
+const DELIVERY_RECITAL =
+  /\bare\s+delivered\s+by\b[^;]{0,120}?\bpursuant\s+to\b|\bis\s+delivered\s+pursuant\s+to\b/i;
+
 /**
  * STRUCT-003 — Signature block present (critical).
  *
@@ -60,7 +69,7 @@ const DATED_ADOPTION =
  */
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",
@@ -101,8 +110,9 @@ export const rule: Rule = {
           signals += 1;
         }
         // Self-sufficient: a dated adoption recital is the complete
-        // execution of an adopted instrument.
-        if (!certified && DATED_ADOPTION.test(text)) {
+        // execution of an adopted instrument; a delivery recital is the
+        // complete execution context of a delivered one.
+        if (!certified && (DATED_ADOPTION.test(text) || DELIVERY_RECITAL.test(text))) {
           certified = true;
           signals += 2;
         }

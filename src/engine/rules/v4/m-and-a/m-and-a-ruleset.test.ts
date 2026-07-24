@@ -175,3 +175,28 @@ describe("MNA presence forms an APA actually writes (v1.1.0)", () => {
     expect(fired.has("MNA-026")).toBe(true);
   });
 });
+
+describe("MNA-042 — the no-admission materiality disclaimer (v1.1.0)", () => {
+  const DS_PB_LOCAL: Playbook = { id: "disclosure-schedules", version: "1.0.0" };
+
+  it("reads 'not an admission that such item is material'", async () => {
+    const ctx = withPb(
+      buildContext([
+        "General Notes",
+        "The inclusion of any item in these Disclosure Schedules is not an admission that such item is material, and no disclosure shall be deemed to enlarge or establish any standard of materiality or dollar threshold beyond that set forth in the Agreement.",
+      ]),
+      DS_PB_LOCAL,
+    );
+    const run = await runEngine({ rules: M_AND_A_RULES, ctx, source_file: SRC });
+    expect(run.findings.map((f) => f.rule_id)).not.toContain("MNA-042");
+  });
+
+  it("still fires when no materiality disclaimer exists", async () => {
+    const ctx = withPb(
+      buildContext(["Schedules", "The following contracts are disclosed."]),
+      DS_PB_LOCAL,
+    );
+    const run = await runEngine({ rules: M_AND_A_RULES, ctx, source_file: SRC });
+    expect(run.findings.map((f) => f.rule_id)).toContain("MNA-042");
+  });
+});

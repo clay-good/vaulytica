@@ -45,6 +45,14 @@ const EXTERNAL_TRAILER_RE =
   /^(?:\(\d+[a-z]?\))*(?:\s+(?:to|through|and|or|,)\s+\d+[A-Za-z]?(?:\(\d+[a-z]?\))*)*\s+(?:of\s+(?:the\s+)?[A-Z][^.;,]*?\b(?:Code|Acts?|Laws?|Regulations?|Rules?|U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?)\b|(?:UK\s+|EU\s+)?(?:GDPR|CCPA|CPRA|HIPAA|LGPD|PIPEDA|DPA\s+20\d\d)\b)/;
 const EXTERNAL_LEADER_RE = /\b(?:U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?|Stat\.)\s*$/;
 
+// A reference into ANOTHER INSTRUMENT'S numbering — "Section 3.7 of the
+// Agreement" in disclosure schedules refers to the SPA, "Article VIII
+// thereof" to its remedies article — is not a broken reference in THIS
+// document. "of this Agreement" is self-reference and still resolves
+// internally (the branch requires "the", never "this").
+const EXTERNAL_INSTRUMENT_RE =
+  /^(?:\(\d+[a-z]?\))*\s+(?:of\s+the\s+(?:[A-Z][\w]*\s+){0,4}(?:Agreement|Lease|Note|Indenture|MSA|SPA|DPA|BAA|Contract)\b|thereof\b)/;
+
 // A paragraph that OPENS with "6. Vendor Indemnity …" is section 6, even when
 // the ingester never promoted it to a heading. The paste path (any pasted
 // contract) keeps numbered clauses as flat paragraphs under one empty-heading
@@ -95,7 +103,13 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
       // authority's numbering, not this document's outline.
       const after = ctx.text.slice(m.index + m[0].length);
       const before = ctx.text.slice(0, m.index);
-      if (EXTERNAL_TRAILER_RE.test(after) || EXTERNAL_LEADER_RE.test(before)) continue;
+      if (
+        EXTERNAL_TRAILER_RE.test(after) ||
+        EXTERNAL_INSTRUMENT_RE.test(after) ||
+        EXTERNAL_LEADER_RE.test(before)
+      ) {
+        continue;
+      }
       const label = (m[2] ?? "").replace(/\(.*\)$/, "");
       // The outline models Section / Article headings only. An Exhibit,
       // Schedule, or Attachment reference must NOT resolve to a section that

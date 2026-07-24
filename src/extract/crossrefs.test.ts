@@ -321,3 +321,40 @@ describe("flat-paste ARTICLE layouts (bylaws style)", () => {
     ).toContain("Article VI");
   });
 });
+
+describe("cross-instrument references (disclosure schedules)", () => {
+  const flat = (...texts: string[]): DocumentTree =>
+    normalize({
+      type: "document",
+      sections: [
+        {
+          id: "",
+          heading: "",
+          level: 1,
+          paragraphs: texts.map((text) => ({
+            id: "",
+            runs: [{ id: "", text, start: 0, end: 0 }],
+          })),
+          children: [],
+        },
+      ],
+    });
+  const unresolvedIn2 = (...texts: string[]) =>
+    extractCrossRefs(flat(...texts), extractSections(flat(...texts)))
+      .filter((r) => r.unresolved)
+      .map((r) => r.raw_text);
+
+  it("'Section 3.7 of the Agreement' refers to the SPA, not this document", () => {
+    expect(
+      unresolvedIn2(
+        "The matters below are disclosed in response to Section 3.7 of the Agreement, as qualified by Article III of the Agreement and Buyer's rights under Article VIII thereof.",
+      ),
+    ).toEqual([]);
+  });
+
+  it("'Section 9 of this Agreement' still resolves internally (and reports when missing)", () => {
+    expect(unresolvedIn2("Payment is due as stated in Section 9 of this Agreement.")).toContain(
+      "Section 9",
+    );
+  });
+});

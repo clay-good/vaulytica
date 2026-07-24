@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
+import { emit, enclosingSentence, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
 
 /**
  * OBLI-007 — Material Adverse Change (MAC) clause present (warning).
@@ -18,7 +18,7 @@ import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js"
  */
 export const rule: Rule = {
   id: "OBLI-007",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Material Adverse Change clause present",
   category: "obligations",
   default_severity: "warning",
@@ -32,6 +32,13 @@ export const rule: Rule = {
     );
     if (!hit) return null;
     if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;
+    // Disclosure schedules recite the SPA's term inside a NO-ADMISSION
+    // disclaimer ("the inclusion of any item is not an admission that it …
+    // would have a Material Adverse Effect") — a reference to another
+    // instrument's MAC, not a MAC clause of this document.
+    if (/\bnot\s+an\s+admission\b/i.test(enclosingSentence(hit.text, hit.match.index))) {
+      return null;
+    }
     return emit(ctx, rule, {
       title: "Material Adverse Change clause present",
       description: hit.match[0],

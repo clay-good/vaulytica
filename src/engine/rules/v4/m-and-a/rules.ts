@@ -844,6 +844,7 @@ const DISCLOSURE_SCHEDULE_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-042",
+    version: "1.1.0",
     name: "Materiality / dollar-threshold-conformity disclaimer",
     description:
       "Schedules should disclaim that listing of items above a stated threshold implies materiality.",
@@ -857,6 +858,12 @@ const DISCLOSURE_SCHEDULE_RULES: Rule[] = [
     present_patterns: [
       /materiality.{0,40}(disclaim|shall\s+not\s+(be|imply))/is,
       /threshold.{0,40}(disclaim|shall\s+not\s+(be|imply))/is,
+      // The standard formulation: "the inclusion of any item … is NOT AN
+      // ADMISSION that such item is MATERIAL", "no disclosure shall be
+      // deemed to ENLARGE or ESTABLISH any STANDARD OF MATERIALITY".
+      /not\s+an\s+admission\s+that[^.]{0,80}\bmaterial/is,
+      /standard\s+of\s+materiality/i,
+      /deemed\s+to\s+(?:enlarge|establish|expand)[^.]{0,60}(?:materiality|threshold)/is,
     ],
     default_severity: "warning",
   }),

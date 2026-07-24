@@ -8,6 +8,7 @@ import { describe, expect, it } from "vitest";
 import { buildContext } from "../_test-fixtures.js";
 import { rule as STRUCT003 } from "./structural/STRUCT-003.js";
 import { rule as STRUCT016 } from "./structural/STRUCT-016.js";
+import { rule as STRUCT018 } from "./structural/STRUCT-018.js";
 import { rule as FIN002 } from "./financial/FIN-002.js";
 import { rule as FIN005 } from "./financial/FIN-005.js";
 
@@ -199,5 +200,36 @@ describe("STRUCT-003 — a dated adoption recital executes an adopted instrument
       ["Amendment", "This Charter may be adopted, amended, or repealed by the Board."],
     );
     expect(STRUCT003.check(ctx)).not.toBeNull();
+  });
+});
+
+describe("STRUCT-003 — a delivery instrument executes by delivery (v1.4.0)", () => {
+  it("accepts disclosure schedules delivered pursuant to an SPA", () => {
+    const ctx = buildContext(
+      [
+        "Disclosure Schedules",
+        "These Disclosure Schedules are delivered by Seller pursuant to the Stock Purchase Agreement dated December 15, 2026.",
+      ],
+      ["Litigation", "The matters set forth below are disclosed in response to Section 3.7."],
+    );
+    expect(STRUCT003.check(ctx)).toBeNull();
+  });
+});
+
+describe("STRUCT-018 — decimal schedule designators (v1.1.0)", () => {
+  it("reconciles 'Schedule 3.7' against its own titled section", () => {
+    const ctx = buildContext(
+      ["Intro", "The items on Schedule 3.7 are disclosed in response to the Agreement."],
+      ["Body", "3. Schedule 3.7 — Litigation. The matters below are disclosed."],
+    );
+    expect(STRUCT018.check(ctx)).toBeNull();
+  });
+
+  it("still reports a genuinely missing decimal schedule", () => {
+    const ctx = buildContext([
+      "Intro",
+      "The excluded assets are listed on Schedule 2.4 to this Agreement.",
+    ]);
+    expect(STRUCT018.check(ctx)).not.toBeNull();
   });
 });
