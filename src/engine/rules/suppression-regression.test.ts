@@ -190,3 +190,49 @@ describe("false-negative regression — BAA defect rules still fire", () => {
     expect(run.findings.map((f) => f.rule_id)).toContain(ruleId);
   });
 });
+
+/**
+ * The GDPR Art. 28 defect rules flag a processor DPA that violates the
+ * controller's mandatory protections. Each was written to a narrower phrasing
+ * than the violation takes: the deletion choice handed to the processor via
+ * "sole discretion" rather than "option/choice", the audit right eliminated by
+ * a generic certification report "in lieu of any audit" rather than a named
+ * SOC 2, and the processor arrogating instruction-amendment power via
+ * "unilaterally amend" rather than "deviate/depart". This adversarial DPA
+ * carries all three and pins that they fire.
+ */
+const DPA_ADVERSARIAL: [string, ...string[]][] = [
+  [
+    "Data Processing Agreement",
+    "This Data Processing Agreement is entered into pursuant to Article 28 GDPR between Controller and Processor, effective June 1, 2027.",
+  ],
+  [
+    "Deletion or Return",
+    "Upon termination, Processor shall, at the Processor's sole discretion, either delete or return the Personal Data.",
+  ],
+  [
+    "Instructions",
+    "Processor may unilaterally amend or supplement the Controller's instructions where Processor deems it operationally necessary.",
+  ],
+  [
+    "Audit",
+    "In lieu of any audit or inspection rights, Controller shall rely solely on a third-party certification report, and Controller shall have no right to conduct or mandate an audit.",
+  ],
+];
+
+const DPA_PLANTED: [string, string][] = [
+  ["DPA-035", "deletion choice handed to the processor's sole discretion"],
+  ["DPA-036", "audit eliminated by a report 'in lieu of any audit'"],
+  ["DPA-037", "processor may unilaterally amend the controller's instructions"],
+];
+
+describe("false-negative regression — GDPR DPA defect rules still fire", () => {
+  it.each(DPA_PLANTED)("%s still fires on %s", async (ruleId) => {
+    const ctx = withPb(buildContext(...DPA_ADVERSARIAL), {
+      id: "dpa-controller-processor",
+      version: "1.0.0",
+    });
+    const run = await runEngine({ rules: ALL_RULES, ctx, source_file: SRC });
+    expect(run.findings.map((f) => f.rule_id)).toContain(ruleId);
+  });
+});

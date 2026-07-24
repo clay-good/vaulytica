@@ -648,6 +648,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   language({
     id: "DPA-035",
+    version: "1.1.0",
     name: "Deletion-or-return choice belongs to processor",
     description:
       "Flags clauses where the processor (not the controller) chooses between deletion and return.",
@@ -662,10 +663,16 @@ export const DPA_GDPR_RULES: Rule[] = [
     bad_patterns: [
       /processor\s+(shall|may)\s+(choose|elect)\s+to\s+(delete|return)/i,
       /at\s+the\s+(option|choice)\s+of\s+(the\s+)?processor.*?(delete|return)/is,
+      // The deletion/return choice belongs to the CONTROLLER under Art.
+      // 28(3)(g). "at the Processor's sole discretion, either delete or
+      // return" hands it to the processor via "discretion" rather than
+      // "option/choice" — the same defect, different word.
+      /(?:at\s+the\s+processor'?s?\s+(?:sole\s+)?discretion|in\s+the\s+processor'?s?\s+(?:sole\s+)?discretion|processor'?s?\s+(?:sole\s+)?discretion)[^.]{0,80}(?:delete|return)|(?:delete|return)[^.]{0,80}at\s+the\s+processor'?s?\s+(?:sole\s+)?discretion/is,
     ],
   }),
   language({
     id: "DPA-036",
+    version: "1.1.0",
     name: "Audit-substitution eliminates audit entirely",
     description:
       "Flags SOC 2 / ISO substitution that eliminates the controller's audit right rather than substituting it.",
@@ -680,10 +687,18 @@ export const DPA_GDPR_RULES: Rule[] = [
     bad_patterns: [
       /(SOC\s*2|ISO\s*27001).{0,160}(in\s+lieu\s+of|shall\s+(satisfy|fulfill|fulfil)|the\s+sole\s+means)/is,
       /(no\s+(other|additional)\s+audit\s+rights|audit\s+rights?\s+are\s+limited\s+to)/i,
+      // Art. 28(3)(h) requires the processor to "allow for and contribute to
+      // audits". Substituting a report for the audit ENTIRELY ("in lieu of
+      // any audit … Controller shall have no right to conduct or mandate an
+      // audit") eliminates the right; the SOC-2-specific branches above miss
+      // a generic "certification report" substitution.
+      /in\s+lieu\s+of\s+(?:any\s+)?(?:audit|inspection)/is,
+      /(?:shall\s+have\s+)?no\s+right\s+to\s+(?:conduct|mandate|require|perform)\s+(?:or\s+\w+\s+)?an?\s+audit/is,
     ],
   }),
   language({
     id: "DPA-037",
+    version: "1.1.0",
     name: "Processor unilaterally amends instructions",
     description:
       "Flags clauses where the processor may deviate from controller instructions unilaterally.",
@@ -698,6 +713,11 @@ export const DPA_GDPR_RULES: Rule[] = [
     bad_patterns: [
       /processor\s+may\s+(deviate|depart)\s+from/i,
       /processor.{0,80}(at\s+its\s+(sole\s+)?discretion).{0,80}(instructions|processing)/is,
+      // Art. 29 binds the processor to the controller's instructions.
+      // "Processor may unilaterally amend or supplement the Controller's
+      // instructions" arrogates that power — the verb is amend/modify/change,
+      // not deviate/depart, so the branches above missed it.
+      /processor\s+may\s+(?:\w+\s+){0,3}?(?:unilaterally\s+)?(?:amend|modify|change|alter|supplement|override)\s+(?:or\s+\w+\s+)?(?:the\s+)?(?:controller'?s?\s+)?instructions/is,
     ],
   }),
   presence({

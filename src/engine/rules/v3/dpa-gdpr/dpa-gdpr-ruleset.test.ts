@@ -314,3 +314,67 @@ describe("DPA-GDPR ruleset — commercial-drafting presence forms (v1.1.0)", () 
     }
   });
 });
+
+describe("DPA defect rules catch the violation's real wording (v1.1.0)", () => {
+  const run1 = async (body: string) => {
+    const ctx = withDpa(buildContext(["Clause", body]));
+    const run = await runEngine({
+      rules: DPA_GDPR_RULES,
+      ctx,
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("DPA-035 fires when the deletion choice is the processor's discretion, not the controller's", async () => {
+    expect(
+      (
+        await run1(
+          "Upon termination, Processor shall, at the Processor's sole discretion, either delete or return the Personal Data.",
+        )
+      ).has("DPA-035"),
+    ).toBe(true);
+    expect(
+      (
+        await run1(
+          "Upon termination, Processor shall, at the choice of the Controller, delete or return all Personal Data.",
+        )
+      ).has("DPA-035"),
+    ).toBe(false);
+  });
+
+  it("DPA-036 fires when a report substitutes for the audit entirely", async () => {
+    expect(
+      (
+        await run1(
+          "In lieu of any audit, Controller shall rely solely on a certification report and shall have no right to conduct an audit.",
+        )
+      ).has("DPA-036"),
+    ).toBe(true);
+    expect(
+      (
+        await run1(
+          "Controller may audit Processor annually, and may in addition rely on Processor's SOC 2 report.",
+        )
+      ).has("DPA-036"),
+    ).toBe(false);
+  });
+
+  it("DPA-037 fires when the processor may unilaterally amend the controller's instructions", async () => {
+    expect(
+      (
+        await run1(
+          "Processor may unilaterally amend or supplement the Controller's instructions where Processor deems it necessary.",
+        )
+      ).has("DPA-037"),
+    ).toBe(true);
+    expect(
+      (
+        await run1(
+          "Processor shall notify Controller if, in Processor's opinion, an instruction infringes the GDPR.",
+        )
+      ).has("DPA-037"),
+    ).toBe(false);
+  });
+});
