@@ -71,7 +71,7 @@
       "finding_id": "CHOICE-011-s1.10-1635",
       "fired": true,
       "rule_id": "CHOICE-011",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -822,7 +822,7 @@
       "id": "CHOICE-011-s1.10-1635",
       "recommendation": "Either change governing law to California, or include a §925 counsel-representation acknowledgment. Note that §16600.5 may render any non-compete unenforceable even with §925-compliant choice-of-law language.",
       "rule_id": "CHOICE-011",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1215,7 +1215,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
-  "result_hash": "6be973c8d0070227857aa970fe43626c4dd59bc9098070123a68e97783814507",
+  "result_hash": "800bdb114235f9ab9bb23cd2906c7ca2464bc8f2b55af1587975a176e381cf2f",
   "source_file": {
     "name": "bad-employment.docx",
     "sha256": "44e689f2fe4e8767866844995363dda962260fd37d54469e6d0fdf443136013c",

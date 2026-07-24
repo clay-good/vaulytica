@@ -20,7 +20,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
  */
 export const rule: Rule = {
   id: "CHOICE-011",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Out-of-state choice-of-law on California employee",
   category: "choice-and-venue",
   default_severity: "warning",
@@ -28,10 +28,16 @@ export const rule: Rule = {
     "Fires when a worker is identified as California-resident / California-working but the contract picks a non-California governing law.",
   dkb_citations: ["stat-ca-bp-16600"],
   check(ctx: RuleContext): Finding | null {
+    // The signal must be that the WORKER resides / works in California, which
+    // is what Cal. Lab. Code § 925 turns on. A party's state of incorporation
+    // ("a California corporation") is NOT that signal: it fired the rule on
+    // every B2B mutual NDA and MSA that happened to have a California entity
+    // as a party — 31 fixtures, none of them an employment relationship — so
+    // that branch is deliberately absent (v1.1.0).
     let californiaWorker = false;
     forEachParagraph(ctx.tree, (p) => {
       if (
-        /\b(?:based\s+in\s+[^.]{0,40}\bCalifornia|California\s+(?:resident|employee|based)|works?\s+(?:in|from)\s+(?:the\s+State\s+of\s+)?California|located\s+in\s+(?:[\w\s]{2,40},\s*)?California|(?:San\s+Francisco|Los\s+Angeles|San\s+Diego|San\s+Jose|Sacramento|Oakland|Fresno|Long\s+Beach|Bakersfield|Anaheim)[^.]{0,40}California|California\s+(?:limited\s+liability\s+company|corporation))\b/i.test(
+        /\b(?:based\s+in\s+[^.]{0,40}\bCalifornia|California\s+(?:resident|employee|based)|works?\s+(?:in|from)\s+(?:the\s+State\s+of\s+)?California|located\s+in\s+(?:[\w\s]{2,40},\s*)?California|(?:San\s+Francisco|Los\s+Angeles|San\s+Diego|San\s+Jose|Sacramento|Oakland|Fresno|Long\s+Beach|Bakersfield|Anaheim)[^.]{0,40}California)\b/i.test(
           p.text,
         )
       ) {

@@ -31,4 +31,25 @@ describe("CHOICE-011 — out-of-state choice-of-law on California worker", () =>
     ]);
     expect(CHOICE_011.check(ctx)).toBeNull();
   });
+
+  it("is silent on a B2B contract whose party is merely a California corporation (v1.1.0)", () => {
+    // § 925 protects a California employee, not a California entity. A mutual
+    // NDA or MSA between corporations, one of which is a California
+    // corporation, under Delaware law is lawful and must not fire.
+    const ctx = buildContext([
+      "Parties",
+      'This Agreement is between Provider, a Delaware corporation, and Acme Retail Co., a California corporation ("Customer").',
+      "This Agreement shall be governed by the laws of the State of Delaware.",
+    ]);
+    expect(CHOICE_011.check(ctx)).toBeNull();
+  });
+
+  it("is silent when a California LLC is a contracting entity (v1.1.0)", () => {
+    const ctx = buildContext([
+      "Parties",
+      "Vendor is a California limited liability company.",
+      "This Agreement shall be governed by the laws of the State of Texas.",
+    ]);
+    expect(CHOICE_011.check(ctx)).toBeNull();
+  });
 });
