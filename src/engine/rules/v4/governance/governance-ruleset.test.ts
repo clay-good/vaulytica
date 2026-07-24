@@ -142,6 +142,28 @@ describe("v4 Governance — failure cases", () => {
     expect(run.findings.some((f) => f.rule_id === "GOV-080")).toBe(true);
   });
 
+  it("GOV-041 reads a 'firm-commitment underwritten public offering' termination (v1.1.0)", async () => {
+    const SHA_PB: Playbook = { id: "stockholders-agreement", version: "1.0.0" };
+    const ctx = withPb(
+      buildContext([
+        "Termination",
+        "This Agreement terminates upon the closing of a firm-commitment underwritten public offering.",
+      ]),
+      SHA_PB,
+    );
+    const run = await runEngine({ rules: GOVERNANCE_RULES, ctx, source_file: SRC });
+    expect(run.findings.some((f) => f.rule_id === "GOV-041")).toBe(false);
+    const noIpo = withPb(
+      buildContext(["Termination", "This Agreement terminates upon the written consent of the parties."]),
+      SHA_PB,
+    );
+    expect(
+      (await runEngine({ rules: GOVERNANCE_RULES, ctx: noIpo, source_file: SRC })).findings.some(
+        (f) => f.rule_id === "GOV-041",
+      ),
+    ).toBe(true);
+  });
+
   it("GOV-013 reads the descriptive 'managed by its Members' structure (v1.1.0)", async () => {
     const ctx = withPb(
       buildContext([

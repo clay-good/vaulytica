@@ -822,6 +822,7 @@ const STOCKHOLDERS_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-041",
+    version: "1.1.0",
     name: "Termination upon IPO",
     description: "Most provisions in a stockholders' agreement should terminate on IPO.",
     citation: govPractice(
@@ -837,7 +838,12 @@ const STOCKHOLDERS_AGREEMENT_RULES: Rule[] = [
     recommendation:
       "Add a 'Termination' section ending the agreement on the earliest of an IPO, sale of the company, or written agreement of the parties.",
     present_patterns: [
-      /termin(ate|ation).{0,80}(initial\s+public\s+offering|ipo|qualified\s+ipo)/is,
+      // The offering that ends the agreement is as often a "firm-commitment
+      // underwritten public offering" or a "qualified public offering" as an
+      // "initial public offering" / "IPO"; the qualifier varies but the trigger
+      // is the public offering.
+      /termin(ate|ation).{0,90}(?:\bipo\b|(?:(?:initial|qualified|firm[-\s]commitment|underwritten|registered)\s+)*public\s+offering)/is,
+      /(?:\bipo\b|public\s+offering).{0,60}termin(ate|ation)/is,
     ],
     default_severity: "warning",
   }),
