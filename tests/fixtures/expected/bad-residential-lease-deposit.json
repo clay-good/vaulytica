@@ -144,6 +144,13 @@
     },
     {
       "elapsed_ms": 0,
+      "finding_id": "DARK-012-s1.2-426",
+      "fired": true,
+      "rule_id": "DARK-012",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
       "fired": false,
       "rule_id": "FIN-001",
       "rule_version": "1.1.0"
@@ -742,6 +749,33 @@
       "title": "Waiver of the implied warranty of habitability"
     },
     {
+      "description": "non-refundable pet deposit",
+      "document_position": 426,
+      "excerpt": {
+        "end_offset": 452,
+        "section_id": "s1.2",
+        "start_offset": 426,
+        "text": "le cleaning fee of $500 and a non-refundable pet deposit of $750."
+      },
+      "explanation": "A residential security deposit is the tenant's money: the landlord must return it, less an itemized statement of lawful deductions, within the statutory window. Declaring it non-refundable, forfeiting it on breach, or waiving the itemized-return right is void in most states and often triggers statutory penalties (multiple damages for a bad-faith retention in several jurisdictions).",
+      "id": "DARK-012-s1.2-426",
+      "recommendation": "State that the deposit will be returned within the statutory period, less an itemized statement of deductions for actual damages beyond ordinary wear and tear. Move any genuinely non-refundable charge into a separately-labeled fee.",
+      "rule_id": "DARK-012",
+      "rule_version": "1.0.0",
+      "severity": "warning",
+      "source_citations": [
+        {
+          "id": "stat-ftc-deception-statement",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "FTC Policy Statement on Deception (1983)",
+          "source_url": "https://www.ftc.gov/legal-library/browse/ftc-policy-statement-deception"
+        }
+      ],
+      "title": "Security-deposit forfeiture / non-return clause"
+    },
+    {
       "description": "The document references fees but no 'Net X' or 'due within' clause was found.",
       "document_position": 0,
       "excerpt": {
@@ -874,7 +908,7 @@
   "playbook_id": "lease-residential-us",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected lease-residential-us (score 0.9). Title matched: \"residential lease\". Distinguishing phrases: \"Landlord\", \"Tenant\", \"Premises\", \"security deposit\", \"residential\".",
-  "result_hash": "a05890ea7703fbe0c35b9714137bf1f269fc772441b2f4e57c43cbd47fa5e8b5",
+  "result_hash": "b366334b527ea5a275bbb07655fdbf85eaa5f94cf2b5ec0f61c8d5a906abe5c7",
   "source_file": {
     "name": "bad-residential-lease-deposit.docx",
     "sha256": "a3aaac8da5682c5a7ff4d3cd79191c3344d5f3bc6ec7abe5d833f6234acf6973",
