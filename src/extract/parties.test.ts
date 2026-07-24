@@ -79,6 +79,15 @@ describe("extractParties", () => {
     expect(roles).toContain("Insurer");
   });
 
+  it("captures a trust settlor from a multi-role paren '(the \"Grantor\" and \"Trustee\")'", () => {
+    const tree = buildTree([
+      "Revocable Living Trust",
+      'This Declaration of Trust is made by Margaret Okafor (the "Grantor" and initial "Trustee").',
+    ]);
+    const roles = extractParties(tree).map((p) => `${p.name}:${p.role ?? ""}`);
+    expect(roles).toContain("Margaret Okafor:Grantor");
+  });
+
   it("does NOT surface a reciprocal role as an extra party in a mutual agreement", () => {
     // "Receiving Party" / "Recipient" is a position BOTH parties occupy; adding
     // it as a party would make OBLI-002 read role-based mutuality as a one-

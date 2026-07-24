@@ -152,8 +152,12 @@ const LABELED_PARTY = new RegExp(
  * one-sided roles denote a fixed position only one party holds.
  */
 const ONE_SIDED_ROLE = String.raw`Guarantor|Grantor|Grantee|Settlor|Trustor|Trustee|Beneficiary|Debtor|Secured\s+Party|Creditor|Mortgagor|Mortgagee|Pledgor|Pledgee|Assignor|Assignee|Surety|Maker|Payee|Borrower|Lender|Insured|Insurer|Named\s+Insured|Indemnitor|Indemnitee`;
+// The paren may carry more than the one role — a revocable trust names one
+// person as both settlor and trustee: "Margaret Okafor (the \"Grantor\" and
+// initial \"Trustee\")" — so allow trailing content (no nested close paren)
+// after the role before the paren closes.
 const ROLE_LABELED_PARTY = new RegExp(
-  String.raw`([A-Z][\w&.,'’-]{0,80}(?:\s+[A-Z][\w&.,'’-]{0,80}){0,5})\s*\(\s*(?:the\s+)?["“”'](${ONE_SIDED_ROLE})["“”']\s*\)`,
+  String.raw`([A-Z][\w&.,'’-]{0,80}(?:\s+[A-Z][\w&.,'’-]{0,80}){0,5})\s*\(\s*(?:the\s+)?["“”'](${ONE_SIDED_ROLE})["“”'][^)]{0,60}\)`,
   "g",
 );
 
