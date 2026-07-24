@@ -187,7 +187,7 @@ const STATUTE_NAMES = new Set([
  * appointment, not by a definitions section.
  */
 const OFFICER_TITLES =
-  /^(?:[A-Z][\w\s]*\sOfficer|Vice\s+President|Executive\s+Vice\s+President|General\s+Counsel|Chair(?:person|man|woman)(?:\s+of\s+the\s+Board)?|Board\s+of\s+Directors|Managing\s+Member|Managing\s+Director)$/;
+  /^(?:[A-Z][\w\s]*\s(?:Officer|Committee)|Vice\s+President|Executive\s+Vice\s+President|General\s+Counsel|Chair(?:person|man|woman)(?:\s+of\s+the\s+Board)?|Board\s+of\s+Directors|Managing\s+Member|Managing\s+Director)$/;
 
 /**
  * Sentence-initial words that are commonly capitalized but never
@@ -445,6 +445,11 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // tail of a hyphenated compound, not a standalone term: "Software-as-a-
       // Service Terms of Service" yielded the phantom term "Service Terms".
       if (ctx.text[m.index - 1] === "-") continue;
+      // Likewise the tail of an and-joined Title-Case name: "Securities and
+      // Exchange Commission" splits at the lowercase "and", yielding the
+      // phantom term "Exchange Commission".
+      if (/[A-Z][a-z]+\s+and\s+$/.test(ctx.text.slice(Math.max(0, m.index - 24), m.index)))
+        continue;
       const phraseLower = phrase.toLowerCase();
       if (definedNames.has(phraseLower)) continue;
       // TITLE_CASE_PHRASE cannot cross an all-caps word, so a candidate is

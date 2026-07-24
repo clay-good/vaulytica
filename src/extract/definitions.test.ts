@@ -574,3 +574,18 @@ describe("statute suffixes and office titles", () => {
     expect(undef).not.toContain("Compliance Officer");
   });
 });
+
+describe("agency-name fragments and board organs", () => {
+  it("does not flag 'Exchange Commission' or 'Audit Committee'", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Ethics",
+        "Reports are filed with the Securities and Exchange Commission. Violations are reported to the Audit Committee.",
+        "The Securities and Exchange Commission's rules govern disclosure, and the Audit Committee oversees enforcement.",
+      ]),
+    );
+    const undef = map.undefined_capitalized.map((u) => u.term);
+    expect(undef).not.toContain("Exchange Commission");
+    expect(undef).not.toContain("Audit Committee");
+  });
+});
