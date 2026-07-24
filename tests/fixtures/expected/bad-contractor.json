@@ -104,7 +104,7 @@
       "finding_id": "DARK-005-s1.6-1231",
       "fired": true,
       "rule_id": "DARK-005",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -721,7 +721,7 @@
       "id": "DARK-005-s1.6-1231",
       "recommendation": "If you are the party giving up class-action rights: weigh the trade-off against the realistic cost of solo arbitration. If you are the drafter: confirm whether enforceability survives in every jurisdiction the contract reaches (some states' analogous statutes are narrower than the FAA).",
       "rule_id": "DARK-005",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "critical",
       "source_citations": [
         {
@@ -1019,7 +1019,7 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "5ad28e461e11f6815ee46a4fef2735ee87f68d33b67c8fac29c86bc2b4572ec8",
+  "result_hash": "bd1c5238776dcc2dfe1072f9dcf1f1cb2709c766c62a7d13483c3ba41ef4eb91",
   "source_file": {
     "name": "bad-contractor.docx",
     "sha256": "7a40a2e53d068557d47cf7690838b907085994f596a0c6e2380b8ac2607543df",

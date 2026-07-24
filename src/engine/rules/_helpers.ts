@@ -110,6 +110,13 @@ export function firstUnnegatedParagraphMatch(
  * material adverse effect") and must still fire; only language negating the
  * clause's PRESENCE or the actor's OBLIGATION to do the thing suppresses.
  *
+ * The `nothing herein …` branch matches the disclaimer idiom every carve-out
+ * uses — "nothing herein waives any right to participate in a class action",
+ * "nothing in this Code restricts protected activity". The subject itself is
+ * the negator, so no verb-level "not" ever appears and the branches above all
+ * miss it; anchored to the end of the pre-trigger slice so it only suppresses
+ * the trigger the disclaimer actually governs.
+ *
  * The final `no\s*$` branch matches a bare "no" sitting immediately before the
  * trigger ("no residuals clause is granted", "grants no source-code escrow") —
  * the determiner negates the trigger noun itself. Anchored to the end of the
@@ -118,7 +125,7 @@ export function firstUnnegatedParagraphMatch(
  * whitespace-to-trigger).
  */
 const CLAUSE_ABSENCE =
-  /\b(?:(?:do(?:es)?|shall|will|may|must)\s+not\s+(?:include|contain|provide\s+for|provide|require|impose|create|permit|allow|grant|obligate|contemplate|use)|(?:contain|include)s?\s+no\b|ha[sv]e\s+no\b|need\s+not\b|no\s+(?:obligation|provision|provisions|requirement|right|duty)\b|not\s+(?:be\s+(?:required|obligated|permitted|entitled|held|deemed|subject|construed)|have\s+(?:the\s+)?right)|no\s*$)/i;
+  /\b(?:(?:do(?:es)?|shall|will|may|must)\s+not\s+(?:include|contain|provide\s+for|provide|require|impose|create|permit|allow|grant|obligate|contemplate|use)|(?:contain|include)s?\s+no\b|ha[sv]e\s+no\b|need\s+not\b|no\s+(?:obligation|provision|provisions|requirement|right|duty)\b|not\s+(?:be\s+(?:required|obligated|permitted|entitled|held|deemed|subject|construed)|have\s+(?:the\s+)?right)|nothing\s+(?:herein|contained\s+herein|in\s+th(?:is|ese)\s+[\w\s]{0,24}?)\s*(?:shall|will|may|does|is)?\s*$|no\s*$)/i;
 
 /**
  * True when the trigger at `matchIndex` sits in a sentence whose text BEFORE

@@ -103,7 +103,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "DARK-005",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -990,7 +990,7 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"consulting agreement\". Distinguishing phrases: \"Consultant\", \"advisory services\", \"deliverables\", \"independent contractor\", \"the Consulting Services\".",
-  "result_hash": "84e505d8222d717b90a0f5f0e68c96eb81254ef1649794c068a473ecde995e2b",
+  "result_hash": "2ccdad5c88f300c69bed48ff04ef3e649aae23718c7c706a0e50c13b9526f88f",
   "source_file": {
     "name": "bad-consulting.docx",
     "sha256": "f66f070f4bb768dbc3f21ee6782418bca5ed64451d483dab533b345a8ddbe691",

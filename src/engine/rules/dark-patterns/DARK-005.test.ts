@@ -60,3 +60,21 @@ describe("DARK-005 — class-action waiver", () => {
     expect(DARK_005.check(ctx)).toBeNull();
   });
 });
+
+describe("the clause that PRESERVES class-action rights is not the waiver (v1.1.0)", () => {
+  it("stays silent on 'nothing herein waives any right to participate in a class action'", () => {
+    const ctx = buildContext([
+      "Disputes",
+      "This Agreement contains no class-action waiver, and nothing herein waives any right to participate in a class action.",
+    ]);
+    expect(DARK_005.check(ctx)).toBeNull();
+  });
+
+  it("still fires on a real class-action waiver", () => {
+    const ctx = buildContext([
+      "Disputes",
+      "Customer waives any right to participate in a class action or collective action against Provider.",
+    ]);
+    expect(DARK_005.check(ctx)).not.toBeNull();
+  });
+});

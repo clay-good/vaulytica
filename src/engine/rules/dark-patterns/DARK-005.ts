@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
 
 /**
  * DARK-005 — Class-action waiver (critical, dark-patterns).
@@ -19,7 +19,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "DARK-005",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Class-action waiver",
   category: "dark-patterns",
   default_severity: "critical",
@@ -35,6 +35,10 @@ export const rule: Rule = {
       /\b(?:waives?|waiv(?:er|ing)|gives?\s+up|relinquishes?|shall\s+not\s+(?:participate|be\s+entitled))\b[^.]{0,200}\b(?:class\s+action|class[-\s]wide|collective\s+action|representative\s+action|consolidated\s+(?:claims|arbitration))\b|\b(?:no|not)\s+(?:class\s+action|class[-\s]wide|collective\s+action|representative\s+action)\b(?!\s+waiver)|\bon\s+an\s+individual\s+basis\s+(?:only|and\s+not)\b/i,
     );
     if (!hit) return null;
+    // "nothing herein waives any right to participate in a class action" is
+    // the clause that PRESERVES the right — the honest opposite of the dark
+    // pattern, and the negated-subject form the lookahead above cannot see.
+    if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;
     return emit(ctx, rule, {
       title: "Class-action waiver present",
       description: hit.match[0],
