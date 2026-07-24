@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit } from "../_helpers.js";
+import { emit, isPresenceDisclaimed } from "../_helpers.js";
 import { forEachParagraph } from "../../../extract/walk.js";
 
 /**
@@ -25,7 +25,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
  */
 export const rule: Rule = {
   id: "IPDATA-008",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Cross-border data transfer without safeguard",
   category: "ip-and-data",
   default_severity: "warning",
@@ -45,7 +45,10 @@ export const rule: Rule = {
     forEachParagraph(ctx.tree, (p) => {
       if (!transferHit) {
         const m = TRANSFER.exec(p.text);
-        if (m) {
+        // "NO transfers outside the EEA occur" states the ABSENCE of any
+        // transfer — a document that transfers nothing needs no Article 46
+        // safeguard, and reporting one is a confident false accusation.
+        if (m && !isPresenceDisclaimed(p.text, m.index)) {
           transferHit = {
             sectionId: p.section.id,
             start: p.start + m.index,

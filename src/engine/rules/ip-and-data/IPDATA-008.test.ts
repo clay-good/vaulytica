@@ -53,3 +53,21 @@ describe("IPDATA-008 — cross-border data transfer without safeguard", () => {
     expect(IPDATA_008.check(ctx)).toBeNull();
   });
 });
+
+describe("a disclaimed transfer needs no safeguard (v1.1.0)", () => {
+  it("stays silent on 'No transfers outside the EEA occur'", () => {
+    const ctx = buildContext([
+      "Recipients",
+      "Recipients are the customer fleet operator and our sub-processors listed in Annex 1. No transfers outside the EEA occur.",
+    ]);
+    expect(IPDATA_008.check(ctx)).toBeNull();
+  });
+
+  it("still fires on a real transfer with no safeguard named", () => {
+    const ctx = buildContext([
+      "Transfers",
+      "Vendor may transfer Customer Data to the United States for support purposes.",
+    ]);
+    expect(IPDATA_008.check(ctx)).not.toBeNull();
+  });
+});
