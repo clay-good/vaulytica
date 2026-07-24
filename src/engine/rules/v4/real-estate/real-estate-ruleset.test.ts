@@ -159,3 +159,28 @@ describe("RE-044/045 — the estoppel formulas drafting actually uses (v1.1.0)",
     expect(ids).toContain("RE-045");
   });
 });
+
+describe("RE-031 — the land-records covenant with a direct object (v1.1.0)", () => {
+  const EASEMENT_PB_LOCAL: Playbook = { id: "easement-agreement", version: "1.0.0" };
+
+  it("reads 'record this Agreement in the land records of the Town'", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Recording",
+        "The parties shall record this Agreement in the land records of the Town of Tunbridge, Vermont, and the easement shall be effective upon recording.",
+      ]),
+      EASEMENT_PB_LOCAL,
+    );
+    const run = await runEngine({ rules: REAL_ESTATE_RULES, ctx, source_file: SRC });
+    expect(run.findings.map((f) => f.rule_id)).not.toContain("RE-031");
+  });
+
+  it("still fires when no recording covenant exists", async () => {
+    const ctx = withPb(
+      buildContext(["Grant", "Grantor grants Grantee a perpetual easement for ingress."]),
+      EASEMENT_PB_LOCAL,
+    );
+    const run = await runEngine({ rules: REAL_ESTATE_RULES, ctx, source_file: SRC });
+    expect(run.findings.map((f) => f.rule_id)).toContain("RE-031");
+  });
+});

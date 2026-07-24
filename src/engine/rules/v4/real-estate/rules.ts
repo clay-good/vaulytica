@@ -637,6 +637,7 @@ const EASEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "RE-031",
+    version: "1.1.0",
     name: "Recording covenant",
     description: "Easement must be recorded to bind successors (state recording acts).",
     citation: recordingAct(),
@@ -649,7 +650,12 @@ const EASEMENT_RULES: Rule[] = [
       "Add 'Recording' covenant requiring the easement to be recorded in the public records.",
     present_patterns: [
       /recorded?\s+in\s+(the\s+)?(public\s+)?records/i,
-      /(record|recording).{0,40}(public|county)/is,
+      // "shall record THIS AGREEMENT in the LAND records of the TOWN of
+      // Tunbridge" — a direct object between the verb and "in", the
+      // "land/official records" register, and a town (not county) recorder
+      // each defeated the branches above.
+      /record\w*\s+(?:this\s+)?[\w\s]{0,30}?\bin\s+the\s+(?:land|official|real\s+property)\s+records/i,
+      /(record|recording).{0,40}(public|county|town|clerk|registry)/is,
     ],
   }),
 ];
