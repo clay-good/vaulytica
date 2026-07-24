@@ -278,3 +278,71 @@ describe("false-negative regression — separation defect rules still fire", () 
     expect(run.findings.map((f) => f.rule_id)).toContain(ruleId);
   });
 });
+
+/**
+ * The highest-stakes defect fixes of the session — a discriminatory covenant, a
+ * cognovit clause, and broad-form / anti-indemnity clauses in their canonical
+ * wording. Each was invisible to the engine (or the rule that should catch it)
+ * until an adversarial document surfaced it. These are the defects where a
+ * false negative is gravest — a title reviewer missing a racially restrictive
+ * covenant, or a lender's confession-of-judgment slipping past — so they get a
+ * permanent guard: narrow the pattern and one of these fails by name.
+ */
+const HIGH_STAKES: { rule: string; playbook: string; sections: [string, ...string[]][] }[] = [
+  {
+    rule: "RE-038",
+    playbook: "ccrs",
+    sections: [
+      [
+        "Covenant",
+        "The premises shall not be conveyed to or occupied by persons of African descent.",
+      ],
+    ],
+  },
+  {
+    rule: "BNK-051",
+    playbook: "promissory-note",
+    sections: [
+      [
+        "Note",
+        "Maker irrevocably authorizes any attorney to appear and confess judgment against Maker for the unpaid balance, without prior notice or a hearing.",
+      ],
+    ],
+  },
+  {
+    rule: "INS-015",
+    playbook: "indemnification-agreement",
+    sections: [
+      [
+        "Indemnity",
+        "Contractor shall indemnify Owner from all liability caused in whole or in part by the negligence of the Owner.",
+      ],
+    ],
+  },
+  {
+    rule: "MSA-010",
+    playbook: "msa-vendor-deep",
+    sections: [
+      [
+        "Indemnity",
+        "Governed by New York law. Vendor shall indemnify Customer for all claims caused in whole or in part by the negligence of Customer.",
+      ],
+    ],
+  },
+  {
+    rule: "MSA-009",
+    playbook: "msa-vendor-deep",
+    sections: [["Liability", "Vendor exempts itself from liability for its own fraud."]],
+  },
+];
+
+describe("false-negative regression — the highest-stakes defects still fire", () => {
+  it.each(HIGH_STAKES.map((h) => [h.rule, h] as const))(
+    "%s still fires on its canonical clause",
+    async (ruleId, h) => {
+      const ctx = withPb(buildContext(...h.sections), { id: h.playbook, version: "1.0.0" });
+      const run = await runEngine({ rules: ALL_RULES, ctx, source_file: SRC });
+      expect(run.findings.map((f) => f.rule_id)).toContain(ruleId);
+    },
+  );
+});
