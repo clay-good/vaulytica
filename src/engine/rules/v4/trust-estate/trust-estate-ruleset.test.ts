@@ -146,3 +146,28 @@ describe("v4 Trust/estate/family — failure cases", () => {
     expect(run.findings.some((f) => f.rule_id === "EST-056")).toBe(true);
   });
 });
+
+describe("EST-034 — 'is effective immediately upon execution' (v1.1.0)", () => {
+  const POA_PB_LOCAL: Playbook = { id: "durable-poa-financial", version: "1.0.0" };
+
+  it("reads the adjective-first effectiveness clause", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Effectiveness",
+        "This power of attorney is effective immediately upon my execution of it, and is not conditioned upon any determination of my incapacity.",
+      ]),
+      POA_PB_LOCAL,
+    );
+    const run = await runEngine({ rules: TRUST_ESTATE_RULES, ctx, source_file: SRC });
+    expect(run.findings.map((f) => f.rule_id)).not.toContain("EST-034");
+  });
+
+  it("still fires when effectiveness is never addressed", async () => {
+    const ctx = withPb(
+      buildContext(["Appointment", "I appoint my brother as my attorney-in-fact."]),
+      POA_PB_LOCAL,
+    );
+    const run = await runEngine({ rules: TRUST_ESTATE_RULES, ctx, source_file: SRC });
+    expect(run.findings.map((f) => f.rule_id)).toContain("EST-034");
+  });
+});

@@ -641,6 +641,7 @@ const DURABLE_POA_RULES: Rule[] = [
   }),
   presence({
     id: "EST-034",
+    version: "1.1.0",
     name: "Springing vs immediate effectiveness",
     description: "POA must state whether it is immediately effective or springing (on incapacity).",
     citation: upoaa("109", "When power of attorney is effective"),
@@ -654,6 +655,9 @@ const DURABLE_POA_RULES: Rule[] = [
     present_patterns: [
       /(immediately\s+effective|takes?\s+effect\s+(immediately|upon|on))/i,
       /(springing|upon\s+incapacity)/i,
+      // "This power of attorney IS EFFECTIVE IMMEDIATELY upon my execution"
+      // — the adjective-first order both branches above rejected.
+      /(?:is|becomes?|shall\s+be)\s+effective\s+(?:immediately|upon|on)\b/i,
     ],
   }),
   presence({

@@ -529,3 +529,19 @@ describe("change-order style terms", () => {
     expect(undef).not.toContain("The Contract Sum");
   });
 });
+
+describe("natural persons are not defined terms", () => {
+  it("does not flag signatories, notary appearances, or persons with residences", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "POA",
+        'I, Nora Castellanos, residing at 41 Quarry Hill Road, Montpelier, VT 05602 (the "Principal"), appoint my brother, Diego Castellanos, residing at 9 Elm Row, Barre, VT 05641 (the "Agent").',
+        "On October 28, 2026, before me personally appeared Nora Castellanos, known to me to be the person whose name is subscribed to this instrument.",
+        "/s/ Nora Castellanos Nora Castellanos, Principal",
+      ]),
+    );
+    const undef = map.undefined_capitalized.map((u) => u.term);
+    expect(undef).not.toContain("Nora Castellanos");
+    expect(undef).not.toContain("Diego Castellanos");
+  });
+});

@@ -398,6 +398,21 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
   const definedNames = new Set([...definitions.keys()]);
   const undefinedHits = new Map<string, DocPosition[]>();
   const caption = captionText(tree);
+  // Names of natural persons who sign or appear before a notary — collected
+  // from conformed-signature lines ("/s/ Nora Castellanos") and notarial
+  // recitals ("personally appeared Nora Castellanos") — are people, not
+  // defined terms, wherever else they appear.
+  const personNames = new Set<string>();
+  forEachParagraph(tree, (ctx) => {
+    for (const re of [
+      /\/s\/\s+([A-Z][\w'’-]+(?:\s+[A-Z][\w'’-]+){0,3})/g,
+      /\b(?:personally\s+appeared|I,)\s+([A-Z][\w'’-]+(?:\s+[A-Z][\w'’-]+){0,3})/g,
+    ]) {
+      re.lastIndex = 0;
+      let pm: RegExpExecArray | null;
+      while ((pm = re.exec(ctx.text)) !== null) personNames.add(pm[1]!.toLowerCase());
+    }
+  });
   forEachParagraph(tree, (ctx) => {
     // A run-in heading ("4. Mutual Release by Meridian. Upon receipt …")
     // capitalizes its words as heading STYLE, not defined-term usage;
@@ -481,6 +496,16 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // "Change Order No" (the abbreviation's word survives, its period and
       // number don't). The fragment is part of a document NUMBER, not a term.
       if (/\sNo$/.test(phrase) && /^\.\s*\d/.test(ctx.text.slice(m.index + phrase.length)))
+        continue;
+      if (personNames.has(phraseLower)) continue;
+      // A phrase introduced with a residence or origin ("Diego Castellanos,
+      // residing at 9 Elm Row", "Lucia Ferrante, of Burlington") is a natural
+      // person, not a defined term.
+      if (
+        /^,\s+(?:residing|of\s+[A-Z]|whose\s+address)/.test(
+          ctx.text.slice(m.index + phrase.length, m.index + phrase.length + 24),
+        )
+      )
         continue;
       if (TITLE_CASE_LEADING_STOPWORDS.has(phrase)) continue;
       // Only strip sentence-initial-stopword patterns from the candidate
