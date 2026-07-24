@@ -187,7 +187,7 @@ const STATUTE_NAMES = new Set([
  * appointment, not by a definitions section.
  */
 const OFFICER_TITLES =
-  /^(?:[A-Z][\w\s]*\s(?:Officer|Committee)|Vice\s+President|Executive\s+Vice\s+President|General\s+Counsel|Chair(?:person|man|woman)(?:\s+of\s+the\s+Board)?|Board\s+of\s+Directors|Managing\s+Member|Managing\s+Director)$/;
+  /^(?:[A-Z][\w\s]*\s(?:Officer|Committee)|(?:[A-Z][\w]*\s+)?Vice\s+President(?:,?\s+[A-Z][\w\s]*)?|General\s+Counsel|Chair(?:person|man|woman)(?:\s+of\s+the\s+Board)?|Board\s+of\s+Directors|Managing\s+Member|Managing\s+Director)$/;
 
 /**
  * Sentence-initial words that are commonly capitalized but never

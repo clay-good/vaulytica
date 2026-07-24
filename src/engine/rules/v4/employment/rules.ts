@@ -536,6 +536,7 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-025",
+    version: "1.1.0",
     name: "Non-compete duration stated",
     description: "Where permitted, non-compete duration must be stated.",
     citation: stateNonCompete(),
@@ -549,6 +550,12 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
       /non.?compete.{0,80}(\d{1,2})\s+(months?|years?)/is,
       /(\d{1,2})\s+(months?|years?).{0,40}non.?compete/is,
       /restricted\s+period/i,
+      // "1. Non-Competition. During employment and for twelve (12) months
+      // after termination …" — 'Non-Competition' does not contain the literal
+      // 'compete', and the spelled-then-numeric duration wraps its digits in
+      // a parenthetical, so neither branch above matched the textbook clause.
+      /non.?competit\w*.{0,80}?\(?(\d{1,2})\)?\s*(months?|years?)/is,
+      /(?:twelve|eighteen|twenty-four|six|nine)\s+\(\d{1,2}\)\s+months?[^.]{0,60}(?:shall\s+not|restrict)/is,
     ],
   }),
   presence({
@@ -604,6 +611,7 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-029",
+    version: "1.1.0",
     name: "Garden-leave option (MA / WA where required)",
     description:
       "Massachusetts and Washington require garden leave or other consideration for post-employment non-competes.",
@@ -615,6 +623,10 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
       "Mass. G.L. c. 149 § 24L requires either garden leave (50% of highest base salary) or 'mutually agreed-upon consideration'.",
     recommendation:
       "Where required by state law, add a 'Garden Leave' clause paying 50% of highest base salary during the restricted period.",
+    // Garden leave is a MASSACHUSETTS (and, for certain workers, Washington)
+    // requirement — a Vermont agreement is not missing one. Fire the absence
+    // only when the document shows the MA/WA nexus.
+    applicable_if: [/massachusetts/i, /\bwashington\b/i, /,\s*(?:MA|WA)\s+\d{5}/],
     present_patterns: [/garden\s+leave/i, /continuing\s+pay/i, /(50|fifty)\s*%.{0,40}salary/is],
     default_severity: "warning",
   }),

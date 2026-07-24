@@ -144,3 +144,46 @@ describe("v4 Employment — failure cases", () => {
     expect(run.findings.some((f) => f.rule_id === "EMP-049")).toBe(true);
   });
 });
+
+describe("EMP-025 / EMP-029 — restrictive-covenant formulas and nexus (v1.1.0)", () => {
+  const RC_PB_LOCAL: Playbook = { id: "employment-restrictive-covenant", version: "1.0.0" };
+
+  it("reads 'Non-Competition … twelve (12) months' and skips garden leave without an MA/WA nexus", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Covenants",
+        "1. Non-Competition. During employment and for twelve (12) months after the termination of employment, the Employee shall not perform competing services in the Restricted Territory.",
+        "9. Governing Law. This Agreement is governed by the laws of the State of Vermont.",
+      ]),
+      RC_PB_LOCAL,
+    );
+    const run = await runEngine({ rules: EMPLOYMENT_RULES, ctx, source_file: SRC });
+    const ids = run.findings.map((f) => f.rule_id);
+    expect(ids).not.toContain("EMP-025");
+    expect(ids).not.toContain("EMP-029");
+  });
+
+  it("EMP-029 still fires on a Massachusetts non-compete without garden leave", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Covenants",
+        "The Employee shall not compete for twelve (12) months after termination. This Agreement is governed by the laws of the Commonwealth of Massachusetts.",
+      ]),
+      RC_PB_LOCAL,
+    );
+    const run = await runEngine({ rules: EMPLOYMENT_RULES, ctx, source_file: SRC });
+    expect(run.findings.map((f) => f.rule_id)).toContain("EMP-029");
+  });
+
+  it("EMP-025 still fires when no duration is stated", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Covenants",
+        "The Employee shall not compete with the Company after termination.",
+      ]),
+      RC_PB_LOCAL,
+    );
+    const run = await runEngine({ rules: EMPLOYMENT_RULES, ctx, source_file: SRC });
+    expect(run.findings.map((f) => f.rule_id)).toContain("EMP-025");
+  });
+});
