@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 /** DARK-003 — Asymmetric fee-shifting (warning). */
 export const rule: Rule = {
   id: "DARK-003",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Asymmetric fee-shifting",
   category: "dark-patterns",
   default_severity: "warning",
@@ -13,7 +13,10 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const oneSided = firstParagraphMatch(
       ctx,
-      /\b(?:Customer|Licensee|Employee)\s+shall\s+(?:pay|reimburse)\s+(?:Provider|Vendor|Company|Licensor|Employer)['’]s\s+(?:reasonable\s+)?attorneys?[’']?\s+fees\b/i,
+      // Consumer terms address the reader in the second person — "YOU shall pay
+      // Vendor's attorneys' fees" — so a party-name-only subject list missed the
+      // fee-shifting clause in exactly the contracts this rule exists for.
+      /\b(?:Customer|Licensee|Employee|User|Subscriber|you)\s+(?:shall|must|agrees?\s+to|will)\s+(?:pay|reimburse)\s+(?:Provider|Vendor|Company|Licensor|Employer|us|our)['’]?s?\s+(?:reasonable\s+)?attorneys?[’']?\s+fees\b/i,
     );
     if (!oneSided) return null;
     // The "prevailing party" balanced-formulation carve-out must be checked in

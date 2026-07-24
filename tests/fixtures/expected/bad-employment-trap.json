@@ -51,7 +51,7 @@
       "finding_id": "CHOICE-008-s1.4-1317",
       "fired": true,
       "rule_id": "CHOICE-008",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -88,19 +88,20 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "DARK-002",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "DARK-003",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
-      "fired": false,
+      "finding_id": "DARK-004-s1.4-1208",
+      "fired": true,
       "rule_id": "DARK-004",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -125,7 +126,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "DARK-008",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -770,6 +771,40 @@
       "title": "Asymmetric jury-trial waiver"
     },
     {
+      "description": "Both mandatory arbitration and a class-action waiver appear.",
+      "document_position": 1208,
+      "excerpt": {
+        "end_offset": 1299,
+        "section_id": "s1.4",
+        "start_offset": 1208,
+        "text": "Any dispute, claim, or controversy arising out of or relating to Employee's employment shall be resolved exclusively by final and binding arbitration before a single arbitrator administered by JAMS pursuant to its Employment Arbitration Rules then in effect. Employee waives any r"
+      },
+      "explanation": "Mandatory arbitration combined with a class-action waiver effectively immunizes widespread small-dollar harms from collective redress. Enforceable in many jurisdictions, but worth surfacing prominently when the agreement is consumer-facing.",
+      "id": "DARK-004-s1.4-1208",
+      "rule_id": "DARK-004",
+      "rule_version": "1.1.0",
+      "severity": "warning",
+      "source_citations": [
+        {
+          "id": "stat-9-usc-2",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "9 U.S.C. § 2",
+          "source_url": "https://www.law.cornell.edu/uscode/text/9/2"
+        },
+        {
+          "id": "stat-frcp-rule-23",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Federal Rules of Civil Procedure, Rule 23 (Class Actions)",
+          "source_url": "https://www.law.cornell.edu/rules/frcp/rule_23"
+        }
+      ],
+      "title": "Mandatory arbitration plus class-action waiver in a consumer-facing contract"
+    },
+    {
       "description": "The contract does not allocate ownership of intellectual property.",
       "document_position": 0,
       "excerpt": {
@@ -936,7 +971,7 @@
       "explanation": "Jury waivers are enforceable in most US jurisdictions but unenforceable in some contexts (e.g., California for pre-dispute employment waivers). Confirm enforceability against the governing-law jurisdiction.",
       "id": "CHOICE-008-s1.4-1317",
       "rule_id": "CHOICE-008",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "info",
       "source_citations": [],
       "title": "Jury trial waiver present"
@@ -962,7 +997,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.9). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
-  "result_hash": "4c01018e3965d0580eb9ae6493b353a6b060c1fc6bab3c1ca8f89ac8c1a473e5",
+  "result_hash": "3b07ec63b944e0b25133a232b0194084284c80f3a6b5e78235a971fd64433980",
   "source_file": {
     "name": "bad-employment-trap.docx",
     "sha256": "c0ef11cc8a800daead332bf1bc265f96d72af1c51953958734b1bf18c4058b2a",

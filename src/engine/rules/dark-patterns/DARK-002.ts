@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 /** DARK-002 — Auto-renewal with hidden notice window (warning). */
 export const rule: Rule = {
   id: "DARK-002",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Auto-renewal with hidden notice window",
   category: "dark-patterns",
   default_severity: "warning",
@@ -14,7 +14,10 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const auto = firstParagraphMatch(
       ctx,
-      /\b(?:auto(?:matic)?(?:ally)?\s+(?:renew|renewal|extend))\b/i,
+      // "the subscription RENEWS AUTOMATICALLY" puts the adverb after the verb —
+      // the dominant consumer-terms order, and the adverb-first pattern missed
+      // every one of them.
+      /\b(?:auto(?:matic)?(?:ally)?\s+(?:renew|renewal|extend)|renew(?:s|ed|ing)?\s+automatically|automatic\s+renewal)\b/i,
     );
     if (!auto) return null;
     const notice = firstParagraphMatch(
@@ -23,7 +26,10 @@ export const rule: Rule = {
       // non-renewal notice — otherwise an unrelated day-count in another
       // sentence (an invoice term, a cure period) was grabbed as the notice
       // window, mis-reporting the days and hiding a genuinely long window.
-      /\bnon[- ]renewal\b[^.;\n]{0,200}?(\d{1,3})\s+days|notice\s+of\s+non[- ]renewal[^.;\n]{0,80}?(\d{1,3})\s+days/i,
+      // The count is written "ninety (90) days" — the spelled-then-numeric
+      // convention wraps the digits in a parenthetical, and requiring the
+      // digits to touch "days" missed every notice window drafted that way.
+      /\bnon[- ]renewal\b[^.;\n]{0,200}?\(?(\d{1,3})\)?\s+days|notice\s+of\s+non[- ]renewal[^.;\n]{0,80}?\(?(\d{1,3})\)?\s+days/i,
     );
     const days = notice ? parseInt(notice.match[1] ?? notice.match[2] ?? "0", 10) : 0;
     const buried =

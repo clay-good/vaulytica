@@ -49,7 +49,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "CHOICE-008",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -83,21 +83,22 @@
     },
     {
       "elapsed_ms": 0,
-      "fired": false,
+      "finding_id": "DARK-002-s1.4-1175",
+      "fired": true,
       "rule_id": "DARK-002",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "DARK-003",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "DARK-004",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -122,7 +123,7 @@
       "finding_id": "DARK-008-s1.1-144",
       "fired": true,
       "rule_id": "DARK-008",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -722,6 +723,32 @@
       "title": "No indemnification clause detected"
     },
     {
+      "description": "Notice window: 90 days, located in s1.4.",
+      "document_position": 1175,
+      "excerpt": {
+        "end_offset": 1197,
+        "section_id": "s1.4",
+        "start_offset": 1175,
+        "text": "Subscription Term: one (1) year, renewing automatically for successive one-year terms unless Customer provides written notice of non-renewal by certified mail to Vendor's General Counsel no fewer than"
+      },
+      "explanation": "When the non-renewal notice window is in a different section from the auto-renewal clause or longer than 90 days, customers commonly miss it. FTC negative-option guidance (16 CFR Part 425) addresses this pattern.",
+      "id": "DARK-002-s1.4-1175",
+      "rule_id": "DARK-002",
+      "rule_version": "1.1.0",
+      "severity": "warning",
+      "source_citations": [
+        {
+          "id": "stat-16-cfr-425",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "16 C.F.R. Part 425 (FTC Negative Option Rule)",
+          "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-D/part-425"
+        }
+      ],
+      "title": "Auto-renewal with notice window buried or long"
+    },
+    {
       "description": "Vendor may suspend Customer's access to the Services, in whole or in part, immediately and without notice if Vendor determines in its sole discretion",
       "document_position": 144,
       "excerpt": {
@@ -734,7 +761,7 @@
       "id": "DARK-008-s1.1-144",
       "recommendation": "Negotiate: (1) written notice of the alleged breach, (2) a cure period (typically 10–30 days), (3) an exclusion for disputed invoices, (4) carve-outs for security-incident response. Vendor's tools to manage non-payment are termination and interest, not suspension.",
       "rule_id": "DARK-008",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -924,7 +951,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected saas-customer (score 0.9). Title matched: \"subscription agreement\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"uptime\".",
-  "result_hash": "465beed90e0c8d0abc2c543b619e7fb32797eb57f2eb624e6c6b912b9eae3b03",
+  "result_hash": "97dabab23833078d7ad492354a55d326251c51083d48fc069c27076780084efe",
   "source_file": {
     "name": "bad-saas-suspension.docx",
     "sha256": "9afd9de44c9b6a123f62c53a81c06b34ec7a515c4e5519fc63b2bc69223ac49b",

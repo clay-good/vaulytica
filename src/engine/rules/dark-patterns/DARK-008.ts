@@ -19,7 +19,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "DARK-008",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Unilateral suspension without notice or cure",
   category: "dark-patterns",
   default_severity: "warning",
@@ -29,7 +29,9 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /\b(?:Vendor|Provider|Company|Licensor|Supplier|Contractor|Licensee)\s+may\s+suspend\s+(?:Customer's\s+access\s+to\s+)?the\s+(?:Service|Services|Software|Platform|Application)[^.]{0,200}(?:immediately\s+and\s+without\s+notice|without\s+notice|at\s+any\s+time|in\s+(?:its\s+)?sole\s+discretion)/i,
+      // Two misses on the textbook clause: the drafter suspends "or terminates",
+      // and what is suspended is "YOUR ACCESS" rather than "the Service".
+      /\b(?:Vendor|Provider|Company|Licensor|Supplier|Contractor|Licensee|we)\s+may\s+suspend\s+(?:or\s+terminate\s+)?(?:(?:Customer's|your)\s+access(?:\s+to\s+)?)?(?:the\s+(?:Service|Services|Software|Platform|Application))?[^.]{0,200}(?:immediately\s+and\s+without\s+notice|without\s+notice|at\s+any\s+time|in\s+(?:its\s+)?sole\s+discretion)/i,
     );
     if (!hit) return null;
     // The broad trigger can span a COMPLIANT clause and land on a negated phrase

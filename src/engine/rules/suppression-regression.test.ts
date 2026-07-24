@@ -106,3 +106,46 @@ describe("suppression regression — every guarded rule still sees the real defe
     expect(run.findings.map((f) => f.rule_id)).toContain(ruleId);
   });
 });
+
+/**
+ * The consumer dark-pattern rules were each written to a narrower phrasing than
+ * the pattern takes, so the textbook form of the clause the rule polices went
+ * unreported. This adversarial "Vendor Terms of Service" carries the genuine
+ * version of each, and pins that they all fire — a future narrowing of any of
+ * these patterns fails here by name.
+ */
+const CONSUMER_ADVERSARIAL: [string, ...string[]][] = [
+  ["Vendor Terms of Service", "By continuing to use the Service, you agree to these Terms."],
+  [
+    "Renewal",
+    "The subscription renews automatically for successive twelve (12) month terms unless you provide written notice of non-renewal at least ninety (90) days before the end of the then-current term.",
+  ],
+  [
+    "Suspension",
+    "Vendor may suspend or terminate your access immediately, without notice and without any cure period, for any reason.",
+  ],
+  [
+    "Disputes",
+    "Any dispute shall be resolved by binding individual arbitration. You waive any right to a jury trial and any right to participate in a class action. If Vendor prevails in any dispute, you shall pay Vendor's attorneys' fees.",
+  ],
+];
+
+const CONSUMER_PLANTED: [string, string][] = [
+  ["DARK-002", "'renews automatically' with a (90)-day non-renewal window"],
+  ["DARK-003", "'you shall pay Vendor's attorneys' fees'"],
+  ["DARK-004", "binding individual arbitration + class waiver in consumer terms"],
+  ["DARK-008", "suspend or terminate your access without notice or cure"],
+  ["CHOICE-008", "'waive any right to a jury trial'"],
+  ["DARK-005", "'you waive any right to … participate in a class action'"],
+];
+
+describe("false-negative regression — consumer dark patterns still fire", () => {
+  it.each(CONSUMER_PLANTED)("%s still fires on %s", async (ruleId) => {
+    const ctx = withPb(buildContext(...CONSUMER_ADVERSARIAL), {
+      id: "saas-vendor",
+      version: "1.0.0",
+    });
+    const run = await runEngine({ rules: ALL_RULES, ctx, source_file: SRC });
+    expect(run.findings.map((f) => f.rule_id)).toContain(ruleId);
+  });
+});

@@ -49,7 +49,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "CHOICE-008",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -83,21 +83,22 @@
     },
     {
       "elapsed_ms": 0,
-      "fired": false,
+      "finding_id": "DARK-002-s1.3-634",
+      "fired": true,
       "rule_id": "DARK-002",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "DARK-003",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "DARK-004",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -122,7 +123,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "DARK-008",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -712,6 +713,32 @@
   ],
   "findings": [
     {
+      "description": "Notice window: 90 days, located in s1.3.",
+      "document_position": 634,
+      "excerpt": {
+        "end_offset": 653,
+        "section_id": "s1.3",
+        "start_offset": 634,
+        "text": "(c) Renewal. This Agreement shall automatically renew for successive one-year terms unless Customer provides written notice of non-renewal at least ninety (90) days before the end of the then-current "
+      },
+      "explanation": "When the non-renewal notice window is in a different section from the auto-renewal clause or longer than 90 days, customers commonly miss it. FTC negative-option guidance (16 CFR Part 425) addresses this pattern.",
+      "id": "DARK-002-s1.3-634",
+      "rule_id": "DARK-002",
+      "rule_version": "1.1.0",
+      "severity": "warning",
+      "source_citations": [
+        {
+          "id": "stat-16-cfr-425",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "16 C.F.R. Part 425 (FTC Negative Option Rule)",
+          "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-D/part-425"
+        }
+      ],
+      "title": "Auto-renewal with notice window buried or long"
+    },
+    {
       "description": "continued use of the Service constitutes acceptance",
       "document_position": 941,
       "excerpt": {
@@ -1064,7 +1091,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "fd1a33eec1444dfecf46d2f2bd61571ed8239dc605f4518b05d190c333038c0e",
+  "result_hash": "918bf4a54fa00d0f76ed8ac0870cf035583f38af5586bd1c651eebf8c783e7b2",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",
