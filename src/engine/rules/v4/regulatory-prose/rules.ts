@@ -341,6 +341,7 @@ const RISK_FACTORS_RULES: Rule[] = [
   }),
   language({
     id: "REG-018",
+    version: "1.1.0",
     name: "Generic / boilerplate risk factor flagged",
     description: "Risk factors must not be generic boilerplate applicable to any company.",
     citation: regSk105(),
@@ -349,6 +350,12 @@ const RISK_FACTORS_RULES: Rule[] = [
       /we\s+(may|might)\s+not\s+be\s+able\s+to\s+attract\s+and\s+retain\s+(qualified\s+)?(personnel|key\s+employees)/i,
       /general\s+economic\s+conditions\s+(may|could).{0,40}adversely\s+affect/is,
       /(our|the)\s+business\s+(may|could).{0,40}be\s+affected\s+by.{0,40}factors\s+beyond\s+our\s+control/is,
+      // The canonical content-free boilerplate the SEC's Item 105 targets puts
+      // the issuer first: "WE MAY BE ADVERSELY AFFECTED BY general economic
+      // conditions … and other factors beyond our control" — the reverse of
+      // the "economic conditions may affect us" order the patterns above knew,
+      // so the most common generic risk factor slipped.
+      /\bwe\s+(?:may|might|could)\s+be\s+(?:materially\s+and\s+)?adversely\s+affected\s+by\b[^.]{0,120}\b(?:general\s+economic\s+conditions|factors\s+beyond\s+our\s+control|numerous\s+factors|many\s+factors|various\s+factors)\b/is,
     ],
     bad_title: "Generic / boilerplate risk factor flagged",
     // The patterns match a boilerplate OPENING clause; they never read the rest

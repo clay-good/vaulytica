@@ -130,3 +130,31 @@ describe("v4 Regulatory-prose — failure cases", () => {
     expect(run.findings.some((f) => f.rule_id === "REG-033")).toBe(true);
   });
 });
+
+describe("REG-018 — the issuer-first generic boilerplate (v1.1.0)", () => {
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Risk Factors", body]), TENK_PB);
+    const run = await runEngine({ rules: REGULATORY_PROSE_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("fires on 'we may be adversely affected by general economic conditions … factors beyond our control'", async () => {
+    expect(
+      (
+        await run1(
+          "We may be adversely affected by general economic conditions, competition, and other factors beyond our control.",
+        )
+      ).has("REG-018"),
+    ).toBe(true);
+  });
+
+  it("stays silent on a specific, quantified risk factor", async () => {
+    expect(
+      (
+        await run1(
+          "Our net interest margin declined from 3.4% in 2025 to 2.9% in 2026 as deposit costs repriced faster than loan yields.",
+        )
+      ).has("REG-018"),
+    ).toBe(false);
+  });
+});
