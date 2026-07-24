@@ -56,7 +56,7 @@ const JURISDICTION_AFTER_LOCALITY = new RegExp(
  */
 const SOVEREIGN_PREFIX = String.raw`the\s+(?:State|Commonwealth|Republic|Kingdom|Province)\s+of\s+|the\s+`;
 const GOV_LAW = new RegExp(
-  String.raw`\b(governed\s+by\s*,?\s*(?:and\s+construed\s+(?:in\s+accordance\s+with\s*,?\s*)?)?the\s+laws?\s+of\s+(?:${SOVEREIGN_PREFIX})?([A-Z][A-Za-z\s&-]+?))(?=[.,;)]|\s+(?:without|excluding|and|regardless)|$)`,
+  String.raw`\b((?:governed\s+by|(?:interpreted|construed)\s+(?:under|in\s+accordance\s+with))\s*,?\s*(?:and\s+construed\s+(?:in\s+accordance\s+with\s*,?\s*)?)?the\s+laws?\s+of\s+(?:${SOVEREIGN_PREFIX})?([A-Z][A-Za-z\s&-]+?))(?=[.,;)]|\s+(?:without|excluding|and|regardless)|$)`,
   "gi",
 );
 

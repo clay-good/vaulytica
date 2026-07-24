@@ -279,3 +279,17 @@ describe("inverted exclusive-forum clauses (Delaware Chancery bylaws)", () => {
     );
   });
 });
+
+describe("interpretation-form governing law", () => {
+  it("reads 'interpreted in accordance with the laws of the State of Vermont'", () => {
+    const refs = extractJurisdictions(
+      buildTree([
+        "Governing Law",
+        "This directive is made under and shall be interpreted in accordance with the laws of the State of Vermont.",
+      ]),
+    );
+    expect(refs.filter((r) => r.clause_kind === "governing-law").map((r) => r.raw_text)).toContain(
+      "Vermont",
+    );
+  });
+});

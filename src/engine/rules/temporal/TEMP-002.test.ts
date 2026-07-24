@@ -105,3 +105,14 @@ describe("TEMP-002 — a stated period boundary is not an effective date", () =>
     ).toBeNull();
   });
 });
+
+describe("a birthdate is biography, not an effective date (v1.1.0)", () => {
+  it("does not compare a declarant's birthdate against the execution date", () => {
+    const ctx = buildContext([
+      "Declarant",
+      "I, Edwin Marsh, born April 4, 1955, residing in Brattleboro, Vermont, make this directive.",
+      "Signed voluntarily on November 5, 2026.",
+    ]);
+    expect(TEMP_002.check(ctx)).toBeNull();
+  });
+});

@@ -22,6 +22,14 @@ const REFERENCED_INSTRUMENT_DATE =
 const PERIOD_START_DATE =
   /\b(?:for\s+|from\s+|covering\s+)?(?:the\s+)?period\s+(?:from\s+|of\s+)?$/i;
 
+/**
+ * A BIRTHDATE ("I, Edwin Marsh, born April 4, 1955, …") is biography, not an
+ * effective date — every will, directive, and POA recites one, and comparing
+ * it against the execution date reported a decades-long "past-dated" anomaly
+ * on routine estate documents.
+ */
+const BIRTHDATE = /\bborn\s+(?:on\s+)?$/i;
+
 /** Absolute-date start offsets whose text reads as another instrument's date. */
 function referencedDateStarts(ctx: RuleContext): Set<number> {
   const out = new Set<number>();
@@ -31,7 +39,13 @@ function referencedDateStarts(ctx: RuleContext): Set<number> {
       const start = d.position?.start;
       if (start === undefined || start < p.start || start >= p.start + p.text.length) continue;
       const before = p.text.slice(0, start - p.start);
-      if (REFERENCED_INSTRUMENT_DATE.test(before) || PERIOD_START_DATE.test(before)) out.add(start);
+      if (
+        REFERENCED_INSTRUMENT_DATE.test(before) ||
+        PERIOD_START_DATE.test(before) ||
+        BIRTHDATE.test(before)
+      ) {
+        out.add(start);
+      }
     }
   });
   return out;
@@ -40,7 +54,7 @@ function referencedDateStarts(ctx: RuleContext): Set<number> {
 /** TEMP-002 — Past-dated effective date in a forward-looking contract (info). */
 export const rule: Rule = {
   id: "TEMP-002",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Past-dated effective date",
   category: "temporal",
   default_severity: "info",
