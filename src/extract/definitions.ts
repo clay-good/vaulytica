@@ -53,7 +53,7 @@ const DEFINITION_ALIASED =
  * a definition.
  */
 const DEFINITION_PARENTHETICAL =
-  /\((?:\s*(?:the|each|an?|collectively|together|individually|hereinafter|referred\s+to\s+as)[,]?\s+)*["\u201C]([A-Z][\w\s\-&/'\u2019.]{1,60}?)["\u201D]\s*\)/g;
+  /\((?:\s*(?:the|this|these|each|an?|collectively|together|individually|hereinafter|referred\s+to\s+as)[,]?\s+)*["\u201C]([A-Z][\w\s\-&/'\u2019.]{1,60}?)["\u201D]\s*\)/g;
 
 /**
  * Meaning-by-reference: a term (or a list of terms) is defined by pointing at
@@ -477,6 +477,11 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
         )
       )
         continue;
+      // A numbered-instrument fragment: "Change Order No. 3" captures as
+      // "Change Order No" (the abbreviation's word survives, its period and
+      // number don't). The fragment is part of a document NUMBER, not a term.
+      if (/\sNo$/.test(phrase) && /^\.\s*\d/.test(ctx.text.slice(m.index + phrase.length)))
+        continue;
       if (TITLE_CASE_LEADING_STOPWORDS.has(phrase)) continue;
       // Only strip sentence-initial-stopword patterns from the candidate
       // list when the phrase is short (2 words). Longer phrases like
@@ -495,9 +500,19 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       ) {
         continue;
       }
-      const list = undefinedHits.get(phrase) ?? [];
-      list.push(posInParagraph(ctx, m.index, m.index + phrase.length));
-      undefinedHits.set(phrase, list);
+      // Normalize a sentence-initial article off the candidate: "The
+      // Contract Sum will be increased …" and "increased the Contract Sum"
+      // are occurrences of ONE term, and reporting "Contract Sum" and "The
+      // Contract Sum" side by side is the same term twice.
+      let canonical = phrase;
+      let start = m.index;
+      if (TITLE_CASE_LEADING_STOPWORDS.has(words[0]!) && words.length > 2) {
+        canonical = words.slice(1).join(" ");
+        start = m.index + phrase.length - canonical.length;
+      }
+      const list = undefinedHits.get(canonical) ?? [];
+      list.push(posInParagraph(ctx, start, start + canonical.length));
+      undefinedHits.set(canonical, list);
     }
   });
   const undefined_capitalized = [...undefinedHits.entries()]

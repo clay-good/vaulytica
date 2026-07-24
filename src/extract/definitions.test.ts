@@ -153,7 +153,8 @@ describe("place names are not undefined defined-terms", () => {
         "The Special Reserve Fund shall be maintained. The Special Reserve Fund covers losses.",
       ]),
     );
-    expect(map.undefined_capitalized.map((e) => e.term)).toContain("The Special Reserve Fund");
+    // The leading article is normalized off the reported term.
+    expect(map.undefined_capitalized.map((e) => e.term)).toContain("Special Reserve Fund");
   });
 });
 
@@ -498,5 +499,33 @@ describe("ordinal instrument names are document titles, not defined terms", () =
       ]),
     );
     expect(map.undefined_capitalized.map((u) => u.term)).not.toContain("First Amendment");
+  });
+});
+
+describe("change-order style terms", () => {
+  it("registers '(this \"Change Order\")' and skips the numbered-instrument fragment", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Change Order",
+        'This Change Order No. 3 (this "Change Order") modifies the Contract, as previously modified by Change Order No. 1 and Change Order No. 2.',
+        "Except as modified by this Change Order, the Contract remains in effect.",
+      ]),
+    );
+    expect(map.entries.map((e) => e.term)).toContain("Change Order");
+    const undef = map.undefined_capitalized.map((u) => u.term);
+    expect(undef).not.toContain("Change Order No");
+    expect(undef).not.toContain("Change Order");
+  });
+
+  it("merges 'The Contract Sum' occurrences into 'Contract Sum'", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Adjustment",
+        "The Contract Sum will be increased by this Change Order. The parties agree the increase modifies the Contract Sum accordingly.",
+      ]),
+    );
+    const undef = map.undefined_capitalized.map((u) => u.term);
+    expect(undef).toContain("Contract Sum");
+    expect(undef).not.toContain("The Contract Sum");
   });
 });
