@@ -173,3 +173,43 @@ describe("PRV-005 — the CCPA opt-out requires a California nexus (v1.1.0)", ()
     expect(run.findings.map((f) => f.rule_id)).toContain("PRV-005");
   });
 });
+
+describe("PRV-005 — 'we do not provide an opt-out' is the denial, not the opt-out (v1.2.0)", () => {
+  const COOKIE_PB: Playbook = { id: "cookie-notice", version: "1.0.0" };
+
+  it("fires when a California notice denies the opt-out while selling", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Notice",
+        "This notice applies to California residents under the CCPA. We do not provide any opt-out mechanism for the sale of personal information.",
+      ]),
+      COOKIE_PB,
+    );
+    const run = await runEngine({ rules: PRIVACY_EXTENDED_RULES, ctx, source_file: SRC });
+    expect(run.findings.map((f) => f.rule_id)).toContain("PRV-005");
+  });
+
+  it("is silent when an opt-out is offered", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Notice",
+        "California residents may opt out of the sale of personal information via Do Not Sell My Personal Information.",
+      ]),
+      COOKIE_PB,
+    );
+    const run = await runEngine({ rules: PRIVACY_EXTENDED_RULES, ctx, source_file: SRC });
+    expect(run.findings.map((f) => f.rule_id)).not.toContain("PRV-005");
+  });
+
+  it("is silent when the business does not sell at all", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Notice",
+        "This notice applies to California residents. We do not sell or share your personal information.",
+      ]),
+      COOKIE_PB,
+    );
+    const run = await runEngine({ rules: PRIVACY_EXTENDED_RULES, ctx, source_file: SRC });
+    expect(run.findings.map((f) => f.rule_id)).not.toContain("PRV-005");
+  });
+});

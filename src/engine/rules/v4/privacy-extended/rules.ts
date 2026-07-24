@@ -120,7 +120,7 @@ const COOKIE_NOTICE_RULES: Rule[] = [
   }),
   presence({
     id: "PRV-005",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "CCPA / CPRA opt-out (Sale / Share / Cross-context targeted advertising)",
     description:
       "Cookie notice for CCPA / CPRA-covered businesses must explain the right to opt out of sale / share / cross-context targeted advertising (GPC support).",
@@ -144,7 +144,12 @@ const COOKIE_NOTICE_RULES: Rule[] = [
     ],
     present_patterns: [
       /(do\s+not\s+sell|do\s+not\s+share)/i,
-      /(opt.?out|opt\s+out)/i,
+      // The opt-out only counts when it is OFFERED. "we do not provide any
+      // opt-out" is the denial the rule exists to flag, so a negative
+      // lookbehind excludes the "not provide/offer an opt-out" form while
+      // keeping "click to opt out" and "your opt-out rights" (the
+      // fake-carve-out false-negative class, on the presence side).
+      /(?<!\b(?:not|never)\s(?:provide|offer|honou?r|include|support|have)\s(?:any\s|an\s|a\s)?)(?:opt.?out)/i,
       /(gpc|global\s+privacy\s+control|cross.context)/i,
     ],
     default_severity: "warning",

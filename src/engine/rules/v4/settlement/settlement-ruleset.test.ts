@@ -187,3 +187,29 @@ describe("SET-003 / SET-010 — '(if applicable)' absences require the nexus (v1
     expect(run.findings.map((f) => f.rule_id)).toContain("SET-010");
   });
 });
+
+describe("SET-008 — an agency prohibition is not a whistleblower carve-out (v1.1.0)", () => {
+  it("fires when the settlement prohibits agency communication", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Confidentiality",
+        "Claimant shall not disclose the settlement to any government agency.",
+      ]),
+      SETTLEMENT_PB,
+    );
+    const run = await runEngine({ rules: SETTLEMENT_RULES, ctx, source_file: SRC });
+    expect(run.findings.map((f) => f.rule_id)).toContain("SET-008");
+  });
+
+  it("is silent when the carve-out genuinely preserves the right", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Protected Rights",
+        "Nothing in this Agreement prevents Claimant from filing a charge with or communicating with any government agency.",
+      ]),
+      SETTLEMENT_PB,
+    );
+    const run = await runEngine({ rules: SETTLEMENT_RULES, ctx, source_file: SRC });
+    expect(run.findings.map((f) => f.rule_id)).not.toContain("SET-008");
+  });
+});

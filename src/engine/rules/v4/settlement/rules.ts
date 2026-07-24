@@ -226,6 +226,7 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "SET-008",
+    version: "1.1.0",
     name: "Whistleblower / agency-communication carve-out",
     description:
       "Confidential settlements must preserve the parties' right to communicate with regulators (SEC Rule 21F-17, EEOC, NLRB, DOL).",
@@ -238,7 +239,14 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
     recommendation:
       "Add 'Protected Rights' carve-out preserving rights to communicate with the SEC, EEOC, NLRB, DOL, or any government agency and to retain any whistleblower bounty.",
     present_patterns: [
-      /(protected\s+rights?|government\s+agency)/i,
+      /protected\s+rights?/i,
+      /(whistleblower|whistle.blower)/i,
+      // A government-agency mention is the carve-out only when it PRESERVES the
+      // right (may / nothing prevents / retains the right / right to file /
+      // free to report). "shall not disclose … to any government agency" is the
+      // very prohibition this carve-out is meant to undo — the same
+      // fake-carve-out false negative fixed in EMP-021.
+      /(?:may|nothing[^.]{0,40}(?:prevent|prohibit|restrict|limit)|retains?\s+the\s+right|right\s+to\s+(?:file|report|communicate)|permitted\s+to|free\s+to)[^.]{0,80}(?:government\s+agency|sec|eeoc|nlrb)/is,
       /(sec|eeoc|nlrb|dol)/i,
       /(whistleblower|whistle.?blower)/i,
     ],
