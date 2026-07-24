@@ -108,4 +108,14 @@ describe("TERM-002 — failure-to-pay / perform default triggers", () => {
       ),
     ).not.toBeNull();
   });
+
+  it("reads the noun-form default 'failure to pay rent … not cured' (v1.1.0)", () => {
+    expect(
+      TERM_002.check(
+        doc(
+          "Landlord may terminate this Lease upon Tenant's failure to pay rent that is not cured within ten (10) days after written notice.",
+        ),
+      ),
+    ).toBeNull();
+  });
 });

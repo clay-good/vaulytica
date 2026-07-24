@@ -56,4 +56,10 @@ describe("RISK-005 — limitation of liability present", () => {
       ),
     ).not.toBeNull();
   });
+
+  it("reads the subject-first 'liability shall in no event exceed' cap (v1.1.0)", () => {
+    expect(
+      RISK_005.check(doc("Provider's liability shall in no event exceed $100,000.")),
+    ).toBeNull();
+  });
 });

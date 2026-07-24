@@ -22,7 +22,10 @@ import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
 // The defaulting event is a "breach"/"default" OR the failure that constitutes
 // one — "fails to pay rent", "fails to perform" — the standard lease/loan
 // default trigger.
-const BREACH = String.raw`\b(?:(?:breach|default|non-?compliance|non-?performance|violation)\w*|fails?\s+to\s+(?:pay|perform|comply|observe|satisfy|make\b[^.]{0,20}?payment))`;
+// The defaulting event's verb takes the noun form too — a lease terminates
+// on "Tenant's FAILURE to pay rent", not only "if Tenant fails to pay" — so
+// the trigger admits fail / fails / failure / failing.
+const BREACH = String.raw`\b(?:(?:breach|default|non-?compliance|non-?performance|violation)\w*|fail(?:s|ure|ing)?\s+to\s+(?:pay|perform|comply|observe|satisfy|make\b[^.]{0,20}?payment))`;
 // Uncured: also the present-tense "does not cure" (a lease writes "and does not
 // cure within ten days"), not just the past-tense "not cured".
 const UNCURED = String.raw`\b(?:(?:does\s+|has\s+|is\s+|are\s+)?not\s+(?:been\s+)?cured?|fails?\s+to\s+cure|uncured|not\s+(?:been\s+)?remedied|fails?\s+to\s+remedy|remains?\s+uncured)\b`;
@@ -40,7 +43,7 @@ const FOR_CAUSE = new RegExp(
 /** TERM-002 — Termination for cause present (warning). */
 export const rule: Rule = {
   id: "TERM-002",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Termination for cause present",
   category: "termination",
   default_severity: "warning",
