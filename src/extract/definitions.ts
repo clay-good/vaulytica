@@ -181,10 +181,13 @@ const STATUTE_NAMES = new Set([
  * Corporate-office titles are designations, not defined terms: bylaws that
  * empower "the Chief Executive Officer" to call a special meeting have not
  * left a defined term undefined — the office is constituted by the officers
- * article, and every governance document capitalizes titles this way.
+ * article, and every governance document capitalizes titles this way. Any
+ * phrase ENDING in "Officer" is an office ("Compliance Officer", "Privacy
+ * Officer", "Data Protection Officer") — offices are constituted by
+ * appointment, not by a definitions section.
  */
 const OFFICER_TITLES =
-  /^(?:Chief\s+[A-Z][a-z]+\s+Officer|Vice\s+President|Executive\s+Vice\s+President|General\s+Counsel|Chair(?:person|man|woman)(?:\s+of\s+the\s+Board)?|Board\s+of\s+Directors|Managing\s+Member|Managing\s+Director)$/;
+  /^(?:[A-Z][\w\s]*\sOfficer|Vice\s+President|Executive\s+Vice\s+President|General\s+Counsel|Chair(?:person|man|woman)(?:\s+of\s+the\s+Board)?|Board\s+of\s+Directors|Managing\s+Member|Managing\s+Director)$/;
 
 /**
  * Sentence-initial words that are commonly capitalized but never
@@ -464,6 +467,11 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       if (COMMON_WORDS.has(phrase)) continue;
       if (PLACE_NAMES.has(phrase)) continue;
       if (STATUTE_NAMES.has(phrase)) continue;
+      // A Title-Case phrase ending in "Act" or "Code" is a statute's title
+      // ("Bank Secrecy Act", "USA PATRIOT Act", "Utah Code") — the law's
+      // name, not a term the document defines. Same reasoning as
+      // STATUTE_NAMES, generalized on the unambiguous suffix.
+      if (/\s(?:Act|Code)$/.test(phrase)) continue;
       if (OFFICER_TITLES.test(phrase)) continue;
       // A phrase immediately followed by a corporate suffix (", Inc.",
       // " LLC") is an entity NAME, not a defined term — same reasoning as

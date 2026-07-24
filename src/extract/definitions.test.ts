@@ -559,3 +559,18 @@ describe("plural compounds of defined terms", () => {
     expect(map.undefined_capitalized.map((u) => u.term)).not.toContain("Your Contributions");
   });
 });
+
+describe("statute suffixes and office titles", () => {
+  it("does not flag 'Bank Secrecy Act' or 'Compliance Officer'", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "AML",
+        "The program complies with the Bank Secrecy Act and applicable regulations. Potential matches are escalated to the BSA Compliance Officer for review.",
+        "Independent testing verifies compliance with the Bank Secrecy Act, and the Compliance Officer reports quarterly.",
+      ]),
+    );
+    const undef = map.undefined_capitalized.map((u) => u.term);
+    expect(undef).not.toContain("Bank Secrecy Act");
+    expect(undef).not.toContain("Compliance Officer");
+  });
+});
