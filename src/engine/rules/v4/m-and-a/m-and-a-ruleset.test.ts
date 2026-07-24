@@ -238,3 +238,34 @@ describe("MNA-040 — blanket data-room deemed-disclosure in its real wording (v
     ).toBe(false);
   });
 });
+
+describe("Escrow release & termination in their real wording (v1.1.0)", () => {
+  const ESCROW_PB: Playbook = { id: "escrow-agreement", version: "1.0.0" };
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Escrow", body]), ESCROW_PB);
+    const run = await runEngine({ rules: M_AND_A_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("MNA-048 reads 'disburse … upon joint written instructions signed by the parties'", async () => {
+    expect(
+      (
+        await run1(
+          "The Escrow Agent shall disburse the Escrow Funds upon receipt of joint written instructions signed by the Buyer and the Seller.",
+        )
+      ).has("MNA-048"),
+    ).toBe(false);
+    expect((await run1("The Escrow Agent shall hold the Escrow Funds.")).has("MNA-048")).toBe(true);
+  });
+
+  it("MNA-053 reads 'This Agreement terminates when all Escrow Funds have been disbursed'", async () => {
+    expect(
+      (
+        await run1("This Agreement terminates when all Escrow Funds have been disbursed.")
+      ).has("MNA-053"),
+    ).toBe(false);
+    expect(
+      (await run1("The Escrow Agent shall disburse per instructions.")).has("MNA-053"),
+    ).toBe(true);
+  });
+});

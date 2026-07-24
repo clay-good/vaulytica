@@ -963,6 +963,7 @@ const ESCROW_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-048",
+    version: "1.1.0",
     name: "Release / claim mechanics",
     description:
       "Escrow agreement must specify how funds are released — joint instructions / sole instructions / arbitration.",
@@ -980,7 +981,12 @@ const ESCROW_AGREEMENT_RULES: Rule[] = [
       "Add 'Release of Escrow Fund' with joint-instruction and unilateral-claim mechanics.",
     present_patterns: [
       /release\s+of\s+(the\s+)?escrow/i,
-      /joint\s+(instruction|written\s+notice)/i,
+      // The disbursement mechanic is as often "joint written INSTRUCTIONS
+      // signed by the parties" (or "joint direction") as "joint written
+      // notice"; the old alternation required the two words adjacent and the
+      // noun "notice", so the common instructions form read as absent.
+      /joint\s+(?:written\s+)?(?:instructions?|directions?|notice)/i,
+      /disburse\w*[^.]{0,60}\b(?:upon|on)\b[^.]{0,40}\b(?:joint|written)\s+(?:instructions?|directions?)/i,
       /claim\s+notice/i,
     ],
   }),
@@ -1069,6 +1075,7 @@ const ESCROW_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-053",
+    version: "1.1.0",
     name: "Termination of escrow / final release",
     description: "Escrow agreement should specify the termination event triggering final release.",
     citation: maPractice(
@@ -1086,6 +1093,11 @@ const ESCROW_AGREEMENT_RULES: Rule[] = [
       /termination\s+of\s+(this\s+)?escrow/i,
       /final\s+release/i,
       /escrow\s+(period|term)\s+(expires|ends)/i,
+      // For an escrow agreement, the AGREEMENT terminating when the escrow
+      // funds are gone IS the escrow termination: "This Agreement terminates
+      // when all Escrow Funds have been disbursed".
+      /terminat\w+[^.]{0,60}\b(?:escrow\s+funds|funds)\b[^.]{0,40}\b(?:disbursed|released|distributed|paid)/i,
+      /(?:this\s+agreement|escrow)\s+terminat\w+[^.]{0,80}\b(?:disbursed|released|distributed)/i,
     ],
   }),
   presence({
