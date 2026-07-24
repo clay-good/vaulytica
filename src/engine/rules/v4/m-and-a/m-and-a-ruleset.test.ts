@@ -304,3 +304,25 @@ describe("Earnout conduct covenant & CoC acceleration in real wording (v1.1.0)",
     ).toBe(true);
   });
 });
+
+describe("MNA-012 reads the verb-form reps-and-warranties article (v1.1.0)", () => {
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Representations", body]), SPA_PB);
+    const run = await runEngine({ rules: M_AND_A_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("reads 'The Seller represents and warrants that …'", async () => {
+    expect(
+      (
+        await run1("The Seller represents and warrants that the Company is duly organized.")
+      ).has("MNA-012"),
+    ).toBe(false);
+  });
+
+  it("still fires when the agreement contains no representations", async () => {
+    expect(
+      (await run1("The Buyer shall pay $9,000,000 at the Closing for the Shares.")).has("MNA-012"),
+    ).toBe(true);
+  });
+});

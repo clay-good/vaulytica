@@ -263,6 +263,7 @@ const SPA_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-012",
+    version: "1.1.0",
     name: "Representations and warranties of the company",
     description:
       "SPA must include reps of the target company (organization, authority, capitalization, financials, etc.).",
@@ -276,6 +277,12 @@ const SPA_RULES: Rule[] = [
     present_patterns: [
       /representations?\s+(and\s+)?warranties/i,
       /the\s+company\s+(hereby\s+)?represents/i,
+      // The article is as often the VERB form by any party — "The Seller
+      // represents and warrants that …", "each party represents and warrants"
+      // — under a "Representations of the Seller / Buyer" heading, none of
+      // which is the noun phrase "representations and warranties".
+      /\brepresents?\s+and\s+warrants?\b/i,
+      /representations?\s+of\s+the\s+(?:seller|buyer|purchaser|company|parties|stockholders?|shareholders?)\b/i,
     ],
   }),
   presence({
