@@ -799,6 +799,7 @@ const DISCLOSURE_SCHEDULE_RULES: Rule[] = [
   }),
   language({
     id: "MNA-040",
+    version: "1.1.0",
     name: "Schedules disclose by mere reference to a data-room folder",
     description:
       "Mere reference to a data-room folder generally does not constitute disclosure (*Cobalt International* line).",
@@ -812,6 +813,13 @@ const DISCLOSURE_SCHEDULE_RULES: Rule[] = [
       /see\s+(the\s+)?data.room/i,
       /reference(?:d)?\s+to\s+(the\s+)?(data.room|deal\s+room)/is,
       /materials?\s+in\s+(the\s+)?data.room/is,
+      // The blanket-disclosure defect is most often written "any matter
+      // DISCLOSED IN the data room shall be deemed disclosed" or reps
+      // "qualified by all documents MADE AVAILABLE IN the data room" — the
+      // improper deemed-disclosure the schedule is not supposed to rely on,
+      // and neither "see" nor "reference to" nor "materials in" reaches it.
+      /(?:disclosed|deemed\s+disclosed|made\s+available|posted|uploaded)\s+(?:in|to|within)\s+(the\s+)?(data.room|deal\s+room|virtual\s+data\s+room|vdr)/is,
+      /(the\s+)?(data.room|deal\s+room)\b[^.]{0,80}\bdeemed\s+disclosed/is,
     ],
     bad_title: "Disclosure by data-room reference flagged",
     // The patterns prove only that a data-room reference EXISTS, not that it is

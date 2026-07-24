@@ -200,3 +200,41 @@ describe("MNA-042 — the no-admission materiality disclaimer (v1.1.0)", () => {
     expect(run.findings.map((f) => f.rule_id)).toContain("MNA-042");
   });
 });
+
+describe("MNA-040 — blanket data-room deemed-disclosure in its real wording (v1.1.0)", () => {
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Disclosure", body]), DS_PB);
+    const run = await runEngine({ rules: M_AND_A_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("fires on 'any matter disclosed in the data room shall be deemed disclosed'", async () => {
+    expect(
+      (
+        await run1(
+          "Any matter disclosed in the data room shall be deemed disclosed for all purposes.",
+        )
+      ).has("MNA-040"),
+    ).toBe(true);
+  });
+
+  it("fires on reps 'qualified by all documents made available in the data room'", async () => {
+    expect(
+      (
+        await run1(
+          "The representations are qualified by all documents made available in the data room.",
+        )
+      ).has("MNA-040"),
+    ).toBe(true);
+  });
+
+  it("stays silent on a clean numbered-schedule disclosure", async () => {
+    expect(
+      (
+        await run1(
+          "The matters set forth on Schedule 3.7 are disclosed in response to Section 3.7 of the Agreement.",
+        )
+      ).has("MNA-040"),
+    ).toBe(false);
+  });
+});
