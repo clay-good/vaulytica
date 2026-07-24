@@ -55,15 +55,20 @@ const EFFECT_OF_TERMINATION = new RegExp(
     // takes termination as a bare object of "survive", not "UPON termination",
     // so the trigger branches above (which require the "(up)on" lead-in) never
     // matched it. This branch pairs the survive verb / "survival" heading with
-    // a nearby termination or expiration reference.
-    String.raw`|\bsurviv(?:e|es|al)\b[^.]{0,60}\b(?:termination|expiration|expiry|this\s+Agreement)\b`,
+    // a nearby termination or expiration reference — in EITHER order, since a
+    // ToS commonly writes "Upon termination, … Sections 4, 8 and 10 survive"
+    // with the trigger first. The reverse direction is anchored on the
+    // termination/expiration noun (not "this Agreement", which is too common)
+    // to avoid stitching an unrelated "survive" to the clause.
+    String.raw`|\bsurviv(?:e|es|al)\b[^.]{0,60}\b(?:termination|expiration|expiry|this\s+Agreement)\b` +
+    String.raw`|\b(?:termination|expiration|expiry)\b[^.]{0,80}\bsurviv(?:e|es|al)\b`,
   "i",
 );
 
 /** TERM-005 — Effect of termination clause present (warning). */
 export const rule: Rule = {
   id: "TERM-005",
-  version: "1.4.0",
+  version: "1.4.1",
   name: "Effect of termination clause",
   category: "termination",
   default_severity: "warning",

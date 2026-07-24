@@ -130,4 +130,12 @@ describe("the survival clause is an effect of termination (v1.4.0)", () => {
     ]);
     expect(TERM_005.check(ctx)).not.toBeNull();
   });
+
+  it("reads the trigger-first order 'Upon termination, … Sections 4, 8 and 10 survive' (v1.4.1)", () => {
+    const ctx = buildContext([
+      "Termination",
+      "Upon termination, your right to use the Service ends and Sections 4, 8, and 10 survive.",
+    ]);
+    expect(TERM_005.check(ctx)).toBeNull();
+  });
 });
