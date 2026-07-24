@@ -165,6 +165,32 @@ describe("v4 Employment — failure cases", () => {
     expect(nyRun.findings.some((f) => f.rule_id === "EMP-023")).toBe(false);
   });
 
+  it("EMP-015 / EMP-016 read the 'twenty-one (21) days' / 'seven (7) days' OWBPA form (v1.1.0)", async () => {
+    const ctx = withPb(
+      buildContext([
+        "ADEA Waiver",
+        "The Employee has been given twenty-one (21) days to consider this Agreement and may revoke it within seven (7) days after signing.",
+      ]),
+      SEPARATION_PB,
+    );
+    const run = await runEngine({ rules: EMPLOYMENT_RULES, ctx, source_file: SRC });
+    const ids = new Set(run.findings.map((f) => f.rule_id));
+    expect(ids.has("EMP-015")).toBe(false);
+    expect(ids.has("EMP-016")).toBe(false);
+    // A release with neither window still fires both.
+    const bare = withPb(
+      buildContext(["Release", "The Employee releases all claims against the Company."]),
+      SEPARATION_PB,
+    );
+    const bareIds = new Set(
+      (await runEngine({ rules: EMPLOYMENT_RULES, ctx: bare, source_file: SRC })).findings.map(
+        (f) => f.rule_id,
+      ),
+    );
+    expect(bareIds.has("EMP-015")).toBe(true);
+    expect(bareIds.has("EMP-016")).toBe(true);
+  });
+
   it("EMP-049 fires on overbroad NLRA § 7 confidentiality / wage-discussion ban", async () => {
     const ctx = withPb(
       buildContext([

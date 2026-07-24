@@ -325,6 +325,7 @@ const OFFER_LETTER_RULES: Rule[] = [
 const SEPARATION_RULES: Rule[] = [
   presence({
     id: "EMP-015",
+    version: "1.1.0",
     name: "OWBPA / ADEA waiver — 21 / 45-day consideration period",
     description:
       "Separation agreements with employees 40+ must give 21 days (or 45 days for group terminations) to consider the ADEA waiver.",
@@ -337,12 +338,16 @@ const SEPARATION_RULES: Rule[] = [
     recommendation:
       "Add 'Consideration Period' giving 21 or 45 days (as applicable) to consider the agreement.",
     present_patterns: [
-      /(21|twenty.one|45|forty.five)\s+days?\s+(to\s+)?(consider|review)/is,
+      // Tolerate the spelled-then-parenthetical-numeric form legal drafting
+      // universally uses: "twenty-one (21) days to consider". The "(21)"
+      // between the spelled number and "days" defeated the adjacent match.
+      /(21|twenty.one|45|forty.five)\s*(?:\(\s*\d{1,2}\s*\)\s*)?days?\s+(to\s+)?(consider|review)/is,
       /consideration\s+period/i,
     ],
   }),
   presence({
     id: "EMP-016",
+    version: "1.1.0",
     name: "OWBPA — 7-day revocation period",
     description: "ADEA waivers must give a 7-day revocation period after signing (§ 626(f)(1)(G)).",
     citation: owbpa(),
@@ -353,8 +358,10 @@ const SEPARATION_RULES: Rule[] = [
       "29 U.S.C. § 626(f)(1)(G) requires a 7-day revocation period during which the employee may rescind the waiver.",
     recommendation: "Add 'Revocation' giving the employee 7 days after signing to revoke.",
     present_patterns: [
-      /(7|seven)\s+days?\s+(to\s+|after\s+|in\s+which\s+to\s+|within\s+which\s+to\s+)?(revoke|rescind)/i,
-      /(revoke|rescind).{0,40}within\s+(7|seven)\s+days?/i,
+      // Same spelled-then-parenthetical form: "seven (7) days", "revoke it
+      // within seven (7) days after signing".
+      /(7|seven)\s*(?:\(\s*\d\s*\)\s*)?days?\s+(to\s+|after\s+|in\s+which\s+to\s+|within\s+which\s+to\s+)?(revoke|rescind)/i,
+      /(revoke|rescind).{0,40}within\s+(7|seven)\s*(?:\(\s*\d\s*\)\s*)?days?/i,
       /revocation\s+period/i,
     ],
   }),
