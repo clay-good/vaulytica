@@ -221,7 +221,7 @@
       "finding_id": "IPDATA-001-s1-0",
       "fired": true,
       "rule_id": "IPDATA-001",
-      "rule_version": "1.3.0"
+      "rule_version": "1.3.1"
     },
     {
       "elapsed_ms": 0,
@@ -847,7 +847,7 @@
       "explanation": "Without an IP-ownership clause, default copyright and patent rules apply: under 17 U.S.C. § 201, copyright vests in the author/employee unless work-for-hire or assignment applies.",
       "id": "IPDATA-001-s1-0",
       "rule_id": "IPDATA-001",
-      "rule_version": "1.3.0",
+      "rule_version": "1.3.1",
       "severity": "warning",
       "source_citations": [
         {
@@ -1020,7 +1020,7 @@
   "playbook_id": "sow",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected sow (score 0.9). Title matched: \"statement of work\". Distinguishing phrases: \"this SOW\", \"Master Agreement\", \"Deliverables\", \"milestones\".",
-  "result_hash": "6bd2bf4f21d028e8ca433a7793f582eca4c4f38d96dae229a6fcbbde8f0c1f9a",
+  "result_hash": "a389688166fe6644fbdb9e0b02402ff48ba448b40cef3cc08ee930c2569c9301",
   "source_file": {
     "name": "bad-sow.docx",
     "sha256": "cd7208763b891cf8cb8e1c853b54f63fb70fe10004a489fbeb95921a14b84c3c",

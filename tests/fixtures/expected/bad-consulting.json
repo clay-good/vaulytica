@@ -218,7 +218,7 @@
       "finding_id": "IPDATA-001-s1-0",
       "fired": true,
       "rule_id": "IPDATA-001",
-      "rule_version": "1.3.0"
+      "rule_version": "1.3.1"
     },
     {
       "elapsed_ms": 0,
@@ -749,7 +749,7 @@
       "explanation": "Without an IP-ownership clause, default copyright and patent rules apply: under 17 U.S.C. § 201, copyright vests in the author/employee unless work-for-hire or assignment applies.",
       "id": "IPDATA-001-s1-0",
       "rule_id": "IPDATA-001",
-      "rule_version": "1.3.0",
+      "rule_version": "1.3.1",
       "severity": "warning",
       "source_citations": [
         {
@@ -1020,7 +1020,7 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"consulting agreement\". Distinguishing phrases: \"Consultant\", \"advisory services\", \"deliverables\", \"independent contractor\", \"the Consulting Services\".",
-  "result_hash": "7138825e074a43e5b15d08afaf98e2fa985b12b5d038fcdd41de6756202cfda4",
+  "result_hash": "8983116d4bffb284e864d5ac8a003b2b1ad7f511c25593b8da8728e652a96107",
   "source_file": {
     "name": "bad-consulting.docx",
     "sha256": "f66f070f4bb768dbc3f21ee6782418bca5ed64451d483dab533b345a8ddbe691",

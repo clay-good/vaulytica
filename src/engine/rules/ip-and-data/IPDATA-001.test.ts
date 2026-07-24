@@ -51,4 +51,17 @@ describe("IPDATA-001 — IP ownership clause present", () => {
       IPDATA_001.check(doc("The Licensee acquires no ownership interest in the Licensed Marks.")),
     ).toBeNull();
   });
+
+  it("reads an ownership STATEMENT — 'Licensor owns the Licensed Patents' (v1.3.1)", () => {
+    expect(
+      IPDATA_001.check(doc("The Licensor represents that it owns the Licensed Patents.")),
+    ).toBeNull();
+    expect(IPDATA_001.check(doc("Each party owns the improvements it makes."))).toBeNull();
+  });
+
+  it("does not read a bare non-IP 'owns' as an IP-ownership clause (v1.3.1)", () => {
+    expect(
+      IPDATA_001.check(doc("The Investor owns 10% of the outstanding shares of the Company.")),
+    ).not.toBeNull();
+  });
 });
