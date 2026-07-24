@@ -26,7 +26,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "FIN-009",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Late fee exceeds typical 18%/year threshold",
   category: "financial",
   default_severity: "warning",
@@ -40,7 +40,11 @@ export const rule: Rule = {
     // undetected and a plainly per-annum rate was reported as period-less.
     const hit = firstParagraphMatch(
       ctx,
-      /\b(?:late\s+(?:fee|charge|payment\s+(?:fee|charge))|interest|finance\s+charge)[:\s][^.]{0,80}?(\d+(?:\.\d+)?)\s*%\s*\)?,?\s*(?:per\s+(month|year|annum|day)|monthly|annually|daily)?/i,
+      // "NET INTEREST MARGIN declined from 3.4%" is a financial METRIC, not a
+      // late-payment rate — the bare "interest" token matched every 10-K's
+      // margin discussion. The lookarounds confine the token to interest
+      // that is charged, not measured.
+      /\b(?:late\s+(?:fee|charge|payment\s+(?:fee|charge))|(?<!net\s)interest(?!\s+margin|\s+income|\s+expense|\s+rate\s+risk)|finance\s+charge)[:\s][^.]{0,80}?(\d+(?:\.\d+)?)\s*%\s*\)?,?\s*(?:per\s+(month|year|annum|day)|monthly|annually|daily)?/i,
     );
     if (!hit) return null;
     const rate = Number(hit.match[1]);

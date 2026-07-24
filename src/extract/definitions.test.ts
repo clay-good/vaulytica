@@ -589,3 +589,20 @@ describe("agency-name fragments and board organs", () => {
     expect(undef).not.toContain("Audit Committee");
   });
 });
+
+describe("10-K style heading lines and self-references", () => {
+  it("does not flag subheading lines or 'this Annual Report'", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Item 1A",
+        "Risks Related to Our Lending Business",
+        "Our loan portfolio is concentrated in commercial real estate, as described in this Annual Report on Form 10-K.",
+        "Risks Related to Our Lending Business",
+        "Additional detail appears elsewhere in this Annual Report on Form 10-K.",
+      ]),
+    );
+    const undef = map.undefined_capitalized.map((u) => u.term);
+    expect(undef).not.toContain("Risks Related");
+    expect(undef).not.toContain("Annual Report");
+  });
+});

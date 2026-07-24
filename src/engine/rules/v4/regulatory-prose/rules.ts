@@ -392,6 +392,7 @@ const RISK_FACTORS_RULES: Rule[] = [
   }),
   presence({
     id: "REG-020",
+    version: "1.1.0",
     name: "Risk-factor headlines / subheadings (plain English)",
     description:
       "Each risk factor should have a concise, plain-English headline (Item 105 + Rule 421).",
@@ -403,7 +404,14 @@ const RISK_FACTORS_RULES: Rule[] = [
       "Securities Act Rule 421(b) plain-English rule + Item 105 require risk-factor subheadings that adequately describe each risk.",
     recommendation:
       "Add concise subheadings (1-line) describing each risk factor; avoid generic captions.",
-    present_patterns: [/(subheading|headline|caption)/i, /(plain\s+english|item\s+105)/i],
+    present_patterns: [
+      /(subheading|headline|caption)/i,
+      /(plain\s+english|item\s+105)/i,
+      // The presence of ACTUAL grouping subheadings — "Risks Related to Our
+      // Lending Business" — satisfies the organization requirement; the
+      // branches above only detected prose TALKING ABOUT headlines.
+      /risks\s+relat(?:ed|ing)\s+to\s+/i,
+    ],
     default_severity: "warning",
   }),
   presence({

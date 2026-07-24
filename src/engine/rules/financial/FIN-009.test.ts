@@ -112,3 +112,24 @@ describe("FIN-009 — the spelled-then-numeric rate states its period (v1.2.0)",
     expect(f?.title).toMatch(/24\.0/);
   });
 });
+
+describe("FIN-009 — net interest margin is a metric, not a charge (v1.3.0)", () => {
+  const doc = (...paras: string[]) => buildContext(["Interest", ...paras]);
+
+  it("stays silent on a 10-K margin discussion", () => {
+    expect(
+      FIN_009.check(
+        doc(
+          "Our net interest margin declined from 3.4% in 2025 to 2.9% in 2026 as deposit costs repriced faster than loan yields.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still reads charged interest", () => {
+    const f = FIN_009.check(
+      doc("Interest shall accrue at a rate of two percent (2%) per month on past-due amounts."),
+    );
+    expect(f).not.toBeNull();
+  });
+});

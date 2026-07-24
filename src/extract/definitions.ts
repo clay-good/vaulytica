@@ -421,11 +421,27 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
     // capitalizes its words as heading STYLE, not defined-term usage;
     // occurrences inside the heading segment are not uses of a term.
     const headingEnd = runInHeadingEnd(ctx.text);
+    // A standalone heading LINE — a short, Title-Case, unpunctuated
+    // paragraph ("Risks Related to Our Lending Business") — is heading
+    // style throughout; none of its phrases are defined-term uses.
+    const trimmed = ctx.text.trim();
+    if (
+      trimmed.length > 0 &&
+      trimmed.length <= 80 &&
+      !/[.;:!?]$/.test(trimmed) &&
+      isTitleCaseSegment(trimmed)
+    ) {
+      return;
+    }
     TITLE_CASE_PHRASE.lastIndex = 0;
     let m: RegExpExecArray | null;
     while ((m = TITLE_CASE_PHRASE.exec(ctx.text)) !== null) {
       const phrase = m[1]!;
       if (m.index < headingEnd) continue;
+      // "in this Annual Report on Form 10-K" — a "this"-prefixed phrase is
+      // the document referring to ITSELF (or to a companion instrument it
+      // just named), not an undefined term.
+      if (/\bthis\s+$/i.test(ctx.text.slice(Math.max(0, m.index - 8), m.index))) continue;
       // The document's caption is its NAME; a phrase inside the caption line
       // or inside an echo of it ("This Confidential Settlement Agreement and
       // Mutual Release (this 'Agreement') …") is title vocabulary.
