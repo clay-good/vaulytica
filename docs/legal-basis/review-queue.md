@@ -6,8 +6,8 @@
 > prioritized first tranche of rules for a licensed reviewer to sign into
 > [`ledger.json`](ledger.json); the workflow lives in [`README.md`](README.md).
 
-- **Engine:** `9.41.0` · **Corpus:** `v0.0.0-seed` (empty) · **Catalog:** 1070 single-document rules
-- **Signed:** 0 of 1070 · **Queued (unreviewed, top 100):** 100
+- **Engine:** `9.41.0` · **Corpus:** `v0.0.0-seed` (empty) · **Catalog:** 1071 single-document rules
+- **Signed:** 0 of 1071 · **Queued (unreviewed, top 100):** 100
 
 ## Ranking
 
@@ -100,27 +100,27 @@ firing refines the order automatically — re-run `npm run accuracy` then
 | 75 | `DARK-010` — Residential waiver of the warranty of habitability | critical | dark-patterns | 0 | `stat-ftc-deception-statement` |
 | 76 | `DARK-011` — Residential self-help eviction / lockout | critical | dark-patterns | 0 | `stat-ftc-deception-statement` |
 | 77 | `DARK-013` — Residential waiver of statutory tenant rights | critical | dark-patterns | 0 | `stat-ftc-deception-statement` |
-| 78 | `DPA-001` — Subject-matter of processing identified | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-introductory` |
-| 79 | `DPA-002` — Duration of processing specified | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-introductory` |
-| 80 | `DPA-003` — Nature and purpose of processing | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-introductory` |
-| 81 | `DPA-004` — Type of personal data identified | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-introductory` |
-| 82 | `DPA-005` — Categories of data subjects identified | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-introductory` |
-| 83 | `DPA-006` — Obligations and rights of the controller stated | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-introductory` |
-| 84 | `DPA-007` — Processing only on documented instructions | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-a-` |
-| 85 | `DPA-008` — Confidentiality of authorised persons | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-b-` |
-| 86 | `DPA-009` — Article 32 security measures incorporated | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-c-` |
-| 87 | `DPA-010` — Subprocessor terms (Art. 28(2) and (4)) | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-d-` |
-| 88 | `DPA-011` — Assist controller in responding to data-subject rights | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-e-` |
-| 89 | `DPA-012` — Assist controller with Articles 32–36 obligations | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-f-` |
-| 90 | `DPA-013` — Deletion or return at end of services | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-g-` |
-| 91 | `DPA-014` — Information available for compliance demonstration | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-h-` |
-| 92 | `DPA-015` — Subprocessor prior written authorisation (Art. 28(2)) | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-2-` |
-| 93 | `DPA-016` — Subprocessor change notification + objection right | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-2-` |
-| 94 | `DPA-017` — Subprocessor flow-down of same obligations (Art. 28(4)) | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-4-` |
-| 95 | `DPA-024` — Processor breach notice to controller (Art. 33(2)) | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-33-2-` |
-| 96 | `DPA-032` — International transfer mechanism named | critical | dpa-gdpr | 0 | `gdpr-gdpr-arts-44-49` |
-| 97 | `DPA-042` — Controller / Processor roles named | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-4-7-and-8-` |
-| 98 | `DPA-050` — Personal data referenced in document | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-4-1-` |
-| 99 | `EMP-001` — Title, duties, and reporting line | critical | employment | 0 | `emp-practice-exec-baseline` |
-| 100 | `EMP-002` — Base salary and bonus structure | critical | employment | 0 | `reg-sk-item-402` |
+| 78 | `DARK-014` — Consumer anti-review gag clause | critical | dark-patterns | 0 | `stat-ftc-deception-statement` |
+| 79 | `DPA-001` — Subject-matter of processing identified | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-introductory` |
+| 80 | `DPA-002` — Duration of processing specified | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-introductory` |
+| 81 | `DPA-003` — Nature and purpose of processing | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-introductory` |
+| 82 | `DPA-004` — Type of personal data identified | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-introductory` |
+| 83 | `DPA-005` — Categories of data subjects identified | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-introductory` |
+| 84 | `DPA-006` — Obligations and rights of the controller stated | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-introductory` |
+| 85 | `DPA-007` — Processing only on documented instructions | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-a-` |
+| 86 | `DPA-008` — Confidentiality of authorised persons | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-b-` |
+| 87 | `DPA-009` — Article 32 security measures incorporated | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-c-` |
+| 88 | `DPA-010` — Subprocessor terms (Art. 28(2) and (4)) | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-d-` |
+| 89 | `DPA-011` — Assist controller in responding to data-subject rights | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-e-` |
+| 90 | `DPA-012` — Assist controller with Articles 32–36 obligations | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-f-` |
+| 91 | `DPA-013` — Deletion or return at end of services | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-g-` |
+| 92 | `DPA-014` — Information available for compliance demonstration | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-h-` |
+| 93 | `DPA-015` — Subprocessor prior written authorisation (Art. 28(2)) | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-2-` |
+| 94 | `DPA-016` — Subprocessor change notification + objection right | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-2-` |
+| 95 | `DPA-017` — Subprocessor flow-down of same obligations (Art. 28(4)) | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-4-` |
+| 96 | `DPA-024` — Processor breach notice to controller (Art. 33(2)) | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-33-2-` |
+| 97 | `DPA-032` — International transfer mechanism named | critical | dpa-gdpr | 0 | `gdpr-gdpr-arts-44-49` |
+| 98 | `DPA-042` — Controller / Processor roles named | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-4-7-and-8-` |
+| 99 | `DPA-050` — Personal data referenced in document | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-4-1-` |
+| 100 | `EMP-001` — Title, duties, and reporting line | critical | employment | 0 | `emp-practice-exec-baseline` |
 

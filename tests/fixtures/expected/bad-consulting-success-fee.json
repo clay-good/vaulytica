@@ -156,6 +156,12 @@
     {
       "elapsed_ms": 0,
       "fired": false,
+      "rule_id": "DARK-014",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
       "rule_id": "FIN-001",
       "rule_version": "1.1.0"
     },
@@ -968,7 +974,7 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"advisory agreement\". Distinguishing phrases: \"advisory services\", \"deliverables\", \"independent contractor\".",
-  "result_hash": "3618778910fd5578b66c7c316eb2fd38cda649ea860a1c01e29b1057b94aa99d",
+  "result_hash": "89577e6f0b5c9362f7d96203b53ec7261f0178ec1b4ddfd77dc448b4f8b2b5d2",
   "source_file": {
     "name": "bad-consulting-success-fee.docx",
     "sha256": "6bc505eb0c1641cda4c3466a62f0b3eead258e2dc3a385e792e79f4a717ad6a5",
