@@ -2,7 +2,7 @@
   "id": "dpia-art-35",
   "version": "1.0.0",
   "name": "Data Protection Impact Assessment (GDPR Art. 35)",
-  "description": "GDPR Art. 35 DPIA covering necessity, proportionality, risk assessment, and mitigations. Selects the §6.I ruleset (PRV-021..PRV-026).",
+  "description": "GDPR Art. 35 DPIA covering necessity, proportionality, risk assessment, and mitigations. Selects the \u00a76.I ruleset (PRV-021..PRV-026).",
   "match_features": {
     "title_keywords": [
       "data protection impact assessment",
@@ -19,16 +19,59 @@
       "mitigations",
       "supervisory authority"
     ],
-    "negative_features": ["business associate", "merger agreement"]
+    "negative_features": [
+      "business associate",
+      "merger agreement"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Controller", "DPO", "Risk"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "Controller",
+    "DPO",
+    "Risk"
+  ],
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "GDPR-ART-35",
-  "applicable_jurisdictions": ["EU", "UK"],
-  "companion_playbooks": ["ropa-art-30"],
+  "applicable_jurisdictions": [
+    "EU",
+    "UK"
+  ],
+  "companion_playbooks": [
+    "ropa-art-30"
+  ],
   "compliance_matrix_columns": [
     "Art. 35(7)(a) description",
     "Art. 35(7)(b) necessity / proportionality",

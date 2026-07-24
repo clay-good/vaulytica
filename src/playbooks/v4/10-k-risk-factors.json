@@ -2,21 +2,71 @@
   "id": "10-k-risk-factors",
   "version": "1.0.0",
   "name": "10-K Risk Factors (prose only)",
-  "description": "10-K risk factors prose under Reg S-K Item 105 (with annual updates). Per spec §6.P caveat: v4 lints prose only (REG-040). Selects the §6.P shared risk-factors ruleset (REG-016..REG-024).",
+  "description": "10-K risk factors prose under Reg S-K Item 105 (with annual updates). Per spec \u00a76.P caveat: v4 lints prose only (REG-040). Selects the \u00a76.P shared risk-factors ruleset (REG-016..REG-024).",
   "match_features": {
-    "title_keywords": ["10-k", "form 10-k", "annual report on form 10-k"],
+    "title_keywords": [
+      "10-k",
+      "form 10-k",
+      "annual report on form 10-k"
+    ],
     "required_clauses": [],
-    "distinguishing_phrases": ["risk factors", "annual report", "item 1a", "fiscal year"],
-    "negative_features": ["form d", "form adv", "s-1", "ppm", "reg a+"]
+    "distinguishing_phrases": [
+      "risk factors",
+      "annual report",
+      "item 1a",
+      "fiscal year"
+    ],
+    "negative_features": [
+      "form d",
+      "form adv",
+      "s-1",
+      "ppm",
+      "reg a+"
+    ]
   },
   "expected_clauses": [],
   "expected_defined_terms": [],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "REG-S-K-ITEM-105",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["s-1-risk-factors"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "s-1-risk-factors"
+  ],
   "compliance_matrix_columns": [
     "Risk-factor section",
     "Item 105 materiality + summary",
