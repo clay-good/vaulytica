@@ -364,6 +364,20 @@ describe("statute names, officer titles, and entity names are not defined terms"
     expect(terms).not.toContain("Chief Executive Officer");
   });
 
+  it("does not flag signature-block designations (Authorized Signatory, Managing Partner)", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Signatures",
+        "MEMBER: Ridgeline Holdings, LLC. By: Morgan Ellis. Title: Authorized Signatory.",
+        "MEMBER: Cormorant Capital, LLC. By: Jesse Park. Title: Authorized Signatory.",
+        "SELLER By: Dana Cole, Title: Managing Partner. BUYER By: Sam Poe, Title: Managing Partner.",
+      ]),
+    );
+    const terms = map.undefined_capitalized.map((u) => u.term);
+    expect(terms).not.toContain("Authorized Signatory");
+    expect(terms).not.toContain("Managing Partner");
+  });
+
   it("does not flag a company name followed by its corporate suffix", () => {
     const map = extractDefinitions(
       buildTree([

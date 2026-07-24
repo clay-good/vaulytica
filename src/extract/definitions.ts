@@ -184,10 +184,13 @@ const STATUTE_NAMES = new Set([
  * article, and every governance document capitalizes titles this way. Any
  * phrase ENDING in "Officer" is an office ("Compliance Officer", "Privacy
  * Officer", "Data Protection Officer") — offices are constituted by
- * appointment, not by a definitions section.
+ * appointment, not by a definitions section. The signature-block designations
+ * ("Authorized Signatory", "Managing Partner") are the same: a title on the
+ * "Title:" line an execution block, not a defined term, so they are covered
+ * too.
  */
 const OFFICER_TITLES =
-  /^(?:[A-Z][\w\s]*\s(?:Officer|Committee)|(?:[A-Z][\w]*\s+)?Vice\s+President(?:,?\s+[A-Z][\w\s]*)?|General\s+Counsel|Chair(?:person|man|woman)(?:\s+of\s+the\s+Board)?|Board\s+of\s+Directors|Managing\s+Member|Managing\s+Director)$/;
+  /^(?:[A-Z][\w\s]*\s(?:Officer|Committee)|(?:[A-Z][\w]*\s+)?Vice\s+President(?:,?\s+[A-Z][\w\s]*)?|General\s+Counsel|Chair(?:person|man|woman)(?:\s+of\s+the\s+Board)?|Board\s+of\s+Directors|Managing\s+(?:Member|Director|Partner)|(?:General|Limited)\s+Partner|Authorized\s+(?:Signator(?:y|ies)|Representative|Person|Agent))$/;
 
 /**
  * Sentence-initial words that are commonly capitalized but never
