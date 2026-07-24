@@ -71,6 +71,21 @@ const GOV_LAW_IS = new RegExp(
   "gi",
 );
 
+/**
+ * The compact adjectival form: "governed by Ohio law", "governed by California
+ * law", "construed under New York law". It names the jurisdiction as an
+ * adjective on the word "law" rather than "the laws OF X", so neither pattern
+ * above matched it and CHOICE-001 reported "no governing-law clause" on a
+ * clause that plainly states one. The capture is one to three Title-case words
+ * before the literal "law"; the `/^[A-Z]/` guard in the consumer rejects the
+ * lowercase non-jurisdictions this would otherwise reach ("applicable law",
+ * "federal law", "such law").
+ */
+const GOV_LAW_ADJECTIVAL = new RegExp(
+  String.raw`\b(?:governed\s+by|construed\s+(?:under|in\s+accordance\s+with))\s+(?:${SOVEREIGN_PREFIX})?([A-Z][A-Za-z&-]+(?:\s+[A-Z][A-Za-z&-]+){0,2})\s+law\b`,
+  "gi",
+);
+
 const VENUE = new RegExp(
   String.raw`\b(?:venue|forum|exclusive\s+jurisdiction|exclusive\s+venue|jurisdiction\s+and\s+venue|sole\s+and\s+exclusive\s+(?:venue|jurisdiction|forum))\b(?:\([0-9]+\)|[^.;)]){0,80}?(?:shall\s+(?:be|lie)|is|lies|shall\s+rest|will\s+be)\s+(?:in|with|within)?\s*(?:any\s+|the\s+|a\s+)?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+|in\s+|within\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
   "gi",
@@ -98,7 +113,7 @@ const VENUE_SIMPLE =
  *   - the preposition: "shall be resolved **by** the courts of France";
  *   - the court: "before the **competent** courts located in Dublin".
  */
-const DISPUTE_NOUN = String.raw`disputes?|claims?|actions?|proceedings?|litigation|controvers(?:y|ies)|disagreements?|suits?`;
+const DISPUTE_NOUN = String.raw`disputes?|claims?|actions?|proceedings?|litigation|controvers(?:y|ies)|disagreements?|suits?|lawsuits?`;
 const FORUM_VERB = String.raw`resolved|brought|litigated|adjudicated|heard|instituted|commenced|filed|maintained|tried|venued|determined`;
 const COURT_ADJECTIVE = String.raw`competent\s+|appropriate\s+|proper\s+|applicable\s+`;
 // The run-up window between the dispute noun and its forum verb excludes ")"
@@ -109,7 +124,7 @@ const COURT_ADJECTIVE = String.raw`competent\s+|appropriate\s+|proper\s+|applica
 // count, never a clause boundary, so it is admitted as a unit.
 const RUNUP = String.raw`(?:\([0-9]+\)|[^.;)])`;
 const VENUE_RESOLVED_IN = new RegExp(
-  String.raw`\b(?:${DISPUTE_NOUN})\b${RUNUP}{0,200}?\bshall\s+be\s+(?:${FORUM_VERB})\s+(?:exclusively\s+|solely\s+|finally\s+)?(?:in|before|by)\s+(?:any\s+|the\s+|a\s+)?(?:${COURT_ADJECTIVE})?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_ADJECTIVE})?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+|in\s+|within\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
+  String.raw`\b(?:${DISPUTE_NOUN})\b${RUNUP}{0,200}?\b(?:shall|must|will|may)\s+be\s+(?:${FORUM_VERB})\s+(?:exclusively\s+|solely\s+|finally\s+)?(?:in|before|by)\s+(?:any\s+|the\s+|a\s+)?(?:${COURT_ADJECTIVE})?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_ADJECTIVE})?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+|in\s+|within\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
   "gi",
 );
 
@@ -228,6 +243,22 @@ export function extractJurisdictions(
       // governing law of this Addendum is determined by …" registers
       // "determined" as the law.
       if (!/^[A-Z]/.test(raw)) return;
+      if (seenGovLaw.has(raw.toLowerCase())) return;
+      seenGovLaw.add(raw.toLowerCase());
+      out.push({
+        clause_kind: "governing-law",
+        jurisdiction_id: lookup(raw),
+        raw_text: raw,
+        position: posInParagraph(ctx, m.index, m.index + m[0].length),
+      });
+    });
+    runRegex(GOV_LAW_ADJECTIVAL, ctx.text, (m) => {
+      const raw = (m[1] ?? "").trim();
+      // Same guards as GOV_LAW_IS: the `i` flag makes `[A-Z]` match any
+      // letter, so require a real capitalized jurisdiction name, and drop a
+      // disclaimed selection ("not governed by California law").
+      if (!/^[A-Z]/.test(raw)) return;
+      if (isNegatedGovLaw(ctx.text, m.index)) return;
       if (seenGovLaw.has(raw.toLowerCase())) return;
       seenGovLaw.add(raw.toLowerCase());
       out.push({

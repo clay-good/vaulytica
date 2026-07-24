@@ -292,4 +292,45 @@ describe("interpretation-form governing law", () => {
       "Vermont",
     );
   });
+
+  it("captures the adjectival 'governed by <State> law' form", () => {
+    const gov = (t: string) =>
+      extractJurisdictions(buildTree(["Governing Law", t])).find(
+        (r) => r.clause_kind === "governing-law",
+      )?.raw_text;
+    expect(gov("This Agreement is governed by Ohio law.")).toBe("Ohio");
+    expect(gov("This Agreement is governed by New York law, without regard to conflicts.")).toBe(
+      "New York",
+    );
+    expect(gov("The Note shall be construed under Illinois law.")).toBe("Illinois");
+  });
+
+  it("does not treat 'governed by applicable law' as a jurisdiction", () => {
+    const refs = extractJurisdictions(
+      buildTree(["Governing Law", "This Agreement is governed by applicable law."]),
+    );
+    expect(refs.filter((r) => r.clause_kind === "governing-law")).toHaveLength(0);
+  });
+
+  it("does not assert a disclaimed adjectival governing law", () => {
+    const refs = extractJurisdictions(
+      buildTree([
+        "Governing Law",
+        "This Agreement shall not be governed by California law.",
+      ]),
+    );
+    expect(
+      refs.filter((r) => r.clause_kind === "governing-law").map((r) => r.raw_text),
+    ).not.toContain("California");
+  });
+
+  it("captures a 'lawsuit must be brought in the courts located in <County>, <State>' venue", () => {
+    const refs = extractJurisdictions(
+      buildTree([
+        "Venue",
+        "Any lawsuit must be brought in the state or federal courts located in Franklin County, Ohio.",
+      ]),
+    );
+    expect(refs.filter((r) => r.clause_kind === "venue").map((r) => r.raw_text)).toContain("Ohio");
+  });
 });
