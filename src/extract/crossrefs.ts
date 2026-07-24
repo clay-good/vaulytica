@@ -53,6 +53,19 @@ const EXTERNAL_LEADER_RE = /\b(?:U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?|Stat\.)\s
 const EXTERNAL_INSTRUMENT_RE =
   /^(?:\(\d+[a-z]?\))*\s+(?:of\s+the\s+(?:[A-Z][\w]*\s+){0,4}(?:Agreement|Lease|Note|Indenture|MSA|SPA|DPA|BAA|Contract)\b|thereof\b)/;
 
+// A four-digit-or-longer flat section number ("Section 4999", "Section 1798")
+// is statutory: no contract numbers its own sections past three digits.
+const STATUTE_SECTION_LABEL = /^\d{4,}$/;
+
+// A section number the DOCUMENT ITSELF ties to a code ("Section 409A of the
+// Internal Revenue Code") is statutory wherever it appears — an executive
+// agreement introduces 409A/280G that way and then cites them bare in later
+// headings ("6. Section 280G. If any payment …"). Corroboration-based, so a
+// bare letter-suffixed reference with no statutory context anywhere still
+// reports as an unresolved internal reference.
+const STATUTE_LABEL_DECLARATION =
+  /\b(?:Section|Sections|§§?)\s+(\d+(?:\.\d+)*[A-Za-z]?)(?:\([a-z0-9]+\))*\s+of\s+(?:the\s+)?[A-Z][^.;,]*?\b(?:Code|Acts?|Laws?|Regulations?|Rules?)\b/g;
+
 // A paragraph that OPENS with "6. Vendor Indemnity …" is section 6, even when
 // the ingester never promoted it to a heading. The paste path (any pasted
 // contract) keeps numbered clauses as flat paragraphs under one empty-heading
@@ -80,6 +93,15 @@ const LEADING_ARTICLE_RE = /^\s*(?:ARTICLE|Article)\s+([IVXLCDM]+|\d+)\b/;
 export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): CrossRef[] {
   const refs: CrossRef[] = [];
   const labelIndex = buildLabelIndex(outline);
+  // Section numbers this document ties to a code anywhere in its text.
+  const statutoryLabels = new Set<string>();
+  forEachParagraph(tree, (ctx) => {
+    STATUTE_LABEL_DECLARATION.lastIndex = 0;
+    let sm: RegExpExecArray | null;
+    while ((sm = STATUTE_LABEL_DECLARATION.exec(ctx.text)) !== null) {
+      statutoryLabels.add(sm[1]!.toUpperCase());
+    }
+  });
   // Augment the index with paragraph-leading section numbers the outline missed.
   forEachParagraph(tree, (ctx) => {
     const m = LEADING_SECTION_RE.exec(ctx.text) ?? LEADING_SUBSECTION_RE.exec(ctx.text);
@@ -106,7 +128,9 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
       if (
         EXTERNAL_TRAILER_RE.test(after) ||
         EXTERNAL_INSTRUMENT_RE.test(after) ||
-        EXTERNAL_LEADER_RE.test(before)
+        EXTERNAL_LEADER_RE.test(before) ||
+        STATUTE_SECTION_LABEL.test(m[2] ?? "") ||
+        statutoryLabels.has((m[2] ?? "").toUpperCase())
       ) {
         continue;
       }

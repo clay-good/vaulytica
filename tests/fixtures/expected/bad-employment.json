@@ -626,7 +626,7 @@
       "finding_id": "TEMP-007-s1.9-1554",
       "fired": true,
       "rule_id": "TEMP-007",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -1176,7 +1176,7 @@
       "explanation": "Typical surviving obligations include confidentiality, indemnity, accrued payment obligations, and governing law. Missing any of these is common and worth confirming.",
       "id": "TEMP-007-s1.9-1554",
       "rule_id": "TEMP-007",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "info",
       "source_citations": [],
       "title": "Survival list may be missing categories: confidentiality, indemnity, payment, governing law"
@@ -1185,7 +1185,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
-  "result_hash": "4c8f62e7434fbdcff5da6ac8697559cff1eed48c9303697420ca36219883700a",
+  "result_hash": "244014d20e816afb1b4cf39229b1054138aec0ab765ab75d12ba5b2aa6704905",
   "source_file": {
     "name": "bad-employment.docx",
     "sha256": "44e689f2fe4e8767866844995363dda962260fd37d54469e6d0fdf443136013c",

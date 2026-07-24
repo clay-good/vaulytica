@@ -11,7 +11,7 @@ const EXPECTED = [
 /** TEMP-007 — Survival list completeness (info). */
 export const rule: Rule = {
   id: "TEMP-007",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Survival list completeness",
   category: "temporal",
   default_severity: "info",
@@ -28,6 +28,21 @@ export const rule: Rule = {
     );
     const survival = survivals[0];
     if (!survival) return null;
+    // A survival clause that carries ANOTHER instrument's obligations past
+    // termination ("obligations under the Restrictive Covenant Agreement …
+    // are incorporated by reference and survive termination in accordance
+    // with their terms") is not this document's survival LIST — auditing it
+    // for confidentiality/indemnity/payment/governing-law categories demands
+    // a list the clause never purported to state.
+    if (
+      survivals.every((sv) =>
+        /\bincorporated\s+by\s+reference\b|\bin\s+accordance\s+with\s+(?:its|their)\s+terms\b/i.test(
+          sv.text,
+        ),
+      )
+    ) {
+      return null;
+    }
     const combined = expandSurvivalSectionRefs(ctx, survivals.map((s) => s.text).join("\n"));
     const missing = EXPECTED.filter(([, re]) => !re.test(combined)).map(([name]) => name);
     if (missing.length === 0) return null;

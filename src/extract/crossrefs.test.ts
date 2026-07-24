@@ -358,3 +358,39 @@ describe("cross-instrument references (disclosure schedules)", () => {
     );
   });
 });
+
+describe("tax-statute section numbering", () => {
+  const para2 = (text: string): DocumentTree =>
+    normalize({
+      type: "document",
+      sections: [
+        {
+          id: "",
+          heading: "Tax",
+          level: 1,
+          paragraphs: [{ id: "", runs: [{ id: "", text, start: 0, end: 0 }] }],
+          children: [],
+        },
+      ],
+    });
+  const unres = (t: string) =>
+    extractCrossRefs(para2(t), extractSections(para2(t)))
+      .filter((r) => r.unresolved)
+      .map((r) => r.raw_text);
+
+  it("carries a code-tied label to its later bare citations", () => {
+    // "Section 409A of the Internal Revenue Code" ties the label once; the
+    // heading "5. Section 409A." and the bare 280G cite follow from it.
+    expect(
+      unres(
+        "This Agreement is intended to comply with Section 409A of the Internal Revenue Code, and Section 280G of the Internal Revenue Code governs parachute payments. Section 409A applies to each installment, and Section 280G reductions are computed before the excise tax imposed by Section 4999.",
+      ),
+    ).toEqual([]);
+  });
+
+  it("still reports an ordinary dangling section reference", () => {
+    expect(unres("Payment terms are stated in Section 12 of this Agreement.")).toContain(
+      "Section 12",
+    );
+  });
+});
