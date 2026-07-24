@@ -599,6 +599,7 @@ const EASEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "RE-028",
+    version: "1.1.0",
     name: "Maintenance and repair allocation",
     description: "Easement should allocate maintenance and repair costs.",
     citation: easementLaw(),
@@ -608,7 +609,14 @@ const EASEMENT_RULES: Rule[] = [
     explanation:
       "Without explicit allocation, courts default to use-proportional or beneficiary-pays — frequent disputes.",
     recommendation: "Add 'Maintenance and Repair' with cost allocation and trigger events.",
-    present_patterns: [/maintenance\s+(and|or)\s+repair/i],
+    // An easement's maintenance allocation is as often "Maintenance and
+    // Restoration — the Grantee shall maintain the Easement Area … and restore
+    // the surface" as "maintenance and repair": admit the restoration/upkeep
+    // synonyms and the verb form "shall maintain the <area/improvements>".
+    present_patterns: [
+      /maintenance\s+(?:and|or)\s+(?:repair|restoration|upkeep)/i,
+      /(?:shall|must|will|agrees?\s+to)\s+maintain\b[^.]{0,40}\b(?:easement|premises|property|area|improvements|surface)/i,
+    ],
   }),
   presence({
     id: "RE-029",

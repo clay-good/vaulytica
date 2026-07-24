@@ -250,3 +250,26 @@ describe("Ground lease term & reversion in real wording (v1.1.0)", () => {
     );
   });
 });
+
+describe("RE-028 reads an easement's 'maintenance and restoration' (v1.1.0)", () => {
+  const EASEMENT_PB: Playbook = { id: "easement-agreement", version: "1.0.0" };
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Easement", body]), EASEMENT_PB);
+    const run = await runEngine({ rules: REAL_ESTATE_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("reads 'shall maintain the Easement Area and restore the surface'", async () => {
+    expect(
+      (
+        await run1("The Grantee shall maintain the Easement Area and restore the surface after any work.")
+      ).has("RE-028"),
+    ).toBe(false);
+  });
+
+  it("still fires when no maintenance allocation is present", async () => {
+    expect(
+      (await run1("The Grantee may use the Easement Area for utility purposes.")).has("RE-028"),
+    ).toBe(true);
+  });
+});
