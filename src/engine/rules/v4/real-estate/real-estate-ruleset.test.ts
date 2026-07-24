@@ -184,3 +184,40 @@ describe("RE-031 — the land-records covenant with a direct object (v1.1.0)", (
     expect(run.findings.map((f) => f.rule_id)).toContain("RE-031");
   });
 });
+
+describe("RE-038 — discriminatory covenants in their real wording (v1.1.0)", () => {
+  const CCR_PB_LOCAL: Playbook = { id: "ccrs", version: "1.0.0" };
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Covenant", body]), CCR_PB_LOCAL);
+    const run = await runEngine({ rules: REAL_ESTATE_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("fires on 'persons of African descent' and a religious restriction", async () => {
+    expect(
+      (
+        await run1(
+          "The premises shall not be conveyed to or occupied by persons of African descent.",
+        )
+      ).has("RE-038"),
+    ).toBe(true);
+    expect(
+      (await run1("No lot shall be occupied by any person of the Jewish faith.")).has("RE-038"),
+    ).toBe(true);
+  });
+
+  it("stays silent on a non-discrimination disclaimer and a clean use restriction", async () => {
+    expect(
+      (
+        await run1(
+          "This community does not discriminate on the basis of race, religion, or national origin.",
+        )
+      ).has("RE-038"),
+    ).toBe(false);
+    expect(
+      (await run1("No lot shall be used for commercial purposes; residential use only.")).has(
+        "RE-038",
+      ),
+    ).toBe(false);
+  });
+});

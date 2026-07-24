@@ -764,6 +764,7 @@ const CCR_RULES: Rule[] = [
   }),
   language({
     id: "RE-038",
+    version: "1.1.0",
     name: "Race / discriminatory covenant flagged",
     description:
       "Discriminatory covenants based on race, color, religion, sex, familial status, national origin, or disability are unenforceable (Shelley v. Kraemer; FHA 42 U.S.C. § 3604).",
@@ -774,8 +775,18 @@ const CCR_RULES: Rule[] = [
     ),
     playbooks: [RE_PLAYBOOK_CCR],
     bad_patterns: [
-      /(no|not).{0,40}(african|asian|black|hispanic|jewish|negro|persons\s+of\s+color)/is,
-      /restricted\s+to\s+(persons\s+of\s+the\s+)?caucasian/is,
+      // Racially/ethnically/religiously restrictive covenants are void under
+      // the Fair Housing Act (42 U.S.C. § 3604) and Shelley v. Kraemer, and
+      // modern statutes require a title reviewer to identify them for
+      // redaction. The prior patterns caught only a handful of group names
+      // within a 40-char window and no "of <group> descent/faith" form, so
+      // "persons of African descent" and "any person of the Jewish faith"
+      // slipped — the exact covenants that must be flagged. The window is
+      // widened and the protected-class vocabulary expanded to descent /
+      // ancestry / blood / extraction / faith / religion forms.
+      /\b(no|not|shall\s+not|nor)\b[^.]{0,90}\b(?:african|asian|black|hispanic|jewish|negro|caucasian|latino|latina|oriental|mongolian|semitic|persons?\s+of\s+colou?r|of\s+(?:the\s+)?(?:caucasian|white|negro|african|asian|hebrew|jewish|mongolian|malay)\s+(?:race|blood|descent|ancestry|extraction)|(?:african|asian|hebrew|mexican|chinese|japanese|jewish)\s+(?:descent|ancestry|origin|blood|extraction|faith|religion))\b/is,
+      /restricted\s+to\s+(?:persons\s+of\s+the\s+)?(?:caucasian|white)/is,
+      /(?:occupied|owned|used|conveyed|sold|leased)\b[^.]{0,80}\b(?:only\s+by|except\s+by)\b[^.]{0,40}(?:caucasian|white)/is,
     ],
     // The bad_patterns are proximity-only, so a modern fair-housing compliance
     // or repudiation clause ("occupancy shall not be denied to any person who
