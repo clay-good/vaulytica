@@ -141,3 +141,16 @@ describe("OBLI-003 — a statutory appointment power is not an ambiguous trigger
     ).toBeNull();
   });
 });
+
+describe("OBLI-001 — a passive clause naming its agent is not ambiguous (v1.1.0)", () => {
+  it("does not flag 'to be prepared by Petitioner's counsel'", () => {
+    expect(
+      OBLI001.check(
+        doc(
+          "Retirement",
+          "Respondent's retirement account shall be divided equally by a Qualified Domestic Relations Order to be prepared by Petitioner's counsel and submitted to the plan administrator.",
+        ),
+      ),
+    ).toBeNull();
+  });
+});

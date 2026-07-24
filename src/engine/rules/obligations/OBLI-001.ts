@@ -4,7 +4,7 @@ import { emit } from "../_helpers.js";
 /** OBLI-001 — Obligor identification quality (info). */
 export const rule: Rule = {
   id: "OBLI-001",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Obligor identification quality",
   category: "obligations",
   default_severity: "info",
@@ -16,14 +16,19 @@ export const rule: Rule = {
     // independently or jointly, as the wording dictates. Only flag
     // truly vague obligors: "the appropriate party", "the relevant
     // party", or an empty/missing obligor.
-    const ambiguous = ctx.extracted.obligations.filter((o) =>
-      // "the other party" is a precise counterparty reference in a bilateral
-      // agreement, not a vague obligor — dropped so a routine "the other party
-      // shall be notified" is not flagged. Only genuinely unidentified obligors
-      // (appropriate / relevant / responsible party, or empty) remain.
-      /^(the\s+appropriate\s+party|the\s+relevant\s+party|the\s+responsible\s+party|\s*)$/i.test(
-        o.obligor.trim(),
-      ),
+    const ambiguous = ctx.extracted.obligations.filter(
+      (o) =>
+        // "the other party" is a precise counterparty reference in a bilateral
+        // agreement, not a vague obligor — dropped so a routine "the other party
+        // shall be notified" is not flagged. Only genuinely unidentified obligors
+        // (appropriate / relevant / responsible party, or empty) remain.
+        /^(the\s+appropriate\s+party|the\s+relevant\s+party|the\s+responsible\s+party|\s*)$/i.test(
+          o.obligor.trim(),
+        ) &&
+        // A passive clause that NAMES its agent is not obligor-ambiguous:
+        // "shall be divided equally … by a QDRO to be prepared by
+        // Petitioner's counsel" states exactly who acts.
+        !/to\s+be\s+\w+(?:ed|en|n)\s+by\s+[A-Z]/.test(o.raw_text),
     );
     if (ambiguous.length === 0) return null;
     const first = ambiguous[0]!;
