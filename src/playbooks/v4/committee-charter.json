@@ -2,7 +2,7 @@
   "id": "committee-charter",
   "version": "1.0.0",
   "name": "Board Committee Charter (audit / comp / nominating)",
-  "description": "Charter for a board committee subject to NYSE / Nasdaq listing standards and SOX § 301. Selects the §6.B governance ruleset (GOV-051..GOV-060).",
+  "description": "Charter for a board committee subject to NYSE / Nasdaq listing standards and SOX \u00a7 301. Selects the \u00a76.B governance ruleset (GOV-051..GOV-060).",
   "match_features": {
     "title_keywords": [
       "committee charter",
@@ -18,20 +18,58 @@
       "whistleblower",
       "annual self-evaluation"
     ],
-    "negative_features": ["operating agreement", "bylaws"]
+    "negative_features": [
+      "operating agreement",
+      "bylaws"
+    ]
   },
   "expected_clauses": [],
   "expected_defined_terms": [],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "SOX",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["bylaws-corporation"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "bylaws-corporation"
+  ],
   "compliance_matrix_columns": [
-    "SOX § 301",
+    "SOX \u00a7 301",
     "Exchange Act Rule 10A-3",
-    "NYSE Listed Company Manual § 303A",
+    "NYSE Listed Company Manual \u00a7 303A",
     "Nasdaq Listing Rule 5605"
   ]
 }

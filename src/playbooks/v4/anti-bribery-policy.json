@@ -2,9 +2,13 @@
   "id": "anti-bribery-policy",
   "version": "1.0.0",
   "name": "Anti-Bribery / Anti-Corruption Policy (FCPA / UKBA)",
-  "description": "Anti-bribery policy under FCPA + UK Bribery Act + multi-jurisdiction baselines. Selects the §6.O ruleset (POL-006..POL-011).",
+  "description": "Anti-bribery policy under FCPA + UK Bribery Act + multi-jurisdiction baselines. Selects the \u00a76.O ruleset (POL-006..POL-011).",
   "match_features": {
-    "title_keywords": ["anti-bribery", "anti-corruption", "fcpa policy"],
+    "title_keywords": [
+      "anti-bribery",
+      "anti-corruption",
+      "fcpa policy"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "fcpa",
@@ -15,18 +19,58 @@
       "ukba",
       "facilitating payment"
     ],
-    "negative_features": ["aml", "insider trading", "lobbying"]
+    "negative_features": [
+      "aml",
+      "insider trading",
+      "lobbying"
+    ]
   },
   "expected_clauses": [],
   "expected_defined_terms": [],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "FCPA-UKBA",
-  "applicable_jurisdictions": ["US", "UK"],
-  "companion_playbooks": ["code-of-conduct"],
+  "applicable_jurisdictions": [
+    "US",
+    "UK"
+  ],
+  "companion_playbooks": [
+    "code-of-conduct"
+  ],
   "compliance_matrix_columns": [
-    "FCPA § 78dd anti-bribery",
+    "FCPA \u00a7 78dd anti-bribery",
     "Third-party due diligence",
     "Books & records / internal controls",
     "Facilitating payments",

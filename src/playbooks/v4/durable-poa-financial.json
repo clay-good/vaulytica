@@ -2,7 +2,7 @@
   "id": "durable-poa-financial",
   "version": "1.0.0",
   "name": "Durable Power of Attorney (Financial)",
-  "description": "Durable POA under UPOAA + state POA statutes with 'hot powers' specific grant. Per spec §6.N caveat: execution formalities cannot be verified from text alone (EST-060). Selects the §6.N ruleset (EST-031..EST-037).",
+  "description": "Durable POA under UPOAA + state POA statutes with 'hot powers' specific grant. Per spec \u00a76.N caveat: execution formalities cannot be verified from text alone (EST-060). Selects the \u00a76.N ruleset (EST-031..EST-037).",
   "match_features": {
     "title_keywords": [
       "durable power of attorney",
@@ -18,24 +18,66 @@
       "hot powers",
       "third-party reliance"
     ],
-    "negative_features": ["healthcare proxy", "advance directive", "trust"]
+    "negative_features": [
+      "healthcare proxy",
+      "advance directive",
+      "trust"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Principal", "Agent"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "Principal",
+    "Agent"
+  ],
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "UPOAA-STATE-POA",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["healthcare-poa"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "healthcare-poa"
+  ],
   "compliance_matrix_columns": [
-    "UPOAA § 110 principal + agent",
-    "§ 104 durability",
-    "§ 201 hot powers",
-    "§ 109 springing / immediate",
-    "§ 114 agent's duties",
-    "§§ 119–120 third-party reliance",
-    "§ 105 notarial + recording",
+    "UPOAA \u00a7 110 principal + agent",
+    "\u00a7 104 durability",
+    "\u00a7 201 hot powers",
+    "\u00a7 109 springing / immediate",
+    "\u00a7 114 agent's duties",
+    "\u00a7\u00a7 119\u2013120 third-party reliance",
+    "\u00a7 105 notarial + recording",
     "Execution-formality disclaimer (EST-060)"
   ]
 }

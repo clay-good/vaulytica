@@ -2,9 +2,13 @@
   "id": "aml-policy",
   "version": "1.0.0",
   "name": "Anti-Money-Laundering Policy",
-  "description": "AML / OFAC / BSA policy under FinCEN five-pillar rule + Corporate Transparency Act + state. Selects the §6.O ruleset (POL-012..POL-017).",
+  "description": "AML / OFAC / BSA policy under FinCEN five-pillar rule + Corporate Transparency Act + state. Selects the \u00a76.O ruleset (POL-012..POL-017).",
   "match_features": {
-    "title_keywords": ["aml", "anti-money-laundering", "bsa policy"],
+    "title_keywords": [
+      "aml",
+      "anti-money-laundering",
+      "bsa policy"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "fincen",
@@ -15,22 +19,59 @@
       "customer identification",
       "five pillars"
     ],
-    "negative_features": ["anti-bribery", "insider trading", "code of conduct"]
+    "negative_features": [
+      "anti-bribery",
+      "insider trading",
+      "code of conduct"
+    ]
   },
   "expected_clauses": [],
   "expected_defined_terms": [],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "BSA-FINCEN-OFAC",
-  "applicable_jurisdictions": ["US"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
   "companion_playbooks": [],
   "compliance_matrix_columns": [
     "BSA five-pillar program",
     "OFAC sanctions screening",
     "SAR (FinCEN 30-day)",
     "CIP + beneficial ownership",
-    "CTR ≥ $10,000",
+    "CTR \u2265 $10,000",
     "Recordkeeping 5 years"
   ]
 }

@@ -2,7 +2,7 @@
   "id": "charter-incorporation",
   "version": "1.0.0",
   "name": "Certificate / Articles of Incorporation",
-  "description": "Charter of a Delaware (or MBCA-modeled) corporation. Selects the §6.B governance ruleset (GOV-023..GOV-032).",
+  "description": "Charter of a Delaware (or MBCA-modeled) corporation. Selects the \u00a76.B governance ruleset (GOV-023..GOV-032).",
   "match_features": {
     "title_keywords": [
       "certificate of incorporation",
@@ -19,25 +19,64 @@
       "common stock",
       "preferred stock"
     ],
-    "negative_features": ["operating agreement", "limited liability company"]
+    "negative_features": [
+      "operating agreement",
+      "limited liability company"
+    ]
   },
   "expected_clauses": [],
   "expected_defined_terms": [],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "DGCL",
-  "applicable_jurisdictions": ["US-DE", "US"],
-  "companion_playbooks": ["bylaws-corporation"],
+  "applicable_jurisdictions": [
+    "US-DE",
+    "US"
+  ],
+  "companion_playbooks": [
+    "bylaws-corporation"
+  ],
   "compliance_matrix_columns": [
-    "DGCL § 102(a)(1)",
-    "DGCL § 102(a)(2)",
-    "DGCL § 102(a)(3)",
-    "DGCL § 102(a)(4)",
-    "DGCL § 102(a)(5)",
-    "DGCL § 102(b)(7)",
-    "DGCL § 145",
-    "DGCL § 228",
-    "DGCL § 242"
+    "DGCL \u00a7 102(a)(1)",
+    "DGCL \u00a7 102(a)(2)",
+    "DGCL \u00a7 102(a)(3)",
+    "DGCL \u00a7 102(a)(4)",
+    "DGCL \u00a7 102(a)(5)",
+    "DGCL \u00a7 102(b)(7)",
+    "DGCL \u00a7 145",
+    "DGCL \u00a7 228",
+    "DGCL \u00a7 242"
   ]
 }

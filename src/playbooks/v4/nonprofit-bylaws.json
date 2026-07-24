@@ -2,9 +2,12 @@
   "id": "nonprofit-bylaws",
   "version": "1.0.0",
   "name": "Nonprofit Bylaws (501(c)(3))",
-  "description": "Bylaws of a 501(c)(3) tax-exempt nonprofit corporation. Selects the §6.B governance ruleset (GOV-071..GOV-080).",
+  "description": "Bylaws of a 501(c)(3) tax-exempt nonprofit corporation. Selects the \u00a76.B governance ruleset (GOV-071..GOV-080).",
   "match_features": {
-    "title_keywords": ["nonprofit bylaws", "bylaws of"],
+    "title_keywords": [
+      "nonprofit bylaws",
+      "bylaws of"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "501(c)(3)",
@@ -13,19 +16,55 @@
       "charitable purposes",
       "conflict of interest"
     ],
-    "negative_features": ["operating agreement", "limited liability company"]
+    "negative_features": [
+      "operating agreement",
+      "limited liability company"
+    ]
   },
   "expected_clauses": [],
   "expected_defined_terms": [],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "IRC-501c3",
-  "applicable_jurisdictions": ["US"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
   "companion_playbooks": [],
   "compliance_matrix_columns": [
-    "IRC § 501(c)(3)",
-    "Treas. Reg. § 1.501(c)(3)-1(b)",
+    "IRC \u00a7 501(c)(3)",
+    "Treas. Reg. \u00a7 1.501(c)(3)-1(b)",
     "IRS Form 990 Part VI",
     "ABA Model Nonprofit Corp Act"
   ]

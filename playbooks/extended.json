@@ -80,7 +80,38 @@
     "expected_defined_terms": [
       "Declarant"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "STATE-ADVANCE-DIRECTIVE",
@@ -276,7 +307,38 @@
     },
     "expected_clauses": [],
     "expected_defined_terms": [],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "BSA-FINCEN-OFAC",
@@ -322,7 +384,38 @@
     },
     "expected_clauses": [],
     "expected_defined_terms": [],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "FCPA-UKBA",
@@ -787,7 +880,38 @@
     },
     "expected_clauses": [],
     "expected_defined_terms": [],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "DGCL",
@@ -969,7 +1093,38 @@
     },
     "expected_clauses": [],
     "expected_defined_terms": [],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "DGCL",
@@ -1020,7 +1175,38 @@
     },
     "expected_clauses": [],
     "expected_defined_terms": [],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "NYSE-NASDAQ-SOX",
@@ -1187,7 +1373,38 @@
     },
     "expected_clauses": [],
     "expected_defined_terms": [],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "IRS-FORM-990-IRC-4958",
@@ -1231,7 +1448,38 @@
     },
     "expected_clauses": [],
     "expected_defined_terms": [],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "SOX",
@@ -1529,7 +1777,38 @@
       "Cookies",
       "Consent"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "ePRIVACY-GDPR-CCPA",
@@ -1761,7 +2040,38 @@
     },
     "expected_clauses": [],
     "expected_defined_terms": [],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "SEC-IRS-DOL-SEDONA",
@@ -2166,7 +2476,38 @@
       "Principal",
       "Agent"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "UPOAA-STATE-POA",
@@ -2295,7 +2636,38 @@
     },
     "expected_clauses": [],
     "expected_defined_terms": [],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "EEOC-NLRA-FLSA",
@@ -4219,7 +4591,38 @@
     },
     "expected_clauses": [],
     "expected_defined_terms": [],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "IRC-501c3",

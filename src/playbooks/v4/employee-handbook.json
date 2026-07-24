@@ -2,9 +2,12 @@
   "id": "employee-handbook",
   "version": "1.0.0",
   "name": "Employee Handbook",
-  "description": "Employee handbook (scoped subset — at-will, EEO, wage/hour, leave, social media, acknowledgment). Selects the §6.F employment ruleset (EMP-045..EMP-050).",
+  "description": "Employee handbook (scoped subset \u2014 at-will, EEO, wage/hour, leave, social media, acknowledgment). Selects the \u00a76.F employment ruleset (EMP-045..EMP-050).",
   "match_features": {
-    "title_keywords": ["employee handbook", "personnel manual"],
+    "title_keywords": [
+      "employee handbook",
+      "personnel manual"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "at-will",
@@ -13,15 +16,56 @@
       "fmla",
       "acknowledgment of receipt"
     ],
-    "negative_features": ["offer letter", "executive employment agreement"]
+    "negative_features": [
+      "offer letter",
+      "executive employment agreement"
+    ]
   },
   "expected_clauses": [],
   "expected_defined_terms": [],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "EEOC-NLRA-FLSA",
-  "applicable_jurisdictions": ["US"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
   "companion_playbooks": [],
-  "compliance_matrix_columns": ["Title VII / EEOC", "FLSA", "FMLA", "NLRA § 7 (Stericycle, 2023)"]
+  "compliance_matrix_columns": [
+    "Title VII / EEOC",
+    "FLSA",
+    "FMLA",
+    "NLRA \u00a7 7 (Stericycle, 2023)"
+  ]
 }

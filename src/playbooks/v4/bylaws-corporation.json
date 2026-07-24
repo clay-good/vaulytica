@@ -2,9 +2,13 @@
   "id": "bylaws-corporation",
   "version": "1.0.0",
   "name": "Corporate Bylaws",
-  "description": "Bylaws of a Delaware (or MBCA-modeled) corporation. Selects the §6.B governance ruleset (GOV-001..GOV-012) plus the cross-applicable governance rules.",
+  "description": "Bylaws of a Delaware (or MBCA-modeled) corporation. Selects the \u00a76.B governance ruleset (GOV-001..GOV-012) plus the cross-applicable governance rules.",
   "match_features": {
-    "title_keywords": ["bylaws", "by-laws", "amended and restated bylaws"],
+    "title_keywords": [
+      "bylaws",
+      "by-laws",
+      "amended and restated bylaws"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "board of directors",
@@ -14,22 +18,62 @@
       "registered office",
       "indemnification"
     ],
-    "negative_features": ["operating agreement", "limited liability company", "partnership"]
+    "negative_features": [
+      "operating agreement",
+      "limited liability company",
+      "partnership"
+    ]
   },
   "expected_clauses": [],
   "expected_defined_terms": [],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "DGCL",
-  "applicable_jurisdictions": ["US-DE", "US"],
-  "companion_playbooks": ["charter-incorporation"],
+  "applicable_jurisdictions": [
+    "US-DE",
+    "US"
+  ],
+  "companion_playbooks": [
+    "charter-incorporation"
+  ],
   "compliance_matrix_columns": [
-    "DGCL § 109",
-    "DGCL § 141",
-    "DGCL § 211",
-    "DGCL § 216",
-    "DGCL § 222",
-    "DGCL § 145"
+    "DGCL \u00a7 109",
+    "DGCL \u00a7 141",
+    "DGCL \u00a7 211",
+    "DGCL \u00a7 216",
+    "DGCL \u00a7 222",
+    "DGCL \u00a7 145"
   ]
 }

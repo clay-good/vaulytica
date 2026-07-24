@@ -2,9 +2,13 @@
   "id": "code-of-conduct",
   "version": "1.0.0",
   "name": "Code of Conduct / Ethics",
-  "description": "Code of business conduct / ethics under NYSE 303A / Nasdaq 5610 / SOX § 406. Selects the §6.O ruleset (POL-001..POL-005).",
+  "description": "Code of business conduct / ethics under NYSE 303A / Nasdaq 5610 / SOX \u00a7 406. Selects the \u00a76.O ruleset (POL-001..POL-005).",
   "match_features": {
-    "title_keywords": ["code of conduct", "code of ethics", "code of business conduct"],
+    "title_keywords": [
+      "code of conduct",
+      "code of ethics",
+      "code of business conduct"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "directors",
@@ -14,19 +18,59 @@
       "ethical conduct",
       "compliance with law"
     ],
-    "negative_features": ["anti-bribery", "aml", "whistleblower"]
+    "negative_features": [
+      "anti-bribery",
+      "aml",
+      "whistleblower"
+    ]
   },
   "expected_clauses": [],
   "expected_defined_terms": [],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "NYSE-NASDAQ-SOX",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["whistleblower-policy", "coi-policy"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "whistleblower-policy",
+    "coi-policy"
+  ],
   "compliance_matrix_columns": [
     "NYSE 303A / Nasdaq 5610 scope",
-    "SOX § 406 financial-officer elements",
+    "SOX \u00a7 406 financial-officer elements",
     "Waiver disclosure (8-K)",
     "Reporting + non-retaliation",
     "Compliance with laws"

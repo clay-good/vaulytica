@@ -2,9 +2,13 @@
   "id": "advance-directive",
   "version": "1.0.0",
   "name": "Advance Directive / Living Will",
-  "description": "Advance directive / living will under state advance-directive statutes (e.g., CA Prob. § 4670; NY Pub. Health § 2980). Per spec §6.N caveat: execution formalities cannot be verified from text alone (EST-060). Selects the §6.N ruleset (EST-017..EST-023).",
+  "description": "Advance directive / living will under state advance-directive statutes (e.g., CA Prob. \u00a7 4670; NY Pub. Health \u00a7 2980). Per spec \u00a76.N caveat: execution formalities cannot be verified from text alone (EST-060). Selects the \u00a76.N ruleset (EST-017..EST-023).",
   "match_features": {
-    "title_keywords": ["advance directive", "living will", "advance health care directive"],
+    "title_keywords": [
+      "advance directive",
+      "living will",
+      "advance health care directive"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "declarant",
@@ -14,16 +18,57 @@
       "persistent vegetative",
       "organ donation"
     ],
-    "negative_features": ["healthcare proxy", "agent", "power of attorney"]
+    "negative_features": [
+      "healthcare proxy",
+      "agent",
+      "power of attorney"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Declarant"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "Declarant"
+  ],
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "STATE-ADVANCE-DIRECTIVE",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["healthcare-poa"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "healthcare-poa"
+  ],
   "compliance_matrix_columns": [
     "Declarant + capacity",
     "End-of-life preferences",

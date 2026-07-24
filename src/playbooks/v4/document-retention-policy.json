@@ -2,7 +2,7 @@
   "id": "document-retention-policy",
   "version": "1.0.0",
   "name": "Document Retention Policy",
-  "description": "Records retention policy under SEC + IRS + DOL + Sedona Principles + state. Selects the §6.O ruleset (POL-028..POL-032).",
+  "description": "Records retention policy under SEC + IRS + DOL + Sedona Principles + state. Selects the \u00a76.O ruleset (POL-028..POL-032).",
   "match_features": {
     "title_keywords": [
       "document retention",
@@ -11,16 +11,59 @@
       "records management"
     ],
     "required_clauses": [],
-    "distinguishing_phrases": ["retention schedule", "legal hold", "esi", "sedona", "destruction"],
-    "negative_features": ["aml", "anti-bribery", "code of conduct"]
+    "distinguishing_phrases": [
+      "retention schedule",
+      "legal hold",
+      "esi",
+      "sedona",
+      "destruction"
+    ],
+    "negative_features": [
+      "aml",
+      "anti-bribery",
+      "code of conduct"
+    ]
   },
   "expected_clauses": [],
   "expected_defined_terms": [],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "SEC-IRS-DOL-SEDONA",
-  "applicable_jurisdictions": ["US"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
   "companion_playbooks": [],
   "compliance_matrix_columns": [
     "Retention schedule",
