@@ -55,4 +55,24 @@ describe("PERS-009 — long non-solicit duration", () => {
     const ctx = buildContext(["X", "The term of this Agreement is three (3) years."]);
     expect(PERS_009.check(ctx)).toBeNull();
   });
+
+  it("does not read a material-contact lookback window as the restriction duration (v1.3.0)", () => {
+    // The 12-month restriction is the duration; the "two (2) years" is the
+    // historical material-contact window, not a 24-month non-solicit.
+    const ctx = buildContext([
+      "Non-Solicitation of Customers",
+      "During employment and for twelve (12) months after termination, the Employee shall not solicit the Company's customers with whom the Employee had material contact during the last two (2) years of employment.",
+    ]);
+    expect(PERS_009.check(ctx)).toBeNull();
+  });
+
+  it("still flags a genuine 24-month non-solicit that also cites a lookback", () => {
+    const ctx = buildContext([
+      "Non-Solicitation",
+      "For a period of twenty-four (24) months after termination, the Employee shall not solicit customers contacted during the last two (2) years of employment.",
+    ]);
+    const f = PERS_009.check(ctx);
+    expect(f).not.toBeNull();
+    expect(f?.title).toMatch(/24 months/);
+  });
 });

@@ -84,7 +84,7 @@ function durationToMonths(amount: string, unit: string): number | null {
 
 export const rule: Rule = {
   id: "PERS-009",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Long non-solicit duration",
   category: "personnel",
   default_severity: "warning",
@@ -142,6 +142,26 @@ export const rule: Rule = {
         while ((dm = re.exec(sentence)) !== null) {
           const months = durationToMonths(dm[1] ?? "", dm[2] ?? "");
           if (months == null || months <= 12) continue;
+          // A material-contact LOOKBACK window is not the restriction period:
+          // "shall not solicit customers with whom the Employee had material
+          // contact during the last two (2) years of employment" states a
+          // 12-month restriction and a 2-year HISTORICAL window, and reading
+          // the lookback as a 24-month non-solicit is a false positive. A
+          // "(last|preceding|prior …) N years" lead-in or an "N years of
+          // employment/service" tail marks the historical window.
+          const before = sentence.slice(Math.max(0, dm.index - 32), dm.index);
+          const after = sentence.slice(
+            dm.index + dm[0].length,
+            dm.index + dm[0].length + 24,
+          );
+          if (
+            /\b(?:last|past|preceding|prior|final|previous|recent|immediately\s+preceding)\s+$/i.test(
+              before,
+            ) ||
+            /^\s*of\s+(?:employment|service|the\s+(?:relationship|engagement))/i.test(after)
+          ) {
+            continue;
+          }
           hit = {
             months,
             raw: dm[0],
