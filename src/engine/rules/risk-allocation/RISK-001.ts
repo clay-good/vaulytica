@@ -4,14 +4,21 @@ import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
 /** RISK-001 — Indemnification clause present (warning). */
 export const rule: Rule = {
   id: "RISK-001",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Indemnification clause present",
   category: "risk-allocation",
   default_severity: "warning",
   description: "Detects indemnification language; fires when absent.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
-    const hit = firstParagraphMatch(ctx, /\bindemnif(?:y|ication|ies)\b|\bhold\s+harmless\b/i);
+    // "hold harmless" is routinely written with the indemnitee between the
+    // verb and the adverb — "hold Client harmless", "hold the other party
+    // harmless" — so requiring the two words adjacent reported a plainly
+    // present indemnity as absent. Allow up to four words in between (v1.1.0).
+    const hit = firstParagraphMatch(
+      ctx,
+      /\bindemnif(?:y|ication|ies)\b|\bhold\s+(?:[\w'-]+\s+){0,4}?harmless\b/i,
+    );
     if (hit) return null;
     return emit(ctx, rule, {
       title: "No indemnification clause detected",

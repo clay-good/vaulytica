@@ -193,7 +193,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "FIN-005",
-      "rule_version": "1.4.1"
+      "rule_version": "1.4.2"
     },
     {
       "elapsed_ms": 0,
@@ -400,7 +400,7 @@
       "finding_id": "RISK-001-s1-0",
       "fired": true,
       "rule_id": "RISK-001",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -953,7 +953,7 @@
       "explanation": "Most commercial contracts allocate risk through an indemnification clause. The absence leaves the parties to default tort and contract law for any third-party claims.",
       "id": "RISK-001-s1-0",
       "rule_id": "RISK-001",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No indemnification clause detected"
@@ -1197,7 +1197,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
-  "result_hash": "36a563fbdf46f2befe66728f293c48e7cc479ae7480e6364f2835a74f457b45c",
+  "result_hash": "db013f7fc54246c2befcd9b122b8eeeca1a0791e612905175dc1bd4141eabc62",
   "source_file": {
     "name": "bad-employment.docx",
     "sha256": "44e689f2fe4e8767866844995363dda962260fd37d54469e6d0fdf443136013c",

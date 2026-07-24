@@ -1,8 +1,12 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
 
+// The hyphenated compound ("forty-five") comes FIRST: alternation is ordered,
+// so listing the bare ten ("forty") before it would match only "forty" and
+// strand "-five (45) days", making "due within forty-five (45) days" read as
+// having no payment term (v1.4.2).
 const NUM_WORDS =
-  "(?:\\d{1,3}|zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|one\\s+hundred|hundred)";
+  "(?:\\d{1,3}|(?:twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)-(?:one|two|three|four|five|six|seven|eight|nine)|zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|one\\s+hundred|hundred)";
 // Capture the common formulations of payment terms. Each branch is
 // anchored on a recognizable verb / noun phrase so we don't catch
 // stray numbers. Real-world drafting we want to recognize:
@@ -68,7 +72,7 @@ const ANY_PAYMENT = /\b(fee|payment|invoice|amount\s+due|payable)\b/i;
 /** FIN-005 — Payment terms presence and parseability (warning). */
 export const rule: Rule = {
   id: "FIN-005",
-  version: "1.4.1",
+  version: "1.4.2",
   name: "Payment terms presence and parseability",
   category: "financial",
   default_severity: "warning",

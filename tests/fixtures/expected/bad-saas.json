@@ -191,7 +191,7 @@
       "finding_id": "FIN-005-s1-0",
       "fired": true,
       "rule_id": "FIN-005",
-      "rule_version": "1.4.1"
+      "rule_version": "1.4.2"
     },
     {
       "elapsed_ms": 0,
@@ -394,7 +394,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "RISK-001",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -834,7 +834,7 @@
       "explanation": "Commercial contracts should state when payment is due. 'Net 30' or 'due within X days of invoice' is the typical formulation. Without it, payment timing defaults to the governing-law rule.",
       "id": "FIN-005-s1-0",
       "rule_id": "FIN-005",
-      "rule_version": "1.4.1",
+      "rule_version": "1.4.2",
       "severity": "warning",
       "source_citations": [],
       "title": "No payment-term clause detected"
@@ -1121,7 +1121,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "eebf1baca2eeadb88f639142cbbf3893cd585255dd34289c3cc93a6edf848fd8",
+  "result_hash": "40697d4793c53b9e87ebcfa2c36f21b41ad86c50f1d386d892b224742c53a55c",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",

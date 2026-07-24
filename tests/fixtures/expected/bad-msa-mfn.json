@@ -188,7 +188,7 @@
       "finding_id": "FIN-005-s1-0",
       "fired": true,
       "rule_id": "FIN-005",
-      "rule_version": "1.4.1"
+      "rule_version": "1.4.2"
     },
     {
       "elapsed_ms": 0,
@@ -390,7 +390,7 @@
       "finding_id": "RISK-001-s1-0",
       "fired": true,
       "rule_id": "RISK-001",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -745,7 +745,7 @@
       "explanation": "Commercial contracts should state when payment is due. 'Net 30' or 'due within X days of invoice' is the typical formulation. Without it, payment timing defaults to the governing-law rule.",
       "id": "FIN-005-s1-0",
       "rule_id": "FIN-005",
-      "rule_version": "1.4.1",
+      "rule_version": "1.4.2",
       "severity": "warning",
       "source_citations": [],
       "title": "No payment-term clause detected"
@@ -796,7 +796,7 @@
       "explanation": "Most commercial contracts allocate risk through an indemnification clause. The absence leaves the parties to default tort and contract law for any third-party claims.",
       "id": "RISK-001-s1-0",
       "rule_id": "RISK-001",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No indemnification clause detected"
@@ -926,7 +926,7 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected msa-general (score 1). Title matched: \"master services agreement\", \"services agreement\". Distinguishing phrases: \"SOW\", \"Services\", \"Deliverables\", \"Provider\", \"Customer\".",
-  "result_hash": "bff2a96456c31b849f9bad62bab3390b6ac1d367a70eb314154080ed545ec95b",
+  "result_hash": "f40773518a1e0ee6216119e0b382ce7f88e81e1b7242088936b7dd745242713c",
   "source_file": {
     "name": "bad-msa-mfn.docx",
     "sha256": "6c82de5ccf5a22064c5da0ad551848546762dc4f0b2fecf127a52f93798fe73d",

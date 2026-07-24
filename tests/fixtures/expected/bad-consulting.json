@@ -187,7 +187,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "FIN-005",
-      "rule_version": "1.4.1"
+      "rule_version": "1.4.2"
     },
     {
       "elapsed_ms": 0,
@@ -394,7 +394,7 @@
       "finding_id": "RISK-001-s1-0",
       "fired": true,
       "rule_id": "RISK-001",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -855,7 +855,7 @@
       "explanation": "Most commercial contracts allocate risk through an indemnification clause. The absence leaves the parties to default tort and contract law for any third-party claims.",
       "id": "RISK-001-s1-0",
       "rule_id": "RISK-001",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No indemnification clause detected"
@@ -1020,7 +1020,7 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"consulting agreement\". Distinguishing phrases: \"Consultant\", \"advisory services\", \"deliverables\", \"independent contractor\", \"the Consulting Services\".",
-  "result_hash": "bc1a48c20bcd4a8819e13a0a5076eb8733a9292ffdd24bee5caae065681006ad",
+  "result_hash": "8baaefffd2d2bdee1e3b4721b0ef32b8bcaba5a433c099e53e8b12960a9f92ac",
   "source_file": {
     "name": "bad-consulting.docx",
     "sha256": "f66f070f4bb768dbc3f21ee6782418bca5ed64451d483dab533b345a8ddbe691",

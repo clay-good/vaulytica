@@ -115,3 +115,15 @@ describe("FIN-005 — 'no later than N days' is a payment window (v1.4.1)", () =
     ).not.toBeNull();
   });
 });
+
+describe("FIN-005 — hyphenated compound-number windows (v1.4.2)", () => {
+  it("reads 'due and payable within forty-five (45) days of the invoice date'", () => {
+    expect(
+      FIN_005.check(doc("Each invoice is due and payable within forty-five (45) days of the invoice date.")),
+    ).toBeNull();
+  });
+
+  it("reads 'payable within twenty-one (21) days of invoice'", () => {
+    expect(FIN_005.check(doc("Fees are payable within twenty-one (21) days of invoice."))).toBeNull();
+  });
+});

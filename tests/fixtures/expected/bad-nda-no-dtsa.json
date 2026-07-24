@@ -187,7 +187,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "FIN-005",
-      "rule_version": "1.4.1"
+      "rule_version": "1.4.2"
     },
     {
       "elapsed_ms": 0,
@@ -389,7 +389,7 @@
       "finding_id": "RISK-001-s1-0",
       "fired": true,
       "rule_id": "RISK-001",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -779,7 +779,7 @@
       "explanation": "Most commercial contracts allocate risk through an indemnification clause. The absence leaves the parties to default tort and contract law for any third-party claims.",
       "id": "RISK-001-s1-0",
       "rule_id": "RISK-001",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No indemnification clause detected"
@@ -917,7 +917,7 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "33877da7782f47d4f6e8b332b1a58068ae43ab399a4b0bbb4ac74da7d6b4e3f9",
+  "result_hash": "259bf5aad911d6d91b6cdca587d33e659c34a07c0fac70116773c5ac083a6ea3",
   "source_file": {
     "name": "bad-nda-no-dtsa.docx",
     "sha256": "6843694916dfef439851e84aca5bf213e35090b1a39f2b027f1e56d6382f2c29",

@@ -187,7 +187,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "FIN-005",
-      "rule_version": "1.4.1"
+      "rule_version": "1.4.2"
     },
     {
       "elapsed_ms": 0,
@@ -388,7 +388,7 @@
       "finding_id": "RISK-001-s1-0",
       "fired": true,
       "rule_id": "RISK-001",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -891,7 +891,7 @@
       "explanation": "Most commercial contracts allocate risk through an indemnification clause. The absence leaves the parties to default tort and contract law for any third-party claims.",
       "id": "RISK-001-s1-0",
       "rule_id": "RISK-001",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "info",
       "source_citations": [],
       "title": "No indemnification clause detected"
@@ -900,7 +900,7 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\", \"Recipient\", \"Confidential Information\".",
-  "result_hash": "529b48facc853fabb389521613f1d5191908da7d33c8615e9c1e4aadd20de1f2",
+  "result_hash": "f292a574d6a01637ab3db4957952f40f23f04eddeb6c17b5a51756a5e7cd12e2",
   "source_file": {
     "name": "bad-nda-residuals.docx",
     "sha256": "622200c84f9ee83eb9c5de968c4b2521039686489a1ccd0a460a268f812b7e12",

@@ -190,7 +190,7 @@
       "finding_id": "FIN-005-s1-0",
       "fired": true,
       "rule_id": "FIN-005",
-      "rule_version": "1.4.1"
+      "rule_version": "1.4.2"
     },
     {
       "elapsed_ms": 0,
@@ -391,7 +391,7 @@
       "finding_id": "RISK-001-s1-0",
       "fired": true,
       "rule_id": "RISK-001",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -747,7 +747,7 @@
       "explanation": "Most commercial contracts allocate risk through an indemnification clause. The absence leaves the parties to default tort and contract law for any third-party claims.",
       "id": "RISK-001-s1-0",
       "rule_id": "RISK-001",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "critical",
       "source_citations": [],
       "title": "No indemnification clause detected"
@@ -817,7 +817,7 @@
       "explanation": "Commercial contracts should state when payment is due. 'Net 30' or 'due within X days of invoice' is the typical formulation. Without it, payment timing defaults to the governing-law rule.",
       "id": "FIN-005-s1-0",
       "rule_id": "FIN-005",
-      "rule_version": "1.4.1",
+      "rule_version": "1.4.2",
       "severity": "warning",
       "source_citations": [],
       "title": "No payment-term clause detected"
@@ -981,7 +981,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected saas-customer (score 0.9). Title matched: \"subscription agreement\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"uptime\".",
-  "result_hash": "4ffce102ac55acfcf8a7ac082006e711a6b0da7e50ea08e68a274da3a7d97308",
+  "result_hash": "e017d21448519064832ed239e5de39e98bfb8d2c349b74ecd5193e4b34b51b52",
   "source_file": {
     "name": "bad-saas-suspension.docx",
     "sha256": "9afd9de44c9b6a123f62c53a81c06b34ec7a515c4e5519fc63b2bc69223ac49b",

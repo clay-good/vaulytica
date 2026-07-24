@@ -187,7 +187,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "FIN-005",
-      "rule_version": "1.4.1"
+      "rule_version": "1.4.2"
     },
     {
       "elapsed_ms": 0,
@@ -388,7 +388,7 @@
       "finding_id": "RISK-001-s1-0",
       "fired": true,
       "rule_id": "RISK-001",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -798,7 +798,7 @@
       "explanation": "Most commercial contracts allocate risk through an indemnification clause. The absence leaves the parties to default tort and contract law for any third-party claims.",
       "id": "RISK-001-s1-0",
       "rule_id": "RISK-001",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No indemnification clause detected"
@@ -893,7 +893,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.9). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"exempt\", \"Employee\".",
-  "result_hash": "684f7ca22ec5e39ade1f4839243f2e753daf3ba392719d2ff94f451e8f9bd8df",
+  "result_hash": "f7e381f66279e49f4910bcc1b26ad47a0e917366d7c3a04e2fd2c2f879bd99c1",
   "source_file": {
     "name": "bad-employment-choice-of-law.docx",
     "sha256": "432c209852332e09cdc68eec7a183f61c5da1fa8aafe36b92e3b8bf6fd2e6c26",
