@@ -145,3 +145,31 @@ describe("v4 Privacy-extended — failure cases", () => {
     expect(run.findings.some((f) => f.rule_id === "PRV-039")).toBe(true);
   });
 });
+
+describe("PRV-005 — the CCPA opt-out requires a California nexus (v1.1.0)", () => {
+  const COOKIE_PB_LOCAL: Playbook = { id: "cookie-notice", version: "1.0.0" };
+
+  it("does not fire on a German cookie notice governed by the GDPR and TTDSG", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Consent",
+        "We place cookies only after you give consent through our cookie banner, in accordance with Article 6(1)(a) GDPR and § 25 TTDSG.",
+      ]),
+      COOKIE_PB_LOCAL,
+    );
+    const run = await runEngine({ rules: PRIVACY_EXTENDED_RULES, ctx, source_file: SRC });
+    expect(run.findings.map((f) => f.rule_id)).not.toContain("PRV-005");
+  });
+
+  it("still fires on a California notice with no opt-out mechanism", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Consent",
+        "We use advertising cookies. This notice is provided to California residents under the CCPA.",
+      ]),
+      COOKIE_PB_LOCAL,
+    );
+    const run = await runEngine({ rules: PRIVACY_EXTENDED_RULES, ctx, source_file: SRC });
+    expect(run.findings.map((f) => f.rule_id)).toContain("PRV-005");
+  });
+});

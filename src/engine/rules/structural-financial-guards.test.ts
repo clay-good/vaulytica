@@ -233,3 +233,22 @@ describe("STRUCT-018 — decimal schedule designators (v1.1.0)", () => {
     expect(STRUCT018.check(ctx)).not.toBeNull();
   });
 });
+
+describe("STRUCT-003 — a published notice is issued, not signed (v1.5.0)", () => {
+  it("accepts a cookie notice carrying a 'Last updated' stamp", () => {
+    const ctx = buildContext(
+      ["Cookie Notice", "Last updated: March 3, 2027"],
+      ["About", "This Cookie Notice explains how we use cookies on our website."],
+      ["Consent", "We place non-essential cookies only after you give consent."],
+    );
+    expect(STRUCT003.check(ctx)).toBeNull();
+  });
+
+  it("an unsigned agreement with only an 'Effective Date:' line still fires", () => {
+    const ctx = buildContext(
+      ["Services Agreement", "Effective Date: March 3, 2027"],
+      ["Services", "Vendor shall provide the Services described in Exhibit A."],
+    );
+    expect(STRUCT003.check(ctx)).not.toBeNull();
+  });
+});

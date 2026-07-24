@@ -120,6 +120,7 @@ const COOKIE_NOTICE_RULES: Rule[] = [
   }),
   presence({
     id: "PRV-005",
+    version: "1.1.0",
     name: "CCPA / CPRA opt-out (Sale / Share / Cross-context targeted advertising)",
     description:
       "Cookie notice for CCPA / CPRA-covered businesses must explain the right to opt out of sale / share / cross-context targeted advertising (GPC support).",
@@ -131,6 +132,16 @@ const COOKIE_NOTICE_RULES: Rule[] = [
       "CCPA § 1798.135 + CPRA + CPPA regulations require a 'Do Not Sell or Share My Personal Information' link, recognition of the Global Privacy Control (GPC) signal, and disclosure of cross-context targeted advertising.",
     recommendation:
       "Add a 'Do Not Sell or Share' link, an explanation of GPC processing, and treatment of cross-context targeted advertising.",
+    // CCPA/CPRA reaches California consumers. A German cookie notice
+    // governed by the GDPR and the TTDSG is not missing a "Do Not Sell"
+    // link — the same inapplicable-regime class as SET-003's § 1542 waiver.
+    applicable_if: [
+      /\bcalifornia\b/i,
+      /\bCCPA\b/,
+      /\bCPRA\b/,
+      /\bUnited\s+States\b/i,
+      /,\s*CA\s+\d{5}/,
+    ],
     present_patterns: [
       /(do\s+not\s+sell|do\s+not\s+share)/i,
       /(opt.?out|opt\s+out)/i,

@@ -48,6 +48,14 @@ const DATED_ADOPTION =
 const DELIVERY_RECITAL =
   /\bare\s+delivered\s+by\b[^;]{0,120}?\bpursuant\s+to\b|\bis\s+delivered\s+pursuant\s+to\b/i;
 
+// A PUBLISHED notice (cookie notice, privacy policy, terms page) is issued,
+// not signed — its "Last updated: <date>" line is the publication stamp that
+// stands in for execution. Deliberately narrow to the revision-stamp wording:
+// "Effective Date:" appears on plenty of signed contracts, and accepting it
+// would silence the critical finding on a genuinely unsigned agreement.
+const PUBLICATION_STAMP =
+  /\blast\s+(?:updated|revised|modified|amended)\s*:?\s*[A-Z][a-z]+\s+\d{1,2},\s+\d{4}/i;
+
 /**
  * STRUCT-003 — Signature block present (critical).
  *
@@ -69,7 +77,7 @@ const DELIVERY_RECITAL =
  */
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",
@@ -112,7 +120,10 @@ export const rule: Rule = {
         // Self-sufficient: a dated adoption recital is the complete
         // execution of an adopted instrument; a delivery recital is the
         // complete execution context of a delivered one.
-        if (!certified && (DATED_ADOPTION.test(text) || DELIVERY_RECITAL.test(text))) {
+        if (
+          !certified &&
+          (DATED_ADOPTION.test(text) || DELIVERY_RECITAL.test(text) || PUBLICATION_STAMP.test(text))
+        ) {
           certified = true;
           signals += 2;
         }
