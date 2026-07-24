@@ -142,6 +142,12 @@
     {
       "elapsed_ms": 0,
       "fired": false,
+      "rule_id": "DARK-011",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
       "rule_id": "FIN-001",
       "rule_version": "1.1.0"
     },
@@ -1100,7 +1106,7 @@
   "playbook_id": "lease-commercial-multitenant",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected lease-commercial-multitenant (score 0.9). Title matched: \"office lease\". Distinguishing phrases: \"Landlord\", \"Tenant\", \"Premises\", \"Common Area\", \"Rentable Square Feet\", \"Base Rent\", \"Operating Expenses\".",
-  "result_hash": "14fa9d3472dbffb3e7503dabc85878c4c9c7e9937d6bba8e0c0999bd070f1c89",
+  "result_hash": "549987adc0fe8369e4ee2dec9987f8e3abc6508cad965143fe2a10cc661e898c",
   "source_file": {
     "name": "bad-lease.docx",
     "sha256": "b9f12348ac5e0f56fe223c8e264370bf1159ebafc2e1c7e1fdb5a811ed1eea17",
