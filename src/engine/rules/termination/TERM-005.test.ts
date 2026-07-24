@@ -105,3 +105,29 @@ describe("the lease surrender consequence (v1.3.0)", () => {
     expect(TERM_005.check(ctx)).toBeNull();
   });
 });
+
+describe("the survival clause is an effect of termination (v1.4.0)", () => {
+  it("reads 'Sections 3-7 shall survive termination of this Agreement'", () => {
+    const ctx = buildContext([
+      "Survival",
+      "Sections 3, 4, and 7 shall survive termination of this Agreement.",
+    ]);
+    expect(TERM_005.check(ctx)).toBeNull();
+  });
+
+  it("reads 'the confidentiality obligations survive the expiration or termination'", () => {
+    const ctx = buildContext([
+      "Term",
+      "The confidentiality obligations survive the expiration or termination of this Agreement for three (3) years.",
+    ]);
+    expect(TERM_005.check(ctx)).toBeNull();
+  });
+
+  it("does not read a non-termination 'survive' as an effect clause", () => {
+    const ctx = buildContext([
+      "Term",
+      "Either party may terminate this Agreement for convenience. The brand is expected to survive the market downturn for years to come.",
+    ]);
+    expect(TERM_005.check(ctx)).not.toBeNull();
+  });
+});

@@ -17,6 +17,11 @@ const TERMINATION_TRIGGER = String.raw`(?:up)?on\s+(?:the\s+)?(?:any\s+)?(?:expi
  * "surrender" is the canonical lease wind-down consequence — "Upon expiration
  * or termination, Tenant shall surrender the Premises" is a commercial lease's
  * effect-of-termination clause, and its absence made the rule report none.
+ * "survive"/"survival" is the paradigmatic effect-of-termination statement —
+ * this rule's own explanation names "the rights and obligations that survive"
+ * as the first thing such a clause spells out, yet a bare survival clause
+ * ("Sections 3-7 shall survive termination of this Agreement") was reported as
+ * having no effect-of-termination clause at all.
  */
 const CONSEQUENCE = String.raw`ceases?|cease|return|destroy|delete|purge|transition|export|refund|revert|discontinue|surrenders?|wind[\s-]down`;
 
@@ -44,14 +49,21 @@ const EFFECT_OF_TERMINATION = new RegExp(
     // `\w*` on the consequence: the conditional form conjugates its verb
     // ("the deposit shall be returnED") and a bare \b-wrapped stem rejects
     // every inflection.
-    String.raw`|\bif\s+[^.]{0,80}?\bterminat(?:es|ed)\b[^.]{0,160}?\b(?:${CONSEQUENCE})\w*`,
+    String.raw`|\bif\s+[^.]{0,80}?\bterminat(?:es|ed)\b[^.]{0,160}?\b(?:${CONSEQUENCE})\w*` +
+    // A survival clause is the paradigmatic effect-of-termination statement —
+    // "Sections 3 through 7 shall survive termination of this Agreement." It
+    // takes termination as a bare object of "survive", not "UPON termination",
+    // so the trigger branches above (which require the "(up)on" lead-in) never
+    // matched it. This branch pairs the survive verb / "survival" heading with
+    // a nearby termination or expiration reference.
+    String.raw`|\bsurviv(?:e|es|al)\b[^.]{0,60}\b(?:termination|expiration|expiry|this\s+Agreement)\b`,
   "i",
 );
 
 /** TERM-005 — Effect of termination clause present (warning). */
 export const rule: Rule = {
   id: "TERM-005",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Effect of termination clause",
   category: "termination",
   default_severity: "warning",
