@@ -116,6 +116,18 @@ describe("FIN-005 — 'no later than N days' is a payment window (v1.4.1)", () =
   });
 });
 
+describe("FIN-005 — a royalty payment window (v1.4.4)", () => {
+  it("reads 'Royalties are payable within thirty (30) days after the end of each quarter'", () => {
+    expect(
+      FIN_005.check(
+        doc(
+          "The Licensee shall pay the Licensor a royalty of fifteen percent (15%) of net receipts. Royalties are payable within thirty (30) days after the end of each calendar quarter.",
+        ),
+      ),
+    ).toBeNull();
+  });
+});
+
 describe("FIN-005 — payment at the Closing event (v1.4.3)", () => {
   it("reads 'the Purchase Price … payable in cash at the Closing'", () => {
     expect(
