@@ -360,4 +360,38 @@ describe("BAA defect rules catch the pattern's real form (v1.1.0)", () => {
       ).has("BAA-042"),
     ).toBe(false);
   });
+
+  it("BAA-037 reads an 'entered into as of <date>' / 'effective on' preamble (v1.1.0)", async () => {
+    expect(
+      (
+        await run1(
+          "Business Associate Agreement",
+          "This Business Associate Agreement is entered into as of December 1, 2026, and is effective on the date above.",
+        )
+      ).has("BAA-037"),
+    ).toBe(false);
+    expect((await run1("BAA", "This Agreement governs PHI handling.")).has("BAA-037")).toBe(true);
+  });
+
+  it("BAA-004 reads 'report to THE Covered Entity any use or disclosure' (v1.1.0)", async () => {
+    expect(
+      (
+        await run1(
+          "Reporting",
+          "The Business Associate shall report to the Covered Entity any use or disclosure of PHI not permitted by this Agreement, and any breach of unsecured PHI.",
+        )
+      ).has("BAA-004"),
+    ).toBe(false);
+  });
+
+  it("BAA-043 reads 'the protections of this Agreement continue' as survival (v1.2.0)", async () => {
+    expect(
+      (
+        await run1(
+          "Return or Destruction",
+          "Upon termination, if return or destruction is infeasible, the protections of this Agreement continue for as long as the Business Associate retains the PHI.",
+        )
+      ).has("BAA-043"),
+    ).toBe(false);
+  });
 });

@@ -50,9 +50,14 @@ const V2_BASELINE_GZIPPED_KB = 165;
  * grew from 5 to 36 primary-source-verified state nodes (statute summaries +
  * citations are real product data shipped in the lazy engine chunk; measured
  * total ~805 KB) — the margin covers the remaining states of the 50-state
- * sweep without re-raising every wave.
+ * sweep without re-raising every wave. Raised to +665 as a wave of
+ * false-positive-precision work widened many detector regexes (payment-term,
+ * limitation-of-liability, effect-of-termination, governing-law/venue
+ * extraction, BAA clause phrasings): the added alternations are a few hundred
+ * bytes gzipped in the lazy engine chunk (measured total ~825 KB) and the
+ * small margin keeps the guard from flaking on a marginally larger CI build.
  */
-const V3_BUDGET_GZIPPED_KB = V2_BASELINE_GZIPPED_KB + 660;
+const V3_BUDGET_GZIPPED_KB = V2_BASELINE_GZIPPED_KB + 665;
 /** Eager-entry budget (first-paint contribution). */
 const EAGER_ENTRY_GZIPPED_KB = 50;
 

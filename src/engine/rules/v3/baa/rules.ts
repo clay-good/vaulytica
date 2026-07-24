@@ -85,6 +85,7 @@ export const BAA_RULES: Rule[] = [
 
   presence({
     id: "BAA-004",
+    version: "1.1.0",
     name: "Report improper uses or disclosures",
     description:
       "BAA must require BA to report to the covered entity any use or disclosure not provided for by the contract.",
@@ -97,7 +98,11 @@ export const BAA_RULES: Rule[] = [
     recommendation:
       "Add: 'Business Associate shall report to Covered Entity any use or disclosure of PHI not provided for by this Agreement.'",
     present_patterns: [
-      /(report\s+(to|the)\s+covered\s+entity|notify\s+covered\s+entity).*?(use|disclosure|breach|incident)/i,
+      // "report to Covered Entity" and "report to THE Covered Entity" are the
+      // same obligation; the original required the article to be absent, so
+      // the ordinary "report to the Covered Entity any use or disclosure …"
+      // read as missing.
+      /(report\s+(?:to\s+)?(?:the\s+)?covered\s+entity|notify\s+(?:the\s+)?covered\s+entity).*?(use|disclosure|breach|incident)/i,
     ],
   }),
 
@@ -688,6 +693,7 @@ export const BAA_RULES: Rule[] = [
 
   presence({
     id: "BAA-037",
+    version: "1.1.0",
     name: "Effective date present",
     description: "BAA should state an effective date.",
     citation: "45 C.F.R. § 164.504(e)",
@@ -696,7 +702,15 @@ export const BAA_RULES: Rule[] = [
     explanation:
       "An effective date anchors the timing rules in the BAA (term, breach windows, termination).",
     recommendation: "Add an 'Effective Date' clause near the preamble.",
-    present_patterns: [/effective\s+date/i],
+    // The date is as often stated without the literal phrase "Effective Date":
+    // the preamble's "entered into as of December 1, 2026" and a body clause's
+    // "effective as of / on the date above" both anchor the timing rules, so
+    // requiring the exact phrase warned "no effective date" on a dated BAA.
+    present_patterns: [
+      /effective\s+date/i,
+      /effective\s+(?:as\s+of|on)\b/i,
+      /(?:entered\s+into|dated|made|executed)\s+as\s+of\s+\w/i,
+    ],
     default_severity: "warning",
   }),
 
@@ -797,7 +811,7 @@ export const BAA_RULES: Rule[] = [
 
   presence({
     id: "BAA-043",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Survival of HIPAA obligations after termination",
     description: "BAA should state that HIPAA-related obligations survive termination.",
     citation: "45 C.F.R. § 164.504(e)(2)(ii)(I)",
@@ -815,6 +829,10 @@ export const BAA_RULES: Rule[] = [
     present_patterns: [
       /survive\s+(the\s+)?termination|survival/i,
       /extend\s+the\s+protections\s+of\s+this\s+(?:BAA|Agreement)/i,
+      // Same mechanism, stated as the protections CONTINUING / remaining
+      // rather than being "extended": "the protections of this Agreement
+      // continue for as long as the Business Associate retains the PHI".
+      /protections\s+of\s+this\s+(?:BAA|Agreement)\s+(?:continue|survive|remain)/i,
     ],
     default_severity: "warning",
   }),
