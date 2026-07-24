@@ -83,7 +83,22 @@ const STATUTE_LABEL_DECLARATION =
 // broken cross-reference to a section printed two lines above it. The number
 // must be followed by a capitalized clause title, so a paragraph opening with a
 // list marker or an amount ("5,000") is not mistaken for a section.
-const LEADING_SECTION_RE = /^\s*(\d+(?:\.\d+)*)\.\s+[A-Z(]/;
+//
+// The optional "Section" / "Sec." lead-in captures the bylaws / contract
+// heading form "Section 2.1. Annual Meeting": there the number carries its own
+// "Section" word, so the bare-number pattern never registered it and every one
+// of those headings was BOTH unregistered AND re-read as a broken reference to
+// itself (a clean set of bylaws drew a dozen unresolved-reference findings).
+const LEADING_SECTION_RE = /^\s*(?:(?:Section|Sec\.?|§)\s+)?(\d+(?:\.\d+)*)\.\s+[A-Z(]/;
+
+// The ingester keeps an article heading and its FIRST subsection in one
+// paragraph — "ARTICLE II — STOCKHOLDERS Section 2.1. Annual Meeting. …" — so
+// "Section 2.1" sits after the article title and `LEADING_SECTION_RE` (which
+// anchors at the paragraph start) never registered it, leaving the first
+// subsection of every article reported as a broken reference to itself. This
+// captures that section number where it trails the article heading.
+const ARTICLE_THEN_SECTION_RE =
+  /^\s*(?:ARTICLE|Article)\s+[IVXLCDM\d]+\b[A-Za-z\s—–-]*?\b(?:Section|Sec\.?|§)\s+(\d+(?:\.\d+)*)\.\s+[A-Z]/;
 
 // Bylaws style writes the multi-level number with NO trailing period —
 // "7.1 Exclusive Forum. Unless …" — so LEADING_SECTION_RE never registered
@@ -119,17 +134,26 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
     const a = LEADING_ARTICLE_RE.exec(ctx.text);
     const aNorm = a ? normalizeLabel(`article ${a[1]!}`) : undefined;
     if (aNorm && !labelIndex.has(aNorm)) labelIndex.set(aNorm, ctx.paragraph.id);
+    // A first subsection sharing the article-heading paragraph.
+    const ats = ARTICLE_THEN_SECTION_RE.exec(ctx.text);
+    const atsNorm = ats ? normalizeLabel(ats[1]!) : undefined;
+    if (atsNorm && !labelIndex.has(atsNorm)) labelIndex.set(atsNorm, ctx.paragraph.id);
   });
 
   forEachParagraph(tree, (ctx) => {
     const leadingArticle = LEADING_ARTICLE_RE.exec(ctx.text);
+    const leadingSection = LEADING_SECTION_RE.exec(ctx.text);
+    const articleThenSection = ARTICLE_THEN_SECTION_RE.exec(ctx.text);
     REF_RE.lastIndex = 0;
     let m: RegExpExecArray | null;
     while ((m = REF_RE.exec(ctx.text)) !== null) {
       const keyword = m[1] ?? "";
-      // The paragraph-leading article heading is the article's declaration,
-      // not a reference into the outline.
+      // The paragraph-leading article / section heading is the clause's own
+      // declaration ("Section 2.1. Annual Meeting."), not a reference into the
+      // outline — reading it as one reported every heading as a broken ref.
       if (leadingArticle && m.index < leadingArticle[0].length) continue;
+      if (leadingSection && m.index < leadingSection[0].length) continue;
+      if (articleThenSection && m.index < articleThenSection[0].length) continue;
       // Skip external statutory citations — a reference into another
       // authority's numbering, not this document's outline.
       const after = ctx.text.slice(m.index + m[0].length);

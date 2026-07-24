@@ -394,6 +394,27 @@ describe("tax-statute section numbering", () => {
     );
   });
 
+  it("registers 'Section X.Y. Title' headings so they are not broken self-references", () => {
+    // Bylaws-style headings carry the "Section" word: "Section 2.2. Special
+    // Meetings." — the heading is a declaration, not a broken reference.
+    expect(
+      unres(
+        "Section 2.2. Special Meetings. Special meetings may be called by the Board.",
+      ),
+    ).toEqual([]);
+  });
+
+  it("registers a first subsection sharing the article-heading paragraph", () => {
+    // The ingester keeps "ARTICLE II — STOCKHOLDERS Section 2.1. Annual
+    // Meeting." in one paragraph; the trailing "Section 2.1" is still a
+    // declaration, not an unresolved reference.
+    expect(
+      unres(
+        "ARTICLE II — STOCKHOLDERS Section 2.1. Annual Meeting. The annual meeting shall be held each year.",
+      ),
+    ).toEqual([]);
+  });
+
   it("treats a statutory qualifier that PRECEDES the section as external", () => {
     // "Treasury Regulations under Section 704(b)" / "the Internal Revenue Code
     // pursuant to Section 409A" put the Code/Regulations noun before the

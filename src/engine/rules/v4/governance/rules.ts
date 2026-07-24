@@ -58,6 +58,7 @@ const compound = (s: Omit<V4CompoundSpec, "category">): Rule =>
 const BYLAWS_RULES: Rule[] = [
   presence({
     id: "GOV-001",
+    version: "1.1.0",
     name: "Bylaws adoption / amendment authority stated",
     description:
       "Bylaws must state who may adopt and amend them (board, stockholders, or both) per DGCL § 109 / MBCA § 10.20.",
@@ -72,6 +73,10 @@ const BYLAWS_RULES: Rule[] = [
     present_patterns: [
       /amend(ed|ment)?\s+(of|to)?\s*(these\s+)?bylaws/i,
       /repeal.{0,30}(these\s+)?bylaws/i,
+      // The authority is as often stated bylaws-first — "These Bylaws may be
+      // amended [or repealed] by the Board of Directors or by the
+      // stockholders" — which the amend-first branches missed.
+      /(these\s+)?bylaws\b[^.]{0,40}\b(?:amend|repeal|alter|restat)\w*/i,
     ],
   }),
   presence({
