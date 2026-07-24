@@ -233,3 +233,52 @@ describe("MSA-deep ruleset — determinism", () => {
     expect(a.result_hash).toBe(b.result_hash);
   });
 });
+
+describe("MSA-010 / MSA-029 — broad-form indemnity in its real wording (v1.1.0)", () => {
+  const run1 = async (body: string, pb: Playbook) => {
+    const ctx: RuleContext = { ...buildContext(["Indemnity", body]), playbook: pb };
+    const run = await runEngine({ rules: MSA_DEEP_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("MSA-010 fires on a NY 'in whole or in part' indemnity naming the party", async () => {
+    expect(
+      (
+        await run1(
+          "Governed by New York law. Vendor shall indemnify Customer for all claims caused in whole or in part by the negligence of Customer.",
+          VENDOR,
+        )
+      ).has("MSA-010"),
+    ).toBe(true);
+  });
+
+  it("MSA-010 is silent on a NY limited indemnity and on a non-NY document", async () => {
+    expect(
+      (
+        await run1(
+          "Governed by New York law. Vendor shall indemnify Customer only to the extent of Vendor's own negligence.",
+          VENDOR,
+        )
+      ).has("MSA-010"),
+    ).toBe(false);
+    expect(
+      (
+        await run1(
+          "Governed by California law. Vendor shall indemnify Customer in whole or in part.",
+          VENDOR,
+        )
+      ).has("MSA-010"),
+    ).toBe(false);
+  });
+
+  it("MSA-029 fires on a Texas 'in whole or in part' indemnity", async () => {
+    expect(
+      (
+        await run1(
+          "Governed by the laws of Texas. Contractor shall indemnify Owner from liability arising in whole or in part from Owner's own negligence.",
+          VENDOR,
+        )
+      ).has("MSA-029"),
+    ).toBe(true);
+  });
+});

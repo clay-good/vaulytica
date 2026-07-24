@@ -339,6 +339,7 @@ export const MSA_DEEP_RULES: Rule[] = [
   }),
   language({
     id: "MSA-010",
+    version: "1.1.0",
     name: "New York Gen. Oblig. § 5-322.1 anti-indemnity flag",
     description:
       "Flags a broad indemnification for negligence in a construction-related MSA governed by New York law — void per N.Y. Gen. Oblig. § 5-322.1.",
@@ -353,6 +354,13 @@ export const MSA_DEEP_RULES: Rule[] = [
     bad_patterns: [
       /(?:indemnif\w+\s+(?:and\s+hold\s+harmless\s+)?).{0,200}(?:against\s+all\s+claims|for\s+any\s+and\s+all\s+(?:claims|losses))[^.]{0,200}(?:including|even\s+(?:if|though)|regardless\s+of)[^.]{0,80}(?:negligence|fault)\s+of\s+(?:the\s+)?indemnitee/is,
       /indemnif\w+.{0,160}(?:contractor|subcontractor|construction).{0,160}negligence\s+of\s+(?:the\s+)?(?:owner|indemnitee)/is,
+      // Real broad-form indemnities name the party ("negligence of Customer")
+      // or use the "in whole or in part" hallmark, not the literal word
+      // "indemnitee", so the patterns above missed the canonical clause. NY
+      // Gen. Oblig. \u00a7 5-322.1 voids construction indemnity for the indemnitee's
+      // own fault; "in whole or in part" is the broad-form signal (Type II "to
+      // the extent" never uses it). Cross-sentence, lazily bounded, NY-gated.
+      /new\s+york[\s\S]{0,400}?indemnif\w+[^.]{0,200}\bin\s+whole\s+or\s+in\s+part\b/is,
     ],
     default_severity: "warning",
   }),
@@ -731,6 +739,7 @@ export const MSA_DEEP_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   language({
     id: "MSA-029",
+    version: "1.1.0",
     name: "Texas anti-indemnity (Tex. Bus. & Com. Code Ch. 151) flag",
     description:
       "Flags an indemnity for the indemnitee's own negligence in a Texas-governed construction MSA — void per Tex. Bus. & Com. Code § 151.102.",
@@ -744,6 +753,11 @@ export const MSA_DEEP_RULES: Rule[] = [
       "Narrow to the indemnitor's own negligence; verify governing law and project-state nexus.",
     bad_patterns: [
       /(?:Texas|tex\.|governed\s+by\s+the\s+laws\s+of\s+(?:the\s+state\s+of\s+)?Texas)[^.]{0,400}indemnif\w+[^.]{0,160}(?:negligence|fault)\s+of\s+(?:the\s+)?indemnitee/is,
+      // As MSA-010: the canonical broad-form clause uses "in whole or in part"
+      // and names the party, not the literal "indemnitee". Tex. Bus. & Com.
+      // Ch. 151 voids construction indemnity for the indemnitee's own
+      // negligence; cross-sentence, lazily bounded, Texas-gated.
+      /(?:texas|tex\.)[\s\S]{0,500}?indemnif\w+[^.]{0,200}\bin\s+whole\s+or\s+in\s+part\b/is,
     ],
     default_severity: "warning",
   }),
