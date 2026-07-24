@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
 /** IPDATA-001 — IP ownership clause present (warning). */
 export const rule: Rule = {
   id: "IPDATA-001",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "IP ownership clause present",
   category: "ip-and-data",
   default_severity: "warning",
@@ -26,7 +26,13 @@ export const rule: Rule = {
         // standard invention-assignment sentence, and requiring the two words
         // to be adjacent made the rule report that the contract "does not
         // allocate ownership of intellectual property".
-        /\b(?:work(?:s)?\s+made\s+for\s+hire|intellectual\s+property|IP\s+ownership|hereby\s+(?:\w+ly\s+)?assigns?[^.]{0,120}?\b(?:inventions?|work\s+product|works?\s+of\s+authorship|copyrights?|patents?|trademarks?|trade\s+secrets?|deliverables?|intellectual\s+property|moral\s+rights?|IP)\b)/i,
+        // A LICENSE allocates ownership by RESERVING it — "the Licensed
+        // Works are and remain the sole property of Licensor", "a license,
+        // not a transfer of copyright ownership", "all rights not expressly
+        // granted are reserved" — and none of the assignment-side branches
+        // read that register, so a copyright license with a dedicated
+        // Ownership section was told it does not allocate IP ownership.
+        /\b(?:work(?:s)?\s+made\s+for\s+hire|intellectual\s+property|IP\s+ownership|copyright\s+ownership|(?:are|is|shall\s+be)\s+and\s+(?:shall\s+)?remains?\s+the\s+(?:sole\s+)?(?:and\s+exclusive\s+)?property\s+of|all\s+rights\s+not\s+expressly\s+granted\s+are\s+reserved|hereby\s+(?:\w+ly\s+)?assigns?[^.]{0,120}?\b(?:inventions?|work\s+product|works?\s+of\s+authorship|copyrights?|patents?|trademarks?|trade\s+secrets?|deliverables?|intellectual\s+property|moral\s+rights?|IP)\b)/i,
       )
     )
       return null;

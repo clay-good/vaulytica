@@ -133,3 +133,35 @@ describe("PERS-009 — a sale-of-business covenant is a different regime (v1.2.0
     expect(PERS_009.check(ctx)).not.toBeNull();
   });
 });
+
+describe("IPDATA-001 — a license allocates ownership by reserving it (v1.2.0)", () => {
+  it("reads 'are and remain the sole property of Licensor'", () => {
+    expect(
+      IPDATA_001.check(
+        buildContext([
+          "Ownership",
+          "The Licensed Works are and remain the sole property of Licensor. This Agreement is a license, not a transfer of copyright ownership.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("reads the reservation-of-rights formula", () => {
+    expect(
+      IPDATA_001.check(
+        buildContext([
+          "Grant",
+          "Licensor grants Licensee a non-exclusive license to reproduce the Works. All rights not expressly granted are reserved.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires when nothing allocates ownership", () => {
+    expect(
+      IPDATA_001.check(
+        buildContext(["Services", "Vendor shall provide the Services described in Exhibit A."]),
+      ),
+    ).not.toBeNull();
+  });
+});
