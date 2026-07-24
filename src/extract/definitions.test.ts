@@ -545,3 +545,17 @@ describe("natural persons are not defined terms", () => {
     expect(undef).not.toContain("Diego Castellanos");
   });
 });
+
+describe("plural compounds of defined terms", () => {
+  it("does not flag 'Your Contributions' when 'Your' and 'Contribution' are defined", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Definitions",
+        '"Your" means the individual entering into this Agreement. "Contribution" means any original work of authorship You submit.',
+        "You hereby grant a license covering Your Contributions and derivative works.",
+        "The Foundation may distribute Your Contributions under the Project license.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((u) => u.term)).not.toContain("Your Contributions");
+  });
+});

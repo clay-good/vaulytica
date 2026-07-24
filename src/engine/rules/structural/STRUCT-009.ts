@@ -5,7 +5,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
 /** STRUCT-009 — Defined-term capitalization consistency (info). */
 export const rule: Rule = {
   id: "STRUCT-009",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Defined-term capitalization consistency",
   category: "structural",
   default_severity: "info",
@@ -91,6 +91,12 @@ export function isStatutoryIdiomUse(
   matchLength: number,
 ): boolean {
   const lower = term.toLowerCase();
+  // A CLA defines "You"/"Your" as the contributor, and its cover letter still
+  // opens "Thank you for your interest in contributing" — the pleasantry is
+  // ordinary English address, not a lowercase use of the defined term.
+  if (lower === "you" || lower === "your") {
+    return /\bthank(?:\s+you\s+for)?\s*$/i.test(text.slice(Math.max(0, index - 16), index));
+  }
   // "a Delaware limited liability company" is the statutory entity type, not
   // a lowercase use of a defined "Company" — every agreement that defines
   // "Company" also recites at least one party's entity type this way.

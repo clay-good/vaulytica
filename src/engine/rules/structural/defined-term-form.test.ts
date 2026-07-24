@@ -171,3 +171,25 @@ describe("the entity-type recital is not a lowercase use of 'Company' (v1.3.0)",
     expect(STRUCT_009.check(ctx)).not.toBeNull();
   });
 });
+
+describe("the cover-letter pleasantry is not a lowercase use of 'You' (v1.4.0)", () => {
+  it("does not flag 'Thank you for your interest' against defined You/Your", () => {
+    const ctx = buildContext(
+      ["Preamble", "Thank you for your interest in contributing to the Project."],
+      [
+        "Definitions",
+        '"You" means the individual entering into this Agreement. "Your" shall be construed accordingly.',
+      ],
+      ["Grant", "You hereby grant the Foundation a license to Your Contributions."],
+    );
+    expect(STRUCT_009.check(ctx)).toBeNull();
+  });
+
+  it("still reports a genuine lowercase use of a defined You", () => {
+    const ctx = buildContext(
+      ["Definitions", '"You" means the individual entering into this Agreement.'],
+      ["Grant", "The license terminates if you breach this Agreement."],
+    );
+    expect(STRUCT_009.check(ctx)).not.toBeNull();
+  });
+});

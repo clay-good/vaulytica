@@ -844,14 +844,23 @@ function insideOccurrenceOf(
   return false;
 }
 
-/** True when the phrase's words segment fully into defined term names. */
+/**
+ * True when the phrase's words segment fully into defined term names.
+ * A segment matches its defined term through a trailing plural — "Your
+ * Contributions" is the defined "Your" + "Contribution", and demanding the
+ * exact singular reported the compound as a new undefined term.
+ */
 function isCompoundOfDefined(phraseLower: string, definedNames: Set<string>): boolean {
   const words = phraseLower.split(/\s+/);
+  const matches = (seg: string): boolean =>
+    definedNames.has(seg) ||
+    (seg.endsWith("es") && definedNames.has(seg.slice(0, -2))) ||
+    (seg.endsWith("s") && definedNames.has(seg.slice(0, -1)));
   const reachable: boolean[] = new Array(words.length + 1).fill(false);
   reachable[0] = true;
   for (let i = 1; i <= words.length; i++) {
     for (let j = 0; j < i; j++) {
-      if (reachable[j] && definedNames.has(words.slice(j, i).join(" "))) {
+      if (reachable[j] && matches(words.slice(j, i).join(" "))) {
         reachable[i] = true;
         break;
       }
