@@ -318,6 +318,7 @@ const INDEMNIFICATION_AGREEMENT_RULES: Rule[] = [
   }),
   language({
     id: "INS-015",
+    version: "1.1.0",
     name: "Broad-form indemnity (Type I) flagged for anti-indemnity scrutiny",
     description:
       "Type I (broad-form) indemnity is void in construction contexts in many states (CA § 2782, NY § 5-322.1, TX § 151).",
@@ -325,6 +326,12 @@ const INDEMNIFICATION_AGREEMENT_RULES: Rule[] = [
     playbooks: [INS_PLAYBOOK_INDEMNIFICATION],
     bad_patterns: [
       /indemnif(y|ies|ied|ying).{0,200}(including|even\s+(for|where)|regardless\s+of|notwithstanding).{0,200}(sole\s+negligence|own\s+negligence|active\s+negligence)/is,
+      // The canonical Type I broad-form phrasing anti-indemnity statutes
+      // target: indemnity for loss "caused IN WHOLE OR IN PART" by the
+      // indemnitee's negligence. "in whole or in part" is the broad-form
+      // hallmark — Type II ("to the extent") and Type III ("indemnitor's own
+      // negligence") never use it, so it separates cleanly.
+      /indemnif(y|ies|ied|ying)[^.]{0,200}\bin\s+whole\s+or\s+in\s+part\b/is,
       /indemnif(y|ies|ied|ying).{0,200}(any\s+and\s+all).{0,80}(claims|liabilit).{0,80}(caused\s+by\s+indemnitee|negligence\s+of\s+indemnitee)/is,
     ],
     exclude_if: [

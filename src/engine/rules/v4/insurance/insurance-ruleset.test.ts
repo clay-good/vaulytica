@@ -119,3 +119,31 @@ describe("v4 Insurance — failure cases", () => {
     expect(run.findings.some((f) => f.rule_id === "INS-022")).toBe(true);
   });
 });
+
+describe("INS-015 — the canonical 'in whole or in part' broad-form indemnity (v1.1.0)", () => {
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Indemnity", body]), IND_PB);
+    const run = await runEngine({ rules: INSURANCE_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("fires on 'caused in whole or in part by the negligence of the Owner' (Type I)", async () => {
+    expect(
+      (
+        await run1(
+          "Contractor shall indemnify Owner from all liability caused in whole or in part by the negligence of the Owner.",
+        )
+      ).has("INS-015"),
+    ).toBe(true);
+  });
+
+  it("stays silent on a Type III limited indemnity", async () => {
+    expect(
+      (
+        await run1(
+          "Subcontractor shall indemnify Owner only to the extent of Subcontractor's own negligence.",
+        )
+      ).has("INS-015"),
+    ).toBe(false);
+  });
+});
