@@ -236,3 +236,45 @@ describe("false-negative regression — GDPR DPA defect rules still fire", () =>
     expect(run.findings.map((f) => f.rule_id)).toContain(ruleId);
   });
 });
+
+/**
+ * The separation-agreement defect rules police McLaren Macomb overbreadth. Each
+ * missed the dominant phrasing: the non-disparagement written "shall not MAKE
+ * any disparaging statement" (not "shall not disclose/disparage"), the
+ * confidentiality written "keep the terms … of this Agreement confidential"
+ * (not the exact "terms of this agreement"), and — worse — the protected-rights
+ * carve-out counted as present whenever "government agency" appeared, even in
+ * the prohibition ("shall not disclose … to any government agency") the
+ * carve-out is supposed to undo. This adversarial separation agreement carries
+ * the overbroad clauses with no genuine carve-out and pins that both fire.
+ */
+const SEPARATION_ADVERSARIAL: [string, ...string[]][] = [
+  [
+    "Separation Agreement and General Release",
+    "This Separation Agreement is between Company and Employee, effective July 1, 2027, and pays Employee severance over and above accrued amounts.",
+  ],
+  [
+    "Confidentiality",
+    "Employee shall keep the terms, amount, and existence of this Agreement strictly confidential and shall not disclose them to any person, including any government agency.",
+  ],
+  [
+    "Non-Disparagement",
+    "Employee shall not make any disparaging, negative, or critical statement about the Company, its officers, or its products, in any forum, at any time.",
+  ],
+];
+
+const SEPARATION_PLANTED: [string, string][] = [
+  ["EMP-020", "overbroad confidentiality and non-disparagement (McLaren Macomb)"],
+  ["EMP-021", "protected-rights carve-out that is actually a prohibition"],
+];
+
+describe("false-negative regression — separation defect rules still fire", () => {
+  it.each(SEPARATION_PLANTED)("%s still fires on %s", async (ruleId) => {
+    const ctx = withPb(buildContext(...SEPARATION_ADVERSARIAL), {
+      id: "separation-agreement",
+      version: "1.0.0",
+    });
+    const run = await runEngine({ rules: ALL_RULES, ctx, source_file: SRC });
+    expect(run.findings.map((f) => f.rule_id)).toContain(ruleId);
+  });
+});

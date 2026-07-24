@@ -418,6 +418,7 @@ const SEPARATION_RULES: Rule[] = [
   }),
   language({
     id: "EMP-020",
+    version: "1.1.0",
     name: "McLaren Macomb — overbroad confidentiality / non-disparagement",
     description:
       "NLRB *McLaren Macomb* (Feb. 21, 2023) found that overbroad confidentiality or non-disparagement provisions in separation agreements violate NLRA § 7.",
@@ -427,6 +428,13 @@ const SEPARATION_RULES: Rule[] = [
       /(employee|you)\s+shall\s+not\s+(disclose|disparage).{0,80}(any|all)\s+(person|individual|terms)/is,
       /(non.?disparag).{0,200}(broadly|any\s+(person|individual|entity))/is,
       /confidentiality.{0,80}(terms\s+of\s+this\s+agreement|any\s+aspect)/is,
+      // The dominant McLaren Macomb non-disparagement form is "shall not MAKE
+      // any disparaging … statement", and the dominant confidentiality form is
+      // "keep the terms … of this Agreement confidential" — neither the
+      // "shall not disclose/disparage" verb list nor the exact "terms of this
+      // agreement" phrase above reaches them.
+      /(?:employee|you)\s+shall\s+not\s+make\s+any\s+(?:disparaging|negative|critical|derogatory)/is,
+      /keep\s+(?:the\s+)?(?:terms|amount|existence|contents?)[^.]{0,60}\bof\s+this\s+agreement[^.]{0,40}\bconfidential/is,
     ],
     exclude_if: [
       /(?:does|do|shall|will)\s+not\s+(?:restrict|prohibit|prevent|preclude|limit|bar|apply\s+to)\b/i,
@@ -443,6 +451,7 @@ const SEPARATION_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-021",
+    version: "1.1.0",
     name: "Protected-rights carve-out",
     description:
       "Separation agreements must preserve employee's right to communicate with government agencies (SEC Rule 21F-17, EEOC, NLRB).",
@@ -456,7 +465,12 @@ const SEPARATION_RULES: Rule[] = [
       "Add 'Protected Rights' carve-out preserving rights to communicate with SEC / EEOC / NLRB / DOL and retain any bounty.",
     present_patterns: [
       /protected\s+rights?/i,
-      /(government\s+agency|sec|eeoc|nlrb)/i,
+      // A government-agency mention counts as a carve-out only when the clause
+      // PRESERVES the right (may / nothing prevents / retains the right /
+      // right to file). "shall not disclose … to any government agency" names
+      // the same words but is the prohibition the carve-out is supposed to
+      // undo, so it must not satisfy this presence check.
+      /(?:may|nothing[^.]{0,40}(?:prevent|prohibit|restrict|limit)|retains?\s+the\s+right|right\s+to\s+(?:file|report|communicate)|permitted\s+to)[^.]{0,80}(government\s+agency|sec|eeoc|nlrb)/is,
       /(whistleblower|whistle.blower)/i,
     ],
   }),

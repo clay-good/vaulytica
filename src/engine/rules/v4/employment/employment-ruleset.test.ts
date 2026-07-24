@@ -187,3 +187,48 @@ describe("EMP-025 / EMP-029 — restrictive-covenant formulas and nexus (v1.1.0)
     expect(run.findings.map((f) => f.rule_id)).toContain("EMP-025");
   });
 });
+
+describe("EMP-020/021 — McLaren Macomb overbreadth and its carve-out (v1.1.0)", () => {
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Separation", body]), SEPARATION_PB);
+    const run = await runEngine({ rules: EMPLOYMENT_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("EMP-020 fires on 'shall not make any disparaging statement' and confidential-terms overbreadth", async () => {
+    expect(
+      (
+        await run1(
+          "Employee shall not make any disparaging statement about the Company in any forum.",
+        )
+      ).has("EMP-020"),
+    ).toBe(true);
+    expect(
+      (
+        await run1(
+          "Employee shall keep the terms and existence of this Agreement strictly confidential.",
+        )
+      ).has("EMP-020"),
+    ).toBe(true);
+  });
+
+  it("EMP-021 fires when a government-agency mention is a PROHIBITION, not a carve-out", async () => {
+    expect(
+      (
+        await run1(
+          "Employee shall not disclose the terms of this Agreement to any government agency.",
+        )
+      ).has("EMP-021"),
+    ).toBe(true);
+  });
+
+  it("EMP-021 is silent when the protected-rights carve-out genuinely preserves the right", async () => {
+    expect(
+      (
+        await run1(
+          "Nothing in this Agreement prevents Employee from filing a charge with or communicating with any government agency, including the EEOC.",
+        )
+      ).has("EMP-021"),
+    ).toBe(false);
+  });
+});
