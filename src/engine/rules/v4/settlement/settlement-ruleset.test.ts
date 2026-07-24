@@ -213,3 +213,29 @@ describe("SET-008 — an agency prohibition is not a whistleblower carve-out (v1
     expect(run.findings.map((f) => f.rule_id)).not.toContain("SET-008");
   });
 });
+
+describe("SET-007 — overbroad non-disparagement in its dominant wording (v1.1.0)", () => {
+  it("fires on 'shall not make any disparaging statement'", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Non-Disparagement",
+        "Claimant shall not make any disparaging statement about the Company in any forum.",
+      ]),
+      SETTLEMENT_PB,
+    );
+    const run = await runEngine({ rules: SETTLEMENT_RULES, ctx, source_file: SRC });
+    expect(run.findings.map((f) => f.rule_id)).toContain("SET-007");
+  });
+
+  it("is silent when the clause carves out protected activity", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Non-Disparagement",
+        "Nothing in this Agreement shall restrict any protected concerted activity or communication with a government agency.",
+      ]),
+      SETTLEMENT_PB,
+    );
+    const run = await runEngine({ rules: SETTLEMENT_RULES, ctx, source_file: SRC });
+    expect(run.findings.map((f) => f.rule_id)).not.toContain("SET-007");
+  });
+});

@@ -201,6 +201,7 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
   }),
   language({
     id: "SET-007",
+    version: "1.1.0",
     name: "Overbroad confidentiality / non-disparagement (NLRB scrutiny)",
     description:
       "NLRB *McLaren Macomb* found that overbroad confidentiality / non-disparagement provisions in settlements with non-supervisory employees violate NLRA § 7.",
@@ -210,6 +211,12 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
       /(employee|claimant|you)\s+shall\s+not\s+(disclose|disparage).{0,80}(any|all)\s+(person|individual|terms)/is,
       /confidentiality.{0,80}(terms\s+of\s+this\s+agreement|existence\s+of\s+this\s+settlement|any\s+aspect)/is,
       /non.?disparag.{0,200}(any|all)\s+(person|individual|entity)/is,
+      // The dominant NLRB-scrutinized forms — "shall not MAKE any disparaging
+      // statement" and "keep the terms … of this Agreement confidential" —
+      // that the disclose/disparage verb list and the exact phrasings above
+      // miss (the same EMP-020 gap).
+      /(?:employee|claimant|you)\s+shall\s+not\s+make\s+any\s+(?:disparaging|negative|critical|derogatory)/is,
+      /keep\s+(?:the\s+)?(?:terms|amount|existence|contents?)[^.]{0,60}\bof\s+this\s+(?:agreement|settlement)[^.]{0,40}\bconfidential/is,
     ],
     exclude_if: [
       /(?:does|do|shall|will)\s+not\s+(?:restrict|prohibit|prevent|preclude|limit|bar|apply\s+to)\b/i,

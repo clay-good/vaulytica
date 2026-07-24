@@ -185,3 +185,31 @@ describe("v4 Compliance-policy — failure cases", () => {
     expect(run.findings.some((f) => f.rule_id === "POL-019")).toBe(true);
   });
 });
+
+describe("POL-004 — a denied whistleblower protection is absence, not presence (v1.1.0)", () => {
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Reporting", body]), CODE_PB);
+    const run = await runEngine({ rules: COMPLIANCE_POLICY_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("fires when the Code denies reporting and whistleblower protection", async () => {
+    expect(
+      (
+        await run1(
+          "This Code prohibits reporting to any agency and provides no whistleblower protection.",
+        )
+      ).has("POL-004"),
+    ).toBe(true);
+  });
+
+  it("is silent on a genuine hotline + non-retaliation mechanism", async () => {
+    expect(
+      (
+        await run1(
+          "The Company maintains a whistleblower hotline and prohibits retaliation against any employee who reports a concern.",
+        )
+      ).has("POL-004"),
+    ).toBe(false);
+  });
+});

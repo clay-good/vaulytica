@@ -109,6 +109,7 @@ const CODE_OF_CONDUCT_RULES: Rule[] = [
   }),
   presence({
     id: "POL-004",
+    version: "1.1.0",
     name: "Reporting violations + non-retaliation",
     description: "Code must establish a confidential reporting channel and prohibit retaliation.",
     citation: whistleblowerLaw(),
@@ -121,7 +122,12 @@ const CODE_OF_CONDUCT_RULES: Rule[] = [
       "Add 'Reporting and Non-Retaliation' clause establishing hotline / ombudsperson, anonymous reporting option, and explicit no-retaliation rule.",
     present_patterns: [
       /(report\s+violations|hotline|helpline|ombudsperson|anonymous(ly)?)/i,
-      /(no\s+retaliation|non.?retaliation|whistleblower)/i,
+      // "no retaliation" / "non-retaliation" are the primary signals; a bare
+      // "whistleblower" counts only when it is not DENIED — "no whistleblower
+      // protection" / "does not include any whistleblower" is the absence this
+      // rule flags, not the protection (the fake-carve-out class).
+      /no\s+retaliation\b|non.?retaliation/i,
+      /(?<!\b(?:no|not|without|any)\s)(?<!\bnot\s+include\s+any\s)whistleblower/i,
     ],
   }),
   presence({
