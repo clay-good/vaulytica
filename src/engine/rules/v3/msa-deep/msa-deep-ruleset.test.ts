@@ -282,3 +282,33 @@ describe("MSA-010 / MSA-029 — broad-form indemnity in its real wording (v1.1.0
     ).toBe(true);
   });
 });
+
+describe("MSA-009 — Cal. § 1668 fraud-exemption in its real wording (v1.1.0)", () => {
+  const run1 = async (body: string) => {
+    const ctx: RuleContext = { ...buildContext(["Liability", body]), playbook: VENDOR };
+    const run = await runEngine({ rules: MSA_DEEP_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("fires on 'exempts itself from liability for fraud' and 'disclaims all liability for fraud'", async () => {
+    expect(
+      (await run1("Vendor exempts itself from liability for its own fraud.")).has("MSA-009"),
+    ).toBe(true);
+    expect(
+      (await run1("Provider disclaims all liability for fraud and willful misconduct.")).has(
+        "MSA-009",
+      ),
+    ).toBe(true);
+  });
+
+  it("stays silent on a compliant carve-out that preserves fraud liability", async () => {
+    expect(
+      (
+        await run1("The limitation of liability does not apply to fraud or willful misconduct.")
+      ).has("MSA-009"),
+    ).toBe(false);
+    expect(
+      (await run1("Nothing in this Agreement limits liability for fraud.")).has("MSA-009"),
+    ).toBe(false);
+  });
+});

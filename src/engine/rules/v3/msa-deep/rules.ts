@@ -320,6 +320,7 @@ export const MSA_DEEP_RULES: Rule[] = [
   }),
   language({
     id: "MSA-009",
+    version: "1.1.0",
     name: "California Civil Code § 1668 problem flag",
     description:
       "Flags a liability cap or exculpation that purports to limit liability for fraud, wilful injury, or violation of law where California law may govern — void per Cal. Civ. Code § 1668.",
@@ -334,6 +335,14 @@ export const MSA_DEEP_RULES: Rule[] = [
     bad_patterns: [
       /(?:no\s+(?:liability|limitation|exclusion)\s+(?:shall|will)\s+apply\s+to|shall\s+not\s+be\s+liable\s+for).{0,160}(?:fraud|wil[l]?ful\s+(?:injury|misconduct)|violation\s+of\s+(?:any\s+)?law)/is,
       /limitation\s+of\s+liability\s+(?:includes|applies\s+to|covers).{0,80}(fraud|wil[l]?ful\s+(?:injury|misconduct))/is,
+      // Cal. Civ. \u00a7 1668 voids a clause EXEMPTING a party from liability for
+      // its own fraud, willful injury, or violation of law. "Vendor exempts
+      // itself from / disclaims all liability for fraud" is that exemption, and
+      // the "shall not be liable for" form above missed it. Deliberately NOT
+      // the compliant carve-out ("the cap does not apply to fraud", "nothing
+      // limits liability for fraud", "fraud is excluded from the cap"), which
+      // PRESERVES fraud liability and must stay silent.
+      /(?:exempts?|disclaims?|is\s+not\s+responsible|accepts?\s+no\s+responsibility)\s+[^.]{0,60}?(?:from\s+)?(?:any\s+)?liability\s+for\b[^.]{0,50}\b(?:fraud|wil?lful\s+(?:injury|misconduct)|violation\s+of\s+(?:any\s+)?law|gross\s+negligence)\b/is,
     ],
     default_severity: "warning",
   }),
