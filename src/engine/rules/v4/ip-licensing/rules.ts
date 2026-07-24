@@ -818,6 +818,7 @@ const WFH_RULES: Rule[] = [
   }),
   presence({
     id: "IPL-038",
+    version: "1.1.0",
     name: "DTSA / 18 U.S.C. § 1833(b) notice",
     description:
       "Work-for-hire agreements with confidentiality obligations must include the DTSA whistleblower notice.",
@@ -832,7 +833,11 @@ const WFH_RULES: Rule[] = [
       "Add 'DTSA Notice' / 'Immunity' reciting that an individual will not be held criminally / civilly liable for disclosure of a trade secret made in confidence to a government official solely for the purpose of reporting or investigating a violation of law.",
     present_patterns: [
       /(18\s+u\.?s\.?c\.?\s+§?\s*1833|section\s+1833|defend\s+trade\s+secrets\s+act|dtsa)/i,
-      /(immunity|whistleblower|reporting\s+a\s+violation)/i,
+      // "immunity" alone was too weak and, in "no whistleblower immunity", the
+      // negator sits two words upstream of it — a genuine DTSA notice always
+      // cites the Act (branch above) or says "whistleblower", so bare
+      // "immunity" is dropped and "whistleblower" carries the guarded signal.
+      /(?<!\b(?:no|not|without|any)\s)(?<!\bnot\s+include\s+any\s)(?:whistleblower|reporting\s+a\s+violation)/i,
     ],
   }),
   presence({

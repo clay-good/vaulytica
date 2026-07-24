@@ -239,3 +239,25 @@ describe("SET-007 — overbroad non-disparagement in its dominant wording (v1.1.
     expect(run.findings.map((f) => f.rule_id)).not.toContain("SET-007");
   });
 });
+
+describe("SET-008 — a denied whistleblower protection is absence too (v1.1.0)", () => {
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Confidentiality", body]), SETTLEMENT_PB);
+    const run = await runEngine({ rules: SETTLEMENT_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+  it("fires when the settlement denies whistleblower rights", async () => {
+    expect(
+      (await run1("No whistleblower rights are retained under this Agreement.")).has("SET-008"),
+    ).toBe(true);
+  });
+  it("is silent when whistleblower rights are genuinely retained", async () => {
+    expect(
+      (
+        await run1(
+          "Nothing in this Agreement prevents Claimant from reporting to a government agency, and Claimant retains all whistleblower rights.",
+        )
+      ).has("SET-008"),
+    ).toBe(false);
+  });
+});

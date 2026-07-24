@@ -1032,6 +1032,7 @@ const COMMITTEE_CHARTER_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-054",
+    version: "1.1.0",
     name: "Whistleblower / complaint procedures (SOX § 301(4))",
     description:
       "Audit committee must have procedures for receiving and addressing complaints regarding accounting / internal-controls / auditing matters.",
@@ -1046,7 +1047,7 @@ const COMMITTEE_CHARTER_RULES: Rule[] = [
     present_patterns: [
       /complaints?.{0,80}(accounting|internal\s+controls|auditing)/is,
       /(confidential|anonymous).{0,80}submission/is,
-      /whistleblower/i,
+      /(?<!\b(?:no|not|without|any)\s)(?<!\bnot\s+include\s+any\s)whistleblower/i,
     ],
   }),
   presence({

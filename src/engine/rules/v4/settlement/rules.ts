@@ -247,15 +247,19 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
       "Add 'Protected Rights' carve-out preserving rights to communicate with the SEC, EEOC, NLRB, DOL, or any government agency and to retain any whistleblower bounty.",
     present_patterns: [
       /protected\s+rights?/i,
-      /(whistleblower|whistle.blower)/i,
+      /(?<!\b(?:no|not|without|any)\s)(?<!\bnot\s+include\s+any\s)(?:whistleblower|whistle.blower)/i,
       // A government-agency mention is the carve-out only when it PRESERVES the
       // right (may / nothing prevents / retains the right / right to file /
       // free to report). "shall not disclose … to any government agency" is the
       // very prohibition this carve-out is meant to undo — the same
       // fake-carve-out false negative fixed in EMP-021.
-      /(?:may|nothing[^.]{0,40}(?:prevent|prohibit|restrict|limit)|retains?\s+the\s+right|right\s+to\s+(?:file|report|communicate)|permitted\s+to|free\s+to)[^.]{0,80}(?:government\s+agency|sec|eeoc|nlrb)/is,
-      /(sec|eeoc|nlrb|dol)/i,
-      /(whistleblower|whistle.?blower)/i,
+      /(?:may|nothing[^.]{0,40}(?:prevent|prohibit|restrict|limit)|retains?\s+the\s+right|right\s+to\s+(?:file|report|communicate)|permitted\s+to|free\s+to)[^.]{0,80}(?:government\s+agency|sec|eeoc|nlrb|dol)/is,
+      // The bare `/(sec|eeoc|nlrb|dol)/` and a second unguarded whistleblower
+      // pattern were removed: an agency acronym or "whistleblower" in a
+      // PROHIBITION ("shall not report to the SEC", "no whistleblower rights")
+      // satisfied the carve-out check, the same fake-carve-out FN — those
+      // signals now count only through the guarded whistleblower branch above
+      // and the preserving-context agency branch.
     ],
   }),
   presence({

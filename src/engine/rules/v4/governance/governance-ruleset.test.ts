@@ -204,3 +204,26 @@ describe("GOV-058 — 'report regularly to the Board' is the reporting clause (v
     expect(run.findings.map((f) => f.rule_id)).toContain("GOV-058");
   });
 });
+
+describe("GOV-054 — a denied whistleblower procedure is absence, not presence (v1.1.0)", () => {
+  const COMMITTEE_PB2: Playbook = { id: "committee-charter", version: "1.0.0" };
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Charter", body]), COMMITTEE_PB2);
+    const run = await runEngine({ rules: GOVERNANCE_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+  it("fires when the charter denies whistleblower procedures", async () => {
+    expect((await run1("This charter includes no whistleblower procedures.")).has("GOV-054")).toBe(
+      true,
+    );
+  });
+  it("is silent when the charter establishes them", async () => {
+    expect(
+      (
+        await run1(
+          "The Committee shall establish whistleblower and complaint procedures for accounting concerns.",
+        )
+      ).has("GOV-054"),
+    ).toBe(false);
+  });
+});

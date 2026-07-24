@@ -155,3 +155,25 @@ describe("v4 IP & licensing — failure cases", () => {
     expect(run.findings.some((f) => f.rule_id === "IPL-027")).toBe(true);
   });
 });
+
+describe("IPL-038 — a denied DTSA notice is absence, not presence (v1.1.0)", () => {
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["IP", body]), WFH_PB);
+    const run = await runEngine({ rules: IP_LICENSING_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+  it("fires when the agreement denies whistleblower immunity", async () => {
+    expect((await run1("This Agreement includes no whistleblower immunity.")).has("IPL-038")).toBe(
+      true,
+    );
+  });
+  it("is silent on a genuine DTSA § 1833(b) immunity notice", async () => {
+    expect(
+      (
+        await run1(
+          "Pursuant to the Defend Trade Secrets Act, Contributor is provided immunity for whistleblower disclosures made in confidence to a government official.",
+        )
+      ).has("IPL-038"),
+    ).toBe(false);
+  });
+});
