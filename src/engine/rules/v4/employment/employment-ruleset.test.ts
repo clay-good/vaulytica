@@ -120,16 +120,49 @@ describe("v4 Employment — failure cases", () => {
     expect(run.findings.some((f) => f.rule_id === "EMP-024")).toBe(true);
   });
 
-  it("EMP-035 fires when PIIA lacks the California § 2870 carve-out", async () => {
+  it("EMP-035 fires when a California PIIA lacks the § 2870 carve-out", async () => {
     const ctx = withPb(
       buildContext([
         "Proprietary Information and Inventions Agreement",
-        "Employee assigns all inventions to Employer. Confidentiality applies. DTSA notice under 18 U.S.C. § 1833 attached. Return of materials on termination.",
+        "This Agreement is governed by California law. Employee assigns all inventions to Employer. Confidentiality applies. DTSA notice under 18 U.S.C. § 1833 attached. Return of materials on termination.",
       ]),
       PIIA_PB,
     );
     const run = await runEngine({ rules: EMPLOYMENT_RULES, ctx, source_file: SRC });
     expect(run.findings.some((f) => f.rule_id === "EMP-035")).toBe(true);
+  });
+
+  it("EMP-035 does not fire on a non-California PIIA (§ 2870 is a California statute) (v1.1.0)", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Proprietary Information and Inventions Agreement",
+        "This Agreement is governed by Delaware law. Employee assigns all inventions to Employer.",
+      ]),
+      PIIA_PB,
+    );
+    const run = await runEngine({ rules: EMPLOYMENT_RULES, ctx, source_file: SRC });
+    expect(run.findings.some((f) => f.rule_id === "EMP-035")).toBe(false);
+  });
+
+  it("EMP-023 fires on a California separation missing the § 1542 waiver, silent elsewhere (v1.1.0)", async () => {
+    const caCtx = withPb(
+      buildContext([
+        "Separation Agreement",
+        "This Agreement is governed by California law. Employee, a California resident, releases all claims against Employer.",
+      ]),
+      SEPARATION_PB,
+    );
+    const nyCtx = withPb(
+      buildContext([
+        "Separation Agreement",
+        "This Agreement is governed by New York law. Employee releases all claims against Employer.",
+      ]),
+      SEPARATION_PB,
+    );
+    const caRun = await runEngine({ rules: EMPLOYMENT_RULES, ctx: caCtx, source_file: SRC });
+    const nyRun = await runEngine({ rules: EMPLOYMENT_RULES, ctx: nyCtx, source_file: SRC });
+    expect(caRun.findings.some((f) => f.rule_id === "EMP-023")).toBe(true);
+    expect(nyRun.findings.some((f) => f.rule_id === "EMP-023")).toBe(false);
   });
 
   it("EMP-049 fires on overbroad NLRA § 7 confidentiality / wage-discussion ban", async () => {

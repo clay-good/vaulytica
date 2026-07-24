@@ -496,6 +496,7 @@ const SEPARATION_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-023",
+    version: "1.1.0",
     name: "California — § 1542 waiver (if applicable)",
     description:
       "California separations should include the § 1542 waiver to release unknown claims.",
@@ -511,6 +512,9 @@ const SEPARATION_RULES: Rule[] = [
       "For California employees, releases do not cover unknown claims unless § 1542 is specifically waived.",
     recommendation: "If California law applies, add a § 1542 waiver with the statutory text.",
     present_patterns: [/section\s+1542/i, /(unknown\s+claims|do\s+not\s+know\s+or\s+suspect)/is],
+    // § 1542 is a California statute; a separation under another state's law is
+    // not missing it. Gate on a California connection, matching SET-003.
+    applicable_if: [/california/i, /\bcal\.\s*(?:civ|civil|lab|labor|code)/i, /,\s*CA\s+\d{5}/],
     default_severity: "warning",
   }),
 ];
@@ -747,6 +751,7 @@ const PIIA_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-035",
+    version: "1.1.0",
     name: "California § 2870 carve-out (where applicable)",
     description:
       "California PIIAs must carve out the § 2870 exception (no assignment of inventions developed on employee's own time without employer resources).",
@@ -763,6 +768,9 @@ const PIIA_RULES: Rule[] = [
       /labor\s+code.{0,40}2870/is,
       /own\s+time.{0,40}without.{0,40}employer.{0,40}(equipment|facilities)/is,
     ],
+    // Cal. Lab. § 2870 governs California PIIAs; a PIIA under another state's
+    // law is not missing its carve-out. Gate on a California connection.
+    applicable_if: [/california/i, /\bcal\.\s*(?:civ|civil|lab|labor|code)/i, /,\s*CA\s+\d{5}/],
   }),
   presence({
     id: "EMP-036",
