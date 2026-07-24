@@ -116,6 +116,28 @@ describe("FIN-005 — 'no later than N days' is a payment window (v1.4.1)", () =
   });
 });
 
+describe("FIN-005 — payment at the Closing event (v1.4.3)", () => {
+  it("reads 'the Purchase Price … payable in cash at the Closing'", () => {
+    expect(
+      FIN_005.check(doc("The Purchase Price is $12,000,000, payable in cash at the Closing.")),
+    ).toBeNull();
+  });
+
+  it("reads 'the balance is due and payable at closing'", () => {
+    expect(
+      FIN_005.check(doc("The balance is due and payable at the closing of the transaction.")),
+    ).toBeNull();
+  });
+
+  it("does not treat a stray 'closing' with no payment verb as a term", () => {
+    expect(
+      FIN_005.check(
+        doc("Payment is described in the Order Form. See the closing paragraph for definitions."),
+      ),
+    ).not.toBeNull();
+  });
+});
+
 describe("FIN-005 — hyphenated compound-number windows (v1.4.2)", () => {
   it("reads 'due and payable within forty-five (45) days of the invoice date'", () => {
     expect(

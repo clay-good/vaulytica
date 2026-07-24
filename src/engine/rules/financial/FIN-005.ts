@@ -56,6 +56,12 @@ const PAYMENT_TERMS = new RegExp(
     // Date". Every branch above is interval- or cadence-shaped, so a
     // perfectly conventional note was told it has no payment term.
     `\\b(?:due|payable|paid)\\s+(?:and\\s+payable\\s+)?on\\s+(?:or\\s+before\\s+)?(?:(?:January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{1,2},?\\s+\\d{4}|the\\s+(?:Maturity|Effective|Closing)\\s+Date\\b|each\\s+anniversary\\b)`,
+    // An M&A or real-estate purchase price states its term as the CLOSING
+    // event, not an interval or a fixed date: "the Purchase Price … payable in
+    // cash at the Closing", "the balance is due and payable at closing". The
+    // Closing-Date branch above requires "on the Closing DATE"; the bare
+    // event ("at the Closing") went unrecognized, warning a plain payment term.
+    `\\b(?:due|payable|paid)\\s+(?:and\\s+payable\\s+)?(?:in\\s+cash\\s+)?(?:at|on)\\s+(?:the\\s+)?closing\\b`,
     `\\bpayable\\s+as\\s+follows\\b`,
     `\\bpayable\\s+in\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\)\\s*)?(?:equal\\s+)?(?:monthly|quarterly|weekly|annual|semi-?annual)\\s+installments\\b`,
   ].join("|"),
@@ -72,7 +78,7 @@ const ANY_PAYMENT = /\b(fee|payment|invoice|amount\s+due|payable)\b/i;
 /** FIN-005 — Payment terms presence and parseability (warning). */
 export const rule: Rule = {
   id: "FIN-005",
-  version: "1.4.2",
+  version: "1.4.3",
   name: "Payment terms presence and parseability",
   category: "financial",
   default_severity: "warning",
