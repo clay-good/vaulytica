@@ -60,6 +60,20 @@ describe("extractJurisdictions", () => {
     expect(refs.find((r) => r.clause_kind === "venue")?.raw_text).toBe("Delaware");
   });
 
+  it("resolves a 'Court of Chancery of the State of Delaware' venue to Delaware", () => {
+    // The dispute-verb forum-selection form ("any action … shall be brought
+    // exclusively in the Court of Chancery of the State of Delaware") left
+    // "Chancery of the State of Delaware" in the capture — a name no
+    // governing-law clause uses — so CHOICE-004/009/012 reported a
+    // law-vs-venue mismatch on the standard VC / corporate forum.
+    const tree = buildTree([
+      "Governing Law; Venue",
+      "This Agreement shall be governed by the laws of the State of Delaware. Any action arising out of this Agreement shall be brought exclusively in the Court of Chancery of the State of Delaware.",
+    ]);
+    const refs = extractJurisdictions(tree);
+    expect(refs.find((r) => r.clause_kind === "venue")?.raw_text).toBe("Delaware");
+  });
+
   it("resolves a county-and-state venue to the state", () => {
     const tree = buildTree([
       "Venue",

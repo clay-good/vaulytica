@@ -347,9 +347,21 @@ export function extractJurisdictions(
       // be the sole and exclusive forum for any derivative action" registers
       // the lowercase clause tail as the venue.
       if (!/^[A-Z]/.test(captured)) return;
+      // A venue captured with the state name embedded — "Court of Chancery of
+      // the State of Delaware" leaves "Chancery of the State of Delaware" in
+      // the capture because "Chancery" blocks the pattern's "the State of"
+      // consumption — names its jurisdiction after "State/Commonwealth of".
+      // Reduce it to the bare state so a Delaware-Chancery forum matches
+      // Delaware governing law instead of reading as a different jurisdiction
+      // (CHOICE-004/009/012). A clean capture ("Delaware") has no such tail and
+      // is left untouched.
+      const stateOfTail = /(?:State|Commonwealth)\s+of\s+([A-Z][A-Za-z\s&-]+?)\s*$/.exec(
+        captured,
+      );
+      const normalizedCapture = stateOfTail?.[1] ? stateOfTail[1].trim() : captured;
       const end = ext.end;
       const jurisdiction = JURISDICTION_AFTER_LOCALITY.exec(ctx.text.slice(end))?.[1];
-      const raw = jurisdiction ? jurisdiction.replace(/\s+/g, " ") : captured;
+      const raw = jurisdiction ? jurisdiction.replace(/\s+/g, " ") : normalizedCapture;
       const key = `${m.index}:${raw.toLowerCase()}`;
       if (seenVenue.has(key)) return;
       seenVenue.add(key);
