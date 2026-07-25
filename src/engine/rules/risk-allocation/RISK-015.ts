@@ -38,13 +38,22 @@ export function isStatutoryDandOIndemnity(text: string): boolean {
     ) ||
     /\bfullest\s+extent\s+permitted\s+by\s+the\b[^.]{0,60}?\bcorporation\s+(?:law|act)\b/i.test(
       text,
+    ) ||
+    // The LLC / partnership analogue: an entity indemnifying its own Manager,
+    // Member, or Partner "to the fullest extent permitted by the Act" is the
+    // same statutory, uncapped-by-design indemnification, just under the LLC or
+    // partnership statute rather than the DGCL. The governance-role indemnitee
+    // is the discriminator — a commercial "indemnify Customer to the fullest
+    // extent permitted by law" carries no such role and still requires its cap.
+    /\bindemnif\w+[^.]{0,80}?\b(?:Managers?|Members?|Partners?|Directors?|Officers?|Trustees?)\b[^.]{0,80}?\bfullest\s+extent\s+permitted\b/i.test(
+      text,
     )
   );
 }
 
 export const rule: Rule = {
   id: "RISK-015",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Indemnification without aggregate cap",
   category: "risk-allocation",
   default_severity: "warning",
