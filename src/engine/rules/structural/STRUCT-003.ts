@@ -34,7 +34,7 @@ const CONFORMED_SIG = /^\s*\/s\/\s+\S/m;
 // false positive). "/s/" is already covered by CONFORMED_SIG, so this matches
 // only the underscore form to avoid double-counting the same line.
 const OFFICE_SIG_LINE =
-  /_{4,}\s*[A-Z][A-Za-z.'’-]+(?:\s+[A-Z][A-Za-z.'’-]+){0,3},?\s+(?:Director|President|Vice\s+President|Secretary|Treasurer|Chief\s+[A-Za-z]+\s+Officer|CEO|CFO|COO|CTO|Manager|Managing\s+Member|Member|Trustee|General\s+Partner|Partner|(?:Sole\s+)?Incorporator|Testat(?:or|rix)|Principal|Execut(?:or|rix)|Personal\s+Representative|Attorney-in-Fact|Patient|Participant|Authorized\s+Signatory|Its\b)\b/g;
+  /_{4,}\s*[A-Z][A-Za-z.'’-]+(?:\s+[A-Z][A-Za-z.'’-]+){0,3},?\s+(?:Director|President|Vice\s+President|Secretary|Treasurer|Chief\s+[A-Za-z]+\s+Officer|CEO|CFO|COO|CTO|Manager|Managing\s+Member|Member|Trustee|General\s+Partner|Partner|(?:Sole\s+)?Incorporator|Testat(?:or|rix)|Principal|Execut(?:or|rix)|Personal\s+Representative|Attorney-in-Fact|Patient|Participant|Trustee|Grantor|Settlor|Authorized\s+Signatory|Its\b)\b/g;
 // A standalone signatory office on a signature line — "____ Notary Public",
 // "____ Witness", "____ Testator" — with no personal name attached.
 const STANDALONE_SIGNATORY_ROLE =
@@ -119,7 +119,7 @@ const PUBLICATION_STAMP =
  */
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.14.0",
+  version: "1.15.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",
@@ -160,9 +160,14 @@ export const rule: Rule = {
           signals += 1;
         }
         if (CONFORMED_SIG.test(text)) signals += 1;
+        // An office-signature line ("____ Eleanor Harper, Settlor and Trustee",
+        // "____ Jordan Ellis, Director") is an unambiguous affordance, and a
+        // unilateral instrument (a trust declaration, a certificate) carries
+        // exactly one — so each is self-sufficient (×2), like the bare-name
+        // line below.
         OFFICE_SIG_LINE.lastIndex = 0;
         const officeSigs = text.match(OFFICE_SIG_LINE);
-        if (officeSigs) signals += officeSigs.length;
+        if (officeSigs) signals += officeSigs.length * 2;
         // A bare-name signature line — an underscore rule followed by the
         // printed name of a known party, a standalone "Notary Public" /
         // "Witness" line, or a "Signature of <role>" label — is an

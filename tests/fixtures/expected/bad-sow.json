@@ -507,7 +507,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "STRUCT-003",
-      "rule_version": "1.14.0"
+      "rule_version": "1.15.0"
     },
     {
       "elapsed_ms": 0,
@@ -570,7 +570,7 @@
       "finding_id": "STRUCT-013-s1-79",
       "fired": true,
       "rule_id": "STRUCT-013",
-      "rule_version": "1.6.0"
+      "rule_version": "1.7.0"
     },
     {
       "elapsed_ms": 0,
@@ -769,7 +769,7 @@
       "id": "STRUCT-013-s1-79",
       "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
       "rule_id": "STRUCT-013",
-      "rule_version": "1.6.0",
+      "rule_version": "1.7.0",
       "severity": "critical",
       "source_citations": [],
       "title": "Unfilled template placeholders: 1"
@@ -1020,7 +1020,7 @@
   "playbook_id": "sow",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected sow (score 0.9). Title matched: \"statement of work\". Distinguishing phrases: \"this SOW\", \"Master Agreement\", \"Deliverables\", \"milestones\".",
-  "result_hash": "42ca55c8c44da5286671039f635775ca165b0aa04d03a4ff41b9b5a471d0ee4f",
+  "result_hash": "7a38dc634c3ce270c45bcca6d7f0f7b349f46779111ca544b3a634c4e53c19ec",
   "source_file": {
     "name": "bad-sow.docx",
     "sha256": "cd7208763b891cf8cb8e1c853b54f63fb70fe10004a489fbeb95921a14b84c3c",

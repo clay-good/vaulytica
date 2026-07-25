@@ -341,4 +341,12 @@ describe("STRUCT-003 — a unilateral instrument signed by one party (v1.14.0)",
     );
     expect(STRUCT003.check(ctx)).not.toBeNull();
   });
+
+  it("accepts a revocable trust signed '____ Name, Settlor and Trustee' (single office line, v1.15.0)", () => {
+    const ctx = buildContext(
+      ["The Family Trust", "The Settlor declares this trust and transfers the property to it."],
+      ["Execution", "Executed this 1st day of November, 2029.", "_______________________________ Eleanor Harper, Settlor and Trustee"],
+    );
+    expect(STRUCT003.check(ctx)).toBeNull();
+  });
 });
