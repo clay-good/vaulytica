@@ -11,7 +11,7 @@ import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
 // "(effective) date of" tolerated between the lead-in and the noun — "upon the
 // effective date of termination", "on the date of expiration" — so the trigger
 // still leads a wind-down consequence in that common phrasing.
-const TERMINATION_TRIGGER = String.raw`(?:up)?on\s+(?:the\s+)?(?:any\s+)?(?:(?:effective\s+)?date\s+of\s+)?(?:expiration|expiry|termination|cessation)(?:\s+or\s+(?:expiration|expiry|termination|cessation))?`;
+const TERMINATION_TRIGGER = String.raw`(?:up)?on\s+(?:the\s+)?(?:any\s+|such\s+)?(?:(?:effective\s+)?date\s+of\s+)?(?:expiration|expiry|termination|cessation)(?:\s+or\s+(?:expiration|expiry|termination|cessation))?`;
 
 /**
  * What the clause says happens. "delete" and "export" belong here: a modern
@@ -79,14 +79,23 @@ const EFFECT_OF_TERMINATION = new RegExp(
     // relieve either party of obligations accrued …", "termination … without
     // prejudice to any other rights or remedies".
     String.raw`|\btermination\b[^.]{0,60}?\b(?:shall|will|does)\s+not\s+(?:relieve|affect|release|discharge|waive)\b` +
-    String.raw`|\btermination\b[^.]{0,80}?\bwithout\s+prejudice\s+to\b`,
+    String.raw`|\btermination\b[^.]{0,80}?\bwithout\s+prejudice\s+to\b` +
+    // "Upon such termination, the Owner may complete the Work … and the
+    // Contractor shall be liable for any costs …" — a construction / services
+    // termination-for-cause states its consequence with a party + modal, and
+    // its verbs ("complete", "be liable for") are deliberately NOT in
+    // CONSEQUENCE (a "fails to complete" TRIGGER would then read as an effect).
+    // "Upon SUCH termination" (the demonstrative pointing back at the specific
+    // termination just described) reliably introduces the consequence, so a
+    // modal within a short window is a safe, specific effect signal.
+    String.raw`|\b(?:up)?on\s+such\s+(?:termination|expiration|expiry|cancellation)\b[^.]{0,40}\b(?:shall|may|will|must)\b`,
   "i",
 );
 
 /** TERM-005 — Effect of termination clause present (warning). */
 export const rule: Rule = {
   id: "TERM-005",
-  version: "1.5.0",
+  version: "1.6.0",
   name: "Effect of termination clause",
   category: "termination",
   default_severity: "warning",

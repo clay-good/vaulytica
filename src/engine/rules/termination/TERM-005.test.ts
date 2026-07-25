@@ -60,6 +60,32 @@ describe("TERM-005 — effect of termination", () => {
   });
 });
 
+describe("the 'upon such termination' construction/services consequence (v1.6.0)", () => {
+  it("reads a completion-and-liability consequence introduced by 'Upon such termination'", () => {
+    // The demonstrative "such" (pointing back at the termination-for-cause just
+    // described) blocked the trigger, and "complete"/"be liable for" are not
+    // CONSEQUENCE verbs, so a clear effect clause was reported as absent.
+    expect(
+      TERM_005.check(
+        doc(
+          "The Owner may terminate this Agreement for cause if the Contractor materially breaches and fails to cure within fourteen (14) days after written notice.",
+          "Upon such termination, the Owner may complete the Work by whatever method it deems expedient, and the Contractor shall be liable for any costs exceeding the unpaid balance of the Contract Price.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires on a bare 'upon such termination' cross-reference with no stated consequence", () => {
+    expect(
+      TERM_005.check(
+        doc(
+          "The Owner may terminate this Agreement for cause. The definitions in Section 1 apply upon such termination of this Agreement.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});
+
 describe("the pay-through-termination-date wind-down (v1.1.0)", () => {
   it("reads pay-for-work-performed as an effect of termination", () => {
     const ctx = buildContext([
