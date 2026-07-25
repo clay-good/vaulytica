@@ -92,6 +92,28 @@ const SCALE = String.raw`(?:thousand|hundred|million|billion|trillion|kk|mm|mn|b
 // has > 8 chars between the symbol, digits, and scale, so this is byte-identical.
 const NUMERIC = new RegExp(String.raw`(${CUR})?\s{0,8}(${AMT})\s{0,8}(${SCALE})?`, "gi");
 
+// A digit amount whose currency TRAILS it — "50,000 dollars", "1,500,000 USD",
+// "5 million pounds sterling". NUMERIC reads only a leading symbol/code, so a
+// bare number with a trailing currency word or ISO code was dropped as
+// non-monetary (computeAmount requires a currency token). The trailing token is
+// required, so a plain "50,000 shares" or "30 days" never matches.
+const POSTFIX_CUR = String.raw`dollars?|euros?|pounds?(?:\s+sterling)?|yen|rupees?|USD|EUR|GBP|JPY|CAD|AUD|NZD|CHF|CNY|INR|KRW|BRL|MXN|ZAR|SGD|HKD|SEK|NOK|DKK|RUB`;
+const NUMERIC_POSTFIX = new RegExp(
+  String.raw`\b(${AMT})\s{0,8}(${SCALE})?\s{1,8}(${POSTFIX_CUR})\b`,
+  "gi",
+);
+
+/** Map a trailing currency word or ISO code to its ISO 4217 code. */
+function postfixCurrency(token: string): string {
+  const t = token.toLowerCase();
+  if (t.startsWith("dollar")) return "USD";
+  if (t.startsWith("euro")) return "EUR";
+  if (t.startsWith("pound")) return "GBP";
+  if (t === "yen") return "JPY";
+  if (t.startsWith("rupee")) return "INR";
+  return token.toUpperCase();
+}
+
 /**
  * Range amounts: "$100k to $200k", "between USD 50,000 and USD 100,000".
  * Matched before the single NUMERIC pass; the span suppresses the
@@ -234,6 +256,26 @@ export function extractAmounts(tree: DocumentTree): MoneyReference[] {
         position: posInParagraph(ctx, m.index, m.index + m[0].length),
       });
       if (lo.fromDollar) dollarSourced.push(idx);
+    }
+    // Trailing-currency amounts ("50,000 dollars", "1.5m USD"), recorded before
+    // the leading-currency NUMERIC pass so its span suppresses a double-count.
+    NUMERIC_POSTFIX.lastIndex = 0;
+    while ((m = NUMERIC_POSTFIX.exec(ctx.text)) !== null) {
+      const start = m.index;
+      const end = m.index + m[0].length;
+      if (rangeSpans.some(([s, e]) => start < e && end > s)) continue;
+      const currency = postfixCurrency(m[3]!);
+      const computed = computeAmount(currency, m[1], m[2]);
+      if (!computed) continue;
+      rangeSpans.push([start, end]);
+      out.push({
+        id: nextId(),
+        raw_text: m[0],
+        amount: computed.amount,
+        currency,
+        word_form: false,
+        position: posInParagraph(ctx, start, end),
+      });
     }
     // Numeric.
     NUMERIC.lastIndex = 0;
