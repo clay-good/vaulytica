@@ -4,7 +4,10 @@
   "name": "Insider Trading Policy",
   "description": "Insider trading policy under Rule 10b-5 + Rule 10b5-1 (Dec. 2022 amendments). Selects the §6.O ruleset (POL-018..POL-022).",
   "match_features": {
-    "title_keywords": ["insider trading policy", "trading policy"],
+    "title_keywords": [
+      "insider trading policy",
+      "trading policy"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "material non-public",
@@ -14,16 +17,55 @@
       "pre-clearance",
       "tipping"
     ],
-    "negative_features": ["aml", "anti-bribery", "code of conduct"]
+    "negative_features": [
+      "aml",
+      "anti-bribery",
+      "code of conduct"
+    ]
   },
   "expected_clauses": [],
   "expected_defined_terms": [],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "SEC-RULE-10B5",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["code-of-conduct"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "code-of-conduct"
+  ],
   "compliance_matrix_columns": [
     "Rule 10b-5 MNPI prohibition",
     "Blackout + pre-clearance",

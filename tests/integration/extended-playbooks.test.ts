@@ -62,4 +62,41 @@ describe("extended playbook manifest", () => {
       `rules whose gate targets are all unservable (can never fire): ${unfireable.join(", ")}`,
     ).toEqual([]);
   });
+
+  it("internal-policy playbooks suppress the generic contract rules", () => {
+    // A corporate policy (insider-trading, whistleblower, social-media,
+    // lobbying) is not a contract: it has no parties, governing law,
+    // liability cap, termination, or IP-ownership clause. These four were
+    // shipped with empty rule_overrides while their siblings (aml,
+    // code-of-conduct, …) already skipped the generic contract rules, so
+    // the generics fired as false positives on every such policy.
+    const raw = JSON.parse(readFileSync(EXTENDED_MANIFEST_PATH, "utf8")) as Array<{
+      id: string;
+      rule_overrides?: Record<string, { skip?: boolean }>;
+    }>;
+    const GENERIC = [
+      "CHOICE-001",
+      "CHOICE-003",
+      "FIN-005",
+      "IPDATA-001",
+      "RISK-001",
+      "RISK-005",
+      "STRUCT-001",
+      "STRUCT-002",
+      "TERM-002",
+      "TERM-005",
+    ];
+    for (const id of [
+      "insider-trading-policy",
+      "whistleblower-policy",
+      "social-media-policy",
+      "lobbying-policy",
+    ]) {
+      const pb = raw.find((p) => p.id === id);
+      expect(pb, `${id} missing from manifest`).toBeDefined();
+      for (const rule of GENERIC) {
+        expect(pb!.rule_overrides?.[rule]?.skip, `${id} should skip ${rule}`).toBe(true);
+      }
+    }
+  });
 });

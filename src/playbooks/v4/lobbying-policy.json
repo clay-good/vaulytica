@@ -18,16 +18,55 @@
       "political contribution",
       "covered official"
     ],
-    "negative_features": ["aml", "insider trading", "ai use"]
+    "negative_features": [
+      "aml",
+      "insider trading",
+      "ai use"
+    ]
   },
   "expected_clauses": [],
   "expected_defined_terms": [],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "LDA-FECA-STATE",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["anti-bribery-policy"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "anti-bribery-policy"
+  ],
   "compliance_matrix_columns": [
     "LDA registration + LD-2 reporting",
     "Pre-approval of activities",

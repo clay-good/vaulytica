@@ -4,7 +4,10 @@
   "name": "Social Media / External Communications Policy",
   "description": "Social media / external communications policy under NLRA § 7 + SEC Reg FD + FTC endorsement guides. Selects the §6.O ruleset (POL-042..POL-045).",
   "match_features": {
-    "title_keywords": ["social media policy", "external communications policy"],
+    "title_keywords": [
+      "social media policy",
+      "external communications policy"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "social media",
@@ -13,16 +16,55 @@
       "protected concerted",
       "ftc"
     ],
-    "negative_features": ["aml", "anti-bribery", "insider trading"]
+    "negative_features": [
+      "aml",
+      "anti-bribery",
+      "insider trading"
+    ]
   },
   "expected_clauses": [],
   "expected_defined_terms": [],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "NLRA-SEC-REG-FD-FTC",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["code-of-conduct"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "code-of-conduct"
+  ],
   "compliance_matrix_columns": [
     "NLRA § 7 — wage / concerted-activity carve-out",
     "FTC endorsement disclosure",
