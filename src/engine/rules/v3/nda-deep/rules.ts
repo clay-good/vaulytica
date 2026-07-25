@@ -166,6 +166,10 @@ export const NDA_DEEP_RULES: Rule[] = [
       "Add: 'Confidential Information does not include information already known to Receiving Party prior to disclosure, as evidenced by its written records.'",
     present_patterns: [
       /(already\s+known|prior\s+to\s+disclos|previously\s+known|in\s+the\s+possession\s+of)/i,
+      // "(rightfully) known to the Receiving Party before disclosure" — the
+      // "known … before disclosure" order with "before" (not "prior to") is as
+      // common as the forms above and was missed.
+      /\bknown\b[^.]{0,40}?\b(?:before|prior\s+to)\s+(?:its\s+|the\s+|such\s+)?disclos/i,
     ],
   }),
 
