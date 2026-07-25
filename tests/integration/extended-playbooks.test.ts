@@ -95,6 +95,10 @@ describe("extended playbook manifest", () => {
       "s-1-risk-factors",
       "healthcare-poa",
       "ropa-art-30",
+      "form-d-narrative",
+      "ppm-narrative",
+      "reg-a-plus-circular",
+      "form-adv-brochure",
     ]) {
       const pb = raw.find((p) => p.id === id);
       expect(pb, `${id} missing from manifest`).toBeDefined();

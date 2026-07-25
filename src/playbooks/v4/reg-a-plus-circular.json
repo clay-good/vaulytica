@@ -4,18 +4,71 @@
   "name": "Reg A+ Offering Circular",
   "description": "Reg A+ Tier 1 / Tier 2 offering circular (Form 1-A) prose. Per spec §6.P caveat: v4 lints prose only (REG-040). Selects the §6.P ruleset (REG-033..REG-039).",
   "match_features": {
-    "title_keywords": ["offering circular", "regulation a", "reg a+", "form 1-a"],
+    "title_keywords": [
+      "offering circular",
+      "regulation a",
+      "reg a+",
+      "form 1-a"
+    ],
     "required_clauses": [],
-    "distinguishing_phrases": ["tier 1", "tier 2", "form 1-a", "offering circular", "regulation a"],
-    "negative_features": ["form d", "form adv", "s-1", "10-k", "ppm"]
+    "distinguishing_phrases": [
+      "tier 1",
+      "tier 2",
+      "form 1-a",
+      "offering circular",
+      "regulation a"
+    ],
+    "negative_features": [
+      "form d",
+      "form adv",
+      "s-1",
+      "10-k",
+      "ppm"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Tier", "Offering Circular"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "Tier",
+    "Offering Circular"
+  ],
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "REG-A-FORM-1-A",
-  "applicable_jurisdictions": ["US"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
   "companion_playbooks": [],
   "compliance_matrix_columns": [
     "Tier 1 vs Tier 2 + offering cap",

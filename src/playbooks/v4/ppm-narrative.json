@@ -18,16 +18,59 @@
       "rule 144 legend",
       "use of proceeds"
     ],
-    "negative_features": ["form d", "form adv", "10-k", "reg a+"]
+    "negative_features": [
+      "form d",
+      "form adv",
+      "10-k",
+      "reg a+"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Subscriber", "Offering"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "Subscriber",
+    "Offering"
+  ],
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "REG-D-BLUE-SKY",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["form-d-narrative"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "form-d-narrative"
+  ],
   "compliance_matrix_columns": [
     "Issuer + offering overview",
     "Risk factors",
