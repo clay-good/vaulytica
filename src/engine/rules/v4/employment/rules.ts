@@ -337,7 +337,7 @@ const OFFER_LETTER_RULES: Rule[] = [
 const SEPARATION_RULES: Rule[] = [
   presence({
     id: "EMP-015",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "OWBPA / ADEA waiver — 21 / 45-day consideration period",
     description:
       "Separation agreements with employees 40+ must give 21 days (or 45 days for group terminations) to consider the ADEA waiver.",
@@ -353,7 +353,10 @@ const SEPARATION_RULES: Rule[] = [
       // Tolerate the spelled-then-parenthetical-numeric form legal drafting
       // universally uses: "twenty-one (21) days to consider". The "(21)"
       // between the spelled number and "days" defeated the adjacent match.
-      /(21|twenty.one|45|forty.five)\s*(?:\(\s*\d{1,2}\s*\)\s*)?days?\s+(to\s+)?(consider|review)/is,
+      // A short bounded window after "days" also tolerates the equally common
+      // "days within which to consider" / "days in which to review" phrasing;
+      // the day-count anchor keeps the match specific to a consideration clause.
+      /(21|twenty.one|45|forty.five)\s*(?:\(\s*\d{1,2}\s*\)\s*)?days?\b[^.]{0,30}?\b(?:to\s+)?(consider|review)/is,
       /consideration\s+period/i,
     ],
   }),
