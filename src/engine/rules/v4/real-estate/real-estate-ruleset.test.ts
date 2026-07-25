@@ -295,3 +295,28 @@ describe("RE-045 reads a sentence-initial 'To the Tenant's knowledge' (v1.1.0)",
     ).toBe(true);
   });
 });
+
+describe("RE-052 reads the SNDA 'no amendment without Lender's consent' (v1.1.0)", () => {
+  const SNDA_PB2: Playbook = { id: "snda", version: "1.0.0" };
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["SNDA", body]), SNDA_PB2);
+    const run = await runEngine({ rules: REAL_ESTATE_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("reads 'not bound by any amendment … made without the Lender's consent'", async () => {
+    expect(
+      (
+        await run1(
+          "A successor landlord is not bound by any amendment to the Lease made without the Lender's consent.",
+        )
+      ).has("RE-052"),
+    ).toBe(false);
+  });
+
+  it("still fires when no modification-restriction clause is present", async () => {
+    expect(
+      (await run1("The Tenant shall attorn to the successor landlord under the Lease.")).has("RE-052"),
+    ).toBe(true);
+  });
+});

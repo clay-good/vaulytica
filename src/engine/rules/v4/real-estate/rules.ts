@@ -1104,6 +1104,7 @@ const SNDA_RULES: Rule[] = [
   }),
   presence({
     id: "RE-052",
+    version: "1.1.0",
     name: "No modification of lease without lender consent",
     description: "Lender wants veto on material lease modifications post-loan.",
     citation: rePractice(
@@ -1122,6 +1123,11 @@ const SNDA_RULES: Rule[] = [
     present_patterns: [
       /no\s+modification.{0,40}without.{0,40}consent/is,
       /lender.{0,40}consent.{0,40}modification/is,
+      // "Modification" and "amendment" are synonyms, and the SNDA form states
+      // it as the successor "not bound by any AMENDMENT to the Lease made
+      // without the Lender's consent" — the modification/amendment noun before
+      // the "without … consent", which the two ordered branches above missed.
+      /(?:modif\w+|amend\w+).{0,60}\bwithout\b[^.]{0,40}consent/is,
     ],
     default_severity: "warning",
   }),
