@@ -19,15 +19,56 @@
       "principal investigator",
       "clinicaltrials.gov"
     ],
-    "negative_features": ["business associate", "merger", "license grant"]
+    "negative_features": [
+      "business associate",
+      "merger",
+      "license grant"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Subject", "Principal Investigator", "IRB"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "Subject",
+    "Principal Investigator",
+    "IRB"
+  ],
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "COMMON-RULE-FDA",
-  "applicable_jurisdictions": ["US"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
   "companion_playbooks": [],
   "compliance_matrix_columns": [
     "Common Rule § 46.116",

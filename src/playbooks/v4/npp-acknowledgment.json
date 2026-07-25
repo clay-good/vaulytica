@@ -16,16 +16,57 @@
       "received",
       "good faith effort"
     ],
-    "negative_features": ["informed consent", "authorization to disclose"]
+    "negative_features": [
+      "informed consent",
+      "authorization to disclose"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Notice of Privacy Practices", "Covered Entity"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "Notice of Privacy Practices",
+    "Covered Entity"
+  ],
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "HIPAA-164.520",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["hipaa-npp"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "hipaa-npp"
+  ],
   "compliance_matrix_columns": [
     "§ 164.520(c)(2)(ii) acknowledgment",
     "Date + signature",
