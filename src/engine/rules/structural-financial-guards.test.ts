@@ -383,7 +383,10 @@ describe("STRUCT-003 — an office signature line executes a consent (v1.6.0)", 
 
   it("accepts a certificate of incorporation signed by the incorporator", () => {
     const ctx = buildContext(
-      ["Certificate of Incorporation", "FIRST: The name of the corporation is Helios Dynamics, Inc."],
+      [
+        "Certificate of Incorporation",
+        "FIRST: The name of the corporation is Helios Dynamics, Inc.",
+      ],
       [
         "Execution",
         "IN WITNESS WHEREOF, the undersigned incorporator has executed this Certificate.",
@@ -423,7 +426,10 @@ describe("STRUCT-003 — a personal instrument signed by bare name (v1.8.0)", ()
 describe("STRUCT-003 — a unilateral instrument signed by one party (v1.14.0)", () => {
   it("accepts a PIIA signed with a single 'Signature of Employee' line", () => {
     const ctx = buildContext(
-      ["Proprietary Information and Inventions Agreement", "The Employee agrees to assign all inventions to the Company."],
+      [
+        "Proprietary Information and Inventions Agreement",
+        "The Employee agrees to assign all inventions to the Company.",
+      ],
       ["Employee", "_______________________________ Signature of Employee"],
     );
     expect(STRUCT003.check(ctx)).toBeNull();
@@ -440,7 +446,11 @@ describe("STRUCT-003 — a unilateral instrument signed by one party (v1.14.0)",
   it("accepts a revocable trust signed '____ Name, Settlor and Trustee' (single office line, v1.15.0)", () => {
     const ctx = buildContext(
       ["The Family Trust", "The Settlor declares this trust and transfers the property to it."],
-      ["Execution", "Executed this 1st day of November, 2029.", "_______________________________ Eleanor Harper, Settlor and Trustee"],
+      [
+        "Execution",
+        "Executed this 1st day of November, 2029.",
+        "_______________________________ Eleanor Harper, Settlor and Trustee",
+      ],
     );
     expect(STRUCT003.check(ctx)).toBeNull();
   });

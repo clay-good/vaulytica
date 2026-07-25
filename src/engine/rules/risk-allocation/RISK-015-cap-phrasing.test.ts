@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 import { rule as RISK_015 } from "./RISK-015.js";
 import { buildContext } from "../../_test-fixtures.js";
 
-const INDEMNITY = "The Vendor shall indemnify and hold the Customer harmless from all third-party claims.";
+const INDEMNITY =
+  "The Vendor shall indemnify and hold the Customer harmless from all third-party claims.";
 
 // Each doc has an indemnity clause AND a liability cap. RISK-015 must stay
 // silent — firing "no aggregate cap" on a capped contract is a false positive.

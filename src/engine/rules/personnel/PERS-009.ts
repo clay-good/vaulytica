@@ -150,10 +150,7 @@ export const rule: Rule = {
           // "(last|preceding|prior …) N years" lead-in or an "N years of
           // employment/service" tail marks the historical window.
           const before = sentence.slice(Math.max(0, dm.index - 32), dm.index);
-          const after = sentence.slice(
-            dm.index + dm[0].length,
-            dm.index + dm[0].length + 24,
-          );
+          const after = sentence.slice(dm.index + dm[0].length, dm.index + dm[0].length + 24);
           if (
             /\b(?:last|past|preceding|prior|final|previous|recent|immediately\s+preceding)\s+$/i.test(
               before,

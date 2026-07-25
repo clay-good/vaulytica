@@ -24,7 +24,10 @@ describe("MNA-032 stockholder-approval window", () => {
   it("still warns when no stockholder-approval mechanism is stated", () => {
     expect(
       MNA032.check(
-        buildContext(["Conditions", "The Merger is subject to the expiration of the HSR waiting period and the absence of any legal prohibition."]),
+        buildContext([
+          "Conditions",
+          "The Merger is subject to the expiration of the HSR waiting period and the absence of any legal prohibition.",
+        ]),
       ),
     ).not.toBeNull();
   });

@@ -154,7 +154,10 @@ describe("v4 Governance — failure cases", () => {
     const run = await runEngine({ rules: GOVERNANCE_RULES, ctx, source_file: SRC });
     expect(run.findings.some((f) => f.rule_id === "GOV-041")).toBe(false);
     const noIpo = withPb(
-      buildContext(["Termination", "This Agreement terminates upon the written consent of the parties."]),
+      buildContext([
+        "Termination",
+        "This Agreement terminates upon the written consent of the parties.",
+      ]),
       SHA_PB,
     );
     expect(
@@ -294,9 +297,11 @@ describe("Nonprofit COI & no-members in real wording (v1.1.0)", () => {
 
   it("GOV-075 reads 'Conflicts of Interest' / 'conflict-of-interest policy'", async () => {
     expect(
-      (await run1("Conflicts of Interest. The Corporation shall follow a conflict-of-interest policy.")).has(
-        "GOV-075",
-      ),
+      (
+        await run1(
+          "Conflicts of Interest. The Corporation shall follow a conflict-of-interest policy.",
+        )
+      ).has("GOV-075"),
     ).toBe(false);
     expect((await run1("The Board manages the affairs of the Corporation.")).has("GOV-075")).toBe(
       true,
@@ -377,7 +382,9 @@ describe("Certificate of incorporation — charter clause phrasings", () => {
         )
       ).has("GOV-028"),
     ).toBe(false);
-    expect((await run1("The Corporation shall have perpetual existence.")).has("GOV-028")).toBe(true);
+    expect((await run1("The Corporation shall have perpetual existence.")).has("GOV-028")).toBe(
+      true,
+    );
   });
 
   it("GOV-030 reads the 'consent in writing' opt-out as addressing § 228", async () => {
@@ -388,6 +395,8 @@ describe("Certificate of incorporation — charter clause phrasings", () => {
         )
       ).has("GOV-030"),
     ).toBe(false);
-    expect((await run1("The Corporation shall have perpetual existence.")).has("GOV-030")).toBe(true);
+    expect((await run1("The Corporation shall have perpetual existence.")).has("GOV-030")).toBe(
+      true,
+    );
   });
 });

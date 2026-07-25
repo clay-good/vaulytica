@@ -31,7 +31,10 @@ describe("TERM-005 effect-of-termination phrasing", () => {
   it("still warns on a bare dissolution trigger with no wind-down", () => {
     expect(
       TERM_005.check(
-        buildContext(["Dissolution", "The Company shall dissolve upon the written consent of the Members."]),
+        buildContext([
+          "Dissolution",
+          "The Company shall dissolve upon the written consent of the Members.",
+        ]),
       ),
     ).not.toBeNull();
   });
@@ -61,7 +64,10 @@ describe("TERM-005 effect-of-termination phrasing", () => {
   it("still warns when the contract states no termination effect", () => {
     expect(
       TERM_005.check(
-        buildContext(["Term", "Either party may terminate this Agreement for convenience on 30 days notice."]),
+        buildContext([
+          "Term",
+          "Either party may terminate this Agreement for convenience on 30 days notice.",
+        ]),
       ),
     ).not.toBeNull();
   });

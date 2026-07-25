@@ -280,7 +280,9 @@ describe("SET-012 — a spelled demand deadline (v1.1.0)", () => {
   });
   it("still fires when no demand deadline or dollar figure is stated", async () => {
     expect(
-      (await run1("We represent Acme. Your conduct is concerning. Please be advised.")).has("SET-012"),
+      (await run1("We represent Acme. Your conduct is concerning. Please be advised.")).has(
+        "SET-012",
+      ),
     ).toBe(true);
   });
 });

@@ -207,10 +207,7 @@ const HONORIFIC_PREFIX =
  * leaving the name to test.
  */
 function isPersonalName(s: string): boolean {
-  const t = s
-    .replace(/,.*$/, "")
-    .trim()
-    .replace(HONORIFIC_PREFIX, "");
+  const t = s.replace(/,.*$/, "").trim().replace(HONORIFIC_PREFIX, "");
   if (NON_NAME_TOKEN.test(t)) return false;
   return /^[A-Z][a-z]+(?:\s+[A-Z][a-z.'’-]+){1,3}$/.test(t);
 }

@@ -25,7 +25,10 @@ describe("BNK-011 financial-covenant metrics", () => {
   it("still warns on a covenant-lite loan (no ratio covenants)", () => {
     expect(
       BNK011.check(
-        buildContext(["Covenants", "The Borrower shall deliver annual financial statements and pay all taxes when due."]),
+        buildContext([
+          "Covenants",
+          "The Borrower shall deliver annual financial statements and pay all taxes when due.",
+        ]),
       ),
     ).not.toBeNull();
   });

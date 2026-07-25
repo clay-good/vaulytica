@@ -122,24 +122,32 @@ describe("TERM-002 — failure-to-pay / perform default triggers", () => {
   it("reads immediate termination on a material default / breach with no cure (v1.2.0)", () => {
     expect(
       TERM_002.check(
-        doc("This Agreement may be terminated by either party in the event of a material default by the other."),
+        doc(
+          "This Agreement may be terminated by either party in the event of a material default by the other.",
+        ),
       ),
     ).toBeNull();
     expect(
       TERM_002.check(
-        doc("The Provider may terminate this Agreement if the Customer breaches any material term hereof."),
+        doc(
+          "The Provider may terminate this Agreement if the Customer breaches any material term hereof.",
+        ),
       ),
     ).toBeNull();
     expect(
       TERM_002.check(
-        doc("Either party may terminate for the other party's failure to perform any material obligation."),
+        doc(
+          "Either party may terminate for the other party's failure to perform any material obligation.",
+        ),
       ),
     ).toBeNull();
   });
 
   it("does not treat a convenience termination or a bare 'material terms' mention as for-cause", () => {
     expect(
-      TERM_002.check(doc("Either party may terminate this Agreement for convenience upon sixty days' notice.")),
+      TERM_002.check(
+        doc("Either party may terminate this Agreement for convenience upon sixty days' notice."),
+      ),
     ).not.toBeNull();
   });
 
@@ -147,13 +155,17 @@ describe("TERM-002 — failure-to-pay / perform default triggers", () => {
     // Immediate termination on ANY breach, no materiality or cure period.
     expect(
       TERM_002.check(
-        doc("The Licensor may terminate this EULA immediately if the Licensee breaches any of its terms."),
+        doc(
+          "The Licensor may terminate this EULA immediately if the Licensee breaches any of its terms.",
+        ),
       ),
     ).toBeNull();
     // And the SCC "terminate … if non-compliance persists" form.
     expect(
       TERM_002.check(
-        doc("The data exporter may terminate the relevant portion of the MSA if non-compliance persists for more than thirty days."),
+        doc(
+          "The data exporter may terminate the relevant portion of the MSA if non-compliance persists for more than thirty days.",
+        ),
       ),
     ).toBeNull();
   });
@@ -161,7 +173,9 @@ describe("TERM-002 — failure-to-pay / perform default triggers", () => {
   it("does not stitch a convenience-termination sentence to a later breach sentence", () => {
     expect(
       TERM_002.check(
-        doc("Either party may terminate for convenience. If a party breaches, the other may seek damages."),
+        doc(
+          "Either party may terminate for convenience. If a party breaches, the other may seek damages.",
+        ),
       ),
     ).not.toBeNull();
   });

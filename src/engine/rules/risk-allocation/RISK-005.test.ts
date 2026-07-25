@@ -65,7 +65,9 @@ describe("RISK-005 — limitation of liability present", () => {
 
   it("reads an 'under no circumstances … liability … exceed' cap (v1.2.0)", () => {
     expect(
-      RISK_005.check(doc("Under no circumstances shall the Supplier's liability exceed the purchase price.")),
+      RISK_005.check(
+        doc("Under no circumstances shall the Supplier's liability exceed the purchase price."),
+      ),
     ).toBeNull();
   });
 

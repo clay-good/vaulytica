@@ -67,11 +67,15 @@ describe("IPDATA-001 — IP ownership clause present", () => {
 
   it("reads retention / title-vesting / owner / property-of ownership forms (v1.4.0)", () => {
     expect(
-      IPDATA_001.check(doc("Licensor retains all right, title, and interest in and to the Licensed Materials.")),
+      IPDATA_001.check(
+        doc("Licensor retains all right, title, and interest in and to the Licensed Materials."),
+      ),
     ).toBeNull();
     expect(IPDATA_001.check(doc("Title to all Inventions shall vest in the Employer."))).toBeNull();
     expect(
-      IPDATA_001.check(doc("The Company shall be the sole and exclusive owner of all Work Product.")),
+      IPDATA_001.check(
+        doc("The Company shall be the sole and exclusive owner of all Work Product."),
+      ),
     ).toBeNull();
     expect(
       IPDATA_001.check(doc("All work product is the exclusive property of the Client.")),

@@ -57,10 +57,7 @@ const HONORIFIC_PREFIX =
  * the block — "____ Gregory Halstead" on a seller non-compete — is recognized.)
  */
 function isPersonalName(s: string): boolean {
-  const t = s
-    .replace(/,.*$/, "")
-    .trim()
-    .replace(HONORIFIC_PREFIX, "");
+  const t = s.replace(/,.*$/, "").trim().replace(HONORIFIC_PREFIX, "");
   if (NON_NAME_TOKEN.test(t)) return false;
   return /^[A-Z][a-z]+(?:\s+[A-Z][a-z.'’-]+){1,3}$/.test(t);
 }

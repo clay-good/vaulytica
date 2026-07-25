@@ -245,9 +245,9 @@ describe("Ground lease term & reversion in real wording (v1.1.0)", () => {
         )
       ).has("RE-021"),
     ).toBe(false);
-    expect((await run1("The Tenant shall maintain the Premises in good repair.")).has("RE-021")).toBe(
-      true,
-    );
+    expect(
+      (await run1("The Tenant shall maintain the Premises in good repair.")).has("RE-021"),
+    ).toBe(true);
   });
 });
 
@@ -262,7 +262,9 @@ describe("RE-028 reads an easement's 'maintenance and restoration' (v1.1.0)", ()
   it("reads 'shall maintain the Easement Area and restore the surface'", async () => {
     expect(
       (
-        await run1("The Grantee shall maintain the Easement Area and restore the surface after any work.")
+        await run1(
+          "The Grantee shall maintain the Easement Area and restore the surface after any work.",
+        )
       ).has("RE-028"),
     ).toBe(false);
   });
@@ -291,7 +293,9 @@ describe("RE-045 reads a sentence-initial 'To the Tenant's knowledge' (v1.1.0)",
 
   it("still fires when the certificate carries no knowledge qualifier", async () => {
     expect(
-      (await run1("The Tenant certifies that the Lease is in full force and effect.")).has("RE-045"),
+      (await run1("The Tenant certifies that the Lease is in full force and effect.")).has(
+        "RE-045",
+      ),
     ).toBe(true);
   });
 });
@@ -316,7 +320,9 @@ describe("RE-052 reads the SNDA 'no amendment without Lender's consent' (v1.1.0)
 
   it("still fires when no modification-restriction clause is present", async () => {
     expect(
-      (await run1("The Tenant shall attorn to the successor landlord under the Lease.")).has("RE-052"),
+      (await run1("The Tenant shall attorn to the successor landlord under the Lease.")).has(
+        "RE-052",
+      ),
     ).toBe(true);
   });
 });

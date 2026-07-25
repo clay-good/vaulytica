@@ -225,7 +225,10 @@ describe("v4 Employment — failure cases", () => {
     // An offer letter with no acceptance mechanism still fires; a "signing
     // bonus" mention is not an acceptance line.
     const bare = withPb(
-      buildContext(["Offer", "You will receive a signing bonus of $10,000. The role is full-time."]),
+      buildContext([
+        "Offer",
+        "You will receive a signing bonus of $10,000. The role is full-time.",
+      ]),
       OFFER_PB,
     );
     const bareRun = await runEngine({ rules: EMPLOYMENT_RULES, ctx: bare, source_file: SRC });

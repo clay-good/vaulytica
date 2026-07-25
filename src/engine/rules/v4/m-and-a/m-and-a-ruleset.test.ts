@@ -318,13 +318,13 @@ describe("Escrow release & termination in their real wording (v1.1.0)", () => {
 
   it("MNA-053 reads 'This Agreement terminates when all Escrow Funds have been disbursed'", async () => {
     expect(
-      (
-        await run1("This Agreement terminates when all Escrow Funds have been disbursed.")
-      ).has("MNA-053"),
+      (await run1("This Agreement terminates when all Escrow Funds have been disbursed.")).has(
+        "MNA-053",
+      ),
     ).toBe(false);
-    expect(
-      (await run1("The Escrow Agent shall disburse per instructions.")).has("MNA-053"),
-    ).toBe(true);
+    expect((await run1("The Escrow Agent shall disburse per instructions.")).has("MNA-053")).toBe(
+      true,
+    );
   });
 
   it("MNA-053 reads a date-certain 'Release Date … release … balance of the Escrow Fund'", async () => {
@@ -346,9 +346,9 @@ describe("Escrow release & termination in their real wording (v1.1.0)", () => {
       ).has("MNA-049"),
     ).toBe(false);
     expect(
-      (await run1("The Escrow Agent shall hold the funds and release them after twelve months.")).has(
-        "MNA-049",
-      ),
+      (
+        await run1("The Escrow Agent shall hold the funds and release them after twelve months.")
+      ).has("MNA-049"),
     ).toBe(true);
   });
 });
@@ -397,9 +397,9 @@ describe("MNA-012 reads the verb-form reps-and-warranties article (v1.1.0)", () 
 
   it("reads 'The Seller represents and warrants that …'", async () => {
     expect(
-      (
-        await run1("The Seller represents and warrants that the Company is duly organized.")
-      ).has("MNA-012"),
+      (await run1("The Seller represents and warrants that the Company is duly organized.")).has(
+        "MNA-012",
+      ),
     ).toBe(false);
   });
 
@@ -420,7 +420,9 @@ describe("MNA-032 reads 'approval by the stockholders' order (v1.1.0)", () => {
 
   it("reads 'subject to approval by the Company's stockholders'", async () => {
     expect(
-      (await run1("The merger is subject to approval by the Company's stockholders.")).has("MNA-032"),
+      (await run1("The merger is subject to approval by the Company's stockholders.")).has(
+        "MNA-032",
+      ),
     ).toBe(false);
   });
 

@@ -138,7 +138,7 @@ describe("extractCrossRefs", () => {
               runs: [
                 {
                   id: "",
-                  text: "The merger shall be effected under the Delaware General Corporation Law (the \"DGCL\"). Stockholders who perfect appraisal rights under Section 262 of the DGCL shall be entitled to the rights provided under Section 262.",
+                  text: 'The merger shall be effected under the Delaware General Corporation Law (the "DGCL"). Stockholders who perfect appraisal rights under Section 262 of the DGCL shall be entitled to the rights provided under Section 262.',
                   start: 0,
                   end: 0,
                 },
@@ -306,7 +306,9 @@ describe("external statutory article citations are not internal cross-references
 
   it("drops a bare 'of the Act' / 'of the Code' statutory cite", () => {
     expect(
-      unresolved("The representative is designated under Section 6223 of the Code and Section 12 of the Act."),
+      unresolved(
+        "The representative is designated under Section 6223 of the Code and Section 12 of the Act.",
+      ),
     ).toEqual([]);
   });
 });
@@ -444,9 +446,7 @@ describe("tax-statute section numbering", () => {
     // Bylaws-style headings carry the "Section" word: "Section 2.2. Special
     // Meetings." — the heading is a declaration, not a broken reference.
     expect(
-      unres(
-        "Section 2.2. Special Meetings. Special meetings may be called by the Board.",
-      ),
+      unres("Section 2.2. Special Meetings. Special meetings may be called by the Board."),
     ).toEqual([]);
   });
 

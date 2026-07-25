@@ -12,7 +12,7 @@ const IPL019 = V4_RULES.find((r) => r.id === "IPL-019") as Rule;
 // still warns.
 describe("IPL-019 licensed-work identification", () => {
   for (const clause of [
-    'Licensor owns all copyright in and to the Work described on Exhibit A.',
+    "Licensor owns all copyright in and to the Work described on Exhibit A.",
     '"Work" means the illustrated book titled "The Lantern Keeper," as described on Exhibit A.',
     "The Licensor grants a license to the copyrighted works listed on Schedule B.",
   ]) {
@@ -24,7 +24,10 @@ describe("IPL-019 licensed-work identification", () => {
   it("still warns when no licensed work is identified", () => {
     expect(
       IPL019.check(
-        buildContext(["Grant", "The Licensor grants the Licensee a non-exclusive license during the Term."]),
+        buildContext([
+          "Grant",
+          "The Licensor grants the Licensee a non-exclusive license during the Term.",
+        ]),
       ),
     ).not.toBeNull();
   });

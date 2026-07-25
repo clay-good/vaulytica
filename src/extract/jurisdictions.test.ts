@@ -341,10 +341,7 @@ describe("interpretation-form governing law", () => {
 
   it("does not assert a disclaimed adjectival governing law", () => {
     const refs = extractJurisdictions(
-      buildTree([
-        "Governing Law",
-        "This Agreement shall not be governed by California law.",
-      ]),
+      buildTree(["Governing Law", "This Agreement shall not be governed by California law."]),
     );
     expect(
       refs.filter((r) => r.clause_kind === "governing-law").map((r) => r.raw_text),
@@ -411,12 +408,12 @@ describe("interpretation-form governing law", () => {
       extractJurisdictions(buildTree(["Governing Law", t]))
         .filter((r) => r.clause_kind === "governing-law")
         .map((r) => r.raw_text);
-    expect(gov("This Agreement shall be subject to the laws of the Commonwealth of Massachusetts.")).toContain(
-      "Massachusetts",
-    );
-    expect(gov("The rights of the parties shall be determined under the laws of Illinois.")).toContain(
-      "Illinois",
-    );
+    expect(
+      gov("This Agreement shall be subject to the laws of the Commonwealth of Massachusetts."),
+    ).toContain("Massachusetts");
+    expect(
+      gov("The rights of the parties shall be determined under the laws of Illinois."),
+    ).toContain("Illinois");
     expect(gov("This Agreement shall be interpreted in accordance with California law.")).toContain(
       "California",
     );

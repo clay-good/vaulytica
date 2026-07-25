@@ -79,7 +79,7 @@ describe("extractParties", () => {
     expect(roles).toContain("Insurer");
   });
 
-  it("captures a trust settlor from a multi-role paren '(the \"Grantor\" and \"Trustee\")'", () => {
+  it('captures a trust settlor from a multi-role paren \'(the "Grantor" and "Trustee")\'', () => {
     const tree = buildTree([
       "Revocable Living Trust",
       'This Declaration of Trust is made by Margaret Okafor (the "Grantor" and initial "Trustee").',

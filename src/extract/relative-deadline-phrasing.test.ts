@@ -9,7 +9,11 @@ import { buildTree } from "./_fixtures.js";
 const ANCHORED: Array<[text: string, days: number, anchor: RegExp]> = [
   ["Terminable on 60 days' written notice before the Expiration Date.", -60, /Expiration Date/i],
   ["The deposit is due 30 days' before the Closing Date.", -30, /Closing Date/i],
-  ["Either party may terminate on 30 days' notice prior to the Renewal Date.", -30, /Renewal Date/i],
+  [
+    "Either party may terminate on 30 days' notice prior to the Renewal Date.",
+    -30,
+    /Renewal Date/i,
+  ],
   ["The report is due 30 days notice after the Effective Date.", 30, /Effective Date/i],
   ["Payment is due within 30 days after the Effective Date.", 30, /Effective Date/i],
 ];

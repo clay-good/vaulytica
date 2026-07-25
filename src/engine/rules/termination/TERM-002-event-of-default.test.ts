@@ -13,7 +13,10 @@ describe("TERM-002 Event-of-Default idiom", () => {
         "Default",
         'The following constitutes an "Event of Default": the Tenant fails to pay any rent when due and such failure continues for five days after written notice.',
       ],
-      ["Remedies", "Upon an Event of Default, the Landlord may terminate this Lease and recover possession."],
+      [
+        "Remedies",
+        "Upon an Event of Default, the Landlord may terminate this Lease and recover possession.",
+      ],
     );
     expect(TERM_002.check(ctx)).toBeNull();
   });
@@ -21,7 +24,10 @@ describe("TERM-002 Event-of-Default idiom", () => {
   it("recognizes terminate-then-Event-of-Default order", () => {
     expect(
       TERM_002.check(
-        buildContext(["Remedies", "The Lender may terminate the Loan upon the occurrence of an Event of Default."]),
+        buildContext([
+          "Remedies",
+          "The Lender may terminate the Loan upon the occurrence of an Event of Default.",
+        ]),
       ),
     ).toBeNull();
   });
@@ -29,7 +35,10 @@ describe("TERM-002 Event-of-Default idiom", () => {
   it("still warns on a bare 'Event of Default' mention with no termination verb", () => {
     expect(
       TERM_002.check(
-        buildContext(["Misc", 'An "Event of Default" is defined in the loan agreement referenced herein.']),
+        buildContext([
+          "Misc",
+          'An "Event of Default" is defined in the loan agreement referenced herein.',
+        ]),
       ),
     ).not.toBeNull();
   });
@@ -45,7 +54,10 @@ describe("TERM-002 Event-of-Default idiom", () => {
   it("still warns on convenience-only termination", () => {
     expect(
       TERM_002.check(
-        buildContext(["Term", "Either party may terminate this Agreement for convenience on 30 days notice."]),
+        buildContext([
+          "Term",
+          "Either party may terminate this Agreement for convenience on 30 days notice.",
+        ]),
       ),
     ).not.toBeNull();
   });

@@ -93,13 +93,17 @@ describe("FIN-005 — anniversary and Effective Date fee terms (v1.4.0)", () => 
 describe("FIN-005 — 'no later than N days' is a payment window (v1.4.1)", () => {
   it("reads 'shall pay each invoice no later than thirty (30) days after receipt'", () => {
     expect(
-      FIN_005.check(doc("Customer shall pay each invoice no later than thirty (30) days after receipt.")),
+      FIN_005.check(
+        doc("Customer shall pay each invoice no later than thirty (30) days after receipt."),
+      ),
     ).toBeNull();
   });
 
   it("reads 'payable no later than fifteen (15) days after the invoice date'", () => {
     expect(
-      FIN_005.check(doc("Each invoice is payable no later than fifteen (15) days after the invoice date.")),
+      FIN_005.check(
+        doc("Each invoice is payable no later than fifteen (15) days after the invoice date."),
+      ),
     ).toBeNull();
   });
 
@@ -111,7 +115,9 @@ describe("FIN-005 — 'no later than N days' is a payment window (v1.4.1)", () =
 
   it("still fires when payment is stated with no window at all", () => {
     expect(
-      FIN_005.check(doc("Customer shall pay each invoice as set out in the applicable Order Form.")),
+      FIN_005.check(
+        doc("Customer shall pay each invoice as set out in the applicable Order Form."),
+      ),
     ).not.toBeNull();
   });
 });
@@ -129,16 +135,22 @@ describe("FIN-005 — more payment-term phrasings (v1.6.0)", () => {
     ).toBeNull();
   });
   it("reads 'due and payable upon presentation of an invoice'", () => {
-    expect(FIN_005.check(doc("All amounts are due and payable upon presentation of an invoice."))).toBeNull();
+    expect(
+      FIN_005.check(doc("All amounts are due and payable upon presentation of an invoice.")),
+    ).toBeNull();
   });
   it("reads 'within thirty days following the end of each month'", () => {
     expect(
-      FIN_005.check(doc("Payment shall be made within thirty (30) days following the end of each month.")),
+      FIN_005.check(
+        doc("Payment shall be made within thirty (30) days following the end of each month."),
+      ),
     ).toBeNull();
   });
   it("does not read a stray 'net income of sixty' as a payment term", () => {
     expect(
-      FIN_005.check(doc("Customer shall make payment for the services. Net income was sixty million dollars.")),
+      FIN_005.check(
+        doc("Customer shall make payment for the services. Net income was sixty million dollars."),
+      ),
     ).not.toBeNull();
   });
 });
@@ -147,14 +159,18 @@ describe("FIN-005 — an installment schedule with no stated count (v1.5.0)", ()
   it("reads a lease rent 'payable in equal monthly installments' (no number)", () => {
     expect(
       FIN_005.check(
-        doc("The Tenant shall pay annual base rent of $360,000, payable in equal monthly installments."),
+        doc(
+          "The Tenant shall pay annual base rent of $360,000, payable in equal monthly installments.",
+        ),
       ),
     ).toBeNull();
   });
 
   it("still reads the counted form 'payable in twelve (12) equal monthly installments'", () => {
     expect(
-      FIN_005.check(doc("The purchase price is payable in twelve (12) equal monthly installments.")),
+      FIN_005.check(
+        doc("The purchase price is payable in twelve (12) equal monthly installments."),
+      ),
     ).toBeNull();
   });
 });
@@ -220,11 +236,15 @@ describe("FIN-005 — payment at the Closing event (v1.4.3)", () => {
 describe("FIN-005 — hyphenated compound-number windows (v1.4.2)", () => {
   it("reads 'due and payable within forty-five (45) days of the invoice date'", () => {
     expect(
-      FIN_005.check(doc("Each invoice is due and payable within forty-five (45) days of the invoice date.")),
+      FIN_005.check(
+        doc("Each invoice is due and payable within forty-five (45) days of the invoice date."),
+      ),
     ).toBeNull();
   });
 
   it("reads 'payable within twenty-one (21) days of invoice'", () => {
-    expect(FIN_005.check(doc("Fees are payable within twenty-one (21) days of invoice."))).toBeNull();
+    expect(
+      FIN_005.check(doc("Fees are payable within twenty-one (21) days of invoice.")),
+    ).toBeNull();
   });
 });

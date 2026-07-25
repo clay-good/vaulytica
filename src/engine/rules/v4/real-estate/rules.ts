@@ -428,9 +428,7 @@ const GROUND_LEASE_RULES: Rule[] = [
     // Tolerate the spelled-then-parenthetical form a lease actually writes:
     // "a term of ninety-nine (99) years". The "(99)" between the number and
     // "years" defeated the adjacent match.
-    present_patterns: [
-      /(49|50|99|forty.nine|fifty|ninety.nine)\s*(?:\(\s*\d{1,3}\s*\)\s*)?years/i,
-    ],
+    present_patterns: [/(49|50|99|forty.nine|fifty|ninety.nine)\s*(?:\(\s*\d{1,3}\s*\)\s*)?years/i],
   }),
   presence({
     id: "RE-019",

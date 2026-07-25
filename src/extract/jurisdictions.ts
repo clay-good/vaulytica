@@ -388,9 +388,7 @@ export function extractJurisdictions(
       // Delaware governing law instead of reading as a different jurisdiction
       // (CHOICE-004/009/012). A clean capture ("Delaware") has no such tail and
       // is left untouched.
-      const stateOfTail = /(?:State|Commonwealth)\s+of\s+([A-Z][A-Za-z\s&-]+?)\s*$/.exec(
-        captured,
-      );
+      const stateOfTail = /(?:State|Commonwealth)\s+of\s+([A-Z][A-Za-z\s&-]+?)\s*$/.exec(captured);
       const normalizedCapture = stateOfTail?.[1] ? stateOfTail[1].trim() : captured;
       const end = ext.end;
       const jurisdiction = JURISDICTION_AFTER_LOCALITY.exec(ctx.text.slice(end))?.[1];

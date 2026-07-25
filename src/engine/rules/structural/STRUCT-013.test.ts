@@ -65,16 +65,24 @@ describe("STRUCT-013 — unfilled template placeholders", () => {
 
   it("silent on an office signature line ('____ Jordan Ellis, Director')", () => {
     expect(
-      STRUCT_013.check(buildContext(["Signatures", "_______________________________ Jordan Ellis, Director"])),
-    ).toBeNull();
-    expect(
       STRUCT_013.check(
-        buildContext(["Signatures", "_______________________________ Morgan Lee, Chief Financial Officer"]),
+        buildContext(["Signatures", "_______________________________ Jordan Ellis, Director"]),
       ),
     ).toBeNull();
     expect(
       STRUCT_013.check(
-        buildContext(["Signatures", "_______________________________ Dana Whitfield, Incorporator"]),
+        buildContext([
+          "Signatures",
+          "_______________________________ Morgan Lee, Chief Financial Officer",
+        ]),
+      ),
+    ).toBeNull();
+    expect(
+      STRUCT_013.check(
+        buildContext([
+          "Signatures",
+          "_______________________________ Dana Whitfield, Incorporator",
+        ]),
       ),
     ).toBeNull();
   });
@@ -127,7 +135,9 @@ describe("STRUCT-013 — unfilled template placeholders", () => {
     // The guard above must not swallow a genuine placeholder: "Company Name",
     // "Insert Party Name", "Print Name" carry a field-label token.
     expect(
-      STRUCT_013.check(buildContext(["Signatures", "_______________________________ Company Name"])),
+      STRUCT_013.check(
+        buildContext(["Signatures", "_______________________________ Company Name"]),
+      ),
     ).not.toBeNull();
     expect(
       STRUCT_013.check(
@@ -172,10 +182,14 @@ describe("STRUCT-013 — unfilled template placeholders", () => {
 
   it("silent on a 'Signature of <role>' / 'Print Name of <role>' consent-form line", () => {
     expect(
-      STRUCT_013.check(buildContext(["Consent", "_______________________________ Signature of Subject"])),
+      STRUCT_013.check(
+        buildContext(["Consent", "_______________________________ Signature of Subject"]),
+      ),
     ).toBeNull();
     expect(
-      STRUCT_013.check(buildContext(["Consent", "_______________________________ Print Name of Witness"])),
+      STRUCT_013.check(
+        buildContext(["Consent", "_______________________________ Print Name of Witness"]),
+      ),
     ).toBeNull();
   });
 
@@ -194,7 +208,11 @@ describe("STRUCT-013 — unfilled template placeholders", () => {
   it("still fires on an underscore run followed by a non-party placeholder", () => {
     expect(
       STRUCT_013.check(
-        buildContext(["Agreement", "The parties agree.", "_______________________________ Insert Party Name Here"]),
+        buildContext([
+          "Agreement",
+          "The parties agree.",
+          "_______________________________ Insert Party Name Here",
+        ]),
       ),
     ).not.toBeNull();
   });
