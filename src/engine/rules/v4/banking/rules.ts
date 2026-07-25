@@ -309,7 +309,13 @@ const LOAN_AGREEMENT_RULES: Rule[] = [
       "Add 'Financial Covenants' (leverage ratio, interest coverage, fixed-charge coverage, minimum liquidity) — or explicitly note 'covenant-lite' design.",
     present_patterns: [
       /financial\s+covenants?/i,
-      /(leverage\s+ratio|interest\s+coverage|fixed.charge|minimum\s+liquidity)/i,
+      // The four original metrics missed the most common ratio of all — the
+      // debt-service-coverage ratio (DSCR) — plus current ratio, debt-to-equity,
+      // loan-to-value, total/net leverage, and a minimum net-worth floor. Each
+      // is an unambiguous financial-covenant metric (not an incidental mention),
+      // so a loan whose covenant is "maintain a debt-service-coverage ratio of
+      // not less than 1.25 to 1.00" is no longer reported as covenant-lite.
+      /(leverage\s+ratio|interest\s+coverage|fixed.charge|minimum\s+liquidity|debt.service.coverage|coverage\s+ratio|current\s+ratio|debt.to.(?:equity|capital(?:ization)?)|loan.to.value|(?:total|net|senior)\s+leverage|minimum\s+(?:tangible\s+)?net\s+worth)/i,
     ],
     default_severity: "warning",
   }),
