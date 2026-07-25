@@ -236,7 +236,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "IPDATA-004",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -880,7 +880,7 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected mutual-nda (score 0.9). Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\", \"Recipient\", \"Confidential Information\", \"Permitted Purpose\". Negative features penalized: \"employee\".",
-  "result_hash": "57392856d67298e2aa17e655f19db47b9b275c6e73ae8bd25cd6a42d1112b861",
+  "result_hash": "d1c2911c34db8b3f7543162dc08e5147d2dee249994578c458888b886872dd10",
   "source_file": {
     "name": "pasted-mutual-nda.txt",
     "sha256": "908fab1cfc67064f69fefb5bd7aed92907945bf54c100eba2dcdb9d75c0e6d40",

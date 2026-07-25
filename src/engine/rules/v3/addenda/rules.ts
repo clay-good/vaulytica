@@ -439,6 +439,11 @@ export const ADDENDA_RULES: Rule[] = [
     present_patterns: [
       /(click[- ]to[- ]cancel|cancel\s+(?:online|at\s+any\s+time)|cancel\w+\s+(?:through|via)\s+(?:your\s+account|the\s+website)|easy\s+cancellation)/i,
       /(ROSCA|Restore\s+Online\s+Shoppers)/i,
+      // The mechanism words rarely sit adjacent to "cancel": "you may cancel
+      // your subscription at any time through your account settings by clicking
+      // 'Cancel Subscription'" states click-to-cancel with the object between.
+      /cancel[^.]{0,50}?\b(?:at\s+any\s+time|through\s+(?:your\s+)?account|via\s+(?:your\s+)?account|in\s+(?:your\s+)?account\s+settings|online)\b/i,
+      /clicking\s+["“'’]?\s*cancel/i,
     ],
     default_severity: "warning",
   }),

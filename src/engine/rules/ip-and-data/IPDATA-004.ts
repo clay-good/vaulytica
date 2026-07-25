@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
 /** IPDATA-004 — Data ownership distinction from IP (info). */
 export const rule: Rule = {
   id: "IPDATA-004",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Data ownership distinguished from IP",
   category: "ip-and-data",
   default_severity: "info",
@@ -23,7 +23,10 @@ export const rule: Rule = {
         // "Vendor owns the Service Data" fails the suppression and the rule
         // falsely reports ownership as unaddressed (Service Data is one of the
         // three trigger terms above).
-        /\b(?:customer\s+data|usage\s+data|service\s+data)\s+ownership\b|owns?\s+(?:the\s+)?(?:customer\s+|usage\s+|service\s+)?data\b/i,
+        // Ownership is also allocated by RETENTION — "You retain all rights in
+        // the data you upload", "Customer retains ownership of its data" — which
+        // the "owns … data" forms above miss.
+        /\b(?:customer\s+data|usage\s+data|service\s+data)\s+ownership\b|owns?\s+(?:the\s+)?(?:customer\s+|usage\s+|service\s+)?data\b|retains?\s+(?:all\s+)?(?:rights?|ownership|title)\s+(?:in|to|of)\s+[^.]{0,30}?\bdata\b/i,
       )
     )
       return null;

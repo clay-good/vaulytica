@@ -238,7 +238,7 @@
       "finding_id": "IPDATA-004-s1.1-400",
       "fired": true,
       "rule_id": "IPDATA-004",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -922,7 +922,7 @@
       "explanation": "IP and data ownership are different. For SaaS, the customer typically owns its data; the vendor typically owns usage analytics. Address each explicitly.",
       "id": "IPDATA-004-s1.1-400",
       "rule_id": "IPDATA-004",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "info",
       "source_citations": [],
       "title": "Data ownership not separately addressed"
@@ -990,7 +990,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "10486d1376028d88efc28027e6e17e0699a87363a5c7b7625d58c5e7922f9ccf",
+  "result_hash": "c97f7eb23cff8288c80def3a78032a5483c972c5d0bcc283358fc99420328aef",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
     "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",
