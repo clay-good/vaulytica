@@ -106,7 +106,7 @@ const GOV_LAW_SUBJECT_FIRST = new RegExp(
 );
 
 const VENUE = new RegExp(
-  String.raw`\b(?:venue|forum|exclusive\s+jurisdiction|exclusive\s+venue|jurisdiction\s+and\s+venue|sole\s+and\s+exclusive\s+(?:venue|jurisdiction|forum))\b(?:\([0-9]+\)|[^.;)]){0,80}?(?:shall\s+(?:be|lie)|is|lies|shall\s+rest|will\s+be)\s+(?:exclusively\s+|solely\s+|only\s+|properly\s+)?(?:in|with|within)?\s*(?:any\s+|the\s+|a\s+)?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+|in\s+|within\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
+  String.raw`\b(?:venue|forum|exclusive\s+jurisdiction|exclusive\s+venue|jurisdiction\s+and\s+venue|sole\s+and\s+exclusive\s+(?:venue|jurisdiction|forum))\b(?:\([0-9]+\)|[^.;)]){0,80}?(?:shall\s+(?:be|lie)|is|lies|shall\s+rest|will\s+be)\s+(?:exclusively\s+|solely\s+|only\s+|proper(?:ly)?\s+)*(?:in|with|within)?\s*(?:any\s+|the\s+|a\s+)?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+|in\s+|within\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
   "gi",
 );
 /**
@@ -150,6 +150,11 @@ const VENUE_SIMPLE =
 const DISPUTE_NOUN = String.raw`disputes?|claims?|actions?|proceedings?|litigation|controvers(?:y|ies)|disagreements?|suits?|lawsuits?`;
 const FORUM_VERB = String.raw`resolved|brought|litigated|adjudicated|heard|instituted|commenced|filed|maintained|tried|venued|determined`;
 const COURT_ADJECTIVE = String.raw`competent\s+|appropriate\s+|proper\s+|applicable\s+`;
+// A forum clause often names the court type before "Court(s)": "the Superior
+// Court of California", "the Circuit Court of Cook County". The qualifier sits
+// between the article and the "Court" token, so it is admitted as an optional
+// prefix to the "courts?" token in the forum patterns.
+const COURT_NAME = String.raw`(?:Superior\s+|Supreme\s+|District\s+|Circuit\s+|Chancery\s+|Commercial\s+|County\s+|Municipal\s+)?`;
 // The run-up window between the dispute noun and its forum verb excludes ")"
 // so a list marker never bridges two clauses — but that also broke on the
 // numeric parenthetical ordinary drafting puts there: "Any dispute not
@@ -157,8 +162,11 @@ const COURT_ADJECTIVE = String.raw`competent\s+|appropriate\s+|proper\s+|applica
 // reported as having no venue clause. A digits-only parenthetical is a day
 // count, never a clause boundary, so it is admitted as a unit.
 const RUNUP = String.raw`(?:\([0-9]+\)|[^.;)])`;
+// The forum verb is frequently a doublet — "filed AND maintained", "brought
+// AND prosecuted", "commenced AND litigated" — and the adverb slot carries
+// "only" ("brought only in") as readily as "exclusively", so both are admitted.
 const VENUE_RESOLVED_IN = new RegExp(
-  String.raw`\b(?:${DISPUTE_NOUN})\b${RUNUP}{0,200}?\b(?:shall|must|will|may)\s+be\s+(?:${FORUM_VERB})\s+(?:exclusively\s+|solely\s+|finally\s+)?(?:in|before|by)\s+(?:any\s+|the\s+|a\s+)?(?:${COURT_ADJECTIVE})?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_ADJECTIVE})?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+|in\s+|within\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
+  String.raw`\b(?:${DISPUTE_NOUN})\b${RUNUP}{0,200}?\b(?:shall|must|will|may)\s+(?:be\s+(?:${FORUM_VERB})(?:\s+and\s+(?:${FORUM_VERB}))?|take\s+place|proceed|lie)\s+(?:exclusively\s+|solely\s+|finally\s+|only\s+)?(?:in|before|by)\s+(?:any\s+|the\s+|a\s+)?(?:${COURT_ADJECTIVE})?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_ADJECTIVE})?${COURT_NAME}courts?\s+(?:of\s+competent\s+jurisdiction\s+)?(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+|in\s+|within\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
   "gi",
 );
 
@@ -176,7 +184,7 @@ const VENUE_RESOLVED_IN = new RegExp(
 // jurisdiction …"), and the clause reads "jurisdiction OF the courts" OR
 // "jurisdiction IN the courts".
 const VENUE_CONSENT = new RegExp(
-  String.raw`\b(?:consent|submit|agree|attorn)\w*\s+(?:[^.;)]{0,40}?\s+)?to\s+(?:the\s+)?(?:${COURT_ADJECTIVE}|exclusive\s+|non-?exclusive\s+|personal\s+|sole\s+|general\s+)*jurisdiction\s+(?:and\s+venue\s+)?(?:of|in)\s+(?:any\s+|the\s+|a\s+)?(?:${COURT_ADJECTIVE})?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_ADJECTIVE})?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+|in\s+|within\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
+  String.raw`\b(?:consent|submit|agree|attorn|subject)\w*\s+(?:[^.;)]{0,40}?\s+)?to\s+(?:the\s+)?(?:${COURT_ADJECTIVE}|exclusive\s+|non-?exclusive\s+|personal\s+|sole\s+|general\s+)*jurisdiction\s+(?:and\s+venue\s+)?(?:of|in)\s+(?:any\s+|the\s+|a\s+)?(?:${COURT_ADJECTIVE})?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_ADJECTIVE})?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+|in\s+|within\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
   "gi",
 );
 // "The parties agree to venue in Harris County, Texas" — venue selected as the
@@ -197,8 +205,21 @@ const VENUE_AGREE_IN = new RegExp(
  * derivative action" (a foreign venue, per CHOICE-005, with no treaty).
  */
 const VENUE_SUBJECT = new RegExp(
-  String.raw`\b(?:Court\s+of\s+Chancery\s+of\s+|(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+|in\s+))(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)\s+(?:shall\s+be|is|are|will\s+be|shall\s+constitute)\s+the\s+(?:sole\s+|and\s+|exclusive\s+)+(?:forum|venue)\b`,
+  String.raw`\b(?:Court\s+of\s+Chancery\s+of\s+|(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?${COURT_NAME}courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+|in\s+))(?:[A-Z][A-Za-z\s&.-]+?,\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)\s+(?:shall\s+be|is|are|will\s+be|shall\s+constitute)\s+the\s+(?:sole\s+|and\s+|exclusive\s+)+(?:forum|venue)\b`,
   "g",
+);
+
+/**
+ * The forum is also selected by WAIVING objection to it: "each party waives any
+ * objection to venue in the courts of Cook County, Illinois", "the parties
+ * waive any objection to the laying of venue in the state courts of Dallas
+ * County, Texas". The clause fixes the forum as surely as an affirmative
+ * consent, but names no dispute and no "shall be … forum" verb, so every
+ * pattern above missed it and CHOICE-003 read the document as forum-silent.
+ */
+const VENUE_WAIVE_OBJECTION = new RegExp(
+  String.raw`\bwaiv\w+\s+(?:any\s+|all\s+)?objections?\s+(?:[^.;)]{0,30}?\s+)?to\s+(?:the\s+)?(?:laying\s+of\s+)?venue\s+(?:in|of)\s+(?:any\s+|the\s+|a\s+)?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+|in\s+|within\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
+  "gi",
 );
 
 const ARBITRATION_SEAT =
@@ -379,6 +400,7 @@ export function extractJurisdictions(
     runRegex(VENUE_CONSENT, ctx.text, recordVenue);
     runRegex(VENUE_AGREE_IN, ctx.text, recordVenue);
     runRegex(VENUE_SUBJECT, ctx.text, recordVenue);
+    runRegex(VENUE_WAIVE_OBJECTION, ctx.text, recordVenue);
     runRegex(ARBITRATION_SEAT, ctx.text, (m) => {
       const raw = (m[1] ?? "").trim();
       out.push({
