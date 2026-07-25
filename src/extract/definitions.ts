@@ -33,6 +33,13 @@ const DEFINITION_INLINE = /["“”']([A-Z][\w\s\-&]{1,80}?)["“”']\s+(?:shal
 // reported them as used-but-undefined.
 const DEFINITION_INLINE_REFERS =
   /["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s+(?:(?:shall|will)\s+)?(?:refers?\s+to|(?:is|are)\s+defined\s+(?:as|to\s+mean\b))/gi;
+// A period / term defined by its BOUNDS rather than by "means" — `The "Tolling
+// Period" shall begin on the Effective Date and shall continue until …`, `the
+// "Restricted Period" shall commence on the Closing`. The quoted term is the
+// definitional marker; the loop keeps only a term ending in Period/Term (a
+// bounded temporal defined term) so an ordinary quoted usage is not swept in.
+const DEFINITION_INLINE_PERIOD =
+  /["“”']([A-Z][\w\s\-&/'’.]{1,60}?)["“”']\s+(?:shall|will)\s+(?:begin|commence|start|run)\b/gi;
 const DEFINITION_BARE = /^\s*([A-Z][\w\s\-&]{1,80}?)\s+(?:shall\s+)?means?\b/i;
 
 /**
@@ -772,6 +779,24 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
     out.push({
       term,
       definition: after,
+      defined_at: {
+        section_id: base.section_id,
+        paragraph_id: base.paragraph_id,
+        start: base.start + m.index,
+        end: base.start + m.index + m[0].length,
+      },
+      used_at: [],
+    });
+  }
+  DEFINITION_INLINE_PERIOD.lastIndex = 0;
+  while ((m = DEFINITION_INLINE_PERIOD.exec(text)) !== null) {
+    const term = m[1]!.trim();
+    // Only a bounded temporal term — "Tolling Period", "Restricted Period",
+    // "Term" — is defined by "shall begin/commence"; a plain quoted noun is not.
+    if (!/\b(?:Period|Term)$/.test(term)) continue;
+    out.push({
+      term,
+      definition: text.slice(m.index + m[0].length).trim(),
       defined_at: {
         section_id: base.section_id,
         paragraph_id: base.paragraph_id,

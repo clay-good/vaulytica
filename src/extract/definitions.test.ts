@@ -163,6 +163,27 @@ describe("parenthetical definitions", () => {
     expect(map.entries.map((e) => e.term)).toContain("Escrow Fund");
   });
 
+  it("registers a period/term defined by its bounds ('shall begin … until')", () => {
+    // A tolling agreement defines its central term as `The "Tolling Period"
+    // shall begin on the Effective Date and shall continue until …`, which the
+    // "means"/"refers to" inline forms never saw, so STRUCT-006 reported it
+    // used-but-undefined.
+    const map = extractDefinitions(
+      buildTree([
+        "Tolling Period",
+        'The "Tolling Period" shall begin on the Effective Date and shall continue until thirty (30) days after either Party delivers notice.',
+      ]),
+    );
+    expect(map.entries.map((e) => e.term)).toContain("Tolling Period");
+  });
+
+  it("does not treat a non-period quoted term with 'shall begin' as a definition", () => {
+    const map = extractDefinitions(
+      buildTree(["Services", 'The "Services" shall begin promptly after the Effective Date.']),
+    );
+    expect(map.entries.map((e) => e.term)).not.toContain("Services");
+  });
+
   it("does not read a used-only quoted term without the appositive comma", () => {
     // "(a sum equal to the 'Base Amount')" USES the term; there is no comma
     // before 'the', so the trailing-parenthetical form must not register it.
