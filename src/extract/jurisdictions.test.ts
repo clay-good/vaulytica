@@ -74,6 +74,19 @@ describe("extractJurisdictions", () => {
     expect(refs.find((r) => r.clause_kind === "venue")?.raw_text).toBe("Delaware");
   });
 
+  it("captures a venue clause with an adverb between the verb and the court", () => {
+    // "Venue … shall lie exclusively in the state courts located in Cook
+    // County, Illinois" — the adverb "exclusively" after "shall lie" defeated
+    // the VENUE pattern, so CHOICE-003 reported no venue clause at all.
+    const tree = buildTree([
+      "Governing Law; Venue",
+      "This Lease shall be governed by the laws of the State of Illinois. Venue for any action arising out of this Lease shall lie exclusively in the state courts located in Cook County, Illinois.",
+    ]);
+    expect(extractJurisdictions(tree).find((r) => r.clause_kind === "venue")?.raw_text).toBe(
+      "Illinois",
+    );
+  });
+
   it("resolves a county-and-state venue to the state", () => {
     const tree = buildTree([
       "Venue",
