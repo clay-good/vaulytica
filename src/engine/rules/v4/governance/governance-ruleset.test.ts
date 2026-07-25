@@ -272,6 +272,16 @@ describe("GOV-054 — a denied whistleblower procedure is absence, not presence 
       ).has("GOV-054"),
     ).toBe(false);
   });
+  it("GOV-053 reads the verb-form auditor authority ('sole authority to appoint, compensate, retain')", async () => {
+    expect(
+      (
+        await run1(
+          "The Committee has the sole authority to appoint, compensate, retain, and oversee the independent auditor.",
+        )
+      ).has("GOV-053"),
+    ).toBe(false);
+    expect((await run1("The Committee shall meet at least quarterly.")).has("GOV-053")).toBe(true);
+  });
 });
 
 describe("Nonprofit COI & no-members in real wording (v1.1.0)", () => {

@@ -1043,6 +1043,7 @@ const COMMITTEE_CHARTER_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-053",
+    version: "1.1.0",
     name: "Audit committee — § 301 oversight authority",
     description:
       "Audit-committee charter must reflect SOX § 301 oversight of the registered public accounting firm.",
@@ -1057,6 +1058,12 @@ const COMMITTEE_CHARTER_RULES: Rule[] = [
       "Add a clause stating the audit committee shall be 'directly responsible for the appointment, compensation, retention, and oversight of the work of any registered public accounting firm'.",
     present_patterns: [
       /(directly\s+responsible|appointment.{0,20}compensation.{0,20}retention).{0,60}(auditor|registered\s+public\s+accounting\s+firm)/is,
+      // The authority is as often stated with the VERBS — "the Committee has
+      // the sole authority to appoint, compensate, retain, and oversee the
+      // independent auditor" — not the Rule 10A-3 nouns; add the verb series
+      // and the "sole authority … auditor" / "oversee … auditor" forms.
+      /appoint\w*[^.]{0,30}compensat\w*[^.]{0,30}retain/i,
+      /(?:sole\s+authority|oversee\w*|oversight)[^.]{0,60}(?:independent\s+)?(?:auditor|registered\s+public\s+accounting\s+firm)/is,
     ],
     default_severity: "warning",
   }),

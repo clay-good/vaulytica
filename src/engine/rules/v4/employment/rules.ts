@@ -323,7 +323,7 @@ const OFFER_LETTER_RULES: Rule[] = [
       /accepted\s+and\s+agreed/i,
       /please\s+sign\s+and\s+return/i,
       /\bby:\s*_+/i,
-      /(?:^|\n)\s*accepted\s*[:\-]/i,
+      /(?:^|\n)\s*accepted\s*[:-]/i,
       /\bacceptance\b[^.]{0,60}\bsign(?:ing|ature)?\b/i,
       /\bsign(?:ing)?\b[^.]{0,20}(?:below|and\s+return(?:ing)?)/i,
     ],
