@@ -858,6 +858,7 @@ const PIIA_RULES: Rule[] = [
 const PIP_RULES: Rule[] = [
   presence({
     id: "EMP-039",
+    version: "1.1.0",
     name: "Specific performance deficiencies identified",
     description: "PIP must identify specific performance deficiencies.",
     citation: eeocGuidance(),
@@ -870,10 +871,14 @@ const PIP_RULES: Rule[] = [
     present_patterns: [
       /performance\s+(deficienc|issues?|concerns?)/i,
       /(deficien|gap|fall(ing|en)\s+short)/i,
+      // "Areas of Concern" is the heading a PIP overwhelmingly uses for the
+      // deficiency list; the "performance concern" adjacency above misses it.
+      /areas?\s+of\s+concern/i,
     ],
   }),
   presence({
     id: "EMP-040",
+    version: "1.1.0",
     name: "Measurable performance goals",
     description: "PIP must include measurable performance goals.",
     citation: eeocGuidance(),
@@ -885,6 +890,9 @@ const PIP_RULES: Rule[] = [
     present_patterns: [
       /performance\s+goals?/i,
       /(measurable|quantitative|specific)\s+(goals?|metrics?|targets?)/is,
+      // "Performance Expectations" is the synonymous PIP heading under which the
+      // measurable targets (quota %, response times) are enumerated.
+      /performance\s+expectations?/i,
     ],
   }),
   presence({
@@ -952,6 +960,7 @@ const PIP_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-044",
+    version: "1.1.0",
     name: "Acknowledgment and signature",
     description:
       "PIP should include employee acknowledgment with a 'signing does not equal agreement' qualifier.",
@@ -968,8 +977,11 @@ const PIP_RULES: Rule[] = [
     recommendation:
       "Add an acknowledgment line with the 'signature confirms receipt, not agreement' qualifier.",
     present_patterns: [
-      /acknowledge.{0,40}receipt/is,
-      /signature\s+(does\s+not|is\s+not)\s+(equal|imply|constitute)\s+agreement/is,
+      // "acknowledge that you have RECEIVED" is as common as "acknowledge
+      // receipt"; and the receipt-not-agreement disclaimer is written "your
+      // signature does not INDICATE agreement" as often as "constitute".
+      /acknowledge.{0,40}(receipt|received)/is,
+      /signature\s+(does\s+not|is\s+not)\s+(equal|imply|constitute|indicate|mean)\s+(?:[a-z]+\s+){0,3}?agreement/is,
     ],
     default_severity: "warning",
   }),
