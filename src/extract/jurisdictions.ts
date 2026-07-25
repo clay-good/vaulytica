@@ -56,7 +56,7 @@ const JURISDICTION_AFTER_LOCALITY = new RegExp(
  */
 const SOVEREIGN_PREFIX = String.raw`the\s+(?:State|Commonwealth|Republic|Kingdom|Province)\s+of\s+|the\s+`;
 const GOV_LAW = new RegExp(
-  String.raw`\b((?:governed\s+by|(?:interpreted|construed)\s+(?:under|in\s+accordance\s+with)|subject\s+to|determined\s+(?:under|by|in\s+accordance\s+with))\s*,?\s*(?:and\s+construed\s+(?:in\s+accordance\s+with\s*,?\s*)?)?the\s+laws?\s+of\s+(?:${SOVEREIGN_PREFIX})?([A-Z][A-Za-z\s&-]+?))(?=[.,;)]|\s+(?:without|excluding|and|regardless)|$)`,
+  String.raw`\b((?:governed\s+by|(?:interpreted|construed|resolved)\s+(?:under|in\s+accordance\s+with)|subject\s+to|determined\s+(?:under|by|in\s+accordance\s+with))\s*,?\s*(?:and\s+construed\s+(?:in\s+accordance\s+with\s*,?\s*)?)?the\s+(?:substantive\s+|internal\s+|domestic\s+|local\s+|applicable\s+)*laws?\s+of\s+(?:${SOVEREIGN_PREFIX})?([A-Z][A-Za-z\s&-]+?))(?=[.,;)]|\s+(?:without|excluding|and|regardless)|$)`,
   "gi",
 );
 
@@ -101,7 +101,7 @@ const GOV_LAW_ADJ_SUBJECT = new RegExp(
  * country so "the laws of physics/God/war" do not register as a jurisdiction.
  */
 const GOV_LAW_SUBJECT_FIRST = new RegExp(
-  String.raw`\bthe\s+laws?\s+of\s+(?:the\s+(?:State|Commonwealth)\s+of\s+)?(${US_STATE_PATTERN}|${COUNTRY_PATTERN})\b[^.;)]{0,20}?\s+(?:shall\s+)?(?:govern|appl(?:y|ies)|control)\b`,
+  String.raw`\bthe\s+(?:substantive\s+|internal\s+|domestic\s+|local\s+|applicable\s+)*laws?\s+of\s+(?:the\s+(?:State|Commonwealth)\s+of\s+)?(${US_STATE_PATTERN}|${COUNTRY_PATTERN})\b[^.;)]{0,20}?\s+(?:shall\s+)?(?:govern|appl(?:y|ies)|control)\b`,
   "gi",
 );
 
