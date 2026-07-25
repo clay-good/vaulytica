@@ -60,7 +60,7 @@ const PATTERNS: Array<{ re: RegExp; label: string }> = [
 
 export const rule: Rule = {
   id: "STRUCT-013",
-  version: "1.5.0",
+  version: "1.6.0",
   name: "Unfilled template placeholders",
   category: "structural",
   default_severity: "critical",
@@ -159,6 +159,11 @@ function isBareNameSignature(text: string, partyNames: string[]): boolean {
   const after = text.replace(/_{6,}/g, " ").replace(/\/s\//g, " ").trim();
   if (!after) return false;
   if (STANDALONE_SIGNATORY_ROLE.test(after)) return true;
+  // A signature line labeled by role beneath the rule — "____ Signature of
+  // Subject", "____ Signed by Applicant", "____ Print Name of Witness" — as a
+  // consent form, affidavit, or application signs. A genuine "[Insert
+  // Signature]" placeholder starts with the bracket / "Insert", not the label.
+  if (/^(?:signature|signed|print(?:ed)?\s+name)\s+(?:of|by)\b/i.test(after)) return true;
   const lower = after.toLowerCase();
   return partyNames.some((n) => {
     // A party is often extracted with its role parenthetical attached —

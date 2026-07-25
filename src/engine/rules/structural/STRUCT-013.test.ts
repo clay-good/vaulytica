@@ -127,6 +127,15 @@ describe("STRUCT-013 — unfilled template placeholders", () => {
     ).toBeNull();
   });
 
+  it("silent on a 'Signature of <role>' / 'Print Name of <role>' consent-form line", () => {
+    expect(
+      STRUCT_013.check(buildContext(["Consent", "_______________________________ Signature of Subject"])),
+    ).toBeNull();
+    expect(
+      STRUCT_013.check(buildContext(["Consent", "_______________________________ Print Name of Witness"])),
+    ).toBeNull();
+  });
+
   it("silent on a standalone 'Notary Public' signature line", () => {
     expect(
       STRUCT_013.check(

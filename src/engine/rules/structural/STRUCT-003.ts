@@ -52,6 +52,9 @@ function isBareNameSignatureLine(text: string, partyNames: string[]): boolean {
   if (!/_{6,}/.test(text)) return false;
   const after = text.replace(/_{6,}/g, " ").replace(/\/s\//g, " ").trim();
   if (!after) return false;
+  // "____ Signature of Subject" / "____ Print Name of Witness" — the label
+  // form a consent, affidavit, or application signs with.
+  if (/^(?:signature|signed|print(?:ed)?\s+name)\s+(?:of|by)\b/i.test(after)) return true;
   const lower = after.toLowerCase();
   return partyNames.some((n) => {
     // Strip a role parenthetical the extractor may attach —
@@ -116,7 +119,7 @@ const PUBLICATION_STAMP =
  */
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.12.0",
+  version: "1.13.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",
