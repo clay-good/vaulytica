@@ -932,6 +932,7 @@ const WRITTEN_CONSENT_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-044",
+    version: "1.1.0",
     name: "In-lieu-of-meeting recital",
     description: "The consent should recite that it is in lieu of a meeting (DGCL §§ 141(f), 228).",
     citation: dgcl("228"),
@@ -942,7 +943,15 @@ const WRITTEN_CONSENT_RULES: Rule[] = [
       "Standard recital language anchors the consent to the statutory authority for action without a meeting.",
     recommendation:
       "Include 'pursuant to DGCL § [141(f) / 228] and in lieu of a [meeting of the Board of Directors / annual or special meeting of the stockholders]'.",
-    present_patterns: [/in\s+lieu\s+of\s+a\s+meeting/i],
+    present_patterns: [
+      /in\s+lieu\s+of\s+a\s+meeting/i,
+      // "without a meeting" is the ACTUAL DGCL § 141(f) / § 228 phrase ("may be
+      // taken without a meeting … if all … consent thereto in writing"); it is
+      // more common than the "in lieu of a meeting" paraphrase and means the
+      // same thing.
+      /(?:consent|action|taken)\b[^.]{0,60}?\bwithout\s+a\s+meeting/i,
+      /\bwithout\s+a\s+meeting\b[^.]{0,60}?\b(?:consent|written|vote)/i,
+    ],
   }),
   presence({
     id: "GOV-045",
