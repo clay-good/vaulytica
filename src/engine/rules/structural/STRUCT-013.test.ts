@@ -79,6 +79,40 @@ describe("STRUCT-013 — unfilled template placeholders", () => {
     ).toBeNull();
   });
 
+  it("silent on a bare-name signature line of a known party (prenup / will style)", () => {
+    expect(
+      STRUCT_013.check(
+        buildContext([
+          "Prenuptial Agreement",
+          'This Agreement is between Alexandra Reyes ("Alexandra") and Jonathan Pierce ("Jonathan"), who intend to marry.',
+          "IN WITNESS WHEREOF, the parties have executed this Agreement.",
+          "_______________________________ Alexandra Reyes",
+          "_______________________________ Jonathan Pierce",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("silent on a standalone 'Notary Public' signature line", () => {
+    expect(
+      STRUCT_013.check(
+        buildContext([
+          "Acknowledgment",
+          "Subscribed and sworn before me this day.",
+          "_______________________________ Notary Public",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires on an underscore run followed by a non-party placeholder", () => {
+    expect(
+      STRUCT_013.check(
+        buildContext(["Agreement", "The parties agree.", "_______________________________ Insert Party Name Here"]),
+      ),
+    ).not.toBeNull();
+  });
+
   it("still fires on a real placeholder even alongside an office signature line", () => {
     expect(
       STRUCT_013.check(

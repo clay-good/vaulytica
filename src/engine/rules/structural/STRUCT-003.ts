@@ -35,6 +35,29 @@ const CONFORMED_SIG = /^\s*\/s\/\s+\S/m;
 // only the underscore form to avoid double-counting the same line.
 const OFFICE_SIG_LINE =
   /_{4,}\s*[A-Z][A-Za-z.'’-]+(?:\s+[A-Z][A-Za-z.'’-]+){0,3},?\s+(?:Director|President|Vice\s+President|Secretary|Treasurer|Chief\s+[A-Za-z]+\s+Officer|CEO|CFO|COO|CTO|Manager|Managing\s+Member|Member|Trustee|General\s+Partner|Partner|(?:Sole\s+)?Incorporator|Authorized\s+Signatory|Its\b)\b/g;
+// A standalone signatory office on a signature line — "____ Notary Public",
+// "____ Witness" — with no personal name attached.
+const STANDALONE_SIGNATORY_ROLE =
+  /_{4,}\s*(?:\/s\/\s*)?(?:Notary\s+Public|Notary|Witness|Affiant|Declarant)\b/i;
+
+/**
+ * True if a paragraph is a bare-name signature line: an underscore rule
+ * followed by the printed name of a known signatory party ("____ Alexandra
+ * Reyes"), or a standalone "Notary Public" / "Witness" line. Requiring an
+ * actual extracted party name (or explicit role) keeps a genuine
+ * "____ [Insert Name]" placeholder from counting as a signature.
+ */
+function isBareNameSignatureLine(text: string, partyNames: string[]): boolean {
+  if (STANDALONE_SIGNATORY_ROLE.test(text)) return true;
+  if (!/_{6,}/.test(text)) return false;
+  const after = text.replace(/_{6,}/g, " ").replace(/\/s\//g, " ").trim();
+  if (!after) return false;
+  const lower = after.toLowerCase();
+  return partyNames.some((n) => {
+    const nl = n.toLowerCase();
+    return lower === nl || lower.startsWith(`${nl},`) || lower.startsWith(`${nl} `);
+  });
+}
 // The secretary's certification formula that closes bylaws and resolutions.
 // Deliberately narrow ("certified as adopted", "certify that the foregoing")
 // so an amendment clause's "may be adopted by the Board" is not a signal.
@@ -86,7 +109,7 @@ const PUBLICATION_STAMP =
  */
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.7.0",
+  version: "1.8.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",
@@ -97,6 +120,11 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     type P = { start: number; text: string; sectionId: string; inExhibit: boolean };
     const paragraphs: P[] = [];
+    // The printed names of the signatories, for the bare-name signature line a
+    // personal / estate instrument uses ("____ Alexandra Reyes").
+    const partyNames = ctx.extracted.parties
+      .map((p) => p.name)
+      .filter((n): n is string => typeof n === "string" && n.trim().length >= 4);
     const exhibitSectionIds = new Set<string>();
     forEachSection(ctx.tree, (s) => {
       if (EXHIBIT_HEADING.test(s.heading)) exhibitSectionIds.add(s.id);
@@ -125,6 +153,10 @@ export const rule: Rule = {
         OFFICE_SIG_LINE.lastIndex = 0;
         const officeSigs = text.match(OFFICE_SIG_LINE);
         if (officeSigs) signals += officeSigs.length;
+        // A bare-name signature line — an underscore rule followed by the
+        // printed name of a known party, or a standalone "Notary Public" /
+        // "Witness" line — is how a prenup, will, or affidavit is signed.
+        if (isBareNameSignatureLine(text, partyNames)) signals += 1;
         if (!certified && CERTIFICATION.test(text)) {
           certified = true;
           signals += 1;

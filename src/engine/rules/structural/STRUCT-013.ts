@@ -60,7 +60,7 @@ const PATTERNS: Array<{ re: RegExp; label: string }> = [
 
 export const rule: Rule = {
   id: "STRUCT-013",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Unfilled template placeholders",
   category: "structural",
   default_severity: "critical",
@@ -71,6 +71,14 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     type Hit = { raw: string; label: string; sectionId: string; start: number; end: number };
     const hits: Hit[] = [];
+    // The printed names of the signatories. A personal / estate instrument
+    // (prenup, will, affidavit, POA) signs with a bare name — "____ Alexandra
+    // Reyes" — not the "By:/Name:/Title:" grid, so those underscore rules read
+    // as placeholders unless the printed party name (or a notary / witness
+    // line) is recognized as a signature affordance.
+    const partyNames = ctx.extracted.parties
+      .map((p) => p.name)
+      .filter((n): n is string => typeof n === "string" && n.trim().length >= 4);
     forEachParagraph(ctx.tree, (p) => {
       for (const { re, label } of PATTERNS) {
         re.lastIndex = 0;
@@ -82,7 +90,10 @@ export const rule: Rule = {
           // aren't unfilled template placeholders — they're signature
           // affordances. The original heuristic mis-classified them as
           // critical placeholder findings on every contract.
-          if (label === "underscore-line placeholder" && isSignatureContext(p.text)) {
+          if (
+            label === "underscore-line placeholder" &&
+            (isSignatureContext(p.text) || isBareNameSignature(p.text, partyNames))
+          ) {
             continue;
           }
           hits.push({
@@ -128,6 +139,32 @@ export const rule: Rule = {
  */
 const SIGNATURE_LINE_BY_OFFICE =
   /(?:_{4,}|\/s\/)\s*(?:\/s\/\s*)?[A-Z][A-Za-z.'’-]+(?:\s+[A-Z][A-Za-z.'’-]+){0,3},?\s+(?:Director|President|Vice\s+President|Secretary|Treasurer|Chief\s+[A-Za-z]+\s+Officer|CEO|CFO|COO|CTO|Manager|Managing\s+Member|Member|Trustee|General\s+Partner|Partner|(?:Sole\s+)?Incorporator|Authorized\s+Signatory|Its\b)\b/;
+
+// A signatory office that stands alone on a signature line, no personal name
+// attached — "____ Notary Public", "____ Witness". These are signature
+// affordances in wills, affidavits, and acknowledgments.
+const STANDALONE_SIGNATORY_ROLE =
+  /\b(?:Notary\s+Public|Notary|Witness|Affiant|Declarant|Grantor|Settlor|Trustee)\b/i;
+
+/**
+ * True if an underscore-line paragraph is a bare-name signature line: an
+ * underscore rule followed by the printed name of a known signatory party
+ * ("____ Alexandra Reyes") or a standalone signatory role ("____ Notary
+ * Public"). Requiring an actual extracted party name (or an explicit role)
+ * keeps this off a genuine "____ [Insert Party Name]" placeholder, whose text
+ * is not a party the document defines.
+ */
+function isBareNameSignature(text: string, partyNames: string[]): boolean {
+  if (!/_{6,}/.test(text)) return false;
+  const after = text.replace(/_{6,}/g, " ").replace(/\/s\//g, " ").trim();
+  if (!after) return false;
+  if (STANDALONE_SIGNATORY_ROLE.test(after)) return true;
+  const lower = after.toLowerCase();
+  return partyNames.some((n) => {
+    const nl = n.toLowerCase();
+    return lower === nl || lower.startsWith(`${nl},`) || lower.startsWith(`${nl} `);
+  });
+}
 
 /**
  * True if the paragraph text looks like a signature-block context.

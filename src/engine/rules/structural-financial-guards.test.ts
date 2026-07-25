@@ -287,3 +287,29 @@ describe("STRUCT-003 — an office signature line executes a consent (v1.6.0)", 
     expect(STRUCT003.check(ctx)).toBeNull();
   });
 });
+
+describe("STRUCT-003 — a personal instrument signed by bare name (v1.8.0)", () => {
+  it("accepts a prenup signed '____ [party name]' with an attestation", () => {
+    const ctx = buildContext(
+      [
+        "Prenuptial Agreement",
+        'This Agreement is between Alexandra Reyes ("Alexandra") and Jonathan Pierce ("Jonathan"), who intend to marry.',
+      ],
+      [
+        "Execution",
+        "IN WITNESS WHEREOF, the parties have executed this Agreement.",
+        "_______________________________ Alexandra Reyes",
+        "_______________________________ Jonathan Pierce",
+      ],
+    );
+    expect(STRUCT003.check(ctx)).toBeNull();
+  });
+
+  it("still fires on a document with no signature affordance of any kind", () => {
+    const ctx = buildContext(
+      ["Agreement", "The parties agree to the terms herein."],
+      ["Term", "This Agreement remains in effect for two years."],
+    );
+    expect(STRUCT003.check(ctx)).not.toBeNull();
+  });
+});
