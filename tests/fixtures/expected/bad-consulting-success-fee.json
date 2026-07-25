@@ -188,7 +188,7 @@
       "finding_id": "FIN-005-s1-0",
       "fired": true,
       "rule_id": "FIN-005",
-      "rule_version": "1.4.4"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -749,7 +749,7 @@
       "explanation": "Commercial contracts should state when payment is due. 'Net 30' or 'due within X days of invoice' is the typical formulation. Without it, payment timing defaults to the governing-law rule.",
       "id": "FIN-005-s1-0",
       "rule_id": "FIN-005",
-      "rule_version": "1.4.4",
+      "rule_version": "1.5.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No payment-term clause detected"
@@ -974,7 +974,7 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"advisory agreement\". Distinguishing phrases: \"advisory services\", \"deliverables\", \"independent contractor\".",
-  "result_hash": "e022ac57ae6be5813d0f65202b2fb9335e137eb639188b05203644c43dde3aef",
+  "result_hash": "055605256564cfa7d731337f6c7107a2fd96e9dbf565e0414b3764e2bd1e4c2a",
   "source_file": {
     "name": "bad-consulting-success-fee.docx",
     "sha256": "6bc505eb0c1641cda4c3466a62f0b3eead258e2dc3a385e792e79f4a717ad6a5",

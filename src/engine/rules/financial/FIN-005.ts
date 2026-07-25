@@ -63,7 +63,11 @@ const PAYMENT_TERMS = new RegExp(
     // event ("at the Closing") went unrecognized, warning a plain payment term.
     `\\b(?:due|payable|paid)\\s+(?:and\\s+payable\\s+)?(?:in\\s+cash\\s+)?(?:at|on)\\s+(?:the\\s+)?closing\\b`,
     `\\bpayable\\s+as\\s+follows\\b`,
-    `\\bpayable\\s+in\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\)\\s*)?(?:equal\\s+)?(?:monthly|quarterly|weekly|annual|semi-?annual)\\s+installments\\b`,
+    // The installment count is optional: a lease states "annual base rent …
+    // payable in equal monthly installments" with no number, and that cadence
+    // + "installments" is a payment term as much as "in twelve (12) … monthly
+    // installments". A cadence word is still required, so this stays tight.
+    `\\bpayable\\s+in\\s+(?:${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\)\\s*)?)?(?:equal\\s+)?(?:monthly|quarterly|weekly|annual|semi-?annual)\\s+installments\\b`,
   ].join("|"),
   "i",
 );
@@ -78,7 +82,7 @@ const ANY_PAYMENT = /\b(fee|payment|invoice|amount\s+due|payable)\b/i;
 /** FIN-005 — Payment terms presence and parseability (warning). */
 export const rule: Rule = {
   id: "FIN-005",
-  version: "1.4.4",
+  version: "1.5.0",
   name: "Payment terms presence and parseability",
   category: "financial",
   default_severity: "warning",

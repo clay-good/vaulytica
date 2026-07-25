@@ -116,6 +116,22 @@ describe("FIN-005 — 'no later than N days' is a payment window (v1.4.1)", () =
   });
 });
 
+describe("FIN-005 — an installment schedule with no stated count (v1.5.0)", () => {
+  it("reads a lease rent 'payable in equal monthly installments' (no number)", () => {
+    expect(
+      FIN_005.check(
+        doc("The Tenant shall pay annual base rent of $360,000, payable in equal monthly installments."),
+      ),
+    ).toBeNull();
+  });
+
+  it("still reads the counted form 'payable in twelve (12) equal monthly installments'", () => {
+    expect(
+      FIN_005.check(doc("The purchase price is payable in twelve (12) equal monthly installments.")),
+    ).toBeNull();
+  });
+});
+
 describe("FIN-005 — a royalty payment window (v1.4.4)", () => {
   it("reads 'Royalties are payable within thirty (30) days after the end of each quarter'", () => {
     expect(
