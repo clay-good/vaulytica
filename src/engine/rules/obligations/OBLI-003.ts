@@ -11,16 +11,19 @@ import { emit } from "../_helpers.js";
 //
 // "as it may be AMENDED from time to time" is likewise not an ambiguous
 // obligation trigger: the phrase modifies the amendment of a statute or
-// instrument ("the DGCL, as it may be amended from time to time"), naming no
-// discretionary act a party performs. Excluded via the amendment verb directly
-// before the phrase.
+// instrument ("the DGCL, as it may be amended from time to time"; "the
+// Contractor's progress schedule, as it may be adjusted from time to time"),
+// naming no discretionary act a party performs. Excluded via the passive
+// modification participle directly before the phrase — the active form
+// ("may adjust the schedule from time to time") has the object, not the verb,
+// before "from time to time" and still flags.
 const AMBIGUOUS =
-  /\b(?:(?<!(?:amended|revised|modified|supplemented|restated|updated)\s)from\s+time\s+to\s+time(?!\s+(?:by\s+resolution\b|as\s+provided\s+by\s+(?:statute|law)\b))|as\s+needed|as\s+appropriate|as\s+reasonably\s+requested)\b/i;
+  /\b(?:(?<!(?:amended|revised|modified|supplemented|restated|updated|adjusted|changed|altered|extended|renewed|replaced)\s)from\s+time\s+to\s+time(?!\s+(?:by\s+resolution\b|as\s+provided\s+by\s+(?:statute|law)\b))|as\s+needed|as\s+appropriate|as\s+reasonably\s+requested)\b/i;
 
 /** OBLI-003 — Trigger condition ambiguity (info). */
 export const rule: Rule = {
   id: "OBLI-003",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Trigger condition ambiguity",
   category: "obligations",
   default_severity: "info",

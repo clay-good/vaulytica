@@ -164,6 +164,20 @@ describe("OBLI-003 — 'as amended from time to time' modifies a statute, not an
       ),
     ).not.toBeNull();
   });
+
+  it("does not flag a schedule 'as it may be adjusted from time to time'", () => {
+    // A passive modification participle (adjusted / extended / renewed …)
+    // before the phrase marks a document/schedule changed over time, not a
+    // discretionary act.
+    expect(
+      OBLI003.check(
+        doc(
+          "Schedule",
+          "The Subcontractor shall complete the Work in accordance with the Contractor's progress schedule, as it may be adjusted from time to time.",
+        ),
+      ),
+    ).toBeNull();
+  });
 });
 
 describe("OBLI-001 — a passive clause naming its agent is not ambiguous (v1.1.0)", () => {
