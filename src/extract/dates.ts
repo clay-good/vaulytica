@@ -33,6 +33,15 @@ const TWO_DIGIT_YEAR_PIVOT = 70;
 const ISO = /\b(\d{4})-(\d{2})-(\d{2})\b/g;
 const US_NUMERIC = /\b(\d{1,2})\/(\d{1,2})\/(\d{2,4})\b/g;
 const PROSE = new RegExp(String.raw`\b(${MONTHS})\.?\s+(\d{1,2}),?\s+(\d{4})\b`, "gi");
+// The formal-instrument date — "the 15th day of September, 2029", "this 4th
+// day of October 2029" — is an ABSOLUTE date (wills, deeds, and formal
+// agreements date themselves this way), but with the day before the month it
+// fell to the RELATIVE pass and lost its ISO value, so STRUCT-002 reported "No
+// Effective Date" on a contract that plainly states one.
+const DAY_OF_MONTH = new RegExp(
+  String.raw`\b(?:the|this)\s+(\d{1,2})(?:st|nd|rd|th)\s+day\s+of\s+(${MONTHS})\.?,?\s+(\d{4})\b`,
+  "gi",
+);
 
 const NUMBER_WORDS: Record<string, number> = {
   zero: 0,
@@ -216,6 +225,26 @@ export function extractDates(tree: DocumentTree): DateReference[] {
         offset_count_max: Math.max(lower * direction, upper * direction),
         position: posInParagraph(ctx, m.index, m.index + m[0].length),
       });
+    }
+    // The "Nth day of Month, Year" absolute date, recorded before RELATIVE so
+    // its span suppresses the relative reading of the same text.
+    DAY_OF_MONTH.lastIndex = 0;
+    while ((m = DAY_OF_MONTH.exec(ctx.text)) !== null) {
+      const day = parseInt(m[1]!, 10);
+      const month = monthNumber(m[2]!);
+      const year = parseInt(m[3]!, 10);
+      const iso =
+        month !== null
+          ? `${year.toString().padStart(4, "0")}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`
+          : undefined;
+      out.push({
+        id: nextId(),
+        type: "absolute",
+        raw_text: m[0],
+        iso: iso && isValidIso(iso) ? iso : undefined,
+        position: posInParagraph(ctx, m.index, m.index + m[0].length),
+      });
+      rangeSpans.push([m.index, m.index + m[0].length]);
     }
     RELATIVE.lastIndex = 0;
     while ((m = RELATIVE.exec(ctx.text)) !== null) {

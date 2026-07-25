@@ -15,6 +15,14 @@ describe("extractDates", () => {
     expect(isos).toContain("2025-01-01");
   });
 
+  it("parses a formal 'Nth day of Month, Year' date as absolute", () => {
+    const dates = extractDates(
+      buildTree(["Execution", "Dated this 15th day of September, 2029, at Austin, Texas."]),
+    );
+    const isos = dates.filter((d) => d.type === "absolute").map((d) => d.iso);
+    expect(isos).toContain("2029-09-15");
+  });
+
   it("parses relative dates and resolves units to days", () => {
     const tree = buildTree([
       "Notice",
