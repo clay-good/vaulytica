@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { allMatches, firstParagraphMatch } from "./_helpers.js";
+import { allMatches, enclosingSentence, firstParagraphMatch } from "./_helpers.js";
 import type { RuleContext } from "../finding.js";
 
 /** Minimal RuleContext with a single-paragraph body. */
@@ -49,5 +49,26 @@ describe("firstParagraphMatch", () => {
 
   it("returns null when there is no match", () => {
     expect(firstParagraphMatch(ctxWith("no number"), /(\d+)\s+days/)).toBeNull();
+  });
+});
+
+describe("enclosingSentence", () => {
+  const at = (text: string, needle: string) => enclosingSentence(text, text.indexOf(needle));
+
+  it("does not truncate at a URL's internal dots", () => {
+    const s =
+      "The services are subject to the AUP at https://vendor.com/aup, which is for reference only.";
+    expect(at(s, "subject")).toContain("for reference only");
+  });
+
+  it("does not truncate at a decimal citation's dot", () => {
+    // "160.103" — a dot not followed by whitespace is not a sentence end.
+    const s = "PHI is defined at 45 CFR 160.103, which the parties acknowledge is controlling.";
+    expect(at(s, "PHI")).toContain("acknowledge");
+  });
+
+  it("still ends the sentence at a real period followed by a space", () => {
+    const s = "First sentence here. Second sentence follows.";
+    expect(at(s, "First")).toBe("First sentence here.");
   });
 });

@@ -157,7 +157,12 @@ export function enclosingSentence(paragraph: string, matchIndex: number): string
     paragraph.lastIndexOf("; ", matchIndex),
     paragraph.lastIndexOf("\n", matchIndex),
   );
-  const rel = paragraph.slice(matchIndex).search(/[.;\n]/);
+  // A period only ends a sentence when whitespace or the string end follows it;
+  // a period inside "vendor.com", "C.F.R.", or "Inc." is not a boundary. The
+  // `start` scan already required ". " (period + space); make the forward scan
+  // symmetric so an embedded dot no longer truncates the sentence early (which
+  // hid a trailing carve-out from the rules that read the enclosing sentence).
+  const rel = paragraph.slice(matchIndex).search(/[;\n]|\.(?=\s|$)/);
   const end = rel === -1 ? paragraph.length : matchIndex + rel + 1;
   return paragraph.slice(start + 1, end);
 }
