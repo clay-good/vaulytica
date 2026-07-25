@@ -69,14 +69,24 @@ const FOR_CAUSE = new RegExp(
     "|" +
     String.raw`\bterminat\w+\b[^.]{0,80}\bEvent\s+of\s+Default\b` +
     "|" +
-    String.raw`\bEvent\s+of\s+Default\b[^.]{0,80}\bterminat\w+`,
+    String.raw`\bEvent\s+of\s+Default\b[^.]{0,80}\bterminat\w+` +
+    // The ENUMERATED termination-grounds list puts the for-cause ground far from
+    // the "terminated" verb: "This Agreement may be terminated … (a) by mutual
+    // consent; (b) if the Closing has not occurred by …; or (c) by either party
+    // if the other has breached … and such breach is not cured within thirty
+    // (30) days." The (a)/(b) clauses push the breach past the 140-char window
+    // above, and the breach-to-uncured span itself exceeds 80. Still one
+    // sentence (the list is semicolon-separated), so `[^.]` keeps it from
+    // stitching across a period; the wider windows reach the enumerated ground.
+    "|" +
+    String.raw`\bterminat\w+\b[^.]{0,280}?${BREACH}[^.]{0,150}?${UNCURED}`,
   "i",
 );
 
 /** TERM-002 — Termination for cause present (warning). */
 export const rule: Rule = {
   id: "TERM-002",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Termination for cause present",
   category: "termination",
   default_severity: "warning",

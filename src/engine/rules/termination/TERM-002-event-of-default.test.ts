@@ -34,6 +34,14 @@ describe("TERM-002 Event-of-Default idiom", () => {
     ).not.toBeNull();
   });
 
+  it("recognizes a for-cause ground buried in an enumerated termination list", () => {
+    const ctx = buildContext([
+      "Termination",
+      "This Agreement may be terminated at any time prior to the Effective Time: (a) by mutual written consent of the parties; (b) by either party if the Closing has not occurred by December 31, 2029; or (c) by either party if the other has breached any representation or covenant and such breach is not cured within thirty (30) days.",
+    ]);
+    expect(TERM_002.check(ctx)).toBeNull();
+  });
+
   it("still warns on convenience-only termination", () => {
     expect(
       TERM_002.check(
