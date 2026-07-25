@@ -279,9 +279,26 @@ const WELL_KNOWN_ENTITIES = new Set(
     "London Stock Exchange",
     "American Arbitration Association",
     "International Chamber of Commerce",
+    "National Labor Relations Board",
+    "United Nations",
+    "World Health Organization",
+    "Supreme Court",
     "Force Majeure",
+    "Force Majeure Event",
     "Generally Accepted Accounting Principles",
     "International Financial Reporting Standards",
+    "Standard Contractual Clauses",
+    "Social Security",
+    "Social Security Administration",
+    // Geographic / political proper nouns whose consecutive Title-Case words
+    // TITLE_CASE_PHRASE captures whole ("United States"/"New York" are already
+    // in PLACE_NAMES; these are the ones it lacked).
+    "European Union",
+    "European Economic Area",
+    "North America",
+    "South America",
+    "Great Britain",
+    "Silicon Valley",
   ].map((s) => s.toLowerCase()),
 );
 

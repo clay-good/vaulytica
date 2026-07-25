@@ -15,6 +15,12 @@ const SHOULD_NOT_FLAG: Array<[phrase: string, sentence: string]> = [
   ["Generally Accepted Accounting Principles", "Statements follow Generally Accepted Accounting Principles. Generally Accepted Accounting Principles apply."],
   ["Court of Chancery", "Heard in the Court of Chancery. The Court of Chancery rules."],
   ["Department of Justice", "Referred to the Department of Justice. The Department of Justice investigates."],
+  ["European Union", "Data stays in the European Union. The European Union oversees it."],
+  ["Standard Contractual Clauses", "The Standard Contractual Clauses apply. These Standard Contractual Clauses bind the parties."],
+  ["National Labor Relations Board", "The National Labor Relations Board ruled. A National Labor Relations Board order issued."],
+  ["United Nations", "The United Nations convened. The United Nations resolved it."],
+  ["Supreme Court", "The Supreme Court held so. The Supreme Court affirmed."],
+  ["Great Britain", "Operations moved to Great Britain. Great Britain regulates them."],
 ];
 
 describe("STRUCT-006 undefined-term FP guard", () => {
