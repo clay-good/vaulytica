@@ -1073,6 +1073,7 @@ const ESCROW_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-051",
+    version: "1.1.0",
     name: "Investment of escrow funds",
     description: "Escrow agreement should specify how funds are invested.",
     citation: maPractice(
@@ -1089,7 +1090,12 @@ const ESCROW_AGREEMENT_RULES: Rule[] = [
       "Add 'Investment of Funds' specifying permitted investments and tax allocation of investment income.",
     present_patterns: [
       /investment\s+of\s+(the\s+)?(escrow|funds)/i,
-      /(money\s+market|treasury\s+bill)/i,
+      // "money-market funds" is hyphenated as often as spaced; and the escrow
+      // states its investment mandate in the VERB form ("shall invest the
+      // Escrow Fund only in deposit accounts or money-market funds"), not the
+      // noun "investment of funds" the first branch expects.
+      /(money[\s-]market|treasury\s+(?:bill|securit|obligation)|deposit\s+account)/i,
+      /\binvest(?:s|ed|ing)?\b[^.]{0,60}?\b(?:deposit\s+account|money[\s-]market|treasur|money\s+fund|government\s+(?:securit|obligation))/i,
       /interest\s+(earned|allocated)/i,
     ],
     default_severity: "warning",
