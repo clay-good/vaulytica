@@ -261,3 +261,26 @@ describe("SET-008 — a denied whistleblower protection is absence too (v1.1.0)"
     ).toBe(false);
   });
 });
+
+describe("SET-012 — a spelled demand deadline (v1.1.0)", () => {
+  const DEMAND_PB_LOCAL: Playbook = { id: "demand-letter", version: "1.0.0" };
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Demand", body]), DEMAND_PB_LOCAL);
+    const run = await runEngine({ rules: SETTLEMENT_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+  it("reads 'provide written assurance within ten days'", async () => {
+    expect(
+      (
+        await run1(
+          "Unless you provide written assurance within ten days that you have ceased, we will pursue all remedies.",
+        )
+      ).has("SET-012"),
+    ).toBe(false);
+  });
+  it("still fires when no demand deadline or dollar figure is stated", async () => {
+    expect(
+      (await run1("We represent Acme. Your conduct is concerning. Please be advised.")).has("SET-012"),
+    ).toBe(true);
+  });
+});

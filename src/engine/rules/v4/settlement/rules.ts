@@ -352,6 +352,7 @@ const DEMAND_LETTER_RULES: Rule[] = [
   }),
   presence({
     id: "SET-012",
+    version: "1.1.0",
     name: "Specific demand and response deadline",
     description:
       "Demand letter must state the specific demand (amount / action) and a response deadline.",
@@ -371,6 +372,11 @@ const DEMAND_LETTER_RULES: Rule[] = [
       /(respond|reply|cure).{0,40}within\s+\d{1,3}\s+(days?|business\s+days?)/i,
       /(\d{1,3})\s+(days?|business\s+days?).{0,40}(respond|cure|comply)/i,
       /\$\s*[\d,]+/,
+      // The deadline is as often a SPELLED number and phrased with "confirm /
+      // provide assurance / comply / cease within ten days", not only "respond
+      // within 30 days" — a digit-and-verb-only pattern read a plainly stated
+      // demand deadline as missing.
+      /(?:respond|reply|cure|confirm|assur\w+|compl\w+|provid\w+|cease)[^.]{0,60}\bwithin\s+(?:\d{1,3}|(?:twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)(?:-(?:one|two|three|four|five|six|seven|eight|nine))?|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|five|six|seven|eight|nine|one|two|three|four)\s+(?:business\s+|calendar\s+)?days?/i,
     ],
   }),
   language({
