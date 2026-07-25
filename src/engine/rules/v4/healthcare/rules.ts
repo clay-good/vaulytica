@@ -160,11 +160,19 @@ const INFORMED_CONSENT_RULES: Rule[] = [
   }),
   presence({
     id: "HC-008",
+    version: "1.1.0",
     name: "FDA-regulated study — § 50.25 additional elements (when applicable)",
     description:
       "If the study is FDA-regulated, the consent must include § 50.25 additional elements (clinicaltrials.gov statement, FDA inspection of records).",
     citation: fdaIc("25", "FDA additional elements"),
     playbooks: [HC_PLAYBOOK_INFORMED_CONSENT],
+    // § 50.25 governs consent for a CLINICAL INVESTIGATION, not treatment. The
+    // informed-consent playbook covers both a surgical / procedure consent and
+    // a research consent; the additional-elements requirement applies only when
+    // the document is actually a research study, so demand a research signal.
+    applicable_if: [
+      /\b(?:clinical\s+(?:trial|investigation|stud)|research\s+(?:stud|subject|participant|protocol)|investigational\s+(?:drug|device|product|agent|new)|institutional\s+review\s+board|\bIRB\b|clinicaltrials\.gov|randomi[sz]|placebo|study\s+(?:drug|device|medication|protocol|sponsor)|principal\s+investigator)\b/i,
+    ],
     missing_title: "FDA § 50.25 additional elements clause missing",
     missing_description: "No § 50.25 additional elements were found for an FDA-regulated study.",
     explanation:

@@ -105,4 +105,31 @@ describe("v4 Healthcare — failure cases", () => {
     const run = await runEngine({ rules: HEALTHCARE_RULES, ctx, source_file: SRC });
     expect(run.findings.some((f) => f.rule_id === "HC-019")).toBe(true);
   });
+
+  it("HC-008 fires on a RESEARCH consent missing the FDA § 50.25 elements (v1.1.0)", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Informed Consent — Clinical Research Study",
+        "You are asked to participate in a research study of an investigational drug, sponsored by Acme Pharma and approved by the Institutional Review Board. Risks include nausea. Your participation is voluntary.",
+      ]),
+      IC_PB,
+    );
+    const run = await runEngine({ rules: HEALTHCARE_RULES, ctx, source_file: SRC });
+    expect(run.findings.some((f) => f.rule_id === "HC-008")).toBe(true);
+  });
+
+  it("HC-008 does NOT fire on a surgical / treatment consent (not a study) (v1.1.0)", async () => {
+    // § 50.25 governs a clinical investigation; a laparoscopic-cholecystectomy
+    // consent is treatment, not research, so the additional-elements rule does
+    // not apply.
+    const ctx = withPb(
+      buildContext([
+        "Informed Consent for Surgical Procedure",
+        "My physician has recommended a laparoscopic cholecystectomy. Risks include bleeding and infection. Alternatives include medication and observation. I consent to anesthesia. My consent is voluntary.",
+      ]),
+      IC_PB,
+    );
+    const run = await runEngine({ rules: HEALTHCARE_RULES, ctx, source_file: SRC });
+    expect(run.findings.some((f) => f.rule_id === "HC-008")).toBe(false);
+  });
 });
