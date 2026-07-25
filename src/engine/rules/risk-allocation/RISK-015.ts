@@ -44,7 +44,7 @@ export function isStatutoryDandOIndemnity(text: string): boolean {
 
 export const rule: Rule = {
   id: "RISK-015",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Indemnification without aggregate cap",
   category: "risk-allocation",
   default_severity: "warning",
@@ -67,8 +67,14 @@ export const rule: Rule = {
     // "NEITHER party's aggregate indemnification liability shall exceed the
     // Purchase Price" carries its negation in the subject — no "not" ever
     // appears, so every branch missed this cap form too.
+    // The M&A indemnity cap is stated as "subject to a[n] (aggregate) cap equal
+    // to 20% of the Purchase Price" / "cap of $1,000,000", and the indemnity
+    // itself is often the subject — "the indemnification obligations shall not
+    // exceed the Escrow Amount". The liability-anchored branches above missed
+    // all three forms. "cap table" / "cap rate" do not match (the cap must be
+    // "of"/"equal to"/"ped at" a limit, or "subject to a … cap").
     const CAP_PRESENT =
-      /\b(?:liability\s+(?:shall|will|is|may)?\s*(?:be\s+)?(?:limited|capped)|aggregate\s+liability.*?(?:not\s+exceed|cap(?:ped)?)|not\s+to\s+exceed|liability\b[^.]{0,80}?\bnot\s+exceed|neither\s+part(?:y|ies)(?:'s)?[^.]{0,60}?\bliabilit(?:y|ies)\b[^.]{0,60}?\bexceed|cap\s+on\s+(?:liability|indemnification)|limited\s+to\s+(?:twelve|six|three|\d+)\s+months)/i;
+      /\b(?:liability\s+(?:shall|will|is|may)?\s*(?:be\s+)?(?:limited|capped)|aggregate\s+liability.*?(?:not\s+exceed|cap(?:ped)?)|not\s+to\s+exceed|liability\b[^.]{0,80}?\bnot\s+exceed|neither\s+part(?:y|ies)(?:'s)?[^.]{0,60}?\bliabilit(?:y|ies)\b[^.]{0,60}?\bexceed|cap\s+on\s+(?:liability|indemnification)|limited\s+to\s+(?:twelve|six|three|\d+)\s+months|subject\s+to\s+(?:an?\s+)?(?:aggregate\s+|indemnification\s+|maximum\s+|per-claim\s+(?:and\s+aggregate\s+)?)?cap\b|cap(?:ped\s+at|\s+equal\s+to|\s+of)\b|indemnif\w+[^.]{0,80}?\b(?:shall\s+not\s+exceed|not\s+to\s+exceed))/i;
     const CARVE_OUT_INDEMNITY =
       /\b(?:except\s+(?:for|with\s+respect\s+to)|excluding|other\s+than|not\s+including|carve[-\s]out\s+for)\s+[^.]{0,80}\bindemnif/i;
 

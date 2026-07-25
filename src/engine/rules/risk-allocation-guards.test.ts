@@ -258,3 +258,27 @@ describe("RISK-015 — the negated-subject cap form (v1.1.0)", () => {
     ).toBeNull();
   });
 });
+
+describe("RISK-015 — the M&A 'subject to a cap equal to …' form (v1.3.0)", () => {
+  it("reads 'subject to a cap equal to 20% of the Purchase Price' as a cap", () => {
+    expect(
+      R015.check(
+        doc(
+          "Indemnification",
+          "The Sellers shall indemnify the Buyer, subject to a cap equal to twenty percent (20%) of the Purchase Price and a basket of $50,000.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires on an uncapped indemnity even where 'cap table' appears elsewhere", () => {
+    expect(
+      R015.check(
+        doc(
+          "Indemnification",
+          "The Sellers shall indemnify and hold harmless the Buyer from any and all losses. The Company maintains a cap table.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});

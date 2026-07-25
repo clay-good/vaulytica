@@ -480,7 +480,7 @@
       "finding_id": "RISK-015-s1.4-1023",
       "fired": true,
       "rule_id": "RISK-015",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -904,7 +904,7 @@
       "id": "RISK-015-s1.4-1023",
       "recommendation": "Either subject indemnification to a per-claim and aggregate cap, or confirm the carve-out is a deliberate trade for higher pricing / different insurance.",
       "rule_id": "RISK-015",
-      "rule_version": "1.2.0",
+      "rule_version": "1.3.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Indemnification without aggregate cap"
@@ -1121,7 +1121,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "4dc30f41d97dae6b2501a12793a3e2281be17514e48e1b6d5b80af57af91761b",
+  "result_hash": "ab2c69265b1a86a8533df21c7354f6f55071d6bd6fc003e9aa2c1c13602603a2",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",
