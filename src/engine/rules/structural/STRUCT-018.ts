@@ -28,15 +28,18 @@ const ATTACH_KINDS = "Exhibit|Schedule|Annex|Annexure|Appendix|Attachment|Addend
 const REF_RE = new RegExp(String.raw`\b(${ATTACH_KINDS})\s+(\d{1,2}(?:\.\d{1,2})*|[A-Z])\b`, "g");
 // A heading / title line that *is* the attachment: "Exhibit C — Data Terms".
 // A title line may carry a leading clause number ("3. Schedule 3.7 —
-// Litigation" in a flat-paste layout) — the attachment is present.
+// Litigation" in a flat-paste layout) — the attachment is present. The
+// identifier may be quoted ('Exhibit "C" — Data Terms') or introduced by "No."
+// ("Exhibit No. 3"); without tolerating those, the heading went unrecognized
+// and a plainly attached exhibit read as referenced-but-absent.
 const TITLE_RE = new RegExp(
-  String.raw`^\s*(?:\d+(?:\.\d+)*\.\s+)?(${ATTACH_KINDS})\s+(\d{1,2}(?:\.\d{1,2})*|[A-Z])\b`,
+  String.raw`^\s*(?:\d+(?:\.\d+)*\.\s+)?(${ATTACH_KINDS})\s+(?:No\.?\s+|Number\s+)?["'“”‘’]?(\d{1,2}(?:\.\d{1,2})*|[A-Z])(?:["'“”‘’]|\b)`,
   "i",
 );
 
 export const rule: Rule = {
   id: "STRUCT-018",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Attachment completeness",
   category: "structural",
   default_severity: "warning",
