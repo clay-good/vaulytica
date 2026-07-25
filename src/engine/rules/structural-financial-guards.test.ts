@@ -84,6 +84,20 @@ describe("STRUCT-003 — signature-block detection", () => {
     ).not.toBeNull();
   });
 
+  it("stays silent on an online agreement accepted by click-wrap (v1.19.0)", () => {
+    // A EULA / terms of service is executed by conduct — "By installing or
+    // using the Software, you agree to be bound" — not a signature block.
+    expect(
+      STRUCT003.check(
+        doc(
+          "End User License Agreement",
+          "By installing or using the Software, you agree to be bound by this EULA.",
+          "The Licensor grants the Licensee a limited license to use the Software.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
   it("stays silent on a real colon- or underscore-labelled signature block", () => {
     expect(
       STRUCT003.check(

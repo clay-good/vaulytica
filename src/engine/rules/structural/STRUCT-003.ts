@@ -131,6 +131,13 @@ const PUBLICATION_STAMP =
 const LETTER_CLOSING =
   /^\s*(?:very\s+truly\s+yours|sincerely(?:\s+yours)?|respectfully(?:\s+submitted|\s+yours)?|yours\s+(?:truly|faithfully|sincerely)|best\s+regards|warm\s+regards|kind\s+regards|cordially)\s*,?\s*$/im;
 
+// A click-wrap / browse-wrap acceptance — "By installing or using the Software,
+// you agree to be bound by this EULA", "By accessing the Service you accept
+// these Terms" — is how an online agreement (EULA, terms of service) is
+// executed: acceptance is by conduct, not a signature block.
+const CLICKWRAP_ACCEPTANCE =
+  /\bby\s+(?:installing|using|accessing|clicking|downloading|continuing|registering|signing\s+up|checking)[^.]{0,90}?\byou\s+(?:agree|accept|consent|acknowledge)\b/i;
+
 /**
  * STRUCT-003 — Signature block present (critical).
  *
@@ -152,7 +159,7 @@ const LETTER_CLOSING =
  */
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.18.0",
+  version: "1.19.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",
@@ -226,7 +233,8 @@ export const rule: Rule = {
           (DATED_ADOPTION.test(text) ||
             DELIVERY_RECITAL.test(text) ||
             PUBLICATION_STAMP.test(text) ||
-            LETTER_CLOSING.test(text))
+            LETTER_CLOSING.test(text) ||
+            CLICKWRAP_ACCEPTANCE.test(text))
         ) {
           certified = true;
           signals += 2;
