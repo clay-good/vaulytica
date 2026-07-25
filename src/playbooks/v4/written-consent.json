@@ -4,7 +4,11 @@
   "name": "Written Consent in Lieu of Meeting",
   "description": "Board or stockholder action by written consent. Selects the §6.B governance ruleset (GOV-043..GOV-050) under DGCL §§ 141(f) and 228.",
   "match_features": {
-    "title_keywords": ["written consent", "action by written consent", "unanimous written consent"],
+    "title_keywords": [
+      "written consent",
+      "action by written consent",
+      "unanimous written consent"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "in lieu of a meeting",
@@ -12,15 +16,55 @@
       "resolved, that",
       "constituting all of the directors"
     ],
-    "negative_features": ["bylaws", "operating agreement"]
+    "negative_features": [
+      "bylaws",
+      "operating agreement"
+    ]
   },
   "expected_clauses": [],
   "expected_defined_terms": [],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "DGCL",
-  "applicable_jurisdictions": ["US-DE", "US"],
+  "applicable_jurisdictions": [
+    "US-DE",
+    "US"
+  ],
   "companion_playbooks": [],
-  "compliance_matrix_columns": ["DGCL § 141(f)", "DGCL § 228"]
+  "compliance_matrix_columns": [
+    "DGCL § 141(f)",
+    "DGCL § 228"
+  ]
 }
