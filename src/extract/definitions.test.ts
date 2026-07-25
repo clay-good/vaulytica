@@ -210,6 +210,17 @@ describe("truncated candidates of longer defined terms", () => {
     );
     expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Contractor Background");
   });
+
+  it("does not report a singular use of a defined plural term as undefined", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Patents",
+        'The "Licensed Patents" means the patents listed on Exhibit A.',
+        "The obligation as to each Licensed Patent terminates on the expiration of such Licensed Patent.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Licensed Patent");
+  });
 });
 
 describe("the double-alias definition form", () => {
