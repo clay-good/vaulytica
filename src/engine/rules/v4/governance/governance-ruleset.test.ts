@@ -327,9 +327,23 @@ describe("GOV-045 — 'unanimous written consent' is the unanimity statement (v1
         )
       ).has("GOV-045"),
     ).toBe(false);
-    expect((await run1("The Board hereby adopts the following resolutions.")).has("GOV-045")).toBe(
-      true,
-    );
+    expect(
+      (
+        await run1(
+          "The undersigned directors, acting by written consent of the Board of Directors, hereby adopt the following resolutions.",
+        )
+      ).has("GOV-045"),
+    ).toBe(true);
+  });
+
+  it("GOV-045 (unanimity, board consents only) does not fire on a stockholder consent", async () => {
+    const holders =
+      "The undersigned stockholders, acting by written consent of the stockholders pursuant to Section 228, hereby adopt the following resolution.";
+    expect((await run1(holders)).has("GOV-045")).toBe(false);
+    // A board consent that omits the unanimity statement still fires.
+    const board =
+      "The undersigned directors, acting by written consent of the Board of Directors pursuant to Section 141(f), hereby adopt the following resolution.";
+    expect((await run1(board)).has("GOV-045")).toBe(true);
   });
 
   it("GOV-046/048 (stockholder § 228 rules) do not fire on a board consent", async () => {

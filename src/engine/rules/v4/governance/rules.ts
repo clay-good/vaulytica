@@ -62,6 +62,19 @@ const STOCKHOLDER_CONSENT_CONTEXT: readonly RegExp[] = [
   /holders?\s+of[^.]{0,40}(?:outstanding\s+)?(?:stock|shares)\b/is,
   /\bsection\s+228\b/i,
 ];
+
+// The mirror of STOCKHOLDER_CONSENT_CONTEXT. GOV-045 requires a UNANIMOUS-
+// consent statement, which is a § 141(f) BOARD-consent obligation — a § 228
+// stockholder consent acts by the requisite vote, not unanimously, so flagging
+// it as missing a unanimity statement is a false positive. Gate GOV-045 to a
+// document whose acting body is the board.
+const BOARD_CONSENT_CONTEXT: readonly RegExp[] = [
+  /consent\s+(?:of|by)\s+(?:the\s+)?(?:board(?:\s+of\s+directors)?|directors)\b/is,
+  /(?:board(?:\s+of\s+directors)?|directors)['’]?\s+(?:written\s+)?consent/is,
+  /written\s+consent\s+of\s+(?:the\s+)?(?:board(?:\s+of\s+directors)?|directors)\b/is,
+  /undersigned[^.]{0,60}\b(?:directors|members\s+of\s+the\s+board)\b/is,
+  /\bsection\s+141\s*\(?f\)?/i,
+];
 const language = (s: Omit<V4LanguageSpec, "category">): Rule =>
   buildV4LanguageRule({ ...s, category: CATEGORY });
 const compound = (s: Omit<V4CompoundSpec, "category">): Rule =>
@@ -921,7 +934,8 @@ const WRITTEN_CONSENT_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-045",
-    version: "1.1.0",
+    version: "1.2.0",
+    applicable_if: BOARD_CONSENT_CONTEXT,
     name: "Unanimous-consent statement (board consents only)",
     description: "DGCL § 141(f) board consents must be unanimous.",
     citation: dgcl("141(f)"),
