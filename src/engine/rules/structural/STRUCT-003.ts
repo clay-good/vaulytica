@@ -40,12 +40,36 @@ const OFFICE_SIG_LINE =
 const STANDALONE_SIGNATORY_ROLE =
   /_{4,}\s*(?:\/s\/\s*)?(?:Notary\s+Public|Notary|Witness|Affiant|Declarant|Testat(?:or|rix)|Execut(?:or|rix)|Personal\s+Representative|Attorney-in-Fact|Patient|Participant)\b/i;
 
+// A template / field-label token that must NOT appear in a string accepted as
+// a printed personal name — "____ Company Name", "____ Insert Party" are
+// placeholders, not signatures. (Parity with STRUCT-013.)
+const NON_NAME_TOKEN =
+  /\b(?:Name|Date|Address|City|State|Zip|Country|Title|Code|Number|Amount|Value|Reference|Period|Term|Field|Information|Details|Description|Phone|Email|Sum|Fee|Rate|Price|Insert|Sign|Signature|Print(?:ed)?|Company|Corporation|Entity|Party|Here|TBD|TBA)\b/i;
+const HONORIFIC_PREFIX =
+  /^(?:Dr|Mr|Mrs|Ms|Mx|Prof(?:essor)?|Hon|Rev|Sir|Dame|Fr|Sr|Capt|Col|Gen|Lt|Sgt|Rabbi|Pastor|Judge)\.?\s+/i;
+
+/**
+ * True if `s` is a bare printed personal name — 2–4 Title-Case words, each with
+ * a lowercase tail, no field-label token, honorific stripped. (Parity with
+ * STRUCT-013 so a unilateral instrument whose sole signatory is named only in
+ * the block — "____ Gregory Halstead" on a seller non-compete — is recognized.)
+ */
+function isPersonalName(s: string): boolean {
+  const t = s
+    .replace(/,.*$/, "")
+    .trim()
+    .replace(HONORIFIC_PREFIX, "");
+  if (NON_NAME_TOKEN.test(t)) return false;
+  return /^[A-Z][a-z]+(?:\s+[A-Z][a-z.'’-]+){1,3}$/.test(t);
+}
+
 /**
  * True if a paragraph is a bare-name signature line: an underscore rule
  * followed by the printed name of a known signatory party ("____ Alexandra
- * Reyes"), or a standalone "Notary Public" / "Witness" line. Requiring an
- * actual extracted party name (or explicit role) keeps a genuine
- * "____ [Insert Name]" placeholder from counting as a signature.
+ * Reyes"), a clean personal name even if not an extracted party
+ * ("____ Gregory Halstead"), or a standalone "Notary Public" / "Witness" line.
+ * Requiring an extracted party, a clean personal name, or an explicit role
+ * keeps a genuine "____ [Insert Name]" placeholder from counting as a signature.
  */
 function isBareNameSignatureLine(text: string, partyNames: string[]): boolean {
   if (STANDALONE_SIGNATORY_ROLE.test(text)) return true;
@@ -55,6 +79,7 @@ function isBareNameSignatureLine(text: string, partyNames: string[]): boolean {
   // "____ Signature of Subject" / "____ Print Name of Witness" — the label
   // form a consent, affidavit, or application signs with.
   if (/^(?:signature|signed|print(?:ed)?\s+name)\s+(?:of|by)\b/i.test(after)) return true;
+  if (isPersonalName(after)) return true;
   const lower = after.toLowerCase();
   return partyNames.some((n) => {
     // Strip a role parenthetical the extractor may attach —
@@ -119,7 +144,7 @@ const PUBLICATION_STAMP =
  */
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.15.0",
+  version: "1.16.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",

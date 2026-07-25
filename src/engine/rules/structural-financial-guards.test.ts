@@ -28,6 +28,36 @@ describe("STRUCT-003 — signature-block detection", () => {
     ).not.toBeNull();
   });
 
+  it("stays silent on a unilateral instrument signed by a bare personal name (v1.16.0)", () => {
+    // A seller non-compete ("by Gregory Halstead in favor of the Buyer") signs
+    // with the sole signatory's bare name; he is not extracted as a "between X
+    // and Y" party, so — in parity with STRUCT-013 — recognize the printed
+    // personal name as the signature.
+    expect(
+      STRUCT003.check(
+        doc(
+          "Non-Competition Agreement",
+          "This Agreement is made by Gregory Halstead in favor of Apex Industrial Holdings, Inc.",
+          "IN WITNESS WHEREOF, the Seller has executed this Agreement.",
+          "_______________________________ Gregory Halstead",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires when a unilateral instrument has a placeholder, not a name", () => {
+    expect(
+      STRUCT003.check(
+        doc(
+          "Non-Competition Agreement",
+          "This Agreement is made by the Seller in favor of the Buyer.",
+          "IN WITNESS WHEREOF, the Seller has executed this Agreement.",
+          "_______________________________ Insert Party Name",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+
   it("stays silent on a real colon- or underscore-labelled signature block", () => {
     expect(
       STRUCT003.check(

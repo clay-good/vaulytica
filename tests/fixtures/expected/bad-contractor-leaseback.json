@@ -505,7 +505,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "STRUCT-003",
-      "rule_version": "1.15.0"
+      "rule_version": "1.16.0"
     },
     {
       "elapsed_ms": 0,
@@ -882,7 +882,7 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "e2389eee8757a422d42ba414cffaced665f46f9d8e887cffcab1b5c869942155",
+  "result_hash": "3c9df529a3e9b0d3fcd5677b783594797e3c2186c5c6cd795aac3fe70189d7e5",
   "source_file": {
     "name": "bad-contractor-leaseback.docx",
     "sha256": "82496f664a3abe77b7ed03c7c77b47c9ffbd8c5f883389cb761b7ba68b31f98d",
