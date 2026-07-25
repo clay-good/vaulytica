@@ -93,6 +93,17 @@ describe("STRUCT-013 — unfilled template placeholders", () => {
     ).toBeNull();
   });
 
+  it("silent on estate signatory lines ('____ Name, Testator', '____ Executor')", () => {
+    expect(
+      STRUCT_013.check(
+        buildContext(["Will", "_______________________________ Margaret Holloway, Testator"]),
+      ),
+    ).toBeNull();
+    expect(
+      STRUCT_013.check(buildContext(["Will", "_______________________________ Executor"])),
+    ).toBeNull();
+  });
+
   it("silent on a standalone 'Notary Public' signature line", () => {
     expect(
       STRUCT_013.check(
