@@ -14,6 +14,16 @@ const REFERENCED_INSTRUMENT_DATE =
   /\bthe\s+[^.;]{0,70}?\b(?:agreement|msa|dpa|baa|contract|sow|order\s+form|lease|note|policy|addendum|indenture)\b[^.;]{0,40}?\bdated\s+(?:as\s+of\s+)?$/i;
 
 /**
+ * A header-field label naming another instrument's date — "Original Contract
+ * Date: February 1, 2029" on a change order, "Prior Agreement Date:" on an
+ * amendment — dates the referenced base instrument, not this one, so it cannot
+ * evidence back-dating. The base/original qualifier or a bare "Contract Date:"
+ * label distinguishes it from this document's own "Effective Date:".
+ */
+const REFERENCED_INSTRUMENT_LABEL =
+  /\b(?:original|prior|underlying|base|existing|initial)?\s*(?:contract|agreement|lease|note|policy|msa|indenture)\s+date\s*:?\s*$/i;
+
+/**
  * A date that opens a stated PERIOD is a range boundary, not an effective
  * date: a HIPAA authorization covering "treatment notes from the period
  * 2024-01-01 through 2026-12-31" is not back-dated to 2024 — that is the span
@@ -48,6 +58,7 @@ function referencedDateStarts(ctx: RuleContext): Set<number> {
       const before = p.text.slice(0, start - p.start);
       if (
         REFERENCED_INSTRUMENT_DATE.test(before) ||
+        REFERENCED_INSTRUMENT_LABEL.test(before) ||
         PERIOD_START_DATE.test(before) ||
         BIRTHDATE.test(before) ||
         CITATION_DATE.test(before)
@@ -62,7 +73,7 @@ function referencedDateStarts(ctx: RuleContext): Set<number> {
 /** TEMP-002 — Past-dated effective date in a forward-looking contract (info). */
 export const rule: Rule = {
   id: "TEMP-002",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Past-dated effective date",
   category: "temporal",
   default_severity: "info",

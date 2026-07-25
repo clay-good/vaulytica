@@ -75,6 +75,24 @@ describe("TEMP-002 — a referenced instrument's date is not this document's", (
     ).toBeNull();
   });
 
+  it("stays silent when a header label names the referenced original contract's date (v1.3.0)", () => {
+    // A change order lists "Original Contract Date: February 1, 2029" in its
+    // header; that dates the referenced base contract, months before the change
+    // order's own July dates, and must not read as a back-dated effective date.
+    expect(
+      TEMP_002.check(
+        buildContext(
+          ["Change Order", "Change Order Date: July 18, 2029"],
+          ["Reference", "Original Contract Date: February 1, 2029"],
+          [
+            "Change",
+            "The Contract Price is increased. The revised Substantial Completion date is October 30, 2029.",
+          ],
+        ),
+      ),
+    ).toBeNull();
+  });
+
   it("still counts the document's OWN 'This Agreement, dated …' date", () => {
     expect(
       TEMP_002.check(
