@@ -26,7 +26,7 @@ const TERMINATION_TRIGGER = String.raw`(?:up)?on\s+(?:the\s+)?(?:any\s+|such\s+)
  * ("Sections 3-7 shall survive termination of this Agreement") was reported as
  * having no effect-of-termination clause at all.
  */
-const CONSEQUENCE = String.raw`ceases?|cease|return|destroy|delete|purge|transition|export|refund|revert|discontinue|surrenders?|wind[\s-]down`;
+const CONSEQUENCE = String.raw`ceases?|cease|return|destroy|delete|purge|transition|export|refund|revert|discontinue|surrenders?|wind[\s-]down|forfeit(?:s|ed|ure)?|disable[sd]?`;
 
 /**
  * Either order, within one sentence. A consequence drafted BEFORE its trigger
@@ -80,6 +80,13 @@ const EFFECT_OF_TERMINATION = new RegExp(
     // prejudice to any other rights or remedies".
     String.raw`|\btermination\b[^.]{0,60}?\b(?:shall|will|does)\s+not\s+(?:relieve|affect|release|discharge|waive)\b` +
     String.raw`|\btermination\b[^.]{0,80}?\bwithout\s+prejudice\s+to\b` +
+    // "Following termination, the parties shall have no further obligations" —
+    // the no-further-obligations savings statement, and "Upon termination,
+    // outstanding amounts become immediately due and payable" — the payment-
+    // acceleration effect. Both are anchored to a nearby "termination" so a
+    // plain payment term ("invoices are due and payable Net 30") stays inert.
+    String.raw`|\btermination\b[^.]{0,80}?\bno\s+further\s+(?:obligations?|liabilit(?:y|ies)|rights|duties)\b` +
+    String.raw`|\btermination\b[^.]{0,80}?\b(?:immediately\s+)?due\s+and\s+payable\b` +
     // "Upon such termination, the Owner may complete the Work … and the
     // Contractor shall be liable for any costs …" — a construction / services
     // termination-for-cause states its consequence with a party + modal, and
@@ -95,7 +102,7 @@ const EFFECT_OF_TERMINATION = new RegExp(
 /** TERM-005 — Effect of termination clause present (warning). */
 export const rule: Rule = {
   id: "TERM-005",
-  version: "1.6.0",
+  version: "1.7.0",
   name: "Effect of termination clause",
   category: "termination",
   default_severity: "warning",
