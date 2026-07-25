@@ -1328,6 +1328,7 @@ const PARTNERSHIP_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-065",
+    version: "1.1.0",
     name: "LP limited liability acknowledgment (DRULPA § 17-303)",
     description:
       "Limited partners are not liable for partnership obligations unless they participate in control.",
@@ -1342,6 +1343,11 @@ const PARTNERSHIP_RULES: Rule[] = [
     present_patterns: [
       /limited\s+partner.{0,80}not.{0,40}liable/is,
       /limited\s+liability.{0,40}limited\s+partner/is,
+      // The acknowledgment is as often drafted with the negation LEADING —
+      // "No Limited Partner shall be liable for the obligations of the
+      // Partnership beyond the amount of its capital commitment" — which the
+      // "not"-after-"liable" patterns above never match.
+      /no\s+limited\s+partner.{0,60}?\bliable/is,
     ],
   }),
   presence({
