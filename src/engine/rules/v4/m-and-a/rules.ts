@@ -670,8 +670,11 @@ const MERGER_RULES: Rule[] = [
       // to approval by the Company's stockholders", "adoption of this
       // Agreement by the stockholders", "the stockholders shall vote to
       // adopt" — none of which is the adjacent "stockholder approval" phrase.
-      /(?:approv\w+|adopt\w+|consent)\s+(?:of|by)\s+[^.]{0,30}?\bstockholders?\b/i,
-      /\bstockholders?\b[^.]{0,30}?(?:approv\w+|adopt\w+|vote\s+(?:to|in\s+favor)|consent)/i,
+      // The window is 50, not 30: "approval OF THIS AGREEMENT BY THE COMPANY'S
+      // stockholders" puts the object and the entity between the verb and the
+      // noun, which the 30-char window fell one character short of reaching.
+      /(?:approv\w+|adopt\w+|consent)\s+(?:of|by)\s+[^.]{0,50}?\bstockholders?\b/i,
+      /\bstockholders?\b[^.]{0,50}?(?:approv\w+|adopt\w+|vote\s+(?:to|in\s+favor)|consent)/i,
       // The condition often routes the approval through the vote: "the
       // adoption of this Agreement by the requisite vote of the Company's
       // stockholders" separates "adoption" from "stockholders" by more than the
