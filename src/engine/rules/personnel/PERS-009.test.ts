@@ -75,4 +75,15 @@ describe("PERS-009 — long non-solicit duration", () => {
     expect(f).not.toBeNull();
     expect(f?.title).toMatch(/24 months/);
   });
+
+  it("does not read a 'two years preceding' lookback (tail form) as the duration (v1.4.0)", () => {
+    // The lookback window can trail the number — "customers with whom the
+    // Company did business during the two (2) years preceding the Effective
+    // Date" — which the lead-in / "of employment" checks did not catch.
+    const ctx = buildContext([
+      "Non-Solicitation",
+      "During the Restricted Period, the Seller shall not solicit any customer of the Company with whom the Company did business during the two (2) years preceding the Effective Date.",
+    ]);
+    expect(PERS_009.check(ctx)).toBeNull();
+  });
 });

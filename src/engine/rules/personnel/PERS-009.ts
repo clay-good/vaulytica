@@ -84,7 +84,7 @@ function durationToMonths(amount: string, unit: string): number | null {
 
 export const rule: Rule = {
   id: "PERS-009",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Long non-solicit duration",
   category: "personnel",
   default_severity: "warning",
@@ -158,7 +158,15 @@ export const rule: Rule = {
             /\b(?:last|past|preceding|prior|final|previous|recent|immediately\s+preceding)\s+$/i.test(
               before,
             ) ||
-            /^\s*of\s+(?:employment|service|the\s+(?:relationship|engagement))/i.test(after)
+            /^\s*of\s+(?:employment|service|the\s+(?:relationship|engagement))/i.test(after) ||
+            // The lookback window can also trail the number: "customers with
+            // whom the Company did business during the two years PRECEDING the
+            // Effective Date" states a historical window, not the restriction
+            // period, so a "preceding / prior to / before / ending" tail marks
+            // it as a lookback the same way the lead-ins above do.
+            /^\s*(?:preceding|prior\s+to|before|ending|immediately\s+(?:preceding|before))\b/i.test(
+              after,
+            )
           ) {
             continue;
           }
