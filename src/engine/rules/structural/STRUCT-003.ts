@@ -119,7 +119,7 @@ const PUBLICATION_STAMP =
  */
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.13.0",
+  version: "1.14.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",
@@ -164,9 +164,14 @@ export const rule: Rule = {
         const officeSigs = text.match(OFFICE_SIG_LINE);
         if (officeSigs) signals += officeSigs.length;
         // A bare-name signature line — an underscore rule followed by the
-        // printed name of a known party, or a standalone "Notary Public" /
-        // "Witness" line — is how a prenup, will, or affidavit is signed.
-        if (isBareNameSignatureLine(text, partyNames)) signals += 1;
+        // printed name of a known party, a standalone "Notary Public" /
+        // "Witness" line, or a "Signature of <role>" label — is an
+        // unambiguous signature affordance. A UNILATERAL instrument (a PIIA,
+        // affidavit, or acknowledgment) is signed by ONE party, so a single
+        // such line must satisfy the check; it is self-sufficient (+2) like a
+        // dated-adoption recital, unlike the weak By/Name/Title tokens that
+        // need corroboration.
+        if (isBareNameSignatureLine(text, partyNames)) signals += 2;
         if (!certified && CERTIFICATION.test(text)) {
           certified = true;
           signals += 1;

@@ -324,3 +324,21 @@ describe("STRUCT-003 — a personal instrument signed by bare name (v1.8.0)", ()
     expect(STRUCT003.check(ctx)).not.toBeNull();
   });
 });
+
+describe("STRUCT-003 — a unilateral instrument signed by one party (v1.14.0)", () => {
+  it("accepts a PIIA signed with a single 'Signature of Employee' line", () => {
+    const ctx = buildContext(
+      ["Proprietary Information and Inventions Agreement", "The Employee agrees to assign all inventions to the Company."],
+      ["Employee", "_______________________________ Signature of Employee"],
+    );
+    expect(STRUCT003.check(ctx)).toBeNull();
+  });
+
+  it("still fires on a document with no signature affordance at all", () => {
+    const ctx = buildContext(
+      ["Agreement", "The parties agree to the terms herein."],
+      ["Term", "This Agreement remains in effect for two years and then expires."],
+    );
+    expect(STRUCT003.check(ctx)).not.toBeNull();
+  });
+});
