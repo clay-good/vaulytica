@@ -250,6 +250,42 @@ const STATUTE_NAMES = new Set([
 ]);
 
 /**
+ * Named institutions and legal terms of art that a contract uses as proper
+ * nouns, never as terms it defines: "Internal Revenue Service", "Federal
+ * Reserve", "New York Stock Exchange", "Force Majeure", "Generally Accepted
+ * Accounting Principles". Their words run consecutively in Title Case, so —
+ * unlike "Securities and Exchange Commission", which the lowercase "and" already
+ * splits — TITLE_CASE_PHRASE captures them whole and, absent this list, reported
+ * each as a Title-Case term the document uses twice but never defines. Keyed in
+ * lowercase for a case-insensitive compare. Generic drafting terms that a
+ * contract is EXPECTED to define ("Governmental Authority", "Material Adverse
+ * Effect") are deliberately excluded, so a document that capitalizes them
+ * without a definition is still flagged.
+ */
+const WELL_KNOWN_ENTITIES = new Set(
+  [
+    "Internal Revenue Service",
+    "Federal Reserve",
+    "Federal Trade Commission",
+    "Federal Deposit Insurance Corporation",
+    "Consumer Financial Protection Bureau",
+    "Environmental Protection Agency",
+    "Food and Drug Administration",
+    "European Central Bank",
+    "European Commission",
+    "Financial Conduct Authority",
+    "New York Stock Exchange",
+    "Nasdaq Stock Market",
+    "London Stock Exchange",
+    "American Arbitration Association",
+    "International Chamber of Commerce",
+    "Force Majeure",
+    "Generally Accepted Accounting Principles",
+    "International Financial Reporting Standards",
+  ].map((s) => s.toLowerCase()),
+);
+
+/**
  * Corporate-office titles are designations, not defined terms: bylaws that
  * empower "the Chief Executive Officer" to call a special meeting have not
  * left a defined term undefined — the office is constituted by the officers
@@ -580,6 +616,16 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
         continue;
       const phraseLower = phrase.toLowerCase();
       if (definedNames.has(phraseLower)) continue;
+      // A named institution or legal term of art is a proper noun, not a term
+      // the document left undefined. Test the article-stripped form too, since a
+      // sentence-initial "The Federal Reserve" is canonicalized to "Federal
+      // Reserve" downstream but reaches this check with the article still on.
+      const wknWords = phrase.split(/\s+/);
+      const wknCanonical =
+        wknWords.length > 2 && TITLE_CASE_LEADING_STOPWORDS.has(wknWords[0]!)
+          ? wknWords.slice(1).join(" ").toLowerCase()
+          : phraseLower;
+      if (WELL_KNOWN_ENTITIES.has(phraseLower) || WELL_KNOWN_ENTITIES.has(wknCanonical)) continue;
       // A SINGULAR use of a defined PLURAL term — "each Licensed Patent" where
       // "Licensed Patents" is the defined term — is that term's use, not a new
       // undefined one. (The mirror, a plural use of a defined singular, is
