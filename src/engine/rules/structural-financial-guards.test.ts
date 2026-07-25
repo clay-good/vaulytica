@@ -252,3 +252,26 @@ describe("STRUCT-003 — a published notice is issued, not signed (v1.5.0)", () 
     expect(STRUCT003.check(ctx)).not.toBeNull();
   });
 });
+
+describe("STRUCT-003 — an office signature line executes a consent (v1.6.0)", () => {
+  it("accepts a board written consent signed by office ('____ Name, Director')", () => {
+    const ctx = buildContext(
+      ["Action by Written Consent", "The undersigned directors adopt these resolutions."],
+      [
+        "Signatures",
+        "IN WITNESS WHEREOF, the undersigned have executed this written consent.",
+        "_______________________________ Jordan Ellis, Director",
+        "_______________________________ Morgan Lee, Director",
+      ],
+    );
+    expect(STRUCT003.check(ctx)).toBeNull();
+  });
+
+  it("still fires when a document has no signature line of any kind", () => {
+    const ctx = buildContext(
+      ["Agreement", "The parties agree to the terms herein."],
+      ["Services", "Vendor shall provide the Services described in Exhibit A."],
+    );
+    expect(STRUCT003.check(ctx)).not.toBeNull();
+  });
+});

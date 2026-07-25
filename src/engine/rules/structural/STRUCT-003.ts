@@ -26,6 +26,15 @@ const ATTESTATION =
 // sign this way, and the label-anchored tokens alone read a certified set of
 // bylaws as unsigned (a critical false positive on a well-formed document).
 const CONFORMED_SIG = /^\s*\/s\/\s+\S/m;
+// A signature line that names its signatory by office rather than by a
+// "By:/Name:/Title:" grid — "____________ Jordan Ellis, Director". Board /
+// member / partner consents, resolutions, and certificates sign this way: an
+// underscore rule followed by a person's name and a signatory office. The
+// label-anchored tokens alone read such a consent as unsigned (a critical
+// false positive). "/s/" is already covered by CONFORMED_SIG, so this matches
+// only the underscore form to avoid double-counting the same line.
+const OFFICE_SIG_LINE =
+  /_{4,}\s*[A-Z][A-Za-z.'’-]+(?:\s+[A-Z][A-Za-z.'’-]+){0,3},?\s+(?:Director|President|Vice\s+President|Secretary|Treasurer|Chief\s+[A-Za-z]+\s+Officer|CEO|CFO|COO|CTO|Manager|Managing\s+Member|Member|Trustee|General\s+Partner|Partner|Authorized\s+Signatory|Its\b)\b/g;
 // The secretary's certification formula that closes bylaws and resolutions.
 // Deliberately narrow ("certified as adopted", "certify that the foregoing")
 // so an amendment clause's "may be adopted by the Board" is not a signal.
@@ -77,7 +86,7 @@ const PUBLICATION_STAMP =
  */
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.5.0",
+  version: "1.6.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",
@@ -113,6 +122,9 @@ export const rule: Rule = {
           signals += 1;
         }
         if (CONFORMED_SIG.test(text)) signals += 1;
+        OFFICE_SIG_LINE.lastIndex = 0;
+        const officeSigs = text.match(OFFICE_SIG_LINE);
+        if (officeSigs) signals += officeSigs.length;
         if (!certified && CERTIFICATION.test(text)) {
           certified = true;
           signals += 1;

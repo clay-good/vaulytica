@@ -310,3 +310,25 @@ describe("Nonprofit COI & no-members in real wording (v1.1.0)", () => {
     expect((await run1("The Board consists of five directors.")).has("GOV-077")).toBe(true);
   });
 });
+
+describe("GOV-045 — 'unanimous written consent' is the unanimity statement (v1.1.0)", () => {
+  const WC_PB: Playbook = { id: "written-consent", version: "1.0.0" };
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Action by Written Consent", body]), WC_PB);
+    const run = await runEngine({ rules: GOVERNANCE_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("reads 'by unanimous written consent'", async () => {
+    expect(
+      (
+        await run1(
+          "The undersigned, being all of the members of the Board, hereby adopt these resolutions by unanimous written consent.",
+        )
+      ).has("GOV-045"),
+    ).toBe(false);
+    expect((await run1("The Board hereby adopts the following resolutions.")).has("GOV-045")).toBe(
+      true,
+    );
+  });
+});

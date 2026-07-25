@@ -118,12 +118,26 @@ export const rule: Rule = {
 };
 
 /**
+ * A signature line that names its signatory by office rather than by a
+ * "By:/Name:/Title:" grid — "____________  Jordan Ellis, Director",
+ * "/s/ Morgan Lee, Chief Financial Officer". Board / member / partner
+ * consents, resolutions, and certificates sign this way: an underscore rule
+ * (or `/s/`) followed by a person's name and a signatory office. The blank is
+ * a place to sign, not an unfilled template field. Anchoring on an underscore
+ * run + name + office keeps this off an inline prose blank.
+ */
+const SIGNATURE_LINE_BY_OFFICE =
+  /(?:_{4,}|\/s\/)\s*(?:\/s\/\s*)?[A-Z][A-Za-z.'’-]+(?:\s+[A-Z][A-Za-z.'’-]+){0,3},?\s+(?:Director|President|Vice\s+President|Secretary|Treasurer|Chief\s+[A-Za-z]+\s+Officer|CEO|CFO|COO|CTO|Manager|Managing\s+Member|Member|Trustee|General\s+Partner|Partner|Authorized\s+Signatory|Its\b)\b/;
+
+/**
  * True if the paragraph text looks like a signature-block context.
  * Triggered by ≥2 of (By, Name, Title, Date, Signature, Signed) in
- * the same paragraph, OR the paragraph being formatted as a table-row
- * "By: __ | Name: __ | Title: __ | Date: __" line.
+ * the same paragraph, the paragraph being formatted as a table-row
+ * "By: __ | Name: __ | Title: __ | Date: __" line, OR a signature line
+ * that names its signatory by office ("____ Jordan Ellis, Director").
  */
 function isSignatureContext(text: string): boolean {
+  if (SIGNATURE_LINE_BY_OFFICE.test(text)) return true;
   const tokens = (
     text.match(
       /\b(By|Name|Title|Date|Signature|Signed|Print(?:ed)?\s+Name|Authorized\s+Signatory)\b\s*:?/gi,

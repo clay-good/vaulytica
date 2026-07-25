@@ -62,4 +62,27 @@ describe("STRUCT-013 — unfilled template placeholders", () => {
     const f = STRUCT_013.check(ctx);
     expect(f?.title).toMatch(/\b3\b/);
   });
+
+  it("silent on an office signature line ('____ Jordan Ellis, Director')", () => {
+    expect(
+      STRUCT_013.check(buildContext(["Signatures", "_______________________________ Jordan Ellis, Director"])),
+    ).toBeNull();
+    expect(
+      STRUCT_013.check(
+        buildContext(["Signatures", "_______________________________ Morgan Lee, Chief Financial Officer"]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires on a real placeholder even alongside an office signature line", () => {
+    expect(
+      STRUCT_013.check(
+        buildContext([
+          "H",
+          "Grant to [Grantee Name] shares.",
+          "_______________________________ Jordan Ellis, Director",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
 });

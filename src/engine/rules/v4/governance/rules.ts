@@ -904,6 +904,7 @@ const WRITTEN_CONSENT_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-045",
+    version: "1.1.0",
     name: "Unanimous-consent statement (board consents only)",
     description: "DGCL § 141(f) board consents must be unanimous.",
     citation: dgcl("141(f)"),
@@ -916,7 +917,11 @@ const WRITTEN_CONSENT_RULES: Rule[] = [
       "Add 'The undersigned constitute all of the directors then in office'; have every director sign.",
     present_patterns: [
       /constitute\s+all\s+of\s+the\s+directors/i,
-      /unanimous(ly)?\s+(consent|adopt)/i,
+      // "unanimous WRITTEN consent" is the canonical phrase — the § 141(f)
+      // adjective sits between "unanimous" and "consent", so an adjacency-only
+      // pattern read every by-the-book consent as missing the statement.
+      /unanimous(ly)?\s+(?:written\s+)?(consent|adopt)/i,
+      /being\s+all\s+of\s+the\s+(?:members\s+of\s+the\s+board|directors)/i,
     ],
   }),
   presence({
