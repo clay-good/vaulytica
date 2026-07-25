@@ -233,6 +233,20 @@ const STATUTE_NAMES = new Set([
   "Code of Civil Procedure",
   "Fair Labor Standards Act",
   "National Labor Relations Act",
+  // Named federal regulatory rules referenced by their term of art. They end in
+  // "Rule", not "Act/Code/Law", so the suffix guard misses them, yet a BAA that
+  // uses "Privacy Rule"/"Security Rule" is importing the HIPAA regulation's own
+  // vocabulary (45 C.F.R. Parts 160/164), not leaving a term undefined. Every
+  // BAA uses these without a definitions entry — flagging them told drafters to
+  // define the CFR. Scoped to recognized named rules, not any "X Rule" phrase.
+  "Privacy Rule",
+  "Security Rule",
+  "Breach Notification Rule",
+  "Enforcement Rule",
+  "Omnibus Rule",
+  "Common Rule",
+  "Red Flags Rule",
+  "Volcker Rule",
 ]);
 
 /**

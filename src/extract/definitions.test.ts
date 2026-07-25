@@ -355,6 +355,22 @@ describe("the double-alias definition form", () => {
   });
 });
 
+describe("named federal regulatory rules are not undefined terms", () => {
+  it("does not flag HIPAA 'Privacy Rule'/'Security Rule' as used-but-undefined", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "1. Definitions",
+        '"HIPAA Rules" means the Privacy, Security, Breach Notification, and Enforcement Rules at 45 C.F.R. Parts 160 and 164.',
+        "Business Associate shall not use PHI in a manner that would violate the Privacy Rule.",
+        "Business Associate shall comply with the Security Rule with respect to electronic PHI.",
+      ]),
+    );
+    const undef = map.undefined_capitalized.map((e) => e.term);
+    expect(undef).not.toContain("Privacy Rule");
+    expect(undef).not.toContain("Security Rule");
+  });
+});
+
 describe("street addresses are not defined terms", () => {
   it("does not report a street name as an undefined Title-Case term", () => {
     const map = extractDefinitions(
