@@ -42,7 +42,7 @@ const PAYMENT_TERMS = new RegExp(
     // an invoice: "Base Rent: $20,000 per month, payable in advance on the
     // first of each month" is a payment term, and every branch above is
     // invoice-shaped, so the rule reported none was stated.
-    `\\b(?:due|payable|paid)\\s+(?:in\\s+advance\\s+)?on\\s+(?:or\\s+before\\s+)?the\\s+(?:first|1st|last|\\d{1,2}(?:st|nd|rd|th))\\s+(?:day\\s+)?of\\s+(?:each|every|the)\\b`,
+    `\\b(?:due|payable|paid)\\s+(?:in\\s+(?:advance|arrears)\\s+)?on\\s+(?:or\\s+before\\s+)?the\\s+(?:first|1st|last|\\d{1,2}(?:st|nd|rd|th))\\s+(?:day\\s+)?of\\s+(?:each|every|the)\\b`,
     `\\b(?:due|payable|paid)\\s+(?:monthly|quarterly|annually|weekly|bi-?weekly|semi-?annually)\\b`,
     `\\b(?:monthly|quarterly|annually)\\s+in\\s+(?:advance|arrears)\\b`,
     // "payable on a monthly basis" — the cadence carries an "on a … basis"
@@ -96,7 +96,7 @@ const ANY_PAYMENT = /\b(fee|payment|invoice|amount\s+due|payable)\b/i;
 /** FIN-005 — Payment terms presence and parseability (warning). */
 export const rule: Rule = {
   id: "FIN-005",
-  version: "1.6.0",
+  version: "1.6.1",
   name: "Payment terms presence and parseability",
   category: "financial",
   default_severity: "warning",

@@ -190,7 +190,7 @@
       "finding_id": "FIN-005-s1-0",
       "fired": true,
       "rule_id": "FIN-005",
-      "rule_version": "1.6.0"
+      "rule_version": "1.6.1"
     },
     {
       "elapsed_ms": 0,
@@ -817,7 +817,7 @@
       "explanation": "Commercial contracts should state when payment is due. 'Net 30' or 'due within X days of invoice' is the typical formulation. Without it, payment timing defaults to the governing-law rule.",
       "id": "FIN-005-s1-0",
       "rule_id": "FIN-005",
-      "rule_version": "1.6.0",
+      "rule_version": "1.6.1",
       "severity": "warning",
       "source_citations": [],
       "title": "No payment-term clause detected"
@@ -981,7 +981,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected saas-customer (score 0.9). Title matched: \"subscription agreement\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"uptime\".",
-  "result_hash": "adfa9c909babfbed9cb547bc2cffb1a27c16185abeb65311a61bc214f29c1f3c",
+  "result_hash": "41bafba83c98f7df7472b1d9126f25c8d0eacc5d201229d56186e70015535cac",
   "source_file": {
     "name": "bad-saas-suspension.docx",
     "sha256": "9afd9de44c9b6a123f62c53a81c06b34ec7a515c4e5519fc63b2bc69223ac49b",

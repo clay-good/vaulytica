@@ -188,7 +188,7 @@
       "finding_id": "FIN-005-s1-0",
       "fired": true,
       "rule_id": "FIN-005",
-      "rule_version": "1.6.0"
+      "rule_version": "1.6.1"
     },
     {
       "elapsed_ms": 0,
@@ -746,7 +746,7 @@
       "explanation": "Commercial contracts should state when payment is due. 'Net 30' or 'due within X days of invoice' is the typical formulation. Without it, payment timing defaults to the governing-law rule.",
       "id": "FIN-005-s1-0",
       "rule_id": "FIN-005",
-      "rule_version": "1.6.0",
+      "rule_version": "1.6.1",
       "severity": "warning",
       "source_citations": [],
       "title": "No payment-term clause detected"
@@ -921,7 +921,7 @@
   "playbook_id": "lease-commercial-multitenant",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected lease-commercial-multitenant (score 0.9). Title matched: \"office lease\". Distinguishing phrases: \"Landlord\", \"Tenant\", \"Premises\", \"Rentable Square Feet\", \"Base Rent\", \"Operating Expenses\".",
-  "result_hash": "25efea2c0018fd432e4e35a52168600c25a80a5cdd34991251782f478206a2d0",
+  "result_hash": "97f796f95344964a7980c2166df7fc24f9660dec7fa84470f0dfbed8a5131510",
   "source_file": {
     "name": "bad-lease-cam.docx",
     "sha256": "1de7804edf376ad66d1a78b0c998aa4a479a18835fa4e104e20057385337a0b6",
