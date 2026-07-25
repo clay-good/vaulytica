@@ -120,6 +120,11 @@ export const ADDENDA_RULES: Rule[] = [
       "State the cadence: e.g., 'Vendor shall maintain a current SOC 2 Type II report renewed annually.'",
     present_patterns: [
       /(annual\w*|annually|quarterly|every\s+\d+\s+(?:months?|years?))\b[^.]{0,80}(?:audit|review|assessment|certification|attestation|SOC\s*2|ISO\s*27001)/i,
+      // The cadence as often TRAILS the review verb — "review access privileges
+      // at least quarterly", "audit … no more than once per year", "penetration
+      // testing … at least annually" — and "once per year" is not in the list
+      // above.
+      /(?:audit|review|assessment|penetration\s+test|pen\s+test|scan)\w*[^.]{0,80}(?:annual\w*|annually|quarterly|monthly|semi-?annually|once\s+(?:per|a|each)\s+(?:year|quarter|month)|every\s+\d+\s+(?:months?|years?))/i,
     ],
     default_severity: "warning",
   }),
@@ -156,6 +161,10 @@ export const ADDENDA_RULES: Rule[] = [
       "Specify a window: e.g., 'Vendor shall notify Customer within 48 hours of confirming a security incident affecting Customer Data.'",
     present_patterns: [
       /(within\s+\d+\s+(?:hours?|days?)|no\s+later\s+than\s+\d+\s+(?:hours?|days?))\b[^.]{0,160}(?:incident|breach|notif)/i,
+      // The window is as often written "in no EVENT later than forty-eight
+      // (48) hours" — with "event", a spelled count, and the digit in a
+      // parenthetical — none of which the digit-only forms above reach.
+      /(?:within|no\s+(?:event\s+)?later\s+than)\s+[^.]{0,20}?\(?\d{1,3}\)?\s*(?:calendar\s+|business\s+)?(?:hours?|days?)\b[^.]{0,160}(?:incident|breach|notif)/i,
     ],
     default_severity: "warning",
   }),
