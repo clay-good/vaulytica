@@ -4,7 +4,12 @@
   "name": "UCC-1 Financing Statement (prose)",
   "description": "UCC-1 financing statement prose components under UCC § 9-502 / § 9-503 / § 9-504. Selects the §6.L ruleset (BNK-045..BNK-050).",
   "match_features": {
-    "title_keywords": ["financing statement", "ucc-1", "ucc1", "ucc financing statement"],
+    "title_keywords": [
+      "financing statement",
+      "ucc-1",
+      "ucc1",
+      "ucc financing statement"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "debtor",
@@ -14,16 +19,59 @@
       "all assets",
       "public organic record"
     ],
-    "negative_features": ["security agreement", "loan agreement", "promissory note"]
+    "negative_features": [
+      "security agreement",
+      "loan agreement",
+      "promissory note"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Debtor", "Secured Party", "Filing Office"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "Debtor",
+    "Secured Party",
+    "Filing Office"
+  ],
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "UCC-9-502-503-504",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["security-agreement"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "security-agreement"
+  ],
   "compliance_matrix_columns": [
     "§ 9-503 exact legal name",
     "§ 9-502 secured party + address",

@@ -3639,7 +3639,38 @@
       "Incident",
       "Affected Individual"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "GDPR-ART-33-STATE-BREACH",
@@ -4263,7 +4294,38 @@
       "Custodian",
       "Covered Materials"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "FRCP-37E-ZUBULAKE",
@@ -7230,7 +7292,38 @@
     },
     "expected_clauses": [],
     "expected_defined_terms": [],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "IRC-83b",
@@ -8057,7 +8150,38 @@
       "Secured Party",
       "Filing Office"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "UCC-9-502-503-504",

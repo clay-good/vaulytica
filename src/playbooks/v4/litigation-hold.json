@@ -19,15 +19,56 @@
       "custodian",
       "attorney work product"
     ],
-    "negative_features": ["settlement payment", "release", "demand letter", "cease and desist"]
+    "negative_features": [
+      "settlement payment",
+      "release",
+      "demand letter",
+      "cease and desist"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Custodian", "Covered Materials"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "Custodian",
+    "Covered Materials"
+  ],
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "FRCP-37E-ZUBULAKE",
-  "applicable_jurisdictions": ["US"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
   "companion_playbooks": [],
   "compliance_matrix_columns": [
     "FRCP 37(e) preservation",

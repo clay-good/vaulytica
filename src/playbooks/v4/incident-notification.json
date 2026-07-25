@@ -19,15 +19,56 @@
       "without undue delay",
       "72 hours"
     ],
-    "negative_features": ["business associate agreement", "license grant"]
+    "negative_features": [
+      "business associate agreement",
+      "license grant"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Incident", "Affected Individual"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "Incident",
+    "Affected Individual"
+  ],
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "GDPR-ART-33-STATE-BREACH",
-  "applicable_jurisdictions": ["US", "EU", "UK"],
+  "applicable_jurisdictions": [
+    "US",
+    "EU",
+    "UK"
+  ],
   "companion_playbooks": [],
   "compliance_matrix_columns": [
     "Art. 33(3)(a) nature",

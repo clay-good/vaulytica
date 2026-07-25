@@ -105,6 +105,10 @@ describe("extended playbook manifest", () => {
       "phi-authorization",
       "npp-acknowledgment",
       "hipaa-npp",
+      "incident-notification",
+      "section-83b-election",
+      "ucc-1-financing-statement",
+      "litigation-hold",
     ]) {
       const pb = raw.find((p) => p.id === id);
       expect(pb, `${id} missing from manifest`).toBeDefined();
