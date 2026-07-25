@@ -690,7 +690,7 @@
       "finding_id": "TERM-002-s1-0",
       "fired": true,
       "rule_id": "TERM-002",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -888,7 +888,7 @@
       "explanation": "Without a for-cause termination path, parties must rely on common-law material-breach doctrines, which are jurisdiction-dependent.",
       "id": "TERM-002-s1-0",
       "rule_id": "TERM-002",
-      "rule_version": "1.2.0",
+      "rule_version": "1.3.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No termination-for-cause clause detected"
@@ -974,7 +974,7 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "71190db6a107c0c60a30889e52cb3b5863cc73571efae927389ecd47bdf876d8",
+  "result_hash": "a75c225a4bef905b1dd15f92c8a24901841441042df15d45654e01d37f1534aa",
   "source_file": {
     "name": "bad-unilateral-nda.docx",
     "sha256": "be3d09f211f21ac2141d1ff1d2ec9023dafe4f56502a8a6b66aec83361fdeca6",

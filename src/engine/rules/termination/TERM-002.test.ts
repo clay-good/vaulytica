@@ -142,4 +142,27 @@ describe("TERM-002 — failure-to-pay / perform default triggers", () => {
       TERM_002.check(doc("Either party may terminate this Agreement for convenience upon sixty days' notice.")),
     ).not.toBeNull();
   });
+
+  it("recognizes the strict immediate 'terminate if it breaches' form (v1.3.0)", () => {
+    // Immediate termination on ANY breach, no materiality or cure period.
+    expect(
+      TERM_002.check(
+        doc("The Licensor may terminate this EULA immediately if the Licensee breaches any of its terms."),
+      ),
+    ).toBeNull();
+    // And the SCC "terminate … if non-compliance persists" form.
+    expect(
+      TERM_002.check(
+        doc("The data exporter may terminate the relevant portion of the MSA if non-compliance persists for more than thirty days."),
+      ),
+    ).toBeNull();
+  });
+
+  it("does not stitch a convenience-termination sentence to a later breach sentence", () => {
+    expect(
+      TERM_002.check(
+        doc("Either party may terminate for convenience. If a party breaches, the other may seek damages."),
+      ),
+    ).not.toBeNull();
+  });
 });

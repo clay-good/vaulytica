@@ -48,14 +48,22 @@ const FOR_CAUSE = new RegExp(
     "|" +
     String.raw`\bterminat\w+\b[^.]{0,140}\bmaterial(?:ly)?\b[^.]{0,80}${BREACH}` +
     "|" +
-    String.raw`\bterminat\w+\b[^.]{0,140}${BREACH}[^.]{0,80}\bmaterial\b`,
+    String.raw`\bterminat\w+\b[^.]{0,140}${BREACH}[^.]{0,80}\bmaterial\b` +
+    // The STRICT for-cause form: immediate termination on ANY breach, with no
+    // materiality qualifier and no cure period — "the Licensor may terminate
+    // this EULA immediately if the Licensee breaches any of its terms". A
+    // conditional connector (if / upon / for / in the event of) between the
+    // termination verb and the breach — within one sentence — marks it as a
+    // for-cause CONDITION, not an incidental mention.
+    "|" +
+    String.raw`\bterminat\w+\b[^.]{0,60}?\b(?:if|upon|for|in\s+the\s+event\s+(?:of|that))\b[^.]{0,50}?${BREACH}`,
   "i",
 );
 
 /** TERM-002 — Termination for cause present (warning). */
 export const rule: Rule = {
   id: "TERM-002",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Termination for cause present",
   category: "termination",
   default_severity: "warning",
