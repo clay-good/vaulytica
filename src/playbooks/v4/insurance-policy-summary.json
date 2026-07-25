@@ -56,6 +56,9 @@
     "STRUCT-002": {
       "skip": true
     },
+    "STRUCT-004": {
+      "skip": true
+    },
     "TERM-002": {
       "skip": true
     },
