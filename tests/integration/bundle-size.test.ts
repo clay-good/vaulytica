@@ -56,8 +56,14 @@ const V2_BASELINE_GZIPPED_KB = 165;
  * extraction, BAA clause phrasings): the added alternations are a few hundred
  * bytes gzipped in the lazy engine chunk (measured total ~825 KB) and the
  * small margin keeps the guard from flaking on a marginally larger CI build.
+ * Raised to +680 as a second, larger false-positive-precision wave widened many
+ * more detectors (Chancery/venue normalization, DGCL statute-acronym crossrefs,
+ * bare-name/honorific/conformed/letter-closing signature recognition, period
+ * definitions, EQT/SET/GOV/MNA/EMP/RE pack phrasings) and added six non-contract
+ * playbook override sets to the bundled catalog: measured total ~830 KB, and the
+ * ~15 KB margin covers the remaining verticals without re-raising every commit.
  */
-const V3_BUDGET_GZIPPED_KB = V2_BASELINE_GZIPPED_KB + 665;
+const V3_BUDGET_GZIPPED_KB = V2_BASELINE_GZIPPED_KB + 680;
 /** Eager-entry budget (first-paint contribution). */
 const EAGER_ENTRY_GZIPPED_KB = 50;
 

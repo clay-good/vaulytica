@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
 /** IPDATA-005 — GDPR / CCPA / HIPAA reference (info). */
 export const rule: Rule = {
   id: "IPDATA-005",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Data regime reference (GDPR / CCPA / HIPAA)",
   category: "ip-and-data",
   default_severity: "info",
@@ -20,7 +20,7 @@ export const rule: Rule = {
     if (
       firstParagraphMatch(
         ctx,
-        /\b(?:GDPR|General\s+Data\s+Protection\s+Regulation|CCPA|California\s+Consumer\s+Privacy\s+Act|HIPAA|Business\s+Associate\s+Agreement|BAA)\b/i,
+        /\b(?:GDPR|General\s+Data\s+Protection\s+Regulation|CCPA|California\s+Consumer\s+Privacy\s+Act|HIPAA|Business\s+Associate\s+Agreement|BAA|Covered\s+Entit(?:y|ies)|45\s+C\.?F\.?R\.?\s*(?:§\s*)?164)\b/i,
       )
     )
       return null;
