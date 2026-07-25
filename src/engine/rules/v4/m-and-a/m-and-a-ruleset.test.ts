@@ -268,6 +268,31 @@ describe("Escrow release & termination in their real wording (v1.1.0)", () => {
       (await run1("The Escrow Agent shall disburse per instructions.")).has("MNA-053"),
     ).toBe(true);
   });
+
+  it("MNA-053 reads a date-certain 'Release Date … release … balance of the Escrow Fund'", async () => {
+    expect(
+      (
+        await run1(
+          "On the Release Date, the Escrow Agent shall release to the Seller the balance of the Escrow Fund less any pending claims.",
+        )
+      ).has("MNA-053"),
+    ).toBe(false);
+  });
+
+  it("MNA-049 reads a 'joint written instructions … or … final order of a court' dispute scheme", async () => {
+    expect(
+      (
+        await run1(
+          "The Escrow Agent shall release the Escrow Fund only upon joint written instructions of both parties, or upon a final, non-appealable order of a court of competent jurisdiction.",
+        )
+      ).has("MNA-049"),
+    ).toBe(false);
+    expect(
+      (await run1("The Escrow Agent shall hold the funds and release them after twelve months.")).has(
+        "MNA-049",
+      ),
+    ).toBe(true);
+  });
 });
 
 describe("Earnout conduct covenant & CoC acceleration in real wording (v1.1.0)", () => {

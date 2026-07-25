@@ -1006,6 +1006,7 @@ const ESCROW_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-049",
+    version: "1.1.0",
     name: "Dispute-resolution mechanics",
     description:
       "Escrow agreement must specify how disputes between buyer / seller over release are resolved.",
@@ -1025,6 +1026,11 @@ const ESCROW_AGREEMENT_RULES: Rule[] = [
       /interpleader/i,
       /arbitrat/i,
       /(dispute|disagreement).{0,40}(resolution|procedure)/is,
+      // The dominant escrow dispute-resolution scheme: the agent releases only
+      // on JOINT written instructions of both parties, or on a final court
+      // order — that IS how a Buyer/Seller disagreement over the fund resolves.
+      /joint\s+(?:written\s+)?instructions?/i,
+      /(?:final|non.?appealable)\b[^.]{0,30}\border\s+of\s+(?:a\s+)?court/i,
     ],
   }),
   presence({
@@ -1089,7 +1095,7 @@ const ESCROW_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-053",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Termination of escrow / final release",
     description: "Escrow agreement should specify the termination event triggering final release.",
     citation: maPractice(
@@ -1112,6 +1118,11 @@ const ESCROW_AGREEMENT_RULES: Rule[] = [
       // when all Escrow Funds have been disbursed".
       /terminat\w+[^.]{0,60}\b(?:escrow\s+funds|funds)\b[^.]{0,40}\b(?:disbursed|released|distributed|paid)/i,
       /(?:this\s+agreement|escrow)\s+terminat\w+[^.]{0,80}\b(?:disbursed|released|distributed)/i,
+      // The rule's own explanation names this as the typical termination:
+      // a date certain (a defined "Release Date") on which the agent releases
+      // the unclaimed BALANCE of the escrow to the seller.
+      /\brelease\s+date\b/i,
+      /(?:release|distribut\w+|disburs\w+)[^.]{0,40}\bbalance\s+of\s+(?:the\s+)?escrow/i,
     ],
   }),
   presence({
