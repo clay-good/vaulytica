@@ -142,6 +142,30 @@ describe("OBLI-003 — a statutory appointment power is not an ambiguous trigger
   });
 });
 
+describe("OBLI-003 — 'as amended from time to time' modifies a statute, not an obligation (v1.3.0)", () => {
+  it("does not flag a charter indemnity tied to the DGCL 'as it may be amended from time to time'", () => {
+    expect(
+      OBLI003.check(
+        doc(
+          "Indemnification",
+          "The Corporation shall indemnify its directors and officers to the fullest extent authorized by the General Corporation Law of the State of Delaware, as it may be amended from time to time, against all expenses and losses.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still flags a bare discretionary 'from time to time' trigger", () => {
+    expect(
+      OBLI003.check(
+        doc(
+          "Updates",
+          "The Administrator shall reallocate the reserve funds from time to time in its sole discretion.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});
+
 describe("OBLI-001 — a passive clause naming its agent is not ambiguous (v1.1.0)", () => {
   it("does not flag 'to be prepared by Petitioner's counsel'", () => {
     expect(
