@@ -263,6 +263,20 @@ describe("external statutory article citations are not internal cross-references
   it("still flags a bare internal Article reference that does not resolve", () => {
     expect(unresolved("As set out in Article 9, the parties agree.")).toContain("Article 9");
   });
+
+  it("drops a hyphenated uniform-act section cite ('Section 17-303 of the Act')", () => {
+    expect(
+      unresolved(
+        "No Limited Partner is liable under Section 17-303 of the Act, nor upon a decree under Section 17-802 of the Act or Section 17-1101(d) of the Act.",
+      ),
+    ).toEqual([]);
+  });
+
+  it("drops a bare 'of the Act' / 'of the Code' statutory cite", () => {
+    expect(
+      unresolved("The representative is designated under Section 6223 of the Code and Section 12 of the Act."),
+    ).toEqual([]);
+  });
 });
 
 describe("flat-paste ARTICLE layouts (bylaws style)", () => {

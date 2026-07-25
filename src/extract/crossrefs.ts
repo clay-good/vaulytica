@@ -41,8 +41,19 @@ const REF_RE =
 // Corporation Law of the State of Delaware" is a statutory cite, and its
 // absence made STRUCT-007 report a broken internal reference to a
 // "Section 220" every set of Delaware bylaws cites externally.
+// Uniform-act sections carry a HYPHENATED number — "Section 17-303 of the
+// Act", "Section 17-1101(d) of the Act" (Delaware LP/LLC Acts, UCC). REF_RE
+// stops the label at the hyphen ("Section 17"), so the trailer text opens with
+// the "-303" suffix before the "of the … Act" qualifier ever lands; without a
+// leading-suffix skip, every DRULPA cite read as a broken internal reference to
+// a "Section 17" the agreement never has. Consume that suffix first.
+// The "[A-Z][^.;,]*?" preceding the qualifier keyword is OPTIONAL: "of the
+// General Corporation Law" has a phrase between "the" and "Law", but "of the
+// Act" / "of the Code" name the statute with the keyword itself — a required
+// preceding word made the [A-Z] swallow the keyword's own first letter and the
+// bare form never matched.
 const EXTERNAL_TRAILER_RE =
-  /^(?:\(\d+[a-z]?\))*(?:\s+(?:to|through|and|or|,)\s+\d+[A-Za-z]?(?:\(\d+[a-z]?\))*)*\s+(?:of\s+(?:the\s+)?[A-Z][^.;,]*?\b(?:Code|Acts?|Laws?|Regulations?|Rules?|U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?)\b|(?:UK\s+|EU\s+)?(?:GDPR|CCPA|CPRA|HIPAA|LGPD|PIPEDA|DPA\s+20\d\d)\b)/;
+  /^(?:-\d+[a-z]?(?:\([a-z0-9]+\))?)?(?:\(\d+[a-z]?\))*(?:\s+(?:to|through|and|or|,)\s+\d+[A-Za-z]?(?:\(\d+[a-z]?\))*)*\s+(?:of\s+(?:the\s+)?(?:[A-Z][^.;,]*?\s+)?(?:Code|Acts?|Laws?|Regulations?|Rules?|U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?)\b|(?:UK\s+|EU\s+)?(?:GDPR|CCPA|CPRA|HIPAA|LGPD|PIPEDA|DPA\s+20\d\d)\b)/;
 const EXTERNAL_LEADER_RE = /\b(?:U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?|Stat\.)\s*$/;
 
 // The statutory qualifier can also PRECEDE the section: "Treasury Regulations
