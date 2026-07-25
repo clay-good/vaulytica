@@ -765,6 +765,7 @@ const CCR_RULES: Rule[] = [
   }),
   presence({
     id: "RE-037",
+    version: "1.1.0",
     name: "Term / duration of restrictions",
     description:
       "CC&Rs should specify term (perpetual or set years) and automatic-extension mechanic.",
@@ -779,6 +780,11 @@ const CCR_RULES: Rule[] = [
       /(perpetual|in\s+perpetuity)/i,
       /(30|50)\s+year.{0,40}term/is,
       /automatic\s+renewal/i,
+      // A CC&R duration states the initial period as "thirty (30) years" and
+      // the renewal as "automatically renew for successive ten-year periods":
+      // tolerate the spelled+parenthetical year and the verb-form renewal.
+      /(?:\d{1,3}|thirty|forty|fifty|sixty|ninety|twenty)\s*(?:\(\s*\d{1,3}\s*\)\s*)?years?/i,
+      /(?:automatic\w*\s+renew\w*|renew\w+\s+(?:automatically|for\s+successive))/i,
     ],
     default_severity: "warning",
   }),
@@ -831,6 +837,7 @@ const CCR_RULES: Rule[] = [
   }),
   presence({
     id: "RE-039",
+    version: "1.1.0",
     name: "Dispute resolution / enforcement",
     description: "CC&Rs should specify dispute resolution / enforcement procedure.",
     citation: hoaStatutes(),
@@ -845,6 +852,12 @@ const CCR_RULES: Rule[] = [
       /dispute\s+resolution/i,
       /(alternative\s+dispute\s+resolution|adr)/i,
       /mediation/i,
+      // The rule covers ENFORCEMENT too (per its title): a CC&R's "Enforcement"
+      // section — "the Association or any owner may enforce these covenants by
+      // any proceeding at law or in equity" — is the dispute mechanism here,
+      // and matching only ADR/mediation missed it.
+      /enforce\w*[^.]{0,60}(?:proceeding|action|law\s+or\s+(?:in\s+)?equity|injunct\w+)/is,
+      /(?:proceeding|action|suit)\s+(?:at\s+law|in\s+equity)/i,
     ],
     default_severity: "warning",
   }),

@@ -320,3 +320,38 @@ describe("RE-052 reads the SNDA 'no amendment without Lender's consent' (v1.1.0)
     ).toBe(true);
   });
 });
+
+describe("CC&R duration & enforcement in real wording (v1.1.0)", () => {
+  const CCR_PB2: Playbook = { id: "ccrs", version: "1.0.0" };
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["CCR", body]), CCR_PB2);
+    const run = await runEngine({ rules: REAL_ESTATE_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("RE-037 reads 'thirty (30) years … automatically renew for successive'", async () => {
+    expect(
+      (
+        await run1(
+          "These covenants run for an initial period of thirty (30) years and automatically renew for successive ten-year periods.",
+        )
+      ).has("RE-037"),
+    ).toBe(false);
+    expect((await run1("Each lot may be used only for residential purposes.")).has("RE-037")).toBe(
+      true,
+    );
+  });
+
+  it("RE-039 reads an enforcement clause ('enforce … by any proceeding at law or in equity')", async () => {
+    expect(
+      (
+        await run1(
+          "The Association or any owner may enforce these covenants by any proceeding at law or in equity.",
+        )
+      ).has("RE-039"),
+    ).toBe(false);
+    expect((await run1("Each owner shall maintain the lot in good condition.")).has("RE-039")).toBe(
+      true,
+    );
+  });
+});
