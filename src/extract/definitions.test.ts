@@ -132,6 +132,23 @@ describe("parenthetical definitions", () => {
     );
     expect(map.entries.map((e) => e.term)).not.toContain("Services");
   });
+
+  it("registers both terms of a paired collective/individual parenthetical", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Parties",
+        'The Persons admitted as limited partners (each a "Limited Partner" and, together with the General Partner, the "Partners") shall contribute capital.',
+      ]),
+    );
+    expect(map.entries.map((e) => e.term).sort()).toEqual(["Limited Partner", "Partners"]);
+  });
+
+  it("registers both terms of an individually/collectively pair", () => {
+    const map = extractDefinitions(
+      buildTree(["Parties", 'The buyers (individually a "Party" and collectively the "Parties").']),
+    );
+    expect(map.entries.map((e) => e.term).sort()).toEqual(["Parties", "Party"]);
+  });
 });
 
 describe("place names are not undefined defined-terms", () => {

@@ -56,6 +56,25 @@ const DEFINITION_PARENTHETICAL =
   /\((?:\s*(?:the|this|these|each|an?|collectively|together|individually|hereinafter|referred\s+to\s+as)[,]?\s+)*["\u201C]([A-Z][\w\s\-&/'\u2019.]{1,60}?)["\u201D]\s*\)/g;
 
 /**
+ * The paired collective/individual parenthetical \u2014 the party-definition idiom
+ * DEFINITION_PARENTHETICAL cannot see because its first quoted term is not
+ * immediately followed by `)`:
+ *
+ *   `(each a "Limited Partner" and, together with the General Partner, the "Partners")`
+ *   `(individually a "Party" and collectively the "Parties")`
+ *   `(the "Company" and, together with its subsidiaries, the "Group")`
+ *
+ * BOTH quoted names are defined terms. The two-quoted-terms requirement plus a
+ * collective/individual connective between them keeps this off a single term
+ * used mid-parenthetical (`(the "Services" described in Exhibit A)` \u2014 one quote,
+ * no pairing connective). Without it, STRUCT-006 flagged the individual term
+ * ("Limited Partner", "Party") and often the collective ("Partners") as
+ * used-but-never-defined.
+ */
+const DEFINITION_PAIR_PARENTHETICAL =
+  /\((?:\s*(?:the|this|these|each|an?|collectively|together|individually|severally|hereinafter)[,]?\s+)*["\u201C]([A-Z][\w\s\-&/'\u2019.]{1,60}?)["\u201D][\s,]+and\b[^)]*?\b(?:collectively|together|individually|each|severally)\b[^)]*?\bthe\s+["\u201C]([A-Z][\w\s\-&/'\u2019.]{1,60}?)["\u201D]\s*\)/g;
+
+/**
  * Meaning-by-reference: a term (or a list of terms) is defined by pointing at
  * another instrument's definition rather than stating one — the dominant
  * convention in DPAs and BAAs importing a statute's vocabulary:
@@ -754,6 +773,29 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
       used_at: [],
       form: "parenthetical",
     });
+  }
+  DEFINITION_PAIR_PARENTHETICAL.lastIndex = 0;
+  while ((m = DEFINITION_PAIR_PARENTHETICAL.exec(text)) !== null) {
+    const before = text.slice(Math.max(0, m.index - 160), m.index);
+    const definition =
+      before
+        .split(/[.;]\s/)
+        .pop()
+        ?.trim() ?? "";
+    for (const g of [m[1]!, m[2]!]) {
+      out.push({
+        term: g.trim(),
+        definition,
+        defined_at: {
+          section_id: base.section_id,
+          paragraph_id: base.paragraph_id,
+          start: base.start + m.index,
+          end: base.start + m.index + m[0].length,
+        },
+        used_at: [],
+        form: "parenthetical",
+      });
+    }
   }
   return out;
 }
