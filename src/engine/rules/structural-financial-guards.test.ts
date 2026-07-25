@@ -253,6 +253,20 @@ describe("STRUCT-003 — conformed signatures and certification (v1.2.0)", () =>
     expect(STRUCT003.check(ctx)).not.toBeNull();
   });
 
+  it("accepts a conformed /s/ that follows a label, not only at line start (v1.20.0)", () => {
+    // An ACORD certificate signs "Authorized Representative: /s/ Margaret Hale"
+    // — the /s/ trails a label rather than opening the line.
+    expect(
+      STRUCT003.check(
+        doc(
+          "Certificate of Insurance",
+          "This certificate is issued as a matter of information only.",
+          "Authorized Representative: /s/ Margaret Hale",
+        ),
+      ),
+    ).toBeNull();
+  });
+
   it("accepts a court filing signed only by a single conformed /s/ line (v1.18.0)", () => {
     // A brief or motion is executed by counsel's "/s/ Name" alone — a single
     // conformed signature is self-sufficient, not a weak token needing a second.

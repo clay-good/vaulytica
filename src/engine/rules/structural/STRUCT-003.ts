@@ -25,7 +25,9 @@ const ATTESTATION =
 // no "By:/Name:/Title:" labels — bylaws, board consents, and court filings
 // sign this way, and the label-anchored tokens alone read a certified set of
 // bylaws as unsigned (a critical false positive on a well-formed document).
-const CONFORMED_SIG = /^\s*\/s\/\s+\S/m;
+// "/s/ Name" at a line start OR right after a label ("By: /s/ Jane Smith",
+// "Authorized Representative: /s/ Margaret Hale" on an ACORD certificate).
+const CONFORMED_SIG = /(?:^|:)\s*\/s\/\s+\S/m;
 // A signature line that names its signatory by office rather than by a
 // "By:/Name:/Title:" grid — "____________ Jordan Ellis, Director". Board /
 // member / partner consents, resolutions, and certificates sign this way: an
@@ -159,7 +161,7 @@ const CLICKWRAP_ACCEPTANCE =
  */
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.19.0",
+  version: "1.20.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",
