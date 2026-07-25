@@ -805,6 +805,7 @@ const RSPA_RULES: Rule[] = [
   }),
   presence({
     id: "EQT-042",
+    version: "1.1.0",
     name: "Securities-law legend on certificates",
     description: "Restricted shares must bear Rule 144 / state-securities legends.",
     citation: eqtPractice(
@@ -823,6 +824,11 @@ const RSPA_RULES: Rule[] = [
       /rule\s+144/i,
       /restrictive\s+legend/i,
       /these\s+(shares|securities)\s+have\s+not\s+been\s+registered/i,
+      // The operative legend covenant — "each certificate representing the
+      // Shares shall bear legends referencing the transfer restrictions … under
+      // applicable securities laws" — states the requirement without quoting
+      // Rule 144 or the literal legend text.
+      /\bbear\s+[^.]{0,30}?\blegends?\b/i,
     ],
   }),
 ];
