@@ -519,6 +519,7 @@ const CEASE_DESIST_RULES: Rule[] = [
   }),
   presence({
     id: "SET-019",
+    version: "1.1.0",
     name: "Response deadline",
     description: "C&D must state a response deadline.",
     citation: settlePractice(
@@ -535,6 +536,14 @@ const CEASE_DESIST_RULES: Rule[] = [
     present_patterns: [
       /(respond|reply|confirm).{0,40}within\s+\d{1,3}\s+(days?|business\s+days?)/i,
       /(by|no\s+later\s+than)\s+\d/i,
+      // The demand-letter deadline anchor — "within ten (10) days of the date
+      // of this letter" — uses a spelled-then-parenthetical count and pins the
+      // window to the letter, not to a respond/reply verb.
+      /within\s+(?:\w+\s+)?\(?\d{1,3}\)?\s+(?:calendar\s+|business\s+)?days\s+(?:of|from|after)\s+(?:the\s+date\s+of\s+)?this\s+(?:letter|notice|demand)/i,
+      // A response/compliance verb + a spelled-or-parenthetical day window
+      // ("provide written confirmation … within ten (10) days", "cease … within
+      // fourteen (14) days").
+      /(respond|reply|confirm|compl\w+|cease|remove|provide\s+written).{0,60}?within\s+(?:\w+\s+)?\(?\d{1,3}\)?\s+(?:calendar\s+|business\s+)?days/i,
     ],
   }),
   language({
