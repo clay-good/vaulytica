@@ -5,7 +5,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
 /** STRUCT-009 — Defined-term capitalization consistency (info). */
 export const rule: Rule = {
   id: "STRUCT-009",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Defined-term capitalization consistency",
   category: "structural",
   default_severity: "info",
@@ -37,6 +37,10 @@ export const rule: Rule = {
           const slice = text.slice(m.index, m.index + m[0].length);
           if (
             slice !== target &&
+            // A lowercase occurrence BEFORE the definition is generic
+            // pre-definition usage (a recital "certain confidential
+            // information" preceding the Section 1 definition), not a slip.
+            p.start + m.index >= def.defined_at.start &&
             !isGenericOwnUse(text, m.index) &&
             !isStatutoryIdiomUse(text, m.index, target, m[0].length)
           ) {

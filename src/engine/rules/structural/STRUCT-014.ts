@@ -21,7 +21,7 @@ import { isGenericOwnUse, isStatutoryIdiomUse } from "./STRUCT-009.js";
  */
 export const rule: Rule = {
   id: "STRUCT-014",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Inconsistent defined-term casing",
   category: "structural",
   default_severity: "info",
@@ -66,6 +66,12 @@ export const rule: Rule = {
           // "personal data breach" / "special categories of personal data"
           // are the GDPR's own lowercase terms of art, not slips.
           if (isStatutoryIdiomUse(p.text, m.index, def.term, m[0].length)) continue;
+          // A lowercase occurrence BEFORE the term is defined is generic
+          // pre-definition usage, not a slip: a recital "wishes to disclose
+          // certain confidential information" precedes the Section 1 definition
+          // of "Confidential Information". The term does not yet carry its
+          // contractual meaning at that point.
+          if (def.defined_at && p.start + m.index < def.defined_at.start) continue;
           hits.push({
             term: def.term,
             section_id: p.section.id,

@@ -45,6 +45,30 @@ describe("STRUCT-014 — inconsistent defined-term casing", () => {
     expect(STRUCT_014.check(ctx)).toBeNull();
   });
 
+  it("does not flag a lowercase recital use that PRECEDES the definition (v1.3.0)", () => {
+    // A recital "may disclose certain confidential information" comes before the
+    // Section 1 definition; the term is not yet defined, so it is not a slip.
+    const ctx = buildContext([
+      "Recitals",
+      "The parties may disclose certain confidential information to each other.",
+      "Definitions",
+      `"Confidential Information" means non-public information disclosed by Discloser.`,
+      `Recipient shall protect Confidential Information using reasonable care.`,
+    ]);
+    expect(STRUCT_014.check(ctx)).toBeNull();
+  });
+
+  it("still flags a lowercase slip that follows the definition", () => {
+    const ctx = buildContext([
+      "Recitals",
+      "The parties may disclose certain confidential information to each other.",
+      "Definitions",
+      `"Confidential Information" means non-public information.`,
+      `Recipient may not share confidential information with third parties.`,
+    ]);
+    expect(STRUCT_014.check(ctx)).not.toBeNull();
+  });
+
   it("flags multiple lowercase variants in one finding with a count", () => {
     const ctx = buildContext([
       "Definitions",
