@@ -580,7 +580,7 @@ const CHARTER_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-028",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Director-exculpation clause (DGCL § 102(b)(7))",
     description:
       "Charter should include the optional § 102(b)(7) director-exculpation clause; absent it, directors are exposed to monetary liability for breaches of fiduciary duty of care.",
@@ -595,7 +595,10 @@ const CHARTER_RULES: Rule[] = [
     present_patterns: [
       /section\s+102\s*\(b\)\s*\(7\)/i,
       /eliminat(e|ed|ing)\s+.{0,40}liability\s+of\s+(a\s+)?director/is,
-      /director(s)?\s+shall\s+not\s+be\s+personally\s+liable/i,
+      // A qualifier commonly sits between "director" and the verb —
+      // "a director OF THE CORPORATION shall not be personally liable" — so an
+      // adjacency-only pattern missed the standard charter phrasing.
+      /director(?:s)?[^.]{0,40}?\bshall\s+not\s+be\s+personally\s+liable/i,
       // The dominant modern formulation carries its negation in the SUBJECT —
       // "NO director or officer … shall be personally liable" — so the
       // verb-negated branch above never matched it.
@@ -620,6 +623,7 @@ const CHARTER_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-030",
+    version: "1.1.0",
     name: "Stockholder action by written consent (DGCL § 228) addressed",
     description:
       "Charter should address whether stockholders may act by written consent (DGCL § 228).",
@@ -632,7 +636,15 @@ const CHARTER_RULES: Rule[] = [
       "DGCL § 228 permits stockholder action by written consent of holders of the minimum number of votes that would be required at a meeting; charters often eliminate this for public companies.",
     recommendation:
       "Add a clause either permitting or eliminating stockholder action by written consent in lieu of a meeting (typical for public-company charters: eliminate).",
-    present_patterns: [/written\s+consent.{0,80}(stockholders?|shareholders?)/is],
+    // The charter may PERMIT or (more often) ELIMINATE written consent, and it
+    // says so as "written consent" OR the inverted "consent in writing", in
+    // either order relative to "stockholders" — "may not be effected by any
+    // consent in writing by such stockholders". Match both phrasings and both
+    // orders so an opt-out charter is not read as silent on § 228.
+    present_patterns: [
+      /(?:written\s+consent|consent\s+in\s+writing)[^.]{0,80}(?:stock|share)holders?/is,
+      /(?:stock|share)holders?[^.]{0,80}(?:written\s+consent|consent\s+in\s+writing)/is,
+    ],
     default_severity: "warning",
   }),
   presence({

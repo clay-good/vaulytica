@@ -360,3 +360,34 @@ describe("GOV-045 — 'unanimous written consent' is the unanimity statement (v1
     expect((await run1(holders)).has("GOV-048")).toBe(true);
   });
 });
+
+describe("Certificate of incorporation — charter clause phrasings", () => {
+  const CHARTER_PB: Playbook = { id: "charter-incorporation", version: "1.0.0" };
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Certificate of Incorporation", body]), CHARTER_PB);
+    const run = await runEngine({ rules: GOVERNANCE_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("GOV-028 reads exculpation with a qualifier ('director of the Corporation shall not be personally liable')", async () => {
+    expect(
+      (
+        await run1(
+          "To the fullest extent permitted by the DGCL, a director of the Corporation shall not be personally liable to the Corporation for monetary damages for breach of fiduciary duty.",
+        )
+      ).has("GOV-028"),
+    ).toBe(false);
+    expect((await run1("The Corporation shall have perpetual existence.")).has("GOV-028")).toBe(true);
+  });
+
+  it("GOV-030 reads the 'consent in writing' opt-out as addressing § 228", async () => {
+    expect(
+      (
+        await run1(
+          "Any action by the stockholders of the Corporation may not be effected by any consent in writing by such stockholders.",
+        )
+      ).has("GOV-030"),
+    ).toBe(false);
+    expect((await run1("The Corporation shall have perpetual existence.")).has("GOV-030")).toBe(true);
+  });
+});

@@ -274,4 +274,16 @@ describe("STRUCT-003 — an office signature line executes a consent (v1.6.0)", 
     );
     expect(STRUCT003.check(ctx)).not.toBeNull();
   });
+
+  it("accepts a certificate of incorporation signed by the incorporator", () => {
+    const ctx = buildContext(
+      ["Certificate of Incorporation", "FIRST: The name of the corporation is Helios Dynamics, Inc."],
+      [
+        "Execution",
+        "IN WITNESS WHEREOF, the undersigned incorporator has executed this Certificate.",
+        "_______________________________ Dana Whitfield, Incorporator",
+      ],
+    );
+    expect(STRUCT003.check(ctx)).toBeNull();
+  });
 });

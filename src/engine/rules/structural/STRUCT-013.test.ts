@@ -72,6 +72,11 @@ describe("STRUCT-013 — unfilled template placeholders", () => {
         buildContext(["Signatures", "_______________________________ Morgan Lee, Chief Financial Officer"]),
       ),
     ).toBeNull();
+    expect(
+      STRUCT_013.check(
+        buildContext(["Signatures", "_______________________________ Dana Whitfield, Incorporator"]),
+      ),
+    ).toBeNull();
   });
 
   it("still fires on a real placeholder even alongside an office signature line", () => {

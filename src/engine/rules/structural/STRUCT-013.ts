@@ -60,7 +60,7 @@ const PATTERNS: Array<{ re: RegExp; label: string }> = [
 
 export const rule: Rule = {
   id: "STRUCT-013",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Unfilled template placeholders",
   category: "structural",
   default_severity: "critical",
@@ -127,7 +127,7 @@ export const rule: Rule = {
  * run + name + office keeps this off an inline prose blank.
  */
 const SIGNATURE_LINE_BY_OFFICE =
-  /(?:_{4,}|\/s\/)\s*(?:\/s\/\s*)?[A-Z][A-Za-z.'’-]+(?:\s+[A-Z][A-Za-z.'’-]+){0,3},?\s+(?:Director|President|Vice\s+President|Secretary|Treasurer|Chief\s+[A-Za-z]+\s+Officer|CEO|CFO|COO|CTO|Manager|Managing\s+Member|Member|Trustee|General\s+Partner|Partner|Authorized\s+Signatory|Its\b)\b/;
+  /(?:_{4,}|\/s\/)\s*(?:\/s\/\s*)?[A-Z][A-Za-z.'’-]+(?:\s+[A-Z][A-Za-z.'’-]+){0,3},?\s+(?:Director|President|Vice\s+President|Secretary|Treasurer|Chief\s+[A-Za-z]+\s+Officer|CEO|CFO|COO|CTO|Manager|Managing\s+Member|Member|Trustee|General\s+Partner|Partner|(?:Sole\s+)?Incorporator|Authorized\s+Signatory|Its\b)\b/;
 
 /**
  * True if the paragraph text looks like a signature-block context.

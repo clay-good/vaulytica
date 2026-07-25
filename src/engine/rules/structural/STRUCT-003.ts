@@ -34,7 +34,7 @@ const CONFORMED_SIG = /^\s*\/s\/\s+\S/m;
 // false positive). "/s/" is already covered by CONFORMED_SIG, so this matches
 // only the underscore form to avoid double-counting the same line.
 const OFFICE_SIG_LINE =
-  /_{4,}\s*[A-Z][A-Za-z.'’-]+(?:\s+[A-Z][A-Za-z.'’-]+){0,3},?\s+(?:Director|President|Vice\s+President|Secretary|Treasurer|Chief\s+[A-Za-z]+\s+Officer|CEO|CFO|COO|CTO|Manager|Managing\s+Member|Member|Trustee|General\s+Partner|Partner|Authorized\s+Signatory|Its\b)\b/g;
+  /_{4,}\s*[A-Z][A-Za-z.'’-]+(?:\s+[A-Z][A-Za-z.'’-]+){0,3},?\s+(?:Director|President|Vice\s+President|Secretary|Treasurer|Chief\s+[A-Za-z]+\s+Officer|CEO|CFO|COO|CTO|Manager|Managing\s+Member|Member|Trustee|General\s+Partner|Partner|(?:Sole\s+)?Incorporator|Authorized\s+Signatory|Its\b)\b/g;
 // The secretary's certification formula that closes bylaws and resolutions.
 // Deliberately narrow ("certified as adopted", "certify that the foregoing")
 // so an amendment clause's "may be adopted by the Board" is not a signal.
@@ -86,7 +86,7 @@ const PUBLICATION_STAMP =
  */
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.6.0",
+  version: "1.7.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",

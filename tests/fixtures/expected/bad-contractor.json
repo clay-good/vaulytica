@@ -509,7 +509,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "STRUCT-003",
-      "rule_version": "1.6.0"
+      "rule_version": "1.7.0"
     },
     {
       "elapsed_ms": 0,
@@ -570,7 +570,7 @@
       "finding_id": "STRUCT-013-s1-123",
       "fired": true,
       "rule_id": "STRUCT-013",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -778,7 +778,7 @@
       "id": "STRUCT-013-s1-123",
       "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
       "rule_id": "STRUCT-013",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "critical",
       "source_citations": [],
       "title": "Unfilled template placeholders: 3"
@@ -1049,7 +1049,7 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "5010b3bf9fa4848464e248246a7c42fea49291a0154f24726873b1f00c6d1e50",
+  "result_hash": "a4de5792efdd2f701390f6af67770f82584ff029ac61ac48e2f1df5a16237217",
   "source_file": {
     "name": "bad-contractor.docx",
     "sha256": "7a40a2e53d068557d47cf7690838b907085994f596a0c6e2380b8ac2607543df",
