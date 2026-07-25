@@ -634,6 +634,7 @@ const TOLLING_RULES: Rule[] = [
   }),
   presence({
     id: "SET-024",
+    version: "1.1.0",
     name: "Termination on notice",
     description: "Tolling agreement should be terminable on stated notice by either party.",
     citation: settlePractice(
@@ -651,6 +652,13 @@ const TOLLING_RULES: Rule[] = [
     present_patterns: [
       /(terminat(e|ion)|cancel).{0,60}(notice|days?)/is,
       /(30|thirty|10|ten|14|fourteen)\s+days?\s+(notice|written\s+notice)/i,
+      // The clause commonly runs "… thirty (30) days after either Party
+      // delivers written notice of termination of this Agreement" — the order
+      // is notice-then-termination (not "terminate … notice") and the spelled-
+      // then-parenthetical "thirty (30) days" is split from "notice", so the
+      // patterns above miss it. A "notice of termination" is a termination-on-
+      // notice clause by definition.
+      /(?:written\s+)?notice\s+of\s+(?:termination|cancellation)\b/i,
     ],
     default_severity: "warning",
   }),
