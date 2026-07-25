@@ -119,3 +119,40 @@ describe("v4 Equity — failure cases", () => {
     expect(run.findings.some((f) => f.rule_id === "EQT-048")).toBe(true);
   });
 });
+
+describe("Voting agreement — election covenant & termination in real wording", () => {
+  const VOTING_PB: Playbook = { id: "voting-agreement", version: "1.0.0" };
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Voting Agreement", body]), VOTING_PB);
+    const run = await runEngine({ rules: EQUITY_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("EQT-057 reads 'vote all shares … so as to elect to the Board … directors designated'", async () => {
+    expect(
+      (
+        await run1(
+          "Each Stockholder agrees to vote all of its shares so as to elect to the Board of Directors two directors designated by the holders of a majority of the Preferred Stock.",
+        )
+      ).has("EQT-057"),
+    ).toBe(false);
+    expect(
+      (await run1("Each Stockholder shall keep the terms of this Agreement confidential.")).has(
+        "EQT-057",
+      ),
+    ).toBe(true);
+  });
+
+  it("EQT-062 reads a 'terminate on … public offering … or Sale of the Company' clause", async () => {
+    expect(
+      (
+        await run1(
+          "This Agreement shall terminate upon the earliest of: (a) the closing of a firm-commitment underwritten public offering; or (b) the closing of a Sale of the Company.",
+        )
+      ).has("EQT-062"),
+    ).toBe(false);
+    expect(
+      (await run1("Each Stockholder agrees to vote its shares as provided herein.")).has("EQT-062"),
+    ).toBe(true);
+  });
+});

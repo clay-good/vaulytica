@@ -1062,6 +1062,7 @@ const IRA_RULES: Rule[] = [
 const VOTING_AGREEMENT_RULES: Rule[] = [
   presence({
     id: "EQT-057",
+    version: "1.1.0",
     name: "Election of directors covenant",
     description:
       "Voting agreement should bind stockholders to vote for the agreed board composition.",
@@ -1074,7 +1075,15 @@ const VOTING_AGREEMENT_RULES: Rule[] = [
       "DGCL § 218(c) permits voting agreements. NVCA model uses one to enforce board designation rights.",
     recommendation:
       "Add 'Election of Directors' binding each stockholder to vote all of its shares to elect the designees per the charter.",
-    present_patterns: [/vote\s+(in\s+favor|to\s+elect)/i, /(elect|appoint).{0,40}designees/i],
+    present_patterns: [
+      /vote\s+(in\s+favor|to\s+elect)/i,
+      /(elect|appoint).{0,40}designees/i,
+      // The canonical covenant: "vote all shares … so as to elect to the Board
+      // … directors designated by [holders]". The verb and object sit apart,
+      // and "designated"/"nominated" is as common as "designees".
+      /vote\b[^.]{0,160}\belect\b[^.]{0,40}(?:to\s+the\s+)?(?:board|director)/i,
+      /(?:elect|appoint)\w*[^.]{0,60}(?:designee|designated|nominat)/i,
+    ],
   }),
   presence({
     id: "EQT-058",
@@ -1138,6 +1147,7 @@ const VOTING_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "EQT-062",
+    version: "1.1.0",
     name: "Termination on IPO / sale",
     description: "Voting agreement should terminate on IPO or sale of the company.",
     citation: nvca("va-termination", "Voting Agreement — Termination"),
@@ -1147,7 +1157,13 @@ const VOTING_AGREEMENT_RULES: Rule[] = [
     explanation: "Without an IPO / sale termination, voting controls survive the liquidity event.",
     recommendation:
       "Add 'Termination' ending the agreement upon the earlier of an IPO and a sale of the company.",
-    present_patterns: [/termin(ate|ation).{0,80}(ipo|sale\s+of\s+the\s+company)/is],
+    // A voting agreement usually terminates on an IPO or a Sale, listed as
+    // branches of one "terminate upon the earliest of: (a) … (b) …" sentence —
+    // so "Sale of the Company" can sit well past 80 chars from "terminate", and
+    // the IPO branch is written "(underwritten) public offering", not "IPO".
+    present_patterns: [
+      /termin(ate|ation)[^.]{0,200}(?:\bipo\b|(?:underwritten\s+)?public\s+offering|firm.commitment|sale\s+of\s+the\s+company)/is,
+    ],
     default_severity: "warning",
   }),
   presence({
