@@ -8,7 +8,10 @@ import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
  * destroy all PHI" — so the rule reported "The contract does not state what
  * happens upon termination" about a clause that states it.
  */
-const TERMINATION_TRIGGER = String.raw`(?:up)?on\s+(?:the\s+)?(?:any\s+)?(?:expiration|expiry|termination|cessation)(?:\s+or\s+(?:expiration|expiry|termination|cessation))?`;
+// "(effective) date of" tolerated between the lead-in and the noun — "upon the
+// effective date of termination", "on the date of expiration" — so the trigger
+// still leads a wind-down consequence in that common phrasing.
+const TERMINATION_TRIGGER = String.raw`(?:up)?on\s+(?:the\s+)?(?:any\s+)?(?:(?:effective\s+)?date\s+of\s+)?(?:expiration|expiry|termination|cessation)(?:\s+or\s+(?:expiration|expiry|termination|cessation))?`;
 
 /**
  * What the clause says happens. "delete" and "export" belong here: a modern
@@ -70,14 +73,20 @@ const EFFECT_OF_TERMINATION = new RegExp(
     // termination/expiration noun (not "this Agreement", which is too common)
     // to avoid stitching an unrelated "survive" to the clause.
     String.raw`|\bsurviv(?:e|es|al)\b[^.]{0,60}\b(?:termination|expiration|expiry|this\s+Agreement)\b` +
-    String.raw`|\b(?:termination|expiration|expiry)\b[^.]{0,80}\bsurviv(?:e|es|al)\b`,
+    String.raw`|\b(?:termination|expiration|expiry)\b[^.]{0,80}\bsurviv(?:e|es|al)\b` +
+    // The accrued-obligations / savings statement is a paradigmatic effect-of-
+    // termination clause with no wind-down verb — "Termination shall not
+    // relieve either party of obligations accrued …", "termination … without
+    // prejudice to any other rights or remedies".
+    String.raw`|\btermination\b[^.]{0,60}?\b(?:shall|will|does)\s+not\s+(?:relieve|affect|release|discharge|waive)\b` +
+    String.raw`|\btermination\b[^.]{0,80}?\bwithout\s+prejudice\s+to\b`,
   "i",
 );
 
 /** TERM-005 — Effect of termination clause present (warning). */
 export const rule: Rule = {
   id: "TERM-005",
-  version: "1.4.2",
+  version: "1.5.0",
   name: "Effect of termination clause",
   category: "termination",
   default_severity: "warning",

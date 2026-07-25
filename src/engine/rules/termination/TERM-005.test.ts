@@ -164,4 +164,34 @@ describe("the purchase-agreement 'terminate this Agreement … refund' form (v1.
     ]);
     expect(TERM_005.check(ctx)).not.toBeNull();
   });
+
+  it("reads an accrued-obligations / savings statement as effect-of-termination (v1.5.0)", () => {
+    expect(
+      TERM_005.check(
+        buildContext([
+          "Effect",
+          "Termination shall not relieve either party of obligations accrued prior to the effective date of termination.",
+        ]),
+      ),
+    ).toBeNull();
+    expect(
+      TERM_005.check(
+        buildContext([
+          "Effect",
+          "Any termination of this Agreement shall be without prejudice to any other rights or remedies.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("reads an 'upon the effective date of termination … destroy' wind-down (v1.5.0)", () => {
+    expect(
+      TERM_005.check(
+        buildContext([
+          "Effect",
+          "Upon the effective date of termination, Licensee shall destroy all copies of the Software.",
+        ]),
+      ),
+    ).toBeNull();
+  });
 });
