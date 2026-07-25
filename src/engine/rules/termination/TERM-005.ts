@@ -95,14 +95,23 @@ const EFFECT_OF_TERMINATION = new RegExp(
     // "Upon SUCH termination" (the demonstrative pointing back at the specific
     // termination just described) reliably introduces the consequence, so a
     // modal within a short window is a safe, specific effect signal.
-    String.raw`|\b(?:up)?on\s+such\s+(?:termination|expiration|expiry|cancellation)\b[^.]{0,40}\b(?:shall|may|will|must)\b`,
+    String.raw`|\b(?:up)?on\s+such\s+(?:termination|expiration|expiry|cancellation)\b[^.]{0,40}\b(?:shall|may|will|must)\b` +
+    // An ENTITY agreement (LLC / partnership) winds down by DISSOLUTION, not
+    // "termination": "Upon dissolution, the Partnership's assets shall be applied
+    // first to creditors, then to the Partners" is the effect-of-termination
+    // clause in entity form. "dissolution" is not among the termination triggers
+    // above, so an entity agreement that states its wind-down read as having
+    // none. A bare dissolution TRIGGER with no wind-down consequence ("the
+    // Company shall dissolve upon consent") does not match — the wind-down verb
+    // (apply / distribute / wind up / liquidate) must follow.
+    String.raw`|\b(?:up)?on\s+(?:the\s+)?dissolution\b[^.]{0,140}\b(?:appl(?:y|ied)|distribut\w+|wind(?:ing)?[\s-]?up|wound\s+up|liquidat\w+)\b`,
   "i",
 );
 
 /** TERM-005 — Effect of termination clause present (warning). */
 export const rule: Rule = {
   id: "TERM-005",
-  version: "1.7.0",
+  version: "1.8.0",
   name: "Effect of termination clause",
   category: "termination",
   default_severity: "warning",

@@ -17,6 +17,25 @@ describe("TERM-005 effect-of-termination phrasing", () => {
     });
   }
 
+  it("recognizes an entity dissolution wind-down clause", () => {
+    expect(
+      TERM_005.check(
+        buildContext([
+          "Dissolution",
+          "Upon dissolution, the Partnership's assets shall be applied first to creditors, then to the Partners in accordance with their capital accounts.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still warns on a bare dissolution trigger with no wind-down", () => {
+    expect(
+      TERM_005.check(
+        buildContext(["Dissolution", "The Company shall dissolve upon the written consent of the Members."]),
+      ),
+    ).not.toBeNull();
+  });
+
   it("still warns when the contract states no termination effect", () => {
     expect(
       TERM_005.check(
