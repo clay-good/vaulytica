@@ -318,7 +318,7 @@ const INDEMNIFICATION_AGREEMENT_RULES: Rule[] = [
   }),
   language({
     id: "INS-015",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Broad-form indemnity (Type I) flagged for anti-indemnity scrutiny",
     description:
       "Type I (broad-form) indemnity is void in construction contexts in many states (CA § 2782, NY § 5-322.1, TX § 151).",
@@ -337,6 +337,17 @@ const INDEMNIFICATION_AGREEMENT_RULES: Rule[] = [
     exclude_if: [
       /(?:shall|will)\s+not\s+be\s+(?:obligated|required|liable)\s+to\s+indemnif/i,
       /\bnot\s+(?:be\s+)?(?:obligated|required)\s+to\s+indemnif/i,
+      // A limited-form (Type II / III) indemnity carves the INDEMNITEE's own
+      // negligence back OUT — "except to the extent … the Indemnitee's own
+      // negligence", "excludes any claims caused by the sole negligence … of
+      // the Indemnitee". That carve-out is the hallmark of NOT broad-form, yet
+      // bad_pattern 1 misread the benign "including [attorneys' fees]" plus the
+      // carve-out's "own negligence" as a broad-form grant.
+      /(?:except\s+to\s+the\s+extent|other\s+than|but\s+not\s+for)[^.]{0,120}\bnegligence/i,
+      /exclude[sd]?[^.]{0,120}(?:sole|own|active)\s+negligence/i,
+      // A document that self-declares the limited form is not Type I.
+      /\b(?:Type\s+(?:II|III)|comparative[-\s]fault)\b[^.]{0,60}indemnit/i,
+      /indemnit[^.]{0,60}\b(?:Type\s+(?:II|III)|comparative[-\s]fault)\b/i,
     ],
     bad_title: "Type I broad-form indemnity flagged for anti-indemnity review",
     bad_description:

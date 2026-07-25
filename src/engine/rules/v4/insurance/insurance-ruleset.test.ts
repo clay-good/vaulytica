@@ -146,4 +146,26 @@ describe("INS-015 — the canonical 'in whole or in part' broad-form indemnity (
       ).has("INS-015"),
     ).toBe(false);
   });
+
+  it("stays silent when a benign 'including [fees]' precedes a Type II carve-out", async () => {
+    // The "including reasonable attorneys' fees" list plus the carve-out's
+    // "own negligence" must not read as a broad-form grant.
+    expect(
+      (
+        await run1(
+          "Indemnitor shall indemnify Indemnitee from any and all claims, including reasonable attorneys' fees, except to the extent caused by the Indemnitee's own negligence.",
+        )
+      ).has("INS-015"),
+    ).toBe(false);
+  });
+
+  it("stays silent on a self-declared Type II (comparative fault) indemnity", async () => {
+    expect(
+      (
+        await run1(
+          "This is a Type II (comparative fault) indemnity. Indemnitor shall indemnify Indemnitee, but excludes any claims caused by the sole negligence of the Indemnitee.",
+        )
+      ).has("INS-015"),
+    ).toBe(false);
+  });
 });
