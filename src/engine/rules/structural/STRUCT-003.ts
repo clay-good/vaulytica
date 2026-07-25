@@ -123,6 +123,14 @@ const DELIVERY_RECITAL =
 const PUBLICATION_STAMP =
   /\blast\s+(?:updated|revised|modified|amended)\s*:?\s*[A-Z][a-z]+\s+\d{1,2},\s+\d{4}/i;
 
+// A formal valediction on its own line — "Very truly yours,", "Sincerely,",
+// "Respectfully submitted," — is the execution of CORRESPONDENCE (a demand
+// letter, a cease-and-desist, an opinion letter): the signer's name follows
+// the closing, not a By:/underscore block. Anchored to its own line so a
+// mid-sentence "sincerely" is not a false signal.
+const LETTER_CLOSING =
+  /^\s*(?:very\s+truly\s+yours|sincerely(?:\s+yours)?|respectfully(?:\s+submitted|\s+yours)?|yours\s+(?:truly|faithfully|sincerely)|best\s+regards|warm\s+regards|kind\s+regards|cordially)\s*,?\s*$/im;
+
 /**
  * STRUCT-003 — Signature block present (critical).
  *
@@ -144,7 +152,7 @@ const PUBLICATION_STAMP =
  */
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.16.0",
+  version: "1.17.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",
@@ -211,7 +219,10 @@ export const rule: Rule = {
         // complete execution context of a delivered one.
         if (
           !certified &&
-          (DATED_ADOPTION.test(text) || DELIVERY_RECITAL.test(text) || PUBLICATION_STAMP.test(text))
+          (DATED_ADOPTION.test(text) ||
+            DELIVERY_RECITAL.test(text) ||
+            PUBLICATION_STAMP.test(text) ||
+            LETTER_CLOSING.test(text))
         ) {
           certified = true;
           signals += 2;

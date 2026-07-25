@@ -45,6 +45,32 @@ describe("STRUCT-003 — signature-block detection", () => {
     ).toBeNull();
   });
 
+  it("stays silent on a demand letter closed by a valediction (v1.17.0)", () => {
+    // Correspondence — a demand or cease-and-desist letter — is executed by its
+    // closing ("Very truly yours, <counsel>"), not a By:/underscore block.
+    expect(
+      STRUCT003.check(
+        doc(
+          "Demand",
+          "You must remit payment within fourteen (14) days or we will pursue all remedies.",
+          "Very truly yours,",
+          "Katherine Osei, Esq.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("does not read a mid-sentence 'sincerely' as a letter closing", () => {
+    expect(
+      STRUCT003.check(
+        doc(
+          "Recitals",
+          "The Company sincerely, and without reservation, commits to the performance of its obligations under this Agreement. The parties are done.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+
   it("still fires when a unilateral instrument has a placeholder, not a name", () => {
     expect(
       STRUCT003.check(
