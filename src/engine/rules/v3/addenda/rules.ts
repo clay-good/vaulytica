@@ -368,6 +368,10 @@ export const ADDENDA_RULES: Rule[] = [
     present_patterns: [
       /(OpenAI|Anthropic|Google\s+(?:Gemini|Vertex)|Cohere|Mistral|Hugging\s*Face|Azure\s+OpenAI|AWS\s+Bedrock)/i,
       /(AI\s+sub[- ]?processors?|model\s+sub[- ]?processors?|AI\s+vendors?)/i,
+      // "disclose any third-party AI PROVIDERS or subprocessors" — "AI
+      // providers" and a "disclose … subprocessors" clause in the AI context.
+      /AI\s+(?:providers?|models?\s+providers?|service\s+providers?)/i,
+      /disclose\w*[^.]{0,60}?\b(?:third[- ]party\s+)?(?:AI\s+)?sub-?processors?\b/i,
     ],
     default_severity: "warning",
   }),
@@ -386,6 +390,10 @@ export const ADDENDA_RULES: Rule[] = [
       "Add: 'On termination, Vendor shall delete all fine-tuning datasets derived from Customer Data within 30 days; trained model weights derived from Customer Data shall be deleted within 90 days.'",
     present_patterns: [
       /(delete\s+(?:fine[- ]tun\w+|training)\s+data|fine[- ]tun\w+\s+(?:data|datasets?)[^.]{0,80}(?:delet|destroy)|model\s+weights?[^.]{0,80}(?:delet|destroy))/i,
+      // The obligation is as often to delete the fine-tuned MODEL itself —
+      // "delete Customer Data and any fine-tuned Model derived from Customer
+      // Data" — not just the fine-tuning data or the model weights.
+      /(?:delet|destroy)\w*[^.]{0,60}?\bfine[- ]tun\w+\s+model|\bfine[- ]tun\w+\s+model[^.]{0,80}(?:delet|destroy)/i,
     ],
     default_severity: "warning",
   }),
