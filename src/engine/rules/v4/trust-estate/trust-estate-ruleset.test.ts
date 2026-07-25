@@ -171,3 +171,30 @@ describe("EST-034 — 'is effective immediately upon execution' (v1.1.0)", () =>
     expect(run.findings.map((f) => f.rule_id)).toContain("EST-034");
   });
 });
+
+describe("EST-038 — contemplation-of-marriage recital in real wording (v1.1.0)", () => {
+  const PRENUP_PB_LOCAL: Playbook = { id: "prenuptial-agreement", version: "1.0.0" };
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Prenuptial Agreement", body]), PRENUP_PB_LOCAL);
+    const run = await runEngine({ rules: TRUST_ESTATE_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("reads 'in contemplation of their forthcoming marriage' and 'intend to marry'", async () => {
+    expect(
+      (
+        await run1(
+          "Alexandra and Jonathan, who intend to marry each other, enter into this Agreement in contemplation of their forthcoming marriage.",
+        )
+      ).has("EST-038"),
+    ).toBe(false);
+  });
+
+  it("still fires when no marriage recital is present", async () => {
+    expect(
+      (await run1("The parties agree to divide their property as set forth in Schedule A.")).has(
+        "EST-038",
+      ),
+    ).toBe(true);
+  });
+});

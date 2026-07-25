@@ -722,6 +722,7 @@ const DURABLE_POA_RULES: Rule[] = [
 const PRENUP_RULES: Rule[] = [
   presence({
     id: "EST-038",
+    version: "1.1.0",
     name: "Parties + contemplation of marriage recital",
     description:
       "Prenup must identify parties and recite that the agreement is made in contemplation of marriage.",
@@ -735,7 +736,16 @@ const PRENUP_RULES: Rule[] = [
       "Add 'Parties' identifying both prospective spouses and reciting contemplation of marriage.",
     present_patterns: [
       /(prospective\s+spouses?|future\s+spouses?)/i,
-      /(contemplation\s+of\s+marriage|in\s+anticipation\s+of\s+marriage|marriage\s+is\s+contemplated)/i,
+      // The recital is written many ways — "in contemplation of their
+      // forthcoming marriage" (words between "of" and "marriage"),
+      // "contemplating marriage", "intend to marry each other", "their
+      // forthcoming/upcoming marriage" — not only the bare "contemplation of
+      // marriage" adjacency.
+      /contemplat\w+\s+(?:of\s+)?(?:their\s+|the\s+)?(?:\w+\s+){0,2}marriage/i,
+      /in\s+anticipation\s+of\s+(?:\w+\s+){0,2}marriage/i,
+      /marriage\s+is\s+contemplated/i,
+      /(?:intend|plan|agree|propose)\w*\s+to\s+(?:be\s+)?marr(?:y|ied)/i,
+      /(?:forthcoming|upcoming|planned|anticipated|intended|impending)\s+marriage/i,
     ],
   }),
   presence({
