@@ -64,6 +64,13 @@ const EXTERNAL_LEADER_RE = /\b(?:U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?|Stat\.)\s
 // broken internal cross-reference. Tested against the text before the match.
 const EXTERNAL_LEADING_RE =
   /\b(?:Code|Acts?|Regulations?|U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?)\b[^.;,]{0,20}?\b(?:under|pursuant\s+to)\s+$/i;
+// A Treasury Regulation citation names the regulation immediately BEFORE the
+// section — "Treasury Regulations Section 1.704-1(b)(2)(iv)", "Treas. Reg. §
+// 1.704-1" — with no "under"/"pursuant to" connector and no "of the … Regulation"
+// trailer, so both guards above missed it and STRUCT-007 reported "Section 1.704"
+// as a broken internal reference to a section the operating agreement never has.
+const EXTERNAL_REG_LEADING_RE =
+  /\b(?:Treasury\s+Regulations?|Treas\.?\s+Reg(?:ulation)?s?\.?)\s+$/i;
 
 // A reference into ANOTHER INSTRUMENT'S numbering — "Section 3.7 of the
 // Agreement" in disclosure schedules refers to the SPA, "Article VIII
@@ -218,6 +225,7 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
         EXTERNAL_INSTRUMENT_RE.test(after) ||
         EXTERNAL_LEADER_RE.test(before) ||
         EXTERNAL_LEADING_RE.test(before) ||
+        EXTERNAL_REG_LEADING_RE.test(before) ||
         STATUTE_SECTION_LABEL.test(m[2] ?? "") ||
         statutoryLabels.has((m[2] ?? "").toUpperCase()) ||
         (acronymTail != null && statuteAcronyms.has(acronymTail[1]!.toUpperCase()))

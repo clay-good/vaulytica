@@ -25,6 +25,8 @@ const EXTERNAL: string[] = [
   "Obligations arise under Article 12 of the Treaty.",
   "As set out in Section 4.1 of Annex I.",
   "As required by Article 5 of the Charter.",
+  "Capital Accounts are maintained under Treasury Regulations Section 1.704-1(b)(2)(iv).",
+  "The allocation complies with Treas. Reg. § 1.704-2.",
 ];
 
 describe("STRUCT-007 external-citation FP guard", () => {
