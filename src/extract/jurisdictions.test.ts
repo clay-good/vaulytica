@@ -404,4 +404,22 @@ describe("interpretation-form governing law", () => {
     expect(gov("This Agreement shall be governed by applicable law.")).toHaveLength(0);
     expect(gov("The Services are subject to the terms of the Order Form.")).toHaveLength(0);
   });
+
+  it("captures 'personal jurisdiction in the courts of <State>' and 'agree to venue in <County>, <State>'", () => {
+    const venue = (t: string) =>
+      extractJurisdictions(buildTree(["Venue", t]))
+        .filter((r) => r.clause_kind === "venue")
+        .map((r) => r.raw_text);
+    expect(
+      venue("Each party consents to personal jurisdiction in the courts of the State of Texas."),
+    ).toContain("Texas");
+    expect(venue("The parties agree to venue in Harris County, Texas.")).toContain("Texas");
+  });
+
+  it("does not read 'agree to the terms' as a venue clause", () => {
+    const venue = extractJurisdictions(
+      buildTree(["Terms", "The parties agree to the terms of the Order Form."]),
+    ).filter((r) => r.clause_kind === "venue");
+    expect(venue).toHaveLength(0);
+  });
 });

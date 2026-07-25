@@ -172,8 +172,17 @@ const VENUE_RESOLVED_IN = new RegExp(
  * clause" on a document whose forum clause is one of the most common ones
  * written.
  */
+// "the" before the jurisdiction adjectives is optional ("consents to personal
+// jurisdiction …"), and the clause reads "jurisdiction OF the courts" OR
+// "jurisdiction IN the courts".
 const VENUE_CONSENT = new RegExp(
-  String.raw`\b(?:consent|submit|agree|attorn)\w*\s+(?:[^.;)]{0,40}?\s+)?to\s+the\s+(?:${COURT_ADJECTIVE}|exclusive\s+|non-?exclusive\s+|personal\s+|sole\s+|general\s+)*jurisdiction\s+(?:and\s+venue\s+)?of\s+(?:any\s+|the\s+|a\s+)?(?:${COURT_ADJECTIVE})?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_ADJECTIVE})?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+|in\s+|within\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
+  String.raw`\b(?:consent|submit|agree|attorn)\w*\s+(?:[^.;)]{0,40}?\s+)?to\s+(?:the\s+)?(?:${COURT_ADJECTIVE}|exclusive\s+|non-?exclusive\s+|personal\s+|sole\s+|general\s+)*jurisdiction\s+(?:and\s+venue\s+)?(?:of|in)\s+(?:any\s+|the\s+|a\s+)?(?:${COURT_ADJECTIVE})?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_ADJECTIVE})?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+|in\s+|within\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
+  "gi",
+);
+// "The parties agree to venue in Harris County, Texas" — venue selected as the
+// object of "agree/consent/submit to venue in", with no "shall be … courts".
+const VENUE_AGREE_IN = new RegExp(
+  String.raw`\b(?:agree|consent|submit|stipulat)\w*\s+(?:[^.;)]{0,30}?\s+)?to\s+(?:exclusive\s+|proper\s+)?venue\s+in\s+(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|$)`,
   "gi",
 );
 
@@ -356,6 +365,7 @@ export function extractJurisdictions(
     runRegex(VENUE_COURTS_FIRST, ctx.text, recordVenue);
     runRegex(VENUE_RESOLVED_IN, ctx.text, recordVenue);
     runRegex(VENUE_CONSENT, ctx.text, recordVenue);
+    runRegex(VENUE_AGREE_IN, ctx.text, recordVenue);
     runRegex(VENUE_SUBJECT, ctx.text, recordVenue);
     runRegex(ARBITRATION_SEAT, ctx.text, (m) => {
       const raw = (m[1] ?? "").trim();
