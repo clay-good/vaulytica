@@ -4,16 +4,19 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 /** RISK-003 — Indemnity cap present (info). */
 export const rule: Rule = {
   id: "RISK-003",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Indemnity cap present",
   category: "risk-allocation",
   default_severity: "info",
   description: "Surfaces the cap on indemnity exposure when stated.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
+    // A cap phrased with a negation PHRASE — "the indemnification obligations
+    // shall in no event exceed the Escrow Amount" — carries no "not", so the
+    // "not exceed" branch missed it and this info-cap went unsurfaced.
     const hit = firstParagraphMatch(
       ctx,
-      /\bindemnif[\s\S]{0,200}?(?:not\s+exceed|capped\s+at|limited\s+to|aggregate\s+(?:liability|cap)\s+(?:of|equal\s+to))/i,
+      /\bindemnif[\s\S]{0,200}?(?:not\s+exceed|capped\s+at|limited\s+to|aggregate\s+(?:liability|cap)\s+(?:of|equal\s+to)|(?:in\s+no\s+event|under\s+no\s+circumstances)[^.]{0,25}?exceed)/i,
     );
     if (!hit) return null;
     return emit(ctx, rule, {
