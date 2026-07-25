@@ -632,9 +632,10 @@
     },
     {
       "elapsed_ms": 0,
-      "fired": false,
+      "finding_id": "TEMP-004-s1.5-956",
+      "fired": true,
       "rule_id": "TEMP-004",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -928,6 +929,32 @@
       "title": "No Effective Date found"
     },
     {
+      "description": "The contract contains automatic-renewal language.",
+      "document_position": 956,
+      "excerpt": {
+        "end_offset": 978,
+        "section_id": "s1.5",
+        "start_offset": 956,
+        "text": "scription Term: one (1) year, renewing automatically for successive one-year terms unless either party provides 20 days written notice of non-renewal."
+      },
+      "explanation": "Auto-renewal commits the customer to another term unless they actively opt out. The notice window is the critical detail; verify it is reasonable and well-located.",
+      "id": "TEMP-004-s1.5-956",
+      "rule_id": "TEMP-004",
+      "rule_version": "1.1.0",
+      "severity": "warning",
+      "source_citations": [
+        {
+          "id": "stat-16-cfr-425",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "16 C.F.R. Part 425 (FTC Negative Option Rule)",
+          "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-D/part-425"
+        }
+      ],
+      "title": "Auto-renewal clause present"
+    },
+    {
       "description": "The contract does not state a path to terminate for material breach.",
       "document_position": 0,
       "excerpt": {
@@ -1094,7 +1121,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\", \"uptime\".",
-  "result_hash": "2aa5445eee7b9bf9151aa7b81da01ed9152d1bd64abd9e601625470535372306",
+  "result_hash": "ffe849b53a314142d1e117180fe042af98423b1534d22e2269319598b6c771d3",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",
