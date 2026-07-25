@@ -22,15 +22,55 @@
       "cyclonedx",
       "notice file"
     ],
-    "negative_features": ["contributor license", "patent license", "trademark license"]
+    "negative_features": [
+      "contributor license",
+      "patent license",
+      "trademark license"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["SBOM", "Third-Party Software"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "SBOM",
+    "Third-Party Software"
+  ],
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "OSS-LICENSE-FAMILIES",
-  "applicable_jurisdictions": ["US"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
   "companion_playbooks": [],
   "compliance_matrix_columns": [
     "Component inventory (SBOM)",
