@@ -121,6 +121,38 @@ describe("extractCrossRefs", () => {
     expect(refs).toHaveLength(0);
   });
 
+  it("treats 'Section 262 of the DGCL' — and a later bare 'Section 262' — as external", () => {
+    // The Delaware GCL is cited by acronym; the tail "of the DGCL" is not a
+    // Code/Act/Law keyword, so all three CHOICE mismatch rules aside, STRUCT-007
+    // reported the appraisal-rights statute as a broken internal reference.
+    const t = normalize({
+      type: "document",
+      sections: [
+        {
+          id: "",
+          heading: "Dissenting Shares",
+          level: 1,
+          paragraphs: [
+            {
+              id: "",
+              runs: [
+                {
+                  id: "",
+                  text: "The merger shall be effected under the Delaware General Corporation Law (the \"DGCL\"). Stockholders who perfect appraisal rights under Section 262 of the DGCL shall be entitled to the rights provided under Section 262.",
+                  start: 0,
+                  end: 0,
+                },
+              ],
+            },
+          ],
+          children: [],
+        },
+      ],
+    });
+    const refs = extractCrossRefs(t, extractSections(t));
+    expect(refs).toHaveLength(0);
+  });
+
   it("reports a genuinely unresolved letter-suffixed section with its honest raw text", () => {
     // A bare "Section 409A" with no external qualifier and no matching outline
     // node is genuinely unresolved — but it must be reported as "Section 409A",

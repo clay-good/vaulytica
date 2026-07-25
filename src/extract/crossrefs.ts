@@ -86,6 +86,31 @@ const STATUTE_SECTION_LABEL = /^\d{4,}$/;
 const STATUTE_LABEL_DECLARATION =
   /\b(?:Section|Sections|§§?)\s+(\d+(?:\.\d+)*[A-Za-z]?)(?:\([a-z0-9]+\))*\s+of\s+(?:the\s+)?[A-Z][^.;,]*?\b(?:Code|Acts?|Laws?|Regulations?|Rules?)\b/g;
 
+// A statute the document abbreviates — "the Delaware General Corporation Law
+// (the 'DGCL')", "the Delaware Revised Uniform Limited Partnership Act
+// ('DRULPA')". A later "Section 262 of the DGCL" cites that authority's own
+// numbering, not this document's outline, so the acronym is collected and the
+// cite reads as external. The defining phrase must end in a statute keyword
+// (Code / Act / Law / Regulation), and the acronym is a single all-caps token.
+const STATUTE_ACRONYM_DEFINITION =
+  /\b[A-Z][A-Za-z]+(?:\s+(?:[A-Z][A-Za-z]+|of|and|the))*\s+(?:Code|Acts?|Laws?|Regulations?)\b(?:\s+of\s+\d{4})?\s*\(\s*(?:the\s+)?["“]([A-Z][A-Za-z]{1,10})["”]\s*\)/g;
+
+// A section reference trailed by "of (the) <ACRONYM>" — "Section 262 of the
+// DGCL". Checked against the collected / seeded statute-acronym set.
+const EXTERNAL_ACRONYM_TAIL = /^(?:\(\d+[a-z]?\))*\s+of\s+(?:the\s+)?([A-Za-z]{2,10})\b/;
+
+// "Section 262 of the DGCL" ties section number (group 1) to a statute acronym
+// (group 2). Corroborates a later BARE "Section 262" as statutory — a merger
+// agreement cites "under Section 262 of the DGCL" once and then "the rights
+// provided under Section 262" without the qualifier.
+const STATUTE_ACRONYM_CITE =
+  /\b(?:Section|Sections|§§?)\s+(\d+(?:\.\d+)*[A-Za-z]?)(?:\([a-z0-9]+\))*\s+of\s+(?:the\s+)?([A-Z][A-Za-z]{1,10})\b/g;
+
+// Statute acronyms so ubiquitous they are cited bare, without a local
+// definition — Delaware corporate law and the UCC head every M&A and secured-
+// lending document.
+const SEED_STATUTE_ACRONYMS = ["DGCL", "UCC", "DRULPA", "DLLCA", "ERISA", "FLSA"];
+
 // A paragraph that OPENS with "6. Vendor Indemnity …" is section 6, even when
 // the ingester never promoted it to a heading. The paste path (any pasted
 // contract) keeps numbered clauses as flat paragraphs under one empty-heading
@@ -130,11 +155,27 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
   const labelIndex = buildLabelIndex(outline);
   // Section numbers this document ties to a code anywhere in its text.
   const statutoryLabels = new Set<string>();
+  // Acronyms of statutes cited into another authority's numbering.
+  const statuteAcronyms = new Set<string>(SEED_STATUTE_ACRONYMS);
   forEachParagraph(tree, (ctx) => {
     STATUTE_LABEL_DECLARATION.lastIndex = 0;
     let sm: RegExpExecArray | null;
     while ((sm = STATUTE_LABEL_DECLARATION.exec(ctx.text)) !== null) {
       statutoryLabels.add(sm[1]!.toUpperCase());
+    }
+    STATUTE_ACRONYM_DEFINITION.lastIndex = 0;
+    let am: RegExpExecArray | null;
+    while ((am = STATUTE_ACRONYM_DEFINITION.exec(ctx.text)) !== null) {
+      statuteAcronyms.add(am[1]!.toUpperCase());
+    }
+  });
+  // A second pass: with the acronym set complete, a "Section N of the <acronym>"
+  // cite corroborates a bare "Section N" elsewhere as statutory.
+  forEachParagraph(tree, (ctx) => {
+    STATUTE_ACRONYM_CITE.lastIndex = 0;
+    let cm: RegExpExecArray | null;
+    while ((cm = STATUTE_ACRONYM_CITE.exec(ctx.text)) !== null) {
+      if (statuteAcronyms.has(cm[2]!.toUpperCase())) statutoryLabels.add(cm[1]!.toUpperCase());
     }
   });
   // Augment the index with paragraph-leading section numbers the outline missed.
@@ -169,13 +210,15 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
       // authority's numbering, not this document's outline.
       const after = ctx.text.slice(m.index + m[0].length);
       const before = ctx.text.slice(0, m.index);
+      const acronymTail = EXTERNAL_ACRONYM_TAIL.exec(after);
       if (
         EXTERNAL_TRAILER_RE.test(after) ||
         EXTERNAL_INSTRUMENT_RE.test(after) ||
         EXTERNAL_LEADER_RE.test(before) ||
         EXTERNAL_LEADING_RE.test(before) ||
         STATUTE_SECTION_LABEL.test(m[2] ?? "") ||
-        statutoryLabels.has((m[2] ?? "").toUpperCase())
+        statutoryLabels.has((m[2] ?? "").toUpperCase()) ||
+        (acronymTail != null && statuteAcronyms.has(acronymTail[1]!.toUpperCase()))
       ) {
         continue;
       }
