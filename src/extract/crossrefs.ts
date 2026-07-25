@@ -53,7 +53,7 @@ const REF_RE =
 // preceding word made the [A-Z] swallow the keyword's own first letter and the
 // bare form never matched.
 const EXTERNAL_TRAILER_RE =
-  /^(?:-\d+[a-z]?(?:\([a-z0-9]+\))?)?(?:\(\d+[a-z]?\))*(?:\s+(?:to|through|and|or|,)\s+\d+[A-Za-z]?(?:\(\d+[a-z]?\))*)*\s+(?:of\s+(?:the\s+)?(?:[A-Z][^.;,]*?\s+)?(?:Code|Acts?|Laws?|Regulations?|Rules?|U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?)\b|(?:of\s+(?:the\s+)?)?(?:UK\s+|EU\s+)?(?:GDPR|CCPA|CPRA|HIPAA|LGPD|PIPEDA|DPA\s+20\d\d)\b)/;
+  /^(?:-\d+[a-z]?(?:\([a-z0-9]+\))?)?(?:\(\d+[a-z]?\))*(?:\s+(?:to|through|and|or|,)\s+\d+[A-Za-z]?(?:\(\d+[a-z]?\))*)*\s+(?:of\s+(?:the\s+)?(?:[A-Z][^.;,]*?\s+)?(?:Code|Acts?|Laws?|Regulations?|Rules?|Directives?|Conventions?|Treat(?:y|ies)|Charters?|Constitutions?|Protocols?|Ordinances?|Statutes?|U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?)\b|(?:of\s+(?:the\s+)?)?(?:UK\s+|EU\s+)?(?:GDPR|CCPA|CPRA|HIPAA|LGPD|PIPEDA|UCC|DPA\s+20\d\d)\b)/;
 const EXTERNAL_LEADER_RE = /\b(?:U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?|Stat\.)\s*$/;
 
 // The statutory qualifier can also PRECEDE the section: "Treasury Regulations
@@ -67,11 +67,13 @@ const EXTERNAL_LEADING_RE =
 
 // A reference into ANOTHER INSTRUMENT'S numbering — "Section 3.7 of the
 // Agreement" in disclosure schedules refers to the SPA, "Article VIII
-// thereof" to its remedies article — is not a broken reference in THIS
-// document. "of this Agreement" is self-reference and still resolves
-// internally (the branch requires "the", never "this").
+// thereof" to its remedies article, "Section 4.1 of Annex I" to an annex — is
+// not a broken reference in THIS document. "the" is optional so the annex/
+// appendix forms that drop it ("of Annex I") are caught; "of this Agreement" is
+// still self-reference that resolves internally, because "this" is neither
+// "the" nor a capitalized instrument word, so the branch does not match it.
 const EXTERNAL_INSTRUMENT_RE =
-  /^(?:\(\d+[a-z]?\))*\s+(?:of\s+the\s+(?:[A-Z][\w]*\s+){0,4}(?:Agreement|Lease|Note|Indenture|MSA|SPA|DPA|BAA|Contract)\b|thereof\b)/;
+  /^(?:\(\d+[a-z]?\))*\s+(?:of\s+(?:the\s+)?(?:[A-Z][\w]*\s+){0,4}(?:Agreement|Lease|Note|Indenture|MSA|SPA|DPA|BAA|Contract|Annex|Appendix)\b|thereof\b)/;
 
 // A four-digit-or-longer flat section number ("Section 4999", "Section 1798")
 // is statutory: no contract numbers its own sections past three digits.

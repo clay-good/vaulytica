@@ -18,6 +18,13 @@ const EXTERNAL: string[] = [
   "Remedies are set out in Section 8.2 of the Purchase Agreement.",
   "Indemnification is governed by Article VIII thereof.",
   "Reporting complies with Section 1502 of Title 15 of the United States Code.",
+  "Processing is lawful under Article 6 of the GDPR.",
+  "Priority is governed by Section 9-203 of the UCC.",
+  "Transfers comply with Article 46 of the Directive.",
+  "Rights follow Article 8 of the Convention.",
+  "Obligations arise under Article 12 of the Treaty.",
+  "As set out in Section 4.1 of Annex I.",
+  "As required by Article 5 of the Charter.",
 ];
 
 describe("STRUCT-007 external-citation FP guard", () => {
