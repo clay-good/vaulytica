@@ -86,8 +86,31 @@ const GOV_LAW_ADJECTIVAL = new RegExp(
   "gi",
 );
 
+/**
+ * The subject-first governing-law clause: "The laws of the State of Texas shall
+ * govern this Agreement", "The laws of Delaware apply". The verb follows the
+ * jurisdiction, so the "governed by … the laws of X" patterns above never saw
+ * it and CHOICE-001 reported a false absence. Gated to a recognized US state or
+ * country so "the laws of physics/God/war" do not register as a jurisdiction.
+ */
+const GOV_LAW_SUBJECT_FIRST = new RegExp(
+  String.raw`\bthe\s+laws?\s+of\s+(?:the\s+(?:State|Commonwealth)\s+of\s+)?(${US_STATE_PATTERN}|${COUNTRY_PATTERN})\b[^.;)]{0,20}?\s+(?:shall\s+)?(?:govern|appl(?:y|ies)|control)\b`,
+  "gi",
+);
+
 const VENUE = new RegExp(
   String.raw`\b(?:venue|forum|exclusive\s+jurisdiction|exclusive\s+venue|jurisdiction\s+and\s+venue|sole\s+and\s+exclusive\s+(?:venue|jurisdiction|forum))\b(?:\([0-9]+\)|[^.;)]){0,80}?(?:shall\s+(?:be|lie)|is|lies|shall\s+rest|will\s+be)\s+(?:in|with|within)?\s*(?:any\s+|the\s+|a\s+)?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+|in\s+|within\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
+  "gi",
+);
+/**
+ * The courts-first venue clause: "the state and federal courts located in San
+ * Francisco, California shall have exclusive jurisdiction". The forum verb
+ * follows the courts, so the venue patterns that lead on "venue/forum … shall
+ * be … courts" missed it. The locality is captured; recordVenue reads the
+ * state after the comma.
+ */
+const VENUE_COURTS_FIRST = new RegExp(
+  String.raw`\b(?:the\s+)?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+)([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|$)(?=[^.]{0,60}?\b(?:shall\s+have|have)\s+(?:exclusive\s+)?(?:jurisdiction|venue))`,
   "gi",
 );
 // "shall lie" is as common as "shall be" for a venue clause — "venue for any
@@ -95,7 +118,7 @@ const VENUE = new RegExp(
 // ("Franklin County") is captured and recordVenue then reads the state after
 // the comma via JURISDICTION_AFTER_LOCALITY, so the venue records as "Ohio".
 const VENUE_SIMPLE =
-  /\b(?:venue|forum|exclusive\s+jurisdiction|exclusive\s+venue)\b[^.;)]{0,80}?\s+(?:shall\s+(?:be|lie)|is|lies|will\s+be)\s+(?:in\s+|within\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|$)/gi;
+  /\b(?:venue|forum|exclusive\s+jurisdiction|exclusive\s+venue)\b[^.;)]{0,80}?\s+(?:shall\s+(?:be|lie)|is|lies|will\s+be)\s+(?:proper\s+)?(?:in\s+|within\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|$)/gi;
 /**
  * The dominant forum-selection formulation carries no "venue"/"forum" token:
  * "all disputes … shall be resolved/brought/litigated (exclusively) in the
@@ -272,6 +295,19 @@ export function extractJurisdictions(
         position: posInParagraph(ctx, m.index, m.index + m[0].length),
       });
     });
+    runRegex(GOV_LAW_SUBJECT_FIRST, ctx.text, (m) => {
+      const raw = (m[1] ?? "").trim();
+      if (!/^[A-Z]/.test(raw)) return;
+      if (isNegatedGovLaw(ctx.text, m.index)) return;
+      if (seenGovLaw.has(raw.toLowerCase())) return;
+      seenGovLaw.add(raw.toLowerCase());
+      out.push({
+        clause_kind: "governing-law",
+        jurisdiction_id: lookup(raw),
+        raw_text: raw,
+        position: posInParagraph(ctx, m.index, m.index + m[0].length),
+      });
+    });
     const seenVenue = new Set<string>();
     const recordVenue = (m: RegExpExecArray): void => {
       const ext = extendEnglandAndWales(ctx.text, (m[1] ?? "").trim(), m.index + m[0].length);
@@ -297,6 +333,7 @@ export function extractJurisdictions(
     };
     runRegex(VENUE, ctx.text, recordVenue);
     runRegex(VENUE_SIMPLE, ctx.text, recordVenue);
+    runRegex(VENUE_COURTS_FIRST, ctx.text, recordVenue);
     runRegex(VENUE_RESOLVED_IN, ctx.text, recordVenue);
     runRegex(VENUE_CONSENT, ctx.text, recordVenue);
     runRegex(VENUE_SUBJECT, ctx.text, recordVenue);

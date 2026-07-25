@@ -343,4 +343,39 @@ describe("interpretation-form governing law", () => {
     );
     expect(refs.filter((r) => r.clause_kind === "venue").map((r) => r.raw_text)).toContain("Ohio");
   });
+
+  it("captures a subject-first 'The laws of the State of Texas shall govern' clause", () => {
+    const refs = extractJurisdictions(
+      buildTree(["Governing Law", "The laws of the State of Texas shall govern this Agreement."]),
+    );
+    expect(refs.filter((r) => r.clause_kind === "governing-law").map((r) => r.raw_text)).toContain(
+      "Texas",
+    );
+  });
+
+  it("does not read 'the laws of physics' as a governing-law jurisdiction", () => {
+    const refs = extractJurisdictions(
+      buildTree(["Preamble", "The laws of physics apply to this experiment."]),
+    );
+    expect(refs.filter((r) => r.clause_kind === "governing-law")).toHaveLength(0);
+  });
+
+  it("captures a 'venue shall be proper in <County>, <State>' clause", () => {
+    const refs = extractJurisdictions(
+      buildTree(["Venue", "Venue shall be proper in Harris County, Texas."]),
+    );
+    expect(refs.filter((r) => r.clause_kind === "venue").map((r) => r.raw_text)).toContain("Texas");
+  });
+
+  it("captures a courts-first 'courts located in <City>, <State> shall have jurisdiction' clause", () => {
+    const refs = extractJurisdictions(
+      buildTree([
+        "Jurisdiction",
+        "The state and federal courts located in San Francisco, California shall have exclusive jurisdiction.",
+      ]),
+    );
+    expect(refs.filter((r) => r.clause_kind === "venue").map((r) => r.raw_text)).toContain(
+      "California",
+    );
+  });
 });
