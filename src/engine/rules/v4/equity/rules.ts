@@ -499,6 +499,7 @@ const OPTION_GRANT_RULES: Rule[] = [
   }),
   presence({
     id: "EQT-025",
+    version: "1.1.0",
     name: "Post-termination exercise window",
     description:
       "Option must specify post-termination exercise window (typically 3 months for ISO under § 422).",
@@ -515,6 +516,12 @@ const OPTION_GRANT_RULES: Rule[] = [
       /3\s+months?\s+after\s+termination/i,
       /ninety\s*\(?90\)?\s+days?/i,
       /exercise\s+period.{0,40}termination/is,
+      // The canonical ISO phrasing — "the vested portion shall remain
+      // exercisable for three (3) months after such termination" — uses a
+      // spelled-then-parenthetical count, the demonstrative "such", and "remain
+      // exercisable" rather than "exercise period", none of which the patterns
+      // above reach.
+      /exercis\w+[^.]{0,20}?\b(?:months?|days?)\b[^.]{0,30}?\b(?:after|following|from)\b[^.]{0,25}?\btermination\b/i,
     ],
   }),
   presence({
