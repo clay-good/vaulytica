@@ -465,6 +465,11 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // The signatory name printed on a "Name:" line of an execution block —
       // "Name: Eleanor Vance" — is a person, not a defined term.
       /\bName:\s+([A-Z][\w'’-]+(?:\s+[A-Z][\w'’-]+){0,3})/g,
+      // The printed name beneath a signature blank — "________ Elena Marquez,
+      // Incorporator" — is a signatory (a person), not a defined term. Two-plus
+      // Title-Case words after the rule so a bare "Signature of X" label form
+      // (single leading word before a lowercase connector) is not swept in.
+      /_{6,}\s*([A-Z][\w'’-]+(?:\s+[A-Z][\w'’-]+){1,3})\b/g,
     ]) {
       re.lastIndex = 0;
       let pm: RegExpExecArray | null;

@@ -188,6 +188,19 @@ describe("signature-block names are not undefined defined-terms", () => {
     expect(terms).not.toContain("Eleanor Vance Title");
     expect(terms).not.toContain("Eleanor Vance");
   });
+
+  it("does not flag the printed name beneath a signature blank", () => {
+    // "________ Elena Marquez, Incorporator" — the incorporator signs by bare
+    // name and is named nowhere else, so STRUCT-006 read her as an undefined
+    // Title-Case term.
+    const map = extractDefinitions(
+      buildTree([
+        "Incorporator",
+        "The name of the incorporator is Elena Marquez. _______________________________ Elena Marquez, Incorporator",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Elena Marquez");
+  });
 });
 
 describe("place names are not undefined defined-terms", () => {
