@@ -159,6 +159,30 @@ describe("FIN-005 — an installment schedule with no stated count (v1.5.0)", ()
   });
 });
 
+describe("FIN-005 — the employment payroll-cadence payment term (v1.6.2)", () => {
+  it("reads 'payable in accordance with the Company's regular payroll practices'", () => {
+    expect(
+      FIN_005.check(
+        doc(
+          "The Company shall pay the Executive an annual base salary of $420,000, payable in accordance with the Company's regular payroll practices.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("does not treat 'payroll taxes' as the payment term when a payment obligation is present", () => {
+    // "payable" trips the payment gate; "payroll taxes" is not a cadence noun,
+    // so with no real term stated the rule must still fire.
+    expect(
+      FIN_005.check(
+        doc(
+          "Compensation is payable to the Executive. The Company shall withhold all applicable payroll taxes.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});
+
 describe("FIN-005 — a royalty payment window (v1.4.4)", () => {
   it("reads 'Royalties are payable within thirty (30) days after the end of each quarter'", () => {
     expect(

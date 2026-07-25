@@ -82,6 +82,13 @@ const PAYMENT_TERMS = new RegExp(
     // + "installments" is a payment term as much as "in twelve (12) … monthly
     // installments". A cadence word is still required, so this stays tight.
     `\\bpayable\\s+in\\s+(?:${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\)\\s*)?)?(?:equal\\s+)?(?:monthly|quarterly|weekly|annual|semi-?annual)\\s+installments\\b`,
+    // An employment agreement states its payment term as the payroll cadence:
+    // "payable in accordance with the Company's regular payroll practices". The
+    // salary / bonus / severance is paid on the normal payroll cycle, which is
+    // this contract's when-payment-is-due. "payroll" is employment-specific, so
+    // this only reduces false-absences and cannot fire in a commercial context;
+    // "payroll taxes" / "payroll records" stay out (only cadence nouns listed).
+    `\\bpayroll\\s+(?:practices?|schedule|cycle|dates?|periods?|procedures?)\\b`,
   ].join("|"),
   "i",
 );
@@ -96,7 +103,7 @@ const ANY_PAYMENT = /\b(fee|payment|invoice|amount\s+due|payable)\b/i;
 /** FIN-005 — Payment terms presence and parseability (warning). */
 export const rule: Rule = {
   id: "FIN-005",
-  version: "1.6.1",
+  version: "1.6.2",
   name: "Payment terms presence and parseability",
   category: "financial",
   default_severity: "warning",
