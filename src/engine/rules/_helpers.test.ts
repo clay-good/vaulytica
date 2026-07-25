@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { allMatches, enclosingSentence, firstParagraphMatch } from "./_helpers.js";
+import {
+  allMatches,
+  enclosingSentence,
+  firstParagraphMatch,
+  firstUnnegatedParagraphMatch,
+} from "./_helpers.js";
 import type { RuleContext } from "../finding.js";
 
 /** Minimal RuleContext with a single-paragraph body. */
@@ -70,5 +75,26 @@ describe("enclosingSentence", () => {
   it("still ends the sentence at a real period followed by a space", () => {
     const s = "First sentence here. Second sentence follows.";
     expect(at(s, "First")).toBe("First sentence here.");
+  });
+});
+
+describe("firstUnnegatedParagraphMatch — disclaims scope", () => {
+  it("suppresses a trigger disclaimed as an obligation/duty", () => {
+    expect(
+      firstUnnegatedParagraphMatch(
+        ctxWith("The Vendor disclaims any obligation to indemnify the Customer."),
+        /indemnif\w+/i,
+      ),
+    ).toBeNull();
+  });
+
+  it("does NOT suppress a disclaimer that is itself the finding", () => {
+    // "disclaims all warranties" is the warranty-disclaimer a rule wants to find.
+    expect(
+      firstUnnegatedParagraphMatch(
+        ctxWith("The Vendor disclaims all warranties, express or implied."),
+        /warrant\w+/i,
+      ),
+    ).not.toBeNull();
   });
 });

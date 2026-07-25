@@ -45,8 +45,13 @@ export function firstParagraphMatch(ctx: RuleContext, re: RegExp): ParagraphHit 
  * of…", "does NOT contain a non-compete", "NOTHING shall be CONSTRUED AS a
  * covenant not to compete", "shall not be subject to arbitration".
  */
+// "disclaims" is deliberately NOT a bare negator: a warranty-disclaimer rule
+// fires on "disclaims all warranties" as the PRESENCE it wants. But "disclaims
+// any obligation / duty / liability to <trigger>" is an unambiguous negation of
+// that trigger — scoped to those object nouns so it never suppresses a warranty
+// or other disclaimer that IS the finding.
 const NEGATION_BEFORE =
-  /\b(?:not|no|never|neither|nor|without|excludes?|excluding|nothing|waives?|waiver\s+of|waive\s+any\s+right\s+to)\b|\bconstrued\s+(?:as|to)\b/i;
+  /\b(?:not|no|never|neither|nor|without|excludes?|excluding|nothing|waives?|waiver\s+of|waive\s+any\s+right\s+to)\b|\bconstrued\s+(?:as|to)\b|\bdisclaims?\s+(?:any\s+|all\s+)?(?:obligation|duty|responsibilit(?:y|ies)|liabilit(?:y|ies))\b/i;
 
 /**
  * Like {@link firstParagraphMatch}, but SKIPS a match that is negated — one
