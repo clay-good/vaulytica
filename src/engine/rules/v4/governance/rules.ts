@@ -1337,7 +1337,7 @@ const PARTNERSHIP_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-065",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "LP limited liability acknowledgment (DRULPA § 17-303)",
     description:
       "Limited partners are not liable for partnership obligations unless they participate in control.",
@@ -1357,6 +1357,14 @@ const PARTNERSHIP_RULES: Rule[] = [
       // Partnership beyond the amount of its capital commitment" — which the
       // "not"-after-"liable" patterns above never match.
       /no\s+limited\s+partner.{0,60}?\bliable/is,
+    ],
+    // DRULPA § 17-303 concerns LIMITED partners. A GENERAL partnership has none —
+    // every partner has unlimited liability — so it has no LP acknowledgment to
+    // be "missing". Apply the rule only to a limited-partnership document.
+    applicable_if: [
+      /\blimited\s+partner(?:s|ship)?\b/i,
+      /\bDRULPA\b/i,
+      /Uniform\s+Limited\s+Partnership\s+Act/i,
     ],
   }),
   presence({
