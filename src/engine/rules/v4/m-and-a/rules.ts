@@ -1530,6 +1530,7 @@ const EARNOUT_RULES: Rule[] = [
 const MA_RESTRICTIVE_COVENANT_RULES: Rule[] = [
   presence({
     id: "MNA-072",
+    version: "1.1.0",
     name: "Sale-of-business identification (goodwill nexus)",
     description:
       "Restrictive covenants must be tied to the sale of a business to qualify for the state-law sale-of-business exceptions (e.g., Cal. Bus. & Prof. Code § 16601).",
@@ -1542,9 +1543,14 @@ const MA_RESTRICTIVE_COVENANT_RULES: Rule[] = [
       "State sale-of-business exceptions (e.g., Cal. Bus. & Prof. Code § 16601) preserve non-competes made in connection with a bona fide sale of a business and its goodwill. Without that nexus, the covenant is judged under the far stricter employee-covenant rules and may be void.",
     recommendation: "Add a recital identifying the sale of the business / acquisition transaction.",
     present_patterns: [
-      /sale\s+of\s+the\s+business/i,
+      /sale\s+of\s+(?:a|the|its|his|her)\s+business/i,
       /acquisition\s+(of|by)/i,
       /goodwill\s+of\s+the\s+(business|company)/i,
+      // The recital as often states the transaction with the acquisition VERB
+      // ("the Buyer is acquiring all of the … capital stock … from the Seller")
+      // or a bare "the acquisition", not the noun "acquisition of/by".
+      /\bacquir(?:e|es|ing|ed)\b[^.]{0,50}?\b(?:capital\s+stock|shares?|business|assets?|company|equity)\b/i,
+      /\bthe\s+acquisition\b/i,
     ],
   }),
   presence({
