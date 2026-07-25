@@ -184,6 +184,20 @@ describe("parenthetical definitions", () => {
     expect(map.entries.map((e) => e.term)).not.toContain("Services");
   });
 
+  it("registers a conditionally-occupied role defined with 'when it …' (mutual NDA)", () => {
+    // Both parties share each role, so it is never "(the 'X')" or "means"; the
+    // quoted term + "when it discloses/receives" is the definition.
+    const map = extractDefinitions(
+      buildTree([
+        "Parties",
+        'Each party may act as a "Disclosing Party" when it discloses Confidential Information and as a "Receiving Party" when it receives Confidential Information.',
+      ]),
+    );
+    const terms = map.entries.map((e) => e.term);
+    expect(terms).toContain("Disclosing Party");
+    expect(terms).toContain("Receiving Party");
+  });
+
   it("does not read a used-only quoted term without the appositive comma", () => {
     // "(a sum equal to the 'Base Amount')" USES the term; there is no comma
     // before 'the', so the trailing-parenthetical form must not register it.

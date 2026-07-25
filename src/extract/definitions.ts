@@ -40,6 +40,13 @@ const DEFINITION_INLINE_REFERS =
 // bounded temporal defined term) so an ordinary quoted usage is not swept in.
 const DEFINITION_INLINE_PERIOD =
   /["“”']([A-Z][\w\s\-&/'’.]{1,60}?)["“”']\s+(?:shall|will)\s+(?:begin|commence|start|run)\b/gi;
+// A role a party occupies CONDITIONALLY — "each party may act as a 'Disclosing
+// Party' when it discloses … and as a 'Receiving Party' when it receives". Both
+// parties share each role, so it is never introduced with a "(the 'X')"
+// parenthetical or "means"; the quoted term followed by "when it/the/such …" is
+// the definition. This is the mutual-NDA idiom STRUCT-006 flagged as undefined.
+const DEFINITION_ROLE_WHEN =
+  /["“”']([A-Z][\w\s\-&/'’.]{1,40}?)["“”']\s+when\s+(?:it|the|such|either|each|a\s+party)\b/gi;
 const DEFINITION_BARE = /^\s*([A-Z][\w\s\-&]{1,80}?)\s+(?:shall\s+)?means?\b/i;
 
 /**
@@ -796,6 +803,20 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
     if (!/\b(?:Period|Term)$/.test(term)) continue;
     out.push({
       term,
+      definition: text.slice(m.index + m[0].length).trim(),
+      defined_at: {
+        section_id: base.section_id,
+        paragraph_id: base.paragraph_id,
+        start: base.start + m.index,
+        end: base.start + m.index + m[0].length,
+      },
+      used_at: [],
+    });
+  }
+  DEFINITION_ROLE_WHEN.lastIndex = 0;
+  while ((m = DEFINITION_ROLE_WHEN.exec(text)) !== null) {
+    out.push({
+      term: m[1]!.trim(),
       definition: text.slice(m.index + m[0].length).trim(),
       defined_at: {
         section_id: base.section_id,
