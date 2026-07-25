@@ -27,6 +27,12 @@ import { forEachParagraph, forEachSection, posInParagraph } from "./walk.js";
 // STRUCT-004/005/006 and the definitions appendix. The quoted-term requirement
 // keeps this from matching an ordinary sentence that merely contains "means".
 const DEFINITION_INLINE = /["“”']([A-Z][\w\s\-&]{1,80}?)["“”']\s+(?:shall\s+)?means?\b/gi;
+// The other inline defining verbs — `"Effective Date" refers to …`, `"Territory"
+// is defined as …`, `"Deliverables" shall refer to …`. DEFINITION_INLINE knows
+// only "means"/"shall mean", so these terms went unregistered and STRUCT-006
+// reported them as used-but-undefined.
+const DEFINITION_INLINE_REFERS =
+  /["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s+(?:(?:shall|will)\s+)?(?:refers?\s+to|(?:is|are)\s+defined\s+(?:as|to\s+mean\b))/gi;
 const DEFINITION_BARE = /^\s*([A-Z][\w\s\-&]{1,80}?)\s+(?:shall\s+)?means?\b/i;
 
 /**
@@ -723,6 +729,23 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
       used_at: [],
       ...(reference ? { reference } : {}),
       ...(scope ? { scope } : {}),
+    });
+  }
+  DEFINITION_INLINE_REFERS.lastIndex = 0;
+  while ((m = DEFINITION_INLINE_REFERS.exec(text)) !== null) {
+    const term = m[1]!.trim();
+    const after = text.slice(m.index + m[0].length).trim();
+    if (!after) continue;
+    out.push({
+      term,
+      definition: after,
+      defined_at: {
+        section_id: base.section_id,
+        paragraph_id: base.paragraph_id,
+        start: base.start + m.index,
+        end: base.start + m.index + m[0].length,
+      },
+      used_at: [],
     });
   }
   for (const conv of [

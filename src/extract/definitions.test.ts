@@ -211,6 +211,19 @@ describe("truncated candidates of longer defined terms", () => {
     expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Contractor Background");
   });
 
+  it("registers 'refers to' / 'is defined as' / 'shall refer to' inline definitions", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Definitions",
+        '"Effective Date" refers to the date first written above. "Territory" is defined as the United States and Canada. "Deliverables" shall refer to all work product delivered under this Agreement.',
+      ]),
+    );
+    const terms = map.entries.map((e) => e.term);
+    expect(terms).toContain("Effective Date");
+    expect(terms).toContain("Territory");
+    expect(terms).toContain("Deliverables");
+  });
+
   it("does not report a singular use of a defined plural term as undefined", () => {
     const map = extractDefinitions(
       buildTree([
