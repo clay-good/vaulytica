@@ -130,7 +130,7 @@ export function firstUnnegatedParagraphMatch(
  * whitespace-to-trigger).
  */
 const CLAUSE_ABSENCE =
-  /\b(?:(?:do(?:es)?|shall|will|may|must)\s+not\s+(?:include|contain|provide\s+for|provide|require|impose|create|permit|allow|grant|obligate|contemplate|use)|(?:contain|include)s?\s+no\b|ha[sv]e\s+no\b|need\s+not\b|no\s+(?:obligation|provision|provisions|requirement|right|duty)\b|not\s+(?:be\s+(?:required|obligated|permitted|entitled|held|deemed|subject|construed)|have\s+(?:the\s+)?right)|nothing\s+(?:herein|contained\s+herein|in\s+th(?:is|ese)\s+[\w\s]{0,24}?)\s*(?:shall|will|may|does|is)?\s*$|no\s*$)/i;
+  /\b(?:(?:do(?:es)?|shall|will|may|must)\s+not\s+(?:include|contain|provide\s+for|provide|require|impose|create|permit|allow|grant|obligate|contemplate|use)|(?:contain|include)s?\s+no\b|ha[sv]e\s+no\b|need\s+not\b|no\s+(?:obligation|provision|provisions|requirement|right|duty)\b|no\s+(?:party|one|person|entity)\s+(?:is|are|shall\s+be|will\s+be|has|have)\s+(?:required|obligated|liable|responsible|any\s+obligation)\b|(?:is|are)\s+not\s+(?:required|obligated|permitted|entitled)\b|not\s+(?:be\s+(?:required|obligated|permitted|entitled|held|deemed|subject|construed)|have\s+(?:the\s+)?right)|exclude(?:s|d)?\s+(?:any\s+|all\s+)?$|nothing\s+(?:herein|contained\s+herein|in\s+th(?:is|ese)\s+[\w\s]{0,24}?)\s*(?:shall|will|may|does|is)?\s*(?:require|obligate|provide\s+for|provide|contain|include|contemplate|create|impose|grant|permit|allow|entitle)?s?\s*(?:for\s+)?(?:[\w\s]{0,24}?\s+to\s+)?$|no\s*$)/i;
 
 /**
  * True when the trigger at `matchIndex` sits in a sentence whose text BEFORE

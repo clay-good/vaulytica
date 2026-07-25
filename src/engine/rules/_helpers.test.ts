@@ -4,6 +4,7 @@ import {
   enclosingSentence,
   firstParagraphMatch,
   firstUnnegatedParagraphMatch,
+  isPresenceDisclaimed,
 } from "./_helpers.js";
 import type { RuleContext } from "../finding.js";
 
@@ -97,4 +98,27 @@ describe("firstUnnegatedParagraphMatch — disclaims scope", () => {
       ),
     ).not.toBeNull();
   });
+});
+
+describe("isPresenceDisclaimed — disclaimer forms", () => {
+  const at = (text: string) => isPresenceDisclaimed(text, text.search(/indemnif/i));
+  for (const t of [
+    "Nothing herein shall require indemnification.",
+    "Nothing in this Agreement obligates the Vendor to indemnify.",
+    "No party is obligated to indemnify.",
+    "The Vendor is not required to indemnify.",
+    "This Agreement excludes any indemnification.",
+  ]) {
+    it(`suppresses: ${t}`, () => {
+      expect(at(t)).toBe(true);
+    });
+  }
+  for (const t of [
+    "The Vendor shall indemnify the Customer against all claims.",
+    "Each party shall indemnify the other for its breaches.",
+  ]) {
+    it(`does NOT suppress genuine: ${t.slice(0, 30)}`, () => {
+      expect(at(t)).toBe(false);
+    });
+  }
 });
