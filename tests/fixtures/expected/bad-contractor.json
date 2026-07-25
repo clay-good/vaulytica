@@ -219,7 +219,7 @@
       "finding_id": "IPDATA-001-s1-0",
       "fired": true,
       "rule_id": "IPDATA-001",
-      "rule_version": "1.3.1"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -795,7 +795,7 @@
       "explanation": "Without an IP-ownership clause, default copyright and patent rules apply: under 17 U.S.C. § 201, copyright vests in the author/employee unless work-for-hire or assignment applies.",
       "id": "IPDATA-001-s1-0",
       "rule_id": "IPDATA-001",
-      "rule_version": "1.3.1",
+      "rule_version": "1.4.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1049,7 +1049,7 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "b68059c95dd21db91f01bb2717e5cdec1f8ea268ea79e48522ec8172f9727055",
+  "result_hash": "8870db4be94d5341cf30281013020655f29d5a8cd4d4590b890606094affa915",
   "source_file": {
     "name": "bad-contractor.docx",
     "sha256": "7a40a2e53d068557d47cf7690838b907085994f596a0c6e2380b8ac2607543df",

@@ -219,7 +219,7 @@
       "finding_id": "IPDATA-001-s1-0",
       "fired": true,
       "rule_id": "IPDATA-001",
-      "rule_version": "1.3.1"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -762,7 +762,7 @@
       "explanation": "Without an IP-ownership clause, default copyright and patent rules apply: under 17 U.S.C. § 201, copyright vests in the author/employee unless work-for-hire or assignment applies.",
       "id": "IPDATA-001-s1-0",
       "rule_id": "IPDATA-001",
-      "rule_version": "1.3.1",
+      "rule_version": "1.4.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -926,7 +926,7 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected msa-general (score 1). Title matched: \"master services agreement\", \"services agreement\". Distinguishing phrases: \"SOW\", \"Services\", \"Deliverables\", \"Provider\", \"Customer\".",
-  "result_hash": "7e864ab9d9a588eeea1de7849bb577ccd723ad44371cdf3aa109b03a4a74680c",
+  "result_hash": "64e6b02cfaf2b1e8a4ee6806c4ab2beb18beea405dc8cc0f037e103be849f1ad",
   "source_file": {
     "name": "bad-msa-mfn.docx",
     "sha256": "6c82de5ccf5a22064c5da0ad551848546762dc4f0b2fecf127a52f93798fe73d",

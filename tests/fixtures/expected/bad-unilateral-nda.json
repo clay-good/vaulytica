@@ -218,7 +218,7 @@
       "finding_id": "IPDATA-001-s1-0",
       "fired": true,
       "rule_id": "IPDATA-001",
-      "rule_version": "1.3.1"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -784,7 +784,7 @@
       "explanation": "Without an IP-ownership clause, default copyright and patent rules apply: under 17 U.S.C. § 201, copyright vests in the author/employee unless work-for-hire or assignment applies.",
       "id": "IPDATA-001-s1-0",
       "rule_id": "IPDATA-001",
-      "rule_version": "1.3.1",
+      "rule_version": "1.4.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -974,7 +974,7 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "6d7fcdffe947114cb3de09b6b66f4774fc375723efdf287fbba1703280de5eda",
+  "result_hash": "9235666688c91720baba82148c628c5b6d7bcf79498497167e1c08ecb1b2ee34",
   "source_file": {
     "name": "bad-unilateral-nda.docx",
     "sha256": "be3d09f211f21ac2141d1ff1d2ec9023dafe4f56502a8a6b66aec83361fdeca6",
