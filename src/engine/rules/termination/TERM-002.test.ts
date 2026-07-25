@@ -118,4 +118,28 @@ describe("TERM-002 — failure-to-pay / perform default triggers", () => {
       ),
     ).toBeNull();
   });
+
+  it("reads immediate termination on a material default / breach with no cure (v1.2.0)", () => {
+    expect(
+      TERM_002.check(
+        doc("This Agreement may be terminated by either party in the event of a material default by the other."),
+      ),
+    ).toBeNull();
+    expect(
+      TERM_002.check(
+        doc("The Provider may terminate this Agreement if the Customer breaches any material term hereof."),
+      ),
+    ).toBeNull();
+    expect(
+      TERM_002.check(
+        doc("Either party may terminate for the other party's failure to perform any material obligation."),
+      ),
+    ).toBeNull();
+  });
+
+  it("does not treat a convenience termination or a bare 'material terms' mention as for-cause", () => {
+    expect(
+      TERM_002.check(doc("Either party may terminate this Agreement for convenience upon sixty days' notice.")),
+    ).not.toBeNull();
+  });
 });

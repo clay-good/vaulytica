@@ -36,14 +36,26 @@ const FOR_CAUSE = new RegExp(
     "|" +
     String.raw`\bterminat\w+\b[^.]{0,140}${BREACH}[^.]{0,80}${UNCURED}` +
     "|" +
-    String.raw`${BREACH}[^.]{0,120}${UNCURED}[^.]{0,120}\bterminat`,
+    String.raw`${BREACH}[^.]{0,120}${UNCURED}[^.]{0,120}\bterminat` +
+    // Immediate termination on a MATERIAL breach/default/failure, with no cure
+    // period — "terminate … in the event of a material default", "terminate …
+    // if the Customer breaches any material term", "terminate for … failure to
+    // perform any material obligation". The exact-phrase branch above only
+    // knew the noun "material breach", so these read as having no for-cause
+    // path. Both require a termination verb AND a material defaulting event in
+    // the same sentence, so a convenience termination or a bare "material
+    // terms" mention does not satisfy it.
+    "|" +
+    String.raw`\bterminat\w+\b[^.]{0,140}\bmaterial(?:ly)?\b[^.]{0,80}${BREACH}` +
+    "|" +
+    String.raw`\bterminat\w+\b[^.]{0,140}${BREACH}[^.]{0,80}\bmaterial\b`,
   "i",
 );
 
 /** TERM-002 — Termination for cause present (warning). */
 export const rule: Rule = {
   id: "TERM-002",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Termination for cause present",
   category: "termination",
   default_severity: "warning",
