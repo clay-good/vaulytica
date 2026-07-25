@@ -45,7 +45,21 @@ const PAYMENT_TERMS = new RegExp(
     `\\b(?:due|payable|paid)\\s+(?:in\\s+advance\\s+)?on\\s+(?:or\\s+before\\s+)?the\\s+(?:first|1st|last|\\d{1,2}(?:st|nd|rd|th))\\s+(?:day\\s+)?of\\s+(?:each|every|the)\\b`,
     `\\b(?:due|payable|paid)\\s+(?:monthly|quarterly|annually|weekly|bi-?weekly|semi-?annually)\\b`,
     `\\b(?:monthly|quarterly|annually)\\s+in\\s+(?:advance|arrears)\\b`,
-    `\\bdue\\s+upon\\s+receipt\\b`,
+    // "payable on a monthly basis" — the cadence carries an "on a … basis"
+    // wrapper the bare-cadence branch above does not reach.
+    `\\b(?:due|payable|paid)\\s+on\\s+a\\s+(?:monthly|quarterly|weekly|annual|semi-?annual|bi-?weekly)\\s+basis\\b`,
+    // "due and payable upon presentation of an invoice" is the same term as
+    // "due upon receipt".
+    `\\b(?:due|amounts?\\s+(?:are|is)\\s+due)\\s+(?:and\\s+payable\\s+)?upon\\s+(?:receipt|presentation)\\b`,
+    // A SPELLED "Net" window — "payable net sixty (60) days" — that the
+    // digits-only "Net 30" branch above never saw.
+    `\\bnet\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\)\\s*)?days?\\b`,
+    // Active voice with "remit" — "Customer will remit payment within fifteen
+    // (15) business days" — a sibling of the "shall pay … within N days" branch.
+    `\\b(?:remit|make)\\s+(?:payment|remittance)\\b[\\s\\w,()$."'“”’]{0,120}?(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?`,
+    // "Payment shall be made within thirty days following the end of each
+    // month" — a period-relative window the invoice-anchored branches missed.
+    `\\b(?:payment|pay|paid|payable)\\b[\\s\\w,]{0,40}?(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?\\s+(?:following|after)\\s+(?:the\\s+end\\s+of\\s+)?(?:each|the|every)\\b`,
     // A purchase-price schedule is a payment term: "payable as follows:
     // (a) $41,000 … within three (3) business days …" / "payable in twelve
     // (12) equal monthly installments". Tight anchors only — FIN-005's
@@ -82,7 +96,7 @@ const ANY_PAYMENT = /\b(fee|payment|invoice|amount\s+due|payable)\b/i;
 /** FIN-005 — Payment terms presence and parseability (warning). */
 export const rule: Rule = {
   id: "FIN-005",
-  version: "1.5.0",
+  version: "1.6.0",
   name: "Payment terms presence and parseability",
   category: "financial",
   default_severity: "warning",

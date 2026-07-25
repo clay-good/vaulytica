@@ -116,6 +116,33 @@ describe("FIN-005 — 'no later than N days' is a payment window (v1.4.1)", () =
   });
 });
 
+describe("FIN-005 — more payment-term phrasings (v1.6.0)", () => {
+  it("reads 'payable on a monthly basis'", () => {
+    expect(FIN_005.check(doc("The fee is payable on a monthly basis."))).toBeNull();
+  });
+  it("reads a spelled 'net sixty (60) days' window", () => {
+    expect(FIN_005.check(doc("Invoices are payable net sixty (60) days."))).toBeNull();
+  });
+  it("reads 'remit payment within fifteen (15) business days'", () => {
+    expect(
+      FIN_005.check(doc("Customer will remit payment within fifteen (15) business days.")),
+    ).toBeNull();
+  });
+  it("reads 'due and payable upon presentation of an invoice'", () => {
+    expect(FIN_005.check(doc("All amounts are due and payable upon presentation of an invoice."))).toBeNull();
+  });
+  it("reads 'within thirty days following the end of each month'", () => {
+    expect(
+      FIN_005.check(doc("Payment shall be made within thirty (30) days following the end of each month.")),
+    ).toBeNull();
+  });
+  it("does not read a stray 'net income of sixty' as a payment term", () => {
+    expect(
+      FIN_005.check(doc("Customer shall make payment for the services. Net income was sixty million dollars.")),
+    ).not.toBeNull();
+  });
+});
+
 describe("FIN-005 — an installment schedule with no stated count (v1.5.0)", () => {
   it("reads a lease rent 'payable in equal monthly installments' (no number)", () => {
     expect(
