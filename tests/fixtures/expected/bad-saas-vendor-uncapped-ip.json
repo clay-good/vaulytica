@@ -474,7 +474,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "RISK-015",
-      "rule_version": "1.3.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -920,7 +920,7 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 0.8,
   "playbook_match_reasoning": "Selected msa-general (score 0.8). Required clauses present: \"indemnification\". Distinguishing phrases: \"Services\", \"Provider\", \"Customer\". Negative features penalized: \"lease\", \"Premises\".",
-  "result_hash": "2707db41c8294b0c594469221abd2f0b9172a1b42fb34b329bf38c54affb61d6",
+  "result_hash": "c7a17b15b0591e589698e8609a643fd5d2b89dbf3e1b19036f877bdc4a6beea5",
   "source_file": {
     "name": "bad-saas-vendor-uncapped-ip.docx",
     "sha256": "8ae94b74fdbe0bc441724e390612c07a1fd3fdc05bf782e829c1e4dda8a69083",

@@ -477,10 +477,9 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "RISK-015-s1.4-1023",
-      "fired": true,
+      "fired": false,
       "rule_id": "RISK-015",
-      "rule_version": "1.3.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -892,24 +891,6 @@
       "title": "Data retention period unspecified"
     },
     {
-      "description": "Indemnification language is present (`shall indemnify`) but no clause caps the aggregate exposure.",
-      "document_position": 1023,
-      "excerpt": {
-        "end_offset": 1038,
-        "section_id": "s1.4",
-        "start_offset": 1023,
-        "text": "shall indemnify"
-      },
-      "explanation": "An indemnity carved out of (or simply not subject to) the liability cap can be the largest single financial risk a contract carries. A third-party IP infringement claim, a data-breach notification cost, or a regulatory fine can dwarf the contract value many times over. Confirm the carve-out is deliberate and proportionate to the indemnifying party's solvency.",
-      "id": "RISK-015-s1.4-1023",
-      "recommendation": "Either subject indemnification to a per-claim and aggregate cap, or confirm the carve-out is a deliberate trade for higher pricing / different insurance.",
-      "rule_id": "RISK-015",
-      "rule_version": "1.3.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "Indemnification without aggregate cap"
-    },
-    {
       "description": "No Effective Date is named, defined, or stated near the top of this Agreement.",
       "document_position": 0,
       "excerpt": {
@@ -1121,7 +1102,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "72c8d67d125c9fedb9ad2f97e31bcc93eedaf258c51113a508cfcb8cfc7cba73",
+  "result_hash": "8579c2af6a0cecd235615e028d48944b755d93d64405ac499ed211dc890303b7",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",

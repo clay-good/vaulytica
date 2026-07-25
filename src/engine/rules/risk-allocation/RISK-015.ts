@@ -44,7 +44,7 @@ export function isStatutoryDandOIndemnity(text: string): boolean {
 
 export const rule: Rule = {
   id: "RISK-015",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Indemnification without aggregate cap",
   category: "risk-allocation",
   default_severity: "warning",
@@ -73,8 +73,15 @@ export const rule: Rule = {
     // exceed the Escrow Amount". The liability-anchored branches above missed
     // all three forms. "cap table" / "cap rate" do not match (the cap must be
     // "of"/"equal to"/"ped at" a limit, or "subject to a … cap").
+    // The negation of a cap is as often a PHRASE as the word "not": "In no event
+    // shall either party's liability exceed the fees", "under no circumstances
+    // shall the Vendor's liability exceed $1,000,000", "the Vendor's liability
+    // shall in no event exceed the fees". None carry "not", so the "not exceed"
+    // branches missed them and the rule reported a capped indemnity as uncapped.
+    // Both orderings are admitted, each requiring "liability … exceed" so a
+    // non-liability limit ("in no event shall the term exceed") stays inert.
     const CAP_PRESENT =
-      /\b(?:liability\s+(?:shall|will|is|may)?\s*(?:be\s+)?(?:limited|capped)|aggregate\s+liability.*?(?:not\s+exceed|cap(?:ped)?)|not\s+to\s+exceed|liability\b[^.]{0,80}?\bnot\s+exceed|neither\s+part(?:y|ies)(?:'s)?[^.]{0,60}?\bliabilit(?:y|ies)\b[^.]{0,60}?\bexceed|cap\s+on\s+(?:liability|indemnification)|limited\s+to\s+(?:twelve|six|three|\d+)\s+months|subject\s+to\s+(?:an?\s+)?(?:aggregate\s+|indemnification\s+|maximum\s+|per-claim\s+(?:and\s+aggregate\s+)?)?cap\b|cap(?:ped\s+at|\s+equal\s+to|\s+of)\b|indemnif\w+[^.]{0,80}?\b(?:shall\s+not\s+exceed|not\s+to\s+exceed))/i;
+      /\b(?:liability\s+(?:shall|will|is|may)?\s*(?:be\s+)?(?:limited|capped)|aggregate\s+liability.*?(?:not\s+exceed|cap(?:ped)?)|not\s+to\s+exceed|liability\b[^.]{0,80}?\bnot\s+exceed|neither\s+part(?:y|ies)(?:'s)?[^.]{0,60}?\bliabilit(?:y|ies)\b[^.]{0,60}?\bexceed|cap\s+on\s+(?:liability|indemnification)|limited\s+to\s+(?:twelve|six|three|\d+)\s+months|subject\s+to\s+(?:an?\s+)?(?:aggregate\s+|indemnification\s+|maximum\s+|per-claim\s+(?:and\s+aggregate\s+)?)?cap\b|cap(?:ped\s+at|\s+equal\s+to|\s+of)\b|indemnif\w+[^.]{0,80}?\b(?:shall\s+not\s+exceed|not\s+to\s+exceed)|(?:in\s+no\s+event|under\s+no\s+circumstances)[^.]{0,80}?\bliabilit(?:y|ies)\b[^.]{0,40}?\bexceed\b|\bliabilit(?:y|ies)\b[^.]{0,60}?(?:in\s+no\s+event|under\s+no\s+circumstances)[^.]{0,30}?\bexceed\b)/i;
     const CARVE_OUT_INDEMNITY =
       /\b(?:except\s+(?:for|with\s+respect\s+to)|excluding|other\s+than|not\s+including|carve[-\s]out\s+for)\s+[^.]{0,80}\bindemnif/i;
 
