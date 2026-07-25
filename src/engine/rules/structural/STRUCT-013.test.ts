@@ -93,6 +93,37 @@ describe("STRUCT-013 — unfilled template placeholders", () => {
     ).toBeNull();
   });
 
+  it("silent on a bare-name signature line whose signatory is named ONLY in the block (v1.8.0)", () => {
+    // A multi-member operating agreement lists its members on an exhibit, so
+    // the individual signatories are never extracted as parties — the printed
+    // name beneath the underscore rule is the only place they appear. A clean
+    // "First Last" name still reads as a signature line, not a placeholder.
+    expect(
+      STRUCT_013.check(
+        buildContext([
+          "Operating Agreement",
+          "This Agreement is entered into by and among the persons listed on Exhibit A.",
+          "IN WITNESS WHEREOF, the Members have executed this Agreement.",
+          "_______________________________ Jonathan Pierce",
+          "_______________________________ Amara Okafor",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires when a bare underscore rule sits above a template field, not a name (v1.8.0)", () => {
+    // The guard above must not swallow a genuine placeholder: "Company Name",
+    // "Insert Party Name", "Print Name" carry a field-label token.
+    expect(
+      STRUCT_013.check(buildContext(["Signatures", "_______________________________ Company Name"])),
+    ).not.toBeNull();
+    expect(
+      STRUCT_013.check(
+        buildContext(["Signatures", "_______________________________ Insert Party Name"]),
+      ),
+    ).not.toBeNull();
+  });
+
   it("silent on estate signatory lines ('____ Name, Testator', '____ Executor')", () => {
     expect(
       STRUCT_013.check(

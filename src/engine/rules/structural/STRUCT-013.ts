@@ -60,7 +60,7 @@ const PATTERNS: Array<{ re: RegExp; label: string }> = [
 
 export const rule: Rule = {
   id: "STRUCT-013",
-  version: "1.7.0",
+  version: "1.8.0",
   name: "Unfilled template placeholders",
   category: "structural",
   default_severity: "critical",
@@ -164,6 +164,15 @@ function isBareNameSignature(text: string, partyNames: string[]): boolean {
   // consent form, affidavit, or application signs. A genuine "[Insert
   // Signature]" placeholder starts with the bracket / "Insert", not the label.
   if (/^(?:signature|signed|print(?:ed)?\s+name)\s+(?:of|by)\b/i.test(after)) return true;
+  // A bare underscore rule beneath a printed personal name — "________ Jonathan
+  // Pierce" — is a signature line even when that individual is named only in the
+  // signature block: a multi-signatory operating agreement, member/partner
+  // consent, or deed lists its signatories here, not as defined parties, so the
+  // party-name anchor below never sees them. Require the remainder to be a clean
+  // 2–4-word personal name (each word Title-Case, no field-label / template
+  // token) so a genuine "____ [Party Name]" / "____ Company Name" / "____ Print
+  // Name" placeholder is not suppressed.
+  if (isPersonalName(after)) return true;
   const lower = after.toLowerCase();
   return partyNames.some((n) => {
     // A party is often extracted with its role parenthetical attached —
@@ -176,6 +185,24 @@ function isBareNameSignature(text: string, partyNames: string[]): boolean {
     if (nl.length < 4) return false;
     return lower === nl || lower.startsWith(`${nl},`) || lower.startsWith(`${nl} `);
   });
+}
+
+// A template / field-label token that must NOT appear in a string we would
+// accept as a printed personal name — "____ Company Name", "____ Insert Party",
+// "____ Print Name" are placeholders, not signatures.
+const NON_NAME_TOKEN =
+  /\b(?:Name|Date|Address|City|State|Zip|Country|Title|Code|Number|Amount|Value|Reference|Period|Term|Field|Information|Details|Description|Phone|Email|Sum|Fee|Rate|Price|Insert|Sign|Signature|Print(?:ed)?|Company|Corporation|Entity|Party|Here|TBD|TBA)\b/i;
+
+/**
+ * True if `s` is a bare printed personal name — 2–4 Title-Case words, each with
+ * a lowercase tail (so ALLCAPS markers like "TBD"/"XXX" are excluded), and no
+ * field-label / template token. A trailing ", Role" clause is dropped first
+ * ("Jonathan Pierce, Manager"), leaving the name to test.
+ */
+function isPersonalName(s: string): boolean {
+  const t = s.replace(/,.*$/, "").trim();
+  if (NON_NAME_TOKEN.test(t)) return false;
+  return /^[A-Z][a-z]+(?:\s+[A-Z][a-z.'’-]+){1,3}$/.test(t);
 }
 
 /**
