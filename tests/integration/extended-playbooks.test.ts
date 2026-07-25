@@ -63,13 +63,14 @@ describe("extended playbook manifest", () => {
     ).toEqual([]);
   });
 
-  it("internal-policy playbooks suppress the generic contract rules", () => {
-    // A corporate policy (insider-trading, whistleblower, social-media,
-    // lobbying) is not a contract: it has no parties, governing law,
-    // liability cap, termination, or IP-ownership clause. These four were
-    // shipped with empty rule_overrides while their siblings (aml,
-    // code-of-conduct, …) already skipped the generic contract rules, so
-    // the generics fired as false positives on every such policy.
+  it("non-contract instruments suppress the generic contract rules", () => {
+    // These documents are not contracts: they have no parties, governing law,
+    // liability cap, termination, or IP-ownership clause. Each has a scoped
+    // sibling in the 10-skip cohort that proves the intent — corporate
+    // policies (aml, code-of-conduct, …); s-1-risk-factors ↔ 10-k-risk-factors;
+    // healthcare-poa ↔ durable-poa-financial / advance-directive; ropa-art-30 ↔
+    // dpia-art-35 — but shipped with empty rule_overrides, so the generic
+    // contract rules fired as false positives on each.
     const raw = JSON.parse(readFileSync(EXTENDED_MANIFEST_PATH, "utf8")) as Array<{
       id: string;
       rule_overrides?: Record<string, { skip?: boolean }>;
@@ -91,6 +92,9 @@ describe("extended playbook manifest", () => {
       "whistleblower-policy",
       "social-media-policy",
       "lobbying-policy",
+      "s-1-risk-factors",
+      "healthcare-poa",
+      "ropa-art-30",
     ]) {
       const pb = raw.find((p) => p.id === id);
       expect(pb, `${id} missing from manifest`).toBeDefined();

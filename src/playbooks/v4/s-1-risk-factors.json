@@ -4,7 +4,12 @@
   "name": "S-1 Risk Factors (prose only)",
   "description": "S-1 risk factors prose under Reg S-K Item 105 + plain-English rule. Per spec §6.P caveat: v4 lints prose only (REG-040). Selects the §6.P shared risk-factors ruleset (REG-016..REG-023).",
   "match_features": {
-    "title_keywords": ["s-1", "form s-1", "registration statement", "ipo prospectus"],
+    "title_keywords": [
+      "s-1",
+      "form s-1",
+      "registration statement",
+      "ipo prospectus"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "risk factors",
@@ -12,16 +17,57 @@
       "registration statement",
       "item 105"
     ],
-    "negative_features": ["form d", "form adv", "10-k", "ppm", "reg a+"]
+    "negative_features": [
+      "form d",
+      "form adv",
+      "10-k",
+      "ppm",
+      "reg a+"
+    ]
   },
   "expected_clauses": [],
   "expected_defined_terms": [],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "REG-S-K-ITEM-105",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["10-k-risk-factors"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "10-k-risk-factors"
+  ],
   "compliance_matrix_columns": [
     "Risk-factor section",
     "Item 105 materiality + summary",

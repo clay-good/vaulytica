@@ -19,16 +19,59 @@
       "incapacity",
       "hipaa"
     ],
-    "negative_features": ["advance directive", "durable poa financial", "prenup"]
+    "negative_features": [
+      "advance directive",
+      "durable poa financial",
+      "prenup"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Principal", "Agent"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "Principal",
+    "Agent"
+  ],
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "STATE-HEALTHCARE-POA",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["advance-directive", "durable-poa-financial"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "advance-directive",
+    "durable-poa-financial"
+  ],
   "compliance_matrix_columns": [
     "Principal + agent + successor",
     "Scope of authority",
