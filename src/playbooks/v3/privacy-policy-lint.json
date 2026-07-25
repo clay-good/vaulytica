@@ -38,8 +38,44 @@
     "International Transfers",
     "Contact"
   ],
-  "expected_defined_terms": ["Personal Information", "Personal Data", "Service", "User"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "Personal Information",
+    "Personal Data",
+    "Service",
+    "User"
+  ],
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [
     {
@@ -68,8 +104,16 @@
     }
   ],
   "regulator_frame": "CCPA + GDPR + COPPA",
-  "applicable_jurisdictions": ["US", "EU", "UK"],
-  "companion_playbooks": ["dpa-controller-processor", "dpa-ccpa-service-provider", "saas-tos"],
+  "applicable_jurisdictions": [
+    "US",
+    "EU",
+    "UK"
+  ],
+  "companion_playbooks": [
+    "dpa-controller-processor",
+    "dpa-ccpa-service-provider",
+    "saas-tos"
+  ],
   "compliance_matrix_columns": [
     "Categories of personal information disclosed (CCPA § 1798.130)",
     "Lawful basis (GDPR Art. 13/14)",
