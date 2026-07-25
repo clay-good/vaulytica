@@ -111,6 +111,18 @@ describe("STRUCT-013 — unfilled template placeholders", () => {
     ).toBeNull();
   });
 
+  it("silent on a bare-name signature line carrying an honorific ('____ Dr. Helena Vasquez') (v1.9.0)", () => {
+    expect(
+      STRUCT_013.check(
+        buildContext([
+          "Executive Employment Agreement",
+          "IN WITNESS WHEREOF, the parties have executed this Agreement.",
+          "_______________________________ Dr. Helena Vasquez",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
   it("still fires when a bare underscore rule sits above a template field, not a name (v1.8.0)", () => {
     // The guard above must not swallow a genuine placeholder: "Company Name",
     // "Insert Party Name", "Print Name" carry a field-label token.

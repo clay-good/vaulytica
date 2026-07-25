@@ -60,7 +60,7 @@ const PATTERNS: Array<{ re: RegExp; label: string }> = [
 
 export const rule: Rule = {
   id: "STRUCT-013",
-  version: "1.8.0",
+  version: "1.9.0",
   name: "Unfilled template placeholders",
   category: "structural",
   default_severity: "critical",
@@ -193,14 +193,24 @@ function isBareNameSignature(text: string, partyNames: string[]): boolean {
 const NON_NAME_TOKEN =
   /\b(?:Name|Date|Address|City|State|Zip|Country|Title|Code|Number|Amount|Value|Reference|Period|Term|Field|Information|Details|Description|Phone|Email|Sum|Fee|Rate|Price|Insert|Sign|Signature|Print(?:ed)?|Company|Corporation|Entity|Party|Here|TBD|TBA)\b/i;
 
+// A professional / courtesy honorific that can precede a printed signatory
+// name — "Dr. Helena Vasquez", "Prof. Alan Reyes". Stripped before the
+// name test so the title's trailing period does not break the Title-Case run.
+const HONORIFIC_PREFIX =
+  /^(?:Dr|Mr|Mrs|Ms|Mx|Prof(?:essor)?|Hon|Rev|Sir|Dame|Fr|Sr|Capt|Col|Gen|Lt|Sgt|Rabbi|Pastor|Judge)\.?\s+/i;
+
 /**
  * True if `s` is a bare printed personal name — 2–4 Title-Case words, each with
  * a lowercase tail (so ALLCAPS markers like "TBD"/"XXX" are excluded), and no
  * field-label / template token. A trailing ", Role" clause is dropped first
- * ("Jonathan Pierce, Manager"), leaving the name to test.
+ * ("Jonathan Pierce, Manager"), and a leading honorific ("Dr.") is stripped,
+ * leaving the name to test.
  */
 function isPersonalName(s: string): boolean {
-  const t = s.replace(/,.*$/, "").trim();
+  const t = s
+    .replace(/,.*$/, "")
+    .trim()
+    .replace(HONORIFIC_PREFIX, "");
   if (NON_NAME_TOKEN.test(t)) return false;
   return /^[A-Z][a-z]+(?:\s+[A-Z][a-z.'’-]+){1,3}$/.test(t);
 }
