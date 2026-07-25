@@ -9,9 +9,18 @@ const PROCEDURE = [
   // wrongly reported this element as present.
   [
     "defense control",
-    /(?:sole\s+|exclusive\s+)?control\s+of\s+the\s+(?:defense|claim|litigation|proceeding|action)|control\s+the\s+defense|(?:assume|conduct)\s+(?:the\s+)?defense/i,
+    // "duty to defend" and "defend … with counsel …" articulate which party
+    // conducts the defense just as much as "control of the defense" — an
+    // indemnity that spells out the defense obligation and counsel selection
+    // was wrongly reported as missing this element.
+    /(?:sole\s+|exclusive\s+)?control\s+(?:of|over)\s+the\s+(?:defense|claim|litigation|proceeding|action)|control\s+the\s+defense|(?:assume|conduct)\s+(?:the\s+)?defense|duty\s+to\s+defend|defend[^.]{0,50}\bcounsel\b/i,
   ],
-  ["settlement consent", /settle(?:ment)?[\s\S]{0,40}consent/i],
+  // "shall not settle any claim in a manner that imposes liability on the
+  // indemnified party without the indemnified party's prior written consent"
+  // puts ~110 chars between "settle" and "consent". Bound the run to one
+  // sentence ([^.]) — where a co-occurring settle/consent is always the
+  // settlement-consent term — and accept either order.
+  ["settlement consent", /settl\w*[^.]{0,160}consent|consent[^.]{0,120}settl/i],
 ] as const;
 
 // An operative indemnity promise, as distinct from a passing reference. A
@@ -26,7 +35,7 @@ const OPERATIVE_INDEMNITY =
 /** RISK-011 — Indemnity procedure clause present (info). */
 export const rule: Rule = {
   id: "RISK-011",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Indemnity procedure clause",
   category: "risk-allocation",
   default_severity: "info",

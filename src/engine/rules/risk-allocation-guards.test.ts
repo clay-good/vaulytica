@@ -121,6 +121,31 @@ describe("RISK-011 — indemnity defense-control element", () => {
       ),
     ).toBeNull();
   });
+
+  it("recognizes 'sole control over the defense' and a verbose settlement-consent clause", () => {
+    // The MSA idiom: control "over" (not "of") the defense, and "shall not
+    // settle any claim in a manner that imposes liability … without … prior
+    // written consent" (~110 chars between "settle" and "consent").
+    expect(
+      R011.check(
+        doc(
+          "Indemnity",
+          "Vendor shall indemnify Customer. Customer shall give Vendor prompt written notice, give Vendor sole control over the defense and settlement, and Vendor shall not settle any claim in a manner that imposes liability on Customer without Customer's prior written consent.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("recognizes a 'duty to defend' articulation of defense control", () => {
+    expect(
+      R011.check(
+        doc(
+          "Indemnity",
+          "Indemnitor shall indemnify Indemnitee, who shall give prompt written notice. The Indemnitor's duty to defend arises upon tender, and the Indemnitor shall not settle any claim without the Indemnitee's prior written consent.",
+        ),
+      ),
+    ).toBeNull();
+  });
 });
 
 describe("RISK-014 — confidentiality term length", () => {
