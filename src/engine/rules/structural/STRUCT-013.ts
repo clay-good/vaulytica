@@ -60,7 +60,7 @@ const PATTERNS: Array<{ re: RegExp; label: string }> = [
 
 export const rule: Rule = {
   id: "STRUCT-013",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Unfilled template placeholders",
   category: "structural",
   default_severity: "critical",
@@ -161,7 +161,14 @@ function isBareNameSignature(text: string, partyNames: string[]): boolean {
   if (STANDALONE_SIGNATORY_ROLE.test(after)) return true;
   const lower = after.toLowerCase();
   return partyNames.some((n) => {
-    const nl = n.toLowerCase();
+    // A party is often extracted with its role parenthetical attached —
+    // 'Karen Whitfield (the "Petitioner")'. The printed signature line is the
+    // bare name, so compare against the name before the "(".
+    const nl = n
+      .toLowerCase()
+      .replace(/\s*\(.*$/, "")
+      .trim();
+    if (nl.length < 4) return false;
     return lower === nl || lower.startsWith(`${nl},`) || lower.startsWith(`${nl} `);
   });
 }

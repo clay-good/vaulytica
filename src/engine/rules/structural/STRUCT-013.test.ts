@@ -112,6 +112,21 @@ describe("STRUCT-013 — unfilled template placeholders", () => {
     ).toBeNull();
   });
 
+  it("silent on a bare-name line when the party carries a role parenthetical", () => {
+    // 'Karen Whitfield (the "Petitioner")' is extracted with the parenthetical
+    // attached; the printed signature is the bare name.
+    expect(
+      STRUCT_013.check(
+        buildContext([
+          "Marital Settlement Agreement",
+          'This Agreement is between Karen Whitfield (the "Petitioner") and David Whitfield (the "Respondent").',
+          "_______________________________ Karen Whitfield, Petitioner",
+          "_______________________________ David Whitfield, Respondent",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
   it("silent on a standalone 'Notary Public' signature line", () => {
     expect(
       STRUCT_013.check(

@@ -54,7 +54,14 @@ function isBareNameSignatureLine(text: string, partyNames: string[]): boolean {
   if (!after) return false;
   const lower = after.toLowerCase();
   return partyNames.some((n) => {
-    const nl = n.toLowerCase();
+    // Strip a role parenthetical the extractor may attach —
+    // 'Karen Whitfield (the "Petitioner")' — before comparing to the printed
+    // signature name.
+    const nl = n
+      .toLowerCase()
+      .replace(/\s*\(.*$/, "")
+      .trim();
+    if (nl.length < 4) return false;
     return lower === nl || lower.startsWith(`${nl},`) || lower.startsWith(`${nl} `);
   });
 }
@@ -109,7 +116,7 @@ const PUBLICATION_STAMP =
  */
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.10.0",
+  version: "1.11.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",
