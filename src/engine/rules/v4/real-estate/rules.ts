@@ -226,6 +226,7 @@ const NET_LEASE_RULES: Rule[] = [
 const PSA_RULES: Rule[] = [
   presence({
     id: "RE-009",
+    version: "1.1.0",
     name: "Property description / legal description",
     description: "PSA must include a legal description of the property (Statute of Frauds).",
     citation: statuteOfFrauds(),
@@ -239,6 +240,16 @@ const PSA_RULES: Rule[] = [
       /legal\s+description/i,
       /(real\s+property|the\s+property)\s+(described\s+(in|on)|located\s+at)/i,
       /exhibit\s+[a-z].{0,40}legal\s+description/is,
+      // The practice baseline this rule's own explanation endorses: the
+      // property is identified in the body and its legal description lives on
+      // an exhibit — "the real property commonly known as <address> … more
+      // particularly described on Exhibit A". The adjacency patterns above
+      // miss the standard "commonly known as <address> … described on Exhibit"
+      // form because "commonly known as" / "more particularly" sit between the
+      // property noun and "described". Anchored on a property noun in the same
+      // sentence so a "Permitted Exceptions described on Exhibit B" reference
+      // does not satisfy it.
+      /\b(?:real\s+property|the\s+property|premises|land)\b[^.]{0,200}?\bdescribed\s+(?:in|on)\s+(?:the\s+)?exhibit\s+[a-z]/i,
     ],
   }),
   presence({
