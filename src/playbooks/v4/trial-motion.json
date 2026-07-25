@@ -32,6 +32,60 @@
   "expected_clauses": [],
   "expected_defined_terms": [],
   "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-002": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "CHOICE-004": {
+      "skip": true
+    },
+    "CHOICE-005": {
+      "skip": true
+    },
+    "CHOICE-006": {
+      "skip": true
+    },
+    "CHOICE-007": {
+      "skip": true
+    },
+    "CHOICE-008": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "FIN-006": {
+      "skip": true
+    },
+    "FIN-007": {
+      "skip": true
+    },
+    "FIN-008": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "IPDATA-002": {
+      "skip": true
+    },
+    "IPDATA-003": {
+      "skip": true
+    },
+    "IPDATA-004": {
+      "skip": true
+    },
+    "IPDATA-005": {
+      "skip": true
+    },
+    "IPDATA-006": {
+      "skip": true
+    },
     "OBLI-001": {
       "skip": true
     },
@@ -48,6 +102,18 @@
       "skip": true
     },
     "OBLI-006": {
+      "skip": true
+    },
+    "PERS-001": {
+      "skip": true
+    },
+    "PERS-002": {
+      "skip": true
+    },
+    "PERS-003": {
+      "skip": true
+    },
+    "PERS-004": {
       "skip": true
     },
     "RISK-001": {
@@ -89,28 +155,13 @@
     "RISK-014": {
       "skip": true
     },
-    "CHOICE-001": {
+    "STRUCT-001": {
       "skip": true
     },
-    "CHOICE-002": {
+    "STRUCT-002": {
       "skip": true
     },
-    "CHOICE-003": {
-      "skip": true
-    },
-    "CHOICE-004": {
-      "skip": true
-    },
-    "CHOICE-005": {
-      "skip": true
-    },
-    "CHOICE-006": {
-      "skip": true
-    },
-    "CHOICE-007": {
-      "skip": true
-    },
-    "CHOICE-008": {
+    "TEMP-002": {
       "skip": true
     },
     "TERM-001": {
@@ -135,48 +186,6 @@
       "skip": true
     },
     "TERM-008": {
-      "skip": true
-    },
-    "IPDATA-001": {
-      "skip": true
-    },
-    "IPDATA-002": {
-      "skip": true
-    },
-    "IPDATA-003": {
-      "skip": true
-    },
-    "IPDATA-004": {
-      "skip": true
-    },
-    "IPDATA-005": {
-      "skip": true
-    },
-    "IPDATA-006": {
-      "skip": true
-    },
-    "PERS-001": {
-      "skip": true
-    },
-    "PERS-002": {
-      "skip": true
-    },
-    "PERS-003": {
-      "skip": true
-    },
-    "PERS-004": {
-      "skip": true
-    },
-    "FIN-005": {
-      "skip": true
-    },
-    "FIN-006": {
-      "skip": true
-    },
-    "FIN-007": {
-      "skip": true
-    },
-    "FIN-008": {
       "skip": true
     }
   },
