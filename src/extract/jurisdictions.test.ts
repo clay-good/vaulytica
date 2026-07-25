@@ -378,4 +378,30 @@ describe("interpretation-form governing law", () => {
       "California",
     );
   });
+
+  it("captures more governing-law lead-ins (subject to / determined under / interpreted / X law governs)", () => {
+    const gov = (t: string) =>
+      extractJurisdictions(buildTree(["Governing Law", t]))
+        .filter((r) => r.clause_kind === "governing-law")
+        .map((r) => r.raw_text);
+    expect(gov("This Agreement shall be subject to the laws of the Commonwealth of Massachusetts.")).toContain(
+      "Massachusetts",
+    );
+    expect(gov("The rights of the parties shall be determined under the laws of Illinois.")).toContain(
+      "Illinois",
+    );
+    expect(gov("This Agreement shall be interpreted in accordance with California law.")).toContain(
+      "California",
+    );
+    expect(gov("The parties agree that Georgia law governs this Agreement.")).toContain("Georgia");
+  });
+
+  it("does not read 'applicable law governs' or 'subject to the terms' as a governing law", () => {
+    const gov = (t: string) =>
+      extractJurisdictions(buildTree(["Governing Law", t])).filter(
+        (r) => r.clause_kind === "governing-law",
+      );
+    expect(gov("This Agreement shall be governed by applicable law.")).toHaveLength(0);
+    expect(gov("The Services are subject to the terms of the Order Form.")).toHaveLength(0);
+  });
 });

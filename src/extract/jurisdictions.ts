@@ -56,7 +56,7 @@ const JURISDICTION_AFTER_LOCALITY = new RegExp(
  */
 const SOVEREIGN_PREFIX = String.raw`the\s+(?:State|Commonwealth|Republic|Kingdom|Province)\s+of\s+|the\s+`;
 const GOV_LAW = new RegExp(
-  String.raw`\b((?:governed\s+by|(?:interpreted|construed)\s+(?:under|in\s+accordance\s+with))\s*,?\s*(?:and\s+construed\s+(?:in\s+accordance\s+with\s*,?\s*)?)?the\s+laws?\s+of\s+(?:${SOVEREIGN_PREFIX})?([A-Z][A-Za-z\s&-]+?))(?=[.,;)]|\s+(?:without|excluding|and|regardless)|$)`,
+  String.raw`\b((?:governed\s+by|(?:interpreted|construed)\s+(?:under|in\s+accordance\s+with)|subject\s+to|determined\s+(?:under|by|in\s+accordance\s+with))\s*,?\s*(?:and\s+construed\s+(?:in\s+accordance\s+with\s*,?\s*)?)?the\s+laws?\s+of\s+(?:${SOVEREIGN_PREFIX})?([A-Z][A-Za-z\s&-]+?))(?=[.,;)]|\s+(?:without|excluding|and|regardless)|$)`,
   "gi",
 );
 
@@ -82,7 +82,14 @@ const GOV_LAW_IS = new RegExp(
  * "federal law", "such law").
  */
 const GOV_LAW_ADJECTIVAL = new RegExp(
-  String.raw`\b(?:governed\s+by|construed\s+(?:under|in\s+accordance\s+with))\s+(?:${SOVEREIGN_PREFIX})?([A-Z][A-Za-z&-]+(?:\s+[A-Z][A-Za-z&-]+){0,2})\s+law\b`,
+  String.raw`\b(?:governed\s+by|(?:construed|interpreted)\s+(?:under|in\s+accordance\s+with))\s+(?:${SOVEREIGN_PREFIX})?([A-Z][A-Za-z&-]+(?:\s+[A-Z][A-Za-z&-]+){0,2})\s+law\b`,
+  "gi",
+);
+// The subject-first adjectival form: "Georgia law governs this Agreement",
+// "California law shall apply". Gated to a recognized US state or country so
+// "applicable/federal/such law governs" does not register.
+const GOV_LAW_ADJ_SUBJECT = new RegExp(
+  String.raw`\b(${US_STATE_PATTERN}|${COUNTRY_PATTERN})\s+law\s+(?:governs?|applies|controls?|shall\s+(?:govern|apply|control))\b`,
   "gi",
 );
 
@@ -296,6 +303,19 @@ export function extractJurisdictions(
       });
     });
     runRegex(GOV_LAW_SUBJECT_FIRST, ctx.text, (m) => {
+      const raw = (m[1] ?? "").trim();
+      if (!/^[A-Z]/.test(raw)) return;
+      if (isNegatedGovLaw(ctx.text, m.index)) return;
+      if (seenGovLaw.has(raw.toLowerCase())) return;
+      seenGovLaw.add(raw.toLowerCase());
+      out.push({
+        clause_kind: "governing-law",
+        jurisdiction_id: lookup(raw),
+        raw_text: raw,
+        position: posInParagraph(ctx, m.index, m.index + m[0].length),
+      });
+    });
+    runRegex(GOV_LAW_ADJ_SUBJECT, ctx.text, (m) => {
       const raw = (m[1] ?? "").trim();
       if (!/^[A-Z]/.test(raw)) return;
       if (isNegatedGovLaw(ctx.text, m.index)) return;
