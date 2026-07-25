@@ -199,6 +199,39 @@ describe("MNA-042 — the no-admission materiality disclaimer (v1.1.0)", () => {
     const run = await runEngine({ rules: M_AND_A_RULES, ctx, source_file: SRC });
     expect(run.findings.map((f) => f.rule_id)).toContain("MNA-042");
   });
+
+  it("reads the verbose 'shall not be deemed to be an admission … that … is material' form", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Materiality",
+        "The inclusion of any item in these Schedules shall not be deemed to be an admission or acknowledgment that such item is material to the Seller or falls within any dollar threshold set forth in the Purchase Agreement.",
+      ]),
+      DS_PB_LOCAL,
+    );
+    const run = await runEngine({ rules: M_AND_A_RULES, ctx, source_file: SRC });
+    expect(run.findings.map((f) => f.rule_id)).not.toContain("MNA-042");
+  });
+
+  it("MNA-044 reads a 'supplement or amend these Schedules' update mechanic", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Update Mechanic",
+        "The Seller may supplement or amend these Schedules by written notice to the Buyer prior to the Closing.",
+      ]),
+      DS_PB_LOCAL,
+    );
+    const run = await runEngine({ rules: M_AND_A_RULES, ctx, source_file: SRC });
+    expect(run.findings.map((f) => f.rule_id)).not.toContain("MNA-044");
+    const noUpdate = withPb(
+      buildContext(["Schedules", "The following contracts are disclosed."]),
+      DS_PB_LOCAL,
+    );
+    expect(
+      (await runEngine({ rules: M_AND_A_RULES, ctx: noUpdate, source_file: SRC })).findings.map(
+        (f) => f.rule_id,
+      ),
+    ).toContain("MNA-044");
+  });
 });
 
 describe("MNA-040 — blanket data-room deemed-disclosure in its real wording (v1.1.0)", () => {

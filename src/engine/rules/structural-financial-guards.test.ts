@@ -214,6 +214,17 @@ describe("STRUCT-003 — a delivery instrument executes by delivery (v1.4.0)", (
     );
     expect(STRUCT003.check(ctx)).toBeNull();
   });
+
+  it("accepts disclosure schedules delivered 'in connection with' an SPA (v1.12.0)", () => {
+    const ctx = buildContext(
+      [
+        "Disclosure Schedules",
+        "These Disclosure Schedules are delivered by Cascade Holdings, Inc. in connection with the Stock Purchase Agreement dated March 1, 2029.",
+      ],
+      ["Litigation", "The matters set forth below are disclosed in response to Section 3.12."],
+    );
+    expect(STRUCT003.check(ctx)).toBeNull();
+  });
 });
 
 describe("STRUCT-018 — decimal schedule designators (v1.1.0)", () => {

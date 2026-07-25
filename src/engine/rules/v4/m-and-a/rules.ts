@@ -884,6 +884,10 @@ const DISCLOSURE_SCHEDULE_RULES: Rule[] = [
       // ADMISSION that such item is MATERIAL", "no disclosure shall be
       // deemed to ENLARGE or ESTABLISH any STANDARD OF MATERIALITY".
       /not\s+an\s+admission\s+that[^.]{0,80}\bmaterial/is,
+      // The same disclaimer with the standard verbiage between "not" and the
+      // admission — "shall not be deemed to be an admission or acknowledgment
+      // that such item is material … or falls within any dollar threshold".
+      /\bnot\b[^.]{0,60}?(?:admission|acknowledg\w+)[^.]{0,80}?\b(?:material|threshold)/is,
       /standard\s+of\s+materiality/i,
       /deemed\s+to\s+(?:enlarge|establish|expand)[^.]{0,60}(?:materiality|threshold)/is,
     ],
@@ -904,6 +908,7 @@ const DISCLOSURE_SCHEDULE_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-044",
+    version: "1.1.0",
     name: "Update / supplement mechanic",
     description:
       "SPA / schedules should address whether (and how) schedules may be updated between signing and closing.",
@@ -915,7 +920,14 @@ const DISCLOSURE_SCHEDULE_RULES: Rule[] = [
       "ABA studies show roughly half of SPAs allow updates between signing and closing; the other half do not. Silence creates litigation risk.",
     recommendation:
       "Add a 'Supplemental Disclosure' section specifying whether updates are permitted and their effect on closing conditions and indemnification.",
-    present_patterns: [/supplement(al)?\s+disclosure/i, /update.{0,40}(schedule|disclosure)/is],
+    present_patterns: [
+      /supplement(al)?\s+disclosure/i,
+      /update.{0,40}(schedule|disclosure)/is,
+      // The mechanic is usually stated as the RIGHT to "supplement or amend
+      // (these) Schedules" before Closing, not the noun "supplemental
+      // disclosure".
+      /(?:supplement|amend|update)[^.]{0,40}(?:these\s+|the\s+)?(?:schedule|disclosure)/is,
+    ],
     default_severity: "warning",
   }),
   presence({

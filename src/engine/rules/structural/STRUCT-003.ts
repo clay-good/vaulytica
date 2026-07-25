@@ -85,7 +85,7 @@ const DATED_ADOPTION =
 // 'Seller') pursuant to …" carries an entity abbreviation) and blocks only
 // semicolons, so the recital's own punctuation cannot defeat it.
 const DELIVERY_RECITAL =
-  /\bare\s+delivered\s+by\b[^;]{0,120}?\bpursuant\s+to\b|\bis\s+delivered\s+pursuant\s+to\b/i;
+  /\bare\s+delivered\s+by\b[^;]{0,120}?\b(?:pursuant\s+to|in\s+connection\s+with)\b|\bis\s+delivered\s+(?:pursuant\s+to|in\s+connection\s+with)\b/i;
 
 // A PUBLISHED notice (cookie notice, privacy policy, terms page) is issued,
 // not signed — its "Last updated: <date>" line is the publication stamp that
@@ -116,7 +116,7 @@ const PUBLICATION_STAMP =
  */
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.11.0",
+  version: "1.12.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",
