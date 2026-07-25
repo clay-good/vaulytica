@@ -464,8 +464,13 @@ const COPYRIGHT_LICENSE_RULES: Rule[] = [
     recommendation:
       "Add 'Licensed Works' (or Schedule A) listing each work, its registration number (if any), and the medium / format covered.",
     present_patterns: [
-      /(licensed\s+works?|copyrighted\s+works?|schedule\s+a)/i,
+      /(licensed\s+works?|copyrighted\s+works?|schedule\s+[a-z]\b|exhibit\s+[a-z]\b)/i,
       /(reg\.?\s*no|registration\s+number|tx|va|pa|sr)\s*\d/i,
+      // The licensed subject is as often defined as "the Work(s)" and identified
+      // by title — '"Work" means the illustrated book titled "…", as described
+      // on Exhibit A' — as it is called "licensed works" verbatim. This rule is
+      // copyright-scoped, so a defined "Work" IS the identification of the work.
+      /["“']works?["”']\s+means\b/i,
     ],
   }),
   presence({

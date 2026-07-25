@@ -22,9 +22,8 @@
     <meta name="apple-mobile-web-app-title" content="Vaulytica" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="theme-color" content="#07090D" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#FAF8F3" media="(prefers-color-scheme: light)" />
-    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#0E1119" />
+    <meta name="color-scheme" content="dark" />
     <link rel="canonical" href="https://vaulytica.com/" />
     <link rel="alternate" hreflang="en" href="https://vaulytica.com/" />
     <link rel="alternate" hreflang="x-default" href="https://vaulytica.com/" />
@@ -66,22 +65,6 @@
     />
     <meta name="twitter:image" content="https://vaulytica.com/og-image.png" />
     <meta name="twitter:image:alt" content="Vaulytica — deterministic, free contract review utility" />
-
-    <!-- Flash-of-unstyled-content guard: apply the saved theme before paint. -->
-    <script>
-      (function () {
-        try {
-          var t = localStorage.getItem("vaulytica-theme");
-          if (t === "light" || t === "dark") {
-            document.documentElement.setAttribute("data-theme", t);
-          } else if (window.matchMedia("(prefers-color-scheme: light)").matches) {
-            document.documentElement.setAttribute("data-theme", "light");
-          }
-        } catch (e) {
-          /* localStorage may be unavailable; default to dark. */
-        }
-      })();
-    </script>
 
     <style>
       :root {
