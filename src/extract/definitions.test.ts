@@ -339,6 +339,20 @@ describe("the double-alias definition form", () => {
       "Protected Health Information",
     );
   });
+
+  it("does not report the unused alias when only the SHORT alias is used", () => {
+    // A BAA defines '"Protected Health Information" or "PHI" means …' and then
+    // uses only "PHI" — a use of either alias satisfies both.
+    const map = extractDefinitions(
+      buildTree([
+        "Definitions",
+        '"Protected Health Information" or "PHI" means individually identifiable health information.',
+        "Business Associate shall safeguard PHI and shall not disclose PHI except as permitted.",
+      ]),
+    );
+    expect(map.unused_terms).not.toContain("Protected Health Information");
+    expect(map.unused_terms).not.toContain("PHI");
+  });
 });
 
 describe("street addresses are not defined terms", () => {

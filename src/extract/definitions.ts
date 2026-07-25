@@ -453,8 +453,18 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
   // 2026" states its fact whether or not the body ever repeats the label, so
   // its non-reuse is not the template-leftover signal unused_terms exists to
   // report.
+  // A double-alias definition ('"Protected Health Information" or "PHI" means
+  // …') registers both names at the SAME defined-at span, and the document then
+  // uses only one of them ("PHI"). A use of either alias satisfies both, so the
+  // unused one is not a template leftover.
+  const usedAliasSpans = new Set(
+    [...definitions.values()]
+      .filter((e) => e.used_at.length > 0)
+      .map((e) => `${e.defined_at.start}:${e.defined_at.end}`),
+  );
   const unused_terms = [...definitions.values()]
     .filter((e) => e.used_at.length === 0 && e.form !== "field-label")
+    .filter((e) => !usedAliasSpans.has(`${e.defined_at.start}:${e.defined_at.end}`))
     .map((e) => e.term)
     .sort();
 
