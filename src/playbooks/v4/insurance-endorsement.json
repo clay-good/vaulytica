@@ -4,7 +4,11 @@
   "name": "Insurance Endorsement Review",
   "description": "Insurance endorsement review (ISO / AAIS forms + state filings). Selects the §6.K ruleset (INS-007..INS-012).",
   "match_features": {
-    "title_keywords": ["endorsement", "policy endorsement", "amendatory endorsement"],
+    "title_keywords": [
+      "endorsement",
+      "policy endorsement",
+      "amendatory endorsement"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "this endorsement modifies",
@@ -14,16 +18,58 @@
       "additional insured",
       "waiver of subrogation"
     ],
-    "negative_features": ["declarations", "indemnification agreement", "hold harmless"]
+    "negative_features": [
+      "declarations",
+      "indemnification agreement",
+      "hold harmless"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Endorsement", "Form Number"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "Endorsement",
+    "Form Number"
+  ],
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "ISO-AAIS-STATE-FILINGS",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["insurance-policy-summary"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "insurance-policy-summary"
+  ],
   "compliance_matrix_columns": [
     "Form number + edition",
     "Coverage being modified",
