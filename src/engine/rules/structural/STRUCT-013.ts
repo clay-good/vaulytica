@@ -60,7 +60,7 @@ const PATTERNS: Array<{ re: RegExp; label: string }> = [
 
 export const rule: Rule = {
   id: "STRUCT-013",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Unfilled template placeholders",
   category: "structural",
   default_severity: "critical",
@@ -138,13 +138,13 @@ export const rule: Rule = {
  * run + name + office keeps this off an inline prose blank.
  */
 const SIGNATURE_LINE_BY_OFFICE =
-  /(?:_{4,}|\/s\/)\s*(?:\/s\/\s*)?[A-Z][A-Za-z.'’-]+(?:\s+[A-Z][A-Za-z.'’-]+){0,3},?\s+(?:Director|President|Vice\s+President|Secretary|Treasurer|Chief\s+[A-Za-z]+\s+Officer|CEO|CFO|COO|CTO|Manager|Managing\s+Member|Member|Trustee|General\s+Partner|Partner|(?:Sole\s+)?Incorporator|Testat(?:or|rix)|Principal|Execut(?:or|rix)|Personal\s+Representative|Attorney-in-Fact|Authorized\s+Signatory|Its\b)\b/;
+  /(?:_{4,}|\/s\/)\s*(?:\/s\/\s*)?[A-Z][A-Za-z.'’-]+(?:\s+[A-Z][A-Za-z.'’-]+){0,3},?\s+(?:Director|President|Vice\s+President|Secretary|Treasurer|Chief\s+[A-Za-z]+\s+Officer|CEO|CFO|COO|CTO|Manager|Managing\s+Member|Member|Trustee|General\s+Partner|Partner|(?:Sole\s+)?Incorporator|Testat(?:or|rix)|Principal|Execut(?:or|rix)|Personal\s+Representative|Attorney-in-Fact|Patient|Participant|Authorized\s+Signatory|Its\b)\b/;
 
 // A signatory office that stands alone on a signature line, no personal name
 // attached — "____ Notary Public", "____ Witness". These are signature
 // affordances in wills, affidavits, and acknowledgments.
 const STANDALONE_SIGNATORY_ROLE =
-  /\b(?:Notary\s+Public|Notary|Witness|Affiant|Declarant|Grantor|Settlor|Trustee|Testat(?:or|rix)|Execut(?:or|rix)|Personal\s+Representative|Attorney-in-Fact)\b/i;
+  /\b(?:Notary\s+Public|Notary|Witness|Affiant|Declarant|Grantor|Settlor|Trustee|Testat(?:or|rix)|Execut(?:or|rix)|Personal\s+Representative|Attorney-in-Fact|Patient|Participant)\b/i;
 
 /**
  * True if an underscore-line paragraph is a bare-name signature line: an

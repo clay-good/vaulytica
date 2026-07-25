@@ -104,6 +104,14 @@ describe("STRUCT-013 — unfilled template placeholders", () => {
     ).toBeNull();
   });
 
+  it("silent on a medical-consent signatory line ('____ Name, Patient')", () => {
+    expect(
+      STRUCT_013.check(
+        buildContext(["Authorization", "_______________________________ Jordan Alvarez, Patient"]),
+      ),
+    ).toBeNull();
+  });
+
   it("silent on a standalone 'Notary Public' signature line", () => {
     expect(
       STRUCT_013.check(

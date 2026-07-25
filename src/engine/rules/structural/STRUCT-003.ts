@@ -34,11 +34,11 @@ const CONFORMED_SIG = /^\s*\/s\/\s+\S/m;
 // false positive). "/s/" is already covered by CONFORMED_SIG, so this matches
 // only the underscore form to avoid double-counting the same line.
 const OFFICE_SIG_LINE =
-  /_{4,}\s*[A-Z][A-Za-z.'’-]+(?:\s+[A-Z][A-Za-z.'’-]+){0,3},?\s+(?:Director|President|Vice\s+President|Secretary|Treasurer|Chief\s+[A-Za-z]+\s+Officer|CEO|CFO|COO|CTO|Manager|Managing\s+Member|Member|Trustee|General\s+Partner|Partner|(?:Sole\s+)?Incorporator|Testat(?:or|rix)|Principal|Execut(?:or|rix)|Personal\s+Representative|Attorney-in-Fact|Authorized\s+Signatory|Its\b)\b/g;
+  /_{4,}\s*[A-Z][A-Za-z.'’-]+(?:\s+[A-Z][A-Za-z.'’-]+){0,3},?\s+(?:Director|President|Vice\s+President|Secretary|Treasurer|Chief\s+[A-Za-z]+\s+Officer|CEO|CFO|COO|CTO|Manager|Managing\s+Member|Member|Trustee|General\s+Partner|Partner|(?:Sole\s+)?Incorporator|Testat(?:or|rix)|Principal|Execut(?:or|rix)|Personal\s+Representative|Attorney-in-Fact|Patient|Participant|Authorized\s+Signatory|Its\b)\b/g;
 // A standalone signatory office on a signature line — "____ Notary Public",
 // "____ Witness", "____ Testator" — with no personal name attached.
 const STANDALONE_SIGNATORY_ROLE =
-  /_{4,}\s*(?:\/s\/\s*)?(?:Notary\s+Public|Notary|Witness|Affiant|Declarant|Testat(?:or|rix)|Execut(?:or|rix)|Personal\s+Representative|Attorney-in-Fact)\b/i;
+  /_{4,}\s*(?:\/s\/\s*)?(?:Notary\s+Public|Notary|Witness|Affiant|Declarant|Testat(?:or|rix)|Execut(?:or|rix)|Personal\s+Representative|Attorney-in-Fact|Patient|Participant)\b/i;
 
 /**
  * True if a paragraph is a bare-name signature line: an underscore rule
@@ -109,7 +109,7 @@ const PUBLICATION_STAMP =
  */
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.9.0",
+  version: "1.10.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",
