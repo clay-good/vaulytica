@@ -112,8 +112,14 @@ const RANGE_RELATIVE = new RegExp(
   "gi",
 );
 
+// After the unit, tolerate a possessive apostrophe ("30 days' notice") and an
+// intervening "(prior) (written) notice" phrase before the anchor connector, so
+// an ANCHORED deadline stated as a notice period — "60 days' written notice
+// before the Expiration Date" — still resolves to its named anchor. A bare
+// notice period with no anchor ("90 days' prior written notice.") still yields
+// nothing, since the connector + capitalized anchor never follow.
 const RELATIVE = new RegExp(
-  String.raw`\b(?:within\s+)?(\w{1,40}(?:[-\s]\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(day|days|week|weeks|month|months|year|years|business\s+day|business\s+days)\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z][\w\s]{2,40}?)(?=[.,;)]|$)`,
+  String.raw`\b(?:within\s+)?(\w{1,40}(?:[-\s]\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(day|days|week|weeks|month|months|year|years|business\s+day|business\s+days)['’]?(?:\s+(?:prior\s+)?(?:written\s+)?notice)?\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z][\w\s]{2,40}?)(?=[.,;)]|$)`,
   "gi",
 );
 
