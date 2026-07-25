@@ -173,6 +173,23 @@ describe("parenthetical definitions", () => {
   });
 });
 
+describe("signature-block names are not undefined defined-terms", () => {
+  it("does not flag a name+label bled across a joined 'Name:/Title:' block", () => {
+    // Ingest joins the execution-block lines into one paragraph, so
+    // "Name: Eleanor Vance Title: Chief Executive Officer" swept "Eleanor
+    // Vance Title" into a phantom Title-Case term.
+    const map = extractDefinitions(
+      buildTree([
+        "Signatures",
+        "By: ____________________ Name: Eleanor Vance Title: Chief Executive Officer",
+      ]),
+    );
+    const terms = map.undefined_capitalized.map((e) => e.term);
+    expect(terms).not.toContain("Eleanor Vance Title");
+    expect(terms).not.toContain("Eleanor Vance");
+  });
+});
+
 describe("place names are not undefined defined-terms", () => {
   it("does not flag a US state named in a governing-law clause", () => {
     const map = extractDefinitions(

@@ -462,6 +462,9 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
     for (const re of [
       /\/s\/\s+([A-Z][\w'’-]+(?:\s+[A-Z][\w'’-]+){0,3})/g,
       /\b(?:personally\s+appeared|I,)\s+([A-Z][\w'’-]+(?:\s+[A-Z][\w'’-]+){0,3})/g,
+      // The signatory name printed on a "Name:" line of an execution block —
+      // "Name: Eleanor Vance" — is a person, not a defined term.
+      /\bName:\s+([A-Z][\w'’-]+(?:\s+[A-Z][\w'’-]+){0,3})/g,
     ]) {
       re.lastIndex = 0;
       let pm: RegExpExecArray | null;
@@ -498,6 +501,12 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
     while ((m = TITLE_CASE_PHRASE.exec(ctx.text)) !== null) {
       const phrase = m[1]!;
       if (m.index < headingEnd) continue;
+      // A candidate whose final word is immediately followed by ":" has bled
+      // across a field boundary in a signature or cover block — ingest joins
+      // "Name: Eleanor Vance" and "Title: Chief Executive Officer" into one
+      // paragraph, so the phrase "Eleanor Vance Title" swept up the next label.
+      // The trailing ":" marks a label, not a defined-term use.
+      if (ctx.text[m.index + m[0].length] === ":") continue;
       // "in this Annual Report on Form 10-K" — a "this"-prefixed phrase is
       // the document referring to ITSELF (or to a companion instrument it
       // just named), not an undefined term.
