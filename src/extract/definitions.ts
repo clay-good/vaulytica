@@ -81,6 +81,25 @@ const DEFINITION_PAIR_PARENTHETICAL =
   /\((?:\s*(?:the|this|these|each|an?|collectively|together|individually|severally|hereinafter)[,]?\s+)*["\u201C]([A-Z][\w\s\-&/'\u2019.]{1,60}?)["\u201D][\s,]+and\b[^)]*?\b(?:collectively|together|individually|each|severally)\b[^)]*?\bthe\s+["\u201C]([A-Z][\w\s\-&/'\u2019.]{1,60}?)["\u201D]\s*\)/g;
 
 /**
+ * A single defined term that trails a PROSE preamble inside its parenthetical:
+ *
+ *   `the sum of $2,000,000 (together with all interest and earnings thereon,
+ *    the "Escrow Fund")`
+ *   `Meridian, Inc. (as defined in Section 3, the "Company")`
+ *
+ * DEFINITION_PARENTHETICAL only tolerates a whitelist of lead-in words before
+ * the quoted term, so an appositive that describes the term first ("together
+ * with all interest and earnings thereon") strands the definition and
+ * STRUCT-006 reports the term as undefined. The discriminating signal is a
+ * comma followed by `the`/`collectively the`/`together the` immediately before
+ * the quoted term at the close of the parenthetical; a quoted term merely USED
+ * mid-parenthetical (`(a sum equal to the "Base Amount")`) has no such comma
+ * and the `[^)"\u201C\u201D]*` run cannot cross another quote.
+ */
+const DEFINITION_TRAILING_PARENTHETICAL =
+  /\([^)"\u201C\u201D]*,\s+(?:collectively\s+|together\s+|individually\s+)?the\s+["\u201C]([A-Z][\w\s\-&/'\u2019.]{1,60}?)["\u201D]\s*\)/g;
+
+/**
  * Meaning-by-reference: a term (or a list of terms) is defined by pointing at
  * another instrument's definition rather than stating one — the dominant
  * convention in DPAs and BAAs importing a statute's vocabulary:
@@ -783,6 +802,28 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
     // the nearest clause break. That is what the drafter defined the term to
     // mean, and it keeps the entry's `definition` from swallowing the whole
     // paragraph.
+    const before = text.slice(Math.max(0, m.index - 160), m.index);
+    const definition =
+      before
+        .split(/[.;]\s/)
+        .pop()
+        ?.trim() ?? "";
+    out.push({
+      term,
+      definition,
+      defined_at: {
+        section_id: base.section_id,
+        paragraph_id: base.paragraph_id,
+        start: base.start + m.index,
+        end: base.start + m.index + m[0].length,
+      },
+      used_at: [],
+      form: "parenthetical",
+    });
+  }
+  DEFINITION_TRAILING_PARENTHETICAL.lastIndex = 0;
+  while ((m = DEFINITION_TRAILING_PARENTHETICAL.exec(text)) !== null) {
+    const term = m[1]!.trim();
     const before = text.slice(Math.max(0, m.index - 160), m.index);
     const definition =
       before

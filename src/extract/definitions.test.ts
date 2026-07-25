@@ -149,6 +149,28 @@ describe("parenthetical definitions", () => {
     );
     expect(map.entries.map((e) => e.term).sort()).toEqual(["Parties", "Party"]);
   });
+
+  it("registers a term that trails a prose appositive inside the parenthetical", () => {
+    // "$2,000,000 (together with all interest and earnings thereon, the
+    // 'Escrow Fund')" — the whitelist-only DEFINITION_PARENTHETICAL never saw
+    // this, so STRUCT-006 reported the escrow's central term as undefined.
+    const map = extractDefinitions(
+      buildTree([
+        "Escrow Fund",
+        'The Buyer shall deposit the sum of $2,000,000 (together with all interest and earnings thereon, the "Escrow Fund").',
+      ]),
+    );
+    expect(map.entries.map((e) => e.term)).toContain("Escrow Fund");
+  });
+
+  it("does not read a used-only quoted term without the appositive comma", () => {
+    // "(a sum equal to the 'Base Amount')" USES the term; there is no comma
+    // before 'the', so the trailing-parenthetical form must not register it.
+    const map = extractDefinitions(
+      buildTree(["Fees", 'The fee is a sum equal to the "Base Amount" set in Exhibit B.']),
+    );
+    expect(map.entries.map((e) => e.term)).not.toContain("Base Amount");
+  });
 });
 
 describe("place names are not undefined defined-terms", () => {
