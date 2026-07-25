@@ -331,4 +331,18 @@ describe("GOV-045 — 'unanimous written consent' is the unanimity statement (v1
       true,
     );
   });
+
+  it("GOV-046/048 (stockholder § 228 rules) do not fire on a board consent", async () => {
+    const board =
+      "The undersigned, being all of the members of the Board of Directors, acting by unanimous written consent pursuant to Section 141(f), adopt these resolutions. The Board finds it in the best interests of the Corporation and its stockholders.";
+    expect((await run1(board)).has("GOV-046")).toBe(false);
+    expect((await run1(board)).has("GOV-048")).toBe(false);
+  });
+
+  it("GOV-046/048 still fire on a stockholder consent missing the § 228 recital / notice", async () => {
+    const holders =
+      "The undersigned stockholders, acting by written consent of the stockholders pursuant to the General Corporation Law, hereby adopt the following resolution amending the Certificate of Incorporation.";
+    expect((await run1(holders)).has("GOV-046")).toBe(true);
+    expect((await run1(holders)).has("GOV-048")).toBe(true);
+  });
 });

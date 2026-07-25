@@ -45,6 +45,23 @@ const CATEGORY = "governance";
 
 const presence = (s: Omit<V4PresenceSpec, "category">): Rule =>
   buildV4PresenceRule({ ...s, category: CATEGORY });
+
+// GOV-046 and GOV-048 are DGCL § 228 STOCKHOLDER-consent rules, but the
+// written-consent playbook also covers BOARD consents (§ 141(f)). A § 228
+// vote-threshold recital and a § 228(e) notice to non-signing stockholders
+// have no application to a unanimous board consent — firing them there is a
+// false positive. Gate both to a document whose acting body is the
+// stockholders. "its stockholders" in a best-interests recital is not the
+// consenting body, so key on the consent / holders-of-shares context, not the
+// bare word "stockholders".
+const STOCKHOLDER_CONSENT_CONTEXT: readonly RegExp[] = [
+  /consent\s+(?:of|by)\s+(?:the\s+)?(?:stock|share)holders/is,
+  /(?:stock|share)holders['’]?\s+(?:written\s+)?consent/is,
+  /written\s+consent\s+of\s+(?:the\s+)?(?:stock|share)holders/is,
+  /undersigned[^.]{0,60}\b(?:stock|share)holders\b/is,
+  /holders?\s+of[^.]{0,40}(?:outstanding\s+)?(?:stock|shares)\b/is,
+  /\bsection\s+228\b/i,
+];
 const language = (s: Omit<V4LanguageSpec, "category">): Rule =>
   buildV4LanguageRule({ ...s, category: CATEGORY });
 const compound = (s: Omit<V4CompoundSpec, "category">): Rule =>
@@ -926,7 +943,9 @@ const WRITTEN_CONSENT_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-046",
+    version: "1.1.0",
     name: "Stockholder consent — minimum-vote threshold recital",
+    applicable_if: STOCKHOLDER_CONSENT_CONTEXT,
     description:
       "Stockholder consents must recite that the signing stockholders hold the requisite vote (DGCL § 228).",
     citation: dgcl("228"),
@@ -960,7 +979,9 @@ const WRITTEN_CONSENT_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-048",
+    version: "1.1.0",
     name: "Notice to non-signing stockholders (DGCL § 228(e))",
+    applicable_if: STOCKHOLDER_CONSENT_CONTEXT,
     description:
       "Less-than-unanimous stockholder consents require prompt notice to non-signing stockholders.",
     citation: dgcl("228(e)"),
