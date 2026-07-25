@@ -84,6 +84,31 @@ describe("v4 M&A — failure cases", () => {
     expect(run.findings.some((f) => f.rule_id === "MNA-001")).toBe(true);
   });
 
+  it("MNA-005 reads a verb-form transaction structure ('acquire all … capital stock')", async () => {
+    const has = withPb(
+      buildContext([
+        "Proposed Transaction",
+        "The Buyer proposes to acquire all of the issued and outstanding capital stock of the Company for $40,000,000.",
+      ]),
+      LOI_PB,
+    );
+    expect(
+      (await runEngine({ rules: M_AND_A_RULES, ctx: has, source_file: SRC })).findings.some(
+        (f) => f.rule_id === "MNA-005",
+      ),
+    ).toBe(false);
+    // "acquire new equipment" is not a transaction structure.
+    const noStructure = withPb(
+      buildContext(["Intent", "The parties shall negotiate a definitive agreement in good faith."]),
+      LOI_PB,
+    );
+    expect(
+      (await runEngine({ rules: M_AND_A_RULES, ctx: noStructure, source_file: SRC })).findings.some(
+        (f) => f.rule_id === "MNA-005",
+      ),
+    ).toBe(true);
+  });
+
   it("MNA-010 fires when SPA omits the operative purchase-and-sale clause", async () => {
     const ctx = withPb(
       buildContext([

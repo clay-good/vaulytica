@@ -131,6 +131,7 @@ const LOI_TERM_SHEET_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-005",
+    version: "1.1.0",
     name: "Transaction structure outline",
     description: "LOI should outline the transaction structure (stock vs asset vs merger).",
     citation: dealPoints("loi-structure", "LOI structure outline"),
@@ -144,6 +145,13 @@ const LOI_TERM_SHEET_RULES: Rule[] = [
     present_patterns: [
       /(stock|asset|merger|share)\s+(purchase|acquisition|transaction)/i,
       /reverse\s+(triangular\s+)?merger/i,
+      // The structure is as often stated as the operative verb + object —
+      // "acquire all of the outstanding capital stock", "the acquisition of
+      // all the equity", "purchase all of the assets" — not the "stock
+      // purchase" noun compound. (`acqui\w+` not `acquir\w+`: the noun
+      // "acquiSition" has no "r".) The object must be equity/stock/assets/
+      // business, so "acquire new equipment" does not match.
+      /\b(?:acqui\w+|purchas\w+|sell|sale\s+of)\b[^.]{0,60}\b(?:capital\s+stock|shares?|equity\s+interests?|equity|assets?|the\s+business|membership\s+interests?)\b/i,
     ],
   }),
   presence({
