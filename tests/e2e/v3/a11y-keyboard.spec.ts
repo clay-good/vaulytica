@@ -16,7 +16,6 @@
  *   - The dropzone itself has `role="button"` + `tabindex="0"` and
  *     activates on Enter and Space (`bindDropzone` listens for both).
  *   - The "Why this playbook?" disclosure is keyboard-operable.
- *   - The theme toggle is reachable and operable via keyboard.
  *
  * For the v3 surface, when the chip row and multi-doc cards land in
  * the DOM, the same set of assertions will apply — the spec already
@@ -59,17 +58,6 @@ test("dropzone is keyboard-reachable via its hidden file input", async ({ page }
   // Sanity: the input also carries an aria-label so screen readers
   // announce the file-type expectation.
   await expect(fileInput).toHaveAttribute("aria-label", /PDF|DOCX/i);
-});
-
-test("theme toggle is keyboard-operable", async ({ page }) => {
-  await page.goto("/");
-  const toggle = page.locator("#theme-toggle");
-  await expect(toggle).toBeVisible();
-  await toggle.focus();
-  const before = await page.evaluate(() => document.documentElement.getAttribute("data-theme"));
-  await page.keyboard.press("Enter");
-  const after = await page.evaluate(() => document.documentElement.getAttribute("data-theme"));
-  expect(after, "theme toggle must flip data-theme on Enter").not.toBe(before);
 });
 
 test("FAQ disclosures open/close with keyboard", async ({ page }) => {

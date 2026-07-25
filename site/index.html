@@ -67,49 +67,47 @@
     <meta name="twitter:image:alt" content="Vaulytica — deterministic, free contract review utility" />
 
     <style>
+      /* ------------------------------------------------------------------
+         Vaulytica "Ink & Brass" — a single committed dark theme. Deep
+         ink-navy surfaces, warm parchment text, a brass accent. The mood
+         is a law library at night: authoritative, calm, easy on the eyes.
+         No light variant, no toggle — one distinct identity.
+
+         Every text colour below is chosen to clear WCAG 2 AA (≥ 4.5:1) on
+         the surface it sits on. Verified contrasts (on --bg / --surface):
+           --body   11.0 / 10.1     --muted   6.2 / 5.7
+           --link   10.9 / 10.0     --heading 15.4 / 14.1
+         Ink text on the brass --accent (buttons, badges): 9.7:1.
+         ------------------------------------------------------------------ */
       :root {
-        --bg: #07090d;
-        --surface: #0d1117;
-        --heading: #f5f7fa;
-        --body: #c8ccd4;
-        --muted: #8b919c;
-        --line: #1f2530;
-        --accent: #00e5a8;
-        --accent-strong: #00e5a8;
-        /* Link-text colour (≥ 4.5:1 on this theme's surfaces). Dark: the
-           bright mint reads cleanly on near-black. */
-        --link: #00e5a8;
-        /* Error-text colour. The plain #b00020 dark-red is only ~2.7:1 on the
-           near-black bg (an invalid-playbook message would be unreadable), so
-           the dark theme uses a brighter red (≥ 6:1). Light keeps #b00020. */
+        --bg: #0e1119; /* ink navy — the page ground */
+        --surface: #161b26; /* raised panels, cards, nav */
+        --surface-2: #1c2230; /* deeper inset (chips, wells) */
+        --heading: #f3efe4; /* warm parchment */
+        --body: #c9c6bc; /* warm off-white body copy */
+        --muted: #97948b; /* warm slate-taupe for meta labels */
+        --line: #262c3a; /* hairline dividers / borders */
+        --accent: #e3b341; /* brass — the one signature colour */
+        --accent-strong: #f0c862; /* brighter brass for hovers/glints */
+        /* Link text: a bright brass that reads cleanly on the ink surfaces
+           (≥ 10:1). Button-styled links keep their class-level colour. */
+        --link: #e9c05a;
+        /* Error text: a brightened red so an invalid-playbook message stays
+           legible on the near-black ground (≥ 6:1). */
         --critical: #ff6b6b;
-        --shadow: 0 1px 0 rgba(255, 255, 255, 0.03), 0 8px 32px rgba(0, 0, 0, 0.4);
+        /* Brass glow used behind the hero + on focus states. */
+        --glow: rgba(227, 179, 65, 0.16);
+        --shadow: 0 1px 0 rgba(255, 255, 255, 0.03), 0 10px 40px rgba(0, 0, 0, 0.5);
         --radius: 14px;
         --max: 1100px;
         --pad: clamp(20px, 4vw, 40px);
         --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto,
           sans-serif;
+        /* Editorial serif for display headings + the wordmark — evokes the
+           printed page of a contract without any web-font network cost. */
+        --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia,
+          ui-serif, serif;
         --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      }
-      [data-theme="light"] {
-        --bg: #faf8f3;
-        --surface: #f3f1ea;
-        --heading: #0d1117;
-        --body: #3a3f4b;
-        /* #6b7280 was ~4.3:1 on the cream --bg/--surface — below WCAG 2 AA for
-           the many normal-size muted labels (sub-text, card meta, toggles).
-           #5b626f darkens just enough to clear 4.5:1 on both surfaces while
-           staying a muted slate. (Dark theme keeps its own lighter --muted.) */
-        --muted: #5b626f;
-        --line: #e6e4dd;
-        --accent: #00a883;
-        --accent-strong: #00a883;
-        /* Light: the brand mint is only ~2.7:1 on the cream surfaces, so link
-           text uses a darker on-brand teal (≥ 5:1). Buttons keep --accent. */
-        --link: #00735a;
-        /* Error text: #b00020 dark-red reads well (~6:1) on the cream. */
-        --critical: #b00020;
-        --shadow: 0 1px 0 rgba(0, 0, 0, 0.02), 0 8px 32px rgba(0, 0, 0, 0.08);
       }
       * {
         box-sizing: border-box;
@@ -149,15 +147,27 @@
         letter-spacing: -0.01em;
         margin: 0 0 0.5em;
       }
+      h1,
+      h2 {
+        /* Display headings set in the editorial serif — the "printed
+           contract" note that gives the page its legal character. */
+        font-family: var(--font-serif);
+        letter-spacing: -0.012em;
+      }
       h1 {
         font-size: clamp(34px, 6vw, 60px);
-        line-height: 1.05;
-        letter-spacing: -0.025em;
+        line-height: 1.06;
+        letter-spacing: -0.015em;
       }
       h2 {
         font-size: clamp(24px, 3.5vw, 36px);
         line-height: 1.15;
         margin-top: 0;
+      }
+      /* The brass "punch line" — the third hero line + any opted-in accent
+         text, matching the share-card treatment. */
+      .accent-line {
+        color: var(--accent);
       }
       h3 {
         font-size: 19px;
@@ -213,18 +223,23 @@
         display: inline-flex;
         align-items: baseline;
         gap: 5px;
+        font-family: var(--font-serif);
         font-weight: 600;
-        font-size: 24px;
+        font-size: 25px;
         color: var(--heading);
-        letter-spacing: -0.01em;
+        letter-spacing: 0;
       }
+      /* Brass "wax-seal" mark: a filled disc with an ink ring, echoing the
+         favicon. A tiny nod to a notary stamp. */
       .wordmark .dot {
-        width: 9px;
-        height: 9px;
+        width: 11px;
+        height: 11px;
         background: var(--accent);
+        border: 2px solid var(--bg);
+        box-shadow: 0 0 0 1.5px var(--accent);
         border-radius: 50%;
         align-self: center;
-        margin-right: 3px;
+        margin-right: 4px;
       }
       .nav-actions {
         display: flex;
@@ -257,17 +272,26 @@
         stroke-linecap: round;
         stroke-linejoin: round;
       }
-      [data-theme="dark"] .moon {
-        display: none;
-      }
-      [data-theme="light"] .sun {
-        display: none;
-      }
-
       /* Hero */
       .hero {
+        position: relative;
         padding-top: clamp(48px, 8vw, 88px);
         padding-bottom: clamp(40px, 6vw, 64px);
+      }
+      /* A soft brass aurora bleeding down from behind the headline. Purely
+         atmospheric — sits under the content and ignores the pointer. */
+      .hero::before {
+        content: "";
+        position: absolute;
+        top: -140px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: min(760px, 90vw);
+        height: 420px;
+        background: radial-gradient(60% 60% at 30% 0%, var(--glow), transparent 70%);
+        filter: blur(20px);
+        pointer-events: none;
+        z-index: -1;
       }
       .eyebrow {
         display: inline-block;
@@ -485,7 +509,7 @@
       }
       .btn-primary {
         background: var(--accent);
-        color: #02110a;
+        color: #0e1119;
         margin-top: 6px;
       }
       .btn-link {
@@ -1403,7 +1427,7 @@
         font-size: 17px;
       }
       .comparison-count--resolved strong {
-        color: #00a883;
+        color: #2ecc8f;
       }
       .comparison-count--introduced strong {
         color: #b00020;
@@ -1477,6 +1501,19 @@
         border: 1px solid var(--line);
         border-radius: var(--radius);
         padding: 22px;
+        transition:
+          border-color 160ms,
+          transform 160ms,
+          box-shadow 160ms;
+      }
+      @media (prefers-reduced-motion: no-preference) {
+        .card:hover {
+          transform: translateY(-2px);
+        }
+      }
+      .card:hover {
+        border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
       }
       .card h3 {
         margin: 0 0 10px;
@@ -1630,7 +1667,7 @@
           place-items: center;
           border-radius: 999px;
           background: var(--accent);
-          color: #02110a;
+          color: #0e1119;
           font-family: var(--font-mono);
           font-weight: 700;
           font-size: 14px;
@@ -1754,7 +1791,7 @@
         gap: 8px;
         padding: 12px 22px;
         background: var(--accent);
-        color: #04221a;
+        color: #0e1119;
         font-weight: 600;
         border-radius: 999px;
         text-decoration: none;
@@ -2077,21 +2114,6 @@
           <span class="dot" aria-hidden="true"></span>vaulytica
         </a>
         <nav class="nav-actions" aria-label="Primary">
-          <button
-            class="icon-btn"
-            id="theme-toggle"
-            type="button"
-            aria-label="Toggle color theme"
-            title="Toggle theme"
-          >
-            <svg class="sun" viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="12" cy="12" r="4"></circle>
-              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
-            </svg>
-            <svg class="moon" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-            </svg>
-          </button>
           <a
             class="icon-btn"
             href="https://github.com/clay-good/vaulytica"
@@ -2110,7 +2132,7 @@
     <main id="main" class="wrap">
       <!-- Hero -->
       <section class="hero" aria-labelledby="hero-h1">
-        <h1 id="hero-h1">Drop legal docs.<br />Get a cited report.<br />Nothing leaves your browser.</h1>
+        <h1 id="hero-h1">Drop legal docs.<br />Get a cited report.<br /><span class="accent-line">Nothing leaves your browser.</span></h1>
         <p class="lead">
           Vaulytica checks contracts the way a spell-checker checks prose — no chatbot, no
           guessing. It runs 1,000+ identical, deterministic checks against your document, the
@@ -2614,8 +2636,8 @@
       </section>
     </main>
 
-    <!-- Theme-toggle wiring lives in src/ui/main.ts so the CSP can stay
-         tight (script-src 'self') and not need an inline-script hash. -->
+    <!-- UI wiring lives in src/ui/main.ts so the CSP can stay tight
+         (script-src 'self') and not need an inline-script hash. -->
     <script type="module" src="../src/ui/main.ts"></script>
   </body>
 </html>

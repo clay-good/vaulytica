@@ -8,11 +8,3 @@ export { createProgressBar, type ProgressBar } from "./progress.js";
 export { createRuleTicker, type RuleTicker } from "./ticker.js";
 export { renderState, select, type DropzoneState } from "./states.js";
 export { registerServiceWorker } from "./sw-register.js";
-export {
-  applyTheme,
-  bindThemeToggle,
-  currentTheme,
-  persistTheme,
-  readPersistedTheme,
-  type Theme,
-} from "./theme.js";

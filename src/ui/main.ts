@@ -11,7 +11,6 @@
  * to drop.
  */
 
-import { bindThemeToggle, applyTheme, readPersistedTheme } from "./theme.js";
 import { bindDropzone } from "./dropzone.js";
 import { renderState, select, type DropzoneState } from "./states.js";
 import { createProgressBar } from "./progress.js";
@@ -55,9 +54,7 @@ function preloadPipeline(): void {
 }
 
 export async function bootUi(opts: {
-  root: HTMLElement;
   dropzone: HTMLElement;
-  themeButton?: HTMLElement;
   /**
    * Sibling element that hosts the folder-pick affordance. Kept outside
    * the dropzone so the dropzone (role="button") never contains a
@@ -84,10 +81,6 @@ export async function bootUi(opts: {
    */
   estatePanelContainer?: HTMLElement | null;
 }): Promise<void> {
-  const persisted = readPersistedTheme();
-  if (persisted) applyTheme(opts.root, persisted);
-  if (opts.themeButton) bindThemeToggle(opts.root, opts.themeButton);
-
   if (opts.playbookPanelContainer) {
     bindPlaybookPanel(opts.playbookPanelContainer, {
       onActiveChange: (playbook) => {
@@ -906,18 +899,14 @@ async function runBundleComparison(
 // Auto-boot on DOMContentLoaded when imported from index.html.
 if (typeof document !== "undefined") {
   const start = (): void => {
-    const root = document.documentElement;
     const dz = document.getElementById("dropzone");
-    const theme = document.getElementById("theme-toggle") ?? undefined;
     if (!dz) return;
     const folderHost = document.getElementById("dropzone-extras") ?? undefined;
     const playbookHost = document.getElementById("playbook-panel") ?? undefined;
     const regimeHost = document.getElementById("regime-panel") ?? undefined;
     const estateHost = document.getElementById("estate-panel") ?? undefined;
     void bootUi({
-      root,
       dropzone: dz,
-      themeButton: theme,
       folderPickContainer: folderHost,
       playbookPanelContainer: playbookHost,
       regimePanelContainer: regimeHost,

@@ -116,7 +116,7 @@ describe("service worker", () => {
       },
     });
     await installPromise;
-    const html = caches.get("vaulytica-v2-html");
+    const html = caches.get("vaulytica-v3-html");
     expect(html?.has("/")).toBe(true);
     expect(html?.has("/manifest.webmanifest")).toBe(true);
   });
@@ -152,7 +152,7 @@ describe("service worker", () => {
     // Seed the asset cache.
     const store = new Map<string, Response>();
     store.set("/assets/app.js", new Response("cached-app-js"));
-    caches.set("vaulytica-v2-assets", store);
+    caches.set("vaulytica-v3-assets", store);
 
     const ev = syntheticFetchEvent(new Request("http://localhost/assets/app.js"));
     dispatch("fetch", ev);
@@ -168,7 +168,7 @@ describe("service worker", () => {
     const { dispatch, caches } = loadSw({ fetchImpl });
     const store = new Map<string, Response>();
     store.set("/dkb/dkb-manifest.json", new Response('{"v":"old"}'));
-    caches.set("vaulytica-v2-dkb", store);
+    caches.set("vaulytica-v3-dkb", store);
     const ev = syntheticFetchEvent(new Request("http://localhost/dkb/dkb-manifest.json"));
     dispatch("fetch", ev);
     const res = await ev.respondedWith;

@@ -28,7 +28,7 @@ async function main(): Promise<void> {
       width: 512,
       height: 512,
       channels: 4,
-      background: { r: 7, g: 9, b: 13, alpha: 1 },
+      background: { r: 14, g: 17, b: 25, alpha: 1 },
     },
   })
     .composite([

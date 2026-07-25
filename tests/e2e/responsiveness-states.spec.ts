@@ -61,14 +61,10 @@ function renderStateHtml(state: DropzoneState): string {
   }
 }
 
-/** Themes: default (no attribute) is the dark palette; `light` opts in. */
-type Theme = "default" | "light";
-
-function pageHtml(state: DropzoneState, theme: Theme = "default"): string {
-  const themeAttr = theme === "light" ? ' data-theme="light"' : "";
+function pageHtml(state: DropzoneState): string {
   return [
     "<!doctype html>",
-    `<html lang="en"${themeAttr}><head><meta charset="utf-8">`,
+    `<html lang="en" data-theme="dark"><head><meta charset="utf-8">`,
     '<meta name="viewport" content="width=device-width, initial-scale=1">',
     "<title>Vaulytica report view</title>",
     `<style>${PAGE_CSS}</style></head><body>`,
@@ -592,24 +588,22 @@ test("download-status with a long unbreakable filename never overflows", async (
 });
 
 // The live `a11y-axe.spec.ts` scans only the empty + complete states; this
-// covers the rest of the union — and both palettes, since contrast depends on
-// the theme (the default dark and the opt-in light) — so a low-contrast colour
-// in the comparison / bundle / error states can no longer ship unnoticed.
-test.describe("every view-state has zero axe violations (WCAG 2 AA, both themes)", () => {
+// covers the rest of the union in the single committed dark ("Ink & Brass")
+// palette — so a low-contrast colour in the comparison / bundle / error states
+// can no longer ship unnoticed.
+test.describe("every view-state has zero axe violations (WCAG 2 AA)", () => {
   for (const { name, state } of STATES) {
-    for (const theme of ["default", "light"] as const) {
-      test(`${name} state is accessible (${theme} theme)`, async ({ page }) => {
-        await page.setContent(pageHtml(state, theme));
-        const results = await new AxeBuilder({ page })
-          .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
-          .analyze();
-        expect(
-          results.violations,
-          `axe found ${results.violations.length} violation(s) in ${name}/${theme}: ${results.violations
-            .map((v) => `${v.id} (${v.nodes.length}: ${v.nodes[0]?.target})`)
-            .join("; ")}`,
-        ).toEqual([]);
-      });
-    }
+    test(`${name} state is accessible`, async ({ page }) => {
+      await page.setContent(pageHtml(state));
+      const results = await new AxeBuilder({ page })
+        .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+        .analyze();
+      expect(
+        results.violations,
+        `axe found ${results.violations.length} violation(s) in ${name}: ${results.violations
+          .map((v) => `${v.id} (${v.nodes.length}: ${v.nodes[0]?.target})`)
+          .join("; ")}`,
+      ).toEqual([]);
+    });
   }
 });
