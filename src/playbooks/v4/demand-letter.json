@@ -4,7 +4,12 @@
   "name": "Demand Letter",
   "description": "Pre-suit demand letter (debt, wage, contract, PAGA) with FDCPA compliance and reservation of rights. Selects the §6.G settlement ruleset (SET-011..SET-015).",
   "match_features": {
-    "title_keywords": ["demand letter", "demand for payment", "notice of claim", "pre-suit demand"],
+    "title_keywords": [
+      "demand letter",
+      "demand for payment",
+      "notice of claim",
+      "pre-suit demand"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "demand",
@@ -13,15 +18,56 @@
       "without prejudice",
       "reservation of rights"
     ],
-    "negative_features": ["settlement agreement", "release", "cease and desist", "tolling"]
+    "negative_features": [
+      "settlement agreement",
+      "release",
+      "cease and desist",
+      "tolling"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Demand", "Response Deadline"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "Demand",
+    "Response Deadline"
+  ],
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "FDCPA-OR-STATE",
-  "applicable_jurisdictions": ["US"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
   "companion_playbooks": [],
   "compliance_matrix_columns": [
     "FDCPA § 1692e (debt-collection)",

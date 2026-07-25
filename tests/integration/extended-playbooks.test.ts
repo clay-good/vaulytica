@@ -111,6 +111,8 @@ describe("extended playbook manifest", () => {
       "litigation-hold",
       "estoppel-certificate",
       "vendor-security-questionnaire",
+      "demand-letter",
+      "cease-and-desist",
     ]) {
       const pb = raw.find((p) => p.id === id);
       expect(pb, `${id} missing from manifest`).toBeDefined();

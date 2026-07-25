@@ -4,7 +4,11 @@
   "name": "Cease-and-Desist Letter",
   "description": "Cease-and-desist letter (IP, unfair competition, defamation). Lanham Act § 43(a) baseline; anti-SLAPP / extortion risk screen. Selects the §6.G settlement ruleset (SET-016..SET-020).",
   "match_features": {
-    "title_keywords": ["cease and desist", "cease-and-desist", "notice of infringement"],
+    "title_keywords": [
+      "cease and desist",
+      "cease-and-desist",
+      "notice of infringement"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "infringement",
@@ -14,15 +18,56 @@
       "immediately cease",
       "recall"
     ],
-    "negative_features": ["settlement agreement", "release", "tolling"]
+    "negative_features": [
+      "settlement agreement",
+      "release",
+      "tolling"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Mark", "Work", "Infringing Activity"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "Mark",
+    "Work",
+    "Infringing Activity"
+  ],
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "LANHAM-ACT-OR-COPYRIGHT",
-  "applicable_jurisdictions": ["US"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
   "companion_playbooks": [],
   "compliance_matrix_columns": [
     "Lanham Act § 43(a) (trademark / UC)",
