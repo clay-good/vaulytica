@@ -969,7 +969,7 @@ const ESTOPPEL_RULES: Rule[] = [
       /knowledge\s+of\s+the\s+undersigned/i,
       // The standard form qualifies by the PARTY ROLE — "to Tenant's actual
       // knowledge", "to Seller's knowledge" — not by "the undersigned".
-      /to\s+(?:the\s+)?[A-Z]\w+[''\u2019]s\s+(?:actual\s+)?knowledge/,
+      /[Tt]o\s+(?:the\s+)?[A-Z]\w+[''\u2019]s\s+(?:actual\s+)?knowledge/,
     ],
     default_severity: "warning",
   }),

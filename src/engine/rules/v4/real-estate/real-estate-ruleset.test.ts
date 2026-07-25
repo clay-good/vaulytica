@@ -273,3 +273,25 @@ describe("RE-028 reads an easement's 'maintenance and restoration' (v1.1.0)", ()
     ).toBe(true);
   });
 });
+
+describe("RE-045 reads a sentence-initial 'To the Tenant's knowledge' (v1.1.0)", () => {
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Estoppel", body]), ESTOPPEL_PB);
+    const run = await runEngine({ rules: REAL_ESTATE_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("reads the capitalized sentence-initial knowledge qualifier", async () => {
+    expect(
+      (await run1("To the Tenant's knowledge, neither party is in default under the Lease.")).has(
+        "RE-045",
+      ),
+    ).toBe(false);
+  });
+
+  it("still fires when the certificate carries no knowledge qualifier", async () => {
+    expect(
+      (await run1("The Tenant certifies that the Lease is in full force and effect.")).has("RE-045"),
+    ).toBe(true);
+  });
+});
