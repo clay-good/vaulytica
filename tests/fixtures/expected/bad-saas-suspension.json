@@ -416,7 +416,7 @@
       "finding_id": "RISK-005-s1-0",
       "fired": true,
       "rule_id": "RISK-005",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -868,7 +868,7 @@
       "explanation": "Without a limitation-of-liability clause, exposure is bounded only by what the parties can prove in damages. Most commercial contracts cap liability.",
       "id": "RISK-005-s1-0",
       "rule_id": "RISK-005",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No limitation-of-liability clause detected"
@@ -981,7 +981,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected saas-customer (score 0.9). Title matched: \"subscription agreement\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"uptime\".",
-  "result_hash": "ae9dc63e524a80ed0f82322a8b64da94f0f068d89d6d334c7e59206bec98fb6f",
+  "result_hash": "3b17f6d52c06c59e3cc7d8a78daf4d49154182ff68cda076327f99059d1a426c",
   "source_file": {
     "name": "bad-saas-suspension.docx",
     "sha256": "9afd9de44c9b6a123f62c53a81c06b34ec7a515c4e5519fc63b2bc69223ac49b",

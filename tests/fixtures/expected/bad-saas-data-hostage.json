@@ -417,7 +417,7 @@
       "finding_id": "RISK-005-s1-0",
       "fired": true,
       "rule_id": "RISK-005",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -844,7 +844,7 @@
       "explanation": "Without a limitation-of-liability clause, exposure is bounded only by what the parties can prove in damages. Most commercial contracts cap liability.",
       "id": "RISK-005-s1-0",
       "rule_id": "RISK-005",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No limitation-of-liability clause detected"
@@ -990,7 +990,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "c5013374baf7222d9af7fdfe8e8b35b04ad886ae90c1e5f2c7743cecc8b09d08",
+  "result_hash": "9103f687e57b02ce44d8d4cd489b90282a01e3bbf3cfad4746dd45ca92367558",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
     "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",

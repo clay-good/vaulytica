@@ -416,7 +416,7 @@
       "finding_id": "RISK-005-s1-0",
       "fired": true,
       "rule_id": "RISK-005",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -783,7 +783,7 @@
       "explanation": "Without a limitation-of-liability clause, exposure is bounded only by what the parties can prove in damages. Most commercial contracts cap liability.",
       "id": "RISK-005-s1-0",
       "rule_id": "RISK-005",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No limitation-of-liability clause detected"
@@ -974,7 +974,7 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"advisory agreement\". Distinguishing phrases: \"advisory services\", \"deliverables\", \"independent contractor\".",
-  "result_hash": "433dc54a7e0739c158504ae45a6366d5d6f472b188e4b62a42fbf47e5669c8fa",
+  "result_hash": "68a3802e326a4c480c6f6c3813313432aa135b70aff9f2e47e817ef1d3989291",
   "source_file": {
     "name": "bad-consulting-success-fee.docx",
     "sha256": "6bc505eb0c1641cda4c3466a62f0b3eead258e2dc3a385e792e79f4a717ad6a5",

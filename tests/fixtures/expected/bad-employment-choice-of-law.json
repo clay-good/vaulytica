@@ -413,7 +413,7 @@
       "finding_id": "RISK-005-s1-0",
       "fired": true,
       "rule_id": "RISK-005",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -815,7 +815,7 @@
       "explanation": "Without a limitation-of-liability clause, exposure is bounded only by what the parties can prove in damages. Most commercial contracts cap liability.",
       "id": "RISK-005-s1-0",
       "rule_id": "RISK-005",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No limitation-of-liability clause detected"
@@ -893,7 +893,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.9). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"exempt\", \"Employee\".",
-  "result_hash": "94df5262e24f3f6cbbf97e722f321db1d09d0eded35ab0d9eb061e00f0a6a8d7",
+  "result_hash": "2683f10739d0e3d8d9159c63ef1d8d0a845cf73ff1aececab80bc8fcd9ea6699",
   "source_file": {
     "name": "bad-employment-choice-of-law.docx",
     "sha256": "432c209852332e09cdc68eec7a183f61c5da1fa8aafe36b92e3b8bf6fd2e6c26",

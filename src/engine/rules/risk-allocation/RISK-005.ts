@@ -13,18 +13,20 @@ import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
  * Both capping forms are sentence-scoped, so the word "liability" in one
  * clause cannot borrow "shall not exceed" from another.
  */
-// The last alternative handles the "in no event" cap in BOTH orders. The
-// original required "in no event" BEFORE "liability" ("In no event shall a
-// party's liability exceed …"), but the equally common drafting states the
-// subject first — "Provider's liability shall in no event exceed $100,000" —
-// which the forward-only branch missed, reporting no cap on a plain cap.
+// The "in no event" cap is handled in BOTH orders, and "under no
+// circumstances" is its equally common synonym — "Under no circumstances shall
+// the Supplier's liability exceed the purchase price". The final branch adds
+// the "shall not be liable for more than $X / in excess of X" cap phrasing,
+// which states the ceiling without the word "exceed". These are dollar/fees
+// CAPS; a bare consequential-damages exclusion ("shall not be liable for lost
+// profits") is deliberately not a cap and still fires.
 const LIMITATION_OF_LIABILITY =
-  /\blimitation\s+of\s+liability\b|\baggregate\s+liability\b|\bliabilit(?:y|ies)\b[^.]{0,200}?\b(?:shall|will)\s+not\s+exceed\b|\bliabilit(?:y|ies)\b[^.]{0,160}?\b(?:capped|limited)\s+(?:at|to)\b|\bin\s+no\s+event\b[^.]{0,140}?\bliabilit(?:y|ies)\b[^.]{0,80}?\bexceed\b|\bliabilit(?:y|ies)\b[^.]{0,80}?\bin\s+no\s+event\b[^.]{0,40}?\bexceed\b/i;
+  /\blimitation\s+of\s+liability\b|\baggregate\s+liability\b|\bliabilit(?:y|ies)\b[^.]{0,200}?\b(?:shall|will)\s+not\s+exceed\b|\bliabilit(?:y|ies)\b[^.]{0,160}?\b(?:capped|limited)\s+(?:at|to)\b|\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b[^.]{0,140}?\bliabilit(?:y|ies)\b[^.]{0,80}?\bexceed\b|\bliabilit(?:y|ies)\b[^.]{0,80}?\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b[^.]{0,40}?\bexceed\b|\b(?:shall|will)\s+not\s+be\s+liable\s+for\s+(?:an\s+amount\s+)?(?:more\s+than|in\s+excess\s+of)\b/i;
 
 /** RISK-005 — Limitation of liability present (warning). */
 export const rule: Rule = {
   id: "RISK-005",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Limitation of liability present",
   category: "risk-allocation",
   default_severity: "warning",

@@ -62,4 +62,20 @@ describe("RISK-005 — limitation of liability present", () => {
       RISK_005.check(doc("Provider's liability shall in no event exceed $100,000.")),
     ).toBeNull();
   });
+
+  it("reads an 'under no circumstances … liability … exceed' cap (v1.2.0)", () => {
+    expect(
+      RISK_005.check(doc("Under no circumstances shall the Supplier's liability exceed the purchase price.")),
+    ).toBeNull();
+  });
+
+  it("reads a 'shall not be liable for more than $X' cap (v1.2.0)", () => {
+    expect(RISK_005.check(doc("Provider shall not be liable for more than $50,000."))).toBeNull();
+  });
+
+  it("still fires on a bare damages exclusion with no cap", () => {
+    expect(
+      RISK_005.check(doc("The Provider shall not be liable for the acts of third parties.")),
+    ).not.toBeNull();
+  });
 });
