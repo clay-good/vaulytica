@@ -56,14 +56,27 @@ const FOR_CAUSE = new RegExp(
     // termination verb and the breach — within one sentence — marks it as a
     // for-cause CONDITION, not an incidental mention.
     "|" +
-    String.raw`\bterminat\w+\b[^.]{0,60}?\b(?:if|upon|for|in\s+the\s+event\s+(?:of|that))\b[^.]{0,50}?${BREACH}`,
+    String.raw`\bterminat\w+\b[^.]{0,60}?\b(?:if|upon|for|in\s+the\s+event\s+(?:of|that))\b[^.]{0,50}?${BREACH}` +
+    // The "Event of Default" idiom splits the for-cause path across sentences: a
+    // Default section defines "Event of Default" (a rent/obligation failure not
+    // cured within a notice period), and a separate Remedies section says "Upon
+    // an Event of Default, the Landlord may terminate". The branches above want
+    // the breach and the termination verb in ONE sentence, so a lease/loan whose
+    // for-cause path is written this standard way was reported as having none.
+    // "Event of Default" is itself the term of art for the defaulting event, so
+    // pairing it with a termination verb in one sentence is an unambiguous
+    // for-cause path (a mere mention of the phrase without "terminate" is not).
+    "|" +
+    String.raw`\bterminat\w+\b[^.]{0,80}\bEvent\s+of\s+Default\b` +
+    "|" +
+    String.raw`\bEvent\s+of\s+Default\b[^.]{0,80}\bterminat\w+`,
   "i",
 );
 
 /** TERM-002 — Termination for cause present (warning). */
 export const rule: Rule = {
   id: "TERM-002",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Termination for cause present",
   category: "termination",
   default_severity: "warning",
