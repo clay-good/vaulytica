@@ -21,16 +21,58 @@
       "penetration test",
       "incident response"
     ],
-    "negative_features": ["merger", "license grant"]
+    "negative_features": [
+      "merger",
+      "license grant"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Vendor", "Subprocessor"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "Vendor",
+    "Subprocessor"
+  ],
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "NIST-CSF-ISO-27001",
-  "applicable_jurisdictions": ["US", "EU"],
-  "companion_playbooks": ["vendor-security-bundle"],
+  "applicable_jurisdictions": [
+    "US",
+    "EU"
+  ],
+  "companion_playbooks": [
+    "vendor-security-bundle"
+  ],
   "compliance_matrix_columns": [
     "Security policy + governance",
     "RBAC / least-privilege / MFA",
