@@ -333,4 +333,14 @@ describe("interpretation-form governing law", () => {
     );
     expect(refs.filter((r) => r.clause_kind === "venue").map((r) => r.raw_text)).toContain("Ohio");
   });
+
+  it("captures a 'venue … shall lie in <County>, <State>' clause (no 'courts' token)", () => {
+    const refs = extractJurisdictions(
+      buildTree([
+        "Dispute Resolution",
+        "Venue for any proceeding shall lie in Franklin County, Ohio.",
+      ]),
+    );
+    expect(refs.filter((r) => r.clause_kind === "venue").map((r) => r.raw_text)).toContain("Ohio");
+  });
 });
