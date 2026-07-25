@@ -273,3 +273,30 @@ describe("GOV-054 — a denied whistleblower procedure is absence, not presence 
     ).toBe(false);
   });
 });
+
+describe("Nonprofit COI & no-members in real wording (v1.1.0)", () => {
+  const NP_PB: Playbook = { id: "nonprofit-bylaws", version: "1.0.0" };
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Nonprofit Bylaws", body]), NP_PB);
+    const run = await runEngine({ rules: GOVERNANCE_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("GOV-075 reads 'Conflicts of Interest' / 'conflict-of-interest policy'", async () => {
+    expect(
+      (await run1("Conflicts of Interest. The Corporation shall follow a conflict-of-interest policy.")).has(
+        "GOV-075",
+      ),
+    ).toBe(false);
+    expect((await run1("The Board manages the affairs of the Corporation.")).has("GOV-075")).toBe(
+      true,
+    );
+  });
+
+  it("GOV-077 reads 'The Corporation has no members'", async () => {
+    expect(
+      (await run1("The Corporation has no members. The rights vest in the Board.")).has("GOV-077"),
+    ).toBe(false);
+    expect((await run1("The Board consists of five directors.")).has("GOV-077")).toBe(true);
+  });
+});

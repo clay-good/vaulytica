@@ -1449,6 +1449,7 @@ const NONPROFIT_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-075",
+    version: "1.1.0",
     name: "Conflict-of-interest policy",
     description:
       "IRS Form 990 governance section asks whether a written conflict-of-interest policy exists.",
@@ -1460,7 +1461,10 @@ const NONPROFIT_RULES: Rule[] = [
       "Form 990 Part VI asks whether the organization has a written COI policy. Bylaws / a separate policy is best practice and is heavily expected by the IRS.",
     recommendation:
       "Add (or incorporate by reference) a 'Conflict of Interest Policy' substantially in the form of the IRS Appendix A model.",
-    present_patterns: [/conflict\s+of\s+interest/i],
+    // "Conflicts of Interest" (plural heading) and "conflict-of-interest
+    // policy" (hyphenated) are the same clause; the space-only singular missed
+    // both.
+    present_patterns: [/conflicts?[-\s]of[-\s]interest/i],
   }),
   presence({
     id: "GOV-076",
@@ -1482,6 +1486,7 @@ const NONPROFIT_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-077",
+    version: "1.1.0",
     name: "Member vs. non-member structure",
     description: "Bylaws should specify whether the nonprofit has voting members.",
     citation: govPractice(
@@ -1497,8 +1502,12 @@ const NONPROFIT_RULES: Rule[] = [
       "Whether the nonprofit has voting members materially changes governance — the bylaws must say so explicitly.",
     recommendation: "Add 'Members' (or 'No Members') specifying the membership structure.",
     present_patterns: [
-      /the\s+corporation\s+shall\s+have\s+(no\s+)?members/i,
+      // "The Corporation HAS no members" / "shall have no members" / "will
+      // have members" — and the bare "No Members" article heading — all state
+      // the membership structure; the "shall have" -only form missed "has".
+      /(?:the\s+)?corporation\s+(?:shall\s+have|has|will\s+have|does\s+not\s+have)\s+(?:no\s+)?members/i,
       /members?\s+of\s+the\s+corporation/i,
+      /(?:^|\n)\s*(?:section\s+[\d.]+\.?\s*)?no\s+members\b/i,
     ],
     default_severity: "warning",
   }),
