@@ -238,6 +238,17 @@ describe("STRUCT-003 — conformed signatures and certification (v1.2.0)", () =>
     );
     expect(STRUCT003.check(ctx)).not.toBeNull();
   });
+
+  it("accepts a court filing signed only by a single conformed /s/ line (v1.18.0)", () => {
+    // A brief or motion is executed by counsel's "/s/ Name" alone — a single
+    // conformed signature is self-sufficient, not a weak token needing a second.
+    const ctx = buildContext(
+      ["Argument", "This Court reviews a grant of summary judgment de novo."],
+      ["Conclusion", "For the foregoing reasons, the judgment should be reversed."],
+      ["Signature", "/s/ Thomas Reyes", "Thomas Reyes", "Counsel for Plaintiff-Appellant"],
+    );
+    expect(STRUCT003.check(ctx)).toBeNull();
+  });
 });
 
 describe("STRUCT-003 — a dated adoption recital executes an adopted instrument (v1.3.0)", () => {

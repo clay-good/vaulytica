@@ -152,7 +152,7 @@ const LETTER_CLOSING =
  */
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.17.0",
+  version: "1.18.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",
@@ -192,7 +192,11 @@ export const rule: Rule = {
           attested = true;
           signals += 1;
         }
-        if (CONFORMED_SIG.test(text)) signals += 1;
+        // A conformed "/s/ Name" is an unambiguous signature affordance, and a
+        // court filing (a brief, a motion) or an e-signed letter is executed by
+        // that single line alone — so it is self-sufficient (+2), like the
+        // bare-name / office-signature lines, not a weak token needing a second.
+        if (CONFORMED_SIG.test(text)) signals += 2;
         // An office-signature line ("____ Eleanor Harper, Settlor and Trustee",
         // "____ Jordan Ellis, Director") is an unambiguous affordance, and a
         // unilateral instrument (a trust declaration, a certificate) carries
