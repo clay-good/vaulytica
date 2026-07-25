@@ -222,8 +222,20 @@ const VENUE_WAIVE_OBJECTION = new RegExp(
   "gi",
 );
 
-const ARBITRATION_SEAT =
-  /\b(?:seat\s+of\s+arbitration|arbitration\s+(?:shall\s+take\s+place|shall\s+be\s+(?:seated|conducted))\s+in)\s+([A-Z][A-Za-z\s&\-,]+?)(?=[.,;)]|\s+under|\s+pursuant|$)/gi;
+// The seat is captured AFTER its connector ("shall be", "in") so the location
+// name — not "shall be London" — lands in the capture group. The `i` flag is
+// needed for the case-varying keywords, so the explicit connector, rather than
+// a case-sensitive anchor, is what makes the capture begin at the seat.
+const ARBITRATION_SEAT = new RegExp(
+  String.raw`\b(?:` +
+    // noun-first: "the seat/place/situs (, or legal place,) of (the) arbitration shall be (in) X"
+    String.raw`(?:legal\s+)?(?:seat|place|situs)(?:\s*,\s*or\s+(?:legal\s+)?place\s*,)?\s+of\s+(?:the\s+)?arbitration\s+(?:shall\s+be|is|will\s+be)\s+(?:in\s+)?` +
+    String.raw`|` +
+    // verb-first: "(the) (arbitral) arbitration/tribunal shall take place/be seated/conducted/held/sit in X"
+    String.raw`(?:the\s+)?(?:arbitral\s+)?(?:arbitration|tribunal)\s+(?:shall|will|must)\s+(?:take\s+place\s+in|be\s+(?:seated|conducted|held)\s+in|sit\s+in)\s+` +
+    String.raw`)([A-Z][A-Za-z\s&\-]+?)(?=[.,;)]|\s+under|\s+pursuant|$)`,
+  "gi",
+);
 
 export type DkbLookup = (raw: string) => string | undefined;
 
