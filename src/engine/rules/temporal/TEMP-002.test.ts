@@ -103,6 +103,30 @@ describe("TEMP-002 — a referenced instrument's date is not this document's", (
       ),
     ).not.toBeNull();
   });
+
+  it("stays silent when the earliest date cites a regulation or statute (v1.4.0)", () => {
+    // An EU SCC recites "Implementing Decision (EU) 2021/914 of 4 June 2021" and
+    // a UK IDTA the "Data Protection Act 2018 on 2 February 2022"; both date the
+    // cited law, not the addendum whose own effective date is 1 January 2026.
+    expect(
+      TEMP_002.check(
+        buildContext(
+          [
+            "SCC Addendum",
+            "These Clauses incorporate the Standard Contractual Clauses in Commission Implementing Decision (EU) 2021/914 of 4 June 2021.",
+          ],
+          [
+            "IDTA",
+            "They incorporate the template issued under section 119A of the Data Protection Act 2018 on 2 February 2022.",
+          ],
+          [
+            "Effective",
+            "This Addendum supplements the Services Agreement dated 1 January 2026. Notice is due 1 March 2026.",
+          ],
+        ),
+      ),
+    ).toBeNull();
+  });
 });
 
 describe("TEMP-002 — a stated period boundary is not an effective date", () => {

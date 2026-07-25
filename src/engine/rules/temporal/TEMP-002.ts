@@ -47,6 +47,18 @@ const BIRTHDATE = /\bborn\s+(?:on\s+)?$/i;
  */
 const CITATION_DATE = /\(\s*(?:[A-Z0-9][\w.]*\s+){0,4}$/;
 
+/**
+ * A date citing a REGULATORY or STATUTORY instrument — "Commission Implementing
+ * Decision (EU) 2021/914 of 4 June 2021", "the Data Protection Act 2018 on 2
+ * February 2022" — dates the cited law, not this document. Every EU SCC recites
+ * the adopting decision's 2021 date and every UK IDTA the Act's 2022 issuance
+ * date, so once those day-month-year forms parse they read as multi-year
+ * back-dating on contracts whose own effective date is current. The statute
+ * branch requires "Act <year>" (not a bare "Act") so the verb "act" is inert.
+ */
+const REGULATION_DATE =
+  /\b(?:(?:Regulation|Directive|Decision)\b[^.;]{0,50}?\bof|Act\s+\d{4}\b[^.;]{0,20}?\b(?:on|of|dated))\s+$/i;
+
 /** Absolute-date start offsets whose text reads as another instrument's date. */
 function referencedDateStarts(ctx: RuleContext): Set<number> {
   const out = new Set<number>();
@@ -61,7 +73,8 @@ function referencedDateStarts(ctx: RuleContext): Set<number> {
         REFERENCED_INSTRUMENT_LABEL.test(before) ||
         PERIOD_START_DATE.test(before) ||
         BIRTHDATE.test(before) ||
-        CITATION_DATE.test(before)
+        CITATION_DATE.test(before) ||
+        REGULATION_DATE.test(before)
       ) {
         out.add(start);
       }
@@ -73,7 +86,7 @@ function referencedDateStarts(ctx: RuleContext): Set<number> {
 /** TEMP-002 — Past-dated effective date in a forward-looking contract (info). */
 export const rule: Rule = {
   id: "TEMP-002",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Past-dated effective date",
   category: "temporal",
   default_severity: "info",
