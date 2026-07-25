@@ -36,6 +36,28 @@ describe("TERM-005 effect-of-termination phrasing", () => {
     ).not.toBeNull();
   });
 
+  it("recognizes a construction terminate-for-default remedy", () => {
+    expect(
+      TERM_005.check(
+        buildContext([
+          "Default",
+          "If the Contractor fails to cure, the Owner may terminate this Agreement for default and complete the Work by other means, and the Contractor shall be liable for the resulting costs.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("does not read a firing-for-cause clause as a termination effect", () => {
+    expect(
+      TERM_005.check(
+        buildContext([
+          "HR",
+          "The Company may terminate any employee for cause who fails to complete required training.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+
   it("still warns when the contract states no termination effect", () => {
     expect(
       TERM_005.check(

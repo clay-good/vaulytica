@@ -104,14 +104,24 @@ const EFFECT_OF_TERMINATION = new RegExp(
     // none. A bare dissolution TRIGGER with no wind-down consequence ("the
     // Company shall dissolve upon consent") does not match — the wind-down verb
     // (apply / distribute / wind up / liquidate) must follow.
-    String.raw`|\b(?:up)?on\s+(?:the\s+)?dissolution\b[^.]{0,140}\b(?:appl(?:y|ied)|distribut\w+|wind(?:ing)?[\s-]?up|wound\s+up|liquidat\w+)\b`,
+    String.raw`|\b(?:up)?on\s+(?:the\s+)?dissolution\b[^.]{0,140}\b(?:appl(?:y|ied)|distribut\w+|wind(?:ing)?[\s-]?up|wound\s+up|liquidat\w+)\b` +
+    // The construction / services termination-FOR-DEFAULT remedy states its
+    // effect in the same clause as the termination: "the Owner may terminate
+    // this Agreement for default and complete the Work by other means, and the
+    // Contractor shall be liable for the resulting costs". The "Upon such
+    // termination … modal" branch above only catches the separate-sentence
+    // form; this catches the one-clause form. "for default/cause" is the
+    // discriminator, and "complete the Work" / "liable for … costs" the effect —
+    // neither verb is in CONSEQUENCE (a "fails to complete" trigger must not read
+    // as an effect), so the for-default qualifier is required.
+    String.raw`|\bterminat\w+\b[^.]{0,80}?\bfor\s+(?:default|cause)\b[^.]{0,120}?\b(?:complete\s+(?:the\s+)?work|liable\s+for\b[^.]{0,40}?\bcosts?)\b`,
   "i",
 );
 
 /** TERM-005 — Effect of termination clause present (warning). */
 export const rule: Rule = {
   id: "TERM-005",
-  version: "1.8.0",
+  version: "1.9.0",
   name: "Effect of termination clause",
   category: "termination",
   default_severity: "warning",
