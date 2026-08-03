@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 /** TEMP-008 — Cure period present (info). */
 export const rule: Rule = {
   id: "TEMP-008",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Cure period present",
   category: "temporal",
   default_severity: "info",
@@ -14,8 +14,11 @@ export const rule: Rule = {
     const hit = firstParagraphMatch(
       ctx,
       // `\b` before "cure" so "procure such breach-free …" is not read as a
-      // breach-cure period.
-      /(?:\bcure\s+such\s+breach|opportunity\s+to\s+cure|cure\s+period)[\s\S]{0,80}?(\d{1,3})\s+days/i,
+      // breach-cure period. The count is parenthesized in the standard form —
+      // "cure such breach within thirty (30) days" — so tolerate the "(30)"; a
+      // bare-digit-only pattern missed the cure period on essentially every real
+      // contract.
+      /(?:\bcure\s+such\s+breach|opportunity\s+to\s+cure|cure\s+period)[\s\S]{0,80}?\(?(\d{1,3})\)?\s+days/i,
     );
     if (!hit) return null;
     const days = parseInt(hit.match[1] ?? "0", 10);

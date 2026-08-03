@@ -54,6 +54,20 @@ describe("TEMP-008 / TEMP-009 — breach-cure period", () => {
       TEMP008.check(clause("A party may cure such breach within 45 days of notice.")),
     ).not.toBeNull();
   });
+
+  it("reads the parenthesized cure-period count — the standard form (v1.1.0)", () => {
+    const c = clause("The breaching party may cure such breach within thirty (30) days of notice.");
+    const f8 = TEMP008.check(c);
+    expect(f8, "TEMP-008 missed paren cure period").not.toBeNull();
+    expect(f8!.title).toContain("30 days");
+    // TEMP-009 evaluates the length: 30 is normal (no fire), 90 is unusual.
+    expect(TEMP009.check(c)).toBeNull();
+    const unusual = TEMP009.check(
+      clause("The breaching party may cure such breach within ninety (90) days of notice."),
+    );
+    expect(unusual, "TEMP-009 missed unusual paren cure period").not.toBeNull();
+    expect(unusual!.title).toContain("90 days");
+  });
 });
 
 describe("TEMP-005 / TEMP-011 — auto-renewal non-renewal window", () => {
