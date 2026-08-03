@@ -108,7 +108,7 @@ const NUMBER_WORDS: Record<string, number> = {
 // overlaps the later `(\d+)` over a long digit run (`\w` matches digits), which
 // is O(n^2) on a giant pasted number; no count word/numeral exceeds 40 chars.
 const RANGE_RELATIVE = new RegExp(
-  String.raw`\b(?:within\s+|between\s+)?(\w{1,40}(?:[-\s]\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(?:to|-|–|—|and|or)\s+(\w{1,40}(?:[-\s]\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(day|days|week|weeks|month|months|year|years|business\s+day|business\s+days)\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z][\w\s]{2,40}?)(?=[.,;)]|$)`,
+  String.raw`\b(?:within\s+|between\s+)?(\w{1,40}(?:[-\s]\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(?:to|-|–|—|and|or)\s+(\w{1,40}(?:[-\s]\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(calendar\s+days?|business\s+days?|day|days|week|weeks|month|months|year|years)\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z][\w\s]{2,40}?)(?=[.,;)]|$)`,
   "gi",
 );
 
@@ -119,7 +119,7 @@ const RANGE_RELATIVE = new RegExp(
 // notice period with no anchor ("90 days' prior written notice.") still yields
 // nothing, since the connector + capitalized anchor never follow.
 const RELATIVE = new RegExp(
-  String.raw`\b(?:within\s+)?(\w{1,40}(?:[-\s]\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(day|days|week|weeks|month|months|year|years|business\s+day|business\s+days)['’]?(?:\s+(?:prior\s+)?(?:written\s+)?notice)?\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z][\w\s]{2,40}?)(?=[.,;)]|$)`,
+  String.raw`\b(?:within\s+)?(\w{1,40}(?:[-\s]\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(calendar\s+days?|business\s+days?|day|days|week|weeks|month|months|year|years)['’]?(?:\s+(?:prior\s+)?(?:written\s+)?notice)?\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z][\w\s]{2,40}?)(?=[.,;)]|$)`,
   "gi",
 );
 
@@ -466,6 +466,7 @@ function parseWordNumber(raw: string): number | null {
 
 function unitToDays(unit: string): number {
   if (unit.startsWith("business day")) return 1;
+  if (unit.startsWith("calendar day")) return 1;
   if (unit.startsWith("day")) return 1;
   if (unit.startsWith("week")) return 7;
   if (unit.startsWith("month")) return 30;
@@ -481,6 +482,8 @@ function unitToDays(unit: string): number {
  */
 function unitToCalendar(unit: string): "days" | "weeks" | "months" | "years" | "business-days" {
   if (unit.startsWith("business day")) return "business-days";
+  // "calendar day(s)" is an ordinary day for arithmetic — the "calendar"
+  // qualifier only distinguishes it from "business day"; falls through to "days".
   if (unit.startsWith("week")) return "weeks";
   if (unit.startsWith("month")) return "months";
   if (unit.startsWith("year")) return "years";

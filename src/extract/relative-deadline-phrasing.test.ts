@@ -35,4 +35,24 @@ describe("relative-deadline possessive/notice guard", () => {
     ).filter((d) => d.type === "relative");
     expect(rel).toHaveLength(0);
   });
+
+  // Regression: "calendar days" (ubiquitous) used to skip the leading count and
+  // match "calendar days" with the unparseable count-word "calendar", producing
+  // a relative deadline with NO offset — the day count was silently dropped.
+  const CALENDAR: Array<[text: string, days: number, anchor: RegExp]> = [
+    ["Notice is due within sixty (60) calendar days of the Effective Date.", 60, /Effective Date/i],
+    ["Cure within ninety (90) calendar days after the Closing Date.", 90, /Closing Date/i],
+    ["Renew no fewer than 30 calendar days prior to the Renewal Date.", -30, /Renewal Date/i],
+  ];
+  for (const [text, days, anchor] of CALENDAR) {
+    it(`resolves ${days}d for calendar-days: ${text.slice(0, 40)}`, () => {
+      const rel = extractDates(buildTree(["Body", text])).find(
+        (d) => d.type === "relative" && d.offset_days === days,
+      );
+      expect(rel, `NO REL ${days} for: ${text}`).toBeTruthy();
+      expect(rel!.offset_unit).toBe("days");
+      expect(rel!.offset_count).toBe(days);
+      expect(rel!.anchor ?? "").toMatch(anchor);
+    });
+  }
 });
