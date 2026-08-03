@@ -88,6 +88,48 @@ describe("extractParties", () => {
     expect(roles).toContain("Margaret Okafor:Grantor");
   });
 
+  it("reads a three-party 'among' preamble (untyped individuals)", () => {
+    // Only "between" was handled, so an all-individual multi-party preamble
+    // reported no parties at all.
+    const tree = buildTree([
+      "Agreement",
+      "This Agreement is made by and among Alice Walker, Bob Marley, and Carol King.",
+    ]);
+    const names = extractParties(tree).map((p) => p.name);
+    expect(names).toEqual(expect.arrayContaining(["Alice Walker", "Bob Marley", "Carol King"]));
+    expect(names).toHaveLength(3);
+  });
+
+  it("reads a typed 'among' list without manufacturing descriptor parties", () => {
+    const tree = buildTree([
+      "Agreement",
+      "This Agreement is entered into by and among Acme Corp, a Delaware corporation, Beta LLC, a New York limited liability company, and Gamma Inc., a Texas corporation.",
+    ]);
+    const names = extractParties(tree).map((p) => p.name);
+    expect(names).toEqual(expect.arrayContaining(["Acme Corp", "Beta LLC", "Gamma Inc"]));
+    // No "a Delaware corporation" / "a New York limited liability company" junk.
+    expect(names.some((n) => /^a\s/i.test(n))).toBe(false);
+  });
+
+  it("captures 'among' member roles from trailing parentheticals", () => {
+    const tree = buildTree([
+      "Stock Purchase Agreement",
+      'This Agreement is by and among Acme Corp ("Buyer"), Jane Doe ("Seller"), and John Roe ("Founder").',
+    ]);
+    const roles = extractParties(tree).map((p) => p.role);
+    expect(roles).toEqual(expect.arrayContaining(["Buyer", "Seller", "Founder"]));
+  });
+
+  it("does not read a prose or negated 'among' as a preamble", () => {
+    for (const prose of [
+      "Profits shall be allocated among Class A, Class B, and Class C members.",
+      "Costs are shared among the parties in proportion to usage.",
+      "Nothing in this Agreement creates a partnership among Acme Corp, Beta LLC, and Gamma Inc.",
+    ]) {
+      expect(extractParties(buildTree(["Doc", prose]))).toEqual([]);
+    }
+  });
+
   it("does NOT surface a reciprocal role as an extra party in a mutual agreement", () => {
     // "Receiving Party" / "Recipient" is a position BOTH parties occupy; adding
     // it as a party would make OBLI-002 read role-based mutuality as a one-

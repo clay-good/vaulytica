@@ -67,6 +67,30 @@ const PARTY_DECL = new RegExp(
 const BETWEEN_RE = /\bbetween\s+(.+?)\s+and\s+(.+?)(?:[.;,]|$)/gi;
 
 /**
+ * A THREE-OR-MORE party preamble is introduced with "among", not "between":
+ * "by and among X, Y, and Z". `BETWEEN_RE` only ever reads two parties, so a
+ * shareholders' / merger / JV agreement that names its parties in an
+ * "among"-list left every party but the entity-typed ones (which `PARTY_DECL`
+ * catches independently) unread — and an all-individual "among" preamble
+ * ("by and among Alice Walker, Bob Marley, and Carol King") reported "no
+ * parties" outright. The captured list runs to the sentence terminator and is
+ * split into its members below. Gated by the same `PREAMBLE_LEAD` as `between`,
+ * so "allocated among the members" / "shared among the parties" in ordinary
+ * prose is not read as a preamble.
+ */
+const AMONG_RE = /\bamong\s+(.+?)(?:[.;]|$)/gi;
+
+/**
+ * Split an "among" party list into members. Consumes the Oxford / non-Oxford
+ * comma and the trailing "and" as ONE separator ("X, Y, and Z" and "X, Y and
+ * Z" both yield three). Each member is name-cleaned downstream, and
+ * `cleanPartyName` rejects a lowercase-leading entity descriptor ("a Delaware
+ * corporation") on its own, so a mixed list of names and descriptors keeps only
+ * the names.
+ */
+const AMONG_SEP = /\s*,\s*(?:and\s+)?|\s+and\s+/;
+
+/**
  * `between X and Y` names the contracting parties only inside an actual
  * preamble. The same three words are everywhere in ordinary drafting — "the
  * difference **between** Gross Revenue and Net Revenue", "any conflict
@@ -312,6 +336,27 @@ export function extractParties(tree: DocumentTree): Party[] {
           ),
         });
       }
+    }
+    // A three-or-more party "among" preamble, introduced the same way a
+    // preamble introduces "between". Each list member is registered; entity
+    // descriptors and boilerplate fall out in cleanPartyName / isBoilerplateName.
+    AMONG_RE.lastIndex = 0;
+    let amongMatch: RegExpExecArray | null;
+    while ((amongMatch = AMONG_RE.exec(text)) !== null) {
+      const lead = text.slice(0, amongMatch.index);
+      if (NEGATED_PREAMBLE.test(lead)) continue;
+      if (!PREAMBLE_LEAD.test(lead)) continue;
+      const listStart = amongMatch.index + amongMatch[0].indexOf(amongMatch[1] ?? "");
+      for (const member of (amongMatch[1] ?? "").split(AMONG_SEP)) {
+        const { name, role } = splitNameAndRole(member);
+        if (!name || isBoilerplateName(name)) continue;
+        const at = text.indexOf(member, listStart);
+        registerParty(partyMap, name, {
+          ...(role ? { role } : {}),
+          position: at >= 0 ? pos(at, at + member.length) : pos(amongMatch.index, amongMatch.index),
+        });
+      }
+      break; // one preamble per paragraph
     }
   }
 
