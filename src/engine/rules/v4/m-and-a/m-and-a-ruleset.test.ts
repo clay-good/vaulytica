@@ -444,11 +444,21 @@ describe("MNA-073/074 read the parenthesized non-compete duration (v1.1.0)", () 
   };
 
   it("does not report the duration missing when it is stated as 'three (3) years'", async () => {
+    // Both "non-compete" and "non-competition" spellings are read (v1.2.0).
+    for (const noun of ["non-compete", "non-competition"]) {
+      const ids = await run1(
+        `The ${noun} covenant shall have a duration of three (3) years following the Closing, within the United States.`,
+      );
+      expect(ids.has("MNA-073"), noun).toBe(false); // duration present → no "missing"
+      expect(ids.has("MNA-074"), noun).toBe(false); // 3 years within the 5-year norm
+    }
+  });
+
+  it("still reports the duration missing when no duration is stated", async () => {
     const ids = await run1(
-      "The non-compete covenant shall have a duration of three (3) years following the Closing, within the United States.",
+      "The Seller's non-competition covenant applies within the United States and to the Business.",
     );
-    expect(ids.has("MNA-073")).toBe(false); // duration present → no "missing" finding
-    expect(ids.has("MNA-074")).toBe(false); // 3 years is within the 5-year norm
+    expect(ids.has("MNA-073")).toBe(true); // no duration → missing finding
   });
 
   it("flags a parenthesized non-compete longer than five years", async () => {

@@ -1558,7 +1558,7 @@ const MA_RESTRICTIVE_COVENANT_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-073",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Non-compete duration stated and bounded",
     description:
       "Non-compete duration should be stated and within enforceability norms (typically 2–5 years for M&A sales).",
@@ -1573,9 +1573,12 @@ const MA_RESTRICTIVE_COVENANT_RULES: Rule[] = [
       // The duration is parenthesized in the standard form — "non-compete of
       // three (3) years" — so tolerate a spelled word and the "(3)" around the
       // authoritative digit; a bare-digit-only pattern read no duration and the
-      // rule falsely reported it missing.
-      /non.?compete.{0,80}\(?(\d{1,2})\)?\s+years?/is,
-      /\(?(\d{1,2})\)?\s+year.{0,40}non.?compete/is,
+      // rule falsely reported it missing. Both "non-compete" and the "non-
+      // competition" spelling are accepted (MNA-074 already matches both; only
+      // this presence rule was narrower, so a "non-competition … three (3)
+      // years" covenant was falsely reported as missing its duration).
+      /non.?compet(?:e|ition).{0,80}\(?(\d{1,2})\)?\s+years?/is,
+      /\(?(\d{1,2})\)?\s+year.{0,40}non.?compet(?:e|ition)/is,
       /restricted\s+period/i,
     ],
   }),
