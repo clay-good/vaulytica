@@ -38,6 +38,18 @@ import { forEachParagraph } from "../../../extract/walk.js";
 const FIELD_LABEL_SUFFIXES =
   "Name|Date|Address|City|State|Zip|Country|Title|Code|Number|Amount|Value|Reference|Period|Term|Field|ID|Information|Details|Info|Description|Phone|Email|Sum|Fee|Rate|Price";
 
+/**
+ * The ALL-CAPS field placeholders a template ships. The bracket patterns above
+ * assume Title-Case ("[Effective Date]"), so an all-caps template field
+ * ("[DATE]", "[COMPANY NAME]", "[CUSTOMER NAME]") — every bit as common —
+ * slipped through. Anchored to the WHOLE bracket content and restricted to a
+ * closed vocabulary of unambiguous field words, so a bracketed acronym or list
+ * marker ("[EU]", "[SIC]", "[A]", "[IV]", "[EXHIBIT A]") is never mistaken for
+ * one.
+ */
+const ALLCAPS_FIELD_PLACEHOLDER =
+  "NAME|DATE|ADDRESS|CITY|STATE|ZIP|COUNTRY|AMOUNT|COMPANY|CUSTOMER|CLIENT|VENDOR|EMAIL|PHONE|PRICE|EFFECTIVE\\s+DATE|COMPANY\\s+NAME|CUSTOMER\\s+NAME|CLIENT\\s+NAME|COUNTERPARTY\\s+NAME|PARTY\\s+NAME|LEGAL\\s+NAME";
+
 const PATTERNS: Array<{ re: RegExp; label: string }> = [
   { re: /\[insert[^\]]{0,80}\]/gi, label: "[insert …] placeholder" },
   { re: /\[[A-Z][A-Za-z\s/&'-]{1,60}\s+[Nn]ame\]/g, label: "[Title-Case name] placeholder" },
@@ -48,6 +60,15 @@ const PATTERNS: Array<{ re: RegExp; label: string }> = [
     ),
     label: "[Field Name] bracketed placeholder",
   },
+  {
+    re: new RegExp(`\\[(?:${ALLCAPS_FIELD_PLACEHOLDER})\\]`, "g"),
+    label: "[FIELD] placeholder",
+  },
+  // A bracket wrapping only a fill-in blank ("[___]", "[ __ ]") or a lone
+  // bullet glyph ("[●]", "[•]") is never a legitimate reference — a draft left
+  // the reader a hole to fill. Bare "[ ]" / "[5.1]" / "[A]" are untouched.
+  { re: /\[[ \t]*_+[ \t_]*\]/g, label: "[___] fill-in blank" },
+  { re: /\[[ \t]*[•●◦‣⁃∙][ \t]*\]/g, label: "[•] placeholder" },
   {
     re: /\[(?:TBD|TBA|REDACTED|PENDING|PLACEHOLDER|FILL\s*IN|TODO)\b[^\]]{0,60}\]/gi,
     label: "[TBD]-family placeholder",
@@ -60,7 +81,7 @@ const PATTERNS: Array<{ re: RegExp; label: string }> = [
 
 export const rule: Rule = {
   id: "STRUCT-013",
-  version: "1.9.0",
+  version: "1.10.0",
   name: "Unfilled template placeholders",
   category: "structural",
   default_severity: "critical",

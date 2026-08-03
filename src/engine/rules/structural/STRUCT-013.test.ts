@@ -228,4 +228,36 @@ describe("STRUCT-013 — unfilled template placeholders", () => {
       ),
     ).not.toBeNull();
   });
+
+  it("fires on ALL-CAPS field placeholders the Title-Case patterns missed", () => {
+    for (const t of [
+      "Closing shall occur on [DATE].",
+      "The Buyer is [COMPANY NAME].",
+      "Notices to [ADDRESS].",
+      "Purchase price of [AMOUNT].",
+      "Contact [EMAIL].",
+    ]) {
+      expect(STRUCT_013.check(buildContext(["H", t])), t).not.toBeNull();
+    }
+  });
+
+  it("fires on a bracketed fill-in blank or bullet glyph", () => {
+    expect(STRUCT_013.check(buildContext(["H", "The term is [__] years."]))).not.toBeNull();
+    expect(STRUCT_013.check(buildContext(["H", "Amount: [ _____ ]."]))).not.toBeNull();
+    expect(STRUCT_013.check(buildContext(["H", "The price is [●] dollars."]))).not.toBeNull();
+    expect(STRUCT_013.check(buildContext(["H", "Deliver by [•]."]))).not.toBeNull();
+  });
+
+  it("does not flag a bracketed acronym, list marker, or empty checkbox", () => {
+    for (const t of [
+      "See Section [5.1].",
+      "Exhibit [A] is attached.",
+      "The parties [sic] agree.",
+      "The [EU] regulation applies.",
+      "Governed by [IV] of the Treaty.",
+      "Check the box [ ] if applicable.",
+    ]) {
+      expect(STRUCT_013.check(buildContext(["H", t])), t).toBeNull();
+    }
+  });
 });
