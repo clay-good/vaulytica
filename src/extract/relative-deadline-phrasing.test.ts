@@ -55,4 +55,27 @@ describe("relative-deadline possessive/notice guard", () => {
       expect(rel!.anchor ?? "").toMatch(anchor);
     });
   }
+
+  // Sub-day breach-notification windows ("within 72 hours") — captured with the
+  // hour count and its anchor, but NO day-collapsed offset_days (72h ≠ 72d), so
+  // the date-granular register surfaces them verify-manually instead of guessing.
+  const HOURS: Array<[text: string, count: number, anchor: RegExp]> = [
+    [
+      "Notice shall be given within seventy-two (72) hours of the Security Incident.",
+      72,
+      /Security Incident/i,
+    ],
+    ["The party shall notify within 24 hours after the Data Breach.", 24, /Data Breach/i],
+  ];
+  for (const [text, count, anchor] of HOURS) {
+    it(`captures a ${count}-hour window: ${text.slice(0, 40)}`, () => {
+      const rel = extractDates(buildTree(["Body", text])).find(
+        (d) => d.type === "relative" && d.offset_unit === "hours",
+      );
+      expect(rel, `NO HOURS REL for: ${text}`).toBeTruthy();
+      expect(rel!.offset_count).toBe(count);
+      expect(rel!.offset_days).toBeUndefined();
+      expect(rel!.anchor ?? "").toMatch(anchor);
+    });
+  }
 });

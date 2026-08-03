@@ -88,6 +88,16 @@ describe("deriveDate — the arithmetic (spec-v9 §25, companion §3)", () => {
     expect(d.reason).toContain("business");
   });
 
+  it("marks an hours window unresolved (sub-day, cannot be pinned to a date)", () => {
+    const d = deriveDate(
+      rel("Security Incident", "hours", 72, { offset_days: undefined }),
+      "2025-01-01",
+    );
+    expect(d.resolved).toBe(false);
+    expect(d.computed_date).toBeNull();
+    expect(d.reason).toContain("hour");
+  });
+
   it("derives both bounds of a disjunctive range as a window", () => {
     const ref = rel("Effective Date", "days", 30, { offset_count_max: 60 });
     const d = deriveDate(ref, "2025-01-01");

@@ -233,6 +233,16 @@ export function deriveDate(reference: DateReference, anchorIso: string | null): 
       reason: `business-day deadline (${n === undefined ? "n" : Math.abs(n)} business days) — no holiday calendar is asserted; verify manually`,
     };
   }
+  if (unit === "hours") {
+    // A sub-day breach-notification window ("within 72 hours"). The register
+    // works in whole calendar dates, so the exact hour cannot be pinned here.
+    const n = reference.offset_count;
+    return {
+      resolved: false,
+      computed_date: null,
+      reason: `${n === undefined ? "n" : Math.abs(n)}-hour deadline — a sub-day window the calendar register cannot pin; verify the exact time manually`,
+    };
+  }
   if (unit === undefined || reference.offset_count === undefined) {
     // Fall back to the day-collapsed offset when the calendar unit was not
     // captured (older reference shapes) — still deterministic.

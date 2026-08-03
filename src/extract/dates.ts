@@ -119,7 +119,7 @@ const RANGE_RELATIVE = new RegExp(
 // notice period with no anchor ("90 days' prior written notice.") still yields
 // nothing, since the connector + capitalized anchor never follow.
 const RELATIVE = new RegExp(
-  String.raw`\b(?:within\s+)?(\w{1,40}(?:[-\s]\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(calendar\s+days?|business\s+days?|day|days|week|weeks|month|months|year|years)['’]?(?:\s+(?:prior\s+)?(?:written\s+)?notice)?\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z][\w\s]{2,40}?)(?=[.,;)]|$)`,
+  String.raw`\b(?:within\s+)?(\w{1,40}(?:[-\s]\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(calendar\s+days?|business\s+days?|day|days|week|weeks|month|months|year|years|hours?)['’]?(?:\s+(?:prior\s+)?(?:written\s+)?notice)?\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z][\w\s]{2,40}?)(?=[.,;)]|$)`,
   "gi",
 );
 
@@ -298,7 +298,11 @@ export function extractDates(tree: DocumentTree): DateReference[] {
       const anchor = trimAnchorQualifier((m[4] ?? "").trim());
       const count = numericCount ?? wordCount;
       const direction = /\bbefore\b|\bprior\s+to\b/i.test(m[0]) ? -1 : 1;
-      const days = count !== null ? count * unitToDays(unit) * direction : undefined;
+      // An hours window ("within 72 hours") is sub-day: it carries NO
+      // day-collapsed offset_days, so the date-granular register surfaces it
+      // verify-manually instead of guessing a wrong calendar day (72h ≠ 72d).
+      const isHours = /^hours?$/.test(unit);
+      const days = count !== null && !isHours ? count * unitToDays(unit) * direction : undefined;
       out.push({
         id: nextId(),
         type: "relative",
@@ -480,8 +484,11 @@ function unitToDays(unit: string): number {
  * arithmetic. "business day(s)" is preserved distinctly so the register
  * can surface it verify-manually (no holiday calendar is asserted).
  */
-function unitToCalendar(unit: string): "days" | "weeks" | "months" | "years" | "business-days" {
+function unitToCalendar(
+  unit: string,
+): "days" | "weeks" | "months" | "years" | "business-days" | "hours" {
   if (unit.startsWith("business day")) return "business-days";
+  if (unit.startsWith("hour")) return "hours";
   // "calendar day(s)" is an ordinary day for arithmetic — the "calendar"
   // qualifier only distinguishes it from "business day"; falls through to "days".
   if (unit.startsWith("week")) return "weeks";

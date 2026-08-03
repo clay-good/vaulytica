@@ -71,9 +71,12 @@ export type DateReference = {
    * 30-days-per-month approximation `offset_days` carries. Additive and
    * optional: existing consumers keep reading `offset_days` unchanged, so
    * no rule and no `result_hash` moves. "business-days" is preserved but
-   * surfaced verify-manually (no holiday calendar is asserted).
+   * surfaced verify-manually (no holiday calendar is asserted); "hours"
+   * likewise (a sub-day breach-notification window — "within 72 hours" — that
+   * a date-granular register cannot pin to a calendar day, so it carries no
+   * `offset_days` and is surfaced verify-manually).
    */
-  offset_unit?: "days" | "weeks" | "months" | "years" | "business-days";
+  offset_unit?: "days" | "weeks" | "months" | "years" | "business-days" | "hours";
   /**
    * For relative dates: the signed count in {@link offset_unit} ("60 days
    * prior to" → `offset_unit: "days"`, `offset_count: -60`). Negative for
