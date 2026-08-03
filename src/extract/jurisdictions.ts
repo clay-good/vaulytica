@@ -226,6 +226,11 @@ const VENUE_WAIVE_OBJECTION = new RegExp(
 // name — not "shall be London" — lands in the capture group. The `i` flag is
 // needed for the case-varying keywords, so the explicit connector, rather than
 // a case-sensitive anchor, is what makes the capture begin at the seat.
+// The named administering institutions. Anchoring the "administered by … in X"
+// form on one of these keeps an ordinary "conducted … in New York" prose out —
+// only a clause that names a real arbitral body records a seat.
+const ARB_PROVIDER = String.raw`AAA|JAMS|ICC|ICDR|LCIA|SIAC|HKIAC|CIETAC|SCC|DIS|CPR|American\s+Arbitration\s+Association|International\s+Chamber\s+of\s+Commerce|International\s+Centre\s+for\s+Dispute\s+Resolution|London\s+Court\s+of\s+International\s+Arbitration`;
+
 const ARBITRATION_SEAT = new RegExp(
   String.raw`\b(?:` +
     // noun-first: "the seat/place/situs (, or legal place,) of (the) arbitration shall be (in) X"
@@ -233,6 +238,11 @@ const ARBITRATION_SEAT = new RegExp(
     String.raw`|` +
     // verb-first: "(the) (arbitral) arbitration/tribunal shall take place/be seated/conducted/held/sit in X"
     String.raw`(?:the\s+)?(?:arbitral\s+)?(?:arbitration|tribunal)\s+(?:shall|will|must)\s+(?:take\s+place\s+in|be\s+(?:seated|conducted|held)\s+in|sit\s+in)\s+` +
+    String.raw`|` +
+    // institution-first: "administered by JAMS in X", "before the ICC in X" — the
+    // named arbitral body fixes the clause as an arbitration seat, so the
+    // locality after "in"/"at" is the seat.
+    String.raw`(?:administered|conducted|held|resolved|settled|before)\s+(?:by\s+|the\s+)?(?:the\s+)?(?:${ARB_PROVIDER})\b(?:\s+(?:rules|arbitration))?\s+(?:in|at)\s+` +
     String.raw`)([A-Z][A-Za-z\s&\-]+?)(?=[.,;)]|\s+under|\s+pursuant|$)`,
   "gi",
 );

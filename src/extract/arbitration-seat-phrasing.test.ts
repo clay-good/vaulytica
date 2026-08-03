@@ -17,6 +17,16 @@ const REGISTERS: Array<[clause: string, want: RegExp]> = [
   ["Any arbitration shall be held in Hong Kong.", /^Hong Kong$/],
   ["The seat, or legal place, of arbitration shall be London, England.", /^London$/],
   ["The tribunal shall sit in Dubai.", /^Dubai$/],
+  // Institution-anchored form ("administered by <provider> in X").
+  [
+    "Disputes shall be resolved by arbitration administered by JAMS in San Francisco, California.",
+    /^San Francisco$/,
+  ],
+  [
+    "Any dispute shall be settled by arbitration administered by the AAA in New York, New York.",
+    /^New York$/,
+  ],
+  ["The dispute shall be resolved before the LCIA in London, England.", /^London$/],
 ];
 
 describe("arbitration-seat phrasing guard", () => {
@@ -34,5 +44,17 @@ describe("arbitration-seat phrasing guard", () => {
       buildTree(["Body", "Either party may demand arbitration of any unresolved dispute."]),
     );
     expect(refs.find((r) => r.clause_kind === "arbitration-seat")).toBeUndefined();
+  });
+
+  it("does not read an ordinary 'conducted/held in <place>' with no arbitral body as a seat", () => {
+    // The institution anchor is required — a business or meeting "conducted in
+    // New York" / "held in Chicago" names no seat.
+    for (const prose of [
+      "Business is conducted in New York and Delaware.",
+      "The annual meeting shall be held in Chicago, Illinois.",
+    ]) {
+      const refs = extractJurisdictions(buildTree(["Body", prose]));
+      expect(refs.find((r) => r.clause_kind === "arbitration-seat")).toBeUndefined();
+    }
   });
 });
