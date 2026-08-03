@@ -434,3 +434,27 @@ describe("MNA-032 reads 'approval by the stockholders' order (v1.1.0)", () => {
     ).toBe(true);
   });
 });
+
+describe("MNA-073/074 read the parenthesized non-compete duration (v1.1.0)", () => {
+  const RC_PB: Playbook = { id: "ma-restrictive-covenant", version: "1.0.0" };
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Restrictive Covenants", body]), RC_PB);
+    const run = await runEngine({ rules: M_AND_A_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("does not report the duration missing when it is stated as 'three (3) years'", async () => {
+    const ids = await run1(
+      "The non-compete covenant shall have a duration of three (3) years following the Closing, within the United States.",
+    );
+    expect(ids.has("MNA-073")).toBe(false); // duration present → no "missing" finding
+    expect(ids.has("MNA-074")).toBe(false); // 3 years is within the 5-year norm
+  });
+
+  it("flags a parenthesized non-compete longer than five years", async () => {
+    const ids = await run1(
+      "The non-competition covenant shall be for a period of seven (7) years following the Closing, within the United States.",
+    );
+    expect(ids.has("MNA-074")).toBe(true); // 7 > 5
+  });
+});

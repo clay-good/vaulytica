@@ -95,6 +95,25 @@ describe("TEMP-005 / TEMP-011 — auto-renewal non-renewal window", () => {
       ),
     ).not.toBeNull();
   });
+
+  it("reads the parenthesized non-renewal window count (v1.1.0)", () => {
+    // Unusual (>90) window in the standard "one hundred twenty (120) days" form.
+    const unusual = TEMP005.check(
+      clause(
+        "This Agreement automatically renews unless a party gives one hundred twenty (120) days notice of non-renewal.",
+      ),
+    );
+    expect(unusual, "TEMP-005 missed paren window").not.toBeNull();
+    expect(unusual!.title).toContain("120 days");
+    // A normal (60) paren window does not fire.
+    expect(
+      TEMP005.check(
+        clause(
+          "This Agreement automatically renews unless a party gives sixty (60) days notice of non-renewal.",
+        ),
+      ),
+    ).toBeNull();
+  });
 });
 
 describe("TERM-001 — termination-for-convenience notice", () => {

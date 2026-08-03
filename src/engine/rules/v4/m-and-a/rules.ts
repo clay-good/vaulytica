@@ -1558,6 +1558,7 @@ const MA_RESTRICTIVE_COVENANT_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-073",
+    version: "1.1.0",
     name: "Non-compete duration stated and bounded",
     description:
       "Non-compete duration should be stated and within enforceability norms (typically 2–5 years for M&A sales).",
@@ -1569,13 +1570,18 @@ const MA_RESTRICTIVE_COVENANT_RULES: Rule[] = [
       "Even M&A sale-of-business non-competes need a bounded duration; 'forever' is unenforceable in most states.",
     recommendation: "Add 'Duration' specifying the non-compete period (typically 3–5 years).",
     present_patterns: [
-      /non.?compete.{0,80}(\d{1,2})\s+years?/is,
-      /(\d{1,2})\s+year.{0,40}non.?compete/is,
+      // The duration is parenthesized in the standard form — "non-compete of
+      // three (3) years" — so tolerate a spelled word and the "(3)" around the
+      // authoritative digit; a bare-digit-only pattern read no duration and the
+      // rule falsely reported it missing.
+      /non.?compete.{0,80}\(?(\d{1,2})\)?\s+years?/is,
+      /\(?(\d{1,2})\)?\s+year.{0,40}non.?compete/is,
       /restricted\s+period/i,
     ],
   }),
   language({
     id: "MNA-074",
+    version: "1.1.0",
     name: "Non-compete > 5 years flagged",
     description: "Most states will not enforce sale-of-business non-competes longer than 5 years.",
     citation: maPractice(
@@ -1588,9 +1594,9 @@ const MA_RESTRICTIVE_COVENANT_RULES: Rule[] = [
       // The year count must be the covenant's DURATION, not merely a number
       // sharing a sentence with it — "the Company has 10 years of history
       // supporting the restricted period" is not a 10-year non-compete.
-      /(?:non.?compete|non.?competition|restricted\s+period)[^.]{0,40}(?:of|shall\s+be|is|are|equal\s+to|not\s+exceed(?:ing)?)\s+(?:a\s+period\s+of\s+)?([6-9]|1[0-9])\s+years?/is,
-      /(?:for|of)\s+(?:a\s+)?(?:period\s+of\s+)?([6-9]|1[0-9])\s+years?[^.]{0,40}(?:non.?compete|non.?competition|restricted\s+period|shall\s+not\s+compete)/is,
-      /([6-9]|1[0-9])[\s-]*year\s+(?:non.?compete|non.?competition|restricted\s+period)/is,
+      /(?:non.?compete|non.?competition|restricted\s+period)[^.]{0,40}(?:of|shall\s+be|is|are|equal\s+to|not\s+exceed(?:ing)?)\s+(?:a\s+period\s+of\s+)?(?:[a-z]+[-\s]+)?\(?([6-9]|1[0-9])\)?\s+years?/is,
+      /(?:for|of)\s+(?:a\s+)?(?:period\s+of\s+)?(?:[a-z]+[-\s]+)?\(?([6-9]|1[0-9])\)?\s+years?[^.]{0,40}(?:non.?compete|non.?competition|restricted\s+period|shall\s+not\s+compete)/is,
+      /\(?([6-9]|1[0-9])\)?[\s-]*year\s+(?:non.?compete|non.?competition|restricted\s+period)/is,
     ],
     bad_title: "Non-compete duration appears > 5 years",
     bad_description:
