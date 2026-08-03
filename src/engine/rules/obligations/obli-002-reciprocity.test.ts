@@ -71,6 +71,45 @@ describe("OBLI-002 — reciprocity accounting", () => {
       ),
     ).toBeNull();
   });
+
+  it("does not read a generic reciprocal role as a one-sided obligor", () => {
+    // A mutual NDA writes confidentiality to "the Receiving Party" — a position
+    // BOTH parties occupy. The single role label is not a specific party bearing
+    // a one-sided burden, so this must not read as an asymmetry.
+    const mutual = [
+      { name: "Acme Corp", role: "Receiving Party" },
+      { name: "Globex LLC", role: "Receiving Party" },
+    ] as Partial<Party>[];
+    expect(
+      obli002.check(
+        ctxWith(mutual, [
+          { obligor: "Receiving Party", action: "hold all Confidential Information in confidence" },
+        ]),
+      ),
+    ).toBeNull();
+    // Recipient / Discloser are treated the same way.
+    expect(
+      obli002.check(
+        ctxWith(
+          [
+            { name: "A", role: "Recipient" },
+            { name: "B", role: "Recipient" },
+          ] as Partial<Party>[],
+          [{ obligor: "Recipient", action: "indemnify the other for a confidentiality breach" }],
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still flags a genuinely party-specific one-sided obligation", () => {
+    // The guard is scoped to reciprocal ROLE labels only — a one-sided indemnity
+    // from a specific party (Vendor) is a real asymmetry and still reported.
+    const finding = obli002.check(
+      ctxWith(PARTIES, [{ obligor: "Vendor", action: "indemnify Customer for all claims" }]),
+    );
+    expect(finding).not.toBeNull();
+    expect(finding?.title).toContain("indemnification");
+  });
 });
 
 describe("OBLI-002 — how the finding reads", () => {

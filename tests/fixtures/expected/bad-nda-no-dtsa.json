@@ -282,10 +282,9 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-002-s1-0",
-      "fired": true,
+      "fired": false,
       "rule_id": "OBLI-002",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -880,23 +879,6 @@
       "title": "No venue / forum clause detected"
     },
     {
-      "description": "Only receiving party bears this typically-mutual obligation.",
-      "document_position": 0,
-      "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "confidentiality obligation"
-      },
-      "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
-      "id": "OBLI-002-s1-0",
-      "rule_id": "OBLI-002",
-      "rule_version": "1.1.0",
-      "severity": "info",
-      "source_citations": [],
-      "title": "Asymmetric confidentiality obligation"
-    },
-    {
       "description": "The Receiving Party agrees to maintain in strict confidence all Confidential Information and shall not disclose any such",
       "document_position": 385,
       "excerpt": {
@@ -917,7 +899,7 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "39b726f47404964114ac9a3b6b2b8ad476b2ba4bd8dc2f2ab9ae34f39c5e9b84",
+  "result_hash": "b04763bdbb0752fa51090e15371839c85b80d8948508442d8cdf7e97eab680e1",
   "source_file": {
     "name": "bad-nda-no-dtsa.docx",
     "sha256": "6843694916dfef439851e84aca5bf213e35090b1a39f2b027f1e56d6382f2c29",

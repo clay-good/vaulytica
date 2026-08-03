@@ -25,10 +25,34 @@ const RECIPROCAL_PATTERNS = [
   { label: "warranties", pattern: /\bwarrant/i },
 ] as const;
 
+/**
+ * Role labels that name a POSITION either party can occupy, not a specific
+ * party — a mutual NDA / BAA defines "Receiving Party" so that each side is the
+ * Receiving Party when it holds the other's information. An obligation written
+ * to such a role ("the Receiving Party shall keep it confidential") is mutual
+ * by construction: both parties bear it. Counting the single role label as one
+ * obligor and reporting "only the Receiving Party bears this" is a false
+ * asymmetry — and even in a UNILATERAL NDA the Receiving Party's confidentiality
+ * duty is the expected shape, not an imbalance worth surfacing. Party-specific
+ * roles (Vendor, Customer, Employee, Landlord, Licensor) are deliberately NOT
+ * here: a one-sided indemnity from the Vendor alone is a genuine asymmetry.
+ */
+const RECIPROCAL_ROLES = new Set([
+  "receiving party",
+  "receiving parties",
+  "recipient",
+  "disclosing party",
+  "discloser",
+  "each party",
+  "either party",
+  "both parties",
+  "the parties",
+]);
+
 /** OBLI-002 — Reciprocity asymmetry (info). */
 export const rule: Rule = {
   id: "OBLI-002",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Reciprocity asymmetry",
   category: "obligations",
   default_severity: "info",
@@ -61,6 +85,10 @@ export const rule: Rule = {
         if (partySet.has(o2)) seenObligors.add(o2);
       }
       if (seenObligors.size === 1 && partySet.size >= 2) {
+        // A generic reciprocal role occupies both sides, so a single-role
+        // obligation is symmetric, not one-sided — skip it and keep checking the
+        // remaining reciprocal patterns for a genuinely party-specific asymmetry.
+        if (RECIPROCAL_ROLES.has([...seenObligors][0]!)) continue;
         return emit(ctx, rule, {
           title: `Asymmetric ${label} obligation`,
           description: `Only ${[...seenObligors][0]} bears this typically-mutual obligation.`,

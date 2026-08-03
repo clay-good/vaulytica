@@ -288,7 +288,7 @@
       "finding_id": "OBLI-002-s1-0",
       "fired": true,
       "rule_id": "OBLI-002",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -1043,7 +1043,7 @@
       "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
       "id": "OBLI-002-s1-0",
       "rule_id": "OBLI-002",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "info",
       "source_citations": [],
       "title": "Asymmetric indemnification obligation"
@@ -1121,7 +1121,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\", \"uptime\".",
-  "result_hash": "8ca6961d3cb07a5619adddc0c6436cc4906c806ddd44bede58d269af110aaf36",
+  "result_hash": "d41bfe12fc3869bed3e84736fc1d041440bc7d01b663d2c7a328eca2f5d998dd",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",

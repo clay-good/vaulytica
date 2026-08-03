@@ -291,7 +291,7 @@
       "finding_id": "OBLI-002-s1-0",
       "fired": true,
       "rule_id": "OBLI-002",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -1076,7 +1076,7 @@
       "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
       "id": "OBLI-002-s1-0",
       "rule_id": "OBLI-002",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "info",
       "source_citations": [],
       "title": "Asymmetric confidentiality obligation"
@@ -1197,7 +1197,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
-  "result_hash": "a4a6e64ecc5464e9c30362cf8bf3472611aa1675b14172a8b5bbda2460c96228",
+  "result_hash": "9d675053fc978f31ed88c883d2582ed345fe844a0cfe2f55faf2bd1b70ce5d86",
   "source_file": {
     "name": "bad-employment.docx",
     "sha256": "44e689f2fe4e8767866844995363dda962260fd37d54469e6d0fdf443136013c",

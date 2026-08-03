@@ -285,7 +285,7 @@
       "finding_id": "OBLI-002-s1-0",
       "fired": true,
       "rule_id": "OBLI-002",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -839,7 +839,7 @@
       "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
       "id": "OBLI-002-s1-0",
       "rule_id": "OBLI-002",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "info",
       "source_citations": [],
       "title": "Asymmetric indemnification obligation"
@@ -882,7 +882,7 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "a99a0cae13d19da184aa46b25fd7bfb0c723879bce585ebd21d4e1a8f635d7f3",
+  "result_hash": "e4883a4483728094f185136e6c9fcf7fee05646d0698e53ff468c6df14f4345f",
   "source_file": {
     "name": "bad-contractor-leaseback.docx",
     "sha256": "82496f664a3abe77b7ed03c7c77b47c9ffbd8c5f883389cb761b7ba68b31f98d",
