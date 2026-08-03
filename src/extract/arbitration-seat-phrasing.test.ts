@@ -27,6 +27,11 @@ const REGISTERS: Array<[clause: string, want: RegExp]> = [
     /^New York$/,
   ],
   ["The dispute shall be resolved before the LCIA in London, England.", /^London$/],
+  [
+    "Any dispute shall be finally resolved by arbitration under the ICC in Paris, France.",
+    /^Paris$/,
+  ],
+  ["Disputes shall be settled under the ICC Rules in Geneva, Switzerland.", /^Geneva$/],
 ];
 
 describe("arbitration-seat phrasing guard", () => {
@@ -52,6 +57,8 @@ describe("arbitration-seat phrasing guard", () => {
     for (const prose of [
       "Business is conducted in New York and Delaware.",
       "The annual meeting shall be held in Chicago, Illinois.",
+      "Obligations under the Agreement shall be performed in New York.",
+      "The rights of the parties under applicable law are exercised in Delaware.",
     ]) {
       const refs = extractJurisdictions(buildTree(["Body", prose]));
       expect(refs.find((r) => r.clause_kind === "arbitration-seat")).toBeUndefined();

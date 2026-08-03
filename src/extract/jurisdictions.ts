@@ -239,10 +239,10 @@ const ARBITRATION_SEAT = new RegExp(
     // verb-first: "(the) (arbitral) arbitration/tribunal shall take place/be seated/conducted/held/sit in X"
     String.raw`(?:the\s+)?(?:arbitral\s+)?(?:arbitration|tribunal)\s+(?:shall|will|must)\s+(?:take\s+place\s+in|be\s+(?:seated|conducted|held)\s+in|sit\s+in)\s+` +
     String.raw`|` +
-    // institution-first: "administered by JAMS in X", "before the ICC in X" — the
-    // named arbitral body fixes the clause as an arbitration seat, so the
-    // locality after "in"/"at" is the seat.
-    String.raw`(?:administered|conducted|held|resolved|settled|before)\s+(?:by\s+|the\s+)?(?:the\s+)?(?:${ARB_PROVIDER})\b(?:\s+(?:rules|arbitration))?\s+(?:in|at)\s+` +
+    // institution-first: "administered by JAMS in X", "before the ICC in X",
+    // "under the ICC Rules in X" — the named arbitral body fixes the clause as an
+    // arbitration seat, so the locality after "in"/"at" is the seat.
+    String.raw`(?:administered|conducted|held|resolved|settled|before|under)\s+(?:by\s+|the\s+)?(?:the\s+)?(?:${ARB_PROVIDER})\b(?:\s+(?:rules|arbitration))?\s+(?:in|at)\s+` +
     String.raw`)([A-Z][A-Za-z\s&\-]+?)(?=[.,;)]|\s+under|\s+pursuant|$)`,
   "gi",
 );
