@@ -31,6 +31,54 @@ describe("extractCitations — positive cases", () => {
     expect(c).toMatchObject({ title: "28", code: "U.S.C.", section: "1331" });
   });
 
+  it("parses common state statute forms with the full jurisdiction prefix", () => {
+    const cases: [string, string, string][] = [
+      // input                                    expected code                 section
+      ["Cal. Civ. Code § 1234", "Cal. Civ. Code", "1234"],
+      ["N.Y. Gen. Bus. Law § 349", "N.Y. Gen. Bus. Law", "349"],
+      ["42 Pa. Cons. Stat. § 8542", "42 Pa. Cons. Stat.", "8542"],
+      ["Del. Code Ann. tit. 8, § 102", "Del. Code Ann.", "102"],
+      ["Tex. Bus. & Com. Code § 17.46", "Tex. Bus. & Com. Code", "17.46"],
+      ["Fla. Stat. § 501.201", "Fla. Stat.", "501.201"],
+      ["Mass. Gen. Laws ch. 93A, § 2", "Mass. Gen. Laws", "2"],
+    ];
+    for (const [input, code, section] of cases) {
+      const hits = extractCitations(`As held under ${input}, the parties agree.`);
+      const c = hits.find((h) => h.kind === "statute");
+      expect(c, input).toBeDefined();
+      // The FULL jurisdiction prefix is captured, not the bare "Code"/"Stat.".
+      expect(c!.code, input).toBe(code);
+      expect(c!.section, input).toBe(section);
+    }
+  });
+
+  it("reads Illinois Compiled Statutes as a statute, never a malformed case", () => {
+    // Regression: "740 Ill. Comp. Stat. 14/15" and "740 ILCS 5/2" used to read
+    // as malformed CASE citations (unknown reporter) and draw a false CITE-001.
+    for (const form of ["740 Ill. Comp. Stat. 14/15", "740 ILCS 5/2", "815 ILCS 505/2"]) {
+      const hits = extractCitations(`Liability arises under ${form}.`);
+      expect(
+        hits.some((h) => h.kind === "statute"),
+        form,
+      ).toBe(true);
+      expect(
+        hits.filter((h) => h.kind === "case" && h.well_formed === false),
+        form,
+      ).toHaveLength(0);
+    }
+  });
+
+  it("does not read ordinary capitalized prose before a section sign as a statute", () => {
+    // Each jurisdiction token must be a period-terminated abbreviation, so a
+    // non-abbreviation capitalized run is not mistaken for a code name.
+    for (const prose of [
+      "The Board Approved Plan sets out § 4 obligations.",
+      "The Company Handbook Section governs § 12 conduct.",
+    ]) {
+      expect(extractCitations(prose).filter((h) => h.kind === "statute")).toHaveLength(0);
+    }
+  });
+
   it("parses a procedural rule citation", () => {
     const hits = extractCitations("Under Fed. R. App. P. 32, briefs are limited.");
     const c = hits.find((h) => h.kind === "rule");

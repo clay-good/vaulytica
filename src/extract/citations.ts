@@ -49,8 +49,30 @@ const CASE_RE =
 /** Federal statute: "28 U.S.C. § 1331". */
 const STATUTE_USC_RE = /\b(\d+)\s+(U\.S\.C\.|C\.F\.R\.)\s+§+\s*([\d.]+[a-z0-9()]*)/g;
 
-/** State code: "Cal. Rev. Stat. § 123" / "Tex. Code § 45.6". */
-const STATUTE_STATE_RE = /\b([A-Z][a-z]+\.?\s+(?:Rev\.\s+)?(?:Stat\.|Code))\s+§+\s*([\d.]+)/g;
+/**
+ * State statute, section-sign form. A run of jurisdiction/subject abbreviation
+ * tokens (each capitalized and period-terminated — "Cal.", "N.Y.", "Gen.",
+ * "Bus." — or a literal "&") followed by a code-type keyword (Code / Stat. /
+ * Laws / Law / Statutes), an optional "Ann.", an optional "tit."/"ch."
+ * subdivision, and a "§" section. Requiring each prefix token to be a
+ * period-terminated abbreviation is what keeps ordinary capitalized prose
+ * ("The Board Approved Plan § 4") from reading as a statute, while still
+ * capturing the FULL jurisdiction name ("Cal. Civ. Code § 1234", not the bare
+ * "Civ. Code" the old anchor-on-Code pattern produced). A leading title number
+ * ("42 Pa. Cons. Stat. § 8542") is captured when present.
+ */
+const STATUTE_STATE_RE =
+  /\b(\d{1,4}\s+)?((?:(?:[A-Z][A-Za-z'.]*\.|&)\s+)+(?:Code|Codes|Stat\.|Stats\.|Statutes|Laws|Law))(\s+Ann\.)?(?:\s+(?:tit\.|ch\.)\s*[\w-]+,?)?\s*§+\s*(\d+[\d.\-a-z()]*)/g;
+
+/**
+ * Illinois Compiled Statutes, "740 ILCS 5/2" / "740 Ill. Comp. Stat. 14/15".
+ * Distinctive chapter/section slash form with no "§". Without this the leading
+ * "740 Ill. Comp. Stat. 14" read as a malformed CASE citation (unknown
+ * reporter "Ill. Comp. Stat.") and drew a false CITE-001 accusation against a
+ * perfectly valid statute. Captured whole so it wins overlap resolution over
+ * the shorter bogus case candidate.
+ */
+const STATUTE_ILCS_RE = /\b(\d{1,4})\s+(ILCS|Ill\.\s+Comp\.\s+Stat\.)\s+(\d+\/[\d.]+[a-z0-9()]*)/g;
 
 /** Procedural rule: "Fed. R. App. P. 32" / "FRAP 32" / "FRCP 12(b)". */
 const RULE_RE =
@@ -166,13 +188,27 @@ function matchStatutesState(text: string): ParsedCitation[] {
   const out: ParsedCitation[] = [];
   for (const m of text.matchAll(STATUTE_STATE_RE)) {
     const start = m.index ?? 0;
+    const code = `${(m[1] ?? "").trim()} ${m[2] ?? ""}${m[3] ?? ""}`.trim();
     out.push({
       kind: "statute",
       raw: m[0],
       start,
       end: start + m[0].length,
-      code: m[1],
-      section: m[2],
+      title: m[1]?.trim() || undefined,
+      code,
+      section: m[4],
+    });
+  }
+  for (const m of text.matchAll(STATUTE_ILCS_RE)) {
+    const start = m.index ?? 0;
+    out.push({
+      kind: "statute",
+      raw: m[0],
+      start,
+      end: start + m[0].length,
+      title: m[1],
+      code: `${m[1] ?? ""} ${m[2] ?? ""}`.trim(),
+      section: m[3],
     });
   }
   return out;
