@@ -24,16 +24,34 @@ import { forEachParagraph, posInParagraph, trimEdges } from "./walk.js";
 const MODALS = [
   "may not",
   "is required to",
+  // Plural subjects state the same duty in the "are …" form — "the parties are
+  // required to maintain insurance". Only the singular forms were listed, so a
+  // plainly-stated multi-party obligation went unextracted.
+  "are required to",
   "is permitted to",
+  "are permitted to",
   "is prohibited from",
+  "are prohibited from",
   "cannot",
   "shall",
   "must",
   "will",
+  // "agrees to" (substantive: "Provider agrees to defend"). The PLURAL "agree
+  // to" is deliberately NOT here — "the parties agree to the following terms"
+  // is contract-formation boilerplate, not a substantive obligation.
   "agrees to",
   "is responsible for",
+  "are responsible for",
   "is obligated to",
+  "are obligated to",
   "undertakes to",
+  // A covenant IS a binding promise, so "covenants to <verb>" is always a
+  // substantive obligation. The multi-verb "covenants and agrees to" form is
+  // listed first so the obligor is not truncated to "… covenants and".
+  "covenants and agrees to",
+  "covenant and agree to",
+  "covenants to",
+  "covenant to",
   "hereby covenants",
 ];
 

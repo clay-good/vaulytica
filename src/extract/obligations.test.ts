@@ -110,4 +110,39 @@ describe("extractObligations", () => {
     expect(modals).toContain("is required to");
     expect(modals).toContain("cannot");
   });
+
+  it("captures plural-subject and covenant modals the singular list missed", () => {
+    const tree = buildTree([
+      "Covenants",
+      "The parties are required to maintain insurance.",
+      "The parties are responsible for their own taxes.",
+      "The Provider covenants to deliver the software.",
+      "The Provider covenants and agrees to defend the Customer.",
+    ]);
+    const obs = extractObligations(tree, []);
+    const modals = obs.map((o) => o.modal);
+    expect(modals).toContain("are required to");
+    expect(modals).toContain("are responsible for");
+    expect(modals).toContain("covenants to");
+    expect(modals).toContain("covenants and agrees to");
+    // The multi-verb covenant keeps the obligor intact ("Provider", not
+    // "Provider covenants and").
+    const defend = obs.find((o) => o.modal === "covenants and agrees to");
+    expect(defend?.obligor).toBe("The Provider");
+  });
+
+  it("does not read the contract-formation 'the parties agree to …' as an obligation", () => {
+    // Plural "agree to" is boilerplate (formation), deliberately excluded — the
+    // substantive singular "agrees to" still extracts.
+    const boilerplate = extractObligations(
+      buildTree(["Recitals", "The parties agree to the following terms and conditions."]),
+      [],
+    );
+    expect(boilerplate).toHaveLength(0);
+    const substantive = extractObligations(
+      buildTree(["Body", "The Provider agrees to indemnify the Customer."]),
+      [],
+    );
+    expect(substantive.map((o) => o.modal)).toContain("agrees to");
+  });
 });
