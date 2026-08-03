@@ -15,14 +15,20 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
  * clauses — fires at reduced (info) severity saying so.
  */
 
-const TERM_RE = /\bterm\s+of\s+(\d{1,4})\s+(day|days|month|months|year|years)\b/i;
-const NOTICE_RE = /\b(\d{1,3})\s+days?\s+(?:prior\s+)?(?:written\s+)?notice\b/i;
+// Counts are almost always parenthesized in a contract — "a term of one (1)
+// year", "sixty (60) days' notice" — so tolerate a spelled-out word before the
+// authoritative digit and the parentheses around it. Without this the rule saw
+// neither number in the standard drafting form and the inconsistency check
+// never ran.
+const TERM_RE =
+  /\bterm\s+of\s+(?:[a-z]+[-\s]+)?\(?(\d{1,4})\)?\s+(day|days|month|months|year|years)\b/i;
+const NOTICE_RE = /\b\(?(\d{1,3})\)?\s+days?\s+(?:prior\s+)?(?:written\s+)?notice\b/i;
 const AUTO_RENEW_RE =
   /\bauto(?:matic(?:ally)?)?[- ]?renew|\bsuccessive\s+(?:renewal\s+)?(?:terms?|periods?)\b|\brenews?\s+for\s+successive\b|\bmonth[- ]to[- ]month\b/i;
 
 export const rule: Rule = {
   id: "TEMP-003",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Deadline-to-term inconsistency",
   category: "temporal",
   default_severity: "warning",

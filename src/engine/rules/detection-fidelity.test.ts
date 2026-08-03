@@ -114,6 +114,27 @@ describe("TEMP-003 — term/notice pairing awareness", () => {
     expect(finding?.severity).toBe("info");
     expect(finding?.explanation).toContain("lower-confidence");
   });
+
+  it("reads the parenthesized term and notice counts (v1.2.0)", () => {
+    // "term of ninety (90) days" + "one hundred twenty (120) days notice" — the
+    // standard drafting form the bare-digit pattern could not see.
+    const ctx = buildContext([
+      "Term",
+      "This Agreement has a term of ninety (90) days and may be terminated on one hundred twenty (120) days prior written notice.",
+    ]);
+    const finding = TEMP_003.check(ctx);
+    expect(finding, "paren counts not read").not.toBeNull();
+    expect(finding!.description).toContain("120 days");
+    expect(finding!.description).toContain("90 days");
+  });
+
+  it("does not flag a parenthesized notice shorter than the term", () => {
+    const ctx = buildContext([
+      "Term",
+      "This Agreement has a term of five (5) years and may be terminated on sixty (60) days written notice.",
+    ]);
+    expect(TEMP_003.check(ctx)).toBeNull();
+  });
 });
 
 describe("PERS-009 — a sale-of-business covenant is a different regime (v1.2.0)", () => {
