@@ -80,4 +80,27 @@ describe("RISK-005 — limitation of liability present", () => {
       RISK_005.check(doc("The Provider shall not be liable for the acts of third parties.")),
     ).not.toBeNull();
   });
+
+  it("reads more cap phrasings the label/exceed patterns missed (v1.3.0)", () => {
+    for (const clause of [
+      "Our total liability under this Agreement will be no more than the amount you paid us.",
+      "Neither party shall be liable to the other for any amount exceeding the fees paid.",
+      "In no event shall the aggregate damages payable by either party exceed the fees paid.",
+      "The Provider shall not be liable in excess of the total Contract Value.",
+    ]) {
+      expect(RISK_005.check(doc(clause)), `MISSED cap: ${clause}`).toBeNull();
+    }
+  });
+
+  it("does not read a liability FLOOR / basket as a cap (still fires)", () => {
+    // "shall be liable for amounts exceeding $X" is a basket/threshold, the
+    // OPPOSITE of a cap — the required negation keeps it out.
+    for (const clause of [
+      "The Provider shall be liable for all amounts exceeding the ten thousand dollar basket.",
+      "Liquidated damages of $500 per day shall apply to late delivery.",
+      "The Vendor shall be liable for and indemnify the Customer against all third-party claims.",
+    ]) {
+      expect(RISK_005.check(doc(clause)), `FALSE cap: ${clause}`).not.toBeNull();
+    }
+  });
 });

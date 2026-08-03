@@ -15,18 +15,25 @@ import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
  */
 // The "in no event" cap is handled in BOTH orders, and "under no
 // circumstances" is its equally common synonym — "Under no circumstances shall
-// the Supplier's liability exceed the purchase price". The final branch adds
-// the "shall not be liable for more than $X / in excess of X" cap phrasing,
-// which states the ceiling without the word "exceed". These are dollar/fees
-// CAPS; a bare consequential-damages exclusion ("shall not be liable for lost
-// profits") is deliberately not a cap and still fires.
+// the Supplier's liability exceed the purchase price". Further cap phrasings:
+//   - "liability … shall/will be no more than / no greater than X";
+//   - an in-no-event cap stated on aggregate/total/cumulative/maximum DAMAGES
+//     rather than "liability" (the aggregating adjective keeps a stray
+//     "liquidated damages" / "consequential damages" mention out);
+//   - a negated "be liable" ceiling that states the amount WITHOUT "exceed" —
+//     "shall not be liable … more than / in excess of / exceeding", and its
+//     "neither party shall be liable … exceeding" form. The negation ("not" /
+//     "neither party") is REQUIRED, so a liability FLOOR / basket ("Provider
+//     shall be liable for amounts exceeding $10,000") is not misread as a cap.
+// These are dollar/fees CAPS; a bare consequential-damages exclusion ("shall
+// not be liable for lost profits") is deliberately not a cap and still fires.
 const LIMITATION_OF_LIABILITY =
-  /\blimitation\s+of\s+liability\b|\baggregate\s+liability\b|\bliabilit(?:y|ies)\b[^.]{0,200}?\b(?:shall|will)\s+not\s+exceed\b|\bliabilit(?:y|ies)\b[^.]{0,160}?\b(?:capped|limited)\s+(?:at|to)\b|\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b[^.]{0,140}?\bliabilit(?:y|ies)\b[^.]{0,80}?\bexceed\b|\bliabilit(?:y|ies)\b[^.]{0,80}?\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b[^.]{0,40}?\bexceed\b|\b(?:shall|will)\s+not\s+be\s+liable\s+for\s+(?:an\s+amount\s+)?(?:more\s+than|in\s+excess\s+of)\b/i;
+  /\blimitation\s+of\s+liability\b|\baggregate\s+liability\b|\bliabilit(?:y|ies)\b[^.]{0,200}?\b(?:shall|will)\s+not\s+exceed\b|\bliabilit(?:y|ies)\b[^.]{0,200}?\b(?:shall|will)\s+be\s+no\s+(?:more|greater)\s+than\b|\bliabilit(?:y|ies)\b[^.]{0,160}?\b(?:capped|limited)\s+(?:at|to)\b|\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b[^.]{0,140}?\bliabilit(?:y|ies)\b[^.]{0,80}?\bexceed\b|\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b[^.]{0,120}?\b(?:aggregate|total|cumulative|maximum)\s+damages\b[^.]{0,60}?\bexceed\b|\bliabilit(?:y|ies)\b[^.]{0,80}?\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b[^.]{0,40}?\bexceed\b|\b(?:neither\s+(?:party|of\s+the\s+parties)\s+(?:shall|will)\s+be|(?:shall|will)\s+not\s+be)\s+liable\b[^.]{0,70}?\b(?:more\s+than|in\s+excess\s+of|exceeding)\b/i;
 
 /** RISK-005 — Limitation of liability present (warning). */
 export const rule: Rule = {
   id: "RISK-005",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Limitation of liability present",
   category: "risk-allocation",
   default_severity: "warning",
