@@ -188,7 +188,7 @@
       "finding_id": "FIN-005-s1-0",
       "fired": true,
       "rule_id": "FIN-005",
-      "rule_version": "1.6.3"
+      "rule_version": "1.6.4"
     },
     {
       "elapsed_ms": 0,
@@ -745,7 +745,7 @@
       "explanation": "Commercial contracts should state when payment is due. 'Net 30' or 'due within X days of invoice' is the typical formulation. Without it, payment timing defaults to the governing-law rule.",
       "id": "FIN-005-s1-0",
       "rule_id": "FIN-005",
-      "rule_version": "1.6.3",
+      "rule_version": "1.6.4",
       "severity": "warning",
       "source_citations": [],
       "title": "No payment-term clause detected"
@@ -926,7 +926,7 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected msa-general (score 1). Title matched: \"master services agreement\", \"services agreement\". Distinguishing phrases: \"SOW\", \"Services\", \"Deliverables\", \"Provider\", \"Customer\".",
-  "result_hash": "c65328c1eb766ccbc5497ef2780affac9c8ba48acde221dd322a2ae9a02bd1c1",
+  "result_hash": "66ebdd95cf1ea649ddc731c5696d9aba5c67f2a8bec335588967e98abec016dc",
   "source_file": {
     "name": "bad-msa-mfn.docx",
     "sha256": "6c82de5ccf5a22064c5da0ad551848546762dc4f0b2fecf127a52f93798fe73d",

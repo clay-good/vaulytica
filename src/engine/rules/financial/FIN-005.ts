@@ -76,6 +76,12 @@ const PAYMENT_TERMS = new RegExp(
     // Closing-Date branch above requires "on the Closing DATE"; the bare
     // event ("at the Closing") went unrecognized, warning a plain payment term.
     `\\b(?:due|payable|paid)\\s+(?:and\\s+payable\\s+)?(?:in\\s+cash\\s+)?(?:at|on)\\s+(?:the\\s+)?closing\\b`,
+    // A retainer or deposit states its term as the SIGNING / EXECUTION of the
+    // agreement — "the fee is due at signing", "payable upon execution of this
+    // Agreement" — a sibling of the "at closing" branch above. "execution" is
+    // scoped to the agreement itself ("of this Agreement" / "hereof") so a
+    // milestone "due upon execution of Phase 1" is not read as a payment term.
+    `\\b(?:due|payable|paid)\\s+(?:and\\s+payable\\s+)?(?:in\\s+cash\\s+)?(?:at|upon|on)\\s+(?:the\\s+)?(?:signing|execution\\s+(?:of\\s+this\\s+\\w+|hereof))\\b`,
     `\\bpayable\\s+as\\s+follows\\b`,
     // The installment count is optional: a lease states "annual base rent …
     // payable in equal monthly installments" with no number, and that cadence
@@ -103,7 +109,7 @@ const ANY_PAYMENT = /\b(fee|payment|invoice|amount\s+due|payable)\b/i;
 /** FIN-005 — Payment terms presence and parseability (warning). */
 export const rule: Rule = {
   id: "FIN-005",
-  version: "1.6.3",
+  version: "1.6.4",
   name: "Payment terms presence and parseability",
   category: "financial",
   default_severity: "warning",

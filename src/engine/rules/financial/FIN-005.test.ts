@@ -248,3 +248,23 @@ describe("FIN-005 — hyphenated compound-number windows (v1.4.2)", () => {
     ).toBeNull();
   });
 });
+
+describe("FIN-005 — retainer/deposit due at signing (v1.6.4)", () => {
+  it("reads a fee due at signing or upon execution of the agreement", () => {
+    for (const text of [
+      "The retainer fee of $5,000 is due at signing.",
+      "The deposit is payable upon signing of this Agreement.",
+      "The fee is payable upon execution of this Agreement.",
+    ]) {
+      expect(FIN_005.check(doc(text)), text).toBeNull();
+    }
+  });
+
+  it("still warns when 'execution' names a milestone, not the agreement", () => {
+    // "due upon execution of Phase 1" is a delivery milestone, not a payment
+    // term — the agreement-scoping keeps it out, so the rule still fires.
+    expect(
+      FIN_005.check(doc("The deliverable fee is due upon execution of Phase 1.")),
+    ).not.toBeNull();
+  });
+});

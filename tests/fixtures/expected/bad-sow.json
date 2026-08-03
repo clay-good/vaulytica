@@ -189,7 +189,7 @@
       "finding_id": "FIN-005-s1-0",
       "fired": true,
       "rule_id": "FIN-005",
-      "rule_version": "1.6.3"
+      "rule_version": "1.6.4"
     },
     {
       "elapsed_ms": 0,
@@ -803,7 +803,7 @@
       "explanation": "Commercial contracts should state when payment is due. 'Net 30' or 'due within X days of invoice' is the typical formulation. Without it, payment timing defaults to the governing-law rule.",
       "id": "FIN-005-s1-0",
       "rule_id": "FIN-005",
-      "rule_version": "1.6.3",
+      "rule_version": "1.6.4",
       "severity": "warning",
       "source_citations": [],
       "title": "No payment-term clause detected"
@@ -1020,7 +1020,7 @@
   "playbook_id": "sow",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected sow (score 0.9). Title matched: \"statement of work\". Distinguishing phrases: \"this SOW\", \"Master Agreement\", \"Deliverables\", \"milestones\".",
-  "result_hash": "870e6feda8eb66a8d38853cb3572d7402da92cba8fc504d32b52bf96944da78a",
+  "result_hash": "49a950afde9ef9041e7929f458f70033954b2c5a5dc9fce58fc71425e3daf5ba",
   "source_file": {
     "name": "bad-sow.docx",
     "sha256": "cd7208763b891cf8cb8e1c853b54f63fb70fe10004a489fbeb95921a14b84c3c",
