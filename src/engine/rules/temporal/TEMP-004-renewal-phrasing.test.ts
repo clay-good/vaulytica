@@ -14,12 +14,17 @@ const RENEWAL: string[] = [
   "The Agreement will be extended automatically for additional terms.",
   "The initial term shall be renewed automatically for successive periods.",
   "This Agreement continues on an evergreen basis unless canceled.",
+  // Noun-form evergreen: "continue for successive … renewal terms/periods".
+  "The Agreement will continue for successive one-year renewal terms unless either party terminates.",
+  "The subscription continues for successive renewal periods absent written notice.",
 ];
 
 // Decoys: text that mentions renewal-adjacent words but is NOT auto-renewal.
 const NOT_RENEWAL: string[] = [
   "Either party may renew this Agreement by mutual written agreement.",
   "The license does not renew and terminates at the end of the term.",
+  // "renewal terms" without "successive" is a manual-renewal reference.
+  "The renewal terms, if any, shall be negotiated by the parties in good faith.",
 ];
 
 describe("TEMP-004 auto-renewal phrasing guard", () => {

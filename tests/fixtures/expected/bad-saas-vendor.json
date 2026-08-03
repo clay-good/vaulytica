@@ -635,7 +635,7 @@
       "finding_id": "TEMP-004-s1.5-956",
       "fired": true,
       "rule_id": "TEMP-004",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -940,7 +940,7 @@
       "explanation": "Auto-renewal commits the customer to another term unless they actively opt out. The notice window is the critical detail; verify it is reasonable and well-located.",
       "id": "TEMP-004-s1.5-956",
       "rule_id": "TEMP-004",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1121,7 +1121,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\", \"uptime\".",
-  "result_hash": "c073ff5eb3a1464bc4b3120a95d5aff07a16a7ec60a31d6af319e484da1452fa",
+  "result_hash": "6f7fe291b8ff946a1eae5c112808201ee5702ca15e571605183de91321af167f",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",
