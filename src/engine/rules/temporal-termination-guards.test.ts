@@ -103,6 +103,30 @@ describe("TERM-001 — termination-for-convenience notice", () => {
       ),
     ).not.toBeNull();
   });
+
+  it("reads the parenthetical notice count and for-convenience synonyms (v1.1.0)", () => {
+    // "thirty (30) days" is the standard drafting form; the ")" between the
+    // digit and "days" used to defeat the match entirely.
+    for (const [text, days] of [
+      ["Either party may terminate for convenience upon thirty (30) days written notice.", 30],
+      ["Either party may terminate without cause upon sixty (60) days' written notice.", 60],
+      ["Customer may terminate for any reason upon 45 days prior written notice.", 45],
+      ["Client may terminate with or without cause upon 30 days written notice.", 30],
+    ] as const) {
+      const f = TERM001.check(clause(text));
+      expect(f, `MISSED: ${text}`).not.toBeNull();
+      expect(f!.title).toContain(`${days} days`);
+    }
+  });
+
+  it("does not read a for-cause termination as for-convenience", () => {
+    for (const text of [
+      "Either party may terminate for cause upon thirty (30) days notice to cure.",
+      "The Bank may terminate at any time for cause upon 10 days written notice.",
+    ]) {
+      expect(TERM001.check(clause(text)), `FALSE convenience: ${text}`).toBeNull();
+    }
+  });
 });
 
 describe("TERM-009 — asymmetric termination-for-convenience", () => {
