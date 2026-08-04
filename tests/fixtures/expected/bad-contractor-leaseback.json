@@ -224,7 +224,7 @@
       "finding_id": "IPDATA-002-s1.3-855",
       "fired": true,
       "rule_id": "IPDATA-002",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -744,7 +744,7 @@
       "explanation": "Without an explicit carve-out, a broad assignment can sweep in the assigning party's pre-existing IP. Modern drafting carves out 'Background IP' or 'Pre-existing IP' to scope the assignment.",
       "id": "IPDATA-002-s1.3-855",
       "rule_id": "IPDATA-002",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Pre-existing IP carve-out not stated"
@@ -882,7 +882,7 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "97e6bfdbffdb11727cb4bc2dd62e9490d096fd3cbf95fefbe38b4246f666f107",
+  "result_hash": "106cf838d2e424706ba8af62c53cf20f3deb58a508c382d4f396f1fd9cde1c26",
   "source_file": {
     "name": "bad-contractor-leaseback.docx",
     "sha256": "82496f664a3abe77b7ed03c7c77b47c9ffbd8c5f883389cb761b7ba68b31f98d",

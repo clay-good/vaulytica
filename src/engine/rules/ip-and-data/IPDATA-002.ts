@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 /** IPDATA-002 — Pre-existing IP carve-out clarity (warning). */
 export const rule: Rule = {
   id: "IPDATA-002",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Pre-existing IP carve-out",
   category: "ip-and-data",
   default_severity: "warning",
@@ -16,8 +16,16 @@ export const rule: Rule = {
       /\b(?:hereby\s+)?assigns?\b[\s\S]{0,200}intellectual\s+property|\b(?:works?\s+made\s+for\s+hire)\b/i,
     );
     if (!hit) return null;
+    // The carve-out is named many ways. The classic invention-assignment
+    // form — "this assignment does not apply to Prior Inventions" (the Cal.
+    // Lab. Code § 2870 schedule) — plus "Background Technology / Materials",
+    // "Retained IP", and "Existing Intellectual Property" are all carve-outs;
+    // recognizing only "pre-existing / background IP" reported the carve-out
+    // missing on the standard employee IP agreement that plainly states one.
     if (
-      /\b(?:pre[- ]?existing|background|prior)\s+(?:IP|intellectual\s+property)\b/i.test(hit.text)
+      /\b(?:pre[- ]?existing|background|prior|existing|retained)\s+(?:IP\b|intellectual\s+property|inventions?|technology|materials?|works?|know[- ]how)\b/i.test(
+        hit.text,
+      )
     )
       return null;
     return emit(ctx, rule, {

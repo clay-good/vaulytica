@@ -227,7 +227,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "IPDATA-002",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -1020,7 +1020,7 @@
   "playbook_id": "sow",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected sow (score 0.9). Title matched: \"statement of work\". Distinguishing phrases: \"this SOW\", \"Master Agreement\", \"Deliverables\", \"milestones\".",
-  "result_hash": "1ac1589a0f53e1b8cd20ad11227bcb6553790d40859a5e22b7efa312416b36b4",
+  "result_hash": "389e8e7d746a8ebd8e20ded68923aa9d33ca77342ebcd23060d88e08007c175e",
   "source_file": {
     "name": "bad-sow.docx",
     "sha256": "cd7208763b891cf8cb8e1c853b54f63fb70fe10004a489fbeb95921a14b84c3c",
