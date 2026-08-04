@@ -310,9 +310,10 @@
     },
     {
       "elapsed_ms": 0,
-      "fired": false,
+      "finding_id": "OBLI-006-s1.2-300",
+      "fired": true,
       "rule_id": "OBLI-006",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -982,6 +983,32 @@
       "title": "'Best efforts' standard used"
     },
     {
+      "description": "One party retains sole discretion over a stated determination.",
+      "document_position": 300,
+      "excerpt": {
+        "end_offset": 329,
+        "section_id": "s1.2",
+        "start_offset": 300,
+        "text": " detailed by Customer from time to time at Customer's sole discretion."
+      },
+      "explanation": "Sole-discretion clauses give one party unilateral power. They are bounded by the implied duty of good faith and fair dealing (Restatement (Second) of Contracts § 205), but the language is asymmetric and worth a deliberate review.",
+      "id": "OBLI-006-s1.2-300",
+      "rule_id": "OBLI-006",
+      "rule_version": "1.1.0",
+      "severity": "info",
+      "source_citations": [
+        {
+          "id": "stat-restatement-205-good-faith",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Restatement (Second) of Contracts § 205 (Duty of Good Faith and Fair Dealing)",
+          "source_url": "https://www.law.cornell.edu/wex/good_faith"
+        }
+      ],
+      "title": "'In its sole discretion' clause present"
+    },
+    {
       "description": "The contract uses \"best efforts\" without defining it.",
       "document_position": 147,
       "excerpt": {
@@ -1020,7 +1047,7 @@
   "playbook_id": "sow",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected sow (score 0.9). Title matched: \"statement of work\". Distinguishing phrases: \"this SOW\", \"Master Agreement\", \"Deliverables\", \"milestones\".",
-  "result_hash": "a18242b541a5bba382b46ad0bb2bab12e3eed6a08eb230193fe9f8ce2b5fa689",
+  "result_hash": "9879f26e0691419e26b27dbedd9bdeeac0f78be12ecb47d38b426a59a5f013d4",
   "source_file": {
     "name": "bad-sow.docx",
     "sha256": "cd7208763b891cf8cb8e1c853b54f63fb70fe10004a489fbeb95921a14b84c3c",
