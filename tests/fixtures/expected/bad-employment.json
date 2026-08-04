@@ -388,7 +388,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "PERS-008",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -1232,7 +1232,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
-  "result_hash": "936531b8c34609dc009e726e352cad1632deb58c8da1166744d23d4815166f11",
+  "result_hash": "a136c82a0a60e72936af52f5b558a7b68a21f639ab2852a34ab607591e9b78b2",
   "source_file": {
     "name": "bad-employment.docx",
     "sha256": "44e689f2fe4e8767866844995363dda962260fd37d54469e6d0fdf443136013c",

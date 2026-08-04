@@ -37,6 +37,38 @@ describe("PERS-008 — training-repayment / stay-or-pay", () => {
     expect(PERS_008.check(ctx)).not.toBeNull();
   });
 
+  it("fires on `repay the training costs` — the bare-'the' form (v1.1.0)", () => {
+    const ctx = buildContext([
+      "Training",
+      "If the Employee resigns within twenty-four (24) months, the Employee shall repay the training costs of $10,000.",
+    ]);
+    expect(PERS_008.check(ctx)).not.toBeNull();
+  });
+
+  it("fires on `reimburse the Company for training` (v1.1.0)", () => {
+    const ctx = buildContext([
+      "Vesting",
+      "The Employee shall reimburse the Company for training costs if they leave within one (1) year.",
+    ]);
+    expect(PERS_008.check(ctx)).not.toBeNull();
+  });
+
+  it("fires on `clawback of the signing bonus` (v1.1.0)", () => {
+    const ctx = buildContext([
+      "Signing Bonus",
+      "The Company reserves a clawback of the signing bonus if the Employee departs within twelve (12) months.",
+    ]);
+    expect(PERS_008.check(ctx)).not.toBeNull();
+  });
+
+  it("stays silent on reimbursement of non-training costs", () => {
+    const ctx = buildContext([
+      "Expenses",
+      "The Employee is entitled to reimbursement of reasonable travel costs.",
+    ]);
+    expect(PERS_008.check(ctx)).toBeNull();
+  });
+
   it("is silent on a plain offer letter", () => {
     const ctx = buildContext([
       "Compensation",

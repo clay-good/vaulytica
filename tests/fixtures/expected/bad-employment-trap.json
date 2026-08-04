@@ -381,7 +381,7 @@
       "finding_id": "PERS-008-s1.2-280",
       "fired": true,
       "rule_id": "PERS-008",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -777,7 +777,7 @@
       "id": "PERS-008-s1.2-280",
       "recommendation": "Strike the clause. If retention is the goal, use vesting equity, deferred compensation, or a discretionary retention bonus — none of which transfer to the employer's exit-cost-shifting goal but also none of which trigger the same enforcement risk.",
       "rule_id": "PERS-008",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "critical",
       "source_citations": [],
       "title": "Training-repayment / stay-or-pay clause"
@@ -1027,7 +1027,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.9). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
-  "result_hash": "5e3394ec3bd25985a69359c2558c785be2a2a5ce9d2f2e1ac1852cc1a2279228",
+  "result_hash": "37b796ac05d6a410e77da1d0babba8110cdb5d63b2db56c7e55d75f167272171",
   "source_file": {
     "name": "bad-employment-trap.docx",
     "sha256": "c0ef11cc8a800daead332bf1bc265f96d72af1c51953958734b1bf18c4058b2a",
