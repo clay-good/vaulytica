@@ -87,7 +87,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "DARK-002",
-      "rule_version": "1.3.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -638,7 +638,7 @@
       "finding_id": "TEMP-005-s1.1-365",
       "fired": true,
       "rule_id": "TEMP-005",
-      "rule_version": "1.2.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -940,7 +940,7 @@
       "explanation": "Typical auto-renewal notice windows are 30 to 90 days. Anything outside that band — too long and the customer is likely to forget, too short and they are likely to miss it — warrants review under FTC negative-option marketing guidance (16 CFR Part 425).",
       "id": "TEMP-005-s1.1-365",
       "rule_id": "TEMP-005",
-      "rule_version": "1.2.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1096,7 +1096,7 @@
   "playbook_id": "lease-commercial-multitenant",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected lease-commercial-multitenant (score 0.9). Title matched: \"office lease\". Distinguishing phrases: \"Landlord\", \"Tenant\", \"Premises\", \"Common Area\", \"Rentable Square Feet\", \"Base Rent\", \"Operating Expenses\".",
-  "result_hash": "da72c496e113dc49f7102580c425e1e58445e5e4bcb8bc4b2697d3f35fea074d",
+  "result_hash": "da958b9b3b6cb284fff483d2556eac6b90880f67a73f075e5aff4c8f9e7874e3",
   "source_file": {
     "name": "bad-lease.docx",
     "sha256": "b9f12348ac5e0f56fe223c8e264370bf1159ebafc2e1c7e1fdb5a811ed1eea17",

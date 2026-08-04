@@ -4,7 +4,7 @@ import { emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
 /** TEMP-005 — Auto-renewal notice window unusual (warning). */
 export const rule: Rule = {
   id: "TEMP-005",
-  version: "1.2.0",
+  version: "1.1.0",
   name: "Auto-renewal notice window unusual",
   category: "temporal",
   default_severity: "warning",
@@ -15,8 +15,12 @@ export const rule: Rule = {
       ctx,
       // The count is parenthesized in the standard form — "ninety (90) days'
       // notice of non-renewal" — so tolerate the "(90)"; a bare-digit-only
-      // pattern could not evaluate the window when written that way.
-      /(?:auto(?:matic)?(?:ally)?\s+(?:renew|renewal|extend)|non[- ]renewal)[\s\S]{0,200}?\(?(\d{1,3})\)?\s+days/i,
+      // pattern could not evaluate the window when written that way. The
+      // separator after "auto" is `[\s-]+`, not `\s+`, so the hyphenated
+      // "auto-renews" / "auto-renewal" (the dominant consumer form) is matched
+      // alongside "automatically renews" — sibling rules TEMP-004 / TEMP-011
+      // already read the hyphen.
+      /(?:auto(?:matic)?(?:ally)?[\s-]+(?:renew|renewal|extend)|non[- ]renewal)[\s\S]{0,200}?\(?(\d{1,3})\)?\s+days/i,
     );
     if (!hit) return null;
     // The matched span must not cross a termination-for-cause / convenience /

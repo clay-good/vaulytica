@@ -87,7 +87,7 @@
       "finding_id": "DARK-002-s1.3-634",
       "fired": true,
       "rule_id": "DARK-002",
-      "rule_version": "1.3.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -640,7 +640,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "TEMP-005",
-      "rule_version": "1.2.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -780,7 +780,7 @@
       "explanation": "When the non-renewal notice window is in a different section from the auto-renewal clause or longer than 90 days, customers commonly miss it. FTC negative-option guidance (16 CFR Part 425) addresses this pattern.",
       "id": "DARK-002-s1.3-634",
       "rule_id": "DARK-002",
-      "rule_version": "1.3.0",
+      "rule_version": "1.4.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1129,7 +1129,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "8050645c8b6b82f11bac9324c468d62203559f05d092bf254188cac98a3ed496",
+  "result_hash": "7b760ee2fc4657ca117fbf814083185cf7907902b2eb336732d5f6674938dde6",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",

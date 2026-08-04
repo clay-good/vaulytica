@@ -144,6 +144,23 @@ describe("TEMP-005 / TEMP-011 — auto-renewal non-renewal window", () => {
       ),
     ).toBeNull();
   });
+
+  it("reads the hyphenated 'auto-renews' / 'auto-renewal' spelling (TEMP-005 v1.1.0)", () => {
+    // The dominant consumer spelling is hyphenated; the space-only separator
+    // missed it while TEMP-004 / TEMP-011 already read the hyphen.
+    const unusual = TEMP005.check(
+      clause(
+        "This Agreement auto-renews for successive terms; a party must give 120 days notice of non-renewal.",
+      ),
+    );
+    expect(unusual).not.toBeNull();
+    expect(unusual!.title).toContain("120 days");
+    expect(
+      TEMP005.check(
+        clause("This is an auto-renewal contract requiring 15 days notice of non-renewal."),
+      ),
+    ).not.toBeNull();
+  });
 });
 
 describe("TERM-001 — termination-for-convenience notice", () => {

@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 /** DARK-002 — Auto-renewal with hidden notice window (warning). */
 export const rule: Rule = {
   id: "DARK-002",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Auto-renewal with hidden notice window",
   category: "dark-patterns",
   default_severity: "warning",
@@ -20,7 +20,11 @@ export const rule: Rule = {
       // branch too ("automatically renews / renewed / renewing"): a bare
       // "renew\b" failed on the trailing "s" of "renews", so "automatically
       // renews" — equally common — was not detected at all.
-      /\b(?:auto(?:matic)?(?:ally)?\s+(?:renew(?:s|ed|ing|al)?|extend(?:s|ed|ing)?)|renew(?:s|ed|ing)?\s+automatically|automatic\s+renewal)\b/i,
+      // The separator after "auto" is `[\s-]+`, not `\s+`, so the hyphenated
+      // "auto-renews" / "auto-renewal" — THE dominant consumer-terms spelling
+      // ("your subscription auto-renews") — is detected, not only the spaced
+      // "automatically renews".
+      /\b(?:auto(?:matic)?(?:ally)?[\s-]+(?:renew(?:s|ed|ing|al)?|extend(?:s|ed|ing)?)|renew(?:s|ed|ing)?\s+automatically|automatic\s+renewal)\b/i,
     );
     if (!auto) return null;
     // The detector matches the phrase even when it is NEGATED — "this

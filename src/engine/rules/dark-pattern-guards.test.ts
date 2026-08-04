@@ -37,6 +37,28 @@ describe("DARK-002 — auto-renewal notice window", () => {
     ).toBeNull();
   });
 
+  it("reads the hyphenated 'auto-renews' consumer spelling (v1.4.0)", () => {
+    // "your subscription auto-renews" is the dominant consumer-terms spelling;
+    // the space-only separator missed it entirely.
+    expect(
+      DARK002.check(
+        doc(
+          "Term",
+          "The subscription auto-renews for successive one-year terms. Non-renewal requires 120 days advance notice.",
+        ),
+      ),
+    ).not.toBeNull();
+    // A negated "does not auto-renew" stays silent.
+    expect(
+      DARK002.check(
+        doc(
+          "Term",
+          "The subscription does not auto-renew. Non-renewal requires 120 days advance notice.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
   it("reads the adverb-first 'automatically renews' and a cancellation window (v1.2.0)", () => {
     // "automatically renews" (adverb-first, plural verb) was not detected at
     // all; and the window stated as a cancellation deadline relative to renewal.
