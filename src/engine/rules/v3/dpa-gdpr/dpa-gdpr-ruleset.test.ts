@@ -436,3 +436,32 @@ describe("DPA-052 — survival clause recognizes 'survive expiration' phrasing (
     ).toBe(true);
   });
 });
+
+describe("DPA-013 — deletion-or-return recognizes 'destroy or return' (v1.1.0)", () => {
+  const has = async (body: string) => {
+    const run = await runEngine({
+      rules: DPA_GDPR_RULES,
+      ctx: withDpa(buildContext(["DPA", body])),
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+  it("does not report the clause missing when written 'destroy or return' / 'returned or destroyed'", async () => {
+    expect(
+      (await has("Upon end of services, Processor shall destroy or return all Personal Data.")).has(
+        "DPA-013",
+      ),
+    ).toBe(false);
+    expect(
+      (
+        await has("All Personal Data shall be returned or destroyed at the end of the services.")
+      ).has("DPA-013"),
+    ).toBe(false);
+  });
+  it("still fires when no deletion/destruction/return clause is present", async () => {
+    expect(
+      (await has("Processor shall process Personal Data per instructions.")).has("DPA-013"),
+    ).toBe(true);
+  });
+});

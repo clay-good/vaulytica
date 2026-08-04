@@ -281,6 +281,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
   }),
   presence({
     id: "USDPA-015",
+    version: "1.1.0",
     name: "Multi-state: deletion or return",
     description:
       "Processor must delete or return personal data at end of services at controller's direction.",
@@ -292,7 +293,10 @@ export const DPA_US_STATE_RULES: Rule[] = [
     recommendation:
       "Add: 'At Controller's direction, Processor shall delete or return all Personal Data at the end of the provision of services.'",
     present_patterns: [
-      /(delete\s+or\s+return|return\s+or\s+delete).{0,80}(personal\s+(data|information)|end\s+of\s+(?:the\s+)?(?:provision\s+of\s+)?services)/is,
+      // "destroy or return" / "returned or destroyed" is the equally-standard
+      // phrasing for the same disposal-or-return obligation; the delete-only
+      // pattern reported those documents as missing the clause.
+      /(?:(?:delet\w*|destroy\w*|destruct\w*)\s+or\s+return\w*|return\w*\s+or\s+(?:delet\w*|destroy\w*|destruct\w*)).{0,80}(personal\s+(data|information)|end\s+of\s+(?:the\s+)?(?:provision\s+of\s+)?services)/is,
     ],
   }),
   presence({

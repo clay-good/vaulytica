@@ -239,6 +239,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   presence({
     id: "DPA-013",
+    version: "1.1.0",
     name: "Deletion or return at end of services",
     description:
       "Processor must, at the choice of the controller, delete or return all personal data after the end of the provision of services.",
@@ -251,7 +252,10 @@ export const DPA_GDPR_RULES: Rule[] = [
     recommendation:
       "Add a clause: 'At the choice of the Controller, Processor shall delete or return all Personal Data after the end of the provision of services relating to processing.'",
     present_patterns: [
-      /(delete\s+or\s+return|return\s+or\s+delete).*?(personal\s+data|end\s+of\s+(?:the\s+)?(?:provision\s+of\s+)?services)/is,
+      // "destroy or return" / "returned or destroyed" is the equally-standard
+      // Art. 28(3)(g) phrasing for the same disposal-or-return obligation; the
+      // delete-only pattern reported those documents as missing the clause.
+      /(?:(?:delet\w*|destroy\w*|destruct\w*)\s+or\s+return\w*|return\w*\s+or\s+(?:delet\w*|destroy\w*|destruct\w*)).*?(personal\s+data|end\s+of\s+(?:the\s+)?(?:provision\s+of\s+)?services)/is,
     ],
   }),
   presence({

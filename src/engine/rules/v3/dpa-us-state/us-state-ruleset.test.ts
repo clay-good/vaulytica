@@ -228,3 +228,29 @@ describe("DPA-US-state ruleset — GDPR-verbatim presence forms (v1.1.0)", () =>
     expect(fired.has("USDPA-017")).toBe(true);
   });
 });
+
+describe("USDPA-015 — deletion-or-return recognizes 'destroy or return' (v1.1.0)", () => {
+  const has = async (body: string) => {
+    const run = await runEngine({
+      rules: DPA_US_STATE_RULES,
+      ctx: withPb(buildContext(["DPA", body]), MULTI),
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+  it("does not report the clause missing when written 'destroy or return'", async () => {
+    expect(
+      (
+        await has("Upon termination, Processor shall destroy or return all Personal Information.")
+      ).has("USDPA-015"),
+    ).toBe(false);
+  });
+  it("still fires when no deletion/destruction/return clause is present", async () => {
+    expect(
+      (
+        await has("Service Provider shall process Personal Information for the business purpose.")
+      ).has("USDPA-015"),
+    ).toBe(true);
+  });
+});
