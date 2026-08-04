@@ -169,3 +169,24 @@ describe("INS-015 — the canonical 'in whole or in part' broad-form indemnity (
     ).toBe(false);
   });
 });
+
+describe("INS-012 — subrogation waiver reads 'waives rights of recovery' (v1.1.0)", () => {
+  const END: Playbook = { id: "insurance-endorsement", version: "1.0.0" };
+  const has = async (b: string) =>
+    new Set(
+      (
+        await runEngine({
+          rules: INSURANCE_RULES,
+          ctx: withPb(buildContext(["Endorsement", b]), END),
+          source_file: SRC,
+        })
+      ).findings.map((f) => f.rule_id),
+    );
+  it("does not fire when the waiver is stated as 'waives its rights of recovery'", async () => {
+    expect(
+      (await has("Each party waives its rights of recovery against the other party.")).has(
+        "INS-012",
+      ),
+    ).toBe(false);
+  });
+});

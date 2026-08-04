@@ -614,6 +614,7 @@ const CHANGE_ORDER_RULES: Rule[] = [
   }),
   presence({
     id: "CON-030",
+    version: "1.1.0",
     name: "Waiver of further claims for the changed work",
     description:
       "Change order should include a waiver of further claims related to the changed work.",
@@ -630,8 +631,8 @@ const CHANGE_ORDER_RULES: Rule[] = [
     recommendation:
       "Add 'Waiver' stating contractor waives further claims for cost or time related to the changed work covered by this Change Order.",
     present_patterns: [
-      /(waiv(es?|e|er|ed)|releases?)/i,
-      /(further\s+claims|additional\s+(cost|time)|change\s+in\s+(scope|time))/i,
+      /(waiv(es?|e|er|ed)|releases?|forfeits?)/i,
+      /(further\s+claims?|additional\s+(cost|time)|change\s+in\s+(scope|time))/i,
     ],
     default_severity: "warning",
   }),

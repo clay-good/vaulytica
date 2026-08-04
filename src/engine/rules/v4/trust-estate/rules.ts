@@ -606,6 +606,7 @@ const DURABLE_POA_RULES: Rule[] = [
   }),
   presence({
     id: "EST-032",
+    version: "1.1.0",
     name: "Durable language — survives incapacity",
     description: "POA must include durable language stating it survives principal's incapacity.",
     citation: upoaa("104", "Power of attorney is durable"),
@@ -618,7 +619,11 @@ const DURABLE_POA_RULES: Rule[] = [
       "Add 'Durability' stating the POA is not affected by principal's subsequent incapacity or disability.",
     present_patterns: [
       /durabl/i,
-      /(survives?|not\s+affected\s+by|notwithstanding).{0,40}(incapacity|disability|incompet)/is,
+      // "not\s+affected" missed the statutory "shall not BE affected by …
+      // incapacity" (the "be" breaks adjacency); "not terminated / revoked by …
+      // incapacity" is the equally-standard Uniform-POA durability form. The
+      // "/durabl/" branch above still covers a POA titled "Durable".
+      /(survives?|not\s+(?:be\s+)?(?:affected|terminated|revoked)\s+by|notwithstanding).{0,40}(incapacity|disability|incompet)/is,
     ],
   }),
   presence({

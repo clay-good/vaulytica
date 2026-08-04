@@ -532,6 +532,7 @@ const GUARANTY_RULES: Rule[] = [
   }),
   presence({
     id: "BNK-022",
+    version: "1.1.0",
     name: "Payment-vs-collection (absolute vs collection guaranty)",
     description:
       "Guaranty must specify whether it is of payment (primary, absolute) or of collection (resort-first to collateral / borrower).",
@@ -545,7 +546,9 @@ const GUARANTY_RULES: Rule[] = [
       "Add 'Type of Guaranty' clearly stating payment vs collection (almost always payment in institutional financings).",
     present_patterns: [
       /(guarant(y|ee)\s+of\s+(payment|collection))/i,
-      /(absolute|primary|continuing)/i,
+      // "unconditional" is the standard synonym for an absolute / primary
+      // (payment) guaranty.
+      /(absolute|primary|continuing|unconditional)/i,
     ],
   }),
   presence({

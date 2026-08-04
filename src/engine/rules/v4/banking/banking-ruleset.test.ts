@@ -248,3 +248,24 @@ describe("BNK-013 — Reg Z / TILA disclosures apply to consumer credit only (v1
     ).toBeUndefined();
   });
 });
+
+describe("BNK-022 — guaranty reads 'unconditional' (v1.1.0)", () => {
+  const GUAR: Playbook = { id: "guaranty", version: "1.0.0" };
+  const has = async (b: string) =>
+    new Set(
+      (
+        await runEngine({
+          rules: BANKING_RULES,
+          ctx: withPb(buildContext(["Guaranty", b]), GUAR),
+          source_file: SRC,
+        })
+      ).findings.map((f) => f.rule_id),
+    );
+  it("does not fire on an 'unconditional guaranty'", async () => {
+    expect(
+      (
+        await has("Guarantor provides an unconditional guaranty of the Borrower's obligations.")
+      ).has("BNK-022"),
+    ).toBe(false);
+  });
+});

@@ -159,3 +159,24 @@ describe("CON-018 — a denied carve-out is absence, not presence (v1.1.0)", () 
     ).toBe(false);
   });
 });
+
+describe("CON-030 — waiver-of-claims reads singular 'claim' / 'forfeit' (v1.1.0)", () => {
+  const CO: Playbook = { id: "change-order", version: "1.0.0" };
+  const has = async (b: string) =>
+    new Set(
+      (
+        await runEngine({
+          rules: CONSTRUCTION_RULES,
+          ctx: withPb(buildContext(["Change Order", b]), CO),
+          source_file: SRC,
+        })
+      ).findings.map((f) => f.rule_id),
+    );
+  it("does not fire on 'forfeits any further claim' (singular / forfeit)", async () => {
+    expect(
+      (
+        await has("Contractor forfeits any further claim for costs or time for this change order.")
+      ).has("CON-030"),
+    ).toBe(false);
+  });
+});

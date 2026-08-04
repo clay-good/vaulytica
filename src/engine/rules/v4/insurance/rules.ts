@@ -254,6 +254,7 @@ const ENDORSEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "INS-012",
+    version: "1.1.0",
     name: "Waiver of subrogation (where required by contract)",
     description:
       "If the underlying contract requires waiver of subrogation, the endorsement (CG 24 04 or equivalent) must be attached.",
@@ -268,6 +269,11 @@ const ENDORSEMENT_RULES: Rule[] = [
     present_patterns: [
       /(waiver\s+of\s+subrogation|waiv(es?|e|ed)\s+(its\s+)?(rights?\s+of\s+)?subrogation|cg\s+24\s+04)/i,
       /(transfer\s+of\s+rights\s+of\s+recovery)/i,
+      // The waiver is often stated without the word "subrogation" as a waiver
+      // of the RIGHTS OF RECOVERY (the substance of subrogation). Kept to
+      // "rights of recovery" so a general litigation / jury-trial waiver ("waives
+      // its right to sue") is NOT misread as a subrogation waiver.
+      /waiv\w*\s+(?:any\s+|its\s+|all\s+|their\s+)?rights?\s+of\s+recovery/i,
     ],
     default_severity: "warning",
   }),

@@ -198,3 +198,32 @@ describe("EST-038 — contemplation-of-marriage recital in real wording (v1.1.0)
     ).toBe(true);
   });
 });
+
+describe("EST-032 — durability reads the statutory 'not be affected by … incapacity' (v1.1.0)", () => {
+  const POA: Playbook = { id: "durable-poa-financial", version: "1.0.0" };
+  const has = async (b: string) =>
+    new Set(
+      (
+        await runEngine({
+          rules: TRUST_ESTATE_RULES,
+          ctx: withPb(buildContext(["POA", b]), POA),
+          source_file: SRC,
+        })
+      ).findings.map((f) => f.rule_id),
+    );
+  it("does not fire on 'shall not be affected by my incapacity' / 'not terminated by'", async () => {
+    expect(
+      (await has("This power of attorney shall not be affected by my subsequent incapacity.")).has(
+        "EST-032",
+      ),
+    ).toBe(false);
+    expect((await has("This power is not terminated by my disability.")).has("EST-032")).toBe(
+      false,
+    );
+  });
+  it("still fires when no durability language is present", async () => {
+    expect((await has("The agent may act on my behalf in financial matters.")).has("EST-032")).toBe(
+      true,
+    );
+  });
+});
