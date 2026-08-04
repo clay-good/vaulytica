@@ -636,7 +636,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "TEMP-005",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -672,7 +672,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "TEMP-011",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -1027,7 +1027,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.9). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
-  "result_hash": "eda0da776be45743f0e7157fc8a8170bb1010b11c69d276526053e4c66ed371d",
+  "result_hash": "02bca75519dd190179fe3294aec47ea08d9efbef6a0a89755067c304a8cf2531",
   "source_file": {
     "name": "bad-employment-trap.docx",
     "sha256": "c0ef11cc8a800daead332bf1bc265f96d72af1c51953958734b1bf18c4058b2a",

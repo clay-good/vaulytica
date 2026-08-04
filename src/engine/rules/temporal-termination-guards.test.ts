@@ -100,6 +100,15 @@ describe("TEMP-005 / TEMP-011 — auto-renewal non-renewal window", () => {
     expect(TEMP011.check(clause(forCause))).toBeNull();
   });
 
+  it("does not misread a 'materially breaches … within N days' cure window (v1.2.0 guard)", () => {
+    // The guard's "breach\b" missed the verb form, so a for-breach cure window
+    // was reported as an unusual auto-renewal notice window.
+    const breachCure =
+      "This Agreement shall automatically renew for successive one-year terms. Either party may terminate if the other party materially breaches and fails to cure within 15 days' prior written notice.";
+    expect(TEMP005.check(clause(breachCure))).toBeNull();
+    expect(TEMP011.check(clause(breachCure))).toBeNull();
+  });
+
   it("still fires on a genuine short or unusual non-renewal window", () => {
     expect(
       TEMP011.check(

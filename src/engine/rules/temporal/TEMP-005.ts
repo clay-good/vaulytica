@@ -4,7 +4,7 @@ import { emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
 /** TEMP-005 — Auto-renewal notice window unusual (warning). */
 export const rule: Rule = {
   id: "TEMP-005",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Auto-renewal notice window unusual",
   category: "temporal",
   default_severity: "warning",
@@ -24,7 +24,11 @@ export const rule: Rule = {
     // upon 15 days notice") in the same paragraph is misread as the non-renewal
     // notice window.
     if (
-      /\bfor\s+(?:cause|convenience)\b|\bmaterial(?:ly)?\s+breach\b|\bdefault\b|\buncured\b/i.test(
+      // "breach\b" missed the verb forms — a cure clause "if the other party
+      // materially BREACHES … within 15 days" would otherwise be misread as a
+      // 15-day auto-renewal notice window. Match breach / breaches / breached /
+      // breaching.
+      /\bfor\s+(?:cause|convenience)\b|\bmaterial(?:ly)?\s+breach(?:e[sd]|ing)?\b|\bdefault\b|\buncured\b/i.test(
         hit.match[0],
       )
     )

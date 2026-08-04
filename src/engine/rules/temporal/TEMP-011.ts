@@ -15,7 +15,7 @@ import { emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "TEMP-011",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Auto-renewal notice window shorter than 30 days",
   category: "temporal",
   default_severity: "warning",
@@ -41,7 +41,10 @@ export const rule: Rule = {
     const noticeStart = noticeMatch.index ?? 0;
     const preNotice = hit.text.slice(Math.max(0, noticeStart - 60), noticeStart);
     if (
-      /\bfor\s+(?:cause|convenience)\b|\bmaterial(?:ly)?\s+breach\b|\bdefault\b|\buncured\b/i.test(
+      // "breach\b" missed the verb forms ("materially breaches / breached"),
+      // so a for-cause cure-notice window could slip past this guard and be
+      // misread as the non-renewal window. Match the inflections too.
+      /\bfor\s+(?:cause|convenience)\b|\bmaterial(?:ly)?\s+breach(?:e[sd]|ing)?\b|\bdefault\b|\buncured\b/i.test(
         preNotice,
       )
     )
