@@ -197,6 +197,42 @@ describe("MSA-deep ruleset — failure modes", () => {
     expect(run.findings.find((f) => f.rule_id === "MSA-017")).toBeTruthy();
   });
 
+  // v1.1.0 — the customer-favorable inverse (service credits are NOT the sole
+  // and exclusive remedy) preserves other remedies and must not be flagged.
+  it("does not fire MSA-017 when credits are NOT the sole and exclusive remedy", async () => {
+    const ctx = withPb(
+      buildContext([
+        "SLA",
+        "Service credits are not the sole and exclusive remedy for downtime; Customer may also terminate for chronic failure.",
+      ]),
+      CUSTOMER,
+    );
+    const run = await runEngine({
+      rules: MSA_DEEP_RULES,
+      ctx,
+      executed_at: "2026-05-13T00:00:00Z",
+      source_file: SRC,
+    });
+    expect(run.findings.find((f) => f.rule_id === "MSA-017")).toBeFalsy();
+  });
+
+  it("still fires MSA-017 when an unrelated 'not' shares the sentence", async () => {
+    const ctx = withPb(
+      buildContext([
+        "SLA",
+        "Service credits, but not cash refunds, are the sole and exclusive remedy for downtime.",
+      ]),
+      CUSTOMER,
+    );
+    const run = await runEngine({
+      rules: MSA_DEEP_RULES,
+      ctx,
+      executed_at: "2026-05-13T00:00:00Z",
+      source_file: SRC,
+    });
+    expect(run.findings.find((f) => f.rule_id === "MSA-017")).toBeTruthy();
+  });
+
   it("order-of-precedence inconsistency fires MSA-027", async () => {
     const ctx = withPb(
       buildContext([

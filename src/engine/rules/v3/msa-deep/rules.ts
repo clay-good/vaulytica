@@ -503,6 +503,7 @@ export const MSA_DEEP_RULES: Rule[] = [
   }),
   language({
     id: "MSA-017",
+    version: "1.1.0",
     name: "SLA credit as sole-and-exclusive remedy",
     description: "Flags when service-level credit is stated as the sole and exclusive remedy.",
     citation: "Commercial drafting baseline — SLA exclusivity",
@@ -516,6 +517,15 @@ export const MSA_DEEP_RULES: Rule[] = [
     bad_patterns: [
       /(service\s+credit|SLA\s+credit).{0,40}sole\s+and\s+exclusive\s+remedy/is,
       /sole\s+and\s+exclusive\s+remedy.{0,40}(?:service\s+level|SLA|downtime)/is,
+    ],
+    // The customer-favorable inverse — "service credits are NOT the sole and
+    // exclusive remedy", "shall NOT be Customer's sole and exclusive remedy" —
+    // preserves other remedies and must not be flagged. The negation is scoped
+    // to govern "sole and exclusive remedy" (only determiners/"be" may sit
+    // between), so an unrelated "not" ("credits, but not cash refunds, are the
+    // sole and exclusive remedy") still fires.
+    exclude_if: [
+      /\bnot\s+(?:be\s+|the\s+|your\s+|its\s+|a\s+|customer'?s?\s+)*sole\s+and\s+exclusive\s+remedy/i,
     ],
     default_severity: "info",
   }),
