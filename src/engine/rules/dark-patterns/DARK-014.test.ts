@@ -49,4 +49,30 @@ describe("DARK-014 — consumer anti-review gag clause", () => {
       ),
     ).toBeNull();
   });
+
+  it("recognizes Subscriber / Member / Account Holder / End User as the consumer (v1.1.0)", () => {
+    for (const clause of [
+      "Subscriber shall not post negative reviews of the Service.",
+      "Members may not leave a bad rating for the Service.",
+      "Account holders shall not post disparaging reviews.",
+      "End Users are not permitted to publish critical reviews.",
+    ]) {
+      const f = DARK_014.check(buildContext(["Reviews", clause]));
+      expect(f, clause).not.toBeNull();
+      expect(f?.severity).toBe("critical");
+    }
+  });
+
+  it("still exempts a confidential-info bar / preserved-review-right for those parties", () => {
+    expect(
+      DARK_014.check(
+        buildContext(["Reviews", "Subscriber shall not post confidential information about us."]),
+      ),
+    ).toBeNull();
+    expect(
+      DARK_014.check(
+        buildContext(["Reviews", "Members are free to post any honest review of the Service."]),
+      ),
+    ).toBeNull();
+  });
 });

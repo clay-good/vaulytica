@@ -159,7 +159,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "DARK-014",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -920,7 +920,7 @@
   "playbook_id": "lease-residential-us",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected lease-residential-us (score 0.9). Title matched: \"residential lease\". Distinguishing phrases: \"Landlord\", \"Tenant\", \"Premises\", \"security deposit\", \"residential\".",
-  "result_hash": "a6fabe656f176af54908d527ee87c7a5e01b74b5e1ba4fb0b556d61fb2b9e3b0",
+  "result_hash": "d0b843f342e089bdcf436a20977f351bc299b4ab497c69c097efdfa7c4115b14",
   "source_file": {
     "name": "bad-residential-lease-deposit.docx",
     "sha256": "a3aaac8da5682c5a7ff4d3cd79191c3344d5f3bc6ec7abe5d833f6234acf6973",

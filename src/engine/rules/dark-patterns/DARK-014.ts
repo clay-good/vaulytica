@@ -23,7 +23,7 @@ import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js"
  */
 export const rule: Rule = {
   id: "DARK-014",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Consumer anti-review gag clause",
   category: "dark-patterns",
   default_severity: "critical",
@@ -34,7 +34,7 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /\b(?:Customer|Consumer|User|Buyer|you|purchaser)\b[^.]{0,80}\b(?:shall\s+not|may\s+not|agrees?\s+not\s+to|prohibited\s+from|will\s+not|are\s+not\s+permitted\s+to)\b[^.]{0,100}\b(?:post|publish|write|make|leave|submit)\b[^.]{0,60}\b(?:(?:negative|disparag\w+|critical|defamatory|unfavorable|bad)\s+(?:online\s+)?(?:review|rating|comment|feedback|testimonial)|(?:review|rating|comment|feedback|testimonial)\w*\b[^.]{0,40}\b(?:negative|disparag\w+|critical|defamatory|unfavorable))|\bno\s+(?:negative|disparaging|critical|unfavorable)\s+(?:online\s+)?(?:review|rating|comment|feedback)/i,
+      /\b(?:Customer|Consumer|User|Buyer|you|purchaser|Subscribers?|Members?|Account\s+Holders?|End\s+Users?|Client|Reviewer)\b[^.]{0,80}\b(?:shall\s+not|may\s+not|agrees?\s+not\s+to|prohibited\s+from|will\s+not|are\s+not\s+permitted\s+to)\b[^.]{0,100}\b(?:post|publish|write|make|leave|submit)\b[^.]{0,60}\b(?:(?:negative|disparag\w+|critical|defamatory|unfavorable|bad)\s+(?:online\s+)?(?:review|rating|comment|feedback|testimonial)|(?:review|rating|comment|feedback|testimonial)\w*\b[^.]{0,40}\b(?:negative|disparag\w+|critical|defamatory|unfavorable))|\bno\s+(?:negative|disparaging|critical|unfavorable)\s+(?:online\s+)?(?:review|rating|comment|feedback)/i,
     );
     if (!hit || isPresenceDisclaimed(hit.text, hit.match.index)) return null;
     // A clause expressly preserving the right to post honest reviews is the
