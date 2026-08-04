@@ -19,7 +19,7 @@ import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js"
  */
 export const rule: Rule = {
   id: "DARK-005",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Class-action waiver",
   category: "dark-patterns",
   default_severity: "critical",
@@ -32,7 +32,16 @@ export const rule: Rule = {
       // The bare "no/not class action" alternative must NOT match "no class
       // action WAIVER" — that is a clause disclaiming any waiver ("there is no
       // class action waiver"), the honest opposite of the dark pattern.
-      /\b(?:waives?|waiv(?:er|ing)|gives?\s+up|relinquishes?|shall\s+not\s+(?:participate|be\s+entitled))\b[^.]{0,200}\b(?:class\s+action|class[-\s]wide|collective\s+action|representative\s+action|consolidated\s+(?:claims|arbitration))\b|\b(?:no|not)\s+(?:class\s+action|class[-\s]wide|collective\s+action|representative\s+action)\b(?!\s+waiver)|\bon\s+an\s+individual\s+basis\s+(?:only|and\s+not)\b/i,
+      // The standard AT&T v. Concepcion clause — "only in an individual
+      // capacity, and not as a plaintiff or class member in any purported class
+      // or representative proceeding" — carries no "waive" verb and the "not"
+      // is not adjacent to "class action", so the branches above missed the
+      // single most common consumer class-waiver phrasing. Add: (a) the
+      // "individual capacity … not as a … class/representative" form, (b) a
+      // "class or representative proceeding" noun (proceeding, not only action),
+      // and (c) an arbitrator "may not consolidate / preside over … class …"
+      // form.
+      /\b(?:waives?|waiv(?:er|ing)|gives?\s+up|relinquishes?|shall\s+not\s+(?:participate|be\s+entitled))\b[^.]{0,200}\b(?:class\s+action|class[-\s]wide|collective\s+action|representative\s+(?:action|proceeding)|class\s+or\s+representative\s+(?:action|proceeding|arbitration)|consolidated\s+(?:claims?|arbitration))\b|\b(?:no|not)\s+(?:class\s+action|class[-\s]wide|collective\s+action|representative\s+(?:action|proceeding))\b(?!\s+waiver)|\bon\s+an\s+individual\s+basis\s+(?:only|and\s+not)\b|\b(?:an?\s+|your\s+|its\s+|his\s+|her\s+|their\s+)?individual\s+capacity\b[^.]{0,90}?\bnot\s+as\s+(?:a\s+)?(?:plaintiff|class\s+member|representative|part\s+of\s+(?:a\s+)?class)\b|\bnot\s+as\s+a\s+(?:plaintiff\s+or\s+)?class\s+member\b|\b(?:may\s+not|shall\s+not|cannot|will\s+not)\s+(?:consolidate|preside\s+over|hear|entertain)\b[^.]{0,70}?\b(?:class|representative|collective)\s+(?:action|proceeding|claims?|arbitration)\b/i,
     );
     if (!hit) return null;
     // "nothing herein waives any right to participate in a class action" is

@@ -77,4 +77,24 @@ describe("the clause that PRESERVES class-action rights is not the waiver (v1.1.
     ]);
     expect(DARK_005.check(ctx)).not.toBeNull();
   });
+
+  it("fires on the AT&T v. Concepcion 'individual capacity' phrasing (v1.2.0)", () => {
+    for (const clause of [
+      "Each party may bring claims only in an individual capacity and not as a plaintiff or class member in any purported class or representative proceeding.",
+      "You agree to resolve disputes in your individual capacity, and not as a class member.",
+      "The arbitrator may not consolidate claims or preside over any class or representative proceeding.",
+    ]) {
+      expect(DARK_005.check(buildContext(["Disputes", clause])), clause).not.toBeNull();
+    }
+  });
+
+  it("does not fire on a signature 'individual capacity' clause", () => {
+    // "signs in his individual capacity and not as an officer" is a
+    // signing-capacity clause, not a class-action waiver.
+    const ctx = buildContext([
+      "Signature",
+      "The guarantor signs this Agreement in his individual capacity and not as an officer of the Company.",
+    ]);
+    expect(DARK_005.check(ctx)).toBeNull();
+  });
 });

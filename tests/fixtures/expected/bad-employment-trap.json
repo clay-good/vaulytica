@@ -108,7 +108,7 @@
       "finding_id": "DARK-005-s1.4-1208",
       "fired": true,
       "rule_id": "DARK-005",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -750,7 +750,7 @@
       "id": "DARK-005-s1.4-1208",
       "recommendation": "If you are the party giving up class-action rights: weigh the trade-off against the realistic cost of solo arbitration. If you are the drafter: confirm whether enforceability survives in every jurisdiction the contract reaches (some states' analogous statutes are narrower than the FAA).",
       "rule_id": "DARK-005",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "critical",
       "source_citations": [
         {
@@ -1027,7 +1027,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.9). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
-  "result_hash": "22466061c71d2abff3ad1eeb130120a04d0ac5a981f954cee8fe257ed274f51d",
+  "result_hash": "aa17b9e4e34d6564f6ba2ac3d6f6a564e8df21b1eae839c9fd989d5581f6443f",
   "source_file": {
     "name": "bad-employment-trap.docx",
     "sha256": "c0ef11cc8a800daead332bf1bc265f96d72af1c51953958734b1bf18c4058b2a",
