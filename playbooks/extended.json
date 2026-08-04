@@ -4890,6 +4890,63 @@
     ]
   },
   {
+    "id": "manufacturing-supply-agreement",
+    "version": "1.0.0",
+    "name": "Manufacturing / Supply Agreement",
+    "description": "Supply of goods for manufacture or resale, governed by UCC Article 2. Selects the §6.A.10 ruleset (COMM-001..COMM-007): quantity term, delivery, specifications/warranty, price, inspection/acceptance, force majeure, and the § 2-306(2) best-efforts obligation.",
+    "match_features": {
+      "title_keywords": [
+        "supply agreement",
+        "manufacturing agreement",
+        "manufacture and supply agreement",
+        "master supply agreement",
+        "purchase and supply agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "delivery schedule",
+        "purchase orders",
+        "requirements",
+        "specifications",
+        "conforming goods",
+        "lead time",
+        "the Goods",
+        "the Products"
+      ],
+      "negative_features": [
+        "master services agreement",
+        "statement of work",
+        "software as a service",
+        "license grant"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Goods",
+      "Products",
+      "Specifications",
+      "Purchase Order",
+      "Delivery"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "UCC-ARTICLE-2-SALE-OF-GOODS",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [],
+    "compliance_matrix_columns": [
+      "Quantity term (§ 2-306)",
+      "Delivery / lead time (§ 2-309)",
+      "Specifications / warranty (§ 2-313)",
+      "Price / open-price (§ 2-305)",
+      "Inspection / acceptance (§ 2-513)",
+      "Force majeure (§ 2-615)",
+      "Exclusive-dealing best efforts (§ 2-306(2))"
+    ]
+  },
+  {
     "id": "merger-agreement",
     "version": "1.0.0",
     "name": "Merger Agreement",

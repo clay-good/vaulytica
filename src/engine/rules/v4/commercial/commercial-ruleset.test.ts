@@ -1,0 +1,82 @@
+import { describe, expect, it } from "vitest";
+
+import { COMMERCIAL_V4_RULES } from "./rules.js";
+import { COMM_PLAYBOOK_IDS } from "./_helpers.js";
+import { buildContext } from "../../../_test-fixtures.js";
+import { runEngine } from "../../../runner.js";
+import type { Playbook, Rule, RuleContext } from "../../../finding.js";
+
+const MFG: Playbook = { id: "manufacturing-supply-agreement", version: "1.0.0" };
+const SRC = { name: "test.docx", sha256: "0".repeat(64), size_bytes: 100 };
+
+const withPb = (ctx: RuleContext, pb: Playbook): RuleContext => ({ ...ctx, playbook: pb });
+const fired = async (pb: Playbook, body: string) => {
+  const run = await runEngine({
+    rules: COMMERCIAL_V4_RULES as Rule[],
+    ctx: withPb(buildContext(["Supply Agreement", body]), pb),
+    source_file: SRC,
+  });
+  return new Set(run.findings.map((f) => f.rule_id));
+};
+
+describe("v4 Commercial ruleset — registry contract", () => {
+  it("exports COMM-NNN rules scoped to a commercial playbook", () => {
+    expect(COMMERCIAL_V4_RULES.length).toBeGreaterThanOrEqual(7);
+    const allowed = new Set<string>(COMM_PLAYBOOK_IDS);
+    for (const r of COMMERCIAL_V4_RULES) {
+      expect(r.id, r.id).toMatch(/^COMM-\d{3}$/);
+      expect(r.version, r.id).toMatch(/^\d+\.\d+\.\d+$/);
+      expect(r.category, r.id).toBe("commercial");
+      for (const pb of r.applies_to_playbooks ?? []) {
+        expect(allowed.has(pb), `${r.id} → ${pb}`).toBe(true);
+      }
+    }
+    expect(new Set(COMMERCIAL_V4_RULES.map((r) => r.id)).size).toBe(COMMERCIAL_V4_RULES.length);
+  });
+
+  it("does not fire under a non-commercial playbook", async () => {
+    const run = await runEngine({
+      rules: COMMERCIAL_V4_RULES as Rule[],
+      ctx: buildContext(["Some other doc", "This is not a supply agreement."]),
+      source_file: SRC,
+    });
+    expect(run.findings.length).toBe(0);
+    expect(run.execution_log.every((e) => !e.fired)).toBe(true);
+  });
+});
+
+describe("v4 Commercial — manufacturing / supply agreement (A.10)", () => {
+  const COMPLETE =
+    "Quantity. Buyer shall purchase its requirements of the Goods from Seller. " +
+    "Delivery. Seller shall deliver within 30 days FOB origin per the delivery schedule. " +
+    "Specifications. The Goods shall conform to the Specifications and Seller warrants that the Goods will be free from defects. " +
+    "Price. The unit price is set on a cost-plus basis with annual price adjustment. " +
+    "Inspection. Buyer may inspect and reject nonconforming goods within 10 days. " +
+    "Force Majeure. Neither party is liable for delays beyond its reasonable control. " +
+    "Best Efforts. Seller shall use commercially reasonable efforts to supply Buyer's requirements.";
+
+  it("emits no findings against a complete supply agreement", async () => {
+    expect((await fired(MFG, COMPLETE)).size).toBe(0);
+  });
+
+  it("flags every required clause on a bare agreement (COMM-007 gated by exclusivity)", async () => {
+    const bare = await fired(MFG, "Seller shall sell certain goods to Buyer from time to time.");
+    // Non-exclusive bare doc: the six unconditional clauses fire; COMM-007 is
+    // inapplicable (no requirements / output / exclusive arrangement).
+    for (const id of ["COMM-001", "COMM-002", "COMM-003", "COMM-004", "COMM-005", "COMM-006"]) {
+      expect(bare.has(id), id).toBe(true);
+    }
+    expect(bare.has("COMM-007")).toBe(false);
+  });
+
+  it("COMM-007 fires when the arrangement is exclusive but omits a best-efforts obligation", async () => {
+    const excl = await fired(
+      MFG,
+      "Buyer shall purchase its requirements of the Goods exclusively from Seller. " +
+        "Delivery within 30 days FOB origin. The Goods shall conform to the Specifications and are warranted free from defects. " +
+        "Unit price per the price schedule. Buyer may inspect and reject nonconforming goods. " +
+        "Neither party is liable for events beyond its reasonable control.",
+    );
+    expect(excl.has("COMM-007")).toBe(true);
+  });
+});

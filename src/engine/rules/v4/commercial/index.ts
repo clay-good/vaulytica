@@ -1,13 +1,13 @@
 /**
- * v4 sub-domain placeholder — `commercial` ruleset (Step 40 carry-forward; v4 additions A.8–A.11).
+ * v4 sub-domain A (Commercial agreements) ruleset — spec-v4.md §6.A.
  *
- * Spec: `spec-v4.md` §6.A. Rules land in this directory once the
- * corresponding build step is executed. The barrel below exports an
- * empty `COMMERCIAL_V4_RULES` so the v4 aggregate at
- * `src/engine/rules/v4/index.ts` can compose it without a build
- * error during scaffolding.
+ * The A.8–A.11 additions to the v1/v3 commercial families. First landed
+ * sub-domain: A.10 — Manufacturing / Supply agreement (COMM-001..COMM-007),
+ * anchored to UCC Article 2. Further sub-domains (A.8 reseller /
+ * distribution, A.9 channel / referral, A.11 marketing services) land in
+ * this barrel as they are built.
  */
 
-import type { Rule } from "../../../finding.js";
+export { COMMERCIAL_V4_RULES, MANUFACTURING_SUPPLY_RULES } from "./rules.js";
 
-export const COMMERCIAL_V4_RULES: readonly Rule[] = [];
+export { COMM_PLAYBOOK_IDS, COMM_PLAYBOOK_MANUFACTURING, type CommPlaybookId } from "./_helpers.js";

@@ -50,6 +50,7 @@ export const NAMESPACE_OWNERS: Readonly<Record<string, string>> = {
   NDA: "nda-deep",
   // v4 sub-domain packs (classifier families A–P).
   BNK: "banking-finance",
+  COMM: "commercial",
   CON: "construction",
   EMP: "employment",
   EQT: "equity-comp",
