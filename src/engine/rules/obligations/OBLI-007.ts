@@ -18,7 +18,7 @@ import { emit, enclosingSentence, firstParagraphMatch, isPresenceDisclaimed } fr
  */
 export const rule: Rule = {
   id: "OBLI-007",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Material Adverse Change clause present",
   category: "obligations",
   default_severity: "warning",
@@ -28,7 +28,10 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /\b(?:material\s+adverse\s+(?:change|effect)|MAC\s+(?:clause|event|condition)|MAE\s+(?:clause|event|condition))\b/i,
+      // `material(?:ly)?` so the adverb form "a MATERIALLY adverse effect on the
+      // business" — as common as the noun-phrase "material adverse effect" — is
+      // detected, not only the exact "material adverse change/effect".
+      /\b(?:material(?:ly)?\s+adverse\s+(?:change|effect)|MAC\s+(?:clause|event|condition)|MAE\s+(?:clause|event|condition))\b/i,
     );
     if (!hit) return null;
     if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;

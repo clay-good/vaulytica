@@ -39,4 +39,20 @@ describe("OBLI-007 — Material Adverse Change clause", () => {
     ]);
     expect(OBLI_007.check(ctx)).toBeNull();
   });
+
+  it("reads the adverb form 'materially adverse effect / change' (v1.2.0)", () => {
+    expect(
+      OBLI_007.check(
+        buildContext([
+          "Conditions",
+          "Closing is conditioned on the absence of a materially adverse effect on the Company's business.",
+        ]),
+      ),
+    ).not.toBeNull();
+    expect(
+      OBLI_007.check(
+        buildContext(["Conditions", "A materially adverse change in the business permits the Buyer to terminate."]),
+      ),
+    ).not.toBeNull();
+  });
 });
