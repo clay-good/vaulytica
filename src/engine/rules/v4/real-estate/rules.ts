@@ -637,6 +637,7 @@ const EASEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "RE-029",
+    version: "1.1.0",
     name: "Indemnification and insurance",
     description: "Easement should include indemnification and insurance covenant.",
     citation: rePractice(
@@ -651,7 +652,11 @@ const EASEMENT_RULES: Rule[] = [
       "Use of the servient parcel creates liability exposure that the dominant owner should indemnify.",
     recommendation:
       "Add 'Indemnification' from dominant owner + minimum liability insurance with servient owner as additional insured.",
-    present_patterns: [/indemnif/i, /(insurance|insured)/i],
+    // Lookbehind guard (see GOV-008): "grantee shall NOT indemnify grantor" is
+    // a disclaimer, not an indemnity — so an easement that disclaims indemnity
+    // and carries no insurance covenant still fires. The insurance alternative
+    // is unchanged.
+    present_patterns: [/(?<!\bno\s)(?<!\bnot\s)indemnif/i, /(insurance|insured)/i],
     default_severity: "warning",
   }),
   presence({

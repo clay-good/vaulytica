@@ -11,6 +11,7 @@ const PSA_PB: Playbook = { id: "real-estate-psa", version: "1.0.0" };
 const CCR_PB: Playbook = { id: "ccrs", version: "1.0.0" };
 const SNDA_PB: Playbook = { id: "snda", version: "1.0.0" };
 const ESTOPPEL_PB: Playbook = { id: "estoppel-certificate", version: "1.0.0" };
+const EASEMENT_PB: Playbook = { id: "easement-agreement", version: "1.0.0" };
 
 const SRC = { name: "test.docx", sha256: "0".repeat(64), size_bytes: 100 };
 
@@ -103,6 +104,36 @@ describe("v4 Real-estate — failure cases", () => {
     );
     const run = await runEngine({ rules: REAL_ESTATE_RULES, ctx, source_file: SRC });
     expect(run.findings.some((f) => f.rule_id === "RE-038")).toBe(true);
+  });
+
+  it("RE-029 fires when an easement DISCLAIMS indemnity and carries no insurance (v1.1.0)", async () => {
+    // The bare /indemnif/ pattern used to match "shall not indemnify"; the
+    // lookbehind now lets a disclaimed indemnity (with no insurance) still fire,
+    // while an affirmative indemnity or an insurance covenant stays silent.
+    const disc = withPb(
+      buildContext([
+        "Easement",
+        "Grantee shall not indemnify Grantor for any claims arising from use of the easement.",
+      ]),
+      EASEMENT_PB,
+    );
+    expect(
+      (await runEngine({ rules: REAL_ESTATE_RULES, ctx: disc, source_file: SRC })).findings.some(
+        (f) => f.rule_id === "RE-029",
+      ),
+    ).toBe(true);
+    const aff = withPb(
+      buildContext([
+        "Easement",
+        "Grantee shall indemnify Grantor against all claims arising from the easement.",
+      ]),
+      EASEMENT_PB,
+    );
+    expect(
+      (await runEngine({ rules: REAL_ESTATE_RULES, ctx: aff, source_file: SRC })).findings.some(
+        (f) => f.rule_id === "RE-029",
+      ),
+    ).toBe(false);
   });
 
   it("RE-047 fires when SNDA omits non-disturbance covenant", async () => {
