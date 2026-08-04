@@ -47,4 +47,33 @@ describe("OBLI-008 — efforts standard undefined", () => {
     ]);
     expect(OBLI_008.check(ctx)).toBeNull();
   });
+
+  // v1.1.0 — a definition is introduced in several standard ways; the check
+  // recognized only "means" / "shall mean" / "is defined as", so an efforts
+  // standard defined via "has the meaning …" / "refers to …" was falsely
+  // flagged as undefined.
+  it("is silent when the efforts standard is defined via 'has the meaning'", () => {
+    const ctx = buildContext(
+      ["Definitions", `"Best Efforts" has the meaning set forth in Section 8.3 of this Agreement.`],
+      ["Performance", "Vendor shall use best efforts to provide the Service."],
+    );
+    expect(OBLI_008.check(ctx)).toBeNull();
+  });
+
+  it("is silent when the efforts standard is defined via 'shall have the meaning' / 'refers to'", () => {
+    const withShallHave = buildContext(
+      [
+        "Definitions",
+        `"Commercially Reasonable Efforts" shall have the meaning given in Schedule A.`,
+      ],
+      ["Performance", "Provider shall use commercially reasonable efforts to maintain uptime."],
+    );
+    expect(OBLI_008.check(withShallHave)).toBeNull();
+
+    const withRefersTo = buildContext(
+      ["Definitions", `"Reasonable Efforts" refers to the standard described in Exhibit 2.`],
+      ["Cooperation", "Each party agrees to use reasonable efforts to fulfill its obligations."],
+    );
+    expect(OBLI_008.check(withRefersTo)).toBeNull();
+  });
 });

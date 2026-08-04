@@ -22,7 +22,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
  */
 export const rule: Rule = {
   id: "OBLI-008",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Efforts standard undefined",
   category: "obligations",
   default_severity: "info",
@@ -38,10 +38,15 @@ export const rule: Rule = {
     if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;
     const phrase = hit.match[1] ?? hit.match[0];
 
-    // Check the document for a definition of the matched phrase.
+    // Check the document for a definition of the matched phrase. Contracts
+    // introduce a defined term in several standard ways — not only "means" /
+    // "shall mean" / "is defined as", but also "has the meaning" / "shall have
+    // the meaning" (a pointer to a definition section) and "refers to". The
+    // narrower list falsely flagged "Best Efforts has the meaning set forth in
+    // Section 1.1" as undefined.
     let defined = false;
     const defPattern = new RegExp(
-      `["“”']?${phrase}["“”']?\\s+(?:means|shall\\s+mean|is\\s+defined\\s+as)\\b`,
+      `["“”']?${phrase}["“”']?\\s+(?:means|shall\\s+mean|(?:shall\\s+have|has|have)\\s+the\\s+meaning|is\\s+defined\\s+as|refers?\\s+to)\\b`,
       "i",
     );
     forEachParagraph(ctx.tree, (p) => {

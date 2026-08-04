@@ -323,7 +323,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "OBLI-008",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -1049,7 +1049,7 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "a5a2f4cb201559ca49ba90886b0206534448abb2e9dab097550b1fc968f352ff",
+  "result_hash": "634cc1dca9c3bd92bc43d900eb555cb66ffb04fa7d365a919a22b5237b244f9c",
   "source_file": {
     "name": "bad-contractor.docx",
     "sha256": "7a40a2e53d068557d47cf7690838b907085994f596a0c6e2380b8ac2607543df",
