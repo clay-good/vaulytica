@@ -248,7 +248,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "IPDATA-006",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -900,7 +900,7 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\", \"Recipient\", \"Confidential Information\".",
-  "result_hash": "01d0f095c9b7b2d592d9dc40bcc2e6e37a7e1e4f3014105e78e661f9d032f3a3",
+  "result_hash": "7982633af83ea5dfe61cddde82db7c7c187688eec54183d574f6880623ee81aa",
   "source_file": {
     "name": "bad-nda-residuals.docx",
     "sha256": "622200c84f9ee83eb9c5de968c4b2521039686489a1ccd0a460a268f812b7e12",
