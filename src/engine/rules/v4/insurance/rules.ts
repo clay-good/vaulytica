@@ -280,7 +280,6 @@ const ENDORSEMENT_RULES: Rule[] = [
 const INDEMNIFICATION_AGREEMENT_RULES: Rule[] = [
   presence({
     id: "INS-013",
-    version: "1.1.0",
     name: "Indemnitor / indemnitee identified",
     description:
       "Indemnification agreement must identify indemnitor and indemnitee (and any third-party beneficiaries).",
@@ -293,7 +292,7 @@ const INDEMNIFICATION_AGREEMENT_RULES: Rule[] = [
     recommendation:
       "Add 'Parties' identifying indemnitor and indemnitee, including affiliates / officers / directors / employees / agents.",
     present_patterns: [
-      /(indemnif\w*|indemnit(?:y|ies|ee|ees|or|ors))/i,
+      /(indemnit(or|ee|y|or)|indemnif(y|ies|ied))/i,
       /(parties|affiliate|officer|director|agent)/i,
     ],
   }),
