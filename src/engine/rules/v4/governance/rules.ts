@@ -210,6 +210,7 @@ const BYLAWS_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-008",
+    version: "1.1.0",
     name: "Indemnification of directors and officers",
     description:
       "Bylaws should provide for indemnification of D&O to the fullest extent of DGCL § 145 / MBCA § 8.50.",
@@ -221,7 +222,12 @@ const BYLAWS_RULES: Rule[] = [
       "DGCL § 145 authorizes indemnification but it is not self-executing; bylaws must provide for it or directors lose the protection.",
     recommendation:
       "Add an 'Indemnification' article extending mandatory indemnification to D&O to the fullest extent permitted by DGCL § 145, including advancement of expenses.",
-    present_patterns: [/indemnif(ication|y|ied)/i],
+    // The bylaws indemnification article is usually written with the verb
+    // "indemnify", but the "indemnit-" forms — the noun "indemnity", the
+    // "Indemnitee" — name the same clause; recognizing only "indemnif…" reported
+    // the article missing when it was drafted around those (consistent with
+    // RISK-001 / RISK-003).
+    present_patterns: [/indemnif\w*/i, /indemnit(?:y|ies|ee|ees|or|ors)/i],
   }),
   presence({
     id: "GOV-009",

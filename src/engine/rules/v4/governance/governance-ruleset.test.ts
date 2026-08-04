@@ -400,3 +400,25 @@ describe("Certificate of incorporation — charter clause phrasings", () => {
     );
   });
 });
+
+describe("GOV-008 — D&O indemnification reads the 'indemnity' / 'Indemnitee' noun forms (v1.1.0)", () => {
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Bylaws", body]), BYLAWS_PB);
+    const run = await runEngine({ rules: GOVERNANCE_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+  it("does not report the article missing when drafted around 'Indemnitee' / 'indemnity'", async () => {
+    expect(
+      (
+        await run1(
+          "Indemnity. Each Indemnitee shall be held harmless to the fullest extent permitted by law.",
+        )
+      ).has("GOV-008"),
+    ).toBe(false);
+  });
+  it("still reports the article missing when no indemnification is provided", async () => {
+    expect(
+      (await run1("The board shall consist of five directors elected annually.")).has("GOV-008"),
+    ).toBe(true);
+  });
+});
