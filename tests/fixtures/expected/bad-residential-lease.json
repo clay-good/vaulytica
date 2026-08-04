@@ -159,7 +159,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "DARK-014",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -1077,7 +1077,7 @@
   "playbook_id": "lease-residential-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected lease-residential-us (score 1). Title matched: \"residential rental agreement\", \"rental agreement\". Distinguishing phrases: \"Landlord\", \"Tenant\", \"Premises\", \"residential\".",
-  "result_hash": "9390b047dc5e24426397ff4847ec89798771836125bc79bf5500d69b980eb94f",
+  "result_hash": "a6edea93d87694521ddf04acc8f56016a7e78e41c580f076431c5474b1e65520",
   "source_file": {
     "name": "bad-residential-lease.docx",
     "sha256": "e9329baa96e35c934a6bdbb32721f88752314e62fbcce83220e7bfa5c353c638",

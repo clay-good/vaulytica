@@ -75,4 +75,14 @@ describe("DARK-014 — consumer anti-review gag clause", () => {
       ),
     ).toBeNull();
   });
+
+  it("reads the 'derogatory' / 'adverse' / 'poor' review-sentiment synonyms (v1.2.0)", () => {
+    for (const clause of [
+      "You may not post any derogatory review or rating of the Service.",
+      "Subscriber agrees not to write an adverse review of our products.",
+      "You shall not post a poor review of the Service.",
+    ]) {
+      expect(DARK_014.check(buildContext(["Reviews", clause])), clause).not.toBeNull();
+    }
+  });
 });

@@ -1,6 +1,23 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
 
+// The sentiment adjective a gag clause uses to bar the review. "derogatory" and
+// "adverse" (and "poor") are as common as "negative"/"disparaging" and were
+// missed; the three occurrences below are unified on this one set so they cannot
+// drift. The prohibition + "post … review" structure around it is unchanged, so
+// widening the adjective does not broaden what counts as a review-gag.
+const NEG_QUAL =
+  "negative|disparag\\w+|critical|defamatory|unfavorable|derogatory|adverse|poor|bad";
+const GAG_CLAUSE = new RegExp(
+  "\\b(?:Customer|Consumer|User|Buyer|you|purchaser|Subscribers?|Members?|Account\\s+Holders?|End\\s+Users?|Client|Reviewer)\\b" +
+    "[^.]{0,80}\\b(?:shall\\s+not|may\\s+not|agrees?\\s+not\\s+to|prohibited\\s+from|will\\s+not|are\\s+not\\s+permitted\\s+to)\\b" +
+    "[^.]{0,100}\\b(?:post|publish|write|make|leave|submit)\\b[^.]{0,60}" +
+    `\\b(?:(?:${NEG_QUAL})\\s+(?:online\\s+)?(?:review|rating|comment|feedback|testimonial)|` +
+    `(?:review|rating|comment|feedback|testimonial)\\w*\\b[^.]{0,40}\\b(?:${NEG_QUAL}))|` +
+    `\\bno\\s+(?:${NEG_QUAL})\\s+(?:online\\s+)?(?:review|rating|comment|feedback)`,
+  "i",
+);
+
 /**
  * DARK-014 — Consumer anti-review "gag" clause (critical, dark-patterns).
  *
@@ -23,7 +40,7 @@ import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js"
  */
 export const rule: Rule = {
   id: "DARK-014",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Consumer anti-review gag clause",
   category: "dark-patterns",
   default_severity: "critical",
@@ -32,10 +49,7 @@ export const rule: Rule = {
   dkb_citations: ["stat-ftc-deception-statement"],
   applies_to_playbooks: ["saas-customer", "eula", "saas-tos"],
   check(ctx: RuleContext): Finding | null {
-    const hit = firstParagraphMatch(
-      ctx,
-      /\b(?:Customer|Consumer|User|Buyer|you|purchaser|Subscribers?|Members?|Account\s+Holders?|End\s+Users?|Client|Reviewer)\b[^.]{0,80}\b(?:shall\s+not|may\s+not|agrees?\s+not\s+to|prohibited\s+from|will\s+not|are\s+not\s+permitted\s+to)\b[^.]{0,100}\b(?:post|publish|write|make|leave|submit)\b[^.]{0,60}\b(?:(?:negative|disparag\w+|critical|defamatory|unfavorable|bad)\s+(?:online\s+)?(?:review|rating|comment|feedback|testimonial)|(?:review|rating|comment|feedback|testimonial)\w*\b[^.]{0,40}\b(?:negative|disparag\w+|critical|defamatory|unfavorable))|\bno\s+(?:negative|disparaging|critical|unfavorable)\s+(?:online\s+)?(?:review|rating|comment|feedback)/i,
-    );
+    const hit = firstParagraphMatch(ctx, GAG_CLAUSE);
     if (!hit || isPresenceDisclaimed(hit.text, hit.match.index)) return null;
     // A clause expressly preserving the right to post honest reviews is the
     // compliant form the CRFA requires.
