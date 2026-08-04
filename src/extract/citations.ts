@@ -74,9 +74,20 @@ const STATUTE_STATE_RE =
  */
 const STATUTE_ILCS_RE = /\b(\d{1,4})\s+(ILCS|Ill\.\s+Comp\.\s+Stat\.)\s+(\d+\/[\d.]+[a-z0-9()]*)/g;
 
-/** Procedural rule: "Fed. R. App. P. 32" / "FRAP 32" / "FRCP 12(b)". */
+/**
+ * Procedural / evidentiary rule: "Fed. R. App. P. 32" / "FRAP 32" /
+ * "FRCP 12(b)" / "Fed. R. Evid. 403" / "Fed. R. Bankr. P. 3002".
+ *
+ * The Rules of Civil/Appellate/Criminal/Bankruptcy PROCEDURE end in "P.", but
+ * the Rules of EVIDENCE do not — they are cited "Fed. R. Evid. 403" with no
+ * trailing "P.". The old pattern demanded "Evid. P.", a form that never occurs,
+ * so every Federal Rule of Evidence citation was silently missed. Evidence is
+ * now its own branch, and Bankruptcy Procedure plus the FRE / FRBP shorthands
+ * are recognized. Each alternative still requires an immediately-following rule
+ * number, so a bare acronym in prose ("the FRE report") is not a citation.
+ */
 const RULE_RE =
-  /\b(?:Fed\.\s*R\.\s*(?:Civ|App|Crim|Evid)\.\s*P\.|FRAP|FRCP)\s*§?\s*(\d+[a-z()0-9]*)/g;
+  /\b(?:Fed\.\s*R\.\s*(?:Civ|App|Crim|Bankr)\.\s*P\.|Fed\.\s*R\.\s*Evid\.|FRAP|FRCP|FRBP|FRE)\s*§?\s*(\d+[a-z()0-9]*)/g;
 
 /** "Id." at a token start. */
 const ID_RE = /\bId\./gi;
@@ -151,7 +162,7 @@ function matchCases(text: string): ParsedCitation[] {
     // App. P. 32" on the next line, joined by flattening) is a RULE cite,
     // not a malformed case — and the longer bogus case match would swallow
     // it in overlap resolution (audit).
-    if (/^Fed\.\s*R\./.test(reporter) || /^(?:FRAP|FRCP)\b/.test(reporter)) continue;
+    if (/^Fed\.\s*R\./.test(reporter) || /^(?:FRAP|FRCP|FRBP|FRE)\b/.test(reporter)) continue;
     const start = m.index ?? 0;
     out.push({
       kind: "case",

@@ -85,6 +85,33 @@ describe("extractCitations — positive cases", () => {
     expect(c).toMatchObject({ section: "32" });
   });
 
+  it("parses a Federal Rule of Evidence (no trailing 'P.')", () => {
+    // Regression: the Rules of Evidence are cited "Fed. R. Evid. 403" — the old
+    // pattern demanded "Evid. P.", a form that never occurs, so every FRE cite
+    // was silently missed.
+    expect(
+      extractCitations("under Fed. R. Evid. 403").find((h) => h.kind === "rule"),
+    ).toMatchObject({ section: "403" });
+    expect(extractCitations("See FRE 702.").find((h) => h.kind === "rule")).toMatchObject({
+      section: "702",
+    });
+  });
+
+  it("parses a Federal Rule of Bankruptcy Procedure", () => {
+    expect(
+      extractCitations("Fed. R. Bankr. P. 3002 governs.").find((h) => h.kind === "rule"),
+    ).toMatchObject({ section: "3002" });
+    expect(extractCitations("See FRBP 7001.").find((h) => h.kind === "rule")).toMatchObject({
+      section: "7001",
+    });
+  });
+
+  it("does not read a bare rule acronym in prose as a citation (number required)", () => {
+    expect(extractCitations("The FRE report was filed today.").some((h) => h.kind === "rule")).toBe(
+      false,
+    );
+  });
+
   it("parses an Id. cross-reference", () => {
     const hits = extractCitations("Id. at 5.");
     const c = hits.find((h) => h.kind === "id");
