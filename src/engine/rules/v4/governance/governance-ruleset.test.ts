@@ -514,3 +514,27 @@ describe("GOV-029 / GOV-068 / GOV-079 — indemnity presence flags a disclaimer 
     ).toBe(false);
   });
 });
+
+describe("GOV-033 — drag-along provision recognizes the 'bring-along' synonym (v1.1.0)", () => {
+  const STOCKHOLDERS_PB: Playbook = { id: "stockholders-agreement", version: "1.0.0" };
+  const run = async (body: string) => {
+    const r = await runEngine({
+      rules: GOVERNANCE_RULES,
+      ctx: withPb(buildContext(["Stockholders Agreement", body]), STOCKHOLDERS_PB),
+      source_file: SRC,
+    });
+    return new Set(r.findings.map((f) => f.rule_id));
+  };
+
+  it("does not report the provision missing when drafted as 'bring-along'", async () => {
+    expect(
+      (await run("The majority may exercise bring-along rights to compel a sale.")).has("GOV-033"),
+    ).toBe(false);
+  });
+
+  it("still fires when no drag/bring-along provision is present", async () => {
+    expect(
+      (await run("The board shall consist of five directors elected annually.")).has("GOV-033"),
+    ).toBe(true);
+  });
+});

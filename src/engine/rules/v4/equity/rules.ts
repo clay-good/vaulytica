@@ -1114,6 +1114,7 @@ const VOTING_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "EQT-058",
+    version: "1.1.0",
     name: "Drag-along covenant",
     description:
       "Voting agreement typically carries the drag-along covenant requiring stockholders to support an approved sale.",
@@ -1125,7 +1126,9 @@ const VOTING_AGREEMENT_RULES: Rule[] = [
       "Drag-alongs bind all stockholders to vote for and execute documents for an approved sale of the company.",
     recommendation:
       "Add 'Drag-Along' triggered by requisite preferred / board approval, with standard appraisal-protection carve-out.",
-    present_patterns: [/drag.along/i],
+    // "bring-along" is a recognized synonym for drag-along; an agreement
+    // drafted around it was reported as missing the covenant.
+    present_patterns: [/(?:drag|bring).along/i],
   }),
   presence({
     id: "EQT-059",

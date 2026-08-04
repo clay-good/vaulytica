@@ -724,6 +724,7 @@ const CHARTER_RULES: Rule[] = [
 const STOCKHOLDERS_AGREEMENT_RULES: Rule[] = [
   presence({
     id: "GOV-033",
+    version: "1.1.0",
     name: "Drag-along provision",
     description:
       "Stockholders' agreements in venture-backed companies should contain a drag-along to enforce sale liquidity.",
@@ -739,7 +740,10 @@ const STOCKHOLDERS_AGREEMENT_RULES: Rule[] = [
       "Drag-along rights allow a majority of preferred (sometimes with founders) to force minority stockholders to sell in an approved exit. NVCA model includes one.",
     recommendation:
       "Add a 'Drag-Along' section conditioned on requisite preferred / board approval and the appraisal-protection carve-out.",
-    present_patterns: [/drag.along/i],
+    // "bring-along" is a recognized synonym for drag-along (the majority can
+    // force/bring the minority into a sale); an agreement drafted around it was
+    // reported as missing the provision.
+    present_patterns: [/(?:drag|bring).along/i],
   }),
   presence({
     id: "GOV-034",

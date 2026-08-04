@@ -242,3 +242,27 @@ describe("EQT-028 — anti-repricing covenant in its passive/negated forms (v1.1
     ).toBe(true);
   });
 });
+
+describe("EQT-058 — drag-along covenant recognizes the 'bring-along' synonym (v1.1.0)", () => {
+  const VOTING_PB: Playbook = { id: "voting-agreement", version: "1.0.0" };
+  const run = async (body: string) => {
+    const r = await runEngine({
+      rules: EQUITY_RULES,
+      ctx: withPb(buildContext(["Voting Agreement", body]), VOTING_PB),
+      source_file: SRC,
+    });
+    return new Set(r.findings.map((f) => f.rule_id));
+  };
+
+  it("does not report the covenant missing when drafted as 'bring-along'", async () => {
+    expect(
+      (await run("The majority may exercise bring-along rights to compel a sale.")).has("EQT-058"),
+    ).toBe(false);
+  });
+
+  it("still fires when no drag/bring-along covenant is present", async () => {
+    expect(
+      (await run("The parties shall vote their shares as directed by the Board.")).has("EQT-058"),
+    ).toBe(true);
+  });
+});
