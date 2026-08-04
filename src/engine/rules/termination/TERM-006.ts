@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js"
 /** TERM-006 — Wind-down or transition services (info). */
 export const rule: Rule = {
   id: "TERM-006",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Wind-down or transition services",
   category: "termination",
   default_severity: "info",
@@ -13,7 +13,13 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /\b(?:wind[- ]down|transition\s+services|post[- ]termination\s+services)\b/i,
+      // Outsourcing / MSA drafting calls the same obligation "termination
+      // assistance", "transition assistance / plan", "disentanglement", or
+      // "reverse transition" — none of which the wind-down / transition-services
+      // list matched. "transition" is anchored to services / assistance / plan
+      // so a generic "transition to the new fiscal year" does not fire, and
+      // bare "winding up" (corporate dissolution) is excluded.
+      /\b(?:wind[- ]?down|transition\s+(?:services|assistance|plan)|termination\s+assistance|disentanglement|post[- ]termination\s+(?:services|assistance|support)|reverse\s+transition)\b/i,
     );
     if (!hit) return null;
     if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;
