@@ -308,7 +308,7 @@
       "finding_id": "OBLI-005-s1.4-784",
       "fired": true,
       "rule_id": "OBLI-005",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -1077,7 +1077,7 @@
       "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
       "id": "OBLI-005-s1.4-784",
       "rule_id": "OBLI-005",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "info",
       "source_citations": [],
       "title": "Negative covenants: 1"
@@ -1121,7 +1121,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\", \"uptime\".",
-  "result_hash": "bca71f3f2932e8c4b51e35a1c0e30deeeb8bd6cc55ba05a24f3ea4fbdd7454dc",
+  "result_hash": "dcbe982bffc70b40220f62a3d65b0698820fcba27cf61213b26ae594571ee1c5",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",

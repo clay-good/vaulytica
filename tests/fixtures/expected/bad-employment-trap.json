@@ -308,7 +308,7 @@
       "finding_id": "OBLI-005-s1.3-632",
       "fired": true,
       "rule_id": "OBLI-005",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -1018,7 +1018,7 @@
       "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
       "id": "OBLI-005-s1.3-632",
       "rule_id": "OBLI-005",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "info",
       "source_citations": [],
       "title": "Negative covenants: 1"
@@ -1027,7 +1027,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.9). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
-  "result_hash": "f0a20c4a99069997cb26d48056b6c986c208022af2094a7c20d5fd6734919e96",
+  "result_hash": "33950d4ac9b9db0621a9484822c6e2ba08bd6f459f9498fd2c9472d82fb567dd",
   "source_file": {
     "name": "bad-employment-trap.docx",
     "sha256": "c0ef11cc8a800daead332bf1bc265f96d72af1c51953958734b1bf18c4058b2a",

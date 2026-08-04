@@ -306,7 +306,7 @@
       "finding_id": "OBLI-005-s1.5-1584",
       "fired": true,
       "rule_id": "OBLI-005",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -930,7 +930,7 @@
       "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
       "id": "OBLI-005-s1.5-1584",
       "rule_id": "OBLI-005",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "info",
       "source_citations": [],
       "title": "Negative covenants: 2"
@@ -974,7 +974,7 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"advisory agreement\". Distinguishing phrases: \"advisory services\", \"deliverables\", \"independent contractor\".",
-  "result_hash": "571b359f296489af74c2aec3cbb3109cf715acffe7ff15cc588f75295c4f54c8",
+  "result_hash": "a44c30116377d299058218bd7abab546418a44734a7b9a6798dcdd8fa7f5be46",
   "source_file": {
     "name": "bad-consulting-success-fee.docx",
     "sha256": "6bc505eb0c1641cda4c3466a62f0b3eead258e2dc3a385e792e79f4a717ad6a5",
