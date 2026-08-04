@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 /** DARK-003 — Asymmetric fee-shifting (warning). */
 export const rule: Rule = {
   id: "DARK-003",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Asymmetric fee-shifting",
   category: "dark-patterns",
   default_severity: "warning",
@@ -21,7 +21,10 @@ export const rule: Rule = {
       // both void-or-reciprocal by statute in many states (e.g., Cal. Civ.
       // § 1717 makes any attorney-fee clause reciprocal). The party lists are
       // extended so the residential and lending forms are caught too.
-      /\b(?:Customer|Licensee|Employee|User|Subscriber|Tenant|Lessee|Borrower|Guarantor|you)\s+(?:shall|must|agrees?\s+to|will)\s+(?:pay|reimburse)\s+(?:Provider|Vendor|Company|Licensor|Employer|Landlord|Lessor|Lender|Bank|Creditor|us|our)['’]?s?\s+(?:reasonable\s+)?attorneys?[’']?\s+fees\b/i,
+      // The recovered cost is written "attorneys' fees", "legal fees",
+      // "counsel fees", or "legal costs" interchangeably — a one-way shift of
+      // any of them is the same asymmetry, so all are recognized.
+      /\b(?:Customer|Licensee|Employee|User|Subscriber|Tenant|Lessee|Borrower|Guarantor|you)\s+(?:shall|must|agrees?\s+to|will)\s+(?:pay|reimburse)\s+(?:the\s+)?(?:Provider|Vendor|Company|Licensor|Employer|Landlord|Lessor|Lender|Bank|Creditor|us|our)['’]?s?\s+(?:reasonable\s+)?(?:attorneys?[’']?\s+(?:fees|costs)|legal\s+(?:fees|costs)|counsel\s+fees)\b/i,
     );
     if (!oneSided) return null;
     // The "prevailing party" balanced-formulation carve-out must be checked in

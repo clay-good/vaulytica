@@ -94,4 +94,20 @@ describe("DARK-003 — one-way attorneys' fee-shifting", () => {
       ),
     ).toBeNull();
   });
+
+  it("reads legal-fees / counsel-fees / legal-costs synonyms and an optional 'the' (v1.3.0)", () => {
+    for (const clause of [
+      "You shall pay the Company's legal fees and costs incurred in enforcing this Agreement.",
+      "Tenant shall reimburse Landlord's reasonable counsel fees.",
+      "Borrower agrees to pay Lender's legal costs and expenses.",
+    ]) {
+      expect(DARK003.check(doc("Fees", clause)), clause).not.toBeNull();
+    }
+  });
+
+  it("does not fire on a reciprocal 'each party pays its own' clause", () => {
+    expect(
+      DARK003.check(doc("Fees", "Each party shall pay its own legal fees and costs.")),
+    ).toBeNull();
+  });
 });
