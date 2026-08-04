@@ -193,3 +193,32 @@ describe("the cover-letter pleasantry is not a lowercase use of 'You' (v1.4.0)",
     expect(STRUCT_009.check(ctx)).not.toBeNull();
   });
 });
+
+describe("a contrastive qualifier marks a different set, not a casing slip (v1.6.0)", () => {
+  it("does not flag 'competing products' against a defined Products", () => {
+    const ctx = buildContext(
+      ["Definitions", '"Products" means the goods listed in Exhibit A.'],
+      ["Restriction", "During the term, the Distributor shall not carry any competing products."],
+    );
+    expect(STRUCT_009.check(ctx)).toBeNull();
+  });
+
+  it("does not flag 'other services' / 'similar goods' against defined terms", () => {
+    const ctx = buildContext(
+      ["Definitions", '"Services" means the consulting services described in the SOW.'],
+      [
+        "Scope",
+        "The Agency may perform other services and provide similar goods to other clients.",
+      ],
+    );
+    expect(STRUCT_009.check(ctx)).toBeNull();
+  });
+
+  it("still fires on a lowercase use with no contrastive qualifier", () => {
+    const ctx = buildContext(
+      ["Definitions", '"Products" means the goods listed in Exhibit A.'],
+      ["Delivery", "The Supplier shall ship the products within thirty (30) days."],
+    );
+    expect(STRUCT_009.check(ctx)).not.toBeNull();
+  });
+});

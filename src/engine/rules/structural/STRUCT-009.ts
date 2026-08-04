@@ -5,7 +5,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
 /** STRUCT-009 — Defined-term capitalization consistency (info). */
 export const rule: Rule = {
   id: "STRUCT-009",
-  version: "1.5.0",
+  version: "1.6.0",
   name: "Defined-term capitalization consistency",
   category: "structural",
   default_severity: "info",
@@ -42,6 +42,7 @@ export const rule: Rule = {
             // information" preceding the Section 1 definition), not a slip.
             p.start + m.index >= def.defined_at.start &&
             !isGenericOwnUse(text, m.index) &&
+            !isContrastiveUse(text, m.index) &&
             !isStatutoryIdiomUse(text, m.index, target, m[0].length)
           ) {
             foundLower = true;
@@ -78,6 +79,21 @@ function escape(s: string): string {
  */
 export function isGenericOwnUse(text: string, index: number): boolean {
   return /\bown\s+$/i.test(text.slice(Math.max(0, index - 12), index));
+}
+
+/**
+ * A lowercase noun immediately preceded by a CONTRASTIVE qualifier names a
+ * DIFFERENT set than the defined term, not a miscapitalized use of it: a
+ * distribution agreement that defines "Products" still bars the distributor
+ * from carrying "competing products" — competitors' goods, deliberately not
+ * the defined Products. The same holds for "other services", "similar goods",
+ * "third-party materials". A real slip never writes "competing <Term>" meaning
+ * the defined term, so these must not read as an inconsistency.
+ */
+export function isContrastiveUse(text: string, index: number): boolean {
+  return /\b(?:competing|competitor'?s?|competitive|rival|similar|comparable|substitute|alternative|other|another|third[-\s]?party)\s+$/i.test(
+    text.slice(Math.max(0, index - 20), index),
+  );
 }
 
 /**
