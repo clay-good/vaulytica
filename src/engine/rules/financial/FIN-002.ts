@@ -20,11 +20,17 @@ const ESCALATION_OR_PERIOD =
  * or `the <Name> of $X` patterns and group by the name.
  */
 
-const NAMED = /\bthe\s+([A-Z][\w\s]{2,30}?)\s+(?:of|equal\s+to)\s+\$([\d,]+(?:\.\d+)?)/g;
+// `[Tt]he` (not a case-insensitive flag) so a named amount that OPENS a
+// sentence — "The Cap of $1,000,000" — is captured, while the name itself
+// stays anchored to an uppercase defined term (a lowercase "the purchase price"
+// is ordinary prose, not a defined amount). Making the whole pattern
+// case-insensitive would have let the lowercase form through and mis-grouped
+// it; keeping the capture upper-anchored preserves that guard.
+const NAMED = /\b[Tt]he\s+([A-Z][\w\s]{2,30}?)\s+(?:of|equal\s+to)\s+\$([\d,]+(?:\.\d+)?)/g;
 
 export const rule: Rule = {
   id: "FIN-002",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Inconsistent named amounts",
   category: "financial",
   default_severity: "warning",
