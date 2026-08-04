@@ -122,7 +122,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "DARK-008",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -1047,7 +1047,7 @@
   "playbook_id": "sow",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected sow (score 0.9). Title matched: \"statement of work\". Distinguishing phrases: \"this SOW\", \"Master Agreement\", \"Deliverables\", \"milestones\".",
-  "result_hash": "b4ba90cfe4ca4f796d105aa2ebf99f465f41369b8e27a32bc5465801d14fa725",
+  "result_hash": "a2946665665b21f7e15d1a04d0fe07647e580d046aef1149c053711692642613",
   "source_file": {
     "name": "bad-sow.docx",
     "sha256": "cd7208763b891cf8cb8e1c853b54f63fb70fe10004a489fbeb95921a14b84c3c",

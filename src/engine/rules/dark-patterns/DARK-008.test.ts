@@ -58,6 +58,44 @@ describe("DARK-008 — unilateral suspension without notice or cure", () => {
     ).not.toBeNull();
   });
 
+  it("reads the reversed 'terminate or suspend' verb order (v1.3.0)", () => {
+    expect(
+      DARK_008.check(
+        buildContext([
+          "Suspension",
+          "Vendor may terminate or suspend your access to the Service at any time without notice.",
+        ]),
+      ),
+    ).not.toBeNull();
+    expect(
+      DARK_008.check(
+        buildContext([
+          "Termination",
+          "Company reserves the right to terminate or suspend your access without notice.",
+        ]),
+      ),
+    ).not.toBeNull();
+    expect(
+      DARK_008.check(
+        buildContext([
+          "Account",
+          "Provider may disable or suspend your account immediately and without notice.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+
+  it("still exempts a reversed-order 'terminate or suspend … only after notice and cure'", () => {
+    expect(
+      DARK_008.check(
+        buildContext([
+          "Suspension",
+          "Vendor may terminate or suspend the Service only after 30 days' notice and an opportunity to cure.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
   it("still exempts a 'reserves the right to suspend … only after notice and cure'", () => {
     expect(
       DARK_008.check(

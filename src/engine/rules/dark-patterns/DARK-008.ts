@@ -19,7 +19,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "DARK-008",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Unilateral suspension without notice or cure",
   category: "dark-patterns",
   default_severity: "warning",
@@ -33,7 +33,13 @@ export const rule: Rule = {
       // and what is suspended is "YOUR ACCESS" rather than "the Service". The
       // right is also as often "reserves the right to suspend" as "may suspend"
       // (the docstring's own example), so both introducers are accepted.
-      /\b(?:Vendor|Provider|Company|Licensor|Supplier|Contractor|Licensee|we)\s+(?:may\s+suspend|reserves?\s+the\s+right\s+to\s+suspend)\s+(?:or\s+terminate\s+)?(?:(?:Customer's|your)\s+(?:access|account)(?:\s+to\s+)?)?(?:the\s+(?:Service|Services|Software|Platform|Application))?[^.]{0,200}(?:immediately\s+and\s+without\s+notice|without\s+notice|at\s+any\s+time|in\s+(?:its\s+)?sole\s+discretion)/i,
+      // The paired verb is drafted in EITHER order — "suspend or terminate"
+      // (already handled by the trailing `or terminate`) and, just as often,
+      // the REVERSED "terminate or suspend" / "disable or suspend" — so a
+      // leading "<verb> or " is accepted before "suspend". Without it the whole
+      // dominant "we may terminate or suspend your account" consumer phrasing
+      // was missed, because "terminate" sat between the introducer and "suspend".
+      /\b(?:Vendor|Provider|Company|Licensor|Supplier|Contractor|Licensee|we)\s+(?:may|reserves?\s+the\s+right\s+to)\s+(?:(?:terminate|disable|deactivate|cancel|revoke|block|limit|restrict)\s+or\s+)?suspend\s+(?:or\s+terminate\s+)?(?:(?:Customer's|your)\s+(?:access|account)(?:\s+to\s+)?)?(?:the\s+(?:Service|Services|Software|Platform|Application))?[^.]{0,200}(?:immediately\s+and\s+without\s+notice|without\s+notice|at\s+any\s+time|in\s+(?:its\s+)?sole\s+discretion)/i,
     );
     if (!hit) return null;
     // The broad trigger can span a COMPLIANT clause and land on a negated phrase
