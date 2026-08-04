@@ -112,6 +112,45 @@ describe("OBLI-002 — reciprocity accounting", () => {
   });
 });
 
+describe("OBLI-002 — negated noun lists", () => {
+  it("does not read a later item of a negated noun list as a borne obligation", () => {
+    // "make NO representations, warranties, or guarantees" — a single leading
+    // "no" disclaims all three. A 12-char look-back caught only the first noun;
+    // "warranties" and "guarantees" were misread as obligations Partner bears.
+    const parties = [
+      { name: "Acme Corp", role: "Company" },
+      { name: "Beta LLC", role: "Partner" },
+    ] as Partial<Party>[];
+    expect(
+      obli002.check(
+        ctxWith(parties, [
+          {
+            obligor: "Partner",
+            action:
+              "make no representations, warranties, or guarantees about the Company or its products",
+          },
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("does not over-suppress: a warranty across a verb from a 'no' still counts", () => {
+    // "…deliver the goods with no delay, AND warrant that they conform" — the
+    // "no" governs "delay", not the later verb "warrant". The negated-list guard
+    // spans nouns and separators, never a verb, so the genuine one-sided
+    // warranty must still surface.
+    const finding = obli002.check(
+      ctxWith(PARTIES, [
+        {
+          obligor: "Vendor",
+          action: "deliver the goods with no delay, and warrant that they conform to spec",
+        },
+      ]),
+    );
+    expect(finding?.title).toBe("Asymmetric warranties obligation");
+  });
+});
+
 describe("OBLI-002 — how the finding reads", () => {
   it("names the obligation, not the pattern that found it", () => {
     const ctx = buildContext([

@@ -11,6 +11,19 @@ import { emit, topPosition } from "../_helpers.js";
 const NEGATED_ACTION = /^(?:not|never)\b/i;
 
 /**
+ * A negation that governs a NOUN LIST: "shall make **no** representations,
+ * warranties, or guarantees". A single leading "no" disclaims every item, but a
+ * fixed 12-character look-back only caught the first noun — the second and third
+ * ("warranties", "guarantees") were read as borne obligations, inverting the
+ * clause. Anchored to end at the keyword, this matches the negation plus a
+ * comma/"or"/"and"-separated run of noun items right up to it. It deliberately
+ * does NOT span a verb ("…with no cap, and warrants X" keeps the genuine
+ * warranty), because a list item is at most two words followed by a separator.
+ */
+const NEGATED_LIST =
+  /\b(?:makes?\s+no|shall\s+not\s+make(?:\s+any)?|without|no)\s+(?:\w+(?:\s+\w+)?[,]\s*|\w+\s+(?:or|and)\s+)*$/i;
+
+/**
  * The obligations that are mutual by default, each with the name a reader
  * would use for it. The label is not decoration: the finding's title and
  * excerpt used to interpolate the pattern itself, so every OBLI-002 finding
@@ -52,7 +65,7 @@ const RECIPROCAL_ROLES = new Set([
 /** OBLI-002 — Reciprocity asymmetry (info). */
 export const rule: Rule = {
   id: "OBLI-002",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Reciprocity asymmetry",
   category: "obligations",
   default_severity: "info",
@@ -75,12 +88,14 @@ export const rule: Rule = {
         const m = pattern.exec(o.action);
         if (!m) continue;
         if (NEGATED_ACTION.test(o.action.trim())) continue;
-        // The keyword may be DISCLAIMED mid-action: a trustee obligated to
-        // "reconvey the Property WITHOUT WARRANTY" bears no warranties
-        // obligation, and counting it inverted the clause. Same for
-        // "makes no representation", "with no indemnification".
-        const lead = o.action.slice(Math.max(0, m.index - 12), m.index);
-        if (/\b(?:without|no)\s+$/i.test(lead)) continue;
+        // The keyword may be DISCLAIMED — directly ("reconvey the Property
+        // WITHOUT WARRANTY", "makes no representation") or as a later member of a
+        // negated noun list ("make NO representations, warranties, or
+        // guarantees"). The look-back anchors a negation + comma/or-separated
+        // noun run ending right at the keyword, so every item the single "no"
+        // governs is skipped, not just the first.
+        const lead = o.action.slice(0, m.index);
+        if (NEGATED_LIST.test(lead)) continue;
         const o2 = o.obligor.toLowerCase().trim();
         if (partySet.has(o2)) seenObligors.add(o2);
       }
