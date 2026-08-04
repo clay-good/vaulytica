@@ -241,6 +241,29 @@ describe("TERM-001 — termination-for-convenience notice", () => {
       expect(TERM001.check(clause(text)), `FALSE convenience: ${text}`).toBeNull();
     }
   });
+
+  it("reads the count-first order — notice period stated before the trigger (v1.2.0)", () => {
+    for (const [text, days] of [
+      ["Upon thirty (30) days' prior written notice, either party may terminate this Agreement for convenience.", 30],
+      ["Upon sixty (60) days' written notice, Customer may terminate this Agreement without cause.", 60],
+    ] as const) {
+      const f = TERM001.check(clause(text));
+      expect(f, `MISSED count-first: ${text}`).not.toBeNull();
+      expect(f!.title).toContain(`${days} days`);
+    }
+  });
+
+  it("count-first does not link a neighbouring-sentence notice to the convenience clause (v1.2.0)", () => {
+    // The 30-day notice belongs to the warranty-claim sentence, not the
+    // convenience termination in the next sentence; `[^.]` gaps keep them apart.
+    expect(
+      TERM001.check(
+        clause(
+          "Vendor shall give thirty (30) days' notice of any warranty claim. Either party may terminate this Agreement for convenience.",
+        ),
+      ),
+    ).toBeNull();
+  });
 });
 
 describe("TERM-009 — asymmetric termination-for-convenience", () => {
