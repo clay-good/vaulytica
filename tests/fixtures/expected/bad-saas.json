@@ -77,9 +77,10 @@
     },
     {
       "elapsed_ms": 0,
-      "fired": false,
+      "finding_id": "DARK-001-s1.3-838",
+      "fired": true,
       "rule_id": "DARK-001",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -742,6 +743,32 @@
   ],
   "findings": [
     {
+      "description": "Vendor may modify the terms of this Agreement at any time",
+      "document_position": 838,
+      "excerpt": {
+        "end_offset": 895,
+        "section_id": "s1.3",
+        "start_offset": 838,
+        "text": "(d) Modifications. Vendor may modify the terms of this Agreement at any time by posting a revised version on its website; continued use of the Service constitutes acceptance."
+      },
+      "explanation": "A unilateral modification right without a corresponding customer termination right shifts re-pricing and re-negotiation power to the drafter.",
+      "id": "DARK-001-s1.3-838",
+      "rule_id": "DARK-001",
+      "rule_version": "1.1.0",
+      "severity": "warning",
+      "source_citations": [
+        {
+          "id": "stat-ftc-deception-statement",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "FTC Policy Statement on Deception (1983)",
+          "source_url": "https://www.ftc.gov/legal-library/browse/ftc-policy-statement-deception"
+        }
+      ],
+      "title": "Unilateral right to modify terms"
+    },
+    {
       "description": "Notice window: 90 days, located in s1.3.",
       "document_position": 634,
       "excerpt": {
@@ -1102,7 +1129,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "20cfc1c2c9f670e4a77458943fd04fc1d0f7eee7a4086d8303de4a1667967f97",
+  "result_hash": "b26b5d59f1590b04c4e9f71ac58161dd60490d63cb5b58e1061060e40acd5f61",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",
