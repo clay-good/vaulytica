@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 /** RISK-003 — Indemnity cap present (info). */
 export const rule: Rule = {
   id: "RISK-003",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Indemnity cap present",
   category: "risk-allocation",
   default_severity: "info",
@@ -13,10 +13,13 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     // A cap phrased with a negation PHRASE — "the indemnification obligations
     // shall in no event exceed the Escrow Amount" — carries no "not", so the
-    // "not exceed" branch missed it and this info-cap went unsurfaced.
+    // "not exceed" branch missed it and this info-cap went unsurfaced. The
+    // anchor is `indemni(f|t)` so the "indemnit-" forms — the noun "indemnity"
+    // (the usual section title), "Indemnitee", "Indemnitor" — are read too, not
+    // only the "indemnif-" verb forms.
     const hit = firstParagraphMatch(
       ctx,
-      /\bindemnif[\s\S]{0,200}?(?:not\s+exceed|capped\s+at|limited\s+to|aggregate\s+(?:liability|cap)\s+(?:of|equal\s+to)|(?:in\s+no\s+event|under\s+no\s+circumstances)[^.]{0,25}?exceed)/i,
+      /\bindemni(?:f|t)[\s\S]{0,200}?(?:not\s+exceed|capped\s+at|limited\s+to|aggregate\s+(?:liability|cap)\s+(?:of|equal\s+to)|(?:in\s+no\s+event|under\s+no\s+circumstances)[^.]{0,25}?exceed)/i,
     );
     if (!hit) return null;
     return emit(ctx, rule, {
