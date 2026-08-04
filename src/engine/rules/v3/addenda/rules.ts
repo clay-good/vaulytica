@@ -280,6 +280,7 @@ export const ADDENDA_RULES: Rule[] = [
   }),
   languageAi({
     id: "ADDENDA-011",
+    version: "1.1.0",
     name: "Prohibited use: training on customer data without opt-in",
     description:
       "Flags an AI Addendum that permits training on customer data without an explicit opt-in.",
@@ -292,7 +293,7 @@ export const ADDENDA_RULES: Rule[] = [
     recommendation:
       "Require an explicit, affirmative opt-in for training on Customer Data; opt-out-by-default is insufficient under FTC posture.",
     bad_patterns: [
-      /(?:may\s+use|will\s+use|reserves?\s+the\s+right\s+to\s+use)\s+(?:Customer\s+Data|your\s+data|content).{0,160}(?:to\s+train|for\s+training|to\s+improve\s+(?:our\s+)?(?:models?|AI))/is,
+      /(?:may\s+use|will\s+use|reserves?\s+the\s+right\s+to\s+use)\s+(?:Customer\s+Data|your\s+data|content).{0,160}(?:to\s+train|for\s+training|to\s+(?:fine[-\s]?tune|fine[-\s]?tuning)|for\s+fine[-\s]?tuning|to\s+improve\s+(?:our\s+)?(?:models?|AI))/is,
       /(?:opt[- ]out\s+(?:basis|default)|unless\s+(?:you\s+)?opt\s+out)[^.]{0,160}(?:train|training|AI\s+model)/is,
     ],
     default_severity: "critical",

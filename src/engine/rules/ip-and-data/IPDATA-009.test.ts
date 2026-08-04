@@ -21,6 +21,24 @@ describe("IPDATA-009 — AI / model-training rights over Customer Data", () => {
     expect(IPDATA_009.check(ctx)).not.toBeNull();
   });
 
+  it("fires on a grant to FINE-TUNE models on Customer Data (v1.2.0)", () => {
+    // "Fine-tuning" is the dominant modern training operation, especially for
+    // LLMs, and was missed by the train/develop-only verb list.
+    expect(
+      IPDATA_009.check(
+        buildContext(["Data and AI", "Vendor may use Customer Data to fine-tune our models."]),
+      ),
+    ).not.toBeNull();
+    expect(
+      IPDATA_009.check(
+        buildContext([
+          "Data License",
+          "Customer grants Vendor a license to use Customer Data for the fine-tuning of Vendor's AI models.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+
   it("is silent on a plain DPA without training language", () => {
     const ctx = buildContext([
       "Data Processing",

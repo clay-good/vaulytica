@@ -190,6 +190,25 @@ describe("Addenda ruleset — failure modes", () => {
     expect(finding?.severity).toBe("critical");
   });
 
+  // v1.1.0 — "fine-tuning" is the dominant modern training operation and was
+  // missed by the train/improve-only verb list.
+  it("fine-tuning on customer data fires ADDENDA-011", async () => {
+    const ctx = withPb(
+      buildContext([
+        "AI Addendum",
+        "Vendor may use Customer Data to fine-tune its models on an opt-out basis.",
+      ]),
+      AI,
+    );
+    const run = await runEngine({
+      rules: ADDENDA_RULES,
+      ctx,
+      executed_at: "2026-05-13T00:00:00Z",
+      source_file: SRC,
+    });
+    expect(run.findings.find((f) => f.rule_id === "ADDENDA-011")).toBeTruthy();
+  });
+
   it("missing AI definitions fires ADDENDA-010", async () => {
     const ctx = withPb(
       buildContext([

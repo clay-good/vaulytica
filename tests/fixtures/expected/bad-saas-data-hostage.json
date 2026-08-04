@@ -270,7 +270,7 @@
       "finding_id": "IPDATA-009-s1.2-662",
       "fired": true,
       "rule_id": "IPDATA-009",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -748,7 +748,7 @@
       "id": "IPDATA-009-s1.2-662",
       "recommendation": "Strike the training license entirely, or narrow it dramatically: (a) only de-identified / aggregated data, (b) only for operating the Service for that customer (not 'developing' the vendor's other services), (c) explicit opt-in rather than buried-in-TOS license, (d) carve-out for regulated data categories (PII, PHI, financial data, education records).",
       "rule_id": "IPDATA-009",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "critical",
       "source_citations": [],
       "title": "AI / model-training rights over Customer Data"
@@ -990,7 +990,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "6a56aa44c72ef00c329b3b5161ee0089817069cf62fc2f6fc09e8a530fe67574",
+  "result_hash": "0fedf6d7d2a2955671bf98628a74d5b772cdc9c55f35e3c819bb3ee5d39e3c30",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
     "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",
