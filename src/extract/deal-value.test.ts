@@ -123,6 +123,29 @@ describe("extractDealValue — labeled total only (never a guess)", () => {
     );
   });
 
+  // Construction and M&A total labels — the AIA "Contract Sum", the CM-at-risk
+  // "Guaranteed Maximum Price" (GMP), and the bounded M&A "transaction value".
+  it("reads the construction 'Contract Sum' and 'Guaranteed Maximum Price'", () => {
+    expect(dealValue("The Contract Sum is $2,500,000.")).toEqual({
+      value: 2_500_000,
+      label: "contract sum",
+    });
+    expect(dealValue("The Guaranteed Maximum Price shall be $4,750,000.")?.value).toBe(4_750_000);
+  });
+
+  it("reads a bounded 'transaction value' total", () => {
+    expect(dealValue("The total transaction value is $12,000,000.")?.value).toBe(12_000_000);
+    expect(dealValue("The aggregate transaction value equals $30,000,000.")?.value).toBe(
+      30_000_000,
+    );
+  });
+
+  it("does not read a per-unit 'contract price' as the total (bare label excluded)", () => {
+    // "contract price" is deliberately NOT a label — a per-unit rate must never
+    // be misread as the deal size.
+    expect(dealValue("The contract price for each widget is $50.")).toBeNull();
+  });
+
   it("does not match a parenthetical that is not the label alone", () => {
     // A non-label parenthetical, and a negated label in parens, must not match.
     expect(dealValue("A fee of $500 (a late charge) applies.")).toBeNull();

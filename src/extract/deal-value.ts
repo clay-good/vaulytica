@@ -31,6 +31,16 @@ export const DEAL_VALUE_LABELS: readonly string[] = [
   "aggregate fees",
   "total fees",
   "not to exceed",
+  // Construction totals: "Contract Sum" is the AIA A-series defined total and
+  // "Guaranteed Maximum Price" (GMP) is the CM-at-risk project ceiling — both
+  // are unambiguous document-total labels with no per-unit idiom. Bare
+  // "contract price" is deliberately NOT added: "$X per unit/hour" would be
+  // misread as the total, which the honesty-first design forbids.
+  "guaranteed maximum price",
+  "contract sum",
+  // M&A totals, bounded by "total"/"aggregate" so a stray figure is never read.
+  "total transaction value",
+  "aggregate transaction value",
 ];
 
 const SCALE_WORDS: Record<string, number> = {
