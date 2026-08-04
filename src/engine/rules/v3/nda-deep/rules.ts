@@ -159,6 +159,7 @@ export const NDA_DEEP_RULES: Rule[] = [
 
   presence({
     id: "NDA-D-007",
+    version: "1.1.0",
     name: "Exclusion: previously known to the recipient",
     description:
       "Confidential Information should exclude information already known to the receiving party prior to disclosure.",
@@ -176,6 +177,11 @@ export const NDA_DEEP_RULES: Rule[] = [
       // "known … before disclosure" order with "before" (not "prior to") is as
       // common as the forms above and was missed.
       /\bknown\b[^.]{0,40}?\b(?:before|prior\s+to)\s+(?:its\s+|the\s+|such\s+)?disclos/i,
+      // The carve-out is also framed on POSSESSION rather than knowledge —
+      // "rightfully in its possession before disclosure" — with a possessive
+      // ("its"/"the Receiving Party's") the "in the possession OF" pattern above
+      // does not reach.
+      /\bpossession\b[^.]{0,40}?\b(?:before|prior\s+to)\s+(?:its\s+|the\s+|such\s+)?disclos/i,
     ],
   }),
 
@@ -200,6 +206,7 @@ export const NDA_DEEP_RULES: Rule[] = [
 
   presence({
     id: "NDA-D-009",
+    version: "1.1.0",
     name: "Exclusion: independently developed",
     description:
       "Confidential Information should exclude information independently developed by the receiver without reference to the Confidential Information.",
@@ -213,6 +220,10 @@ export const NDA_DEEP_RULES: Rule[] = [
       "Add: 'Confidential Information does not include information independently developed by Receiving Party without use of or reference to Disclosing Party's Confidential Information.'",
     present_patterns: [
       /independently\s+(developed|derived|created)/i,
+      // The NOUN form "the result of independent DEVELOPMENT / derivation /
+      // creation" carries the same carve-out and was missed by the adverb-verb
+      // pattern above.
+      /independent\s+(?:development|derivation|creation)/i,
       /without\s+(use\s+of|reference\s+to)\s+(the\s+)?confidential/i,
     ],
   }),
