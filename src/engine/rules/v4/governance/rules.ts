@@ -620,6 +620,7 @@ const CHARTER_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-029",
+    version: "1.1.0",
     name: "Indemnification authorization in charter",
     description:
       "Charter should authorize indemnification under DGCL § 145; bylaws then implement.",
@@ -631,7 +632,10 @@ const CHARTER_RULES: Rule[] = [
       "While the bylaws typically carry the operational text, including an indemnification authorization in the charter prevents future bylaw amendments from being read to limit existing rights.",
     recommendation:
       "Add an article stating the corporation shall indemnify D&O to the fullest extent permitted by DGCL § 145, and that any amendment may not retroactively limit indemnification.",
-    present_patterns: [/indemnif/i],
+    // Lookbehind guard (see GOV-008): a charter/agreement that DISCLAIMS
+    // indemnity ("shall NOT indemnify", "NO indemnification") must not be read
+    // as providing it — that is the very risk this rule flags.
+    present_patterns: [/(?<!\bno\s)(?<!\bnot\s)indemnif/i],
   }),
   presence({
     id: "GOV-030",
@@ -1410,6 +1414,7 @@ const PARTNERSHIP_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-068",
+    version: "1.1.0",
     name: "Indemnification of general partner",
     description: "GP indemnification under DRULPA § 17-108 should be addressed.",
     citation: drulpa("108"),
@@ -1420,7 +1425,10 @@ const PARTNERSHIP_RULES: Rule[] = [
       "DRULPA § 17-108 permits broad indemnification of GPs. Practice baseline is to grant it expressly.",
     recommendation:
       "Add 'Indemnification' covering the GP to the fullest extent permitted by DRULPA § 17-108.",
-    present_patterns: [/indemnif/i],
+    // Lookbehind guard (see GOV-008): a charter/agreement that DISCLAIMS
+    // indemnity ("shall NOT indemnify", "NO indemnification") must not be read
+    // as providing it — that is the very risk this rule flags.
+    present_patterns: [/(?<!\bno\s)(?<!\bnot\s)indemnif/i],
     default_severity: "warning",
   }),
   presence({
@@ -1625,6 +1633,7 @@ const NONPROFIT_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-079",
+    version: "1.1.0",
     name: "Indemnification of directors and officers",
     description: "Bylaws should provide for indemnification of directors and officers.",
     citation: govPractice(
@@ -1639,7 +1648,10 @@ const NONPROFIT_RULES: Rule[] = [
       "ABA Model Nonprofit Corp Act permits broad indemnification; nonprofits typically grant it expressly to attract qualified directors.",
     recommendation:
       "Add an 'Indemnification' article granting directors and officers indemnification to the fullest extent permitted by state law.",
-    present_patterns: [/indemnif/i],
+    // Lookbehind guard (see GOV-008): a charter/agreement that DISCLAIMS
+    // indemnity ("shall NOT indemnify", "NO indemnification") must not be read
+    // as providing it — that is the very risk this rule flags.
+    present_patterns: [/(?<!\bno\s)(?<!\bnot\s)indemnif/i],
   }),
   compound({
     id: "GOV-080",

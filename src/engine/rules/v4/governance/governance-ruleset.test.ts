@@ -9,6 +9,8 @@ import type { Playbook, RuleContext } from "../../../finding.js";
 const BYLAWS_PB: Playbook = { id: "bylaws-corporation", version: "1.0.0" };
 const OP_AGREEMENT_PB: Playbook = { id: "operating-agreement-llc", version: "1.0.0" };
 const NONPROFIT_PB: Playbook = { id: "nonprofit-bylaws", version: "1.0.0" };
+const CHARTER_PB: Playbook = { id: "charter-incorporation", version: "1.0.0" };
+const PARTNERSHIP_PB: Playbook = { id: "partnership-agreement", version: "1.0.0" };
 
 const SRC = { name: "test.docx", sha256: "0".repeat(64), size_bytes: 100 };
 
@@ -447,6 +449,68 @@ describe("GOV-008 — D&O indemnification reads the 'indemnity' / 'Indemnitee' n
           "The Corporation shall indemnify its directors and officers to the fullest extent permitted by law.",
         )
       ).has("GOV-008"),
+    ).toBe(false);
+  });
+});
+
+describe("GOV-029 / GOV-068 / GOV-079 — indemnity presence flags a disclaimer (v1.1.0)", () => {
+  const fired = async (pb: Playbook, body: string) => {
+    const run = await runEngine({
+      rules: GOVERNANCE_RULES,
+      ctx: withPb(buildContext(["Doc", body]), pb),
+      source_file: SRC,
+    });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("GOV-029 fires when a charter DISCLAIMS indemnification, stays silent when it grants it", async () => {
+    expect(
+      (
+        await fired(
+          CHARTER_PB,
+          "The Corporation shall not indemnify any director for any liability.",
+        )
+      ).has("GOV-029"),
+    ).toBe(true);
+    expect(
+      (
+        await fired(
+          CHARTER_PB,
+          "The Corporation shall indemnify each director to the fullest extent permitted by law.",
+        )
+      ).has("GOV-029"),
+    ).toBe(false);
+  });
+
+  it("GOV-068 fires when an LP agreement DISCLAIMS GP indemnity", async () => {
+    expect(
+      (await fired(PARTNERSHIP_PB, "The Partnership shall not indemnify the General Partner.")).has(
+        "GOV-068",
+      ),
+    ).toBe(true);
+    expect(
+      (
+        await fired(
+          PARTNERSHIP_PB,
+          "The Partnership shall indemnify the General Partner to the fullest extent permitted.",
+        )
+      ).has("GOV-068"),
+    ).toBe(false);
+  });
+
+  it("GOV-079 fires when nonprofit bylaws DISCLAIM D&O indemnity", async () => {
+    expect(
+      (
+        await fired(NONPROFIT_PB, "The Corporation shall not indemnify its directors or officers.")
+      ).has("GOV-079"),
+    ).toBe(true);
+    expect(
+      (
+        await fired(
+          NONPROFIT_PB,
+          "The Corporation shall indemnify its directors and officers as permitted by law.",
+        )
+      ).has("GOV-079"),
     ).toBe(false);
   });
 });
