@@ -134,6 +134,7 @@ export const NDA_DEEP_RULES: Rule[] = [
 
   presence({
     id: "NDA-D-006",
+    version: "1.1.0",
     name: "Exclusion: publicly available information",
     description:
       "The Confidential Information definition should exclude information that is or becomes publicly available through no breach.",
@@ -148,6 +149,11 @@ export const NDA_DEEP_RULES: Rule[] = [
     present_patterns: [
       /(publicly|generally)\s+(available|known)/i,
       /(public\s+domain|in\s+the\s+public)/i,
+      // The same exclusion is drafted "becomes public knowledge", "is available
+      // to the public", "enters the public domain", or "is or becomes public
+      // [other than through a breach]" — all standard, none matched by the two
+      // patterns above, so a compliant NDA drafted that way was falsely flagged.
+      /public\s+knowledge|available\s+to\s+the\s+public|enters?\s+the\s+public\s+domain|(?:is\s+or\s+)?becomes?\s+public\b/i,
     ],
   }),
 
