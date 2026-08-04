@@ -90,4 +90,29 @@ describe("IPDATA-001 — IP ownership clause present", () => {
       ),
     ).not.toBeNull();
   });
+
+  it("reads the IP-object-first 'shall belong to' / 'owned by' forms (v1.5.0)", () => {
+    expect(
+      IPDATA_001.check(doc("All Work Product and deliverables shall belong to the Customer.")),
+    ).toBeNull();
+    expect(
+      IPDATA_001.check(
+        doc("All right, title, and interest in the Deliverables shall be owned by Customer."),
+      ),
+    ).toBeNull();
+    expect(
+      IPDATA_001.check(doc("The patents and trade secrets belong to the Company.")),
+    ).toBeNull();
+  });
+
+  it("does not read generic 'owned by' / 'belong to' with no IP object as an ownership clause", () => {
+    // "the company is owned by its shareholders", "the parties belong to the
+    // association" allocate no IP, so the rule still warns.
+    expect(
+      IPDATA_001.check(doc("The company is owned by its shareholders and managed by a board.")),
+    ).not.toBeNull();
+    expect(
+      IPDATA_001.check(doc("The parties belong to the same trade association and meet quarterly.")),
+    ).not.toBeNull();
+  });
 });

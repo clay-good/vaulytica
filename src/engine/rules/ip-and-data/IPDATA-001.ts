@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
 /** IPDATA-001 — IP ownership clause present (warning). */
 export const rule: Rule = {
   id: "IPDATA-001",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "IP ownership clause present",
   category: "ip-and-data",
   default_severity: "warning",
@@ -41,13 +41,19 @@ export const rule: Rule = {
         // owns the Licensed Patents", "each party owns the improvements it
         // makes". Anchored on an IP object so a bare "owns 10% of the
         // company" is not read as an IP-ownership clause.
+        // Ownership stated with the IP object FIRST and the verb after —
+        // "all Work Product shall belong to the Customer", "the Deliverables
+        // shall be owned by Customer" — which the owner-first / owns-object
+        // branches did not read. Anchored on an IP object so a generic "the
+        // company is owned by its shareholders" / "the parties belong to the
+        // association" is not mistaken for an IP-ownership clause.
         // Ownership stated by RETENTION ("Licensor retains all right, title,
         // and interest" / "retains ownership"), by TITLE VESTING ("Title to all
         // Inventions shall vest in the Employer"), by naming the OWNER ("the
         // sole and exclusive owner of all Work Product"), by the "is the
         // exclusive property of" form (no "and remain"), and by "own … Data /
         // IP / Work Product" (objects the assignment-anchored branch lacked).
-        /\b(?:work(?:s)?\s+made\s+for\s+hire|intellectual\s+property|IP\s+ownership|copyright\s+ownership|retains?\s+(?:all\s+)?(?:ownership\b|right,?\s+title\b)|title\s+(?:to|in)\b[^.]{0,60}?\bvest(?:s|ed)?\s+in\b|(?:sole\s+and\s+exclusive|exclusive|sole)\s+owner\s+of\b|(?:owns|owned|(?:shall|will|hereby|to|must)\s+own)\b[^.]{0,40}?\b(?:data|IP\b|work\s+product)\b|(?:are|is|shall\s+be)\s+the\s+(?:sole\s+)?(?:and\s+exclusive\s+)?property\s+of|(?:is|are|shall\s+be)\s+the\s+(?:sole\s+(?:and\s+exclusive\s+)?|exclusive\s+)property\s+of|all\s+rights\s+not\s+expressly\s+granted\s+are\s+reserved|reserves\s+all\s+(?:its\s+)?rights|acquires?\s+no\s+(?:ownership|right|title)|own(?:s|ed|ership\s+of)?\b[^.]{0,40}?\b(?:licensed\s+)?(?:patents?|copyrights?|trademarks?|inventions?|improvements?|intellectual\s+property|trade\s+secrets?|works?\s+of\s+authorship|deliverables?)\b|goodwill\b[^.]{0,60}?\binures?\s+(?:solely\s+)?to\s+the\s+benefit\s+of|hereby\s+(?:\w+ly\s+)?assigns?[^.]{0,120}?\b(?:inventions?|work\s+product|works?\s+of\s+authorship|copyrights?|patents?|trademarks?|trade\s+secrets?|deliverables?|intellectual\s+property|moral\s+rights?|IP)\b)/i,
+        /\b(?:work(?:s)?\s+made\s+for\s+hire|intellectual\s+property|IP\s+ownership|copyright\s+ownership|retains?\s+(?:all\s+)?(?:ownership\b|right,?\s+title\b)|title\s+(?:to|in)\b[^.]{0,60}?\bvest(?:s|ed)?\s+in\b|(?:sole\s+and\s+exclusive|exclusive|sole)\s+owner\s+of\b|(?:owns|owned|(?:shall|will|hereby|to|must)\s+own)\b[^.]{0,40}?\b(?:data|IP\b|work\s+product)\b|(?:are|is|shall\s+be)\s+the\s+(?:sole\s+)?(?:and\s+exclusive\s+)?property\s+of|(?:is|are|shall\s+be)\s+the\s+(?:sole\s+(?:and\s+exclusive\s+)?|exclusive\s+)property\s+of|all\s+rights\s+not\s+expressly\s+granted\s+are\s+reserved|reserves\s+all\s+(?:its\s+)?rights|acquires?\s+no\s+(?:ownership|right|title)|own(?:s|ed|ership\s+of)?\b[^.]{0,40}?\b(?:licensed\s+)?(?:patents?|copyrights?|trademarks?|inventions?|improvements?|intellectual\s+property|trade\s+secrets?|works?\s+of\s+authorship|deliverables?)\b|goodwill\b[^.]{0,60}?\binures?\s+(?:solely\s+)?to\s+the\s+benefit\s+of|hereby\s+(?:\w+ly\s+)?assigns?[^.]{0,120}?\b(?:inventions?|work\s+product|works?\s+of\s+authorship|copyrights?|patents?|trademarks?|trade\s+secrets?|deliverables?|intellectual\s+property|moral\s+rights?|IP)\b|(?:work\s+product|deliverables?|inventions?|copyrights?|patents?|trademarks?|trade\s+secrets?|works?\s+of\s+authorship|intellectual\s+property|moral\s+rights?)\b[^.]{0,60}?\b(?:belongs?\s+to|owned\s+by)\b)/i,
       )
     )
       return null;
