@@ -41,4 +41,18 @@ describe("RISK-017 — one-way attorneys'-fees", () => {
     const ctx = buildContext(["Body", "Provider shall provide the Services."]);
     expect(RISK_017.check(ctx)).toBeNull();
   });
+
+  it("reads a one-way 'legal costs' / 'attorneys' costs' shift (v1.1.0)", () => {
+    expect(
+      RISK_017.check(
+        buildContext(["Fees", "Vendor shall be entitled to recover its reasonable legal costs."]),
+      ),
+    ).not.toBeNull();
+    expect(
+      RISK_017.check(buildContext(["Fees", "Customer shall reimburse Vendor's legal costs."])),
+    ).not.toBeNull();
+    expect(
+      RISK_017.check(buildContext(["Fees", "Vendor may recover its attorneys' costs."])),
+    ).not.toBeNull();
+  });
 });
