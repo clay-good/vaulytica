@@ -23,7 +23,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "PERS-005",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Non-compete clause present",
   category: "personnel",
   default_severity: "warning",
@@ -33,7 +33,11 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /\b(?:non[-\s]?compete|covenant\s+not\s+to\s+compete|shall\s+not\s+(?:directly\s+or\s+indirectly\s+)?compete|agrees?\s+not\s+to\s+(?:directly\s+or\s+indirectly\s+)?engage\s+in\s+(?:any\s+)?(?:business|activity)\s+(?:that\s+)?compet|shall\s+not[^.;]{0,60}?\b(?:own|manage|operate|control|be\s+employed\s+by|participate\s+in)\b[^.;]{0,120}?\bcompeting\s+business)/i,
+      // "non-competition" (the dominant section-heading spelling) is added — the
+      // old `non[-\s]?compete` matched "non-compete" but not "non-competition".
+      // The bare covenant verb is also written "WILL not compete" / "AGREES NOT
+      // TO compete", not only "shall not compete".
+      /\b(?:non[-\s]?compet(?:e|ition)|covenant\s+not\s+to\s+compete|(?:shall|will)\s+not\s+(?:directly\s+or\s+indirectly\s+)?compete|agrees?\s+not\s+to\s+(?:directly\s+or\s+indirectly\s+)?compete|agrees?\s+not\s+to\s+(?:directly\s+or\s+indirectly\s+)?engage\s+in\s+(?:any\s+)?(?:business|activity)\s+(?:that\s+)?compet|shall\s+not[^.;]{0,60}?\b(?:own|manage|operate|control|be\s+employed\s+by|participate\s+in)\b[^.;]{0,120}?\bcompeting\s+business)/i,
     );
     if (!hit) return null;
     // Suppress a DISCLAIMER of a non-compete ("nothing shall be construed as a
@@ -42,7 +46,7 @@ export const rule: Rule = {
     // the restriction, not a disclaimer. The generic negation helper can't tell
     // these apart, so this rule checks disclaimer markers specifically.
     if (
-      /\bconstrued\s+(?:as|to)\b|\b(?:does|shall|will)\s+not\s+(?:contain|include|impose|create|constitute|be\s+deemed)\b|for\s+the\s+avoidance\s+of\s+doubt[\s\S]{0,80}\bnothing\b|\bnothing\b[\s\S]{0,80}\bconstrued\b|\bno\s+(?:non[-\s]?compete|covenant\s+not\s+to\s+compete|restrictive\s+covenant)\b/i.test(
+      /\bconstrued\s+(?:as|to)\b|\b(?:does|shall|will)\s+not\s+(?:contain|include|impose|create|constitute|be\s+deemed)\b|for\s+the\s+avoidance\s+of\s+doubt[\s\S]{0,80}\bnothing\b|\bnothing\b[\s\S]{0,80}\bconstrued\b|\bno\s+(?:non[-\s]?compet(?:e|ition)|covenant\s+not\s+to\s+compete|restrictive\s+covenant)\b/i.test(
         hit.text,
       )
     )
