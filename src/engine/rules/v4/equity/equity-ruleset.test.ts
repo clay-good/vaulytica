@@ -156,3 +156,26 @@ describe("Voting agreement — election covenant & termination in real wording",
     ).toBe(true);
   });
 });
+
+describe("EQT-068 — election window reads the parenthesized 'fifteen (15) days to elect' (v1.1.0)", () => {
+  const ROFR_PB: Playbook = { id: "rofr-co-sale", version: "1.0.0" };
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["ROFR", body]), ROFR_PB);
+    const run = await runEngine({ rules: EQUITY_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+  it("does not report the election window missing when stated as '(15) days to elect'", async () => {
+    expect(
+      (
+        await run1(
+          "The Company shall have fifteen (15) days to elect to purchase the offered shares.",
+        )
+      ).has("EQT-068"),
+    ).toBe(false);
+  });
+  it("still reports the mechanics missing when none is stated", async () => {
+    expect(
+      (await run1("The shares are subject to certain transfer restrictions only.")).has("EQT-068"),
+    ).toBe(true);
+  });
+});

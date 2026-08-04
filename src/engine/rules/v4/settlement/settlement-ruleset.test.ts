@@ -286,3 +286,19 @@ describe("SET-012 — a spelled demand deadline (v1.1.0)", () => {
     ).toBe(true);
   });
 });
+
+describe("SET-012 — demand deadline reads the parenthesized 'within thirty (30) days' (v1.2.0)", () => {
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Demand", body]), DEMAND_PB);
+    const run = await runEngine({ rules: SETTLEMENT_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+  it("does not report the deadline missing when stated as 'respond within thirty (30) days'", async () => {
+    expect(
+      (await run1("You must respond within thirty (30) days of this letter.")).has("SET-012"),
+    ).toBe(false);
+  });
+  it("still reports the deadline missing when none is stated", async () => {
+    expect((await run1("This is a demand regarding the dispute.")).has("SET-012")).toBe(true);
+  });
+});

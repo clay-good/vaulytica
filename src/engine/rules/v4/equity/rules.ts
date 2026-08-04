@@ -1263,6 +1263,7 @@ const ROFR_RULES: Rule[] = [
   }),
   presence({
     id: "EQT-068",
+    version: "1.1.0",
     name: "Notice and election windows",
     description: "ROFR / co-sale need clear notice and election windows.",
     citation: nvca("rofr-mechanics", "ROFR / Co-Sale — Mechanics"),
@@ -1273,7 +1274,7 @@ const ROFR_RULES: Rule[] = [
       "Mechanics typically: 15 days for company election, 10 days for investor election, with a 60-day sale window if neither exercises.",
     recommendation: "Add explicit notice / election windows for each tier.",
     present_patterns: [
-      /(\d{1,3})\s*(day|business\s+day)s?\s+(after|to\s+elect)/i,
+      /\(?(\d{1,3})\)?\s*(day|business\s+day)s?\s+(after|to\s+elect)/i,
       /notice\s+of\s+(intended\s+)?transfer/i,
     ],
     default_severity: "warning",
