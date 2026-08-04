@@ -261,7 +261,7 @@
       "finding_id": "IPDATA-007-s1.1-272",
       "fired": true,
       "rule_id": "IPDATA-007",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -912,7 +912,7 @@
       "id": "IPDATA-007-s1.1-272",
       "recommendation": "Add an explicit retention clause: how long data is kept (or the trigger that ends retention), what happens at the end of retention (return / deletion / certification of destruction), and the cooperation timeline.",
       "rule_id": "IPDATA-007",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Data retention period unspecified"
@@ -1129,7 +1129,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "cbba8eb2a5a64c7b338520172d44881074046f14239cc08a52eff43598f95a49",
+  "result_hash": "4dd9a9a819f3bf7edbcda45cf5ced302aa575517181ce791e340ed8c881f45eb",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",

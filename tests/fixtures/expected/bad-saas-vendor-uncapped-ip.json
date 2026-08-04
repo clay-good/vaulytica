@@ -255,7 +255,7 @@
       "finding_id": "IPDATA-007-s1.2-604",
       "fired": true,
       "rule_id": "IPDATA-007",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -749,7 +749,7 @@
       "id": "IPDATA-007-s1.2-604",
       "recommendation": "Add an explicit retention clause: how long data is kept (or the trigger that ends retention), what happens at the end of retention (return / deletion / certification of destruction), and the cooperation timeline.",
       "rule_id": "IPDATA-007",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Data retention period unspecified"
@@ -956,7 +956,7 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 0.8,
   "playbook_match_reasoning": "Selected msa-general (score 0.8). Required clauses present: \"indemnification\". Distinguishing phrases: \"Services\", \"Provider\", \"Customer\". Negative features penalized: \"lease\", \"Premises\".",
-  "result_hash": "70410df04e5fb3abb7bc5571b3665043dce9f6e386b63817ca7f2e769ae7c9d9",
+  "result_hash": "9a1a5039177b5bcb2d6b752028a0cdfed926017d6ed07695e7236a1b4ae2b6b4",
   "source_file": {
     "name": "bad-saas-vendor-uncapped-ip.docx",
     "sha256": "8ae94b74fdbe0bc441724e390612c07a1fd3fdc05bf782e829c1e4dda8a69083",

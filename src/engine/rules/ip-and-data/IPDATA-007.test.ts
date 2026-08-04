@@ -46,4 +46,31 @@ describe("IPDATA-007 — data retention period unspecified", () => {
     ]);
     expect(IPDATA_007.check(ctx)).toBeNull();
   });
+
+  it("is silent when retention is stated as 'stored/kept/held for <N> …' or a 'storage period' (v1.1.0)", () => {
+    for (const clause of [
+      "Customer Data will be stored for 90 days and no longer.",
+      "Customer Data is kept for 12 months following termination.",
+      "Customer Data will be held for no longer than 24 months.",
+      "The storage period for Customer Data is defined in Exhibit B.",
+    ]) {
+      const ctx = buildContext([
+        "Data",
+        "The Vendor processes Customer Data on the Company's behalf.",
+        "Terms",
+        clause,
+      ]);
+      expect(IPDATA_007.check(ctx), clause).toBeNull();
+    }
+  });
+
+  it("still fires when a data contract only says data is 'kept for internal use' (v1.1.0)", () => {
+    const ctx = buildContext([
+      "Data",
+      "The Vendor processes Customer Data on the Company's behalf.",
+      "Records",
+      "Records are kept for internal use by the finance team.",
+    ]);
+    expect(IPDATA_007.check(ctx)).not.toBeNull();
+  });
 });

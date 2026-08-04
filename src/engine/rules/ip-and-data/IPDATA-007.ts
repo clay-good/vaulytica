@@ -22,7 +22,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
  */
 export const rule: Rule = {
   id: "IPDATA-007",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Data retention period unspecified",
   category: "ip-and-data",
   default_severity: "warning",
@@ -36,8 +36,14 @@ export const rule: Rule = {
 
     const DATA_HANDLING =
       /\b(?:customer\s+data|personal\s+data|personally\s+identifiable\s+information|PII|data\s+processing|process(?:es|ing)?\s+personal\s+data|data\s+processing\s+addendum|DPA\b)/i;
+    // Because this is an ABSENCE detector, a retention phrasing it fails to
+    // recognize is a FALSE POSITIVE ("retention unspecified" over a contract
+    // that does specify it). The "kept / stored / held / maintained for <N>
+    // days/months/years" and "storage period/limitation" forms are as common as
+    // "retained for a period of …" and were missed. The duration/keyword anchor
+    // keeps an unrelated "kept for internal use" from being read as retention.
     const RETENTION =
-      /\b(?:retain(?:ed|ing|s)?|retention|delete(?:d|s)?|deletion|destroy(?:ed|ing|s)?|purge(?:d)?|erase(?:d|s)?|return(?:ed|s)?\s+(?:or\s+destroy|and\s+destroy|or\s+delete)|for\s+(?:no\s+more\s+than|a\s+period\s+of)\s+\w+\s+(?:days?|months?|years?))\b/i;
+      /\b(?:retain(?:ed|ing|s)?|retention|delete(?:d|s)?|deletion|destroy(?:ed|ing|s)?|purge(?:d)?|erase(?:d|s)?|return(?:ed|s)?\s+(?:or\s+destroy|and\s+destroy|or\s+delete)|for\s+(?:no\s+more\s+than|a\s+period\s+of)\s+\w+\s+(?:days?|months?|years?)|(?:kept|stored|held|maintained)\s+for\s+(?:no\s+(?:longer|more)\s+than\s+|up\s+to\s+|(?:a\s+)?(?:maximum\s+)?period\s+of\s+)?\d+\s*(?:days?|weeks?|months?|years?)|storage\s+(?:period|limitation|duration))\b/i;
 
     forEachParagraph(ctx.tree, (p) => {
       if (!dataHit) {
