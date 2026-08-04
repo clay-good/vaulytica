@@ -998,6 +998,7 @@ const IRA_RULES: Rule[] = [
   }),
   presence({
     id: "EQT-052",
+    version: "1.1.0",
     name: "Pro rata participation rights",
     description: "Major investors get pro rata participation in subsequent issuances.",
     citation: nvca("ira-pro-rata", "IRA — Pro Rata Right"),
@@ -1008,7 +1009,9 @@ const IRA_RULES: Rule[] = [
       "NVCA model preserves ownership percentage for major investors in subsequent rounds.",
     recommendation:
       "Add a 'Right to Maintain Proportionate Ownership' section with a major-investor threshold and the standard excluded-issuance carve-outs.",
-    present_patterns: [/pro\s.?rata/i, /right\s+to\s+maintain/i, /preemptive/i],
+    // "pro\s.?rata" required whitespace, so the hyphenated "pro-rata" and the
+    // closed "prorata" were missed; use "pro[\s-]?rata".
+    present_patterns: [/pro[\s-]?rata/i, /right\s+to\s+maintain/i, /preemptive/i],
   }),
   presence({
     id: "EQT-053",

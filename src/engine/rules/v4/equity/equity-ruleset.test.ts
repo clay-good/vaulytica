@@ -266,3 +266,31 @@ describe("EQT-058 — drag-along covenant recognizes the 'bring-along' synonym (
     ).toBe(true);
   });
 });
+
+describe("EQT-052 — pro-rata rights presence handles the hyphenated spelling (v1.1.0)", () => {
+  const IRA_PB: Playbook = { id: "investor-rights-agreement", version: "1.0.0" };
+  const run = async (body: string) =>
+    new Set(
+      (
+        await runEngine({
+          rules: EQUITY_RULES,
+          ctx: withPb(buildContext(["Investor Rights Agreement", body]), IRA_PB),
+          source_file: SRC,
+        })
+      ).findings.map((f) => f.rule_id),
+    );
+
+  it("does not report the clause missing when written 'pro-rata'", async () => {
+    expect(
+      (await run("Each Major Investor shall have pro-rata rights in subsequent issuances.")).has(
+        "EQT-052",
+      ),
+    ).toBe(false);
+  });
+
+  it("still fires when no pro-rata / preemptive / maintain right is present", async () => {
+    expect(
+      (await run("The Company shall deliver annual financial statements.")).has("EQT-052"),
+    ).toBe(true);
+  });
+});
