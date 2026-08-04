@@ -333,9 +333,10 @@
     },
     {
       "elapsed_ms": 0,
-      "fired": false,
+      "finding_id": "PERS-001-s1.3-739",
+      "fired": true,
       "rule_id": "PERS-001",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -766,6 +767,40 @@
       "title": "Class-action waiver present"
     },
     {
+      "description": "shall not directly or indirectly compete",
+      "document_position": 739,
+      "excerpt": {
+        "end_offset": 779,
+        "section_id": "s1.3",
+        "start_offset": 739,
+        "text": "During the Term and for twelve (12) months thereafter, Contractor shall not directly or indirectly compete with Company or perform services for any other party within California."
+      },
+      "explanation": "Non-competes are unenforceable in some jurisdictions (e.g., California, Bus. & Prof. Code § 16600). The FTC's 2024 rule that would have banned most worker non-competes (16 C.F.R. Part 910) was set aside nationwide in Ryan LLC v. FTC (N.D. Tex. Aug. 20, 2024) and never took effect — the FTC dismissed its appeals in September 2025 — so enforceability turns on state law, with the FTC retaining only case-by-case FTC Act § 5 enforcement. Verify against the governing-law jurisdiction.",
+      "id": "PERS-001-s1.3-739",
+      "rule_id": "PERS-001",
+      "rule_version": "1.1.0",
+      "severity": "critical",
+      "source_citations": [
+        {
+          "id": "stat-16-cfr-910",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-07-04T00:00:00Z",
+          "source": "16 C.F.R. Part 910 (FTC Non-Compete Clause Rule — vacated nationwide, Ryan LLC v. FTC, No. 3:24-cv-00986 (N.D. Tex. Aug. 20, 2024); never took effect; FTC appeals dismissed Sept. 2025, acceding to vacatur — federal posture is case-by-case FTC Act § 5 enforcement; non-compete enforceability rests on state law)",
+          "source_url": "https://www.federalregister.gov/documents/2024/05/07/2024-09171/non-compete-clause-rule"
+        },
+        {
+          "id": "stat-ca-bp-16600",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "California Business and Professions Code § 16600",
+          "source_url": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=16600."
+        }
+      ],
+      "title": "Non-compete clause present"
+    },
+    {
       "description": "Found 3 placeholders that look like unfilled template content: \"[insert contractor name]\", \"[Contractor Name]\", \"[Contractor Name]\".",
       "document_position": 123,
       "excerpt": {
@@ -1049,7 +1084,7 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "c6f20a9e9dda3f4419f68bd164772c8247f028af1769d2ee15237aa94bc3b42b",
+  "result_hash": "dc097b6f16200e2eddcd099fff9580a2466221d5e992183c6fc618619051359d",
   "source_file": {
     "name": "bad-contractor.docx",
     "sha256": "7a40a2e53d068557d47cf7690838b907085994f596a0c6e2380b8ac2607543df",

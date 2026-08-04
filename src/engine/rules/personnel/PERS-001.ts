@@ -4,7 +4,7 @@ import { emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
 /** PERS-001 — Non-compete present (info). */
 export const rule: Rule = {
   id: "PERS-001",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Non-compete present",
   category: "personnel",
   default_severity: "info",
@@ -13,9 +13,17 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstUnnegatedParagraphMatch(
       ctx,
-      // The classic own/manage/operate formulation carries neither token —
-      // its absence made a textbook non-compete invisible (audit).
-      /\bnon[- ]compete\b|\bcovenant\s+not\s+to\s+compete\b|\bshall\s+not[^.;]{0,60}?\b(?:own|manage|operate|control|be\s+employed\s+by|participate\s+in)\b[^.;]{0,120}?\bcompeting\s+business\b/i,
+      // The dominant non-compete forms carried none of the original tokens and
+      // went undetected (audit): the bare "Employee shall not compete", the
+      // noun "non-competition" (the old `\bnon[- ]compete\b` stopped at the
+      // word boundary and missed the "-ition" ending), and the "engage in a
+      // business that competes" object. `non[- ]?compet(?:e|ition)` admits
+      // non-compete / noncompete / non-competition while still excluding
+      // "non-competitive" (bids, pricing). The negation the covenant itself
+      // carries ("shall NOT compete") sits INSIDE each match, so the
+      // unnegated-window guard only suppresses a genuine disclaimer ("this is
+      // NOT a non-compete") — not the covenant.
+      /\bnon[- ]?compet(?:e|ition)\b|\bcovenant\s+not\s+to\s+compete\b|\b(?:shall|will|agrees?)\s+not[,\s]+(?:to[,\s]+)?(?:directly\s+or\s+indirectly[,\s]+)?compete\b|\bshall\s+not[^.;]{0,80}?\b(?:own|manage|operate|control|engage\s+in|carry\s+on|be\s+employed\s+by|work\s+for|render\s+services?|participate\s+in)\b[^.;]{0,120}?\b(?:(?:competing|competitive)\s+(?:business|enterprise|activit\w*|venture|firm|company)|business\s+that\s+competes)\b/i,
     );
     if (!hit) return null;
     return emit(ctx, rule, {

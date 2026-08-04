@@ -341,9 +341,10 @@
     },
     {
       "elapsed_ms": 0,
-      "fired": false,
+      "finding_id": "PERS-001-s1.5-764",
+      "fired": true,
       "rule_id": "PERS-001",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -1160,6 +1161,40 @@
       "title": "Efforts standard \"best efforts\" undefined"
     },
     {
+      "description": "shall not directly or indirectly compete",
+      "document_position": 764,
+      "excerpt": {
+        "end_offset": 804,
+        "section_id": "s1.5",
+        "start_offset": 764,
+        "text": "For a period of twelve (12) months following termination of employment for any reason, Employee shall not directly or indirectly compete with Employer within the State of California or any other state where Employer conducts business."
+      },
+      "explanation": "Non-competes are unenforceable in some jurisdictions (e.g., California, Bus. & Prof. Code § 16600). The FTC's 2024 rule that would have banned most worker non-competes (16 C.F.R. Part 910) was set aside nationwide in Ryan LLC v. FTC (N.D. Tex. Aug. 20, 2024) and never took effect — the FTC dismissed its appeals in September 2025 — so enforceability turns on state law, with the FTC retaining only case-by-case FTC Act § 5 enforcement. Verify against the governing-law jurisdiction.",
+      "id": "PERS-001-s1.5-764",
+      "rule_id": "PERS-001",
+      "rule_version": "1.1.0",
+      "severity": "info",
+      "source_citations": [
+        {
+          "id": "stat-16-cfr-910",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-07-04T00:00:00Z",
+          "source": "16 C.F.R. Part 910 (FTC Non-Compete Clause Rule — vacated nationwide, Ryan LLC v. FTC, No. 3:24-cv-00986 (N.D. Tex. Aug. 20, 2024); never took effect; FTC appeals dismissed Sept. 2025, acceding to vacatur — federal posture is case-by-case FTC Act § 5 enforcement; non-compete enforceability rests on state law)",
+          "source_url": "https://www.federalregister.gov/documents/2024/05/07/2024-09171/non-compete-clause-rule"
+        },
+        {
+          "id": "stat-ca-bp-16600",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "California Business and Professions Code § 16600",
+          "source_url": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=16600."
+        }
+      ],
+      "title": "Non-compete clause present"
+    },
+    {
       "description": "Provisions are stated to survive termination.",
       "document_position": 1554,
       "excerpt": {
@@ -1197,7 +1232,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
-  "result_hash": "36e824ed654985335c8f0d42818edaacbb34579aa549ce179a48e9ae944c7930",
+  "result_hash": "af62eac4f54bf69ff18728fbc22f1e3a1124a9c31b88560e76d3146e6ff7a3eb",
   "source_file": {
     "name": "bad-employment.docx",
     "sha256": "44e689f2fe4e8767866844995363dda962260fd37d54469e6d0fdf443136013c",
