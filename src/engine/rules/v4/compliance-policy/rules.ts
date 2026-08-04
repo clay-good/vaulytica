@@ -922,6 +922,7 @@ const AI_AUP_RULES: Rule[] = [
 const SOCIAL_MEDIA_POLICY_RULES: Rule[] = [
   language({
     id: "POL-042",
+    version: "1.1.0",
     name: "NLRA § 7 — overbroad social-media restriction flagged",
     description:
       "Social-media policy must not broadly restrict employee discussion of wages / working conditions (NLRA § 7).",
@@ -932,7 +933,12 @@ const SOCIAL_MEDIA_POLICY_RULES: Rule[] = [
       /(social\s+media|online).{0,80}(prohibit(s|ed)?|may\s+not).{0,80}(company|employer|business)/is,
     ],
     exclude_if: [
-      /(?:does|do|shall|will)\s+not\s+(?:prohibit|restrict|prevent|preclude|bar|limit)/i,
+      // "may not" is itself a bad_pattern trigger ("posts may not mention the
+      // company"), but "the policy MAY NOT restrict / prohibit discussion of the
+      // company" is the compliant self-limiting inverse — the carve-out verbs
+      // (prohibit/restrict/…) never appear in a genuine restriction, which uses
+      // "may not mention / post / discuss", so adding "may" here is safe.
+      /(?:does|do|shall|will|may)\s+not\s+(?:prohibit|restrict|prevent|preclude|bar|limit)/i,
     ],
     bad_title: "Overbroad social-media restriction flagged (NLRA § 7)",
     bad_description:

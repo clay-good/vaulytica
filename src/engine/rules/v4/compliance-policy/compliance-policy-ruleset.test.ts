@@ -149,6 +149,32 @@ describe("v4 Compliance-policy — failure cases", () => {
     expect(run.findings.some((f) => f.rule_id === "POL-042")).toBe(true);
   });
 
+  it("POL-042 does not fire on a compliant 'policy may not restrict … company' carve-out (v1.1.0)", async () => {
+    // Inverse-FP regression: "may not" is a bad_pattern trigger, but a policy
+    // that says it MAY NOT restrict discussion of the company is compliant.
+    const ctx = withPb(
+      buildContext([
+        "Social Media Policy",
+        "This social media policy may not restrict employees' discussion of the company, its wages, or its working conditions.",
+      ]),
+      SM_PB,
+    );
+    const run = await runEngine({ rules: COMPLIANCE_POLICY_RULES, ctx, source_file: SRC });
+    expect(run.findings.some((f) => f.rule_id === "POL-042")).toBe(false);
+  });
+
+  it("POL-042 still fires on a 'posts may not mention the company' restriction (v1.1.0)", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Social Media Policy",
+        "Employees' social media posts may not mention the company, the employer, or any business matter.",
+      ]),
+      SM_PB,
+    );
+    const run = await runEngine({ rules: COMPLIANCE_POLICY_RULES, ctx, source_file: SRC });
+    expect(run.findings.some((f) => f.rule_id === "POL-042")).toBe(true);
+  });
+
   it("POL-046 fires when lobbying policy omits LDA registration / reporting", async () => {
     const ctx = withPb(
       buildContext([
