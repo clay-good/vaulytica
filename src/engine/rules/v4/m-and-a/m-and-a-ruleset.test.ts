@@ -158,6 +158,47 @@ describe("v4 M&A — failure cases", () => {
   });
 });
 
+describe("MNA earnout / set-off spelling variants — hyphenated & closed forms", () => {
+  // The detectors were anchored on the closed literal "earnout" / "set.off",
+  // missing the hyphenated "earn-out" (the dominant drafting form), the spaced
+  // "earn out", and the closed "setoff".
+  it("MNA-067 fires on a hyphenated 'Earn-Out' maximization disclaimer", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Earn-Out Agreement",
+        "Buyer has no obligation to maximize the Earn-Out and may operate the business in its sole discretion notwithstanding any effect on the Earn-Out.",
+      ]),
+      EARNOUT_PB,
+    );
+    const run = await runEngine({ rules: M_AND_A_RULES, ctx, source_file: SRC });
+    expect(run.findings.some((f) => f.rule_id === "MNA-067")).toBe(true);
+  });
+
+  it("MNA-065 accepts a hyphenated 'Earn-Out Period' good-faith conduct covenant", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Conduct of Business",
+        "During the Earn-Out Period, Buyer shall operate the acquired business in good faith consistent with achieving the Earn-Out.",
+      ]),
+      EARNOUT_PB,
+    );
+    const run = await runEngine({ rules: M_AND_A_RULES, ctx, source_file: SRC });
+    expect(run.findings.some((f) => f.rule_id === "MNA-065")).toBe(false);
+  });
+
+  it("MNA-069 accepts a closed-spelling 'Setoff' clause", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Right of Setoff",
+        "The Buyer may setoff any indemnifiable claim against the Earn-Out payments in good faith.",
+      ]),
+      EARNOUT_PB,
+    );
+    const run = await runEngine({ rules: M_AND_A_RULES, ctx, source_file: SRC });
+    expect(run.findings.some((f) => f.rule_id === "MNA-069")).toBe(false);
+  });
+});
+
 describe("MNA presence forms an APA actually writes (v1.1.0)", () => {
   it("accepts 'governed by the laws of' and a named third-party consent", async () => {
     const ctx = withPb(

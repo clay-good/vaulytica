@@ -1354,6 +1354,7 @@ const TSA_RULES: Rule[] = [
 const EARNOUT_RULES: Rule[] = [
   presence({
     id: "MNA-063",
+    version: "1.1.0",
     name: "Earnout period and milestones defined",
     description: "Earnout must define period and specific, measurable milestones.",
     citation: delawareEarnoutCases(),
@@ -1364,7 +1365,7 @@ const EARNOUT_RULES: Rule[] = [
       "Delaware Chancery (*Aveta / Lazard*) emphasizes specificity to avoid 'implied covenant' fights post-closing.",
     recommendation:
       "Add 'Earnout Period' and 'Milestones' with measurable financial or operational triggers.",
-    present_patterns: [/earnout\s+period/i, /milestone/i, /performance\s+target/i],
+    present_patterns: [/earn[-\s]?out\s+period/i, /milestone/i, /performance\s+target/i],
   }),
   presence({
     id: "MNA-064",
@@ -1385,7 +1386,7 @@ const EARNOUT_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-065",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Conduct-of-business covenant during earnout period",
     description:
       "Buyer should covenant to operate the business in a way consistent with achieving earnout milestones.",
@@ -1398,15 +1399,15 @@ const EARNOUT_RULES: Rule[] = [
     recommendation:
       "Add 'Conduct of Business' with a chosen efforts standard (commercially reasonable / good faith) and a 'no actions intended to reduce earnout' covenant.",
     present_patterns: [
-      /(conduct\s+of\s+(the\s+)?business|operate.{0,40}business).{0,80}earnout/is,
-      /(commercially\s+reasonable|good\s+faith).{0,80}earnout/is,
+      /(conduct\s+of\s+(the\s+)?business|operate.{0,40}business).{0,80}earn[-\s]?out/is,
+      /(commercially\s+reasonable|good\s+faith).{0,80}earn[-\s]?out/is,
       // The covenant as often leads with the period — "During the Earnout
       // Period, the Buyer shall operate the acquired business in good faith" —
       // putting "Earnout" BEFORE the operate/good-faith verb, and the "reduce
       // the Earnout Payments" tail sits past the 80-char window of the
       // operate-first branches.
-      /earnout\s+period.{0,120}(operate|conduct|good\s+faith|commercially\s+reasonable)/is,
-      /(operate|conduct).{0,60}business.{0,120}(reduc\w+|avoid\w+|frustrat\w+).{0,40}earnout/is,
+      /earn[-\s]?out\s+period.{0,120}(operate|conduct|good\s+faith|commercially\s+reasonable)/is,
+      /(operate|conduct).{0,60}business.{0,120}(reduc\w+|avoid\w+|frustrat\w+).{0,40}earn[-\s]?out/is,
       /no\s+action.{0,40}intended\s+to.{0,40}(reduce|frustrate)/is,
     ],
   }),
@@ -1429,14 +1430,15 @@ const EARNOUT_RULES: Rule[] = [
   }),
   language({
     id: "MNA-067",
+    version: "1.1.0",
     name: "Disclaimer of obligation to maximize earnout",
     description:
       "Disclaimers of any duty to maximize the earnout will not survive — *Lazard* still applies.",
     citation: delawareEarnoutCases(),
     playbooks: [MA_PLAYBOOK_EARNOUT],
     bad_patterns: [
-      /(no\s+(duty|obligation)\s+to\s+(maximize|increase).{0,40}earnout)/is,
-      /buyer\s+(may|shall)\s+operate.{0,40}sole\s+discretion.{0,80}earnout/is,
+      /(no\s+(duty|obligation)\s+to\s+(maximize|increase).{0,40}earn[-\s]?out)/is,
+      /buyer\s+(may|shall)\s+operate.{0,40}sole\s+discretion.{0,80}earn[-\s]?out/is,
     ],
     bad_title: "Disclaimer of earnout-maximization duty flagged",
     bad_description:
@@ -1448,6 +1450,7 @@ const EARNOUT_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-068",
+    version: "1.1.0",
     name: "Earnout calculation and payment mechanics",
     description:
       "Earnout must specify calculation, statement-delivery, dispute, and payment timing.",
@@ -1460,13 +1463,14 @@ const EARNOUT_RULES: Rule[] = [
     recommendation:
       "Add 'Calculation Mechanics' with statement delivery, objection, dispute resolution, and payment timing.",
     present_patterns: [
-      /earnout\s+(statement|notice|payment)/i,
+      /earn[-\s]?out\s+(statement|notice|payment)/i,
       /independent\s+accountant/i,
       /objection\s+notice/i,
     ],
   }),
   presence({
     id: "MNA-069",
+    version: "1.1.0",
     name: "Right of set-off against earnout",
     description: "Earnout often includes a right of set-off against indemnification obligations.",
     citation: dealPoints("earnout-setoff", "Earnout set-off practice"),
@@ -1477,7 +1481,7 @@ const EARNOUT_RULES: Rule[] = [
       "Buyers commonly negotiate a right to set off indemnifiable claims against earnout payments — protective and reduces collection friction.",
     recommendation:
       "Add a 'Right of Set-Off' clause tied to indemnification claims (with reasonable-good-faith standard).",
-    present_patterns: [/set.off/i],
+    present_patterns: [/set[-\s]?off/i],
     default_severity: "warning",
   }),
   presence({
