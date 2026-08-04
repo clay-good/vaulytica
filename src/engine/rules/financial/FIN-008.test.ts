@@ -22,4 +22,17 @@ describe("FIN-008 — minimum commitment / take-or-pay", () => {
   it("does not fire on an unrelated 'minimum age' clause", () => {
     expect(fires("The minimum age for the service is 18 years.")).toBe(false);
   });
+
+  it("reads guaranteed-minimum / period-minimum / minimum-revenue / purchase-quota forms (v1.2.0)", () => {
+    expect(fires("Customer shall pay a guaranteed minimum of $100,000 annually.")).toBe(true);
+    expect(fires("The agreement includes an annual minimum guarantee of $250,000.")).toBe(true);
+    expect(fires("Customer shall meet an annual minimum of $500,000 in purchases.")).toBe(true);
+    expect(fires("Distributor shall generate a minimum revenue of $1,000,000 per year.")).toBe(true);
+    expect(fires("Customer shall purchase at least 10,000 units per calendar year.")).toBe(true);
+  });
+
+  it("does not fire on an unrelated 'minimum notice' or 'minimum standard' clause (v1.2.0)", () => {
+    expect(fires("Either party shall give a minimum notice of 30 days.")).toBe(false);
+    expect(fires("A minimum standard of care applies to all work.")).toBe(false);
+  });
 });
