@@ -20,7 +20,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
  */
 export const rule: Rule = {
   id: "CHOICE-011",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Out-of-state choice-of-law on California employee",
   category: "choice-and-venue",
   default_severity: "warning",
@@ -37,7 +37,14 @@ export const rule: Rule = {
     let californiaWorker = false;
     forEachParagraph(ctx.tree, (p) => {
       if (
-        /\b(?:based\s+in\s+[^.]{0,40}\bCalifornia|California\s+(?:resident|employee|based)|works?\s+(?:in|from)\s+(?:the\s+State\s+of\s+)?California|located\s+in\s+(?:[\w\s]{2,40},\s*)?California|(?:San\s+Francisco|Los\s+Angeles|San\s+Diego|San\s+Jose|Sacramento|Oakland|Fresno|Long\s+Beach|Bakersfield|Anaheim)[^.]{0,40}California)\b/i.test(
+        // The employment-specific signals — "resides in California", "employed
+        // in California", "principal place of employment … California" — are the
+        // verb-phrase counterparts of "California resident / employee" and were
+        // missed. They stay tied to a NATURAL-PERSON worker ("resides",
+        // "employed", "of employment/work"), so they do not re-open the v1.1.0
+        // false positive on a party's mere state of incorporation ("a California
+        // corporation") or on a B2B "perform the Services in California" clause.
+        /\b(?:based\s+in\s+[^.]{0,40}\bCalifornia|California\s+(?:resident|employee|based)|works?\s+(?:in|from)\s+(?:the\s+State\s+of\s+)?California|resides?\s+in\s+(?:the\s+State\s+of\s+)?California|employed\s+in\s+(?:the\s+State\s+of\s+)?California|principal\s+place\s+of\s+(?:employment|work)\s+(?:is\s+)?(?:in\s+)?(?:the\s+State\s+of\s+)?California|located\s+in\s+(?:[\w\s]{2,40},\s*)?California|(?:San\s+Francisco|Los\s+Angeles|San\s+Diego|San\s+Jose|Sacramento|Oakland|Fresno|Long\s+Beach|Bakersfield|Anaheim)[^.]{0,40}California)\b/i.test(
           p.text,
         )
       ) {

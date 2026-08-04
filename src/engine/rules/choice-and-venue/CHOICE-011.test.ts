@@ -52,4 +52,40 @@ describe("CHOICE-011 — out-of-state choice-of-law on California worker", () =>
     ]);
     expect(CHOICE_011.check(ctx)).toBeNull();
   });
+
+  const DEL = "This Agreement shall be governed by the laws of the State of Delaware.";
+
+  it("reads the employment-specific worker signals (v1.2.0)", () => {
+    for (const worker of [
+      "Employee resides in California and reports to the New York office.",
+      "Employee is employed in California under this Agreement.",
+      "Employee's principal place of employment is in California.",
+      "Executive's principal place of work is the State of California.",
+    ]) {
+      expect(CHOICE_011.check(buildContext(["Parties", worker, "Governing Law", DEL])), worker).not.toBeNull();
+    }
+  });
+
+  it("does not fire on a B2B 'perform the Services in California' or 'principal place of business' (v1.2.0)", () => {
+    expect(
+      CHOICE_011.check(
+        buildContext([
+          "Services",
+          "Provider shall perform the Services in California as directed by Customer.",
+          "Governing Law",
+          DEL,
+        ]),
+      ),
+    ).toBeNull();
+    expect(
+      CHOICE_011.check(
+        buildContext([
+          "Parties",
+          "Company's principal place of business is in California.",
+          "Governing Law",
+          DEL,
+        ]),
+      ),
+    ).toBeNull();
+  });
 });
