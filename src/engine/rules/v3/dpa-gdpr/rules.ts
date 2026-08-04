@@ -672,7 +672,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   language({
     id: "DPA-036",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Audit-substitution eliminates audit entirely",
     description:
       "Flags SOC 2 / ISO substitution that eliminates the controller's audit right rather than substituting it.",
@@ -694,6 +694,17 @@ export const DPA_GDPR_RULES: Rule[] = [
       // a generic "certification report" substitution.
       /in\s+lieu\s+of\s+(?:any\s+)?(?:audit|inspection)/is,
       /(?:shall\s+have\s+)?no\s+right\s+to\s+(?:conduct|mandate|require|perform)\s+(?:or\s+\w+\s+)?an?\s+audit/is,
+    ],
+    // The COMPLIANT form the rule wants — a SOC 2 / ISO report provided IN
+    // ADDITION TO, and NOT IN LIEU OF, the audit right — states "in lieu of" /
+    // "the sole means" only to disclaim them, so the SOC-2 branch flags it as
+    // the elimination it actually preserves against. Skip when the paragraph
+    // negates the substitution or keeps the report supplementary to the audit.
+    exclude_if: [
+      /\bnot\s+in\s+lieu\s+of\b/i,
+      /\bnot\s+the\s+sole\s+means\b/i,
+      /\bdoes\s+not\s+replace\b/i,
+      /(?:supplements?|in\s+addition\s+to|without\s+limiting)[^.]{0,40}\baudit/i,
     ],
   }),
   language({

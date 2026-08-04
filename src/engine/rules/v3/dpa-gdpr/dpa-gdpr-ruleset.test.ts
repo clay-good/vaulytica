@@ -361,6 +361,36 @@ describe("DPA defect rules catch the violation's real wording (v1.1.0)", () => {
     ).toBe(false);
   });
 
+  // v1.2.0 — the COMPLIANT clause states "in lieu of" / "the sole means" only
+  // to disclaim them (report is IN ADDITION TO, NOT IN LIEU OF, the audit); the
+  // SOC-2 branch must not read that as the elimination it guards against.
+  it("does not fire DPA-036 on a report provided in addition to (not in lieu of) the audit", async () => {
+    expect(
+      (
+        await run1(
+          "SOC 2 reports are provided in addition to, and not in lieu of, the Controller's audit rights.",
+        )
+      ).has("DPA-036"),
+    ).toBe(false);
+    expect(
+      (
+        await run1(
+          "The ISO 27001 certificate supplements, and does not replace, the audit rights; it is not the sole means of verification.",
+        )
+      ).has("DPA-036"),
+    ).toBe(false);
+  });
+
+  it("still fires DPA-036 when 'in addition to' is unrelated to the audit", async () => {
+    expect(
+      (
+        await run1(
+          "SOC 2 reports are provided in lieu of on-site audits, in addition to the annual security summary.",
+        )
+      ).has("DPA-036"),
+    ).toBe(true);
+  });
+
   it("DPA-037 fires when the processor may unilaterally amend the controller's instructions", async () => {
     expect(
       (
