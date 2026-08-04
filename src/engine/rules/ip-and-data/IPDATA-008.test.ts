@@ -70,4 +70,25 @@ describe("a disclaimed transfer needs no safeguard (v1.1.0)", () => {
     ]);
     expect(IPDATA_008.check(ctx)).not.toBeNull();
   });
+
+  it("does not fire on a non-data cross-border transfer (v1.2.0)", () => {
+    // The transfer regex's "transfer … to the United States" branch is not
+    // data-specific; a goods / funds / Confidential-Information transfer is not
+    // a GDPR Article 46 issue and must not be flagged.
+    for (const clause of [
+      "Seller shall transfer the goods to the United States within 30 days of the order.",
+      "The Borrower shall transfer the funds to the UK account by wire.",
+      "The Recipient may transfer Confidential Information to its affiliates in the United States.",
+    ]) {
+      expect(IPDATA_008.check(buildContext(["Transfers", clause])), clause).toBeNull();
+    }
+  });
+
+  it("fires on a personal-information transfer stated without the word 'data' (v1.2.0)", () => {
+    expect(
+      IPDATA_008.check(
+        buildContext(["Transfers", "Personal information will be transferred to the United States."]),
+      ),
+    ).not.toBeNull();
+  });
 });

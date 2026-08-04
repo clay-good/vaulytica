@@ -25,7 +25,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
  */
 export const rule: Rule = {
   id: "IPDATA-008",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Cross-border data transfer without safeguard",
   category: "ip-and-data",
   default_severity: "warning",
@@ -41,6 +41,14 @@ export const rule: Rule = {
       /\b(?:transfer(?:red|s|ring)?\s+[^.]{0,60}?(?:to|outside|across\s+borders?)\s+(?:the\s+)?(?:EU|EEA|UK|United\s+Kingdom|United\s+States|US\b)|cross[-\s]?border\s+(?:transfer|processing|flow)|international\s+(?:data\s+)?transfer|(?:processed|process(?:es|ing))\s+(?:outside|in)\s+(?:the\s+)?(?:United\s+States|United\s+Kingdom|US\b|EU|EEA|UK|India|Philippines|third\s+countr)|outside\s+(?:the\s+)?(?:EEA|EU|UK|United\s+Kingdom))/i;
     const SAFEGUARD =
       /\b(?:standard\s+contractual\s+clauses|SCCs?|binding\s+corporate\s+rules|BCRs?|adequacy\s+decision|data\s+privacy\s+framework|DPF|IDTA|article\s+46|chapter\s+v\s+of\s+the\s+gdpr)\b/i;
+    // The transfer regex's leading branch ("transfer … to the United States")
+    // is not data-specific, so it also matched a GOODS or FUNDS transfer — an
+    // Article 46 accusation over a shipping or wire clause. Require a
+    // personal-data signal in the same paragraph. "data" / "PII" / "personal
+    // information" are used, NOT a bare "information": an NDA that lets the
+    // Recipient "transfer Confidential Information to its US affiliates" is not
+    // a GDPR data transfer and must not fire.
+    const DATA_CONTEXT = /\b(?:data|PII|personal\s+information)\b/i;
 
     forEachParagraph(ctx.tree, (p) => {
       if (!transferHit) {
@@ -48,7 +56,7 @@ export const rule: Rule = {
         // "NO transfers outside the EEA occur" states the ABSENCE of any
         // transfer — a document that transfers nothing needs no Article 46
         // safeguard, and reporting one is a confident false accusation.
-        if (m && !isPresenceDisclaimed(p.text, m.index)) {
+        if (m && DATA_CONTEXT.test(p.text) && !isPresenceDisclaimed(p.text, m.index)) {
           transferHit = {
             sectionId: p.section.id,
             start: p.start + m.index,
