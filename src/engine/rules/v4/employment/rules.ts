@@ -674,6 +674,7 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-030",
+    version: "1.1.0",
     name: "Blue-pencil / reformation clause",
     description: "Restrictive-covenant agreement should empower courts to reform overbroad terms.",
     citation: empPractice(
@@ -688,7 +689,17 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
       "Reformation is permissive in many states (TX, MO); strict-construction states (CA, GA pre-2011) ignore it. Including the clause increases the chance of partial enforcement.",
     recommendation:
       "Add a 'Reformation' clause authorizing the court to modify any overbroad covenant.",
-    present_patterns: [/blue.?pencil/i, /reformation/i],
+    // The clause is as often written with the VERB — "the court may REFORM /
+    // MODIFY / REDUCE / narrow the covenant to the extent necessary to make it
+    // enforceable" (the recommendation itself says "authorizing the court to
+    // modify"). The noun-only "reformation" / "blue-pencil" patterns missed
+    // those. The verb branch is anchored to the enforceability concept, so a
+    // general amendment ("parties may modify this Agreement") does not match.
+    present_patterns: [
+      /blue.?pencil/i,
+      /reformation/i,
+      /(?:reform|modif\w+|reduc\w+|revis\w+|narrow\w+)[\s\S]{0,60}(?:enforceable|to\s+the\s+(?:extent|maximum)|maximum\s+(?:extent|duration|scope|geographic))/i,
+    ],
     default_severity: "warning",
   }),
   presence({

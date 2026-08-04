@@ -361,3 +361,32 @@ describe("EMP-025 — non-compete duration reads the parenthesized 'non-compete 
     ).toBe(true);
   });
 });
+
+describe("EMP-030 — blue-pencil/reformation reads the verb 'reform/modify … enforceable' (v1.1.0)", () => {
+  const has = async (body: string) =>
+    new Set(
+      (
+        await runEngine({
+          rules: EMPLOYMENT_RULES,
+          ctx: withPb(buildContext(["Restrictive Covenants", body]), RC_PB),
+          source_file: SRC,
+        })
+      ).findings.map((f) => f.rule_id),
+    );
+
+  it("does not report the clause missing when the court is empowered to 'reform … enforceable'", async () => {
+    for (const clause of [
+      "A court may reform the covenant to the extent necessary to make it enforceable.",
+      "The court may modify or reduce the scope of this covenant to render it enforceable.",
+      "If overbroad, this covenant shall be judicially modified to the maximum enforceable extent.",
+    ]) {
+      expect((await has(clause)).has("EMP-030"), clause).toBe(false);
+    }
+  });
+
+  it("still fires when a general amendment clause is the only 'modify' language", async () => {
+    expect(
+      (await has("The parties may modify this Agreement only by a signed writing.")).has("EMP-030"),
+    ).toBe(true);
+  });
+});
