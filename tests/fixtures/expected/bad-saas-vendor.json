@@ -244,7 +244,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "IPDATA-005",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -1121,7 +1121,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\", \"uptime\".",
-  "result_hash": "a7ef547953544361c2410ae204e5dd57c9f2abbe3b5866786dc9ca331147b31b",
+  "result_hash": "641536c47d49d1406230296714e8324bc4c9d99204842a1a99353f6981fb26c0",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",

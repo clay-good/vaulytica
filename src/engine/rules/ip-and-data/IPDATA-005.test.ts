@@ -55,4 +55,25 @@ describe("IPDATA-005 — HIPAA terms of art count as a regime reference", () => 
       ),
     ).not.toBeNull();
   });
+
+  it("recognizes US sector / state regimes and transfer instruments (v1.3.0)", () => {
+    // Absence detector: naming any of these regimes must SUPPRESS the finding
+    // — flagging "regime missing" over a contract that cites GLBA / FERPA /
+    // VCDPA / the Data Privacy Framework was a false positive.
+    for (const regime of [
+      "The parties shall comply with the Gramm-Leach-Bliley Act (GLBA).",
+      "Student records are governed by FERPA.",
+      "Services directed to children comply with COPPA.",
+      "The parties shall comply with the Virginia Consumer Data Protection Act (VCDPA).",
+      "The parties shall comply with the Colorado Privacy Act.",
+      "Cross-border transfers rely on the EU-U.S. Data Privacy Framework.",
+    ]) {
+      expect(
+        IPDATA005.check(
+          buildContext(["Data", "The Company processes personal data of users.", "Compliance", regime]),
+        ),
+        regime,
+      ).toBeNull();
+    }
+  });
 });

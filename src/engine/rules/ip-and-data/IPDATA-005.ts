@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
 /** IPDATA-005 — GDPR / CCPA / HIPAA reference (info). */
 export const rule: Rule = {
   id: "IPDATA-005",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Data regime reference (GDPR / CCPA / HIPAA)",
   category: "ip-and-data",
   default_severity: "info",
@@ -25,8 +25,14 @@ export const rule: Rule = {
         // Standard Contractual Clauses are themselves the governing instrument
         // (as a BAA is for HIPAA). LGPD / PIPEDA / PIPL cover non-US personal
         // data. "SCCs" (plural / spelled) is used, not the bare "SCC", which
-        // also abbreviates the Stockholm Chamber of Commerce.
-        /\b(?:GDPR|General\s+Data\s+Protection\s+Regulation|CCPA|California\s+Consumer\s+Privacy\s+Act|CPRA|California\s+Privacy\s+Rights\s+Act|HIPAA|Business\s+Associate\s+Agreement|BAA|Covered\s+Entit(?:y|ies)|45\s+C\.?F\.?R\.?\s*(?:§\s*)?164|LGPD|PIPEDA|PIPL|Data\s+Processing\s+(?:Agreement|Addendum)|Standard\s+Contractual\s+Clauses|SCCs)\b/i,
+        // also abbreviates the Stockholm Chamber of Commerce. Because this is an
+        // ABSENCE detector, a regime it does not recognize is a FALSE POSITIVE
+        // ("regime missing" over a contract that names one) — so the US sector
+        // laws (GLBA, FERPA, COPPA), the leading state comprehensive laws
+        // (VCDPA, Colorado Privacy Act), and the current EU→US transfer
+        // instruments (Data Privacy Framework, Privacy Shield) are recognized.
+        // All are unambiguous data-protection references (unlike a bare "CPA").
+        /\b(?:GDPR|General\s+Data\s+Protection\s+Regulation|CCPA|California\s+Consumer\s+Privacy\s+Act|CPRA|California\s+Privacy\s+Rights\s+Act|HIPAA|Business\s+Associate\s+Agreement|BAA|Covered\s+Entit(?:y|ies)|45\s+C\.?F\.?R\.?\s*(?:§\s*)?164|GLBA|Gramm[- ]Leach[- ]Bliley|FERPA|COPPA|VCDPA|Virginia\s+Consumer\s+Data\s+Protection\s+Act|Colorado\s+Privacy\s+Act|Data\s+Privacy\s+Framework|Privacy\s+Shield|LGPD|PIPEDA|PIPL|Data\s+Processing\s+(?:Agreement|Addendum)|Standard\s+Contractual\s+Clauses|SCCs)\b/i,
       )
     )
       return null;
