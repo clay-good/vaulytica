@@ -1,0 +1,45 @@
+{
+  "id": "channel-referral-agreement",
+  "version": "1.0.0",
+  "name": "Channel Partner / Referral Agreement",
+  "description": "Referral or channel-partner arrangement paying a fee for introduced business. Selects the §6.A.9 ruleset (COMM-014..COMM-018): qualified-referral definition, referral-fee terms, RESPA § 8 compliance for settlement-service referrals, independent-contractor / no-authority, and an anti-bribery representation.",
+  "match_features": {
+    "title_keywords": [
+      "referral agreement",
+      "channel partner agreement",
+      "finder's fee agreement",
+      "finder agreement",
+      "partner referral agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "referral fee",
+      "channel partner",
+      "qualified referral",
+      "finder's fee",
+      "introduce",
+      "lead"
+    ],
+    "negative_features": [
+      "distribution agreement",
+      "master services agreement",
+      "employment",
+      "purchase of goods"
+    ]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Referral", "Qualified Referral", "Referral Fee", "Partner"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "RESPA-SECTION-8-ANTITRUST",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "Qualified-referral definition",
+    "Referral-fee / payment terms",
+    "RESPA § 8 (settlement services)",
+    "Independent contractor / no authority",
+    "Anti-bribery representation"
+  ]
+}

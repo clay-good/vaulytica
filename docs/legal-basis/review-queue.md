@@ -6,8 +6,8 @@
 > prioritized first tranche of rules for a licensed reviewer to sign into
 > [`ledger.json`](ledger.json); the workflow lives in [`README.md`](README.md).
 
-- **Engine:** `9.41.0` · **Corpus:** `v0.0.0-seed` (empty) · **Catalog:** 1084 single-document rules
-- **Signed:** 0 of 1084 · **Queued (unreviewed, top 100):** 100
+- **Engine:** `9.41.0` · **Corpus:** `v0.0.0-seed` (empty) · **Catalog:** 1089 single-document rules
+- **Signed:** 0 of 1089 · **Queued (unreviewed, top 100):** 100
 
 ## Ranking
 
@@ -90,37 +90,37 @@ firing refines the order automatically — re-run `npm run accuracy` then
 | 65 | `COMM-011` — Term and termination — good cause and notice | critical | commercial | 0 | `comm-dealer-termination` |
 | 66 | `COMM-012` — Trademark license and quality control | critical | commercial | 0 | `lanham-45` |
 | 67 | `COMM-013` — Post-termination — inventory repurchase and cease use | critical | commercial | 0 | `comm-dealer-repurchase` |
-| 68 | `CON-001` — Owner / contractor / architect identified | critical | construction | 0 | `aia-a101` |
-| 69 | `CON-002` — Scope of work / contract documents | critical | construction | 0 | `aia-a201` |
-| 70 | `CON-003` — Contract sum + price / payment terms | critical | construction | 0 | `aia-a101` |
-| 71 | `CON-006` — Indemnification + insurance + waiver of subrogation | critical | construction | 0 | `ca-civ-2782` |
-| 72 | `CON-008` — General contractor / subcontractor / project identified | critical | construction | 0 | `con-practice-subk-baseline` |
-| 73 | `CON-009` — Subcontract scope of work + flow-down | critical | construction | 0 | `aia-a401` |
-| 74 | `CON-012` — Subcontractor warranties + workmanship + materials | critical | construction | 0 | `con-practice-subk-warranty` |
-| 75 | `CON-014` — Waiver type — conditional / unconditional + progress / final | critical | construction | 0 | `ca-civ-8132` |
-| 76 | `CON-015` — Identified claimant + property + project | critical | construction | 0 | `state-mechanics-lien` |
-| 77 | `CON-016` — Scope of waiver — limited to amount received / through-date | critical | construction | 0 | `ca-civ-8132` |
-| 78 | `CON-019` — Signature + date + statutory form recital | critical | construction | 0 | `ca-civ-8132` |
-| 79 | `CON-020` — Principal / surety / obligee identification | critical | construction | 0 | `miller-act-40-usc-3131` |
-| 80 | `CON-021` — Bond type — payment / performance / dual-obligee | critical | construction | 0 | `miller-act-40-usc-3131` |
-| 81 | `CON-022` — Penal sum | critical | construction | 0 | `miller-act-40-usc-3131` |
-| 82 | `CON-023` — Underlying contract incorporation | critical | construction | 0 | `miller-act-40-usc-3131` |
-| 83 | `CON-026` — Original contract sum + revised contract sum | critical | construction | 0 | `aia-g701` |
-| 84 | `CON-027` — Description of change in work | critical | construction | 0 | `aia-g701` |
-| 85 | `CON-028` — Time impact — contract time adjustment | critical | construction | 0 | `aia-g701` |
-| 86 | `CON-029` — Signatures — owner + architect + contractor | critical | construction | 0 | `aia-g701` |
-| 87 | `DARK-005` — Class-action waiver | critical | dark-patterns | 0 | `stat-ftc-deception-statement` |
-| 88 | `DARK-010` — Residential waiver of the warranty of habitability | critical | dark-patterns | 0 | `stat-ftc-deception-statement` |
-| 89 | `DARK-011` — Residential self-help eviction / lockout | critical | dark-patterns | 0 | `stat-ftc-deception-statement` |
-| 90 | `DARK-013` — Residential waiver of statutory tenant rights | critical | dark-patterns | 0 | `stat-ftc-deception-statement` |
-| 91 | `DARK-014` — Consumer anti-review gag clause | critical | dark-patterns | 0 | `stat-ftc-deception-statement` |
-| 92 | `DPA-001` — Subject-matter of processing identified | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-introductory` |
-| 93 | `DPA-002` — Duration of processing specified | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-introductory` |
-| 94 | `DPA-003` — Nature and purpose of processing | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-introductory` |
-| 95 | `DPA-004` — Type of personal data identified | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-introductory` |
-| 96 | `DPA-005` — Categories of data subjects identified | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-introductory` |
-| 97 | `DPA-006` — Obligations and rights of the controller stated | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-introductory` |
-| 98 | `DPA-007` — Processing only on documented instructions | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-a-` |
-| 99 | `DPA-008` — Confidentiality of authorised persons | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-b-` |
-| 100 | `DPA-009` — Article 32 security measures incorporated | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-c-` |
+| 68 | `COMM-014` — Qualified-referral / lead definition | critical | commercial | 0 | `comm-referral-qualification` |
+| 69 | `COMM-015` — Referral-fee amount and payment terms | critical | commercial | 0 | `comm-referral-compensation` |
+| 70 | `COMM-016` — RESPA § 8 compliance for settlement-service referrals | critical | commercial | 0 | `respa-8-prohibition-against-kickbacks-and-unearned-fees` |
+| 71 | `COMM-017` — Independent contractor — no authority to bind | critical | commercial | 0 | `comm-referral-agency` |
+| 72 | `COMM-018` — Anti-kickback / anti-bribery representation | critical | commercial | 0 | `comm-referral-anti-bribery` |
+| 73 | `CON-001` — Owner / contractor / architect identified | critical | construction | 0 | `aia-a101` |
+| 74 | `CON-002` — Scope of work / contract documents | critical | construction | 0 | `aia-a201` |
+| 75 | `CON-003` — Contract sum + price / payment terms | critical | construction | 0 | `aia-a101` |
+| 76 | `CON-006` — Indemnification + insurance + waiver of subrogation | critical | construction | 0 | `ca-civ-2782` |
+| 77 | `CON-008` — General contractor / subcontractor / project identified | critical | construction | 0 | `con-practice-subk-baseline` |
+| 78 | `CON-009` — Subcontract scope of work + flow-down | critical | construction | 0 | `aia-a401` |
+| 79 | `CON-012` — Subcontractor warranties + workmanship + materials | critical | construction | 0 | `con-practice-subk-warranty` |
+| 80 | `CON-014` — Waiver type — conditional / unconditional + progress / final | critical | construction | 0 | `ca-civ-8132` |
+| 81 | `CON-015` — Identified claimant + property + project | critical | construction | 0 | `state-mechanics-lien` |
+| 82 | `CON-016` — Scope of waiver — limited to amount received / through-date | critical | construction | 0 | `ca-civ-8132` |
+| 83 | `CON-019` — Signature + date + statutory form recital | critical | construction | 0 | `ca-civ-8132` |
+| 84 | `CON-020` — Principal / surety / obligee identification | critical | construction | 0 | `miller-act-40-usc-3131` |
+| 85 | `CON-021` — Bond type — payment / performance / dual-obligee | critical | construction | 0 | `miller-act-40-usc-3131` |
+| 86 | `CON-022` — Penal sum | critical | construction | 0 | `miller-act-40-usc-3131` |
+| 87 | `CON-023` — Underlying contract incorporation | critical | construction | 0 | `miller-act-40-usc-3131` |
+| 88 | `CON-026` — Original contract sum + revised contract sum | critical | construction | 0 | `aia-g701` |
+| 89 | `CON-027` — Description of change in work | critical | construction | 0 | `aia-g701` |
+| 90 | `CON-028` — Time impact — contract time adjustment | critical | construction | 0 | `aia-g701` |
+| 91 | `CON-029` — Signatures — owner + architect + contractor | critical | construction | 0 | `aia-g701` |
+| 92 | `DARK-005` — Class-action waiver | critical | dark-patterns | 0 | `stat-ftc-deception-statement` |
+| 93 | `DARK-010` — Residential waiver of the warranty of habitability | critical | dark-patterns | 0 | `stat-ftc-deception-statement` |
+| 94 | `DARK-011` — Residential self-help eviction / lockout | critical | dark-patterns | 0 | `stat-ftc-deception-statement` |
+| 95 | `DARK-013` — Residential waiver of statutory tenant rights | critical | dark-patterns | 0 | `stat-ftc-deception-statement` |
+| 96 | `DARK-014` — Consumer anti-review gag clause | critical | dark-patterns | 0 | `stat-ftc-deception-statement` |
+| 97 | `DPA-001` — Subject-matter of processing identified | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-introductory` |
+| 98 | `DPA-002` — Duration of processing specified | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-introductory` |
+| 99 | `DPA-003` — Nature and purpose of processing | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-introductory` |
+| 100 | `DPA-004` — Type of personal data identified | critical | dpa-gdpr | 0 | `gdpr-gdpr-art-28-3-introductory` |
 

@@ -16,8 +16,13 @@ import type { SourceCitation } from "../../../../dkb/types.js";
 
 export const COMM_PLAYBOOK_MANUFACTURING = "manufacturing-supply-agreement" as const;
 export const COMM_PLAYBOOK_DISTRIBUTION = "distribution-agreement" as const;
+export const COMM_PLAYBOOK_REFERRAL = "channel-referral-agreement" as const;
 
-export const COMM_PLAYBOOK_IDS = [COMM_PLAYBOOK_MANUFACTURING, COMM_PLAYBOOK_DISTRIBUTION] as const;
+export const COMM_PLAYBOOK_IDS = [
+  COMM_PLAYBOOK_MANUFACTURING,
+  COMM_PLAYBOOK_DISTRIBUTION,
+  COMM_PLAYBOOK_REFERRAL,
+] as const;
 
 export type CommPlaybookId = (typeof COMM_PLAYBOOK_IDS)[number];
 
@@ -48,7 +53,16 @@ export function lanham(section: string, label?: string): SourceCitation {
   });
 }
 
-/** Practitioner-baseline / state dealer-statute citation for distribution law. */
+/** RESPA § 8 (12 U.S.C. § 2607) — anti-kickback for settlement services. */
+export function respa(label: string): SourceCitation {
+  return v4Cite({
+    id: `respa-8-${label.replace(/[^A-Za-z0-9]+/g, "-").toLowerCase()}`,
+    source: `RESPA § 8, 12 U.S.C. § 2607 (${label})`,
+    source_url: "https://www.law.cornell.edu/uscode/text/12/2607",
+  });
+}
+
+/** Practitioner-baseline / state dealer-statute citation for commercial law. */
 export function commPractice(id: string, label: string, url: string): SourceCitation {
   return v4Cite({ id: `comm-${id}`, source: label, source_url: url });
 }

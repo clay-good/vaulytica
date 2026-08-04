@@ -12,6 +12,10 @@
  *          pricing (Leegin), term & termination (dealer statutes),
  *          trademark license & quality control, and post-termination
  *          inventory / cease-use.
+ *   A.9  — Channel partner / Referral agreement (COMM-014..COMM-018):
+ *          qualified-referral definition, referral-fee terms, RESPA § 8
+ *          compliance for settlement-service referrals, independent-
+ *          contractor status, and an anti-bribery representation.
  *
  * Rule ids are flat `COMM-NNN`.
  */
@@ -21,9 +25,11 @@ import { buildV4PresenceRule, type V4PresenceSpec } from "../_helpers.js";
 import {
   COMM_PLAYBOOK_MANUFACTURING,
   COMM_PLAYBOOK_DISTRIBUTION,
+  COMM_PLAYBOOK_REFERRAL,
   ucc,
   sherman,
   lanham,
+  respa,
   commPractice,
 } from "./_helpers.js";
 
@@ -340,9 +346,141 @@ const DISTRIBUTION_RULES: Rule[] = [
   }),
 ];
 
+// ────────────────────────────────────────────────────────────────────
+// A.9 — Channel partner / Referral agreement. 5 rules: COMM-014..COMM-018.
+// ────────────────────────────────────────────────────────────────────
+
+const REFERRAL_RULES: Rule[] = [
+  presence({
+    id: "COMM-014",
+    name: "Qualified-referral / lead definition",
+    description:
+      "A referral agreement must define what counts as a qualified referral or lead that earns a fee.",
+    citation: commPractice(
+      "referral-qualification",
+      "Channel / referral-agreement qualification baseline",
+      "https://www.americanbar.org/groups/business_law/",
+    ),
+    playbooks: [COMM_PLAYBOOK_REFERRAL],
+    missing_title: "Qualified-referral definition missing",
+    missing_description:
+      "No definition of a qualified referral / lead (the fee-triggering event) was found.",
+    explanation:
+      "Without a definition of what constitutes a qualified referral — introduction, accepted lead, or closed sale — the parties will dispute which introductions earn a fee. Tying the fee to a defined, verifiable event is the core of an enforceable referral arrangement.",
+    recommendation:
+      "Define 'Qualified Referral' / 'Lead' (e.g., a prospect the Partner introduces who is not already known and who executes an order) and the point at which the fee is earned.",
+    present_patterns: [
+      /(qualified\s+(referral|lead)|referral\s+fee)/i,
+      /\blead\b[\s\S]{0,40}(defin|qualif|accept)/is,
+      /introduc\w+[\s\S]{0,40}(customer|prospect|client)/is,
+      /\breferral\b[\s\S]{0,40}(defin|means|qualif)/is,
+    ],
+  }),
+  presence({
+    id: "COMM-015",
+    name: "Referral-fee amount and payment terms",
+    description:
+      "A referral agreement should state the fee amount / rate and when and how it is paid.",
+    citation: commPractice(
+      "referral-compensation",
+      "Referral-fee compensation baseline",
+      "https://www.americanbar.org/groups/business_law/",
+    ),
+    playbooks: [COMM_PLAYBOOK_REFERRAL],
+    missing_title: "Referral-fee / payment-terms clause missing",
+    missing_description: "No referral-fee amount / rate or payment-terms clause was found.",
+    explanation:
+      "The fee amount (flat, percentage of contract value, or tiered), the trigger for payment (on close, on collection), and the payment schedule are the economic core of the deal; their absence leaves the compensation indefinite.",
+    recommendation:
+      "State the fee as a flat amount or a percentage of the referred contract's value, the event that triggers payment, and the payment schedule and any clawback on refund / cancellation.",
+    present_patterns: [
+      /(referral|finder.?s?)\s+fee/i,
+      /\d+\s*%|\bpercent\b|percentage\s+of/i,
+      /(paid|payable)[\s\S]{0,40}(within|upon|after)\s+\d/is,
+      /commission\s+(of|rate|schedule)/i,
+    ],
+  }),
+  presence({
+    id: "COMM-016",
+    name: "RESPA § 8 compliance for settlement-service referrals",
+    description:
+      "A referral fee tied to real-estate settlement services must comply with the RESPA § 8 anti-kickback prohibition.",
+    citation: respa("Prohibition against kickbacks and unearned fees"),
+    playbooks: [COMM_PLAYBOOK_REFERRAL],
+    // Only relevant where the referrals involve real-estate settlement services
+    // — RESPA § 8 does not reach ordinary commercial referrals.
+    applicable_if: [
+      /\brespa\b|settlement\s+service|mortgage|real\s+estate|title\s+(insurance|company)|escrow|loan\s+origin/i,
+    ],
+    missing_title: "RESPA § 8 compliance clause missing (settlement-service referral)",
+    missing_description:
+      "The referrals involve real-estate settlement services but no RESPA § 8 compliance clause was found.",
+    explanation:
+      "RESPA § 8 (12 U.S.C. § 2607) makes it unlawful to pay a fee for the mere referral of real-estate settlement-service business; a fee is permissible only for services actually performed at their reasonable market value, or within an affiliated-business or other safe harbor. A referral fee for settlement services without a compliance statement risks a per-violation penalty.",
+    recommendation:
+      "Add a RESPA-compliance clause confirming the fee is for services actually performed (or fits a § 8(c) safe harbor), with the required affiliated-business-arrangement disclosure where applicable.",
+    present_patterns: [
+      /\brespa\b|12\s+u\.?s\.?c\.?\s+§?\s*2607|section\s+8/i,
+      /services\s+actually\s+(performed|rendered)/i,
+      /affiliated\s+business\s+(arrangement|disclosure)/i,
+      /reasonable\s+(market\s+)?value\s+of\s+.{0,20}services/is,
+    ],
+  }),
+  presence({
+    id: "COMM-017",
+    name: "Independent contractor — no authority to bind",
+    description:
+      "A referral / channel partner must be an independent contractor with no authority to bind the principal.",
+    citation: commPractice(
+      "referral-agency",
+      "Referral-agreement agency-disclaimer baseline",
+      "https://www.americanbar.org/groups/business_law/",
+    ),
+    playbooks: [COMM_PLAYBOOK_REFERRAL],
+    missing_title: "Independent-contractor / no-authority clause missing",
+    missing_description:
+      "No independent-contractor status or no-authority-to-bind clause was found.",
+    explanation:
+      "If the referral partner appears to act as the principal's agent, the principal can be bound by the partner's representations and liable for the partner's conduct. Stating independent-contractor status and disclaiming authority to bind, quote, or make representations forecloses apparent-authority and vicarious-liability claims.",
+    recommendation:
+      "Add an 'Independent Contractor' clause stating the Partner is not an agent, employee, or joint venturer and has no authority to bind, quote prices, or make representations on the Company's behalf.",
+    present_patterns: [
+      /independent\s+contractor/i,
+      /no\s+authority\s+to\s+bind/i,
+      /(not|nor)\s+(an?\s+)?(agent|employee|partner|joint\s+venturer?)/i,
+      /shall\s+not\s+.{0,30}(bind|obligate|make\s+.{0,10}representations)/is,
+    ],
+  }),
+  presence({
+    id: "COMM-018",
+    name: "Anti-kickback / anti-bribery representation",
+    description:
+      "A referral arrangement should carry an anti-bribery / no-improper-payments representation.",
+    citation: commPractice(
+      "referral-anti-bribery",
+      "FCPA / anti-bribery compliance baseline (15 U.S.C. §§ 78dd-1 et seq.)",
+      "https://www.justice.gov/criminal-fraud/foreign-corrupt-practices-act",
+    ),
+    playbooks: [COMM_PLAYBOOK_REFERRAL],
+    missing_title: "Anti-bribery / anti-kickback clause missing",
+    missing_description: "No anti-bribery / no-improper-payments representation was found.",
+    explanation:
+      "Referral and finder arrangements are a classic channel for improper payments; a fee routed to a government-linked introducer or paid to secure business can trigger FCPA or commercial-bribery liability for the principal. An anti-bribery representation and a right to terminate for a violation allocate that risk.",
+    recommendation:
+      "Add an 'Anti-Bribery' clause requiring the Partner to comply with the FCPA and applicable anti-corruption laws, to make no improper payments, and to permit termination on a violation.",
+    present_patterns: [
+      /anti.?bribery|anti.?corruption/i,
+      /\bfcpa\b|foreign\s+corrupt\s+practices/i,
+      /improper\s+payment|\bkickback/i,
+      /comply\s+with[\s\S]{0,40}(anti.?corruption|bribery)\s+laws/is,
+    ],
+  }),
+];
+
 export const COMMERCIAL_V4_RULES: readonly Rule[] = [
   ...MANUFACTURING_SUPPLY_RULES,
   ...DISTRIBUTION_RULES,
+  ...REFERRAL_RULES,
 ];
 
-export { MANUFACTURING_SUPPLY_RULES, DISTRIBUTION_RULES };
+export { MANUFACTURING_SUPPLY_RULES, DISTRIBUTION_RULES, REFERRAL_RULES };

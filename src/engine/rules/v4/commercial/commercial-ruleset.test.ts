@@ -127,3 +127,32 @@ describe("v4 Commercial — reseller / distribution agreement (A.8)", () => {
     expect(marks.has("COMM-012")).toBe(true);
   });
 });
+
+describe("v4 Commercial — channel partner / referral agreement (A.9)", () => {
+  const REF: Playbook = { id: "channel-referral-agreement", version: "1.0.0" };
+  const COMPLETE =
+    "Qualified Referral means a prospect the Partner introduces who executes an order. " +
+    "Referral Fee. Company shall pay a referral fee of 10% of the contract value, payable within 30 days after collection. " +
+    "Independent Contractor. Partner is not an agent or employee and has no authority to bind the Company. " +
+    "Anti-Bribery. Partner shall comply with the FCPA and applicable anti-corruption laws and make no improper payments.";
+
+  it("emits no findings against a complete commercial referral agreement", async () => {
+    expect((await fired(REF, COMPLETE)).size).toBe(0);
+  });
+
+  it("COMM-016 fires on a settlement-service referral with no RESPA compliance clause", async () => {
+    const respa = await fired(
+      REF,
+      "Partner refers mortgage and title insurance settlement services and receives a referral fee of $500 per closing. Independent contractor with no authority to bind. Anti-bribery: Partner complies with the FCPA.",
+    );
+    expect(respa.has("COMM-016")).toBe(true);
+  });
+
+  it("COMM-016 is inapplicable to an ordinary commercial referral (no settlement services)", async () => {
+    const commercial = await fired(
+      REF,
+      "Qualified Referral means an introduced customer who executes an order. Referral fee of 10% payable within 30 days after collection. Partner is an independent contractor with no authority to bind. Partner complies with the FCPA and makes no improper payments.",
+    );
+    expect(commercial.has("COMM-016")).toBe(false);
+  });
+});
