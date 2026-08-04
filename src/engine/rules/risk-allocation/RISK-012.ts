@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 /** RISK-012 — IP indemnity scope (info). */
 export const rule: Rule = {
   id: "RISK-012",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "IP indemnity scope",
   category: "risk-allocation",
   default_severity: "info",
@@ -13,7 +13,11 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /\b(?:ip|intellectual\s+property)\s+indemnif|\binfring(?:e|ement)\b[\s\S]{0,80}\bindemnif/i,
+      // Three orders: "IP indemnification" (noun-first), "infringement … shall
+      // indemnify" (infringement-first), and the natural verb-first "shall
+      // indemnify … against patent infringement" / "… from any infringing use",
+      // which the first two branches missed.
+      /\b(?:ip|intellectual\s+property)\s+indemnif|\binfring(?:e|ement)\b[\s\S]{0,80}\bindemnif|\bindemnif\w+[\s\S]{0,80}\binfring(?:e|ement|ing)\b/i,
     );
     if (!hit) return null;
     return emit(ctx, rule, {

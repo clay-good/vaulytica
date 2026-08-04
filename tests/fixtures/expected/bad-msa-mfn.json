@@ -456,7 +456,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "RISK-012",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -926,7 +926,7 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected msa-general (score 1). Title matched: \"master services agreement\", \"services agreement\". Distinguishing phrases: \"SOW\", \"Services\", \"Deliverables\", \"Provider\", \"Customer\".",
-  "result_hash": "6835ef5c345f9ae3b2bd167c1d62f0e2fa8ec5126dca8f7b8bb1db533d0e64f9",
+  "result_hash": "41b27fb05ea85620152f6e9d10526a48717afb9cb0d0d24814964806fafd38b4",
   "source_file": {
     "name": "bad-msa-mfn.docx",
     "sha256": "6c82de5ccf5a22064c5da0ad551848546762dc4f0b2fecf127a52f93798fe73d",

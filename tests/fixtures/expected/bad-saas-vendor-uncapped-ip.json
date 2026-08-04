@@ -454,9 +454,10 @@
     },
     {
       "elapsed_ms": 0,
-      "fired": false,
+      "finding_id": "RISK-012-s1.1-207",
+      "fired": true,
       "rule_id": "RISK-012",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -899,6 +900,23 @@
       "title": "Indemnity procedural elements missing: notice, defense control, settlement consent"
     },
     {
+      "description": "indemnify, and hold harmless Customer from any claim that the Services infringe",
+      "document_position": 207,
+      "excerpt": {
+        "end_offset": 286,
+        "section_id": "s1.1",
+        "start_offset": 207,
+        "text": "Provider shall defend, indemnify, and hold harmless Customer from any claim that the Services infringe any third-party intellectual property right, and shall pay all damages and costs awarded. The foregoing obligation shall not be subject to any limitation of liability set forth "
+      },
+      "explanation": "IP indemnity protects against third-party infringement claims. Standard scope is third-party claims only; broader scope shifts more risk to the indemnifying party.",
+      "id": "RISK-012-s1.1-207",
+      "rule_id": "RISK-012",
+      "rule_version": "1.1.0",
+      "severity": "info",
+      "source_citations": [],
+      "title": "IP indemnity present"
+    },
+    {
       "description": "The following defined terms are never used outside their definition: Downtime.",
       "document_position": 987,
       "excerpt": {
@@ -920,7 +938,7 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 0.8,
   "playbook_match_reasoning": "Selected msa-general (score 0.8). Required clauses present: \"indemnification\". Distinguishing phrases: \"Services\", \"Provider\", \"Customer\". Negative features penalized: \"lease\", \"Premises\".",
-  "result_hash": "5b0899362dd2076912a6b2945d810513ee7295b940bfd7f35301f1d2d9073135",
+  "result_hash": "944579105bb8eb5628a055eb858e8ac55d6caf7bc0926e27ec2e3d5ee037c7ea",
   "source_file": {
     "name": "bad-saas-vendor-uncapped-ip.docx",
     "sha256": "8ae94b74fdbe0bc441724e390612c07a1fd3fdc05bf782e829c1e4dda8a69083",
