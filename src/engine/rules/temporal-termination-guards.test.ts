@@ -68,6 +68,27 @@ describe("TEMP-008 / TEMP-009 — breach-cure period", () => {
     expect(unusual, "TEMP-009 missed unusual paren cure period").not.toBeNull();
     expect(unusual!.title).toContain("90 days");
   });
+
+  // v1.2.0 — the day-count also leads the cure phrase ("shall have ninety (90)
+  // days to cure", "a 5-day cure period"), which the phrase-first pattern
+  // missed.
+  it("TEMP-009 reads the count-first (reversed) and hyphenated-adjacent forms", () => {
+    const reversed = TEMP009.check(
+      clause("The breaching party shall have ninety (90) days to cure such breach."),
+    );
+    expect(reversed, "missed reversed 'N days to cure'").not.toBeNull();
+    expect(reversed!.title).toContain("90 days");
+
+    const adjacent = TEMP009.check(clause("A 5-day cure period applies to any monetary default."));
+    expect(adjacent, "missed '5-day cure period'").not.toBeNull();
+    expect(adjacent!.title).toContain("5 days");
+  });
+
+  it("TEMP-009 does not read an unrelated 'N days … procure' as a cure period", () => {
+    expect(
+      TEMP009.check(clause("Within 5 days, Customer may procure a replacement product.")),
+    ).toBeNull();
+  });
 });
 
 describe("TEMP-005 / TEMP-011 — auto-renewal non-renewal window", () => {
