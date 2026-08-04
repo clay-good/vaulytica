@@ -177,3 +177,56 @@ describe("IPL-038 — a denied DTSA notice is absence, not presence (v1.1.0)", (
     ).toBe(false);
   });
 });
+
+describe("IPL-009 — Kimble-compliant post-expiration royalty structures (v1.1.0)", () => {
+  const PATENT_PB_LOCAL: Playbook = { id: "patent-license", version: "1.0.0" };
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Royalties", body]), PATENT_PB_LOCAL);
+    const run = await runEngine({ rules: IP_LICENSING_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  // Kimble expressly permits post-expiration royalties structured as a
+  // step-down, an allocation to non-patent rights, or an amortized lump sum —
+  // exactly the workarounds this rule's own recommendation endorses. Flagging
+  // them is a false positive.
+  it("stays silent on a step-down to a reduced know-how rate", async () => {
+    expect(
+      (
+        await run1(
+          "Royalties shall continue after patent expiration at a reduced rate of 2% reflecting the licensed know-how.",
+        )
+      ).has("IPL-009"),
+    ).toBe(false);
+  });
+
+  it("stays silent on royalties expressly allocated to know-how / trade secrets", async () => {
+    expect(
+      (
+        await run1(
+          "Post-expiration royalties are attributable to the retained know-how and trade secrets and accrue separately.",
+        )
+      ).has("IPL-009"),
+    ).toBe(false);
+  });
+
+  it("stays silent on an amortized lump sum spanning the patent term", async () => {
+    expect(
+      (
+        await run1(
+          "The lump-sum consideration is amortized as royalties over 20 years, notwithstanding expiration of the patent.",
+        )
+      ).has("IPL-009"),
+    ).toBe(false);
+  });
+
+  it("still fires on a flat patent + know-how rate with no step-down (classic Brulotte)", async () => {
+    expect(
+      (
+        await run1(
+          "Royalties for the patent and know-how continue after expiration of the patent at the same 5% rate.",
+        )
+      ).has("IPL-009"),
+    ).toBe(true);
+  });
+});

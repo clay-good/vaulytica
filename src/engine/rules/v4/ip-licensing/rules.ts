@@ -230,6 +230,7 @@ const PATENT_LICENSE_RULES: Rule[] = [
   }),
   language({
     id: "IPL-009",
+    version: "1.1.0",
     name: "Brulotte / Kimble — royalties beyond patent expiration",
     description:
       "Royalty obligations that extend beyond patent expiration violate the *Brulotte / Kimble* rule absent a step-down or unbundling.",
@@ -242,6 +243,16 @@ const PATENT_LICENSE_RULES: Rule[] = [
     exclude_if: [
       /\b(?:shall|do|does|will)\s+not\s+(?:extend|accrue|continue|survive|be\s+(?:payable|owed|due|owing))\b/i,
       /\bno\s+royalt(?:y|ies)?\b[^.]{0,80}(?:after|beyond|following)\b/i,
+      // Kimble-COMPLIANT structures the rule's own recommendation endorses — a
+      // step-down at expiration, royalties separately allocated to non-patent
+      // rights (know-how / trade secret), or an amortized lump sum — are lawful
+      // and must not be flagged. Paragraph-scoped, so a flat post-expiration
+      // royalty in another paragraph still fires. Note: mere mention of
+      // "know-how" is NOT enough (a flat patent+know-how rate is the classic
+      // Brulotte violation) — the carve-out requires an explicit allocation.
+      /\b(?:step[-\s]?down|steps?\s+down|reduced\s+(?:rate|royalt)|lower(?:ed)?\s+(?:rate|royalt)|declin(?:e|es|ing)\s+(?:rate|royalt))\w*/i,
+      /\b(?:allocat|apportion|attributabl)\w*\b[^.]{0,40}\b(?:know[-\s]?how|trade[-\s]?secrets?|non[-\s]?patent)\b/i,
+      /\bamortiz\w*/i,
     ],
     bad_title: "Royalty obligation potentially extends beyond patent expiration",
     bad_description:
