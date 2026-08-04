@@ -21,7 +21,11 @@
  *          CAN-SPAM compliance for email, ownership of deliverables, and
  *          advertising-claims substantiation (FTC Act § 5).
  *
- * Rule ids are flat `COMM-NNN`.
+ * Rule ids are flat `COMM-NNN` (COMM-001..023 core; COMM-024..031 the
+ * second-wave additions toward the spec's ~10-rules-per-playbook target —
+ * supply title/remedies (§ 2-312 / 2-719), distribution competing-products
+ * & product-liability, referral confidentiality & non-circumvention, and
+ * marketing consumer-data privacy & client-approval rights).
  */
 
 import type { Rule } from "../../../finding.js";
@@ -196,6 +200,48 @@ const MANUFACTURING_SUPPLY_RULES: Rule[] = [
       /(diligent|reasonable)\s+efforts/i,
     ],
   }),
+  presence({
+    id: "COMM-024",
+    name: "Warranty of title and against infringement",
+    description:
+      "Seller should warrant good title to the Goods, free of liens, and that the Goods do not infringe third-party rights.",
+    citation: ucc("2-312", "Warranty of title and against infringement"),
+    playbooks: [COMM_PLAYBOOK_MANUFACTURING],
+    missing_title: "Title / non-infringement warranty missing",
+    missing_description:
+      "No warranty of good title, freedom from liens, or non-infringement of the Goods was found.",
+    explanation:
+      "UCC § 2-312 implies a warranty of good title and, from a merchant seller, a warranty that the Goods are delivered free of any rightful third-party infringement claim. Stating it expressly — and allocating an infringement indemnity — protects the buyer against a lien or a patent claim on the goods it resells.",
+    recommendation:
+      "Add a warranty that Seller conveys good title free of liens and that the Goods do not infringe any third-party patent, trademark, or copyright, with an infringement indemnity.",
+    present_patterns: [
+      /(good\s+title|title\s+to\s+the\s+(goods|products))/i,
+      /free\s+(and\s+clear\s+)?of\s+(all\s+)?(liens|encumbrances)/i,
+      /(not|non).{0,15}infring\w*/is,
+      /infringement\s+indemn\w*/i,
+    ],
+  }),
+  presence({
+    id: "COMM-025",
+    name: "Limitation of remedies / exclusive remedy",
+    description:
+      "A supply agreement should state the buyer's exclusive remedy for nonconforming Goods (repair, replace, or refund).",
+    citation: ucc("2-719", "Contractual modification or limitation of remedy"),
+    playbooks: [COMM_PLAYBOOK_MANUFACTURING],
+    missing_title: "Limitation-of-remedies clause missing",
+    missing_description:
+      "No exclusive-remedy (repair / replace / refund) or remedies-limitation clause was found.",
+    explanation:
+      "UCC § 2-719 lets the parties agree to an exclusive remedy — typically repair, replacement, or refund — and to exclude consequential damages, but a remedy that 'fails of its essential purpose' reopens the full UCC remedy set. A stated exclusive remedy with a fallback avoids that failure and fixes the seller's exposure per defect.",
+    recommendation:
+      "Add a 'Remedies' clause making repair / replacement / refund the buyer's exclusive remedy, with a fallback if that remedy fails of its essential purpose, and the treatment of consequential damages.",
+    present_patterns: [
+      /(sole|exclusive)\s+remed\w+/i,
+      /(repair|replace\w*|refund)[\s\S]{0,60}(sole|exclusive|only)\s+remed/is,
+      /essential\s+purpose/i,
+      /limitation\s+of\s+remed\w+/i,
+    ],
+  }),
 ];
 
 // ────────────────────────────────────────────────────────────────────
@@ -351,6 +397,56 @@ const DISTRIBUTION_RULES: Rule[] = [
       /return\s+.{0,30}(materials|samples|inventory|marks)/is,
     ],
   }),
+  presence({
+    id: "COMM-026",
+    name: "Competing-products restriction (exclusive dealing)",
+    description:
+      "A distribution agreement should address whether the Distributor may carry competing products.",
+    citation: sherman("Exclusive dealing — rule of reason (Tampa Electric)"),
+    playbooks: [COMM_PLAYBOOK_DISTRIBUTION],
+    // Only relevant where the agreement actually addresses exclusivity or
+    // competing products — a plain non-exclusive appointment need not restrict
+    // the Distributor's line card.
+    applicable_if: [/(?<!non[\s-]?)exclusiv\w*|competing\s+(product|line|brand)|non.?compet\w*/i],
+    missing_title: "Competing-products / exclusive-dealing clause missing",
+    missing_description:
+      "The appointment is exclusive but no competing-products / exclusive-dealing term was found.",
+    explanation:
+      "An exclusive appointment usually carries a reciprocal restriction on the Distributor carrying competing lines. Exclusive-dealing restraints are judged under the rule of reason (Tampa Electric v. Nashville Coal) by their market foreclosure; stating the restriction and its scope both allocates the obligation and frames the antitrust analysis.",
+    recommendation:
+      "Add a 'Competing Products' clause stating whether and to what extent the Distributor may carry competing products, and for how long after termination.",
+    present_patterns: [
+      /competing\s+(product|line|brand|goods)/i,
+      /shall\s+not\s+(carry|sell|distribute|promote)[\s\S]{0,40}(competing|competitive)/is,
+      /non.?compet\w*/i,
+      /exclusiv\w*[\s\S]{0,40}(carry|handle|line)/is,
+    ],
+  }),
+  presence({
+    id: "COMM-027",
+    name: "Product liability, recall, and indemnity allocation",
+    description:
+      "A distribution agreement should allocate product-liability, recall, and indemnity responsibility between Supplier and Distributor.",
+    citation: commPractice(
+      "distribution-product-liability",
+      "Product-liability / recall allocation baseline",
+      "https://www.americanbar.org/groups/business_law/",
+    ),
+    playbooks: [COMM_PLAYBOOK_DISTRIBUTION],
+    missing_title: "Product-liability / recall clause missing",
+    missing_description:
+      "No product-liability indemnity or recall-responsibility clause was found.",
+    explanation:
+      "As the party in the chain of distribution, the Distributor faces strict product-liability exposure for defects it did not create. The agreement should have the Supplier indemnify the Distributor for defect and design claims and allocate the cost and conduct of any recall.",
+    recommendation:
+      "Add a 'Product Liability' clause with a Supplier indemnity for defect / design / warning claims and a 'Recall' clause allocating who initiates, conducts, and pays for a recall.",
+    present_patterns: [
+      /product\s+liability/i,
+      /\brecall\b/i,
+      /indemnif\w*[\s\S]{0,50}(defect|design|product|warning)/is,
+      /(defect|design)[\s\S]{0,40}indemnif/is,
+    ],
+  }),
 ];
 
 // ────────────────────────────────────────────────────────────────────
@@ -480,6 +576,54 @@ const REFERRAL_RULES: Rule[] = [
       /\bfcpa\b|foreign\s+corrupt\s+practices/i,
       /improper\s+payment|\bkickback/i,
       /comply\s+with[\s\S]{0,40}(anti.?corruption|bribery)\s+laws/is,
+    ],
+  }),
+  presence({
+    id: "COMM-028",
+    name: "Confidentiality of leads and customer information",
+    description:
+      "A referral agreement should protect the confidentiality of referred leads and each party's customer information.",
+    citation: commPractice(
+      "referral-confidentiality",
+      "Referral-agreement confidentiality baseline",
+      "https://www.americanbar.org/groups/business_law/",
+    ),
+    playbooks: [COMM_PLAYBOOK_REFERRAL],
+    missing_title: "Confidentiality clause missing",
+    missing_description:
+      "No confidentiality clause protecting referred leads / customer information was found.",
+    explanation:
+      "A referral relationship exchanges prospect and customer data — commercially sensitive information whose misuse harms both parties and can trigger privacy-law exposure. A confidentiality clause covering leads, customer lists, and each party's confidential information is a baseline protection.",
+    recommendation:
+      "Add a 'Confidentiality' clause covering referred leads, customer lists, pricing, and each party's confidential information, with use limited to the referral relationship.",
+    present_patterns: [
+      /confidential\w*/i,
+      /non.?disclosure|\bnda\b/i,
+      /(customer|prospect|lead)\s+(list|data|information)[\s\S]{0,40}(confidential|proprietary)/is,
+      /proprietary\s+information/i,
+    ],
+  }),
+  presence({
+    id: "COMM-029",
+    name: "Non-circumvention",
+    description:
+      "A referral agreement should bar the Partner from circumventing the Company to deal directly with a referred customer.",
+    citation: commPractice(
+      "referral-non-circumvention",
+      "Finder / referral non-circumvention baseline",
+      "https://www.americanbar.org/groups/business_law/",
+    ),
+    playbooks: [COMM_PLAYBOOK_REFERRAL],
+    missing_title: "Non-circumvention clause missing",
+    missing_description: "No non-circumvention clause was found.",
+    explanation:
+      "Without a non-circumvention term, a party can take an introduced relationship outside the agreement to avoid paying the fee or to compete for the account directly. A non-circumvention clause preserves the economic bargain that the introduction created.",
+    recommendation:
+      "Add a 'Non-Circumvention' clause barring each party, for a stated period, from bypassing the other to transact directly with a relationship introduced under the Agreement.",
+    present_patterns: [
+      /non.?circumvent\w*|circumvent\w*/i,
+      /shall\s+not\s+(bypass|circumvent|solicit\s+directly)/i,
+      /not\s+.{0,20}(deal|transact)\s+directly\s+with/is,
     ],
   }),
 ];
@@ -619,6 +763,62 @@ const MARKETING_RULES: Rule[] = [
       /(truthful|not\s+(false|deceptive|misleading))\s+.{0,20}(advertis|claims?)/is,
       /reasonable\s+basis\s+for\s+.{0,20}claims?/is,
       /comply\s+with[\s\S]{0,40}(ftc|advertising)\s+(act|law|regulations)/is,
+    ],
+  }),
+  presence({
+    id: "COMM-030",
+    name: "Consumer-data privacy compliance",
+    description:
+      "A marketing agreement under which the Agency handles consumer data should require privacy-law compliance and a data-processing term.",
+    citation: commPractice(
+      "marketing-data-privacy",
+      "State consumer-privacy acts (CCPA/CPRA, VCDPA, CPA) and GDPR baseline",
+      "https://oag.ca.gov/privacy/ccpa",
+    ),
+    playbooks: [COMM_PLAYBOOK_MARKETING],
+    // Only relevant where the engagement actually involves consumer / personal
+    // data — a pure media-placement buy with no audience data does not need a
+    // data-processing term.
+    applicable_if: [
+      /personal\s+(data|information)|consumer\s+data|\bpii\b|email\s+list|audience\s+data|customer\s+(data|list)|retargeting/i,
+    ],
+    missing_title: "Consumer-data privacy / data-processing clause missing",
+    missing_description:
+      "The engagement handles consumer / personal data but no privacy-compliance or data-processing clause was found.",
+    explanation:
+      "A marketing agency that collects or processes consumer data (email lists, audience segments, retargeting pixels) acts as a service provider / processor under CCPA/CPRA, the other state privacy acts, and the GDPR. The agreement should require the Agency to process the data only on the Client's instructions and to comply with applicable privacy laws.",
+    recommendation:
+      "Add a data-processing / privacy clause limiting the Agency's use of personal data to the Client's instructions, requiring privacy-law compliance and appropriate safeguards, and a deletion / return obligation.",
+    present_patterns: [
+      /data\s+processing\s+(agreement|addendum|terms)|\bdpa\b/i,
+      /(ccpa|cpra|gdpr|service\s+provider|data\s+processor)/i,
+      /comply\s+with[\s\S]{0,40}(privacy|data\s+protection)\s+laws/is,
+      /(process|use)\s+.{0,30}personal\s+(data|information)[\s\S]{0,40}(instruction|behalf)/is,
+    ],
+  }),
+  presence({
+    id: "COMM-031",
+    name: "Client approval rights over creative and claims",
+    description:
+      "A marketing agreement should reserve the Client's right to review and approve creative and public claims before release.",
+    citation: commPractice(
+      "marketing-approval",
+      "Marketing-services approval-rights baseline",
+      "https://www.americanbar.org/groups/business_law/",
+    ),
+    playbooks: [COMM_PLAYBOOK_MARKETING],
+    missing_title: "Client-approval clause missing",
+    missing_description:
+      "No Client review / approval right over creative or public claims was found.",
+    explanation:
+      "Because the Client bears the FTC and brand risk of what the Agency publishes in its name, the Client should control what goes out. An approval clause — creative and claims reviewed and approved before release — keeps the Client from being bound by an unvetted advertisement or an unsubstantiated claim.",
+    recommendation:
+      "Add an 'Approvals' clause requiring the Client's prior written approval of creative, media plans, and public claims before publication, with a defined review turnaround.",
+    present_patterns: [
+      /(client|company)['’]?s?\s+(prior\s+)?(written\s+)?approval/i,
+      /(review|approve)[\s\S]{0,40}(creative|advertis\w*|claims?|materials)/is,
+      /(creative|materials|claims?)[\s\S]{0,40}(subject\s+to|require)[\s\S]{0,20}approval/is,
+      /right\s+to\s+(review|approve|reject)/i,
     ],
   }),
 ];

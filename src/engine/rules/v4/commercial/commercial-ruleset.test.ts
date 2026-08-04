@@ -53,6 +53,8 @@ describe("v4 Commercial — manufacturing / supply agreement (A.10)", () => {
     "Price. The unit price is set on a cost-plus basis with annual price adjustment. " +
     "Inspection. Buyer may inspect and reject nonconforming goods within 10 days. " +
     "Force Majeure. Neither party is liable for delays beyond its reasonable control. " +
+    "Warranty of Title. Seller conveys good title free and clear of all liens and warrants that the Goods do not infringe any third-party patent, with an infringement indemnity. " +
+    "Remedies. Repair or replacement, or a refund, is Buyer's sole and exclusive remedy, provided that if that remedy fails of its essential purpose the full UCC remedies apply. " +
     "Best Efforts. Seller shall use commercially reasonable efforts to supply Buyer's requirements.";
 
   it("emits no findings against a complete supply agreement", async () => {
@@ -79,6 +81,15 @@ describe("v4 Commercial — manufacturing / supply agreement (A.10)", () => {
     );
     expect(excl.has("COMM-007")).toBe(true);
   });
+
+  it("COMM-024/025 fire when title/infringement warranty and remedy limits are absent", async () => {
+    const bare = await fired(
+      MFG,
+      "Seller shall sell the Goods to Buyer at the price in Exhibit A.",
+    );
+    expect(bare.has("COMM-024")).toBe(true);
+    expect(bare.has("COMM-025")).toBe(true);
+  });
 });
 
 describe("v4 Commercial — reseller / distribution agreement (A.8)", () => {
@@ -89,6 +100,8 @@ describe("v4 Commercial — reseller / distribution agreement (A.8)", () => {
     "Resale Prices. Distributor is free to determine its own resale prices; any pricing control is limited to a minimum advertised price (MAP) policy. " +
     "Term and Termination. This Agreement may be terminated for cause upon 60 days prior written notice and a 30-day cure period. " +
     "Trademark License. Supplier grants Distributor a limited license to use the Trademarks subject to Supplier's quality control and right to inspect. " +
+    "Competing Products. During the Term, Distributor shall not carry, sell, or promote any competing products in the Territory. " +
+    "Product Liability. Supplier shall indemnify Distributor against any product-liability claim arising from a defect in the Products, and the parties shall cooperate on any recall, which Supplier shall conduct and fund. " +
     "Post-Termination. Supplier shall repurchase unsold inventory and Distributor shall cease using the marks and return all branded materials.";
 
   it("emits no findings against a complete distribution agreement", async () => {
@@ -126,6 +139,27 @@ describe("v4 Commercial — reseller / distribution agreement (A.8)", () => {
     );
     expect(marks.has("COMM-012")).toBe(true);
   });
+
+  it("COMM-026 fires only on an exclusive deal that is silent on competing products", async () => {
+    const excl = await fired(
+      DIST,
+      "Supplier appoints Distributor as the exclusive distributor of the Products in the Territory. Minimum purchases apply.",
+    );
+    expect(excl.has("COMM-026")).toBe(true);
+    const nonExcl = await fired(
+      DIST,
+      "Supplier appoints Distributor as a non-exclusive reseller of the Products in the Territory.",
+    );
+    expect(nonExcl.has("COMM-026")).toBe(false);
+  });
+
+  it("COMM-027 fires when product-liability / recall allocation is absent", async () => {
+    const bare = await fired(
+      DIST,
+      "Supplier appoints Distributor as reseller of the Products in the Territory.",
+    );
+    expect(bare.has("COMM-027")).toBe(true);
+  });
 });
 
 describe("v4 Commercial — channel partner / referral agreement (A.9)", () => {
@@ -134,6 +168,8 @@ describe("v4 Commercial — channel partner / referral agreement (A.9)", () => {
     "Qualified Referral means a prospect the Partner introduces who executes an order. " +
     "Referral Fee. Company shall pay a referral fee of 10% of the contract value, payable within 30 days after collection. " +
     "Independent Contractor. Partner is not an agent or employee and has no authority to bind the Company. " +
+    "Confidentiality. Each party shall keep confidential the referred leads and the other party's customer lists and proprietary information, using them only for the referral relationship. " +
+    "Non-Circumvention. Neither party shall circumvent the other or deal directly with a relationship introduced under this Agreement to avoid the Referral Fee for two years. " +
     "Anti-Bribery. Partner shall comply with the FCPA and applicable anti-corruption laws and make no improper payments.";
 
   it("emits no findings against a complete commercial referral agreement", async () => {
@@ -155,6 +191,15 @@ describe("v4 Commercial — channel partner / referral agreement (A.9)", () => {
     );
     expect(commercial.has("COMM-016")).toBe(false);
   });
+
+  it("COMM-028/029 fire when lead confidentiality and non-circumvention are absent", async () => {
+    const bare = await fired(
+      REF,
+      "Partner earns a referral fee for each qualified referral introduced to Company.",
+    );
+    expect(bare.has("COMM-028")).toBe(true);
+    expect(bare.has("COMM-029")).toBe(true);
+  });
 });
 
 describe("v4 Commercial — marketing services agreement (A.11)", () => {
@@ -164,6 +209,8 @@ describe("v4 Commercial — marketing services agreement (A.11)", () => {
     "Endorsements. All influencers shall clearly and conspicuously disclose the material connection (#ad) per 16 CFR Part 255. " +
     "Email. All commercial email shall comply with CAN-SPAM: accurate headers, a working unsubscribe, and a physical postal address. " +
     "Ownership. All deliverables and work product are works made for hire owned by Client, and Agency assigns all rights. " +
+    "Data Privacy. The Agency processes personal data and email list data only on the Client's instructions and shall comply with applicable privacy laws (CCPA/CPRA and GDPR) as a service provider, with a deletion obligation on termination. " +
+    "Approvals. The Client's prior written approval is required for all creative, media plans, and public claims before publication. " +
     "Claims. All advertising claims shall be truthful and substantiated before use.";
 
   it("emits no findings against a complete marketing services agreement", async () => {
@@ -193,5 +240,26 @@ describe("v4 Commercial — marketing services agreement (A.11)", () => {
     );
     expect(media.has("COMM-020")).toBe(false);
     expect(media.has("COMM-021")).toBe(false);
+  });
+
+  it("COMM-030 fires only on a data-driven campaign missing a privacy-compliance clause", async () => {
+    const data = await fired(
+      MKT,
+      "Scope of Work: Agency manages the Client's email list and consumer personal data for retargeting. Deliverables owned by Client. Claims substantiated.",
+    );
+    expect(data.has("COMM-030")).toBe(true);
+    const plain = await fired(
+      MKT,
+      "Scope of Work: Agency runs a media-buy campaign and provides deliverables. Deliverables owned by Client. Claims substantiated.",
+    );
+    expect(plain.has("COMM-030")).toBe(false);
+  });
+
+  it("COMM-031 fires when the client has no approval rights over creative and claims", async () => {
+    const bare = await fired(
+      MKT,
+      "Scope of Work: Agency runs the campaign and provides deliverables. Deliverables owned by Client. Claims substantiated.",
+    );
+    expect(bare.has("COMM-031")).toBe(true);
   });
 });

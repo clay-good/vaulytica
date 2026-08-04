@@ -18,4 +18,7 @@ Best Efforts. Because Buyer purchases its requirements exclusively from Seller, 
 
 Term. This Agreement continues for three (3) years and renews for successive one-year terms unless either party gives sixty (60) days' notice of non-renewal.
 
+Warranty of Title. Seller conveys good title to the Goods, free and clear of all liens and encumbrances, and warrants that the Goods do not infringe any third-party patent, trademark, or copyright; Seller shall provide an infringement indemnity.
+
+Remedies. Repair or replacement of nonconforming Goods, or a refund, is Buyer's sole and exclusive remedy, provided that if that remedy fails of its essential purpose the full remedies under the UCC apply.
 Governing Law. This Agreement is governed by the laws of the State of Ohio.

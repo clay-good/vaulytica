@@ -62,8 +62,15 @@ const V2_BASELINE_GZIPPED_KB = 165;
  * definitions, EQT/SET/GOV/MNA/EMP/RE pack phrasings) and added six non-contract
  * playbook override sets to the bundled catalog: measured total ~830 KB, and the
  * ~15 KB margin covers the remaining verticals without re-raising every commit.
+ * Raised to +690 as the commercial v4 pack grew a second wave of rules
+ * (COMM-024..031: UCC § 2-312/2-719 title & remedy limits, distribution
+ * competing-products & product-liability, referral confidentiality &
+ * non-circumvention, marketing consumer-data privacy & client approval): their
+ * added alternations are ~2 KB gzipped in the lazy engine chunk (measured total
+ * ~847 KB) and the ~8 KB margin keeps the guard from flaking on a marginally
+ * larger CI build.
  */
-const V3_BUDGET_GZIPPED_KB = V2_BASELINE_GZIPPED_KB + 680;
+const V3_BUDGET_GZIPPED_KB = V2_BASELINE_GZIPPED_KB + 690;
 /** Eager-entry budget (first-paint contribution). */
 const EAGER_ENTRY_GZIPPED_KB = 50;
 

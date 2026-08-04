@@ -6,8 +6,8 @@
 > prioritized first tranche of rules for a licensed reviewer to sign into
 > [`ledger.json`](ledger.json); the workflow lives in [`README.md`](README.md).
 
-- **Engine:** `9.41.0` · **Corpus:** `v0.0.0-seed` (empty) · **Catalog:** 1094 single-document rules
-- **Signed:** 0 of 1094 · **Queued (unreviewed, top 100):** 100
+- **Engine:** `9.41.0` · **Corpus:** `v0.0.0-seed` (empty) · **Catalog:** 1102 single-document rules
+- **Signed:** 0 of 1102 · **Queued (unreviewed, top 100):** 100
 
 ## Ranking
 
@@ -100,27 +100,27 @@ firing refines the order automatically — re-run `npm run accuracy` then
 | 75 | `COMM-021` — CAN-SPAM compliance for email marketing | critical | commercial | 0 | `can-spam-7704-commercial-email-requirements` |
 | 76 | `COMM-022` — Ownership of deliverables / work product | critical | commercial | 0 | `comm-marketing-ip` |
 | 77 | `COMM-023` — Advertising-claims substantiation | critical | commercial | 0 | `ftc-15-u-s-c-45` |
-| 78 | `CON-001` — Owner / contractor / architect identified | critical | construction | 0 | `aia-a101` |
-| 79 | `CON-002` — Scope of work / contract documents | critical | construction | 0 | `aia-a201` |
-| 80 | `CON-003` — Contract sum + price / payment terms | critical | construction | 0 | `aia-a101` |
-| 81 | `CON-006` — Indemnification + insurance + waiver of subrogation | critical | construction | 0 | `ca-civ-2782` |
-| 82 | `CON-008` — General contractor / subcontractor / project identified | critical | construction | 0 | `con-practice-subk-baseline` |
-| 83 | `CON-009` — Subcontract scope of work + flow-down | critical | construction | 0 | `aia-a401` |
-| 84 | `CON-012` — Subcontractor warranties + workmanship + materials | critical | construction | 0 | `con-practice-subk-warranty` |
-| 85 | `CON-014` — Waiver type — conditional / unconditional + progress / final | critical | construction | 0 | `ca-civ-8132` |
-| 86 | `CON-015` — Identified claimant + property + project | critical | construction | 0 | `state-mechanics-lien` |
-| 87 | `CON-016` — Scope of waiver — limited to amount received / through-date | critical | construction | 0 | `ca-civ-8132` |
-| 88 | `CON-019` — Signature + date + statutory form recital | critical | construction | 0 | `ca-civ-8132` |
-| 89 | `CON-020` — Principal / surety / obligee identification | critical | construction | 0 | `miller-act-40-usc-3131` |
-| 90 | `CON-021` — Bond type — payment / performance / dual-obligee | critical | construction | 0 | `miller-act-40-usc-3131` |
-| 91 | `CON-022` — Penal sum | critical | construction | 0 | `miller-act-40-usc-3131` |
-| 92 | `CON-023` — Underlying contract incorporation | critical | construction | 0 | `miller-act-40-usc-3131` |
-| 93 | `CON-026` — Original contract sum + revised contract sum | critical | construction | 0 | `aia-g701` |
-| 94 | `CON-027` — Description of change in work | critical | construction | 0 | `aia-g701` |
-| 95 | `CON-028` — Time impact — contract time adjustment | critical | construction | 0 | `aia-g701` |
-| 96 | `CON-029` — Signatures — owner + architect + contractor | critical | construction | 0 | `aia-g701` |
-| 97 | `DARK-005` — Class-action waiver | critical | dark-patterns | 0 | `stat-ftc-deception-statement` |
-| 98 | `DARK-010` — Residential waiver of the warranty of habitability | critical | dark-patterns | 0 | `stat-ftc-deception-statement` |
-| 99 | `DARK-011` — Residential self-help eviction / lockout | critical | dark-patterns | 0 | `stat-ftc-deception-statement` |
-| 100 | `DARK-013` — Residential waiver of statutory tenant rights | critical | dark-patterns | 0 | `stat-ftc-deception-statement` |
+| 78 | `COMM-024` — Warranty of title and against infringement | critical | commercial | 0 | `ucc-2-312` |
+| 79 | `COMM-025` — Limitation of remedies / exclusive remedy | critical | commercial | 0 | `ucc-2-719` |
+| 80 | `COMM-026` — Competing-products restriction (exclusive dealing) | critical | commercial | 0 | `sherman-1-exclusive-dealing-rule-of-reason-tampa-electric-` |
+| 81 | `COMM-027` — Product liability, recall, and indemnity allocation | critical | commercial | 0 | `comm-distribution-product-liability` |
+| 82 | `COMM-028` — Confidentiality of leads and customer information | critical | commercial | 0 | `comm-referral-confidentiality` |
+| 83 | `COMM-029` — Non-circumvention | critical | commercial | 0 | `comm-referral-non-circumvention` |
+| 84 | `COMM-030` — Consumer-data privacy compliance | critical | commercial | 0 | `comm-marketing-data-privacy` |
+| 85 | `COMM-031` — Client approval rights over creative and claims | critical | commercial | 0 | `comm-marketing-approval` |
+| 86 | `CON-001` — Owner / contractor / architect identified | critical | construction | 0 | `aia-a101` |
+| 87 | `CON-002` — Scope of work / contract documents | critical | construction | 0 | `aia-a201` |
+| 88 | `CON-003` — Contract sum + price / payment terms | critical | construction | 0 | `aia-a101` |
+| 89 | `CON-006` — Indemnification + insurance + waiver of subrogation | critical | construction | 0 | `ca-civ-2782` |
+| 90 | `CON-008` — General contractor / subcontractor / project identified | critical | construction | 0 | `con-practice-subk-baseline` |
+| 91 | `CON-009` — Subcontract scope of work + flow-down | critical | construction | 0 | `aia-a401` |
+| 92 | `CON-012` — Subcontractor warranties + workmanship + materials | critical | construction | 0 | `con-practice-subk-warranty` |
+| 93 | `CON-014` — Waiver type — conditional / unconditional + progress / final | critical | construction | 0 | `ca-civ-8132` |
+| 94 | `CON-015` — Identified claimant + property + project | critical | construction | 0 | `state-mechanics-lien` |
+| 95 | `CON-016` — Scope of waiver — limited to amount received / through-date | critical | construction | 0 | `ca-civ-8132` |
+| 96 | `CON-019` — Signature + date + statutory form recital | critical | construction | 0 | `ca-civ-8132` |
+| 97 | `CON-020` — Principal / surety / obligee identification | critical | construction | 0 | `miller-act-40-usc-3131` |
+| 98 | `CON-021` — Bond type — payment / performance / dual-obligee | critical | construction | 0 | `miller-act-40-usc-3131` |
+| 99 | `CON-022` — Penal sum | critical | construction | 0 | `miller-act-40-usc-3131` |
+| 100 | `CON-023` — Underlying contract incorporation | critical | construction | 0 | `miller-act-40-usc-3131` |
 

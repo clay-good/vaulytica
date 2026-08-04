@@ -14,4 +14,7 @@ Term and Termination. The term is three (3) years. Either party may terminate fo
 
 Post-Termination. On termination, Supplier shall repurchase Distributor's unsold inventory at net invoice cost, and Distributor shall cease using the marks and return all branded materials and samples.
 
+Competing Products. During the Term, Distributor shall not carry, sell, or promote any competing products in the Territory.
+
+Product Liability. Supplier shall indemnify Distributor against any product-liability claim arising from a defect or design of the Products, and the parties shall cooperate on any recall, which Supplier shall conduct and fund.
 Governing Law. This Agreement is governed by the laws of the State of Illinois.
