@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
 /** IPDATA-005 — GDPR / CCPA / HIPAA reference (info). */
 export const rule: Rule = {
   id: "IPDATA-005",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Data regime reference (GDPR / CCPA / HIPAA)",
   category: "ip-and-data",
   default_severity: "info",
@@ -20,7 +20,13 @@ export const rule: Rule = {
     if (
       firstParagraphMatch(
         ctx,
-        /\b(?:GDPR|General\s+Data\s+Protection\s+Regulation|CCPA|California\s+Consumer\s+Privacy\s+Act|HIPAA|Business\s+Associate\s+Agreement|BAA|Covered\s+Entit(?:y|ies)|45\s+C\.?F\.?R\.?\s*(?:§\s*)?164)\b/i,
+        // The regime list must track the current landscape: CPRA is now the
+        // operative California law, and a Data Processing Agreement / the
+        // Standard Contractual Clauses are themselves the governing instrument
+        // (as a BAA is for HIPAA). LGPD / PIPEDA / PIPL cover non-US personal
+        // data. "SCCs" (plural / spelled) is used, not the bare "SCC", which
+        // also abbreviates the Stockholm Chamber of Commerce.
+        /\b(?:GDPR|General\s+Data\s+Protection\s+Regulation|CCPA|California\s+Consumer\s+Privacy\s+Act|CPRA|California\s+Privacy\s+Rights\s+Act|HIPAA|Business\s+Associate\s+Agreement|BAA|Covered\s+Entit(?:y|ies)|45\s+C\.?F\.?R\.?\s*(?:§\s*)?164|LGPD|PIPEDA|PIPL|Data\s+Processing\s+(?:Agreement|Addendum)|Standard\s+Contractual\s+Clauses|SCCs)\b/i,
       )
     )
       return null;

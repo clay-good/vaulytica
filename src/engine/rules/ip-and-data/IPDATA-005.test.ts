@@ -30,4 +30,29 @@ describe("IPDATA-005 — HIPAA terms of art count as a regime reference", () => 
       ),
     ).not.toBeNull();
   });
+
+  it("recognizes CPRA / LGPD / DPA / SCCs as regime references (v1.2.0)", () => {
+    const base = "The Processor handles personal data on behalf of the Controller.";
+    for (const regime of [
+      "The parties comply with the CPRA.",
+      "The parties comply with the LGPD.",
+      "This Data Processing Agreement governs the processing.",
+      "Cross-border transfers rely on the Standard Contractual Clauses.",
+    ]) {
+      expect(IPDATA005.check(buildContext(["Data", `${base} ${regime}`])), regime).toBeNull();
+    }
+  });
+
+  it("does not treat a bare 'SCC' arbitration reference as a data regime", () => {
+    // "SCC" also abbreviates the Stockholm Chamber of Commerce; only "SCCs" /
+    // the spelled form counts, so an arbitration clause is not a false regime.
+    expect(
+      IPDATA005.check(
+        buildContext([
+          "Data",
+          "The Processor handles personal data. Disputes are resolved by the SCC in Stockholm.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
 });

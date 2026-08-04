@@ -245,7 +245,7 @@
       "finding_id": "IPDATA-005-s1.2-751",
       "fired": true,
       "rule_id": "IPDATA-005",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -939,7 +939,7 @@
       "explanation": "When a contract touches personal data, citing the governing regime (GDPR Art. 28, CCPA, HIPAA 45 CFR 164.504) makes obligations explicit and discoverable.",
       "id": "IPDATA-005-s1.2-751",
       "rule_id": "IPDATA-005",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "info",
       "source_citations": [
         {
@@ -990,7 +990,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "35ae5abd63dd792a71ab01e57fa55365dac0d71489c4136ac2806bb23a931729",
+  "result_hash": "750360a68b63caf538badfeecb47c2b967132a5b37b72d652a7628b34c4c3455",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
     "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",
