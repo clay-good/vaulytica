@@ -4,7 +4,7 @@ import { emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
 /** PERS-002 — Non-solicit present (info). */
 export const rule: Rule = {
   id: "PERS-002",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Non-solicit present",
   category: "personnel",
   default_severity: "info",
@@ -18,8 +18,12 @@ export const rule: Rule = {
       // <non-personnel>" clause borrowed "employees" from an unrelated next
       // sentence and was misreported as a personnel non-solicit.
       // "induce/encourage/persuade … to terminate" is the same covenant
-      // without the solicit token (audit).
-      /\bnon[- ]solicit(?:ation)?\b|\bnot\s+(?:solicit|induce|encourage|persuade|recruit)\b[^.;\n]{0,80}\b(?:employees?|customers?)\b/i,
+      // without the solicit token (audit). The protected object is as often
+      // "clients", "personnel", or "staff" as "employees"/"customers" —
+      // "vendors"/"suppliers"/"contractors" are deliberately excluded so a
+      // procurement clause ("shall not solicit bids from vendors") is not
+      // misread as a personnel non-solicit.
+      /\bnon[- ]solicit(?:ation)?\b|\bnot\s+(?:to\s+)?(?:solicit|induce|encourage|persuade|recruit)\b[^.;\n]{0,80}\b(?:employees?|customers?|clients?|personnel|staff)\b/i,
     );
     if (!hit) return null;
     return emit(ctx, rule, {
