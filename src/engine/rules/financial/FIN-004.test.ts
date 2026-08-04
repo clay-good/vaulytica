@@ -38,4 +38,27 @@ describe("FIN-004 — late-payment interest-rate sanity (period-honest)", () => 
     ]);
     expect(FIN_004.check(ctx)).toBeNull();
   });
+
+  // v1.1.0 — the same usurious rate is written under several standard triggers
+  // the payment/past-due/overdue list missed: "late charge", "default
+  // interest / default rate", "delinquent".
+  it("fires on the 'late charge', 'default interest', and 'delinquent' phrasings", () => {
+    for (const body of [
+      "A late charge of 18% per annum shall accrue on any unpaid balance.",
+      "The default interest rate is 24% per annum on all outstanding sums.",
+      "Delinquent amounts bear interest at 18% per year until paid.",
+    ]) {
+      const f = FIN_004.check(buildContext(["Late Payment", body]));
+      expect(f, body).not.toBeNull();
+      expect(f?.severity).toBe("warning");
+    }
+  });
+
+  it("still does not fire on a flat 'late charge' with no stated period", () => {
+    expect(
+      FIN_004.check(
+        buildContext(["Late Payment", "A late charge of 15% of the overdue amount applies."]),
+      ),
+    ).toBeNull();
+  });
 });

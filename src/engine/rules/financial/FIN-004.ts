@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 /** FIN-004 — Late payment interest rate sanity (warning). */
 export const rule: Rule = {
   id: "FIN-004",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Late payment interest rate sanity",
   category: "financial",
   default_severity: "warning",
@@ -19,7 +19,7 @@ export const rule: Rule = {
     // accusation. A stated period must follow the percentage to match.
     const hit = firstParagraphMatch(
       ctx,
-      /(?:late\s+payment|past\s+due|overdue)[\s\S]{0,80}?(\d{1,2}(?:\.\d+)?)\s*%\s*(?:per\s+(?:month|year|annum|day)|monthly|annually|daily)/i,
+      /(?:late\s+(?:payment|charge|fee)|past\s+due|overdue|default\s+(?:interest|rate)|delinquent|in\s+arrears)[\s\S]{0,80}?(\d{1,2}(?:\.\d+)?)\s*%\s*(?:per\s+(?:month|year|annum|day)|monthly|annually|daily)/i,
     );
     if (!hit) return null;
     const rate = parseFloat(hit.match[1] ?? "0");
