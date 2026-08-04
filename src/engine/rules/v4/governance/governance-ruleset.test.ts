@@ -421,4 +421,32 @@ describe("GOV-008 — D&O indemnification reads the 'indemnity' / 'Indemnitee' n
       (await run1("The board shall consist of five directors elected annually.")).has("GOV-008"),
     ).toBe(true);
   });
+
+  // v1.2.0 — a bylaw that DISCLAIMS D&O indemnity matched the bare label and
+  // was misread as providing it; a director who loses indemnification is
+  // exactly what this rule must flag.
+  it("reports the article missing when the bylaws DISCLAIM D&O indemnity", async () => {
+    expect(
+      (
+        await run1(
+          "The Corporation shall not indemnify its directors or officers under any circumstances.",
+        )
+      ).has("GOV-008"),
+    ).toBe(true);
+    expect(
+      (
+        await run1("No indemnity or advancement of expenses shall be provided to any director.")
+      ).has("GOV-008"),
+    ).toBe(true);
+  });
+
+  it("still does not fire on a standard 'shall indemnify … to the fullest extent' bylaw", async () => {
+    expect(
+      (
+        await run1(
+          "The Corporation shall indemnify its directors and officers to the fullest extent permitted by law.",
+        )
+      ).has("GOV-008"),
+    ).toBe(false);
+  });
 });

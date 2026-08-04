@@ -210,7 +210,7 @@ const BYLAWS_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-008",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Indemnification of directors and officers",
     description:
       "Bylaws should provide for indemnification of D&O to the fullest extent of DGCL § 145 / MBCA § 8.50.",
@@ -226,8 +226,14 @@ const BYLAWS_RULES: Rule[] = [
     // "indemnify", but the "indemnit-" forms — the noun "indemnity", the
     // "Indemnitee" — name the same clause; recognizing only "indemnif…" reported
     // the article missing when it was drafted around those (consistent with
-    // RISK-001 / RISK-003).
-    present_patterns: [/indemnif\w*/i, /indemnit(?:y|ies|ee|ees|or|ors)/i],
+    // RISK-001 / RISK-003). Each label carries a negative lookbehind so a bylaw
+    // that DISCLAIMS D&O indemnity ("shall NOT indemnify its directors", "NO
+    // indemnity … shall be provided") is not misread as providing it — a
+    // director who loses indemnification is exactly what this rule must flag.
+    present_patterns: [
+      /(?<!\bno\s)(?<!\bnot\s)indemnif\w*/i,
+      /(?<!\bno\s)(?<!\bnot\s)indemnit(?:y|ies|ee|ees|or|ors)/i,
+    ],
   }),
   presence({
     id: "GOV-009",
