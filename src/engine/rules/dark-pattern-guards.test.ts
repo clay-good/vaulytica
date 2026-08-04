@@ -36,6 +36,38 @@ describe("DARK-002 — auto-renewal notice window", () => {
       ),
     ).toBeNull();
   });
+
+  it("reads the adverb-first 'automatically renews' and a cancellation window (v1.2.0)", () => {
+    // "automatically renews" (adverb-first, plural verb) was not detected at
+    // all; and the window stated as a cancellation deadline relative to renewal.
+    expect(
+      DARK002.check(
+        doc(
+          "Term",
+          "The Agreement automatically renews. Notice of cancellation must be given 100 days prior to the renewal date.",
+        ),
+      ),
+    ).not.toBeNull();
+    expect(
+      DARK002.check(
+        doc(
+          "Term",
+          "The subscription renews automatically. You must cancel at least one hundred twenty (120) days before the renewal date.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+
+  it("does not treat a general cancellation day-count as the renewal window", () => {
+    expect(
+      DARK002.check(
+        doc(
+          "Term",
+          "The subscription renews automatically. You may cancel within 30 days of any material defect.",
+        ),
+      ),
+    ).toBeNull();
+  });
 });
 
 describe("DARK-003 — one-way attorneys' fee-shifting", () => {

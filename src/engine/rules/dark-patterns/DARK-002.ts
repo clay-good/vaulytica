@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 /** DARK-002 — Auto-renewal with hidden notice window (warning). */
 export const rule: Rule = {
   id: "DARK-002",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Auto-renewal with hidden notice window",
   category: "dark-patterns",
   default_severity: "warning",
@@ -16,8 +16,11 @@ export const rule: Rule = {
       ctx,
       // "the subscription RENEWS AUTOMATICALLY" puts the adverb after the verb —
       // the dominant consumer-terms order, and the adverb-first pattern missed
-      // every one of them.
-      /\b(?:auto(?:matic)?(?:ally)?\s+(?:renew|renewal|extend)|renew(?:s|ed|ing)?\s+automatically|automatic\s+renewal)\b/i,
+      // every one of them. The verb must carry its inflection in the adverb-FIRST
+      // branch too ("automatically renews / renewed / renewing"): a bare
+      // "renew\b" failed on the trailing "s" of "renews", so "automatically
+      // renews" — equally common — was not detected at all.
+      /\b(?:auto(?:matic)?(?:ally)?\s+(?:renew(?:s|ed|ing|al)?|extend(?:s|ed|ing)?)|renew(?:s|ed|ing)?\s+automatically|automatic\s+renewal)\b/i,
     );
     if (!auto) return null;
     const notice = firstParagraphMatch(
@@ -29,9 +32,16 @@ export const rule: Rule = {
       // The count is written "ninety (90) days" — the spelled-then-numeric
       // convention wraps the digits in a parenthetical, and requiring the
       // digits to touch "days" missed every notice window drafted that way.
-      /\bnon[- ]renewal\b[^.;\n]{0,200}?\(?(\d{1,3})\)?\s+days|notice\s+of\s+non[- ]renewal[^.;\n]{0,80}?\(?(\d{1,3})\)?\s+days/i,
+      // The window is as often stated as a CANCELLATION deadline relative to
+      // renewal — "cancel at least 120 days before the renewal date", "notice
+      // of cancellation … prior to the renewal" — so a cancel/opt-out branch is
+      // included, but only when it links the day-count to renewal, so a general
+      // cancellation-notice day-count elsewhere is not mistaken for it.
+      /\bnon[- ]renewal\b[^.;\n]{0,200}?\(?(\d{1,3})\)?\s+days|notice\s+of\s+non[- ]renewal[^.;\n]{0,80}?\(?(\d{1,3})\)?\s+days|(?:cancel(?:lation)?|opt[- ]?out)\b[^.;\n]{0,80}?\(?(\d{1,3})\)?\s+days\b[^.;\n]{0,30}?(?:before|prior\s+to|in\s+advance\s+of)[^.;\n]{0,20}?(?:renewal|renew|the\s+next\s+term)/i,
     );
-    const days = notice ? parseInt(notice.match[1] ?? notice.match[2] ?? "0", 10) : 0;
+    const days = notice
+      ? parseInt(notice.match[1] ?? notice.match[2] ?? notice.match[3] ?? "0", 10)
+      : 0;
     const buried =
       !!notice && (notice.position.section_id !== auto.position.section_id || days >= 90);
     if (!buried) return null;

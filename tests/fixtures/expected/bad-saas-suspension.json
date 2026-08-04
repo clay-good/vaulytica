@@ -86,7 +86,7 @@
       "finding_id": "DARK-002-s1.4-1175",
       "fired": true,
       "rule_id": "DARK-002",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -765,7 +765,7 @@
       "explanation": "When the non-renewal notice window is in a different section from the auto-renewal clause or longer than 90 days, customers commonly miss it. FTC negative-option guidance (16 CFR Part 425) addresses this pattern.",
       "id": "DARK-002-s1.4-1175",
       "rule_id": "DARK-002",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1008,7 +1008,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected saas-customer (score 0.9). Title matched: \"subscription agreement\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"uptime\".",
-  "result_hash": "4ccf61c3a45931169cb3bad9f3d7fd34c8ac68d460626a648555b77cb72b8c52",
+  "result_hash": "a9850ec3d1b35b3f7f9475086d0246177ed399c1e6e0b8e3b5bd5204c59c1b0c",
   "source_file": {
     "name": "bad-saas-suspension.docx",
     "sha256": "9afd9de44c9b6a123f62c53a81c06b34ec7a515c4e5519fc63b2bc69223ac49b",
