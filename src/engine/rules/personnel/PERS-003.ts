@@ -16,12 +16,22 @@ const EMPLOYEE_INDICATORS = [
   /subject\s+to\s+(?:the\s+)?(?:direct\s+)?supervision/i,
   /(?:eligible\s+for|entitled\s+to)\s+(?:the\s+)?(?:Company\s+)?(?:employee\s+)?benefits/i,
   /paid\s+(?:an?\s+)?(?:annual\s+|monthly\s+)?salary/i,
+  // Paid leave is an employee benefit an IC does not receive; anchored to
+  // "paid" / "PTO" / "entitled to" so a genuine "Contractor may take vacation at
+  // its own discretion" (the opposite signal) is not flagged.
+  /paid\s+(?:time\s+off|vacation|sick\s+(?:leave|days?)|holidays?|personal\s+days?)|\bPTO\b|(?:entitled\s+to|accrues?)\s+(?:vacation|sick\s+leave)/i,
+  // "at-will EMPLOYMENT" literally names the relationship an employee has; a
+  // bare "terminate at will" is common in IC contracts and is not flagged.
+  /\bat[- ]will\s+employ(?:ment|ee)\b|\bemployment\s+(?:is\s+|shall\s+be\s+)?at[- ]will\b/i,
+  // The Company withholding payroll / income tax is employer behavior — an IC
+  // pays its own taxes. Only the Company-withholds direction is the signal.
+  /\b(?:Company|Employer)\s+(?:shall|will|agrees\s+to)\s+withhold\b[^.]{0,40}\b(?:tax|taxes|income|payroll|FICA|withholding)/i,
 ] as const;
 
 /** PERS-003 — Independent contractor classification language (warning). */
 export const rule: Rule = {
   id: "PERS-003",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Independent contractor classification risk",
   category: "personnel",
   default_severity: "warning",
