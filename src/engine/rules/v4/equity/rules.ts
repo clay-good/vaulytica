@@ -558,6 +558,7 @@ const OPTION_GRANT_RULES: Rule[] = [
   }),
   language({
     id: "EQT-028",
+    version: "1.1.0",
     name: "Repricing without stockholder approval",
     description:
       "Most equity-incentive plans prohibit repricing without stockholder approval; standalone repricing language is suspicious.",
@@ -568,7 +569,18 @@ const OPTION_GRANT_RULES: Rule[] = [
     ),
     playbooks: [EQT_PLAYBOOK_OPTION_GRANT],
     bad_patterns: [/reprice.{0,80}without.{0,40}(stockholder|shareholder)\s+approval/is],
-    exclude_if: [/(?:shall|will|may)\s+not\s+reprice/i, /\bno\s+repricing\b/i],
+    // The standard exchange-required anti-repricing covenant reads "No option
+    // MAY BE repriced" / "Options SHALL NOT BE repriced without stockholder
+    // approval" — the passive/negated form is the good governance this rule
+    // wants, but "repriced without … approval" trips the pattern. The active
+    // "shall/may not reprice" was already excluded; add the passive form and the
+    // "no <award> … repriced" lead-in.
+    exclude_if: [
+      /(?:shall|will|may)\s+not\s+reprice/i,
+      /\bno\s+repricing\b/i,
+      /\bnot\s+(?:be\s+)?repric(?:e|ed|ing)\b/i,
+      /\bno\s+(?:option|award|grant|stock\s+option|sar)s?\b[^.]{0,40}\brepric/i,
+    ],
     bad_title: "Repricing without stockholder approval permitted",
     bad_description:
       "The grant permits the board to reprice the option without stockholder approval, in tension with listed-issuer governance and most plan terms.",

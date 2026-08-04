@@ -211,3 +211,34 @@ describe("EQT lock-up spelling — closed 'lockup' form (v1.1.0)", () => {
     expect(run.findings.some((f) => f.rule_id === "EQT-055")).toBe(false);
   });
 });
+
+describe("EQT-028 — anti-repricing covenant in its passive/negated forms (v1.1.0)", () => {
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Repricing", body]), OPTION_PB);
+    const run = await runEngine({ rules: EQUITY_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  // The exchange-required anti-repricing covenant is the GOOD governance this
+  // rule wants; its standard passive/negated wording ("No option may be
+  // repriced …", "Options shall not be repriced …") tripped the pattern.
+  it("stays silent on 'No option may be repriced without stockholder approval'", async () => {
+    expect(
+      (await run1("No option may be repriced without stockholder approval.")).has("EQT-028"),
+    ).toBe(false);
+  });
+
+  it("stays silent on 'Options shall not be repriced without stockholder approval'", async () => {
+    expect(
+      (await run1("Options shall not be repriced without stockholder approval.")).has("EQT-028"),
+    ).toBe(false);
+  });
+
+  it("still fires when repricing without approval is affirmatively permitted", async () => {
+    expect(
+      (
+        await run1("The Committee may reprice outstanding options without stockholder approval.")
+      ).has("EQT-028"),
+    ).toBe(true);
+  });
+});
