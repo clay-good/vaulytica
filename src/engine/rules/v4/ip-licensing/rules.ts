@@ -287,6 +287,7 @@ const PATENT_LICENSE_RULES: Rule[] = [
   }),
   presence({
     id: "IPL-011",
+    version: "1.1.0",
     name: "Patent marking obligation — 35 U.S.C. § 287",
     description:
       "Licensee should be required to mark licensed products with patent number(s) per 35 U.S.C. § 287 to preserve damages.",
@@ -299,7 +300,14 @@ const PATENT_LICENSE_RULES: Rule[] = [
     recommendation:
       "Add 'Patent Marking' requiring licensee to mark Licensed Products with applicable patent numbers (or 'Patent Pending' / virtual marking per § 287(a)).",
     present_patterns: [
-      /(patent\s+marking|mark.{0,40}with\s+(the\s+)?patent\s+number)/i,
+      // The "mark … with … patent number" branch allowed only a bare article
+      // before "patent", so the dominant phrasing "mark the Products with the
+      // APPLICABLE / relevant / licensed patent numbers" (and the passive
+      // "Products shall be MARKED with …") slipped past all three patterns and
+      // drew a false "clause missing" warning. Allow up to four noun-phrase
+      // words between "with" and "patent number(s)"; "patent number" must still
+      // actually appear, so a document with no marking clause is unaffected.
+      /(patent\s+marking|\bmark\w*\b.{0,40}?with\s+(?:[a-z]+\s+){0,4}patent\s+numbers?)/i,
       /(35\s+u\.?s\.?c\.?\s+§?\s*287|section\s+287)/i,
       /virtual\s+marking/i,
     ],

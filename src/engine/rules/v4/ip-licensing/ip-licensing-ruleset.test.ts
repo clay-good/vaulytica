@@ -95,6 +95,33 @@ describe("v4 IP & licensing — failure cases", () => {
     expect(run.findings.some((f) => f.rule_id === "IPL-009")).toBe(true);
   });
 
+  it("IPL-011 does not falsely fire when marking uses 'the applicable patent numbers'", async () => {
+    // Regression: "mark … with the APPLICABLE patent numbers" (adjective before
+    // "patent") slipped past the old bare-article pattern and drew a false
+    // "Patent-marking clause missing" warning.
+    const ctx = withPb(
+      buildContext([
+        "Patent License",
+        "Licensed Patents: U.S. Pat. No. 8,000,000. Licensee shall mark the Licensed Products with the applicable patent numbers.",
+      ]),
+      PATENT_PB,
+    );
+    const run = await runEngine({ rules: IP_LICENSING_RULES, ctx, source_file: SRC });
+    expect(run.findings.some((f) => f.rule_id === "IPL-011")).toBe(false);
+  });
+
+  it("IPL-011 still fires when a patent license omits any marking clause", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Patent License",
+        "Licensed Patents: U.S. Pat. No. 8,000,000. Exclusive worldwide license. Royalty 5% of Net Sales, stepping down after expiration.",
+      ]),
+      PATENT_PB,
+    );
+    const run = await runEngine({ rules: IP_LICENSING_RULES, ctx, source_file: SRC });
+    expect(run.findings.some((f) => f.rule_id === "IPL-011")).toBe(true);
+  });
+
   it("IPL-014 fires when trademark license omits quality control", async () => {
     const ctx = withPb(
       buildContext([
