@@ -68,6 +68,38 @@ describe("DARK-002 — auto-renewal notice window", () => {
       ),
     ).toBeNull();
   });
+
+  // v1.3.0 — the detector matched the phrase even when NEGATED. A plan that
+  // explicitly does NOT auto-renew but describes a non-renewal notice process in
+  // another section otherwise tripped the buried-window finding — a false
+  // positive on the opposite of the dark pattern.
+  it("does not fire when the subscription explicitly does NOT auto-renew", () => {
+    expect(
+      DARK002.check(
+        buildContext(
+          ["5. Term", "This subscription does not automatically renew at the end of the term."],
+          [
+            "9. Cancellation",
+            "To end the subscription, provide notice of non-renewal at least 30 days before the renewal date.",
+          ],
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires on a genuine auto-renewal with the same buried-window structure", () => {
+    expect(
+      DARK002.check(
+        buildContext(
+          ["5. Term", "This subscription automatically renews at the end of the term."],
+          [
+            "9. Cancellation",
+            "To end the subscription, provide notice of non-renewal at least 30 days before the renewal date.",
+          ],
+        ),
+      ),
+    ).not.toBeNull();
+  });
 });
 
 describe("DARK-003 — one-way attorneys' fee-shifting", () => {

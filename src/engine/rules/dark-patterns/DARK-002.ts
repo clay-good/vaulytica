@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 /** DARK-002 — Auto-renewal with hidden notice window (warning). */
 export const rule: Rule = {
   id: "DARK-002",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Auto-renewal with hidden notice window",
   category: "dark-patterns",
   default_severity: "warning",
@@ -23,6 +23,15 @@ export const rule: Rule = {
       /\b(?:auto(?:matic)?(?:ally)?\s+(?:renew(?:s|ed|ing|al)?|extend(?:s|ed|ing)?)|renew(?:s|ed|ing)?\s+automatically|automatic\s+renewal)\b/i,
     );
     if (!auto) return null;
+    // The detector matches the phrase even when it is NEGATED — "this
+    // subscription does NOT automatically renew", "there is NO automatic
+    // renewal". A non-auto-renewing plan that happens to describe a
+    // non-renewal notice process (in another section) otherwise trips the
+    // buried-notice-window finding: a false positive on the opposite of the
+    // dark pattern. Skip when a negation immediately precedes the phrase in the
+    // same sentence.
+    if (/\b(?:not|never|no)\b[^.!?;]{0,25}$/i.test(auto.text.slice(0, auto.match.index)))
+      return null;
     const notice = firstParagraphMatch(
       ctx,
       // `[^.;\n]` so the day count must sit in the SAME sentence as the
