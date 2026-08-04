@@ -179,3 +179,35 @@ describe("EQT-068 — election window reads the parenthesized 'fifteen (15) days
     ).toBe(true);
   });
 });
+
+describe("EQT lock-up spelling — closed 'lockup' form (v1.1.0)", () => {
+  // /lock.up/ matched "lock-up" / "lock up" but not the closed "lockup",
+  // so a lockup clause with a non-180-day period and no "market stand-off"
+  // term falsely tripped the missing-clause finding.
+  const RSPA_PB: Playbook = { id: "rspa", version: "1.0.0" };
+  const IRA_PB: Playbook = { id: "investor-rights-agreement", version: "1.0.0" };
+
+  it("EQT-041 accepts a closed-spelling '90-day lockup' clause", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Lockup",
+        "Each holder agrees to a 90-day lockup following the Company's initial public offering.",
+      ]),
+      RSPA_PB,
+    );
+    const run = await runEngine({ rules: EQUITY_RULES, ctx, source_file: SRC });
+    expect(run.findings.some((f) => f.rule_id === "EQT-041")).toBe(false);
+  });
+
+  it("EQT-055 accepts a closed-spelling '90-day lockup' clause", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Lockup",
+        "Each Investor agrees to a 90-day lockup following the Company's initial public offering.",
+      ]),
+      IRA_PB,
+    );
+    const run = await runEngine({ rules: EQUITY_RULES, ctx, source_file: SRC });
+    expect(run.findings.some((f) => f.rule_id === "EQT-055")).toBe(false);
+  });
+});

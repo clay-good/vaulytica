@@ -786,6 +786,7 @@ const RSPA_RULES: Rule[] = [
   }),
   presence({
     id: "EQT-041",
+    version: "1.1.0",
     name: "Lock-up / market stand-off",
     description: "Modern RSPAs include a 180-day IPO lock-up.",
     citation: eqtPractice(
@@ -800,7 +801,7 @@ const RSPA_RULES: Rule[] = [
       "Underwriters require 180-day lock-ups in connection with IPO; building it into the RSPA at issuance avoids future amendments.",
     recommendation:
       "Add a 'Market Stand-Off' section requiring the holder to honor a 180-day lock-up requested by the underwriters in connection with an IPO.",
-    present_patterns: [/market\s+stand.?off/i, /lock.up/i, /180\s+days?/i],
+    present_patterns: [/market\s+stand.?off/i, /lock[-\s]?up/i, /180\s+days?/i],
     default_severity: "warning",
   }),
   presence({
@@ -1031,6 +1032,7 @@ const IRA_RULES: Rule[] = [
   }),
   presence({
     id: "EQT-055",
+    version: "1.1.0",
     name: "Market stand-off / lock-up on IPO",
     description: "IRA should impose an IPO lock-up on investors.",
     citation: eqtPractice(
@@ -1044,7 +1046,7 @@ const IRA_RULES: Rule[] = [
     explanation: "Underwriters require 180-day IPO lock-ups from significant pre-IPO holders.",
     recommendation:
       "Add a 180-day market-stand-off section with the customary underwriter-flexibility clause.",
-    present_patterns: [/market\s+stand.?off/i, /lock.up/i, /180\s+days?/i],
+    present_patterns: [/market\s+stand.?off/i, /lock[-\s]?up/i, /180\s+days?/i],
     default_severity: "warning",
   }),
   presence({
