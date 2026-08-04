@@ -38,4 +38,34 @@ describe("DARK-008 — unilateral suspension without notice or cure", () => {
     ]);
     expect(DARK_008.check(ctx)).toBeNull();
   });
+
+  it("reads the 'reserves the right to suspend' introducer (v1.2.0)", () => {
+    expect(
+      DARK_008.check(
+        buildContext([
+          "Suspension",
+          "Vendor reserves the right to suspend the Service at any time without notice.",
+        ]),
+      ),
+    ).not.toBeNull();
+    expect(
+      DARK_008.check(
+        buildContext([
+          "Suspension",
+          "We reserve the right to suspend or terminate your account at any time in our sole discretion.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+
+  it("still exempts a 'reserves the right to suspend … only after notice and cure'", () => {
+    expect(
+      DARK_008.check(
+        buildContext([
+          "Suspension",
+          "Vendor reserves the right to suspend the Service only after 30 days' notice and an opportunity to cure.",
+        ]),
+      ),
+    ).toBeNull();
+  });
 });

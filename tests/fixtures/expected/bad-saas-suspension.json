@@ -123,7 +123,7 @@
       "finding_id": "DARK-008-s1.1-144",
       "fired": true,
       "rule_id": "DARK-008",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -792,7 +792,7 @@
       "id": "DARK-008-s1.1-144",
       "recommendation": "Negotiate: (1) written notice of the alleged breach, (2) a cure period (typically 10–30 days), (3) an exclusion for disputed invoices, (4) carve-outs for security-incident response. Vendor's tools to manage non-payment are termination and interest, not suspension.",
       "rule_id": "DARK-008",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1008,7 +1008,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected saas-customer (score 0.9). Title matched: \"subscription agreement\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"uptime\".",
-  "result_hash": "a9850ec3d1b35b3f7f9475086d0246177ed399c1e6e0b8e3b5bd5204c59c1b0c",
+  "result_hash": "e23ecc5c971037290554881c658d862c0882f8883795c47334ae3fff4e2c3388",
   "source_file": {
     "name": "bad-saas-suspension.docx",
     "sha256": "9afd9de44c9b6a123f62c53a81c06b34ec7a515c4e5519fc63b2bc69223ac49b",
