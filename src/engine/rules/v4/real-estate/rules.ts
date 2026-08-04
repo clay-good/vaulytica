@@ -186,6 +186,7 @@ const NET_LEASE_RULES: Rule[] = [
   }),
   presence({
     id: "RE-007",
+    version: "1.1.0",
     name: "Right to relet / mitigate damages on default",
     description: "Landlord remedies should address relet / mitigation duty per state law.",
     citation: stateLT(),
@@ -195,7 +196,14 @@ const NET_LEASE_RULES: Rule[] = [
     explanation:
       "Many states impose a mitigation duty on landlords; the lease should acknowledge or restate it.",
     recommendation: "Add 'Default Remedies' covering relet and mitigation obligations.",
-    present_patterns: [/relet/i, /(mitigation|mitigate).{0,40}damages/is],
+    // The re-letting duty is written "relet", "re-let", "re-lease", or
+    // "re-rent", and the loss the landlord must mitigate is its "losses" as
+    // often as its "damages"; the narrower "relet" / "mitigate … damages"
+    // patterns reported the clause missing when drafted with the common variants.
+    present_patterns: [
+      /re-?let|re-?leas(?:e|ing)|re-?rent/i,
+      /(mitigation|mitigate)[\s\S]{0,40}(damages|loss(?:es)?)/is,
+    ],
     default_severity: "warning",
   }),
   presence({

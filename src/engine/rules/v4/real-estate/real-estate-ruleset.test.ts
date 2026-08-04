@@ -361,3 +361,27 @@ describe("CC&R duration & enforcement in real wording (v1.1.0)", () => {
     );
   });
 });
+
+describe("RE-007 — relet / mitigate reads re-let / re-lease and 'mitigate its losses' (v1.1.0)", () => {
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Default", body]), NET_LEASE_PB);
+    const run = await runEngine({ rules: REAL_ESTATE_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+  it("does not report the clause missing for re-let / re-lease / 'mitigate its losses'", async () => {
+    for (const clause of [
+      "Landlord may re-let the Premises upon Tenant's default.",
+      "Landlord shall use commercially reasonable efforts to re-lease the Premises.",
+      "Landlord shall use reasonable efforts to mitigate its losses following any default.",
+    ]) {
+      expect((await run1(clause)).has("RE-007"), clause).toBe(false);
+    }
+  });
+  it("still reports the clause missing when neither relet nor mitigation appears", async () => {
+    expect(
+      (await run1("Upon default, all rent for the remainder of the Term shall accelerate.")).has(
+        "RE-007",
+      ),
+    ).toBe(true);
+  });
+});
