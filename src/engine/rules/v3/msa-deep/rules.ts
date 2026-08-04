@@ -587,6 +587,7 @@ export const MSA_DEEP_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "MSA-021",
+    version: "1.1.0",
     name: "Data return / portability on termination",
     description: "MSA must address data return or portability on termination.",
     citation: "Commercial drafting baseline — data return",
@@ -597,7 +598,15 @@ export const MSA_DEEP_RULES: Rule[] = [
     recommendation:
       "Add: on termination, vendor shall return all customer data in a machine-readable format and then delete its copies within N days.",
     present_patterns: [
-      /(return\s+(?:all\s+)?(?:customer\s+)?data|data\s+portability|export\s+(?:in\s+)?(?:a\s+)?machine[- ]readable)/i,
+      // The data-return obligation is drafted as "return", "return OR DESTROY",
+      // "delete", or "destroy" the data — the original "return … data" pattern
+      // caught only the first and missed the (equally standard) or-destroy /
+      // delete / destroy forms and the "return THE data" article. The data
+      // object is required (customer data / the data / all data / …) so an
+      // unrelated "delete inactive log data" is not read as the return clause.
+      /(?:return|delet(?:e|es|ion)|destroy(?:ed|s)?|dispose\s+of)\b[^.]{0,40}?\b(?:customer\s+data|company\s+data|customer\s+information|the\s+data|all\s+data|your\s+data|its\s+data|the\s+customer['’]?s?\s+data)\b/i,
+      /provid\w+\s+[^.]{0,30}?(?:copy|export)\s+of\s+[^.]{0,30}?\bdata\b/i,
+      /(data\s+portability|export\s+(?:in\s+)?(?:a\s+)?machine[- ]readable)/i,
     ],
     default_severity: "warning",
   }),
