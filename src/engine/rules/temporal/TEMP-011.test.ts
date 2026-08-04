@@ -44,4 +44,15 @@ describe("TEMP-011 — auto-renewal notice window < 30 days", () => {
     ]);
     expect(TEMP_011.check(ctx)).toBeNull();
   });
+
+  it("reads the hyphenated 'auto-renew(s)' spelling (v1.2.0)", () => {
+    expect(
+      TEMP_011.check(
+        buildContext(["Renewal", "Your subscription will auto-renew unless you provide 15 days written notice."]),
+      )?.title,
+    ).toContain("15");
+    expect(
+      TEMP_011.check(buildContext(["Renewal", "The plan auto-renews unless cancelled with 7 days notice."]))?.title,
+    ).toContain("7");
+  });
 });

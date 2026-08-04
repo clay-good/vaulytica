@@ -15,7 +15,7 @@ import { emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "TEMP-011",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Auto-renewal notice window shorter than 30 days",
   category: "temporal",
   default_severity: "warning",
@@ -24,7 +24,10 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstUnnegatedParagraphMatch(
       ctx,
-      /(?:automatically|automatic|auto-?)\s+renew|renews?\s+(?:automatically\s+)?(?:for\s+)?(?:successive|additional|further)/i,
+      // The separator is `[\s-]+`, not `\s+`, so the dominant hyphenated
+      // consumer spelling "auto-renew(s)" / "auto-renewal" is detected, not only
+      // the spaced "automatically renew" — the same gap TEMP-005 / DARK-002 fixed.
+      /auto(?:matic)?(?:ally)?[\s-]+renew(?:s|ed|ing|al)?|renews?\s+(?:automatically\s+)?(?:for\s+)?(?:successive|additional|further)/i,
     );
     if (!hit) return null;
 
