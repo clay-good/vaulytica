@@ -110,14 +110,16 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   "banking-loan-agreement-missing-events-of-default-fail.txt": ["BNK-012"],
 
   // v4 commercial pack (A.8–A.11). Each fixture is an otherwise-complete
-  // agreement missing the one clause the rule checks; the two gated
-  // compliance rules (COMM-016 RESPA, COMM-020 FTC endorsement) also
-  // supply the context that makes them applicable, proving the
-  // applicable_if fires end-to-end.
+  // agreement missing the one clause the rule checks; the gated rules
+  // (COMM-016 RESPA, COMM-020 FTC endorsement, COMM-026 exclusive-dealing,
+  // COMM-030 consumer-data privacy) also supply the context that makes
+  // them applicable, proving the applicable_if fires end-to-end.
   "manufacturing-supply-agreement-missing-quantity-fail.txt": ["COMM-001"],
   "distribution-agreement-missing-termination-fail.txt": ["COMM-011"],
+  "distribution-agreement-exclusive-missing-competing-products-fail.txt": ["COMM-026"],
   "channel-referral-agreement-settlement-missing-respa-fail.txt": ["COMM-016"],
   "marketing-services-agreement-influencer-missing-ftc-fail.txt": ["COMM-020"],
+  "marketing-services-agreement-data-campaign-missing-privacy-fail.txt": ["COMM-030"],
 
   // Asset Purchase Agreement with the preamble extended by a sentence
   // that affirmatively elects not to include a separately captioned
