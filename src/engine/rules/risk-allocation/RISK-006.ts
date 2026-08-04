@@ -4,6 +4,11 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 const TYPICAL = [
   ["fraud", /fraud/i],
   ["willful misconduct", /willful\s+misconduct/i],
+  // General indemnification is the single most common LoL carve-out — a clause
+  // reading "except for indemnification obligations" must not read as zero
+  // carve-outs. Kept distinct from the narrower "IP indemnity" category so a doc
+  // that names an IP-specific indemnity still surfaces that too.
+  ["indemnification", /\bindemnif/i],
   ["IP indemnity", /(?:ip|intellectual\s+property)\s+indemnit/i],
   ["confidentiality breach", /confidential/i],
   ["payment obligations", /payment\s+obligations?/i],
@@ -12,7 +17,7 @@ const TYPICAL = [
 /** RISK-006 — LoL exceptions list (info). */
 export const rule: Rule = {
   id: "RISK-006",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "LoL exceptions list",
   category: "risk-allocation",
   default_severity: "info",

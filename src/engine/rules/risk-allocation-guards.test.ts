@@ -52,6 +52,19 @@ describe("RISK-006 — LoL carve-out list", () => {
     const present = (f?.description ?? "").split("Missing:")[0];
     expect(present).not.toMatch(/fraud|willful/);
   });
+
+  it("counts a general indemnification carve-out (v1.1.0)", () => {
+    // The most common LoL carve-out — "except for indemnification obligations" —
+    // must not read as zero carve-outs present.
+    const f = R006.check(
+      doc(
+        "LoL",
+        "Limitation of Liability. Except for indemnification obligations, neither party's aggregate liability shall exceed the fees paid.",
+      ),
+    );
+    expect(f?.title).toContain("1/6");
+    expect((f?.description ?? "").split("Missing:")[0]).toMatch(/indemnification/);
+  });
 });
 
 describe("RISK-010 / RISK-016 — insurance coverage minimum", () => {
