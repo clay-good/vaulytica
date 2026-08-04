@@ -89,6 +89,40 @@ describe("TEMP-008 / TEMP-009 — breach-cure period", () => {
       TEMP009.check(clause("Within 5 days, Customer may procure a replacement product.")),
     ).toBeNull();
   });
+
+  // v1.2.0 (TEMP-008) / v1.3.0 (TEMP-009) — both rules share ./temporal/_cure.ts,
+  // which reads the count-first order and the remedy/correct synonyms that the
+  // presence rule previously missed entirely.
+  it("TEMP-008 reads the count-first order and remedy/correct synonyms", () => {
+    expect(
+      TEMP008.check(clause("The defaulting party shall have thirty (30) days to cure such breach."))!
+        .title,
+    ).toContain("30 days");
+    expect(
+      TEMP008.check(clause("Tenant shall have thirty (30) days to remedy the breach."))!.title,
+    ).toContain("30 days");
+    expect(
+      TEMP008.check(clause("Borrower shall have ten (10) days to correct any default."))!.title,
+    ).toContain("10 days");
+    expect(TEMP008.check(clause("A 5-day cure period applies to any monetary default."))!.title).toContain(
+      "5 days",
+    );
+  });
+
+  it("TEMP-008 locks onto the adjacent cure count, not a leading notice count", () => {
+    // The cure period is 30 days; the 60 days is the termination-notice period.
+    expect(
+      TEMP008.check(
+        clause("Either party may terminate on 60 days prior written notice and a 30-day cure period."),
+      )!.title,
+    ).toContain("30 days");
+  });
+
+  it("TEMP-008 does not read a 'sole remedy … 30 days' clause as a cure period", () => {
+    expect(
+      TEMP008.check(clause("The sole remedy for breach shall be termination upon 30 days notice.")),
+    ).toBeNull();
+  });
 });
 
 describe("TEMP-005 / TEMP-011 — auto-renewal non-renewal window", () => {

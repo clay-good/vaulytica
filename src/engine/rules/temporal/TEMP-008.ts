@@ -1,27 +1,20 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch } from "../_helpers.js";
+import { CURE_PERIOD, curePeriodDays } from "./_cure.js";
 
 /** TEMP-008 — Cure period present (info). */
 export const rule: Rule = {
   id: "TEMP-008",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Cure period present",
   category: "temporal",
   default_severity: "info",
   description: "Detects cure periods for material breach and surfaces their length.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
-    const hit = firstParagraphMatch(
-      ctx,
-      // `\b` before "cure" so "procure such breach-free …" is not read as a
-      // breach-cure period. The count is parenthesized in the standard form —
-      // "cure such breach within thirty (30) days" — so tolerate the "(30)"; a
-      // bare-digit-only pattern missed the cure period on essentially every real
-      // contract.
-      /(?:\bcure\s+such\s+breach|opportunity\s+to\s+cure|cure\s+period)[\s\S]{0,80}?\(?(\d{1,3})\)?\s+days/i,
-    );
+    const hit = firstParagraphMatch(ctx, CURE_PERIOD);
     if (!hit) return null;
-    const days = parseInt(hit.match[1] ?? "0", 10);
+    const days = curePeriodDays(hit.match);
     return emit(ctx, rule, {
       title: `Cure period: ${days} days`,
       description: `Material breach cure period of ${days} days is stated.`,
