@@ -952,6 +952,7 @@ const ESTOPPEL_RULES: Rule[] = [
   }),
   presence({
     id: "RE-043",
+    version: "1.1.0",
     name: "Lease in full force and effect",
     description: "Estoppel should state the lease is in full force and effect.",
     citation: rePractice(
@@ -966,7 +967,14 @@ const ESTOPPEL_RULES: Rule[] = [
       "Standard practice for estoppels; reassures the relying party that no termination is pending.",
     recommendation:
       "Add 'Full Force and Effect' representation that the lease is in full force and not been modified except as listed.",
-    present_patterns: [/full\s+force\s+and\s+effect/i],
+    // Estoppels attest the lease is in force with more than the exact "full
+    // force and effect" phrase: the classic "valid and subsisting", and the
+    // "unmodified / has not been modified … and in effect" pairing. Each
+    // alternate requires its unmodified/subsisting companion, so a bare
+    // "effective as of" date or an unrelated "in effect" does not match.
+    present_patterns: [
+      /full\s+force\s+and\s+effect|valid\s+and\s+subsisting|(?:unmodified|not\s+been\s+(?:modified|amended))\s+and\s+in\s+(?:full\s+force|effect)|in\s+(?:full\s+force|effect)\s+and\s+(?:unmodified|has\s+not\s+been\s+(?:modified|amended))/i,
+    ],
   }),
   presence({
     id: "RE-044",

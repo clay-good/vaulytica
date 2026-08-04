@@ -136,6 +136,38 @@ describe("v4 Real-estate — failure cases", () => {
     ).toBe(false);
   });
 
+  it("RE-043 accepts estoppel force-and-effect variants beyond the exact phrase (v1.1.0)", async () => {
+    // "valid and subsisting" and "unmodified … and in effect" are standard
+    // estoppel attestations that the exact-phrase pattern missed.
+    for (const attest of [
+      "The Lease is in full force and effect.",
+      "The Lease is valid and subsisting as of the date hereof.",
+      "The Lease is unmodified and in effect.",
+      "The Lease is in effect and has not been modified.",
+    ]) {
+      const ctx = withPb(buildContext(["Estoppel Certificate", attest]), ESTOPPEL_PB);
+      expect(
+        (await runEngine({ rules: REAL_ESTATE_RULES, ctx, source_file: SRC })).findings.some(
+          (f) => f.rule_id === "RE-043",
+        ),
+        `RE-043 wrongly fired on: ${attest}`,
+      ).toBe(false);
+    }
+    // A bare effective-date line is not a force-and-effect attestation.
+    const bare = withPb(
+      buildContext([
+        "Estoppel Certificate",
+        "This Estoppel Certificate is effective as of January 1.",
+      ]),
+      ESTOPPEL_PB,
+    );
+    expect(
+      (await runEngine({ rules: REAL_ESTATE_RULES, ctx: bare, source_file: SRC })).findings.some(
+        (f) => f.rule_id === "RE-043",
+      ),
+    ).toBe(true);
+  });
+
   it("RE-047 fires when SNDA omits non-disturbance covenant", async () => {
     const ctx = withPb(
       buildContext([
