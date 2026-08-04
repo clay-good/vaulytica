@@ -85,4 +85,25 @@ describe("RISK-016 — insurance requirement without coverage minimum", () => {
       ),
     ).toBeNull();
   });
+
+  it("is silent when the coverage minimum is stated in a following sentence (v1.2.0)", () => {
+    for (const clause of [
+      "Contractor shall maintain commercial general liability insurance. Such insurance shall have limits of not less than $1,000,000 per occurrence and $2,000,000 in the aggregate.",
+      "Vendor shall maintain professional liability insurance. Coverage shall be at least $5,000,000.",
+      "Vendor shall maintain insurance. The policy shall provide coverage of one million dollars.",
+    ]) {
+      expect(RISK_016.check(buildContext(["Insurance", clause])), clause).toBeNull();
+    }
+  });
+
+  it("still fires when a later sentence names only an unrelated fee, not a coverage minimum (v1.2.0)", () => {
+    expect(
+      RISK_016.check(
+        buildContext([
+          "Insurance",
+          "Contractor shall maintain commercial general liability insurance. The total contract fee is $500,000.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
 });

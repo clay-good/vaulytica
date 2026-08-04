@@ -15,7 +15,7 @@ import { emit, enclosingSentence, firstParagraphMatch } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "RISK-016",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Insurance requirement without coverage minimum",
   category: "risk-allocation",
   default_severity: "warning",
@@ -40,10 +40,22 @@ export const rule: Rule = {
     // `at least $X`, `not less than $X`, or `$X per occurrence`.
     const COVERAGE_MIN =
       /\$\s*[\d,]+(?:\.\d+)?\s*(?:k|m|mm|million|thousand)?|(?:at\s+least|not\s+less\s+than|minimum\s+of)\s+\$?[\d,]+|(?:one|two|three|four|five|six|seven|eight|nine|ten)\s+million\s+dollars?|per\s+occurrence|aggregate\s+(?:of|limit)|combined\s+single\s+limit/i;
-    // Scope the coverage-minimum check to the insurance clause's own sentence —
-    // otherwise an unrelated dollar figure elsewhere in the paragraph (e.g. the
-    // contract fee) suppressed the "no coverage minimum" warning entirely.
-    if (COVERAGE_MIN.test(enclosingSentence(hit.text, hit.match.index))) return null;
+    // Scope the GENERAL coverage-minimum check (which includes a bare dollar
+    // figure) to the insurance clause's own sentence — otherwise an unrelated
+    // dollar elsewhere in the paragraph (e.g. the contract fee) suppressed the
+    // warning. But the limit is very often stated in the NEXT sentence ("shall
+    // maintain CGL insurance. Such insurance shall have limits of not less than
+    // $1,000,000 per occurrence"), so a second, paragraph-wide check accepts
+    // only INSURANCE-ANCHORED minimums — per-occurrence / aggregate / combined
+    // single limit / "limits|coverage … $X" / "not less than $X" / "X million
+    // dollars" — none of which a bare contract fee matches.
+    const COVERAGE_MIN_ANYWHERE =
+      /\bper\s+occurrence\b|\bcombined\s+single\s+limit\b|\baggregate\s+(?:limit|of)\b|\bin\s+the\s+aggregate\b|\b(?:limits?|coverage)\b[^.]{0,40}?\$\s*[\d,]+|\b(?:not\s+less\s+than|at\s+least|minimum\s+of)\s+\$\s*[\d,]+|\b(?:one|two|three|four|five|six|seven|eight|nine|ten)\s+million\s+dollars?\b/i;
+    if (
+      COVERAGE_MIN.test(enclosingSentence(hit.text, hit.match.index)) ||
+      COVERAGE_MIN_ANYWHERE.test(hit.text)
+    )
+      return null;
 
     return emit(ctx, rule, {
       title: "Insurance requirement without coverage minimum",
