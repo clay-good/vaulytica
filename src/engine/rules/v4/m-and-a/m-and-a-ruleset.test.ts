@@ -84,6 +84,33 @@ describe("v4 M&A — failure cases", () => {
     expect(run.findings.some((f) => f.rule_id === "MNA-001")).toBe(true);
   });
 
+  it("MNA-015 reads a 'Material Adverse Change' / MAC definition, not just MAE (v1.1.0)", async () => {
+    // A merger agreement drafted around MAC rather than MAE was reported as
+    // missing the definition entirely.
+    const mac = withPb(
+      buildContext([
+        "Definitions",
+        "'Material Adverse Change' means any change that is materially adverse to the business, subject to customary carve-outs (a MAC).",
+      ]),
+      SPA_PB,
+    );
+    expect(
+      (await runEngine({ rules: M_AND_A_RULES, ctx: mac, source_file: SRC })).findings.some(
+        (f) => f.rule_id === "MNA-015",
+      ),
+    ).toBe(false);
+    // A document with no MAE/MAC definition still fires.
+    const none = withPb(
+      buildContext(["Definitions", "'Company' means Acme Corp., a Delaware corporation."]),
+      SPA_PB,
+    );
+    expect(
+      (await runEngine({ rules: M_AND_A_RULES, ctx: none, source_file: SRC })).findings.some(
+        (f) => f.rule_id === "MNA-015",
+      ),
+    ).toBe(true);
+  });
+
   it("MNA-005 reads a verb-form transaction structure ('acquire all … capital stock')", async () => {
     const has = withPb(
       buildContext([

@@ -332,6 +332,7 @@ const SPA_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-015",
+    version: "1.1.0",
     name: "Material Adverse Effect (MAE) defined",
     description:
       "SPA must define Material Adverse Effect — central allocation-of-risk concept (Akorn / Channel Medsystems).",
@@ -347,7 +348,10 @@ const SPA_RULES: Rule[] = [
       "*Akorn / Channel Medsystems* affirm the high bar to invoke MAE; nevertheless the definition is the linchpin of buyer walk rights and must be present.",
     recommendation:
       "Add a 'Material Adverse Effect' definition with the customary carve-outs (general economy, industry, war, pandemic) qualified by 'disproportionate impact'.",
-    present_patterns: [/material\s+adverse\s+effect/i, /\bmae\b/i],
+    // "Material Adverse CHANGE" / "MAC" is the equally-standard label for the
+    // same walk-right linchpin — a merger agreement drafted around MAC rather
+    // than MAE was reported as missing the definition entirely.
+    present_patterns: [/material\s+adverse\s+(?:effect|change)/i, /\b(?:mae|mac)\b/i],
   }),
   presence({
     id: "MNA-016",
