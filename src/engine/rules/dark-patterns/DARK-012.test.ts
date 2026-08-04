@@ -63,4 +63,44 @@ describe("DARK-012 — residential security-deposit forfeiture / non-return", ()
       ),
     ).toBeNull();
   });
+
+  // v1.1.0 — the forfeiture is also written "retained / kept / held by Landlord
+  // as liquidated damages / upon breach / and not returned".
+  it("fires on a 'retained/held by Landlord as liquidated damages / upon breach' forfeiture", () => {
+    expect(
+      DARK_012.check(
+        buildContext([
+          "Lease",
+          "The security deposit shall be retained by Landlord as liquidated damages.",
+        ]),
+      ),
+    ).not.toBeNull();
+    expect(
+      DARK_012.check(
+        buildContext([
+          "Lease",
+          "The deposit shall be kept by Landlord upon any breach of this Lease.",
+        ]),
+      ),
+    ).not.toBeNull();
+    expect(
+      DARK_012.check(
+        buildContext([
+          "Lease",
+          "The security deposit will be held by Landlord and not returned to Tenant.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+
+  it("stays silent on ordinary deposit-holding during the term", () => {
+    expect(
+      DARK_012.check(
+        buildContext([
+          "Lease",
+          "The security deposit shall be held by Landlord during the term of the tenancy.",
+        ]),
+      ),
+    ).toBeNull();
+  });
 });

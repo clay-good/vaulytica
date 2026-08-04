@@ -146,7 +146,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "DARK-012",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -1049,7 +1049,7 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "7edcb250ebb589241090596cbd777d00e1848a2c8838436061153e54b7b764b7",
+  "result_hash": "55c8af0dac5b51cb01fe210a3909a1d42465429cbeb8d458939b4bbbc523a9bb",
   "source_file": {
     "name": "bad-contractor.docx",
     "sha256": "7a40a2e53d068557d47cf7690838b907085994f596a0c6e2380b8ac2607543df",
