@@ -65,7 +65,7 @@ const RECIPROCAL_ROLES = new Set([
 /** OBLI-002 — Reciprocity asymmetry (info). */
 export const rule: Rule = {
   id: "OBLI-002",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Reciprocity asymmetry",
   category: "obligations",
   default_severity: "info",
@@ -84,6 +84,7 @@ export const rule: Rule = {
     );
     for (const { label, pattern } of RECIPROCAL_PATTERNS) {
       const seenObligors = new Set<string>();
+      let mutualByRole = false;
       for (const o of ctx.extracted.obligations) {
         const m = pattern.exec(o.action);
         if (!m) continue;
@@ -97,8 +98,20 @@ export const rule: Rule = {
         const lead = o.action.slice(0, m.index);
         if (NEGATED_LIST.test(lead)) continue;
         const o2 = o.obligor.toLowerCase().trim();
+        // A generic reciprocal subject ("the parties", "each party") bearing the
+        // obligation makes it mutual by construction — and such a subject is NOT
+        // a party name/role, so it never lands in `partySet`. Left uncounted, a
+        // genuinely-mutual "the parties shall keep it confidential" could not
+        // offset a stray party-specific mention (e.g. a mis-segmented "Buyer
+        // shall … and each party shall return Confidential Information"), and the
+        // rule reported a false asymmetry. Flag the pattern mutual instead.
+        if (RECIPROCAL_ROLES.has(o2)) {
+          mutualByRole = true;
+          continue;
+        }
         if (partySet.has(o2)) seenObligors.add(o2);
       }
+      if (mutualByRole) continue;
       if (seenObligors.size === 1 && partySet.size >= 2) {
         // A generic reciprocal role occupies both sides, so a single-role
         // obligation is symmetric, not one-sided — skip it and keep checking the

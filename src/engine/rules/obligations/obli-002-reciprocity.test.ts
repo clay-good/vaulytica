@@ -134,6 +134,29 @@ describe("OBLI-002 — negated noun lists", () => {
     ).toBeNull();
   });
 
+  it("treats a 'the parties' / 'each party' obligation as mutual even beside a stray party mention", () => {
+    // Confidentiality written mutually ("the parties shall keep it confidential")
+    // is mutual by construction — but "the parties" is not a party name/role, so
+    // it never lands in partySet. A co-located, mis-segmented party-specific
+    // mention ("Buyer shall pay … and each party shall return Confidential
+    // Information") must not then read as a one-sided Buyer confidentiality duty.
+    expect(
+      obli002.check(
+        ctxWith(PARTIES, [
+          {
+            obligor: "Customer",
+            action:
+              "pay for all goods and each party shall return the other's Confidential Information",
+          },
+          {
+            obligor: "the parties",
+            action: "keep the other's Confidential Information confidential",
+          },
+        ]),
+      ),
+    ).toBeNull();
+  });
+
   it("does not over-suppress: a warranty across a verb from a 'no' still counts", () => {
     // "…deliver the goods with no delay, AND warrant that they conform" — the
     // "no" governs "delay", not the later verb "warrant". The negated-list guard
