@@ -170,6 +170,8 @@ describe("v4 Commercial — channel partner / referral agreement (A.9)", () => {
     "Independent Contractor. Partner is not an agent or employee and has no authority to bind the Company. " +
     "Confidentiality. Each party shall keep confidential the referred leads and the other party's customer lists and proprietary information, using them only for the referral relationship. " +
     "Non-Circumvention. Neither party shall circumvent the other or deal directly with a relationship introduced under this Agreement to avoid the Referral Fee for two years. " +
+    "Survival of Fees. Referral fees remain payable and shall survive termination for any referral introduced before termination that converts within a six-month tail period. " +
+    "Representations. Partner shall use only Company-approved materials and shall make no representations, warranties, or guarantees about the Company or its products beyond those materials. " +
     "Anti-Bribery. Partner shall comply with the FCPA and applicable anti-corruption laws and make no improper payments.";
 
   it("emits no findings against a complete commercial referral agreement", async () => {
@@ -200,6 +202,28 @@ describe("v4 Commercial — channel partner / referral agreement (A.9)", () => {
     expect(bare.has("COMM-028")).toBe(true);
     expect(bare.has("COMM-029")).toBe(true);
   });
+
+  it("COMM-032/033 fire when the tail and representation-restriction clauses are absent", async () => {
+    const bare = await fired(
+      REF,
+      "Partner earns a referral fee for each qualified referral introduced to Company.",
+    );
+    expect(bare.has("COMM-032")).toBe(true);
+    expect(bare.has("COMM-033")).toBe(true);
+  });
+
+  it("COMM-034 fires only when the Partner conducts outreach without an anti-spam clause", async () => {
+    const outreach = await fired(
+      REF,
+      "Partner will make cold calls and send an email blast to solicit referrals for Company.",
+    );
+    expect(outreach.has("COMM-034")).toBe(true);
+    const passive = await fired(
+      REF,
+      "Partner earns a referral fee for each qualified referral it introduces by word of mouth.",
+    );
+    expect(passive.has("COMM-034")).toBe(false);
+  });
 });
 
 describe("v4 Commercial — marketing services agreement (A.11)", () => {
@@ -211,6 +235,9 @@ describe("v4 Commercial — marketing services agreement (A.11)", () => {
     "Ownership. All deliverables and work product are works made for hire owned by Client, and Agency assigns all rights. " +
     "Data Privacy. The Agency processes personal data and email list data only on the Client's instructions and shall comply with applicable privacy laws (CCPA/CPRA and GDPR) as a service provider, with a deletion obligation on termination. " +
     "Approvals. The Client's prior written approval is required for all creative, media plans, and public claims before publication. " +
+    "Rights Clearance. The Agency shall obtain all licenses, releases, and clearances for third-party materials (stock imagery, licensed music, fonts, and talent / model releases) and warrants that the deliverables do not infringe any third-party intellectual-property or publicity right. " +
+    "Confidentiality. The Agency shall keep the Client's confidential information confidential and use it only to perform the services. " +
+    "Subcontractors. The Agency remains responsible for its subcontractors and influencers and shall bind them in writing to the same material obligations, flowing down the FTC disclosure, confidentiality, and IP terms. " +
     "Claims. All advertising claims shall be truthful and substantiated before use.";
 
   it("emits no findings against a complete marketing services agreement", async () => {
@@ -261,5 +288,27 @@ describe("v4 Commercial — marketing services agreement (A.11)", () => {
       "Scope of Work: Agency runs the campaign and provides deliverables. Deliverables owned by Client. Claims substantiated.",
     );
     expect(bare.has("COMM-031")).toBe(true);
+  });
+
+  it("COMM-035/036 fire when rights-clearance and confidentiality clauses are absent", async () => {
+    const bare = await fired(
+      MKT,
+      "Scope of Work: Agency runs the campaign and provides deliverables. Deliverables owned by Client. Claims substantiated.",
+    );
+    expect(bare.has("COMM-035")).toBe(true);
+    expect(bare.has("COMM-036")).toBe(true);
+  });
+
+  it("COMM-037 fires only when subcontractors / influencers are used without a flow-down clause", async () => {
+    const sub = await fired(
+      MKT,
+      "Scope of Work: Agency may engage subcontractors and influencers to run the campaign. Deliverables owned by Client.",
+    );
+    expect(sub.has("COMM-037")).toBe(true);
+    const inHouse = await fired(
+      MKT,
+      "Scope of Work: Agency's in-house team runs a media-buy campaign and provides deliverables. Deliverables owned by Client.",
+    );
+    expect(inHouse.has("COMM-037")).toBe(false);
   });
 });

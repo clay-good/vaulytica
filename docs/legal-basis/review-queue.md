@@ -6,8 +6,8 @@
 > prioritized first tranche of rules for a licensed reviewer to sign into
 > [`ledger.json`](ledger.json); the workflow lives in [`README.md`](README.md).
 
-- **Engine:** `9.41.0` · **Corpus:** `v0.0.0-seed` (empty) · **Catalog:** 1102 single-document rules
-- **Signed:** 0 of 1102 · **Queued (unreviewed, top 100):** 100
+- **Engine:** `9.41.0` · **Corpus:** `v0.0.0-seed` (empty) · **Catalog:** 1108 single-document rules
+- **Signed:** 0 of 1108 · **Queued (unreviewed, top 100):** 100
 
 ## Ranking
 
@@ -108,19 +108,19 @@ firing refines the order automatically — re-run `npm run accuracy` then
 | 83 | `COMM-029` — Non-circumvention | critical | commercial | 0 | `comm-referral-non-circumvention` |
 | 84 | `COMM-030` — Consumer-data privacy compliance | critical | commercial | 0 | `comm-marketing-data-privacy` |
 | 85 | `COMM-031` — Client approval rights over creative and claims | critical | commercial | 0 | `comm-marketing-approval` |
-| 86 | `CON-001` — Owner / contractor / architect identified | critical | construction | 0 | `aia-a101` |
-| 87 | `CON-002` — Scope of work / contract documents | critical | construction | 0 | `aia-a201` |
-| 88 | `CON-003` — Contract sum + price / payment terms | critical | construction | 0 | `aia-a101` |
-| 89 | `CON-006` — Indemnification + insurance + waiver of subrogation | critical | construction | 0 | `ca-civ-2782` |
-| 90 | `CON-008` — General contractor / subcontractor / project identified | critical | construction | 0 | `con-practice-subk-baseline` |
-| 91 | `CON-009` — Subcontract scope of work + flow-down | critical | construction | 0 | `aia-a401` |
-| 92 | `CON-012` — Subcontractor warranties + workmanship + materials | critical | construction | 0 | `con-practice-subk-warranty` |
-| 93 | `CON-014` — Waiver type — conditional / unconditional + progress / final | critical | construction | 0 | `ca-civ-8132` |
-| 94 | `CON-015` — Identified claimant + property + project | critical | construction | 0 | `state-mechanics-lien` |
-| 95 | `CON-016` — Scope of waiver — limited to amount received / through-date | critical | construction | 0 | `ca-civ-8132` |
-| 96 | `CON-019` — Signature + date + statutory form recital | critical | construction | 0 | `ca-civ-8132` |
-| 97 | `CON-020` — Principal / surety / obligee identification | critical | construction | 0 | `miller-act-40-usc-3131` |
-| 98 | `CON-021` — Bond type — payment / performance / dual-obligee | critical | construction | 0 | `miller-act-40-usc-3131` |
-| 99 | `CON-022` — Penal sum | critical | construction | 0 | `miller-act-40-usc-3131` |
-| 100 | `CON-023` — Underlying contract incorporation | critical | construction | 0 | `miller-act-40-usc-3131` |
+| 86 | `COMM-032` — Effect of termination on accrued and pipeline referral fees | critical | commercial | 0 | `comm-referral-tail` |
+| 87 | `COMM-033` — Restriction on Partner representations about the Company | critical | commercial | 0 | `lanham-43-a-` |
+| 88 | `COMM-034` — Telemarketing / anti-spam compliance for Partner outreach | critical | commercial | 0 | `tcpa-227-consent-for-telemarketing-calls-and-texts` |
+| 89 | `COMM-035` — Third-party rights clearance and non-infringement of deliverables | critical | commercial | 0 | `lanham-43-a-` |
+| 90 | `COMM-036` — Confidentiality of Client information | critical | commercial | 0 | `comm-marketing-confidentiality` |
+| 91 | `COMM-037` — Subcontractor and influencer responsibility (flow-down) | critical | commercial | 0 | `ftc-16-c-f-r-part-255` |
+| 92 | `CON-001` — Owner / contractor / architect identified | critical | construction | 0 | `aia-a101` |
+| 93 | `CON-002` — Scope of work / contract documents | critical | construction | 0 | `aia-a201` |
+| 94 | `CON-003` — Contract sum + price / payment terms | critical | construction | 0 | `aia-a101` |
+| 95 | `CON-006` — Indemnification + insurance + waiver of subrogation | critical | construction | 0 | `ca-civ-2782` |
+| 96 | `CON-008` — General contractor / subcontractor / project identified | critical | construction | 0 | `con-practice-subk-baseline` |
+| 97 | `CON-009` — Subcontract scope of work + flow-down | critical | construction | 0 | `aia-a401` |
+| 98 | `CON-012` — Subcontractor warranties + workmanship + materials | critical | construction | 0 | `con-practice-subk-warranty` |
+| 99 | `CON-014` — Waiver type — conditional / unconditional + progress / final | critical | construction | 0 | `ca-civ-8132` |
+| 100 | `CON-015` — Identified claimant + property + project | critical | construction | 0 | `state-mechanics-lien` |
 

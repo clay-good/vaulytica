@@ -82,6 +82,14 @@ export function canSpam(label: string): SourceCitation {
   });
 }
 
+export function tcpa(label: string): SourceCitation {
+  return v4Cite({
+    id: `tcpa-227-${label.replace(/[^A-Za-z0-9]+/g, "-").toLowerCase()}`,
+    source: `TCPA, 47 U.S.C. § 227 (${label})`,
+    source_url: "https://www.law.cornell.edu/uscode/text/47/227",
+  });
+}
+
 /** Practitioner-baseline / state dealer-statute citation for commercial law. */
 export function commPractice(id: string, label: string, url: string): SourceCitation {
   return v4Cite({ id: `comm-${id}`, source: label, source_url: url });

@@ -19,4 +19,11 @@ Term. This Agreement continues for one (1) year and renews for successive one-ye
 Data Privacy. The Agency processes personal data and email list data only on the Client's instructions and shall comply with applicable privacy laws (CCPA/CPRA and GDPR) as a service provider, with appropriate safeguards and a deletion obligation on termination.
 
 Approvals. The Client's prior written approval is required for all creative, media plans, and public claims before publication, subject to a five (5) business-day review turnaround.
+
+Rights Clearance. The Agency shall obtain all licenses, releases, and clearances for third-party materials used in the deliverables (stock imagery, licensed music, fonts, and talent and model releases) and warrants that the deliverables do not infringe any third-party intellectual-property or publicity right.
+
+Confidentiality. The Agency shall keep the Client's confidential information confidential and use it only to perform the Services.
+
+Subcontractors. The Agency remains responsible for its subcontractors and influencers and shall bind them in writing to the same material obligations, flowing down the FTC disclosure, confidentiality, and intellectual-property terms.
+
 Governing Law. This Agreement is governed by the laws of the State of New York.

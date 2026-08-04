@@ -41,6 +41,7 @@ import {
   respa,
   ftc,
   canSpam,
+  tcpa,
   commPractice,
 } from "./_helpers.js";
 
@@ -450,7 +451,8 @@ const DISTRIBUTION_RULES: Rule[] = [
 ];
 
 // ────────────────────────────────────────────────────────────────────
-// A.9 — Channel partner / Referral agreement. 5 rules: COMM-014..COMM-018.
+// A.9 — Channel partner / Referral agreement. COMM-014..COMM-018 core;
+// COMM-028..029, COMM-032..034 the second-wave additions.
 // ────────────────────────────────────────────────────────────────────
 
 const REFERRAL_RULES: Rule[] = [
@@ -626,10 +628,84 @@ const REFERRAL_RULES: Rule[] = [
       /not\s+.{0,20}(deal|transact)\s+directly\s+with/is,
     ],
   }),
+  presence({
+    id: "COMM-032",
+    name: "Effect of termination on accrued and pipeline referral fees",
+    description:
+      "A referral agreement should state whether fees remain payable on referrals introduced before termination that close afterward (the 'tail').",
+    citation: commPractice(
+      "referral-tail",
+      "Referral / finder trailing-fee (tail) baseline",
+      "https://www.americanbar.org/groups/business_law/",
+    ),
+    playbooks: [COMM_PLAYBOOK_REFERRAL],
+    missing_title: "Post-termination (tail) referral-fee clause missing",
+    missing_description:
+      "No clause states whether referral fees survive termination for referrals introduced beforehand.",
+    explanation:
+      "The most common referral-fee dispute is whether the Partner is paid for a referral introduced during the term that closes after termination. Silence leaves the trailing 'tail' open to argument; a clause fixing whether and for how long post-termination closings still earn the fee resolves it in advance.",
+    recommendation:
+      "Add a clause stating whether referral fees are payable on referrals introduced before termination that convert afterward, and for how long the tail period runs.",
+    present_patterns: [
+      /(survive|surviving|continue|remain\s+payable)[\s\S]{0,60}(termination|expiration)/is,
+      /(termination|expiration)[\s\S]{0,80}(referral\s+fee|fee\s+shall\s+(still\s+)?be\s+(paid|payable)|earned\s+prior)/is,
+      /\btail\b[\s\S]{0,30}(period|fee)|trailing\s+(fee|commission)/i,
+      /referrals?\s+(introduced|made|submitted)[\s\S]{0,60}(prior\s+to|before)[\s\S]{0,40}(terminat|expir)/is,
+    ],
+  }),
+  presence({
+    id: "COMM-033",
+    name: "Restriction on Partner representations about the Company",
+    description:
+      "A referral agreement should bar the Partner from making representations about the Company or its products beyond Company-approved materials.",
+    citation: lanham("43(a)", "false or misleading representation of fact"),
+    playbooks: [COMM_PLAYBOOK_REFERRAL],
+    missing_title: "Partner-representations restriction missing",
+    missing_description:
+      "No clause limits the Partner to Company-approved statements about the Company or its products.",
+    explanation:
+      "A referral partner who makes its own claims about the Company's products can create Lanham Act § 43(a) false-advertising exposure and apparent-authority risk for the Company. Limiting the Partner to approved materials and barring unauthorized warranties contains that exposure.",
+    recommendation:
+      "Add a clause requiring the Partner to use only Company-approved marketing materials and to make no representations, warranties, or guarantees about the Company or its products beyond those materials.",
+    present_patterns: [
+      /(approved|authorized)\s+(marketing\s+)?materials/i,
+      /(no|not\s+make\s+any)\s+(representation|warrant|guarantee)\w*[\s\S]{0,40}(product|service|company)/is,
+      /shall\s+not\s+.{0,40}(misrepresent|make\s+false)/is,
+      /only\s+.{0,30}(materials|statements)\s+(provided|approved)\s+by/is,
+    ],
+  }),
+  presence({
+    id: "COMM-034",
+    name: "Telemarketing / anti-spam compliance for Partner outreach",
+    description:
+      "Where the Partner solicits referrals by call, text, or email, the agreement should require TCPA / CAN-SPAM compliance.",
+    citation: tcpa("consent for telemarketing calls and texts"),
+    playbooks: [COMM_PLAYBOOK_REFERRAL],
+    // Only relevant where the Partner conducts outbound solicitation — a
+    // passive introduction / word-of-mouth referral does not implicate the
+    // telemarketing or anti-spam statutes.
+    applicable_if: [
+      /cold\s+call|telemarket\w*|outbound|robocall|auto.?dial\w*|text\s+message|\bsms\b|email\s+(blast|campaign|solicit)|mass\s+email/i,
+    ],
+    missing_title: "Telemarketing / anti-spam compliance clause missing",
+    missing_description:
+      "The Partner conducts outbound solicitation but no TCPA / CAN-SPAM compliance clause was found.",
+    explanation:
+      "A partner who solicits referrals through calls, texts, or bulk email triggers the TCPA (47 U.S.C. § 227 — prior express consent for autodialed / prerecorded calls and texts) and CAN-SPAM (15 U.S.C. § 7704). Because the Company can face vicarious TCPA liability for a partner acting on its behalf, the agreement should require the Partner to comply and to indemnify for violations.",
+    recommendation:
+      "Add a clause requiring the Partner to comply with the TCPA, CAN-SPAM, and applicable state telemarketing laws (consent, do-not-call, unsubscribe) and to indemnify the Company for violations.",
+    present_patterns: [
+      /\btcpa\b|telephone\s+consumer\s+protection\s+act/i,
+      /can.?spam/i,
+      /do.?not.?call|prior\s+express\s+(written\s+)?consent/i,
+      /comply\s+with[\s\S]{0,40}(telemarketing|anti.?spam|solicitation)\s+laws/is,
+    ],
+  }),
 ];
 
 // ────────────────────────────────────────────────────────────────────
-// A.11 — Marketing services agreement. 5 rules: COMM-019..COMM-023.
+// A.11 — Marketing services agreement. 5 rules: COMM-019..COMM-023;
+// COMM-030..031, COMM-035..037 the second-wave additions.
 // ────────────────────────────────────────────────────────────────────
 
 const MARKETING_RULES: Rule[] = [
@@ -819,6 +895,78 @@ const MARKETING_RULES: Rule[] = [
       /(review|approve)[\s\S]{0,40}(creative|advertis\w*|claims?|materials)/is,
       /(creative|materials|claims?)[\s\S]{0,40}(subject\s+to|require)[\s\S]{0,20}approval/is,
       /right\s+to\s+(review|approve|reject)/i,
+    ],
+  }),
+  presence({
+    id: "COMM-035",
+    name: "Third-party rights clearance and non-infringement of deliverables",
+    description:
+      "A marketing agreement should require the Agency to clear all third-party rights in the deliverables and warrant non-infringement.",
+    citation: lanham("43(a)", "unauthorized use of a mark / infringing advertising"),
+    playbooks: [COMM_PLAYBOOK_MARKETING],
+    missing_title: "Third-party rights-clearance / non-infringement clause missing",
+    missing_description:
+      "No clause requires the Agency to clear third-party rights (stock, music, talent) or warrant the deliverables do not infringe.",
+    explanation:
+      "Marketing deliverables routinely embed third-party materials — stock imagery, licensed music, fonts, and on-camera talent. Without a clearance warranty and non-infringement covenant, the Client inherits copyright, trademark, and right-of-publicity exposure for content the Agency assembled. Ownership of the deliverable (a separate clause) does not by itself clear the inputs.",
+    recommendation:
+      "Add a clause requiring the Agency to obtain all licenses, releases, and clearances for third-party materials (stock, music, fonts, talent / model releases) and to warrant that the deliverables do not infringe any third-party intellectual-property or publicity right.",
+    present_patterns: [
+      /(clear\w*|obtain\w*|secur\w*)[\s\S]{0,40}(rights|licenses?|releases?|clearances?|permissions?)/is,
+      /(talent|model|appearance)\s+releases?/i,
+      /(stock|licensed|third.?party)\s+(imagery|images|music|footage|content|material)/i,
+      /(warrant|represent)\w*[\s\S]{0,60}(deliverables?|work\s+product|materials)[\s\S]{0,40}(not\s+infring|do\s+not\s+infring|non.?infring)/is,
+    ],
+  }),
+  presence({
+    id: "COMM-036",
+    name: "Confidentiality of Client information",
+    description:
+      "A marketing agreement should require the Agency to keep the Client's non-public business information confidential.",
+    citation: commPractice(
+      "marketing-confidentiality",
+      "Marketing-services confidentiality baseline",
+      "https://www.americanbar.org/groups/business_law/",
+    ),
+    playbooks: [COMM_PLAYBOOK_MARKETING],
+    missing_title: "Confidentiality clause missing",
+    missing_description: "No clause protects the Client's confidential business information.",
+    explanation:
+      "An agency is exposed to the Client's launch plans, budgets, customer data, and unreleased products. A confidentiality clause obliging the Agency to protect that non-public information — and to use it only for the engagement — is standard and its absence is a real gap. This is distinct from consumer-data privacy, which governs end-user personal data.",
+    recommendation:
+      "Add a 'Confidentiality' clause requiring the Agency to protect the Client's confidential information, use it only to perform the services, and return or destroy it on termination.",
+    present_patterns: [
+      /confidential\s+information/i,
+      /(keep|hold|treat|maintain)[\s\S]{0,30}(in\s+)?confiden\w*/is,
+      /non.?disclosure|\bnda\b/i,
+      /shall\s+not\s+(disclose|use)[\s\S]{0,40}confiden\w*/is,
+    ],
+  }),
+  presence({
+    id: "COMM-037",
+    name: "Subcontractor and influencer responsibility (flow-down)",
+    description:
+      "Where the Agency engages subcontractors or influencers, the agreement should make the Agency responsible for them and flow down its obligations.",
+    citation: ftc("16 C.F.R. Part 255", "advertiser responsibility for endorsers it engages"),
+    playbooks: [COMM_PLAYBOOK_MARKETING],
+    // Only relevant where the engagement actually uses subcontractors,
+    // freelancers, or influencers — a fully in-house agency need not address
+    // flow-down.
+    applicable_if: [
+      /subcontractor|sub.?contract\w*|freelanc\w*|influencer|third.?party\s+(vendor|provider|contractor)/i,
+    ],
+    missing_title: "Subcontractor / influencer flow-down clause missing",
+    missing_description:
+      "The Agency uses subcontractors or influencers but no clause makes it responsible for them or flows down its obligations.",
+    explanation:
+      "When an agency engages subcontractors or influencers, the Client needs the Agency to remain responsible for their acts and to flow down the material obligations — FTC disclosure, confidentiality, IP assignment, and compliance. Otherwise a disclosure or infringement failure by a downstream influencer leaves a gap in the chain that reaches the Client.",
+    recommendation:
+      "Add a clause making the Agency responsible for its subcontractors and influencers and requiring it to bind them in writing to the material obligations (FTC disclosure, confidentiality, IP assignment, compliance).",
+    present_patterns: [
+      /(remain\w*|be)\s+(fully\s+)?responsible\s+for[\s\S]{0,40}(subcontractor|influencer|freelanc|third.?party)/is,
+      /flow(ed|s)?[\s-]?down|pass(ed|es)?[\s-]?through/i,
+      /(bind|require)[\s\S]{0,40}(subcontractor|influencer)[\s\S]{0,40}(same|equivalent|written)/is,
+      /(subcontractor|influencer)s?[\s\S]{0,40}(shall\s+)?(comply|be\s+bound|agree)/is,
     ],
   }),
 ];
