@@ -4,14 +4,22 @@ import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js"
 /** RISK-013 — Force majeure clause present (info). */
 export const rule: Rule = {
   id: "RISK-013",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Force majeure clause present",
   category: "risk-allocation",
   default_severity: "info",
   description: "Detects force-majeure language and surfaces its scope.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
-    const hit = firstParagraphMatch(ctx, /\bforce\s+majeure\b|\bact\s+of\s+god\b/i);
+    // Many force-majeure clauses never use the Latin term — they are drafted
+    // around the defining idiom "causes/events BEYOND [a party's] REASONABLE
+    // CONTROL" (or "beyond the control of the parties"). That phrasing is
+    // specific to the excuse-of-performance concept, so it is a reliable
+    // force-majeure signal. "act of God" is also written in the plural.
+    const hit = firstParagraphMatch(
+      ctx,
+      /\bforce\s+majeure\b|\bacts?\s+of\s+god\b|\bbeyond\s+(?:the\s+|its\s+|their\s+|a\s+party'?s?\s+|such\s+party'?s?\s+|any\s+party'?s?\s+|either\s+party'?s?\s+)?reasonable\s+control\b|\bbeyond\s+the\s+(?:reasonable\s+)?control\s+of\s+(?:the\s+|any\s+|such\s+|either\s+)?part(?:y|ies)\b/i,
+    );
     if (!hit) return null;
     if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;
     return emit(ctx, rule, {
