@@ -277,7 +277,7 @@
       "finding_id": "IPDATA-010-s1.2-598",
       "fired": true,
       "rule_id": "IPDATA-010",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -827,7 +827,7 @@
       "id": "IPDATA-010-s1.2-598",
       "recommendation": "Narrow the license to what the vendor actually needs. For Feedback, a non-exclusive, non-transferable license to use Feedback for the limited purpose of improving the Service, terminating on termination of the Agreement, is the standard balanced position. Strike 'sublicensable' and 'transferable' unless the use case genuinely requires sharing the grant with third parties.",
       "rule_id": "IPDATA-010",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [],
       "title": "License grant is perpetual / irrevocable / royalty-free / sublicensable"
@@ -990,7 +990,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "668bfa6468e67e4768d547f72d61fad6f8f904c5cd303af9f87ce03dfbeaf650",
+  "result_hash": "d89f37a7909c7dae15068813f808629ab4125eebaf7f82226d3558dfd2eb3b12",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
     "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",

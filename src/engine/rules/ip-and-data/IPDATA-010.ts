@@ -31,7 +31,7 @@ import { emit, enclosingSentence, firstParagraphMatch } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "IPDATA-010",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Perpetual / irrevocable license overreach",
   category: "ip-and-data",
   default_severity: "warning",
@@ -55,8 +55,13 @@ export const rule: Rule = {
 
     // Must reference a counterparty-side subject (otherwise this is
     // probably the regular Vendor → Customer software license).
+    // Consumer terms of service address the reader in the second person and
+    // grant the license over "YOUR content / data / photos / posts" — the
+    // dominant UGC-license phrasing, which a Capitalized-defined-term-only
+    // subject list missed entirely. The ≥3-overreach-modifier gate below keeps
+    // an ordinary "worldwide license to process your data" from firing.
     const SUBJECT =
-      /\b(?:Feedback|Suggestions?|Comments?|Ideas?|Improvements?|Customer\s+Data|Customer\s+Content|User\s+(?:Content|Generated\s+Content|Submissions?)|Submissions?|Likeness|Name\s+and\s+(?:image|likeness)|Image\s+and\s+likeness)\b/i;
+      /\b(?:Feedback|Suggestions?|Comments?|Ideas?|Improvements?|Customer\s+Data|Customer\s+Content|User\s+(?:Content|Generated\s+Content|Submissions?)|Submissions?|Likeness|Name\s+and\s+(?:image|likeness)|Image\s+and\s+likeness|your\s+(?:content|data|materials|submissions?|posts?|photos?|videos?|recordings?))\b/i;
     if (!SUBJECT.test(clause)) return null;
 
     // Tally the overreach modifiers. Three or more is the signal. A leading

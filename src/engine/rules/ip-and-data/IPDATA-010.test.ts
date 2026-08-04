@@ -37,4 +37,22 @@ describe("IPDATA-010 — perpetual / irrevocable license overreach", () => {
     // license to use the vendor's product.
     expect(IPDATA_010.check(ctx)).toBeNull();
   });
+
+  it("reads the lowercase consumer-ToS 'your content / data / photos' subject (v1.1.0)", () => {
+    for (const clause of [
+      "You hereby grant us a perpetual, irrevocable, royalty-free license to use your content.",
+      "You grant Provider a perpetual, irrevocable, sublicensable license to your data.",
+      "You grant us a worldwide, perpetual, irrevocable license to your photos and videos.",
+    ]) {
+      expect(IPDATA_010.check(buildContext(["License", clause])), clause).not.toBeNull();
+    }
+  });
+
+  it("silent on an ordinary 'worldwide license to process your data' (below the 3-modifier gate)", () => {
+    expect(
+      IPDATA_010.check(
+        buildContext(["Data", "You grant us a worldwide license to process your data to provide the Services."]),
+      ),
+    ).toBeNull();
+  });
 });

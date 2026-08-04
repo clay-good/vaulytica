@@ -273,7 +273,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "IPDATA-010",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -926,7 +926,7 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected msa-general (score 1). Title matched: \"master services agreement\", \"services agreement\". Distinguishing phrases: \"SOW\", \"Services\", \"Deliverables\", \"Provider\", \"Customer\".",
-  "result_hash": "115a50dd0f72c401db06a31c9ba023cf40f0bcef809b20b09b710a6a0aaed266",
+  "result_hash": "30abec3d7351809551715d4e8128a0c9441608c8a90dace4abd721141c2bf76d",
   "source_file": {
     "name": "bad-msa-mfn.docx",
     "sha256": "6c82de5ccf5a22064c5da0ad551848546762dc4f0b2fecf127a52f93798fe73d",
