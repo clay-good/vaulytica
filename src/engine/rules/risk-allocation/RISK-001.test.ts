@@ -44,4 +44,15 @@ describe("RISK-001 — indemnification present", () => {
       RISK_001.check(doc("The Receiving Party shall hold all information in strict confidence.")),
     ).not.toBeNull();
   });
+
+  it("reads the wider indemnity vocabulary, not only 'indemnify' (v1.2.0)", () => {
+    for (const clause of [
+      "Indemnity. Each party's indemnity obligations survive termination.",
+      "Customer shall be indemnified by Vendor for third-party claims.",
+      "The Indemnifying Party shall defend the Indemnified Party.",
+      "The Indemnitee shall notify the Indemnitor of any claim.",
+    ]) {
+      expect(RISK_001.check(doc(clause)), clause).toBeNull();
+    }
+  });
 });

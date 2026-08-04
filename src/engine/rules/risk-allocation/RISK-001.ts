@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
 /** RISK-001 — Indemnification clause present (warning). */
 export const rule: Rule = {
   id: "RISK-001",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Indemnification clause present",
   category: "risk-allocation",
   default_severity: "warning",
@@ -15,9 +15,15 @@ export const rule: Rule = {
     // verb and the adverb — "hold Client harmless", "hold the other party
     // harmless" — so requiring the two words adjacent reported a plainly
     // present indemnity as absent. Allow up to four words in between (v1.1.0).
+    // The indemnity vocabulary is far wider than "indemnify / indemnification":
+    // the noun "indemnity" (the usual section title), "indemnified", the
+    // "Indemnifying Party", and the "Indemnitee / Indemnitor" all name the same
+    // clause, and a contract drafted with those forms was told it had no
+    // indemnification (v1.2.0). `indemnif\w*` + `indemnit(y|ee|or…)` cover them
+    // all; no non-indemnity word carries either stem.
     const hit = firstParagraphMatch(
       ctx,
-      /\bindemnif(?:y|ication|ies)\b|\bhold\s+(?:[\w'-]+\s+){0,4}?harmless\b/i,
+      /\bindemnif\w*|\bindemnit(?:y|ies|ee|ees|or|ors)\b|\bhold\s+(?:[\w'-]+\s+){0,4}?harmless\b/i,
     );
     if (hit) return null;
     return emit(ctx, rule, {
