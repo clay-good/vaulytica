@@ -456,6 +456,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "DPA-024",
+    version: "1.1.0",
     name: "Processor breach notice to controller (Art. 33(2))",
     description:
       "Processor must notify the controller without undue delay after becoming aware of a personal data breach.",
@@ -468,8 +469,14 @@ export const DPA_GDPR_RULES: Rule[] = [
     recommendation:
       "Add: 'Processor shall notify Controller without undue delay after becoming aware of a Personal Data Breach.'",
     present_patterns: [
-      /(personal\s+data\s+breach|breach\s+of\s+personal\s+data|data\s+breach).{0,160}(notify|notification)/is,
-      /(notify|notification).{0,80}(controller).{0,80}(breach|incident)/is,
+      // The Art. 33(2) obligation is also written "inform" / "give notice to"
+      // the controller (common in non-native-English DPA templates); the
+      // notify-only patterns missed those. The notify→controller→breach
+      // structure of the second pattern keeps a wrong-direction "the Controller
+      // shall inform the Processor …" out. "advise" is deliberately excluded as
+      // too weak/broad.
+      /(personal\s+data\s+breach|breach\s+of\s+personal\s+data|data\s+breach).{0,160}(notif\w+|inform\w*|(?:give|provide)[sd]?\s+notice)/is,
+      /(notif\w+|inform\w*|(?:give|provide)[sd]?\s+notice).{0,80}(controller).{0,80}(breach|incident)/is,
     ],
   }),
   presence({

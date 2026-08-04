@@ -465,3 +465,45 @@ describe("DPA-013 — deletion-or-return recognizes 'destroy or return' (v1.1.0)
     ).toBe(true);
   });
 });
+
+describe("DPA-024 — breach notice recognizes 'inform' / 'give notice' (v1.1.0)", () => {
+  const has = async (body: string) => {
+    const run = await runEngine({
+      rules: DPA_GDPR_RULES,
+      ctx: withDpa(buildContext(["DPA", body])),
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+  it("does not report the clause missing when the processor 'informs' / 'gives notice'", async () => {
+    expect(
+      (
+        await has(
+          "Processor shall inform the Controller without undue delay after becoming aware of a Personal Data Breach.",
+        )
+      ).has("DPA-024"),
+    ).toBe(false);
+    expect(
+      (
+        await has(
+          "Processor shall give notice to the Controller of any breach of personal data without undue delay.",
+        )
+      ).has("DPA-024"),
+    ).toBe(false);
+  });
+  it("still fires when the controller informs the processor (wrong direction) or no notice is given", async () => {
+    expect(
+      (
+        await has(
+          "The Controller shall inform the Processor of its data breach response procedures and policies.",
+        )
+      ).has("DPA-024"),
+    ).toBe(true);
+    expect(
+      (await has("Processor shall implement measures to prevent a personal data breach.")).has(
+        "DPA-024",
+      ),
+    ).toBe(true);
+  });
+});
