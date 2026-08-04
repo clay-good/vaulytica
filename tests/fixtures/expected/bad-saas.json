@@ -304,7 +304,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "OBLI-004",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -1129,7 +1129,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "3f64d689ee7611057029f84f5f4ca147b7ef05430f13e858e65d2997b0b414fb",
+  "result_hash": "5a733b176666bc6cb10aa3e5a691a65d602b0941a119f4b5b02f63b86cabb87e",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",

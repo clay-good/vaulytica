@@ -299,7 +299,7 @@
       "finding_id": "OBLI-004-s1.1-260",
       "fired": true,
       "rule_id": "OBLI-004",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -913,7 +913,7 @@
       "explanation": "Courts in different US jurisdictions interpret 'best efforts' differently — some treat it as an extraordinary standard, others as a synonym for reasonable efforts. 'Commercially reasonable efforts' is generally clearer.",
       "id": "OBLI-004-s1.1-260",
       "rule_id": "OBLI-004",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "info",
       "source_citations": [],
       "title": "'Best efforts' standard used"
@@ -974,7 +974,7 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"advisory agreement\". Distinguishing phrases: \"advisory services\", \"deliverables\", \"independent contractor\".",
-  "result_hash": "fb2660d98be51e0c67bda89b00d79577177a2323810c633fb588895c453df7b7",
+  "result_hash": "17b9555626aff4d516ef30f966b672d19e1f9e25da21dc481b038e6e945922cd",
   "source_file": {
     "name": "bad-consulting-success-fee.docx",
     "sha256": "6bc505eb0c1641cda4c3466a62f0b3eead258e2dc3a385e792e79f4a717ad6a5",

@@ -4,14 +4,18 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 /** OBLI-004 — "Best efforts" vs. "reasonable efforts" (info). */
 export const rule: Rule = {
   id: "OBLI-004",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Best efforts standard ambiguity",
   category: "obligations",
   default_severity: "info",
   description: "Flags uses of 'best efforts' for review — the standard varies by jurisdiction.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
-    const hit = firstParagraphMatch(ctx, /\bbest\s+efforts\b/i);
+    // "best endeavours" (also spelled "best endeavors") is the British direct
+    // equivalent of "best efforts" and carries the identical ambiguity — an
+    // aspirational, undefined standard courts interpret inconsistently. Cross-
+    // border contracts drafted on an English-law template use it verbatim.
+    const hit = firstParagraphMatch(ctx, /\bbest\s+(?:efforts|endeavou?rs)\b/i);
     if (!hit) return null;
     // Suppress a DISCLAIMER of the best-efforts standard — "commercially
     // reasonable efforts, and not best efforts", "reasonable efforts rather
