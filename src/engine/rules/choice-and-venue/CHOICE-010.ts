@@ -1,6 +1,23 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch } from "../_helpers.js";
 
+// The waived right is usually introduced by a POSSESSIVE determiner — "waives
+// ITS right", "waives THE right", "waives HIS OR HER right" — not the bare
+// "any/all right" the original pattern required. That dominant possessive form
+// was missed entirely. The determiner set is shared by the one-sided matcher and
+// the bilateral-waiver guard, so a compliant "each party waives its right to a
+// jury trial" still suppresses the finding.
+const RIGHT_DET = "(?:his\\s+or\\s+her\\s+|(?:any|all|its|the|his|her|their|your|our)\\s+)?";
+const WAIVES_JURY = `(?:hereby\\s+)?(?:waives?|waiv(?:er|ing))\\s+${RIGHT_DET}right(?:s)?\\s+to\\s+(?:a\\s+)?(?:trial\\s+by\\s+)?jury`;
+const ONE_SIDED = new RegExp(
+  `\\b(Customer|Licensee|Recipient|Employee|Tenant|Contractor|Consumer|User|Buyer|Purchaser|Borrower)\\s+${WAIVES_JURY}`,
+  "i",
+);
+const BILATERAL = new RegExp(
+  `\\b(?:each\\s+party|the\\s+parties|either\\s+party|both\\s+parties)\\s+${WAIVES_JURY}`,
+  "i",
+);
+
 /**
  * CHOICE-010 — Asymmetric jury-trial waiver (warning,
  * choice-and-venue).
@@ -18,7 +35,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "CHOICE-010",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Asymmetric jury-trial waiver",
   category: "choice-and-venue",
   default_severity: "warning",
@@ -26,17 +43,10 @@ export const rule: Rule = {
     "Fires when a jury-trial waiver binds one named party but does not impose a mirror waiver on the drafter.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
-    const hit = firstParagraphMatch(
-      ctx,
-      /\b(Customer|Licensee|Recipient|Employee|Tenant|Contractor|Consumer|User|Buyer|Purchaser|Borrower)\s+(?:hereby\s+)?(?:waives?|waiv(?:er|ing))\s+(?:any\s+|all\s+)?right(?:s)?\s+to\s+(?:a\s+)?(?:trial\s+by\s+)?jury/i,
-    );
+    const hit = firstParagraphMatch(ctx, ONE_SIDED);
     if (!hit) return null;
     // Silent if the same paragraph has a bilateral waiver.
-    if (
-      /\b(?:each\s+party|the\s+parties|either\s+party|both\s+parties)\s+(?:hereby\s+)?(?:waives?|waiv(?:er|ing))\s+(?:any\s+|all\s+)?right(?:s)?\s+to\s+(?:a\s+)?(?:trial\s+by\s+)?jury/i.test(
-        hit.text,
-      )
-    ) {
+    if (BILATERAL.test(hit.text)) {
       return null;
     }
     return emit(ctx, rule, {

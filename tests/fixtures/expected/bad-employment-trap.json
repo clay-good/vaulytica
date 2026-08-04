@@ -64,7 +64,7 @@
       "finding_id": "CHOICE-010-s1.4-1301",
       "fired": true,
       "rule_id": "CHOICE-010",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -795,7 +795,7 @@
       "id": "CHOICE-010-s1.4-1301",
       "recommendation": "Make the waiver bilateral (`each party hereby waives any right to trial by jury`). If the asymmetry is intentional, document the consideration that supports the affected party's `knowing and voluntary` waiver.",
       "rule_id": "CHOICE-010",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Asymmetric jury-trial waiver"
@@ -1027,7 +1027,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.9). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
-  "result_hash": "d26d40e3c6232ee2be6b4d5072736e5f643c1e60c48bc447fdccd2a27ebf1345",
+  "result_hash": "fafd5c0efe42f6d05e7ac0c267ea6e3d094a5ea132d2ceaa4d6c6aee0cb02d3b",
   "source_file": {
     "name": "bad-employment-trap.docx",
     "sha256": "c0ef11cc8a800daead332bf1bc265f96d72af1c51953958734b1bf18c4058b2a",

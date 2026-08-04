@@ -44,4 +44,23 @@ describe("CHOICE-010 — asymmetric jury-trial waiver", () => {
     ]);
     expect(CHOICE_010.check(ctx)).toBeNull();
   });
+
+  it("reads the possessive 'waives its / the / his or her / their right' forms (v1.1.0)", () => {
+    for (const clause of [
+      "Customer waives its right to a trial by jury.",
+      "Employee waives the right to a jury trial in any action arising under this Agreement.",
+      "Borrower hereby waives his or her right to trial by jury.",
+      "Tenant waives their right to a jury trial.",
+    ]) {
+      expect(CHOICE_010.check(buildContext(["Waiver", clause])), clause).not.toBeNull();
+    }
+  });
+
+  it("is silent on a bilateral possessive waiver — 'each party waives its right' (v1.1.0)", () => {
+    expect(
+      CHOICE_010.check(
+        buildContext(["Disputes", "Each party waives its right to a jury trial under this Agreement."]),
+      ),
+    ).toBeNull();
+  });
 });
