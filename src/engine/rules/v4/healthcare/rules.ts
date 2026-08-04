@@ -288,6 +288,7 @@ const PHI_AUTHORIZATION_RULES: Rule[] = [
   }),
   presence({
     id: "HC-014",
+    version: "1.1.0",
     name: "Expiration date or event",
     description: "Authorization must include an expiration date or expiration event.",
     citation: hipaa("508(c)(1)(v)", "Expiration"),
@@ -299,7 +300,11 @@ const PHI_AUTHORIZATION_RULES: Rule[] = [
     recommendation:
       "Add 'Expiration' with a specific date or a clear expiration event (e.g., 'one year from signature', 'upon conclusion of the litigation').",
     present_patterns: [
-      /(expir(es?|ation|ing)|expir\b)/i,
+      // The old second alternative "expir\b" was dead code — "expir" is always
+      // followed by a vowel ("expires"/"expiration"/"expiry"), so the word
+      // boundary never held. Fold the inflections into one branch and add the
+      // British "expiry", which neither branch previously caught.
+      /expir(?:es?|ation|ing|y)/i,
       /((on|by)\s+\d|years?\s+from|end\s+of|conclusion\s+of)/i,
     ],
   }),

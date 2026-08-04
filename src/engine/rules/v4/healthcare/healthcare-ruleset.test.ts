@@ -94,6 +94,22 @@ describe("v4 Healthcare — failure cases", () => {
     expect(run.findings.some((f) => f.rule_id === "HC-014")).toBe(true);
   });
 
+  it("HC-014 recognizes the British 'expiry' spelling (dead-branch fix, v1.1.0)", async () => {
+    // Regression: the dead `expir\b` branch never matched and no branch caught
+    // "expiry", so a PHI authorization that stated its term only in that
+    // spelling (no US "expiration" / date phrase) drew a false "Expiration date
+    // / event missing" warning.
+    const ctx = withPb(
+      buildContext([
+        "PHI Authorization",
+        "I authorize disclosure of my PHI to Acme Health. This authorization is subject to expiry as set out in the attached schedule.",
+      ]),
+      PHI_PB,
+    );
+    const run = await runEngine({ rules: HEALTHCARE_RULES, ctx, source_file: SRC });
+    expect(run.findings.some((f) => f.rule_id === "HC-014")).toBe(false);
+  });
+
   it("HC-019 fires when NPP acknowledgment omits receipt language", async () => {
     const ctx = withPb(
       buildContext([
