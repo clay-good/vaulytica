@@ -101,7 +101,7 @@
       "finding_id": "DARK-004-s1.4-1208",
       "fired": true,
       "rule_id": "DARK-004",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -812,7 +812,7 @@
       "explanation": "Mandatory arbitration combined with a class-action waiver effectively immunizes widespread small-dollar harms from collective redress. Enforceable in many jurisdictions, but worth surfacing prominently when the agreement is consumer-facing.",
       "id": "DARK-004-s1.4-1208",
       "rule_id": "DARK-004",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1027,7 +1027,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.9). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
-  "result_hash": "fb5f34d6776e4828e755111bee3a5bb857619843e4b9934a5db7bb2ea142b43d",
+  "result_hash": "9e86ebb7e376467486c0cf779f065b0733111c9695ffcbf03d1d690d93cf10ee",
   "source_file": {
     "name": "bad-employment-trap.docx",
     "sha256": "c0ef11cc8a800daead332bf1bc265f96d72af1c51953958734b1bf18c4058b2a",

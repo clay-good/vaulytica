@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 /** DARK-004 — Mandatory arbitration with class waiver in consumer contract (warning). */
 export const rule: Rule = {
   id: "DARK-004",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Mandatory arbitration + class waiver (consumer)",
   category: "dark-patterns",
   default_severity: "warning",
@@ -41,8 +41,11 @@ export const rule: Rule = {
       // 40-char window from "waive". Widen the window but keep it anchored to
       // "waive" and confined to the SAME sentence (`[^.]`), so a PRESERVATION
       // clause with no "waive" ("you retain the right to participate in class
-      // actions") is not swept in.
-      /(?<!\b(?:no|without|not)\s)class\s+action\s+waiver|\bwaives?\b[^.]{0,120}(?:class\s+action|collective\s+action|representative\s+action)/i,
+      // actions") is not swept in. The AT&T v. Concepcion "individual capacity …
+      // not as a plaintiff or class member" form carries no "waive" verb — the
+      // dominant consumer class-waiver phrasing — so it is added explicitly
+      // (matching DARK-005).
+      /(?<!\b(?:no|without|not)\s)class\s+action\s+waiver|\bwaives?\b[^.]{0,120}(?:class\s+action|collective\s+action|representative\s+action)|\bindividual\s+capacity\b[^.]{0,90}?\bnot\s+as\s+(?:a\s+)?(?:plaintiff|class\s+member|representative)\b|\bnot\s+as\s+a\s+(?:plaintiff\s+or\s+)?class\s+member\b/i,
     );
     if (!arb || !cw) return null;
     return emit(ctx, rule, {

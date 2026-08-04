@@ -31,4 +31,20 @@ describe("DARK-004 — mandatory arbitration + class waiver (consumer)", () => {
     ]);
     expect(DARK_004.check(ctx)).toBeNull();
   });
+
+  it("reads the Concepcion 'individual capacity' class waiver alongside arbitration (v1.2.0)", () => {
+    const ctx = buildContext([
+      "Terms of Service",
+      "Any dispute shall be resolved by binding arbitration. You agree to bring claims only in an individual capacity and not as a plaintiff or class member in any class or representative proceeding.",
+    ]);
+    expect(DARK_004.check(ctx)).not.toBeNull();
+  });
+
+  it("does not treat a signature 'individual capacity' clause as a class waiver", () => {
+    const ctx = buildContext([
+      "Terms of Service",
+      "Any dispute shall be resolved by binding arbitration. The guarantor signs in his individual capacity and not as an officer of the Company.",
+    ]);
+    expect(DARK_004.check(ctx)).toBeNull();
+  });
 });
