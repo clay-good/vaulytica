@@ -21,7 +21,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "DARK-007",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Browsewrap / passive-acceptance language",
   category: "dark-patterns",
   default_severity: "warning",
@@ -31,7 +31,11 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /\b(?:by\s+(?:using|accessing|continuing\s+to\s+use|visiting|browsing)\s+(?:the|this|our)\s+(?:Service|Site|Software|Application|Platform|website)[^.]{0,80}(?:you\s+agree|you\s+accept|constitutes?\s+(?:your\s+)?(?:agreement|acceptance))|continued\s+use\s+(?:of\s+the\s+\w+\s+)?constitutes?\s+(?:your\s+)?(?:agreement|acceptance|consent)|(?:you\s+are\s+)?deemed\s+to\s+have\s+(?:agreed|accepted|consented))/i,
+      // "by downloading / installing … you agree" is the same passive-assent
+      // construct — Specht v. Netscape (2d Cir. 2002) was itself a
+      // download-to-agree case — and "your / the / any use … constitutes
+      // acceptance" is the passive form written without "continued".
+      /\b(?:by\s+(?:using|accessing|continuing\s+to\s+use|visiting|browsing|downloading|installing)\s+(?:the|this|our)\s+(?:Service|Site|Software|Application|App|Platform|website)[^.]{0,80}(?:you\s+agree|you\s+accept|constitutes?\s+(?:your\s+)?(?:agreement|acceptance))|(?:continued|your|the|any|such)\s+use\s+(?:of\s+(?:the|our|this)\s+\w+\s+)?constitutes?\s+(?:your\s+)?(?:agreement|acceptance|consent)|(?:you\s+are\s+)?deemed\s+to\s+have\s+(?:agreed|accepted|consented))/i,
     );
     if (!hit) return null;
     return emit(ctx, rule, {

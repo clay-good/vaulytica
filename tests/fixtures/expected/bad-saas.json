@@ -118,7 +118,7 @@
       "finding_id": "DARK-007-s1.3-941",
       "fired": true,
       "rule_id": "DARK-007",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -807,7 +807,7 @@
       "id": "DARK-007-s1.3-941",
       "recommendation": "Pair the contract with an affirmative manifestation of assent — a click-through checkbox, a typed name, or an e-signature. Confirm reasonable conspicuous notice of the terms prior to the assent step.",
       "rule_id": "DARK-007",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1129,7 +1129,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "b26b5d59f1590b04c4e9f71ac58161dd60490d63cb5b58e1061060e40acd5f61",
+  "result_hash": "505220421b5c35dba28f79ddb7057dd815f4f4f007b557bd49315f0128443b25",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",

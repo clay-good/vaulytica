@@ -115,7 +115,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "DARK-007",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -862,7 +862,7 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected mutual-nda (score 0.9). Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\", \"Recipient\", \"Confidential Information\", \"Permitted Purpose\". Negative features penalized: \"employee\".",
-  "result_hash": "bae53c6c46ea956258f184d89c2b907d80040230564a68b8f34cbd3f025476e1",
+  "result_hash": "7390cdc4d6084a88179e92576c912d768e540f3c58c5534c9938e9a6b1617df4",
   "source_file": {
     "name": "pasted-mutual-nda.txt",
     "sha256": "908fab1cfc67064f69fefb5bd7aed92907945bf54c100eba2dcdb9d75c0e6d40",

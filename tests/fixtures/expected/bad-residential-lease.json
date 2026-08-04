@@ -117,7 +117,7 @@
       "finding_id": "DARK-007-s1.4-744",
       "fired": true,
       "rule_id": "DARK-007",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -797,7 +797,7 @@
       "id": "DARK-007-s1.4-744",
       "recommendation": "Pair the contract with an affirmative manifestation of assent — a click-through checkbox, a typed name, or an e-signature. Confirm reasonable conspicuous notice of the terms prior to the assent step.",
       "rule_id": "DARK-007",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1077,7 +1077,7 @@
   "playbook_id": "lease-residential-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected lease-residential-us (score 1). Title matched: \"residential rental agreement\", \"rental agreement\". Distinguishing phrases: \"Landlord\", \"Tenant\", \"Premises\", \"residential\".",
-  "result_hash": "4e5af31c6041078dbe60ea695faf36726f61e6478f1bdec3352c949cff093e68",
+  "result_hash": "9daed12b6170728528a30a4d7b4f4ccb79c34655e885d1c5849b28e6dc5c30b5",
   "source_file": {
     "name": "bad-residential-lease.docx",
     "sha256": "e9329baa96e35c934a6bdbb32721f88752314e62fbcce83220e7bfa5c353c638",

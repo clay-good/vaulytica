@@ -42,4 +42,25 @@ describe("DARK-007 — browsewrap / passive acceptance", () => {
     ]);
     expect(DARK_007.check(ctx)).toBeNull();
   });
+
+  it("reads download/install and 'your use constitutes' passive-assent forms (v1.1.0)", () => {
+    for (const clause of [
+      "By downloading the Application you agree to be bound by these Terms.",
+      "By installing the Software you accept these Terms.",
+      "Your use of the Service constitutes your acceptance of these Terms.",
+    ]) {
+      expect(DARK_007.check(buildContext(["Acceptance", clause])), clause).not.toBeNull();
+    }
+  });
+
+  it("does not flag a neutral 'your use … is subject to' clause", () => {
+    expect(
+      DARK_007.check(
+        buildContext([
+          "Availability",
+          "Your use of the Service is subject to the availability of the network.",
+        ]),
+      ),
+    ).toBeNull();
+  });
 });
