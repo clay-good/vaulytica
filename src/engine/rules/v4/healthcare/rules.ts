@@ -160,7 +160,7 @@ const INFORMED_CONSENT_RULES: Rule[] = [
   }),
   presence({
     id: "HC-008",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "FDA-regulated study — § 50.25 additional elements (when applicable)",
     description:
       "If the study is FDA-regulated, the consent must include § 50.25 additional elements (clinicaltrials.gov statement, FDA inspection of records).",
@@ -170,8 +170,13 @@ const INFORMED_CONSENT_RULES: Rule[] = [
     // informed-consent playbook covers both a surgical / procedure consent and
     // a research consent; the additional-elements requirement applies only when
     // the document is actually a research study, so demand a research signal.
+    // The trailing `\b` applies to every branch, so a bare stem "stud" becomes
+    // "stud\b" — which can never match "study" / "studies" ("d"→"y"/"i" is no
+    // word boundary). A research consent that signals only via "clinical study"
+    // or "research study" (no IRB / protocol / placebo / clinicaltrials.gov)
+    // was therefore wrongly deemed inapplicable. Spell the inflections out.
     applicable_if: [
-      /\b(?:clinical\s+(?:trial|investigation|stud)|research\s+(?:stud|subject|participant|protocol)|investigational\s+(?:drug|device|product|agent|new)|institutional\s+review\s+board|\bIRB\b|clinicaltrials\.gov|randomi[sz]|placebo|study\s+(?:drug|device|medication|protocol|sponsor)|principal\s+investigator)\b/i,
+      /\b(?:clinical\s+(?:trial|investigation|stud(?:y|ies))|research\s+(?:stud(?:y|ies)|subject|participant|protocol)|investigational\s+(?:drug|device|product|agent|new)|institutional\s+review\s+board|\bIRB\b|clinicaltrials\.gov|randomi[sz]|placebo|study\s+(?:drug|device|medication|protocol|sponsor)|principal\s+investigator)\b/i,
     ],
     missing_title: "FDA § 50.25 additional elements clause missing",
     missing_description: "No § 50.25 additional elements were found for an FDA-regulated study.",

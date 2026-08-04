@@ -192,6 +192,7 @@ export const BAA_RULES: Rule[] = [
 
   presence({
     id: "BAA-010",
+    version: "1.1.0",
     name: "Return or destruction at termination",
     description:
       "BA must, at termination, return or destroy all PHI received from, or created on behalf of, the covered entity.",
@@ -203,7 +204,17 @@ export const BAA_RULES: Rule[] = [
       "Section 164.504(e)(2)(ii)(I) requires the BA to return or destroy all PHI received from the covered entity, including PHI in the possession of subcontractors, at termination if feasible.",
     recommendation:
       "Add: 'Upon termination, Business Associate shall return or destroy all PHI received from or created on behalf of Covered Entity, including such PHI in the possession of any subcontractor.'",
-    present_patterns: [/(return\s+or\s+destroy|destruction\s+of\s+PHI|destroy\s+all\s+PHI)/i],
+    // Broadened beyond the bare "return or destroy" / "destroy all PHI" forms:
+    // the required §164.504(e) clause is just as often written with the verbs
+    // reversed ("destroy or return"), as a verb+noun pair ("return or
+    // destruction of"), or in the canonical infeasibility form ("return all
+    // PHI, or if return is infeasible, destroy such/the PHI"). The destroy
+    // branch keeps a determiner (all/the/such) so a Security-Rule safeguards
+    // mention ("prevent destruction of PHI") is the only pre-existing overlap,
+    // not a newly broadened one.
+    present_patterns: [
+      /(return\s+or\s+destroy|destroy\s+or\s+return|return\s+or\s+destruction|destruction\s+of\s+PHI|destroy\s+(?:all|the|such)\s+PHI)/i,
+    ],
   }),
 
   presence({

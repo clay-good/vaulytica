@@ -149,6 +149,46 @@ describe("BAA ruleset — failure modes", () => {
     expect(run.findings.find((f) => f.rule_id === "BAA-020")).toBeTruthy();
   });
 
+  it("BAA-010 does not falsely fire on reversed / infeasibility return-or-destroy phrasing", async () => {
+    // Regression: the required §164.504(e)(2)(ii)(I) clause is often written
+    // with the verbs reversed or in the canonical infeasibility form; the old
+    // single "return or destroy" / "destroy all PHI" pattern missed both and
+    // drew a false "Return-or-destruction clause missing" warning.
+    for (const clause of [
+      "Upon termination, Business Associate shall destroy or return all PHI received from Covered Entity.",
+      "Business Associate shall return all PHI, or if such return is infeasible, destroy such PHI.",
+      "Business Associate shall effect the return or destruction of all PHI at termination.",
+    ]) {
+      const ctx = withBaa(buildContext(["BAA", clause]));
+      const run = await runEngine({
+        rules: BAA_RULES,
+        ctx,
+        executed_at: "2026-05-12T00:00:00Z",
+        source_file: SRC,
+      });
+      expect(
+        run.findings.find((f) => f.rule_id === "BAA-010"),
+        clause,
+      ).toBeFalsy();
+    }
+  });
+
+  it("BAA-010 still fires when no return-or-destruction clause is present", async () => {
+    const ctx = withBaa(
+      buildContext([
+        "BAA",
+        "This BAA references PHI, Covered Entity, and Business Associate but says nothing about the fate of PHI at termination.",
+      ]),
+    );
+    const run = await runEngine({
+      rules: BAA_RULES,
+      ctx,
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
+    expect(run.findings.find((f) => f.rule_id === "BAA-010")).toBeTruthy();
+  });
+
   it("Security Incident narrowed to 'successful' fires BAA-023", async () => {
     const ctx = withBaa(
       buildContext([

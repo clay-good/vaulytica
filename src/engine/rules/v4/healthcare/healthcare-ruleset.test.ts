@@ -118,6 +118,23 @@ describe("v4 Healthcare — failure cases", () => {
     expect(run.findings.some((f) => f.rule_id === "HC-008")).toBe(true);
   });
 
+  it("HC-008 fires on a research consent signalled only by the word 'study' (dead-stem regression, v1.2.0)", async () => {
+    // Regression: the applicable_if "stud" stem was broken by a trailing \b
+    // ("stud\b" never matches "study"), so a consent that signalled its research
+    // nature only via "clinical study" — with no IRB / protocol / investigational
+    // drug — was wrongly deemed inapplicable and the missing § 50.25 elements
+    // went unflagged.
+    const ctx = withPb(
+      buildContext([
+        "Informed Consent",
+        "You are invited to take part in a clinical study. The study involves interviews and questionnaires. Your participation is voluntary and you may withdraw at any time.",
+      ]),
+      IC_PB,
+    );
+    const run = await runEngine({ rules: HEALTHCARE_RULES, ctx, source_file: SRC });
+    expect(run.findings.some((f) => f.rule_id === "HC-008")).toBe(true);
+  });
+
   it("HC-008 does NOT fire on a surgical / treatment consent (not a study) (v1.1.0)", async () => {
     // § 50.25 governs a clinical investigation; a laparoscopic-cholecystectomy
     // consent is treatment, not research, so the additional-elements rule does
