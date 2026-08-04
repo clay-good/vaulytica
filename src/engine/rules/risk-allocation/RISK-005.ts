@@ -27,13 +27,21 @@ import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
 //     shall be liable for amounts exceeding $10,000") is not misread as a cap.
 // These are dollar/fees CAPS; a bare consequential-damages exclusion ("shall
 // not be liable for lost profits") is deliberately not a cap and still fires.
+// The bare-label branches ("limitation of liability" / "aggregate liability")
+// carry a negative lookbehind so an explicit DISCLAIMER of any cap — "there
+// shall be NO limitation of liability", "WITHOUT any limitation of liability",
+// "NO aggregate liability cap" — is not misread as a cap being present. That is
+// the worst case for the reviewing party (unbounded exposure), and it must
+// fire, not stay silent. A genuine cap heading, a carve-out ("this limitation
+// of liability does not apply to …"), and "the limitation of liability set
+// forth herein" all lack the negator and still match.
 const LIMITATION_OF_LIABILITY =
-  /\blimitation\s+of\s+liability\b|\baggregate\s+liability\b|\bliabilit(?:y|ies)\b[^.]{0,200}?\b(?:shall|will)\s+not\s+exceed\b|\bliabilit(?:y|ies)\b[^.]{0,200}?\b(?:shall|will)\s+be\s+no\s+(?:more|greater)\s+than\b|\bliabilit(?:y|ies)\b[^.]{0,160}?\b(?:capped|limited)\s+(?:at|to)\b|\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b[^.]{0,140}?\bliabilit(?:y|ies)\b[^.]{0,80}?\bexceed\b|\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b[^.]{0,120}?\b(?:aggregate|total|cumulative|maximum)\s+damages\b[^.]{0,60}?\bexceed\b|\bliabilit(?:y|ies)\b[^.]{0,80}?\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b[^.]{0,40}?\bexceed\b|\b(?:neither\s+(?:party|of\s+the\s+parties)\s+(?:shall|will)\s+be|(?:shall|will)\s+not\s+be)\s+liable\b[^.]{0,70}?\b(?:more\s+than|in\s+excess\s+of|exceeding)\b/i;
+  /(?<!\b(?:no|without)\s(?:any\s)?)\blimitation\s+of\s+liability\b|(?<!\b(?:no|without)\s(?:any\s)?)\baggregate\s+liability\b|\bliabilit(?:y|ies)\b[^.]{0,200}?\b(?:shall|will)\s+not\s+exceed\b|\bliabilit(?:y|ies)\b[^.]{0,200}?\b(?:shall|will)\s+be\s+no\s+(?:more|greater)\s+than\b|\bliabilit(?:y|ies)\b[^.]{0,160}?\b(?:capped|limited)\s+(?:at|to)\b|\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b[^.]{0,140}?\bliabilit(?:y|ies)\b[^.]{0,80}?\bexceed\b|\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b[^.]{0,120}?\b(?:aggregate|total|cumulative|maximum)\s+damages\b[^.]{0,60}?\bexceed\b|\bliabilit(?:y|ies)\b[^.]{0,80}?\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b[^.]{0,40}?\bexceed\b|\b(?:neither\s+(?:party|of\s+the\s+parties)\s+(?:shall|will)\s+be|(?:shall|will)\s+not\s+be)\s+liable\b[^.]{0,70}?\b(?:more\s+than|in\s+excess\s+of|exceeding)\b/i;
 
 /** RISK-005 — Limitation of liability present (warning). */
 export const rule: Rule = {
   id: "RISK-005",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Limitation of liability present",
   category: "risk-allocation",
   default_severity: "warning",

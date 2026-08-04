@@ -92,6 +92,29 @@ describe("RISK-005 — limitation of liability present", () => {
     }
   });
 
+  it("fires on an explicit DISCLAIMER of any cap — the worst case (v1.4.0)", () => {
+    // A contract that states there is NO cap ("no / without [any] limitation of
+    // liability", "no aggregate liability cap") is UNBOUNDED exposure; the bare
+    // label used to match the phrase and wrongly stay silent.
+    for (const clause of [
+      "There shall be no limitation of liability under this Agreement.",
+      "This Agreement is entered into without any limitation of liability.",
+      "No aggregate liability cap shall apply to either party.",
+    ]) {
+      expect(RISK_005.check(doc(clause)), `MISSED uncapped: ${clause}`).not.toBeNull();
+    }
+  });
+
+  it("still reads a genuine cap heading / carve-out that merely references the label (v1.4.0)", () => {
+    for (const clause of [
+      "Section 8. Limitation of Liability applies to all claims arising hereunder.",
+      "This limitation of liability does not apply to breaches of confidentiality.",
+      "Subject to the limitation of liability set forth herein, the parties agree as follows.",
+    ]) {
+      expect(RISK_005.check(doc(clause)), `FALSE no-cap: ${clause}`).toBeNull();
+    }
+  });
+
   it("does not read a liability FLOOR / basket as a cap (still fires)", () => {
     // "shall be liable for amounts exceeding $X" is a basket/threshold, the
     // OPPOSITE of a cap — the required negation keeps it out.
