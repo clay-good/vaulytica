@@ -5,9 +5,9 @@
 - **Corpus:** `v0.0.0-seed` · **DKB:** `v2026-08-02-local` · **Engine:** `9.41.0`
 - **Status:** empty
 - **Real graded pairs:** 0 · **Bootstrap (excluded):** 0
-- **Catalog:** 1089 rules · 144 playbooks
+- **Catalog:** 1094 rules · 145 playbooks
 - **Inter-annotator κ:** — (none, n=0)
-- **Scoreboard hash:** `f020301030a889ca608ab7504da779f2127d5a78d0648570ad10cfee6e4c8233`
+- **Scoreboard hash:** `f50642c9ca21f860b1f37b26f73bff13bf7a3e5401f91428d85a01130ae2d0b6`
 
 ## Headline
 

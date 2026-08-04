@@ -1,0 +1,45 @@
+{
+  "id": "marketing-services-agreement",
+  "version": "1.0.0",
+  "name": "Marketing Services Agreement",
+  "description": "Engagement of a marketing agency to run campaigns / creative services. Selects the §6.A.11 ruleset (COMM-019..COMM-023): scope / deliverables, FTC endorsement-disclosure (16 C.F.R. Part 255), CAN-SPAM compliance for email, ownership of deliverables, and advertising-claims substantiation (FTC Act § 5).",
+  "match_features": {
+    "title_keywords": [
+      "marketing services agreement",
+      "marketing agreement",
+      "advertising services agreement",
+      "agency agreement",
+      "digital marketing agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "marketing services",
+      "campaign",
+      "advertising",
+      "deliverables",
+      "creative",
+      "media buy"
+    ],
+    "negative_features": [
+      "distribution agreement",
+      "supply of goods",
+      "employment",
+      "referral fee"
+    ]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Services", "Deliverables", "Campaign", "Agency"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "FTC-ENDORSEMENT-GUIDES-CAN-SPAM",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "Scope / deliverables / campaign",
+    "FTC endorsement disclosure (Part 255)",
+    "CAN-SPAM (email)",
+    "Ownership of deliverables",
+    "Claims substantiation (FTC § 5)"
+  ]
+}

@@ -17,11 +17,13 @@ import type { SourceCitation } from "../../../../dkb/types.js";
 export const COMM_PLAYBOOK_MANUFACTURING = "manufacturing-supply-agreement" as const;
 export const COMM_PLAYBOOK_DISTRIBUTION = "distribution-agreement" as const;
 export const COMM_PLAYBOOK_REFERRAL = "channel-referral-agreement" as const;
+export const COMM_PLAYBOOK_MARKETING = "marketing-services-agreement" as const;
 
 export const COMM_PLAYBOOK_IDS = [
   COMM_PLAYBOOK_MANUFACTURING,
   COMM_PLAYBOOK_DISTRIBUTION,
   COMM_PLAYBOOK_REFERRAL,
+  COMM_PLAYBOOK_MARKETING,
 ] as const;
 
 export type CommPlaybookId = (typeof COMM_PLAYBOOK_IDS)[number];
@@ -59,6 +61,24 @@ export function respa(label: string): SourceCitation {
     id: `respa-8-${label.replace(/[^A-Za-z0-9]+/g, "-").toLowerCase()}`,
     source: `RESPA § 8, 12 U.S.C. § 2607 (${label})`,
     source_url: "https://www.law.cornell.edu/uscode/text/12/2607",
+  });
+}
+
+/** FTC rule / guide citation (16 C.F.R.) or FTC Act § 5 (15 U.S.C. § 45). */
+export function ftc(part: string, label: string): SourceCitation {
+  return v4Cite({
+    id: `ftc-${part.replace(/[^A-Za-z0-9]+/g, "-").toLowerCase()}`,
+    source: `${part} (${label})`,
+    source_url: "https://www.ecfr.gov/current/title-16",
+  });
+}
+
+/** CAN-SPAM Act (15 U.S.C. § 7704). */
+export function canSpam(label: string): SourceCitation {
+  return v4Cite({
+    id: `can-spam-7704-${label.replace(/[^A-Za-z0-9]+/g, "-").toLowerCase()}`,
+    source: `CAN-SPAM Act, 15 U.S.C. § 7704 (${label})`,
+    source_url: "https://www.law.cornell.edu/uscode/text/15/7704",
   });
 }
 

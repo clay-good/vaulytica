@@ -16,6 +16,10 @@
  *          qualified-referral definition, referral-fee terms, RESPA § 8
  *          compliance for settlement-service referrals, independent-
  *          contractor status, and an anti-bribery representation.
+ *   A.11 — Marketing services agreement (COMM-019..COMM-023): scope /
+ *          deliverables, FTC endorsement-disclosure (16 C.F.R. Part 255),
+ *          CAN-SPAM compliance for email, ownership of deliverables, and
+ *          advertising-claims substantiation (FTC Act § 5).
  *
  * Rule ids are flat `COMM-NNN`.
  */
@@ -26,10 +30,13 @@ import {
   COMM_PLAYBOOK_MANUFACTURING,
   COMM_PLAYBOOK_DISTRIBUTION,
   COMM_PLAYBOOK_REFERRAL,
+  COMM_PLAYBOOK_MARKETING,
   ucc,
   sherman,
   lanham,
   respa,
+  ftc,
+  canSpam,
   commPractice,
 } from "./_helpers.js";
 
@@ -477,10 +484,143 @@ const REFERRAL_RULES: Rule[] = [
   }),
 ];
 
+// ────────────────────────────────────────────────────────────────────
+// A.11 — Marketing services agreement. 5 rules: COMM-019..COMM-023.
+// ────────────────────────────────────────────────────────────────────
+
+const MARKETING_RULES: Rule[] = [
+  presence({
+    id: "COMM-019",
+    name: "Scope of services / deliverables / campaign",
+    description:
+      "A marketing services agreement must define the scope of services, deliverables, or the campaign.",
+    citation: commPractice(
+      "marketing-scope",
+      "Marketing-services scope-of-work baseline",
+      "https://www.americanbar.org/groups/business_law/",
+    ),
+    playbooks: [COMM_PLAYBOOK_MARKETING],
+    missing_title: "Scope-of-services / deliverables clause missing",
+    missing_description: "No scope of services, deliverables, or campaign definition was found.",
+    explanation:
+      "The scope of services, the deliverables, and the campaign definition are the operative core of a marketing engagement; their absence leaves the agency's obligations indefinite and invites scope-creep and payment disputes.",
+    recommendation:
+      "Add a 'Services' / 'Scope of Work' clause (or reference an SOW) describing the services, the deliverables, the channels, and the campaign timeline.",
+    present_patterns: [
+      /(scope\s+of\s+(services|work)|statement\s+of\s+work|\bsow\b)/i,
+      /\bdeliverables?\b/i,
+      /marketing\s+services|\bcampaign\b/i,
+      /services\s+to\s+be\s+(provided|performed)/i,
+    ],
+  }),
+  presence({
+    id: "COMM-020",
+    name: "FTC endorsement / testimonial disclosure",
+    description:
+      "Marketing that uses endorsements, influencers, or testimonials must require the FTC-mandated material-connection disclosures.",
+    citation: ftc(
+      "16 C.F.R. Part 255",
+      "Guides Concerning the Use of Endorsements and Testimonials",
+    ),
+    playbooks: [COMM_PLAYBOOK_MARKETING],
+    // Only relevant where the campaign uses endorsements / influencers /
+    // testimonials / reviews — a plain media-buy campaign does not implicate
+    // the endorsement guides.
+    applicable_if: [
+      /endorse\w*|influencer|testimonial|\breview(s|er)?\b|sponsored\s+(post|content)/i,
+    ],
+    missing_title: "FTC endorsement-disclosure clause missing",
+    missing_description:
+      "The campaign uses endorsements / influencers / testimonials but no FTC material-connection disclosure requirement was found.",
+    explanation:
+      "The FTC Endorsement Guides (16 C.F.R. Part 255) require clear and conspicuous disclosure of any material connection between an advertiser and an endorser. An agency running influencer / testimonial content without contractually requiring #ad-style disclosures exposes the advertiser to a § 5 deception claim.",
+    recommendation:
+      "Add a clause requiring all endorsers / influencers to clearly and conspicuously disclose the material connection (e.g., '#ad' / 'paid partnership') and to make only substantiated claims, per 16 C.F.R. Part 255.",
+    present_patterns: [
+      /material\s+connection/i,
+      /clear\w*\s+and\s+conspicuous\w*\s+disclos\w*/i,
+      /#ad\b|paid\s+partnership|sponsored/i,
+      /endorsement\s+guides|16\s+c\.?f\.?r\.?\s+.{0,6}255/i,
+    ],
+  }),
+  presence({
+    id: "COMM-021",
+    name: "CAN-SPAM compliance for email marketing",
+    description:
+      "Email-marketing services must require CAN-SPAM compliance: accurate headers, an opt-out, and a physical address.",
+    citation: canSpam("Commercial-email requirements"),
+    playbooks: [COMM_PLAYBOOK_MARKETING],
+    // Only relevant where the campaign includes email / electronic messaging.
+    applicable_if: [
+      /\bemail\b|e-?mail|electronic\s+(mail|message)|newsletter|\bsms\b|text\s+message/i,
+    ],
+    missing_title: "CAN-SPAM compliance clause missing (email marketing)",
+    missing_description:
+      "The campaign includes email marketing but no CAN-SPAM compliance clause was found.",
+    explanation:
+      "The CAN-SPAM Act (15 U.S.C. § 7704) requires commercial email to use accurate 'from' / subject headers, to offer a working opt-out honored within 10 business days, and to include a valid physical postal address. Non-compliance carries per-email civil penalties for which the advertiser can be liable.",
+    recommendation:
+      "Add a CAN-SPAM clause requiring accurate header / subject lines, a functioning unsubscribe honored within 10 business days, and a valid physical postal address in every commercial email.",
+    present_patterns: [
+      /can.?spam/i,
+      /(unsubscribe|opt.?out)\b/i,
+      /physical\s+(postal\s+)?address/i,
+      /accurate\s+(header|subject|from)/i,
+    ],
+  }),
+  presence({
+    id: "COMM-022",
+    name: "Ownership of deliverables / work product",
+    description:
+      "A marketing services agreement should state who owns the creative deliverables and work product.",
+    citation: commPractice(
+      "marketing-ip",
+      "Marketing-services work-product ownership baseline",
+      "https://www.americanbar.org/groups/intellectual_property_law/",
+    ),
+    playbooks: [COMM_PLAYBOOK_MARKETING],
+    missing_title: "Deliverables-ownership clause missing",
+    missing_description:
+      "No clause allocating ownership of the creative deliverables / work product was found.",
+    explanation:
+      "Creative work an agency produces is owned by the agency by default unless assigned; without an ownership / work-made-for-hire or assignment clause the client may not own the very campaign assets it paid for, and any embedded third-party or stock content is unlicensed.",
+    recommendation:
+      "Add an 'Ownership' clause assigning the deliverables (or a work-made-for-hire recital plus a backstop assignment) to the client on payment, and warranting that third-party materials are licensed for the intended use.",
+    present_patterns: [
+      /works?\s+(made\s+)?for\s+hire/i,
+      /(assign\w*|own\w*|vest\w*)\s+.{0,50}(deliverables?|work\s+product|all\s+(right|title)|materials)/is,
+      /(deliverables?|work\s+product)\s+.{0,50}(owned\s+by|shall\s+be\s+owned|belong|are\s+owned|vest)/is,
+      /intellectual\s+property\s+.{0,30}(assign|owned|vest|belong)/is,
+    ],
+  }),
+  presence({
+    id: "COMM-023",
+    name: "Advertising-claims substantiation",
+    description:
+      "A marketing services agreement should require that advertising claims be truthful and substantiated.",
+    citation: ftc("15 U.S.C. § 45", "FTC Act § 5 — unfair or deceptive acts; claim substantiation"),
+    playbooks: [COMM_PLAYBOOK_MARKETING],
+    missing_title: "Claims-substantiation clause missing",
+    missing_description:
+      "No advertising-claims substantiation / truthful-advertising clause was found.",
+    explanation:
+      "FTC Act § 5 (15 U.S.C. § 45) bars unfair or deceptive advertising, and the FTC requires a reasonable basis for objective claims before they are made. Allocating who substantiates claims — and requiring the agency to run only substantiated, non-deceptive claims — protects the advertiser from a deception action.",
+    recommendation:
+      "Add a clause requiring all advertising claims to be truthful, non-deceptive, and substantiated before use, and allocating responsibility for maintaining the substantiation file.",
+    present_patterns: [
+      /substantiat\w*/i,
+      /(truthful|not\s+(false|deceptive|misleading))\s+.{0,20}(advertis|claims?)/is,
+      /reasonable\s+basis\s+for\s+.{0,20}claims?/is,
+      /comply\s+with[\s\S]{0,40}(ftc|advertising)\s+(act|law|regulations)/is,
+    ],
+  }),
+];
+
 export const COMMERCIAL_V4_RULES: readonly Rule[] = [
   ...MANUFACTURING_SUPPLY_RULES,
   ...DISTRIBUTION_RULES,
   ...REFERRAL_RULES,
+  ...MARKETING_RULES,
 ];
 
-export { MANUFACTURING_SUPPLY_RULES, DISTRIBUTION_RULES, REFERRAL_RULES };
+export { MANUFACTURING_SUPPLY_RULES, DISTRIBUTION_RULES, REFERRAL_RULES, MARKETING_RULES };

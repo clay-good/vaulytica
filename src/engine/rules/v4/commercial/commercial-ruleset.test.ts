@@ -156,3 +156,42 @@ describe("v4 Commercial — channel partner / referral agreement (A.9)", () => {
     expect(commercial.has("COMM-016")).toBe(false);
   });
 });
+
+describe("v4 Commercial — marketing services agreement (A.11)", () => {
+  const MKT: Playbook = { id: "marketing-services-agreement", version: "1.0.0" };
+  const COMPLETE =
+    "Scope of Work. Agency shall provide the marketing services and deliverables described in the SOW for the campaign. " +
+    "Endorsements. All influencers shall clearly and conspicuously disclose the material connection (#ad) per 16 CFR Part 255. " +
+    "Email. All commercial email shall comply with CAN-SPAM: accurate headers, a working unsubscribe, and a physical postal address. " +
+    "Ownership. All deliverables and work product are works made for hire owned by Client, and Agency assigns all rights. " +
+    "Claims. All advertising claims shall be truthful and substantiated before use.";
+
+  it("emits no findings against a complete marketing services agreement", async () => {
+    expect((await fired(MKT, COMPLETE)).size).toBe(0);
+  });
+
+  it("COMM-020 fires on an influencer campaign with no FTC disclosure requirement", async () => {
+    const inf = await fired(
+      MKT,
+      "Scope of Work: Agency runs an influencer campaign with paid endorsements and testimonials. Deliverables owned by Client. Claims substantiated.",
+    );
+    expect(inf.has("COMM-020")).toBe(true);
+  });
+
+  it("COMM-021 fires on an email campaign with no CAN-SPAM clause", async () => {
+    const em = await fired(
+      MKT,
+      "Scope of Work: Agency runs an email newsletter campaign. Deliverables owned by Client. Claims substantiated.",
+    );
+    expect(em.has("COMM-021")).toBe(true);
+  });
+
+  it("COMM-020 and COMM-021 are inapplicable to a plain media-buy campaign", async () => {
+    const media = await fired(
+      MKT,
+      "Scope of Work: Agency runs a media-buy campaign and provides the deliverables. Deliverables are owned by Client. Claims shall be substantiated.",
+    );
+    expect(media.has("COMM-020")).toBe(false);
+    expect(media.has("COMM-021")).toBe(false);
+  });
+});

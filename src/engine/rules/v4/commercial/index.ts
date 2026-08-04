@@ -13,6 +13,7 @@ export {
   MANUFACTURING_SUPPLY_RULES,
   DISTRIBUTION_RULES,
   REFERRAL_RULES,
+  MARKETING_RULES,
 } from "./rules.js";
 
 export {
@@ -20,5 +21,6 @@ export {
   COMM_PLAYBOOK_MANUFACTURING,
   COMM_PLAYBOOK_DISTRIBUTION,
   COMM_PLAYBOOK_REFERRAL,
+  COMM_PLAYBOOK_MARKETING,
   type CommPlaybookId,
 } from "./_helpers.js";
