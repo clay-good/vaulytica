@@ -76,4 +76,23 @@ describe("OBLI-008 — efforts standard undefined", () => {
     );
     expect(OBLI_008.check(withRefersTo)).toBeNull();
   });
+
+  it("reads British 'best endeavours' and the 'reasonable commercial efforts' order (v1.2.0)", () => {
+    for (const clause of [
+      "Supplier shall use best endeavours to complete the works.",
+      "Supplier shall use its best endeavors to obtain the permits.",
+      "Vendor shall use reasonable commercial efforts to promote the Products.",
+      "Vendor shall use commercially reasonable endeavours to deliver.",
+    ]) {
+      expect(OBLI_008.check(buildContext(["Efforts", clause])), clause).not.toBeNull();
+    }
+  });
+
+  it("is silent when 'best endeavours' is expressly defined (v1.2.0)", () => {
+    const ctx = buildContext(
+      ["Performance", "Supplier shall use best endeavours to deliver."],
+      ["Definitions", `"Best endeavours" means all actions a prudent person would take.`],
+    );
+    expect(OBLI_008.check(ctx)).toBeNull();
+  });
 });

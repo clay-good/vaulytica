@@ -22,7 +22,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
  */
 export const rule: Rule = {
   id: "OBLI-008",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Efforts standard undefined",
   category: "obligations",
   default_severity: "info",
@@ -32,7 +32,11 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /\b(best\s+efforts|reasonable\s+(?:best\s+)?efforts|commercially\s+reasonable\s+efforts|good\s+faith\s+efforts|diligent\s+efforts)\b/i,
+      // The British "best endeavours" (also "endeavors") carries the identical
+      // ambiguity and appears verbatim on English-law templates, and the middle
+      // standard is written in either order — "commercially reasonable efforts"
+      // and "reasonable commercial efforts". All were missed.
+      /\b(best\s+efforts|best\s+endeavou?rs|reasonable\s+(?:best\s+)?efforts|reasonable\s+commercial\s+efforts|commercially\s+reasonable\s+(?:efforts|endeavou?rs)|good\s+faith\s+efforts|diligent\s+efforts)\b/i,
     );
     if (!hit) return null;
     if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;
