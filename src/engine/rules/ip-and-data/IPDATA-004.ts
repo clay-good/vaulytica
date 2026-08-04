@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
 /** IPDATA-004 — Data ownership distinction from IP (info). */
 export const rule: Rule = {
   id: "IPDATA-004",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Data ownership distinguished from IP",
   category: "ip-and-data",
   default_severity: "info",
@@ -25,8 +25,11 @@ export const rule: Rule = {
         // three trigger terms above).
         // Ownership is also allocated by RETENTION — "You retain all rights in
         // the data you upload", "Customer retains ownership of its data" — which
-        // the "owns … data" forms above miss.
-        /\b(?:customer\s+data|usage\s+data|service\s+data)\s+ownership\b|owns?\s+(?:the\s+)?(?:customer\s+|usage\s+|service\s+)?data\b|retains?\s+(?:all\s+)?(?:rights?|ownership|title)\s+(?:in|to|of)\s+[^.]{0,30}?\bdata\b/i,
+        // the "owns … data" forms above miss. Ownership stated with the DATA
+        // object first — "Customer Data shall belong to / is owned by / is the
+        // property of the Customer" — and the "owns ALL Customer Data" form
+        // (an intervening "all"/"its") are recognized too.
+        /\b(?:customer\s+data|usage\s+data|service\s+data)\s+ownership\b|owns?\s+(?:all\s+|the\s+|its\s+)*(?:customer\s+|usage\s+|service\s+)?data\b|retains?\s+(?:all\s+)?(?:rights?|ownership|title)\s+(?:in|to|of)\s+[^.]{0,30}?\bdata\b|(?:customer|usage|service)\s+data\b[^.]{0,40}?\b(?:belongs?\s+to|owned\s+by|(?:is|are|shall\s+be)\s+(?:the\s+)?(?:sole\s+|exclusive\s+)*property\s+of)\b/i,
       )
     )
       return null;

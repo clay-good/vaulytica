@@ -48,6 +48,18 @@ describe("IPDATA-004 — data ownership addressed", () => {
       IPDATA004.check(doc("Data", "The Service Data is processed for analytics.")),
     ).not.toBeNull();
   });
+
+  it("recognizes data-object-first and 'owns all' ownership forms (v1.2.0)", () => {
+    const base = "The Service processes Customer Data on the Customer's behalf.";
+    for (const ownership of [
+      "Customer Data is and remains owned by the Customer.",
+      "All Customer Data shall belong to the Customer.",
+      "Customer Data is the exclusive property of the Customer.",
+      "The Customer owns all Customer Data.",
+    ]) {
+      expect(IPDATA004.check(doc("Data", `${base} ${ownership}`)), ownership).toBeNull();
+    }
+  });
 });
 
 describe("IPDATA-010 — perpetual-license overreach", () => {
