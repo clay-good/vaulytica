@@ -118,6 +118,21 @@ describe("v4 Insurance — failure cases", () => {
     const run = await runEngine({ rules: INSURANCE_RULES, ctx, source_file: SRC });
     expect(run.findings.some((f) => f.rule_id === "INS-022")).toBe(true);
   });
+
+  it("INS-013 stays silent when the parties clause uses the noun 'indemnification' (v1.1.0)", async () => {
+    // Regression: the old detector /indemnif(y|ies|ied)/ missed the standard
+    // heading noun "indemnification" (and "indemnifying party"), firing a false
+    // "identification missing" on a clause that plainly identifies the parties.
+    const ctx = withPb(
+      buildContext([
+        "Indemnification",
+        "The indemnification obligations of the parties, including their affiliates, officers, directors, and agents, are set forth in this Section.",
+      ]),
+      IND_PB,
+    );
+    const run = await runEngine({ rules: INSURANCE_RULES, ctx, source_file: SRC });
+    expect(run.findings.some((f) => f.rule_id === "INS-013")).toBe(false);
+  });
 });
 
 describe("INS-015 — the canonical 'in whole or in part' broad-form indemnity (v1.1.0)", () => {
