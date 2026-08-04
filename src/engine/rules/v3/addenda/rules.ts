@@ -240,6 +240,7 @@ export const ADDENDA_RULES: Rule[] = [
   }),
   presenceSec({
     id: "ADDENDA-009",
+    version: "1.1.0",
     name: "Penetration-test cadence stated",
     description: "Vendor Security Addendum should state pen-test cadence.",
     citation: "NIST SP 800-53 (consensus practice)",
@@ -249,8 +250,11 @@ export const ADDENDA_RULES: Rule[] = [
     recommendation:
       "State the cadence: e.g., 'Vendor commissions an independent penetration test at least annually and remediates critical findings within 30 days.'",
     present_patterns: [
-      /(penetration\s+test\w*|pen[- ]test\w*)[^.]{0,80}(?:annual\w*|annually|quarter\w+|every\s+\d+\s+(?:months?|years?))/i,
-      /(annual\w*|annually|quarter\w+)[^.]{0,40}(?:penetration\s+test|pen[- ]test)/i,
+      // "quarter\w+" required a suffix, so it matched "quarterly" / "quarters"
+      // but not a bare "every quarter" cadence — the sibling "annual\w*" allows
+      // the zero-suffix form, so quarter should too. Use "quarter\w*".
+      /(penetration\s+test\w*|pen[- ]test\w*)[^.]{0,80}(?:annual\w*|annually|quarter\w*|every\s+\d+\s+(?:months?|years?))/i,
+      /(annual\w*|annually|quarter\w*)[^.]{0,40}(?:penetration\s+test|pen[- ]test)/i,
     ],
     default_severity: "info",
   }),

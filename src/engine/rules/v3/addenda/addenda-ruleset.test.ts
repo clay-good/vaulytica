@@ -171,6 +171,25 @@ describe("Addenda ruleset — failure modes", () => {
     expect(run.findings.find((f) => f.rule_id === "ADDENDA-004")).toBeTruthy();
   });
 
+  // v1.1.0 — "quarter\w+" required a suffix, so a bare "every quarter" cadence
+  // was wrongly reported missing.
+  it("ADDENDA-009 accepts a bare 'every quarter' pen-test cadence (v1.1.0)", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Vendor Security Addendum",
+        "Vendor shall conduct an independent penetration test every quarter and remediate critical findings within 30 days.",
+      ]),
+      SEC,
+    );
+    const run = await runEngine({
+      rules: ADDENDA_RULES,
+      ctx,
+      executed_at: "2026-05-13T00:00:00Z",
+      source_file: SRC,
+    });
+    expect(run.findings.find((f) => f.rule_id === "ADDENDA-009")).toBeFalsy();
+  });
+
   it("training on customer data without opt-in fires ADDENDA-011 critical", async () => {
     const ctx = withPb(
       buildContext([
