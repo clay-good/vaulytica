@@ -639,7 +639,7 @@
       "finding_id": "TEMP-006-s1.3-537",
       "fired": true,
       "rule_id": "TEMP-006",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -948,7 +948,7 @@
       "explanation": "A survival clause names the obligations that outlast termination — typically confidentiality, indemnity, payment obligations accrued before termination, and choice of law.",
       "id": "TEMP-006-s1.3-537",
       "rule_id": "TEMP-006",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "info",
       "source_citations": [],
       "title": "Survival clause present"
@@ -974,7 +974,7 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "ab2383561e13f6cf14c27343204642c19f7fecbb1deb4ac1d8b32c72b00a58f2",
+  "result_hash": "371ec4d74cf5011a3ffa3cc3e16ff67049c04afd876fabd112c549228b28881c",
   "source_file": {
     "name": "bad-unilateral-nda.docx",
     "sha256": "be3d09f211f21ac2141d1ff1d2ec9023dafe4f56502a8a6b66aec83361fdeca6",

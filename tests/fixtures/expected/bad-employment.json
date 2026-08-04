@@ -649,7 +649,7 @@
       "finding_id": "TEMP-006-s1.9-1554",
       "fired": true,
       "rule_id": "TEMP-006",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -1171,7 +1171,7 @@
       "explanation": "A survival clause names the obligations that outlast termination — typically confidentiality, indemnity, payment obligations accrued before termination, and choice of law.",
       "id": "TEMP-006-s1.9-1554",
       "rule_id": "TEMP-006",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "info",
       "source_citations": [],
       "title": "Survival clause present"
@@ -1197,7 +1197,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
-  "result_hash": "58ec9827beaab2a29d606789ae254464f6a976647ecb6c84560b2861b2321515",
+  "result_hash": "24ff6ff25ff1d99e3979a2b94e3e23ad0014e11a3f4cb6ebdd0b78b7c1af53eb",
   "source_file": {
     "name": "bad-employment.docx",
     "sha256": "44e689f2fe4e8767866844995363dda962260fd37d54469e6d0fdf443136013c",
