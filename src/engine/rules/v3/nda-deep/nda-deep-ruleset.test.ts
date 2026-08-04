@@ -132,6 +132,39 @@ describe("NDA-deep ruleset — failure cases", () => {
     expect(run.findings.some((f) => f.rule_id === "NDA-D-011")).toBe(true);
   });
 
+  it("NDA-D-011 does not fire on the RESTRICTIVE 'shall not make any use … other than' form (v1.1.0)", async () => {
+    // Inverse-FP regression: "any use of confidential" also matched the
+    // compliant restrictive clause that limits use to the Purpose.
+    const sf = { name: "nda.docx", sha256: "0".repeat(64), size_bytes: 1 };
+    for (const clause of [
+      "Receiving Party shall not make any use of the Confidential Information other than for the Purpose.",
+      "Recipient shall not have any use of the Confidential Information except to evaluate the transaction.",
+    ]) {
+      const ctx = withPb(buildContext(["NDA", clause]), MUTUAL);
+      const run = await runEngine({ rules: NDA_DEEP_RULES, ctx, source_file: sf });
+      expect(
+        run.findings.some((f) => f.rule_id === "NDA-D-011"),
+        clause,
+      ).toBe(false);
+    }
+  });
+
+  it("NDA-D-011 still fires on a permissive 'does not restrict any use' double-negative (v1.1.0)", async () => {
+    const ctx = withPb(
+      buildContext([
+        "NDA",
+        "This Agreement does not restrict any use of the Confidential Information by Recipient.",
+      ]),
+      MUTUAL,
+    );
+    const run = await runEngine({
+      rules: NDA_DEEP_RULES,
+      ctx,
+      source_file: { name: "nda.docx", sha256: "0".repeat(64), size_bytes: 1 },
+    });
+    expect(run.findings.some((f) => f.rule_id === "NDA-D-011")).toBe(true);
+  });
+
   it("rules do not fire when no NDA playbook is active", async () => {
     const ctx = buildContext([
       "Some other doc",

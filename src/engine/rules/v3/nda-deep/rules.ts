@@ -230,6 +230,7 @@ export const NDA_DEEP_RULES: Rule[] = [
 
   language({
     id: "NDA-D-011",
+    version: "1.1.0",
     name: "Permitted-use scope is too broad",
     description:
       "Permitted use of Confidential Information should be limited to the specific Purpose; 'any business purpose' is overbroad.",
@@ -247,8 +248,18 @@ export const NDA_DEEP_RULES: Rule[] = [
     ],
     // "for any purpose OTHER THAN the Purpose" is the narrow best-practice
     // framing NDA-D-012 checks for — the exact opposite of the unbounded grant
-    // this rule targets.
-    exclude_if: [/\bpurpose\s+other\s+than\b/i],
+    // this rule targets. The "any use" bad_pattern also matched its own
+    // inverse: the RESTRICTIVE "shall NOT make any use of the Confidential
+    // Information other than / except for the Purpose" (a compliant clause).
+    // Guard it two ways — a restrictive verb after the negation ("not make /
+    // have / put any use"), and an "any use of confidential … [limiter]" form —
+    // so a genuinely permissive grant ("does not restrict any use", "may make
+    // any use … for any purpose") still fires.
+    exclude_if: [
+      /\bpurpose\s+other\s+than\b/i,
+      /\bnot\s+(?:to\s+)?(?:make|have|put)\s+any\s+use\b/i,
+      /\bany\s+use\s+of\s+(?:the\s+)?confidential[^.]{0,40}\b(?:other\s+than|solely|only\s+for|except|limited\s+to)\b/i,
+    ],
   }),
 
   presence({
