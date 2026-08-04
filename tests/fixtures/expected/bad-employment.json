@@ -372,10 +372,10 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "PERS-006-s1.6-933",
+      "finding_id": "PERS-006-s1.6-939",
       "fired": true,
       "rule_id": "PERS-006",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -915,19 +915,19 @@
       "title": "Non-compete clause present"
     },
     {
-      "description": "shall not disparage",
-      "document_position": 933,
+      "description": "not disparage",
+      "document_position": 939,
       "excerpt": {
         "end_offset": 952,
         "section_id": "s1.6",
-        "start_offset": 933,
+        "start_offset": 939,
         "text": "Employee shall not disparage Employer, its officers, directors, products, or services in any forum at any time."
       },
       "explanation": "A non-disparagement clause that binds an employee or contractor at separation is enforceable in most US jurisdictions, but the NLRB's *McLaren Macomb* decision (Feb 2023) held that broad non-disparagement language in severance agreements can be unlawful as to NLRA-protected concerted activity. The SEC's Rule 21F-17 separately voids clauses that would prevent whistleblowing to the Commission. A non-disparagement provision without carve-outs for protected speech / agency reports / truthful testimony is increasingly indefensible.",
-      "id": "PERS-006-s1.6-933",
+      "id": "PERS-006-s1.6-939",
       "recommendation": "Add explicit carve-outs for: (1) NLRA-protected concerted activity, (2) SEC, DOL, EEOC, or other agency whistleblower reports, (3) truthful testimony in legal proceedings, and (4) statements required by law. Consider also whether the clause should be bilateral.",
       "rule_id": "PERS-006",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1197,7 +1197,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
-  "result_hash": "000ef89e2299f20c30dcf6d31829ab3a6fbc22785204dd06ee620a47274e9e8e",
+  "result_hash": "24a84eeb599f4e0dc1a9e78713c79700abcde3c186c7f9a4c1c0c2a17796cfbd",
   "source_file": {
     "name": "bad-employment.docx",
     "sha256": "44e689f2fe4e8767866844995363dda962260fd37d54469e6d0fdf443136013c",

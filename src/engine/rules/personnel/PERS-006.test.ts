@@ -34,4 +34,15 @@ describe("PERS-006 — non-disparagement clause present", () => {
     ]);
     expect(PERS_006.check(ctx)).toBeNull();
   });
+
+  it("reads the verb forms the enumerated list missed (v1.1.0)", () => {
+    for (const clause of [
+      "Employee will not disparage the Company or its officers.",
+      "Employee shall refrain from disparaging the Company.",
+      "Employee shall make no disparaging statements about the Company.",
+      "Employee is prohibited from disparaging the Employer.",
+    ]) {
+      expect(PERS_006.check(buildContext(["Non-Disparagement", clause])), clause).not.toBeNull();
+    }
+  });
 });

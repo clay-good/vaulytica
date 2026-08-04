@@ -22,7 +22,7 @@ import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js"
  */
 export const rule: Rule = {
   id: "PERS-006",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Non-disparagement clause present",
   category: "personnel",
   default_severity: "warning",
@@ -32,7 +32,17 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /\b(?:non[-\s]?disparagement|shall\s+not\s+disparage|agrees?\s+not\s+to\s+disparage|will\s+not\s+(?:make\s+)?(?:any\s+)?disparaging\s+(?:remarks?|comments?|statements?))/i,
+      // "disparage" is a distinctive word that appears almost only in this
+      // clause; requiring a negation ("not"/"no"/"refrain from"/"prohibited
+      // from") within a short window before the VERB / adjective form catches
+      // the many verb forms the enumerated list missed — "will not disparage",
+      // "refrain from disparaging", "make no disparaging statements",
+      // "prohibited from disparaging". The verb branch matches only
+      // disparage/disparages/disparaging (NOT the noun "disparagement"), so it
+      // cannot span "does not include a non-disparagement obligation" and move
+      // the match off the noun — that disclaimed form stays with the noun
+      // branch, where the presence-disclaimer guard suppresses it.
+      /\b(?:non|no)[-\s]?disparagement\b|\b(?:not|no|never|refrain\s+from|prohibited\s+from|cease\s+to)\b[^.]{0,24}?\bdisparag(?:e|es|ing)\b/i,
     );
     if (!hit) return null;
     if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;

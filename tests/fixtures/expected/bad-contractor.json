@@ -364,10 +364,10 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "PERS-006-s1.4-884",
+      "finding_id": "PERS-006-s1.4-890",
       "fired": true,
       "rule_id": "PERS-006",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -845,19 +845,19 @@
       "title": "Non-compete clause present"
     },
     {
-      "description": "shall not disparage",
-      "document_position": 884,
+      "description": "not disparage",
+      "document_position": 890,
       "excerpt": {
         "end_offset": 903,
         "section_id": "s1.4",
-        "start_offset": 884,
+        "start_offset": 890,
         "text": "Contractor shall not disparage Company, its officers, or its products at any time."
       },
       "explanation": "A non-disparagement clause that binds an employee or contractor at separation is enforceable in most US jurisdictions, but the NLRB's *McLaren Macomb* decision (Feb 2023) held that broad non-disparagement language in severance agreements can be unlawful as to NLRA-protected concerted activity. The SEC's Rule 21F-17 separately voids clauses that would prevent whistleblowing to the Commission. A non-disparagement provision without carve-outs for protected speech / agency reports / truthful testimony is increasingly indefensible.",
-      "id": "PERS-006-s1.4-884",
+      "id": "PERS-006-s1.4-890",
       "recommendation": "Add explicit carve-outs for: (1) NLRA-protected concerted activity, (2) SEC, DOL, EEOC, or other agency whistleblower reports, (3) truthful testimony in legal proceedings, and (4) statements required by law. Consider also whether the clause should be bilateral.",
       "rule_id": "PERS-006",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1049,7 +1049,7 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "3b2467acd27fc91f5e44dbc2372d0cc7200fafa5bea9c7edcb54ea98275e94b5",
+  "result_hash": "e38dc6e52d2f9dfff6400661a2fb4e6101ec70991109f46878fc3cc55fd4f118",
   "source_file": {
     "name": "bad-contractor.docx",
     "sha256": "7a40a2e53d068557d47cf7690838b907085994f596a0c6e2380b8ac2607543df",

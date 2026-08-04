@@ -365,10 +365,10 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "PERS-006-s1.6-1069",
+      "finding_id": "PERS-006-s1.6-1075",
       "fired": true,
       "rule_id": "PERS-006",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -799,19 +799,19 @@
       "title": "Non-compete clause present"
     },
     {
-      "description": "shall not disparage",
-      "document_position": 1069,
+      "description": "not disparage",
+      "document_position": 1075,
       "excerpt": {
         "end_offset": 1088,
         "section_id": "s1.6",
-        "start_offset": 1069,
+        "start_offset": 1075,
         "text": "Consultant shall not disparage Customer, its officers, or its products in any public or private communication."
       },
       "explanation": "A non-disparagement clause that binds an employee or contractor at separation is enforceable in most US jurisdictions, but the NLRB's *McLaren Macomb* decision (Feb 2023) held that broad non-disparagement language in severance agreements can be unlawful as to NLRA-protected concerted activity. The SEC's Rule 21F-17 separately voids clauses that would prevent whistleblowing to the Commission. A non-disparagement provision without carve-outs for protected speech / agency reports / truthful testimony is increasingly indefensible.",
-      "id": "PERS-006-s1.6-1069",
+      "id": "PERS-006-s1.6-1075",
       "recommendation": "Add explicit carve-outs for: (1) NLRA-protected concerted activity, (2) SEC, DOL, EEOC, or other agency whistleblower reports, (3) truthful testimony in legal proceedings, and (4) statements required by law. Consider also whether the clause should be bilateral.",
       "rule_id": "PERS-006",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1020,7 +1020,7 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"consulting agreement\". Distinguishing phrases: \"Consultant\", \"advisory services\", \"deliverables\", \"independent contractor\", \"the Consulting Services\".",
-  "result_hash": "89f0665e41411c23cf04a25526319c709b5d57d8eac7d08e8e0943e26ad709b5",
+  "result_hash": "90a68c1052bbabccf1c69f18574bbdc805d5c1cc1f281fbe4bf4c279c6e738ad",
   "source_file": {
     "name": "bad-consulting.docx",
     "sha256": "f66f070f4bb768dbc3f21ee6782418bca5ed64451d483dab533b345a8ddbe691",
