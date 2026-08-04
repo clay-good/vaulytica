@@ -32,6 +32,40 @@ describe("CHOICE-007 — consumer-contract detection", () => {
       ),
     ).not.toBeNull();
   });
+
+  // v1.1.0 — a contract that PRESERVES class rights trips the same words; it is
+  // the opposite of the waiver and must not be flagged.
+  it("is silent when the consumer contract preserves class rights", () => {
+    expect(
+      CHOICE007.check(
+        doc(
+          "Terms of Service",
+          "You do not waive your right to participate in a class action against us.",
+        ),
+      ),
+    ).toBeNull();
+    expect(
+      CHOICE007.check(
+        doc("Terms of Service", "Nothing in this Agreement waives your right to a class action."),
+      ),
+    ).toBeNull();
+    expect(
+      CHOICE007.check(
+        doc("Terms of Service", "This agreement does not contain a class action waiver."),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires when an unrelated negation shares the sentence with a real waiver", () => {
+    expect(
+      CHOICE007.check(
+        doc(
+          "Terms of Service",
+          "You may not receive a refund, and you agree to a class action waiver.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
 });
 
 describe("IPDATA-004 — data ownership addressed", () => {
