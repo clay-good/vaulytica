@@ -38,7 +38,7 @@
       "finding_id": "CHOICE-006-s1.4-1078",
       "fired": true,
       "rule_id": "CHOICE-006",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -975,7 +975,7 @@
       "explanation": "Arbitration is binding under the Federal Arbitration Act (9 U.S.C. § 2). The seat, governing rules (AAA, JAMS, ICC), and language are the key parameters.",
       "id": "CHOICE-006-s1.4-1078",
       "rule_id": "CHOICE-006",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "info",
       "source_citations": [
         {
@@ -1027,7 +1027,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.9). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
-  "result_hash": "0d658689ce626de9488b8204094c51ba65c923050f344fa0dddfdc6af4f54377",
+  "result_hash": "202885fd01d8a5447e6d5fc5c72077d73805a1b941f0a697acfb9e128cec71f0",
   "source_file": {
     "name": "bad-employment-trap.docx",
     "sha256": "c0ef11cc8a800daead332bf1bc265f96d72af1c51953958734b1bf18c4058b2a",
