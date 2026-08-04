@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 /** RISK-014 — Confidentiality term length (info). */
 export const rule: Rule = {
   id: "RISK-014",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Confidentiality term length",
   category: "risk-allocation",
   default_severity: "info",
@@ -16,8 +16,13 @@ export const rule: Rule = {
       // `[^.;\n]` so the survival term is tied to confidentiality in ONE
       // sentence — otherwise an unrelated survival clause in a later sentence
       // (e.g. indemnification surviving for 10 years) was reported as the
-      // confidentiality term length.
-      /confidentiality[^.;\n]{0,200}?(?:survive|continue|remain\s+in\s+effect)[^.;\n]{0,40}?(?:for|until)\s+(\w+\s+\(\d+\)|\d+)\s+(year|years|month|months)/i,
+      // confidentiality term length. The anchor is `confidential(?:ity)?` (not
+      // just the noun "confidentiality") and the duration verb includes "remain
+      // confidential" / "(be) kept | held | maintained confidential" — the
+      // dominant "Confidential Information shall remain confidential for five
+      // (5) years" phrasing, which the survive/continue/remain-in-effect-only
+      // list missed.
+      /\bconfidential(?:ity)?[^.;\n]{0,200}?(?:survive|continue|remain\s+in\s+effect|remain\s+confidential|(?:be\s+)?(?:kept|held|maintained)\s+(?:strictly\s+)?(?:in\s+)?confiden\w*)[^.;\n]{0,40}?(?:for|until)\s+(?:a\s+period\s+of\s+)?(\w+\s+\(\d+\)|\d+)\s+(year|years|month|months)/i,
     );
     if (!hit) return null;
     return emit(ctx, rule, {
