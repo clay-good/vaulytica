@@ -109,6 +109,16 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // are designed to provide.
   "banking-loan-agreement-missing-events-of-default-fail.txt": ["BNK-012"],
 
+  // v4 commercial pack (A.8–A.11). Each fixture is an otherwise-complete
+  // agreement missing the one clause the rule checks; the two gated
+  // compliance rules (COMM-016 RESPA, COMM-020 FTC endorsement) also
+  // supply the context that makes them applicable, proving the
+  // applicable_if fires end-to-end.
+  "manufacturing-supply-agreement-missing-quantity-fail.txt": ["COMM-001"],
+  "distribution-agreement-missing-termination-fail.txt": ["COMM-011"],
+  "channel-referral-agreement-settlement-missing-respa-fail.txt": ["COMM-016"],
+  "marketing-services-agreement-influencer-missing-ftc-fail.txt": ["COMM-020"],
+
   // Asset Purchase Agreement with the preamble extended by a sentence
   // that affirmatively elects not to include a separately captioned
   // retained-obligations schedule enumerating liabilities not assumed

@@ -515,6 +515,7 @@ const MARKETING_RULES: Rule[] = [
   }),
   presence({
     id: "COMM-020",
+    version: "1.0.1",
     name: "FTC endorsement / testimonial disclosure",
     description:
       "Marketing that uses endorsements, influencers, or testimonials must require the FTC-mandated material-connection disclosures.",
@@ -536,10 +537,16 @@ const MARKETING_RULES: Rule[] = [
       "The FTC Endorsement Guides (16 C.F.R. Part 255) require clear and conspicuous disclosure of any material connection between an advertiser and an endorser. An agency running influencer / testimonial content without contractually requiring #ad-style disclosures exposes the advertiser to a § 5 deception claim.",
     recommendation:
       "Add a clause requiring all endorsers / influencers to clearly and conspicuously disclose the material connection (e.g., '#ad' / 'paid partnership') and to make only substantiated claims, per 16 C.F.R. Part 255.",
+    // Detect the DISCLOSURE REQUIREMENT, not the campaign type — a bare
+    // "sponsored" matches "sponsored posts" (a description of the campaign),
+    // so require actual disclosure language: a material-connection / clear-and-
+    // conspicuous-disclosure obligation, an "#ad" / "paid partnership" label, or
+    // a citation to the endorsement guides.
     present_patterns: [
       /material\s+connection/i,
       /clear\w*\s+and\s+conspicuous\w*\s+disclos\w*/i,
-      /#ad\b|paid\s+partnership|sponsored/i,
+      /#ad\b|paid\s+partnership/i,
+      /disclos\w+[\s\S]{0,40}(endorse\w*|sponsor\w*|material\s+connection|paid)/is,
       /endorsement\s+guides|16\s+c\.?f\.?r\.?\s+.{0,6}255/i,
     ],
   }),
