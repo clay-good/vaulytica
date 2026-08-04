@@ -220,6 +220,52 @@ describe("RE-038 — discriminatory covenants in their real wording (v1.1.0)", (
       ),
     ).toBe(false);
   });
+
+  // v1.2.0 — a nondiscrimination clause that ENUMERATES ethnicities trips the
+  // same `no/not` + protected-class window as a covenant, but is compliance
+  // language. Accusing it of being a discriminatory covenant is the worst false
+  // positive this critical-severity rule can make.
+  it("stays silent on nondiscrimination clauses that enumerate ethnicities", async () => {
+    expect(
+      (
+        await run1(
+          "The Landlord shall not refuse to rent to any applicant because they are African American, Hispanic, or Asian.",
+        )
+      ).has("RE-038"),
+    ).toBe(false);
+    expect(
+      (
+        await run1(
+          "This community does not discriminate against African, Asian, or Latino residents.",
+        )
+      ).has("RE-038"),
+    ).toBe(false);
+    expect(
+      (
+        await run1(
+          "Equal Housing Opportunity: we will not deny housing to Black or Hispanic families.",
+        )
+      ).has("RE-038"),
+    ).toBe(false);
+  });
+
+  it("still fires on a real covenant even when the document also carries a compliance notice", async () => {
+    const ctx = withPb(
+      buildContext(
+        [
+          "Article XII — Nondiscrimination",
+          "The Association does not discriminate against any African American, Hispanic, or Asian member.",
+        ],
+        [
+          "Legacy Restriction",
+          "Said premises shall not be sold to or occupied by any person of African descent.",
+        ],
+      ),
+      CCR_PB_LOCAL,
+    );
+    const run = await runEngine({ rules: REAL_ESTATE_RULES, ctx, source_file: SRC });
+    expect(run.findings.some((f) => f.rule_id === "RE-038")).toBe(true);
+  });
 });
 
 describe("Ground lease term & reversion in real wording (v1.1.0)", () => {

@@ -807,7 +807,7 @@ const CCR_RULES: Rule[] = [
   }),
   language({
     id: "RE-038",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Race / discriminatory covenant flagged",
     description:
       "Discriminatory covenants based on race, color, religion, sex, familial status, national origin, or disability are unenforceable (Shelley v. Kraemer; FHA 42 U.S.C. § 3604).",
@@ -837,11 +837,21 @@ const CCR_RULES: Rule[] = [
     // void") trips the same `no/not` + protected-class window as the covenant
     // it repudiates. Accusing the remediation clause of being the covenant is
     // the worst false accusation this rule can make.
+    // A nondiscrimination / compliance clause trips the same `no/not` +
+    // protected-class window as the covenant it repudiates, but uses vocabulary
+    // no historical racial covenant ever did — "shall not discriminate", "will
+    // not refuse ... because they are ...", an "Equal Housing" notice, or a
+    // "without regard to race" recital. These markers are paragraph-scoped, so a
+    // genuine covenant in another paragraph still fires.
     exclude_if: [
       /\bfair\s+housing\b/i,
       /shall\s+not\s+be\s+denied/i,
       /purport(?:ing|s)?\s+to\s+(?:exclude|restrict|discriminate)/i,
       /\bvoid\b[^.]{0,60}(?:force|effect|unenforceable)/i,
+      /\bdiscriminat/i,
+      /\bbecause\s+they\s+are\b/i,
+      /\bequal\s+housing\b/i,
+      /\b(?:without\s+regard\s+to|regardless\s+of)\b[^.]{0,30}\b(?:race|colou?r|religion|national\s+origin|ancestry|familial)\b/i,
     ],
     bad_title: "Discriminatory restrictive covenant flagged",
     bad_description:
