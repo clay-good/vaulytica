@@ -972,6 +972,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   presence({
     id: "DPA-052",
+    version: "1.1.0",
     name: "Survival of GDPR obligations post-termination",
     description:
       "DPA should state that obligations applicable to retained personal data survive termination.",
@@ -982,7 +983,11 @@ export const DPA_GDPR_RULES: Rule[] = [
       "Where personal data is retained post-termination, the protective obligations should survive.",
     recommendation:
       "Add: 'Obligations applicable to retained Personal Data shall survive termination.'",
-    present_patterns: [/survive\s+(the\s+)?termination|survival/i],
+    // The verb branch required "survive … termination", so the dominant
+    // "survive expiration or termination" / "survive the expiry" phrasing was
+    // missed whenever the clause carried no "Survival" heading word. Accept
+    // expiration / expiry on the verb branch too.
+    present_patterns: [/survive\s+(?:the\s+)?(?:termination|expiration|expiry)|survival/i],
     default_severity: "warning",
   }),
   presence({

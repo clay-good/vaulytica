@@ -408,3 +408,31 @@ describe("DPA defect rules catch the violation's real wording (v1.1.0)", () => {
     ).toBe(false);
   });
 });
+
+describe("DPA-052 — survival clause recognizes 'survive expiration' phrasing (v1.1.0)", () => {
+  const has = async (body: string) => {
+    const run = await runEngine({
+      rules: DPA_GDPR_RULES,
+      ctx: withDpa(buildContext(["DPA", body])),
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("does not report the survival clause missing when written 'survive expiration or termination'", async () => {
+    expect(
+      (await has("Sections 5-8 shall survive expiration or termination of this Agreement.")).has(
+        "DPA-052",
+      ),
+    ).toBe(false);
+  });
+
+  it("still reports the survival clause missing when no survival language is present", async () => {
+    expect(
+      (
+        await has("The Processor shall process personal data per the Controller's instructions.")
+      ).has("DPA-052"),
+    ).toBe(true);
+  });
+});
