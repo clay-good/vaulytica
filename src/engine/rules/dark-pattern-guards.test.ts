@@ -164,4 +164,22 @@ describe("DARK-003 — one-way attorneys' fee-shifting", () => {
       DARK003.check(doc("Fees", "Each party shall pay its own legal fees and costs.")),
     ).toBeNull();
   });
+
+  it("reads the 'fees … incurred by <drafter>' and 'reimburse <drafter> for its fees' forms (v1.4.0)", () => {
+    for (const clause of [
+      "You shall pay all attorneys' fees and costs incurred by the Company in enforcing this Agreement.",
+      "Tenant shall pay all costs, including attorneys' fees, incurred by Landlord in any eviction proceeding.",
+      "Customer shall reimburse Company for its attorneys' fees incurred in collection.",
+    ]) {
+      expect(DARK003.check(doc("Fees", clause)), clause).not.toBeNull();
+    }
+  });
+
+  it("stays silent when the reader — not the drafter — recovers its own fees (v1.4.0)", () => {
+    expect(
+      DARK003.check(
+        doc("Fees", "Customer shall be entitled to recover its attorneys' fees if it prevails."),
+      ),
+    ).toBeNull();
+  });
 });
