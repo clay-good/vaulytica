@@ -6,8 +6,8 @@
 > prioritized first tranche of rules for a licensed reviewer to sign into
 > [`ledger.json`](ledger.json); the workflow lives in [`README.md`](README.md).
 
-- **Engine:** `9.41.0` · **Corpus:** `v0.0.0-seed` (empty) · **Catalog:** 1108 single-document rules
-- **Signed:** 0 of 1108 · **Queued (unreviewed, top 100):** 100
+- **Engine:** `9.41.0` · **Corpus:** `v0.0.0-seed` (empty) · **Catalog:** 1111 single-document rules
+- **Signed:** 0 of 1111 · **Queued (unreviewed, top 100):** 100
 
 ## Ranking
 
@@ -114,13 +114,13 @@ firing refines the order automatically — re-run `npm run accuracy` then
 | 89 | `COMM-035` — Third-party rights clearance and non-infringement of deliverables | critical | commercial | 0 | `lanham-43-a-` |
 | 90 | `COMM-036` — Confidentiality of Client information | critical | commercial | 0 | `comm-marketing-confidentiality` |
 | 91 | `COMM-037` — Subcontractor and influencer responsibility (flow-down) | critical | commercial | 0 | `ftc-16-c-f-r-part-255` |
-| 92 | `CON-001` — Owner / contractor / architect identified | critical | construction | 0 | `aia-a101` |
-| 93 | `CON-002` — Scope of work / contract documents | critical | construction | 0 | `aia-a201` |
-| 94 | `CON-003` — Contract sum + price / payment terms | critical | construction | 0 | `aia-a101` |
-| 95 | `CON-006` — Indemnification + insurance + waiver of subrogation | critical | construction | 0 | `ca-civ-2782` |
-| 96 | `CON-008` — General contractor / subcontractor / project identified | critical | construction | 0 | `con-practice-subk-baseline` |
-| 97 | `CON-009` — Subcontract scope of work + flow-down | critical | construction | 0 | `aia-a401` |
-| 98 | `CON-012` — Subcontractor warranties + workmanship + materials | critical | construction | 0 | `con-practice-subk-warranty` |
-| 99 | `CON-014` — Waiver type — conditional / unconditional + progress / final | critical | construction | 0 | `ca-civ-8132` |
-| 100 | `CON-015` — Identified claimant + property + project | critical | construction | 0 | `state-mechanics-lien` |
+| 92 | `COMM-038` — Inventory / stocking and forecasting | critical | commercial | 0 | `comm-distribution-inventory` |
+| 93 | `COMM-039` — Warranty pass-through and warranty-claim administration | critical | commercial | 0 | `comm-distribution-warranty-passthrough` |
+| 94 | `COMM-040` — Implied warranty of merchantability / fitness — granted or disclaimed | critical | commercial | 0 | `ucc-2-316` |
+| 95 | `CON-001` — Owner / contractor / architect identified | critical | construction | 0 | `aia-a101` |
+| 96 | `CON-002` — Scope of work / contract documents | critical | construction | 0 | `aia-a201` |
+| 97 | `CON-003` — Contract sum + price / payment terms | critical | construction | 0 | `aia-a101` |
+| 98 | `CON-006` — Indemnification + insurance + waiver of subrogation | critical | construction | 0 | `ca-civ-2782` |
+| 99 | `CON-008` — General contractor / subcontractor / project identified | critical | construction | 0 | `con-practice-subk-baseline` |
+| 100 | `CON-009` — Subcontract scope of work + flow-down | critical | construction | 0 | `aia-a401` |
 

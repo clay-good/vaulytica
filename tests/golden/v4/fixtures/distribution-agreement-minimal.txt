@@ -17,4 +17,9 @@ Post-Termination. On termination, Supplier shall repurchase Distributor's unsold
 Competing Products. During the Term, Distributor shall not carry, sell, or promote any competing products in the Territory.
 
 Product Liability. Supplier shall indemnify Distributor against any product-liability claim arising from a defect or design of the Products, and the parties shall cooperate on any recall, which Supplier shall conduct and fund.
+
+Inventory. Distributor shall maintain adequate inventory to serve the Territory and shall provide the Supplier with rolling ninety (90) day non-binding demand forecasts.
+
+Warranty Pass-Through. The Supplier's product warranty passes through to end customers; Distributor administers warranty claims and RMA returns, and the parties settle warranty costs monthly.
+
 Governing Law. This Agreement is governed by the laws of the State of Illinois.

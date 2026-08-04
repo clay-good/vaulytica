@@ -55,6 +55,7 @@ describe("v4 Commercial — manufacturing / supply agreement (A.10)", () => {
     "Force Majeure. Neither party is liable for delays beyond its reasonable control. " +
     "Warranty of Title. Seller conveys good title free and clear of all liens and warrants that the Goods do not infringe any third-party patent, with an infringement indemnity. " +
     "Remedies. Repair or replacement, or a refund, is Buyer's sole and exclusive remedy, provided that if that remedy fails of its essential purpose the full UCC remedies apply. " +
+    "Implied Warranties. EXCEPT AS EXPRESSLY STATED, Seller disclaims all implied warranties of merchantability and fitness for a particular purpose. " +
     "Best Efforts. Seller shall use commercially reasonable efforts to supply Buyer's requirements.";
 
   it("emits no findings against a complete supply agreement", async () => {
@@ -90,6 +91,19 @@ describe("v4 Commercial — manufacturing / supply agreement (A.10)", () => {
     expect(bare.has("COMM-024")).toBe(true);
     expect(bare.has("COMM-025")).toBe(true);
   });
+
+  it("COMM-040 fires when implied warranties are neither granted nor disclaimed", async () => {
+    const bare = await fired(
+      MFG,
+      "Seller shall sell the Goods to Buyer at the price in Exhibit A.",
+    );
+    expect(bare.has("COMM-040")).toBe(true);
+    const disclaimed = await fired(
+      MFG,
+      "The Goods are sold AS IS and Seller disclaims all implied warranties of merchantability and fitness for a particular purpose.",
+    );
+    expect(disclaimed.has("COMM-040")).toBe(false);
+  });
 });
 
 describe("v4 Commercial — reseller / distribution agreement (A.8)", () => {
@@ -102,6 +116,8 @@ describe("v4 Commercial — reseller / distribution agreement (A.8)", () => {
     "Trademark License. Supplier grants Distributor a limited license to use the Trademarks subject to Supplier's quality control and right to inspect. " +
     "Competing Products. During the Term, Distributor shall not carry, sell, or promote any competing products in the Territory. " +
     "Product Liability. Supplier shall indemnify Distributor against any product-liability claim arising from a defect in the Products, and the parties shall cooperate on any recall, which Supplier shall conduct and fund. " +
+    "Inventory. Distributor shall maintain adequate inventory to serve the Territory and provide rolling 90-day non-binding forecasts. " +
+    "Warranty Pass-Through. The Supplier's product warranty passes through to end customers; Distributor administers warranty claims and RMA returns, and the parties settle warranty costs monthly. " +
     "Post-Termination. Supplier shall repurchase unsold inventory and Distributor shall cease using the marks and return all branded materials.";
 
   it("emits no findings against a complete distribution agreement", async () => {
@@ -159,6 +175,15 @@ describe("v4 Commercial — reseller / distribution agreement (A.8)", () => {
       "Supplier appoints Distributor as reseller of the Products in the Territory.",
     );
     expect(bare.has("COMM-027")).toBe(true);
+  });
+
+  it("COMM-038/039 fire when inventory/forecasting and warranty pass-through are absent", async () => {
+    const bare = await fired(
+      DIST,
+      "Supplier appoints Distributor as reseller of the Products in the Territory.",
+    );
+    expect(bare.has("COMM-038")).toBe(true);
+    expect(bare.has("COMM-039")).toBe(true);
   });
 });
 

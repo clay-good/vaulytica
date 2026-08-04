@@ -51,7 +51,8 @@ const presence = (s: Omit<V4PresenceSpec, "category">): Rule =>
   buildV4PresenceRule({ ...s, category: CATEGORY });
 
 // ────────────────────────────────────────────────────────────────────
-// A.10 — Manufacturing / Supply agreement. 7 rules: COMM-001..COMM-007.
+// A.10 — Manufacturing / Supply agreement. COMM-001..COMM-007 core;
+// COMM-024..025, COMM-040 the second-wave additions.
 // ────────────────────────────────────────────────────────────────────
 
 const MANUFACTURING_SUPPLY_RULES: Rule[] = [
@@ -243,10 +244,32 @@ const MANUFACTURING_SUPPLY_RULES: Rule[] = [
       /limitation\s+of\s+remed\w+/i,
     ],
   }),
+  presence({
+    id: "COMM-040",
+    name: "Implied warranty of merchantability / fitness — granted or disclaimed",
+    description:
+      "A supply agreement should address the UCC implied warranties — either affirm them or conspicuously disclaim them.",
+    citation: ucc("2-316", "Exclusion or modification of warranties"),
+    playbooks: [COMM_PLAYBOOK_MANUFACTURING],
+    missing_title: "Implied-warranty (merchantability / fitness) clause missing",
+    missing_description:
+      "The agreement does not address the UCC implied warranties of merchantability or fitness (neither granted nor disclaimed).",
+    explanation:
+      "UCC § 2-314 implies a warranty of merchantability in a sale by a merchant, and § 2-315 a warranty of fitness for a particular purpose, unless § 2-316 excludes them by a conspicuous disclaimer (mentioning merchantability, or an 'as is' sale). A supply agreement silent on implied warranties leaves the merchantability warranty in place by default, often contrary to the parties' intent; the agreement should either affirm or disclaim it.",
+    recommendation:
+      "Add a warranty clause that either affirms or conspicuously disclaims the implied warranties of merchantability and fitness for a particular purpose (e.g., an 'AS IS' / 'NO IMPLIED WARRANTIES' disclaimer or an express grant), per UCC § 2-316.",
+    present_patterns: [
+      /merchantab\w+/i,
+      /fitness\s+for\s+(a\s+)?(particular|specific)\s+purpose/i,
+      /implied\s+warrant\w+/i,
+      /\bas\s+is\b|no\s+(other\s+)?warrant\w+/i,
+    ],
+  }),
 ];
 
 // ────────────────────────────────────────────────────────────────────
-// A.8 — Reseller / Distribution agreement. 6 rules: COMM-008..COMM-013.
+// A.8 — Reseller / Distribution agreement. COMM-008..COMM-013 core;
+// COMM-026..027, COMM-038..039 the second-wave additions.
 // ────────────────────────────────────────────────────────────────────
 
 const DISTRIBUTION_RULES: Rule[] = [
@@ -446,6 +469,55 @@ const DISTRIBUTION_RULES: Rule[] = [
       /\brecall\b/i,
       /indemnif\w*[\s\S]{0,50}(defect|design|product|warning)/is,
       /(defect|design)[\s\S]{0,40}indemnif/is,
+    ],
+  }),
+  presence({
+    id: "COMM-038",
+    name: "Inventory / stocking and forecasting",
+    description:
+      "A distribution agreement should require the Distributor to maintain adequate inventory and provide demand forecasts.",
+    citation: commPractice(
+      "distribution-inventory",
+      "Distribution inventory / stocking and forecasting baseline",
+      "https://www.americanbar.org/groups/business_law/",
+    ),
+    playbooks: [COMM_PLAYBOOK_DISTRIBUTION],
+    missing_title: "Inventory / forecasting clause missing",
+    missing_description: "No inventory-maintenance or demand-forecasting obligation was found.",
+    explanation:
+      "A stocking distributor is expected to hold enough inventory to serve the Territory and to give the Supplier rolling demand forecasts so the Supplier can plan production. Silence on stocking and forecasting invites stock-outs and over-production disputes; the agreement should set the stocking level and the forecast cadence.",
+    recommendation:
+      "Add an 'Inventory' clause setting a minimum stocking level and a 'Forecasting' clause requiring periodic (e.g., rolling 90-day) non-binding demand forecasts.",
+    present_patterns: [
+      /(maintain|carry|hold|stock)[\s\S]{0,40}(inventory|stock)/is,
+      /(inventory|stocking)\s+(level|requirement|obligation)/i,
+      /forecast\w*/i,
+      /safety\s+stock|reorder\s+point/i,
+    ],
+  }),
+  presence({
+    id: "COMM-039",
+    name: "Warranty pass-through and warranty-claim administration",
+    description:
+      "A distribution agreement should state how the Supplier's product warranty reaches end customers and who administers warranty claims and returns.",
+    citation: commPractice(
+      "distribution-warranty-passthrough",
+      "Distribution warranty pass-through / RMA baseline",
+      "https://www.americanbar.org/groups/business_law/",
+    ),
+    playbooks: [COMM_PLAYBOOK_DISTRIBUTION],
+    missing_title: "Warranty pass-through / claim-administration clause missing",
+    missing_description:
+      "No clause states whether the Supplier's warranty passes through to end customers or who handles warranty claims and returns.",
+    explanation:
+      "The Distributor sits between the Supplier's product warranty and the end customer. Without a pass-through and administration clause, it is unclear whether the Distributor may extend the Supplier's warranty, who honors a defective-unit claim, and how returns (RMAs) and warranty costs are settled between Supplier and Distributor.",
+    recommendation:
+      "Add a clause stating that the Supplier's warranty passes through to end customers, and allocating who administers warranty claims, returns / RMAs, and the associated cost.",
+    present_patterns: [
+      /(pass|flow)(ed|es|s)?[\s-]?(through|to)[\s\S]{0,30}(warrant|end\s+(customer|user))/is,
+      /warrant\w*[\s\S]{0,40}(pass|extend|assign)\w*[\s\S]{0,30}(customer|end\s+user)/is,
+      /\brma\b|return\s+material\s+authoriz\w+/i,
+      /warranty\s+claim\w*[\s\S]{0,40}(administ|handl|process|honor)/is,
     ],
   }),
 ];
