@@ -28,4 +28,43 @@ describe("RISK-007 — consequential damages waiver present", () => {
     expect(fires("Each party remains liable for consequential damages.")).toBe(false);
     expect(fires("The breaching party is liable for consequential damages.")).toBe(false);
   });
+
+  it("reads the 'indirect' and 'exemplary' damage synonyms (v1.2.0)", () => {
+    expect(fires("In no event shall either party be liable for any indirect damages.")).toBe(true);
+    expect(fires("Neither party shall be liable for any indirect or exemplary damages.")).toBe(true);
+    expect(fires("Company shall not be liable for exemplary damages of any kind.")).toBe(true);
+    expect(fires("No indirect damages shall be recoverable under this Agreement.")).toBe(true);
+  });
+
+  it("reads a single-type 'in no event … liable for' waiver (v1.2.0)", () => {
+    expect(fires("In no event shall Vendor be liable for any consequential damages.")).toBe(true);
+    expect(fires("Under no circumstances shall Provider be liable for special damages.")).toBe(true);
+  });
+
+  it("does not treat an 'in no event … liable for more than' cap as a damages waiver (v1.2.0)", () => {
+    expect(
+      fires("In no event shall Vendor be liable for more than the fees paid in the prior twelve months."),
+    ).toBe(false);
+  });
+
+  it("does not fire on an affirmative indemnity that ASSUMES the damage types (v1.2.0)", () => {
+    expect(
+      fires(
+        "Tenant shall further indemnify Landlord for all direct, indirect and consequential damages arising from any holdover.",
+      ),
+    ).toBe(false);
+    expect(
+      fires(
+        "Contractor shall indemnify Owner for all special, incidental, and consequential damages resulting from Contractor's breach.",
+      ),
+    ).toBe(false);
+  });
+
+  it("still fires on a waiver that merely references an indemnity carve-out (v1.2.0)", () => {
+    expect(
+      fires(
+        "Except for its indemnification obligations, in no event shall Vendor be liable for indirect, incidental, or consequential damages.",
+      ),
+    ).toBe(true);
+  });
 });
