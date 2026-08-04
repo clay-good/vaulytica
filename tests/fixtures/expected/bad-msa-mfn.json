@@ -19,7 +19,7 @@
       "finding_id": "CHOICE-003-s1-0",
       "fired": true,
       "rule_id": "CHOICE-003",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -865,7 +865,7 @@
       "explanation": "Without a venue clause, default venue rules apply (in federal court, 28 U.S.C. § 1391). A clear forum-selection clause avoids ambiguity.",
       "id": "CHOICE-003-s1-0",
       "rule_id": "CHOICE-003",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "info",
       "source_citations": [
         {
@@ -926,7 +926,7 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected msa-general (score 1). Title matched: \"master services agreement\", \"services agreement\". Distinguishing phrases: \"SOW\", \"Services\", \"Deliverables\", \"Provider\", \"Customer\".",
-  "result_hash": "66ebdd95cf1ea649ddc731c5696d9aba5c67f2a8bec335588967e98abec016dc",
+  "result_hash": "39cebc2d7c0dcd82d6d8d19ef5d7b5811c1844012f6f3766fcc28c1f15f842c9",
   "source_file": {
     "name": "bad-msa-mfn.docx",
     "sha256": "6c82de5ccf5a22064c5da0ad551848546762dc4f0b2fecf127a52f93798fe73d",

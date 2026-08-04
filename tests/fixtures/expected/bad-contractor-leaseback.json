@@ -19,7 +19,7 @@
       "finding_id": "CHOICE-003-s1-0",
       "fired": true,
       "rule_id": "CHOICE-003",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -813,7 +813,7 @@
       "explanation": "Without a venue clause, default venue rules apply (in federal court, 28 U.S.C. § 1391). A clear forum-selection clause avoids ambiguity.",
       "id": "CHOICE-003-s1-0",
       "rule_id": "CHOICE-003",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "info",
       "source_citations": [
         {
@@ -882,7 +882,7 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "178675e99046d2ed5c061a16dff136a1254226b9752e82e0b421c57b5077178f",
+  "result_hash": "4763d45a01792311c0f52f0e848f4419ea0b2f9be1aa4d49a57df7eedc3d7b68",
   "source_file": {
     "name": "bad-contractor-leaseback.docx",
     "sha256": "82496f664a3abe77b7ed03c7c77b47c9ffbd8c5f883389cb761b7ba68b31f98d",

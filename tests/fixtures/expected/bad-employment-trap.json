@@ -19,7 +19,7 @@
       "finding_id": "CHOICE-003-s1-0",
       "fired": true,
       "rule_id": "CHOICE-003",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -949,7 +949,7 @@
       "explanation": "Without a venue clause, default venue rules apply (in federal court, 28 U.S.C. § 1391). A clear forum-selection clause avoids ambiguity.",
       "id": "CHOICE-003-s1-0",
       "rule_id": "CHOICE-003",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "info",
       "source_citations": [
         {
@@ -1027,7 +1027,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.9). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
-  "result_hash": "7020fed6199cee66c62a4919b4474a283b28e3658cefa5d47ef0286dcadff8ce",
+  "result_hash": "75c03e45c9b437de2d292dea55fadd9efd601df0f56761ceb9863694cbd9236c",
   "source_file": {
     "name": "bad-employment-trap.docx",
     "sha256": "c0ef11cc8a800daead332bf1bc265f96d72af1c51953958734b1bf18c4058b2a",
