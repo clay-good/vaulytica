@@ -1,0 +1,21 @@
+Master Supply Agreement
+
+This Master Supply Agreement is entered into between Seller, Precision Components Inc., and Buyer, Acme Assembly Co., for the manufacture and supply of the Goods.
+
+Quantity. Buyer shall purchase its requirements of the Goods from Seller during the Term, with a binding forecast delivered ninety (90) days in advance and a commitment for the first thirty (30) days of each forecast.
+
+Delivery. Seller shall deliver the Goods FOB Seller's plant per the delivery schedule, with a standard lead time of fourteen (14) days. Risk of loss passes to Buyer on delivery to the carrier.
+
+Specifications. The Goods shall conform to the Specifications attached as Exhibit A, and Seller warrants that the Goods will be free from defects in material and workmanship for twelve (12) months.
+
+Price. The unit price is set on a cost-plus basis and is subject to annual price adjustment tied to the producer price index.
+
+Inspection and Acceptance. Buyer may inspect the Goods within ten (10) days of delivery and reject nonconforming goods, which Seller shall replace or refund.
+
+Force Majeure. Neither party shall be liable for any failure or delay in performance caused by events beyond its reasonable control, including acts of god, war, and supply-chain disruption; the affected party shall give prompt notice.
+
+Best Efforts. Because Buyer purchases its requirements exclusively from Seller, Seller shall use commercially reasonable efforts to supply Buyer's requirements and Buyer shall use commercially reasonable efforts to purchase.
+
+Term. This Agreement continues for three (3) years and renews for successive one-year terms unless either party gives sixty (60) days' notice of non-renewal.
+
+Governing Law. This Agreement is governed by the laws of the State of Ohio.
