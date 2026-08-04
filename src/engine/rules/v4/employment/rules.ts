@@ -576,7 +576,7 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-025",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Non-compete duration stated",
     description: "Where permitted, non-compete duration must be stated.",
     citation: stateNonCompete(),
@@ -591,10 +591,12 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
       /(\d{1,2})\s+(months?|years?).{0,40}non.?compete/is,
       /restricted\s+period/i,
       // "1. Non-Competition. During employment and for twelve (12) months
-      // after termination …" — 'Non-Competition' does not contain the literal
-      // 'compete', and the spelled-then-numeric duration wraps its digits in
-      // a parenthetical, so neither branch above matched the textbook clause.
-      /non.?competit\w*.{0,80}?\(?(\d{1,2})\)?\s*(months?|years?)/is,
+      // after termination …" — the spelled-then-numeric duration wraps its
+      // digits in a parenthetical, so the bare-digit branches above missed the
+      // textbook clause. `non.?compet\w*` matches BOTH "non-compete … (12)
+      // months" and "non-competition … (12) months" (the earlier form used
+      // "competit\w*", which excluded the plain "non-compete" spelling).
+      /non.?compet\w*.{0,80}?\(?(\d{1,2})\)?\s*(months?|years?)/is,
       /(?:twelve|eighteen|twenty-four|six|nine)\s+\(\d{1,2}\)\s+months?[^.]{0,60}(?:shall\s+not|restrict)/is,
     ],
   }),

@@ -335,3 +335,29 @@ describe("EMP-020/021 — McLaren Macomb overbreadth and its carve-out (v1.1.0)"
     ).toBe(false);
   });
 });
+
+describe("EMP-025 — non-compete duration reads the parenthesized 'non-compete … (2) years' (v1.2.0)", () => {
+  const run1 = async (body: string) => {
+    const ctx = withPb(buildContext(["Restrictive Covenants", body]), RC_PB);
+    const run = await runEngine({ rules: EMPLOYMENT_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("does not report the duration missing when stated as 'non-compete … two (2) years'", async () => {
+    expect(
+      (
+        await run1(
+          "The Employee's non-compete covenant shall last for two (2) years following termination, within the United States.",
+        )
+      ).has("EMP-025"),
+    ).toBe(false);
+  });
+
+  it("still reports the duration missing when no duration is stated", async () => {
+    expect(
+      (await run1("The Employee agrees to a non-compete covenant within the United States.")).has(
+        "EMP-025",
+      ),
+    ).toBe(true);
+  });
+});
