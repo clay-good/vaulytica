@@ -18,7 +18,7 @@ import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js"
  */
 export const rule: Rule = {
   id: "IPDATA-009",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "AI / model-training rights over Customer Data",
   category: "ip-and-data",
   default_severity: "critical",
@@ -36,10 +36,20 @@ export const rule: Rule = {
     // train" alternative starts at "use", so the negator straddles the match
     // boundary; check the text immediately before the match for a trailing
     // "shall/will/may/does not" in addition to the sentence-scoped guard.
+    // The increasingly standard privacy commitment is also written "we NEVER
+    // use your data to train …" and "AT NO TIME will we use …" — the negation
+    // is "never" (immediately before the verb) or a sentence-leading "at no
+    // time" / "under no circumstances" / "in no event" that governs the verb.
+    // Both are checked so the protective clause is not read as the grant.
     const before = hit.text.slice(0, hit.match.index);
+    const sentenceStart =
+      Math.max(before.lastIndexOf("."), before.lastIndexOf(";"), before.lastIndexOf("\n")) + 1;
+    const sentence = before.slice(sentenceStart);
     if (
       isPresenceDisclaimed(hit.text, hit.match.index) ||
-      /\b(?:shall|will|may|must|do(?:es)?|is|are)\s+not\s+$/i.test(before)
+      /\b(?:shall|will|may|must|do(?:es)?|is|are)\s+not\s+$/i.test(before) ||
+      /\bnever\s+$/i.test(before) ||
+      /\b(?:at\s+no\s+time|under\s+no\s+circumstances?|in\s+no\s+event)\b/i.test(sentence)
     )
       return null;
     return emit(ctx, rule, {

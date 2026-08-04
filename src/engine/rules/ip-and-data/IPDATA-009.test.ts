@@ -28,4 +28,50 @@ describe("IPDATA-009 — AI / model-training rights over Customer Data", () => {
     ]);
     expect(IPDATA_009.check(ctx)).toBeNull();
   });
+
+  // v1.1.0 — the standard privacy-protective commitment ("we NEVER train on
+  // your data", "AT NO TIME will we …") is the opposite of the training grant;
+  // flagging it critical is the worst false positive this rule can make. The
+  // prior guard covered only "<modal> not".
+  it("is silent on a 'we never use Customer Data to train' commitment", () => {
+    expect(
+      IPDATA_009.check(
+        buildContext(["Data and AI", "We never use Customer Data to train our models."]),
+      ),
+    ).toBeNull();
+  });
+
+  it("is silent on an 'at no time will we …' commitment", () => {
+    expect(
+      IPDATA_009.check(
+        buildContext([
+          "Data and AI",
+          "At no time will we use your data to train or develop our machine-learning models.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("is silent on an 'under no circumstances' commitment", () => {
+    expect(
+      IPDATA_009.check(
+        buildContext([
+          "Data and AI",
+          "Under no circumstances will we use Customer Data to train our AI models.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires when a 'will not sell' promise sits beside a real training grant", () => {
+    // The unrelated "will not sell" negation must not suppress a genuine grant.
+    expect(
+      IPDATA_009.check(
+        buildContext([
+          "Data and AI",
+          "Although we will not sell your data, we use Customer Data to train our models.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
 });
