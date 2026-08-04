@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 /** RISK-007 — Consequential damages waiver present (info). */
 export const rule: Rule = {
   id: "RISK-007",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Consequential damages waiver present",
   category: "risk-allocation",
   default_severity: "info",
@@ -13,7 +13,14 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /\b(?:no\s+(?:special|incidental|consequential|punitive)|(?:not\s+be\s+liable\s+for|liable\s+for|exclude(?:s|d)?\s+(?:any|all)?|waive(?:s|d)?\s+(?:any|all)?)\s+(?:[^.]*?\b)?(?:special|incidental|consequential|punitive)|(?:special|incidental|consequential|punitive)(?:[,\s]+(?:and\s+|or\s+)?(?:special|incidental|consequential|punitive)){1,3})[^.]*?\bdamages?\b/i,
+      // The "liable for" branch required a NEGATION — a bare "liable for
+      // consequential damages" was matching the affirmative inverse ("each
+      // party REMAINS liable for consequential damages", "the breaching party
+      // IS liable for …"), which is the opposite of a waiver. `not (be) liable
+      // for` also folds in the old "not be liable for" branch and now catches
+      // "is not liable for" (no "be"). Genuine waivers via the "no <type>",
+      // enumerated-list, exclude, and waive branches are unaffected.
+      /\b(?:no\s+(?:special|incidental|consequential|punitive)|(?:not\s+(?:be\s+)?liable\s+for|exclude(?:s|d)?\s+(?:any|all)?|waive(?:s|d)?\s+(?:any|all)?)\s+(?:[^.]*?\b)?(?:special|incidental|consequential|punitive)|(?:special|incidental|consequential|punitive)(?:[,\s]+(?:and\s+|or\s+)?(?:special|incidental|consequential|punitive)){1,3})[^.]*?\bdamages?\b/i,
     );
     if (!hit) return null;
     return emit(ctx, rule, {
