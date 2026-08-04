@@ -52,4 +52,37 @@ describe("RISK-016 — insurance requirement without coverage minimum", () => {
     ]);
     expect(RISK_016.check(ctx)).toBeNull();
   });
+
+  // v1.1.0 — the mandate is also written with an "is required to" modal, a
+  // "purchase / secure" verb, or in the passive voice, all previously missed.
+  it("fires on the required-to / purchase / passive forms without a minimum", () => {
+    for (const body of [
+      "Vendor is required to carry professional liability insurance during the engagement.",
+      "Tenant shall purchase fire and casualty insurance for the premises.",
+      "Insurance shall be maintained by the Contractor throughout the term.",
+    ]) {
+      const f = RISK_016.check(buildContext(["Insurance", body]));
+      expect(f, body).not.toBeNull();
+      expect(f?.severity).toBe("warning");
+    }
+  });
+
+  it("does not misread an insurance-CERTIFICATE or insurance-PROCEEDS clause as the mandate", () => {
+    expect(
+      RISK_016.check(
+        buildContext([
+          "Insurance",
+          "Contractor shall provide insurance certificates to Owner annually.",
+        ]),
+      ),
+    ).toBeNull();
+    expect(
+      RISK_016.check(
+        buildContext([
+          "Casualty",
+          "The Owner shall have insurance proceeds applied to restoration.",
+        ]),
+      ),
+    ).toBeNull();
+  });
 });

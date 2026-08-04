@@ -15,7 +15,7 @@ import { emit, enclosingSentence, firstParagraphMatch } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "RISK-016",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Insurance requirement without coverage minimum",
   category: "risk-allocation",
   default_severity: "warning",
@@ -25,7 +25,13 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /\b(?:shall|must|will|agrees?\s+to)\s+(?:maintain|carry|procure|obtain|keep\s+in\s+force)\s+[^.]{0,80}\binsurance\b/i,
+      // The requirement is also written with an "is/are required-to" modal, an
+      // "purchase / secure" verb, or in the PASSIVE ("Insurance shall be
+      // maintained by …") — all the same bare insurance mandate, previously
+      // matched only in the active shall-maintain voice. "provide / have" are
+      // deliberately omitted so "shall provide insurance CERTIFICATES" and
+      // "shall have insurance PROCEEDS applied" are not misread as the mandate.
+      /\b(?:(?:shall|must|will|agrees?\s+to|(?:is|are)\s+(?:required|obligated)\s+to)\s+(?:maintain|carry|procure|obtain|purchase|secure|keep\s+in\s+force)\s+[^.]{0,80}\binsurance\b|insurance\s+(?:shall|must|will)\s+be\s+(?:maintained|carried|procured|obtained|purchased|secured|kept\s+in\s+force))/i,
     );
     if (!hit) return null;
 

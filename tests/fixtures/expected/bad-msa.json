@@ -485,7 +485,7 @@
       "finding_id": "RISK-016-s1.4-612",
       "fired": true,
       "rule_id": "RISK-016",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -892,7 +892,7 @@
       "id": "RISK-016-s1.4-612",
       "recommendation": "Specify (1) the coverage types required (CGL, professional liability, errors & omissions, cyber, workers' comp, auto), (2) the per-occurrence limit, (3) the aggregate limit, and (4) the certificate-of-insurance / additional-insured cooperation obligations.",
       "rule_id": "RISK-016",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Insurance requirement without coverage minimum"
@@ -1033,7 +1033,7 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected msa-general (score 1). Title matched: \"master services agreement\", \"services agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Statement of Work\", \"SOW\", \"Services\", \"Provider\", \"Customer\", \"Master Agreement\".",
-  "result_hash": "770cfbe152d90d8b94e133cbe4ed98abbdec208197beb0c5fcb7f8e58471bcb0",
+  "result_hash": "dc14b526967bbe6d4bb4002c4d5439b79251a37bde52de53354bedd4f12d0a7d",
   "source_file": {
     "name": "bad-msa.docx",
     "sha256": "230075c191089510c566f91a8020e1d82f4632510794cd80d8e78c744570f4f5",
