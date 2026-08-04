@@ -80,3 +80,50 @@ describe("v4 Commercial — manufacturing / supply agreement (A.10)", () => {
     expect(excl.has("COMM-007")).toBe(true);
   });
 });
+
+describe("v4 Commercial — reseller / distribution agreement (A.8)", () => {
+  const DIST: Playbook = { id: "distribution-agreement", version: "1.0.0" };
+  const COMPLETE =
+    "Appointment. Supplier appoints Distributor as its exclusive distributor of the Products in the Territory. " +
+    "Minimum Purchases. Distributor shall purchase an annual minimum of 10,000 units. " +
+    "Resale Prices. Distributor is free to determine its own resale prices; any pricing control is limited to a minimum advertised price (MAP) policy. " +
+    "Term and Termination. This Agreement may be terminated for cause upon 60 days prior written notice and a 30-day cure period. " +
+    "Trademark License. Supplier grants Distributor a limited license to use the Trademarks subject to Supplier's quality control and right to inspect. " +
+    "Post-Termination. Supplier shall repurchase unsold inventory and Distributor shall cease using the marks and return all branded materials.";
+
+  it("emits no findings against a complete distribution agreement", async () => {
+    expect((await fired(DIST, COMPLETE)).size).toBe(0);
+  });
+
+  it("flags the missing unconditional clauses on a bare appointment", async () => {
+    const bare = await fired(
+      DIST,
+      "Supplier appoints Distributor as reseller of the Products in the Territory.",
+    );
+    // Appointment/territory present (COMM-008 silent); pricing & trademark are
+    // gated and inapplicable here; the min-purchase, term, and post-termination
+    // clauses are genuinely absent.
+    expect(bare.has("COMM-008")).toBe(false);
+    for (const id of ["COMM-009", "COMM-011", "COMM-013"]) {
+      expect(bare.has(id), id).toBe(true);
+    }
+    expect(bare.has("COMM-010")).toBe(false);
+    expect(bare.has("COMM-012")).toBe(false);
+  });
+
+  it("COMM-010 fires when the agreement fixes a minimum resale price without a freedom / MAP statement", async () => {
+    const rpm = await fired(
+      DIST,
+      "Distributor shall not sell below the minimum resale price of $50 set by Supplier.",
+    );
+    expect(rpm.has("COMM-010")).toBe(true);
+  });
+
+  it("COMM-012 fires when the agreement uses the marks but omits quality control", async () => {
+    const marks = await fired(
+      DIST,
+      "Distributor may use the Supplier's trademarks and brand in marketing the Products in the Territory.",
+    );
+    expect(marks.has("COMM-012")).toBe(true);
+  });
+});

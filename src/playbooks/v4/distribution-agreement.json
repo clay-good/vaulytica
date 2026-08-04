@@ -1,0 +1,47 @@
+{
+  "id": "distribution-agreement",
+  "version": "1.0.0",
+  "name": "Reseller / Distribution Agreement",
+  "description": "Appointment of a distributor or reseller for goods in a territory. Selects the §6.A.8 ruleset (COMM-008..COMM-013): appointment / territory / exclusivity, minimum purchase, resale-pricing freedom (Leegin), term & termination (dealer statutes), trademark license & quality control, and post-termination inventory / cease-use.",
+  "match_features": {
+    "title_keywords": [
+      "distribution agreement",
+      "distributor agreement",
+      "reseller agreement",
+      "dealer agreement",
+      "channel reseller agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "distributor",
+      "reseller",
+      "territory",
+      "appoints",
+      "exclusive distributor",
+      "resale",
+      "minimum purchase"
+    ],
+    "negative_features": [
+      "master services agreement",
+      "statement of work",
+      "software as a service",
+      "employment"
+    ]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Distributor", "Territory", "Products", "Trademarks"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "SHERMAN-ACT-VERTICAL-RESTRAINTS",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [],
+  "compliance_matrix_columns": [
+    "Appointment / territory / exclusivity",
+    "Minimum purchase / performance",
+    "Resale-pricing freedom (Leegin)",
+    "Term & termination (dealer statutes)",
+    "Trademark license & quality control",
+    "Post-termination inventory / cease-use"
+  ]
+}

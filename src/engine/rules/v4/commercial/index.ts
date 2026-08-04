@@ -8,6 +8,11 @@
  * this barrel as they are built.
  */
 
-export { COMMERCIAL_V4_RULES, MANUFACTURING_SUPPLY_RULES } from "./rules.js";
+export { COMMERCIAL_V4_RULES, MANUFACTURING_SUPPLY_RULES, DISTRIBUTION_RULES } from "./rules.js";
 
-export { COMM_PLAYBOOK_IDS, COMM_PLAYBOOK_MANUFACTURING, type CommPlaybookId } from "./_helpers.js";
+export {
+  COMM_PLAYBOOK_IDS,
+  COMM_PLAYBOOK_MANUFACTURING,
+  COMM_PLAYBOOK_DISTRIBUTION,
+  type CommPlaybookId,
+} from "./_helpers.js";

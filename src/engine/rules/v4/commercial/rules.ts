@@ -1,22 +1,31 @@
 /**
  * v4 Commercial-agreements ruleset — spec-v4.md §6.A additions.
  *
- * First landed sub-domain: A.10 — Manufacturing / Supply agreement
- * (COMM-001..COMM-007). A supply agreement for goods is governed by UCC
- * Article 2; the rules check the terms whose absence most often defeats
- * enforceability or leaves a material risk unallocated: the quantity
- * term (§ 2-306), delivery timing (§ 2-309), conformance to
- * specifications (§ 2-313/2-314), price or a price mechanism (§ 2-305),
- * inspection / acceptance (§ 2-513/2-606), excuse for supervening events
- * (§ 2-615), and — for a requirements / output or exclusive arrangement —
- * the § 2-306(2) best-efforts obligation.
+ * Landed sub-domains:
+ *   A.10 — Manufacturing / Supply agreement (COMM-001..COMM-007), UCC
+ *          Article 2: quantity (§ 2-306), delivery (§ 2-309),
+ *          specifications / warranty (§ 2-313/2-314), price (§ 2-305),
+ *          inspection / acceptance (§ 2-513/2-606), force majeure
+ *          (§ 2-615), and the § 2-306(2) best-efforts obligation.
+ *   A.8  — Reseller / Distribution agreement (COMM-008..COMM-013): the
+ *          appointment / territory / exclusivity, minimum purchase, resale
+ *          pricing (Leegin), term & termination (dealer statutes),
+ *          trademark license & quality control, and post-termination
+ *          inventory / cease-use.
  *
  * Rule ids are flat `COMM-NNN`.
  */
 
 import type { Rule } from "../../../finding.js";
 import { buildV4PresenceRule, type V4PresenceSpec } from "../_helpers.js";
-import { COMM_PLAYBOOK_MANUFACTURING, ucc } from "./_helpers.js";
+import {
+  COMM_PLAYBOOK_MANUFACTURING,
+  COMM_PLAYBOOK_DISTRIBUTION,
+  ucc,
+  sherman,
+  lanham,
+  commPractice,
+} from "./_helpers.js";
 
 const CATEGORY = "commercial";
 
@@ -176,6 +185,164 @@ const MANUFACTURING_SUPPLY_RULES: Rule[] = [
   }),
 ];
 
-export const COMMERCIAL_V4_RULES: readonly Rule[] = [...MANUFACTURING_SUPPLY_RULES];
+// ────────────────────────────────────────────────────────────────────
+// A.8 — Reseller / Distribution agreement. 6 rules: COMM-008..COMM-013.
+// ────────────────────────────────────────────────────────────────────
 
-export { MANUFACTURING_SUPPLY_RULES };
+const DISTRIBUTION_RULES: Rule[] = [
+  presence({
+    id: "COMM-008",
+    name: "Appointment, territory, and exclusivity",
+    description:
+      "A distribution agreement must define the appointment: the territory / customer scope and whether it is exclusive or non-exclusive.",
+    citation: sherman("Vertical territorial restraints — rule of reason (GTE Sylvania)"),
+    playbooks: [COMM_PLAYBOOK_DISTRIBUTION],
+    missing_title: "Appointment / territory clause missing",
+    missing_description:
+      "No clause defining the appointment, territory / customer scope, or exclusivity was found.",
+    explanation:
+      "Vertical territorial and customer restraints are judged under the rule of reason (Continental T.V. v. GTE Sylvania); the appointment must state the territory / field and whether it is exclusive so the parties — and a reviewing court — can assess the competitive scope of the restraint.",
+    recommendation:
+      "Add an 'Appointment' clause naming the products, the territory / customer scope, and whether the distributor is exclusive, sole, or non-exclusive.",
+    present_patterns: [
+      /appoint\w*/i,
+      /\bterritory\b|\bterritories\b/i,
+      /(exclusive|non.?exclusive|sole)\s+(distributor|reseller|right)/i,
+      /(distributor|reseller)\b/i,
+    ],
+  }),
+  presence({
+    id: "COMM-009",
+    name: "Minimum purchase / performance requirements",
+    description:
+      "A distribution agreement should set minimum purchase or performance requirements that measure the distributor's commitment.",
+    citation: commPractice(
+      "distribution-minimums",
+      "Distribution-agreement minimum-performance baseline (ABA Antitrust Section)",
+      "https://www.americanbar.org/groups/antitrust_law/",
+    ),
+    playbooks: [COMM_PLAYBOOK_DISTRIBUTION],
+    missing_title: "Minimum-purchase / performance clause missing",
+    missing_description: "No minimum-purchase or performance-requirement clause was found.",
+    explanation:
+      "Without a stated minimum purchase or performance quota, an exclusive appointment gives the distributor the territory with no measurable obligation — the supplier cannot police under-performance or justify terminating a passive distributor.",
+    recommendation:
+      "Add 'Minimum Purchases' or 'Performance Requirements' with an annual minimum (units or dollars) and the consequence of a shortfall (loss of exclusivity or termination).",
+    present_patterns: [
+      /minimum\s+(purchase|order|quantity|volume|amount)/i,
+      /(annual|quarterly)\s+(minimum|quota|target)/i,
+      /performance\s+(requirement|quota|target|obligation)/i,
+      /\bquota\b/i,
+    ],
+  }),
+  presence({
+    id: "COMM-010",
+    name: "Resale-pricing freedom / MAP policy",
+    description:
+      "A distribution agreement should leave the distributor free to set resale prices, or set pricing only through a lawful MAP policy.",
+    citation: sherman("Resale price maintenance — rule of reason (Leegin)"),
+    playbooks: [COMM_PLAYBOOK_DISTRIBUTION],
+    // Only relevant where the agreement actually addresses RESALE pricing — a
+    // distribution agreement silent on price has no resale-price-maintenance
+    // problem (the distributor is implicitly free). Gate on a resale-pricing
+    // context, not on the bare word "reseller".
+    applicable_if: [
+      /(resale|re-?sale|advertised)\s+price|\bmap\s+(policy|price)|price\s+(floor|maintenance|restriction)|minimum\s+(resale|advertised)\s+price/i,
+    ],
+    missing_title: "Resale-pricing freedom / MAP clause missing",
+    missing_description:
+      "The agreement addresses pricing but no resale-pricing-freedom statement or MAP policy was found.",
+    explanation:
+      "Minimum resale price maintenance is judged under the rule of reason (Leegin Creative Leather Prods. v. PSKS), and several states still treat it as per se unlawful. A distribution agreement should state that the distributor is free to set its own resale prices, or confine any pricing control to a lawful minimum-advertised-price (MAP) policy.",
+    recommendation:
+      "State that the distributor determines its own resale prices, or replace any minimum-resale-price term with a unilateral minimum-advertised-price (MAP) policy.",
+    present_patterns: [
+      /(distributor|reseller)\s+(may|shall)\s+(determine|set|establish).{0,30}(resale\s+)?price/is,
+      /free\s+to\s+(determine|set)\s+.{0,20}price/is,
+      /minimum\s+advertised\s+price|\bmap\s+policy\b/i,
+      /own\s+resale\s+prices/i,
+    ],
+  }),
+  presence({
+    id: "COMM-011",
+    name: "Term and termination — good cause and notice",
+    description:
+      "A distribution agreement should state the term and a termination standard with a notice / cure period.",
+    citation: commPractice(
+      "dealer-termination",
+      "State dealer / distributor-protection statutes (e.g., Wisconsin Fair Dealership Law, Wis. Stat. ch. 135)",
+      "https://docs.legis.wisconsin.gov/statutes/statutes/135",
+    ),
+    playbooks: [COMM_PLAYBOOK_DISTRIBUTION],
+    missing_title: "Term / termination clause missing",
+    missing_description:
+      "No term, termination standard, or notice / cure period for termination was found.",
+    explanation:
+      "Many states protect a distributor or dealer from termination except for good cause and on notice (e.g., the Wisconsin Fair Dealership Law and analogous dealer statutes). Stating the term, a good-cause / for-convenience standard, and a notice / cure period aligns the agreement with those protections and avoids a wrongful-termination claim.",
+    recommendation:
+      "Add 'Term and Termination' stating the term, the termination grounds (for cause with a cure period, and any for-convenience right with notice), and the required notice period.",
+    present_patterns: [
+      /terminat\w*[\s\S]{0,60}(for\s+cause|good\s+cause|material\s+breach|convenience)/is,
+      /(notice|cure)\s+period/i,
+      /\d+\s+days.{0,20}(notice|prior\s+written\s+notice)/is,
+      /\bterm\s+of\s+(this\s+)?agreement\b/i,
+    ],
+  }),
+  presence({
+    id: "COMM-012",
+    name: "Trademark license and quality control",
+    description:
+      "A distribution agreement that lets the distributor use the supplier's marks must grant a license and reserve quality control.",
+    citation: lanham("45", "Naked license — abandonment"),
+    playbooks: [COMM_PLAYBOOK_DISTRIBUTION],
+    // Only relevant where the agreement references the supplier's trademarks /
+    // brand — a pure commodity-resale deal that never uses the marks does not
+    // need a trademark-license clause.
+    applicable_if: [/trademark|\bmarks?\b|brand|logo|trade\s+name/i],
+    missing_title: "Trademark-license / quality-control clause missing",
+    missing_description:
+      "The agreement references the supplier's marks but no trademark license with quality control was found.",
+    explanation:
+      "A licensor that lets a distributor use its marks without controlling the quality of the goods or services risks a 'naked license' and abandonment of the marks (Lanham Act § 45). The agreement should grant a limited license and reserve the supplier's right to set and inspect quality standards.",
+    recommendation:
+      "Add a 'Trademark License' granting a limited, revocable license to use the marks in the territory, subject to the supplier's quality standards and right to inspect / approve use.",
+    present_patterns: [
+      /trademark\s+license|licens\w+\s+to\s+use\s+the\s+(marks?|trademarks?)/i,
+      /quality\s+(control|standards)/i,
+      /right\s+to\s+(inspect|approve)/i,
+      /brand\s+(guidelines|standards)/i,
+    ],
+  }),
+  presence({
+    id: "COMM-013",
+    name: "Post-termination — inventory repurchase and cease use",
+    description:
+      "A distribution agreement should address post-termination inventory repurchase / sell-off and cessation of use of the supplier's marks.",
+    citation: commPractice(
+      "dealer-repurchase",
+      "State dealer inventory-repurchase statutes (equipment / dealer acts)",
+      "https://www.americanbar.org/groups/business_law/",
+    ),
+    playbooks: [COMM_PLAYBOOK_DISTRIBUTION],
+    missing_title: "Post-termination inventory / cease-use clause missing",
+    missing_description:
+      "No post-termination inventory-repurchase / sell-off or cease-use-of-marks clause was found.",
+    explanation:
+      "On termination the distributor is left holding branded inventory and may keep using the supplier's marks. Many state dealer statutes require the supplier to repurchase unsold inventory; the agreement should also require the distributor to stop using the marks and return branded materials.",
+    recommendation:
+      "Add a 'Post-Termination' clause covering repurchase or an orderly sell-off of remaining inventory, cessation of use of the marks, and return of samples / branded materials.",
+    present_patterns: [
+      /repurchas\w*|buy.?back/i,
+      /sell.?off|sell-through|dispose\s+of\s+.{0,20}inventory/is,
+      /(cease|discontinue|stop)\s+(using|use\s+of).{0,30}(marks?|trademarks?|name)/is,
+      /return\s+.{0,30}(materials|samples|inventory|marks)/is,
+    ],
+  }),
+];
+
+export const COMMERCIAL_V4_RULES: readonly Rule[] = [
+  ...MANUFACTURING_SUPPLY_RULES,
+  ...DISTRIBUTION_RULES,
+];
+
+export { MANUFACTURING_SUPPLY_RULES, DISTRIBUTION_RULES };
