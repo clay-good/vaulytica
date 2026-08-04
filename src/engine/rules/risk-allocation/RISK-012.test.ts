@@ -28,4 +28,21 @@ describe("RISK-012 — IP indemnity present", () => {
       false,
     );
   });
+
+  // v1.2.0 — an IP-indemnity DISCLAIMER matches the same shape but grants no
+  // indemnity; surfacing it as "IP indemnity present" is a false positive.
+  it("does not fire on an IP-indemnity disclaimer (negated-detector guard)", () => {
+    expect(fires("Vendor does not indemnify Customer for any IP infringement claims.")).toBe(false);
+    expect(fires("Vendor provides no indemnification for infringement of third-party IP.")).toBe(
+      false,
+    );
+  });
+
+  it("still fires when an unrelated 'not' sits far from the indemnify verb", () => {
+    expect(
+      fires(
+        "Customer shall not be liable for infringement; Vendor shall indemnify Customer for IP claims.",
+      ),
+    ).toBe(true);
+  });
 });
