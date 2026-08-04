@@ -294,3 +294,33 @@ describe("EQT-052 — pro-rata rights presence handles the hyphenated spelling (
     ).toBe(true);
   });
 });
+
+describe("EQT-021 — FMV rep reads 'fair value … per § 1.409A' (v1.1.0)", () => {
+  const PB: Playbook = { id: "stock-option-grant", version: "1.0.0" };
+  const has = async (b: string) =>
+    new Set(
+      (
+        await runEngine({
+          rules: EQUITY_RULES,
+          ctx: withPb(buildContext(["Option Grant", b]), PB),
+          source_file: SRC,
+        })
+      ).findings.map((f) => f.rule_id),
+    );
+  it("does not fire when FMV is stated as 'fair value … per Treas. Reg. § 1.409A'", async () => {
+    expect(
+      (
+        await has(
+          "The Board determined the fair value of each share on the Grant Date per Treasury Regulation Section 1.409A-1(b)(5)(iv).",
+        )
+      ).has("EQT-021"),
+    ).toBe(false);
+  });
+  it("still fires on a bare ASC-820 'fair value' with no 409A reference", async () => {
+    expect(
+      (await has("Shares are recorded at fair value under ASC 820 for accounting purposes.")).has(
+        "EQT-021",
+      ),
+    ).toBe(true);
+  });
+});

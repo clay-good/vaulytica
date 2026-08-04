@@ -257,3 +257,26 @@ describe("IPL-009 — Kimble-compliant post-expiration royalty structures (v1.1.
     ).toBe(true);
   });
 });
+
+describe("IPL-012 — grant-back reads the 'license back' synonym (v1.1.0)", () => {
+  const PB: Playbook = { id: "patent-license", version: "1.0.0" };
+  const has = async (b: string) =>
+    new Set(
+      (
+        await runEngine({
+          rules: IP_LICENSING_RULES,
+          ctx: withPb(buildContext(["Patent License", b]), PB),
+          source_file: SRC,
+        })
+      ).findings.map((f) => f.rule_id),
+    );
+  it("does not fire when improvements are 'licensed back'", async () => {
+    expect(
+      (
+        await has(
+          "All improvements developed by Licensee shall be licensed back to Licensor royalty-free.",
+        )
+      ).has("IPL-012"),
+    ).toBe(false);
+  });
+});

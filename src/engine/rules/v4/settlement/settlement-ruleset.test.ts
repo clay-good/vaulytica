@@ -302,3 +302,24 @@ describe("SET-012 — demand deadline reads the parenthesized 'within thirty (30
     expect((await run1("This is a demand regarding the dispute.")).has("SET-012")).toBe(true);
   });
 });
+
+describe("SET-004 — no-admission reads 'without [any] admission' (v1.1.0)", () => {
+  const PB: Playbook = { id: "mutual-release", version: "1.0.0" };
+  const has = async (b: string) =>
+    new Set(
+      (
+        await runEngine({
+          rules: SETTLEMENT_RULES,
+          ctx: withPb(buildContext(["Settlement", b]), PB),
+          source_file: SRC,
+        })
+      ).findings.map((f) => f.rule_id),
+    );
+  it("does not fire on 'without any admission of liability'", async () => {
+    expect(
+      (
+        await has("This Agreement is entered into without any admission of liability by any party.")
+      ).has("SET-004"),
+    ).toBe(false);
+  });
+});

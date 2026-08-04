@@ -315,6 +315,7 @@ const PATENT_LICENSE_RULES: Rule[] = [
   }),
   presence({
     id: "IPL-012",
+    version: "1.1.0",
     name: "Improvements / grant-back",
     description:
       "Patent license should address whether improvements made by licensee are licensed back.",
@@ -330,7 +331,11 @@ const PATENT_LICENSE_RULES: Rule[] = [
       "Improvements made by licensee can be a valuable side-channel. Antitrust concerns require careful drafting: non-exclusive royalty-free grant-back is generally permissible; exclusive grant-back raises misuse concerns under DOJ / FTC IP guidelines.",
     recommendation:
       "Add 'Improvements' addressing ownership of improvements and grant-back (non-exclusive, royalty-free is the common safe-harbor).",
-    present_patterns: [/(improvements?|enhancements?|derivative\s+works?)/i, /grant.?back/i],
+    // "license back" / "licensed back" is a recognized synonym for grant-back.
+    present_patterns: [
+      /(improvements?|enhancements?|derivative\s+works?)/i,
+      /grant.?back|licens\w+\s+back/i,
+    ],
     default_severity: "warning",
   }),
 ];

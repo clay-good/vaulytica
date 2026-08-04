@@ -424,6 +424,7 @@ const OPTION_GRANT_RULES: Rule[] = [
   }),
   presence({
     id: "EQT-021",
+    version: "1.1.0",
     name: "Fair-market-value-at-grant representation",
     description:
       "Grant must represent that the exercise price equals or exceeds FMV at grant (§ 409A safe harbor / § 422(b)(4)).",
@@ -435,7 +436,17 @@ const OPTION_GRANT_RULES: Rule[] = [
       "§ 409A safe-harbor requires the exercise price to be no less than the FMV at grant. Boards typically rely on a 409A valuation; the grant should recite the FMV determination.",
     recommendation:
       "Add a recital that the exercise price is equal to or greater than the FMV of the Common Stock as determined by the Board in good faith on the Grant Date.",
-    present_patterns: [/fair\s+market\s+value/i, /\bfmv\b/i, /409a\s+valuation/i],
+    // A board resolution / valuation report often states the "fair value …
+    // determined per Treas. Reg. § 1.409A-1(b)(5)(iv)" without the word
+    // "market". Accept "fair value" ONLY within proximity of a 409A reference,
+    // so a bare ASC-820 accounting "fair value" (a different standard) is not
+    // misread as a § 409A FMV determination.
+    present_patterns: [
+      /fair\s+market\s+value/i,
+      /\bfmv\b/i,
+      /409a\s+valuation/i,
+      /fair\s+value[\s\S]{0,120}\b(?:1\.)?409a|\b(?:1\.)?409a[\s\S]{0,120}fair\s+value/i,
+    ],
     default_severity: "warning",
   }),
   presence({

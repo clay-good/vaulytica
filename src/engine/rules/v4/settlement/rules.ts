@@ -126,6 +126,7 @@ const RELEASE_RULES: Rule[] = [
   }),
   presence({
     id: "SET-004",
+    version: "1.1.0",
     name: "No admission of liability",
     description:
       "Release should state that settlement is not an admission of liability or wrongdoing.",
@@ -138,7 +139,8 @@ const RELEASE_RULES: Rule[] = [
     recommendation:
       "Add 'No Admission of Liability' recital — the settlement is a compromise of disputed claims, not an admission of fault.",
     present_patterns: [
-      /no\s+admission\s+of\s+(liability|wrongdoing|fault)/i,
+      // The clause is as often written "WITHOUT [any] admission of liability".
+      /(?:no|without)\s+(?:any\s+)?admission\s+of\s+(liability|wrongdoing|fault)/i,
       /(compromise|disputed\s+claim)/i,
     ],
     default_severity: "warning",
