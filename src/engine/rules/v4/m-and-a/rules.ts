@@ -829,7 +829,7 @@ const DISCLOSURE_SCHEDULE_RULES: Rule[] = [
   }),
   language({
     id: "MNA-040",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Schedules disclose by mere reference to a data-room folder",
     description:
       "Mere reference to a data-room folder generally does not constitute disclosure (*Cobalt International* line).",
@@ -850,6 +850,16 @@ const DISCLOSURE_SCHEDULE_RULES: Rule[] = [
       // and neither "see" nor "reference to" nor "materials in" reaches it.
       /(?:disclosed|deemed\s+disclosed|made\s+available|posted|uploaded)\s+(?:in|to|within)\s+(the\s+)?(data.room|deal\s+room|virtual\s+data\s+room|vdr)/is,
       /(the\s+)?(data.room|deal\s+room)\b[^.]{0,80}\bdeemed\s+disclosed/is,
+    ],
+    // The inverse — a protective anti-sandbagging clause that says an item is
+    // NOT deemed disclosed merely by sitting in the data room (the good drafting
+    // this rule wants) — trips the same "deemed disclosed … data room" window.
+    // These negation markers are paragraph-scoped, so a genuine blanket-
+    // disclosure clause in another paragraph still fires.
+    exclude_if: [
+      /\b(?:not|never|nor)\s+(?:be\s+|been\s+)?deemed\s+disclosed\b/i,
+      /\bno\s+(?:item|matter|information|documents?|materials?|schedule|fact|disclosure)\b[^.]{0,50}\bdeemed\s+disclosed\b/i,
+      /\bunless\s+(?:expressly|specifically|otherwise)\b[^.]{0,40}\b(?:reference|referenced|cross.reference|identified|set\s+forth|listed)\b/i,
     ],
     bad_title: "Disclosure by data-room reference flagged",
     // The patterns prove only that a data-room reference EXISTS, not that it is

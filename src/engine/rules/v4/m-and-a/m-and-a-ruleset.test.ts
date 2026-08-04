@@ -336,6 +336,34 @@ describe("MNA-040 — blanket data-room deemed-disclosure in its real wording (v
       ).has("MNA-040"),
     ).toBe(false);
   });
+
+  // v1.2.0 — the INVERSE clause (good anti-sandbagging drafting: an item is NOT
+  // deemed disclosed merely by sitting in the data room) trips the same
+  // "deemed disclosed … data room" window and must not be flagged as the defect.
+  it("stays silent on a protective 'not deemed disclosed' anti-sandbagging clause", async () => {
+    expect(
+      (
+        await run1(
+          "Materials in the data room are not deemed disclosed unless expressly cross-referenced in the Disclosure Schedules.",
+        )
+      ).has("MNA-040"),
+    ).toBe(false);
+    expect(
+      (
+        await run1(
+          "No item shall be deemed disclosed solely by virtue of being posted to the data room; specific reference in a Schedule is required.",
+        )
+      ).has("MNA-040"),
+    ).toBe(false);
+  });
+
+  it("still fires on blanket disclosure even when a 'no limit' phrase is present", async () => {
+    expect(
+      (await run1("There is no limit; all data-room materials are deemed disclosed to Buyer.")).has(
+        "MNA-040",
+      ),
+    ).toBe(true);
+  });
 });
 
 describe("Escrow release & termination in their real wording (v1.1.0)", () => {
