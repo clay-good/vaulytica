@@ -198,9 +198,10 @@
     },
     {
       "elapsed_ms": 0,
-      "fired": false,
+      "finding_id": "FIN-007-s1.1-285",
+      "fired": true,
       "rule_id": "FIN-007",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -880,6 +881,23 @@
       "title": "No venue / forum clause detected"
     },
     {
+      "description": "An MFN clause appears in the document.",
+      "document_position": 285,
+      "excerpt": {
+        "end_offset": 343,
+        "section_id": "s1.1",
+        "start_offset": 285,
+        "text": "Provider represents and warrants that the fees charged hereunder are, and shall at all times during the Term remain, no less favorable than those offered to any other customer of Provider for substant"
+      },
+      "explanation": "MFN clauses guarantee one party terms no worse than the other's best customer. They are operationally expensive to administer, sometimes raise antitrust concerns, and lock the drafting party into prices going forward.",
+      "id": "FIN-007-s1.1-285",
+      "rule_id": "FIN-007",
+      "rule_version": "1.2.0",
+      "severity": "info",
+      "source_citations": [],
+      "title": "Most-favored-nation clause present"
+    },
+    {
       "description": "Provider shall not invoice for any Deliverable until Customer has provided written acceptance of such Deliverable. | Customer shall not assign this Agreement, nor undergo any direct or indirect change of control (including any merger, co | EACH PARTY'S TOTAL CUMULATIVE LIABILITY ARISING OUT OF OR RELATED TO THIS AGREEMENT, WHETHER IN CONTRACT, TORT, OR OTHER",
       "document_position": 863,
       "excerpt": {
@@ -926,7 +944,7 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected msa-general (score 1). Title matched: \"master services agreement\", \"services agreement\". Distinguishing phrases: \"SOW\", \"Services\", \"Deliverables\", \"Provider\", \"Customer\".",
-  "result_hash": "71dced498856443876050a0f0465dd9910e8535fa7f6c53b0ab04adceb15654b",
+  "result_hash": "6c62e681ea83c175265d19c355924e12dab8978b130fa4ce7e6a0f7132e862ef",
   "source_file": {
     "name": "bad-msa-mfn.docx",
     "sha256": "6c82de5ccf5a22064c5da0ad551848546762dc4f0b2fecf127a52f93798fe73d",
