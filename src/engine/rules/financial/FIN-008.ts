@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js"
 /** FIN-008 — Minimum commitment language (info). */
 export const rule: Rule = {
   id: "FIN-008",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Minimum commitment / take-or-pay",
   category: "financial",
   default_severity: "info",
@@ -13,7 +13,12 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /\b(minimum\s+commitment|take[- ]or[- ]pay|minimum\s+(?:annual|monthly|quarterly)\s+(?:fee|payment))\b/i,
+      // The same commitment is written "minimum purchase / spend / volume /
+      // quantity", "committed volume / spend", or "volume commitment" — none of
+      // which the commitment/take-or-pay/minimum-fee list matched. "minimum" is
+      // anchored to a commitment noun so an unrelated "minimum age" does not
+      // fire.
+      /\b(?:minimum\s+(?:commitment|purchase|spend|volume|quantity|order|usage)|take[- ]or[- ]pay|minimum\s+(?:annual|monthly|quarterly)\s+(?:fee|payment|volume|quantity|spend|commitment)|committed\s+(?:volume|spend|amount|quantity)|volume\s+commitment)\b/i,
     );
     if (!hit) return null;
     if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;
