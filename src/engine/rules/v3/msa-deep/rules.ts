@@ -563,6 +563,7 @@ export const MSA_DEEP_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "MSA-018",
+    version: "1.1.0",
     name: "Termination for material breach",
     description: "MSA must include termination for material breach with cure period.",
     citation: "Commercial drafting baseline — material-breach termination",
@@ -573,7 +574,13 @@ export const MSA_DEEP_RULES: Rule[] = [
     recommendation:
       "Add: either party may terminate on N (e.g., 30) days' written notice of an uncured material breach.",
     present_patterns: [
-      /(material\s+breach|materially\s+breach\w*).{0,160}(?:cure|notice|terminate)/is,
+      // "material default" / "materially defaults" is a standard synonym for the
+      // termination trigger and was missed by the breach-only pattern, so a
+      // clause drafted "a party in material default that has not cured … may be
+      // terminated" was falsely flagged as lacking a material-breach right. The
+      // cure/notice/terminate proximity keeps it a termination clause, not an
+      // unrelated payment-default mention.
+      /(material\s+breach|materially\s+breach\w*|material\s+default|materially\s+default\w*).{0,160}(?:cure|notice|terminat)/is,
     ],
     default_severity: "warning",
   }),
