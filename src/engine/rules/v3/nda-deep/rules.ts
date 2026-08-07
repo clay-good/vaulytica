@@ -187,6 +187,7 @@ export const NDA_DEEP_RULES: Rule[] = [
 
   presence({
     id: "NDA-D-008",
+    version: "1.1.0",
     name: "Exclusion: third party lawfully obtained",
     description:
       "Confidential Information should exclude information lawfully received from a third party without breach.",
@@ -200,7 +201,17 @@ export const NDA_DEEP_RULES: Rule[] = [
       "Add: 'Confidential Information does not include information received from a third party not under an obligation of confidentiality to Disclosing Party.'",
     present_patterns: [
       /(third\s+party).{0,80}(without\s+(breach|restriction)|lawfully|not\s+(under|subject\s+to))/is,
-      /(received|obtained)\s+from\s+a\s+third\s+party/i,
+      // The carve-out uses many receipt verbs and either "from a third party" or
+      // "... to the Receiving Party BY a third party". The original verb list
+      // (received/obtained) and required "from a" article missed disclosed /
+      // provided / furnished / made-available and the "by a third party" order —
+      // so a compliant NDA drafted that way was falsely flagged missing. The
+      // direction is receipt (from/by a third party), not onward disclosure (TO a
+      // third party), which stays unmatched.
+      /(?:received|obtained|acquired|disclosed|provided|furnished|made\s+available)\b[^.]{0,40}?\b(?:from|by)\s+(?:a\s+)?third\s+party/i,
+      // "lawfully obtained from a source other than the Disclosing Party" states
+      // the same exclusion without the literal words "third party".
+      /(?:source|party)\s+other\s+than\s+(?:the\s+)?disclos\w+/i,
     ],
   }),
 
