@@ -51,6 +51,7 @@ export const BAA_RULES: Rule[] = [
 
   presence({
     id: "BAA-002",
+    version: "1.1.0",
     name: "Use limited to permitted purposes",
     description:
       "Business associate may not use PHI for any purpose other than as permitted by the BAA or required by law.",
@@ -62,7 +63,14 @@ export const BAA_RULES: Rule[] = [
       "Under § 164.504(e)(2)(ii)(A), the contract must require the BA not to use or further disclose PHI other than as permitted by the contract or as required by law.",
     recommendation:
       "Add: 'Business Associate shall not use or disclose PHI other than as permitted or required by this Agreement or as required by law.'",
-    present_patterns: [/(not\s+use\s+or\s+disclose|shall\s+not\s+use)/i],
+    // The statutory phrasing is "not use or FURTHER disclose", and the modal is
+    // as often "will"/"may" as "shall" — the original "not use or disclose" /
+    // "shall not use" pair missed the very common "Business Associate WILL not
+    // use or FURTHER disclose …" combination.
+    present_patterns: [
+      /(?:shall|will|must|may)\s+not\s+use\s+or\s+(?:further\s+)?disclose/i,
+      /(?:shall|will|must)\s+not\s+use\b/i,
+    ],
   }),
 
   presence({
