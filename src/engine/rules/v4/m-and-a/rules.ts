@@ -80,6 +80,7 @@ const LOI_TERM_SHEET_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-002",
+    version: "1.1.0",
     name: "Exclusivity / no-shop period stated",
     description:
       "LOI should include an exclusivity period during which the seller may not solicit competing offers.",
@@ -95,6 +96,10 @@ const LOI_TERM_SHEET_RULES: Rule[] = [
       /no.shop/i,
       /go.shop/i,
       /not\s+solicit.{0,40}(alternative|competing)/is,
+      // The undertaking is as often the adverb/adjective form "negotiate
+      // EXCLUSIVELY with Buyer" / "exclusive negotiations" as the noun
+      // "exclusivity".
+      /negotiate\s+exclusively|exclusive\s+(?:negotiat\w+|dealings?|basis)/i,
     ],
   }),
   presence({
@@ -112,6 +117,7 @@ const LOI_TERM_SHEET_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-004",
+    version: "1.1.0",
     name: "Purchase price / consideration outline",
     description: "LOI should outline purchase price and consideration mix.",
     citation: dealPoints("loi-price", "LOI price outline"),
@@ -124,7 +130,8 @@ const LOI_TERM_SHEET_RULES: Rule[] = [
       "Add 'Purchase Price' specifying total consideration and consideration mix (cash, stock, rollover, earnout).",
     present_patterns: [
       /purchase\s+price/i,
-      /aggregate\s+consideration/i,
+      // "total consideration" is as common as "aggregate consideration".
+      /(?:aggregate|total)\s+consideration/i,
       /enterprise\s+value/i,
       /\beva?\b/i,
     ],
@@ -156,6 +163,7 @@ const LOI_TERM_SHEET_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-006",
+    version: "1.1.0",
     name: "Conditions to closing — outline",
     description: "LOI should outline conditions to closing (due diligence, financing, regulatory).",
     citation: dealPoints("loi-conditions", "LOI conditions outline"),
@@ -168,6 +176,10 @@ const LOI_TERM_SHEET_RULES: Rule[] = [
       "Add 'Conditions' outlining due diligence, financing, HSR / regulatory, board / stockholder approvals.",
     present_patterns: [
       /conditions?\s+to\s+closing/i,
+      // "conditions precedent" and "regulatory approval / clearance" are the
+      // most common closing-condition signals and were missed.
+      /conditions?\s+precedent/i,
+      /regulatory\s+(approval|clearance)/i,
       /due\s+diligence/i,
       /financing\s+contingency/i,
       /hsr/i,
