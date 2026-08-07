@@ -564,3 +564,57 @@ describe("MNA-073/074 read the parenthesized non-compete duration (v1.1.0)", () 
     expect(ids.has("MNA-074")).toBe(true); // 7 > 5
   });
 });
+
+describe("MNA-067 — earnout-disclaimer detection allows an intervening verb (v1.2.0)", () => {
+  const EARNOUT: Playbook = { id: "earnout-agreement", version: "1.0.0" };
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: M_AND_A_RULES,
+        ctx: withPb(buildContext(["Earnout", b]), EARNOUT),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "MNA-067");
+
+  it.each([
+    "Buyer has no obligation to maximize the earnout.",
+    "Buyer has no obligation to operate the Business so as to maximize the Earnout.",
+    "Buyer is under no duty to take any action to increase the earn-out.",
+  ])("fires on a maximization disclaimer: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "Buyer shall use commercially reasonable efforts to maximize the earnout.",
+    "Buyer's obligation to maximize the Earnout shall not be diminished.",
+  ])("stays silent on an affirmative efforts standard: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});
+
+describe("MNA-074 — >5yr non-compete recognizes 'shall not compete for … years' (v1.2.0)", () => {
+  const RC: Playbook = { id: "ma-restrictive-covenant", version: "1.0.0" };
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: M_AND_A_RULES,
+        ctx: withPb(buildContext(["Restrictive Covenant", b]), RC),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "MNA-074");
+
+  it.each([
+    "The non-compete period shall be seven (7) years.",
+    "Seller shall not compete for a period of ten (10) years.",
+    "The restricted period is 8 years from Closing.",
+  ])("fires on a >5-year covenant: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "Seller shall not compete for a period of three (3) years.",
+    "The non-compete period shall be four (4) years.",
+  ])("stays silent on a <=5-year covenant: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});

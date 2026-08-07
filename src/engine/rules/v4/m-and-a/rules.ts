@@ -1456,14 +1456,19 @@ const EARNOUT_RULES: Rule[] = [
   }),
   language({
     id: "MNA-067",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Disclaimer of obligation to maximize earnout",
     description:
       "Disclaimers of any duty to maximize the earnout will not survive — *Lazard* still applies.",
     citation: delawareEarnoutCases(),
     playbooks: [MA_PLAYBOOK_EARNOUT],
+    // v1.1.0 required "no duty/obligation to maximize/increase" to sit directly
+    // against the earnout noun and missed the usual drafted forms that put a
+    // verb in between — "no obligation to OPERATE the Business so as to maximize
+    // the Earnout" and "no duty to TAKE ANY ACTION to increase the earn-out".
+    // Widen the gap between the negated duty and the maximize/increase verb.
     bad_patterns: [
-      /(no\s+(duty|obligation)\s+to\s+(maximize|increase).{0,40}earn[-\s]?out)/is,
+      /no\s+(?:duty|obligation)\s+to\b[^.]{0,60}(?:maximize|increase|accelerate|optimize)[^.]{0,40}earn[-\s]?out/is,
       /buyer\s+(may|shall)\s+operate.{0,40}sole\s+discretion.{0,80}earn[-\s]?out/is,
     ],
     bad_title: "Disclaimer of earnout-maximization duty flagged",
@@ -1614,7 +1619,7 @@ const MA_RESTRICTIVE_COVENANT_RULES: Rule[] = [
   }),
   language({
     id: "MNA-074",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Non-compete > 5 years flagged",
     description: "Most states will not enforce sale-of-business non-competes longer than 5 years.",
     citation: maPractice(
@@ -1630,6 +1635,11 @@ const MA_RESTRICTIVE_COVENANT_RULES: Rule[] = [
       /(?:non.?compete|non.?competition|restricted\s+period)[^.]{0,40}(?:of|shall\s+be|is|are|equal\s+to|not\s+exceed(?:ing)?)\s+(?:a\s+period\s+of\s+)?(?:[a-z]+[-\s]+)?\(?([6-9]|1[0-9])\)?\s+years?/is,
       /(?:for|of)\s+(?:a\s+)?(?:period\s+of\s+)?(?:[a-z]+[-\s]+)?\(?([6-9]|1[0-9])\)?\s+years?[^.]{0,40}(?:non.?compete|non.?competition|restricted\s+period|shall\s+not\s+compete)/is,
       /\(?([6-9]|1[0-9])\)?[\s-]*year\s+(?:non.?compete|non.?competition|restricted\s+period)/is,
+      // The active covenant verb "shall not compete" followed by the duration —
+      // "Seller shall not compete for a period of ten (10) years" — which the
+      // keyword-first and duration-first patterns above (they key on the noun
+      // forms) both missed.
+      /shall\s+not\s+compete\b[^.]{0,30}(?:for|of|during)\s+(?:a\s+)?(?:period\s+of\s+)?(?:[a-z]+[-\s]+)?\(?([6-9]|1[0-9])\)?\s+years?/is,
     ],
     bad_title: "Non-compete duration appears > 5 years",
     bad_description:
