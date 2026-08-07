@@ -390,3 +390,61 @@ describe("EMP-030 — blue-pencil/reformation reads the verb 'reform/modify … 
     ).toBe(true);
   });
 });
+
+describe("EMP-024 — non-compete detection recognizes 'agrees/covenants/will not' (v1.1.0)", () => {
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: EMPLOYMENT_RULES,
+        ctx: withPb(buildContext(["Restrictive Covenant", b]), RC_PB),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "EMP-024");
+
+  it.each([
+    "Employee shall not compete with the Company for two years.",
+    "Employee agrees not to compete with the Company during the restricted period.",
+    "Employee will not, directly or indirectly, engage in any competing business.",
+    "The Employee shall not, directly or indirectly, engage in any business that competes with the Company.",
+    "Employee covenants not to compete with the Company within the territory.",
+  ])("fires on a worker non-compete: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "Employee shall not be subject to any covenant not to compete.",
+    "This agreement contains no non-compete covenant.",
+    "Employee will not solicit any employee of a competing business to leave the Company.",
+    "Employee shall not disclose confidential information to any competitor.",
+  ])("stays silent on a disclaimed non-compete / non-solicit / NDA: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});
+
+describe("EMP-049 — handbook § 7 detection recognizes passive & fronted forms (v1.1.0)", () => {
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: EMPLOYMENT_RULES,
+        ctx: withPb(buildContext(["Employee Handbook", b]), HANDBOOK_PB),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "EMP-049");
+
+  it.each([
+    "Employees may not discuss their wages on company premises.",
+    "Employees are prohibited from discussing their salary with coworkers.",
+    "No employee shall disclose their compensation to others.",
+    "Employees may not post about their working conditions on social media.",
+  ])("fires on an overbroad wage-discussion rule: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "Employees are not prohibited from discussing their wages or working conditions.",
+    "This handbook does not restrict employees' rights to discuss compensation.",
+    "Employees may freely discuss their wages and working conditions.",
+  ])("stays silent on the compliant § 7 carve-out: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});

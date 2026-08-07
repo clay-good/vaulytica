@@ -548,13 +548,20 @@ const SEPARATION_RULES: Rule[] = [
 const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
   language({
     id: "EMP-024",
+    version: "1.1.0",
     name: "Worker non-compete — state-law enforceability scrutiny",
     description:
       "Worker non-competes turn on state law; the FTC's 2024 rule that would have banned most of them (16 C.F.R. Part 910) was vacated and never took effect.",
     citation: ftcNcr(),
     playbooks: [EMP_PLAYBOOK_RC],
+    // v1.0.0 keyed the restriction verb to "shall not" and missed the equally
+    // common "agrees not to compete", "covenants not to compete", and "will
+    // not … engage in any competing business". Broaden the verb group and let
+    // the action be either the verb "compete" or "engage in any [competing]
+    // business"; the "engage in any …" branch keeps a non-solicit ("will not
+    // solicit … a competing business") from being misread as a non-compete.
     bad_patterns: [
-      /(employee|worker).{0,40}shall\s+not.{0,40}(compete|engage\s+in\s+any\s+business)/is,
+      /(?:employee|worker)\b.{0,40}\b(?:shall\s+not|will\s+not|(?:agrees?|covenants?)\s+not\s+to)\b.{0,50}(?:compete\b|engage\s+in\s+any\s+(?:competing\s+|competitive\s+)?business)/is,
       /non.?compete\s+(period|covenant).{0,200}(employee|worker)/is,
     ],
     // "Employee shall not be subject to any covenant not to compete" satisfies
@@ -1089,14 +1096,27 @@ const HANDBOOK_RULES: Rule[] = [
   }),
   language({
     id: "EMP-049",
+    version: "1.1.0",
     name: "NLRA § 7 overbroad confidentiality / social-media policy",
     description:
       "Overbroad confidentiality / social-media / non-disparagement rules can chill protected concerted activity (NLRA § 7).",
     citation: nlraSec7(),
     playbooks: [EMP_PLAYBOOK_HANDBOOK],
+    // v1.0.0 keyed on "employees shall/may not discuss/disclose … wages" and
+    // (like POL-042 before its v1.2.0 fix) missed the passive "employees are
+    // prohibited from discussing their salary" and the fronted-negation "no
+    // employee shall disclose their compensation" — and carried no exclude_if,
+    // so add the § 7 carve-out guards while broadening the verb set.
     bad_patterns: [
-      /employees?\s+(shall|may)\s+not\s+(discuss|disclose).{0,80}(wages?|salary|compensation|working\s+conditions)/is,
+      /employees?\s+(shall|may)\s+not\s+(discuss|disclose|post|comment|shar\w*).{0,80}(wages?|salary|salaries|compensation|pay|working\s+conditions)/is,
+      /employees?\s+(?:are\s+)?(?:prohibited|barred|forbidden|not\s+permitted|not\s+allowed)\s+(?:from\s+)?(?:discuss|disclose|post|comment|shar)\w*.{0,80}(wages?|salary|salaries|compensation|pay|working\s+conditions)/is,
+      /no\s+employee\s+(?:shall|may|will|can)\s+(?:discuss|disclose|post|comment|shar\w*).{0,80}(wages?|salary|salaries|compensation|pay|working\s+conditions)/is,
       /(social\s+media|online).{0,80}(prohibit|may\s+not).{0,80}company/is,
+    ],
+    exclude_if: [
+      /(?:does|do|shall|will|may)\s+not\s+(?:prohibit|restrict|prevent|preclude|bar|limit)/i,
+      /\bnot\s+(?:prohibited|barred|forbidden|restricted|precluded|prevented)\b/i,
+      /\bnothing\b[^.]{0,60}(?:restrict|prohibit|prevent|preclude|limit|bar)/i,
     ],
     bad_title: "Handbook policy potentially chills § 7 rights",
     bad_description:
