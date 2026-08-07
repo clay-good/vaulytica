@@ -258,7 +258,7 @@ export const NDA_DEEP_RULES: Rule[] = [
 
   language({
     id: "NDA-D-011",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Permitted-use scope is too broad",
     description:
       "Permitted use of Confidential Information should be limited to the specific Purpose; 'any business purpose' is overbroad.",
@@ -273,6 +273,11 @@ export const NDA_DEEP_RULES: Rule[] = [
     bad_patterns: [
       /(for\s+any\s+(business\s+)?purpose|any\s+lawful\s+purpose)/i,
       /(unrestricted\s+use|any\s+use)\s+of\s+(the\s+)?confidential/is,
+      // v1.1.0 missed the "use the Confidential Information WITHOUT RESTRICTION"
+      // grant — an equally unbounded permitted-use scope. Tie it to the
+      // confidential-information object so the ubiquitous "including without
+      // limitation" boilerplate is not swept in.
+      /(?:use|utiliz\w*|exploit)[^.]{0,50}confidential[^.]{0,50}without\s+(?:any\s+)?restriction/is,
     ],
     // "for any purpose OTHER THAN the Purpose" is the narrow best-practice
     // framing NDA-D-012 checks for — the exact opposite of the unbounded grant
@@ -476,6 +481,7 @@ export const NDA_DEEP_RULES: Rule[] = [
 
   language({
     id: "NDA-D-020",
+    version: "1.1.0",
     name: "Non-solicitation lacks general-solicitation carve-out",
     description:
       "If a non-solicitation clause is present, it should carve out general solicitations not targeted at the other party's personnel.",
@@ -487,7 +493,16 @@ export const NDA_DEEP_RULES: Rule[] = [
       "Without a general-solicitation carve-out, ordinary recruiting (LinkedIn posts, conference recruiters) becomes a contractual breach risk. The standard fix is a general-solicitation safe harbor.",
     recommendation:
       "Carve out: 'Nothing in this clause shall restrict general solicitations of employment not specifically directed at employees of the other party.'",
-    bad_patterns: [/(non[- ]solicit|shall\s+not\s+solicit|will\s+not\s+solicit)/i],
+    bad_patterns: [
+      /(non[- ]solicit|shall\s+not\s+solicit|will\s+not\s+solicit)/i,
+      // v1.0.0 keyed only on "solicit" and missed the equivalent no-poach verbs.
+      // Tie recruit/hire/poach/induce to a personnel object so an unrelated
+      // "shall not hire outside counsel" is not swept in; also catch the
+      // fronted-negation "neither party shall …" form.
+      /(?:shall|will)\s+not\s+(?:recruit|hire|poach|induce)[^.]{0,60}(?:employee|personnel|staff|worker|contractor)/i,
+      /(?:neither|no)\s+party\s+shall\s+(?:solicit|recruit|hire|poach|induce)[^.]{0,60}(?:employee|personnel|staff|worker|contractor)/i,
+      /\bno[- ](?:hire|poach)\b/i,
+    ],
     // Was a forward-only negative lookahead, so a carve-out drafted BEFORE the
     // trigger ("Notwithstanding the foregoing, this Section shall not restrict
     // general solicitations ... each party shall not solicit ...") went unseen.

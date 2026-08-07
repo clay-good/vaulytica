@@ -192,3 +192,56 @@ describe("NDA-deep ruleset — failure cases", () => {
     expect(run.findings.some((f) => f.rule_id === "NDA-D-025")).toBe(true);
   });
 });
+
+describe("NDA-D-011 — overbroad use recognizes 'without restriction' (v1.2.0)", () => {
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: NDA_DEEP_RULES,
+        ctx: withPb(buildContext(["NDA", b]), MUTUAL),
+        source_file: { name: "nda.docx", sha256: "0".repeat(64), size_bytes: 1 },
+      })
+    ).findings.some((f) => f.rule_id === "NDA-D-011");
+
+  it.each([
+    "Recipient may use the Confidential Information for any business purpose.",
+    "Recipient may use the Confidential Information for any purpose whatsoever.",
+    "Recipient may use the Confidential Information without restriction.",
+  ])("fires on an unbounded permitted-use grant: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "Recipient may use the Confidential Information solely for the Purpose and for no other purpose.",
+    "Recipient shall not make any use of the Confidential Information other than for the Purpose.",
+  ])("stays silent on a Purpose-limited grant: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});
+
+describe("NDA-D-020 — non-solicit detection recognizes recruit/hire/induce & 'neither party' (v1.1.0)", () => {
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: NDA_DEEP_RULES,
+        ctx: withPb(buildContext(["NDA", b]), MUTUAL),
+        source_file: { name: "nda.docx", sha256: "0".repeat(64), size_bytes: 1 },
+      })
+    ).findings.some((f) => f.rule_id === "NDA-D-020");
+
+  it.each([
+    "Each party shall not solicit the employees of the other party.",
+    "Each party shall not recruit or hire any employee of the other party.",
+    "Neither party shall induce any employee of the other to leave.",
+  ])("fires on a non-solicit lacking a carve-out: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it("stays silent when a general-solicitation carve-out is present", async () => {
+    expect(
+      await fires(
+        "Each party shall not solicit employees, provided that general solicitations not specifically directed at the other party's employees are permitted.",
+      ),
+    ).toBe(false);
+  });
+});
