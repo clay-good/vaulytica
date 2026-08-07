@@ -79,6 +79,7 @@ const MANUFACTURING_SUPPLY_RULES: Rule[] = [
   }),
   presence({
     id: "COMM-002",
+    version: "1.1.0",
     name: "Delivery schedule / lead time",
     description:
       "A supply agreement should state delivery timing — a schedule, lead time, or Incoterms delivery point.",
@@ -94,7 +95,11 @@ const MANUFACTURING_SUPPLY_RULES: Rule[] = [
       /delivery\s+(schedule|date|time|term|point)/i,
       /lead\s+time/i,
       /\b(fob|f\.o\.b\.|ex\s+works|exw|ddp|dap|cif|incoterms)\b/i,
-      /(ship|deliver)\w*\s+within\s+\d/i,
+      // "deliver/ship … within N days" routinely names the goods between the
+      // verb and "within" ("deliver THE PRODUCTS within 15 days") and spells the
+      // count with a parenthetical ("within fifteen (15) days") — the original
+      // rigid "deliver within <digit>" missed both.
+      /(?:ship|deliver)\w*\b[^.]{0,40}?\bwithin\s+[^.]{0,12}?\(?\d{1,3}\)?\s*(?:business\s+|calendar\s+)?(?:days?|weeks?|months?|hours?)/i,
     ],
   }),
   presence({
