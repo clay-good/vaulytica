@@ -3,7 +3,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 
 /** Every party named as protected by a consequential-damages waiver in `text`. */
 const WAIVER_BENEFICIARY =
-  /\b(Provider|Vendor|Company|Supplier|Contractor|Licensor|Customer|Client|Licensee|Subscriber|Buyer|Purchaser)\s+(?:will|shall)\s+not\s+be\s+liable[\s\S]{0,200}?\b(?:consequential|special|incidental|punitive)\s+damages?\b/gi;
+  /\b(Provider|Vendor|Company|Supplier|Contractor|Licensor|Customer|Client|Licensee|Subscriber|Buyer|Purchaser|Seller)\s+(?:will|shall)\s+not\s+be\s+liable[\s\S]{0,200}?\b(?:consequential|special|incidental|punitive)\s+damages?\b/gi;
 
 function countWaiverBeneficiaries(text: string): number {
   const seen = new Set<string>();
@@ -16,7 +16,7 @@ function countWaiverBeneficiaries(text: string): number {
 /** RISK-008 — Consequential damages waiver mutuality (warning). */
 export const rule: Rule = {
   id: "RISK-008",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Consequential damages waiver mutuality",
   category: "risk-allocation",
   default_severity: "warning",
@@ -28,9 +28,14 @@ export const rule: Rule = {
       /\b(?:neither\s+party|neither\s+\w+\s+nor\s+\w+)\s+(?:will|shall)\s+be\s+liable[\s\S]{0,200}\b(?:consequential|special|incidental|punitive)\s+damages?\b/i,
     );
     if (hit) return null;
+    // v1.0.0 detected the one-sided waiver only when Provider/Vendor/Company was
+    // the protected party, so a waiver protecting only the Supplier / Licensor /
+    // Seller (etc.) slipped through entirely. Match the same party vocabulary the
+    // beneficiary counter uses; the >=2-beneficiary guard below still clears a
+    // genuinely mutual "X … and Y shall not be liable" clause.
     const oneSided = firstParagraphMatch(
       ctx,
-      /\b(?:Provider|Vendor|Company)\s+(?:will|shall)\s+not\s+be\s+liable[\s\S]{0,200}\b(?:consequential|special|incidental|punitive)\s+damages?\b/i,
+      /\b(?:Provider|Vendor|Company|Supplier|Contractor|Licensor|Customer|Client|Licensee|Subscriber|Buyer|Purchaser|Seller)\s+(?:will|shall)\s+not\s+be\s+liable[\s\S]{0,200}\b(?:consequential|special|incidental|punitive)\s+damages?\b/i,
     );
     if (!oneSided) return null;
     // A mutual waiver is just as often drafted as two symmetric grants
