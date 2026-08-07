@@ -168,6 +168,7 @@ const PROMISSORY_NOTE_RULES: Rule[] = [
   }),
   language({
     id: "BNK-051",
+    version: "1.1.0",
     name: "Confession of judgment / cognovit clause",
     description:
       "A confession-of-judgment (cognovit) clause lets the holder obtain judgment without notice or a hearing; it is void in consumer credit and prohibited or unenforceable in many states.",
@@ -178,13 +179,17 @@ const PROMISSORY_NOTE_RULES: Rule[] = [
     ),
     playbooks: [BNK_PLAYBOOK_PROMISSORY, BNK_PLAYBOOK_LOAN, BNK_PLAYBOOK_GUARANTY],
     bad_patterns: [
-      /confess(?:es|ion)?\s+(?:of\s+)?judgment/i,
+      /confess(?:es|ed|ing|ion)?\s+(?:of\s+)?judgment/i,
       /\bcognovit\b/i,
       /authorizes?\s+any\s+attorney[^.]{0,80}(?:appear|confess|judgment)/i,
       /warrant\s+of\s+attorney[^.]{0,60}(?:confess|judgment)/i,
+      // v1.0.0 matched only the "confess(ion of) judgment" order; the reversed
+      // "(entry of) judgment by confession" is an equally common cognovit form.
+      /judgment\s+by\s+confession/i,
     ],
     exclude_if: [
       /\bno\b[^.]{0,40}confession\s+of\s+judgment|confession\s+of\s+judgment[^.]{0,40}\b(?:is\s+)?(?:not|prohibited|void|waived|disclaimed)\b/i,
+      /\bno\b[^.]{0,40}judgment\s+by\s+confession|judgment\s+by\s+confession[^.]{0,40}\b(?:is\s+)?(?:not|prohibited|void|waived|disclaimed)\b/i,
     ],
     bad_title: "Confession-of-judgment (cognovit) clause present",
     bad_description:

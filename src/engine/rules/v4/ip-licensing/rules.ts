@@ -230,7 +230,7 @@ const PATENT_LICENSE_RULES: Rule[] = [
   }),
   language({
     id: "IPL-009",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Brulotte / Kimble — royalties beyond patent expiration",
     description:
       "Royalty obligations that extend beyond patent expiration violate the *Brulotte / Kimble* rule absent a step-down or unbundling.",
@@ -239,8 +239,15 @@ const PATENT_LICENSE_RULES: Rule[] = [
     bad_patterns: [
       /royalt(y|ies).{0,200}(after|beyond|notwithstanding).{0,80}(expiration|expir|term\s+of\s+the\s+patent)/is,
       /(perpetual|indefinite|in\s+perpetuity).{0,80}royalt/is,
+      // v1.1.0 matched only the "perpetual … royalt" order and the
+      // "after/beyond/notwithstanding expiration" verb set. Add the reversed
+      // "royalties … in perpetuity" and the very common "royalties … survive …
+      // expiration / the patent term" — both are the Brulotte/Kimble violation.
+      /royalt(?:y|ies).{0,80}(?:in\s+perpetuity|perpetual|indefinitely|without\s+(?:end|expiration|termination))/is,
+      /royalt(?:y|ies).{0,120}surviv\w*.{0,40}(?:expiration|expir|the\s+patent|term\s+of\s+the\s+patent)/is,
     ],
     exclude_if: [
+      /\bnot\s+be\s+(?:perpetual|indefinite|in\s+perpetuity)/i,
       /\b(?:shall|do|does|will)\s+not\s+(?:extend|accrue|continue|survive|be\s+(?:payable|owed|due|owing))\b/i,
       /\bno\s+royalt(?:y|ies)?\b[^.]{0,80}(?:after|beyond|following)\b/i,
       // Kimble-COMPLIANT structures the rule's own recommendation endorses — a

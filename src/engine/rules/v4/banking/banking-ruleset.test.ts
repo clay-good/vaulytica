@@ -269,3 +269,30 @@ describe("BNK-022 — guaranty reads 'unconditional' (v1.1.0)", () => {
     ).toBe(false);
   });
 });
+
+describe("BNK-051 — cognovit detection recognizes 'judgment by confession' (v1.1.0)", () => {
+  const NOTE: Playbook = { id: "promissory-note", version: "1.0.0" };
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: BANKING_RULES,
+        ctx: withPb(buildContext(["Promissory Note", b]), NOTE),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "BNK-051");
+
+  it.each([
+    "The Borrower authorizes any attorney to confess judgment against the Borrower.",
+    "Borrower waives the right to notice and hearing and authorizes entry of judgment by confession.",
+    "This note contains a warrant of attorney to confess judgment.",
+  ])("fires on a confession-of-judgment clause: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "No confession of judgment is authorized under this note.",
+    "Judgment by confession is prohibited and void under this note.",
+  ])("stays silent on a disclaimed clause: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});

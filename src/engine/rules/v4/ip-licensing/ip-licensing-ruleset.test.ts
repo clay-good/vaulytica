@@ -280,3 +280,31 @@ describe("IPL-012 — grant-back reads the 'license back' synonym (v1.1.0)", () 
     ).toBe(false);
   });
 });
+
+describe("IPL-009 — Brulotte royalty detection recognizes reversed & 'survive' forms (v1.2.0)", () => {
+  const PATENT: Playbook = { id: "patent-license", version: "1.0.0" };
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: IP_LICENSING_RULES,
+        ctx: withPb(buildContext(["Patent License", b]), PATENT),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "IPL-009");
+
+  it.each([
+    "Royalties shall continue after the expiration of the patent.",
+    "Licensee shall pay royalties in perpetuity.",
+    "The obligation to pay royalties survives expiration of the licensed patents.",
+  ])("fires on royalties running past patent expiration: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "Royalties shall not survive expiration of the licensed patent.",
+    "Royalties shall not be perpetual and terminate upon patent expiration.",
+    "Reduced royalties allocated to know-how shall survive expiration of the patent.",
+  ])("stays silent on a compliant / hybrid-license royalty: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});
