@@ -111,6 +111,7 @@ const BYLAWS_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-002",
+    version: "1.1.0",
     name: "Annual meeting of stockholders specified",
     description:
       "Bylaws must designate the time / place / mode of the annual meeting of stockholders (DGCL § 211; MBCA § 7.01).",
@@ -125,6 +126,10 @@ const BYLAWS_RULES: Rule[] = [
     present_patterns: [
       /annual\s+meeting\s+of\s+(the\s+)?stockholders/i,
       /annual\s+meeting\s+of\s+(the\s+)?shareholders/i,
+      // Bylaws just as often use the reordered possessive form "annual
+      // stockholders' / shareholders' meeting", which the "meeting of
+      // stockholders" order missed.
+      /annual\s+(?:stockholders?|shareholders?)['’]?\s+meeting/i,
     ],
   }),
   presence({
