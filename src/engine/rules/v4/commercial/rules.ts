@@ -301,6 +301,7 @@ const DISTRIBUTION_RULES: Rule[] = [
   }),
   presence({
     id: "COMM-009",
+    version: "1.1.0",
     name: "Minimum purchase / performance requirements",
     description:
       "A distribution agreement should set minimum purchase or performance requirements that measure the distributor's commitment.",
@@ -317,7 +318,10 @@ const DISTRIBUTION_RULES: Rule[] = [
     recommendation:
       "Add 'Minimum Purchases' or 'Performance Requirements' with an annual minimum (units or dollars) and the consequence of a shortfall (loss of exclusivity or termination).",
     present_patterns: [
-      /minimum\s+(purchase|order|quantity|volume|amount)/i,
+      // "shall purchase a minimum OF 10,000 units" is as common as "minimum
+      // purchase/quantity" — the noun-only pattern missed the "minimum of
+      // <number>" form.
+      /minimum\s+(purchase|order|quantity|volume|amount|commitment|of\s+[\d,]+)/i,
       /(annual|quarterly)\s+(minimum|quota|target)/i,
       /performance\s+(requirement|quota|target|obligation)/i,
       /\bquota\b/i,
