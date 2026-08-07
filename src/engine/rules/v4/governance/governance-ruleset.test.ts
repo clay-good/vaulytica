@@ -538,3 +538,110 @@ describe("GOV-033 — drag-along provision recognizes the 'bring-along' synonym 
     ).toBe(true);
   });
 });
+
+describe("GOV-011 — exclusive-forum overreach detected regardless of clause order (v1.1.0)", () => {
+  const BYLAWS: Playbook = { id: "bylaws-corporation", version: "1.0.0" };
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: GOVERNANCE_RULES,
+        ctx: withPb(buildContext(["Bylaws", b]), BYLAWS),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "GOV-011");
+
+  it.each([
+    "The Court of Chancery of the State of Delaware shall be the exclusive forum for any claim arising under the Securities Exchange Act of 1934.",
+    "The sole and exclusive forum for any action, including claims under the Exchange Act, shall be the Delaware Court of Chancery.",
+  ])("fires on an Exchange-Act forum overreach: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "The federal district courts shall be the exclusive forum for claims arising under the Securities Act of 1933; the Court of Chancery of the State of Delaware is the exclusive forum for internal corporate claims.",
+    "The Court of Chancery is the exclusive forum for internal claims; this provision shall not apply to any claim under the Exchange Act.",
+  ])("stays silent on the permissible 1933-Act split / carve-out: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});
+
+describe("GOV-022 — implied-covenant waiver recognizes eliminate/disclaim & passive (v1.1.0)", () => {
+  const OA: Playbook = { id: "operating-agreement-llc", version: "1.0.0" };
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: GOVERNANCE_RULES,
+        ctx: withPb(buildContext(["Operating Agreement", b]), OA),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "GOV-022");
+
+  it.each([
+    "The Members hereby waive the implied covenant of good faith and fair dealing.",
+    "The implied contractual covenant of good faith and fair dealing is hereby eliminated.",
+    "The Members disclaim any implied covenant of good faith.",
+  ])("fires on an implied-covenant waiver/elimination: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "Nothing in this Agreement shall waive or eliminate the implied covenant of good faith and fair dealing.",
+    "No provision of this Agreement eliminates the implied covenant of good faith.",
+  ])("stays silent on a preservation clause: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});
+
+describe("GOV-060 — audit-committee independence override recognizes 'need not be independent' (v1.1.0)", () => {
+  const CC: Playbook = { id: "committee-charter", version: "1.0.0" };
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: GOVERNANCE_RULES,
+        ctx: withPb(buildContext(["Committee Charter", b]), CC),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "GOV-060");
+
+  it.each([
+    "A non-independent director may serve on the audit committee.",
+    "Members of the audit committee need not be independent.",
+    "A director who is not independent may serve on the audit committee.",
+  ])("fires on an independence override: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "Each member of the audit committee must be independent.",
+    "A non-independent director may serve during the phase-in period under the Rule 10A-3 exception.",
+  ])("stays silent on a compliant / phase-in charter: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});
+
+describe("GOV-070 — implied-covenant elimination recognizes passive form (v1.1.0)", () => {
+  const PA: Playbook = { id: "partnership-agreement", version: "1.0.0" };
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: GOVERNANCE_RULES,
+        ctx: withPb(buildContext(["Partnership Agreement", b]), PA),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "GOV-070");
+
+  it.each([
+    "The partners hereby eliminate the implied covenant of good faith and fair dealing.",
+    "Any implied covenant of good faith and fair dealing is hereby disclaimed.",
+  ])("fires on an implied-covenant elimination: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it("stays silent on a preservation clause", async () => {
+    expect(
+      await fires(
+        "Nothing herein shall eliminate the implied covenant of good faith and fair dealing.",
+      ),
+    ).toBe(false);
+  });
+});

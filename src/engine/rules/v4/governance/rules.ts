@@ -272,6 +272,7 @@ const BYLAWS_RULES: Rule[] = [
   }),
   language({
     id: "GOV-011",
+    version: "1.1.0",
     name: "Exclusive-forum bylaw — federal-claims overreach",
     description:
       "A Delaware exclusive-forum bylaw cannot validly designate Delaware Chancery as the exclusive forum for Securities Act claims (Boilermakers / Sciabacucchi / Salzberg lineage; cf. CA & WA pushback).",
@@ -283,6 +284,15 @@ const BYLAWS_RULES: Rule[] = [
     playbooks: [GOV_PLAYBOOK_BYLAWS],
     bad_patterns: [
       /exclusive\s+forum.{0,120}(state\s+of\s+delaware|chancery).{0,200}(exchange\s+act|1934\s+act|federal\s+securities)/is,
+      // v1.0.0 required the "exclusive forum → Delaware/Chancery → Exchange Act"
+      // order and missed the equally common Chancery-first drafting ("The Court
+      // of Chancery … shall be the exclusive forum for … the Securities Exchange
+      // Act of 1934") and the forum→securities→Chancery order. Require all three
+      // signals to co-occur regardless of order via lookaheads; exclude_if still
+      // clears a paragraph that carves the Exchange Act back out. The 1933-only
+      // federal-forum provision does not mention the Exchange Act, so it is not
+      // swept in.
+      /(?=[\s\S]{0,400}?exclusive\s+forum)(?=[\s\S]{0,400}?(?:court\s+of\s+chancery|state\s+of\s+delaware|delaware\s+court))(?=[\s\S]{0,400}?(?:securities\s+exchange\s+act|exchange\s+act\s+of\s+1934|1934\s+act|\bexchange\s+act\b))/is,
     ],
     exclude_if: [
       /(?:shall|will|does|do)\s+not\s+apply\s+to[^.]{0,100}(?:exchange\s+act|federal\s+securities|1934\s+act)/i,
@@ -482,19 +492,24 @@ const OP_AGREEMENT_RULES: Rule[] = [
   }),
   language({
     id: "GOV-022",
+    version: "1.1.0",
     name: "Implied covenant cannot be waived",
     description:
       "DE LLC Act § 18-1101(c) prohibits waiver of the implied covenant of good faith and fair dealing.",
     citation: delllca("1101(c)"),
     playbooks: [GOV_PLAYBOOK_OP_AGREEMENT],
+    // v1.0.0 keyed only on the verb "waive" and missed the LLC agreements that
+    // "eliminate" or "disclaim" the implied covenant, and the passive "is hereby
+    // eliminated / disclaimed" where the verb follows the covenant noun.
     bad_patterns: [
-      /waiv(e|er|ed|es).{0,80}implied\s+covenant.{0,40}good\s+faith/is,
+      /(?:waiv\w*|eliminat\w*|disclaim\w*).{0,80}implied\s+covenant.{0,40}good\s+faith/is,
       /waive.{0,40}good\s+faith\s+and\s+fair\s+dealing/i,
+      /implied[^.]{0,30}covenant\s+of\s+good\s+faith[^.]{0,60}(?:is|are|be|hereby)\s+(?:hereby\s+)?(?:waiv\w*|eliminat\w*|disclaim\w*)/is,
     ],
     exclude_if: [
-      /(?:does|do|shall|will)\s+not\s+(?:be\s+deemed\s+to\s+)?waive/i,
-      /\bnothing\b[^.]{0,60}waive/i,
-      /\bno\s+(?:provision|term)\b[^.]{0,60}waive/i,
+      /(?:does|do|shall|will)\s+not\s+(?:be\s+deemed\s+to\s+)?(?:waiv\w*|eliminat\w*|disclaim\w*)/i,
+      /\bnothing\b[^.]{0,60}(?:waiv\w*|eliminat\w*|disclaim\w*)/i,
+      /\bno\s+(?:provision|term)\b[^.]{0,60}(?:waiv\w*|eliminat\w*|disclaim\w*)/i,
     ],
     bad_title: "Implied-covenant waiver is statutorily prohibited",
     bad_description:
@@ -1265,13 +1280,20 @@ const COMMITTEE_CHARTER_RULES: Rule[] = [
   }),
   language({
     id: "GOV-060",
+    version: "1.1.0",
     name: "Audit committee — non-independent member prohibited",
     description:
       "Charter cannot allow a non-independent member to serve on the audit committee absent the § 301 controlled-company / phase-in exception.",
     citation: sox301(),
     playbooks: [GOV_PLAYBOOK_COMMITTEE_CHARTER],
+    // v1.0.0 required the exact "non-independent director may serve … audit"
+    // adjacency and missed the two other ways a charter relaxes the SOX § 301
+    // rule: "members of the audit committee need not be independent" and "a
+    // director who is not independent may serve on the audit committee".
     bad_patterns: [
       /non.independent\s+(director|member).{0,40}(may|shall|can)\s+serve.{0,40}audit/is,
+      /audit\s+committee[^.]{0,80}(?:need\s+not\s+be|(?:is|are|be)\s+not\s+required\s+to\s+be|do(?:es)?\s+not\s+(?:need|have)\s+to\s+be)\s+independent/is,
+      /(?:director|member)\s+(?:who\s+is\s+)?not\s+independent[^.]{0,60}(?:may|shall|can)?\s*(?:serve|sit)[^.]{0,30}audit/is,
     ],
     // The rule's own recommendation treats an override *limited to* the Rule
     // 10A-3 phase-in / controlled-company exceptions as the compliant fix, so
@@ -1462,12 +1484,19 @@ const PARTNERSHIP_RULES: Rule[] = [
   }),
   language({
     id: "GOV-070",
+    version: "1.1.0",
     name: "Implied covenant cannot be eliminated (DRULPA § 17-1101(d))",
     description:
       "DRULPA § 17-1101(d) prohibits elimination of the implied covenant of good faith and fair dealing.",
     citation: drulpa("1101"),
     playbooks: [GOV_PLAYBOOK_PARTNERSHIP],
-    bad_patterns: [/(waive|eliminate|disclaim).{0,80}implied\s+covenant.{0,40}good\s+faith/is],
+    // v1.0.0's single verb-first pattern missed the passive "implied covenant of
+    // good faith … is hereby eliminated / disclaimed" where the verb follows the
+    // covenant noun.
+    bad_patterns: [
+      /(waive|eliminate|disclaim)\w*.{0,80}implied\s+covenant.{0,40}good\s+faith/is,
+      /implied[^.]{0,30}covenant\s+of\s+good\s+faith[^.]{0,60}(?:is|are|be|hereby)\s+(?:hereby\s+)?(?:waiv\w*|eliminat\w*|disclaim\w*)/is,
+    ],
     exclude_if: [
       /(?:does|do|shall|will)\s+not\s+(?:waive|eliminate|disclaim)/i,
       /\bnothing\b[^.]{0,60}(?:waive|eliminate|disclaim)/i,
