@@ -208,6 +208,7 @@ const ENDORSEMENT_RULES: Rule[] = [
   }),
   language({
     id: "INS-010",
+    version: "1.1.0",
     name: "Coverage-restricting endorsements flagged for review",
     description:
       "Coverage-restricting endorsements (exclusions, sublimits) should be flagged to underwriters and the broker.",
@@ -217,12 +218,25 @@ const ENDORSEMENT_RULES: Rule[] = [
       "https://www.irmi.com/articles/expert-commentary/exclusions",
     ),
     playbooks: [INS_PLAYBOOK_ENDORSEMENT],
+    // v1.0.0 only caught "absolute/total exclusion" adjacent to a peril, a
+    // "$NNk / $NN thousand" sublimit, or "excludes all coverage". Real
+    // endorsements usually title the exclusion ("Asbestos Exclusion") and state
+    // it as "we will not pay for … <peril>", and write the sublimit in comma
+    // form ("$25,000") — all of which slipped. Add the titled-exclusion + "we
+    // will not pay for <serious peril>" forms and a comma-grouped dollar
+    // sublimit bounded below $1M (a lookahead drops million-dollar figures so a
+    // routine large sublimit is not flagged as severe).
     bad_patterns: [
       /(absolute\s+exclusion|total\s+exclusion).{0,80}(pollution|cyber|communicable\s+disease|silica|asbestos|abuse|molest)/is,
-      /sublimit.{0,80}(\$\s*\d{1,2}[,.]?\d{0,3}\s*(thousand|k\b))/is,
+      /\b(?:pollution|cyber|communicable\s+disease|silica|asbestos|abuse|molest\w*|lead|mold|fungi|terrorism|nuclear|assault\s+(?:and|or|&)\s+battery)\s+exclusion\b/i,
+      /we\s+will\s+not\s+pay[^.]{0,90}\b(?:pollution|cyber|communicable\s+disease|silica|asbestos|abuse|molest\w*|lead|mold|fungi|terrorism|nuclear)\b/is,
+      /sublimit[^.]{0,80}\$\s*\d{1,3}(?:,\d{3})?(?:\s*(?:thousand|k\b))?(?!\s*,?\d)/is,
       /excludes?\s+all\s+coverage/i,
     ],
-    exclude_if: [/(?:does|do|shall|will)\s+not\s+exclude/i],
+    exclude_if: [
+      /(?:does|do|shall|will)\s+not\s+exclude/i,
+      /\bno\s+(?:\w+\s+){0,2}exclusion\b/i,
+    ],
     bad_title: "Coverage-restricting endorsement flagged for review",
     bad_description:
       "The endorsement contains an absolute exclusion, severe sublimit, or all-coverage exclusion that warrants underwriter / broker review.",
@@ -496,6 +510,7 @@ const HOLD_HARMLESS_RULES: Rule[] = [
   }),
   language({
     id: "INS-022",
+    version: "1.1.0",
     name: "Release-of-future-claims overreach flagged",
     description:
       "Pre-dispute hold-harmless agreements that release ordinary negligence may be unenforceable in some states (esp. for recreational / fitness activities for consumers).",
@@ -505,13 +520,20 @@ const HOLD_HARMLESS_RULES: Rule[] = [
       "https://www.law.cornell.edu/wex/exculpatory_clause",
     ),
     playbooks: [INS_PLAYBOOK_HOLD_HARMLESS],
+    // v1.0.0 keyed only on the verbs "release" / "hold harmless" and missed the
+    // equally common "waive(s) all claims … including gross negligence" form.
+    // Add "waiv…" as a release verb; the strengthened carve-out guards below
+    // keep the compliant "nothing herein waives … gross negligence" / "except
+    // for gross negligence" forms silent.
     bad_patterns: [
-      /(release|hold\s+harmless).{0,200}(any\s+and\s+all|all)\s+(future|prospective)\s+claims?/is,
-      /(release|hold\s+harmless).{0,200}(gross\s+negligence|willful\s+misconduct|intentional)/is,
+      /(release|hold\s+harmless|waiv\w*).{0,200}(any\s+and\s+all|all)\s+(future|prospective)\s+claims?/is,
+      /(release|hold\s+harmless|waiv\w*).{0,200}(gross\s+negligence|willful\s+misconduct|intentional)/is,
     ],
     exclude_if: [
       /(?:release|releases?|hold\s+harmless)\s+(?:does|do|shall|will)\s+not\s+(?:apply|extend|cover|include|reach)\b/i,
-      /(?:does|do|shall|will)\s+not\s+(?:apply|extend|release|cover)\b[^.]{0,80}(?:gross\s+negligence|willful|intentional)/i,
+      /(?:does|do|shall|will)\s+not\s+(?:apply|extend|release|cover|waive)\b[^.]{0,80}(?:gross\s+negligence|willful|intentional)/i,
+      /\bnothing\b[^.]{0,80}(?:gross\s+negligence|willful|intentional)/i,
+      /(?:except|other\s+than|excluding|but\s+not)\b[^.]{0,80}(?:gross\s+negligence|willful|intentional)/i,
     ],
     bad_title: "Pre-dispute release / hold-harmless overreach flagged",
     bad_description:

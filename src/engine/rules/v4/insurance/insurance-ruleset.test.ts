@@ -190,3 +190,60 @@ describe("INS-012 — subrogation waiver reads 'waives rights of recovery' (v1.1
     ).toBe(false);
   });
 });
+
+describe("INS-010 — coverage-restricting endorsement detection (v1.1.0)", () => {
+  const END: Playbook = { id: "insurance-endorsement", version: "1.0.0" };
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: INSURANCE_RULES,
+        ctx: withPb(buildContext(["Endorsement", b]), END),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "INS-010");
+
+  it.each([
+    "Exclusion of Communicable Disease. We will not pay for any loss arising from a communicable disease.",
+    "A sublimit of $25,000 applies to all cyber claims.",
+    "The policy is amended to add an Asbestos Exclusion; we will not pay for any claim arising out of asbestos.",
+    "Pollution Exclusion. This endorsement adds an absolute pollution exclusion.",
+  ])("fires on a titled exclusion / dollar sublimit: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "This endorsement does not exclude pollution; coverage is preserved.",
+    "This policy contains no asbestos exclusion.",
+    "A general aggregate limit of $2,000,000 applies to this coverage part.",
+    "The sublimit for this coverage is $5,000,000 per occurrence.",
+  ])("stays silent on preserved coverage / million-dollar sublimit: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});
+
+describe("INS-022 — release overreach recognizes 'waive' verb (v1.1.0)", () => {
+  const HH: Playbook = { id: "hold-harmless-agreement", version: "1.0.0" };
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: INSURANCE_RULES,
+        ctx: withPb(buildContext(["Hold Harmless", b]), HH),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "INS-022");
+
+  it.each([
+    "Releasor waives all claims, including those for the Operator's gross negligence.",
+    "The undersigned waives any and all future claims against the facility.",
+  ])("fires on a waiver-verb overreach: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "Participant waives claims for ordinary negligence. Nothing herein waives liability for gross negligence or willful misconduct.",
+    "Releasor waives claims except for the Operator's gross negligence or willful misconduct.",
+    "The waiver does not extend to intentional misconduct.",
+  ])("stays silent on a carve-out for gross negligence / intentional acts: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});
