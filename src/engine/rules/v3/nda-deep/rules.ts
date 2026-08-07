@@ -315,6 +315,7 @@ export const NDA_DEEP_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "NDA-D-013",
+    version: "1.1.0",
     name: "Return-or-destruction clause present",
     description:
       "NDA should require return or destruction of Confidential Information upon request or termination.",
@@ -327,7 +328,18 @@ export const NDA_DEEP_RULES: Rule[] = [
     recommendation:
       "Add a return-or-destruction clause triggered by termination of the NDA or upon written request by Disclosing Party.",
     present_patterns: [
-      /(return\s+or\s+destroy|destruction\s+of\s+confidential|destroy\s+all\s+copies)/i,
+      // The obligation is drafted many ways: "return or/and destroy" in any
+      // tense (incl. the object-first "Confidential Information shall be returned
+      // or destroyed"), a single verb + the Confidential Information object
+      // ("return all Confidential Information", "destroy the Confidential
+      // Information", "delete or erase all Confidential Information"), or the
+      // original "destruction of confidential" / "destroy all copies". The
+      // narrow original matched only the exact "return or destroy" idiom and
+      // "destroy all copies", so a compliant NDA drafted any other standard way
+      // was falsely flagged missing.
+      /\breturn(?:ed|s)?\s+(?:or|and)\s+destroy(?:ed|s)?\b/i,
+      /\b(?:return(?:s|ed|ing)?|destroy(?:s|ed|ing)?|delet(?:e|es|ed|ing)|eras(?:e|es|ed|ing))\b[^.]{0,40}?\b(?:all\s+|the\s+|such\s+|any\s+)?(?:copies\s+of\s+(?:the\s+)?)?confidential\s+information\b/i,
+      /destruction\s+of\s+confidential|destroy\s+all\s+copies/i,
     ],
   }),
 
