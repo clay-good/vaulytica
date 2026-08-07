@@ -101,7 +101,10 @@ export const ADDENDA_RULES: Rule[] = [
       "Enumerate specific controls (e.g., access control / MFA, encryption-at-rest, encryption-in-transit, vulnerability management, logging, incident response).",
     present_patterns: [
       /(access\s+control|multi[- ]factor|MFA)/i,
-      /(encryption\s+(?:at\s+rest|in\s+transit)|TLS\s+1\.[23])/i,
+      // The encryption control is at least as often stated with the VERB
+      // ("Customer Data is encrypted at rest / in transit") as the noun
+      // "encryption at rest", which the noun-only pattern missed.
+      /(encrypt\w*\s+(?:at\s+rest|in\s+transit)|TLS\s+1\.[23])/i,
       /(vulnerability\s+management|patching|configuration\s+management|logging\s+and\s+monitoring)/i,
     ],
     default_severity: "warning",
@@ -195,6 +198,7 @@ export const ADDENDA_RULES: Rule[] = [
   }),
   presenceSec({
     id: "ADDENDA-006",
+    version: "1.1.0",
     name: "Secure-development-lifecycle reference",
     description:
       "Vendor Security Addendum should reference a secure-development-lifecycle (SDLC) program.",
@@ -208,6 +212,12 @@ export const ADDENDA_RULES: Rule[] = [
       "Reference: e.g., 'Vendor maintains a secure-development-lifecycle program including SAST, DAST, and peer code review prior to production deployment.'",
     present_patterns: [
       /(secure[- ]development\s+lifecycle|\bSDLC\b|SAST|DAST|secure\s+coding\s+(?:standards|practices)|code\s+review)/i,
+      // SAST / DAST are routinely spelled out ("static / dynamic application
+      // security testing"), and SDLC programs are described with adjacent
+      // controls the abbreviation list missed: software composition analysis,
+      // threat modeling, and peer review of code (scoped to the security
+      // addendum, so "peer review" here is code review).
+      /static\s+(?:and\s+dynamic\s+)?application\s+security\s+testing|dynamic\s+application\s+security\s+testing|software\s+composition\s+analysis|threat\s+model\w*|peer\s+review/i,
     ],
     default_severity: "info",
   }),
