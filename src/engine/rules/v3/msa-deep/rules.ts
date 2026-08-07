@@ -270,6 +270,7 @@ export const MSA_DEEP_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "MSA-006",
+    version: "1.1.0",
     name: "Aggregate liability cap present",
     description: "MSA must specify an aggregate liability cap.",
     citation: "Commercial drafting baseline — aggregate cap",
@@ -280,6 +281,13 @@ export const MSA_DEEP_RULES: Rule[] = [
     present_patterns: [
       /(aggregate\s+liability|total\s+liability).{0,80}(?:not\s+exceed|capped\s+at|limited\s+to)/i,
       /(twelve\s+months\s+(?:of\s+)?fees|12\s*months\s+(?:of\s+)?fees)/i,
+      // The single most common cap construction fronts the negation — "In no
+      // event shall [either party's] [aggregate/total] liability exceed …" —
+      // where the "liability … not exceed / limited to" adjacency above never
+      // matches (the "not" sits at the head as "in no event", and the verb is a
+      // bare "exceed"). Anchored to "in no event … exceed" so an UNCAPPED
+      // "liability may exceed" is not read as a cap.
+      /in\s+no\s+event\s+(?:shall|will|may)[^.]{0,80}?\bliabilit(?:y|ies)\b[^.]{0,40}?\bexceed\b/is,
     ],
   }),
   presence({
