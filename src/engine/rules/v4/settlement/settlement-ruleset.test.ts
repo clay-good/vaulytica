@@ -323,3 +323,84 @@ describe("SET-004 — no-admission reads 'without [any] admission' (v1.1.0)", ()
     ).toBe(false);
   });
 });
+
+describe("SET-005 — future-claims release recognizes claims-first order (v1.1.0)", () => {
+  const RELEASE: Playbook = { id: "mutual-release", version: "1.0.0" };
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: SETTLEMENT_RULES,
+        ctx: withPb(buildContext(["Release", b]), RELEASE),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "SET-005");
+
+  it.each([
+    "Releasor releases any and all future claims of any kind.",
+    "Releasor releases all claims, known or unknown, now existing or hereafter arising.",
+    "This release covers all claims whether now existing or which may arise in the future.",
+  ])("fires on an overbroad future-claims release: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "This release does not extend to claims that may arise in the future.",
+    "The parties release all claims arising on or before the Effective Date.",
+  ])("stays silent on a carve-out / accrued-only release: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});
+
+describe("SET-013 — FDCPA threats recognize 'failure to pay … arrest' & article'd garnishment (v1.1.0)", () => {
+  const DEMAND: Playbook = { id: "demand-letter", version: "1.0.0" };
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: SETTLEMENT_RULES,
+        ctx: withPb(buildContext(["Demand", b]), DEMAND),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "SET-013");
+
+  it.each([
+    "If you fail to pay, we will have you arrested.",
+    "Failure to pay this debt may result in your arrest and criminal prosecution.",
+    "We will garnish your wages without a court judgment.",
+  ])("fires on an abusive collection threat: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "This letter does not threaten criminal prosecution.",
+    "You may pay the balance due within 30 days to resolve this matter.",
+  ])("stays silent on a disclaimed / benign demand: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});
+
+describe("SET-020 — extortion detection recognizes 'we will report you to the criminal authorities' (v1.1.0)", () => {
+  const CD: Playbook = { id: "cease-and-desist", version: "1.0.0" };
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: SETTLEMENT_RULES,
+        ctx: withPb(buildContext(["Cease and Desist", b]), CD),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "SET-020");
+
+  it.each([
+    "If you do not pay, we will contact your employer and family.",
+    "Unless you settle, we will report you to the criminal authorities.",
+    "Pay us or we will refer this matter to the police.",
+  ])("fires on a criminal-referral threat for settlement leverage: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "We will report the infringement to the relevant regulatory authorities.",
+    "Nothing in this letter constitutes a threat of criminal prosecution.",
+  ])("stays silent on a regulatory report / disclaimed threat: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});

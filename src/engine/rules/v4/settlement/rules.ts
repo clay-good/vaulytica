@@ -155,6 +155,7 @@ const RELEASE_RULES: Rule[] = [
   }),
   language({
     id: "SET-005",
+    version: "1.1.0",
     name: "Overbroad future-claims release flagged",
     description:
       "Releases that purport to cover future, post-execution claims may be unenforceable or limited by public policy (e.g., CA Civ. Code § 1668).",
@@ -167,6 +168,12 @@ const RELEASE_RULES: Rule[] = [
     bad_patterns: [
       /releases?.{0,80}(future|hereafter\s+arising|may\s+arise).{0,80}claims?/is,
       /(future|prospective)\s+claims?.{0,80}(of\s+any\s+kind|whatsoever)/is,
+      // v1.0.0 only matched the "release … future … claims" order and missed
+      // the common form where the claims noun comes first and the future marker
+      // follows — "releases all claims, known or unknown, now existing or
+      // hereafter arising", "all claims whether now existing or which may arise
+      // in the future".
+      /releases?[^.]{0,100}\bclaims?\b[^.]{0,80}(?:hereafter\s+arising|which\s+may\s+arise|that\s+may\s+arise|arising\s+(?:in\s+the\s+future|hereafter|after\s+the\s+date)|now\s+existing\s+or\s+hereafter)/is,
     ],
     exclude_if: [
       /releases?\s+(?:does|do|shall|will)\s+not\s+(?:extend|apply|cover|include|reach)\b/i,
@@ -391,6 +398,7 @@ const DEMAND_LETTER_RULES: Rule[] = [
   }),
   language({
     id: "SET-013",
+    version: "1.1.0",
     name: "FDCPA — abusive / threatening language flagged (debt collection)",
     description:
       "Demand letters in debt-collection contexts must comply with FDCPA (15 U.S.C. § 1692e) — no false / abusive / threatening representations.",
@@ -400,7 +408,12 @@ const DEMAND_LETTER_RULES: Rule[] = [
       /(arrest|criminal\s+prosecut|jail|imprison).{0,60}(if|unless|fail)/is,
       /(if\s+you\s+(fail|do\s+not|don.?t)).{0,60}(arrest|criminal\s+prosecut|jail|imprison)/is,
       /(we\s+will\s+(arrange|have)).{0,40}(arrest|criminal\s+prosecut|jail|imprison)/is,
-      /(seize\s+(your|the)\s+(home|property|wages)|garnish.{0,40}without\s+(court|judgment))/is,
+      // v1.0.0's garnish branch required "without <court|judgment>" with no
+      // article and missed "garnish your wages without A court judgment"; also
+      // add the "failure to pay … arrest / prosecution" lead-in the "if you
+      // fail" pattern above did not reach.
+      /(seize\s+(your|the)\s+(home|property|wages)|garnish[^.]{0,40}without\s+(?:a\s+)?(court|judgment|judicial|legal))/is,
+      /(?:failure\s+to\s+pay|if\s+(?:you\s+)?(?:fail|do\s+not|don.?t|refuse)\s+(?:to\s+)?pay)[^.]{0,60}(arrest|criminal\s+prosecut|prosecut|jail|imprison)/is,
       /threat.{0,40}(violence|harm)/is,
     ],
     exclude_if: [
@@ -558,6 +571,7 @@ const CEASE_DESIST_RULES: Rule[] = [
   }),
   language({
     id: "SET-020",
+    version: "1.1.0",
     name: "Anti-SLAPP / extortion risk — overreaching threats flagged",
     description:
       "C&D should avoid threats of unrelated criminal prosecution or other overreach that may give rise to abuse-of-process / extortion / anti-SLAPP exposure.",
@@ -571,6 +585,14 @@ const CEASE_DESIST_RULES: Rule[] = [
       /threat.{0,80}(criminal\s+prosecution|report\s+to.{0,40}authorities)/is,
       /(extortion|blackmail|expose)/is,
       /if\s+you\s+do\s+not.{0,60}we\s+will\s+(contact|notify).{0,40}(employer|family|customers)/is,
+      // Threatening to report the recipient to CRIMINAL authorities to extract a
+      // settlement is the classic extortion form (Cal. Penal §§ 518–524). v1.0.0
+      // required the literal "threat … report to … authorities"; catch the
+      // future/conditional "we will report you to the criminal authorities" /
+      // "unless you pay … we will refer this to the police". Tied to
+      // criminal-justice actors so a benign "report to the regulatory
+      // authorities" is not swept in.
+      /(?:we\s+(?:will|shall|intend\s+to|may)|unless\s+you|if\s+you\s+(?:do\s+not|don.?t|fail|refuse))[^.]{0,70}(?:report|refer|turn\s+you\s+in)[^.]{0,50}(?:criminal\s+(?:authorities|charges|complaint|prosecut)|the\s+police|\bpolice\b|prosecutor|law\s+enforcement|district\s+attorney|sheriff)/is,
     ],
     exclude_if: [
       /\bnothing\b[^.]{0,60}(?:constitutes?|amounts?\s+to|is\s+(?:intended|a\s+threat))/i,
