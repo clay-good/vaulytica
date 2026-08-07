@@ -260,6 +260,7 @@ export const MSA_DEEP_RULES: Rule[] = [
   }),
   language({
     id: "MSA-005",
+    version: "1.1.0",
     name: "Indemnification carved out of liability cap",
     description: "Detects when indemnification is excluded from the aggregate liability cap.",
     citation: "Commercial drafting baseline — indemnity / cap interaction",
@@ -269,8 +270,11 @@ export const MSA_DEEP_RULES: Rule[] = [
       "Whether indemnification falls inside or outside the cap is the most contested cap-carve-out term. The report surfaces it for explicit review.",
     recommendation:
       "Confirm intent: keep indemnity inside the cap (lower vendor exposure), put it outside (higher customer protection), or place it under a supercap (compromise).",
+    // v1.0.0's first pattern matched only "liability/cap shall/will not apply to
+    // … indemn" and missed the equally common "cap DOES not apply to …" and
+    // "cap shall not LIMIT … indemnity" — both carve indemnity out of the cap.
     bad_patterns: [
-      /(?:liability|cap)\s+(?:shall|will)\s+not\s+apply\s+to.{0,80}indemn/is,
+      /(?:liability|cap)\s+(?:shall|will|does?)\s+not\s+(?:apply\s+to|limit)\b.{0,80}indemn/is,
       /except(?:\s+for)?\s+indemnif\w+.{0,80}(?:cap|limitation\s+of\s+liability)/is,
       /indemnif\w+\s+(?:are|is)\s+excluded\s+from\s+(?:the\s+)?(?:cap|limitation)/is,
     ],
@@ -425,6 +429,7 @@ export const MSA_DEEP_RULES: Rule[] = [
   }),
   language({
     id: "MSA-012",
+    version: "1.1.0",
     name: "Feedback license may be unbounded",
     description:
       "Flags a feedback license that conveys unrestricted, perpetual, irrevocable rights in customer feedback without scope limits.",
@@ -436,9 +441,16 @@ export const MSA_DEEP_RULES: Rule[] = [
       "A broad feedback grant can sweep in customer ideas the customer may want to commercialize separately.",
     recommendation:
       "Limit the feedback license to the vendor's product improvement and add 'non-confidential feedback' as the trigger; consider a scope cap.",
+    // v1.0.0's first pattern required "feedback" to precede the license terms and
+    // so missed the usual "…a perpetual, irrevocable, royalty-free license to use
+    // Feedback for any purpose" order. The added pattern keys on the unbounded
+    // "use … Feedback … for any purpose" grant regardless of where the license
+    // adjectives sit; exclude_if still clears a "solely for the limited purpose"
+    // grant.
     bad_patterns: [
       /feedback.{0,80}(?:perpetual|irrevocable|royalty[- ]free|worldwide).{0,80}(?:any\s+purpose|without\s+(?:any\s+)?restriction)/is,
       /(?:assign|transfer|grant).{0,40}all\s+right.{0,40}feedback/is,
+      /(?:use|exploit|utiliz\w*)[^.]{0,40}feedback[^.]{0,20}for\s+any\s+purpose/is,
     ],
     // The finding claims the grant carries no scope limits, but the second
     // pattern only proves that rights in Feedback were granted. A grant reading

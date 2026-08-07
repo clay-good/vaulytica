@@ -348,3 +348,56 @@ describe("MSA-009 — Cal. § 1668 fraud-exemption in its real wording (v1.1.0)"
     ).toBe(false);
   });
 });
+
+describe("MSA-005 — indemnity-cap carve-out recognizes 'does not apply' / 'shall not limit' (v1.1.0)", () => {
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: MSA_DEEP_RULES,
+        ctx: withPb(buildContext(["MSA", b]), VENDOR),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "MSA-005");
+
+  it.each([
+    "The limitation of liability shall not apply to the indemnification obligations.",
+    "The foregoing cap does not apply to a party's indemnification obligations.",
+    "The liability cap shall not limit either party's indemnity obligations under Section 9.",
+  ])("fires on an indemnity carve-out from the cap: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "The liability cap applies to all claims including indemnification.",
+    "The cap shall not limit the parties' payment obligations.",
+  ])("stays silent when indemnity is inside the cap / no indemnity: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});
+
+describe("MSA-012 — unbounded feedback license recognizes 'use Feedback for any purpose' (v1.1.0)", () => {
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: MSA_DEEP_RULES,
+        ctx: withPb(buildContext(["MSA", b]), VENDOR),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "MSA-012");
+
+  it.each([
+    "Customer grants Vendor a perpetual, irrevocable, royalty-free license to use Feedback for any purpose.",
+    "Vendor may use any Feedback for any purpose without restriction.",
+    "Customer hereby assigns all right, title and interest in Feedback to Vendor.",
+  ])("fires on an unbounded feedback grant: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it("stays silent on a purpose-limited feedback grant", async () => {
+    expect(
+      await fires(
+        "Vendor may use Feedback solely for the limited purpose of improving the Services, and for no other purpose.",
+      ),
+    ).toBe(false);
+  });
+});
