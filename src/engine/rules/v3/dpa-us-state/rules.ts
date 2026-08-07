@@ -77,6 +77,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
   }),
   presence({
     id: "USDPA-002",
+    version: "1.1.0",
     name: "CCPA: no-sale prohibition",
     description: "CCPA service-provider contract must prohibit selling personal information.",
     citation: "Cal. Civ. Code § 1798.140(ag)(1)(A)",
@@ -85,7 +86,13 @@ export const DPA_US_STATE_RULES: Rule[] = [
     explanation: "§ 1798.140(ag)(1)(A) requires a no-sale prohibition.",
     recommendation: "Add: 'Service Provider is prohibited from selling personal information.'",
     present_patterns: [
-      /(prohibited\s+from\s+selling|no\s+sale\s+of\s+personal\s+information|shall\s+not\s+sell\s+personal\s+information)/i,
+      /prohibited\s+from\s+(?:selling|sharing)/i,
+      /no\s+sale\s+of\s+personal\s+information/i,
+      // Post-CPRA the prohibition is routinely drafted "shall / will not sell OR
+      // SHARE personal information" — the intervening "or share" and the "will"
+      // modal both broke the rigid "shall not sell personal information"
+      // adjacency, so a compliant CCPA addendum was falsely flagged missing.
+      /(?:shall|will|may|must)\s+not\s+sell(?:\s+or\s+shar\w+)?\s+(?:the\s+)?personal\s+(?:information|data)/i,
     ],
   }),
   presence({
