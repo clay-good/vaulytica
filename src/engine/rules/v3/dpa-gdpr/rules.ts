@@ -142,6 +142,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "DPA-007",
+    version: "1.1.0",
     name: "Processing only on documented instructions",
     description:
       "Processor must process personal data only on documented instructions from the controller.",
@@ -154,11 +155,18 @@ export const DPA_GDPR_RULES: Rule[] = [
     recommendation:
       "Add: 'Processor shall process Personal Data only on documented instructions from Controller.'",
     present_patterns: [
-      /(only|exclusively)\s+on\s+(the\s+)?(documented\s+)?instructions\s+(from|of)\s+(the\s+)?controller/i,
+      // The obligation is drafted "only/exclusively/solely ON" or "IN ACCORDANCE
+      // WITH" the (documented / written) instructions "from / of / provided by"
+      // the Controller — the original required "on" + "from/of" only, missing the
+      // equally standard "in accordance with the documented instructions of the
+      // Controller" and "only as instructed by the Controller" forms.
+      /(?:only|exclusively|solely)\s+(?:on|in\s+accordance\s+with)\s+(?:the\s+)?(?:documented\s+|written\s+)*instructions\s+(?:from|of|provided\s+by)\s+(?:the\s+)?controller/i,
+      /only\s+as\s+instructed\s+(?:in\s+writing\s+)?by\s+(?:the\s+)?controller/i,
     ],
   }),
   presence({
     id: "DPA-008",
+    version: "1.1.0",
     name: "Confidentiality of authorised persons",
     description:
       "Persons authorised to process personal data must commit themselves to confidentiality.",
@@ -171,7 +179,13 @@ export const DPA_GDPR_RULES: Rule[] = [
     recommendation:
       "Add: 'Processor shall ensure that persons authorised to process Personal Data have committed themselves to confidentiality.'",
     present_patterns: [
-      /(committed\s+(themselves\s+)?to\s+confidentiality|duty\s+of\s+confidentiality|bound\s+by\s+confidentiality)/i,
+      /committed\s+(?:themselves\s+)?to\s+confidentiality/i,
+      // "bound by AN OBLIGATION OF confidentiality" (and "confidentiality
+      // obligations" / "commitment of confidentiality") is the most common
+      // Art 28(3)(b) phrasing and broke the rigid "bound by confidentiality"
+      // adjacency, so a compliant DPA was falsely flagged missing.
+      /(?:duty|obligation|commitment)s?\s+of\s+confidentiality|confidentiality\s+(?:obligation|duty|commitment)s?/i,
+      /bound\s+by\s+confidentiality/i,
     ],
   }),
   presence({
