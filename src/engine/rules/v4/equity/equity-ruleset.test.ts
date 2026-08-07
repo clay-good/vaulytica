@@ -324,3 +324,91 @@ describe("EQT-021 — FMV rep reads 'fair value … per § 1.409A' (v1.1.0)", ()
     ).toBe(true);
   });
 });
+
+describe("EQT-008 — interest-bearing SAFE detection (v1.1.0)", () => {
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: EQUITY_RULES,
+        ctx: withPb(buildContext(["SAFE", b]), SAFE_PB),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "EQT-008");
+
+  it.each([
+    "The Purchase Amount shall accrue interest at a rate of 5% per annum until conversion.",
+    "Interest shall accrue on the outstanding balance of this instrument at 6% per year.",
+    "This SAFE bears interest at 4% per annum.",
+    "The Investor is entitled to interest accruing at eight percent (8%).",
+    "Simple interest of 5% per annum accrues on the Purchase Amount.",
+  ])("fires on interest-accrual phrasing: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "This SAFE shall not bear interest.",
+    "No interest shall accrue on the Purchase Amount.",
+    "This instrument is non-interest-bearing.",
+    "The Purchase Amount bears no interest.",
+    "The Company acts in the best interest of investors.",
+  ])("stays silent on compliant / negated phrasing: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});
+
+describe("EQT-012 — usury threshold recognizes 'per year' and parenthesized rates (v1.1.0)", () => {
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: EQUITY_RULES,
+        ctx: withPb(buildContext(["Convertible Note", b]), CONV_NOTE_PB),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "EQT-012");
+
+  it.each([
+    "This note bears interest at 30% per annum.",
+    "The interest rate is 30% per year.",
+    "Interest accrues at a rate of thirty percent (30%) per annum.",
+    "The note carries interest of 28%/yr.",
+  ])("fires on a usurious annualized rate: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "This note bears interest at 8% per annum.",
+    "Interest accrues at 30% per annum, not to exceed the highest lawful rate.",
+    "Ownership is 30% of the fully diluted capitalization.",
+  ])("stays silent on a lawful rate / savings clause / non-rate percentage: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});
+
+describe("EQT-028 — repricing detection recognizes 'reduce price' and reversed order (v1.2.0)", () => {
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: EQUITY_RULES,
+        ctx: withPb(buildContext(["Option Grant", b]), OPTION_PB),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "EQT-028");
+
+  it.each([
+    "The Board may reprice this option without stockholder approval.",
+    "The Committee may reduce the exercise price of outstanding options without obtaining shareholder approval.",
+    "Options may be repriced by the Administrator without approval of stockholders.",
+    "The Administrator may lower the strike price without shareholder approval.",
+  ])("fires on a repricing override: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "No option may be repriced without stockholder approval.",
+    "The Company shall not reprice options without shareholder approval.",
+    "The Administrator may not reduce the exercise price without stockholder approval.",
+    "Options shall not be repriced without approval of the stockholders.",
+  ])("stays silent on the anti-repricing covenant: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});

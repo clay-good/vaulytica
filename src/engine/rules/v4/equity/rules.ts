@@ -176,14 +176,35 @@ const SAFE_RULES: Rule[] = [
   }),
   language({
     id: "EQT-008",
+    version: "1.1.0",
     name: "Interest-bearing SAFE language",
     description:
       "A SAFE is not a debt instrument; interest accrual is inconsistent with the YC SAFE form.",
     citation: ycSafe("post-money"),
     playbooks: [EQT_PLAYBOOK_SAFE],
+    // v1.0.0 required the literal "this SAFE shall/will bear/accrue interest",
+    // which missed nearly every real-world interest grant — "the Purchase
+    // Amount shall accrue interest", "bears interest at 4%", "interest accruing
+    // at 8%". A SAFE that grants interest in ANY affirmative form is the
+    // convertible-note-in-disguise this rule targets, so match the interest-
+    // accrual verb directly and let `exclude_if` carve out the compliant "does
+    // not bear interest" / "no interest shall accrue" forms.
     bad_patterns: [
-      /this\s+safe\s+(shall|will)\s+(bear|accrue)\s+interest/i,
-      /interest\s+(rate|accrues|shall\s+accrue)\s+(at|of)\s+\d/i,
+      /bears?\s+interest/i,
+      /(?:shall|will|to|may|would)\s+(?:bear|accrue)\s+interest/i,
+      /interest\s+(?:shall|will|does|is|to)\s+accru/i,
+      /interest\s+(?:accrues|accruing)/i,
+      /accru(?:e|es|ing|ed)\s+interest/i,
+      /(?:simple|compound)\s+interest\s+(?:of|at)\s+\d/i,
+      /interest\s+(?:rate\s+)?(?:of|at)\s+(?:a\s+rate\s+of\s+)?\d/i,
+    ],
+    exclude_if: [
+      /\bno\s+interest\b/i,
+      /(?:shall|will|does|do|may|would)\s+not\s+(?:bear|accrue|be)\b/i,
+      /(?:bears?|bearing)\s+no\s+interest/i,
+      /\bwithout\s+interest\b/i,
+      /\bnon-?interest(?:[-\s]?bearing)?\b/i,
+      /\bnot\s+bear\s+interest\b/i,
     ],
     bad_title: "SAFE appears to bear interest — re-characterization risk",
     bad_description:
@@ -255,12 +276,20 @@ const CONVERTIBLE_NOTE_RULES: Rule[] = [
   }),
   language({
     id: "EQT-012",
+    version: "1.1.0",
     name: "Interest rate above plausible usury threshold",
     description:
       "Most state usury caps for non-bank lenders sit in the 7–24% range; rates above 25% are heuristically usurious in many states.",
     citation: usuryGeneric(),
     playbooks: [EQT_PLAYBOOK_CONV_NOTE],
-    bad_patterns: [/(2[5-9]|[3-9]\d|1\d{2,})\s*%\s*per\s+annum/i],
+    // v1.0.0 anchored on the exact "NN% per annum" adjacency and missed the
+    // equally common "NN% per year" and the spelled-out "thirty percent (30%)
+    // per annum" (the ")" between the digits and "per" broke the match). Allow
+    // "per year" and an optional close-paren / "/yr" so the same usurious rate
+    // is caught regardless of how the drafter wrote the annualization.
+    bad_patterns: [
+      /(2[5-9]|[3-9]\d|1\d{2,})\s*%\s*\)?\s*(?:per\s+(?:annum|year)|\/\s*(?:year|yr|annum))/i,
+    ],
     exclude_if: [
       /(?:not\s+to\s+exceed|shall\s+not\s+exceed|maximum\s+(?:rate\s+)?(?:permitted|allowed)|highest\s+lawful\s+rate|permitted\s+by\s+(?:applicable\s+)?law)/i,
     ],
@@ -569,7 +598,7 @@ const OPTION_GRANT_RULES: Rule[] = [
   }),
   language({
     id: "EQT-028",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Repricing without stockholder approval",
     description:
       "Most equity-incentive plans prohibit repricing without stockholder approval; standalone repricing language is suspicious.",
@@ -579,7 +608,15 @@ const OPTION_GRANT_RULES: Rule[] = [
       "https://nyseguide.srorules.com/listed-company-manual/",
     ),
     playbooks: [EQT_PLAYBOOK_OPTION_GRANT],
-    bad_patterns: [/reprice.{0,80}without.{0,40}(stockholder|shareholder)\s+approval/is],
+    // v1.1.0 required the literal verb "reprice" AND the "…stockholder approval"
+    // word order. Repricing is just as often written as "reduce / lower the
+    // exercise price" and the condition reversed to "without approval of the
+    // stockholders". Match either action verb and either order; `exclude_if`
+    // keeps the good-governance negated forms ("may not reprice", "shall not
+    // reduce the exercise price") silent.
+    bad_patterns: [
+      /(?:reprice|(?:reduc|lower|decreas|reset)\w*\s+(?:the\s+)?(?:exercise|strike|option|purchase)\s+price)[^.]{0,100}without[^.]{0,60}(?:(?:stockholder|shareholder)s?\s+approval|approval\s+of\s+(?:the\s+)?(?:stockholder|shareholder)s?)/is,
+    ],
     // The standard exchange-required anti-repricing covenant reads "No option
     // MAY BE repriced" / "Options SHALL NOT BE repriced without stockholder
     // approval" — the passive/negated form is the good governance this rule
@@ -591,6 +628,10 @@ const OPTION_GRANT_RULES: Rule[] = [
       /\bno\s+repricing\b/i,
       /\bnot\s+(?:be\s+)?repric(?:e|ed|ing)\b/i,
       /\bno\s+(?:option|award|grant|stock\s+option|sar)s?\b[^.]{0,40}\brepric/i,
+      // The negated-action good-governance form, now that "reduce/lower the
+      // exercise price" is a matched action: "may not reduce the exercise
+      // price without stockholder approval" is the covenant, not the violation.
+      /(?:shall|will|may)\s+not\s+(?:be\s+)?(?:reduc|lower|decreas|reset)/i,
     ],
     bad_title: "Repricing without stockholder approval permitted",
     bad_description:
