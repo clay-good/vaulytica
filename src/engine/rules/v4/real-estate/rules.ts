@@ -97,6 +97,7 @@ const NET_LEASE_RULES: Rule[] = [
   }),
   presence({
     id: "RE-003",
+    version: "1.1.0",
     name: "Insurance requirements (liability + property)",
     description:
       "NNN lease must specify tenant insurance: CGL with minimum limits, property insurance, waiver of subrogation.",
@@ -113,13 +114,18 @@ const NET_LEASE_RULES: Rule[] = [
     recommendation:
       "Add 'Insurance' specifying CGL minimums ($1M / $2M typical), property insurance, additional-insured / loss-payee, and waiver of subrogation.",
     present_patterns: [
-      /commercial\s+general\s+liability/i,
+      // Leases commonly write "general liability insurance" without the
+      // "commercial" prefix; require the "insurance" noun so a bare "general
+      // liability of Tenant" (a liability allocation, not insurance) is not read
+      // as the insurance clause.
+      /commercial\s+general\s+liability|general\s+liability\s+insurance/i,
       /property\s+insurance/i,
       /waiver\s+of\s+subrogation/i,
     ],
   }),
   presence({
     id: "RE-004",
+    version: "1.1.0",
     name: "Maintenance and repair obligations",
     description:
       "Single-tenant NNN puts maintenance / repair on tenant; landlord typically retains only structural / roof obligations.",
@@ -137,6 +143,11 @@ const NET_LEASE_RULES: Rule[] = [
       "Add 'Maintenance and Repair' specifying landlord's structural / roof obligations and tenant's responsibility for everything else.",
     present_patterns: [
       /maintenance\s+and\s+repair/i,
+      // The obligation is as often the VERB form "Tenant shall MAINTAIN AND
+      // REPAIR the Premises" or the reversed "repairs and maintenance", neither
+      // of which the noun-bigram matched.
+      /maintain\s+and\s+repair/i,
+      /repairs?\s+and\s+maintenance/i,
       /(roof|structural)\s+(integrity|repair|maintenance)/i,
     ],
   }),
