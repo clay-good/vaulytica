@@ -158,3 +158,49 @@ describe("REG-018 — the issuer-first generic boilerplate (v1.1.0)", () => {
     ).toBe(false);
   });
 });
+
+describe("REG-018 — boilerplate risk factor recognizes impersonal subject (v1.2.0)", () => {
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: REGULATORY_PROSE_RULES,
+        ctx: withPb(buildContext(["Risk Factors", b]), S1_PB),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "REG-018");
+
+  it.each([
+    "We may not be able to attract and retain qualified personnel.",
+    "Our results of operations may be adversely affected by numerous factors beyond our control.",
+    "Our business could be adversely affected by general economic conditions.",
+    "We may be materially and adversely affected by factors beyond our control.",
+  ])("fires on generic boilerplate: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+});
+
+describe("REG-019 — hypothetical cyber risk recognizes article + broader verbs (v1.1.0)", () => {
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: REGULATORY_PROSE_RULES,
+        ctx: withPb(buildContext(["Risk Factors", b]), S1_PB),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "REG-019");
+
+  it.each([
+    "We could experience a data breach that harms our business.",
+    "We may face a cyberattack.",
+    "We might suffer a ransomware incident.",
+  ])("fires on a hedged cyber risk factor: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "We have experienced a data breach affecting customer records in 2024.",
+    "We identified a security breach and notified affected users.",
+  ])("stays silent on an already-materialized incident: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});

@@ -341,7 +341,7 @@ const RISK_FACTORS_RULES: Rule[] = [
   }),
   language({
     id: "REG-018",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Generic / boilerplate risk factor flagged",
     description: "Risk factors must not be generic boilerplate applicable to any company.",
     citation: regSk105(),
@@ -356,6 +356,11 @@ const RISK_FACTORS_RULES: Rule[] = [
       // the "economic conditions may affect us" order the patterns above knew,
       // so the most common generic risk factor slipped.
       /\bwe\s+(?:may|might|could)\s+be\s+(?:materially\s+and\s+)?adversely\s+affected\s+by\b[^.]{0,120}\b(?:general\s+economic\s+conditions|factors\s+beyond\s+our\s+control|numerous\s+factors|many\s+factors|various\s+factors)\b/is,
+      // The same boilerplate just as often takes an impersonal subject —
+      // "our results of operations / business / financial condition may be
+      // adversely affected by numerous factors beyond our control" — which the
+      // issuer-first "we may be adversely affected" pattern missed.
+      /\bour\s+(?:results|operations|business|financial\s+condition|revenues?|stock\s+price)(?:\s+of\s+operations)?\s+(?:may|might|could)\s+be\s+(?:materially\s+and\s+)?adversely\s+affected\s+by\b[^.]{0,120}\b(?:general\s+economic\s+conditions|factors\s+beyond\s+our\s+control|numerous\s+factors|many\s+factors|various\s+factors)\b/is,
     ],
     bad_title: "Generic / boilerplate risk factor flagged",
     // The patterns match a boilerplate OPENING clause; they never read the rest
@@ -372,13 +377,19 @@ const RISK_FACTORS_RULES: Rule[] = [
   }),
   language({
     id: "REG-019",
+    version: "1.1.0",
     name: "Hypothetical / 'could' risk-factor language flagged for specificity",
     description:
       "Risk factors that hedge as merely hypothetical without specifying current exposures should be flagged.",
     citation: regSk105(),
     playbooks: [REG_PLAYBOOK_S1, REG_PLAYBOOK_10K],
+    // v1.0.0 required the security noun to sit directly against the verb and so
+    // missed the natural "we could experience A data breach" (the article broke
+    // the adjacency); also broadened the verb + noun sets to the common cyber
+    // phrasings while keeping the noun tied to a security context to avoid
+    // flagging an ordinary "breach of contract".
     bad_patterns: [
-      /(we\s+may|could|might)\s+(experience|face|be\s+subject\s+to)\s+(cyber|security|data\s+breach)/i,
+      /(we\s+may|could|might)\s+(experience|face|be\s+subject\s+to|suffer|incur)\s+(?:an?\s+)?(cyber\w*|security\s+breach|data\s+breach|ransomware|cyber-?attack)/i,
       /(potential|hypothetical).{0,40}(risk|impact)/is,
     ],
     // The whole point of the Pearson / First American line is framing an

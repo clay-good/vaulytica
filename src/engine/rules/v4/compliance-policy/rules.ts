@@ -922,14 +922,23 @@ const AI_AUP_RULES: Rule[] = [
 const SOCIAL_MEDIA_POLICY_RULES: Rule[] = [
   language({
     id: "POL-042",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "NLRA § 7 — overbroad social-media restriction flagged",
     description:
       "Social-media policy must not broadly restrict employee discussion of wages / working conditions (NLRA § 7).",
     citation: nlraSec7(),
     playbooks: [POL_PLAYBOOK_SOCIAL_MEDIA, POL_PLAYBOOK_CODE_OF_CONDUCT],
+    // v1.1.0 keyed on "employees shall/may not discuss…" and missed the two
+    // other common ways the same restriction is written: the passive
+    // "employees are prohibited from posting about their salary" and the
+    // fronted-negation "no employee shall comment on compensation". Both chill
+    // § 7 activity identically. exclude_if gains an "are not prohibited" guard
+    // so the compliant carve-out ("employees are not prohibited from discussing
+    // wages") stays silent.
     bad_patterns: [
       /employees?\s+(shall|may)\s+not\s+(discuss|post|comment).{0,80}(wages?|salary|compensation|working\s+conditions)/is,
+      /employees?\s+(?:are\s+)?(?:prohibited|barred|forbidden|not\s+permitted|not\s+allowed)\s+(?:from\s+)?(?:discuss|post|comment|shar)\w*.{0,80}(wages?|salary|salaries|compensation|pay|working\s+conditions)/is,
+      /no\s+employee\s+(?:shall|may|will|can)\s+(?:discuss|post|comment|shar\w*).{0,80}(wages?|salary|salaries|compensation|pay|working\s+conditions)/is,
       /(social\s+media|online).{0,80}(prohibit(s|ed)?|may\s+not).{0,80}(company|employer|business)/is,
     ],
     exclude_if: [
@@ -939,6 +948,9 @@ const SOCIAL_MEDIA_POLICY_RULES: Rule[] = [
       // (prohibit/restrict/…) never appear in a genuine restriction, which uses
       // "may not mention / post / discuss", so adding "may" here is safe.
       /(?:does|do|shall|will|may)\s+not\s+(?:prohibit|restrict|prevent|preclude|bar|limit)/i,
+      // The compliant inverse of the new passive pattern: "employees are NOT
+      // prohibited / barred from discussing wages" affirms the § 7 right.
+      /\bnot\s+(?:prohibited|barred|forbidden|restricted|precluded|prevented)\b/i,
     ],
     bad_title: "Overbroad social-media restriction flagged (NLRA § 7)",
     bad_description:

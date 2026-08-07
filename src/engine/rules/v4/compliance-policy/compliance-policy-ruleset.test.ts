@@ -239,3 +239,32 @@ describe("POL-004 — a denied whistleblower protection is absence, not presence
     ).toBe(false);
   });
 });
+
+describe("POL-042 — social-media restriction recognizes passive & fronted-negation forms (v1.2.0)", () => {
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: COMPLIANCE_POLICY_RULES,
+        ctx: withPb(buildContext(["Social Media Policy", b]), SM_PB),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "POL-042");
+
+  it.each([
+    "Employees may not discuss their wages or working conditions on social media.",
+    "Employees are prohibited from posting about their salary online.",
+    "No employee shall comment on compensation matters via social media.",
+    "Employees are forbidden from discussing their pay on any online forum.",
+  ])("fires on an overbroad wage-discussion restriction: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "Employees are not prohibited from discussing their wages or working conditions.",
+    "This policy does not restrict employees' rights to discuss compensation.",
+    "Nothing in this policy prohibits protected concerted activity regarding wages.",
+    "Employees may discuss their wages and working conditions freely.",
+  ])("stays silent on the compliant § 7 carve-out: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});
