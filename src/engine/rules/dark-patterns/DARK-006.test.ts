@@ -37,3 +37,21 @@ describe("DARK-006 — asymmetric pre-suit notice / cure window", () => {
     expect(DARK_006.check(ctx)).toBeNull();
   });
 });
+
+describe("DARK-006 — pre-suit notice detection recognizes the 'notify' verb (v1.1.0)", () => {
+  const fires = (b: string) => !!DARK_006.check(buildContext(["Dispute", b]) as never);
+
+  it.each([
+    "Customer must notify Vendor in writing at least 30 days before commencing any arbitration.",
+    "The Tenant shall give the Landlord written notice and an opportunity to cure prior to filing any action.",
+  ])("fires on a one-sided pre-suit notice / notify obligation: %s", (b) => {
+    expect(fires(b)).toBe(true);
+  });
+
+  it.each([
+    "The Vendor shall provide the Customer with 30 days' notice before initiating any action.",
+    "Customer shall notify Vendor before initiating suit, and each party shall notify the other before commencing any action.",
+  ])("stays silent when the drafter is the obligor / the gate is bilateral: %s", (b) => {
+    expect(fires(b)).toBe(false);
+  });
+});

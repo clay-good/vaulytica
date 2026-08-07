@@ -19,7 +19,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "DARK-006",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Asymmetric pre-suit notice / cure window",
   category: "dark-patterns",
   default_severity: "warning",
@@ -27,15 +27,20 @@ export const rule: Rule = {
     "Flags clauses that require one party (and not the other) to give pre-suit notice or a cure window before initiating a dispute.",
   dkb_citations: ["stat-ftc-deception-statement"],
   check(ctx: RuleContext): Finding | null {
+    // The obligation is as often written "…shall NOTIFY the other before…" as
+    // "…shall give NOTICE before…"; v1.0.0 knew only the noun form, so the
+    // equally common verb form slipped. Both the trigger and the symmetric-guard
+    // below accept the "notify" verb so a genuinely bilateral "each party shall
+    // notify" clause still suppresses the finding.
     const hit = firstParagraphMatch(
       ctx,
-      /\b(Customer|Licensee|Recipient|Tenant|Employee|Contractor|Consumer|User|Buyer|Purchaser)\s+(?:shall|must|will)\s+(?:provide|give|deliver)\s+[^.]{0,80}\bnotice\b[^.]{0,80}\b(?:before|prior\s+to|at\s+least\s+\d+\s+days?\s+(?:before|prior))[^.]{0,80}\b(?:suit|claim|action|arbitration|complaint|litigation)/i,
+      /\b(Customer|Licensee|Recipient|Tenant|Employee|Contractor|Consumer|User|Buyer|Purchaser)\s+(?:shall|must|will)\s+(?:(?:provide|give|deliver|furnish)\s+[^.]{0,80}?\bnotice\b|notif(?:y|ies|ied))\b[^.]{0,80}\b(?:before|prior\s+to|at\s+least\s+\d+\s+days?\s+(?:before|prior))[^.]{0,80}\b(?:suit|claim|action|arbitration|complaint|litigation)/i,
     );
     if (!hit) return null;
     // Skip if the same paragraph imposes a symmetric obligation —
     // "each party shall", "the parties shall", "either party shall".
     if (
-      /\b(?:each\s+party|the\s+parties|either\s+party|both\s+parties|the\s+(?:other\s+)?party)\s+(?:shall|must|will)\s+(?:provide|give|deliver)\s+[^.]{0,80}\bnotice\b[^.]{0,80}\b(?:before|prior)/i.test(
+      /\b(?:each\s+party|the\s+parties|either\s+party|both\s+parties|the\s+(?:other\s+)?party)\s+(?:shall|must|will)\s+(?:(?:provide|give|deliver|furnish)\s+[^.]{0,80}?\bnotice\b|notif(?:y|ies|ied))\b[^.]{0,80}\b(?:before|prior)/i.test(
         hit.text,
       )
     ) {
