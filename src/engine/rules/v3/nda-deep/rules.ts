@@ -345,6 +345,7 @@ export const NDA_DEEP_RULES: Rule[] = [
 
   presence({
     id: "NDA-D-014",
+    version: "1.1.0",
     name: "Return-or-destruction attestation requirement",
     description:
       "Return-or-destruction clauses should require a written certification or attestation of destruction.",
@@ -359,6 +360,14 @@ export const NDA_DEEP_RULES: Rule[] = [
     present_patterns: [
       /(certif(y|ication)|attest(ation)?|written\s+confirmation).{0,80}(destroy|destruction|return)/is,
       /(destroy|destruction|return).{0,80}(certif(y|ication)|attest(ation)?|written\s+confirmation)/is,
+      // The canonical attestation clause refers BACK to the return/destruction
+      // obligation with "has done so" / "such return or destruction" /
+      // "compliance with this Section" rather than repeating the destroy verb —
+      // and in a well-drafted clause the intervening object list ("all copies,
+      // extracts, and summaries thereof") pushes the destroy verb well past the
+      // 80-char window above. So a compliant "shall certify in writing that it
+      // has done so" was falsely flagged missing.
+      /(?:certif(?:y|ies|ied|ication)|attest(?:s|ed|ation)?|written\s+confirmation)\b[^.]{0,80}?\b(?:has\s+done\s+so|such\s+(?:return|destruction)|compliance\s+with\s+this\s+(?:section|paragraph|clause|agreement))/is,
     ],
     default_severity: "warning",
   }),
