@@ -9,11 +9,11 @@ import { forEachParagraph } from "../../../extract/walk.js";
  * Cross-references CUAD's "Uncapped Liability" category.
  */
 const UNCAPPED =
-  /\b(?:unlimited\s+liability|no\s+(?:limitation|cap)\s+on\s+liability|liability\b[^.;\n]{0,40}?\b(?:is|shall\s+be)\s+unlimited|without\s+(?:any\s+)?(?:cap|limitation)\s+on\s+(?:its\s+)?liability|(?:liable|responsible)\s+for\s+all\s+damages[^.]*?without\s+limitation|all\s+damages[^.]*?without\s+(?:any\s+)?(?:cap|limit(?:ation)?))/i;
+  /\b(?:unlimited\s+liability|no\s+(?:limitation|cap)\s+on\s+liability|liability\b[^.;\n]{0,40}?\b(?:is|shall\s+be)\s+unlimited|without\s+(?:any\s+)?(?:cap|limitation)\s+on\s+(?:its\s+)?liability|(?:liable|responsible)\s+for\s+all\s+damages[^.]*?without\s+limitation|all\s+damages[^.]*?without\s+(?:any\s+)?(?:cap|limit(?:ation)?)|no\s+(?:limit|limitation|cap)\s+on\s+(?:the\s+[A-Za-z]+'?s?\s+|its\s+|any\s+|your\s+|such\s+)?liability|\bliability\s+(?:of\s+(?:the\s+)?[A-Za-z]+\s+)?shall\s+not\s+be\s+limited\b)/i;
 
 export const rule: Rule = {
   id: "RISK-009",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Uncapped liability detection",
   category: "risk-allocation",
   default_severity: "critical",

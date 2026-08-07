@@ -29,3 +29,24 @@ describe("RISK-009 — uncapped liability", () => {
     expect(f!.excerpt.text.toLowerCase()).toContain("without any cap on liability");
   });
 });
+
+describe("RISK-009 — uncapped liability recognizes 'no limit on' & 'shall not be limited' (v1.1.0)", () => {
+  const fires = (b: string) => !!RISK_009.check(buildContext(["Liability", b]) as any);
+
+  it.each([
+    "Each party's liability under this Agreement is unlimited.",
+    "The Vendor shall have unlimited liability for data breaches.",
+    "There shall be no limit on the Supplier's liability.",
+    "The Contractor's liability shall not be limited in any way.",
+  ])("fires on an uncapped-liability phrasing: %s", (b) => {
+    expect(fires(b)).toBe(true);
+  });
+
+  it.each([
+    "The Provider's liability is limited to the fees paid in the prior 12 months.",
+    "In no event shall either party's liability exceed $1,000,000.",
+    "Nothing in this Agreement shall limit or exclude the Provider's liability for death or personal injury caused by negligence.",
+  ])("stays silent on a capped liability / statutory carve-out: %s", (b) => {
+    expect(fires(b)).toBe(false);
+  });
+});
