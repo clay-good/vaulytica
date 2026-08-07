@@ -532,6 +532,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   language({
     id: "DPA-027",
+    version: "1.1.0",
     name: "Breach notice timing stricter than 'undue delay'",
     description:
       "Flags fixed breach-notice deadlines that exceed regulator expectations (e.g., > 72 hours from controller awareness, > 5 days from processor awareness).",
@@ -543,9 +544,20 @@ export const DPA_GDPR_RULES: Rule[] = [
       "Although Art. 33(2) does not set a strict outer bound for the processor, supervisory guidance treats anything beyond ~24–72 hours as suspect.",
     recommendation:
       "Tighten the processor's notification window to no more than 48–72 hours after becoming aware.",
+    // v1.0.0 required the day count to sit directly against "days" and so missed
+    // "within 30 BUSINESS days" / "within 10 CALENDAR days" and the spelled /
+    // parenthesized "thirty (30) days". Allow an optional spelled word + paren
+    // before the digit and an optional business/calendar/working qualifier
+    // after it; the >=10-day threshold (single-digit windows stay silent) is
+    // unchanged. The anchor requires a NOTIFICATION term (not the bare word
+    // "breach") near the window so an unrelated "cure such breach within 30
+    // days" (a termination cure period) or a "sub-processor list … 30 days in
+    // advance" notice is not misread as a breach-notification deadline — the
+    // v1.0.0 digit-only patterns dodged those only because they used the
+    // spelled/parenthesized form.
     bad_patterns: [
-      /\b(within|no\s+later\s+than)\s+(?:1[0-9]|2[0-9]|3[0-9]|[4-9][0-9]|[1-9][0-9]{2,})\s+days?\b.{0,80}(breach|notif)/is,
-      /(breach|notif).{0,80}\b(within|no\s+later\s+than)\s+(?:1[0-9]|2[0-9]|3[0-9]|[4-9][0-9]|[1-9][0-9]{2,})\s+days?\b/is,
+      /(?:notif\w+|notification|report(?:s|ed|ing)?|inform|disclos\w+)\b[^.]{0,80}\bbreach\b[^.]{0,80}\b(?:within|no\s+later\s+than)\s+(?:[a-z]+[-\s]+)?\(?(?:1[0-9]|2[0-9]|3[0-9]|[4-9][0-9]|[1-9][0-9]{2,})\)?\s+(?:business\s+|calendar\s+|working\s+)?days?\b/is,
+      /\b(?:within|no\s+later\s+than)\s+(?:[a-z]+[-\s]+)?\(?(?:1[0-9]|2[0-9]|3[0-9]|[4-9][0-9]|[1-9][0-9]{2,})\)?\s+(?:business\s+|calendar\s+|working\s+)?days?\b[^.]{0,80}(?:notif\w+|notification|report(?:s|ed|ing)?|inform|disclos\w+)[^.]{0,40}breach/is,
     ],
   }),
 

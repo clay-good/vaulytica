@@ -507,3 +507,30 @@ describe("DPA-024 — breach notice recognizes 'inform' / 'give notice' (v1.1.0)
     ).toBe(true);
   });
 });
+
+describe("DPA-027 — breach-timing recognizes business/calendar days & parenthesized counts (v1.1.0)", () => {
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: DPA_GDPR_RULES,
+        ctx: withDpa(buildContext(["DPA", b])),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "DPA-027");
+
+  it.each([
+    "Processor shall notify Controller of a Personal Data Breach within 30 days.",
+    "Processor shall notify Controller of any breach within 30 business days of becoming aware.",
+    "Notification of a breach shall be provided no later than thirty (30) days after awareness.",
+    "Processor shall report the breach within 10 calendar days.",
+  ])("fires on a too-loose breach-notice window: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "Processor shall notify Controller of a breach without undue delay and in any event within 48 hours.",
+    "Processor shall notify Controller of a breach within 2 days of becoming aware.",
+  ])("stays silent on a tight window (hours / single-digit days): %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});
