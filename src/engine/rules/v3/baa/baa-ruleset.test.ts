@@ -435,3 +435,55 @@ describe("BAA defect rules catch the pattern's real form (v1.1.0)", () => {
     ).toBe(false);
   });
 });
+
+describe("BAA-023 — Security-Incident narrowing recognizes the 'excludes unsuccessful' form (v1.1.0)", () => {
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: BAA_RULES,
+        ctx: withBaa(buildContext(["BAA", b])),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "BAA-023");
+
+  it.each([
+    "Security Incident means only successful unauthorized access to systems.",
+    "Security Incident shall not include unsuccessful attempts to access PHI.",
+    "The term Security Incident excludes pings, port scans, and other unsuccessful attempts.",
+  ])("fires on a narrowed Security-Incident definition: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "Security Incident means the attempted or successful unauthorized access to PHI.",
+    "Security Incident shall not include activities unrelated to PHI.",
+  ])("stays silent on the full HIPAA definition / unrelated carve-out: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});
+
+describe("BAA-025 — HIPAA-remedy-impairing cap recognizes 'capped at / limited to … fees' (v1.1.0)", () => {
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: BAA_RULES,
+        ctx: withBaa(buildContext(["BAA", b])),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "BAA-025");
+
+  it.each([
+    "The aggregate liability of Business Associate shall not exceed the fees paid.",
+    "In no event shall either party's total liability exceed the fees paid in the prior 12 months.",
+    "Business Associate's liability is capped at the amount of fees paid under this Agreement.",
+  ])("fires on a fee-based cap: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "Business Associate's liability is capped at $5,000,000.",
+    "Each party's liability is limited to direct damages.",
+  ])("stays silent on a non-fee cap / damages-type limit: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});

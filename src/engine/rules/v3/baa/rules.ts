@@ -445,6 +445,7 @@ export const BAA_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   language({
     id: "BAA-023",
+    version: "1.1.0",
     name: "Security Incident narrowed to 'successful' access",
     description:
       "Flags clauses that limit 'Security Incident' to only successful unauthorized accesses — a narrowing OCR has criticized.",
@@ -459,6 +460,12 @@ export const BAA_RULES: Rule[] = [
     bad_patterns: [
       /Security\s+Incident.{0,200}successful\s+(unauthorized|access)/is,
       /only\s+successful\s+(unauthorized\s+access|incidents)/i,
+      // v1.0.0 caught only the "limited to SUCCESSFUL access" framing and missed
+      // the more common inverse — a definition that EXCLUDES unsuccessful
+      // attempts / routine pings / port scans, which narrows the § 164.304
+      // definition the same way. exclude_if ("attempted or successful") still
+      // clears a definition that keeps HIPAA's full wording.
+      /security\s+incident[^.]{0,120}(?:shall\s+not\s+include|does\s+not\s+include|excludes?|other\s+than)[^.]{0,120}(?:unsuccessful|pings?|port\s+scans?|broadcast\s+attacks?)/is,
     ],
     // "attempted or successful" IS HIPAA's full definition — the very wording
     // this rule's own recommendation asks for. Reading the "successful" half of
@@ -505,6 +512,7 @@ export const BAA_RULES: Rule[] = [
 
   language({
     id: "BAA-025",
+    version: "1.1.0",
     name: "Indemnity cap impairing HIPAA remedies",
     description:
       "Flags liability caps that limit damages below the covered entity's potential HIPAA penalty exposure.",
@@ -516,8 +524,12 @@ export const BAA_RULES: Rule[] = [
       "HIPAA civil money penalties can reach over $2M per violation category per year (45 CFR § 160.404, adjusted annually). A liability cap below that effectively shifts HIPAA risk back to the Covered Entity.",
     recommendation:
       "Carve HIPAA-related liability out of the cap, or set the cap at a multiple of fees no lower than the HHS annual penalty cap.",
+    // v1.0.0 matched "aggregate/total liability" or "liability … shall not
+    // exceed"; added the "liability is capped at / limited to … fees" framing,
+    // still anchored to a fee/amount-paid basis so a plain dollar cap or a
+    // direct-damages limit (not a HIPAA-remedy impairment) is not flagged.
     bad_patterns: [
-      /(aggregate\s+liability|total\s+liability|liability.{0,40}shall\s+not\s+exceed).{0,120}(fees|paid|amount)/is,
+      /(aggregate\s+liability|total\s+liability|liability[^.]{0,40}(?:shall\s+not\s+exceed|is\s+(?:capped|limited)\s+(?:at|to)|capped\s+at|limited\s+to)).{0,120}(fees|paid|amount)/is,
     ],
     default_severity: "warning",
   }),
