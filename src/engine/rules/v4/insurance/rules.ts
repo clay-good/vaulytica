@@ -233,10 +233,7 @@ const ENDORSEMENT_RULES: Rule[] = [
       /sublimit[^.]{0,80}\$\s*\d{1,3}(?:,\d{3})?(?:\s*(?:thousand|k\b))?(?!\s*,?\d)/is,
       /excludes?\s+all\s+coverage/i,
     ],
-    exclude_if: [
-      /(?:does|do|shall|will)\s+not\s+exclude/i,
-      /\bno\s+(?:\w+\s+){0,2}exclusion\b/i,
-    ],
+    exclude_if: [/(?:does|do|shall|will)\s+not\s+exclude/i, /\bno\s+(?:\w+\s+){0,2}exclusion\b/i],
     bad_title: "Coverage-restricting endorsement flagged for review",
     bad_description:
       "The endorsement contains an absolute exclusion, severe sublimit, or all-coverage exclusion that warrants underwriter / broker review.",
