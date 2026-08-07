@@ -315,3 +315,30 @@ describe("Addenda ruleset — determinism", () => {
     expect(a.result_hash).toBe(b.result_hash);
   });
 });
+
+describe("ADDENDA-011 — AI-training detection recognizes reversed & passive forms (v1.2.0)", () => {
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: ADDENDA_RULES,
+        ctx: withPb(buildContext(["AI Addendum", b]), AI),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "ADDENDA-011");
+
+  it.each([
+    "Vendor may use Customer Data to train its models.",
+    "Vendor may train its models on Customer Data.",
+    "Customer Data may be used to train and improve our AI models.",
+    "We reserve the right to use your data for training our AI.",
+  ])("fires on training on customer data without opt-in: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "Vendor shall not use Customer Data to train any models.",
+    "Vendor will only train on Customer Data with the Customer's explicit opt-in.",
+  ])("stays silent on a prohibition / opt-in clause: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});
