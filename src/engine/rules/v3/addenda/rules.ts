@@ -148,6 +148,7 @@ export const ADDENDA_RULES: Rule[] = [
   }),
   presenceSec({
     id: "ADDENDA-004",
+    version: "1.1.0",
     name: "Incident-response notification window",
     description:
       "Vendor Security Addendum must specify a notification window for security incidents.",
@@ -165,6 +166,12 @@ export const ADDENDA_RULES: Rule[] = [
       // (48) hours" — with "event", a spelled count, and the digit in a
       // parenthetical — none of which the digit-only forms above reach.
       /(?:within|no\s+(?:event\s+)?later\s+than)\s+[^.]{0,20}?\(?\d{1,3}\)?\s*(?:calendar\s+|business\s+)?(?:hours?|days?)\b[^.]{0,160}(?:incident|breach|notif)/i,
+      // The canonical clause puts the notification trigger BEFORE the window —
+      // "notify Customer of any Security Incident within seventy-two (72) hours"
+      // — where both patterns above (which require incident/breach/notif to
+      // FOLLOW the window) miss even the plain digit form. Anchor on a
+      // notification verb preceding the numeric window, within one sentence.
+      /notif\w*[^.]{0,160}(?:within|no\s+(?:event\s+)?later\s+than)\s+[^.]{0,25}?\(?\d{1,3}\)?\s*(?:calendar\s+|business\s+)?(?:hours?|days?)\b/i,
     ],
     default_severity: "warning",
   }),
