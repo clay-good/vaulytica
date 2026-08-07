@@ -197,6 +197,7 @@ export const MSA_DEEP_RULES: Rule[] = [
   }),
   presence({
     id: "MSA-002",
+    version: "1.1.0",
     name: "Indemnification procedure (notice / defense / settlement)",
     description:
       "Indemnification clause must include procedural mechanics (prompt notice, control of defense, settlement consent).",
@@ -209,7 +210,18 @@ export const MSA_DEEP_RULES: Rule[] = [
     recommendation:
       "Add: prompt written notice, indemnitor controls defense with reputable counsel, settlement requires indemnitee consent for non-monetary terms.",
     present_patterns: [
-      /(prompt(?:ly)?\s+(?:notify|notice)|control\s+of\s+(?:the\s+)?defense|settlement.{0,40}consent)/i,
+      // The notice prong is routinely drafted "prompt written notice" (an
+      // adjective sits between "prompt" and "notice") and the defense prong as
+      // "control THE defense" (no "of"), neither of which the original rigid
+      // "prompt notice" / "control of the defense" adjacency matched — so a
+      // clause with all three mechanics was falsely flagged as lacking a
+      // procedure. "defence" spelling and "assume the defense" are also covered.
+      /prompt(?:ly)?\s+(?:\w+\s+){0,2}(?:notice|notif\w+)/i,
+      /(?:control|assume|conduct)(?:\s+of)?\s+(?:the\s+)?defen[cs]e/i,
+      // "no settlement … without … prior written consent" routinely separates
+      // the two words by more than the original 40-char window, and the mechanic
+      // is also framed "consent to any settlement" (reverse order).
+      /settle\w*[^.]{0,80}consent|consent[^.]{0,60}settle\w*/i,
     ],
     default_severity: "warning",
   }),
@@ -387,6 +399,7 @@ export const MSA_DEEP_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "MSA-011",
+    version: "1.1.0",
     name: "Background / foreground IP allocation",
     description:
       "MSA must allocate ownership of background IP (pre-existing) and foreground IP (created during the engagement).",
@@ -398,8 +411,15 @@ export const MSA_DEEP_RULES: Rule[] = [
     recommendation:
       "Add explicit allocation: each party retains its background IP; foreground IP ownership rule (usually customer for deliverables, vendor for tooling).",
     present_patterns: [
-      /(background\s+(?:IP|intellectual\s+property)|pre[- ]existing\s+IP)/i,
-      /(foreground\s+(?:IP|intellectual\s+property)|developed\s+(?:hereunder|under\s+this\s+Agreement))/i,
+      // "pre-existing IP" is at least as often spelled out ("pre-existing
+      // intellectual property"), and the foreground side is drafted with created
+      // / made / conceived as often as "developed" — the original required the
+      // "IP" abbreviation and the exact verb "developed", so a standard
+      // "retains … its pre-existing intellectual property; Deliverables created
+      // under this Agreement are owned by Customer" allocation was falsely
+      // flagged missing.
+      /(background\s+(?:IP|intellectual\s+property)|pre[- ]existing\s+(?:IP|intellectual\s+property))/i,
+      /(foreground\s+(?:IP|intellectual\s+property)|(?:developed|created|made|conceived)\s+(?:hereunder|under\s+this\s+Agreement))/i,
     ],
     default_severity: "warning",
   }),
