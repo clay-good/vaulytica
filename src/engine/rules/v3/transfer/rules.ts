@@ -96,6 +96,7 @@ export const TRANSFER_RULES: Rule[] = [
   }),
   language({
     id: "TRANSFER-003",
+    version: "1.1.0",
     name: "SCC clauses materially modified",
     description:
       "Flags any 'as modified' / 'notwithstanding' / 'as amended' language attached to SCC clauses — forbidden by Clause 2.",
@@ -110,14 +111,24 @@ export const TRANSFER_RULES: Rule[] = [
     bad_patterns: [
       /(?:standard\s+contractual\s+clauses|SCCs?).{0,80}(?:as\s+modified|as\s+amended|notwithstanding|except\s+for|with\s+the\s+exception)/is,
       /(?:notwithstanding\s+(?:any\s+)?provision\s+of\s+the\s+SCCs?|modified\s+SCCs?)/i,
+      // v1.0.0 caught only the "as modified / as amended" adjectival form and
+      // missed the active-verb forms: "the SCCs ARE hereby AMENDED", "the SCCs
+      // ARE MODIFIED to the extent…", and "the parties agree to VARY the SCCs".
+      // exclude_if below suppresses a prohibition ("shall not amend the SCCs").
+      /(?:standard\s+contractual\s+clauses|SCCs?)[^.]{0,40}\b(?:amended|modified|varied|altered|supplemented|deviated)\b/is,
+      /\b(?:amend|modify|vary|alter|supplement|deviate\s+from)\b[^.]{0,10}(?:the\s+)?(?:standard\s+contractual\s+clauses|SCCs?)/is,
     ],
     // A non-derogation savings clause runs the other way: it incorporates the
     // SCCs "in full and without modification" and makes them override
     // conflicting business terms. That is what Clause 2 requires, so reading
-    // its "notwithstanding" as modification accuses the compliant form.
+    // its "notwithstanding" as modification accuses the compliant form. The
+    // negated-verb guards keep a prohibition on modification ("shall not amend
+    // the SCCs", "no amendment of the SCCs") silent too.
     exclude_if: [
       /without\s+(?:any\s+)?modification/i,
       /SCCs?\s+shall\s+(?:govern|prevail|control|take\s+precedence)/i,
+      /(?:shall|will|may|must|can)\s+not\s+(?:be\s+)?(?:amend|modif|vary|alter|change|deviat|supplement)/i,
+      /\bno\s+(?:amendment|modification|variation|alteration|change)\b/i,
     ],
     default_severity: "critical",
   }),

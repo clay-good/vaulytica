@@ -197,3 +197,32 @@ describe("Transfer ruleset — determinism", () => {
     expect(a.result_hash).toBe(b.result_hash);
   });
 });
+
+describe("TRANSFER-003 — SCC-modification detection recognizes active verbs (v1.1.0)", () => {
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: TRANSFER_RULES,
+        ctx: withPb(buildContext(["SCC", b]), SCC2),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "TRANSFER-003");
+
+  it.each([
+    "The Standard Contractual Clauses shall apply as modified by this Agreement.",
+    "The SCCs are hereby amended to limit the data importer's liability.",
+    "The parties agree to vary the Standard Contractual Clauses as set out below.",
+    "The Standard Contractual Clauses are modified to the extent set forth in Annex IV.",
+  ])("fires on a modification of the SCCs: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "The Standard Contractual Clauses are incorporated in full and without modification.",
+    "In the event of conflict, the SCCs shall prevail over the business terms.",
+    "The parties shall not amend the Standard Contractual Clauses.",
+    "No amendment of the SCCs is permitted under Clause 2.",
+  ])("stays silent on unmodified / prohibition-of-modification clauses: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});
