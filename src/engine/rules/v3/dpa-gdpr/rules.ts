@@ -222,6 +222,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   presence({
     id: "DPA-011",
+    version: "1.1.0",
     name: "Assist controller in responding to data-subject rights",
     description:
       "Processor must assist the controller in responding to data-subject rights requests.",
@@ -233,7 +234,12 @@ export const DPA_GDPR_RULES: Rule[] = [
       "Art. 28(3)(e) requires the processor to assist the controller, taking into account the nature of processing, by appropriate technical and organisational measures to fulfil the controller's obligation to respond to data subjects' rights.",
     recommendation:
       "Add: 'Processor shall assist Controller, taking into account the nature of processing, in fulfilling its obligation to respond to requests for exercising data subject rights.'",
-    present_patterns: [/(assist\s+(the\s+)?controller|data\s+subject\s+rights|chapter\s+III)/i],
+    // "assist" was required in the base form, so the conjugated "Processor
+    // ASSISTS Controller" (and "assisting") was missed; and the obligation is
+    // about responding to data-subject REQUESTS as often as "rights".
+    present_patterns: [
+      /(assist\w*\s+(?:the\s+)?controller|data\s+subject\s+(?:rights|requests?)|chapter\s+III)/i,
+    ],
   }),
   presence({
     id: "DPA-012",
