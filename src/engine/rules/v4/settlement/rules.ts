@@ -77,6 +77,7 @@ const RELEASE_RULES: Rule[] = [
   }),
   presence({
     id: "SET-002",
+    version: "1.1.0",
     name: "Scope of released claims — broad release language",
     description:
       "Release must state the scope of claims released (known / unknown, past / present).",
@@ -96,6 +97,13 @@ const RELEASE_RULES: Rule[] = [
     present_patterns: [
       /(any\s+and\s+all|each\s+and\s+every)\s+claims?/i,
       /(known\s+(or|and)\s+unknown|known\s+or\s+unknown)\s+claims?/i,
+      // Broad-release scope is also signalled by "claims of any / every
+      // kind / nature / character / description" and the "now known or
+      // HEREAFTER (arising / discovered)" unknown-claims formula — neither of
+      // which the two patterns above reach, so a broadly-scoped release drafted
+      // that way read as missing its scope clause.
+      /claims?\s+of\s+(?:any|every)\s+(?:kind|nature|character|description)/i,
+      /now\s+known\s+or\s+(?:hereafter|hereinafter|later|subsequently)\s+(?:arising|discovered|existing|known)/i,
     ],
   }),
   presence({
