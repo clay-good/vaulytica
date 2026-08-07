@@ -102,6 +102,7 @@ const PROMISSORY_NOTE_RULES: Rule[] = [
   }),
   presence({
     id: "BNK-004",
+    version: "1.1.0",
     name: "Time of payment — demand or definite time",
     description:
       "Promissory note must be payable on demand or at a definite time (UCC § 3-104(a)(2)).",
@@ -116,6 +117,11 @@ const PROMISSORY_NOTE_RULES: Rule[] = [
     present_patterns: [
       /(maturity\s+date|due\s+date|date\s+of\s+maturity)/i,
       /(on\s+demand|payable\s+on\s+demand|definite\s+time)/i,
+      // A definite time is as often stated "this Note MATURES on …", bare
+      // "maturity", or "DUE AND PAYABLE on <date>" — none reached by the
+      // "maturity date" / "due date" compounds above.
+      /\bmatur(?:es|ing|ity|e)\b/i,
+      /due\s+and\s+payable\s+(?:on|upon|in\s+full)/i,
     ],
   }),
   presence({
