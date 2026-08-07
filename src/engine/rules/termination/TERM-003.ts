@@ -16,16 +16,21 @@ function countConvenienceGrantees(text: string): number {
 /** TERM-003 — Termination asymmetry (warning). */
 export const rule: Rule = {
   id: "TERM-003",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Termination asymmetry",
   category: "termination",
   default_severity: "warning",
   description: "Flags when only one party can terminate for convenience.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
+    // v1.0.0's one-sided trigger listed only Provider/Vendor/Customer/Company/
+    // Employer, so a lone "Licensor / Supplier / Contractor / Licensee may
+    // terminate for convenience" never fired even though the beneficiary counter
+    // (CONVENIENCE_GRANT) already knew those labels. Match the same vocabulary;
+    // the >=2-grantee guard still clears a reciprocal two-sentence grant.
     const oneSided = firstParagraphMatch(
       ctx,
-      /\b(?:Provider|Vendor|Customer|Company|Employer)\s+may\s+terminate[\s\S]{0,160}\bfor\s+convenience\b/i,
+      /\b(?:Provider|Vendor|Customer|Company|Employer|Client|Licensee|Licensor|Subscriber|Supplier|Contractor)\s+may\s+terminate[\s\S]{0,160}\bfor\s+convenience\b/i,
     );
     const mutual = firstParagraphMatch(
       ctx,
