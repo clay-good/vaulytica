@@ -37,3 +37,21 @@ describe("OBLI-009 — residuals clause swallows confidentiality", () => {
     expect(OBLI_009.check(ctx)).toBeNull();
   });
 });
+
+describe("OBLI-009 — residuals detection recognizes plural 'unaided memories' (v1.1.0)", () => {
+  const fires = (b: string) => !!OBLI_009.check(buildContext(["Confidentiality", b]) as never);
+
+  it("fires on the plural 'unaided memories of its employees' form", () => {
+    expect(
+      fires(
+        "The Receiving Party may freely use ideas, concepts, and know-how retained in intangible form in the unaided memories of its employees.",
+      ),
+    ).toBe(true);
+  });
+
+  it("still stays silent on an ordinary confidentiality obligation", () => {
+    expect(
+      fires("The Receiving Party shall protect Confidential Information using reasonable care."),
+    ).toBe(false);
+  });
+});

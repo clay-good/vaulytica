@@ -18,7 +18,7 @@ import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js"
  */
 export const rule: Rule = {
   id: "OBLI-009",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Residuals clause swallows confidentiality",
   category: "obligations",
   default_severity: "warning",
@@ -28,7 +28,10 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /\b(?:Residuals|unaided\s+memory|retained\s+in\s+the\s+(?:unaided\s+)?memor(?:y|ies)\s+of)|general\s+(?:knowledge|know-?how)[,\s]+skills(?:\s+and\s+experience)?\b/i,
+      // v1.0.0's "unaided memory" alt was singular-only and missed the plural
+      // "unaided memories of its employees" — common when the clause names a
+      // class of people. Make the noun plural-aware.
+      /\b(?:Residuals|unaided\s+memor(?:y|ies)|retained\s+in\s+the\s+(?:unaided\s+)?memor(?:y|ies)\s+of)|general\s+(?:knowledge|know-?how)[,\s]+skills(?:\s+and\s+experience)?\b/i,
     );
     if (!hit) return null;
     if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;
