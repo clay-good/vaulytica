@@ -55,8 +55,14 @@ const JURISDICTION_AFTER_LOCALITY = new RegExp(
  * "Ireland" venue.
  */
 const SOVEREIGN_PREFIX = String.raw`the\s+(?:State|Commonwealth|Republic|Kingdom|Province)\s+of\s+|the\s+`;
+// A manner adverb routinely sits between "governed" and "by" — "governed
+// exclusively by", "governed solely by" — and the rigid "governed\s+by" token
+// dropped the whole clause, so CHOICE-001 reported "no governing-law clause" on
+// a document that plainly names one. The adverb is optional and does not change
+// the clause's meaning, so this only widens what matches.
+const GOVERNED_BY = String.raw`governed\s+(?:(?:exclusively|solely|only|entirely)\s+)?by`;
 const GOV_LAW = new RegExp(
-  String.raw`\b((?:governed\s+by|(?:interpreted|construed|resolved)\s+(?:under|in\s+accordance\s+with)|subject\s+to|determined\s+(?:under|by|in\s+accordance\s+with))\s*,?\s*(?:and\s+construed\s+(?:in\s+accordance\s+with\s*,?\s*)?)?the\s+(?:substantive\s+|internal\s+|domestic\s+|local\s+|applicable\s+)*laws?\s+of\s+(?:${SOVEREIGN_PREFIX})?([A-Z][A-Za-z\s&-]+?))(?=[.,;)]|\s+(?:without|excluding|and|regardless)|$)`,
+  String.raw`\b((?:${GOVERNED_BY}|(?:interpreted|construed|resolved)\s+(?:under|in\s+accordance\s+with)|subject\s+to|determined\s+(?:under|by|in\s+accordance\s+with))\s*,?\s*(?:and\s+construed\s+(?:in\s+accordance\s+with\s*,?\s*)?)?the\s+(?:substantive\s+|internal\s+|domestic\s+|local\s+|applicable\s+)*laws?\s+of\s+(?:${SOVEREIGN_PREFIX})?([A-Z][A-Za-z\s&-]+?))(?=[.,;)]|\s+(?:without|excluding|and|regardless)|$)`,
   "gi",
 );
 
@@ -82,7 +88,7 @@ const GOV_LAW_IS = new RegExp(
  * "federal law", "such law").
  */
 const GOV_LAW_ADJECTIVAL = new RegExp(
-  String.raw`\b(?:governed\s+by|(?:construed|interpreted)\s+(?:under|in\s+accordance\s+with))\s+(?:${SOVEREIGN_PREFIX})?([A-Z][A-Za-z&-]+(?:\s+[A-Z][A-Za-z&-]+){0,2})\s+law\b`,
+  String.raw`\b(?:${GOVERNED_BY}|(?:construed|interpreted)\s+(?:under|in\s+accordance\s+with))\s+(?:${SOVEREIGN_PREFIX})?([A-Z][A-Za-z&-]+(?:\s+[A-Z][A-Za-z&-]+){0,2})\s+law\b`,
   "gi",
 );
 // The subject-first adjectival form: "Georgia law governs this Agreement",

@@ -12,6 +12,11 @@ const REGISTERS: Array<[clause: string, want: RegExp]> = [
   ["This Agreement is governed by the internal substantive laws of Texas.", /Texas/],
   ["The internal laws of the State of Delaware shall govern this Agreement.", /Delaware/],
   ["The substantive laws of Nevada shall apply to this Agreement.", /Nevada/],
+  // A manner adverb between "governed" and "by" must not drop the clause.
+  ["This Agreement shall be governed exclusively by the laws of California.", /California/],
+  ["This Agreement shall be governed solely by the laws of the State of Delaware.", /Delaware/],
+  ["This Agreement is governed only by the laws of New York.", /New York/],
+  ["This Agreement shall be governed entirely by Texas law.", /Texas/],
 ];
 
 // Decoys: an adjective before "laws" must not turn a non-choice-of-law phrase
