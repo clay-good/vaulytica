@@ -51,7 +51,7 @@
       "finding_id": "CHOICE-008-s1.4-1317",
       "fired": true,
       "rule_id": "CHOICE-008",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -1001,7 +1001,7 @@
       "explanation": "Jury waivers are enforceable in most US jurisdictions but unenforceable in some contexts (e.g., California for pre-dispute employment waivers). Confirm enforceability against the governing-law jurisdiction.",
       "id": "CHOICE-008-s1.4-1317",
       "rule_id": "CHOICE-008",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "info",
       "source_citations": [],
       "title": "Jury trial waiver present"
@@ -1027,7 +1027,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.9). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
-  "result_hash": "60d01154930445278cca9fecac3b31f541e44a945a114aa20b36e13de210c86d",
+  "result_hash": "401df9c40bb20755bb46a594684fa5d56acaab4c60b7f66b70931aada65080e5",
   "source_file": {
     "name": "bad-employment-trap.docx",
     "sha256": "c0ef11cc8a800daead332bf1bc265f96d72af1c51953958734b1bf18c4058b2a",
