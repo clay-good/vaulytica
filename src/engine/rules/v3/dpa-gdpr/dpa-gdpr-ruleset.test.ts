@@ -564,3 +564,32 @@ describe("DPA-048 — controller-indemnity recognizes 'agrees to' / defend-indem
     expect(await fires(b)).toBe(false);
   });
 });
+
+describe("DPA-023 — hand-waving security recognizes bare 'reasonable/adequate security measures' (v1.1.0)", () => {
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: DPA_GDPR_RULES,
+        ctx: withDpa(buildContext(["DPA", b])),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "DPA-023");
+
+  it.each([
+    "Processor shall implement commercially reasonable security to protect Personal Data.",
+    "Processor shall maintain industry-standard security for all Personal Data.",
+    "Processor shall implement reasonable security measures to protect Personal Data.",
+    "Processor shall use reasonable technical and organizational measures to safeguard the data.",
+    "Processor shall apply adequate security measures to protect Personal Data.",
+  ])("fires on vague/hand-waving security language: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "Processor shall implement the technical and organisational measures set out in Annex II.",
+    "Processor shall implement reasonable security measures, including encryption at rest and in transit, role-based access controls, and annual penetration testing.",
+    "Processor implements measures pursuant to Article 32, including pseudonymisation, encryption, and regular security testing described in Appendix A.",
+  ])("stays silent when specifics or an annex are present: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});

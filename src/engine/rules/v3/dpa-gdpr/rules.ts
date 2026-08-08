@@ -449,6 +449,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   language({
     id: "DPA-023",
+    version: "1.1.0",
     name: "'Appropriate measures' undefined hand-waving",
     description:
       "Flags DPAs that reference 'appropriate measures' without an Annex of technical and organisational measures.",
@@ -462,6 +463,19 @@ export const DPA_GDPR_RULES: Rule[] = [
     bad_patterns: [
       /commercially\s+reasonable\s+(security|measures)/i,
       /industry[- ]standard\s+security\b(?!.*?(?:annex|appendix|exhibit))/is,
+      // v1.0.0 caught only "commercially reasonable" / "industry-standard"; the
+      // equally-common bare weasel adjective — "reasonable security measures",
+      // "reasonable technical and organizational measures", "adequate security
+      // measures" — slipped. Match the vague adjective + the security-measures
+      // noun. Deliberately NOT "appropriate", which is GDPR Art. 32's own
+      // statutory term. The negative lookahead keeps the compliant form where
+      // the phrase is DIRECTLY followed by an enumeration of the actual measures
+      // ("reasonable security measures, including encryption, access controls,
+      // penetration testing") silent — there the specifics are the measures. A
+      // paragraph-level specifics guard would over-suppress: a real hand-waving
+      // clause states concrete measures and THEN a "commercially reasonable"
+      // fallback in the same paragraph, and must still fire.
+      /\b(?:reasonable|adequate)\s+(?:security|technical\s+and\s+organi[sz]ational)\s+(?:measures|safeguards|controls)\b(?!\s*(?:[,:]\s*)?(?:includ|such\s+as|namely|comprising|consisting\s+of|e\.g\.))/i,
     ],
     // The second pattern's lookahead only scans FORWARD, so an Annex named
     // before the trigger ("As set forth in Annex II ... industry-standard
