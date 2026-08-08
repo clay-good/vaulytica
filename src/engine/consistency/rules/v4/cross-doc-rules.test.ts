@@ -103,6 +103,24 @@ describe("CROSS-PARTY-001", () => {
     });
     expect(run.findings).toHaveLength(0);
   });
+
+  it("recognizes the spelled-out 'Incorporated' suffix as equivalent to 'Inc.'", async () => {
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Agreement",
+      'This Master Services Agreement is between Acme Incorporated ("Provider") and Globex Industries, Inc. ("Customer").',
+    ]);
+    const dpa = makeDoc("dpa", "dpa-controller-processor", [
+      "Agreement",
+      'This DPA is between Acme, Inc. ("Processor") and Globex Industries, Inc. ("Controller").',
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_PARTY_001],
+      documents: [msa, dpa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings.length).toBeGreaterThanOrEqual(1);
+    expect(run.findings[0]!.title.toLowerCase()).toMatch(/acme/);
+  });
 });
 
 /* ---------------- CROSS-JURIS-001 ----------------- */

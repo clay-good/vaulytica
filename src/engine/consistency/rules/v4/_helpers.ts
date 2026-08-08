@@ -23,7 +23,7 @@ export function normalizePartyName(name: string): string {
   return name
     .toLowerCase()
     .replace(
-      /\b(inc\.?|corp\.?|corporation|llc|l\.l\.c\.|lp|l\.p\.|llp|l\.l\.p\.|ltd\.?|limited|company|co\.?|plc|gmbh|s\.?a\.?|s\.?a\.?r\.?l\.?|n\.?v\.?|ag|pte\.?|sdn\.?\s*bhd\.?)\b/g,
+      /\b(inc\.?|incorporated|corp\.?|corporation|llc|l\.l\.c\.|lllp|lp|l\.p\.|llp|l\.l\.p\.|ltd\.?|limited|company|co\.?|plc|gmbh|s\.?a\.?|s\.?a\.?r\.?l\.?|n\.?v\.?|ag|pte\.?|sdn\.?\s*bhd\.?)\b/g,
       "",
     )
     .replace(/[,.()]/g, " ")
