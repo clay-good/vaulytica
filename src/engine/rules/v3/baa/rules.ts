@@ -552,6 +552,7 @@ export const BAA_RULES: Rule[] = [
 
   language({
     id: "BAA-027",
+    version: "1.1.0",
     name: "Covered entity indemnifies BA for HIPAA violations",
     description:
       "Flags clauses where the covered entity indemnifies the business associate for HIPAA violations — a common vendor overreach.",
@@ -563,9 +564,23 @@ export const BAA_RULES: Rule[] = [
       "HHS-frowned-upon drafting: shifting HIPAA liability from BA to the covered entity inverts the regulatory burden. The covered entity should not indemnify the BA for the BA's own HIPAA violations.",
     recommendation:
       "Restrict mutual indemnification to non-HIPAA matters, or remove the CE-to-BA indemnification entirely with respect to HIPAA breaches.",
+    // v1.0.0 required "covered entity (shall|will) indemnif" with the verb
+    // sitting DIRECTLY against the subject, so it caught only the barest form
+    // and missed the three phrasings real indemnity clauses use: the "agrees to
+    // indemnify" verb, and the standard tripartite "shall defend, indemnify and
+    // hold harmless" / "shall defend and indemnify" where the "defend," /
+    // "defend and" clause breaks the adjacency. Broaden the verb set, allow an
+    // intervening defend/reimburse clause, accept a bare "hold harmless" grant,
+    // and require the HIPAA hook so an ordinary non-HIPAA indemnity is not
+    // flagged. exclude_if keeps the compliant negated / carved-out forms silent.
     bad_patterns: [
-      /covered\s+entity\s+(shall|will)\s+indemnif/i,
-      /(customer|client)\s+(shall|will)\s+indemnif.*?HIPAA/i,
+      /covered\s+entity\s+(?:shall|will|must|agrees?\s+to)\s+(?:(?:defend|reimburse)\b[^.]{0,30})?(?:indemnif|hold\s+harmless)/i,
+      /(?:customer|client)\s+(?:shall|will|must|agrees?\s+to)\s+(?:(?:defend|reimburse)\b[^.]{0,30})?(?:indemnif|hold\s+harmless)[^.]{0,120}(?:HIPAA|PHI|civil\s+money\s+penalt|business\s+associate)/is,
+    ],
+    exclude_if: [
+      /\bnot\s+(?:be\s+)?(?:obligated|required|liable)\s+to\s+(?:defend|indemnif|hold)/i,
+      /\bno\s+(?:obligation|duty|liability)\s+to\s+(?:defend|indemnif|hold)/i,
+      /(?:shall|will|does|do|agrees?)\s+not\s+(?:defend|indemnif|hold)/i,
     ],
   }),
 

@@ -487,3 +487,33 @@ describe("BAA-025 — HIPAA-remedy-impairing cap recognizes 'capped at / limited
     expect(await fires(b)).toBe(false);
   });
 });
+
+describe("BAA-027 — CE-indemnity recognizes 'agrees to' / defend-indemnify-hold-harmless forms (v1.1.0)", () => {
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: BAA_RULES,
+        ctx: withBaa(buildContext(["BAA", b])),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "BAA-027");
+
+  it.each([
+    "Covered Entity shall indemnify Business Associate for any HIPAA violations.",
+    "Covered Entity agrees to indemnify Business Associate for any civil money penalties under HIPAA.",
+    "Covered Entity shall defend, indemnify and hold harmless Business Associate against all HIPAA claims.",
+    "Client agrees to indemnify and hold harmless Business Associate for any HIPAA penalties.",
+    "Covered Entity shall defend and indemnify Business Associate from and against all HIPAA fines.",
+  ])("fires on CE/customer indemnity of the BA: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "Each party shall be responsible for its own violations of HIPAA.",
+    "Covered Entity shall not indemnify Business Associate for the Business Associate's own HIPAA violations.",
+    "Covered Entity shall have no obligation to indemnify Business Associate for HIPAA penalties.",
+    "Business Associate shall indemnify Covered Entity for any HIPAA violations caused by Business Associate.",
+  ])("stays silent on the compliant / negated / reversed form: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});
