@@ -46,3 +46,26 @@ describe("DARK-011 — residential self-help eviction / lockout", () => {
     ).toBeNull();
   });
 });
+
+describe("DARK-011 — additional self-help actions (v1.1.0)", () => {
+  const fires = (t: string) => DARK_011.check(buildContext(["Lease", t])) !== null;
+
+  it.each([
+    "Landlord may disconnect the utilities if rent is unpaid.",
+    "Landlord may cut off the utilities to the unit.",
+    "Landlord reserves the right to padlock the premises.",
+    "Landlord may seize the tenant's belongings for unpaid rent.",
+    "Landlord may distrain upon the tenant's goods for rent due.",
+  ])("fires on an additional self-help remedy: %s", (t) => {
+    expect(fires(t)).toBe(true);
+  });
+
+  it.each([
+    "Landlord may recover possession only through the applicable judicial eviction process.",
+    "Landlord may take possession in accordance with applicable law.",
+    "Landlord shall not change the locks or shut off utilities.",
+    "Tenant may change the locks and provide Landlord a key.",
+  ])("stays silent on a lawful / negated / tenant-side clause: %s", (t) => {
+    expect(fires(t)).toBe(false);
+  });
+});

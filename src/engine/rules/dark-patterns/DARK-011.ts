@@ -23,7 +23,7 @@ import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js"
  */
 export const rule: Rule = {
   id: "DARK-011",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Residential self-help eviction / lockout",
   category: "dark-patterns",
   default_severity: "critical",
@@ -34,7 +34,11 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /\b(?:Landlord|Lessor|Owner)\b[^.]{0,80}\b(?:may|shall\s+have\s+the\s+right\s+to|is\s+entitled\s+to|reserves?\s+the\s+right\s+to)\b[^.]{0,120}\b(?:change\s+(?:the\s+)?locks?|lock\s+out|remove\s+(?:the\s+)?(?:tenant|tenant.?s\s+(?:belongings|personal\s+property|possessions))|shut\s+off\s+(?:the\s+)?utilit\w+|terminate\s+(?:the\s+)?utilit\w+|take\s+possession|re-?enter\s+and\s+(?:take|remove)|evict\s+(?:the\s+)?tenant)\b/i,
+      // v1.1.0 adds the self-help actions v1.0.0 missed: "disconnect / cut off"
+      // utilities (alongside "shut off / terminate"), "padlock" (a lockout form),
+      // and "seize / distrain" the tenant's belongings (distraint for rent — a
+      // self-help remedy void in residential tenancies in nearly every state).
+      /\b(?:Landlord|Lessor|Owner)\b[^.]{0,80}\b(?:may|shall\s+have\s+the\s+right\s+to|is\s+entitled\s+to|reserves?\s+the\s+right\s+to)\b[^.]{0,120}\b(?:change\s+(?:the\s+)?locks?|lock\s+out|padlock|remove\s+(?:the\s+)?(?:tenant|tenant.?s\s+(?:belongings|personal\s+property|possessions|property))|(?:seize|distrain\w*)\s+[^.]{0,30}(?:belongings|possessions|property|goods)|(?:shut\s+off|cut\s+off|disconnect|terminate)\s+(?:the\s+)?utilit\w+|take\s+possession|re-?enter\s+and\s+(?:take|remove)|evict\s+(?:the\s+)?tenant)\b/i,
     );
     if (!hit || isPresenceDisclaimed(hit.text, hit.match.index)) return null;
     // Retaking possession THROUGH the legal process is the compliant remedy,
