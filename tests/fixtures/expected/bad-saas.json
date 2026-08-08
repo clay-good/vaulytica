@@ -131,7 +131,7 @@
       "finding_id": "DARK-009-s1.3-838",
       "fired": true,
       "rule_id": "DARK-009",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -834,7 +834,7 @@
       "id": "DARK-009-s1.3-838",
       "recommendation": "Restrict unilateral amendment to immaterial / non-substantive changes effected by written notice (email + at least 30 days) with a defined objection / opt-out right. Material changes — pricing, scope, liability, data use — must require a signed amendment or affirmative click-through consent.",
       "rule_id": "DARK-009",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1129,7 +1129,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "8e4d60b52c816c017e6e2ac05db1fa9c17ad436ed1f91a4a99587d896dca6318",
+  "result_hash": "f58bec8f68dcb1930a377999e00395ed80230e3f6d25eb36029884a6663030fa",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",

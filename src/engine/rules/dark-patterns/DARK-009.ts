@@ -28,7 +28,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "DARK-009",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Unilateral amendment by posting",
   category: "dark-patterns",
   default_severity: "warning",
@@ -39,7 +39,10 @@ export const rule: Rule = {
     // Pattern A: "Vendor may modify/amend the Agreement by posting…"
     const a = firstParagraphMatch(
       ctx,
-      /\b(?:Vendor|Provider|Company|Licensor|Customer|Operator|we|we\s+reserve\s+the\s+right\s+to)\s*(?:may|reserves?\s+the\s+right\s+to|shall\s+have\s+the\s+right\s+to)?\s*(?:modify|amend|change|update|revise|alter)\b[\s\S]{0,160}\b(?:terms?|agreement|service|policy|policies|conditions)\b[\s\S]{0,160}\b(?:post(?:ing)?|publish(?:ing)?|making\s+available|made\s+available|upload(?:ing)?|placing)\b[\s\S]{0,80}\b(?:website|site|portal|url|link|page|online|on\s+its\s+(?:website|site|portal)|at\s+(?:the\s+)?url)\b/i,
+      // "making … available" tolerates words between the verb and "available"
+      // ("making the revised version available on its portal"), which the rigid
+      // "making\s+available" adjacency missed.
+      /\b(?:Vendor|Provider|Company|Licensor|Customer|Operator|we|we\s+reserve\s+the\s+right\s+to)\s*(?:may|reserves?\s+the\s+right\s+to|shall\s+have\s+the\s+right\s+to)?\s*(?:modify|amend|change|update|revise|alter)\b[\s\S]{0,160}\b(?:terms?|agreement|service|policy|policies|conditions)\b[\s\S]{0,160}\b(?:post(?:ing)?|publish(?:ing)?|mak(?:e|es|ing)\s+[^.]{0,40}?available|made\s+[^.]{0,40}?available|upload(?:ing)?|placing)\b[\s\S]{0,80}\b(?:website|site|portal|url|link|page|online|on\s+its\s+(?:website|site|portal)|at\s+(?:the\s+)?url)\b/i,
     );
     // The dark pattern is amendment by posting ALONE — "we change the terms by
     // putting a new version online; keep using = you agree." A clause that
@@ -80,16 +83,27 @@ export const rule: Rule = {
       // opposite of the pattern — does not fire.
       /\b(?:modif(?:y|ied)|amend(?:ed)?|chang(?:e|ed)|updat(?:e|ed)|revis(?:e|ed))\b[\s\S]{0,200}\bcontinued\s+(?:use|access)\b(?:(?!\b(?:not|never)\b)[\s\S]){0,120}\b(?:constitut\w+|deem\w+|signif\w+|will\s+be|shall\s+be)[\s\S]{0,40}(?:acceptance|consent|agreement|assent|binding)\b/i,
     );
-    if (b) {
+    // Pattern B2: the reversed order, where "continued use … constitutes
+    // acceptance" comes FIRST and the amendment reference follows ("continued
+    // use after we post changes constitutes acceptance of the modified Terms").
+    // The same tempered gap stops at a negation so "continued use does NOT
+    // constitute acceptance" stays silent.
+    const b2 =
+      b ||
+      firstParagraphMatch(
+        ctx,
+        /\bcontinued\s+(?:use|access)\b(?:(?!\b(?:not|never)\b)[\s\S]){0,120}\b(?:constitut\w+|deem\w+|signif\w+|will\s+be|shall\s+be)[\s\S]{0,40}(?:acceptance|consent|agreement|assent|binding)\b[\s\S]{0,80}\b(?:modif\w+|amend\w+|chang\w+|updat\w+|revis\w+|new\s+(?:terms?|version))\b/i,
+      );
+    if (b2) {
       return emit(ctx, rule, {
         title: "Continued-use-as-acceptance amendment clause",
-        description: b.match[0],
-        excerpt: b.text.slice(Math.max(0, b.match.index - 30), b.match.index + 320),
+        description: b2.match[0],
+        excerpt: b2.text.slice(Math.max(0, b2.match.index - 30), b2.match.index + 320),
         explanation:
           "A clause that deems continued use of the service to be acceptance of unilateral amendments has been criticized as illusory: the party 'consenting' has no real notice and no real ability to refuse without disrupting their business. FTC guidance and courts increasingly require affirmative consent for material contract changes.",
         recommendation:
           "Require affirmative consent (signed amendment or click-through) for material changes. Continued-use-as-acceptance is acceptable only for non-substantive changes after meaningful written notice and an opt-out window.",
-        position: b.position,
+        position: b2.position,
       });
     }
     return null;

@@ -84,3 +84,23 @@ describe("DARK-009 — compliant notice-based amendment is not a dark pattern", 
     ).not.toBeNull();
   });
 });
+
+describe("DARK-009 — reversed continued-use order & spaced 'making … available' (v1.1.0)", () => {
+  const fires = (b: string) => !!DARK_009.check(buildContext(["Terms", b]) as never);
+
+  it.each([
+    "Vendor may update the Agreement by making the revised version available on its portal.",
+    "Your continued use of the Service after we post changes constitutes acceptance of the modified Terms.",
+    "Continued access to the platform following any update shall be deemed acceptance of the revised terms.",
+  ])("fires on the spaced 'making available' / reversed continued-use forms: %s", (b) => {
+    expect(fires(b)).toBe(true);
+  });
+
+  it.each([
+    "We will notify you by email at least 30 days before any changes to these Terms take effect.",
+    "These Terms may be amended only by a written agreement signed by both parties.",
+    "Your continued use of the Service does not constitute acceptance of any modified Terms unless separately signed.",
+  ])("stays silent on compliant-notice / signed-amendment / negated forms: %s", (b) => {
+    expect(fires(b)).toBe(false);
+  });
+});
