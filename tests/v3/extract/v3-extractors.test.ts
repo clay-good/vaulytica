@@ -191,6 +191,18 @@ describe("v3 breach-timing extractor", () => {
       ).toBe(true);
     }
   });
+
+  it("matches a plural breach noun ('report Breaches')", () => {
+    // A BAA states its duty in the plural; `\bbreach\b` never matched "Breaches"
+    // so the whole clause was dropped.
+    const t = extractBreachTimings(
+      buildTree([
+        "Breach Reporting",
+        "Business Associate shall report Breaches to Covered Entity within sixty (60) days of discovery.",
+      ]),
+    );
+    expect(t.some((x) => x.max_delay_hours === 1440 && x.addressee === "controller")).toBe(true);
+  });
 });
 
 describe("v3 audit-rights extractor", () => {

@@ -10,9 +10,17 @@ import { forEachParagraph, posInParagraph } from "../walk.js";
  * Sentence-scoped: any sentence (period-delimited) that pairs a breach noun with a
  * notification verb in either order. Greedy across `[^.]` lets us scoop the
  * neighborhood that carries trigger/addressee/channel.
+ *
+ * The breach noun is pluralized (`breach(?:es)?`, `incident(?:s)?`) — a BAA that
+ * says "shall report Breaches within sixty (60) days" states its notification
+ * duty in the plural, and `\bbreach\b` (boundary after "breach") never matched
+ * "Breaches", so the whole clause was dropped.
  */
-const BREACH_RX =
-  /[^.\n]*?\b(?:(?:breach|security incident|data incident|incident|unauthor(?:i[sz]ed) (?:access|disclosure))\b[^.\n]*?\b(?:notify|notification|inform|report|disclose)|(?:notify|notification|inform|report|disclose)\b[^.\n]*?\b(?:breach|security incident|data incident|incident|unauthor(?:i[sz]ed) (?:access|disclosure)))\b[^.\n]*\./i;
+const BREACH_NOUN = String.raw`breach(?:es)?|security incident(?:s)?|data incident(?:s)?|incident(?:s)?|unauthor(?:i[sz]ed) (?:access|disclosure(?:s)?)`;
+const BREACH_RX = new RegExp(
+  String.raw`[^.\n]*?\b(?:(?:${BREACH_NOUN})\b[^.\n]*?\b(?:notify|notification|inform|report|disclose)|(?:notify|notification|inform|report|disclose)\b[^.\n]*?\b(?:${BREACH_NOUN}))\b[^.\n]*\.`,
+  "i",
+);
 
 // Legal drafting states a period as "word (numeral)" — "within seventy-two
 // (72) hours", "within two (2) business days" — and the authoritative value is
