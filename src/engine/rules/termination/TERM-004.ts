@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js"
 /** TERM-004 — Notice of termination form requirement (info). */
 export const rule: Rule = {
   id: "TERM-004",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Notice of termination form",
   category: "termination",
   default_severity: "info",
@@ -13,7 +13,9 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /\bnotice\s+of\s+termination[\s\S]{0,200}?(in\s+writing|by\s+certified\s+mail|by\s+email\s+to|via\s+(?:email|portal))/i,
+      // v1.0.0 matched only "notice of termination"; the reversed "termination
+      // notice … in writing" is equally common.
+      /\b(?:notice\s+of\s+termination|termination\s+notice)[\s\S]{0,200}?(in\s+writing|by\s+certified\s+mail|by\s+email\s+to|via\s+(?:email|portal))/i,
     );
     if (!hit) return null;
     // The trigger spans from "notice of termination" to the form keyword, so
