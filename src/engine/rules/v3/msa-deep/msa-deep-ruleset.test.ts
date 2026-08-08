@@ -401,3 +401,31 @@ describe("MSA-012 — unbounded feedback license recognizes 'use Feedback for an
     ).toBe(false);
   });
 });
+
+describe("MSA-015 — UCC disclaimer overreach recognizes hyphenated 'AS-IS' & 'all implied warranties' (v1.1.0)", () => {
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: MSA_DEEP_RULES,
+        ctx: withPb(buildContext(["MSA", b]), VENDOR),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "MSA-015");
+
+  it.each([
+    "The Services are provided AS IS, without any warranty of any kind.",
+    "Vendor disclaims all warranties, express or implied.",
+    "Vendor disclaims all implied warranties, express or statutory.",
+    "The Product is provided AS-IS, without any warranties whatsoever.",
+  ])("fires on a merchantability-silent disclaimer: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "VENDOR DISCLAIMS ALL IMPLIED WARRANTIES, INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.",
+    "Vendor disclaims all warranties other than the implied warranty of merchantability.",
+    "Vendor warrants the Services will conform to the documentation.",
+  ])("stays silent when merchantability is named or no disclaimer is present: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});

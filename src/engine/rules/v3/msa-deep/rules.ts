@@ -500,6 +500,7 @@ export const MSA_DEEP_RULES: Rule[] = [
   }),
   language({
     id: "MSA-015",
+    version: "1.1.0",
     name: "Implied-warranty disclaimer overreach (UCC alignment)",
     description:
       "Flags an implied-warranty disclaimer that may overreach the UCC's conspicuous-disclaimer requirement.",
@@ -511,9 +512,15 @@ export const MSA_DEEP_RULES: Rule[] = [
       "UCC § 2-316 requires merchantability disclaimers to mention 'merchantability' and to be conspicuous; many MSAs default to a generic 'AS IS' that fails the test.",
     recommendation:
       "Use the UCC-safe disclaimer: '[ALL-CAPS] VENDOR DISCLAIMS ALL IMPLIED WARRANTIES, INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.' Confirm conspicuousness.",
+    // v1.0.0 required "as is" with a space and "disclaims all [other] warranties"
+    // with nothing between "all" and "warranties". It missed the hyphenated
+    // "AS-IS" and the extremely common "disclaims all IMPLIED warranties" (the
+    // word "implied" broke the adjacency). Both are the same UCC-overreach the
+    // rule targets, and the merchantability lookahead + exclude_if still keep the
+    // UCC-safe merchantability-naming form silent.
     bad_patterns: [
-      /(?:as\s+is|with\s+all\s+faults)(?![A-Z]).{0,160}without\s+(?:any\s+)?(?:other\s+)?warrant/is,
-      /disclaims?\s+all\s+(?:other\s+)?warranties(?![^.]*merchantability)/is,
+      /(?:as(?:\s+|-)is|with\s+all\s+faults)(?![A-Z]).{0,160}without\s+(?:any\s+)?(?:other\s+)?warrant/is,
+      /disclaims?\s+all\s+(?:other\s+|implied\s+)?warranties(?![^.]*merchantability)/is,
     ],
     // The lookahead scans only FORWARD, so the UCC-safe form that names the
     // implied warranties first ("THE IMPLIED WARRANTIES OF MERCHANTABILITY …
