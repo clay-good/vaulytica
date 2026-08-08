@@ -374,7 +374,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "PERS-007",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -1027,7 +1027,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.9). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
-  "result_hash": "3de36102359e2b9ed623e26c2ad9a3aadecf007f96c3b84b0703833c8e2503bc",
+  "result_hash": "d6e0badc19b40517c0664e079363ccaac08cda84967ea4054a9d8e321ffbb042",
   "source_file": {
     "name": "bad-employment-trap.docx",
     "sha256": "c0ef11cc8a800daead332bf1bc265f96d72af1c51953958734b1bf18c4058b2a",

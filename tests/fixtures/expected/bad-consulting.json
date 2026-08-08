@@ -376,7 +376,7 @@
       "finding_id": "PERS-007-s1-0",
       "fired": true,
       "rule_id": "PERS-007",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -873,7 +873,7 @@
       "id": "PERS-007-s1-0",
       "recommendation": "Either restructure the engagement to remove the employee-indicator signals (let the contractor set their own hours, use their own equipment, take other clients, work off-site), or reclassify the worker as a W-2 employee with the corresponding tax/benefits structure.",
       "rule_id": "PERS-007",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [],
       "title": "IC misclassification: 2 employee-indicator signals"
@@ -1055,7 +1055,7 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"consulting agreement\". Distinguishing phrases: \"Consultant\", \"advisory services\", \"deliverables\", \"independent contractor\", \"the Consulting Services\".",
-  "result_hash": "fe34c96b4d73ad9fb56c33e182e2166eb66db26032f75db2db54cd1a548ed6fb",
+  "result_hash": "d6f23c872d3ba8d274917818ca30cdf5a9376c51d093b261f24a3471cfa987e0",
   "source_file": {
     "name": "bad-consulting.docx",
     "sha256": "f66f070f4bb768dbc3f21ee6782418bca5ed64451d483dab533b345a8ddbe691",

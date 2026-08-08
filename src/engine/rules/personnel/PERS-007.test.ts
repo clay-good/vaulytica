@@ -73,3 +73,33 @@ describe("PERS-007 — IC misclassification signals", () => {
     expect(PERS_007.check(ctx)).toBeNull();
   });
 });
+
+describe("PERS-007 — broadened exclusivity & daily-reporting signals (v1.1.0)", () => {
+  const IC = "The worker is an independent contractor.";
+  const FIXED_HOURS = "Contractor shall work from 9:00 a.m. to 5:00 p.m.";
+  // IC label + a fixed-hours signal + the candidate; fires only if the candidate
+  // is recognized as a second employee-indicator signal.
+  const firesWith = (candidate: string) =>
+    !!PERS_007.check(buildContext(["Engagement", IC, FIXED_HOURS, candidate]) as never);
+
+  it.each([
+    "Contractor shall not provide services to any other client.",
+    "Contractor shall work exclusively for the Company.",
+    "Contractor shall report to the Manager on a daily basis.",
+    "Contractor shall provide daily status reports to the project manager.",
+  ])("recognizes the broadened signal (so 2 signals -> fires): %s", (candidate) => {
+    expect(firesWith(candidate)).toBe(true);
+  });
+
+  it("does not fire on the IC label plus a single signal alone", () => {
+    expect(
+      !!PERS_007.check(
+        buildContext([
+          "Engagement",
+          IC,
+          "Contractor shall work exclusively for the Company.",
+        ]) as never,
+      ),
+    ).toBe(false);
+  });
+});

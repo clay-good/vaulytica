@@ -25,7 +25,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
  */
 export const rule: Rule = {
   id: "PERS-007",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "IC misclassification signals",
   category: "personnel",
   default_severity: "warning",
@@ -55,7 +55,10 @@ export const rule: Rule = {
       }
       if (
         signals.indexOf("daily-reporting") < 0 &&
-        /\breport\s+(?:daily|on\s+a\s+daily\s+basis)\s+to|daily\s+to\s+(?:company|the\s+designated\s+supervisor)|\bsupervisor\b[^.]{0,80}\bdaily/i.test(
+        // v1.0.0 required "report daily to" or a "supervisor…daily" adjacency.
+        // Added the reversed "report to <the manager/supervisor> on a daily
+        // basis" and "provide daily … reports to" forms.
+        /\breport\s+(?:daily|on\s+a\s+daily\s+basis)\s+to|daily\s+to\s+(?:company|the\s+designated\s+supervisor)|\b(?:supervisor|manager)\b[^.]{0,80}\bdaily|\breport\s+to\s+[^.]{0,60}\bon\s+a\s+daily\s+basis|\bprovide\s+daily\s+[^.]{0,40}reports?\s+to/i.test(
           p.text,
         )
       ) {
@@ -63,7 +66,11 @@ export const rule: Rule = {
       }
       if (
         signals.indexOf("exclusivity") < 0 &&
-        /\bshall\s+not\s+(?:directly\s+or\s+indirectly\s+)?(?:perform\s+services\s+for|engage\s+with|work\s+for)\s+(?:any\s+other|any\s+third|another)\s+party/i.test(
+        // v1.0.0 required "perform services for / engage with / work for any
+        // other party". Added the "provide/render services to any other client
+        // /customer" verb+object synonyms and the affirmative "work / provide
+        // services exclusively for the Company" form.
+        /\bshall\s+not\s+(?:directly\s+or\s+indirectly\s+)?(?:perform|provide|render)\s+services\s+(?:for|to)\s+(?:any\s+other|any\s+third|another)\s+(?:party|client|customer|compan(?:y|ies)|business)|\bshall\s+not\s+(?:directly\s+or\s+indirectly\s+)?(?:engage\s+with|work\s+for)\s+(?:any\s+other|any\s+third|another)\s+party|\b(?:work|provide\s+services|render\s+services)\s+exclusively\s+(?:for|to|with)\s+(?:the\s+)?(?:Company|Employer|Client)\b/i.test(
           p.text,
         )
       ) {
