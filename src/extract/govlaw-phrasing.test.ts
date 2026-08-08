@@ -17,6 +17,9 @@ const REGISTERS: Array<[clause: string, want: RegExp]> = [
   ["This Agreement shall be governed solely by the laws of the State of Delaware.", /Delaware/],
   ["This Agreement is governed only by the laws of New York.", /New York/],
   ["This Agreement shall be governed entirely by Texas law.", /Texas/],
+  // The elliptical "that of" statement form, where "that" == "the law".
+  ["The governing law shall be that of the State of Texas.", /Texas/],
+  ["The governing law is that of New York.", /New York/],
 ];
 
 // Decoys: an adjective before "laws" must not turn a non-choice-of-law phrase

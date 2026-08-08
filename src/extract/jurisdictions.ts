@@ -70,10 +70,13 @@ const GOV_LAW = new RegExp(
  * The other half of the same clause, written as a statement rather than a
  * command: "The governing law of this Addendum **is** the law of England and
  * Wales" — the UK IDTA's own wording, and eight corpus fixtures were told
- * they had no governing-law clause because of it.
+ * they had no governing-law clause because of it. The elliptical "**that of**"
+ * variant — "The governing law shall be that of the State of Texas", where
+ * "that" stands in for "the law" — is accepted too; without it the capture
+ * began on the lowercase "that" and the clause read as absent.
  */
 const GOV_LAW_IS = new RegExp(
-  String.raw`\bgoverning\s+law\b(?:\s+of\s+[^.;)]{0,60}?)?\s+(?:is|shall\s+be|will\s+be)\s+(?:the\s+laws?\s+of\s+)?(?:${SOVEREIGN_PREFIX})?([A-Z][A-Za-z&-]+(?:\s+(?:and\s+)?[A-Z][A-Za-z&-]+){0,3})`,
+  String.raw`\bgoverning\s+law\b(?:\s+of\s+[^.;)]{0,60}?)?\s+(?:is|shall\s+be|will\s+be)\s+(?:that\s+of\s+)?(?:the\s+laws?\s+of\s+)?(?:${SOVEREIGN_PREFIX})?([A-Z][A-Za-z&-]+(?:\s+(?:and\s+)?[A-Z][A-Za-z&-]+){0,3})`,
   "gi",
 );
 
