@@ -10,8 +10,12 @@ const AUDIT_RX = /\b(?:audit|inspect|inspection)[^.]{0,400}\./i;
 
 const FREQUENCY_RX = /\b(?:once|twice|(\d{1,2})\s*times?)\s+(?:per|a)\s+(?:year|calendar year)\b/i;
 
+// `(?:[^.()\d\n]*?\()?` reads the "word (numeral)" form — "upon thirty (30)
+// days' prior written notice" — whose parenthesized numeral is authoritative;
+// a bare-digit anchor dropped it to null. Bounded by the sentence and by parens
+// so no unrelated parenthetical is consumed; a plain "30 days" still matches.
 const NOTICE_RX =
-  /\b(?:upon |with )?(?:no less than |at least |minimum |no fewer than )?(\d{1,3})\s+(?:business days?|calendar days?|days?)['’]?\s+(?:prior )?(?:written )?notice\b/i;
+  /\b(?:upon |with )?(?:no less than |at least |minimum |no fewer than )?(?:[^.()\d\n]*?\()?(\d{1,3})\)?\s+(?:business days?|calendar days?|days?)['’]?\s+(?:prior )?(?:written )?notice\b/i;
 
 const METHOD_RX: { rx: RegExp; method: AuditMethod }[] = [
   { rx: /\bonsite\b|\bon[- ]site\b|\bon premises\b/i, method: "onsite" },

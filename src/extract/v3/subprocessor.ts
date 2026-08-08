@@ -16,8 +16,12 @@ import { forEachParagraph, posInParagraph } from "../walk.js";
 
 const SUBP_RX = /\b(?:sub[- ]?processor|subcontractor)s?\b/i;
 
+// `(?:[^.()\d\n]*?\()?` reads the "word (numeral)" form — "thirty (30) days'
+// prior written notice" — whose parenthesized numeral is authoritative; a
+// bare-digit anchor dropped it to null. Bounded by the sentence and by parens
+// so no unrelated parenthetical is consumed; a plain "30 days" still matches.
 const NOTICE_RX =
-  /\b(?:no less than |at least |minimum |with )?(\d{1,3})\s+(?:business days?|calendar days?|days?)['’]?\s+(?:prior )?(?:written )?notice\b/i;
+  /\b(?:no less than |at least |minimum |with )?(?:[^.()\d\n]*?\()?(\d{1,3})\)?\s+(?:business days?|calendar days?|days?)['’]?\s+(?:prior )?(?:written )?notice\b/i;
 
 export function extractSubprocessorInventory(tree: DocumentTree): SubprocessorInventory | null {
   let best: SubprocessorInventory | null = null;

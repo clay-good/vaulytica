@@ -220,6 +220,16 @@ describe("v3 audit-rights extractor", () => {
     expect(first!.methods).toContain("soc2-substitution");
     expect(first!.confidentiality_required).toBe(true);
   });
+
+  it("reads the notice period in the 'word (numeral)' form", () => {
+    const a = extractAuditRights(
+      buildTree([
+        "Audit",
+        "Customer may audit Processor once per year upon thirty (30) days' prior written notice.",
+      ]),
+    );
+    expect(a[0]?.notice_days).toBe(30);
+  });
 });
 
 describe("v3 subprocessor extractor", () => {
@@ -240,6 +250,16 @@ describe("v3 subprocessor extractor", () => {
   it("returns null when no subprocessor language appears", () => {
     const tree = buildTree(["Body", "Effective Date: 2026-01-01."]);
     expect(extractSubprocessorInventory(tree)).toBeNull();
+  });
+
+  it("reads the notice period in the 'word (numeral)' form", () => {
+    const s = extractSubprocessorInventory(
+      buildTree([
+        "Subprocessors",
+        "Processor may engage sub-processors listed in Annex III, subject to thirty (30) days' prior written notice; Controller may object on reasonable grounds.",
+      ]),
+    );
+    expect(s?.notice_days).toBe(30);
   });
 });
 
