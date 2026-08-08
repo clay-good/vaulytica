@@ -9,7 +9,7 @@ const CONSUMER_HEADINGS = /\b(lease|residential|terms\s+of\s+service|employment|
 /** CHOICE-007 — Class-action waiver in consumer-facing contract (warning). */
 export const rule: Rule = {
   id: "CHOICE-007",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Class-action waiver in consumer contract",
   category: "choice-and-venue",
   default_severity: "warning",
@@ -20,7 +20,14 @@ export const rule: Rule = {
     if (!isConsumer) return null;
     const hit = firstParagraphMatch(
       ctx,
-      /\bclass\s+(?:action\s+)?waiver\b|\bwaive[\s\S]{0,40}class\s+action\b/i,
+      // v1.2.0 widens the active window from 40 to a sentence-bounded 100 so the
+      // boilerplate "waives, to the fullest extent permitted by law, any right …
+      // to bring or participate in a class action" reaches its object, and adds
+      // a passive branch ("the right to a class action is hereby waived")
+      // tempered so a negated "class action is NOT waived" cannot match — the
+      // inline-negation guard below only inspects the text BEFORE the match, not
+      // a negation sitting between "class action" and "waived".
+      /\bclass\s+(?:action\s+)?waiver\b|\bwaive[^.]{0,100}class\s+action\b|class\s+action(?:(?!\bnot\b|\bnever\b|\bno\b)[^.;]){0,40}\bwaived\b/i,
     );
     if (!hit) return null;
     // A contract that PRESERVES class rights trips the same words — "you do NOT
