@@ -50,8 +50,14 @@ const AM_BEST_RX =
 
 const ENDORSEMENT_RX = /\b(CG\s*\d{2}\s*\d{2}(?:\s*\d{2})?|CA\s*\d{2}\s*\d{2})\b/g;
 
+// Insurance clauses spell the notice period as "word (numeral)" — "thirty (30)
+// days' prior written notice of cancellation" — and the parenthesized numeral
+// is authoritative. Anchoring on a bare digit dropped every such period to a
+// null notice value. The optional `(?:[^.()\d\n]*?\()?` skips the spelled words
+// up to the numeral's open paren, bounded by the sentence and by parens so it
+// never reaches an unrelated parenthetical; a plain "30 days" still matches.
 const NOTICE_RX =
-  /\b(\d{1,3})\s+days?['’]?\s+(?:prior )?(?:written )?notice of (?:cancellation|non[- ]renewal)/i;
+  /\b(?:[^.()\d\n]*?\()?(\d{1,3})\)?\s+days?['’]?\s+(?:prior )?(?:written )?notice of (?:cancellation|non[- ]renewal)/i;
 
 function normalizeAmount(raw: string, multiplier?: string): number {
   const n = Number(raw.replace(/,/g, ""));

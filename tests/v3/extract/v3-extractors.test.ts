@@ -264,6 +264,18 @@ describe("v3 insurance extractor", () => {
     expect(sched.required_am_best_rating).toBe("A-VII");
     expect(sched.notice_of_cancellation_days).toBe(30);
   });
+
+  it("reads the notice period in the 'word (numeral)' drafting form", () => {
+    // "thirty (30) days' notice of cancellation" previously parsed to null.
+    for (const [text, days] of [
+      ["Insurer shall provide thirty (30) days' prior written notice of cancellation.", 30],
+      ["Insurer shall give ten (10) days notice of cancellation for non-payment.", 10],
+      ["Sixty (60) days' notice of non-renewal is required.", 60],
+    ] as const) {
+      const sched = extractInsuranceSchedule(buildTree(["Insurance", text]));
+      expect(sched.notice_of_cancellation_days, text).toBe(days);
+    }
+  });
 });
 
 describe("v3 DTSA notice extractor", () => {
