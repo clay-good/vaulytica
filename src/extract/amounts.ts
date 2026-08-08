@@ -65,7 +65,13 @@ const CURRENCY_CODES = new Set([
   "RUB",
 ]);
 
-const CUR = String.raw`[$€£¥₹₩₽]|\b(?:USD|EUR|GBP|JPY|CAD|AUD|NZD|CHF|CNY|INR|KRW|BRL|MXN|ZAR|SGD|HKD|SEK|NOK|DKK|RUB)\b`;
+// The ISO-code alternative ends in `(?:\b|(?=\d))` rather than a bare `\b`: a
+// terse "USD5,000" / "EUR1,000" (no space between the code and the digits) has
+// NO word boundary after the code (letter→digit is word→word), so `\bUSD\b`
+// dropped it. The digit lookahead is additive and cannot introduce a false
+// match — a code followed by a LETTER ("USDT", "USDA") still fails both `\b` and
+// `(?=\d)`, and a code followed by a digit is a currency amount in practice.
+const CUR = String.raw`[$€£¥₹₩₽]|\b(?:USD|EUR|GBP|JPY|CAD|AUD|NZD|CHF|CNY|INR|KRW|BRL|MXN|ZAR|SGD|HKD|SEK|NOK|DKK|RUB)(?:\b|(?=\d))`;
 // Digit counts are BOUNDED (`{0,40}`/`{1,40}`, not `*`/`+`): in RANGE_NUMERIC
 // the amount is followed by a REQUIRED range connector, so an unbounded `\d+`
 // matches a whole pasted digit run, fails to find the connector, then

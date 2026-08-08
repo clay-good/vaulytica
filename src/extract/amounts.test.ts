@@ -139,3 +139,20 @@ describe("extractAmounts", () => {
     expect(Array.isArray(out)).toBe(true);
   });
 });
+
+describe("extractAmounts — ISO code with no space before digits (USD5,000)", () => {
+  it("parses a code fused to its digits and does not misparse a longer ticker/word", () => {
+    const out = extractAmounts(
+      buildTree([
+        "Fees",
+        "Invoice total USD5,000; deposit EUR1,000; cap GBP2.5M. Balance USDT100 tokens per USDA rule.",
+      ]),
+    );
+    const pairs = new Set(out.map((a) => `${a.currency}:${a.amount}`));
+    expect(pairs.has("USD:5000")).toBe(true);
+    expect(pairs.has("EUR:1000")).toBe(true);
+    expect(pairs.has("GBP:2500000")).toBe(true);
+    // "USDT100" must NOT yield USD 100 (USDT is not a recognized code).
+    expect(out.some((a) => a.currency === "USD" && a.amount === "100")).toBe(false);
+  });
+});
