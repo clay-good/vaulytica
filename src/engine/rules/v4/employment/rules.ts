@@ -548,7 +548,7 @@ const SEPARATION_RULES: Rule[] = [
 const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
   language({
     id: "EMP-024",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Worker non-compete — state-law enforceability scrutiny",
     description:
       "Worker non-competes turn on state law; the FTC's 2024 rule that would have banned most of them (16 C.F.R. Part 910) was vacated and never took effect.",
@@ -560,9 +560,14 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
     // the action be either the verb "compete" or "engage in any [competing]
     // business"; the "engage in any …" branch keeps a non-solicit ("will not
     // solicit … a competing business") from being misread as a non-compete.
+    // v1.2.0: the restricted party was keyed to "employee"/"worker", but
+    // senior restrictive-covenant and executive-employment agreements — exactly
+    // the non-competes state-law scrutiny targets — define the party as
+    // "Executive" (or address the reader as "you"). Add both to the subject
+    // group.
     bad_patterns: [
-      /(?:employee|worker)\b.{0,40}\b(?:shall\s+not|will\s+not|(?:agrees?|covenants?)\s+not\s+to)\b.{0,50}(?:compete\b|engage\s+in\s+any\s+(?:competing\s+|competitive\s+)?business)/is,
-      /non.?compete\s+(period|covenant).{0,200}(employee|worker)/is,
+      /(?:employee|worker|executive|you)\b.{0,40}\b(?:shall\s+not|will\s+not|(?:agrees?|covenants?)\s+not\s+to)\b.{0,50}(?:compete\b|engage\s+in\s+any\s+(?:competing\s+|competitive\s+)?business)/is,
+      /non.?compete\s+(period|covenant).{0,200}(employee|worker|executive)/is,
     ],
     // "Employee shall not be subject to any covenant not to compete" satisfies
     // the `shall not … compete` pattern while saying the OPPOSITE — reporting

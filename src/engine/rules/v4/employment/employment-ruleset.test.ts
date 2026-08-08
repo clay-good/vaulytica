@@ -407,6 +407,11 @@ describe("EMP-024 — non-compete detection recognizes 'agrees/covenants/will no
     "Employee will not, directly or indirectly, engage in any competing business.",
     "The Employee shall not, directly or indirectly, engage in any business that competes with the Company.",
     "Employee covenants not to compete with the Company within the territory.",
+    // v1.2.0 — senior restrictive-covenant / executive agreements define the
+    // party as "Executive" (or address the reader as "you").
+    "Executive shall not, directly or indirectly, compete with the Company during the Restricted Period.",
+    "Executive agrees not to engage in any competing business within the Territory.",
+    "You shall not compete with the Company for twelve months following termination.",
   ])("fires on a worker non-compete: %s", async (b) => {
     expect(await fires(b)).toBe(true);
   });
