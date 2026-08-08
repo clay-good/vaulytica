@@ -410,6 +410,42 @@ describe("CROSS-PRECEDENCE-001", () => {
   });
 });
 
+describe("CROSS-PRECEDENCE-001 — Order Form as a doc type", () => {
+  it("fires when an MSA and an Order Form each claim to control", async () => {
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Order of Precedence",
+      "In the event of any conflict, this Agreement shall control.",
+    ]);
+    const order = makeDoc("order", "generic-fallback", [
+      "Order of Precedence",
+      "In the event of any conflict, this Order Form shall prevail.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_PRECEDENCE_001],
+      documents: [msa, order],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("does not treat a 'supersedes all prior agreements' merger clause as a precedence claim", async () => {
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Entire Agreement",
+      "This Agreement supersedes all prior agreements between the parties.",
+    ]);
+    const sow = makeDoc("sow", "sow", [
+      "Entire Agreement",
+      "This Statement of Work supersedes all prior discussions.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_PRECEDENCE_001],
+      documents: [msa, sow],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+  });
+});
+
 /* ---------------- determinism ---------------- */
 
 describe("V4_CROSS_RULES — determinism", () => {
