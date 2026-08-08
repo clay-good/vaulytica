@@ -4,14 +4,17 @@ import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js"
 /** FIN-006 — Liquidated damages reasonableness (info). */
 export const rule: Rule = {
   id: "FIN-006",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Liquidated damages reasonableness",
   category: "financial",
   default_severity: "info",
   description: "Flags liquidated-damages clauses for review against the reasonableness test.",
   dkb_citations: ["stat-restatement-356-liquidated-damages"],
   check(ctx: RuleContext): Finding | null {
-    const hit = firstParagraphMatch(ctx, /\bliquidated\s+damages?\b/i);
+    // v1.0.0 matched only "liquidated damages"; construction and international
+    // contracts use the "liquidated AND ASCERTAINED damages" (LADs) formulation
+    // for the identical concept, which the bare-adjacency pattern missed.
+    const hit = firstParagraphMatch(ctx, /\bliquidated\s+(?:and\s+ascertained\s+)?damages?\b/i);
     if (!hit) return null;
     if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;
     return emit(ctx, rule, {

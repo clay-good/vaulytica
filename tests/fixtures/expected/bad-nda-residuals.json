@@ -193,7 +193,7 @@
       "elapsed_ms": 0,
       "fired": false,
       "rule_id": "FIN-006",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -900,7 +900,7 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\", \"Recipient\", \"Confidential Information\".",
-  "result_hash": "d40e20d685a754e8b7533fe34bdd93c26ac05da6c271e3456610f619d26bf52d",
+  "result_hash": "9055fb5bbb6b01abc380a53e341346fd1929ec1681dbc67d8e6265f61353876c",
   "source_file": {
     "name": "bad-nda-residuals.docx",
     "sha256": "622200c84f9ee83eb9c5de968c4b2521039686489a1ccd0a460a268f812b7e12",
