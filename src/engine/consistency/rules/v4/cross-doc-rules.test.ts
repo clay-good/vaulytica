@@ -323,6 +323,54 @@ describe("CROSS-MISSING-001", () => {
   });
 });
 
+describe("CROSS-MISSING-001 — DPA acronym reference", () => {
+  it("fires when an MSA references 'the DPA' (acronym) and no DPA is in the bundle", async () => {
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Privacy",
+      "Customer Data is processed under the DPA attached as Exhibit B.",
+    ]);
+    const nda = makeDoc("nda", "mutual-nda-deep", ["NDA", "Confidentiality terms apply."]);
+    const run = await runConsistency({
+      rules: [CROSS_MISSING_001],
+      documents: [msa, nda],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings.length).toBeGreaterThanOrEqual(1);
+    expect(run.findings[0]!.title).toMatch(/Data Processing Agreement/);
+  });
+
+  it("does not fire when the DPA acronym is used but a DPA is present", async () => {
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Privacy",
+      "Processing is governed by the DPA.",
+    ]);
+    const dpa = makeDoc("dpa", "dpa-controller-processor", [
+      "Agreement",
+      "This Data Processing Agreement governs Customer Data.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_MISSING_001],
+      documents: [msa, dpa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+  });
+
+  it("does not fire on a bare 'DPA' token with no article", async () => {
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Privacy",
+      "DPA compliance is important to us.",
+    ]);
+    const nda = makeDoc("nda", "mutual-nda-deep", ["NDA", "Confidentiality terms apply."]);
+    const run = await runConsistency({
+      rules: [CROSS_MISSING_001],
+      documents: [msa, nda],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+  });
+});
+
 /* ---------------- CROSS-PRECEDENCE-001 ----------- */
 
 describe("CROSS-PRECEDENCE-001", () => {

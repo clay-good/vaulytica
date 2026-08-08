@@ -41,7 +41,7 @@ import {
 } from "./_helpers.js";
 import { forEachParagraph } from "../../../../extract/walk.js";
 
-const V4_VERSION = "1.0.0";
+const V4_VERSION = "1.1.0";
 
 /* -------------------- CROSS-PARTY-001 ----------------------------- */
 
@@ -313,7 +313,14 @@ export const CROSS_AMOUNT_001: ConsistencyRule = {
 const COMPANION_REFERENCE_PATTERNS: Array<{ kind: DocKind; pattern: RegExp; label: string }> = [
   {
     kind: "dpa",
-    pattern: /\b(data\s+processing\s+(?:agreement|addendum))\b/i,
+    // Also match the "DPA" acronym when it is used as a document reference (with
+    // a preceding article/determiner — "the DPA", "a separate DPA"), which the
+    // full-name-only pattern missed. Gated by the article so a stray token can't
+    // trip it; "DPA" is not an English word so the acronym is safe to add here
+    // (unlike "SOW"/"BAA", which collide with ordinary words and are left as
+    // full-name-only). The rule only fires when no DPA is present in the bundle.
+    pattern:
+      /\b(data\s+processing\s+(?:agreement|addendum)|(?:the|a|an|this|that|said|separate|applicable)\s+DPA)\b/i,
     label: "DPA / Data Processing Agreement",
   },
   {
