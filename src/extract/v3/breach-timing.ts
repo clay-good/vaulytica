@@ -14,8 +14,17 @@ import { forEachParagraph, posInParagraph } from "../walk.js";
 const BREACH_RX =
   /[^.\n]*?\b(?:(?:breach|security incident|data incident|incident|unauthor(?:i[sz]ed) (?:access|disclosure))\b[^.\n]*?\b(?:notify|notification|inform|report|disclose)|(?:notify|notification|inform|report|disclose)\b[^.\n]*?\b(?:breach|security incident|data incident|incident|unauthor(?:i[sz]ed) (?:access|disclosure)))\b[^.\n]*\./i;
 
+// Legal drafting states a period as "word (numeral)" — "within seventy-two
+// (72) hours", "within two (2) business days" — and the authoritative value is
+// the parenthesized numeral. The old `within\s+(\d)` anchored on a digit
+// immediately after the connector, so every spelled-out-plus-numeral deadline
+// (the dominant form in breach clauses) parsed to a null max_delay_hours. The
+// optional `(?:[^.()\d]*?\()?` skips the spelled words up to the numeral's open
+// paren; it is bounded by the sentence (no `.`) and by parens (no `(`/`)`), so
+// it never reaches a later, unrelated parenthetical, and a plain "within 72
+// hours" still matches with the group empty.
 const NUMERIC_TIME_RX =
-  /\b(?:within|no later than|no longer than|not (?:to exceed|later than))\s+(\d{1,4})\s*(hour|hr|day|business day|calendar day)s?\b/i;
+  /\b(?:within|no later than|no longer than|not (?:to exceed|later than))\s+(?:[^.()\d]*?\()?(\d{1,4})\)?\s*(hour|hr|day|business day|calendar day)s?\b/i;
 
 const VAGUE_TIME_RX =
   /\b(without unreasonable delay|without undue delay|promptly|as soon as practicable|as soon as reasonably practicable|immediately)\b/i;

@@ -162,6 +162,35 @@ describe("v3 breach-timing extractor", () => {
     expect(first!.max_delay_phrase).toBe("without unreasonable delay");
     expect(first!.max_delay_hours).toBeNull();
   });
+
+  it("reads the numeral in the 'word (numeral)' drafting form", () => {
+    // "within seventy-two (72) hours" is the dominant breach-clause form; the
+    // parenthesized numeral is authoritative. It previously parsed to null.
+    for (const [text, hours] of [
+      [
+        "Processor shall notify Controller of any personal data breach within seventy-two (72) hours of discovery.",
+        72,
+      ],
+      [
+        "Vendor shall notify Customer of a security incident within twenty-four (24) hours of confirmation.",
+        24,
+      ],
+      [
+        "Processor shall inform Controller of any personal data breach within two (2) business days.",
+        48,
+      ],
+      [
+        "Processor shall notify Controller of any personal data breach within sixty (60) days of discovery.",
+        1440,
+      ],
+    ] as const) {
+      const t = extractBreachTimings(buildTree(["Notification", text]));
+      expect(
+        t.some((x) => x.max_delay_hours === hours),
+        `${text} -> ${JSON.stringify(t.map((x) => x.max_delay_hours))}`,
+      ).toBe(true);
+    }
+  });
 });
 
 describe("v3 audit-rights extractor", () => {
