@@ -47,3 +47,21 @@ describe("DARK-013 — residential waiver of statutory tenant rights", () => {
     ).toBeNull();
   });
 });
+
+describe("DARK-013 — recognizes 'waives ANY right … under law' (v1.1.0)", () => {
+  const fires = (b: string) => !!DARK_013.check(buildContext(["Lease", b]));
+
+  it("fires on 'waives any right to withhold rent under applicable law'", () => {
+    expect(fires("Tenant waives any right to withhold rent under applicable law.")).toBe(true);
+  });
+
+  it("stays silent on a lawful specific waiver with no statutory anchor", () => {
+    expect(fires("Tenant waives the right to a refund of the pet deposit.")).toBe(false);
+  });
+
+  it("stays silent on the negated 'shall not waive' form", () => {
+    expect(
+      fires("Tenant shall not waive any rights under the residential landlord-tenant act."),
+    ).toBe(false);
+  });
+});

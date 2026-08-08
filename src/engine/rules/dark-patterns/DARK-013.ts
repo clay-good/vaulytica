@@ -21,7 +21,7 @@ import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js"
  */
 export const rule: Rule = {
   id: "DARK-013",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Residential waiver of statutory tenant rights",
   category: "dark-patterns",
   default_severity: "critical",
@@ -32,7 +32,12 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /\bTenant\s+(?:hereby\s+)?waives?\b[^.]{0,40}\ball\b[^.]{0,50}\b(?:rights?|remed\w+|protections?|defenses?)\b[^.]{0,40}\b(?:under|provided\s+by|afforded\s+by)\b[^.]{0,30}\b(?:landlord|tenant|residential|civil\s+code|law|statute)\b|\bTenant\s+(?:hereby\s+)?waives?\b[^.]{0,60}\b(?:covenant\s+of\s+quiet\s+enjoyment|right\s+to\s+(?:notice|a\s+jury\s+trial|habitab\w+))\b/i,
+      // v1.0.0 required "waives ALL rights/remedies … under [law]" and missed
+      // the "waives ANY right … under applicable law" form (e.g. "waives any
+      // right to withhold rent under applicable law"). Allow "any"; the
+      // "under/provided by … law/statute" anchor still keeps a lawful specific
+      // waiver (with no statutory anchor) from firing.
+      /\bTenant\s+(?:hereby\s+)?waives?\b[^.]{0,40}\b(?:all|any)\b[^.]{0,50}\b(?:rights?|remed\w+|protections?|defenses?)\b[^.]{0,40}\b(?:under|provided\s+by|afforded\s+by)\b[^.]{0,30}\b(?:landlord|tenant|residential|civil\s+code|law|statute)\b|\bTenant\s+(?:hereby\s+)?waives?\b[^.]{0,60}\b(?:covenant\s+of\s+quiet\s+enjoyment|right\s+to\s+(?:notice|a\s+jury\s+trial|habitab\w+))\b/i,
     );
     if (!hit || isPresenceDisclaimed(hit.text, hit.match.index)) return null;
     return emit(ctx, rule, {
