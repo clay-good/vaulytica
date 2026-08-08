@@ -575,6 +575,23 @@ describe("CROSS-INDEMNITY-001", () => {
     });
     expect(run.findings).toHaveLength(0);
   });
+
+  it("recognizes 'will not exceed' / 'in no event … exceed' indemnity-cap phrasings", async () => {
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Indemnification",
+      "In no event shall each party's indemnification liability exceed $2,000,000.",
+    ]);
+    const order = makeDoc("order", "sow", [
+      "Indemnification",
+      "Vendor's indemnification liability under this Order Form will not exceed $500,000.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_INDEMNITY_001],
+      documents: [msa, order],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(1);
+  });
 });
 
 /* ---------------- CROSS-SURVIVAL-001 (spec-v6 §20) ------------- */

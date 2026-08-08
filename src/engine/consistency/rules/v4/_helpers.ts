@@ -299,8 +299,11 @@ export function firstIndemnityCap(doc: ConsistencyDocument): {
   end: number;
 } | null {
   const capRe = /\b(indemnif\w+)\b/i;
+  // Added the "will/may not exceed" and "in no event … exceed" cap phrasings
+  // (the same class BAA-025 broadened) so an indemnity cap written those ways is
+  // not missed by the cross-document cap-stacking check.
   const limitRe =
-    /\b(not\s+to\s+exceed|shall\s+not\s+exceed|capped\s+at|limited\s+to|up\s+to|maximum\s+(?:aggregate\s+)?(?:amount|liability))\b/i;
+    /\b(not\s+to\s+exceed|(?:shall|will|may|can)\s+not\s+exceed|in\s+no\s+event\s+[^.]{0,60}\bexceed|capped\s+at|limited\s+to|up\s+to|maximum\s+(?:aggregate\s+)?(?:amount|liability))\b/i;
   type Hit = { text: string; section_id?: string; start: number; end: number };
   const slot: { value: Hit | null } = { value: null };
   forEachParagraph(doc.tree, (p) => {

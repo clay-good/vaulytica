@@ -41,7 +41,7 @@ import {
 } from "./_helpers.js";
 import { forEachParagraph } from "../../../../extract/walk.js";
 
-const V4_VERSION = "1.3.0";
+const V4_VERSION = "1.4.0";
 
 /* -------------------- CROSS-PARTY-001 ----------------------------- */
 

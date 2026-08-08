@@ -68,9 +68,21 @@ const V2_BASELINE_GZIPPED_KB = 165;
  * non-circumvention, marketing consumer-data privacy & client approval): their
  * added alternations are ~2 KB gzipped in the lazy engine chunk (measured total
  * ~847 KB) and the ~8 KB margin keeps the guard from flaking on a marginally
- * larger CI build.
+ * larger CI build. Raised to +705 as a large detection-precision session
+ * (2026-08-07) widened ~46 language / standalone / cross-document detector
+ * regexes across the v3+v4 packs (interest-bearing SAFE, usury, repricing,
+ * coverage-restricting endorsements, hold-harmless/release verbs, NLRA §7
+ * social-media, boilerplate risk factors, non-compete verbs, earnout / >5yr
+ * non-compete, FDCPA/extortion threats, implied-covenant elimination, audit-
+ * committee independence, cognovit, Brulotte royalty, NDA residuals, MSA
+ * indemnity/feedback, BAA security-incident, DPA breach-timing, SCC modification,
+ * AI-training, uncapped/one-sided liability, termination asymmetry, pre-suit
+ * notice, amend-by-posting, IC-misclassification, and cross-doc companion/
+ * precedence/party/indemnity-cap detection): the added alternations are a few KB
+ * gzipped in the lazy engine chunk (measured total ~855 KB) and the ~10 KB margin
+ * keeps the guard from flaking on a marginally larger CI build.
  */
-const V3_BUDGET_GZIPPED_KB = V2_BASELINE_GZIPPED_KB + 690;
+const V3_BUDGET_GZIPPED_KB = V2_BASELINE_GZIPPED_KB + 705;
 /** Eager-entry budget (first-paint contribution). */
 const EAGER_ENTRY_GZIPPED_KB = 50;
 
