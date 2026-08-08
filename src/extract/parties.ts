@@ -175,7 +175,13 @@ const LABELED_PARTY = new RegExp(
  * role-based mutuality as a one-sided (asymmetric) obligation. These
  * one-sided roles denote a fixed position only one party holds.
  */
-const ONE_SIDED_ROLE = String.raw`Guarantor|Grantor|Grantee|Settlor|Trustor|Trustee|Beneficiary|Debtor|Secured\s+Party|Creditor|Mortgagor|Mortgagee|Pledgor|Pledgee|Assignor|Assignee|Surety|Maker|Payee|Borrower|Lender|Insured|Insurer|Named\s+Insured|Indemnitor|Indemnitee`;
+// A power of attorney names its two sides "<Name> (the \"Principal\")" and
+// "<Name> (the \"Agent\"/\"Attorney-in-Fact\")" with no entity-type suffix, so
+// PARTY_DECL missed both and STRUCT-001 reported "no parties" on a plainly
+// captioned POA. "Agent"/"Principal" are quote-anchored on both sides here, so
+// a credit agreement's "Administrative Agent" (a space, not a quote, precedes
+// "Agent") is untouched.
+const ONE_SIDED_ROLE = String.raw`Guarantor|Grantor|Grantee|Settlor|Trustor|Trustee|Beneficiary|Debtor|Secured\s+Party|Creditor|Mortgagor|Mortgagee|Pledgor|Pledgee|Assignor|Assignee|Surety|Maker|Payee|Borrower|Lender|Insured|Insurer|Named\s+Insured|Indemnitor|Indemnitee|Principal|Attorney-in-Fact|Agent`;
 // The paren may carry more than the one role — a revocable trust names one
 // person as both settlor and trustee: "Margaret Okafor (the \"Grantor\" and
 // initial \"Trustee\")" — so allow trailing content (no nested close paren)

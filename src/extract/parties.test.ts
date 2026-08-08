@@ -66,6 +66,37 @@ describe("extractParties", () => {
     expect(roles).toContain("Summit Commercial Bank:Lender");
   });
 
+  it("captures a power of attorney's Principal and Agent/Attorney-in-Fact", () => {
+    // A POA names two individuals with no entity suffix; PARTY_DECL misses them
+    // and STRUCT-001 reported "no parties" on a plainly captioned instrument.
+    const roles = (t: string) =>
+      extractParties(buildTree(["Power of Attorney", t]))
+        .map((p) => `${p.name}:${p.role ?? ""}`)
+        .sort();
+    expect(
+      roles(
+        'This Power of Attorney is granted by Margaret Okafor (the "Principal") to David Lin (the "Agent").',
+      ),
+    ).toEqual(["David Lin:Agent", "Margaret Okafor:Principal"]);
+    expect(
+      roles(
+        'Executed by Ruth Cole (the "Principal") appointing James Ford (the "Attorney-in-Fact").',
+      ),
+    ).toEqual(["James Ford:Attorney-in-Fact", "Ruth Cole:Principal"]);
+  });
+
+  it('does not read a credit agreement\'s "Administrative Agent" as a POA Agent', () => {
+    // "Agent" is quote-anchored on both sides, so a space-prefixed
+    // "Administrative Agent" is not captured as a one-sided party role.
+    const roles = extractParties(
+      buildTree([
+        "Credit Agreement",
+        'Acme Bank, N.A. (the "Administrative Agent"), and the Lenders party hereto.',
+      ]),
+    ).map((p) => p.role);
+    expect(roles).not.toContain("Agent");
+  });
+
   it("captures an insurance policy's 'Named Insured:' / 'Insurer:' labeled parties", () => {
     const tree = buildTree([
       "Policy Summary",
