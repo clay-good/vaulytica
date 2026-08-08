@@ -534,3 +534,33 @@ describe("DPA-027 — breach-timing recognizes business/calendar days & parenthe
     expect(await fires(b)).toBe(false);
   });
 });
+
+describe("DPA-048 — controller-indemnity recognizes 'agrees to' / defend-indemnify-hold-harmless forms (v1.1.0)", () => {
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: DPA_GDPR_RULES,
+        ctx: withDpa(buildContext(["DPA", b])),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "DPA-048");
+
+  it.each([
+    "Controller shall indemnify Processor for any GDPR fines.",
+    "The Controller agrees to indemnify the Processor for any fines imposed under the GDPR.",
+    "Controller shall defend, indemnify and hold harmless Processor against all GDPR fines and penalties.",
+    "Customer agrees to indemnify and hold harmless the Processor for any administrative fine under the GDPR.",
+    "The Controller shall defend and indemnify the Processor from and against all fines under the GDPR.",
+  ])("fires on controller/customer indemnity of the processor: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "Each party shall be liable for its own infringements of the GDPR under Article 82.",
+    "The Controller shall not indemnify the Processor for the Processor's own GDPR fines.",
+    "The Controller shall have no obligation to indemnify the Processor for GDPR fines.",
+    "Processor shall indemnify Controller for any GDPR fines arising from Processor's breach.",
+  ])("stays silent on the compliant / negated / reversed form: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});

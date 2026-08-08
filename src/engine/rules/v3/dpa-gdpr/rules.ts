@@ -938,6 +938,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   language({
     id: "DPA-048",
+    version: "1.1.0",
     name: "Controller indemnifies Processor for GDPR fines",
     description:
       "Flags clauses where the controller indemnifies the processor for the processor's own GDPR liability.",
@@ -949,9 +950,22 @@ export const DPA_GDPR_RULES: Rule[] = [
       "Under Art. 82, a processor remains liable for its own infringements. Shifting that liability to the controller is vendor overreach and may be invalid.",
     recommendation:
       "Limit indemnification to non-GDPR contract claims, or align with the parties' actual fault.",
+    // v1.0.0 required "controller/customer (shall|will) indemnif" with the verb
+    // sitting DIRECTLY against the subject, so it caught only the barest form
+    // and missed the three phrasings real indemnity clauses actually use: the
+    // "agrees to indemnify" verb, and the standard tripartite "shall defend,
+    // indemnify and hold harmless" / "shall defend and indemnify" where the
+    // "defend," / "defend and" clause breaks the adjacency. Broaden the verb
+    // set, allow an intervening defend/reimburse clause, and accept a bare
+    // "hold harmless" grant. exclude_if keeps the compliant negated / carved-out
+    // forms silent (belt-and-suspenders: "not" already breaks the adjacency).
     bad_patterns: [
-      /controller\s+(shall|will)\s+indemnif.*?(processor|GDPR|fine)/is,
-      /customer\s+(shall|will)\s+indemnif.*?(processor|GDPR|fine)/is,
+      /\b(?:controller|customer)\s+(?:shall|will|must|agrees?\s+to)\s+(?:(?:defend|reimburse)\b[^.]{0,30})?(?:indemnif|hold\s+harmless)[^.]{0,90}(?:processor|GDPR|fine)/is,
+    ],
+    exclude_if: [
+      /\bnot\s+(?:be\s+)?(?:obligated|required|liable)\s+to\s+(?:defend|indemnif|hold)/i,
+      /\bno\s+(?:obligation|duty|liability)\s+to\s+(?:defend|indemnif|hold)/i,
+      /(?:shall|will|does|do|agrees?)\s+not\s+(?:defend|indemnif|hold)/i,
     ],
   }),
   language({
