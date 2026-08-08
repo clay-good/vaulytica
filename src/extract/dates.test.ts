@@ -152,6 +152,39 @@ describe("extractDates", () => {
     expect(fiscal.every((d) => d.iso === undefined)).toBe(true);
   });
 
+  it("captures a bare quarter ('Q2 2025', 'Q4/2025', 'Q3-2024')", () => {
+    for (const [text, label] of [
+      ["Amounts are reconciled by Q2 2025.", "FY2025-Q2"],
+      ["The report is due in Q4/2025.", "FY2025-Q4"],
+      ["Filed for Q3-2024.", "FY2024-Q3"],
+    ] as const) {
+      const fiscal = extractDates(buildTree(["Body", text])).filter(
+        (d) => d.type === "fiscal-period",
+      );
+      expect(
+        fiscal.map((d) => d.fiscal_period),
+        text,
+      ).toContain(label);
+    }
+  });
+
+  it("does not double-count the quarter inside 'fiscal Q2 2025'", () => {
+    const fiscal = extractDates(buildTree(["Body", "Due in fiscal Q2 2025."])).filter(
+      (d) => d.type === "fiscal-period",
+    );
+    expect(fiscal).toHaveLength(1);
+    expect(fiscal[0]?.fiscal_period).toBe("FY2025-Q2");
+  });
+
+  it("ignores a bare 'Q2' label with no 19xx/20xx year", () => {
+    for (const text of ["See item Q2 here.", "Refer to Q3 for details."]) {
+      const fiscal = extractDates(buildTree(["Body", text])).filter(
+        (d) => d.type === "fiscal-period",
+      );
+      expect(fiscal, text).toHaveLength(0);
+    }
+  });
+
   it("does not catastrophically backtrack on a long Unicode-whitespace run (ReDoS guard)", () => {
     // The RELATIVE / RANGE_RELATIVE numeral chain previously used four adjacent
     // unbounded `\s*`; `\s` matches NBSP (U+00A0), which `normalize` does not

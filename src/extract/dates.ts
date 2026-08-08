@@ -157,12 +157,16 @@ const DATE_HEREOF = /\bthe\s+(Date\s+Hereof)\b/gi;
 
 /**
  * Fiscal periods: "fiscal Q2 2025", "FY2025-Q3", "FY 2025", "fiscal
- * year 2025". No calendar-unit anchor exists; financial documents use
- * them for payment and reporting deadlines, so capture them rather than
- * fall silent. Normalized to an `FYyyyy[-Qn]` label.
+ * year 2025", and the bare quarter "Q2 2025" / "Q2/2025" / "Q2-2025". No
+ * calendar-unit anchor exists; financial documents use them for payment and
+ * reporting deadlines, so capture them rather than fall silent. Normalized to
+ * an `FYyyyy[-Qn]` label. The bare-quarter form requires a 19xx/20xx year so a
+ * stray "Q2" label with an unrelated number never registers, and the anchored
+ * forms are ordered first so "fiscal Q2 2025" is consumed whole (leftmost) and
+ * the quarter is never double-counted.
  */
 const FISCAL_PERIOD =
-  /\b(?:fiscal\s+(?:year\s+)?|FY\s*)(\d{4})(?:[-\s]?Q([1-4]))?\b|\bfiscal\s+Q([1-4])\s+(\d{4})\b/gi;
+  /\b(?:fiscal\s+(?:year\s+)?|FY\s*)(\d{4})(?:[-\s]?Q([1-4]))?\b|\bfiscal\s+Q([1-4])\s+(\d{4})\b|\bQ([1-4])[\s/-]((?:19|20)\d{2})\b/gi;
 
 export function extractDates(tree: DocumentTree): DateReference[] {
   const out: DateReference[] = [];
@@ -351,10 +355,11 @@ export function extractDates(tree: DocumentTree): DateReference[] {
     }
     FISCAL_PERIOD.lastIndex = 0;
     while ((m = FISCAL_PERIOD.exec(ctx.text)) !== null) {
-      // Two alternations: "FY2025[-Q3]" (m1=year, m2=quarter) or
-      // "fiscal Q3 2025" (m3=quarter, m4=year).
-      const year = m[1] ?? m[4];
-      const quarter = m[2] ?? m[3];
+      // Three alternations: "FY2025[-Q3]" (m1=year, m2=quarter),
+      // "fiscal Q3 2025" (m3=quarter, m4=year), or bare "Q3 2025"
+      // (m5=quarter, m6=year).
+      const year = m[1] ?? m[4] ?? m[6];
+      const quarter = m[2] ?? m[3] ?? m[5];
       if (!year) continue;
       const label = quarter ? `FY${year}-Q${quarter}` : `FY${year}`;
       out.push({
