@@ -27,7 +27,7 @@ import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js"
  */
 export const rule: Rule = {
   id: "DARK-010",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Residential waiver of the warranty of habitability",
   category: "dark-patterns",
   default_severity: "critical",
@@ -39,7 +39,10 @@ export const rule: Rule = {
     // (a) Express waiver / disclaimer of the warranty of habitability.
     const waiver = firstParagraphMatch(
       ctx,
-      /\b(?:waiv\w+|disclaim\w+|relinquish\w+|give[sn]?\s+up)\b[^.]{0,80}\b(?:implied\s+)?warrant(?:y|ies)\s+of\s+habitability|\bwarrant(?:y|ies)\s+of\s+habitability\b[^.]{0,60}\b(?:is|are|shall\s+be)\s+(?:hereby\s+)?(?:waiv\w+|disclaim\w+|excluded|of\s+no\s+(?:force|effect))/i,
+      // v1.1.0 allows an adverb ("is EXPRESSLY / specifically disclaimed")
+      // between the copula and the waiver verb — the bare "is disclaimed"
+      // adjacency missed the far more common emphasized form.
+      /\b(?:waiv\w+|disclaim\w+|relinquish\w+|give[sn]?\s+up)\b[^.]{0,80}\b(?:implied\s+)?warrant(?:y|ies)\s+of\s+habitability|\bwarrant(?:y|ies)\s+of\s+habitability\b[^.]{0,60}\b(?:is|are|shall\s+be)\s+(?:(?:hereby|expressly|specifically|explicitly)\s+)*(?:waiv\w+|disclaim\w+|excluded|of\s+no\s+(?:force|effect))/i,
     );
     if (waiver && !isPresenceDisclaimed(waiver.text, waiver.match.index)) {
       return emit(ctx, rule, {
@@ -83,6 +86,35 @@ export const rule: Rule = {
         recommendation:
           "State the landlord's repair and habitability obligations. If the parties intend the tenant to handle specific minor upkeep, scope it narrowly and preserve the landlord's non-waivable habitability duty ('except as required by law').",
         position: noRepair.position,
+      });
+    }
+
+    // (c) The disclaimer-by-denial form — "Landlord makes no warranty of
+    // habitability", "no warranty of habitability is made or given" — reaches
+    // the same void result without a waiver verb. Guarded against the compliant
+    // carve-out that EXCEPTS or PRESERVES the habitability warranty ("makes no
+    // warranty except the implied warranty of habitability, which is preserved").
+    const denial = firstParagraphMatch(
+      ctx,
+      /\b(?:makes?|gives?|provides?|offers?)\s+no\s+(?:express\s+or\s+implied\s+)?warrant(?:y|ies)\b[^.]{0,50}\bhabitability\b|\bno\s+(?:express\s+or\s+implied\s+)?warrant(?:y|ies)\s+of\s+habitability\b[^.]{0,40}\b(?:is|are)\s+(?:made|given|provided|offered|created|extended)\b/i,
+    );
+    if (denial && !isPresenceDisclaimed(denial.text, denial.match.index)) {
+      if (
+        /\bexcept[^.]{0,50}habitability|habitability\b[^.]{0,60}\b(?:preserved|remains|survives|applies|not\s+(?:waived|disclaimed))\b/i.test(
+          denial.text,
+        )
+      ) {
+        return null;
+      }
+      return emit(ctx, rule, {
+        title: "Disclaimer of the implied warranty of habitability",
+        description: denial.match[0],
+        excerpt: denial.text.slice(Math.max(0, denial.match.index - 30), denial.match.index + 280),
+        explanation:
+          "Denying that any warranty of habitability is made or given ('Landlord makes no warranty of habitability') is an unenforceable attempt to disclaim the non-waivable implied warranty of habitability in a residential tenancy (Javins v. First National Realty; state residential landlord-tenant acts). The duty to keep a residential premises habitable cannot be disclaimed by lease.",
+        recommendation:
+          "Remove the disclaimer. The implied warranty of habitability cannot be disclaimed in a residential lease; state the landlord's repair and habitability obligations instead.",
+        position: denial.position,
       });
     }
     return null;

@@ -55,3 +55,24 @@ describe("DARK-010 — residential waiver of the warranty of habitability", () =
     ).toBeNull();
   });
 });
+
+describe("DARK-010 — disclaimer-by-denial & adverbial forms (v1.1.0)", () => {
+  const fires = (t: string) => DARK_010.check(buildContext(["Lease", t])) !== null;
+
+  it.each([
+    "Landlord makes no warranty of habitability.",
+    "No warranty of habitability is made or given by Landlord.",
+    "The implied warranty of habitability is expressly disclaimed.",
+    "Landlord gives no express or implied warranty of habitability.",
+  ])("fires on a disclaimer-by-denial / adverbial waiver: %s", (t) => {
+    expect(fires(t)).toBe(true);
+  });
+
+  it.each([
+    "Landlord makes no warranty except the implied warranty of habitability, which is preserved.",
+    "No warranty of habitability is waived by this lease.",
+    "Landlord makes no warranty of merchantability; the warranty of habitability remains in full force.",
+  ])("stays silent when the habitability warranty is excepted or preserved: %s", (t) => {
+    expect(fires(t)).toBe(false);
+  });
+});
