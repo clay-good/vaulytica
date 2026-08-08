@@ -984,6 +984,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   language({
     id: "DPA-049",
+    version: "1.1.0",
     name: "Processor caps audit cost on controller exclusively",
     description:
       "Flags clauses where the controller must bear the entire cost of any audit, including audits triggered by processor breach.",
@@ -995,9 +996,18 @@ export const DPA_GDPR_RULES: Rule[] = [
       "Standard practice splits routine-audit cost to the controller but allocates cost to the processor where the audit uncovers material breach.",
     recommendation:
       "Carve out an exception for audits revealing material breach (cost shifts to the processor).",
+    // v1.0.0 required the exact verb "bear" ("controller shall bear all costs")
+    // or "at controller's expense". It missed the equally-common active verb
+    // variants ("controller shall be responsible for / shall pay all costs of
+    // the audit") and the passive voice ("all costs of any audit shall be borne
+    // by the Controller"). Add an active-verb pattern (bear / pay / cover /
+    // be responsible|liable for) and a passive pattern, both still requiring an
+    // all-encompassing quantifier so a partial-cost split is not flagged.
     bad_patterns: [
       /controller\s+(shall|will)\s+bear\s+(all|the\s+entire|the\s+full)\s+costs?\s+of\s+(any\s+)?audit/i,
       /audit.{0,80}(at\s+(the\s+)?controller'?s?\s+(sole\s+)?(cost|expense))/is,
+      /(?:the\s+)?controller\s+(?:shall|will|must|agrees?\s+to)\s+(?:bear|pay|cover|be\s+(?:responsible|liable)\s+for)\s+(?:all|the\s+(?:entire|full)|any)\s+costs?(?:\s+and\s+expenses?)?[^.]{0,40}audit/is,
+      /(?:all\s+)?costs?(?:\s+and\s+expenses?)?\s+of\s+(?:any\s+|the\s+)*audit[^.]{0,60}(?:borne|paid)\s+(?:solely\s+|exclusively\s+)?by\s+(?:the\s+)?controller/is,
     ],
     // The finding claims costs are allocated "without exception", but the
     // patterns never look for one. A clause carrying the exact carve-out this

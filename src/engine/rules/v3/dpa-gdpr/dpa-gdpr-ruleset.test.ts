@@ -593,3 +593,33 @@ describe("DPA-023 — hand-waving security recognizes bare 'reasonable/adequate 
     expect(await fires(b)).toBe(false);
   });
 });
+
+describe("DPA-049 — audit-cost allocation recognizes 'be responsible for' / 'pay' / passive 'borne by' forms (v1.1.0)", () => {
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: DPA_GDPR_RULES,
+        ctx: withDpa(buildContext(["DPA", b])),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "DPA-049");
+
+  it.each([
+    "Controller shall bear all costs of any audit.",
+    "Any audit shall be at the Controller's sole expense.",
+    "Controller shall be responsible for all costs of the audit.",
+    "All costs and expenses of any audit shall be borne by the Controller.",
+    "The Controller shall pay all costs associated with any audit or inspection.",
+  ])("fires on all-audit-cost-on-controller: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "Controller shall bear the costs of a routine audit, except where the audit reveals a material breach, in which case Processor shall bear the cost.",
+    "Each party shall bear its own costs of any audit.",
+    "The cost of the audit shall be shared equally between the parties.",
+    "Processor shall bear the cost of any audit that reveals a material breach.",
+  ])("stays silent on a carve-out / split / reversed allocation: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});
