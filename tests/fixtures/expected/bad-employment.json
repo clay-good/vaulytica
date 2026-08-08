@@ -743,7 +743,7 @@
       "finding_id": "TERM-009-s1.7-1051",
       "fired": true,
       "rule_id": "TERM-009",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     }
   ],
   "findings": [
@@ -1025,7 +1025,7 @@
       "id": "TERM-009-s1.7-1051",
       "recommendation": "Either grant both parties the same termination right, mirror the cure-period gate on the drafter, or pair the convenience right with a meaningful termination fee.",
       "rule_id": "TERM-009",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Asymmetric termination-for-convenience"
@@ -1232,7 +1232,7 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\", \"Employee\".",
-  "result_hash": "12439f51ee96aeeaaed80d794b2447a94ad145725f0f377e775c6cba8eae69f8",
+  "result_hash": "b3c2a53e36fa330498b94b83dc66148ac0f7f11d7bb73e79726ddb1a74e80e29",
   "source_file": {
     "name": "bad-employment.docx",
     "sha256": "44e689f2fe4e8767866844995363dda962260fd37d54469e6d0fdf443136013c",

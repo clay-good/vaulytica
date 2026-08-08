@@ -39,3 +39,26 @@ describe("TERM-009 — asymmetric termination-for-convenience", () => {
     expect(TERM_009.check(ctx)).toBeNull();
   });
 });
+
+describe("TERM-009 — convenience trigger recognizes 'without cause' / bare 'for convenience' (v1.1.0)", () => {
+  const CURE =
+    "Customer may only terminate this Agreement upon a material breach by Vendor that remains uncured after a 30-day cure period.";
+  const fires = (conv: string) =>
+    TERM_009.check(buildContext(["Termination", conv, CURE])) !== null;
+
+  it.each([
+    "Vendor may terminate this Agreement at any time.",
+    "Vendor may terminate this Agreement for any reason.",
+    "Vendor may terminate this Agreement without cause upon thirty days notice.",
+    "Vendor may terminate this Agreement for convenience or without cause.",
+  ])("fires on an asymmetric convenience right: %s", (conv) => {
+    expect(fires(conv)).toBe(true);
+  });
+
+  it.each([
+    "Either party may terminate this Agreement at any time.",
+    "Vendor may terminate this Agreement upon a material breach by Customer.",
+  ])("stays silent on a bilateral / for-cause-only right: %s", (conv) => {
+    expect(fires(conv)).toBe(false);
+  });
+});

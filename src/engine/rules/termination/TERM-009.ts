@@ -19,7 +19,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
  */
 export const rule: Rule = {
   id: "TERM-009",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Asymmetric termination-for-convenience",
   category: "termination",
   default_severity: "warning",
@@ -29,7 +29,10 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const convenienceHit = firstParagraphMatch(
       ctx,
-      /\b(Vendor|Provider|Company|Licensor|Employer|Landlord|Supplier|Contractor|Consultant|Disclosing\s+Party)\s+may\s+terminate\s+(?:this\s+Agreement\s+)?(?:at\s+any\s+time|for\s+(?:any|its)\s+(?:reason|convenience)|in\s+its\s+(?:sole\s+)?discretion)/i,
+      // v1.1.0 adds the two most common convenience synonyms the trigger missed:
+      // the bare "for convenience" (v1.0.0 required "for any/its convenience")
+      // and "without cause" — the classic termination-for-convenience phrasing.
+      /\b(Vendor|Provider|Company|Licensor|Employer|Landlord|Supplier|Contractor|Consultant|Disclosing\s+Party)\s+may\s+terminate\s+(?:this\s+Agreement\s+)?(?:at\s+any\s+time|for\s+(?:(?:any|its)\s+)?convenience|for\s+(?:any|its)\s+reason|without\s+cause|in\s+its\s+(?:sole\s+)?discretion)/i,
     );
     if (!convenienceHit) return null;
 
