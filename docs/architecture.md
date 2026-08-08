@@ -50,7 +50,7 @@ Each extractor is a **pure function** from the `DocumentTree` (and the outputs o
 
 - [`parties.ts`](../src/extract/parties.ts) — preamble + signature blocks
 - [`dates.ts`](../src/extract/dates.ts) — ISO + US + prose + relative + named-anchor
-- [`amounts.ts`](../src/extract/amounts.ts) — `decimal.js`-backed normalizer for `$1,500,000.00`, `USD 1.5MM`, "one million five hundred thousand," etc.
+- [`amounts.ts`](../src/extract/amounts.ts) — `decimal.js`-backed normalizer for `$1,500,000.00`, `USD 1.5MM`, `C$5,000`/`R$1,200` composite dollar-sign currencies, "one million five hundred thousand," etc.
 - [`definitions.ts`](../src/extract/definitions.ts) — defined terms + defined-but-unused tracking
 - [`sections.ts`](../src/extract/sections.ts) — dotted-decimal / `Article I` / `§` labels
 - [`crossrefs.ts`](../src/extract/crossrefs.ts) — resolves cross-references against the outline

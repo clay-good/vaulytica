@@ -65,13 +65,36 @@ const CURRENCY_CODES = new Set([
   "RUB",
 ]);
 
+// Composite dollar-sign prefixes: "C$" (Canada), "A$"/"AU$" (Australia),
+// "US$", "NZ$", "HK$", "S$" (Singapore), "R$" (Brazil), "MX$" (Mexico), and
+// the "CAD$"/"AUD$" long forms. Without this a bare `$` swallowed them all as
+// USD ("C$5,000" → USD 5,000, wrong currency AND a dropped prefix in raw_text);
+// only "US$" was right, by accident. A leading `\b` keeps the prefix from
+// matching mid-word ("textC$" never fires); a SPACE before the `$` ("Schedule A
+// $5,000") also blocks it, since the `$` is not adjacent. Alternatives are
+// ordered longest-first ("CAD" before "CA" before "C") so the greediest prefix
+// wins. Resolution lives in `resolveCurrency` via COMPOSITE_DOLLAR.
+const COMPOSITE_DOLLAR: Record<string, string> = {
+  US$: "USD",
+  C$: "CAD",
+  CA$: "CAD",
+  CAD$: "CAD",
+  A$: "AUD",
+  AU$: "AUD",
+  AUD$: "AUD",
+  NZ$: "NZD",
+  HK$: "HKD",
+  S$: "SGD",
+  R$: "BRL",
+  MX$: "MXN",
+};
 // The ISO-code alternative ends in `(?:\b|(?=\d))` rather than a bare `\b`: a
 // terse "USD5,000" / "EUR1,000" (no space between the code and the digits) has
 // NO word boundary after the code (letter→digit is word→word), so `\bUSD\b`
 // dropped it. The digit lookahead is additive and cannot introduce a false
 // match — a code followed by a LETTER ("USDT", "USDA") still fails both `\b` and
 // `(?=\d)`, and a code followed by a digit is a currency amount in practice.
-const CUR = String.raw`[$€£¥₹₩₽]|\b(?:USD|EUR|GBP|JPY|CAD|AUD|NZD|CHF|CNY|INR|KRW|BRL|MXN|ZAR|SGD|HKD|SEK|NOK|DKK|RUB)(?:\b|(?=\d))`;
+const CUR = String.raw`\b(?:CAD|AUD|US|CA|AU|NZ|HK|MX|C|A|S|R)\$|[$€£¥₹₩₽]|\b(?:USD|EUR|GBP|JPY|CAD|AUD|NZD|CHF|CNY|INR|KRW|BRL|MXN|ZAR|SGD|HKD|SEK|NOK|DKK|RUB)(?:\b|(?=\d))`;
 // Digit counts are BOUNDED (`{0,40}`/`{1,40}`, not `*`/`+`): in RANGE_NUMERIC
 // the amount is followed by a REQUIRED range connector, so an unbounded `\d+`
 // matches a whole pasted digit run, fails to find the connector, then
@@ -371,6 +394,7 @@ function computeAmount(
 
 function resolveCurrency(symOrCode: string): string {
   const upper = symOrCode.toUpperCase();
+  if (COMPOSITE_DOLLAR[upper]) return COMPOSITE_DOLLAR[upper]!;
   if (CURRENCY_CODES.has(upper)) return upper;
   return CURRENCY_SYMBOLS[symOrCode] ?? "USD";
 }
