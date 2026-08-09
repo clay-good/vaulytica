@@ -58,13 +58,19 @@ const compound = (s: Omit<V4CompoundSpec, "category">): Rule =>
 const LOI_TERM_SHEET_RULES: Rule[] = [
   compound({
     id: "MNA-001",
+    version: "1.1.0",
     name: "Binding vs non-binding clause clearly demarcated",
     description:
       "LOIs must clearly demarcate binding (confidentiality, exclusivity, expenses, governing law) from non-binding (price, structure) provisions.",
     citation: sigaPennzoil(),
     playbooks: [MA_PLAYBOOK_LOI],
     required_patterns: [
-      /(non.?binding|not\s+binding|except\s+(as|for))/i,
+      // The non-binding half of the demarcation. The bounded `not … binding`
+      // gap catches the phrasings that state non-binding intent without the two
+      // words adjacent — "not intended to be binding", "does not create a
+      // binding obligation", "shall not be binding" — alongside the compact
+      // "non-binding" and the "except as/for" carve-out.
+      /(non.?binding|not\s+(?:[a-z]+\s+){0,3}binding|no\s+binding|except\s+(?:as|for))/i,
       /(binding|legally\s+binding)/i,
       /(confidentiality|exclusivity|expenses)/i,
     ],

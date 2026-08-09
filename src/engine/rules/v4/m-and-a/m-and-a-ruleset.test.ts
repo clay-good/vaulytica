@@ -71,6 +71,43 @@ describe("v4 M&A — compliant LOI fixture", () => {
   });
 });
 
+describe("MNA-001 — non-binding phrasings a real LOI writes (v1.1.0)", () => {
+  // Regression: the demarcation check required the non-binding half to read
+  // "non-binding" / "not binding" (adjacent) / "except as|for". A compliant LOI
+  // that states its non-binding intent as "not intended to be binding" or "does
+  // not create a binding obligation", and carves out with "save for" / "other
+  // than", scored 2/3 and drew a false "demarcation incomplete" finding.
+  const COMPLIANT: [string, string][] = [
+    [
+      "other-than + does-not-create",
+      "This letter of intent does not create a binding obligation, other than the provisions regarding confidentiality and the no-shop covenant, which the parties intend to be binding.",
+    ],
+    [
+      "save-for + not-intended-to-be",
+      "Save for the confidentiality and expense-reimbursement clauses, which are legally binding, this term sheet is not intended to be binding.",
+    ],
+  ];
+  for (const [label, clause] of COMPLIANT) {
+    it(`does not fire on a demarcated LOI: ${label}`, async () => {
+      const ctx = withPb(buildContext(["Letter of Intent", clause]), LOI_PB);
+      const run = await runEngine({ rules: M_AND_A_RULES, ctx, source_file: SRC });
+      expect(run.findings.some((f) => f.rule_id === "MNA-001")).toBe(false);
+    });
+  }
+
+  it("still fires when the LOI states no non-binding intent at all", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Letter of Intent",
+        "This Letter of Intent sets out the proposed purchase price and the confidentiality obligations of the parties, both of which are binding.",
+      ]),
+      LOI_PB,
+    );
+    const run = await runEngine({ rules: M_AND_A_RULES, ctx, source_file: SRC });
+    expect(run.findings.some((f) => f.rule_id === "MNA-001")).toBe(true);
+  });
+});
+
 describe("v4 M&A — failure cases", () => {
   it("MNA-001 fires when LOI omits binding / non-binding demarcation", async () => {
     const ctx = withPb(
