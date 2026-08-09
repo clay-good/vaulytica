@@ -59,10 +59,18 @@ const SOVEREIGN_PREFIX = String.raw`the\s+(?:State|Commonwealth|Republic|Kingdom
 // exclusively by", "governed solely by" — and the rigid "governed\s+by" token
 // dropped the whole clause, so CHOICE-001 reported "no governing-law clause" on
 // a document that plainly names one. The adverb is optional and does not change
-// the clause's meaning, so this only widens what matches.
-const GOVERNED_BY = String.raw`governed\s+(?:(?:exclusively|solely|only|entirely)\s+)?by`;
+// the clause's meaning, so this only widens what matches. `under` joins `by` as
+// the preposition — "governed under the laws of X" is the same clause as
+// "governed by the laws of X".
+const GOVERNED_BY = String.raw`governed\s+(?:(?:exclusively|solely|only|entirely)\s+)?(?:by|under)`;
+// The intervening doublet — "governed by, and construed in accordance with, the
+// laws of X" / "governed by, and enforced under, the laws of X". The second
+// verb+preposition sits between the first verb and "the laws of"; without this
+// optional clause the anchor never reached "the laws of" and the whole
+// governing-law clause was read as absent.
+const GOV_LAW_DOUBLET = String.raw`(?:and\s+(?:construed|enforced|interpreted|governed)\s+(?:in\s+accordance\s+with|under|by)\s*,?\s*)?`;
 const GOV_LAW = new RegExp(
-  String.raw`\b((?:${GOVERNED_BY}|(?:interpreted|construed|resolved)\s+(?:under|in\s+accordance\s+with)|subject\s+to|determined\s+(?:under|by|in\s+accordance\s+with))\s*,?\s*(?:and\s+construed\s+(?:in\s+accordance\s+with\s*,?\s*)?)?the\s+(?:substantive\s+|internal\s+|domestic\s+|local\s+|applicable\s+)*laws?\s+of\s+(?:${SOVEREIGN_PREFIX})?([A-Z][A-Za-z\s&-]+?))(?=[.,;)]|\s+(?:without|excluding|and|regardless)|$)`,
+  String.raw`\b((?:${GOVERNED_BY}|controlled\s+by|(?:interpreted|construed|resolved)\s+(?:under|in\s+accordance\s+with)|subject\s+to|determined\s+(?:under|by|in\s+accordance\s+with))\s*,?\s*${GOV_LAW_DOUBLET}the\s+(?:substantive\s+|internal\s+|domestic\s+|local\s+|applicable\s+)*laws?\s+of\s+(?:${SOVEREIGN_PREFIX})?([A-Z][A-Za-z\s&-]+?))(?=[.,;)]|\s+(?:without|excluding|and|regardless)|$)`,
   "gi",
 );
 

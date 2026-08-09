@@ -20,6 +20,18 @@ const REGISTERS: Array<[clause: string, want: RegExp]> = [
   // The elliptical "that of" statement form, where "that" == "the law".
   ["The governing law shall be that of the State of Texas.", /Texas/],
   ["The governing law is that of New York.", /New York/],
+  // `under` as the preposition, `controlled by` as the verb, and an intervening
+  // "and <verb> <prep>," doublet between the first verb and "the laws of".
+  ["This Agreement shall be governed under the laws of the State of Oregon.", /Oregon/],
+  ["This Agreement shall be controlled by the laws of the State of Arizona.", /Arizona/],
+  [
+    "This Agreement shall be governed by, and enforced under, the laws of the State of Nevada.",
+    /Nevada/,
+  ],
+  [
+    "This Agreement shall be governed by and interpreted under the laws of Washington.",
+    /Washington/,
+  ],
 ];
 
 // Decoys: an adjective before "laws" must not turn a non-choice-of-law phrase
@@ -27,6 +39,11 @@ const REGISTERS: Array<[clause: string, want: RegExp]> = [
 const NO_GOV_LAW: string[] = [
   "The parties shall comply with the applicable laws of any jurisdiction in which they operate.",
   "Nothing herein alters the immutable laws of physics governing the equipment.",
+  // "controlled by X" is corporate control, not a governing-law verb, unless
+  // "the laws of" follows immediately.
+  "Acme is controlled by Beta Holdings under the laws of Delaware for tax purposes.",
+  // A disclaimed governing law must stay unmatched.
+  "This Agreement shall not be governed by the laws of the State of New York.",
 ];
 
 describe("governing-law phrasing guard", () => {
