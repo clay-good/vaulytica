@@ -131,6 +131,21 @@ describe("v3 security-measures extractor", () => {
     expect(pen?.cadence).toBe("annual");
   });
 
+  it("detects spelled two-factor and passive/hyphenated encryption phrasings", () => {
+    const expect_slug = (text: string, slug: string) => {
+      const slugs = extractSecurityMeasures(buildTree(["Security", text])).map((m) => m.slug);
+      expect(slugs, text).toContain(slug);
+    };
+    expect_slug("Vendor requires two-factor authentication for administrative access.", "mfa");
+    expect_slug("Vendor enforces two-step verification for remote logins.", "mfa");
+    expect_slug("All data at rest is encrypted using AES-256.", "encryption-at-rest");
+    expect_slug(
+      "Vendor maintains data-at-rest encryption across all databases.",
+      "encryption-at-rest",
+    );
+    expect_slug("All data in transit is encrypted.", "encryption-in-transit");
+  });
+
   it("returns empty on clean text", () => {
     const tree = buildTree(["Body", "The Term begins on the Effective Date."]);
     expect(extractSecurityMeasures(tree)).toEqual([]);

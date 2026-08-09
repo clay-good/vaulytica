@@ -19,13 +19,18 @@ type MeasureDef = { slug: SecurityMeasureSlug; rx: RegExp };
 const MEASURE_CATALOG: MeasureDef[] = [
   {
     slug: "encryption-at-rest",
-    rx: /\bencryption (?:at|of data at) rest\b|\bencrypted at rest\b/i,
+    // "encryption at rest", the passive "data at rest is encrypted", and the
+    // hyphenated adjective "data-at-rest encryption" are all the same control.
+    rx: /\bencryption (?:at|of data at) rest\b|\bencrypted at rest\b|\bdata[- ]at[- ]rest\b[^.]{0,30}?encrypt\w*|\bencrypt\w*[^.]{0,30}?\bdata[- ]at[- ]rest\b/i,
   },
   {
     slug: "encryption-in-transit",
-    rx: /\bencryption in transit\b|\bencrypted in transit\b|\bTLS\b/i,
+    rx: /\bencryption in transit\b|\bencrypted in transit\b|\bdata[- ]in[- ]transit\b[^.]{0,30}?encrypt\w*|\bencrypt\w*[^.]{0,30}?\bdata[- ]in[- ]transit\b|\bTLS\b/i,
   },
-  { slug: "mfa", rx: /\bmulti[- ]?factor authentication\b|\bMFA\b|\b2FA\b/i },
+  {
+    slug: "mfa",
+    rx: /\bmulti[- ]?factor authentication\b|\btwo[- ]factor authentication\b|\btwo[- ]step verification\b|\bMFA\b|\b2FA\b/i,
+  },
   { slug: "sso", rx: /\bsingle sign[- ]?on\b|\bSSO\b|\bSAML\b/i },
   { slug: "vulnerability-scanning", rx: /\bvulnerability scan(?:s|ning)?\b/i },
   { slug: "penetration-testing", rx: /\bpenetration test(?:s|ing)?\b|\bpen[- ]?test(?:s|ing)?\b/i },
