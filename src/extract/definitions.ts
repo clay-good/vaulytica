@@ -34,16 +34,21 @@ import { forEachParagraph, forEachSection, posInParagraph } from "./walk.js";
 // longer adjacent to `means`, the term went unregistered, and STRUCT-006
 // reported it as used-but-undefined. The aside is comma-anchored on
 // "as/when used" and bounded by `[^,.]` so it cannot cross a sentence.
+// `will` joins `shall` as an optional modal — modern drafting writes
+// `"Renewal Window" will mean …` as often as `shall mean`.
 const DEFINITION_INLINE =
-  /["“”']([A-Z][\w\s\-&]{1,80}?)["“”']\s*(?:,\s*(?:as|when)\s+used\b[^,.]{0,40},\s*)?(?:shall\s+)?means?\b/gi;
+  /["“”']([A-Z][\w\s\-&]{1,80}?)["“”']\s*(?:,\s*(?:as|when)\s+used\b[^,.]{0,40},\s*)?(?:shall\s+|will\s+)?means?\b/gi;
 // The other inline defining verbs — `"Effective Date" refers to …`, `"Territory"
 // is defined as …`, `"Deliverables" shall refer to …`. DEFINITION_INLINE knows
 // only "means"/"shall mean", so these terms went unregistered and STRUCT-006
 // reported them as used-but-undefined. The optional `collectively` adverb
 // covers the multi-instrument idiom `The "Transaction Documents" collectively
-// refer to …`, where the adverb pushed "refer to" off the anchor.
+// refer to …`, where the adverb pushed "refer to" off the anchor. The
+// `defined` branch also reads `is hereby defined to mean`, `shall be defined
+// as`, and `is defined to include` — the modal/adverb variants of the plain
+// `is defined as` form.
 const DEFINITION_INLINE_REFERS =
-  /["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s+(?:(?:shall|will)\s+)?(?:collectively\s+)?(?:refers?\s+to|denotes?|(?:is|are)\s+defined\s+(?:as|to\s+mean\b))/gi;
+  /["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s+(?:(?:shall|will)\s+)?(?:collectively\s+)?(?:refers?\s+to|denotes?|(?:(?:is|are)(?:\s+hereby)?|shall\s+be|will\s+be)\s+defined\s+(?:as|to\s+(?:mean|include)\b))/gi;
 // A period / term defined by its BOUNDS rather than by "means" — `The "Tolling
 // Period" shall begin on the Effective Date and shall continue until …`, `the
 // "Restricted Period" shall commence on the Closing`. The quoted term is the

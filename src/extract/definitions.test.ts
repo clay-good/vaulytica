@@ -389,6 +389,44 @@ describe("a scope aside between the term and its defining verb", () => {
   });
 });
 
+describe("modal and verb variants of the inline defining forms", () => {
+  it("registers a 'will mean' definition (will as an alternative modal to shall)", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Definitions",
+        '"Renewal Window" will mean the sixty-day period before expiry.',
+        "Body",
+        "Notice must be given during the Renewal Window. Each Renewal Window is fixed.",
+      ]),
+    );
+    expect(map.entries.map((e) => e.term)).toContain("Renewal Window");
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Renewal Window");
+  });
+
+  it("registers 'is hereby defined to mean' / 'shall be defined as' / 'is defined to include'", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Definitions",
+        '"Governing Body" is hereby defined to mean the board of directors. "Applicable Standard" shall be defined as ISO 27001. "Restricted Data" is defined to include all customer records.',
+      ]),
+    );
+    const terms = map.entries.map((e) => e.term);
+    expect(terms).toContain("Governing Body");
+    expect(terms).toContain("Applicable Standard");
+    expect(terms).toContain("Restricted Data");
+  });
+
+  it("does not read a future-tense 'will' clause without a defining verb as a definition", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Body",
+        'The parties agree that "Best Efforts" will resolve the dispute amicably.',
+      ]),
+    );
+    expect(map.entries.map((e) => e.term)).not.toContain("Best Efforts");
+  });
+});
+
 describe("a quoted colon/dash glossary entry in a definitions section", () => {
   it("registers a 'Term: definition' glossary entry", () => {
     const map = extractDefinitions(
