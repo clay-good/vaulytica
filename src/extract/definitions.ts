@@ -26,13 +26,24 @@ import { forEachParagraph, forEachSection, posInParagraph } from "./walk.js";
 // without the `i` flag the whole defined term was silently dropped from
 // STRUCT-004/005/006 and the definitions appendix. The quoted-term requirement
 // keeps this from matching an ordinary sentence that merely contains "means".
-const DEFINITION_INLINE = /["“”']([A-Z][\w\s\-&]{1,80}?)["“”']\s+(?:shall\s+)?means?\b/gi;
+//
+// The `(?:, as/when used …,)?` aside covers the dominant drafting form that
+// interposes a scope clause between the quoted term and its defining verb —
+// `"Confidential Information", as used herein, means …`, `"Purchase Price",
+// when used in this Agreement, means …`. Without it the closing quote was no
+// longer adjacent to `means`, the term went unregistered, and STRUCT-006
+// reported it as used-but-undefined. The aside is comma-anchored on
+// "as/when used" and bounded by `[^,.]` so it cannot cross a sentence.
+const DEFINITION_INLINE =
+  /["“”']([A-Z][\w\s\-&]{1,80}?)["“”']\s*(?:,\s*(?:as|when)\s+used\b[^,.]{0,40},\s*)?(?:shall\s+)?means?\b/gi;
 // The other inline defining verbs — `"Effective Date" refers to …`, `"Territory"
 // is defined as …`, `"Deliverables" shall refer to …`. DEFINITION_INLINE knows
 // only "means"/"shall mean", so these terms went unregistered and STRUCT-006
-// reported them as used-but-undefined.
+// reported them as used-but-undefined. The optional `collectively` adverb
+// covers the multi-instrument idiom `The "Transaction Documents" collectively
+// refer to …`, where the adverb pushed "refer to" off the anchor.
 const DEFINITION_INLINE_REFERS =
-  /["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s+(?:(?:shall|will)\s+)?(?:refers?\s+to|(?:is|are)\s+defined\s+(?:as|to\s+mean\b))/gi;
+  /["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s+(?:(?:shall|will)\s+)?(?:collectively\s+)?(?:refers?\s+to|(?:is|are)\s+defined\s+(?:as|to\s+mean\b))/gi;
 // A period / term defined by its BOUNDS rather than by "means" — `The "Tolling
 // Period" shall begin on the Effective Date and shall continue until …`, `the
 // "Restricted Period" shall commence on the Closing`. The quoted term is the

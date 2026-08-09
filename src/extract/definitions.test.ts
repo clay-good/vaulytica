@@ -323,6 +323,59 @@ describe("truncated candidates of longer defined terms", () => {
   });
 });
 
+describe("a scope aside between the term and its defining verb", () => {
+  it("registers a term defined through an 'as used herein' aside", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Definitions",
+        '"Confidential Information", as used herein, means all non-public data disclosed by a party.',
+        "Body",
+        "The Receiving Party shall protect the Confidential Information at all times.",
+      ]),
+    );
+    expect(map.entries.map((e) => e.term)).toContain("Confidential Information");
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Confidential Information");
+  });
+
+  it("registers a term defined through a 'when used in this Agreement' aside", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Definitions",
+        '"Purchase Price", when used in this Agreement, means the amount stated in Section 3.',
+        "Body",
+        "Buyer shall pay the Purchase Price on the Closing Date.",
+      ]),
+    );
+    expect(map.entries.map((e) => e.term)).toContain("Purchase Price");
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Purchase Price");
+  });
+
+  it("registers a 'collectively refer to' multi-instrument definition", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Definitions",
+        'The "Transaction Documents" collectively refer to this Agreement and the Exhibits.',
+        "Body",
+        "Each of the Transaction Documents shall be duly executed at Closing.",
+      ]),
+    );
+    expect(map.entries.map((e) => e.term)).toContain("Transaction Documents");
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Transaction Documents");
+  });
+
+  it("does not read an 'as used herein' aside as a definition when no defining verb follows", () => {
+    // The aside is present but the clause resolves with "are described", not
+    // "means" — so it is an ordinary sentence, not a definition.
+    const map = extractDefinitions(
+      buildTree([
+        "Body",
+        '"Service Levels", as used herein, are described in the attached SLA table.',
+      ]),
+    );
+    expect(map.entries.map((e) => e.term)).not.toContain("Service Levels");
+  });
+});
+
 describe("the double-alias definition form", () => {
   it('registers both names of \'"X" or "Y" means …\'', () => {
     const map = extractDefinitions(
