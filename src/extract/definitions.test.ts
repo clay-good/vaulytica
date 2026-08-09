@@ -374,6 +374,63 @@ describe("a scope aside between the term and its defining verb", () => {
     );
     expect(map.entries.map((e) => e.term)).not.toContain("Service Levels");
   });
+
+  it("registers a term defined with the 'denotes' verb", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Definitions",
+        'The "Restricted Territory" denotes the fifty United States and the District of Columbia.',
+        "Body",
+        "Seller shall not compete within the Restricted Territory.",
+      ]),
+    );
+    expect(map.entries.map((e) => e.term)).toContain("Restricted Territory");
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Restricted Territory");
+  });
+});
+
+describe("a quoted colon/dash glossary entry in a definitions section", () => {
+  it("registers a 'Term: definition' glossary entry", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Definitions",
+        '"Delivery Point": the loading dock at the receiving facility.',
+        "Body",
+        "Risk of loss passes to Buyer at the Delivery Point.",
+      ]),
+    );
+    expect(map.entries.map((e) => e.term)).toContain("Delivery Point");
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Delivery Point");
+  });
+
+  it("registers a 'Term — definition' em-dash glossary entry", () => {
+    const map = extractDefinitions(
+      buildTree(["Glossary", '"Cure Period" — the ten business days following notice of default.']),
+    );
+    expect(map.entries.map((e) => e.term)).toContain("Cure Period");
+  });
+
+  it("does not read a quoted colon phrase outside a definitions section as a definition", () => {
+    // The glossary form is scoped to Pass 1 (definitions/glossary headings); a
+    // quoted term followed by a colon in ordinary body text is not a definition.
+    const map = extractDefinitions(
+      buildTree([
+        "Recitals",
+        '"Force Majeure": a party is excused where an event of God intervenes.',
+      ]),
+    );
+    expect(map.entries.map((e) => e.term)).not.toContain("Force Majeure");
+  });
+
+  it("does not read a mid-paragraph quoted colon phrase as a glossary entry", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Definitions",
+        'The parties note the following. "Widget": a red thing used later.',
+      ]),
+    );
+    expect(map.entries.map((e) => e.term)).not.toContain("Widget");
+  });
 });
 
 describe("the double-alias definition form", () => {

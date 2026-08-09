@@ -43,7 +43,7 @@ const DEFINITION_INLINE =
 // covers the multi-instrument idiom `The "Transaction Documents" collectively
 // refer to …`, where the adverb pushed "refer to" off the anchor.
 const DEFINITION_INLINE_REFERS =
-  /["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s+(?:(?:shall|will)\s+)?(?:collectively\s+)?(?:refers?\s+to|(?:is|are)\s+defined\s+(?:as|to\s+mean\b))/gi;
+  /["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s+(?:(?:shall|will)\s+)?(?:collectively\s+)?(?:refers?\s+to|denotes?|(?:is|are)\s+defined\s+(?:as|to\s+mean\b))/gi;
 // A period / term defined by its BOUNDS rather than by "means" — `The "Tolling
 // Period" shall begin on the Effective Date and shall continue until …`, `the
 // "Restricted Period" shall commence on the Closing`. The quoted term is the
@@ -59,6 +59,13 @@ const DEFINITION_INLINE_PERIOD =
 const DEFINITION_ROLE_WHEN =
   /["“”']([A-Z][\w\s\-&/'’.]{1,40}?)["“”']\s+when\s+(?:it|the|such|either|each|a\s+party)\b/gi;
 const DEFINITION_BARE = /^\s*([A-Z][\w\s\-&]{1,80}?)\s+(?:shall\s+)?means?\b/i;
+// A pure glossary entry inside a Definitions/Glossary section: a quoted term at
+// the START of the paragraph, then a colon or dash, then its definition — with
+// no "means"/"refers to" verb (`"Delivery Point": the loading dock`, `"Term" —
+// the laws of Delaware`). Common in definition schedules and data-processing
+// addenda. Used ONLY in Pass 1 (section-scoped) and anchored at paragraph start
+// so an ordinary mid-sentence quotation followed by a colon is not swept in.
+const GLOSSARY_ENTRY = /^\s*["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s*[:—–]\s+\S/;
 
 /**
  * The double-alias definition: `"Protected Health Information" or "PHI"
@@ -448,6 +455,35 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
           used_at: [],
           ...(reference ? { reference } : {}),
         });
+      }
+      // Only when neither a verb-based inline definition nor the bare "Term
+      // means …" form recognized this paragraph do we fall back to the quoted
+      // colon/dash glossary form, so a paragraph that already defined a term is
+      // never re-read.
+      if (inline.length === 0 && !bare) {
+        const glossary = GLOSSARY_ENTRY.exec(text);
+        if (glossary) {
+          const term = glossary[1]!.trim();
+          const def = text
+            .slice(term.length)
+            .replace(/^["“”'\s]*/, "")
+            .replace(/^[:—–]\s*/, "")
+            .trim();
+          const start = p.runs[0]?.start ?? 0;
+          const reference = cleanRef(DEFINITION_REFERENCE.exec(def)?.[1]);
+          registerDefinition(definitions, {
+            term,
+            definition: def,
+            defined_at: {
+              section_id: section.id,
+              paragraph_id: p.id,
+              start,
+              end: start + text.length,
+            },
+            used_at: [],
+            ...(reference ? { reference } : {}),
+          });
+        }
       }
       _pIdx += 1;
     }
