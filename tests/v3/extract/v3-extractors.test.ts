@@ -230,6 +230,23 @@ describe("v3 audit-rights extractor", () => {
     );
     expect(a[0]?.notice_days).toBe(30);
   });
+
+  it("reads annual and twelve-month audit-frequency forms as once per year", () => {
+    for (const text of [
+      "Customer may audit Processor once annually upon reasonable notice.",
+      "Customer may audit Processor no more than once in any twelve (12) month period.",
+      "Customer may audit Processor no more than once per twelve-month period.",
+      "Customer may audit Processor once every twelve months.",
+      "Processor shall be audited annually by an independent auditor.",
+    ]) {
+      const a = extractAuditRights(buildTree(["Audit", text]));
+      expect(a[0]?.frequency_per_year, text).toBe(1);
+    }
+    const twice = extractAuditRights(
+      buildTree(["Audit", "Customer may audit Processor twice annually."]),
+    );
+    expect(twice[0]?.frequency_per_year).toBe(2);
+  });
 });
 
 describe("v3 subprocessor extractor", () => {

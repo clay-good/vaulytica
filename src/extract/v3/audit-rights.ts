@@ -8,7 +8,21 @@ import { forEachParagraph, posInParagraph } from "../walk.js";
 
 const AUDIT_RX = /\b(?:audit|inspect|inspection)[^.]{0,400}\./i;
 
-const FREQUENCY_RX = /\b(?:once|twice|(\d{1,2})\s*times?)\s+(?:per|a)\s+(?:year|calendar year)\b/i;
+// Audit-frequency drafting has several equivalent annual forms: "once per
+// year", "once annually", "an annual audit", "once in any twelve (12) month
+// period", "once every twelve months". Each states a count (once=1, twice=2, or
+// a bare "N times") over a one-year window; the parenthesized numeral in the
+// "twelve (12) month" form is incidental. A sub-annual window (per quarter, per
+// month) is left vague rather than normalized, and a spelled count other than
+// once/twice ("two times") is not read.
+const YEAR_WINDOW = String.raw`(?:year|calendar\s+year|annum|(?:twelve|12)(?:\s*\(\d{1,2}\))?[-\s]months?(?:\s+period)?)`;
+const FREQUENCY_RX = new RegExp(
+  String.raw`\b(?:once|twice|(\d{1,2})\s*times?)\s+(?:per|a|in\s+any|every)\s+${YEAR_WINDOW}\b` +
+    String.raw`|\b(?:once|twice)\s+annually\b` +
+    String.raw`|\bannual(?:ly)?\s+(?:audit|inspection|assessment|review)\b` +
+    String.raw`|\baudit(?:s|ed)?\b[^.]{0,20}?\bannually\b`,
+  "i",
+);
 
 // `(?:[^.()\d\n]*?\()?` reads the "word (numeral)" form — "upon thirty (30)
 // days' prior written notice" — whose parenthesized numeral is authoritative;
