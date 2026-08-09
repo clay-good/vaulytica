@@ -23,6 +23,7 @@ const KIND_LABEL: Record<TransferMechanismKind, string> = {
   "binding-corporate-rules": "Binding Corporate Rules",
   "article-49-derogation": "Art. 49 derogation",
   "data-privacy-framework": "EU-US Data Privacy Framework",
+  "privacy-shield": "Privacy Shield (invalidated)",
   unknown: "Unknown",
 };
 

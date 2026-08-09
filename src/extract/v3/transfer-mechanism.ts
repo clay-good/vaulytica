@@ -45,6 +45,9 @@ const PATTERNS: MechanismPattern[] = [
   { kind: "binding-corporate-rules", rx: /\bBinding Corporate Rules\b|\bBCRs?\b/i },
   { kind: "article-49-derogation", rx: /\bArticle\s*49\b|\bArt\.\s*49\b/i },
   { kind: "data-privacy-framework", rx: /\bData Privacy Framework\b|\bDPF\b/i },
+  // Privacy Shield was invalidated by Schrems II (2020) but still appears as a
+  // stated basis in older DPAs; it is a distinct (defunct) mechanism, not DPF.
+  { kind: "privacy-shield", rx: /\bPrivacy Shield\b/i },
 ];
 
 function inferLocation(text: string): TransferMechanismLocation {

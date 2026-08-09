@@ -77,6 +77,7 @@ export type TransferMechanismKind =
   | "binding-corporate-rules"
   | "article-49-derogation"
   | "data-privacy-framework"
+  | "privacy-shield"
   | "unknown";
 
 export type TransferMechanismLocation =

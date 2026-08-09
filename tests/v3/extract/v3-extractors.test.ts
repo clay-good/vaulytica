@@ -109,6 +109,14 @@ describe("v3 transfer-mechanism extractor", () => {
     expect(kinds).toContain("adequacy-decision");
   });
 
+  it("classifies Privacy Shield as its own defunct mechanism, not DPF", () => {
+    const kinds = extractTransferMechanisms(
+      buildTree(["Transfers", "Transfers rely on the EU-U.S. Privacy Shield Framework."]),
+    ).map((m) => m.kind);
+    expect(kinds).toContain("privacy-shield");
+    expect(kinds).not.toContain("data-privacy-framework");
+  });
+
   it("reads adequacy 'finding' and UK adequacy 'regulations' as the adequacy basis", () => {
     for (const text of [
       "Transfers are permitted under an adequacy finding by the Commission.",
