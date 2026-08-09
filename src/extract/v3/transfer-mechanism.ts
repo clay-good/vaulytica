@@ -39,7 +39,9 @@ const PATTERNS: MechanismPattern[] = [
   { kind: "uk-idta", rx: /\bInternational Data Transfer Agreement\b|\bIDTA\b/i },
   { kind: "uk-addendum", rx: /\bUK Addendum\b|\bInternational Data Transfer Addendum\b/i },
   { kind: "swiss-addendum", rx: /\bSwiss Addendum\b/i },
-  { kind: "adequacy-decision", rx: /\badequacy decision\b/i },
+  // EU Art. 45 "adequacy decision" (a.k.a. "adequacy finding") and the UK GDPR
+  // "adequacy regulations" are the same adequacy-based transfer basis.
+  { kind: "adequacy-decision", rx: /\badequacy (?:decision|finding|regulations?)\b/i },
   { kind: "binding-corporate-rules", rx: /\bBinding Corporate Rules\b|\bBCRs?\b/i },
   { kind: "article-49-derogation", rx: /\bArticle\s*49\b|\bArt\.\s*49\b/i },
   { kind: "data-privacy-framework", rx: /\bData Privacy Framework\b|\bDPF\b/i },

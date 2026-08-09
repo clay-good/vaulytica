@@ -109,6 +109,16 @@ describe("v3 transfer-mechanism extractor", () => {
     expect(kinds).toContain("adequacy-decision");
   });
 
+  it("reads adequacy 'finding' and UK adequacy 'regulations' as the adequacy basis", () => {
+    for (const text of [
+      "Transfers are permitted under an adequacy finding by the Commission.",
+      "Transfers rely on the UK adequacy regulations.",
+    ]) {
+      const kinds = extractTransferMechanisms(buildTree(["Transfers", text])).map((m) => m.kind);
+      expect(kinds, text).toContain("adequacy-decision");
+    }
+  });
+
   it("returns empty when no transfer language is present", () => {
     const tree = buildTree(["Body", "Effective Date: 2026-01-01."]);
     expect(extractTransferMechanisms(tree)).toEqual([]);
