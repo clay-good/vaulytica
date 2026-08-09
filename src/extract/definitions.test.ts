@@ -551,6 +551,30 @@ describe("meaning-by-reference definitions", () => {
     );
     expect(map.entries).toHaveLength(0);
   });
+
+  it("registers a term defined with 'has the same meaning as' (statutory import)", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Definitions",
+        '"Sensitive Data Category" has the same meaning as in the GDPR.',
+        "Body",
+        "The processor treats each Sensitive Data Category with heightened care.",
+        "A Sensitive Data Category requires explicit consent.",
+      ]),
+    );
+    expect(map.entries.map((e) => e.term)).toContain("Sensitive Data Category");
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Sensitive Data Category");
+  });
+
+  it("does not read 'has the same meaning' without a quoted subject as a definition", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Body",
+        "The word herein has the same meaning as it does in common usage everywhere.",
+      ]),
+    );
+    expect(map.entries).toHaveLength(0);
+  });
 });
 
 describe("construed-accordingly derivative terms", () => {

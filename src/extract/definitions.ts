@@ -149,9 +149,12 @@ const DEFINITION_TRAILING_PARENTHETICAL =
  * otherwise defined herein shall have the meaning given in the MSA")
  * contributes nothing — its subject is not a Title-Case term list.
  * The tail tolerates periods inside numeric citations (`45 CFR § 160.103`).
+ * The `same` adjective + `as` connector cover the statutory-import idiom
+ * `"Controller" has the same meaning as in the GDPR` / `… as set forth in
+ * the DPA`, which the participle-only verb list missed.
  */
 const DEFINITION_MEANING_TAIL =
-  /\b(?:shall\s+|will\s+)?(?:each\s+)?ha(?:ve|s)\s+the\s+(?:respective\s+)?meanings?\s+(?:given|set\s+forth|set\s+out|ascribed|assigned|specified|defined|stated)\b(?:[^.;]|\.(?=\d))*/g;
+  /\b(?:shall\s+|will\s+)?(?:each\s+)?ha(?:ve|s)\s+the\s+(?:respective\s+|same\s+)?meanings?\s+(?:given|set\s+forth|set\s+out|ascribed|assigned|specified|defined|stated|as\s+(?:in|set|used|defined|given|ascribed|specified|that))\b(?:[^.;]|\.(?=\d))*/g;
 
 /**
  * The derivative-form convention: `"Processing" means …, and "Process" and
