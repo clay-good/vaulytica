@@ -307,6 +307,11 @@ describe("v3 audit-rights extractor", () => {
       "Customer may audit Processor no more than once per twelve-month period.",
       "Customer may audit Processor once every twelve months.",
       "Processor shall be audited annually by an independent auditor.",
+      // Adjective-before-noun "annual audit" sits before the audit-keyword
+      // window; the whole-paragraph fallback still reads it, including an
+      // intervening adjective ("annual independent audit").
+      "Customer may conduct an annual audit of Processor.",
+      "Processor shall permit an annual independent audit of its controls.",
     ]) {
       const a = extractAuditRights(buildTree(["Audit", text]));
       expect(a[0]?.frequency_per_year, text).toBe(1);

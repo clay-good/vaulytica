@@ -19,7 +19,7 @@ const YEAR_WINDOW = String.raw`(?:year|calendar\s+year|annum|(?:twelve|12)(?:\s*
 const FREQUENCY_RX = new RegExp(
   String.raw`\b(?:once|twice|(\d{1,2})\s*times?)\s+(?:per|a|in\s+any|every)\s+${YEAR_WINDOW}\b` +
     String.raw`|\b(?:once|twice)\s+annually\b` +
-    String.raw`|\bannual(?:ly)?\s+(?:audit|inspection|assessment|review)\b` +
+    String.raw`|\bannual(?:ly)?\s+(?:\w+\s+){0,2}(?:audit|inspection|assessment|review)\b` +
     String.raw`|\baudit(?:s|ed)?\b[^.]{0,20}?\bannually\b`,
   "i",
 );
@@ -55,7 +55,10 @@ export function extractAuditRights(tree: DocumentTree): AuditRights[] {
     if (!m) return;
     const window = m[0];
 
-    const freqMatch = FREQUENCY_RX.exec(window);
+    // The window starts at the audit keyword, so an adjective-before-noun form
+    // ("conduct an annual audit") sits just before it; fall back to the whole
+    // paragraph, which AUDIT_RX has already confirmed is an audit clause.
+    const freqMatch = FREQUENCY_RX.exec(window) ?? FREQUENCY_RX.exec(ctx.text);
     let frequency: number | null = null;
     if (freqMatch) {
       if (freqMatch[1]) frequency = Number(freqMatch[1]);
