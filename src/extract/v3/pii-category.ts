@@ -190,7 +190,9 @@ export const CATEGORY_CATALOG: CategoryDef[] = [
     slug: "ccpa-precise-geolocation",
     label: "precise geolocation",
     group: "ccpa-sensitive",
-    rx: /\bprecise geolocation\b/i,
+    // Data schedules paraphrase the CCPA's "precise geolocation" as "precise
+    // location"; both name the same sensitive category.
+    rx: /\bprecise (?:geo)?location\b/i,
   },
   {
     slug: "ccpa-mail-content",

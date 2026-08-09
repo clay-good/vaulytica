@@ -80,6 +80,13 @@ describe("v3 data-category extractor", () => {
     expect(cats.some((c) => c.group === "gdpr-special")).toBe(true);
   });
 
+  it("reads the 'precise location' paraphrase of CCPA precise geolocation", () => {
+    const cats = extractDataCategories(
+      buildTree(["Data", "Categories include precise location information about the user."]),
+    );
+    expect(cats.some((c) => c.slug === "ccpa-precise-geolocation")).toBe(true);
+  });
+
   it("returns nothing on clean text", () => {
     const tree = buildTree(["Body", "The parties agree to terms."]);
     expect(extractDataCategories(tree)).toEqual([]);
