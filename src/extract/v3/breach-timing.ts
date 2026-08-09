@@ -39,18 +39,27 @@ const VAGUE_TIME_RX =
 
 const TRIGGERS: { rx: RegExp; trigger: BreachTrigger }[] = [
   {
-    rx: /\b(?:upon|after|of|following|on)\s+(?:its )?discovery\b|\bbecoming aware\b/i,
+    // "identif(y|ying|ication|ied)" (but not "identifiable", as in PII) reads
+    // the "upon identifying a breach" form as a discovery trigger.
+    rx: /\b(?:upon|after|of|following|on)\s+(?:its )?discovery\b|\bbecoming aware\b|\bidentif(?:y|ies|ying|ication|ied)\b/i,
     trigger: "discovery",
   },
-  { rx: /\b(?:once|upon|after)\s+confirm/i, trigger: "confirmation" },
-  { rx: /\bsuspect/i, trigger: "suspicion" },
+  { rx: /\b(?:once|upon|after)\s+(?:confirm|verif)/i, trigger: "confirmation" },
+  { rx: /\bsuspect|\breasonable belief\b/i, trigger: "suspicion" },
   { rx: /\bdetermin/i, trigger: "determination" },
 ];
 
 const ADDRESSEES: { rx: RegExp; addressee: BreachAddressee }[] = [
   { rx: /\bsupervisory authorit/i, addressee: "regulator" },
   { rx: /\bregulator/i, addressee: "regulator" },
+  { rx: /\battorney general\b/i, addressee: "regulator" },
   { rx: /\bdata subject/i, addressee: "data-subject" },
+  {
+    // US breach-notification statutes address the "affected individuals" —
+    // the data subjects by another name (persons, consumers, residents).
+    rx: /\baffected (?:individual|person|customer|consumer|party|resident|user)s?\b/i,
+    addressee: "data-subject",
+  },
   { rx: /\blaw enforcement\b/i, addressee: "law-enforcement" },
   { rx: /\bcontroller\b/i, addressee: "controller" },
   { rx: /\bcovered entity\b/i, addressee: "controller" },

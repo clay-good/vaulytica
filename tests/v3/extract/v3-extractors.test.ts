@@ -236,6 +236,42 @@ describe("v3 breach-timing extractor", () => {
     );
     expect(t.some((x) => x.max_delay_hours === 1440 && x.addressee === "controller")).toBe(true);
   });
+
+  it("classifies identify/verify/reasonable-belief triggers and US-statute addressees", () => {
+    const trig = (text: string) =>
+      extractBreachTimings(buildTree(["Notification", text]))[0]?.trigger;
+    const addr = (text: string) =>
+      extractBreachTimings(buildTree(["Notification", text]))[0]?.addressee;
+    expect(
+      trig(
+        "Processor shall notify Controller within 48 hours of identifying a personal data breach.",
+      ),
+    ).toBe("discovery");
+    expect(
+      trig("Vendor shall notify Customer within 24 hours after verifying a security incident."),
+    ).toBe("confirmation");
+    expect(
+      trig(
+        "Vendor shall notify Customer upon a reasonable belief that a breach occurred, within 24 hours.",
+      ),
+    ).toBe("suspicion");
+    expect(
+      addr("Vendor shall notify affected individuals of a data breach without undue delay."),
+    ).toBe("data-subject");
+    expect(addr("Vendor shall notify the Attorney General of the breach within 30 days.")).toBe(
+      "regulator",
+    );
+  });
+
+  it("does not read 'personally identifiable information' as a discovery trigger", () => {
+    const t = extractBreachTimings(
+      buildTree([
+        "Notification",
+        "Vendor shall protect personally identifiable information and report any incident to Customer within 72 hours.",
+      ]),
+    );
+    expect(t[0]?.trigger).toBe("unspecified");
+  });
 });
 
 describe("v3 audit-rights extractor", () => {
