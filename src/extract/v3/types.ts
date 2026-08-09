@@ -234,6 +234,8 @@ export type InsuranceLine =
   | "automobile-liability"
   | "employment-practices-liability"
   | "fiduciary-liability"
+  | "directors-officers-liability"
+  | "crime-fidelity"
   | "other";
 
 export type InsuranceAmount = {

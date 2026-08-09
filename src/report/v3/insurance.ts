@@ -22,6 +22,8 @@ const LINE_LABEL: Record<InsuranceLine, string> = {
   "automobile-liability": "Automobile Liability",
   "employment-practices-liability": "Employment Practices Liability (EPLI)",
   "fiduciary-liability": "Fiduciary Liability",
+  "directors-officers-liability": "Directors & Officers (D&O)",
+  "crime-fidelity": "Crime / Fidelity",
   other: "Other",
 };
 

@@ -40,6 +40,17 @@ const LINE_PATTERNS: { line: InsuranceLine; rx: RegExp }[] = [
     rx: /\bemployment practices liabilit(?:y|ies)\b|\bEPLI\b/i,
   },
   { line: "fiduciary-liability", rx: /\bfiduciary liabilit(?:y|ies)\b/i },
+  {
+    // The spelled "directors and officers" also names a governance body, so it
+    // counts as a line only when an insurance noun follows within the clause;
+    // the "D&O" abbreviation is insurance-specific and needs no such guard.
+    line: "directors-officers-liability",
+    rx: /\bD\s*&\s*O\b|\bdirectors?\s*(?:and|&|and\/or)\s*officers?\b(?=[^.]{0,30}?(?:insurance|coverage|policy))/i,
+  },
+  {
+    line: "crime-fidelity",
+    rx: /\bcrime\s+(?:insurance|coverage|policy)\b|\bcommercial\s+crime\b|\bfidelity\s+(?:bond|insurance|coverage)\b|\bemployee\s+dishonesty\b/i,
+  },
 ];
 
 // Insurance limits carry their currency on either side of the figure — a

@@ -369,6 +369,33 @@ describe("v3 insurance extractor", () => {
     expect(el?.raw_text).toContain("each accident");
   });
 
+  it("detects Directors & Officers and Crime/Fidelity lines", () => {
+    const expect_line = (text: string, line: string) => {
+      const lines = extractInsuranceSchedule(buildTree(["Insurance", text])).amounts.map(
+        (a) => a.line,
+      );
+      expect(lines, text).toContain(line);
+    };
+    expect_line(
+      "Directors and Officers liability insurance of $5,000,000 per claim.",
+      "directors-officers-liability",
+    );
+    expect_line("D&O insurance with a limit of $5,000,000.", "directors-officers-liability");
+    expect_line("Crime insurance of $1,000,000 per occurrence.", "crime-fidelity");
+    expect_line("Fidelity bond in the amount of $1,000,000.", "crime-fidelity");
+    expect_line("Employee dishonesty coverage of $500,000.", "crime-fidelity");
+  });
+
+  it("does not read a governance 'directors and officers' clause as a D&O line", () => {
+    const sched = extractInsuranceSchedule(
+      buildTree([
+        "Indemnification",
+        "The directors and officers of the Company shall be indemnified up to $5,000,000 for claims arising from their service.",
+      ]),
+    );
+    expect(sched.amounts.some((a) => a.line === "directors-officers-liability")).toBe(false);
+  });
+
   it("does not treat a bare number without a currency marker as a limit", () => {
     const sched = extractInsuranceSchedule(
       buildTree([
