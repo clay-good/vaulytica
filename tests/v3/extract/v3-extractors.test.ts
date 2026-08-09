@@ -296,6 +296,46 @@ describe("v3 insurance extractor", () => {
       expect(sched.notice_of_cancellation_days, text).toBe(days);
     }
   });
+
+  it("reads limits stated with a currency code instead of a leading '$'", () => {
+    for (const text of [
+      "Vendor shall carry commercial general liability insurance of 1,000,000 USD per occurrence.",
+      "Vendor shall carry commercial general liability insurance of USD 1,000,000 per occurrence.",
+      "Vendor shall carry commercial general liability insurance of 1,000,000 dollars per occurrence.",
+    ]) {
+      const sched = extractInsuranceSchedule(buildTree(["Insurance", text]));
+      const cgl = sched.amounts.find(
+        (a) => a.line === "commercial-general-liability" && a.per_occurrence_usd === 1_000_000,
+      );
+      expect(cgl, text).toBeDefined();
+    }
+  });
+
+  it("captures per-claim and each-accident limit qualifiers", () => {
+    const sched = extractInsuranceSchedule(
+      buildTree([
+        "Insurance",
+        "Consultant shall maintain professional liability (errors and omissions) insurance of $5,000,000 per claim.",
+        "Consultant shall maintain employers' liability insurance of $1,000,000 each accident.",
+      ]),
+    );
+    const eo = sched.amounts.find((a) => a.line === "professional-liability");
+    expect(eo?.per_occurrence_usd).toBe(5_000_000);
+    expect(eo?.raw_text).toContain("per claim");
+    const el = sched.amounts.find((a) => a.line === "employers-liability");
+    expect(el?.per_occurrence_usd).toBe(1_000_000);
+    expect(el?.raw_text).toContain("each accident");
+  });
+
+  it("does not treat a bare number without a currency marker as a limit", () => {
+    const sched = extractInsuranceSchedule(
+      buildTree([
+        "Insurance",
+        "Under Section 25, the Contractor shall maintain Commercial General Liability insurance for a period of 3 years covering 2 locations.",
+      ]),
+    );
+    expect(sched.amounts).toHaveLength(0);
+  });
 });
 
 describe("v3 DTSA notice extractor", () => {

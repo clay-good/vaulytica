@@ -42,8 +42,18 @@ const LINE_PATTERNS: { line: InsuranceLine; rx: RegExp }[] = [
   { line: "fiduciary-liability", rx: /\bfiduciary liabilit(?:y|ies)\b/i },
 ];
 
+// Insurance limits carry their currency on either side of the figure — a
+// leading symbol/code (`$1,000,000`, `USD 1,000,000`) or a trailing code
+// (`1,000,000 USD`). Anchoring on a leading `$` dropped every code-only form,
+// leaving a schedule that named the currency but no limit. The leading and
+// trailing currency markers are both optional in the pattern; a match with
+// neither is a bare number (a section or year) and is rejected in code, so a
+// currency marker on at least one side stays mandatory. The number must start
+// with a digit so a stray comma cannot seed a junk match. Per-claim and
+// each-accident are standard professional-liability and workers'-comp limit
+// qualifiers alongside per-occurrence and aggregate.
 const AMOUNT_RX =
-  /\$\s*([\d,]+(?:\.\d+)?)\s*(?:(million|mm|m\b|thousand|k\b))?\s*(?:USD)?\s*(per occurrence|each occurrence|aggregate|in the aggregate|annual aggregate)?/gi;
+  /(\$|USD|US\$)?\s*(\d[\d,]*(?:\.\d+)?)\s*(million|mm|m\b|thousand|k\b)?\s*(USD|dollars)?\s*(per occurrence|each occurrence|per claim|each claim|per accident|each accident|aggregate|in the aggregate|annual aggregate)?/gi;
 
 const AM_BEST_RX =
   /\bA\.?M\.?\s*Best\b[^.]{0,80}?\b([A-Z]\+?\+?(?:[- ](?:I{1,3}|IV|V|VI{0,3}|IX|X{1,2}))?)\b/i;
@@ -82,9 +92,11 @@ export function extractInsuranceSchedule(tree: DocumentTree): InsuranceSchedule 
       const matches = Array.from(ctx.text.matchAll(AMOUNT_RX));
       for (const lp of lineHits) {
         for (const am of matches) {
-          if (!am[1]) continue;
-          const amt = normalizeAmount(am[1], am[2]);
-          const qualifier = (am[3] ?? "").toLowerCase();
+          // Require a currency marker on one side; a bare number is not a limit.
+          if (!am[1] && !am[4]) continue;
+          if (!am[2]) continue;
+          const amt = normalizeAmount(am[2], am[3]);
+          const qualifier = (am[5] ?? "").toLowerCase();
           const isAggregate = qualifier.includes("aggregate");
           amounts.push({
             line: lp.line,
