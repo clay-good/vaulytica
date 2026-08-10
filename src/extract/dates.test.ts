@@ -115,6 +115,27 @@ describe("extractDates", () => {
     }
   });
 
+  it("captures financial/transactional anchors in bare and labeled forms", () => {
+    const tree = buildTree([
+      "Terms",
+      "All sums are computed as of the Valuation Date and are due on the Payment Date.",
+      "Title passes on the Purchase Date; amounts accrue from the Reference Date.",
+      "Filing Date: March 3, 2026.",
+    ]);
+    const anchors = extractDates(tree)
+      .filter((d) => d.type === "named-anchor")
+      .map((d) => d.anchor);
+    for (const a of [
+      "Valuation Date",
+      "Payment Date",
+      "Purchase Date",
+      "Reference Date",
+      "Filing Date",
+    ]) {
+      expect(anchors).toContain(a);
+    }
+  });
+
   it("decomposes disjunctive range deadlines into lower and upper bounds", () => {
     const tree = buildTree([
       "Notice",
