@@ -791,12 +791,15 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       if (words.length === 2 && TITLE_CASE_LEADING_STOPWORDS.has(words[0]!)) continue;
       // A sentence-initial article fused onto a DEFINED term is that term's
       // use: "The Escrow Agent shall release …" is the defined "Escrow
-      // Agent", not an undefined "The Escrow Agent". A stopword-led phrase
-      // whose remainder is NOT defined ("The Special Reserve Fund") still
-      // flags.
+      // Agent", not an undefined "The Escrow Agent". The remainder is tested
+      // the same way a non-stopword phrase is (see the isCompoundOfDefined
+      // check above), so a plural of a defined singular counts too — "All
+      // Licensed Products" is the defined "Licensed Product" in the plural,
+      // not an undefined term. A stopword-led phrase whose remainder is NOT
+      // defined ("The Special Reserve Fund") still flags.
       if (
         TITLE_CASE_LEADING_STOPWORDS.has(words[0]!) &&
-        definedNames.has(words.slice(1).join(" ").toLowerCase())
+        isCompoundOfDefined(words.slice(1).join(" ").toLowerCase(), definedNames)
       ) {
         continue;
       }

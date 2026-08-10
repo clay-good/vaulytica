@@ -962,6 +962,22 @@ describe("plural compounds of defined terms", () => {
     );
     expect(map.undefined_capitalized.map((u) => u.term)).not.toContain("Your Contributions");
   });
+
+  it("does not flag a stopword-led plural of a defined singular", () => {
+    // "All Licensed Products" / "The Licensed Products" is the defined
+    // "Licensed Product" in the plural with a leading article — its own use,
+    // not a used-but-undefined term (STRUCT-006).
+    const map = extractDefinitions(
+      buildTree([
+        "Agreement",
+        '"Licensed Product" means the software listed in Exhibit A.',
+        "Customer may resell the Licensed Products to end users.",
+        "All Licensed Products remain the property of Licensor.",
+        "The Licensed Products carry a warranty.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((u) => u.term)).not.toContain("Licensed Products");
+  });
 });
 
 describe("statute suffixes and office titles", () => {
