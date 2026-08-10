@@ -85,6 +85,18 @@ describe("extractDealValue — labeled total only (never a guess)", () => {
     expect(dealValue("Total consideration of $8,000,000.")?.value).toBe(8_000_000);
   });
 
+  it("reads the equality connectors 'equal to' / 'in the amount of' / 'in an amount equal to'", () => {
+    // These are pure equality phrasings — as much a labeled total as "is" or
+    // "of" — so the ladder should resolve them rather than fall to the default.
+    expect(dealValue("The aggregate purchase price equal to $5,000,000.")?.value).toBe(5_000_000);
+    expect(dealValue("Total contract value in the amount of $2,500,000.")?.value).toBe(2_500_000);
+    expect(dealValue("Aggregate purchase price in an amount equal to $7,000,000.")?.value).toBe(
+      7_000_000,
+    );
+    // A subtraction/exclusion clause is still not a connector — honesty-first.
+    expect(dealValue("Total consideration, less the holdback, of $4,000,000.")).toBeNull();
+  });
+
   it("falls back to null (honest default) when a non-connector clause separates label and amount", () => {
     // Honesty-first: rather than risk misattributing the amount, an unusual
     // clause between the label and the figure yields no deal value (the run

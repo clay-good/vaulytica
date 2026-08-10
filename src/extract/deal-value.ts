@@ -62,14 +62,16 @@ const WINDOW = 60;
 /**
  * The text between the label and the amount must be a *connector* — whitespace,
  * a colon/dash/comma, and at most a short linking verb ("is", "of", "shall
- * be", "equals", …). Anything else (", less the …", "excludes …", "under this
- * Agreement is …") means the nearby amount is not the labeled total, so we bail
- * to the honest default rather than misattribute it. Honesty-first: a legitimate
- * total behind an unusual clause is a false negative (base default), never a
- * false positive that fabricates a deal size.
+ * be", "equals", "equal to", "in the amount of", …). Anything else (", less the
+ * …", "excludes …", "under this Agreement is …") means the nearby amount is not
+ * the labeled total, so we bail to the honest default rather than misattribute
+ * it. Honesty-first: a legitimate total behind an unusual clause is a false
+ * negative (base default), never a false positive that fabricates a deal size.
+ * Every connector here is a pure equality phrase (it asserts the amount IS the
+ * labeled total); a subtraction or exclusion clause never matches.
  */
 const CONNECTOR =
-  /^[\s]*[:=,–—-]?[\s]*(?:is|of|shall be|will be|equals?|amounts? to|totall?ing)?[\s]*$/i;
+  /^[\s]*[:=,–—-]?[\s]*(?:is|of|shall be|will be|equals?|equal to|amounts? to|totall?ing|in the amount of|in an amount equal to)?[\s]*$/i;
 
 export type DealValue = {
   /** The resolved numeric deal value (USD). */

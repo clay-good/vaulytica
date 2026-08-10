@@ -42,6 +42,14 @@ All notable changes to this project will be documented in this file. Format adap
   reporter table, so `123 B.R. 45` matched the case-citation shape but drew a false
   malformed-citation accusation. Added to the table; the bare-acronym prose form
   (`the B.R. department`) is still not read as a citation.
+- **The negotiation-ladder deal-value reader now recognizes the "equal to" /
+  "in the amount of" equality phrasings.** A labeled total written as "aggregate
+  purchase price **equal to** $5,000,000" or "total contract value **in the amount
+  of** $2,500,000" fell through the connector check, so the size-band ladder
+  dropped silently to its base default instead of the stated total. These are
+  pure equality connectors (they assert the amount IS the labeled total), added
+  alongside the existing "is" / "of" / "equals"; a subtraction or exclusion clause
+  ("less the holdback") still yields no deal value, honesty-first.
 - **The headless CLI can now actually analyze DOCX files — `vaulytica analyze contract.docx`
   was broken end-to-end in Node.** Two Node-only failures, both masked because the test suite
   runs under happy-dom (browser-build mammoth + a built-in `DOMParser`) while no test ever
