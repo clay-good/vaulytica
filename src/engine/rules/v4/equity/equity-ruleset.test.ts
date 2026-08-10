@@ -120,6 +120,37 @@ describe("v4 Equity — failure cases", () => {
   });
 });
 
+describe("EQT-048 — 83(b) filing recitals in IRS-model wording (v1.1.0)", () => {
+  // Regression: the deadline pattern required the word "thirty", and the IRS
+  // pattern required the abbreviated "IRS Service Center". A compliant election
+  // written the way the IRS model statement is — digits-only "30 days" and the
+  // spelled-out "Internal Revenue Service Center" — matched neither and drew a
+  // false "recitals incomplete" finding.
+  it("does not fire on 'within 30 days … Internal Revenue Service Center … copy to the employer'", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Section 83(b) Election",
+        "This statement is filed within 30 days of the transfer with the Internal Revenue Service Center where the taxpayer files their return, and a copy has been furnished to the employer.",
+      ]),
+      E83B_PB,
+    );
+    const run = await runEngine({ rules: EQUITY_RULES, ctx, source_file: SRC });
+    expect(run.findings.some((f) => f.rule_id === "EQT-048")).toBe(false);
+  });
+
+  it("still fires on an election that states none of the procedural recitals", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Section 83(b) Election",
+        "The recipient acknowledges receipt of restricted shares subject to vesting over four years.",
+      ]),
+      E83B_PB,
+    );
+    const run = await runEngine({ rules: EQUITY_RULES, ctx, source_file: SRC });
+    expect(run.findings.some((f) => f.rule_id === "EQT-048")).toBe(true);
+  });
+});
+
 describe("Voting agreement — election covenant & termination in real wording", () => {
   const VOTING_PB: Playbook = { id: "voting-agreement", version: "1.0.0" };
   const run1 = async (body: string) => {

@@ -978,14 +978,21 @@ const ELECTION_83B_RULES: Rule[] = [
   }),
   compound({
     id: "EQT-048",
+    version: "1.1.0",
     name: "30-day filing notice + copies to IRS / employer / return",
     description:
       "Treas. Reg. § 1.83-2(c) requires filing within 30 days and copies to the IRS / employer / taxpayer's return.",
     citation: treasReg("1.83-2(c)", "30-day filing + copies"),
     playbooks: [EQT_PLAYBOOK_83B],
     required_patterns: [
-      /thirty\s*\(?30\)?\s+days/i,
-      /(internal\s+revenue\s+service|irs)\s+(service\s+center|office)/i,
+      // The deadline is written "thirty (30) days", "thirty days", or the
+      // digits-only "30 days" the IRS model election uses; requiring the word
+      // "thirty" dropped the last (most common) form.
+      /(?:\bthirty\b(?:\s*\(?\s*30\s*\)?)?|\b30\b)\s+days/i,
+      // "IRS Service Center", but also the spelled-out "Internal Revenue
+      // Service Center" (one "service") and "… Office"; the old pattern needed a
+      // second literal "service" after the full name, so the spelled form missed.
+      /(?:internal\s+revenue\s+service|irs)\s+(?:service\s+)?(?:center|office)/i,
       /(employer|company).{0,40}(copy|file)/is,
     ],
     min_match: 2,
