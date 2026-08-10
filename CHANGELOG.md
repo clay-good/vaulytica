@@ -29,6 +29,14 @@ All notable changes to this project will be documented in this file. Format adap
   production-QA pack.
 
 ### Fixed
+- **CITE-001 no longer calls New York's modern reporter series "malformed."** The Indigo
+  Book reporter table listed only the bare `N.Y.`, so any citation to the second/third
+  series (`5 N.Y.2d 100`, `1 N.Y.3d 5`) or the New York Supplement (`850 N.Y.S.2d 12`,
+  `40 N.Y.S. 9`) — the reporter nearly every New York appellate cite actually uses — has a
+  period and matches the case-citation shape, but failed the known-reporter check and drew
+  a false malformed-citation accusation in filing briefs. The five modern New York forms
+  (`N.Y.2d`, `N.Y.3d`, `N.Y.S.`, `N.Y.S.2d`, `N.Y.S.3d`) are now in the table, exactly as
+  the earlier `F.4th` gap was closed.
 - **The headless CLI can now actually analyze DOCX files — `vaulytica analyze contract.docx`
   was broken end-to-end in Node.** Two Node-only failures, both masked because the test suite
   runs under happy-dom (browser-build mammoth + a built-in `DOMParser`) while no test ever

@@ -147,6 +147,11 @@ describe("extractCitations — negative cases", () => {
     // Modern reporters are known.
     const modern = extractCitations("See 12 F.4th 300 and 61 Cal. App. 5th 500.");
     expect(modern.filter((h) => h.kind === "case" && h.well_formed === false)).toHaveLength(0);
+    // New York's modern series and the New York Supplement are well-formed —
+    // only the bare "N.Y." was listed, so "5 N.Y.2d 100" read as malformed.
+    const ny = extractCitations("5 N.Y.2d 100, 1 N.Y.3d 5, 850 N.Y.S.2d 12, 40 N.Y.S. 9.");
+    expect(ny.filter((h) => h.kind === "case")).toHaveLength(4);
+    expect(ny.filter((h) => h.kind === "case" && h.well_formed === false)).toHaveLength(0);
     // TOA leader digit + rule cite is a RULE, not a malformed case.
     const toa = extractCitations("42 U.S.C. § 1983 ...... 4 Fed. R. App. P. 32 ...... 5");
     expect(toa.filter((h) => h.kind === "case" && h.well_formed === false)).toHaveLength(0);

@@ -47,6 +47,11 @@ export const REPORTERS: readonly string[] = [
   "Cal. Rptr. 2d",
   "Cal. Rptr. 3d",
   "N.Y.",
+  "N.Y.2d", // New York Reports second series; only the bare "N.Y." was listed, so
+  "N.Y.3d", // every modern "5 N.Y.2d 100" / "1 N.Y.3d 5" read as a malformed case (audit)
+  "N.Y.S.", // New York Supplement — the reporter almost every NY appellate cite uses
+  "N.Y.S.2d",
+  "N.Y.S.3d",
   "N.E.",
   "N.E.2d",
   "N.E.3d",
