@@ -22,6 +22,21 @@ describe("extractObligations", () => {
     expect(customer?.qualifier ?? "").toMatch(/subject\s+to/);
   });
 
+  it("captures an hours-based deadline as an obligation trigger", () => {
+    // Breach- and incident-notice duties are commonly stated in hours ("within
+    // 24 hours", "within seventy-two (72) hours"); hours was missing from the
+    // trigger's time-unit list, so those deadlines never surfaced.
+    const tree = buildTree([
+      "Notice",
+      "Provider shall notify Customer within 24 hours of discovering a breach.",
+      "Provider shall report the incident within seventy-two (72) hours.",
+    ]);
+    const oblis = extractObligations(tree, []);
+    const triggers = oblis.map((o) => o.trigger ?? "");
+    expect(triggers.some((t) => /within\s+24\s+hours/.test(t))).toBe(true);
+    expect(triggers.some((t) => /seventy-two\s+\(72\)\s+hours/.test(t))).toBe(true);
+  });
+
   it("decomposes a nested trigger into its sub-conditions", () => {
     const tree = buildTree([
       "Notice",

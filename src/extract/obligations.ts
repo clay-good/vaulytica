@@ -58,7 +58,7 @@ const MODALS = [
 const MODAL_RE = new RegExp(String.raw`\b(${MODALS.join("|").replace(/ /g, "\\s+")})\b`, "gi");
 
 const TRIGGER_RE =
-  /\b(upon\s[^,;.]+|if\s[^,;.]+|when\s[^,;.]+|promptly\s+after\s[^,;.]+|within\s+(?:\d+|\w+(?:[-\s]\w+)?)\s*(?:\(\d+\)\s*)?(?:business\s+)?(?:days?|weeks?|months?|years?)\b[^,;.]*)/i;
+  /\b(upon\s[^,;.]+|if\s[^,;.]+|when\s[^,;.]+|promptly\s+after\s[^,;.]+|within\s+(?:\d+|\w+(?:[-\s]\w+)?)\s*(?:\(\d+\)\s*)?(?:business\s+)?(?:hours?|days?|weeks?|months?|years?)\b[^,;.]*)/i;
 
 const QUALIFIER_RE =
   /\b(subject\s+to\s[^,;.]+|except\s[^,;.]+|provided\s+that\s[^,;.]+|provided,\s+however,\s+that\s[^,;.]+)/i;
