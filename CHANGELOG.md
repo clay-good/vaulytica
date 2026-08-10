@@ -109,6 +109,14 @@ All notable changes to this project will be documented in this file. Format adap
   hash or the precision/recall metrics, which legitimately move with the corpus.
 
 ### Security
+- **Cleared three high-severity advisories via `npm audit fix` (semver-compatible, no
+  `package.json` change).** `pdfjs-dist` 6.0.227 → 6.2.108 closes GHSA-hq66-cqwq-w95j
+  (arbitrary JavaScript execution when opening a malicious PDF) — the most relevant here,
+  since document ingest parses user-supplied PDFs; `js-yaml` 4.3.0 → 4.3.1 closes
+  GHSA-5p4m-2wfm-xmqj (quadratic CPU on `!!omap` resolution); `nanoid` 3.3.16 → 3.3.18 and
+  5.1.11 → 5.1.16 close GHSA-28wg-ghj8-5hjv / GHSA-2v37-7h3g-55p8 (non-secure generators
+  can loop indefinitely on a zero/negative size). Only `package-lock.json` changed; the full
+  suite and production build pass unchanged, and `npm audit` reports 0 vulnerabilities.
 - **Bumped the transitive `ws` dependency 8.20.1 → 8.21.0 to clear GHSA-96hv-2xvq-fx4p** (a
   WebSocket memory-exhaustion DoS, high severity). `ws` is pulled in only by `happy-dom`, the
   vitest test environment — it is a dev/test-only dependency and never reaches the shipped
