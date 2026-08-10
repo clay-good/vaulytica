@@ -994,6 +994,21 @@ describe("plural compounds of defined terms", () => {
     );
     expect(map.undefined_capitalized.map((u) => u.term)).not.toContain("Licensed Products");
   });
+
+  it("does not flag the singular of a defined 'y'→'ies' plural term", () => {
+    // "Licensed Facility" is the singular of the defined "Licensed
+    // Facilities"; the bare "+s"/"+es" check produced "licensed facilitys"/
+    // "licensed facilityes" and missed it, leaking a STRUCT-006 false positive.
+    const map = extractDefinitions(
+      buildTree([
+        "Agreement",
+        '"Licensed Facilities" means the plants operated by Seller.',
+        "Each Licensed Facility shall be maintained.",
+        "A Licensed Facility may be inspected without notice.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((u) => u.term)).not.toContain("Licensed Facility");
+  });
 });
 
 describe("statute suffixes and office titles", () => {

@@ -709,8 +709,18 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // A SINGULAR use of a defined PLURAL term — "each Licensed Patent" where
       // "Licensed Patents" is the defined term — is that term's use, not a new
       // undefined one. (The mirror, a plural use of a defined singular, is
-      // handled by isCompoundOfDefined further down.)
-      if (definedNames.has(`${phraseLower}s`) || definedNames.has(`${phraseLower}es`)) continue;
+      // handled by isCompoundOfDefined further down.) The bare "+s"/"+es"
+      // forms are kept for a final word already ending in "s" ("Asset Class" →
+      // "Asset Classes"); regularPlural adds the "y" → "ies" case ("Licensed
+      // Facility" → "Licensed Facilities") that neither bare form produces.
+      const definedAsPlural = regularPlural(phraseLower);
+      if (
+        definedNames.has(`${phraseLower}s`) ||
+        definedNames.has(`${phraseLower}es`) ||
+        (definedAsPlural !== null && definedNames.has(definedAsPlural))
+      ) {
+        continue;
+      }
       // TITLE_CASE_PHRASE cannot cross an all-caps word, so a candidate is
       // often a truncation of a longer defined term — "Contractor Background"
       // cut from the defined "Contractor Background IP". A word-boundary
