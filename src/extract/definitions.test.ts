@@ -15,6 +15,27 @@ describe("extractDefinitions", () => {
     expect(entry?.used_at.length).toBeGreaterThan(0);
   });
 
+  it("reads bare and glossary definitions under an 'Interpretation' heading", () => {
+    // UK/commonwealth drafting titles the section "Interpretation" rather than
+    // "Definitions"; the bare `Term means …` and quoted `"Term": …` glossary
+    // forms are Pass-1-only, so without the heading they were missed and their
+    // uses reported by STRUCT-006 as used-but-undefined.
+    const tree = buildTree([
+      "Interpretation",
+      "Business Day means any day other than a Saturday, Sunday or public holiday.",
+      '"Delivery Point": the loading dock at the facility.',
+      "In this Agreement, the singular includes the plural and vice versa.",
+      "Headings are for convenience only and shall not affect interpretation.",
+      "The Business Day count starts at the Delivery Point.",
+    ]);
+    const terms = extractDefinitions(tree).entries.map((e) => e.term);
+    expect(terms).toContain("Business Day");
+    expect(terms).toContain("Delivery Point");
+    // Construction rules in the same section are not spurious defined terms.
+    expect(terms).not.toContain("In this Agreement");
+    expect(terms).not.toContain("Headings");
+  });
+
   it("records defined-but-never-used terms", () => {
     const tree = buildTree([
       "Definitions",

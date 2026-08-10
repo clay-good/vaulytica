@@ -194,7 +194,7 @@ const DEFINITION_REFERENCE =
 const DEFINITION_SCOPE =
   /\b(?:for\s+(?:the\s+)?purposes\s+of|as\s+used\s+in|solely\s+for\s+purposes\s+of)\s+(?:this\s+)?((?:Section|Article|Clause|Paragraph)\s+[\w.()-]+)[,:\s]*$/i;
 
-const DEFINITIONS_HEADING = /\b(definitions?|defined\s+terms|glossary)\b/i;
+const DEFINITIONS_HEADING = /\b(definitions?|defined\s+terms|glossary|interpretation)\b/i;
 const TITLE_CASE_PHRASE = /\b((?:[A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,4}))\b/g;
 
 /**
