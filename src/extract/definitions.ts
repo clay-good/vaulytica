@@ -709,7 +709,7 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // A SINGULAR use of a defined PLURAL term — "each Licensed Patent" where
       // "Licensed Patents" is the defined term — is that term's use, not a new
       // undefined one. (The mirror, a plural use of a defined singular, is
-      // handled by segmentMatchesDefined further down.)
+      // handled by isCompoundOfDefined further down.)
       if (definedNames.has(`${phraseLower}s`) || definedNames.has(`${phraseLower}es`)) continue;
       // TITLE_CASE_PHRASE cannot cross an all-caps word, so a candidate is
       // often a truncation of a longer defined term — "Contractor Background"
