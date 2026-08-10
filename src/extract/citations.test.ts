@@ -152,6 +152,9 @@ describe("extractCitations — negative cases", () => {
     const ny = extractCitations("5 N.Y.2d 100, 1 N.Y.3d 5, 850 N.Y.S.2d 12, 40 N.Y.S. 9.");
     expect(ny.filter((h) => h.kind === "case")).toHaveLength(4);
     expect(ny.filter((h) => h.kind === "case" && h.well_formed === false)).toHaveLength(0);
+    // The Bankruptcy Reporter is well-formed; the bare-acronym prose decoy is not a cite.
+    const br = extractCitations("In re Foo, 500 B.R. 100. The B.R. department reviewed 5 files.");
+    expect(br.filter((h) => h.kind === "case" && h.well_formed)).toHaveLength(1);
     // TOA leader digit + rule cite is a RULE, not a malformed case.
     const toa = extractCitations("42 U.S.C. § 1983 ...... 4 Fed. R. App. P. 32 ...... 5");
     expect(toa.filter((h) => h.kind === "case" && h.well_formed === false)).toHaveLength(0);

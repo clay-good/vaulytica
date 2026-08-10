@@ -19,6 +19,7 @@ describe("citation-grammar", () => {
       "F. Supp. 2d",
       "F. Supp. 3d",
       "F. App'x",
+      "B.R.",
       "Cal.",
       "Cal. 4th",
       "N.Y.",

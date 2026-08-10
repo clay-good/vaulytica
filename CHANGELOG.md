@@ -37,6 +37,11 @@ All notable changes to this project will be documented in this file. Format adap
   a false malformed-citation accusation in filing briefs. The five modern New York forms
   (`N.Y.2d`, `N.Y.3d`, `N.Y.S.`, `N.Y.S.2d`, `N.Y.S.3d`) are now in the table, exactly as
   the earlier `F.4th` gap was closed.
+- **CITE-001 no longer calls the Bankruptcy Reporter "malformed."** `B.R.` — West's
+  Bankruptcy Reporter, cited in nearly every bankruptcy brief — was missing from the
+  reporter table, so `123 B.R. 45` matched the case-citation shape but drew a false
+  malformed-citation accusation. Added to the table; the bare-acronym prose form
+  (`the B.R. department`) is still not read as a citation.
 - **The headless CLI can now actually analyze DOCX files — `vaulytica analyze contract.docx`
   was broken end-to-end in Node.** Two Node-only failures, both masked because the test suite
   runs under happy-dom (browser-build mammoth + a built-in `DOMParser`) while no test ever

@@ -33,6 +33,8 @@ export const REPORTERS: readonly string[] = [
   "F. Supp. 2d",
   "F. Supp. 3d",
   "F. App'x",
+  "B.R.", // West's Bankruptcy Reporter — cited in nearly every bankruptcy brief, yet its
+  // absence made every "123 B.R. 45" read as a malformed case (audit)
   "Cal.",
   "Cal. 2d",
   "Cal. 3d",
