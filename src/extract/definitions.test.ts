@@ -36,6 +36,32 @@ describe("extractDefinitions", () => {
     expect(terms).not.toContain("Headings");
   });
 
+  it("counts a plural use of a singular-defined term as a use", () => {
+    // A term defined in the singular but used only in the plural was reported by
+    // STRUCT-005 as an unused template leftover even though it is used.
+    const tree = buildTree([
+      "Definitions",
+      '"Confidential Material" means any non-public information.',
+      '"Disclosing Party" means the party sharing information.',
+      "Each party shall protect the Confidential Materials it receives from the Disclosing Parties.",
+    ]);
+    const map = extractDefinitions(tree);
+    expect(map.unused_terms).not.toContain("Confidential Material");
+    expect(map.unused_terms).not.toContain("Disclosing Party");
+    expect(map.entries.find((e) => e.term === "Confidential Material")?.used_at.length).toBe(1);
+  });
+
+  it("does not treat an unrelated word sharing a prefix as a plural use", () => {
+    const tree = buildTree([
+      "Definitions",
+      '"Fee" means the amount payable for the Services.',
+      "The Customer may submit Feedback about the platform.",
+    ]);
+    const map = extractDefinitions(tree);
+    // "Feedback" is not a use of "Fee"/"Fees"; the term stays unused.
+    expect(map.unused_terms).toContain("Fee");
+  });
+
   it("records defined-but-never-used terms", () => {
     const tree = buildTree([
       "Definitions",

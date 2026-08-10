@@ -542,7 +542,15 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
 
   // Pass 3: record every use of each term outside its definition.
   for (const entry of definitions.values()) {
-    const needle = new RegExp(`\\b${escapeRegExp(entry.term)}\\b`, "g");
+    // Match the term as defined and its regular plural — a term defined in the
+    // singular is routinely used in the plural ("… the Confidential Materials
+    // it receives"), which is still a use, not a template leftover.
+    const plural = regularPlural(entry.term);
+    const alternatives =
+      plural && plural !== entry.term
+        ? `${escapeRegExp(entry.term)}|${escapeRegExp(plural)}`
+        : escapeRegExp(entry.term);
+    const needle = new RegExp(`\\b(?:${alternatives})\\b`, "g");
     forEachParagraph(tree, (ctx) => {
       // Skip the definition itself. For an express definition that is the
       // whole paragraph — a term repeated inside its own definition body
@@ -1239,4 +1247,25 @@ function registerDefinition(map: Map<string, DefinitionEntry>, entry: Definition
 
 function escapeRegExp(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/**
+ * Regular English plural of a term's final word — "Confidential Material" →
+ * "Confidential Materials", "Disclosing Party" → "Disclosing Parties",
+ * "Franchise" → "Franchises". Returns null when no simple rule applies (the
+ * final word already ends in "s", so its plural is ambiguous — "Losses" vs an
+ * already-plural "Fees"). Used only to count a singular-defined term that the
+ * body uses in the plural as a genuine use, so STRUCT-005 does not report it as
+ * an unused template leftover.
+ */
+function regularPlural(term: string): string | null {
+  const m = /^(.*?)(\S+)$/.exec(term);
+  if (!m) return null;
+  const [, head, last] = m as unknown as [string, string, string];
+  if (/s$/i.test(last)) return null;
+  let plural: string;
+  if (/[^aeiou]y$/i.test(last)) plural = last.replace(/y$/i, "ies");
+  else if (/(x|z|ch|sh)$/i.test(last)) plural = last + "es";
+  else plural = last + "s";
+  return head + plural;
 }
