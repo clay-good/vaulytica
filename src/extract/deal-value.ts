@@ -68,10 +68,14 @@ const WINDOW = 60;
  * it. Honesty-first: a legitimate total behind an unusual clause is a false
  * negative (base default), never a false positive that fabricates a deal size.
  * Every connector here is a pure equality phrase (it asserts the amount IS the
- * labeled total); a subtraction or exclusion clause never matches.
+ * labeled total); a subtraction or exclusion clause never matches. The
+ * "aggregate" variants mirror their plain siblings — deal-value clauses very
+ * often restate an already-aggregate label ("aggregate consideration in the
+ * aggregate amount of $5,000,000"), and without them that equality read as an
+ * unrecognized connector and the honest default (base ladder) was taken.
  */
 const CONNECTOR =
-  /^[\s]*[:=,–—-]?[\s]*(?:is|of|shall be|will be|equals?|equal to|amounts? to|totall?ing|in the amount of|in an amount equal to|in the sum of|in a sum equal to)?[\s]*$/i;
+  /^[\s]*[:=,–—-]?[\s]*(?:is|of|shall be|will be|equals?|equal to|amounts? to|totall?ing|in the amount of|in an amount equal to|in the aggregate amount of|in an aggregate amount equal to|in the sum of|in a sum equal to|in the aggregate sum of)?[\s]*$/i;
 
 export type DealValue = {
   /** The resolved numeric deal value (USD). */

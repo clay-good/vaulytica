@@ -98,6 +98,17 @@ describe("extractDealValue — labeled total only (never a guess)", () => {
     expect(dealValue("Aggregate purchase price in a sum equal to $6,000,000.")?.value).toBe(
       6_000_000,
     );
+    // "aggregate"-worded parallels — deal clauses routinely restate an already-
+    // aggregate label ("aggregate consideration in the aggregate amount of …").
+    expect(dealValue("Total consideration in the aggregate amount of $8,000,000.")?.value).toBe(
+      8_000_000,
+    );
+    expect(dealValue("Aggregate consideration in the aggregate sum of $9,000,000.")?.value).toBe(
+      9_000_000,
+    );
+    expect(
+      dealValue("Total purchase price in an aggregate amount equal to $1,000,000.")?.value,
+    ).toBe(1_000_000);
     // A subtraction/exclusion clause is still not a connector — honesty-first.
     expect(dealValue("Total consideration, less the holdback, of $4,000,000.")).toBeNull();
   });
