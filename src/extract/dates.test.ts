@@ -89,6 +89,32 @@ describe("extractDates", () => {
     expect(anchors).toContain("Anniversary Date");
   });
 
+  it("captures instrument and severance anchors used as relative-deadline reference points", () => {
+    const tree = buildTree([
+      "Deadlines",
+      "The release must be signed within 21 days of the Separation Date.",
+      "Payment is due two business days after the Settlement Date.",
+      "Proceeds are paid on the Distribution Date to holders of record.",
+      "The note matures five years from the Issuance Date.",
+      "Shares vest on the Exercise Date, and interest accrues from the Conversion Date.",
+      "Holders as of the Record Date receive the dividend.",
+    ]);
+    const anchors = extractDates(tree)
+      .filter((d) => d.type === "named-anchor")
+      .map((d) => d.anchor);
+    for (const a of [
+      "Separation Date",
+      "Settlement Date",
+      "Distribution Date",
+      "Issuance Date",
+      "Exercise Date",
+      "Conversion Date",
+      "Record Date",
+    ]) {
+      expect(anchors).toContain(a);
+    }
+  });
+
   it("decomposes disjunctive range deadlines into lower and upper bounds", () => {
     const tree = buildTree([
       "Notice",

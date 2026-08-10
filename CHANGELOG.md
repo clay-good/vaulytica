@@ -37,6 +37,15 @@ All notable changes to this project will be documented in this file. Format adap
   a false malformed-citation accusation in filing briefs. The five modern New York forms
   (`N.Y.2d`, `N.Y.3d`, `N.Y.S.`, `N.Y.S.2d`, `N.Y.S.3d`) are now in the table, exactly as
   the earlier `F.4th` gap was closed.
+- **The date extractor now recognizes seven more named date anchors.**
+  `Separation`, `Settlement`, `Distribution`, `Conversion`, `Exercise`, `Issuance`,
+  and `Record` join the curated anchor-alias vocabulary, so the reference points that
+  severance ("within 21 days of the Separation Date"), securities ("two days after the
+  Settlement Date"), convertible-instrument ("five years from the Issuance Date"), and
+  distribution ("holders as of the Record Date") clauses date relative deadlines from
+  are surfaced as named-anchor date references instead of going unread. STRUCT-002 keys
+  only on "Effective Date", so this does not affect the effective-date check; no fixture
+  cites any of the new terms, so the extracted stream is byte-identical (zero golden churn).
 - **The date extractor now recognizes "the Anniversary Date" as a named anchor.**
   `Anniversary` joins the curated anchor-alias vocabulary (Effective, Closing,
   Commencement, …), so a bare reference like "notice is due before the Anniversary
