@@ -132,7 +132,7 @@ const RELATIVE = new RegExp(
  * concept. (v7 §5: broaden anchor-alias breadth.)
  */
 const ANCHOR_ALIASES =
-  "Effective|Closing|Commencement|Termination|Expiration|Renewal|Execution|Signing|Start|Term Start|Delivery|Acceptance|Go-Live|Hire|Grant|Vesting|Maturity|Funding|Disbursement|Completion|Onboarding";
+  "Effective|Closing|Commencement|Termination|Expiration|Renewal|Execution|Signing|Start|Term Start|Delivery|Acceptance|Go-Live|Hire|Grant|Vesting|Maturity|Funding|Disbursement|Completion|Onboarding|Anniversary";
 
 const NAMED_ANCHOR = new RegExp(String.raw`\bthe\s+(${ANCHOR_ALIASES})\s+Date\b`, "gi");
 

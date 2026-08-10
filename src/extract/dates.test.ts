@@ -78,6 +78,17 @@ describe("extractDates", () => {
     expect(anchors).toContain("Date Hereof");
   });
 
+  it("captures the Anniversary Date anchor (renewal/escalation reference point)", () => {
+    const tree = buildTree([
+      "Renewal",
+      "The fee escalates on the Anniversary Date, and notice is due before the Anniversary Date.",
+    ]);
+    const anchors = extractDates(tree)
+      .filter((d) => d.type === "named-anchor")
+      .map((d) => d.anchor);
+    expect(anchors).toContain("Anniversary Date");
+  });
+
   it("decomposes disjunctive range deadlines into lower and upper bounds", () => {
     const tree = buildTree([
       "Notice",

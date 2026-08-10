@@ -37,6 +37,12 @@ All notable changes to this project will be documented in this file. Format adap
   a false malformed-citation accusation in filing briefs. The five modern New York forms
   (`N.Y.2d`, `N.Y.3d`, `N.Y.S.`, `N.Y.S.2d`, `N.Y.S.3d`) are now in the table, exactly as
   the earlier `F.4th` gap was closed.
+- **The date extractor now recognizes "the Anniversary Date" as a named anchor.**
+  `Anniversary` joins the curated anchor-alias vocabulary (Effective, Closing,
+  Commencement, …), so a bare reference like "notice is due before the Anniversary
+  Date" — the reference point renewal and fee-escalation clauses date from — is
+  surfaced as a named-anchor date reference instead of going unread. STRUCT-002 keys
+  only on "Effective Date", so this does not affect the effective-date check.
 - **CITE-001 no longer calls the Bankruptcy Reporter "malformed."** `B.R.` — West's
   Bankruptcy Reporter, cited in nearly every bankruptcy brief — was missing from the
   reporter table, so `123 B.R. 45` matched the case-citation shape but drew a false
