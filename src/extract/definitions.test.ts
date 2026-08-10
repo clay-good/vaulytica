@@ -51,6 +51,22 @@ describe("extractDefinitions", () => {
     expect(map.entries.find((e) => e.term === "Confidential Material")?.used_at.length).toBe(1);
   });
 
+  it("counts a singular use of a plural-defined term as a use", () => {
+    // Mirror of the above: a term defined in the plural but used only in the
+    // singular ("Deliverables" … "each Deliverable"; "Affiliates" … "an
+    // Affiliate") is still used, not an unused template leftover.
+    const tree = buildTree([
+      "Definitions",
+      '"Deliverables" means the items listed in the SOW.',
+      '"Affiliates" means entities under common control.',
+      "Provider shall submit each Deliverable to any Affiliate on request.",
+      "A late Deliverable incurs a penalty.",
+    ]);
+    const map = extractDefinitions(tree);
+    expect(map.unused_terms).not.toContain("Deliverables");
+    expect(map.unused_terms).not.toContain("Affiliates");
+  });
+
   it("does not treat an unrelated word sharing a prefix as a plural use", () => {
     const tree = buildTree([
       "Definitions",

@@ -542,14 +542,14 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
 
   // Pass 3: record every use of each term outside its definition.
   for (const entry of definitions.values()) {
-    // Match the term as defined and its regular plural — a term defined in the
-    // singular is routinely used in the plural ("… the Confidential Materials
-    // it receives"), which is still a use, not a template leftover.
-    const plural = regularPlural(entry.term);
-    const alternatives =
-      plural && plural !== entry.term
-        ? `${escapeRegExp(entry.term)}|${escapeRegExp(plural)}`
-        : escapeRegExp(entry.term);
+    // Match the term as defined and its regular plural/singular — a term
+    // defined in one number is routinely used in the other ("Confidential
+    // Material" … "the Confidential Materials"; "Deliverables" … "each
+    // Deliverable"), which is still a use, not a template leftover.
+    const variants = [entry.term, regularPlural(entry.term), regularSingular(entry.term)].filter(
+      (v): v is string => !!v && v !== entry.term,
+    );
+    const alternatives = [entry.term, ...new Set(variants)].map(escapeRegExp).join("|");
     const needle = new RegExp(`\\b(?:${alternatives})\\b`, "g");
     forEachParagraph(tree, (ctx) => {
       // Skip the definition itself. For an express definition that is the
@@ -1271,4 +1271,26 @@ function regularPlural(term: string): string | null {
   else if (/(x|z|ch|sh)$/i.test(last)) plural = last + "es";
   else plural = last + "s";
   return head + plural;
+}
+
+/**
+ * Regular English singular of a plural term's final word — the mirror of
+ * {@link regularPlural}, for a term defined in the plural ("Deliverables",
+ * "Affiliates", "Parties") that the body uses in the singular. Guarded by a
+ * round trip: the candidate singular is only accepted when re-pluralizing it
+ * reproduces the exact term, so a non-plural word ending in "s" ("Business" →
+ * "Busines" → "Businesses" ≠ "Business") is rejected. Returns null when no
+ * simple rule applies.
+ */
+function regularSingular(term: string): string | null {
+  const m = /^(.*?)(\S+)$/.exec(term);
+  if (!m) return null;
+  const [, head, last] = m as unknown as [string, string, string];
+  let singularLast: string | null = null;
+  if (/[^aeiou]ies$/i.test(last)) singularLast = last.replace(/ies$/i, "y");
+  else if (/(ses|xes|zes|ches|shes)$/i.test(last)) singularLast = last.replace(/es$/i, "");
+  else if (/[^s]s$/i.test(last)) singularLast = last.replace(/s$/i, "");
+  if (!singularLast) return null;
+  const candidate = head + singularLast;
+  return regularPlural(candidate) === term ? candidate : null;
 }
