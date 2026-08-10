@@ -29,6 +29,7 @@ describe("citation-grammar", () => {
       "N.Y.S.2d",
       "N.Y.S.3d",
       "N.E.2d",
+      "N.W.3d",
       "P.3d",
       "So. 2d",
       "A.3d",

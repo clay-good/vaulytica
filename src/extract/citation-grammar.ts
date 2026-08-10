@@ -59,6 +59,9 @@ export const REPORTERS: readonly string[] = [
   "N.E.3d",
   "N.W.",
   "N.W.2d",
+  "N.W.3d", // North Western Reporter, Third Series (2023–); the current series for
+  // Minnesota/Michigan/Wisconsin/Iowa/Nebraska/etc., so its absence made every
+  // modern "1 N.W.3d 100" read as a malformed case (audit)
   "P.",
   "P.2d",
   "P.3d",
