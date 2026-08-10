@@ -64,7 +64,8 @@ All notable changes to this project will be documented in this file. Format adap
   dropped silently to its base default instead of the stated total. These are
   pure equality connectors (they assert the amount IS the labeled total), added
   alongside the existing "is" / "of" / "equals"; a subtraction or exclusion clause
-  ("less the holdback") still yields no deal value, honesty-first.
+  ("less the holdback") still yields no deal value, honesty-first. The "sum"-worded
+  parallels — "in the sum of $X" and "in a sum equal to $X" — now resolve too.
 - **The headless CLI can now actually analyze DOCX files — `vaulytica analyze contract.docx`
   was broken end-to-end in Node.** Two Node-only failures, both masked because the test suite
   runs under happy-dom (browser-build mammoth + a built-in `DOMParser`) while no test ever

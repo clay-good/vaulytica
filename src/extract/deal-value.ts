@@ -71,7 +71,7 @@ const WINDOW = 60;
  * labeled total); a subtraction or exclusion clause never matches.
  */
 const CONNECTOR =
-  /^[\s]*[:=,–—-]?[\s]*(?:is|of|shall be|will be|equals?|equal to|amounts? to|totall?ing|in the amount of|in an amount equal to)?[\s]*$/i;
+  /^[\s]*[:=,–—-]?[\s]*(?:is|of|shall be|will be|equals?|equal to|amounts? to|totall?ing|in the amount of|in an amount equal to|in the sum of|in a sum equal to)?[\s]*$/i;
 
 export type DealValue = {
   /** The resolved numeric deal value (USD). */
