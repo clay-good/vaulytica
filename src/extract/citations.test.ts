@@ -152,6 +152,11 @@ describe("extractCitations — negative cases", () => {
     const ny = extractCitations("5 N.Y.2d 100, 1 N.Y.3d 5, 850 N.Y.S.2d 12, 40 N.Y.S. 9.");
     expect(ny.filter((h) => h.kind === "case")).toHaveLength(4);
     expect(ny.filter((h) => h.kind === "case" && h.well_formed === false)).toHaveLength(0);
+    // South Eastern Reporter Third Series is well-formed — every sibling regional
+    // reporter listed its 3d series except S.E.3d, so "1 S.E.3d 100" read as malformed.
+    const se = extractCitations("800 S.E.2d 100, 1 S.E.3d 55.");
+    expect(se.filter((h) => h.kind === "case")).toHaveLength(2);
+    expect(se.filter((h) => h.kind === "case" && h.well_formed === false)).toHaveLength(0);
     // The Bankruptcy Reporter is well-formed; the bare-acronym prose decoy is not a cite.
     const br = extractCitations("In re Foo, 500 B.R. 100. The B.R. department reviewed 5 files.");
     expect(br.filter((h) => h.kind === "case" && h.well_formed)).toHaveLength(1);

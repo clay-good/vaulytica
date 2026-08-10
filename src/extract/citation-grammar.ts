@@ -67,6 +67,10 @@ export const REPORTERS: readonly string[] = [
   "P.3d",
   "S.E.",
   "S.E.2d",
+  "S.E.3d", // South Eastern Reporter, Third Series (2003–); the current series for
+  // Georgia/Virginia/West Virginia/North Carolina/South Carolina. Every sibling
+  // regional reporter listed its 3d series (N.E.3d, N.W.3d, S.W.3d, So. 3d, A.3d)
+  // except this one, so every modern "1 S.E.3d 100" read as a malformed case.
   "S.W.",
   "S.W.2d",
   "S.W.3d",
