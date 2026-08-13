@@ -326,6 +326,27 @@ describe("CROSS-AMOUNT-001", () => {
     expect(run.findings[0]!.title).toContain("$250,000");
     expect(run.findings[0]!.title).not.toMatch(/000,000,000/);
   });
+
+  it("scales a 'billion' cap so the comparison uses the real magnitude", async () => {
+    // "$2.5 billion" must parse as $2,500,000,000, not $2.5 — otherwise the
+    // huge-cap document is mistaken for the lowest cap in the bundle.
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Limitation of Liability",
+      "The Provider's aggregate liability under this Agreement shall not exceed $2.5 billion.",
+    ]);
+    const sow = makeDoc("sow", "sow", [
+      "Limitation of Liability",
+      "The Provider's aggregate liability under this Statement of Work shall not exceed $1,000,000.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_AMOUNT_001],
+      documents: [msa, sow],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(1);
+    // The $1,000,000 SOW cap is the lower one; the $2.5B MSA is the higher.
+    expect(run.findings[0]!.title).toContain("$2,500,000,000");
+  });
 });
 
 /* ---------------- CROSS-MISSING-001 -------------- */

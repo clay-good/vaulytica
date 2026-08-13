@@ -185,7 +185,9 @@ export function firstLiabilityCap(doc: ConsistencyDocument): {
   const found: Hit = slot.value;
   // Find the largest $X dollar amount in the paragraph.
   const amounts = [
-    ...found.paragraph_text.matchAll(/\$\s*([\d,]+(?:\.\d+)?)\s*(million|thousand|m|k)?\b/gi),
+    ...found.paragraph_text.matchAll(
+      /\$\s*([\d,]+(?:\.\d+)?)\s*(billion|bn|million|thousand|m|k)?\b/gi,
+    ),
   ];
   if (amounts.length === 0) return null;
   let max = 0;
@@ -194,11 +196,13 @@ export function firstLiabilityCap(doc: ConsistencyDocument): {
     if (!Number.isFinite(num)) continue;
     const suffix = (m[2] ?? "").toLowerCase();
     const scaled =
-      suffix === "million" || suffix === "m"
-        ? num * 1_000_000
-        : suffix === "thousand" || suffix === "k"
-          ? num * 1_000
-          : num;
+      suffix === "billion" || suffix === "bn"
+        ? num * 1_000_000_000
+        : suffix === "million" || suffix === "m"
+          ? num * 1_000_000
+          : suffix === "thousand" || suffix === "k"
+            ? num * 1_000
+            : num;
     if (scaled > max) max = scaled;
   }
   if (max === 0) return null;
@@ -319,18 +323,22 @@ export function firstIndemnityCap(doc: ConsistencyDocument): {
   });
   if (!slot.value) return null;
   const found: Hit = slot.value;
-  const amounts = [...found.text.matchAll(/\$\s*([\d,]+(?:\.\d+)?)\s*(million|thousand|m|k)?\b/gi)];
+  const amounts = [
+    ...found.text.matchAll(/\$\s*([\d,]+(?:\.\d+)?)\s*(billion|bn|million|thousand|m|k)?\b/gi),
+  ];
   let max = 0;
   for (const m of amounts) {
     const num = Number(m[1]!.replace(/,/g, ""));
     if (!Number.isFinite(num)) continue;
     const s = (m[2] ?? "").toLowerCase();
     const scaled =
-      s === "million" || s === "m"
-        ? num * 1_000_000
-        : s === "thousand" || s === "k"
-          ? num * 1_000
-          : num;
+      s === "billion" || s === "bn"
+        ? num * 1_000_000_000
+        : s === "million" || s === "m"
+          ? num * 1_000_000
+          : s === "thousand" || s === "k"
+            ? num * 1_000
+            : num;
     if (scaled > max) max = scaled;
   }
   if (max === 0) return null;
