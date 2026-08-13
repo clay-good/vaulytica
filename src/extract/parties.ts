@@ -77,8 +77,31 @@ const BETWEEN_RE = /\bbetween\s+(.+?)\s+and\s+(.+?)(?:[.;,]|$)/gi;
  * split into its members below. Gated by the same `PREAMBLE_LEAD` as `between`,
  * so "allocated among the members" / "shared among the parties" in ordinary
  * prose is not read as a preamble.
+ *
+ * The list body absorbs an in-abbreviation period rather than treating it as
+ * the sentence terminator — the corpus writes its "among" lists with
+ * abbreviated entity types ("Alpha Inc., Beta Corp., and Gamma Ltd.", "Acme
+ * Inc. ("Buyer"), …"), so a non-greedy `.+?` stopped at the FIRST period
+ * ("Alpha Inc") and dropped every party but the first. A period is in-word when
+ * it is NOT followed by whitespace/end (`Inc.,` `L.P.` `Ltd`) OR when a role
+ * parenthetical or an "and" connector follows across a space (`Inc. ("Buyer")`,
+ * `Corp. and Gamma …`). Those two arms are the only period-space contexts a
+ * party list opens; anything else after a period-space — a new capitalized word
+ * (a fresh sentence "…Z. This Agreement …", a middle initial "Alice B. Walker")
+ * or the end of the paragraph — terminates the list, so the capture never runs
+ * past the preamble sentence. The three arms are mutually exclusive (a char is a
+ * non-period, a period with no following space, or a period with a following
+ * space), so the `+` is unambiguous — no backtracking (spec-v8 §5). Kept
+ * case-insensitive so an ALL-CAPS preamble ("BY AND AMONG …") still reads.
  */
-const AMONG_RE = /\bamong\s+(.+?)(?:[.;]|$)/gi;
+const AMONG_RE = /\bamong\s+((?:[^.;\n]|\.(?!\s|$)|\.(?=\s+(?:and\s|["“(])))+)(?:[.;]|$)/gi;
+
+// A member that is nothing but an entity-type suffix — produced when an "among"
+// list separates the suffix from the name with a comma ("Alpha Holdings, L.P.")
+// and `AMONG_SEP` splits on that comma. The name (e.g. "Alpha Holdings") is kept
+// on its own; the bare "L.P." / "LLC" fragment is not a party.
+const BARE_ENTITY_SUFFIX =
+  /^(?:l\.?p\.?|l\.?l\.?c\.?|inc\.?|corp\.?|corporation|co\.?|ltd\.?|limited|llp|pllc|gmbh|a\.?g\.?|plc|s\.?a\.?|sarl|n\.?v\.?|b\.?v\.?|pty)$/i;
 
 /**
  * Split an "among" party list into members. Consumes the Oxford / non-Oxford
@@ -86,9 +109,10 @@ const AMONG_RE = /\bamong\s+(.+?)(?:[.;]|$)/gi;
  * Z" both yield three). Each member is name-cleaned downstream, and
  * `cleanPartyName` rejects a lowercase-leading entity descriptor ("a Delaware
  * corporation") on its own, so a mixed list of names and descriptors keeps only
- * the names.
+ * the names. Case-insensitive so an ALL-CAPS preamble's "… AND …" join is
+ * consumed as a separator, not left glued to the last member ("AND GAMMA LTD").
  */
-const AMONG_SEP = /\s*,\s*(?:and\s+)?|\s+and\s+/;
+const AMONG_SEP = /\s*,\s*(?:and\s+)?|\s+and\s+/i;
 
 /**
  * `between X and Y` names the contracting parties only inside an actual
@@ -355,7 +379,7 @@ export function extractParties(tree: DocumentTree): Party[] {
       const listStart = amongMatch.index + amongMatch[0].indexOf(amongMatch[1] ?? "");
       for (const member of (amongMatch[1] ?? "").split(AMONG_SEP)) {
         const { name, role } = splitNameAndRole(member);
-        if (!name || isBoilerplateName(name)) continue;
+        if (!name || isBoilerplateName(name) || BARE_ENTITY_SUFFIX.test(name)) continue;
         const at = text.indexOf(member, listStart);
         registerParty(partyMap, name, {
           ...(role ? { role } : {}),

@@ -29,6 +29,20 @@ All notable changes to this project will be documented in this file. Format adap
   production-QA pack.
 
 ### Fixed
+- **The party extractor no longer truncates a multi-party "among" preamble at the
+  first abbreviation period.** A three-or-more-party preamble written the way real
+  merger, credit, and joint-venture agreements write it — "by and among Alpha Inc.,
+  Beta Corp., and Gamma Ltd." — captured its member list with a non-greedy match
+  that stopped at the FIRST period, so the period inside "Inc." ended the list and
+  every party but the first ("Alpha Inc") was dropped. The list body now absorbs an
+  in-abbreviation period (before a comma, another letter, a role parenthetical, or an
+  "and" connector) while a real sentence-ending period still terminates it, so the
+  full roster is read — with member roles ('Acme Inc. ("Buyer"), …') and in ALL-CAPS
+  preambles. A member that is nothing but an entity-type suffix ("L.P." / "LLC" split
+  off a comma-separated "Alpha Holdings, L.P.") is dropped rather than surfaced as a
+  party. This feeds STRUCT-001 (party identification) and every party-tallying rule
+  (RISK-002); no corpus fixture uses an "among" preamble, so the extracted stream is
+  byte-identical on the golden corpus (zero churn).
 - **CITE-001 no longer calls New York's modern reporter series "malformed."** The Indigo
   Book reporter table listed only the bare `N.Y.`, so any citation to the second/third
   series (`5 N.Y.2d 100`, `1 N.Y.3d 5`) or the New York Supplement (`850 N.Y.S.2d 12`,

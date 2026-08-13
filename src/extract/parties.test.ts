@@ -142,6 +142,68 @@ describe("extractParties", () => {
     expect(names.some((n) => /^a\s/i.test(n))).toBe(false);
   });
 
+  it("reads an 'among' list of abbreviated entity names without truncating at a period", () => {
+    // The list body carries in-word periods ("Alpha Inc.", "Beta Corp.",
+    // "Gamma Ltd."); a non-greedy `.+?` stopped at the FIRST period and dropped
+    // every party but "Alpha Inc".
+    const tree = buildTree([
+      "Agreement",
+      "This Agreement is entered into by and among Alpha Inc., Beta Corp., and Gamma Ltd.",
+    ]);
+    const names = extractParties(tree).map((p) => p.name);
+    expect(names).toEqual(expect.arrayContaining(["Alpha Inc", "Beta Corp", "Gamma Ltd"]));
+    expect(names).toHaveLength(3);
+  });
+
+  it("reads an abbreviated-entity 'among' list whose members carry role parentheticals", () => {
+    const tree = buildTree([
+      "Stock Purchase Agreement",
+      'This Agreement is entered into by and among Acme Inc. ("Buyer"), Beta LLC ("Seller"), and Gamma Ltd. ("Escrow Agent").',
+    ]);
+    const parties = extractParties(tree);
+    expect(parties.map((p) => p.name)).toEqual(
+      expect.arrayContaining(["Acme Inc", "Beta LLC", "Gamma Ltd"]),
+    );
+    expect(parties.map((p) => p.role)).toEqual(
+      expect.arrayContaining(["Buyer", "Seller", "Escrow Agent"]),
+    );
+  });
+
+  it("drops a bare entity-suffix fragment split from a comma-separated 'among' member", () => {
+    // "Alpha Holdings, L.P." splits on its internal comma; the "L.P." fragment
+    // is not a party, but the distinctive name is kept.
+    const tree = buildTree([
+      "Agreement",
+      "This Agreement is made by and among Alpha Holdings, L.P., Beta Capital, LLC, and Gamma Ventures, Inc.",
+    ]);
+    const names = extractParties(tree).map((p) => p.name);
+    expect(names).toEqual(
+      expect.arrayContaining(["Alpha Holdings", "Beta Capital", "Gamma Ventures"]),
+    );
+    expect(names).toHaveLength(3);
+  });
+
+  it("does not pull a following sentence into an abbreviated-entity 'among' list", () => {
+    // The abbreviation period must not defeat the sentence boundary: the second
+    // sentence's prose is not read as additional parties.
+    const tree = buildTree([
+      "Agreement",
+      "This Agreement is by and among Acme Inc., Beta LLC, and Gamma Ltd. This Agreement is governed by New York law and the Delaware General Corporation Law.",
+    ]);
+    const names = extractParties(tree).map((p) => p.name);
+    expect(names).toEqual(["Acme Inc", "Beta LLC", "Gamma Ltd"]);
+  });
+
+  it("reads an ALL-CAPS abbreviated-entity 'among' preamble", () => {
+    const tree = buildTree([
+      "AGREEMENT",
+      "THIS AGREEMENT IS ENTERED INTO BY AND AMONG ACME INC., BETA CORP., AND GAMMA LTD.",
+    ]);
+    const names = extractParties(tree).map((p) => p.name);
+    expect(names).toEqual(expect.arrayContaining(["ACME INC", "BETA CORP", "GAMMA LTD"]));
+    expect(names).toHaveLength(3);
+  });
+
   it("captures 'among' member roles from trailing parentheticals", () => {
     const tree = buildTree([
       "Stock Purchase Agreement",
