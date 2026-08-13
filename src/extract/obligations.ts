@@ -226,6 +226,23 @@ function splitSentences(text: string): { text: string; start: number }[] {
 function resolveObligor(subject: string, partyNames: Set<string>, partyRoles: Set<string>): string {
   const trimmed = trimEdges(subject, /[,;.\s]/);
   const lower = trimmed.toLowerCase();
+  // A compound subject naming TWO parties ("The Provider and the Customer shall
+  // each …", "Acme Corp. and Globex Inc. shall jointly …") states a MUTUAL
+  // obligation. The endsWith matches below key on the tail of the subject, so
+  // they would attribute the whole duty to whichever party happens to sit last
+  // — making OBLI-002 read a shared obligation as one-sided (a false asymmetry).
+  // When the "and"-joined segments each resolve to a known party/role, the duty
+  // is borne by both, so it resolves to "the parties" like "each party" does.
+  const segments = lower.split(/\s+and\s+/);
+  if (segments.length >= 2) {
+    const resolvedCount = segments.filter((seg) => {
+      const t = seg.trim();
+      for (const name of partyNames) if (t.endsWith(name)) return true;
+      for (const role of partyRoles) if (t.endsWith(role) || t.endsWith(`the ${role}`)) return true;
+      return false;
+    }).length;
+    if (resolvedCount >= 2) return "the parties";
+  }
   // Direct party-name match.
   for (const name of partyNames) {
     if (lower.endsWith(name)) {

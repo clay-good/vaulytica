@@ -22,6 +22,36 @@ describe("extractObligations", () => {
     expect(customer?.qualifier ?? "").toMatch(/subject\s+to/);
   });
 
+  it("attributes a two-party compound subject to 'the parties', not the last one", () => {
+    // "The Provider and the Customer shall each …" is a mutual obligation. The
+    // obligor's endsWith match keys on the tail of the subject, so it used to
+    // return whichever party sat last ("Customer") — making OBLI-002 read the
+    // shared duty as one-sided.
+    const tree = buildTree([
+      "Agreement",
+      'This Agreement is between Acme Corp., a Delaware corporation ("Provider"), and Globex Industries, Inc., a New York corporation ("Customer").',
+      "The Provider and the Customer shall each bear their own costs and expenses.",
+    ]);
+    const parties = extractParties(tree);
+    const oblis = extractObligations(tree, parties);
+    const shared = oblis.find((o) => /bear their own costs/.test(o.action));
+    expect(shared?.obligor).toBe("the parties");
+  });
+
+  it("does not read a party-plus-non-party compound subject as mutual", () => {
+    // Only ONE side of the "and" is a party, so this is not a mutual obligation
+    // and must not collapse to "the parties".
+    const tree = buildTree([
+      "Agreement",
+      'This Agreement is between Acme Corp., a Delaware corporation ("Provider"), and Globex Industries, Inc., a New York corporation ("Customer").',
+      "The Provider and its subcontractors shall comply with the security policy.",
+    ]);
+    const parties = extractParties(tree);
+    const oblis = extractObligations(tree, parties);
+    const o = oblis.find((x) => /comply with the security policy/.test(x.action));
+    expect(o?.obligor).not.toBe("the parties");
+  });
+
   it("captures an hours-based deadline as an obligation trigger", () => {
     // Breach- and incident-notice duties are commonly stated in hours ("within
     // 24 hours", "within seventy-two (72) hours"); hours was missing from the

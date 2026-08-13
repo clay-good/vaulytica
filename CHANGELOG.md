@@ -29,6 +29,17 @@ All notable changes to this project will be documented in this file. Format adap
   production-QA pack.
 
 ### Fixed
+- **A mutual obligation with a two-party compound subject is now attributed to
+  "the parties," not to whichever party is named last.** "The Provider and the
+  Customer shall each bear their own costs" states a duty both parties share, but
+  the obligor resolver keyed on the tail of the subject and returned "Customer" —
+  so OBLI-002 could read the shared obligation as one-sided (a false asymmetry
+  finding). When the "and"-joined segments of the subject each resolve to a known
+  party or role, the obligation now resolves to "the parties," the same value the
+  resolver already gives "each party" / "either party." A subject where only one
+  side is a party ("The Provider and its subcontractors shall …") is unchanged, so
+  a genuinely one-party duty is not collapsed to mutual. No corpus fixture carries
+  a two-party compound obligor, so the golden corpus is byte-identical (zero churn).
 - **The courts-first venue reader now recognizes a bare jurisdiction and the "of
   the State of" preposition.** "The state and federal courts located in Delaware
   shall have exclusive jurisdiction" and "The courts of the State of California
