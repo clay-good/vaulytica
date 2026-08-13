@@ -29,6 +29,18 @@ All notable changes to this project will be documented in this file. Format adap
   production-QA pack.
 
 ### Fixed
+- **The definition extractor now reads a quoted defined term with an internal
+  abbreviation period.** A period-bearing abbreviation is a common defined term in
+  tax and securities agreements — `"U.S. Person" means …`, `"U.K. Subsidiary"
+  means …`, `"No. 5 Warehouse" means …` — but the primary inline `"Term" means …`
+  matcher (and the aliased `"X" or "Y" means …` form) used a term character class
+  that omitted the period, so the term stopped at the first `.`, the closing quote
+  never lined up, and the whole definition was dropped. STRUCT-006 then reported the
+  term as used-but-undefined even though the document plainly defines it. The two
+  matchers now carry the same quoted-term class (`.` `/` `'`) their nine sibling
+  patterns already use; the term is quote-bounded, so a period can only sit between
+  the quotes. No corpus fixture defines a period-bearing term this way, so the
+  extracted stream is byte-identical on the golden corpus (zero churn).
 - **The party extractor no longer truncates a multi-party "among" preamble at the
   first abbreviation period.** A three-or-more-party preamble written the way real
   merger, credit, and joint-venture agreements write it — "by and among Alpha Inc.,

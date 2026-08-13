@@ -36,8 +36,16 @@ import { forEachParagraph, forEachSection, posInParagraph } from "./walk.js";
 // "as/when used" and bounded by `[^,.]` so it cannot cross a sentence.
 // `will` joins `shall` as an optional modal — modern drafting writes
 // `"Renewal Window" will mean …` as often as `shall mean`.
+//
+// The quoted-term class carries `.` (and `/`, `'`) like its sibling patterns
+// below: a defined term is often an abbreviation with an internal period —
+// `"U.S. Person" means …`, `"U.K. Subsidiary" means …`, `"No. 5 Warehouse"
+// means …` — and the bare `[\w\s\-&]` class stopped the term at the first
+// period, so the closing quote never lined up and the whole definition was
+// dropped (STRUCT-006 then reported the term as used-but-undefined). Safe
+// because the term is quote-bounded: a period can only sit BETWEEN the quotes.
 const DEFINITION_INLINE =
-  /["“”']([A-Z][\w\s\-&]{1,80}?)["“”']\s*(?:,\s*(?:as|when)\s+used\b[^,.]{0,40},\s*)?(?:shall\s+|will\s+)?means?\b/gi;
+  /["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s*(?:,\s*(?:as|when)\s+used\b[^,.]{0,40},\s*)?(?:shall\s+|will\s+)?means?\b/gi;
 // The other inline defining verbs — `"Effective Date" refers to …`, `"Territory"
 // is defined as …`, `"Deliverables" shall refer to …`. DEFINITION_INLINE knows
 // only "means"/"shall mean", so these terms went unregistered and STRUCT-006
@@ -80,7 +88,7 @@ const GLOSSARY_ENTRY = /^\s*["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s*
  * defined. Both names name the same definition.
  */
 const DEFINITION_ALIASED =
-  /["“”']([A-Z][\w\s\-&]{1,80}?)["“”']\s+or\s+["“”']([A-Z][\w\s\-&/'’.]{1,60}?)["“”']\s+(?:shall\s+)?means?\b/gi;
+  /["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s+or\s+["“”']([A-Z][\w\s\-&/'’.]{1,60}?)["“”']\s+(?:shall\s+)?means?\b/gi;
 
 /**
  * The other inline convention, and the dominant one in commercial drafting:

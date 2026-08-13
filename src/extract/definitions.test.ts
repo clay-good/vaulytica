@@ -15,6 +15,24 @@ describe("extractDefinitions", () => {
     expect(entry?.used_at.length).toBeGreaterThan(0);
   });
 
+  it("captures a quoted defined term with an internal abbreviation period", () => {
+    // "U.S. Person" / "U.K. Subsidiary" — a period-bearing abbreviation is a
+    // common defined term in tax and securities agreements. The primary inline
+    // matcher's term class dropped the period, so the closing quote never lined
+    // up and the whole definition was lost (STRUCT-006 then reported the term as
+    // used-but-undefined).
+    const tree = buildTree([
+      "Definitions",
+      '"U.S. Person" means any person resident in the U.S.A. for tax purposes.',
+      "Each U.S. Person shall provide a tax certification.",
+    ]);
+    const map = extractDefinitions(tree);
+    const entry = map.entries.find((e) => e.term === "U.S. Person");
+    expect(entry).toBeDefined();
+    expect(entry?.definition).toContain("U.S.A.");
+    expect(entry?.used_at.length).toBeGreaterThan(0);
+  });
+
   it("reads bare and glossary definitions under an 'Interpretation' heading", () => {
     // UK/commonwealth drafting titles the section "Interpretation" rather than
     // "Definitions"; the bare `Term means …` and quoted `"Term": …` glossary
