@@ -48,6 +48,12 @@ export const DEAL_VALUE_LABELS: readonly string[] = [
   // M&A totals, bounded by "total"/"aggregate" so a stray figure is never read.
   "total transaction value",
   "aggregate transaction value",
+  // Debt-issuance total: "Aggregate Principal Amount" is the standard label for
+  // the total face value of a note or bond offering. The "aggregate" prefix is
+  // load-bearing — a bare "principal amount of each Note is $1,000" is a
+  // per-instrument denomination, never the deal size; the aggregate form is the
+  // whole issuance and has no per-unit idiom, so it is safe to add.
+  "aggregate principal amount",
 ];
 
 const SCALE_WORDS: Record<string, number> = {

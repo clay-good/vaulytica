@@ -175,6 +175,22 @@ describe("extractDealValue — labeled total only (never a guess)", () => {
     );
   });
 
+  it("reads the debt-issuance 'aggregate principal amount' total", () => {
+    expect(dealValue("The aggregate principal amount is $50,000,000.")).toEqual({
+      value: 50_000_000,
+      label: "aggregate principal amount",
+    });
+    expect(dealValue('$25,000,000 (the "Aggregate Principal Amount") was issued.')?.value).toBe(
+      25_000_000,
+    );
+  });
+
+  it("does not read a bare per-instrument 'principal amount' as the deal total", () => {
+    // Only the "aggregate"-bounded form is a label; a per-note denomination is
+    // never the deal size.
+    expect(dealValue("The principal amount of each Note is $1,000.")).toBeNull();
+  });
+
   it("does not read a per-unit 'contract price' as the total (bare label excluded)", () => {
     // "contract price" is deliberately NOT a label — a per-unit rate must never
     // be misread as the deal size.
