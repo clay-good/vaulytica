@@ -459,10 +459,15 @@ export function dominantCurrency(
  * Negated convenience-termination: a "not / no / neither / never" that governs
  * the terminate verb feeding "for convenience". Used to keep
  * {@link terminationPosture} from mislabeling "may not be terminated for
- * convenience" as convenience-terminable.
+ * convenience" as convenience-terminable. Two shapes are negated: a negator
+ * that precedes the terminate verb ("may not be terminated for convenience")
+ * and a negator fused directly to the phrase ("...for cause only, and not for
+ * convenience"). A trailing negator that governs something else — e.g. "may
+ * terminate for convenience, but not for cause" — is left affirmative because
+ * its "not" is followed by "for cause", not "for convenience".
  */
 const NEG_CONVENIENCE =
-  /\b(?:not|never|no|neither)\b[^.]{0,40}?\b(?:terminat\w*|terminable)\b[^.]{0,60}?\bfor\s+convenience\b/i;
+  /\bnot\s+for\s+convenience\b|\b(?:not|never|no|neither)\b[^.]{0,40}?\b(?:terminat\w*|terminable)\b[^.]{0,60}?\bfor\s+convenience\b/i;
 
 export function terminationPosture(doc: ConsistencyDocument): {
   posture: "convenience" | "cause-only";

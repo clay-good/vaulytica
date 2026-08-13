@@ -718,6 +718,25 @@ describe("CROSS-TERM-001", () => {
     expect(run.findings).toHaveLength(0);
   });
 
+  it("does not treat a trailing 'and not for convenience' as convenience-terminable", async () => {
+    // The negator trails the terminate verb ("for cause only, and not for
+    // convenience") — still the opposite of a convenience right.
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Term",
+      "This Master Services Agreement may be terminated for cause only, and not for convenience.",
+    ]);
+    const sow = makeDoc("sow", "msa-vendor-deep", [
+      "Term",
+      "This Statement of Work is non-terminable except for cause.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_TERM_001],
+      documents: [msa, sow],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+  });
+
   it("does not treat a NEGATED convenience clause as convenience-terminable", async () => {
     // "may not be terminated for convenience" is the opposite of a convenience
     // right; pairing it with a cause-only companion must NOT fire CROSS-TERM-001
