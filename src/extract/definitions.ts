@@ -71,7 +71,13 @@ const DEFINITION_INLINE_PERIOD =
 // the definition. This is the mutual-NDA idiom STRUCT-006 flagged as undefined.
 const DEFINITION_ROLE_WHEN =
   /["“”']([A-Z][\w\s\-&/'’.]{1,40}?)["“”']\s+when\s+(?:it|the|such|either|each|a\s+party)\b/gi;
-const DEFINITION_BARE = /^\s*([A-Z][\w\s\-&]{1,80}?)\s+(?:shall\s+)?means?\b/i;
+// The bare (unquoted) glossary form carries the period in its term class for the
+// same reason the quoted matchers do — "U.S. Person means …", "Non-U.S. Holder
+// means …" are unquoted defined terms in interpretation sections. This matcher
+// only runs inside a Definitions/Interpretation section (see Pass 1), so a
+// numbered-cross-reference line like "Section 4.2 means …" is not a realistic
+// false positive here.
+const DEFINITION_BARE = /^\s*([A-Z][\w\s\-&.]{1,80}?)\s+(?:shall\s+)?means?\b/i;
 // A pure glossary entry inside a Definitions/Glossary section: a quoted term at
 // the START of the paragraph, then a colon or dash, then its definition — with
 // no "means"/"refers to" verb (`"Delivery Point": the loading dock`, `"Term" —

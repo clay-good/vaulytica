@@ -33,6 +33,19 @@ describe("extractDefinitions", () => {
     expect(entry?.used_at.length).toBeGreaterThan(0);
   });
 
+  it("captures a bare (unquoted) defined term with an internal period", () => {
+    // Interpretation sections define terms unquoted — "U.S. Person means …",
+    // "Non-U.S. Holder means …". The bare matcher's term class dropped the
+    // period, so these period-bearing terms went unregistered.
+    const tree = buildTree([
+      "Definitions",
+      "U.S. Person means any person resident in the U.S.A. for tax purposes.",
+      "Non-U.S. Holder means a holder that is not a U.S. Person.",
+    ]);
+    const terms = extractDefinitions(tree).entries.map((e) => e.term);
+    expect(terms).toEqual(expect.arrayContaining(["U.S. Person", "Non-U.S. Holder"]));
+  });
+
   it("reads bare and glossary definitions under an 'Interpretation' heading", () => {
     // UK/commonwealth drafting titles the section "Interpretation" rather than
     // "Definitions"; the bare `Term means …` and quoted `"Term": …` glossary

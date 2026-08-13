@@ -65,8 +65,11 @@ All notable changes to this project will be documented in this file. Format adap
   term as used-but-undefined even though the document plainly defines it. The two
   matchers now carry the same quoted-term class (`.` `/` `'`) their nine sibling
   patterns already use; the term is quote-bounded, so a period can only sit between
-  the quotes. No corpus fixture defines a period-bearing term this way, so the
-  extracted stream is byte-identical on the golden corpus (zero churn).
+  the quotes. The bare (unquoted) glossary matcher — `U.S. Person means …` under an
+  Interpretation heading — takes the same period, safely, because it only runs inside
+  a Definitions/Interpretation section. No corpus fixture defines a period-bearing
+  term this way, so the extracted stream is byte-identical on the golden corpus (zero
+  churn).
 - **The party extractor no longer truncates a multi-party "among" preamble at the
   first abbreviation period.** A three-or-more-party preamble written the way real
   merger, credit, and joint-venture agreements write it — "by and among Alpha Inc.,
