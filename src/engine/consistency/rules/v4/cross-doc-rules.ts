@@ -604,7 +604,9 @@ export const CROSS_SURVIVAL_001: ConsistencyRule = {
       for (let j = i + 1; j < survivals.length; j++) {
         const a = survivals[i]!;
         const b = survivals[j]!;
-        if (a.s.descriptor === b.s.descriptor) continue;
+        // Compare the normalized duration, not the descriptor string, so "12
+        // months" and "1 year" don't read as a conflict.
+        if (a.s.months === b.s.months) continue;
         const key = `${a.doc.doc_id}|${b.doc.doc_id}`;
         if (seen.has(key)) continue;
         seen.add(key);

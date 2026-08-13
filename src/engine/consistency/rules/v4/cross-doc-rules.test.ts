@@ -677,6 +677,61 @@ describe("CROSS-SURVIVAL-001", () => {
     });
     expect(run.findings).toHaveLength(0);
   });
+
+  it("reads the survival period, not an unrelated Term figure in the same clause", async () => {
+    // Both survive confidentiality for FIVE years; the MSA clause also states a
+    // 3-year contract Term earlier in the same paragraph. The old code grabbed
+    // the first "N years" (the Term) and reported a false 3-vs-5 conflict.
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Survival",
+      "The Term of this Agreement shall be three (3) years. The confidentiality obligations shall survive termination for five (5) years.",
+    ]);
+    const dpa = makeDoc("dpa", "dpa-controller-processor", [
+      "Survival",
+      "The confidentiality obligations shall survive termination for five (5) years.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_SURVIVAL_001],
+      documents: [msa, dpa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+  });
+
+  it("treats '12 months' and '1 year' as the same duration (no conflict)", async () => {
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Survival",
+      "The confidentiality obligations shall survive termination for twelve (12) months.",
+    ]);
+    const dpa = makeDoc("dpa", "dpa-controller-processor", [
+      "Survival",
+      "The confidentiality obligations shall survive termination for one (1) year.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_SURVIVAL_001],
+      documents: [msa, dpa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+  });
+
+  it("fires on a real month-vs-year mismatch (18 months vs 3 years)", async () => {
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Survival",
+      "The confidentiality obligations shall survive termination for eighteen (18) months.",
+    ]);
+    const dpa = makeDoc("dpa", "dpa-controller-processor", [
+      "Survival",
+      "The confidentiality obligations shall survive termination for three (3) years.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_SURVIVAL_001],
+      documents: [msa, dpa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(1);
+    expect(run.findings[0]!.title).toMatch(/18 month\(s\)|3 year\(s\)/);
+  });
 });
 
 /* ---------------- CROSS-TERM-001 (spec-v7 §13) ----------------- */

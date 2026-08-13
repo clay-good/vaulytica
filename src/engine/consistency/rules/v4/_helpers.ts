@@ -353,14 +353,16 @@ export function firstIndemnityCap(doc: ConsistencyDocument): {
 
 /**
  * Detect how a document treats the *survival* of confidentiality after
- * termination. Returns a normalized descriptor — a number of years, or
- * "perpetual" — plus the paragraph for the excerpt, or null when no
+ * termination. Returns a normalized duration in `months` (or "perpetual") plus
+ * a human descriptor and the paragraph for the excerpt, or null when no
  * confidentiality-survival statement is found. Cross-doc conflict = two
- * documents that survive confidentiality for materially different periods.
+ * documents that survive confidentiality for materially different periods; the
+ * numeric `months` field is what CROSS-SURVIVAL-001 compares, so "12 months"
+ * and "1 year" are correctly treated as equal.
  */
 export function confidentialitySurvival(doc: ConsistencyDocument): {
   descriptor: string;
-  years: number | "perpetual";
+  months: number | "perpetual";
   raw_text: string;
   section_id?: string;
   start: number;
@@ -388,22 +390,28 @@ export function confidentialitySurvival(doc: ConsistencyDocument): {
   ) {
     return {
       descriptor: "perpetual",
-      years: "perpetual",
+      months: "perpetual",
       raw_text: found.text,
       section_id: found.section_id,
       start: found.start,
       end: found.end,
     };
   }
-  // Match the number of years, tolerating the "three (3) years" drafting
-  // form (grab the parenthetical digit) as well as a plain "3 years".
-  const ym = found.text.match(/(\d+)\s*\)?\s*years?\b/i);
+  // Anchor the period to the survival statement itself: scan from the
+  // "surviv…" keyword forward, so an unrelated earlier figure (the contract
+  // Term, a lookback window) can't be read as the survival period. Match a
+  // number of years OR months, tolerating the "three (3) years" drafting form
+  // (grab the parenthetical digit) as well as a plain "3 years"/"18 months".
+  const survIdx = found.text.search(/\bsurviv\w+/i);
+  const tail = survIdx >= 0 ? found.text.slice(survIdx) : found.text;
+  const ym = tail.match(/(\d+)\s*\)?\s*(years?|months?)\b/i);
   if (ym) {
-    const y = Number(ym[1]);
-    if (Number.isFinite(y) && y > 0) {
+    const n = Number(ym[1]);
+    if (Number.isFinite(n) && n > 0) {
+      const isMonth = /^month/i.test(ym[2]!);
       return {
-        descriptor: `${y} year(s)`,
-        years: y,
+        descriptor: isMonth ? `${n} month(s)` : `${n} year(s)`,
+        months: isMonth ? n : n * 12,
         raw_text: found.text,
         section_id: found.section_id,
         start: found.start,
