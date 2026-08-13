@@ -136,6 +136,20 @@ describe("extractDates", () => {
     }
   });
 
+  it("captures debt-instrument and equity-award anchors in bare and labeled forms", () => {
+    const tree = buildTree([
+      "Terms",
+      "The note is due on the Redemption Date, and principal is paid on the Repayment Date.",
+      "Options vest as of the Award Date; the purchase price is set on the Adjustment Date.",
+    ]);
+    const anchors = extractDates(tree)
+      .filter((d) => d.type === "named-anchor")
+      .map((d) => d.anchor);
+    for (const a of ["Redemption Date", "Repayment Date", "Award Date", "Adjustment Date"]) {
+      expect(anchors).toContain(a);
+    }
+  });
+
   it("decomposes disjunctive range deadlines into lower and upper bounds", () => {
     const tree = buildTree([
       "Notice",
