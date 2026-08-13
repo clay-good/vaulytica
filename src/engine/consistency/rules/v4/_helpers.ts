@@ -185,7 +185,7 @@ export function firstLiabilityCap(doc: ConsistencyDocument): {
   const found: Hit = slot.value;
   // Find the largest $X dollar amount in the paragraph.
   const amounts = [
-    ...found.paragraph_text.matchAll(/\$\s*([\d,]+(?:\.\d+)?)\s*(million|thousand|m|k)?/gi),
+    ...found.paragraph_text.matchAll(/\$\s*([\d,]+(?:\.\d+)?)\s*(million|thousand|m|k)?\b/gi),
   ];
   if (amounts.length === 0) return null;
   let max = 0;
@@ -319,7 +319,7 @@ export function firstIndemnityCap(doc: ConsistencyDocument): {
   });
   if (!slot.value) return null;
   const found: Hit = slot.value;
-  const amounts = [...found.text.matchAll(/\$\s*([\d,]+(?:\.\d+)?)\s*(million|thousand|m|k)?/gi)];
+  const amounts = [...found.text.matchAll(/\$\s*([\d,]+(?:\.\d+)?)\s*(million|thousand|m|k)?\b/gi)];
   let max = 0;
   for (const m of amounts) {
     const num = Number(m[1]!.replace(/,/g, ""));

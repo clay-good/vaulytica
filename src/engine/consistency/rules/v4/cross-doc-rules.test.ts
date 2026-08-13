@@ -302,6 +302,30 @@ describe("CROSS-AMOUNT-001", () => {
     });
     expect(run.findings).toHaveLength(0);
   });
+
+  it("does not read a bare 'm'/'k' inside an adjacent word as a magnitude suffix", async () => {
+    // "$250,000 minimum" must parse as $250,000 — not $250,000,000,000 (the
+    // bare `m` of "minimum" was scaling the amount ×1,000,000 before the
+    // word-boundary guard on the million/thousand/m/k suffix).
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Limitation of Liability",
+      "Provider's aggregate liability under this Agreement shall not exceed $250,000 minimum commitment.",
+    ]);
+    const sow = makeDoc("sow", "sow", [
+      "Limitation of Liability",
+      "Provider's aggregate liability under this SOW shall not exceed $1,000,000.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_AMOUNT_001],
+      documents: [msa, sow],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(1);
+    // The $250,000 cap is the lower one; the finding must not report a
+    // scaled-up billions figure.
+    expect(run.findings[0]!.title).toContain("$250,000");
+    expect(run.findings[0]!.title).not.toMatch(/000,000,000/);
+  });
 });
 
 /* ---------------- CROSS-MISSING-001 -------------- */
