@@ -105,7 +105,14 @@ function compilePatterns(raw: ClassifierPattern[]): {
   confidence: number;
 }[] {
   return raw.map((p) => {
-    let flags = p.flags ?? "";
+    // Strip `g`/`y` from the externally-supplied flags: the overlay tests each
+    // pattern with `re.test(text)` for a boolean "does this clause match", and a
+    // global/sticky regex is STATEFUL across `.test()` calls — its `lastIndex`
+    // advances, so a `g`-flagged pattern would match the first paragraph, skip
+    // the identical second one, and match the third, silently misclassifying
+    // alternating clauses. The DKB patterns ship with `i`/`is` today, but this
+    // engine trusts external data, so sanitize the flag set at compile time.
+    let flags = (p.flags ?? "").replace(/[gy]/g, "");
     if (!flags.includes("i")) flags += "i";
     return {
       category: p.category,

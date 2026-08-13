@@ -29,6 +29,16 @@ All notable changes to this project will be documented in this file. Format adap
   production-QA pack.
 
 ### Fixed
+- **The clause classifier is now immune to a stateful-regex hazard in its pattern
+  overlay.** The overlay tests each category pattern with `regexp.test(text)` — a
+  boolean "does this clause match" — but a pattern compiled with the `g` (or `y`)
+  flag is stateful: its `lastIndex` advances between calls, so a global pattern
+  would match the first paragraph, silently skip an identical second paragraph, and
+  match the third, misclassifying alternating clauses. The pattern compiler now
+  strips `g`/`y` from the externally-supplied flag set (the classifier reads its
+  patterns from the DKB), so the overlay is a pure membership test regardless of
+  what flags the data carries. The shipped DKB patterns use only `i`/`is`, so
+  classification output is unchanged on the golden corpus (zero churn).
 - **A mutual obligation with a two-party compound subject is now attributed to
   "the parties," not to whichever party is named last.** "The Provider and the
   Customer shall each bear their own costs" states a duty both parties share, but

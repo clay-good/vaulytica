@@ -27,6 +27,24 @@ describe("classifyClauses", () => {
     expect(labels[0]!.confidence).toBeCloseTo(0.99);
   });
 
+  it("classifies identical paragraphs consistently even when a pattern carries the g flag", () => {
+    // `re.test()` is stateful under the global flag: its lastIndex advances, so a
+    // g-flagged pattern would match paragraph 1, skip the identical paragraph 2,
+    // and match paragraph 3. The compiler strips g/y so the overlay is a pure
+    // boolean membership test.
+    const data: ClassifierData = {
+      patterns: [{ category: "indemnity", pattern: "indemnify", flags: "g" }],
+    };
+    const tree = buildTree([
+      "H",
+      "The parties agree to indemnify each other.",
+      "The parties agree to indemnify each other.",
+      "The parties agree to indemnify each other.",
+    ]);
+    const labels = classifyClauses(tree, data);
+    expect(labels.map((l) => l.category)).toEqual(["indemnity", "indemnity", "indemnity"]);
+  });
+
   it("falls back to TF-IDF cosine similarity above threshold", () => {
     const data: ClassifierData = {
       vocab: {
