@@ -24,6 +24,13 @@ import { flattenText } from "../ingest/types.js";
  */
 export const DEAL_VALUE_LABELS: readonly string[] = [
   "total contract value",
+  // "Aggregate Contract Value" (ACV) is the standard aggregate sibling of
+  // "total contract value"; every other concept here carries both the total-
+  // and aggregate-worded forms (consideration, purchase price, transaction
+  // value, fees), so the missing aggregate form was an asymmetry that dropped
+  // a plainly-labeled total. "Value" (unlike bare "contract price") has no
+  // per-unit idiom, so it is safe to add.
+  "aggregate contract value",
   "total consideration",
   "aggregate consideration",
   "aggregate purchase price",

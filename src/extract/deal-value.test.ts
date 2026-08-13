@@ -15,6 +15,13 @@ describe("extractDealValue — labeled total only (never a guess)", () => {
     });
   });
 
+  it("reads the aggregate sibling of 'contract value' (ACV)", () => {
+    expect(dealValue("The aggregate contract value is $5,000,000.")).toEqual({
+      value: 5_000_000,
+      label: "aggregate contract value",
+    });
+  });
+
   it("resolves scale words and suffixes", () => {
     expect(dealValue("Total consideration: $1.5 million.")?.value).toBe(1_500_000);
     expect(dealValue("aggregate fees of $500k")?.value).toBe(500_000);
