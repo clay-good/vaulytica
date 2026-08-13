@@ -447,6 +447,15 @@ export function dominantCurrency(
  * convenience-terminable master over a cause-only companion, where
  * early termination of the master orphans the bound companion.
  */
+/**
+ * Negated convenience-termination: a "not / no / neither / never" that governs
+ * the terminate verb feeding "for convenience". Used to keep
+ * {@link terminationPosture} from mislabeling "may not be terminated for
+ * convenience" as convenience-terminable.
+ */
+const NEG_CONVENIENCE =
+  /\b(?:not|never|no|neither)\b[^.]{0,40}?\b(?:terminat\w*|terminable)\b[^.]{0,60}?\bfor\s+convenience\b/i;
+
 export function terminationPosture(doc: ConsistencyDocument): {
   posture: "convenience" | "cause-only";
   raw_text: string;
@@ -469,7 +478,17 @@ export function terminationPosture(doc: ConsistencyDocument): {
     ) {
       slot.causeOnly = { text: p.text, section_id: p.section_id, start: p.start, end: p.end };
     }
-    if (!slot.convenience && /\bterminat\w*\b[^.]*?\bfor\s+convenience\b/i.test(p.text)) {
+    if (
+      !slot.convenience &&
+      /\bterminat\w*\b[^.]*?\bfor\s+convenience\b/i.test(p.text) &&
+      // A negated convenience-termination ("may not be terminated for
+      // convenience", "neither party may terminate ... for convenience", "no
+      // right to terminate for convenience") is the OPPOSITE of a convenience
+      // right, so it must not be read as one. The negator has to govern the
+      // terminate verb that feeds "for convenience"; a trailing "not" (e.g.
+      // "may terminate for convenience, but not for cause") is left affirmative.
+      !NEG_CONVENIENCE.test(p.text)
+    ) {
       slot.convenience = { text: p.text, section_id: p.section_id, start: p.start, end: p.end };
     }
   });
