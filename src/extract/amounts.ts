@@ -126,7 +126,7 @@ const NUMERIC = new RegExp(String.raw`(${CUR})?\s{0,8}(${AMT})\s{0,8}(${SCALE})?
 // bare number with a trailing currency word or ISO code was dropped as
 // non-monetary (computeAmount requires a currency token). The trailing token is
 // required, so a plain "50,000 shares" or "30 days" never matches.
-const POSTFIX_CUR = String.raw`dollars?|euros?|pounds?(?:\s+sterling)?|yen|rupees?|USD|EUR|GBP|JPY|CAD|AUD|NZD|CHF|CNY|INR|KRW|BRL|MXN|ZAR|SGD|HKD|SEK|NOK|DKK|RUB`;
+const POSTFIX_CUR = String.raw`dollars?|euros?|pounds?(?:\s+sterling)?|yen|renminbi|yuan|rupees?|USD|EUR|GBP|JPY|CAD|AUD|NZD|CHF|CNY|INR|KRW|BRL|MXN|ZAR|SGD|HKD|SEK|NOK|DKK|RUB`;
 const NUMERIC_POSTFIX = new RegExp(
   String.raw`\b(${AMT})\s{0,8}(${SCALE})?\s{1,8}(${POSTFIX_CUR})\b`,
   "gi",
@@ -139,6 +139,7 @@ function postfixCurrency(token: string): string {
   if (t.startsWith("euro")) return "EUR";
   if (t.startsWith("pound")) return "GBP";
   if (t === "yen") return "JPY";
+  if (t === "yuan" || t === "renminbi") return "CNY";
   if (t.startsWith("rupee")) return "INR";
   return token.toUpperCase();
 }

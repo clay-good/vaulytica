@@ -12,6 +12,8 @@ const REGISTERS: Array<[text: string, value: number, cur: string]> = [
   ["The cap is 5 million pounds sterling.", 5_000_000, "GBP"],
   ["A grant of 200,000 EUR applies.", 200_000, "EUR"],
   ["The award was 1.2m dollars.", 1_200_000, "USD"],
+  ["The purchase price is 5,000,000 yuan.", 5_000_000, "CNY"],
+  ["A deposit of 300,000 renminbi is required.", 300_000, "CNY"],
 ];
 
 // Decoys: a bare number with a non-currency trailing noun is not money.
