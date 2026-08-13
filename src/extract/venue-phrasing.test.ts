@@ -35,6 +35,18 @@ const REGISTERS: Array<[clause: string, want: RegExp]> = [
     "The state courts of Travis County, Texas shall be the exclusive forum for any dispute.",
     /Texas/,
   ],
+  // Courts-first with a bare jurisdiction and NO "City, State" comma: the
+  // capture must end before the forum verb, not run past it.
+  [
+    "The state and federal courts located in Delaware shall have exclusive jurisdiction.",
+    /Delaware/,
+  ],
+  // Courts-first with the "of the State/Commonwealth of" preposition.
+  [
+    "The courts of the State of California shall have exclusive jurisdiction over any dispute.",
+    /California/,
+  ],
+  ["The courts of the Commonwealth of Massachusetts shall have exclusive venue.", /Massachusetts/],
 ];
 
 // Decoys: sentences that mention courts/jurisdiction but select no forum must
@@ -43,6 +55,10 @@ const NO_VENUE: string[] = [
   "The company operates in several states, including Texas and Florida.",
   "The board has jurisdiction over internal committee matters and reports to Delaware.",
   "Each party shall comply with all applicable laws of every state in which it operates.",
+  // "of <X>" without a State/Commonwealth-of scaffold is not a jurisdiction —
+  // the courts-first "of" arm must not sweep these in.
+  "Any dispute may be heard by the courts of competent jurisdiction shall have jurisdiction.",
+  "Nothing herein grants the courts of Appeals jurisdiction over these matters.",
 ];
 
 describe("venue phrasing guard", () => {

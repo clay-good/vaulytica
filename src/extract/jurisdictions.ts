@@ -132,9 +132,23 @@ const VENUE = new RegExp(
  * follows the courts, so the venue patterns that lead on "venue/forum … shall
  * be … courts" missed it. The locality is captured; recordVenue reads the
  * state after the comma.
+ *
+ * Two shapes the original pattern missed:
+ *   - The locality is a bare jurisdiction with NO trailing "City, State" comma
+ *     ("courts located in Delaware shall have exclusive jurisdiction", "courts
+ *     sitting in New York County shall have venue"). The capture could only end
+ *     at punctuation, so with the forum verb directly after the locality it ran
+ *     past it, swallowed "shall have …", and the forward lookahead then failed —
+ *     the whole clause went unread. The locality now also ends before a "shall
+ *     have" / "have" forum verb, so the comma-less form reads. (The comma form
+ *     is unchanged: the comma still terminates the capture first.)
+ *   - The "of the State of" preposition ("the courts of the State of California
+ *     shall have exclusive jurisdiction") alongside "located in" / "sitting in".
+ *     Gated to "of the State/Commonwealth of <Name>", so "courts of competent
+ *     jurisdiction" / "courts of Appeals" (no State-of scaffold) are not swept in.
  */
 const VENUE_COURTS_FIRST = new RegExp(
-  String.raw`\b(?:the\s+)?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+)([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|$)(?=[^.]{0,60}?\b(?:shall\s+have|have)\s+(?:exclusive\s+)?(?:jurisdiction|venue))`,
+  String.raw`\b(?:the\s+)?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+the\s+(?:State|Commonwealth)\s+of\s+)([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+(?:shall\s+have|have)\b|$)(?=[^.]{0,60}?\b(?:shall\s+have|have)\s+(?:exclusive\s+)?(?:jurisdiction|venue))`,
   "gi",
 );
 // "shall lie" is as common as "shall be" for a venue clause — "venue for any

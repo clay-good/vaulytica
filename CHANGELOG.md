@@ -29,6 +29,21 @@ All notable changes to this project will be documented in this file. Format adap
   production-QA pack.
 
 ### Fixed
+- **The courts-first venue reader now recognizes a bare jurisdiction and the "of
+  the State of" preposition.** "The state and federal courts located in Delaware
+  shall have exclusive jurisdiction" and "The courts of the State of California
+  shall have exclusive jurisdiction" went unread: the pattern could only end the
+  captured locality at punctuation, so with the forum verb sitting directly after
+  the locality (no "City, State" comma) the capture ran past it, swallowed "shall
+  have …", and the clause was dropped — and the "of the State/Commonwealth of"
+  phrasing was not among the recognized prepositions at all. A missed venue makes
+  CHOICE-003 assert "no forum clause" on a document that has one. The locality now
+  also ends before a "shall have" / "have" forum verb, and "of the
+  State/Commonwealth of &lt;Name&gt;" joins "located in" / "sitting in" — gated to the
+  State-of scaffold so "courts of competent jurisdiction" and "courts of Appeals"
+  are not swept in. The existing "City, State" comma form is unchanged (the comma
+  still terminates the capture first); no corpus fixture uses either new form, so
+  the extracted stream is byte-identical on the golden corpus (zero churn).
 - **The definition extractor now reads a quoted defined term with an internal
   abbreviation period.** A period-bearing abbreviation is a common defined term in
   tax and securities agreements — `"U.S. Person" means …`, `"U.K. Subsidiary"
