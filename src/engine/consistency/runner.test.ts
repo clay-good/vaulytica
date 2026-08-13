@@ -354,6 +354,26 @@ describe("CC-004 BAA term aligns with MSA", () => {
     });
     expect(run.findings).toHaveLength(0);
   });
+
+  it("does not fire when the BAA ties its term to the bare 'Master Agreement'", async () => {
+    // Many BAAs reference "the Master Agreement" (no "Services") when the
+    // surrounding contract already defines that term. That is still an explicit
+    // tie, not a silent divergence.
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Term",
+      "This Agreement shall commence on the Effective Date and continue for the Initial Term.",
+    ]);
+    const baa = makeDoc("baa", "baa", [
+      "Term",
+      "This Agreement shall remain in effect for a term of 3 years, coincident with the term of the Master Agreement.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_004_BAA_TERM],
+      documents: [msa, baa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+  });
 });
 
 describe("CC-005 governing-law alignment", () => {

@@ -245,7 +245,7 @@ export const CC_004_BAA_TERM: ConsistencyRule = {
     // Services Agreement").
     const baaText = fullText(baa);
     if (
-      /\b(co-?terminous|coextensive)\s+with\s+(?:the\s+)?(?:master\s+services?\s+agreement|msa|underlying\s+agreement|services\s+agreement)\b/i.test(
+      /\b(co-?terminous|coextensive)\s+with\s+(?:the\s+)?(?:master\s+services?\s+agreement|master\s+agreement|msa|underlying\s+agreement|services\s+agreement)\b/i.test(
         baaText,
       )
     ) {
@@ -264,7 +264,7 @@ export const CC_004_BAA_TERM: ConsistencyRule = {
     // narrow phrase allowlist; without this, a correctly-drafted alignment is
     // reported as a silent divergence (a false "independent term" conflict).
     if (
-      /\b(?:matching|tied\s+to|aligned\s+with|coincident\s+with|co-?terminous\s+with|coextensive\s+with|(?:the\s+)?same\s+(?:term\s+)?as|identical\s+to)\s+(?:the\s+)?(?:term\s+of\s+)?(?:the\s+)?(?:master\s+services?\s+agreement|msa|underlying\s+agreement|services\s+agreement)\b/i.test(
+      /\b(?:matching|tied\s+to|aligned\s+with|coincident\s+with|co-?terminous\s+with|coextensive\s+with|(?:the\s+)?same\s+(?:term\s+)?as|identical\s+to)\s+(?:the\s+)?(?:term\s+of\s+)?(?:the\s+)?(?:master\s+services?\s+agreement|master\s+agreement|msa|underlying\s+agreement|services\s+agreement)\b/i.test(
         baaText,
       )
     ) {
