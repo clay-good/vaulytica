@@ -45,6 +45,22 @@ describe("extractAmounts", () => {
     expect(extractAmounts(buildTree(["F", "Fee is $750."]))[0]?.amount).toBe("750");
   });
 
+  it("reads a comma-less amount whole, not truncated to three digits", () => {
+    // Regression: the comma-grouped alternative once matched only the first 1–3
+    // digits of a separator-less run and won with no trailing requirement, so
+    // "$5000" read as $500 and "$1000000" as $100. A real comma group is now
+    // required, so a comma-less run falls through to the full-run alternative.
+    expect(extractAmounts(buildTree(["F", "The fee is $5000."]))[0]?.amount).toBe("5000");
+    expect(extractAmounts(buildTree(["F", "The fee is $12345."]))[0]?.amount).toBe("12345");
+    expect(extractAmounts(buildTree(["F", "The fee is $1000000."]))[0]?.amount).toBe("1000000");
+    expect(extractAmounts(buildTree(["F", "The fee is USD 5000."]))[0]?.amount).toBe("5000");
+    expect(extractAmounts(buildTree(["F", "The fee is USD5000 total."]))[0]?.amount).toBe("5000");
+    expect(extractAmounts(buildTree(["F", "The fee is $1250.50."]))[0]?.amount).toBe("1250.5");
+    // Comma-grouped and short amounts are unchanged.
+    expect(extractAmounts(buildTree(["F", "The fee is $5,000."]))[0]?.amount).toBe("5000");
+    expect(extractAmounts(buildTree(["F", "The fee is $999."]))[0]?.amount).toBe("999");
+  });
+
   it("recognizes spelled-out scale words after a numeral", () => {
     expect(extractAmounts(buildTree(["F", "Fee is $150 thousand."]))[0]?.amount).toBe("150000");
     const m = extractAmounts(buildTree(["F", "Price is $2.5 million."]))[0];

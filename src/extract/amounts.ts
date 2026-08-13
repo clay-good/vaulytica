@@ -95,14 +95,24 @@ const COMPOSITE_DOLLAR: Record<string, string> = {
 // match — a code followed by a LETTER ("USDT", "USDA") still fails both `\b` and
 // `(?=\d)`, and a code followed by a digit is a currency amount in practice.
 const CUR = String.raw`\b(?:CAD|AUD|US|CA|AU|NZ|HK|MX|C|A|S|R)\$|[$€£¥₹₩₽]|\b(?:USD|EUR|GBP|JPY|CAD|AUD|NZD|CHF|CNY|INR|KRW|BRL|MXN|ZAR|SGD|HKD|SEK|NOK|DKK|RUB)(?:\b|(?=\d))`;
-// Digit counts are BOUNDED (`{0,40}`/`{1,40}`, not `*`/`+`): in RANGE_NUMERIC
+// Digit counts are BOUNDED (`{1,40}`, not `*`/`+`): in RANGE_NUMERIC
 // the amount is followed by a REQUIRED range connector, so an unbounded `\d+`
 // matches a whole pasted digit run, fails to find the connector, then
 // backtracks the run from every start position — O(n²) (a ReDoS hang). Forty
 // digits comfortably exceeds MAX_AMOUNT_DIGITS (30), so any number long enough
 // to be bounded here is dropped by `computeAmount` regardless: byte-identical
 // extraction on every real amount, linear on a hostile digit run.
-const AMT = String.raw`[\d]{1,3}(?:,\d{3}){0,40}(?:\.\d{1,40})?|\d{1,40}(?:\.\d{1,40})?`;
+//
+// The comma-grouped alternative requires AT LEAST ONE group (`{1,40}`, not
+// `{0,40}`). With `{0,40}` it matched the first 1–3 digits of a *comma-less*
+// run ("5000" -> "500") and, since NUMERIC requires nothing after the amount,
+// won with no pressure to backtrack to the full-run alternative — truncating
+// every no-separator amount to 3 digits ("$5000" -> $500, "$1000000" -> $100).
+// Requiring a real comma group makes a comma-less run fall through to the
+// second alternative, which reads it whole. Comma-grouped amounts still match
+// the first alternative; every corpus amount already carried its separators, so
+// this only recovers the previously-truncated forms.
+const AMT = String.raw`[\d]{1,3}(?:,\d{3}){1,40}(?:\.\d{1,40})?|\d{1,40}(?:\.\d{1,40})?`;
 // Scale suffixes: the abbreviations AND the spelled-out words. A trailing `\b`
 // is REQUIRED so a suffix only matches a standalone token — without it the bare
 // "m" matched the first letter of "monthly" ("$500 monthly" → $500,000,000) and
