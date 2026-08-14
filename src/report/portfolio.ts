@@ -110,9 +110,14 @@ export const PORTFOLIO_CHECKS: ReadonlyArray<PortfolioCheckDef> = [
   {
     key: "data_processing",
     label: "Data-processing terms",
+    rollup: { statuses: ["risk"], phrase: "do not identify the subject-matter of processing" },
     evaluate: (run) => {
-      // Scanned as a DPA/GDPR document → data-processing terms are in scope.
-      // We assert presence only when the DPA rule family actually ran.
+      // DPA-001 is a fires-on-absence rule ("Subject-matter of processing not
+      // identified"), so a fired finding means the clause is MISSING. Mirror
+      // the breach_notice / governing_law pattern: fired → risk, ran → present.
+      // Gating on `ran` alone reported "Present" for every DPA — even one whose
+      // subject-matter clause is genuinely absent (a false compliance assurance).
+      if (fired(run, "DPA-001")) return { status: "risk", label: "Missing", rule_ids: ["DPA-001"] };
       if (ran(run, "DPA-001")) return { status: "ok", label: "Present", rule_ids: ["DPA-001"] };
       return { status: "na", label: "N/A" };
     },

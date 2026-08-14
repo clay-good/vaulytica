@@ -81,6 +81,19 @@ describe("portfolio risk matrix (spec-v6 Part V)", () => {
     expect(buildPortfolioMatrix([doc("na", {})]).rows[0]!.cells[i]!.status).toBe("na");
   });
 
+  it("data-processing cell: DPA-001 fired (subject-matter missing) → risk, ran → ok, not run → na", () => {
+    const i = checkIndex("data_processing");
+    // DPA-001 is a fires-on-absence rule, so a fired finding means the clause
+    // is missing — the cell must read risk/Missing, not a vacuous Present.
+    expect(buildPortfolioMatrix([doc("m", { "DPA-001": true })]).rows[0]!.cells[i]!.status).toBe(
+      "risk",
+    );
+    expect(buildPortfolioMatrix([doc("p", { "DPA-001": false })]).rows[0]!.cells[i]!.status).toBe(
+      "ok",
+    );
+    expect(buildPortfolioMatrix([doc("na", {})]).rows[0]!.cells[i]!.status).toBe("na");
+  });
+
   it("rollups count the documents that match and list them", () => {
     const m = buildPortfolioMatrix([
       doc("a.pdf", { "RISK-009": true }), // uncapped
