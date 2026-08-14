@@ -157,17 +157,26 @@ export function isPresenceDisclaimed(paragraph: string, matchIndex: number): boo
  * neighbouring sentence in the same paragraph.
  */
 export function enclosingSentence(paragraph: string, matchIndex: number): string {
+  // A "." ends a sentence only when it is followed by whitespace + a capital
+  // letter/digit (the start of the next sentence) or by the string end. A period
+  // inside "vendor.com" / "160.103" (no following space) OR a corporate-suffix /
+  // Latin abbreviation followed by a lowercase word ("Inc. shall", "Corp. will",
+  // "C.F.R. requires", "5 p.m. deadline") is NOT a boundary — so the clause the
+  // caller asked about is not silently truncated at the abbreviation. The
+  // backward scan mirrors the forward one: `lastIndexOf(". ")` would have
+  // stopped at "Inc. ", so it is replaced by a capital/digit-aware reverse scan.
+  const SENTENCE_DOT = /\.(?=\s+[A-Z0-9]|\s*$)/g;
+  let dot = -1;
+  let m: RegExpExecArray | null;
+  while ((m = SENTENCE_DOT.exec(paragraph)) !== null && m.index < matchIndex) {
+    dot = m.index;
+  }
   const start = Math.max(
-    paragraph.lastIndexOf(". ", matchIndex),
+    dot,
     paragraph.lastIndexOf("; ", matchIndex),
     paragraph.lastIndexOf("\n", matchIndex),
   );
-  // A period only ends a sentence when whitespace or the string end follows it;
-  // a period inside "vendor.com", "C.F.R.", or "Inc." is not a boundary. The
-  // `start` scan already required ". " (period + space); make the forward scan
-  // symmetric so an embedded dot no longer truncates the sentence early (which
-  // hid a trailing carve-out from the rules that read the enclosing sentence).
-  const rel = paragraph.slice(matchIndex).search(/[;\n]|\.(?=\s|$)/);
+  const rel = paragraph.slice(matchIndex).search(/[;\n]|\.(?=\s+[A-Z0-9]|\s*$)/);
   const end = rel === -1 ? paragraph.length : matchIndex + rel + 1;
   return paragraph.slice(start + 1, end);
 }

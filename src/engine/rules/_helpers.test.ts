@@ -77,6 +77,24 @@ describe("enclosingSentence", () => {
     const s = "First sentence here. Second sentence follows.";
     expect(at(s, "First")).toBe("First sentence here.");
   });
+
+  it("does not truncate at a corporate-suffix abbreviation followed by a lowercase word", () => {
+    // "Inc. shall …" — the period ends an abbreviation, not the sentence, so the
+    // whole clause (subject + obligation) must stay intact for a rule reading it.
+    const s = "XYZ Inc. shall indemnify Vendor from claims arising out of gross negligence.";
+    expect(at(s, "indemnify")).toBe(s);
+    expect(at(s, "XYZ")).toBe(s);
+  });
+
+  it("does not truncate at a Latin abbreviation ('p.m.', 'C.F.R.')", () => {
+    const s = "Payment is due by 5 p.m. eastern time on the invoice date.";
+    expect(at(s, "eastern")).toBe(s);
+  });
+
+  it("still ends at a period followed by a capitalized next sentence", () => {
+    const s = "Fees are due. The Company shall pay within 30 days.";
+    expect(at(s, "pay")).toBe(" The Company shall pay within 30 days.");
+  });
 });
 
 describe("firstUnnegatedParagraphMatch — disclaims scope", () => {
