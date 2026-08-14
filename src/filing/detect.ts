@@ -39,8 +39,16 @@ const CAPTION_RE =
 /** A cover-page signal: the brief's own title / party role. */
 const COVER_RE = /\bbrief (?:of|for)\b|\b(?:appellant|appellee|petitioner|respondent)\b/i;
 
-/** A signature block: a submission line plus a signer. */
-const SIG_RE = /\brespectfully submitted\b|(?:^|\n)\s*\/s\/|\b(?:attorney|counsel) for\b/i;
+/**
+ * A signature block. "Respectfully submitted" and an "/s/" signer line are
+ * unambiguous closing signals anywhere in the document. The bare
+ * "attorney/counsel for <party>" line is weaker — it is standard,
+ * rule-mandated content on an appellate-brief COVER page (Fed. R. App. P.
+ * 32(a)(2)), so on its own it must not claim the signature-block slot from
+ * the real closing block later in the brief.
+ */
+const SIG_STRONG_RE = /\brespectfully submitted\b|(?:^|\n)\s*\/s\//i;
+const SIG_WEAK_RE = /\b(?:attorney|counsel) for\b/i;
 
 /** Word count of a section's own heading + paragraphs (mirrors countWords). */
 function wordsInSection(s: Section): number {
@@ -92,7 +100,11 @@ export function detectFilingBlocks(tree: DocumentTree): DetectedBlock[] {
       if (CAPTION_RE.test(text)) record("caption", s, s.heading || "caption");
       if (COVER_RE.test(text)) record("cover", s, s.heading || "cover");
     }
-    if (SIG_RE.test(text)) record("signature-block", s, s.heading || "signature");
+    // A strong closing signal anywhere, or the weak "counsel for" signer line
+    // outside the cover region (i >= 3), locates the signature block.
+    if (SIG_STRONG_RE.test(text) || (i >= 3 && SIG_WEAK_RE.test(text))) {
+      record("signature-block", s, s.heading || "signature");
+    }
   });
 
   return [...found.values()];

@@ -28,6 +28,25 @@ describe("detectFilingBlocks", () => {
     expect(found.length).toBe(0);
   });
 
+  it("locates the signature block at the closing section, not the cover's 'counsel for' line", () => {
+    const tree = buildTree(
+      [
+        "IN THE UNITED STATES COURT OF APPEALS",
+        "No. 24-1. BRIEF OF APPELLANT. Sarah Attorney, Counsel for Appellant.",
+      ],
+      ["TABLE OF CONTENTS", "I. Argument ... 1"],
+      ["ARGUMENT", "The court erred."],
+      ["", "Respectfully submitted, /s/ Sarah Attorney, Attorney for Appellant."],
+    );
+    const sig = detectFilingBlocks(tree).find((b) => b.block === "signature-block");
+    const cover = detectFilingBlocks(tree).find((b) => b.block === "cover");
+    expect(sig).toBeDefined();
+    // The signature block must resolve to the closing section, distinct from
+    // the cover section it previously stole its slot from.
+    expect(sig?.section_id).not.toBe(cover?.section_id);
+    expect(sig?.where.toLowerCase()).not.toContain("court of appeals");
+  });
+
   it("records at most one entry per block kind", () => {
     const tree = buildTree(
       ["TABLE OF AUTHORITIES", "Cases"],
