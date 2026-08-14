@@ -20,6 +20,30 @@ const pos = (section: string, start: number): DocPosition => ({
   end: start + 10,
 });
 
+/** Minimal RFC-4180 single-row field splitter (quotes, doubled quotes). */
+function parseCsvRow(row: string): string[] {
+  const out: string[] = [];
+  let field = "";
+  let inQuotes = false;
+  for (let i = 0; i < row.length; i++) {
+    const c = row[i]!;
+    if (inQuotes) {
+      if (c === '"') {
+        if (row[i + 1] === '"') {
+          field += '"';
+          i++;
+        } else inQuotes = false;
+      } else field += c;
+    } else if (c === '"') inQuotes = true;
+    else if (c === ",") {
+      out.push(field);
+      field = "";
+    } else field += c;
+  }
+  out.push(field);
+  return out;
+}
+
 const entry = (term: string, definedAt: number, usedAt: number[]): DefinitionEntry => ({
   term,
   definition: `${term} means something.`,
@@ -92,6 +116,16 @@ describe("buildDefinitionsReport — buckets over a known inventory", () => {
     expect(md).toContain("## Definitions report");
     expect(md).toContain("Ghost Term");
     expect(md).toContain("definitions_hash");
+  });
+
+  it("quotes the undefined-but-used detail so its literal comma keeps the row 4-field (RFC 4180)", async () => {
+    const r = await buildDefinitionsReport(extracted);
+    const csv = buildDefinitionsCsv(r);
+    const row = csv.split("\n").find((l) => l.startsWith("undefined-but-used"))!;
+    // The "N use(s), never defined" detail must be quoted, or its comma splits
+    // the row into 5 fields and shifts the locations column.
+    expect(row).toMatch(/"\d+ use\(s\), never defined"/);
+    expect(parseCsvRow(row)).toHaveLength(4);
   });
 
   it("property: every term appears in exactly one primary bucket", async () => {

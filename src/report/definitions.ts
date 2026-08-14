@@ -137,14 +137,17 @@ const loc = (p: DocPosition): string => `§${p.section_id}`;
 
 /** Risk-ordered CSV: bucket,term,detail,locations. */
 export function buildDefinitionsCsv(report: DefinitionsReport): string {
-  const esc = (s: string): string => (/[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s);
+  const esc = (s: string): string => (/[",\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s);
   const rows: string[] = ["bucket,term,detail,locations"];
   for (const u of report.undefined_used) {
     rows.push(
       [
         "undefined-but-used",
         esc(u.term),
-        `${u.use_count} use(s), never defined`,
+        // Detail carries a literal comma ("use(s), never defined") — it MUST be
+        // esc()'d, or the row splits into 5 fields and shifts the locations
+        // column. Fires on every undefined-but-used row (the top risk bucket).
+        esc(`${u.use_count} use(s), never defined`),
         esc(u.positions.map(loc).join("; ")),
       ].join(","),
     );
