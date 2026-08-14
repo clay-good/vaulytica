@@ -190,6 +190,26 @@ describe("CC-001 BAA purpose no broader than MSA", () => {
     expect(run.findings).toHaveLength(0);
   });
 
+  it("does NOT fire on 'any purpose' tethered to the Services / obligations", async () => {
+    // "for any purpose necessary to perform its obligations under this
+    // Agreement" is bounded by the obligations — not open-ended — so it is not
+    // broader than the MSA scope and must not trip a false critical.
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Scope of Services",
+      "The Services to be provided are claims processing on behalf of Customer.",
+    ]);
+    const baa = makeDoc("baa", "baa", [
+      "Permitted Uses",
+      "Business Associate may use and disclose PHI for any purpose necessary to perform its obligations under this Agreement.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_001_BAA_PURPOSE],
+      documents: [msa, baa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+  });
+
   it("is skipped (ran=false) when the bundle has no BAA", async () => {
     const msa = makeDoc("msa", "msa-vendor-deep", ["A", "x"]);
     const dpa = makeDoc("dpa", "dpa-controller-processor", ["A", "y"]);
@@ -232,6 +252,26 @@ describe("CC-002 DPA purpose matches MSA services", () => {
     const dpa = makeDoc("dpa", "dpa-controller-processor", [
       "Subject Matter",
       "The processing purposes shall not extend to any purpose other than delivering the Services described in the Master Services Agreement.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_002_DPA_PURPOSE],
+      documents: [msa, dpa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+  });
+
+  it("does NOT fire on 'any purpose' tethered to performing the Services", async () => {
+    // "any purpose necessary for performing the Services under this Agreement"
+    // states a specified, bounded purpose — Art. 28(3)-compliant, not the
+    // open-ended controller-discretion grant the rule flags.
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Scope of Services",
+      "Provider shall provide payroll processing services to Customer.",
+    ]);
+    const dpa = makeDoc("dpa", "dpa-controller-processor", [
+      "Subject Matter",
+      "The processing purposes shall be any purpose necessary for performing the Services under this Agreement.",
     ]);
     const run = await runConsistency({
       rules: [CC_002_DPA_PURPOSE],

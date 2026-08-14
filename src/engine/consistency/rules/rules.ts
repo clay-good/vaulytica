@@ -28,6 +28,18 @@ import { paragraphExcerpt, textExcerpt, makeConsistencyFinding } from "./_findin
 
 const RULE_VERSION = "1.0.0";
 
+/**
+ * A grant of "any purpose" that is narrowed by a connector back to the Services
+ * / the party's obligations / this Agreement is TETHERED, not open-ended — the
+ * opposite of the unbounded grant CC-001/CC-002 exist to flag. Without this
+ * guard, a compliant clause ("may use PHI for any purpose necessary to perform
+ * its obligations under this Agreement") tripped a false critical finding.
+ * Truly open-ended grants ("for any business purpose", "any purpose authorized
+ * by the Controller") carry no such tether and still fire.
+ */
+const TETHER_TO_SCOPE =
+  /\b(?:any\s+(?:business\s+|lawful\s+)?purpose|for\s+any\s+reason)\b[^.\n]{0,50}?\b(?:necessary|required|needed|appropriate|in\s+connection\s+with|in\s+furtherance\s+of|(?:to|for)\s+(?:perform\w*|provid\w*|carry\s+out|carrying\s+out|fulfil\w*|deliver\w*|render\w*))\b[^.\n]{0,60}?\b(?:services|this\s+agreement|the\s+agreement|its\s+obligations|obligations\s+(?:under|hereunder))\b/i;
+
 /* -------------------- CC-001 BAA-purpose-no-broader-than-MSA ----- */
 
 export const CC_001_BAA_PURPOSE: ConsistencyRule = {
@@ -54,6 +66,9 @@ export const CC_001_BAA_PURPOSE: ConsistencyRule = {
       /(?:permitted\s+uses?(?:(?!\bnot\b)[^.\n]){0,80}|business\s+associate\s+may(?:(?!\bnot\b)[^.\n]){0,80})\b(any\s+(?:business\s+)?purpose|any\s+lawful\s+purpose|any\s+purpose\s+permitted|for\s+any\s+reason)\b/i,
     );
     if (!baaBroad) return [];
+    // A grant tethered to the Services / obligations / this Agreement is not
+    // open-ended, so it is not broader than the MSA scope.
+    if (TETHER_TO_SCOPE.test(baaBroad.text)) return [];
 
     // Locate the MSA's services / purpose anchor.
     const msaServices =
@@ -104,6 +119,9 @@ export const CC_002_DPA_PURPOSE: ConsistencyRule = {
       /\b(?:processing\s+(?:purposes?|shall\s+be|will\s+be)|purpose\s+of\s+the\s+processing)\b(?:(?!\bnot\b)[^.\n]){0,120}\b(any\s+purpose|any\s+lawful\s+purpose|as\s+(?:the\s+)?controller\s+(?:may\s+)?direct|any\s+purpose\s+authori[sz]ed)\b/i,
     );
     if (!dpaBroad) return [];
+    // A processing purpose tethered to the Services / this Agreement satisfies
+    // Art. 28(3)'s "specified purpose" — it is not the open-ended grant flagged.
+    if (TETHER_TO_SCOPE.test(dpaBroad.text)) return [];
 
     const msaServices =
       findParagraph(msa, /\b(scope\s+of\s+services|the\s+services|services\s+description)\b/i) ??
