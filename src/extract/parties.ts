@@ -179,7 +179,14 @@ const PREAMBLE_LEAD = new RegExp(
 const PARTY_ROLE_LABEL = String.raw`Data\s+Exporter|Data\s+Importer|Exporter|Importer|Discloser|Disclosing\s+Party|Recipient|Receiving\s+Party|Covered\s+Entity|Business\s+Associate|Controller|Processor|Sub-?processor|Service\s+Provider|Subcontractor|Sublicensee|Sublessee|Landlord|Tenant|Lessor|Lessee|Licensor|Licensee|Buyer|Seller|Purchaser|Vendor|Supplier|Provider|Customer|Client|Company|Employer|Employee|Contractor|Consultant|Borrower|Lender|Guarantor|Trustee|Grantor|Settlor|Named\s+Insured|Insured|Insurer|Party\s+[AB]`;
 
 const LABELED_PARTY = new RegExp(
-  String.raw`(?:^|\n)\s*(${PARTY_ROLE_LABEL})\s*:\s*(?!\s)([A-Z][^\n,;.]{2,80})`,
+  // The name body absorbs an in-abbreviation period — one followed by a
+  // non-space ("J.P.", "N.A.") or by a Capitalized continuation ("J.P. Morgan")
+  // — but stops at a sentence period (followed by a space + lowercase word, or
+  // end). Without this, a name whose first token is an initialed abbreviation
+  // ("Lender: J.P. Morgan Chase Bank") failed the `{2,80}` minimum at the first
+  // period and was dropped entirely, so a labeled-only document (SCC annex,
+  // IDTA table) reported STRUCT-001 "could not identify the parties".
+  String.raw`(?:^|\n)\s*(${PARTY_ROLE_LABEL})\s*:\s*(?!\s)([A-Z](?:[^\n,;.]|\.(?!\s|$)|\.(?=\s+[A-Z])){2,80})`,
   "g",
 );
 

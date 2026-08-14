@@ -110,6 +110,21 @@ describe("extractParties", () => {
     expect(roles).toContain("Insurer");
   });
 
+  it("captures a labeled party whose name begins with an initialed abbreviation", () => {
+    // "J.P. Morgan…" starts with a period two chars in; the old name char-class
+    // excluded '.', so the `{2,80}` minimum failed at the first period and the
+    // whole party was dropped (STRUCT-001 "could not identify the parties").
+    const tree = buildTree([
+      "Parties",
+      "Lender: J.P. Morgan Chase Bank, N.A.",
+      "Borrower: Acme Manufacturing Company",
+    ]);
+    const names = extractParties(tree).map((p) => p.name);
+    // Truncates at the comma before "N.A." (existing labeled-party behavior),
+    // but the initialed name itself is now captured rather than dropped.
+    expect(names).toContain("J.P. Morgan Chase Bank");
+  });
+
   it('captures a trust settlor from a multi-role paren \'(the "Grantor" and "Trustee")\'', () => {
     const tree = buildTree([
       "Revocable Living Trust",
