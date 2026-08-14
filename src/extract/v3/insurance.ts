@@ -66,8 +66,15 @@ const LINE_PATTERNS: { line: InsuranceLine; rx: RegExp }[] = [
 const AMOUNT_RX =
   /(\$|USD|US\$)?\s*(\d[\d,]*(?:\.\d+)?)\s*(million|mm|m\b|thousand|k\b)?\s*(USD|dollars)?\s*(per occurrence|each occurrence|per claim|each claim|per accident|each accident|aggregate|in the aggregate|annual aggregate)?/gi;
 
+// Rating = a letter grade with an optional modifier (A++, A+, A, A-) and an
+// optional financial-size category in Roman numerals (I–XV), separated by a
+// space and/or hyphen. The old pattern only read a `+` modifier (so the very
+// common minus grade "A-" was truncated to "A", a materially higher rating)
+// and allowed only a single delimiter char (so "A- VII" — hyphen then space —
+// dropped the numeral). The FSC tokens are longest-first and `\b`-terminated
+// so a following lowercase word ("A video") can never be misread as a numeral.
 const AM_BEST_RX =
-  /\bA\.?M\.?\s*Best\b[^.]{0,80}?\b([A-Z]\+?\+?(?:[- ](?:I{1,3}|IV|V|VI{0,3}|IX|X{1,2}))?)\b/i;
+  /\bA\.?M\.?\s*Best\b[^.]{0,80}?\b([A-Z](?:\+\+|\+|-)?(?:[-\s]*(?:XV|XIV|XIII|XII|XI|X|IX|VIII|VII|VI|V|IV|III|II|I)\b)?)(?![A-Za-z])/i;
 
 const ENDORSEMENT_RX = /\b(CG\s*\d{2}\s*\d{2}(?:\s*\d{2})?|CA\s*\d{2}\s*\d{2})\b/g;
 

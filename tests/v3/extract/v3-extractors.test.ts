@@ -156,6 +156,19 @@ describe("v3 security-measures extractor", () => {
     expect(pen?.cadence).toBe("annual");
   });
 
+  it("attributes each measure's own cadence when two appear in one sentence", () => {
+    // Whole-paragraph inference tagged both measures with the first-listed
+    // cadence ("annual"); proximity keeps each measure's neighbouring qualifier.
+    const measures = extractSecurityMeasures(
+      buildTree([
+        "Security",
+        "Vendor performs penetration testing annually and conducts continuous vulnerability scanning.",
+      ]),
+    );
+    expect(measures.find((m) => m.slug === "penetration-testing")?.cadence).toBe("annual");
+    expect(measures.find((m) => m.slug === "vulnerability-scanning")?.cadence).toBe("continuous");
+  });
+
   it("detects spelled two-factor and passive/hyphenated encryption phrasings", () => {
     const expect_slug = (text: string, slug: string) => {
       const slugs = extractSecurityMeasures(buildTree(["Security", text])).map((m) => m.slug);
@@ -359,6 +372,29 @@ describe("v3 subprocessor extractor", () => {
     );
     expect(s?.notice_days).toBe(30);
   });
+
+  it("reads a singular-verb prohibition ('No sub-processor is permitted') as not permitted", () => {
+    const isForm = extractSubprocessorInventory(
+      buildTree(["Subprocessors", "No sub-processor is permitted to process Personal Data."]),
+    );
+    expect(isForm?.permitted).toBe(false);
+    const areForm = extractSubprocessorInventory(
+      buildTree(["Subprocessors", "No sub-processors are permitted without approval."]),
+    );
+    expect(areForm?.permitted).toBe(false);
+    const shallForm = extractSubprocessorInventory(
+      buildTree(["Subprocessors", "No sub-processor shall be permitted absent consent."]),
+    );
+    expect(shallForm?.permitted).toBe(false);
+    // A permissive clause still reads permitted=true.
+    const yes = extractSubprocessorInventory(
+      buildTree([
+        "Subprocessors",
+        "Processor may engage sub-processors with general written authorization.",
+      ]),
+    );
+    expect(yes?.permitted).toBe(true);
+  });
 });
 
 describe("v3 insurance extractor", () => {
@@ -425,6 +461,25 @@ describe("v3 insurance extractor", () => {
     expect(el?.raw_text).toContain("each accident");
   });
 
+  it("captures the A.M. Best minus grade and a space-separated size category", () => {
+    // A- is a materially lower grade than A; the old pattern read only '+' and a
+    // single delimiter, so "A- VII" (minus, then a space before the numeral)
+    // collapsed to "A".
+    const minusSpace = extractInsuranceSchedule(
+      buildTree(["Insurance", "Insurers shall carry an A.M. Best rating of A- VII or better."]),
+    );
+    expect(minusSpace.required_am_best_rating).toBe("A- VII");
+    const bareMinus = extractInsuranceSchedule(
+      buildTree(["Insurance", "Each insurer shall have an A.M. Best rating of A- or higher."]),
+    );
+    expect(bareMinus.required_am_best_rating).toBe("A-");
+    // The contiguous form still round-trips unchanged.
+    const contiguous = extractInsuranceSchedule(
+      buildTree(["Insurance", "Policies written by an A.M. Best A-VII rated carrier."]),
+    );
+    expect(contiguous.required_am_best_rating).toBe("A-VII");
+  });
+
   it("detects Directors & Officers and Crime/Fidelity lines", () => {
     const expect_line = (text: string, line: string) => {
       const lines = extractInsuranceSchedule(buildTree(["Insurance", text])).amounts.map(
@@ -485,6 +540,22 @@ describe("v3 DTSA notice extractor", () => {
     const d = extractDtsaNotice(tree);
     expect(d.present).toBe(true);
     expect(d.substantively_complete).toBe(false);
+  });
+
+  it("reads a notice whose elements span the following paragraph", () => {
+    // The immunity elements commonly sit in a separate "elements" paragraph;
+    // the extractor previously looked only at the paragraph where DTSA matched.
+    const tree = buildTree([
+      "Immunity Notice",
+      "This Agreement provides notice under the Defend Trade Secrets Act (DTSA) regarding immunity for the disclosure of a trade secret.",
+      "Such immunity applies where the disclosure is made in confidence to a federal government official or to an attorney solely for the purpose of reporting a suspected violation of law, and where any disclosure made under seal in a lawsuit is protected. This notice applies to the Company's employees, contractors, and consultants.",
+    ]);
+    const d = extractDtsaNotice(tree);
+    expect(d.present).toBe(true);
+    expect(d.covers_government_disclosure).toBe(true);
+    expect(d.covers_under_seal).toBe(true);
+    expect(d.covers_contractors).toBe(true);
+    expect(d.substantively_complete).toBe(true);
   });
 
   it("returns absent when no notice present", () => {

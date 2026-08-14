@@ -31,7 +31,15 @@ export function extractSubprocessorInventory(tree: DocumentTree): SubprocessorIn
 
     const text = ctx.text;
 
-    const permitted = !/\bno sub[- ]?processor[s]? (?:are )?permitted\b/i.test(text);
+    // "No sub-processor <verb> permitted" is a prohibition. The verb agrees
+    // with singular/plural ("is"/"are") and may be modal ("shall be", "may
+    // be"); the old pattern only allowed "are", so the natural singular "No
+    // sub-processor IS permitted" slipped through and inverted `permitted` to
+    // true — reporting a flat ban as "sub-processing allowed".
+    const permitted =
+      !/\bno sub[- ]?processors?\s+(?:(?:is|are|shall|may|will|can)\s+(?:be\s+)?)?permitted\b/i.test(
+        text,
+      );
 
     const consent: SubprocessorConsentForm =
       /\bspecific prior (?:written )?consent\b|\bspecific prior authori[sz]ation\b/i.test(text)

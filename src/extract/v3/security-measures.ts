@@ -63,14 +63,49 @@ const SCOPE_RX: { rx: RegExp; scope: SecurityMeasureScope }[] = [
   { rx: /\bin[- ]scope systems\b|\bin scope\b/i, scope: "in-scope-systems" },
 ];
 
-function inferCadence(text: string): SecurityMeasureCadence {
-  for (const c of CADENCE_RX) if (c.rx.test(text)) return c.cadence;
-  return "unspecified";
+/**
+ * The label (cadence/scope) whose keyword sits NEAREST the measure match at
+ * `at`. Scanning the whole paragraph and returning the first list-priority
+ * match mis-attributed a shared cadence: "penetration testing annually and
+ * continuous vulnerability scanning" tagged BOTH measures "annual" because
+ * that entry is listed first. Proximity keeps each measure's own neighbouring
+ * qualifier; ties fall back to list order (the first def at the min distance).
+ */
+function nearestLabel<T>(
+  defs: { rx: RegExp; value: T }[],
+  text: string,
+  at: number,
+  fallback: T,
+): T {
+  let best: { value: T; dist: number } | null = null;
+  for (const d of defs) {
+    const re = new RegExp(d.rx.source, d.rx.flags.replace("g", "") + "g");
+    for (const m of text.matchAll(re)) {
+      const start = m.index;
+      const end = start + m[0].length;
+      const dist = at < start ? start - at : at > end ? at - end : 0;
+      if (best === null || dist < best.dist) best = { value: d.value, dist };
+    }
+  }
+  return best ? best.value : fallback;
 }
 
-function inferScope(text: string): SecurityMeasureScope {
-  for (const s of SCOPE_RX) if (s.rx.test(text)) return s.scope;
-  return "unspecified";
+function inferCadence(text: string, at: number): SecurityMeasureCadence {
+  return nearestLabel(
+    CADENCE_RX.map((c) => ({ rx: c.rx, value: c.cadence })),
+    text,
+    at,
+    "unspecified",
+  );
+}
+
+function inferScope(text: string, at: number): SecurityMeasureScope {
+  return nearestLabel(
+    SCOPE_RX.map((s) => ({ rx: s.rx, value: s.scope })),
+    text,
+    at,
+    "unspecified",
+  );
 }
 
 export function extractSecurityMeasures(tree: DocumentTree): SecurityMeasure[] {
@@ -86,8 +121,8 @@ export function extractSecurityMeasures(tree: DocumentTree): SecurityMeasure[] {
       out.push({
         slug: m.slug,
         raw_text: match[0],
-        cadence: inferCadence(ctx.text),
-        scope: inferScope(ctx.text),
+        cadence: inferCadence(ctx.text, match.index),
+        scope: inferScope(ctx.text, match.index),
         position: posInParagraph(ctx, match.index, match.index + match[0].length),
       });
     }
