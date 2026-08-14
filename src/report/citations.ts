@@ -170,8 +170,16 @@ export function currencyLabel(
   const [ay, am, ad] = asOf.split("-").map(Number);
   // The node ages out the day after `retrieved + horizon months`. Date.UTC
   // on the two *stored* dates — never a clock read — so the label is a pure
-  // function of (citation, DKB build date).
-  const threshold = Date.UTC(ry!, rm! - 1 + currency.horizon_months, rd!);
+  // function of (citation, DKB build date). The retrieval day is clamped to
+  // the target month's length (like addMonths in critical-dates.ts): without
+  // it, "Aug 31 + 6 months" overflowed Date.UTC's day into early March and
+  // pushed the staleness threshold days late (a missed "verify currency"
+  // warning) whenever the target month is shorter than the retrieval day.
+  const monthIndex = rm! - 1 + currency.horizon_months;
+  const targetYear = ry! + Math.floor(monthIndex / 12);
+  const targetMonth0 = ((monthIndex % 12) + 12) % 12;
+  const lastDay = new Date(Date.UTC(targetYear, targetMonth0 + 1, 0)).getUTCDate();
+  const threshold = Date.UTC(targetYear, targetMonth0, Math.min(rd!, lastDay));
   if (Date.UTC(ay!, am! - 1, ad!) <= threshold) return undefined;
   return `verify currency (retrieved ${retrieved})`;
 }

@@ -45,6 +45,20 @@ describe("currencyLabel", () => {
     expect(currencyLabel(cite("2025-07-03T00:00:00Z"), currency)).toContain("verify currency");
   });
 
+  it("clamps a month-end retrieval to the target month (no Date.UTC day overflow)", () => {
+    // Aug 31 + 6 months = end of Feb (28 in 2025). A DKB built on/after Mar 1
+    // is past the horizon and must be flagged. A raw Date.UTC(y, m+6, 31)
+    // overflowed to early March and silently suppressed the warning.
+    const sixMonths = { as_of: "2025-03-01T00:00:00Z", horizon_months: 6 };
+    expect(currencyLabel(cite("2024-08-31T00:00:00Z"), sixMonths)).toContain("verify currency");
+    // Still silent one day inside the (clamped) horizon.
+    const atBoundary = { as_of: "2025-02-28T00:00:00Z", horizon_months: 6 };
+    expect(currencyLabel(cite("2024-08-31T00:00:00Z"), atBoundary)).toBeUndefined();
+    // Jan 31 + 1 month = Feb 28; a Mar 1 build is stale.
+    const oneMonth = { as_of: "2025-03-01T00:00:00Z", horizon_months: 1 };
+    expect(currencyLabel(cite("2025-01-31T00:00:00Z"), oneMonth)).toContain("verify currency");
+  });
+
   it("is undefined without a currency reference or retrieval date", () => {
     expect(currencyLabel(cite("2025-01-07"), undefined)).toBeUndefined();
     expect(currencyLabel({ ...cite("2025-01-07"), retrieved_at: "" }, currency)).toBeUndefined();
