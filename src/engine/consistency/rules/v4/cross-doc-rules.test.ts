@@ -851,6 +851,27 @@ describe("CROSS-CARVEOUT-001", () => {
     });
     expect(run.findings).toHaveLength(0);
   });
+
+  it("does not fabricate a carveout set from an unrelated indemnity sentence", async () => {
+    // The indemnity sentence names gross negligence / willful misconduct, but
+    // the paragraph's actual "except" clause carves out nothing category-wise.
+    // Scanning the whole paragraph used to attribute those terms as carveouts
+    // and fire a false asymmetric-carveout finding against the DPA's real set.
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Liability",
+      "Each party shall indemnify, defend, and hold harmless the other from third-party claims arising out of its gross negligence or willful misconduct. Nothing in this Section limits either party's liability, except as the parties may otherwise agree in writing.",
+    ]);
+    const dpa = makeDoc("dpa", "dpa-controller-processor", [
+      "Liability",
+      "This limitation of liability shall not apply to breaches of confidentiality.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_CARVEOUT_001],
+      documents: [msa, dpa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+  });
 });
 
 /* ---------------- CROSS-CURRENCY-001 (spec-v7 §13) ------------- */

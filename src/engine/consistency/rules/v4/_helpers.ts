@@ -560,28 +560,31 @@ const CARVEOUT_TERMS: Array<[string, RegExp]> = [
 export function liabilityCarveouts(
   doc: ConsistencyDocument,
 ): { set: string[]; raw_text: string; section_id?: string; start: number; end: number } | null {
-  type Hit = { text: string; section_id?: string; start: number; end: number };
+  type Hit = { text: string; section_id?: string; start: number; end: number; set: string[] };
+  const capContextRe =
+    /\b(?:liability|limitation\s+of\s+liability|shall\s+not\s+exceed|aggregate\s+liability)\b/i;
+  const exceptionRe =
+    /\b(?:shall\s+not\s+apply|do(?:es)?\s+not\s+apply|except(?:ions?)?|excluding|other\s+than)\b/i;
   const slot: { value: Hit | null } = { value: null };
   walkParagraphs(doc.tree, (p) => {
     if (slot.value) return;
-    const capContext =
-      /\b(?:liability|limitation\s+of\s+liability|shall\s+not\s+exceed|aggregate\s+liability)\b/i.test(
-        p.text,
-      );
-    const exception =
-      /\b(?:shall\s+not\s+apply|do(?:es)?\s+not\s+apply|except(?:ions?)?|excluding|other\s+than)\b/i.test(
-        p.text,
-      );
-    if (capContext && exception) {
-      slot.value = { text: p.text, section_id: p.section_id, start: p.start, end: p.end };
-    }
+    if (!capContextRe.test(p.text)) return;
+    const ex = exceptionRe.exec(p.text);
+    if (!ex) return;
+    // Scan for carveout categories only in the exception clause itself — the
+    // text at and after the "shall not apply" / "except" trigger — not the whole
+    // paragraph. Otherwise categories named in an unrelated earlier sentence
+    // (e.g. an indemnity sentence in the same clause) are fabricated into a
+    // carveout set that no cap actually excepts.
+    const clause = p.text.slice(ex.index);
+    const set = CARVEOUT_TERMS.filter(([, re]) => re.test(clause)).map(([label]) => label);
+    if (set.length === 0) return;
+    slot.value = { text: p.text, section_id: p.section_id, start: p.start, end: p.end, set };
   });
   if (!slot.value) return null;
   const found: Hit = slot.value;
-  const set = CARVEOUT_TERMS.filter(([, re]) => re.test(found.text)).map(([label]) => label);
-  if (set.length === 0) return null;
   return {
-    set,
+    set: found.set,
     raw_text: found.text,
     section_id: found.section_id,
     start: found.start,
