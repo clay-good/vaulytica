@@ -486,8 +486,14 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
         const glossary = GLOSSARY_ENTRY.exec(text);
         if (glossary) {
           const term = glossary[1]!.trim();
+          // Slice from the END of the match, not `term.length`: the pattern
+          // consumes the opening quote, the (possibly-longer-than-`term`) quoted
+          // phrase, the closing quote, and the ":"/"—" separator, ending on the
+          // first non-space char of the definition. Using the trimmed term's
+          // length as an offset landed mid-term and prepended a stray fragment
+          // ('"Delivery Point": the dock' → 't": the dock').
           const def = text
-            .slice(term.length)
+            .slice(glossary.index + glossary[0].length - 1)
             .replace(/^["“”'\s]*/, "")
             .replace(/^[:—–]\s*/, "")
             .trim();

@@ -59,9 +59,15 @@ describe("extractDefinitions", () => {
       "Headings are for convenience only and shall not affect interpretation.",
       "The Business Day count starts at the Delivery Point.",
     ]);
-    const terms = extractDefinitions(tree).entries.map((e) => e.term);
+    const entries = extractDefinitions(tree).entries;
+    const terms = entries.map((e) => e.term);
     expect(terms).toContain("Business Day");
     expect(terms).toContain("Delivery Point");
+    // The glossary definition text is captured cleanly — no stray fragment of
+    // the term prepended (regression: a `text.slice(term.length)` offset landed
+    // mid-term and produced 't": the loading dock …').
+    const deliveryPoint = entries.find((e) => e.term === "Delivery Point");
+    expect(deliveryPoint?.definition).toBe("the loading dock at the facility.");
     // Construction rules in the same section are not spurious defined terms.
     expect(terms).not.toContain("In this Agreement");
     expect(terms).not.toContain("Headings");
