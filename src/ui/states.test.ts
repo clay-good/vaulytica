@@ -736,6 +736,24 @@ describe("renderState", () => {
     expect(chip.classList.contains("low-confidence")).toBe(true);
   });
 
+  it("v3 family chip in the [0.4, 0.5) band renders normally (spec-v3 §60 faint threshold is 0.4)", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "complete",
+      filename: "borderline.docx",
+      playbook_name: "DPA",
+      counts: { critical: 0, warning: 0, info: 0 },
+      docx_blob: new Blob(["docx"]),
+      json_blob: new Blob(["{}"]),
+      docx_filename: "x.docx",
+      json_filename: "x.json",
+      v3_family: { family: "dpa-eu", label: "EU DPA", confidence: 0.45 },
+    });
+    const chip = select(dz, "v3-family")!;
+    // 0.45 is above the 0.4 faint threshold, so it must NOT be dimmed.
+    expect(chip.classList.contains("low-confidence")).toBe(false);
+  });
+
   it("hides v3 family chip when family is unknown or omitted", () => {
     const dz = document.createElement("div");
     renderState(dz, {

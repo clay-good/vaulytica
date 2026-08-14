@@ -391,7 +391,7 @@ export type DropzoneState =
          * Optional `detectV3Family` confidence in `[0, 1]`. When
          * present, the card meta line appends "(0.83)" next to the
          * family label and renders the entry with a `.low-confidence`
-         * class when the score is below 0.5 so ambiguous detections
+         * class when the score is below 0.4 so ambiguous detections
          * are visually distinct from confident ones (spec-v3 §60
          * "below 0.4 the suggestion should be presented faintly").
          */
@@ -1128,7 +1128,7 @@ function renderMultiDocCards(
       const playbook = `<span class="multi-doc-card-playbook">${escapeHtml(d.playbook_name)}${legacyHint}</span>`;
       const c = d.counts;
       const countsLine = `${c.critical} critical · ${c.warning} warnings · ${c.info} info`;
-      const lowConfClass = conf !== null && conf < 0.5 ? " low-confidence" : "";
+      const lowConfClass = conf !== null && conf < 0.4 ? " low-confidence" : "";
       const secondary =
         d.secondary_families && d.secondary_families.length > 0
           ? `<div class="multi-doc-card-secondary">Also checked: ${d.secondary_families
@@ -1238,10 +1238,10 @@ function renderV3FamilyChip(
   const pct = Math.round(detection.confidence * 100);
   chip.setAttribute("data-confidence", String(pct));
   // Spec-v3 §60: render the numeric confidence next to the family
-  // label, and flag low-confidence (< 0.5) detections with a class so
+  // label, and flag low-confidence (< 0.4) detections with a class so
   // CSS can present them faintly. Mirrors the affordance on the
   // bundle-complete multi-doc cards (`.multi-doc-card.low-confidence`).
-  chip.classList.toggle("low-confidence", detection.confidence < 0.5);
+  chip.classList.toggle("low-confidence", detection.confidence < 0.4);
   chip.textContent = `Detected: ${detection.label} (${detection.confidence.toFixed(2)})`;
 }
 
