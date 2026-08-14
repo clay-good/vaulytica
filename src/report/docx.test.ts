@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildDocxReport } from "./docx.js";
+import { buildDocxReport, truncate } from "./docx.js";
 import { buildJsonReport } from "./json.js";
 import { loadStarterDkbSync } from "../engine/_test-fixtures.js";
 import type { EngineRun, Finding } from "../engine/finding.js";
@@ -888,5 +888,23 @@ describe("report-structure validation (spec-v7 Step 122)", () => {
       }
       expect(["critical", "warning", "info"]).toContain(f.severity);
     }
+  });
+});
+
+describe("truncate (surrogate-safe excerpt clamp)", () => {
+  it("returns short text unchanged and clamps long text with an ellipsis", () => {
+    expect(truncate("short", 480)).toBe("short");
+    expect(truncate("a".repeat(500), 10)).toBe("a".repeat(9) + "…");
+  });
+
+  it("never splits a UTF-16 surrogate pair at the cut", () => {
+    // "𝔸" (U+1D538) is a non-BMP char = one high + one low surrogate. Place it
+    // so the naive slice(0, limit-1) would keep only its high half.
+    const text = "a".repeat(9) + "𝔸" + "b".repeat(20);
+    const out = truncate(text, 11); // naive cut lands between the surrogate pair
+    // No lone surrogate survived: the string round-trips through UTF-8 intact.
+    expect(Buffer.from(out, "utf8").toString("utf8")).toBe(out);
+    expect(out.endsWith("…")).toBe(true);
+    expect(out).not.toContain("�");
   });
 });

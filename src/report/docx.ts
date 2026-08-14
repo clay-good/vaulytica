@@ -1167,9 +1167,16 @@ function severityColor(severity: Finding["severity"]): string {
   }
 }
 
-function truncate(text: string, limit: number): string {
+export function truncate(text: string, limit: number): string {
   if (text.length <= limit) return text;
-  return text.slice(0, limit - 1) + "…";
+  let end = limit - 1;
+  // Never split a UTF-16 surrogate pair: if the last kept code unit is a lone
+  // high surrogate (its low half falls past the cut), drop it — otherwise the
+  // packed UTF-8 turns it into a U+FFFD replacement char, corrupting a quoted
+  // excerpt exactly at a non-BMP character (emoji, CJK Extension B, …).
+  const lastUnit = text.charCodeAt(end - 1);
+  if (lastUnit >= 0xd800 && lastUnit <= 0xdbff) end -= 1;
+  return text.slice(0, end) + "…";
 }
 
 function plural(n: number, noun: string): string {
