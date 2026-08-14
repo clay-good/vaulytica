@@ -643,7 +643,11 @@ function renderCover(input: BundleReportInput, fingerprint: string): Paragraph[]
       "Cross-document consistency",
       input.consistency_enabled === false
         ? "disabled by user"
-        : `${input.consistency.execution_log.length} rules executed`,
+        : // Count rules that actually RAN — a `ran: false` entry was skipped
+          // because its `requires` DocKinds were absent, and the audit-trail
+          // block below reports it as "skipped", so counting it as executed
+          // here overstated the analysis coverage.
+          `${input.consistency.execution_log.filter((e) => e.ran).length} rules executed`,
     ),
     coverField("Analysis date", iso ? `${iso}  (${human})` : "(omitted from hash)"),
     spacer(),
@@ -668,7 +672,10 @@ function renderExecutiveSummary(
   const consistencyClause =
     input.consistency_enabled === false
       ? "The cross-document consistency pass was disabled by the user; no cross-document findings were computed."
-      : `The cross-document consistency pass executed ${plural(input.consistency.execution_log.length, "rule")} and surfaced ${plural(crossCounts.critical + crossCounts.warning + crossCounts.info, "cross-document finding")}.`;
+      : // Only rules that actually ran count as "executed" — skipped
+        // (requires-not-satisfied) entries are reported separately in the audit
+        // trail, so including them here overstated the coverage.
+        `The cross-document consistency pass executed ${plural(input.consistency.execution_log.filter((e) => e.ran).length, "rule")} and surfaced ${plural(crossCounts.critical + crossCounts.warning + crossCounts.info, "cross-document finding")}.`;
   const intro = `This bundle contains ${plural(docs, "document")}.${rejectedSentence} Across all documents the engine emitted ${plural(counts.critical, "critical finding")}, ${plural(counts.warning, "warning")}, and ${plural(counts.info, "informational item")}. ${consistencyClause}`;
   return [
     h1("Executive Summary"),

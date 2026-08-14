@@ -429,6 +429,11 @@ describe("buildBundleDocxReport — consistency_enabled", () => {
     const docXml = strFromU8(entries["word/document.xml"]!);
     expect(docXml).toMatch(/rules executed/);
     expect(docXml).not.toContain("disabled by user");
+    // The fixture logs 2 rules but only 1 ran (the other was requires-skipped);
+    // "executed" must count only the rule that ran, not the total log length.
+    expect(docXml).toContain("1 rules executed");
+    expect(docXml).not.toContain("2 rules executed");
+    expect(docXml).toContain("executed 1 rule and surfaced");
   });
 
   it("omitting consistency_enabled preserves prior implicit behavior", async () => {
