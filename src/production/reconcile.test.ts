@@ -47,6 +47,26 @@ describe("reconcileProduction — audit-round pins", () => {
     expect(findings.some((f) => f.code === "PROD-011")).toBe(false);
   });
 
+  it("intra-row mixed-case range still reconciles: PROD-010 fires (privilege-waiver check)", () => {
+    // A single log row whose two ends differ only in prefix casing must not be
+    // dropped — that would silently disable overlap detection for the range.
+    const bates = extractBatesSet(filenames("SMITH", [100, 125, 150]));
+    const log = parsePrivilegeLog(
+      "Bates Start,Bates End,Privilege,Description\nsmith_000100,SMITH_000150,AC,Email\n",
+    );
+    const findings = reconcileProduction({ bates, log });
+    expect(findings.some((f) => f.code === "PROD-010")).toBe(true);
+  });
+
+  it("cross-row mixed-case overlap fires PROD-012 (duplicate privilege claim)", () => {
+    const bates = extractBatesSet(filenames("ABC", [100, 105, 110, 115]));
+    const log = parsePrivilegeLog(
+      "Bates Start,Bates End,Privilege,Description\nabc_000100,abc_000110,AC,A\nABC_000105,ABC_000115,AC,B\n",
+    );
+    const findings = reconcileProduction({ bates, log });
+    expect(findings.some((f) => f.code === "PROD-012")).toBe(true);
+  });
+
   it("hyphen-convention Bates in a combined range column parses (PROD-010 fires)", () => {
     const bates = extractBatesSet(["ABC-000123.pdf", "ABC-000124.pdf", "ABC-000125.pdf"]);
     const log = parsePrivilegeLog(
