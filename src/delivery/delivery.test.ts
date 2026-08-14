@@ -106,6 +106,18 @@ describe("sensitive-data scan (HANDOFF-005)", () => {
     expect(bad.some((h) => h.type === "card")).toBe(false);
   });
 
+  it("detects an American Express number in its canonical spaced 4-6-5 grouping", () => {
+    // 3782 822463 10005 is a Luhn-valid Amex test number; the 4-4-4 pattern
+    // cannot form the 6-digit middle group, so it was previously missed.
+    const hits = scanSensitive("Card on file: 3782 822463 10005 (Amex).");
+    const card = hits.find((h) => h.type === "card");
+    expect(card).toBeDefined();
+    expect(card?.masked).toMatch(/0005$/);
+    expect(card?.masked).not.toContain("822463");
+    // A same-shape run that fails Luhn is still not a card.
+    expect(scanSensitive("Ref 1234 567890 12345 end.").some((h) => h.type === "card")).toBe(false);
+  });
+
   it("never echoes an unmasked value (the §Part XIV invariant)", () => {
     const text = "SSN 123-45-6789, card 4242424242424242, dob 01/02/1980, jane@example.com";
     const facts = readContainer(

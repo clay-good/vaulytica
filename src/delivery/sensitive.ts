@@ -25,7 +25,12 @@ const MAX_PER_TYPE = 200;
 
 const SSN = /\b(\d{3})-(\d{2})-(\d{4})\b/g;
 const EIN = /\b(\d{2})-(\d{7})\b/g;
-const CARD = /\b\d{4}[ -]?\d{4}[ -]?\d{4}[ -]?\d{1,7}\b/g;
+// First alternative: the 4-4-4-… grouping (Visa/MC 16-digit, and a contiguous
+// 15-digit Amex, whose last group absorbs into \d{1,7}). Second: American
+// Express's canonical *spaced* 4-6-5 grouping ("3782 822463 10005"), which the
+// first alternative cannot form once the separators are present. Every hit is
+// Luhn-gated below, so the broader pattern cannot surface a non-card run.
+const CARD = /\b\d{4}[ -]?\d{4}[ -]?\d{4}[ -]?\d{1,7}\b|\b\d{4}[ -]\d{6}[ -]\d{5}\b/g;
 const ROUTING = /\b(\d{9})\b/g;
 const DOB = /(?:DOB|D\.O\.B\.|date of birth)\D{0,20}(\d{1,2}[/.-]\d{1,2}[/.-]\d{2,4})/gi;
 const EMAIL = /\b[A-Za-z0-9._%+-]{1,64}@[A-Za-z0-9.-]{1,255}\.[A-Za-z]{2,24}\b/g;
