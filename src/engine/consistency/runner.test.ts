@@ -297,6 +297,26 @@ describe("CC-003 DPA data categories not broader than MSA", () => {
     });
     expect(run.findings).toHaveLength(0);
   });
+
+  it("does not fire on a multi-category exclusion list where the negation is far from the item", async () => {
+    // The exclusion "does not process" governs several categories in one
+    // sentence; for the later items the negation sits well beyond a 60-char
+    // lookback. Scoping the lookback to the enclosing sentence catches it.
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Scope of Services",
+      "Provider performs invoice reconciliation services for Customer.",
+    ]);
+    const dpa = makeDoc("dpa", "dpa-controller-processor", [
+      "Annex I.B Categories",
+      "The Processor does not process any of the following special categories of personal data: data revealing racial or ethnic origin, religious beliefs, or trade union membership.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_003_DPA_CATEGORIES],
+      documents: [msa, dpa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+  });
 });
 
 describe("CC-004 BAA term aligns with MSA", () => {

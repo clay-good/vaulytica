@@ -187,7 +187,18 @@ export const CC_003_DPA_CATEGORIES: ConsistencyRule = {
         // DPA is NARROWER than the MSA's scope, not broader; flagging it as
         // unauthorized scope-creep is a confident false conflict (the opposite
         // of what this rule detects).
-        const before = p.text.slice(Math.max(0, m.index - 60), m.index);
+        // Look back to the start of the enclosing sentence, not a fixed 60-char
+        // window: a DPA commonly excludes several categories in one sentence
+        // ("does not process … racial or ethnic origin, religious beliefs, or
+        // trade union membership"), and the negation sits far before the later
+        // items — outside a 60-char window — so the exclusion was missed and the
+        // rule fired a false conflict on a category the DPA explicitly excludes.
+        const sentenceStart = Math.max(
+          p.text.lastIndexOf(". ", m.index),
+          p.text.lastIndexOf("; ", m.index),
+          p.text.lastIndexOf("\n", m.index),
+        );
+        const before = p.text.slice(sentenceStart + 1, m.index);
         if (
           /\b(?:do(?:es)?\s+not\s+(?:process|include|collect|contain|cover|store|use|involve|handle)|(?:shall|will)\s+not\s+(?:process|include|collect|contain|cover|store|use)|excludes?|excluding|(?:contain|include|collect|process|store)s?\s+no)\b/i.test(
             before,
