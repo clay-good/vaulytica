@@ -646,7 +646,10 @@ async function runBundle(
     // just the consistency pass + bundle-report rebuild without
     // re-ingesting every document (spec-v3 §62 follow-up).
     const prepared: PreparedBundle = result.prepared;
-    renderBundleComplete(dz, prepared, result, options.cross_doc_consistency !== false);
+    // Await it: renderBundleComplete is async, so an unawaited call turns any
+    // failure during result assembly/rendering into an unhandled rejection that
+    // skips this try/catch, leaving the dropzone stuck on "analyzing".
+    await renderBundleComplete(dz, prepared, result, options.cross_doc_consistency !== false);
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     setState(dz, { kind: "error", message });
@@ -661,7 +664,7 @@ async function rerunBundleReport(
   try {
     const { runBundleReport } = await import("./pipeline.js");
     const result = await runBundleReport(prepared, { cross_doc_consistency: active });
-    renderBundleComplete(dz, prepared, result, active);
+    await renderBundleComplete(dz, prepared, result, active);
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     setState(dz, { kind: "error", message });
