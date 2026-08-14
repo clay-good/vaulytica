@@ -292,7 +292,11 @@ const EQUAL_DIVISION_RE = /equal shares|share and share alike|in equal|per stirp
 const PERCENT_RE = /(\d{1,3}(?:\.\d+)?)\s*(?:%|percent)/g;
 const WORD_FRACTION_RE =
   /\b(one|two|three|four|five|1|2|3|4|5)[\s-](half|halves|third|thirds|fourth|fourths|quarter|quarters|fifth|fifths)\b/g;
-const EXPLICIT_FRACTION_RE = /(\d)\s*\/\s*(\d)/g;
+// Numerator/denominator may be multi-digit: a residuary split in tenths or
+// sixteenths ("1/10 to A and 9/10 to B") must read the full fraction. A
+// single-digit capture (`\d`) truncated "9/10" to "9/1" (900%), turning a
+// clean 100% split into a 1000%-sum false positive.
+const EXPLICIT_FRACTION_RE = /(\d+)\s*\/\s*(\d+)/g;
 
 const NUMERATOR_WORDS: Record<string, number> = {
   one: 1,
@@ -363,23 +367,36 @@ function collectRawShareMatches(text: string): ShareMatch[] {
   return out.sort((a, b) => a.index - b.index);
 }
 
+// A word-fraction's restatement is joined to it by pure connective glue —
+// a bare parenthetical "one-half (50%)", a "one-half, or 50%," aside, or a
+// "one-half (i.e., 50%)" gloss — never by a beneficiary reference. This glue
+// is whitespace/punctuation plus an optional restatement connector; a gap
+// carrying a real word ("one-half to A, 50% to B") is NOT a restatement, so
+// those two shares stay distinct.
+const RESTATEMENT_GLUE_RE = /^[\s(),.]*(?:or|i\.e\.|that is|viz\.?)?[\s(),.]*$/i;
+
 /**
- * De-dupe a word-fraction immediately followed by its own parenthetical
- * restatement — "one-half (50%)" or "one-half (1/2)" — so the pair counts
- * once, preferring the more explicit percent/explicit-fraction value.
+ * De-dupe a word-fraction immediately followed by its own restatement —
+ * "one-half (50%)", "one-half (1/2)", "one-half, or 50%,", "one-half (i.e.,
+ * 50%)" — so the pair counts once, preferring the more explicit
+ * percent/explicit-fraction value. A restatement restates the SAME value, so
+ * the pair is collapsed only when the two values agree (guarding against a
+ * genuine second share of equal size going to a different beneficiary).
  */
 function dedupShares(matches: ShareMatch[], text: string): number[] {
   const shares: number[] = [];
   for (let i = 0; i < matches.length; i++) {
     const m = matches[i]!;
     const prev = matches[i - 1];
-    const isParenRestatement =
+    const gap = prev !== undefined ? text.slice(prev.end, m.index) : "";
+    const isRestatement =
       prev !== undefined &&
       prev.kind === "word-fraction" &&
       (m.kind === "percent" || m.kind === "explicit-fraction") &&
-      m.index - prev.end <= 6 &&
-      /^\s*\($/.test(text.slice(prev.end, m.index));
-    if (isParenRestatement) {
+      gap.length <= 12 &&
+      RESTATEMENT_GLUE_RE.test(gap) &&
+      Math.abs(m.value - prev.value) <= 0.5;
+    if (isRestatement) {
       shares.pop();
       shares.push(m.value);
       continue;

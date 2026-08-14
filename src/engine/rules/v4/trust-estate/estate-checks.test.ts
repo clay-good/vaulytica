@@ -302,6 +302,40 @@ describe("EST-201 — residuary share arithmetic", () => {
     ]);
     expect(findRule("EST-201").check(ctx)).toBeNull();
   });
+
+  it("reads a multi-digit fraction split (1/10 + 9/10 = 100%) and stays silent", () => {
+    const ctx = willContext([
+      "Last Will and Testament",
+      "I devise the residue of my estate: 1/10 to my nephew and 9/10 to my niece.",
+    ]);
+    expect(findRule("EST-201").check(ctx)).toBeNull();
+  });
+
+  it("dedupes a fraction restated with 'or NN%' and stays silent", () => {
+    const ctx = willContext([
+      "Last Will and Testament",
+      "I give one-half, or 50%, of the residue of my estate to A, and the remaining one-half to B.",
+    ]);
+    expect(findRule("EST-201").check(ctx)).toBeNull();
+  });
+
+  it("dedupes a fraction restated with '(i.e., NN%)' and stays silent", () => {
+    const ctx = willContext([
+      "Last Will and Testament",
+      "I give one-half (i.e., 50%) of the residue to A and one-half to B.",
+    ]);
+    expect(findRule("EST-201").check(ctx)).toBeNull();
+  });
+
+  it("still fires when equal shares to three beneficiaries oversubscribe to 150%", () => {
+    const ctx = willContext([
+      "Last Will and Testament",
+      "I devise the residue of my estate: one-half to Alice, 50% to Bob, and 50% to Carol.",
+    ]);
+    const finding = findRule("EST-201").check(ctx);
+    expect(finding).not.toBeNull();
+    expect(finding?.title).toContain("150%");
+  });
 });
 
 describe("EST-303 — guardian nomination for minor children", () => {
