@@ -65,11 +65,11 @@ export async function loadDkb(options: LoadDkbOptions = {}): Promise<DKB> {
   const useCache = options.useCache !== false && typeof indexedDB !== "undefined";
 
   let manifest: DkbManifest;
+  let manifestJson: unknown;
   try {
     const res = await f(`${base}/dkb-manifest.json`, { cache: "no-cache" });
     if (!res.ok) throw new DkbLoadError("manifest-missing", `manifest fetch failed: ${res.status}`);
-    const json = (await res.json()) as unknown;
-    manifest = DkbManifestSchema.parse(json);
+    manifestJson = (await res.json()) as unknown;
   } catch (err) {
     if (err instanceof DkbLoadError) throw err;
     // Network failure: try the most recent cached DKB.
@@ -82,6 +82,17 @@ export async function loadDkb(options: LoadDkbOptions = {}): Promise<DKB> {
       "could not load DKB manifest and no cached DKB is available",
       err,
     );
+  }
+
+  // Shape validation is a *reachability-independent* failure: the manifest was
+  // fetched successfully but is corrupt (truncated CDN response, schema drift).
+  // Classify it "schema" and surface it — the same way fetchAndValidate treats
+  // a bad per-file payload — rather than mislabeling it "network" and silently
+  // serving a stale cached DKB that hides a real deploy bug.
+  try {
+    manifest = DkbManifestSchema.parse(manifestJson);
+  } catch (err) {
+    throw new DkbLoadError("schema", "DKB manifest failed schema validation", err);
   }
 
   if (useCache) {

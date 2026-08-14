@@ -48,4 +48,19 @@ describe("loadDkb", () => {
       new Response("", { status: 404 })) as unknown as typeof fetch;
     await expect(loadDkb({ fetchImpl: f, useCache: false })).rejects.toBeInstanceOf(DkbLoadError);
   });
+
+  it("classifies a reachable-but-corrupt manifest as a schema error, not network", async () => {
+    // HTTP 200 with valid JSON that does not match the manifest shape (a
+    // truncated CDN response or schema drift). It must surface as "schema",
+    // not be mislabeled "network" and masked by a stale cache.
+    const f: typeof fetch = (async () =>
+      new Response(JSON.stringify({ not: "a manifest" }), {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      })) as unknown as typeof fetch;
+    await expect(loadDkb({ fetchImpl: f, useCache: false })).rejects.toMatchObject({
+      name: "DkbLoadError",
+      cause_kind: "schema",
+    });
+  });
 });
