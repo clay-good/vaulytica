@@ -56,7 +56,21 @@ export function normalize(tree: DocumentTree): DocumentTree {
     // disclaimer ("does not include …") into a false accusation, or a trigger
     // word into a silent under-scan. Removing (not spacing) them rejoins the
     // word. ASCII-only documents (every fixture) are byte-unchanged.
-    return text.replace(/[\u00AD\u200B-\u200D\u2060]/g, "").replace(/\s+/g, " ");
+    //
+    // Then drop the C0/DEL control characters that XML 1.0 forbids outright
+    // (Char production excludes #x0\u2013#x8, #xB\u2013#xC, #xE\u2013#x1F, #x7F). OCR/PDF
+    // extraction routinely leaves these stray bytes in the text; left in, they
+    // flow through every finding into the DOCX report and the "reviewed copy",
+    // producing an OOXML part a strict parser (or Word) rejects as corrupt.
+    // \t (#x9), \n (#xA), \r (#xD) are legal and, along with the illegal but
+    // whitespace #xB/#xC, are handled by the `\s+`\u2192space collapse below.
+    return (
+      text
+        .replace(/[\u00AD\u200B-\u200D\u2060]/g, "")
+        // eslint-disable-next-line no-control-regex
+        .replace(/[\x00-\x08\x0E-\x1F\x7F]/g, "")
+        .replace(/\s+/g, " ")
+    );
   };
 
   const normalizeParagraph = (

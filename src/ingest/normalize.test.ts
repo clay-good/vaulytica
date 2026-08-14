@@ -117,6 +117,19 @@ describe("normalize", () => {
     const out = normalize(treeOf("H", [["a\u00A0\u3000b"]]));
     expect(out.sections[0]!.paragraphs[0]!.runs[0]!.text).toBe("a b");
   });
+
+  it("strips XML-illegal C0/DEL control characters (OCR/PDF artifacts)", () => {
+    // #x1, #x1F, #x7F are forbidden by the XML 1.0 Char production; left in the
+    // text they corrupt the DOCX report / reviewed copy. \t/\n are legal and,
+    // with #xB/#xC, fold to a space via the \s collapse \u2014 never dropped.
+    const c = String.fromCharCode;
+    const dirty = "before" + c(0x01) + "mid" + c(0x1f) + "end" + c(0x7f) + "tail";
+    const out = normalize(treeOf("H", [[dirty]]));
+    expect(out.sections[0]!.paragraphs[0]!.runs[0]!.text).toBe("beforemidendtail");
+    const vtff = "a" + c(0x0b) + "b" + c(0x0c) + "c";
+    const legal = normalize(treeOf("H", [[vtff]])); // VT, FF \u2192 space
+    expect(legal.sections[0]!.paragraphs[0]!.runs[0]!.text).toBe("a b c");
+  });
 });
 
 describe("countWords", () => {
