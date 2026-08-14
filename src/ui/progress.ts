@@ -18,7 +18,11 @@ export function createProgressBar(host: HTMLElement): ProgressBar {
   if (reduce) host.style.setProperty("--progress-transition", "none");
   return {
     set(fraction: number) {
-      const clamped = Math.max(0, Math.min(1, fraction));
+      // A non-finite fraction (a NaN from an upstream `n / 0` page-count, or
+      // ±Infinity) survives Math.max/min unchanged, leaving `aria-valuenow`
+      // and the `--progress` CSS var as the literal "NaN" — an invalid ARIA
+      // value and a broken bar. Treat any non-finite input as 0.
+      const clamped = Number.isFinite(fraction) ? Math.max(0, Math.min(1, fraction)) : 0;
       host.style.setProperty("--progress", `${(clamped * 100).toFixed(2)}%`);
       host.setAttribute("aria-valuenow", `${Math.round(clamped * 100)}`);
     },

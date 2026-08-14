@@ -16,6 +16,17 @@ describe("createProgressBar", () => {
     expect(el.style.getPropertyValue("--progress")).toBe("0.00%");
   });
 
+  it("treats a non-finite fraction as 0 (no 'NaN%' / aria-valuenow='NaN')", () => {
+    const el = document.createElement("div");
+    const bar = createProgressBar(el);
+    bar.set(0.5);
+    bar.set(NaN); // e.g. an upstream n / 0 page-count
+    expect(el.style.getPropertyValue("--progress")).toBe("0.00%");
+    expect(el.getAttribute("aria-valuenow")).toBe("0");
+    bar.set(Infinity);
+    expect(el.getAttribute("aria-valuenow")).toBe("0");
+  });
+
   it(".reset() returns to 0", () => {
     const el = document.createElement("div");
     const bar = createProgressBar(el);
