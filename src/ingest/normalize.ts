@@ -66,9 +66,31 @@ export function normalize(tree: DocumentTree): DocumentTree {
   ): Paragraph | null => {
     const runs: Run[] = [];
     let runIndex = 0;
+    // A run that normalizes to a single space is not content, but when it sits
+    // BETWEEN two content runs it is the only separator between two words — a
+    // DOCX artifact whenever a lone space falls inside a formatting/tracked-
+    // change span (e.g. "does not<b> </b>include"). Dropping it outright fused
+    // the neighbours ("does notinclude"), silently defeating a downstream
+    // negation/trigger regex. Defer it: carry the space forward and attach it
+    // to the preceding run only once a following content run confirms it is a
+    // real separator (a leading or trailing whitespace-only run stays dropped).
+    let pendingSpace = false;
     for (const r of p.runs) {
       const text = normalizeRunText(r.text);
-      if (text.length === 0 || text === " ") continue;
+      if (text.length === 0) continue;
+      if (text === " ") {
+        if (runs.length > 0) pendingSpace = true;
+        continue;
+      }
+      if (pendingSpace) {
+        const prev = runs[runs.length - 1]!;
+        if (!prev.text.endsWith(" ") && !text.startsWith(" ")) {
+          prev.text += " ";
+          cursor += 1;
+          prev.end = cursor;
+        }
+        pendingSpace = false;
+      }
       const start = cursor;
       cursor += text.length;
       runs.push({

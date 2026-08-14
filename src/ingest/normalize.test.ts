@@ -59,6 +59,29 @@ describe("normalize", () => {
     expect(out.sections[0]!.paragraphs[0]!.runs[0]!.text).toBe("real");
   });
 
+  it("keeps the separating space when a whitespace-only run sits between two words", () => {
+    // A lone space inside a formatting/tracked-change span ("does not<b> </b>
+    // include") arrives as an isolated whitespace-only run. Dropping it fused
+    // the neighbouring words ("does notinclude"), defeating downstream regexes.
+    const out = normalize(treeOf("H", [["does not", " ", "include"]]));
+    expect(flattenText(out)).toBe("H\ndoes not include\n");
+    // Offsets stay contiguous across the run that absorbed the space.
+    const runs = out.sections[0]!.paragraphs[0]!.runs;
+    expect(runs[0]!.end).toBe(runs[1]!.start);
+  });
+
+  it("still drops a leading or trailing whitespace-only run (no stray edge space)", () => {
+    const lead = normalize(treeOf("H", [[" ", "real"]]));
+    expect(flattenText(lead)).toBe("H\nreal\n");
+    const trail = normalize(treeOf("H", [["real", " "]]));
+    expect(flattenText(trail)).toBe("H\nreal\n");
+  });
+
+  it("does not double a space when a neighbour already carries one", () => {
+    const out = normalize(treeOf("H", [["does not ", " ", "include"]]));
+    expect(flattenText(out)).toBe("H\ndoes not include\n");
+  });
+
   it("assigns contiguous offsets per run, exclusive end", () => {
     const out = normalize(treeOf("H", [["hello", " world"]]));
     const runs = out.sections[0]!.paragraphs[0]!.runs;
