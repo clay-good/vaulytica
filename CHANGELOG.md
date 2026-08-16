@@ -29,6 +29,21 @@ All notable changes to this project will be documented in this file. Format adap
   production-QA pack.
 
 ### Fixed
+- **`npm run dev` serves a working app again.** `vite.config.ts` sets
+  `root: "site"`, and `site/index.html` loaded the UI with
+  `<script type="module" src="../src/ui/main.ts">`. A production build resolves
+  that out-of-root path fine, but the dev server does not rewrite it: the browser
+  requested `/src/ui/main.ts`, the SPA fallback answered with `index.html` as
+  `text/html`, and the module was refused on MIME type — so `npm run dev` rendered
+  the full marketing page with no application behind it (no drop handling, no
+  theme toggle, no DKB footer), and nothing in the build or the suite noticed.
+  The tag now points at `site/main.ts`, a one-line in-root shim that imports the
+  real entry, which resolves under the dev root and leaves the production output
+  unchanged (still a single `main-*.js` entry chunk of the same size). Verified in
+  a real browser: the whole `src/ui/*` module graph now loads over the dev server
+  and the page boots. New guard in [`site/entry.test.ts`](site/entry.test.ts)
+  (4 tests) pins the entry tag to a root-absolute path that exists inside the Vite
+  root and still reaches `src/ui/main.ts`.
 - **The clause classifier is now immune to a stateful-regex hazard in its pattern
   overlay.** The overlay tests each category pattern with `regexp.test(text)` — a
   boolean "does this clause match" — but a pattern compiled with the `g` (or `y`)

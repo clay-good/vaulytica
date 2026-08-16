@@ -2637,7 +2637,10 @@
     </main>
 
     <!-- UI wiring lives in src/ui/main.ts so the CSP can stay tight
-         (script-src 'self') and not need an inline-script hash. -->
-    <script type="module" src="../src/ui/main.ts"></script>
+         (script-src 'self') and not need an inline-script hash. The tag
+         points at the in-root shim `site/main.ts` (a one-line re-export)
+         because the dev server does not rewrite out-of-root script srcs —
+         see the comment in that file. -->
+    <script type="module" src="/main.ts"></script>
   </body>
 </html>
