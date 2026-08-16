@@ -440,7 +440,7 @@ const SEPARATION_RULES: Rule[] = [
   }),
   language({
     id: "EMP-020",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "McLaren Macomb — overbroad confidentiality / non-disparagement",
     description:
       "NLRB *McLaren Macomb* (Feb. 21, 2023) found that overbroad confidentiality or non-disparagement provisions in separation agreements violate NLRA § 7.",
@@ -461,6 +461,16 @@ const SEPARATION_RULES: Rule[] = [
     exclude_if: [
       /(?:does|do|shall|will)\s+not\s+(?:restrict|prohibit|prevent|preclude|limit|bar|apply\s+to)\b/i,
       /\bnothing\b[^.]{0,60}(?:restrict|prohibit|prevent|preclude|limit|bar|interfere)/i,
+      // Both guards above expect the carve-out as its own sentence ("Nothing in
+      // this Section restricts…"). The equally standard in-sentence form —
+      // "…confidential, except that Employee may discuss the terms with the
+      // NLRB or as otherwise protected under Section 7 of the NLRA" — carries
+      // the same substantive protection but was flagged as overbroad.
+      //
+      // The carve-out must reach § 7 / protected activity, not merely name a
+      // government agency: under McLaren Macomb an agency-only carve-out is
+      // still arguably too narrow, so that form keeps firing.
+      /\b(?:except|provided)\s+(?:that\s+)?\b[^.]{0,160}(?:section\s+7|\bnlra\b|\bnlrb\b|protected\s+(?:concerted\s+)?activity)/i,
     ],
     bad_title: "Overbroad confidentiality / non-disparagement flagged",
     bad_description:

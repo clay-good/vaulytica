@@ -155,7 +155,7 @@ const RELEASE_RULES: Rule[] = [
   }),
   language({
     id: "SET-005",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Overbroad future-claims release flagged",
     description:
       "Releases that purport to cover future, post-execution claims may be unenforceable or limited by public policy (e.g., CA Civ. Code § 1668).",
@@ -177,6 +177,12 @@ const RELEASE_RULES: Rule[] = [
     ],
     exclude_if: [
       /releases?\s+(?:does|do|shall|will)\s+not\s+(?:extend|apply|cover|include|reach)\b/i,
+      // The guard above wants the verb directly after "release", and knows only
+      // four modals. The standard construal limit — "This release cannot be
+      // construed to release any future claims arising after the Effective
+      // Date" — breaks both, and the express limit was flagged as the overbroad
+      // release it imposes.
+      /(?:does|do|shall|will|can|may|must)\s*not\s+(?:be\s+(?:construed|interpreted|read|deemed)\s+to\s+)?(?:extend|apply|cover|include|reach|release|waive)\b/i,
     ],
     bad_title: "Overbroad future-claims release flagged",
     bad_description:
@@ -398,7 +404,7 @@ const DEMAND_LETTER_RULES: Rule[] = [
   }),
   language({
     id: "SET-013",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "FDCPA — abusive / threatening language flagged (debt collection)",
     description:
       "Demand letters in debt-collection contexts must comply with FDCPA (15 U.S.C. § 1692e) — no false / abusive / threatening representations.",
@@ -417,7 +423,11 @@ const DEMAND_LETTER_RULES: Rule[] = [
       /threat.{0,40}(violence|harm)/is,
     ],
     exclude_if: [
-      /(?:does|do|shall|will)\s+not\s+(?:threaten|seek|pursue|constitute|contain\s+(?:any\s+)?threat|make\s+any\s+threat)/i,
+      // The bad patterns match the passive order ("criminal prosecution … if
+      // you fail to pay"), so the guard has to tolerate the passive voice too —
+      // otherwise "Criminal prosecution will not be pursued if you fail to pay"
+      // is charged with the FDCPA threat it disclaims.
+      /(?:does|do|shall|will|can|may)\s*not\s+(?:be\s+)?(?:threaten(?:ed)?|seek|sought|pursue[d]?|constitute|contain\s+(?:any\s+)?threat|make\s+any\s+threat)/i,
       /\bnothing\b[^.]{0,60}(?:threat|constitute|arrest|prosecut)/i,
     ],
     bad_title: "Potentially FDCPA-violative threatening language flagged",

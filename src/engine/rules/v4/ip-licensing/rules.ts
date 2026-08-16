@@ -230,7 +230,7 @@ const PATENT_LICENSE_RULES: Rule[] = [
   }),
   language({
     id: "IPL-009",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Brulotte / Kimble — royalties beyond patent expiration",
     description:
       "Royalty obligations that extend beyond patent expiration violate the *Brulotte / Kimble* rule absent a step-down or unbundling.",
@@ -248,7 +248,10 @@ const PATENT_LICENSE_RULES: Rule[] = [
     ],
     exclude_if: [
       /\bnot\s+be\s+(?:perpetual|indefinite|in\s+perpetuity)/i,
-      /\b(?:shall|do|does|will)\s+not\s+(?:extend|accrue|continue|survive|be\s+(?:payable|owed|due|owing))\b/i,
+      // "paid" belongs in this set as much as "payable" does: the textbook
+      // Brulotte-compliant clause "Royalties shall not be paid after expiration
+      // of the Licensed Patents" was reported as the violation it prevents.
+      /\b(?:shall|do|does|will|can|may|must)\s*not\s+(?:extend|accrue|continue|survive|be\s+(?:payable|owed|due|owing|paid|charged|collected))\b/i,
       /\bno\s+royalt(?:y|ies)?\b[^.]{0,80}(?:after|beyond|following)\b/i,
       // Kimble-COMPLIANT structures the rule's own recommendation endorses — a
       // step-down at expiration, royalties separately allocated to non-patent

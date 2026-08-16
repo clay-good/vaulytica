@@ -308,3 +308,31 @@ describe("IPL-009 — Brulotte royalty detection recognizes reversed & 'survive'
     expect(await fires(b)).toBe(false);
   });
 });
+
+describe("IPL-009 — the Brulotte-compliant step-down (v1.3.0)", () => {
+  const PB: Playbook = { id: "patent-license", version: "1.0.0" };
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: IP_LICENSING_RULES,
+        ctx: { ...buildContext(["License", b]), playbook: PB },
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "IPL-009");
+
+  it("stays silent when royalties are barred after expiration", async () => {
+    // The guard listed "payable / owed / due / owing" but not "paid", so the
+    // textbook compliant clause was reported as the Brulotte violation.
+    expect(
+      await fires("Royalties shall not be paid after expiration of the Licensed Patents."),
+    ).toBe(false);
+  });
+
+  it("still fires on a royalty that outlives the patent", async () => {
+    expect(
+      await fires(
+        "Royalties shall be paid for twenty years after expiration of the Licensed Patents.",
+      ),
+    ).toBe(true);
+  });
+});

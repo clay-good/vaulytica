@@ -296,3 +296,32 @@ describe("BNK-051 — cognovit detection recognizes 'judgment by confession' (v1
     expect(await fires(b)).toBe(false);
   });
 });
+
+describe("BNK-051 — notes that disclaim a cognovit clause (v1.2.0)", () => {
+  const PB: Playbook = { id: "promissory-note", version: "1.0.0" };
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: BANKING_RULES,
+        ctx: { ...buildContext(["Note", b]), playbook: PB },
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "BNK-051");
+
+  // "cognovit" and "warrant of attorney" had no exclude coverage at all, so
+  // naming either in order to disclaim it fired the rule.
+  it.each([
+    "This Note does not contain a cognovit clause. No attorney is authorized to confess judgment against Maker.",
+    "The Note shall not include any confession of judgment provision, warrant of attorney, or judgment by confession against Maker.",
+  ])("stays silent on: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+
+  it("still fires on a genuine cognovit clause", async () => {
+    expect(
+      await fires(
+        "Maker authorizes any attorney to confess judgment against Maker for the unpaid balance.",
+      ),
+    ).toBe(true);
+  });
+});

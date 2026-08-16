@@ -134,6 +134,7 @@ const WILL_RULES: Rule[] = [
   }),
   presence({
     id: "EST-006",
+    version: "1.1.0",
     name: "Guardianship nomination for minor children",
     description: "Wills involving minor children should nominate a guardian (and successors).",
     citation: upc("5-202", "Testamentary appointment of guardian"),
@@ -148,6 +149,13 @@ const WILL_RULES: Rule[] = [
       /(guardian|guardianship)/i,
       /(minor\s+children|minor\s+child|under\s+the\s+age\s+of\s+18)/i,
     ],
+    // The rule's own description and recommendation are conditional ("Wills
+    // involving minor children", "If testator has minor children") but nothing
+    // enforced the condition, so a will that says "I have no children" was told
+    // it was missing a guardianship nomination. The lookbehinds keep the
+    // negated recital ("no children", "no minor children") from counting as a
+    // child reference; an affirmative mention anywhere still gates the rule in.
+    applicable_if: [/(?<!\bno\s)(?<!\bno\s\w{1,12}\s)\b(?:minor\s+)?child(?:ren)?\b/i],
     default_severity: "warning",
   }),
   presence({
@@ -1080,6 +1088,7 @@ const FAMILY_MSA_RULES: Rule[] = [
   }),
   presence({
     id: "EST-056",
+    version: "1.1.0",
     name: "Child custody + parenting plan + child support",
     description:
       "MSAs involving minor children must address custody, parenting plan, and child support.",
@@ -1099,6 +1108,10 @@ const FAMILY_MSA_RULES: Rule[] = [
       /(custody|parenting\s+plan|visitation|parenting\s+time)/i,
       /(child\s+support|guidelines?|best\s+interests?)/i,
     ],
+    // Same unenforced condition as EST-006, at critical severity: an MSA for a
+    // couple "who have no children together" was told it was missing a
+    // parenting plan.
+    applicable_if: [/(?<!\bno\s)(?<!\bno\s\w{1,12}\s)\b(?:minor\s+)?child(?:ren)?\b/i],
   }),
   presence({
     id: "EST-057",

@@ -453,3 +453,42 @@ describe("EMP-049 — handbook § 7 detection recognizes passive & fronted forms
     expect(await fires(b)).toBe(false);
   });
 });
+
+describe("EMP-020 — in-sentence § 7 carve-outs (v1.2.0)", () => {
+  const PB: Playbook = { id: "separation-agreement", version: "1.0.0" };
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: EMPLOYMENT_RULES,
+        ctx: { ...buildContext(["Separation Agreement", b]), playbook: PB },
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "EMP-020");
+
+  it("stays silent when the carve-out preserves § 7 rights in the same sentence", async () => {
+    // Both guards expected the carve-out as its own "Nothing in this Section…"
+    // sentence; the "except that …" form carries the same protection.
+    expect(
+      await fires(
+        "Employee shall keep the terms of this Agreement confidential, except that Employee may discuss the existence and terms of this Agreement with the SEC, EEOC, NLRB, or other government agency, or as otherwise protected under Section 7 of the NLRA.",
+      ),
+    ).toBe(false);
+  });
+
+  it("still fires on an unqualified confidentiality clause", async () => {
+    expect(
+      await fires(
+        "Employee shall keep the terms of this Agreement confidential and shall not disclose them to any person.",
+      ),
+    ).toBe(true);
+  });
+
+  it("still fires when the carve-out does not reach § 7 activity", async () => {
+    // A subpoena-only carve-out is not a McLaren Macomb carve-out.
+    expect(
+      await fires(
+        "Employee shall keep the terms of this Agreement confidential, except that Employee may respond to a subpoena.",
+      ),
+    ).toBe(true);
+  });
+});

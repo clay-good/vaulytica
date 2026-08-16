@@ -168,7 +168,7 @@ const PROMISSORY_NOTE_RULES: Rule[] = [
   }),
   language({
     id: "BNK-051",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Confession of judgment / cognovit clause",
     description:
       "A confession-of-judgment (cognovit) clause lets the holder obtain judgment without notice or a hearing; it is void in consumer credit and prohibited or unenforceable in many states.",
@@ -190,6 +190,14 @@ const PROMISSORY_NOTE_RULES: Rule[] = [
     exclude_if: [
       /\bno\b[^.]{0,40}confession\s+of\s+judgment|confession\s+of\s+judgment[^.]{0,40}\b(?:is\s+)?(?:not|prohibited|void|waived|disclaimed)\b/i,
       /\bno\b[^.]{0,40}judgment\s+by\s+confession|judgment\s+by\s+confession[^.]{0,40}\b(?:is\s+)?(?:not|prohibited|void|waived|disclaimed)\b/i,
+      // Two gaps. The `cognovit` and `warrant of attorney` bad patterns had no
+      // guard at all, so naming either one in order to disclaim it fired the
+      // rule. And the guards above key on a literal "no", missing the "shall
+      // not include any …" form. A note that says it contains no cognovit
+      // clause was reported as containing one.
+      /\b(?:not|no)\b[^.]{0,60}(?:\bcognovit\b|warrant\s+of\s+attorney)/i,
+      /(?:\bcognovit\b|warrant\s+of\s+attorney)[^.]{0,40}\b(?:is\s+)?(?:not|prohibited|void|waived|disclaimed)\b/i,
+      /(?:shall|does|do|will|may|can)\s*not\s+(?:include|contain|constitute|authorize)\b[^.]{0,100}(?:confession\s+of\s+judgment|\bcognovit\b|warrant\s+of\s+attorney|judgment\s+by\s+confession)/i,
     ],
     bad_title: "Confession-of-judgment (cognovit) clause present",
     bad_description:

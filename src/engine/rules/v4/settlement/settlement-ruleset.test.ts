@@ -404,3 +404,50 @@ describe("SET-020 — extortion detection recognizes 'we will report you to the 
     expect(await fires(b)).toBe(false);
   });
 });
+
+describe("SET-005 / SET-013 — passive and construal-limited disclaimers", () => {
+  const fires = async (id: string, pbId: string, b: string) =>
+    (
+      await runEngine({
+        rules: SETTLEMENT_RULES,
+        ctx: {
+          ...buildContext(["Agreement", b]),
+          playbook: { id: pbId, version: "1.0.0" },
+        },
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === id);
+
+  it("SET-005 (v1.2.0) stays silent on an express future-claims limit", async () => {
+    // "cannot be construed to release" breaks both the modal set and the
+    // verb-adjacency the guard required.
+    expect(
+      await fires(
+        "SET-005",
+        "mutual-release",
+        "This release cannot be construed to release any future claims arising after the Effective Date.",
+      ),
+    ).toBe(false);
+  });
+
+  it("SET-013 (v1.2.0) stays silent on a disclaimed prosecution threat", async () => {
+    // The bad pattern matches the passive order, so the guard must too.
+    expect(
+      await fires(
+        "SET-013",
+        "demand-letter",
+        "Criminal prosecution will not be pursued if you fail to pay.",
+      ),
+    ).toBe(false);
+  });
+
+  it("SET-013 still fires on the actual threat", async () => {
+    expect(
+      await fires(
+        "SET-013",
+        "demand-letter",
+        "Criminal prosecution will be pursued if you fail to pay.",
+      ),
+    ).toBe(true);
+  });
+});

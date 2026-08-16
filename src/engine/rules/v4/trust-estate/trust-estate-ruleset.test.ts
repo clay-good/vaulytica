@@ -138,7 +138,10 @@ describe("v4 Trust/estate/family — failure cases", () => {
     const ctx = withPb(
       buildContext([
         "Marital Settlement Agreement",
-        "Petitioner and respondent, date of separation 2026-01-01. Division of property: real estate to respondent, accounts split. Spousal support: $5,000/month for 36 months. Tax: TCJA-compliant alimony. QDRO for 401(k) division. Incorporated into judgment without merger.",
+        // The fixture is named "with children" and, until EST-056 v1.1.0 gated
+        // on the condition its own description states, contained no reference
+        // to a child at all — it passed on the misfire it was meant to catch.
+        "Petitioner and respondent, date of separation 2026-01-01. The parties have two minor children. Division of property: real estate to respondent, accounts split. Spousal support: $5,000/month for 36 months. Tax: TCJA-compliant alimony. QDRO for 401(k) division. Incorporated into judgment without merger.",
       ]),
       MSA_PB,
     );
@@ -225,5 +228,62 @@ describe("EST-032 — durability reads the statutory 'not be affected by … inc
     expect((await has("The agent may act on my behalf in financial matters.")).has("EST-032")).toBe(
       true,
     );
+  });
+});
+
+describe("EST-006 / EST-056 — documents that state there are no children", () => {
+  const fires = async (id: string, pbId: string, b: string) =>
+    (
+      await runEngine({
+        rules: TRUST_ESTATE_RULES,
+        ctx: {
+          ...buildContext(["Agreement", b]),
+          playbook: { id: pbId, version: "1.0.0" },
+        },
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === id);
+
+  // Both rules describe themselves as conditional on minor children but never
+  // enforced the condition. Note the naive gate does not work: these documents
+  // do contain the word "children" — they negate it.
+  it("EST-006 stays silent on a will that states the testator has no children", async () => {
+    expect(
+      await fires(
+        "EST-006",
+        "last-will-and-testament",
+        "I, the Testator, hereby revoke all prior wills. I have no children. I appoint Jane Roe as Executor, to serve without bond. I give my residuary estate to my spouse.",
+      ),
+    ).toBe(false);
+  });
+
+  it("EST-006 still fires when the will does have minor children", async () => {
+    expect(
+      await fires(
+        "EST-006",
+        "last-will-and-testament",
+        "I, the Testator, revoke all prior wills. I have three children under the age of eighteen. I appoint Jane Roe as Executor. I give my residuary estate to my spouse.",
+      ),
+    ).toBe(true);
+  });
+
+  it("EST-056 stays silent on an MSA for a couple with no children", async () => {
+    expect(
+      await fires(
+        "EST-056",
+        "family-msa",
+        "The parties, who have no children together and none are expected, agree to divide marital property as set forth herein, and each waives spousal support.",
+      ),
+    ).toBe(false);
+  });
+
+  it("EST-056 still fires when the marriage does have children", async () => {
+    expect(
+      await fires(
+        "EST-056",
+        "family-msa",
+        "The parties have two minor children of the marriage and agree to divide marital property as set forth herein.",
+      ),
+    ).toBe(true);
   });
 });
