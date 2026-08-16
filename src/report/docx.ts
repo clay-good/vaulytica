@@ -65,6 +65,7 @@ import {
 import { modelClauseForRule, MODEL_CLAUSE_COVERAGE } from "../dkb/model-clauses.js";
 import { selectStateOverlays, type StateOverlayResult } from "../dkb/state-overlays.js";
 import type { V3ReportInputs } from "./v3/types.js";
+import { truncate, plural } from "./v3/_dx.js";
 import {
   renderComplianceMatrix,
   renderTransfersSummary,
@@ -1167,21 +1168,11 @@ function severityColor(severity: Finding["severity"]): string {
   }
 }
 
-export function truncate(text: string, limit: number): string {
-  if (text.length <= limit) return text;
-  let end = limit - 1;
-  // Never split a UTF-16 surrogate pair: if the last kept code unit is a lone
-  // high surrogate (its low half falls past the cut), drop it — otherwise the
-  // packed UTF-8 turns it into a U+FFFD replacement char, corrupting a quoted
-  // excerpt exactly at a non-BMP character (emoji, CJK Extension B, …).
-  const lastUnit = text.charCodeAt(end - 1);
-  if (lastUnit >= 0xd800 && lastUnit <= 0xdbff) end -= 1;
-  return text.slice(0, end) + "…";
-}
-
-function plural(n: number, noun: string): string {
-  return `${n} ${noun}${n === 1 ? "" : "s"}`;
-}
+// `truncate` and `plural` live in ./v3/_dx.js — the shared DOCX helpers — so
+// the surrogate-pair guard has exactly one implementation. It previously lived
+// here and was fixed here, while three stale copies in the v3 renderers kept
+// the old splitting behavior.
+export { truncate, plural };
 
 function countFindings(findings: Finding[]): Record<"critical" | "warning" | "info", number> {
   const out = { critical: 0, warning: 0, info: 0 };

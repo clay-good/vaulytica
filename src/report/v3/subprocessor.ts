@@ -10,7 +10,7 @@
 
 import type { Paragraph, Table } from "docx";
 import type { SubprocessorInventory } from "../../extract/v3/types.js";
-import { h1, para, pageBreak, buildTable, headerRow, bodyRow } from "./_dx.js";
+import { h1, para, pageBreak, buildTable, headerRow, bodyRow, truncate, plural } from "./_dx.js";
 
 const CONSENT_LABEL: Record<SubprocessorInventory["consent_form"], string> = {
   "general-written": "General written authorization (Art. 28(2) opt-in)",
@@ -44,7 +44,7 @@ export function renderSubprocessorPage(
     bodyRow(["List location", LIST_LOCATION_LABEL[inv.list_location]]),
     bodyRow([
       "Notice of additions",
-      inv.notice_days !== null ? `${inv.notice_days} days` : "Not numerically specified",
+      inv.notice_days !== null ? plural(inv.notice_days, "day") : "Not numerically specified",
     ]),
     bodyRow([
       "Objection right",
@@ -66,9 +66,4 @@ export function renderSubprocessorPage(
     para({ text: `Source excerpt: "${truncate(inv.raw_text, 480)}"`, italics: true }),
     pageBreak(),
   ];
-}
-
-function truncate(text: string, limit: number): string {
-  if (text.length <= limit) return text;
-  return text.slice(0, limit - 1) + "…";
 }

@@ -2,6 +2,7 @@ import { defineConfig, type Plugin } from "vite";
 import { resolve, sep } from "node:path";
 import { pickLatestDkb } from "./tools/dkb/resolve.js";
 import { createHash } from "node:crypto";
+import { createRequire } from "node:module";
 import {
   copyFileSync,
   cpSync,
@@ -14,6 +15,28 @@ import {
 
 const REPO_ROOT = resolve(__dirname);
 const DIST = resolve(REPO_ROOT, "dist");
+
+/**
+ * Absolute path to the pdf.js worker build that matches the bundled
+ * `pdfjs-dist`, or `null` when the package cannot be resolved.
+ *
+ * Resolved through Node rather than a hardcoded `<root>/node_modules/…` path,
+ * because that path is wrong whenever npm put the package somewhere else — a
+ * hoisted workspace, or a git worktree whose deps live in the parent checkout.
+ * There the copy below silently found nothing and the build emitted a `dist/`
+ * with no `pdf-worker/` at all: `src/ingest/pdf.ts` pins
+ * `GlobalWorkerOptions.workerSrc` to `/pdf-worker/pdf.worker.min.mjs`, so every
+ * PDF analysis in that build failed on a 404, with nothing in the build log.
+ */
+export function pdfWorkerPath(): string | null {
+  try {
+    return createRequire(resolve(REPO_ROOT, "vite.config.ts")).resolve(
+      "pdfjs-dist/legacy/build/pdf.worker.min.mjs",
+    );
+  } catch {
+    return null;
+  }
+}
 
 /**
  * v4 sub-domain rule families bundled into the `v4-rules-corp` chunk
@@ -65,6 +88,7 @@ export function resolveMountedFile(mounts: Record<string, string>, url: string):
  * same content into `dist/` via {@link deployAssets}.
  */
 function serveExtras(): Plugin {
+  const worker = pdfWorkerPath();
   const mounts: Record<string, string> = {
     "/playbooks": resolve(REPO_ROOT, "playbooks"),
     "/dkb": pickLatestDkb(resolve(REPO_ROOT, "dkb", "dist")),
@@ -72,7 +96,7 @@ function serveExtras(): Plugin {
     // pins GlobalWorkerOptions.workerSrc to /pdf-worker/pdf.worker.min.mjs,
     // so PDF analysis never resolves assets off-origin — and actually works
     // in a real browser (without the pin pdfjs throws before parsing).
-    "/pdf-worker": resolve(REPO_ROOT, "node_modules", "pdfjs-dist", "legacy", "build"),
+    ...(worker === null ? {} : { "/pdf-worker": resolve(worker, "..") }),
   };
   return {
     name: "vaulytica-serve-extras",
@@ -133,19 +157,19 @@ function deployAssets(): Plugin {
       }
 
       // Same-origin pdf.js worker (see serveExtras): ship the exact worker
-      // build matching the bundled pdfjs-dist version.
-      const pdfWorker = resolve(
-        REPO_ROOT,
-        "node_modules",
-        "pdfjs-dist",
-        "legacy",
-        "build",
-        "pdf.worker.min.mjs",
-      );
-      if (existsSync(pdfWorker)) {
-        mkdirSync(resolve(DIST, "pdf-worker"), { recursive: true });
-        copyFileSync(pdfWorker, resolve(DIST, "pdf-worker", "pdf.worker.min.mjs"));
+      // build matching the bundled pdfjs-dist version. Missing it is fatal, not
+      // skippable — a dist without it serves a 404 to every PDF analysis, the
+      // same reason `assertShippableDkb` refuses to ship an empty DKB.
+      const pdfWorker = pdfWorkerPath();
+      if (pdfWorker === null || !existsSync(pdfWorker)) {
+        throw new Error(
+          "refusing to build: the pdf.js worker (pdfjs-dist/legacy/build/pdf.worker.min.mjs) " +
+            "could not be resolved, so dist/pdf-worker/ would be empty and every PDF analysis " +
+            "would fail on a 404 — run `npm ci` before building the site",
+        );
       }
+      mkdirSync(resolve(DIST, "pdf-worker"), { recursive: true });
+      copyFileSync(pdfWorker, resolve(DIST, "pdf-worker", "pdf.worker.min.mjs"));
 
       // Ensure /dkb/v3/validation-status.json always resolves (200) so the
       // footer fetch in src/ui/dkb-validation.ts does not log a console

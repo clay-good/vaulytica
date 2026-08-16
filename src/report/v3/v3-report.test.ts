@@ -328,3 +328,53 @@ describe("buildDocxReport with v3 inputs", () => {
     expect(blob.size).toBeGreaterThan(1000);
   });
 });
+
+/**
+ * Two defects that lived in the v3 renderers because they carried their own
+ * copies of helpers that had already been fixed elsewhere:
+ *
+ *  - `truncate` was duplicated in transfers/subprocessor/consistency as the
+ *    pre-fix version, which cuts UTF-16 surrogate pairs in half. The lone high
+ *    surrogate becomes U+FFFD when the DOCX is packed to UTF-8, so an excerpt
+ *    corrupts exactly at a non-BMP character (emoji, CJK Extension B, …).
+ *  - "N days" was interpolated without pluralization, rendering "1 days".
+ *
+ * Both helpers now live once in `./_dx.js`.
+ */
+describe("v3 renderers use the shared, fixed helpers", () => {
+  /** Every text run in a rendered paragraph/table tree, flattened. */
+  const textOf = (nodes: unknown): string => JSON.stringify(nodes);
+
+  it("truncate does not leave a lone surrogate at the cut", () => {
+    // The emoji straddles the 160-char excerpt limit used by transfers.ts.
+    const straddling = "x".repeat(158) + "\u{1F600}" + "y".repeat(200);
+    const out = renderTransfersSummary([
+      { ...sampleTransfers[0]!, raw_text: straddling },
+    ] as TransferMechanismReference[]);
+    const rendered = textOf(out);
+    expect(rendered).not.toMatch(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])/);
+    expect(rendered).not.toContain("�");
+  });
+
+  it("a one-day subprocessor notice reads '1 day', not '1 days'", () => {
+    const out = renderSubprocessorPage({ ...sampleSubprocessor, notice_days: 1 });
+    const rendered = textOf(out);
+    expect(rendered).toContain("1 day");
+    expect(rendered).not.toContain("1 days");
+  });
+
+  it("a one-day cancellation notice reads '1 day', not '1 days'", () => {
+    const out = renderInsurancePage({
+      amounts: [],
+      endorsements: [],
+      required_am_best_rating: null,
+      notice_of_cancellation_days: 1,
+    });
+    expect(textOf(out)).not.toContain("1 days");
+  });
+
+  it("still pluralizes a multi-day notice", () => {
+    const out = renderSubprocessorPage({ ...sampleSubprocessor, notice_days: 30 });
+    expect(textOf(out)).toContain("30 days");
+  });
+});

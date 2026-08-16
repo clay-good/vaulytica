@@ -29,6 +29,34 @@ All notable changes to this project will be documented in this file. Format adap
   production-QA pack.
 
 ### Fixed
+- **A build missing the pdf.js worker now fails instead of shipping broken PDF
+  analysis.** The worker was located at a hardcoded
+  `<repo>/node_modules/pdfjs-dist/legacy/build/…` path and the copy into `dist/`
+  was guarded by `existsSync`. Wherever npm had actually put the package —
+  a hoisted workspace, a git worktree whose dependencies live in the parent
+  checkout — the guard quietly found nothing and the build emitted a `dist/`
+  with no `pdf-worker/` at all. Since `src/ingest/pdf.ts` pins
+  `GlobalWorkerOptions.workerSrc` to `/pdf-worker/pdf.worker.min.mjs`, every PDF
+  dropped into that build failed on a 404, with nothing in the build log to say
+  so. Found by running the Playwright suite, where both PDF specs in
+  `privacy-interception.spec.ts` failed while the DOCX spec passed. The path is
+  now resolved through Node (so it is found wherever it lives) and a missing
+  worker aborts the build with an explicit message, the same way
+  `assertShippableDkb` refuses to ship an empty DKB. Two tests pin the
+  resolution so a `pdfjs-dist` upgrade that moves the worker fails at test time
+  rather than at runtime. All 45 e2e specs pass.
+- **Three v3 report renderers no longer corrupt non-BMP characters, and "1 days"
+  reads "1 day".** `transfers.ts`, `subprocessor.ts`, and `consistency.ts` each
+  carried a private copy of `truncate` that was a *pre-fix* duplicate of the one
+  in `docx.ts`: it cuts UTF-16 surrogate pairs in half, and the lone high
+  surrogate becomes a U+FFFD replacement character when the DOCX is packed to
+  UTF-8 — so an excerpt corrupts exactly at an emoji or a CJK Extension B
+  character. Separately, `subprocessor.ts` and `insurance.ts` interpolated
+  `"${n} days"` with no pluralization. `truncate` and `plural` now live once in
+  `v3/_dx.ts` and every caller — including `docx.ts` — imports them from there,
+  so the guard cannot drift out of sync again. This layer is still dormant (the
+  `v3` argument to `buildDocxReport` is always undefined), so the fix is latent
+  and carries zero golden churn.
 - **A custom playbook's `result_hash` now covers the evidence, not just which
   rules fired.** It was computed over `{rule_id, severity, section_id,
   citation_provenance}` only, so the same rule firing on completely different

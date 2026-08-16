@@ -14,10 +14,10 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { resolveMountedFile } from "../../vite.config.js";
+import { resolveMountedFile, pdfWorkerPath } from "../../vite.config.js";
 
 /** A mount root holding `inside.json`, with a secret next to it. */
 function makeMount(): { mounts: Record<string, string>; base: string } {
@@ -89,5 +89,30 @@ describe("resolveMountedFile", () => {
       join(playbooks, "extended.json"),
     );
     expect(resolveMountedFile(mounts, "/playbooks/../package.json")).toBeNull();
+  });
+});
+
+/**
+ * The pdf.js worker must be resolvable at build time.
+ *
+ * `src/ingest/pdf.ts` pins `GlobalWorkerOptions.workerSrc` to
+ * `/pdf-worker/pdf.worker.min.mjs`, which is served from this file in dev and
+ * copied into `dist/` at build. The path used to be a hardcoded
+ * `<repo>/node_modules/pdfjs-dist/legacy/build`, and the copy was guarded by
+ * `existsSync` — so wherever npm had put the package somewhere else (a hoisted
+ * workspace, a git worktree whose deps live in the parent checkout), the build
+ * silently emitted a `dist/` with no `pdf-worker/` and every PDF analysis in it
+ * failed on a 404. This test fails the moment a pdfjs-dist upgrade moves the
+ * worker, instead of letting a broken build ship.
+ */
+describe("pdf.js worker resolution", () => {
+  it("resolves to a file that exists", () => {
+    const worker = pdfWorkerPath();
+    expect(worker).not.toBeNull();
+    expect(existsSync(worker!)).toBe(true);
+  });
+
+  it("resolves to the minified worker build, not the loader", () => {
+    expect(pdfWorkerPath()).toMatch(/pdf\.worker\.min\.mjs$/);
   });
 });

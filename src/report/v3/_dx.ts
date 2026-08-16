@@ -178,3 +178,28 @@ export function hyperlinkParagraph(
     children: safe ? [new ExternalHyperlink({ link: url, children: runs })] : runs,
   });
 }
+
+/**
+ * Truncate `text` to `limit` characters with a trailing ellipsis.
+ *
+ * Never splits a UTF-16 surrogate pair: if the last kept code unit is a lone
+ * high surrogate (its low half falls past the cut), drop it — otherwise the
+ * packed UTF-8 turns it into a U+FFFD replacement char, corrupting a quoted
+ * excerpt exactly at a non-BMP character (emoji, CJK Extension B, …).
+ *
+ * This lives here, next to the other shared DOCX helpers, because the guard
+ * was previously fixed in one place and three stale copies in the v3
+ * renderers kept the old splitting behavior.
+ */
+export function truncate(text: string, limit: number): string {
+  if (text.length <= limit) return text;
+  let end = limit - 1;
+  const lastUnit = text.charCodeAt(end - 1);
+  if (lastUnit >= 0xd800 && lastUnit <= 0xdbff) end -= 1;
+  return text.slice(0, end) + "…";
+}
+
+/** `"1 day"` / `"2 days"` — pluralization-aware count + noun. */
+export function plural(n: number, noun: string): string {
+  return `${n} ${noun}${n === 1 ? "" : "s"}`;
+}

@@ -9,7 +9,7 @@
 
 import type { Paragraph, Table } from "docx";
 import type { ConsistencyRun, ConsistencyFinding } from "../../engine/consistency/types.js";
-import { h1, h2, h3, para, pageBreak, buildTable, headerRow, bodyRow } from "./_dx.js";
+import { h1, h2, h3, para, pageBreak, buildTable, headerRow, bodyRow, truncate } from "./_dx.js";
 
 export function renderConsistencyAppendix(run: ConsistencyRun): (Paragraph | Table)[] {
   if (run.findings.length === 0) {
@@ -70,9 +70,4 @@ function renderConsistencyFinding(f: ConsistencyFinding): Paragraph[] {
     );
   }
   return paragraphs;
-}
-
-function truncate(text: string, limit: number): string {
-  if (text.length <= limit) return text;
-  return text.slice(0, limit - 1) + "…";
 }

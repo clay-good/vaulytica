@@ -8,7 +8,7 @@
 
 import type { Paragraph, Table } from "docx";
 import type { TransferMechanismReference, TransferMechanismKind } from "../../extract/v3/types.js";
-import { h1, para, pageBreak, buildTable, headerRow, bodyRow } from "./_dx.js";
+import { h1, para, pageBreak, buildTable, headerRow, bodyRow, truncate } from "./_dx.js";
 
 const KIND_LABEL: Record<TransferMechanismKind, string> = {
   "scc-module-1": "EU SCC Module 1 (C → C)",
@@ -53,9 +53,4 @@ export function renderTransfersSummary(refs: TransferMechanismReference[]): (Par
     }),
     pageBreak(),
   ];
-}
-
-function truncate(text: string, limit: number): string {
-  if (text.length <= limit) return text;
-  return text.slice(0, limit - 1) + "…";
 }

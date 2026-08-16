@@ -10,7 +10,7 @@
 
 import type { Paragraph, Table } from "docx";
 import type { InsuranceSchedule, InsuranceLine } from "../../extract/v3/types.js";
-import { h1, para, pageBreak, buildTable, headerRow, bodyRow } from "./_dx.js";
+import { h1, para, pageBreak, buildTable, headerRow, bodyRow, plural } from "./_dx.js";
 
 const LINE_LABEL: Record<InsuranceLine, string> = {
   "commercial-general-liability": "Commercial General Liability",
@@ -73,7 +73,9 @@ export function renderInsurancePage(
   }
   if (schedule.notice_of_cancellation_days !== null) {
     out.push(
-      para({ text: `Notice of cancellation: ${schedule.notice_of_cancellation_days} days.` }),
+      para({
+        text: `Notice of cancellation: ${plural(schedule.notice_of_cancellation_days, "day")}.`,
+      }),
     );
   }
   out.push(pageBreak());
