@@ -377,7 +377,7 @@ const RISK_FACTORS_RULES: Rule[] = [
   }),
   language({
     id: "REG-019",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Hypothetical / 'could' risk-factor language flagged for specificity",
     description:
       "Risk factors that hedge as merely hypothetical without specifying current exposures should be flagged.",
@@ -390,7 +390,14 @@ const RISK_FACTORS_RULES: Rule[] = [
     // flagging an ordinary "breach of contract".
     bad_patterns: [
       /(we\s+may|could|might)\s+(experience|face|be\s+subject\s+to|suffer|incur)\s+(?:an?\s+)?(cyber\w*|security\s+breach|data\s+breach|ransomware|cyber-?attack)/i,
-      /(potential|hypothetical).{0,40}(risk|impact)/is,
+      // Tied to the security context for the same reason bad_pattern #1 is: on
+      // its own, `(potential|hypothetical).{0,40}(risk|impact)` matched the
+      // phrase "potential risk" anywhere, so ordinary forward-looking risk
+      // prose ("entry into new markets carries potential risk related to
+      // currency fluctuation") was charged with the Pearson / First American
+      // defect of disguising an incident that had already happened.
+      /(?:potential|hypothetical)[^.]{0,40}(?:risk|impact)[^.]{0,80}(?:cyber\w*|security|data\s+breach|ransomware|intrusion|unauthorized\s+access)/is,
+      /(?:cyber\w*|security\s+breach|data\s+breach|ransomware)[^.]{0,60}(?:potential|hypothetical)[^.]{0,40}(?:risk|impact)/is,
     ],
     // The whole point of the Pearson / First American line is framing an
     // ALREADY-MATERIALIZED risk as hypothetical. A paragraph that narrates the

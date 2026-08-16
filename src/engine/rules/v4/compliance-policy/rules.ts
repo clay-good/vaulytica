@@ -922,7 +922,7 @@ const AI_AUP_RULES: Rule[] = [
 const SOCIAL_MEDIA_POLICY_RULES: Rule[] = [
   language({
     id: "POL-042",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "NLRA § 7 — overbroad social-media restriction flagged",
     description:
       "Social-media policy must not broadly restrict employee discussion of wages / working conditions (NLRA § 7).",
@@ -939,7 +939,13 @@ const SOCIAL_MEDIA_POLICY_RULES: Rule[] = [
       /employees?\s+(shall|may)\s+not\s+(discuss|post|comment).{0,80}(wages?|salary|compensation|working\s+conditions)/is,
       /employees?\s+(?:are\s+)?(?:prohibited|barred|forbidden|not\s+permitted|not\s+allowed)\s+(?:from\s+)?(?:discuss|post|comment|shar)\w*.{0,80}(wages?|salary|salaries|compensation|pay|working\s+conditions)/is,
       /no\s+employee\s+(?:shall|may|will|can)\s+(?:discuss|post|comment|shar\w*).{0,80}(wages?|salary|salaries|compensation|pay|working\s+conditions)/is,
-      /(social\s+media|online).{0,80}(prohibit(s|ed)?|may\s+not).{0,80}(company|employer|business)/is,
+      // Unlike patterns 1-3 this one carries no wage / working-conditions term,
+      // so it matched any social-media confidentiality restriction — "prohibits
+      // employees from disclosing confidential company trade secrets online" —
+      // and charged a lawful trade-secret rule with an NLRA § 7 violation. The
+      // lookahead drops those; a blanket ban on merely mentioning the employer,
+      // which is what this pattern is for, still fires.
+      /(social\s+media|online).{0,80}(prohibit(s|ed)?|may\s+not)(?!.{0,80}(?:confidential|proprietary|trade\s+secret)).{0,80}(company|employer|business)/is,
     ],
     exclude_if: [
       // "may not" is itself a bad_pattern trigger ("posts may not mention the

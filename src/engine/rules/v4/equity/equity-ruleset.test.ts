@@ -443,3 +443,47 @@ describe("EQT-028 — repricing detection recognizes 'reduce price' and reversed
     expect(await fires(b)).toBe(false);
   });
 });
+
+describe("EQT-008 / EQT-028 — adverbial negation and the 'consent' synonym", () => {
+  const fires = async (id: string, pb: Playbook, b: string) =>
+    (
+      await runEngine({
+        rules: EQUITY_RULES,
+        ctx: withPb(buildContext(["Agreement", b]), pb),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === id);
+
+  it("EQT-008 (v1.2.0) stays silent on 'shall never bear interest'", async () => {
+    // The guard only knew "not"; "never" is the same disclaimer.
+    expect(await fires("EQT-008", SAFE_PB, "This SAFE shall never bear interest.")).toBe(false);
+  });
+
+  it("EQT-008 still fires on an actual interest grant", async () => {
+    expect(await fires("EQT-008", SAFE_PB, "The Purchase Amount shall bear interest at 6%.")).toBe(
+      true,
+    );
+  });
+
+  it("EQT-028 (v1.3.0) stays silent on an emphatic anti-repricing covenant", async () => {
+    // "under no circumstances" separates the negation from the verb, so every
+    // v1.2.0 guard missed it and the covenant was read as the violation.
+    expect(
+      await fires(
+        "EQT-028",
+        OPTION_PB,
+        "Options shall, under no circumstances, be repriced without stockholder approval.",
+      ),
+    ).toBe(false);
+  });
+
+  it("EQT-028 fires when the carve-out says 'consent' rather than 'approval'", async () => {
+    expect(
+      await fires(
+        "EQT-028",
+        OPTION_PB,
+        "The board may unilaterally reduce the strike price without shareholder consent.",
+      ),
+    ).toBe(true);
+  });
+});

@@ -335,7 +335,7 @@ const INDEMNIFICATION_AGREEMENT_RULES: Rule[] = [
   }),
   language({
     id: "INS-015",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Broad-form indemnity (Type I) flagged for anti-indemnity scrutiny",
     description:
       "Type I (broad-form) indemnity is void in construction contexts in many states (CA § 2782, NY § 5-322.1, TX § 151).",
@@ -352,7 +352,12 @@ const INDEMNIFICATION_AGREEMENT_RULES: Rule[] = [
       /indemnif(y|ies|ied|ying).{0,200}(any\s+and\s+all).{0,80}(claims|liabilit).{0,80}(caused\s+by\s+indemnitee|negligence\s+of\s+indemnitee)/is,
     ],
     exclude_if: [
-      /(?:shall|will)\s+not\s+be\s+(?:obligated|required|liable)\s+to\s+indemnif/i,
+      // The "be obligated / required / liable to" filler is optional: v1.2.0
+      // required it, so the blunt refusal "Indemnitor shall not indemnify Owner
+      // for loss caused in whole or in part by Owner's own negligence" tripped
+      // bad_pattern #2 and was reported as a broad-form grant — the clause says
+      // the opposite.
+      /(?:shall|will|does|do|may)\s+not\s+(?:be\s+(?:obligated|required|liable)\s+to\s+)?indemnif/i,
       /\bnot\s+(?:be\s+)?(?:obligated|required)\s+to\s+indemnif/i,
       // A limited-form (Type II / III) indemnity carves the INDEMNITEE's own
       // negligence back OUT — "except to the extent … the Indemnitee's own
@@ -507,7 +512,7 @@ const HOLD_HARMLESS_RULES: Rule[] = [
   }),
   language({
     id: "INS-022",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Release-of-future-claims overreach flagged",
     description:
       "Pre-dispute hold-harmless agreements that release ordinary negligence may be unenforceable in some states (esp. for recreational / fitness activities for consumers).",
@@ -531,6 +536,11 @@ const HOLD_HARMLESS_RULES: Rule[] = [
       /(?:does|do|shall|will)\s+not\s+(?:apply|extend|release|cover|waive)\b[^.]{0,80}(?:gross\s+negligence|willful|intentional)/i,
       /\bnothing\b[^.]{0,80}(?:gross\s+negligence|willful|intentional)/i,
       /(?:except|other\s+than|excluding|but\s+not)\b[^.]{0,80}(?:gross\s+negligence|willful|intentional)/i,
+      // Fronted negation. Every guard above expects `subject … does not verb`,
+      // so the equally common disclaimer "No waiver of claims arising from
+      // gross negligence is intended" matched bad_pattern #2 on its own
+      // "waiver … gross negligence" and was flagged as the overreach it denies.
+      /\bno\s+(?:waiver|release|hold\s+harmless)\s+of\b[^.]{0,80}(?:gross\s+negligence|willful|intentional)/i,
     ],
     bad_title: "Pre-dispute release / hold-harmless overreach flagged",
     bad_description:

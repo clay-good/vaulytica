@@ -645,3 +645,56 @@ describe("GOV-070 — implied-covenant elimination recognizes passive form (v1.1
     ).toBe(false);
   });
 });
+
+describe("GOV-022 / GOV-070 — the compliant anti-waiver form (v1.2.0)", () => {
+  const fires = async (id: string, pb: Playbook, b: string) =>
+    (
+      await runEngine({
+        rules: GOVERNANCE_RULES,
+        ctx: withPb(buildContext(["Agreement", b]), pb),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === id);
+
+  // Both rules recommend exactly this drafting, and both then reported it as a
+  // critical statutory violation: v1.1.0's guards required the negation to sit
+  // directly on the verb, while the passive "may not be eliminated" satisfied
+  // the bad pattern's bare `be`.
+  it.each([
+    "Notwithstanding anything herein, the implied covenant of good faith and fair dealing may not be eliminated or waived by the Members.",
+    "The implied covenant of good faith and fair dealing cannot be waived.",
+    "The implied covenant of good faith and fair dealing shall never be disclaimed.",
+  ])("GOV-022 stays silent on: %s", async (b) => {
+    expect(await fires("GOV-022", OP_AGREEMENT_PB, b)).toBe(false);
+  });
+
+  it("GOV-022 still fires on an actual waiver", async () => {
+    expect(
+      await fires(
+        "GOV-022",
+        OP_AGREEMENT_PB,
+        "The implied covenant of good faith and fair dealing is hereby waived by the Members.",
+      ),
+    ).toBe(true);
+  });
+
+  it("GOV-070 stays silent on the partnership form of the same covenant", async () => {
+    expect(
+      await fires(
+        "GOV-070",
+        PARTNERSHIP_PB,
+        "The implied covenant of good faith and fair dealing may not be eliminated or waived.",
+      ),
+    ).toBe(false);
+  });
+
+  it("GOV-070 still fires on an actual elimination", async () => {
+    expect(
+      await fires(
+        "GOV-070",
+        PARTNERSHIP_PB,
+        "The implied covenant of good faith and fair dealing is hereby eliminated.",
+      ),
+    ).toBe(true);
+  });
+});

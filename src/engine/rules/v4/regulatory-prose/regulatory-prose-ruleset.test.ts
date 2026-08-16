@@ -204,3 +204,32 @@ describe("REG-019 — hypothetical cyber risk recognizes article + broader verbs
     expect(await fires(b)).toBe(false);
   });
 });
+
+describe("REG-019 — ordinary forward-looking risk prose (v1.2.0)", () => {
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: REGULATORY_PROSE_RULES,
+        ctx: withPb(buildContext(["Risk Factors", b]), S1_PB),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "REG-019");
+
+  // The rule targets the Pearson / First American defect of framing an
+  // already-materialized incident as hypothetical. Untethered from that
+  // context, `(potential|hypothetical).{0,40}(risk|impact)` matched the phrase
+  // "potential risk" in any topic — i.e. most compliant risk factors.
+  it.each([
+    "Entry into new international markets carries potential risk related to currency fluctuation and local regulatory approval delays.",
+    "Our expansion strategy involves potential risk associated with integrating acquired companies' personnel.",
+  ])("stays silent on: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+
+  it.each([
+    "We face a potential risk of a data breach affecting customer records.",
+    "A cyber-attack presents a hypothetical risk to our operations.",
+  ])("still fires on hedged security-incident prose: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+});

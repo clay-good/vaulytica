@@ -176,7 +176,7 @@ const SAFE_RULES: Rule[] = [
   }),
   language({
     id: "EQT-008",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Interest-bearing SAFE language",
     description:
       "A SAFE is not a debt instrument; interest accrual is inconsistent with the YC SAFE form.",
@@ -200,7 +200,9 @@ const SAFE_RULES: Rule[] = [
     ],
     exclude_if: [
       /\bno\s+interest\b/i,
-      /(?:shall|will|does|do|may|would)\s+not\s+(?:bear|accrue|be)\b/i,
+      // "never" is the adverb form of the same disclaimer: "This SAFE shall
+      // never bear interest" is the compliant instrument, not a disguised note.
+      /(?:shall|will|does|do|may|would)\s+(?:not|never)\s+(?:bear|accrue|be)\b/i,
       /(?:bears?|bearing)\s+no\s+interest/i,
       /\bwithout\s+interest\b/i,
       /\bnon-?interest(?:[-\s]?bearing)?\b/i,
@@ -598,7 +600,7 @@ const OPTION_GRANT_RULES: Rule[] = [
   }),
   language({
     id: "EQT-028",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Repricing without stockholder approval",
     description:
       "Most equity-incentive plans prohibit repricing without stockholder approval; standalone repricing language is suspicious.",
@@ -615,7 +617,10 @@ const OPTION_GRANT_RULES: Rule[] = [
     // keeps the good-governance negated forms ("may not reprice", "shall not
     // reduce the exercise price") silent.
     bad_patterns: [
-      /(?:reprice|(?:reduc|lower|decreas|reset)\w*\s+(?:the\s+)?(?:exercise|strike|option|purchase)\s+price)[^.]{0,100}without[^.]{0,60}(?:(?:stockholder|shareholder)s?\s+approval|approval\s+of\s+(?:the\s+)?(?:stockholder|shareholder)s?)/is,
+      // "consent" is as common as "approval" in the repricing carve-out, and
+      // v1.2.0 matched only the latter — "reduce the strike price without
+      // shareholder consent" is the same override, unflagged.
+      /(?:reprice|(?:reduc|lower|decreas|reset)\w*\s+(?:the\s+)?(?:exercise|strike|option|purchase)\s+price)[^.]{0,100}without[^.]{0,60}(?:(?:stockholder|shareholder)s?\s+(?:approval|consent)|(?:approval|consent)\s+of\s+(?:the\s+)?(?:stockholder|shareholder)s?)/is,
     ],
     // The standard exchange-required anti-repricing covenant reads "No option
     // MAY BE repriced" / "Options SHALL NOT BE repriced without stockholder
@@ -632,6 +637,11 @@ const OPTION_GRANT_RULES: Rule[] = [
       // exercise price" is a matched action: "may not reduce the exercise
       // price without stockholder approval" is the covenant, not the violation.
       /(?:shall|will|may)\s+not\s+(?:be\s+)?(?:reduc|lower|decreas|reset)/i,
+      // Every guard above puts the negation directly on the verb, so the
+      // emphatic form of the very covenant this rule wants — "Options shall,
+      // under no circumstances, be repriced without stockholder approval" —
+      // was reported as permitting the repricing it forbids.
+      /\b(?:under\s+no\s+circumstances|in\s+no\s+event)\b[^.]{0,60}\b(?:repric|reduc|lower|decreas|reset)/i,
     ],
     bad_title: "Repricing without stockholder approval permitted",
     bad_description:

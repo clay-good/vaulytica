@@ -268,3 +268,33 @@ describe("POL-042 — social-media restriction recognizes passive & fronted-nega
     expect(await fires(b)).toBe(false);
   });
 });
+
+describe("POL-042 — lawful confidentiality restrictions (v1.3.0)", () => {
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: COMPLIANCE_POLICY_RULES,
+        ctx: withPb(buildContext(["Social Media Policy", b]), SM_PB),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "POL-042");
+
+  // The fourth bad_pattern carried no wage / working-conditions term, so any
+  // trade-secret rule read as an NLRA § 7 violation.
+  it.each([
+    "This social media policy prohibits employees from disclosing confidential company trade secrets online.",
+    "On social media, employees may not disclose the company's proprietary product roadmap.",
+  ])("stays silent on a confidentiality-scoped restriction: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+
+  it("still fires on a blanket ban on discussing the employer", async () => {
+    expect(await fires("Social media posts may not mention the company in any way.")).toBe(true);
+  });
+
+  it("still fires on the wage-discussion ban", async () => {
+    expect(
+      await fires("Employees may not discuss wages or working conditions on social media."),
+    ).toBe(true);
+  });
+});

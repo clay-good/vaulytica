@@ -247,3 +247,49 @@ describe("INS-022 — release overreach recognizes 'waive' verb (v1.1.0)", () =>
     expect(await fires(b)).toBe(false);
   });
 });
+
+describe("INS-015 / INS-022 — bare and fronted negation (v1.3.0 / v1.2.0)", () => {
+  const IND: Playbook = { id: "indemnification-agreement", version: "1.0.0" };
+  const HH: Playbook = { id: "hold-harmless-agreement", version: "1.0.0" };
+  const fires = async (id: string, pb: Playbook, b: string) =>
+    (
+      await runEngine({
+        rules: INSURANCE_RULES,
+        ctx: withPb(buildContext(["Agreement", b]), pb),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === id);
+
+  it("INS-015 stays silent on a refusal to indemnify with no 'obligated to' filler", async () => {
+    // Every v1.2.0 guard required "not be obligated / required / liable to
+    // indemnify", so the blunt refusal tripped the "in whole or in part"
+    // pattern and was reported as the broad-form grant it declines.
+    expect(
+      await fires(
+        "INS-015",
+        IND,
+        "Indemnitor shall not indemnify Owner for loss caused in whole or in part by Owner's own negligence.",
+      ),
+    ).toBe(false);
+  });
+
+  it("INS-015 still fires on the same clause without the negation", async () => {
+    expect(
+      await fires(
+        "INS-015",
+        IND,
+        "Indemnitor shall indemnify Owner for loss caused in whole or in part by Owner's own negligence.",
+      ),
+    ).toBe(true);
+  });
+
+  it("INS-022 stays silent on a fronted 'No waiver of …' disclaimer", async () => {
+    expect(
+      await fires(
+        "INS-022",
+        HH,
+        "No waiver of claims arising from gross negligence is intended by this agreement.",
+      ),
+    ).toBe(false);
+  });
+});

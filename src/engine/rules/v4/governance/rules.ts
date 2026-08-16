@@ -492,7 +492,7 @@ const OP_AGREEMENT_RULES: Rule[] = [
   }),
   language({
     id: "GOV-022",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Implied covenant cannot be waived",
     description:
       "DE LLC Act § 18-1101(c) prohibits waiver of the implied covenant of good faith and fair dealing.",
@@ -508,6 +508,12 @@ const OP_AGREEMENT_RULES: Rule[] = [
     ],
     exclude_if: [
       /(?:does|do|shall|will)\s+not\s+(?:be\s+deemed\s+to\s+)?(?:waiv\w*|eliminat\w*|disclaim\w*)/i,
+      // v1.1.0 required the negation to sit directly on the bare verb, so the
+      // compliant passive form this rule's own recommendation asks drafters to
+      // use — "may not be eliminated or waived", "cannot be waived" — matched
+      // bad_pattern #3 via its bare `be` and was reported as a critical
+      // statutory violation: the exact opposite of what the clause says.
+      /(?:may|can|shall|will|must|is|are)\s*(?:not|never)\s+(?:be\s+)?(?:deemed\s+to\s+(?:be\s+)?)?(?:waiv\w*|eliminat\w*|disclaim\w*)/i,
       /\bnothing\b[^.]{0,60}(?:waiv\w*|eliminat\w*|disclaim\w*)/i,
       /\bno\s+(?:provision|term)\b[^.]{0,60}(?:waiv\w*|eliminat\w*|disclaim\w*)/i,
     ],
@@ -1484,7 +1490,7 @@ const PARTNERSHIP_RULES: Rule[] = [
   }),
   language({
     id: "GOV-070",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Implied covenant cannot be eliminated (DRULPA § 17-1101(d))",
     description:
       "DRULPA § 17-1101(d) prohibits elimination of the implied covenant of good faith and fair dealing.",
@@ -1499,6 +1505,9 @@ const PARTNERSHIP_RULES: Rule[] = [
     ],
     exclude_if: [
       /(?:does|do|shall|will)\s+not\s+(?:waive|eliminate|disclaim)/i,
+      // Same defect as GOV-022 v1.1.0: the compliant passive "may not be
+      // eliminated or waived" tripped bad_pattern #2's bare `be`.
+      /(?:may|can|shall|will|must|is|are)\s*(?:not|never)\s+(?:be\s+)?(?:deemed\s+to\s+(?:be\s+)?)?(?:waiv\w*|eliminat\w*|disclaim\w*)/i,
       /\bnothing\b[^.]{0,60}(?:waive|eliminate|disclaim)/i,
       /\bno\s+(?:provision|term)\b[^.]{0,60}(?:waive|eliminate|disclaim)/i,
     ],

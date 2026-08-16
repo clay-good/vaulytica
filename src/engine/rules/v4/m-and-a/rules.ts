@@ -1625,7 +1625,7 @@ const MA_RESTRICTIVE_COVENANT_RULES: Rule[] = [
   }),
   language({
     id: "MNA-074",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Non-compete > 5 years flagged",
     description: "Most states will not enforce sale-of-business non-competes longer than 5 years.",
     citation: maPractice(
@@ -1634,18 +1634,23 @@ const MA_RESTRICTIVE_COVENANT_RULES: Rule[] = [
       "https://www.americanbar.org/",
     ),
     playbooks: [MA_PLAYBOOK_MA_RC],
+    // v1.2.0's year class `[6-9]|1[0-9]` stopped at 19, so the longest and most
+    // obviously unenforceable covenants — "twenty (20) years", "twenty-five
+    // (25) years" — were the ones that went unflagged. `[1-9][0-9]` covers
+    // 10-99 and still excludes the compliant 0-5. The spelled-out prefix also
+    // had to grow to two words, since "twenty-five (25)" is two.
     bad_patterns: [
       // The year count must be the covenant's DURATION, not merely a number
       // sharing a sentence with it — "the Company has 10 years of history
       // supporting the restricted period" is not a 10-year non-compete.
-      /(?:non.?compete|non.?competition|restricted\s+period)[^.]{0,40}(?:of|shall\s+be|is|are|equal\s+to|not\s+exceed(?:ing)?)\s+(?:a\s+period\s+of\s+)?(?:[a-z]+[-\s]+)?\(?([6-9]|1[0-9])\)?\s+years?/is,
-      /(?:for|of)\s+(?:a\s+)?(?:period\s+of\s+)?(?:[a-z]+[-\s]+)?\(?([6-9]|1[0-9])\)?\s+years?[^.]{0,40}(?:non.?compete|non.?competition|restricted\s+period|shall\s+not\s+compete)/is,
-      /\(?([6-9]|1[0-9])\)?[\s-]*year\s+(?:non.?compete|non.?competition|restricted\s+period)/is,
+      /(?:non.?compete|non.?competition|restricted\s+period)[^.]{0,40}(?:of|shall\s+be|is|are|equal\s+to|not\s+exceed(?:ing)?)\s+(?:a\s+period\s+of\s+)?(?:[a-z]+[-\s]+){0,2}\(?([6-9]|[1-9][0-9])\)?\s+years?/is,
+      /(?:for|of)\s+(?:a\s+)?(?:period\s+of\s+)?(?:[a-z]+[-\s]+){0,2}\(?([6-9]|[1-9][0-9])\)?\s+years?[^.]{0,40}(?:non.?compete|non.?competition|restricted\s+period|shall\s+not\s+compete)/is,
+      /\(?([6-9]|[1-9][0-9])\)?[\s-]*year\s+(?:non.?compete|non.?competition|restricted\s+period)/is,
       // The active covenant verb "shall not compete" followed by the duration —
       // "Seller shall not compete for a period of ten (10) years" — which the
       // keyword-first and duration-first patterns above (they key on the noun
       // forms) both missed.
-      /shall\s+not\s+compete\b[^.]{0,30}(?:for|of|during)\s+(?:a\s+)?(?:period\s+of\s+)?(?:[a-z]+[-\s]+)?\(?([6-9]|1[0-9])\)?\s+years?/is,
+      /shall\s+not\s+compete\b[^.]{0,30}(?:for|of|during)\s+(?:a\s+)?(?:period\s+of\s+)?(?:[a-z]+[-\s]+){0,2}\(?([6-9]|[1-9][0-9])\)?\s+years?/is,
     ],
     bad_title: "Non-compete duration appears > 5 years",
     bad_description:

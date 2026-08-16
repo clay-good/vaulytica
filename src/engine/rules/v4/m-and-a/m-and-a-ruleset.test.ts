@@ -655,3 +655,32 @@ describe("MNA-074 — >5yr non-compete recognizes 'shall not compete for … yea
     expect(await fires(b)).toBe(false);
   });
 });
+
+describe("MNA-074 — non-compete durations of 20 years and up (v1.3.0)", () => {
+  const RC_PB: Playbook = { id: "ma-restrictive-covenant", version: "1.0.0" };
+  const fires = async (b: string) =>
+    (
+      await runEngine({
+        rules: M_AND_A_RULES,
+        ctx: withPb(buildContext(["Agreement", b]), RC_PB),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "MNA-074");
+
+  // The year class stopped at 19, so the least enforceable covenants were the
+  // ones that escaped the check.
+  it.each([
+    "Seller shall not compete with the Business for a period of twenty (20) years following the Closing.",
+    "The restricted period is twenty-five (25) years.",
+    "Seller agrees to a 30-year non-compete.",
+  ])("fires on: %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
+  it.each([
+    "Seller shall not compete with the Business for a period of three (3) years following the Closing.",
+    "The restricted period is five (5) years.",
+  ])("stays silent on a compliant duration: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+});
