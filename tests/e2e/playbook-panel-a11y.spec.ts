@@ -50,6 +50,31 @@ const LOADED_STATUS = `
     <button type="button" class="btn-link">Clear playbook</button>
   </div>`;
 
+// The role-picker branch of `renderPreview` (a playbook whose positions vary by
+// party role). It was missing from the fixtures entirely, so its `<select>` —
+// the one control in this panel — had never been axe-scanned or overflow-checked
+// in either theme. The party-role strings are deliberately long to stress wrap.
+const ROLE_PICKER_STATUS = `
+  <div class="playbook-loaded" data-role="playbook-loaded">
+    <div class="playbook-loaded-name"><strong>Acme Corporation Outside-Counsel Data-Processing Standard (rev 2026-Q2)</strong> <span class="playbook-loaded-file">(acme-standard-2026-q2-final.json)</span></div>
+    <div class="playbook-loaded-summary">Built-in catalog: <strong>112</strong> rules.<br />Your positions: <strong>1</strong> custom rule, <strong>1</strong> required clause.</div>
+    <fieldset class="playbook-role" data-role="playbook-role-picker">
+      <legend>Party role</legend>
+      <div class="playbook-role-hint" data-role="playbook-role-hint">This playbook's positions vary by party role — choose your side to activate it.</div>
+      <select data-role="playbook-role-select" aria-label="Party role">
+        <option value="" selected disabled>Choose a role…</option>
+        <option value="customer">customer-receiving-services-under-a-master-agreement</option>
+        <option value="supplier">supplier-providing-services-under-a-master-agreement</option>
+      </select>
+    </fieldset>
+    <fieldset class="playbook-mode" data-role="playbook-mode">
+      <legend>Enforcement mode</legend>
+      <label><input type="radio" name="playbook-mode" value="augment" checked /> Augment — built-in catalog + your positions</label>
+      <label><input type="radio" name="playbook-mode" value="replace" /> Replace — only your positions</label>
+    </fieldset>
+    <button type="button" class="btn-link">Clear playbook</button>
+  </div>`;
+
 function pageHtml(statusInner: string, theme: "dark" | "light"): string {
   return [
     "<!doctype html>",
@@ -79,6 +104,7 @@ async function expectNoOverflow(page: Page, label: string): Promise<void> {
 const SUBSTATES = [
   { name: "error", status: ERROR_STATUS },
   { name: "loaded", status: LOADED_STATUS },
+  { name: "role-picker", status: ROLE_PICKER_STATUS },
 ];
 
 for (const { name, status } of SUBSTATES) {
@@ -102,3 +128,43 @@ for (const { name, status } of SUBSTATES) {
     });
   }
 }
+
+/**
+ * The fixtures above are hand-written mirrors of `src/ui/playbook-panel.ts`,
+ * which is how the role-picker branch came to be missing from them: the
+ * component grew a `<select>` and every gate here kept passing against markup
+ * that never contained one.
+ *
+ * This guard makes that drift loud. It reads the component source and asserts
+ * every `playbook-*` class and `data-role` it can emit is present in at least
+ * one fixture — so adding markup to the panel without extending the fixtures
+ * fails here rather than silently going unscanned. Tokens belonging to the
+ * static shell in `site/index.html` (the file input, load/clear buttons, the
+ * status region) are excluded: those are covered by the landing-page gates.
+ */
+const SHELL_TOKENS = new Set([
+  "playbook-input",
+  "playbook-load",
+  "playbook-clear",
+  "playbook-status",
+  "playbook-errors",
+]);
+
+test("every playbook-panel token the component emits appears in a fixture", () => {
+  const source = readFileSync(
+    join(__dirname, "..", "..", "src", "ui", "playbook-panel.ts"),
+    "utf8",
+  );
+  const emitted = new Set<string>();
+  for (const m of source.matchAll(/(?:class|data-role)="(playbook-[a-z-]+)"/g)) {
+    if (!SHELL_TOKENS.has(m[1]!)) emitted.add(m[1]!);
+  }
+  expect(emitted.size).toBeGreaterThan(0);
+
+  const fixtures = [ERROR_STATUS, LOADED_STATUS, ROLE_PICKER_STATUS].join("\n");
+  const missing = [...emitted].filter((token) => !fixtures.includes(token)).sort();
+  expect(
+    missing,
+    `playbook-panel.ts emits markup no fixture covers, so it is never axe-scanned: ${missing.join(", ")}`,
+  ).toEqual([]);
+});

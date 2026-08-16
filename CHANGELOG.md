@@ -29,6 +29,21 @@ All notable changes to this project will be documented in this file. Format adap
   production-QA pack.
 
 ### Fixed
+- **The party-role picker no longer scrolls the page sideways on a narrow
+  phone.** A dropdown never wraps its option text and a `fieldset` defaults to
+  `min-inline-size: min-content`, so a party role long enough to exceed the
+  viewport — the names come from a user-supplied playbook — widened the fieldset
+  and pushed the whole page into horizontal scroll (114 px of overflow at
+  320 px, in both themes). Both the fieldset and the control now carry
+  `min-width: 0`. This was invisible because the panel's a11y/responsive spec
+  asserted against a hand-written copy of the component's markup that predated
+  the role picker entirely: the one control in the panel had never been
+  axe-scanned or overflow-checked. The spec now covers that sub-state, and a new
+  drift guard reads `src/ui/playbook-panel.ts` and fails if the component emits
+  any `playbook-*` markup no fixture covers, so the fixtures cannot silently
+  fall behind again. `tests/e2e/landing-responsive-a11y.spec.ts` also dropped a
+  `<script>`-stripping step that had quietly become a no-op once the inline
+  theme-init script was removed from `site/index.html`.
 - **A build missing the pdf.js worker now fails instead of shipping broken PDF
   analysis.** The worker was located at a hardcoded
   `<repo>/node_modules/pdfjs-dist/legacy/build/…` path and the copy into `dist/`

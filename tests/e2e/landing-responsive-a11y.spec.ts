@@ -30,15 +30,20 @@ const BREAKPOINTS = [
 ];
 
 /**
- * Load the landing page pinned to a theme. The inline theme-init script
- * would otherwise re-pick the theme from `prefers-color-scheme` at parse
- * time (non-deterministic across runners), so we strip that one bare inline
- * `<script>` and set `data-theme` directly — the same attribute the script
- * and the in-app toggle set, so the rendered palette is identical to the
- * real app, just deterministically chosen.
+ * Load the landing page pinned to a theme.
+ *
+ * Determinism comes from forcing `data-theme` on `<html>` — the same attribute
+ * the in-app toggle sets, so the rendered palette is identical to the real app,
+ * just deterministically chosen rather than read from the runner's
+ * `prefers-color-scheme`.
+ *
+ * This used to also strip a bare inline `<script>` that re-picked the theme at
+ * parse time. That script is long gone from `site/index.html` (every remaining
+ * `<script>` there carries a `type` attribute), so the strip had quietly become
+ * a no-op that made this helper look like it did more than it does.
  */
 async function loadLanding(page: Page, theme: "dark" | "light"): Promise<void> {
-  const html = LANDING_HTML.replace(/<script>[\s\S]*?<\/script>/, "").replace(
+  const html = LANDING_HTML.replace(
     /<html([^>]*?)\sdata-theme="[^"]*"/,
     `<html$1 data-theme="${theme}"`,
   );

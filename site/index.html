@@ -817,6 +817,12 @@
         border: 1px solid var(--border, #ddd);
         border-radius: 8px;
         padding: 6px 10px;
+        /* A dropdown never wraps its option text, and a fieldset defaults to
+           min-inline-size: min-content — so without this, a party role long
+           enough to exceed the viewport (the names come from a user-supplied
+           playbook) widened the fieldset and scrolled the whole page
+           sideways on a narrow phone. */
+        min-width: 0;
       }
       .playbook-role legend {
         font-size: 13px;
@@ -832,6 +838,9 @@
         font: inherit;
         font-size: 14px;
         max-width: 100%;
+        /* Pairs with the fieldset's min-width: 0 — the control must be allowed
+           to shrink below the width of its longest option. */
+        min-width: 0;
       }
       /* Custom-playbook provenance line in the complete state. */
       .playbook-provenance {
