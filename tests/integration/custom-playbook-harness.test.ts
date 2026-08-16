@@ -309,5 +309,10 @@ describe("custom-playbook end-to-end harness over the fixture corpus", () => {
     // The liability_cap_multiple metric is honestly reported unevaluable on
     // fixtures that never state a cap multiple (no fabricated answer).
     expect(totalUneval).toBeGreaterThan(0);
-  });
+    // This harness ingests and analyzes every .docx fixture in the corpus, so
+    // the 5 s default is not a realistic budget — it fits under a plain `npm
+    // run test` but times out under `npm run coverage`'s v8 instrumentation,
+    // which is the form CI runs. Same explicit allowance the other corpus-wide
+    // integration harnesses carry.
+  }, 60000);
 });
