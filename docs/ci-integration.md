@@ -72,7 +72,7 @@ exposure — "this redline added a critical finding."
 | `files` | analyze | path / single-segment glob / directory of `.pdf` `.docx` `.txt` `.md` |
 | `base`, `revised` | compare | the two documents to diff |
 | `format` | both | analyze: `json,sarif,html,md,csv` (default `sarif`) · compare: `json\|markdown` |
-| `fail-on` | both | `critical\|warning\|info` — non-zero exit when a finding (analyze) / *introduced* finding (compare) is at or above it |
+| `fail-on` | both | `critical\|warning\|info` — non-zero exit when a finding (analyze) / *introduced* finding (compare) is at or above it. Empty = never fail; any **other** value is a usage error (exit 1), so a typo fails the job loudly instead of silently disabling the gate |
 | `playbook` | both | force a specific playbook id instead of auto-matching |
 | `out` | analyze | directory for one output file per document per format |
 
