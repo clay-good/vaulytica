@@ -72,6 +72,37 @@ describe("site asset references", () => {
   });
 });
 
+describe("deploy asset list", () => {
+  // `vite.config.ts` copies `site/` assets into `dist/` from a hand-maintained
+  // list. Existing inside the Vite root is therefore not enough to ship: the
+  // apple-touch-icon existed in `site/` and still 404'd in production because
+  // nothing added it here.
+  const viteConfig = readFileSync(join(process.cwd(), "vite.config.ts"), "utf8");
+
+  function deployedNames(): string[] {
+    const body = /const sitePublic\s*=\s*\[([\s\S]*?)\]/.exec(viteConfig)?.[1];
+    expect(body, "sitePublic array not found in vite.config.ts").toBeDefined();
+    return [...body!.matchAll(/["']([^"']+)["']/g)].map((m) => m[1]!);
+  }
+
+  it("carries every static asset the page references", () => {
+    const deployed = new Set(deployedNames());
+    // `main.ts` is the module entry: Vite bundles it rather than copying it.
+    const missing = referencedAssetPaths()
+      .map((p) => p.replace(/^\//, ""))
+      .filter((n) => !n.endsWith(".ts"))
+      .filter((n) => !deployed.has(n));
+    expect(missing).toEqual([]);
+  });
+
+  it("lists only files that exist", () => {
+    // The copy loop throws on a missing entry, which fails the build rather
+    // than shipping a gap; this keeps the failure at test time instead.
+    const missing = deployedNames().filter((n) => !existsSync(join(SITE, n)));
+    expect(missing).toEqual([]);
+  });
+});
+
 describe("service worker precache", () => {
   const sw = readFileSync(join(SITE, "sw.js"), "utf8");
 

@@ -139,10 +139,18 @@ function deployAssets(): Plugin {
         "icon-192.png",
         "icon-512.png",
         "icon-maskable-512.png",
+        "apple-touch-icon.png",
       ];
       for (const name of sitePublic) {
         const src = resolve(REPO_ROOT, "site", name);
-        if (existsSync(src)) copyFileSync(src, resolve(DIST, name));
+        // Every entry is a committed file. Skipping a missing one silently is
+        // how `dist/` shipped without the pdf.js worker, and the SPA fallback
+        // then answers the request with `index.html` as `text/html` rather
+        // than a 404 — so nothing downstream notices either.
+        if (!existsSync(src)) {
+          throw new Error(`deployAssets: site/${name} is listed for deploy but does not exist`);
+        }
+        copyFileSync(src, resolve(DIST, name));
       }
 
       const playbooks = resolve(REPO_ROOT, "playbooks");
