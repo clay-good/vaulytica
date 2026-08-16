@@ -29,6 +29,18 @@ All notable changes to this project will be documented in this file. Format adap
   production-QA pack.
 
 ### Fixed
+- **A custom playbook's `result_hash` now covers the evidence, not just which
+  rules fired.** It was computed over `{rule_id, severity, section_id,
+  citation_provenance}` only, so the same rule firing on completely different
+  violating text at a different offset in the same section produced a
+  byte-identical hash — a consumer using it to answer "did the findings change"
+  saw no change when the evidence had changed entirely, which is the exact
+  contract the module's own "changes the result_hash when findings change" test
+  asserts. The clause text and document position are now part of the hashed
+  payload. Scope: this is the standalone `CustomPlaybookRun.result_hash`; the
+  engine-level `run.result_hash` from `runWithCustomPlaybook` already hashed the
+  full findings and was never affected. No golden carries this value and no test
+  pinned a literal, so there is zero churn.
 - **The handoff report no longer credits one author with another's words.** The
   forward text scans in `parseComments` / `parseRevisions` read a flat character
   window from each element's opening tag without regard for where that element

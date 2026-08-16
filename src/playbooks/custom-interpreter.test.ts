@@ -961,3 +961,46 @@ describe("resolvePositionsForDealValue — deal-size bands (add-negotiation-ladd
     expect(sh).not.toBe(lh);
   });
 });
+
+/**
+ * The hash must move when the evidence moves. Keying only on rule + severity +
+ * section made it blind to *what* was wrong: the same rule firing on different
+ * violating text at a different offset in the same section produced a
+ * byte-identical hash, so a consumer using it for change detection saw nothing.
+ */
+describe("result_hash covers the evidence, not just which rules fired", () => {
+  const arbitrationPlaybook = (): CustomPlaybook =>
+    pb({
+      custom_rules: [
+        {
+          id: "B",
+          title: "t",
+          description: "d",
+          severity: "warning",
+          assert: { kind: "clause_absent", pattern: "arbitration" },
+        },
+      ],
+    } as Partial<CustomPlaybook>);
+
+  const run = async (body: string) =>
+    runCustomPlaybook(arbitrationPlaybook(), {
+      tree: tree("X", body),
+      extracted: emptyExtracted(),
+    });
+
+  it("differs when the same rule fires on different text in the same section", async () => {
+    const a = await run("This requires binding arbitration in New York.");
+    const b = await run("Filler filler filler, then arbitration shall govern in California.");
+    expect(a.findings).toHaveLength(1);
+    expect(b.findings).toHaveLength(1);
+    expect(a.findings[0]!.rule_id).toBe(b.findings[0]!.rule_id);
+    expect(a.findings[0]!.excerpt.text).not.toBe(b.findings[0]!.excerpt.text);
+    expect(a.result_hash).not.toBe(b.result_hash);
+  });
+
+  it("is still byte-identical for the same document", async () => {
+    const a = await run("This requires binding arbitration in New York.");
+    const b = await run("This requires binding arbitration in New York.");
+    expect(a.result_hash).toBe(b.result_hash);
+  });
+});

@@ -308,10 +308,18 @@ export async function runCustomPlaybook(
   const result_hash = await sha256Hex(
     stableStringify({
       playbook_id: playbook.id,
+      // The evidence is part of the finding, so it is part of the hash. Keying
+      // on rule + severity + section alone made the hash blind to *what* was
+      // wrong: a rule firing on different violating text at a different offset
+      // in the same section produced a byte-identical hash, so a consumer using
+      // it to detect "did the findings change" saw no change when the evidence
+      // had changed completely.
       findings: findings.map((f) => ({
         rule_id: f.rule_id,
         severity: f.severity,
         section_id: f.excerpt.section_id ?? "",
+        position: f.document_position,
+        clause_text: f.excerpt.text,
         citation_provenance: f.citation_provenance,
       })),
       unevaluable: unevaluable.map((u) => ({ rule_id: u.rule_id, reason: u.reason })),
