@@ -326,3 +326,85 @@ describe("delivery report aggregate", () => {
     expect(report.findings).toHaveLength(0);
   });
 });
+
+/**
+ * Author attribution must not bleed between elements. The forward text scans
+ * in `parseComments` / `parseRevisions` used to read a flat character window
+ * from the open tag, ignoring where the element ended — so an element with no
+ * text of its own (an empty comment, a `w:del` holding only a drawing) walked
+ * past its own close and picked up the NEXT element's text. A pre-send report
+ * whose entire job is "who wrote what" then credited one author with another's
+ * words.
+ */
+describe("container: text-free elements do not borrow the next element's text", () => {
+  it("an empty comment reports no excerpt instead of the following comment's", () => {
+    const bytes = buildDocx({
+      document: documentXml(`<w:p><w:r><w:t>Body.</w:t></w:r></w:p>`),
+      comments:
+        `<?xml version="1.0"?><w:comments xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">` +
+        `<w:comment w:id="0" w:author="Alice"></w:comment>` +
+        `<w:comment w:id="1" w:author="Bob"><w:p><w:r><w:t>Redact the penalty.</w:t></w:r></w:p></w:comment>` +
+        `</w:comments>`,
+    });
+    const facts = readContainer(bytes, "docx", "Body.");
+    const alice = facts.comments.find((c) => c.author === "Alice");
+    const bob = facts.comments.find((c) => c.author === "Bob");
+    expect(alice?.excerpt).toBeUndefined();
+    expect(bob?.excerpt).toContain("Redact the penalty.");
+  });
+
+  it("a text-free revision reports no excerpt instead of the following revision's", () => {
+    const bytes = buildDocx({
+      document: documentXml(
+        `<w:p><w:del w:id="1" w:author="Alice"><w:r><w:drawing/></w:r></w:del>` +
+          `<w:ins w:id="2" w:author="Bob"><w:r><w:t>Confidential clause.</w:t></w:r></w:ins></w:p>`,
+      ),
+    });
+    const facts = readContainer(bytes, "docx", "Body.");
+    const alice = facts.revisions.find((r) => r.author === "Alice");
+    const bob = facts.revisions.find((r) => r.author === "Bob");
+    expect(alice?.excerpt).toBeUndefined();
+    expect(bob?.excerpt).toContain("Confidential clause.");
+  });
+
+  it("still reads the excerpt of an element that does carry its own text", () => {
+    const facts = readContainer(trackedChangesDocx(), "docx", "Ordinary visible text.");
+    const ins = facts.revisions.find((r) => r.kind === "insertion");
+    const del = facts.revisions.find((r) => r.kind === "deletion");
+    expect(ins?.excerpt).toContain("indemnify and hold harmless");
+    expect(del?.excerpt).toContain("net 30 days");
+  });
+});
+
+/**
+ * Dedup must key on the raw value, not the masked one. Masking reveals only a
+ * suffix, so distinct values collapse to identical masks — keying on the mask
+ * silently dropped the second value from both the count and the evidence,
+ * under-reporting how much sensitive data a document actually carries.
+ */
+describe("sensitive: distinct values sharing a mask are counted separately", () => {
+  it("two SSNs with the same last four are two facts", () => {
+    const facts = scanSensitive("SSN 123-45-6789 and also 234-56-6789 on file.");
+    expect(facts.filter((f) => f.type === "ssn")).toHaveLength(2);
+  });
+
+  it("two emails sharing the first character and domain are two facts", () => {
+    const facts = scanSensitive("Contact alice@example.com or adam@example.com for details.");
+    expect(facts.filter((f) => f.type === "email")).toHaveLength(2);
+  });
+
+  it("two phone numbers with the same last four are two facts", () => {
+    const facts = scanSensitive("Call 415-555-1234 or 617-555-1234 today.");
+    expect(facts.filter((f) => f.type === "phone")).toHaveLength(2);
+  });
+
+  it("still collapses the same value repeated, including across formats", () => {
+    const facts = scanSensitive("SSN 123-45-6789 appears again as 123-45-6789 and as 123456789.");
+    expect(facts.filter((f) => f.type === "ssn")).toHaveLength(1);
+  });
+
+  it("never puts an unmasked value in the output", () => {
+    const facts = scanSensitive("SSN 123-45-6789 and email alice@example.com.");
+    for (const f of facts) expect(f.masked).toContain("*");
+  });
+});

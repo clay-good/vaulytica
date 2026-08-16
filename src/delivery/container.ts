@@ -131,6 +131,32 @@ function inflateDocxParts(bytes: ArrayBuffer): Record<string, string> {
 
 const TAG_AUTHOR = /\bw:author="([^"]{0,200})"/;
 
+/**
+ * The slice of `xml` belonging to the element opened by `match`, capped at
+ * `budget` characters.
+ *
+ * The forward text scans below used to read a flat `budget`-character window
+ * from the open tag, with no regard for where the element actually ended. An
+ * element carrying no text of its own — an empty comment, a `w:del` holding
+ * only a drawing — therefore walked past its own close and picked up the NEXT
+ * element's text, attributing one author's words to another in a report whose
+ * whole job is to say who wrote what before a document goes out.
+ *
+ * Clamping at the closing tag makes a text-free element report no excerpt,
+ * which is the honest answer. A self-closing element (no closing tag within
+ * the budget) yields an empty window for the same reason.
+ */
+function elementWindow(xml: string, match: RegExpExecArray, tag: string, budget: number): string {
+  const bodyStart = match.index + match[0].length;
+  if (match[0].endsWith("/>")) return "";
+  const window = xml.slice(bodyStart, bodyStart + budget);
+  // The closing tag must be matched whole: a bare `indexOf("</w:del")` also
+  // hits `</w:delText>`, which would cut the window before the very text the
+  // caller is looking for.
+  const close = new RegExp(`</w:${tag}\\s*>`).exec(window);
+  return close === null ? window : window.slice(0, close.index);
+}
+
 /** Parse `w:ins` / `w:del` / `w:moveFrom` / `w:moveTo` revision elements. */
 function parseRevisions(xml: string): RevisionFact[] {
   const facts: RevisionFact[] = [];
@@ -142,8 +168,10 @@ function parseRevisions(xml: string): RevisionFact[] {
     const kind: RevisionFact["kind"] =
       tag === "ins" ? "insertion" : tag === "del" ? "deletion" : "move";
     const author = TAG_AUTHOR.exec(attrs)?.[1];
-    // Bounded forward scan for the revision's text, for location only.
-    const tail = xml.slice(m.index, m.index + 2000);
+    // Bounded forward scan for the revision's text, for location only —
+    // clamped to this element so a text-free revision cannot borrow the
+    // next one's words (see {@link elementWindow}).
+    const tail = elementWindow(xml, m, tag, 2000);
     const txt = /<w:(?:t|delText)\b[^>]{0,200}>([^<]{0,200})<\/w:(?:t|delText)>/.exec(tail)?.[1];
     facts.push(compact({ kind, author: clean(author), excerpt: excerpt(txt) }));
   }
@@ -159,7 +187,7 @@ function parseComments(xml: string): CommentFact[] {
   while ((m = open.exec(xml)) !== null && facts.length < MAX_FACTS) {
     const attrs = m[1] ?? "";
     const author = TAG_AUTHOR.exec(attrs)?.[1];
-    const tail = xml.slice(m.index, m.index + 4000);
+    const tail = elementWindow(xml, m, "comment", 4000);
     const txt = /<w:t\b[^>]{0,200}>([^<]{0,400})<\/w:t>/.exec(tail)?.[1];
     facts.push(compact({ author: clean(author), excerpt: excerpt(txt) }));
   }

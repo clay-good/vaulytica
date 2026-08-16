@@ -29,6 +29,38 @@ All notable changes to this project will be documented in this file. Format adap
   production-QA pack.
 
 ### Fixed
+- **The handoff report no longer credits one author with another's words.** The
+  forward text scans in `parseComments` / `parseRevisions` read a flat character
+  window from each element's opening tag without regard for where that element
+  ended. An element carrying no text of its own — an empty comment, a `w:del`
+  holding only a drawing — walked past its own close and picked up the **next**
+  element's text. In a document where Alice leaves an empty comment and Bob
+  writes "Redact the penalty," the report attributed Bob's sentence to Alice as
+  well, which is exactly backwards for a screen whose whole job is to say who
+  wrote what before a document goes out. The scan is now clamped to the
+  element's own closing tag (matched whole, so `</w:del>` does not also hit
+  `</w:delText>`), and a text-free element honestly reports no excerpt.
+- **The sensitive-data scan no longer merges distinct values that share a mask.**
+  Dedup keyed on the *masked* string, but masking reveals only a suffix — so
+  `alice@example.com` and `adam@example.com` both mask to `a***@example.com`,
+  and `123-45-6789` and `234-56-6789` both mask to `***-**-6789`. The second
+  value silently vanished from both the count and the evidence, under-reporting
+  how much sensitive data the document carried; every revealing type (SSN, EIN,
+  card, routing, phone, email) had the same collision. Dedup now keys on the raw
+  value with separators stripped and case folded, so the same value written two
+  ways still counts once while genuinely different values each count. Raw values
+  are used only as set keys and never leave the function — the output still
+  carries masks alone.
+- **CI is green again.** Every one of the last 100 runs — as far back as the API
+  lists (2026-08-08) — failed at `npm run format:check` on 18 committed files
+  that had drifted out of Prettier's formatting. Because the job runs under
+  `bash -e`, the steps after it (`npm run coverage`, `npm run build`) never
+  executed on any of those runs, hiding a second failure: the custom-playbook
+  corpus harness in
+  [`tests/integration/custom-playbook-harness.test.ts`](tests/integration/custom-playbook-harness.test.ts)
+  analyzes every `.docx` fixture on the default 5 s budget, which fits a plain
+  `npm run test` but times out under coverage's v8 instrumentation. Both are
+  fixed; the reformat is whitespace-only.
 - **`analyze --fail-on` no longer accepts a value it cannot enforce.** The flag
   is the CI gate, but an unrecognized severity was cast straight to `Severity`,
   leaving `SEVERITY_RANK[failOn]` undefined and making the gate comparison

@@ -39,11 +39,28 @@ const PHONE = /\b(?:\+?1[ .-]?)?\(?\d{3}\)?[ .-]\d{3}[ .-]\d{4}\b/g;
 export function scanSensitive(text: string): SensitiveFact[] {
   const body = text.length > MAX_SCAN_CHARS ? text.slice(0, MAX_SCAN_CHARS) : text;
   const out: SensitiveFact[] = [];
-  // Dedup identical masked values per type so a value repeated across the
-  // document counts once and the output stays bounded and meaningful.
+  // Dedup on the RAW value per type, so a value repeated across the document
+  // counts once and the output stays bounded and meaningful.
+  //
+  // Keying on the *masked* value instead silently merged genuinely different
+  // values: masking reveals only a suffix, so `alice@example.com` and
+  // `adam@example.com` both mask to `a***@example.com`, and `123-45-6789` and
+  // `234-56-6789` both mask to `***-**-6789` — the second value vanished from
+  // the count and the evidence, under-reporting how much sensitive data the
+  // document actually carries. Every revealing type (ssn/ein/card/routing/
+  // phone reveal a suffix, email reveals one character) had the same collision.
+  //
+  // Separators are stripped and case folded so the same value written two ways
+  // ("123-45-6789" / "123456789") still counts once. Raw values are used only
+  // as set keys and never leave this function — `out` carries masks alone.
   const seen = new Set<string>();
-  const push = (type: string, confidence: SensitiveFact["confidence"], masked: string): void => {
-    const key = `${type}${masked}`;
+  const push = (
+    type: string,
+    confidence: SensitiveFact["confidence"],
+    masked: string,
+    raw: string,
+  ): void => {
+    const key = `${type}:${raw.toLowerCase().replace(/[^a-z0-9@.]/g, "")}`;
     if (seen.has(key)) return;
     const perType = out.filter((f) => f.type === type).length;
     if (perType >= MAX_PER_TYPE) return;
@@ -55,26 +72,26 @@ export function scanSensitive(text: string): SensitiveFact[] {
 
   while ((m = SSN.exec(body)) !== null) {
     if (ssnStructurallyValid(m[1]!, m[2]!, m[3]!)) {
-      push("ssn", "high", maskDigits(m[0], 4));
+      push("ssn", "high", maskDigits(m[0], 4), m[0]);
     }
   }
   while ((m = EIN.exec(body)) !== null) {
-    push("ein", "medium", maskDigits(m[0], 3));
+    push("ein", "medium", maskDigits(m[0], 3), m[0]);
   }
   while ((m = CARD.exec(body)) !== null) {
-    if (luhnValid(m[0])) push("card", "high", maskDigits(m[0], 4));
+    if (luhnValid(m[0])) push("card", "high", maskDigits(m[0], 4), m[0]);
   }
   while ((m = ROUTING.exec(body)) !== null) {
-    if (abaValid(m[1]!)) push("routing", "medium", maskDigits(m[0], 2));
+    if (abaValid(m[1]!)) push("routing", "medium", maskDigits(m[0], 2), m[0]);
   }
   while ((m = DOB.exec(body)) !== null) {
-    push("dob", "medium", maskDigits(m[1]!, 0));
+    push("dob", "medium", maskDigits(m[1]!, 0), m[1]!);
   }
   while ((m = EMAIL.exec(body)) !== null) {
-    push("email", "low", maskEmail(m[0]));
+    push("email", "low", maskEmail(m[0]), m[0]);
   }
   while ((m = PHONE.exec(body)) !== null) {
-    push("phone", "low", maskDigits(m[0], 4));
+    push("phone", "low", maskDigits(m[0], 4), m[0]);
   }
 
   // Canonical order: by type then masked value, so the hash is stable.
