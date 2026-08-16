@@ -8,6 +8,11 @@
  *
  * The maskable variant has 12.5% safe-area padding around the
  * "central icon" per the PWA maskable-icon spec.
+ *
+ * `apple-touch-icon.png` is 180x180 and deliberately opaque: iOS renders
+ * an alpha channel as black, and it applies its own rounded-rect mask, so
+ * the artwork is composited on the theme background with only a small
+ * margin rather than the maskable safe area.
  */
 
 import sharp from "sharp";
@@ -41,6 +46,27 @@ async function main(): Promise<void> {
     .png()
     .toBuffer();
   await writeFile(join(SITE, "icon-maskable-512.png"), maskable);
+
+  // Apple touch icon: opaque, 180x180, artwork at ~84% of the canvas.
+  const appleTouch = await sharp({
+    create: {
+      width: 180,
+      height: 180,
+      channels: 4,
+      background: { r: 14, g: 17, b: 25, alpha: 1 },
+    },
+  })
+    .composite([
+      {
+        input: await sharp(svg).resize(152, 152).png().toBuffer(),
+        top: 14,
+        left: 14,
+      },
+    ])
+    .png()
+    .toBuffer();
+  await writeFile(join(SITE, "apple-touch-icon.png"), appleTouch);
+
   process.stdout.write("icons regenerated\n");
 }
 
