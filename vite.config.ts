@@ -1,5 +1,5 @@
 import { defineConfig, type Plugin } from "vite";
-import { resolve } from "node:path";
+import { resolve, sep } from "node:path";
 import { pickLatestDkb } from "./tools/dkb/resolve.js";
 import { createHash } from "node:crypto";
 import {
@@ -33,6 +33,36 @@ const V4_CORP_FAMILIES = new Set([
 ]);
 
 /**
+ * Map a dev-server request URL onto a file inside one of the mounted
+ * directories, or `null` when nothing matches.
+ *
+ * Exported so the containment rule is directly testable. This handler
+ * reads from disk itself, so Vite's own `server.fs.allow` never sees
+ * the request: without the `startsWith(root + sep)` check, `resolve()`
+ * follows `../` segments straight out of the mount and
+ * `GET /playbooks/../../../../etc/hosts` serves the real file — making
+ * `npm run dev --host` an arbitrary-file-read hole on the local
+ * network. Traversal is rejected before any `existsSync` probe, so the
+ * response can't be used as an oracle for what exists outside the mount
+ * either.
+ */
+export function resolveMountedFile(
+  mounts: Record<string, string>,
+  url: string,
+): string | null {
+  for (const prefix of Object.keys(mounts)) {
+    if (!url.startsWith(prefix + "/")) continue;
+    const tail = url.slice(prefix.length + 1).split("?")[0]!;
+    const root = mounts[prefix]!;
+    const path = resolve(root, tail);
+    if (path !== root && !path.startsWith(root + sep)) continue;
+    if (!existsSync(path) || !statSync(path).isFile()) continue;
+    return path;
+  }
+  return null;
+}
+
+/**
  * Dev middleware that serves directories that live outside the Vite
  * root (`site/`) as virtual public paths. Production builds copy the
  * same content into `dist/` via {@link deployAssets}.
@@ -52,17 +82,13 @@ function serveExtras(): Plugin {
     apply: "serve",
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
-        const url = req.url ?? "";
-        for (const prefix of Object.keys(mounts)) {
-          if (!url.startsWith(prefix + "/")) continue;
-          const tail = url.slice(prefix.length + 1).split("?")[0]!;
-          const path = resolve(mounts[prefix]!, tail);
-          if (!existsSync(path) || !statSync(path).isFile()) continue;
-          res.setHeader("Content-Type", contentType(path));
-          res.end(readFileSync(path));
+        const path = resolveMountedFile(mounts, req.url ?? "");
+        if (path === null) {
+          next();
           return;
         }
-        next();
+        res.setHeader("Content-Type", contentType(path));
+        res.end(readFileSync(path));
       });
     },
   };

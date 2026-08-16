@@ -29,6 +29,31 @@ All notable changes to this project will be documented in this file. Format adap
   production-QA pack.
 
 ### Fixed
+- **`analyze --fail-on` no longer accepts a value it cannot enforce.** The flag
+  is the CI gate, but an unrecognized severity was cast straight to `Severity`,
+  leaving `SEVERITY_RANK[failOn]` undefined and making the gate comparison
+  always false. `vaulytica analyze contract.docx --fail-on critcal` (a typo)
+  therefore exited **0** on a document whose findings would otherwise have
+  exited 2 — a CI job that believed it was gating on critical findings passed
+  everything, silently, with nothing printed. A bad or missing value is now a
+  usage error naming the accepted values, matching how `compare` has always
+  handled the identical flag. Four regression tests in
+  [`tools/cli/run.test.ts`](tools/cli/run.test.ts) cover an unknown value, a
+  near-miss typo, the flag with no value, and a case variant.
+- **The dev server no longer serves files outside its mounted directories.**
+  `serveExtras` mounts `playbooks/`, the latest DKB build, and the pdf.js worker
+  at virtual URL prefixes and reads them off disk itself — so Vite's own
+  `server.fs.allow` never saw those requests, and `resolve()` followed `../`
+  segments straight out of the mount. Against a live `npm run dev`,
+  `GET /playbooks/../../../../../../../../../../../etc/hosts` returned the real
+  file; `npm run dev --host` was an arbitrary-file-read hole on the local
+  network. The path resolution moved into an exported `resolveMountedFile` that
+  rejects anything not contained by its mount root (before any `existsSync`
+  probe, so responses can't be used as an existence oracle either), with 10
+  tests in
+  [`tests/integration/dev-mount-traversal.test.ts`](tests/integration/dev-mount-traversal.test.ts)
+  — including the sibling-directory prefix trap (`served-evil` vs `served`).
+  Dev-only; no production surface was affected.
 - **`npm run dev` serves a working app again.** `vite.config.ts` sets
   `root: "site"`, and `site/index.html` loaded the UI with
   `<script type="module" src="../src/ui/main.ts">`. A production build resolves

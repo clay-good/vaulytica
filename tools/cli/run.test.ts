@@ -9,6 +9,7 @@ import {
   documentLabel,
   renderCoherenceSummary,
   renderCoherenceMovementSummary,
+  runAnalyze,
 } from "./run.js";
 import {
   bundlePostureCoherence,
@@ -301,5 +302,36 @@ describe("ladder-pinned coherence baseline (spec-v15 — cross-ladder guard)", (
     expect(parsed.ladderHash).toBe(await ladderHash(ladder(1)));
     // The guard's reject path: a *different* ladder (looser floor) does not match.
     expect(parsed.ladderHash).not.toBe(await ladderHash(ladder(0.5)));
+  });
+});
+
+/**
+ * `--fail-on` is the CI gate. An unrecognized value used to be cast
+ * straight to `Severity`, which left `SEVERITY_RANK[args.failOn]`
+ * undefined and made the gate comparison always false: `analyze
+ * --fail-on critcal` (typo) exited 0 on a document full of critical
+ * findings, with nothing printed. A gate that silently stops gating is
+ * worse than no gate, so a bad value must be a usage error — the same
+ * way `compare` has always handled the identical flag.
+ */
+describe("analyze --fail-on validation", () => {
+  const doc = join(process.cwd(), "tests", "fixtures", "contracts", "pasted-mutual-nda.txt");
+
+  it("rejects an unrecognized severity instead of silently disabling the gate", async () => {
+    await expect(runAnalyze([doc, "--fail-on", "bogus-severity"])).rejects.toThrow(
+      /--fail-on must be critical\|warning\|info/,
+    );
+  });
+
+  it("rejects a near-miss typo", async () => {
+    await expect(runAnalyze([doc, "--fail-on", "critcal"])).rejects.toThrow(/--fail-on must be/);
+  });
+
+  it("rejects the flag with no value at all", async () => {
+    await expect(runAnalyze([doc, "--fail-on"])).rejects.toThrow(/--fail-on must be/);
+  });
+
+  it("rejects a case variant rather than accepting it loosely", async () => {
+    await expect(runAnalyze([doc, "--fail-on", "CRITICAL"])).rejects.toThrow(/--fail-on must be/);
   });
 });

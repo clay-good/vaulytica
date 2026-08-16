@@ -261,6 +261,8 @@ import {
 
 const SUPPORTED_EXT = new Set([".txt", ".md", ".markdown", ".text", ".docx", ".pdf"]);
 const SEVERITY_RANK: Record<Severity, number> = { critical: 0, warning: 1, info: 2 };
+/** Accepted `--fail-on` values, in the order the usage error lists them. */
+const VALID_SEVERITIES = Object.keys(SEVERITY_RANK) as Severity[];
 type Format = "json" | "sarif" | "html" | "md" | "csv" | "docx-comments";
 /**
  * Formats a machine consumes (`jq`, SARIF uploaders, spreadsheets). Stream
@@ -397,10 +399,20 @@ function parseArgs(argv: string[]): Args {
         args.out = val;
         i++;
         break;
-      case "--fail-on":
+      case "--fail-on": {
+        // An unrecognized severity used to be cast straight to `Severity`,
+        // leaving `SEVERITY_RANK[args.failOn]` undefined — so the gate
+        // comparison was always false and `analyze --fail-on critcal` (typo)
+        // exited 0 on a document full of critical findings. A CI gate that
+        // silently stops gating is worse than no gate, so a bad value is a
+        // usage error, matching `compare`'s handling of the same flag.
+        if (!VALID_SEVERITIES.includes(val as Severity)) {
+          throw new Error(`--fail-on must be ${VALID_SEVERITIES.join("|")}`);
+        }
         args.failOn = val as Severity;
         i++;
         break;
+      }
       case "--delivery":
         args.delivery = true;
         break;
