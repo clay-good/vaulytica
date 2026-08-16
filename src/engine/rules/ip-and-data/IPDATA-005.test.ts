@@ -70,7 +70,12 @@ describe("IPDATA-005 — HIPAA terms of art count as a regime reference", () => 
     ]) {
       expect(
         IPDATA005.check(
-          buildContext(["Data", "The Company processes personal data of users.", "Compliance", regime]),
+          buildContext([
+            "Data",
+            "The Company processes personal data of users.",
+            "Compliance",
+            regime,
+          ]),
         ),
         regime,
       ).toBeNull();

@@ -11,7 +11,8 @@ const CONVENIENCE =
 // ")" between the digit and "days" is tolerated, and it must be a termination
 // NOTICE period (followed by "notice") so an unrelated invoice deadline in the
 // same paragraph is not grabbed.
-const NOTICE = "\\(?(\\d{1,3})\\)?\\s+days?['’]?\\s*(?:(?:prior|written|advance|business|calendar)\\s+){0,4}notice";
+const NOTICE =
+  "\\(?(\\d{1,3})\\)?\\s+days?['’]?\\s*(?:(?:prior|written|advance|business|calendar)\\s+){0,4}notice";
 // The notice period is stated in EITHER order: trigger-first ("terminate for
 // convenience upon thirty (30) days' notice") and, just as often, count-first
 // ("Upon thirty (30) days' notice, either party may terminate for convenience").

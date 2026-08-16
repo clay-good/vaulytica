@@ -18,13 +18,19 @@ describe("PERS-002 — non-solicit present", () => {
 
   it("reads the clients / personnel / staff objects and the 'agrees not to solicit' form (v1.1.0)", () => {
     expect(fires("Executive shall not solicit any client of the Company.")).toBe(true);
-    expect(fires("Contractor agrees not to solicit any customers or clients of the Company.")).toBe(true);
+    expect(fires("Contractor agrees not to solicit any customers or clients of the Company.")).toBe(
+      true,
+    );
     expect(fires("Employee shall not induce any personnel to leave the Company.")).toBe(true);
     expect(fires("Executive shall not solicit members of the Company's staff.")).toBe(true);
   });
 
   it("does not fire on a procurement 'not solicit bids from vendors/suppliers' clause (v1.1.0)", () => {
-    expect(fires("The Company shall not solicit bids from unqualified vendors for the cafeteria.")).toBe(false);
-    expect(fires("Buyer agrees not to solicit proposals from suppliers outside the approved list.")).toBe(false);
+    expect(
+      fires("The Company shall not solicit bids from unqualified vendors for the cafeteria."),
+    ).toBe(false);
+    expect(
+      fires("Buyer agrees not to solicit proposals from suppliers outside the approved list."),
+    ).toBe(false);
   });
 });

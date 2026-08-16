@@ -87,7 +87,10 @@ describe("a disclaimed transfer needs no safeguard (v1.1.0)", () => {
   it("fires on a personal-information transfer stated without the word 'data' (v1.2.0)", () => {
     expect(
       IPDATA_008.check(
-        buildContext(["Transfers", "Personal information will be transferred to the United States."]),
+        buildContext([
+          "Transfers",
+          "Personal information will be transferred to the United States.",
+        ]),
       ),
     ).not.toBeNull();
   });

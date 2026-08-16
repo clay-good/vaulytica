@@ -59,7 +59,10 @@ describe("CHOICE-010 — asymmetric jury-trial waiver", () => {
   it("is silent on a bilateral possessive waiver — 'each party waives its right' (v1.1.0)", () => {
     expect(
       CHOICE_010.check(
-        buildContext(["Disputes", "Each party waives its right to a jury trial under this Agreement."]),
+        buildContext([
+          "Disputes",
+          "Each party waives its right to a jury trial under this Agreement.",
+        ]),
       ),
     ).toBeNull();
   });

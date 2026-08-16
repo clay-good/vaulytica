@@ -62,7 +62,10 @@ describe("CHOICE-011 — out-of-state choice-of-law on California worker", () =>
       "Employee's principal place of employment is in California.",
       "Executive's principal place of work is the State of California.",
     ]) {
-      expect(CHOICE_011.check(buildContext(["Parties", worker, "Governing Law", DEL])), worker).not.toBeNull();
+      expect(
+        CHOICE_011.check(buildContext(["Parties", worker, "Governing Law", DEL])),
+        worker,
+      ).not.toBeNull();
     }
   });
 

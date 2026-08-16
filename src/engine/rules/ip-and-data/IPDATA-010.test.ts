@@ -51,7 +51,10 @@ describe("IPDATA-010 — perpetual / irrevocable license overreach", () => {
   it("silent on an ordinary 'worldwide license to process your data' (below the 3-modifier gate)", () => {
     expect(
       IPDATA_010.check(
-        buildContext(["Data", "You grant us a worldwide license to process your data to provide the Services."]),
+        buildContext([
+          "Data",
+          "You grant us a worldwide license to process your data to provide the Services.",
+        ]),
       ),
     ).toBeNull();
   });

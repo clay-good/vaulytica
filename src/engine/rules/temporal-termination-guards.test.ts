@@ -95,8 +95,9 @@ describe("TEMP-008 / TEMP-009 — breach-cure period", () => {
   // presence rule previously missed entirely.
   it("TEMP-008 reads the count-first order and remedy/correct synonyms", () => {
     expect(
-      TEMP008.check(clause("The defaulting party shall have thirty (30) days to cure such breach."))!
-        .title,
+      TEMP008.check(
+        clause("The defaulting party shall have thirty (30) days to cure such breach."),
+      )!.title,
     ).toContain("30 days");
     expect(
       TEMP008.check(clause("Tenant shall have thirty (30) days to remedy the breach."))!.title,
@@ -104,16 +105,18 @@ describe("TEMP-008 / TEMP-009 — breach-cure period", () => {
     expect(
       TEMP008.check(clause("Borrower shall have ten (10) days to correct any default."))!.title,
     ).toContain("10 days");
-    expect(TEMP008.check(clause("A 5-day cure period applies to any monetary default."))!.title).toContain(
-      "5 days",
-    );
+    expect(
+      TEMP008.check(clause("A 5-day cure period applies to any monetary default."))!.title,
+    ).toContain("5 days");
   });
 
   it("TEMP-008 locks onto the adjacent cure count, not a leading notice count", () => {
     // The cure period is 30 days; the 60 days is the termination-notice period.
     expect(
       TEMP008.check(
-        clause("Either party may terminate on 60 days prior written notice and a 30-day cure period."),
+        clause(
+          "Either party may terminate on 60 days prior written notice and a 30-day cure period.",
+        ),
       )!.title,
     ).toContain("30 days");
   });
@@ -244,8 +247,14 @@ describe("TERM-001 — termination-for-convenience notice", () => {
 
   it("reads the count-first order — notice period stated before the trigger (v1.2.0)", () => {
     for (const [text, days] of [
-      ["Upon thirty (30) days' prior written notice, either party may terminate this Agreement for convenience.", 30],
-      ["Upon sixty (60) days' written notice, Customer may terminate this Agreement without cause.", 60],
+      [
+        "Upon thirty (30) days' prior written notice, either party may terminate this Agreement for convenience.",
+        30,
+      ],
+      [
+        "Upon sixty (60) days' written notice, Customer may terminate this Agreement without cause.",
+        60,
+      ],
     ] as const) {
       const f = TERM001.check(clause(text));
       expect(f, `MISSED count-first: ${text}`).not.toBeNull();

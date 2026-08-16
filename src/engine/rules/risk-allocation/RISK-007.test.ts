@@ -31,19 +31,25 @@ describe("RISK-007 — consequential damages waiver present", () => {
 
   it("reads the 'indirect' and 'exemplary' damage synonyms (v1.2.0)", () => {
     expect(fires("In no event shall either party be liable for any indirect damages.")).toBe(true);
-    expect(fires("Neither party shall be liable for any indirect or exemplary damages.")).toBe(true);
+    expect(fires("Neither party shall be liable for any indirect or exemplary damages.")).toBe(
+      true,
+    );
     expect(fires("Company shall not be liable for exemplary damages of any kind.")).toBe(true);
     expect(fires("No indirect damages shall be recoverable under this Agreement.")).toBe(true);
   });
 
   it("reads a single-type 'in no event … liable for' waiver (v1.2.0)", () => {
     expect(fires("In no event shall Vendor be liable for any consequential damages.")).toBe(true);
-    expect(fires("Under no circumstances shall Provider be liable for special damages.")).toBe(true);
+    expect(fires("Under no circumstances shall Provider be liable for special damages.")).toBe(
+      true,
+    );
   });
 
   it("does not treat an 'in no event … liable for more than' cap as a damages waiver (v1.2.0)", () => {
     expect(
-      fires("In no event shall Vendor be liable for more than the fees paid in the prior twelve months."),
+      fires(
+        "In no event shall Vendor be liable for more than the fees paid in the prior twelve months.",
+      ),
     ).toBe(false);
   });
 

@@ -46,10 +46,7 @@ const V4_CORP_FAMILIES = new Set([
  * response can't be used as an oracle for what exists outside the mount
  * either.
  */
-export function resolveMountedFile(
-  mounts: Record<string, string>,
-  url: string,
-): string | null {
+export function resolveMountedFile(mounts: Record<string, string>, url: string): string | null {
   for (const prefix of Object.keys(mounts)) {
     if (!url.startsWith(prefix + "/")) continue;
     const tail = url.slice(prefix.length + 1).split("?")[0]!;

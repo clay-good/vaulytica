@@ -41,14 +41,20 @@ describe("PERS-005 — non-compete clause present", () => {
       "Executive will not compete with the Company during the term.",
       "Employee agrees not to compete with the Company for two years.",
     ]) {
-      expect(PERS_005.check(buildContext(["Restrictive Covenants", clause])), clause).not.toBeNull();
+      expect(
+        PERS_005.check(buildContext(["Restrictive Covenants", clause])),
+        clause,
+      ).not.toBeNull();
     }
   });
 
   it("stays silent on a disclaimer of a non-competition covenant (v1.1.0)", () => {
     expect(
       PERS_005.check(
-        buildContext(["Restrictive Covenants", "This Agreement contains no non-competition covenant of any kind."]),
+        buildContext([
+          "Restrictive Covenants",
+          "This Agreement contains no non-competition covenant of any kind.",
+        ]),
       ),
     ).toBeNull();
   });

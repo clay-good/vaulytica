@@ -12,9 +12,9 @@ const fires = (s: string) => RISK_013.check(buildContext(["Force Majeure", s])) 
 
 describe("RISK-013 — force majeure clause present", () => {
   it("fires on the literal 'force majeure' term", () => {
-    expect(fires("Neither party shall be liable for delays caused by an event of force majeure.")).toBe(
-      true,
-    );
+    expect(
+      fires("Neither party shall be liable for delays caused by an event of force majeure."),
+    ).toBe(true);
   });
 
   it("reads the descriptive 'beyond … reasonable control' form (v1.1.0)", () => {
@@ -24,14 +24,20 @@ describe("RISK-013 — force majeure clause present", () => {
       ),
     ).toBe(true);
     expect(
-      fires("A party shall be excused where performance is prevented by causes beyond their reasonable control."),
+      fires(
+        "A party shall be excused where performance is prevented by causes beyond their reasonable control.",
+      ),
     ).toBe(true);
     expect(
-      fires("Each party is excused from performance for events beyond the reasonable control of the parties."),
+      fires(
+        "Each party is excused from performance for events beyond the reasonable control of the parties.",
+      ),
     ).toBe(true);
-    expect(fires("Delays arising from causes beyond the control of either party shall excuse performance.")).toBe(
-      true,
-    );
+    expect(
+      fires(
+        "Delays arising from causes beyond the control of either party shall excuse performance.",
+      ),
+    ).toBe(true);
   });
 
   it("reads the plural 'acts of God' (v1.1.0)", () => {
@@ -40,7 +46,9 @@ describe("RISK-013 — force majeure clause present", () => {
 
   it("does not fire on unrelated 'control' language", () => {
     expect(
-      fires("The Company shall retain control of the board and reasonable oversight of operations."),
+      fires(
+        "The Company shall retain control of the board and reasonable oversight of operations.",
+      ),
     ).toBe(false);
   });
 

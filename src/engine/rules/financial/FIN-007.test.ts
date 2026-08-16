@@ -24,19 +24,23 @@ describe("FIN-007 — most-favored-nation clause present", () => {
   });
 
   it("reads the commercial 'most favored customer' and comparison forms (v1.2.0)", () => {
-    expect(fires("Vendor grants Customer most favored customer pricing for the Products.")).toBe(true);
+    expect(fires("Vendor grants Customer most favored customer pricing for the Products.")).toBe(
+      true,
+    );
     expect(fires("Buyer shall be treated as Seller's most favoured customer.")).toBe(true);
-    expect(fires("Pricing shall be no less favorable than the pricing offered to any other customer.")).toBe(
-      true,
-    );
-    expect(fires("Customer shall receive rates no less favorable than those offered to any other client.")).toBe(
-      true,
-    );
+    expect(
+      fires("Pricing shall be no less favorable than the pricing offered to any other customer."),
+    ).toBe(true);
+    expect(
+      fires(
+        "Customer shall receive rates no less favorable than those offered to any other client.",
+      ),
+    ).toBe(true);
   });
 
   it("does not fire on a legal-compliance 'no less favorable than required by law' floor (v1.2.0)", () => {
-    expect(fires("Employees shall receive treatment no less favorable than required by applicable law.")).toBe(
-      false,
-    );
+    expect(
+      fires("Employees shall receive treatment no less favorable than required by applicable law."),
+    ).toBe(false);
   });
 });

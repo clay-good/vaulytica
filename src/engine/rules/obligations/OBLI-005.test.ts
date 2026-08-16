@@ -13,7 +13,10 @@ describe("OBLI-005 — negative covenants list", () => {
   it("fires on the 'shall not' / 'may not' baseline", () => {
     expect(
       OBLI_005.check(
-        buildContext(["Restrictions", "Licensee shall not sublicense the Software to any third party."]),
+        buildContext([
+          "Restrictions",
+          "Licensee shall not sublicense the Software to any third party.",
+        ]),
       ),
     ).not.toBeNull();
   });

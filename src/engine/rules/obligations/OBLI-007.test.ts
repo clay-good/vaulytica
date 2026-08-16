@@ -51,7 +51,10 @@ describe("OBLI-007 — Material Adverse Change clause", () => {
     ).not.toBeNull();
     expect(
       OBLI_007.check(
-        buildContext(["Conditions", "A materially adverse change in the business permits the Buyer to terminate."]),
+        buildContext([
+          "Conditions",
+          "A materially adverse change in the business permits the Buyer to terminate.",
+        ]),
       ),
     ).not.toBeNull();
   });

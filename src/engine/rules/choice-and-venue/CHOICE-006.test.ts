@@ -15,8 +15,12 @@ describe("CHOICE-006 — arbitration clause present", () => {
   });
 
   it("reads 'arbitral tribunal' / 'arbitrators' / 'arbitrate' (v1.1.0)", () => {
-    expect(fires("All disputes shall be finally settled by an arbitral tribunal seated in Geneva.")).toBe(true);
-    expect(fires("The dispute shall be referred to three arbitrators under the ICC Rules.")).toBe(true);
+    expect(
+      fires("All disputes shall be finally settled by an arbitral tribunal seated in Geneva."),
+    ).toBe(true);
+    expect(fires("The dispute shall be referred to three arbitrators under the ICC Rules.")).toBe(
+      true,
+    );
     expect(fires("The parties agree to arbitrate any dispute.")).toBe(true);
   });
 

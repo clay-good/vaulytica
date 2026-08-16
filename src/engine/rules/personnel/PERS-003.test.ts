@@ -46,17 +46,25 @@ describe("PERS-003 — IC classification risk", () => {
   });
 
   it("flags paid-leave / at-will-employment / employer-withholding signals (v1.2.0)", () => {
-    expect(inIC("Contractor shall be entitled to paid time off of fifteen days per year.")).toBe(true);
+    expect(inIC("Contractor shall be entitled to paid time off of fifteen days per year.")).toBe(
+      true,
+    );
     expect(inIC("Contractor shall accrue PTO at the standard company rate.")).toBe(true);
-    expect(inIC("This is an at-will employment relationship terminable by either party.")).toBe(true);
+    expect(inIC("This is an at-will employment relationship terminable by either party.")).toBe(
+      true,
+    );
     expect(
       inIC("The Company shall withhold federal and state income taxes from all payments."),
     ).toBe(true);
   });
 
   it("does not flag genuine IC language — own taxes, discretionary vacation, terminate-at-will (v1.2.0)", () => {
-    expect(inIC("Contractor is solely responsible for its own taxes and receives no benefits.")).toBe(false);
-    expect(inIC("Contractor may take vacation at its own discretion without Company approval.")).toBe(false);
+    expect(
+      inIC("Contractor is solely responsible for its own taxes and receives no benefits."),
+    ).toBe(false);
+    expect(
+      inIC("Contractor may take vacation at its own discretion without Company approval."),
+    ).toBe(false);
     expect(inIC("Either party may terminate this Agreement at will upon notice.")).toBe(false);
   });
 });
