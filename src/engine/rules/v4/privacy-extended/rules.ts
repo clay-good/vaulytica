@@ -62,7 +62,7 @@ const COOKIE_NOTICE_RULES: Rule[] = [
   }),
   presence({
     id: "PRV-002",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Consent mechanism (opt-in for non-essential)",
     description:
       "Cookie notice must disclose the consent mechanism for non-essential cookies (banner / preference center).",
@@ -81,7 +81,12 @@ const COOKIE_NOTICE_RULES: Rule[] = [
       // excludes the "without/no (your/our/the) consent" form while keeping
       // "after you provide consent" and "consent through our banner" (the
       // fake-carve-out false-negative class, keyed on consent).
-      /(?<!\bwithout\s)(?<!\bwithout\s(?:your|our|the)\s)(?<!\bno\s)(?<!\bno\s(?:prior\s|further\s)?)consent/i,
+      //
+      // v1.1.0's lookbehinds caught only negation that PRECEDES the noun. The
+      // copula form puts it after — "Consent is not required for these
+      // cookies" — the same denial, and it was counting as a consent
+      // mechanism, so the rule stayed silent on it.
+      /(?<!\bwithout\s)(?<!\bwithout\s(?:your|our|the)\s)(?<!\bno\s)(?<!\bno\s(?:prior\s|further\s)?)consent(?!\s+(?:is|are|was|were|shall|will|may)\s+not\s+(?:be\s+)?(?:required|obtained|sought|necessary|needed))/i,
       /(banner|preference\s+center|cookie\s+preference)/i,
       /(accept|reject|manage)\s+(?:all\s+)?cookies/i,
     ],
@@ -127,7 +132,7 @@ const COOKIE_NOTICE_RULES: Rule[] = [
   }),
   presence({
     id: "PRV-005",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "CCPA / CPRA opt-out (Sale / Share / Cross-context targeted advertising)",
     description:
       "Cookie notice for CCPA / CPRA-covered businesses must explain the right to opt out of sale / share / cross-context targeted advertising (GPC support).",
@@ -156,7 +161,10 @@ const COOKIE_NOTICE_RULES: Rule[] = [
       // lookbehind excludes the "not provide/offer an opt-out" form while
       // keeping "click to opt out" and "your opt-out rights" (the
       // fake-carve-out false-negative class, on the presence side).
-      /(?<!\b(?:not|never)\s(?:provide|offer|honou?r|include|support|have)\s(?:any\s|an\s|a\s)?)(?:opt.?out)/i,
+      // Same gap as PRV-002: the lookbehind misses the copula form "An opt-out
+      // is not offered for the sale of your data", which denies the right the
+      // rule checks for and was reading as offering it.
+      /(?<!\b(?:not|never)\s(?:provide|offer|honou?r|include|support|have)\s(?:any\s|an\s|a\s)?)(?:opt.?out)(?!\s+(?:is|are|was|were)\s+not\s+(?:currently\s+)?(?:offered|provided|available|honou?red|supported))/i,
       /(gpc|global\s+privacy\s+control|cross.context)/i,
     ],
     default_severity: "warning",

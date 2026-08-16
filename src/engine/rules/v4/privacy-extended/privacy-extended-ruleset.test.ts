@@ -246,3 +246,54 @@ describe("PRV-002 — 'without your consent' is the violation, not the mechanism
     ).toBe(false);
   });
 });
+
+describe("PRV-002 / PRV-005 — a right denied after the noun, not before", () => {
+  const fires = async (id: string, b: string) =>
+    (
+      await runEngine({
+        rules: PRIVACY_EXTENDED_RULES,
+        ctx: { ...buildContext(["Cookie Notice", b]), playbook: COOKIE_PB },
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === id);
+
+  // Both rules already guarded the pre-posed denial ("without your consent",
+  // "we do not offer an opt-out") with a lookbehind. The copula form puts the
+  // negation after the noun, so the denial read as the right being offered and
+  // the rule went silent on the document that most needed it.
+  it("PRV-002 (v1.2.0) fires when consent is declared unnecessary", async () => {
+    expect(
+      await fires(
+        "PRV-002",
+        "We set advertising cookies on your device to track you across sites. Consent is not required for these cookies.",
+      ),
+    ).toBe(true);
+  });
+
+  it("PRV-002 stays silent on a real consent mechanism", async () => {
+    expect(
+      await fires(
+        "PRV-002",
+        "We set non-essential cookies only after you give consent through our cookie banner, and you may withdraw consent at any time.",
+      ),
+    ).toBe(false);
+  });
+
+  it("PRV-005 (v1.3.0) fires when the opt-out is declared unavailable", async () => {
+    expect(
+      await fires(
+        "PRV-005",
+        "This site is based in California, USA. We sell your data to advertising partners. An opt-out is not offered for the sale of your data.",
+      ),
+    ).toBe(true);
+  });
+
+  it("PRV-005 stays silent when the opt-out is genuinely offered", async () => {
+    expect(
+      await fires(
+        "PRV-005",
+        "California residents may exercise a Do Not Sell or Share opt-out; we honor Global Privacy Control signals for cross-context behavioral advertising.",
+      ),
+    ).toBe(false);
+  });
+});
