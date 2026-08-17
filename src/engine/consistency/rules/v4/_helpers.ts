@@ -161,37 +161,35 @@ export function effectiveDateOf(doc: ConsistencyDocument): string | null {
  * fee-multiple caps ("12 months of fees") the function returns null —
  * those aren't directly comparable as dollar amounts.
  */
-export function firstLiabilityCap(doc: ConsistencyDocument): {
-  amount_usd: number;
-  raw_text: string;
-  section_id?: string;
-  start: number;
-  end: number;
-} | null {
-  // The body-text scan looks for the cap anchor; the matched paragraph
-  // then surfaces its highest dollar amount as the cap value.
-  const tree = doc.tree;
-  const anchorRe =
-    /\b(aggregate\s+liability|liability\s+(?:shall|will)\s+not\s+exceed|limitation\s+of\s+liability)\b/i;
-  type Hit = { paragraph_text: string; section_id?: string; start: number; end: number };
-  const slot: { value: Hit | null } = { value: null };
-  walkParagraphs(tree, (p) => {
-    if (slot.value) return;
-    if (anchorRe.test(p.text)) {
-      slot.value = { paragraph_text: p.text, section_id: p.section_id, start: p.start, end: p.end };
-    }
-  });
-  if (!slot.value) return null;
-  const found: Hit = slot.value;
-  // Find the largest $X dollar amount in the paragraph.
-  const amounts = [
-    ...found.paragraph_text.matchAll(
-      /\$\s*([\d,]+(?:\.\d+)?)\s*(billion|bn|million|thousand|m|k)?\b/gi,
-    ),
-  ];
-  if (amounts.length === 0) return null;
+const DOLLAR_AMOUNT_RE = /\$\s*([\d,]+(?:\.\d+)?)\s*(billion|bn|million|thousand|m|k)?\b/gi;
+
+/**
+ * The slice of `text` a cap amount may legitimately live in: from the cap
+ * anchor to the end of that sentence, cut short at a connective that shifts
+ * the subject away from the cap.
+ *
+ * Both cap parsers used to take the LARGEST `$` figure anywhere in the matched
+ * paragraph. Contracts routinely name a bigger, unrelated figure right beside
+ * the cap — insurance coverage the party "separately maintains", an amount a
+ * carve-out is "exclusive of" — and that figure won, so two documents stating
+ * the same cap were reported as conflicting.
+ */
+function capAmountWindow(text: string, anchorIndex: number): string {
+  const rest = text.slice(anchorIndex);
+  // A "." ends the sentence only before whitespace + a capital/digit, so
+  // "Section 14." and "$2.5" are not boundaries.
+  const sentenceEnd = rest.search(/\.(?=\s+[A-Z0-9]|\s*$)/);
+  const bounded = sentenceEnd === -1 ? rest : rest.slice(0, sentenceEnd + 1);
+  const shift = bounded.search(
+    /\b(?:except|exclusive\s+of|other\s+than|provided\s*,?\s*(?:that|however)|separately|in\s+addition\s+to)\b/i,
+  );
+  return shift === -1 ? bounded : bounded.slice(0, shift);
+}
+
+/** The largest `$` amount in `text`, scaled by its magnitude suffix; 0 if none. */
+function maxDollarAmount(text: string): number {
   let max = 0;
-  for (const m of amounts) {
+  for (const m of text.matchAll(DOLLAR_AMOUNT_RE)) {
     const num = Number(m[1]!.replace(/,/g, ""));
     if (!Number.isFinite(num)) continue;
     const suffix = (m[2] ?? "").toLowerCase();
@@ -205,6 +203,55 @@ export function firstLiabilityCap(doc: ConsistencyDocument): {
             : num;
     if (scaled > max) max = scaled;
   }
+  return max;
+}
+
+/**
+ * The cap amount for a paragraph anchored at `anchorIndex`: read from the cap
+ * window, falling back to the whole paragraph when the window holds no figure
+ * (a cap stated ahead of its anchor must still be found).
+ */
+function capAmountFrom(text: string, anchorIndex: number): number {
+  const windowed = maxDollarAmount(capAmountWindow(text, anchorIndex));
+  return windowed > 0 ? windowed : maxDollarAmount(text);
+}
+
+export function firstLiabilityCap(doc: ConsistencyDocument): {
+  amount_usd: number;
+  raw_text: string;
+  section_id?: string;
+  start: number;
+  end: number;
+} | null {
+  // The body-text scan looks for the cap anchor; the matched paragraph
+  // then surfaces its highest dollar amount as the cap value.
+  const tree = doc.tree;
+  const anchorRe =
+    /\b(aggregate\s+liability|liability\s+(?:shall|will)\s+not\s+exceed|limitation\s+of\s+liability)\b/i;
+  type Hit = {
+    paragraph_text: string;
+    anchor_index: number;
+    section_id?: string;
+    start: number;
+    end: number;
+  };
+  const slot: { value: Hit | null } = { value: null };
+  walkParagraphs(tree, (p) => {
+    if (slot.value) return;
+    const anchor = anchorRe.exec(p.text);
+    if (anchor) {
+      slot.value = {
+        paragraph_text: p.text,
+        anchor_index: anchor.index,
+        section_id: p.section_id,
+        start: p.start,
+        end: p.end,
+      };
+    }
+  });
+  if (!slot.value) return null;
+  const found: Hit = slot.value;
+  const max = capAmountFrom(found.paragraph_text, found.anchor_index);
   if (max === 0) return null;
   return {
     amount_usd: max,
@@ -308,13 +355,21 @@ export function firstIndemnityCap(doc: ConsistencyDocument): {
   // not missed by the cross-document cap-stacking check.
   const limitRe =
     /\b(not\s+to\s+exceed|(?:shall|will|may|can)\s+not\s+exceed|in\s+no\s+event\s+[^.]{0,60}\bexceed|capped\s+at|limited\s+to|up\s+to|maximum\s+(?:aggregate\s+)?(?:amount|liability))\b/i;
-  type Hit = { text: string; section_id?: string; start: number; end: number };
+  type Hit = {
+    text: string;
+    anchor_index: number;
+    section_id?: string;
+    start: number;
+    end: number;
+  };
   const slot: { value: Hit | null } = { value: null };
   forEachParagraph(doc.tree, (p) => {
     if (slot.value) return;
-    if (capRe.test(p.text) && limitRe.test(p.text) && /\$/.test(p.text)) {
+    const anchor = capRe.exec(p.text);
+    if (anchor && limitRe.test(p.text) && /\$/.test(p.text)) {
       slot.value = {
         text: p.text,
+        anchor_index: anchor.index,
         section_id: p.section.id || undefined,
         start: p.start,
         end: p.end,
@@ -323,24 +378,7 @@ export function firstIndemnityCap(doc: ConsistencyDocument): {
   });
   if (!slot.value) return null;
   const found: Hit = slot.value;
-  const amounts = [
-    ...found.text.matchAll(/\$\s*([\d,]+(?:\.\d+)?)\s*(billion|bn|million|thousand|m|k)?\b/gi),
-  ];
-  let max = 0;
-  for (const m of amounts) {
-    const num = Number(m[1]!.replace(/,/g, ""));
-    if (!Number.isFinite(num)) continue;
-    const s = (m[2] ?? "").toLowerCase();
-    const scaled =
-      s === "billion" || s === "bn"
-        ? num * 1_000_000_000
-        : s === "million" || s === "m"
-          ? num * 1_000_000
-          : s === "thousand" || s === "k"
-            ? num * 1_000
-            : num;
-    if (scaled > max) max = scaled;
-  }
+  const max = capAmountFrom(found.text, found.anchor_index);
   if (max === 0) return null;
   return {
     amount_usd: max,
@@ -576,7 +614,16 @@ export function liabilityCarveouts(
     // paragraph. Otherwise categories named in an unrelated earlier sentence
     // (e.g. an indemnity sentence in the same clause) are fabricated into a
     // carveout set that no cap actually excepts.
-    const clause = p.text.slice(ex.index);
+    //
+    // The right edge needs the same bound: an open-ended slice ran on into a
+    // LATER unrelated sentence ("… gross negligence. Except as required by
+    // applicable law, breach-notification obligations are governed by Section
+    // 12 …") and fabricated a "data breach" carveout the cap never excepted.
+    // Stop at the next sentence, but not at a ";" — carveout enumerations are
+    // routinely semicolon-separated lists.
+    const rest = p.text.slice(ex.index);
+    const sentenceEnd = rest.search(/\.(?=\s+[A-Z0-9]|\s*$)/);
+    const clause = sentenceEnd === -1 ? rest : rest.slice(0, sentenceEnd + 1);
     const set = CARVEOUT_TERMS.filter(([, re]) => re.test(clause)).map(([label]) => label);
     if (set.length === 0) return;
     slot.value = { text: p.text, section_id: p.section_id, start: p.start, end: p.end, set };

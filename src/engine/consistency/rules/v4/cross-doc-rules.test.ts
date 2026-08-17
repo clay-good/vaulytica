@@ -935,3 +935,103 @@ describe("CROSS-CURRENCY-001", () => {
     expect(run.findings).toHaveLength(0);
   });
 });
+
+/* -------- cap/carveout scans stay inside their own clause -------- */
+
+describe("cap and carveout scans do not absorb a neighbouring clause", () => {
+  it("CROSS-AMOUNT-001 ignores a larger insurance figure beside the cap", async () => {
+    // Both documents cap liability at $500,000. The MSA also names $5,000,000
+    // of cyber insurance in the same sentence; taking the paragraph's largest
+    // figure reported that as the MSA's cap and fabricated a conflict.
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Limitation of Liability",
+      "In no event shall either party's aggregate liability exceed $500,000, except that the parties separately maintain cyber insurance coverage of $5,000,000 for incident response.",
+    ]);
+    const sow = makeDoc("sow", "sow", [
+      "Limitation of Liability",
+      "In no event shall either party's aggregate liability exceed $500,000.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_AMOUNT_001],
+      documents: [msa, sow],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+  });
+
+  it("CROSS-AMOUNT-001 still fires on a real conflict, reporting the cap not the insurance", async () => {
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Limitation of Liability",
+      "In no event shall either party's aggregate liability exceed $2,000,000, except that the parties separately maintain cyber insurance coverage of $9,000,000.",
+    ]);
+    const sow = makeDoc("sow", "sow", [
+      "Limitation of Liability",
+      "In no event shall either party's aggregate liability exceed $500,000.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_AMOUNT_001],
+      documents: [msa, sow],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(1);
+    expect(run.findings[0]!.title).toContain("$2,000,000");
+    expect(run.findings[0]!.title).not.toContain("$9,000,000");
+  });
+
+  it("CROSS-INDEMNITY-001 ignores an amount the cap is stated to be exclusive of", async () => {
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Indemnification",
+      "Vendor's indemnification obligations under this Section shall not exceed $500,000 in the aggregate, exclusive of the $5,000,000 of third-party cyber liability insurance Vendor separately maintains under Section 14.",
+    ]);
+    const sow = makeDoc("sow", "sow", [
+      "Indemnification",
+      "Vendor's indemnification obligations under this Section shall not exceed $500,000 in the aggregate.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_INDEMNITY_001],
+      documents: [msa, sow],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+  });
+
+  it("CROSS-CARVEOUT-001 does not read a later unrelated sentence as a carveout", async () => {
+    // Both documents carve out only gross negligence. The MSA's next sentence
+    // opens "Except as required by applicable law" and mentions a security
+    // breach — which an open-ended clause scan turned into a "data breach"
+    // carveout that the cap never excepted.
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Limitation of Liability",
+      "The foregoing limitation of liability shall not apply to claims arising from gross negligence. Except as required by applicable law, Vendor's notification obligations following a security breach are governed exclusively by Section 12 and are not part of this liability cap.",
+    ]);
+    const dpa = makeDoc("dpa", "dpa-controller-processor", [
+      "Limitation of Liability",
+      "The foregoing limitation of liability shall not apply to claims arising from gross negligence.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_CARVEOUT_001],
+      documents: [msa, dpa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+  });
+
+  it("CROSS-CARVEOUT-001 still reads a semicolon-separated carveout list in full", async () => {
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Limitation of Liability",
+      "The foregoing limitation of liability shall not apply to claims arising from gross negligence; breach of confidentiality; or infringement of intellectual property rights.",
+    ]);
+    const dpa = makeDoc("dpa", "dpa-controller-processor", [
+      "Limitation of Liability",
+      "The foregoing limitation of liability shall not apply to claims arising from gross negligence.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_CARVEOUT_001],
+      documents: [msa, dpa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(1);
+    expect(run.findings[0]!.description).toContain("IP infringement");
+    expect(run.findings[0]!.description).toContain("confidentiality");
+  });
+});
