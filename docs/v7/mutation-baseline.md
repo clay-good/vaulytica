@@ -24,16 +24,18 @@ For most of this file's history the list named only `x.test.ts` per mutated `x.t
 
 | File | Mutation score | Killed | Survived | Timeout | No coverage |
 |---|---:|---:|---:|---:|---:|
-| **All (scoped)** | **55.51%** | 1,443 | 1,143 | 58 | 60 |
+| **All (scoped)** | **56.94%** | 1,476 | 1,101 | 59 | 60 |
 | `amounts.ts` | 64.74% | 228 | 124 | 7 | 4 |
+| `jurisdictions.ts` | 62.81% | 229 | 141 | 21 | 7 |
 | `dates.ts` | 60.91% | 287 | 174 | 9 | 16 |
-| `jurisdictions.ts` | 58.16% | 207 | 157 | 21 | 7 |
-| `parties.ts` | 55.99% | 287 | 222 | 12 | 13 |
+| `parties.ts` | 58.99% | 292 | 199 | 13 | 13 |
 | `sections.ts` | 51.92% | 27 | 21 | 0 | 4 |
-| `obligations.ts` | 48.41% | 158 | 175 | 9 | 3 |
+| `obligations.ts` | 49.71% | 164 | 172 | 9 | 3 |
 | `crossrefs.ts` | 46.80% | 249 | 270 | 0 | 13 |
 
-(Mutation score = (killed + timeout) ÷ (killed + timeout + survived + no-coverage). The "covered" score, excluding no-coverage mutants, is 56.77% overall. A further 25 mutants — 24 of them in `obligations.ts` — ended as runtime **errors**, where the injected fault crashed the test runner outright rather than failing an assertion; Stryker excludes those from the score, and they are not evidence either way about the tests.)
+(Mutation score = (killed + timeout) ÷ (killed + timeout + survived + no-coverage). The "covered" score, excluding no-coverage mutants, is 58.23% overall.
+
+A further 25 mutants — 24 of them in `obligations.ts` — ended as runtime **errors**: the injected fault empties the `MODALS` constant, which makes `MODAL_RE` match the empty string, which makes `splitModalClauses`' `exec` loop stop advancing and hang the runner. Stryker excludes errors from the score. **This is a mutation-only artifact, not a product hazard** — every real `MODALS` entry is non-empty, so the pattern cannot match zero-length on any input; the `fuzz-boundary` guard exercises that same loop with the real constants. Note the consequence for the number: whether those 24 land as "error" or as "timeout" varies between runs, and timeouts count as killed — so `obligations.ts` oscillates a few points (49.71% here, 52.96% on the immediately preceding run of identical code) for that reason alone. Read it with that tolerance.)
 
 **Read the aggregate against its scope, never across scopes** — and now also against its include list, since the same code scores differently depending on which covering suites run.
 
@@ -46,7 +48,8 @@ For most of this file's history the list named only `x.test.ts` per mutated `x.t
 | 2026-08-17 | dates + amounts | 56.16% | 54 | Features covered as though entirely untested: `postfixCurrency`, `DAY_MONTH_YEAR`, `CURRENCY_OVERRIDE`. The first two already had dedicated suites that the config never ran. |
 | 2026-08-17 | + crossrefs + sections | 52.34% | 50 | Scope widened; see the note above on comparing scores across scopes. |
 | 2026-08-17 | + crossrefs + sections | **53.94%** | 52 | Pinned each external-citation branch in crossrefs (41 rows). crossrefs 42.86% → 46.80%. |
-| 2026-08-17 | + jurisdictions + obligations + parties, **include list corrected** | **55.51%** | 53 | Seven extractors. The include list now names every covering test file; that correction alone lifted amounts and dates (see above). Three real extractor bugs found while widening — a disclaimed governing law recorded as the chosen one, a bogus arbitration seat, and stranded punctuation in obligation actions — each fixed with a regression test. |
+| 2026-08-17 | + jurisdictions + obligations + parties, **include list corrected** | 55.51% | 53 | Seven extractors. The include list now names every covering test file; that correction alone lifted amounts and dates (see above). Three real extractor bugs found while widening — a disclaimed governing law recorded as the chosen one, a bogus arbitration seat, and stranded punctuation in obligation actions — each fixed with a regression test. |
+| 2026-08-17 | same seven | **56.94%** | 54 | Pinned the three governing-law clause-tail helpers, which carried one test row each against regexes with four to six distinct branches (jurisdictions 58.16% → 62.81%), and the two party phantoms found while mining the parties survivors — a comma-suffixed legal name registering twice, and a two-column signature block registering both signers as one party (parties 55.99% → 58.99%). |
 
 The lesson the decay taught: a mutation score is not a one-time measurement. Adding code to a mutated file without adding tests lowers it mechanically, and because the job is weekly and off the push path, the failure sits unseen unless someone looks for it. The lesson the include-list defect taught is sharper: **a low score is a claim about the tests, and it is only trustworthy if the harness is actually running them.** Diagnose the harness before rewriting the suite.
 
@@ -54,4 +57,4 @@ The remaining survivors are the ratchet target, but crossrefs shows where that r
 
 ## Gate (regression-only, Step 124)
 
-`stryker.config.json` sets `thresholds.break = 53` — a couple points under the measured 55.51%, with headroom for cross-platform drift. The scheduled job fails if the score drops below the floor; it never blocks on an unmet aspiration. **Ratchet up as survivors are killed** — the same measure-first discipline coverage and the v5 scoreboard use. The break threshold applies only in the mutation workflow, not the per-push gate.
+`stryker.config.json` sets `thresholds.break = 54` — a couple points under the measured 56.94%, with headroom for cross-platform drift. The scheduled job fails if the score drops below the floor; it never blocks on an unmet aspiration. **Ratchet up as survivors are killed** — the same measure-first discipline coverage and the v5 scoreboard use. The break threshold applies only in the mutation workflow, not the per-push gate.
