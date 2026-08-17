@@ -186,7 +186,7 @@ describe("TEMP-002 — same-day dates sort deterministically", () => {
   it("returns an identical finding across repeated runs", () => {
     const results = Array.from({ length: 25 }, () => {
       const f = TEMP_002.check(doc());
-      return f === null ? "null" : `${f.title}|${f.excerpts?.[0]?.text ?? ""}`;
+      return f === null ? "null" : `${f.title}|${f.excerpt.text}|${f.excerpt.start_offset}`;
     });
     expect(new Set(results).size).toBe(1);
   });
