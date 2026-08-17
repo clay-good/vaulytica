@@ -334,11 +334,16 @@ export function expressDenial(topic: string): RegExp[] {
   // "allowed": "failure to file a SAR is not permitted" is a PROHIBITION of
   // the failure, i.e. the compliant drafting, not a denial of the clause.
   const done =
-    "(?:required|performed|conducted|maintained|provided|undertaken|implemented|applicable|filed|retained|kept|screened|collected|identified|obtained|established|withdrawn|revoked|honored|honoured|granted|issued|suspended|available|offered|encrypted|appointed|designated|reviewed|notified|exchanged|delivered|attached)";
+    "(?:required|performed|conducted|maintained|provided|undertaken|implemented|applicable|filed|retained|kept|screened|collected|identified|obtained|established|withdrawn|revoked|honored|honoured|granted|issued|suspended|available|offered|encrypted|appointed|designated|reviewed|notified|exchanged|delivered|attached|bound)";
+  // A conditional connective AFTER the topic turns the sentence into a
+  // REQUIREMENT, not a denial: "may not engage a subcontractor WITHOUT a
+  // written contract" demands the contract, it does not disclaim it. The gap's
+  // blocked list cannot see this one, because the connective trails the topic.
+  const tail = String.raw`(?![^.]{0,40}?\b(?:without|unless|except)\b)`;
   return [
     // "does not perform OFAC screening" / "is not required to conduct AML training"
     new RegExp(
-      String.raw`\b(?:do|does|did|shall|will|is|are|was|were|has|have|had|can|may|need)\s+not\s+(?:be\s+)?${gap}${t}`,
+      String.raw`\b(?:do|does|did|shall|will|is|are|was|were|has|have|had|can|may|need)\s+not\s+(?:be\s+)?${gap}${t}${tail}`,
       "i",
     ),
     // "cannot revoke this authorization"

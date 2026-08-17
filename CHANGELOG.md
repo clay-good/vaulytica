@@ -47,6 +47,20 @@ All notable changes to this project will be documented in this file. Format adap
   **without** OFAC screening", "this policy does not **apply to** OFAC
   screening by third parties" — is not read as a denial. Golden churn is
   `result_hash` only across all 99 v4 fixtures: zero finding-level changes.
+- **A CCPA service-provider addendum or an SCC transfer that expressly
+  disclaims its obligations is no longer scored as compliant.** Ten more rules
+  guarded: USDPA-005 (same level of privacy protection), USDPA-007 (monitoring
+  and oversight), USDPA-008 (consumer-request assistance), USDPA-009 (notice of
+  inability to comply), USDPA-010 (subcontractor flow-down), and TRANSFER-004
+  through TRANSFER-008 (SCC Clauses 8, 9, 11, 14, 15). USDPA-002/003/004 are
+  deliberately unguarded with a test pinning them — their required clauses ARE
+  prohibitions ("shall not sell", "shall not use for cross-context
+  advertising"), so a denial frame would flag the compliant drafting. The SCCs
+  needed a narrow local pattern: "does not apply to" is treated as a scope
+  carve-out everywhere else, but Clause 2 makes the SCCs invariable, so
+  disapplying a clause outright voids the transfer basis — while a genuine
+  subset carve-out ("Clause 9 does not apply to sub-processors engaged before
+  the effective date") still passes. Golden churn is `result_hash` only.
 - **A GDPR DPA that expressly disclaims an Article 28(3) obligation is no longer
   scored as compliant.** Eight processor obligations now carry a `denied_if`
   guard: DPA-008 (confidentiality undertaking), DPA-009 (Art. 32 security

@@ -9,6 +9,7 @@
  * controller-processor playbooks (where transfer mechanisms apply).
  */
 
+import { expressDenial } from "../../_helpers.js";
 import type { Rule } from "../../../finding.js";
 import {
   buildLanguageRule,
@@ -30,6 +31,28 @@ const SCC_PLAYBOOKS = [
 ];
 const UK_PLAYBOOKS = ["uk-idta-addendum"];
 const ALL_TRANSFER_PLAYBOOKS = [...SCC_PLAYBOOKS, ...UK_PLAYBOOKS];
+
+/**
+ * Whole-scope disapplication of a numbered SCC clause.
+ *
+ * The shared `expressDenial` frames deliberately treat "does not apply to X"
+ * as a SCOPE CARVE-OUT rather than a denial, because in most documents it is
+ * one. The SCCs are the exception: Clause 2 makes them invariable, so
+ * disapplying a clause outright voids the transfer basis. This matches the
+ * whole-scope forms only — a bare "Clause 9 shall not apply", or one aimed at
+ * the transfer/Clauses/Agreement as a whole — and NOT a genuine subset
+ * carve-out like "Clause 9 does not apply to sub-processors engaged before the
+ * effective date", which narrows the clause rather than discarding it.
+ */
+function sccDisapplied(clause: number): RegExp[] {
+  return [
+    new RegExp(String.raw`\bclause\s+${clause}\b[^.]{0,60}?\bnot\s+apply\b(?!\s+to\s)`, "i"),
+    new RegExp(
+      String.raw`\bclause\s+${clause}\b[^.]{0,60}?\bnot\s+apply\s+to\s+(?:this|the|these)\s+(?:transfer|clauses?|agreement|addendum|sccs?)\b`,
+      "i",
+    ),
+  ];
+}
 
 const CONFIG_SCC: RegulatedRuleConfig = {
   category: "transfer",
@@ -134,6 +157,7 @@ export const TRANSFER_RULES: Rule[] = [
   }),
   presence({
     id: "TRANSFER-004",
+    version: "1.1.0",
     name: "SCC Clause 8 — Data Protection Safeguards",
     description: "SCC Module 2 Clause 8 (Data Protection Safeguards) must be present.",
     citation: "EU SCCs Clause 8",
@@ -143,9 +167,17 @@ export const TRANSFER_RULES: Rule[] = [
       "Clause 8 contains the bulk of the Module-2 data-protection obligations (instructions, purpose limitation, transparency, accuracy, minimisation, storage limitation, security).",
     recommendation: "Include the full Clause 8 (Data Protection Safeguards) text unmodified.",
     present_patterns: [/clause\s*8\b/i],
+    denied_if: [
+      ...expressDenial(String.raw`(?:clause\s+8|data\s+protection\s+safeguards)`),
+      ...sccDisapplied(8),
+    ],
+    denied_title: "SCC Clause 8 safeguards expressly disclaimed",
+    denied_description:
+      "The document states that the Clause 8 data-protection safeguards do not apply. Clause 2 makes the SCCs invariable, so disclaiming a clause voids the transfer basis.",
   }),
   presence({
     id: "TRANSFER-005",
+    version: "1.1.0",
     name: "SCC Clause 9 — Use of Sub-processors",
     description: "SCC Module 2 Clause 9 (Use of Sub-processors) must be present.",
     citation: "EU SCCs Clause 9",
@@ -155,9 +187,14 @@ export const TRANSFER_RULES: Rule[] = [
     recommendation:
       "Include the full Clause 9 text and complete Annex III (List of Sub-processors).",
     present_patterns: [/clause\s*9\b/i],
+    denied_if: [...expressDenial(String.raw`(?:clause\s+9|sub.?processors?)`), ...sccDisapplied(9)],
+    denied_title: "SCC Clause 9 sub-processor terms expressly disclaimed",
+    denied_description:
+      "The document states that the Clause 9 sub-processor terms do not apply. Clause 2 makes the SCCs invariable.",
   }),
   presence({
     id: "TRANSFER-006",
+    version: "1.1.0",
     name: "SCC Clause 11 — Redress",
     description: "SCC Module 2 Clause 11 (Redress) must be present.",
     citation: "EU SCCs Clause 11",
@@ -168,9 +205,14 @@ export const TRANSFER_RULES: Rule[] = [
     recommendation: "Include the full Clause 11 (Redress) text unmodified.",
     present_patterns: [/clause\s*11\b|redress\b/i],
     default_severity: "warning",
+    denied_if: [...expressDenial(String.raw`(?:clause\s+11|redress)`), ...sccDisapplied(11)],
+    denied_title: "SCC Clause 11 redress expressly denied",
+    denied_description:
+      "The document states that data subjects have no right of redress. Clause 11 confers it and Clause 2 makes the SCCs invariable.",
   }),
   presence({
     id: "TRANSFER-007",
+    version: "1.1.0",
     name: "SCC Clause 14 — Local Laws (TIA)",
     description:
       "SCC Clause 14 (Local laws and practices affecting compliance) must be present, anchoring the TIA.",
@@ -182,9 +224,17 @@ export const TRANSFER_RULES: Rule[] = [
     present_patterns: [
       /(clause\s*14\b|local\s+laws\s+and\s+practices|transfer\s+impact\s+assessment|\bTIA\b)/i,
     ],
+    denied_if: [
+      ...expressDenial(String.raw`(?:clause\s+14|transfer\s+impact\s+assessment|local\s+laws?)`),
+      ...sccDisapplied(14),
+    ],
+    denied_title: "SCC Clause 14 local-laws assessment expressly disclaimed",
+    denied_description:
+      "The document states that no transfer impact assessment of local laws is performed. Clause 14 requires the parties to warrant they have made it.",
   }),
   presence({
     id: "TRANSFER-008",
+    version: "1.1.0",
     name: "SCC Clause 15 — Public Authority Access",
     description:
       "SCC Clause 15 (Obligations of the data importer in case of public authority access) must be present.",
@@ -197,6 +247,13 @@ export const TRANSFER_RULES: Rule[] = [
     present_patterns: [
       /(clause\s*15\b|public\s+authority\s+(?:access|request)|government\s+access\s+request|law\s+enforcement\s+request)/i,
     ],
+    denied_if: [
+      ...expressDenial(String.raw`(?:clause\s+15|public\s+authorit(?:y|ies))`),
+      ...sccDisapplied(15),
+    ],
+    denied_title: "SCC Clause 15 public-authority-access duties expressly disclaimed",
+    denied_description:
+      "The document states that the importer need not notify the exporter of public-authority access requests. Clause 15 requires that notification and challenge.",
   }),
   presence({
     id: "TRANSFER-009",

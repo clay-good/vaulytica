@@ -12,6 +12,7 @@
  * playbooks so v2 launch suite is untouched.
  */
 
+import { expressDenial } from "../../_helpers.js";
 import type { Rule } from "../../../finding.js";
 import {
   buildLanguageRule,
@@ -129,6 +130,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
   }),
   presence({
     id: "USDPA-005",
+    version: "1.1.0",
     name: "CCPA: same-level-of-privacy-protection",
     description:
       "CCPA contract must require the service provider to comply with applicable CCPA obligations and provide the same level of privacy protection.",
@@ -142,6 +144,10 @@ export const DPA_US_STATE_RULES: Rule[] = [
     present_patterns: [
       /same\s+level\s+of\s+privacy\s+protection|comply\s+with\s+all\s+applicable\s+(?:obligations|ccpa)/i,
     ],
+    denied_if: expressDenial(String.raw`same\s+level\s+of\s+privacy\s+protection`),
+    denied_title: "Same-level-of-privacy-protection duty expressly disclaimed",
+    denied_description:
+      "The agreement states that the service provider does not provide the same level of privacy protection the CCPA requires. Civ. Code \u00a7 1798.100(d) makes that duty mandatory.",
   }),
   presence({
     id: "USDPA-006",
@@ -160,6 +166,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
   }),
   presence({
     id: "USDPA-007",
+    version: "1.1.0",
     name: "CCPA: monitoring / oversight right",
     description:
       "CCPA contract must grant the business the right to take reasonable steps to ensure consistent use.",
@@ -174,9 +181,14 @@ export const DPA_US_STATE_RULES: Rule[] = [
     present_patterns: [
       /(reasonable\s+and\s+appropriate\s+steps|monitor|oversight\s+right|right\s+to\s+(?:audit|monitor|inspect))/i,
     ],
+    denied_if: expressDenial(String.raw`monitor\w*|oversight`),
+    denied_title: "Monitoring / oversight right expressly denied",
+    denied_description:
+      "The agreement states that the business may not monitor or oversee the service provider's compliance. Civ. Code \u00a7 1798.100(d) requires the right to take reasonable steps to ensure compliance.",
   }),
   presence({
     id: "USDPA-008",
+    version: "1.1.0",
     name: "CCPA: assistance with consumer requests",
     description:
       "CCPA service-provider contract must require assistance with consumer rights requests.",
@@ -191,9 +203,14 @@ export const DPA_US_STATE_RULES: Rule[] = [
     present_patterns: [
       /(verifiable\s+consumer\s+requests?|consumer\s+rights?\s+(request|assist)|assist.{0,80}consumer)/is,
     ],
+    denied_if: expressDenial(String.raw`consumer\s+requests?|assist\w*[^.]{0,30}?consumer`),
+    denied_title: "Consumer-request assistance expressly disclaimed",
+    denied_description:
+      "The agreement states that the service provider does not assist with consumer rights requests. The CCPA regulations require that assistance.",
   }),
   presence({
     id: "USDPA-009",
+    version: "1.1.0",
     name: "CCPA: notification of inability to comply",
     description:
       "CCPA service-provider must notify business if it can no longer meet its obligations under CCPA.",
@@ -208,9 +225,16 @@ export const DPA_US_STATE_RULES: Rule[] = [
     present_patterns: [
       /(no\s+longer\s+(meet|able\s+to\s+meet)|notify.{0,80}(can\s+no\s+longer|unable\s+to\s+meet|inability))/is,
     ],
+    denied_if: expressDenial(
+      String.raw`(?:notif\w*|inform)[^.]{0,40}?(?:inability|no\s+longer\s+able|cannot\s+comply)|inability\s+to\s+comply`,
+    ),
+    denied_title: "Notice-of-inability-to-comply duty expressly disclaimed",
+    denied_description:
+      "The agreement states that the service provider need not notify the business when it can no longer meet its CCPA obligations. Civ. Code \u00a7 1798.100(d) requires that notice.",
   }),
   presence({
     id: "USDPA-010",
+    version: "1.1.0",
     name: "CCPA: subcontractor flow-down",
     description:
       "CCPA service-provider must require subcontractors to meet the same CCPA obligations.",
@@ -225,6 +249,10 @@ export const DPA_US_STATE_RULES: Rule[] = [
     present_patterns: [
       /(subcontractor|sub[- ]processor).{0,200}(same\s+(restrictions|obligations|provisions)|equivalent)/is,
     ],
+    denied_if: expressDenial(String.raw`subcontractors?|subprocessors?`),
+    denied_title: "Subcontractor flow-down expressly disclaimed",
+    denied_description:
+      "The agreement states that subcontractors are not bound by the same CCPA restrictions. The service-provider terms must flow down.",
   }),
 
   // ────────────────────────────────────────────────────────────────
