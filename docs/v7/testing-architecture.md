@@ -23,7 +23,7 @@ The suite is **green ⇏ correct** by itself: a green example-based suite only s
 
 ## Why each layer earns its place
 
-- **Coverage** tells you a line *ran*; it does not tell you a test would *catch a bug* on that line — that is what **mutation testing** (Steps 123–124) measures. Stryker injects faults and reports how many the tests kill; the scoped baseline is **55.65%** (see [`mutation-baseline.md`](mutation-baseline.md)), a regression-only floor on a scheduled job, never the per-push gate. Coverage is the floor, not the ceiling.
+- **Coverage** tells you a line *ran*; it does not tell you a test would *catch a bug* on that line — that is what **mutation testing** (Steps 123–124) measures. Stryker injects faults and reports how many the tests kill; the scoped baseline is **52.34%** across four extractors (see [`mutation-baseline.md`](mutation-baseline.md)), a regression-only floor on a scheduled job, never the per-push gate. Coverage is the floor, not the ceiling.
 - **Per-rule completeness** converts an unknown ("how many rules are actually proven?") into a closed set the build enforces. It is measure-first: it reports the gap, then ratchets to hard-fail as negatives are backfilled.
 - **Property-based** testing catches the off-by-one and the empty-input crash the fixtures never hit — normalizer idempotence, exact/contiguous offsets, amount/date round-trips. Fixed seed → a failure reproduces exactly.
 - **Metamorphic** testing encodes what the engine *means*: whitespace noise must not change `result_hash`; re-wrapping paragraphs must not change which rules fire. It already caught a real heading-whitespace determinism leak.

@@ -36,7 +36,7 @@ The three served families spec §21 names — each one where state law dominates
 
 | Family | Topic | States covered |
 |---|---|---|
-| **employment** | non-compete enforceability | CA, ND, OK, MN, CO, WA, OR, MA, VA, IL, DC, NV, TX, FL, NY (15) |
+| **employment** | non-compete enforceability | CA, ND, OK, MN, CO, WA, OR, MA, VA, IL, DC, NV, TX, FL, NY, WY, AR (17) |
 | **residential-lease** | security-deposit cap & return window | CA, NY, MA, NJ, DC, TX, FL, IL, WA, OR (10) |
 | **lending** | usury / interest-rate cap | CA, NY, TX, FL, IL, DE, MA, PA, WA, CO (10) |
 

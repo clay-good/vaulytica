@@ -21,8 +21,10 @@ import { describe, expect, it } from "vitest";
 const root = process.cwd();
 const stryker = JSON.parse(readFileSync(join(root, "stryker.config.json"), "utf8")) as {
   mutate: string[];
+  thresholds: { break: number };
 };
 const mutationConfig = readFileSync(join(root, "vitest.mutation.config.ts"), "utf8");
+const baselineDoc = readFileSync(join(root, "docs", "v7", "mutation-baseline.md"), "utf8");
 
 /** The string literals inside the config's `include: [...]` array. */
 function includedTestFiles(source: string): string[] {
@@ -41,5 +43,12 @@ describe("mutation scope", () => {
   it("includes the test file of every mutated module", () => {
     const expected = stryker.mutate.map((f) => f.replace(/\.ts$/, ".test.ts"));
     expect(included.slice().sort()).toEqual(expected.slice().sort());
+  });
+
+  // docs/v7/mutation-baseline.md documents the gate. It sat at "break = 48"
+  // against a "55.65%" baseline long after both had moved, so a reader
+  // checking whether the gate was healthy got a stale answer from the doc.
+  it("is documented with the break threshold the config actually sets", () => {
+    expect(baselineDoc).toContain(`\`thresholds.break = ${stryker.thresholds.break}\``);
   });
 });

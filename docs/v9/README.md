@@ -27,7 +27,8 @@ Execution readiness — deepening the `STRUCT-*` family from *detection* to *rec
 | `STRUCT-018` | every Exhibit/Schedule/Annex/Appendix/Attachment reference ↔ present heading or title line | The consolidated reconciliation view, distinct from `STRUCT-016`'s incorporation-risk lens. |
 | `STRUCT-019` | recited notary/witness formality ↔ a fillable jurat / witness block | High precision: the recital must be an explicit obligation and the block clearly absent. Never asserts notarization is legally required. |
 
-These are the only three always-on rules v9 adds (launch set 112 → **115**), so the engine `result_hash` and `execution_log` re-baseline mechanically across the golden corpus; the new findings were audited to fire only on genuine gaps.
+These are the only three always-on rules v9 adds (launch set 112 → **115** at the time; later
+dark-pattern additions have since taken the always-on set to **120**), so the engine `result_hash` and `execution_log` re-baseline mechanically across the golden corpus; the new findings were audited to fire only on genuine gaps.
 
 A **Closing Checklist** ([`src/report/closing-checklist.ts`](../../src/report/closing-checklist.ts)) consolidates the readiness findings (`STRUCT-003`/`011`/`013`/`017`/`018`/`019`) plus the send-readiness handoff items (`HANDOFF-001`/`002`) into one ordered, grouped artifact — Markdown and CSV exports, a JSON `closing_checklist` block, a CLI `--checklist` flag, and a tab "Ready to sign?" view. It is a render-side projection of findings the engine already produced, so it moves no `result_hash`.
 
