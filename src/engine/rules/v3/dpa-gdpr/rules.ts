@@ -773,7 +773,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   language({
     id: "DPA-036",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Audit-substitution eliminates audit entirely",
     description:
       "Flags SOC 2 / ISO substitution that eliminates the controller's audit right rather than substituting it.",
@@ -802,7 +802,10 @@ export const DPA_GDPR_RULES: Rule[] = [
     // the elimination it actually preserves against. Skip when the paragraph
     // negates the substitution or keeps the report supplementary to the audit.
     exclude_if: [
-      /\bnot\s+in\s+lieu\s+of\b/i,
+      // "never ... in lieu of" and the fronted "under no circumstances" are the
+      // same non-substitution the rule recommends; the guard knew only "not".
+      /\b(?:not|never)\s+(?:be\s+)?(?:\w+\s+){0,2}?in\s+lieu\s+of\b/i,
+      /under\s+no\s+circumstances[^.]{0,100}?in\s+lieu\s+of\b/i,
       /\bnot\s+the\s+sole\s+means\b/i,
       /\bdoes\s+not\s+replace\b/i,
       /(?:supplements?|in\s+addition\s+to|without\s+limiting)[^.]{0,40}\baudit/i,

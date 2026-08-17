@@ -47,6 +47,21 @@ All notable changes to this project will be documented in this file. Format adap
   **without** OFAC screening", "this policy does not **apply to** OFAC
   screening by third parties" — is not read as a denial. Golden churn is
   `result_hash` only across all 99 v4 fixtures: zero finding-level changes.
+- **Four v3 rules no longer report the compliant clause as the violation it
+  forbids.** The same defect class a prior sweep found across the v4 packs,
+  audited in v3 for the first time: an `exclude_if` guard written as a literal
+  "not" adjacent to the verb, so the drafting the rule's own recommendation
+  asks for — phrased with "never", or with a fronted "under no circumstances" —
+  slips past and trips the bad pattern. MSA-017 read "service credits shall
+  NEVER be Customer's sole and exclusive remedy" as making them the sole
+  remedy. MSA-024 read "venue shall never be in Delaware" — an explicit
+  exclusion, i.e. alignment — as a governing-law/venue mismatch, and also
+  missed the ordinary "shall not BE in" because it required "not" to sit
+  directly before "in". DPA-036 read "the SOC 2 report shall never be provided
+  in lieu of any audit right" as eliminating the audit. TRANSFER-003 read "the
+  SCCs may never be amended" — a textbook Clause 2 non-derogation clause — as
+  the modification Clause 2 forbids. Each fix is paired with a check that the
+  genuinely bad clause still fires. Golden churn is `result_hash` only.
 - **Quoted excerpts in the bundle DOCX and the comparison DOCX no longer
   corrupt non-BMP characters.** The surrogate-pair-safe `truncate` was fixed
   once in the shared DOCX helpers, but `bundle.ts` and `compare-docx.ts` each

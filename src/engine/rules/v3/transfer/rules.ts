@@ -119,7 +119,7 @@ export const TRANSFER_RULES: Rule[] = [
   }),
   language({
     id: "TRANSFER-003",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "SCC clauses materially modified",
     description:
       "Flags any 'as modified' / 'notwithstanding' / 'as amended' language attached to SCC clauses — forbidden by Clause 2.",
@@ -150,7 +150,8 @@ export const TRANSFER_RULES: Rule[] = [
     exclude_if: [
       /without\s+(?:any\s+)?modification/i,
       /SCCs?\s+shall\s+(?:govern|prevail|control|take\s+precedence)/i,
-      /(?:shall|will|may|must|can)\s+not\s+(?:be\s+)?(?:amend|modif|vary|alter|change|deviat|supplement)/i,
+      /(?:shall|will|may|must|can)\s+(?:not|never)\s+(?:be\s+)?(?:amend|modif|vary|alter|change|deviat|supplement)/i,
+      /under\s+no\s+circumstances[^.]{0,100}?(?:amend|modif|vary|alter|change|deviat|supplement)/i,
       /\bno\s+(?:amendment|modification|variation|alteration|change)\b/i,
     ],
     default_severity: "critical",

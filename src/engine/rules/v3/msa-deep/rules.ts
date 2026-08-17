@@ -563,7 +563,7 @@ export const MSA_DEEP_RULES: Rule[] = [
   }),
   language({
     id: "MSA-017",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "SLA credit as sole-and-exclusive remedy",
     description: "Flags when service-level credit is stated as the sole and exclusive remedy.",
     citation: "Commercial drafting baseline — SLA exclusivity",
@@ -584,8 +584,12 @@ export const MSA_DEEP_RULES: Rule[] = [
     // to govern "sole and exclusive remedy" (only determiners/"be" may sit
     // between), so an unrelated "not" ("credits, but not cash refunds, are the
     // sole and exclusive remedy") still fires.
+    // "never" and a fronted "under no circumstances" are ordinary ways to draft
+    // the same negation; keying the guard on a literal "not" adjacent to the
+    // phrase reported the customer-favorable clause as the overreach it denies.
     exclude_if: [
-      /\bnot\s+(?:be\s+|the\s+|your\s+|its\s+|a\s+|customer'?s?\s+)*sole\s+and\s+exclusive\s+remedy/i,
+      /\b(?:not|never)\s+(?:be\s+|the\s+|your\s+|its\s+|a\s+|customer'?s?\s+|deemed\s+)*sole\s+and\s+exclusive\s+remedy/i,
+      /under\s+no\s+circumstances[^.]{0,80}?sole\s+and\s+exclusive\s+remedy/i,
     ],
     default_severity: "info",
   }),
@@ -739,6 +743,7 @@ export const MSA_DEEP_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   language({
     id: "MSA-024",
+    version: "1.1.0",
     name: "Governing-law / venue jurisdiction mismatch",
     description: "Flags when the governing-law jurisdiction differs from the venue jurisdiction.",
     citation: "Commercial drafting baseline — choice-of-law / venue alignment",
@@ -768,7 +773,17 @@ export const MSA_DEEP_RULES: Rule[] = [
     // A stated EXCLUSION is alignment, not a mismatch ("venue shall be in
     // Delaware only, and not in California").
     exclude_if: [
-      new RegExp(String.raw`\bnot\s+in\s+(?:the\s+state\s+of\s+)?(?:${FORUM_STATE})`, "i"),
+      // "shall not BE in Delaware" and "shall NEVER be in Delaware" are the
+      // same exclusion as "not in Delaware"; requiring "not" to sit directly
+      // before "in" reported an explicit venue exclusion as a mismatch.
+      new RegExp(
+        String.raw`\b(?:not|never)\s+(?:be\s+)?in\s+(?:the\s+state\s+of\s+)?(?:${FORUM_STATE})`,
+        "i",
+      ),
+      new RegExp(
+        String.raw`under\s+no\s+circumstances[^.]{0,120}?(?:the\s+state\s+of\s+)?(?:${FORUM_STATE})`,
+        "i",
+      ),
     ],
     default_severity: "info",
   }),
