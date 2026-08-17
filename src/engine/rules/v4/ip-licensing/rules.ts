@@ -902,6 +902,7 @@ const WFH_RULES: Rule[] = [
   }),
   presence({
     id: "IPL-037",
+    version: "1.1.0",
     name: "Backup assignment clause",
     description:
       "Work-for-hire agreement must include a backup assignment in case the work-for-hire designation fails.",
@@ -917,6 +918,18 @@ const WFH_RULES: Rule[] = [
       /(to\s+the\s+extent|in\s+the\s+event).{0,40}(not\s+a\s+work\s+for\s+hire|fails\s+to\s+qualify)/is,
       /(hereby\s+assigns?|assignment)/i,
     ],
+    // Express-denial guard: the "to the extent … not a work for hire" framing
+    // is present in a refusal too, so a contract that declines the backup
+    // assignment scored clean. That refusal is the whole failure mode — if the
+    // work-for-hire characterisation does not hold, the client owns nothing.
+    denied_if: [
+      /\b(?:shall|will|does|do)\s+not\s+assign\b/i,
+      /\bno\s+(?:backup\s+)?assignment\s+(?:is|shall\s+be)\s+(?:made|granted|implied)/i,
+      /\b(?:retains?|reserves?)\b[^.]{0,40}?\ball\s+right,?\s+title/i,
+    ],
+    denied_title: "Backup assignment expressly refused",
+    denied_description:
+      "The agreement declines to assign the deliverable if the work-for-hire characterisation fails. Work-for-hire is unavailable for most commissioned work under 17 U.S.C. § 101, so without the backup assignment the client can end up owning nothing it paid for.",
   }),
   presence({
     id: "IPL-038",

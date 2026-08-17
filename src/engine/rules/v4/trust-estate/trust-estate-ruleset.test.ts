@@ -287,3 +287,43 @@ describe("EST-006 / EST-056 — documents that state there are no children", () 
     ).toBe(true);
   });
 });
+
+/**
+ * EST-004 read a will that AFFIRMATIVELY REQUIRES bond as though bond were
+ * waived: the text contains "bond" (and often "waive"), which satisfied the
+ * presence check. Requiring bond is a lawful choice, but it is a recurring
+ * cost to the estate and the reverse of what this rule looks for — the drafter
+ * should see it reported, not hidden behind a waiver finding.
+ */
+describe("EST-004 — fiduciary bond expressly required", () => {
+  const run = async (text: string) => {
+    const res = await runEngine({
+      rules: TRUST_ESTATE_RULES,
+      ctx: withPb(buildContext(["Terms", text]), WILL_PB),
+      source_file: SRC,
+    });
+    return res.findings.filter((f) => f.rule_id === "EST-004").map((f) => f.title);
+  };
+
+  it.each([
+    ["My executor shall be required to post bond with surety in the full value of the estate."],
+    ["Bond is not waived; surety shall be required of every fiduciary."],
+  ])("reports %j as a denial", async (text) => {
+    expect(await run(text)).toEqual(["Fiduciary bond expressly required"]);
+  });
+
+  it("still reports the waiver missing on silence", async () => {
+    expect(await run("I nominate my spouse as executor of this will.")).toEqual([
+      "Fiduciary-bond waiver clause missing",
+    ]);
+  });
+
+  it.each([
+    // "no bond shall be required" IS the waiver — the denial patterns must not
+    // read the negated noun as a requirement.
+    ["My executor shall serve without bond, and no bond shall be required of any fiduciary."],
+    ["Bond is waived for each fiduciary named herein."],
+  ])("stays silent on the compliant waiver %j", async (text) => {
+    expect(await run(text)).toEqual([]);
+  });
+});

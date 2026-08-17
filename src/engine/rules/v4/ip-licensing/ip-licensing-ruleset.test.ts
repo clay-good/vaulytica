@@ -484,3 +484,43 @@ describe("IPL-012 — grant-back expressly refused", () => {
     ).toEqual([]);
   });
 });
+
+/**
+ * IPL-037's "to the extent … not a work for hire" framing appears in a refusal
+ * too, so a contract declining the backup assignment scored clean. That refusal
+ * is the whole failure mode: work-for-hire is unavailable for most commissioned
+ * work under 17 U.S.C. § 101, so without the backup assignment the client can
+ * end up owning nothing it paid for.
+ */
+describe("IPL-037 — backup assignment expressly refused", () => {
+  const run = async (text: string) => {
+    const res = await runEngine({
+      rules: IP_LICENSING_RULES,
+      ctx: withPb(buildContext(["Terms", text]), WFH_PB),
+      source_file: SRC,
+    });
+    return res.findings.filter((f) => f.rule_id === "IPL-037").map((f) => f.title);
+  };
+
+  it("reports a refused backup assignment as a denial", async () => {
+    expect(
+      await run(
+        "To the extent the deliverable is not a work for hire, Contractor does not assign it to Company.",
+      ),
+    ).toEqual(["Backup assignment expressly refused"]);
+  });
+
+  it("still reports the clause missing on silence", async () => {
+    expect(await run("Contractor shall deliver the artwork by March 1.")).toEqual([
+      "Backup-assignment clause missing",
+    ]);
+  });
+
+  it("stays silent on the compliant backup assignment", async () => {
+    expect(
+      await run(
+        "To the extent any deliverable is not a work for hire, Contractor hereby assigns all right, title and interest to Company.",
+      ),
+    ).toEqual([]);
+  });
+});

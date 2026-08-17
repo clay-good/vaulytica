@@ -98,6 +98,7 @@ const WILL_RULES: Rule[] = [
   }),
   presence({
     id: "EST-004",
+    version: "1.1.0",
     name: "Bond waiver for fiduciaries",
     description:
       "Will should waive bond / surety for executor and other fiduciaries unless state law requires.",
@@ -113,6 +114,24 @@ const WILL_RULES: Rule[] = [
       /(bond|surety)/i,
       /(waive(s|d|r)?|without\s+bond|no\s+bond\s+(shall\s+be\s+)?required)/i,
     ],
+    // Express-denial guard. A will that AFFIRMATIVELY REQUIRES bond contains
+    // both "bond" and (often) "waive", so it satisfied the presence check and
+    // scored as though bond were waived — the reverse of the truth. Requiring
+    // bond is a lawful choice, but it is a cost the estate bears and the
+    // drafter should see it reported, not hidden behind a waiver finding.
+    denied_if: [
+      // The bond token must not itself be negated: "and no bond shall be
+      // required" is the COMPLIANT waiver, and without this lookbehind it
+      // matched "bond … shall be required" and accused the compliant will.
+      /(?<!\bno\s)(?<!\bwithout\s)\bbond\b[^.]{0,60}?\b(?:shall|will|must)\s+be\s+required/i,
+      /\b(?:shall|will|must)\s+(?:be\s+required\s+to\s+)?(?:post|furnish|provide)\s+(?:a\s+)?bond/i,
+      /\bno\s+bond\s+is\s+waived/i,
+      /\bbond\b[^.]{0,40}?\b(?:is|are)\s+not\s+waived/i,
+      /\bsurety\s+shall\s+be\s+required/i,
+    ],
+    denied_title: "Fiduciary bond expressly required",
+    denied_description:
+      "The instrument requires the fiduciary to post bond rather than waiving it. That is a lawful choice, but it is a recurring cost to the estate and the opposite of the waiver this rule looks for — it should be reported, not read as compliance.",
     default_severity: "warning",
   }),
   presence({
