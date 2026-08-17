@@ -47,6 +47,21 @@ All notable changes to this project will be documented in this file. Format adap
   **without** OFAC screening", "this policy does not **apply to** OFAC
   screening by third parties" — is not read as a denial. Golden churn is
   `result_hash` only across all 99 v4 fixtures: zero finding-level changes.
+- **Quoted excerpts in the bundle DOCX and the comparison DOCX no longer
+  corrupt non-BMP characters.** The surrogate-pair-safe `truncate` was fixed
+  once in the shared DOCX helpers, but `bundle.ts` and `compare-docx.ts` each
+  carried their own pre-fix copy, so every excerpt they quote — the audit-trail
+  clause text, and each base/revised finding pair in a comparison — still cut
+  between the two halves of an emoji or a CJK Extension B character and emitted
+  U+FFFD where the character should be. Both now import the shared helper, and
+  a new test scans the renderer sources so a future copy without the guard
+  fails by name.
+- **The definitions CSV export no longer lets a defined term open as a live
+  spreadsheet formula.** Every other CSV writer routes through a shared field
+  escaper that neutralizes formula injection (CWE-1236); `definitions.ts` had
+  its own copy that quoted commas and quotes but omitted that guard. Defined
+  terms are verbatim document text, so a term beginning `=`, `+`, `-`, or `@`
+  executed on open in Excel or Sheets. It now uses the shared escaper.
 - **A zip whose headers under-declare an entry's size is now rejected instead
   of silently handing back a fragment of the document.** `unzipSync` sizes each
   output buffer from the entry's declared `originalSize` and inflate stops when

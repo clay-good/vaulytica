@@ -107,6 +107,26 @@ describe("buildDefinitionsReport — buckets over a known inventory", () => {
     expect(await verifyDefinitionsHash({ ...a, unused: [] })).toBe(false);
   });
 
+  // `definitions.ts` kept its own CSV escaper that quoted commas and quotes
+  // but omitted the formula-injection guard the fix-list / obligations CSVs
+  // have carried all along. Defined terms are verbatim document text, so a
+  // term starting `=`, `+`, `-`, or `@` opened as a live formula in Excel.
+  it("neutralizes a defined term that would open as a spreadsheet formula", async () => {
+    const r = await buildDefinitionsReport(extracted);
+    const poisoned: typeof r = {
+      ...r,
+      undefined_used: [
+        { term: '=HYPERLINK("http://evil","click")', use_count: 2, positions: [] },
+        ...r.undefined_used,
+      ],
+    };
+    const row = buildDefinitionsCsv(poisoned).split("\n")[1]!;
+    // The term cell must be inert text, not a formula: guarded with a leading
+    // apostrophe (inside the RFC-4180 quoting the comma forces).
+    expect(row).toContain(`"'=HYPERLINK`);
+    expect(row.startsWith("undefined-but-used,=")).toBe(false);
+  });
+
   it("renders CSV (risk-ordered, header first) and Markdown", async () => {
     const r = await buildDefinitionsReport(extracted);
     const csv = buildDefinitionsCsv(r);

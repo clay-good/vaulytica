@@ -229,7 +229,7 @@ export function buildFixListMarkdown(
  * CSVs carry verbatim clause text and custom-playbook rule titles — both
  * untrusted — so a clause like `=HYPERLINK(...)` must not become live.
  */
-function csvField(value: string): string {
+export function csvField(value: string): string {
   const guarded = /^[=+\-@\t\r]/.test(value) ? `'${value}` : value;
   if (/[",\r\n]/.test(guarded)) {
     return `"${guarded.replace(/"/g, '""')}"`;

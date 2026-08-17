@@ -21,6 +21,10 @@
  * file ordering so two runs of the same bundle produce identical bytes.
  */
 
+// `truncate` is imported, not redefined: a local copy of it here kept the
+// pre-fix behavior that splits a surrogate pair and emits U+FFFD into a
+// quoted excerpt, long after the shared helper was corrected.
+import { truncate } from "./v3/_dx.js";
 import {
   AlignmentType,
   BorderStyle,
@@ -1587,11 +1591,6 @@ function severityColor(severity: Severity): string {
     case "info":
       return "555555";
   }
-}
-
-function truncate(text: string, limit: number): string {
-  if (text.length <= limit) return text;
-  return text.slice(0, limit - 1) + "…";
 }
 
 function plural(n: number, noun: string): string {

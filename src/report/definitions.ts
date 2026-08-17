@@ -15,6 +15,7 @@
  * tamper-evident like every other Vaulytica artifact.
  */
 
+import { csvField } from "./exports.js";
 import type { DocPosition, ExtractedData } from "../extract/types.js";
 import { sha256Hex } from "../ingest/hash.js";
 import { stableStringify } from "../engine/runner.js";
@@ -137,7 +138,11 @@ const loc = (p: DocPosition): string => `§${p.section_id}`;
 
 /** Risk-ordered CSV: bucket,term,detail,locations. */
 export function buildDefinitionsCsv(report: DefinitionsReport): string {
-  const esc = (s: string): string => (/[",\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s);
+  // Shared with the fix-list / obligations CSVs rather than reimplemented: the
+  // local copy quoted commas and quotes but omitted the formula-injection
+  // guard (CWE-1236), and defined terms are verbatim document text, so a term
+  // beginning `=`, `+`, `-`, or `@` became a live formula on open.
+  const esc = csvField;
   const rows: string[] = ["bucket,term,detail,locations"];
   for (const u of report.undefined_used) {
     rows.push(

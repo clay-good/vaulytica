@@ -907,4 +907,27 @@ describe("truncate (surrogate-safe excerpt clamp)", () => {
     expect(out.endsWith("…")).toBe(true);
     expect(out).not.toContain("�");
   });
+
+  // The guard was fixed once and then re-broken by copy: `bundle.ts` and
+  // `compare-docx.ts` each carried their own pre-fix `truncate`, so every
+  // quoted excerpt in the bundle DOCX and the comparison DOCX still split
+  // surrogate pairs. Both now import the shared helper. This pins that there
+  // is exactly ONE definition left in the tree.
+  it("has no stale private copy of truncate in any renderer", async () => {
+    const { readFileSync, readdirSync } = await import("node:fs");
+    const { join } = await import("node:path");
+    const roots = ["src/report", "src/report/v3", "src/delivery"];
+    const offenders: string[] = [];
+    for (const dir of roots) {
+      for (const f of readdirSync(dir)) {
+        if (!f.endsWith(".ts") || f.endsWith(".test.ts")) continue;
+        const src = readFileSync(join(dir, f), "utf8");
+        if (!/function truncate\s*\(/.test(src)) continue;
+        // The one canonical definition is allowed; a copy without the
+        // surrogate guard is not.
+        if (!src.includes("0xd800")) offenders.push(join(dir, f));
+      }
+    }
+    expect(offenders, `unguarded truncate copies: ${offenders.join(", ")}`).toEqual([]);
+  });
 });
