@@ -246,14 +246,20 @@ describe("paragraph-leading section numbers resolve cross-references", () => {
   });
 
   it("does not treat a numbered list item beginning an amount as a section", () => {
-    // "5,000" and a lone number without a capitalized title must not register.
-    const t = flat("The fee is 5,000 dollars. 5. business days is the cure period.");
+    // A lone number without a capitalized title must not register as a
+    // section declaration. The list item has to lead its own paragraph for
+    // the leading-section guard to apply at all — folded into a preceding
+    // sentence it can never match, so a fixture that keeps it mid-paragraph
+    // passes no matter what the guard does.
+    const t = flat(
+      "The fee is 5,000 dollars.",
+      "5. business days is the cure period.",
+      "See Section 5 for the schedule.",
+    );
     const refs = extractCrossRefs(t, extractSections(t));
-    // A reference to Section 5 should NOT resolve to the "5. business days" run.
-    const t2 = flat("The fee is 5,000 dollars.", "See Section 5 for the schedule.");
-    const refs2 = extractCrossRefs(t2, extractSections(t2));
-    expect(refs2.some((r) => /Section 5/.test(r.raw_text) && r.unresolved)).toBe(true);
-    void refs;
+    // "Section 5" must stay unresolved: the "5. business days" run is a list
+    // item, not a section 5 for it to point at.
+    expect(refs.some((r) => /Section 5/.test(r.raw_text) && r.unresolved)).toBe(true);
   });
 });
 
