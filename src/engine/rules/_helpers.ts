@@ -321,10 +321,13 @@ export function expressDenial(topic: string): RegExp[] {
   // Agreement shall not become effective until the REVOCATION PERIOD expires"
   // (the compliant OWBPA drafting) then reads as a denial of the revocation
   // right. The gap refuses to cross a conditional
-  // connective ("...not onboard a customer WITHOUT OFAC screening") or a
+  // connective ("...not onboard a customer WITHOUT OFAC screening"), a
+  // temporal one ("data shall not be RETAINED AFTER the deletion-or-return
+  // obligation is discharged" — the negation governs retention, not the
+  // deletion clause), or a
   // scope verb ("this policy does not APPLY TO OFAC screening by third
   // parties"), because neither sentence denies that the clause exists.
-  const gap = String.raw`(?:(?!\b(?:without|unless|except|absent|failing|prior|appl(?:y|ies)|affect|affects|limit|limits|waive|waives|relieve|relieves|supersede|supersedes|alter|alters|modify|modifies|excuse|excuses|prevent|prevents|preclude|precludes|restrict|restricts)\b)\w+[\s,]+){0,3}`;
+  const gap = String.raw`(?:(?!\b(?:without|unless|except|absent|failing|prior|after|before|until|once|upon|following|appl(?:y|ies)|affect|affects|limit|limits|waive|waives|relieve|relieves|supersede|supersedes|alter|alters|modify|modifies|excuse|excuses|prevent|prevents|preclude|precludes|restrict|restricts)\b)\w+[\s,]+){0,3}`;
   const verb =
     "(?:perform|conduct|provide|maintain|require|undertake|implement|operate|run|have|has|make|exercise|exercises|grant|grants)";
   // Past participles a denial lands on. Deliberately excludes "permitted" /

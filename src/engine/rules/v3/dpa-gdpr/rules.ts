@@ -10,6 +10,7 @@
  * the v2 launch suite is untouched when no DPA playbook is active.
  */
 
+import { expressDenial } from "../../_helpers.js";
 import type { Rule } from "../../../finding.js";
 import {
   buildLanguageRule,
@@ -166,7 +167,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   presence({
     id: "DPA-008",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Confidentiality of authorised persons",
     description:
       "Persons authorised to process personal data must commit themselves to confidentiality.",
@@ -187,9 +188,14 @@ export const DPA_GDPR_RULES: Rule[] = [
       /(?:duty|obligation|commitment)s?\s+of\s+confidentiality|confidentiality\s+(?:obligation|duty|commitment)s?/i,
       /bound\s+by\s+confidentiality/i,
     ],
+    denied_if: expressDenial(String.raw`confidentialit(?:y|ies)|duty\s+of\s+confidence`),
+    denied_title: "Confidentiality undertaking expressly disclaimed",
+    denied_description:
+      "The agreement states that persons authorised to process personal data are not bound by confidentiality. Art. 28(3)(b) requires that undertaking.",
   }),
   presence({
     id: "DPA-009",
+    version: "1.1.0",
     name: "Article 32 security measures incorporated",
     description:
       "DPA must require the processor to take all measures required pursuant to Article 32.",
@@ -206,6 +212,12 @@ export const DPA_GDPR_RULES: Rule[] = [
     // missing-art32 fixture proves it — its only TOMs mention is in the DSR
     // clause).
     present_patterns: [/article\s*32|technical\s+and\s+organisational\s+measures/i],
+    denied_if: expressDenial(
+      String.raw`(?:article\s+)?32\s+security|technical\s+and\s+organisational\s+measures|security\s+measures`,
+    ),
+    denied_title: "Article 32 security measures expressly disclaimed",
+    denied_description:
+      "The agreement states that the processor does not implement technical and organisational security measures. Art. 28(3)(c) makes Art. 32 measures mandatory.",
   }),
   presence({
     id: "DPA-010",
@@ -222,7 +234,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   presence({
     id: "DPA-011",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Assist controller in responding to data-subject rights",
     description:
       "Processor must assist the controller in responding to data-subject rights requests.",
@@ -240,9 +252,16 @@ export const DPA_GDPR_RULES: Rule[] = [
     present_patterns: [
       /(assist\w*\s+(?:the\s+)?controller|data\s+subject\s+(?:rights|requests?)|chapter\s+III)/i,
     ],
+    denied_if: expressDenial(
+      String.raw`data.?subject\s+rights?|data.?subject\s+requests?|assist\w*[^.]{0,30}?data.?subject`,
+    ),
+    denied_title: "Data-subject-rights assistance expressly disclaimed",
+    denied_description:
+      "The agreement states that the processor does not assist the controller in responding to data-subject requests. Art. 28(3)(e) requires that assistance.",
   }),
   presence({
     id: "DPA-012",
+    version: "1.1.0",
     name: "Assist controller with Articles 32–36 obligations",
     description:
       "Processor must assist the controller with Articles 32–36 obligations (security, breach, DPIA, prior consultation).",
@@ -256,10 +275,16 @@ export const DPA_GDPR_RULES: Rule[] = [
     present_patterns: [
       /(articles?\s*32.{0,8}(to|–|-)\s*36|articles?\s*33.{0,8}(to|–|-)\s*36|assist.*?(breach|security|DPIA))/i,
     ],
+    denied_if: expressDenial(
+      String.raw`data\s+protection\s+impact\s+assessment|\bDPIA\b|breach\s+notification`,
+    ),
+    denied_title: "Article 32-36 assistance expressly disclaimed",
+    denied_description:
+      "The agreement states that the processor does not assist with security, breach notification, or impact assessments. Art. 28(3)(f) requires that assistance.",
   }),
   presence({
     id: "DPA-013",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Deletion or return at end of services",
     description:
       "Processor must, at the choice of the controller, delete or return all personal data after the end of the provision of services.",
@@ -277,9 +302,14 @@ export const DPA_GDPR_RULES: Rule[] = [
       // delete-only pattern reported those documents as missing the clause.
       /(?:(?:delet\w*|destroy\w*|destruct\w*)\s+or\s+return\w*|return\w*\s+or\s+(?:delet\w*|destroy\w*|destruct\w*)).*?(personal\s+data|end\s+of\s+(?:the\s+)?(?:provision\s+of\s+)?services)/is,
     ],
+    denied_if: expressDenial(String.raw`delet(?:e|ion)\s+or\s+return|return\s+or\s+delet(?:e|ion)`),
+    denied_title: "Deletion-or-return obligation expressly disclaimed",
+    denied_description:
+      "The agreement states that personal data is not deleted or returned at the end of the services. Art. 28(3)(g) requires one or the other at the controller's choice.",
   }),
   presence({
     id: "DPA-014",
+    version: "1.1.0",
     name: "Information available for compliance demonstration",
     description:
       "Processor must make available all information necessary to demonstrate compliance with Article 28.",
@@ -294,6 +324,10 @@ export const DPA_GDPR_RULES: Rule[] = [
     present_patterns: [
       /(demonstrate\s+compliance|information\s+necessary\s+to\s+demonstrate|allow\s+for\s+and\s+contribute\s+to\s+audits)/i,
     ],
+    denied_if: expressDenial(String.raw`audits?|inspections?`),
+    denied_title: "Audit / compliance-demonstration right expressly denied",
+    denied_description:
+      "The agreement states that the controller may not audit or inspect the processor. Art. 28(3)(h) requires the processor to allow for and contribute to audits.",
   }),
 
   // ────────────────────────────────────────────────────────────────
@@ -301,7 +335,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "DPA-015",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Subprocessor prior written authorisation (Art. 28(2))",
     description:
       "Processor must obtain prior specific or general written authorisation before engaging a subprocessor.",
@@ -319,6 +353,12 @@ export const DPA_GDPR_RULES: Rule[] = [
     present_patterns: [
       /(prior\s+(specific\s+or\s+general\s+)?written\s+authori[sz]ation|(specific\s+or\s+)?general\s+written\s+authori[sz]ation|authori[sz]ation\s+of\s+(the\s+)?controller).*?(processor|subprocessor)/is,
     ],
+    denied_if: expressDenial(
+      String.raw`prior\s+written\s+authorisation|prior\s+written\s+authorization|prior\s+(?:written\s+)?consent`,
+    ),
+    denied_title: "Subprocessor prior-authorisation requirement expressly disclaimed",
+    denied_description:
+      "The agreement states that no prior authorisation is needed to engage a subprocessor. Art. 28(2) requires prior specific or general written authorisation.",
   }),
   presence({
     id: "DPA-016",
@@ -345,7 +385,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   presence({
     id: "DPA-017",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Subprocessor flow-down of same obligations (Art. 28(4))",
     description:
       "Where the processor engages a subprocessor, the same data-protection obligations must be imposed on the subprocessor by contract.",
@@ -363,6 +403,10 @@ export const DPA_GDPR_RULES: Rule[] = [
     present_patterns: [
       /(sub[- ]?processor|another\s+processor).*?(same\s+(data[- ]protection\s+)?obligations|same\s+obligations|same\s+terms|equivalent\s+obligations|obligations\s+no\s+less\s+(protective|onerous|stringent|restrictive))/is,
     ],
+    denied_if: expressDenial(String.raw`same\s+(?:data\s+protection\s+)?obligations|flow.?down`),
+    denied_title: "Subprocessor flow-down expressly disclaimed",
+    denied_description:
+      "The agreement states that subprocessors are not bound by the same data-protection obligations. Art. 28(4) requires the flow-down.",
   }),
   presence({
     id: "DPA-018",

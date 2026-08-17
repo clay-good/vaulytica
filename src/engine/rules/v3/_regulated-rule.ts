@@ -18,6 +18,7 @@ import { makeFinding } from "../../finding.js";
 import { forEachParagraph, forEachSection } from "../../../extract/walk.js";
 import type { DocPosition } from "../../../extract/types.js";
 import type { SourceCitation } from "../../../dkb/types.js";
+import { enclosingSentence } from "../_helpers.js";
 
 export type RegulatedRuleConfig = {
   category: string;
@@ -63,6 +64,24 @@ export type PresenceSpec = {
   explanation: string;
   recommendation: string;
   present_patterns: RegExp[];
+  /**
+   * Express-denial patterns. A presence rule looks for the words the required
+   * clause would use, so a document that AFFIRMATIVELY DISCLAIMS the clause
+   * matches the topic words and the rule stays SILENT — while a document that
+   * merely omits the topic is flagged. The disclaimer is the worse document.
+   * When any of these matches, the rule fires on the denying sentence
+   * regardless of `present_patterns`. Build them with `expressDenial()`.
+   *
+   * Do NOT set this on a rule whose required clause is ITSELF a negation or
+   * waiver — a denial frame would flag the compliant drafting as its own
+   * violation. This is a narrower, opt-in alternative to the family-wide
+   * `negation_guarded` flag, which cannot make that distinction per rule.
+   */
+  denied_if?: readonly RegExp[];
+  /** Title used when `denied_if` fires. Defaults to the missing_title. */
+  denied_title?: string;
+  /** Description used when `denied_if` fires. Defaults to the missing_description. */
+  denied_description?: string;
   default_severity?: Severity;
 };
 
@@ -129,6 +148,23 @@ export function buildPresenceRule(spec: PresenceSpec, config: RegulatedRuleConfi
     applies_to_playbooks: [...config.applies_to_playbooks],
     check(ctx: RuleContext): Finding | null {
       const text = fullText(ctx);
+      if (spec.denied_if) {
+        // An express denial outranks the presence check: the topic words are
+        // present precisely because the document is disclaiming the clause.
+        const denial = findDenial(ctx, spec.denied_if);
+        if (denial) {
+          return makeFinding({
+            rule: this as Rule,
+            title: spec.denied_title ?? spec.missing_title,
+            description: spec.denied_description ?? spec.missing_description,
+            excerptText: denial.sentence.slice(0, 280),
+            explanation: spec.explanation,
+            recommendation: spec.recommendation,
+            position: denial.position,
+            source_citations: [cite(config, spec.citation)],
+          });
+        }
+      }
       const present = config.negation_guarded
         ? presentUnnegated(spec.present_patterns, text)
         : spec.present_patterns.some((re) => re.test(text));
@@ -199,4 +235,33 @@ export function buildLanguageRule(spec: LanguageSpec, config: RegulatedRuleConfi
       });
     },
   };
+}
+
+/** First denying sentence in the document, with its position. */
+function findDenial(
+  ctx: RuleContext,
+  patterns: readonly RegExp[],
+): { sentence: string; position: DocPosition } | null {
+  let found: { sentence: string; position: DocPosition } | null = null;
+  forEachParagraph(ctx.tree, (p) => {
+    if (found) return;
+    for (const re of patterns) {
+      const r = new RegExp(re.source, re.flags.includes("g") ? re.flags : re.flags + "g");
+      r.lastIndex = 0;
+      const m = r.exec(p.text);
+      if (m) {
+        found = {
+          sentence: enclosingSentence(p.text, m.index).trim(),
+          position: {
+            section_id: p.section.id,
+            paragraph_id: p.paragraph.id,
+            start: p.start + m.index,
+            end: p.start + m.index + m[0].length,
+          },
+        };
+        return;
+      }
+    }
+  });
+  return found;
 }

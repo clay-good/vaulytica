@@ -47,6 +47,16 @@ All notable changes to this project will be documented in this file. Format adap
   **without** OFAC screening", "this policy does not **apply to** OFAC
   screening by third parties" — is not read as a denial. Golden churn is
   `result_hash` only across all 99 v4 fixtures: zero finding-level changes.
+- **A GDPR DPA that expressly disclaims an Article 28(3) obligation is no longer
+  scored as compliant.** Eight processor obligations now carry a `denied_if`
+  guard: DPA-008 (confidentiality undertaking), DPA-009 (Art. 32 security
+  measures), DPA-011 (data-subject-rights assistance), DPA-012 (Art. 32-36
+  assistance), DPA-013 (deletion or return at end of services), DPA-014 (audits
+  and inspections), DPA-015 (subprocessor prior authorisation), and DPA-017
+  (subprocessor flow-down). DPA-007 is deliberately left unguarded with a test
+  pinning it: "shall process personal data ONLY on documented instructions" is
+  itself a restriction, and a denial frame would flag the required drafting.
+  Golden churn is `result_hash` only: zero finding-level changes.
 - **A HIPAA BAA that expressly disclaims an obligation is no longer scored as
   compliant.** The same defect the v4 packs had, found in the v3 layer's
   highest-stakes family and confirmed by probe: a BAA stating "Business
