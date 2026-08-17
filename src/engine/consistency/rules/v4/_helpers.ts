@@ -183,6 +183,24 @@ function untilTopicShift(text: string): string {
   return shift === -1 ? text : text.slice(0, shift);
 }
 
+/**
+ * The whole sentence containing `index` — the backward half of the sentence
+ * bound the forward window already applies. A "." starts a new sentence only
+ * when followed by whitespace + a capital/digit, so "Inc." and "$2.5" do not
+ * split it.
+ */
+function enclosingSentence(text: string, index: number): string {
+  const boundary = /\.(?=\s+[A-Z0-9])/g;
+  let start = 0;
+  let m: RegExpExecArray | null;
+  while ((m = boundary.exec(text)) !== null && m.index < index) {
+    start = m.index + 1;
+  }
+  const rest = text.slice(start);
+  const end = rest.search(/\.(?=\s+[A-Z0-9]|\s*$)/);
+  return end === -1 ? rest : rest.slice(0, end + 1);
+}
+
 function capAmountWindow(text: string, anchorIndex: number): string {
   const rest = text.slice(anchorIndex);
   // A "." ends the sentence only before whitespace + a capital/digit, so
@@ -212,20 +230,53 @@ function maxDollarAmount(text: string): number {
   return max;
 }
 
+/** Every index in `text` where the cap anchor matches. */
+function anchorIndices(text: string, anchor: RegExp): number[] {
+  const scan = new RegExp(
+    anchor.source,
+    anchor.flags.includes("g") ? anchor.flags : anchor.flags + "g",
+  );
+  const out: number[] = [];
+  let m: RegExpExecArray | null;
+  while ((m = scan.exec(text)) !== null) {
+    out.push(m.index);
+    if (m.index === scan.lastIndex) scan.lastIndex++;
+  }
+  return out;
+}
+
 /**
- * The cap amount for a paragraph anchored at `anchorIndex`: read from the cap
- * window, widening when that window holds no figure — a cap is often stated
- * AHEAD of its anchor ("The sum of $500,000 shall be the maximum aggregate
- * liability …"), leaving the forward-only window empty.
+ * The cap amount for a paragraph, read from the cap window of whichever anchor
+ * actually carries a figure.
  *
- * The widened read still stops at the first topic shift. Falling back to the
- * whole paragraph reintroduced the very bug the window exists to prevent: with
- * the cap ahead of the anchor and an insurance figure behind it, the fallback
- * fired and took the insurance figure as the cap.
+ * EVERY anchor is tried, not just the first, because the first is routinely
+ * the section HEADING: "Limitation of Liability. Each party's aggregate
+ * liability … shall not exceed ($2,000,000)." Bounding on the heading alone
+ * yields "Limitation of Liability." and no amount at all — the same trap the
+ * survival parser fell into, and it silently dropped the cap-mismatch bundle
+ * golden's only finding.
+ *
+ * A cap is also often stated AHEAD of its anchor ("The sum of $500,000 shall
+ * be the maximum aggregate liability …"), which the forward-only window
+ * cannot see, so a second pass widens to each anchor's own SENTENCE. It stays
+ * inside that sentence and still stops at the first topic shift; widening
+ * further reintroduces the very bug the window exists to prevent. That took
+ * two corrections: the whole paragraph let a figure behind the anchor win
+ * ("exclusive of the $5,000,000 …"), and cutting only at a topic-shift
+ * connective still let a PRECEDING sentence win, where there is no connective
+ * to stop on ("Provider maintains $10,000,000 of cyber insurance. The sum of
+ * $500,000 shall be the maximum aggregate liability …").
  */
-function capAmountFrom(text: string, anchorIndex: number): number {
-  const windowed = maxDollarAmount(capAmountWindow(text, anchorIndex));
-  return windowed > 0 ? windowed : maxDollarAmount(untilTopicShift(text));
+function capAmountFrom(text: string, indices: readonly number[]): number {
+  for (const i of indices) {
+    const v = maxDollarAmount(capAmountWindow(text, i));
+    if (v > 0) return v;
+  }
+  for (const i of indices) {
+    const v = maxDollarAmount(untilTopicShift(enclosingSentence(text, i)));
+    if (v > 0) return v;
+  }
+  return 0;
 }
 
 export function firstLiabilityCap(doc: ConsistencyDocument): {
@@ -242,7 +293,7 @@ export function firstLiabilityCap(doc: ConsistencyDocument): {
     /\b(aggregate\s+liability|liability\s+(?:shall|will)\s+not\s+exceed|limitation\s+of\s+liability)\b/i;
   type Hit = {
     paragraph_text: string;
-    anchor_index: number;
+    anchor_indices: number[];
     section_id?: string;
     start: number;
     end: number;
@@ -250,11 +301,11 @@ export function firstLiabilityCap(doc: ConsistencyDocument): {
   const slot: { value: Hit | null } = { value: null };
   walkParagraphs(tree, (p) => {
     if (slot.value) return;
-    const anchor = anchorRe.exec(p.text);
-    if (anchor) {
+    const indices = anchorIndices(p.text, anchorRe);
+    if (indices.length > 0) {
       slot.value = {
         paragraph_text: p.text,
-        anchor_index: anchor.index,
+        anchor_indices: indices,
         section_id: p.section_id,
         start: p.start,
         end: p.end,
@@ -263,7 +314,7 @@ export function firstLiabilityCap(doc: ConsistencyDocument): {
   });
   if (!slot.value) return null;
   const found: Hit = slot.value;
-  const max = capAmountFrom(found.paragraph_text, found.anchor_index);
+  const max = capAmountFrom(found.paragraph_text, found.anchor_indices);
   if (max === 0) return null;
   return {
     amount_usd: max,
@@ -369,7 +420,7 @@ export function firstIndemnityCap(doc: ConsistencyDocument): {
     /\b(not\s+to\s+exceed|(?:shall|will|may|can)\s+not\s+exceed|in\s+no\s+event\s+[^.]{0,60}\bexceed|capped\s+at|limited\s+to|up\s+to|maximum\s+(?:aggregate\s+)?(?:amount|liability))\b/i;
   type Hit = {
     text: string;
-    anchor_index: number;
+    anchor_indices: number[];
     section_id?: string;
     start: number;
     end: number;
@@ -377,11 +428,11 @@ export function firstIndemnityCap(doc: ConsistencyDocument): {
   const slot: { value: Hit | null } = { value: null };
   forEachParagraph(doc.tree, (p) => {
     if (slot.value) return;
-    const anchor = capRe.exec(p.text);
-    if (anchor && limitRe.test(p.text) && /\$/.test(p.text)) {
+    const indices = anchorIndices(p.text, capRe);
+    if (indices.length > 0 && limitRe.test(p.text) && /\$/.test(p.text)) {
       slot.value = {
         text: p.text,
-        anchor_index: anchor.index,
+        anchor_indices: indices,
         section_id: p.section.id || undefined,
         start: p.start,
         end: p.end,
@@ -390,7 +441,7 @@ export function firstIndemnityCap(doc: ConsistencyDocument): {
   });
   if (!slot.value) return null;
   const found: Hit = slot.value;
-  const max = capAmountFrom(found.text, found.anchor_index);
+  const max = capAmountFrom(found.text, found.anchor_indices);
   if (max === 0) return null;
   return {
     amount_usd: max,

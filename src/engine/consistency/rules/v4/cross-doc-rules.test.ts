@@ -998,6 +998,27 @@ describe("cap and carveout scans do not absorb a neighbouring clause", () => {
     expect(run.findings).toHaveLength(0);
   });
 
+  it("CROSS-AMOUNT-001 ignores an insurance figure in the PRECEDING sentence", async () => {
+    // The widened read (used when the cap sits ahead of its anchor) must stay
+    // inside the anchor's own sentence. A preceding sentence offers no
+    // topic-shift connective to stop on, so cutting only at a connective let
+    // its figure win.
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Limitation of Liability",
+      "Provider maintains $10,000,000 of cyber insurance. The sum of $500,000 shall be the maximum aggregate liability of Provider under this Agreement.",
+    ]);
+    const sow = makeDoc("sow", "sow", [
+      "Limitation of Liability",
+      "The sum of $500,000 shall be the maximum aggregate liability of Provider under this Agreement.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_AMOUNT_001],
+      documents: [msa, sow],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+  });
+
   it("CROSS-AMOUNT-001 still reads a cap stated ahead of its anchor", async () => {
     const msa = makeDoc("msa", "msa-vendor-deep", [
       "Limitation of Liability",
