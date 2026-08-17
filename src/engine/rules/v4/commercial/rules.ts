@@ -506,6 +506,7 @@ const DISTRIBUTION_RULES: Rule[] = [
   }),
   presence({
     id: "COMM-039",
+    version: "1.1.0",
     name: "Warranty pass-through and warranty-claim administration",
     description:
       "A distribution agreement should state how the Supplier's product warranty reaches end customers and who administers warranty claims and returns.",
@@ -528,6 +529,17 @@ const DISTRIBUTION_RULES: Rule[] = [
       /\brma\b|return\s+material\s+authoriz\w+/i,
       /warranty\s+claim\w*[\s\S]{0,40}(administ|handl|process|honor)/is,
     ],
+    // Express-denial guard: a refusal names the same pass-through the
+    // obligation does. Without it the distributor carries warranty exposure to
+    // its own customers with no recourse upstream.
+    denied_if: [
+      /\b(?:does|do|shall|will)\s+not\s+(?:pass|flow|extend|assign)\b[^.]{0,60}?\bwarrant\w*/i,
+      /\bno\s+warrant\w*\s+(?:is|are|shall\s+be)\s+(?:passed|flowed|extended|assigned)/i,
+      /\bwarrant\w*\b[^.]{0,40}?\b(?:is|are)\s+not\s+passed\s+through/i,
+    ],
+    denied_title: "Warranty pass-through expressly refused",
+    denied_description:
+      "The agreement states that no manufacturer warranty passes through to the distributor or its customers. The distributor then carries warranty exposure downstream with no recourse upstream — worse than a contract silent on the point, where the position is at least arguable.",
   }),
 ];
 
@@ -980,6 +992,7 @@ const MARKETING_RULES: Rule[] = [
   }),
   presence({
     id: "COMM-035",
+    version: "1.1.0",
     name: "Third-party rights clearance and non-infringement of deliverables",
     description:
       "A marketing agreement should require the Agency to clear all third-party rights in the deliverables and warrant non-infringement.",
@@ -998,6 +1011,18 @@ const MARKETING_RULES: Rule[] = [
       /(stock|licensed|third.?party)\s+(imagery|images|music|footage|content|material)/i,
       /(warrant|represent)\w*[\s\S]{0,60}(deliverables?|work\s+product|materials)[\s\S]{0,40}(not\s+infring|do\s+not\s+infring|non.?infring)/is,
     ],
+    // Express-denial guard: a disclaimer names the same clearances the
+    // obligation does, so an agency that refuses to clear third-party rights —
+    // leaving the client to be sued over stock imagery, music, or talent it
+    // paid the agency to clear — scored clean.
+    denied_if: [
+      /\b(?:does|do|shall|will)\s+not\s+(?:obtain|secure|clear)\b[^.]{0,60}?\b(?:rights|licen[cs]es?|releases?|clearances?|permissions?)/i,
+      /\b(?:makes?|gives?|provides?)\s+no\b[^.]{0,40}?\bnon.?infringement\b/i,
+      /\bno\s+(?:clearance|rights?.clearance)\s+(?:is|are|shall\s+be)\s+(?:obtained|provided|required)/i,
+    ],
+    denied_title: "Third-party rights clearance expressly disclaimed",
+    denied_description:
+      "The agreement states that the agency does NOT clear third-party rights or warrant non-infringement. The client is then exposed on the stock imagery, music, fonts, and talent it engaged the agency to clear — the exact risk this clause exists to place.",
   }),
   presence({
     id: "COMM-036",

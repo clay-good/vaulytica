@@ -377,3 +377,72 @@ describe("COMM-036 — confidentiality obligation expressly disclaimed", () => {
     expect(await titles(text)).toEqual([]);
   });
 });
+
+/**
+ * Two more express-denial guards in this pack. In each the refusal names the
+ * same obligation the requirement does, so it satisfied the presence check.
+ */
+describe("COMM-035 / COMM-039 — obligations expressly refused", () => {
+  const MKT: Playbook = { id: "marketing-services-agreement", version: "1.0.0" };
+  const DIST: Playbook = { id: "distribution-agreement", version: "1.0.0" };
+  const titles = async (id: string, pb: Playbook, text: string) => {
+    const run = await runEngine({
+      rules: COMMERCIAL_V4_RULES as Rule[],
+      ctx: withPb(buildContext(["Terms", text]), pb),
+      source_file: SRC,
+    });
+    return run.findings.filter((f) => f.rule_id === id).map((f) => f.title);
+  };
+
+  it("COMM-035 reports disclaimed rights clearance as a denial", async () => {
+    expect(
+      await titles(
+        "COMM-035",
+        MKT,
+        "Agency does not obtain licenses, releases, or clearances for third-party materials and makes no non-infringement warranty.",
+      ),
+    ).toEqual(["Third-party rights clearance expressly disclaimed"]);
+  });
+
+  it("COMM-035 stays silent on the compliant clearance obligation", async () => {
+    expect(
+      await titles(
+        "COMM-035",
+        MKT,
+        "Agency shall obtain all licenses, releases, and clearances for third-party materials and warrants the deliverables are non-infringing.",
+      ),
+    ).toEqual([]);
+  });
+
+  it("COMM-039 reports a refused warranty pass-through as a denial", async () => {
+    expect(
+      await titles(
+        "COMM-039",
+        DIST,
+        "Supplier does not pass through any manufacturer warranty to Distributor or its customers.",
+      ),
+    ).toEqual(["Warranty pass-through expressly refused"]);
+  });
+
+  it("COMM-039 stays silent on the compliant pass-through", async () => {
+    expect(
+      await titles(
+        "COMM-039",
+        DIST,
+        "Supplier shall pass through the manufacturer warranty to Distributor and administer warranty claims.",
+      ),
+    ).toEqual([]);
+  });
+
+  it.each([
+    ["COMM-035", "Third-party rights-clearance / non-infringement clause missing"],
+    ["COMM-039", "Warranty pass-through / claim-administration clause missing"],
+  ])("%s still reports the clause missing on silence", async (id, title) => {
+    const pb = id === "COMM-035" ? MKT : DIST;
+    const text =
+      id === "COMM-035"
+        ? "Agency shall provide marketing services as described in the SOW."
+        : "Distributor shall purchase Products at the prices in Exhibit A.";
+    expect(await titles(id, pb, text)).toEqual([title]);
+  });
+});
