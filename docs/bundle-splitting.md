@@ -1,27 +1,28 @@
 # Bundle splitting
 
-Vaulytica ships the entire analysis engine to the browser — there is no server, so the rules, extractors, classifier, and report builder all run in the tab. That is a lot of code (~70,000 lines of application TypeScript on top of the parser vendors). This document explains how it is split into cacheable chunks, why the split is purely a packaging concern, and the rules a change to it must keep.
+Vaulytica ships the entire analysis engine to the browser — there is no server, so the rules, extractors, classifier, and report builder all run in the tab. That is a lot of code (~88,000 lines of application TypeScript on top of the parser vendors). This document explains how it is split into cacheable chunks, why the split is purely a packaging concern, and the rules a change to it must keep.
 
 ## The shape of the bundle
 
-The site has a tiny eager entry and a large lazy body. First paint loads only `main-*.js` (~16 KB gzipped) plus the HTML and CSS — enough to render the hero and the dropzone. Nothing else is on the critical path.
+The site has a tiny eager entry and a large lazy body. First paint loads only `main-*.js` (~22 KB gzipped) plus the HTML and CSS — enough to render the hero and the dropzone. Nothing else is on the critical path.
 
 The moment the user drops a file, the entry calls `import("./pipeline.js")`. That dynamic import pulls in the analysis body: the engine, the rule catalog, the extractors, the classifier, the DKB loader, and the playbook matcher. The heavy parser vendors (`pdfjs`, `mammoth`, `tesseract`) and the `docx` report builder are separate chunks loaded behind the same gesture. See [`src/ui/main.ts`](../src/ui/main.ts) for the drop handler and [`vite.config.ts`](../vite.config.ts) for the chunking.
 
 ```
-first paint    main-*.js (16 KB gz)  ──────────────  hero + dropzone
+first paint    main-*.js (22 KB gz)  ──────────────  hero + dropzone
                                                        │ user drops a file
-file drop      pipeline-*.js          31 KB gz         engine core + orchestration
-               rules-core-*.js        98 KB gz         launch + v3 compliance rules
-               v4-rules-corp-*.js     78 KB gz         v4: m&a, governance, equity,
+file drop      pipeline-*.js          49 KB gz         engine core + orchestration
+               rules-core-*.js       139 KB gz         launch + v3 compliance rules
+               v4-rules-corp-*.js     91 KB gz         v4: m&a, governance, equity,
                                                         trust-estate, banking, ip-licensing
-               v4-rules-reg-*.js      76 KB gz         v4: every other sector family
+               v4-rules-reg-*.js     100 KB gz         v4: every other sector family
+               report-*.js            94 KB gz         report builders (DOCX/HTML/JSON/…)
                vendor-pdfjs / mammoth / docx / ...     parsers + report builder, on demand
 ```
 
 ## Why the rule catalog is its own set of chunks
 
-The rule catalog is roughly 40% of the analysis code (~28,000 lines), and it changes far more often than anything else — most feature commits add or tune rules. The engine core, the extractors, and the report builder are comparatively stable.
+The rule catalog is roughly 45% of the analysis code (~40,000 lines), and it changes far more often than anything else — most feature commits add or tune rules. The engine core, the extractors, and the report builder are comparatively stable.
 
 `/assets/*` is served `Cache-Control: public, max-age=31536000, immutable`, so a returning visitor re-downloads only the chunks whose content hash changed. If the whole analysis body were one chunk (it was — a single 1,045 KB `pipeline-*.js`), every rule tweak would invalidate the engine core and the report builder for every returning user. Peeling the catalog out means a rule-only commit re-downloads only the affected rule chunk.
 
@@ -40,7 +41,7 @@ Because nothing about execution changes, the `result_hash` of every report is by
 [`tests/integration/bundle-size.test.ts`](../tests/integration/bundle-size.test.ts) enforces the budgets a chunking change must respect:
 
 - The eager `main-*.js` entry stays under **50 KB gzipped** (first-paint cost).
-- Total gzipped JS stays under the **1,065 KB** ceiling (v2 baseline + v3 + v4 budgets).
+- Total gzipped JS stays under the **1,170 KB** ceiling (v2 baseline 165 + v3 705 + v4 300).
 - Any chunk over **600 KB raw** must match the allow-list (`vendor-mammoth`, `vendor-pdfjs`, `vendor-docx`, `vendor-v4-*`, `pipeline-*`). After this split every chunk is under 600 KB, so the allow-list is currently slack — keep it rather than tighten it, so a future regression surfaces as an explicit decision.
 - v4 rule chunks (`v4-*` / `vendor-v4-*`) must be separate files, never inlined into the eager entry.
 

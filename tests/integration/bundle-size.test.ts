@@ -176,7 +176,10 @@ describe.skipIf(!RUN)("v3 bundle-size guard", () => {
 /** v4 bundle-size guard (spec-v4 §17). */
 describe.skipIf(!RUN)("v4 bundle-size guard", () => {
   /** v4 incremental budget over v3: +300 KB compressed. */
-  const V4_BUDGET_GZIPPED_KB = V3_BUDGET_GZIPPED_KB + 300; // 1065 KB ceiling
+  // 1,170 KB ceiling = v2 baseline 165 + v3 705 + v4 300. The comment used to
+  // say 1065, from back when the v3 budget was +600; the v3 raises to +705 left
+  // it stale, and docs/bundle-splitting.md quoted the stale figure.
+  const V4_BUDGET_GZIPPED_KB = V3_BUDGET_GZIPPED_KB + 300;
 
   beforeAll(() => {
     // Wait for build artifacts. The v3 block's beforeAll (and the SRI test)
@@ -233,7 +236,7 @@ describe.skipIf(!RUN)("v4 bundle-size guard", () => {
     const breakdown = files.map((f) => `${f.name}: ${f.size.toFixed(2)} KB`).join("\n  ");
     expect(
       total,
-      `total gzipped JS ${total.toFixed(2)} KB exceeds the ${V4_BUDGET_GZIPPED_KB} KB ceiling (v2 ${V2_BASELINE_GZIPPED_KB} KB + v3 600 KB + v4 300 KB). Breakdown:\n  ${breakdown}`,
+      `total gzipped JS ${total.toFixed(2)} KB exceeds the ${V4_BUDGET_GZIPPED_KB} KB ceiling (v2 ${V2_BASELINE_GZIPPED_KB} KB + v3 705 KB + v4 300 KB). Breakdown:\n  ${breakdown}`,
     ).toBeLessThan(V4_BUDGET_GZIPPED_KB);
   });
 
