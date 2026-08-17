@@ -293,3 +293,64 @@ describe("INS-015 / INS-022 — bare and fronted negation (v1.3.0 / v1.2.0)", ()
     ).toBe(false);
   });
 });
+
+/**
+ * INS-012 used to read an express refusal of the waiver as compliance: its
+ * "waive … rights of recovery" pattern matched inside a negated sentence, and
+ * a single present-pattern match short-circuits a presence rule. So an
+ * endorsement stating the insurer KEEPS its subrogation rights — the exact
+ * condition the rule exists to surface — scored clean, while a document merely
+ * silent on the topic fired. Same express-denial class fixed across the other
+ * v4 packs; this rule had been missed.
+ */
+describe("INS-012 — express denial of the subrogation waiver", () => {
+  const run = async (text: string) => {
+    const ctx = buildContext(["Endorsement", text]);
+    const res = await runEngine({
+      rules: INSURANCE_RULES,
+      ctx: withPb(ctx, ENDORSEMENT_PB),
+      source_file: SRC,
+    });
+    return res.findings.filter((f) => f.rule_id === "INS-012").map((f) => f.title);
+  };
+
+  it.each([
+    [
+      "shall not waive",
+      "Contractor's insurer shall not waive its rights of recovery against Owner.",
+    ],
+    ["no waiver of", "No waiver of subrogation is granted under this endorsement."],
+    [
+      "reserves subrogation",
+      "The insurer reserves all rights of subrogation against any responsible third party.",
+    ],
+    ["retains recovery", "The company retains its rights of recovery against the Owner."],
+  ])("%s is reported as a denial, not as compliance", async (_form, text) => {
+    expect(await run(text)).toEqual(["Waiver of subrogation expressly denied"]);
+  });
+
+  it("mere silence still reports the endorsement as missing", async () => {
+    expect(
+      await run(
+        "This endorsement modifies coverage under the commercial general liability policy.",
+      ),
+    ).toEqual(["Waiver-of-subrogation endorsement missing"]);
+  });
+
+  it.each([
+    [
+      "waives rights of recovery",
+      "The insurer waives its rights of recovery against the Owner under CG 24 04.",
+    ],
+    [
+      "waiver of subrogation",
+      "A waiver of subrogation in favor of the Owner is included per CG 24 04.",
+    ],
+    [
+      "transfer of rights",
+      "This endorsement addresses transfer of rights of recovery against others to us.",
+    ],
+  ])("%s stays silent (the compliant drafting must not be accused)", async (_form, text) => {
+    expect(await run(text)).toEqual([]);
+  });
+});

@@ -265,7 +265,7 @@ const ENDORSEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "INS-012",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Waiver of subrogation (where required by contract)",
     description:
       "If the underlying contract requires waiver of subrogation, the endorsement (CG 24 04 or equivalent) must be attached.",
@@ -286,6 +286,29 @@ const ENDORSEMENT_RULES: Rule[] = [
       // its right to sue") is NOT misread as a subrogation waiver.
       /waiv\w*\s+(?:any\s+|its\s+|all\s+|their\s+)?rights?\s+of\s+recovery/i,
     ],
+    // A document that expressly REFUSES the waiver used to read as compliant:
+    // the third present_pattern matches "waive ... rights of recovery" inside
+    // a negated sentence, and one present match short-circuits the rule. So an
+    // endorsement stating the insurer keeps its subrogation rights — the exact
+    // condition this rule exists to surface — was scored as if the CG 24 04
+    // were attached, while a document merely silent on the topic fired.
+    //
+    // `expressDenial` cannot reach these: its frames put the negation on the
+    // topic ("subrogation ... shall not be waived"), and it deliberately
+    // treats "waive" as a scope verb that ENDS the gap, so the far commoner
+    // "shall not waive its rights of recovery" needs its own frames. The
+    // reservation forms matter just as much — reserving subrogation is how
+    // an insurer denies the waiver without ever using the word "waive".
+    denied_if: [
+      /\b(?:shall|will|does|do|may|can|is|are)\s+not\s+waiv\w+\b[^.]{0,40}?\b(?:subrogation|rights?\s+of\s+recovery)/i,
+      /\bno\s+waiver\s+of\s+(?:subrogation|(?:any\s+|its\s+|all\s+)?rights?\s+of\s+recovery)/i,
+      /\b(?:waiver\s+of\s+subrogation|rights?\s+of\s+recovery)\b[^.]{0,40}?\b(?:is|are|shall\s+be|will\s+be)\s+not\s+(?:waived|granted|provided)/i,
+      /\b(?:insurer|company|underwriter)\b[^.]{0,40}?\b(?:reserves?|retains?|preserves?)\b[^.]{0,20}?\b(?:rights?\s+of\s+)?subrogation/i,
+      /\b(?:reserves?|retains?|preserves?)\s+(?:any\s+|its\s+|all\s+|their\s+)?rights?\s+of\s+(?:recovery|subrogation)/i,
+    ],
+    denied_title: "Waiver of subrogation expressly denied",
+    denied_description:
+      "The document states that the insurer does not waive — or expressly reserves — its rights of subrogation / recovery. Where the underlying contract requires a waiver, an express reservation is a harder failure than silence: the endorsement affirmatively preserves the insurer's right to sue the other party.",
     default_severity: "warning",
   }),
 ];
