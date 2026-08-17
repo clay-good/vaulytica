@@ -4815,4 +4815,4 @@ Initial public release. Vaulytica is now feature-complete for the seventeen-step
 
 `@playwright/test`, `@types/js-yaml`, `@types/node`, `@typescript-eslint/eslint-plugin`, `@typescript-eslint/parser`, `@xmldom/xmldom`, `eslint`, `eslint-config-prettier`, `happy-dom`, `js-yaml`, `prettier`, `sharp`, `tsx`, `typescript`, `vite`, `vitest`.
 
-[1.0.0]: https://github.com/claygood/vaulytica/releases/tag/v1.0.0
+[1.0.0]: https://github.com/clay-good/vaulytica/releases/tag/v1.0.0

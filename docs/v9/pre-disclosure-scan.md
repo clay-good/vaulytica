@@ -12,7 +12,7 @@ The pre-disclosure scan reads the **same original bytes a second time**, through
 
 ## 2. The read surface
 
-A new module `src/ingest/container.ts`, called with the original `ArrayBuffer` the ingest path already holds, returns a typed `ContainerFacts`:
+A new module `src/delivery/container.ts`, called with the original `ArrayBuffer` the ingest path already holds, returns a typed `ContainerFacts`:
 
 ```
 ContainerFacts {

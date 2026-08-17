@@ -53,7 +53,7 @@ npm run typecheck
 npm test
 ```
 
-CI in [.github/workflows/deploy.yml](.github/workflows/deploy.yml) re-runs all three on every push to `main` and on every PR. **Do not** open a PR with failing checks expecting CI to surface what local would have caught.
+CI in [.github/workflows/ci.yml](.github/workflows/ci.yml) re-runs all three — plus `npm run format:check` and `npm run coverage` — on every push to `main` and on every PR. (`deploy.yml` has no `pull_request` trigger; it only runs on push to `main`.) **Do not** open a PR with failing checks expecting CI to surface what local would have caught.
 
 For DKB changes, also run:
 

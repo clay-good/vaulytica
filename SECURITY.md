@@ -4,4 +4,4 @@ Vaulytica is a static web page with no backend, no database, no analytics, and n
 
 ## Reporting a vulnerability
 
-Please report security issues privately via [GitHub Security Advisories](https://github.com/claygood/vaulytica/security/advisories/new). Do not open public issues for security reports. Reasonable disclosures will receive an acknowledgement within 7 days.
+Please report security issues privately via [GitHub Security Advisories](https://github.com/clay-good/vaulytica/security/advisories/new). Do not open public issues for security reports. Reasonable disclosures will receive an acknowledgement within 7 days.
