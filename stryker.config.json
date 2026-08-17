@@ -1,15 +1,18 @@
 {
   "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
-  "_comment": "spec-v7 Step 123 \u2014 mutation testing. Scoped to the highest-value pure extractors; a separate, slow, on-demand/scheduled job, never the per-push gate. `mutate` and the `include` list in vitest.mutation.config.ts MUST stay in step \u2014 a file listed here whose tests are not included there reports 0% with every mutant NoCoverage. tests/integration/mutation-scope.test.ts asserts they agree.",
+  "_comment": "spec-v7 Step 123 \u2014 mutation testing. Scoped to the highest-value pure extractors; a separate, slow, on-demand/scheduled job, never the per-push gate. `mutate` here and the `include` list in vitest.mutation.config.ts MUST describe the same surface: `include` needs EVERY test file that imports a mutated module, not just the same-named one \u2014 a module whose sibling phrasing suite is left out has its kills go uncounted and reports them as NoCoverage. tests/integration/mutation-scope.test.ts derives the correct include list from the test files' own imports and asserts this config matches.",
   "testRunner": "vitest",
   "vitest": {
     "configFile": "vitest.mutation.config.ts"
   },
   "coverageAnalysis": "perTest",
   "mutate": [
-    "src/extract/dates.ts",
     "src/extract/amounts.ts",
     "src/extract/crossrefs.ts",
+    "src/extract/dates.ts",
+    "src/extract/jurisdictions.ts",
+    "src/extract/obligations.ts",
+    "src/extract/parties.ts",
     "src/extract/sections.ts"
   ],
   "reporters": [
@@ -26,10 +29,10 @@
   "timeoutMS": 60000,
   "concurrency": 4,
   "tempDirName": ".stryker-tmp",
-  "_thresholds_comment": "Regression-only (spec-v7 Step 124): break a couple points under the measured baseline; never an aspiration. Runs only in the scheduled/on-demand mutation workflow, not the per-push gate. Ratchet up as survivors are killed. CURRENT baseline 53.94% over dates+amounts+crossrefs+sections (1,433 mutants), 2026-08-17, break 52. NOTE scores are comparable ONLY within one `mutate` set: widening from 2 files to 4 moved the aggregate from 56.16 to 52.34 without anything getting worse, because crossrefs and sections score below the original pair. History: 51.26% baseline (2026-06-05, dates+amounts, break 48); decayed to 47.59 and BROKE the gate as those two files grew without matching tests; covering three then-untested features took the pair to 56.16; scope widened to four files (52.34); pinning each external-citation branch in crossrefs took it to 53.94. CEILING NOTE: crossrefs' ~270 remaining survivors are mostly EQUIVALENT mutants inside long alternations (\\s+ -> \\s, [A-Za-z]+ -> [A-Za-z], dropped ^ anchors) that no realistic legal drafting distinguishes \u2014 41 new branch-pinning test rows moved it only 42.86 -> 46.80. Further gains need a different lever, not more rows.",
+  "_thresholds_comment": "Regression-only (spec-v7 Step 124): break a couple points under the measured baseline; never an aspiration. Runs only in the scheduled/on-demand mutation workflow, not the per-push gate. Ratchet up as survivors are killed. CURRENT baseline 55.51% over amounts+crossrefs+dates+jurisdictions+obligations+parties+sections (2,729 mutants), 2026-08-17, break 53. NOTE scores are comparable ONLY within one `mutate` set AND one include list. History: 51.26% baseline (2026-06-05, dates+amounts, break 48); decayed to 47.59 and BROKE the gate; covering then-untested features took the pair to 56.16; scope widened to four files (52.34); pinning each external-citation branch in crossrefs took it to 53.94; then the include list was corrected to name every covering test file (several phrasing suites had never run under mutation, so their kills went uncounted) and the scope widened to seven files \u2192 55.51. CEILING NOTE: crossrefs' ~270 remaining survivors are mostly EQUIVALENT mutants inside long alternations (\\s+ -> \\s, [A-Za-z]+ -> [A-Za-z], dropped ^ anchors) that no realistic legal drafting distinguishes \u2014 41 new branch-pinning test rows moved it only 42.86 -> 46.80. Further gains need a different lever, not more rows.",
   "thresholds": {
     "high": 80,
     "low": 55,
-    "break": 52
+    "break": 53
   }
 }
