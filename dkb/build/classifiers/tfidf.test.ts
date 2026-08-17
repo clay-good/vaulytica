@@ -9,7 +9,10 @@ describe("trainTfIdf", () => {
     { category: "governing-law", text: "Governed by the laws of the State of New York." },
     { category: "term", text: "The term of this agreement is two years." },
     { category: "term", text: "The initial term is one year, renewing annually." },
-    { category: "indemnification", text: "Each party shall indemnify and hold the other harmless." },
+    {
+      category: "indemnification",
+      text: "Each party shall indemnify and hold the other harmless.",
+    },
   ];
 
   it("returns one entry per category, alphabetically sorted", () => {

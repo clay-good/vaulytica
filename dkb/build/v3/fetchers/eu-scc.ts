@@ -13,7 +13,13 @@ import type {
   TransferMechanismKind,
   V3DkbNode,
 } from "../../../../src/dkb/v3/types.js";
-import { normalizeForHash, pin, sha256Hex, type V3Fetcher, type V3FetcherResult } from "./_common.js";
+import {
+  normalizeForHash,
+  pin,
+  sha256Hex,
+  type V3Fetcher,
+  type V3FetcherResult,
+} from "./_common.js";
 
 export const EU_SCC_URL = "https://eur-lex.europa.eu/eli/dec_impl/2021/914/oj";
 
@@ -57,7 +63,11 @@ const MODULES: ModuleSpec[] = [
 ];
 
 const ANNEX_CLAUSES = [
-  { id: "annex-i-list-of-parties", heading: "Annex I — List of Parties / Description of Transfer / Competent Supervisory Authority" },
+  {
+    id: "annex-i-list-of-parties",
+    heading:
+      "Annex I — List of Parties / Description of Transfer / Competent Supervisory Authority",
+  },
   { id: "annex-ii-tom", heading: "Annex II — Technical and Organisational Measures" },
   { id: "annex-iii-sub-processors", heading: "Annex III — List of Sub-processors (Modules 2 & 3)" },
 ];

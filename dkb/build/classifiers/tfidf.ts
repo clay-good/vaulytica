@@ -113,10 +113,7 @@ function round6(n: number): number {
 }
 
 /** Cosine similarity between an input token bag and a category vocabulary. */
-export function cosineScore(
-  inputTokens: readonly string[],
-  vocab: CategoryVocab,
-): number {
+export function cosineScore(inputTokens: readonly string[], vocab: CategoryVocab): number {
   // Build the input vector with raw term counts.
   const input = new Map<string, number>();
   for (const t of inputTokens) input.set(t, (input.get(t) ?? 0) + 1);
@@ -149,7 +146,11 @@ export function classify(
   let best: { category: string; confidence: number } | undefined;
   for (const v of vocabs) {
     const score = cosineScore(toks, v);
-    if (!best || score > best.confidence || (score === best.confidence && v.category < best.category)) {
+    if (
+      !best ||
+      score > best.confidence ||
+      (score === best.confidence && v.category < best.category)
+    ) {
       best = { category: v.category, confidence: score };
     }
   }

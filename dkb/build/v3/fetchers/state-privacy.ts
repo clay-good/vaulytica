@@ -141,8 +141,7 @@ export const STATE_PRIVACY_SOURCES: Record<string, StatePrivacySource> = {
     source_id: "ctdpa",
     jurisdiction: "us-ct",
     regulator: "Connecticut Attorney General",
-    source_url:
-      "https://www.cga.ct.gov/2022/ACT/PA/PDF/2022PA-00015-R00SB-00006-PA.PDF",
+    source_url: "https://www.cga.ct.gov/2022/ACT/PA/PDF/2022PA-00015-R00SB-00006-PA.PDF",
     citation_root: "Conn. Gen. Stat. § 42",
     effective_date: "2023-07-01",
     requirements: [
@@ -199,8 +198,7 @@ export const STATE_PRIVACY_SOURCES: Record<string, StatePrivacySource> = {
     source_id: "ocpa",
     jurisdiction: "us-or",
     regulator: "Oregon Attorney General",
-    source_url:
-      "https://olis.oregonlegislature.gov/liz/2023R1/Downloads/MeasureDocument/SB0619",
+    source_url: "https://olis.oregonlegislature.gov/liz/2023R1/Downloads/MeasureDocument/SB0619",
     citation_root: "ORS § 646A",
     effective_date: "2024-07-01",
     requirements: [

@@ -90,10 +90,7 @@ const REQUIREMENTS: RequirementSpec[] = [
   },
 ];
 
-export function parseHipaaSnapshot(
-  text: string,
-  nowIso: string,
-): StatutoryClauseRequirement[] {
+export function parseHipaaSnapshot(text: string, nowIso: string): StatutoryClauseRequirement[] {
   const normalized = normalizeForHash(text);
   return REQUIREMENTS.filter((r) => r.detect.test(normalized)).map((r) => ({
     id: r.id,

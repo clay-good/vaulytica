@@ -33,11 +33,7 @@ export {
   HIPAA_TITLE_45_URL,
   parseHipaaSnapshot,
 } from "./hipaa-ecfr-title-45.js";
-export {
-  hhsSampleBaaFetcher,
-  HHS_SAMPLE_BAA_URL,
-  parseHhsSampleBaa,
-} from "./hhs-sample-baa.js";
+export { hhsSampleBaaFetcher, HHS_SAMPLE_BAA_URL, parseHhsSampleBaa } from "./hhs-sample-baa.js";
 export {
   hhsOcrResolutionsFetcher,
   HHS_OCR_INDEX_URL,
@@ -73,12 +69,7 @@ export {
   parseSwissAddendum,
   parseEdpbGuidelines,
 } from "./swiss-edpb.js";
-export {
-  INTL_FETCHERS,
-  INTL_SOURCES,
-  makeIntlFetcher,
-  parseIntl,
-} from "./international.js";
+export { INTL_FETCHERS, INTL_SOURCES, makeIntlFetcher, parseIntl } from "./international.js";
 
 export const V3_FETCHERS: Record<string, V3Fetcher> = {
   "hipaa-ecfr-title-45": hipaaTitle45Fetcher,

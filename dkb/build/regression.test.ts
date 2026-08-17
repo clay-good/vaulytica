@@ -79,9 +79,7 @@ describe("runRegression", () => {
 
 describe("summarizeDiffs", () => {
   it("is ok when every fixture matches", () => {
-    expect(
-      summarizeDiffs([{ fixture: "a", status: "match", message: "" }]).ok,
-    ).toBe(true);
+    expect(summarizeDiffs([{ fixture: "a", status: "match", message: "" }]).ok).toBe(true);
   });
 
   it("lists failing fixtures in the summary when any fail", () => {

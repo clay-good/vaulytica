@@ -13,7 +13,13 @@
  */
 
 import type { RegulatorModelForm } from "../../../../src/dkb/v3/types.js";
-import { normalizeForHash, pin, sha256Hex, type V3Fetcher, type V3FetcherResult } from "./_common.js";
+import {
+  normalizeForHash,
+  pin,
+  sha256Hex,
+  type V3Fetcher,
+  type V3FetcherResult,
+} from "./_common.js";
 
 export const HHS_SAMPLE_BAA_URL =
   "https://www.hhs.gov/hipaa/for-professionals/covered-entities/sample-business-associate-agreement-provisions/index.html";
@@ -102,15 +108,16 @@ export function parseHhsSampleBaa(html: string, nowIso: string): RegulatorModelF
     authoritative_url: HHS_SAMPLE_BAA_URL,
     vendored_path: "dkb/fixtures/v3/hhs-sample-baa.html",
     vendored_content_hash: sha256Hex(html),
-    clauses: clauses.length > 0
-      ? clauses
-      : [
-          {
-            clause_id: "hhs-baa-placeholder",
-            required_by_citation: "45 C.F.R. § 164.504(e)",
-            normalized_text: "HHS sample BAA provisions (full text vendored).",
-          },
-        ],
+    clauses:
+      clauses.length > 0
+        ? clauses
+        : [
+            {
+              clause_id: "hhs-baa-placeholder",
+              required_by_citation: "45 C.F.R. § 164.504(e)",
+              normalized_text: "HHS sample BAA provisions (full text vendored).",
+            },
+          ],
     cites: [
       pin({
         authority: "45 C.F.R. § 164.504(e)",

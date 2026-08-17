@@ -81,7 +81,8 @@ const UCC_ARTICLES: UccArticle[] = [
           "Negotiable instrument means an unconditional promise or order to pay a fixed amount of money, with or without interest, payable on demand or at a definite time, payable to bearer or to order, and containing no other undertaking by the person promising or ordering payment except as authorized by § 3-104(a)(3).",
         minimum_compliant_text:
           "FOR VALUE RECEIVED, the undersigned unconditionally promises to pay to the order of [Payee] the principal sum of $[Amount], together with interest at the rate of [%] per annum, payable [on demand / on [date]].",
-        detect: /(promissory note|negotiable instrument|unconditional.{0,40}promise|pay to the order)/i,
+        detect:
+          /(promissory note|negotiable instrument|unconditional.{0,40}promise|pay to the order)/i,
       },
       {
         id: "ucc-3-305-defenses",

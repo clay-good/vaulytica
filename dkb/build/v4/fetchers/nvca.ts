@@ -14,7 +14,13 @@
  */
 
 import type { RegulatorModelForm } from "../../../../src/dkb/v3/types.js";
-import { normalizeForHash, pin, sha256Hex, type V4Fetcher, type V4FetcherResult } from "./_common.js";
+import {
+  normalizeForHash,
+  pin,
+  sha256Hex,
+  type V4Fetcher,
+  type V4FetcherResult,
+} from "./_common.js";
 
 export const NVCA_MODEL_DOCS_URL = "https://nvca.org/resources/model-legal-documents/";
 

@@ -28,8 +28,7 @@ export type V4FetchContext = V3FetchContext;
 export type V4Fetcher = V3Fetcher;
 export type V4FetcherResult = V3FetcherResult;
 
-export const urlKey = (url: string): string =>
-  createHash("sha256").update(url).digest("hex");
+export const urlKey = (url: string): string => createHash("sha256").update(url).digest("hex");
 
 /**
  * Filesystem-backed snapshot reader. Resolves

@@ -157,7 +157,9 @@ describe("parseCuadRows", () => {
 describe("parseLedgarRows", () => {
   it("uses ClassLabel names when available", () => {
     const fixture = JSON.stringify({
-      features: [{ name: "label", type: { _type: "ClassLabel", names: ["governing-law", "term"] } }],
+      features: [
+        { name: "label", type: { _type: "ClassLabel", names: ["governing-law", "term"] } },
+      ],
       rows: [
         { row_idx: 0, row: { text: "Governed by Delaware.", label: 0 } },
         { row_idx: 1, row: { text: "Two-year term.", label: 1 } },

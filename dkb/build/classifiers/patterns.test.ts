@@ -39,12 +39,18 @@ describe("PATTERNS", () => {
   it("the governing-law pattern matches a canonical clause", () => {
     const gl = PATTERNS.find((p) => p.category === "governing-law")!;
     const re = new RegExp(gl.pattern, gl.flags);
-    expect(re.test("This Agreement shall be governed by and construed in accordance with the laws of the State of Delaware.")).toBe(true);
+    expect(
+      re.test(
+        "This Agreement shall be governed by and construed in accordance with the laws of the State of Delaware.",
+      ),
+    ).toBe(true);
   });
 
   it("the force-majeure pattern matches both 'force majeure' and 'reasonable control' phrasing", () => {
     const fm = PATTERNS.filter((p) => p.category === "force-majeure");
-    expect(fm.some((p) => new RegExp(p.pattern, p.flags).test("This is a Force Majeure event."))).toBe(true);
+    expect(
+      fm.some((p) => new RegExp(p.pattern, p.flags).test("This is a Force Majeure event.")),
+    ).toBe(true);
     expect(
       fm.some((p) =>
         new RegExp(p.pattern, p.flags).test(

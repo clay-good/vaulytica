@@ -73,7 +73,13 @@ export type PinOptions = {
   text: string;
 };
 
-export function pin({ authority, citation, source_url, fetched_at, text }: PinOptions): PinnedCitation {
+export function pin({
+  authority,
+  citation,
+  source_url,
+  fetched_at,
+  text,
+}: PinOptions): PinnedCitation {
   return {
     authority,
     citation,

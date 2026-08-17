@@ -35,7 +35,10 @@ export function parseLedgarRows(raw: string): ParsedRecord[] {
       kind: "classifier-example",
       data: {
         id: `ledgar/${r.row_idx}`,
-        category: label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, ""),
+        category: label
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, ""),
         text,
       },
     });

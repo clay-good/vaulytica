@@ -40,7 +40,8 @@ export const INTL_SOURCES: Record<string, IntlSource> = {
     regulator: "Office of the Privacy Commissioner of Canada",
     source_url: "https://laws-lois.justice.gc.ca/eng/acts/p-8.6/page-1.html",
     effective_date: "2004-01-01",
-    authority_label: "Personal Information Protection and Electronic Documents Act, S.C. 2000, c. 5",
+    authority_label:
+      "Personal Information Protection and Electronic Documents Act, S.C. 2000, c. 5",
     requirements: [
       {
         id: "pipeda-principle-4.1.3-third-party-processing",
@@ -57,8 +58,7 @@ export const INTL_SOURCES: Record<string, IntlSource> = {
     source_id: "lgpd",
     jurisdiction: "br",
     regulator: "ANPD (Autoridade Nacional de Proteção de Dados)",
-    source_url:
-      "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm",
+    source_url: "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm",
     effective_date: "2020-09-18",
     authority_label: "Lei Geral de Proteção de Dados Pessoais (Lei nº 13.709/2018)",
     requirements: [
@@ -79,7 +79,8 @@ export const INTL_SOURCES: Record<string, IntlSource> = {
     regulator: "Personal Information Protection Commission (PPC) Japan",
     source_url: "https://www.ppc.go.jp/en/legal/",
     effective_date: "2022-04-01",
-    authority_label: "Act on the Protection of Personal Information (APPI), Law No. 57 of 2003 as amended",
+    authority_label:
+      "Act on the Protection of Personal Information (APPI), Law No. 57 of 2003 as amended",
     requirements: [
       {
         id: "appi-art-25-supervision-of-trustee",

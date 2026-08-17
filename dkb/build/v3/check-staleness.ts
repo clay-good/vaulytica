@@ -40,17 +40,17 @@ export type RunOptions = {
 
 const urlKey = (url: string): string => createHash("sha256").update(url).digest("hex");
 
-const snapshotFetcher = (snapshotsDir: string, nowIso: string): AuthorityFetcher => async (
-  cite: PinnedCitation,
-) => {
-  const path = join(snapshotsDir, `${urlKey(cite.source_url)}.txt`);
-  if (!existsSync(path)) {
-    throw new Error(
-      `staleness check: snapshot missing for ${cite.source_url} at ${path}; vendor a snapshot or run with --online`,
-    );
-  }
-  return { text: readFileSync(path, "utf8"), fetched_at: nowIso };
-};
+const snapshotFetcher =
+  (snapshotsDir: string, nowIso: string): AuthorityFetcher =>
+  async (cite: PinnedCitation) => {
+    const path = join(snapshotsDir, `${urlKey(cite.source_url)}.txt`);
+    if (!existsSync(path)) {
+      throw new Error(
+        `staleness check: snapshot missing for ${cite.source_url} at ${path}; vendor a snapshot or run with --online`,
+      );
+    }
+    return { text: readFileSync(path, "utf8"), fetched_at: nowIso };
+  };
 
 export function loadNodes(nodesDir: string): V3DkbNode[] {
   if (!existsSync(nodesDir)) return [];
@@ -111,7 +111,8 @@ if (isMain()) {
     snapshotsDir:
       process.env.V3_SNAPSHOTS_DIR ?? join(repoRoot, "dkb", "fixtures", "v3", "snapshots"),
     reportPath:
-      process.env.V3_STALENESS_REPORT ?? join(repoRoot, "dkb", "fixtures", "v3", "staleness-report.json"),
+      process.env.V3_STALENESS_REPORT ??
+      join(repoRoot, "dkb", "fixtures", "v3", "staleness-report.json"),
     ackPath: process.env.V3_STALENESS_ACK ?? join(repoRoot, "dkb-staleness-ack.yml"),
   };
 

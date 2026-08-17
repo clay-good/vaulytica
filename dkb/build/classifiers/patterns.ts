@@ -16,7 +16,8 @@ import type { ClassifierPatternEntry } from "../../../src/dkb/types.js";
 export const PATTERNS: ClassifierPatternEntry[] = [
   {
     category: "governing-law",
-    pattern: "governed\\s+by\\s+(?:and\\s+construed\\s+(?:in\\s+accordance\\s+)?with\\s+)?the\\s+laws\\s+of",
+    pattern:
+      "governed\\s+by\\s+(?:and\\s+construed\\s+(?:in\\s+accordance\\s+)?with\\s+)?the\\s+laws\\s+of",
     flags: "i",
     confidence: 0.98,
   },
@@ -28,7 +29,8 @@ export const PATTERNS: ClassifierPatternEntry[] = [
   },
   {
     category: "indemnification",
-    pattern: "(?:shall|will|agrees?\\s+to)\\s+indemnify[\\s,]+(?:and\\s+)?(?:defend|hold\\s+harmless)",
+    pattern:
+      "(?:shall|will|agrees?\\s+to)\\s+indemnify[\\s,]+(?:and\\s+)?(?:defend|hold\\s+harmless)",
     flags: "i",
     confidence: 0.98,
   },
@@ -52,7 +54,8 @@ export const PATTERNS: ClassifierPatternEntry[] = [
   },
   {
     category: "consequential-damages-waiver",
-    pattern: "(?:no|not|excluding)\\s+(?:indirect|consequential|incidental|special|punitive)\\s+damages",
+    pattern:
+      "(?:no|not|excluding)\\s+(?:indirect|consequential|incidental|special|punitive)\\s+damages",
     flags: "i",
     confidence: 0.94,
   },
@@ -64,7 +67,8 @@ export const PATTERNS: ClassifierPatternEntry[] = [
   },
   {
     category: "confidentiality-obligation",
-    pattern: "shall\\s+(?:not\\s+disclose|maintain\\s+the\\s+confidentiality|treat\\s+as\\s+confidential)",
+    pattern:
+      "shall\\s+(?:not\\s+disclose|maintain\\s+the\\s+confidentiality|treat\\s+as\\s+confidential)",
     flags: "i",
     confidence: 0.93,
   },
@@ -106,7 +110,8 @@ export const PATTERNS: ClassifierPatternEntry[] = [
   },
   {
     category: "force-majeure",
-    pattern: "neither\\s+party\\s+(?:shall|will)\\s+be\\s+liable.*?(?:beyond\\s+(?:its|their)\\s+reasonable\\s+control)",
+    pattern:
+      "neither\\s+party\\s+(?:shall|will)\\s+be\\s+liable.*?(?:beyond\\s+(?:its|their)\\s+reasonable\\s+control)",
     flags: "is",
     confidence: 0.9,
   },
@@ -124,7 +129,8 @@ export const PATTERNS: ClassifierPatternEntry[] = [
   },
   {
     category: "entire-agreement",
-    pattern: "supersedes\\s+all\\s+(?:prior|previous)\\s+(?:agreements|understandings|communications)",
+    pattern:
+      "supersedes\\s+all\\s+(?:prior|previous)\\s+(?:agreements|understandings|communications)",
     flags: "i",
     confidence: 0.95,
   },
@@ -142,7 +148,8 @@ export const PATTERNS: ClassifierPatternEntry[] = [
   },
   {
     category: "notices",
-    pattern: "(?:all\\s+)?notices?\\s+(?:under|required\\s+by|pursuant\\s+to)\\s+this\\s+agreement\\s+(?:shall|must)\\s+be\\s+in\\s+writing",
+    pattern:
+      "(?:all\\s+)?notices?\\s+(?:under|required\\s+by|pursuant\\s+to)\\s+this\\s+agreement\\s+(?:shall|must)\\s+be\\s+in\\s+writing",
     flags: "i",
     confidence: 0.96,
   },
@@ -154,25 +161,29 @@ export const PATTERNS: ClassifierPatternEntry[] = [
   },
   {
     category: "jury-trial-waiver",
-    pattern: "(?:waives?|waiv(?:er|ing))\\s+(?:any\\s+)?right\\s+to\\s+(?:a\\s+)?trial\\s+by\\s+jury",
+    pattern:
+      "(?:waives?|waiv(?:er|ing))\\s+(?:any\\s+)?right\\s+to\\s+(?:a\\s+)?trial\\s+by\\s+jury",
     flags: "i",
     confidence: 0.98,
   },
   {
     category: "arbitration",
-    pattern: "shall\\s+be\\s+(?:finally\\s+)?(?:settled|resolved|determined)\\s+by\\s+(?:binding\\s+)?arbitration",
+    pattern:
+      "shall\\s+be\\s+(?:finally\\s+)?(?:settled|resolved|determined)\\s+by\\s+(?:binding\\s+)?arbitration",
     flags: "i",
     confidence: 0.97,
   },
   {
     category: "venue",
-    pattern: "exclusive\\s+(?:jurisdiction|venue)\\s+(?:of|in)\\s+the\\s+(?:state|federal)\\s+courts",
+    pattern:
+      "exclusive\\s+(?:jurisdiction|venue)\\s+(?:of|in)\\s+the\\s+(?:state|federal)\\s+courts",
     flags: "i",
     confidence: 0.96,
   },
   {
     category: "ip-ownership",
-    pattern: "(?:all\\s+)?(?:work\\s+product|deliverables)\\s+(?:shall|will)\\s+be\\s+(?:owned\\s+by|the\\s+(?:sole\\s+)?property\\s+of)",
+    pattern:
+      "(?:all\\s+)?(?:work\\s+product|deliverables)\\s+(?:shall|will)\\s+be\\s+(?:owned\\s+by|the\\s+(?:sole\\s+)?property\\s+of)",
     flags: "i",
     confidence: 0.94,
   },

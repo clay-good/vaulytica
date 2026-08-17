@@ -53,15 +53,16 @@ export function parseOcrIndex(html: string, nowIso: string): RegulatorModelForm 
     authoritative_url: HHS_OCR_INDEX_URL,
     vendored_path: "dkb/fixtures/v3/ocr-resolutions/",
     vendored_content_hash: sha256Hex(html),
-    clauses: clauses.length > 0
-      ? clauses
-      : [
-          {
-            clause_id: "hhs-ocr-placeholder",
-            required_by_citation: "OCR enforcement guidance",
-            normalized_text: "OCR resolution-agreement index (no entries parsed from snapshot).",
-          },
-        ],
+    clauses:
+      clauses.length > 0
+        ? clauses
+        : [
+            {
+              clause_id: "hhs-ocr-placeholder",
+              required_by_citation: "OCR enforcement guidance",
+              normalized_text: "OCR resolution-agreement index (no entries parsed from snapshot).",
+            },
+          ],
     cites: [
       pin({
         authority: "HHS OCR enforcement guidance",

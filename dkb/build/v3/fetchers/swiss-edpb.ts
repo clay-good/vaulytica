@@ -9,7 +9,13 @@ import type {
   TransferMechanism,
   V3DkbNode,
 } from "../../../../src/dkb/v3/types.js";
-import { normalizeForHash, pin, sha256Hex, type V3Fetcher, type V3FetcherResult } from "./_common.js";
+import {
+  normalizeForHash,
+  pin,
+  sha256Hex,
+  type V3Fetcher,
+  type V3FetcherResult,
+} from "./_common.js";
 
 export const SWISS_FADP_URL = "https://www.fedlex.admin.ch/eli/cc/2022/491/en";
 export const SWISS_ADDENDUM_URL =
@@ -131,15 +137,16 @@ export function parseEdpbGuidelines(html: string, nowIso: string): RegulatorMode
     authoritative_url: EDPB_GUIDELINES_URL,
     vendored_path: "dkb/fixtures/v3/edpb-guidelines/",
     vendored_content_hash: sha256Hex(html),
-    clauses: clauses.length > 0
-      ? clauses
-      : [
-          {
-            clause_id: "edpb-placeholder",
-            required_by_citation: "EDPB guidelines",
-            normalized_text: "EDPB guidelines index (no entries parsed from snapshot).",
-          },
-        ],
+    clauses:
+      clauses.length > 0
+        ? clauses
+        : [
+            {
+              clause_id: "edpb-placeholder",
+              required_by_citation: "EDPB guidelines",
+              normalized_text: "EDPB guidelines index (no entries parsed from snapshot).",
+            },
+          ],
     cites: [
       pin({
         authority: "EDPB guidelines",

@@ -27,10 +27,7 @@ import {
   STATE_LANDLORD_TENANT_FETCHERS,
   STATE_LANDLORD_TENANT_SOURCES,
 } from "./state-landlord-tenant.js";
-import {
-  STATE_TRUST_WILL_FETCHERS,
-  STATE_TRUST_WILL_SOURCES,
-} from "./state-trust-will.js";
+import { STATE_TRUST_WILL_FETCHERS, STATE_TRUST_WILL_SOURCES } from "./state-trust-will.js";
 
 export * from "./_common.js";
 export { nvcaFetcher, NVCA_MODEL_DOCS_URL, parseNvcaIndex } from "./nvca.js";

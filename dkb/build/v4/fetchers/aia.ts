@@ -11,7 +11,13 @@
  */
 
 import type { RegulatorModelForm } from "../../../../src/dkb/v3/types.js";
-import { normalizeForHash, pin, sha256Hex, type V4Fetcher, type V4FetcherResult } from "./_common.js";
+import {
+  normalizeForHash,
+  pin,
+  sha256Hex,
+  type V4Fetcher,
+  type V4FetcherResult,
+} from "./_common.js";
 
 export const AIA_CONTRACTS_URL = "https://www.aiacontracts.com/";
 
@@ -24,7 +30,8 @@ const AIA_FORMS: Array<{ form_id: string; name: string; description: string }> =
   {
     form_id: "aia-a102",
     name: "AIA A102–2017 Standard Form of Agreement Between Owner and Contractor (Cost Plus a Fee with GMP)",
-    description: "Owner-contractor agreement for cost-plus-a-fee with a guaranteed maximum price (GMP).",
+    description:
+      "Owner-contractor agreement for cost-plus-a-fee with a guaranteed maximum price (GMP).",
   },
   {
     form_id: "aia-a201",

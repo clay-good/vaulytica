@@ -132,7 +132,8 @@ export const STATE_TRUST_WILL_SOURCES: Record<string, StateTrustWillSource> = {
           "Every will shall be in writing, signed by the testator or by some person in his presence and by his direction, and attested in the presence of the testator by two or more credible witnesses.",
         minimum_compliant_text:
           "This Will is in writing, signed by the Testator, and attested in the presence of the Testator by the two undersigned credible witnesses, as required by 755 ILCS 5/4-3.",
-        detect: /(§?\s*755 ILCS 5\/4-3(?!\d)|credible witnesses|in writing.{0,30}signed by the testator)/i,
+        detect:
+          /(§?\s*755 ILCS 5\/4-3(?!\d)|credible witnesses|in writing.{0,30}signed by the testator)/i,
       },
     ],
   },
@@ -180,8 +181,5 @@ export function makeStateTrustWillFetcher(src: StateTrustWillSource): V4Fetcher 
 }
 
 export const STATE_TRUST_WILL_FETCHERS: Record<string, V4Fetcher> = Object.fromEntries(
-  Object.values(STATE_TRUST_WILL_SOURCES).map((s) => [
-    s.source_id,
-    makeStateTrustWillFetcher(s),
-  ]),
+  Object.values(STATE_TRUST_WILL_SOURCES).map((s) => [s.source_id, makeStateTrustWillFetcher(s)]),
 );

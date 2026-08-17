@@ -17,7 +17,13 @@ import type {
   TransferMechanism,
   V3DkbNode,
 } from "../../../../src/dkb/v3/types.js";
-import { normalizeForHash, pin, sha256Hex, type V3Fetcher, type V3FetcherResult } from "./_common.js";
+import {
+  normalizeForHash,
+  pin,
+  sha256Hex,
+  type V3Fetcher,
+  type V3FetcherResult,
+} from "./_common.js";
 
 export const UK_GDPR_URL = "https://www.legislation.gov.uk/eur/2016/679/contents";
 export const UK_IDTA_URL =
@@ -68,7 +74,9 @@ export function parseUkIdta(text: string, nowIso: string): V3DkbNode[] {
     { id: "uk-idta-part-4-mandatory-clauses", heading: "Part 4 — Mandatory Clauses" },
   ];
 
-  const matched = parts.filter((p) => normalized.toLowerCase().includes(p.heading.toLowerCase().split(" — ")[0]!.toLowerCase()));
+  const matched = parts.filter((p) =>
+    normalized.toLowerCase().includes(p.heading.toLowerCase().split(" — ")[0]!.toLowerCase()),
+  );
   if (matched.length === 0) return [];
 
   const form: RegulatorModelForm = {
@@ -126,9 +134,16 @@ export function parseUkAddendum(text: string, nowIso: string): V3DkbNode[] {
     { id: "uk-addendum-table-1-parties", heading: "Table 1 — Parties" },
     { id: "uk-addendum-table-2-selected-scc-modules", heading: "Table 2 — Selected SCC Modules" },
     { id: "uk-addendum-table-3-appendix-info", heading: "Table 3 — Appendix Information" },
-    { id: "uk-addendum-table-4-ending-changes", heading: "Table 4 — Ending This Addendum When the Approved Addendum Changes" },
+    {
+      id: "uk-addendum-table-4-ending-changes",
+      heading: "Table 4 — Ending This Addendum When the Approved Addendum Changes",
+    },
   ];
-  const matched = tables.filter((t) => /table\s*\d/i.test(normalized) && normalized.toLowerCase().includes(t.heading.split(" — ")[0]!.toLowerCase()));
+  const matched = tables.filter(
+    (t) =>
+      /table\s*\d/i.test(normalized) &&
+      normalized.toLowerCase().includes(t.heading.split(" — ")[0]!.toLowerCase()),
+  );
   if (matched.length === 0) return [];
 
   const form: RegulatorModelForm = {

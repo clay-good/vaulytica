@@ -100,5 +100,8 @@ export function summarizeDiffs(diffs: readonly FixtureDiff[]): {
     return { ok: true, summary: `${diffs.length} fixtures match` };
   }
   const lines = fails.map((d) => `  ${d.fixture}: ${d.status} — ${d.message}`);
-  return { ok: false, summary: `${fails.length}/${diffs.length} fixtures failed:\n${lines.join("\n")}` };
+  return {
+    ok: false,
+    summary: `${fails.length}/${diffs.length} fixtures failed:\n${lines.join("\n")}`,
+  };
 }
