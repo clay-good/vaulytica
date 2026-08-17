@@ -180,3 +180,51 @@ describe("CON-030 — waiver-of-claims reads singular 'claim' / 'forfeit' (v1.1.
     ).toBe(false);
   });
 });
+
+/**
+ * CON-030 had the same express-denial trap as INS-012: its bare
+ * "waives|releases|forfeits" pattern also matches inside a sentence that
+ * REFUSES the waiver, and one present-pattern match short-circuits a presence
+ * rule. So a change order in which the contractor expressly preserves its
+ * claims — the outcome the rule warns about — scored clean, while a change
+ * order merely silent on the point fired.
+ */
+describe("CON-030 — express denial of the further-claims waiver", () => {
+  const run = async (text: string) => {
+    const ctx = buildContext(["Change Order", text]);
+    const res = await runEngine({
+      rules: CONSTRUCTION_RULES,
+      ctx: withPb(ctx, CO_PB),
+      source_file: SRC,
+    });
+    return res.findings.filter((f) => f.rule_id === "CON-030").map((f) => f.title);
+  };
+
+  it.each([
+    [
+      "does not waive",
+      "Contractor does not waive any further claims for additional cost or time related to the changed work.",
+    ],
+    ["no waiver of", "No waiver of further claims is made by this Change Order."],
+    [
+      "reserves",
+      "Contractor reserves all further claims for additional cost arising from the changed work.",
+    ],
+  ])("%s is reported as a denial, not as compliance", async (_form, text) => {
+    expect(await run(text)).toEqual(["Waiver of further claims expressly denied"]);
+  });
+
+  it("mere silence still reports the clause as missing", async () => {
+    expect(await run("This Change Order adjusts the contract sum by $5,000.")).toEqual([
+      "Waiver-of-further-claims clause missing",
+    ]);
+  });
+
+  it("the compliant waiver stays silent", async () => {
+    expect(
+      await run(
+        "Contractor waives further claims for additional cost or time related to the changed work.",
+      ),
+    ).toEqual([]);
+  });
+});

@@ -619,7 +619,7 @@ const CHANGE_ORDER_RULES: Rule[] = [
   }),
   presence({
     id: "CON-030",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Waiver of further claims for the changed work",
     description:
       "Change order should include a waiver of further claims related to the changed work.",
@@ -639,6 +639,24 @@ const CHANGE_ORDER_RULES: Rule[] = [
       /(waiv(es?|e|er|ed)|releases?|forfeits?)/i,
       /(further\s+claims?|additional\s+(cost|time)|change\s+in\s+(scope|time))/i,
     ],
+    // Same express-denial trap as INS-012: the bare "waives|releases" pattern
+    // also matches inside a sentence that REFUSES the waiver, and one present
+    // match short-circuits a presence rule. So a change order in which the
+    // contractor expressly preserves its claims — the outcome this rule warns
+    // about — scored clean, while a change order merely silent on the point
+    // fired. `expressDenial` cannot reach it: it treats "waive" as a scope verb
+    // that ends the gap, so "does not waive further claims" needs its own
+    // frames, as do the reservation forms that deny the waiver without using
+    // the word at all.
+    denied_if: [
+      /\b(?:shall|will|does|do|may|can|is|are)\s+not\s+(?:waiv\w+|releas\w+|forfeit\w*)\b[^.]{0,60}?\b(?:further\s+claims?|additional\s+(?:cost|time))/i,
+      /\bno\s+waiver\s+of\s+(?:any\s+)?(?:further\s+claims?|additional\s+(?:cost|time))/i,
+      /\b(?:reserves?|retains?|preserves?)\b[^.]{0,40}?\b(?:further\s+claims?|right\s+to\s+(?:additional|further)\s+(?:cost|time|claims?)|all\s+claims?)/i,
+      /\b(?:further\s+claims?|additional\s+(?:cost|time))\b[^.]{0,40}?\b(?:are|is)\s+not\s+(?:waived|released|forfeited)/i,
+    ],
+    denied_title: "Waiver of further claims expressly denied",
+    denied_description:
+      "The change order states that the contractor does NOT waive — or expressly reserves — further claims for cost or time on the changed work. That is the opposite of the waiver this rule looks for: the owner is exposed to later claims on scope it has already paid to change.",
     default_severity: "warning",
   }),
 ];
