@@ -1016,6 +1016,28 @@ describe("cap and carveout scans do not absorb a neighbouring clause", () => {
     expect(run.findings).toHaveLength(0);
   });
 
+  it("CROSS-CARVEOUT-001 follows a carveout list that continues into the next sentence", async () => {
+    // Bounding the scan to the first trigger's sentence must not lose a list
+    // that legitimately continues ("It ALSO shall not apply to …"). The
+    // continuation marker is what separates this from the unrelated
+    // "Except as required by applicable law, …" boilerplate above.
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Limitation of Liability",
+      "The foregoing limitation of liability shall not apply to gross negligence. It also shall not apply to breach of confidentiality.",
+    ]);
+    const dpa = makeDoc("dpa", "dpa-controller-processor", [
+      "Limitation of Liability",
+      "The foregoing limitation of liability shall not apply to gross negligence.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_CARVEOUT_001],
+      documents: [msa, dpa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(1);
+    expect(run.findings[0]!.description).toContain("confidentiality");
+  });
+
   it("CROSS-CARVEOUT-001 still reads a semicolon-separated carveout list in full", async () => {
     const msa = makeDoc("msa", "msa-vendor-deep", [
       "Limitation of Liability",

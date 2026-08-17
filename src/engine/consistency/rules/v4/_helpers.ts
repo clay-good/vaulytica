@@ -624,6 +624,38 @@ const CARVEOUT_TERMS: Array<[string, RegExp]> = [
  * conflict (CROSS-CARVEOUT-001) = two documents whose carveout sets
  * differ — an asymmetric allocation trap.
  */
+/** Continuation markers that mark a later exception sentence as still enumerating the same carveout list. */
+const CARVEOUT_CONTINUATION =
+  /\b(?:also|further(?:more)?|likewise|additionally|nor|in\s+addition)\b/i;
+
+/**
+ * The exception clauses of a paragraph: the first trigger's own sentence, plus
+ * any later trigger sentence that reads as a continuation of the same list.
+ * Each is bounded at the sentence end (never at a ";", which separates the
+ * items of a single enumeration).
+ */
+function exceptionClauses(text: string, triggerRe: RegExp): string[] {
+  const scan = new RegExp(triggerRe.source, "gi");
+  const out: string[] = [];
+  let m: RegExpExecArray | null;
+  while ((m = scan.exec(text)) !== null) {
+    const rest = text.slice(m.index);
+    const sentenceEnd = rest.search(/\.(?=\s+[A-Z0-9]|\s*$)/);
+    const clause = sentenceEnd === -1 ? rest : rest.slice(0, sentenceEnd + 1);
+    if (out.length === 0) {
+      out.push(clause);
+      continue;
+    }
+    // Judge continuation on the whole sentence, not just the text after the
+    // trigger — the marker usually sits before it ("It ALSO shall not apply").
+    const sentenceStart = text.lastIndexOf(".", m.index) + 1;
+    if (CARVEOUT_CONTINUATION.test(text.slice(sentenceStart, m.index + clause.length))) {
+      out.push(clause);
+    }
+  }
+  return out;
+}
+
 export function liabilityCarveouts(
   doc: ConsistencyDocument,
 ): { set: string[]; raw_text: string; section_id?: string; start: number; end: number } | null {
@@ -650,9 +682,15 @@ export function liabilityCarveouts(
     // 12 …") and fabricated a "data breach" carveout the cap never excepted.
     // Stop at the next sentence, but not at a ";" — carveout enumerations are
     // routinely semicolon-separated lists.
-    const rest = p.text.slice(ex.index);
-    const sentenceEnd = rest.search(/\.(?=\s+[A-Z0-9]|\s*$)/);
-    const clause = sentenceEnd === -1 ? rest : rest.slice(0, sentenceEnd + 1);
+    //
+    // A list may legitimately CONTINUE into a following sentence ("… shall not
+    // apply to gross negligence. It also shall not apply to breach of
+    // confidentiality."), so later exception sentences contribute too — but
+    // only when they carry a continuation marker. That is what separates a
+    // continuation from the unrelated boilerplate this bound exists to reject:
+    // "Except as required by applicable law, …" opens a new subject, and
+    // nothing in it says it is still enumerating the cap's exceptions.
+    const clause = exceptionClauses(p.text, exceptionRe).join(" ");
     const set = CARVEOUT_TERMS.filter(([, re]) => re.test(clause)).map(([label]) => label);
     if (set.length === 0) return;
     slot.value = { text: p.text, section_id: p.section_id, start: p.start, end: p.end, set };
