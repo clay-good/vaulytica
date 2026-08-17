@@ -6,8 +6,10 @@
  *
  *   npm run icons
  *
- * The maskable variant has 12.5% safe-area padding around the
- * "central icon" per the PWA maskable-icon spec.
+ * The maskable variant keeps the artwork inside the central 80% of the
+ * canvas — 410x410 inset by 51px on a 512x512 ground, i.e. 10% padding
+ * per side. That is the maskable-icon safe zone: a circle whose diameter
+ * is 80% of the icon, which is what a launcher may crop to.
  *
  * `apple-touch-icon.png` is 180x180 and deliberately opaque: iOS renders
  * an alpha channel as black, and it applies its own rounded-rect mask, so
