@@ -411,7 +411,7 @@ export const MSA_DEEP_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "MSA-011",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Background / foreground IP allocation",
     description:
       "MSA must allocate ownership of background IP (pre-existing) and foreground IP (created during the engagement).",
@@ -433,6 +433,22 @@ export const MSA_DEEP_RULES: Rule[] = [
       /(background\s+(?:IP|intellectual\s+property)|pre[- ]existing\s+(?:IP|intellectual\s+property))/i,
       /(foreground\s+(?:IP|intellectual\s+property)|(?:developed|created|made|conceived)\s+(?:hereunder|under\s+this\s+Agreement))/i,
     ],
+    // Express-denial guard: a clause that explicitly DECLINES to allocate IP
+    // names background and foreground IP, the very terms the rule looks for,
+    // so it satisfied the presence check. Leaving ownership unresolved on
+    // purpose is the failure this rule exists to surface.
+    denied_if: [
+      // NOT "assign": "this Agreement does not assign ownership of background
+      // IP to the other party" is exactly what a well-drafted MSA says — each
+      // party keeps its own background IP. Only verbs that decline to RESOLVE
+      // the question count as a denial.
+      /\b(?:does|do|shall|will)\s+not\s+(?:allocate|determine|address|resolve)\b[^.]{0,60}?\bownership/i,
+      /\bownership\b[^.]{0,40}?\b(?:remains|is)\s+(?:unresolved|undetermined|unallocated)/i,
+      /\bno\s+allocation\s+of\s+(?:ip|intellectual\s+property)\s+ownership/i,
+    ],
+    denied_title: "IP ownership allocation expressly declined",
+    denied_description:
+      "The agreement states that it does not allocate ownership of background or foreground IP. Ownership then falls to default law, which for commissioned work usually leaves it with the supplier — the outcome the customer is paying to avoid, and worse than silence because it is deliberate.",
     default_severity: "warning",
   }),
   language({

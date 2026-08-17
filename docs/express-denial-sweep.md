@@ -9,15 +9,15 @@ That is backwards. An express refusal is strictly worse than an omission: the
 omission leaves the position arguable, the refusal settles it against you.
 
 An earlier pass added `denied_if` to 27 rules and the class was believed
-closed. It was not. This document records the full sweep of the v4 packs, so
-nobody has to rediscover which rules were judged and why.
+closed. It was not. This document records the full sweep of the v4 AND v3
+packs, so nobody has to rediscover which rules were judged and why.
 
 ## How to find candidates
 
 ```bash
 node -e '
 const {readdirSync,readFileSync,statSync}=require("fs");const {join}=require("path");
-const root="src/engine/rules/v4";
+const root="src/engine/rules/v4"; // then again with "src/engine/rules/v3"
 const VERB=/\b(waiv(e|es|ed|er)|releases?|forfeits?|indemnif(y|ies)|assigns?|terminates?|discloses?|consents?|permits?|grants?|reserves?|appoints?|authoriz(e|es))\b/i;
 for (const pack of readdirSync(root)) {
   const f=join(root,pack,"rules.ts"); try{statSync(f)}catch{continue}
@@ -58,12 +58,11 @@ deny without negating anything: "reserves all rights of subrogation",
 
 ### Always test the compliant case
 
-Three separate times in this sweep a denial pattern accused the compliant
-drafting. The sharpest: EST-004's "and no bond **shall be required**" is the
-*waiver*, and a pattern looking for "bond … shall be required" matched it,
-because the negation sits on the noun rather than the verb.
+Six times in this sweep a denial pattern accused correct drafting — see the
+table near the end. This is the single most important step, and one-sentence
+fixtures are not enough to catch it.
 
-## Fixed (18)
+## Fixed — v4 packs (18)
 
 | Rule | Pack | The refusal that used to read as compliance |
 |---|---|---|
@@ -85,6 +84,23 @@ because the negation sits on the noun rather than the verb.
 | IPL-028 | ip-licensing | contributor "makes no representation" of originality |
 | COMM-035 | commercial | agency does not clear third-party rights |
 | COMM-039 | commercial | supplier does not pass through the warranty |
+
+## Fixed — v3 regulated packs (5)
+
+The v3 packs had never been swept for this class.
+
+| Rule | Pack | The refusal that used to read as compliance |
+|---|---|---|
+| BAA-010 | baa | "need not return or destroy PHI upon termination" |
+| BAA-043 | baa | "obligations do not survive termination" |
+| DPA-024 | dpa-gdpr | "not required to notify Controller of any personal data breach" |
+| USDPA-015 | dpa-us-state | "not required to delete or return Personal Data" |
+| MSA-011 | msa-deep | "does not allocate ownership … ownership remains unresolved" |
+
+Wired into each pack's existing express-denial harness. Those harnesses filter
+on the finding **title** to prove `denied_if` matched rather than the ordinary
+absence branch, so a new denial title has to be added to the filter's
+vocabulary — "excused" and "declined" were added for these five.
 
 ## Judged and deliberately NOT changed
 
@@ -113,11 +129,38 @@ EST-042, EST-043).
 `(?<!\bno\s)(?<!\bnot\s)` lookbehind rather than a `denied_if`. The candidate
 script skips these.
 
+**Rejected on the drafting, v3.** MSA-002 (indemnification procedure): the
+candidate denial was "Customer is not entitled to control the defense", but
+that is ordinary drafting — the INDEMNITOR normally controls the defense.
+Guarding it would accuse a standard indemnity.
+
 **Checked and not reproducible.** CON-016 stays silent on omission too, because
 a bare "release" anywhere satisfies its gate. That is a loose gate — a separate
 judgement about what CON-016 should require — not this bug. SET-001's patterns
 are noun forms ("releasor", "releasing party") that a denial sentence does not
 match.
+
+## Guards that accused compliant drafting
+
+Six of the guards written during this sweep fired on correct documents and had
+to be narrowed. Every one was caught by testing the COMPLIANT case, and three
+only appeared once the clause was placed in realistic multi-paragraph prose
+rather than a one-sentence fixture. They are worth reading before writing a new
+`denied_if`:
+
+| Rule | Compliant text it accused | Why |
+|---|---|---|
+| EMP-033 | the California Labor Code § 2870 carve-out | statute COMPELS "does not assign any invention that…" |
+| EST-004 | "no bond **or surety** shall be required" | negation sits before "bond", not before "surety" |
+| RE-003 | "**Landlord** shall not be required to carry insurance on Tenant's property" | frame was not bound to the tenant |
+| SET-002 | "Releasor reserves all claims arising after the Effective Date" | a carve-out, not a refusal — frame removed entirely |
+| BAA-010 / USDPA-015 | "except copies it is not required to delete under applicable law" | legal-hold and HIPAA infeasibility use identical phrasing |
+| MSA-011 | "this Agreement does not assign ownership of background IP" | that IS the well-drafted term — each party keeps its own |
+
+The pattern: the compliant clause often CONTAINS a negation. A guard keyed on
+"not <verb>" alone will find it. Bind the frame to the subject, exclude
+carve-out markers, and scan back for an earlier negation in the clause
+(JavaScript supports variable-length lookbehind, which is what EST-004 needs).
 
 ## What does not work
 

@@ -36,6 +36,23 @@ const CASES: [Rule[], string, string, boolean, string][] = [
   ],
   [
     MSA_DEEP_RULES,
+    "MSA-011",
+    CLEAN_MSA,
+    true,
+    "This Agreement does not allocate ownership of background IP or foreground IP created hereunder; ownership remains unresolved.",
+  ],
+  [
+    // A well-drafted MSA says the agreement "does not assign ownership of
+    // background IP" — each party keeps its own. Only a refusal to RESOLVE
+    // ownership is a denial, so this decoy must stay silent.
+    MSA_DEEP_RULES,
+    "",
+    CLEAN_MSA,
+    false,
+    "Each party retains its background IP and grants a licence; this Agreement does not assign ownership of background IP to the other party.",
+  ],
+  [
+    MSA_DEEP_RULES,
     "MSA-016",
     CLEAN_MSA,
     true,
@@ -135,7 +152,10 @@ const denied = (rules: Rule[], text: string): string[] =>
   rules
     .filter((r) => {
       const f = r.check(buildContext(["Agreement", text]));
-      return f !== null && /disclaim|denied/i.test(f.title);
+      // "declined" joins the vocabulary with MSA-011. None of the
+      // missing-clause titles in these packs use these words, so the filter
+      // still proves it was `denied_if` that matched.
+      return f !== null && /disclaim|denied|declined/i.test(f.title);
     })
     .map((r) => r.id);
 
