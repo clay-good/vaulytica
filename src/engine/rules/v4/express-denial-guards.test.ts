@@ -1,0 +1,158 @@
+import { describe, expect, it } from "vitest";
+
+import { HEALTHCARE_RULES } from "./healthcare/rules.js";
+import { PRIVACY_EXTENDED_RULES } from "./privacy-extended/rules.js";
+import { EMPLOYMENT_RULES } from "./employment/rules.js";
+import { SETTLEMENT_RULES } from "./settlement/rules.js";
+import { buildContext } from "../../_test-fixtures.js";
+import type { Rule } from "../../finding.js";
+
+const ALL: Rule[] = [
+  ...HEALTHCARE_RULES,
+  ...PRIVACY_EXTENDED_RULES,
+  ...EMPLOYMENT_RULES,
+  ...SETTLEMENT_RULES,
+];
+const byId = (id: string): Rule => {
+  const r = ALL.find((x) => x.id === id);
+  if (!r) throw new Error(`no rule ${id}`);
+  return r;
+};
+
+// [rule, expect-fire?, sentence]
+const CASES: [string, boolean, string][] = [
+  // HC-015 — right to revoke
+  ["HC-015", true, "The individual may not revoke this authorization once it has been signed."],
+  ["HC-015", true, "This authorization cannot be revoked."],
+  ["HC-015", true, "This authorization is irrevocable."],
+  [
+    "HC-015",
+    false,
+    "Right to Revoke. The individual may revoke this authorization in writing at any time, except to the extent the Company has already taken action in reliance on it. Send revocation to the Privacy Officer.",
+  ],
+  [
+    "HC-015",
+    false,
+    "Right to Revoke. You may revoke this authorization at any time in writing. This authorization does not limit your right to revoke consent for future disclosures.",
+  ],
+  // PRV-004 — withdraw consent
+  [
+    "PRV-004",
+    true,
+    "Once given, consent to non-essential cookies may not be withdrawn for the remainder of the session.",
+  ],
+  ["PRV-004", true, "You cannot withdraw consent after accepting."],
+  [
+    "PRV-004",
+    false,
+    "You may withdraw your consent at any time via the cookie preference center. Withdrawing consent does not affect the lawfulness of processing carried out before the withdrawal.",
+  ],
+  [
+    "PRV-004",
+    false,
+    "Withdraw Consent. Use the preference center to withdraw consent. Strictly necessary cookies do not require consent.",
+  ],
+  // PRV-029 — encryption
+  [
+    "PRV-029",
+    true,
+    "Customer data is not encrypted at rest; database backups are stored in plaintext.",
+  ],
+  [
+    "PRV-029",
+    false,
+    "Data is encrypted at rest with AES-256 and encrypted in transit with TLS 1.3. Encryption at rest does not apply to non-production test fixtures containing only synthetic data.",
+  ],
+  // PRV-032 — incident response
+  [
+    "PRV-032",
+    true,
+    "The vendor does not maintain a documented incident response plan and provides no breach notification SLA.",
+  ],
+  [
+    "PRV-032",
+    false,
+    "Incident Response. We maintain a documented incident response plan and provide breach notification within 72 hours. This section does not limit the incident response plan's application to systems outside production.",
+  ],
+  // EMP-016 — OWBPA revocation
+  [
+    "EMP-016",
+    true,
+    "Once signed, the Employee may not revoke this Agreement or the release of ADEA claims contained herein.",
+  ],
+  [
+    "EMP-016",
+    false,
+    "Employee may revoke this Agreement within seven (7) days after signing, and this Agreement shall not become effective until the revocation period expires.",
+  ],
+  [
+    "EMP-016",
+    false,
+    "Employee has twenty-one (21) days to consider. Nothing in this Section limits Employee's right to revoke this Agreement within the statutory revocation period.",
+  ],
+  // EMP-021 — protected rights
+  [
+    "EMP-021",
+    true,
+    "Employee shall not communicate with the SEC, EEOC, or NLRB regarding any matter addressed in this Agreement.",
+  ],
+  [
+    "EMP-021",
+    false,
+    "Nothing in this Agreement prevents Employee from communicating with the SEC, EEOC, or NLRB or from filing a charge with any government agency.",
+  ],
+  [
+    "EMP-021",
+    false,
+    "Protected Rights. This confidentiality provision does not restrict Employee's right to communicate with the SEC or to receive a whistleblower award.",
+  ],
+  // SET-008 — whistleblower carve-out
+  [
+    "SET-008",
+    true,
+    "Claimant shall not communicate with the SEC, EEOC, NLRB, or DOL regarding the facts underlying this settlement.",
+  ],
+  [
+    "SET-008",
+    false,
+    "Nothing in this Agreement prohibits Claimant from communicating with the SEC, EEOC, NLRB, or DOL or from retaining any whistleblower award.",
+  ],
+  [
+    "SET-008",
+    false,
+    "Protected Activity. This confidentiality clause does not apply to communications with government agencies regarding possible violations of law.",
+  ],
+];
+
+/**
+ * A clause-presence rule fires when NONE of its `present_patterns` match, so a
+ * document that AFFIRMATIVELY DISCLAIMS the required clause matches every topic
+ * word and the rule stays silent — while a document that merely omits the topic
+ * is flagged. `denied_if` inverts that. These cases pin both halves: the express
+ * disclaimer fires with the denial title, and the compliant drafting that pairs
+ * the topic with a negation does NOT.
+ *
+ * The assertion reads the finding TITLE rather than merely "did it fire",
+ * because a one-sentence fixture also trips the ordinary missing-clause branch;
+ * only the denial title proves `denied_if` is what matched.
+ */
+describe("v4 presence rules — express denial across packs", () => {
+  it.each(CASES.filter(([, want]) => want).map(([id, , text]) => [id, text]))(
+    "%s fires on an express disclaimer: %s",
+    (id, text) => {
+      const f = byId(id).check(buildContext(["Doc", text]));
+      expect(f, `${id} did not fire`).not.toBeNull();
+      expect(f?.title, `${id} fired as a plain omission, not a denial`).toMatch(
+        /disclaim|denied|expressly/i,
+      );
+    },
+  );
+
+  it.each(CASES.filter(([, want]) => !want).map(([id, , text]) => [id, text]))(
+    "%s does not read compliant drafting as a denial: %s",
+    (id, text) => {
+      const f = byId(id).check(buildContext(["Doc", text]));
+      if (f) expect(f.title, `${id} misread a compliant clause`).not.toMatch(/disclaim|denied/i);
+    },
+  );
+});

@@ -13,7 +13,7 @@
  */
 
 import type { Rule } from "../../../finding.js";
-import { buildV4PresenceRule, type V4PresenceSpec } from "../_helpers.js";
+import { buildV4PresenceRule, expressDenial, type V4PresenceSpec } from "../_helpers.js";
 import {
   PRV_PLAYBOOK_COOKIE,
   PRV_PLAYBOOK_NPP,
@@ -114,6 +114,7 @@ const COOKIE_NOTICE_RULES: Rule[] = [
   }),
   presence({
     id: "PRV-004",
+    version: "1.1.0",
     name: "Withdraw consent — instructions",
     description:
       "Cookie notice must explain how users can withdraw consent (as easy as giving it — GDPR Art. 7(3)).",
@@ -129,6 +130,20 @@ const COOKIE_NOTICE_RULES: Rule[] = [
       /(withdraw|change|update|revoke).{0,40}consent/i,
       /(cookie\s+(preferences?|settings)|preference\s+center)/i,
     ],
+    denied_if: [
+      ...expressDenial(
+        String.raw`withdraw(?:ing)?\s+(?:your\s+|the\s+)?consent|withdrawal\s+of\s+consent`,
+      ),
+      // The passive form puts the topic words in the opposite order, so the
+      // shared frames cannot reach it. A bare `consent` topic would, but it
+      // also swallows "strictly necessary cookies do NOT REQUIRE consent" —
+      // which is the correct statement of the law, not a denial.
+      /\bconsent\b[^.]{0,60}?\b(?:may|can|shall|will|is|are)\s+not\s+be\s+withdraw(?:n|able)/i,
+      /\bconsent\b[^.]{0,60}?\bcan\s?not\s+be\s+withdraw(?:n|able)/i,
+    ],
+    denied_title: "Right to withdraw cookie consent expressly denied",
+    denied_description:
+      "The notice states that consent, once given, cannot be withdrawn. GDPR Art. 7(3) requires withdrawal to be as easy as giving consent.",
   }),
   presence({
     id: "PRV-005",
@@ -623,6 +638,7 @@ const VENDOR_QUESTIONNAIRE_RULES: Rule[] = [
   }),
   presence({
     id: "PRV-029",
+    version: "1.1.0",
     name: "Encryption at rest and in transit",
     description: "VSQ must confirm encryption at rest and in transit with stated algorithms.",
     citation: nistIso(),
@@ -638,6 +654,10 @@ const VENDOR_QUESTIONNAIRE_RULES: Rule[] = [
       /(at\s+rest|in\s+transit)/i,
       /(aes.?256|tls\s+1\.[23]|rsa|ssh)/i,
     ],
+    denied_if: expressDenial(String.raw`encrypt(?:ion|ed)\s+(?:at\s+rest|in\s+transit)`),
+    denied_title: "Encryption at rest or in transit expressly disclaimed",
+    denied_description:
+      "The questionnaire states that data is not encrypted at rest or in transit. ISO 27001 A.10 / NIST CSF Protect.DS treat this as a baseline control, so an express disclaimer is a material gap rather than an omission.",
   }),
   presence({
     id: "PRV-030",
@@ -680,6 +700,7 @@ const VENDOR_QUESTIONNAIRE_RULES: Rule[] = [
   }),
   presence({
     id: "PRV-032",
+    version: "1.1.0",
     name: "Incident response + breach notification SLA",
     description:
       "VSQ must describe the incident-response process and breach-notification SLA to customers.",
@@ -696,6 +717,12 @@ const VENDOR_QUESTIONNAIRE_RULES: Rule[] = [
       /(breach\s+notification|notify)/i,
       /(without\s+undue\s+delay|24|48|72)\s+hours?/i,
     ],
+    denied_if: expressDenial(
+      String.raw`incident\s+response\s+(?:plan|process|procedures?)|breach\s+notification`,
+    ),
+    denied_title: "Incident-response plan expressly disclaimed",
+    denied_description:
+      "The questionnaire states that no incident-response plan or breach-notification process is maintained. ISO 27001 A.16 / NIST CSF Respond treat this as a baseline expectation for any vendor handling customer data.",
   }),
   presence({
     id: "PRV-033",

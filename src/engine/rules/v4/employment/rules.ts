@@ -15,6 +15,7 @@
 import type { Rule } from "../../../finding.js";
 import {
   buildV4PresenceRule,
+  expressDenial,
   buildV4LanguageRule,
   type V4PresenceSpec,
   type V4LanguageSpec,
@@ -362,7 +363,7 @@ const SEPARATION_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-016",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "OWBPA — 7-day revocation period",
     description: "ADEA waivers must give a 7-day revocation period after signing (§ 626(f)(1)(G)).",
     citation: owbpa(),
@@ -379,6 +380,12 @@ const SEPARATION_RULES: Rule[] = [
       /(revoke|rescind).{0,40}within\s+(7|seven)\s*(?:\(\s*\d\s*\)\s*)?days?/i,
       /revocation\s+period/i,
     ],
+    denied_if: expressDenial(
+      String.raw`revoke\s+(?:this\s+)?(?:agreement|waiver|release)|revocation\s+(?:period|right)`,
+    ),
+    denied_title: "ADEA seven-day revocation right expressly denied",
+    denied_description:
+      "The agreement states the employee may not revoke after signing. OWBPA requires a seven-day revocation right for an ADEA waiver to be knowing and voluntary; denying it voids the waiver.",
   }),
   presence({
     id: "EMP-017",
@@ -483,7 +490,7 @@ const SEPARATION_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-021",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Protected-rights carve-out",
     description:
       "Separation agreements must preserve employee's right to communicate with government agencies (SEC Rule 21F-17, EEOC, NLRB).",
@@ -505,6 +512,12 @@ const SEPARATION_RULES: Rule[] = [
       /(?:may|nothing[^.]{0,40}(?:prevent|prohibit|restrict|limit)|retains?\s+the\s+right|right\s+to\s+(?:file|report|communicate)|permitted\s+to)[^.]{0,80}(government\s+agency|sec|eeoc|nlrb)/is,
       /(whistleblower|whistle.blower)/i,
     ],
+    denied_if: expressDenial(
+      String.raw`communicat(?:e|ing|ions?)\s+with\s+(?:the\s+)?(?:sec|eeoc|nlrb|dol|government\s+agenc(?:y|ies))|file\s+a\s+charge`,
+    ),
+    denied_title: "Right to communicate with a government agency expressly denied",
+    denied_description:
+      "The agreement bars the employee from communicating with the SEC, EEOC, NLRB, or DOL. SEC Rule 21F-17 forbids impeding whistleblower communications, so an express bar is unlawful on its face.",
   }),
   presence({
     id: "EMP-022",

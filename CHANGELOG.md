@@ -47,6 +47,22 @@ All notable changes to this project will be documented in this file. Format adap
   **without** OFAC screening", "this policy does not **apply to** OFAC
   screening by third parties" — is not read as a denial. Golden churn is
   `result_hash` only across all 99 v4 fixtures: zero finding-level changes.
+- **Seven more presence rules now catch the clause their document expressly
+  disclaims.** Same defect class as the AML rules above, extended across five
+  packs after a two-agent audit of all sixteen: HC-015 (a HIPAA authorization
+  that states it "cannot be revoked" or "is irrevocable"), EMP-016 (an ADEA
+  waiver that bars revocation, which voids the waiver under OWBPA), EMP-021 and
+  SET-008 (an agreement barring the employee or claimant from communicating with
+  the SEC / EEOC / NLRB / DOL, unlawful on its face under SEC Rule 21F-17),
+  PRV-004 (a cookie notice stating consent "may not be withdrawn", contrary to
+  GDPR Art. 7(3)), and PRV-029 / PRV-032 (a vendor questionnaire stating data is
+  not encrypted or that no incident-response plan exists). Each is paired with
+  compliant decoys that must stay silent — "strictly necessary cookies do not
+  require consent", "nothing in this Agreement prevents Employee from
+  communicating with the SEC", "withdrawing consent does not affect the
+  lawfulness of prior processing". Rules whose own presence patterns are
+  themselves phrased as a negation were deliberately left alone. Golden churn is
+  `result_hash` only: zero finding-level changes.
 - **The party-role picker no longer scrolls the page sideways on a narrow
   phone.** A dropdown never wraps its option text and a `fieldset` defaults to
   `min-inline-size: min-content`, so a party role long enough to exceed the

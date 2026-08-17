@@ -16,6 +16,7 @@
 import type { Rule } from "../../../finding.js";
 import {
   buildV4PresenceRule,
+  expressDenial,
   buildV4LanguageRule,
   type V4PresenceSpec,
   type V4LanguageSpec,
@@ -256,7 +257,7 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "SET-008",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Whistleblower / agency-communication carve-out",
     description:
       "Confidential settlements must preserve the parties' right to communicate with regulators (SEC Rule 21F-17, EEOC, NLRB, DOL).",
@@ -284,6 +285,12 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
       // signals now count only through the guarded whistleblower branch above
       // and the preserving-context agency branch.
     ],
+    denied_if: expressDenial(
+      String.raw`communicat(?:e|ing|ions?)\s+with\s+(?:the\s+)?(?:sec|eeoc|nlrb|dol|government\s+agenc(?:y|ies))|file\s+a\s+charge|whistleblower\s+(?:rights?|award)`,
+    ),
+    denied_title: "Whistleblower / agency-communication right expressly denied",
+    denied_description:
+      "The settlement bars a party from communicating with the SEC, EEOC, NLRB, or DOL. SEC Rule 21F-17 prohibits impeding such communications regardless of what the release says.",
   }),
   presence({
     id: "SET-009",

@@ -10,7 +10,7 @@
  */
 
 import type { Rule } from "../../../finding.js";
-import { buildV4PresenceRule, type V4PresenceSpec } from "../_helpers.js";
+import { buildV4PresenceRule, expressDenial, type V4PresenceSpec } from "../_helpers.js";
 import {
   HC_PLAYBOOK_INFORMED_CONSENT,
   HC_PLAYBOOK_PHI_AUTH,
@@ -310,6 +310,7 @@ const PHI_AUTHORIZATION_RULES: Rule[] = [
   }),
   presence({
     id: "HC-015",
+    version: "1.1.0",
     name: "Right to revoke authorization",
     description:
       "Authorization must include a statement of the individual's right to revoke in writing and the exceptions.",
@@ -326,6 +327,20 @@ const PHI_AUTHORIZATION_RULES: Rule[] = [
       /(in\s+writing|written\s+notice)/i,
       /(except|reliance)/i,
     ],
+    denied_if: [
+      ...expressDenial(
+        String.raw`revoke\s+(?:this\s+)?authorization|revocation\s+of\s+(?:this\s+)?authorization|right\s+to\s+revoke`,
+      ),
+      // "This authorization cannot be revoked" / "is irrevocable" — the
+      // passive and adjectival forms reverse the topic's word order, so the
+      // shared frames cannot reach them.
+      /\bauthorization\b[^.]{0,40}?\b(?:may|can|shall|will|is|are)\s+not\s+be\s+revoked/i,
+      /\bauthorization\b[^.]{0,40}?\bcan\s?not\s+be\s+revoked/i,
+      /\bauthorization\s+(?:is|shall\s+be)\s+irrevocable/i,
+    ],
+    denied_title: "Right to revoke the authorization expressly denied",
+    denied_description:
+      "The document states that the individual may not revoke this authorization. \u00a7 164.508(c)(2)(i) requires a revocable authorization; denying the right outright voids the authorization rather than merely omitting the statement.",
   }),
   presence({
     id: "HC-016",
