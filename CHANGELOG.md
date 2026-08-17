@@ -47,6 +47,16 @@ All notable changes to this project will be documented in this file. Format adap
   **without** OFAC screening", "this policy does not **apply to** OFAC
   screening by third parties" — is not read as a denial. Golden churn is
   `result_hash` only across all 99 v4 fixtures: zero finding-level changes.
+- **The shipped `dist/index.html` no longer carries a duplicate `crossorigin`
+  attribute.** Vite already emits a bare `crossorigin` on the module script and
+  its modulepreload links; the SRI plugin appended `integrity="sha384-…"
+  crossorigin="anonymous"` unconditionally, so both tags shipped with the
+  attribute twice — invalid HTML, and if the two values ever disagreed only the
+  first would take effect. The plugin now strips an existing `crossorigin`
+  before adding its own, exactly as it already did for `integrity`. Every
+  existing SRI assertion passed throughout, because `[^>]*crossorigin=
+  "anonymous"` matches a tag carrying two of them; the new guard parses out
+  attribute names and asserts none repeats.
 - **Seven more presence rules now catch the clause their document expressly
   disclaims.** Same defect class as the AML rules above, extended across five
   packs after a two-agent audit of all sixteen: HC-015 (a HIPAA authorization

@@ -63,6 +63,23 @@ describe.skipIf(!RUN)("SRI plugin", () => {
     }
   });
 
+  // Vite already emits a bare `crossorigin` on the module script and its
+  // modulepreload links. The SRI plugin used to append a second one
+  // unconditionally, producing `crossorigin crossorigin="anonymous"` —
+  // invalid HTML that every assertion above still passed, because
+  // `[^>]*crossorigin="anonymous"` matches a tag carrying two of them.
+  it("no tag the SRI plugin rewrote carries a duplicate attribute", () => {
+    const tags = html.match(/<(?:script|link)\b[^>]*integrity="[^"]*"[^>]*>/g) ?? [];
+    expect(tags.length, "SRI plugin rewrote nothing").toBeGreaterThan(0);
+    for (const t of tags) {
+      const names = [...t.matchAll(/[\s"'](?:([a-zA-Z-]+)(?==)|([a-zA-Z-]+)(?=[\s>]))/g)].map((m) =>
+        (m[1] ?? m[2])!.toLowerCase(),
+      );
+      const dupes = names.filter((n, i) => names.indexOf(n) !== i);
+      expect(dupes, `duplicate attribute(s) ${dupes.join(", ")} in: ${t}`).toEqual([]);
+    }
+  });
+
   it("the referenced main script is non-trivial in size", () => {
     const m = html.match(/<script[^>]*type="module"[^>]*src="([^"]+)"/);
     expect(m).not.toBeNull();

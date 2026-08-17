@@ -252,7 +252,16 @@ function subresourceIntegrity(): Plugin {
           const localPath = resolveLocalAsset(ref);
           if (!localPath || !existsSync(localPath) || !statSync(localPath).isFile()) return full;
           const sha = createHash("sha384").update(readFileSync(localPath)).digest("base64");
-          return `<${tag}${attrs} integrity="sha384-${sha}" crossorigin="anonymous">`;
+          // Vite already emits a bare `crossorigin` on the module script and
+          // its modulepreload links. Appending a second one is a duplicate
+          // attribute: invalid HTML, and it would silently win/lose by source
+          // order if the two ever disagreed. Drop the existing one first — the
+          // `integrity=` guard above already does the same for its attribute.
+          const cleaned = attrs.replace(
+            /\s+crossorigin(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+))?/gi,
+            "",
+          );
+          return `<${tag}${cleaned} integrity="sha384-${sha}" crossorigin="anonymous">`;
         },
       );
       if (rewritten !== original) writeFileSync(html, rewritten);
