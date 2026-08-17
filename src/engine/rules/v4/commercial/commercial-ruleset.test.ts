@@ -337,3 +337,43 @@ describe("v4 Commercial — marketing services agreement (A.11)", () => {
     expect(inHouse.has("COMM-037")).toBe(false);
   });
 });
+
+/**
+ * COMM-036 already carries a NEGATED present pattern ("shall not disclose"),
+ * because that IS the compliant drafting — which makes separating a genuine
+ * denial harder, not easier. The guard therefore keys on the obligation being
+ * refused ("not be required to keep … confidential"), never on a bare "shall
+ * not", so both compliant phrasings stay silent.
+ */
+describe("COMM-036 — confidentiality obligation expressly disclaimed", () => {
+  const MKT_PB: Playbook = { id: "marketing-services-agreement", version: "1.0.0" };
+  const titles = async (text: string) => {
+    const run = await runEngine({
+      rules: COMMERCIAL_V4_RULES as Rule[],
+      ctx: withPb(buildContext(["Terms", text]), MKT_PB),
+      source_file: SRC,
+    });
+    return run.findings.filter((f) => f.rule_id === "COMM-036").map((f) => f.title);
+  };
+
+  it("reports a disclaimed confidentiality duty as a denial", async () => {
+    expect(
+      await titles(
+        "Agency shall not be required to keep Client confidential information in confidence.",
+      ),
+    ).toEqual(["Confidentiality obligation expressly disclaimed"]);
+  });
+
+  it("still reports the clause missing on silence", async () => {
+    expect(
+      await titles("Agency shall provide marketing services as described in the SOW."),
+    ).toEqual(["Confidentiality clause missing"]);
+  });
+
+  it.each([
+    ["Agency shall keep Client confidential information in confidence and shall not disclose it."],
+    ["Agency shall not disclose or use Client confidential information except as permitted."],
+  ])("stays silent on the compliant drafting %j", async (text) => {
+    expect(await titles(text)).toEqual([]);
+  });
+});

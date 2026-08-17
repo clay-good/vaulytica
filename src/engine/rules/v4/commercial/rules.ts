@@ -1001,6 +1001,7 @@ const MARKETING_RULES: Rule[] = [
   }),
   presence({
     id: "COMM-036",
+    version: "1.1.0",
     name: "Confidentiality of Client information",
     description:
       "A marketing agreement should require the Agency to keep the Client's non-public business information confidential.",
@@ -1022,6 +1023,21 @@ const MARKETING_RULES: Rule[] = [
       /non.?disclosure|\bnda\b/i,
       /shall\s+not\s+(disclose|use)[\s\S]{0,40}confiden\w*/is,
     ],
+    // Express-denial guard. Note this rule already carries a NEGATED present
+    // pattern ("shall not disclose") because that is the compliant drafting —
+    // which makes the denial harder to separate, not easier. The frames below
+    // therefore key on the obligation being refused ("not be required to keep
+    // … confidential", "no confidentiality obligation"), never on a bare
+    // "shall not", so the compliant "shall not disclose" is untouched.
+    denied_if: [
+      /\bnot\s+(?:be\s+)?(?:required|obligated|obliged)\s+to\s+(?:keep|hold|treat|maintain)\b[^.]{0,60}?\bconfiden\w*/i,
+      /\bno\s+(?:duty|obligation)\s+of\s+confidentiality/i,
+      /\bno\s+confidentiality\s+obligations?\b/i,
+      /\bconfidentiality\s+obligations?\b[^.]{0,40}?\b(?:do|does|shall)\s+not\s+apply\s+to\s+(?:this\s+)?(?:agreement|the\s+parties)/i,
+    ],
+    denied_title: "Confidentiality obligation expressly disclaimed",
+    denied_description:
+      "The agreement states that the recipient is NOT required to keep the client's confidential information in confidence. The client's material is then unprotected — the opposite of the clause this rule looks for, and worse than leaving it out.",
   }),
   presence({
     id: "COMM-037",

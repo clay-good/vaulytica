@@ -524,3 +524,41 @@ describe("IPL-037 — backup assignment expressly refused", () => {
     ).toEqual([]);
   });
 });
+
+/**
+ * IPL-028: a disclaimer names the same concepts the representation does
+ * ("makes NO representation that the Contribution is an original work"), so a
+ * CLA giving the project no assurance of provenance scored clean.
+ */
+describe("IPL-028 — original-work representation expressly disclaimed", () => {
+  const run = async (text: string) => {
+    const res = await runEngine({
+      rules: IP_LICENSING_RULES,
+      ctx: withPb(buildContext(["Terms", text]), CLA_PB),
+      source_file: SRC,
+    });
+    return res.findings.filter((f) => f.rule_id === "IPL-028").map((f) => f.title);
+  };
+
+  it("reports a disclaimed representation as a denial", async () => {
+    expect(
+      await run(
+        "Contributor makes no representation that the Contribution is an original work or that it has the right to grant the license.",
+      ),
+    ).toEqual(["Original-work representation expressly disclaimed"]);
+  });
+
+  it("still reports the clause missing on silence", async () => {
+    expect(await run("Contributor submits the Contribution to the Project.")).toEqual([
+      "Original-work representation clause missing",
+    ]);
+  });
+
+  it("stays silent on the compliant representation", async () => {
+    expect(
+      await run(
+        "Contributor represents that the Contribution is an original creation and that it has the right to grant the license, free of third-party claims.",
+      ),
+    ).toEqual([]);
+  });
+});

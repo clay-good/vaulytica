@@ -722,6 +722,7 @@ const CLA_RULES: Rule[] = [
   }),
   presence({
     id: "IPL-028",
+    version: "1.1.0",
     name: "Original-work representation",
     description:
       "Contributor must represent that the contribution is their original work or properly licensed.",
@@ -737,6 +738,19 @@ const CLA_RULES: Rule[] = [
       /(original\s+(creation|work)|created.{0,40}by\s+(you|the\s+contributor))/i,
       /(third.?party|right\s+(to|to\s+grant))/i,
     ],
+    // Express-denial guard: a disclaimer names the same concepts the
+    // representation does ("makes NO representation that the Contribution is
+    // an original work"), so the CLA that gives the project no assurance at all
+    // about provenance scored clean.
+    denied_if: [
+      /\b(?:makes?|gives?|provides?)\s+no\s+(?:representation|warrant\w+)/i,
+      /\bno\s+(?:representation|warrant\w+)\s+(?:is|are)\s+(?:made|given|provided)/i,
+      /\b(?:does|do|shall|will)\s+not\s+(?:represent|warrant)\b/i,
+      /\bwithout\s+any\s+(?:representation|warrant\w+)\s+(?:as\s+to\s+)?(?:originality|ownership)/i,
+    ],
+    denied_title: "Original-work representation expressly disclaimed",
+    denied_description:
+      "The CLA states that the contributor makes no representation that the contribution is original or that it has the right to grant the licence. The project then takes the contribution with no assurance of provenance — the exposure this representation exists to close.",
   }),
   presence({
     id: "IPL-029",

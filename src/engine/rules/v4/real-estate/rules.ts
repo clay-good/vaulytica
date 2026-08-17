@@ -123,6 +123,19 @@ const NET_LEASE_RULES: Rule[] = [
       /property\s+insurance/i,
       /waiver\s+of\s+subrogation/i,
     ],
+    // Express-denial guard: a lease relieving the tenant of insurance names the
+    // same coverages the requirement does, so "Tenant shall not be required to
+    // carry any liability insurance" satisfied the presence check. In a net
+    // lease the tenant carrying insurance is the point of the structure —
+    // relieving it shifts the risk back to the landlord silently.
+    denied_if: [
+      /\bnot\s+(?:be\s+)?(?:required|obligated|obliged)\s+to\s+(?:carry|maintain|obtain|provide)\b[^.]{0,60}?\binsurance/i,
+      /\bno\s+insurance\s+(?:is|shall\s+be)\s+required/i,
+      /\binsurance\b[^.]{0,40}?\b(?:is|are)\s+not\s+required\s+of\s+tenant/i,
+    ],
+    denied_title: "Tenant insurance requirement expressly waived",
+    denied_description:
+      "The lease states that the tenant is NOT required to carry insurance. In a net lease the tenant's coverage is the structure's premise; relieving it moves casualty and liability risk back to the landlord, which the parties should decide deliberately rather than have read as a satisfied requirement.",
   }),
   presence({
     id: "RE-004",

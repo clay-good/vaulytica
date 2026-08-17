@@ -494,3 +494,42 @@ describe("RE-007 — relet / mitigate reads re-let / re-lease and 'mitigate its 
     ).toBe(true);
   });
 });
+
+/**
+ * RE-003: a lease relieving the tenant of insurance names the same coverages
+ * the requirement does, so it satisfied the presence check. In a net lease the
+ * tenant's coverage is the premise of the structure — relieving it moves
+ * casualty and liability risk back to the landlord.
+ */
+describe("RE-003 — tenant insurance requirement expressly waived", () => {
+  const run = async (text: string) => {
+    const res = await runEngine({
+      rules: REAL_ESTATE_RULES,
+      ctx: withPb(buildContext(["Terms", text]), NET_LEASE_PB),
+      source_file: SRC,
+    });
+    return res.findings.filter((f) => f.rule_id === "RE-003").map((f) => f.title);
+  };
+
+  it("reports a waived insurance requirement as a denial", async () => {
+    expect(
+      await run(
+        "Tenant shall not be required to carry any liability insurance or property insurance.",
+      ),
+    ).toEqual(["Tenant insurance requirement expressly waived"]);
+  });
+
+  it("still reports the clause missing on silence", async () => {
+    expect(await run("Tenant shall pay base rent monthly in advance.")).toEqual([
+      "Insurance requirements clause missing",
+    ]);
+  });
+
+  it("stays silent on the compliant requirement", async () => {
+    expect(
+      await run(
+        "Tenant shall maintain commercial general liability insurance and property insurance throughout the term.",
+      ),
+    ).toEqual([]);
+  });
+});
