@@ -269,7 +269,7 @@ export const LAUNCH_RULES: readonly Rule[] = [
   PERS_007,
   PERS_008,
   PERS_009,
-  // Dark patterns — 9
+  // Dark patterns — 14
   DARK_001,
   DARK_002,
   DARK_003,

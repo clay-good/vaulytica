@@ -169,3 +169,25 @@ describe("a case citation's date is the opinion's, not the document's (v1.2.0)",
     expect(TEMP_002.check(ctx)).toBeNull();
   });
 });
+
+/**
+ * The date sort must be a TOTAL comparator. Returning 1 for equal keys makes
+ * it self-contradictory, and which of two same-day dates lands first then
+ * depends on V8's tie handling for an invalid comparator — while that date
+ * supplies the finding's excerpt and position.
+ */
+describe("TEMP-002 — same-day dates sort deterministically", () => {
+  const doc = (): ReturnType<typeof buildContext> =>
+    buildContext([
+      "Dates",
+      "Signed January 1, 2020 and also dated 01/01/2020. The term commences March 1, 2026 and ends March 1, 2031.",
+    ]);
+
+  it("returns an identical finding across repeated runs", () => {
+    const results = Array.from({ length: 25 }, () => {
+      const f = TEMP_002.check(doc());
+      return f === null ? "null" : `${f.title}|${f.excerpts?.[0]?.text ?? ""}`;
+    });
+    expect(new Set(results).size).toBe(1);
+  });
+});

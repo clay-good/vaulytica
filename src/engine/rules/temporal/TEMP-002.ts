@@ -108,7 +108,12 @@ export const rule: Rule = {
     // (2026-03-01 → 2031-03-01) and a one-year insurance policy period
     // (2026-01-01 → 2027-01-01) are not back-dated.
     if (abs.length < 3) return null;
-    const sorted = [...abs].sort((a, b) => (a.iso! < b.iso! ? -1 : 1));
+    // Three-way compare: returning 1 for EQUAL keys makes the comparator
+    // self-contradictory (compare(a,b) and compare(b,a) both 1), and which of
+    // two same-day dates lands at sorted[0] then depends on V8's tie handling
+    // for an invalid comparator. That date supplies the finding's excerpt and
+    // position, so the output has to be ordered by a total comparator.
+    const sorted = [...abs].sort((a, b) => (a.iso! < b.iso! ? -1 : a.iso! > b.iso! ? 1 : 0));
     const earliest = new Date(sorted[0]!.iso!);
     const next = new Date(sorted[1]!.iso!);
     const gapDays = (next.getTime() - earliest.getTime()) / 86_400_000;
