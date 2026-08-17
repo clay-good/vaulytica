@@ -15,6 +15,7 @@
 import type { Rule } from "../../../finding.js";
 import {
   buildV4PresenceRule,
+  expressDenial,
   buildV4LanguageRule,
   buildV4CompoundRule,
   type V4PresenceSpec,
@@ -373,6 +374,7 @@ const SPA_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-016",
+    version: "1.1.0",
     name: "Non-solicit / non-compete on selling stockholders",
     description:
       "Selling stockholders typically agree to non-compete and non-solicit covenants (enforceable under state-law sale-of-business doctrine).",
@@ -387,6 +389,10 @@ const SPA_RULES: Rule[] = [
       "Add 'Article IX — Restrictive Covenants' with non-compete (3–5 years), non-solicit (employees / customers), and confidentiality undertakings.",
     present_patterns: [/(non.?compete|non.?solicit)/i, /restrictive\s+covenant/i],
     default_severity: "warning",
+    denied_if: expressDenial(String.raw`non.?compet\w*|non.?solicit\w*`),
+    denied_title: "Selling-stockholder restrictive covenant expressly denied",
+    denied_description:
+      "The document states that the selling stockholders are subject to no non-compete or non-solicit. Buyer has then paid for goodwill it received no protection for.",
   }),
   presence({
     id: "MNA-017",
@@ -659,6 +665,7 @@ const MERGER_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-031",
+    version: "1.1.0",
     name: "Appraisal rights notice (DGCL § 262)",
     description: "Stockholders must be advised of appraisal rights under DGCL § 262.",
     citation: dgcl("262"),
@@ -670,6 +677,10 @@ const MERGER_RULES: Rule[] = [
     recommendation:
       "Add 'Appraisal Rights' describing dissenters' rights under DGCL § 262 and the notice mechanics.",
     present_patterns: [/(section\s+262|appraisal\s+rights|dissenters)/i],
+    denied_if: expressDenial(String.raw`appraisal\s+rights?|dissenters?.?\s+rights?`),
+    denied_title: "Appraisal rights expressly denied",
+    denied_description:
+      "The document states that stockholders have no appraisal rights. DGCL \u00a7 262 confers a statutory right to dissent and seek appraisal; a blanket denial is a defect on its face rather than the statutory notice.",
   }),
   presence({
     id: "MNA-032",

@@ -7,6 +7,12 @@ import { SETTLEMENT_RULES } from "./settlement/rules.js";
 import { BANKING_RULES } from "./banking/rules.js";
 import { GOVERNANCE_RULES } from "./governance/rules.js";
 import { REAL_ESTATE_RULES } from "./real-estate/rules.js";
+import { M_AND_A_RULES } from "./m-and-a/rules.js";
+import { EQUITY_RULES } from "./equity/rules.js";
+import { TRUST_ESTATE_RULES } from "./trust-estate/rules.js";
+import { IP_LICENSING_RULES } from "./ip-licensing/rules.js";
+import { CONSTRUCTION_RULES } from "./construction/rules.js";
+import { REGULATORY_PROSE_RULES } from "./regulatory-prose/rules.js";
 import { buildContext } from "../../_test-fixtures.js";
 import type { Rule } from "../../finding.js";
 
@@ -18,6 +24,12 @@ const ALL: Rule[] = [
   ...BANKING_RULES,
   ...GOVERNANCE_RULES,
   ...REAL_ESTATE_RULES,
+  ...M_AND_A_RULES,
+  ...EQUITY_RULES,
+  ...TRUST_ESTATE_RULES,
+  ...IP_LICENSING_RULES,
+  ...CONSTRUCTION_RULES,
+  ...REGULATORY_PROSE_RULES,
 ];
 const byId = (id: string): Rule => {
   const r = ALL.find((x) => x.id === id);
@@ -183,6 +195,102 @@ const CASES: [string, boolean, string][] = [
     "RE-056",
     false,
     "Assumption. Assignee assumes all obligations of Tenant under the Lease. Assignee's assumption of obligations does not apply to any obligation arising prior to the Effective Date.",
+  ],
+  // MNA-031 — appraisal rights
+  [
+    "MNA-031",
+    true,
+    "Appraisal rights shall not be available to any holder of Company Stock in connection with the Merger.",
+  ],
+  [
+    "MNA-031",
+    false,
+    "Appraisal Rights. Stockholders who perfect their rights under DGCL § 262 are entitled to appraisal. This Section does not limit any stockholder's statutory appraisal rights.",
+  ],
+  // MNA-016 — restrictive covenants
+  [
+    "MNA-016",
+    true,
+    "For the avoidance of doubt, the Selling Stockholders shall not be subject to any non-compete or non-solicit restriction under this Agreement.",
+  ],
+  [
+    "MNA-016",
+    false,
+    "Non-Competition. Each Selling Stockholder agrees to a three-year non-compete and non-solicit. The non-compete does not restrict passive ownership of less than 2% of a public company's stock.",
+  ],
+  // EQT-049 — demand registration
+  ["EQT-049", true, "The Investors shall have no demand registration rights under this Agreement."],
+  [
+    "EQT-049",
+    false,
+    "Demand Registration. Investors may require two S-1 demand registrations. The demand registration rights do not apply prior to the six-month anniversary of the IPO.",
+  ],
+  // EQT-052 — pro rata participation
+  [
+    "EQT-052",
+    true,
+    "The Investors shall have no pro rata participation right in any future issuance of the Company's securities.",
+  ],
+  [
+    "EQT-052",
+    false,
+    "Pro Rata Rights. Each Major Investor has a pro rata right to participate in future issuances. The pro rata right does not apply to Exempted Issuances.",
+  ],
+  // EST-032 — durable POA
+  [
+    "EST-032",
+    true,
+    "This power of attorney shall terminate upon the Principal's incapacity and is not durable.",
+  ],
+  [
+    "EST-032",
+    false,
+    "Durable Power of Attorney. This power of attorney is durable and shall not be affected by the Principal's subsequent incapacity or disability.",
+  ],
+  [
+    "EST-032",
+    false,
+    "This durable power of attorney survives incapacity. The durability of this power does not extend to a successor agent who has not accepted appointment.",
+  ],
+  // EST-039 — prenup financial disclosure
+  [
+    "EST-039",
+    true,
+    "The parties acknowledge that no financial disclosure was exchanged and each waives any right to disclosure of the other's assets.",
+  ],
+  [
+    "EST-039",
+    false,
+    "Financial Disclosure. Each party has made full financial disclosure of assets and liabilities on Schedule A. The financial disclosure does not include assets held in a blind trust, disclosed separately in Schedule C.",
+  ],
+  // IPL-014 — trademark quality control
+  ["IPL-014", true, "Licensor shall exercise no quality control over Licensee's use of the Marks."],
+  [
+    "IPL-014",
+    false,
+    "Quality Control. Licensor may inspect and approve goods bearing the Marks against its quality standards. This Section does not limit Licensor's right to exercise quality control through periodic inspection.",
+  ],
+  // CON-006 — indemnification
+  [
+    "CON-006",
+    true,
+    "Contractor shall not indemnify Owner for any claims, damages, or losses arising out of the Work.",
+  ],
+  [
+    "CON-006",
+    false,
+    "Indemnification. Contractor shall indemnify and hold Owner harmless from all claims arising out of the Work. This indemnity does not extend to claims arising from Owner's sole negligence.",
+  ],
+  // REG-030 — conflicts of interest
+  [
+    "REG-030",
+    true,
+    "This Memorandum does not disclose any conflicts of interest between the General Partner and the Fund.",
+  ],
+  [
+    "REG-030",
+    false,
+    "Conflicts of Interest. The General Partner discloses the related-party transactions described below. This disclosure requirement does not apply to conflicts immaterial to a reasonable investor.",
   ],
 ];
 

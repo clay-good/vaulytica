@@ -13,6 +13,7 @@
 import { makeFinding, type Finding, type Rule, type RuleContext } from "../../../finding.js";
 import {
   buildV4PresenceRule,
+  expressDenial,
   buildV4LanguageRule,
   docTop,
   type V4PresenceSpec,
@@ -636,6 +637,7 @@ const PPM_RULES: Rule[] = [
   }),
   presence({
     id: "REG-030",
+    version: "1.1.0",
     name: "Conflicts of interest disclosure",
     description: "PPM must disclose material conflicts of interest.",
     citation: regPractice(
@@ -654,6 +656,10 @@ const PPM_RULES: Rule[] = [
       /(conflicts?\s+of\s+interest|related.?party)/i,
       /(disclos|related|sponsor|general\s+partner)/i,
     ],
+    denied_if: expressDenial(String.raw`conflicts?\s+of\s+interest|related.?party\s+transactions?`),
+    denied_title: "Conflicts-of-interest disclosure expressly denied",
+    denied_description:
+      "The document states that conflicts of interest are not disclosed. Failure to disclose material conflicts is a leading basis for a Rule 10b-5 claim against the offering.",
   }),
   presence({
     id: "REG-031",

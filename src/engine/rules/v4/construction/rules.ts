@@ -10,7 +10,7 @@
  */
 
 import type { Rule } from "../../../finding.js";
-import { buildV4PresenceRule, type V4PresenceSpec } from "../_helpers.js";
+import { buildV4PresenceRule, expressDenial, type V4PresenceSpec } from "../_helpers.js";
 import {
   CON_PLAYBOOK_CONTRACT,
   CON_PLAYBOOK_SUBCONTRACTOR,
@@ -127,6 +127,7 @@ const CONSTRUCTION_CONTRACT_RULES: Rule[] = [
   }),
   presence({
     id: "CON-006",
+    version: "1.1.0",
     name: "Indemnification + insurance + waiver of subrogation",
     description:
       "Contract must include indemnification, insurance requirements, and waiver-of-subrogation provisions consistent with state anti-indemnity statutes.",
@@ -143,6 +144,10 @@ const CONSTRUCTION_CONTRACT_RULES: Rule[] = [
       /(insurance|cgl|workers?\s+compensation)/i,
       /(waiver\s+of\s+subrogation)/i,
     ],
+    denied_if: expressDenial(String.raw`indemnif(?:y|ies|ication)|indemnity`),
+    denied_title: "Indemnification obligation expressly denied",
+    denied_description:
+      "The document states that the contractor does not indemnify the owner for any claims, leaving the owner without the risk-shifting the AIA A201 pattern assumes.",
   }),
   presence({
     id: "CON-007",

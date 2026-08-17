@@ -17,7 +17,7 @@
  */
 
 import { makeFinding, type Finding, type Rule, type RuleContext } from "../../../finding.js";
-import { buildV4PresenceRule, docTop, type V4PresenceSpec } from "../_helpers.js";
+import { buildV4PresenceRule, expressDenial, docTop, type V4PresenceSpec } from "../_helpers.js";
 import {
   EST_PLAYBOOK_WILL,
   EST_PLAYBOOK_REVOCABLE_TRUST,
@@ -614,7 +614,7 @@ const DURABLE_POA_RULES: Rule[] = [
   }),
   presence({
     id: "EST-032",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Durable language — survives incapacity",
     description: "POA must include durable language stating it survives principal's incapacity.",
     citation: upoaa("104", "Power of attorney is durable"),
@@ -633,6 +633,10 @@ const DURABLE_POA_RULES: Rule[] = [
       // "/durabl/" branch above still covers a POA titled "Durable".
       /(survives?|not\s+(?:be\s+)?(?:affected|terminated|revoked)\s+by|notwithstanding).{0,40}(incapacity|disability|incompet)/is,
     ],
+    denied_if: expressDenial(String.raw`durable|durability`),
+    denied_title: "Durability expressly denied — the power terminates on incapacity",
+    denied_description:
+      "The document states that this power of attorney is not durable and terminates on the principal's incapacity. That is the opposite of a durable power and defeats the instrument's purpose.",
   }),
   presence({
     id: "EST-033",
@@ -763,6 +767,7 @@ const PRENUP_RULES: Rule[] = [
   }),
   presence({
     id: "EST-039",
+    version: "1.1.0",
     name: "Financial disclosure schedules + adequacy recital",
     description:
       "Prenup must include financial disclosure schedules and recital that disclosures are fair and reasonable.",
@@ -778,6 +783,12 @@ const PRENUP_RULES: Rule[] = [
       /(disclosure|schedule\s+a|schedule\s+b|assets\s+and\s+liabilities)/i,
       /(fair\s+and\s+reasonable|adequate|knowing\s+waiver)/i,
     ],
+    denied_if: expressDenial(
+      String.raw`financial\s+disclosure|disclosure\s+of\s+(?:assets|liabilities|debts)`,
+    ),
+    denied_title: "Financial disclosure expressly denied",
+    denied_description:
+      "The document states that no financial disclosure was exchanged. Failure to disclose is the leading ground courts cite when invalidating a premarital agreement.",
   }),
   presence({
     id: "EST-040",

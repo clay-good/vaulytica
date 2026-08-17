@@ -19,6 +19,7 @@
 import type { Rule } from "../../../finding.js";
 import {
   buildV4PresenceRule,
+  expressDenial,
   buildV4LanguageRule,
   type V4PresenceSpec,
   type V4LanguageSpec,
@@ -374,6 +375,7 @@ const TM_LICENSE_RULES: Rule[] = [
   }),
   presence({
     id: "IPL-014",
+    version: "1.1.0",
     name: "Quality control — naked-license avoidance",
     description:
       "Trademark license must impose quality-control obligations on licensee to avoid 'naked license' abandonment.",
@@ -390,6 +392,10 @@ const TM_LICENSE_RULES: Rule[] = [
       /(inspect|sample|approval)/i,
       /(specifications?|guidelines?)/i,
     ],
+    denied_if: expressDenial(String.raw`quality\s+control|quality\s+standards?`),
+    denied_title: "Trademark quality control expressly disclaimed (naked license)",
+    denied_description:
+      "The document states that the licensor exercises no quality control over use of the marks. An express disclaimer documents a naked license and risks abandonment of the marks.",
   }),
   presence({
     id: "IPL-015",

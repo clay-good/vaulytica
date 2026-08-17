@@ -123,12 +123,12 @@ export function expressDenial(topic: string): RegExp[] {
   // parties"), because neither sentence denies that the clause exists.
   const gap = String.raw`(?:(?!\b(?:without|unless|except|absent|failing|prior|appl(?:y|ies)|affect|affects|limit|limits|waive|waives|relieve|relieves|supersede|supersedes|alter|alters|modify|modifies|excuse|excuses|prevent|prevents|preclude|precludes|restrict|restricts)\b)\w+[\s,]+){0,3}`;
   const verb =
-    "(?:perform|conduct|provide|maintain|require|undertake|implement|operate|run|have|has|make)";
+    "(?:perform|conduct|provide|maintain|require|undertake|implement|operate|run|have|has|make|exercise|exercises|grant|grants)";
   // Past participles a denial lands on. Deliberately excludes "permitted" /
   // "allowed": "failure to file a SAR is not permitted" is a PROHIBITION of
   // the failure, i.e. the compliant drafting, not a denial of the clause.
   const done =
-    "(?:required|performed|conducted|maintained|provided|undertaken|implemented|applicable|filed|retained|kept|screened|collected|identified|obtained|established|withdrawn|revoked|honored|honoured|granted|issued|suspended|available|offered|encrypted|appointed|designated|reviewed|notified)";
+    "(?:required|performed|conducted|maintained|provided|undertaken|implemented|applicable|filed|retained|kept|screened|collected|identified|obtained|established|withdrawn|revoked|honored|honoured|granted|issued|suspended|available|offered|encrypted|appointed|designated|reviewed|notified|exchanged|delivered|attached)";
   return [
     // "does not perform OFAC screening" / "is not required to conduct AML training"
     new RegExp(
@@ -146,9 +146,9 @@ export function expressDenial(topic: string): RegExp[] {
     ),
     // "consent cannot be withdrawn"
     new RegExp(String.raw`\b${t}\b[^.]{0,80}?\bcan\s?not\s+(?:be\s+)?${done}`, "i"),
-    // "no OFAC screening is performed"
+    // "no OFAC screening is performed" / "no financial disclosure was exchanged"
     new RegExp(
-      String.raw`\bno\s+${gap}${t}\b[^.]{0,80}?\b(?:is|are|shall\s+be|will\s+be)\s+${done}`,
+      String.raw`\bno\s+${gap}${t}\b[^.]{0,80}?\b(?:is|are|was|were|shall\s+be|will\s+be|has\s+been|have\s+been)\s+${done}`,
       "i",
     ),
   ];

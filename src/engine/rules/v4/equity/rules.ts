@@ -14,6 +14,7 @@
 import type { Rule } from "../../../finding.js";
 import {
   buildV4PresenceRule,
+  expressDenial,
   buildV4LanguageRule,
   buildV4CompoundRule,
   type V4PresenceSpec,
@@ -1025,6 +1026,7 @@ const ELECTION_83B_RULES: Rule[] = [
 const IRA_RULES: Rule[] = [
   presence({
     id: "EQT-049",
+    version: "1.1.0",
     name: "Demand registration rights",
     description: "IRA should include demand registration rights (NVCA Model IRA § 2).",
     citation: nvca("ira-demand-registration", "Investor Rights Agreement — Demand Registration"),
@@ -1036,6 +1038,10 @@ const IRA_RULES: Rule[] = [
     recommendation:
       "Add 'Demand Registration' covering S-1 demands (typically 2, after a holding period) and S-3 demands (typically unlimited, subject to a dollar minimum).",
     present_patterns: [/demand\s+registration/i, /form\s+s.1\s+demand/i],
+    denied_if: expressDenial(String.raw`demand\s+registration\s+rights?`),
+    denied_title: "Demand registration rights expressly denied",
+    denied_description:
+      "The document states that the investors have no demand registration rights, stripping out the preferred-holder liquidity mechanism the rights agreement exists to grant.",
   }),
   presence({
     id: "EQT-050",
@@ -1067,7 +1073,7 @@ const IRA_RULES: Rule[] = [
   }),
   presence({
     id: "EQT-052",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Pro rata participation rights",
     description: "Major investors get pro rata participation in subsequent issuances.",
     citation: nvca("ira-pro-rata", "IRA — Pro Rata Right"),
@@ -1081,6 +1087,10 @@ const IRA_RULES: Rule[] = [
     // "pro\s.?rata" required whitespace, so the hyphenated "pro-rata" and the
     // closed "prorata" were missed; use "pro[\s-]?rata".
     present_patterns: [/pro[\s-]?rata/i, /right\s+to\s+maintain/i, /preemptive/i],
+    denied_if: expressDenial(String.raw`pro[\s-]?rata\s+(?:participation\s+)?rights?`),
+    denied_title: "Pro rata participation right expressly denied",
+    denied_description:
+      "The document states that the investors have no pro rata right to participate in future issuances, eliminating the anti-dilution protection the rights agreement confers on major investors.",
   }),
   presence({
     id: "EQT-053",

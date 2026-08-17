@@ -77,6 +77,20 @@ All notable changes to this project will be documented in this file. Format adap
   subrogation, GOV-072 inurement, RE-046 subordination) were deliberately left
   alone: there the negative IS the compliant drafting. Golden churn is
   `result_hash` only.
+- **Nine more presence rules across the remaining seven packs now catch the
+  clause the document expressly denies**, completing the sweep of all sixteen
+  v4 packs: MNA-031 (a merger agreement declaring appraisal rights unavailable,
+  contrary to DGCL § 262), MNA-016 (selling stockholders subject to no
+  non-compete, so the buyer paid for unprotected goodwill), EQT-049 / EQT-052
+  (investors given no demand registration or pro rata participation right),
+  EST-032 (a power of attorney that terminates on incapacity and states it is
+  not durable — the opposite of the instrument's purpose), EST-039 (a premarital
+  agreement reciting that no financial disclosure was exchanged, the leading
+  ground for invalidation), IPL-014 (a licensor exercising no quality control,
+  which documents a naked license and risks abandonment of the marks), CON-006
+  (a contractor who will not indemnify the owner), and REG-030 (an offering
+  memorandum disclosing no conflicts of interest). Golden churn is `result_hash`
+  only across all 99 v4 fixtures: zero finding-level changes.
 - **The party-role picker no longer scrolls the page sideways on a narrow
   phone.** A dropdown never wraps its option text and a `fieldset` defaults to
   `min-inline-size: min-content`, so a party role long enough to exceed the
