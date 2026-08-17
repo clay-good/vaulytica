@@ -481,3 +481,108 @@ describe("tax-statute section numbering", () => {
     ).toEqual([]);
   });
 });
+
+/**
+ * Each alternative of the external-citation discriminators, pinned one by one.
+ *
+ * `EXTERNAL_TRAILER_RE`, `EXTERNAL_LEADER_RE` and friends are long
+ * alternations, and the suite covered the CONCEPT ("a statute cite is not a
+ * broken cross-reference") without covering the individual branches — mutation
+ * testing showed most of them could be deleted with every test still green.
+ * Each row below is a real drafting form, and each exercises one branch: drop
+ * `Protocols?` and the Madrid Protocol row starts reporting a phantom broken
+ * reference to "Section 12".
+ *
+ * The failure mode these guard against is the expensive one — telling a
+ * drafter their document has a dangling internal cross-reference when the text
+ * is in fact citing an outside statute.
+ */
+describe("external citations are never reported as broken internal references", () => {
+  const flat = (...texts: string[]): DocumentTree =>
+    normalize({
+      type: "document",
+      sections: [
+        {
+          id: "",
+          heading: "",
+          level: 1,
+          paragraphs: texts.map((text) => ({
+            id: "",
+            runs: [{ id: "", text, start: 0, end: 0 }],
+          })),
+          children: [],
+        },
+      ],
+    });
+  const unresolved = (text: string): string[] =>
+    extractCrossRefs(flat(text), extractSections(flat(text)))
+      .filter((r) => r.unresolved)
+      .map((r) => r.raw_text);
+
+  it.each([
+    // Trailing "of the <NOUN>" — one row per instrument noun.
+    ["Code", "Section 12 of the Companies Code"],
+    ["Act", "Section 12 of the Securities Act"],
+    ["Laws", "Section 12 of the Uniform Commercial Laws"],
+    ["Regulations", "Section 12 of the Treasury Regulations"],
+    ["Rules", "Section 12 of the Federal Rules"],
+    ["Directive", "Section 12 of the EU Directive"],
+    ["Convention", "Section 12 of the Hague Convention"],
+    ["Treaty", "Section 12 of the Berne Treaty"],
+    ["Charter", "Section 12 of the UN Charter"],
+    ["Constitution", "Section 12 of the State Constitution"],
+    ["Protocol", "Section 12 of the Madrid Protocol"],
+    ["Ordinance", "Section 12 of the City Ordinance"],
+    ["Statutes", "Section 12 of the Revised Statutes"],
+    ["U.S.C.", "Section 12 of the U.S.C."],
+    ["C.F.R.", "Section 12 of the C.F.R."],
+    // Named regimes carried as bare acronyms.
+    ["GDPR", "Article 6 of the GDPR"],
+    ["CCPA", "Section 1798.100 of the CCPA"],
+    ["CPRA", "Section 12 of the CPRA"],
+    ["HIPAA", "Section 12 of HIPAA"],
+    ["LGPD", "Section 12 of the LGPD"],
+    ["PIPEDA", "Section 12 of PIPEDA"],
+    ["UCC", "Section 2-207 of the UCC"],
+    ["DPA 2018", "Section 12 of the DPA 2018"],
+    // Reporter/leader forms, where the instrument PRECEDES the section.
+    ["leading U.S.C.", "12 U.S.C. Section 1841"],
+    ["leading C.F.R.", "29 C.F.R. Section 825.100"],
+    ["leading Stat.", "104 Stat. Section 12"],
+  ])("%s: reports nothing for %j", (_branch, citation) => {
+    expect(unresolved(`The parties comply with ${citation} in all respects.`)).toEqual([]);
+  });
+
+  it.each([
+    // Singular/plural and symbol variance — the recurring false-positive class
+    // in this codebase. An alternation that loses its `?` (Acts? -> Acts,
+    // §§? -> §§) stops matching the form a real drafter used.
+    ["single section symbol", "§ 12 of the Securities Act"],
+    ["double section symbol", "§§ 12 and 13 of the Securities Act"],
+    ["plural Sections", "Sections 12 and 13 of the Securities Act"],
+    ["plural Acts", "Section 12 of the Securities Acts"],
+    ["singular Law", "Section 12 of the Companies Law"],
+    ["singular Regulation", "Section 12 of the Treasury Regulation"],
+    ["singular Rule", "Section 12 of the Federal Rule"],
+    ["plural Directives", "Section 12 of the EU Directives"],
+    ["plural Conventions", "Section 12 of the Hague Conventions"],
+    ["plural Treaties", "Section 12 of the Berne Treaties"],
+    ["plural Ordinances", "Section 12 of the City Ordinances"],
+    // Instrument named BEFORE the section (the leading-qualifier branch).
+    ["leading Act", "the Securities Act under Section 12"],
+    ["leading Code", "the Internal Revenue Code pursuant to Section 409A"],
+    ["leading Regulations", "Treasury Regulations under Section 704(b)"],
+    ["leading Regulation", "the Securities Regulation under Section 12"],
+  ])("%s: reports nothing for %j", (_branch, citation) => {
+    expect(unresolved(`The parties comply with ${citation} in all respects.`)).toEqual([]);
+  });
+
+  it("still reports a genuinely dangling internal reference in the same shape", () => {
+    // The control: strip the statutory tail and the very same number IS a
+    // broken internal cross-reference. Without this the suite above could be
+    // satisfied by a discriminator that suppresses everything.
+    expect(unresolved("The parties comply with Section 12 in all respects.")).toEqual([
+      "Section 12",
+    ]);
+  });
+});

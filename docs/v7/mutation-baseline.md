@@ -16,15 +16,15 @@ Stryker runs the test suite once per mutant, so it is **slow** and runs **off th
 
 | File | Mutation score | Killed | Survived | Timeout | No coverage |
 |---|---:|---:|---:|---:|---:|
-| **All (scoped)** | **52.34%** | 736 | 642 | 12 | 39 |
+| **All (scoped)** | **53.94%** | 757 | 621 | 16 | 39 |
 | `amounts.ts` | 61.16% | 215 | 136 | 7 | 5 |
-| `dates.ts` | 56.22% | 266 | 194 | 5 | 17 |
+| `dates.ts` | 56.58% | 266 | 194 | 9 | 17 |
 | `sections.ts` | 51.92% | 27 | 21 | 0 | 4 |
-| `crossrefs.ts` | 42.86% | 228 | 291 | 0 | 13 |
+| `crossrefs.ts` | 46.80% | 249 | 270 | 0 | 13 |
 
-(Mutation score = killed ÷ (killed + survived + timeout + no-coverage). The "covered" score, excluding no-coverage mutants, is 53.81% overall.)
+(Mutation score = killed ÷ (killed + survived + timeout + no-coverage). The "covered" score, excluding no-coverage mutants, is 55.45% overall.)
 
-**Read the aggregate against its scope, never across scopes.** 52.34% is *lower* than the 56.16% recorded for the two-file scope, and that is not a regression: the surface grew from 846 mutants to 1,433, and the two files that joined score below the original pair.
+**Read the aggregate against its scope, never across scopes.** 53.94% is *lower* than the 56.16% recorded for the two-file scope, and that is not a regression: the surface grew from 846 mutants to 1,433, and the two files that joined score below the original pair.
 
 ### History
 
@@ -34,9 +34,10 @@ Stryker runs the test suite once per mutant, so it is **slow** and runs **off th
 | 2026-08-17 | dates + amounts | **47.59%** | 48 | **Gate broke.** Not a flake — real decay. Both files had grown (postfix currencies, fiscal quarters, composite `$`, new date anchors) without matching tests, so 112 mutants had no coverage at all. |
 | 2026-08-17 | dates + amounts | 56.16% | 54 | Three entirely untested shipped features covered: `postfixCurrency` (trailing currency words), `DAY_MONTH_YEAR` (day-before-month dates), `CURRENCY_OVERRIDE` (the v7 §6 deferred override). Each was deletable with the suite green. |
 | 2026-08-17 | + crossrefs + sections | 52.34% | 50 | Scope widened; see the note above on comparing scores across scopes. |
+| 2026-08-17 | + crossrefs + sections | **53.94%** | 52 | Pinned each external-citation branch in crossrefs (41 rows: every instrument noun, named regime, reporter form, and singular/plural + `§`/`§§` variant). crossrefs 42.86% → 46.80%. |
 
-The lesson the decay taught: a mutation score is not a one-time measurement. Adding code to a mutated file without adding tests lowers it mechanically, and because the job is weekly and off the push path, the failure sits unseen unless someone looks for it. The remaining survivors are the ratchet target; many regex survivors (`\s+` → `\s`, character-class tweaks) are equivalent or near-equivalent mutants that no input in the linter's domain distinguishes, so the practical ceiling is below 100%.
+The lesson the decay taught: a mutation score is not a one-time measurement. Adding code to a mutated file without adding tests lowers it mechanically, and because the job is weekly and off the push path, the failure sits unseen unless someone looks for it. The remaining survivors are the ratchet target, but crossrefs shows where that runs out: 41 new rows pinning every external-citation branch moved it only 42.86% → 46.80%, because most of its ~270 survivors are equivalent mutants inside long alternations (`\s+` → `\s`, `[A-Za-z]+` → `[A-Za-z]`, dropped `^` anchors) that no realistic legal drafting distinguishes. The practical ceiling is well below 100%, and further gains need a different lever — a narrower, more testable decomposition of those regexes — not more test rows.
 
 ## Gate (regression-only, Step 124)
 
-`stryker.config.json` sets `thresholds.break = 50` — a couple points under the measured 52.34%, with headroom for cross-platform drift. The scheduled job fails if the score drops below the floor; it never blocks on an unmet aspiration. **Ratchet up as survivors are killed** — the same measure-first discipline coverage and the v5 scoreboard use. The break threshold applies only in the mutation workflow, not the per-push gate.
+`stryker.config.json` sets `thresholds.break = 52` — a couple points under the measured 53.94%, with headroom for cross-platform drift. The scheduled job fails if the score drops below the floor; it never blocks on an unmet aspiration. **Ratchet up as survivors are killed** — the same measure-first discipline coverage and the v5 scoreboard use. The break threshold applies only in the mutation workflow, not the per-push gate.
