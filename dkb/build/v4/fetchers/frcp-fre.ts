@@ -54,7 +54,7 @@ const PROCEDURAL_RULES: ProceduralRule[] = [
           "A voluntary dismissal of a pending action is without prejudice unless the notice or stipulation states otherwise; a second voluntary dismissal of the same claim operates as an adjudication on the merits.",
         minimum_compliant_text:
           "Plaintiff hereby voluntarily dismisses the Action with prejudice pursuant to Fed. R. Civ. P. 41(a)(1)(A)(ii), each Party to bear its own attorneys' fees and costs.",
-        detect: /(rule 41|voluntary dismissal|with prejudice)/i,
+        detect: /(rule 41(?!\d)|voluntary dismissal|with prejudice)/i,
       },
     ],
   },
@@ -71,7 +71,7 @@ const PROCEDURAL_RULES: ProceduralRule[] = [
           "Conduct or statements made during compromise negotiations about the claim are not admissible to prove or disprove the validity or amount of a disputed claim or to impeach by a prior inconsistent statement, except for limited purposes such as proving bias, negating undue delay, or proving an effort to obstruct a criminal investigation.",
         minimum_compliant_text:
           "This communication is made for settlement purposes only and is inadmissible under Fed. R. Evid. 408 (and any applicable state-law analog) to prove or disprove the validity or amount of the disputed claim.",
-        detect: /(rule 408|settlement.{0,30}negotiation|compromise.{0,30}offer)/i,
+        detect: /(rule 408(?!\d)|settlement.{0,30}negotiation|compromise.{0,30}offer)/i,
       },
       {
         id: "fre-502-privilege-waiver",
@@ -80,7 +80,7 @@ const PROCEDURAL_RULES: ProceduralRule[] = [
           "When the disclosure of attorney-client communication or work product is made in a federal proceeding and is the subject of a court order, the disclosure does not operate as a waiver in any federal or state proceeding; an inadvertent disclosure does not waive when reasonable steps were taken to prevent disclosure and to rectify the error.",
         minimum_compliant_text:
           "The Parties stipulate, and the Court orders pursuant to Fed. R. Evid. 502(d), that disclosure of attorney-client privileged or work-product-protected information in connection with this Action does not waive the privilege or protection in any other federal or state proceeding.",
-        detect: /(rule 502|privilege waiver|inadvertent disclosure)/i,
+        detect: /(rule 502(?!\d)|privilege waiver|inadvertent disclosure)/i,
       },
     ],
   },

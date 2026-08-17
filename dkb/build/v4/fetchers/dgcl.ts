@@ -72,7 +72,7 @@ const DGCL_REQUIREMENTS: DgclRequirement[] = [
     minimum_compliant_text:
       "The constituent corporations have entered into this Agreement and Plan of Merger pursuant to 8 Del. C. § 251, providing for the terms and conditions of the merger, the manner of converting the shares of each constituent corporation, and the certificate of incorporation of the surviving corporation.",
     applies_to: ["merger-agreement", "spa", "apa"],
-    detect: /agreement.{0,20}of merger|plan of merger|§\s*251/i,
+    detect: /agreement.{0,20}of merger|plan of merger|§\s*251(?!\d)/i,
   },
   {
     id: "dgcl-262-appraisal-rights",
@@ -82,7 +82,7 @@ const DGCL_REQUIREMENTS: DgclRequirement[] = [
     minimum_compliant_text:
       "Holders of record of shares of [Class] are entitled to appraisal rights pursuant to 8 Del. C. § 262 in connection with the Merger, subject to compliance with the procedural requirements of § 262.",
     applies_to: ["merger-agreement"],
-    detect: /appraisal rights|§\s*262/i,
+    detect: /appraisal rights|§\s*262(?!\d)/i,
   },
 ];
 

@@ -46,7 +46,7 @@ export const STATE_LANDLORD_TENANT_SOURCES: Record<string, StateLandlordTenantSo
           "Security deposit for an unfurnished unit may not exceed two months' rent (one month if the landlord is a small landlord per AB 12 / SB 1182, eff. 2024-07-01); landlord must return any unused portion with an itemized statement within 21 days of termination.",
         minimum_compliant_text:
           "Tenant shall pay a security deposit not to exceed [one / two] months' rent, which Landlord shall return, with any itemized deductions, within 21 days after termination of the tenancy pursuant to Cal. Civ. Code § 1950.5.",
-        detect: /(security deposit|cal\.?\s*civ.{0,30}1950\.5|return.{0,40}21 days)/i,
+        detect: /(security deposit|cal\.?\s*civ.{0,30}1950\.5(?!\d)|return.{0,40}21 days)/i,
       },
       {
         id: "ca-civ-1942-habitability",
@@ -74,7 +74,7 @@ export const STATE_LANDLORD_TENANT_SOURCES: Record<string, StateLandlordTenantSo
           "Every written or oral residential lease contains an implied warranty of habitability — that the premises and all common areas are fit for human habitation and that occupants will not be subjected to conditions dangerous to life, health, or safety. The warranty cannot be waived.",
         minimum_compliant_text:
           "This Lease incorporates the non-waivable implied warranty of habitability under N.Y. Real Prop. Law § 235-b. Landlord shall maintain the Premises in conditions fit for human habitation.",
-        detect: /(warranty of habitability|§\s*235-b|fit for human habitation)/i,
+        detect: /(warranty of habitability|§\s*235-b\b|fit for human habitation)/i,
       },
       {
         id: "ny-gol-7-103-security-deposit",
@@ -83,7 +83,7 @@ export const STATE_LANDLORD_TENANT_SOURCES: Record<string, StateLandlordTenantSo
           "Security deposit must be held in trust by landlord; landlords of buildings with six or more units must deposit in an interest-bearing account at the prevailing rate and remit interest (less 1% administrative fee) to tenant.",
         minimum_compliant_text:
           "Any security deposit shall be held in trust pursuant to N.Y. Gen. Oblig. Law § 7-103; for buildings with six or more units, Landlord shall deposit the security in an interest-bearing account and remit interest annually to Tenant.",
-        detect: /(security deposit|§\s*7-103|interest-bearing)/i,
+        detect: /(security deposit|§\s*7-103(?!\d)|interest-bearing)/i,
       },
     ],
   },
@@ -102,7 +102,7 @@ export const STATE_LANDLORD_TENANT_SOURCES: Record<string, StateLandlordTenantSo
           "Landlord must refund any security deposit, with an itemized statement of deductions, not later than the 30th day after the date the tenant surrenders the premises.",
         minimum_compliant_text:
           "Landlord shall refund the security deposit, less any lawful deductions itemized in a written statement, within 30 days after Tenant surrenders the Premises and provides a forwarding address, as required by Tex. Prop. Code § 92.103.",
-        detect: /(security deposit|§\s*92\.103|30.{0,10}day)/i,
+        detect: /(security deposit|§\s*92\.103(?!\d)|30.{0,10}day)/i,
       },
       {
         id: "tx-prop-92-052-repair-duty",
@@ -111,7 +111,7 @@ export const STATE_LANDLORD_TENANT_SOURCES: Record<string, StateLandlordTenantSo
           "Landlord shall make a diligent effort to repair or remedy a condition if the tenant specifies the condition in a notice, is not delinquent in rent at the time notice is given, and the condition materially affects the physical health or safety of an ordinary tenant.",
         minimum_compliant_text:
           "Upon receipt of written notice from Tenant specifying a condition that materially affects the physical health or safety of an ordinary tenant, Landlord shall make a diligent effort to repair or remedy the condition as required by Tex. Prop. Code § 92.052.",
-        detect: /(repair|§\s*92\.052|diligent effort)/i,
+        detect: /(repair|§\s*92\.052(?!\d)|diligent effort)/i,
       },
     ],
   },
@@ -131,7 +131,7 @@ export const STATE_LANDLORD_TENANT_SOURCES: Record<string, StateLandlordTenantSo
           "Landlord must hold security deposit in a Florida bank account or post a surety bond; within 15 days after tenant vacates, landlord shall return deposit, or, if making a claim, give written notice within 30 days of the intent to impose a claim.",
         minimum_compliant_text:
           "Landlord shall hold any security deposit in accordance with Fla. Stat. § 83.49 and shall return the deposit within 15 days after Tenant vacates or, if making a claim, give written notice within 30 days as required by § 83.49(3).",
-        detect: /(security deposit|§\s*83\.49|return.{0,15}15 days)/i,
+        detect: /(security deposit|§\s*83\.49(?!\d)|return.{0,15}15 days)/i,
       },
     ],
   },
@@ -150,7 +150,7 @@ export const STATE_LANDLORD_TENANT_SOURCES: Record<string, StateLandlordTenantSo
           "Lessor of residential real property containing 5 or more units must return security deposit, or furnish itemized statement of damages, within 30 days after tenant vacates; failure entitles tenant to twice the deposit plus attorneys' fees.",
         minimum_compliant_text:
           "Landlord shall return any security deposit or furnish an itemized statement of damages within 30 days after Tenant vacates, as required by 765 ILCS 710/1; failure shall entitle Tenant to twice the deposit plus reasonable attorneys' fees.",
-        detect: /(security deposit|§?\s*765 ILCS 710|30 days)/i,
+        detect: /(security deposit|§?\s*765 ILCS 710(?!\d)|30 days)/i,
       },
     ],
   },

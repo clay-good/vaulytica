@@ -29,6 +29,13 @@ __pycache__/
 *$py.class
 .Python
 build/
+# `build/` above is from this template's Python section, but it also matches
+# `dkb/build/` — the DKB builder's own SOURCE tree. The files already there are
+# tracked, so nothing looked wrong, while every NEW file under it was silently
+# ignored: adding a fetcher would leave it uncommitted and break the build for
+# everyone else. Re-include the source, keep the real cache directory ignored.
+!dkb/build/
+dkb/build/cache/
 develop-eggs/
 dist/
 

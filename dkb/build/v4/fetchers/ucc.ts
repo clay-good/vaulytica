@@ -90,7 +90,7 @@ const UCC_ARTICLES: UccArticle[] = [
           "The right to enforce an instrument is subject to the maker's real defenses (infancy, duress, illegality, fraud in the factum, discharge in insolvency) and, unless held by a holder in due course, to ordinary contract defenses.",
         minimum_compliant_text:
           "Maker acknowledges that this Note is subject to the defenses set forth in U.C.C. § 3-305; nothing herein waives any defense not waivable under applicable law.",
-        detect: /(holder in due course|real defenses|U\.C\.C\.\s*§?\s*3-?305)/i,
+        detect: /(holder in due course|real defenses|U\.C\.C\.\s*§?\s*3-?305(?!\d))/i,
       },
     ],
   },
@@ -125,7 +125,7 @@ const UCC_ARTICLES: UccArticle[] = [
           "A financing statement is sufficient only if it (1) provides the name of the debtor; (2) provides the name of the secured party or a representative of the secured party; and (3) indicates the collateral covered by the financing statement.",
         minimum_compliant_text:
           "Debtor Name: [Name]. Secured Party Name: [Name]. Collateral: [Description]. [Filed as UCC-1 with the [State] Secretary of State pursuant to U.C.C. § 9-502.]",
-        detect: /(financing statement|UCC-?1|secretary of state)/i,
+        detect: /(financing statement|UCC-?1(?!\d)|secretary of state)/i,
       },
     ],
   },

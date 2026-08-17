@@ -42,7 +42,7 @@ export const STATE_TRUST_WILL_SOURCES: Record<string, StateTrustWillSource> = {
           "A will (other than a holographic or statutory will) must be in writing, signed by the testator, and witnessed by at least two persons who are present at the same time and who witnessed either the signing or the testator's acknowledgment of the signature.",
         minimum_compliant_text:
           "This Will is signed by the Testator in the presence of two competent witnesses, who, at the request of the Testator and in his/her presence and in the presence of each other, have subscribed their names hereto, satisfying Cal. Prob. Code § 6110.",
-        detect: /(§\s*6110|will|witnessed by at least two)/i,
+        detect: /(§\s*6110(?!\d)|will|witnessed by at least two)/i,
       },
       {
         id: "ca-prob-15206-trust-formalities",
@@ -51,7 +51,7 @@ export const STATE_TRUST_WILL_SOURCES: Record<string, StateTrustWillSource> = {
           "A trust in relation to real property is not valid unless evidenced by a written instrument signed by the trustee or by a written instrument conveying the trust property signed by the settlor.",
         minimum_compliant_text:
           "This Trust is evidenced by this written instrument signed by the Settlor and accepted by the Trustee, satisfying Cal. Prob. Code § 15206 for any trust property consisting of real property.",
-        detect: /(§\s*15206|trust.{0,30}real property|written instrument)/i,
+        detect: /(§\s*15206(?!\d)|trust.{0,30}real property|written instrument)/i,
       },
     ],
   },
@@ -69,7 +69,7 @@ export const STATE_TRUST_WILL_SOURCES: Record<string, StateTrustWillSource> = {
           "Every will must be in writing and signed at the end thereof by the testator (or by another person in the testator's name in the testator's presence and by his direction); the testator's signature must be made or acknowledged in the presence of each of at least two attesting witnesses, who attest within one 30-day period.",
         minimum_compliant_text:
           "I, the undersigned Testator, sign this Will at the end thereof, in the presence of each of the two undersigned witnesses, who have, at my request and in my presence and in the presence of each other, attested this Will in conformity with N.Y. Est. Powers & Trusts Law § 3-2.1.",
-        detect: /(§\s*3-2\.1|signed at the end|attesting witnesses)/i,
+        detect: /(§\s*3-2\.1(?!\d)|signed at the end|attesting witnesses)/i,
       },
       {
         id: "ny-ept-7-1.17-trust-formalities",
@@ -78,7 +78,7 @@ export const STATE_TRUST_WILL_SOURCES: Record<string, StateTrustWillSource> = {
           "Every lifetime trust shall be in writing and shall be executed and acknowledged by the initial creator and, unless such creator is the sole trustee, by at least one trustee thereof, in the manner required by the laws of this state for the recording of a conveyance of real property, or by two witnesses.",
         minimum_compliant_text:
           "This Trust is executed and acknowledged by the Settlor and Trustee in the manner required by N.Y. Est. Powers & Trusts Law § 7-1.17 for the recording of a conveyance of real property.",
-        detect: /(§\s*7-1\.17|lifetime trust|executed and acknowledged)/i,
+        detect: /(§\s*7-1\.17(?!\d)|lifetime trust|executed and acknowledged)/i,
       },
     ],
   },
@@ -96,7 +96,7 @@ export const STATE_TRUST_WILL_SOURCES: Record<string, StateTrustWillSource> = {
           "Except as otherwise provided by law, a will must be in writing, signed by the testator in person or by another person on behalf of the testator in the testator's presence and at the testator's direction, and attested by two or more credible witnesses who are at least 14 years of age and who subscribe their names to the will in the testator's presence.",
         minimum_compliant_text:
           "The Testator signs this Will in the presence of the two credible witnesses, each at least 14 years of age, who at the Testator's request subscribe their names hereto in the Testator's presence, satisfying Tex. Est. Code § 251.051.",
-        detect: /(§\s*251\.051|credible witnesses|at least 14|subscribe their names)/i,
+        detect: /(§\s*251\.051(?!\d)|credible witnesses|at least 14(?!\d)|subscribe their names)/i,
       },
     ],
   },
@@ -114,7 +114,7 @@ export const STATE_TRUST_WILL_SOURCES: Record<string, StateTrustWillSource> = {
           "Every will must be in writing and executed as follows: the testator must sign the will at the end (or have another person sign the testator's name at the testator's direction); the testator's signature must be made or acknowledged in the presence of at least two attesting witnesses; the attesting witnesses must sign the will in the presence of the testator and of each other.",
         minimum_compliant_text:
           "The Testator signs this Will at the end in the presence of the two attesting witnesses, who then sign in the presence of the Testator and of each other, satisfying Fla. Stat. § 732.502.",
-        detect: /(§\s*732\.502|attesting witnesses|presence.{0,30}each other)/i,
+        detect: /(§\s*732\.502(?!\d)|attesting witnesses|presence.{0,30}each other)/i,
       },
     ],
   },
@@ -132,7 +132,7 @@ export const STATE_TRUST_WILL_SOURCES: Record<string, StateTrustWillSource> = {
           "Every will shall be in writing, signed by the testator or by some person in his presence and by his direction, and attested in the presence of the testator by two or more credible witnesses.",
         minimum_compliant_text:
           "This Will is in writing, signed by the Testator, and attested in the presence of the Testator by the two undersigned credible witnesses, as required by 755 ILCS 5/4-3.",
-        detect: /(§?\s*755 ILCS 5\/4-3|credible witnesses|in writing.{0,30}signed by the testator)/i,
+        detect: /(§?\s*755 ILCS 5\/4-3(?!\d)|credible witnesses|in writing.{0,30}signed by the testator)/i,
       },
     ],
   },
