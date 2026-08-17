@@ -386,3 +386,62 @@ describe("IPL-005 — express denial of the power of attorney", () => {
     ).toEqual([]);
   });
 });
+
+/**
+ * Express-denial guards for the two CLA grant rules. "Contributor grants NO
+ * copyright license" contains the very phrase the rule looks for, and one
+ * present-pattern match short-circuits a presence rule — so a CLA that grants
+ * nothing scored clean while a CLA merely silent on the grant fired. A CLA
+ * without the grant defeats its purpose: the project cannot ship the
+ * contribution, and downstream users stay exposed to the contributor's patents.
+ */
+describe("IPL-026 / IPL-027 — CLA grants expressly withheld", () => {
+  const run = async (id: string, text: string) => {
+    const res = await runEngine({
+      rules: IP_LICENSING_RULES,
+      ctx: withPb(buildContext(["Contribution", text]), CLA_PB),
+      source_file: SRC,
+    });
+    return res.findings.filter((f) => f.rule_id === id).map((f) => f.title);
+  };
+
+  it.each([
+    [
+      "IPL-026",
+      "Contributor grants no copyright license to the Project, and no perpetual or royalty-free rights are conveyed.",
+      "Copyright license grant expressly withheld",
+    ],
+    [
+      "IPL-026",
+      "No copyright license is granted under this Agreement, whether perpetual or royalty-free.",
+      "Copyright license grant expressly withheld",
+    ],
+    [
+      "IPL-027",
+      "No patent license is granted by Contributor, and defensive termination does not apply to any patent litigation.",
+      "Patent license grant expressly withheld",
+    ],
+  ])("%s reports a withheld grant as a denial", async (id, text, title) => {
+    expect(await run(id, text)).toEqual([title]);
+  });
+
+  it.each([
+    ["IPL-026", "Copyright license grant clause missing"],
+    ["IPL-027", "Patent license / defensive termination clause missing"],
+  ])("%s still reports the clause missing on silence", async (id, title) => {
+    expect(await run(id, "Contributor submits the Contribution to the Project.")).toEqual([title]);
+  });
+
+  it.each([
+    [
+      "IPL-026",
+      "Contributor grants a perpetual, worldwide, royalty-free copyright license to the Project.",
+    ],
+    [
+      "IPL-027",
+      "Contributor grants a patent license to the Project, subject to defensive termination upon patent litigation.",
+    ],
+  ])("%s stays silent on the compliant grant", async (id, text) => {
+    expect(await run(id, text)).toEqual([]);
+  });
+});

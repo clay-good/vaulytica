@@ -645,6 +645,7 @@ const CLA_RULES: Rule[] = [
   }),
   presence({
     id: "IPL-026",
+    version: "1.1.0",
     name: "Copyright license grant to project",
     description:
       "CLA must grant a copyright license sufficient for the project to use, modify, and redistribute.",
@@ -660,9 +661,24 @@ const CLA_RULES: Rule[] = [
       /(copyright\s+license|grant.{0,40}copyright)/i,
       /(perpetual|worldwide|royalty.?free|irrevocable)/i,
     ],
+    // Express-denial guard: "Contributor grants NO copyright license" contains
+    // the very phrase the rule looks for, and one present match short-circuits
+    // a presence rule. A CLA that grants no licence defeats its entire purpose
+    // — the project cannot ship the contribution — yet it scored clean while a
+    // CLA merely silent on the grant fired.
+    denied_if: [
+      /\bno\s+copyright\s+licen[cs]e\b/i,
+      /\b(?:grants?|conveys?|confers?)\s+no\b[^.]{0,40}?\bcopyright/i,
+      /\b(?:shall|will|does|do)\s+not\s+(?:grant|convey|confer)\b[^.]{0,60}?\bcopyright\s+licen[cs]e/i,
+      /\bcopyright\s+licen[cs]e\b[^.]{0,40}?\b(?:is|are)\s+not\s+(?:granted|conveyed|conferred)/i,
+    ],
+    denied_title: "Copyright license grant expressly withheld",
+    denied_description:
+      "The CLA states that no copyright license is granted to the project. Without the grant the project has no right to reproduce or distribute the contribution at all — a harder failure than omitting the clause, which at least leaves the position arguable.",
   }),
   presence({
     id: "IPL-027",
+    version: "1.1.0",
     name: "Patent license grant + defensive termination",
     description: "CLA must grant a patent license and include defensive termination.",
     citation: apacheCla(),
@@ -678,6 +694,18 @@ const CLA_RULES: Rule[] = [
       /patent\s+(license|grant)/i,
       /(defensive\s+termination|patent\s+litigation|countersuit)/i,
     ],
+    // Same trap as IPL-026: "No patent license is granted" contains the phrase
+    // the rule looks for, so a CLA withholding the patent grant — leaving every
+    // downstream user exposed to the contributor's own patents — scored clean.
+    denied_if: [
+      /\bno\s+patent\s+licen[cs]e\b/i,
+      /\b(?:grants?|conveys?|confers?)\s+no\b[^.]{0,40}?\bpatent/i,
+      /\b(?:shall|will|does|do)\s+not\s+(?:grant|convey|confer)\b[^.]{0,60}?\bpatent\s+licen[cs]e/i,
+      /\bpatent\s+licen[cs]e\b[^.]{0,40}?\b(?:is|are)\s+not\s+(?:granted|conveyed|conferred)/i,
+    ],
+    denied_title: "Patent license grant expressly withheld",
+    denied_description:
+      "The CLA states that no patent license is granted. Every downstream user of the contribution is then exposed to the contributor's own patents — the exposure the ASF ICLA § 3 grant exists to close.",
   }),
   presence({
     id: "IPL-028",
