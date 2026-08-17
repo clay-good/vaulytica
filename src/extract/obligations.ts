@@ -1,6 +1,6 @@
 import type { DocumentTree } from "../ingest/types.js";
 import type { Obligation, Party } from "./types.js";
-import { forEachParagraph, posInParagraph, trimEdges } from "./walk.js";
+import { forEachParagraph, posInParagraph, trimEdges, trimEnd } from "./walk.js";
 
 /**
  * Extract every modal-verb obligation from the document.
@@ -97,7 +97,18 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
         let action = predicate;
         if (trigger) action = action.replace(trigger, "").trim();
         if (qualifier) action = action.replace(qualifier, "").trim();
-        action = action.replace(/[.,;]$/, "").trim();
+        // A run, not one character: excising the trigger clause leaves behind
+        // the comma that separated it from the main clause, so a sentence with
+        // BOTH a trigger and a qualifier ("…shall deliver the Deliverables
+        // within thirty (30) days of the Effective Date, subject to …") ended
+        // up as "deliver the Deliverables ," — the single-character strip took
+        // the sentence's own period and left the stranded comma behind it.
+        //
+        // Trimmed by scan rather than by `/[\s.,;]+$/`, which is quadratic: an
+        // unanchored trailing-run pattern retries from every index, so a
+        // pathological all-commas paragraph took ~19s where the budget is 2s.
+        // The fuzz-boundary guard (spec-v8 §5) catches exactly this.
+        action = trimEnd(action, /[\s.,;]/);
 
         out.push({
           id: nextId(),

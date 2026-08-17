@@ -190,4 +190,21 @@ describe("extractObligations", () => {
     );
     expect(substantive.map((o) => o.modal)).toContain("agrees to");
   });
+
+  it("leaves no stranded punctuation when both a trigger and a qualifier are excised", () => {
+    // Cutting the trigger clause out of the predicate leaves behind the comma
+    // that separated it from the main clause, so the action for a sentence
+    // carrying BOTH a trigger and a qualifier — a routine drafting shape —
+    // came out as "deliver the Deliverables ,": the cleanup stripped only one
+    // trailing character, taking the period and leaving the comma exposed.
+    const obs = extractObligations(
+      buildTree([
+        "Delivery",
+        "Provider shall deliver the Deliverables within thirty (30) days of the Effective Date, subject to Customer's timely provision of specifications.",
+      ]),
+      [],
+    );
+    expect(obs).toHaveLength(1);
+    expect(obs[0]!.action).toBe("deliver the Deliverables");
+  });
 });

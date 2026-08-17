@@ -44,6 +44,24 @@ const NO_GOV_LAW: string[] = [
   "Acme is controlled by Beta Holdings under the laws of Delaware for tax purposes.",
   // A disclaimed governing law must stay unmatched.
   "This Agreement shall not be governed by the laws of the State of New York.",
+  // …including when a comma parenthetical or an adverb sits between the
+  // negation and the verb. The lookback was too short to reach the negation
+  // past either, so the REJECTED law was reported as the chosen one.
+  "This Agreement shall not, under any circumstances, be governed by the laws of the State of New York.",
+  "This Agreement shall under no circumstances whatsoever be governed by the laws of the State of New York.",
+];
+
+// A negation that belongs to an earlier, unrelated clause of the same sentence
+// must NOT suppress the governing law the sentence goes on to choose.
+const NEGATION_ELSEWHERE: Array<[clause: string, want: RegExp]> = [
+  [
+    "Although the Company is not incorporated in Delaware, this Agreement is governed by the laws of Delaware.",
+    /Delaware/,
+  ],
+  [
+    "The parties have not agreed to arbitrate any dispute; this Agreement is governed by the laws of New York.",
+    /New York/,
+  ],
 ];
 
 describe("governing-law phrasing guard", () => {
@@ -61,4 +79,41 @@ describe("governing-law phrasing guard", () => {
       expect(refs.find((r) => r.clause_kind === "governing-law")).toBeUndefined();
     });
   }
+  for (const [clause, want] of NEGATION_ELSEWHERE) {
+    it(`still registers ${want} despite an unrelated negation: ${clause.slice(0, 40)}`, () => {
+      const refs = extractJurisdictions(buildTree(["Body", clause]));
+      const gov = refs.find((r) => r.clause_kind === "governing-law");
+      expect(gov, `OVER-SUPPRESSED for: ${clause}`).toBeTruthy();
+      expect(gov!.raw_text).toMatch(want);
+    });
+  }
+
+  // A disclaimed law whose clause names the law it selects instead records the
+  // SELECTED one — exactly once. The selected law is read out of the rejected
+  // clause's tail, so a restated verb ("…but shall instead be governed by the
+  // laws of Delaware") was then matched a second time on its own and recorded
+  // Delaware twice.
+  it("records the selected law once when a disclaimer restates the verb", () => {
+    const refs = extractJurisdictions(
+      buildTree([
+        "Governing Law",
+        "This Agreement shall not be governed by the laws of California, but shall instead be governed by the laws of Delaware.",
+      ]),
+    );
+    expect(refs.filter((r) => r.clause_kind === "governing-law").map((r) => r.raw_text)).toEqual([
+      "Delaware",
+    ]);
+  });
+
+  it("records the selected law when the disclaimer carries a comma parenthetical", () => {
+    const refs = extractJurisdictions(
+      buildTree([
+        "Governing Law",
+        "This Agreement shall not, under any circumstances, be governed by the laws of California, but shall instead be governed by the laws of Delaware.",
+      ]),
+    );
+    expect(refs.filter((r) => r.clause_kind === "governing-law").map((r) => r.raw_text)).toEqual([
+      "Delaware",
+    ]);
+  });
 });

@@ -44,6 +44,21 @@ describe("arbitration-seat phrasing guard", () => {
     });
   }
 
+  it("does not read the rules recital after the institution as the seat", () => {
+    // The pattern needs `i` for its case-varying keywords, which also weakens
+    // the capture's leading `[A-Z]` to "any letter" — so "administered by the
+    // ICC in accordance with the ICC Rules…" recorded "accordance with the ICC
+    // Rules of Arbitration then in force" as a seat, alongside the real one.
+    const refs = extractJurisdictions(
+      buildTree([
+        "Arbitration",
+        "Any dispute shall be resolved by arbitration administered by the ICC in accordance with the ICC Rules of Arbitration then in force, and the parties agree the seat of arbitration shall be Geneva.",
+      ]),
+    );
+    const seats = refs.filter((r) => r.clause_kind === "arbitration-seat");
+    expect(seats.map((s) => s.raw_text)).toEqual(["Geneva"]);
+  });
+
   it("registers no seat when arbitration is merely mentioned", () => {
     const refs = extractJurisdictions(
       buildTree(["Body", "Either party may demand arbitration of any unresolved dispute."]),

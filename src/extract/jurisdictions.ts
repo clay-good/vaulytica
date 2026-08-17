@@ -310,6 +310,8 @@ export function extractJurisdictions(
   const seenGovLaw = new Set<string>();
 
   forEachParagraph(tree, (ctx) => {
+    /** Laws captured out of a negated clause's tail, per paragraph. */
+    const altLaws = new Set<string>();
     runRegex(GOV_LAW, ctx.text, (m) => {
       const ext = extendEnglandAndWales(ctx.text, (m[2] ?? "").trim(), m.index + m[0].length);
       const raw = ext.raw;
@@ -324,6 +326,14 @@ export function extractJurisdictions(
       if (isNegatedGovLaw(ctx.text, m.index)) {
         const actual = detectAlternativeLaw(tail);
         if (actual) {
+          // The selected law is recorded from the REJECTED clause's tail, so
+          // when that tail restates the verb — "shall not be governed by the
+          // laws of California, but shall instead be governed by the laws of
+          // Delaware" — the very next GOV_LAW match records Delaware a second
+          // time. Note the alternative here so the restated clause is skipped
+          // below; scoped to the paragraph, so a genuinely separate governing-
+          // law clause elsewhere in the document still records normally.
+          altLaws.add(actual.toLowerCase());
           out.push({
             clause_kind: "governing-law",
             jurisdiction_id: lookup(actual),
@@ -344,6 +354,7 @@ export function extractJurisdictions(
       // it as the governing law made the SCC's own France forum read as a
       // law/venue mismatch.
       const named = detectNamedJurisdiction(tail);
+      if (altLaws.has((named ?? raw).toLowerCase())) return;
       seenGovLaw.add((named ?? raw).toLowerCase());
       out.push({
         clause_kind: "governing-law",
@@ -454,6 +465,14 @@ export function extractJurisdictions(
     runRegex(VENUE_WAIVE_OBJECTION, ctx.text, recordVenue);
     runRegex(ARBITRATION_SEAT, ctx.text, (m) => {
       const raw = (m[1] ?? "").trim();
+      // The pattern needs the `i` flag for its case-varying keywords, which
+      // also weakens the capture's leading `[A-Z]` to "any letter" — so the
+      // institution-first branch happily took the lowercase word after "in"
+      // in "administered by the ICC in accordance with the ICC Rules…" and
+      // recorded "accordance with the ICC Rules of Arbitration then in force"
+      // as a seat. Every other consumer in this file re-checks the capital
+      // for exactly this reason; this one did not.
+      if (!/^[A-Z]/.test(raw)) return;
       out.push({
         clause_kind: "arbitration-seat",
         jurisdiction_id: lookup(raw),
@@ -497,14 +516,32 @@ function detectNamedJurisdiction(tail: string): string | undefined {
 
 /**
  * True when a "governed by the laws of …" match at `matchIndex` is negated by
- * a preceding "not" / "never" / "in no event" in the same clause (bounded to
- * the ~40 chars before the match, cut at the last sentence break, allowing a
- * few intervening words like "shall not be governed", "is not governed").
+ * a preceding "not" / "never" / "in no event" / "under no circumstances" in
+ * the same clause (cut at the last sentence break, allowing a few intervening
+ * words like "shall not be governed", "is not governed").
+ *
+ * Two things widened here, because a disclaimed law was being recorded as the
+ * agreement's actual governing law — the exact failure this guard exists to
+ * prevent. The lookback was ~40 chars, which is shorter than the negation
+ * phrase itself in "shall under no circumstances whatsoever be governed by",
+ * so the negation sat just outside the window. And an interposed comma
+ * parenthetical — "shall not, under any circumstances, be governed by the laws
+ * of California" — pushed the negation past the 3-word adjacency budget.
+ *
+ * The adjacency budget is what keeps this from over-suppressing, so it is
+ * deliberately NOT relaxed: the interposed clause is allowed only when it is
+ * set off by commas immediately after the negation. An unrelated negation
+ * earlier in the same sentence ("Although the Company is not incorporated in
+ * Delaware, this Agreement is governed by the laws of Delaware") still does
+ * not match, because its words are neither comma-set-off at the negation nor
+ * within the word budget.
  */
 function isNegatedGovLaw(text: string, matchIndex: number): boolean {
-  const raw = text.slice(Math.max(0, matchIndex - 40), matchIndex);
+  const raw = text.slice(Math.max(0, matchIndex - 90), matchIndex);
   const clause = raw.split(/[.;]\s/).pop() ?? raw;
-  return /\b(?:not|never|no\s+event)\b(?:\s+\w+){0,3}\s*$/i.test(clause);
+  return /\b(?:not|never|no\s+(?:event|circumstances?))\b(?:\s*,[^,.;]{0,60},)?(?:\s+\w+){0,3}\s*$/i.test(
+    clause,
+  );
 }
 
 /**
