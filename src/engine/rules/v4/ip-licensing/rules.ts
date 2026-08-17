@@ -139,6 +139,7 @@ const IP_ASSIGNMENT_RULES: Rule[] = [
   }),
   presence({
     id: "IPL-005",
+    version: "1.1.0",
     name: "Power of attorney for IP-office filings",
     description:
       "Assignment should grant a power of attorney to enable the assignee to file in the IP offices.",
@@ -158,6 +159,21 @@ const IP_ASSIGNMENT_RULES: Rule[] = [
       /power\s+of\s+attorney/i,
       /(authoriz(e|es|ed)|appoint(s|ed)?).{0,40}(assignee|attorney.in.fact)/i,
     ],
+    // Third instance of the INS-012 / CON-030 trap: the appoint/authorize
+    // pattern also matches inside a sentence that REFUSES the appointment, and
+    // one present match short-circuits a presence rule. An assignment that
+    // expressly withholds the power of attorney — leaving the assignee unable
+    // to record or prosecute the IP it just bought — scored clean, while one
+    // merely silent on the point fired.
+    denied_if: [
+      /\b(?:shall|will|does|do|may|can|is|are)\s+not\s+(?:appoint|authoriz\w+|grant)\b[^.]{0,60}?\b(?:assignee|attorney.in.fact|power\s+of\s+attorney)/i,
+      /\bno\s+power\s+of\s+attorney\s+(?:is|shall\s+be|will\s+be)\s+(?:granted|conferred|created|implied)/i,
+      /\bpower\s+of\s+attorney\b[^.]{0,40}?\b(?:is|are|shall\s+be|will\s+be)\s+not\s+(?:granted|conferred|created)/i,
+      /\bnothing\b[^.]{0,60}?\b(?:constitutes?|creates?|confers?)\b[^.]{0,20}?\bpower\s+of\s+attorney/i,
+    ],
+    denied_title: "Power of attorney expressly withheld",
+    denied_description:
+      "The document states that no power of attorney is granted, or that the assignee is not appointed attorney-in-fact. Recording, maintaining, prosecuting, or enforcing the assigned IP normally requires it; withholding it outright is a harder failure than omitting the clause.",
     default_severity: "warning",
   }),
   presence({

@@ -336,3 +336,53 @@ describe("IPL-009 — the Brulotte-compliant step-down (v1.3.0)", () => {
     ).toBe(true);
   });
 });
+
+/**
+ * Third instance of the INS-012 / CON-030 express-denial trap. IPL-005's
+ * appoint/authorize pattern also matches inside a sentence that REFUSES the
+ * appointment, and one present-pattern match short-circuits a presence rule —
+ * so an assignment expressly withholding the power of attorney (leaving the
+ * assignee unable to record or prosecute the IP it just bought) scored clean,
+ * while one merely silent on the point fired.
+ */
+describe("IPL-005 — express denial of the power of attorney", () => {
+  const run = async (text: string) => {
+    const ctx = buildContext(["Assignment", text]);
+    const res = await runEngine({
+      rules: IP_LICENSING_RULES,
+      ctx: withPb(ctx, ASSIGN_PB),
+      source_file: SRC,
+    });
+    return res.findings.filter((f) => f.rule_id === "IPL-005").map((f) => f.title);
+  };
+
+  it.each([
+    [
+      "does not appoint",
+      "Assignor does not appoint Assignee as attorney-in-fact for any IP-office filing.",
+    ],
+    ["no power of attorney", "No power of attorney is granted under this Assignment."],
+    [
+      "nothing creates",
+      "Nothing in this Assignment creates a power of attorney in favor of Assignee.",
+    ],
+  ])("%s is reported as a denial, not as compliance", async (_form, text) => {
+    expect(await run(text)).toEqual(["Power of attorney expressly withheld"]);
+  });
+
+  it("mere silence still reports the clause as missing", async () => {
+    expect(
+      await run(
+        "Assignor hereby assigns all right, title and interest in the Patents to Assignee.",
+      ),
+    ).toEqual(["POA clause missing"]);
+  });
+
+  it("the compliant appointment stays silent", async () => {
+    expect(
+      await run(
+        "Assignor irrevocably appoints Assignee as its attorney-in-fact to execute IP-office filings, and grants a power of attorney for that purpose.",
+      ),
+    ).toEqual([]);
+  });
+});
