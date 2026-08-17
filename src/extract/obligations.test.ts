@@ -222,4 +222,74 @@ describe("extractObligations", () => {
     expect(obs).toHaveLength(1);
     expect(obs[0]!.action).toBe("deliver the Deliverables, no later than 30 days after execution");
   });
+
+  it("does not end a sentence at an abbreviation period", () => {
+    // splitSentences treated EVERY "." as a terminator, so a clock time cut the
+    // sentence in half: the action recorded was "deliver notice no later than
+    // 5:00 p" and the rest of the clause was dropped as an unterminated
+    // remainder — a silently truncated obligation.
+    const obs = extractObligations(
+      buildTree([
+        "Notices",
+        "Provider shall deliver notice no later than 5:00 p.m. Eastern Time on the Delivery Date.",
+      ]),
+      [],
+    );
+    expect(obs).toHaveLength(1);
+    expect(obs[0]!.action).toBe(
+      "deliver notice no later than 5:00 p.m. Eastern Time on the Delivery Date",
+    );
+  });
+
+  it("does not resolve an obligor from an address fragment left by an abbreviation split", () => {
+    // The truncation's worse half: splitting at "St." in a street address made
+    // the NEXT "sentence" start mid-clause, so the following modal's subject
+    // was the fragment "Suite 400, and" — a phantom obligor no reader would
+    // recognize, attached to a real duty.
+    const obs = extractObligations(
+      buildTree([
+        "Delivery",
+        "Provider shall, no later than 5:00 p.m. Eastern Time on the Delivery Date, deliver the Deliverables to Customer at 123 Main St., Suite 400, and shall provide a written notice of delivery.",
+      ]),
+      [],
+    );
+    expect(obs.map((o) => o.obligor)).toEqual(["Provider"]);
+    // And no stranded separator from the fronted clause: the predicate starts
+    // at the comma after "shall", which used to lead the action text.
+    expect(obs[0]!.action.startsWith("no later than")).toBe(true);
+  });
+
+  it("keeps a proviso as the qualifier rather than splitting it into an obligation", () => {
+    // "; provided that … shall not …" carries its own modal, so the semicolon
+    // boundary split it into a second obligation — with the literal words
+    // "provided that any such inspection" as the obligor and, with the negation
+    // stripped by the split, an action that read as an affirmative duty TO
+    // interfere. The clause says the exact opposite.
+    const obs = extractObligations(
+      buildTree([
+        "Audit",
+        "Customer shall have the right to inspect Provider's records; provided that any such inspection shall not unreasonably interfere with Provider's business operations.",
+      ]),
+      [],
+    );
+    expect(obs).toHaveLength(1);
+    expect(obs[0]!.obligor).toBe("Customer");
+    expect(obs[0]!.action).toBe("have the right to inspect Provider's records");
+    expect(obs[0]!.qualifier).toBe(
+      "provided that any such inspection shall not unreasonably interfere with Provider's business operations",
+    );
+  });
+
+  it("still splits a genuine coordinated second clause", () => {
+    // The proviso guard is anchored, so an ordinary semicolon-coordinated
+    // second obligation must still yield two records.
+    const obs = extractObligations(
+      buildTree([
+        "Duties",
+        "Provider shall deliver the Services; Customer shall pay the fees within thirty (30) days.",
+      ]),
+      [],
+    );
+    expect(obs.map((o) => o.obligor)).toEqual(["Provider", "Customer"]);
+  });
 });

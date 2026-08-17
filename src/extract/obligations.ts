@@ -109,6 +109,12 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
         // pathological all-commas paragraph took ~19s where the budget is 2s.
         // The fuzz-boundary guard (spec-v8 §5) catches exactly this.
         action = trimEnd(action, /[\s.,;]/);
+        // The mirror image: a modal followed by a fronted clause ("Provider
+        // shall, no later than 5:00 p.m. …, deliver the Deliverables") starts
+        // the predicate at the comma, so the action read ", no later than …".
+        // Only leading separators are trimmed — a leading "." never occurs
+        // here, and trimming one would eat a decimal.
+        action = trimEdges(action, /[\s,;]/);
         // The same excision leaves a seam MID-string when the cut clause sat
         // between two others: "shall deliver the Deliverables, provided that
         // the Client has paid the Deposit, no later than 30 days after
@@ -158,6 +164,9 @@ function splitModalClauses(
   if (modals.length === 0) return [];
 
   const CONJ = /(?:,\s+and\s+|;\s+and\s+|;\s+)/gi;
+  // Anchored, so it fires only when the candidate new subject BEGINS with the
+  // proviso — "the fee, provided that …" mid-subject is untouched.
+  const PROVISO_LEAD = /^provided\s*,?\s*(?:however\s*,?\s*)?that\b/i;
   // Each clause records where its subject starts and which modal it owns.
   const clauses: { subjectStart: number; modal: (typeof modals)[number]; predEnd?: number }[] = [
     { subjectStart: 0, modal: modals[0]! },
@@ -172,6 +181,17 @@ function splitModalClauses(
     while ((cm = CONJ.exec(region)) !== null) last = cm;
     if (!last) continue; // no clause boundary → subordinate modal, keep merged
     const subjectStart = regionStart + last.index + last[0].length;
+    // A proviso is a RESTRICTION on the clause before it, never an independent
+    // obligation — but it carries its own modal, so the semicolon boundary
+    // split it off as one. "Customer shall have the right to inspect
+    // Provider's records; provided that any such inspection shall not
+    // unreasonably interfere with Provider's business operations" fabricated a
+    // second obligation whose obligor was the literal words "provided that any
+    // such inspection" and whose action, with the negation stripped by the
+    // modal split, read as an affirmative duty TO interfere — the inversion of
+    // what the clause says. Keep it merged so QUALIFIER_RE records it as the
+    // first obligation's `qualifier`, which is what it is.
+    if (PROVISO_LEAD.test(sentence.slice(subjectStart, modals[k]!.index))) continue;
     if (sentence.slice(subjectStart, modals[k]!.index).trim().length === 0) continue; // elided subject
     clauses[clauses.length - 1]!.predEnd = regionStart + last.index;
     clauses.push({ subjectStart, modal: modals[k]! });
@@ -222,16 +242,46 @@ function splitSentences(text: string): { text: string; start: number }[] {
   // non-terminator then ≥1 terminator, and an unterminated trailing remainder is
   // dropped (the whole-text fallback below covers the no-sentence case).
   const out: { text: string; start: number }[] = [];
-  const isTerm = (c: string): boolean => c === "." || c === "!" || c === "?";
-  let i = 0;
   const n = text.length;
+  // `!`/`?` always end a sentence. A `.` does NOT: it also writes decimals
+  // ("$5.00"), hosts ("vendor.com") and abbreviations ("5:00 p.m.", "123 Main
+  // St.", "U.S."), and treating every one as a terminator truncated real
+  // obligations. "Provider shall deliver notice no later than 5:00 p.m.
+  // Eastern Time on the Delivery Date" recorded the action as "deliver notice
+  // no later than 5:00 p" and silently DROPPED the rest as an unterminated
+  // remainder; worse, a split at "St." in an address left the next "sentence"
+  // starting mid-clause, so a following obligation resolved its obligor to the
+  // fragment "Suite 400, and".
+  //
+  // Two rules, matching `enclosingSentence`'s convention in
+  // src/engine/rules/_helpers.ts: a sentence ends where the next one STARTS
+  // (whitespace + a capital or digit) or at the end of the text; and a period
+  // closing a single-letter segment is an initialism's internal period
+  // ("p.m.", "U.S.", "C.F.R."), never a boundary. Both are O(1) local checks,
+  // so the O(n) scan — and the ReDoS property it exists for — is preserved.
+  const isTerm = (i: number): boolean => {
+    const c = text[i]!;
+    if (c === "!" || c === "?") return true;
+    if (c !== ".") return false;
+    if (i >= 2 && /[A-Za-z]/.test(text[i - 1]!) && text[i - 2] === ".") return false;
+    let j = i + 1;
+    let sawSpace = false;
+    while (j < n && (text[j] === " " || text[j] === "\t" || text[j] === "\n" || text[j] === "\r")) {
+      sawSpace = true;
+      j += 1;
+    }
+    if (j >= n) return true; // trailing period closes the last sentence
+    if (!sawSpace) return false; // "$5.00", "vendor.com", "p.m"
+    return /[A-Z0-9]/.test(text[j]!);
+  };
+  let i = 0;
   while (i < n) {
-    while (i < n && isTerm(text[i]!)) i += 1; // skip leading terminators
+    while (i < n && isTerm(i)) i += 1; // skip leading terminators
     if (i >= n) break;
     const start = i;
-    while (i < n && !isTerm(text[i]!)) i += 1; // [^.!?]+
+    while (i < n && !isTerm(i)) i += 1; // [^.!?]+
     if (i >= n) break; // no terminator follows → unterminated remainder, dropped
-    while (i < n && isTerm(text[i]!)) i += 1; // [.!?]+
+    while (i < n && isTerm(i)) i += 1; // [.!?]+
     out.push({ text: text.slice(start, i), start });
   }
   if (out.length === 0 && text.trim().length > 0) {

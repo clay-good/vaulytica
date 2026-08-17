@@ -155,8 +155,21 @@ const VENUE_COURTS_FIRST = new RegExp(
 // proceeding shall lie in Franklin County, Ohio" — so include it. The locality
 // ("Franklin County") is captured and recordVenue then reads the state after
 // the comma via JURISDICTION_AFTER_LOCALITY, so the venue records as "Ohio".
-const VENUE_SIMPLE =
-  /\b(?:venue|forum|exclusive\s+jurisdiction|exclusive\s+venue)\b[^.;)]{0,80}?\s+(?:shall\s+(?:be|lie)|is|lies|will\s+be)\s+(?:proper\s+)?(?:in\s+|within\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|$)/gi;
+// The run-up window between a venue/dispute anchor and its forum verb excludes
+// ")" so a list marker never bridges two clauses — but that also broke on the
+// numeric parenthetical ordinary drafting puts there: "Any dispute not
+// resolved within thirty (30) days shall be resolved in the … courts" was
+// reported as having no venue clause. A digits-only parenthetical is a day
+// count, never a clause boundary, so it is admitted as a unit. Shared by
+// VENUE_SIMPLE and VENUE_RESOLVED_IN (and inlined in VENUE) — VENUE_SIMPLE
+// carried the bare `[^.;)]` window until an audit found it failing on
+// "Venue for any dispute not resolved within thirty (30) days shall be in
+// Franklin County, Ohio", which its own comment names as its target shape.
+const RUNUP = String.raw`(?:\([0-9]+\)|[^.;)])`;
+const VENUE_SIMPLE = new RegExp(
+  String.raw`\b(?:venue|forum|exclusive\s+jurisdiction|exclusive\s+venue)\b${RUNUP}{0,80}?\s+(?:shall\s+(?:be|lie)|is|lies|will\s+be)\s+(?:proper\s+)?(?:in\s+|within\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|$)`,
+  "gi",
+);
 /**
  * The dominant forum-selection formulation carries no "venue"/"forum" token:
  * "all disputes … shall be resolved/brought/litigated (exclusively) in the
@@ -186,13 +199,6 @@ const COURT_ADJECTIVE = String.raw`competent\s+|appropriate\s+|proper\s+|applica
 // between the article and the "Court" token, so it is admitted as an optional
 // prefix to the "courts?" token in the forum patterns.
 const COURT_NAME = String.raw`(?:Superior\s+|Supreme\s+|District\s+|Circuit\s+|Chancery\s+|Commercial\s+|County\s+|Municipal\s+)?`;
-// The run-up window between the dispute noun and its forum verb excludes ")"
-// so a list marker never bridges two clauses — but that also broke on the
-// numeric parenthetical ordinary drafting puts there: "Any dispute not
-// resolved within thirty (30) days shall be resolved in the … courts" was
-// reported as having no venue clause. A digits-only parenthetical is a day
-// count, never a clause boundary, so it is admitted as a unit.
-const RUNUP = String.raw`(?:\([0-9]+\)|[^.;)])`;
 // The forum verb is frequently a doublet — "filed AND maintained", "brought
 // AND prosecuted", "commenced AND litigated" — and the adverb slot carries
 // "only" ("brought only in") as readily as "exclusively", so both are admitted.

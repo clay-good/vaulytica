@@ -522,4 +522,22 @@ describe("interpretation-form governing law", () => {
       expect(gov.map((r) => r.raw_text)).toEqual([want]);
     });
   }
+  it("reads a venue clause past a day-count parenthetical", () => {
+    // VENUE_SIMPLE's run-up excluded ")" outright, so the numeric parenthetical
+    // ordinary drafting puts in a venue clause severed the anchor from its verb
+    // and the clause went unread — CHOICE-003 then reported "no venue clause"
+    // about a document that names one. Its sibling patterns already admitted a
+    // digits-only parenthetical as a unit; this one did not.
+    const withParenthetical = extractJurisdictions(
+      buildTree([
+        "Venue",
+        "Venue for any dispute not resolved within thirty (30) days shall be in Franklin County, Ohio.",
+      ]),
+    ).filter((r) => r.clause_kind === "venue");
+    const control = extractJurisdictions(
+      buildTree(["Venue", "Venue for any proceeding shall lie in Franklin County, Ohio."]),
+    ).filter((r) => r.clause_kind === "venue");
+    expect(control.map((r) => r.raw_text)).toEqual(["Ohio"]);
+    expect(withParenthetical.map((r) => r.raw_text)).toEqual(["Ohio"]);
+  });
 });
