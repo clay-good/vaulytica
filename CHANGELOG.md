@@ -47,6 +47,17 @@ All notable changes to this project will be documented in this file. Format adap
   **without** OFAC screening", "this policy does not **apply to** OFAC
   screening by third parties" — is not read as a denial. Golden churn is
   `result_hash` only across all 99 v4 fixtures: zero finding-level changes.
+- **A zip whose headers under-declare an entry's size is now rejected instead
+  of silently handing back a fragment of the document.** `unzipSync` sizes each
+  output buffer from the entry's declared `originalSize` and inflate stops when
+  that buffer is full, so an archive claiming 10 bytes for an entry that really
+  holds 10 MB extracted "successfully" as a 10-byte stub — the archive lied and
+  nothing reported it. The post-inflate guard meant to catch this tested
+  `byteLength > declared`, which by that same property can never be true: it
+  was unreachable, and no test covered it. A streaming pass (fflate's `Unzip`,
+  which takes no size hint) now measures the real inflated length, rejects any
+  entry that out-runs its declaration, and aborts mid-inflate rather than
+  expanding the whole stream first.
 - **The express-denial sweep now covers every rule pack in the product.** The
   last three v3 families are done: MSA-001 (a supplier that does not indemnify
   against third-party IP infringement), MSA-016 (no service level applies),

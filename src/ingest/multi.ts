@@ -23,7 +23,7 @@
  * browser-only entry point and is provided as a separate helper.
  */
 
-import { unzipSync, strFromU8 } from "fflate";
+import { unzipSync, strFromU8, Unzip, UnzipInflate } from "fflate";
 import { ingestPdfBuffer } from "./pdf.js";
 import { ingestDocxBuffer } from "./docx.js";
 import type { IngestResult } from "./types.js";
@@ -325,20 +325,27 @@ export function extractZipEntries(
       return true;
     },
   });
-  // Produced-bytes checks (harden-determinism-guards): the filter above
-  // reads DECLARED sizes — attacker-controlled header data. Measure what
-  // inflation actually produced: any entry that out-inflates its own
-  // header is a lying archive, and the cumulative produced bytes must
-  // respect the bundle budget regardless of what the headers claimed.
+  // Produced-bytes checks. The filter above reads DECLARED sizes —
+  // attacker-controlled header data — so what inflation actually produced has
+  // to be measured too.
+  //
+  // The check that matters here is UNDER-declaration, and it is not the
+  // obvious one. `unzipSync` sizes each output buffer from the entry's
+  // declared `originalSize` and inflate stops when that buffer is full, so a
+  // produced length can never EXCEED its declaration: an entry claiming 10
+  // bytes over a 10 MB deflate stream yields exactly 10 bytes. The archive is
+  // lying and the document is silently truncated to a fragment. (An earlier
+  // guard here tested `data.byteLength > declared`, which by that same
+  // property can never be true — it could not fire, and no test covered it.)
+  //
+  // `verifyDeclaredSizes` re-reads each entry with fflate's STREAMING
+  // inflater, which has no size hint and therefore reports the real inflated
+  // length. Any disagreement with the header means the archive lied about
+  // what it holds.
+  verifyDeclaredSizes(archive, declaredSize);
   let producedBytes = 0;
   for (const [path, data] of Object.entries(unzipped)) {
     if (path.endsWith("/") || path.startsWith("__MACOSX/")) continue;
-    const declared = declaredSize.get(path);
-    if (declared !== undefined && data.byteLength > declared) {
-      throw new ArchiveTooLargeError(
-        `Archive entry "${path}" inflated to ${data.byteLength.toLocaleString("en-US")} bytes but declared ${declared.toLocaleString("en-US")} — dishonest header (possible zip bomb).`,
-      );
-    }
     producedBytes += data.byteLength;
     if (producedBytes > MAX_BUNDLE_BYTES) {
       throw new ArchiveTooLargeError(
@@ -376,6 +383,60 @@ export function extractZipEntries(
   // chain (spec-v4 §15) depends on a stable enumeration order.
   out.sort((a, b) => (a.filename < b.filename ? -1 : a.filename > b.filename ? 1 : 0));
   return out;
+}
+
+/**
+ * Confirm every inflated entry is exactly as long as its header declared.
+ *
+ * `unzipSync` cannot answer this: it allocates each output buffer from the
+ * declared `originalSize`, so a short declaration silently truncates the
+ * entry rather than overflowing. fflate's streaming `Unzip` takes no size
+ * hint — it emits chunks as they inflate — so counting those chunks gives the
+ * TRUE inflated length. Counting also lets the walk abort the moment an entry
+ * out-runs its declaration or the bundle budget, instead of inflating the
+ * whole stream first.
+ *
+ * Only entries the filter accepted (those in `declared`) are inflated here;
+ * everything else is left un-started, so no extra work is done for members
+ * that were never going to be extracted.
+ */
+function verifyDeclaredSizes(archive: ArrayBuffer, declared: Map<string, number>): void {
+  if (declared.size === 0) return;
+  const unzip = new Unzip();
+  unzip.register(UnzipInflate);
+  let produced = 0;
+  const seen = new Map<string, number>();
+  unzip.onfile = (file) => {
+    const want = declared.get(file.name);
+    if (want === undefined) return; // filtered out upstream — never inflate it
+    let got = 0;
+    file.ondata = (err, chunk, final) => {
+      if (err) throw err;
+      got += chunk.length;
+      produced += chunk.length;
+      if (got > want) {
+        throw new ArchiveTooLargeError(
+          `Archive entry "${file.name}" inflates to more than the ${want.toLocaleString("en-US")} bytes its header declares — dishonest header (possible zip bomb).`,
+        );
+      }
+      if (produced > MAX_BUNDLE_BYTES) {
+        throw new ArchiveTooLargeError(
+          `Archive inflates to over ${MAX_BUNDLE_BYTES.toLocaleString("en-US")} uncompressed bytes; rejected during expansion.`,
+        );
+      }
+      if (final) seen.set(file.name, got);
+    };
+    file.start();
+  };
+  unzip.push(new Uint8Array(archive), true);
+  for (const [name, want] of declared) {
+    const got = seen.get(name);
+    if (got !== undefined && got !== want) {
+      throw new ArchiveTooLargeError(
+        `Archive entry "${name}" inflated to ${got.toLocaleString("en-US")} bytes but declared ${want.toLocaleString("en-US")} — dishonest header.`,
+      );
+    }
+  }
 }
 
 /** Heuristic: do these bytes look like a zip archive? Checks the PK magic. */

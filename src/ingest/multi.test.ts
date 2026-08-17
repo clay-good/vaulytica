@@ -147,6 +147,43 @@ function buildZip(entries: Record<string, Uint8Array>): ArrayBuffer {
   return out.buffer.slice(out.byteOffset, out.byteOffset + out.byteLength) as ArrayBuffer;
 }
 
+describe("extractZipEntries — dishonest declared sizes", () => {
+  /** A zip whose stored `originalSize` for an entry is a lie. */
+  function forgeUnderDeclared(realBytes: number, declared: number): ArrayBuffer {
+    const payload = Uint8Array.from({ length: realBytes }, (_, i) => (i * 7 + (i % 13) * 31) % 251);
+    const z = zipSync({ "big.pdf": payload }, { level: 9 });
+    const view = new DataView(z.buffer, z.byteOffset, z.byteLength);
+    for (let i = 0; i + 4 <= z.byteLength; i++) {
+      if (view.getUint32(i, true) === realBytes) view.setUint32(i, declared, true);
+    }
+    return z.buffer.slice(z.byteOffset, z.byteOffset + z.byteLength) as ArrayBuffer;
+  }
+
+  // `unzipSync` sizes each output buffer from the declared `originalSize` and
+  // inflate stops when it is full, so an under-declared entry is TRUNCATED
+  // rather than overflowing. Before the streaming size check, this archive
+  // extracted "successfully" as a 10-byte fragment of a real document, with
+  // nothing reporting that the archive had lied. The old guard tested
+  // `byteLength > declared`, which by that same property could never be true.
+  it("rejects an entry that inflates past the size its header declares", () => {
+    expect(() => extractZipEntries(forgeUnderDeclared(2_000_000, 10))).toThrow(
+      /dishonest header|inflates to more than/i,
+    );
+  });
+
+  it("still extracts an archive whose headers are honest", () => {
+    const archive = buildZip({
+      "msa.docx": Uint8Array.from({ length: 5000 }, (_, i) => (i * 7 + (i % 13) * 31) % 251),
+      "a.pdf": Uint8Array.from({ length: 800 }, (_, i) => (i * 11 + (i % 7) * 17) % 251),
+    });
+    const entries = extractZipEntries(archive);
+    expect(entries.map((e) => `${e.filename}:${e.size_bytes}`)).toEqual([
+      "a.pdf:800",
+      "msa.docx:5000",
+    ]);
+  });
+});
+
 describe("extractZipEntries", () => {
   it("extracts every .pdf and .docx entry", () => {
     const archive = buildZip({
@@ -200,16 +237,24 @@ describe("extractZipEntries", () => {
     expect(() => extractZipEntries(archive)).toThrow(ArchiveTooLargeError);
   });
 
-  it("an under-declaring header never yields more bytes than it declared (harden-determinism-guards)", () => {
-    // Craft an archive whose headers lie small: 100,000 real bytes declared
-    // as 1,000. The declared-size budget in the filter is attacker-
-    // controlled data, so the extraction must be bounded by MEASURED
-    // production: fflate stops inflating at the declared size, and the
-    // post-inflate honesty check pins that invariant so a library upgrade
-    // that starts trusting the stream over the header fails here loudly.
+  it("rejects an under-declaring header instead of silently truncating (harden-determinism-guards)", () => {
+    // 100,000 real bytes declared as 1,000. `unzipSync` sizes the output
+    // buffer from the DECLARED size and inflate stops when it is full, so the
+    // old behavior was to hand back a 1,000-byte fragment of the document and
+    // report success — the archive lied and nothing said so. This test used to
+    // pin that truncation as the invariant ("never yields more bytes than it
+    // declared"), which is true but is the wrong guarantee: bounded allocation
+    // is necessary, silent corruption is not acceptable. The streaming size
+    // check now catches the lie and rejects the archive.
     const real = 100_000;
     const declared = 1_000;
-    const zip = Buffer.from(new Uint8Array(buildZip({ "doc.pdf": new Uint8Array(real).fill(65) })));
+    const zip = Buffer.from(
+      new Uint8Array(
+        buildZip({
+          "doc.pdf": Uint8Array.from({ length: real }, (_, i) => (i * 7 + (i % 13) * 31) % 251),
+        }),
+      ),
+    );
     let patched = 0;
     for (let i = 0; i + 4 <= zip.length; i++) {
       if (zip.readUInt32LE(i) === real) {
@@ -218,12 +263,15 @@ describe("extractZipEntries", () => {
       }
     }
     expect(patched).toBeGreaterThanOrEqual(2); // local header + central directory
-    const entries = extractZipEntries(
-      zip.buffer.slice(zip.byteOffset, zip.byteOffset + zip.byteLength) as ArrayBuffer,
-    );
-    expect(entries).toHaveLength(1);
-    // Never past the declared ceiling — allocation is bounded by it.
-    expect(entries[0]!.size_bytes).toBeLessThanOrEqual(declared);
+    const archive = zip.buffer.slice(
+      zip.byteOffset,
+      zip.byteOffset + zip.byteLength,
+    ) as ArrayBuffer;
+    expect(() => extractZipEntries(archive)).toThrow(ArchiveTooLargeError);
+    // The memory-safety half of the original invariant still holds: the
+    // verifier aborts the moment an entry out-runs its declaration, so nothing
+    // ever buffers more than the header allowed.
+    expect(() => extractZipEntries(archive)).toThrow(/inflates to more than|dishonest header/i);
   });
 
   it("produces a deterministic order regardless of zip producer order", () => {
