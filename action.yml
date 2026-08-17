@@ -23,7 +23,7 @@ inputs:
     required: false
     default: ""
   format:
-    description: "Output format(s). analyze: comma list of json,sarif,html,md,csv (default sarif). compare: json|markdown (default markdown). Leave empty to take each command's default."
+    description: "Output format(s). analyze: comma list of json,sarif,html,md,csv,docx-comments (default sarif). compare: json|markdown (default markdown). Leave empty to take each command's default."
     required: false
     default: ""
   fail-on:

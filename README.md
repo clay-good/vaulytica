@@ -1117,8 +1117,12 @@ npm run citation:check -- --reachability   # + network sweep
 | `analyze` flag | Meaning |
 |---|---|
 | `--playbook <id>` | force a specific playbook instead of auto-matching |
-| `--format <list>` | comma list of `json,sarif,html,md,csv` (default `json`) |
+| `--format <list>` | comma list of `json,sarif,html,md,csv,docx-comments` (default `json`) |
 | `--out <dir>` | write one file per document per format (else stdout for a single file/format) |
+| `--role <name>` | resolve the playbook's negotiation positions from the named party's side |
+| `--deal-value <n>` | resolve value-banded negotiation positions against this deal size |
+| `--as-text` | read each input as plain text, skipping format sniffing |
+| `--certificate` | also emit a reproducibility certificate for the run |
 | `--fail-on <sev>` | exit non-zero (code 2) when any finding is at or above `critical\|warning\|info` |
 | `--playbook-file <p>` `--posture` | classify the playbook's `negotiation_positions` per document; over a bundle, also reports cross-document posture coherence (the binding floor + divergent fronts) |
 | `--fail-on-divergence` | exit non-zero (code 2) when any posture front diverges across the bundle (requires `--posture`) |
@@ -1348,8 +1352,8 @@ The suite proves *behavior*; coverage proves the suite *reaches the code*. Measu
 
 | Metric | Measured | Floor | Metric | Measured | Floor |
 |---|---:|---:|---|---:|---:|
-| Lines | 88.8% | 85% | Functions | 88.3% | 85% |
-| Statements | 86.6% | 83% | Branches | 74.4% | 70% |
+| Lines | 93.7% | 91% | Functions | 92.8% | 90% |
+| Statements | 92.2% | 90% | Branches | 81.1% | 78% |
 
 Floors are **regression-only** — set a couple points under the measured value (headroom for cross-platform drift), they fail the build on a *drop*, never block on an aspiration. A ratchet raises them as coverage climbs; branches (the lowest) is the next ratchet target. Same measure-first discipline the [v5 accuracy scoreboard](docs/v5/methodology.md) uses for precision/recall — publish the real number, gate against regression, never against a fabricated target.
 

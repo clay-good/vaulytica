@@ -83,6 +83,44 @@ describe("README rule counts", () => {
   });
 
   /**
+   * The README's coverage table quotes both the measured figures and the
+   * enforced floors. The floors are machine-checkable against the config that
+   * actually enforces them, and they had drifted ~8 points apart: the table
+   * said 85/85/70/83 while real coverage had climbed to the low 90s, so the
+   * "regression gate" would not have fired until coverage fell off a cliff.
+   * The measured column stays trust-on-write (only a coverage run produces
+   * it), but it must at least sit above its own floor.
+   */
+  it("quotes the coverage floors vitest.config.ts actually enforces", () => {
+    const config = readFileSync(join(root, "vitest.config.ts"), "utf8");
+    const enforced = Object.fromEntries(
+      [...config.matchAll(/^\s*(lines|functions|branches|statements):\s*(\d+),/gm)].map((m) => [
+        m[1]!,
+        Number(m[2]!),
+      ]),
+    );
+    expect(Object.keys(enforced).sort()).toEqual(["branches", "functions", "lines", "statements"]);
+    // The table packs two metrics per row, so the cells are matched wherever
+    // they sit rather than anchored to the start of a line.
+    const rows = [
+      ...readme.matchAll(
+        /\|\s*(Lines|Functions|Statements|Branches)\s*\|\s*([\d.]+)%\s*\|\s*(\d+)%/g,
+      ),
+    ];
+    const quoted = new Map(
+      rows.map((m) => [m[1]!.toLowerCase(), { measured: Number(m[2]!), floor: Number(m[3]!) }]),
+    );
+    for (const metric of ["lines", "functions", "branches", "statements"]) {
+      const row = quoted.get(metric);
+      expect(row, `README coverage table has no ${metric} row`).toBeDefined();
+      expect(row!.floor, `${metric} floor disagrees with vitest.config.ts`).toBe(enforced[metric]);
+      expect(row!.measured, `${metric} measured sits below its own floor`).toBeGreaterThan(
+        row!.floor,
+      );
+    }
+  });
+
+  /**
    * The suite size is quoted twice — the badge line and the verify block — and
    * both had aged to "6,014" against a suite of 6,450. Unlike a rule count it
    * cannot be read off a live array here: deriving it means collecting every

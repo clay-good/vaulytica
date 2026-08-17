@@ -251,4 +251,43 @@ describe("extractParties", () => {
       false,
     );
   });
+  // The assertions above mostly use `.find(...)` or `.toContain(...)`, which
+  // cannot see a PHANTOM party — an extra entry alongside the right ones. Two
+  // such phantoms were shipping, both on fixtures this file already used. The
+  // tests below assert the EXACT list, which is the only shape that catches
+  // them.
+
+  it("registers a comma-suffixed legal name once, not twice", () => {
+    // "…and Globex Industries, Inc., a New York corporation" — the between-
+    // preamble capture stopped at the comma before the suffix and registered
+    // "Globex Industries" under a different key than the full name, so one
+    // company became two parties and the phantom carried no role.
+    const parties = extractParties(
+      buildTree([
+        "Preamble",
+        'This Agreement is made between Acme Corp., a Delaware corporation ("Provider"), and Globex Industries, Inc., a New York corporation ("Customer").',
+      ]),
+    );
+    expect(parties.map((p) => [p.name, p.role])).toEqual([
+      ["Acme Corp", "Provider"],
+      ["Globex Industries, Inc", "Customer"],
+    ]);
+  });
+
+  it("reads a two-column signature block as exactly its two signers", () => {
+    // The leading-label strip took the whole rest of the line, so the second
+    // signer's own "By:" field came along as part of the first signer's name.
+    const parties = extractParties(buildTree(["Signatures", "By: Jane Roe          By: John Doe"]));
+    expect(parties.map((p) => p.name)).toEqual(["Jane Roe", "John Doe"]);
+  });
+
+  it("keeps a signer whose name is longer than the field cap", () => {
+    // `SIGNATURE_FIELD` caps a captured name at five words, so this column was
+    // skipped by that path entirely; with the leading-strip path swallowing
+    // the rest of the line, the signer appeared nowhere as a clean party.
+    const parties = extractParties(
+      buildTree(["Signatures", "By: Maria De La Cruz Fernandez Ibanez          By: John Doe"]),
+    );
+    expect(parties.map((p) => p.name)).toEqual(["Maria De La Cruz Fernandez Ibanez", "John Doe"]);
+  });
 });

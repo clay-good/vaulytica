@@ -31,16 +31,21 @@ export default defineConfig({
         "src/**/*.d.ts",
       ],
       reporter: ["text-summary", "json-summary", "html"],
-      // Floors (regression-only) — set a couple points under the first
-      // measured baseline (statements 85.53 · branches 72.35 · functions
-      // 87.12 · lines 87.52, measured 2026-06-05), leaving headroom for
-      // cross-platform drift (the gate runs on ubuntu/Node-22 CI). A ratchet
-      // raises these as coverage climbs; they only ever fail on a *drop*.
+      // Floors (regression-only) — set a couple points under the measured
+      // baseline (statements 92.22 · branches 81.06 · functions 92.80 ·
+      // lines 93.73, measured 2026-08-17), leaving headroom for cross-platform
+      // drift (the gate runs on ubuntu/Node-22 CI). A ratchet raises these as
+      // coverage climbs; they only ever fail on a *drop*. Ratcheted here from
+      // 85/85/70/83, which were a couple points under the FIRST baseline
+      // (2026-06-05) and had been left ~8 points behind ever since — a floor
+      // that far under the real number stops being a regression gate.
+      // README's coverage table quotes these; mutation-scope.test.ts pins the
+      // two together.
       thresholds: {
-        lines: 85,
-        functions: 85,
-        branches: 70,
-        statements: 83,
+        lines: 91,
+        functions: 90,
+        branches: 78,
+        statements: 90,
       },
     },
   },

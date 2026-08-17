@@ -64,7 +64,25 @@ const PARTY_DECL = new RegExp(
   "g",
 );
 
-const BETWEEN_RE = /\bbetween\s+(.+?)\s+and\s+(.+?)(?:[.;,]|$)/gi;
+/**
+ * The suffix forms a legal name carries after a comma ("Globex Industries,
+ * Inc."). Shared by `BETWEEN_RE`'s terminator and `BARE_ENTITY_SUFFIX` so the
+ * two cannot disagree about what counts as a suffix.
+ */
+const LEGAL_SUFFIX = String.raw`l\.?p\.?|l\.?l\.?c\.?|inc\.?|corp\.?|corporation|co\.?|ltd\.?|limited|llp|pllc|gmbh|a\.?g\.?|plc|s\.?a\.?|sarl|n\.?v\.?|b\.?v\.?|pty`;
+
+/**
+ * A comma does NOT end the second party when it is the comma that separates a
+ * legal name from its own suffix. Stopping there captured "Globex Industries"
+ * out of "…and Globex Industries, Inc., a New York corporation", which
+ * registered under a different key than the full name `PARTY_DECL` captures —
+ * so one company became TWO parties, the second roleless. Party-tallying rules
+ * (RISK-002) count that phantom.
+ */
+const BETWEEN_RE = new RegExp(
+  String.raw`\bbetween\s+(.+?)\s+and\s+(.+?)(?:[.;]|,(?!\s*(?:${LEGAL_SUFFIX})(?![A-Za-z]))|$)`,
+  "gi",
+);
 
 /**
  * A THREE-OR-MORE party preamble is introduced with "among", not "between":
@@ -100,8 +118,7 @@ const AMONG_RE = /\bamong\s+((?:[^.;\n]|\.(?!\s|$)|\.(?=\s+(?:and\s|["“(])))+)
 // list separates the suffix from the name with a comma ("Alpha Holdings, L.P.")
 // and `AMONG_SEP` splits on that comma. The name (e.g. "Alpha Holdings") is kept
 // on its own; the bare "L.P." / "LLC" fragment is not a party.
-const BARE_ENTITY_SUFFIX =
-  /^(?:l\.?p\.?|l\.?l\.?c\.?|inc\.?|corp\.?|corporation|co\.?|ltd\.?|limited|llp|pllc|gmbh|a\.?g\.?|plc|s\.?a\.?|sarl|n\.?v\.?|b\.?v\.?|pty)$/i;
+const BARE_ENTITY_SUFFIX = new RegExp(`^(?:${LEGAL_SUFFIX})$`, "i");
 
 /**
  * Split an "among" party list into members. Consumes the Oxford / non-Oxford
@@ -419,7 +436,16 @@ export function extractParties(tree: DocumentTree): Party[] {
   for (let i = sigStart; i < allText.length; i += 1) {
     const { text, pos } = allText[i]!;
     if (SIGNATURE_LINE.test(text)) {
-      const after = text.replace(SIGNATURE_LINE, "").trim();
+      // Only the FIRST label is stripped, so on a two-column block the rest of
+      // the line — including the second signer's own "By:" field — came along
+      // and registered as one party named "Jane Roe By: John Doe". Cut at the
+      // next label so this path yields just its own column's name. That also
+      // recovers a signer whose name is too long for `SIGNATURE_FIELD`'s
+      // five-word cap, which otherwise skipped the column entirely.
+      const after = text
+        .replace(SIGNATURE_LINE, "")
+        .replace(/\s+(?:By|Name|Title|Date)\s*:.*$/i, "")
+        .trim();
       if (after && /[A-Z]/.test(after) && !/^_+$/.test(after)) {
         const name = cleanPartyName(after);
         if (name) {
