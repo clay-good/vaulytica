@@ -106,6 +106,20 @@ const RELEASE_RULES: Rule[] = [
       /claims?\s+of\s+(?:any|every)\s+(?:kind|nature|character|description)/i,
       /now\s+known\s+or\s+(?:hereafter|hereinafter|later|subsequently)\s+(?:arising|discovered|existing|known)/i,
     ],
+    // Express-denial guard: the scope phrases ("any and all claims", "known or
+    // unknown claims") appear just as readily in a sentence that REFUSES the
+    // release, and one present match short-circuits a presence rule. A
+    // settlement stating it releases nothing — the opposite of the broad
+    // release this rule looks for — scored clean, while one merely silent on
+    // scope fired.
+    denied_if: [
+      /\b(?:shall|will|does|do|may|can|is|are)\s+not\s+releas\w+\b[^.]{0,60}?\b(?:any\s+and\s+all|each\s+and\s+every|known\s+or\s+unknown)?\s*claims?/i,
+      /\bno\s+claims?\b[^.]{0,40}?\b(?:are|is)\s+(?:hereby\s+)?released/i,
+      /\b(?:reserves?|retains?|preserves?)\b[^.]{0,40}?\ball\s+claims?/i,
+    ],
+    denied_title: "Release of claims expressly withheld",
+    denied_description:
+      "The document states that it does NOT release the claims, or expressly reserves them. A settlement whose release is withheld does not buy the peace the payment is made for — a harder failure than leaving the scope unstated.",
   }),
   presence({
     id: "SET-003",

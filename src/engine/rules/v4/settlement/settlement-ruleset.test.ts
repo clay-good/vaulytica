@@ -451,3 +451,48 @@ describe("SET-005 / SET-013 — passive and construal-limited disclaimers", () =
     ).toBe(true);
   });
 });
+
+/**
+ * Express-denial guard. SET-002's scope phrases ("any and all claims", "known
+ * or unknown claims") appear just as readily in a sentence that REFUSES the
+ * release, and one present-pattern match short-circuits a presence rule — so a
+ * settlement releasing nothing scored clean, while one merely silent on scope
+ * fired. A withheld release does not buy the peace the payment is made for.
+ */
+describe("SET-002 — release of claims expressly withheld", () => {
+  const run = async (text: string) => {
+    const res = await runEngine({
+      rules: SETTLEMENT_RULES,
+      ctx: withPb(buildContext(["Release", text]), RELEASE_PB),
+      source_file: SRC,
+    });
+    return res.findings.filter((f) => f.rule_id === "SET-002").map((f) => f.title);
+  };
+
+  it.each([
+    [
+      "does not release",
+      "This Agreement does not release any and all claims, whether known or unknown.",
+    ],
+    [
+      "reserves",
+      "Releasor reserves all claims against the Released Parties notwithstanding this Agreement.",
+    ],
+  ])("%s is reported as a denial, not as compliance", async (_form, text) => {
+    expect(await run(text)).toEqual(["Release of claims expressly withheld"]);
+  });
+
+  it("mere silence still reports the scope clause as missing", async () => {
+    expect(await run("The parties agree to settle the dispute for $50,000.")).toEqual([
+      "Scope-of-release clause missing",
+    ]);
+  });
+
+  it("the compliant broad release stays silent", async () => {
+    expect(
+      await run(
+        "Releasor releases any and all claims, known or unknown claims, arising from the dispute.",
+      ),
+    ).toEqual([]);
+  });
+});

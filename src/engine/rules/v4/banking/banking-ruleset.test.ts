@@ -325,3 +325,50 @@ describe("BNK-051 — notes that disclaim a cognovit clause (v1.2.0)", () => {
     ).toBe(true);
   });
 });
+
+/**
+ * Express-denial guard (same class as INS-012 / CON-030 / IPL-005). BNK-023's
+ * bare "waive" pattern also matches inside a sentence refusing the waiver, and
+ * one present-pattern match short-circuits a presence rule — so a guaranty in
+ * which the guarantor KEEPS its suretyship defenses scored clean, while one
+ * merely silent on the point fired. Preserved defences are what let a release,
+ * modification, or impairment of collateral discharge the guarantor, which is
+ * the whole risk the waiver removes.
+ */
+describe("BNK-023 — suretyship defenses expressly preserved", () => {
+  const run = async (text: string) => {
+    const res = await runEngine({
+      rules: BANKING_RULES,
+      ctx: withPb(buildContext(["Guaranty", text]), GTY_PB),
+      source_file: SRC,
+    });
+    return res.findings.filter((f) => f.rule_id === "BNK-023").map((f) => f.title);
+  };
+
+  it.each([
+    [
+      "does not waive",
+      "Guarantor does not waive any suretyship defenses, including release, modification, or impairment of collateral.",
+    ],
+    [
+      "reserves",
+      "Guarantor reserves all suretyship defenses notwithstanding any release or modification of the collateral.",
+    ],
+  ])("%s is reported as a denial, not as compliance", async (_form, text) => {
+    expect(await run(text)).toEqual(["Suretyship defenses expressly preserved"]);
+  });
+
+  it("mere silence still reports the waiver as missing", async () => {
+    expect(await run("Guarantor guarantees payment of the Obligations when due.")).toEqual([
+      "Suretyship-defenses waiver missing",
+    ]);
+  });
+
+  it("the compliant waiver stays silent", async () => {
+    expect(
+      await run(
+        "Guarantor waives all suretyship defenses, including release, modification, and impairment of collateral.",
+      ),
+    ).toEqual([]);
+  });
+});

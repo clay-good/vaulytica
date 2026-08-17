@@ -588,6 +588,7 @@ const GUARANTY_RULES: Rule[] = [
   }),
   presence({
     id: "BNK-023",
+    version: "1.1.0",
     name: "Suretyship defenses waived",
     description:
       "Institutional guaranties waive common-law suretyship defenses (release / modification / impairment of collateral).",
@@ -604,6 +605,21 @@ const GUARANTY_RULES: Rule[] = [
       /(defenses?|suretyship)/i,
       /(release|modification|impairment\s+of\s+collateral)/i,
     ],
+    // Express-denial guard (same class as INS-012 / CON-030 / IPL-005): the
+    // bare "waive" pattern also matches inside a sentence REFUSING the waiver,
+    // and one present match short-circuits a presence rule. A guaranty stating
+    // the guarantor keeps its suretyship defenses — which is precisely what
+    // makes the guaranty unenforceable on the lender's terms — scored clean,
+    // while a guaranty merely silent on the point fired.
+    denied_if: [
+      /\b(?:shall|will|does|do|may|can|is|are)\s+not\s+waiv\w+\b[^.]{0,60}?\b(?:defenses?|suretyship)/i,
+      /\bno\s+waiver\s+of\s+(?:any\s+)?(?:suretyship\s+)?defenses?/i,
+      /\b(?:reserves?|retains?|preserves?)\b[^.]{0,40}?\b(?:all\s+|any\s+|its\s+)?(?:suretyship\s+)?defenses?/i,
+      /\b(?:defenses?|suretyship\s+defenses?)\b[^.]{0,40}?\b(?:are|is)\s+not\s+waived/i,
+    ],
+    denied_title: "Suretyship defenses expressly preserved",
+    denied_description:
+      "The guaranty states that the guarantor does NOT waive — or expressly reserves — its suretyship defenses. That is the opposite of the waiver this rule looks for: release, modification, or impairment of collateral would then discharge the guarantor, which is the risk the waiver exists to remove.",
   }),
   presence({
     id: "BNK-024",
