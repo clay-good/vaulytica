@@ -19,6 +19,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { LAUNCH_RULES, V3_RULES, V4_RULES } from "../../src/engine/index.js";
+import { ALL_CONSISTENCY_RULES } from "../../src/engine/consistency/rules/index.js";
 
 const root = process.cwd();
 const readme = readFileSync(join(root, "README.md"), "utf8");
@@ -89,5 +90,20 @@ describe("landing-page rule counts", () => {
       `${LAUNCH_RULES.length} rules at launch across ten categories — ${V3_RULES.length} more in v3, ` +
         `${V4_RULES.length} more in v4 (${total.toLocaleString("en-US")} in`,
     );
+  });
+});
+
+describe("architecture-diagram rule counts", () => {
+  const architecture = readFileSync(join(root, "docs", "architecture.md"), "utf8");
+
+  it("quotes the live launch set and catalog total", () => {
+    const total = LAUNCH_RULES.length + V3_RULES.length + V4_RULES.length;
+    expect(architecture).toContain(
+      `${LAUNCH_RULES.length} launch · ${total.toLocaleString("en-US")} total rules`,
+    );
+  });
+
+  it("quotes the live cross-document check count", () => {
+    expect(architecture).toContain(`+ ${ALL_CONSISTENCY_RULES.length} cross-document checks`);
   });
 });
