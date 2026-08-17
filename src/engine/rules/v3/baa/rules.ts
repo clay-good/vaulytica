@@ -239,7 +239,7 @@ export const BAA_RULES: Rule[] = [
 
   presence({
     id: "BAA-010",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Return or destruction at termination",
     description:
       "BA must, at termination, return or destroy all PHI received from, or created on behalf of, the covered entity.",
@@ -262,6 +262,23 @@ export const BAA_RULES: Rule[] = [
     present_patterns: [
       /(return\s+or\s+destroy|destroy\s+or\s+return|return\s+or\s+destruction|destruction\s+of\s+PHI|destroy\s+(?:all|the|such)\s+PHI)/i,
     ],
+    // Express-denial guard. § 164.504(e)(2)(ii)(J) requires return or
+    // destruction of PHI at termination; "Business Associate need not return
+    // or destroy PHI" uses the same words the requirement does, so the BAA
+    // that keeps PHI indefinitely read as compliant while one merely silent
+    // was flagged.
+    denied_if: [
+      // Same carve-out guard: § 164.504(e)(2)(ii)(J) itself contemplates
+      // retention where return or destruction is INFEASIBLE, and legal-hold
+      // language uses the identical "not required to return" phrasing.
+      /\b(?:need\s+not|shall\s+not|will\s+not|is\s+not\s+required\s+to|does\s+not\s+(?:have\s+to)?)\s+(?:return|destroy)\b(?![^.]{0,90}\b(?:applicable\s+law|by\s+law|required\s+by\s+law|legal\s+(?:hold|obligation|requirement)|retention\s+(?:schedule|requirement)|infeasible)\b)[^.]{0,60}?\bPHI/i,
+      /\bno\s+obligation\s+to\s+(?:return|destroy)\b/i,
+      /\bPHI\b[^.]{0,40}?\b(?:need\s+not|shall\s+not)\s+be\s+(?:returned|destroyed)/i,
+      /\bmay\s+retain\s+(?:all\s+|any\s+)?PHI\s+(?:indefinitely|permanently)/i,
+    ],
+    denied_title: "Return-or-destruction of PHI expressly excused",
+    denied_description:
+      "The BAA states that the business associate need not return or destroy PHI at termination. \u00a7 164.504(e)(2)(ii)(J) requires return or destruction where feasible, and permits indefinite retention only with the infeasibility recital plus continuing protections \u2014 an outright excusal leaves PHI with a former vendor under no ongoing obligation.",
   }),
 
   presence({
@@ -896,7 +913,7 @@ export const BAA_RULES: Rule[] = [
 
   presence({
     id: "BAA-043",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Survival of HIPAA obligations after termination",
     description: "BAA should state that HIPAA-related obligations survive termination.",
     citation: "45 C.F.R. § 164.504(e)(2)(ii)(I)",
@@ -919,6 +936,17 @@ export const BAA_RULES: Rule[] = [
       // continue for as long as the Business Associate retains the PHI".
       /protections\s+of\s+this\s+(?:BAA|Agreement)\s+(?:continue|survive|remain)/i,
     ],
+    // Express-denial guard: "do not survive termination" names survival, the
+    // very concept the rule looks for, so a BAA whose HIPAA obligations lapse
+    // at termination scored clean.
+    denied_if: [
+      /\b(?:do|does|shall|will)\s+not\s+surviv\w+/i,
+      /\bno\s+(?:obligations?|provisions?)\s+(?:shall\s+)?surviv\w+/i,
+      /\bterminate\s+(?:in\s+full|entirely|completely)\s+upon\s+termination/i,
+    ],
+    denied_title: "Survival of HIPAA obligations expressly denied",
+    denied_description:
+      "The BAA states that the business associate's obligations do NOT survive termination. Confidentiality, the return-or-destruction duty, and breach reporting all have to outlive the agreement; a clause ending them at termination is worse than one that leaves survival unstated.",
     default_severity: "warning",
   }),
 

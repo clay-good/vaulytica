@@ -28,6 +28,14 @@ const DENIALS: [string, string][] = [
   ["BAA-007", "Business Associate shall not make any amendment of PHI upon request."],
   ["BAA-008", "Business Associate maintains no accounting of disclosures."],
   ["BAA-009", "Business Associate does not make its books and records available to the Secretary."],
+  [
+    "BAA-010",
+    "Business Associate need not return or destroy PHI upon termination of this Agreement.",
+  ],
+  [
+    "BAA-043",
+    "The obligations of Business Associate under this Agreement do not survive termination of this Agreement.",
+  ],
 ];
 
 const DECOYS: string[] = [
@@ -38,12 +46,20 @@ const DECOYS: string[] = [
   "Business Associate may not disclose PHI without appropriate safeguards in place.",
   "Failure to provide an accounting of disclosures in any single instance is not permitted.",
   "The books and records provision does not affect any separate audit right.",
+  // § 164.504(e)(2)(ii)(J) itself contemplates retention where return or
+  // destruction is INFEASIBLE, and legal-hold language uses the identical
+  // "not required to return/destroy" phrasing. Neither is a denial.
+  "If return or destruction is infeasible, Business Associate shall extend the protections of this Agreement to such PHI.",
+  "Business Associate shall return or destroy all PHI, except where it is not required to destroy PHI under applicable law.",
 ];
 
 const fired = (text: string): string[] =>
   BAA_RULES.filter((r) => {
     const f = r.check(buildContext(["Business Associate Agreement", text]));
-    return f !== null && /disclaim|denied/i.test(f.title);
+    // "excused" joins the vocabulary with BAA-010; the missing-clause titles
+    // in this pack use none of these words, so the filter still proves that
+    // `denied_if` is what matched rather than the ordinary absence branch.
+    return f !== null && /disclaim|denied|excused/i.test(f.title);
   }).map((r) => r.id);
 
 /**

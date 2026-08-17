@@ -254,3 +254,46 @@ describe("USDPA-015 — deletion-or-return recognizes 'destroy or return' (v1.1.
     ).toBe(true);
   });
 });
+
+/**
+ * USDPA-015 read an express excusal of the deletion-or-return duty as
+ * compliance: "Processor is not required to delete or return Personal Data"
+ * uses the same words the requirement does, and a single present-pattern match
+ * clears a presence rule. Every US state processor statute requires deletion or
+ * return on the controller's direction, so the excusal is a substantive failure
+ * rather than a drafting gap.
+ */
+describe("USDPA-015 — deletion-or-return expressly excused", () => {
+  const titles = (text: string): string[] => {
+    const rule = DPA_US_STATE_RULES.find((r) => r.id === "USDPA-015")!;
+    const f = rule.check(buildContext(["Data Processing Addendum", text]));
+    return f ? [f.title] : [];
+  };
+
+  it("reports a blanket excusal as a denial", () => {
+    expect(
+      titles(
+        "Processor is not required to delete or return Personal Data at the end of the provision of services.",
+      ),
+    ).toEqual(["Deletion-or-return expressly excused"]);
+  });
+
+  it("still reports the clause missing on silence", () => {
+    expect(titles("Processor shall process personal data on documented instructions.")).toEqual([
+      "Deletion-or-return clause missing",
+    ]);
+  });
+
+  it.each([
+    [
+      "At Controller's direction, Processor shall delete or return all Personal Data at the end of the provision of services.",
+    ],
+    // The legal-retention carve-out uses the identical "not required to
+    // delete" phrasing and is lawful, standard drafting.
+    [
+      "Processor shall delete or return all Personal Data at the end of the services, except copies it is not required to delete under applicable law.",
+    ],
+  ])("stays silent on compliant drafting: %s", (text) => {
+    expect(titles(text)).toEqual([]);
+  });
+});

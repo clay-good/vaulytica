@@ -28,6 +28,7 @@ const DENIALS: [string, string][] = [
     "Processor is not required to obtain prior written authorisation before engaging a subprocessor.",
   ],
   ["DPA-017", "Subprocessors are not bound by the same data protection obligations."],
+  ["DPA-024", "Processor is not required to notify Controller of any personal data breach."],
 ];
 
 const DECOYS: string[] = [
@@ -43,7 +44,10 @@ const DECOYS: string[] = [
 const denied = (text: string): string[] =>
   DPA_GDPR_RULES.filter((r) => {
     const f = r.check(buildContext(["Data Processing Agreement", text]));
-    return f !== null && /disclaim|denied/i.test(f.title);
+    // "excused" joins the vocabulary with DPA-024. The missing-clause titles in
+    // this pack use none of these words, so the filter still proves it was
+    // `denied_if` that matched, not the ordinary absence branch.
+    return f !== null && /disclaim|denied|excused/i.test(f.title);
   }).map((r) => r.id);
 
 /**

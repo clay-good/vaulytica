@@ -534,7 +534,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "DPA-024",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Processor breach notice to controller (Art. 33(2))",
     description:
       "Processor must notify the controller without undue delay after becoming aware of a personal data breach.",
@@ -556,6 +556,18 @@ export const DPA_GDPR_RULES: Rule[] = [
       /(personal\s+data\s+breach|breach\s+of\s+personal\s+data|data\s+breach).{0,160}(notif\w+|inform\w*|(?:give|provide)[sd]?\s+notice)/is,
       /(notif\w+|inform\w*|(?:give|provide)[sd]?\s+notice).{0,80}(controller).{0,80}(breach|incident)/is,
     ],
+    // Express-denial guard: a refusal names the same notification duty the
+    // requirement does. Art. 33(2) has no exception, so a processor that
+    // declines to notify leaves the controller unable to meet its own 72-hour
+    // deadline under Art. 33(1).
+    denied_if: [
+      /\b(?:is|are)\s+not\s+(?:required|obligated|obliged)\s+to\s+(?:notify|inform)\b/i,
+      /\b(?:shall|will|does|do)\s+not\s+(?:notify|inform)\b[^.]{0,60}?\b(?:controller|breach)/i,
+      /\bno\s+(?:obligation|duty)\s+to\s+(?:notify|inform)\b/i,
+    ],
+    denied_title: "Processor breach notification expressly excused",
+    denied_description:
+      "The DPA states that the processor is not required to notify the controller of a personal data breach. Art. 33(2) admits no exception, and without notice the controller cannot meet its own 72-hour obligation under Art. 33(1).",
   }),
   presence({
     id: "DPA-025",

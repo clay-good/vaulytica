@@ -316,7 +316,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
   }),
   presence({
     id: "USDPA-015",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Multi-state: deletion or return",
     description:
       "Processor must delete or return personal data at end of services at controller's direction.",
@@ -333,6 +333,22 @@ export const DPA_US_STATE_RULES: Rule[] = [
       // pattern reported those documents as missing the clause.
       /(?:(?:delet\w*|destroy\w*|destruct\w*)\s+or\s+return\w*|return\w*\s+or\s+(?:delet\w*|destroy\w*|destruct\w*)).{0,80}(personal\s+(data|information)|end\s+of\s+(?:the\s+)?(?:provision\s+of\s+)?services)/is,
     ],
+    // Express-denial guard: the refusal names the same deletion-or-return duty
+    // the requirement does. Every US state processor statute requires it at
+    // the end of the services, so an excusal is a substantive failure, not a
+    // gap in drafting.
+    denied_if: [
+      // Not a LEGAL-RETENTION carve-out. "except copies it is not required to
+      // delete under applicable law" is standard, lawful drafting, and an
+      // unguarded frame accused it.
+      /\b(?:is|are)\s+not\s+(?:required|obligated|obliged)\s+to\s+(?:delete|destroy|return)\b(?![^.]{0,90}\b(?:applicable\s+law|by\s+law|required\s+by\s+law|legal\s+(?:hold|obligation|requirement)|retention\s+(?:schedule|requirement)|infeasible)\b)/i,
+      /\b(?:shall|will|does|do)\s+not\s+(?:delete|destroy|return)\b[^.]{0,60}?\bpersonal\s+data/i,
+      /\bno\s+(?:obligation|duty)\s+to\s+(?:delete|destroy|return)\b/i,
+      /\bmay\s+retain\s+(?:all\s+)?personal\s+data\s+(?:indefinitely|permanently)/i,
+    ],
+    denied_title: "Deletion-or-return expressly excused",
+    denied_description:
+      "The agreement states that the processor is not required to delete or return personal data at the end of the services. Every US state processor statute requires deletion or return on the controller's direction; excusing it leaves personal data with a former vendor indefinitely.",
   }),
   presence({
     id: "USDPA-016",
