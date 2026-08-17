@@ -1,16 +1,35 @@
 {
   "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
-  "_comment": "spec-v7 Step 123 — mutation testing. Scoped first to the highest-value pure extractors (dates, amounts); a separate, slow, on-demand/scheduled job, never the per-push gate. Expand the mutate set as the score is established.",
+  "_comment": "spec-v7 Step 123 \u2014 mutation testing. Scoped to the highest-value pure extractors; a separate, slow, on-demand/scheduled job, never the per-push gate. `mutate` and the `include` list in vitest.mutation.config.ts MUST stay in step \u2014 a file listed here whose tests are not included there reports 0% with every mutant NoCoverage. tests/integration/mutation-scope.test.ts asserts they agree.",
   "testRunner": "vitest",
-  "vitest": { "configFile": "vitest.mutation.config.ts" },
+  "vitest": {
+    "configFile": "vitest.mutation.config.ts"
+  },
   "coverageAnalysis": "perTest",
-  "mutate": ["src/extract/dates.ts", "src/extract/amounts.ts"],
-  "reporters": ["clear-text", "json", "html"],
-  "htmlReporter": { "fileName": "reports/mutation/index.html" },
-  "jsonReporter": { "fileName": "reports/mutation/mutation.json" },
+  "mutate": [
+    "src/extract/dates.ts",
+    "src/extract/amounts.ts",
+    "src/extract/crossrefs.ts",
+    "src/extract/sections.ts"
+  ],
+  "reporters": [
+    "clear-text",
+    "json",
+    "html"
+  ],
+  "htmlReporter": {
+    "fileName": "reports/mutation/index.html"
+  },
+  "jsonReporter": {
+    "fileName": "reports/mutation/mutation.json"
+  },
   "timeoutMS": 60000,
   "concurrency": 4,
   "tempDirName": ".stryker-tmp",
-  "_thresholds_comment": "Regression-only (spec-v7 Step 124): break a couple points under the measured baseline (56.16% on dates+amounts, 2026-08-17); never an aspiration. Runs only in the scheduled/on-demand mutation workflow, not the per-push gate. Ratchet up as survivors are killed. History: baseline 51.26% (2026-06-05) with break 48; the extractors then grew (postfix currencies, fiscal quarters, composite $, new date anchors) without matching tests and the score DECAYED to 47.59, breaking the gate — covering the three then-untested features (trailing currency words, day-month-year dates, the deferred currency override) took it to 56.16.",
-  "thresholds": { "high": 80, "low": 55, "break": 54 }
+  "_thresholds_comment": "Regression-only (spec-v7 Step 124): break a couple points under the measured baseline; never an aspiration. Runs only in the scheduled/on-demand mutation workflow, not the per-push gate. Ratchet up as survivors are killed. CURRENT baseline 52.34% over dates+amounts+crossrefs+sections (1,433 mutants), 2026-08-17, break 50. NOTE the number went DOWN from 56.16 when the scope widened from 2 files to 4 \u2014 the bar did not drop, the surface grew: crossrefs (42.86%) and sections (51.92%) came in below the older pair. Compare scores only within the same `mutate` set. History: 51.26% baseline (2026-06-05, dates+amounts, break 48); decayed to 47.59 and BROKE the gate as those two files grew without matching tests; covering three then-untested features (trailing currency words, day-month-year dates, the deferred currency override) took the pair to 56.16; scope then widened to four files.",
+  "thresholds": {
+    "high": 80,
+    "low": 55,
+    "break": 50
+  }
 }

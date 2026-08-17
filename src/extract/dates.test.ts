@@ -330,3 +330,50 @@ describe("extractDates — day-month-year form", () => {
     expect(hit!.iso).toBeUndefined();
   });
 });
+
+/**
+ * A bare two-digit year is resolved against a century pivot (70): `< 70` is
+ * 20xx, `>= 70` is 19xx. The whole branch was uncovered — the pivot could be
+ * moved, or the century arithmetic inverted, without a single failure. These
+ * pin both sides and the boundary itself.
+ */
+describe("extractDates — two-digit year century pivot", () => {
+  const isoFor = (text: string) =>
+    extractDates(buildTree(["Dates", text]))
+      .filter((d) => d.type === "absolute")
+      .map((d) => d.iso);
+
+  it.each([
+    ["12/31/26", "2026-12-31"],
+    ["01/02/69", "2069-01-02"],
+    ["01/02/70", "1970-01-02"],
+    ["06/15/99", "1999-06-15"],
+  ])("resolves %s to %s", (written, iso) => {
+    expect(isoFor(`Due on ${written} without fail.`)).toContain(iso);
+  });
+
+  it("leaves a four-digit year untouched by the pivot", () => {
+    expect(isoFor("Due on 01/02/2069 without fail.")).toContain("2069-01-02");
+  });
+});
+
+/**
+ * Spelled-out counts ("ninety days", "one hundred twenty days") go through
+ * `parseWordNumber`, whose accumulate/multiply-by-hundred branches and
+ * unrecognized-word path were all uncovered.
+ */
+describe("extractDates — spelled-out relative counts", () => {
+  const daysFor = (text: string) => {
+    const rel = extractDates(buildTree(["Term", text])).filter((d) => d.type === "relative");
+    return rel.map((d) => d.offset_days);
+  };
+
+  it.each([
+    ["ninety (90) days", 90],
+    ["thirty days", 30],
+    ["one hundred twenty days", 120],
+    ["forty-five days", 45],
+  ])("reads %s as %d days", (phrase, days) => {
+    expect(daysFor(`Notice must be given ${phrase} after the Effective Date.`)).toContain(days);
+  });
+});

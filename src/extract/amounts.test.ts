@@ -260,3 +260,22 @@ describe("extractAmounts — deferred currency override", () => {
     expect(hits[0]!.currency).toBe("USD");
   });
 });
+
+/**
+ * A range records its span so the later single-amount passes cannot
+ * double-count an endpoint. "between $50,000 and $100,000 USD" is one range,
+ * not a range plus a separate $100,000 — the trailing-currency pass would
+ * otherwise re-read the upper bound. That suppression branch was uncovered.
+ */
+describe("extractAmounts — a range endpoint is not re-counted", () => {
+  it("does not emit the upper bound again when it carries a trailing currency", () => {
+    const amounts = extractAmounts(
+      buildTree(["Fees", "The fee is between $50,000 and $100,000 USD per year."]),
+    );
+    const numeric = amounts.filter((a) => !a.word_form);
+    expect(numeric).toHaveLength(1);
+    expect(numeric[0]!.amount).toBe("50000");
+    expect(numeric[0]!.range_max).toBe("100000");
+    expect(numeric[0]!.currency).toBe("USD");
+  });
+});
