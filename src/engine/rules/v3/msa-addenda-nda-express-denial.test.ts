@@ -155,7 +155,13 @@ const denied = (rules: Rule[], text: string): string[] =>
       // "declined" joins the vocabulary with MSA-011. None of the
       // missing-clause titles in these packs use these words, so the filter
       // still proves it was `denied_if` that matched.
-      return f !== null && /disclaim|denied|declined/i.test(f.title);
+
+      // Every denial title in these packs is phrased "… expressly <verb>", and
+      // no missing-clause title uses that word — so this proves the finding
+      // came from `denied_if` rather than the ordinary absence branch. A
+      // vocabulary filter (/disclaim|denied|…/) did NOT: ADDENDA-014's missing
+      // title is "AI hallucination DISCLAIMER … missing", which leaked in.
+      return f !== null && /\bexpressly\b/i.test(f.title);
     })
     .map((r) => r.id);
 

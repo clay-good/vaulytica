@@ -184,19 +184,36 @@ function untilTopicShift(text: string): string {
 }
 
 /**
- * The whole sentence containing `index` — the backward half of the sentence
- * bound the forward window already applies. A "." starts a new sentence only
- * when followed by whitespace + a capital/digit, so "Inc." and "$2.5" do not
- * split it.
+ * The offset just past the sentence boundary preceding `index`, using the same
+ * abbreviation-aware rule as the forward scans: a "." ends a sentence only when
+ * followed by whitespace + a capital or digit. `lastIndexOf(".")` would stop at
+ * any period at all, including the one in "$2.5 million".
+ *
+ * Residual limitation, shared with every sentence bound in this codebase: an
+ * abbreviation followed by a CAPITALISED word ("Acme Corp. LLC") is
+ * indistinguishable from a sentence end by this rule, so a bound taken there
+ * starts late. Tightening it means treating a real sentence that ends in
+ * "… Acme Inc." as continuing, which trades a false negative for a false
+ * positive — the worse direction here.
  */
-function enclosingSentence(text: string, index: number): string {
+function sentenceStartBefore(text: string, index: number): number {
   const boundary = /\.(?=\s+[A-Z0-9])/g;
   let start = 0;
   let m: RegExpExecArray | null;
   while ((m = boundary.exec(text)) !== null && m.index < index) {
     start = m.index + 1;
   }
-  const rest = text.slice(start);
+  return start;
+}
+
+/**
+ * The whole sentence containing `index` — the backward half of the sentence
+ * bound the forward window already applies. A "." starts a new sentence only
+ * when followed by whitespace + a capital/digit, so "Inc." and "$2.5" do not
+ * split it.
+ */
+function enclosingSentence(text: string, index: number): string {
+  const rest = text.slice(sentenceStartBefore(text, index));
   const end = rest.search(/\.(?=\s+[A-Z0-9]|\s*$)/);
   return end === -1 ? rest : rest.slice(0, end + 1);
 }
@@ -711,7 +728,14 @@ function exceptionClauses(text: string, triggerRe: RegExp): string[] {
     }
     // Judge continuation on the whole sentence, not just the text after the
     // trigger — the marker usually sits before it ("It ALSO shall not apply").
-    const sentenceStart = text.lastIndexOf(".", m.index) + 1;
+    //
+    // The backward scan has to use the same abbreviation-aware boundary as
+    // every other sentence bound in this file. A plain `lastIndexOf(".")`
+    // stops at any period, including one inside "Acme Corp." or "$2.5
+    // million" sitting between the marker and the trigger — which starts the
+    // window AFTER the marker, so the continuation is not seen and a real
+    // carveout is silently dropped.
+    const sentenceStart = sentenceStartBefore(text, m.index);
     if (CARVEOUT_CONTINUATION.test(text.slice(sentenceStart, m.index + clause.length))) {
       out.push(clause);
     }

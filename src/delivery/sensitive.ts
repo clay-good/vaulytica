@@ -60,7 +60,16 @@ export function scanSensitive(text: string): SensitiveFact[] {
     masked: string,
     raw: string,
   ): void => {
-    const key = `${type}:${raw.toLowerCase().replace(/[^a-z0-9@.]/g, "")}`;
+    // Digit-based types carry pure formatting noise — "123-45-6789" and
+    // "123456789" are one SSN — so they normalize by stripping separators.
+    // An email must NOT: `+`, `_`, `%` and `-` are significant in a local
+    // part, and stripping them merged user+tag@example.com with
+    // usertag@example.com. That reintroduced, one layer down, the very
+    // under-count that keying on the raw value instead of the masked value
+    // was added to fix.
+    const normalized =
+      type === "email" ? raw.toLowerCase() : raw.toLowerCase().replace(/[^a-z0-9@.]/g, "");
+    const key = `${type}:${normalized}`;
     if (seen.has(key)) return;
     const perType = out.filter((f) => f.type === type).length;
     if (perType >= MAX_PER_TYPE) return;

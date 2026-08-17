@@ -408,3 +408,27 @@ describe("sensitive: distinct values sharing a mask are counted separately", () 
     for (const f of facts) expect(f.masked).toContain("*");
   });
 });
+
+/**
+ * The dedup key normalizes away formatting noise so one value is counted once.
+ * For digit types that is right — "123-45-6789" and "123456789" are one SSN.
+ * For an email it is not: `+`, `_`, `%` and `-` are significant in a local
+ * part, and stripping them merged two distinct addresses into one. That is the
+ * same under-count that keying on the RAW value (rather than the masked value)
+ * was introduced to fix, reappearing one layer down — in a scan whose whole
+ * job is to say how many addresses a document exposes.
+ */
+describe("scanSensitive — distinct emails are not merged by the dedup key", () => {
+  it.each([
+    ["plus tag", "Contact user+tag@example.com or usertag@example.com for details."],
+    ["underscore", "Reach first_last@example.com and firstlast@example.com now."],
+    ["dot", "Write to a.b@example.com or ab@example.com today."],
+  ])("%s: counts both addresses", (_label, text) => {
+    expect(scanSensitive(text).filter((f) => f.type === "email")).toHaveLength(2);
+  });
+
+  it("still counts one SSN written two ways as a single value", () => {
+    const facts = scanSensitive("SSN 123-45-6789 also written 123456789.");
+    expect(facts.filter((f) => f.type === "ssn")).toHaveLength(1);
+  });
+});

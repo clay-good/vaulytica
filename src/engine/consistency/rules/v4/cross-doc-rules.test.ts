@@ -1097,6 +1097,28 @@ describe("cap and carveout scans do not absorb a neighbouring clause", () => {
     expect(run.findings[0]!.description).toContain("confidentiality");
   });
 
+  it("CROSS-CARVEOUT-001 sees a continuation marker past a decimal figure", async () => {
+    // The backward scan for the continuation marker has to use the same
+    // abbreviation-aware sentence rule as the forward scans. A plain
+    // `lastIndexOf(".")` stopped at the "." in "$2.5 million", starting the
+    // window after the marker — so a genuine second carveout was dropped.
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Limitation of Liability",
+      "Each party's aggregate liability shall not exceed the Fees, except for gross negligence. It also, in addition to the $2.5 million cyber policy, shall not apply to fraud.",
+    ]);
+    const dpa = makeDoc("dpa", "dpa-controller-processor", [
+      "Limitation of Liability",
+      "Each party's aggregate liability shall not exceed the Fees, except for gross negligence.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_CARVEOUT_001],
+      documents: [msa, dpa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(1);
+    expect(run.findings[0]!.description).toContain("fraud");
+  });
+
   it("CROSS-CARVEOUT-001 still reads a semicolon-separated carveout list in full", async () => {
     const msa = makeDoc("msa", "msa-vendor-deep", [
       "Limitation of Liability",
