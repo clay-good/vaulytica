@@ -440,9 +440,20 @@ export function confidentialitySurvival(doc: ConsistencyDocument): {
   // Term, a lookback window) can't be read as the survival period. Match a
   // number of years OR months, tolerating the "three (3) years" drafting form
   // (grab the parenthetical digit) as well as a plain "3 years"/"18 months".
-  const survIdx = found.text.search(/\bsurviv\w+/i);
-  const tail = survIdx >= 0 ? found.text.slice(survIdx) : found.text;
-  const ym = tail.match(/(\d+)\s*\)?\s*(years?|months?)\b/i);
+  //
+  // The scan needs the same bound on its right edge. Sliced open-ended to the
+  // end of the paragraph, a survival sentence that states no period at all
+  // ("shall survive termination as set forth herein.") ran on into the next,
+  // unrelated sentence and reported ITS figure — an audit-records retention
+  // period became the confidentiality survival term.
+  //
+  // Every "surviv…" mention gets its own bounded sentence, because the first
+  // one is routinely the section heading ("Survival. The confidentiality
+  // obligations … shall survive termination for three (3) years."): bounding
+  // from the heading alone yields just "Survival." and loses the real period.
+  // A sentence that never says "surviv…" is never scanned, so the unrelated
+  // neighbour still cannot contribute its figure.
+  const ym = firstSurvivalDuration(found.text);
   if (ym) {
     const n = Number(ym[1]);
     if (Number.isFinite(n) && n > 0) {
@@ -456,6 +467,24 @@ export function confidentialitySurvival(doc: ConsistencyDocument): {
         end: found.end,
       };
     }
+  }
+  return null;
+}
+
+/**
+ * The first year/month duration stated inside a sentence that mentions
+ * survival. Returns the regex match (group 1 = digits, group 2 = unit), or
+ * null when no survival sentence in the paragraph states a period.
+ */
+function firstSurvivalDuration(text: string): RegExpMatchArray | null {
+  const anchor = /\bsurviv\w+/gi;
+  let m: RegExpExecArray | null;
+  while ((m = anchor.exec(text)) !== null) {
+    const rest = text.slice(m.index);
+    const sentenceEnd = rest.search(/\.(?=\s+[A-Z0-9]|\s*$)/);
+    const sentence = sentenceEnd === -1 ? rest : rest.slice(0, sentenceEnd + 1);
+    const ym = sentence.match(/(\d+)\s*\)?\s*(years?|months?)\b/i);
+    if (ym) return ym;
   }
   return null;
 }

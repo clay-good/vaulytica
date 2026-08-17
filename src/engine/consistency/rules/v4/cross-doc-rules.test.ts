@@ -1035,3 +1035,64 @@ describe("cap and carveout scans do not absorb a neighbouring clause", () => {
     expect(run.findings[0]!.description).toContain("confidentiality");
   });
 });
+
+describe("CROSS-SURVIVAL-001 reads only the survival sentence", () => {
+  it("does not borrow a later sentence's retention period", async () => {
+    // The MSA's survival clause states no period at all; the next sentence
+    // sets a 7-year records-retention period. Scanning to the end of the
+    // paragraph reported that as the confidentiality survival term.
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Confidentiality",
+      "The confidentiality obligations of this Agreement shall survive termination as set forth herein. Separately, the parties agree to retain financial audit records for a period of seven (7) years following termination.",
+    ]);
+    const dpa = makeDoc("dpa", "dpa-controller-processor", [
+      "Confidentiality",
+      "The confidentiality obligations shall survive termination for a period of five (5) years.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_SURVIVAL_001],
+      documents: [msa, dpa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+  });
+
+  it("still fires on a genuine 3-year vs 5-year conflict", async () => {
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Confidentiality",
+      "The confidentiality obligations shall survive termination for a period of three (3) years.",
+    ]);
+    const dpa = makeDoc("dpa", "dpa-controller-processor", [
+      "Confidentiality",
+      "The confidentiality obligations shall survive termination for a period of five (5) years.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_SURVIVAL_001],
+      documents: [msa, dpa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(1);
+    expect(run.findings[0]!.title).toContain("3 year(s)");
+  });
+
+  it("reads the period when the paragraph opens with a 'Survival.' heading", async () => {
+    // The first "surviv…" match is the heading, whose own sentence is just
+    // "Survival." — bounding on it alone loses the real period two words later
+    // and silently drops a genuine conflict.
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Survival",
+      "Survival. The confidentiality obligations in this Agreement shall survive termination for a period of three (3) years.",
+    ]);
+    const dpa = makeDoc("dpa", "dpa-controller-processor", [
+      "Survival",
+      "Survival. The confidentiality obligations shall survive termination for a period of five (5) years.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_SURVIVAL_001],
+      documents: [msa, dpa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(1);
+    expect(run.findings[0]!.title).toContain("3 year(s)");
+  });
+});
