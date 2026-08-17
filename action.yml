@@ -23,9 +23,9 @@ inputs:
     required: false
     default: ""
   format:
-    description: "Output format(s). analyze: comma list of json,sarif,html,md,csv (default sarif). compare: json|markdown."
+    description: "Output format(s). analyze: comma list of json,sarif,html,md,csv (default sarif). compare: json|markdown (default markdown). Leave empty to take each command's default."
     required: false
-    default: "sarif"
+    default: ""
   fail-on:
     description: "Exit non-zero when a finding (analyze) — or an introduced finding (compare) — is at or above this severity: critical|warning|info. Empty = never fail."
     required: false
@@ -84,6 +84,14 @@ runs:
             exit 1
           fi
           args+=("$FILES")
+        fi
+        # `sarif` is the analyze-only default (it is what gets uploaded to code
+        # scanning); compare accepts json|markdown and rejects sarif outright,
+        # so passing the default through to compare failed every run. Leave the
+        # flag off for compare unless the caller asked for a format explicitly,
+        # letting each subcommand apply its own default.
+        if [ -z "$FORMAT" ] && [ "$CMD" != "compare" ]; then
+          FORMAT="sarif"
         fi
         [ -n "$FORMAT" ] && args+=(--format "$FORMAT")
         [ -n "$PLAYBOOK" ] && args+=(--playbook "$PLAYBOOK")

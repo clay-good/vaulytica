@@ -98,6 +98,18 @@ describe("action.yml (GitHub composite Action)", () => {
       expect(action.inputs[input]).toBeDefined();
     }
     expect(action.inputs.command!.default).toBe("analyze");
-    expect(action.inputs.format!.default).toBe("sarif");
+    // `format` defaults to empty, not "sarif": sarif is analyze-only, and
+    // handing it to `compare` (which takes json|markdown) made the action
+    // fail on every run. The step below re-applies the sarif default for
+    // every command except compare, so analyze's behavior is unchanged.
+    expect(action.inputs.format!.default).toBe("");
+  });
+
+  it("applies the sarif default to analyze but never to compare", () => {
+    const runs = action.runs.steps.map((s) => s.run ?? "").join("\n");
+    expect(runs).toContain('if [ -z "$FORMAT" ] && [ "$CMD" != "compare" ]; then');
+    expect(runs).toContain('FORMAT="sarif"');
+    // An explicitly-supplied format is still forwarded for either command.
+    expect(runs).toContain('[ -n "$FORMAT" ] && args+=(--format "$FORMAT")');
   });
 });
