@@ -978,6 +978,44 @@ describe("cap and carveout scans do not absorb a neighbouring clause", () => {
     expect(run.findings[0]!.title).not.toContain("$9,000,000");
   });
 
+  it("CROSS-AMOUNT-001 ignores the insurance figure when the cap PRECEDES the anchor", async () => {
+    // The forward-only window is empty here (the cap sits ahead of "aggregate
+    // liability"), so the read widens — but it must still stop at the topic
+    // shift. Widening to the whole paragraph reintroduced the original bug.
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Limitation of Liability",
+      "The sum of $500,000 shall be the maximum aggregate liability of either party under this Agreement, exclusive of the $5,000,000 of cyber insurance coverage separately maintained by Vendor.",
+    ]);
+    const sow = makeDoc("sow", "sow", [
+      "Limitation of Liability",
+      "The sum of $500,000 shall be the maximum aggregate liability of either party under this Agreement.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_AMOUNT_001],
+      documents: [msa, sow],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+  });
+
+  it("CROSS-AMOUNT-001 still reads a cap stated ahead of its anchor", async () => {
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Limitation of Liability",
+      "The sum of $2,000,000 shall be the maximum aggregate liability of either party.",
+    ]);
+    const sow = makeDoc("sow", "sow", [
+      "Limitation of Liability",
+      "The sum of $500,000 shall be the maximum aggregate liability of either party.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_AMOUNT_001],
+      documents: [msa, sow],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(1);
+    expect(run.findings[0]!.title).toContain("$2,000,000");
+  });
+
   it("CROSS-INDEMNITY-001 ignores an amount the cap is stated to be exclusive of", async () => {
     const msa = makeDoc("msa", "msa-vendor-deep", [
       "Indemnification",

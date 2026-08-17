@@ -174,16 +174,22 @@ const DOLLAR_AMOUNT_RE = /\$\s*([\d,]+(?:\.\d+)?)\s*(billion|bn|million|thousand
  * carve-out is "exclusive of" — and that figure won, so two documents stating
  * the same cap were reported as conflicting.
  */
+const CAP_TOPIC_SHIFT =
+  /\b(?:except|exclusive\s+of|other\s+than|provided\s*,?\s*(?:that|however)|separately|in\s+addition\s+to)\b/i;
+
+/** Everything up to the first connective that shifts the subject away from the cap. */
+function untilTopicShift(text: string): string {
+  const shift = text.search(CAP_TOPIC_SHIFT);
+  return shift === -1 ? text : text.slice(0, shift);
+}
+
 function capAmountWindow(text: string, anchorIndex: number): string {
   const rest = text.slice(anchorIndex);
   // A "." ends the sentence only before whitespace + a capital/digit, so
   // "Section 14." and "$2.5" are not boundaries.
   const sentenceEnd = rest.search(/\.(?=\s+[A-Z0-9]|\s*$)/);
   const bounded = sentenceEnd === -1 ? rest : rest.slice(0, sentenceEnd + 1);
-  const shift = bounded.search(
-    /\b(?:except|exclusive\s+of|other\s+than|provided\s*,?\s*(?:that|however)|separately|in\s+addition\s+to)\b/i,
-  );
-  return shift === -1 ? bounded : bounded.slice(0, shift);
+  return untilTopicShift(bounded);
 }
 
 /** The largest `$` amount in `text`, scaled by its magnitude suffix; 0 if none. */
@@ -208,12 +214,18 @@ function maxDollarAmount(text: string): number {
 
 /**
  * The cap amount for a paragraph anchored at `anchorIndex`: read from the cap
- * window, falling back to the whole paragraph when the window holds no figure
- * (a cap stated ahead of its anchor must still be found).
+ * window, widening when that window holds no figure — a cap is often stated
+ * AHEAD of its anchor ("The sum of $500,000 shall be the maximum aggregate
+ * liability …"), leaving the forward-only window empty.
+ *
+ * The widened read still stops at the first topic shift. Falling back to the
+ * whole paragraph reintroduced the very bug the window exists to prevent: with
+ * the cap ahead of the anchor and an insurance figure behind it, the fallback
+ * fired and took the insurance figure as the cap.
  */
 function capAmountFrom(text: string, anchorIndex: number): number {
   const windowed = maxDollarAmount(capAmountWindow(text, anchorIndex));
-  return windowed > 0 ? windowed : maxDollarAmount(text);
+  return windowed > 0 ? windowed : maxDollarAmount(untilTopicShift(text));
 }
 
 export function firstLiabilityCap(doc: ConsistencyDocument): {
