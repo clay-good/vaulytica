@@ -58,6 +58,48 @@ describe("detectV3Family", () => {
     expect(d.confidence).toBeGreaterThan(0);
   });
 
+  // A single weight-1 phrase used to be enough to name a specific family and
+  // suggest its playbook, and "Service Provider" — the ordinary vendor-role
+  // label in any MSA — carried weight 2 with no privacy context at all. So an
+  // ordinary commercial MSA was routed to a Certificate of Insurance, a deep
+  // NDA, or (at 0.5 confidence, above the module's own "faint" threshold) the
+  // CCPA service-provider playbook.
+  it.each([
+    [
+      "routine insurance covenant",
+      "This Master Services Agreement governs the Services. Supplier shall maintain insurance with a carrier providing coverage of $1,000,000 per occurrence. Fees are due net 30.",
+    ],
+    [
+      "routine IP representation mentioning trade secrets",
+      "This Master Services Agreement governs the Services. Supplier represents the Deliverables do not infringe any patents, copyrights, or trade secrets of a third party. Fees are due net 30.",
+    ],
+  ])("does not name a v3 family for a plain MSA with a %s", (_label, text) => {
+    const d = detectV3Family(emptyExtracted(), text);
+    expect(d.family).toBe("unknown");
+    expect(d.suggested_playbook).toBeNull();
+  });
+
+  it("does not route a plain MSA to the CCPA playbook on a bare Service Provider definition", () => {
+    const ext = emptyExtracted({
+      "Service Provider": "means Acme Corp, the party providing the Services under this Agreement.",
+    });
+    const text =
+      "This Master Services Agreement governs the Services provided by the Service Provider to Customer. Fees are due net 30.";
+    const d = detectV3Family(ext, text);
+    expect(d.family).not.toBe("dpa-us-state");
+    expect(d.suggested_playbook).not.toBe("dpa-ccpa-service-provider");
+  });
+
+  it("still detects a genuine CCPA service-provider addendum at full confidence", () => {
+    const ext = emptyExtracted({ "Service Provider": "has the meaning given in the CCPA." });
+    const text =
+      "California Consumer Privacy Act Service Provider Addendum. Service Provider shall not sell or share personal information and shall not retain it for any purpose other than the business purpose.";
+    const d = detectV3Family(ext, text);
+    expect(d.family).toBe("dpa-us-state");
+    expect(d.suggested_playbook).toBe("dpa-ccpa-service-provider");
+    expect(d.confidence).toBe(1);
+  });
+
   it("flags a DPA-EU when Controller + Processor are defined and Article 28 cited", () => {
     const ext = emptyExtracted({
       Controller: "the party that determines the purposes and means of processing.",

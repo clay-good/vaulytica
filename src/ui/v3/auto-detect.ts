@@ -89,7 +89,15 @@ export function detectV3Family(extracted: ExtractedData, body_text: string): V3D
     if (score > best.score) best = { family: c.family, signals: c.signals, score };
   }
 
-  if (best.score < 1) {
+  // Two points, not one. Several detectors award weight 1 for a phrase that is
+  // ordinary outside their family, so a single one used to be enough to name a
+  // specific family and suggest its playbook: a routine "maintain insurance
+  // with a carrier providing coverage" covenant in an MSA was detected as a
+  // Certificate of Insurance, and a routine "does not infringe any trade
+  // secrets" IP representation as a deep NDA. A weight-1 signal is
+  // corroboration; it takes either a strong signal or two weak ones to name a
+  // family.
+  if (best.score < 2) {
     return { family: "unknown", suggested_playbook: null, confidence: 0, signals: [] };
   }
 
@@ -223,14 +231,22 @@ function detectDpaUsState(extracted: ExtractedData, text: string): DetectionSign
   for (const { term } of extracted.definitions.entries) {
     if (/service\s+provider/i.test(term)) serviceProvider = true;
   }
-  if (serviceProvider) {
+  const ccpa = /\bCCPA\b|\bCalifornia\s+Consumer\s+Privacy\b/.test(text);
+  const statute = /\b1798\.140\b|\b1798\.100\b|\b59\.1-579\b|\b6-1-1305\b/.test(text);
+  // "Service Provider" is the ordinary vendor-role label in a commercial MSA,
+  // so on its own it says nothing about privacy. Standing alone at weight 2 it
+  // tied with the "Master Services Agreement" title signal and — because ties
+  // were broken by declaration order — WON, routing a plain MSA with no
+  // privacy content to the CCPA service-provider playbook at 0.5 confidence.
+  // It counts only as corroboration for a real privacy signal.
+  if (serviceProvider && (ccpa || statute)) {
     out.push({ source: "definition", evidence: "Service Provider defined", weight: 2 });
   }
-  if (/\bCCPA\b|\bCalifornia\s+Consumer\s+Privacy\b/.test(text)) {
+  if (ccpa) {
     out.push({ source: "phrase", evidence: "CCPA reference", weight: 2 });
   }
   // State statute citations
-  if (/\b1798\.140\b|\b1798\.100\b|\b59\.1-579\b|\b6-1-1305\b/.test(text)) {
+  if (statute) {
     out.push({ source: "phrase", evidence: "US state privacy statute cited", weight: 2 });
   }
   return out;

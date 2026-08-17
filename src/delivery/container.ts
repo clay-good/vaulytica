@@ -387,15 +387,29 @@ function decodePdfHex(h: string): string {
 
 /* ------------------------------ helpers ------------------------------- */
 
-/** Decode the handful of XML entities OOXML uses, trim, and bound length. */
+const XML_ENTITY: Record<string, string> = {
+  amp: "&",
+  lt: "<",
+  gt: ">",
+  quot: '"',
+  apos: "'",
+};
+
+/**
+ * Decode the handful of XML entities OOXML uses, trim, and bound length.
+ *
+ * ONE pass, not a chain of `.replace` calls. Decoding `&amp;` first and the
+ * others after double-decodes: `&amp;lt;` — the correct encoding of the four
+ * literal characters a reviewer typed as `&lt;` — became `&lt;` after the
+ * first step and then `<` after the second, so the comment shown in the
+ * pre-disclosure report said something the document did not. A single pass
+ * consumes each entity exactly once, so a decoded `&` can never be re-read as
+ * the start of another entity.
+ */
 function clean(value: string | undefined): string | undefined {
   if (value === undefined) return undefined;
   const decoded = value
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&apos;/g, "'")
+    .replace(/&(amp|lt|gt|quot|apos);/g, (whole, name: string) => XML_ENTITY[name] ?? whole)
     .replace(/\s+/g, " ")
     .trim();
   return decoded.length > 0 ? decoded.slice(0, 400) : undefined;

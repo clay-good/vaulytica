@@ -47,6 +47,27 @@ All notable changes to this project will be documented in this file. Format adap
   **without** OFAC screening", "this policy does not **apply to** OFAC
   screening by third parties" — is not read as a denial. Golden churn is
   `result_hash` only across all 99 v4 fixtures: zero finding-level changes.
+- **An ordinary commercial MSA is no longer auto-detected as an unrelated v3
+  document family.** A single weight-1 signal was enough to name a specific
+  family and suggest its playbook, so a routine "maintain insurance with a
+  carrier providing coverage" covenant detected a Certificate of Insurance, and
+  a routine "does not infringe any trade secrets" IP representation detected a
+  deep NDA. Separately, "Service Provider" — the ordinary vendor-role label in
+  any MSA — scored weight 2 with no privacy content required, which tied with
+  the "Master Services Agreement" title signal and won on declaration order:
+  a plain MSA was routed to the CCPA service-provider playbook at 0.5
+  confidence, above the module's own "faint" threshold, which would have
+  switched on the entire US-state-privacy chip row. Naming a family now takes
+  either a strong signal or two weak ones, and the vendor-role definition
+  counts only as corroboration for a real privacy signal. A genuine CCPA
+  addendum still detects at full confidence.
+- **The pre-disclosure report no longer mis-decodes XML entities in recovered
+  comment, tracked-change, and metadata text.** The decoder ran a chain of
+  replacements with `&amp;` first, which decodes twice: file bytes `&amp;lt;` —
+  the correct encoding of the four characters a reviewer typed as `&lt;` —
+  became `&lt;` after the first step and then a live `<` after the second, so
+  the report showed text the document did not contain. It now decodes in a
+  single pass, consuming each entity exactly once.
 - **Dropping a second document while an analysis is running no longer shows a
   report for the wrong file.** Nothing checked whether an analysis was already
   in flight, so a second drop started a concurrent pipeline; both finished and
