@@ -14,6 +14,7 @@
 import type { Rule } from "../../../finding.js";
 import {
   buildV4PresenceRule,
+  expressDenial,
   buildV4LanguageRule,
   type V4PresenceSpec,
   type V4LanguageSpec,
@@ -363,7 +364,7 @@ const LOAN_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "BNK-013",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Reg Z disclosures (consumer loans only)",
     description:
       "Consumer-purpose loans must include TILA / Reg Z disclosures (APR, finance charge, amount financed, total of payments).",
@@ -391,6 +392,10 @@ const LOAN_AGREEMENT_RULES: Rule[] = [
       /(regulation\s+z|tila|truth\s+in\s+lending)/i,
     ],
     default_severity: "warning",
+    denied_if: expressDenial(String.raw`regulation\s+z|truth\s+in\s+lending|tila\s+disclosures?`),
+    denied_title: "TILA / Regulation Z disclosures expressly disclaimed",
+    denied_description:
+      "The document states that Regulation Z disclosures are not provided for a consumer-purpose loan. That is a Regulation Z violation exposing the lender to statutory damages.",
   }),
 ];
 
@@ -415,6 +420,7 @@ const SECURITY_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "BNK-015",
+    version: "1.1.0",
     name: "Granting clause — grant of security interest",
     description:
       "Security agreement must contain an operative granting clause creating the security interest.",
@@ -430,6 +436,16 @@ const SECURITY_AGREEMENT_RULES: Rule[] = [
       /(grants?|hereby\s+grants?|assigns?\s+and\s+grants?).{0,80}security\s+interest/is,
       /security\s+interest/i,
     ],
+    denied_if: [
+      ...expressDenial(String.raw`security\s+interest`),
+      // The granting clause names the secured party between the verb and the
+      // topic ("does not grant Secured Party any security interest"), which is
+      // one word more than the shared frames' gap allows.
+      /\b(?:do|does|shall|will)\s+not\s+grant\b[^.]{0,40}?security\s+interest/i,
+    ],
+    denied_title: "Grant of a security interest expressly denied",
+    denied_description:
+      "The document states that no security interest is granted in the collateral. Without a granting clause, attachment fails under UCC \u00a7 9-203 and the agreement creates no enforceable lien.",
   }),
   presence({
     id: "BNK-016",

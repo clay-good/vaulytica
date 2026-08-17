@@ -15,6 +15,7 @@
 import type { Rule } from "../../../finding.js";
 import {
   buildV4PresenceRule,
+  expressDenial,
   buildV4LanguageRule,
   type V4PresenceSpec,
   type V4LanguageSpec,
@@ -1085,6 +1086,7 @@ const SNDA_RULES: Rule[] = [
   }),
   presence({
     id: "RE-048",
+    version: "1.1.0",
     name: "Attornment by tenant",
     description: "Tenant attornment to the successor / foreclosure purchaser.",
     citation: rePractice(
@@ -1099,6 +1101,10 @@ const SNDA_RULES: Rule[] = [
       "The A in SNDA — tenant attorns to the successor landlord after foreclosure, accepting it as landlord.",
     recommendation: "Add 'Attornment' from tenant to lender / successor.",
     present_patterns: [/attorn/i],
+    denied_if: expressDenial(String.raw`attorn(?:s|ment|ed|ing)?`),
+    denied_title: "Tenant attornment expressly denied",
+    denied_description:
+      "The agreement states that Tenant will not attorn to the successor landlord. Without attornment the successor owner has no assurance the lease survives foreclosure.",
   }),
   presence({
     id: "RE-049",
@@ -1252,6 +1258,7 @@ const LEASE_ASSIGNMENT_RULES: Rule[] = [
   }),
   presence({
     id: "RE-056",
+    version: "1.1.0",
     name: "Assumption of obligations by assignee",
     description: "Assignee should expressly assume all tenant obligations under the lease.",
     citation: rePractice(
@@ -1266,6 +1273,12 @@ const LEASE_ASSIGNMENT_RULES: Rule[] = [
     recommendation:
       "Add 'Assumption' clause expressly assuming all tenant obligations from and after the effective date.",
     present_patterns: [/assumes?\s+all.{0,40}obligations/is, /assumption\s+of/i],
+    denied_if: expressDenial(
+      String.raw`assum(?:e|es|ed|ption\s+of)\s+(?:all\s+|any\s+)?(?:the\s+)?(?:tenant(?:'s)?\s+)?obligations`,
+    ),
+    denied_title: "Assignee's assumption of the lease obligations expressly denied",
+    denied_description:
+      "The assignment states that Assignee does not assume the tenant's lease obligations. Without an express assumption the landlord has no privity of contract with Assignee.",
   }),
   presence({
     id: "RE-057",

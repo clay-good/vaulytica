@@ -114,7 +114,10 @@ export type V4PresenceSpec = {
  */
 export function expressDenial(topic: string): RegExp[] {
   const t = `(?:${topic})`;
-  // Up to three filler words. The gap refuses to cross a conditional
+  // Up to three filler words — four was measured to be too many: "this
+  // Agreement shall not become effective until the REVOCATION PERIOD expires"
+  // (the compliant OWBPA drafting) then reads as a denial of the revocation
+  // right. The gap refuses to cross a conditional
   // connective ("...not onboard a customer WITHOUT OFAC screening") or a
   // scope verb ("this policy does not APPLY TO OFAC screening by third
   // parties"), because neither sentence denies that the clause exists.

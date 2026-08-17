@@ -14,6 +14,7 @@
 import type { Rule } from "../../../finding.js";
 import {
   buildV4PresenceRule,
+  expressDenial,
   buildV4LanguageRule,
   buildV4CompoundRule,
   type V4PresenceSpec,
@@ -1470,6 +1471,7 @@ const PARTNERSHIP_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-069",
+    version: "1.1.0",
     name: "Tax matters / partnership representative",
     description:
       "BBA partnership-audit rules require designation of a Partnership Representative (IRC § 6223).",
@@ -1487,6 +1489,10 @@ const PARTNERSHIP_RULES: Rule[] = [
       /tax\s+matters\s+partner/i,
       /section\s+6223/i,
     ],
+    denied_if: expressDenial(String.raw`partnership\s+representative|tax\s+matters\s+partner`),
+    denied_title: "Partnership Representative designation expressly denied",
+    denied_description:
+      "The agreement states that no Partnership Representative is designated. Under the BBA centralized audit regime the IRS will appoint one the partners cannot control.",
   }),
   language({
     id: "GOV-070",

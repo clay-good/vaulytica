@@ -4,6 +4,9 @@ import { HEALTHCARE_RULES } from "./healthcare/rules.js";
 import { PRIVACY_EXTENDED_RULES } from "./privacy-extended/rules.js";
 import { EMPLOYMENT_RULES } from "./employment/rules.js";
 import { SETTLEMENT_RULES } from "./settlement/rules.js";
+import { BANKING_RULES } from "./banking/rules.js";
+import { GOVERNANCE_RULES } from "./governance/rules.js";
+import { REAL_ESTATE_RULES } from "./real-estate/rules.js";
 import { buildContext } from "../../_test-fixtures.js";
 import type { Rule } from "../../finding.js";
 
@@ -12,6 +15,9 @@ const ALL: Rule[] = [
   ...PRIVACY_EXTENDED_RULES,
   ...EMPLOYMENT_RULES,
   ...SETTLEMENT_RULES,
+  ...BANKING_RULES,
+  ...GOVERNANCE_RULES,
+  ...REAL_ESTATE_RULES,
 ];
 const byId = (id: string): Rule => {
   const r = ALL.find((x) => x.id === id);
@@ -121,6 +127,62 @@ const CASES: [string, boolean, string][] = [
     "SET-008",
     false,
     "Protected Activity. This confidentiality clause does not apply to communications with government agencies regarding possible violations of law.",
+  ],
+  // BNK-015 — grant of security interest
+  [
+    "BNK-015",
+    true,
+    "Notwithstanding anything herein, Debtor does not grant Secured Party any security interest in the Collateral.",
+  ],
+  [
+    "BNK-015",
+    false,
+    "Grant of Security Interest. Debtor hereby grants Secured Party a security interest in the Collateral. The security interest granted hereunder does not include any Excluded Collateral.",
+  ],
+  [
+    "BNK-015",
+    false,
+    "Debtor grants a security interest in all accounts and inventory. Secured Party's failure to perfect its security interest does not affect the validity of the grant.",
+  ],
+  // BNK-013 — TILA / Reg Z
+  [
+    "BNK-013",
+    true,
+    "Borrower acknowledges that Lender does not provide Regulation Z disclosures in connection with this consumer loan.",
+  ],
+  [
+    "BNK-013",
+    false,
+    "Truth in Lending. Lender has delivered the Regulation Z disclosures, including the APR and finance charge. This Agreement does not apply Regulation Z requirements to any advance made for business purposes.",
+  ],
+  // GOV-069 — partnership representative
+  [
+    "GOV-069",
+    true,
+    "The Partnership does not designate a Partnership Representative for purposes of Section 6223 of the Internal Revenue Code.",
+  ],
+  [
+    "GOV-069",
+    false,
+    "Partnership Representative. The Members designate the Manager as the Partnership Representative under Section 6223. This designation does not apply to any tax year prior to the BBA regime.",
+  ],
+  // RE-048 — attornment
+  ["RE-048", true, "Tenant shall not attorn to Lender or any purchaser at a foreclosure sale."],
+  [
+    "RE-048",
+    false,
+    "Attornment. Tenant shall attorn to and recognize any successor landlord. Tenant's attornment obligation does not apply to a successor who acquires the Property by voluntary conveyance.",
+  ],
+  // RE-056 — assumption of obligations
+  [
+    "RE-056",
+    true,
+    "Assignee does not assume any obligations of Assignor arising under the Lease from and after the Effective Date.",
+  ],
+  [
+    "RE-056",
+    false,
+    "Assumption. Assignee assumes all obligations of Tenant under the Lease. Assignee's assumption of obligations does not apply to any obligation arising prior to the Effective Date.",
   ],
 ];
 

@@ -63,6 +63,20 @@ All notable changes to this project will be documented in this file. Format adap
   lawfulness of prior processing". Rules whose own presence patterns are
   themselves phrased as a negation were deliberately left alone. Golden churn is
   `result_hash` only: zero finding-level changes.
+- **Five more presence rules across banking, governance, and real estate now
+  catch the clause the document expressly denies.** BNK-015 (an agreement
+  stating no security interest is granted, so attachment fails under UCC
+  § 9-203 and there is no enforceable lien), BNK-013 (a consumer loan stating
+  Regulation Z disclosures are not provided), GOV-069 (an LLC agreement
+  designating no Partnership Representative, leaving the IRS to appoint one the
+  partners cannot control), and RE-048 / RE-056 (an SNDA where Tenant will not
+  attorn, or an assignment where Assignee assumes no lease obligations). Each is
+  paired with compliant decoys that must stay silent, including the "does not
+  apply to" scope carve-outs these documents use constantly. Rules whose
+  required clause is itself a waiver or a prohibition (INS-012 waiver of
+  subrogation, GOV-072 inurement, RE-046 subordination) were deliberately left
+  alone: there the negative IS the compliant drafting. Golden churn is
+  `result_hash` only.
 - **The party-role picker no longer scrolls the page sideways on a narrow
   phone.** A dropdown never wraps its option text and a `fieldset` defaults to
   `min-inline-size: min-content`, so a party role long enough to exceed the
