@@ -29,6 +29,7 @@
  * `deprecated: true` today, by design.
  */
 
+import { expressDenial } from "../../_helpers.js";
 import type { Finding, Rule, RuleContext } from "../../../finding.js";
 import { makeFinding } from "../../../finding.js";
 import { forEachParagraph } from "../../../../extract/walk.js";
@@ -181,6 +182,7 @@ export const MSA_DEEP_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "MSA-001",
+    version: "1.1.0",
     name: "Third-party IP infringement indemnity",
     description: "MSA must address third-party IP infringement indemnification.",
     citation: "Commercial drafting baseline — indemnification scope",
@@ -194,6 +196,12 @@ export const MSA_DEEP_RULES: Rule[] = [
       /(?:indemnif\w+).{0,200}(?:intellectual\s+property|infring\w+|IP\s+claim)/is,
     ],
     default_severity: "warning",
+    denied_if: expressDenial(
+      String.raw`(?:third.?party\s+)?(?:ip|intellectual\s+property)\s+(?:infringement\s+)?indemnit\w*|indemnif\w*[^.]{0,40}?infringement`,
+    ),
+    denied_title: "IP infringement indemnity expressly denied",
+    denied_description:
+      "The agreement states that the supplier does not indemnify the customer against third-party IP infringement claims, leaving the customer exposed to the claim it cannot defend.",
   }),
   presence({
     id: "MSA-002",
@@ -536,6 +544,7 @@ export const MSA_DEEP_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "MSA-016",
+    version: "1.1.0",
     name: "SLA referenced or attached",
     description: "MSA must reference or attach an SLA where the service is hosted.",
     citation: "Commercial drafting baseline — SLA reference",
@@ -547,6 +556,10 @@ export const MSA_DEEP_RULES: Rule[] = [
       "Reference an SLA (attached or linked) with uptime, support response, and remedy schedules.",
     present_patterns: [/(service\s+level\s+agreement|\bSLA\b|uptime|availability\s+commitment)/i],
     default_severity: "warning",
+    denied_if: expressDenial(String.raw`service\s+level\s+agreement|\bSLA\b|service\s+levels?`),
+    denied_title: "Service-level commitment expressly disclaimed",
+    denied_description:
+      "The agreement states that no service level applies. Without a committed service level the availability obligation is unenforceable.",
   }),
   language({
     id: "MSA-017",
@@ -582,7 +595,7 @@ export const MSA_DEEP_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "MSA-018",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Termination for material breach",
     description: "MSA must include termination for material breach with cure period.",
     citation: "Commercial drafting baseline — material-breach termination",
@@ -602,6 +615,10 @@ export const MSA_DEEP_RULES: Rule[] = [
       /(material\s+breach|materially\s+breach\w*|material\s+default|materially\s+default\w*).{0,160}(?:cure|notice|terminat)/is,
     ],
     default_severity: "warning",
+    denied_if: expressDenial(String.raw`terminat\w*[^.]{0,30}?material\s+breach|material\s+breach`),
+    denied_title: "Termination for material breach expressly denied",
+    denied_description:
+      "The agreement states that a party may not terminate for material breach, leaving it bound to a counterparty already in default.",
   }),
   presence({
     id: "MSA-019",
@@ -641,7 +658,7 @@ export const MSA_DEEP_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "MSA-021",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Data return / portability on termination",
     description: "MSA must address data return or portability on termination.",
     citation: "Commercial drafting baseline — data return",
@@ -663,6 +680,12 @@ export const MSA_DEEP_RULES: Rule[] = [
       /(data\s+portability|export\s+(?:in\s+)?(?:a\s+)?machine[- ]readable)/i,
     ],
     default_severity: "warning",
+    denied_if: expressDenial(
+      String.raw`data\s+(?:return|portability)|return\s+of\s+(?:customer\s+)?data|export\s+(?:of\s+)?(?:customer\s+)?data`,
+    ),
+    denied_title: "Data return / portability on termination expressly denied",
+    denied_description:
+      "The agreement states that customer data is not returned or exported on termination, which is the classic lock-in defect.",
   }),
 
   // ────────────────────────────────────────────────────────────────

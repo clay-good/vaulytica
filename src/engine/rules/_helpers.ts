@@ -334,7 +334,7 @@ export function expressDenial(topic: string): RegExp[] {
   // "allowed": "failure to file a SAR is not permitted" is a PROHIBITION of
   // the failure, i.e. the compliant drafting, not a denial of the clause.
   const done =
-    "(?:required|performed|conducted|maintained|provided|undertaken|implemented|applicable|filed|retained|kept|screened|collected|identified|obtained|established|withdrawn|revoked|honored|honoured|granted|issued|suspended|available|offered|encrypted|appointed|designated|reviewed|notified|exchanged|delivered|attached|bound)";
+    "(?:required|performed|conducted|maintained|provided|undertaken|implemented|applicable|filed|retained|kept|screened|collected|identified|obtained|established|withdrawn|revoked|honored|honoured|granted|issued|suspended|available|offered|encrypted|appointed|designated|reviewed|notified|exchanged|delivered|attached|bound|deleted|destroyed|returned)";
   // A conditional connective AFTER the topic turns the sentence into a
   // REQUIREMENT, not a denial: "may not engage a subcontractor WITHOUT a
   // written contract" demands the contract, it does not disclaim it. The gap's

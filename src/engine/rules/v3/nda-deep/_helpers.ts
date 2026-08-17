@@ -12,6 +12,7 @@ import type { SourceCitation } from "../../../../dkb/types.js";
 import { makeFinding } from "../../../finding.js";
 import { forEachParagraph, forEachSection } from "../../../../extract/walk.js";
 import type { DocPosition } from "../../../../extract/types.js";
+import { enclosingSentence } from "../../_helpers.js";
 
 const NDA_PLAYBOOKS_ALL = ["mutual-nda-deep", "unilateral-nda-deep"] as const;
 const NDA_PLAYBOOKS_MUTUAL = ["mutual-nda-deep"] as const;
@@ -89,6 +90,20 @@ export type NdaPresenceSpec = {
   recommendation: string;
   /** Regexes that, if any match, indicate the clause IS present (pass). */
   present_patterns: RegExp[];
+  /**
+   * Express-denial patterns. A presence rule looks for the words the required
+   * clause would use, so an NDA that AFFIRMATIVELY DISCLAIMS the clause
+   * ("this Agreement provides no immunity under the DTSA") matches the topic
+   * words and the rule stays SILENT — while an NDA that merely omits the topic
+   * is flagged. The disclaimer is the worse document. Build with
+   * `expressDenial()`. Do NOT set this on a rule whose required clause is
+   * ITSELF a carve-out or exclusion.
+   */
+  denied_if?: readonly RegExp[];
+  /** Title used when `denied_if` fires. Defaults to the missing_title. */
+  denied_title?: string;
+  /** Description used when `denied_if` fires. Defaults to the missing_description. */
+  denied_description?: string;
   default_severity?: Severity;
   scope?: PlaybookScope;
   dkb_citation_id?: string;
@@ -106,6 +121,23 @@ export function buildNdaPresenceRule(spec: NdaPresenceSpec): Rule {
     applies_to_playbooks: playbookList(spec.scope ?? "all"),
     check(ctx: RuleContext): Finding | null {
       const text = fullText(ctx);
+      if (spec.denied_if) {
+        // An express denial outranks the presence check: the topic words are
+        // present precisely because the document is disclaiming the clause.
+        const denial = findNdaDenial(ctx, spec.denied_if);
+        if (denial) {
+          return makeFinding({
+            rule: this as Rule,
+            title: spec.denied_title ?? spec.missing_title,
+            description: spec.denied_description ?? spec.missing_description,
+            excerptText: denial.sentence.slice(0, 280),
+            explanation: spec.explanation,
+            recommendation: spec.recommendation,
+            position: denial.position,
+            source_citations: [spec.citation],
+          });
+        }
+      }
       if (spec.present_patterns.some((re) => re.test(text))) return null;
       return makeFinding({
         rule: this as Rule,
@@ -266,4 +298,33 @@ export function buildNdaCompoundRule(spec: NdaCompoundSpec): Rule {
       });
     },
   };
+}
+
+/** First denying sentence in the document, with its position. */
+function findNdaDenial(
+  ctx: RuleContext,
+  patterns: readonly RegExp[],
+): { sentence: string; position: DocPosition } | null {
+  let found: { sentence: string; position: DocPosition } | null = null;
+  forEachParagraph(ctx.tree, (p) => {
+    if (found) return;
+    for (const re of patterns) {
+      const r = new RegExp(re.source, re.flags.includes("g") ? re.flags : re.flags + "g");
+      r.lastIndex = 0;
+      const m = r.exec(p.text);
+      if (m) {
+        found = {
+          sentence: enclosingSentence(p.text, m.index).trim(),
+          position: {
+            section_id: p.section.id,
+            paragraph_id: p.paragraph.id,
+            start: p.start + m.index,
+            end: p.start + m.index + m[0].length,
+          },
+        };
+        return;
+      }
+    }
+  });
+  return found;
 }

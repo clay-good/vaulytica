@@ -47,6 +47,18 @@ All notable changes to this project will be documented in this file. Format adap
   **without** OFAC screening", "this policy does not **apply to** OFAC
   screening by third parties" — is not read as a denial. Golden churn is
   `result_hash` only across all 99 v4 fixtures: zero finding-level changes.
+- **The express-denial sweep now covers every rule pack in the product.** The
+  last three v3 families are done: MSA-001 (a supplier that does not indemnify
+  against third-party IP infringement), MSA-016 (no service level applies),
+  MSA-018 (a party barred from terminating for material breach), MSA-021 (no
+  data return or portability on termination — the classic lock-in defect),
+  ADDENDA-015 (AI subprocessors not disclosed), ADDENDA-016 (fine-tuning data
+  not deleted on termination, so customer data persists in the model),
+  NDA-D-001 (an NDA stating it provides no DTSA whistleblower immunity, which
+  18 U.S.C. § 1833(b) confers by statute), and NDA-D-013 (confidential
+  information need not be returned or destroyed). Rules whose required clause
+  is itself a disclaimer, waiver, exclusion, or carve-out are left unguarded by
+  design. Golden churn is `result_hash` only: zero finding-level changes.
 - **A CCPA service-provider addendum or an SCC transfer that expressly
   disclaims its obligations is no longer scored as compliant.** Ten more rules
   guarded: USDPA-005 (same level of privacy protection), USDPA-007 (monitoring

@@ -15,6 +15,7 @@
  * (NIST AI RMF / EU AI Act / FTC enforcement actions).
  */
 
+import { expressDenial } from "../../_helpers.js";
 import type { Rule } from "../../../finding.js";
 import {
   buildLanguageRule,
@@ -390,6 +391,7 @@ export const ADDENDA_RULES: Rule[] = [
   }),
   presenceAi({
     id: "ADDENDA-015",
+    version: "1.1.0",
     name: "AI subprocessor disclosure",
     description: "AI Addendum should disclose AI subprocessors (OpenAI, Anthropic, Google, etc.).",
     citation: "GDPR Article 28(2) (subprocessor authorisation)",
@@ -408,9 +410,14 @@ export const ADDENDA_RULES: Rule[] = [
       /disclose\w*[^.]{0,60}?\b(?:third[- ]party\s+)?(?:AI\s+)?sub-?processors?\b/i,
     ],
     default_severity: "warning",
+    denied_if: expressDenial(String.raw`(?:ai\s+)?sub.?processors?`),
+    denied_title: "AI subprocessor disclosure expressly denied",
+    denied_description:
+      "The addendum states that AI subprocessors are not disclosed, so the customer cannot assess or object to the model providers handling its data.",
   }),
   presenceAi({
     id: "ADDENDA-016",
+    version: "1.1.0",
     name: "Deletion of fine-tuning data on termination",
     description:
       "AI Addendum should obligate deletion of fine-tuning / training data on termination.",
@@ -430,6 +437,12 @@ export const ADDENDA_RULES: Rule[] = [
       /(?:delet|destroy)\w*[^.]{0,60}?\bfine[- ]tun\w+\s+model|\bfine[- ]tun\w+\s+model[^.]{0,80}(?:delet|destroy)/i,
     ],
     default_severity: "warning",
+    denied_if: expressDenial(
+      String.raw`fine.?tun\w*[^.]{0,30}?(?:data|deletion)|deletion\s+of\s+fine.?tun\w*`,
+    ),
+    denied_title: "Fine-tuning data deletion expressly disclaimed",
+    denied_description:
+      "The addendum states that fine-tuning data derived from customer data is not deleted on termination, so the customer's data persists in the model indefinitely.",
   }),
 
   // ────────────────────────────────────────────────────────────────

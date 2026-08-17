@@ -9,6 +9,7 @@
  * the NDA-deep playbooks via `applies_to_playbooks`.
  */
 
+import { expressDenial } from "../../_helpers.js";
 import type { Rule } from "../../../finding.js";
 import {
   buildNdaCompoundRule,
@@ -32,6 +33,7 @@ export const NDA_DEEP_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "NDA-D-001",
+    version: "1.1.0",
     name: "DTSA whistleblower-immunity notice present",
     description:
       "NDAs with employees, contractors, or consultants must contain the DTSA notice of immunity for confidential disclosure of trade secrets to government or in court filings.",
@@ -47,6 +49,12 @@ export const NDA_DEEP_RULES: Rule[] = [
       /(immunity|immune)\s+from\s+liability.{0,80}(trade\s+secret|disclosure)/is,
       /defend\s+trade\s+secrets\s+act/i,
     ],
+    denied_if: expressDenial(
+      String.raw`(?:dtsa|defend\s+trade\s+secrets\s+act)\s+(?:whistleblower\s+)?immunity|immunity[^.]{0,30}?1833\(b\)|whistleblower\s+immunity`,
+    ),
+    denied_title: "DTSA whistleblower immunity expressly denied",
+    denied_description:
+      "The agreement states that no DTSA immunity is provided. 18 U.S.C. \u00a7 1833(b) confers the immunity by statute, and an employer that omits the notice forfeits exemplary damages and fees.",
   }),
 
   compound({
@@ -320,7 +328,7 @@ export const NDA_DEEP_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "NDA-D-013",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Return-or-destruction clause present",
     description:
       "NDA should require return or destruction of Confidential Information upon request or termination.",
@@ -346,6 +354,10 @@ export const NDA_DEEP_RULES: Rule[] = [
       /\b(?:return(?:s|ed|ing)?|destroy(?:s|ed|ing)?|delet(?:e|es|ed|ing)|eras(?:e|es|ed|ing))\b[^.]{0,40}?\b(?:all\s+|the\s+|such\s+|any\s+)?(?:copies\s+of\s+(?:the\s+)?)?confidential\s+information\b/i,
       /destruction\s+of\s+confidential|destroy\s+all\s+copies/i,
     ],
+    denied_if: expressDenial(String.raw`return\s+or\s+destr\w*|destruction\s+of\s+confidential`),
+    denied_title: "Return-or-destruction obligation expressly denied",
+    denied_description:
+      "The agreement states that confidential information need not be returned or destroyed, so the recipient keeps the material indefinitely after the relationship ends.",
   }),
 
   presence({
