@@ -51,4 +51,30 @@ describe("mutation scope", () => {
   it("is documented with the break threshold the config actually sets", () => {
     expect(baselineDoc).toContain(`\`thresholds.break = ${stryker.thresholds.break}\``);
   });
+
+  // The documented SCORE cannot be re-derived here — only a Stryker run
+  // produces it, and that is a slow scheduled job. So it is trust-on-write,
+  // and a stale or invented figure would sit in the doc unchallenged. These
+  // two assertions are the part that IS machine-checkable.
+  it("documents a baseline score consistent with the break threshold", () => {
+    const row = /\|\s*\*\*All \(scoped\)\*\*\s*\|\s*\*\*([\d.]+)%\*\*/.exec(baselineDoc);
+    expect(row, "no '**All (scoped)**' baseline row found in mutation-baseline.md").not.toBeNull();
+    const score = Number(row![1]);
+    const brk = stryker.thresholds.break;
+    // The config's own rule is "break a couple points under the measured
+    // baseline". A score at or below the floor is incoherent; one far above it
+    // means either the floor was never ratcheted or the figure is wrong.
+    expect(score).toBeGreaterThan(brk);
+    expect(score - brk).toBeLessThanOrEqual(5);
+  });
+
+  it("documents a baseline row for exactly the mutated files", () => {
+    // Catches the other half of a scope change: `mutate` and the include list
+    // updated, but the doc's per-file table left describing the old set.
+    const documented = [...baselineDoc.matchAll(/^\|\s*`([A-Za-z0-9_-]+\.ts)`\s*\|/gm)].map(
+      (m) => m[1]!,
+    );
+    const expected = stryker.mutate.map((f) => f.split("/").pop()!);
+    expect([...new Set(documented)].sort()).toEqual(expected.slice().sort());
+  });
 });
