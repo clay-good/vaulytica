@@ -81,6 +81,27 @@ describe("README rule counts", () => {
     const total = LAUNCH_RULES.length + V3_RULES.length + V4_RULES.length;
     expect(readme).toContain(`**${total.toLocaleString("en-US")}-rule**`);
   });
+
+  /**
+   * The suite size is quoted twice — the badge line and the verify block — and
+   * both had aged to "6,014" against a suite of 6,450. Unlike a rule count it
+   * cannot be read off a live array here: deriving it means collecting every
+   * spec (`npx vitest list`), which is far too slow to run from inside the
+   * suite it is counting. So the claim is stated as a FLOOR, which degrades
+   * honestly — it stays true as tests are added and only becomes false if the
+   * suite shrinks past it — and what IS machine-checkable is pinned: both
+   * mentions quote the same floor, and it is a floor rather than a bare exact
+   * number that will be wrong by the next commit.
+   *
+   * Re-derive with: `npx vitest list --reporter=tree | grep -c ' > '`
+   */
+  it("quotes the suite size as a single consistent floor", () => {
+    const quoted = [...readme.matchAll(/`([\d,]+)\+ passing tests`/g)].map((m) => m[1]!);
+    const inBlock = [...readme.matchAll(/# vitest — ([\d,]+)\+ tests/g)].map((m) => m[1]!);
+    expect(quoted, "badge line must state the suite size as a floor (N+)").toHaveLength(1);
+    expect(inBlock, "verify block must state the suite size as a floor (N+)").toHaveLength(1);
+    expect(inBlock[0], "the two suite-size claims disagree").toBe(quoted[0]);
+  });
 });
 
 describe("landing-page rule counts", () => {

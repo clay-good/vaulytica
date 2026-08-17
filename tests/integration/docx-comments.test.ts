@@ -107,6 +107,13 @@ describe("buildReviewedDocx — invariants", () => {
     // the corresponding finding's excerpt (whitespace-normalized).
     const commentsXml = strFromU8(out["word/comments.xml"]!);
     const ids = [...commentsXml.matchAll(/w:comment w:id="(\d+)"/g)].map((m) => m[1]!);
+    // The round-trip assertion below is guarded on the excerpt being present
+    // and long enough to be a meaningful substring — which means a short or
+    // missing excerpt would silently skip the one check this test exists to
+    // make, and the test would still pass while verifying nothing. Record the
+    // skips and assert there are none, so the guard can only ever narrow the
+    // check deliberately rather than by accident.
+    const skipped: string[] = [];
     for (const id of ids.slice(0, anchorable.length)) {
       const start = outDoc.indexOf(`<w:commentRangeStart w:id="${id}"/>`);
       const end = outDoc.indexOf(`<w:commentRangeEnd w:id="${id}"/>`);
@@ -116,8 +123,11 @@ describe("buildReviewedDocx — invariants", () => {
       const excerpt = anchorable[Number(id)]?.excerpt.text.replace(/\s+/g, " ").trim();
       if (excerpt && excerpt.length >= 8) {
         expect(spanText).toContain(excerpt);
+      } else {
+        skipped.push(`${id}: ${JSON.stringify(excerpt)}`);
       }
     }
+    expect(skipped, "anchor round-trip was not actually verified for these comments").toEqual([]);
   });
 
   it("unanchorable findings land in one aggregation comment — never dropped", async () => {
