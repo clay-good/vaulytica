@@ -16,7 +16,20 @@ import prettier from "eslint-config-prettier/flat";
 export default tseslint.config(
   // Global ignores. node_modules/ and .git/ are ignored by default in flat
   // config; these are the project's build outputs + the old-style CJS files.
-  { ignores: ["dist/", "dkb/dist/", "dkb/build/cache/", "coverage/", "**/*.cjs"] },
+  // `.stryker-tmp/` holds Stryker's working COPY of src/ during a mutation
+  // run; it is gitignored but was not ignored here, so `npm run lint` after an
+  // interrupted `npm run mutation` reported ~930 errors against that copy.
+  {
+    ignores: [
+      "dist/",
+      "dkb/dist/",
+      "dkb/build/cache/",
+      "coverage/",
+      ".stryker-tmp/",
+      "reports/",
+      "**/*.cjs",
+    ],
+  },
 
   // Base recommended rule sets: core JS, then TypeScript (non-type-checked, to
   // match the prior `plugin:@typescript-eslint/recommended` — no typed linting).

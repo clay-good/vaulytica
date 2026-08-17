@@ -172,3 +172,91 @@ describe("extractAmounts — ISO code with no space before digits (USD5,000)", (
     expect(out.some((a) => a.currency === "USD" && a.amount === "100")).toBe(false);
   });
 });
+
+/**
+ * Trailing-currency amounts ("50,000 dollars", "1.5m USD") go through
+ * `postfixCurrency`, which maps a currency WORD to its ISO 4217 code. The
+ * word branches had no test at all — every one of them could be deleted and
+ * the suite stayed green — so this pins each mapping, including the ones a
+ * naive "uppercase the token" fallback would get wrong (pound -> GBP, not
+ * POUND; yuan and renminbi both -> CNY).
+ */
+describe("extractAmounts — trailing currency words", () => {
+  const cases: [string, string, string][] = [
+    ["50,000 dollars", "USD", "50000"],
+    ["50,000 euros", "EUR", "50000"],
+    ["50,000 pounds sterling", "GBP", "50000"],
+    ["50,000 yen", "JPY", "50000"],
+    ["50,000 yuan", "CNY", "50000"],
+    ["50,000 renminbi", "CNY", "50000"],
+    ["50,000 rupees", "INR", "50000"],
+  ];
+
+  it.each(cases)("reads %s as %s", (phrase, currency, value) => {
+    const amounts = extractAmounts(buildTree(["Fees", `The fee is ${phrase} per year.`]));
+    const hit = amounts.find((a) => a.amount === value && !a.word_form);
+    expect(hit, `no amount extracted from "${phrase}"`).toBeDefined();
+    expect(hit!.currency).toBe(currency);
+  });
+
+  it("passes a trailing ISO code through as the code itself", () => {
+    const amounts = extractAmounts(buildTree(["Fees", "The fee is 1.5m USD per year."]));
+    const hit = amounts.find((a) => !a.word_form);
+    expect(hit).toBeDefined();
+    expect(hit!.currency).toBe("USD");
+    expect(hit!.amount).toBe("1500000");
+  });
+
+  it("applies the magnitude suffix to a trailing-currency amount", () => {
+    const amounts = extractAmounts(buildTree(["Fees", "A reserve of 2.5 million euros is held."]));
+    const hit = amounts.find((a) => !a.word_form);
+    expect(hit).toBeDefined();
+    expect(hit!.currency).toBe("EUR");
+    expect(hit!.amount).toBe("2500000");
+  });
+});
+
+/**
+ * The deferred currency override (v7 §6): a document-level clause ("all
+ * amounts are in CAD") retroactively resolves the ambiguous `$` amounts,
+ * including ones written BEFORE the clause. The whole feature was untested —
+ * its clause regex, its `$`-only scope, and its USD no-op branch could each
+ * be broken without a single failure.
+ */
+describe("extractAmounts — deferred currency override", () => {
+  const dollarOf = (text: string) =>
+    extractAmounts(buildTree(["Fees", text])).filter((a) => !a.word_form && a.amount === "50000");
+
+  it("re-currencies a bare $ amount that appears before the clause", () => {
+    const hits = dollarOf("The fee is $50,000. All amounts are in CAD unless otherwise stated.");
+    expect(hits).toHaveLength(1);
+    expect(hits[0]!.currency).toBe("CAD");
+  });
+
+  it.each([
+    "All fees are stated in EUR.",
+    "All payments shall be in GBP.",
+    "All sums are denominated in CHF.",
+    "All charges will be in AUD.",
+    "All prices to be in SGD.",
+    "All figures in JPY.",
+  ])("recognizes the clause form %s", (clause) => {
+    const expected = /\b([A-Z]{3})\b/.exec(clause)![1];
+    const hits = dollarOf(`The fee is $50,000. ${clause}`);
+    expect(hits[0]!.currency).toBe(expected);
+  });
+
+  it("leaves an explicitly-currencied amount alone", () => {
+    // Only `$`-sourced amounts are ambiguous; a stated code is not overridden.
+    const amounts = extractAmounts(
+      buildTree(["Fees", "The fee is EUR 50,000. All amounts are in CAD."]),
+    );
+    const hit = amounts.find((a) => a.amount === "50000" && !a.word_form);
+    expect(hit!.currency).toBe("EUR");
+  });
+
+  it("does not fire without a controlling clause", () => {
+    const hits = dollarOf("The fee is $50,000 payable in advance.");
+    expect(hits[0]!.currency).toBe("USD");
+  });
+});

@@ -298,3 +298,35 @@ describe("labeled date anchors", () => {
     ).toHaveLength(1);
   });
 });
+
+/**
+ * The day-before-month absolute form — "14 March 2026", "1st of April, 2026"
+ * — is how UK/EU and formal-instrument drafting writes a date. The whole
+ * DAY_MONTH_YEAR branch was uncovered: it could be deleted outright and the
+ * suite stayed green. These pin the ordinal suffix, the optional "of" and
+ * "the", the abbreviated month, and the trailing comma variant, and confirm
+ * the day is read as the DAY (not swapped into the month, which is the
+ * failure mode this ordering invites).
+ */
+describe("extractDates — day-month-year form", () => {
+  const cases: [string, string][] = [
+    ["14 March 2026", "2026-03-14"],
+    ["1st of April, 2026", "2026-04-01"],
+    ["the 15th of September 2029", "2029-09-15"],
+    ["3 Sept. 2027", "2027-09-03"],
+    ["22 Dec 2025", "2025-12-22"],
+  ];
+
+  it.each(cases)("reads %s as %s", (phrase, iso) => {
+    const dates = extractDates(buildTree(["Dates", `This deed is dated ${phrase} and binds.`]));
+    const isos = dates.filter((d) => d.type === "absolute").map((d) => d.iso);
+    expect(isos).toContain(iso);
+  });
+
+  it("does not invent an iso for an impossible day-month-year date", () => {
+    const dates = extractDates(buildTree(["Dates", "Dated 31 February 2026 by mistake."]));
+    const hit = dates.find((d) => d.raw_text.includes("February"));
+    expect(hit).toBeDefined();
+    expect(hit!.iso).toBeUndefined();
+  });
+});

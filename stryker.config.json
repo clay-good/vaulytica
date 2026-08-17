@@ -11,6 +11,6 @@
   "timeoutMS": 60000,
   "concurrency": 4,
   "tempDirName": ".stryker-tmp",
-  "_thresholds_comment": "Regression-only (spec-v7 Step 124): break a couple points under the measured baseline (51.26% on dates+amounts, 2026-06-05); never an aspiration. Runs only in the scheduled/on-demand mutation workflow, not the per-push gate. Ratchet up as survivors are killed.",
-  "thresholds": { "high": 80, "low": 55, "break": 48 }
+  "_thresholds_comment": "Regression-only (spec-v7 Step 124): break a couple points under the measured baseline (56.16% on dates+amounts, 2026-08-17); never an aspiration. Runs only in the scheduled/on-demand mutation workflow, not the per-push gate. Ratchet up as survivors are killed. History: baseline 51.26% (2026-06-05) with break 48; the extractors then grew (postfix currencies, fiscal quarters, composite $, new date anchors) without matching tests and the score DECAYED to 47.59, breaking the gate — covering the three then-untested features (trailing currency words, day-month-year dates, the deferred currency override) took it to 56.16.",
+  "thresholds": { "high": 80, "low": 55, "break": 54 }
 }
