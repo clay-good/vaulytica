@@ -15,10 +15,13 @@
  *
  *   1. The eager entry (`main-*.js`) is small — well under 50 KB
  *      gzipped — so first-paint time is preserved.
- *   2. The total gzipped JS payload (every `dist/assets/*.js`)
- *      stays under the v2 baseline + 600 KB budget.
- *   3. No single chunk has crossed the 600 KB raw threshold without
+ *   2. No single chunk has crossed the 600 KB raw threshold without
  *      explicit reason (Vite's default warning limit).
+ *
+ * The total gzipped payload is gated once, by the v4 guard at the bottom of
+ * this file. A second total assertion used to sit in this block against the
+ * pre-v4 budget; see the note where it stood for why it had to go.
+ * `V3_BUDGET_GZIPPED_KB` survives as the base the v4 ceiling is derived from.
  *
  * The budgets are intentionally generous; tightening them is a
  * separate optimization concern. Their purpose is to fail loudly if
@@ -126,27 +129,18 @@ describe.skipIf(!RUN)("v3 bundle-size guard", () => {
     ).toBeLessThan(EAGER_ENTRY_GZIPPED_KB);
   });
 
-  it("total gzipped JS payload stays under v2 + 600 KB", () => {
-    // Read filenames + bytes in one pass; the SRI test may rebuild `dist/`
-    // in parallel, invalidating hashed filenames between `readdir` and
-    // `readFile`. Skip any file that disappears mid-iteration.
-    const files: { name: string; size: number }[] = [];
-    for (const name of jsFiles()) {
-      try {
-        const bytes = readFileSync(resolve(ASSETS, name));
-        files.push({ name, size: gzipSync(bytes).byteLength / 1024 });
-      } catch {
-        // raced with rebuild
-      }
-    }
-    const total = files.reduce((s, f) => s + f.size, 0);
-    const breakdown = files.map((f) => `${f.name}: ${f.size.toFixed(2)} KB`).join("\n  ");
-    expect(
-      total,
-      `total gzipped JS ${total.toFixed(2)} KB exceeds the ${V3_BUDGET_GZIPPED_KB} KB budget. Breakdown:\n  ${breakdown}`,
-    ).toBeLessThan(V3_BUDGET_GZIPPED_KB);
-  });
-
+  // The total-payload assertion that used to live here measured exactly what
+  // the v4 guard below measures — every gzipped JS chunk — but capped it at the
+  // pre-v4 870 KB. So the +300 KB v4 was granted for its 771 rules could never
+  // actually be spent: the v3 cap always bound first, and the v4 ceiling was
+  // unreachable dead code. The bundle grew into 870 KB and CI went red against
+  // a budget that v4 was supposed to have superseded.
+  //
+  // The v4 ceiling is now the single total gate. The guards that constrain what
+  // a user actually waits for are unaffected and still here: the eager-entry
+  // budget above (first paint, ~22 KB against 50) and the per-chunk raw cap
+  // below. Reinstating a tighter total belongs with a real payload reduction,
+  // not with a number chosen to make the suite pass.
   it("no single chunk exceeds 600 KB raw without an explicit allow-list reason", () => {
     // Vite's default warning threshold; v3 dynamic-imports the analysis
     // pipeline so user-facing first-paint cost is unchanged. The list
