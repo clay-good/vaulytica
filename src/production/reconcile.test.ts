@@ -75,6 +75,21 @@ describe("reconcileProduction — audit-round pins", () => {
     const findings = reconcileProduction({ bates, log });
     expect(findings.some((f) => f.code === "PROD-010")).toBe(true);
   });
+
+  it("a single hyphen-convention Bates id (no range) is not split into prefix/number", () => {
+    const log = parsePrivilegeLog("Bates,Privilege,Description\nABC-000124,AC,Legal memo\n");
+    // Splitting on the id's own internal hyphen yielded start="ABC", which
+    // parseBates rejects, dropping the row from every range check.
+    expect(log.entries[0]?.bates_start).toBe("ABC-000124");
+    expect(log.entries[0]?.bates_end).toBeUndefined();
+  });
+
+  it("a withheld single hyphen-convention id that was produced fires PROD-010", () => {
+    const bates = extractBatesSet(["ABC-000123.pdf", "ABC-000124.pdf"]);
+    const log = parsePrivilegeLog("Bates,Privilege,Description\nABC-000124,AC,Legal memo\n");
+    const findings = reconcileProduction({ bates, log });
+    expect(findings.some((f) => f.code === "PROD-010")).toBe(true);
+  });
 });
 
 describe("reconcileProduction — PROD-002 duplicates", () => {

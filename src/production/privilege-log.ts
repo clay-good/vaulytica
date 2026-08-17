@@ -189,6 +189,12 @@ function splitBatesRange(value: string): { start?: string; end?: string } {
       return { start: left, end: right };
     }
   }
+  // No hyphen position split the cell into two Bates ids, so a hyphenated
+  // cell that parses whole is a SINGLE id ("ABC-000124"), not a range. The
+  // fallback below would split it on its own internal hyphen into
+  // start="ABC", which parseBates rejects — dropping the entry from every
+  // range check (PROD-010/011/012) exactly as the range case above did.
+  if (parseBates(trimmed)) return { start: trimmed };
   const m = /^(.+?)\s*(?:-|\bto\b)\s*(.+)$/i.exec(trimmed);
   if (!m) return { start: trimmed };
   return { start: m[1]?.trim() || undefined, end: m[2]?.trim() || undefined };
