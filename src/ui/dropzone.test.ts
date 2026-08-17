@@ -61,6 +61,66 @@ describe("bindDropzone", () => {
     document.body.removeChild(dz);
   });
 
+  // A second drop during a slow analysis used to start a CONCURRENT pipeline.
+  // Both would finish and each would replace the zone with its own "complete"
+  // render, so whichever finished last won — not necessarily the file dropped
+  // last. The user could read a finished report for the wrong document.
+  it("ignores a second file while an analysis is still running", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    const calls: string[] = [];
+    const cleanup = bindDropzone(dz, {
+      onFile: (r) => {
+        if (r.ok) calls.push(r.file.name);
+      },
+    });
+    const input = dz.querySelector<HTMLInputElement>("input[type=file]")!;
+    const pick = (name: string): void => {
+      Object.defineProperty(input, "files", { configurable: true, get: () => [fakeFile(name)] });
+      input.dispatchEvent(new Event("change"));
+    };
+
+    pick("contract-a.pdf");
+    expect(calls).toEqual(["contract-a.pdf"]);
+
+    // renderState sets this for the whole of every analysis path.
+    dz.setAttribute("data-state", "analyzing");
+    pick("contract-b.pdf");
+    expect(calls, "second pick must not start a concurrent analysis").toEqual(["contract-a.pdf"]);
+
+    // Once the run finishes the zone accepts work again.
+    dz.setAttribute("data-state", "complete");
+    pick("contract-c.pdf");
+    expect(calls).toEqual(["contract-a.pdf", "contract-c.pdf"]);
+
+    cleanup();
+    document.body.removeChild(dz);
+  });
+
+  it("ignores a second multi-file bundle while an analysis is still running", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    const bundles: number[] = [];
+    const cleanup = bindDropzone(dz, {
+      onFile: () => {},
+      onFiles: (files) => bundles.push(files.length),
+    });
+    const input = dz.querySelector<HTMLInputElement>("input[type=file]")!;
+    const pick = (n: number): void => {
+      const files = Array.from({ length: n }, (_, i) => fakeFile(`d${i}.pdf`));
+      Object.defineProperty(input, "files", { configurable: true, get: () => files });
+      input.dispatchEvent(new Event("change"));
+    };
+
+    pick(3);
+    dz.setAttribute("data-state", "analyzing");
+    pick(2);
+    expect(bundles).toEqual([3]);
+
+    cleanup();
+    document.body.removeChild(dz);
+  });
+
   it("fires onDragState(true) on dragenter and (false) on dragleave/drop", () => {
     const dz = document.createElement("div");
     document.body.appendChild(dz);

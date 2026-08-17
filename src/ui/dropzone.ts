@@ -144,6 +144,17 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
 
   const dispatch = (files: File[]): void => {
     if (files.length === 0) return;
+    // Serialize analyses. Nothing here used to check whether one was already
+    // running, so a second drop during a slow analysis started a CONCURRENT
+    // pipeline; both finished and each replaced the zone with its own
+    // "complete" render, so whichever finished last won — not necessarily the
+    // file dropped last. The user could end up reading a finished report for a
+    // different document than the one they just dropped, with no error shown.
+    // The zone carries `data-state="analyzing"` for the whole of every
+    // analysis path (single file, bundle, and both comparison flows), and it
+    // visibly names the file being worked on, so refusing here leaves the user
+    // looking at an accurate in-progress state rather than a wrong result.
+    if (dz.getAttribute("data-state") === "analyzing") return;
     const isBundle = files.length >= 2 || (files.length === 1 && isZipFile(files[0]!));
     if (isBundle && opts.onFiles) {
       opts.onFiles(files);

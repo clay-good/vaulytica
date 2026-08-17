@@ -47,6 +47,15 @@ All notable changes to this project will be documented in this file. Format adap
   **without** OFAC screening", "this policy does not **apply to** OFAC
   screening by third parties" — is not read as a denial. Golden churn is
   `result_hash` only across all 99 v4 fixtures: zero finding-level changes.
+- **Dropping a second document while an analysis is running no longer shows a
+  report for the wrong file.** Nothing checked whether an analysis was already
+  in flight, so a second drop started a concurrent pipeline; both finished and
+  each replaced the dropzone with its own "complete" render, meaning whichever
+  finished last won — not necessarily the file dropped last, since parse time
+  varies by size and page count. A user could be reading a finished report for
+  a different document than the one they just dropped, with no error shown.
+  Analyses are now serialized: while one is running the zone keeps showing
+  "analyzing" with the file it is working on, and further drops are ignored.
 - **Four v3 rules no longer report the compliant clause as the violation it
   forbids.** The same defect class a prior sweep found across the v4 packs,
   audited in v3 for the first time: an `exclude_if` guard written as a literal
