@@ -13,6 +13,7 @@
  * `src/engine/runner.ts`.
  */
 
+import { expressDenial } from "../../_helpers.js";
 import type { Rule } from "../../../finding.js";
 import {
   buildBaaLanguageRule,
@@ -75,6 +76,7 @@ export const BAA_RULES: Rule[] = [
 
   presence({
     id: "BAA-003",
+    version: "1.1.0",
     name: "Appropriate safeguards clause",
     description:
       "BAA must require BA to use appropriate safeguards, including Security Rule administrative, physical, and technical safeguards.",
@@ -89,11 +91,17 @@ export const BAA_RULES: Rule[] = [
     present_patterns: [
       /(appropriate\s+safeguards|administrative.*physical.*technical|reasonable\s+safeguards)/i,
     ],
+    denied_if: expressDenial(
+      String.raw`appropriate\s+safeguards|administrative,?\s+physical,?\s+and\s+technical\s+safeguards`,
+    ),
+    denied_title: "Safeguards obligation expressly disclaimed",
+    denied_description:
+      "The agreement states that the business associate does not implement safeguards for PHI. \u00a7 164.504(e)(2)(ii)(B) makes the safeguards obligation mandatory.",
   }),
 
   presence({
     id: "BAA-004",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Report improper uses or disclosures",
     description:
       "BAA must require BA to report to the covered entity any use or disclosure not provided for by the contract.",
@@ -112,10 +120,17 @@ export const BAA_RULES: Rule[] = [
       // read as missing.
       /(report\s+(?:to\s+)?(?:the\s+)?covered\s+entity|notify\s+(?:the\s+)?covered\s+entity).*?(use|disclosure|breach|incident)/i,
     ],
+    denied_if: expressDenial(
+      String.raw`report\s+(?:to\s+)?(?:the\s+)?covered\s+entity|notify\s+(?:the\s+)?covered\s+entity`,
+    ),
+    denied_title: "Incident-reporting obligation expressly disclaimed",
+    denied_description:
+      "The agreement states that the business associate does not report unauthorized uses or disclosures. \u00a7 164.504(e)(2)(ii)(C) requires that reporting.",
   }),
 
   presence({
     id: "BAA-005",
+    version: "1.1.0",
     name: "Subcontractor flow-down",
     description:
       "BA must ensure subcontractors that handle PHI agree in writing to the same restrictions and conditions.",
@@ -130,10 +145,15 @@ export const BAA_RULES: Rule[] = [
     present_patterns: [
       /(subcontractor|sub[- ]processor).*?(same restrictions|same conditions|written contract|agree)/is,
     ],
+    denied_if: expressDenial(String.raw`subcontractors?|sub.?processors?`),
+    denied_title: "Subcontractor flow-down expressly disclaimed",
+    denied_description:
+      "The agreement states that subcontractors handling PHI are not bound by the same restrictions. \u00a7 164.504(e)(2)(ii)(D) requires the flow-down in writing.",
   }),
 
   presence({
     id: "BAA-006",
+    version: "1.1.0",
     name: "Access to PHI (164.524)",
     description:
       "BAA must require BA to make PHI available in a Designated Record Set to satisfy 45 CFR 164.524.",
@@ -146,10 +166,15 @@ export const BAA_RULES: Rule[] = [
     recommendation:
       "Add a clause: 'Business Associate shall make PHI available as necessary to comply with 45 CFR 164.524.'",
     present_patterns: [/(access\s+to\s+PHI|right\s+of\s+access|164\.524)/i],
+    denied_if: expressDenial(String.raw`access\s+to\s+PHI|right\s+of\s+access`),
+    denied_title: "Individual access obligation expressly disclaimed",
+    denied_description:
+      "The agreement states that the business associate does not provide access to PHI. \u00a7 164.524 gives the individual that right.",
   }),
 
   presence({
     id: "BAA-007",
+    version: "1.1.0",
     name: "Amendment of PHI (164.526)",
     description:
       "BAA must require BA to make PHI available for amendment to satisfy 45 CFR 164.526.",
@@ -162,10 +187,15 @@ export const BAA_RULES: Rule[] = [
     recommendation:
       "Add a clause: 'Business Associate shall make PHI available for amendment as required by 45 CFR 164.526.'",
     present_patterns: [/(amendment\s+of\s+PHI|amend.*?PHI|164\.526)/is],
+    denied_if: expressDenial(String.raw`amendment\s+of\s+PHI|amend\s+PHI`),
+    denied_title: "PHI amendment obligation expressly disclaimed",
+    denied_description:
+      "The agreement states that PHI is not amended on request. \u00a7 164.526 requires the business associate to make agreed amendments.",
   }),
 
   presence({
     id: "BAA-008",
+    version: "1.1.0",
     name: "Accounting of disclosures (164.528)",
     description:
       "BAA must require BA to maintain and make available the information required to provide an accounting of disclosures.",
@@ -178,10 +208,15 @@ export const BAA_RULES: Rule[] = [
     recommendation:
       "Add: 'Business Associate shall maintain and make available the information required for an accounting of disclosures as required by 45 CFR 164.528.'",
     present_patterns: [/(accounting\s+of\s+disclosures|164\.528)/i],
+    denied_if: expressDenial(String.raw`accounting\s+of\s+disclosures`),
+    denied_title: "Accounting-of-disclosures obligation expressly disclaimed",
+    denied_description:
+      "The agreement states that no accounting of disclosures is maintained or provided. \u00a7 164.528 requires it.",
   }),
 
   presence({
     id: "BAA-009",
+    version: "1.1.0",
     name: "Books and records available to HHS Secretary",
     description:
       "BAA must require BA to make its internal practices, books, and records available to HHS for compliance review.",
@@ -196,6 +231,10 @@ export const BAA_RULES: Rule[] = [
     present_patterns: [
       /(internal\s+practices.*books.*records|books.*records.*secretary|HHS\s+secretary)/is,
     ],
+    denied_if: expressDenial(String.raw`books\s+and\s+records|internal\s+practices`),
+    denied_title: "HHS access to books and records expressly denied",
+    denied_description:
+      "The agreement states that books and records are not made available to the Secretary. \u00a7 164.504(e)(2)(ii)(H) requires that access for compliance review.",
   }),
 
   presence({

@@ -47,6 +47,24 @@ All notable changes to this project will be documented in this file. Format adap
   **without** OFAC screening", "this policy does not **apply to** OFAC
   screening by third parties" — is not read as a denial. Golden churn is
   `result_hash` only across all 99 v4 fixtures: zero finding-level changes.
+- **A HIPAA BAA that expressly disclaims an obligation is no longer scored as
+  compliant.** The same defect the v4 packs had, found in the v3 layer's
+  highest-stakes family and confirmed by probe: a BAA stating "Business
+  Associate shall NOT report to the Covered Entity any use or disclosure of PHI
+  not provided for by this Agreement" satisfied BAA-004's presence pattern and
+  the rule stayed silent, while a BAA that never mentioned reporting was flagged
+  critical. Seven rules now carry a `denied_if` guard — BAA-003 (safeguards),
+  BAA-004 (incident reporting), BAA-005 (subcontractor flow-down), BAA-006
+  (individual access), BAA-007 (amendment), BAA-008 (accounting of disclosures),
+  and BAA-009 (HHS access to books and records) — and the finding reports the
+  denying sentence rather than "(clause absent from the document)". BAA-002 is
+  deliberately left unguarded and has a test pinning that: its compliant
+  drafting IS a negation ("shall not use or disclose PHI other than as
+  permitted"), so a denial frame would flag the required language as its own
+  violation. `expressDenial` moved to the shared rule helpers so the v3 packs
+  can use it without pulling v4 code into their bundle chunk. Golden churn is
+  `result_hash` only across all 340 affected fixtures: zero finding-level
+  changes.
 - **The shipped `dist/index.html` no longer carries a duplicate `crossorigin`
   attribute.** Vite already emits a bare `crossorigin` on the module script and
   its modulepreload links; the SRI plugin appended `integrity="sha384-…"

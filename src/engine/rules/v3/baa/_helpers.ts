@@ -18,6 +18,7 @@ import type { SourceCitation } from "../../../../dkb/types.js";
 import { makeFinding } from "../../../finding.js";
 import { forEachParagraph, forEachSection } from "../../../../extract/walk.js";
 import type { DocPosition } from "../../../../extract/types.js";
+import { enclosingSentence } from "../../_helpers.js";
 
 const BAA_PLAYBOOKS = ["baa", "baa-deep", "baa-subcontractor"] as const;
 
@@ -73,6 +74,25 @@ export type BaaPresenceSpec = {
   recommendation: string;
   /** Regexes that, if any match, indicate the clause IS present (pass). */
   present_patterns: RegExp[];
+  /**
+   * Express-denial patterns. A presence rule looks for the words the required
+   * clause would use, so a BAA that AFFIRMATIVELY DISCLAIMS the obligation
+   * ("Business Associate shall NOT report to the Covered Entity any use or
+   * disclosure not provided for by this Agreement") matches the topic words
+   * and the rule stays SILENT — while a BAA that merely omits the topic is
+   * flagged critical. The disclaimer is the worse document. When any of these
+   * matches, the rule fires on the denying sentence regardless of
+   * `present_patterns`. Build them with `expressDenial()`.
+   *
+   * Do NOT set this on a rule whose required clause is ITSELF a negation —
+   * BAA-002's compliant drafting is "shall not use or disclose PHI other than
+   * as permitted", and a denial frame would flag it as its own violation.
+   */
+  denied_if?: readonly RegExp[];
+  /** Title used when `denied_if` fires. Defaults to the missing_title. */
+  denied_title?: string;
+  /** Description used when `denied_if` fires. Defaults to the missing_description. */
+  denied_description?: string;
   /** Optional severity override. Default: critical. */
   default_severity?: Severity;
 };
@@ -93,6 +113,23 @@ export function buildBaaPresenceRule(spec: BaaPresenceSpec): Rule {
     applies_to_playbooks: Array.from(BAA_PLAYBOOKS),
     check(ctx: RuleContext): Finding | null {
       const text = fullText(ctx);
+      if (spec.denied_if) {
+        // An express denial outranks the presence check: the topic words are
+        // present precisely because the document is disclaiming the clause.
+        const denial = findBaaDenial(ctx, spec.denied_if);
+        if (denial) {
+          return makeFinding({
+            rule: this as Rule,
+            title: spec.denied_title ?? spec.missing_title,
+            description: spec.denied_description ?? spec.missing_description,
+            excerptText: denial.sentence.slice(0, 280),
+            explanation: spec.explanation,
+            recommendation: spec.recommendation,
+            position: denial.position,
+            source_citations: [hipaaCite(spec.citation)],
+          });
+        }
+      }
       if (spec.present_patterns.some((re) => re.test(text))) return null;
       return makeFinding({
         rule: this as Rule,
@@ -191,3 +228,32 @@ export function buildBaaLanguageRule(spec: BaaLanguageSpec): Rule {
 }
 
 export const BAA_PLAYBOOK_IDS = BAA_PLAYBOOKS;
+
+/** First denying sentence in the document, with its position. */
+function findBaaDenial(
+  ctx: RuleContext,
+  patterns: readonly RegExp[],
+): { sentence: string; position: DocPosition } | null {
+  let found: { sentence: string; position: DocPosition } | null = null;
+  forEachParagraph(ctx.tree, (p) => {
+    if (found) return;
+    for (const re of patterns) {
+      const r = new RegExp(re.source, re.flags.includes("g") ? re.flags : re.flags + "g");
+      r.lastIndex = 0;
+      const m = r.exec(p.text);
+      if (m) {
+        found = {
+          sentence: enclosingSentence(p.text, m.index).trim(),
+          position: {
+            section_id: p.section.id,
+            paragraph_id: p.paragraph.id,
+            start: p.start + m.index,
+            end: p.start + m.index + m[0].length,
+          },
+        };
+        return;
+      }
+    }
+  });
+  return found;
+}

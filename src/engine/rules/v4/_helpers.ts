@@ -102,57 +102,11 @@ export type V4PresenceSpec = {
   default_severity?: Severity;
 };
 
-/**
- * Build express-disclaimer patterns for a presence rule's `denied_if`.
- *
- * `topic` is a regex source fragment naming the required clause (e.g.
- * `"ofac|sanctions\\s+screening"`). The frames below wrap it in the ways a
- * document actually disclaims an obligation. The word gap refuses to cross
- * a conditional connective, so a COMPLIANT sentence that pairs a negation
- * with the topic — "no customer shall be onboarded WITHOUT OFAC screening"
- * — is not read as a denial.
- */
-export function expressDenial(topic: string): RegExp[] {
-  const t = `(?:${topic})`;
-  // Up to three filler words — four was measured to be too many: "this
-  // Agreement shall not become effective until the REVOCATION PERIOD expires"
-  // (the compliant OWBPA drafting) then reads as a denial of the revocation
-  // right. The gap refuses to cross a conditional
-  // connective ("...not onboard a customer WITHOUT OFAC screening") or a
-  // scope verb ("this policy does not APPLY TO OFAC screening by third
-  // parties"), because neither sentence denies that the clause exists.
-  const gap = String.raw`(?:(?!\b(?:without|unless|except|absent|failing|prior|appl(?:y|ies)|affect|affects|limit|limits|waive|waives|relieve|relieves|supersede|supersedes|alter|alters|modify|modifies|excuse|excuses|prevent|prevents|preclude|precludes|restrict|restricts)\b)\w+[\s,]+){0,3}`;
-  const verb =
-    "(?:perform|conduct|provide|maintain|require|undertake|implement|operate|run|have|has|make|exercise|exercises|grant|grants)";
-  // Past participles a denial lands on. Deliberately excludes "permitted" /
-  // "allowed": "failure to file a SAR is not permitted" is a PROHIBITION of
-  // the failure, i.e. the compliant drafting, not a denial of the clause.
-  const done =
-    "(?:required|performed|conducted|maintained|provided|undertaken|implemented|applicable|filed|retained|kept|screened|collected|identified|obtained|established|withdrawn|revoked|honored|honoured|granted|issued|suspended|available|offered|encrypted|appointed|designated|reviewed|notified|exchanged|delivered|attached)";
-  return [
-    // "does not perform OFAC screening" / "is not required to conduct AML training"
-    new RegExp(
-      String.raw`\b(?:do|does|did|shall|will|is|are|was|were|has|have|had|can|may|need)\s+not\s+(?:be\s+)?${gap}${t}`,
-      "i",
-    ),
-    // "cannot revoke this authorization"
-    new RegExp(String.raw`\bcan\s?not\s+(?:be\s+)?${gap}${t}`, "i"),
-    // "performs no OFAC screening" / "maintains no SAR procedures"
-    new RegExp(String.raw`\b${verb}(?:s|es|ed)?\s+no\s+${gap}${t}`, "i"),
-    // "OFAC screening is not required" / "consent may not be withdrawn"
-    new RegExp(
-      String.raw`\b${t}\b[^.]{0,80}?\b(?:is|are|shall\s+be|will\s+be|shall|will|may|can|must)\s+not\s+(?:be\s+)?${done}`,
-      "i",
-    ),
-    // "consent cannot be withdrawn"
-    new RegExp(String.raw`\b${t}\b[^.]{0,80}?\bcan\s?not\s+(?:be\s+)?${done}`, "i"),
-    // "no OFAC screening is performed" / "no financial disclosure was exchanged"
-    new RegExp(
-      String.raw`\bno\s+${gap}${t}\b[^.]{0,80}?\b(?:is|are|was|were|shall\s+be|will\s+be|has\s+been|have\s+been)\s+${done}`,
-      "i",
-    ),
-  ];
-}
+// `expressDenial` lives in the shared rule helpers: the v3 regulated packs
+// (BAA above all) have the identical blindness, and a v3 file importing from
+// `v4/` would drag v4 helper code into the v3 bundle chunk. Re-exported here so
+// the v4 packs' existing import path keeps working.
+export { expressDenial } from "../_helpers.js";
 
 export function buildV4PresenceRule(spec: V4PresenceSpec): Rule {
   return {
