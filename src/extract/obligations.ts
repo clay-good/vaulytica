@@ -109,6 +109,12 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
         // pathological all-commas paragraph took ~19s where the budget is 2s.
         // The fuzz-boundary guard (spec-v8 §5) catches exactly this.
         action = trimEnd(action, /[\s.,;]/);
+        // The same excision leaves a seam MID-string when the cut clause sat
+        // between two others: "shall deliver the Deliverables, provided that
+        // the Client has paid the Deposit, no later than 30 days after
+        // execution" loses the middle clause and reads "deliver the
+        // Deliverables, , no later than …". Collapse the doubled separator.
+        action = action.replace(/,\s*,/g, ",");
 
         out.push({
           id: nextId(),

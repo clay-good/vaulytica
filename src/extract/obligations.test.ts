@@ -207,4 +207,19 @@ describe("extractObligations", () => {
     expect(obs).toHaveLength(1);
     expect(obs[0]!.action).toBe("deliver the Deliverables");
   });
+
+  it("leaves no doubled separator when the excised clause sat between two others", () => {
+    // Same excision seam, mid-string rather than at the end: cutting the
+    // qualifier out of the middle left "deliver the Deliverables, , no later
+    // than 30 days after execution".
+    const obs = extractObligations(
+      buildTree([
+        "Delivery",
+        "The Contractor shall deliver the Deliverables, provided that the Client has paid the Deposit, no later than 30 days after execution.",
+      ]),
+      [],
+    );
+    expect(obs).toHaveLength(1);
+    expect(obs[0]!.action).toBe("deliver the Deliverables, no later than 30 days after execution");
+  });
 });

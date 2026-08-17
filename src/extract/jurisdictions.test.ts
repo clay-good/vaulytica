@@ -446,4 +446,80 @@ describe("interpretation-form governing law", () => {
     ).filter((r) => r.clause_kind === "venue");
     expect(venue).toHaveLength(0);
   });
+  // Each of the three clause-tail helpers — the exception/fallback link, the
+  // "namely X" concrete jurisdiction, and the alternative law after a
+  // disclaimer — carried exactly one test row against a regex with four to six
+  // distinct alternation branches, so most of the shipped behaviour could be
+  // deleted with the suite green. The mutation run made that visible (35, 13
+  // and 14 surviving mutants across the three). Every branch is pinned here.
+
+  const GOV = "This Agreement shall be governed by the laws of the State of Delaware";
+
+  const FALLBACKS: Array<[tail: string, want: string]> = [
+    [
+      ", except that disputes regarding intellectual property shall be governed by the laws of Texas.",
+      "Texas",
+    ],
+    [", provided that the laws of Texas shall apply to any employment claim.", "Texas"],
+    ["; otherwise the laws of Texas shall apply.", "Texas"],
+    [", failing which the laws of Texas shall apply.", "Texas"],
+    [", provided that if such courts lack jurisdiction, then New York shall apply.", "New York"],
+    // "courts of X" is a fallback connector alongside "laws of X".
+    [", except that the courts of Texas shall have jurisdiction over injunctive relief.", "Texas"],
+    // Sovereign prefixes on the fallback itself.
+    [", except the laws of the State of Texas shall govern any real property claim.", "Texas"],
+    [
+      ", except that the laws of the Commonwealth of Massachusetts shall apply to any tax matter.",
+      "Massachusetts",
+    ],
+  ];
+
+  for (const [tail, want] of FALLBACKS) {
+    it(`links the fallback jurisdiction ${want} for: ${tail.slice(0, 34)}`, () => {
+      const gov = extractJurisdictions(buildTree(["Governing Law", GOV + tail])).find(
+        (r) => r.clause_kind === "governing-law",
+      );
+      expect(gov?.raw_text).toMatch(/Delaware/);
+      expect(gov?.fallback_jurisdiction).toBe(want);
+    });
+  }
+
+  const DESCRIPTIVE =
+    "These Clauses shall be governed by the law of the Member State in which the data exporter is established";
+
+  const NAMED: Array<[tail: string, want: string]> = [
+    [", namely France.", "France"],
+    [", i.e., Ireland.", "Ireland"],
+    [", that is, Germany.", "Germany"],
+    [", specifically the Netherlands.", "Netherlands"],
+  ];
+
+  for (const [tail, want] of NAMED) {
+    it(`reads the concrete jurisdiction ${want} out of a descriptive clause: ${tail.trim()}`, () => {
+      const gov = extractJurisdictions(buildTree(["Governing Law", DESCRIPTIVE + tail])).find(
+        (r) => r.clause_kind === "governing-law",
+      );
+      // The description alone matches no venue clause ever written, so the
+      // named jurisdiction — not the formula — is what must be recorded.
+      expect(gov?.raw_text).toBe(want);
+    });
+  }
+
+  const DISCLAIMED = "This Agreement shall not be governed by the laws of California";
+
+  const ALTERNATIVES: Array<[tail: string, want: string]> = [
+    [", but rather by the laws of Delaware.", "Delaware"],
+    ["; instead governed by the laws of New York.", "New York"],
+    [", but rather by the laws of the State of Delaware.", "Delaware"],
+    [", but rather by the laws of the Commonwealth of Massachusetts.", "Massachusetts"],
+  ];
+
+  for (const [tail, want] of ALTERNATIVES) {
+    it(`records only the selected law ${want} after a disclaimer: ${tail.slice(0, 30)}`, () => {
+      const gov = extractJurisdictions(buildTree(["Governing Law", DISCLAIMED + tail])).filter(
+        (r) => r.clause_kind === "governing-law",
+      );
+      expect(gov.map((r) => r.raw_text)).toEqual([want]);
+    });
+  }
 });

@@ -32,6 +32,11 @@ const REGISTERS: Array<[clause: string, want: RegExp]> = [
     /^Paris$/,
   ],
   ["Disputes shall be settled under the ICC Rules in Geneva, Switzerland.", /^Geneva$/],
+  // Seats that idiomatically carry the article. The capital-letter guard that
+  // rejects a lowercase prose capture must look PAST "the", or these real seat
+  // clauses read as no seat at all.
+  ["The seat of arbitration shall be the Netherlands.", /^the Netherlands$/],
+  ["The arbitration shall be seated in the Hague.", /^the Hague$/],
 ];
 
 describe("arbitration-seat phrasing guard", () => {

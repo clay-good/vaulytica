@@ -310,8 +310,11 @@ export function extractJurisdictions(
   const seenGovLaw = new Set<string>();
 
   forEachParagraph(tree, (ctx) => {
-    /** Laws captured out of a negated clause's tail, per paragraph. */
-    const altLaws = new Set<string>();
+    /**
+     * Paragraph offsets where a law was captured out of a negated clause's
+     * tail — the restated clause's own GOV_LAW match starts there too.
+     */
+    const altLawOffsets = new Set<number>();
     runRegex(GOV_LAW, ctx.text, (m) => {
       const ext = extendEnglandAndWales(ctx.text, (m[2] ?? "").trim(), m.index + m[0].length);
       const raw = ext.raw;
@@ -330,14 +333,16 @@ export function extractJurisdictions(
           // when that tail restates the verb — "shall not be governed by the
           // laws of California, but shall instead be governed by the laws of
           // Delaware" — the very next GOV_LAW match records Delaware a second
-          // time. Note the alternative here so the restated clause is skipped
-          // below; scoped to the paragraph, so a genuinely separate governing-
-          // law clause elsewhere in the document still records normally.
-          altLaws.add(actual.toLowerCase());
+          // time. Remember WHERE the selected law was read from, so only that
+          // one restated clause is skipped below. Keying on the name instead
+          // would drop any later clause in the paragraph naming the same
+          // jurisdiction — an ancillary exhibit's own governing-law sentence
+          // is a real, separate clause and must still record.
+          altLawOffsets.add(ext.end + actual.offset);
           out.push({
             clause_kind: "governing-law",
-            jurisdiction_id: lookup(actual),
-            raw_text: actual,
+            jurisdiction_id: lookup(actual.raw),
+            raw_text: actual.raw,
             position: posInParagraph(ctx, m.index, m.index + m[0].length),
           });
         }
@@ -354,7 +359,7 @@ export function extractJurisdictions(
       // it as the governing law made the SCC's own France forum read as a
       // law/venue mismatch.
       const named = detectNamedJurisdiction(tail);
-      if (altLaws.has((named ?? raw).toLowerCase())) return;
+      if (altLawOffsets.has(m.index + m[0].lastIndexOf(raw))) return;
       seenGovLaw.add((named ?? raw).toLowerCase());
       out.push({
         clause_kind: "governing-law",
@@ -472,7 +477,13 @@ export function extractJurisdictions(
       // recorded "accordance with the ICC Rules of Arbitration then in force"
       // as a seat. Every other consumer in this file re-checks the capital
       // for exactly this reason; this one did not.
-      if (!/^[A-Z]/.test(raw)) return;
+      //
+      // The article is allowed before the capital. A bare `^[A-Z]` also threw
+      // away every seat that idiomatically carries one — "the seat of
+      // arbitration shall be the Netherlands", "shall be seated in the Hague"
+      // — turning a real seat clause into no seat at all, which is the more
+      // dangerous direction of the two.
+      if (!/^(?:the\s+)?[A-Z]/.test(raw)) return;
       out.push({
         clause_kind: "arbitration-seat",
         jurisdiction_id: lookup(raw),
@@ -549,12 +560,16 @@ function isNegatedGovLaw(text: string, matchIndex: number): boolean {
  * the clause actually selects: "…, but rather by the laws of Delaware",
  * "instead governed by the laws of New York". Bounded to the clause tail.
  */
-function detectAlternativeLaw(tail: string): string | undefined {
+function detectAlternativeLaw(tail: string): { raw: string; offset: number } | undefined {
   const m =
     /\b(?:rather|instead)\b[^.;]{0,60}?\bthe\s+laws?\s+of\s+(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+(?:without|excluding|and|regardless)|$)/.exec(
       tail,
     );
-  return m?.[1]?.trim() || undefined;
+  const raw = m?.[1]?.trim();
+  if (!m || !raw) return undefined;
+  // The offset identifies the clause this law was read out of, so the caller
+  // can skip that one restated clause without keying on the name.
+  return { raw, offset: m.index + m[0].lastIndexOf(raw) };
 }
 
 function runRegex(re: RegExp, text: string, fn: (m: RegExpExecArray) => void): void {

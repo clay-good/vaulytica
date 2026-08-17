@@ -105,6 +105,23 @@ describe("governing-law phrasing guard", () => {
     ]);
   });
 
+  it("still records a separate later clause naming that same law", () => {
+    // Skipping the restated clause must key on WHERE the selected law was read
+    // from, not on its name: an ancillary document's own governing-law
+    // sentence in the same paragraph is a real, separate clause, and keying on
+    // the name silently swallowed it.
+    const refs = extractJurisdictions(
+      buildTree([
+        "Governing Law",
+        "This Agreement shall not be governed by the laws of California, but shall instead be governed by the laws of Delaware. The Ancillary IP Assignment attached as Exhibit B shall also be governed by the laws of Delaware.",
+      ]),
+    );
+    expect(refs.filter((r) => r.clause_kind === "governing-law").map((r) => r.raw_text)).toEqual([
+      "Delaware",
+      "Delaware",
+    ]);
+  });
+
   it("records the selected law when the disclaimer carries a comma parenthetical", () => {
     const refs = extractJurisdictions(
       buildTree([
