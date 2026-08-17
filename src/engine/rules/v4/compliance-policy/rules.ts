@@ -9,6 +9,7 @@ import type { Rule } from "../../../finding.js";
 import {
   buildV4PresenceRule,
   buildV4LanguageRule,
+  expressDenial,
   type V4PresenceSpec,
   type V4LanguageSpec,
 } from "../_helpers.js";
@@ -283,6 +284,7 @@ const FCPA_RULES: Rule[] = [
 const AML_RULES: Rule[] = [
   presence({
     id: "POL-012",
+    version: "1.1.0",
     name: "AML program — BSA five pillars",
     description:
       "AML policy must establish the five-pillar AML program (BSA + FinCEN final rule 2018).",
@@ -299,9 +301,14 @@ const AML_RULES: Rule[] = [
       /(compliance\s+officer|aml\s+officer)/i,
       /(training|testing|cdd|customer\s+due\s+diligence)/i,
     ],
+    denied_if: expressDenial(String.raw`aml\s+program|anti.?money.?laundering\s+program`),
+    denied_title: "BSA five-pillar AML program expressly disclaimed",
+    denied_description:
+      "The document states that no AML program is maintained. Disclaiming the program is a BSA violation on its face, not a substitute for one.",
   }),
   presence({
     id: "POL-013",
+    version: "1.1.0",
     name: "OFAC sanctions screening",
     description: "Policy must require OFAC sanctions screening (SDN + sectoral lists).",
     citation: ofac(),
@@ -317,9 +324,16 @@ const AML_RULES: Rule[] = [
       /(sdn|specially\s+designated\s+nationals|sanctions\s+list)/i,
       /(screen(ing)?|block(ing)?|report)/i,
     ],
+    denied_if: expressDenial(
+      String.raw`ofac|office\s+of\s+foreign\s+assets\s+control|sanctions\s+screening|sdn\s+(?:list|screening)`,
+    ),
+    denied_title: "OFAC sanctions screening expressly disclaimed",
+    denied_description:
+      "The document states that OFAC sanctions screening is not performed. OFAC liability is strict, so an express disclaimer is worse than silence — it documents the gap.",
   }),
   presence({
     id: "POL-014",
+    version: "1.1.0",
     name: "Suspicious activity reporting (SAR) procedures",
     description:
       "Policy must establish SAR procedures (FinCEN 31 C.F.R. § 1010.320 thresholds + 30-day deadline).",
@@ -336,9 +350,14 @@ const AML_RULES: Rule[] = [
       /(30\s+days?|thirty\s+days?|fincen)/i,
       /(confidential|tipping.?off)/i,
     ],
+    denied_if: expressDenial(String.raw`suspicious\s+activity\s+reports?|sars?\b`),
+    denied_title: "SAR procedure expressly disclaimed",
+    denied_description:
+      "The document states that suspicious activity reports are not filed. Failure to file a SAR is itself a BSA violation.",
   }),
   presence({
     id: "POL-015",
+    version: "1.1.0",
     name: "Customer identification program (CIP) + beneficial ownership",
     description: "Policy must establish CIP and FinCEN beneficial-ownership identification rule.",
     citation: polPractice(
@@ -358,9 +377,16 @@ const AML_RULES: Rule[] = [
       /(beneficial\s+ownership|beneficial\s+owners?)/i,
       /(25%|twenty.five\s+percent|cta|corporate\s+transparency)/i,
     ],
+    denied_if: expressDenial(
+      String.raw`customer\s+identification\s+program|\bcip\b|beneficial\s+ownership`,
+    ),
+    denied_title: "CIP / beneficial-ownership identification expressly disclaimed",
+    denied_description:
+      "The document states that customers or beneficial owners are not identified. The FinCEN CDD rule makes that identification mandatory, not optional.",
   }),
   presence({
     id: "POL-016",
+    version: "1.1.0",
     name: "Currency Transaction Reports (CTR) ≥ $10,000",
     description:
       "Covered businesses must file CTRs for currency transactions exceeding $10,000 (31 C.F.R. § 1010.311).",
@@ -377,10 +403,15 @@ const AML_RULES: Rule[] = [
       /(\$10,?000|ten\s+thousand)/i,
       /(structuring|aggregation|aggregate)/i,
     ],
+    denied_if: expressDenial(String.raw`currency\s+transaction\s+reports?|\bctrs?\b`),
+    denied_title: "CTR filing expressly disclaimed",
+    denied_description:
+      "The document states that currency transaction reports are not filed. CTR filing above $10,000 is mandatory under 31 C.F.R. § 1010.311.",
     default_severity: "warning",
   }),
   presence({
     id: "POL-017",
+    version: "1.1.0",
     name: "Recordkeeping + retention",
     description: "AML records must be retained for at least 5 years (31 C.F.R. § 1010.430).",
     citation: bsa(),
@@ -395,6 +426,10 @@ const AML_RULES: Rule[] = [
       /(recordkeeping|records?\s+retention|retain)/i,
       /(5\s+years?|five\s+years?)/i,
     ],
+    denied_if: expressDenial(String.raw`aml\s+records?|bsa\s+records?`),
+    denied_title: "AML recordkeeping expressly disclaimed",
+    denied_description:
+      "The document states that AML / BSA records are not retained. 31 C.F.R. § 1010.430 requires 5-year retention.",
     default_severity: "warning",
   }),
 ];

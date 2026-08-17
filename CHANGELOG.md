@@ -29,6 +29,24 @@ All notable changes to this project will be documented in this file. Format adap
   production-QA pack.
 
 ### Fixed
+- **A policy that expressly disclaims an AML/BSA clause is no longer scored as
+  compliant.** A clause-presence rule reads the document for the words the
+  required clause would use, so a policy that states "the Company performs no
+  OFAC sanctions screening" satisfied every one of POL-013's presence patterns
+  and the rule stayed silent — while a policy that merely never mentioned OFAC
+  was flagged. The express disclaimer is the worse document, and under OFAC's
+  strict-liability regime it is the one that must not be missed. Presence rules
+  now accept a `denied_if` guard (built by the shared `expressDenial()` frames)
+  that outranks the presence check and reports the denying sentence itself
+  rather than "(clause absent from the document)". Wired into the six AML/BSA
+  rules — POL-012 (five-pillar AML program), POL-013 (OFAC screening),
+  POL-014 (SAR), POL-015 (CIP / beneficial ownership), POL-016 (CTR), and
+  POL-017 (AML recordkeeping), each bumped to v1.1.0. The frames refuse to
+  cross a conditional connective or a scope verb, so the compliant drafting
+  that pairs a negation with the topic — "no customer shall be onboarded
+  **without** OFAC screening", "this policy does not **apply to** OFAC
+  screening by third parties" — is not read as a denial. Golden churn is
+  `result_hash` only across all 99 v4 fixtures: zero finding-level changes.
 - **The party-role picker no longer scrolls the page sideways on a narrow
   phone.** A dropdown never wraps its option text and a `fieldset` defaults to
   `min-inline-size: min-content`, so a party role long enough to exceed the

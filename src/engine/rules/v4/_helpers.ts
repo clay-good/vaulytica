@@ -20,6 +20,7 @@ import type { Finding, Rule, RuleContext, Severity } from "../../finding.js";
 import type { SourceCitation } from "../../../dkb/types.js";
 import { makeFinding } from "../../finding.js";
 import { forEachParagraph, forEachSection } from "../../../extract/walk.js";
+import { enclosingSentence } from "../_helpers.js";
 import type { DocPosition } from "../../../extract/types.js";
 
 /** Concatenate every section heading + paragraph text. */
@@ -80,8 +81,68 @@ export type V4PresenceSpec = {
    * rules without it are unchanged.
    */
   applicable_if?: readonly RegExp[];
+  /**
+   * Express-denial patterns. A presence rule reads the document for the
+   * words the required clause would use, so a document that AFFIRMATIVELY
+   * DISCLAIMS the clause ("the Company performs no OFAC screening") is
+   * silent — the topic words are all there, so the rule scores it as
+   * compliant. That is backwards: an express denial is strictly worse than
+   * an omission, and it is the one the rule must not miss.
+   *
+   * When any of these patterns match, the rule fires on the denying
+   * paragraph regardless of `present_patterns`. Build them with
+   * `expressDenial()` so the frames stay consistent across rules.
+   * Optional; rules without it are unchanged.
+   */
+  denied_if?: readonly RegExp[];
+  /** Title used when `denied_if` fires. Defaults to the missing_title. */
+  denied_title?: string;
+  /** Description used when `denied_if` fires. Defaults to the missing_description. */
+  denied_description?: string;
   default_severity?: Severity;
 };
+
+/**
+ * Build express-disclaimer patterns for a presence rule's `denied_if`.
+ *
+ * `topic` is a regex source fragment naming the required clause (e.g.
+ * `"ofac|sanctions\\s+screening"`). The frames below wrap it in the ways a
+ * document actually disclaims an obligation. The word gap refuses to cross
+ * a conditional connective, so a COMPLIANT sentence that pairs a negation
+ * with the topic — "no customer shall be onboarded WITHOUT OFAC screening"
+ * — is not read as a denial.
+ */
+export function expressDenial(topic: string): RegExp[] {
+  const t = `(?:${topic})`;
+  // Up to three filler words. The gap refuses to cross a conditional
+  // connective ("...not onboard a customer WITHOUT OFAC screening") or a
+  // scope verb ("this policy does not APPLY TO OFAC screening by third
+  // parties"), because neither sentence denies that the clause exists.
+  const gap = String.raw`(?:(?!\b(?:without|unless|except|absent|failing|prior|appl(?:y|ies)|affect|affects|limit|limits|waive|waives|relieve|relieves|supersede|supersedes|alter|alters|modify|modifies|excuse|excuses|prevent|prevents|preclude|precludes|restrict|restricts)\b)\w+[\s,]+){0,3}`;
+  const verb =
+    "(?:perform|conduct|provide|maintain|require|undertake|implement|operate|run|have|has|make)";
+  const done =
+    "(?:required|performed|conducted|maintained|provided|undertaken|implemented|applicable|filed|retained|kept|screened|collected|identified|obtained|established)";
+  return [
+    // "does not perform OFAC screening" / "is not required to conduct AML training"
+    new RegExp(
+      String.raw`\b(?:do|does|did|shall|will|is|are|was|were|has|have|had|can|may|need)\s+not\s+(?:be\s+)?${gap}${t}`,
+      "i",
+    ),
+    // "performs no OFAC screening" / "maintains no SAR procedures"
+    new RegExp(String.raw`\b${verb}(?:s|es|ed)?\s+no\s+${gap}${t}`, "i"),
+    // "OFAC screening is not required" / "the AML program shall not be maintained"
+    new RegExp(
+      String.raw`\b${t}\b[^.]{0,80}?\b(?:is|are|shall\s+be|will\s+be|shall|will)\s+not\s+(?:be\s+)?${done}`,
+      "i",
+    ),
+    // "no OFAC screening is performed"
+    new RegExp(
+      String.raw`\bno\s+${gap}${t}\b[^.]{0,80}?\b(?:is|are|shall\s+be|will\s+be)\s+${done}`,
+      "i",
+    ),
+  ];
+}
 
 export function buildV4PresenceRule(spec: V4PresenceSpec): Rule {
   return {
@@ -96,6 +157,26 @@ export function buildV4PresenceRule(spec: V4PresenceSpec): Rule {
     check(ctx: RuleContext): Finding | null {
       const text = fullText(ctx);
       if (spec.applicable_if && !spec.applicable_if.some((re) => re.test(text))) return null;
+      if (spec.denied_if) {
+        // An express denial outranks the presence check: the topic words are
+        // present precisely because the document is disclaiming the clause.
+        const denial = findDenial(ctx, spec.denied_if);
+        if (denial) {
+          return makeFinding({
+            rule: this as Rule,
+            title: spec.denied_title ?? spec.missing_title,
+            description: spec.denied_description ?? spec.missing_description,
+            // Excerpt the denying SENTENCE. A policy states its disclaimer deep
+            // inside a long clause, so the paragraph's leading 280 characters
+            // would show everything except the sentence being reported.
+            excerptText: denial.sentence.slice(0, 280),
+            explanation: spec.explanation,
+            recommendation: spec.recommendation,
+            position: denial.position,
+            source_citations: [spec.citation],
+          });
+        }
+      }
       if (spec.present_patterns.some((re) => re.test(text))) return null;
       return makeFinding({
         rule: this as Rule,
@@ -109,6 +190,35 @@ export function buildV4PresenceRule(spec: V4PresenceSpec): Rule {
       });
     },
   };
+}
+
+/** First denying sentence in the document, with its position. */
+function findDenial(
+  ctx: RuleContext,
+  patterns: readonly RegExp[],
+): { sentence: string; position: DocPosition } | null {
+  let found: { sentence: string; position: DocPosition } | null = null;
+  forEachParagraph(ctx.tree, (p) => {
+    if (found) return;
+    for (const re of patterns) {
+      const r = new RegExp(re.source, re.flags.includes("g") ? re.flags : re.flags + "g");
+      r.lastIndex = 0;
+      const m = r.exec(p.text);
+      if (m) {
+        found = {
+          sentence: enclosingSentence(p.text, m.index).trim(),
+          position: {
+            section_id: p.section.id,
+            paragraph_id: p.paragraph.id,
+            start: p.start + m.index,
+            end: p.start + m.index + m[0].length,
+          },
+        };
+        return;
+      }
+    }
+  });
+  return found;
 }
 
 /** A language-quality rule: fires when any bad pattern matches some paragraph. */

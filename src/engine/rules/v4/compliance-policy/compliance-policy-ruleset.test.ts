@@ -298,3 +298,88 @@ describe("POL-042 — lawful confidentiality restrictions (v1.3.0)", () => {
     ).toBe(true);
   });
 });
+
+// ────────────────────────────────────────────────────────────────────
+// Express denial (POL-012..POL-017, v1.1.0).
+//
+// A presence rule reads the document for the words the required clause
+// would use, so a policy that AFFIRMATIVELY DISCLAIMS the clause ("the
+// Company performs no OFAC screening") scored as compliant while a policy
+// that merely omitted the topic was flagged. That is backwards: the
+// disclaimer is the worse document, and — for OFAC, where liability is
+// strict — the one the rule must not miss.
+// ────────────────────────────────────────────────────────────────────
+
+describe("v4 Compliance-policy — express denial of an AML/BSA clause", () => {
+  const COMPLIANT_AML =
+    "AML Program. The Company maintains an anti-money-laundering program with written policies and procedures, a designated AML compliance officer, ongoing employee training, independent testing, and customer due diligence (CDD). " +
+    "OFAC Sanctions Screening. No customer shall be onboarded without OFAC screening against the SDN list and other sanctions lists; matches are blocked and reported. " +
+    "Suspicious Activity Reports. SARs are filed with FinCEN within 30 days of detection and are treated as confidential; tipping-off is prohibited. " +
+    "Customer Identification Program. The CIP collects name, date of birth, address, and ID number, and identifies each beneficial owner holding 25% or more under the Corporate Transparency Act. " +
+    "Currency Transaction Reports. CTRs are filed for currency transactions above $10,000 with same-day aggregation; structuring is prohibited. " +
+    "Recordkeeping. AML records are retained for 5 years.";
+
+  const amlFindings = async (tail: string): Promise<string[]> => {
+    const run = await runEngine({
+      rules: COMPLIANCE_POLICY_RULES,
+      ctx: withPb(buildContext(["AML Policy", `${COMPLIANT_AML} ${tail}`]), AML_PB),
+      source_file: SRC,
+    });
+    return run.findings.map((f) => f.rule_id).filter((id) => /^POL-01[2-7]$/.test(id));
+  };
+
+  it.each([
+    ["POL-012", "The Company does not maintain an anti-money-laundering program."],
+    ["POL-013", "The Company performs no OFAC sanctions screening of customers."],
+    ["POL-013", "The Company does not conduct OFAC screening against the SDN list."],
+    ["POL-013", "OFAC screening is not required under this policy."],
+    ["POL-014", "Suspicious activity reports are not filed by the Company."],
+    ["POL-015", "The Company performs no customer identification program checks."],
+    ["POL-016", "Currency transaction reports will not be filed."],
+    ["POL-017", "AML records are not retained."],
+  ])("%s fires on an express disclaimer: %s", async (id, tail) => {
+    expect(await amlFindings(tail)).toContain(id);
+  });
+
+  // The denial frames must not read a COMPLIANT sentence that happens to
+  // pair a negation with the topic as a disclaimer.
+  it.each([
+    ["nothing added", ""],
+    ["conditional 'unless'", "No transaction is processed unless OFAC screening is performed."],
+    ["conditional 'without'", "The Company shall not onboard any customer without OFAC screening."],
+    ["scope carve-out", "This policy does not apply to OFAC screening performed by third parties."],
+    ["non-limitation", "Nothing herein limits the SAR obligations of any employee."],
+    ["non-waiver", "The Company does not waive any OFAC screening requirement."],
+    ["prohibition", "Failure to file a suspicious activity report is not permitted."],
+  ])("stays silent on a compliant AML policy — %s", async (_label, tail) => {
+    expect(await amlFindings(tail)).toEqual([]);
+  });
+
+  it("reports the denying sentence rather than '(clause absent)'", async () => {
+    const run = await runEngine({
+      rules: COMPLIANCE_POLICY_RULES,
+      ctx: withPb(
+        buildContext([
+          "AML Policy",
+          `${COMPLIANT_AML} The Company performs no OFAC sanctions screening of customers.`,
+        ]),
+        AML_PB,
+      ),
+      source_file: SRC,
+    });
+    const f = run.findings.find((x) => x.rule_id === "POL-013");
+    expect(f?.title).toBe("OFAC sanctions screening expressly disclaimed");
+    expect(f?.excerpt.text).toContain("performs no OFAC sanctions screening");
+  });
+
+  it("still reports a plain omission as a missing clause", async () => {
+    const run = await runEngine({
+      rules: COMPLIANCE_POLICY_RULES,
+      ctx: withPb(buildContext(["AML Policy", "The Company has an AML program."]), AML_PB),
+      source_file: SRC,
+    });
+    const f = run.findings.find((x) => x.rule_id === "POL-013");
+    expect(f?.title).toBe("OFAC sanctions screening clause missing");
+    expect(f?.excerpt.text).toBe("(clause absent from the document)");
+  });
+});
