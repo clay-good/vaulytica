@@ -57,7 +57,7 @@ Two or more documents trigger **bundle mode**: per-document reports *plus* a por
 
 ## What it checks — rule cheat sheet
 
-The **always-on launch set** is 115 rules across ten categories that apply to any agreement (the original v1 set of 112 plus v9 Thrust B's three execution-readiness reconciliations):
+The **always-on launch set** is 120 rules across ten categories that apply to any agreement (the original v1 set of 112, plus v9 Thrust B's three execution-readiness reconciliations and five later dark-pattern additions):
 
 | Category | Rules | Catches (examples) |
 |---|---|---|
@@ -69,10 +69,10 @@ The **always-on launch set** is 115 rules across ten categories that apply to an
 | Termination | 9 | termination asymmetry, no effect-of-termination clause, termination tied to payment |
 | IP & data | 10 | no IP ownership clause, AI/model-training rights over customer data, cross-border transfer w/o safeguard |
 | Obligations | 9 | sole-discretion language, MAC clause, residuals clause swallowing confidentiality |
-| Dark patterns | 9 | unilateral amendment by posting, hidden auto-renewal, browsewrap acceptance |
+| Dark patterns | 14 | unilateral amendment by posting, hidden auto-renewal, browsewrap acceptance |
 | Personnel | 9 | stay-or-pay/training-repayment clauses, IC misclassification signals, overlong non-solicits |
 
-On top of that, **v3 (+220 rules)** adds compliance-grade rule sets and **v4 (+747 rules)** adds 16 specialized sub-domains. The full **1,111-rule** catalog runs live, family-gated so a plain NDA is not flagged for missing GDPR clauses. The contract every pack honors — how it gates its rules, reserves its namespace, and discloses its scope — is written down in [`verticals`](docs/verticals.md); a document matching no known family is reported as unmatched, never given a confidently-wrong contract verdict.
+On top of that, **v3 (+220 rules)** adds compliance-grade rule sets and **v4 (+771 rules)** adds 16 specialized sub-domains. The full **1,111-rule** catalog runs live, family-gated so a plain NDA is not flagged for missing GDPR clauses. The contract every pack honors — how it gates its rules, reserves its namespace, and discloses its scope — is written down in [`verticals`](docs/verticals.md); a document matching no known family is reported as unmatched, never given a confidently-wrong contract verdict.
 
 Those 1,111 are all **single-document** rules. Dropping a folder or `.zip` additionally runs **20 cross-document consistency rules** — defects no single-document scan can see because they live in the *relationship between* documents:
 
@@ -837,7 +837,7 @@ Every view is verified to render with **no horizontal scroll from 320 px to 1280
 |---|---|---|---|
 | v1 | Linter | 112 rules, DOCX report, `result_hash`, browser-only | shipped |
 | v3 | Regulated agreements | +220 rules (HIPAA, GDPR, 8 US state privacy laws, EU SCCs, UK IDTA), cross-doc consistency, compliance matrix, citation-pinned sources | shipped |
-| v4 | Every operative document | +747 rules, 16 sub-domains, multi-doc bundles (folder/zip), document classifier | shipped |
+| v4 | Every operative document | +771 rules, 16 sub-domains, multi-doc bundles (folder/zip), document classifier | shipped |
 | v5 | Ground Truth | accuracy & validation harness, measured recall/precision, rule-retirement discipline | **infrastructure built** (Steps 67/69/71/75/83): corpus scaffolding, gold-annotation schema + Cohen's κ, `npm run accuracy` harness + reproducible scoreboard, legal-basis ledger + `tier` field. Numbers + sign-offs await a human-gated real corpus, attorney annotation, and legal review (Steps 68/70/76/77). |
 | v6 | Workflow | version comparison · bring-your-own-playbook · findings-to-action exports · model-clause references · portfolio matrix · depth (classifier, cross-doc families, jurisdiction overlays) | **complete · 6.0.0** (Steps 87–102; only Step 98 extraction-recall deferred behind v5) |
 | v7 | Depth & Proof | extraction recall · 3 new cross-doc families · mixed-text-layer OCR + per-word confidence · report provenance/exec-summary · **and** the missing test *kinds*: coverage + property + metamorphic + parity + schema-fuzz + report-structure + **mutation** + responsiveness gates | **substantially done · 7.0.0** (Steps 103–108, 110, 113–126; [`spec-v7`](docs/spec-v7.md) · [`docs/v7/`](docs/v7/README.md)). Deferred — all v5-/attorney-gated: 109 (routing measured against the real corpus), 111 (per-state overlay data), 112 (golden-churn + citable sources). |
