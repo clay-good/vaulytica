@@ -530,3 +530,36 @@ describe("EMP-033 — invention assignment expressly refused", () => {
     ).toEqual([]);
   });
 });
+
+/**
+ * California Labor Code § 2870 (and its analogues in WA, MN, IL, DE) REQUIRES
+ * an invention-assignment agreement to state that it does not assign
+ * inventions the employee developed entirely on their own time without company
+ * equipment. That mandated sentence contains "does not assign any invention",
+ * and the denial frame accused it until a carve-out lookahead was added —
+ * the rule would have flagged the very language the statute compels.
+ */
+describe("EMP-033 — the § 2870 statutory carve-out is not accused", () => {
+  const run = async (text: string) => {
+    const res = await runEngine({
+      rules: EMPLOYMENT_RULES,
+      ctx: withPb(buildContext(["Inventions", text]), PIIA_PB),
+      source_file: SRC,
+    });
+    return res.findings.filter((f) => f.rule_id === "EMP-033").map((f) => f.title);
+  };
+
+  it("stays silent on a compliant assignment carrying the § 2870 carve-out", async () => {
+    expect(
+      await run(
+        "Employee hereby assigns all inventions to the Company. This assignment does not assign any invention that Employee developed entirely on Employee's own time without using Company equipment, as provided by California Labor Code Section 2870.",
+      ),
+    ).toEqual([]);
+  });
+
+  it("still reports a blanket refusal to assign", async () => {
+    expect(await run("Employee does not assign any inventions to the Company.")).toEqual([
+      "Invention assignment expressly refused",
+    ]);
+  });
+});

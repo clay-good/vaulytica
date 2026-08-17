@@ -782,7 +782,7 @@ const PIIA_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-033",
-    version: "1.1.0",
+    version: "1.1.1",
     name: "Assignment of inventions",
     description: "PIIA must assign work-related inventions to employer.",
     citation: empPractice(
@@ -806,7 +806,13 @@ const PIIA_RULES: Rule[] = [
     // definitively leaves invention ownership with the employee — the risk this
     // rule exists to catch — scored clean, while a PIIA merely silent fired.
     denied_if: [
-      /\b(?:shall|will|does|do|may|can)\s+not\s+assign\b[^.]{0,60}?\binventions?/i,
+      // Must be a BLANKET refusal, not a statutory carve-out. California Labor
+      // Code § 2870 (and its analogues in WA, MN, IL, DE) requires the
+      // agreement to say it "does not assign any invention that the employee
+      // developed entirely on their own time without using company equipment"
+      // — mandated language that this frame accused until the lookahead was
+      // added. A carve-out marker anywhere in the clause disqualifies it.
+      /\b(?:shall|will|does|do|may|can)\s+not\s+assign\b(?![^.]{0,160}\b(?:own\s+time|2870|without\s+using|no\s+equipment|unrelated\s+to|does\s+not\s+relate)\b)[^.]{0,60}?\binventions?/i,
       /\bno\s+(?:invention|patent|intellectual\s+property)\s+assignment\b/i,
       /\binventions?\b[^.]{0,40}?\b(?:are|is)\s+not\s+assigned/i,
       /\b(?:retains?|reserves?|keeps?)\b[^.]{0,40}?\bownership\s+of\s+(?:all\s+|any\s+)?inventions?/i,

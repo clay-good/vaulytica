@@ -533,3 +533,26 @@ describe("RE-003 — tenant insurance requirement expressly waived", () => {
     ).toEqual([]);
   });
 });
+
+/**
+ * The RE-003 denial frame must be bound to the TENANT. A compliant net lease
+ * routinely says the landlord is not required to insure the tenant's own
+ * property, and an unbound "not required to carry … insurance" pattern
+ * accused it.
+ */
+describe("RE-003 — the denial frame is bound to the tenant", () => {
+  it("does not accuse a compliant lease that relieves the LANDLORD", async () => {
+    const res = await runEngine({
+      rules: REAL_ESTATE_RULES,
+      ctx: withPb(
+        buildContext([
+          "Insurance",
+          "Tenant shall maintain commercial general liability insurance and property insurance. Landlord shall not be required to carry insurance on Tenant's personal property.",
+        ]),
+        NET_LEASE_PB,
+      ),
+      source_file: SRC,
+    });
+    expect(res.findings.filter((f) => f.rule_id === "RE-003").map((f) => f.title)).toEqual([]);
+  });
+});

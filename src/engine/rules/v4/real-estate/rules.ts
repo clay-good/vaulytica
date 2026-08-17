@@ -98,7 +98,7 @@ const NET_LEASE_RULES: Rule[] = [
   }),
   presence({
     id: "RE-003",
-    version: "1.1.0",
+    version: "1.1.1",
     name: "Insurance requirements (liability + property)",
     description:
       "NNN lease must specify tenant insurance: CGL with minimum limits, property insurance, waiver of subrogation.",
@@ -129,7 +129,10 @@ const NET_LEASE_RULES: Rule[] = [
     // lease the tenant carrying insurance is the point of the structure —
     // relieving it shifts the risk back to the landlord silently.
     denied_if: [
-      /\bnot\s+(?:be\s+)?(?:required|obligated|obliged)\s+to\s+(?:carry|maintain|obtain|provide)\b[^.]{0,60}?\binsurance/i,
+      // The subject must be the TENANT. "Landlord shall not be required to
+      // carry insurance on Tenant's personal property" is ordinary drafting in
+      // a compliant lease, and an unbound pattern accused it.
+      /\btenant\b[^.]{0,40}?\bnot\s+(?:be\s+)?(?:required|obligated|obliged)\s+to\s+(?:carry|maintain|obtain|provide)\b[^.]{0,40}?\binsurance/i,
       /\bno\s+insurance\s+(?:is|shall\s+be)\s+required/i,
       /\binsurance\b[^.]{0,40}?\b(?:is|are)\s+not\s+required\s+of\s+tenant/i,
     ],

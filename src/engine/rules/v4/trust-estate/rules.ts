@@ -98,7 +98,7 @@ const WILL_RULES: Rule[] = [
   }),
   presence({
     id: "EST-004",
-    version: "1.1.0",
+    version: "1.1.1",
     name: "Bond waiver for fiduciaries",
     description:
       "Will should waive bond / surety for executor and other fiduciaries unless state law requires.",
@@ -120,14 +120,16 @@ const WILL_RULES: Rule[] = [
     // bond is a lawful choice, but it is a cost the estate bears and the
     // drafter should see it reported, not hidden behind a waiver finding.
     denied_if: [
-      // The bond token must not itself be negated: "and no bond shall be
-      // required" is the COMPLIANT waiver, and without this lookbehind it
-      // matched "bond … shall be required" and accused the compliant will.
-      /(?<!\bno\s)(?<!\bwithout\s)\bbond\b[^.]{0,60}?\b(?:shall|will|must)\s+be\s+required/i,
+      // Neither token may sit under an earlier negation in the same sentence.
+      // "No bond OR SURETY shall be required" is the standard combined waiver:
+      // a fixed lookbehind on the word itself is not enough, because "surety"
+      // is preceded by "or", not by "no". The variable-length lookbehind scans
+      // back for the negation anywhere in the clause. A separate
+      // surety-only frame without this guard accused exactly that waiver.
+      /(?<!\bno\b[^.]{0,40})(?<!\bwithout\b[^.]{0,40})\b(?:bond|surety)\b[^.]{0,60}?\b(?:shall|will|must)\s+be\s+required/i,
       /\b(?:shall|will|must)\s+(?:be\s+required\s+to\s+)?(?:post|furnish|provide)\s+(?:a\s+)?bond/i,
       /\bno\s+bond\s+is\s+waived/i,
       /\bbond\b[^.]{0,40}?\b(?:is|are)\s+not\s+waived/i,
-      /\bsurety\s+shall\s+be\s+required/i,
     ],
     denied_title: "Fiduciary bond expressly required",
     denied_description:

@@ -327,3 +327,34 @@ describe("EST-004 — fiduciary bond expressly required", () => {
     expect(await run(text)).toEqual([]);
   });
 });
+
+/**
+ * The combined waiver is the common form: "no bond OR SURETY shall be
+ * required". A fixed lookbehind on the word itself is not enough there — the
+ * negation sits before "bond", while "surety" is preceded by "or" — so a
+ * surety-only frame accused the standard compliant waiver.
+ */
+describe("EST-004 — the combined bond-or-surety waiver is not accused", () => {
+  const run = async (text: string) => {
+    const res = await runEngine({
+      rules: TRUST_ESTATE_RULES,
+      ctx: withPb(buildContext(["Terms", text]), WILL_PB),
+      source_file: SRC,
+    });
+    return res.findings.filter((f) => f.rule_id === "EST-004").map((f) => f.title);
+  };
+
+  it("stays silent on 'no bond or surety shall be required'", async () => {
+    expect(
+      await run(
+        "I direct that no bond or surety shall be required of my Executor in any jurisdiction.",
+      ),
+    ).toEqual([]);
+  });
+
+  it("still reports an unnegated surety requirement", async () => {
+    expect(await run("Surety shall be required of each fiduciary serving hereunder.")).toEqual([
+      "Fiduciary bond expressly required",
+    ]);
+  });
+});

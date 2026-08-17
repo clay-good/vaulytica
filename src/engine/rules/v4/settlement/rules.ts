@@ -78,7 +78,7 @@ const RELEASE_RULES: Rule[] = [
   }),
   presence({
     id: "SET-002",
-    version: "1.1.0",
+    version: "1.1.1",
     name: "Scope of released claims — broad release language",
     description:
       "Release must state the scope of claims released (known / unknown, past / present).",
@@ -115,7 +115,11 @@ const RELEASE_RULES: Rule[] = [
     denied_if: [
       /\b(?:shall|will|does|do|may|can|is|are)\s+not\s+releas\w+\b[^.]{0,60}?\b(?:any\s+and\s+all|each\s+and\s+every|known\s+or\s+unknown)?\s*claims?/i,
       /\bno\s+claims?\b[^.]{0,40}?\b(?:are|is)\s+(?:hereby\s+)?released/i,
-      /\b(?:reserves?|retains?|preserves?)\b[^.]{0,40}?\ball\s+claims?/i,
+      // Deliberately NO blanket "reserves all claims" frame: carving claims
+      // out of a release ("Releasor reserves all claims arising after the
+      // Effective Date") is standard drafting, and no pattern here can tell a
+      // carve-out from a refusal to release at all. Only the explicit refusals
+      // above are safe to report.
     ],
     denied_title: "Release of claims expressly withheld",
     denied_description:

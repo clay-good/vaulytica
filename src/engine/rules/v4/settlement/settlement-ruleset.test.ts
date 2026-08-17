@@ -469,17 +469,23 @@ describe("SET-002 — release of claims expressly withheld", () => {
     return res.findings.filter((f) => f.rule_id === "SET-002").map((f) => f.title);
   };
 
-  it.each([
-    [
-      "does not release",
-      "This Agreement does not release any and all claims, whether known or unknown.",
-    ],
-    [
-      "reserves",
-      "Releasor reserves all claims against the Released Parties notwithstanding this Agreement.",
-    ],
-  ])("%s is reported as a denial, not as compliance", async (_form, text) => {
-    expect(await run(text)).toEqual(["Release of claims expressly withheld"]);
+  it("an outright refusal to release is reported as a denial", async () => {
+    expect(
+      await run("This Agreement does not release any and all claims, whether known or unknown."),
+    ).toEqual(["Release of claims expressly withheld"]);
+  });
+
+  it("a claims carve-out is NOT reported — it is standard drafting", async () => {
+    // Deliberate limit. Reserving claims out of a release ("all claims arising
+    // after the Effective Date") is ordinary and compliant; no pattern here can
+    // separate that from a refusal to release at all, so the guard does not
+    // try. An earlier blanket "reserves all claims" frame accused this very
+    // sentence, which is why it was removed.
+    expect(
+      await run(
+        "Releasor releases any and all claims, known or unknown claims, arising from the dispute. Releasor reserves all claims arising after the Effective Date.",
+      ),
+    ).toEqual([]);
   });
 
   it("mere silence still reports the scope clause as missing", async () => {
