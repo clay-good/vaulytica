@@ -412,14 +412,30 @@ function clean(value: string | undefined): string | undefined {
     .replace(/&(amp|lt|gt|quot|apos);/g, (whole, name: string) => XML_ENTITY[name] ?? whole)
     .replace(/\s+/g, " ")
     .trim();
-  return decoded.length > 0 ? decoded.slice(0, 400) : undefined;
+  return decoded.length > 0 ? cut(decoded, 400) : undefined;
+}
+
+/**
+ * Slice to at most `limit` UTF-16 code units without splitting a surrogate
+ * pair. A plain `.slice` keeps the lone high surrogate of a non-BMP character
+ * (emoji, CJK Extension B, …) straddling the cut, and once the excerpt is
+ * UTF-8 encoded for the report — or for the canonical hash body — that half
+ * becomes a U+FFFD replacement char, so the reviewer is shown a character the
+ * document does not contain. Same guard the DOCX report helpers carry; the
+ * delivery layer does not import from the report layer, so it is repeated.
+ */
+function cut(text: string, limit: number): string {
+  if (text.length <= limit) return text;
+  const lastUnit = text.charCodeAt(limit - 1);
+  const end = lastUnit >= 0xd800 && lastUnit <= 0xdbff ? limit - 1 : limit;
+  return text.slice(0, end);
 }
 
 /** Truncate a recovered text span to an excerpt — for location, never reproduction. */
 function excerpt(value: string | undefined): string | undefined {
   const c = clean(value);
   if (!c) return undefined;
-  return c.length > EXCERPT_LEN ? c.slice(0, EXCERPT_LEN) + "…" : c;
+  return c.length > EXCERPT_LEN ? cut(c, EXCERPT_LEN) + "…" : c;
 }
 
 /** Drop undefined fields so the canonical hash body is stable and minimal. */

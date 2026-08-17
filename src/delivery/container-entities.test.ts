@@ -41,3 +41,31 @@ describe("container XML entity decoding", () => {
     expect(c!.excerpt).not.toContain("Type < to");
   });
 });
+
+/**
+ * The same faithfulness requirement applies to the excerpt's length cut. An
+ * 80-code-unit `.slice` split a non-BMP character in half, and the surviving
+ * lone surrogate became U+FFFD once the excerpt was UTF-8 encoded — so the
+ * pre-disclosure report showed a replacement char the document never held,
+ * inside text that also feeds the canonical hash body.
+ */
+describe("container excerpt truncation", () => {
+  function longCommentDocx(text: string): ArrayBuffer {
+    const body = documentXml(`<w:p><w:r><w:t>Body.</w:t></w:r></w:p>`);
+    const comments =
+      `<?xml version="1.0"?><w:comments ${W_NS}>` +
+      `<w:comment w:id="1" w:author="A" w:date="2026-01-02T00:00:00Z">` +
+      `<w:p><w:r><w:t>${text}</w:t></w:r></w:p>` +
+      `</w:comment></w:comments>`;
+    return buildDocx({ document: body, comments });
+  }
+
+  it("never splits a surrogate pair at the excerpt cut", () => {
+    // The emoji straddles the 80-code-unit boundary.
+    const text = `${"a".repeat(79)}\u{1F600} trailing filler text to force truncation`;
+    const facts = readContainer(longCommentDocx(text), "docx", "Body.");
+    const ex = facts.comments[0]!.excerpt!;
+    expect(ex).not.toMatch(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])/);
+    expect(Buffer.from(ex, "utf8").toString("utf8")).not.toContain("�");
+  });
+});
