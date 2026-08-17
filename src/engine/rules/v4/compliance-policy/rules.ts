@@ -552,6 +552,7 @@ const INSIDER_TRADING_RULES: Rule[] = [
 const WHISTLEBLOWER_RULES: Rule[] = [
   presence({
     id: "POL-023",
+    version: "1.1.0",
     name: "Reporting channels — internal + external",
     description:
       "Policy must establish internal reporting channels and acknowledge external (SEC / CFTC / DOL) options.",
@@ -567,6 +568,12 @@ const WHISTLEBLOWER_RULES: Rule[] = [
       /(hotline|helpline|ombudsperson|audit\s+committee|reporting\s+channels?)/i,
       /(sec|cftc|dol|nlrb|government\s+agency)/i,
     ],
+    denied_if: expressDenial(
+      String.raw`hotline|helpline|ombudsperson|reporting\s+channels?|anonymous\s+reporting`,
+    ),
+    denied_title: "Whistleblower reporting channel expressly disclaimed",
+    denied_description:
+      "The document states that no reporting channel is maintained. SOX \u00a7 301 requires the audit committee to establish procedures for receiving complaints.",
   }),
   presence({
     id: "POL-024",
@@ -676,6 +683,7 @@ const DOC_RETENTION_RULES: Rule[] = [
   }),
   presence({
     id: "POL-029",
+    version: "1.1.0",
     name: "Legal hold + e-discovery suspension override",
     description: "Policy must provide for legal-hold override that suspends routine destruction.",
     citation: sedona(),
@@ -690,6 +698,10 @@ const DOC_RETENTION_RULES: Rule[] = [
       /(legal\s+hold|litigation\s+hold|preservation)/i,
       /(suspend|override|stop\s+destruction)/i,
     ],
+    denied_if: expressDenial(String.raw`legal\s+holds?|litigation\s+holds?`),
+    denied_title: "Legal-hold override expressly disclaimed",
+    denied_description:
+      "The document states that routine destruction is not suspended by a legal hold. Destroying records after litigation is reasonably anticipated is spoliation under FRCP 37(e).",
   }),
   presence({
     id: "POL-030",
@@ -890,6 +902,7 @@ const AI_AUP_RULES: Rule[] = [
   }),
   presence({
     id: "POL-039",
+    version: "1.1.0",
     name: "Human-in-the-loop review for high-impact outputs",
     description:
       "AI AUP must require human review of AI outputs in high-impact contexts (hiring, lending, legal, medical).",
@@ -905,6 +918,10 @@ const AI_AUP_RULES: Rule[] = [
       /(human.?in.?the.?loop|human\s+review|human\s+oversight)/i,
       /(high.?(risk|impact)|hiring|lending|legal|medical|adverse)/i,
     ],
+    denied_if: expressDenial(String.raw`human.?in.?the.?loop|human\s+review|human\s+oversight`),
+    denied_title: "Human review of AI output expressly disclaimed",
+    denied_description:
+      "The document states that AI output is not subject to human review. Unreviewed high-impact AI output is the core risk the NIST AI RMF and the EU AI Act address.",
   }),
   presence({
     id: "POL-040",

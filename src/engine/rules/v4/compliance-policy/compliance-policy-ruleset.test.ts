@@ -383,3 +383,84 @@ describe("v4 Compliance-policy — express denial of an AML/BSA clause", () => {
     expect(f?.excerpt.text).toBe("(clause absent from the document)");
   });
 });
+
+describe("v4 Compliance-policy — express denial beyond the AML pack", () => {
+  const CLEAN_WB =
+    "Reporting Channels. The Company maintains a 24-hour hotline and an ombudsperson, and reports may also be made to the audit committee. Nothing in this policy restricts the right to report to the SEC, CFTC, or DOL. " +
+    "Non-Retaliation. The Company prohibits retaliation and will not retaliate against any whistleblower; SOX § 806 and Dodd-Frank § 922 protections apply. " +
+    "Nothing in this policy limits Rule 21F-17 rights. Anonymous reporting is available. Investigations are conducted promptly and confidentially.";
+
+  const CLEAN_RET =
+    "Retention Schedule. Tax, HR, contracts, corporate, and financial records are retained for the periods listed, in years. " +
+    "Legal Hold. On issuance of a litigation hold, routine destruction is suspended and custodians cooperate with counsel to preserve records. " +
+    "ESI including email, cloud, and mobile data is preserved. SEC, IRS, DOL, ERISA, and HIPAA minimums apply. Secure destruction by shredding follows NAID sanitization standards.";
+
+  const CLEAN_AI =
+    "Approved Tools. Only authorized tools on the allowlist may be used. Prohibited Inputs. PHI, protected health information, PII, trade secret, and privileged material may not be entered. " +
+    "Human Review. Human-in-the-loop review is required for high-impact outputs; human oversight applies to all decisions affecting individuals. " +
+    "Accuracy. Users must verify output and fact-check for hallucination. Training is provided to all trained users.";
+
+  const findings = async (pb: Playbook, base: string, tail: string): Promise<string[]> =>
+    (
+      await runEngine({
+        rules: COMPLIANCE_POLICY_RULES,
+        ctx: withPb(buildContext(["Policy", `${base} ${tail}`]), pb),
+        source_file: SRC,
+      })
+    ).findings.map((f) => f.rule_id);
+
+  it.each([
+    ["POL-023", WB_PB, CLEAN_WB, "The Company maintains no hotline or reporting channels."],
+    ["POL-023", WB_PB, CLEAN_WB, "Anonymous reporting is not provided."],
+    ["POL-029", RET_PB, CLEAN_RET, "The Company does not issue litigation holds."],
+    ["POL-029", RET_PB, CLEAN_RET, "A legal hold is not required before destruction proceeds."],
+    ["POL-039", AI_PB, CLEAN_AI, "Human review is not required for AI output."],
+    ["POL-039", AI_PB, CLEAN_AI, "The Company provides no human oversight of model output."],
+  ])("%s fires on an express disclaimer: %s", async (id, pb, base, tail) => {
+    expect(await findings(pb, base, tail)).toContain(id);
+  });
+
+  it.each([
+    ["whistleblower — nothing added", WB_PB, CLEAN_WB, ""],
+    [
+      "whistleblower — confidentiality, not absence",
+      WB_PB,
+      CLEAN_WB,
+      "Hotline reports are not disclosed to the subject of the report.",
+    ],
+    [
+      "whistleblower — non-limitation",
+      WB_PB,
+      CLEAN_WB,
+      "Nothing herein limits the reporting channels available to employees.",
+    ],
+    ["retention — nothing added", RET_PB, CLEAN_RET, ""],
+    [
+      "retention — conditional 'without'",
+      RET_PB,
+      CLEAN_RET,
+      "Records may not be destroyed without a legal hold release.",
+    ],
+    [
+      "retention — hold duration",
+      RET_PB,
+      CLEAN_RET,
+      "A legal hold does not expire until counsel releases it.",
+    ],
+    ["ai — nothing added", AI_PB, CLEAN_AI, ""],
+    [
+      "ai — conditional 'without'",
+      AI_PB,
+      CLEAN_AI,
+      "AI output may not be published without human review.",
+    ],
+    [
+      "ai — non-relief",
+      AI_PB,
+      CLEAN_AI,
+      "Human review does not relieve the user of accuracy obligations.",
+    ],
+  ])("stays silent on a compliant policy — %s", async (_label, pb, base, tail) => {
+    expect(await findings(pb, base, tail)).toEqual([]);
+  });
+});
