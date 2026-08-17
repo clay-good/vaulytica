@@ -372,3 +372,72 @@ describe("BNK-023 — suretyship defenses expressly preserved", () => {
     ).toEqual([]);
   });
 });
+
+/**
+ * Two more express-denial guards in this pack, same class as BNK-023. In each
+ * the bare waive/defer pattern also matches a sentence REFUSING the waiver,
+ * and one present match short-circuits a presence rule.
+ */
+describe("BNK-006 / BNK-025 — waivers expressly refused", () => {
+  const run = async (id: string, pb: Playbook, heading: string, text: string) => {
+    const res = await runEngine({
+      rules: BANKING_RULES,
+      ctx: withPb(buildContext([heading, text]), pb),
+      source_file: SRC,
+    });
+    return res.findings.filter((f) => f.rule_id === id).map((f) => f.title);
+  };
+
+  it.each([
+    ["Maker does not waive presentment, demand, notice of dishonor, or protest."],
+    ["Maker reserves presentment and notice of dishonor."],
+  ])("BNK-006 reports %j as a denial", async (text) => {
+    expect(await run("BNK-006", NOTE_PB, "Note", text)).toEqual([
+      "Maker waivers expressly refused",
+    ]);
+  });
+
+  it("BNK-006 still reports the clause missing on silence", async () => {
+    expect(
+      await run(
+        "BNK-006",
+        NOTE_PB,
+        "Note",
+        "Maker promises to pay the principal sum with interest.",
+      ),
+    ).toEqual(["Maker waivers clause missing"]);
+  });
+
+  it("BNK-006 stays silent on the compliant waiver", async () => {
+    expect(
+      await run(
+        "BNK-006",
+        NOTE_PB,
+        "Note",
+        "Maker waives presentment, demand, notice of dishonor, and protest.",
+      ),
+    ).toEqual([]);
+  });
+
+  it("BNK-025 reports preserved subrogation rights as a denial", async () => {
+    expect(
+      await run(
+        "BNK-025",
+        GTY_PB,
+        "Guaranty",
+        "Guarantor does not waive its subrogation, contribution, or reimbursement rights.",
+      ),
+    ).toEqual(["Subrogation / contribution rights expressly preserved"]);
+  });
+
+  it("BNK-025 stays silent on the compliant waiver", async () => {
+    expect(
+      await run(
+        "BNK-025",
+        GTY_PB,
+        "Guaranty",
+        "Guarantor waives all subrogation and contribution rights until paid in full.",
+      ),
+    ).toEqual([]);
+  });
+});

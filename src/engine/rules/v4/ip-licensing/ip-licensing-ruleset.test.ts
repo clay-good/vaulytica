@@ -445,3 +445,42 @@ describe("IPL-026 / IPL-027 — CLA grants expressly withheld", () => {
     expect(await run(id, text)).toEqual([]);
   });
 });
+
+/**
+ * Express-denial guard for the grant-back rule: "No grant-back license is
+ * granted" contains the phrasing IPL-012 looks for, so a licence expressly
+ * refusing the grant-back — locking the licensor out of improvements to its
+ * own technology — scored clean.
+ */
+describe("IPL-012 — grant-back expressly refused", () => {
+  const run = async (text: string) => {
+    const res = await runEngine({
+      rules: IP_LICENSING_RULES,
+      // Heading must be neutral: "Improvements" alone satisfies the rule's
+      // first present_pattern, which would make the omission case unfireable.
+      ctx: withPb(buildContext(["Terms", text]), PATENT_PB),
+      source_file: SRC,
+    });
+    return res.findings.filter((f) => f.rule_id === "IPL-012").map((f) => f.title);
+  };
+
+  it("reports a refused grant-back as a denial", async () => {
+    expect(
+      await run("No grant-back license to improvements is granted under this Agreement."),
+    ).toEqual(["Grant-back expressly refused"]);
+  });
+
+  it("still reports the clause missing on silence", async () => {
+    expect(await run("Licensor grants a license under the Licensed Patents.")).toEqual([
+      "Improvements / grant-back clause missing",
+    ]);
+  });
+
+  it("stays silent on the compliant grant-back", async () => {
+    expect(
+      await run(
+        "Licensee grants a non-exclusive royalty-free grant-back license to improvements and enhancements.",
+      ),
+    ).toEqual([]);
+  });
+});

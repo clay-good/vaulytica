@@ -782,6 +782,7 @@ const PIIA_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-033",
+    version: "1.1.0",
     name: "Assignment of inventions",
     description: "PIIA must assign work-related inventions to employer.",
     citation: empPractice(
@@ -800,6 +801,19 @@ const PIIA_RULES: Rule[] = [
       /assign.{0,40}inventions?/is,
       /(invention|patent|intellectual\s+property)\s+assignment/i,
     ],
+    // Express-denial guard: "Employee does not assign any inventions" contains
+    // the assignment phrasing the rule looks for, so the one document that
+    // definitively leaves invention ownership with the employee — the risk this
+    // rule exists to catch — scored clean, while a PIIA merely silent fired.
+    denied_if: [
+      /\b(?:shall|will|does|do|may|can)\s+not\s+assign\b[^.]{0,60}?\binventions?/i,
+      /\bno\s+(?:invention|patent|intellectual\s+property)\s+assignment\b/i,
+      /\binventions?\b[^.]{0,40}?\b(?:are|is)\s+not\s+assigned/i,
+      /\b(?:retains?|reserves?|keeps?)\b[^.]{0,40}?\bownership\s+of\s+(?:all\s+|any\s+)?inventions?/i,
+    ],
+    denied_title: "Invention assignment expressly refused",
+    denied_description:
+      "The document states that the employee does NOT assign inventions, or retains ownership of them. The company then has no title to work created on its time — the exact exposure the assignment clause exists to close, and worse than leaving the clause out.",
   }),
   presence({
     id: "EMP-034",

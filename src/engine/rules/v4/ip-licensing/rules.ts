@@ -363,6 +363,19 @@ const PATENT_LICENSE_RULES: Rule[] = [
       /(improvements?|enhancements?|derivative\s+works?)/i,
       /grant.?back|licens\w+\s+back/i,
     ],
+    // Express-denial guard: "No grant-back license is granted" contains the
+    // grant-back phrasing the rule looks for. A licence that expressly refuses
+    // the grant-back leaves the licensor locked out of improvements to its own
+    // technology, which is the allocation this rule surfaces.
+    denied_if: [
+      /\bno\s+grant.?back\b/i,
+      /\b(?:shall|will|does|do)\s+not\s+(?:grant|licens\w+)\s+back\b/i,
+      /\b(?:shall|will|does|do)\s+not\s+grant\b[^.]{0,60}?\bimprovements?/i,
+      /\bgrant.?back\s+licen[cs]e\b[^.]{0,40}?\b(?:is|are)\s+not\s+(?:granted|required|conveyed)/i,
+    ],
+    denied_title: "Grant-back expressly refused",
+    denied_description:
+      "The licence states that no grant-back is given. Improvements the licensee makes to the licensor's own technology then stay wholly with the licensee — an allocation the parties should make deliberately, not one to be read as if the clause were satisfied.",
     default_severity: "warning",
   }),
 ];

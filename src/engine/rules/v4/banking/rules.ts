@@ -149,6 +149,7 @@ const PROMISSORY_NOTE_RULES: Rule[] = [
   }),
   presence({
     id: "BNK-006",
+    version: "1.1.0",
     name: "Maker waivers — presentment / notice / dishonor / protest",
     description:
       "Promissory note typically includes maker waivers of presentment, notice of dishonor, and protest (UCC § 3-504).",
@@ -165,6 +166,19 @@ const PROMISSORY_NOTE_RULES: Rule[] = [
       /(waive(s|d|r)?|waiver)/i,
       /(presentment|demand|notice\s+of\s+dishonor|protest)/i,
     ],
+    // Express-denial guard: the bare "waive" pattern matches inside a sentence
+    // REFUSING the waiver, and one present match short-circuits a presence
+    // rule. A note in which the maker preserves presentment and notice of
+    // dishonor imposes real procedural conditions on enforcement — the opposite
+    // of what this rule looks for — yet it scored clean.
+    denied_if: [
+      /\b(?:shall|will|does|do|may|can)\s+not\s+waiv\w+\b[^.]{0,60}?\b(?:presentment|demand|notice\s+of\s+dishonor|protest)/i,
+      /\bno\s+waiver\s+of\s+(?:presentment|demand|notice\s+of\s+dishonor|protest)/i,
+      /\b(?:reserves?|retains?|preserves?)\b[^.]{0,40}?\b(?:presentment|notice\s+of\s+dishonor|protest)/i,
+    ],
+    denied_title: "Maker waivers expressly refused",
+    denied_description:
+      "The note states that the maker does NOT waive presentment, demand, notice of dishonor, or protest. Those steps then become conditions of enforcement — a harder problem for the holder than a note that simply omits the clause.",
     default_severity: "warning",
   }),
   language({
@@ -646,6 +660,7 @@ const GUARANTY_RULES: Rule[] = [
   }),
   presence({
     id: "BNK-025",
+    version: "1.1.0",
     name: "Subrogation / contribution rights waived or deferred",
     description:
       "Institutional guaranties waive or defer guarantor's subrogation / contribution rights until full payment.",
@@ -662,6 +677,18 @@ const GUARANTY_RULES: Rule[] = [
       /(subrogation|contribution|reimbursement|indemnification)/i,
       /(waive(s|d|r)?|defer(red)?|until\s+paid\s+in\s+full)/i,
     ],
+    // Express-denial guard, same class. A guarantor who keeps its subrogation
+    // and contribution rights can compete with the lender for the same
+    // collateral — precisely the outcome the waiver-or-deferral exists to
+    // prevent — and the refusal was being read as the waiver.
+    denied_if: [
+      /\b(?:shall|will|does|do|may|can)\s+not\s+(?:waiv\w+|defer)\b[^.]{0,60}?\b(?:subrogation|contribution|reimbursement)/i,
+      /\bno\s+waiver\s+of\s+(?:any\s+)?(?:subrogation|contribution|reimbursement)/i,
+      /\b(?:reserves?|retains?|preserves?)\b[^.]{0,40}?\b(?:subrogation|contribution|reimbursement)\s+rights?/i,
+    ],
+    denied_title: "Subrogation / contribution rights expressly preserved",
+    denied_description:
+      "The guaranty states that the guarantor does NOT waive or defer its subrogation, contribution, or reimbursement rights. The guarantor may then compete with the lender for the same collateral on the borrower's insolvency, which is the outcome the waiver exists to prevent.",
     default_severity: "warning",
   }),
   presence({

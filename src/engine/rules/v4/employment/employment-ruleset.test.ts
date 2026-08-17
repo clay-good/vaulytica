@@ -492,3 +492,41 @@ describe("EMP-020 — in-sentence § 7 carve-outs (v1.2.0)", () => {
     ).toBe(true);
   });
 });
+
+/**
+ * Express-denial guard. "Employee does not assign any inventions" contains the
+ * assignment phrasing EMP-033 looks for, so the one document that definitively
+ * leaves invention ownership with the employee scored clean, while a PIIA
+ * merely silent on assignment fired.
+ */
+describe("EMP-033 — invention assignment expressly refused", () => {
+  const run = async (text: string) => {
+    const res = await runEngine({
+      rules: EMPLOYMENT_RULES,
+      ctx: withPb(buildContext(["Inventions", text]), PIIA_PB),
+      source_file: SRC,
+    });
+    return res.findings.filter((f) => f.rule_id === "EMP-033").map((f) => f.title);
+  };
+
+  it.each([
+    ["Employee does not assign any inventions to the Company."],
+    ["Employee retains ownership of all inventions conceived during employment."],
+  ])("reports %j as a denial", async (text) => {
+    expect(await run(text)).toEqual(["Invention assignment expressly refused"]);
+  });
+
+  it("still reports the clause missing on silence", async () => {
+    expect(await run("Employee agrees to protect Company confidential information.")).toEqual([
+      "Invention-assignment clause missing",
+    ]);
+  });
+
+  it("stays silent on the compliant assignment", async () => {
+    expect(
+      await run(
+        "Employee hereby assigns all inventions conceived during employment to the Company.",
+      ),
+    ).toEqual([]);
+  });
+});
