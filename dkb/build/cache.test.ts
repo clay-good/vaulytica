@@ -29,8 +29,15 @@ describe("MemoryCache", () => {
   });
 });
 
+// These two touch the real filesystem (mkdtemp + read/write), so they are the
+// only tests here whose runtime depends on the host. On a loaded Windows CI
+// runner the trivial cache-miss read has been seen taking ~20s, which turned
+// the cross-OS determinism matrix red on a run whose code was identical to the
+// green one before it. Vitest's 5s default is the wrong budget for host I/O.
+const FS_TIMEOUT_MS = 60_000;
+
 describe("FilesystemCache", () => {
-  it("persists bytes under root/{sourceId}/{hash}", async () => {
+  it("persists bytes under root/{sourceId}/{hash}", { timeout: FS_TIMEOUT_MS }, async () => {
     const root = mkdtempSync(join(tmpdir(), "vaulytica-cache-"));
     const c = new FilesystemCache(root);
     const key = c.keyFor("commonpaper", "https://github.com/CommonPaper/Mutual-NDA");
@@ -40,7 +47,7 @@ describe("FilesystemCache", () => {
     expect([...got!]).toEqual([42, 43]);
   });
 
-  it("returns undefined on a miss", async () => {
+  it("returns undefined on a miss", { timeout: FS_TIMEOUT_MS }, async () => {
     const root = mkdtempSync(join(tmpdir(), "vaulytica-cache-"));
     const c = new FilesystemCache(root);
     expect(await c.get("edgar/nonexistent")).toBeUndefined();
