@@ -224,6 +224,28 @@ describe("CROSS-DEFTERM-001", () => {
     });
     expect(run.findings).toHaveLength(0);
   });
+
+  it("truncates a long definition without splitting a surrogate pair", async () => {
+    // The emoji straddles the 200-char cut, so an unguarded truncate keeps
+    // its lone high surrogate and the description packs a U+FFFD.
+    const longDef = `${"x".repeat(198)}\u{1F600} tail data provided by Customer.`;
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Definitions",
+      `"Customer Data" means ${longDef}`,
+    ]);
+    const dpa = makeDoc("dpa", "dpa-controller-processor", [
+      "Definitions",
+      '"Customer Data" means any data processed by Provider on behalf of Customer.',
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_DEFTERM_001],
+      documents: [msa, dpa],
+      dkb: STARTER_DKB,
+    });
+    const description = run.findings[0]!.description;
+    expect(description).not.toMatch(/�/);
+    expect(description).not.toMatch(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])/);
+  });
 });
 
 /* ---------------- CROSS-DATE-001 ----------------- */

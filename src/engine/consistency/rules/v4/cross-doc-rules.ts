@@ -783,9 +783,25 @@ export const CROSS_CURRENCY_001: ConsistencyRule = {
 
 /* -------------------- Internal helpers ---------------------------- */
 
+/**
+ * Truncate with an ellipsis, never splitting a UTF-16 surrogate pair: when
+ * the last kept code unit is a lone high surrogate (its low half falls past
+ * the cut), drop it, or the packed output turns it into a U+FFFD replacement
+ * char — corrupting a quoted definition or excerpt exactly at a non-BMP
+ * character (emoji, CJK Extension B, …) and, because these descriptions feed
+ * finding text, doing so inside a hashed artifact.
+ *
+ * This guard was fixed once in the DOCX helpers (`src/report/v3/_dx.ts`) and
+ * in the v3 renderers that had copied it; this was the last stale copy. The
+ * engine does not import from the report layer, so the guard is repeated here
+ * rather than shared.
+ */
 function truncate(text: string, limit: number): string {
   if (text.length <= limit) return text;
-  return text.slice(0, limit - 1) + "…";
+  let end = limit - 1;
+  const lastUnit = text.charCodeAt(end - 1);
+  if (lastUnit >= 0xd800 && lastUnit <= 0xdbff) end -= 1;
+  return text.slice(0, end) + "…";
 }
 
 function canonicalLaw(raw: string): string {
