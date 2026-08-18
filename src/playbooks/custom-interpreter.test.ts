@@ -605,6 +605,58 @@ describe("runCustomPlaybook — clause_mutual predicate", () => {
     expect(run.unevaluable).toHaveLength(0);
   });
 
+  it("does not treat a mid-sentence semicolon as a clause boundary", async () => {
+    // A semicolon joining two halves of one sentence is not a new clause.
+    // Clipping there cut the clause off before its own mutuality tail.
+    const run = await runCustomPlaybook(pb({ custom_rules: [indemnityRule] }), {
+      tree: tree(
+        "Terms",
+        "Indemnification. The parties acknowledge that; termination of any related covenant " +
+          "shall not affect this obligation, each of which shall be mutual and shall bind each " +
+          "party equally for claims arising from the other party's acts.",
+      ),
+      extracted: emptyExtracted(),
+    });
+    expect(run.findings).toHaveLength(0);
+  });
+
+  it("does not treat a list item as a clause boundary", async () => {
+    const run = await runCustomPlaybook(pb({ custom_rules: [indemnityRule] }), {
+      tree: tree(
+        "Terms",
+        "Indemnification. The following survive termination: confidentiality; indemnification; " +
+          "and audit rights, each of which shall be mutual and bind each party equally.",
+      ),
+      extracted: emptyExtracted(),
+    });
+    expect(run.findings).toHaveLength(0);
+  });
+
+  it("recognizes a NUMBERED run-in heading as a clause boundary", async () => {
+    // "4) Indemnification." / "5) Confidentiality." is ordinary commercial
+    // drafting. A boundary check reading only the single preceding character
+    // saw ")" and rejected it, so the two clauses bled together and the
+    // one-way indemnity was reported mutual.
+    const run = await runCustomPlaybook(pb({ custom_rules: [indemnityRule] }), {
+      tree: tree("Terms", "4) " + ONE_WAY_INDEMNITY + "5) " + MUTUAL_CONFIDENTIALITY),
+      extracted: emptyExtracted(),
+    });
+    expect(run.findings).toHaveLength(1);
+    expect(run.findings[0]!.explanation.toLowerCase()).toContain("one-way");
+  });
+
+  it("does not mistake a sentence ending in the topic word for a heading", async () => {
+    const run = await runCustomPlaybook(pb({ custom_rules: [indemnityRule] }), {
+      tree: tree(
+        "Terms",
+        "Indemnification. Neither party is released from its obligations of confidentiality. " +
+          "The indemnities in this section shall be mutual and bind each party equally.",
+      ),
+      extracted: emptyExtracted(),
+    });
+    expect(run.findings).toHaveLength(0);
+  });
+
   it("is unevaluable when no clause of that category is present", async () => {
     const run = await runCustomPlaybook(
       pb({

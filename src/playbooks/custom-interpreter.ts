@@ -900,7 +900,7 @@ function mutualityWindow(section: string, position: number): [number, number] {
   // following clause takes over.
   for (const stem of Object.values(MUTUAL_CLAUSE_ANCHORS)) {
     for (let at = section.indexOf(stem); at !== -1; at = section.indexOf(stem, at + 1)) {
-      if (!startsClause(section, at)) continue;
+      if (!startsClause(section, at, stem)) continue;
       if (at <= position) from = Math.max(from, at);
       else {
         to = Math.min(to, at);
@@ -912,24 +912,34 @@ function mutualityWindow(section: string, position: number): [number, number] {
 }
 
 /**
- * Whether the stem at `at` opens a clause rather than merely being mentioned
+ * Whether the stem at `at` opens a clause, rather than merely being mentioned
  * inside one.
  *
- * This distinction is the whole safety margin of {@link mutualityWindow}. A
- * clause routinely NAMES another doctrine in its own text — an indemnity that
- * covers "any breach of the confidentiality provisions" — and clipping at that
- * mention truncates the clause before its own "shall be mutual … each party"
- * tail, reporting compliant drafting as one-way. Requiring the stem to follow a
- * sentence or paragraph break keeps the clip on real clause boundaries
- * ("… this Agreement. Confidentiality. Each party …") and ignores in-sentence
- * mentions.
+ * This distinction is the whole safety margin of {@link mutualityWindow}, and
+ * it needs TWO signals, because each alone fails in a different direction:
+ *
+ * - The stem must sit in a RUN-IN HEADING token — a word terminated by "."
+ *   ("Indemnification. Client shall …"). Without this, a clause that merely
+ *   NAMES another doctrine ("any breach of the confidentiality provisions") or
+ *   lists one ("the following survive: confidentiality; indemnification") was
+ *   read as a boundary, truncating the clause before its own "shall be mutual
+ *   … each party" tail and accusing compliant drafting of being one-way.
+ * - That token must OPEN a sentence or paragraph, so an ordinary sentence
+ *   ending in the same word ("… releases its obligations of confidentiality.")
+ *   is not mistaken for a heading. A numbering token is allowed to sit in
+ *   between, because "4) Indemnification." and "5) Confidentiality." are
+ *   ordinary commercial drafting — and a check that looked only at the single
+ *   preceding character rejected them, letting the two clauses bleed together
+ *   and reporting a one-way indemnity as mutual.
  */
-function startsClause(section: string, at: number): boolean {
-  let i = at - 1;
-  while (i >= 0 && (section[i] === " " || section[i] === "\t")) i--;
-  if (i < 0) return true;
-  const c = section[i]!;
-  return c === "." || c === ";" || c === ":" || c === "\n";
+const CLAUSE_LEAD_IN =
+  /(?:^|[.\n:;])[ \t]*(?:\(?[0-9]{1,3}[.)]|\([0-9a-z]{1,3}\)|[0-9]+(?:\.[0-9]+)+\.?)?[ \t]*$/;
+
+function startsClause(section: string, at: number, stem: string): boolean {
+  let end = at + stem.length;
+  while (end < section.length && section[end]! >= "a" && section[end]! <= "z") end++;
+  if (section[end] !== ".") return false;
+  return CLAUSE_LEAD_IN.test(section.slice(Math.max(0, at - 24), at));
 }
 
 /** Trim a section's text for a finding excerpt (first 480 chars). */
