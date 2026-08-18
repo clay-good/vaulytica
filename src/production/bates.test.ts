@@ -58,6 +58,53 @@ describe("parseBates", () => {
   });
 });
 
+describe("parseBates — range filenames", () => {
+  it("reads a prefix + start-end range as one member spanning the range", () => {
+    expect(parseBates("ACME_000123-000145.pdf")).toEqual({
+      raw: "ACME_000123-000145",
+      prefix: "ACME",
+      number: 123,
+      end_number: 145,
+      padding: 6,
+      filename: "ACME_000123-000145.pdf",
+    });
+  });
+
+  it("keeps the prefix clean so ranged members still group together", () => {
+    // The whole point: the old parse produced prefix "ACME_000123" for the
+    // first file and "ACME_000146" for the second, so each landed in its own
+    // singleton group and no cross-member sequence check could ever run.
+    const set = extractBatesSet(["ACME_000123-000145.pdf", "ACME_000146-000167.pdf"]);
+    expect(set.map((b) => b.prefix)).toEqual(["ACME", "ACME"]);
+    expect(set.map((b) => b.number)).toEqual([123, 146]);
+    expect(set.map((b) => b.end_number)).toEqual([145, 167]);
+  });
+
+  it("accepts an en-dash separator and a single-page range", () => {
+    expect(parseBates("ACME_000123–000145.pdf")?.end_number).toBe(145);
+    expect(parseBates("ACME_000123-000123.pdf")?.end_number).toBe(123);
+  });
+
+  it("does not read an ordinary hyphenated Bates id as a range", () => {
+    expect(parseBates("SMITH-00042.docx")?.end_number).toBeUndefined();
+  });
+
+  it("does not read a descending pair as a range", () => {
+    // "INV-2024-0001" is invoice numbering, not Bates 2024 through 1. Reading
+    // it as a range would credit the member with covering 2,024 numbers and
+    // hide every real gap underneath.
+    const parsed = parseBates("INV-2024-0001.pdf");
+    expect(parsed?.end_number).toBeUndefined();
+    expect(parsed?.prefix).toBe("INV-2024");
+  });
+
+  it("does not read a mismatched-width pair as a range", () => {
+    // Both halves of a real range are padded to the same width; unequal
+    // widths mean the hyphen is part of the identifier, not a separator.
+    expect(parseBates("ACME_000123-45.pdf")?.end_number).toBeUndefined();
+  });
+});
+
 describe("extractBatesSet", () => {
   it("drops non-Bates filenames and sorts by prefix then number", () => {
     const result = extractBatesSet([

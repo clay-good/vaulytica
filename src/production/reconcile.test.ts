@@ -16,6 +16,25 @@ describe("reconcileProduction — clean production", () => {
   });
 });
 
+describe("reconcileProduction — range filenames", () => {
+  it("reports no gap for contiguous ranged members", () => {
+    const bates = extractBatesSet(["ACME_000001-000010.pdf", "ACME_000011-000020.pdf"]);
+    expect(reconcileProduction({ bates, log: EMPTY_LOG })).toEqual([]);
+  });
+
+  it("does not report a ranged document's own interior pages as a gap", () => {
+    const bates = extractBatesSet(["ACME_000001-000010.pdf", "ACME_000011.pdf"]);
+    expect(reconcileProduction({ bates, log: EMPTY_LOG })).toEqual([]);
+  });
+
+  it("still detects a real gap between two ranged members", () => {
+    const bates = extractBatesSet(["ACME_000001-000010.pdf", "ACME_000021-000030.pdf"]);
+    const gap = reconcileProduction({ bates, log: EMPTY_LOG }).find((f) => f.code === "PROD-001");
+    expect(gap).toBeDefined();
+    expect(gap?.detail).toContain("ACME_000011–ACME_000020");
+  });
+});
+
 describe("reconcileProduction — PROD-001 sequence gaps", () => {
   it("detects a missing range within a prefix", () => {
     const bates = extractBatesSet(filenames("ACME", [1, 2, 5, 6]));
