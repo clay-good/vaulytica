@@ -564,8 +564,8 @@ function evaluatePredicate(p: CustomPredicate, facts: DocFacts): PredicateOutcom
       // section mask a genuinely one-way clause. The window (some text before
       // the anchor, more after) is the clause's own neighbourhood.
       const section = facts.sectionTextLower.get(hit.section_id) ?? hit.text;
-      const scanFrom = Math.max(0, hit.position - MUTUAL_SCAN_BACK);
-      const scanText = section.slice(scanFrom, hit.position + MUTUAL_SCAN_FWD);
+      const [scanFrom, scanTo] = mutualityWindow(section, hit.position, p.clause);
+      const scanText = section.slice(scanFrom, scanTo);
       const mutual = MUTUALITY_MARKERS.some((m) => scanText.includes(m));
       if (mutual) return { kind: "compliant" };
       return {
@@ -861,10 +861,52 @@ function stripLawAffixes(s: string): string {
 /**
  * Window (chars before / after the clause anchor) the `clause_mutual` marker
  * scan reads, so reciprocity language that sits just before ("each party
- * shall…") or after the anchor is seen, without bleeding into adjacent clauses.
+ * shall…") or after the anchor is seen.
  */
 const MUTUAL_SCAN_BACK = 240;
 const MUTUAL_SCAN_FWD = 520;
+
+/**
+ * The slice of `section` the mutuality scan may read: the character window
+ * around the anchor, clipped at the nearest NEIGHBOURING CLAUSE on either side.
+ *
+ * The window alone bled. Sections routinely run several clauses together, and
+ * a confidentiality clause is almost always drafted "each party" — so a
+ * genuinely one-way indemnity followed 300 characters later by ordinary mutual
+ * confidentiality boilerplate read as MUTUAL, and the rule reported the
+ * document compliant. Silent false compliance is the worst outcome for this
+ * predicate: it is the enforcement core of the bring-your-own-playbook
+ * feature, and the author gets a clean report rather than a warning.
+ *
+ * The clip is deliberately conservative. Narrowing this window in the wrong
+ * place produces the OPPOSITE error — accusing genuinely mutual drafting of
+ * being one-way — so the only cut points are the other clause categories'
+ * own anchors, which mark where a different clause demonstrably begins. Prose
+ * that names no other clause keeps the full window, exactly as before.
+ *
+ * (The scan reads `sectionTextLower`, so a run-in heading cannot be recognized
+ * by its capitalization — the anchors are the signal available here.)
+ */
+function mutualityWindow(
+  section: string,
+  position: number,
+  clause: keyof typeof MUTUAL_CLAUSE_ANCHORS,
+): [number, number] {
+  let from = Math.max(0, position - MUTUAL_SCAN_BACK);
+  let to = Math.min(section.length, position + MUTUAL_SCAN_FWD);
+  for (const [category, stem] of Object.entries(MUTUAL_CLAUSE_ANCHORS)) {
+    if (category === clause) continue;
+    // Nearest occurrence of another clause's anchor BEFORE this one starts the
+    // neighbourhood; the nearest one AFTER ends it.
+    const before = section.lastIndexOf(stem, position);
+    if (before !== -1 && before < position && before + stem.length > from) {
+      from = before + stem.length;
+    }
+    const after = section.indexOf(stem, position + 1);
+    if (after !== -1 && after < to) to = after;
+  }
+  return [from, Math.max(from, to)];
+}
 
 /** Trim a section's text for a finding excerpt (first 480 chars). */
 function cap(text: string): string {

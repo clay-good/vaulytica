@@ -533,6 +533,60 @@ describe("runCustomPlaybook — clause_mutual predicate", () => {
     expect(run.findings[0]!.explanation.toLowerCase()).toContain("one-way");
   });
 
+  // Regression: the marker scan must read the ANCHORED clause's own
+  // neighbourhood. A fixed character window bled into the next clause, and a
+  // confidentiality clause is almost always "each party" — so a genuinely
+  // one-way indemnity a few hundred characters earlier read as mutual and the
+  // rule reported the document compliant.
+  const ONE_WAY_INDEMNITY =
+    "Indemnification. Client shall indemnify, defend and hold harmless Vendor and its " +
+    "officers, directors, employees and agents from and against any and all claims, losses, " +
+    "damages, liabilities, costs and expenses arising out of or relating to Client's use of " +
+    "the Services or Client's breach of this Agreement. ";
+  const MUTUAL_CONFIDENTIALITY =
+    "Confidentiality. Each party agrees to keep confidential the other party's proprietary " +
+    "information and to use it only for purposes of this Agreement.";
+
+  const indemnityRule = {
+    id: "R1",
+    title: "Mutual indemnity",
+    description: "d",
+    severity: "warning" as const,
+    assert: { kind: "clause_mutual" as const, clause: "indemnification" as const },
+  };
+
+  it("does not read a following clause's mutuality as this clause's", async () => {
+    const run = await runCustomPlaybook(pb({ custom_rules: [indemnityRule] }), {
+      tree: tree("Terms", ONE_WAY_INDEMNITY + MUTUAL_CONFIDENTIALITY),
+      extracted: emptyExtracted(),
+    });
+    expect(run.findings).toHaveLength(1);
+    expect(run.findings[0]!.explanation.toLowerCase()).toContain("one-way");
+  });
+
+  it("does not read a preceding clause's mutuality as this clause's", async () => {
+    const run = await runCustomPlaybook(pb({ custom_rules: [indemnityRule] }), {
+      tree: tree("Terms", MUTUAL_CONFIDENTIALITY + " " + ONE_WAY_INDEMNITY),
+      extracted: emptyExtracted(),
+    });
+    expect(run.findings).toHaveLength(1);
+  });
+
+  it("still sees mutuality in the anchored clause's own sentence", async () => {
+    // The clip must not swing the other way and accuse compliant drafting.
+    const run = await runCustomPlaybook(pb({ custom_rules: [indemnityRule] }), {
+      tree: tree(
+        "Terms",
+        "Indemnification. Each party shall indemnify and hold harmless the other party from " +
+          "third-party claims arising out of its own breach. " +
+          MUTUAL_CONFIDENTIALITY,
+      ),
+      extracted: emptyExtracted(),
+    });
+    expect(run.findings).toHaveLength(0);
+    expect(run.unevaluable).toHaveLength(0);
+  });
+
   it("is unevaluable when no clause of that category is present", async () => {
     const run = await runCustomPlaybook(
       pb({
