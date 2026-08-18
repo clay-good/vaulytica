@@ -71,7 +71,7 @@ exposure — "this redline added a critical finding."
 | `command` | both | `analyze` (default) or `compare` |
 | `files` | analyze | path / single-segment glob / directory of `.pdf` `.docx` `.txt` `.md` |
 | `base`, `revised` | compare | the two documents to diff |
-| `format` | both | analyze: `json,sarif,html,md,csv` (default `sarif`) · compare: `json\|markdown` |
+| `format` | both | analyze: `json,sarif,html,md,csv,docx-comments` (default `sarif`) · compare: `json\|markdown` |
 | `fail-on` | both | `critical\|warning\|info` — non-zero exit when a finding (analyze) / *introduced* finding (compare) is at or above it. Empty = never fail; any **other** value is a usage error (exit 1), so a typo fails the job loudly instead of silently disabling the gate |
 | `playbook` | both | force a specific playbook id instead of auto-matching |
 | `out` | analyze | directory for one output file per document per format |
@@ -87,7 +87,7 @@ number on a dashboard describes shipped behavior.
 ## 2. The `vaulytica` CLI
 
 In a repo that has Vaulytica installed (or once it is published to npm), the
-binary exposes the four reach commands:
+binary's four everyday commands are `analyze`, `compare`, `diff` and `verify`:
 
 ```bash
 # analyze one file → SARIF on stdout
@@ -103,6 +103,13 @@ npx vaulytica compare base.docx revised.docx --fail-on critical
 npx vaulytica diff team-v1.json team-v2.json --exit-code
 npx vaulytica verify report.json original.txt
 ```
+
+Those four are not the whole surface: the dispatcher exposes **34** commands in
+all — the four above plus `posture-review`, `compare-coherence`, and the 28
+`coherence-*` reads of the document-free posture family (`coherence-trend`,
+`coherence-arc`, `coherence-matrix`, …). `npx vaulytica --help` prints the
+current list; the [README's command table](../README.md#headless-api--cli)
+documents each one's flags and exit codes.
 
 Exit codes are CI-meaningful: `2` when `--fail-on` is breached (analyze) or the
 revision introduced a finding at/above the threshold (compare), `1` for a
