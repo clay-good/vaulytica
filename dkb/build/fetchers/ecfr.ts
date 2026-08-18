@@ -72,13 +72,31 @@ export const ecfrFetcher: Fetcher = async (ctx): Promise<FetcherResult> => {
   // We always request the most recent date the API exposes; the
   // pipeline's deterministic `nowIso` is used as the date key.
   const dateKey = ctx.nowIso.slice(0, 10);
+  const failures: string[] = [];
   for (const t of CFR_TITLES) {
     const url = `${ctx.source.url}full/${dateKey}/title-${t}.xml`;
-    const xml = await cachedGetText(ctx.http, ctx.cache, ctx.source.id, url);
-    bytesFetched += xml.length;
-    for (const s of parseEcfrXml(xml, t, ctx.nowIso)) {
-      records.push({ kind: "statute", data: s });
+    // One bad title must not discard the titles that fetched cleanly. Without
+    // this, a single unparseable response threw out of the fetcher and
+    // `runBuild`'s per-source catch dropped EVERY record collected so far —
+    // turning one title's outage into the whole source contributing nothing,
+    // which is a worse trade than the silent skip this replaced.
+    try {
+      const xml = await cachedGetText(ctx.http, ctx.cache, ctx.source.id, url);
+      bytesFetched += xml.length;
+      for (const s of parseEcfrXml(xml, t, ctx.nowIso)) {
+        records.push({ kind: "statute", data: s });
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      failures.push(`title ${t}: ${msg}`);
+      process.stderr.write(`warn: ecfr ${url} failed: ${msg}\n`);
     }
+  }
+  // Every title failing is not a per-title outage, it is the source being
+  // down or having changed shape — that should reach the build log as a
+  // source failure, not as a quiet zero.
+  if (failures.length === CFR_TITLES.length) {
+    throw new Error(`eCFR: every title failed — ${failures.join("; ")}`);
   }
   return {
     source_id: ctx.source.id,
