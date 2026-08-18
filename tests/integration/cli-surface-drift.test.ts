@@ -85,6 +85,22 @@ describe("CLI surface drift", () => {
     );
   });
 
+  it("documents every flag the analyze command parses", () => {
+    // The sibling check below has covered `compare`'s flags since this guard
+    // was written, but `analyze` — the command every CI consumer actually runs,
+    // and the one carrying the gate flags — had no equivalent. Its parser is
+    // by far the largest, which is exactly where an undocumented flag hides.
+    const body = runSource.slice(runSource.indexOf("function parseArgs("));
+    const flags = [...body.matchAll(/case "(--[a-z0-9-]+)":/g)].map((m) => m[1]!);
+    expect(flags.length, "no flags parsed out of parseArgs in tools/cli/run.ts").toBeGreaterThan(
+      20,
+    );
+    const docs = `${readme}\n${ciDoc}`;
+    for (const flag of flags) {
+      expect(docs, `${flag} is parsed by analyze but documented nowhere`).toContain(flag);
+    }
+  });
+
   it("documents every flag the compare command parses", () => {
     const flags = [...compareSource.matchAll(/case "(--[a-z-]+)":/g)].map((m) => m[1]!);
     expect(flags.length, "no flags parsed out of tools/cli/compare.ts").toBeGreaterThan(3);
