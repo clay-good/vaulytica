@@ -365,6 +365,13 @@ const ShrinkageAckFileSchema = z.object({
   acknowledgments: z.array(
     z.object({
       section: z.string().min(1),
+      /**
+       * The count the acknowledged build shrank FROM. Required, and part of
+       * the match, so an acknowledgment names one transition rather than
+       * standing open for any future build that happens to land on the same
+       * new count.
+       */
+      prior_count: z.number().int().nonnegative(),
       new_count: z.number().int().nonnegative(),
       reason: z.string().min(1),
     }),
@@ -374,9 +381,17 @@ const ShrinkageAckFileSchema = z.object({
 /**
  * Compare each manifest `files` section's entry count against the
  * previous released version. Any decrease must be acknowledged in the
- * ack file (matched on section + new count); unacknowledged shrinkage
- * is a hard build error. Returns the acknowledgments actually used so
- * the manifest records them.
+ * ack file; unacknowledged shrinkage is a hard build error. Returns the
+ * acknowledgments actually used so the manifest records them.
+ *
+ * The match is on the whole transition — section, prior count AND new count —
+ * because an acknowledgment is a statement about one specific drop that a
+ * human reviewed. Matched on (section, new_count) alone it was a standing
+ * exemption: once "clauses fell to 12" was blessed, a later unrelated
+ * regression that dropped clauses from 40 to 12 matched the same entry and
+ * published unreviewed. Nothing expires these entries (deliberately — the
+ * manifest keeps them as an audit trail), so an over-broad key stays live
+ * forever.
  */
 async function checkShrinkage(args: {
   priorDir: string | undefined;
@@ -401,7 +416,9 @@ async function checkShrinkage(args: {
     const priorCount = prior.files[section as keyof DkbManifest["files"]]?.entries ?? 0;
     const newCount = entries.length;
     if (newCount >= priorCount) continue;
-    const ack = acks.find((a) => a.section === section && a.new_count === newCount);
+    const ack = acks.find(
+      (a) => a.section === section && a.prior_count === priorCount && a.new_count === newCount,
+    );
     if (ack) {
       used.push({ section, prior_count: priorCount, new_count: newCount, reason: ack.reason });
     } else {

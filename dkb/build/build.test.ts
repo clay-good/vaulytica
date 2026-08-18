@@ -174,6 +174,7 @@ describe("shrinkage gate", () => {
       [
         "acknowledgments:",
         "  - section: clauses",
+        "    prior_count: 30",
         "    new_count: 12",
         '    reason: "test: intentional reduction"',
       ].join("\n"),
@@ -195,6 +196,45 @@ describe("shrinkage gate", () => {
         reason: "test: intentional reduction",
       },
     ]);
+  });
+
+  it("does not let an old acknowledgment bless a different drop to the same count", async () => {
+    // An acknowledgment is a statement about ONE reviewed drop. Matched on the
+    // new count alone it was a standing exemption: with "clauses fell to 12"
+    // blessed, any later regression landing on 12 — from any prior count —
+    // published unreviewed.
+    const ackPath = join(tmp, "ack-stale.yml");
+    writeFileSync(
+      ackPath,
+      [
+        "acknowledgments:",
+        "  - section: clauses",
+        "    prior_count: 99",
+        "    new_count: 12",
+        '    reason: "test: a drop from a different baseline"',
+      ].join("\n"),
+      "utf8",
+    );
+    // Its own output root, so the prior version is the full starter set and
+    // this build really is a 30 → 12 drop.
+    const isolated = join(tmp, "out-shrink-stale");
+    await runBuild({
+      records: [],
+      curated_root: STARTER,
+      out_root: isolated,
+      version: "v0001-prior",
+      now_iso: NOW,
+    });
+    await expect(
+      runBuild({
+        records: [],
+        curated_root: reduced,
+        out_root: isolated,
+        version: "v0002-next",
+        now_iso: NOW,
+        ack_path: ackPath,
+      }),
+    ).rejects.toThrow(/unacknowledged shrinkage.*clauses 30 → 12/s);
   });
 });
 
