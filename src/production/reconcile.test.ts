@@ -16,6 +16,30 @@ describe("reconcileProduction — clean production", () => {
   });
 });
 
+describe("reconcileProduction — PROD-010 over a ranged produced member", () => {
+  it("flags a withheld range landing inside a produced member's span", () => {
+    // The produced member covers 100-200. The log withholds 150-160, squarely
+    // inside it. Testing only the member's START number (100) against the
+    // withheld range missed this entirely, so a genuine privilege waiver went
+    // unreported.
+    const bates = extractBatesSet(["ACME_000100-000200.pdf"]);
+    const log = parsePrivilegeLog(
+      "Beg Bates,End Bates,Description,Privilege\nACME_000150,ACME_000160,Memo,AC\n",
+    );
+    const findings = reconcileProduction({ bates, log });
+    expect(findings.some((f) => f.code === "PROD-010")).toBe(true);
+  });
+
+  it("does not flag a withheld range that misses the span entirely", () => {
+    const bates = extractBatesSet(["ACME_000100-000200.pdf"]);
+    const log = parsePrivilegeLog(
+      "Beg Bates,End Bates,Description,Privilege\nACME_000300,ACME_000310,Memo,AC\n",
+    );
+    const findings = reconcileProduction({ bates, log });
+    expect(findings.some((f) => f.code === "PROD-010")).toBe(false);
+  });
+});
+
 describe("reconcileProduction — a bare-digit range end in the log", () => {
   const produced = extractBatesSet(["ACME_000100.pdf", "ACME_000200.pdf"]);
   const csv = (end: string) =>

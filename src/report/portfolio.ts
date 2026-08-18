@@ -56,8 +56,16 @@ type PortfolioCheckDef = {
 function logEntry(run: EngineRun, ruleId: string) {
   return run.execution_log.find((e) => e.rule_id === ruleId);
 }
+/**
+ * Whether the rule actually EXECUTED on this run. Not "is there a log entry" —
+ * a rule the playbook skipped, or one excluded by `applies_to_playbooks`, gets
+ * an entry too, so the presence test was true for every rule in the catalog.
+ * That turned a never-evaluated rule into a confident `ok`/"Present"/"Capped"
+ * cell, contradicting this module's own contract that a check whose rule never
+ * ran renders an honest `N/A`.
+ */
 function ran(run: EngineRun, ruleId: string): boolean {
-  return logEntry(run, ruleId) !== undefined;
+  return logEntry(run, ruleId)?.ran === true;
 }
 function fired(run: EngineRun, ruleId: string): boolean {
   return logEntry(run, ruleId)?.fired === true;

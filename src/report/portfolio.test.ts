@@ -33,6 +33,19 @@ function doc(name: string, outcomes: Record<string, boolean>): PortfolioInputDoc
   return { doc_id: name, source_file_name: name, run: run(outcomes) };
 }
 
+/** A document whose named rules were SKIPPED — logged, but never evaluated. */
+function docSkipped(name: string, ruleIds: string[]): PortfolioInputDocument {
+  const r = run({});
+  r.execution_log = ruleIds.map((rule_id) => ({
+    rule_id,
+    rule_version: "1.0.0",
+    ran: false,
+    fired: false,
+    elapsed_ms: 0,
+  }));
+  return { doc_id: name, source_file_name: name, run: r };
+}
+
 const checkIndex = (key: string) => PORTFOLIO_CHECKS.findIndex((c) => c.key === key);
 
 describe("portfolio risk matrix (spec-v6 Part V)", () => {
@@ -44,6 +57,16 @@ describe("portfolio risk matrix (spec-v6 Part V)", () => {
     expect(m.rows).toHaveLength(2);
     expect(m.checks).toHaveLength(PORTFOLIO_CHECKS.length);
     for (const r of m.rows) expect(r.cells).toHaveLength(PORTFOLIO_CHECKS.length);
+  });
+
+  it("a skipped rule renders N/A, not a clean cell", () => {
+    // This module promises that "a check whose underlying rule never ran for a
+    // document renders an honest N/A, never a wrong Risk/ok". A rule the
+    // playbook skipped still gets an execution-log entry, so testing for the
+    // entry's PRESENCE reported it as evaluated-and-clean.
+    const i = checkIndex("liability_cap");
+    const m = buildPortfolioMatrix([docSkipped("s", ["RISK-005", "RISK-009"])]);
+    expect(m.rows[0]!.cells[i]!.status).toBe("na");
   });
 
   it("liability-cap cell: uncapped → risk, missing → risk, present → ok, not run → na", () => {

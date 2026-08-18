@@ -959,7 +959,7 @@ function renderAuditTrail(
     h2("Rules executed"),
     ...run.execution_log.map((e) =>
       para({
-        text: `${e.rule_id} v${e.rule_version} — ${e.fired ? "fired" : "silent"}${e.fired && e.finding_id ? ` → ${e.finding_id}` : ""} (${formatElapsed(e.elapsed_ms)} ms)`,
+        text: `${e.rule_id} v${e.rule_version} — ${!e.ran ? "skipped" : e.fired ? "fired" : "silent"}${e.fired && e.finding_id ? ` → ${e.finding_id}` : ""} (${formatElapsed(e.elapsed_ms)} ms)`,
       }),
     ),
     spacer(),
