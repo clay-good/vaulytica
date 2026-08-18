@@ -360,6 +360,30 @@ function deadlineOptionFrom(args: Args): DeadlineResolution | undefined {
   };
 }
 
+/**
+ * The value for a flag that takes one, or a usage error.
+ *
+ * The parser reads `argv[i + 1]` and then skips it, so a value-taking flag
+ * written without its value consumed whatever came next — including ANOTHER
+ * FLAG. `analyze doc.txt --playbook --delivery` set the playbook to the string
+ * "--delivery", skipped past it, and never set `--delivery` at all: no error,
+ * no warning, exit 0, and a report with the delivery scan silently missing.
+ * A gate the caller believes is enabled being quietly switched off is the
+ * worst failure this parser can produce, and it is the same failure the
+ * `--fail-on critcal` typo used to cause.
+ *
+ * Flags whose values are checked against an allowlist (`--format`,
+ * `--fail-on`, `--court`, `--deadline-profile`, `--service-method`,
+ * `--regime`, `--state`) already reject a flag-shaped value on their own.
+ * This covers the free-form ones, which cannot.
+ */
+function requireValue(flag: string, val: string | undefined): string {
+  if (val === undefined || val.startsWith("--")) {
+    throw new Error(`${flag} requires a value`);
+  }
+  return val;
+}
+
 function parseArgs(argv: string[]): Args {
   // argv: [target, ...flags] (the "analyze" command word is already stripped)
   const target = argv[0];
@@ -370,7 +394,7 @@ function parseArgs(argv: string[]): Args {
     const val = argv[i + 1];
     switch (flag) {
       case "--playbook":
-        args.playbook = val;
+        args.playbook = requireValue(flag, val);
         i++;
         break;
       case "--format": {
@@ -396,7 +420,7 @@ function parseArgs(argv: string[]): Args {
         break;
       }
       case "--out":
-        args.out = val;
+        args.out = requireValue(flag, val);
         i++;
         break;
       case "--fail-on": {
@@ -423,40 +447,40 @@ function parseArgs(argv: string[]): Args {
         args.checklist = true;
         break;
       case "--playbook-file":
-        args.playbookFile = val;
+        args.playbookFile = requireValue(flag, val);
         i++;
         break;
       case "--posture":
         args.posture = true;
         break;
       case "--role":
-        args.role = val;
+        args.role = requireValue(flag, val);
         i++;
         break;
       case "--deal-value":
-        args.dealValue = Number(val);
+        args.dealValue = Number(requireValue(flag, val));
         i++;
         break;
       case "--fail-on-divergence":
         args.failOnDivergence = true;
         break;
       case "--baseline":
-        args.baseline = val;
+        args.baseline = requireValue(flag, val);
         i++;
         break;
       case "--fail-on-coherence-regression":
         args.failOnCoherenceRegression = true;
         break;
       case "--emit-coherence":
-        args.emitCoherence = val;
+        args.emitCoherence = requireValue(flag, val);
         i++;
         break;
       case "--baseline-coherence":
-        args.baselineCoherence = val;
+        args.baselineCoherence = requireValue(flag, val);
         i++;
         break;
       case "--dkb":
-        args.dkb = val;
+        args.dkb = requireValue(flag, val);
         i++;
         break;
       case "--as-text":

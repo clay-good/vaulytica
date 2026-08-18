@@ -306,6 +306,48 @@ describe("ladder-pinned coherence baseline (spec-v15 — cross-ladder guard)", (
 });
 
 /**
+ * A value-taking flag written WITHOUT its value used to consume whatever came
+ * next — including another flag. `analyze doc.txt --playbook --delivery` set
+ * the playbook to the string "--delivery", skipped past it, and never enabled
+ * `--delivery`: no error, exit 0, and a report with the delivery scan silently
+ * missing. A gate the caller believes is on being quietly switched off is the
+ * same failure the `--fail-on critcal` typo used to cause, so it gets the same
+ * treatment — a usage error.
+ *
+ * The allowlist-validated flags (`--format`, `--fail-on`, `--court`,
+ * `--deadline-profile`, `--service-method`, `--regime`, `--state`) already
+ * reject a flag-shaped value on their own; these are the free-form ones.
+ */
+describe("value-taking flags reject a missing or flag-shaped value", () => {
+  const doc = join(process.cwd(), "tests", "fixtures", "contracts", "pasted-mutual-nda.txt");
+  const FREE_FORM = [
+    "--playbook",
+    "--out",
+    "--playbook-file",
+    "--role",
+    "--deal-value",
+    "--baseline",
+    "--emit-coherence",
+    "--baseline-coherence",
+    "--dkb",
+  ];
+
+  for (const flag of FREE_FORM) {
+    it(`${flag} rejects a following flag instead of swallowing it`, async () => {
+      await expect(runAnalyze([doc, flag, "--delivery"])).rejects.toThrow(
+        new RegExp(`\\${flag} requires a value`),
+      );
+    });
+
+    it(`${flag} rejects being the last argument`, async () => {
+      await expect(runAnalyze([doc, flag])).rejects.toThrow(
+        new RegExp(`\\${flag} requires a value`),
+      );
+    });
+  }
+});
+
+/**
  * `--fail-on` is the CI gate. An unrecognized value used to be cast
  * straight to `Severity`, which left `SEVERITY_RANK[args.failOn]`
  * undefined and made the gate comparison always false: `analyze
