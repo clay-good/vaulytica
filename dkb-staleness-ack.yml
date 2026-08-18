@@ -6,11 +6,20 @@
 # listed below, the build exits non-zero — spec-v3.md §14, Step 20.
 #
 # To acknowledge a drift, add an entry under `acknowledgments:` with:
-#   - node_id:  the v3 DKB node id from the staleness report
-#   - citation: the citation string from the staleness report
-#   - ack:      a short human note explaining the disposition
-#               (e.g. "renumbered, no substantive change", "amendment
-#               under review by counsel — track via VAUL-1234").
+#   - node_id:      the v3 DKB node id from the staleness report
+#   - citation:     the citation string from the staleness report
+#   - fetched_hash: the `fetched_hash` from that same staleness row — the
+#                   version of the authority you actually reviewed
+#   - ack:          a short human note explaining the disposition
+#                   (e.g. "renumbered, no substantive change", "amendment
+#                   under review by counsel — track via VAUL-1234").
+#
+# The hash is part of the match, so an acknowledgment covers ONE reviewed
+# version of an authority, not the citation forever. When that authority
+# changes again the gate re-arms and asks for a fresh review — without the
+# hash, dispositioning one cosmetic renumbering permanently silenced every
+# later change, including a substantive amendment. An entry missing
+# `fetched_hash` is ignored, so the gate fails closed rather than open.
 #
 # An acknowledgment does not silence the rule-disable behavior — rules
 # that depend on a stale node remain `enabled: false` until the pin is

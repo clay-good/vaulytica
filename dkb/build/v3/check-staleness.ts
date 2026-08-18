@@ -79,9 +79,18 @@ export function loadAcks(path: string): AcknowledgmentEntry[] {
         e !== null &&
         typeof (e as Record<string, unknown>).node_id === "string" &&
         typeof (e as Record<string, unknown>).citation === "string" &&
+        // An entry missing the reviewed hash is DROPPED rather than treated as
+        // a wildcard, so a hand-written ack that omits it fails closed: the
+        // build keeps reporting the drift instead of quietly publishing it.
+        typeof (e as Record<string, unknown>).fetched_hash === "string" &&
         typeof (e as Record<string, unknown>).ack === "string",
     )
-    .map((e) => ({ node_id: e.node_id, citation: e.citation, ack: e.ack }));
+    .map((e) => ({
+      node_id: e.node_id,
+      citation: e.citation,
+      fetched_hash: e.fetched_hash,
+      ack: e.ack,
+    }));
 }
 
 export async function runStalenessCheck(

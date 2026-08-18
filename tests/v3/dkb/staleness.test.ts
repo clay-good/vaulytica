@@ -110,10 +110,33 @@ describe("unacknowledgedRows", () => {
         {
           node_id: "hipaa-test-node",
           citation: "45 C.F.R. § 164.504(e)(2)(ii)(C)",
+          fetched_hash: report.rows[0]!.fetched_hash,
           ack: "renumbered, no substantive change",
         },
       ]),
     ).toHaveLength(0);
+  });
+
+  it("re-arms on a LATER drift of an already-acknowledged citation", async () => {
+    // An acknowledgment says "I reviewed THIS version and it is fine". Keyed on
+    // (node_id, citation) alone it said "never ask me about this authority
+    // again" — so a substantive amendment landing after a cosmetic one was
+    // published with no human ever seeing it, which is the whole event this
+    // gate exists to catch.
+    const report = await detectStaleness({
+      nodes: [node()],
+      fetchAuthority: async () => ({ text: "a later, substantive amendment", fetched_at: NOW }),
+      nowIso: NOW,
+    });
+    const staleAck = [
+      {
+        node_id: "hipaa-test-node",
+        citation: "45 C.F.R. § 164.504(e)(2)(ii)(C)",
+        fetched_hash: "the-hash-of-the-earlier-cosmetic-drift",
+        ack: "renumbered, no substantive change",
+      },
+    ];
+    expect(unacknowledgedRows(report, staleAck)).toHaveLength(1);
   });
 });
 
