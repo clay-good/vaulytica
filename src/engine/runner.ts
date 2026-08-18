@@ -117,6 +117,7 @@ export async function runEngine(input: RunEngineInput): Promise<EngineRun> {
       execution_log.push({
         rule_id: rule.id,
         rule_version: rule.version,
+        ran: false,
         fired: false,
         elapsed_ms: 0,
       });
@@ -127,6 +128,7 @@ export async function runEngine(input: RunEngineInput): Promise<EngineRun> {
       execution_log.push({
         rule_id: rule.id,
         rule_version: rule.version,
+        ran: false,
         fired: false,
         elapsed_ms: 0,
       });
@@ -153,6 +155,7 @@ export async function runEngine(input: RunEngineInput): Promise<EngineRun> {
     execution_log.push({
       rule_id: rule.id,
       rule_version: rule.version,
+      ran: true,
       fired: finding !== null,
       finding_id: finding?.id,
       elapsed_ms: elapsed,

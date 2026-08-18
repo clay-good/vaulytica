@@ -53,6 +53,7 @@ function makeRun(name: string, hash: string, findings: Finding[]): EngineRun {
     execution_log: findings.map((f) => ({
       rule_id: f.rule_id,
       rule_version: "1.0.0",
+      ran: true,
       fired: true,
       elapsed_ms: 0,
     })),

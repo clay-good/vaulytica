@@ -5,12 +5,14 @@
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "CHOICE-001",
       "rule_version": "1.0.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "CHOICE-002",
       "rule_version": "1.1.0"
     },
@@ -18,204 +20,238 @@
       "elapsed_ms": 0,
       "finding_id": "CHOICE-003-s1-0",
       "fired": true,
+      "ran": true,
       "rule_id": "CHOICE-003",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "CHOICE-004",
       "rule_version": "1.0.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "CHOICE-005",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "CHOICE-006",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "CHOICE-007",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "CHOICE-008",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "CHOICE-009",
       "rule_version": "1.0.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "CHOICE-010",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "CHOICE-011",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "CHOICE-012",
       "rule_version": "1.0.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "DARK-001",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "DARK-002",
       "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "DARK-003",
       "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "DARK-004",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "DARK-005",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "DARK-006",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "DARK-007",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "DARK-008",
       "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "DARK-009",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": false,
       "rule_id": "DARK-010",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": false,
       "rule_id": "DARK-011",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": false,
       "rule_id": "DARK-012",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": false,
       "rule_id": "DARK-013",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": false,
       "rule_id": "DARK-014",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "FIN-001",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "FIN-002",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "FIN-003",
       "rule_version": "1.0.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "FIN-004",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "FIN-005",
       "rule_version": "1.6.4"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "FIN-006",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "FIN-007",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "FIN-008",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "FIN-009",
       "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "IPDATA-001",
       "rule_version": "1.5.0"
     },
@@ -223,60 +259,70 @@
       "elapsed_ms": 0,
       "finding_id": "IPDATA-002-s1.3-855",
       "fired": true,
+      "ran": true,
       "rule_id": "IPDATA-002",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "IPDATA-003",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "IPDATA-004",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "IPDATA-005",
       "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "IPDATA-006",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "IPDATA-007",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "IPDATA-008",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "IPDATA-009",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "IPDATA-010",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "OBLI-001",
       "rule_version": "1.1.0"
     },
@@ -284,18 +330,21 @@
       "elapsed_ms": 0,
       "finding_id": "OBLI-002-s1-0",
       "fired": true,
+      "ran": true,
       "rule_id": "OBLI-002",
       "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "OBLI-003",
       "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "OBLI-004",
       "rule_version": "1.1.0"
     },
@@ -303,108 +352,126 @@
       "elapsed_ms": 0,
       "finding_id": "OBLI-005-s1.1-402",
       "fired": true,
+      "ran": true,
       "rule_id": "OBLI-005",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "OBLI-006",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "OBLI-007",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "OBLI-008",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "OBLI-009",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "PERS-001",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "PERS-002",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "PERS-003",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "PERS-004",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "PERS-005",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "PERS-006",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "PERS-007",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "PERS-008",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "PERS-009",
       "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "RISK-001",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "RISK-002",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "RISK-003",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "RISK-004",
       "rule_version": "1.1.0"
     },
@@ -412,36 +479,42 @@
       "elapsed_ms": 0,
       "finding_id": "RISK-005-s1-0",
       "fired": true,
+      "ran": true,
       "rule_id": "RISK-005",
       "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "RISK-006",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "RISK-007",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "RISK-008",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "RISK-009",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "RISK-010",
       "rule_version": "1.1.0"
     },
@@ -449,48 +522,56 @@
       "elapsed_ms": 0,
       "finding_id": "RISK-011-s1.4-1236",
       "fired": true,
+      "ran": true,
       "rule_id": "RISK-011",
       "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "RISK-012",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "RISK-013",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "RISK-014",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "RISK-015",
       "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "RISK-016",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "RISK-017",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "STRUCT-001",
       "rule_version": "1.0.0"
     },
@@ -498,204 +579,238 @@
       "elapsed_ms": 0,
       "finding_id": "STRUCT-002-s1-0",
       "fired": true,
+      "ran": true,
       "rule_id": "STRUCT-002",
       "rule_version": "1.0.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "STRUCT-003",
       "rule_version": "1.20.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "STRUCT-004",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "STRUCT-005",
       "rule_version": "1.0.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "STRUCT-006",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "STRUCT-007",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "STRUCT-008",
       "rule_version": "1.0.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "STRUCT-009",
       "rule_version": "1.6.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "STRUCT-010",
       "rule_version": "1.0.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "STRUCT-011",
       "rule_version": "1.0.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "STRUCT-012",
       "rule_version": "1.0.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "STRUCT-013",
       "rule_version": "1.10.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "STRUCT-014",
       "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "STRUCT-015",
       "rule_version": "1.0.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "STRUCT-016",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "STRUCT-017",
       "rule_version": "1.0.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "STRUCT-018",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "STRUCT-019",
       "rule_version": "1.0.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "TEMP-001",
       "rule_version": "1.0.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "TEMP-002",
       "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "TEMP-003",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "TEMP-004",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "TEMP-005",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "TEMP-006",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "TEMP-007",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "TEMP-008",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "TEMP-009",
       "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "TEMP-010",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "TEMP-011",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "TEMP-012",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "TERM-001",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "TERM-002",
       "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "TERM-003",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "TERM-004",
       "rule_version": "1.1.0"
     },
@@ -703,30 +818,35 @@
       "elapsed_ms": 0,
       "finding_id": "TERM-005-s1-0",
       "fired": true,
+      "ran": true,
       "rule_id": "TERM-005",
       "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "TERM-006",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "TERM-007",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "TERM-008",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
       "rule_id": "TERM-009",
       "rule_version": "1.1.0"
     }
@@ -882,7 +1002,7 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "0a6f5cef24345a47be5fb1c83a50ce20e0d927a4302ab387719958f0d4f01f88",
+  "result_hash": "ae35c6b6b4d14cf18416c2091f52610beb2ea68880f9b3ee89ab9f3a8265cdfd",
   "source_file": {
     "name": "bad-contractor-leaseback.docx",
     "sha256": "82496f664a3abe77b7ed03c7c77b47c9ffbd8c5f883389cb761b7ba68b31f98d",

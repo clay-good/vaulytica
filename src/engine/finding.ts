@@ -133,6 +133,19 @@ export type Rule = {
 export type ExecutionLogEntry = {
   rule_id: string;
   rule_version: string;
+  /**
+   * False when the rule was never evaluated — skipped by a playbook
+   * `rule_overrides[id].skip`, or excluded because its `applies_to_playbooks`
+   * does not list the matched playbook. A skipped rule also records
+   * `fired: false`, so without this field a rule that never ran is
+   * indistinguishable from one that ran and stayed silent, and every consumer
+   * that reads "no finding" as "checked, and clean" overstates how much of the
+   * document was actually screened. `ConsistencyExecutionLogEntry` has carried
+   * the same field, for the same reason, since the consistency engine shipped.
+   * Inside the hash: two runs that evaluated different rule sets are different
+   * analyses and must not share a `result_hash`.
+   */
+  ran: boolean;
   fired: boolean;
   finding_id?: string;
   elapsed_ms: number;

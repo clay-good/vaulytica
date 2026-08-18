@@ -13,6 +13,7 @@ function run(outcomes: Record<string, boolean>): EngineRun {
   const log: ExecutionLogEntry[] = Object.entries(outcomes).map(([rule_id, fired]) => ({
     rule_id,
     rule_version: "1.0.0",
+    ran: true,
     fired,
     elapsed_ms: 0.1,
   }));

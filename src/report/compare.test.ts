@@ -54,7 +54,7 @@ function finding(
 }
 
 function logEntry(rule_id: string, fired: boolean): ExecutionLogEntry {
-  return { rule_id, rule_version: "1.0.0", fired, elapsed_ms: 0 };
+  return { rule_id, rule_version: "1.0.0", ran: true, fired, elapsed_ms: 0 };
 }
 
 function makeRun(opts: {
@@ -64,10 +64,21 @@ function makeRun(opts: {
   result_hash?: string;
   findings: Finding[];
   silentRules?: string[];
+  /** Rules the playbook skipped: logged `ran: false, fired: false`. */
+  skippedRules?: string[];
 }): EngineRun {
   const log: ExecutionLogEntry[] = [
     ...opts.findings.map((f) => logEntry(f.rule_id, true)),
     ...(opts.silentRules ?? []).map((r) => logEntry(r, false)),
+    ...(opts.skippedRules ?? []).map(
+      (r): ExecutionLogEntry => ({
+        rule_id: r,
+        rule_version: "1.0.0",
+        ran: false,
+        fired: false,
+        elapsed_ms: 0,
+      }),
+    ),
   ];
   return {
     version: "0.1.0",
@@ -102,6 +113,47 @@ describe("compareRuns — buckets", () => {
     expect(cmp.delta.introduced.map((f) => f.rule_id)).toEqual(["R-INTRODUCED"]);
     expect(cmp.delta.unchanged.map((u) => u.rule_id)).toEqual(["R-UNCHANGED"]);
     expect(cmp.delta.carried_clean_count).toBe(2);
+  });
+
+  it("does not count a skipped rule as carried-clean", async () => {
+    // A rule the playbook skipped is logged `fired: false` exactly like a rule
+    // that ran and stayed silent. Counting on `fired` alone reported rules that
+    // were NEVER EVALUATED as evidence the document had been checked clean.
+    const base = makeRun({
+      result_hash: "base".padEnd(64, "0"),
+      findings: [],
+      silentRules: ["R-CLEAN"],
+      skippedRules: ["R-SKIPPED"],
+    });
+    const revised = makeRun({
+      result_hash: "rev".padEnd(64, "0"),
+      findings: [],
+      silentRules: ["R-CLEAN"],
+      skippedRules: ["R-SKIPPED"],
+    });
+
+    const cmp = await compareRuns(base, revised);
+    // Only R-CLEAN — R-SKIPPED never ran on either side.
+    expect(cmp.delta.carried_clean_count).toBe(1);
+  });
+
+  it("does not count a rule that ran on only one side", async () => {
+    // Skipped on the base run, evaluated and silent on the revised one: the
+    // pair cannot support a "no regression" claim, because there is no base
+    // result to compare the revised silence against.
+    const base = makeRun({
+      result_hash: "base".padEnd(64, "0"),
+      findings: [],
+      skippedRules: ["R-ONE-SIDED"],
+    });
+    const revised = makeRun({
+      result_hash: "rev".padEnd(64, "0"),
+      findings: [],
+      silentRules: ["R-ONE-SIDED"],
+    });
+
+    const cmp = await compareRuns(base, revised);
+    expect(cmp.delta.carried_clean_count).toBe(0);
   });
 
   it("uses the revised finding for the unchanged bucket", async () => {

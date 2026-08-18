@@ -66,11 +66,12 @@ function makeRun(name: string, hashSeed: string, findings: Finding[]): EngineRun
       {
         rule_id: "STRUCT-001",
         rule_version: "1.0.0",
+        ran: true,
         fired: true,
         finding_id: "c1",
         elapsed_ms: 0.1,
       },
-      { rule_id: "STRUCT-002", rule_version: "1.0.0", fired: false, elapsed_ms: 0.05 },
+      { rule_id: "STRUCT-002", rule_version: "1.0.0", ran: true, fired: false, elapsed_ms: 0.05 },
     ],
     result_hash: hashSeed.repeat(64).slice(0, 64),
   };

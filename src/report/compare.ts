@@ -221,19 +221,29 @@ function cmpFinding(a: Finding, b: Finding): number {
 }
 
 /**
- * Count rules evaluated on both runs that fired on neither. A whitespace-only
+ * Count rules EVALUATED on both runs that fired on neither. A whitespace-only
  * difference does not count as firing — both produced no finding. The count is
  * the "no regression" signal; listing every clean rule would bury the report.
+ *
+ * "Evaluated" is the load-bearing word, and it is why both sides test `ran`
+ * and not just `fired`. A rule the playbook skipped, or one whose
+ * `applies_to_playbooks` excludes the matched playbook, is logged with
+ * `fired: false` exactly like a rule that ran and stayed silent. Counting on
+ * `fired` alone therefore reported rules that were never executed at all as
+ * evidence that the document had been checked and come back clean — the
+ * reassurance an attorney reads this number for is precisely the thing those
+ * entries cannot support. `bundle.ts` filters the consistency log on `ran` for
+ * the same reason.
  */
 function countCarriedClean(base: EngineRun, revised: EngineRun): number {
   const revSilent = new Set<string>();
   for (const e of revised.execution_log) {
-    if (!e.fired) revSilent.add(e.rule_id);
+    if (e.ran && !e.fired) revSilent.add(e.rule_id);
   }
   const counted = new Set<string>();
   let count = 0;
   for (const e of base.execution_log) {
-    if (e.fired || counted.has(e.rule_id)) continue;
+    if (!e.ran || e.fired || counted.has(e.rule_id)) continue;
     counted.add(e.rule_id);
     if (revSilent.has(e.rule_id)) count += 1;
   }
