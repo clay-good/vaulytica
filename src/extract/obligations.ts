@@ -181,20 +181,33 @@ function splitModalClauses(
     while ((cm = CONJ.exec(region)) !== null) last = cm;
     if (!last) continue; // no clause boundary → subordinate modal, keep merged
     const subjectStart = regionStart + last.index + last[0].length;
-    // A proviso is a RESTRICTION on the clause before it, never an independent
-    // obligation — but it carries its own modal, so the semicolon boundary
-    // split it off as one. "Customer shall have the right to inspect
-    // Provider's records; provided that any such inspection shall not
-    // unreasonably interfere with Provider's business operations" fabricated a
-    // second obligation whose obligor was the literal words "provided that any
-    // such inspection" and whose action, with the negation stripped by the
-    // modal split, read as an affirmative duty TO interfere — the inversion of
-    // what the clause says. Keep it merged so QUALIFIER_RE records it as the
-    // first obligation's `qualifier`, which is what it is.
-    if (PROVISO_LEAD.test(sentence.slice(subjectStart, modals[k]!.index))) continue;
-    if (sentence.slice(subjectStart, modals[k]!.index).trim().length === 0) continue; // elided subject
+    // A proviso carries its own modal, so the semicolon boundary split it into
+    // a second obligation — and the split dropped the negation with it.
+    // "Customer shall have the right to inspect Provider's records; provided
+    // that any such inspection shall not unreasonably interfere with
+    // Provider's business operations" produced a phantom duty whose obligor
+    // was the literal words "provided that any such inspection" and whose
+    // action read as an affirmative duty TO interfere — the inversion of what
+    // the clause says.
+    //
+    // Which repair is right depends on the proviso. A NEGATED one restricts
+    // the clause before it and states no duty of its own, so it is kept merged
+    // and QUALIFIER_RE records it as the first obligation's `qualifier`. An
+    // AFFIRMATIVE one ("; provided that Customer shall pay all undisputed fees
+    // within thirty days") is a genuine second duty, so it still splits —
+    // suppressing that would lose a real obligation, as an adversarial pass
+    // showed. Either way the lead-in is stripped off the subject, which also
+    // fixes the obligor it used to corrupt ("provided that Customer").
+    const provisoLead = PROVISO_LEAD.exec(sentence.slice(subjectStart, modals[k]!.index));
+    let clauseStart = subjectStart;
+    if (provisoLead) {
+      const after = sentence.slice(modals[k]!.index + modals[k]!.len);
+      if (/^\s*(?:not|never)\b/i.test(after)) continue; // restriction → qualifier
+      clauseStart = subjectStart + provisoLead[0].length;
+    }
+    if (sentence.slice(clauseStart, modals[k]!.index).trim().length === 0) continue; // elided subject
     clauses[clauses.length - 1]!.predEnd = regionStart + last.index;
-    clauses.push({ subjectStart, modal: modals[k]! });
+    clauses.push({ subjectStart: clauseStart, modal: modals[k]! });
   }
 
   return clauses.map((c) => ({
@@ -253,17 +266,30 @@ function splitSentences(text: string): { text: string; start: number }[] {
   // starting mid-clause, so a following obligation resolved its obligor to the
   // fragment "Suite 400, and".
   //
-  // Two rules, matching `enclosingSentence`'s convention in
+  // Two rules, the first matching `enclosingSentence`'s convention in
   // src/engine/rules/_helpers.ts: a sentence ends where the next one STARTS
-  // (whitespace + a capital or digit) or at the end of the text; and a period
-  // closing a single-letter segment is an initialism's internal period
-  // ("p.m.", "U.S.", "C.F.R."), never a boundary. Both are O(1) local checks,
-  // so the O(n) scan — and the ReDoS property it exists for — is preserved.
+  // (whitespace + a capital or digit) or at the end of the text.
+  //
+  // The second covers what that rule alone cannot: "5:00 p.m. Eastern Time"
+  // puts a capital right after the abbreviation, so the start-of-sentence test
+  // reads it as a boundary. A period closing a LOWERCASE single-letter segment
+  // ("p.m.", "a.m.") is an initialism's internal period and never a boundary.
+  //
+  // The lowercase restriction is load-bearing, and an adversarial pass caught
+  // its absence: an unrestricted version also swallowed "U.S.", so "…business
+  // is in the U.S. Vendor shall comply with export laws" merged two real
+  // sentences and reported the obligor as "business is in the U.S. Vendor".
+  // Uppercase initialisms ("U.S.", "C.F.R.", "N.Y.") fall through to the
+  // start-of-sentence test instead, which reads "U.S. federal courts" as one
+  // sentence and "U.S. Vendor shall …" as two — the correct call in both.
+  //
+  // Both checks are O(1) and local, so the O(n) scan — and the ReDoS property
+  // it exists for — is preserved.
   const isTerm = (i: number): boolean => {
     const c = text[i]!;
     if (c === "!" || c === "?") return true;
     if (c !== ".") return false;
-    if (i >= 2 && /[A-Za-z]/.test(text[i - 1]!) && text[i - 2] === ".") return false;
+    if (i >= 2 && /[a-z]/.test(text[i - 1]!) && text[i - 2] === ".") return false;
     let j = i + 1;
     let sawSpace = false;
     while (j < n && (text[j] === " " || text[j] === "\t" || text[j] === "\n" || text[j] === "\r")) {

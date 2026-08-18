@@ -280,6 +280,53 @@ describe("extractObligations", () => {
     );
   });
 
+  it("still ends a sentence at an uppercase initialism before a new subject", () => {
+    // The abbreviation guard has to tell "5:00 p.m. Eastern Time" (one
+    // sentence) from "…in the U.S. Vendor shall comply…" (two). An
+    // unrestricted guard swallowed both, and reported this obligor as
+    // "business is in the U.S. Vendor" — an adversarial pass caught it.
+    const obs = extractObligations(
+      buildTree([
+        "Compliance",
+        "Vendor represents that its principal place of business is in the U.S. Vendor shall comply with all applicable export control laws.",
+      ]),
+      [],
+    );
+    expect(obs.map((o) => o.obligor)).toEqual(["Vendor"]);
+    expect(obs[0]!.action).toBe("comply with all applicable export control laws");
+  });
+
+  it("keeps an uppercase initialism inside its own sentence", () => {
+    // The other direction: "U.S." mid-sentence is followed by a lowercase word,
+    // so the start-of-sentence test correctly declines to split there.
+    const obs = extractObligations(
+      buildTree([
+        "Compliance",
+        "The Provider shall comply with all U.S. federal export regulations.",
+      ]),
+      [],
+    );
+    expect(obs).toHaveLength(1);
+    expect(obs[0]!.action).toBe("comply with all U.S. federal export regulations");
+  });
+
+  it("splits an affirmative proviso into its own obligation, without the lead-in", () => {
+    // A negated proviso restricts the clause before it; an affirmative one is a
+    // real second duty, and suppressing it would lose an obligation. Both keep
+    // the lead-in off the obligor, which the pre-existing split corrupted into
+    // "provided that Customer".
+    const obs = extractObligations(
+      buildTree([
+        "Invoices",
+        "Customer shall have the right to dispute any invoice in writing within ten days; provided that Customer shall pay all undisputed fees within thirty days of invoice.",
+      ]),
+      [],
+    );
+    expect(obs.map((o) => o.obligor)).toEqual(["Customer", "Customer"]);
+    expect(obs[1]!.action).toBe("pay all undisputed fees");
+    expect(obs[1]!.trigger).toBe("within thirty days of invoice");
+  });
+
   it("still splits a genuine coordinated second clause", () => {
     // The proviso guard is anchored, so an ordinary semicolon-coordinated
     // second obligation must still yield two records.
