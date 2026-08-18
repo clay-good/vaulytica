@@ -9,30 +9,45 @@ const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const BIN = join(REPO_ROOT, "bin", "vaulytica.mjs");
 
 describe("vaulytica bin launcher (spec-v8 §22 distribution)", () => {
-  it("runs the CLI and prints usage with --help", () => {
-    // The launcher spawns `node --import tsx tools/cli/run.ts`; cold tsx start
-    // is slow on CI, so give it room.
-    const out = execFileSync(process.execPath, [BIN, "--help"], {
-      encoding: "utf8",
-      timeout: 60_000,
-    });
-    expect(out).toContain("vaulytica — deterministic legal-document linter");
-    expect(out).toContain("analyze");
-    expect(out).toContain("compare");
-  });
+  // Both tests below spawn `node --import tsx tools/cli/run.ts`. Cold tsx
+  // start is slow, so each allows the CHILD 60s — but the child allowance is
+  // only half of it: vitest's own per-test timeout defaults to 5s and this
+  // repo sets no global override, so the 60s was silently capped at 5s and the
+  // test failed as "Test timed out in 5000ms" whenever the machine was busy
+  // enough for a cold tsx start to cross five seconds. The vitest timeout has
+  // to be raised to match the intent the child timeout already declares.
+  const SPAWN_TIMEOUT_MS = 60_000;
 
-  it("propagates a non-zero exit code from the CLI", () => {
-    let code = 0;
-    try {
-      execFileSync(process.execPath, [BIN, "nonsense-command"], {
-        stdio: "pipe",
-        timeout: 60_000,
+  it(
+    "runs the CLI and prints usage with --help",
+    () => {
+      const out = execFileSync(process.execPath, [BIN, "--help"], {
+        encoding: "utf8",
+        timeout: SPAWN_TIMEOUT_MS,
       });
-    } catch (e) {
-      code = (e as { status?: number }).status ?? -1;
-    }
-    expect(code).not.toBe(0);
-  });
+      expect(out).toContain("vaulytica — deterministic legal-document linter");
+      expect(out).toContain("analyze");
+      expect(out).toContain("compare");
+    },
+    SPAWN_TIMEOUT_MS,
+  );
+
+  it(
+    "propagates a non-zero exit code from the CLI",
+    () => {
+      let code = 0;
+      try {
+        execFileSync(process.execPath, [BIN, "nonsense-command"], {
+          stdio: "pipe",
+          timeout: SPAWN_TIMEOUT_MS,
+        });
+      } catch (e) {
+        code = (e as { status?: number }).status ?? -1;
+      }
+      expect(code).not.toBe(0);
+    },
+    SPAWN_TIMEOUT_MS,
+  );
 });
 
 describe("package.json distribution metadata", () => {
