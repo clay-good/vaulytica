@@ -16,9 +16,32 @@ import { cachedGetText, citationFor } from "./_common.js";
 
 const CFR_TITLES = [16, 17, 29, 49] as const;
 
+/**
+ * Parse one title's XML into section records.
+ *
+ * Throws when the body yields no sections. `@xmldom/xmldom` does not throw on
+ * malformed input — it hands back a document with nothing in it — so an
+ * upstream maintenance or error page served with HTTP 200 parsed "successfully"
+ * into zero `DIV8` elements. The fetcher then moved to the next title with no
+ * warning and no exception, and the build reported success. Because statutes
+ * merge additively onto the curated baseline, the shrinkage gate could not see
+ * it either: nothing shrank, the existing entries were simply never updated,
+ * indefinitely and silently.
+ *
+ * Every title this fetcher pulls (16, 17, 29, 49 CFR) has hundreds of sections,
+ * so zero is never a real answer — it always means the body was not the XML we
+ * asked for. Throwing routes it to the per-source `warn: fetcher … failed`
+ * path in `runBuild`, which is visible in the build log.
+ */
 export function parseEcfrXml(xml: string, title: number, retrievedAt: string): StatuteRecord[] {
   const doc = new DOMParser().parseFromString(xml, "text/xml");
   const sections = Array.from(doc.getElementsByTagName("DIV8")); // DIV8 = Section in CFR
+  if (sections.length === 0) {
+    throw new Error(
+      `eCFR title ${title}: response contained no sections (DIV8) — the body was probably ` +
+        `not the requested XML (an error or maintenance page served with HTTP 200).`,
+    );
+  }
   return sections.map((s) => {
     const n = s.getAttribute("N") ?? "";
     const headTag = s.getElementsByTagName("HEAD")[0];

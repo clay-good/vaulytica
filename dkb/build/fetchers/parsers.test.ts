@@ -91,6 +91,25 @@ describe("parseEcfrXml", () => {
     expect(out[0]?.citation).toBe("17 C.F.R. § 240.10b-5");
     expect(out[0]?.canonical_url).toContain("title-17/section-240.10b-5");
   });
+
+  it("throws on a body with no sections instead of yielding zero records", () => {
+    // xmldom does not throw on malformed input, so an upstream error page
+    // served with HTTP 200 parsed into an empty document and the title was
+    // skipped silently — the build reported success having fetched nothing.
+    expect(() =>
+      parseEcfrXml(
+        "<html><body><h1>503 Service Unavailable</h1></body></html>",
+        17,
+        "2026-05-12T00:00:00Z",
+      ),
+    ).toThrow(/no sections/);
+  });
+
+  it("throws on well-formed XML that carries no CFR sections", () => {
+    expect(() =>
+      parseEcfrXml(`<?xml version="1.0"?><CFR></CFR>`, 29, "2026-05-12T00:00:00Z"),
+    ).toThrow(/title 29/);
+  });
 });
 
 describe("parsePublicLawXml", () => {
