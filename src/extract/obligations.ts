@@ -169,7 +169,16 @@ function splitModalClauses(
   }
   if (modals.length === 0) return [];
 
-  const CONJ = /(?:,\s+and\s+|;\s+and\s+|;\s+|\.\s+)/gi;
+  // The `.\s+` alternative recovers a duty stranded when splitSentences kept an
+  // ambiguous abbreviation ("5:00 p.m. The Provider shall …") in one sentence.
+  // It has to know the same abbreviations splitSentences does, or it undoes that
+  // work one stage later: "described in Ex. 4 of this Agreement and Client shall
+  // pay …" split at "Ex." and handed the second duty the obligor "4 of this
+  // Agreement and Client".
+  const CONJ = new RegExp(
+    String.raw`(?:,\s+and\s+|;\s+and\s+|;\s+|(?<!\b(?:${ABBREV_BEFORE_NUMBER})\b)\.\s+)`,
+    "gi",
+  );
   // Anchored, so it fires only when the candidate new subject BEGINS with the
   // proviso — "the fee, provided that …" mid-subject is untouched.
   const PROVISO_LEAD = /^provided\s*,?\s*(?:however\s*,?\s*)?that\b/i;

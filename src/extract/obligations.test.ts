@@ -280,6 +280,22 @@ describe("extractObligations", () => {
     );
   });
 
+  it("does not split a clause at a cross-reference abbreviation either", () => {
+    // The clause splitter's "." boundary exists to recover a duty stranded
+    // behind an ambiguous abbreviation, but it knew nothing about cross
+    // references, so it undid the sentence fix one stage later and handed the
+    // second duty the obligor "4 of this Agreement and Client".
+    const obs = extractObligations(
+      buildTree([
+        "Reporting",
+        "Provider shall submit the report described in Ex. 4 of this Agreement and Client shall pay the invoice within 30 days.",
+      ]),
+      [],
+    );
+    expect(obs.map((o) => o.obligor)).toEqual(["Provider"]);
+    expect(obs[0]!.action.startsWith("submit the report described in Ex. 4")).toBe(true);
+  });
+
   it("does not end a sentence at a cross-reference or date abbreviation", () => {
     // The obligations splitter and SENTENCE_END in walk.ts had drifted: the
     // shared pattern already kept "Ex. 4" whole, but this hand-rolled scan
