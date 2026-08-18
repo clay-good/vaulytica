@@ -16,6 +16,35 @@ describe("reconcileProduction — clean production", () => {
   });
 });
 
+describe("reconcileProduction — a bare-digit range end in the log", () => {
+  const produced = extractBatesSet(["ACME_000100.pdf", "ACME_000200.pdf"]);
+  const csv = (end: string) =>
+    `Beg Bates,End Bates,Description,Privilege\nACME_000101,${end},Memo,AC\n`;
+
+  it("accounts for the produced-set gap the same as a fully-prefixed end", () => {
+    // "ACME_000101" .. "000199" is an ordinary way to write a range. The bare
+    // end used to read as a prefix mismatch, the row was dropped, and the gap
+    // it covers was reported as UNLOGGED — a false PROD-011 against a correct
+    // log, on one of the two codes the CI gate exits 2 on.
+    const bare = reconcileProduction({ bates: produced, log: parsePrivilegeLog(csv("000199")) });
+    const full = reconcileProduction({
+      bates: produced,
+      log: parsePrivilegeLog(csv("ACME_000199")),
+    });
+    expect(bare.map((f) => f.code)).toEqual(full.map((f) => f.code));
+    expect(bare.some((f) => f.code === "PROD-011")).toBe(false);
+  });
+
+  it("still drops a row whose two ends carry different prefixes", () => {
+    const log = parsePrivilegeLog(
+      "Beg Bates,End Bates,Description,Privilege\nACME_000101,SMITH_000199,Memo,AC\n",
+    );
+    const findings = reconcileProduction({ bates: produced, log });
+    // The range is unusable, so the produced gap is still unaccounted for.
+    expect(findings.some((f) => f.code === "PROD-011")).toBe(true);
+  });
+});
+
 describe("reconcileProduction — range filenames", () => {
   it("reports no gap for contiguous ranged members", () => {
     const bates = extractBatesSet(["ACME_000001-000010.pdf", "ACME_000011-000020.pdf"]);
