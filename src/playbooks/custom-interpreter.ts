@@ -564,7 +564,7 @@ function evaluatePredicate(p: CustomPredicate, facts: DocFacts): PredicateOutcom
       // section mask a genuinely one-way clause. The window (some text before
       // the anchor, more after) is the clause's own neighbourhood.
       const section = facts.sectionTextLower.get(hit.section_id) ?? hit.text;
-      const [scanFrom, scanTo] = mutualityWindow(section, hit.position, p.clause);
+      const [scanFrom, scanTo] = mutualityWindow(section, hit.position);
       const scanText = section.slice(scanFrom, scanTo);
       const mutual = MUTUALITY_MARKERS.some((m) => scanText.includes(m));
       if (mutual) return { kind: "compliant" };
@@ -878,34 +878,58 @@ const MUTUAL_SCAN_FWD = 520;
  * predicate: it is the enforcement core of the bring-your-own-playbook
  * feature, and the author gets a clean report rather than a warning.
  *
- * The clip is deliberately conservative. Narrowing this window in the wrong
- * place produces the OPPOSITE error — accusing genuinely mutual drafting of
- * being one-way — so the only cut points are the other clause categories'
- * own anchors, which mark where a different clause demonstrably begins. Prose
- * that names no other clause keeps the full window, exactly as before.
+ * The clip is deliberately conservative, because narrowing this window in the
+ * wrong place produces the OPPOSITE error — accusing genuinely mutual drafting
+ * of being one-way. The only cut points are CLAUSE OPENINGS: an anchor stem
+ * that follows a sentence or paragraph break, as in "… this Agreement.
+ * Confidentiality. Each party …". A stem merely NAMED inside a clause ("any
+ * breach of the confidentiality provisions") is not a boundary — clipping
+ * there truncated the clause before its own "shall be mutual … each party"
+ * tail and accused it of being one-way, which an earlier revision of this
+ * function did. Prose containing no clause opening keeps the full window.
  *
  * (The scan reads `sectionTextLower`, so a run-in heading cannot be recognized
  * by its capitalization — the anchors are the signal available here.)
  */
-function mutualityWindow(
-  section: string,
-  position: number,
-  clause: keyof typeof MUTUAL_CLAUSE_ANCHORS,
-): [number, number] {
+function mutualityWindow(section: string, position: number): [number, number] {
   let from = Math.max(0, position - MUTUAL_SCAN_BACK);
   let to = Math.min(section.length, position + MUTUAL_SCAN_FWD);
-  for (const [category, stem] of Object.entries(MUTUAL_CLAUSE_ANCHORS)) {
-    if (category === clause) continue;
-    // Nearest occurrence of another clause's anchor BEFORE this one starts the
-    // neighbourhood; the nearest one AFTER ends it.
-    const before = section.lastIndexOf(stem, position);
-    if (before !== -1 && before < position && before + stem.length > from) {
-      from = before + stem.length;
+  // Every clause opening this section names, including this clause's own. The
+  // opening at or before the anchor is where this clause begins, so nothing
+  // earlier belongs to it; the next opening after the anchor is where the
+  // following clause takes over.
+  for (const stem of Object.values(MUTUAL_CLAUSE_ANCHORS)) {
+    for (let at = section.indexOf(stem); at !== -1; at = section.indexOf(stem, at + 1)) {
+      if (!startsClause(section, at)) continue;
+      if (at <= position) from = Math.max(from, at);
+      else {
+        to = Math.min(to, at);
+        break;
+      }
     }
-    const after = section.indexOf(stem, position + 1);
-    if (after !== -1 && after < to) to = after;
   }
   return [from, Math.max(from, to)];
+}
+
+/**
+ * Whether the stem at `at` opens a clause rather than merely being mentioned
+ * inside one.
+ *
+ * This distinction is the whole safety margin of {@link mutualityWindow}. A
+ * clause routinely NAMES another doctrine in its own text — an indemnity that
+ * covers "any breach of the confidentiality provisions" — and clipping at that
+ * mention truncates the clause before its own "shall be mutual … each party"
+ * tail, reporting compliant drafting as one-way. Requiring the stem to follow a
+ * sentence or paragraph break keeps the clip on real clause boundaries
+ * ("… this Agreement. Confidentiality. Each party …") and ignores in-sentence
+ * mentions.
+ */
+function startsClause(section: string, at: number): boolean {
+  let i = at - 1;
+  while (i >= 0 && (section[i] === " " || section[i] === "\t")) i--;
+  if (i < 0) return true;
+  const c = section[i]!;
+  return c === "." || c === ";" || c === ":" || c === "\n";
 }
 
 /** Trim a section's text for a finding excerpt (first 480 chars). */

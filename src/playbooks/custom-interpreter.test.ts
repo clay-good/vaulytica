@@ -587,6 +587,24 @@ describe("runCustomPlaybook — clause_mutual predicate", () => {
     expect(run.unevaluable).toHaveLength(0);
   });
 
+  it("does not clip at another topic merely NAMED inside this clause", async () => {
+    // A clause routinely names another doctrine in its own text. Clipping at
+    // that mention truncated the clause before its own "shall be mutual … each
+    // party" tail and accused compliant drafting of being one-way — the exact
+    // opposite error, and the worse one.
+    const run = await runCustomPlaybook(pb({ custom_rules: [indemnityRule] }), {
+      tree: tree(
+        "Terms",
+        "Indemnification. Client's indemnification obligations, including for any breach of " +
+          "the confidentiality provisions of this Agreement, shall be mutual and shall bind " +
+          "each party equally for claims arising from the other party's acts.",
+      ),
+      extracted: emptyExtracted(),
+    });
+    expect(run.findings).toHaveLength(0);
+    expect(run.unevaluable).toHaveLength(0);
+  });
+
   it("is unevaluable when no clause of that category is present", async () => {
     const run = await runCustomPlaybook(
       pb({
