@@ -197,7 +197,7 @@ function untilTopicShift(text: string): string {
  * positive — the worse direction here.
  */
 function sentenceStartBefore(text: string, index: number): number {
-  const boundary = /\.(?=\s+[A-Z0-9])/g;
+  const boundary = new RegExp(SENTENCE_END, "g");
   let start = 0;
   let m: RegExpExecArray | null;
   while ((m = boundary.exec(text)) !== null && m.index < index) {
@@ -214,7 +214,7 @@ function sentenceStartBefore(text: string, index: number): number {
  */
 function enclosingSentence(text: string, index: number): string {
   const rest = text.slice(sentenceStartBefore(text, index));
-  const end = rest.search(/\.(?=\s+[A-Z0-9]|\s*$)/);
+  const end = rest.search(new RegExp(SENTENCE_END));
   return end === -1 ? rest : rest.slice(0, end + 1);
 }
 
@@ -222,7 +222,7 @@ function capAmountWindow(text: string, anchorIndex: number): string {
   const rest = text.slice(anchorIndex);
   // A "." ends the sentence only before whitespace + a capital/digit, so
   // "Section 14." and "$2.5" are not boundaries.
-  const sentenceEnd = rest.search(/\.(?=\s+[A-Z0-9]|\s*$)/);
+  const sentenceEnd = rest.search(new RegExp(SENTENCE_END));
   const bounded = sentenceEnd === -1 ? rest : rest.slice(0, sentenceEnd + 1);
   return untilTopicShift(bounded);
 }
@@ -344,7 +344,7 @@ export function firstLiabilityCap(doc: ConsistencyDocument): {
 
 import type { DocumentTree } from "../../../../ingest/types.js";
 import type { DocPosition } from "../../../../extract/types.js";
-import { forEachParagraph } from "../../../../extract/walk.js";
+import { forEachParagraph, SENTENCE_END } from "../../../../extract/walk.js";
 import { fullText } from "../../_helpers.js";
 
 /**
@@ -561,7 +561,7 @@ function firstSurvivalDuration(text: string): RegExpMatchArray | null {
   let m: RegExpExecArray | null;
   while ((m = anchor.exec(text)) !== null) {
     const rest = text.slice(m.index);
-    const sentenceEnd = rest.search(/\.(?=\s+[A-Z0-9]|\s*$)/);
+    const sentenceEnd = rest.search(new RegExp(SENTENCE_END));
     const sentence = sentenceEnd === -1 ? rest : rest.slice(0, sentenceEnd + 1);
     const ym = sentence.match(/(\d+)\s*\)?\s*(years?|months?)\b/i);
     if (ym) return ym;
@@ -720,7 +720,7 @@ function exceptionClauses(text: string, triggerRe: RegExp): string[] {
   let m: RegExpExecArray | null;
   while ((m = scan.exec(text)) !== null) {
     const rest = text.slice(m.index);
-    const sentenceEnd = rest.search(/\.(?=\s+[A-Z0-9]|\s*$)/);
+    const sentenceEnd = rest.search(new RegExp(SENTENCE_END));
     const clause = sentenceEnd === -1 ? rest : rest.slice(0, sentenceEnd + 1);
     if (out.length === 0) {
       out.push(clause);

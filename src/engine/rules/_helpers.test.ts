@@ -67,6 +67,32 @@ describe("enclosingSentence", () => {
     expect(at(s, "subject")).toContain("for reference only");
   });
 
+  it("does not truncate at a numbering abbreviation before its number", () => {
+    // "Contract No. 5" — the "." sits before whitespace + a digit, which the
+    // boundary rule read as the start of a new sentence, so the helper returned
+    // " 5, which shall govern …" with the subject cut off the front.
+    const s = "The contract number is Contract No. 5, which shall govern all disputes.";
+    expect(at(s, "shall govern")).toBe(s);
+    // The forward scan truncated symmetrically.
+    const f = "The parties shall reference Contract No. 5 in all future correspondence.";
+    expect(at(f, "shall reference")).toBe(f);
+  });
+
+  it("does not truncate at a lowercase initialism's period", () => {
+    // "5:00 p.m. Eastern" puts a capital right after the abbreviation, so the
+    // start-of-sentence test alone read it as a boundary and dropped everything
+    // before it.
+    const s = "Notice must be delivered by 5:00 p.m. Eastern time on the Closing Date.";
+    expect(at(s, "Closing Date")).toBe(s);
+  });
+
+  it("still ends the sentence at a genuine boundary", () => {
+    // The suppressions must not swallow real sentence ends — the helper exists
+    // to keep a neighbouring sentence OUT of a rule's scope.
+    const s = "Acme Corp. shall indemnify the Buyer for all losses. The Seller shall not.";
+    expect(at(s, "shall indemnify")).toBe("Acme Corp. shall indemnify the Buyer for all losses.");
+  });
+
   it("does not truncate at a decimal citation's dot", () => {
     // "160.103" — a dot not followed by whitespace is not a sentence end.
     const s = "PHI is defined at 45 CFR 160.103, which the parties acknowledge is controlling.";

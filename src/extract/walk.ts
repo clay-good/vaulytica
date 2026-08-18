@@ -101,3 +101,35 @@ export function documentLength(tree: DocumentTree): number {
   });
   return max;
 }
+
+/**
+ * Where a "." ends a sentence in legal prose.
+ *
+ * A sentence ends where the next one STARTS — whitespace followed by a capital
+ * or a digit — or at the end of the text. That alone was the whole rule for a
+ * long time, and it mis-read two shapes that ordinary drafting is full of:
+ *
+ *   - an initialism's internal period whose next segment is lowercase
+ *     ("5:00 p.m. Eastern time"), and
+ *   - a numbering abbreviation before its number ("Contract No. 5, which …",
+ *     "Art. 6 of the Treaty").
+ *
+ * Both were read as sentence ends, so a helper asking for "the sentence around
+ * this match" got a fragment: `enclosingSentence` returned " 5, which shall
+ * govern …" for the first example above, having cut the subject off the front.
+ * The two lookbehinds suppress exactly those cases and nothing else — this
+ * pattern only ever REMOVES boundaries, so no window it bounds can widen except
+ * across the abbreviations named here.
+ *
+ * A period closing an UPPERCASE single-letter segment ("U.S. Federal law") is
+ * deliberately left as a boundary: it is genuinely ambiguous — "in the U.S.
+ * Vendor shall comply" is two sentences and "under U.S. Federal law" is one —
+ * and no local rule separates them. Cutting short scopes a check too narrowly
+ * (a missed flag); merging would scope it too widely (a false one), and this
+ * codebase prefers the first. `splitSentences` in src/extract/obligations.ts
+ * makes the same call for the same reason.
+ *
+ * Shared verbatim by the rule helpers and the consistency helpers, which held
+ * seven hand-copied instances of the older pattern between them.
+ */
+export const SENTENCE_END = String.raw`(?<!\.[a-z])(?<!\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol)\b)\.(?=\s+[A-Z0-9]|\s*$)`;

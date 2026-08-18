@@ -1,7 +1,7 @@
 import type { DocPosition } from "../../extract/types.js";
 import type { RuleContext, Severity } from "../finding.js";
 import { findSource, findStatuteCitation, makeFinding } from "../finding.js";
-import { forEachParagraph } from "../../extract/walk.js";
+import { forEachParagraph, SENTENCE_END } from "../../extract/walk.js";
 import type { ClassifiedParagraph } from "../../extract/types.js";
 import type { SourceCitation } from "../../dkb/types.js";
 
@@ -165,7 +165,7 @@ export function enclosingSentence(paragraph: string, matchIndex: number): string
   // caller asked about is not silently truncated at the abbreviation. The
   // backward scan mirrors the forward one: `lastIndexOf(". ")` would have
   // stopped at "Inc. ", so it is replaced by a capital/digit-aware reverse scan.
-  const SENTENCE_DOT = /\.(?=\s+[A-Z0-9]|\s*$)/g;
+  const SENTENCE_DOT = new RegExp(SENTENCE_END, "g");
   let dot = -1;
   let m: RegExpExecArray | null;
   while ((m = SENTENCE_DOT.exec(paragraph)) !== null && m.index < matchIndex) {
@@ -176,7 +176,7 @@ export function enclosingSentence(paragraph: string, matchIndex: number): string
     paragraph.lastIndexOf("; ", matchIndex),
     paragraph.lastIndexOf("\n", matchIndex),
   );
-  const rel = paragraph.slice(matchIndex).search(/[;\n]|\.(?=\s+[A-Z0-9]|\s*$)/);
+  const rel = paragraph.slice(matchIndex).search(new RegExp(`[;\\n]|${SENTENCE_END}`));
   const end = rel === -1 ? paragraph.length : matchIndex + rel + 1;
   return paragraph.slice(start + 1, end);
 }
