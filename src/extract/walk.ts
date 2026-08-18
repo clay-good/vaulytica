@@ -111,15 +111,22 @@ export function documentLength(tree: DocumentTree): number {
  *
  *   - an initialism's internal period whose next segment is lowercase
  *     ("5:00 p.m. Eastern time"), and
- *   - a numbering abbreviation before its number ("Contract No. 5, which …",
- *     "Art. 6 of the Treaty").
+ *   - a numbering abbreviation immediately before ITS NUMBER ("Contract No. 5,
+ *     which …", "Art. 6 of the Treaty").
  *
  * Both were read as sentence ends, so a helper asking for "the sentence around
  * this match" got a fragment: `enclosingSentence` returned " 5, which shall
  * govern …" for the first example above, having cut the subject off the front.
- * The two lookbehinds suppress exactly those cases and nothing else — this
- * pattern only ever REMOVES boundaries, so no window it bounds can widen except
- * across the abbreviations named here.
+ *
+ * The numbering suppression is conditional on the DIGIT that follows, and that
+ * is load-bearing: an adversarial pass caught an earlier version that keyed on
+ * the abbreviation alone. Interpretation boilerplate ends real sentences with
+ * these words ("… as further explained in Sec. This convention is used
+ * throughout …"), and erasing that boundary let `capAmountWindow` merge three
+ * sentences and report an unrelated $9,000,000 insurance figure as the
+ * liability cap — the exact neighbouring-clause bleed that window exists to
+ * prevent. Followed by a capital, the period stays a boundary; only "Sec. 5"
+ * is suppressed, never "Sec. This".
  *
  * A period closing an UPPERCASE single-letter segment ("U.S. Federal law") is
  * deliberately left as a boundary: it is genuinely ambiguous — "in the U.S.
@@ -132,4 +139,4 @@ export function documentLength(tree: DocumentTree): number {
  * Shared verbatim by the rule helpers and the consistency helpers, which held
  * seven hand-copied instances of the older pattern between them.
  */
-export const SENTENCE_END = String.raw`(?<!\.[a-z])(?<!\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol)\b)\.(?=\s+[A-Z0-9]|\s*$)`;
+export const SENTENCE_END = String.raw`(?<!\.[a-z])(?:\.(?=\s+[A-Z]|\s*$)|(?<!\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol)\b)\.(?=\s+[0-9]))`;

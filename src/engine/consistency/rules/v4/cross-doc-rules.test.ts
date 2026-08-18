@@ -308,6 +308,32 @@ describe("CROSS-AMOUNT-001", () => {
     expect(run.findings[0]!.title).toMatch(/\$50,000|caps? differ/);
   });
 
+  it("does not read past a sentence that ends in a numbering abbreviation", async () => {
+    // The shared sentence bound suppresses a boundary at "No. 5" / "Art. 6" so
+    // a numbering reference does not cut a clause in half. Keyed on the
+    // abbreviation ALONE, that suppression also erased the genuine sentence end
+    // in interpretation boilerplate ("… explained in Sec. This convention is
+    // used throughout …"), and the cap window then merged three sentences and
+    // reported an unrelated insurance figure as the cap — the neighbouring
+    // clause bleed the window exists to prevent. The suppression is conditional
+    // on the digit that follows, so this reads $500,000, not $9,000,000.
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Limitation of Liability",
+      "Each party's aggregate liability under this Agreement shall not exceed $500,000, as further explained in Sec. This convention is used throughout this Agreement, including references to Article, which is abbreviated as Art. The parties acknowledge that unrelated insurance proceeds of $9,000,000 are available under a separate policy.",
+    ]);
+    const sow = makeDoc("sow", "sow", [
+      "Limitation of Liability",
+      "Provider's aggregate liability under this Statement of Work shall not exceed $500,000.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_AMOUNT_001],
+      documents: [msa, sow],
+      dkb: STARTER_DKB,
+    });
+    // Both caps are $500,000, so a correctly-bounded window finds no mismatch.
+    expect(run.findings).toHaveLength(0);
+  });
+
   it("does not fire when caps match", async () => {
     const msa = makeDoc("msa", "msa-vendor-deep", [
       "Limitation of Liability",
