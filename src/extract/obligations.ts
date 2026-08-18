@@ -1,6 +1,12 @@
 import type { DocumentTree } from "../ingest/types.js";
 import type { Obligation, Party } from "./types.js";
-import { forEachParagraph, posInParagraph, trimEdges, trimEnd } from "./walk.js";
+import {
+  ABBREV_BEFORE_NUMBER,
+  forEachParagraph,
+  posInParagraph,
+  trimEdges,
+  trimEnd,
+} from "./walk.js";
 
 /**
  * Extract every modal-verb obligation from the document.
@@ -283,6 +289,7 @@ function splitSentences(text: string): { text: string; start: number }[] {
   //
   // The check is O(1) and local, so the O(n) scan — and the ReDoS property it
   // exists for — is preserved.
+  const ABBREV_RE = new RegExp(String.raw`\b(?:${ABBREV_BEFORE_NUMBER})$`);
   const isTerm = (i: number): boolean => {
     const c = text[i]!;
     if (c === "!" || c === "?") return true;
@@ -296,7 +303,15 @@ function splitSentences(text: string): { text: string; start: number }[] {
     }
     if (j >= n) return true; // trailing period closes the last sentence
     if (!sawSpace) return false; // "$5.00", "vendor.com", "p.m"
-    return /[A-Z0-9]/.test(text[j]!);
+    // A cross-reference or date abbreviation before its number is not a
+    // sentence end — "described in Ex. 4", "in accordance with Sec. 7", "by
+    // Jan. 5". Splitting there truncated the action at "…described in Ex" and
+    // dropped the rest as an unterminated remainder. Same list, and so the same
+    // answer, as SENTENCE_END in ./walk.js; the two had drifted apart.
+    if (text[j]! >= "0" && text[j]! <= "9") {
+      return !ABBREV_RE.test(text.slice(Math.max(0, i - 6), i));
+    }
+    return /[A-Z]/.test(text[j]!);
   };
   let i = 0;
   while (i < n) {

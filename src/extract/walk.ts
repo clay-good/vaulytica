@@ -137,4 +137,18 @@ export function documentLength(tree: DocumentTree): number {
  * Shared verbatim by the rule helpers and the consistency helpers, which held
  * seven hand-copied instances of an older pattern between them.
  */
-export const SENTENCE_END = String.raw`(?:\.(?=\s+[A-Z]|\s*$)|(?<!\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\b)\.(?=\s+[0-9]))`;
+/**
+ * Abbreviations that take a NUMBER after the period — a cross-reference
+ * ("Ex. 4", "Sec. 7", "Sch. 2") or a date ("Jan. 5"). The period after one of
+ * these, before a digit, never ends a sentence: no contract sentence begins
+ * with a bare digit right after "Ex." or "Jan.".
+ *
+ * Exported because `splitSentences` in ./obligations.ts needs the same list and
+ * cannot use {@link SENTENCE_END} itself — it is a hand-rolled O(n) character
+ * scan, kept that way for the ReDoS property a regex over the same text would
+ * lose. Sharing the list is what keeps the two definitions from drifting: they
+ * had drifted, and obligation actions were being truncated at "described in Ex".
+ */
+export const ABBREV_BEFORE_NUMBER = String.raw`No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec`;
+
+export const SENTENCE_END = String.raw`(?:\.(?=\s+[A-Z]|\s*$)|(?<!\b(?:${ABBREV_BEFORE_NUMBER})\b)\.(?=\s+[0-9]))`;

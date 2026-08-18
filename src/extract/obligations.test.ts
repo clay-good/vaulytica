@@ -280,6 +280,28 @@ describe("extractObligations", () => {
     );
   });
 
+  it("does not end a sentence at a cross-reference or date abbreviation", () => {
+    // The obligations splitter and SENTENCE_END in walk.ts had drifted: the
+    // shared pattern already kept "Ex. 4" whole, but this hand-rolled scan
+    // never got the list, so the action was truncated at "described in Ex" and
+    // the rest dropped as an unterminated remainder. Both now read one list.
+    const ex = extractObligations(
+      buildTree([
+        "Reporting",
+        "Provider shall submit the quarterly compliance report described in Ex. 4 of this Agreement.",
+      ]),
+      [],
+    );
+    expect(ex[0]!.action).toBe(
+      "submit the quarterly compliance report described in Ex. 4 of this Agreement",
+    );
+    const jan = extractObligations(
+      buildTree(["Renewal", "Provider shall deliver the renewal notice by Jan. 5 of each year."]),
+      [],
+    );
+    expect(jan[0]!.action).toBe("deliver the renewal notice by Jan. 5 of each year");
+  });
+
   it("recovers a duty stranded behind a clock abbreviation that ends a sentence", () => {
     // "5:00 p.m. Eastern Time" is one sentence and "5:00 p.m. The Provider
     // shall …" is two, and nothing local tells them apart — so the splitter
