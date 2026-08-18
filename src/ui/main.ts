@@ -590,7 +590,24 @@ async function runComparison(
       setState(dz, {
         kind: "error",
         message: comparability.reason ?? "These documents are not comparable.",
-        action: { label: "Compare anyway", on_click: () => void build(true) },
+        action: {
+          label: "Compare anyway",
+          // This runs from a DOM handler LONG AFTER `runComparison` returned,
+          // so the try/catch below is no longer on the stack. Fire-and-forget
+          // here left a failing rebuild as an unhandled rejection: no error
+          // state, no feedback, the dropzone frozen on this very screen with
+          // the user's one recovery action apparently doing nothing. Every
+          // other async entry point in this file reports its own failures;
+          // this one has to do it explicitly.
+          on_click: () => {
+            void build(true).catch((err: unknown) => {
+              setState(dz, {
+                kind: "error",
+                message: err instanceof Error ? err.message : String(err),
+              });
+            });
+          },
+        },
       });
       return;
     }
