@@ -105,38 +105,36 @@ export function documentLength(tree: DocumentTree): number {
 /**
  * Where a "." ends a sentence in legal prose.
  *
- * A sentence ends where the next one STARTS — whitespace followed by a capital
- * or a digit — or at the end of the text. That alone was the whole rule for a
- * long time, and it mis-read two shapes that ordinary drafting is full of:
+ * A sentence ends where the next one STARTS — whitespace + a capital, or the
+ * end of the text — with ONE exception: a period before whitespace + a DIGIT is
+ * not a boundary when a numbering or month abbreviation precedes it, because
+ * "Contract No. 5", "Art. 6" and "by Jan. 5 of each year" are one continuous
+ * clause. That exception is unambiguous: no sentence in a contract begins with
+ * a bare digit right after "No." or "Jan.".
  *
- *   - an initialism's internal period whose next segment is lowercase
- *     ("5:00 p.m. Eastern time"), and
- *   - a numbering abbreviation immediately before ITS NUMBER ("Contract No. 5,
- *     which …", "Art. 6 of the Treaty").
+ * WHAT THIS DELIBERATELY DOES NOT DO, and why. An abbreviation followed by a
+ * CAPITAL is ambiguous and no local rule resolves it:
  *
- * Both were read as sentence ends, so a helper asking for "the sentence around
- * this match" got a fragment: `enclosingSentence` returned " 5, which shall
- * govern …" for the first example above, having cut the subject off the front.
+ *   "…delivered no later than 5:00 p.m. Eastern time on the Closing Date"  → one
+ *   "…delivered no later than 5:00 p.m. The parties shall then execute…"   → two
+ *   "…its principal place of business is in the U.S. Vendor shall comply…" → two
+ *   "…operates under U.S. Federal law, which requires…"                    → one
  *
- * The numbering suppression is conditional on the DIGIT that follows, and that
- * is load-bearing: an adversarial pass caught an earlier version that keyed on
- * the abbreviation alone. Interpretation boilerplate ends real sentences with
- * these words ("… as further explained in Sec. This convention is used
- * throughout …"), and erasing that boundary let `capAmountWindow` merge three
- * sentences and report an unrelated $9,000,000 insurance figure as the
- * liability cap — the exact neighbouring-clause bleed that window exists to
- * prevent. Followed by a capital, the period stays a boundary; only "Sec. 5"
- * is suppressed, never "Sec. This".
+ * Earlier versions of this pattern suppressed the boundary for these, which
+ * fixed the first line and broke the second. That is the WRONG side of the
+ * trade: suppressing merges the sentence with its neighbour, and every window
+ * this pattern bounds then reads a figure from the next sentence. Three
+ * adversarial passes found the same bleed three times — most sharply through
+ * capAmountWindow, where a merged neighbour let an unrelated $9,000,000
+ * insurance figure be reported as a $500,000 liability cap, a false accusation
+ * against documents that actually agree.
  *
- * A period closing an UPPERCASE single-letter segment ("U.S. Federal law") is
- * deliberately left as a boundary: it is genuinely ambiguous — "in the U.S.
- * Vendor shall comply" is two sentences and "under U.S. Federal law" is one —
- * and no local rule separates them. Cutting short scopes a check too narrowly
- * (a missed flag); merging would scope it too widely (a false one), and this
- * codebase prefers the first. `splitSentences` in src/extract/obligations.ts
- * makes the same call for the same reason.
+ * So an ambiguous abbreviation-then-capital stays a BOUNDARY. The cost is a
+ * sentence occasionally cut short, which scopes a check too narrowly and can
+ * only ever MISS a flag — the direction this codebase prefers, and the one it
+ * states everywhere else.
  *
  * Shared verbatim by the rule helpers and the consistency helpers, which held
- * seven hand-copied instances of the older pattern between them.
+ * seven hand-copied instances of an older pattern between them.
  */
-export const SENTENCE_END = String.raw`(?<!\.[a-z])(?:\.(?=\s+[A-Z]|\s*$)|(?<!\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol)\b)\.(?=\s+[0-9]))`;
+export const SENTENCE_END = String.raw`(?:\.(?=\s+[A-Z]|\s*$)|(?<!\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\b)\.(?=\s+[0-9]))`;

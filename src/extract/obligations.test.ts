@@ -280,6 +280,24 @@ describe("extractObligations", () => {
     );
   });
 
+  it("recovers a duty stranded behind a clock abbreviation that ends a sentence", () => {
+    // "5:00 p.m. Eastern Time" is one sentence and "5:00 p.m. The Provider
+    // shall …" is two, and nothing local tells them apart — so the splitter
+    // keeps them together and the clause splitter separates them at the period
+    // instead. Without that, the Provider's duty was swallowed into the
+    // previous sentence's action and the only obligation reported had the
+    // obligor "Notice".
+    const obs = extractObligations(
+      buildTree([
+        "Notices",
+        "Notice must be delivered no later than 5:00 p.m. The Provider shall then execute the definitive documents.",
+      ]),
+      [],
+    );
+    expect(obs.map((o) => o.obligor)).toEqual(["Notice", "The Provider"]);
+    expect(obs[1]!.action).toBe("then execute the definitive documents");
+  });
+
   it("still ends a sentence at an uppercase initialism before a new subject", () => {
     // The abbreviation guard has to tell "5:00 p.m. Eastern Time" (one
     // sentence) from "…in the U.S. Vendor shall comply…" (two). An

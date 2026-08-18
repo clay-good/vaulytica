@@ -163,7 +163,7 @@ function splitModalClauses(
   }
   if (modals.length === 0) return [];
 
-  const CONJ = /(?:,\s+and\s+|;\s+and\s+|;\s+)/gi;
+  const CONJ = /(?:,\s+and\s+|;\s+and\s+|;\s+|\.\s+)/gi;
   // Anchored, so it fires only when the candidate new subject BEGINS with the
   // proviso — "the fee, provided that …" mid-subject is untouched.
   const PROVISO_LEAD = /^provided\s*,?\s*(?:however\s*,?\s*)?that\b/i;
@@ -266,25 +266,23 @@ function splitSentences(text: string): { text: string; start: number }[] {
   // starting mid-clause, so a following obligation resolved its obligor to the
   // fragment "Suite 400, and".
   //
-  // Two rules, the first matching `enclosingSentence`'s convention in
-  // src/engine/rules/_helpers.ts: a sentence ends where the next one STARTS
-  // (whitespace + a capital or digit) or at the end of the text.
+  // The rule, shared in spirit with `SENTENCE_END` in ./walk.ts: a sentence
+  // ends where the next one STARTS — whitespace + a capital or digit — or at
+  // the end of the text. So "$5.00", "vendor.com" and "123 Main St., Suite
+  // 400" no longer end a sentence, which is what used to truncate an
+  // obligation's action and hand the next one an obligor of "Suite 400, and".
   //
-  // The second covers what that rule alone cannot: "5:00 p.m. Eastern Time"
-  // puts a capital right after the abbreviation, so the start-of-sentence test
-  // reads it as a boundary. A period closing a LOWERCASE single-letter segment
-  // ("p.m.", "a.m.") is an initialism's internal period and never a boundary.
+  // An abbreviation followed by a CAPITAL is left as a boundary on purpose.
+  // It is ambiguous — "5:00 p.m. Eastern Time" is one sentence, "5:00 p.m. The
+  // Provider shall then execute…" is two — and an earlier version that
+  // suppressed it merged the second shape, swallowing the Provider's duty into
+  // the previous sentence's action and reporting the obligor as "Notice".
+  // Losing a whole obligation is worse than cutting one short, so the boundary
+  // stands; walk.ts documents the same call at more length for the rule
+  // helpers, which reached it from the other direction.
   //
-  // The lowercase restriction is load-bearing, and an adversarial pass caught
-  // its absence: an unrestricted version also swallowed "U.S.", so "…business
-  // is in the U.S. Vendor shall comply with export laws" merged two real
-  // sentences and reported the obligor as "business is in the U.S. Vendor".
-  // Uppercase initialisms ("U.S.", "C.F.R.", "N.Y.") fall through to the
-  // start-of-sentence test instead, which reads "U.S. federal courts" as one
-  // sentence and "U.S. Vendor shall …" as two — the correct call in both.
-  //
-  // Both checks are O(1) and local, so the O(n) scan — and the ReDoS property
-  // it exists for — is preserved.
+  // The check is O(1) and local, so the O(n) scan — and the ReDoS property it
+  // exists for — is preserved.
   const isTerm = (i: number): boolean => {
     const c = text[i]!;
     if (c === "!" || c === "?") return true;

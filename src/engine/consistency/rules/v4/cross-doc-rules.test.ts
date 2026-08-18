@@ -334,6 +334,27 @@ describe("CROSS-AMOUNT-001", () => {
     expect(run.findings).toHaveLength(0);
   });
 
+  it("does not read past a sentence that ends in a clock abbreviation", async () => {
+    // The other half of the same bleed. An earlier bound suppressed the period
+    // after "p.m." unconditionally, so this cap sentence merged with the
+    // insurance sentence after it and the MSA's cap was reported as
+    // $9,000,000 — a mismatch against a SOW that in fact agrees.
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Limitation of Liability",
+      "Each party's aggregate liability under this Agreement shall not exceed $500,000, when notice of any claim is delivered no later than 5:00 p.m. The parties acknowledge that unrelated insurance proceeds of $9,000,000 are available under a separate policy.",
+    ]);
+    const sow = makeDoc("sow", "sow", [
+      "Limitation of Liability",
+      "Provider's aggregate liability under this Statement of Work shall not exceed $500,000.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_AMOUNT_001],
+      documents: [msa, sow],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+  });
+
   it("does not fire when caps match", async () => {
     const msa = makeDoc("msa", "msa-vendor-deep", [
       "Limitation of Liability",

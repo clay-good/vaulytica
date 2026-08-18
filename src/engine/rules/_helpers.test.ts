@@ -78,12 +78,25 @@ describe("enclosingSentence", () => {
     expect(at(f, "shall reference")).toBe(f);
   });
 
-  it("does not truncate at a lowercase initialism's period", () => {
-    // "5:00 p.m. Eastern" puts a capital right after the abbreviation, so the
-    // start-of-sentence test alone read it as a boundary and dropped everything
-    // before it.
-    const s = "Notice must be delivered by 5:00 p.m. Eastern time on the Closing Date.";
-    expect(at(s, "Closing Date")).toBe(s);
+  it("ends the sentence at an abbreviation that is followed by a capital", () => {
+    // Ambiguous by construction: "5:00 p.m. Eastern time" is one sentence and
+    // "5:00 p.m. The parties shall …" is two, and no local rule tells them
+    // apart. Suppressing the boundary fixed the first and broke the second —
+    // and the broken direction is the dangerous one, because the window then
+    // reads the NEXT sentence (a merged neighbour once put a $9,000,000
+    // insurance figure forward as a $500,000 liability cap). So the boundary
+    // stands, and the cost is that the first case is cut short.
+    const two = "Notice must be delivered no later than 5:00 p.m. The parties shall then execute.";
+    expect(at(two, "Notice must")).toBe("Notice must be delivered no later than 5:00 p.m.");
+    const one = "Notice must be delivered by 5:00 p.m. Eastern time on the Closing Date.";
+    expect(at(one, "Notice must")).toBe("Notice must be delivered by 5:00 p.m.");
+  });
+
+  it("does not truncate at a month abbreviation before its day", () => {
+    // Same unambiguous shape as "No. 5": no sentence starts with a bare digit
+    // right after "Jan.".
+    const s = "The renewal notice must be sent by Jan. 5 of each year to remain effective.";
+    expect(at(s, "renewal notice")).toBe(s);
   });
 
   it("still ends the sentence at a genuine boundary", () => {
