@@ -20,8 +20,39 @@ import { defineConfig } from "vitest/config";
  *
  * `tests/integration/mutation-scope.test.ts` derives the correct list from the
  * test files' own imports and asserts this one matches, so a new phrasing
- * suite cannot be silently left out.
+ * suite cannot be silently left out. Its derivation walks the WHOLE repo, not
+ * just the mutated modules' directories — a covering suite is a covering suite
+ * wherever it lives, and the directory-scoped version of that walk was itself
+ * hiding two covering gates in `tests/integration/`.
+ *
+ * Which raises the case this list could not previously express: a covering
+ * suite that should be left out ON PURPOSE. So exclusions are now declared,
+ * with a reason, in EXCLUDED_COVERING_SUITES below, and the guard checks
+ * `included == derived - excluded`. A suite can still be dropped — it just
+ * cannot be dropped silently, which is the whole failure this file has a
+ * history of.
  */
+/**
+ * Covering suites deliberately kept OUT of the per-mutant run, each with the
+ * measurement that justifies it. The scope guard reads this list, so an entry
+ * here is a decision on the record, not an omission.
+ */
+export const EXCLUDED_COVERING_SUITES: Record<string, string> = {
+  // Both are fast-check gates: every `it` generates 100-200 inputs, and Stryker
+  // reruns the covering tests once per mutant. Measured on the seven-extractor
+  // scope (2,758 mutants): the run went from ~7 minutes to over 66 minutes
+  // WITHOUT FINISHING, and three test-runner children were killed for running
+  // out of memory along the way. That is not a slow job, it is an unreliable
+  // one — and the score it would eventually print is worth less than a weekly
+  // signal that actually lands. Their kills therefore go uncounted, which means
+  // the published baseline UNDERSTATES the suite's true fault detection; read
+  // it as a floor. Both still run on every push as part of the normal suite.
+  "tests/integration/fuzz-boundary.test.ts":
+    "fast-check gate: ~10x per-mutant cost, three OOM child restarts, 66min without finishing",
+  "tests/integration/property-based.test.ts":
+    "fast-check gate: ~10x per-mutant cost, three OOM child restarts, 66min without finishing",
+};
+
 export default defineConfig({
   test: {
     include: [

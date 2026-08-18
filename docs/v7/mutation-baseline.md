@@ -20,6 +20,16 @@ For most of this file's history the list named only `x.test.ts` per mutated `x.t
 
 `tests/integration/mutation-scope.test.ts` now **derives** the expected include list from the test files' own import statements and asserts the config matches, so a new phrasing suite cannot be silently left out.
 
+### …and the derivation had the same blind spot one level up
+
+That guard scanned only the mutated modules' **own directories**, so a covering suite living anywhere else was invisible to it — it reported agreement while the measurement was still short. Two were hiding there: `tests/integration/fuzz-boundary.test.ts` (which imports four of the seven mutated modules, and is the gate `obligations.ts` cites for its ReDoS property) and `tests/integration/property-based.test.ts` (four). The walk now covers every test file in the repo.
+
+Including them, however, is not free, and the measurement is worth recording. Both are `fast-check` gates: each `it` generates 100–200 inputs, and Stryker reruns the covering tests once per mutant. On the seven-extractor scope (2,758 mutants) the run went from **~7 minutes to over 66 minutes without finishing**, and three test-runner children were killed for **running out of memory** on the way. That is not a slow job but an unreliable one, and a weekly signal that never lands is worth less than one that does.
+
+So they are **declared exclusions**, in `EXCLUDED_COVERING_SUITES` in `vitest.mutation.config.ts`, each carrying the measurement above as its reason; the scope guard asserts `included == derived − excluded` and that every exclusion names a covering suite and gives a reason. A suite can still be left out — it just cannot be left out *silently*, which is the failure this file keeps having. Both gates run on every push as part of the normal suite; only the per-mutant path skips them.
+
+**Consequence for the number below: it is a floor.** Two covering gates do not run, so their kills go uncounted and the published score **understates** the suite's true fault-detection power. The baseline is unchanged at 56.94% because the effective include list is byte-identical to the one that produced it.
+
 ## Baseline (2026-08-17, seven-extractor scope)
 
 | File | Mutation score | Killed | Survived | Timeout | No coverage |

@@ -20,11 +20,19 @@
  * So the expected list is DERIVED, from what each test file actually imports:
  * every test file importing a mutated module must be included, and nothing may
  * be included that does not import one.
+ *
+ * That derivation used to scan only the mutated modules' OWN directories, which
+ * reintroduced the same blind spot one level up: a covering suite that lives
+ * elsewhere could not be seen, so the guard reported agreement while the
+ * measurement was still short. `tests/integration/property-based.test.ts`
+ * imports four of the seven mutated extractors and was invisible for exactly
+ * that reason. The walk now covers every test file in the repo.
  */
 
-import { readdirSync, readFileSync } from "node:fs";
+import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { EXCLUDED_COVERING_SUITES } from "../../vitest.mutation.config.js";
 
 const root = process.cwd();
 const stryker = JSON.parse(readFileSync(join(root, "stryker.config.json"), "utf8")) as {
@@ -41,34 +49,46 @@ function includedTestFiles(source: string): string[] {
   return [...block[1]!.matchAll(/"([^"]+)"/g)].map((m) => m[1]!);
 }
 
+/** Every `*.test.ts` in the repo, as repo-relative paths. */
+function allTestFiles(): string[] {
+  const skip = new Set(["node_modules", ".git", ".stryker-tmp", "dist", "reports", "coverage"]);
+  const found: string[] = [];
+  const walk = (dir: string): void => {
+    for (const entry of readdirSync(join(root, dir))) {
+      if (skip.has(entry) || entry.startsWith(".")) continue;
+      const path = dir ? `${dir}/${entry}` : entry;
+      if (statSync(join(root, path)).isDirectory()) walk(path);
+      else if (entry.endsWith(".test.ts")) found.push(path);
+    }
+  };
+  walk("");
+  return found;
+}
+
 /**
- * Every test file under the mutated modules' directories that imports at least
- * one of them. Import specifiers are emitted as `./x.js` (NodeNext), so the
- * mutated `src/extract/x.ts` is matched by a `./x.js` specifier resolved
- * against the test file's own directory.
+ * Every test file in the repo that imports at least one mutated module. Import
+ * specifiers are emitted as `./x.js` / `../../src/extract/x.js` (NodeNext), so
+ * the mutated `src/extract/x.ts` is matched by resolving the specifier against
+ * the test file's own directory and mapping `.js` back to the `.ts` source.
+ *
+ * Scanning the WHOLE repo rather than the mutated files' directories is the
+ * point: a covering suite is a covering suite wherever it lives, and a
+ * directory-scoped walk silently under-derives (see the header note).
  */
 function testFilesCoveringMutatedModules(mutated: string[]): string[] {
-  const dirs = [...new Set(mutated.map((f) => f.slice(0, f.lastIndexOf("/"))))];
   const mutatedSet = new Set(mutated);
-  const found: string[] = [];
-  for (const dir of dirs) {
-    for (const entry of readdirSync(join(root, dir))) {
-      if (!entry.endsWith(".test.ts")) continue;
-      const path = `${dir}/${entry}`;
+  return allTestFiles()
+    .filter((path) => {
       const source = readFileSync(join(root, path), "utf8");
       const specifiers = [...source.matchAll(/from\s+"(\.[^"]+)"/g)].map((m) => m[1]!);
-      const importsMutated = specifiers.some((spec) => {
-        // Resolve the specifier against the test file's directory, then map the
-        // emitted .js extension back to the .ts source Stryker mutates.
+      return specifiers.some((spec) => {
         const resolved = new URL(spec, `file:///${path}`).pathname
           .replace(/^\//, "")
           .replace(/\.js$/, ".ts");
         return mutatedSet.has(resolved);
       });
-      if (importsMutated) found.push(path);
-    }
-  }
-  return found.sort();
+    })
+    .sort();
 }
 
 describe("mutation scope", () => {
@@ -78,12 +98,25 @@ describe("mutation scope", () => {
     expect(included.length).toBeGreaterThan(0);
   });
 
-  it("includes every test file that imports a mutated module, and only those", () => {
-    const expected = testFilesCoveringMutatedModules(stryker.mutate);
+  it("includes every test file that imports a mutated module, minus the declared exclusions", () => {
+    const covering = testFilesCoveringMutatedModules(stryker.mutate);
     // Guards the derivation itself: a broken resolver returning [] would make
     // the comparison below vacuous for an empty include list.
-    expect(expected.length).toBeGreaterThanOrEqual(stryker.mutate.length);
+    expect(covering.length).toBeGreaterThanOrEqual(stryker.mutate.length);
+    const expected = covering.filter((f) => !(f in EXCLUDED_COVERING_SUITES));
     expect(included.slice().sort()).toEqual(expected);
+  });
+
+  // An exclusion is a decision about the measurement's completeness, so it has
+  // to be argued in the file, not just listed. Both of these cost the run more
+  // than an hour and three out-of-memory restarts; that reasoning belongs next
+  // to the entry, where the next person to widen the scope will read it.
+  it("declares a reason for every excluded covering suite, and excludes nothing else", () => {
+    const covering = new Set(testFilesCoveringMutatedModules(stryker.mutate));
+    for (const [file, reason] of Object.entries(EXCLUDED_COVERING_SUITES)) {
+      expect(covering.has(file), `${file} is excluded but covers no mutated module`).toBe(true);
+      expect(reason.length, `${file} is excluded without a reason`).toBeGreaterThan(20);
+    }
   });
 
   it("mutates only modules that have at least one covering test file", () => {
