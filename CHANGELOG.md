@@ -29,6 +29,46 @@ All notable changes to this project will be documented in this file. Format adap
   production-QA pack.
 
 ### Fixed
+- **A multi-word run-in heading is now read as a clause boundary.** The playbook
+  clause scanner required a period immediately after the anchor stem, so it only
+  recognized a single-word run-in heading. "Confidentiality Obligations." and
+  "Limitation of Liability." — at least as common in commercial drafting as the
+  bare form — were not boundaries, so the following clause's mutual language bled
+  into this one and a genuinely one-way indemnity scored as mutual. A heading may
+  now carry up to three further words. The bound is the safety margin: widening
+  the heading token *narrows* the mutuality window, and clipping in the wrong
+  place accuses compliant drafting of being one-way. An adversarial probe proved
+  that necessary — the first version of this fix read "Indemnification is
+  reciprocal." as a heading and cut the clause off before its own "each party"
+  tail. A run-in heading is a noun phrase, so a token containing a finite verb,
+  modal or negation is rejected. Both directions are pinned by tests.
+- **`compare --dkb` now uses the directory it was given.** The flag was parsed
+  and then dropped from the returned arguments, so a run that pinned an explicit
+  DKB for reproducibility silently resolved the default one instead, with no
+  error to say so. `compare`'s three free-form flags (`--playbook`,
+  `--playbook-file`, `--dkb`) also read the next token blindly, so `compare a b
+  --playbook --posture` took `--posture` as the playbook id and left posture off —
+  the same class `analyze` grew its `requireValue` guard for.
+- **A rule that crashes is no longer recorded as a rule that found nothing.** The
+  rule contract is pure, so a `check()` that throws is swallowed and the run
+  continues — but the execution-log entry it produced was byte-identical to the
+  one a rule that ran and stayed silent writes. A rule failing on a real bug
+  reported "screened, and clean" forever, with nothing anywhere in the run to
+  contradict it. Both engine logs now carry an `errored` flag, omitted rather than
+  `false` on the common path so no existing run's hash moves, and inside the hash
+  for the same reason `ran` is: a run in which a rule crashed is a different
+  analysis from one in which it passed.
+- **An SSN written without separators is now detected and masked.** The
+  pre-disclosure sweep matched only the dashed form, and while its bare-9-digit
+  routing pattern does scan the same span, that pattern drops everything failing
+  the ABA checksum — so an SSN copied out of a spreadsheet cell produced no
+  finding at all and was handed to the opposing party unmasked. The scan's own
+  dedup logic already treated the two spellings as one SSN, so the bare form was
+  always meant to be reachable. It is reported at low confidence, because nine
+  bare digits are genuinely ambiguous and the honesty contract phrases every hit
+  as "spans match SSN format" rather than as a count of SSNs, and it is still
+  gated on structural validity. A document carrying both spellings reports one
+  SSN, at the higher confidence.
 - **A section heading is now cleaned the same way run text is.** The heading was
   the one text path that skipped `normalizeRunText`: it got the whitespace
   collapse and nothing else, so the soft hyphens and zero-width joiners Word and
