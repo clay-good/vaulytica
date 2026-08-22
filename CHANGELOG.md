@@ -38,10 +38,17 @@ All notable changes to this project will be documented in this file. Format adap
   now carry up to three further words. The bound is the safety margin: widening
   the heading token *narrows* the mutuality window, and clipping in the wrong
   place accuses compliant drafting of being one-way. An adversarial probe proved
-  that necessary — the first version of this fix read "Indemnification is
-  reciprocal." as a heading and cut the clause off before its own "each party"
-  tail. A run-in heading is a noun phrase, so a token containing a finite verb,
-  modal or negation is rejected. Both directions are pinned by tests.
+  that necessary twice over — the first version of this fix read
+  "Indemnification is reciprocal." as a heading and cut the clause off before its
+  own "each party" tail, and the second, which rejected a sentence by looking for
+  a finite verb in a stop-list, leaked on "Confidentiality obligations survive
+  termination." because English verbs are unbounded and a denylist cannot be the
+  primary signal. Capitalization is what actually separates a run-in heading from
+  a sentence opening with the same word, so the scanner now reads the original-
+  case text (it had only ever kept a lower-cased copy) and requires each further
+  word to be capitalized, admitting the lowercase connectives a real heading
+  carries ("Limitation **of** Liability."). The verb stop-list is kept as a
+  second guard behind it. Both directions are pinned by tests.
 - **`compare --dkb` now uses the directory it was given.** The flag was parsed
   and then dropped from the returned arguments, so a run that pinned an explicit
   DKB for reproducibility silently resolved the default one instead, with no
@@ -68,7 +75,9 @@ All notable changes to this project will be documented in this file. Format adap
   bare digits are genuinely ambiguous and the honesty contract phrases every hit
   as "spans match SSN format" rather than as a count of SSNs, and it is still
   gated on structural validity. A document carrying both spellings reports one
-  SSN, at the higher confidence.
+  SSN, at the higher confidence — and a bare run that satisfies the ABA checksum
+  is left to the routing-number scan rather than being reported a second time as
+  an SSN, since wire and ACH details are ordinary contract content.
 - **A section heading is now cleaned the same way run text is.** The heading was
   the one text path that skipped `normalizeRunText`: it got the whitespace
   collapse and nothing else, so the soft hyphens and zero-width joiners Word and

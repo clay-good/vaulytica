@@ -96,7 +96,12 @@ export function scanSensitive(text: string): SensitiveFact[] {
     }
   }
   while ((m = SSN_BARE.exec(body)) !== null) {
-    if (ssnStructurallyValid(m[1]!, m[2]!, m[3]!)) {
+    // A validated bank routing number is not a Social Security Number. Wire and
+    // ACH details are ordinary contract content, and nine digits that satisfy
+    // the ABA checksum are overwhelmingly a routing number — which the ROUTING
+    // scan below already reports. Without this the same span was pushed twice,
+    // under two types, because dedup keys include the type.
+    if (ssnStructurallyValid(m[1]!, m[2]!, m[3]!) && !abaValid(m[0])) {
       // Dedup normalizes digit types by stripping separators, so a document
       // carrying both "123-45-6789" and "123456789" still reports one SSN —
       // and the dashed hit, pushed first, keeps its "high" confidence.

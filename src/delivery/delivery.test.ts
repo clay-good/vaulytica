@@ -472,3 +472,28 @@ describe("scanSensitive — an SSN written without separators", () => {
     expect(scanSensitive("Ref 123450000").filter((f) => f.type === "ssn")).toHaveLength(0);
   });
 });
+
+describe("scanSensitive — a bare 9-digit run that is not an SSN", () => {
+  it("does not also report a validated routing number as an SSN", () => {
+    // Wire/ACH details are ordinary contract content. Nine digits satisfying
+    // the ABA checksum are a routing number, which the routing scan already
+    // reports — the bare-SSN pattern pushed the identical span a second time
+    // under a second type, because dedup keys include the type.
+    const facts = scanSensitive("Please wire funds using routing number 011401533.");
+    expect(facts.filter((f) => f.type === "routing")).toHaveLength(1);
+    expect(facts.filter((f) => f.type === "ssn")).toHaveLength(0);
+  });
+
+  it("does not find an SSN inside a longer digit run", () => {
+    // The pattern is \b-anchored at both ends, so a 10+ digit account number or
+    // a 16-digit card cannot yield a spurious 9-digit interior match.
+    for (const text of [
+      "Account 1234567890 is active.",
+      "Order 123456789012 placed.",
+      "Card 4111111111111111 on file.",
+      "Ref ABC123456789 shipped.",
+    ]) {
+      expect(scanSensitive(text).filter((f) => f.type === "ssn")).toHaveLength(0);
+    }
+  });
+});

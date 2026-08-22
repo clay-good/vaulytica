@@ -181,6 +181,14 @@ type DocFacts = {
   textLower: string;
   /** Section id → that section's concatenated text (lower-cased). */
   sectionTextLower: Map<string, string>;
+  /**
+   * The same text with its ORIGINAL case. Matching is done lower-cased, but
+   * capitalization is the one reliable signal that separates a run-in heading
+   * ("Confidentiality Obligations.") from an ordinary sentence that happens to
+   * open with the same word ("Confidentiality obligations survive
+   * termination."). See {@link startsClause}.
+   */
+  sectionText: Map<string, string>;
   /** Section id → heading (lower-cased). */
   sectionHeadingLower: Map<string, string>;
   extracted: ExtractedData;
@@ -564,7 +572,8 @@ function evaluatePredicate(p: CustomPredicate, facts: DocFacts): PredicateOutcom
       // section mask a genuinely one-way clause. The window (some text before
       // the anchor, more after) is the clause's own neighbourhood.
       const section = facts.sectionTextLower.get(hit.section_id) ?? hit.text;
-      const [scanFrom, scanTo] = mutualityWindow(section, hit.position);
+      const cased = facts.sectionText.get(hit.section_id) ?? section;
+      const [scanFrom, scanTo] = mutualityWindow(section, hit.position, cased);
       const scanText = section.slice(scanFrom, scanTo);
       const mutual = MUTUALITY_MARKERS.some((m) => scanText.includes(m));
       if (mutual) return { kind: "compliant" };
@@ -814,6 +823,7 @@ function comparatorWord(c: NumericComparator): string {
 
 function buildDocFacts(tree: DocumentTree, extracted: ExtractedData): DocFacts {
   const sectionTextLower = new Map<string, string>();
+  const sectionText = new Map<string, string>();
   const sectionHeadingLower = new Map<string, string>();
   const walk = (sections: Section[]): void => {
     for (const s of sections) {
@@ -823,6 +833,7 @@ function buildDocFacts(tree: DocumentTree, extracted: ExtractedData): DocFacts {
         text += "\n";
       }
       sectionTextLower.set(s.id, text.toLowerCase());
+      sectionText.set(s.id, text);
       sectionHeadingLower.set(s.id, (s.heading ?? "").toLowerCase());
       walk(s.children);
     }
@@ -831,6 +842,7 @@ function buildDocFacts(tree: DocumentTree, extracted: ExtractedData): DocFacts {
   return {
     textLower: flattenText(tree).toLowerCase(),
     sectionTextLower,
+    sectionText,
     sectionHeadingLower,
     extracted,
   };
@@ -891,7 +903,7 @@ const MUTUAL_SCAN_FWD = 520;
  * (The scan reads `sectionTextLower`, so a run-in heading cannot be recognized
  * by its capitalization — the anchors are the signal available here.)
  */
-function mutualityWindow(section: string, position: number): [number, number] {
+function mutualityWindow(section: string, position: number, cased: string): [number, number] {
   let from = Math.max(0, position - MUTUAL_SCAN_BACK);
   let to = Math.min(section.length, position + MUTUAL_SCAN_FWD);
   // Every clause opening this section names, including this clause's own. The
@@ -900,7 +912,7 @@ function mutualityWindow(section: string, position: number): [number, number] {
   // following clause takes over.
   for (const stem of Object.values(MUTUAL_CLAUSE_ANCHORS)) {
     for (let at = section.indexOf(stem); at !== -1; at = section.indexOf(stem, at + 1)) {
-      if (!startsClause(section, at, stem)) continue;
+      if (!startsClause(section, at, stem, cased)) continue;
       if (at <= position) from = Math.max(from, at);
       else {
         to = Math.min(to, at);
@@ -966,6 +978,23 @@ const MAX_HEADING_EXTRA_WORDS = 3;
  * about, reintroduced by widening the heading token. An adversarial probe caught
  * it against the version of this fix that lacked this list.
  */
+/**
+ * The lowercase words a real run-in heading still carries — "Limitation **of**
+ * Liability.", "Indemnification **and** Defense." Drafters leave these
+ * uncapitalized inside an otherwise title-cased heading, so the capitalization
+ * test has to admit them by name. The list is closed and short on purpose:
+ * every word on it is one more way a sentence can pass for a heading.
+ */
+const HEADING_CONNECTIVES = new Set(["of", "and", "or", "for", "to", "the"]);
+
+/**
+ * A second, redundant guard behind the capitalization test: these never appear
+ * in a run-in heading but do appear in a sentence, so they still reject a
+ * Title-Cased sentence ("Indemnification Is Reciprocal.") that capitalization
+ * alone would wave through. Kept deliberately, because an earlier version of
+ * this fix relied on a list like this ALONE and an adversarial pass broke it —
+ * English verbs are unbounded, so a denylist cannot be the primary signal.
+ */
 const NOT_IN_HEADING = new Set([
   "is",
   "are",
@@ -996,8 +1025,14 @@ const NOT_IN_HEADING = new Set([
   "that",
 ]);
 
-function startsClause(section: string, at: number, stem: string): boolean {
+function startsClause(section: string, at: number, stem: string, cased: string): boolean {
   let end = at + stem.length;
+  // A multi-word heading may only be read out of the ORIGINAL-case text, and
+  // only when the two strings line up index-for-index. `toLowerCase()` is
+  // length-preserving for every script this corpus contains, but not for all of
+  // Unicode, so a length mismatch falls back to the single-word rule rather
+  // than reading capitalization off a drifted offset.
+  const caseAligned = cased.length === section.length;
   // Walk the heading token: letter-runs joined by SINGLE spaces, ending at ".".
   // The single-space rule keeps the token from crossing a comma, semicolon or
   // newline, so only an uninterrupted title phrase can qualify.
@@ -1006,13 +1041,25 @@ function startsClause(section: string, at: number, stem: string): boolean {
     while (end < section.length && section[end]! >= "a" && section[end]! <= "z") end++;
     if (section[end] === ".") break;
     if (section[end] !== " " || extraWords >= MAX_HEADING_EXTRA_WORDS) return false;
+    if (!caseAligned) return false;
     extraWords += 1;
     end += 1;
     // A space only continues the heading if a word actually follows it.
     const wordStart = end;
     while (end < section.length && section[end]! >= "a" && section[end]! <= "z") end++;
     if (end === wordStart) return false;
-    if (NOT_IN_HEADING.has(section.slice(wordStart, end))) return false;
+    // THE discriminator. A run-in heading is capitalized — "Confidentiality
+    // Obligations." — and an ordinary sentence opening with the same stem is
+    // not: "Confidentiality obligations survive termination." Only the case of
+    // the original text separates the two, and getting it wrong here clips the
+    // clause before its own mutual tail and accuses compliant drafting of being
+    // one-way. Lowercase connectives inside a heading ("Limitation of
+    // Liability.", "Indemnification and Defense.") stay allowed by name.
+    const word = section.slice(wordStart, end);
+    const initial = cased[wordStart]!;
+    const capitalized = initial >= "A" && initial <= "Z";
+    if (!capitalized && !HEADING_CONNECTIVES.has(word)) return false;
+    if (NOT_IN_HEADING.has(word)) return false;
   }
   return CLAUSE_LEAD_IN.test(section.slice(Math.max(0, at - 24), at));
 }

@@ -1198,3 +1198,51 @@ describe("clause_mutual — a multi-word run-in heading is a clause boundary", (
     ).toBe(0);
   });
 });
+
+describe("clause_mutual — capitalization separates a heading from a sentence", () => {
+  const indemnity = {
+    id: "R1",
+    title: "Mutual indemnity",
+    description: "d",
+    severity: "warning" as const,
+    assert: { kind: "clause_mutual" as const, clause: "indemnification" as const },
+  };
+
+  const fires = async (body: string): Promise<number> => {
+    const run = await runCustomPlaybook(pb({ custom_rules: [indemnity] }), {
+      tree: tree("Agreement", body),
+      extracted: emptyExtracted(),
+    });
+    return run.findings.length;
+  };
+
+  // An intermediate version of the multi-word-heading fix rejected a "sentence"
+  // by looking for a finite verb in a stop-list. English verbs are unbounded, so
+  // that leaked: "Confidentiality obligations survive termination." passed as a
+  // heading, the window was clipped before the clause's own "each party" tail,
+  // and mutual drafting was accused of being one-way. Capitalization is the
+  // signal that actually separates the two, and the stop-list is now only a
+  // second guard behind it.
+  it("does not read a lowercase multi-word sentence as a heading", async () => {
+    expect(
+      await fires(
+        "Indemnification. Client shall indemnify Vendor against all claims. Confidentiality obligations survive termination. Each party shall indemnify the other party for its own breach of this Section.",
+      ),
+    ).toBe(0);
+    expect(
+      await fires(
+        "Indemnification. Client shall indemnify Vendor. Indemnification obligations continue indefinitely. Each party shall indemnify the other party.",
+      ),
+    ).toBe(0);
+  });
+
+  it("still reads a Title-Case heading carrying a lowercase connective", async () => {
+    // "Confidentiality and Data Security." — drafters leave "and"/"of"
+    // uncapitalized inside an otherwise title-cased heading.
+    expect(
+      await fires(
+        "1) Indemnification and Defense. Supplier shall have no obligation to indemnify Client. 2) Confidentiality and Data Security. Each party shall protect the other party's information.",
+      ),
+    ).toBe(1);
+  });
+});
