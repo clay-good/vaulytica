@@ -163,3 +163,46 @@ describe("computeScoreboard — an unmeasured rule stays out of the headline", (
     expect(board.averages.micro.precision).toBe(1);
   });
 });
+
+describe("computeScoreboard — a mixed-confidence rule publishes only its confident counts", () => {
+  // Excluding rules with ZERO κ-confident documents narrowed the leak without
+  // closing it. Confidence is a property of the grading DOCUMENT, so a rule
+  // with one verified document and one single-annotator document was treated
+  // as measured and had BOTH documents' counts folded into the headline —
+  // publishing exactly the unverified evidence the κ gate exists to hold back.
+  it("drops the unverified document's counts from totals and the averages", () => {
+    const docs: GradedDocument[] = [
+      {
+        corpus_doc_id: "d1",
+        playbook_id: "p1",
+        fired_rule_ids: new Set(["R1"]),
+        gold: new Map([["R1", "should_fire"]]),
+        high_confidence: true,
+        bootstrap: false,
+      },
+      {
+        corpus_doc_id: "d2",
+        playbook_id: "p1",
+        fired_rule_ids: new Set(["R1"]),
+        gold: new Map([["R1", "should_not_fire"]]),
+        high_confidence: false,
+        bootstrap: false,
+      },
+    ];
+    const board = computeScoreboard(docs);
+
+    // The rule IS measured — it has a κ-confident document.
+    expect(board.unmeasured_rule_ids).toEqual([]);
+    // ...but only that document's counts reach the headline.
+    expect(board.totals).toEqual({ tp: 1, fp: 0, fn: 0, tn: 0 });
+    expect(board.averages.micro.precision).toBe(1);
+    expect(board.averages.macro.precision).toBe(1);
+
+    // per_rule still carries the FULL picture, including the unverified FP, so
+    // the split is about what gets published — nothing is hidden.
+    const r1 = board.per_rule.find((r) => r.rule_id === "R1")!;
+    expect(r1.tp).toBe(1);
+    expect(r1.fp).toBe(1);
+    expect(r1.graded_docs).toBe(2);
+  });
+});

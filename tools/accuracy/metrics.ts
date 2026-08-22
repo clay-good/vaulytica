@@ -92,6 +92,8 @@ export function computeScoreboard(docs: ReadonlyArray<GradedDocument>): Scoreboa
   const totals = emptyCounts();
   const perRule = new Map<string, Counts>();
   const perRuleDocs = new Map<string, number>();
+  /** Counts drawn from κ-confident documents only — what the headline uses. */
+  const perRuleConfident = new Map<string, Counts>();
   const perRuleConfidentDocs = new Map<string, number>();
 
   let gradedPairs = 0;
@@ -128,6 +130,24 @@ export function computeScoreboard(docs: ReadonlyArray<GradedDocument>): Scoreboa
       else c.tn++;
 
       perRule.set(ruleId, c);
+
+      // The headline is counted a SECOND time, from κ-confident documents
+      // only. Confidence is a property of the grading DOCUMENT, not of the
+      // rule, so a rule that has some confident documents and some
+      // single-annotator ones is not "unmeasured" — but the counts drawn from
+      // its unverified documents are still unverified, and folding them into
+      // the published precision publishes exactly the evidence the κ gate
+      // exists to hold back. Excluding only the all-unverified rules narrowed
+      // that leak without closing it. `per_rule` keeps the full counts, so
+      // nothing is hidden — the split is only about what gets published.
+      if (doc.high_confidence) {
+        const cc = perRuleConfident.get(ruleId) ?? emptyCounts();
+        if (fired && shouldFire) cc.tp++;
+        else if (fired && !shouldFire) cc.fp++;
+        else if (!fired && shouldFire) cc.fn++;
+        else cc.tn++;
+        perRuleConfident.set(ruleId, cc);
+      }
     }
   }
 
@@ -141,6 +161,7 @@ export function computeScoreboard(docs: ReadonlyArray<GradedDocument>): Scoreboa
 
   for (const ruleId of ruleIds) {
     const c = perRule.get(ruleId)!;
+    const confident = perRuleConfident.get(ruleId) ?? emptyCounts();
     const confidentDocs = perRuleConfidentDocs.get(ruleId) ?? 0;
     const lowConfidence = confidentDocs === 0;
     if (lowConfidence) unmeasured.push(ruleId);
@@ -160,13 +181,16 @@ export function computeScoreboard(docs: ReadonlyArray<GradedDocument>): Scoreboa
     // precision of 0%. Publishing a number the evidence does not support is
     // the dishonesty this whole harness exists to prevent.
     if (!lowConfidence) {
-      totals.tp += c.tp;
-      totals.fp += c.fp;
-      totals.fn += c.fn;
-      totals.tn += c.tn;
-      if (p !== null) macroP.push(p);
-      if (r !== null) macroR.push(r);
-      if (fScore !== null) macroF.push(fScore);
+      totals.tp += confident.tp;
+      totals.fp += confident.fp;
+      totals.fn += confident.fn;
+      totals.tn += confident.tn;
+      const cp = precision(confident);
+      const cr = recall(confident);
+      const cf = f1(confident);
+      if (cp !== null) macroP.push(cp);
+      if (cr !== null) macroR.push(cr);
+      if (cf !== null) macroF.push(cf);
     }
 
     per_rule.push({

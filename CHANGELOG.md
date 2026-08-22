@@ -52,7 +52,11 @@ All notable changes to this project will be documented in this file. Format adap
   computed, so a single unverified annotator's one false positive could publish a
   headline precision of 0%. Unmeasured rules are still reported per-rule with
   their counts and the flag, so nothing is hidden — they just no longer move a
-  number the evidence cannot support.
+  number the evidence cannot support. The headline is counted from κ-confident
+  documents only, rather than merely dropping the rules that have none:
+  confidence is a property of the grading *document*, so a rule with one
+  verified and one single-annotator document was treated as measured and had
+  both documents' counts published, which narrowed the leak without closing it.
 - **The v4 sub-domain classifier matches a feature as a word, not as a
   substring.** Feature phrases were tested with a plain `includes`, so every
   short entry fired inside ordinary English: "iso" (incentive stock option) on
@@ -65,7 +69,12 @@ All notable changes to this project will be documented in this file. Format adap
   user-visible reasoning trail and can tip a borderline document into the wrong
   sub-domain. Matching is now bounded by lookarounds rather than `\b`, because
   many phrases begin or end with a non-word character ("501(c)(3)", "35 u.s.c.",
-  "cc&rs") where `\b` asserts the opposite of what is wanted. Zero golden churn.
+  "cc&rs") where `\b` asserts the opposite of what is wanted — and a trailing
+  plural "s" still counts, because documents write "the Owners", "all rents" and
+  "the ISOs" and the old substring test caught those for free. Rejecting them
+  would have traded a false positive for a false negative on the routing layer:
+  an adversarial pass found a lease written entirely in the plural falling off
+  the real-estate sub-domain altogether. Zero golden churn.
 - **Loading a second custom playbook before the first finished validating no
   longer leaves the first one active.** The picker's handler is async — it reads
   the file, then validates, which dynamic-imports the pipeline chunk — so two

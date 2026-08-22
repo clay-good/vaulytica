@@ -359,6 +359,34 @@ describe("feature matching is word-bounded, not substring", () => {
     expect(scoreOf(body3, "E-real-estate")).toBe(0);
   });
 
+  // The boundary rule must not trade a false positive for a false negative:
+  // the old substring test matched "the Owners", "all rents" and "the ISOs"
+  // for free, and real documents use exactly those plural forms. An
+  // end-to-end lease written only in the plural fell off the sub-domain
+  // entirely (0.71 -> null) before this was allowed back.
+  it("still matches the plural form of a feature", () => {
+    expect(matchedOf("Tenant shall pay all rents, issues and profits.", "E-real-estate")).toContain(
+      "rent",
+    );
+    expect(matchedOf("The Owners shall retain the Contractor.", "M-construction")).toContain(
+      "owner",
+    );
+    expect(matchedOf("The ISOs granted hereunder vest monthly.", "C-equity")).toContain("iso");
+  });
+
+  it("classifies a lease written entirely in the plural", () => {
+    const title = "Rental Contract";
+    const body =
+      "This agreement is between the Landlords and the Tenants. The Tenants shall pay monthly rents to the Landlords. Security deposits are held in escrow by the Landlords.";
+    const ctx = buildContext([title, body]);
+    const out = classifyV4SubDomain({
+      extracted: ctx.extracted,
+      body_text: `${title}\n${body}`,
+      features: FEATURES,
+    });
+    expect(out.sub_domain).toBe("E-real-estate");
+  });
+
   it("still matches the feature as a standalone word", () => {
     expect(
       matchedOf("Tenant shall pay rent on the first of each month.", "E-real-estate"),

@@ -122,7 +122,17 @@ function containsPhrase(haystack: string, phrase: string): boolean {
   let re = PHRASE_RE.get(key);
   if (!re) {
     const escaped = key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    re = new RegExp(`(?<![a-z0-9])${escaped}(?![a-z0-9])`);
+    // A trailing plural "s" is still the same feature — documents write "the
+    // ISOs granted hereunder", "Tenant shall pay all rents", "the Owners".
+    // The old substring match caught those for free, so rejecting them would
+    // trade a false positive for a false negative on the routing layer. It
+    // reintroduces none of the substring hits, because every one of those was
+    // blocked by the LOOKBEHIND ("cur|rent", "diffe|rent", "adv|iso|ry") or by
+    // a following letter that is not "s" ("cam|paign", "cla|use", "safe|ty").
+    // A possessive needs no allowance: "'" is already not [a-z0-9].
+    // An -y/-ies plural ("beneficiary"/"beneficiaries") is NOT covered, and was
+    // not matched by the old substring test either, so nothing is lost there.
+    re = new RegExp(`(?<![a-z0-9])${escaped}s?(?![a-z0-9])`);
     PHRASE_RE.set(key, re);
   }
   return re.test(haystack);
