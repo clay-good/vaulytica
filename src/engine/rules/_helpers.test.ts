@@ -179,3 +179,51 @@ describe("isPresenceDisclaimed — disclaimer forms", () => {
     });
   }
 });
+
+describe("the reverse clause boundary is the shared, abbreviation-aware one", () => {
+  // `enclosingSentence` walked the shared `SENTENCE_END`, but its two sibling
+  // helpers kept private `lastIndexOf(". ")` / `split(/[.;]\s|\n/)` scans that
+  // stop at the period in "Sec. 5". Both exist to FIND A NEGATION before the
+  // trigger, so truncating there dropped the negation and let the rule fire on
+  // drafting that had plainly disclaimed the clause — a confident false
+  // accusation. All three now share one scan.
+  it("isPresenceDisclaimed sees a negation separated by an abbreviation", () => {
+    const text =
+      "This Agreement does not include, per Sec. 5 hereof, an indemnification clause for third-party claims.";
+    expect(isPresenceDisclaimed(text, text.indexOf("indemnification clause"))).toBe(true);
+  });
+
+  it("firstUnnegatedParagraphMatch sees a negator separated by an abbreviation", () => {
+    expect(
+      firstUnnegatedParagraphMatch(
+        ctxWith("This Agreement shall not, per Sec. 5 hereof, automatically renew at the end."),
+        /automatically renew/i,
+      ),
+    ).toBeNull();
+  });
+
+  // The other direction: widening the window must not suppress a real finding.
+  it("does not let a PRIOR sentence's disclaimer suppress this one", () => {
+    const text =
+      "This Agreement does not include a warranty. The parties agree to an indemnification clause for third-party claims.";
+    expect(isPresenceDisclaimed(text, text.indexOf("indemnification clause"))).toBe(false);
+  });
+
+  it("still fires on a genuine trigger after an unrelated negation", () => {
+    expect(
+      firstUnnegatedParagraphMatch(
+        ctxWith("The Order shall not be amended. This Agreement shall automatically renew."),
+        /automatically renew/i,
+      ),
+    ).not.toBeNull();
+  });
+
+  it("still fires on a plain unnegated trigger", () => {
+    expect(
+      firstUnnegatedParagraphMatch(
+        ctxWith("This Agreement shall automatically renew at the end of the Term."),
+        /automatically renew/i,
+      ),
+    ).not.toBeNull();
+  });
+});

@@ -29,6 +29,23 @@ All notable changes to this project will be documented in this file. Format adap
   production-QA pack.
 
 ### Fixed
+- **Two rule helpers no longer lose a negation at an abbreviation.** The shared
+  helpers that ~30 always-on rules call to decide whether a clause is disclaimed
+  (`isPresenceDisclaimed`) or whether a trigger is negated
+  (`firstUnnegatedParagraphMatch`) each carried their own reverse boundary scan
+  — a literal `lastIndexOf(". ")` and a `split(/[.;]\s|\n/)` — while
+  `enclosingSentence`, in the same file, already walked the shared,
+  abbreviation-aware `SENTENCE_END`. Both private scans stopped at the period in
+  "Sec. 5", so a cross-reference sitting between the negation and the trigger cut
+  the negation out of the window: "does not include, per Sec. 5 hereof, an
+  indemnification clause" read as a clause that was present, and "shall not, per
+  Sec. 5 hereof, automatically renew" read as a live auto-renewal. Both helpers
+  exist precisely to *find* that negation, and firing on drafting that plainly
+  disclaims the clause is the confident false accusation this file's own comments
+  call the worst honesty failure for an always-on rule. All three now share one
+  scan, which is the point — this was the third copy of a boundary rule that had
+  drifted before, and a single definition cannot drift from itself. Zero golden
+  churn.
 - **Three more DKB fetchers now survive one source's outage.** The eCFR fetcher
   was given two guards after a build shipped stale data silently — a per-title
   `try`/`catch` so one bad title cannot discard the titles that already parsed,

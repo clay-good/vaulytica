@@ -78,8 +78,12 @@ export function firstUnnegatedParagraphMatch(
       // Confine the negator search to the current clause (after the last
       // sentence/clause break before the match), so a negation in a prior
       // sentence never suppresses a genuine trigger.
-      const before = p.text.slice(from, m.index);
-      const clause = before.split(/[.;]\s|\n/).pop() ?? before;
+      // The clause is bounded by the SHARED sentence scan, not by a literal
+      // "." split: "shall not, per Sec. 5 hereof, automatically renew" lost its
+      // negator at the abbreviation and was reported as a live auto-renewal.
+      // Still floored at the `window` slice, so a distant negation in the same
+      // sentence cannot reach forward and suppress a genuine trigger.
+      const clause = p.text.slice(Math.max(from, clauseStartBefore(p.text, m.index)), m.index);
       if (!NEGATION_BEFORE.test(clause)) {
         hit = {
           text: p.text,
@@ -133,6 +137,30 @@ const CLAUSE_ABSENCE =
   /\b(?:(?:do(?:es)?|shall|will|may|must)\s+not\s+(?:include|contain|provide\s+for|provide|require|impose|create|permit|allow|grant|obligate|contemplate|use)|(?:contain|include)s?\s+no\b|ha[sv]e\s+no\b|need\s+not\b|no\s+(?:obligation|provision|provisions|requirement|right|duty)\b|no\s+(?:party|one|person|entity)\s+(?:is|are|shall\s+be|will\s+be|has|have)\s+(?:required|obligated|liable|responsible|any\s+obligation)\b|(?:is|are)\s+not\s+(?:required|obligated|permitted|entitled)\b|not\s+(?:be\s+(?:required|obligated|permitted|entitled|held|deemed|subject|construed)|have\s+(?:the\s+)?right)|exclude(?:s|d)?\s+(?:any\s+|all\s+)?$|nothing\s+(?:herein|contained\s+herein|in\s+th(?:is|ese)\s+[\w\s]{0,24}?)\s*(?:shall|will|may|does|is)?\s*(?:require|obligate|provide\s+for|provide|contain|include|contemplate|create|impose|grant|permit|allow|entitle)?s?\s*(?:for\s+)?(?:[\w\s]{0,24}?\s+to\s+)?$|no\s*$)/i;
 
 /**
+ * Index of the first character of the sentence/clause containing `at`.
+ *
+ * The ONE reverse boundary scan for this file. `enclosingSentence` already got
+ * this right — it walks the shared, abbreviation-aware `SENTENCE_END` rather
+ * than looking for a literal ". " — but two sibling helpers kept their own
+ * hand-rolled `lastIndexOf(". ")` / `split(/[.;]\s|\n/)` versions, which stop
+ * at the period in "Sec. 5", "Art. 28" or "No. 5". Both of those helpers exist
+ * to FIND A NEGATION before the trigger, so truncating there dropped the
+ * negation and let the rule fire on drafting that had plainly disclaimed the
+ * clause — a confident false accusation, the failure this file's own comments
+ * call the worst honesty failure for an always-on rule.
+ *
+ * Sharing one scan is the point: this is the third copy of a boundary rule that
+ * has drifted before, and a single definition cannot drift from itself.
+ */
+function clauseStartBefore(text: string, at: number): number {
+  const dots = new RegExp(SENTENCE_END, "g");
+  let dot = -1;
+  let m: RegExpExecArray | null;
+  while ((m = dots.exec(text)) !== null && m.index < at) dot = m.index;
+  return Math.max(dot, text.lastIndexOf("; ", at), text.lastIndexOf("\n", at)) + 1;
+}
+
+/**
  * True when the trigger at `matchIndex` sits in a sentence whose text BEFORE
  * the match disclaims the clause's presence (see {@link CLAUSE_ABSENCE}).
  * Scoped to the enclosing sentence (cut at the last `.`/`;`/newline before the
@@ -141,12 +169,7 @@ const CLAUSE_ABSENCE =
  * disclaimed form suppresses instead — a missed flag is safer than a false one.
  */
 export function isPresenceDisclaimed(paragraph: string, matchIndex: number): boolean {
-  const start = Math.max(
-    paragraph.lastIndexOf(". ", matchIndex),
-    paragraph.lastIndexOf("; ", matchIndex),
-    paragraph.lastIndexOf("\n", matchIndex),
-  );
-  const before = paragraph.slice(start + 1, matchIndex);
+  const before = paragraph.slice(clauseStartBefore(paragraph, matchIndex), matchIndex);
   return CLAUSE_ABSENCE.test(before);
 }
 
@@ -165,20 +188,10 @@ export function enclosingSentence(paragraph: string, matchIndex: number): string
   // caller asked about is not silently truncated at the abbreviation. The
   // backward scan mirrors the forward one: `lastIndexOf(". ")` would have
   // stopped at "Inc. ", so it is replaced by a capital/digit-aware reverse scan.
-  const SENTENCE_DOT = new RegExp(SENTENCE_END, "g");
-  let dot = -1;
-  let m: RegExpExecArray | null;
-  while ((m = SENTENCE_DOT.exec(paragraph)) !== null && m.index < matchIndex) {
-    dot = m.index;
-  }
-  const start = Math.max(
-    dot,
-    paragraph.lastIndexOf("; ", matchIndex),
-    paragraph.lastIndexOf("\n", matchIndex),
-  );
+  const start = clauseStartBefore(paragraph, matchIndex);
   const rel = paragraph.slice(matchIndex).search(new RegExp(`[;\\n]|${SENTENCE_END}`));
   const end = rel === -1 ? paragraph.length : matchIndex + rel + 1;
-  return paragraph.slice(start + 1, end);
+  return paragraph.slice(start, end);
 }
 
 /** Returns true if any classified paragraph belongs to `category`. */
