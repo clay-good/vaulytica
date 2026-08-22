@@ -57,14 +57,26 @@ export function ulcActToStatute(act: UlcAct, retrievedAt: string, excerpt = ""):
 export const ulcFetcher: Fetcher = async (ctx): Promise<FetcherResult> => {
   const records: ParsedRecord[] = [];
   let bytesFetched = 0;
+  const failures: string[] = [];
   for (const act of ULC_ACTS) {
-    const bytes = await cachedGet(ctx.http, ctx.cache, ctx.source.id, act.url);
-    bytesFetched += bytes.byteLength;
-    // PDF text extraction is deferred to a step-11 helper that has
-    // access to pdfjs-dist with a DOM. Here we record the stub so the
-    // orchestrator can stage statutes and let the build wire the
-    // extracted excerpt in afterward.
-    records.push({ kind: "statute", data: ulcActToStatute(act, ctx.nowIso) });
+    // One act's outage must not discard the acts already fetched — see the same
+    // guard in the eCFR, US Code and Common Paper fetchers.
+    try {
+      const bytes = await cachedGet(ctx.http, ctx.cache, ctx.source.id, act.url);
+      bytesFetched += bytes.byteLength;
+      // PDF text extraction is deferred to a step-11 helper that has
+      // access to pdfjs-dist with a DOM. Here we record the stub so the
+      // orchestrator can stage statutes and let the build wire the
+      // extracted excerpt in afterward.
+      records.push({ kind: "statute", data: ulcActToStatute(act, ctx.nowIso) });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      failures.push(`${act.url}: ${msg}`);
+      process.stderr.write(`warn: ulc ${act.url} failed: ${msg}\n`);
+    }
+  }
+  if (failures.length === ULC_ACTS.length) {
+    throw new Error(`ULC: every act failed — ${failures.join("; ")}`);
   }
   return {
     source_id: ctx.source.id,

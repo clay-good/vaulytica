@@ -27,6 +27,7 @@ import {
   classifyV4,
   classifyV4SubDomain,
   rankedAlternatives,
+  scoreSubDomains,
   type SubDomainFeatures,
 } from "../../../src/extract/v4/index.js";
 import type { V3Detection } from "../../../src/ui/v3/auto-detect.js";
@@ -314,3 +315,69 @@ describe("sub-domain-features.json — registry contract", () => {
 });
 
 void classifyV4SubDomain; // typecheck reference
+
+describe("feature matching is word-bounded, not substring", () => {
+  const scoreOf = (body: string, subDomain: string): number => {
+    const ctx = buildContext(["Memo", body]);
+    const scores = scoreSubDomains({
+      extracted: ctx.extracted,
+      body_text: `Memo\n${body}`,
+      features: FEATURES,
+    });
+    return scores.find((s) => s.sub_domain === subDomain)!.raw_score;
+  };
+
+  const matchedOf = (body: string, subDomain: string): string[] => {
+    const ctx = buildContext(["Memo", body]);
+    const scores = scoreSubDomains({
+      extracted: ctx.extracted,
+      body_text: `Memo\n${body}`,
+      features: FEATURES,
+    });
+    return scores.find((s) => s.sub_domain === subDomain)!.matched.distinguishing;
+  };
+
+  // A plain `.includes()` made every short feature fire inside ordinary
+  // English: "iso" on "advisory", "cam" on "became"/"campaign", "rent" on
+  // "current"/"different"/"apparent" — so the real-estate sub-domain collected
+  // a spurious distinguishing hit on nearly every contract. False evidence in
+  // the user-visible reasoning trail, and enough to tip a borderline document.
+  it("does not match a feature inside a longer, unrelated word", () => {
+    const body =
+      "This is a short generic memo with no legal terms of art at all, just an advisory note about scheduling.";
+    expect(matchedOf(body, "C-equity")).not.toContain("iso");
+    expect(scoreOf(body, "C-equity")).toBe(0);
+
+    const body2 =
+      "This memo became final after the marketing campaign concluded. Nothing here relates to property.";
+    expect(matchedOf(body2, "E-real-estate")).not.toContain("cam");
+    expect(scoreOf(body2, "E-real-estate")).toBe(0);
+
+    const body3 =
+      "The current schedule is different from the parent plan, and it is apparent that no change is needed.";
+    expect(matchedOf(body3, "E-real-estate")).not.toContain("rent");
+    expect(scoreOf(body3, "E-real-estate")).toBe(0);
+  });
+
+  it("still matches the feature as a standalone word", () => {
+    expect(
+      matchedOf("Tenant shall pay rent on the first of each month.", "E-real-estate"),
+    ).toContain("rent");
+    expect(matchedOf("The option is an iso for tax purposes.", "C-equity")).toContain("iso");
+  });
+
+  // Many phrases begin or end with a non-word character, where `\b` asserts the
+  // opposite of what is wanted — so the boundaries are lookarounds. "83(b)
+  // election" is a TITLE keyword, so it is matched against the heading.
+  it("still matches a phrase whose edges are not word characters", () => {
+    const title = "83(b) Election";
+    const ctx = buildContext([title, "The holder filed the required paperwork."]);
+    const scores = scoreSubDomains({
+      extracted: ctx.extracted,
+      body_text: `${title}\nThe holder filed the required paperwork.`,
+      features: FEATURES,
+    });
+    const equity = scores.find((s) => s.sub_domain === "C-equity")!;
+    expect(equity.matched.title).toContain("83(b) election");
+  });
+});

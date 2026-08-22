@@ -141,11 +141,6 @@ export function computeScoreboard(docs: ReadonlyArray<GradedDocument>): Scoreboa
 
   for (const ruleId of ruleIds) {
     const c = perRule.get(ruleId)!;
-    totals.tp += c.tp;
-    totals.fp += c.fp;
-    totals.fn += c.fn;
-    totals.tn += c.tn;
-
     const confidentDocs = perRuleConfidentDocs.get(ruleId) ?? 0;
     const lowConfidence = confidentDocs === 0;
     if (lowConfidence) unmeasured.push(ruleId);
@@ -153,9 +148,26 @@ export function computeScoreboard(docs: ReadonlyArray<GradedDocument>): Scoreboa
     const p = precision(c);
     const r = recall(c);
     const fScore = f1(c);
-    if (p !== null) macroP.push(p);
-    if (r !== null) macroR.push(r);
-    if (fScore !== null) macroF.push(fScore);
+
+    // A rule with no κ-confident grading document is UNMEASURED: its only
+    // evidence is a single, unverified annotator. It is still reported in
+    // `per_rule` with its own counts, flagged `low_confidence`, so a maintainer
+    // can see what little there is — but it must not reach the headline, which
+    // is exactly what `buildScoreboard`'s own note promises ("excluded from the
+    // headline (reported as unmeasured)"). It did reach it: `totals` and the
+    // macro arrays were accumulated before this was even computed, so one
+    // unverified annotator's single false positive could publish a headline
+    // precision of 0%. Publishing a number the evidence does not support is
+    // the dishonesty this whole harness exists to prevent.
+    if (!lowConfidence) {
+      totals.tp += c.tp;
+      totals.fp += c.fp;
+      totals.fn += c.fn;
+      totals.tn += c.tn;
+      if (p !== null) macroP.push(p);
+      if (r !== null) macroR.push(r);
+      if (fScore !== null) macroF.push(fScore);
+    }
 
     per_rule.push({
       rule_id: ruleId,

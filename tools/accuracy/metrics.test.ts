@@ -112,3 +112,54 @@ describe("computeScoreboard confusion model (spec-v5 §8)", () => {
     expect(worstByRecall(board, 1)[0]?.rule_id).toBe("MISS");
   });
 });
+
+describe("computeScoreboard — an unmeasured rule stays out of the headline", () => {
+  // `buildScoreboard`'s own note tells the reader that rules with no
+  // κ-confident grading document are "excluded from the headline (reported as
+  // unmeasured)". They were not: `totals` and the macro arrays were
+  // accumulated before `low_confidence` was computed, so a single unverified
+  // annotator's one false positive published a headline precision of 0%.
+  // Publishing a number the evidence does not support is the dishonesty this
+  // harness exists to prevent.
+  it("excludes a low-confidence rule's counts from totals and the averages", () => {
+    const docs: GradedDocument[] = [
+      {
+        corpus_doc_id: "d1",
+        playbook_id: "p1",
+        fired_rule_ids: new Set(["R1"]),
+        gold: new Map([["R1", "should_not_fire"]]),
+        high_confidence: false,
+        bootstrap: false,
+      },
+    ];
+    const board = computeScoreboard(docs);
+
+    expect(board.unmeasured_rule_ids).toEqual(["R1"]);
+    expect(board.totals).toEqual({ tp: 0, fp: 0, fn: 0, tn: 0 });
+    expect(board.averages.micro.precision).toBeNull();
+    expect(board.averages.macro.precision).toBeNull();
+
+    // Still reported per-rule, with its counts intact and the flag set — the
+    // point is that it is visible but not published as a headline number.
+    const r1 = board.per_rule.find((r) => r.rule_id === "R1")!;
+    expect(r1.low_confidence).toBe(true);
+    expect(r1.fp).toBe(1);
+  });
+
+  it("still counts a κ-confident rule in the headline", () => {
+    const docs: GradedDocument[] = [
+      {
+        corpus_doc_id: "d1",
+        playbook_id: "p1",
+        fired_rule_ids: new Set(["R1"]),
+        gold: new Map([["R1", "should_fire"]]),
+        high_confidence: true,
+        bootstrap: false,
+      },
+    ];
+    const board = computeScoreboard(docs);
+    expect(board.unmeasured_rule_ids).toEqual([]);
+    expect(board.totals.tp).toBe(1);
+    expect(board.averages.micro.precision).toBe(1);
+  });
+});

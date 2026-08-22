@@ -89,6 +89,45 @@ export type V4ClassifierInput = {
  * the full list is exposed for diagnostic surfaces ("Detected as: X.
  * Alternatives: Y (0.21).").
  */
+/**
+ * Compiled matchers, memoized by phrase. The feature tables are static, so each
+ * phrase compiles once for the life of the process rather than once per
+ * document per sub-domain.
+ */
+const PHRASE_RE = new Map<string, RegExp>();
+
+/**
+ * Whether `haystack` (already lower-cased) contains `phrase` as a WHOLE token
+ * run, rather than merely as a substring.
+ *
+ * A plain `.includes()` made every short feature match inside ordinary English:
+ * "iso" (incentive stock option) fired on "adv**iso**ry", "cam" (common area
+ * maintenance) on "be**cam**e" and "**cam**paign", "cla" on "**cla**use" — a
+ * word in every contract — "safe" on "**safe**ty", "spa" on "**spa**ce", and
+ * "rent" on "cur**rent**", "diffe**rent**" and "appa**rent**", so the
+ * real-estate sub-domain collected a spurious distinguishing hit on nearly
+ * every document. That is the same defect class as the substring-vs-word-
+ * boundary bug ("lease" inside "release") this routing layer is meant to avoid:
+ * it puts false evidence in the user-visible reasoning trail and can tip a
+ * genuinely borderline document into the wrong sub-domain.
+ *
+ * The boundaries are lookarounds, not `\b`, because many phrases begin or end
+ * with a non-word character — "501(c)(3)", "35 u.s.c.", "cc&rs", "ucc § 9-203"
+ * — and `\b` next to one of those asserts the opposite of what is wanted.
+ * Asserting "not adjacent to an alphanumeric" is correct for every phrase shape
+ * in the table.
+ */
+function containsPhrase(haystack: string, phrase: string): boolean {
+  const key = phrase.toLowerCase();
+  let re = PHRASE_RE.get(key);
+  if (!re) {
+    const escaped = key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    re = new RegExp(`(?<![a-z0-9])${escaped}(?![a-z0-9])`);
+    PHRASE_RE.set(key, re);
+  }
+  return re.test(haystack);
+}
+
 export function scoreSubDomains(input: V4ClassifierInput): SubDomainScore[] {
   const body = input.body_text.toLowerCase();
   const title = (input.extracted.outline.nodes[0]?.heading ?? "").toLowerCase();
@@ -106,14 +145,13 @@ export function scoreSubDomains(input: V4ClassifierInput): SubDomainScore[] {
     };
 
     for (const kw of entry.title_keywords) {
-      const k = kw.toLowerCase();
-      if (title.includes(k) || headings.includes(k)) matched.title.push(kw);
+      if (containsPhrase(title, kw) || containsPhrase(headings, kw)) matched.title.push(kw);
     }
     for (const ph of entry.distinguishing_phrases) {
-      if (body.includes(ph.toLowerCase())) matched.distinguishing.push(ph);
+      if (containsPhrase(body, ph)) matched.distinguishing.push(ph);
     }
     for (const neg of entry.negative_features) {
-      if (body.includes(neg.toLowerCase())) matched.negative.push(neg);
+      if (containsPhrase(body, neg)) matched.negative.push(neg);
     }
 
     const raw =

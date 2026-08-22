@@ -72,20 +72,41 @@ function slugify(s: string): string {
 export const commonpaperFetcher: Fetcher = async (ctx): Promise<FetcherResult> => {
   const records: ParsedRecord[] = [];
   let bytesFetched = 0;
+  const failures: string[] = [];
   for (const t of TEMPLATE_REPOS) {
     const url = `https://raw.githubusercontent.com/CommonPaper/${t.repo}/main/README.md`;
-    const md = await cachedGetText(ctx.http, ctx.cache, ctx.source.id, url);
-    bytesFetched += md.length;
-    for (const c of parseCommonPaperMarkdown(
-      md,
-      t.deal_type,
-      url,
-      ctx.nowIso,
-      ctx.source.license,
-      ctx.source.license_url,
-    )) {
-      records.push({ kind: "clause", data: c });
+    // One repo's outage must not discard the repos already fetched — see the
+    // same guard in the eCFR and US Code fetchers. `runBuild`'s per-source
+    // catch drops the whole source's records, so a throw escaping this loop
+    // turns one template's 404 into the source contributing nothing.
+    try {
+      const md = await cachedGetText(ctx.http, ctx.cache, ctx.source.id, url);
+      bytesFetched += md.length;
+      const clauses = parseCommonPaperMarkdown(
+        md,
+        t.deal_type,
+        url,
+        ctx.nowIso,
+        ctx.source.license,
+        ctx.source.license_url,
+      );
+      // A template README always carries clause sections, so zero means the
+      // body was not the README we asked for (GitHub serves an error page with
+      // HTTP 200 for a moved or renamed repo). Treating that as a legitimate
+      // zero leaves the existing clauses silently un-refreshed forever, which
+      // no gate can see because nothing shrank.
+      if (clauses.length === 0) {
+        throw new Error(`no clause sections parsed — the body was probably not the README`);
+      }
+      for (const c of clauses) records.push({ kind: "clause", data: c });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      failures.push(`${t.repo}: ${msg}`);
+      process.stderr.write(`warn: commonpaper ${url} failed: ${msg}\n`);
     }
+  }
+  if (failures.length === TEMPLATE_REPOS.length) {
+    throw new Error(`Common Paper: every template failed — ${failures.join("; ")}`);
   }
   return {
     source_id: ctx.source.id,

@@ -29,6 +29,57 @@ All notable changes to this project will be documented in this file. Format adap
   production-QA pack.
 
 ### Fixed
+- **Three more DKB fetchers now survive one source's outage.** The eCFR fetcher
+  was given two guards after a build shipped stale data silently — a per-title
+  `try`/`catch` so one bad title cannot discard the titles that already parsed,
+  and a parser that throws when a response yields no sections rather than
+  accepting it as a legitimate zero. Its siblings never got them. The US Code,
+  Common Paper and ULC fetchers all looped over their items with an unguarded
+  `await`, so a single title, template repo or act failing threw out of the
+  fetcher and `runBuild`'s per-source catch dropped every record collected so
+  far — one outage costing the whole source. The US Code and Common Paper
+  parsers also read an error page served with HTTP 200 as "zero records". That
+  combination is invisible to every gate: because these sources merge additively
+  onto the curated baseline, nothing shrinks, so the shrinkage gate sees nothing
+  — the existing entries are simply never refreshed again. All three now isolate
+  per item, log the failure, and throw only when *every* item fails, which is the
+  source being down rather than one item's outage.
+- **The accuracy scoreboard no longer publishes a headline it told you it was
+  excluding.** A rule with no κ-confident grading document is unmeasured — its
+  only evidence is one unverified annotator — and the scoreboard's own note says
+  such rules are "excluded from the headline". They were not: `totals` and the
+  macro averages were accumulated before the low-confidence flag was even
+  computed, so a single unverified annotator's one false positive could publish a
+  headline precision of 0%. Unmeasured rules are still reported per-rule with
+  their counts and the flag, so nothing is hidden — they just no longer move a
+  number the evidence cannot support.
+- **The v4 sub-domain classifier matches a feature as a word, not as a
+  substring.** Feature phrases were tested with a plain `includes`, so every
+  short entry fired inside ordinary English: "iso" (incentive stock option) on
+  "adv**iso**ry", "cam" (common area maintenance) on "be**cam**e" and
+  "**cam**paign", "cla" on "**cla**use" — a word in every contract — "safe" on
+  "**safe**ty", and "rent" on "cur**rent**", "diffe**rent**" and "appa**rent**",
+  which handed the real-estate sub-domain a spurious distinguishing hit on
+  nearly every document. That is the same substring-versus-word-boundary defect
+  as "lease" inside "release", and it both puts false evidence in the
+  user-visible reasoning trail and can tip a borderline document into the wrong
+  sub-domain. Matching is now bounded by lookarounds rather than `\b`, because
+  many phrases begin or end with a non-word character ("501(c)(3)", "35 u.s.c.",
+  "cc&rs") where `\b` asserts the opposite of what is wanted. Zero golden churn.
+- **Loading a second custom playbook before the first finished validating no
+  longer leaves the first one active.** The picker's handler is async — it reads
+  the file, then validates, which dynamic-imports the pipeline chunk — so two
+  picks in flight raced and whichever resolved LAST won. Picking a slow playbook
+  and then a fast one activated the slow one, and the next analysis silently ran
+  the file the user thought they had replaced. Each pick now carries a
+  generation and drops its result if a newer pick has started.
+- **A test that measures asymptotics no longer fails on a busy machine.** The
+  extractor fuzz gate exists to catch a super-linear blowup, but asserted a
+  2000ms wall-clock budget against a slowest case that already takes ~1.5s idle
+  — so it went red over scheduler contention rather than over a complexity
+  regression. The budget is now 8000ms, which still fails a quadratic pattern
+  decisively (50,000 characters squared is billions of operations) while
+  surviving a parallel run.
 - **A multi-word run-in heading is now read as a clause boundary.** The playbook
   clause scanner required a period immediately after the anchor stem, so it only
   recognized a single-word run-in heading. "Confidentiality Obligations." and

@@ -99,27 +99,44 @@ export function bindPlaybookPanel(container: HTMLElement, opts: PlaybookPanelOpt
     input.click();
   };
 
+  // Which pick is current. `onPick` is async — it reads the file and then
+  // validates, which dynamic-imports the pipeline chunk — so a user who picks
+  // playbook A and then picks playbook B before A finishes has two runs in
+  // flight. Whichever resolved LAST won, so if A was the slower one it
+  // overwrote B: the panel activated the file the user had already replaced,
+  // and `main.ts` fed that stale playbook straight into the next analysis with
+  // nothing on screen to say so. Each run captures its generation and drops its
+  // result if a newer pick has started. Same shape as `rerun`'s coalescing in
+  // `main.ts`.
+  let pickGeneration = 0;
+
   const onPick = async (e: Event): Promise<void> => {
     e.stopPropagation();
     const file = input.files?.[0];
     if (!file) return;
+    const generation = ++pickGeneration;
+    const superseded = (): boolean => generation !== pickGeneration;
     status.textContent = `Validating ${file.name}…`;
     let text: string;
     try {
       text = await file.text();
     } catch (err) {
+      if (superseded()) return;
       renderErrors(status, [`could not read ${file.name}: ${errMsg(err)}`]);
       opts.onActiveChange(null);
       return;
     }
+    if (superseded()) return;
     let result: PlaybookValidationResult;
     try {
       result = await validate(text);
     } catch (err) {
+      if (superseded()) return;
       renderErrors(status, [`validation failed: ${errMsg(err)}`]);
       opts.onActiveChange(null);
       return;
     }
+    if (superseded()) return;
     if (!result.ok) {
       renderErrors(status, result.errors);
       opts.onActiveChange(null);

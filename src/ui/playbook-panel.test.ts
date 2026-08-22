@@ -282,3 +282,46 @@ describe("bindPlaybookPanel", () => {
     });
   });
 });
+
+describe("bindPlaybookPanel — two picks in flight", () => {
+  // `onPick` reads the file and then validates (which dynamic-imports the
+  // pipeline chunk), so picking A and then B before A resolves left two runs in
+  // flight. Whichever resolved LAST won, so a slower A overwrote B: the panel
+  // activated the file the user had already replaced, and main.ts fed that
+  // stale playbook into the next analysis with nothing on screen to say so.
+  it("keeps the LAST pick even when an earlier pick resolves later", async () => {
+    const el = panel();
+    const changes: Array<LoadedPlaybook | null> = [];
+    const validate = vi.fn(async (text: string): Promise<PlaybookValidationResult> => {
+      const slow = text.includes("A");
+      await new Promise((r) => setTimeout(r, slow ? 40 : 5));
+      const pb = { ...loaded("augment"), name: slow ? "A" : "B" };
+      return { ok: true, playbook: pb, preview: makePreview({ name: pb.name }) };
+    });
+    bindPlaybookPanel(el, { onActiveChange: (p) => changes.push(p), validate });
+
+    pickFile(el, '{"which":"A"}', "a.json"); // slow
+    pickFile(el, '{"which":"B"}', "b.json"); // fast — the user's actual choice
+    await new Promise((r) => setTimeout(r, 100));
+
+    // A resolves after B, but it is superseded and must not be applied.
+    const applied = changes.filter((c): c is LoadedPlaybook => c !== null);
+    expect(applied.map((p) => p.name)).toEqual(["B"]);
+  });
+
+  it("still applies a single pick normally", async () => {
+    const el = panel();
+    const changes: Array<LoadedPlaybook | null> = [];
+    const validate = vi.fn(
+      (): PlaybookValidationResult => ({
+        ok: true,
+        playbook: loaded("augment"),
+        preview: makePreview(),
+      }),
+    );
+    bindPlaybookPanel(el, { onActiveChange: (p) => changes.push(p), validate });
+    pickFile(el, '{"ok":true}');
+    await flush();
+    expect(changes.filter((c) => c !== null)).toHaveLength(1);
+  });
+});
