@@ -186,3 +186,37 @@ describe("property: dayOfWeek is stable and 7-cyclic", () => {
     );
   });
 });
+
+describe("HolidayCalendarSchema — a holiday on a date that does not exist", () => {
+  it("rejects a seeded holiday of Feb 29 in a non-leap year", () => {
+    // The schema's day-of-month check used to be a flat `<= 31`, so a calendar
+    // could declare a holiday on a date the Gregorian calendar has no room for
+    // and still validate — after which `dayOfWeek` would assign that phantom
+    // date a weekday and `isNonCourtDay` would answer for it.
+    const cal = {
+      id: "test",
+      name: "Test Calendar",
+      version: "2026-01-01",
+      covers: { from: 2024, to: 2025 },
+      all_saturdays_holiday: false,
+      all_sundays_holiday: true,
+      holidays: ["2025-02-29"],
+      authority: [{ cite: "Test Cite", url: "https://example.com", retrieved_at: "2026-01-01" }],
+    };
+    expect(() => HolidayCalendarSchema.parse(cal)).toThrow();
+  });
+
+  it("still accepts Feb 29 in a real leap year", () => {
+    const cal = {
+      id: "test",
+      name: "Test Calendar",
+      version: "2026-01-01",
+      covers: { from: 2024, to: 2025 },
+      all_saturdays_holiday: false,
+      all_sundays_holiday: true,
+      holidays: ["2024-02-29"],
+      authority: [{ cite: "Test Cite", url: "https://example.com", retrieved_at: "2026-01-01" }],
+    };
+    expect(() => HolidayCalendarSchema.parse(cal)).not.toThrow();
+  });
+});

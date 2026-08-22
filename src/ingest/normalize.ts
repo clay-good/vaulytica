@@ -139,13 +139,23 @@ export function normalize(tree: DocumentTree): DocumentTree {
 
   const normalizeSection = (s: Section, path: number[]): Section => {
     const id = makeSectionId(path);
-    // Collapse heading whitespace the same way run text is collapsed, so the
+    // Normalize the heading exactly the way run text is normalized, so the
     // offset stream (and therefore every finding offset and the result_hash)
     // never depends on non-semantic whitespace in a heading. Without this, two
     // documents identical except for extra spaces/tabs in a heading produce
     // different result_hashes — a determinism leak the metamorphic suite caught
     // (spec-v7 Step 119). Clean single-spaced headings are unchanged (no churn).
-    const heading = s.heading.replace(/\s+/g, " ").trim();
+    //
+    // This routes through `normalizeRunText` rather than repeating its final
+    // `\s+`-collapse, because the two strips that precede that collapse matter
+    // just as much in a heading as in a run: Word and PDF inject soft hyphens
+    // and zero-width joiners mid-word in headings too, and a heading is read
+    // literally by the v4 document classifier (`headings.includes(keyword)`),
+    // so an invisible U+00AD inside "Con[shy]fidentiality" silently defeats the
+    // family match. C0 control bytes left in a heading flow into the DOCX
+    // report the same way they would from a run, producing the OOXML a strict
+    // parser rejects. The heading was the one text path that skipped both.
+    const heading = normalizeRunText(s.heading).trim();
     if (heading) {
       // The heading text itself takes up its own offset span plus a newline.
       cursor += heading.length + 1;

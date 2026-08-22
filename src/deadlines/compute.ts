@@ -32,10 +32,19 @@ const ISO_DATE_RE = /^(\d{4})-(\d{2})-(\d{2})$/;
 function parseIso(iso: string): [number, number, number] | null {
   const m = ISO_DATE_RE.exec(iso);
   if (!m) return null;
+  const y = +m[1]!;
   const mo = +m[2]!;
   const d = +m[3]!;
-  if (mo < 1 || mo > 12 || d < 1 || d > 31) return null;
-  return [+m[1]!, mo, d];
+  // The day must exist in THAT month of THAT year, not merely be <= 31. A bare
+  // `d > 31` check let "2025-02-29" (not a leap year) and "2026-04-31" through
+  // as valid triggers; `addDays`' month-normalization loop then rolled them
+  // silently forward into a real date, so `computeDeadline` answered
+  // `resolved: true` with a date the caller never asked about instead of taking
+  // the `not a valid ISO date` branch its own guard promises. A deadline
+  // computed from a date that does not exist is the one answer this module must
+  // never give.
+  if (mo < 1 || mo > 12 || d < 1 || d > daysInMonth(y, mo)) return null;
+  return [y, mo, d];
 }
 
 function pad(n: number, w: number): string {

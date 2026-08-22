@@ -187,3 +187,35 @@ describe("computeCourtDays — business-day counting", () => {
     expect(r.resolved).toBe(false);
   });
 });
+
+describe("computeDeadline — a date that does not exist is rejected, not rolled", () => {
+  // `parseIso` used to range-check the day against a flat 31, so a calendar-
+  // impossible trigger passed the `not a valid ISO date` guard and `addDays`'
+  // month-normalization loop then rolled it silently forward into a real date.
+  // The caller asked about Feb 29 in a non-leap year and got a confident
+  // deadline computed from March 1 — the worst possible failure mode for this
+  // module, since the answer looks authoritative.
+  it("rejects Feb 29 in a non-leap year", () => {
+    const r = computeDeadline({ trigger: "2025-02-29", days: 0, profile: frcp6 });
+    expect(r.resolved).toBe(false);
+    if (!r.resolved) expect(r.reason).toContain("not a valid ISO date");
+  });
+
+  it("rejects a day past the end of a 30-day month", () => {
+    const r = computeDeadline({ trigger: "2026-04-31", days: 0, profile: frcp6 });
+    expect(r.resolved).toBe(false);
+  });
+
+  it("still accepts Feb 29 in a real leap year", () => {
+    // 2024 is a leap year AND inside the us-federal calendar's covers range,
+    // so an unresolved result here would mean the tightened check over-rejects.
+    const r = computeDeadline({ trigger: "2024-02-29", days: 1, profile: frcp6 });
+    expect(r.resolved).toBe(true);
+  });
+
+  it("rejects an impossible trigger through computeCourtDays too", () => {
+    // Both entry points share `parseIso`, so one fix must cover both.
+    const r = computeCourtDays({ trigger: "2025-02-29", days: 3, profile: frcp6 });
+    expect(r.resolved).toBe(false);
+  });
+});

@@ -130,6 +130,27 @@ describe("normalize", () => {
     const legal = normalize(treeOf("H", [[vtff]])); // VT, FF \u2192 space
     expect(legal.sections[0]!.paragraphs[0]!.runs[0]!.text).toBe("a b c");
   });
+
+  it("strips format and control characters from a HEADING, not just from runs", () => {
+    // The heading used to get only the `\s+` collapse, so a soft hyphen or a
+    // zero-width joiner injected mid-word by Word/PDF survived in it while the
+    // identical string in a run was cleaned. That matters twice over: the v4
+    // classifier matches document families by `headings.includes(keyword)`, so
+    // an invisible U+00AD inside "Con[shy]fidentiality" silently loses the
+    // match; and a C0 byte in a heading corrupts the DOCX report exactly as it
+    // would from a run.
+    const c = String.fromCharCode;
+    const dirty = "Con\u00adfi\u200bdentiality" + c(0x01);
+    const out = normalize(treeOf(dirty, [["body"]]));
+    expect(out.sections[0]!.heading).toBe("Confidentiality");
+  });
+
+  it("leaves a clean heading byte-identical (no offset churn)", () => {
+    // The guard on the fix above: normalizing headings must not move the offset
+    // stream for any document that did not carry a format/control character.
+    const out = normalize(treeOf("Section 1. Confidentiality", [["body"]]));
+    expect(out.sections[0]!.heading).toBe("Section 1. Confidentiality");
+  });
 });
 
 describe("countWords", () => {

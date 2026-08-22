@@ -45,7 +45,11 @@ describe("headless DOCX ingestion (Node CLI environment)", () => {
     // Same bytes + same engine + same DKB ⇒ byte-identical run.
     expect(b.run.result_hash).toBe(a.run.result_hash);
     expect(b.run.findings).toEqual(a.run.findings);
-  });
+    // Two full engine passes over a real DOCX land within a few hundred ms of
+    // vitest's 5s default even on an idle machine, so this gate flaked under
+    // any parallel load — a red CI run that says nothing about the code. The
+    // sibling `api.test.ts` already allows 30s for the same shape of work.
+  }, 30000);
 
   it("verify reproduces a DOCX report (binary input re-ingested, not re-read as text)", async () => {
     const deps = await loadAccuracyDeps();
@@ -64,5 +68,6 @@ describe("headless DOCX ingestion (Node CLI environment)", () => {
     const result = await verifyReproducibilityFromFile(saved, FIXTURE, { deps });
     expect(result.reproduced).toBe(true);
     expect(result.divergences).toEqual([]);
-  });
+    // Same reasoning as above: an analyze plus a full reproducibility re-run.
+  }, 30000);
 });

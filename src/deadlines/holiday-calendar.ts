@@ -28,8 +28,20 @@ function parseIso(iso: string): [number, number, number] | null {
   const y = +m[1]!;
   const mo = +m[2]!;
   const d = +m[3]!;
-  if (mo < 1 || mo > 12 || d < 1 || d > 31) return null;
+  // Day-of-month is checked against THAT month of THAT year, not a flat 31 —
+  // see the same fix in `compute.ts`. Here it is the calendar schema's own
+  // gate: the `.refine` below is what stops a seeded calendar declaring a
+  // holiday on a date that does not exist ("2025-02-29"), which `dayOfWeek`
+  // would otherwise happily assign a weekday to.
+  if (mo < 1 || mo > 12 || d < 1 || d > daysInMonth(y, mo)) return null;
   return [y, mo, d];
+}
+
+/** Days in a Gregorian month (1-indexed), leap-year-correct. */
+function daysInMonth(year: number, month1: number): number {
+  const leap = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+  const lengths = [31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  return lengths[month1 - 1]!;
 }
 
 /**
