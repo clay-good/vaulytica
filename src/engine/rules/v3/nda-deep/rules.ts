@@ -63,6 +63,12 @@ export const NDA_DEEP_RULES: Rule[] = [
     description:
       "The DTSA notice must cover (a) immunity, (b) disclosure to a government official or attorney, and (c) sealed court filing — all three elements per § 1833(b).",
     citation: dtsaCite(),
+    // The clause being judged: the DTSA notice itself. These are NDA-D-001's
+    // own presence signals. A bare "trade secret" is deliberately NOT one of
+    // them — an NDA names trade secrets in its perpetuity carve-out too, and
+    // anchoring there would accuse a compliant agreement.
+    anchor:
+      /18\s*U\.?S\.?C\.?\s*§?\s*1833|defend\s+trade\s+secrets\s+act|(?:immunity|immune)\s+from\s+liability/i,
     required_patterns: [
       /(immunity|not\s+be\s+held\s+(criminally\s+or\s+civilly\s+)?liable)/i,
       /(government\s+official|federal,\s+state|attorney|law\s+enforcement)/i,

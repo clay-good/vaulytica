@@ -29,6 +29,44 @@ All notable changes to this project will be documented in this file. Format adap
   production-QA pack.
 
 ### Fixed
+- **A liability cap written "$5.5mm" is no longer read as five dollars.** The
+  cross-document cap parser's magnitude-suffix list had drifted from the one the
+  amount extractor uses, and was missing the "mm" / "mn" / "kk" shorthands. That
+  is not a gap but a MIS-read: the optional suffix cannot consume "mm" (the `m`
+  alternative is followed by another word character, so the trailing word
+  boundary fails), and the number then backtracks to "5" so the decimal point can
+  supply the boundary. A bundle whose master agreement says "$5,500,000" and
+  whose order form says "$5.5mm" was compared as 5,500,000 against 5 and reported
+  as a 1,100,000× discrepancy between two documents that agree exactly. The list
+  now mirrors the extractor's, full words before single letters and "mm"/"mn"
+  ahead of a bare "m" so they are not shadowed.
+- **Two rules no longer accuse a clause that says the opposite of what they
+  flag.** The class-action-waiver rule and the model-training-rights rule each
+  sliced out "the current sentence" with a bare `lastIndexOf(".")` before testing
+  it for a sentence-leading "Nothing" / "Neither" / "At no time" / "Under no
+  circumstances". A bare period stops at the "." in "Section 5.2" and in "Acme
+  Inc.", so the protective opening was cut out of view: "Nothing in this
+  Agreement, including Section 5.2, waives your right to a class action" was
+  reported as a class-action waiver, and "At no time, subject to Section 4.1,
+  will we use your data to train our models" as a training grant — the very
+  false accusation each rule's own comment says the guard exists to prevent.
+  Both now use the shared, abbreviation-aware sentence bound. A repo-wide sweep
+  found these two; they were the fifth and sixth copies of that boundary rule.
+- **The DTSA notice completeness check now reads the notice, not the whole
+  document.** It counted its three statutory components — immunity, disclosure to
+  a government official or attorney, and a sealed-filing carve-out — anywhere in
+  the agreement, and each component pattern is deliberately loose. That was wrong
+  in both directions. A notice missing its sealed-filing prong scored as complete
+  because an unrelated exhibit was "filed under seal", so the rule went silent on
+  an incomplete statutory notice — which under 18 U.S.C. § 1833(b) costs the
+  employer its exemplary-damages and fees remedy. And on an NDA with no notice at
+  all the count fell short and the rule reported "DTSA notice is incomplete",
+  describing a notice that does not exist; absence is the presence rule's finding
+  and its wording says so properly. The components are now counted inside the
+  clause itself, and where a document mentions the topic more than once — an NDA
+  names trade secrets in its perpetuity carve-out as well as in the notice — the
+  best candidate is judged rather than the first, so a compliant agreement is not
+  accused because its carve-out quite properly carries none of the pillars.
 - **Two rule helpers no longer lose a negation at an abbreviation.** The shared
   helpers that ~30 always-on rules call to decide whether a clause is disclaimed
   (`isPresenceDisclaimed`) or whether a trigger is negated

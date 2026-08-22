@@ -149,10 +149,13 @@ const CLAUSE_ABSENCE =
  * clause — a confident false accusation, the failure this file's own comments
  * call the worst honesty failure for an always-on rule.
  *
- * Sharing one scan is the point: this is the third copy of a boundary rule that
- * has drifted before, and a single definition cannot drift from itself.
+ * Sharing one scan is the point: copies of this boundary rule keep drifting —
+ * this was the third and fourth found in the file, and a repo-wide sweep then
+ * turned up two more inside individual rules (CHOICE-007, IPDATA-009) using a
+ * BARE `lastIndexOf(".")`, which stops even at the "." in "Section 5.2". Hence
+ * the export: a single definition cannot drift from itself.
  */
-function clauseStartBefore(text: string, at: number): number {
+export function clauseStartBefore(text: string, at: number): number {
   // ONE backward scan, stopping at the first boundary of any kind — which is
   // by definition the nearest, i.e. the same value the previous
   // `Math.max(dot, lastIndexOf("; "), lastIndexOf("\n"))` produced.

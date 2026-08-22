@@ -36,3 +36,22 @@ describe("CHOICE-007 — class-action waiver recognizes passive & long-parenthet
     ).toBeNull();
   });
 });
+
+describe("CHOICE-007 — the sentence guard survives a decimal or abbreviation", () => {
+  // The sentence-leading "nothing"/"neither" guard sliced the sentence with a
+  // BARE `lastIndexOf(".")`, which stops at the "." in "Section 5.2" and in
+  // "Acme Inc." — cutting "Nothing" out of view and firing on a clause that
+  // PRESERVES class-action rights. It now uses the shared, abbreviation-aware
+  // sentence bound.
+  it.each([
+    "Nothing in this Agreement, including Section 5.2, waives your right to a class action.",
+    "Nothing in this Agreement, as required by Acme Inc. policy, waives your right to a class action.",
+    "Neither this Section 8.1 nor any other provision waives your right to a class action.",
+  ])("stays silent on a preserved right stated after a period: %s", (t) => {
+    expect(fires(t)).toBe(false);
+  });
+
+  it("still fires on a genuine waiver that mentions a numbered section", () => {
+    expect(fires("Under Section 5.2, you agree to a class action waiver.")).toBe(true);
+  });
+});

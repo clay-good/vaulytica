@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, firstParagraphMatch, clauseStartBefore } from "../_helpers.js";
 
 // `\b` boundaries so "lease" does not match inside "Release" — a routine B2B /
 // settlement "Release of Claims" heading is not a consumer contract, and the
@@ -38,9 +38,12 @@ export const rule: Rule = {
     // Scoped so an unrelated same-sentence negation ("you may not get a refund,
     // and you agree to a class action waiver") still fires.
     const before = hit.text.slice(0, hit.match.index);
-    const sentence = before.slice(
-      Math.max(before.lastIndexOf("."), before.lastIndexOf(";"), before.lastIndexOf("\n")) + 1,
-    );
+    // The sentence bound is the SHARED, abbreviation-aware one. A bare
+    // `lastIndexOf(".")` stopped at the "." in "Section 5.2" and in "Acme
+    // Inc.", so the sentence-leading "Nothing" was cut out of view and this
+    // rule accused a clause that PRESERVES class-action rights — the exact
+    // false accusation the guard below exists to prevent.
+    const sentence = hit.text.slice(clauseStartBefore(hit.text, hit.match.index), hit.match.index);
     if (
       /\b(?:not|never|no|without)\b[^.;]{0,12}$/i.test(before) ||
       /^\s*(?:nothing|neither)\b/i.test(sentence)

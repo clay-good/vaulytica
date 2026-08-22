@@ -28,6 +28,7 @@ import {
   CROSS_CURRENCY_001,
 } from "./index.js";
 import { ALL_CONSISTENCY_RULES, CONSISTENCY_RULES } from "../index.js";
+import { firstLiabilityCap } from "./_helpers.js";
 import type { ConsistencyDocument } from "../../types.js";
 import { buildContext } from "../../../_test-fixtures.js";
 
@@ -1244,5 +1245,37 @@ describe("CROSS-SURVIVAL-001 reads only the survival sentence", () => {
     });
     expect(run.findings).toHaveLength(1);
     expect(run.findings[0]!.title).toContain("3 year(s)");
+  });
+});
+
+describe("firstLiabilityCap — every way of writing the same cap scales the same", () => {
+  const cap = (t: string): number | null =>
+    firstLiabilityCap(makeDoc("d", "msa-vendor-deep", ["Liability", t]))?.amount_usd ?? null;
+
+  const say = (amount: string): string =>
+    `The aggregate liability of each party shall not exceed ${amount} in the aggregate.`;
+
+  // The suffix list had drifted from `SCALES` in src/extract/amounts.ts and was
+  // missing the "mm"/"mn"/"kk" shorthands. That is not a gap, it is a MIS-read:
+  // the optional suffix cannot consume "mm" (the `m` alternative is followed by
+  // another word character, so the trailing \b fails), and the number then
+  // backtracks to "5" so the "." can supply the boundary — the cap reads as
+  // FIVE DOLLARS. A bundle whose MSA says "$5,500,000" and whose order form
+  // says "$5.5mm" would be accused of a 1,100,000x discrepancy while agreeing
+  // exactly.
+  it.each(["$5,500,000", "$5.5 million", "$5.5m", "$5.5mm", "$5.5 mm", "$5.5MM", "$5.5mn"])(
+    "reads %s as 5,500,000",
+    (amount) => {
+      expect(cap(say(amount))).toBe(5_500_000);
+    },
+  );
+
+  it("still reads a plain figure without a suffix", () => {
+    expect(cap(say("$500,000"))).toBe(500_000);
+  });
+
+  it("scales billions and thousands too", () => {
+    expect(cap(say("$2bn"))).toBe(2_000_000_000);
+    expect(cap(say("$750k"))).toBe(750_000);
   });
 });

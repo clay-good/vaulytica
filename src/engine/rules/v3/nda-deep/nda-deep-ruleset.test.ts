@@ -245,3 +245,70 @@ describe("NDA-D-020 — non-solicit detection recognizes recruit/hire/induce & '
     ).toBe(false);
   });
 });
+
+describe("NDA-D-002 — the three DTSA pillars must sit in the notice itself", () => {
+  const rule = NDA_DEEP_RULES.find((r) => r.id === "NDA-D-002")!;
+  const title = (...sections: [string, ...string[]][]): string | null =>
+    rule.check(buildContext(...sections))?.title ?? null;
+
+  const INCOMPLETE_NOTICE: [string, ...string[]] = [
+    "Trade Secrets",
+    "Under 18 U.S.C. § 1833(b), an individual shall not be held criminally or civilly liable for disclosing a trade secret in confidence to a government official.",
+  ];
+
+  // The pillars were counted across the WHOLE document, and each pattern is
+  // deliberately loose ("immunity", "government official|attorney", "under
+  // seal"). So an unrelated clause could supply a pillar the notice itself is
+  // missing, and the rule went silent on a genuinely incomplete statutory
+  // notice — which under § 1833(b) costs the employer its exemplary-damages
+  // and fees remedy.
+  it("flags an incomplete notice even when another clause says 'under seal'", () => {
+    expect(
+      title(INCOMPLETE_NOTICE, [
+        "Exhibits",
+        "Exhibit A is filed under seal with the escrow agent.",
+      ]),
+    ).toBe("DTSA notice is incomplete");
+  });
+
+  it("flags an incomplete notice on its own", () => {
+    expect(title(INCOMPLETE_NOTICE)).toBe("DTSA notice is incomplete");
+  });
+
+  it("stays silent on a complete notice", () => {
+    expect(
+      title([
+        "Trade Secrets",
+        "Under 18 U.S.C. § 1833(b), an individual shall not be held criminally or civilly liable for disclosing a trade secret in confidence to a government official or attorney, or in a complaint filed under seal.",
+      ]),
+    ).toBeNull();
+  });
+
+  // The other direction: on a document with no notice at all it used to report
+  // "DTSA notice is incomplete", describing a notice that does not exist.
+  // Absence is NDA-D-001's finding, and it says so properly.
+  it("stays silent when the document has no DTSA notice at all", () => {
+    expect(
+      title([
+        "Confidentiality",
+        "The Receiving Party shall keep the Confidential Information confidential.",
+      ]),
+    ).toBeNull();
+  });
+
+  it("does not assemble a notice from three unrelated clauses", () => {
+    expect(
+      title(
+        [
+          "Limitation of Liability",
+          "Neither party shall be held liable for indirect damages, and each party has immunity from such claims.",
+        ],
+        [
+          "Notices",
+          "Notices shall be delivered to the government official address listed, or to counsel of record, attorney for each party.",
+        ],
+        ["Exhibits", "Exhibit A is filed under seal with the escrow agent."],
+      ),
+    ).toBeNull();
+  });
+});

@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
+import { emit, firstParagraphMatch, isPresenceDisclaimed, clauseStartBefore } from "../_helpers.js";
 
 /**
  * IPDATA-009 — AI / ML training rights over Customer Data (critical,
@@ -42,9 +42,13 @@ export const rule: Rule = {
     // time" / "under no circumstances" / "in no event" that governs the verb.
     // Both are checked so the protective clause is not read as the grant.
     const before = hit.text.slice(0, hit.match.index);
-    const sentenceStart =
-      Math.max(before.lastIndexOf("."), before.lastIndexOf(";"), before.lastIndexOf("\n")) + 1;
-    const sentence = before.slice(sentenceStart);
+    // The sentence bound is the SHARED, abbreviation-aware one. A bare
+    // `lastIndexOf(".")` stopped at the "." in "Section 4.1" and in "Acme
+    // Inc.", cutting the sentence-leading "At no time" / "Under no
+    // circumstances" out of view — so the protective commitment was read as
+    // the training grant, which this rule's own comment calls a critical false
+    // accusation.
+    const sentence = hit.text.slice(clauseStartBefore(hit.text, hit.match.index), hit.match.index);
     if (
       isPresenceDisclaimed(hit.text, hit.match.index) ||
       /\b(?:shall|will|may|must|do(?:es)?|is|are)\s+not\s+$/i.test(before) ||

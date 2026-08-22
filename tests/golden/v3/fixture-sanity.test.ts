@@ -30,7 +30,11 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // 18 U.S.C. § 1833(b) requires the notice in any agreement governing
   // trade secrets. NDA-D-001 is the presence check, NDA-D-002 the
   // completeness check.
-  "mutual-nda-deep-missing-dtsa-fail.txt": ["NDA-D-001", "NDA-D-002"],
+  // Only NDA-D-001. The fixture has no DTSA notice at all, and NDA-D-002 asks
+  // whether an existing notice carries all three statutory pillars — it used to
+  // fire here too, reporting "DTSA notice is incomplete" about a notice that
+  // does not exist. Absence is NDA-D-001's finding and its wording says so.
+  "mutual-nda-deep-missing-dtsa-fail.txt": ["NDA-D-001"],
 
   // Article 28(3)(a) GDPR DPA with the documented-instructions clause
   // removed. DPA-007 is the load-bearing critical; the controller-side

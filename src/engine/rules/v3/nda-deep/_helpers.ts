@@ -260,6 +260,12 @@ export type NdaCompoundSpec = {
   name: string;
   description: string;
   citation: SourceCitation;
+  /**
+   * Locates the clause whose components are being counted. Without it, the
+   * components are counted across the WHOLE document — see the note on
+   * {@link buildNdaCompoundRule}.
+   */
+  anchor: RegExp;
   required_patterns: RegExp[];
   /** How many of the required_patterns must match to count as PRESENT. */
   min_match: number;
@@ -272,6 +278,29 @@ export type NdaCompoundSpec = {
   dkb_citation_id?: string;
 };
 
+/**
+ * A rule that asks whether ONE clause carries all of its required components.
+ *
+ * The components are counted inside the paragraph the `anchor` matches, not
+ * across the document. Counting document-wide was wrong in both directions,
+ * because the individual component patterns are deliberately loose — for the
+ * DTSA notice they are "immunity", "government official|attorney" and "under
+ * seal":
+ *
+ *  - FALSE COMPLIANCE. Three unrelated clauses satisfied all three: a
+ *    limitation-of-liability clause saying "immunity", a notices clause naming
+ *    an "attorney", and an exhibit "filed under seal". An agreement with no
+ *    DTSA notice anywhere scored as having a complete one, and the rule went
+ *    silent. Under 18 U.S.C. § 1833(b) that silence costs the employer its
+ *    exemplary-damages and fees remedy.
+ *  - WRONG ACCUSATION. On a plain NDA with no notice at all, the count fell
+ *    short and the rule reported "DTSA notice is incomplete" — describing a
+ *    notice that does not exist. Absence is NDA-D-001's job, and its finding
+ *    says so properly.
+ *
+ * With no anchor match there is no clause to judge, so the rule is silent and
+ * leaves absence to the presence rule.
+ */
 export function buildNdaCompoundRule(spec: NdaCompoundSpec): Rule {
   return {
     id: spec.id,
@@ -283,17 +312,40 @@ export function buildNdaCompoundRule(spec: NdaCompoundSpec): Rule {
     dkb_citations: [spec.dkb_citation_id ?? spec.citation.id],
     applies_to_playbooks: playbookList(spec.scope ?? "all"),
     check(ctx: RuleContext): Finding | null {
-      const text = fullText(ctx);
-      const matches = spec.required_patterns.filter((re) => re.test(text)).length;
-      if (matches >= spec.min_match) return null;
+      // Judge the BEST candidate, not the first. A document can mention the
+      // topic in more than one place — an NDA names trade secrets in its
+      // perpetuity carve-out as well as in the notice — and taking the first
+      // match would accuse a compliant agreement because the carve-out, quite
+      // properly, carries none of the pillars.
+      let best: { text: string; position: DocPosition; matches: number } | null = null;
+      forEachParagraph(ctx.tree, (p) => {
+        if (!spec.anchor.test(p.text)) return;
+        const matches = spec.required_patterns.filter((re) => re.test(p.text)).length;
+        if (best && matches <= best.matches) return;
+        best = {
+          text: p.text,
+          matches,
+          position: {
+            section_id: p.section.id,
+            paragraph_id: p.paragraph.id,
+            start: p.start,
+            end: p.end,
+          },
+        };
+      });
+      // No clause of this kind in the document: nothing to judge complete or
+      // incomplete. The presence rule reports the absence.
+      if (!best) return null;
+      const found = best as { text: string; position: DocPosition; matches: number };
+      if (found.matches >= spec.min_match) return null;
       return makeFinding({
         rule: this as Rule,
         title: spec.missing_title,
         description: spec.missing_description,
-        excerptText: "(required components not all present)",
+        excerptText: found.text.slice(0, 280),
         explanation: spec.explanation,
         recommendation: spec.recommendation,
-        position: docTop(ctx),
+        position: found.position,
         source_citations: [spec.citation],
       });
     },

@@ -93,3 +93,23 @@ describe("IPDATA-009 — AI / model-training rights over Customer Data", () => {
     ).not.toBeNull();
   });
 });
+
+describe("IPDATA-009 — the sentence guard survives a decimal or abbreviation", () => {
+  const fires = (t: string): boolean =>
+    IPDATA_009.check(buildContext(["Data License", t])) !== null;
+
+  // The "at no time" / "under no circumstances" guard sliced the sentence with
+  // a BARE `lastIndexOf(".")`, which stops at the "." in "Section 4.1" and in
+  // "Acme Inc." — so the protective commitment was read as the training grant,
+  // which this rule's own comment calls a critical false accusation.
+  it.each([
+    "At no time, subject to Section 4.1, will we use your data to train our models.",
+    "Under no circumstances shall Acme Inc. use your data to train our models.",
+  ])("stays silent on a protective commitment stated after a period: %s", (t) => {
+    expect(fires(t)).toBe(false);
+  });
+
+  it("still fires on a genuine grant that mentions a numbered section", () => {
+    expect(fires("Under Section 4.1, we may use your data to train our models.")).toBe(true);
+  });
+});

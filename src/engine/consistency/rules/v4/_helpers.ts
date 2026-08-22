@@ -161,7 +161,23 @@ export function effectiveDateOf(doc: ConsistencyDocument): string | null {
  * fee-multiple caps ("12 months of fees") the function returns null —
  * those aren't directly comparable as dollar amounts.
  */
-const DOLLAR_AMOUNT_RE = /\$\s*([\d,]+(?:\.\d+)?)\s*(billion|bn|million|thousand|m|k)?\b/gi;
+// Magnitude suffixes, mirroring `SCALES` in src/extract/amounts.ts. This list
+// had DRIFTED from that one and was missing the "mm" / "mn" / "kk" shorthands,
+// which is not a cosmetic gap: "$5.5mm" does not simply fail to scale, it
+// MIS-scales. The optional suffix cannot consume "mm" (the `m` alternative is
+// followed by another word character, so the trailing `\b` fails), and the
+// number then backtracks to "5" so the "." can supply the boundary — the cap
+// reads as FIVE DOLLARS. A bundle whose MSA says "$5,500,000" and whose order
+// form says "$5.5mm" would be reported as a 1,100,000x discrepancy between two
+// documents that agree exactly.
+//
+// Full words precede the single letters so `raw_text` stays honest, and "mm"
+// and "mn" precede the bare "m" so they are not shadowed by it — the same
+// ordering discipline amounts.ts documents. The bare "b" is deliberately NOT
+// included: amounts.ts records that it matched the "b" of "by" ("$50 by the
+// tenth" read as $50 billion), and nothing here needs it.
+const DOLLAR_AMOUNT_RE =
+  /\$\s*([\d,]+(?:\.\d+)?)\s*(trillion|billion|million|thousand|hundred|bn|kk|mm|mn|m|k)?\b/gi;
 
 /**
  * The slice of `text` a cap amount may legitimately live in: from the cap
@@ -227,6 +243,21 @@ function capAmountWindow(text: string, anchorIndex: number): string {
   return untilTopicShift(bounded);
 }
 
+/** Suffix → multiplier, mirroring `SCALES` in src/extract/amounts.ts. */
+const DOLLAR_SCALES: Record<string, number> = {
+  k: 1_000,
+  kk: 1_000_000,
+  m: 1_000_000,
+  mm: 1_000_000,
+  mn: 1_000_000,
+  bn: 1_000_000_000,
+  hundred: 100,
+  thousand: 1_000,
+  million: 1_000_000,
+  billion: 1_000_000_000,
+  trillion: 1_000_000_000_000,
+};
+
 /** The largest `$` amount in `text`, scaled by its magnitude suffix; 0 if none. */
 function maxDollarAmount(text: string): number {
   let max = 0;
@@ -234,14 +265,7 @@ function maxDollarAmount(text: string): number {
     const num = Number(m[1]!.replace(/,/g, ""));
     if (!Number.isFinite(num)) continue;
     const suffix = (m[2] ?? "").toLowerCase();
-    const scaled =
-      suffix === "billion" || suffix === "bn"
-        ? num * 1_000_000_000
-        : suffix === "million" || suffix === "m"
-          ? num * 1_000_000
-          : suffix === "thousand" || suffix === "k"
-            ? num * 1_000
-            : num;
+    const scaled = num * (DOLLAR_SCALES[suffix] ?? 1);
     if (scaled > max) max = scaled;
   }
   return max;
