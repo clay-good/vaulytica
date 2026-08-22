@@ -66,7 +66,19 @@ All notable changes to this project will be documented in this file. Format adap
   clause itself, and where a document mentions the topic more than once — an NDA
   names trade secrets in its perpetuity carve-out as well as in the notice — the
   best candidate is judged rather than the first, so a compliant agreement is not
-  accused because its carve-out quite properly carries none of the pillars.
+  accused because its carve-out quite properly carries none of the pillars. The
+  count spans the anchored paragraph and its immediate neighbours within the same
+  section, because a drafter may legitimately split one notice across two
+  paragraphs — citation and immunity in the first, the sealed-filing carve-out in
+  the second — and judging the anchor paragraph alone accused that perfectly
+  ordinary drafting. The window stops at three paragraphs and at the section
+  boundary rather than widening to the whole section, since a document with few
+  headings is one enormous section and that would reopen the document-wide
+  counting this fix exists to stop. The anchor also recognizes a notice that
+  paraphrases the statute without citing it, naming the Act, or using the word
+  "immunity", which is ordinary drafting the first attempt missed entirely — with
+  a trade-secret context requirement so that an ordinary "shall not be held
+  liable" limitation clause is not mistaken for a notice.
 - **Two rule helpers no longer lose a negation at an abbreviation.** The shared
   helpers that ~30 always-on rules call to decide whether a clause is disclaimed
   (`isPresenceDisclaimed`) or whether a trigger is negated

@@ -296,6 +296,44 @@ describe("NDA-D-002 — the three DTSA pillars must sit in the notice itself", (
     ).toBeNull();
   });
 
+  // A notice split across two paragraphs is one notice. Judging the anchor
+  // paragraph alone accused that perfectly ordinary drafting of being
+  // incomplete, so the count spans the anchor paragraph and its immediate
+  // neighbours within the same section.
+  it("accepts a complete notice split across two paragraphs", () => {
+    expect(
+      title([
+        "7. DTSA Notice",
+        "Pursuant to 18 U.S.C. § 1833(b), an individual shall not be held criminally or civilly liable under federal or state trade secret law for the disclosure of a trade secret made in confidence to a government official, or to an attorney, solely for the purpose of reporting a suspected violation of law.",
+        "Notwithstanding the foregoing, an individual may also disclose a trade secret in a complaint or other document filed in a lawsuit, provided that the filing is made under seal.",
+      ]),
+    ).toBeNull();
+  });
+
+  // A notice that paraphrases § 1833(b) without citing it, naming the Act, or
+  // using the word "immunity" is ordinary drafting. The first, narrower anchor
+  // missed it entirely and the rule went silent on an incomplete notice.
+  it("flags a paraphrased notice that is missing a pillar", () => {
+    expect(
+      title([
+        "Trade Secrets",
+        "An individual shall not be held criminally or civilly liable under this Agreement for disclosing a trade secret in confidence to a government official or to an attorney, solely for the purpose of reporting a suspected violation of law.",
+      ]),
+    ).toBe("DTSA notice is incomplete");
+  });
+
+  // ...but an ordinary limitation-of-liability clause must not be anchored, or
+  // it becomes the best candidate in a document with no notice and is reported
+  // as an incomplete one. Hence the trade-secret context requirement.
+  it("does not anchor on a plain limitation-of-liability clause", () => {
+    expect(
+      title([
+        "Limitation of Liability",
+        "Neither party shall not be held liable for indirect or consequential damages under this Agreement.",
+      ]),
+    ).toBeNull();
+  });
+
   it("does not assemble a notice from three unrelated clauses", () => {
     expect(
       title(

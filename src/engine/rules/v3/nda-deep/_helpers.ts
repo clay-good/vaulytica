@@ -312,27 +312,51 @@ export function buildNdaCompoundRule(spec: NdaCompoundSpec): Rule {
     dkb_citations: [spec.dkb_citation_id ?? spec.citation.id],
     applies_to_playbooks: playbookList(spec.scope ?? "all"),
     check(ctx: RuleContext): Finding | null {
-      // Judge the BEST candidate, not the first. A document can mention the
-      // topic in more than one place — an NDA names trade secrets in its
-      // perpetuity carve-out as well as in the notice — and taking the first
-      // match would accuse a compliant agreement because the carve-out, quite
-      // properly, carries none of the pillars.
-      let best: { text: string; position: DocPosition; matches: number } | null = null;
+      // Collect paragraphs in document order so a clause that spans two of
+      // them can be judged as one clause.
+      const paras: { text: string; sectionId: string; position: DocPosition }[] = [];
       forEachParagraph(ctx.tree, (p) => {
-        if (!spec.anchor.test(p.text)) return;
-        const matches = spec.required_patterns.filter((re) => re.test(p.text)).length;
-        if (best && matches <= best.matches) return;
-        best = {
+        paras.push({
           text: p.text,
-          matches,
+          sectionId: p.section.id,
           position: {
             section_id: p.section.id,
             paragraph_id: p.paragraph.id,
             start: p.start,
             end: p.end,
           },
-        };
+        });
       });
+
+      // Judge the BEST candidate, not the first. A document can mention the
+      // topic in more than one place — an NDA names trade secrets in its
+      // perpetuity carve-out as well as in the notice — and taking the first
+      // match accused a compliant agreement, because the carve-out quite
+      // properly carries none of the pillars.
+      //
+      // The components are counted over the anchor paragraph AND its immediate
+      // neighbours WITHIN THE SAME SECTION, because drafters legitimately split
+      // one notice across two paragraphs — citation and immunity in the first,
+      // the sealed-filing carve-out in the second — and judging the anchor
+      // paragraph alone accused that drafting of being incomplete. The window
+      // is deliberately three paragraphs and section-bounded rather than the
+      // whole section: a document with few headings is one enormous section,
+      // and widening to it would reopen the document-wide counting this rule
+      // was fixed to stop.
+      let best: { text: string; position: DocPosition; matches: number } | null = null;
+      for (let i = 0; i < paras.length; i++) {
+        const here = paras[i]!;
+        if (!spec.anchor.test(here.text)) continue;
+        const parts = [here.text];
+        const prev = paras[i - 1];
+        const next = paras[i + 1];
+        if (prev && prev.sectionId === here.sectionId) parts.unshift(prev.text);
+        if (next && next.sectionId === here.sectionId) parts.push(next.text);
+        const windowText = parts.join("\n");
+        const matches = spec.required_patterns.filter((re) => re.test(windowText)).length;
+        if (best && matches <= best.matches) continue;
+        best = { text: here.text, position: here.position, matches };
+      }
       // No clause of this kind in the document: nothing to judge complete or
       // incomplete. The presence rule reports the absence.
       if (!best) return null;

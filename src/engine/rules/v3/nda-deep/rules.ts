@@ -67,8 +67,15 @@ export const NDA_DEEP_RULES: Rule[] = [
     // own presence signals. A bare "trade secret" is deliberately NOT one of
     // them — an NDA names trade secrets in its perpetuity carve-out too, and
     // anchoring there would accuse a compliant agreement.
+    // The last alternative catches a notice that PARAPHRASES § 1833(b) without
+    // citing it, naming the Act, or using the word "immunity" — which is
+    // ordinary drafting, and which the narrower anchor missed entirely,
+    // silently. It requires trade-secret context within the same sentence so an
+    // ordinary "shall not be held liable" limitation clause is not anchored:
+    // that clause would otherwise become the best candidate in a document with
+    // no notice at all and be reported as an incomplete one.
     anchor:
-      /18\s*U\.?S\.?C\.?\s*§?\s*1833|defend\s+trade\s+secrets\s+act|(?:immunity|immune)\s+from\s+liability/i,
+      /18\s*U\.?S\.?C\.?\s*§?\s*1833|defend\s+trade\s+secrets\s+act|(?:immunity|immune)\s+from\s+liability|not\s+be\s+held\s+(?:criminally\s+or\s+civilly\s+)?liable[^.]{0,160}trade\s+secret/i,
     required_patterns: [
       /(immunity|not\s+be\s+held\s+(criminally\s+or\s+civilly\s+)?liable)/i,
       /(government\s+official|federal,\s+state|attorney|law\s+enforcement)/i,
