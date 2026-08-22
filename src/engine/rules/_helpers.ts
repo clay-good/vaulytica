@@ -153,11 +153,34 @@ const CLAUSE_ABSENCE =
  * has drifted before, and a single definition cannot drift from itself.
  */
 function clauseStartBefore(text: string, at: number): number {
-  const dots = new RegExp(SENTENCE_END, "g");
-  let dot = -1;
-  let m: RegExpExecArray | null;
-  while ((m = dots.exec(text)) !== null && m.index < at) dot = m.index;
-  return Math.max(dot, text.lastIndexOf("; ", at), text.lastIndexOf("\n", at)) + 1;
+  // ONE backward scan, stopping at the first boundary of any kind — which is
+  // by definition the nearest, i.e. the same value the previous
+  // `Math.max(dot, lastIndexOf("; "), lastIndexOf("\n"))` produced.
+  //
+  // Cost follows the DISTANCE BACK TO THE BOUNDARY, not the length of the
+  // document, and that is the whole point. Running `SENTENCE_END` forward from
+  // index 0, or calling `lastIndexOf` on a string that contains no ";" or
+  // newline at all, is O(n) per call — and these helpers call this once per
+  // regex match inside a loop over every match in the paragraph, so the scan
+  // became super-linear overall: a 94,000-character paragraph took 190ms, and
+  // doubling the input roughly quintupled the time. This repo guarantees no
+  // super-linear blowup on adversarial input, and the paste limit allows a
+  // single very large paragraph.
+  //
+  // The period test uses a STICKY regex so the result is identical to matching
+  // `SENTENCE_END` at that index: `y` anchors the test at exactly `i`, and the
+  // lookbehind still sees the whole string.
+  const bound = new RegExp(SENTENCE_END, "y");
+  for (let i = at - 1; i >= 0; i--) {
+    const c = text[i];
+    if (c === "\n") return i + 1;
+    if (c === ";" && text[i + 1] === " ") return i + 1;
+    if (c === ".") {
+      bound.lastIndex = i;
+      if (bound.test(text)) return i + 1;
+    }
+  }
+  return 0;
 }
 
 /**

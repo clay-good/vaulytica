@@ -227,3 +227,44 @@ describe("the reverse clause boundary is the shared, abbreviation-aware one", ()
     ).not.toBeNull();
   });
 });
+
+describe("the clause scan stays linear on a large, densely-matching paragraph", () => {
+  // The rule helpers had no perf gate: `fuzz-boundary.test.ts` caps its inputs
+  // at a few hundred characters and targets the extractors, not this layer. So
+  // when the reverse scan was unified, a version that ran `SENTENCE_END`
+  // forward from index 0 on every call — once per match, inside a loop over
+  // every match in the paragraph — went super-linear unnoticed: 94,000
+  // characters took 190ms and doubling the input roughly quintupled it. The
+  // paste limit allows a single very large paragraph, and this repo guarantees
+  // no super-linear blowup on adversarial input.
+  const unit = "The Order shall not automatically renew under this clause. ";
+
+  it("is fast enough at 190,000 characters that a quadratic scan cannot hide", () => {
+    // Every match is negated, so the loop runs to the very end — the worst case
+    // for a per-match scan. Linear work here is single-digit milliseconds; the
+    // quadratic version took over 800ms on the same input, so this budget is
+    // loose enough to survive a loaded CI machine and still fail a regression
+    // by two orders of magnitude.
+    const text = unit.repeat(3200);
+    const t0 = performance.now();
+    const hit = firstUnnegatedParagraphMatch(ctxWith(text), /automatically renew/i);
+    const ms = performance.now() - t0;
+    expect(hit).toBeNull();
+    expect(ms).toBeLessThan(500);
+  });
+
+  it("scales sub-quadratically between 47k and 190k characters", () => {
+    const time = (reps: number): number => {
+      const ctx = ctxWith(unit.repeat(reps));
+      const t0 = performance.now();
+      firstUnnegatedParagraphMatch(ctx, /automatically renew/i);
+      return performance.now() - t0;
+    };
+    time(400); // warm the JIT so the first timed run is not the slow one
+    const small = Math.max(time(800), 1);
+    const large = time(3200);
+    // 4x the input. Linear predicts ~4x; quadratic predicts ~16x. Anything at
+    // or under 10x is comfortably not quadratic, with room for timer noise.
+    expect(large / small).toBeLessThan(10);
+  });
+});

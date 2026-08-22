@@ -46,6 +46,17 @@ All notable changes to this project will be documented in this file. Format adap
   scan, which is the point — this was the third copy of a boundary rule that had
   drifted before, and a single definition cannot drift from itself. Zero golden
   churn.
+
+  The shared scan runs BACKWARD from the match and stops at the first boundary
+  of any kind, so its cost follows the distance back to that boundary rather
+  than the length of the document. That matters because these helpers are called
+  once per match inside a loop over every match in a paragraph: the obvious
+  implementations — running the boundary rule forward from index 0, or calling
+  `lastIndexOf` for a separator the text does not contain — are each O(n) per
+  call and made the whole scan super-linear. A 190,000-character paragraph took
+  849ms and now takes 3ms. The rule helpers had no performance gate at all (the
+  extractor fuzz suite caps its inputs at a few hundred characters and does not
+  reach this layer), so one was added.
 - **Three more DKB fetchers now survive one source's outage.** The eCFR fetcher
   was given two guards after a build shipped stale data silently — a per-title
   `try`/`catch` so one bad title cannot discard the titles that already parsed,
