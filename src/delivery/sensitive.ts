@@ -24,6 +24,17 @@ const MAX_SCAN_CHARS = 5 * 1024 * 1024;
 const MAX_PER_TYPE = 200;
 
 const SSN = /\b(\d{3})-(\d{2})-(\d{4})\b/g;
+// The same nine digits written with no separators — the form a spreadsheet
+// cell, an unformatted intake field or OCR output produces. Nothing else caught
+// it: it has no dashes for `SSN`, and while `ROUTING` does scan bare 9-digit
+// runs it drops everything failing the ABA checksum, so a bare SSN produced no
+// finding at all and went out unmasked. This module's own dedup comment already
+// treats "123-45-6789" and "123456789" as one SSN, so the bare form was always
+// meant to be reachable. Reported at LOW confidence, because nine bare digits
+// are genuinely ambiguous (an invoice or part number can look identical) and
+// the §14 honesty contract phrases every hit as "spans match SSN format"
+// rather than as a count of SSNs. Still gated on `ssnStructurallyValid`.
+const SSN_BARE = /\b(\d{3})(\d{2})(\d{4})\b/g;
 const EIN = /\b(\d{2})-(\d{7})\b/g;
 // First alternative: the 4-4-4-… grouping (Visa/MC 16-digit, and a contiguous
 // 15-digit Amex, whose last group absorbs into \d{1,7}). Second: American
@@ -82,6 +93,14 @@ export function scanSensitive(text: string): SensitiveFact[] {
   while ((m = SSN.exec(body)) !== null) {
     if (ssnStructurallyValid(m[1]!, m[2]!, m[3]!)) {
       push("ssn", "high", maskDigits(m[0], 4), m[0]);
+    }
+  }
+  while ((m = SSN_BARE.exec(body)) !== null) {
+    if (ssnStructurallyValid(m[1]!, m[2]!, m[3]!)) {
+      // Dedup normalizes digit types by stripping separators, so a document
+      // carrying both "123-45-6789" and "123456789" still reports one SSN —
+      // and the dashed hit, pushed first, keeps its "high" confidence.
+      push("ssn", "low", maskDigits(m[0], 4), m[0]);
     }
   }
   while ((m = EIN.exec(body)) !== null) {

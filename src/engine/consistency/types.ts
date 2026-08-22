@@ -86,6 +86,15 @@ export type ConsistencyExecutionLogEntry = {
   rule_version: string;
   /** False if the rule was skipped because `requires` was not satisfied. */
   ran: boolean;
+  /**
+   * True when the rule's `check()` THREW and was swallowed. Without it, the
+   * entry a crashing rule writes (`ran: true, findings_count: 0`) is identical
+   * to the one a rule that ran and found no conflict writes — so a rule failing
+   * on a real bug reads as a document with nothing wrong in it. Omitted rather
+   * than `false` on the common path, so no existing run's hash moves. The
+   * v4 engine's `ExecutionLogEntry` carries the same field for the same reason.
+   */
+  errored?: true;
   /** Number of findings emitted (zero when ran=true but no conflict). */
   findings_count: number;
   elapsed_ms: number;

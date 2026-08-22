@@ -76,12 +76,16 @@ export async function runConsistency(input: RunConsistencyInput): Promise<Consis
     // variable is definitely assigned afterward and an initial `= []` would be
     // dead (ESLint 10 `no-useless-assignment`).
     let out: ConsistencyFinding[];
+    let errored = false;
     try {
       out = rule.check(ctx) ?? [];
     } catch {
       // A throwing rule is treated as emitting nothing; the run still
-      // proceeds. The execution log records the (zero-finding) attempt.
+      // proceeds. The execution log records the (zero-finding) attempt, and
+      // that it ENDED IN A THROW — otherwise the entry is indistinguishable
+      // from a rule that ran and found no conflict.
       out = [];
+      errored = true;
     }
     const elapsed = nowMs() - started;
     for (const f of out) findings.push(f);
@@ -89,6 +93,7 @@ export async function runConsistency(input: RunConsistencyInput): Promise<Consis
       rule_id: rule.id,
       rule_version: rule.version,
       ran: true,
+      ...(errored ? { errored: true as const } : {}),
       findings_count: out.length,
       elapsed_ms: elapsed,
     });

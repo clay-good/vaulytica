@@ -140,12 +140,17 @@ export async function runEngine(input: RunEngineInput): Promise<EngineRun> {
     // the try/catch; an initial `= null` would be dead (ESLint 10
     // `no-useless-assignment`).
     let finding: Finding | null;
+    let errored = false;
     try {
       finding = rule.check(input.ctx);
     } catch {
       // A rule that throws is treated as silent — the contract is pure.
-      // The execution log still records the attempt.
+      // The execution log still records the attempt, and now records that it
+      // ENDED IN A THROW: without that, the entry is byte-identical to the one
+      // a rule that ran and found nothing writes, so a crashing rule reports
+      // "screened, and clean" with nothing to contradict it.
       finding = null;
+      errored = true;
     }
     const elapsed = nowMs() - started;
     if (finding && override?.severity) {
@@ -156,6 +161,8 @@ export async function runEngine(input: RunEngineInput): Promise<EngineRun> {
       rule_id: rule.id,
       rule_version: rule.version,
       ran: true,
+      // Omitted unless the rule actually threw, so no existing run's hash moves.
+      ...(errored ? { errored: true as const } : {}),
       fired: finding !== null,
       finding_id: finding?.id,
       elapsed_ms: elapsed,

@@ -338,3 +338,36 @@ describe("runCompare (integration)", () => {
     }
   });
 });
+
+describe("parseCompareArgs — value-taking flags", () => {
+  // `--dkb` was parsed into the working object and then left out of the
+  // returned one, so `runCompare`'s `loadAccuracyDeps({ dkbDir: args.dkb })`
+  // always saw `undefined` and resolved the default DKB. A caller pinning an
+  // explicit DKB directory for reproducibility got the default instead, with no
+  // error to say so.
+  it("returns the --dkb directory it parsed", () => {
+    const args = parseCompareArgs(["base.txt", "revised.txt", "--dkb", "/pinned/dkb"]);
+    expect(args.dkb).toBe("/pinned/dkb");
+  });
+
+  // The same class `analyze` was hardened against: a value-taking flag reads
+  // the next token blindly, so it eats the flag that follows and that flag is
+  // silently never set. Here `--playbook --posture` left posture off.
+  it("rejects a flag-shaped value instead of swallowing the next flag", () => {
+    expect(() => parseCompareArgs(["base.txt", "revised.txt", "--playbook", "--posture"])).toThrow(
+      /--playbook requires a value/,
+    );
+    expect(() =>
+      parseCompareArgs(["base.txt", "revised.txt", "--playbook-file", "--fail-on-regression"]),
+    ).toThrow(/--playbook-file requires a value/);
+    expect(() => parseCompareArgs(["base.txt", "revised.txt", "--dkb", "--posture"])).toThrow(
+      /--dkb requires a value/,
+    );
+  });
+
+  it("rejects a value-taking flag at the end of argv", () => {
+    expect(() => parseCompareArgs(["base.txt", "revised.txt", "--playbook"])).toThrow(
+      /--playbook requires a value/,
+    );
+  });
+});

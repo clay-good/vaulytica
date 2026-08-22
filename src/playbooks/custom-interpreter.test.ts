@@ -1128,3 +1128,73 @@ describe("result_hash covers the evidence, not just which rules fired", () => {
     expect(a.result_hash).toBe(b.result_hash);
   });
 });
+
+describe("clause_mutual — a multi-word run-in heading is a clause boundary", () => {
+  const indemnity = {
+    id: "R1",
+    title: "Mutual indemnity",
+    description: "d",
+    severity: "warning" as const,
+    assert: { kind: "clause_mutual" as const, clause: "indemnification" as const },
+  };
+
+  const fires = async (body: string): Promise<number> => {
+    const run = await runCustomPlaybook(pb({ custom_rules: [indemnity] }), {
+      tree: tree("Agreement", body),
+      extracted: emptyExtracted(),
+    });
+    return run.findings.length;
+  };
+
+  // The boundary detector only accepted a SINGLE-word run-in heading
+  // ("Confidentiality."), because it required "." immediately after the stem's
+  // letter run. "Confidentiality Obligations." — at least as common in
+  // commercial drafting — was not recognized, so the following clause's mutual
+  // language bled into this one and a genuinely one-way indemnity read as
+  // mutual. That silent pass is the worst outcome for this predicate.
+  it("flags a one-way indemnity when the NEXT heading is multi-word", async () => {
+    expect(
+      await fires(
+        "Indemnification Obligations. Supplier shall have no obligation to indemnify Client for any claim arising from this Agreement. Confidentiality Obligations. Each party shall keep confidential all information disclosed by the other party.",
+      ),
+    ).toBe(1);
+  });
+
+  it("flags it with numbered multi-word headings too", async () => {
+    expect(
+      await fires(
+        "1) Indemnification and Defense. Supplier shall have no obligation to indemnify Client. 2) Confidentiality and Data Security. Each party shall protect the other party's information.",
+      ),
+    ).toBe(1);
+  });
+
+  // The other half of the fix, and the reason it is bounded. Widening the
+  // heading token narrows the mutuality window, and clipping in the wrong place
+  // accuses genuinely mutual drafting of being one-way. These three each broke
+  // an intermediate version of the fix.
+  it("does not treat a SENTENCE opening with the stem as a heading", async () => {
+    // "Indemnification is reciprocal." is a sentence, not a heading. Clipping
+    // there cut the clause off before its own "each party" tail.
+    expect(
+      await fires(
+        "Indemnification. Supplier shall indemnify Client against third-party claims. Indemnification is reciprocal. Each party shall indemnify the other party to the same extent.",
+      ),
+    ).toBe(0);
+  });
+
+  it("does not treat a long stem-led sentence as a heading", async () => {
+    expect(
+      await fires(
+        "Indemnification. Supplier shall indemnify Client. Confidentiality of the Disclosed Information shall be maintained, and each party shall indemnify the other party for any breach of this Section.",
+      ),
+    ).toBe(0);
+  });
+
+  it("keeps the mutual tail of a clause under a multi-word heading", async () => {
+    expect(
+      await fires(
+        "1) Indemnification and Defense. Supplier shall indemnify Client, and each party shall indemnify the other party against third-party claims.",
+      ),
+    ).toBe(0);
+  });
+});

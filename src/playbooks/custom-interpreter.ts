@@ -935,10 +935,85 @@ function mutualityWindow(section: string, position: number): [number, number] {
 const CLAUSE_LEAD_IN =
   /(?:^|[.\n:;])[ \t]*(?:\(?[0-9]{1,3}[.)]|\([0-9a-z]{1,3}\)|[0-9]+(?:\.[0-9]+)+\.?)?[ \t]*$/;
 
+/**
+ * How many words a run-in heading may carry BEYOND the anchor stem itself.
+ *
+ * Three covers the commercial forms — "Confidentiality Obligations.",
+ * "Limitation of Liability.", "Indemnification and Defense of Claims." — and
+ * stops well short of a sentence. The bound is the safety margin: every extra
+ * word admitted is another place the window can be clipped, and clipping in the
+ * wrong place is the FALSE-ACCUSATION direction for this predicate. A prose
+ * sentence that happens to open with a stem ("Confidentiality of the Disclosed
+ * Information shall be maintained, and each party …") runs past three words
+ * before reaching its period and is therefore still rejected.
+ */
+const MAX_HEADING_EXTRA_WORDS = 3;
+
+/**
+ * Words that disqualify a token from being a run-in heading.
+ *
+ * A heading is a NOUN PHRASE — "Indemnification and Defense", "Limitation of
+ * Liability". A short SENTENCE that happens to open with an anchor stem
+ * ("Indemnification is reciprocal.") is not a heading, but once extra words are
+ * allowed the two are indistinguishable in lowercased text. The finite verbs,
+ * modals and negations below never appear in a run-in heading and always appear
+ * in such a sentence, so they separate the two cases.
+ *
+ * This is not cosmetic. Without it, "Indemnification is reciprocal." was read as
+ * a clause opening, the window was clipped before the clause's own "each party
+ * shall indemnify the other" tail, and genuinely mutual drafting was accused of
+ * being one-way — the exact false-accusation direction the clip is conservative
+ * about, reintroduced by widening the heading token. An adversarial probe caught
+ * it against the version of this fix that lacked this list.
+ */
+const NOT_IN_HEADING = new Set([
+  "is",
+  "are",
+  "was",
+  "were",
+  "be",
+  "been",
+  "shall",
+  "will",
+  "may",
+  "must",
+  "can",
+  "should",
+  "would",
+  "has",
+  "have",
+  "had",
+  "does",
+  "do",
+  "did",
+  "not",
+  "no",
+  "each",
+  "any",
+  "such",
+  "this",
+  "these",
+  "that",
+]);
+
 function startsClause(section: string, at: number, stem: string): boolean {
   let end = at + stem.length;
-  while (end < section.length && section[end]! >= "a" && section[end]! <= "z") end++;
-  if (section[end] !== ".") return false;
+  // Walk the heading token: letter-runs joined by SINGLE spaces, ending at ".".
+  // The single-space rule keeps the token from crossing a comma, semicolon or
+  // newline, so only an uninterrupted title phrase can qualify.
+  let extraWords = 0;
+  for (;;) {
+    while (end < section.length && section[end]! >= "a" && section[end]! <= "z") end++;
+    if (section[end] === ".") break;
+    if (section[end] !== " " || extraWords >= MAX_HEADING_EXTRA_WORDS) return false;
+    extraWords += 1;
+    end += 1;
+    // A space only continues the heading if a word actually follows it.
+    const wordStart = end;
+    while (end < section.length && section[end]! >= "a" && section[end]! <= "z") end++;
+    if (end === wordStart) return false;
+    if (NOT_IN_HEADING.has(section.slice(wordStart, end))) return false;
+  }
   return CLAUSE_LEAD_IN.test(section.slice(Math.max(0, at - 24), at));
 }
 

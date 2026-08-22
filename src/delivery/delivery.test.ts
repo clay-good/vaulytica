@@ -432,3 +432,43 @@ describe("scanSensitive — distinct emails are not merged by the dedup key", ()
     expect(facts.filter((f) => f.type === "ssn")).toHaveLength(1);
   });
 });
+
+describe("scanSensitive — an SSN written without separators", () => {
+  // The dashed form was the only one matched. Nine bare digits have no dashes
+  // for the SSN pattern, and the bare-9-digit ROUTING pattern drops everything
+  // that fails the ABA checksum — so an SSN copied out of a spreadsheet cell
+  // produced no finding at all and was disclosed unmasked.
+  it("detects a bare-digit SSN and masks it", () => {
+    const facts = scanSensitive("Employee SSN: 123456789 on file.");
+    const ssn = facts.filter((f) => f.type === "ssn");
+    expect(ssn).toHaveLength(1);
+    expect(ssn[0]!.masked).toBe("*****6789");
+    expect(ssn[0]!.confidence).toBe("low");
+    // The value itself must never survive into the fact.
+    expect(JSON.stringify(ssn[0])).not.toContain("123456789");
+  });
+
+  it("still reports the dashed form at high confidence", () => {
+    const ssn = scanSensitive("SSN: 123-45-6789").filter((f) => f.type === "ssn");
+    expect(ssn).toHaveLength(1);
+    expect(ssn[0]!.confidence).toBe("high");
+  });
+
+  it("counts both spellings of one SSN once", () => {
+    // Dedup normalizes digit types by stripping separators, and the dashed hit
+    // is pushed first, so the surviving fact keeps the higher confidence.
+    const ssn = scanSensitive("SSN 123-45-6789 (also written 123456789)").filter(
+      (f) => f.type === "ssn",
+    );
+    expect(ssn).toHaveLength(1);
+    expect(ssn[0]!.confidence).toBe("high");
+  });
+
+  it("does not report a structurally impossible bare run", () => {
+    // Area 000/666/9xx, group 00 and serial 0000 are never issued.
+    expect(scanSensitive("Ref 000456789").filter((f) => f.type === "ssn")).toHaveLength(0);
+    expect(scanSensitive("Ref 666456789").filter((f) => f.type === "ssn")).toHaveLength(0);
+    expect(scanSensitive("Ref 123004567").filter((f) => f.type === "ssn")).toHaveLength(0);
+    expect(scanSensitive("Ref 123450000").filter((f) => f.type === "ssn")).toHaveLength(0);
+  });
+});

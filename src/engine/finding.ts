@@ -146,6 +146,23 @@ export type ExecutionLogEntry = {
    * analyses and must not share a `result_hash`.
    */
   ran: boolean;
+  /**
+   * True when the rule's `check()` THREW and was swallowed. The rule contract
+   * is pure, so a throw is treated as silence and the run continues — but
+   * without this field that silence is written to the log as `ran: true,
+   * fired: false`, the exact entry a rule that ran and found nothing produces.
+   * A rule crashing on a real bug therefore reported "screened, and clean"
+   * forever, with nothing anywhere in the run to say otherwise. That is the
+   * same conflation `ran` was added to break, one branch over: `ran`
+   * distinguishes "never evaluated" from "evaluated", and this distinguishes
+   * "evaluated and clean" from "evaluated and crashed".
+   *
+   * Omitted (not `false`) on the overwhelmingly common path, so every run in
+   * which no rule threw hashes exactly as it did before. Inside the hash for
+   * the same reason `ran` is: a run in which a rule crashed is a different
+   * analysis from one in which it passed cleanly.
+   */
+  errored?: true;
   fired: boolean;
   finding_id?: string;
   elapsed_ms: number;

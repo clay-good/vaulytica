@@ -29,6 +29,109 @@ All notable changes to this project will be documented in this file. Format adap
   production-QA pack.
 
 ### Fixed
+- **A section heading is now cleaned the same way run text is.** The heading was
+  the one text path that skipped `normalizeRunText`: it got the whitespace
+  collapse and nothing else, so the soft hyphens and zero-width joiners Word and
+  PDF inject mid-word survived in a heading while the identical string in a
+  paragraph run was cleaned, and XML-illegal C0 control bytes rode a heading into
+  the DOCX report. Both matter — the v4 classifier matches document families by
+  reading headings literally, so an invisible U+00AD inside "Con[shy]fidentiality"
+  silently lost the family match. Routing the heading through the same helper is a
+  strict superset of the old behavior (that helper already ends in the same
+  collapse), so a heading carrying no format or control character is byte-identical
+  and no offset moves. Zero golden churn across the corpus.
+- **A deadline is no longer computed from a date that does not exist.** `parseIso`
+  range-checked day-of-month against a flat 31, so `2025-02-29` (not a leap year)
+  and `2026-04-31` passed the "not a valid ISO date" guard, and the calendar
+  arithmetic then rolled them silently forward into a real date. `computeDeadline`
+  answered `resolved: true` with a deadline computed from a day the caller never
+  named — the worst failure mode this module has, because the answer looks
+  authoritative. The day is now checked against that month of that year using the
+  leap-correct `daysInMonth` the file already defined. The same one-line gap sat in
+  the holiday-calendar schema's own validator, where it let a seeded calendar
+  declare a holiday on a date the Gregorian calendar has no room for.
+- **The DKB build no longer loses three sources to one source's outage.** Making
+  the eCFR parser throw correctly surfaced a bad response, but it threw straight
+  out of the fetcher's title loop, so the per-source catch discarded every record
+  already collected — one title's outage cost all four. Each title now fails on its
+  own and the rest still contribute; only a run where *every* title fails throws,
+  because that is the source being down rather than a per-title outage. Relatedly,
+  an eCFR response carrying no sections is now treated as a failure rather than as
+  a legitimate zero.
+- **A DKB acknowledgment now expires with the thing it acknowledged.** Both gates
+  keyed their acknowledgments on identifiers that said nothing about the content a
+  human had actually reviewed, which made every acknowledgment a standing
+  exemption. The staleness gate matched on `(node_id, citation)`, so dispositioning
+  one cosmetic renumbering as "no substantive change" meant that citation never
+  raised the gate again — the next real amendment would publish silently, which is
+  precisely the event the gate exists for. The shrinkage gate matched on
+  `(section, new_count)` with no record of what the count fell *from*, so an old
+  disposition would bless an unrelated later regression that happened to land on
+  the same number — a partial repeat of the incident the gate was built for. Each
+  acknowledgment now names the version or the transition it reviewed
+  (`fetched_hash`, `prior_count`), and an entry missing the field is dropped rather
+  than treated as a wildcard, so a hand-written acknowledgment that omits it fails
+  closed.
+- **A clause opening is judged by its heading shape, not by one character.** The
+  playbook clause scanner accepted any stem preceded by `.`, `;`, `:` or a newline,
+  which was wrong in both directions. A semicolon joining two halves of one
+  sentence — or separating items in a list — was read as a clause boundary, cutting
+  a clause off before its own mutuality tail and reporting compliant drafting as
+  one-way. And a numbered run-in heading ("4) Indemnification." … "5)
+  Confidentiality.") has `)` before the stem, so the boundary was rejected, the two
+  clauses bled together, and a genuinely one-way indemnity read as mutual. That is
+  ordinary commercial drafting, not an edge case. The mutuality window is now
+  clipped at clause *openings* rather than at topic mentions, so a neighbouring
+  clause's mutual language no longer counts as this clause's.
+- **A value-taking CLI flag no longer swallows the flag after it.** `analyze
+  doc.txt --playbook --delivery` exited 0 with a clean report and no delivery scan:
+  `--playbook` took the string `--delivery` as its playbook id and stepped over it,
+  and because a forced playbook id that matches nothing falls back to auto-matching,
+  the run silently used `generic-fallback` with no error and no warning. A gate the
+  caller believes is enabled being quietly switched off is the worst thing this
+  parser can do. The allowlist-validated flags already rejected a flag-shaped value
+  as a side effect of validating it; the nine free-form ones now share a
+  `requireValue` guard.
+- **Rules that never ran are no longer counted as evidence the document is
+  clean.** The comparison report's "no regression" number selected rules on
+  `fired === false` alone — but the engine logs `fired: false` for a rule it
+  *skipped*, using the identical entry shape it writes for a rule that ran and
+  stayed silent. Rules never evaluated at all were being counted as evidence the
+  document had been screened and come back clean, which is exactly the reassurance
+  an attorney reads that number for and exactly what a skipped rule cannot support.
+  The v4 execution log now carries the `ran` field the consistency log has had since
+  it shipped, with the same semantics, and every consumer reads it.
+- **Production QA reads a Bates range filename as a range.** A produced file named
+  for a range was parsed as a single, corrupted number, and a range whose end is
+  written as bare digits (inheriting the prefix from its start) failed the CI gate
+  on a log that was in fact correct. A privilege-log row logging a single Bates id
+  is also no longer dropped.
+- **The shared sentence boundary no longer cuts at an abbreviation.** The rule
+  that decides where a sentence ends was hand-copied seven times across the
+  extractors and treated any period as a terminator, so "5:00 p.m." and "No. 5"
+  split a sentence in two — and, worse, a suppression that widened the window let
+  one finding report an unrelated figure from a merged neighbour. There is now a
+  single `SENTENCE_END` in `extract/walk.ts`, keyed on the character that follows
+  the period, and the clause boundary and the obligations splitter share the same
+  abbreviation list rather than each carrying part of it.
+- **Five extractor defects that produced phantom or missing entities.** A
+  comma-suffixed party name registered twice; a two-column signature block
+  registered "Jane Roe By: John Doe" as one party while a real signer was dropped by
+  a field cap; a proviso was invented where none existed; and a venue clause went
+  unread. Each fix is pinned by a test that fails against the old behavior.
+- **A date sort in TEMP-002 is now a total comparator.** Two dates comparing equal
+  were left in input order, so the same document could produce two different
+  outputs — a determinism leak in the one product guarantee that must not have one.
+- **The cross-document cap check reads the figure from whichever anchor carries
+  it,** rather than taking the first anchor and, when that one held no figure,
+  falling back to the very value it had just rejected.
+- **The mutation harness now runs every suite that covers the code it mutates.**
+  Its config listed only `x.test.ts` for a mutated `x.ts`, so sibling suites never
+  ran and their kills went uncounted — which is why two features with weeks-old test
+  suites had been recorded as entirely untested. Fixing the include list alone
+  lifted the measured score with zero new tests. The scope guard now derives the
+  list from each test file's imports rather than restating it, and the two suites
+  that must be excluded are declared with reasons instead of silently missing.
 - **A policy that expressly disclaims an AML/BSA clause is no longer scored as
   compliant.** A clause-presence rule reads the document for the words the
   required clause would use, so a policy that states "the Company performs no

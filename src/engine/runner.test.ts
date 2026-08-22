@@ -168,3 +168,56 @@ describe("classification notice", () => {
     expect(strippedHash).not.toBe(run.result_hash);
   });
 });
+
+describe("runEngine — a rule that throws is distinguishable from one that is silent", () => {
+  function throwingRule(id: string): Rule {
+    return {
+      id,
+      version: "1.0.0",
+      name: id,
+      category: "test",
+      default_severity: "info",
+      description: "test",
+      dkb_citations: [],
+      check(_ctx: RuleContext): Finding | null {
+        throw new Error("a real bug inside this rule");
+      },
+    };
+  }
+
+  // The rule contract is pure, so a throw is swallowed and the run continues.
+  // But the log entry it produced — `ran: true, fired: false` — was byte-for-
+  // byte the entry a rule that ran and found nothing produces, so a rule
+  // crashing on a real bug reported "screened, and clean" forever, and no
+  // consumer anywhere in the product could tell the two apart.
+  it("marks the crashed rule errored and leaves the silent one unmarked", async () => {
+    const ctx = buildContext(["H", "Body."]);
+    const run = await runEngine({
+      rules: [throwingRule("THROW-001"), fakeRule("SILENT-001", false)],
+      ctx,
+      source_file: { name: "x", sha256: "0".repeat(64), size_bytes: 1 },
+    });
+    const crashed = run.execution_log.find((e) => e.rule_id === "THROW-001")!;
+    const silent = run.execution_log.find((e) => e.rule_id === "SILENT-001")!;
+
+    expect(crashed.errored).toBe(true);
+    expect(crashed.ran).toBe(true);
+    expect(crashed.fired).toBe(false);
+
+    // The silent rule must be untouched — and must OMIT the field, not carry
+    // `false`, so that every run in which nothing threw hashes as it did before.
+    expect(silent.errored).toBeUndefined();
+    expect("errored" in silent).toBe(false);
+    expect(silent.fired).toBe(false);
+  });
+
+  it("gives a crashed run a different result_hash than a clean one", async () => {
+    // A run in which a rule crashed is a different analysis from one in which
+    // it passed cleanly — the same reasoning that puts `ran` inside the hash.
+    const ctx = buildContext(["H", "Body."]);
+    const src = { name: "x", sha256: "0".repeat(64), size_bytes: 1 };
+    const crashed = await runEngine({ rules: [throwingRule("R-001")], ctx, source_file: src });
+    const clean = await runEngine({ rules: [fakeRule("R-001", false)], ctx, source_file: src });
+    expect(crashed.result_hash).not.toBe(clean.result_hash);
+  });
+});

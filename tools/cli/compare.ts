@@ -61,6 +61,23 @@ type CompareArgs = {
   dkb?: string;
 };
 
+/**
+ * A value-taking flag must be given a value, and a flag is not a value.
+ *
+ * The twin of `requireValue` in `run.ts`, kept local because `run.ts` imports
+ * this module and the dependency cannot run the other way. `analyze` grew this
+ * guard after `--playbook --delivery` silently disabled the delivery scan;
+ * `compare`'s parser had the identical unguarded `argv[++i]` on its three
+ * free-form flags. The enum-validated flags (`--format`, `--fail-on`) reject a
+ * flag-shaped value already, as a side effect of validating it.
+ */
+function requireValue(flag: string, val: string | undefined): string {
+  if (val === undefined || val.startsWith("--")) {
+    throw new Error(`${flag} requires a value`);
+  }
+  return val;
+}
+
 export function parseCompareArgs(argv: string[]): CompareArgs {
   const positional: string[] = [];
   const args: Partial<CompareArgs> = {
@@ -73,10 +90,10 @@ export function parseCompareArgs(argv: string[]): CompareArgs {
     const flag = argv[i]!;
     switch (flag) {
       case "--playbook":
-        args.playbook = argv[++i];
+        args.playbook = requireValue(flag, argv[++i]);
         break;
       case "--playbook-file":
-        args.playbookFile = argv[++i];
+        args.playbookFile = requireValue(flag, argv[++i]);
         break;
       case "--posture":
         args.posture = true;
@@ -102,7 +119,7 @@ export function parseCompareArgs(argv: string[]): CompareArgs {
         args.confirmPairing = true;
         break;
       case "--dkb":
-        args.dkb = argv[++i];
+        args.dkb = requireValue(flag, argv[++i]);
         break;
       default:
         if (flag.startsWith("--")) throw new Error(`unknown flag "${flag}"`);
@@ -130,6 +147,10 @@ export function parseCompareArgs(argv: string[]): CompareArgs {
     ...(args.failOn ? { failOn: args.failOn } : {}),
     failOnRegression: args.failOnRegression!,
     confirmPairing: args.confirmPairing!,
+    // `--dkb` was parsed into `args` and then dropped here, so a run that pinned
+    // an explicit DKB directory silently used the default one instead — the
+    // opposite of what a caller pinning the DKB is asking for.
+    ...(args.dkb ? { dkb: args.dkb } : {}),
   };
 }
 
