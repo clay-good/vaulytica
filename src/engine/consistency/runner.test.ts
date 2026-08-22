@@ -11,7 +11,7 @@ import {
   CC_007_ORDER_OF_PRECEDENCE,
 } from "./rules/index.js";
 import { kindOf } from "./_helpers.js";
-import type { ConsistencyDocument } from "./types.js";
+import type { ConsistencyDocument, ConsistencyFinding, ConsistencyRule } from "./types.js";
 import { buildContext } from "../_test-fixtures.js";
 
 function makeDoc(
@@ -600,5 +600,46 @@ describe("runConsistency — finding ordering", () => {
     if (ids.includes("CC-001") && ids.includes("CC-005")) {
       expect(ids.indexOf("CC-001")).toBeLessThan(ids.indexOf("CC-005"));
     }
+  });
+});
+
+describe("runConsistency — a rule that throws is distinguishable from one that is silent", () => {
+  const rule = (id: string, throws: boolean): ConsistencyRule => ({
+    id,
+    version: "1.0.0",
+    name: id,
+    category: "test",
+    default_severity: "info",
+    description: "test",
+    requires: [],
+    check(): ConsistencyFinding[] {
+      if (throws) throw new Error("a real bug inside this rule");
+      return [];
+    },
+  });
+
+  // The v4 engine log and this one carry the same `errored` field for the same
+  // reason, and it is easy to fix one runner and leave the other — so this is
+  // the consistency half of the guarantee. Without the field, a crashing rule
+  // logs `ran: true, findings_count: 0`, exactly what a rule that ran and found
+  // no conflict logs, and the bundle reads as one with nothing wrong in it.
+  it("marks the crashed rule errored and leaves the silent one unmarked", async () => {
+    const a = makeDoc("a", "msa-vendor-deep", ["Services", "Provider shall provide."]);
+    const b = makeDoc("b", "msa-vendor-deep", ["Services", "Provider shall provide."]);
+    const run = await runConsistency({
+      rules: [rule("THROW-001", true), rule("SILENT-001", false)],
+      documents: [a, b],
+      dkb: STARTER_DKB,
+    });
+    const crashed = run.execution_log.find((e) => e.rule_id === "THROW-001")!;
+    const silent = run.execution_log.find((e) => e.rule_id === "SILENT-001")!;
+
+    expect(crashed.errored).toBe(true);
+    expect(crashed.ran).toBe(true);
+    expect(crashed.findings_count).toBe(0);
+
+    // Omitted, not false — so every run in which nothing threw hashes as before.
+    expect(silent.errored).toBeUndefined();
+    expect("errored" in silent).toBe(false);
   });
 });
