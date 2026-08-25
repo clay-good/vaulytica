@@ -667,7 +667,7 @@ const FCRA = pack("background-check-disclosure", C, [
       "Fair Credit Reporting Act § 604(b) — conditions for furnishing and using consumer reports for employment purposes",
     ),
     pat: [
-      /(clear\s+and\s+conspicuous\s+(written\s+)?disclosure|in\s+a\s+document\s+that\s+consists\s+solely)/i,
+      /(clear\s+and\s+conspicuous\s+(written\s+)?disclosure|in\s+a\s+document\s+that\s+consists\s+solely|stand-?alone\s+(disclosure|document)|separate\s+document\s+(containing|consisting))/i,
       /(consumer\s+report|background\s+(check|report))/i,
     ],
     all: true,

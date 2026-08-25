@@ -4,6 +4,46 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Fixed
+- **Two vacated FTC rules were being cited as governing law
+  ([`spec-v47.md`](docs/spec-v47.md)).** A deterministic linter's whole claim is
+  that every finding cites a real authority, and the failure mode that claim is
+  most exposed to is a citation that *was* good law and is not any more —
+  invisible in a diff, invisible in the goldens, and reading to an attorney as
+  confident, sourced advice. The FTC's 2024 "click-to-cancel" amendments to the
+  Negative Option Rule were vacated in their entirety in July 2025, never took
+  effect, and 16 C.F.R. Part 425 has been recodified to its pre-2024
+  prenotification-plans text — but six surfaces still presented it as governing
+  a SaaS subscription, including a rule *named* "FTC Click-to-Cancel alignment".
+  Separately, the M&A restrictive-covenant playbook still framed itself on the
+  FTC Non-Compete Clause Rule's § 910.2(a)(2), which was set aside nationwide
+  and removed from the CFR. Every affected check keeps its logic and gets the
+  authority that actually imposes the obligation — ROSCA (15 U.S.C. § 8403) and
+  the state automatic-renewal laws for cancellation parity, the state
+  sale-of-business goodwill doctrine for seller covenants. Rule versions bumped
+  and 340 goldens regenerated, because the report text genuinely changed. The
+  DKB entry for Part 425 now carries the vacatur note inline the way the Part
+  910 entry already did.
+- **Three v5 patterns that would have flagged compliant drafting.** The
+  variance-power check (`GOV-129`) recognized "sole discretion" but not
+  "complete discretion and control", which is the standard fiscal-sponsorship
+  formulation; the permitted-exceptions check (`RE-134`) did not recognize a
+  deed excepting matters by reference to the title commitment's Schedule B; and
+  the FCRA stand-alone disclosure check (`EMP-148`) did not recognize a form
+  that says "stand-alone disclosure" rather than "clear and conspicuous".
+
+### Added
+- **A vacated-authority drift guard
+  ([`vacated-authority.test.ts`](tests/integration/vacated-authority.test.ts)).**
+  Every drift guard in this repo compares the repo against itself, and an
+  authority going stale is a change in the world that no self-consistency check
+  can see. This one holds a registry of vacated authorities and asserts that no
+  rule name, description, or citation — and no line of the repaired prose files
+  — names one without a disclaimer nearby. It cannot know what gets vacated
+  next; its value is that a repair cannot be silently undone, and that the next
+  discovery has one obvious place to land. `spec-v47.md` records the repair
+  pattern and the per-release re-verification cadence.
+
 ### Added
 - **The lawyer's own documents: engagement letters, discovery, and pleadings
   ([`spec-v46.md`](docs/spec-v46.md)).** Every wave through v5 reads a document
