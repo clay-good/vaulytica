@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 /** DARK-002 — Auto-renewal with hidden notice window (warning). */
 export const rule: Rule = {
   id: "DARK-002",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Auto-renewal with hidden notice window",
   category: "dark-patterns",
   default_severity: "warning",
@@ -63,7 +63,7 @@ export const rule: Rule = {
       description: `Notice window: ${days} days, located in ${notice!.position.section_id}.`,
       excerpt: auto.text.slice(0, 200),
       explanation:
-        "When the non-renewal notice window is in a different section from the auto-renewal clause or longer than 90 days, customers commonly miss it. FTC negative-option guidance (16 CFR Part 425) addresses this pattern.",
+        "When the non-renewal notice window is in a different section from the auto-renewal clause or longer than 90 days, customers commonly miss it. ROSCA (15 U.S.C. § 8403) and the state automatic-renewal statutes address this pattern.",
       position: auto.position,
     });
   },

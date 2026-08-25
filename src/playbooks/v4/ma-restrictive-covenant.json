@@ -2,7 +2,7 @@
   "id": "ma-restrictive-covenant",
   "version": "1.0.0",
   "name": "M&A Restrictive Covenant Agreement",
-  "description": "Sale-of-business non-compete / non-solicit covenants under the FTC NCR sale-of-business exception (16 C.F.R. § 910.2(a)(2)). Selects the §6.D M&A ruleset (MNA-072..MNA-080).",
+  "description": "Sale-of-business non-compete / non-solicit covenants, governed by state goodwill doctrine (e.g. Cal. Bus. & Prof. Code § 16601). The FTC Non-Compete Clause Rule, whose § 910.2(a)(2) would likewise have preserved them, was set aside nationwide in Ryan LLC v. FTC and never took effect. Selects the §6.D M&A ruleset (MNA-072..MNA-080).",
   "match_features": {
     "title_keywords": [
       "restrictive covenant agreement",
@@ -31,5 +31,5 @@
     "asset-purchase-agreement",
     "merger-agreement"
   ],
-  "compliance_matrix_columns": ["16 C.F.R. § 910.2(a)(2)", "State non-compete law"]
+  "compliance_matrix_columns": ["State sale-of-business goodwill doctrine", "State non-compete law"]
 }

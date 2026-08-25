@@ -245,7 +245,7 @@ describe("Addenda ruleset — failure modes", () => {
     expect(run.findings.find((f) => f.rule_id === "ADDENDA-010")).toBeTruthy();
   });
 
-  it("missing FTC Click-to-Cancel alignment fires ADDENDA-019", async () => {
+  it("missing cancellation-parity clause fires ADDENDA-019", async () => {
     const ctx = withPb(
       buildContext([
         "Terms of Service",

@@ -18,7 +18,7 @@ const CLEAN_ADDENDA =
   "Provider disclaims warranties as to Output accuracy and Customer shall apply human review. " +
   "AI Subprocessors. Provider discloses each AI subprocessor and model provider on its trust page and notifies Customer of changes. " +
   "Deletion. Provider shall perform deletion of fine-tuning data derived from Customer data on termination. " +
-  "License grant scope and prohibited uses are stated. EU consumer-law minimums apply. FTC click-to-cancel alignment. Required privacy disclosures are provided.";
+  "License grant scope and prohibited uses are stated. EU consumer-law minimums apply. You may cancel online at any time. Required privacy disclosures are provided.";
 
 const CLEAN_NDA =
   "Mutual Nondisclosure Agreement. Notice of Immunity. Pursuant to the Defend Trade Secrets Act, 18 U.S.C. § 1833(b), an individual shall not be held criminally or civilly liable for disclosing a trade secret in confidence to a government official solely for the purpose of reporting a suspected violation of law; this whistleblower immunity applies to filings made under seal. " +

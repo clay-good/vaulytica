@@ -34,7 +34,7 @@
     "statutes": {
       "entries": 30,
       "filename": "dkb-statutes.json",
-      "sha256": "8712176b98a295f955f74c1d90ef9f1df1a8da8d05ee01a3557eb181c7d87c28"
+      "sha256": "fe33547812d26eac12d9e52f8c06f15609c4d7f838722c9b40c89679dbd9c46f"
     }
   },
   "schema_version": "1.0.0",
@@ -110,7 +110,7 @@
     },
     {
       "id": "us-code",
-      "license": "Public domain (17 USC § 105)",
+      "license": "Public domain (17 USC \u00a7 105)",
       "license_url": "https://www.law.cornell.edu/uscode/text/17/105",
       "retrieved_at": "2026-05-11T00:00:00Z",
       "source": "United States Code (Office of the Law Revision Counsel)",

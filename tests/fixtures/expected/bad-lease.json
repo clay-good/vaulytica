@@ -101,7 +101,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "DARK-002",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -151,7 +151,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "DARK-009",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -742,7 +742,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TEMP-005",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -785,7 +785,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TEMP-011",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -1042,7 +1042,7 @@
           "license": "Public domain (US government work)",
           "license_url": "https://www.usa.gov/government-works",
           "retrieved_at": "2026-05-11T00:00:00Z",
-          "source": "16 C.F.R. Part 425 (FTC Negative Option Rule)",
+          "source": "16 C.F.R. Part 425 (FTC Negative Option Rule — prenotification plans only. The 2024 amendments (the \"click-to-cancel\" rule) were vacated in their entirety, Custom Communications, Inc. v. FTC (8th Cir. July 8, 2025), never took effect, and Part 425 has been recodified to its pre-2024 text. For consumer subscriptions generally the operative federal authority is ROSCA, 15 U.S.C. § 8403, plus the state automatic-renewal statutes.)",
           "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-D/part-425"
         }
       ],
@@ -1057,10 +1057,10 @@
         "start_offset": 365,
         "text": "automatic renewal for successive one-year terms unless either party provides written notice of non-renewal at least 10 days"
       },
-      "explanation": "Typical auto-renewal notice windows are 30 to 90 days. Anything outside that band — too long and the customer is likely to forget, too short and they are likely to miss it — warrants review under FTC negative-option marketing guidance (16 CFR Part 425).",
+      "explanation": "Typical auto-renewal notice windows are 30 to 90 days. Anything outside that band — too long and the customer is likely to forget, too short and they are likely to miss it — warrants review under ROSCA (15 U.S.C. § 8403) and the state automatic-renewal statutes.",
       "id": "TEMP-005-s1.1-365",
       "rule_id": "TEMP-005",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1068,7 +1068,7 @@
           "license": "Public domain (US government work)",
           "license_url": "https://www.usa.gov/government-works",
           "retrieved_at": "2026-05-11T00:00:00Z",
-          "source": "16 C.F.R. Part 425 (FTC Negative Option Rule)",
+          "source": "16 C.F.R. Part 425 (FTC Negative Option Rule — prenotification plans only. The 2024 amendments (the \"click-to-cancel\" rule) were vacated in their entirety, Custom Communications, Inc. v. FTC (8th Cir. July 8, 2025), never took effect, and Part 425 has been recodified to its pre-2024 text. For consumer subscriptions generally the operative federal authority is ROSCA, 15 U.S.C. § 8403, plus the state automatic-renewal statutes.)",
           "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-D/part-425"
         }
       ],
@@ -1083,11 +1083,11 @@
         "start_offset": 365,
         "text": "The initial Term is three (3) years, with automatic renewal for successive one-year terms unless either party provides written notice of non-renewal at least 10 days before the end of the then-current Term."
       },
-      "explanation": "An under-30-day non-renewal window compresses the customer's decision time. The FTC's Negative Option Rule and state-level auto-renewal statutes (California BPC §17600 et seq., New York GBL §527-a, and similar) constrain this in consumer contexts; even where the contract is B2B, short windows are widely reported as a friction-based dark pattern.",
+      "explanation": "An under-30-day non-renewal window compresses the customer's decision time. ROSCA (15 U.S.C. § 8403) and state-level auto-renewal statutes (California BPC §17600 et seq., New York GBL §527-a, and similar) constrain this in consumer contexts; even where the contract is B2B, short windows are widely reported as a friction-based dark pattern.",
       "id": "TEMP-011-s1.1-365",
       "recommendation": "Negotiate a 30- or 60-day non-renewal notice window.",
       "rule_id": "TEMP-011",
-      "rule_version": "1.2.0",
+      "rule_version": "1.3.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1095,7 +1095,7 @@
           "license": "Public domain (US government work)",
           "license_url": "https://www.usa.gov/government-works",
           "retrieved_at": "2026-05-11T00:00:00Z",
-          "source": "16 C.F.R. Part 425 (FTC Negative Option Rule)",
+          "source": "16 C.F.R. Part 425 (FTC Negative Option Rule — prenotification plans only. The 2024 amendments (the \"click-to-cancel\" rule) were vacated in their entirety, Custom Communications, Inc. v. FTC (8th Cir. July 8, 2025), never took effect, and Part 425 has been recodified to its pre-2024 text. For consumer subscriptions generally the operative federal authority is ROSCA, 15 U.S.C. § 8403, plus the state automatic-renewal statutes.)",
           "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-D/part-425"
         }
       ],
@@ -1216,7 +1216,7 @@
   "playbook_id": "lease-commercial-multitenant",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected lease-commercial-multitenant (score 0.9). Title matched: \"office lease\". Distinguishing phrases: \"Landlord\", \"Tenant\", \"Premises\", \"Common Area\", \"Rentable Square Feet\", \"Base Rent\", \"Operating Expenses\".",
-  "result_hash": "c0309edf08ab7c415bf73e11c24a4204534ab27c29c6031ea021bfb1174caa2d",
+  "result_hash": "adeafc764e41da57334e3ab43d03fa9aaad79e6ce7b9233bdc6b194d0a1c9435",
   "source_file": {
     "name": "bad-lease.docx",
     "sha256": "b9f12348ac5e0f56fe223c8e264370bf1159ebafc2e1c7e1fdb5a811ed1eea17",

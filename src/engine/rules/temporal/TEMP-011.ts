@@ -8,14 +8,14 @@ import { emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
  * An auto-renewal clause with a non-renewal notice window of fewer
  * than 30 days disadvantages the renewing party — by the time the
  * customer realizes they're approaching renewal, the window may have
- * already closed. The FTC's Negative Option Rule (16 CFR § 425) and
+ * already closed. ROSCA (15 U.S.C. § 8403) and
  * a growing list of state-level auto-renewal statutes (California
  * BPC § 17600 et seq., New York GBL § 527-a, etc.) constrain how
  * aggressively this can be compressed in consumer contexts.
  */
 export const rule: Rule = {
   id: "TEMP-011",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Auto-renewal notice window shorter than 30 days",
   category: "temporal",
   default_severity: "warning",
@@ -62,7 +62,7 @@ export const rule: Rule = {
       description: `Auto-renewal requires non-renewal notice ${days} day${days === 1 ? "" : "s"} in advance.`,
       excerpt: hit.text.slice(0, 280),
       explanation:
-        "An under-30-day non-renewal window compresses the customer's decision time. The FTC's Negative Option Rule and state-level auto-renewal statutes (California BPC §17600 et seq., New York GBL §527-a, and similar) constrain this in consumer contexts; even where the contract is B2B, short windows are widely reported as a friction-based dark pattern.",
+        "An under-30-day non-renewal window compresses the customer's decision time. ROSCA (15 U.S.C. § 8403) and state-level auto-renewal statutes (California BPC §17600 et seq., New York GBL §527-a, and similar) constrain this in consumer contexts; even where the contract is B2B, short windows are widely reported as a friction-based dark pattern.",
       recommendation: "Negotiate a 30- or 60-day non-renewal notice window.",
       position: hit.position,
     });

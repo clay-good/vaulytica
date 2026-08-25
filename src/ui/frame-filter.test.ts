@@ -59,7 +59,7 @@ describe("framesForRule", () => {
     expect(framesForRule("ADDENDA-018")).toEqual([]);
   });
 
-  it("ADDENDA-019 (FTC Click-to-Cancel) is gated by FTC-ROSCA", () => {
+  it("ADDENDA-019 (cancellation parity) is gated by FTC-ROSCA", () => {
     expect(framesForRule("ADDENDA-019")).toEqual(["FTC-ROSCA"]);
   });
 

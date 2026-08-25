@@ -4,7 +4,7 @@ import { emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
 /** TEMP-005 — Auto-renewal notice window unusual (warning). */
 export const rule: Rule = {
   id: "TEMP-005",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Auto-renewal notice window unusual",
   category: "temporal",
   default_severity: "warning",
@@ -44,7 +44,7 @@ export const rule: Rule = {
       description: `Non-renewal notice window: ${days} days.`,
       excerpt: hit.match[0],
       explanation:
-        "Typical auto-renewal notice windows are 30 to 90 days. Anything outside that band — too long and the customer is likely to forget, too short and they are likely to miss it — warrants review under FTC negative-option marketing guidance (16 CFR Part 425).",
+        "Typical auto-renewal notice windows are 30 to 90 days. Anything outside that band — too long and the customer is likely to forget, too short and they are likely to miss it — warrants review under ROSCA (15 U.S.C. § 8403) and the state automatic-renewal statutes.",
       position: hit.position,
     });
   },

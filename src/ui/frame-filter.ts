@@ -37,7 +37,7 @@ import type { ComplianceFrame } from "./v3/index.js";
  *   - ADDENDA-001..009 (vendor security)        → no frame (playbook-bound)
  *   - ADDENDA-010..016 (AI Addendum)            → NIST-AI-RMF + EU-AI-Act
  *   - ADDENDA-017..018 (EULA)                   → no frame
- *   - ADDENDA-019 (FTC Click-to-Cancel)         → FTC-ROSCA
+ *   - ADDENDA-019 (cancellation parity)          → FTC-ROSCA
  *   - ADDENDA-020 (privacy policy)              → GDPR + CCPA (the typical
  *     audience for a privacy policy is one of these two regimes)
  *

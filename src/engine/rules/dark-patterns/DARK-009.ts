@@ -15,8 +15,8 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
  *
  * The FTC has criticized "post-and-pray" amendment in
  * `Klocek v. Gateway, 104 F. Supp. 2d 1332` and subsequent enforcement
- * actions, and California's Auto-Renewal Law / FTC Click-to-Cancel
- * Rule (16 CFR § 425) require affirmative consent for material
+ * actions, and California's Auto-Renewal Law requires affirmative
+ * consent for material
  * changes. Best practice: material changes require signed amendment;
  * minor / non-material changes may be effected by written notice
  * with a defined objection / opt-out window.
@@ -28,7 +28,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "DARK-009",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Unilateral amendment by posting",
   category: "dark-patterns",
   default_severity: "warning",
@@ -65,7 +65,7 @@ export const rule: Rule = {
         description: a.match[0],
         excerpt: a.text.slice(Math.max(0, a.match.index - 30), a.match.index + 320),
         explanation:
-          "Allowing one party to change the contract by posting a new version on a website shifts the entire burden of monitoring the agreement to the other party in perpetuity, and renders the originally negotiated terms effectively meaningless. The FTC has called out 'post-and-pray' amendment in enforcement actions, and California's auto-renewal law plus the FTC's Click-to-Cancel rule (16 CFR § 425) require affirmative consent for material changes. Courts also sometimes refuse to enforce such clauses on illusory-contract grounds.",
+          "Allowing one party to change the contract by posting a new version on a website shifts the entire burden of monitoring the agreement to the other party in perpetuity, and renders the originally negotiated terms effectively meaningless. The FTC has called out 'post-and-pray' amendment in enforcement actions under Section 5 and ROSCA (15 U.S.C. § 8403), and California's automatic renewal law (Bus. & Prof. Code § 17600 et seq.) requires affirmative consent to material changes in a consumer subscription. Courts also sometimes refuse to enforce such clauses on illusory-contract grounds.",
         recommendation:
           "Restrict unilateral amendment to immaterial / non-substantive changes effected by written notice (email + at least 30 days) with a defined objection / opt-out right. Material changes — pricing, scope, liability, data use — must require a signed amendment or affirmative click-through consent.",
         position: a.position,

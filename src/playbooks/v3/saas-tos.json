@@ -2,7 +2,7 @@
   "id": "saas-tos",
   "version": "1.0.0",
   "name": "SaaS Terms of Service (Consumer-Facing)",
-  "description": "Linter for a consumer-facing SaaS Terms of Service / Terms of Use. Selects the §34 addenda ruleset (ToS portion, ADDENDA-019): FTC Click-to-Cancel rule + ROSCA alignment. v2's dark-patterns ruleset is also active on this surface (browsewrap, buried notice, class-action waiver, asymmetric jury-trial waiver) at elevated severity.",
+  "description": "Linter for a consumer-facing SaaS Terms of Service / Terms of Use. Selects the §34 addenda ruleset (ToS portion, ADDENDA-019): cancellation parity under ROSCA (15 U.S.C. § 8403) and the state automatic-renewal laws. v2's dark-patterns ruleset is also active on this surface (browsewrap, buried notice, class-action waiver, asymmetric jury-trial waiver) at elevated severity.",
   "match_features": {
     "title_keywords": [
       "terms of service",
@@ -43,8 +43,8 @@
   "balanced_defaults": [],
   "sources": [
     {
-      "id": "addenda-ftc-click-to-cancel",
-      "source": "FTC Negative Option / Click-to-Cancel Rule (16 C.F.R. Part 425)",
+      "id": "addenda-rosca-cancellation-parity",
+      "source": "ROSCA, 15 U.S.C. § 8403, and the state automatic-renewal laws (the FTC's 2024 click-to-cancel amendments to 16 C.F.R. Part 425 were vacated in July 2025 and never took effect)",
       "source_url": "https://www.ftc.gov/legal-library/browse/rules/negative-option-rule",
       "retrieved_at": "2026-05-13T00:00:00Z",
       "license": "Public domain (FTC)",
@@ -63,7 +63,7 @@
   "applicable_jurisdictions": ["US"],
   "companion_playbooks": ["privacy-policy-lint", "eula"],
   "compliance_matrix_columns": [
-    "FTC Click-to-Cancel alignment",
+    "Cancellation parity with signup",
     "ROSCA negative-option compliance",
     "Dark-patterns surface (v2 reused at elevated severity)"
   ]

@@ -8394,7 +8394,7 @@
     "id": "ma-restrictive-covenant",
     "version": "1.0.0",
     "name": "M&A Restrictive Covenant Agreement",
-    "description": "Sale-of-business non-compete / non-solicit covenants under the FTC NCR sale-of-business exception (16 C.F.R. § 910.2(a)(2)). Selects the §6.D M&A ruleset (MNA-072..MNA-080).",
+    "description": "Sale-of-business non-compete / non-solicit covenants, governed by state goodwill doctrine (e.g. Cal. Bus. & Prof. Code § 16601). The FTC Non-Compete Clause Rule, whose § 910.2(a)(2) would likewise have preserved them, was set aside nationwide in Ryan LLC v. FTC and never took effect. Selects the §6.D M&A ruleset (MNA-072..MNA-080).",
     "match_features": {
       "title_keywords": [
         "restrictive covenant agreement",
@@ -8432,7 +8432,7 @@
       "merger-agreement"
     ],
     "compliance_matrix_columns": [
-      "16 C.F.R. § 910.2(a)(2)",
+      "State sale-of-business goodwill doctrine",
       "State non-compete law"
     ]
   },
@@ -12500,7 +12500,7 @@
     "id": "saas-tos",
     "version": "1.0.0",
     "name": "SaaS Terms of Service (Consumer-Facing)",
-    "description": "Linter for a consumer-facing SaaS Terms of Service / Terms of Use. Selects the §34 addenda ruleset (ToS portion, ADDENDA-019): FTC Click-to-Cancel rule + ROSCA alignment. v2's dark-patterns ruleset is also active on this surface (browsewrap, buried notice, class-action waiver, asymmetric jury-trial waiver) at elevated severity.",
+    "description": "Linter for a consumer-facing SaaS Terms of Service / Terms of Use. Selects the §34 addenda ruleset (ToS portion, ADDENDA-019): cancellation parity under ROSCA (15 U.S.C. § 8403) and the state automatic-renewal laws. v2's dark-patterns ruleset is also active on this surface (browsewrap, buried notice, class-action waiver, asymmetric jury-trial waiver) at elevated severity.",
     "match_features": {
       "title_keywords": [
         "terms of service",
@@ -12546,8 +12546,8 @@
     "balanced_defaults": [],
     "sources": [
       {
-        "id": "addenda-ftc-click-to-cancel",
-        "source": "FTC Negative Option / Click-to-Cancel Rule (16 C.F.R. Part 425)",
+        "id": "addenda-rosca-cancellation-parity",
+        "source": "ROSCA, 15 U.S.C. § 8403, and the state automatic-renewal laws (the FTC's 2024 click-to-cancel amendments to 16 C.F.R. Part 425 were vacated in July 2025 and never took effect)",
         "source_url": "https://www.ftc.gov/legal-library/browse/rules/negative-option-rule",
         "retrieved_at": "2026-05-13T00:00:00Z",
         "license": "Public domain (FTC)",
@@ -12571,7 +12571,7 @@
       "eula"
     ],
     "compliance_matrix_columns": [
-      "FTC Click-to-Cancel alignment",
+      "Cancellation parity with signup",
       "ROSCA negative-option compliance",
       "Dark-patterns surface (v2 reused at elevated severity)"
     ]

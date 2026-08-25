@@ -36,7 +36,6 @@ const URL_BY_CITATION: Record<string, string> = {
   "NIST AI RMF": "https://www.nist.gov/itl/ai-risk-management-framework",
   "FIPS 140-3": "https://csrc.nist.gov/publications/detail/fips/140/3/final",
   "EU AI Act": "https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
-  "FTC Click-to-Cancel Rule": "https://www.ftc.gov/legal-library/browse/rules/negative-option-rule",
   "FTC enforcement actions on AI claims":
     "https://www.ftc.gov/business-guidance/blog/2023/02/keep-your-ai-claims-check",
   "CCPA § 1798.130":
@@ -486,18 +485,28 @@ export const ADDENDA_RULES: Rule[] = [
 
   // ────────────────────────────────────────────────────────────────
   // SaaS Terms of Service (ADDENDA-019)
+  //
+  // Renamed from "FTC Click-to-Cancel alignment". The FTC's 2024
+  // amendments to the Negative Option Rule — the click-to-cancel rule —
+  // were vacated in their entirety by the Eighth Circuit in July 2025,
+  // never took effect, and Part 425 has since been recodified to its
+  // pre-2024 text covering prenotification plans only. The check is
+  // unchanged and still worth running; what changed is the authority it
+  // may honestly claim. ROSCA and the state automatic-renewal statutes
+  // are live law and impose the substance directly.
   // ────────────────────────────────────────────────────────────────
   presenceTos({
     id: "ADDENDA-019",
-    name: "FTC Click-to-Cancel alignment",
+    version: "1.1.0",
+    name: "Cancellation parity with signup (ROSCA / state ARLs)",
     description:
-      "Consumer SaaS Terms of Service should align with the FTC Click-to-Cancel rule (cancellation as easy as signup).",
-    citation: "FTC Click-to-Cancel Rule",
-    missing_title: "FTC Click-to-Cancel alignment missing",
+      "Consumer SaaS Terms of Service should let a subscriber cancel by a mechanism at least as simple as the one used to subscribe.",
+    citation: "ROSCA 15 U.S.C. § 8403",
+    missing_title: "Cancellation-parity clause missing",
     missing_description:
-      "No clause aligns cancellation difficulty with signup ease (FTC Click-to-Cancel / ROSCA).",
+      "No clause states that cancellation is available by a mechanism at least as simple as signup (ROSCA § 8403 / state automatic-renewal laws).",
     explanation:
-      "The FTC's Click-to-Cancel rule and ROSCA both require that cancellation be at least as easy as signup; phone-only cancellation for online-signed subscriptions is non-compliant.",
+      "ROSCA (15 U.S.C. § 8403(3)) requires a simple mechanism to stop recurring charges, and California, New York, and other state automatic-renewal laws require cancellation in the same medium as enrollment — so phone-only cancellation of an online signup is exposed. The FTC's 2024 click-to-cancel rule would have said this expressly, but it was vacated in July 2025 and never took effect; the obligation comes from the statutes, which are unaffected.",
     recommendation:
       "Add: 'You may cancel your subscription using the same method you used to subscribe (e.g., online via your account).'",
     present_patterns: [
@@ -505,7 +514,7 @@ export const ADDENDA_RULES: Rule[] = [
       /(ROSCA|Restore\s+Online\s+Shoppers)/i,
       // The mechanism words rarely sit adjacent to "cancel": "you may cancel
       // your subscription at any time through your account settings by clicking
-      // 'Cancel Subscription'" states click-to-cancel with the object between.
+      // 'Cancel Subscription'" states self-service cancellation with the object between.
       /cancel[^.]{0,50}?\b(?:at\s+any\s+time|through\s+(?:your\s+)?account|via\s+(?:your\s+)?account|in\s+(?:your\s+)?account\s+settings|online)\b/i,
       /clicking\s+["“'’]?\s*cancel/i,
     ],
