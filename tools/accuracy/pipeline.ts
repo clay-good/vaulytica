@@ -32,6 +32,7 @@ import {
 import {
   matchPlaybook,
   parsePlaybook,
+  titleCorpus,
   LAUNCH_PLAYBOOK_IDS,
   type Playbook,
 } from "../../src/playbooks/index.js";
@@ -169,7 +170,7 @@ export async function runIngested(
   const extracted = extractAll(ingest.tree, {
     classifier: { vocab: { vocab: {} }, patterns: deps.dkb.classifier.patterns },
   });
-  const titleSource = ingest.tree.sections[0]?.heading ?? filename;
+  const titleSource = titleCorpus(ingest.tree, filename);
   const body = bodyTextOf(ingest.tree);
   const candidates = selectMatchCandidates(deps.launchPlaybooks, deps.extendedPlaybooks, {
     title: titleSource,

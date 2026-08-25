@@ -26,7 +26,12 @@ import type { IngestResult } from "../ingest/types.js";
 import { extractAll } from "../extract/index.js";
 import { loadDkb } from "../dkb/index.js";
 import type { DKB } from "../dkb/types.js";
-import { matchPlaybook, parsePlaybook, LAUNCH_PLAYBOOK_IDS } from "../playbooks/index.js";
+import {
+  matchPlaybook,
+  parsePlaybook,
+  titleCorpus,
+  LAUNCH_PLAYBOOK_IDS,
+} from "../playbooks/index.js";
 import type { Playbook } from "../playbooks/types.js";
 import { activateFiling } from "../filing/activate.js";
 import type { CourtProfile } from "../filing/court-profile.js";
@@ -416,6 +421,7 @@ let cachedExtendedPlaybooks: Playbook[] | null = null;
  * relative to its inputs. The output is reused across compliance-
  * frame toggle re-runs.
  */
+
 export async function prepareDocument(
   file: File,
   kind: "pdf" | "docx",
@@ -446,7 +452,7 @@ export async function prepareDocument(
     ensurePlaybooks(playbookBase),
     ensureExtendedPlaybooks(playbookBase),
   ]);
-  const titleSource = ingest.tree.sections[0]?.heading ?? file.name;
+  const titleSource = titleCorpus(ingest.tree, file.name);
   // Walk every section + child paragraph for distinguishing-phrase
   // matching. The classifier categories alone are a poor proxy for
   // body text — a unilateral NDA's `the Disclosing Party` phrasing
@@ -1216,7 +1222,7 @@ export async function prepareBundle(
     };
     walkSections(ingest.tree.sections as unknown as Parameters<typeof walkSections>[0]);
 
-    const titleSource = ingest.tree.sections[0]?.heading ?? entry.filename;
+    const titleSource = titleCorpus(ingest.tree, entry.filename);
     const bundleBody = bodyParts.join(" ");
     const candidates = selectMatchCandidates(launchPlaybooks, extendedPlaybooks, {
       title: titleSource,

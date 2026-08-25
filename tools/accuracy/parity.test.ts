@@ -19,7 +19,7 @@ import { describe, expect, it } from "vitest";
 
 import { ingestPaste } from "../../src/ingest/paste.js";
 import { extractAll } from "../../src/extract/index.js";
-import { matchPlaybook } from "../../src/playbooks/index.js";
+import { matchPlaybook, titleCorpus } from "../../src/playbooks/index.js";
 import { selectMatchCandidates } from "../../src/ui/playbook-candidates.js";
 import { runReport, type PreparedDocument } from "../../src/ui/pipeline.js";
 import type { DocumentTree, Section } from "../../src/ingest/types.js";
@@ -81,7 +81,10 @@ describe("Node↔browser pipeline parity (spec-v7 Step 120)", () => {
       const extracted = extractAll(ingest.tree, {
         classifier: { vocab: { vocab: {} }, patterns: deps.dkb.classifier.patterns },
       });
-      const title = ingest.tree.sections[0]?.heading ?? fx.name;
+      // Must use the same helper the real pipelines use, or this test
+      // proves parity with its own stale copy rather than with the
+      // browser path (`titleCorpus`, src/playbooks/matcher.ts).
+      const title = titleCorpus(ingest.tree, fx.name);
       const body = bodyTextOf(ingest.tree);
       const candidates = selectMatchCandidates(deps.launchPlaybooks, deps.extendedPlaybooks, {
         title,

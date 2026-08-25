@@ -20,7 +20,7 @@ export {
   PlaybookOverrideSchema,
   PlaybookMatchFeaturesSchema,
 } from "./types.js";
-export { matchPlaybook, type MatchInput } from "./matcher.js";
+export { matchPlaybook, titleCorpus, TITLE_PREAMBLE_CHARS, type MatchInput } from "./matcher.js";
 export { parsePlaybook, parsePlaybooks, fetchPlaybooks } from "./loader.js";
 export { LAUNCH_PLAYBOOK_IDS, type LaunchPlaybookId } from "./registry.js";
 

@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file. Format adap
 ## [9.42.0] — 2026-08-25
 
 ### Fixed
+- **The playbook matcher never saw the document's title on a plain-text or
+  unstyled document.** Title keywords are the single largest contributor to a
+  playbook score — 0.3, against 0.2 per distinguishing phrase — and three
+  production call sites (the browser pipeline, the bundle pipeline, and the
+  Node/CLI pipeline) plus the parity test that simulates the browser path had
+  each built that input as `sections[0]?.heading ?? filename`. `??` catches null
+  and undefined, not the **empty string** the tree builder produces for a
+  document with no styled heading, so every pasted or plain-text document — and
+  every DOCX whose title is bold body text rather than a Heading style — reached
+  the matcher with an empty title, and not even the filename fallback fired. The
+  observable effect: a short, unambiguous engagement letter scored 0.4 against
+  the 0.5 threshold, fell to `generic-fallback`, and none of its family's checks
+  ran. With the title seen it scores 0.7 and routes. The corpus documents all
+  carry proper headings, so the repair is hash-neutral — every golden is
+  byte-identical — while the signal it restores applies to every one of the 265
+  families. `titleCorpus` now lives beside `matchPlaybook`, which is the only
+  reason a fifth copy of that line cannot appear.
 - **Lighthouse CI was red on `main`.** The byte-level `unused-css-rules` audit
   (inherited at `error` from the `lighthouse:no-pwa` preset) began failing on the
   previous commit's front-page rewrite and stayed red. It is now `warn`,

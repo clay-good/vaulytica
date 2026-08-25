@@ -20,6 +20,48 @@ import {
   type PlaybookMatchResult,
 } from "./types.js";
 
+/**
+ * The title-ish corpus the playbook matcher scores `title_keywords` against.
+ *
+ * `matchPlaybook` documents this as "the first heading plus the preamble
+ * paragraph". The pipeline had been passing only the first section's
+ * heading, with `?? file.name` as the fallback — and `??` catches null and
+ * undefined, not the **empty string** the tree builder actually produces for
+ * a document with no styled heading. Every plain-text or pasted document,
+ * and every DOCX whose title is bold body text rather than a Heading style,
+ * therefore reached the matcher with an empty title.
+ *
+ * The consequence was silent and large: title keywords are the single
+ * biggest contributor to a playbook score (0.3, against 0.2 per
+ * distinguishing phrase), so a document that names itself in its first line
+ * lost that entire signal. A short, unambiguous engagement letter scored
+ * 0.4 and fell to `generic-fallback`; the same text with the title seen
+ * scores 0.7 and routes correctly.
+ *
+ * The preamble is capped because it is a *title* corpus, not a body one:
+ * an unbounded first paragraph would let an incidental mention of another
+ * family's title keyword outrank the document's own name.
+ */
+export const TITLE_PREAMBLE_CHARS = 240;
+
+export function titleCorpus(
+  tree: {
+    sections: readonly {
+      heading?: string;
+      paragraphs: readonly { runs: readonly { text: string }[] }[];
+    }[];
+  },
+  fallback: string,
+): string {
+  const first = tree.sections[0];
+  const heading = (first?.heading ?? "").trim();
+  const preamble = (first?.paragraphs[0]?.runs.map((r) => r.text).join("") ?? "")
+    .trim()
+    .slice(0, TITLE_PREAMBLE_CHARS);
+  const parts = [heading, preamble].filter((p) => p.length > 0);
+  return parts.length > 0 ? parts.join(" ") : fallback;
+}
+
 export type MatchInput = {
   /**
    * A title-ish corpus drawn from the document — typically the first
